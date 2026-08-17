@@ -87,11 +87,14 @@ jobs:
           echo "::group::Launcher discovery"
           # The whole point of an icon pack: a launcher finds it by intent.
           # Projectivy scans the ADW and Nova actions.
+          # `cmd package query-intent-activities` is unavailable on the
+          # Android TV x86 image, so we inspect the installed package's
+          # intent filters via `dumpsys package` instead.
+          PKGDUMP=$(adb shell dumpsys package "$PKG")
           for ACTION in org.adw.launcher.THEMES com.novalauncher.THEME; do
-            RESOLVED=$(adb shell cmd package query-intent-activities --brief -a "$ACTION" 2>/dev/null || true)
-            if ! echo "$RESOLVED" | grep -q "$PKG"; then
-              echo "::error::$PKG does not resolve for $ACTION — no launcher would discover the pack."
-              echo "$RESOLVED"
+            if ! echo "$PKGDUMP" | grep -q "$ACTION"; then
+              echo "::error::$PKG does not declare $ACTION — no launcher would discover the pack."
+              echo "$PKGDUMP" | grep -A2 "intent-filter" || true
               exit 1
             fi
             echo "$ACTION -> $PKG"
