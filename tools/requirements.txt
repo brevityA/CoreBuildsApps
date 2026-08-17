@@ -1,0 +1,2 @@
+# Pinned so PNG output stays reproducible across machines and CI.
+cairosvg==2.9.0

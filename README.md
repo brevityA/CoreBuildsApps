@@ -80,7 +80,7 @@ Everything generates from one file — `tools/catalog.json`. You never hand-edit
 Then regenerate and verify:
 
 ```bash
-pip install cairosvg
+pip install -r tools/requirements.txt
 python tools/build_icons.py      # SVGs, PNGs, appfilter, docs, preview
 python tools/build_branding.py   # launcher icon + TV banner
 python tools/validate.py         # 400+ coherence checks

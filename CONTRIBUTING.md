@@ -5,7 +5,7 @@ Everything in this repo generates from one file: **`tools/catalog.json`**. You n
 ## Setup
 
 ```bash
-pip install cairosvg          # needs libcairo2 on Linux
+pip install -r tools/requirements.txt   # needs libcairo2 on Linux
 ```
 
 That's the whole toolchain for asset work. Building the APK additionally needs JDK 17 + the Android SDK.
