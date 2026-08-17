@@ -1,8 +1,10 @@
 # Supported applications
 
-`68` icons · `117` mapped components · pack v1.1.0
+`68` icons · `117` mapped components · `0` unconfirmed · pack v1.1.0
 
 Every app below auto-assigns in Projectivy. If one doesn't, the app ships a different launcher activity on your device — open an issue with the component name and it gets added.
+
+Components marked ⚠ are **best-known, not device-confirmed** (0 of 117, across 0 apps). They were written from package documentation rather than read off a device with `adb shell cmd package resolve-activity`. A wrong component fails silently — the icon simply never assigns — so if one of these doesn't work, the component name from your device is the single most useful thing you can put in an issue.
 
 | App | Drawable | Accent | Components |
 | --- | --- | --- | --- |
