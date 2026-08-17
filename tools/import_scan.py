@@ -84,7 +84,12 @@ def parse_raw(path: Path):
     return rows
 
 
-def interesting(pkg: str) -> bool:
+def interesting(pkg: str, in_catalog: bool = False) -> bool:
+    # Never hide an app the catalog already claims — otherwise a mismatch on a
+    # system app (Settings, Play Store) is filtered out of the very report
+    # that exists to surface it.
+    if in_catalog:
+        return True
     if pkg in SKIP_EXACT:
         return False
     return not any(pkg.startswith(p) for p in SKIP_PREFIXES)
@@ -174,10 +179,11 @@ def main():
     covered, mismatched, missing = [], [], []
 
     for r in rows:
-        if not interesting(r["package"]):
-            continue
         comp = norm(r["component"])
         icon = by_component.get(comp)
+        known = icon is not None or r["package"] in by_package
+        if not interesting(r["package"], in_catalog=known):
+            continue
         if icon:
             covered.append((r, icon))
             continue

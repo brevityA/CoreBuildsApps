@@ -6,42 +6,70 @@
         <item>sevenplus</item>
         <item>ninenow</item>
         <item>abciview</item>
+        <item>adbappcontrol</item>
         <item>alldebrid</item>
+        <item>apktime</item>
         <item>appletv</item>
+        <item>aptoide</item>
+        <item>atvtools</item>
+        <item>aurora_store</item>
         <item>binge</item>
+        <item>cinemahd</item>
         <item>corebuilds</item>
         <item>disneyplus</item>
         <item>downloader</item>
         <item>emby</item>
         <item>files</item>
+        <item>playstore</item>
+        <item>homebutton</item>
+        <item>janky</item>
         <item>jellyfin</item>
         <item>justplayer</item>
         <item>kayo</item>
         <item>kodi</item>
         <item>kore</item>
+        <item>livetv</item>
+        <item>luckymanager</item>
         <item>max</item>
+        <item>monet</item>
+        <item>moonlight</item>
         <item>mxplayer</item>
         <item>netflix</item>
         <item>nuvio</item>
         <item>plex</item>
+        <item>poweramp_eq</item>
         <item>premiumize</item>
         <item>primevideo</item>
+        <item>projectivy_blueprint</item>
         <item>projectivy</item>
         <item>realdebrid</item>
+        <item>sai</item>
         <item>sbs</item>
+        <item>sdmaid</item>
+        <item>sendfilestotv</item>
         <item>settings</item>
+        <item>shizuku</item>
         <item>smarttube</item>
         <item>smarttubenext</item>
         <item>spotify</item>
         <item>stan</item>
         <item>stremio</item>
+        <item>strexo</item>
+        <item>strmr</item>
         <item>syncler</item>
+        <item>tasker</item>
+        <item>tizentube</item>
         <item>torbox</item>
         <item>trakt</item>
+        <item>tvquickactions</item>
         <item>twitch</item>
+        <item>unlinked</item>
+        <item>vimu</item>
         <item>vlc</item>
+        <item>wavetv</item>
         <item>weyd</item>
+        <item>wuplay</item>
         <item>youtube</item>
     </string-array>
-    <integer name="icon_count">40</integer>
+    <integer name="icon_count">68</integer>
 </resources>

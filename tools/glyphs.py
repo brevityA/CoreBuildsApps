@@ -264,7 +264,104 @@ def core_mark(c):
             f'<polygon points="256,166 346,256 256,346 166,256" {_f(c)}/>')
 
 
+def store_bag(c):
+    """App stores — shopping bag with a download arc."""
+    return (f'<path d="M 118 172 L 394 172 L 372 404 L 140 404 Z" {_s(c, 32)}/>'
+            f'<path d="M 196 224 L 196 148 C 196 108 226 84 256 84 '
+            f'C 286 84 316 108 316 148 L 316 224" {_s(c, 30)}/>')
+
+
+def install_box(c):
+    """Sideload / installer — package with an inbound arrow."""
+    return (f'<path d="M 96 186 L 256 108 L 416 186 L 416 350 L 256 428 '
+            f'L 96 350 Z" {_s(c, 32)}/>'
+            f'<path d="M 96 186 L 256 264 L 416 186" {_s(c, 28)}/>'
+            f'<path d="M 256 264 L 256 428" {_s(c, 28)}/>')
+
+
+def stream_tower(c):
+    """IPTV / live TV — broadcast tower radiating."""
+    return (f'<path d="M 200 424 L 256 208 L 312 424" {_s(c, 32)}/>'
+            f'<path d="M 218 340 L 294 340" {_s(c, 26)}/>'
+            f'<circle cx="256" cy="152" r="34" {_s(c, 28)}/>'
+            f'<path d="M 150 96 C 116 130 116 174 150 208" {_s(c, 26)}/>'
+            f'<path d="M 362 96 C 396 130 396 174 362 208" {_s(c, 26)}/>')
+
+
+def gamepad(c):
+    """Game streaming — controller silhouette."""
+    return (f'<path d="M 168 176 L 344 176 C 400 176 428 232 436 296 '
+            f'C 444 352 412 380 380 380 C 348 380 330 336 300 336 '
+            f'L 212 336 C 182 336 164 380 132 380 C 100 380 68 352 76 296 '
+            f'C 84 232 112 176 168 176 Z" {_s(c, 30)}/>'
+            f'<path d="M 148 236 L 148 292" {_s(c, 24)}/>'
+            f'<path d="M 120 264 L 176 264" {_s(c, 24)}/>'
+            f'<circle cx="348" cy="248" r="18" {_f(c)}/>'
+            f'<circle cx="384" cy="290" r="18" {_f(c)}/>')
+
+
+def tools_wrench(c):
+    """Utilities / tweaks — wrench."""
+    return (f'<path d="M 352 96 C 300 82 250 118 250 174 C 250 190 254 204 '
+            f'260 216 L 116 360 C 98 378 98 404 116 422 C 134 440 160 440 '
+            f'178 422 L 322 278 C 334 284 348 288 364 288 C 420 288 456 238 '
+            f'442 186 L 392 236 L 342 226 L 332 176 Z" {_s(c, 30)}/>')
+
+
+def send_arrow(c):
+    """File transfer — paper-plane."""
+    return (f'<path d="M 428 96 L 84 246 L 214 292 L 260 422 Z" {_s(c, 32)}/>'
+            f'<path d="M 428 96 L 214 292" {_s(c, 28)}/>')
+
+
+def broom(c):
+    """Cleaner / maintenance."""
+    return (f'<path d="M 384 96 L 236 244" {_s(c, 34)}/>'
+            f'<path d="M 268 208 L 176 300 L 246 370 L 338 278 Z" {_s(c, 30)}/>'
+            f'<path d="M 176 300 L 96 416 L 246 370" {_s(c, 30)}/>')
+
+
+def shield_key(c):
+    """Permissions / privileged access."""
+    return (f'<path d="M 256 84 L 404 144 L 404 262 C 404 344 336 396 256 420 '
+            f'C 176 396 108 344 108 262 L 108 144 Z" {_s(c, 32)}/>'
+            f'<circle cx="256" cy="228" r="42" {_s(c, 26)}/>'
+            f'<path d="M 256 270 L 256 336" {_s(c, 26)}/>'
+            f'<path d="M 256 306 L 296 306" {_s(c, 22)}/>')
+
+
+def automation(c):
+    """Automation / scripting — node graph."""
+    return (f'<circle cx="140" cy="150" r="46" {_s(c, 28)}/>'
+            f'<circle cx="372" cy="150" r="46" {_s(c, 28)}/>'
+            f'<circle cx="256" cy="372" r="46" {_s(c, 28)}/>'
+            f'<path d="M 186 150 L 326 150" {_s(c, 24)}/>'
+            f'<path d="M 158 192 L 232 332" {_s(c, 24)}/>'
+            f'<path d="M 354 192 L 280 332" {_s(c, 24)}/>')
+
+
+def home_button(c):
+    """Remote / button remapper."""
+    return (f'<path d="M 96 250 L 256 108 L 416 250" {_s(c, 32)}/>'
+            f'<path d="M 148 236 L 148 404 L 364 404 L 364 236" {_s(c, 30)}/>'
+            f'<circle cx="256" cy="318" r="40" {_s(c, 26)}/>')
+
+
+def tv_stack(c):
+    """Generic media/IPTV client — screen with stacked layers."""
+    return (f'<rect x="72" y="112" width="368" height="240" rx="40" {_s(c, 32)}/>'
+            f'<path d="M 176 412 L 336 412" {_s(c, 28)}/>'
+            f'<path d="M 256 352 L 256 412" {_s(c, 28)}/>'
+            f'<path d="M 148 190 L 300 190" {_s(c, 24)}/>'
+            f'<path d="M 148 250 L 364 250" {_s(c, 24)}/>')
+
+
 GLYPHS = {
+    "store_bag": store_bag, "install_box": install_box,
+    "stream_tower": stream_tower, "gamepad": gamepad,
+    "tools_wrench": tools_wrench, "send_arrow": send_arrow,
+    "broom": broom, "shield_key": shield_key, "automation": automation,
+    "home_button": home_button, "tv_stack": tv_stack,
     "play_hex": play_hex, "play_round": play_round, "play_rect": play_rect,
     "kodi_box": kodi_box, "jellyfin_chevrons": jellyfin_chevrons,
     "emby_shield": emby_shield, "plex_chevron": plex_chevron,
