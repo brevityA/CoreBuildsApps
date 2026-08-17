@@ -8,6 +8,38 @@
         android:name="android.software.leanback"
         android:required="false" />
 
+    <!--
+      Android 11 (API 30) package visibility.
+
+      Without this, getPackageInfo() and resolveActivity() return nothing for
+      other apps, so launcher detection silently reports "not installed" and
+      direct apply never fires. targetSdk is 34, so the filtering applies.
+
+      We declare the specific launchers we hand off to plus the HOME intent
+      (to detect the active launcher) — narrower and more honest than
+      QUERY_ALL_PACKAGES, which Play treats as a sensitive permission.
+    -->
+    <queries>
+        <package android:name="com.spocky.projengmenu" />
+        <package android:name="com.teslacoilsw.launcher" />
+        <package android:name="com.anddoes.launcher" />
+        <package android:name="org.adw.launcher" />
+        <package android:name="org.adwfreak.launcher" />
+        <package android:name="app.lawnchair" />
+        <package android:name="ch.deletescape.lawnchair" />
+        <package android:name="ch.deletescape.lawnchair.plah" />
+        <package android:name="ch.deletescape.lawnchair.ci" />
+        <package android:name="ch.deletescape.lawnchair.dev" />
+
+        <intent>
+            <action android:name="android.intent.action.MAIN" />
+            <category android:name="android.intent.category.HOME" />
+        </intent>
+        <intent>
+            <action android:name="com.spocky.projengmenu.APPLY_ICONPACK" />
+        </intent>
+    </queries>
+
     <application
         android:allowBackup="true"
         android:banner="@drawable/cb_banner"
@@ -42,6 +74,40 @@
             <intent-filter>
                 <action android:name="org.adw.launcher.icons.ACTION_PICK_ICON" />
                 <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+            <!-- Projectivy's own icon-picker action. Without this the pack is
+                 invisible to Projectivy's per-app "choose icon" browser. -->
+            <intent-filter>
+                <action android:name="com.spocky.projengmenu.icons.ACTION_PICK_ICON" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+            <!-- Remaining discovery actions, matched to the set the established
+                 Projectivy pack declares. Launchers scan for whichever they own;
+                 a missing action means the pack simply never appears in that
+                 launcher's list. They are cheap, so we declare the full set. -->
+            <intent-filter>
+                <action android:name="com.sonymobile.home.ICON_PACK" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="com.fede.launcher.THEME_ICONPACK" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="ch.deletescape.lawnchair.PICK_ICON" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="net.oneplus.launcher.icons.ACTION_PICK_ICON" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="com.phonemetra.turbo.launcher.icons.ACTION_PICK_ICON" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="org.adw.launcher.THEMES" />
+                <category android:name="com.novalauncher.category.CUSTOM_ICON_PICKER" />
             </intent-filter>
             <intent-filter>
                 <action android:name="com.novalauncher.THEME" />

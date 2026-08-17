@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="720" viewBox="0 0 1280 720">
+  <g transform="translate(70.0,0.0)">
+  <defs><linearGradient id="cbRail" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#00d4ff"/><stop offset="100%" stop-color="#a78bfa"/></linearGradient></defs><rect x="70" y="168" width="16" height="384" rx="8.0" fill="url(#cbRail)"/>
+  <g transform="translate(233,180) scale(0.70312)"><path d="M 256 82 C 256 82 380 218 380 300 C 380 372 324 428 256 428 C 188 428 132 372 132 300 C 132 218 256 82 256 82 Z" fill="none" stroke="#B388FF" stroke-width="32.0" stroke-linecap="round" stroke-linejoin="round"/><path d="M 316 236 C 344 272 352 306 340 340" fill="none" stroke="#B388FF" stroke-width="26.2" stroke-linecap="round" stroke-linejoin="round"/></g>
+  <text x="639" y="299" fill="#00d4ff" font-family="ui-monospace,'DejaVu Sans Mono',monospace" font-size="46" font-weight="700" letter-spacing="7.0">LAUNCHER</text>
+  <text x="639" y="424" fill="#E6EDF3" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'DejaVu Sans',sans-serif" font-weight="700" font-size="124" letter-spacing="-1.5">Monet</text>
+  </g>
+</svg>

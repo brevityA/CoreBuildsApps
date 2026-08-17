@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="720" viewBox="0 0 1280 720">
+  <g transform="translate(34.5,0.0)">
+  <defs><linearGradient id="cbRail" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#00d4ff"/><stop offset="100%" stop-color="#a78bfa"/></linearGradient></defs><rect x="70" y="168" width="16" height="384" rx="8.0" fill="url(#cbRail)"/>
+  <g transform="translate(161,180) scale(0.70312)"><path d="M 352 96 C 300 82 250 118 250 174 C 250 190 254 204 260 216 L 116 360 C 98 378 98 404 116 422 C 134 440 160 440 178 422 L 322 278 C 334 284 348 288 364 288 C 420 288 456 238 442 186 L 392 236 L 342 226 L 332 176 Z" fill="none" stroke="#FBBF24" stroke-width="32.0" stroke-linecap="round" stroke-linejoin="round"/></g>
+  <text x="567" y="239" fill="#00d4ff" font-family="ui-monospace,'DejaVu Sans Mono',monospace" font-size="46" font-weight="700" letter-spacing="7.0">TOOL</text>
+  <text x="567" y="358" fill="#E6EDF3" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'DejaVu Sans',sans-serif" font-weight="700" font-size="118" letter-spacing="-1.5">Lucky</text>
+  <text x="567" y="485" fill="#E6EDF3" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'DejaVu Sans',sans-serif" font-weight="700" font-size="118" letter-spacing="-1.5">Manager</text>
+  </g>
+</svg>

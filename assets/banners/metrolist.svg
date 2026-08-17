@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="720" viewBox="0 0 1280 720">
+  <g transform="translate(35.0,0.0)">
+  <defs><linearGradient id="cbRail" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#00d4ff"/><stop offset="100%" stop-color="#a78bfa"/></linearGradient></defs><rect x="70" y="168" width="16" height="384" rx="8.0" fill="url(#cbRail)"/>
+  <g transform="translate(158,180) scale(0.70312)"><path d="M 196 372 L 196 128 L 384 96 L 384 340" fill="none" stroke="#FF5252" stroke-width="32.0" stroke-linecap="round" stroke-linejoin="round"/><ellipse cx="150" cy="372" rx="52" ry="42" fill="none" stroke="#FF5252" stroke-width="32.0" stroke-linecap="round" stroke-linejoin="round"/><ellipse cx="338" cy="340" rx="52" ry="42" fill="none" stroke="#FF5252" stroke-width="32.0" stroke-linecap="round" stroke-linejoin="round"/></g>
+  <text x="564" y="304" fill="#00d4ff" font-family="ui-monospace,'DejaVu Sans Mono',monospace" font-size="46" font-weight="700" letter-spacing="7.0">MUSIC</text>
+  <text x="564" y="421" fill="#E6EDF3" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'DejaVu Sans',sans-serif" font-weight="700" font-size="116" letter-spacing="-1.5">Metrolist</text>
+  </g>
+</svg>

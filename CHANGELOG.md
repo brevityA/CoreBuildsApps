@@ -4,6 +4,54 @@ All notable changes to the Core Builds Icon Pack. Format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); versions follow
 [SemVer](https://semver.org/spec/v2.0.0.html).
 
+## [1.1.0] — 2026-08-17
+
+Built from a real device scan (`himalaya`, Android 14 / API 34).
+
+### Fixed — icons that were silently not applying
+Eight apps were mapped to activities the device does not launch, so their
+icons never applied and nothing reported it. Device-verified components added:
+
+- **Projectivy Launcher** `.ui.home.MainActivity`
+- **Prime Video** `com.amazon.ignition.IgnitionActivity`
+- **Stan** `au.com.stan.presentation.tv.splash.SplashScreenActivity`
+- **10 Play** `com.tenplay.MainActivity`
+- **Just Player** `.PlayerActivity`
+- **Disney+** `com.bamtechmedia.dominguez.main.MainActivity`
+- **Downloader** `.ui.main.MainActivity`
+- **Spotify** `com.spotify.app.androidtv.MainActivity`
+
+### Added
+- **28 icons** (40 → 68), every component read off hardware: WuPlay, Aurora
+  Store, Aptoide TV, SAI, APKTime, Strexo, ADB App Control, Monet, Moonlight,
+  Janky, Wave TV, Strmr, Send Files to TV, Projectivy Blueprint, TV Quick
+  Actions, Home Button, Cinema HD, Unlinked, Vimu, TizenTube, Play Store,
+  Live TV, SD Maid SE, Shizuku, Tasker, Poweramp EQ, ATV Tools, Lucky Manager.
+- 11 new glyphs: store bag, install box, stream tower, gamepad, wrench, send
+  arrow, broom, shield key, automation graph, home button, tv stack.
+- Scanner reports mismatches on catalogued system apps instead of filtering
+  them out.
+
+## [1.0.1] — 2026-08-17
+
+### Fixed
+- **Projectivy could not see the pack.** The manifest never declared
+  `com.spocky.projengmenu.icons.ACTION_PICK_ICON`, Projectivy's own discovery
+  action, so the pack installed successfully and remained invisible in
+  Appearance → Cards → Icon Pack. Found by decompiling the shipped v1.0.0 APK
+  and diffing its manifest against the reference pack.
+- **Android 11+ package visibility.** With `targetSdk 34` and no `<queries>`
+  block, every launcher lookup returned "not installed", so direct apply could
+  never have fired on a modern device — silently, since nothing throws.
+
+### Added
+- One-press **direct apply** for Projectivy, Nova, Lawnchair, Apex and ADW.
+  The button names its target before it is pressed and reports
+  Applied / NotInstalled / Manual by name, with the exact menu path on fallback.
+- Remaining launcher discovery actions (Sony, Fede, Lawnchair PICK_ICON,
+  OnePlus, Turbo, Nova CUSTOM_ICON_PICKER).
+- 10 validator checks covering the intent contract and `<queries>` (419 total).
+
 ## [1.0.0] — 2026-08-17
 
 First release.

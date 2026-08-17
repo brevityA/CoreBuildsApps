@@ -9,6 +9,8 @@ updates:
         update-types: ["version-update:semver-minor", "version-update:semver-major"]
       - dependency-name: "androidx.recyclerview:recyclerview"
         update-types: ["version-update:semver-minor", "version-update:semver-major"]
+      - dependency-name: "androidx.appcompat:appcompat"
+        update-types: ["version-update:semver-minor", "version-update:semver-major"]
   - package-ecosystem: github-actions
     directory: "/"
     schedule:

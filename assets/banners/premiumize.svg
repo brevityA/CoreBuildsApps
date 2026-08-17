@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="720" viewBox="0 0 1280 720">
+  <g transform="translate(37.5,0.0)">
+  <defs><linearGradient id="cbRail" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#00d4ff"/><stop offset="100%" stop-color="#a78bfa"/></linearGradient></defs><rect x="70" y="168" width="16" height="384" rx="8.0" fill="url(#cbRail)"/>
+  <g transform="translate(161,180) scale(0.70312)"><rect x="76" y="76" width="360" height="360" rx="84" fill="none" stroke="#F5A623" stroke-width="32.0" stroke-linecap="round" stroke-linejoin="round"/><path d="M 202 366 L 202 152 L 282 152 C 340 152 366 186 366 224 C 366 262 340 296 282 296 L 202 296" fill="none" stroke="#F5A623" stroke-width="32.0" stroke-linecap="round" stroke-linejoin="round"/></g>
+  <text x="567" y="320" fill="#00d4ff" font-family="ui-monospace,'DejaVu Sans Mono',monospace" font-size="46" font-weight="700" letter-spacing="7.0">DEBRID</text>
+  <text x="567" y="411" fill="#E6EDF3" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'DejaVu Sans',sans-serif" font-weight="700" font-size="88" letter-spacing="-1.5">Premiumize</text>
+  </g>
+</svg>

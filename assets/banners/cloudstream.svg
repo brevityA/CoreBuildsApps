@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="720" viewBox="0 0 1280 720">
+  <g transform="translate(40.5,0.0)">
+  <defs><linearGradient id="cbRail" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#00d4ff"/><stop offset="100%" stop-color="#a78bfa"/></linearGradient></defs><rect x="70" y="168" width="16" height="384" rx="8.0" fill="url(#cbRail)"/>
+  <g transform="translate(162,180) scale(0.70312)"><path d="M 168 350 C 112 350 84 310 96 268 C 106 232 142 216 170 220 C 182 160 240 130 292 148 C 336 162 356 202 352 236 C 400 240 424 274 418 312 C 412 342 386 350 352 350 Z" fill="none" stroke="#4FACFE" stroke-width="32.0" stroke-linecap="round" stroke-linejoin="round"/><path d="M 256 262 L 256 380" fill="none" stroke="#4FACFE" stroke-width="32.0" stroke-linecap="round" stroke-linejoin="round"/><path d="M 208 336 L 256 384 L 304 336" fill="none" stroke="#4FACFE" stroke-width="32.0" stroke-linecap="round" stroke-linejoin="round"/></g>
+  <text x="568" y="324" fill="#00d4ff" font-family="ui-monospace,'DejaVu Sans Mono',monospace" font-size="46" font-weight="700" letter-spacing="7.0">STREAM</text>
+  <text x="568" y="408" fill="#E6EDF3" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'DejaVu Sans',sans-serif" font-weight="700" font-size="80" letter-spacing="-1.5">CloudStream</text>
+  </g>
+</svg>

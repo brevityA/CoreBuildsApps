@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="720" viewBox="0 0 1280 720">
+  <g transform="translate(34.5,0.0)">
+  <defs><linearGradient id="cbRail" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#00d4ff"/><stop offset="100%" stop-color="#a78bfa"/></linearGradient></defs><rect x="70" y="168" width="16" height="384" rx="8.0" fill="url(#cbRail)"/>
+  <g transform="translate(161,180) scale(0.70312)"><path d="M 256 68 C 320 130 348 218 340 306 L 172 306 C 164 218 192 130 256 68 Z" fill="none" stroke="#00E5A0" stroke-width="32.0" stroke-linecap="round" stroke-linejoin="round"/><circle cx="256" cy="196" r="40" fill="none" stroke="#00E5A0" stroke-width="26.2" stroke-linecap="round" stroke-linejoin="round"/><path d="M 172 268 L 108 330 L 156 342" fill="none" stroke="#00E5A0" stroke-width="26.2" stroke-linecap="round" stroke-linejoin="round"/><path d="M 340 268 L 404 330 L 356 342" fill="none" stroke="#00E5A0" stroke-width="26.2" stroke-linecap="round" stroke-linejoin="round"/><path d="M 216 348 L 256 444 L 296 348" fill="none" stroke="#00E5A0" stroke-width="26.2" stroke-linecap="round" stroke-linejoin="round"/></g>
+  <text x="567" y="246" fill="#00d4ff" font-family="ui-monospace,'DejaVu Sans Mono',monospace" font-size="46" font-weight="700" letter-spacing="7.0">LAUNCHER</text>
+  <text x="567" y="359" fill="#E6EDF3" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'DejaVu Sans',sans-serif" font-weight="700" font-size="112" letter-spacing="-1.5">AT4K</text>
+  <text x="567" y="480" fill="#E6EDF3" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'DejaVu Sans',sans-serif" font-weight="700" font-size="112" letter-spacing="-1.5">Launcher</text>
+  </g>
+</svg>

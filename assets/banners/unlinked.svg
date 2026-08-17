@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="720" viewBox="0 0 1280 720">
+  <g transform="translate(38.0,0.0)">
+  <defs><linearGradient id="cbRail" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#00d4ff"/><stop offset="100%" stop-color="#a78bfa"/></linearGradient></defs><rect x="70" y="168" width="16" height="384" rx="8.0" fill="url(#cbRail)"/>
+  <g transform="translate(161,180) scale(0.70312)"><path d="M 190 214 L 150 254 C 106 298 172 364 216 320 L 246 290" fill="none" stroke="#00B8D9" stroke-width="32.0" stroke-linecap="round" stroke-linejoin="round"/><path d="M 322 298 L 362 258 C 406 214 340 148 296 192 L 266 222" fill="none" stroke="#00B8D9" stroke-width="32.0" stroke-linecap="round" stroke-linejoin="round"/><path d="M 200 128 L 224 172" fill="none" stroke="#00B8D9" stroke-width="21.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M 312 384 L 288 340" fill="none" stroke="#00B8D9" stroke-width="21.8" stroke-linecap="round" stroke-linejoin="round"/></g>
+  <text x="567" y="303" fill="#00d4ff" font-family="ui-monospace,'DejaVu Sans Mono',monospace" font-size="46" font-weight="700" letter-spacing="7.0">STORE</text>
+  <text x="567" y="421" fill="#E6EDF3" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'DejaVu Sans',sans-serif" font-weight="700" font-size="118" letter-spacing="-1.5">Unlinked</text>
+  </g>
+</svg>

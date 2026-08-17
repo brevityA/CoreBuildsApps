@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="720" viewBox="0 0 1280 720">
+  <g transform="translate(42.0,0.0)">
+  <defs><linearGradient id="cbRail" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#00d4ff"/><stop offset="100%" stop-color="#a78bfa"/></linearGradient></defs><rect x="70" y="168" width="16" height="384" rx="8.0" fill="url(#cbRail)"/>
+  <g transform="translate(165,180) scale(0.70312)"><path d="M 116 392 L 116 258 L 166 206 L 216 258 L 216 392" fill="none" stroke="#1F80E0" stroke-width="26.2" stroke-linecap="round" stroke-linejoin="round"/><path d="M 216 392 L 216 186 L 268 124 L 320 186 L 320 392" fill="none" stroke="#1F80E0" stroke-width="26.2" stroke-linecap="round" stroke-linejoin="round"/><path d="M 96 392 L 340 392" fill="none" stroke="#1F80E0" stroke-width="32.0" stroke-linecap="round" stroke-linejoin="round"/><path d="M 268 108 L 268 82" fill="none" stroke="#1F80E0" stroke-width="21.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M 404 214 L 404 306" fill="none" stroke="#1F80E0" stroke-width="32.0" stroke-linecap="round" stroke-linejoin="round"/><path d="M 358 260 L 450 260" fill="none" stroke="#1F80E0" stroke-width="32.0" stroke-linecap="round" stroke-linejoin="round"/></g>
+  <text x="571" y="299" fill="#00d4ff" font-family="ui-monospace,'DejaVu Sans Mono',monospace" font-size="46" font-weight="700" letter-spacing="7.0">VOD</text>
+  <text x="571" y="424" fill="#E6EDF3" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'DejaVu Sans',sans-serif" font-weight="700" font-size="124" letter-spacing="-1.5">Disney+</text>
+  </g>
+</svg>

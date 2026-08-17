@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="720" viewBox="0 0 1280 720">
+  <g transform="translate(32.5,0.0)">
+  <defs><linearGradient id="cbRail" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#00d4ff"/><stop offset="100%" stop-color="#a78bfa"/></linearGradient></defs><rect x="70" y="168" width="16" height="384" rx="8.0" fill="url(#cbRail)"/>
+  <g transform="translate(161,180) scale(0.70312)"><path d="M 110 118 L 402 118 C 444 118 478 152 478 194 L 478 318 C 478 360 444 394 402 394 L 110 394 C 68 394 34 360 34 318 L 34 194 C 34 152 68 118 110 118 Z" fill="none" stroke="#E62117" stroke-width="32.0" stroke-linecap="round" stroke-linejoin="round"/><path d="M 218 200 L 218 312 L 326 256 Z" fill="none" stroke="#E62117" stroke-width="32.0" stroke-linecap="round" stroke-linejoin="round"/><path d="M 388 150 L 458 150" fill="none" stroke="#E62117" stroke-width="21.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M 388 190 L 458 190" fill="none" stroke="#E62117" stroke-width="21.8" stroke-linecap="round" stroke-linejoin="round"/></g>
+  <text x="567" y="263" fill="#00d4ff" font-family="ui-monospace,'DejaVu Sans Mono',monospace" font-size="46" font-weight="700" letter-spacing="7.0">VIDEO</text>
+  <text x="567" y="362" fill="#E6EDF3" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'DejaVu Sans',sans-serif" font-weight="700" font-size="96" letter-spacing="-1.5">SmartTube</text>
+  <text x="567" y="465" fill="#E6EDF3" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'DejaVu Sans',sans-serif" font-weight="700" font-size="96" letter-spacing="-1.5">Next</text>
+  </g>
+</svg>
