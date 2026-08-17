@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="720" viewBox="0 0 1280 720">
+  <g transform="translate(48.0,0.0)">
+  <defs><linearGradient id="cbRail" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#00d4ff"/><stop offset="100%" stop-color="#a78bfa"/></linearGradient></defs><rect x="70" y="168" width="16" height="384" rx="8.0" fill="url(#cbRail)"/>
+  <g transform="translate(193,180) scale(0.70312)"><circle cx="256" cy="256" r="186" fill="none" stroke="#FFFFFF" stroke-width="32.0" stroke-linecap="round" stroke-linejoin="round"/><path d="M 256 70 A 93 93 0 0 1 256 256 A 93 93 0 0 0 256 442" fill="none" stroke="#FFFFFF" stroke-width="32.0" stroke-linecap="round" stroke-linejoin="round"/><path d="M 226 140 L 226 196 L 274 168 Z" fill="none" stroke="#FFFFFF" stroke-width="21.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M 286 316 L 286 372 L 238 344 Z" fill="none" stroke="#FFFFFF" stroke-width="21.8" stroke-linecap="round" stroke-linejoin="round"/></g>
+  <text x="599" y="299" fill="#00d4ff" font-family="ui-monospace,'DejaVu Sans Mono',monospace" font-size="46" font-weight="700" letter-spacing="7.0">STREAM</text>
+  <text x="599" y="424" fill="#E6EDF3" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'DejaVu Sans',sans-serif" font-weight="700" font-size="124" letter-spacing="-1.5">WuPlay</text>
+  </g>
+</svg>

@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="720" viewBox="0 0 1280 720">
+  <g transform="translate(65.5,0.0)">
+  <defs><linearGradient id="cbRail" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#00d4ff"/><stop offset="100%" stop-color="#a78bfa"/></linearGradient></defs><rect x="70" y="168" width="16" height="384" rx="8.0" fill="url(#cbRail)"/>
+  <g transform="translate(215,180) scale(0.70312)"><path d="M 118 172 L 394 172 L 372 404 L 140 404 Z" fill="none" stroke="#00C2FF" stroke-width="32.0" stroke-linecap="round" stroke-linejoin="round"/><path d="M 196 224 L 196 148 C 196 108 226 84 256 84 C 286 84 316 108 316 148 L 316 224" fill="none" stroke="#00C2FF" stroke-width="32.0" stroke-linecap="round" stroke-linejoin="round"/></g>
+  <text x="621" y="233" fill="#00d4ff" font-family="ui-monospace,'DejaVu Sans Mono',monospace" font-size="46" font-weight="700" letter-spacing="7.0">STORE</text>
+  <text x="621" y="357" fill="#E6EDF3" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'DejaVu Sans',sans-serif" font-weight="700" font-size="124" letter-spacing="-1.5">Aurora</text>
+  <text x="621" y="491" fill="#E6EDF3" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'DejaVu Sans',sans-serif" font-weight="700" font-size="124" letter-spacing="-1.5">Store</text>
+  </g>
+</svg>

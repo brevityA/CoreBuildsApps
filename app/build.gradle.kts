@@ -11,8 +11,8 @@ android {
         applicationId = "tv.corebuilds.iconpack"
         minSdk = 21
         targetSdk = 34
-        versionCode = 3
-        versionName = "1.1.0"
+        versionCode = 5
+        versionName = "1.3.0"
     }
 
     signingConfigs {

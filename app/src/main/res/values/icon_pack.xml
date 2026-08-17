@@ -11,12 +11,18 @@
         <item>apktime</item>
         <item>appletv</item>
         <item>aptoide</item>
+        <item>arvio</item>
+        <item>at4k</item>
         <item>atvtools</item>
         <item>aurora_store</item>
         <item>binge</item>
+        <item>chillhub</item>
         <item>cinemahd</item>
+        <item>cloudstream</item>
         <item>corebuilds</item>
+        <item>debrify</item>
         <item>disneyplus</item>
+        <item>dodostream</item>
         <item>downloader</item>
         <item>emby</item>
         <item>files</item>
@@ -28,14 +34,19 @@
         <item>kayo</item>
         <item>kodi</item>
         <item>kore</item>
+        <item>leanbackonfire</item>
         <item>livetv</item>
+        <item>ltvlauncher</item>
         <item>luckymanager</item>
+        <item>lumera</item>
         <item>max</item>
+        <item>metrolist</item>
         <item>monet</item>
         <item>moonlight</item>
         <item>mxplayer</item>
         <item>netflix</item>
         <item>nuvio</item>
+        <item>owntv</item>
         <item>plex</item>
         <item>poweramp_eq</item>
         <item>premiumize</item>
@@ -53,6 +64,8 @@
         <item>smarttubenext</item>
         <item>spotify</item>
         <item>stan</item>
+        <item>streamflix</item>
+        <item>streamvault</item>
         <item>stremio</item>
         <item>strexo</item>
         <item>strmr</item>
@@ -71,5 +84,5 @@
         <item>wuplay</item>
         <item>youtube</item>
     </string-array>
-    <integer name="icon_count">68</integer>
+    <integer name="icon_count">81</integer>
 </resources>

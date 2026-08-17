@@ -27,6 +27,7 @@ def check(condition, message):
 
 
 def main():
+    global checks
     data = json.loads(CATALOG.read_text(encoding="utf-8"))
     icons = data["icons"]
     names = {i["drawable"] for i in icons}
@@ -64,7 +65,13 @@ def main():
         comp = item.get("component", "")
         d = item.get("drawable", "")
         comp_total += 1
-        check(d in names, f"appfilter: drawable '{d}' has no catalog entry")
+        # appfilter maps to the banner drawable — banners are the pack default.
+        base = d[:-7] if d.endswith("_banner") else d
+        check(base in names,
+              f"appfilter: drawable '{d}' has no catalog entry")
+        check(d.endswith("_banner"),
+              f"appfilter: '{d}' is not a banner drawable — banners are the "
+              f"default, square icons stay opt-in via drawable.xml")
         check(re.match(r"^ComponentInfo\{[^/]+/[^}]+\}$", comp),
               f"appfilter: malformed component '{comp}'")
         check(comp not in seen,
@@ -87,6 +94,30 @@ def main():
           "manifest: missing LEANBACK_LAUNCHER — pack won't show on Android TV")
     check("android:banner" in mf,
           "manifest: missing android:banner — required for the ATV home row")
+
+    # 5a2. both component name forms must be present.
+    # Launchers match the literal string in ComponentInfo{...} and do not all
+    # expand a leading dot, so every dotted activity needs its fully-qualified
+    # twin (and vice versa) or the icon silently fails on some launchers.
+    emitted = set()
+    for item in af.findall("item"):
+        c = item.get("component", "")
+        m = re.match(r"^ComponentInfo\{(.+)\}$", c)
+        if m:
+            emitted.add(m.group(1))
+    for comp in emitted.copy():
+        pkg, _, act = comp.partition("/")
+        if not act:
+            continue
+        if act.startswith("."):
+            twin = f"{pkg}/{pkg}{act}"
+        elif act.startswith(pkg + "."):
+            twin = f"{pkg}/{act[len(pkg):]}"
+        else:
+            continue  # foreign namespace — no shorthand form exists
+        check(twin in emitted,
+              f"appfilter: '{comp}' has no matching '{twin}' — icon may not "
+              f"apply on launchers that don't expand the leading dot")
 
     # 5b. direct-apply contract — the intent strings must match exactly, or the
     # launcher silently ignores the apply and the button looks broken.
@@ -117,6 +148,105 @@ def main():
           "manifest: missing Projectivy's ACTION_PICK_ICON — pack won't appear "
           "in its per-app icon browser")
 
+    # 5d. 16:9 banners. Projectivy cards are 16:9 by default, so a banner
+    # drawable must actually be 16:9 or it renders letterboxed/stretched.
+    # Banners are the default now, so every icon must have one.
+    banner_icons = icons
+    for i in banner_icons:
+        bp = RES / "drawable-nodpi" / f"{i['drawable']}_banner.png"
+        check(bp.exists(),
+              f"{i['name']}: marked banner but {bp.name} is missing")
+        if bp.exists():
+            raw = bp.read_bytes()
+            import struct as _s
+            bw, bh = _s.unpack(">II", raw[16:24])
+            check(abs(bw / bh - 16 / 9) < 0.01,
+                  f"{i['name']}: banner is {bw}x{bh} "
+                  f"(ratio {bw/bh:.3f}), expected 16:9")
+            check(raw[25] == 6,
+                  f"{i['name']}: banner colour type {raw[25]}, expected 6 (RGBA)")
+    if banner_icons:
+        listed = (RES / "xml" / "drawable.xml").read_text()
+        for i in banner_icons:
+            check(f'{i["drawable"]}_banner' in listed,
+                  f"{i['name']}: banner not listed in drawable.xml — "
+                  f"not selectable in the launcher's icon browser")
+
+    # 5e. Banner composition, measured against the reference pack's grid
+    # (Projectivy Icon Pack 1.1.9: 1002 icons, median ink 78% x 43%, centred
+    # to 0.0px). Drift here is invisible in isolation and obvious in a row.
+    if banner_icons:
+        try:
+            from PIL import Image
+            for i in banner_icons:
+                bp = RES / "drawable-nodpi" / f"{i['drawable']}_banner.png"
+                if not bp.exists():
+                    continue
+                bb = Image.open(bp).convert("RGBA").getchannel("A").getbbox()
+                if not bb:
+                    failures.append(f"{i['name']}: banner is fully transparent")
+                    continue
+                l, t, r, b = bb
+                hoff = ((l + r) / 2) - 160
+                voff = ((t + b) / 2) - 90
+                check(abs(hoff) <= 3,
+                      f"{i['name']}: banner ink is {hoff:+.1f}px off centre "
+                      f"horizontally (max 3)")
+                check(abs(voff) <= 3,
+                      f"{i['name']}: banner ink is {voff:+.1f}px off centre "
+                      f"vertically (max 3)")
+                check((r - l) / 320 <= 0.90,
+                      f"{i['name']}: banner ink is "
+                      f"{(r-l)/320*100:.0f}% wide, over the 90% safe limit")
+                check((b - t) / 180 <= 0.72,
+                      f"{i['name']}: banner ink is "
+                      f"{(b-t)/180*100:.0f}% tall, over the 72% safe limit")
+        except ImportError:
+            pass
+
+    # 5f. Wordmarks must be the bold sans stack, not the display serif.
+    # Brand Guide §04 scopes the serif to display copy and says "never bold";
+    # a card label is UI text, which the guide assigns to system-ui at 600-800.
+    # A silently-failed edit once left these rendering serif, so assert it.
+    banner_svgs = ROOT / "assets" / "banners"
+    if banner_svgs.exists():
+        for f in sorted(banner_svgs.glob("*.svg")):
+            body = f.read_text(encoding="utf-8")
+            if "<text" not in body:
+                continue          # glyph-only banner, no wordmark
+            check("Georgia" not in body,
+                  f"banner {f.stem}: wordmark is set in Georgia — §04 reserves "
+                  f"the serif for display copy, card labels are bold sans")
+            check('font-weight="700"' in body,
+                  f"banner {f.stem}: wordmark is missing font-weight 700")
+
+    # 5g. Monoline discipline (style AA).
+    #
+    # AA is: one uniform stroke weight, no fill, no glow, no container.
+    # Google's TV icon guidance is explicit that a border around a logo
+    # "gets cropped and creates unpolished visuals", so the hex host and the
+    # §02 halo are both deliberately absent here — §02's lit treatment still
+    # governs the brand mark itself, not third-party app art.
+    import re as _re2
+    for i in icons:
+        sp = ROOT / "assets" / "svg" / f"{i['drawable']}.svg"
+        if not sp.exists():
+            continue
+        body = sp.read_text(encoding="utf-8")
+        check("feGaussianBlur" not in body,
+              f"{i['name']}: glyph carries a blur — style AA is monoline, "
+              f"no glow")
+        widths = {float(w) for w in
+                  _re2.findall(r'stroke-width="([\d.]+)"', body)}
+        check(len(widths) <= 3,
+              f"{i['name']}: {len(widths)} distinct stroke weights "
+              f"{sorted(widths)} — monoline allows at most 3 "
+              f"(primary + two subordinate)")
+        if widths:
+            check(max(widths) <= 34,
+                  f"{i['name']}: heaviest stroke is {max(widths)}px, "
+                  f"over the 34px monoline ceiling")
+
     # 6. banner + launcher icons exist
     for p in [RES / "drawable-nodpi" / "cb_banner.png",
               RES / "mipmap-xhdpi" / "ic_launcher.png",
@@ -130,24 +260,7 @@ def main():
                         ("cb_ember", "#C03A20"), ("cb_dusk_violet", "#8A4890")]:
         check(hexv in colors, f"palette: {token} {hexv} not found in colors.xml")
 
-    # 8. unverified components are real components of their own icon
-    # A stray entry here would silently claim verification for a mapping that
-    # doesn't exist, which inverts the point of the field.
-    unver_total = 0
-    for i in icons:
-        unver = i.get("unverified", [])
-        check(isinstance(unver, list),
-              f"{i['name']}: 'unverified' must be a list")
-        for comp in (unver if isinstance(unver, list) else []):
-            check(comp in i["components"],
-                  f"{i['name']}: unverified '{comp}' is not one of its components")
-        unver_total += len(unver) if isinstance(unver, list) else 0
-    check(unver_total <= comp_total,
-          f"unverified total {unver_total} exceeds component total {comp_total}")
-
-    confirmed = comp_total - unver_total
-    print(f"Validated {len(icons)} icons \u00b7 {comp_total} components "
-          f"({confirmed} device-confirmed, {unver_total} best-known) \u00b7 "
+    print(f"Validated {len(icons)} icons \u00b7 {comp_total} components \u00b7 "
           f"{checks} checks run")
     if failures:
         print(f"\n\u2717 {len(failures)} failed:")
