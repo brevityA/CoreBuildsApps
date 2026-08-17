@@ -4,6 +4,11 @@ updates:
     directory: "/"
     schedule:
       interval: monthly
+    ignore:
+      - dependency-name: "androidx.core:core-ktx"
+        update-types: ["version-update:semver-minor", "version-update:semver-major"]
+      - dependency-name: "androidx.recyclerview:recyclerview"
+        update-types: ["version-update:semver-minor", "version-update:semver-major"]
   - package-ecosystem: github-actions
     directory: "/"
     schedule:
