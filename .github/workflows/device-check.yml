@@ -62,6 +62,81 @@ jobs:
         # lookup.
         run: ./gradlew assembleDebug --no-daemon
 
+      - name: Prepare emulator test script
+        # The emulator-runner action (v2) executes each line of its `script:`
+        # parameter as a separate `sh -c` call, so shell variables set on one
+        # line are lost by the next. Writing the test to a file and invoking
+        # it as one bash process avoids that.
+        run: |
+          cat > "$RUNNER_TEMP/device-check.sh" << 'DEVICE_CHECK'
+          #!/usr/bin/env bash
+          set -eu
+          PKG=tv.corebuilds.iconpack
+          ACT=$PKG/.MainActivity
+          APK=app/build/outputs/apk/debug/app-debug.apk
+
+          echo "::group::Install"
+          adb install -r "$APK"
+          if ! adb shell pm list packages | grep -q "package:$PKG"; then
+            echo "::error::$PKG is not present after install — the APK did not install."
+            exit 1
+          fi
+          echo "Installed $PKG"
+          echo "::endgroup::"
+
+          echo "::group::Launcher discovery"
+          # The whole point of an icon pack: a launcher finds it by intent.
+          # Projectivy scans the ADW and Nova actions.
+          for ACTION in org.adw.launcher.THEMES com.novalauncher.THEME; do
+            RESOLVED=$(adb shell cmd package query-intent-activities --brief -a "$ACTION" 2>/dev/null || true)
+            if ! echo "$RESOLVED" | grep -q "$PKG"; then
+              echo "::error::$PKG does not resolve for $ACTION — no launcher would discover the pack."
+              echo "$RESOLVED"
+              exit 1
+            fi
+            echo "$ACTION -> $PKG"
+          done
+          echo "::endgroup::"
+
+          echo "::group::Launch"
+          adb logcat -c
+          START=$(adb shell am start -W -n "$ACT")
+          echo "$START"
+          if ! echo "$START" | grep -q "Status: ok"; then
+            echo "::error::$ACT did not start cleanly."
+            exit 1
+          fi
+          sleep 5
+          CRASH=$(adb logcat -d -s AndroidRuntime:E | grep -E "FATAL EXCEPTION|$PKG" || true)
+          if [ -n "$CRASH" ]; then
+            echo "::error::$PKG crashed after launch."
+            echo "$CRASH"
+            exit 1
+          fi
+          echo "::endgroup::"
+
+          echo "::group::Runtime resource resolution"
+          # MainActivity reads R.array.icon_pack — the generated list — and
+          # prints its size. Asserting the rendered count proves the
+          # generated string-array survived into the APK and loaded on
+          # device. A stripped or stale icon_pack.xml changes this number;
+          # nothing else in the pipeline would notice.
+          EXPECTED=$(python3 -c "import json;print(len(json.load(open('tools/catalog.json'))['icons']))")
+          adb shell uiautomator dump /sdcard/ui.xml >/dev/null
+          adb pull /sdcard/ui.xml ui.xml >/dev/null
+          if ! grep -q "$EXPECTED icons installed" ui.xml; then
+            echo "::error::Expected the UI to report '$EXPECTED icons installed'; it did not."
+            echo "Rendered text nodes:"
+            grep -o 'text="[^"]*"' ui.xml | sort -u
+            exit 1
+          fi
+          echo "UI reports $EXPECTED icons installed"
+          echo "::endgroup::"
+
+          echo "Device check passed: installed, discoverable, launched, $EXPECTED icons loaded."
+          DEVICE_CHECK
+          chmod +x "$RUNNER_TEMP/device-check.sh"
+
       - name: Boot emulator, install, and verify
         uses: reactivecircus/android-emulator-runner@v2
         with:
@@ -76,71 +151,7 @@ jobs:
           profile: tv_1080p
           disable-animations: true
           emulator-options: -no-window -gpu swiftshader_indirect -no-snapshot -noaudio -no-boot-anim
-          script: |
-            set -eu
-            PKG=tv.corebuilds.iconpack
-            ACT=$PKG/.MainActivity
-            APK=app/build/outputs/apk/debug/app-debug.apk
-
-            echo "::group::Install"
-            adb install -r "$APK"
-            if ! adb shell pm list packages | grep -q "package:$PKG"; then
-              echo "::error::$PKG is not present after install — the APK did not install."
-              exit 1
-            fi
-            echo "Installed $PKG"
-            echo "::endgroup::"
-
-            echo "::group::Launcher discovery"
-            # The whole point of an icon pack: a launcher finds it by intent.
-            # Projectivy scans the ADW and Nova actions.
-            for ACTION in org.adw.launcher.THEMES com.novalauncher.THEME; do
-              RESOLVED=$(adb shell cmd package query-intent-activities --brief -a "$ACTION" 2>/dev/null || true)
-              if ! echo "$RESOLVED" | grep -q "$PKG"; then
-                echo "::error::$PKG does not resolve for $ACTION — no launcher would discover the pack."
-                echo "$RESOLVED"
-                exit 1
-              fi
-              echo "$ACTION -> $PKG"
-            done
-            echo "::endgroup::"
-
-            echo "::group::Launch"
-            adb logcat -c
-            START=$(adb shell am start -W -n "$ACT")
-            echo "$START"
-            if ! echo "$START" | grep -q "Status: ok"; then
-              echo "::error::$ACT did not start cleanly."
-              exit 1
-            fi
-            sleep 5
-            CRASH=$(adb logcat -d -s AndroidRuntime:E | grep -E "FATAL EXCEPTION|$PKG" || true)
-            if [ -n "$CRASH" ]; then
-              echo "::error::$PKG crashed after launch."
-              echo "$CRASH"
-              exit 1
-            fi
-            echo "::endgroup::"
-
-            echo "::group::Runtime resource resolution"
-            # MainActivity reads R.array.icon_pack — the generated list — and
-            # prints its size. Asserting the rendered count proves the
-            # generated string-array survived into the APK and loaded on
-            # device. A stripped or stale icon_pack.xml changes this number;
-            # nothing else in the pipeline would notice.
-            EXPECTED=$(python3 -c "import json;print(len(json.load(open('tools/catalog.json'))['icons']))")
-            adb shell uiautomator dump /sdcard/ui.xml >/dev/null
-            adb pull /sdcard/ui.xml ui.xml >/dev/null
-            if ! grep -q "$EXPECTED icons installed" ui.xml; then
-              echo "::error::Expected the UI to report '$EXPECTED icons installed'; it did not."
-              echo "Rendered text nodes:"
-              grep -o 'text="[^"]*"' ui.xml | sort -u
-              exit 1
-            fi
-            echo "UI reports $EXPECTED icons installed"
-            echo "::endgroup::"
-
-            echo "Device check passed: installed, discoverable, launched, $EXPECTED icons loaded."
+          script: bash ${{ runner.temp }}/device-check.sh
 
       - name: Upload UI dump on failure
         if: failure()
