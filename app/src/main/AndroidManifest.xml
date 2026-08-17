@@ -81,6 +81,34 @@
                 <action android:name="com.spocky.projengmenu.icons.ACTION_PICK_ICON" />
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
+            <!-- Remaining discovery actions, matched to the set the established
+                 Projectivy pack declares. Launchers scan for whichever they own;
+                 a missing action means the pack simply never appears in that
+                 launcher's list. They are cheap, so we declare the full set. -->
+            <intent-filter>
+                <action android:name="com.sonymobile.home.ICON_PACK" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="com.fede.launcher.THEME_ICONPACK" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="ch.deletescape.lawnchair.PICK_ICON" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="net.oneplus.launcher.icons.ACTION_PICK_ICON" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="com.phonemetra.turbo.launcher.icons.ACTION_PICK_ICON" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="org.adw.launcher.THEMES" />
+                <category android:name="com.novalauncher.category.CUSTOM_ICON_PICKER" />
+            </intent-filter>
             <intent-filter>
                 <action android:name="com.novalauncher.THEME" />
                 <category android:name="android.intent.category.DEFAULT" />

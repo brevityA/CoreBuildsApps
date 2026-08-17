@@ -4,6 +4,26 @@ All notable changes to the Core Builds Icon Pack. Format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); versions follow
 [SemVer](https://semver.org/spec/v2.0.0.html).
 
+## [1.0.1] — 2026-08-17
+
+### Fixed
+- **Projectivy could not see the pack.** The manifest never declared
+  `com.spocky.projengmenu.icons.ACTION_PICK_ICON`, Projectivy's own discovery
+  action, so the pack installed successfully and remained invisible in
+  Appearance → Cards → Icon Pack. Found by decompiling the shipped v1.0.0 APK
+  and diffing its manifest against the reference pack.
+- **Android 11+ package visibility.** With `targetSdk 34` and no `<queries>`
+  block, every launcher lookup returned "not installed", so direct apply could
+  never have fired on a modern device — silently, since nothing throws.
+
+### Added
+- One-press **direct apply** for Projectivy, Nova, Lawnchair, Apex and ADW.
+  The button names its target before it is pressed and reports
+  Applied / NotInstalled / Manual by name, with the exact menu path on fallback.
+- Remaining launcher discovery actions (Sony, Fede, Lawnchair PICK_ICON,
+  OnePlus, Turbo, Nova CUSTOM_ICON_PICKER).
+- 10 validator checks covering the intent contract and `<queries>` (419 total).
+
 ## [1.0.0] — 2026-08-17
 
 First release.
