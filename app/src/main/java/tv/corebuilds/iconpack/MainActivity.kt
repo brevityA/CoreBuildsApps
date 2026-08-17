@@ -1,7 +1,5 @@
 package tv.corebuilds.iconpack
 
-import android.content.ActivityNotFoundException
-import android.content.Intent
 import android.os.Bundle
 import android.widget.TextView
 import android.widget.Toast
@@ -17,7 +15,7 @@ import androidx.recyclerview.widget.RecyclerView
  */
 class MainActivity : AppCompatActivity() {
 
-    private val projectivyPackage = "com.spocky.projengmenu"
+    private var target: ApplyIconPack.Launcher? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -34,30 +32,66 @@ class MainActivity : AppCompatActivity() {
             setHasFixedSize(true)
         }
 
-        findViewById<TextView>(R.id.apply_button).setOnClickListener { openProjectivy() }
+        bindApplyButton()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        // The user may have installed a launcher while we were backgrounded.
+        bindApplyButton()
+    }
+
+    /**
+     * The button names the launcher it will hand off to, before it's pressed —
+     * no "Apply" that leaves you guessing where it went.
+     */
+    private fun bindApplyButton() {
+        val button = findViewById<TextView>(R.id.apply_button)
+        val sub = findViewById<TextView>(R.id.apply_sub)
+
+        val detected = ApplyIconPack.detectInstalled(this)
+        target = detected
+
+        if (detected == null) {
+            button.text = getString(R.string.cta_no_launcher)
+            sub.text = getString(R.string.cta_sub_no_launcher)
+            button.setOnClickListener {
+                toast(getString(R.string.projectivy_missing))
+            }
+            return
+        }
+
+        button.text = getString(R.string.cta_apply_to_fmt, detected.displayName)
+        sub.text = getString(R.string.cta_sub_apply_fmt, detected.displayName)
+        button.setOnClickListener { applyTo(detected) }
+    }
+
+    private fun applyTo(launcher: ApplyIconPack.Launcher) {
+        when (val result = ApplyIconPack.apply(this, launcher)) {
+            is ApplyIconPack.Result.Applied ->
+                toast(getString(R.string.apply_handed_off_fmt, result.launcherName))
+
+            is ApplyIconPack.Result.NotInstalled ->
+                toast(getString(R.string.apply_not_installed_fmt, result.launcherName))
+
+            is ApplyIconPack.Result.Manual -> {
+                // Direct apply bounced. Name the launcher, name the menu path,
+                // and open it so the user isn't hunting.
+                toast(
+                    getString(
+                        R.string.apply_manual_fmt,
+                        result.launcherName,
+                        result.instructions
+                    )
+                )
+                ApplyIconPack.openLauncher(this, launcher)
+            }
+        }
     }
 
     private fun spanForScreen(): Int {
         val dp = resources.configuration.screenWidthDp
         return (dp / 140).coerceIn(3, 10)
-    }
-
-    /**
-     * Hands off to Projectivy's settings. We never claim we "applied" the pack —
-     * the launcher owns that choice, so we say what we actually did.
-     */
-    private fun openProjectivy() {
-        val launch = packageManager.getLaunchIntentForPackage(projectivyPackage)
-        if (launch == null) {
-            toast(getString(R.string.projectivy_missing))
-            return
-        }
-        try {
-            startActivity(launch.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK))
-            toast(getString(R.string.projectivy_opened))
-        } catch (e: ActivityNotFoundException) {
-            toast(getString(R.string.projectivy_missing))
-        }
     }
 
     private fun toast(msg: String) =

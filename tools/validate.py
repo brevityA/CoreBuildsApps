@@ -88,6 +88,35 @@ def main():
     check("android:banner" in mf,
           "manifest: missing android:banner — required for the ATV home row")
 
+    # 5b. direct-apply contract — the intent strings must match exactly, or the
+    # launcher silently ignores the apply and the button looks broken.
+    apply_src = (ROOT / "app" / "src" / "main" / "java" / "tv" / "corebuilds" /
+                 "iconpack" / "ApplyIconPack.kt")
+    check(apply_src.exists(), "direct apply: ApplyIconPack.kt is missing")
+    if apply_src.exists():
+        src = apply_src.read_text()
+        for token in [
+            "com.spocky.projengmenu.APPLY_ICONPACK",
+            "com.spocky.projengmenu.extra.ICONPACK_PACKAGENAME",
+            "com.teslacoilsw.launcher.APPLY_ICON_THEME",
+            "com.teslacoilsw.launcher.extra.ICON_THEME_PACKAGE",
+        ]:
+            check(token in src, f"direct apply: intent contract '{token}' not found")
+
+    # 5c. Android 11+ package visibility. Without <queries>, every launcher
+    # lookup returns "not installed" on API 30+ and direct apply never fires.
+    check("<queries>" in mf,
+          "manifest: no <queries> block — launcher detection fails on Android 11+")
+    for pkg in ["com.spocky.projengmenu", "com.teslacoilsw.launcher"]:
+        check(f'<package android:name="{pkg}"' in mf,
+              f"manifest: <queries> missing {pkg} — cannot detect that launcher")
+    check("android.intent.category.HOME" in mf,
+          "manifest: <queries> missing the HOME intent — cannot detect the "
+          "active launcher")
+    check("com.spocky.projengmenu.icons.ACTION_PICK_ICON" in mf,
+          "manifest: missing Projectivy's ACTION_PICK_ICON — pack won't appear "
+          "in its per-app icon browser")
+
     # 6. banner + launcher icons exist
     for p in [RES / "drawable-nodpi" / "cb_banner.png",
               RES / "mipmap-xhdpi" / "ic_launcher.png",
