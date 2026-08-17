@@ -27,7 +27,7 @@ Icons are **original geometry** drawn on a shared 512 grid — simple shapes, ro
 
 ## 🔷 Install
 
-1. Download the APK from [**Releases**](../../releases/latest).
+1. Download using **Downloader code 9243509**, or grab the APK from [**Releases**](../../releases/latest).
 2. Sideload it (Downloader, `adb install`, or a file manager).
 3. Apply it in Projectivy:
    - **Projectivy Launcher Settings** → **Appearance** → **Cards** → **Icon Pack** → **Core Builds Icon Pack**
