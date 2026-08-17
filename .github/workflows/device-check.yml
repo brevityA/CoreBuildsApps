@@ -53,7 +53,7 @@ jobs:
           java-version: '17'
 
       - name: Set up Gradle
-        uses: gradle/actions/setup-gradle@v3
+        uses: gradle/actions/setup-gradle@v6
 
       - name: Build debug APK
         # Debug, not release: an unsigned release APK cannot be installed at
