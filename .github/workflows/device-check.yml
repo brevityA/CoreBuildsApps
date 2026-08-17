@@ -144,7 +144,7 @@ jobs:
 
       - name: Upload UI dump on failure
         if: failure()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: ui-dump
           path: ui.xml

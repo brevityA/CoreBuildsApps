@@ -113,7 +113,7 @@ jobs:
           echo "APK signature verified."
 
       - name: Upload APK artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: core-builds-icon-pack
           path: app/build/outputs/apk/release/*.apk
