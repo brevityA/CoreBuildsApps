@@ -23,7 +23,9 @@ git push -u origin main
 
 CI runs immediately. On this first push it will **regenerate assets, verify no drift, run the validator, and build the APK** — download it from the run's **Artifacts** section.
 
-> Signing is optional. Without a keystore the release APK builds **unsigned** and the artifact still uploads; it just can't be installed until signed. Set up signing (step 4) before cutting a public release.
+> Signing is optional for ordinary pushes. Without a keystore the release APK builds **unsigned** and the artifact still uploads; it just can't be installed until signed. Set up signing (step 4) before cutting a public release.
+>
+> Tagged builds are stricter: the workflow refuses to publish an unsigned APK, because an unsigned APK cannot be installed on Android at all, and a release nobody can install is worse than no release. If a `v*` tag fails at **Verify the APK is signed before releasing**, `KEYSTORE_BASE64` is missing or failed to decode — fix step 4 and re-tag.
 
 ## 3. Repo settings
 

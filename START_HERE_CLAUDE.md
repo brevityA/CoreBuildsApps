@@ -56,7 +56,7 @@ Pick one and drop it into the `[describe your task]` slot.
 
 ## What is NOT verified (be honest about these)
 
-- **The APK has never been built.** JDK 11 and no Android SDK in the authoring sandbox. CI is the first real Gradle run.
+- **The APK has been built.** See CLAUDE.md — both variants build clean; not yet installed on a device.
 - **Some component names are best-known, not device-confirmed** — TorBox, Weyd, AllDebrid, Premiumize, and several AU broadcaster apps.
 - The CI drift gate covers text assets only; PNG bytes vary with the runner's libcairo build.
 

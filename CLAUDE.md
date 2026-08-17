@@ -115,7 +115,9 @@ Claims in this repo are earned. Before saying something works:
 
 ## Known gaps
 
-- **The APK has never been built.** Authored in a sandbox with JDK 11 and no Android SDK; CI is the first real Gradle run. If AGP 8.5.2 objects to something, that's where it surfaces.
+- **The APK now builds.** First real Gradle run: `assembleDebug` and `assembleRelease` both succeeded on Gradle 8.7 / AGP 8.5.2 / JDK 21 / compileSdk 34, with no AGP objections. Verified by `aapt2 dump resources` rather than by exit code — all 40 catalog drawables and all three XML resources (`appfilter`, `drawable`, `iconpack`) are present in **both** variants, so `isShrinkResources = false` is doing its job. Debug 3,897 KB, release 2,964 KB.
+  - Release builds apply resource **path shortening** (`res/drawable-nodpi/torbox.png` → `res/-B.png`). This is harmless here — the pack resolves drawables by *name* at runtime, and names live in `resources.arsc`, which shortening does not touch. Do not check packaged icons by filename; it reports zero on a perfectly good APK. Check resource names.
+  - Still unverified: **no build has run on a real device or emulator.** Compiling and packaging correctly is not the same as Projectivy picking up the pack.
 - **Some component names are best-known, not device-verified** — TorBox, Weyd, AllDebrid, Premiumize, and a few AU apps. Correct them as reports arrive.
 - **The CI drift gate covers text assets only** (XML/SVG/MD). PNG bytes vary with the runner's libcairo build, so diffing them would fail on a library bump rather than real drift.
 - **Icons assume dark card backgrounds.** Light launcher themes wash them out.
