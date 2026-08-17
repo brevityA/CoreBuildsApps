@@ -1,0 +1,69 @@
+name: "🎨 New icon request"
+description: Request an icon for an app that isn't in the pack yet.
+title: "[Icon] "
+labels: ["icon request"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        One app per issue, please — it keeps the queue countable.
+
+        Before opening: check [docs/IconPackList.md](../blob/main/docs/IconPackList.md). If the app is listed but the icon isn't applying, use the **Icon not auto-assigning** template instead.
+
+  - type: input
+    id: app_name
+    attributes:
+      label: App name
+      description: Exactly as it appears in the launcher.
+      placeholder: Example TV
+    validations:
+      required: true
+
+  - type: input
+    id: component
+    attributes:
+      label: Component name
+      description: |
+        The package + launcher activity. Get it over ADB with:
+        `adb shell cmd package resolve-activity --brief com.example.tv | tail -1`
+      placeholder: com.example.tv/.MainActivity
+    validations:
+      required: true
+
+  - type: input
+    id: store_link
+    attributes:
+      label: Store or download link
+      description: Play Store, APKMirror, or the official site — so the mark can be referenced.
+      placeholder: https://play.google.com/store/apps/details?id=com.example.tv
+    validations:
+      required: true
+
+  - type: dropdown
+    id: device
+    attributes:
+      label: Device type
+      options:
+        - Android TV / Google TV
+        - Fire TV
+        - Nvidia Shield
+        - TV box (generic)
+        - Other
+    validations:
+      required: true
+
+  - type: textarea
+    id: notes
+    attributes:
+      label: Anything else
+      description: Brand colour, a screenshot of the app's icon, or a note if it ships regional variants.
+    validations:
+      required: false
+
+  - type: checkboxes
+    id: confirm
+    attributes:
+      label: Confirm
+      options:
+        - label: I checked docs/IconPackList.md and this app isn't already covered.
+          required: true

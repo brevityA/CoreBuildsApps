@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="Theme.CoreBuilds" parent="Theme.AppCompat.NoActionBar">
+        <item name="android:windowBackground">@color/cb_night</item>
+        <item name="android:colorBackground">@color/cb_night</item>
+        <item name="android:textColorPrimary">@color/cb_ink</item>
+        <item name="android:textColorSecondary">@color/cb_slate</item>
+        <item name="android:statusBarColor">@color/cb_night</item>
+    </style>
+</resources>

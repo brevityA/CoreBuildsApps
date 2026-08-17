@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Signature gradient, §03: linear-gradient(135deg,#00abd3,#00d4ff). Never a flat cyan. -->
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:state_focused="true">
+        <shape android:shape="rectangle">
+            <gradient android:angle="315" android:startColor="@color/cb_cta_start" android:endColor="@color/cb_cta_end" />
+            <corners android:radius="11dp" />
+            <stroke android:width="2dp" android:color="@color/cb_glow_cyan" />
+        </shape>
+    </item>
+    <item>
+        <shape android:shape="rectangle">
+            <gradient android:angle="315" android:startColor="@color/cb_cta_start" android:endColor="@color/cb_cta_end" />
+            <corners android:radius="11dp" />
+        </shape>
+    </item>
+</selector>

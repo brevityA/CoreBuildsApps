@@ -1,0 +1,292 @@
+{
+  "$schema": "./catalog.schema.json",
+  "meta": {
+    "pack": "Core Builds Icon Pack",
+    "version": "1.0.0",
+    "grid": 512,
+    "safe_area": 432,
+    "note": "Brand-colored glyph on transparent, per Core Builds Brand Guide v1.0 §07. Glyphs are original geometry in Core Builds language (rounded ends, flat fills, no gradients from source logos)."
+  },
+  "icons": [
+    {
+      "name": "Stremio",
+      "drawable": "stremio",
+      "color": "#7B5BF5",
+      "glyph": "play_hex",
+      "components": ["com.stremio.one/com.stremio.one.MainActivity", "com.stremio.one/.MainActivity", "com.stremio.one/com.stremio.tv.MainActivity"]
+    },
+    {
+      "name": "Kodi",
+      "drawable": "kodi",
+      "color": "#3EBBF0",
+      "glyph": "kodi_box",
+      "components": ["org.xbmc.kodi/.Splash", "org.xbmc.kodi/org.xbmc.kodi.Splash", "org.xbmc.kodi_touch/.Splash"]
+    },
+    {
+      "name": "Jellyfin",
+      "drawable": "jellyfin",
+      "color": "#AA5CC3",
+      "glyph": "jellyfin_chevrons",
+      "components": ["org.jellyfin.androidtv/.ui.startup.StartupActivity", "org.jellyfin.androidtv/org.jellyfin.androidtv.ui.startup.StartupActivity", "org.jellyfin.mobile/.MainActivity"]
+    },
+    {
+      "name": "Emby",
+      "drawable": "emby",
+      "color": "#52B54B",
+      "glyph": "emby_shield",
+      "components": ["tv.emby.embyatv/.startup.StartupActivity", "com.mb.android/.MainActivity"]
+    },
+    {
+      "name": "Plex",
+      "drawable": "plex",
+      "color": "#E5A00D",
+      "glyph": "plex_chevron",
+      "components": ["com.plexapp.android/com.plexapp.plex.activities.SplashActivity", "com.plexapp.mediaserver.smb/.MainActivity"]
+    },
+    {
+      "name": "Nuvio TV",
+      "drawable": "nuvio",
+      "color": "#F472B6",
+      "glyph": "nuvio_wave",
+      "components": ["com.nuvio.tv/.MainActivity", "com.nuvio.tv/com.nuvio.tv.MainActivity", "com.nuviodebug.com/com.nuvio.tv.MainActivity"]
+    },
+    {
+      "name": "Projectivy Launcher",
+      "drawable": "projectivy",
+      "color": "#00D4FF",
+      "glyph": "projector_beam",
+      "components": ["com.spocky.projengmenu/.ui.tvinput.TvInputActivity", "com.spocky.projengmenu/com.spocky.projengmenu.ui.MainActivity"]
+    },
+    {
+      "name": "Downloader",
+      "drawable": "downloader",
+      "color": "#F0913A",
+      "glyph": "download_arrow",
+      "components": ["com.esaba.downloader/.MainActivity", "com.esaba.downloader/com.esaba.downloader.MainActivity"]
+    },
+    {
+      "name": "TorBox",
+      "drawable": "torbox",
+      "color": "#00E5FF",
+      "glyph": "cloud_box",
+      "components": ["com.torbox.app/.MainActivity", "app.torbox.android/.MainActivity"]
+    },
+    {
+      "name": "Real-Debrid",
+      "drawable": "realdebrid",
+      "color": "#7BC144",
+      "glyph": "link_chain",
+      "components": ["debrid.real.app/.MainActivity", "com.realdebrid.app/.MainActivity"]
+    },
+    {
+      "name": "AllDebrid",
+      "drawable": "alldebrid",
+      "color": "#FF7A00",
+      "glyph": "link_chain",
+      "components": ["com.alldebrid.app/.MainActivity"]
+    },
+    {
+      "name": "Premiumize",
+      "drawable": "premiumize",
+      "color": "#4FACFE",
+      "glyph": "cloud_box",
+      "components": ["me.premiumize.app/.MainActivity"]
+    },
+    {
+      "name": "Syncler",
+      "drawable": "syncler",
+      "color": "#00BFA5",
+      "glyph": "sync_ring",
+      "components": ["com.wolfpack.syncler/.ui.SplashActivity", "com.wolfpack.syncler/com.wolfpack.syncler.MainActivity"]
+    },
+    {
+      "name": "Weyd",
+      "drawable": "weyd",
+      "color": "#8A4890",
+      "glyph": "monogram_W",
+      "components": ["com.weyd.app/.MainActivity"]
+    },
+    {
+      "name": "Trakt",
+      "drawable": "trakt",
+      "color": "#ED1C24",
+      "glyph": "sync_ring",
+      "components": ["tv.trakt.trakt/.MainActivity"]
+    },
+    {
+      "name": "VLC",
+      "drawable": "vlc",
+      "color": "#FF8800",
+      "glyph": "cone",
+      "components": ["org.videolan.vlc/.StartActivity", "org.videolan.vlc/org.videolan.vlc.gui.MainActivity", "org.videolan.vlc/.gui.tv.MainTvActivity"]
+    },
+    {
+      "name": "MX Player",
+      "drawable": "mxplayer",
+      "color": "#3AB4F2",
+      "glyph": "play_round",
+      "components": ["com.mxtech.videoplayer.ad/.ActivityMediaList", "com.mxtech.videoplayer.pro/.ActivityMediaList", "com.mxtech.videoplayer.tv/.ActivityMediaList"]
+    },
+    {
+      "name": "Just Player",
+      "drawable": "justplayer",
+      "color": "#7EEEFF",
+      "glyph": "play_round",
+      "components": ["com.brouken.player/.MainActivity"]
+    },
+    {
+      "name": "Kore",
+      "drawable": "kore",
+      "color": "#3EBBF0",
+      "glyph": "remote",
+      "components": ["org.xbmc.kore/.ui.sections.hosts.AddHostActivity", "org.xbmc.kore/.ui.sections.remote.RemoteActivity"]
+    },
+    {
+      "name": "Smart Tube",
+      "drawable": "smarttube",
+      "color": "#FF0033",
+      "glyph": "play_rect",
+      "components": ["com.teamsmart.videomanager.tv/com.liskovsoft.smartyoutubetv2.tv.ui.main.SplashActivity"]
+    },
+    {
+      "name": "YouTube",
+      "drawable": "youtube",
+      "color": "#FF0033",
+      "glyph": "play_rect",
+      "components": ["com.google.android.youtube.tv/com.google.android.apps.youtube.tv.activity.ShellActivity", "com.google.android.youtube/.HomeActivity"]
+    },
+    {
+      "name": "Netflix",
+      "drawable": "netflix",
+      "color": "#E50914",
+      "glyph": "monogram_N",
+      "components": ["com.netflix.ninja/.MainActivity", "com.netflix.mediaclient/.ui.launch.UIWebViewActivity"]
+    },
+    {
+      "name": "Prime Video",
+      "drawable": "primevideo",
+      "color": "#00A8E1",
+      "glyph": "smile_arrow",
+      "components": ["com.amazon.amazonvideo.livingroom/.ui.LauncherActivity", "com.amazon.avod.thirdpartyclient/.LauncherActivity"]
+    },
+    {
+      "name": "Disney+",
+      "drawable": "disneyplus",
+      "color": "#1F80E0",
+      "glyph": "plus_star",
+      "components": ["com.disney.disneyplus/.MainActivity", "com.disney.disneyplus.tv/.MainActivity"]
+    },
+    {
+      "name": "Max",
+      "drawable": "max",
+      "color": "#0046FF",
+      "glyph": "monogram_M",
+      "components": ["com.wbd.stream/.MainActivity", "com.hbo.hbonow/.MainActivity"]
+    },
+    {
+      "name": "Apple TV",
+      "drawable": "appletv",
+      "color": "#E6EDF3",
+      "glyph": "apple_tv",
+      "components": ["com.apple.atve.androidtv.appletv/.MainActivity", "com.apple.atve.amazon.appletv/.MainActivity"]
+    },
+    {
+      "name": "Stan",
+      "drawable": "stan",
+      "color": "#0091EA",
+      "glyph": "monogram_S",
+      "components": ["au.com.stan.and/.MainActivity", "au.com.stan.and.tv/.MainActivity"]
+    },
+    {
+      "name": "Binge",
+      "drawable": "binge",
+      "color": "#E6007E",
+      "glyph": "monogram_B",
+      "components": ["au.com.streamotion.ares/.MainActivity", "au.com.binge.tv/.MainActivity"]
+    },
+    {
+      "name": "Kayo Sports",
+      "drawable": "kayo",
+      "color": "#00E676",
+      "glyph": "monogram_K",
+      "components": ["au.com.kayosports.tv/.MainActivity", "au.com.streamotion.hyperion/.MainActivity"]
+    },
+    {
+      "name": "ABC iview",
+      "drawable": "abciview",
+      "color": "#00B6E4",
+      "glyph": "eye",
+      "components": ["au.net.abc.iview/.MainActivity", "au.net.abc.iview.tv/.MainActivity"]
+    },
+    {
+      "name": "9Now",
+      "drawable": "ninenow",
+      "color": "#00A0DC",
+      "glyph": "monogram_9",
+      "components": ["com.mi9.gomi/.MainActivity", "au.com.nine.now.tv/.MainActivity"]
+    },
+    {
+      "name": "7plus",
+      "drawable": "sevenplus",
+      "color": "#0072CE",
+      "glyph": "monogram_7",
+      "components": ["au.com.seven.inferno/.MainActivity"]
+    },
+    {
+      "name": "10 Play",
+      "drawable": "tenplay",
+      "color": "#E9142B",
+      "glyph": "monogram_10",
+      "components": ["au.com.tenplay/.MainActivity", "com.network10.tenplay/.MainActivity"]
+    },
+    {
+      "name": "SBS On Demand",
+      "drawable": "sbs",
+      "color": "#F0A500",
+      "glyph": "monogram_S",
+      "components": ["au.com.sbs.ondemand.tv/.MainActivity", "au.com.sbs.ondemand/.MainActivity"]
+    },
+    {
+      "name": "Spotify",
+      "drawable": "spotify",
+      "color": "#1DB954",
+      "glyph": "waves_circle",
+      "components": ["com.spotify.tv.android/.SpotifyTVActivity", "com.spotify.music/.MainActivity"]
+    },
+    {
+      "name": "Twitch",
+      "drawable": "twitch",
+      "color": "#9146FF",
+      "glyph": "chat_screen",
+      "components": ["tv.twitch.android.app/.core.LandingActivity", "tv.twitch.android.viewer/.MainActivity"]
+    },
+    {
+      "name": "Settings",
+      "drawable": "settings",
+      "color": "#8B949E",
+      "glyph": "gear",
+      "components": ["com.android.tv.settings/.MainSettings", "com.android.settings/.Settings"]
+    },
+    {
+      "name": "Files",
+      "drawable": "files",
+      "color": "#4FACFE",
+      "glyph": "folder",
+      "components": ["com.google.android.documentsui/.files.FilesActivity", "nextapp.fx/.FX", "com.mixplorer/.activities.BrowseActivity"]
+    },
+    {
+      "name": "SmartTube Next",
+      "drawable": "smarttubenext",
+      "color": "#FF3B30",
+      "glyph": "play_rect",
+      "components": ["com.liskovsoft.smarttubetv.beta/com.liskovsoft.smartyoutubetv2.tv.ui.main.SplashActivity"]
+    },
+    {
+      "name": "Core Builds",
+      "drawable": "corebuilds",
+      "color": "#00D4FF",
+      "glyph": "core_mark",
+      "components": ["tv.corebuilds.iconpack/.MainActivity"]
+    }
+  ]
+}

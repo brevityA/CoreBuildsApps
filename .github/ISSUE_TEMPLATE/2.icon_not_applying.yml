@@ -1,0 +1,58 @@
+name: "🔧 Icon not auto-assigning"
+description: The app is in the pack, but its icon doesn't appear on your device.
+title: "[Not applying] "
+labels: ["mapping"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Almost always this means your device ships a **different launcher activity** than the one mapped — common on Fire TV, mobile-variant builds, and regional forks. The component name below is the fix.
+
+  - type: input
+    id: app_name
+    attributes:
+      label: App name
+      placeholder: Stremio
+    validations:
+      required: true
+
+  - type: input
+    id: component
+    attributes:
+      label: The component name on YOUR device
+      description: |
+        `adb shell cmd package resolve-activity --brief <package> | tail -1`
+      placeholder: com.stremio.one/com.stremio.tv.SomeOtherActivity
+    validations:
+      required: true
+
+  - type: input
+    id: device
+    attributes:
+      label: Device and OS
+      placeholder: Nvidia Shield Pro · Android 11 · Projectivy 4.70
+    validations:
+      required: true
+
+  - type: dropdown
+    id: launcher
+    attributes:
+      label: Launcher
+      options:
+        - Projectivy
+        - Nova
+        - Lawnchair
+        - FLauncher
+        - Other
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: confirm
+    attributes:
+      label: Confirm
+      options:
+        - label: The pack is selected in my launcher's icon-pack setting.
+          required: true
+        - label: I restarted the launcher (or rebooted) after applying.
+          required: true

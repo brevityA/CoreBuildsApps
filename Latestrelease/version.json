@@ -1,0 +1,10 @@
+{
+  "versionCode": 1,
+  "versionName": "1.0.0",
+  "iconCount": 40,
+  "componentCount": 78,
+  "releaseDate": "2026-08-17",
+  "apkUrl": "https://github.com/brevityA/CoreBuildsIconPack/releases/latest/download/app-release.apk",
+  "releaseNotesUrl": "https://github.com/brevityA/CoreBuildsIconPack/blob/main/CHANGELOG.md",
+  "minSdk": 21
+}

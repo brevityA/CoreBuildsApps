@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: 💬 Core Builds community
+    url: https://github.com/brevityA/Core-Builds
+    about: Questions about templates, the configurator, or the wider ecosystem.
+  - name: ☕ Support the project
+    url: https://ko-fi.com/branding_brevity
+    about: If the pack saved you an evening of manual icon assignment.
