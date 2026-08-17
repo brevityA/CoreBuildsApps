@@ -62,6 +62,20 @@ def validate(icons):
             if comp in seen_c:
                 errors.append(f"{n}: component '{comp}' duplicates {seen_c[comp]}")
             seen_c[comp] = n
+        # `unverified` names the components that are best-known rather than
+        # confirmed with `adb shell cmd package resolve-activity`. Absent means
+        # every component on this icon is device-confirmed, so a stray entry
+        # would quietly claim a component that isn't mapped — hence the subset
+        # check. A wrong mapping fails silently on the user's TV; this is the
+        # one place that distinction can be recorded as data rather than prose.
+        unver = i.get("unverified", [])
+        if not isinstance(unver, list):
+            errors.append(f"{n}: 'unverified' must be a list of component strings")
+            unver = []
+        for comp in unver:
+            if comp not in i.get("components", []):
+                errors.append(
+                    f"{n}: unverified component '{comp}' is not in this icon's components")
     return errors
 
 
@@ -149,22 +163,35 @@ def main():
     write(VAL_DIR / "icon_pack.xml", "\n".join(v) + "\n")
 
     # 7. supported list
+    unver_count = sum(len(i.get("unverified", [])) for i in icons)
+    unver_icons = [i for i in icons if i.get("unverified")]
     md = ["# Supported applications",
           "",
           f"`{len(icons)}` icons \u00b7 `{comp_count}` mapped components \u00b7 "
-          f"pack v{data['meta']['version']}",
+          f"`{unver_count}` unconfirmed \u00b7 pack v{data['meta']['version']}",
           "",
           "Every app below auto-assigns in Projectivy. If one doesn't, the app "
           "ships a different launcher activity on your device \u2014 open an issue "
           "with the component name and it gets added.",
           "",
+          f"Components marked \u26a0 are **best-known, not device-confirmed** "
+          f"({unver_count} of {comp_count}, across {len(unver_icons)} apps). They were "
+          "written from package documentation rather than read off a device with "
+          "`adb shell cmd package resolve-activity`. A wrong component fails silently "
+          "\u2014 the icon simply never assigns \u2014 so if one of these doesn't work, "
+          "the component name from your device is the single most useful thing you "
+          "can put in an issue.",
+          "",
           "| App | Drawable | Accent | Components |",
           "| --- | --- | --- | --- |"]
     for i in icons:
-        comps = "<br>".join(f"`{c}`" for c in i["components"])
+        unver = set(i.get("unverified", []))
+        comps = "<br>".join(
+            f"`{c}` \u26a0" if c in unver else f"`{c}`" for c in i["components"])
         md.append(f"| {i['name']} | `{i['drawable']}` | `{i['color']}` | {comps} |")
     write(DOC_DIR / "IconPackList.md", "\n".join(md) + "\n")
-    print(f"\u2713 docs/IconPackList.md written ({len(icons)} rows)")
+    print(f"\u2713 docs/IconPackList.md written ({len(icons)} rows, "
+          f"{unver_count} components flagged unconfirmed)")
 
     # 8. contact sheet on night chrome
     cols, cell = 8, 150

@@ -69,7 +69,8 @@
       "drawable": "torbox",
       "color": "#00E5FF",
       "glyph": "cloud_box",
-      "components": ["com.torbox.app/.MainActivity", "app.torbox.android/.MainActivity"]
+      "components": ["com.torbox.app/.MainActivity", "app.torbox.android/.MainActivity"],
+      "unverified": ["com.torbox.app/.MainActivity", "app.torbox.android/.MainActivity"]
     },
     {
       "name": "Real-Debrid",
@@ -83,14 +84,16 @@
       "drawable": "alldebrid",
       "color": "#FF7A00",
       "glyph": "link_chain",
-      "components": ["com.alldebrid.app/.MainActivity"]
+      "components": ["com.alldebrid.app/.MainActivity"],
+      "unverified": ["com.alldebrid.app/.MainActivity"]
     },
     {
       "name": "Premiumize",
       "drawable": "premiumize",
       "color": "#4FACFE",
       "glyph": "cloud_box",
-      "components": ["me.premiumize.app/.MainActivity"]
+      "components": ["me.premiumize.app/.MainActivity"],
+      "unverified": ["me.premiumize.app/.MainActivity"]
     },
     {
       "name": "Syncler",
@@ -104,7 +107,8 @@
       "drawable": "weyd",
       "color": "#8A4890",
       "glyph": "monogram_W",
-      "components": ["com.weyd.app/.MainActivity"]
+      "components": ["com.weyd.app/.MainActivity"],
+      "unverified": ["com.weyd.app/.MainActivity"]
     },
     {
       "name": "Trakt",
@@ -195,56 +199,64 @@
       "drawable": "stan",
       "color": "#0091EA",
       "glyph": "monogram_S",
-      "components": ["au.com.stan.and/.MainActivity", "au.com.stan.and.tv/.MainActivity"]
+      "components": ["au.com.stan.and/.MainActivity", "au.com.stan.and.tv/.MainActivity"],
+      "unverified": ["au.com.stan.and/.MainActivity", "au.com.stan.and.tv/.MainActivity"]
     },
     {
       "name": "Binge",
       "drawable": "binge",
       "color": "#E6007E",
       "glyph": "monogram_B",
-      "components": ["au.com.streamotion.ares/.MainActivity", "au.com.binge.tv/.MainActivity"]
+      "components": ["au.com.streamotion.ares/.MainActivity", "au.com.binge.tv/.MainActivity"],
+      "unverified": ["au.com.streamotion.ares/.MainActivity", "au.com.binge.tv/.MainActivity"]
     },
     {
       "name": "Kayo Sports",
       "drawable": "kayo",
       "color": "#00E676",
       "glyph": "monogram_K",
-      "components": ["au.com.kayosports.tv/.MainActivity", "au.com.streamotion.hyperion/.MainActivity"]
+      "components": ["au.com.kayosports.tv/.MainActivity", "au.com.streamotion.hyperion/.MainActivity"],
+      "unverified": ["au.com.kayosports.tv/.MainActivity", "au.com.streamotion.hyperion/.MainActivity"]
     },
     {
       "name": "ABC iview",
       "drawable": "abciview",
       "color": "#00B6E4",
       "glyph": "eye",
-      "components": ["au.net.abc.iview/.MainActivity", "au.net.abc.iview.tv/.MainActivity"]
+      "components": ["au.net.abc.iview/.MainActivity", "au.net.abc.iview.tv/.MainActivity"],
+      "unverified": ["au.net.abc.iview/.MainActivity", "au.net.abc.iview.tv/.MainActivity"]
     },
     {
       "name": "9Now",
       "drawable": "ninenow",
       "color": "#00A0DC",
       "glyph": "monogram_9",
-      "components": ["com.mi9.gomi/.MainActivity", "au.com.nine.now.tv/.MainActivity"]
+      "components": ["com.mi9.gomi/.MainActivity", "au.com.nine.now.tv/.MainActivity"],
+      "unverified": ["com.mi9.gomi/.MainActivity", "au.com.nine.now.tv/.MainActivity"]
     },
     {
       "name": "7plus",
       "drawable": "sevenplus",
       "color": "#0072CE",
       "glyph": "monogram_7",
-      "components": ["au.com.seven.inferno/.MainActivity"]
+      "components": ["au.com.seven.inferno/.MainActivity"],
+      "unverified": ["au.com.seven.inferno/.MainActivity"]
     },
     {
       "name": "10 Play",
       "drawable": "tenplay",
       "color": "#E9142B",
       "glyph": "monogram_10",
-      "components": ["au.com.tenplay/.MainActivity", "com.network10.tenplay/.MainActivity"]
+      "components": ["au.com.tenplay/.MainActivity", "com.network10.tenplay/.MainActivity"],
+      "unverified": ["au.com.tenplay/.MainActivity", "com.network10.tenplay/.MainActivity"]
     },
     {
       "name": "SBS On Demand",
       "drawable": "sbs",
       "color": "#F0A500",
       "glyph": "monogram_S",
-      "components": ["au.com.sbs.ondemand.tv/.MainActivity", "au.com.sbs.ondemand/.MainActivity"]
+      "components": ["au.com.sbs.ondemand.tv/.MainActivity", "au.com.sbs.ondemand/.MainActivity"],
+      "unverified": ["au.com.sbs.ondemand.tv/.MainActivity", "au.com.sbs.ondemand/.MainActivity"]
     },
     {
       "name": "Spotify",

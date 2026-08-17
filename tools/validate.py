@@ -101,7 +101,24 @@ def main():
                         ("cb_ember", "#C03A20"), ("cb_dusk_violet", "#8A4890")]:
         check(hexv in colors, f"palette: {token} {hexv} not found in colors.xml")
 
-    print(f"Validated {len(icons)} icons \u00b7 {comp_total} components \u00b7 "
+    # 8. unverified components are real components of their own icon
+    # A stray entry here would silently claim verification for a mapping that
+    # doesn't exist, which inverts the point of the field.
+    unver_total = 0
+    for i in icons:
+        unver = i.get("unverified", [])
+        check(isinstance(unver, list),
+              f"{i['name']}: 'unverified' must be a list")
+        for comp in (unver if isinstance(unver, list) else []):
+            check(comp in i["components"],
+                  f"{i['name']}: unverified '{comp}' is not one of its components")
+        unver_total += len(unver) if isinstance(unver, list) else 0
+    check(unver_total <= comp_total,
+          f"unverified total {unver_total} exceeds component total {comp_total}")
+
+    confirmed = comp_total - unver_total
+    print(f"Validated {len(icons)} icons \u00b7 {comp_total} components "
+          f"({confirmed} device-confirmed, {unver_total} best-known) \u00b7 "
           f"{checks} checks run")
     if failures:
         print(f"\n\u2717 {len(failures)} failed:")

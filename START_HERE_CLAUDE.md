@@ -49,7 +49,7 @@ Pick one and drop it into the `[describe your task]` slot.
 
 ## What's already true (don't re-verify)
 
-- 40 icons, 78 mapped components, 409 validator checks passing.
+- 40 icons, 78 mapped components (58 device-confirmed, 20 best-known), 470 validator checks passing.
 - Generator output is deterministic — two consecutive runs are byte-identical.
 - All XML parses; all workflow YAML parses.
 - Three git commits on `main`, clean working tree.
@@ -57,7 +57,7 @@ Pick one and drop it into the `[describe your task]` slot.
 ## What is NOT verified (be honest about these)
 
 - **The APK has been built.** See CLAUDE.md — both variants build clean; not yet installed on a device.
-- **Some component names are best-known, not device-confirmed** — TorBox, Weyd, AllDebrid, Premiumize, and several AU broadcaster apps.
+- **20 of 78 components are best-known, not device-confirmed** — recorded in `catalog.json` as `unverified`, counted by the validator, marked ⚠ in `docs/IconPackList.md`.
 - The CI drift gate covers text assets only; PNG bytes vary with the runner's libcairo build.
 
 ## Repo map
