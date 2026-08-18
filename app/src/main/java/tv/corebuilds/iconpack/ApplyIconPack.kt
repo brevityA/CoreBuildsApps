@@ -82,21 +82,23 @@ object ApplyIconPack {
         manualPath = "Nova Settings → Look & feel → Icon style → Icon theme"
     )
 
+    private val LAWNCHAIR_PACKAGES = listOf(
+        "app.lawnchair",
+        "ch.deletescape.lawnchair",
+        "ch.deletescape.lawnchair.plah",
+        "ch.deletescape.lawnchair.ci",
+        "ch.deletescape.lawnchair.dev"
+    )
+
     val LAWNCHAIR = Launcher(
         key = "lawnchair",
         displayName = "Lawnchair",
-        packages = listOf(
-            "app.lawnchair",
-            "ch.deletescape.lawnchair",
-            "ch.deletescape.lawnchair.plah",
-            "ch.deletescape.lawnchair.ci",
-            "ch.deletescape.lawnchair.dev"
-        ),
+        packages = LAWNCHAIR_PACKAGES,
         intent = { ctx, self ->
             val pkg = LAWNCHAIR_PACKAGES.firstOrNull { ctx.isInstalled(it) }
-            pkg?.let {
+            pkg?.let { p ->
                 Intent("ch.deletescape.lawnchair.APPLY_ICONS").apply {
-                    `package` = it
+                    `package` = p
                     putExtra("packageName", self)
                     addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                 }
@@ -132,8 +134,6 @@ object ApplyIconPack {
         },
         manualPath = "ADW Settings → Themes"
     )
-
-    private val LAWNCHAIR_PACKAGES = LAWNCHAIR.packages
 
     /** Every launcher we can hand off to, Projectivy first — it's the target. */
     val ALL = listOf(PROJECTIVY, NOVA, LAWNCHAIR, APEX, ADW)
