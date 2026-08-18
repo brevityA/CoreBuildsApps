@@ -96,9 +96,9 @@ object ApplyIconPack {
         packages = LAWNCHAIR_PACKAGES,
         intent = { ctx, self ->
             val pkg = LAWNCHAIR_PACKAGES.firstOrNull { ctx.isInstalled(it) }
-            pkg?.let {
+            pkg?.let { p ->
                 Intent("ch.deletescape.lawnchair.APPLY_ICONS").apply {
-                    `package` = it
+                    `package` = p
                     putExtra("packageName", self)
                     addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                 }

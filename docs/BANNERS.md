@@ -41,12 +41,21 @@ assets/banners/<drawable>.svg                    master vector, 1280x720
 app/src/main/res/drawable-nodpi/<d>_banner.png   1280x720 transparent
 ```
 
-## Why a separate drawable
+## Banners are the default (v1.3.0)
 
-Banners are `<icon>_banner`, distinct from the square `<icon>`. The square set
-stays the pack default; banners are listed under their own category in
-`drawable.xml`, so a user picks the banner treatment **per app** from the
-launcher's icon browser without changing anything globally.
+`appfilter.xml` maps every component to the **banner** drawable, so auto-assign
+gives a 16:9 card straight away. Projectivy cards are 16:9 by default and the
+reference pack ships 1002 of its 1002 icons at 320×180 — a banner is what a
+card actually wants.
+
+The square set still ships. `drawable.xml` lists both categories —
+**Banners (16:9)** first, **Square icons** second — so a user can switch any
+individual app to the square treatment from the launcher's icon browser.
+
+Every icon gets a banner, unconditionally. The old `"banner": true` flag is
+gone: partial generation would have left `appfilter` pointing at drawables
+that did not exist, and those apps would silently fall back to their stock
+icon.
 
 Mark an app for a banner in `tools/catalog.json`:
 

@@ -1,8 +1,8 @@
 {
-  "versionCode": 5,
-  "versionName": "1.3.0",
-  "iconCount": 81,
-  "componentCount": 232,
+  "versionCode": 6,
+  "versionName": "1.4.0",
+  "iconCount": 501,
+  "componentCount": 901,
   "releaseDate": "2026-08-17",
   "apkUrl": "https://github.com/brevityA/CoreBuildsIconPack/releases/latest/download/app-release.apk",
   "releaseNotesUrl": "https://github.com/brevityA/CoreBuildsIconPack/blob/main/CHANGELOG.md",

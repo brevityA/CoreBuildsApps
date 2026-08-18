@@ -7,7 +7,7 @@
 **Transparent app icons for Projectivy Launcher on Android TV.**
 Precision-made. Verified live. Nothing hides.
 
-`40 icons` · `78 mapped components` · `v1.0.0`
+`501 icons` · `901 mapped components` · `v1.4.0`
 
 </div>
 
@@ -27,22 +27,35 @@ Icons are **original geometry** drawn on a shared 512 grid — simple shapes, ro
 
 ## 🔷 Install
 
-1. Download using **Downloader code 9243509**, or grab the APK from [**Releases**](../../releases/latest).
+1. Download using **Downloader code 5270601**, or grab the APK from [**Releases**](../../releases/latest).
 2. Sideload it (Downloader, `adb install`, or a file manager).
-3. Apply it in Projectivy:
-   - **Projectivy Launcher Settings** → **Appearance** → **Cards** → **Icon Pack** → **Core Builds Icon Pack**
+3. Open the app and press the **apply** button — it detects your launcher and hands off directly.
 
-The app's own **Open Projectivy settings** button takes you there. It never changes a setting for you — the launcher owns that choice.
+   Or apply manually: **Projectivy Launcher Settings** → **Appearance** → **Cards** → **Icon Pack** → **Core Builds Icon Pack**
+
+> **Android 11+:** The APK declares a `<queries>` block so launcher detection works under package-visibility filtering. No `QUERY_ALL_PACKAGES` permission required.
+
+> **Updates:** The app checks for new versions at launch and shows a toast when one is available. No background service, no analytics — one HTTPS GET to `Latestrelease/version.json`.
 
 ---
 
 ## 🔷 What's covered
 
-The starter set targets the Core Builds ecosystem first: Stremio, Kodi, Jellyfin, Emby, Plex, Nuvio TV, Syncler, Weyd, Trakt, TorBox, Real-Debrid, AllDebrid, Premiumize, Downloader, VLC, MX Player, Just Player, Kore, SmartTube — plus mainstream and AU free-to-air apps (Netflix, Prime Video, Disney+, Max, Apple TV, Stan, Binge, Kayo, ABC iview, 9Now, 7plus, 10 Play, SBS).
+501 icons across 21 categories — streaming, media centres, debrid services, players, launchers, tools, stores, live TV, music, sport, gaming, VPN, browsers, and more.
+
+Highlights: Stremio, Kodi, Jellyfin, Emby, Plex, Nuvio TV, Syncler, Weyd, TorBox, Real-Debrid, AllDebrid, Premiumize, Trakt, VLC, MX Player, SmartTube, YouTube, Spotify, Twitch, Downloader, Aurora Store, TiviMate, TV Bro, SYNC — plus Netflix, Prime Video, Disney+, Max, Apple TV, Stan, Binge, Kayo, ABC iview, 9Now, 7plus, 10 Play, SBS, and 460+ more.
 
 Full table with every mapped component: [**docs/IconPackList.md**](docs/IconPackList.md)
 
 <div align="center"><img src="docs/preview.png" alt="All icons" width="760"></div>
+
+---
+
+## 🔷 16:9 Banners
+
+Every icon ships a **320×180 monoline banner** for Projectivy's wide-card layout. One glyph, cyan→violet rail, uppercase mono category, bold-sans wordmark — generated from `tools/build_banners.py`.
+
+Appfilter maps to banners by default; square icons stay opt-in via `drawable.xml`.
 
 ---
 
@@ -82,14 +95,15 @@ Then regenerate and verify:
 ```bash
 pip install -r tools/requirements.txt
 python tools/build_icons.py      # SVGs, PNGs, appfilter, docs, preview
+python tools/build_banners.py    # 16:9 monoline banners
 python tools/build_branding.py   # launcher icon + TV banner
-python tools/validate.py         # 400+ coherence checks
+python tools/validate.py         # 12800+ coherence checks
 ```
 
 **Finding a component name** for an installed app:
 
 ```bash
-adb shell cmd package resolve-activity --brief com.example.tv | tail -1
+adb shell dumpsys package com.example.tv | grep -A1 "android.intent.action.MAIN"
 ```
 
 Need a new shape? Add a function to `tools/glyphs.py` and register it in `GLYPHS`. Glyphs are plain SVG path strings on the 512 grid — stroke `34`, safe area `432`, rounded caps and joins.
@@ -98,7 +112,9 @@ Need a new shape? Add a function to `tools/glyphs.py` and register it in `GLYPHS
 
 ## 🔷 Building the APK
 
-CI does it on every push: [`.github/workflows/build.yml`](.github/workflows/build.yml) regenerates assets, **fails if the committed files drift from the catalog**, runs the validator, then builds and uploads the APK. Push a `v*` tag to cut a release.
+CI does it on every push: [`.github/workflows/build.yml`](.github/workflows/build.yml) regenerates assets, **fails if the committed files drift from the catalog**, runs the validator, then builds and uploads the APK. Push a `v*` tag to cut a release — CI verifies the tag is on `main` and its versionName matches, so a mis-placed tag fails before it publishes.
+
+On tag release, CI also syncs `Latestrelease/version.json` so the in-app update checker stays current automatically.
 
 Locally (needs JDK 17 + Android SDK):
 
@@ -130,15 +146,18 @@ Inherited from the brand guide, enforced by the generator and validator:
 ## 🔷 Layout
 
 ```
-tools/catalog.json          the single source of truth
-tools/glyphs.py             33 glyph primitives, pure geometry
-tools/build_icons.py        catalog → SVG, PNG, appfilter, docs
-tools/build_branding.py     launcher icon + Leanback banner
+tools/catalog.json           the single source of truth
+tools/glyphs.py              104 glyph primitives, pure geometry
+tools/build_icons.py         catalog → SVG, PNG, appfilter, docs
+tools/build_banners.py       catalog → 16:9 monoline banners
+tools/build_branding.py      launcher icon + Leanback banner
 tools/build_brand_preview.py branding preview sheet
-tools/validate.py           coherence checks
-assets/svg/                 master vectors (40)
-app/src/main/res/           the Android module
-docs/IconPackList.md        supported apps + components
+tools/validate.py            coherence checks (12800 at 501 icons)
+assets/svg/                  master vectors (501)
+assets/banners/              16:9 banners (501)
+app/src/main/res/            the Android module
+Latestrelease/version.json   in-app update manifest
+docs/IconPackList.md         supported apps + components
 ```
 
 ---

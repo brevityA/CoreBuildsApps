@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="720" viewBox="0 0 1280 720">
+  <g transform="translate(53.5,0.0)">
+  <defs><linearGradient id="cbRail" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#00d4ff"/><stop offset="100%" stop-color="#a78bfa"/></linearGradient></defs><rect x="70" y="168" width="16" height="384" rx="8.0" fill="url(#cbRail)"/>
+  <g transform="translate(197,180) scale(0.70312)"><path d="M 178 116 L 178 396 L 262 396 C 356 396 384 330 384 256 C 384 182 356 116 262 116 Z" fill="none" stroke="#F94144" stroke-width="32.0" stroke-linecap="round" stroke-linejoin="round"/></g>
+  <text x="603" y="299" fill="#00d4ff" font-family="ui-monospace,'DejaVu Sans Mono',monospace" font-size="46" font-weight="700" letter-spacing="7.0">LIVE</text>
+  <text x="603" y="424" fill="#E6EDF3" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'DejaVu Sans',sans-serif" font-weight="700" font-size="124" letter-spacing="-1.5">Dcsapp</text>
+  </g>
+</svg>

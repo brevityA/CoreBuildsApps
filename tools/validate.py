@@ -247,6 +247,33 @@ def main():
                   f"{i['name']}: heaviest stroke is {max(widths)}px, "
                   f"over the 34px monoline ceiling")
 
+    # 5j. The update manifest must agree with the build it ships beside.
+    # Latestrelease/version.json is what the in-app updater polls; if its
+    # versionCode lags build.gradle.kts, every user is told they are current
+    # when they are not. It is hand-maintained, so assert it.
+    import json as _json
+    _vj = ROOT / "Latestrelease" / "version.json"
+    _gradle = (ROOT / "app" / "build.gradle.kts").read_text(encoding="utf-8")
+    if _vj.exists():
+        _v = _json.loads(_vj.read_text(encoding="utf-8"))
+        _gc = re.search(r"versionCode\s*=\s*(\d+)", _gradle)
+        _gn = re.search(r'versionName\s*=\s*"([^"]+)"', _gradle)
+        if _gc:
+            check(int(_gc.group(1)) == _v.get("versionCode"),
+                  f"version.json versionCode {_v.get('versionCode')} != "
+                  f"build.gradle.kts {_gc.group(1)} — the updater would "
+                  f"report the wrong build")
+        if _gn:
+            check(_gn.group(1) == _v.get("versionName"),
+                  f"version.json versionName {_v.get('versionName')} != "
+                  f"build.gradle.kts {_gn.group(1)}")
+        check(_v.get("iconCount") == len(icons),
+              f"version.json iconCount {_v.get('iconCount')} != "
+              f"{len(icons)} icons in the catalogue")
+        check(str(_v.get("apkUrl", "")).endswith("app-release.apk"),
+              "version.json apkUrl must end in app-release.apk — the "
+              "Downloader code matches on that exact filename")
+
     # 6. banner + launcher icons exist
     for p in [RES / "drawable-nodpi" / "cb_banner.png",
               RES / "mipmap-xhdpi" / "ic_launcher.png",

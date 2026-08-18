@@ -66,34 +66,10 @@ def _mono(color, paths, w=40):
     return "".join(f'<path d="{d}" {_s(color, w)}/>' for d in paths)
 
 
-def monogram_N(c):
-    return _mono(c, ["M 168 356 L 168 156 L 344 356 L 344 156"])
 
 
-def monogram_M(c):
-    return _mono(c, ["M 150 356 L 150 156 L 256 286 L 362 156 L 362 356"])
 
 
-def monogram_S(c):
-    return _mono(c, [
-        "M 340 190 C 300 148 200 148 186 200 C 172 252 250 258 290 268 "
-        "C 336 280 356 316 330 348 C 300 384 206 380 172 336"])
-
-
-def monogram_B(c):
-    return _mono(c, [
-        "M 180 156 L 180 356",
-        "M 180 156 L 288 156 C 344 156 344 246 288 246 L 180 246",
-        "M 180 246 L 300 246 C 358 246 358 356 300 356 L 180 356"])
-
-
-def monogram_K(c):
-    return _mono(c, [
-        "M 176 156 L 176 356", "M 336 156 L 196 256", "M 240 224 L 344 356"])
-
-
-def monogram_W(c):
-    return _mono(c, ["M 132 156 L 186 356 L 256 214 L 326 356 L 380 156"])
 
 
 def monogram_9(c):
@@ -405,9 +381,6 @@ GLYPHS = {
     "apple_tv": apple_tv, "eye": eye, "waves_circle": waves_circle,
     "chat_screen": chat_screen, "gear": gear, "folder": folder,
     "core_mark": core_mark,
-    "monogram_N": monogram_N, "monogram_M": monogram_M,
-    "monogram_S": monogram_S, "monogram_B": monogram_B,
-    "monogram_K": monogram_K, "monogram_W": monogram_W,
     "monogram_9": monogram_9, "monogram_7": monogram_7,
     "monogram_10": monogram_10,
 }
@@ -704,4 +677,349 @@ GLYPHS.update({
     "vault_lock": vault_lock, "equalizer": equalizer, "music_note": music_note,
     "bag_play": bag_play, "aurora_a": aurora_a, "launcher_grid": launcher_grid,
     "rocket": rocket, "droplet": droplet,
+})
+
+
+# ==========================================================================
+# Monogram set A-Z and 0-9.
+#
+# Written because a pack this size needs a distinct fallback: a repeated
+# generic glyph across dozens of apps is what made the earlier set read as a
+# rebrand. An app's own initial is always specific to it.
+#
+# Original stroke geometry on the 512 grid - single weight, rounded
+# terminals, matching the monoline language. Not traced from any typeface.
+# ==========================================================================
+
+
+def monogram_0(c):
+    """Monogram 0 — original stroke geometry, monoline weight."""
+    return (f'<path d="M 256 116 C 322 116 356 176 356 256 C 356 336 322 396 256 396 C 190 396 156 336 156 256 C 156 176 190 116 256 116 Z" {_s(c, 40)}/>')
+
+
+def monogram_1(c):
+    """Monogram 1 — original stroke geometry, monoline weight."""
+    return (f'<path d="M 186 176 L 256 116 L 256 396" {_s(c, 40)}/>'
+            f'<path d="M 190 396 L 326 396" {_s(c, 40)}/>')
+
+
+def monogram_2(c):
+    """Monogram 2 — original stroke geometry, monoline weight."""
+    return (f'<path d="M 172 176 C 196 128 300 112 336 160 C 372 208 320 258 268 300 L 168 396 L 348 396" {_s(c, 40)}/>')
+
+
+def monogram_3(c):
+    """Monogram 3 — original stroke geometry, monoline weight."""
+    return (f'<path d="M 176 162 C 210 116 320 118 340 172 C 356 218 306 254 266 254" {_s(c, 40)}/>'
+            f'<path d="M 266 254 C 320 254 360 286 348 340 C 332 398 208 402 172 350" {_s(c, 40)}/>')
+
+
+def monogram_4(c):
+    """Monogram 4 — original stroke geometry, monoline weight."""
+    return (f'<path d="M 300 396 L 300 116 L 148 306 L 356 306" {_s(c, 40)}/>')
+
+
+def monogram_5(c):
+    """Monogram 5 — original stroke geometry, monoline weight."""
+    return (f'<path d="M 340 116 L 196 116 L 180 250 C 232 214 318 226 342 282 C 366 342 314 396 250 396 C 212 396 182 382 164 358" {_s(c, 40)}/>')
+
+
+def monogram_6(c):
+    """Monogram 6 — original stroke geometry, monoline weight."""
+    return (f'<path d="M 330 140 C 262 108 178 152 168 246 C 158 340 210 396 268 396 C 322 396 356 356 356 312 C 356 262 316 230 268 230 C 222 230 186 258 174 292" {_s(c, 40)}/>')
+
+
+def monogram_8(c):
+    """Monogram 8 — original stroke geometry, monoline weight."""
+    return (f'<path d="M 256 116 C 306 116 336 148 336 184 C 336 220 306 246 256 246 C 206 246 176 220 176 184 C 176 148 206 116 256 116 Z" {_s(c, 40)}/>'
+            f'<path d="M 256 246 C 314 246 350 282 350 322 C 350 364 312 396 256 396 C 200 396 162 364 162 322 C 162 282 198 246 256 246 Z" {_s(c, 40)}/>')
+
+
+def monogram_A(c):
+    """Monogram A — original stroke geometry, monoline weight."""
+    return (f'<path d="M 138 396 L 256 116 L 374 396" {_s(c, 40)}/>'
+            f'<path d="M 190 300 L 322 300" {_s(c, 40)}/>')
+
+
+def monogram_B(c):
+    """Monogram B — original stroke geometry, monoline weight."""
+    return (f'<path d="M 176 116 L 176 396" {_s(c, 40)}/>'
+            f'<path d="M 176 116 L 286 116 C 342 116 342 246 286 246 L 176 246" {_s(c, 40)}/>'
+            f'<path d="M 176 246 L 296 246 C 354 246 354 396 296 396 L 176 396" {_s(c, 40)}/>')
+
+
+def monogram_C(c):
+    """Monogram C — original stroke geometry, monoline weight."""
+    return (f'<path d="M 360 176 C 322 130 250 116 202 152 C 148 192 140 320 202 360 C 250 392 322 382 360 336" {_s(c, 40)}/>')
+
+
+def monogram_D(c):
+    """Monogram D — original stroke geometry, monoline weight."""
+    return (f'<path d="M 178 116 L 178 396 L 262 396 C 356 396 384 330 384 256 C 384 182 356 116 262 116 Z" {_s(c, 40)}/>')
+
+
+def monogram_E(c):
+    """Monogram E — original stroke geometry, monoline weight."""
+    return (f'<path d="M 350 116 L 172 116 L 172 396 L 350 396" {_s(c, 40)}/>'
+            f'<path d="M 172 256 L 320 256" {_s(c, 40)}/>')
+
+
+def monogram_F(c):
+    """Monogram F — original stroke geometry, monoline weight."""
+    return (f'<path d="M 350 116 L 172 116 L 172 396" {_s(c, 40)}/>'
+            f'<path d="M 172 256 L 316 256" {_s(c, 40)}/>')
+
+
+def monogram_G(c):
+    """Monogram G — original stroke geometry, monoline weight."""
+    return (f'<path d="M 360 176 C 322 130 250 116 202 152 C 148 192 140 320 202 360 C 258 396 344 380 362 320 L 362 262 L 282 262" {_s(c, 40)}/>')
+
+
+def monogram_H(c):
+    """Monogram H — original stroke geometry, monoline weight."""
+    return (f'<path d="M 168 116 L 168 396" {_s(c, 40)}/>'
+            f'<path d="M 344 116 L 344 396" {_s(c, 40)}/>'
+            f'<path d="M 168 256 L 344 256" {_s(c, 40)}/>')
+
+
+def monogram_I(c):
+    """Monogram I — original stroke geometry, monoline weight."""
+    return (f'<path d="M 256 116 L 256 396" {_s(c, 40)}/>'
+            f'<path d="M 190 116 L 322 116" {_s(c, 40)}/>'
+            f'<path d="M 190 396 L 322 396" {_s(c, 40)}/>')
+
+
+def monogram_J(c):
+    """Monogram J — original stroke geometry, monoline weight."""
+    return (f'<path d="M 330 116 L 330 320 C 330 384 256 404 206 372" {_s(c, 40)}/>')
+
+
+def monogram_K(c):
+    """Monogram K — original stroke geometry, monoline weight."""
+    return (f'<path d="M 176 116 L 176 396" {_s(c, 40)}/>'
+            f'<path d="M 344 116 L 200 258" {_s(c, 40)}/>'
+            f'<path d="M 244 222 L 352 396" {_s(c, 40)}/>')
+
+
+def monogram_L(c):
+    """Monogram L — original stroke geometry, monoline weight."""
+    return (f'<path d="M 180 116 L 180 396 L 348 396" {_s(c, 40)}/>')
+
+
+def monogram_M(c):
+    """Monogram M — original stroke geometry, monoline weight."""
+    return (f'<path d="M 150 396 L 150 116 L 256 254 L 362 116 L 362 396" {_s(c, 40)}/>')
+
+
+def monogram_N(c):
+    """Monogram N — original stroke geometry, monoline weight."""
+    return (f'<path d="M 168 396 L 168 116 L 344 396 L 344 116" {_s(c, 40)}/>')
+
+
+def monogram_O(c):
+    """Monogram O — original stroke geometry, monoline weight."""
+    return (f'<path d="M 256 116 C 330 116 372 176 372 256 C 372 336 330 396 256 396 C 182 396 140 336 140 256 C 140 176 182 116 256 116 Z" {_s(c, 40)}/>')
+
+
+def monogram_P(c):
+    """Monogram P — original stroke geometry, monoline weight."""
+    return (f'<path d="M 180 396 L 180 116 L 282 116 C 344 116 358 168 358 202 C 358 236 344 288 282 288 L 180 288" {_s(c, 40)}/>')
+
+
+def monogram_Q(c):
+    """Monogram Q — original stroke geometry, monoline weight."""
+    return (f'<path d="M 256 116 C 330 116 372 176 372 256 C 372 336 330 396 256 396 C 182 396 140 336 140 256 C 140 176 182 116 256 116 Z" {_s(c, 40)}/>'
+            f'<path d="M 296 320 L 380 412" {_s(c, 40)}/>')
+
+
+def monogram_R(c):
+    """Monogram R — original stroke geometry, monoline weight."""
+    return (f'<path d="M 180 396 L 180 116 L 282 116 C 344 116 358 168 358 200 C 358 232 344 282 282 282 L 180 282" {_s(c, 40)}/>'
+            f'<path d="M 268 282 L 366 396" {_s(c, 40)}/>')
+
+
+def monogram_S(c):
+    """Monogram S — original stroke geometry, monoline weight."""
+    return (f'<path d="M 348 172 C 314 128 218 124 194 176 C 170 228 246 254 288 266 C 336 280 356 314 330 350 C 300 392 210 386 172 342" {_s(c, 40)}/>')
+
+
+def monogram_T(c):
+    """Monogram T — original stroke geometry, monoline weight."""
+    return (f'<path d="M 148 116 L 364 116" {_s(c, 40)}/>'
+            f'<path d="M 256 116 L 256 396" {_s(c, 40)}/>')
+
+
+def monogram_U(c):
+    """Monogram U — original stroke geometry, monoline weight."""
+    return (f'<path d="M 168 116 L 168 300 C 168 366 210 396 256 396 C 302 396 344 366 344 300 L 344 116" {_s(c, 40)}/>')
+
+
+def monogram_V(c):
+    """Monogram V — original stroke geometry, monoline weight."""
+    return (f'<path d="M 152 116 L 256 396 L 360 116" {_s(c, 40)}/>')
+
+
+def monogram_W(c):
+    """Monogram W — original stroke geometry, monoline weight."""
+    return (f'<path d="M 128 116 L 184 396 L 256 208 L 328 396 L 384 116" {_s(c, 40)}/>')
+
+
+def monogram_X(c):
+    """Monogram X — original stroke geometry, monoline weight."""
+    return (f'<path d="M 168 116 L 344 396" {_s(c, 40)}/>'
+            f'<path d="M 344 116 L 168 396" {_s(c, 40)}/>')
+
+
+def monogram_Y(c):
+    """Monogram Y — original stroke geometry, monoline weight."""
+    return (f'<path d="M 160 116 L 256 262 L 352 116" {_s(c, 40)}/>'
+            f'<path d="M 256 262 L 256 396" {_s(c, 40)}/>')
+
+
+def monogram_Z(c):
+    """Monogram Z — original stroke geometry, monoline weight."""
+    return (f'<path d="M 168 116 L 348 116 L 168 396 L 348 396" {_s(c, 40)}/>')
+
+
+GLYPHS.update({
+    "monogram_0": monogram_0,
+    "monogram_1": monogram_1,
+    "monogram_2": monogram_2,
+    "monogram_3": monogram_3,
+    "monogram_4": monogram_4,
+    "monogram_5": monogram_5,
+    "monogram_6": monogram_6,
+    "monogram_8": monogram_8,
+    "monogram_A": monogram_A,
+    "monogram_B": monogram_B,
+    "monogram_C": monogram_C,
+    "monogram_D": monogram_D,
+    "monogram_E": monogram_E,
+    "monogram_F": monogram_F,
+    "monogram_G": monogram_G,
+    "monogram_H": monogram_H,
+    "monogram_I": monogram_I,
+    "monogram_J": monogram_J,
+    "monogram_K": monogram_K,
+    "monogram_L": monogram_L,
+    "monogram_M": monogram_M,
+    "monogram_N": monogram_N,
+    "monogram_O": monogram_O,
+    "monogram_P": monogram_P,
+    "monogram_Q": monogram_Q,
+    "monogram_R": monogram_R,
+    "monogram_S": monogram_S,
+    "monogram_T": monogram_T,
+    "monogram_U": monogram_U,
+    "monogram_V": monogram_V,
+    "monogram_W": monogram_W,
+    "monogram_X": monogram_X,
+    "monogram_Y": monogram_Y,
+    "monogram_Z": monogram_Z,
+})
+
+
+
+# ==========================================================================
+# Marks for apps seen on a real device row that the pack had missed.
+# Original geometry, monoline weight.
+# ==========================================================================
+
+def stadium(c):
+    """
+    SYNC — stadium bowl in perspective.
+
+    Two earlier attempts added floodlight pylons; at 100px they read first as
+    pot handles and then as antennae on a face. Removed. The concentric
+    tilted ovals plus the halfway line are enough to say "arena", and they
+    survive the downscale, which the masts never did.
+    """
+    return (
+        f'<path d="M 56 262 C 56 190 146 138 256 138 C 366 138 456 190 456 262 '
+        f'C 456 334 366 386 256 386 C 146 386 56 334 56 262 Z" {_s(c, 32)}/>'
+        f'<path d="M 132 262 C 132 220 188 194 256 194 C 324 194 380 220 380 262 '
+        f'C 380 304 324 330 256 330 C 188 330 132 304 132 262 Z" {_s(c, 26)}/>'
+        f'<path d="M 256 194 L 256 330" {_s(c, 20)}/>')
+
+
+def browser_globe(c):
+    """
+    TV Bro — a globe inside a rounded screen.
+
+    Its own icon is neon 'TV BRO' lettering wrapping a remote and a wire
+    globe. A wordmark cannot survive the downscale, so the globe carries it:
+    it is the browser idea, and it is what stays legible small.
+    """
+    return (f'<rect x="52" y="96" width="408" height="284" rx="72" {_s(c, 32)}/>'
+            f'<circle cx="256" cy="238" r="104" {_s(c, 28)}/>'
+            f'<path d="M 152 238 L 360 238" {_s(c, 24)}/>'
+            f'<path d="M 256 134 C 300 172 300 304 256 342" {_s(c, 24)}/>'
+            f'<path d="M 256 134 C 212 172 212 304 256 342" {_s(c, 24)}/>'
+            # stand
+            f'<path d="M 176 434 L 336 434" {_s(c, 28)}/>'
+            f'<path d="M 256 380 L 256 434" {_s(c, 24)}/>')
+
+
+GLYPHS.update({"stadium": stadium, "browser_globe": browser_globe})
+
+
+# ==========================================================================
+# Bespoke marks for apps seen on the user's real device row.
+#
+# Each replaces a shared glyph: Janky was one of five apps on play_round,
+# TiviMate one of twenty-one on monogram_T. A mark shared twenty-one ways
+# is not a mark, it is a placeholder.
+# ==========================================================================
+
+def janky_play(c):
+    """
+    Janky Player — a play triangle with a deliberate stagger.
+
+    The name is the idea: the wedge is split and offset, so it reads as a
+    play mark that is slightly out of joint. Distinguishes it from the four
+    other players that were all sharing play_round.
+    """
+    return (f'<circle cx="256" cy="256" r="182" {_s(c, 32)}/>'
+            f'<path d="M 210 168 L 330 232 L 210 254 Z" {_s(c, 26)}/>'
+            f'<path d="M 222 272 L 342 294 L 222 358 Z" {_s(c, 26)}/>')
+
+
+def tivimate_grid(c):
+    """
+    TiviMate — an EPG grid: the programme guide is the app.
+
+    A screen split into channel rows with a highlighted 'now' cell. Says
+    IPTV guide rather than generic player, and is nothing like the twenty
+    other apps that were sharing monogram_T.
+    """
+    return (f'<rect x="52" y="104" width="408" height="268" rx="40" {_s(c, 32)}/>'
+            # channel column divider
+            f'<path d="M 158 104 L 158 372" {_s(c, 24)}/>'
+            # programme rows
+            f'<path d="M 52 192 L 460 192" {_s(c, 22)}/>'
+            f'<path d="M 52 284 L 460 284" {_s(c, 22)}/>'
+            # 'now' cell, filled to read as the highlight
+            f'<rect x="196" y="212" width="128" height="52" rx="12" {_f(c)}/>'
+            # stand
+            f'<path d="M 176 428 L 336 428" {_s(c, 28)}/>'
+            f'<path d="M 256 372 L 256 428" {_s(c, 24)}/>')
+
+
+def downloader_arrow(c):
+    """
+    Downloader — arrow into a tray, inside a rounded frame.
+
+    Replaces the bare download_arrow with something that reads as an app
+    rather than a system glyph: the frame gives it presence at 100px.
+    """
+    return (f'<rect x="62" y="62" width="388" height="388" rx="96" {_s(c, 32)}/>'
+            f'<path d="M 256 132 L 256 300" {_s(c, 34)}/>'
+            f'<path d="M 180 232 L 256 308 L 332 232" {_s(c, 34)}/>'
+            f'<path d="M 156 366 L 356 366" {_s(c, 30)}/>')
+
+
+GLYPHS.update({
+    "janky_play": janky_play,
+    "tivimate_grid": tivimate_grid,
+    "downloader_arrow": downloader_arrow,
 })

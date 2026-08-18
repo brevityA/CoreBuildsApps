@@ -130,6 +130,35 @@ jobs:
           path: app/build/outputs/apk/release/*.apk
           if-no-files-found: error
 
+      - name: Sync the update manifest to the published tag
+        # Latestrelease/version.json is what the in-app updater polls. If it
+        # is not bumped on release, every user is told they are current when
+        # they are not. Commit it back to main as part of publishing rather
+        # than relying on remembering.
+        if: startsWith(github.ref, 'refs/tags/v')
+        run: |
+          TAG="${GITHUB_REF_NAME#v}"
+          python - "$TAG" <<'PY'
+          import json, re, sys
+          tag = sys.argv[1]
+          gradle = open('app/build.gradle.kts').read()
+          code = int(re.search(r'versionCode\s*=\s*(\d+)', gradle).group(1))
+          p = 'Latestrelease/version.json'
+          d = json.load(open(p))
+          d['versionCode'] = code
+          d['versionName'] = tag
+          json.dump(d, open(p, 'w'), indent=2)
+          open(p, 'a').write('\n')
+          print(f'version.json -> {tag} / {code}')
+          PY
+          if ! git diff --quiet -- Latestrelease/version.json; then
+            git config user.name "github-actions[bot]"
+            git config user.email "github-actions[bot]@users.noreply.github.com"
+            git add Latestrelease/version.json
+            git commit -m "chore: sync update manifest to ${GITHUB_REF_NAME}"
+            git push origin HEAD:main
+          fi
+
       - name: Publish release
         if: startsWith(github.ref, 'refs/tags/v')
         uses: softprops/action-gh-release@v3
