@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="720" viewBox="0 0 1280 720">
+  <g transform="translate(40.5,0.0)">
+  <defs><linearGradient id="cbRail" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#00d4ff"/><stop offset="100%" stop-color="#a78bfa"/></linearGradient></defs><rect x="70" y="168" width="16" height="384" rx="8.0" fill="url(#cbRail)"/>
+  <g transform="translate(159,180) scale(0.70312)"><path d="M 176 116 L 176 396" fill="none" stroke="#90BE6D" stroke-width="32.0" stroke-linecap="round" stroke-linejoin="round"/><path d="M 176 116 L 286 116 C 342 116 342 246 286 246 L 176 246" fill="none" stroke="#90BE6D" stroke-width="32.0" stroke-linecap="round" stroke-linejoin="round"/><path d="M 176 246 L 296 246 C 354 246 354 396 296 396 L 176 396" fill="none" stroke="#90BE6D" stroke-width="32.0" stroke-linecap="round" stroke-linejoin="round"/></g>
+  <text x="565" y="324" fill="#00d4ff" font-family="ui-monospace,'DejaVu Sans Mono',monospace" font-size="46" font-weight="700" letter-spacing="7.0">APP</text>
+  <text x="565" y="408" fill="#E6EDF3" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'DejaVu Sans',sans-serif" font-weight="700" font-size="80" letter-spacing="-1.5">Babyeinstein</text>
+  </g>
+</svg>

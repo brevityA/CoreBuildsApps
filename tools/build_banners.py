@@ -108,7 +108,15 @@ def split_name(name):
     which reads as inconsistent in a row. Two lines keeps every wordmark in
     the same optical range.
     """
-    if len(name) <= 11 or " " not in name:
+    if len(name) <= 11:
+        return [name]
+    if " " not in name:
+        # No space to break on (e.g. "Xtreamplayeranddownloader"). Long
+        # single tokens blew past the 90% safe-area limit because fit_type
+        # can only shrink to MIN_TYPE. Split near the middle instead.
+        if len(name) > 16:
+            k = len(name) // 2
+            return [name[:k], name[k:]]
         return [name]
     words = name.split()
     best, gap = None, 10 ** 9

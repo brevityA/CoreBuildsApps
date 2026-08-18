@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="720" viewBox="0 0 1280 720">
+  <g transform="translate(80.0,0.0)">
+  <defs><linearGradient id="cbRail" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#00d4ff"/><stop offset="100%" stop-color="#a78bfa"/></linearGradient></defs><rect x="70" y="168" width="16" height="384" rx="8.0" fill="url(#cbRail)"/>
+  <g transform="translate(250,180) scale(0.70312)"><path d="M 360 176 C 322 130 250 116 202 152 C 148 192 140 320 202 360 C 250 392 322 382 360 336" fill="none" stroke="#9B5DE5" stroke-width="32.0" stroke-linecap="round" stroke-linejoin="round"/></g>
+  <text x="656" y="299" fill="#00d4ff" font-family="ui-monospace,'DejaVu Sans Mono',monospace" font-size="46" font-weight="700" letter-spacing="7.0">APP</text>
+  <text x="656" y="424" fill="#E6EDF3" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'DejaVu Sans',sans-serif" font-weight="700" font-size="124" letter-spacing="-1.5">Ctvgo</text>
+  </g>
+</svg>

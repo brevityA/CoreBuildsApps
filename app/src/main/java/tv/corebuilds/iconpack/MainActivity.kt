@@ -1,5 +1,7 @@
 package tv.corebuilds.iconpack
 
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.widget.TextView
 import android.widget.Toast
@@ -16,6 +18,7 @@ import androidx.recyclerview.widget.RecyclerView
 class MainActivity : AppCompatActivity() {
 
     private var target: ApplyIconPack.Launcher? = null
+    private var updateChecked = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -39,6 +42,51 @@ class MainActivity : AppCompatActivity() {
         super.onResume()
         // The user may have installed a launcher while we were backgrounded.
         bindApplyButton()
+        if (!updateChecked) {
+            updateChecked = true
+            checkForUpdate()
+        }
+    }
+
+    /**
+     * Ask the repo whether a newer build exists.
+     *
+     * Reports and stops there — no silent download, no self-install. Doing
+     * that needs REQUEST_INSTALL_PACKAGES, a sensitive permission, which is
+     * a poor trade for a pack the user sideloaded deliberately.
+     */
+    private fun checkForUpdate() {
+        UpdateChecker.check(this) { result ->
+            when (result) {
+                is UpdateChecker.Result.Available -> {
+                    toast(getString(R.string.update_available_fmt,
+                        result.versionName, result.iconCount))
+                    findViewById<TextView>(R.id.count).apply {
+                        text = getString(R.string.update_available_fmt,
+                            result.versionName, result.iconCount)
+                        setOnClickListener { openReleases(result.apkUrl) }
+                    }
+                }
+                is UpdateChecker.Result.UpToDate -> {
+                    // Say nothing on success; a toast on every launch is noise.
+                }
+                is UpdateChecker.Result.Failed -> {
+                    // Name the failure rather than swallowing it, but keep it
+                    // to the log — a failed check is not the user's problem.
+                    android.util.Log.w("CoreBuilds",
+                        getString(R.string.update_failed_fmt, result.reason))
+                }
+            }
+        }
+    }
+
+    private fun openReleases(url: String) {
+        try {
+            startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(url))
+                .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK))
+        } catch (e: Exception) {
+            toast(getString(R.string.update_failed_fmt, "no browser installed"))
+        }
     }
 
     /**

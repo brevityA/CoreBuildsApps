@@ -3,7 +3,7 @@
     <string name="app_name">Core Builds Icon Pack</string>
     <string name="kicker">CORE BUILDS · ICON PACK</string>
     <string name="tagline">Transparent app icons for Projectivy on Android TV.</string>
-    <string name="icon_count_fmt">%1$d icons installed · pack v1.3.0</string>
+    <string name="icon_count_fmt">%1$d icons installed · pack v1.4.0</string>
     <string name="cta_open_projectivy">Open Projectivy settings</string>
     <string name="cta_sub">Opens Projectivy. Set it under Appearance → Cards → Icon Pack. Nothing is changed for you.</string>
     <string name="projectivy_opened">Projectivy opened. Go to Appearance → Cards → Icon Pack → Core Builds.</string>
@@ -15,4 +15,8 @@
     <string name="apply_handed_off_fmt">Sent to %1$s. If the icons don\'t change, restart the launcher.</string>
     <string name="apply_not_installed_fmt">%1$s is not installed.</string>
     <string name="apply_manual_fmt">%1$s didn\'t accept direct apply. Set it here: %2$s</string>
+    <string name="update_available_fmt">Update available — v%1$s with %2$d icons. Open Releases to download.</string>
+    <string name="update_current_fmt">Up to date — v%1$s.</string>
+    <string name="update_failed_fmt">Update check failed: %1$s</string>
+    <string name="update_checking">Checking for updates…</string>
 </resources>
