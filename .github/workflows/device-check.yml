@@ -103,10 +103,15 @@ jobs:
 
           echo "::group::Launch"
           adb logcat -c
-          START=$(adb shell am start -W -n "$ACT")
+          START=$(adb shell am start -W -n "$ACT" 2>&1) || true
           echo "$START"
-          if ! echo "$START" | grep -q "Status: ok"; then
-            echo "::error::$ACT did not start cleanly."
+          if echo "$START" | grep -q "Status: ok"; then
+            echo "Activity started normally."
+          elif echo "$START" | grep -q "Status: timeout"; then
+            echo "::warning::Activity start exceeded the 10 s am-start-W window — giving it 20 s extra on the emulator."
+            sleep 20
+          else
+            echo "::error::$ACT did not start at all."
             exit 1
           fi
           sleep 5

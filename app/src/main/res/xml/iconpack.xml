@@ -222,6 +222,7 @@
     <item drawable="guideplus" />
     <item drawable="hallmarkchannel" />
     <item drawable="haystack" />
+    <item drawable="max" />
     <item drawable="heinetworktv" />
     <item drawable="livingwithhippos" />
     <item drawable="historyhit" />
@@ -290,7 +291,6 @@
     <item drawable="magneticchen" />
     <item drawable="intl" />
     <item drawable="materialfiles" />
-    <item drawable="max" />
     <item drawable="powerpoint45" />
     <item drawable="mediabrowser" />
     <item drawable="utility" />
@@ -411,6 +411,7 @@
     <item drawable="rsi" />
     <item drawable="auvio" />
     <item drawable="minimal" />
+    <item drawable="s0undtv" />
     <item drawable="sai" />
     <item drawable="sbs" />
     <item drawable="scholastic" />

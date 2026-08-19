@@ -8,6 +8,8 @@
     <string name="search_hint">Find an app by name</string>
     <string name="chip_all">All</string>
     <string name="icon_selected_fmt">%1$s · %2$s. Assign it from the launcher icon picker if it did not auto-apply.</string>
+    <string name="picker_hint">Tap an icon to assign it to the app.</string>
+    <string name="picker_failed_fmt">Could not deliver %1$s to the launcher.</string>
     <string name="cta_open_projectivy">Open Projectivy settings</string>
     <string name="cta_sub">Opens Projectivy. Set it under Appearance → Cards → Icon Pack. Nothing is changed for you.</string>
     <string name="projectivy_opened">Projectivy opened. Go to Appearance → Cards → Icon Pack → Core Builds.</string>

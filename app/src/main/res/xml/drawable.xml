@@ -19,6 +19,7 @@
     <item drawable="dodostream_banner" />
     <item drawable="ertflix_banner" />
     <item drawable="filmrise_banner" />
+    <item drawable="max_banner" />
     <item drawable="justwatch_banner" />
     <item drawable="live_streaming_tv_banner" />
     <item drawable="lumera_banner" />
@@ -71,7 +72,6 @@
     <item drawable="dramafever_banner" />
     <item drawable="kayo_banner" />
     <item drawable="livingroomplus_banner" />
-    <item drawable="max_banner" />
     <item drawable="mubi_banner" />
     <item drawable="netflix_banner" />
     <item drawable="nordiskfilmplus_banner" />
@@ -111,6 +111,7 @@
     <item drawable="vlc_banner" />
     <category title="Banners · Video" />
     <item drawable="dailymotion_banner" />
+    <item drawable="s0undtv_banner" />
     <item drawable="smarttube_banner" />
     <item drawable="smarttubenext_banner" />
     <item drawable="tizentube_banner" />
@@ -555,6 +556,7 @@
     <item drawable="dodostream" />
     <item drawable="ertflix" />
     <item drawable="filmrise" />
+    <item drawable="max" />
     <item drawable="justwatch" />
     <item drawable="live_streaming_tv" />
     <item drawable="lumera" />
@@ -607,7 +609,6 @@
     <item drawable="dramafever" />
     <item drawable="kayo" />
     <item drawable="livingroomplus" />
-    <item drawable="max" />
     <item drawable="mubi" />
     <item drawable="netflix" />
     <item drawable="nordiskfilmplus" />
@@ -647,6 +648,7 @@
     <item drawable="vlc" />
     <category title="Square · Video" />
     <item drawable="dailymotion" />
+    <item drawable="s0undtv" />
     <item drawable="smarttube" />
     <item drawable="smarttubenext" />
     <item drawable="tizentube" />

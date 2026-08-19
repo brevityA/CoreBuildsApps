@@ -1,6 +1,6 @@
 # Supported applications
 
-`515` icons · `622` mapped components · pack v1.5.0
+`516` icons · `626` mapped components · pack v1.5.0
 
 Every app below auto-assigns in Projectivy. If one doesn't, the app ships a different launcher activity on your device — open an issue with the component name and it gets added.
 
@@ -228,6 +228,7 @@ Every app below auto-assigns in Projectivy. If one doesn't, the app ships a diff
 | Guide Plus | `guideplus` | `#FF6B35` | `com.guideplus.co/com.guideplus.co.SplashActivity` |
 | Hallmark Channel | `hallmarkchannel` | `#2EC4B6` | `com.hallmarkchannel.awe/tv.accedo.one.app.bootstrap.BootstrapActivity` |
 | Haystack | `haystack` | `#F3722C` | `com.haystack.android/com.haystack.android.tv.ui.activities.LoadingActivity` |
+| HBO Max | `max` | `#0046FF` | `com.wbd.stream/.MainActivity`<br>`com.hbo.hbonow/.MainActivity`<br>`com.wbd.hbomax/.MainActivity`<br>`com.wbd.hbomax/com.wbd.hbomax.MainActivity` |
 | HEI Network | `heinetworktv` | `#F15BB5` | `com.heinetwork.HEINetworkTV/com.heinetwork.HEINetworkTV.MainActivity` |
 | Hippos | `livingwithhippos` | `#E71D36` | `com.github.livingwithhippos.unchained/com.github.livingwithhippos.unchained.base.MainActivity` |
 | Historyhit | `historyhit` | `#00BBF9` | `com.historyhit/tv.vhx.tv.home.TvHomeActivity` |
@@ -296,7 +297,6 @@ Every app below auto-assigns in Projectivy. If one doesn't, the app ships a diff
 | Magnetic | `magneticchen` | `#6A4C93` | `com.magneticchen.daijishou/com.magneticchen.daijishou.activities.BootstrapActivity` |
 | Mango TV | `intl` | `#90BE6D` | `com.mgtv.tv.intl/com.mgtv.tv.launcher.LauncherActivity` |
 | Material Files | `materialfiles` | `#00E5FF` | `me.zhanghai.android.files/me.zhanghai.android.files.filelist.FileListActivity`<br>`me.zhanghai.android.files/.filelist.FileListActivity` |
-| Max | `max` | `#0046FF` | `com.wbd.stream/.MainActivity`<br>`com.hbo.hbonow/.MainActivity` |
 | Maze | `powerpoint45` | `#2EC4B6` | `com.powerpoint45.maze/com.powerpoint45.maze.MainMenuActivity` |
 | Media Browser | `mediabrowser` | `#00BBF9` | `com.cmpsoft.MediaBrowser/com.cmpsoft.MediaBrowser.SplashScreenActivity` |
 | Media Hub | `utility` | `#6A4C93` | `com.oumi.utility.media.hub/com.mac.utility.media.hub.ui_tv.main.TVMainActivity` |
@@ -417,6 +417,7 @@ Every app below auto-assigns in Projectivy. If one doesn't, the app ships a diff
 | Rsi | `rsi` | `#00F5D4` | `ch.rsi.player/ch.srg.srgplayer.tv.MainActivity` |
 | RTBF Auvio | `auvio` | `#00BBF9` | `be.rtbf.auvio/com.dotscreen.ethanol.tv.ui.MainActivity` |
 | RTE Player | `minimal` | `#6A4C93` | `air.RTE.OSMF.Minimal/com.finconsgroup.droid.activities.MainActivity`<br>`air.RTE.OSMF.Minimal/com.finconsgroup.droid.activities.TvActivity` |
+| S0undTV | `s0undtv` | `#A78BFA` | `com.s0und.s0undtv/.MainActivity`<br>`com.s0und.s0undtv/com.s0und.s0undtv.MainActivity` |
 | SAI | `sai` | `#3DDC84` | `com.apkpreem.sai/.ui.activities.MainActivity` |
 | SBS | `sbs` | `#F0A500` | `au.com.sbs.ondemand.tv/.MainActivity`<br>`au.com.sbs.ondemand/.MainActivity` |
 | Scholastic | `scholastic` | `#E71D36` | `com.future.scholastic/com.future.scholastic.SplashActivity` |

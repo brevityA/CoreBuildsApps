@@ -624,6 +624,13 @@
     <!-- Haystack -->
     <item component="ComponentInfo{com.haystack.android/com.haystack.android.tv.ui.activities.LoadingActivity}" drawable="haystack_banner"/>
     <item component="ComponentInfo{com.haystack.android/.tv.ui.activities.LoadingActivity}" drawable="haystack_banner"/>
+    <!-- HBO Max -->
+    <item component="ComponentInfo{com.wbd.stream/com.wbd.stream.MainActivity}" drawable="max_banner"/>
+    <item component="ComponentInfo{com.wbd.stream/.MainActivity}" drawable="max_banner"/>
+    <item component="ComponentInfo{com.hbo.hbonow/com.hbo.hbonow.MainActivity}" drawable="max_banner"/>
+    <item component="ComponentInfo{com.hbo.hbonow/.MainActivity}" drawable="max_banner"/>
+    <item component="ComponentInfo{com.wbd.hbomax/com.wbd.hbomax.MainActivity}" drawable="max_banner"/>
+    <item component="ComponentInfo{com.wbd.hbomax/.MainActivity}" drawable="max_banner"/>
     <!-- HEI Network -->
     <item component="ComponentInfo{com.heinetwork.HEINetworkTV/com.heinetwork.HEINetworkTV.MainActivity}" drawable="heinetworktv_banner"/>
     <item component="ComponentInfo{com.heinetwork.HEINetworkTV/.MainActivity}" drawable="heinetworktv_banner"/>
@@ -826,11 +833,6 @@
     <!-- Material Files -->
     <item component="ComponentInfo{me.zhanghai.android.files/me.zhanghai.android.files.filelist.FileListActivity}" drawable="materialfiles_banner"/>
     <item component="ComponentInfo{me.zhanghai.android.files/.filelist.FileListActivity}" drawable="materialfiles_banner"/>
-    <!-- Max -->
-    <item component="ComponentInfo{com.wbd.stream/com.wbd.stream.MainActivity}" drawable="max_banner"/>
-    <item component="ComponentInfo{com.wbd.stream/.MainActivity}" drawable="max_banner"/>
-    <item component="ComponentInfo{com.hbo.hbonow/com.hbo.hbonow.MainActivity}" drawable="max_banner"/>
-    <item component="ComponentInfo{com.hbo.hbonow/.MainActivity}" drawable="max_banner"/>
     <!-- Maze -->
     <item component="ComponentInfo{com.powerpoint45.maze/com.powerpoint45.maze.MainMenuActivity}" drawable="powerpoint45_banner"/>
     <item component="ComponentInfo{com.powerpoint45.maze/.MainMenuActivity}" drawable="powerpoint45_banner"/>
@@ -1165,6 +1167,9 @@
     <!-- RTE Player -->
     <item component="ComponentInfo{air.RTE.OSMF.Minimal/com.finconsgroup.droid.activities.MainActivity}" drawable="minimal_banner"/>
     <item component="ComponentInfo{air.RTE.OSMF.Minimal/com.finconsgroup.droid.activities.TvActivity}" drawable="minimal_banner"/>
+    <!-- S0undTV -->
+    <item component="ComponentInfo{com.s0und.s0undtv/com.s0und.s0undtv.MainActivity}" drawable="s0undtv_banner"/>
+    <item component="ComponentInfo{com.s0und.s0undtv/.MainActivity}" drawable="s0undtv_banner"/>
     <!-- SAI -->
     <item component="ComponentInfo{com.apkpreem.sai/com.apkpreem.sai.ui.activities.MainActivity}" drawable="sai_banner"/>
     <item component="ComponentInfo{com.apkpreem.sai/.ui.activities.MainActivity}" drawable="sai_banner"/>

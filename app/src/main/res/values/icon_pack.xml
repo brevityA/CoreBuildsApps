@@ -224,6 +224,7 @@
         <item>guideplus</item>
         <item>hallmarkchannel</item>
         <item>haystack</item>
+        <item>max</item>
         <item>heinetworktv</item>
         <item>livingwithhippos</item>
         <item>historyhit</item>
@@ -292,7 +293,6 @@
         <item>magneticchen</item>
         <item>intl</item>
         <item>materialfiles</item>
-        <item>max</item>
         <item>powerpoint45</item>
         <item>mediabrowser</item>
         <item>utility</item>
@@ -413,6 +413,7 @@
         <item>rsi</item>
         <item>auvio</item>
         <item>minimal</item>
+        <item>s0undtv</item>
         <item>sai</item>
         <item>sbs</item>
         <item>scholastic</item>
@@ -741,6 +742,7 @@
         <item>Guide Plus</item>
         <item>Hallmark Channel</item>
         <item>Haystack</item>
+        <item>HBO Max</item>
         <item>HEI Network</item>
         <item>Hippos</item>
         <item>Historyhit</item>
@@ -809,7 +811,6 @@
         <item>Magnetic</item>
         <item>Mango TV</item>
         <item>Material Files</item>
-        <item>Max</item>
         <item>Maze</item>
         <item>Media Browser</item>
         <item>Media Hub</item>
@@ -930,6 +931,7 @@
         <item>Rsi</item>
         <item>RTBF Auvio</item>
         <item>RTE Player</item>
+        <item>S0undTV</item>
         <item>SAI</item>
         <item>SBS</item>
         <item>Scholastic</item>
@@ -1258,6 +1260,7 @@
         <item>APP</item>
         <item>APP</item>
         <item>APP</item>
+        <item>STREAM</item>
         <item>APP</item>
         <item>APP</item>
         <item>APP</item>
@@ -1326,7 +1329,6 @@
         <item>APP</item>
         <item>APP</item>
         <item>FILES</item>
-        <item>VOD</item>
         <item>APP</item>
         <item>BROWSER</item>
         <item>APP</item>
@@ -1447,6 +1449,7 @@
         <item>APP</item>
         <item>APP</item>
         <item>APP</item>
+        <item>VIDEO</item>
         <item>TOOL</item>
         <item>VOD</item>
         <item>APP</item>
@@ -1552,5 +1555,5 @@
         <item>LIVE</item>
         <item>APP</item>
     </string-array>
-    <integer name="icon_count">515</integer>
+    <integer name="icon_count">516</integer>
 </resources>
