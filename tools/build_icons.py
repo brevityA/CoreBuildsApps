@@ -40,6 +40,11 @@ def esc(s):
              .replace('"', "&quot;"))
 
 
+def esc_android(s):
+    """esc() plus Android-specific apostrophe escaping for values XML."""
+    return esc(s).replace("'", "\\'")
+
+
 def validate(icons):
     """Fail loudly and by name. No unnamed errors (Brand Guide §08)."""
     errors, seen_d, seen_c = [], {}, {}
@@ -214,11 +219,11 @@ def main():
     v.append('    </string-array>')
     v.append('    <string-array name="icon_names">')
     for i in icons:
-        v.append(f'        <item>{esc(i["name"])}</item>')
+        v.append(f'        <item>{esc_android(i["name"])}</item>')
     v.append('    </string-array>')
     v.append('    <string-array name="icon_categories">')
     for i in icons:
-        v.append(f'        <item>{esc(i.get("category") or "APP")}</item>')
+        v.append(f'        <item>{esc_android(i.get("category") or "APP")}</item>')
     v.append('    </string-array>')
     v.append(f'    <integer name="icon_count">{len(icons)}</integer>')
     v.append('</resources>')
