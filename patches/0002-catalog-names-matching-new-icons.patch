@@ -1,0 +1,2279 @@
+diff --git a/tools/catalog.json b/tools/catalog.json
+index e37fe0f..9e8bf92 100644
+--- a/tools/catalog.json
++++ b/tools/catalog.json
+@@ -2,7 +2,7 @@
+   "$schema": "./catalog.schema.json",
+   "meta": {
+     "pack": "Core Builds Icon Pack",
+-    "version": "1.4.0",
++    "version": "1.5.0",
+     "grid": 512,
+     "safe_area": 432,
+     "note": "Brand-colored glyph on transparent, per Core Builds Brand Guide v1.0 §07. Glyphs are original geometry in Core Builds language (rounded ends, flat fills, no gradients from source logos)."
+@@ -115,7 +115,7 @@
+       "category": "DEBRID"
+     },
+     {
+-      "name": "Real-Debrid",
++      "name": "Realdebrid",
+       "drawable": "realdebrid",
+       "color": "#7BC144",
+       "glyph": "debrid_bolt",
+@@ -126,7 +126,7 @@
+       "category": "DEBRID"
+     },
+     {
+-      "name": "AllDebrid",
++      "name": "Alldebrid",
+       "drawable": "alldebrid",
+       "color": "#FF7A00",
+       "glyph": "alldebrid_infinity",
+@@ -346,7 +346,7 @@
+       "category": "VOD"
+     },
+     {
+-      "name": "Ninenow",
++      "name": "9Now",
+       "drawable": "ninenow",
+       "color": "#00A0DC",
+       "glyph": "monogram_9",
+@@ -357,7 +357,7 @@
+       "category": "VOD"
+     },
+     {
+-      "name": "Sevenplus",
++      "name": "7plus",
+       "drawable": "sevenplus",
+       "color": "#0072CE",
+       "glyph": "monogram_7",
+@@ -367,7 +367,7 @@
+       "category": "VOD"
+     },
+     {
+-      "name": "Tenplay",
++      "name": "10 Play",
+       "drawable": "tenplay",
+       "color": "#E9142B",
+       "glyph": "monogram_10",
+@@ -429,12 +429,15 @@
+       "color": "#4285F4",
+       "glyph": "folder",
+       "components": [
+-        "com.alphainventor.filemanager/.activity.MainActivity",
+         "com.google.android.documentsui/.files.FilesActivity",
+-        "nextapp.fx/.FX",
+-        "com.mixplorer/.activities.BrowseActivity"
++        "com.google.android.documentsui/com.android.documentsui.files.FilesActivity",
++        "com.google.android.apps.nbu.files/.home.HomeActivity"
+       ],
+-      "category": "SYSTEM"
++      "category": "SYSTEM",
++      "unverified": [
++        "com.google.android.documentsui/com.android.documentsui.files.FilesActivity",
++        "com.google.android.apps.nbu.files/.home.HomeActivity"
++      ]
+     },
+     {
+       "name": "SmartTube Next",
+@@ -652,7 +655,7 @@
+       "category": "PLAYER"
+     },
+     {
+-      "name": "TizenTube",
++      "name": "Tizentube",
+       "drawable": "tizentube",
+       "color": "#FF4B4B",
+       "glyph": "tizen_play",
+@@ -792,7 +795,7 @@
+       "category": "DEBRID"
+     },
+     {
+-      "name": "DodoStream",
++      "name": "Dodo Stream",
+       "drawable": "dodostream",
+       "color": "#FBBF24",
+       "glyph": "play_round",
+@@ -802,7 +805,7 @@
+       "category": "STREAM"
+     },
+     {
+-      "name": "LeanbackOnFire",
++      "name": "Leanback on Fire",
+       "drawable": "leanbackonfire",
+       "color": "#FF9800",
+       "glyph": "launcher_grid",
+@@ -812,7 +815,7 @@
+       "category": "LAUNCHER"
+     },
+     {
+-      "name": "LTvLauncher",
++      "name": "L TV Launcher",
+       "drawable": "ltvlauncher",
+       "color": "#42A5F5",
+       "glyph": "launcher_grid",
+@@ -863,7 +866,7 @@
+       "category": "STREAM"
+     },
+     {
+-      "name": "StreamVault",
++      "name": "Stream Vault",
+       "drawable": "streamvault",
+       "color": "#9B59B6",
+       "glyph": "vault_lock",
+@@ -873,7 +876,7 @@
+       "category": "LIVE"
+     },
+     {
+-      "name": "Enhanced",
++      "name": "Jellyfin Enhanced",
+       "drawable": "enhanced",
+       "color": "#9B5DE5",
+       "glyph": "monogram_E",
+@@ -883,7 +886,7 @@
+       "category": "APP"
+     },
+     {
+-      "name": "Itvmobileplayer",
++      "name": "ITV Hub",
+       "drawable": "itvmobileplayer",
+       "color": "#FF477E",
+       "glyph": "monogram_I",
+@@ -893,7 +896,7 @@
+       "category": "APP"
+     },
+     {
+-      "name": "Minimal",
++      "name": "RTE Player",
+       "drawable": "minimal",
+       "color": "#6A4C93",
+       "glyph": "monogram_M",
+@@ -904,7 +907,7 @@
+       "category": "APP"
+     },
+     {
+-      "name": "Downloadertablet",
++      "name": "Vudu",
+       "drawable": "downloadertablet",
+       "color": "#FF477E",
+       "glyph": "monogram_D",
+@@ -914,7 +917,7 @@
+       "category": "STORE"
+     },
+     {
+-      "name": "Smarttvapp",
++      "name": "Ucom TV",
+       "drawable": "smarttvapp",
+       "color": "#FF6B35",
+       "glyph": "monogram_S",
+@@ -924,7 +927,7 @@
+       "category": "APP"
+     },
+     {
+-      "name": "Kernelmedia",
++      "name": "Kernel Media",
+       "drawable": "kernelmedia",
+       "color": "#577590",
+       "glyph": "monogram_K",
+@@ -954,7 +957,7 @@
+       "category": "APP"
+     },
+     {
+-      "name": "Hueshortcuts",
++      "name": "Hue Shortcuts",
+       "drawable": "hueshortcuts",
+       "color": "#00F5D4",
+       "glyph": "monogram_H",
+@@ -964,7 +967,7 @@
+       "category": "APP"
+     },
+     {
+-      "name": "Netmirrortv",
++      "name": "NetMirror TV",
+       "drawable": "netmirrortv",
+       "color": "#1982C4",
+       "glyph": "monogram_N",
+@@ -974,7 +977,7 @@
+       "category": "APP"
+     },
+     {
+-      "name": "Netmirror",
++      "name": "NetMirror",
+       "drawable": "netmirror",
+       "color": "#8AC926",
+       "glyph": "monogram_N",
+@@ -984,7 +987,7 @@
+       "category": "APP"
+     },
+     {
+-      "name": "Rbmain",
++      "name": "RB Main",
+       "drawable": "rbmain",
+       "color": "#4CC9F0",
+       "glyph": "monogram_R",
+@@ -994,7 +997,7 @@
+       "category": "APP"
+     },
+     {
+-      "name": "Catchontv",
++      "name": "Catch-On TV",
+       "drawable": "catchontv",
+       "color": "#FEE440",
+       "glyph": "monogram_C",
+@@ -1004,7 +1007,7 @@
+       "category": "LAUNCHER"
+     },
+     {
+-      "name": "Siptv",
++      "name": "SIPTV",
+       "drawable": "siptv",
+       "color": "#1982C4",
+       "glyph": "monogram_S",
+@@ -1035,7 +1038,7 @@
+       "category": "APP"
+     },
+     {
+-      "name": "Weyd 2",
++      "name": "Weyd Player",
+       "drawable": "weyd_2",
+       "color": "#FEE440",
+       "glyph": "monogram_W",
+@@ -1045,7 +1048,7 @@
+       "category": "APP"
+     },
+     {
+-      "name": "Zeniptv",
++      "name": "Zen IPTV",
+       "drawable": "zeniptv",
+       "color": "#1982C4",
+       "glyph": "monogram_Z",
+@@ -1055,7 +1058,7 @@
+       "category": "LIVE"
+     },
+     {
+-      "name": "Onepixmedia",
++      "name": "OnePix",
+       "drawable": "onepixmedia",
+       "color": "#90BE6D",
+       "glyph": "monogram_O",
+@@ -1076,7 +1079,7 @@
+       "category": "LIVE"
+     },
+     {
+-      "name": "Android TV",
++      "name": "SimpliTV",
+       "drawable": "androidtv",
+       "color": "#8AC926",
+       "glyph": "monogram_A",
+@@ -1086,7 +1089,7 @@
+       "category": "APP"
+     },
+     {
+-      "name": "Uae4arm",
++      "name": "UAE4ARM",
+       "drawable": "uae4arm",
+       "color": "#FEE440",
+       "glyph": "monogram_U",
+@@ -1106,7 +1109,7 @@
+       "category": "APP"
+     },
+     {
+-      "name": "Ninenow 2",
++      "name": "9Now CTV",
+       "drawable": "ninenow_2",
+       "color": "#F94144",
+       "glyph": "monogram_N",
+@@ -1116,7 +1119,7 @@
+       "category": "APP"
+     },
+     {
+-      "name": "Iplayer",
++      "name": "BBC iPlayer",
+       "drawable": "iplayer",
+       "color": "#F3722C",
+       "glyph": "monogram_I",
+@@ -1126,7 +1129,7 @@
+       "category": "APP"
+     },
+     {
+-      "name": "DPG Media",
++      "name": "Streamz",
+       "drawable": "dpgmedia",
+       "color": "#FEE440",
+       "glyph": "monogram_D",
+@@ -1136,7 +1139,7 @@
+       "category": "STREAM"
+     },
+     {
+-      "name": "Auvio",
++      "name": "RTBF Auvio",
+       "drawable": "auvio",
+       "color": "#00BBF9",
+       "glyph": "monogram_A",
+@@ -1156,7 +1159,7 @@
+       "category": "APP"
+     },
+     {
+-      "name": "Zenderapp",
++      "name": "VTM GO",
+       "drawable": "zenderapp",
+       "color": "#9B5DE5",
+       "glyph": "monogram_Z",
+@@ -1166,7 +1169,7 @@
+       "category": "APP"
+     },
+     {
+-      "name": "Vrtnu",
++      "name": "VRT MAX",
+       "drawable": "vrtnu",
+       "color": "#577590",
+       "glyph": "monogram_V",
+@@ -1176,7 +1179,7 @@
+       "category": "APP"
+     },
+     {
+-      "name": "Selfcare",
++      "name": "Yettel TV",
+       "drawable": "selfcare",
+       "color": "#00F5D4",
+       "glyph": "monogram_S",
+@@ -1186,7 +1189,7 @@
+       "category": "APP"
+     },
+     {
+-      "name": "Torrentsearchengine",
++      "name": "Torrent Search",
+       "drawable": "torrentsearchengine",
+       "color": "#4CC9F0",
+       "glyph": "monogram_T",
+@@ -1196,7 +1199,7 @@
+       "category": "APP"
+     },
+     {
+-      "name": "Apksrebrand",
++      "name": "PlayLatin",
+       "drawable": "apksrebrand",
+       "color": "#F15BB5",
+       "glyph": "monogram_A",
+@@ -1216,7 +1219,7 @@
+       "category": "APP"
+     },
+     {
+-      "name": "Skymais",
++      "name": "Sky+",
+       "drawable": "skymais",
+       "color": "#F94144",
+       "glyph": "monogram_S",
+@@ -1226,7 +1229,7 @@
+       "category": "APP"
+     },
+     {
+-      "name": "Premierefc",
++      "name": "Premiere FC",
+       "drawable": "premierefc",
+       "color": "#9B5DE5",
+       "glyph": "monogram_P",
+@@ -1348,7 +1351,7 @@
+       "category": "APP"
+     },
+     {
+-      "name": "Srfplayer",
++      "name": "Srf Player",
+       "drawable": "srfplayer",
+       "color": "#F94144",
+       "glyph": "monogram_S",
+@@ -1389,7 +1392,7 @@
+       "category": "APP"
+     },
+     {
+-      "name": "Sportseverywhere",
++      "name": "Sports Everywhere",
+       "drawable": "sportseverywhere",
+       "color": "#6A4C93",
+       "glyph": "monogram_S",
+@@ -1399,7 +1402,7 @@
+       "category": "SPORT"
+     },
+     {
+-      "name": "Airattack2tv",
++      "name": "Air Attack 2",
+       "drawable": "airattack2tv",
+       "color": "#FEE440",
+       "glyph": "monogram_A",
+@@ -1419,7 +1422,7 @@
+       "category": "SPORT"
+     },
+     {
+-      "name": "Magellantv",
++      "name": "Magellan TV",
+       "drawable": "magellantv",
+       "color": "#00F5D4",
+       "glyph": "monogram_M",
+@@ -1429,7 +1432,7 @@
+       "category": "APP"
+     },
+     {
+-      "name": "Hyperiongrabber",
++      "name": "Hyperion Grabber",
+       "drawable": "hyperiongrabber",
+       "color": "#1982C4",
+       "glyph": "monogram_H",
+@@ -1470,7 +1473,7 @@
+       "category": "APP"
+     },
+     {
+-      "name": "Acontraplus",
++      "name": "Acontra Plus",
+       "drawable": "acontraplus",
+       "color": "#F94144",
+       "glyph": "monogram_A",
+@@ -1571,7 +1574,7 @@
+       "category": "SPORT"
+     },
+     {
+-      "name": "Allsaversocial",
++      "name": "AllSaves Social",
+       "drawable": "allsaversocial",
+       "color": "#F15BB5",
+       "glyph": "monogram_A",
+@@ -1631,7 +1634,7 @@
+       "category": "APP"
+     },
+     {
+-      "name": "Amcnetworks",
++      "name": "AMC",
+       "drawable": "amcnetworks",
+       "color": "#00BBF9",
+       "glyph": "monogram_A",
+@@ -1641,7 +1644,7 @@
+       "category": "APP"
+     },
+     {
+-      "name": "Amcandroidtv",
++      "name": "AMC+",
+       "drawable": "amcandroidtv",
+       "color": "#FF6B35",
+       "glyph": "monogram_A",
+@@ -1651,7 +1654,7 @@
+       "category": "APP"
+     },
+     {
+-      "name": "Americasvoicenews",
++      "name": "Real America's Voice",
+       "drawable": "americasvoicenews",
+       "color": "#4CC9F0",
+       "glyph": "monogram_A",
+@@ -1691,7 +1694,7 @@
+       "category": "APP"
+     },
+     {
+-      "name": "Gallery3d",
++      "name": "Gallery 3D",
+       "drawable": "gallery3d",
+       "color": "#6A4C93",
+       "glyph": "monogram_G",
+@@ -1711,7 +1714,7 @@
+       "category": "APP"
+     },
+     {
+-      "name": "Androidfung",
++      "name": "Android Fung",
+       "drawable": "androidfung",
+       "color": "#F7B32B",
+       "glyph": "monogram_A",
+@@ -1742,7 +1745,7 @@
+       "category": "APP"
+     },
+     {
+-      "name": "Atresplayer",
++      "name": "ATRESplayer",
+       "drawable": "atresplayer",
+       "color": "#43AA8B",
+       "glyph": "monogram_A",
+@@ -1752,7 +1755,7 @@
+       "category": "APP"
+     },
+     {
+-      "name": "Anydeskandroid",
++      "name": "AnyDesk",
+       "drawable": "anydeskandroid",
+       "color": "#43AA8B",
+       "glyph": "monogram_A",
+@@ -1762,7 +1765,7 @@
+       "category": "APP"
+     },
+     {
+-      "name": "Aparatsport",
++      "name": "Aparat Sport",
+       "drawable": "aparatsport",
+       "color": "#B5179E",
+       "glyph": "monogram_A",
+@@ -1802,7 +1805,7 @@
+       "category": "APP"
+     },
+     {
+-      "name": "Aplicativox",
++      "name": "Aplicativo X",
+       "drawable": "aplicativox",
+       "color": "#F7B32B",
+       "glyph": "monogram_A",
+@@ -1812,7 +1815,7 @@
+       "category": "APP"
+     },
+     {
+-      "name": "Appgeneration",
++      "name": "App Generation",
+       "drawable": "appgeneration",
+       "color": "#43AA8B",
+       "glyph": "monogram_A",
+@@ -1822,7 +1825,7 @@
+       "category": "APP"
+     },
+     {
+-      "name": "Appomroepbrabant",
++      "name": "Omroep Brabant",
+       "drawable": "appomroepbrabant",
+       "color": "#9B5DE5",
+       "glyph": "monogram_A",
+@@ -1913,7 +1916,7 @@
+       "category": "VPN"
+     },
+     {
+-      "name": "Threeplayer",
++      "name": "3Player",
+       "drawable": "threeplayer",
+       "color": "#8AC926",
+       "glyph": "monogram_T",
+@@ -1954,7 +1957,7 @@
+       "category": "APP"
+     },
+     {
+-      "name": "Podcastaddict",
++      "name": "Podcast Addict",
+       "drawable": "podcastaddict",
+       "color": "#FF477E",
+       "glyph": "monogram_P",
+@@ -1964,7 +1967,7 @@
+       "category": "MUSIC"
+     },
+     {
+-      "name": "Bamnetworks",
++      "name": "BAM Networks",
+       "drawable": "bamnetworks",
+       "color": "#00F5D4",
+       "glyph": "monogram_B",
+@@ -1974,7 +1977,7 @@
+       "category": "GAMING"
+     },
+     {
+-      "name": "Battlelancer",
++      "name": "BattleLancer",
+       "drawable": "battlelancer",
+       "color": "#FEE440",
+       "glyph": "monogram_B",
+@@ -2024,7 +2027,7 @@
+       "category": "VPN"
+     },
+     {
+-      "name": "Shadowcloudgaming",
++      "name": "Shadow",
+       "drawable": "shadowcloudgaming",
+       "color": "#F94144",
+       "glyph": "monogram_S",
+@@ -2064,7 +2067,7 @@
+       "category": "APP"
+     },
+     {
+-      "name": "Boosteroidtv",
++      "name": "Boosteroid",
+       "drawable": "boosteroidtv",
+       "color": "#F3722C",
+       "glyph": "monogram_B",
+@@ -2154,7 +2157,7 @@
+       "category": "APP"
+     },
+     {
+-      "name": "Canaldigital",
++      "name": "Canal Digital",
+       "drawable": "canaldigital",
+       "color": "#8AC926",
+       "glyph": "monogram_C",
+@@ -2204,7 +2207,7 @@
+       "category": "SPORT"
+     },
+     {
+-      "name": "Cgtnamericanow",
++      "name": "CGTN America",
+       "drawable": "cgtnamericanow",
+       "color": "#43AA8B",
+       "glyph": "monogram_C",
+@@ -2255,7 +2258,7 @@
+       "category": "STREAM"
+     },
+     {
+-      "name": "Clearchannel",
++      "name": "iHeartRadio",
+       "drawable": "clearchannel",
+       "color": "#F7B32B",
+       "glyph": "monogram_C",
+@@ -2275,7 +2278,7 @@
+       "category": "BROWSER"
+     },
+     {
+-      "name": "Mediabrowser",
++      "name": "Media Browser",
+       "drawable": "mediabrowser",
+       "color": "#00BBF9",
+       "glyph": "monogram_M",
+@@ -2305,7 +2308,7 @@
+       "category": "APP"
+     },
+     {
+-      "name": "Collegehumor",
++      "name": "Dropout",
+       "drawable": "collegehumor",
+       "color": "#FF6B35",
+       "glyph": "monogram_C",
+@@ -2336,7 +2339,7 @@
+       "category": "APP"
+     },
+     {
+-      "name": "Watchcorridortv",
++      "name": "Corridor",
+       "drawable": "watchcorridortv",
+       "color": "#9B5DE5",
+       "glyph": "monogram_W",
+@@ -2356,7 +2359,7 @@
+       "category": "APP"
+     },
+     {
+-      "name": "Criterionchannel",
++      "name": "Criterion Channel",
+       "drawable": "criterionchannel",
+       "color": "#00F5D4",
+       "glyph": "monogram_C",
+@@ -2367,7 +2370,7 @@
+       "category": "APP"
+     },
+     {
+-      "name": "Crunchyroid",
++      "name": "Crunchyroll",
+       "drawable": "crunchyroid",
+       "color": "#F7B32B",
+       "glyph": "monogram_C",
+@@ -2387,7 +2390,7 @@
+       "category": "APP"
+     },
+     {
+-      "name": "Curiositystream",
++      "name": "Curiosity Stream",
+       "drawable": "curiositystream",
+       "color": "#E71D36",
+       "glyph": "monogram_C",
+@@ -2407,12 +2410,14 @@
+       "category": "APP"
+     },
+     {
+-      "name": "Cxinventor",
++      "name": "CX File Explorer",
+       "drawable": "cxinventor",
+       "color": "#577590",
+-      "glyph": "monogram_C",
++      "glyph": "folder",
+       "components": [
+-        "com.cxinventor.file.explorer/com.alphainventor.filemanager.activity.MainActivity"
++        "com.cxinventor.file.explorer/com.alphainventor.filemanager.activity.MainActivity",
++        "com.alphainventor.filemanager/.activity.MainActivity",
++        "com.alphainventor.filemanager/com.alphainventor.filemanager.activity.MainActivity"
+       ],
+       "category": "FILES"
+     },
+@@ -2447,7 +2452,7 @@
+       "category": "APP"
+     },
+     {
+-      "name": "Danielkorgel",
++      "name": "FLauncher",
+       "drawable": "danielkorgel",
+       "color": "#90BE6D",
+       "glyph": "monogram_D",
+@@ -2497,7 +2502,7 @@
+       "category": "APP"
+     },
+     {
+-      "name": "Debridstream",
++      "name": "Debrid Stream",
+       "drawable": "debridstream",
+       "color": "#00BBF9",
+       "glyph": "monogram_D",
+@@ -2517,7 +2522,7 @@
+       "category": "APP"
+     },
+     {
+-      "name": "Devinterestdev",
++      "name": "DevInterest",
+       "drawable": "devinterestdev",
+       "color": "#577590",
+       "glyph": "monogram_D",
+@@ -2558,7 +2563,7 @@
+       "category": "VPN"
+     },
+     {
+-      "name": "Worldradios",
++      "name": "World Radios",
+       "drawable": "worldradios",
+       "color": "#FF6B35",
+       "glyph": "monogram_W",
+@@ -2578,7 +2583,7 @@
+       "category": "TOOL"
+     },
+     {
+-      "name": "Discoveryplus",
++      "name": "Discovery+",
+       "drawable": "discoveryplus",
+       "color": "#00F5D4",
+       "glyph": "monogram_D",
+@@ -2609,7 +2614,7 @@
+       "category": "VOD"
+     },
+     {
+-      "name": "Distroscale",
++      "name": "DistroScale",
+       "drawable": "distroscale",
+       "color": "#F15BB5",
+       "glyph": "monogram_D",
+@@ -2639,7 +2644,7 @@
+       "category": "STREAM"
+     },
+     {
+-      "name": "Dogusdigital",
++      "name": "D-Smart",
+       "drawable": "dogusdigital",
+       "color": "#F7B32B",
+       "glyph": "monogram_D",
+@@ -2649,17 +2654,17 @@
+       "category": "APP"
+     },
+     {
+-      "name": "Wififileexplorer",
++      "name": "WiFi File Explorer",
+       "drawable": "wififileexplorer",
+       "color": "#FF477E",
+-      "glyph": "monogram_W",
++      "glyph": "folder_wifi",
+       "components": [
+         "com.dooblou.WiFiFileExplorer/com.dooblou.WiFiFileExplorerLib.Start"
+       ],
+       "category": "FILES"
+     },
+     {
+-      "name": "Officialmotogp",
++      "name": "MotoGP",
+       "drawable": "officialmotogp",
+       "color": "#90BE6D",
+       "glyph": "monogram_O",
+@@ -2669,7 +2674,7 @@
+       "category": "APP"
+     },
+     {
+-      "name": "Simpleplayer",
++      "name": "Simple Player",
+       "drawable": "simpleplayer",
+       "color": "#F15BB5",
+       "glyph": "monogram_S",
+@@ -2699,7 +2704,7 @@
+       "category": "FILES"
+     },
+     {
+-      "name": "Dstvmobile",
++      "name": "Ds TV Mobile",
+       "drawable": "dstvmobile",
+       "color": "#F15BB5",
+       "glyph": "monogram_D",
+@@ -2719,7 +2724,7 @@
+       "category": "APP"
+     },
+     {
+-      "name": "Earthcamtv",
++      "name": "Earthcam TV",
+       "drawable": "earthcamtv",
+       "color": "#1982C4",
+       "glyph": "monogram_E",
+@@ -2729,7 +2734,7 @@
+       "category": "APP"
+     },
+     {
+-      "name": "Radioparadisewidget",
++      "name": "Radio Paradise",
+       "drawable": "radioparadisewidget",
+       "color": "#FF477E",
+       "glyph": "monogram_R",
+@@ -2770,7 +2775,7 @@
+       "category": "TOOL"
+     },
+     {
+-      "name": "Epicchannel",
++      "name": "Epic Channel",
+       "drawable": "epicchannel",
+       "color": "#9B5DE5",
+       "glyph": "monogram_E",
+@@ -2840,7 +2845,7 @@
+       "category": "APP"
+     },
+     {
+-      "name": "Eternaltviptvbox",
++      "name": "Eternal TV",
+       "drawable": "eternaltviptvbox",
+       "color": "#577590",
+       "glyph": "monogram_E",
+@@ -2870,7 +2875,7 @@
+       "category": "VPN"
+     },
+     {
+-      "name": "Falcofemoralis",
++      "name": "Falco",
+       "drawable": "falcofemoralis",
+       "color": "#90BE6D",
+       "glyph": "monogram_F",
+@@ -2912,7 +2917,7 @@
+       "category": "APP"
+     },
+     {
+-      "name": "Appnotifier",
++      "name": "App Notifier",
+       "drawable": "appnotifier",
+       "color": "#6A4C93",
+       "glyph": "monogram_A",
+@@ -2932,7 +2937,7 @@
+       "category": "APP"
+     },
+     {
+-      "name": "Fcportotv",
++      "name": "Fcporto TV",
+       "drawable": "fcportotv",
+       "color": "#00F5D4",
+       "glyph": "monogram_F",
+@@ -2992,14 +2997,14 @@
+       "category": "APP"
+     },
+     {
+-      "name": "Filesynced",
++      "name": "FileSynced",
+       "drawable": "filesynced",
+       "color": "#F94144",
+       "glyph": "monogram_F",
+       "components": [
+         "com.filesynced.app/com.filesynced.app.SplashActivity"
+       ],
+-      "category": "STORE"
++      "category": "FILES"
+     },
+     {
+       "name": "Platform",
+@@ -3043,7 +3048,7 @@
+       "category": "APP"
+     },
+     {
+-      "name": "Fivetviptvbox",
++      "name": "Five TV",
+       "drawable": "fivetviptvbox",
+       "color": "#90BE6D",
+       "glyph": "monogram_F",
+@@ -3113,7 +3118,7 @@
+       "category": "SPORT"
+     },
+     {
+-      "name": "Foxsports",
++      "name": "Fox Sports",
+       "drawable": "foxsports",
+       "color": "#90BE6D",
+       "glyph": "monogram_F",
+@@ -3133,7 +3138,7 @@
+       "category": "SPORT"
+     },
+     {
+-      "name": "Fpbasquetebol",
++      "name": "FP Basquetebol",
+       "drawable": "fpbasquetebol",
+       "color": "#9B5DE5",
+       "glyph": "monogram_F",
+@@ -3153,7 +3158,7 @@
+       "category": "APP"
+     },
+     {
+-      "name": "Fredrikburmester",
++      "name": "Burmester",
+       "drawable": "fredrikburmester",
+       "color": "#F94144",
+       "glyph": "monogram_F",
+@@ -3183,7 +3188,7 @@
+       "category": "APP"
+     },
+     {
+-      "name": "Photoscreensaver",
++      "name": "Photo Screensaver",
+       "drawable": "photoscreensaver",
+       "color": "#F15BB5",
+       "glyph": "monogram_P",
+@@ -3243,7 +3248,7 @@
+       "category": "APP"
+     },
+     {
+-      "name": "Getchannels",
++      "name": "Channels",
+       "drawable": "getchannels",
+       "color": "#F94144",
+       "glyph": "monogram_G",
+@@ -3263,17 +3268,17 @@
+       "category": "STREAM"
+     },
+     {
+-      "name": "Totalcommander",
++      "name": "Total Commander",
+       "drawable": "totalcommander",
+       "color": "#1982C4",
+-      "glyph": "monogram_T",
++      "glyph": "folder",
+       "components": [
+         "com.ghisler.android.TotalCommander/com.ghisler.android.TotalCommander.TotalCommander"
+       ],
+       "category": "FILES"
+     },
+     {
+-      "name": "Babyeinstein",
++      "name": "Baby Einstein",
+       "drawable": "babyeinstein",
+       "color": "#90BE6D",
+       "glyph": "monogram_B",
+@@ -3283,7 +3288,7 @@
+       "category": "APP"
+     },
+     {
+-      "name": "Damontecres",
++      "name": "Damonte",
+       "drawable": "damontecres",
+       "color": "#2EC4B6",
+       "glyph": "monogram_D",
+@@ -3303,7 +3308,7 @@
+       "category": "APP"
+     },
+     {
+-      "name": "Livingwithhippos",
++      "name": "Hippos",
+       "drawable": "livingwithhippos",
+       "color": "#E71D36",
+       "glyph": "monogram_L",
+@@ -3343,7 +3348,7 @@
+       "category": "APP"
+     },
+     {
+-      "name": "Goodtoolapps",
++      "name": "Good Tools",
+       "drawable": "goodtoolapps",
+       "color": "#9B5DE5",
+       "glyph": "monogram_G",
+@@ -3403,7 +3408,7 @@
+       "category": "MUSIC"
+     },
+     {
+-      "name": "Tvunplugged",
++      "name": "TV Unplugged",
+       "drawable": "tvunplugged",
+       "color": "#1982C4",
+       "glyph": "monogram_T",
+@@ -3413,7 +3418,7 @@
+       "category": "VIDEO"
+     },
+     {
+-      "name": "Gothamsports",
++      "name": "Gotham Sports",
+       "drawable": "gothamsports",
+       "color": "#90BE6D",
+       "glyph": "monogram_G",
+@@ -3423,7 +3428,7 @@
+       "category": "SPORT"
+     },
+     {
+-      "name": "Nflgamecenter",
++      "name": "NFL",
+       "drawable": "nflgamecenter",
+       "color": "#00BBF9",
+       "glyph": "monogram_N",
+@@ -3463,7 +3468,7 @@
+       "category": "APP"
+     },
+     {
+-      "name": "Guideplus",
++      "name": "Guide Plus",
+       "drawable": "guideplus",
+       "color": "#FF6B35",
+       "glyph": "monogram_G",
+@@ -3473,7 +3478,7 @@
+       "category": "APP"
+     },
+     {
+-      "name": "Hallmarkchannel",
++      "name": "Hallmark Channel",
+       "drawable": "hallmarkchannel",
+       "color": "#2EC4B6",
+       "glyph": "monogram_H",
+@@ -3503,7 +3508,7 @@
+       "category": "APP"
+     },
+     {
+-      "name": "Heinetworktv",
++      "name": "HEI Network",
+       "drawable": "heinetworktv",
+       "color": "#F15BB5",
+       "glyph": "monogram_H",
+@@ -3533,7 +3538,7 @@
+       "category": "APP"
+     },
+     {
+-      "name": "Hoopladigital",
++      "name": "Hoopla",
+       "drawable": "hoopladigital",
+       "color": "#2EC4B6",
+       "glyph": "monogram_H",
+@@ -3554,7 +3559,7 @@
+       "category": "APP"
+     },
+     {
+-      "name": "Livingroomplus",
++      "name": "Living Room+",
+       "drawable": "livingroomplus",
+       "color": "#1982C4",
+       "glyph": "monogram_L",
+@@ -3574,7 +3579,7 @@
+       "category": "APP"
+     },
+     {
+-      "name": "Applinkednew",
++      "name": "AppLinked",
+       "drawable": "applinkednew",
+       "color": "#B5179E",
+       "glyph": "monogram_A",
+@@ -3634,7 +3639,7 @@
+       "category": "APP"
+     },
+     {
+-      "name": "Instantbits",
++      "name": "InstantBits",
+       "drawable": "instantbits",
+       "color": "#90BE6D",
+       "glyph": "monogram_I",
+@@ -3644,7 +3649,7 @@
+       "category": "APP"
+     },
+     {
+-      "name": "Tvbrowser",
++      "name": "TV Browser",
+       "drawable": "tvbrowser",
+       "color": "#F3722C",
+       "glyph": "monogram_T",
+@@ -3694,7 +3699,7 @@
+       "category": "LIVE"
+     },
+     {
+-      "name": "Thundertv",
++      "name": "Thunder TV",
+       "drawable": "thundertv",
+       "color": "#6A4C93",
+       "glyph": "monogram_T",
+@@ -3734,7 +3739,7 @@
+       "category": "APP"
+     },
+     {
+-      "name": "Buttonsremapper",
++      "name": "Buttons Remapper",
+       "drawable": "buttonsremapper",
+       "color": "#FF6B35",
+       "glyph": "monogram_B",
+@@ -3764,7 +3769,7 @@
+       "category": "APP"
+     },
+     {
+-      "name": "Jiotvplus",
++      "name": "Jio TV Plus",
+       "drawable": "jiotvplus",
+       "color": "#FF6B35",
+       "glyph": "monogram_J",
+@@ -3794,7 +3799,7 @@
+       "category": "STREAM"
+     },
+     {
+-      "name": "Tveverywhere",
++      "name": "TV Everywhere",
+       "drawable": "tveverywhere",
+       "color": "#FF6B35",
+       "glyph": "monogram_T",
+@@ -3834,7 +3839,7 @@
+       "category": "APP"
+     },
+     {
+-      "name": "Streamingkemo",
++      "name": "Kemo Stream",
+       "drawable": "streamingkemo",
+       "color": "#2EC4B6",
+       "glyph": "monogram_S",
+@@ -3886,7 +3891,7 @@
+       "category": "APP"
+     },
+     {
+-      "name": "Kpnandroidtv",
++      "name": "KPN",
+       "drawable": "kpnandroidtv",
+       "color": "#90BE6D",
+       "glyph": "monogram_K",
+@@ -3896,7 +3901,7 @@
+       "category": "APP"
+     },
+     {
+-      "name": "Laughafterdark",
++      "name": "Laugh After Dark",
+       "drawable": "laughafterdark",
+       "color": "#B5179E",
+       "glyph": "monogram_L",
+@@ -3906,7 +3911,7 @@
+       "category": "APP"
+     },
+     {
+-      "name": "Lazycatsoftware",
++      "name": "LazyCat",
+       "drawable": "lazycatsoftware",
+       "color": "#6A4C93",
+       "glyph": "monogram_L",
+@@ -3916,7 +3921,7 @@
+       "category": "APP"
+     },
+     {
+-      "name": "Lazyiptvdeluxe",
++      "name": "Lazy IPTV Deluxe",
+       "drawable": "lazyiptvdeluxe",
+       "color": "#FF477E",
+       "glyph": "monogram_L",
+@@ -3936,7 +3941,7 @@
+       "category": "SPORT"
+     },
+     {
+-      "name": "Ligaportugal",
++      "name": "Liga Portugal",
+       "drawable": "ligaportugal",
+       "color": "#4CC9F0",
+       "glyph": "monogram_L",
+@@ -3946,7 +3951,7 @@
+       "category": "APP"
+     },
+     {
+-      "name": "Ligueunpass",
++      "name": "Ligue 1+",
+       "drawable": "ligueunpass",
+       "color": "#F15BB5",
+       "glyph": "monogram_L",
+@@ -3996,7 +4001,7 @@
+       "category": "STREAM"
+     },
+     {
+-      "name": "Liverpoolfc",
++      "name": "Liverpool FC",
+       "drawable": "liverpoolfc",
+       "color": "#00BBF9",
+       "glyph": "monogram_L",
+@@ -4006,7 +4011,7 @@
+       "category": "APP"
+     },
+     {
+-      "name": "Googletv",
++      "name": "Locals Google TV",
+       "drawable": "googletv",
+       "color": "#F7B32B",
+       "glyph": "monogram_G",
+@@ -4016,14 +4021,15 @@
+       "category": "APP"
+     },
+     {
+-      "name": "Lonelycatgames",
++      "name": "X-plore",
+       "drawable": "lonelycatgames",
+       "color": "#FF477E",
+-      "glyph": "monogram_L",
++      "glyph": "folder",
+       "components": [
+-        "com.lonelycatgames.Xplore/com.lonelycatgames.Xplore.Browser"
++        "com.lonelycatgames.Xplore/com.lonelycatgames.Xplore.Browser",
++        "com.lonelycatgames.Xplore/.Browser"
+       ],
+-      "category": "GAMING"
++      "category": "FILES"
+     },
+     {
+       "name": "Maertsno",
+@@ -4036,7 +4042,7 @@
+       "category": "APP"
+     },
+     {
+-      "name": "Magneticchen",
++      "name": "Magnetic",
+       "drawable": "magneticchen",
+       "color": "#6A4C93",
+       "glyph": "monogram_M",
+@@ -4046,7 +4052,7 @@
+       "category": "APP"
+     },
+     {
+-      "name": "Maoritelevision",
++      "name": "Māori+",
+       "drawable": "maoritelevision",
+       "color": "#F7B32B",
+       "glyph": "monogram_M",
+@@ -4086,7 +4092,7 @@
+       "category": "APP"
+     },
+     {
+-      "name": "Tvod169",
++      "name": "TVOD",
+       "drawable": "tvod169",
+       "color": "#F94144",
+       "glyph": "monogram_T",
+@@ -4106,7 +4112,7 @@
+       "category": "APP"
+     },
+     {
+-      "name": "Mediaworks",
++      "name": "ThreeNow",
+       "drawable": "mediaworks",
+       "color": "#FF477E",
+       "glyph": "monogram_M",
+@@ -4116,7 +4122,7 @@
+       "category": "APP"
+     },
+     {
+-      "name": "Thecomedychannel",
++      "name": "The Comedy Channel",
+       "drawable": "thecomedychannel",
+       "color": "#4CC9F0",
+       "glyph": "monogram_T",
+@@ -4126,7 +4132,7 @@
+       "category": "STREAM"
+     },
+     {
+-      "name": "Application",
++      "name": "MEGOGO",
+       "drawable": "application",
+       "color": "#B5179E",
+       "glyph": "monogram_A",
+@@ -4136,7 +4142,7 @@
+       "category": "APP"
+     },
+     {
+-      "name": "Intl",
++      "name": "Mango TV",
+       "drawable": "intl",
+       "color": "#90BE6D",
+       "glyph": "monogram_I",
+@@ -4146,7 +4152,7 @@
+       "category": "APP"
+     },
+     {
+-      "name": "Gallery",
++      "name": "Mi Gallery",
+       "drawable": "gallery",
+       "color": "#1982C4",
+       "glyph": "monogram_G",
+@@ -4156,7 +4162,7 @@
+       "category": "APP"
+     },
+     {
+-      "name": "Mitvplus",
++      "name": "Mi TV Plus",
+       "drawable": "mitvplus",
+       "color": "#F3722C",
+       "glyph": "monogram_M",
+@@ -4166,17 +4172,19 @@
+       "category": "LAUNCHER"
+     },
+     {
+-      "name": "Mixplorer",
++      "name": "MiXplorer",
+       "drawable": "mixplorer",
+       "color": "#F15BB5",
+-      "glyph": "monogram_M",
++      "glyph": "folder",
+       "components": [
+-        "com.mixplorer.silver/com.mixplorer.activities.BrowseActivity"
++        "com.mixplorer.silver/com.mixplorer.activities.BrowseActivity",
++        "com.mixplorer/.activities.BrowseActivity",
++        "com.mixplorer/com.mixplorer.activities.BrowseActivity"
+       ],
+       "category": "FILES"
+     },
+     {
+-      "name": "Mobily",
++      "name": "Mobily TV",
+       "drawable": "mobily",
+       "color": "#F7B32B",
+       "glyph": "monogram_M",
+@@ -4186,17 +4194,17 @@
+       "category": "APP"
+     },
+     {
+-      "name": "Mobisystems",
++      "name": "File Commander",
+       "drawable": "mobisystems",
+       "color": "#1982C4",
+-      "glyph": "monogram_M",
++      "glyph": "folder",
+       "components": [
+         "com.mobisystems.fileman/com.mobisystems.files.FileBrowser"
+       ],
+       "category": "FILES"
+     },
+     {
+-      "name": "Whitelabel",
++      "name": "Movideo",
+       "drawable": "whitelabel",
+       "color": "#4CC9F0",
+       "glyph": "monogram_W",
+@@ -4206,7 +4214,7 @@
+       "category": "APP"
+     },
+     {
+-      "name": "Movieboxpro",
++      "name": "MovieBox Pro",
+       "drawable": "movieboxpro",
+       "color": "#43AA8B",
+       "glyph": "monogram_M",
+@@ -4216,7 +4224,7 @@
+       "category": "STREAM"
+     },
+     {
+-      "name": "Movielab",
++      "name": "MovieLab",
+       "drawable": "movielab",
+       "color": "#FF477E",
+       "glyph": "monogram_M",
+@@ -4226,7 +4234,7 @@
+       "category": "STREAM"
+     },
+     {
+-      "name": "Moviesanywhere",
++      "name": "Movies Anywhere",
+       "drawable": "moviesanywhere",
+       "color": "#E71D36",
+       "glyph": "monogram_M",
+@@ -4236,7 +4244,7 @@
+       "category": "STREAM"
+     },
+     {
+-      "name": "Playkids",
++      "name": "PlayKids",
+       "drawable": "playkids",
+       "color": "#F3722C",
+       "glyph": "monogram_P",
+@@ -4246,7 +4254,7 @@
+       "category": "APP"
+     },
+     {
+-      "name": "Msmvideo",
++      "name": "MSM Video",
+       "drawable": "msmvideo",
+       "color": "#577590",
+       "glyph": "monogram_M",
+@@ -4256,7 +4264,7 @@
+       "category": "APP"
+     },
+     {
+-      "name": "Mubi",
++      "name": "MUBI",
+       "drawable": "mubi",
+       "color": "#2EC4B6",
+       "glyph": "monogram_M",
+@@ -4267,7 +4275,7 @@
+       "category": "VOD"
+     },
+     {
+-      "name": "Manutd",
++      "name": "MUTV",
+       "drawable": "manutd",
+       "color": "#E71D36",
+       "glyph": "monogram_M",
+@@ -4277,7 +4285,7 @@
+       "category": "APP"
+     },
+     {
+-      "name": "Mvas",
++      "name": "STB Emu",
+       "drawable": "mvas",
+       "color": "#F15BB5",
+       "glyph": "monogram_M",
+@@ -4287,7 +4295,7 @@
+       "category": "GAMING"
+     },
+     {
+-      "name": "Videoplayer",
++      "name": "MX Player TV",
+       "drawable": "videoplayer",
+       "color": "#F7B32B",
+       "glyph": "monogram_V",
+@@ -4297,7 +4305,7 @@
+       "category": "STREAM"
+     },
+     {
+-      "name": "Enjoytvandroid",
++      "name": "Enjoy TV",
+       "drawable": "enjoytvandroid",
+       "color": "#B5179E",
+       "glyph": "monogram_E",
+@@ -4307,7 +4315,7 @@
+       "category": "APP"
+     },
+     {
+-      "name": "Myiptvonline",
++      "name": "My IPTV Online",
+       "drawable": "myiptvonline",
+       "color": "#00BBF9",
+       "glyph": "monogram_M",
+@@ -4317,7 +4325,7 @@
+       "category": "LIVE"
+     },
+     {
+-      "name": "Nathnetwork",
++      "name": "Eternal TV",
+       "drawable": "nathnetwork",
+       "color": "#6A4C93",
+       "glyph": "monogram_N",
+@@ -4327,7 +4335,7 @@
+       "category": "APP"
+     },
+     {
+-      "name": "Sharktvthree",
++      "name": "Shark TV",
+       "drawable": "sharktvthree",
+       "color": "#00BBF9",
+       "glyph": "monogram_S",
+@@ -4337,7 +4345,7 @@
+       "category": "APP"
+     },
+     {
+-      "name": "Nathnetwork 2",
++      "name": "XC IPTV",
+       "drawable": "nathnetwork_2",
+       "color": "#FF477E",
+       "glyph": "monogram_N",
+@@ -4347,7 +4355,7 @@
+       "category": "LIVE"
+     },
+     {
+-      "name": "Gametime",
++      "name": "NBA",
+       "drawable": "gametime",
+       "color": "#9B5DE5",
+       "glyph": "monogram_G",
+@@ -4357,7 +4365,7 @@
+       "category": "GAMING"
+     },
+     {
+-      "name": "Nbcsports",
++      "name": "NBC Sports",
+       "drawable": "nbcsports",
+       "color": "#00BBF9",
+       "glyph": "monogram_N",
+@@ -4367,7 +4375,7 @@
+       "category": "SPORT"
+     },
+     {
+-      "name": "Androidtv 8",
++      "name": "SYFY",
+       "drawable": "androidtv_8",
+       "color": "#00F5D4",
+       "glyph": "monogram_A",
+@@ -4377,7 +4385,7 @@
+       "category": "APP"
+     },
+     {
+-      "name": "Androidtv 9",
++      "name": "USA Network",
+       "drawable": "androidtv_9",
+       "color": "#8AC926",
+       "glyph": "monogram_A",
+@@ -4387,7 +4395,7 @@
+       "category": "APP"
+     },
+     {
+-      "name": "Aerialviews",
++      "name": "Aerial Views",
+       "drawable": "aerialviews",
+       "color": "#F3722C",
+       "glyph": "monogram_A",
+@@ -4397,7 +4405,7 @@
+       "category": "APP"
+     },
+     {
+-      "name": "Smartphone",
++      "name": "UFC",
+       "drawable": "smartphone",
+       "color": "#577590",
+       "glyph": "monogram_S",
+@@ -4407,7 +4415,7 @@
+       "category": "SPORT"
+     },
+     {
+-      "name": "Nextinteractive",
++      "name": "RMC BFM",
+       "drawable": "nextinteractive",
+       "color": "#00BBF9",
+       "glyph": "monogram_N",
+@@ -4417,7 +4425,7 @@
+       "category": "APP"
+     },
+     {
+-      "name": "Nhl",
++      "name": "NHL",
+       "drawable": "nhl",
+       "color": "#9B5DE5",
+       "glyph": "monogram_N",
+@@ -4427,7 +4435,7 @@
+       "category": "APP"
+     },
+     {
+-      "name": "Niklabs",
++      "name": "Perfect Player",
+       "drawable": "niklabs",
+       "color": "#2EC4B6",
+       "glyph": "monogram_N",
+@@ -4437,7 +4445,7 @@
+       "category": "APP"
+     },
+     {
+-      "name": "Nitobi",
++      "name": "NFB",
+       "drawable": "nitobi",
+       "color": "#B5179E",
+       "glyph": "monogram_N",
+@@ -4447,17 +4455,17 @@
+       "category": "APP"
+     },
+     {
+-      "name": "Nordiskfilmplus",
++      "name": "Nordisk Film+",
+       "drawable": "nordiskfilmplus",
+       "color": "#F94144",
+       "glyph": "monogram_N",
+       "components": [
+         "com.nordiskfilmplus.android/com.nordiskfilmplus.android.ui.splash.SplashActivity"
+       ],
+-      "category": "VPN"
++      "category": "VOD"
+     },
+     {
+-      "name": "Nordvpn",
++      "name": "NordVPN",
+       "drawable": "nordvpn",
+       "color": "#F3722C",
+       "glyph": "monogram_N",
+@@ -4467,7 +4475,7 @@
+       "category": "VPN"
+     },
+     {
+-      "name": "Nostalgiatv",
++      "name": "Nostalgia TV",
+       "drawable": "nostalgiatv",
+       "color": "#8AC926",
+       "glyph": "monogram_N",
+@@ -4477,7 +4485,7 @@
+       "category": "APP"
+     },
+     {
+-      "name": "Orftvthek",
++      "name": "ORF ON",
+       "drawable": "orftvthek",
+       "color": "#4CC9F0",
+       "glyph": "monogram_O",
+@@ -4487,7 +4495,7 @@
+       "category": "APP"
+     },
+     {
+-      "name": "Nousguide",
++      "name": "Red Bull TV",
+       "drawable": "nousguide",
+       "color": "#6A4C93",
+       "glyph": "monogram_N",
+@@ -4497,7 +4505,7 @@
+       "category": "APP"
+     },
+     {
+-      "name": "Deltatv",
++      "name": "Delta TV",
+       "drawable": "deltatv",
+       "color": "#F7B32B",
+       "glyph": "monogram_D",
+@@ -4507,7 +4515,7 @@
+       "category": "APP"
+     },
+     {
+-      "name": "Iptvsmarterstvbox",
++      "name": "IPTV Smarters",
+       "drawable": "iptvsmarterstvbox",
+       "color": "#1982C4",
+       "glyph": "monogram_I",
+@@ -4517,7 +4525,7 @@
+       "category": "LIVE"
+     },
+     {
+-      "name": "Ntathome",
++      "name": "NT at Home",
+       "drawable": "ntathome",
+       "color": "#2EC4B6",
+       "glyph": "monogram_N",
+@@ -4528,7 +4536,7 @@
+       "category": "LAUNCHER"
+     },
+     {
+-      "name": "Tvaplus",
++      "name": "TVA+",
+       "drawable": "tvaplus",
+       "color": "#00BBF9",
+       "glyph": "monogram_T",
+@@ -4538,7 +4546,7 @@
+       "category": "APP"
+     },
+     {
+-      "name": "Tablofast",
++      "name": "Tablo",
+       "drawable": "tablofast",
+       "color": "#B5179E",
+       "glyph": "monogram_T",
+@@ -4548,7 +4556,7 @@
+       "category": "APP"
+     },
+     {
+-      "name": "Bbciplayer",
++      "name": "BBC iPlayer TV",
+       "drawable": "bbciplayer",
+       "color": "#1982C4",
+       "glyph": "monogram_B",
+@@ -4558,7 +4566,7 @@
+       "category": "APP"
+     },
+     {
+-      "name": "Launchsounds",
++      "name": "Launch Sounds",
+       "drawable": "launchsounds",
+       "color": "#B5179E",
+       "glyph": "monogram_L",
+@@ -4568,7 +4576,7 @@
+       "category": "APP"
+     },
+     {
+-      "name": "Tegrazone3",
++      "name": "GeForce Now",
+       "drawable": "tegrazone3",
+       "color": "#00BBF9",
+       "glyph": "monogram_T",
+@@ -4588,7 +4596,7 @@
+       "category": "APP"
+     },
+     {
+-      "name": "Nzrplus",
++      "name": "NZR+",
+       "drawable": "nzrplus",
+       "color": "#6A4C93",
+       "glyph": "monogram_N",
+@@ -4598,7 +4606,7 @@
+       "category": "APP"
+     },
+     {
+-      "name": "Photocollage",
++      "name": "Photo Collage",
+       "drawable": "photocollage",
+       "color": "#6A4C93",
+       "glyph": "monogram_P",
+@@ -4618,7 +4626,7 @@
+       "category": "APP"
+     },
+     {
+-      "name": "Oilers",
++      "name": "Oilers+",
+       "drawable": "oilers",
+       "color": "#B5179E",
+       "glyph": "monogram_O",
+@@ -4628,7 +4636,7 @@
+       "category": "APP"
+     },
+     {
+-      "name": "Omnisoft",
++      "name": "VPN Dot",
+       "drawable": "omnisoft",
+       "color": "#9B5DE5",
+       "glyph": "monogram_O",
+@@ -4638,7 +4646,7 @@
+       "category": "VPN"
+     },
+     {
+-      "name": "Onepeloton",
++      "name": "Peloton",
+       "drawable": "onepeloton",
+       "color": "#B5179E",
+       "glyph": "monogram_O",
+@@ -4648,7 +4656,7 @@
+       "category": "APP"
+     },
+     {
+-      "name": "Osn",
++      "name": "OSN+",
+       "drawable": "osn",
+       "color": "#00F5D4",
+       "glyph": "monogram_O",
+@@ -4658,7 +4666,7 @@
+       "category": "APP"
+     },
+     {
+-      "name": "Ottplay",
++      "name": "OTTplay",
+       "drawable": "ottplay",
+       "color": "#90BE6D",
+       "glyph": "monogram_O",
+@@ -4668,7 +4676,7 @@
+       "category": "APP"
+     },
+     {
+-      "name": "Utility",
++      "name": "Media Hub",
+       "drawable": "utility",
+       "color": "#6A4C93",
+       "glyph": "monogram_U",
+@@ -4678,7 +4686,7 @@
+       "category": "APP"
+     },
+     {
+-      "name": "Appstore",
++      "name": "App Store",
+       "drawable": "appstore",
+       "color": "#B5179E",
+       "glyph": "monogram_A",
+@@ -4698,7 +4706,7 @@
+       "category": "MUSIC"
+     },
+     {
+-      "name": "Video",
++      "name": "PBS",
+       "drawable": "video",
+       "color": "#2EC4B6",
+       "glyph": "monogram_V",
+@@ -4708,7 +4716,7 @@
+       "category": "APP"
+     },
+     {
+-      "name": "Peacockandroid",
++      "name": "Peacock",
+       "drawable": "peacockandroid",
+       "color": "#577590",
+       "glyph": "monogram_P",
+@@ -4718,7 +4726,7 @@
+       "category": "VOD"
+     },
+     {
+-      "name": "Iptvextremepro",
++      "name": "IPTV Extreme Pro",
+       "drawable": "iptvextremepro",
+       "color": "#00F5D4",
+       "glyph": "monogram_I",
+@@ -4728,17 +4736,17 @@
+       "category": "LIVE"
+     },
+     {
+-      "name": "Weathereyeandroid",
++      "name": "The Weather Network",
+       "drawable": "weathereyeandroid",
+       "color": "#FF6B35",
+       "glyph": "monogram_W",
+       "components": [
+         "com.pelmorex.WeatherEyeAndroid.tv/com.pelmorex.WeatherEyeAndroid.tv.ui.activities.SplashActivity"
+       ],
+-      "category": "SPORT"
++      "category": "APP"
+     },
+     {
+-      "name": "Perfecttv",
++      "name": "Perfect TV",
+       "drawable": "perfecttv",
+       "color": "#9B5DE5",
+       "glyph": "monogram_P",
+@@ -4768,7 +4776,7 @@
+       "category": "BROWSER"
+     },
+     {
+-      "name": "Pigeoncast",
++      "name": "PigeonCast",
+       "drawable": "pigeoncast",
+       "color": "#00F5D4",
+       "glyph": "monogram_P",
+@@ -4778,7 +4786,7 @@
+       "category": "APP"
+     },
+     {
+-      "name": "Pikcloud",
++      "name": "PikPak",
+       "drawable": "pikcloud",
+       "color": "#00F5D4",
+       "glyph": "monogram_P",
+@@ -4789,7 +4797,7 @@
+       "category": "APP"
+     },
+     {
+-      "name": "Playnow",
++      "name": "Play Now",
+       "drawable": "playnow",
+       "color": "#2EC4B6",
+       "glyph": "monogram_P",
+@@ -4799,7 +4807,7 @@
+       "category": "APP"
+     },
+     {
+-      "name": "Universal",
++      "name": "Play Universal",
+       "drawable": "universal",
+       "color": "#FEE440",
+       "glyph": "monogram_U",
+@@ -4819,7 +4827,7 @@
+       "category": "APP"
+     },
+     {
+-      "name": "Androidtv 10",
++      "name": "PlayNet",
+       "drawable": "androidtv_10",
+       "color": "#90BE6D",
+       "glyph": "monogram_A",
+@@ -4830,7 +4838,7 @@
+       "category": "APP"
+     },
+     {
+-      "name": "Standup Comedy TV",
++      "name": "Stand-Up Comedy TV",
+       "drawable": "standupcomedytv",
+       "color": "#F7B32B",
+       "glyph": "monogram_S",
+@@ -4840,7 +4848,7 @@
+       "category": "APP"
+     },
+     {
+-      "name": "Videoplayer 2",
++      "name": "Polygon Player",
+       "drawable": "videoplayer_2",
+       "color": "#43AA8B",
+       "glyph": "monogram_V",
+@@ -4850,7 +4858,7 @@
+       "category": "APP"
+     },
+     {
+-      "name": "Powerpoint45",
++      "name": "Maze",
+       "drawable": "powerpoint45",
+       "color": "#2EC4B6",
+       "glyph": "monogram_P",
+@@ -4867,20 +4875,20 @@
+       "components": [
+         "com.privateinternetaccess.android/com.kape.vpn.MainActivity"
+       ],
+-      "category": "APP"
++      "category": "VPN"
+     },
+     {
+-      "name": "Subscription",
++      "name": "Psiphon",
+       "drawable": "subscription",
+       "color": "#9B5DE5",
+       "glyph": "monogram_S",
+       "components": [
+         "com.psiphon3.subscription/com.psiphon3.MainActivity"
+       ],
+-      "category": "APP"
++      "category": "VPN"
+     },
+     {
+-      "name": "Pureflix",
++      "name": "Pure Flix",
+       "drawable": "pureflix",
+       "color": "#577590",
+       "glyph": "monogram_P",
+@@ -4890,7 +4898,7 @@
+       "category": "STREAM"
+     },
+     {
+-      "name": "Music",
++      "name": "Qobuz",
+       "drawable": "music",
+       "color": "#F7B32B",
+       "glyph": "monogram_M",
+@@ -4900,7 +4908,7 @@
+       "category": "MUSIC"
+     },
+     {
+-      "name": "Bellmediaplayer",
++      "name": "Bell Fibe",
+       "drawable": "bellmediaplayer",
+       "color": "#F7B32B",
+       "glyph": "monogram_B",
+@@ -4911,7 +4919,7 @@
+       "category": "APP"
+     },
+     {
+-      "name": "Gamelauncher",
++      "name": "Game Launcher",
+       "drawable": "gamelauncher",
+       "color": "#F94144",
+       "glyph": "monogram_G",
+@@ -4921,7 +4929,7 @@
+       "category": "LAUNCHER"
+     },
+     {
+-      "name": "Fmradio",
++      "name": "FM Radio",
+       "drawable": "fmradio",
+       "color": "#6A4C93",
+       "glyph": "monogram_F",
+@@ -4951,7 +4959,7 @@
+       "category": "MUSIC"
+     },
+     {
+-      "name": "Ram",
++      "name": "RAM TV",
+       "drawable": "ram",
+       "color": "#FF477E",
+       "glyph": "monogram_R",
+@@ -4961,7 +4969,7 @@
+       "category": "APP"
+     },
+     {
+-      "name": "Rblive",
++      "name": "RB Live",
+       "drawable": "rblive",
+       "color": "#F94144",
+       "glyph": "monogram_R",
+@@ -4971,7 +4979,7 @@
+       "category": "APP"
+     },
+     {
+-      "name": "Realdebrid 2",
++      "name": "Real-Debrid App",
+       "drawable": "realdebrid_2",
+       "color": "#1982C4",
+       "glyph": "monogram_R",
+@@ -4981,7 +4989,7 @@
+       "category": "DEBRID"
+     },
+     {
+-      "name": "Filmrise",
++      "name": "FilmRise",
+       "drawable": "filmrise",
+       "color": "#FF6B35",
+       "glyph": "monogram_F",
+@@ -4991,7 +4999,7 @@
+       "category": "STREAM"
+     },
+     {
+-      "name": "Kfandroid",
++      "name": "Karaoke",
+       "drawable": "kfandroid",
+       "color": "#4CC9F0",
+       "glyph": "monogram_K",
+@@ -5012,7 +5020,7 @@
+       "category": "APP"
+     },
+     {
+-      "name": "Betterxc",
++      "name": "Better XC",
+       "drawable": "betterxc",
+       "color": "#F15BB5",
+       "glyph": "monogram_B",
+@@ -5022,7 +5030,7 @@
+       "category": "APP"
+     },
+     {
+-      "name": "Retroarch",
++      "name": "RetroArch",
+       "drawable": "retroarch",
+       "color": "#F7B32B",
+       "glyph": "monogram_R",
+@@ -5032,7 +5040,7 @@
+       "category": "GAMING"
+     },
+     {
+-      "name": "Rlaxxtv",
++      "name": "RlaXX TV",
+       "drawable": "rlaxxtv",
+       "color": "#00BBF9",
+       "glyph": "monogram_R",
+@@ -5042,7 +5050,7 @@
+       "category": "APP"
+     },
+     {
+-      "name": "Rlcplus",
++      "name": "RLC+",
+       "drawable": "rlcplus",
+       "color": "#F3722C",
+       "glyph": "monogram_R",
+@@ -5052,7 +5060,7 @@
+       "category": "APP"
+     },
+     {
+-      "name": "Speedtesttv",
++      "name": "Speedtest TV",
+       "drawable": "speedtesttv",
+       "color": "#00BBF9",
+       "glyph": "monogram_S",
+@@ -5062,7 +5070,7 @@
+       "category": "TOOL"
+     },
+     {
+-      "name": "Rodrig Matrix",
++      "name": "WeatherYou",
+       "drawable": "rodrigmatrix",
+       "color": "#90BE6D",
+       "glyph": "monogram_R",
+@@ -5072,7 +5080,7 @@
+       "category": "SPORT"
+     },
+     {
+-      "name": "Citytvplus",
++      "name": "Citytv+",
+       "drawable": "citytvplus",
+       "color": "#577590",
+       "glyph": "monogram_C",
+@@ -5082,7 +5090,7 @@
+       "category": "APP"
+     },
+     {
+-      "name": "Ignitetv",
++      "name": "Ignite TV",
+       "drawable": "ignitetv",
+       "color": "#FEE440",
+       "glyph": "monogram_I",
+@@ -5101,6 +5109,227 @@
+         "tv.sync.app/.MainActivity"
+       ],
+       "category": "SPORT"
++    },
++    {
++      "name": "LocalSend",
++      "drawable": "localsend",
++      "color": "#00D4FF",
++      "glyph": "localsend_nodes",
++      "category": "FILES",
++      "components": [
++        "org.localsend.localsend_app/org.localsend.localsend_app.MainActivity"
++      ],
++      "unverified": [
++        "org.localsend.localsend_app/org.localsend.localsend_app.MainActivity"
++      ]
++    },
++    {
++      "name": "RS File Manager",
++      "drawable": "rsfilemanager",
++      "color": "#4FACFE",
++      "glyph": "folder_rs",
++      "category": "FILES",
++      "components": [
++        "com.rs.explorer.filemanager/com.rs.explorer.filemanager.MainActivity",
++        "com.rs.explorer.filemanager/.MainActivity"
++      ],
++      "unverified": [
++        "com.rs.explorer.filemanager/com.rs.explorer.filemanager.MainActivity",
++        "com.rs.explorer.filemanager/.MainActivity"
++      ]
++    },
++    {
++      "name": "Sparkle TV",
++      "drawable": "sparkletv",
++      "color": "#A78BFA",
++      "glyph": "sparkle_burst",
++      "category": "LIVE",
++      "components": [
++        "se.hedekonsult.sparkle/se.hedekonsult.sparkle.MainActivity"
++      ],
++      "unverified": [
++        "se.hedekonsult.sparkle/se.hedekonsult.sparkle.MainActivity"
++      ]
++    },
++    {
++      "name": "DS file",
++      "drawable": "dsfile",
++      "color": "#4FACFE",
++      "glyph": "nas_stack",
++      "category": "FILES",
++      "components": [
++        "com.synology.DSfile/com.synology.DSfile.ui.activity.SplashActivity",
++        "com.synology.DSfile/.ui.activity.SplashActivity",
++        "com.synology.DSfile/com.synology.DSfile.MainActivity",
++        "com.hisona.dsfile/com.hisona.dsfile.MainActivity"
++      ],
++      "unverified": [
++        "com.synology.DSfile/com.synology.DSfile.ui.activity.SplashActivity",
++        "com.synology.DSfile/.ui.activity.SplashActivity",
++        "com.synology.DSfile/com.synology.DSfile.MainActivity",
++        "com.hisona.dsfile/com.hisona.dsfile.MainActivity"
++      ]
++    },
++    {
++      "name": "DS video",
++      "drawable": "dsvideo",
++      "color": "#00D4FF",
++      "glyph": "nas_play",
++      "category": "MEDIA",
++      "components": [
++        "com.synology.dsvideo/com.synology.dsvideo.ui.SplashActivity",
++        "com.synology.dsvideo/.ui.SplashActivity",
++        "com.synology.dsvideo/com.synology.dsvideo.MainActivity"
++      ],
++      "unverified": [
++        "com.synology.dsvideo/com.synology.dsvideo.ui.SplashActivity",
++        "com.synology.dsvideo/.ui.SplashActivity",
++        "com.synology.dsvideo/com.synology.dsvideo.MainActivity"
++      ]
++    },
++    {
++      "name": "DS photo",
++      "drawable": "dsphoto",
++      "color": "#34D399",
++      "glyph": "nas_image",
++      "category": "FILES",
++      "components": [
++        "com.synology.dsphoto/com.synology.dsphoto.ui.SplashActivity",
++        "com.synology.dsphoto/.ui.SplashActivity",
++        "com.synology.dsphoto/com.synology.dsphoto.MainActivity"
++      ],
++      "unverified": [
++        "com.synology.dsphoto/com.synology.dsphoto.ui.SplashActivity",
++        "com.synology.dsphoto/.ui.SplashActivity",
++        "com.synology.dsphoto/com.synology.dsphoto.MainActivity"
++      ]
++    },
++    {
++      "name": "DS audio",
++      "drawable": "dsaudio",
++      "color": "#F472B6",
++      "glyph": "music_note",
++      "category": "MUSIC",
++      "components": [
++        "com.synology.dsaudio/com.synology.dsaudio.ui.SplashActivity",
++        "com.synology.dsaudio/.ui.SplashActivity",
++        "com.synology.dsaudio/com.synology.dsaudio.MainActivity"
++      ],
++      "unverified": [
++        "com.synology.dsaudio/com.synology.dsaudio.ui.SplashActivity",
++        "com.synology.dsaudio/.ui.SplashActivity",
++        "com.synology.dsaudio/com.synology.dsaudio.MainActivity"
++      ]
++    },
++    {
++      "name": "DS finder",
++      "drawable": "dsfinder",
++      "color": "#00E5FF",
++      "glyph": "radar_dish",
++      "category": "TOOL",
++      "components": [
++        "com.synology.DSfinder/com.synology.DSfinder.ui.SplashActivity",
++        "com.synology.DSfinder/.ui.SplashActivity",
++        "com.synology.DSfinder/com.synology.DSfinder.MainActivity"
++      ],
++      "unverified": [
++        "com.synology.DSfinder/com.synology.DSfinder.ui.SplashActivity",
++        "com.synology.DSfinder/.ui.SplashActivity",
++        "com.synology.DSfinder/com.synology.DSfinder.MainActivity"
++      ]
++    },
++    {
++      "name": "Synology Drive",
++      "drawable": "synologydrive",
++      "color": "#4FACFE",
++      "glyph": "sync_ring",
++      "category": "FILES",
++      "components": [
++        "com.synology.server.SynologyDrive/com.synology.server.SynologyDrive.ui.SplashActivity",
++        "com.synology.dscloud/com.synology.dscloud.ui.SplashActivity",
++        "com.synology.dscloud/.ui.SplashActivity"
++      ],
++      "unverified": [
++        "com.synology.server.SynologyDrive/com.synology.server.SynologyDrive.ui.SplashActivity",
++        "com.synology.dscloud/com.synology.dscloud.ui.SplashActivity",
++        "com.synology.dscloud/.ui.SplashActivity"
++      ]
++    },
++    {
++      "name": "DS get",
++      "drawable": "dsget",
++      "color": "#FBBF24",
++      "glyph": "download_arrow",
++      "category": "TOOL",
++      "components": [
++        "com.synology.DSget/com.synology.DSget.ui.SplashActivity",
++        "com.synology.DSget/.ui.SplashActivity",
++        "com.synology.DSget/com.synology.DSget.MainActivity"
++      ],
++      "unverified": [
++        "com.synology.DSget/com.synology.DSget.ui.SplashActivity",
++        "com.synology.DSget/.ui.SplashActivity",
++        "com.synology.DSget/com.synology.DSget.MainActivity"
++      ]
++    },
++    {
++      "name": "FX File Explorer",
++      "drawable": "fxfile",
++      "color": "#00D4FF",
++      "glyph": "folder_fx",
++      "category": "FILES",
++      "components": [
++        "nextapp.fx/.FX",
++        "nextapp.fx/nextapp.fx.ui.ExplorerActivity"
++      ],
++      "unverified": [
++        "nextapp.fx/nextapp.fx.ui.ExplorerActivity"
++      ]
++    },
++    {
++      "name": "Solid Explorer",
++      "drawable": "solidexplorer",
++      "color": "#34D399",
++      "glyph": "folder_solid",
++      "category": "FILES",
++      "components": [
++        "pl.solidexplorer2/pl.solidexplorer2.SolidExplorer",
++        "pl.solidexplorer2/.SolidExplorer"
++      ],
++      "unverified": [
++        "pl.solidexplorer2/pl.solidexplorer2.SolidExplorer",
++        "pl.solidexplorer2/.SolidExplorer"
++      ]
++    },
++    {
++      "name": "Material Files",
++      "drawable": "materialfiles",
++      "color": "#00E5FF",
++      "glyph": "folder",
++      "category": "FILES",
++      "components": [
++        "me.zhanghai.android.files/me.zhanghai.android.files.filelist.FileListActivity",
++        "me.zhanghai.android.files/.filelist.FileListActivity"
++      ],
++      "unverified": [
++        "me.zhanghai.android.files/me.zhanghai.android.files.filelist.FileListActivity",
++        "me.zhanghai.android.files/.filelist.FileListActivity"
++      ]
++    },
++    {
++      "name": "Ghost Commander",
++      "drawable": "ghostcommander",
++      "color": "#8B949E",
++      "glyph": "folder",
++      "category": "FILES",
++      "components": [
++        "com.ghostsq.commander/com.ghostsq.commander.FileCommander",
++        "com.ghostsq.commander/.FileCommander"
++      ],
++      "unverified": [
++        "com.ghostsq.commander/com.ghostsq.commander.FileCommander",
++        "com.ghostsq.commander/.FileCommander"
++      ]
+     }
+   ]
+ }
