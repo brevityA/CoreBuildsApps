@@ -1,4 +1,6 @@
 import re
+
+from typeface import monogram_body, monogram_text
 """
 Core Builds Icon Pack — glyph library.
 
@@ -683,202 +685,147 @@ GLYPHS.update({
 # ==========================================================================
 # Monogram set A-Z and 0-9.
 #
-# Written because a pack this size needs a distinct fallback: a repeated
-# generic glyph across dozens of apps is what made the earlier set read as a
-# rebrand. An app's own initial is always specific to it.
-#
-# Original stroke geometry on the 512 grid - single weight, rounded
-# terminals, matching the monoline language. Not traced from any typeface.
+# Driven from Outfit ExtraBold (tools/typeface.py) so every letter shares
+# the same weight, contrast and optical box. Hand-drawn strokes drifted
+# letter-to-letter; a row of fallback icons then read as mixed alphabets.
+# Outlines are converted to paths — nothing ships as <text>.
 # ==========================================================================
 
 
 def monogram_0(c):
-    """Monogram 0 — original stroke geometry, monoline weight."""
-    return (f'<path d="M 256 116 C 322 116 356 176 356 256 C 356 336 322 396 256 396 C 190 396 156 336 156 256 C 156 176 190 116 256 116 Z" {_s(c, 40)}/>')
+    return monogram_body("0", c)
 
 
 def monogram_1(c):
-    """Monogram 1 — original stroke geometry, monoline weight."""
-    return (f'<path d="M 186 176 L 256 116 L 256 396" {_s(c, 40)}/>'
-            f'<path d="M 190 396 L 326 396" {_s(c, 40)}/>')
+    return monogram_body("1", c)
 
 
 def monogram_2(c):
-    """Monogram 2 — original stroke geometry, monoline weight."""
-    return (f'<path d="M 172 176 C 196 128 300 112 336 160 C 372 208 320 258 268 300 L 168 396 L 348 396" {_s(c, 40)}/>')
+    return monogram_body("2", c)
 
 
 def monogram_3(c):
-    """Monogram 3 — original stroke geometry, monoline weight."""
-    return (f'<path d="M 176 162 C 210 116 320 118 340 172 C 356 218 306 254 266 254" {_s(c, 40)}/>'
-            f'<path d="M 266 254 C 320 254 360 286 348 340 C 332 398 208 402 172 350" {_s(c, 40)}/>')
+    return monogram_body("3", c)
 
 
 def monogram_4(c):
-    """Monogram 4 — original stroke geometry, monoline weight."""
-    return (f'<path d="M 300 396 L 300 116 L 148 306 L 356 306" {_s(c, 40)}/>')
+    return monogram_body("4", c)
 
 
 def monogram_5(c):
-    """Monogram 5 — original stroke geometry, monoline weight."""
-    return (f'<path d="M 340 116 L 196 116 L 180 250 C 232 214 318 226 342 282 C 366 342 314 396 250 396 C 212 396 182 382 164 358" {_s(c, 40)}/>')
+    return monogram_body("5", c)
 
 
 def monogram_6(c):
-    """Monogram 6 — original stroke geometry, monoline weight."""
-    return (f'<path d="M 330 140 C 262 108 178 152 168 246 C 158 340 210 396 268 396 C 322 396 356 356 356 312 C 356 262 316 230 268 230 C 222 230 186 258 174 292" {_s(c, 40)}/>')
+    return monogram_body("6", c)
 
 
 def monogram_8(c):
-    """Monogram 8 — original stroke geometry, monoline weight."""
-    return (f'<path d="M 256 116 C 306 116 336 148 336 184 C 336 220 306 246 256 246 C 206 246 176 220 176 184 C 176 148 206 116 256 116 Z" {_s(c, 40)}/>'
-            f'<path d="M 256 246 C 314 246 350 282 350 322 C 350 364 312 396 256 396 C 200 396 162 364 162 322 C 162 282 198 246 256 246 Z" {_s(c, 40)}/>')
+    return monogram_body("8", c)
 
 
 def monogram_A(c):
-    """Monogram A — original stroke geometry, monoline weight."""
-    return (f'<path d="M 138 396 L 256 116 L 374 396" {_s(c, 40)}/>'
-            f'<path d="M 190 300 L 322 300" {_s(c, 40)}/>')
+    return monogram_body("A", c)
 
 
 def monogram_B(c):
-    """Monogram B — original stroke geometry, monoline weight."""
-    return (f'<path d="M 176 116 L 176 396" {_s(c, 40)}/>'
-            f'<path d="M 176 116 L 286 116 C 342 116 342 246 286 246 L 176 246" {_s(c, 40)}/>'
-            f'<path d="M 176 246 L 296 246 C 354 246 354 396 296 396 L 176 396" {_s(c, 40)}/>')
+    return monogram_body("B", c)
 
 
 def monogram_C(c):
-    """Monogram C — original stroke geometry, monoline weight."""
-    return (f'<path d="M 360 176 C 322 130 250 116 202 152 C 148 192 140 320 202 360 C 250 392 322 382 360 336" {_s(c, 40)}/>')
+    return monogram_body("C", c)
 
 
 def monogram_D(c):
-    """Monogram D — original stroke geometry, monoline weight."""
-    return (f'<path d="M 178 116 L 178 396 L 262 396 C 356 396 384 330 384 256 C 384 182 356 116 262 116 Z" {_s(c, 40)}/>')
+    return monogram_body("D", c)
 
 
 def monogram_E(c):
-    """Monogram E — original stroke geometry, monoline weight."""
-    return (f'<path d="M 350 116 L 172 116 L 172 396 L 350 396" {_s(c, 40)}/>'
-            f'<path d="M 172 256 L 320 256" {_s(c, 40)}/>')
+    return monogram_body("E", c)
 
 
 def monogram_F(c):
-    """Monogram F — original stroke geometry, monoline weight."""
-    return (f'<path d="M 350 116 L 172 116 L 172 396" {_s(c, 40)}/>'
-            f'<path d="M 172 256 L 316 256" {_s(c, 40)}/>')
+    return monogram_body("F", c)
 
 
 def monogram_G(c):
-    """Monogram G — original stroke geometry, monoline weight."""
-    return (f'<path d="M 360 176 C 322 130 250 116 202 152 C 148 192 140 320 202 360 C 258 396 344 380 362 320 L 362 262 L 282 262" {_s(c, 40)}/>')
+    return monogram_body("G", c)
 
 
 def monogram_H(c):
-    """Monogram H — original stroke geometry, monoline weight."""
-    return (f'<path d="M 168 116 L 168 396" {_s(c, 40)}/>'
-            f'<path d="M 344 116 L 344 396" {_s(c, 40)}/>'
-            f'<path d="M 168 256 L 344 256" {_s(c, 40)}/>')
+    return monogram_body("H", c)
 
 
 def monogram_I(c):
-    """Monogram I — original stroke geometry, monoline weight."""
-    return (f'<path d="M 256 116 L 256 396" {_s(c, 40)}/>'
-            f'<path d="M 190 116 L 322 116" {_s(c, 40)}/>'
-            f'<path d="M 190 396 L 322 396" {_s(c, 40)}/>')
+    return monogram_body("I", c)
 
 
 def monogram_J(c):
-    """Monogram J — original stroke geometry, monoline weight."""
-    return (f'<path d="M 330 116 L 330 320 C 330 384 256 404 206 372" {_s(c, 40)}/>')
+    return monogram_body("J", c)
 
 
 def monogram_K(c):
-    """Monogram K — original stroke geometry, monoline weight."""
-    return (f'<path d="M 176 116 L 176 396" {_s(c, 40)}/>'
-            f'<path d="M 344 116 L 200 258" {_s(c, 40)}/>'
-            f'<path d="M 244 222 L 352 396" {_s(c, 40)}/>')
+    return monogram_body("K", c)
 
 
 def monogram_L(c):
-    """Monogram L — original stroke geometry, monoline weight."""
-    return (f'<path d="M 180 116 L 180 396 L 348 396" {_s(c, 40)}/>')
+    return monogram_body("L", c)
 
 
 def monogram_M(c):
-    """Monogram M — original stroke geometry, monoline weight."""
-    return (f'<path d="M 150 396 L 150 116 L 256 254 L 362 116 L 362 396" {_s(c, 40)}/>')
+    return monogram_body("M", c)
 
 
 def monogram_N(c):
-    """Monogram N — original stroke geometry, monoline weight."""
-    return (f'<path d="M 168 396 L 168 116 L 344 396 L 344 116" {_s(c, 40)}/>')
+    return monogram_body("N", c)
 
 
 def monogram_O(c):
-    """Monogram O — original stroke geometry, monoline weight."""
-    return (f'<path d="M 256 116 C 330 116 372 176 372 256 C 372 336 330 396 256 396 C 182 396 140 336 140 256 C 140 176 182 116 256 116 Z" {_s(c, 40)}/>')
+    return monogram_body("O", c)
 
 
 def monogram_P(c):
-    """Monogram P — original stroke geometry, monoline weight."""
-    return (f'<path d="M 180 396 L 180 116 L 282 116 C 344 116 358 168 358 202 C 358 236 344 288 282 288 L 180 288" {_s(c, 40)}/>')
+    return monogram_body("P", c)
 
 
 def monogram_Q(c):
-    """Monogram Q — original stroke geometry, monoline weight."""
-    return (f'<path d="M 256 116 C 330 116 372 176 372 256 C 372 336 330 396 256 396 C 182 396 140 336 140 256 C 140 176 182 116 256 116 Z" {_s(c, 40)}/>'
-            f'<path d="M 296 320 L 380 412" {_s(c, 40)}/>')
+    return monogram_body("Q", c)
 
 
 def monogram_R(c):
-    """Monogram R — original stroke geometry, monoline weight."""
-    return (f'<path d="M 180 396 L 180 116 L 282 116 C 344 116 358 168 358 200 C 358 232 344 282 282 282 L 180 282" {_s(c, 40)}/>'
-            f'<path d="M 268 282 L 366 396" {_s(c, 40)}/>')
+    return monogram_body("R", c)
 
 
 def monogram_S(c):
-    """Monogram S — original stroke geometry, monoline weight."""
-    return (f'<path d="M 348 172 C 314 128 218 124 194 176 C 170 228 246 254 288 266 C 336 280 356 314 330 350 C 300 392 210 386 172 342" {_s(c, 40)}/>')
+    return monogram_body("S", c)
 
 
 def monogram_T(c):
-    """Monogram T — original stroke geometry, monoline weight."""
-    return (f'<path d="M 148 116 L 364 116" {_s(c, 40)}/>'
-            f'<path d="M 256 116 L 256 396" {_s(c, 40)}/>')
+    return monogram_body("T", c)
 
 
 def monogram_U(c):
-    """Monogram U — original stroke geometry, monoline weight."""
-    return (f'<path d="M 168 116 L 168 300 C 168 366 210 396 256 396 C 302 396 344 366 344 300 L 344 116" {_s(c, 40)}/>')
+    return monogram_body("U", c)
 
 
 def monogram_V(c):
-    """Monogram V — original stroke geometry, monoline weight."""
-    return (f'<path d="M 152 116 L 256 396 L 360 116" {_s(c, 40)}/>')
+    return monogram_body("V", c)
 
 
 def monogram_W(c):
-    """Monogram W — original stroke geometry, monoline weight."""
-    return (f'<path d="M 128 116 L 184 396 L 256 208 L 328 396 L 384 116" {_s(c, 40)}/>')
+    return monogram_body("W", c)
 
 
 def monogram_X(c):
-    """Monogram X — original stroke geometry, monoline weight."""
-    return (f'<path d="M 168 116 L 344 396" {_s(c, 40)}/>'
-            f'<path d="M 344 116 L 168 396" {_s(c, 40)}/>')
+    return monogram_body("X", c)
 
 
 def monogram_Y(c):
-    """Monogram Y — original stroke geometry, monoline weight."""
-    return (f'<path d="M 160 116 L 256 262 L 352 116" {_s(c, 40)}/>'
-            f'<path d="M 256 262 L 256 396" {_s(c, 40)}/>')
+    return monogram_body("Y", c)
 
 
 def monogram_Z(c):
-    """Monogram Z — original stroke geometry, monoline weight."""
-    return (f'<path d="M 168 116 L 348 116 L 168 396 L 348 396" {_s(c, 40)}/>')
+    return monogram_body("Z", c)
 
 
 GLYPHS.update({
@@ -1022,4 +969,138 @@ GLYPHS.update({
     "janky_play": janky_play,
     "tivimate_grid": tivimate_grid,
     "downloader_arrow": downloader_arrow,
+})
+
+
+# ==========================================================================
+# File transfer, file managers, Synology NAS, Sparkle TV.
+# Original geometry — suggest the app, never trace a vendor mark.
+# ==========================================================================
+
+
+def localsend_nodes(c):
+    """LocalSend — two devices passing a packet across the LAN."""
+    return (
+        f'<rect x="64" y="150" width="148" height="212" rx="36" {_s(c, 32)}/>'
+        f'<rect x="300" y="150" width="148" height="212" rx="36" {_s(c, 32)}/>'
+        f'<path d="M 228 220 L 284 220" {_s(c, 28)}/>'
+        f'<path d="M 256 198 L 284 220 L 256 242" {_s(c, 28)}/>'
+        f'<path d="M 284 292 L 228 292" {_s(c, 28)}/>'
+        f'<path d="M 256 270 L 228 292 L 256 314" {_s(c, 28)}/>'
+    )
+
+
+def sparkle_burst(c):
+    """Sparkle TV — a 4-point sparkle over a screen. Extra playlists, live."""
+    return (
+        f'<rect x="72" y="128" width="368" height="232" rx="40" {_s(c, 32)}/>'
+        f'<path d="M 176 420 L 336 420" {_s(c, 28)}/>'
+        f'<path d="M 256 360 L 256 420" {_s(c, 24)}/>'
+        # 4-point sparkle, original geometry
+        f'<path d="M 256 86 L 276 196 L 386 216 L 276 236 L 256 346 '
+        f'L 236 236 L 126 216 L 236 196 Z" {_s(c, 28)}/>'
+    )
+
+
+def nas_stack(c):
+    """Synology / NAS — three stacked drive bays. The disk shelf is the product."""
+    return (
+        f'<rect x="86" y="92" width="340" height="92" rx="22" {_s(c, 30)}/>'
+        f'<rect x="86" y="210" width="340" height="92" rx="22" {_s(c, 30)}/>'
+        f'<rect x="86" y="328" width="340" height="92" rx="22" {_s(c, 30)}/>'
+        f'<circle cx="138" cy="138" r="14" {_f(c)}/>'
+        f'<circle cx="138" cy="256" r="14" {_f(c)}/>'
+        f'<circle cx="138" cy="374" r="14" {_f(c)}/>'
+        f'<path d="M 178 138 L 372 138" {_s(c, 22)}/>'
+        f'<path d="M 178 256 L 372 256" {_s(c, 22)}/>'
+        f'<path d="M 178 374 L 372 374" {_s(c, 22)}/>'
+    )
+
+
+def nas_play(c):
+    """DS video — drive shelf with a play wedge."""
+    return (
+        f'<rect x="72" y="118" width="368" height="276" rx="36" {_s(c, 32)}/>'
+        f'<path d="M 72 210 L 440 210" {_s(c, 24)}/>'
+        f'<path d="M 72 302 L 440 302" {_s(c, 24)}/>'
+        f'<path d="M 214 168 L 214 344 L 348 256 Z" {_s(c, 30)}/>'
+    )
+
+
+def nas_image(c):
+    """DS photo — drive shelf framing a landscape."""
+    return (
+        f'<rect x="72" y="118" width="368" height="276" rx="36" {_s(c, 32)}/>'
+        f'<path d="M 118 318 L 196 232 L 256 286 L 318 214 L 394 318 Z" {_s(c, 28)}/>'
+        f'<circle cx="168" cy="186" r="22" {_s(c, 24)}/>'
+    )
+
+
+def folder_rs(c):
+    """RS File Manager — folder with a file-index list, not a letter."""
+    return (
+        f'<path d="M 80 152 L 216 152 L 258 206 L 432 206 L 432 372 '
+        f'C 432 384 422 394 410 394 L 102 394 C 90 394 80 384 80 372 Z" '
+        f'{_s(c, 32)}/>'
+        f'<path d="M 156 262 L 356 262" {_s(c, 24)}/>'
+        f'<path d="M 156 308 L 356 308" {_s(c, 24)}/>'
+        f'<path d="M 156 354 L 300 354" {_s(c, 24)}/>'
+    )
+
+
+def folder_wifi(c):
+    """WiFi File Explorer — folder radiating a short-range arc."""
+    return (
+        f'<path d="M 80 168 L 216 168 L 258 222 L 432 222 L 432 388 '
+        f'C 432 400 422 410 410 410 L 102 410 C 90 410 80 400 80 388 Z" '
+        f'{_s(c, 32)}/>'
+        f'<path d="M 176 118 C 216 86 296 86 336 118" {_s(c, 26)}/>'
+        f'<path d="M 204 148 C 228 128 284 128 308 148" {_s(c, 26)}/>'
+        f'<circle cx="256" cy="172" r="10" {_f(c)}/>'
+    )
+
+
+def folder_fx(c):
+    """FX File Explorer — folder with a crossed tab."""
+    return (
+        f'<path d="M 80 152 L 216 152 L 258 206 L 432 206 L 432 372 '
+        f'C 432 384 422 394 410 394 L 102 394 C 90 394 80 384 80 372 Z" '
+        f'{_s(c, 32)}/>'
+        f'<path d="M 176 250 L 336 346" {_s(c, 28)}/>'
+        f'<path d="M 336 250 L 176 346" {_s(c, 28)}/>'
+    )
+
+
+def folder_solid(c):
+    """Solid Explorer — folder with a filled inner plate."""
+    return (
+        f'<path d="M 80 152 L 216 152 L 258 206 L 432 206 L 432 372 '
+        f'C 432 384 422 394 410 394 L 102 394 C 90 394 80 384 80 372 Z" '
+        f'{_s(c, 32)}/>'
+        f'<rect x="148" y="248" width="216" height="96" rx="18" {_s(c, 26)}/>'
+    )
+
+
+def radar_dish(c):
+    """DS finder — a dish sweeping for a NAS on the LAN."""
+    return (
+        f'<path d="M 96 392 C 96 250 210 136 352 136" {_s(c, 34)}/>'
+        f'<circle cx="124" cy="368" r="28" {_s(c, 26)}/>'
+        f'<path d="M 124 368 L 256 236" {_s(c, 26)}/>'
+        f'<path d="M 300 96 C 372 96 448 172 448 244" {_s(c, 26)}/>'
+        f'<path d="M 324 148 C 368 148 412 192 412 236" {_s(c, 26)}/>'
+    )
+
+
+GLYPHS.update({
+    "localsend_nodes": localsend_nodes,
+    "sparkle_burst": sparkle_burst,
+    "nas_stack": nas_stack,
+    "nas_play": nas_play,
+    "nas_image": nas_image,
+    "folder_rs": folder_rs,
+    "folder_wifi": folder_wifi,
+    "folder_fx": folder_fx,
+    "folder_solid": folder_solid,
+    "radar_dish": radar_dish,
 })

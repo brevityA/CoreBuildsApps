@@ -3,7 +3,11 @@
     <string name="app_name">Core Builds Icon Pack</string>
     <string name="kicker">CORE BUILDS · ICON PACK</string>
     <string name="tagline">Transparent app icons for Projectivy on Android TV.</string>
-    <string name="icon_count_fmt">%1$d icons installed · pack v1.4.0</string>
+    <string name="icon_count_fmt">%1$d icons installed · pack v1.5.0</string>
+    <string name="icon_filter_fmt">%1$d of %2$d icons</string>
+    <string name="search_hint">Find an app by name</string>
+    <string name="chip_all">All</string>
+    <string name="icon_selected_fmt">%1$s · %2$s. Assign it from the launcher icon picker if it did not auto-apply.</string>
     <string name="cta_open_projectivy">Open Projectivy settings</string>
     <string name="cta_sub">Opens Projectivy. Set it under Appearance → Cards → Icon Pack. Nothing is changed for you.</string>
     <string name="projectivy_opened">Projectivy opened. Go to Appearance → Cards → Icon Pack → Core Builds.</string>

@@ -1,2 +1,4 @@
 # Pinned so PNG output stays reproducible across machines and CI.
 cairosvg==2.9.0
+fonttools==4.59.0
+Pillow==10.4.0

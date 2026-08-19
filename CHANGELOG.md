@@ -4,6 +4,39 @@ All notable changes to the Core Builds Icon Pack. Format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); versions follow
 [SemVer](https://semver.org/spec/v2.0.0.html).
 
+## [1.5.0] — 2026-08-18
+
+Outfit wordmarks, dedicated file/NAS icons, named in-app browser.
+
+### Added
+- **Outfit Bold / ExtraBold** bundled under `tools/fonts/` (SIL OFL). Banner
+  wordmarks and square monograms are converted to paths from that one family,
+  so a row of cards no longer mixes hand-drawn letters with whatever sans the
+  host has installed.
+- **14 icons**: LocalSend, RS File Manager, Sparkle TV, DS file, DS video,
+  DS photo, DS audio, DS finder, Synology Drive, DS get, FX File Explorer,
+  Solid Explorer, Material Files, Ghost Commander.
+- 10 new glyphs: `localsend_nodes`, `sparkle_burst`, `nas_stack`, `nas_play`,
+  `nas_image`, `folder_rs`, `folder_wifi`, `folder_fx`, `folder_solid`,
+  `radar_dish`.
+- In-app **category chips**, **name search**, and **labeled tiles**. D-pad
+  moves apply → chips → search → grid; the grid is no longer trapped inside
+  a NestedScrollView.
+- `drawable.xml` grouped by catalog category (Banners · Files, Square · Live
+  TV, …) so Projectivy's icon picker can jump a section.
+
+### Fixed
+- **200+ slug names** imported from package fragments now read as app names
+  (WiFi File Explorer, CX File Explorer, X-plore, 9Now, Peacock, …).
+- **Files** no longer steals CX / MiXplorer / FX components. Each file
+  manager maps to its own icon. X-plore is Files, not Gaming.
+- Banner wordmarks no longer depend on DejaVu/Liberation being present.
+
+### Notes
+- New Synology / LocalSend / RS File Manager / Sparkle TV components are
+  best-known, not device-confirmed. If one does not auto-assign, open an
+  issue with `adb shell cmd package resolve-activity --brief <package>`.
+
 ## [1.1.0] — 2026-08-17
 
 Built from a real device scan (`himalaya`, Android 14 / API 34).

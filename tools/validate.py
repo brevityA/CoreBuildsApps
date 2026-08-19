@@ -204,21 +204,22 @@ def main():
         except ImportError:
             pass
 
-    # 5f. Wordmarks must be the bold sans stack, not the display serif.
+    # 5f. Wordmarks are Outfit Bold converted to paths (tools/typeface.py).
     # Brand Guide §04 scopes the serif to display copy and says "never bold";
-    # a card label is UI text, which the guide assigns to system-ui at 600-800.
-    # A silently-failed edit once left these rendering serif, so assert it.
+    # a card label is UI text. Path conversion keeps every machine on the same
+    # outlines — a <text> fallback would pick DejaVu on one host and nothing
+    # on another, which is what made earlier wordmarks look mixed.
     banner_svgs = ROOT / "assets" / "banners"
     if banner_svgs.exists():
         for f in sorted(banner_svgs.glob("*.svg")):
             body = f.read_text(encoding="utf-8")
-            if "<text" not in body:
-                continue          # glyph-only banner, no wordmark
             check("Georgia" not in body,
                   f"banner {f.stem}: wordmark is set in Georgia — §04 reserves "
-                  f"the serif for display copy, card labels are bold sans")
-            check('font-weight="700"' in body,
-                  f"banner {f.stem}: wordmark is missing font-weight 700")
+                  f"the serif for display copy, card labels are Outfit Bold")
+            if "<text" in body:
+                check('font-weight="700"' in body,
+                      f"banner {f.stem}: live <text> wordmark is missing "
+                      f"font-weight 700 — convert it via typeface.wordmark_spans")
 
     # 5g. Monoline discipline (style AA).
     #

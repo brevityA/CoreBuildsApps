@@ -1,0 +1,663 @@
+diff --git a/app/build.gradle.kts b/app/build.gradle.kts
+index 7f0a529..c614f0c 100644
+--- a/app/build.gradle.kts
++++ b/app/build.gradle.kts
+@@ -11,8 +11,8 @@ android {
+         applicationId = "tv.corebuilds.iconpack"
+         minSdk = 21
+         targetSdk = 34
+-        versionCode = 6
+-        versionName = "1.4.0"
++        versionCode = 7
++        versionName = "1.5.0"
+     }
+ 
+     signingConfigs {
+diff --git a/app/src/main/java/tv/corebuilds/iconpack/ChipAdapter.kt b/app/src/main/java/tv/corebuilds/iconpack/ChipAdapter.kt
+new file mode 100644
+index 0000000..25fd7c0
+--- /dev/null
++++ b/app/src/main/java/tv/corebuilds/iconpack/ChipAdapter.kt
+@@ -0,0 +1,36 @@
++package tv.corebuilds.iconpack
++
++import android.view.LayoutInflater
++import android.view.ViewGroup
++import android.widget.TextView
++import androidx.recyclerview.widget.RecyclerView
++
++/** Horizontal category chips. Activated chip is the current filter. */
++class ChipAdapter(
++    private val labels: List<String>,
++    private val keys: List<String>,
++    private var selected: String,
++    private val onPick: (String) -> Unit
++) : RecyclerView.Adapter<ChipAdapter.VH>() {
++
++    class VH(val view: TextView) : RecyclerView.ViewHolder(view)
++
++    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): VH {
++        val v = LayoutInflater.from(parent.context)
++            .inflate(R.layout.item_chip, parent, false) as TextView
++        return VH(v)
++    }
++
++    override fun onBindViewHolder(holder: VH, position: Int) {
++        val key = keys[position]
++        holder.view.text = labels[position]
++        holder.view.isActivated = key == selected
++        holder.view.setOnClickListener {
++            selected = key
++            notifyDataSetChanged()
++            onPick(key)
++        }
++    }
++
++    override fun getItemCount() = keys.size
++}
+diff --git a/app/src/main/java/tv/corebuilds/iconpack/IconAdapter.kt b/app/src/main/java/tv/corebuilds/iconpack/IconAdapter.kt
+index b3ecf72..899ed65 100644
+--- a/app/src/main/java/tv/corebuilds/iconpack/IconAdapter.kt
++++ b/app/src/main/java/tv/corebuilds/iconpack/IconAdapter.kt
+@@ -4,14 +4,24 @@ import android.view.LayoutInflater
+ import android.view.View
+ import android.view.ViewGroup
+ import android.widget.ImageView
++import android.widget.TextView
+ import androidx.recyclerview.widget.RecyclerView
+ 
+-/** Renders the pack's own drawables into the browser grid. */
+-class IconAdapter(private val names: Array<String>) :
+-    RecyclerView.Adapter<IconAdapter.VH>() {
++/** One labeled tile in the in-app browser. */
++class IconAdapter(
++    private var items: List<IconItem>,
++    private val onActivate: (IconItem) -> Unit
++) : RecyclerView.Adapter<IconAdapter.VH>() {
++
++    data class IconItem(
++        val drawable: String,
++        val name: String,
++        val category: String
++    )
+ 
+     class VH(view: View) : RecyclerView.ViewHolder(view) {
+         val image: ImageView = view.findViewById(R.id.icon_image)
++        val label: TextView = view.findViewById(R.id.icon_name)
+     }
+ 
+     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): VH {
+@@ -21,12 +31,19 @@ class IconAdapter(private val names: Array<String>) :
+     }
+ 
+     override fun onBindViewHolder(holder: VH, position: Int) {
+-        val name = names[position]
++        val item = items[position]
+         val ctx = holder.image.context
+-        val id = ctx.resources.getIdentifier(name, "drawable", ctx.packageName)
++        val id = ctx.resources.getIdentifier(item.drawable, "drawable", ctx.packageName)
+         if (id != 0) holder.image.setImageResource(id)
+-        holder.image.contentDescription = name
++        holder.label.text = item.name
++        holder.itemView.contentDescription = item.name
++        holder.itemView.setOnClickListener { onActivate(item) }
+     }
+ 
+-    override fun getItemCount() = names.size
++    override fun getItemCount() = items.size
++
++    fun submit(next: List<IconItem>) {
++        items = next
++        notifyDataSetChanged()
++    }
+ }
+diff --git a/app/src/main/java/tv/corebuilds/iconpack/MainActivity.kt b/app/src/main/java/tv/corebuilds/iconpack/MainActivity.kt
+index 7d092f5..37e9687 100644
+--- a/app/src/main/java/tv/corebuilds/iconpack/MainActivity.kt
++++ b/app/src/main/java/tv/corebuilds/iconpack/MainActivity.kt
+@@ -3,10 +3,14 @@ package tv.corebuilds.iconpack
+ import android.content.Intent
+ import android.net.Uri
+ import android.os.Bundle
++import android.text.Editable
++import android.text.TextWatcher
++import android.widget.EditText
+ import android.widget.TextView
+ import android.widget.Toast
+ import androidx.appcompat.app.AppCompatActivity
+ import androidx.recyclerview.widget.GridLayoutManager
++import androidx.recyclerview.widget.LinearLayoutManager
+ import androidx.recyclerview.widget.RecyclerView
+ 
+ /**
+@@ -19,28 +23,45 @@ class MainActivity : AppCompatActivity() {
+ 
+     private var target: ApplyIconPack.Launcher? = null
+     private var updateChecked = false
++    private lateinit var all: List<IconAdapter.IconItem>
++    private lateinit var adapter: IconAdapter
++    private var category = ALL
++    private var query = ""
+ 
+     override fun onCreate(savedInstanceState: Bundle?) {
+         super.onCreate(savedInstanceState)
+         setContentView(R.layout.activity_main)
+ 
+-        val icons = resources.getStringArray(R.array.icon_pack)
++        val drawables = resources.getStringArray(R.array.icon_pack)
++        val names = resources.getStringArray(R.array.icon_names)
++        val cats = resources.getStringArray(R.array.icon_categories)
++        all = drawables.indices.map { i ->
++            IconAdapter.IconItem(
++                drawable = drawables[i],
++                name = names.getOrElse(i) { drawables[i] },
++                category = cats.getOrElse(i) { "APP" }
++            )
++        }
+ 
+         findViewById<TextView>(R.id.count).text =
+-            getString(R.string.icon_count_fmt, icons.size)
++            getString(R.string.icon_count_fmt, all.size)
+ 
++        adapter = IconAdapter(all) { item ->
++            toast(getString(R.string.icon_selected_fmt, item.name, item.drawable))
++        }
+         findViewById<RecyclerView>(R.id.grid).apply {
+             layoutManager = GridLayoutManager(this@MainActivity, spanForScreen())
+-            adapter = IconAdapter(icons)
++            adapter = this@MainActivity.adapter
+             setHasFixedSize(true)
+         }
+ 
++        bindChips()
++        bindSearch()
+         bindApplyButton()
+     }
+ 
+     override fun onResume() {
+         super.onResume()
+-        // The user may have installed a launcher while we were backgrounded.
+         bindApplyButton()
+         if (!updateChecked) {
+             updateChecked = true
+@@ -48,13 +69,56 @@ class MainActivity : AppCompatActivity() {
+         }
+     }
+ 
+-    /**
+-     * Ask the repo whether a newer build exists.
+-     *
+-     * Reports and stops there — no silent download, no self-install. Doing
+-     * that needs REQUEST_INSTALL_PACKAGES, a sensitive permission, which is
+-     * a poor trade for a pack the user sideloaded deliberately.
+-     */
++    private fun bindChips() {
++        val present = all.map { it.category }.toSet()
++        val keys = mutableListOf(ALL)
++        val labels = mutableListOf(getString(R.string.chip_all))
++        for ((key, label) in CHIP_ORDER) {
++            if (key in present) {
++                keys += key
++                labels += label
++            }
++        }
++        findViewById<RecyclerView>(R.id.chip_row).apply {
++            layoutManager = LinearLayoutManager(
++                this@MainActivity, LinearLayoutManager.HORIZONTAL, false
++            )
++            adapter = ChipAdapter(labels, keys, ALL) { picked ->
++                category = picked
++                applyFilter()
++            }
++        }
++    }
++
++    private fun bindSearch() {
++        findViewById<EditText>(R.id.search).addTextChangedListener(object : TextWatcher {
++            override fun beforeTextChanged(s: CharSequence?, a: Int, b: Int, c: Int) {}
++            override fun onTextChanged(s: CharSequence?, a: Int, b: Int, c: Int) {}
++            override fun afterTextChanged(s: Editable?) {
++                query = s?.toString().orEmpty()
++                applyFilter()
++            }
++        })
++    }
++
++    private fun applyFilter() {
++        val q = query.trim().lowercase()
++        val filtered = all.filter { item ->
++            val catOk = category == ALL || item.category == category
++            val qOk = q.isEmpty()
++                || item.name.lowercase().contains(q)
++                || item.drawable.contains(q)
++            catOk && qOk
++        }
++        adapter.submit(filtered)
++        findViewById<TextView>(R.id.count).text =
++            if (filtered.size == all.size) {
++                getString(R.string.icon_count_fmt, all.size)
++            } else {
++                getString(R.string.icon_filter_fmt, filtered.size, all.size)
++            }
++    }
++
+     private fun checkForUpdate() {
+         UpdateChecker.check(this) { result ->
+             when (result) {
+@@ -67,12 +131,8 @@ class MainActivity : AppCompatActivity() {
+                         setOnClickListener { openReleases(result.apkUrl) }
+                     }
+                 }
+-                is UpdateChecker.Result.UpToDate -> {
+-                    // Say nothing on success; a toast on every launch is noise.
+-                }
++                is UpdateChecker.Result.UpToDate -> { }
+                 is UpdateChecker.Result.Failed -> {
+-                    // Name the failure rather than swallowing it, but keep it
+-                    // to the log — a failed check is not the user's problem.
+                     android.util.Log.w("CoreBuilds",
+                         getString(R.string.update_failed_fmt, result.reason))
+                 }
+@@ -89,10 +149,6 @@ class MainActivity : AppCompatActivity() {
+         }
+     }
+ 
+-    /**
+-     * The button names the launcher it will hand off to, before it's pressed —
+-     * no "Apply" that leaves you guessing where it went.
+-     */
+     private fun bindApplyButton() {
+         val button = findViewById<TextView>(R.id.apply_button)
+         val sub = findViewById<TextView>(R.id.apply_sub)
+@@ -123,8 +179,6 @@ class MainActivity : AppCompatActivity() {
+                 toast(getString(R.string.apply_not_installed_fmt, result.launcherName))
+ 
+             is ApplyIconPack.Result.Manual -> {
+-                // Direct apply bounced. Name the launcher, name the menu path,
+-                // and open it so the user isn't hunting.
+                 toast(
+                     getString(
+                         R.string.apply_manual_fmt,
+@@ -139,9 +193,33 @@ class MainActivity : AppCompatActivity() {
+ 
+     private fun spanForScreen(): Int {
+         val dp = resources.configuration.screenWidthDp
+-        return (dp / 140).coerceIn(3, 10)
++        return (dp / 148).coerceIn(3, 8)
+     }
+ 
+     private fun toast(msg: String) =
+         Toast.makeText(this, msg, Toast.LENGTH_LONG).show()
++
++    companion object {
++        private const val ALL = "ALL"
++        private val CHIP_ORDER = listOf(
++            "FILES" to "Files",
++            "LIVE" to "Live TV",
++            "STREAM" to "Streaming",
++            "MEDIA" to "Media",
++            "VOD" to "On demand",
++            "PLAYER" to "Players",
++            "MUSIC" to "Music",
++            "SPORT" to "Sport",
++            "TOOL" to "Tools",
++            "STORE" to "Stores",
++            "LAUNCHER" to "Launchers",
++            "VPN" to "VPN",
++            "GAMING" to "Gaming",
++            "DEBRID" to "Debrid",
++            "BROWSER" to "Browsers",
++            "VIDEO" to "Video",
++            "SYSTEM" to "System",
++            "APP" to "Apps"
++        )
++    }
+ }
+diff --git a/app/src/main/res/drawable/bg_chip_toggle.xml b/app/src/main/res/drawable/bg_chip_toggle.xml
+new file mode 100644
+index 0000000..e3d45a6
+--- /dev/null
++++ b/app/src/main/res/drawable/bg_chip_toggle.xml
+@@ -0,0 +1,24 @@
++<?xml version="1.0" encoding="utf-8"?>
++<selector xmlns:android="http://schemas.android.com/apk/res/android">
++    <item android:state_activated="true">
++        <shape android:shape="rectangle">
++            <solid android:color="#1A00D4FF" />
++            <corners android:radius="999dp" />
++            <stroke android:width="1dp" android:color="@color/cb_signal_cyan" />
++        </shape>
++    </item>
++    <item android:state_focused="true">
++        <shape android:shape="rectangle">
++            <solid android:color="@color/cb_panel" />
++            <corners android:radius="999dp" />
++            <stroke android:width="2dp" android:color="@color/cb_signal_cyan" />
++        </shape>
++    </item>
++    <item>
++        <shape android:shape="rectangle">
++            <solid android:color="@color/cb_card" />
++            <corners android:radius="999dp" />
++            <stroke android:width="1dp" android:color="#1AFFFFFF" />
++        </shape>
++    </item>
++</selector>
+diff --git a/app/src/main/res/drawable/bg_search.xml b/app/src/main/res/drawable/bg_search.xml
+new file mode 100644
+index 0000000..d8d7856
+--- /dev/null
++++ b/app/src/main/res/drawable/bg_search.xml
+@@ -0,0 +1,17 @@
++<?xml version="1.0" encoding="utf-8"?>
++<selector xmlns:android="http://schemas.android.com/apk/res/android">
++    <item android:state_focused="true">
++        <shape android:shape="rectangle">
++            <solid android:color="@color/cb_panel" />
++            <corners android:radius="11dp" />
++            <stroke android:width="2dp" android:color="@color/cb_signal_cyan" />
++        </shape>
++    </item>
++    <item>
++        <shape android:shape="rectangle">
++            <solid android:color="@color/cb_card" />
++            <corners android:radius="11dp" />
++            <stroke android:width="1dp" android:color="#1AFFFFFF" />
++        </shape>
++    </item>
++</selector>
+diff --git a/app/src/main/res/layout/activity_main.xml b/app/src/main/res/layout/activity_main.xml
+index 7a0d1d0..94477d6 100644
+--- a/app/src/main/res/layout/activity_main.xml
++++ b/app/src/main/res/layout/activity_main.xml
+@@ -1,94 +1,136 @@
+ <?xml version="1.0" encoding="utf-8"?>
+-<!-- Night chrome ground, glass card, cyan-gradient primary CTA (Brand Guide §05) -->
+-<androidx.core.widget.NestedScrollView
++<!-- TV-first: no NestedScrollView wrapping the grid. D-pad moves
++     apply → chips → search → tiles. Brand Guide §05 night chrome. -->
++<LinearLayout
+     xmlns:android="http://schemas.android.com/apk/res/android"
+     android:layout_width="match_parent"
+     android:layout_height="match_parent"
++    android:orientation="vertical"
+     android:background="@color/cb_night"
+-    android:fillViewport="true">
++    android:paddingStart="36dp"
++    android:paddingEnd="36dp"
++    android:paddingTop="24dp"
++    android:paddingBottom="16dp">
+ 
+     <LinearLayout
+         android:layout_width="match_parent"
+         android:layout_height="wrap_content"
+-        android:orientation="vertical"
+-        android:paddingStart="48dp"
+-        android:paddingEnd="48dp"
+-        android:paddingTop="36dp"
+-        android:paddingBottom="36dp">
++        android:gravity="center_vertical"
++        android:orientation="horizontal">
+ 
+-        <TextView
+-            android:id="@+id/kicker"
+-            android:layout_width="wrap_content"
++        <LinearLayout
++            android:layout_width="0dp"
+             android:layout_height="wrap_content"
+-            android:background="@drawable/bg_chip"
+-            android:paddingStart="12dp"
+-            android:paddingEnd="12dp"
+-            android:paddingTop="5dp"
+-            android:paddingBottom="5dp"
+-            android:letterSpacing="0.13"
+-            android:text="@string/kicker"
+-            android:textColor="@color/cb_signal_cyan"
+-            android:textSize="10sp"
+-            android:textStyle="bold" />
++            android:layout_weight="1"
++            android:orientation="vertical">
+ 
+-        <TextView
+-            android:layout_width="wrap_content"
+-            android:layout_height="wrap_content"
+-            android:layout_marginTop="14dp"
+-            android:fontFamily="serif"
+-            android:text="@string/app_name"
+-            android:textColor="@color/cb_ink"
+-            android:textSize="30sp" />
++            <TextView
++                android:id="@+id/kicker"
++                android:layout_width="wrap_content"
++                android:layout_height="wrap_content"
++                android:background="@drawable/bg_chip"
++                android:paddingStart="12dp"
++                android:paddingEnd="12dp"
++                android:paddingTop="5dp"
++                android:paddingBottom="5dp"
++                android:letterSpacing="0.13"
++                android:text="@string/kicker"
++                android:textColor="@color/cb_signal_cyan"
++                android:textSize="10sp"
++                android:textStyle="bold" />
+ 
+-        <TextView
+-            android:layout_width="wrap_content"
+-            android:layout_height="wrap_content"
+-            android:layout_marginTop="6dp"
+-            android:text="@string/tagline"
+-            android:textColor="@color/cb_slate"
+-            android:textSize="13sp" />
++            <TextView
++                android:layout_width="wrap_content"
++                android:layout_height="wrap_content"
++                android:layout_marginTop="10dp"
++                android:fontFamily="serif"
++                android:text="@string/app_name"
++                android:textColor="@color/cb_ink"
++                android:textSize="26sp" />
+ 
+-        <TextView
+-            android:id="@+id/count"
+-            android:layout_width="wrap_content"
+-            android:layout_height="wrap_content"
+-            android:layout_marginTop="4dp"
+-            android:fontFamily="monospace"
+-            android:textColor="@color/cb_slate"
+-            android:textSize="12sp" />
++            <TextView
++                android:id="@+id/count"
++                android:layout_width="wrap_content"
++                android:layout_height="wrap_content"
++                android:layout_marginTop="2dp"
++                android:fontFamily="monospace"
++                android:textColor="@color/cb_slate"
++                android:textSize="12sp" />
++        </LinearLayout>
+ 
+-        <TextView
+-            android:id="@+id/apply_button"
++        <LinearLayout
+             android:layout_width="wrap_content"
+             android:layout_height="wrap_content"
+-            android:layout_marginTop="22dp"
+-            android:background="@drawable/bg_cta"
+-            android:focusable="true"
+-            android:clickable="true"
+-            android:paddingStart="26dp"
+-            android:paddingEnd="26dp"
+-            android:paddingTop="14dp"
+-            android:paddingBottom="14dp"
+-            android:text="@string/cta_open_projectivy"
+-            android:textColor="@color/cb_cta_ink"
+-            android:textSize="14sp"
+-            android:textStyle="bold" />
++            android:gravity="end"
++            android:orientation="vertical">
+ 
+-        <TextView
+-            android:id="@+id/apply_sub"
+-            android:layout_width="wrap_content"
+-            android:layout_height="wrap_content"
+-            android:layout_marginTop="8dp"
+-            android:text="@string/cta_sub"
+-            android:textColor="@color/cb_slate"
+-            android:textSize="11sp" />
++            <TextView
++                android:id="@+id/apply_button"
++                android:layout_width="wrap_content"
++                android:layout_height="wrap_content"
++                android:background="@drawable/bg_cta"
++                android:focusable="true"
++                android:focusableInTouchMode="true"
++                android:nextFocusDown="@id/chip_row"
++                android:clickable="true"
++                android:paddingStart="22dp"
++                android:paddingEnd="22dp"
++                android:paddingTop="12dp"
++                android:paddingBottom="12dp"
++                android:text="@string/cta_open_projectivy"
++                android:textColor="@color/cb_cta_ink"
++                android:textSize="14sp"
++                android:textStyle="bold" />
+ 
+-        <androidx.recyclerview.widget.RecyclerView
+-            android:id="@+id/grid"
+-            android:layout_width="match_parent"
+-            android:layout_height="wrap_content"
+-            android:layout_marginTop="28dp"
+-            android:clipToPadding="false"
+-            android:nestedScrollingEnabled="false" />
++            <TextView
++                android:id="@+id/apply_sub"
++                android:layout_width="wrap_content"
++                android:layout_height="wrap_content"
++                android:layout_marginTop="6dp"
++                android:text="@string/cta_sub"
++                android:textColor="@color/cb_slate"
++                android:textSize="11sp" />
++        </LinearLayout>
+     </LinearLayout>
+-</androidx.core.widget.NestedScrollView>
++
++    <androidx.recyclerview.widget.RecyclerView
++        android:id="@+id/chip_row"
++        android:layout_width="match_parent"
++        android:layout_height="wrap_content"
++        android:layout_marginTop="18dp"
++        android:clipToPadding="false"
++        android:nextFocusUp="@id/apply_button"
++        android:nextFocusDown="@id/search"
++        android:orientation="horizontal" />
++
++    <EditText
++        android:id="@+id/search"
++        android:layout_width="match_parent"
++        android:layout_height="wrap_content"
++        android:layout_marginTop="12dp"
++        android:background="@drawable/bg_search"
++        android:focusable="true"
++        android:focusableInTouchMode="true"
++        android:hint="@string/search_hint"
++        android:imeOptions="actionSearch"
++        android:importantForAutofill="no"
++        android:inputType="text"
++        android:nextFocusUp="@id/chip_row"
++        android:nextFocusDown="@id/grid"
++        android:paddingStart="16dp"
++        android:paddingEnd="16dp"
++        android:paddingTop="10dp"
++        android:paddingBottom="10dp"
++        android:textColor="@color/cb_ink"
++        android:textColorHint="@color/cb_slate"
++        android:textSize="14sp" />
++
++    <androidx.recyclerview.widget.RecyclerView
++        android:id="@+id/grid"
++        android:layout_width="match_parent"
++        android:layout_height="0dp"
++        android:layout_marginTop="12dp"
++        android:layout_weight="1"
++        android:clipToPadding="false"
++        android:nextFocusUp="@id/search" />
++</LinearLayout>
+diff --git a/app/src/main/res/layout/item_chip.xml b/app/src/main/res/layout/item_chip.xml
+new file mode 100644
+index 0000000..b90b491
+--- /dev/null
++++ b/app/src/main/res/layout/item_chip.xml
+@@ -0,0 +1,16 @@
++<?xml version="1.0" encoding="utf-8"?>
++<TextView xmlns:android="http://schemas.android.com/apk/res/android"
++    android:id="@+id/chip_label"
++    android:layout_width="wrap_content"
++    android:layout_height="wrap_content"
++    android:layout_marginEnd="8dp"
++    android:background="@drawable/bg_chip_toggle"
++    android:clickable="true"
++    android:focusable="true"
++    android:focusableInTouchMode="true"
++    android:paddingStart="14dp"
++    android:paddingEnd="14dp"
++    android:paddingTop="8dp"
++    android:paddingBottom="8dp"
++    android:textColor="@color/cb_ink"
++    android:textSize="12sp" />
+diff --git a/app/src/main/res/layout/item_icon.xml b/app/src/main/res/layout/item_icon.xml
+index ac4de68..1acf640 100644
+--- a/app/src/main/res/layout/item_icon.xml
++++ b/app/src/main/res/layout/item_icon.xml
+@@ -1,14 +1,30 @@
+ <?xml version="1.0" encoding="utf-8"?>
+-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
++<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+     android:layout_width="match_parent"
+     android:layout_height="wrap_content"
+-    android:padding="6dp">
++    android:background="@drawable/bg_card"
++    android:clickable="true"
++    android:focusable="true"
++    android:focusableInTouchMode="true"
++    android:gravity="center_horizontal"
++    android:orientation="vertical"
++    android:padding="8dp">
+ 
+     <ImageView
+         android:id="@+id/icon_image"
+         android:layout_width="match_parent"
+-        android:layout_height="96dp"
+-        android:background="@drawable/bg_card"
+-        android:padding="18dp"
++        android:layout_height="72dp"
++        android:contentDescription="@null"
+         android:scaleType="fitCenter" />
+-</FrameLayout>
++
++    <TextView
++        android:id="@+id/icon_name"
++        android:layout_width="match_parent"
++        android:layout_height="wrap_content"
++        android:layout_marginTop="6dp"
++        android:ellipsize="end"
++        android:gravity="center"
++        android:maxLines="2"
++        android:textColor="@color/cb_ink"
++        android:textSize="11sp" />
++</LinearLayout>
+diff --git a/app/src/main/res/values/strings.xml b/app/src/main/res/values/strings.xml
+index df5f152..139fcdc 100644
+--- a/app/src/main/res/values/strings.xml
++++ b/app/src/main/res/values/strings.xml
+@@ -3,7 +3,11 @@
+     <string name="app_name">Core Builds Icon Pack</string>
+     <string name="kicker">CORE BUILDS · ICON PACK</string>
+     <string name="tagline">Transparent app icons for Projectivy on Android TV.</string>
+-    <string name="icon_count_fmt">%1$d icons installed · pack v1.4.0</string>
++    <string name="icon_count_fmt">%1$d icons installed · pack v1.5.0</string>
++    <string name="icon_filter_fmt">%1$d of %2$d icons</string>
++    <string name="search_hint">Find an app by name</string>
++    <string name="chip_all">All</string>
++    <string name="icon_selected_fmt">%1$s · %2$s. Assign it from the launcher icon picker if it did not auto-apply.</string>
+     <string name="cta_open_projectivy">Open Projectivy settings</string>
+     <string name="cta_sub">Opens Projectivy. Set it under Appearance → Cards → Icon Pack. Nothing is changed for you.</string>
+     <string name="projectivy_opened">Projectivy opened. Go to Appearance → Cards → Icon Pack → Core Builds.</string>

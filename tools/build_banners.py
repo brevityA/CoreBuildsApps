@@ -34,6 +34,7 @@ from pathlib import Path
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from glyphs import GLYPHS, monoline  # noqa: E402
+from typeface import FONT_WORDMARK, measure as type_measure, wordmark_spans  # noqa: E402
 
 ROOT = Path(__file__).resolve().parent.parent
 CATALOG = ROOT / "tools" / "catalog.json"
@@ -60,34 +61,22 @@ RAIL_PAD = 168            # rail inset from top/bottom, keeps ink under 72%
 KICKER = 46               # uppercase mono category size
 KICK_TRACK = 7.0          # .08em at this size, matching the site
 
-# Wordmarks are BOLD SANS, not serif.
+# Wordmarks are Outfit Bold, converted to paths.
 #
 # Brand Guide §04 scopes the serif to display copy — splash headlines, question
 # cards, doc covers — and says "never bold". An app card is not display copy;
 # it is a label read at distance, which §04 assigns to the system-ui stack at
-# 600-800 weight. The reference pack's icons read hard because their wordmarks
-# are heavy sans; a light serif at card size looks tentative next to them.
-#
-# Metrics come from DejaVu Sans Bold, which is close to the system-ui stack the
-# guide specifies. The SVG still requests the real stack first.
-FONT_CANDIDATES = [
-    "/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf",
-    "/usr/share/fonts/truetype/liberation/LiberationSans-Bold.ttf",
-]
-FONT_STACK = ("-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,"
-              "'DejaVu Sans',sans-serif")
+# 600-800 weight. One bundled family keeps every card the same optical voice
+# instead of whatever sans the host happens to have (DejaVu vs Liberation vs
+# missing), which is what made earlier wordmarks look mixed in a row.
 
 
 def _measure(text, size):
-    """Width of `text` at `size`, measured — falls back to an estimate."""
+    """Width of `text` at `size`, measured from Outfit Bold."""
     try:
-        from PIL import ImageFont
-        for p in FONT_CANDIDATES:
-            if os.path.exists(p):
-                return ImageFont.truetype(p, size).getlength(text)
+        return type_measure(text, size, FONT_WORDMARK)
     except Exception:
-        pass
-    return len(text) * size * 0.55
+        return len(text) * size * 0.52
 
 
 def esc(s):
@@ -200,17 +189,11 @@ def render(name, glyph, accent, category=None):
     spans = ""
     if has_kick:
         ky = baselines[0] - size * 0.92 - 10
-        spans += (f'<text x="{tx:.0f}" y="{ky:.0f}" fill="{ACCENT}" '
-                  f'font-family="ui-monospace,\'DejaVu Sans Mono\',monospace" '
-                  f'font-size="{KICKER}" font-weight="700" '
-                  f'letter-spacing="{KICK_TRACK}">{esc(category)}</text>\n  ')
+        kick_paths, _ = wordmark_spans([category], KICKER, tx, [ky], ACCENT)
+        spans += kick_paths + "\n  "
 
-    spans += "".join(
-        f'<text x="{tx:.0f}" y="{b:.0f}" fill="{INK}" '
-        f'font-family="{FONT_STACK}" font-weight="700" '
-        f'font-size="{size}" letter-spacing="-1.5">{esc(l)}</text>\n  '
-        for l, b in zip(lines, baselines)
-    )
+    mark, _ = wordmark_spans(lines, size, tx, baselines, INK)
+    spans += mark
 
     rail = (f'<defs><linearGradient id="cbRail" x1="0" y1="0" x2="0" y2="1">'
             f'<stop offset="0%" stop-color="{ACCENT}"/>'

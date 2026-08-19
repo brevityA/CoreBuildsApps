@@ -7,7 +7,7 @@
 **Transparent app icons for Projectivy Launcher on Android TV.**
 Precision-made. Verified live. Nothing hides.
 
-`501 icons` · `901 mapped components` · `v1.4.0`
+`515 icons` · `v1.5.0`
 
 </div>
 
@@ -41,9 +41,9 @@ Icons are **original geometry** drawn on a shared 512 grid — simple shapes, ro
 
 ## 🔷 What's covered
 
-501 icons across 21 categories — streaming, media centres, debrid services, players, launchers, tools, stores, live TV, music, sport, gaming, VPN, browsers, and more.
+515 icons across 21 categories — streaming, media centres, debrid services, players, launchers, tools, stores, live TV, music, sport, gaming, VPN, browsers, files, and more.
 
-Highlights: Stremio, Kodi, Jellyfin, Emby, Plex, Nuvio TV, Syncler, Weyd, TorBox, Real-Debrid, AllDebrid, Premiumize, Trakt, VLC, MX Player, SmartTube, YouTube, Spotify, Twitch, Downloader, Aurora Store, TiviMate, TV Bro, SYNC — plus Netflix, Prime Video, Disney+, Max, Apple TV, Stan, Binge, Kayo, ABC iview, 9Now, 7plus, 10 Play, SBS, and 460+ more.
+Highlights: Stremio, Kodi, Jellyfin, Emby, Plex, Nuvio TV, Syncler, Weyd, TorBox, Real-Debrid, AllDebrid, Premiumize, Trakt, VLC, MX Player, SmartTube, YouTube, Spotify, Twitch, Downloader, Aurora Store, TiviMate, TV Bro, SYNC, LocalSend, RS File Manager, Sparkle TV, DS file — plus Netflix, Prime Video, Disney+, Max, Apple TV, Stan, Binge, Kayo, ABC iview, 9Now, 7plus, 10 Play, SBS, and 470+ more.
 
 Full table with every mapped component: [**docs/IconPackList.md**](docs/IconPackList.md)
 
@@ -53,7 +53,7 @@ Full table with every mapped component: [**docs/IconPackList.md**](docs/IconPack
 
 ## 🔷 16:9 Banners
 
-Every icon ships a **320×180 monoline banner** for Projectivy's wide-card layout. One glyph, cyan→violet rail, uppercase mono category, bold-sans wordmark — generated from `tools/build_banners.py`.
+Every icon ships a **320×180 monoline banner** for Projectivy's wide-card layout. One glyph, cyan→violet rail, Outfit Bold wordmark (path-outlined so every machine renders the same) — generated from `tools/build_banners.py`.
 
 Appfilter maps to banners by default; square icons stay opt-in via `drawable.xml`.
 
@@ -147,14 +147,16 @@ Inherited from the brand guide, enforced by the generator and validator:
 
 ```
 tools/catalog.json           the single source of truth
-tools/glyphs.py              104 glyph primitives, pure geometry
+tools/glyphs.py              glyph primitives, original geometry
+tools/typeface.py            Outfit Bold/ExtraBold → SVG paths
+tools/fonts/                 Outfit OFL sources for wordmarks + monograms
 tools/build_icons.py         catalog → SVG, PNG, appfilter, docs
 tools/build_banners.py       catalog → 16:9 monoline banners
 tools/build_branding.py      launcher icon + Leanback banner
 tools/build_brand_preview.py branding preview sheet
-tools/validate.py            coherence checks (12800 at 501 icons)
-assets/svg/                  master vectors (501)
-assets/banners/              16:9 banners (501)
+tools/validate.py            coherence checks (12341 at 515 icons)
+assets/svg/                  master vectors (515)
+assets/banners/              16:9 banners (515)
 app/src/main/res/            the Android module
 Latestrelease/version.json   in-app update manifest
 docs/IconPackList.md         supported apps + components

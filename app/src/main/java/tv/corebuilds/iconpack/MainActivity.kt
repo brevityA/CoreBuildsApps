@@ -3,10 +3,14 @@ package tv.corebuilds.iconpack
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
+import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 
 /**
@@ -19,28 +23,45 @@ class MainActivity : AppCompatActivity() {
 
     private var target: ApplyIconPack.Launcher? = null
     private var updateChecked = false
+    private lateinit var all: List<IconAdapter.IconItem>
+    private lateinit var adapter: IconAdapter
+    private var category = ALL
+    private var query = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        val icons = resources.getStringArray(R.array.icon_pack)
+        val drawables = resources.getStringArray(R.array.icon_pack)
+        val names = resources.getStringArray(R.array.icon_names)
+        val cats = resources.getStringArray(R.array.icon_categories)
+        all = drawables.indices.map { i ->
+            IconAdapter.IconItem(
+                drawable = drawables[i],
+                name = names.getOrElse(i) { drawables[i] },
+                category = cats.getOrElse(i) { "APP" }
+            )
+        }
 
         findViewById<TextView>(R.id.count).text =
-            getString(R.string.icon_count_fmt, icons.size)
+            getString(R.string.icon_count_fmt, all.size)
 
+        adapter = IconAdapter(all) { item ->
+            toast(getString(R.string.icon_selected_fmt, item.name, item.drawable))
+        }
         findViewById<RecyclerView>(R.id.grid).apply {
             layoutManager = GridLayoutManager(this@MainActivity, spanForScreen())
-            adapter = IconAdapter(icons)
+            adapter = this@MainActivity.adapter
             setHasFixedSize(true)
         }
 
+        bindChips()
+        bindSearch()
         bindApplyButton()
     }
 
     override fun onResume() {
         super.onResume()
-        // The user may have installed a launcher while we were backgrounded.
         bindApplyButton()
         if (!updateChecked) {
             updateChecked = true
@@ -48,13 +69,56 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    /**
-     * Ask the repo whether a newer build exists.
-     *
-     * Reports and stops there — no silent download, no self-install. Doing
-     * that needs REQUEST_INSTALL_PACKAGES, a sensitive permission, which is
-     * a poor trade for a pack the user sideloaded deliberately.
-     */
+    private fun bindChips() {
+        val present = all.map { it.category }.toSet()
+        val keys = mutableListOf(ALL)
+        val labels = mutableListOf(getString(R.string.chip_all))
+        for ((key, label) in CHIP_ORDER) {
+            if (key in present) {
+                keys += key
+                labels += label
+            }
+        }
+        findViewById<RecyclerView>(R.id.chip_row).apply {
+            layoutManager = LinearLayoutManager(
+                this@MainActivity, LinearLayoutManager.HORIZONTAL, false
+            )
+            adapter = ChipAdapter(labels, keys, ALL) { picked ->
+                category = picked
+                applyFilter()
+            }
+        }
+    }
+
+    private fun bindSearch() {
+        findViewById<EditText>(R.id.search).addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, a: Int, b: Int, c: Int) {}
+            override fun onTextChanged(s: CharSequence?, a: Int, b: Int, c: Int) {}
+            override fun afterTextChanged(s: Editable?) {
+                query = s?.toString().orEmpty()
+                applyFilter()
+            }
+        })
+    }
+
+    private fun applyFilter() {
+        val q = query.trim().lowercase()
+        val filtered = all.filter { item ->
+            val catOk = category == ALL || item.category == category
+            val qOk = q.isEmpty()
+                || item.name.lowercase().contains(q)
+                || item.drawable.contains(q)
+            catOk && qOk
+        }
+        adapter.submit(filtered)
+        findViewById<TextView>(R.id.count).text =
+            if (filtered.size == all.size) {
+                getString(R.string.icon_count_fmt, all.size)
+            } else {
+                getString(R.string.icon_filter_fmt, filtered.size, all.size)
+            }
+    }
+
     private fun checkForUpdate() {
         UpdateChecker.check(this) { result ->
             when (result) {
@@ -67,12 +131,8 @@ class MainActivity : AppCompatActivity() {
                         setOnClickListener { openReleases(result.apkUrl) }
                     }
                 }
-                is UpdateChecker.Result.UpToDate -> {
-                    // Say nothing on success; a toast on every launch is noise.
-                }
+                is UpdateChecker.Result.UpToDate -> { }
                 is UpdateChecker.Result.Failed -> {
-                    // Name the failure rather than swallowing it, but keep it
-                    // to the log — a failed check is not the user's problem.
                     android.util.Log.w("CoreBuilds",
                         getString(R.string.update_failed_fmt, result.reason))
                 }
@@ -89,10 +149,6 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    /**
-     * The button names the launcher it will hand off to, before it's pressed —
-     * no "Apply" that leaves you guessing where it went.
-     */
     private fun bindApplyButton() {
         val button = findViewById<TextView>(R.id.apply_button)
         val sub = findViewById<TextView>(R.id.apply_sub)
@@ -123,8 +179,6 @@ class MainActivity : AppCompatActivity() {
                 toast(getString(R.string.apply_not_installed_fmt, result.launcherName))
 
             is ApplyIconPack.Result.Manual -> {
-                // Direct apply bounced. Name the launcher, name the menu path,
-                // and open it so the user isn't hunting.
                 toast(
                     getString(
                         R.string.apply_manual_fmt,
@@ -139,9 +193,33 @@ class MainActivity : AppCompatActivity() {
 
     private fun spanForScreen(): Int {
         val dp = resources.configuration.screenWidthDp
-        return (dp / 140).coerceIn(3, 10)
+        return (dp / 148).coerceIn(3, 8)
     }
 
     private fun toast(msg: String) =
         Toast.makeText(this, msg, Toast.LENGTH_LONG).show()
+
+    companion object {
+        private const val ALL = "ALL"
+        private val CHIP_ORDER = listOf(
+            "FILES" to "Files",
+            "LIVE" to "Live TV",
+            "STREAM" to "Streaming",
+            "MEDIA" to "Media",
+            "VOD" to "On demand",
+            "PLAYER" to "Players",
+            "MUSIC" to "Music",
+            "SPORT" to "Sport",
+            "TOOL" to "Tools",
+            "STORE" to "Stores",
+            "LAUNCHER" to "Launchers",
+            "VPN" to "VPN",
+            "GAMING" to "Gaming",
+            "DEBRID" to "Debrid",
+            "BROWSER" to "Browsers",
+            "VIDEO" to "Video",
+            "SYSTEM" to "System",
+            "APP" to "Apps"
+        )
+    }
 }
