@@ -4,6 +4,44 @@ All notable changes to the Core Builds Icon Pack. Format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); versions follow
 [SemVer](https://semver.org/spec/v2.0.0.html).
 
+## [1.5.1] — 2026-08-19
+
+Robustness. Mixed-launcher apply. Safer updater. Picker can hand a banner or a square. In-app update download. Name audit.
+
+### Fixed
+- **In-app install crashed.** `UpdateInstaller` wrote a FileProvider path but the manifest never declared the provider.
+- **Updater followed any redirect host.** Now https-only and GitHub CDN allowlisted; download must be a ZIP/APK and ≥ 200 KB.
+- **Install permission return did nothing.** After Unknown Sources, `onResume` now opens the installer once.
+- **Picker only sent a bitmap unless a rare extra was set.** Now always returns `EXTRA_SHORTCUT_ICON_RESOURCE` plus a bitmap fallback.
+- **Picker always delivered the 1:1 glyph.** Default is the 16:9 banner; a Banner / Square chip switches.
+- **Twitch / 19 other aliases** from SicMundus 1.1.9. Monet 1.0.76 has **no apply extra** — Manual path is the real contract.
+- **Launcher Manager** was labelled Lucky Manager (`com.wolf.google.lm`).
+- **180+ display names** that were still package slugs or vendor fragments
+  (Acorn TV, A&E, HISTORY, Fubo, Hulu, F1 TV, YouTube Kids, Paramount+,
+  Crave, Streamyfin, TIDAL, FLauncher, CinemaGlow, DRM Info, …).
+- **Twitch** was mapped to the mobile activity
+  (`tv.twitch.android.app/.core.LandingActivity`). Android TV launches
+  `tv.twitch.android.apps.TVLandingActivity` (older) or
+  `tv.twitch.starshot64.app.StarshotActivity` (current, SicMundus 1.1.9).
+  Both are now mapped, plus the older `TwitchActivity` alias (unverified).
+- **19 more documented aliases** harvested from Projectivy Icon Pack 1.1.9
+  for packages we already ship (10 Play You.i, iview `.ui.MainActivity`,
+  Kayo Fox Sports Martian, Stan splash, Max Beam, Trakt TV, S0undTV Fire TV,
+  Solid Explorer class name, SmartTube beta, …). Marked `unverified`.
+  Same approach as other TV packs: extra `ComponentInfo` lines, not a
+  package wildcard — Projectivy matches the literal string.
+
+### Added
+- FileProvider `tv.corebuilds.iconpack.update` + validator guards.
+- CI runs `build_banners.py` so renamed wordmarks cannot drift in XML/SVG.
+- Apply names Home first and lists every other known installed launcher.
+- **Download / Install** bar when `Latestrelease/version.json` is newer.
+  One press pulls the APK from GitHub and opens the system installer.
+- Apply targets every known installed launcher. The primary button names
+  the Home launcher (Projectivy, Monet, AT4K, Leanback on Fire, L TV,
+  FLauncher, ChillHub, Nova, Lawnchair, Apex, ADW). Extra chips list the
+  others. No apply contract → opens the launcher with the named path.
+
 ## [1.5.0] — 2026-08-18
 
 Outfit wordmarks, dedicated file/NAS icons, named in-app browser.

@@ -147,6 +147,33 @@ def main():
     check("com.spocky.projengmenu.icons.ACTION_PICK_ICON" in mf,
           "manifest: missing Projectivy's ACTION_PICK_ICON — pack won't appear "
           "in its per-app icon browser")
+    for pkg in ["com.klevico.monet", "com.overdevs.at4k"]:
+        check(f'<package android:name="{pkg}"' in mf,
+              f"manifest: <queries> missing {pkg} — cannot detect that launcher")
+
+    # 5c2. In-app updater. FileProvider + install permission are the whole
+    # contract; without them UpdateInstaller.install() throws at runtime.
+    check("android.permission.REQUEST_INSTALL_PACKAGES" in mf,
+          "manifest: missing REQUEST_INSTALL_PACKAGES — in-app install cannot start")
+    check('android:authorities="tv.corebuilds.iconpack.update"' in mf,
+          "manifest: FileProvider authority must be tv.corebuilds.iconpack.update")
+    check("androidx.core.content.FileProvider" in mf,
+          "manifest: FileProvider provider is missing — APK install will crash")
+    fp = RES / "xml" / "file_paths.xml"
+    check(fp.exists(), "xml/file_paths.xml missing — FileProvider has no paths")
+    if fp.exists():
+        fpt = fp.read_text()
+        check('path="updates/"' in fpt,
+              "file_paths.xml must expose cache/updates/ for the downloaded APK")
+    inst = (ROOT / "app" / "src" / "main" / "java" / "tv" / "corebuilds" /
+            "iconpack" / "UpdateInstaller.kt")
+    check(inst.exists(), "UpdateInstaller.kt is missing")
+    if inst.exists():
+        it = inst.read_text()
+        check('AUTHORITY = "tv.corebuilds.iconpack.update"' in it,
+              "UpdateInstaller authority must match the FileProvider")
+        check("github.com" in it and "objects.githubusercontent.com" in it,
+              "UpdateInstaller must allowlist GitHub download hosts")
 
     # 5d. 16:9 banners. Projectivy cards are 16:9 by default, so a banner
     # drawable must actually be 16:9 or it renders letterboxed/stretched.

@@ -1,24 +1,23 @@
 package tv.corebuilds.iconpack
 
-import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
 import android.widget.EditText
+import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import java.io.File
 
 /**
- * Core Builds Icon Pack — front door.
- *
- * Brand Guide §05: every interactive element states what it will do BEFORE
- * it does it, and the receipts voice reports exactly what happened.
+ * Front door. Apply targets the Home launcher. An update bar appears
+ * when Latestrelease/version.json is newer; Download pulls the APK and
+ * hands it to the system installer.
  */
 class MainActivity : AppCompatActivity() {
 
@@ -29,6 +28,10 @@ class MainActivity : AppCompatActivity() {
     private lateinit var adapter: IconAdapter
     private var category = ALL
     private var query = ""
+    private var pickBanners = true
+    private var pendingUpdate: UpdateChecker.Result.Available? = null
+    private var downloadedApk: File? = null
+    private var installOffered = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -62,13 +65,16 @@ class MainActivity : AppCompatActivity() {
 
         if (pickMode) {
             findViewById<TextView>(R.id.picker_hint).visibility = View.VISIBLE
+            findViewById<TextView>(R.id.picker_hint).text =
+                getString(R.string.picker_hint_banner)
             findViewById<TextView>(R.id.apply_button).visibility = View.GONE
             findViewById<TextView>(R.id.apply_sub).visibility = View.GONE
+            findViewById<LinearLayout>(R.id.update_bar).visibility = View.GONE
         }
 
         bindChips()
         bindSearch()
-        bindApplyButton()
+        if (pickMode) bindPickShape() else bindApplyButton()
     }
 
     private fun onIconChosen(item: IconAdapter.IconItem) {
@@ -76,17 +82,26 @@ class MainActivity : AppCompatActivity() {
             toast(getString(R.string.icon_selected_fmt, item.name, item.drawable))
             return
         }
-        if (!IconPicker.deliver(this, item.drawable)) {
+        val deliver = if (pickBanners) "${item.drawable}_banner" else item.drawable
+        if (!IconPicker.deliver(this, deliver)) {
             toast(getString(R.string.picker_failed_fmt, item.name))
         }
     }
 
     override fun onResume() {
         super.onResume()
-        bindApplyButton()
-        if (!updateChecked) {
-            updateChecked = true
-            checkForUpdate()
+        if (!pickMode) {
+            bindApplyButton()
+            if (!updateChecked) {
+                updateChecked = true
+                checkForUpdate()
+            }
+            downloadedApk?.let { file ->
+                if (file.exists() && UpdateInstaller.canInstall(this) && !installOffered) {
+                    installOffered = true
+                    startInstall(file)
+                }
+            }
         }
     }
 
@@ -143,52 +158,151 @@ class MainActivity : AppCompatActivity() {
     private fun checkForUpdate() {
         UpdateChecker.check(this) { result ->
             when (result) {
-                is UpdateChecker.Result.Available -> {
-                    toast(getString(R.string.update_available_fmt,
-                        result.versionName, result.iconCount))
-                    findViewById<TextView>(R.id.count).apply {
-                        text = getString(R.string.update_available_fmt,
-                            result.versionName, result.iconCount)
-                        setOnClickListener { openReleases(result.apkUrl) }
-                    }
-                }
+                is UpdateChecker.Result.Available -> showUpdateAvailable(result)
                 is UpdateChecker.Result.UpToDate -> { }
                 is UpdateChecker.Result.Failed -> {
-                    android.util.Log.w("CoreBuilds",
-                        getString(R.string.update_failed_fmt, result.reason))
+                    android.util.Log.w(
+                        "CoreBuilds",
+                        getString(R.string.update_failed_fmt, result.reason)
+                    )
                 }
             }
         }
     }
 
-    private fun openReleases(url: String) {
-        try {
-            startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(url))
-                .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK))
-        } catch (e: Exception) {
-            toast(getString(R.string.update_failed_fmt, "no browser installed"))
+    private fun showUpdateAvailable(update: UpdateChecker.Result.Available) {
+        pendingUpdate = update
+        downloadedApk = null
+        val bar = findViewById<LinearLayout>(R.id.update_bar)
+        val label = findViewById<TextView>(R.id.update_label)
+        val sub = findViewById<TextView>(R.id.update_sub)
+        val button = findViewById<TextView>(R.id.update_button)
+        bar.visibility = View.VISIBLE
+        label.text = getString(
+            R.string.update_available_fmt, update.versionName, update.iconCount
+        )
+        sub.text = getString(R.string.update_sub_download)
+        button.isEnabled = true
+        button.text = getString(R.string.update_download, update.versionName)
+        button.setOnClickListener { startDownload(update) }
+        button.requestFocus()
+    }
+
+    private fun startDownload(update: UpdateChecker.Result.Available) {
+        if (update.apkUrl.isBlank()) {
+            toast(getString(R.string.update_failed_fmt, "no apkUrl in version.json"))
+            return
         }
+        val label = findViewById<TextView>(R.id.update_label)
+        val button = findViewById<TextView>(R.id.update_button)
+        button.isEnabled = false
+        button.text = getString(R.string.update_checking)
+        UpdateInstaller.download(this, update.apkUrl) { event ->
+            when (event) {
+                is UpdateInstaller.Event.Progress -> {
+                    label.text = progressLabel(event.received, event.total)
+                }
+                is UpdateInstaller.Event.Ready -> {
+                    downloadedApk = event.file
+                    installOffered = false
+                    button.isEnabled = true
+                    button.text = getString(R.string.update_install, update.versionName)
+                    findViewById<TextView>(R.id.update_sub).text =
+                        getString(R.string.update_sub_install)
+                    button.setOnClickListener { startInstall(event.file) }
+                    startInstall(event.file)
+                }
+                is UpdateInstaller.Event.Failed -> {
+                    button.isEnabled = true
+                    button.text = getString(R.string.update_download, update.versionName)
+                    label.text = getString(R.string.update_failed_fmt, event.reason)
+                    toast(getString(R.string.update_failed_fmt, event.reason))
+                    button.setOnClickListener { startDownload(update) }
+                }
+            }
+        }
+    }
+
+    private fun startInstall(file: File) {
+        if (!UpdateInstaller.canInstall(this)) {
+            installOffered = false
+            toast(getString(R.string.update_need_permission))
+            if (!UpdateInstaller.requestInstallPermission(this)) {
+                toast(getString(R.string.update_permission_missing))
+            }
+            return
+        }
+        try {
+            UpdateInstaller.install(this, file)
+        } catch (e: Exception) {
+            toast(getString(R.string.update_failed_fmt, e.message ?: "installer refused"))
+        }
+    }
+
+    private fun progressLabel(received: Long, total: Long): String {
+        val rec = formatBytes(received)
+        return if (total > 0) {
+            getString(R.string.update_progress_of_fmt, rec, formatBytes(total))
+        } else {
+            getString(R.string.update_progress_fmt, rec)
+        }
+    }
+
+    private fun formatBytes(n: Long): String = when {
+        n >= 1_000_000 -> "%.1f MB".format(n / 1_000_000.0)
+        n >= 1_000 -> "%.0f KB".format(n / 1_000.0)
+        else -> "${n}B"
     }
 
     private fun bindApplyButton() {
         val button = findViewById<TextView>(R.id.apply_button)
         val sub = findViewById<TextView>(R.id.apply_sub)
+        val extras = findViewById<RecyclerView>(R.id.apply_targets)
 
-        val detected = ApplyIconPack.detectInstalled(this)
+        if (pickMode) {
+            bindPickShape()
+            return
+        }
+
+        val installed = ApplyIconPack.installed(this)
+        val detected = installed.firstOrNull()
         target = detected
 
         if (detected == null) {
             button.text = getString(R.string.cta_no_launcher)
             sub.text = getString(R.string.cta_sub_no_launcher)
+            extras.visibility = View.GONE
             button.setOnClickListener {
                 toast(getString(R.string.projectivy_missing))
             }
             return
         }
 
+        val home = ApplyIconPack.detectDefault(this)
         button.text = getString(R.string.cta_apply_to_fmt, detected.displayName)
-        sub.text = getString(R.string.cta_sub_apply_fmt, detected.displayName)
+        sub.text = if (home != null && installed.size > 1) {
+            getString(R.string.cta_sub_home_fmt, detected.displayName)
+        } else {
+            getString(R.string.cta_sub_apply_fmt, detected.displayName)
+        }
         button.setOnClickListener { applyTo(detected) }
+
+        val others = installed.drop(1)
+        if (others.isEmpty()) {
+            extras.visibility = View.GONE
+        } else {
+            extras.visibility = View.VISIBLE
+            extras.layoutManager = LinearLayoutManager(
+                this, LinearLayoutManager.HORIZONTAL, false
+            )
+            extras.adapter = ChipAdapter(
+                others.map { getString(R.string.cta_apply_also_fmt, it.displayName) },
+                others.map { it.key },
+                selected = ""
+            ) { key ->
+                others.firstOrNull { it.key == key }?.let { applyTo(it) }
+            }
+        }
     }
 
     private fun applyTo(launcher: ApplyIconPack.Launcher) {
@@ -222,6 +336,8 @@ class MainActivity : AppCompatActivity() {
 
     companion object {
         private const val ALL = "ALL"
+        private const val PICK_BANNER = "PICK_BANNER"
+        private const val PICK_SQUARE = "PICK_SQUARE"
         private val CHIP_ORDER = listOf(
             "FILES" to "Files",
             "LIVE" to "Live TV",

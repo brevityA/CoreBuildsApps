@@ -7,7 +7,7 @@
 **Transparent app icons for Projectivy Launcher on Android TV.**
 Precision-made. Verified live. Nothing hides.
 
-`516 icons` · `v1.5.0`
+`516 icons` · `v1.5.1`
 
 </div>
 
@@ -35,7 +35,7 @@ Icons are **original geometry** drawn on a shared 512 grid — simple shapes, ro
 
 > **Android 11+:** The APK declares a `<queries>` block so launcher detection works under package-visibility filtering. No `QUERY_ALL_PACKAGES` permission required.
 
-> **Updates:** The app checks for new versions at launch and shows a toast when one is available. No background service, no analytics — one HTTPS GET to `Latestrelease/version.json`.
+> **Updates:** At launch the app checks `Latestrelease/version.json`. If a newer build exists, a **Download** button pulls the APK from GitHub and opens the system installer.
 
 ---
 

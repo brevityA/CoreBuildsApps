@@ -18,11 +18,8 @@ import java.util.concurrent.Executors
  * Deliberately small: no library, no background service, no analytics. One
  * HTTPS GET on a worker thread when the app is opened.
  *
- * Brand Guide §08 — the result names the version and what it will do. There
- * is no silent download and no self-install: Android would need
- * REQUEST_INSTALL_PACKAGES for that, which is a sensitive permission and a
- * poor trade for a pack the user sideloaded on purpose. We report, they
- * choose.
+ * Brand Guide §08 — the result names the version. Download only starts
+ * when the user presses the update button (see UpdateInstaller).
  */
 object UpdateChecker {
 

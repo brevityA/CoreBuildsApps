@@ -42,16 +42,15 @@ object IconPicker {
             drawableName, "drawable", activity.packageName)
         if (resId == 0) return false
 
-        val request = activity.intent
-        val wantsResource = request?.hasExtra(EXTRA_RESOURCE_MODE) ?: false
         val result = Intent()
-
-        if (wantsResource) {
-            result.putExtra(
-                Intent.EXTRA_SHORTCUT_ICON_RESOURCE,
-                Intent.ShortcutIconResource.fromContext(activity, resId))
-        } else {
-            val bitmap = rasterise(activity, resId) ?: return false
+        // Projectivy and ADW both accept EXTRA_SHORTCUT_ICON_RESOURCE.
+        // Some older pickers only read the bitmap extra. Send both so a
+        // launcher that ignores one still gets a usable icon.
+        result.putExtra(
+            Intent.EXTRA_SHORTCUT_ICON_RESOURCE,
+            Intent.ShortcutIconResource.fromContext(activity, resId))
+        val bitmap = rasterise(activity, resId)
+        if (bitmap != null) {
             result.putExtra(Intent.EXTRA_SHORTCUT_ICON, bitmap)
             result.putExtra("icon", bitmap)
         }

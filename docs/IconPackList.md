@@ -1,6 +1,6 @@
 # Supported applications
 
-`516` icons · `626` mapped components · pack v1.5.0
+`516` icons · `648` mapped components · pack v1.5.1
 
 Every app below auto-assigns in Projectivy. If one doesn't, the app ships a different launcher activity on your device — open an issue with the component name and it gets added.
 
@@ -489,7 +489,7 @@ Every app below auto-assigns in Projectivy. If one doesn't, the app ships a diff
 | TVE | `tve` | `#6A4C93` | `com.cbs.tve/com.paramount.android.pplus.features.splash.tv.SplashMediatorActivity` |
 | Tvmusic | `tvmusic` | `#577590` | `com.google.android.youtube.tvmusic/com.google.android.apps.youtube.tvmusic.activity.MainActivity` |
 | TVOD | `tvod169` | `#F94144` | `com.maz.tvod169/com.maz.activities.ViewerLaunchActivity` |
-| Twitch | `twitch` | `#9146FF` | `tv.twitch.android.app/.core.LandingActivity`<br>`tv.twitch.android.viewer/.MainActivity` |
+| Twitch | `twitch` | `#9146FF` | `tv.twitch.android.app/tv.twitch.android.apps.TVLandingActivity`<br>`tv.twitch.android.app/.core.LandingActivity`<br>`tv.twitch.android.app/tv.twitch.android.apps.TwitchActivity`<br>`tv.twitch.android.app/tv.twitch.starshot64.app.StarshotActivity`<br>`tv.twitch.android.viewer/.MainActivity` |
 | Twitch 2 | `twitch_2` | `#6A4C93` | `com.fgl27.twitch/com.fgl27.twitch.PlayerActivity` |
 | UAE4ARM | `uae4arm` | `#FEE440` | `atua.anddev.uae4arm/atua.anddev.uae4arm.MainActivity` |
 | Ucom TV | `smarttvapp` | `#FF6B35` | `am.ucom.smarttvapp/tv.smartlabs.framework.MainActivity` |
