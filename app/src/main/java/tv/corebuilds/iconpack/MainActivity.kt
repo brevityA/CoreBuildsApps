@@ -254,6 +254,28 @@ class MainActivity : AppCompatActivity() {
         else -> "${n}B"
     }
 
+    private fun bindPickShape() {
+        val hint = findViewById<TextView>(R.id.picker_hint)
+        val targets = findViewById<RecyclerView>(R.id.apply_targets)
+        val labels = listOf(
+            getString(R.string.picker_chip_banner),
+            getString(R.string.picker_chip_square)
+        )
+        val keys = listOf(PICK_BANNER, PICK_SQUARE)
+        targets.visibility = View.VISIBLE
+        targets.layoutManager = LinearLayoutManager(
+            this, LinearLayoutManager.HORIZONTAL, false
+        )
+        targets.adapter = ChipAdapter(labels, keys, PICK_BANNER) { key ->
+            pickBanners = key == PICK_BANNER
+            hint.text = if (pickBanners) {
+                getString(R.string.picker_hint_banner)
+            } else {
+                getString(R.string.picker_hint_square)
+            }
+        }
+    }
+
     private fun bindApplyButton() {
         val button = findViewById<TextView>(R.id.apply_button)
         val sub = findViewById<TextView>(R.id.apply_sub)
