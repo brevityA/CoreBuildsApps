@@ -8,38 +8,18 @@ import android.content.pm.PackageManager
 /**
  * Direct-apply support.
  *
- * Icon packs don't apply themselves — the launcher does. Each launcher exposes
- * its own intent contract for "adopt this pack", so applying is a matter of
- * firing the right intent at the right package with the pack's own package name
- * as the payload.
+ * Icon packs don't apply themselves — the launcher does. Each launcher
+ * exposes its own intent, or none at all. We detect the HOME launcher,
+ * list every known launcher that's installed, and either fire a real
+ * apply contract or open the launcher with a named settings path.
  *
- * The contracts below are the ones Blueprint has established across the icon
- * pack ecosystem; Projectivy's is:
- *
- *     action  com.spocky.projengmenu.APPLY_ICONPACK
- *     package com.spocky.projengmenu
- *     extra   com.spocky.projengmenu.extra.ICONPACK_PACKAGENAME = <our package>
- *
- * Projectivy handles this as an activity intent (startActivity), not a
- * broadcast. It applies the pack and returns.
- *
- * Brand Guide §05/§08: we say what will happen before it happens, and report
- * exactly what did — including naming the launcher when we can't do it.
+ * Brand Guide §05/§08: the button names the target before it is pressed.
  */
 object ApplyIconPack {
 
-    /** Result of an apply attempt. Never an unnamed error. */
     sealed class Result {
-        /** The launcher accepted the intent. */
         data class Applied(val launcherName: String) : Result()
-
-        /** Launcher isn't installed. */
         data class NotInstalled(val launcherName: String) : Result()
-
-        /**
-         * The launcher is installed but refused or doesn't support direct
-         * apply. [instructions] names the manual path.
-         */
         data class Manual(val launcherName: String, val instructions: String) : Result()
     }
 
@@ -47,24 +27,126 @@ object ApplyIconPack {
         val key: String,
         val displayName: String,
         val packages: List<String>,
-        /** Builds the apply intent, given our own package name. */
         val intent: (Context, String) -> Intent?,
-        /** Manual fallback, used when the intent bounces. */
         val manualPath: String
     )
+
+    private fun applyIntent(
+        action: String,
+        pkg: String,
+        extra: Pair<String, String>? = null,
+        extras: List<Pair<String, String>> = emptyList()
+    ): Intent = Intent(action).apply {
+        `package` = pkg
+        extra?.let { putExtra(it.first, it.second) }
+        extras.forEach { putExtra(it.first, it.second) }
+        addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+    }
+
+    /**
+     * Try the Blueprint / ADW / Nova / GO contracts against [pkg].
+     * Used when a TV launcher claims icon-pack support but has no
+     * documented apply extra of its own.
+     */
+    private fun tryStandardApply(ctx: Context, pkg: String, self: String): Intent? {
+        val candidates = listOf(
+            applyIntent(
+                "com.novalauncher.THEME", pkg,
+                extras = listOf("com.novalauncher.extra.ICON_THEME_PACKAGE" to self)
+            ),
+            applyIntent(
+                "org.adw.launcher.THEMES", pkg,
+                extra = "org.adw.launcher.theme.NAME" to self
+            ),
+            applyIntent(
+                "com.gau.go.launcherex.theme", pkg
+            ),
+            applyIntent(
+                "com.anddoes.launcher.THEME", pkg,
+                extra = "com.anddoes.launcher.THEME_PACKAGE_NAME" to self
+            ),
+            applyIntent(
+                "$pkg.APPLY_ICONPACK", pkg,
+                extra = "$pkg.extra.ICONPACK_PACKAGENAME" to self
+            )
+        )
+        return candidates.firstOrNull { intent ->
+            ctx.packageManager.queryIntentActivities(intent, 0).isNotEmpty()
+        }
+    }
 
     val PROJECTIVY = Launcher(
         key = "projectivy",
         displayName = "Projectivy Launcher",
         packages = listOf("com.spocky.projengmenu"),
         intent = { _, self ->
-            Intent("com.spocky.projengmenu.APPLY_ICONPACK").apply {
-                `package` = "com.spocky.projengmenu"
-                putExtra("com.spocky.projengmenu.extra.ICONPACK_PACKAGENAME", self)
-                addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-            }
+            applyIntent(
+                "com.spocky.projengmenu.APPLY_ICONPACK",
+                "com.spocky.projengmenu",
+                extra = "com.spocky.projengmenu.extra.ICONPACK_PACKAGENAME" to self
+            )
         },
-        manualPath = "Projectivy Settings → Appearance → Cards → Icon Pack → Core Builds Icon Pack"
+        manualPath = "Projectivy Settings → Appearance → Cards → Icon Pack → Core Builds"
+    )
+
+    val MONET = Launcher(
+        key = "monet",
+        displayName = "Monet Launcher",
+        packages = listOf("com.klevico.monet"),
+        // Monet 1.0.76 (decompiled 2026-08-19) has no incoming apply extra.
+        // It lists packs via Nova/ADW/GO/Lawnchair/Fede discovery actions,
+        // then setIconPackPackage() from its own settings. tryStandardApply
+        // is a best-effort; expect Manual on current builds.
+        intent = { ctx, self ->
+            tryStandardApply(ctx, "com.klevico.monet", self)
+        },
+        manualPath = "Monet Settings → Icons → Icon pack → Core Builds Icon Pack"
+    )
+
+    val AT4K = Launcher(
+        key = "at4k",
+        displayName = "AT4K Launcher",
+        packages = listOf("com.overdevs.at4k"),
+        intent = { ctx, self -> tryStandardApply(ctx, "com.overdevs.at4k", self) },
+        manualPath = "Open AT4K → Settings → Icon pack → Core Builds Icon Pack"
+    )
+
+    val LEANBACK = Launcher(
+        key = "leanback",
+        displayName = "Leanback on Fire",
+        packages = listOf("com.amazon.tv.leanbacklauncher"),
+        intent = { ctx, self ->
+            tryStandardApply(ctx, "com.amazon.tv.leanbacklauncher", self)
+        },
+        manualPath = "Leanback on Fire has no icon-pack apply. Open it and assign icons per app."
+    )
+
+    val LTV = Launcher(
+        key = "ltv",
+        displayName = "L TV Launcher",
+        packages = listOf("com.leanbitlab.ltvL"),
+        intent = { ctx, self -> tryStandardApply(ctx, "com.leanbitlab.ltvL", self) },
+        manualPath = "L TV Launcher Settings → Icon pack"
+    )
+
+    val FLAUNCHER = Launcher(
+        key = "flauncher",
+        displayName = "FLauncher",
+        packages = listOf("me.efesser.flauncher", "com.kfaraj.launcher"),
+        intent = { ctx, self ->
+            val pkg = listOf("me.efesser.flauncher", "com.kfaraj.launcher")
+                .firstOrNull { ctx.isInstalled(it) } ?: return@Launcher null
+            tryStandardApply(ctx, pkg, self)
+        },
+        manualPath = "FLauncher Settings → Appearance → Icon pack"
+    )
+
+    val CHILLHUB = Launcher(
+        key = "chillhub",
+        displayName = "ChillHub",
+        packages = listOf("app.lumoslabs.chillhub"),
+        intent = { ctx, self -> tryStandardApply(ctx, "app.lumoslabs.chillhub", self) },
+        manualPath = "ChillHub Settings → Icon pack"
     )
 
     val NOVA = Launcher(
@@ -72,12 +154,14 @@ object ApplyIconPack {
         displayName = "Nova Launcher",
         packages = listOf("com.teslacoilsw.launcher"),
         intent = { _, self ->
-            Intent("com.teslacoilsw.launcher.APPLY_ICON_THEME").apply {
-                `package` = "com.teslacoilsw.launcher"
-                putExtra("com.teslacoilsw.launcher.extra.ICON_THEME_TYPE", "GO")
-                putExtra("com.teslacoilsw.launcher.extra.ICON_THEME_PACKAGE", self)
-                addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-            }
+            applyIntent(
+                "com.teslacoilsw.launcher.APPLY_ICON_THEME",
+                "com.teslacoilsw.launcher",
+                extras = listOf(
+                    "com.teslacoilsw.launcher.extra.ICON_THEME_TYPE" to "GO",
+                    "com.teslacoilsw.launcher.extra.ICON_THEME_PACKAGE" to self
+                )
+            )
         },
         manualPath = "Nova Settings → Look & feel → Icon style → Icon theme"
     )
@@ -97,11 +181,7 @@ object ApplyIconPack {
         intent = { ctx, self ->
             val pkg = LAWNCHAIR_PACKAGES.firstOrNull { ctx.isInstalled(it) }
             pkg?.let { p ->
-                Intent("ch.deletescape.lawnchair.APPLY_ICONS").apply {
-                    `package` = p
-                    putExtra("packageName", self)
-                    addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                }
+                applyIntent("ch.deletescape.lawnchair.APPLY_ICONS", p, extra = "packageName" to self)
             }
         },
         manualPath = "Lawnchair Settings → General → Icon style → Icon pack"
@@ -125,8 +205,8 @@ object ApplyIconPack {
         displayName = "ADW Launcher",
         packages = listOf("org.adw.launcher", "org.adwfreak.launcher"),
         intent = { ctx, self ->
-            val ex = ctx.isInstalled("org.adwfreak.launcher")
-            val prefix = if (ex) "org.adwfreak.launcher" else "org.adw.launcher"
+            val prefix = if (ctx.isInstalled("org.adwfreak.launcher"))
+                "org.adwfreak.launcher" else "org.adw.launcher"
             Intent("$prefix.SET_THEME").apply {
                 putExtra("$prefix.theme.NAME", self)
                 addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
@@ -135,8 +215,11 @@ object ApplyIconPack {
         manualPath = "ADW Settings → Themes"
     )
 
-    /** Every launcher we can hand off to, Projectivy first — it's the target. */
-    val ALL = listOf(PROJECTIVY, NOVA, LAWNCHAIR, APEX, ADW)
+    /** Known launchers. HOME detection walks this list. Projectivy first. */
+    val ALL = listOf(
+        PROJECTIVY, MONET, AT4K, LEANBACK, LTV, FLAUNCHER, CHILLHUB,
+        NOVA, LAWNCHAIR, APEX, ADW
+    )
 
     fun Context.isInstalled(pkg: String): Boolean = try {
         packageManager.getPackageInfo(pkg, 0)
@@ -147,28 +230,32 @@ object ApplyIconPack {
 
     private fun Context.isInstalledAny(l: Launcher) = l.packages.any { isInstalled(it) }
 
-    /** The installed launcher currently set as HOME, if we support it. */
-    fun detectDefault(context: Context): Launcher? = try {
+    /** Package of the current HOME launcher, if any. */
+    fun homePackage(context: Context): String? = try {
         val home = Intent(Intent.ACTION_MAIN).addCategory(Intent.CATEGORY_HOME)
-        val pkg = context.packageManager
+        context.packageManager
             .resolveActivity(home, PackageManager.MATCH_DEFAULT_ONLY)
             ?.activityInfo?.packageName
-        ALL.firstOrNull { l -> pkg != null && l.packages.any { it.equals(pkg, true) } }
     } catch (_: Exception) {
         null
     }
 
-    /** First supported launcher that's installed — Projectivy wins ties. */
+    fun detectDefault(context: Context): Launcher? {
+        val pkg = homePackage(context) ?: return null
+        return ALL.firstOrNull { l -> l.packages.any { it.equals(pkg, true) } }
+    }
+
+    /** HOME launcher if we know it, otherwise the first installed we support. */
     fun detectInstalled(context: Context): Launcher? =
         detectDefault(context) ?: ALL.firstOrNull { context.isInstalledAny(it) }
 
-    /**
-     * Fire the launcher's apply intent.
-     *
-     * Verifies the intent actually resolves before starting it, so a launcher
-     * that dropped support gives us [Result.Manual] with the real menu path
-     * instead of an ActivityNotFoundException the user can't act on.
-     */
+    /** Every known launcher that is actually installed, HOME first. */
+    fun installed(context: Context): List<Launcher> {
+        val home = detectDefault(context)
+        val rest = ALL.filter { context.isInstalledAny(it) && it != home }
+        return listOfNotNull(home) + rest
+    }
+
     fun apply(context: Context, launcher: Launcher): Result {
         if (!context.isInstalledAny(launcher)) {
             return Result.NotInstalled(launcher.displayName)
@@ -191,7 +278,6 @@ object ApplyIconPack {
         }
     }
 
-    /** Open a launcher's own settings, for the manual path. */
     fun openLauncher(context: Context, launcher: Launcher): Boolean {
         val pkg = launcher.packages.firstOrNull { context.isInstalled(it) } ?: return false
         val intent = context.packageManager.getLaunchIntentForPackage(pkg) ?: return false
@@ -203,7 +289,6 @@ object ApplyIconPack {
         }
     }
 
-    /** Unused today; kept because some launchers expect a broadcast, not an activity. */
     @Suppress("unused")
     fun componentOf(pkg: String, cls: String) = ComponentName(pkg, cls)
 }
