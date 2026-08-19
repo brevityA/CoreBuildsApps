@@ -5,6 +5,7 @@ import android.net.Uri
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.view.View
 import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
@@ -23,6 +24,7 @@ class MainActivity : AppCompatActivity() {
 
     private var target: ApplyIconPack.Launcher? = null
     private var updateChecked = false
+    private var pickMode = false
     private lateinit var all: List<IconAdapter.IconItem>
     private lateinit var adapter: IconAdapter
     private var category = ALL
@@ -31,6 +33,11 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        pickMode = IconPicker.isPickRequest(intent)
+        if (pickMode) {
+            IconPicker.cancel(this)
+        }
 
         val drawables = resources.getStringArray(R.array.icon_pack)
         val names = resources.getStringArray(R.array.icon_names)
@@ -46,18 +53,32 @@ class MainActivity : AppCompatActivity() {
         findViewById<TextView>(R.id.count).text =
             getString(R.string.icon_count_fmt, all.size)
 
-        adapter = IconAdapter(all) { item ->
-            toast(getString(R.string.icon_selected_fmt, item.name, item.drawable))
-        }
+        adapter = IconAdapter(all) { item -> onIconChosen(item) }
         findViewById<RecyclerView>(R.id.grid).apply {
             layoutManager = GridLayoutManager(this@MainActivity, spanForScreen())
             adapter = this@MainActivity.adapter
             setHasFixedSize(true)
         }
 
+        if (pickMode) {
+            findViewById<TextView>(R.id.picker_hint).visibility = View.VISIBLE
+            findViewById<TextView>(R.id.apply_button).visibility = View.GONE
+            findViewById<TextView>(R.id.apply_sub).visibility = View.GONE
+        }
+
         bindChips()
         bindSearch()
         bindApplyButton()
+    }
+
+    private fun onIconChosen(item: IconAdapter.IconItem) {
+        if (!pickMode) {
+            toast(getString(R.string.icon_selected_fmt, item.name, item.drawable))
+            return
+        }
+        if (!IconPicker.deliver(this, item.drawable)) {
+            toast(getString(R.string.picker_failed_fmt, item.name))
+        }
     }
 
     override fun onResume() {

@@ -93,6 +93,16 @@
         </LinearLayout>
     </LinearLayout>
 
+    <TextView
+        android:id="@+id/picker_hint"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="@string/picker_hint"
+        android:textColor="@color/cb_signal_cyan"
+        android:textSize="13sp"
+        android:visibility="gone" />
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/chip_row"
         android:layout_width="match_parent"

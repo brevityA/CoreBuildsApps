@@ -279,15 +279,17 @@
       "category": "VOD"
     },
     {
-      "name": "Max",
+      "name": "HBO Max",
       "drawable": "max",
       "color": "#0046FF",
       "glyph": "monogram_M",
       "components": [
         "com.wbd.stream/.MainActivity",
-        "com.hbo.hbonow/.MainActivity"
+        "com.hbo.hbonow/.MainActivity",
+        "com.wbd.hbomax/.MainActivity",
+        "com.wbd.hbomax/com.wbd.hbomax.MainActivity"
       ],
-      "category": "VOD"
+      "category": "STREAM"
     },
     {
       "name": "Apple TV",
@@ -5330,6 +5332,17 @@
         "com.ghostsq.commander/com.ghostsq.commander.FileCommander",
         "com.ghostsq.commander/.FileCommander"
       ]
+    },
+    {
+      "name": "S0undTV",
+      "drawable": "s0undtv",
+      "color": "#A78BFA",
+      "glyph": "monogram_S",
+      "components": [
+        "com.s0und.s0undtv/.MainActivity",
+        "com.s0und.s0undtv/com.s0und.s0undtv.MainActivity"
+      ],
+      "category": "VIDEO"
     }
   ]
 }

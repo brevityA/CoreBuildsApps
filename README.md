@@ -7,7 +7,7 @@
 **Transparent app icons for Projectivy Launcher on Android TV.**
 Precision-made. Verified live. Nothing hides.
 
-`515 icons` · `v1.5.0`
+`516 icons` · `v1.5.0`
 
 </div>
 
