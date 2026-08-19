@@ -162,6 +162,13 @@ object UpdateInstaller {
                     "downloaded ${received}B — too small to be an APK"
                 )
             }
+            val header = dest.inputStream().use { s ->
+                val b = ByteArray(2); s.read(b); b
+            }
+            if (header[0] != 0x50.toByte() || header[1] != 0x4B.toByte()) {
+                dest.delete()
+                throw IllegalStateException("not a ZIP/APK (bad magic)")
+            }
             return dest
         } finally {
             c.disconnect()
