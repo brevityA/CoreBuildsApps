@@ -45,7 +45,7 @@ jobs:
     name: Assemble APK
     runs-on: ubuntu-latest
     env:
-      KEYSTORE_BASE64: ${{ secrets.CORELINE_KEYSTORE_BASE64 }}
+      KEYSTORE_BASE64: ${{ secrets.KEYSTORE_BASE64 }}
     steps:
       - uses: actions/checkout@v7
 
@@ -85,9 +85,9 @@ jobs:
         if: startsWith(github.ref, 'refs/tags/coreline-v')
         working-directory: ticker/android
         env:
-          KEYSTORE_PASSWORD: ${{ secrets.CORELINE_KEYSTORE_PASSWORD }}
-          KEY_ALIAS: ${{ secrets.CORELINE_KEY_ALIAS }}
-          KEY_PASSWORD: ${{ secrets.CORELINE_KEY_PASSWORD }}
+          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
+          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
         run: ./gradlew :app:assembleRelease --no-daemon --stacktrace
 
       - name: Assemble debug APK
