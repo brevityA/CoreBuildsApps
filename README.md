@@ -13,7 +13,7 @@
 > | App | What it does | Downloader | Release tag |
 > |---|---|---|---|
 > | **[Icon Pack](#-icon-pack)** | 516 transparent icons for Projectivy Launcher | `5270601` | [`v*`](../../releases) |
-> | **[Core Line](#-core-line)** | Sports scores & channel RSS ticker (chyron) | `TBD` | [`coreline-v*`](../../releases) |
+> | **[Core Line](#-core-line)** | Sports scores & channel RSS ticker (chyron) | [stable link](../../releases/tag/coreline) | [`coreline-v*`](../../releases) |
 >
 > Each app has its own CI workflow with path filters — changes to one never rebuild the other.
 
@@ -192,7 +192,9 @@ LIVE  TOR 3-2 MTL  ·  TSN4  SN 3     ◆     LAL vs BOS  7:00 PM  ·  ESPN
 
 ### Install
 
-1. Download using **Downloader code `TBD`**, or grab the APK from [**Releases**](../../releases) (tags starting with `coreline-v`).
+1. Grab the APK from the [**stable Downloader release**](../../releases/tag/coreline) (tags starting with `coreline-v` have versioned notes).
+   - **Stable URL:** `https://github.com/brevityA/CoreBuildsApps/releases/download/coreline/coreline-release.apk`
+   - Generate a Downloader code once at [go.aftvnews.com](https://go.aftvnews.com/) using the URL above.
 2. Sideload it (Downloader, `adb install`, or a file manager).
 3. Open the app — it loads a demo ticker immediately. Add your RSS feeds via the settings panel or pair from a phone on the same Wi-Fi using the QR code.
 
@@ -208,7 +210,7 @@ cd ticker/android && ./gradlew :app:assembleDebug
 
 Tests: `cd ticker && npm test` (24 tests).
 
-Release signing uses `CORELINE_KEYSTORE_BASE64`, `CORELINE_KEYSTORE_PASSWORD`, `CORELINE_KEY_ALIAS`, `CORELINE_KEY_PASSWORD` secrets.
+Release signing uses the same `KEYSTORE_BASE64`, `KEYSTORE_PASSWORD`, `KEY_ALIAS`, `KEY_PASSWORD` secrets as the icon pack.
 
 Full architecture and remaining debt: [`ticker/HANDOVER.md`](ticker/HANDOVER.md) · Detailed readme: [`ticker/README.md`](ticker/README.md).
 
