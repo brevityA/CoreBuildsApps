@@ -4,7 +4,25 @@ on:
   push:
     branches: [main]
     tags: ['v*']
+    paths:
+      - 'app/**'
+      - 'tools/**'
+      - '*.gradle.kts'
+      - 'gradle/**'
+      - 'gradle.properties'
+      - 'settings.gradle.kts'
+      - 'Latestrelease/**'
+      - '.github/workflows/build.yml'
   pull_request:
+    paths:
+      - 'app/**'
+      - 'tools/**'
+      - '*.gradle.kts'
+      - 'gradle/**'
+      - 'gradle.properties'
+      - 'settings.gradle.kts'
+      - 'Latestrelease/**'
+      - '.github/workflows/build.yml'
   workflow_dispatch:
 
 permissions:
