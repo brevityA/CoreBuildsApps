@@ -13,6 +13,16 @@ Precision-made. Verified live. Nothing hides.
 
 ---
 
+## 🔷 Also in this repo: Core Line
+
+[**Core Line**](ticker/) is a second, standalone app: a 10-foot sports & channel ticker for Android / Android TV / the web. RSS, Atom, or JSON in → `LIVE TOR 3-2 MTL · TSN4 SN 3` crawling along the bottom of the screen. Not a player, not streams — a TV guide chyron.
+
+- Web: `cd ticker && node server.mjs` (Node 20+, zero deps)
+- Android / Fire TV: `ticker/android`, APK built by the **Core Line APK** workflow
+- Its own readme: [`ticker/README.md`](ticker/README.md)
+
+---
+
 ## 🔷 About
 
 The **Core Builds Icon Pack** is designed for the [Projectivy Launcher](https://play.google.com/store/apps/details?id=com.spocky.projengmenu) on Android TV and Google TV, built to the [Core Builds Brand & Style Guide v1.0](https://github.com/brevityA/Core-Builds).
