@@ -176,7 +176,7 @@ ticker/                      Core Line — sports & channel ticker (see ticker/R
 
 ## 🔷 Core Line
 
-**TV-first sports & channel ticker (chyron).** `v1.0.1`
+**TV-first sports & channel ticker (chyron).** `v1.0.2`
 
 Not a player, not a playlist, not streams — a reader that crawls the listings other channel apps already publish as RSS:
 
