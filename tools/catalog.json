@@ -2,7 +2,7 @@
   "$schema": "./catalog.schema.json",
   "meta": {
     "pack": "Core Builds Icon Pack",
-    "version": "1.5.1",
+    "version": "1.6.0",
     "grid": 512,
     "safe_area": 432,
     "note": "Brand-colored glyph on transparent, per Core Builds Brand Guide v1.0 §07. Glyphs are original geometry in Core Builds language (rounded ends, flat fills, no gradients from source logos)."
@@ -5413,6 +5413,5702 @@
         "com.s0und.s0undtv/com.s0und.s0undtv.activities.FireTVMainActivity",
         "com.s0und.s0undtv/com.s0und.s0undtv.activities.MainActivity"
       ]
+    },
+    {
+      "name": "Kinopoisk",
+      "drawable": "kinopoisk",
+      "color": "#F94144",
+      "glyph": "monogram_K",
+      "components": [
+        "ru.kinopoisk.tv/ru.kinopoisk.tv.presentation.splash.SplashActivity"
+      ],
+      "category": "APP",
+      "unverified": [
+        "ru.kinopoisk.tv/ru.kinopoisk.tv.presentation.splash.SplashActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "A 8k Player Vip",
+      "drawable": "a_8k_player_vip",
+      "color": "#9B5DE5",
+      "glyph": "monogram_A",
+      "components": [
+        "com.shadeed.S4kvip/com.shadeed.ibopro.MainActivity"
+      ],
+      "category": "PLAYER",
+      "unverified": [
+        "com.shadeed.S4kvip/com.shadeed.ibopro.MainActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Ace Stream",
+      "drawable": "ace_stream",
+      "color": "#F94144",
+      "glyph": "monogram_A",
+      "components": [
+        "org.acestream.node/org.acestream.engine.ui.MainWebViewActivity"
+      ],
+      "category": "APP",
+      "unverified": [
+        "org.acestream.node/org.acestream.engine.ui.MainWebViewActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Aircast",
+      "drawable": "aircast",
+      "color": "#FF6B35",
+      "glyph": "monogram_A",
+      "components": [
+        "com.smartdevice.tv.aircast/com.coocaa.icast.ui.home.SplashActivity"
+      ],
+      "category": "APP",
+      "unverified": [
+        "com.smartdevice.tv.aircast/com.coocaa.icast.ui.home.SplashActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Airpin Pro",
+      "drawable": "airpin_pro",
+      "color": "#FF6B35",
+      "glyph": "monogram_A",
+      "components": [
+        "com.waxrain.airplaydmr/com.waxrain.ui.WaxPlayerSetting"
+      ],
+      "category": "APP",
+      "unverified": [
+        "com.waxrain.airplaydmr/com.waxrain.ui.WaxPlayerSetting"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Airreceiverlite",
+      "drawable": "airreceiverlite",
+      "color": "#8AC926",
+      "glyph": "monogram_A",
+      "components": [
+        "com.softmedia.receiver.lite/com.softmedia.receiver.app.SplashActivity"
+      ],
+      "category": "APP",
+      "unverified": [
+        "com.softmedia.receiver.lite/com.softmedia.receiver.app.SplashActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Al Jazeera",
+      "drawable": "al_jazeera",
+      "color": "#577590",
+      "glyph": "monogram_A",
+      "components": [
+        "net.aljazeera.english/net.aljazeera.english.MainActivity"
+      ],
+      "category": "APP",
+      "unverified": [
+        "net.aljazeera.english/net.aljazeera.english.MainActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Amazing Classics",
+      "drawable": "amazing_classics",
+      "color": "#4CC9F0",
+      "glyph": "monogram_A",
+      "components": [
+        "stormcastcinema.amazing.classics/stormcastcinema.westernmania.ui.splash.SplashActivity"
+      ],
+      "category": "APP",
+      "unverified": [
+        "stormcastcinema.amazing.classics/stormcastcinema.westernmania.ui.splash.SplashActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Anexplorer Pro",
+      "drawable": "anexplorer_pro",
+      "color": "#B5179E",
+      "glyph": "monogram_A",
+      "components": [
+        "dev.dworks.apps.anexplorer.pro/dev.dworks.apps.anexplorer.DocumentsActivity"
+      ],
+      "category": "FILES",
+      "unverified": [
+        "dev.dworks.apps.anexplorer.pro/dev.dworks.apps.anexplorer.DocumentsActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Anime Cast",
+      "drawable": "anime_cast",
+      "color": "#9B5DE5",
+      "glyph": "monogram_A",
+      "components": [
+        "csc.app.anime.cast/csc.app.app.tv.activity.Splash",
+        "csc.app.anime.cast/csc.app.app.movil.activity.Splash"
+      ],
+      "category": "APP",
+      "unverified": [
+        "csc.app.anime.cast/csc.app.app.tv.activity.Splash",
+        "csc.app.anime.cast/csc.app.app.movil.activity.Splash"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Ant1",
+      "drawable": "ant1",
+      "color": "#43AA8B",
+      "glyph": "monogram_A",
+      "components": [
+        "gr.antenna.ant1/com.arxnet.soeasytv.MainActivity"
+      ],
+      "category": "APP",
+      "unverified": [
+        "gr.antenna.ant1/com.arxnet.soeasytv.MainActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Apk Installer",
+      "drawable": "apk_installer",
+      "color": "#00BBF9",
+      "glyph": "monogram_A",
+      "components": [
+        "com.uptodown.installer/com.uptodown.installer.activity.SplashActivity"
+      ],
+      "category": "APP",
+      "unverified": [
+        "com.uptodown.installer/com.uptodown.installer.activity.SplashActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Arc Browser",
+      "drawable": "arc_browser",
+      "color": "#577590",
+      "glyph": "monogram_A",
+      "components": [
+        "net.floatingpoint.android.arcturus/net.floatingpoint.android.arcturus.MainActivity"
+      ],
+      "category": "BROWSER",
+      "unverified": [
+        "net.floatingpoint.android.arcturus/net.floatingpoint.android.arcturus.MainActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Ard Mediathek",
+      "drawable": "ard_mediathek",
+      "color": "#F7B32B",
+      "glyph": "monogram_A",
+      "components": [
+        "de.swr.avp.ard.tv/de.swr.avp.ard.tv.TvActivity"
+      ],
+      "category": "APP",
+      "unverified": [
+        "de.swr.avp.ard.tv/de.swr.avp.ard.tv.TvActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Arte",
+      "drawable": "arte",
+      "color": "#E71D36",
+      "glyph": "monogram_A",
+      "components": [
+        "tv.arte.plus7/tv.arte.plus7.leanback.MainActivity"
+      ],
+      "category": "APP",
+      "unverified": [
+        "tv.arte.plus7/tv.arte.plus7.leanback.MainActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Artlume",
+      "drawable": "artlume",
+      "color": "#B5179E",
+      "glyph": "monogram_A",
+      "components": [
+        "io.artlume.mobile/io.artlume.tv.presentation.MainActivity"
+      ],
+      "category": "APP",
+      "unverified": [
+        "io.artlume.mobile/io.artlume.tv.presentation.MainActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Background Apps And Process List",
+      "drawable": "background_apps_and_process_list",
+      "color": "#FF6B35",
+      "glyph": "monogram_B",
+      "components": [
+        "io.github.visnkmr.bapl/io.github.visnkmr.bapl.MainActivity"
+      ],
+      "category": "APP",
+      "unverified": [
+        "io.github.visnkmr.bapl/io.github.visnkmr.bapl.MainActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "BBC Iplayer",
+      "drawable": "bbc_iplayer",
+      "color": "#9B5DE5",
+      "glyph": "monogram_B",
+      "components": [
+        "uk.co.freeview.bbc/uk.co.freeview.templatewrapper.MainActivity"
+      ],
+      "category": "PLAYER",
+      "unverified": [
+        "uk.co.freeview.bbc/uk.co.freeview.templatewrapper.MainActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Bet Plus",
+      "drawable": "bet_plus",
+      "color": "#B5179E",
+      "glyph": "monogram_B",
+      "components": [
+        "com.viacom.betplus/com.vmn.playplex.tv.ui.splash.TvSplashActivity"
+      ],
+      "category": "APP",
+      "unverified": [
+        "com.viacom.betplus/com.vmn.playplex.tv.ui.splash.TvSplashActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Blip",
+      "drawable": "blip",
+      "color": "#8AC926",
+      "glyph": "monogram_B",
+      "components": [
+        "net.blip.android/net.blip.android.MainActivity"
+      ],
+      "category": "APP",
+      "unverified": [
+        "net.blip.android/net.blip.android.MainActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Blokada",
+      "drawable": "blokada",
+      "color": "#2EC4B6",
+      "glyph": "monogram_B",
+      "components": [
+        "org.blokada.fyra/core.PanelActivity"
+      ],
+      "category": "VPN",
+      "unverified": [
+        "org.blokada.fyra/core.PanelActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Bravia Core",
+      "drawable": "bravia_core",
+      "color": "#577590",
+      "glyph": "monogram_B",
+      "components": [
+        "com.sonypicturescore/com.sphe.bravialounge.SplashActivity"
+      ],
+      "category": "APP",
+      "unverified": [
+        "com.sonypicturescore/com.sphe.bravialounge.SplashActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Brollie",
+      "drawable": "brollie",
+      "color": "#F94144",
+      "glyph": "monogram_B",
+      "components": [
+        "com.shift72.brollie/com.sh72apps.MainActivity",
+        "com.shift72.brollie/com.sh72apps.TVMainActivity"
+      ],
+      "category": "APP",
+      "unverified": [
+        "com.shift72.brollie/com.sh72apps.MainActivity",
+        "com.shift72.brollie/com.sh72apps.TVMainActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Browsehere",
+      "drawable": "browsehere",
+      "color": "#4CC9F0",
+      "glyph": "monogram_B",
+      "components": [
+        "com.tcl.browser/com.tcl.browser.portal.home.activity.HomePageActivity"
+      ],
+      "category": "APP",
+      "unverified": [
+        "com.tcl.browser/com.tcl.browser.portal.home.activity.HomePageActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Byebyedpi",
+      "drawable": "byebyedpi",
+      "color": "#2EC4B6",
+      "glyph": "monogram_B",
+      "components": [
+        "io.github.romanvht.byedpi/io.github.dovecoteescapee.byedpi.activities.MainActivity"
+      ],
+      "category": "APP",
+      "unverified": [
+        "io.github.romanvht.byedpi/io.github.dovecoteescapee.byedpi.activities.MainActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Byutv",
+      "drawable": "byutv",
+      "color": "#9B5DE5",
+      "glyph": "monogram_B",
+      "components": [
+        "org.byutv.android/org.byutv.android.MainActivity"
+      ],
+      "category": "APP",
+      "unverified": [
+        "org.byutv.android/org.byutv.android.MainActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Caixaforum Plus",
+      "drawable": "caixaforum_plus",
+      "color": "#6A4C93",
+      "glyph": "monogram_C",
+      "components": [
+        "es.caixaforum.cxplus/com.mediapro.caixaforum.view.splash.SplashActivity"
+      ],
+      "category": "APP",
+      "unverified": [
+        "es.caixaforum.cxplus/com.mediapro.caixaforum.view.splash.SplashActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Capsule",
+      "drawable": "capsule",
+      "color": "#9B5DE5",
+      "glyph": "monogram_C",
+      "components": [
+        "studio.goodegg.capsule/studio.goodegg.capsule.tv.MainActivity"
+      ],
+      "category": "APP",
+      "unverified": [
+        "studio.goodegg.capsule/studio.goodegg.capsule.tv.MainActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Cda Pl",
+      "drawable": "cda_pl",
+      "color": "#B5179E",
+      "glyph": "monogram_C",
+      "components": [
+        "pl.cda.tv/pl.cda.tv.ui.welcome.WelcomeActivity"
+      ],
+      "category": "APP",
+      "unverified": [
+        "pl.cda.tv/pl.cda.tv.ui.welcome.WelcomeActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Chaupal",
+      "drawable": "chaupal",
+      "color": "#FF477E",
+      "glyph": "monogram_C",
+      "components": [
+        "video.laminar.tv.chaupal.android/com.yupptv.ott.ui.activity.SplashActivity"
+      ],
+      "category": "APP",
+      "unverified": [
+        "video.laminar.tv.chaupal.android/com.yupptv.ott.ui.activity.SplashActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Cinemaghar TV",
+      "drawable": "cinemaghar_tv",
+      "color": "#FF6B35",
+      "glyph": "monogram_C",
+      "components": [
+        "com.thesunbi.cinemaghartv/com.thesunbi.cinemaghartv.ui.main.MainActivity"
+      ],
+      "category": "APP",
+      "unverified": [
+        "com.thesunbi.cinemaghartv/com.thesunbi.cinemaghartv.ui.main.MainActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Cinemahd Stable",
+      "drawable": "cinemahd_stable",
+      "color": "#FF6B35",
+      "glyph": "monogram_C",
+      "components": [
+        "com.yoku.marumovie/com.movie.ui.activity.SplashActivity"
+      ],
+      "category": "APP",
+      "unverified": [
+        "com.yoku.marumovie/com.movie.ui.activity.SplashActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Clip TV",
+      "drawable": "clip_tv",
+      "color": "#6A4C93",
+      "glyph": "monogram_C",
+      "components": [
+        "vn.com.vega.clipvn.tv/com.vega.cliptv.auth.AuthActivity"
+      ],
+      "category": "APP",
+      "unverified": [
+        "vn.com.vega.clipvn.tv/com.vega.cliptv.auth.AuthActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Clone Hero",
+      "drawable": "clone_hero",
+      "color": "#F7B32B",
+      "glyph": "monogram_C",
+      "components": [
+        "com.srylain.CloneHero/com.unity3d.player.UnityPlayerActivity"
+      ],
+      "category": "GAMING",
+      "unverified": [
+        "com.srylain.CloneHero/com.unity3d.player.UnityPlayerActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Coji TV Browser",
+      "drawable": "coji_tv_browser",
+      "color": "#FF477E",
+      "glyph": "monogram_C",
+      "components": [
+        "mvl.studio.tvlite/mvl.studio.tvlite.android_tv.presentation.ui.TabletLauncherActivity",
+        "mvl.studio.tvlite/mvl.studio.tvlite.android_tv.presentation.ui.HomeLauncherActivity"
+      ],
+      "category": "BROWSER",
+      "unverified": [
+        "mvl.studio.tvlite/mvl.studio.tvlite.android_tv.presentation.ui.TabletLauncherActivity",
+        "mvl.studio.tvlite/mvl.studio.tvlite.android_tv.presentation.ui.HomeLauncherActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Cosmote TV",
+      "drawable": "cosmote_tv",
+      "color": "#F15BB5",
+      "glyph": "monogram_C",
+      "components": [
+        "gr.cosmote.cosmotetv.androidtv/dt.ote.poc.presentation.view.tv.TvActivity"
+      ],
+      "category": "APP",
+      "unverified": [
+        "gr.cosmote.cosmotetv.androidtv/dt.ote.poc.presentation.view.tv.TvActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Couch Puzzles",
+      "drawable": "couch_puzzles",
+      "color": "#F7B32B",
+      "glyph": "monogram_C",
+      "components": [
+        "com.roysolberg.couchpuzzles/com.roysolberg.couchpuzzles.AndroidLauncher"
+      ],
+      "category": "APP",
+      "unverified": [
+        "com.roysolberg.couchpuzzles/com.roysolberg.couchpuzzles.AndroidLauncher"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Crossy Road",
+      "drawable": "crossy_road",
+      "color": "#90BE6D",
+      "glyph": "monogram_C",
+      "components": [
+        "com.yodo1.crossyroad/com.google.firebase.MessagingUnityPlayerActivity"
+      ],
+      "category": "GAMING",
+      "unverified": [
+        "com.yodo1.crossyroad/com.google.firebase.MessagingUnityPlayerActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Cyberghost",
+      "drawable": "cyberghost",
+      "color": "#F3722C",
+      "glyph": "monogram_C",
+      "components": [
+        "de.mobileconcepts.cyberghost/de.mobileconcepts.cyberghost.view.app.AppActivity"
+      ],
+      "category": "APP",
+      "unverified": [
+        "de.mobileconcepts.cyberghost/de.mobileconcepts.cyberghost.view.app.AppActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Debrid Em All",
+      "drawable": "debrid_em_all",
+      "color": "#F7B32B",
+      "glyph": "monogram_D",
+      "components": [
+        "com.yablio.debridemall/com.yablio.debridemall.StartActivity"
+      ],
+      "category": "APP",
+      "unverified": [
+        "com.yablio.debridemall/com.yablio.debridemall.StartActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Deezer",
+      "drawable": "deezer",
+      "color": "#9B5DE5",
+      "glyph": "monogram_D",
+      "components": [
+        "deezer.android.app/deezer.android.app.navigation.ui.MainNavigationActivity",
+        "deezer.android.tv/com.deezer.android.ui.activity.LauncherActivity"
+      ],
+      "category": "MUSIC",
+      "unverified": [
+        "deezer.android.app/deezer.android.app.navigation.ui.MainNavigationActivity",
+        "deezer.android.tv/com.deezer.android.ui.activity.LauncherActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Developer Tools",
+      "drawable": "developer_tools",
+      "color": "#F94144",
+      "glyph": "monogram_D",
+      "components": [
+        "com.roysolberg.android.developertools/com.roysolberg.android.developertools.ui.activity.MainActivity"
+      ],
+      "category": "TOOL",
+      "unverified": [
+        "com.roysolberg.android.developertools/com.roysolberg.android.developertools.ui.activity.MainActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Digi TV",
+      "drawable": "digi_tv",
+      "color": "#E71D36",
+      "glyph": "monogram_D",
+      "components": [
+        "ro.digionline.tv/ro.digionline.tv.MainActivity"
+      ],
+      "category": "APP",
+      "unverified": [
+        "ro.digionline.tv/ro.digionline.tv.MainActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Direct One",
+      "drawable": "direct_one",
+      "color": "#90BE6D",
+      "glyph": "monogram_D",
+      "components": [
+        "nl.streamgroup.upcdirect/tv.solocoo.htmlapp.FullscreenActivity"
+      ],
+      "category": "APP",
+      "unverified": [
+        "nl.streamgroup.upcdirect/tv.solocoo.htmlapp.FullscreenActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Dish Anywhere",
+      "drawable": "dish_anywhere",
+      "color": "#00BBF9",
+      "glyph": "monogram_D",
+      "components": [
+        "com.sm.SlingGuide.Dish/com.sm.SlingGuide.Dish.MainActivity"
+      ],
+      "category": "APP",
+      "unverified": [
+        "com.sm.SlingGuide.Dish/com.sm.SlingGuide.Dish.MainActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Dixmax",
+      "drawable": "dixmax",
+      "color": "#FF6B35",
+      "glyph": "monogram_D",
+      "components": [
+        "es.shufflex.dixmax.android/es.shufflex.dixmax.android.Main",
+        "es.shufflex.dixmax.android/es.shufflex.dixmax.android.activities.tv.activities.LoginActivity"
+      ],
+      "category": "APP",
+      "unverified": [
+        "es.shufflex.dixmax.android/es.shufflex.dixmax.android.Main",
+        "es.shufflex.dixmax.android/es.shufflex.dixmax.android.activities.tv.activities.LoginActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Dolphin Emulator",
+      "drawable": "dolphin_emulator",
+      "color": "#FF477E",
+      "glyph": "monogram_D",
+      "components": [
+        "org.dolphinemu.dolphinemu/org.dolphinemu.dolphinemu.ui.main.MainActivity",
+        "org.dolphinemu.dolphinemu/org.dolphinemu.dolphinemu.ui.main.TvMainActivity"
+      ],
+      "category": "GAMING",
+      "unverified": [
+        "org.dolphinemu.dolphinemu/org.dolphinemu.dolphinemu.ui.main.MainActivity",
+        "org.dolphinemu.dolphinemu/org.dolphinemu.dolphinemu.ui.main.TvMainActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Download Navi",
+      "drawable": "download_navi",
+      "color": "#4CC9F0",
+      "glyph": "monogram_D",
+      "components": [
+        "com.tachibana.downloader/com.tachibana.downloader.ui.main.MainActivity"
+      ],
+      "category": "TOOL",
+      "unverified": [
+        "com.tachibana.downloader/com.tachibana.downloader.ui.main.MainActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Dr Nettools",
+      "drawable": "dr_nettools",
+      "color": "#2EC4B6",
+      "glyph": "monogram_D",
+      "components": [
+        "pl.dronline.nettools/pl.dronline.nettools.activity.CoreActivity"
+      ],
+      "category": "TOOL",
+      "unverified": [
+        "pl.dronline.nettools/pl.dronline.nettools.activity.CoreActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Drama Live",
+      "drawable": "drama_live",
+      "color": "#00BBF9",
+      "glyph": "monogram_D",
+      "components": [
+        "com.sneig.livedrama/com.sneig.livedrama.activities.StartActivity"
+      ],
+      "category": "LIVE",
+      "unverified": [
+        "com.sneig.livedrama/com.sneig.livedrama.activities.StartActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Dramox",
+      "drawable": "dramox",
+      "color": "#90BE6D",
+      "glyph": "monogram_D",
+      "components": [
+        "cz.dramox.dramox/com.elevup.panda.MainActivity"
+      ],
+      "category": "APP",
+      "unverified": [
+        "cz.dramox.dramox/com.elevup.panda.MainActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Dream Player TV",
+      "drawable": "dream_player_tv",
+      "color": "#4CC9F0",
+      "glyph": "monogram_D",
+      "components": [
+        "de.cyberdream.dreamepg.tv.player/de.cyberdream.dreamepg.MainActivityTV"
+      ],
+      "category": "PLAYER",
+      "unverified": [
+        "de.cyberdream.dreamepg.tv.player/de.cyberdream.dreamepg.MainActivityTV"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Dropsync",
+      "drawable": "dropsync",
+      "color": "#FF477E",
+      "glyph": "monogram_D",
+      "components": [
+        "com.ttxapps.dropsync/com.ttxapps.sync.app.MainActivity"
+      ],
+      "category": "APP",
+      "unverified": [
+        "com.ttxapps.dropsync/com.ttxapps.sync.app.MainActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Drtv",
+      "drawable": "drtv",
+      "color": "#E71D36",
+      "glyph": "monogram_D",
+      "components": [
+        "dk.dr.tvplayer/axis.androidtv.sdk.app.MainActivity"
+      ],
+      "category": "APP",
+      "unverified": [
+        "dk.dr.tvplayer/axis.androidtv.sdk.app.MainActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Dry Bar Comedy Plus",
+      "drawable": "dry_bar_comedy_plus",
+      "color": "#FEE440",
+      "glyph": "monogram_D",
+      "components": [
+        "com.vidangel.drybarcomedy/tv.vhx.LauncherActivity",
+        "com.vidangel.drybarcomedy/tv.vhx.tv.home.TvHomeActivity"
+      ],
+      "category": "APP",
+      "unverified": [
+        "com.vidangel.drybarcomedy/tv.vhx.LauncherActivity",
+        "com.vidangel.drybarcomedy/tv.vhx.tv.home.TvHomeActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Dudeperfect",
+      "drawable": "dudeperfect",
+      "color": "#F3722C",
+      "glyph": "monogram_D",
+      "components": [
+        "tv.kidoodle.android.dudeperfect/tv.kidoodle.android.ui.MainActivity"
+      ],
+      "category": "APP",
+      "unverified": [
+        "tv.kidoodle.android.dudeperfect/tv.kidoodle.android.ui.MainActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Dw",
+      "drawable": "dw",
+      "color": "#4CC9F0",
+      "glyph": "monogram_D",
+      "components": [
+        "dw.com.androidtv.live/com.dw.app.dwforsmarttv.MainActivity"
+      ],
+      "category": "APP",
+      "unverified": [
+        "dw.com.androidtv.live/com.dw.app.dwforsmarttv.MainActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Eon TV",
+      "drawable": "eon_tv",
+      "color": "#E71D36",
+      "glyph": "monogram_E",
+      "components": [
+        "com.ug.eon.android.tv/com.ug.eon.android.tv.TvActivity"
+      ],
+      "category": "APP",
+      "unverified": [
+        "com.ug.eon.android.tv/com.ug.eon.android.tv.TvActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Ertflix",
+      "drawable": "ertflix_2",
+      "color": "#9B5DE5",
+      "glyph": "monogram_E",
+      "components": [
+        "t.yi.erthybrid/com.arxnet.soeasytv.MainActivity"
+      ],
+      "category": "APP",
+      "unverified": [
+        "t.yi.erthybrid/com.arxnet.soeasytv.MainActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Es De Frontend",
+      "drawable": "es_de_frontend",
+      "color": "#43AA8B",
+      "glyph": "monogram_E",
+      "components": [
+        "org.es_de.frontend/org.es_de.frontend.TvActivity"
+      ],
+      "category": "APP",
+      "unverified": [
+        "org.es_de.frontend/org.es_de.frontend.TvActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Etube",
+      "drawable": "etube",
+      "color": "#F94144",
+      "glyph": "monogram_E",
+      "components": [
+        "com.vietts.etube/com.vietts.etube.MainActivity"
+      ],
+      "category": "APP",
+      "unverified": [
+        "com.vietts.etube/com.vietts.etube.MainActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "F Droid",
+      "drawable": "f_droid",
+      "color": "#F3722C",
+      "glyph": "monogram_F",
+      "components": [
+        "org.fdroid.fdroid/org.fdroid.fdroid.views.main.MainActivity"
+      ],
+      "category": "APP",
+      "unverified": [
+        "org.fdroid.fdroid/org.fdroid.fdroid.views.main.MainActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Feb",
+      "drawable": "feb",
+      "color": "#577590",
+      "glyph": "monogram_F",
+      "components": [
+        "com.topspeed.febbox2/com.snowtop.diskpanda.view.activity.SplashActivity"
+      ],
+      "category": "APP",
+      "unverified": [
+        "com.topspeed.febbox2/com.snowtop.diskpanda.view.activity.SplashActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Filimo",
+      "drawable": "filimo",
+      "color": "#6A4C93",
+      "glyph": "monogram_F",
+      "components": [
+        "com.sabaidea.filimo.tv/com.bluevod.android.tv.ui.activities.MainActivity"
+      ],
+      "category": "APP",
+      "unverified": [
+        "com.sabaidea.filimo.tv/com.bluevod.android.tv.ui.activities.MainActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Filmfriend",
+      "drawable": "filmfriend",
+      "color": "#F15BB5",
+      "glyph": "monogram_F",
+      "components": [
+        "de.filmfriend/crc64a5e6c5f1927a9b79.MainActivity"
+      ],
+      "category": "APP",
+      "unverified": [
+        "de.filmfriend/crc64a5e6c5f1927a9b79.MainActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Filmnet TV",
+      "drawable": "filmnet_tv",
+      "color": "#B5179E",
+      "glyph": "monogram_F",
+      "components": [
+        "ir.filmnet.android.tv/ir.filmnet.android.ui.MainActivity"
+      ],
+      "category": "APP",
+      "unverified": [
+        "ir.filmnet.android.tv/ir.filmnet.android.ui.MainActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Firedown",
+      "drawable": "firedown",
+      "color": "#4CC9F0",
+      "glyph": "monogram_F",
+      "components": [
+        "com.solarized.firedown/com.solarized.firedown.phone.BrowserActivity"
+      ],
+      "category": "APP",
+      "unverified": [
+        "com.solarized.firedown/com.solarized.firedown.phone.BrowserActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Fladder",
+      "drawable": "fladder",
+      "color": "#577590",
+      "glyph": "monogram_F",
+      "components": [
+        "nl.jknaapen.fladder/nl.jknaapen.fladder.MainActivity"
+      ],
+      "category": "APP",
+      "unverified": [
+        "nl.jknaapen.fladder/nl.jknaapen.fladder.MainActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Flickfolio",
+      "drawable": "flickfolio",
+      "color": "#6A4C93",
+      "glyph": "monogram_F",
+      "components": [
+        "com.snapwood.flickfolio/com.snapwood.flickfolio.SelectAlbumActivity"
+      ],
+      "category": "APP",
+      "unverified": [
+        "com.snapwood.flickfolio/com.snapwood.flickfolio.SelectAlbumActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Flix TV",
+      "drawable": "flix_tv",
+      "color": "#90BE6D",
+      "glyph": "monogram_F",
+      "components": [
+        "com.tvflix.ippflixtvbox/com.tvflix.ippflixtvbox.view.activity.SplashActivity"
+      ],
+      "category": "APP",
+      "unverified": [
+        "com.tvflix.ippflixtvbox/com.tvflix.ippflixtvbox.view.activity.SplashActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Flixnest",
+      "drawable": "flixnest",
+      "color": "#00BBF9",
+      "glyph": "monogram_F",
+      "components": [
+        "hu.kinetik.streamapp/hu.kinetik.streamapp.MainActivity"
+      ],
+      "category": "APP",
+      "unverified": [
+        "hu.kinetik.streamapp/hu.kinetik.streamapp.MainActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Flosports",
+      "drawable": "flosports",
+      "color": "#F94144",
+      "glyph": "monogram_F",
+      "components": [
+        "tv.flosports/tv.flosports.TvActivity"
+      ],
+      "category": "SPORT",
+      "unverified": [
+        "tv.flosports/tv.flosports.TvActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Folder Sync",
+      "drawable": "folder_sync",
+      "color": "#FF6B35",
+      "glyph": "monogram_F",
+      "components": [
+        "dk.tacit.android.foldersync.lite/dk.tacit.android.foldersync.activity.MainActivity"
+      ],
+      "category": "FILES",
+      "unverified": [
+        "dk.tacit.android.foldersync.lite/dk.tacit.android.foldersync.activity.MainActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Football 360",
+      "drawable": "football_360",
+      "color": "#43AA8B",
+      "glyph": "monogram_F",
+      "components": [
+        "tv.football360.androidtv/tv.football360.androidtv.MainActivity"
+      ],
+      "category": "SPORT",
+      "unverified": [
+        "tv.football360.androidtv/tv.football360.androidtv.MainActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Forja TV",
+      "drawable": "forja_tv",
+      "color": "#577590",
+      "glyph": "monogram_F",
+      "components": [
+        "ma.snrt.forja.android.app/com.ebplatformtv.MainActivity"
+      ],
+      "category": "APP",
+      "unverified": [
+        "ma.snrt.forja.android.app/com.ebplatformtv.MainActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Fpt Play",
+      "drawable": "fpt_play",
+      "color": "#90BE6D",
+      "glyph": "monogram_F",
+      "components": [
+        "net.fptplay.ottbox/com.tear.modules.tv.welcome.WelcomeActivity"
+      ],
+      "category": "APP",
+      "unverified": [
+        "net.fptplay.ottbox/com.tear.modules.tv.welcome.WelcomeActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Francetv",
+      "drawable": "francetv",
+      "color": "#E71D36",
+      "glyph": "monogram_F",
+      "components": [
+        "fr.francetv.pluzz/fr.francetv.androidtv.main.MainActivity"
+      ],
+      "category": "APP",
+      "unverified": [
+        "fr.francetv.pluzz/fr.francetv.androidtv.main.MainActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Free TV",
+      "drawable": "free_tv",
+      "color": "#4CC9F0",
+      "glyph": "monogram_F",
+      "components": [
+        "net.oqee.androidtv.store/net.oqee.androidtv.ui.splash.SplashActivity"
+      ],
+      "category": "APP",
+      "unverified": [
+        "net.oqee.androidtv.store/net.oqee.androidtv.ui.splash.SplashActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Freeflix Hq",
+      "drawable": "freeflix_hq",
+      "color": "#2EC4B6",
+      "glyph": "monogram_F",
+      "components": [
+        "tonybits.com.ffhq/tonybits.com.ffhq.activities.SplashScreenActivity"
+      ],
+      "category": "APP",
+      "unverified": [
+        "tonybits.com.ffhq/tonybits.com.ffhq.activities.SplashScreenActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Fresh Drama",
+      "drawable": "fresh_drama",
+      "color": "#E71D36",
+      "glyph": "monogram_F",
+      "components": [
+        "com.skylinktv.freshdrama/co.unreel.videoapp.PreSplashActivity",
+        "com.skylinktv.freshdrama/co.unreel.tvapp.ui.activity.SplashActivity"
+      ],
+      "category": "APP",
+      "unverified": [
+        "com.skylinktv.freshdrama/co.unreel.videoapp.PreSplashActivity",
+        "com.skylinktv.freshdrama/co.unreel.tvapp.ui.activity.SplashActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Ftp Server",
+      "drawable": "ftp_server",
+      "color": "#8AC926",
+      "glyph": "monogram_F",
+      "components": [
+        "net.xnano.android.ftpserver.tv/net.xnano.android.ftpserver.MainActivity"
+      ],
+      "category": "FILES",
+      "unverified": [
+        "net.xnano.android.ftpserver.tv/net.xnano.android.ftpserver.MainActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Gain",
+      "drawable": "gain",
+      "color": "#F94144",
+      "glyph": "monogram_G",
+      "components": [
+        "com.trgain.mikrogain/com.gain.mikrogain.TVMainActivity"
+      ],
+      "category": "APP",
+      "unverified": [
+        "com.trgain.mikrogain/com.gain.mikrogain.TVMainActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Galaxy Play",
+      "drawable": "galaxy_play",
+      "color": "#2EC4B6",
+      "glyph": "monogram_G",
+      "components": [
+        "movies.fimplus.vn.andtv/movies.fimplus.vn.andtv.v2.activity.HomeActivityV2"
+      ],
+      "category": "APP",
+      "unverified": [
+        "movies.fimplus.vn.andtv/movies.fimplus.vn.andtv.v2.activity.HomeActivityV2"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Gb News",
+      "drawable": "gb_news",
+      "color": "#F94144",
+      "glyph": "monogram_G",
+      "components": [
+        "uk.gbnews.app/com.simplestream.presentation.startup.StartUpActivity"
+      ],
+      "category": "APP",
+      "unverified": [
+        "uk.gbnews.app/com.simplestream.presentation.startup.StartUpActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Get Icon",
+      "drawable": "get_icon",
+      "color": "#2EC4B6",
+      "glyph": "monogram_G",
+      "components": [
+        "de.lemke.geticon/de.lemke.geticon.ui.MainActivity"
+      ],
+      "category": "APP",
+      "unverified": [
+        "de.lemke.geticon/de.lemke.geticon.ui.MainActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Global TV",
+      "drawable": "global_tv",
+      "color": "#43AA8B",
+      "glyph": "monogram_G",
+      "components": [
+        "com.shawmedia.smglobal/com.corusent.stream.activity.SplashScreenActivity"
+      ],
+      "category": "APP",
+      "unverified": [
+        "com.shawmedia.smglobal/com.corusent.stream.activity.SplashScreenActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Go3",
+      "drawable": "go3",
+      "color": "#B5179E",
+      "glyph": "monogram_G",
+      "components": [
+        "lt.go3.android.tv/pl.atende.mobile.tv.ui.gui.main.activity.SplashActivity"
+      ],
+      "category": "APP",
+      "unverified": [
+        "lt.go3.android.tv/pl.atende.mobile.tv.ui.gui.main.activity.SplashActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Gymondo",
+      "drawable": "gymondo",
+      "color": "#FEE440",
+      "glyph": "monogram_G",
+      "components": [
+        "de.gymondo.app.gymondo/com.gymondo.presentation.features.startup.StartupTvActivity"
+      ],
+      "category": "APP",
+      "unverified": [
+        "de.gymondo.app.gymondo/com.gymondo.presentation.features.startup.StartupTvActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Hayu",
+      "drawable": "hayu",
+      "color": "#F15BB5",
+      "glyph": "monogram_H",
+      "components": [
+        "com.upst.hayu/com.upst.hayu.tv.main.MainActivity"
+      ],
+      "category": "APP",
+      "unverified": [
+        "com.upst.hayu/com.upst.hayu.tv.main.MainActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Hd Streamz",
+      "drawable": "hd_streamz",
+      "color": "#4CC9F0",
+      "glyph": "monogram_H",
+      "components": [
+        "insure.cable.estate/com.android.vending.a.UI",
+        "insure.cable.estate/com.android.vending.a.TV"
+      ],
+      "category": "APP",
+      "unverified": [
+        "insure.cable.estate/com.android.vending.a.UI",
+        "insure.cable.estate/com.android.vending.a.TV"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Hdhomerun",
+      "drawable": "hdhomerun",
+      "color": "#8AC926",
+      "glyph": "monogram_H",
+      "components": [
+        "com.silicondust.view/com.silicondust.view.App"
+      ],
+      "category": "APP",
+      "unverified": [
+        "com.silicondust.view/com.silicondust.view.App"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Hdo Box",
+      "drawable": "hdo_box",
+      "color": "#43AA8B",
+      "glyph": "monogram_H",
+      "components": [
+        "com.tv.hdobox/com.tv.hdobox.MainActivity"
+      ],
+      "category": "APP",
+      "unverified": [
+        "com.tv.hdobox/com.tv.hdobox.MainActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Hdtv Player",
+      "drawable": "hdtv_player",
+      "color": "#F94144",
+      "glyph": "monogram_H",
+      "components": [
+        "com.zva3.mobile.litetvandroid/com.zva3.mobile.litetvandroid.MainActivity",
+        "com.zva3.mobile.litetvandroid/com.zva3.mobile.litetvandroid.TvActivity"
+      ],
+      "category": "LIVE",
+      "unverified": [
+        "com.zva3.mobile.litetvandroid/com.zva3.mobile.litetvandroid.MainActivity",
+        "com.zva3.mobile.litetvandroid/com.zva3.mobile.litetvandroid.TvActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Hideme",
+      "drawable": "hideme",
+      "color": "#577590",
+      "glyph": "monogram_H",
+      "components": [
+        "hideme.android.vpn/com.android.vpn.activities.LoginActivity"
+      ],
+      "category": "APP",
+      "unverified": [
+        "hideme.android.vpn/com.android.vpn.activities.LoginActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Hidive",
+      "drawable": "hidive",
+      "color": "#90BE6D",
+      "glyph": "monogram_H",
+      "components": [
+        "com.twentyfouri.androidtv.hidive/com.twentyfouri.androidtv.hidive.MainActivity"
+      ],
+      "category": "APP",
+      "unverified": [
+        "com.twentyfouri.androidtv.hidive/com.twentyfouri.androidtv.hidive.MainActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Hoichoi",
+      "drawable": "hoichoi",
+      "color": "#F94144",
+      "glyph": "monogram_H",
+      "components": [
+        "com.viewlift.hoichoi/com.viewlift.hoichoi.ui.splash.MainActivity"
+      ],
+      "category": "APP",
+      "unverified": [
+        "com.viewlift.hoichoi/com.viewlift.hoichoi.ui.splash.MainActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Home Automation TV Dashboard",
+      "drawable": "home_automation_tv_dashboard",
+      "color": "#F15BB5",
+      "glyph": "monogram_H",
+      "components": [
+        "io.homeassistant.companion.androidtv/io.homeassistant.companion.androidtv.DefaultLauncherAlias"
+      ],
+      "category": "APP",
+      "unverified": [
+        "io.homeassistant.companion.androidtv/io.homeassistant.companion.androidtv.DefaultLauncherAlias"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Home Workout",
+      "drawable": "home_workout",
+      "color": "#FF6B35",
+      "glyph": "monogram_H",
+      "components": [
+        "com.sugarapple.workout/com.sugarapple.workout.MainActivity"
+      ],
+      "category": "SPORT",
+      "unverified": [
+        "com.sugarapple.workout/com.sugarapple.workout.MainActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Hotspot Shield VPN",
+      "drawable": "hotspot_shield_vpn",
+      "color": "#F15BB5",
+      "glyph": "monogram_H",
+      "components": [
+        "hotspotshield.android.vpn/com.anchorfree.hotspotshield.ui.HssActivity",
+        "hotspotshield.android.vpn/com.anchorfree.hotspotshield.ui.tv.HssTvActivity"
+      ],
+      "category": "VPN",
+      "unverified": [
+        "hotspotshield.android.vpn/com.anchorfree.hotspotshield.ui.HssActivity",
+        "hotspotshield.android.vpn/com.anchorfree.hotspotshield.ui.tv.HssTvActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Hrti",
+      "drawable": "hrti",
+      "color": "#577590",
+      "glyph": "monogram_H",
+      "components": [
+        "hr.hrt.hrti/hr.cs.aviion.ui.splash.SplashActivity"
+      ],
+      "category": "APP",
+      "unverified": [
+        "hr.hrt.hrti/hr.cs.aviion.ui.splash.SplashActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Hueessentials",
+      "drawable": "hueessentials",
+      "color": "#FEE440",
+      "glyph": "monogram_H",
+      "components": [
+        "com.superthomaslab.hueessentials/com.superthomaslab.hueessentials.MainActivity"
+      ],
+      "category": "APP",
+      "unverified": [
+        "com.superthomaslab.hueessentials/com.superthomaslab.hueessentials.MainActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Hyperspin",
+      "drawable": "hyperspin",
+      "color": "#F7B32B",
+      "glyph": "monogram_H",
+      "components": [
+        "com.shieldcade.hyperspin/com.shieldcade.hyperspin.HSFENativeActivity"
+      ],
+      "category": "GAMING",
+      "unverified": [
+        "com.shieldcade.hyperspin/com.shieldcade.hyperspin.HSFENativeActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Ici Tou TV",
+      "drawable": "ici_tou_tv",
+      "color": "#4CC9F0",
+      "glyph": "monogram_I",
+      "components": [
+        "tv.toutv.androidtv/tv.tou.android.splash.views.activities.SplashScreenActivity",
+        "tv.tou.android/tv.tou.android.splash.views.activities.SplashScreenActivity"
+      ],
+      "category": "APP",
+      "unverified": [
+        "tv.toutv.androidtv/tv.tou.android.splash.views.activities.SplashScreenActivity",
+        "tv.tou.android/tv.tou.android.splash.views.activities.SplashScreenActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Iflix",
+      "drawable": "iflix",
+      "color": "#43AA8B",
+      "glyph": "monogram_I",
+      "components": [
+        "iflix.play/com.ktcp.video.activity.HomeActivity"
+      ],
+      "category": "APP",
+      "unverified": [
+        "iflix.play/com.ktcp.video.activity.HomeActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Immich TV",
+      "drawable": "immich_tv",
+      "color": "#6A4C93",
+      "glyph": "monogram_I",
+      "components": [
+        "nl.giejay.android.tv.immich/nl.giejay.android.tv.immich.MainActivity"
+      ],
+      "category": "APP",
+      "unverified": [
+        "nl.giejay.android.tv.immich/nl.giejay.android.tv.immich.MainActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Ip Address",
+      "drawable": "ip_address",
+      "color": "#F15BB5",
+      "glyph": "monogram_I",
+      "components": [
+        "net.info.az/net.info.az.SplashActivity"
+      ],
+      "category": "TOOL",
+      "unverified": [
+        "net.info.az/net.info.az.SplashActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "IPTV Pro",
+      "drawable": "iptv_pro",
+      "color": "#F94144",
+      "glyph": "monogram_I",
+      "components": [
+        "ru.iptvremote.android.iptv.pro/ru.iptvremote.android.iptv.pro.ChannelsActivity"
+      ],
+      "category": "LIVE",
+      "unverified": [
+        "ru.iptvremote.android.iptv.pro/ru.iptvremote.android.iptv.pro.ChannelsActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "IPTV Smarters Plus",
+      "drawable": "iptv_smarters_plus",
+      "color": "#F7B32B",
+      "glyph": "monogram_I",
+      "components": [
+        "iptv.smarters.plus/flix.pro.player.SplashActivity"
+      ],
+      "category": "LIVE",
+      "unverified": [
+        "iptv.smarters.plus/flix.pro.player.SplashActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Ivysiilani",
+      "drawable": "ivysiilani",
+      "color": "#577590",
+      "glyph": "monogram_I",
+      "components": [
+        "cz.ceskatelevize.ivysilani.tvapp/cz.ceskatelevize.ivysilani.tvapp.MainActivity"
+      ],
+      "category": "APP",
+      "unverified": [
+        "cz.ceskatelevize.ivysilani.tvapp/cz.ceskatelevize.ivysilani.tvapp.MainActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Jawwy TV",
+      "drawable": "jawwy_tv",
+      "color": "#9B5DE5",
+      "glyph": "monogram_J",
+      "components": [
+        "net.intigral.jawwytv/com.intigral.jawwytv.standalone.StandaloneSplashActivity"
+      ],
+      "category": "APP",
+      "unverified": [
+        "net.intigral.jawwytv/com.intigral.jawwytv.standalone.StandaloneSplashActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Jiohotstar",
+      "drawable": "jiohotstar",
+      "color": "#B5179E",
+      "glyph": "monogram_J",
+      "components": [
+        "in.startv.hotstar/com.hotstar.MainActivity"
+      ],
+      "category": "APP",
+      "unverified": [
+        "in.startv.hotstar/com.hotstar.MainActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Joyn",
+      "drawable": "joyn",
+      "color": "#F7B32B",
+      "glyph": "monogram_J",
+      "components": [
+        "de.prosiebensat1digital.seventv/de.joyn.mobile.app.splash.SplashActivity"
+      ],
+      "category": "APP",
+      "unverified": [
+        "de.prosiebensat1digital.seventv/de.joyn.mobile.app.splash.SplashActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Jtv Go Server",
+      "drawable": "jtv_go_server",
+      "color": "#F3722C",
+      "glyph": "monogram_J",
+      "components": [
+        "com.skylake.skytv.jgorunner/com.skylake.skytv.jgorunner.Default"
+      ],
+      "category": "TOOL",
+      "unverified": [
+        "com.skylake.skytv.jgorunner/com.skylake.skytv.jgorunner.Default"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "KDE Connect",
+      "drawable": "kde_connect",
+      "color": "#4CC9F0",
+      "glyph": "monogram_K",
+      "components": [
+        "org.kde.kdeconnect_tp/org.kde.kdeconnect.UserInterface.MainActivity"
+      ],
+      "category": "FILES",
+      "unverified": [
+        "org.kde.kdeconnect_tp/org.kde.kdeconnect.UserInterface.MainActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Kemo IPTV",
+      "drawable": "kemo_iptv",
+      "color": "#00BBF9",
+      "glyph": "monogram_K",
+      "components": [
+        "de.cyberdream.iptv.tv.player/de.cyberdream.dreamepg.MainActivityTV"
+      ],
+      "category": "LIVE",
+      "unverified": [
+        "de.cyberdream.iptv.tv.player/de.cyberdream.dreamepg.MainActivityTV"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Kennytv",
+      "drawable": "kennytv",
+      "color": "#6A4C93",
+      "glyph": "monogram_K",
+      "components": [
+        "de.wabosh.kenny_tv/de.wabosh.kenny_tv.MainActivity"
+      ],
+      "category": "APP",
+      "unverified": [
+        "de.wabosh.kenny_tv/de.wabosh.kenny_tv.MainActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Kijk",
+      "drawable": "kijk",
+      "color": "#FF477E",
+      "glyph": "monogram_K",
+      "components": [
+        "nl.sbs.kijk/nl.sbs.kijk.ui.activity.LaunchActivity"
+      ],
+      "category": "APP",
+      "unverified": [
+        "nl.sbs.kijk/nl.sbs.kijk.ui.activity.LaunchActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Kika",
+      "drawable": "kika",
+      "color": "#F15BB5",
+      "glyph": "monogram_K",
+      "components": [
+        "de.kika.player.androidtv/de.kika.player.androidtv.MainActivity",
+        "de.kika.player.androidtv/com.mitxp.androidtv.MainActivity"
+      ],
+      "category": "APP",
+      "unverified": [
+        "de.kika.player.androidtv/de.kika.player.androidtv.MainActivity",
+        "de.kika.player.androidtv/com.mitxp.androidtv.MainActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Kreate",
+      "drawable": "kreate",
+      "color": "#90BE6D",
+      "glyph": "monogram_K",
+      "components": [
+        "me.knighthat.kreate/it.fast4x.rimusic.MainActivity"
+      ],
+      "category": "APP",
+      "unverified": [
+        "me.knighthat.kreate/it.fast4x.rimusic.MainActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Kuku TV",
+      "drawable": "kuku_tv",
+      "color": "#F3722C",
+      "glyph": "monogram_K",
+      "components": [
+        "com.vlv.aravali.reels/com.vlv.aravali.television.MainActivity"
+      ],
+      "category": "APP",
+      "unverified": [
+        "com.vlv.aravali.reels/com.vlv.aravali.television.MainActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "L Equipe",
+      "drawable": "l_equipe",
+      "color": "#F7B32B",
+      "glyph": "monogram_L",
+      "components": [
+        "lequipe.fr/com.dotscreen.ethanol.tv.ui.MainActivity"
+      ],
+      "category": "APP",
+      "unverified": [
+        "lequipe.fr/com.dotscreen.ethanol.tv.ui.MainActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Laliga",
+      "drawable": "laliga",
+      "color": "#2EC4B6",
+      "glyph": "monogram_L",
+      "components": [
+        "la.liga.sports.tv.deporte/la.liga.sports.tv.deporte.features.splash.TvSplashActivity"
+      ],
+      "category": "SPORT",
+      "unverified": [
+        "la.liga.sports.tv.deporte/la.liga.sports.tv.deporte.features.splash.TvSplashActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Lampa",
+      "drawable": "lampa",
+      "color": "#FEE440",
+      "glyph": "monogram_L",
+      "components": [
+        "top.rootu.lampa/top.rootu.lampa.MainActivity"
+      ],
+      "category": "APP",
+      "unverified": [
+        "top.rootu.lampa/top.rootu.lampa.MainActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Launchbox",
+      "drawable": "launchbox",
+      "color": "#FEE440",
+      "glyph": "monogram_L",
+      "components": [
+        "com.unbrokensoftware.launchbox/crc640d6c5ebcc48c6177.MainActivity"
+      ],
+      "category": "APP",
+      "unverified": [
+        "com.unbrokensoftware.launchbox/crc640d6c5ebcc48c6177.MainActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Launcher Manager",
+      "drawable": "launcher_manager",
+      "color": "#00BBF9",
+      "glyph": "monogram_L",
+      "components": [
+        "com.wolf.lm/com.wolf.lm.main.MainActivity"
+      ],
+      "category": "LAUNCHER",
+      "unverified": [
+        "com.wolf.lm/com.wolf.lm.main.MainActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Leankeyboard",
+      "drawable": "leankeyboard",
+      "color": "#F94144",
+      "glyph": "monogram_L",
+      "components": [
+        "org.liskovsoft.androidtv.rukeyboard/com.liskovsoft.leankeyboard.activity.settings.KbSettingsActivity2"
+      ],
+      "category": "APP",
+      "unverified": [
+        "org.liskovsoft.androidtv.rukeyboard/com.liskovsoft.leankeyboard.activity.settings.KbSettingsActivity2"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Lemino",
+      "drawable": "lemino",
+      "color": "#F7B32B",
+      "glyph": "monogram_L",
+      "components": [
+        "jp.ne.docomo.lemino.androidtv/jp.ne.docomo.lemino.androidtv.activities.SplashActivity"
+      ],
+      "category": "APP",
+      "unverified": [
+        "jp.ne.docomo.lemino.androidtv/jp.ne.docomo.lemino.androidtv.activities.SplashActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Lemuroid",
+      "drawable": "lemuroid",
+      "color": "#F7B32B",
+      "glyph": "monogram_L",
+      "components": [
+        "com.swordfish.lemuroid/com.swordfish.lemuroid.app.mobile.feature.main.MainActivity",
+        "com.swordfish.lemuroid/com.swordfish.lemuroid.app.tv.main.MainTVActivity"
+      ],
+      "category": "GAMING",
+      "unverified": [
+        "com.swordfish.lemuroid/com.swordfish.lemuroid.app.mobile.feature.main.MainActivity",
+        "com.swordfish.lemuroid/com.swordfish.lemuroid.app.tv.main.MainTVActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Localnow",
+      "drawable": "localnow",
+      "color": "#43AA8B",
+      "glyph": "monogram_L",
+      "components": [
+        "com.weathergroup.localnow/com.weathergroup.localnow.MainActivity"
+      ],
+      "category": "APP",
+      "unverified": [
+        "com.weathergroup.localnow/com.weathergroup.localnow.MainActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Loco",
+      "drawable": "loco",
+      "color": "#F3722C",
+      "glyph": "monogram_L",
+      "components": [
+        "com.showtimeapp/com.showtimeapp.MainActivity"
+      ],
+      "category": "APP",
+      "unverified": [
+        "com.showtimeapp/com.showtimeapp.MainActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Lrt",
+      "drawable": "lrt",
+      "color": "#4CC9F0",
+      "glyph": "monogram_L",
+      "components": [
+        "lt.lrt.androidtv/com.applicaster.ui.activities.MainActivity"
+      ],
+      "category": "APP",
+      "unverified": [
+        "lt.lrt.androidtv/com.applicaster.ui.activities.MainActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "M3u IPTV",
+      "drawable": "m3u_iptv",
+      "color": "#9B5DE5",
+      "glyph": "monogram_M",
+      "components": [
+        "de.herber_edevelopment.m3uiptv/de.herber_edevelopment.m3uiptv.MainActivity",
+        "de.herber_edevelopment.m3uiptv/de.herber_edevelopment.m3uiptv.TvActivity"
+      ],
+      "category": "LIVE",
+      "unverified": [
+        "de.herber_edevelopment.m3uiptv/de.herber_edevelopment.m3uiptv.MainActivity",
+        "de.herber_edevelopment.m3uiptv/de.herber_edevelopment.m3uiptv.TvActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "M64plus Fz",
+      "drawable": "m64plus_fz",
+      "color": "#FF6B35",
+      "glyph": "monogram_M",
+      "components": [
+        "org.mupen64plusae.v3.fzurita/paulscode.android.mupen64plusae.SplashActivity"
+      ],
+      "category": "APP",
+      "unverified": [
+        "org.mupen64plusae.v3.fzurita/paulscode.android.mupen64plusae.SplashActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "M6 Plus",
+      "drawable": "m6_plus",
+      "color": "#9B5DE5",
+      "glyph": "monogram_M",
+      "components": [
+        "fr.m6.m6replay/com.bedrockstreaming.shared.tv.activity.SplashActivity"
+      ],
+      "category": "APP",
+      "unverified": [
+        "fr.m6.m6replay/com.bedrockstreaming.shared.tv.activity.SplashActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Magenta Sport",
+      "drawable": "magenta_sport",
+      "color": "#FF6B35",
+      "glyph": "monogram_M",
+      "components": [
+        "com.telekom.androidtv.sport/com.telekom.firetv.sport.ui.launcher.LauncherActivity"
+      ],
+      "category": "SPORT",
+      "unverified": [
+        "com.telekom.androidtv.sport/com.telekom.firetv.sport.ui.launcher.LauncherActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Magenta TV",
+      "drawable": "magenta_tv",
+      "color": "#90BE6D",
+      "glyph": "monogram_M",
+      "components": [
+        "cz.tmobile.tvgo/com.telekom.tv.player.StbPlayerActivity",
+        "de.telekom.magentatv.androidtv/de.telekom.magentatv.androidtv.ApplicationMainActivity"
+      ],
+      "category": "APP",
+      "unverified": [
+        "cz.tmobile.tvgo/com.telekom.tv.player.StbPlayerActivity",
+        "de.telekom.magentatv.androidtv/de.telekom.magentatv.androidtv.ApplicationMainActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Magio TV",
+      "drawable": "magio_tv",
+      "color": "#6A4C93",
+      "glyph": "monogram_M",
+      "components": [
+        "com.telekom.magiogo/com.telekom.tv.player.StbPlayerActivity"
+      ],
+      "category": "APP",
+      "unverified": [
+        "com.telekom.magiogo/com.telekom.tv.player.StbPlayerActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Mame4droid",
+      "drawable": "mame4droid",
+      "color": "#F15BB5",
+      "glyph": "monogram_M",
+      "components": [
+        "com.seleuco.mame4droid/com.seleuco.mame4droid.MAME4droid"
+      ],
+      "category": "GAMING",
+      "unverified": [
+        "com.seleuco.mame4droid/com.seleuco.mame4droid.MAME4droid"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Matvt Mouse For Android TV Toggle",
+      "drawable": "matvt_mouse_for_android_tv_toggle",
+      "color": "#FF477E",
+      "glyph": "monogram_M",
+      "components": [
+        "io.github.virresh.matvt/io.github.virresh.matvt.gui.GuiActivity"
+      ],
+      "category": "TOOL",
+      "unverified": [
+        "io.github.virresh.matvt/io.github.virresh.matvt.gui.GuiActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Mecool File Manager",
+      "drawable": "mecool_file_manager",
+      "color": "#B5179E",
+      "glyph": "monogram_M",
+      "components": [
+        "com.tvonline.filewizard/com.tvonline.filewizard.ui.MainActivity"
+      ],
+      "category": "FILES",
+      "unverified": [
+        "com.tvonline.filewizard/com.tvonline.filewizard.ui.MainActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Mediaset Infinity TV",
+      "drawable": "mediaset_infinity_tv",
+      "color": "#F94144",
+      "glyph": "monogram_M",
+      "components": [
+        "it.mediaset.infinitytv/it.mediaset.mediasetplay.ctv.MainActivity"
+      ],
+      "category": "APP",
+      "unverified": [
+        "it.mediaset.infinitytv/it.mediaset.mediasetplay.ctv.MainActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Mercado Play",
+      "drawable": "mercado_play",
+      "color": "#FF6B35",
+      "glyph": "monogram_M",
+      "components": [
+        "com.mercadolibre.android.mplay_tv/com.mercadolibre.android.mplay_tv.app.feature.splash.SplashActivity"
+      ],
+      "category": "APP",
+      "unverified": [
+        "com.mercadolibre.android.mplay_tv/com.mercadolibre.android.mplay_tv.app.feature.splash.SplashActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Mewatch",
+      "drawable": "mewatch",
+      "color": "#F15BB5",
+      "glyph": "monogram_M",
+      "components": [
+        "sg.mediacorp.android/axis.androidtv.sdk.app.startup.ui.StartupActivity"
+      ],
+      "category": "APP",
+      "unverified": [
+        "sg.mediacorp.android/axis.androidtv.sdk.app.startup.ui.StartupActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Miracast",
+      "drawable": "miracast",
+      "color": "#F15BB5",
+      "glyph": "monogram_M",
+      "components": [
+        "com.xiaomi.mitv.smartshare/com.xiaomi.mitv.smartshare.wifidisplay.WfdActivity"
+      ],
+      "category": "APP",
+      "unverified": [
+        "com.xiaomi.mitv.smartshare/com.xiaomi.mitv.smartshare.wifidisplay.WfdActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Mo 4media",
+      "drawable": "mo_4media",
+      "color": "#4CC9F0",
+      "glyph": "monogram_M",
+      "components": [
+        "dancingtree.mo4media/crc64fc68bfe11eb03c38.MainActivity",
+        "dancingtree.mo4media/crc64fc68bfe11eb03c38.TVMainActivity"
+      ],
+      "category": "APP",
+      "unverified": [
+        "dancingtree.mo4media/crc64fc68bfe11eb03c38.MainActivity",
+        "dancingtree.mo4media/crc64fc68bfe11eb03c38.TVMainActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Molotov TV",
+      "drawable": "molotov_tv",
+      "color": "#F7B32B",
+      "glyph": "monogram_M",
+      "components": [
+        "tv.molotov.app/tv.molotov.android.splash.SplashActivity"
+      ],
+      "category": "APP",
+      "unverified": [
+        "tv.molotov.app/tv.molotov.android.splash.SplashActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Monplayer",
+      "drawable": "monplayer",
+      "color": "#2EC4B6",
+      "glyph": "monogram_M",
+      "components": [
+        "org.monplayer.mpapp/org.monplayer.mpapp.MainActivity"
+      ],
+      "category": "PLAYER",
+      "unverified": [
+        "org.monplayer.mpapp/org.monplayer.mpapp.MainActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Moonfin",
+      "drawable": "moonfin",
+      "color": "#6A4C93",
+      "glyph": "monogram_M",
+      "components": [
+        "org.moonfin.androidtv/org.jellyfin.androidtv.ui.startup.StartupActivity"
+      ],
+      "category": "APP",
+      "unverified": [
+        "org.moonfin.androidtv/org.jellyfin.androidtv.ui.startup.StartupActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Movieark",
+      "drawable": "movieark",
+      "color": "#577590",
+      "glyph": "monogram_M",
+      "components": [
+        "com.tcl.movieark/com.tcl.waterfall.overseas.main.MainActivity"
+      ],
+      "category": "APP",
+      "unverified": [
+        "com.tcl.movieark/com.tcl.waterfall.overseas.main.MainActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Movistar Plus",
+      "drawable": "movistar_plus",
+      "color": "#43AA8B",
+      "glyph": "monogram_M",
+      "components": [
+        "es.plus.yomvi/com.movistar.android.views.HomeActivity"
+      ],
+      "category": "APP",
+      "unverified": [
+        "es.plus.yomvi/com.movistar.android.views.HomeActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Mpv",
+      "drawable": "mpv",
+      "color": "#FEE440",
+      "glyph": "monogram_M",
+      "components": [
+        "is.xyz.mpv/is.xyz.mpv.MainActivity"
+      ],
+      "category": "APP",
+      "unverified": [
+        "is.xyz.mpv/is.xyz.mpv.MainActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Mst3k",
+      "drawable": "mst3k",
+      "color": "#9B5DE5",
+      "glyph": "monogram_M",
+      "components": [
+        "ott.mst3k/tv.vhx.LauncherActivity",
+        "ott.mst3k/tv.vhx.tv.home.TvHomeActivity"
+      ],
+      "category": "APP",
+      "unverified": [
+        "ott.mst3k/tv.vhx.LauncherActivity",
+        "ott.mst3k/tv.vhx.tv.home.TvHomeActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Mtv Katsomo",
+      "drawable": "mtv_katsomo",
+      "color": "#9B5DE5",
+      "glyph": "monogram_M",
+      "components": [
+        "fi.mtvkatsomo/se.tv4.tv4play.ui.tv.navigation.TvHubActivity"
+      ],
+      "category": "APP",
+      "unverified": [
+        "fi.mtvkatsomo/se.tv4.tv4play.ui.tv.navigation.TvHubActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Mullvad VPN",
+      "drawable": "mullvad_vpn",
+      "color": "#E71D36",
+      "glyph": "monogram_M",
+      "components": [
+        "net.mullvad.mullvadvpn/net.mullvad.mullvadvpn.ui.MainActivity"
+      ],
+      "category": "VPN",
+      "unverified": [
+        "net.mullvad.mullvadvpn/net.mullvad.mullvadvpn.ui.MainActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "My Family Cinema Player",
+      "drawable": "my_family_cinema_player",
+      "color": "#FF477E",
+      "glyph": "monogram_M",
+      "components": [
+        "com.rxrv.myfamilycpfst/com.atvapps.ibo.MainActivity",
+        "com.rxrv.myfamilycpfst/com.atvapps.ibo.MainTVActivity"
+      ],
+      "category": "PLAYER",
+      "unverified": [
+        "com.rxrv.myfamilycpfst/com.atvapps.ibo.MainActivity",
+        "com.rxrv.myfamilycpfst/com.atvapps.ibo.MainTVActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Mytvonline",
+      "drawable": "mytvonline",
+      "color": "#E71D36",
+      "glyph": "monogram_M",
+      "components": [
+        "m.formuler.mol.plus/m.formuler.mol.plus.IntroActivity"
+      ],
+      "category": "APP",
+      "unverified": [
+        "m.formuler.mol.plus/m.formuler.mol.plus.IntroActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Namava",
+      "drawable": "namava",
+      "color": "#FEE440",
+      "glyph": "monogram_N",
+      "components": [
+        "com.shatelland.namava.tv/com.shatelland.namava.splash_tv.splash.SplashActivity"
+      ],
+      "category": "APP",
+      "unverified": [
+        "com.shatelland.namava.tv/com.shatelland.namava.splash_tv.splash.SplashActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Nasa",
+      "drawable": "nasa",
+      "color": "#8AC926",
+      "glyph": "monogram_N",
+      "components": [
+        "gov.nasa/gov.nasa.nasatabs.SplashActivity"
+      ],
+      "category": "FILES",
+      "unverified": [
+        "gov.nasa/gov.nasa.nasatabs.SplashActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "NBC News",
+      "drawable": "nbc_news",
+      "color": "#00BBF9",
+      "glyph": "monogram_N",
+      "components": [
+        "com.zumobi.msnbc/com.nbc.androidottweb.main.MainActivity"
+      ],
+      "category": "APP",
+      "unverified": [
+        "com.zumobi.msnbc/com.nbc.androidottweb.main.MainActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Nebula",
+      "drawable": "nebula",
+      "color": "#577590",
+      "glyph": "monogram_N",
+      "components": [
+        "tv.standard.nebula/tv.standard.nebula.tv.features.splash.view.activities.SplashActivity"
+      ],
+      "category": "APP",
+      "unverified": [
+        "tv.standard.nebula/tv.standard.nebula.tv.features.splash.view.activities.SplashActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Neon",
+      "drawable": "neon",
+      "color": "#F3722C",
+      "glyph": "monogram_N",
+      "components": [
+        "nz.co.lightbox/nz.co.lightbox.splash.SplashActivity"
+      ],
+      "category": "APP",
+      "unverified": [
+        "nz.co.lightbox/nz.co.lightbox.splash.SplashActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Netfly TV",
+      "drawable": "netfly_tv",
+      "color": "#F94144",
+      "glyph": "monogram_N",
+      "components": [
+        "xyz.netfly/com.video_cloud.SplashActivity"
+      ],
+      "category": "APP",
+      "unverified": [
+        "xyz.netfly/com.video_cloud.SplashActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Nettv",
+      "drawable": "nettv",
+      "color": "#8AC926",
+      "glyph": "monogram_N",
+      "components": [
+        "np.com.androidtv.nettv/com.np.androidTV.main.TVMainActivity"
+      ],
+      "category": "APP",
+      "unverified": [
+        "np.com.androidtv.nettv/com.np.androidTV.main.TVMainActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Netzkino",
+      "drawable": "netzkino",
+      "color": "#E71D36",
+      "glyph": "monogram_N",
+      "components": [
+        "de.netzkino.android.ics/de.netzkino.android.ics.SplashActivity"
+      ],
+      "category": "APP",
+      "unverified": [
+        "de.netzkino.android.ics/de.netzkino.android.ics.SplashActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Newpipe",
+      "drawable": "newpipe",
+      "color": "#B5179E",
+      "glyph": "monogram_N",
+      "components": [
+        "org.schabi.newpipe/org.schabi.newpipe.MainActivity"
+      ],
+      "category": "APP",
+      "unverified": [
+        "org.schabi.newpipe/org.schabi.newpipe.MainActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Nextup Watch Stand Up Comedy",
+      "drawable": "nextup_watch_stand_up_comedy",
+      "color": "#2EC4B6",
+      "glyph": "monogram_N",
+      "components": [
+        "tv.vhx.nextup/com.example.videoapp.MainActivity"
+      ],
+      "category": "APP",
+      "unverified": [
+        "tv.vhx.nextup/com.example.videoapp.MainActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Nfolio",
+      "drawable": "nfolio",
+      "color": "#F3722C",
+      "glyph": "monogram_N",
+      "components": [
+        "com.snapwood.nfolio/com.snapwood.gfolio.SelectAlbumActivity"
+      ],
+      "category": "APP",
+      "unverified": [
+        "com.snapwood.nfolio/com.snapwood.gfolio.SelectAlbumActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Nhk Plus",
+      "drawable": "nhk_plus",
+      "color": "#2EC4B6",
+      "glyph": "monogram_N",
+      "components": [
+        "jp.nhk.plus/jp.nhk.simul.view.activity.SplashActivity"
+      ],
+      "category": "APP",
+      "unverified": [
+        "jp.nhk.plus/jp.nhk.simul.view.activity.SplashActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Nhk World Japan",
+      "drawable": "nhk_world_japan",
+      "color": "#FEE440",
+      "glyph": "monogram_N",
+      "components": [
+        "jp.or.nhk.nhkworld.tv/jp.or.nhk.nhkworld.tv.ui.MainActivity"
+      ],
+      "category": "APP",
+      "unverified": [
+        "jp.or.nhk.nhkworld.tv/jp.or.nhk.nhkworld.tv.ui.MainActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Njpw World",
+      "drawable": "njpw_world",
+      "color": "#90BE6D",
+      "glyph": "monogram_N",
+      "components": [
+        "com.tvasahi.njpwworld/uk.tva.template.LaunchScreenActivity"
+      ],
+      "category": "APP",
+      "unverified": [
+        "com.tvasahi.njpwworld/uk.tva.template.LaunchScreenActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Nlziet",
+      "drawable": "nlziet",
+      "color": "#6A4C93",
+      "glyph": "monogram_N",
+      "components": [
+        "nl.nlziet/nl.nlziet.tv.app.di.tv.InjectActivity"
+      ],
+      "category": "APP",
+      "unverified": [
+        "nl.nlziet/nl.nlziet.tv.app.di.tv.InjectActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Noovo",
+      "drawable": "noovo",
+      "color": "#FEE440",
+      "glyph": "monogram_N",
+      "components": [
+        "com.vmediagroup.noovo/entpay.awl.tv.splash.SplashActivity"
+      ],
+      "category": "APP",
+      "unverified": [
+        "com.vmediagroup.noovo/entpay.awl.tv.splash.SplashActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Norton Clean",
+      "drawable": "norton_clean",
+      "color": "#F15BB5",
+      "glyph": "monogram_N",
+      "components": [
+        "com.symantec.cleansweep/com.avast.android.cleaner.activity.StartActivity"
+      ],
+      "category": "APP",
+      "unverified": [
+        "com.symantec.cleansweep/com.avast.android.cleaner.activity.StartActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Nos",
+      "drawable": "nos",
+      "color": "#90BE6D",
+      "glyph": "monogram_N",
+      "components": [
+        "nl.nos.app/tv.mauna.app.MainActivity"
+      ],
+      "category": "APP",
+      "unverified": [
+        "nl.nos.app/tv.mauna.app.MainActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Notifications For Android TV",
+      "drawable": "notifications_for_android_tv",
+      "color": "#F94144",
+      "glyph": "monogram_N",
+      "components": [
+        "de.cyberdream.androidtv.notifications.google/de.cyberdream.androidtv.notifications.StartActivity",
+        "de.cyberdream.androidtv.notifications.google/de.cyberdream.smarttv.leanback.MainActivityLeanBack"
+      ],
+      "category": "TOOL",
+      "unverified": [
+        "de.cyberdream.androidtv.notifications.google/de.cyberdream.androidtv.notifications.StartActivity",
+        "de.cyberdream.androidtv.notifications.google/de.cyberdream.smarttv.leanback.MainActivityLeanBack"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Notubetv",
+      "drawable": "notubetv",
+      "color": "#F3722C",
+      "glyph": "monogram_N",
+      "components": [
+        "com.ycngmn.notubetv/com.ycngmn.notubetv.MainActivity"
+      ],
+      "category": "APP",
+      "unverified": [
+        "com.ycngmn.notubetv/com.ycngmn.notubetv.MainActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Nova Video Player",
+      "drawable": "nova_video_player",
+      "color": "#2EC4B6",
+      "glyph": "monogram_N",
+      "components": [
+        "org.courville.nova/com.archos.mediacenter.video.leanback.MainActivityLeanback"
+      ],
+      "category": "PLAYER",
+      "unverified": [
+        "org.courville.nova/com.archos.mediacenter.video.leanback.MainActivityLeanback"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Nowo TV",
+      "drawable": "nowo_tv",
+      "color": "#43AA8B",
+      "glyph": "monogram_N",
+      "components": [
+        "pt.nowo.nowotv.androidtv/com.androme.andrometv.ui.boot.SplashScreenActivity"
+      ],
+      "category": "APP",
+      "unverified": [
+        "pt.nowo.nowotv.androidtv/com.androme.andrometv.ui.boot.SplashScreenActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Npo Start",
+      "drawable": "npo_start",
+      "color": "#00BBF9",
+      "glyph": "monogram_N",
+      "components": [
+        "nl.uitzendinggemist/nl.uitzendinggemist.tv.presentation.activities.main.MainActivity"
+      ],
+      "category": "APP",
+      "unverified": [
+        "nl.uitzendinggemist/nl.uitzendinggemist.tv.presentation.activities.main.MainActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Nrk TV",
+      "drawable": "nrk_tv",
+      "color": "#9B5DE5",
+      "glyph": "monogram_N",
+      "components": [
+        "no.nrk.tv/no.nrk.tv.view.MobileSplashScreenActivity",
+        "no.nrk.tv/no.nrk.tv.view.TvSplashScreenActivity"
+      ],
+      "category": "APP",
+      "unverified": [
+        "no.nrk.tv/no.nrk.tv.view.MobileSplashScreenActivity",
+        "no.nrk.tv/no.nrk.tv.view.TvSplashScreenActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Oblivion",
+      "drawable": "oblivion",
+      "color": "#FF477E",
+      "glyph": "monogram_O",
+      "components": [
+        "org.bepass.oblivion/org.bepass.oblivion.ui.SplashScreenActivity"
+      ],
+      "category": "APP",
+      "unverified": [
+        "org.bepass.oblivion/org.bepass.oblivion.ui.SplashScreenActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Obtainium",
+      "drawable": "obtainium",
+      "color": "#F3722C",
+      "glyph": "monogram_O",
+      "components": [
+        "dev.imranr.obtainium.fdroid/dev.imranr.obtainium.MainActivity"
+      ],
+      "category": "APP",
+      "unverified": [
+        "dev.imranr.obtainium.fdroid/dev.imranr.obtainium.MainActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Ocean Streamz",
+      "drawable": "ocean_streamz",
+      "color": "#B5179E",
+      "glyph": "monogram_O",
+      "components": [
+        "streamzy.com.ocean/streamzy.com.ocean.activities.SplashScreenActivity"
+      ],
+      "category": "APP",
+      "unverified": [
+        "streamzy.com.ocean/streamzy.com.ocean.activities.SplashScreenActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Odidotv",
+      "drawable": "odidotv",
+      "color": "#FF477E",
+      "glyph": "monogram_O",
+      "components": [
+        "com.tmobile.tv.nl/com.zodiac.tv.presentation.common.layouts.ZodiacActivity"
+      ],
+      "category": "APP",
+      "unverified": [
+        "com.tmobile.tv.nl/com.zodiac.tv.presentation.common.layouts.ZodiacActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Ok Video",
+      "drawable": "ok_video",
+      "color": "#FF477E",
+      "glyph": "monogram_O",
+      "components": [
+        "ru.ok.androidtv/ru.ok.androidtv.activities.MainActivity"
+      ],
+      "category": "VIDEO",
+      "unverified": [
+        "ru.ok.androidtv/ru.ok.androidtv.activities.MainActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "One Play",
+      "drawable": "one_play",
+      "color": "#2EC4B6",
+      "glyph": "monogram_O",
+      "components": [
+        "net.cme.voyo.cz.tvapp/net.cme.voyo.cz.tvapp.MainActivity"
+      ],
+      "category": "APP",
+      "unverified": [
+        "net.cme.voyo.cz.tvapp/net.cme.voyo.cz.tvapp.MainActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Openvpn For Android",
+      "drawable": "openvpn_for_android",
+      "color": "#F94144",
+      "glyph": "monogram_O",
+      "components": [
+        "de.blinkt.openvpn/de.blinkt.openvpn.activities.MainActivity"
+      ],
+      "category": "VPN",
+      "unverified": [
+        "de.blinkt.openvpn/de.blinkt.openvpn.activities.MainActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Oqee By Free",
+      "drawable": "oqee_by_free",
+      "color": "#F7B32B",
+      "glyph": "monogram_O",
+      "components": [
+        "net.oqee.androidmobile/net.oqee.android.ui.splash.SplashActivity"
+      ],
+      "category": "APP",
+      "unverified": [
+        "net.oqee.androidmobile/net.oqee.android.ui.splash.SplashActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Orange TV Go",
+      "drawable": "orange_tv_go",
+      "color": "#6A4C93",
+      "glyph": "monogram_O",
+      "components": [
+        "ro.orange.tvlive/tv.solocoo.htmlapp.FullscreenActivity"
+      ],
+      "category": "APP",
+      "unverified": [
+        "ro.orange.tvlive/tv.solocoo.htmlapp.FullscreenActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Otf TV",
+      "drawable": "otf_tv",
+      "color": "#F94144",
+      "glyph": "monogram_O",
+      "components": [
+        "com.t100v.otf/com.t100v.otf.intro"
+      ],
+      "category": "APP",
+      "unverified": [
+        "com.t100v.otf/com.t100v.otf.intro"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Ott Navigator",
+      "drawable": "ott_navigator",
+      "color": "#00BBF9",
+      "glyph": "monogram_O",
+      "components": [
+        "studio.scillarium.ottnavigator/studio.scillarium.ottnavigator.MainActivity"
+      ],
+      "category": "APP",
+      "unverified": [
+        "studio.scillarium.ottnavigator/studio.scillarium.ottnavigator.MainActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Ottplayer",
+      "drawable": "ottplayer",
+      "color": "#E71D36",
+      "glyph": "monogram_O",
+      "components": [
+        "es.ottplayer.tv/es.ottplayer.tv.SplashActivity"
+      ],
+      "category": "PLAYER",
+      "unverified": [
+        "es.ottplayer.tv/es.ottplayer.tv.SplashActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Pac Man 256",
+      "drawable": "pac_man_256",
+      "color": "#FF6B35",
+      "glyph": "monogram_P",
+      "components": [
+        "eu.bandainamcoent.pacman256/com.unity3d.player.UnityPlayerActivity"
+      ],
+      "category": "GAMING",
+      "unverified": [
+        "eu.bandainamcoent.pacman256/com.unity3d.player.UnityPlayerActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Package Explorer",
+      "drawable": "package_explorer",
+      "color": "#B5179E",
+      "glyph": "monogram_P",
+      "components": [
+        "com.yugandhar_kumar.packageexplorer/com.yugandhar_kumar.packageexplorer.applist.AppListActivity"
+      ],
+      "category": "FILES",
+      "unverified": [
+        "com.yugandhar_kumar.packageexplorer/com.yugandhar_kumar.packageexplorer.applist.AppListActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Panda Plus",
+      "drawable": "panda_plus",
+      "color": "#9B5DE5",
+      "glyph": "monogram_P",
+      "components": [
+        "pt.dreamia.pandaplus/com.magycal.androidott.ui.tv.TVBaseActivity"
+      ],
+      "category": "APP",
+      "unverified": [
+        "pt.dreamia.pandaplus/com.magycal.androidott.ui.tv.TVBaseActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Parsec",
+      "drawable": "parsec",
+      "color": "#9B5DE5",
+      "glyph": "monogram_P",
+      "components": [
+        "tv.parsec.client/tv.parsec.client.MainActivity"
+      ],
+      "category": "APP",
+      "unverified": [
+        "tv.parsec.client/tv.parsec.client.MainActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Pathethuis",
+      "drawable": "pathethuis",
+      "color": "#FF477E",
+      "glyph": "monogram_P",
+      "components": [
+        "nl.pathe.thuis/nl.pathe.thuis.LaunchActivity"
+      ],
+      "category": "APP",
+      "unverified": [
+        "nl.pathe.thuis/nl.pathe.thuis.LaunchActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "PBS Kids",
+      "drawable": "pbs_kids",
+      "color": "#FEE440",
+      "glyph": "monogram_P",
+      "components": [
+        "org.pbskids.video/org.pbskids.video.ui.root.MainActivity"
+      ],
+      "category": "APP",
+      "unverified": [
+        "org.pbskids.video/org.pbskids.video.ui.root.MainActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Pepperbox TV",
+      "drawable": "pepperbox_tv",
+      "color": "#90BE6D",
+      "glyph": "monogram_P",
+      "components": [
+        "com.watchvelocity.android/com.corridordigital.watchcorridortv.feature.main.MainActivity"
+      ],
+      "category": "APP",
+      "unverified": [
+        "com.watchvelocity.android/com.corridordigital.watchcorridortv.feature.main.MainActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Player",
+      "drawable": "player",
+      "color": "#00BBF9",
+      "glyph": "monogram_P",
+      "components": [
+        "pl.tvn.player.tv/pl.redlabs.redcdn.portal.ui.main.MainActivity"
+      ],
+      "category": "PLAYER",
+      "unverified": [
+        "pl.tvn.player.tv/pl.redlabs.redcdn.portal.ui.main.MainActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Plexamp",
+      "drawable": "plexamp",
+      "color": "#577590",
+      "glyph": "monogram_P",
+      "components": [
+        "tv.plex.labs.plexamp/com.plexamp.MainActivity"
+      ],
+      "category": "APP",
+      "unverified": [
+        "tv.plex.labs.plexamp/com.plexamp.MainActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Pluto TV",
+      "drawable": "pluto_tv",
+      "color": "#F3722C",
+      "glyph": "monogram_P",
+      "components": [
+        "tv.pluto.android/tv.pluto.android.EntryPoint"
+      ],
+      "category": "APP",
+      "unverified": [
+        "tv.pluto.android/tv.pluto.android.EntryPoint"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Polsat Box Go",
+      "drawable": "polsat_box_go",
+      "color": "#F94144",
+      "glyph": "monogram_P",
+      "components": [
+        "pl.cyfrowypolsat.cpgo/pl.cyfrowypolsat.cpframework.presentation.mobile.launch.LaunchActivity",
+        "pl.cyfrowypolsat.cpgo/pl.cyfrowypolsat.cpframework.presentation.tv.launch.TvLaunchActivity"
+      ],
+      "category": "APP",
+      "unverified": [
+        "pl.cyfrowypolsat.cpgo/pl.cyfrowypolsat.cpframework.presentation.mobile.launch.LaunchActivity",
+        "pl.cyfrowypolsat.cpgo/pl.cyfrowypolsat.cpframework.presentation.tv.launch.TvLaunchActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Ppsspp",
+      "drawable": "ppsspp",
+      "color": "#FF477E",
+      "glyph": "monogram_P",
+      "components": [
+        "org.ppsspp.ppsspp/org.ppsspp.ppsspp.PpssppActivity"
+      ],
+      "category": "APP",
+      "unverified": [
+        "org.ppsspp.ppsspp/org.ppsspp.ppsspp.PpssppActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Premier Sports",
+      "drawable": "premier_sports",
+      "color": "#FF6B35",
+      "glyph": "monogram_P",
+      "components": [
+        "premierplayer.premiersports.com.premierplayer/com.premiersports.premiersportstv.ui.login.DeviceLinkActivity"
+      ],
+      "category": "SPORT",
+      "unverified": [
+        "premierplayer.premiersports.com.premierplayer/com.premiersports.premiersportstv.ui.login.DeviceLinkActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Premiumize TV",
+      "drawable": "premiumize_tv",
+      "color": "#9B5DE5",
+      "glyph": "monogram_P",
+      "components": [
+        "me.premiumize.pmtvfire/me.premiumize.pmtvandroid.MainActivity"
+      ],
+      "category": "APP",
+      "unverified": [
+        "me.premiumize.pmtvfire/me.premiumize.pmtvandroid.MainActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Privado VPN",
+      "drawable": "privado_vpn",
+      "color": "#6A4C93",
+      "glyph": "monogram_P",
+      "components": [
+        "io.privado.android/io.privado.android.ui.splash.SplashActivity"
+      ],
+      "category": "VPN",
+      "unverified": [
+        "io.privado.android/io.privado.android.ui.splash.SplashActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Projectivy Overflight",
+      "drawable": "projectivy_overflight",
+      "color": "#FF6B35",
+      "glyph": "monogram_P",
+      "components": [
+        "tv.projectivy.plugin.wallpaperprovider.overflight/tv.projectivy.plugin.wallpaperprovider.overflight.SettingsActivity"
+      ],
+      "category": "LAUNCHER",
+      "unverified": [
+        "tv.projectivy.plugin.wallpaperprovider.overflight/tv.projectivy.plugin.wallpaperprovider.overflight.SettingsActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Put Io",
+      "drawable": "put_io",
+      "color": "#4CC9F0",
+      "glyph": "monogram_P",
+      "components": [
+        "io.put.putio/io.put.putio.MainActivity"
+      ],
+      "category": "APP",
+      "unverified": [
+        "io.put.putio/io.put.putio.MainActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Quasitv",
+      "drawable": "quasitv",
+      "color": "#43AA8B",
+      "glyph": "monogram_Q",
+      "components": [
+        "gonemad.quasi.tv/gonemad.quasi.tv.ui.MainActivity"
+      ],
+      "category": "APP",
+      "unverified": [
+        "gonemad.quasi.tv/gonemad.quasi.tv.ui.MainActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Quickbars For Home Assistant",
+      "drawable": "quickbars_for_home_assistant",
+      "color": "#B5179E",
+      "glyph": "monogram_Q",
+      "components": [
+        "dev.trooped.tvquickbars/dev.trooped.tvquickbars.ui.SplashActivity"
+      ],
+      "category": "TOOL",
+      "unverified": [
+        "dev.trooped.tvquickbars/dev.trooped.tvquickbars.ui.SplashActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Quicksupport",
+      "drawable": "quicksupport",
+      "color": "#F7B32B",
+      "glyph": "monogram_Q",
+      "components": [
+        "com.teamviewer.quicksupport.market/com.teamviewer.quicksupport.ui.QSActivity"
+      ],
+      "category": "APP",
+      "unverified": [
+        "com.teamviewer.quicksupport.market/com.teamviewer.quicksupport.ui.QSActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Radio Net",
+      "drawable": "radio_net",
+      "color": "#00BBF9",
+      "glyph": "monogram_R",
+      "components": [
+        "de.radio.android/de.radio.android.tv.activities.TvMainActivity"
+      ],
+      "category": "MUSIC",
+      "unverified": [
+        "de.radio.android/de.radio.android.tv.activities.TvMainActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Radio On TV",
+      "drawable": "radio_on_tv",
+      "color": "#E71D36",
+      "glyph": "monogram_R",
+      "components": [
+        "de.fitzood.radio.tv/de.fitzood.radio.tv.MainActivity"
+      ],
+      "category": "MUSIC",
+      "unverified": [
+        "de.fitzood.radio.tv/de.fitzood.radio.tv.MainActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Raiplay",
+      "drawable": "raiplay",
+      "color": "#F7B32B",
+      "glyph": "monogram_R",
+      "components": [
+        "it.rainet.androidtv/it.rainet.androidtv.ui.MainLeanbackActivity"
+      ],
+      "category": "APP",
+      "unverified": [
+        "it.rainet.androidtv/it.rainet.androidtv.ui.MainLeanbackActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Rakuten TV",
+      "drawable": "rakuten_tv",
+      "color": "#4CC9F0",
+      "glyph": "monogram_R",
+      "components": [
+        "tv.wuaki.apptv/tv.wuaki.apptv.activity.TVLaunchActivity"
+      ],
+      "category": "APP",
+      "unverified": [
+        "tv.wuaki.apptv/tv.wuaki.apptv.activity.TVLaunchActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Rally TV",
+      "drawable": "rally_tv",
+      "color": "#8AC926",
+      "glyph": "monogram_R",
+      "components": [
+        "laola1.wrc/com.redbull.rallytv.core.MainActivity"
+      ],
+      "category": "SPORT",
+      "unverified": [
+        "laola1.wrc/com.redbull.rallytv.core.MainActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Rapid Streamz",
+      "drawable": "rapid_streamz",
+      "color": "#B5179E",
+      "glyph": "monogram_R",
+      "components": [
+        "com.rpstreamz.live/com.rpstreamz.live.activity.SplashActivity"
+      ],
+      "category": "APP",
+      "unverified": [
+        "com.rpstreamz.live/com.rpstreamz.live.activity.SplashActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Redream",
+      "drawable": "redream",
+      "color": "#6A4C93",
+      "glyph": "monogram_R",
+      "components": [
+        "io.recompiled.redream/io.recompiled.redream.MainActivity"
+      ],
+      "category": "GAMING",
+      "unverified": [
+        "io.recompiled.redream/io.recompiled.redream.MainActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Refreshrate",
+      "drawable": "refreshrate",
+      "color": "#FF477E",
+      "glyph": "monogram_R",
+      "components": [
+        "mobi.bytearray.refreshrate/mobi.bytearray.refreshrate.SettingsActivity"
+      ],
+      "category": "APP",
+      "unverified": [
+        "mobi.bytearray.refreshrate/mobi.bytearray.refreshrate.SettingsActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Remote Starter For Yatse",
+      "drawable": "remote_starter_for_yatse",
+      "color": "#FF477E",
+      "glyph": "monogram_R",
+      "components": [
+        "tv.yatse.android.remotestarter/tv.yatse.android.remotestarter.ui.MainActivity"
+      ],
+      "category": "TOOL",
+      "unverified": [
+        "tv.yatse.android.remotestarter/tv.yatse.android.remotestarter.ui.MainActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Rezka",
+      "drawable": "rezka",
+      "color": "#9B5DE5",
+      "glyph": "monogram_R",
+      "components": [
+        "ru.astroapps.hdrezka/ru.astroapps.hdrezka.MainActivity"
+      ],
+      "category": "APP",
+      "unverified": [
+        "ru.astroapps.hdrezka/ru.astroapps.hdrezka.MainActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Riks TV",
+      "drawable": "riks_tv",
+      "color": "#B5179E",
+      "glyph": "monogram_R",
+      "components": [
+        "no.rikstv.atv/no.rikstv.atv.MainActivity"
+      ],
+      "category": "APP",
+      "unverified": [
+        "no.rikstv.atv/no.rikstv.atv.MainActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "RTL",
+      "drawable": "rtl",
+      "color": "#FF6B35",
+      "glyph": "monogram_R",
+      "components": [
+        "de.rtli.tvnow/de.rtl.plus.RtlPlusLauncherActivity"
+      ],
+      "category": "APP",
+      "unverified": [
+        "de.rtli.tvnow/de.rtl.plus.RtlPlusLauncherActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "RTL Play",
+      "drawable": "rtl_play",
+      "color": "#FEE440",
+      "glyph": "monogram_R",
+      "components": [
+        "com.tapptic.rtl.tvi/be.persgroep.rtlplay.RtlPlayMainActivity"
+      ],
+      "category": "APP",
+      "unverified": [
+        "com.tapptic.rtl.tvi/be.persgroep.rtlplay.RtlPlayMainActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "RTP Play",
+      "drawable": "rtp_play",
+      "color": "#4CC9F0",
+      "glyph": "monogram_R",
+      "components": [
+        "pt.rtp.play/pt.rtp.play.IntroActivity"
+      ],
+      "category": "APP",
+      "unverified": [
+        "pt.rtp.play/pt.rtp.play.IntroActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "RTVE Play",
+      "drawable": "rtve_play",
+      "color": "#F3722C",
+      "glyph": "monogram_R",
+      "components": [
+        "com.rtve.androidtv/com.rtve.androidtv.Activity.SplashActivity"
+      ],
+      "category": "APP",
+      "unverified": [
+        "com.rtve.androidtv/com.rtve.androidtv.Activity.SplashActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Rugbypass TV",
+      "drawable": "rugbypass_tv",
+      "color": "#F7B32B",
+      "glyph": "monogram_R",
+      "components": [
+        "com.worldrugbypass.app/com.worldrugbypass.app.MainActivity"
+      ],
+      "category": "SPORT",
+      "unverified": [
+        "com.worldrugbypass.app/com.worldrugbypass.app.MainActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Rumble",
+      "drawable": "rumble",
+      "color": "#6A4C93",
+      "glyph": "monogram_R",
+      "components": [
+        "com.rumble.battles/com.rumble.battles.LauncherActivity"
+      ],
+      "category": "VIDEO",
+      "unverified": [
+        "com.rumble.battles/com.rumble.battles.LauncherActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Rustore",
+      "drawable": "rustore",
+      "color": "#4CC9F0",
+      "glyph": "monogram_R",
+      "components": [
+        "ru.vk.store.tv/ru.vk.store.tv.app.presentation.MainActivity"
+      ],
+      "category": "APP",
+      "unverified": [
+        "ru.vk.store.tv/ru.vk.store.tv.app.presentation.MainActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Rutube",
+      "drawable": "rutube",
+      "color": "#43AA8B",
+      "glyph": "monogram_R",
+      "components": [
+        "ru.rutube.app.tv/ru.rutube.app.SplashActivity"
+      ],
+      "category": "APP",
+      "unverified": [
+        "ru.rutube.app.tv/ru.rutube.app.SplashActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Saff",
+      "drawable": "saff",
+      "color": "#43AA8B",
+      "glyph": "monogram_S",
+      "components": [
+        "sa.saffplus/com.mottostreaming.android.tv.MainActivity"
+      ],
+      "category": "APP",
+      "unverified": [
+        "sa.saffplus/com.mottostreaming.android.tv.MainActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Sbsondemand",
+      "drawable": "sbsondemand",
+      "color": "#6A4C93",
+      "glyph": "monogram_S",
+      "components": [
+        "com.sbs.ondemand.tv/com.sbs.ondemand.tv.MainActivity"
+      ],
+      "category": "APP",
+      "unverified": [
+        "com.sbs.ondemand.tv/com.sbs.ondemand.tv.MainActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Scb Next",
+      "drawable": "scb_next",
+      "color": "#8AC926",
+      "glyph": "monogram_S",
+      "components": [
+        "com.scb.next/com.scb.next.SplashActivity"
+      ],
+      "category": "APP",
+      "unverified": [
+        "com.scb.next/com.scb.next.SplashActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Screenscape",
+      "drawable": "screenscape",
+      "color": "#F7B32B",
+      "glyph": "monogram_S",
+      "components": [
+        "com.screenscape/com.screenscape.MainActivity"
+      ],
+      "category": "APP",
+      "unverified": [
+        "com.screenscape/com.screenscape.MainActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Sd Maid",
+      "drawable": "sd_maid",
+      "color": "#FEE440",
+      "glyph": "monogram_S",
+      "components": [
+        "eu.thedarken.sdm/eu.thedarken.sdm.main.ui.SDMMainActivity"
+      ],
+      "category": "APP",
+      "unverified": [
+        "eu.thedarken.sdm/eu.thedarken.sdm.main.ui.SDMMainActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Seven Plus",
+      "drawable": "seven_plus",
+      "color": "#FF6B35",
+      "glyph": "monogram_S",
+      "components": [
+        "com.swm.live/au.com.seven.inferno.ui.setup.SetupActivity",
+        "com.swm.live/au.com.seven.inferno.ui.tv.setup.SetupTvActivity"
+      ],
+      "category": "APP",
+      "unverified": [
+        "com.swm.live/au.com.seven.inferno.ui.setup.SetupActivity",
+        "com.swm.live/au.com.seven.inferno.ui.tv.setup.SetupTvActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Sfjazz At Home",
+      "drawable": "sfjazz_at_home",
+      "color": "#B5179E",
+      "glyph": "monogram_S",
+      "components": [
+        "com.sfjazzdigital/tv.vhx.LauncherActivity",
+        "com.sfjazzdigital/tv.vhx.tv.home.TvHomeActivity"
+      ],
+      "category": "APP",
+      "unverified": [
+        "com.sfjazzdigital/tv.vhx.LauncherActivity",
+        "com.sfjazzdigital/tv.vhx.tv.home.TvHomeActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Sfr TV",
+      "drawable": "sfr_tv",
+      "color": "#FEE440",
+      "glyph": "monogram_S",
+      "components": [
+        "com.sfr.androidtv.gen8/com.sfr.androidtv.gen8.ui.Tv8MainActivity"
+      ],
+      "category": "APP",
+      "unverified": [
+        "com.sfr.androidtv.gen8/com.sfr.androidtv.gen8.ui.Tv8MainActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Shahid",
+      "drawable": "shahid",
+      "color": "#FEE440",
+      "glyph": "monogram_S",
+      "components": [
+        "net.mbc.shahidTV/net.mbc.shahidTV.MainActivity"
+      ],
+      "category": "APP",
+      "unverified": [
+        "net.mbc.shahidTV/net.mbc.shahidTV.MainActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Shout TV",
+      "drawable": "shout_tv",
+      "color": "#FF6B35",
+      "glyph": "monogram_S",
+      "components": [
+        "com.shoutfactory.app/com.shoutfactory.app.MainActivity"
+      ],
+      "category": "APP",
+      "unverified": [
+        "com.shoutfactory.app/com.shoutfactory.app.MainActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Showmax",
+      "drawable": "showmax",
+      "color": "#577590",
+      "glyph": "monogram_S",
+      "components": [
+        "com.showmax.showmax.google/com.peacock.peacocktv.GoogleMainActivity"
+      ],
+      "category": "APP",
+      "unverified": [
+        "com.showmax.showmax.google/com.peacock.peacocktv.GoogleMainActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Sideload Launcher",
+      "drawable": "sideload_launcher",
+      "color": "#90BE6D",
+      "glyph": "monogram_S",
+      "components": [
+        "eu.chainfire.tv.sideloadlauncher/eu.chainfire.tv.sideloadlauncher.MainActivity",
+        "net.easyjoin.applauncher/net.easyjoin.applauncher.activity.MainActivityTV"
+      ],
+      "category": "LAUNCHER",
+      "unverified": [
+        "eu.chainfire.tv.sideloadlauncher/eu.chainfire.tv.sideloadlauncher.MainActivity",
+        "net.easyjoin.applauncher/net.easyjoin.applauncher.activity.MainActivityTV"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Sirius",
+      "drawable": "sirius",
+      "color": "#9B5DE5",
+      "glyph": "monogram_S",
+      "components": [
+        "com.sirius/sxmp.app.welcome.WelcomeActivity"
+      ],
+      "category": "MUSIC",
+      "unverified": [
+        "com.sirius/sxmp.app.welcome.WelcomeActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Sky News",
+      "drawable": "sky_news",
+      "color": "#F94144",
+      "glyph": "monogram_S",
+      "components": [
+        "com.sky.news.androidtv/com.easeltv.falconheavy.tv.splash.view.SplashIntroVideoActivity"
+      ],
+      "category": "APP",
+      "unverified": [
+        "com.sky.news.androidtv/com.easeltv.falconheavy.tv.splash.view.SplashIntroVideoActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Skyshowtime",
+      "drawable": "skyshowtime",
+      "color": "#9B5DE5",
+      "glyph": "monogram_S",
+      "components": [
+        "com.skyshowtime.skyshowtime.google/com.peacock.peacocktv.GoogleMainActivity"
+      ],
+      "category": "APP",
+      "unverified": [
+        "com.skyshowtime.skyshowtime.google/com.peacock.peacocktv.GoogleMainActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Sledovani",
+      "drawable": "sledovani",
+      "color": "#FEE440",
+      "glyph": "monogram_S",
+      "components": [
+        "cz.sledovanitv.android/cz.sledovanitv.androidtv.entry.EntryActivity"
+      ],
+      "category": "APP",
+      "unverified": [
+        "cz.sledovanitv.android/cz.sledovanitv.androidtv.entry.EntryActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Sling TV",
+      "drawable": "sling_tv",
+      "color": "#B5179E",
+      "glyph": "monogram_S",
+      "components": [
+        "com.sling/com.sling.MainActivity"
+      ],
+      "category": "APP",
+      "unverified": [
+        "com.sling/com.sling.MainActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Smugmug",
+      "drawable": "smugmug",
+      "color": "#2EC4B6",
+      "glyph": "monogram_S",
+      "components": [
+        "com.snapwood.smugfolio/com.smugmug.android.activities.SmugMainActivity"
+      ],
+      "category": "APP",
+      "unverified": [
+        "com.snapwood.smugfolio/com.smugmug.android.activities.SmugMainActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Snapcast",
+      "drawable": "snapcast",
+      "color": "#F3722C",
+      "glyph": "monogram_S",
+      "components": [
+        "de.badaix.snapcast/de.badaix.snapcast.MainActivity"
+      ],
+      "category": "APP",
+      "unverified": [
+        "de.badaix.snapcast/de.badaix.snapcast.MainActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Snrt Live",
+      "drawable": "snrt_live",
+      "color": "#E71D36",
+      "glyph": "monogram_S",
+      "components": [
+        "ma.snrt.live/ma.snrt.snrtLive.snrt_live_tv_app.MainActivity"
+      ],
+      "category": "LIVE",
+      "unverified": [
+        "ma.snrt.live/ma.snrt.snrtLive.snrt_live_tv_app.MainActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Sofascore",
+      "drawable": "sofascore",
+      "color": "#43AA8B",
+      "glyph": "monogram_S",
+      "components": [
+        "com.sofascore.results/com.sofascore.results.main.MainActivity"
+      ],
+      "category": "APP",
+      "unverified": [
+        "com.sofascore.results/com.sofascore.results.main.MainActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Sonyliv",
+      "drawable": "sonyliv",
+      "color": "#FF6B35",
+      "glyph": "monogram_S",
+      "components": [
+        "com.sonyliv/com.sonyliv.ui.splash.SplashActivity"
+      ],
+      "category": "APP",
+      "unverified": [
+        "com.sonyliv/com.sonyliv.ui.splash.SplashActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Sooner",
+      "drawable": "sooner",
+      "color": "#43AA8B",
+      "glyph": "monogram_S",
+      "components": [
+        "sooner.app.de/de.eyzmedia.sooner.MainActivity"
+      ],
+      "category": "APP",
+      "unverified": [
+        "sooner.app.de/de.eyzmedia.sooner.MainActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Soundcloud",
+      "drawable": "soundcloud",
+      "color": "#6A4C93",
+      "glyph": "monogram_S",
+      "components": [
+        "com.soundcloud.android/com.soundcloud.android.tv.app.TvMainActivity"
+      ],
+      "category": "MUSIC",
+      "unverified": [
+        "com.soundcloud.android/com.soundcloud.android.tv.app.TvMainActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Sport TV",
+      "drawable": "sport_tv",
+      "color": "#B5179E",
+      "glyph": "monogram_S",
+      "components": [
+        "pt.sporttv.app.androidtv/pt.sporttv.app.ui.SplashScreenTVActivity"
+      ],
+      "category": "SPORT",
+      "unverified": [
+        "pt.sporttv.app.androidtv/pt.sporttv.app.ui.SplashScreenTVActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Sportsnet",
+      "drawable": "sportsnet",
+      "color": "#FF6B35",
+      "glyph": "monogram_S",
+      "components": [
+        "com.rogers.sportsnet.sportsnet/com.rogers.sportsnet.tv.ui.AppActivity"
+      ],
+      "category": "SPORT",
+      "unverified": [
+        "com.rogers.sportsnet.sportsnet/com.rogers.sportsnet.tv.ui.AppActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Sportzx",
+      "drawable": "sportzx",
+      "color": "#F94144",
+      "glyph": "monogram_S",
+      "components": [
+        "com.sportzx.live/com.sportzx.live.activities.SplashActivity"
+      ],
+      "category": "SPORT",
+      "unverified": [
+        "com.sportzx.live/com.sportzx.live.activities.SplashActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Steam Link",
+      "drawable": "steam_link",
+      "color": "#2EC4B6",
+      "glyph": "monogram_S",
+      "components": [
+        "com.valvesoftware.steamlink/com.valvesoftware.steamlink.SteamShellActivity"
+      ],
+      "category": "GAMING",
+      "unverified": [
+        "com.valvesoftware.steamlink/com.valvesoftware.steamlink.SteamShellActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Stream Fire",
+      "drawable": "stream_fire",
+      "color": "#FEE440",
+      "glyph": "monogram_S",
+      "components": [
+        "com.streamfire.app/com.streamfire.app.ui.HomeActivity"
+      ],
+      "category": "APP",
+      "unverified": [
+        "com.streamfire.app/com.streamfire.app.ui.HomeActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Streamflix",
+      "drawable": "streamflix_2",
+      "color": "#577590",
+      "glyph": "monogram_S",
+      "components": [
+        "com.tanasi.streamflix/com.tanasi.streamflix.activities.main.MainTvActivity",
+        "com.weatherbug.firetv/com.weatherbug.firetv.MainActivity"
+      ],
+      "category": "APP",
+      "unverified": [
+        "com.tanasi.streamflix/com.tanasi.streamflix.activities.main.MainTvActivity",
+        "com.weatherbug.firetv/com.weatherbug.firetv.MainActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Streamlocator VPN",
+      "drawable": "streamlocator_vpn",
+      "color": "#F94144",
+      "glyph": "monogram_S",
+      "components": [
+        "com.streamlocator.vpn/com.streamlocator.vpn.ui.tv.home.TVHomeActivity"
+      ],
+      "category": "VPN",
+      "unverified": [
+        "com.streamlocator.vpn/com.streamlocator.vpn.ui.tv.home.TVHomeActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Strim",
+      "drawable": "strim",
+      "color": "#FF477E",
+      "glyph": "monogram_S",
+      "components": [
+        "no.strim.atv/no.rikstv.atv.MainActivity"
+      ],
+      "category": "APP",
+      "unverified": [
+        "no.strim.atv/no.rikstv.atv.MainActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Strongvpn",
+      "drawable": "strongvpn",
+      "color": "#4CC9F0",
+      "glyph": "monogram_S",
+      "components": [
+        "com.strongvpn/com.strongvpn.ui.activities.SplashActivity"
+      ],
+      "category": "VPN",
+      "unverified": [
+        "com.strongvpn/com.strongvpn.ui.activities.SplashActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Stv Player",
+      "drawable": "stv_player",
+      "color": "#9B5DE5",
+      "glyph": "monogram_S",
+      "components": [
+        "tv.stv.android.player/tv.stv.android.commontv.screens.TvActivity"
+      ],
+      "category": "LIVE",
+      "unverified": [
+        "tv.stv.android.player/tv.stv.android.commontv.screens.TvActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Sunnxt",
+      "drawable": "sunnxt",
+      "color": "#F15BB5",
+      "glyph": "monogram_S",
+      "components": [
+        "com.suntv.sunnxt/com.androidtv.myplex.ui.activity.SPlashActivity"
+      ],
+      "category": "APP",
+      "unverified": [
+        "com.suntv.sunnxt/com.androidtv.myplex.ui.activity.SPlashActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Surfshark",
+      "drawable": "surfshark",
+      "color": "#FF6B35",
+      "glyph": "monogram_S",
+      "components": [
+        "com.surfshark.vpnclient.android/com.surfshark.vpnclient.android.StartActivity"
+      ],
+      "category": "APP",
+      "unverified": [
+        "com.surfshark.vpnclient.android/com.surfshark.vpnclient.android.StartActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "SVT",
+      "drawable": "svt",
+      "color": "#B5179E",
+      "glyph": "monogram_S",
+      "components": [
+        "se.svt.android.svtplay/se.svt.svtplay.ui.mobile.MainActivity",
+        "se.svt.android.svtplay/se.svt.svtplay.ui.tv.profile.ProfilePickerActivity"
+      ],
+      "category": "APP",
+      "unverified": [
+        "se.svt.android.svtplay/se.svt.svtplay.ui.mobile.MainActivity",
+        "se.svt.android.svtplay/se.svt.svtplay.ui.tv.profile.ProfilePickerActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Swac TV",
+      "drawable": "swac_tv",
+      "color": "#4CC9F0",
+      "glyph": "monogram_S",
+      "components": [
+        "video.gideo.swactv/gideo.video.MainActivity"
+      ],
+      "category": "APP",
+      "unverified": [
+        "video.gideo.swactv/gideo.video.MainActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Swampdog Media",
+      "drawable": "swampdog_media",
+      "color": "#2EC4B6",
+      "glyph": "monogram_S",
+      "components": [
+        "com.semperpax.eumc16/org.xbmc.kodi.Splash"
+      ],
+      "category": "APP",
+      "unverified": [
+        "com.semperpax.eumc16/org.xbmc.kodi.Splash"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Sweet TV",
+      "drawable": "sweet_tv",
+      "color": "#E71D36",
+      "glyph": "monogram_S",
+      "components": [
+        "tv.sweet.tvplayer/tv.sweet.tvplayer.MainActivity"
+      ],
+      "category": "APP",
+      "unverified": [
+        "tv.sweet.tvplayer/tv.sweet.tvplayer.MainActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Syncler",
+      "drawable": "syncler_2",
+      "color": "#6A4C93",
+      "glyph": "monogram_S",
+      "components": [
+        "com.syncler/urbanMedia.android.touchDevice.ui.activities.StartUpSplashActivity",
+        "com.syncler/com.swordfish.ui.screen.splash.StartUpSplashActivity"
+      ],
+      "category": "APP",
+      "unverified": [
+        "com.syncler/urbanMedia.android.touchDevice.ui.activities.StartUpSplashActivity",
+        "com.syncler/com.swordfish.ui.screen.splash.StartUpSplashActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Syncler Beta",
+      "drawable": "syncler_beta",
+      "color": "#43AA8B",
+      "glyph": "monogram_S",
+      "components": [
+        "com.syncler.beta/com.swordfish.ui.screen.splash.StartUpSplashActivity"
+      ],
+      "category": "APP",
+      "unverified": [
+        "com.syncler.beta/com.swordfish.ui.screen.splash.StartUpSplashActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Synologyphotos",
+      "drawable": "synologyphotos",
+      "color": "#F94144",
+      "glyph": "monogram_S",
+      "components": [
+        "com.synology.projectkailash/com.synology.projectkailash.ui.login.LoginActivity"
+      ],
+      "category": "APP",
+      "unverified": [
+        "com.synology.projectkailash/com.synology.projectkailash.ui.login.LoginActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Tabii",
+      "drawable": "tabii",
+      "color": "#6A4C93",
+      "glyph": "monogram_T",
+      "components": [
+        "com.trt.tabii.android/com.trt.tabii.android.tv.MainActivity"
+      ],
+      "category": "APP",
+      "unverified": [
+        "com.trt.tabii.android/com.trt.tabii.android.tv.MainActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Tailscale",
+      "drawable": "tailscale",
+      "color": "#9B5DE5",
+      "glyph": "monogram_T",
+      "components": [
+        "com.tailscale.ipn/com.tailscale.ipn.MainActivity"
+      ],
+      "category": "VPN",
+      "unverified": [
+        "com.tailscale.ipn/com.tailscale.ipn.MainActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Talk TV",
+      "drawable": "talk_tv",
+      "color": "#43AA8B",
+      "glyph": "monogram_T",
+      "components": [
+        "uk.co.news.talkradiotv/com.simplestream.presentation.startup.StartUpActivity"
+      ],
+      "category": "APP",
+      "unverified": [
+        "uk.co.news.talkradiotv/com.simplestream.presentation.startup.StartUpActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Talksport",
+      "drawable": "talksport",
+      "color": "#F3722C",
+      "glyph": "monogram_T",
+      "components": [
+        "com.talksport.tsliveen/com.simplestream.presentation.startup.StartUpActivity"
+      ],
+      "category": "SPORT",
+      "unverified": [
+        "com.talksport.tsliveen/com.simplestream.presentation.startup.StartUpActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Tamashakhoneh TV",
+      "drawable": "tamashakhoneh_tv",
+      "color": "#6A4C93",
+      "glyph": "monogram_T",
+      "components": [
+        "ir.tamashakhonehtv/ir.tamashakhonehtv.ui.splash.SplashActivity"
+      ],
+      "category": "APP",
+      "unverified": [
+        "ir.tamashakhonehtv/ir.tamashakhonehtv.ui.splash.SplashActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Tbn Plus",
+      "drawable": "tbn_plus",
+      "color": "#B5179E",
+      "glyph": "monogram_T",
+      "components": [
+        "tbn_mobile.android/com.applicaster.ui.activities.MainActivity"
+      ],
+      "category": "APP",
+      "unverified": [
+        "tbn_mobile.android/com.applicaster.ui.activities.MainActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "TBS",
+      "drawable": "tbs",
+      "color": "#B5179E",
+      "glyph": "monogram_T",
+      "components": [
+        "com.turner.tbs.android.networkapp/com.wme.app.MainActivityTv"
+      ],
+      "category": "APP",
+      "unverified": [
+        "com.turner.tbs.android.networkapp/com.wme.app.MainActivityTv"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "TCL Channel",
+      "drawable": "tcl_channel",
+      "color": "#00BBF9",
+      "glyph": "monogram_T",
+      "components": [
+        "com.tcl.waterfall.overseas/com.tcl.waterfall.overseas.main.MainActivity"
+      ],
+      "category": "APP",
+      "unverified": [
+        "com.tcl.waterfall.overseas/com.tcl.waterfall.overseas.main.MainActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "TCL Home",
+      "drawable": "tcl_home",
+      "color": "#B5179E",
+      "glyph": "monogram_T",
+      "components": [
+        "com.tcl.tclhome/com.tcl.bmmain.SplashActivity"
+      ],
+      "category": "APP",
+      "unverified": [
+        "com.tcl.tclhome/com.tcl.bmmain.SplashActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Tcn",
+      "drawable": "tcn",
+      "color": "#FF6B35",
+      "glyph": "monogram_T",
+      "components": [
+        "com.tuckercarlson.tv/tv.accedo.one.app.bootstrap.BootstrapActivity"
+      ],
+      "category": "APP",
+      "unverified": [
+        "com.tuckercarlson.tv/tv.accedo.one.app.bootstrap.BootstrapActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Tdtchannels Player",
+      "drawable": "tdtchannels_player",
+      "color": "#8AC926",
+      "glyph": "monogram_T",
+      "components": [
+        "com.tdtchannels.player/com.tdtchannels.player.SplashScreenActivity"
+      ],
+      "category": "PLAYER",
+      "unverified": [
+        "com.tdtchannels.player/com.tdtchannels.player.SplashScreenActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Tduk Screensaver Manager",
+      "drawable": "tduk_screensaver_manager",
+      "color": "#90BE6D",
+      "glyph": "monogram_T",
+      "components": [
+        "com.tduk.scrmgr/dev.vodik7.tdukscrmng.MainActivity"
+      ],
+      "category": "TOOL",
+      "unverified": [
+        "com.tduk.scrmgr/dev.vodik7.tdukscrmng.MainActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Ted",
+      "drawable": "ted",
+      "color": "#F7B32B",
+      "glyph": "monogram_T",
+      "components": [
+        "com.ted.android.tv/com.ted.android.tv.view.MainActivity"
+      ],
+      "category": "APP",
+      "unverified": [
+        "com.ted.android.tv/com.ted.android.tv.view.MainActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Tele2 Play",
+      "drawable": "tele2_play",
+      "color": "#B5179E",
+      "glyph": "monogram_T",
+      "components": [
+        "com.tivo.android.comhem/com.comhem.mandel.mobile.presentation.NavigationActivity",
+        "com.tivo.android.comhem/tv.threess.threeready.ui.generic.activity.MainActivity"
+      ],
+      "category": "APP",
+      "unverified": [
+        "com.tivo.android.comhem/com.comhem.mandel.mobile.presentation.NavigationActivity",
+        "com.tivo.android.comhem/tv.threess.threeready.ui.generic.activity.MainActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Tele Quebec",
+      "drawable": "tele_quebec",
+      "color": "#4CC9F0",
+      "glyph": "monogram_T",
+      "components": [
+        "tv.telequebec/uk.tva.template.LaunchScreenActivity"
+      ],
+      "category": "APP",
+      "unverified": [
+        "tv.telequebec/uk.tva.template.LaunchScreenActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Telewebion",
+      "drawable": "telewebion",
+      "color": "#F94144",
+      "glyph": "monogram_T",
+      "components": [
+        "tv.telewebion/tv.telewebion.ui.main.MainActivity"
+      ],
+      "category": "APP",
+      "unverified": [
+        "tv.telewebion/tv.telewebion.ui.main.MainActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Teliaplaylt",
+      "drawable": "teliaplaylt",
+      "color": "#F3722C",
+      "glyph": "monogram_T",
+      "components": [
+        "lt.telia.tv/lt.telia.tv.MainActivity"
+      ],
+      "category": "APP",
+      "unverified": [
+        "lt.telia.tv/lt.telia.tv.MainActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Telly",
+      "drawable": "telly",
+      "color": "#4CC9F0",
+      "glyph": "monogram_T",
+      "components": [
+        "tv.fournetwork.android.box.digi/tv.fournetwork.android.box.MainActivity"
+      ],
+      "category": "LIVE",
+      "unverified": [
+        "tv.fournetwork.android.box.digi/tv.fournetwork.android.box.MainActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Tencent",
+      "drawable": "tencent",
+      "color": "#FF6B35",
+      "glyph": "monogram_T",
+      "components": [
+        "com.tencent.qqlive/com.tencent.qqlive.ona.activity.SplashHomeActivity"
+      ],
+      "category": "APP",
+      "unverified": [
+        "com.tencent.qqlive/com.tencent.qqlive.ona.activity.SplashHomeActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Tennis Channel",
+      "drawable": "tennis_channel",
+      "color": "#8AC926",
+      "glyph": "monogram_T",
+      "components": [
+        "com.tennischannel.foxxum.amazon/com.foxxum.tennis.MainActivity",
+        "com.tennischannel.tceverywhere.amazon/com.foxxum.webapp.MainActivity"
+      ],
+      "category": "SPORT",
+      "unverified": [
+        "com.tennischannel.foxxum.amazon/com.foxxum.tennis.MainActivity",
+        "com.tennischannel.tceverywhere.amazon/com.foxxum.webapp.MainActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Tennistv",
+      "drawable": "tennistv",
+      "color": "#00BBF9",
+      "glyph": "monogram_T",
+      "components": [
+        "com.tennistv.cdtv/com.tennistv.cdtv.MainActivity"
+      ],
+      "category": "SPORT",
+      "unverified": [
+        "com.tennistv.cdtv/com.tennistv.cdtv.MainActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Termux",
+      "drawable": "termux",
+      "color": "#00BBF9",
+      "glyph": "monogram_T",
+      "components": [
+        "com.termux/com.termux.app.TermuxActivity"
+      ],
+      "category": "TOOL",
+      "unverified": [
+        "com.termux/com.termux.app.TermuxActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Texttv",
+      "drawable": "texttv",
+      "color": "#B5179E",
+      "glyph": "monogram_T",
+      "components": [
+        "com.vonlegohufvud.texttvsv/com.vonlegohufvud.texttvsv.MainActivity"
+      ],
+      "category": "APP",
+      "unverified": [
+        "com.vonlegohufvud.texttvsv/com.vonlegohufvud.texttvsv.MainActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Tf1",
+      "drawable": "tf1",
+      "color": "#2EC4B6",
+      "glyph": "monogram_T",
+      "components": [
+        "fr.tf1.mytf1/fr.tf1.mytf1.MainActivity"
+      ],
+      "category": "APP",
+      "unverified": [
+        "fr.tf1.mytf1/fr.tf1.mytf1.MainActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Tflix",
+      "drawable": "tflix",
+      "color": "#E71D36",
+      "glyph": "monogram_T",
+      "components": [
+        "com.tflix.live/com.tflix.live.tv.TvSplashActivity"
+      ],
+      "category": "APP",
+      "unverified": [
+        "com.tflix.live/com.tflix.live.tv.TvSplashActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Tg4 Player",
+      "drawable": "tg4_player",
+      "color": "#577590",
+      "glyph": "monogram_T",
+      "components": [
+        "ie.bytes.tg4.tg4videoapp/ie.bytes.tg4.tg4videoapp.tv.TVActivity"
+      ],
+      "category": "PLAYER",
+      "unverified": [
+        "ie.bytes.tg4.tg4videoapp/ie.bytes.tg4.tg4videoapp.tv.TVActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "The Roku Channel",
+      "drawable": "the_roku_channel",
+      "color": "#6A4C93",
+      "glyph": "monogram_T",
+      "components": [
+        "com.roku.web.trc/com.roku.web.trc.MainActivity"
+      ],
+      "category": "APP",
+      "unverified": [
+        "com.roku.web.trc/com.roku.web.trc.MainActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Thmanyah",
+      "drawable": "thmanyah",
+      "color": "#90BE6D",
+      "glyph": "monogram_T",
+      "components": [
+        "com.thmanyah.shasha.tv/com.thmanyah.shasha.SplashActivity"
+      ],
+      "category": "APP",
+      "unverified": [
+        "com.thmanyah.shasha.tv/com.thmanyah.shasha.SplashActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Timvision",
+      "drawable": "timvision",
+      "color": "#E71D36",
+      "glyph": "monogram_T",
+      "components": [
+        "it.telecomitalia.cubovision/com.canal.ui.tv.TvMainActivity"
+      ],
+      "category": "APP",
+      "unverified": [
+        "it.telecomitalia.cubovision/com.canal.ui.tv.TvMainActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Tivify",
+      "drawable": "tivify",
+      "color": "#9B5DE5",
+      "glyph": "monogram_T",
+      "components": [
+        "com.tvup.tivify.app.tv/com.tvup.tvapp.view.activity.MainActivityTVup"
+      ],
+      "category": "APP",
+      "unverified": [
+        "com.tvup.tivify.app.tv/com.tvup.tvapp.view.activity.MainActivityTVup"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "TNT",
+      "drawable": "tnt",
+      "color": "#B5179E",
+      "glyph": "monogram_T",
+      "components": [
+        "com.turner.tnt.android.networkapp/com.wme.app.MainActivityTv"
+      ],
+      "category": "APP",
+      "unverified": [
+        "com.turner.tnt.android.networkapp/com.wme.app.MainActivityTv"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Tod",
+      "drawable": "tod",
+      "color": "#F94144",
+      "glyph": "monogram_T",
+      "components": [
+        "com.todtv.tod/com.todtv.tod.MainActivity"
+      ],
+      "category": "APP",
+      "unverified": [
+        "com.todtv.tod/com.todtv.tod.MainActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Toggo",
+      "drawable": "toggo",
+      "color": "#8AC926",
+      "glyph": "monogram_T",
+      "components": [
+        "de.toggo/de.toggo.vod.ui.MainActivityToggo"
+      ],
+      "category": "APP",
+      "unverified": [
+        "de.toggo/de.toggo.vod.ui.MainActivityToggo"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Top Radio",
+      "drawable": "top_radio",
+      "color": "#B5179E",
+      "glyph": "monogram_T",
+      "components": [
+        "nl.angrybytes.apps.topradio/nl.angrybytes.apps.topradio.Activities.TVActivity"
+      ],
+      "category": "MUSIC",
+      "unverified": [
+        "nl.angrybytes.apps.topradio/nl.angrybytes.apps.topradio.Activities.TVActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Torguard",
+      "drawable": "torguard",
+      "color": "#00BBF9",
+      "glyph": "monogram_T",
+      "components": [
+        "net.torguard.openvpn.client/net.torguard.openvpn.client.LauncherActivity"
+      ],
+      "category": "VPN",
+      "unverified": [
+        "net.torguard.openvpn.client/net.torguard.openvpn.client.LauncherActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Torrserve",
+      "drawable": "torrserve",
+      "color": "#43AA8B",
+      "glyph": "monogram_T",
+      "components": [
+        "ru.yourok.torrserve/ru.yourok.torrserve.ui.activities.main.MainActivity"
+      ],
+      "category": "APP",
+      "unverified": [
+        "ru.yourok.torrserve/ru.yourok.torrserve.ui.activities.main.MainActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Trilogy Plus",
+      "drawable": "trilogy_plus",
+      "color": "#F3722C",
+      "glyph": "monogram_T",
+      "components": [
+        "ott.trilogyplus/tv.vhx.LauncherActivity",
+        "ott.trilogyplus/tv.vhx.tv.home.TvHomeActivity"
+      ],
+      "category": "APP",
+      "unverified": [
+        "ott.trilogyplus/tv.vhx.LauncherActivity",
+        "ott.trilogyplus/tv.vhx.tv.home.TvHomeActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Trublu",
+      "drawable": "trublu",
+      "color": "#577590",
+      "glyph": "monogram_T",
+      "components": [
+        "ott.trublu/tv.vhx.LauncherActivity",
+        "ott.trublu/tv.vhx.tv.home.TvHomeActivity"
+      ],
+      "category": "APP",
+      "unverified": [
+        "ott.trublu/tv.vhx.LauncherActivity",
+        "ott.trublu/tv.vhx.tv.home.TvHomeActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Tt",
+      "drawable": "tt",
+      "color": "#00BBF9",
+      "glyph": "monogram_T",
+      "components": [
+        "ott.ttplus/tv.vhx.tv.home.TvHomeActivity"
+      ],
+      "category": "APP",
+      "unverified": [
+        "ott.ttplus/tv.vhx.tv.home.TvHomeActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Tubi",
+      "drawable": "tubi",
+      "color": "#2EC4B6",
+      "glyph": "monogram_T",
+      "components": [
+        "com.tubitv/com.tubitv.activities.MainActivity"
+      ],
+      "category": "APP",
+      "unverified": [
+        "com.tubitv/com.tubitv.activities.MainActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Tunein Radio",
+      "drawable": "tunein_radio",
+      "color": "#F7B32B",
+      "glyph": "monogram_T",
+      "components": [
+        "tunein.player/tunein.ui.leanback.ui.activities.TvHomeActivity"
+      ],
+      "category": "MUSIC",
+      "unverified": [
+        "tunein.player/tunein.ui.leanback.ui.activities.TvHomeActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Tv2 Play",
+      "drawable": "tv2_play",
+      "color": "#FF477E",
+      "glyph": "monogram_T",
+      "components": [
+        "dk.tv2.tv2play/dk.tv2.tv2play.ui.main.MainActivity"
+      ],
+      "category": "APP",
+      "unverified": [
+        "dk.tv2.tv2play/dk.tv2.tv2play.ui.main.MainActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Tv360",
+      "drawable": "tv360",
+      "color": "#FF477E",
+      "glyph": "monogram_T",
+      "components": [
+        "com.viettel.tv360.tv/com.viettel.tv360.tv.screen.splash.SplashActivity"
+      ],
+      "category": "APP",
+      "unverified": [
+        "com.viettel.tv360.tv/com.viettel.tv360.tv.screen.splash.SplashActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Tv4 Play",
+      "drawable": "tv4_play",
+      "color": "#E71D36",
+      "glyph": "monogram_T",
+      "components": [
+        "se.tv4.tv4playtab/se.tv4.tv4play.ui.mobile.main.BottomNavigationActivity",
+        "se.tv4.tv4playtab/se.tv4.tv4play.ui.tv.navigation.TvHubActivity"
+      ],
+      "category": "APP",
+      "unverified": [
+        "se.tv4.tv4playtab/se.tv4.tv4play.ui.mobile.main.BottomNavigationActivity",
+        "se.tv4.tv4playtab/se.tv4.tv4play.ui.tv.navigation.TvHubActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "TV 2 Play",
+      "drawable": "tv_2_play",
+      "color": "#4CC9F0",
+      "glyph": "monogram_T",
+      "components": [
+        "no.tv2.sumo/no.tv2.android.ui.LauncherBridgeActivity"
+      ],
+      "category": "APP",
+      "unverified": [
+        "no.tv2.sumo/no.tv2.android.ui.LauncherBridgeActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "TV App Repo",
+      "drawable": "tv_app_repo",
+      "color": "#F94144",
+      "glyph": "monogram_T",
+      "components": [
+        "news.androidtv.tvapprepo.playstore/news.androidtv.tvapprepo.activities.MainActivity"
+      ],
+      "category": "APP",
+      "unverified": [
+        "news.androidtv.tvapprepo.playstore/news.androidtv.tvapprepo.activities.MainActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "TV Garden",
+      "drawable": "tv_garden",
+      "color": "#F94144",
+      "glyph": "monogram_T",
+      "components": [
+        "com.tvgarden/com.tvgarden.MainActivity"
+      ],
+      "category": "APP",
+      "unverified": [
+        "com.tvgarden/com.tvgarden.MainActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "TV Manager",
+      "drawable": "tv_manager",
+      "color": "#4CC9F0",
+      "glyph": "monogram_T",
+      "components": [
+        "com.xiaomi.mitv.tvmanager/com.xiaomi.mitv.tvmanager.MainTvManagerActivity"
+      ],
+      "category": "TOOL",
+      "unverified": [
+        "com.xiaomi.mitv.tvmanager/com.xiaomi.mitv.tvmanager.MainTvManagerActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "TV Quick Actions",
+      "drawable": "tv_quick_actions",
+      "color": "#B5179E",
+      "glyph": "monogram_T",
+      "components": [
+        "dev.vodik7.tvquickactions.free/dev.vodik7.tvquickactions.MainActivity"
+      ],
+      "category": "APP",
+      "unverified": [
+        "dev.vodik7.tvquickactions.free/dev.vodik7.tvquickactions.MainActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "TV Vlaanderen",
+      "drawable": "tv_vlaanderen",
+      "color": "#90BE6D",
+      "glyph": "monogram_T",
+      "components": [
+        "nl.streamgroup.vlaanderen/tv.solocoo.htmlapp.FullscreenActivity"
+      ],
+      "category": "APP",
+      "unverified": [
+        "nl.streamgroup.vlaanderen/tv.solocoo.htmlapp.FullscreenActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "TV Web Browser",
+      "drawable": "tv_web_browser",
+      "color": "#F3722C",
+      "glyph": "monogram_T",
+      "components": [
+        "jp.co.rarity.tvweb/jp.co.rarity.tvweb.MainActivity"
+      ],
+      "category": "BROWSER",
+      "unverified": [
+        "jp.co.rarity.tvweb/jp.co.rarity.tvweb.MainActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Tvi Player",
+      "drawable": "tvi_player",
+      "color": "#9B5DE5",
+      "glyph": "monogram_T",
+      "components": [
+        "pt.iol.tviplayer.androidtv/pt.iol.tviplayer.androidtv.MainActivity"
+      ],
+      "category": "PLAYER",
+      "unverified": [
+        "pt.iol.tviplayer.androidtv/pt.iol.tviplayer.androidtv.MainActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Tving",
+      "drawable": "tving",
+      "color": "#E71D36",
+      "glyph": "monogram_T",
+      "components": [
+        "net.cj.cjhv.gs.tving/net.cj.cjhv.gs.tving.view.scaleup.ScaleupIntroActivity"
+      ],
+      "category": "APP",
+      "unverified": [
+        "net.cj.cjhv.gs.tving/net.cj.cjhv.gs.tving.view.scaleup.ScaleupIntroActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Tvnzplus",
+      "drawable": "tvnzplus",
+      "color": "#8AC926",
+      "glyph": "monogram_T",
+      "components": [
+        "nz.co.tvnz.ondemand.tv/nz.co.tvnz.ondemand.SplashScreenTVActivity"
+      ],
+      "category": "APP",
+      "unverified": [
+        "nz.co.tvnz.ondemand.tv/nz.co.tvnz.ondemand.SplashScreenTVActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Tvo Kids",
+      "drawable": "tvo_kids",
+      "color": "#FF477E",
+      "glyph": "monogram_T",
+      "components": [
+        "com.tvokids.tvokids/tv.accedo.one.app.bootstrap.BootstrapActivity"
+      ],
+      "category": "APP",
+      "unverified": [
+        "com.tvokids.tvokids/tv.accedo.one.app.bootstrap.BootstrapActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Tvo Today",
+      "drawable": "tvo_today",
+      "color": "#43AA8B",
+      "glyph": "monogram_T",
+      "components": [
+        "org.tvo.tvoott/tv.accedo.one.app.bootstrap.BootstrapActivity"
+      ],
+      "category": "APP",
+      "unverified": [
+        "org.tvo.tvoott/tv.accedo.one.app.bootstrap.BootstrapActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Tvoverlay",
+      "drawable": "tvoverlay",
+      "color": "#F94144",
+      "glyph": "monogram_T",
+      "components": [
+        "com.tabdeveloper.tvoverlay/com.tabdeveloper.tvoverlay.SetupActivity"
+      ],
+      "category": "APP",
+      "unverified": [
+        "com.tabdeveloper.tvoverlay/com.tabdeveloper.tvoverlay.SetupActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Tvp Vod",
+      "drawable": "tvp_vod",
+      "color": "#E71D36",
+      "glyph": "monogram_T",
+      "components": [
+        "com.tvp.vodtv.tv/com.redgemediaportaltv.MainActivity"
+      ],
+      "category": "APP",
+      "unverified": [
+        "com.tvp.vodtv.tv/com.redgemediaportaltv.MainActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Tvpsport",
+      "drawable": "tvpsport",
+      "color": "#2EC4B6",
+      "glyph": "monogram_T",
+      "components": [
+        "pl.tvp.sport.tv/pl.tvp.sport.tv.presentation.MainActivity"
+      ],
+      "category": "SPORT",
+      "unverified": [
+        "pl.tvp.sport.tv/pl.tvp.sport.tv.presentation.MainActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Twilight",
+      "drawable": "twilight",
+      "color": "#4CC9F0",
+      "glyph": "monogram_T",
+      "components": [
+        "com.urbandroid.lux/com.urbandroid.lux.TvActivity"
+      ],
+      "category": "APP",
+      "unverified": [
+        "com.urbandroid.lux/com.urbandroid.lux.TvActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Twodf Tivi",
+      "drawable": "twodf_tivi",
+      "color": "#F15BB5",
+      "glyph": "monogram_T",
+      "components": [
+        "de.zdf.mediathek.tivi/de.zdf.mediathek.tivi.ui.splash.SplashActivity"
+      ],
+      "category": "APP",
+      "unverified": [
+        "de.zdf.mediathek.tivi/de.zdf.mediathek.tivi.ui.splash.SplashActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "U",
+      "drawable": "u",
+      "color": "#43AA8B",
+      "glyph": "monogram_U",
+      "components": [
+        "uk.co.uktv.dave/uk.co.uktv.dave.UKTVPlayActivity"
+      ],
+      "category": "APP",
+      "unverified": [
+        "uk.co.uktv.dave/uk.co.uktv.dave.UKTVPlayActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "U Next",
+      "drawable": "u_next",
+      "color": "#90BE6D",
+      "glyph": "monogram_U",
+      "components": [
+        "jp.unext.mediaplayer/jp.unext.mediaplayer.main.MainActivity"
+      ],
+      "category": "APP",
+      "unverified": [
+        "jp.unext.mediaplayer/jp.unext.mediaplayer.main.MainActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "UEFA TV",
+      "drawable": "uefa_tv",
+      "color": "#FF6B35",
+      "glyph": "monogram_U",
+      "components": [
+        "com.uefa.uefatv.androidtv/com.uefa.uefatv.androidtv.MainActivity"
+      ],
+      "category": "SPORT",
+      "unverified": [
+        "com.uefa.uefatv.androidtv/com.uefa.uefatv.androidtv.MainActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Ugreen NAS",
+      "drawable": "ugreen_nas",
+      "color": "#577590",
+      "glyph": "monogram_U",
+      "components": [
+        "com.ugreen.nasprotv/com.ugreen.nasprotv.LaunchActivity"
+      ],
+      "category": "FILES",
+      "unverified": [
+        "com.ugreen.nasprotv/com.ugreen.nasprotv.LaunchActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Ukiku",
+      "drawable": "ukiku",
+      "color": "#6A4C93",
+      "glyph": "monogram_U",
+      "components": [
+        "knf.kuma.tv/knf.kuma.tv.ui.TVMain"
+      ],
+      "category": "APP",
+      "unverified": [
+        "knf.kuma.tv/knf.kuma.tv.ui.TVMain"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Unifi Protect",
+      "drawable": "unifi_protect",
+      "color": "#00BBF9",
+      "glyph": "monogram_U",
+      "components": [
+        "com.ubnt.unifi.protect/com.ubnt.sections.splash.AuthenticationActivity"
+      ],
+      "category": "APP",
+      "unverified": [
+        "com.ubnt.unifi.protect/com.ubnt.sections.splash.AuthenticationActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Unifi TV",
+      "drawable": "unifi_tv",
+      "color": "#F3722C",
+      "glyph": "monogram_U",
+      "components": [
+        "com.tm.playtv/com.tm.ott.module.login.activity.LoginActivity"
+      ],
+      "category": "APP",
+      "unverified": [
+        "com.tm.playtv/com.tm.ott.module.login.activity.LoginActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Unreal Debrid",
+      "drawable": "unreal_debrid",
+      "color": "#FF477E",
+      "glyph": "monogram_U",
+      "components": [
+        "com.yablio.realdebridtv/com.yablio.realdebridtv.StartActivity"
+      ],
+      "category": "APP",
+      "unverified": [
+        "com.yablio.realdebridtv/com.yablio.realdebridtv.StartActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Vbtv",
+      "drawable": "vbtv",
+      "color": "#F94144",
+      "glyph": "monogram_V",
+      "components": [
+        "dce.fivb.volleyballtv/com.applicaster.ui.activities.MainActivity"
+      ],
+      "category": "APP",
+      "unverified": [
+        "dce.fivb.volleyballtv/com.applicaster.ui.activities.MainActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Veezie",
+      "drawable": "veezie",
+      "color": "#00BBF9",
+      "glyph": "monogram_V",
+      "components": [
+        "st.veezie/st.veezie.MainActivity"
+      ],
+      "category": "APP",
+      "unverified": [
+        "st.veezie/st.veezie.MainActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Vewd Internet Browser",
+      "drawable": "vewd_internet_browser",
+      "color": "#00BBF9",
+      "glyph": "monogram_V",
+      "components": [
+        "com.vewd.core.integration.dia/com.vewd.core.browser.BrowserActivity",
+        "com.vewd.core.integration.dia/com.vewd.core.browser.TVActivity"
+      ],
+      "category": "BROWSER",
+      "unverified": [
+        "com.vewd.core.integration.dia/com.vewd.core.browser.BrowserActivity",
+        "com.vewd.core.integration.dia/com.vewd.core.browser.TVActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Viaplay",
+      "drawable": "viaplay",
+      "color": "#F94144",
+      "glyph": "monogram_V",
+      "components": [
+        "com.viaplay.android/com.viaplay.android.features.home.HomeActivity"
+      ],
+      "category": "APP",
+      "unverified": [
+        "com.viaplay.android/com.viaplay.android.features.home.HomeActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Vibra",
+      "drawable": "vibra",
+      "color": "#9B5DE5",
+      "glyph": "monogram_V",
+      "components": [
+        "com.vibra/com.ryanheise.audioservice.AudioServiceActivity"
+      ],
+      "category": "APP",
+      "unverified": [
+        "com.vibra/com.ryanheise.audioservice.AudioServiceActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Victory Plus",
+      "drawable": "victory_plus",
+      "color": "#9B5DE5",
+      "glyph": "monogram_V",
+      "components": [
+        "tv.apmc.android.victorysports/tv.kidoodle.android.ui.MainActivity"
+      ],
+      "category": "APP",
+      "unverified": [
+        "tv.apmc.android.victorysports/tv.kidoodle.android.ui.MainActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Vidangel",
+      "drawable": "vidangel",
+      "color": "#FF477E",
+      "glyph": "monogram_V",
+      "components": [
+        "com.vidangel.tvapp/com.vidangel.tvapp.activities.IntroActivity"
+      ],
+      "category": "APP",
+      "unverified": [
+        "com.vidangel.tvapp/com.vidangel.tvapp.activities.IntroActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Videoland",
+      "drawable": "videoland",
+      "color": "#FEE440",
+      "glyph": "monogram_V",
+      "components": [
+        "nl.rtl.videoland.v2/com.bedrockstreaming.shared.tv.activity.SplashActivity"
+      ],
+      "category": "VIDEO",
+      "unverified": [
+        "nl.rtl.videoland.v2/com.bedrockstreaming.shared.tv.activity.SplashActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Vidio",
+      "drawable": "vidio",
+      "color": "#F94144",
+      "glyph": "monogram_V",
+      "components": [
+        "com.vidio.android.tv/com.vidio.android.tv.splashscreen.SplashScreenActivity"
+      ],
+      "category": "APP",
+      "unverified": [
+        "com.vidio.android.tv/com.vidio.android.tv.splashscreen.SplashScreenActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Vieon",
+      "drawable": "vieon",
+      "color": "#E71D36",
+      "glyph": "monogram_V",
+      "components": [
+        "com.vieon.tv/com.my.app.MainActivity"
+      ],
+      "category": "APP",
+      "unverified": [
+        "com.vieon.tv/com.my.app.MainActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Viki",
+      "drawable": "viki",
+      "color": "#2EC4B6",
+      "glyph": "monogram_V",
+      "components": [
+        "com.viki.android/com.viki.android.ui.splash.SplashActivity"
+      ],
+      "category": "APP",
+      "unverified": [
+        "com.viki.android/com.viki.android.ui.splash.SplashActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Vimeo",
+      "drawable": "vimeo",
+      "color": "#FF6B35",
+      "glyph": "monogram_V",
+      "components": [
+        "com.vimeo.android.videoapp/com.vimeo.android.videoapp.launch.LaunchActivity"
+      ],
+      "category": "APP",
+      "unverified": [
+        "com.vimeo.android.videoapp/com.vimeo.android.videoapp.launch.LaunchActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Virtualhere USB Server",
+      "drawable": "virtualhere_usb_server",
+      "color": "#FF6B35",
+      "glyph": "monogram_V",
+      "components": [
+        "com.virtualhere.androidserver/com.virtualhere.androidserver.GUI"
+      ],
+      "category": "TOOL",
+      "unverified": [
+        "com.virtualhere.androidserver/com.virtualhere.androidserver.GUI"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Viu",
+      "drawable": "viu",
+      "color": "#6A4C93",
+      "glyph": "monogram_V",
+      "components": [
+        "com.viu.tv/com.viu.tv.mvp.ui.activity.WelcomeActivity"
+      ],
+      "category": "APP",
+      "unverified": [
+        "com.viu.tv/com.viu.tv.mvp.ui.activity.WelcomeActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Viva One TV",
+      "drawable": "viva_one_tv",
+      "color": "#FEE440",
+      "glyph": "monogram_V",
+      "components": [
+        "com.viva.vivaone/com.viva.vivamax.activity.SplashActivity"
+      ],
+      "category": "APP",
+      "unverified": [
+        "com.viva.vivaone/com.viva.vivamax.activity.SplashActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "ViX",
+      "drawable": "vix",
+      "color": "#E71D36",
+      "glyph": "monogram_V",
+      "components": [
+        "com.univision.prendetv/com.univision.descarga.tv.ui.MainActivity"
+      ],
+      "category": "APP",
+      "unverified": [
+        "com.univision.prendetv/com.univision.descarga.tv.ui.MainActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Vmx",
+      "drawable": "vmx",
+      "color": "#2EC4B6",
+      "glyph": "monogram_V",
+      "components": [
+        "com.viva.vivamax/com.viva.vivamax.activity.SplashActivity"
+      ],
+      "category": "APP",
+      "unverified": [
+        "com.viva.vivamax/com.viva.vivamax.activity.SplashActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Vodafone TV",
+      "drawable": "vodafone_tv",
+      "color": "#2EC4B6",
+      "glyph": "monogram_V",
+      "components": [
+        "com.vodafone.vtv.atv.pt/com.witsoftware.vodafonetv.view.splash.SplashActivity"
+      ],
+      "category": "APP",
+      "unverified": [
+        "com.vodafone.vtv.atv.pt/com.witsoftware.vodafonetv.view.splash.SplashActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Voyo Sk",
+      "drawable": "voyo_sk",
+      "color": "#8AC926",
+      "glyph": "monogram_V",
+      "components": [
+        "net.cme.voyo.sk.tvapp/net.cme.voyo.sk.tvapp.MainActivity"
+      ],
+      "category": "APP",
+      "unverified": [
+        "net.cme.voyo.sk.tvapp/net.cme.voyo.sk.tvapp.MainActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "VPN Unlimited",
+      "drawable": "vpn_unlimited",
+      "color": "#E71D36",
+      "glyph": "monogram_V",
+      "components": [
+        "com.simplexsolutionsinc.vpn_unlimited/com.simplexsolutionsinc.vpn_unlimited.ui.screens.splash.SplashScreenActivity"
+      ],
+      "category": "VPN",
+      "unverified": [
+        "com.simplexsolutionsinc.vpn_unlimited/com.simplexsolutionsinc.vpn_unlimited.ui.screens.splash.SplashScreenActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Vstro Player",
+      "drawable": "vstro_player",
+      "color": "#9B5DE5",
+      "glyph": "monogram_V",
+      "components": [
+        "com.vs.vsplayer/com.vs.vsplayer.common.view.SplashActivity"
+      ],
+      "category": "PLAYER",
+      "unverified": [
+        "com.vs.vsplayer/com.vs.vsplayer.common.view.SplashActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Vtvcab On TV",
+      "drawable": "vtvcab_on_tv",
+      "color": "#9B5DE5",
+      "glyph": "monogram_V",
+      "components": [
+        "com.vtvcab.onTV/com.vtvcab.activities.NewSplashActivity"
+      ],
+      "category": "APP",
+      "unverified": [
+        "com.vtvcab.onTV/com.vtvcab.activities.NewSplashActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Vtvgo TV",
+      "drawable": "vtvgo_tv",
+      "color": "#F7B32B",
+      "glyph": "monogram_V",
+      "components": [
+        "vn.vtv.vtvgotv/com.vtvcab.activities.NewSplashActivity"
+      ],
+      "category": "APP",
+      "unverified": [
+        "vn.vtv.vtvgotv/com.vtvcab.activities.NewSplashActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Waipu TV",
+      "drawable": "waipu_tv",
+      "color": "#90BE6D",
+      "glyph": "monogram_W",
+      "components": [
+        "de.exaring.waipu/de.exaring.waipu.ui.login.LoginActivity"
+      ],
+      "category": "APP",
+      "unverified": [
+        "de.exaring.waipu/de.exaring.waipu.ui.login.LoginActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Watcher TV",
+      "drawable": "watcher_tv",
+      "color": "#577590",
+      "glyph": "monogram_W",
+      "components": [
+        "ott.watcherentertainment/tv.vhx.LauncherActivity",
+        "ott.watcherentertainment/tv.vhx.tv.home.TvHomeActivity"
+      ],
+      "category": "APP",
+      "unverified": [
+        "ott.watcherentertainment/tv.vhx.LauncherActivity",
+        "ott.watcherentertainment/tv.vhx.tv.home.TvHomeActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Watcho",
+      "drawable": "watcho",
+      "color": "#FF477E",
+      "glyph": "monogram_W",
+      "components": [
+        "com.watcho_multi/com.yupptv.ott.ui.activity.SplashActivity"
+      ],
+      "category": "APP",
+      "unverified": [
+        "com.watcho_multi/com.yupptv.ott.ui.activity.SplashActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Wave IPTV",
+      "drawable": "wave_iptv",
+      "color": "#FF6B35",
+      "glyph": "monogram_W",
+      "components": [
+        "com.smartwave.wave_iptv/com.smartwave.wave_iptv.SplashActivity"
+      ],
+      "category": "LIVE",
+      "unverified": [
+        "com.smartwave.wave_iptv/com.smartwave.wave_iptv.SplashActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Wetv",
+      "drawable": "wetv",
+      "color": "#4CC9F0",
+      "glyph": "monogram_W",
+      "components": [
+        "com.tencent.qqlivei18n/com.ktcp.video.activity.MainActivity",
+        "com.tencent.qqlivei18n/com.ktcp.video.activity.HomeActivity"
+      ],
+      "category": "APP",
+      "unverified": [
+        "com.tencent.qqlivei18n/com.ktcp.video.activity.MainActivity",
+        "com.tencent.qqlivei18n/com.ktcp.video.activity.HomeActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Windscribe",
+      "drawable": "windscribe",
+      "color": "#F7B32B",
+      "glyph": "monogram_W",
+      "components": [
+        "com.windscribe.vpn/com.windscribe.tv.splash.SplashActivity"
+      ],
+      "category": "APP",
+      "unverified": [
+        "com.windscribe.vpn/com.windscribe.tv.splash.SplashActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Wink",
+      "drawable": "wink",
+      "color": "#6A4C93",
+      "glyph": "monogram_W",
+      "components": [
+        "ru.rt.video.app.tv/ru.rt.video.app.splash.view.SplashActivity"
+      ],
+      "category": "APP",
+      "unverified": [
+        "ru.rt.video.app.tv/ru.rt.video.app.splash.view.SplashActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Wireguard",
+      "drawable": "wireguard",
+      "color": "#F15BB5",
+      "glyph": "monogram_W",
+      "components": [
+        "com.wireguard.android/com.wireguard.android.activity.TvMainActivity"
+      ],
+      "category": "VPN",
+      "unverified": [
+        "com.wireguard.android/com.wireguard.android.activity.TvMainActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Wondery",
+      "drawable": "wondery",
+      "color": "#43AA8B",
+      "glyph": "monogram_W",
+      "components": [
+        "com.wondery/com.ensemble.streams.android.app.wonderytv.app.MainActivity"
+      ],
+      "category": "APP",
+      "unverified": [
+        "com.wondery/com.ensemble.streams.android.app.wonderytv.app.MainActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Wow",
+      "drawable": "wow",
+      "color": "#6A4C93",
+      "glyph": "monogram_W",
+      "components": [
+        "tv.vhx.worldofwonder/tv.vhx.LauncherActivity",
+        "tv.vhx.worldofwonder/tv.vhx.tv.home.TvHomeActivity"
+      ],
+      "category": "APP",
+      "unverified": [
+        "tv.vhx.worldofwonder/tv.vhx.LauncherActivity",
+        "tv.vhx.worldofwonder/tv.vhx.tv.home.TvHomeActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Wow2",
+      "drawable": "wow2",
+      "color": "#2EC4B6",
+      "glyph": "monogram_W",
+      "components": [
+        "de.sky.online/com.peacock.peacocktv.GoogleMainActivity"
+      ],
+      "category": "APP",
+      "unverified": [
+        "de.sky.online/com.peacock.peacocktv.GoogleMainActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Wrestle Universe",
+      "drawable": "wrestle_universe",
+      "color": "#F3722C",
+      "glyph": "monogram_W",
+      "components": [
+        "com.wrestle_universe/com.wrestle_universe.MainActivity"
+      ],
+      "category": "APP",
+      "unverified": [
+        "com.wrestle_universe/com.wrestle_universe.MainActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "X TV",
+      "drawable": "x_tv",
+      "color": "#90BE6D",
+      "glyph": "monogram_X",
+      "components": [
+        "com.x.xtv/com.x.xtv.MainActivity"
+      ],
+      "category": "APP",
+      "unverified": [
+        "com.x.xtv/com.x.xtv.MainActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Xiaomi Media Player",
+      "drawable": "xiaomi_media_player",
+      "color": "#6A4C93",
+      "glyph": "monogram_X",
+      "components": [
+        "com.xiaomi.mitv.mediaexplorer/com.xiaomi.mitv.mediaexplorer.NewScraperMainEntryActivity"
+      ],
+      "category": "PLAYER",
+      "unverified": [
+        "com.xiaomi.mitv.mediaexplorer/com.xiaomi.mitv.mediaexplorer.NewScraperMainEntryActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Xstream Play",
+      "drawable": "xstream_play",
+      "color": "#2EC4B6",
+      "glyph": "monogram_X",
+      "components": [
+        "tv.airtel.xstream.tvapp/tv.airtel.xstream.login.LoginActivity"
+      ],
+      "category": "APP",
+      "unverified": [
+        "tv.airtel.xstream.tvapp/tv.airtel.xstream.login.LoginActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Xumo Play",
+      "drawable": "xumo_play",
+      "color": "#6A4C93",
+      "glyph": "monogram_X",
+      "components": [
+        "com.xumo.xumo/com.xumo.xumo.activity.SplashActivity"
+      ],
+      "category": "APP",
+      "unverified": [
+        "com.xumo.xumo/com.xumo.xumo.activity.SplashActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Yacine TV",
+      "drawable": "yacine_tv",
+      "color": "#F7B32B",
+      "glyph": "monogram_Y",
+      "components": [
+        "ver3.ycntivi.off/dev.google.yacinetv.ui.splash.SplashActivity",
+        "ver3.ycntivi.off/dev.google.yacinetv.tvui.splash.SplashActivity"
+      ],
+      "category": "APP",
+      "unverified": [
+        "ver3.ycntivi.off/dev.google.yacinetv.ui.splash.SplashActivity",
+        "ver3.ycntivi.off/dev.google.yacinetv.tvui.splash.SplashActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Yandex Browser",
+      "drawable": "yandex_browser",
+      "color": "#00BBF9",
+      "glyph": "monogram_Y",
+      "components": [
+        "com.yandex.browser.tv/com.yandex.browser.tv.tvactivity.TvActivity"
+      ],
+      "category": "BROWSER",
+      "unverified": [
+        "com.yandex.browser.tv/com.yandex.browser.tv.tvactivity.TvActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Yettel TV",
+      "drawable": "yettel_tv",
+      "color": "#2EC4B6",
+      "glyph": "monogram_Y",
+      "components": [
+        "rs.yettel.tv/rs.yettel.tv.MainActivity"
+      ],
+      "category": "APP",
+      "unverified": [
+        "rs.yettel.tv/rs.yettel.tv.MainActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Yippee",
+      "drawable": "yippee",
+      "color": "#90BE6D",
+      "glyph": "monogram_Y",
+      "components": [
+        "com.yippeeentertainment/tv.vhx.tv.home.TvHomeActivity"
+      ],
+      "category": "APP",
+      "unverified": [
+        "com.yippeeentertainment/tv.vhx.tv.home.TvHomeActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Yle Areena",
+      "drawable": "yle_areena",
+      "color": "#F3722C",
+      "glyph": "monogram_Y",
+      "components": [
+        "com.yle.webtv/fi.yle.areena.leanback.ui.LaunchActivity"
+      ],
+      "category": "APP",
+      "unverified": [
+        "com.yle.webtv/fi.yle.areena.leanback.ui.LaunchActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Yoga Download",
+      "drawable": "yoga_download",
+      "color": "#4CC9F0",
+      "glyph": "monogram_Y",
+      "components": [
+        "com.yogadownload.andtv/com.yogadownload.andtv.SplashScreen"
+      ],
+      "category": "SPORT",
+      "unverified": [
+        "com.yogadownload.andtv/com.yogadownload.andtv.SplashScreen"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Youcine",
+      "drawable": "youcine",
+      "color": "#FEE440",
+      "glyph": "monogram_Y",
+      "components": [
+        "com.world.youcinetv/com.interactive.brasiliptv.ui.activity.WelcomeActivity"
+      ],
+      "category": "APP",
+      "unverified": [
+        "com.world.youcinetv/com.interactive.brasiliptv.ui.activity.WelcomeActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Youku",
+      "drawable": "youku",
+      "color": "#43AA8B",
+      "glyph": "monogram_Y",
+      "components": [
+        "com.youku.intl.tv/com.youku.tv.home.activity.HomeActivity"
+      ],
+      "category": "APP",
+      "unverified": [
+        "com.youku.intl.tv/com.youku.tv.home.activity.HomeActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Yousee Play",
+      "drawable": "yousee_play",
+      "color": "#00BBF9",
+      "glyph": "monogram_Y",
+      "components": [
+        "dk.yousee.tv.leanback/dk.yousee.ott.leanback.main.MainActivity"
+      ],
+      "category": "APP",
+      "unverified": [
+        "dk.yousee.tv.leanback/dk.yousee.ott.leanback.main.MainActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Yowindow",
+      "drawable": "yowindow",
+      "color": "#FF6B35",
+      "glyph": "monogram_Y",
+      "components": [
+        "yo.app.free/yo.activity.MainActivity",
+        "yo.app.free/yo.tv.TvActivity"
+      ],
+      "category": "APP",
+      "unverified": [
+        "yo.app.free/yo.activity.MainActivity",
+        "yo.app.free/yo.tv.TvActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Zaap TV",
+      "drawable": "zaap_tv",
+      "color": "#F7B32B",
+      "glyph": "monogram_Z",
+      "components": [
+        "com.zaaptv.mw.client.atv/com.alphaott.webtv.client.launcher.SystemLauncherActivity"
+      ],
+      "category": "APP",
+      "unverified": [
+        "com.zaaptv.mw.client.atv/com.alphaott.webtv.client.launcher.SystemLauncherActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Zank Remote",
+      "drawable": "zank_remote",
+      "color": "#E71D36",
+      "glyph": "monogram_Z",
+      "components": [
+        "zank.remote/zank.remote.MainActivity",
+        "zank.remote/zank.remote.AndroidTV"
+      ],
+      "category": "TOOL",
+      "unverified": [
+        "zank.remote/zank.remote.MainActivity",
+        "zank.remote/zank.remote.AndroidTV"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Zapp",
+      "drawable": "zapp",
+      "color": "#F15BB5",
+      "glyph": "monogram_Z",
+      "components": [
+        "de.christinecoenen.code.zapp/de.christinecoenen.code.zapp.tv.main.MainActivity"
+      ],
+      "category": "APP",
+      "unverified": [
+        "de.christinecoenen.code.zapp/de.christinecoenen.code.zapp.tv.main.MainActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Zattoo",
+      "drawable": "zattoo",
+      "color": "#2EC4B6",
+      "glyph": "monogram_Z",
+      "components": [
+        "com.zattoo.player/com.utv.MainActivity"
+      ],
+      "category": "APP",
+      "unverified": [
+        "com.zattoo.player/com.utv.MainActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Zdf",
+      "drawable": "zdf",
+      "color": "#F15BB5",
+      "glyph": "monogram_Z",
+      "components": [
+        "com.zdf.android.mediathek/com.zdf.android.mediathek.tv.MainActivity"
+      ],
+      "category": "APP",
+      "unverified": [
+        "com.zdf.android.mediathek/com.zdf.android.mediathek.tv.MainActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Zeus",
+      "drawable": "zeus",
+      "color": "#4CC9F0",
+      "glyph": "monogram_Z",
+      "components": [
+        "com.thezeusnetwork.www/tv.vhx.LauncherActivity",
+        "com.thezeusnetwork.www/tv.vhx.tv.home.TvHomeActivity"
+      ],
+      "category": "APP",
+      "unverified": [
+        "com.thezeusnetwork.www/tv.vhx.LauncherActivity",
+        "com.thezeusnetwork.www/tv.vhx.tv.home.TvHomeActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Ziggo Go TV",
+      "drawable": "ziggo_go_tv",
+      "color": "#9B5DE5",
+      "glyph": "monogram_Z",
+      "components": [
+        "com.ziggo.tv/com.libertyglobal.horizonx.MainActivity"
+      ],
+      "category": "APP",
+      "unverified": [
+        "com.ziggo.tv/com.libertyglobal.horizonx.MainActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Zona",
+      "drawable": "zona",
+      "color": "#8AC926",
+      "glyph": "monogram_Z",
+      "components": [
+        "mobi.zona/mobi.zona.ui.MainActivity"
+      ],
+      "category": "APP",
+      "unverified": [
+        "mobi.zona/mobi.zona.ui.MainActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Zumba",
+      "drawable": "zumba",
+      "color": "#FF477E",
+      "glyph": "monogram_Z",
+      "components": [
+        "com.zumba.consumerapp.tv/com.maz.activities.ViewerLaunchActivity"
+      ],
+      "category": "APP",
+      "unverified": [
+        "com.zumba.consumerapp.tv/com.maz.activities.ViewerLaunchActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9"
     }
   ]
 }

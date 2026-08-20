@@ -64,7 +64,7 @@ The tag triggers a build that publishes a GitHub Release with the APK attached a
 
 ## 6. After releasing
 
-- Update `Latestrelease/version.json` if you wire up an in-app updater — it points at `releases/latest/download/app-release.apk`.
+- Update `Latestrelease/version.json` if you wire up an in-app updater — it points at the floating `iconpack/iconpack-release.apk` release URL.
 - Get a [Downloader](https://www.aftvnews.com/downloader/) code for the release URL so TV users can sideload without a keyboard. Add it to the README's install section.
 
 ---

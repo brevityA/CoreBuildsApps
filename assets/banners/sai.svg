@@ -1,5 +1,5 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1280" height="720" viewBox="0 0 1280 720">
-  <g transform="translate(129.5,0.0)">
+  <g transform="translate(130.0,0.0)">
   <defs><linearGradient id="cbRail" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#00d4ff"/><stop offset="100%" stop-color="#a78bfa"/></linearGradient></defs><rect x="70" y="168" width="16" height="384" rx="8.0" fill="url(#cbRail)"/>
   <g transform="translate(353,180) scale(0.70312)"><path d="M 96 186 L 256 108 L 416 186 L 416 350 L 256 428 L 96 350 Z" fill="none" stroke="#3DDC84" stroke-width="32.0" stroke-linecap="round" stroke-linejoin="round"/><path d="M 96 186 L 256 264 L 416 186" fill="none" stroke="#3DDC84" stroke-width="26.2" stroke-linecap="round" stroke-linejoin="round"/><path d="M 256 264 L 256 428" fill="none" stroke="#3DDC84" stroke-width="26.2" stroke-linecap="round" stroke-linejoin="round"/></g>
   <path d="M770.576 299.49V267.474H777.798V299.49ZM760.41 273.31600000000003V267.014H787.964V273.31600000000003Z" fill="#00d4ff" stroke="none"/>

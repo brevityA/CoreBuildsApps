@@ -94,9 +94,9 @@ def main():
     # 2. PNGs
     png_written = 0
     try:
-        import cairosvg
+        from svg_renderer import svg2png
         for i in icons:
-            cairosvg.svg2png(
+            svg2png(
                 url=str(SVG_DIR / f"{i['drawable']}.svg"),
                 write_to=str(PNG_DIR / f"{i['drawable']}.png"),
                 output_width=PNG_SIZE, output_height=PNG_SIZE,
@@ -104,9 +104,9 @@ def main():
             png_written += 1
         print(f"\u2713 PNG {PNG_SIZE}px transparent written "
               f"({png_written}/{len(icons)}) \u2192 res/drawable-nodpi/")
-    except ImportError:
-        print("\u26a0 cairosvg not installed \u2014 PNGs skipped. "
-              "Run: pip install cairosvg  (APK build needs them)")
+    except (ImportError, OSError):
+        print("\u26a0 no SVG rasterizer is available \u2014 PNGs skipped. "
+              "Run: pip install -r tools/requirements.txt  (APK build needs them)")
 
     # 3. appfilter.xml — what makes icons auto-assign
     #
@@ -155,10 +155,16 @@ def main():
                              f'drawable="{i["drawable"]}_banner"/>')
                 emitted_count += 1
     lines.append('</resources>')
-    write(XML_DIR / "appfilter.xml", "\n".join(lines) + "\n")
+    appfilter_text = "\n".join(lines) + "\n"
+    write(XML_DIR / "appfilter.xml", appfilter_text)
+    # The ADW convention permits res/xml, res/raw, or assets. Modern launchers
+    # prefer res/xml, while several older picker/request implementations only
+    # inspect assets. Generate identical files so mappings cannot drift.
+    write(ROOT / "app" / "src" / "main" / "assets" / "appfilter.xml",
+          appfilter_text)
     print(f"\u2713 appfilter.xml written \u2014 {comp_count} catalog components "
           f"\u2192 {emitted_count} entries (both name forms) "
-          f"\u2192 {len(icons)} drawables")
+          f"\u2192 {len(icons)} drawables (res/xml + assets)")
 
     # 4. drawable.xml — launcher icon picker, grouped by catalog category
     # so Projectivy's browser can jump a section instead of scrolling 500
@@ -196,7 +202,10 @@ def main():
         for i in by_cat[cat]:
             d.append(f'    <item drawable="{i["drawable"]}" />')
     d.append('</resources>')
-    write(XML_DIR / "drawable.xml", "\n".join(d) + "\n")
+    drawable_text = "\n".join(d) + "\n"
+    write(XML_DIR / "drawable.xml", drawable_text)
+    write(ROOT / "app" / "src" / "main" / "assets" / "drawable.xml",
+          drawable_text)
 
     # 5. iconpack.xml — legacy/alt launcher discovery
     p = ['<?xml version="1.0" encoding="utf-8"?>', '<iconpack>']
@@ -278,12 +287,12 @@ def main():
 
     # 9. raster contact sheet for the README (GitHub won't render SVG text well)
     try:
-        import cairosvg
-        cairosvg.svg2png(url=str(DOC_DIR / "preview.svg"),
+        from svg_renderer import svg2png
+        svg2png(url=str(DOC_DIR / "preview.svg"),
                          write_to=str(DOC_DIR / "preview.png"),
                          output_width=1200, background_color="#0d1117")
         print("\u2713 docs/preview.png written (README contact sheet)")
-    except ImportError:
+    except (ImportError, OSError):
         pass
 
     print(f"\nBuild complete \u2014 {len(icons)} icons, {comp_count} components, "

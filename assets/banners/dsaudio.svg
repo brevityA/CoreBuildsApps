@@ -1,5 +1,5 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1280" height="720" viewBox="0 0 1280 720">
-  <g transform="translate(49.5,0.0)">
+  <g transform="translate(50.0,0.0)">
   <defs><linearGradient id="cbRail" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#00d4ff"/><stop offset="100%" stop-color="#a78bfa"/></linearGradient></defs><rect x="70" y="168" width="16" height="384" rx="8.0" fill="url(#cbRail)"/>
   <g transform="translate(199,180) scale(0.70312)"><path d="M 196 372 L 196 128 L 384 96 L 384 340" fill="none" stroke="#F472B6" stroke-width="32.0" stroke-linecap="round" stroke-linejoin="round"/><ellipse cx="150" cy="372" rx="52" ry="42" fill="none" stroke="#F472B6" stroke-width="32.0" stroke-linecap="round" stroke-linejoin="round"/><ellipse cx="338" cy="340" rx="52" ry="42" fill="none" stroke="#F472B6" stroke-width="32.0" stroke-linecap="round" stroke-linejoin="round"/></g>
   <path d="M608.362 299.49V267.014H613.5139999999999L626.3019999999999 286.932H623.68L636.4219999999999 267.014H641.6199999999999V299.49H634.3979999999999V279.204L635.6859999999999 279.526L627.3599999999999 292.498H622.5759999999999L614.2959999999999 279.526L615.5379999999999 279.204V299.49Z" fill="#00d4ff" stroke="none"/>

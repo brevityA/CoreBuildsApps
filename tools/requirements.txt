@@ -2,3 +2,5 @@
 cairosvg==2.9.0
 fonttools==4.59.0
 Pillow==10.4.0
+# Self-contained renderer keeps output stable across hosts.
+resvg-py==0.4.0
