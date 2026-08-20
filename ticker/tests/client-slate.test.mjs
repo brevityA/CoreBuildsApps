@@ -7,7 +7,8 @@ test('isNativeShell is false in Node tests', () => {
   assert.equal(isNativeShell(), false);
 });
 
-test('buildClientSlate falls back to a demo slate when remotes fail', async () => {
+test('buildClientSlate falls back to a demo slate when remotes fail', async (t) => {
+  t.mock.method(globalThis, 'fetch', () => Promise.reject(new Error('network stubbed')));
   const slate = await buildClientSlate({ leagues: ['nhl'], feeds: [] });
   assert.equal(slate.ok, true);
   assert.equal(slate.demo, true);
