@@ -109,6 +109,15 @@ jobs:
           "$ANDROID_HOME/build-tools/34.0.0/apksigner" verify --print-certs "$APK"
           echo "APK signature verified."
 
+      - name: Name the APK for the stable Downloader URL
+        if: startsWith(github.ref, 'refs/tags/coreline-v')
+        run: |
+          SRC=$(ls ticker/android/app/build/outputs/apk/release/*.apk | grep -v unsigned | head -1)
+          mkdir -p dist
+          cp "$SRC" dist/coreline-release.apk
+          ls -lh dist/coreline-release.apk
+          echo "CORELINE_APK=$PWD/dist/coreline-release.apk" >> "$GITHUB_ENV"
+
       - name: Upload debug APK artifact
         if: ${{ !startsWith(github.ref, 'refs/tags/coreline-v') }}
         uses: actions/upload-artifact@v7
@@ -122,13 +131,35 @@ jobs:
         uses: actions/upload-artifact@v7
         with:
           name: CoreLine-release
-          path: ticker/android/app/build/outputs/apk/release/*.apk
+          path: dist/coreline-release.apk
           if-no-files-found: error
 
-      - name: Publish release
+      - name: Publish versioned release
         if: startsWith(github.ref, 'refs/tags/coreline-v')
         uses: softprops/action-gh-release@v3
         with:
-          files: ticker/android/app/build/outputs/apk/release/*.apk
+          files: dist/coreline-release.apk
           generate_release_notes: true
           name: "Core Line ${{ github.ref_name }}"
+          make_latest: false
+
+      - name: Point floating tag coreline at this commit
+        if: startsWith(github.ref, 'refs/tags/coreline-v')
+        run: |
+          git tag -f coreline "$GITHUB_SHA"
+          git push -f origin refs/tags/coreline
+
+      - name: Publish stable Downloader release
+        if: startsWith(github.ref, 'refs/tags/coreline-v')
+        uses: softprops/action-gh-release@v3
+        with:
+          tag_name: coreline
+          name: Core Line (latest)
+          body: |
+            Always the current Core Line APK. Versioned notes live on `coreline-v*` releases.
+
+            Downloader (generate the numeric code **once** at https://go.aftvnews.com/):
+            https://github.com/brevityA/CoreBuildsApps/releases/download/coreline/coreline-release.apk
+          files: dist/coreline-release.apk
+          fail_on_unmatched_files: true
+          make_latest: false
