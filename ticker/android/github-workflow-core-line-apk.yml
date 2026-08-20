@@ -1,0 +1,75 @@
+name: Core Line APK
+
+# Canonical source for the Core Line CI workflow. The sandbox's GitHub App
+# cannot push .github/workflows/* (workflows permission denied), so the live
+# copy is landed by the owner:
+#
+#   cp ticker/android/github-workflow-core-line-apk.yml .github/workflows/core-line-apk.yml
+#   git add .github/workflows/core-line-apk.yml && git commit -m "ci: Core Line APK workflow" && git push
+#
+# Builds the Core Line Android/TV app (ticker/android) and runs the shared
+# parser / SSRF test suite (ticker). The Android project is standalone —
+# it has its own Gradle root at ticker/android and is not part of the
+# icon-pack build in app/.
+#
+# Artifact: CoreLine-debug → ticker/android/app/build/outputs/apk/debug/app-debug.apk
+# Sideload on a phone, Shield, Google TV, or Fire TV.
+
+on:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - 'ticker/**'
+      - '.github/workflows/core-line-apk.yml'
+  push:
+    paths:
+      - 'ticker/**'
+      - '.github/workflows/core-line-apk.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    name: Ticker tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 22
+
+      - name: Run parser / SSRF tests
+        run: cd ticker && npm test
+
+  apk:
+    name: Assemble debug APK
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Set up Android SDK
+        uses: android-actions/setup-android@v3
+
+      - name: Install Android platform 34
+        run: sdkmanager "platforms;android-34" "build-tools;34.0.0"
+
+      - name: Set up Gradle
+        uses: gradle/actions/setup-gradle@v6
+
+      - name: Assemble debug APK
+        working-directory: ticker/android
+        run: ./gradlew :app:assembleDebug --no-daemon --stacktrace
+
+      - name: Upload CoreLine.apk
+        uses: actions/upload-artifact@v7
+        with:
+          name: CoreLine-debug
+          path: ticker/android/app/build/outputs/apk/debug/*.apk
+          if-no-files-found: error
