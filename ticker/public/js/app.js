@@ -3,6 +3,7 @@ import { LEAGUES, compareEvents, buildDemoSlate, mergeEvents } from '/lib/scoreb
 import { buildClientSlate, isNativeShell } from '/lib/client-slate.mjs';
 import { loadState, saveState, cacheSlate, readCachedSlate } from './state.js';
 import { initTvNav } from './tv.js';
+import { qrDataUrl } from './qr.js';
 
 const params = new URLSearchParams(location.search);
 if (params.get('native') === '1') globalThis.CORELINE_NATIVE = true;
@@ -198,8 +199,12 @@ function startPair() {
   $('pairUrl').textContent = info.url;
   $('pairCode').textContent = info.code || '';
   const qr = $('pairQr');
-  qr.src = `https://api.qrserver.com/v1/create-qr-code/?size=240x240&data=${encodeURIComponent(info.url)}`;
-  qr.onerror = () => { qr.style.display = 'none'; };
+  const dataUrl = qrDataUrl(info.url, 6);
+  if (dataUrl) {
+    qr.src = dataUrl;
+  } else {
+    qr.style.display = 'none';
+  }
   clearInterval(pairTimer);
   pairTimer = setInterval(pollPairInbox, 1000);
 }
@@ -508,5 +513,6 @@ function esc(value) {
     .replace(/&/g, '&amp;')
     .replace(/</g, '&lt;')
     .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;');
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
 }
