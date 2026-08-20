@@ -30,6 +30,10 @@ export function initTvNav(root) {
     }
   };
   window.addEventListener('keydown', onKey);
+  root.addEventListener('click', (event) => {
+    const el = event.target.closest('.focusable');
+    if (el) el.focus();
+  });
   if (!document.activeElement || document.activeElement === document.body) {
     root.querySelector('.focusable')?.focus();
   }
