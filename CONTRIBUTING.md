@@ -87,3 +87,14 @@ python tools/validate.py
 Commit the regenerated output. Paste the validator's last line into the PR — that's the receipt.
 
 PRs carry a **"why this exists"** paragraph. Not "adds icons" — what problem it solves.
+
+## Core Line (the second app)
+
+`ticker/` — the sports & channel RSS ticker — is self-contained and follows its own rules; read [`ticker/HANDOVER.md`](ticker/HANDOVER.md) before editing it (product decisions there are locked). Its CI is `.github/workflows/core-line-apk.yml`:
+
+```bash
+cd ticker && npm test               # parser/SSRF tests — keep green
+cd ticker/android && ./gradlew :app:assembleDebug
+```
+
+Icon-pack work must never touch `ticker/`, and Core Line must never import from `tools/` or `app/`.

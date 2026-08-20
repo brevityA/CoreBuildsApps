@@ -8,6 +8,8 @@ An Android TV icon pack for [Projectivy Launcher](https://play.google.com/store/
 
 Sibling project to [`brevityA/Core-Builds`](https://github.com/brevityA/Core-Builds) (AIOStreams templates). Same brand, same voice, same standards of proof.
 
+**This repo also hosts a second app: [Core Line](ticker/HANDOVER.md)**, the Android / TV sports & channel RSS ticker, under `ticker/`. It is self-contained (Node 20+, zero npm deps) and deliberately **not** part of the icon-pack Gradle build — it has its own project root at `ticker/android/`. See its handover doc before touching it; product decisions there are locked.
+
 ## The one rule that governs everything
 
 **`tools/catalog.json` is the single source of truth. Never hand-edit generated files.**
@@ -38,6 +40,16 @@ python tools/validate.py            # 470 coherence checks — run before every 
 ```
 
 Run all three generators plus the validator before committing. Paste the validator's final line into the PR — that's the receipt.
+
+### Core Line (second app)
+
+```bash
+cd ticker && npm test               # 24 tests, node:test, no deps
+cd ticker && node server.mjs        # web ticker on 0.0.0.0:8787
+cd ticker/android && ./gradlew :app:assembleDebug   # APK (wrapper jar committed)
+```
+
+Core Line CI lives in `.github/workflows/core-line-apk.yml` (tests + debug APK) and triggers only on `ticker/**` changes, so icon-pack work never waits on it. The root `./gradlew` does **not** build it — `ticker/android` is a standalone Gradle root.
 
 ## Architecture
 
@@ -133,4 +145,4 @@ Claims in this repo are earned. Before saying something works:
 
 ## Scope
 
-This repo is the icon pack. Template, configurator, and genie work belongs in `brevityA/Core-Builds`. Keep the brand consistent across both; keep the code separate.
+This repo hosts **two apps**: the icon pack (everything above) and **Core Line** (`ticker/` — sports/channel RSS ticker with its own Android project and workflow). Template, configurator, and genie work belongs in `brevityA/Core-Builds`. Keep the brand consistent across all three; keep the code separate. `ticker/` is self-contained — it must never depend on `tools/` or `app/`, and the icon-pack build must never depend on `ticker/`.

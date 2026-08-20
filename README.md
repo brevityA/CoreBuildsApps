@@ -13,6 +13,10 @@ Precision-made. Verified live. Nothing hides.
 
 ---
 
+> **Two apps in this repo.** The icon pack below, plus **[Core Line](ticker/README.md)** — the Android / TV sports & channel RSS ticker (`ticker/`). Same brand, same living-room bar. CI builds both: `.github/workflows/build.yml` (icon pack) and `.github/workflows/core-line-apk.yml` (Core Line APK + tests).
+
+---
+
 ## 🔷 About
 
 The **Core Builds Icon Pack** is designed for the [Projectivy Launcher](https://play.google.com/store/apps/details?id=com.spocky.projengmenu) on Android TV and Google TV, built to the [Core Builds Brand & Style Guide v1.0](https://github.com/brevityA/Core-Builds).
@@ -160,7 +164,28 @@ assets/banners/              16:9 banners (515)
 app/src/main/res/            the Android module
 Latestrelease/version.json   in-app update manifest
 docs/IconPackList.md         supported apps + components
+ticker/                      Core Line — sports & channel ticker (see ticker/README.md)
 ```
+
+---
+
+## 🔷 Core Line — the second app in this repo
+
+**[Core Line](ticker/README.md)** is a TV-first sports & channel **ticker** (chyron). Not a player, not a playlist, not streams — a reader that crawls the listings other channel apps already publish as RSS:
+
+```
+LIVE  TOR 3-2 MTL  ·  TSN4  SN 3     ◆     LAL vs BOS  7:00 PM  ·  ESPN
+```
+
+- One Android APK for phone, Shield, Google TV, Fire TV (`LAUNCHER` + `LEANBACK_LAUNCHER`)
+- Parses messy listing lines (`Team vs team epn, tsn4, sn 3` → ESPN, TSN4, SN 3)
+- Public scoreboards (ESPN, NHL, MLB) with a labeled demo-slate fallback
+- Same-Wi-Fi QR pairing so a Fire remote never types an RSS URL
+- Zero npm dependencies; web version runs with `cd ticker && node server.mjs`
+
+Build the APK on CI: `.github/workflows/core-line-apk.yml` → artifact `CoreLine-debug` (sideload `app-debug.apk`). Locally: `cd ticker/android && ./gradlew :app:assembleDebug`. Tests: `cd ticker && npm test` (24 tests).
+
+Full story, architecture, and remaining debt: [`ticker/HANDOVER.md`](ticker/HANDOVER.md).
 
 ---
 
