@@ -237,14 +237,14 @@ def recentre(svg):
     try:
         import io
         import re
-        import cairosvg
+        from svg_renderer import svg2png
         from PIL import Image
-    except ImportError:
+    except (ImportError, OSError):
         return svg
 
-    png = cairosvg.svg2png(bytestring=svg.encode(),
-                           output_width=W, output_height=H,
-                           background_color=None)
+    png = svg2png(bytestring=svg.encode(),
+                  output_width=W, output_height=H,
+                  background_color=None)
     bbox = Image.open(io.BytesIO(png)).convert("RGBA").getchannel("A").getbbox()
     if not bbox:
         return svg
@@ -286,15 +286,15 @@ def main():
           f"\u2192 assets/banners/")
 
     try:
-        import cairosvg
-    except ImportError:
-        print("\u26a0 cairosvg not installed \u2014 PNGs skipped. "
+        from svg_renderer import svg2png
+    except (ImportError, OSError):
+        print("\u26a0 no SVG rasterizer is available \u2014 PNGs skipped. "
               "Run: pip install -r tools/requirements.txt")
         return 0
 
     PNG_DIR.mkdir(parents=True, exist_ok=True)
     for i in targets:
-        cairosvg.svg2png(
+        svg2png(
             url=str(SVG_DIR / f"{i['drawable']}.svg"),
             write_to=str(PNG_DIR / f"{i['drawable']}_banner.png"),
             output_width=PNG_W, output_height=PNG_H,

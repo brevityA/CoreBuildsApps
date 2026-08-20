@@ -142,6 +142,16 @@ jobs:
           "$ANDROID_HOME/build-tools/34.0.0/apksigner" verify --print-certs "$APK"
           echo "APK signature verified."
 
+      - name: Name the APK for the stable Downloader URL
+        if: startsWith(github.ref, 'refs/tags/v')
+        run: |
+          SRC=$(ls app/build/outputs/apk/release/*.apk | grep -v unsigned | head -1)
+          mkdir -p dist
+          cp "$SRC" dist/iconpack-release.apk
+          # Compatibility filename requested by existing Downloader code 5270601.
+          cp "$SRC" dist/app-release.apk
+          ls -lh dist/
+
       - name: Upload APK artifact
         uses: actions/upload-artifact@v7
         with:
@@ -178,10 +188,36 @@ jobs:
             git push origin HEAD:main
           fi
 
-      - name: Publish release
+      - name: Publish versioned release
         if: startsWith(github.ref, 'refs/tags/v')
         uses: softprops/action-gh-release@v3
         with:
-          files: app/build/outputs/apk/release/*.apk
+          files: |
+            dist/iconpack-release.apk
+            dist/app-release.apk
           generate_release_notes: true
           make_latest: true
+
+      - name: Point floating tag iconpack at this commit
+        if: startsWith(github.ref, 'refs/tags/v')
+        run: |
+          git tag -f iconpack "$GITHUB_SHA"
+          git push -f origin refs/tags/iconpack
+
+      - name: Publish stable Downloader release
+        if: startsWith(github.ref, 'refs/tags/v')
+        uses: softprops/action-gh-release@v3
+        with:
+          tag_name: iconpack
+          name: Icon Pack (latest)
+          body: |
+            Always the current Core Builds Icon Pack APK. Versioned notes live on `v*` releases.
+
+            Downloader (existing code **5270601** still uses latest/app-release.apk).
+            New stable URL (generate a code once at https://go.aftvnews.com/ if you want a second code):
+            https://github.com/brevityA/CoreBuildsApps/releases/download/iconpack/iconpack-release.apk
+          files: |
+            dist/iconpack-release.apk
+            dist/app-release.apk
+          fail_on_unmatched_files: true
+          make_latest: false

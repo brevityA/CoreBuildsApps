@@ -12,7 +12,7 @@
 
 > | App | What it does | Downloader | Release tag |
 > |---|---|---|---|
-> | **[Icon Pack](#-icon-pack)** | 516 transparent icons for Projectivy Launcher | `5270601` | [`v*`](../../releases) |
+> | **[Icon Pack](#-icon-pack)** | 917 transparent icons for Projectivy Launcher | `5270601` | [`v*`](../../releases) |
 > | **[Core Line](#-core-line)** | Sports scores & channel RSS ticker (chyron) | `7375676` | [`coreline-v*`](../../releases) |
 >
 > Each app has its own CI workflow with path filters — changes to one never rebuild the other.
@@ -22,7 +22,7 @@
 ## 🔷 Icon Pack
 
 **Transparent app icons for Projectivy Launcher on Android TV.**
-`516 icons` · `v1.5.1`
+`917 icons` · `v1.6.0`
 
 The **Core Builds Icon Pack** is designed for the [Projectivy Launcher](https://play.google.com/store/apps/details?id=com.spocky.projengmenu) on Android TV and Google TV, built to the [Core Builds Brand & Style Guide v1.0](https://github.com/brevityA/Core-Builds).
 
@@ -36,7 +36,11 @@ Icons are **original geometry** drawn on a shared 512 grid — simple shapes, ro
 
 ### Install
 
-1. Download using **Downloader code `5270601`**, or grab the APK from [**Releases**](../../releases/latest) (tags starting with `v`).
+1. Download using the existing **Downloader code `5270601`**, or use the permanent APK URL:
+
+   **https://github.com/brevityA/CoreBuildsApps/releases/download/iconpack/iconpack-release.apk**
+
+   Versioned builds remain available from [**Releases**](../../releases) under `v*` tags. The `iconpack` release is a floating stable target; do not use the repository-wide `latest/download/...` URL as a permanent link because Core Line has separate releases in this repository.
 2. Sideload it (Downloader, `adb install`, or a file manager).
 3. Open the app and press the **apply** button — it detects your launcher and hands off directly.
 
@@ -50,9 +54,9 @@ Icons are **original geometry** drawn on a shared 512 grid — simple shapes, ro
 
 ### What's covered
 
-515 icons across 21 categories — streaming, media centres, debrid services, players, launchers, tools, stores, live TV, music, sport, gaming, VPN, browsers, files, and more.
+917 icons across 21 categories — streaming, media centres, debrid services, players, launchers, tools, stores, live TV, music, sport, gaming, VPN, browsers, files, and more.
 
-Highlights: Stremio, Kodi, Jellyfin, Emby, Plex, Nuvio TV, Syncler, Weyd, TorBox, Real-Debrid, AllDebrid, Premiumize, Trakt, VLC, MX Player, SmartTube, YouTube, Spotify, Twitch, Downloader, Aurora Store, TiviMate, TV Bro, SYNC, LocalSend, RS File Manager, Sparkle TV, DS file — plus Netflix, Prime Video, Disney+, Max, Apple TV, Stan, Binge, Kayo, ABC iview, 9Now, 7plus, 10 Play, SBS, and 470+ more.
+Highlights: Stremio, Kodi, Jellyfin, Emby, Plex, Nuvio TV, Syncler, Weyd, TorBox, Real-Debrid, AllDebrid, Premiumize, Trakt, VLC, MX Player, SmartTube, YouTube, Spotify, Twitch, Downloader, Aurora Store, TiviMate, TV Bro, SYNC, LocalSend, RS File Manager, Sparkle TV, DS file — plus Netflix, Prime Video, Disney+, Max, Apple TV, Stan, Binge, Kayo, ABC iview, 9Now, 7plus, 10 Play, SBS, and 870+ more.
 
 Full table with every mapped component: [**docs/IconPackList.md**](docs/IconPackList.md)
 
@@ -163,9 +167,9 @@ tools/build_icons.py         catalog → SVG, PNG, appfilter, docs
 tools/build_banners.py       catalog → 16:9 monoline banners
 tools/build_branding.py      launcher icon + Leanback banner
 tools/build_brand_preview.py branding preview sheet
-tools/validate.py            coherence checks (12341 at 515 icons)
-assets/svg/                  master vectors (515)
-assets/banners/              16:9 banners (515)
+tools/validate.py            coherence checks (22,000+ at 917 icons)
+assets/svg/                  master vectors (917)
+assets/banners/              16:9 banners (917)
 app/src/main/res/            the Android module
 Latestrelease/version.json   in-app update manifest
 docs/IconPackList.md         supported apps + components
@@ -176,7 +180,7 @@ ticker/                      Core Line — sports & channel ticker (see ticker/R
 
 ## 🔷 Core Line
 
-**TV-first sports & channel ticker (chyron).** `v1.0.2`
+**TV-first sports & channel ticker (chyron).** `v1.0.1`
 
 Not a player, not a playlist, not streams — a reader that crawls the listings other channel apps already publish as RSS:
 

@@ -195,16 +195,39 @@ class VersionAndCiTests(unittest.TestCase):
     def test_gradle_and_version_json_agree(self):
         gradle = read("app/build.gradle.kts")
         ver = json.loads(read("Latestrelease/version.json"))
-        self.assertIn("versionCode = 8", gradle)
-        self.assertIn('versionName = "1.5.1"', gradle)
-        self.assertEqual(ver["versionCode"], 8)
-        self.assertEqual(ver["versionName"], "1.5.1")
-        self.assertEqual(ver["iconCount"], 516)
-        self.assertTrue(str(ver["apkUrl"]).endswith("app-release.apk"))
+        self.assertIn("versionCode = 9", gradle)
+        self.assertIn('versionName = "1.6.0"', gradle)
+        self.assertEqual(ver["versionCode"], 9)
+        self.assertEqual(ver["versionName"], "1.6.0")
+        self.assertEqual(ver["iconCount"], 917)
+        self.assertEqual(
+            ver["apkUrl"],
+            "https://github.com/brevityA/CoreBuildsApps/releases/download/iconpack/iconpack-release.apk",
+        )
 
     def test_ci_runs_build_banners(self):
         wf = read(".github/workflows/build.yml")
         self.assertIn("python tools/build_banners.py", wf)
+
+    def test_iconpack_release_keeps_both_download_names(self):
+        wf = read(".github/workflows/build.yml")
+        self.assertIn("dist/iconpack-release.apk", wf)
+        self.assertIn("dist/app-release.apk", wf)
+        self.assertIn("git tag -f iconpack", wf)
+        self.assertIn("tag_name: iconpack", wf)
+        versioned = wf.split("- name: Publish versioned release", 1)[1]
+        self.assertIn("make_latest: true", versioned.split("- name:", 1)[0])
+        stable = wf.split("- name: Publish stable Downloader release", 1)[1]
+        self.assertIn("make_latest: false", stable)
+
+    def test_core_line_never_becomes_repository_latest(self):
+        wf = read(".github/workflows/core-line-apk.yml")
+        self.assertEqual(
+            wf.count("make_latest: false"),
+            2,
+            "both Core Line versioned and floating releases must opt out of Latest",
+        )
+        self.assertNotIn("make_latest: true", wf)
 
 
 if __name__ == "__main__":

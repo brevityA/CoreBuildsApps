@@ -79,6 +79,59 @@ def main():
               f"({seen.get(comp)} vs {d})")
         seen[comp] = d
 
+    # 3b. Compatibility copies must be byte-identical. Some launchers read
+    # res/xml and older ADW/GO integrations read assets; divergent mappings
+    # produce device-specific failures that are extremely hard to diagnose.
+    assets = ROOT / "app" / "src" / "main" / "assets"
+    for filename in ("appfilter.xml", "drawable.xml"):
+        resource_file = RES / "xml" / filename
+        asset_file = assets / filename
+        check(asset_file.exists(),
+              f"assets/{filename} missing — legacy launchers may not find the pack")
+        if asset_file.exists():
+            check(asset_file.read_bytes() == resource_file.read_bytes(),
+                  f"assets/{filename} differs from res/xml/{filename}")
+
+    # Every catalog component must resolve canonically. ComponentName treats
+    # pkg/.Activity and pkg/pkg.Activity as the same component; compare that
+    # identity rather than raw spelling when auditing generated output.
+    def canonical(component):
+        match = re.match(r"^ComponentInfo\{([^/]+)/([^}]+)\}$", component)
+        if not match:
+            return component
+        pkg, activity = match.groups()
+        if activity.startswith("."):
+            activity = pkg + activity
+        return f"{pkg}/{activity}"
+
+    emitted_canonical = {canonical(c) for c in seen}
+    for icon in icons:
+        for component in icon["components"]:
+            wrapped = f"ComponentInfo{{{component}}}"
+            check(canonical(wrapped) in emitted_canonical,
+                  f"{icon['name']}: component '{component}' was not emitted")
+
+    # Coverage baseline: every component identity mapped by the reference pack
+    # must remain covered. The snapshot contains two malformed legacy values
+    # without the ComponentInfo prefix, so normalize both representations.
+    reference = ROOT / "tools" / "reference" / "projectivy-1.1.9-appfilter.xml"
+    check(reference.exists(), "Projectivy 1.1.9 mapping baseline is missing")
+    if reference.exists():
+        reference_root = ET.parse(reference).getroot()
+        reference_components = set()
+        for item in reference_root.findall("item"):
+            value = item.get("component", "")
+            if not value.startswith("ComponentInfo{"):
+                value = f"ComponentInfo{{{value.rstrip('}')}}}"
+            reference_components.add(canonical(value))
+        uncovered = reference_components - emitted_canonical
+        check(not uncovered,
+              f"reference coverage regressed for {len(uncovered)} component(s): "
+              f"{sorted(uncovered)[:10]}")
+        check(len(reference_components) == 955,
+              f"reference baseline has {len(reference_components)} canonical "
+              "components, expected 955")
+
     # 4. drawable.xml grid covers the whole catalog
     dx = ET.parse(RES / "xml" / "drawable.xml").getroot()
     listed = {i.get("drawable") for i in dx.findall("item")}
@@ -298,9 +351,11 @@ def main():
         check(_v.get("iconCount") == len(icons),
               f"version.json iconCount {_v.get('iconCount')} != "
               f"{len(icons)} icons in the catalogue")
-        check(str(_v.get("apkUrl", "")).endswith("app-release.apk"),
-              "version.json apkUrl must end in app-release.apk — the "
-              "Downloader code matches on that exact filename")
+        stable_apk = ("https://github.com/brevityA/CoreBuildsApps/releases/"
+                      "download/iconpack/iconpack-release.apk")
+        check(_v.get("apkUrl") == stable_apk,
+              "version.json apkUrl must use the floating iconpack release — "
+              "repository-wide latest can point at Core Line")
 
     # 6. banner + launcher icons exist
     for p in [RES / "drawable-nodpi" / "cb_banner.png",

@@ -4,6 +4,24 @@ All notable changes to the Core Builds Icon Pack. Format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); versions follow
 [SemVer](https://semver.org/spec/v2.0.0.html).
 
+## [1.6.0] — 2026-08-20
+
+Projectivy-scale coverage and evidence-based launcher matching.
+
+### Added
+- **401 new original icons and 16:9 banners**, bringing the pack from 516 to **917 icons**.
+- Exact component mappings from the Projectivy Icon Pack 1.1.9 reference set: **1,090 source mappings**, **958 packages**, and **1,646 generated appfilter rows**.
+- A decoded, auditable mapping snapshot at `tools/reference/projectivy-1.1.9-appfilter.xml`; inherited entries carry `mapping_source` provenance and remain marked unverified pending hardware confirmation.
+- Byte-identical `assets/appfilter.xml` and `assets/drawable.xml` compatibility copies for launchers that do not read `res/xml`.
+- Canonical component and asset-parity validation.
+- `resvg-py` as the deterministic primary rasterizer so generation is stable on minimal hosts without libcairo.
+- Floating `iconpack` release automation with permanent `iconpack-release.apk` and compatibility `app-release.apk` assets, restoring Downloader code `5270601` without competing with Core Line's floating release.
+- Expanded Android launcher matching research in `docs/COMPARISON.md`.
+
+### Changed
+- Version bumped to 1.6.0 (version code 9).
+- Coverage claims now distinguish selectable icons, mapped art, source components, generated aliases, and unique packages instead of conflating them.
+
 ## [1.5.1] — 2026-08-19
 
 Robustness. Mixed-launcher apply. Safer updater. Picker can hand a banner or a square. In-app update download. Name audit.
