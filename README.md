@@ -1,23 +1,28 @@
 <div align="center">
 
-<img src="docs/banner.png" alt="Core Builds Icon Pack" width="420">
+<img src="docs/banner.png" alt="Core Builds Apps" width="420">
 
-# Core Builds Icon Pack
+# Core Builds Apps
 
-**Transparent app icons for Projectivy Launcher on Android TV.**
-Precision-made. Verified live. Nothing hides.
-
-`516 icons` · `v1.5.1`
+**Two Android TV apps. Same brand, same living-room bar.**
 
 </div>
 
 ---
 
-> **Two apps in this repo.** The icon pack below, plus **[Core Line](ticker/README.md)** — the Android / TV sports & channel RSS ticker (`ticker/`). Same brand, same living-room bar. CI builds both: `.github/workflows/build.yml` (icon pack) and `.github/workflows/core-line-apk.yml` (Core Line APK + tests).
+> | App | What it does | Downloader | Release tag |
+> |---|---|---|---|
+> | **[Icon Pack](#-icon-pack)** | 516 transparent icons for Projectivy Launcher | `5270601` | [`v*`](../../releases) |
+> | **[Core Line](#-core-line)** | Sports scores & channel RSS ticker (chyron) | `TBD` | [`coreline-v*`](../../releases) |
+>
+> Each app has its own CI workflow with path filters — changes to one never rebuild the other.
 
 ---
 
-## 🔷 About
+## 🔷 Icon Pack
+
+**Transparent app icons for Projectivy Launcher on Android TV.**
+`516 icons` · `v1.5.1`
 
 The **Core Builds Icon Pack** is designed for the [Projectivy Launcher](https://play.google.com/store/apps/details?id=com.spocky.projengmenu) on Android TV and Google TV, built to the [Core Builds Brand & Style Guide v1.0](https://github.com/brevityA/Core-Builds).
 
@@ -29,9 +34,9 @@ Icons are **original geometry** drawn on a shared 512 grid — simple shapes, ro
 
 ---
 
-## 🔷 Install
+### Install
 
-1. Download using **Downloader code 5270601**, or grab the APK from [**Releases**](../../releases/latest).
+1. Download using **Downloader code `5270601`**, or grab the APK from [**Releases**](../../releases/latest) (tags starting with `v`).
 2. Sideload it (Downloader, `adb install`, or a file manager).
 3. Open the app and press the **apply** button — it detects your launcher and hands off directly.
 
@@ -43,7 +48,7 @@ Icons are **original geometry** drawn on a shared 512 grid — simple shapes, ro
 
 ---
 
-## 🔷 What's covered
+### What's covered
 
 515 icons across 21 categories — streaming, media centres, debrid services, players, launchers, tools, stores, live TV, music, sport, gaming, VPN, browsers, files, and more.
 
@@ -55,7 +60,7 @@ Full table with every mapped component: [**docs/IconPackList.md**](docs/IconPack
 
 ---
 
-## 🔷 16:9 Banners
+### 16:9 Banners
 
 Every icon ships a **320×180 monoline banner** for Projectivy's wide-card layout. One glyph, cyan→violet rail, Outfit Bold wordmark (path-outlined so every machine renders the same) — generated from `tools/build_banners.py`.
 
@@ -63,7 +68,7 @@ Appfilter maps to banners by default; square icons stay opt-in via `drawable.xml
 
 ---
 
-## 🔷 Branding assets
+### Branding assets
 
 The pack's own identity — Leanback banner, launcher icon at true sizes, adaptive-icon masks, and a home-row mock.
 
@@ -80,7 +85,7 @@ Regenerate with `python tools/build_branding.py && python tools/build_brand_prev
 
 ---
 
-## 🔷 Adding an icon
+### Adding an icon
 
 Everything generates from one file — `tools/catalog.json`. You never hand-edit XML.
 
@@ -114,7 +119,7 @@ Need a new shape? Add a function to `tools/glyphs.py` and register it in `GLYPHS
 
 ---
 
-## 🔷 Building the APK
+### Building the APK
 
 CI does it on every push: [`.github/workflows/build.yml`](.github/workflows/build.yml) regenerates assets, **fails if the committed files drift from the catalog**, runs the validator, then builds and uploads the APK. Push a `v*` tag to cut a release — CI verifies the tag is on `main` and its versionName matches, so a mis-placed tag fails before it publishes.
 
@@ -131,7 +136,7 @@ Release signing reads `KEYSTORE_PATH`, `KEYSTORE_PASSWORD`, `KEY_ALIAS`, `KEY_PA
 
 ---
 
-## 🔷 Design rules
+### Design rules
 
 Inherited from the brand guide, enforced by the generator and validator:
 
@@ -147,7 +152,7 @@ Inherited from the brand guide, enforced by the generator and validator:
 
 ---
 
-## 🔷 Layout
+## 🔷 Repo Layout
 
 ```
 tools/catalog.json           the single source of truth
@@ -169,9 +174,11 @@ ticker/                      Core Line — sports & channel ticker (see ticker/R
 
 ---
 
-## 🔷 Core Line — the second app in this repo
+## 🔷 Core Line
 
-**[Core Line](ticker/README.md)** is a TV-first sports & channel **ticker** (chyron). Not a player, not a playlist, not streams — a reader that crawls the listings other channel apps already publish as RSS:
+**TV-first sports & channel ticker (chyron).** `v1.0.0`
+
+Not a player, not a playlist, not streams — a reader that crawls the listings other channel apps already publish as RSS:
 
 ```
 LIVE  TOR 3-2 MTL  ·  TSN4  SN 3     ◆     LAL vs BOS  7:00 PM  ·  ESPN
@@ -183,9 +190,27 @@ LIVE  TOR 3-2 MTL  ·  TSN4  SN 3     ◆     LAL vs BOS  7:00 PM  ·  ESPN
 - Same-Wi-Fi QR pairing so a Fire remote never types an RSS URL
 - Zero npm dependencies; web version runs with `cd ticker && node server.mjs`
 
-Build the APK on CI: `.github/workflows/core-line-apk.yml` → artifact `CoreLine-debug` (sideload `app-debug.apk`). Locally: `cd ticker/android && ./gradlew :app:assembleDebug`. Tests: `cd ticker && npm test` (24 tests).
+### Install
 
-Full story, architecture, and remaining debt: [`ticker/HANDOVER.md`](ticker/HANDOVER.md).
+1. Download using **Downloader code `TBD`**, or grab the APK from [**Releases**](../../releases) (tags starting with `coreline-v`).
+2. Sideload it (Downloader, `adb install`, or a file manager).
+3. Open the app — it loads a demo ticker immediately. Add your RSS feeds via the settings panel or pair from a phone on the same Wi-Fi using the QR code.
+
+### Building
+
+CI: [`.github/workflows/core-line-apk.yml`](.github/workflows/core-line-apk.yml) → push a `coreline-v*` tag to cut a release. Debug APKs are uploaded as CI artifacts on every push.
+
+Locally (needs JDK 17 + Android SDK):
+
+```bash
+cd ticker/android && ./gradlew :app:assembleDebug
+```
+
+Tests: `cd ticker && npm test` (24 tests).
+
+Release signing uses `CORELINE_KEYSTORE_BASE64`, `CORELINE_KEYSTORE_PASSWORD`, `CORELINE_KEY_ALIAS`, `CORELINE_KEY_PASSWORD` secrets.
+
+Full architecture and remaining debt: [`ticker/HANDOVER.md`](ticker/HANDOVER.md) · Detailed readme: [`ticker/README.md`](ticker/README.md).
 
 ---
 
