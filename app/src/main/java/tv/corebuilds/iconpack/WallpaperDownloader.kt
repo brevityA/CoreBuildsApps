@@ -135,13 +135,13 @@ object WallpaperDownloader {
             requestMethod = "GET"
             setRequestProperty("Accept", "image/png,image/jpeg,*/*")
         }
-        conn.use { c ->
-            val code = c.responseCode
+        try {
+            val code = conn.responseCode
             if (code !in 200..299) {
                 throw IllegalStateException("HTTP $code fetching wallpaper")
             }
-            val total = c.contentLengthLong.coerceAtLeast(0L)
-            c.inputStream.use { input ->
+            val total = conn.contentLengthLong.coerceAtLeast(0L)
+            conn.inputStream.use { input ->
                 tmp.outputStream().use { out ->
                     val buf = ByteArray(64 * 1024)
                     var received = 0L
@@ -150,10 +150,10 @@ object WallpaperDownloader {
                         if (n == -1) break
                         out.write(buf, 0, n)
                         received += n
-                        // Progress is broadcast to all waiters; coalescing means
-                        // there is only one fetch per URL, so this is cheap.
-                        val waiters = inFlight[cacheName] ?: continue
-                        waiters.forEach { w ->
+                        val snapshot = synchronized(inFlight) {
+                            inFlight[cacheName]?.toList()
+                        } ?: continue
+                        snapshot.forEach { w ->
                             main.post { w.onEvent(Event.Progress(received, total)) }
                         }
                     }
@@ -166,12 +166,12 @@ object WallpaperDownloader {
             }
             if (dest.exists()) dest.delete()
             if (!tmp.renameTo(dest)) {
-                // Fall back to copy if rename across filesystems fails (shouldn't
-                // happen within cacheDir, but be defensive).
                 tmp.copyTo(dest, overwrite = true)
                 tmp.delete()
             }
             return dest
+        } finally {
+            conn.disconnect()
         }
     }
 

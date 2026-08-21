@@ -64,6 +64,7 @@ class WallpapersActivity : AppCompatActivity() {
         // long-press/toggle path.
         adapter.registerAdapterDataObserver(object : RecyclerView.AdapterDataObserver() {
             override fun onChanged() = refreshSelectionUi()
+            override fun onItemRangeChanged(positionStart: Int, itemCount: Int) = refreshSelectionUi()
             override fun onItemRangeInserted(positionStart: Int, itemCount: Int) = refreshSelectionUi()
             override fun onItemRangeRemoved(positionStart: Int, itemCount: Int) = refreshSelectionUi()
         })

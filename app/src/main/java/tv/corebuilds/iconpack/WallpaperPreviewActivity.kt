@@ -57,11 +57,10 @@ class WallpaperPreviewActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_wallpaper_preview)
 
+        image = findViewById(R.id.preview_image)
         url = intent.getStringExtra(EXTRA_URL).orEmpty()
         title = intent.getStringExtra(EXTRA_TITLE).orEmpty()
         if (url.isEmpty()) { finish(); return }
-
-        image = findViewById(R.id.preview_image)
         setButton = findViewById(R.id.preview_set)
         saveButton = findViewById(R.id.preview_save)
         sub = findViewById(R.id.preview_sub)

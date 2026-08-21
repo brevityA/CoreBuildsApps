@@ -125,7 +125,9 @@ object WallpaperExporter {
                 else -> { /* progress: nothing to do */ }
             }
         }
-        latch.await()
+        if (!latch.await(90, java.util.concurrent.TimeUnit.SECONDS)) {
+            throw java.io.IOException("Download timed out")
+        }
         result?.let { return it }
         throw java.io.IOException("Download failed: ${error ?: "unknown"}")
     }
