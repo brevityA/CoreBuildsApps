@@ -4,6 +4,48 @@ All notable changes to the Core Builds Icon Pack. Format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); versions follow
 [SemVer](https://semver.org/spec/v2.0.0.html).
 
+## [1.7.1] — 2026-08-21
+
+Hot patch on 1.7.0: export wallpapers to `Pictures/CoreBuilds/` for launcher
+auto-rotation, plus hardening for the in-app wallpapers surface shipped in 1.7.0.
+
+### Added
+- **Multi-select export.** Long-press a wallpaper (or press the header Export
+  button) to enter selection mode; Select all / Clear / Export N start a bulk
+  copy to `Pictures/CoreBuilds/`. A progress screen reports saved, skipped and
+  failed counts with **Retry failed** — no unnamed errors.
+- **`WallpaperExporter`** — sequential download-then-copy that streams original
+  bytes (no bitmap decode, no re-encode). Idempotent: same-named, same-size
+  files are skipped; pre-flight free-space check; failed files never leave
+  half-written MediaStore rows.
+- **`ExportProgressActivity`** — determinate progress, then a row of installed
+  launchers (detected via the existing `ApplyIconPack` catalog) so the user can
+  open Monet/Projectivy/etc. and finish enabling rotation.
+- **Save button** on the wallpaper preview, alongside Set. Saves the original
+  4K file into `Pictures/CoreBuilds/` without setting it.
+- `WRITE_EXTERNAL_STORAGE` with `maxSdkVersion=28` for API 21–28 (Fire TV /
+  older Shield); API 29+ uses scoped storage with no runtime permission.
+- `tests/test_wallpaper_export.py` — contract tests for export wiring.
+
+### Fixed
+- Wallpaper series labels crashed on API 21–23 (`CharSequence.titlecase()` is
+  API 24+). Now uses `toUpperCase(Locale)`.
+- Preview could recycle a bitmap still held by its ImageView on destroy
+  ("Canvas: trying to use a recycled bitmap"). Detaches before recycling and
+  guards all background callbacks against a destroyed activity.
+- Concurrent wallpaper downloads could write the same cache file from two
+  threads. Requests for a URL already in flight now coalesce onto one fetch;
+  downloads write through a `.part` temp and atomically rename.
+- Wallpaper preview now requests initial focus after layout (not in `onCreate`),
+  and thumbnail decoding runs on a shared 2-thread pool instead of one thread
+  per bind.
+
+### Changed
+- `WallpaperSetter` gained a public `copyFileToPictures(File)` used by both Save
+  and export; the bitmap-only path remains for the Fire TV set fallback.
+- `WallpaperDownloader` exposes `fetchUrl()` and uses a single worker plus a
+  shared main Handler (was one Handler allocated per thumbnail load).
+
 ## [1.7.0] — 2026-08-21
 
 In-app wallpapers. The Core Builds wallpaper collection is now browsable and

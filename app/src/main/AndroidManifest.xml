@@ -9,6 +9,11 @@
          WallpaperManager write is granted at runtime without a manifest
          permission. Declared for the legacy Fire TV / Android 9 floor. -->
     <uses-permission android:name="android.permission.SET_WALLPAPER" />
+    <!-- Bulk export to Pictures/CoreBuilds for launcher auto-rotation. Only
+         needed on API <= 28; API 29+ scoped storage needs no permission. -->
+    <uses-permission
+        android:name="android.permission.WRITE_EXTERNAL_STORAGE"
+        android:maxSdkVersion="28" />
 
     <uses-feature
         android:name="android.hardware.touchscreen"
@@ -169,6 +174,11 @@
             android:name=".WallpaperPreviewActivity"
             android:exported="false"
             android:label="@string/wp_title"
+            android:theme="@style/Theme.CoreBuilds" />
+        <activity
+            android:name=".ExportProgressActivity"
+            android:exported="false"
+            android:label="@string/wp_export_title"
             android:theme="@style/Theme.CoreBuilds" />
     </application>
 </manifest>

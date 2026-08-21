@@ -1,6 +1,8 @@
 package tv.corebuilds.iconpack
 
 import android.content.Context
+import android.os.Parcel
+import android.os.Parcelable
 import org.json.JSONObject
 import java.util.Locale
 
@@ -11,6 +13,8 @@ import java.util.Locale
  * repo's `Wallpapers/manifest.json`). Thumbs are bundled so the browser grid
  * is instant offline; the full 4K image is downloaded on demand from [url]
  * (raw GitHub) and cached by [WallpaperDownloader].
+ *
+ * Parcelable so the browser can hand a selection to [ExportProgressActivity].
  */
 data class Wallpaper(
     /** Display name, e.g. "41 Core Mark · Signature". */
@@ -26,7 +30,32 @@ data class Wallpaper(
     val resolution: String,
     /** Bundled thumb asset path under assets/ (with .jpg). */
     val thumbAsset: String
-) {
+) : Parcelable {
+
+    private constructor(parcel: Parcel) : this(
+        name = parcel.readString().orEmpty(),
+        series = parcel.readString().orEmpty(),
+        url = parcel.readString().orEmpty(),
+        thumbUrl = parcel.readString().orEmpty(),
+        resolution = parcel.readString().orEmpty(),
+        thumbAsset = parcel.readString().orEmpty()
+    )
+
+    override fun writeToParcel(parcel: Parcel, flags: Int) {
+        parcel.writeString(name)
+        parcel.writeString(series)
+        parcel.writeString(url)
+        parcel.writeString(thumbUrl)
+        parcel.writeString(resolution)
+        parcel.writeString(thumbAsset)
+    }
+
+    override fun describeContents(): Int = 0
+
+    companion object CREATOR : Parcelable.Creator<Wallpaper> {
+        override fun createFromParcel(parcel: Parcel): Wallpaper = Wallpaper(parcel)
+        override fun newArray(size: Int): Array<Wallpaper?> = arrayOfNulls(size)
+    }
     /** Short title without the leading number/series prefix. */
     val title: String
         get() = name.substringAfter("· ", name).trim()
@@ -71,10 +100,23 @@ object WallpaperCatalog {
         return out
     }
 
-    /** Human label for a series id, e.g. "series-4-core-mark" -> "Core Mark". */
-    fun seriesLabel(series: String): String =
-        series.removePrefix("series-")
+    /**
+     * Human label for a series id, e.g. "series-4-core-mark" -> "Core Mark".
+     *
+     * Strips the leading "series-N-" index prefix (the number is an ordering
+     * aid, not a word) and title-cases the remainder. Uses `toUpperCase(Locale)`
+     * rather than `CharSequence.titlecase()` because the latter is API 24+ and
+     * minSdk is 21.
+     */
+    fun seriesLabel(series: String): String {
+        val words = series
+            .removePrefix("series-")
             .substringAfter('-')
-            .split('-')
-            .joinToString(" ") { it.replaceFirstChar { c -> c.titlecase(Locale.ROOT) } }
+        if (words.isBlank()) return series
+        return words.split('-')
+            .filter { it.isNotEmpty() }
+            .joinToString(" ") { word ->
+                word.substring(0, 1).toUpperCase(Locale.ROOT) + word.substring(1)
+            }
+    }
 }

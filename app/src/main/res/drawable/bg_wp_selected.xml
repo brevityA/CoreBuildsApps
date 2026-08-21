@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Selection-mode overlay for a wallpaper tile. A 3dp cyan inset frame so the
+     16:9 thumbnail stays visible underneath; matches the focused card ring. -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="rectangle">
+    <solid android:color="#1400D4FF" />
+    <corners android:radius="16dp" />
+    <stroke
+        android:width="3dp"
+        android:color="@color/cb_signal_cyan" />
+</shape>
