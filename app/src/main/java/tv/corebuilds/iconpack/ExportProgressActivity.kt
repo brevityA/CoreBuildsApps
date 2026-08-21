@@ -61,7 +61,7 @@ class ExportProgressActivity : AppCompatActivity() {
         progress.isIndeterminate = false
 
         done.setOnClickListener { finish() }
-        retry.setOnClickListener { runExport(failed.mapNotNull { fn -> wallpapers.firstOrNull { it.cacheName == fn } }) }
+        retry.setOnClickListener { runExport(failed.mapNotNull { (name, _) -> wallpapers.firstOrNull { it.cacheName == name } }) }
         findViewById<TextView>(R.id.export_cancel).setOnClickListener { finish() }
 
         runExport(wallpapers)
@@ -99,6 +99,7 @@ class ExportProgressActivity : AppCompatActivity() {
                     title.text = event.reason
                     progress.isIndeterminate = false
                     progress.progress = 0
+                    failed = targets.map { it.cacheName to event.reason }
                     retry.visibility = View.VISIBLE
                     retry.requestFocus()
                 }
