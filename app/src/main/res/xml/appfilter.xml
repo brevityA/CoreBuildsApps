@@ -2330,6 +2330,9 @@
     <!-- Ukiku -->
     <item component="ComponentInfo{knf.kuma.tv/knf.kuma.tv.ui.TVMain}" drawable="ukiku_banner"/>
     <item component="ComponentInfo{knf.kuma.tv/.ui.TVMain}" drawable="ukiku_banner"/>
+    <!-- Ultimate File Manager Pro -->
+    <item component="ComponentInfo{za.kilowatch.ultimatefilemanager/za.kilowatch.ultimatefilemanager.MainActivity}" drawable="ultimatefilemanager_banner"/>
+    <item component="ComponentInfo{za.kilowatch.ultimatefilemanager/.MainActivity}" drawable="ultimatefilemanager_banner"/>
     <!-- Unifi Protect -->
     <item component="ComponentInfo{com.ubnt.unifi.protect/com.ubnt.sections.splash.AuthenticationActivity}" drawable="unifi_protect_banner"/>
     <!-- Unifi TV -->

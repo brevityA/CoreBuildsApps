@@ -277,6 +277,7 @@
     <item drawable="synologydrive_banner" />
     <item drawable="totalcommander_banner" />
     <item drawable="ugreen_nas_banner" />
+    <item drawable="ultimatefilemanager_banner" />
     <item drawable="wififileexplorer_banner" />
     <item drawable="lonelycatgames_banner" />
     <category title="Banners · Tools" />
@@ -1218,6 +1219,7 @@
     <item drawable="synologydrive" />
     <item drawable="totalcommander" />
     <item drawable="ugreen_nas" />
+    <item drawable="ultimatefilemanager" />
     <item drawable="wififileexplorer" />
     <item drawable="lonelycatgames" />
     <category title="Square · Tools" />

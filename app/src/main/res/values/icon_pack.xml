@@ -831,6 +831,7 @@
         <item>smartphone</item>
         <item>ugreen_nas</item>
         <item>ukiku</item>
+        <item>ultimatefilemanager</item>
         <item>unifi_protect</item>
         <item>unifi_tv</item>
         <item>unlinked</item>
@@ -1753,6 +1754,7 @@
         <item>UFC</item>
         <item>Ugreen NAS</item>
         <item>Ukiku</item>
+        <item>Ultimate File Manager Pro</item>
         <item>Unifi Protect</item>
         <item>Unifi TV</item>
         <item>Unlinked</item>
@@ -2675,6 +2677,7 @@
         <item>SPORT</item>
         <item>FILES</item>
         <item>APP</item>
+        <item>FILES</item>
         <item>APP</item>
         <item>APP</item>
         <item>STORE</item>
@@ -2767,5 +2770,5 @@
         <item>APP</item>
         <item>APP</item>
     </string-array>
-    <integer name="icon_count">920</integer>
+    <integer name="icon_count">921</integer>
 </resources>

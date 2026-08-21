@@ -202,7 +202,7 @@ class VersionAndCiTests(unittest.TestCase):
         # number, so a version bump doesn't break this test — only a mismatch does.
         self.assertEqual(ver["versionCode"], g_code)
         self.assertEqual(ver["versionName"], g_name)
-        self.assertEqual(ver["iconCount"], 920)
+        self.assertEqual(ver["iconCount"], 921)
         self.assertEqual(
             ver["apkUrl"],
             "https://github.com/brevityA/CoreBuildsApps/releases/download/iconpack/iconpack-release.apk",

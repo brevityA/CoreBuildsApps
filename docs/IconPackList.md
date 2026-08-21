@@ -1,6 +1,6 @@
 # Supported applications
 
-`920` icons · `1093` mapped components · pack v1.6.0
+`921` icons · `1095` mapped components · pack v1.6.0
 
 Every app below auto-assigns in Projectivy. If one doesn't, the app ships a different launcher activity on your device — open an issue with the component name and it gets added.
 
@@ -835,6 +835,7 @@ Every app below auto-assigns in Projectivy. If one doesn't, the app ships a diff
 | UFC | `smartphone` | `#577590` | `com.neulion.smartphone.ufc.android/com.neulion.smartphone.ufc.android.MainActivity` |
 | Ugreen NAS | `ugreen_nas` | `#577590` | `com.ugreen.nasprotv/com.ugreen.nasprotv.LaunchActivity` |
 | Ukiku | `ukiku` | `#6A4C93` | `knf.kuma.tv/knf.kuma.tv.ui.TVMain` |
+| Ultimate File Manager Pro | `ultimatefilemanager` | `#1982C4` | `za.kilowatch.ultimatefilemanager/.MainActivity`<br>`za.kilowatch.ultimatefilemanager/za.kilowatch.ultimatefilemanager.MainActivity` |
 | Unifi Protect | `unifi_protect` | `#00BBF9` | `com.ubnt.unifi.protect/com.ubnt.sections.splash.AuthenticationActivity` |
 | Unifi TV | `unifi_tv` | `#F3722C` | `com.tm.playtv/com.tm.ott.module.login.activity.LoginActivity` |
 | Unlinked | `unlinked` | `#00B8D9` | `link.unlinked/.android.core.ui.SplashActivity` |
