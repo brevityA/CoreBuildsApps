@@ -1,4 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- One wallpaper in the browser grid. 16:9 thumbnail on a glass card,
+     same focus treatment as item_icon (Brand Guide §05). -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -8,25 +10,24 @@
     android:focusableInTouchMode="true"
     android:gravity="center_horizontal"
     android:orientation="vertical"
-    android:padding="6dp">
+    android:padding="8dp">
 
     <ImageView
-        android:id="@+id/wallpaper_image"
+        android:id="@+id/wp_image"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:adjustViewBounds="true"
-        android:background="@color/cb_card"
+        android:layout_height="110dp"
         android:contentDescription="@null"
-        android:scaleType="fitCenter" />
+        android:scaleType="centerCrop" />
 
     <TextView
-        android:id="@+id/wallpaper_name"
+        android:id="@+id/wp_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
+        android:layout_marginTop="8dp"
         android:ellipsize="end"
         android:gravity="center"
         android:maxLines="1"
         android:textColor="@color/cb_ink"
-        android:textSize="11sp" />
+        android:textSize="12sp"
+        android:textStyle="bold" />
 </LinearLayout>

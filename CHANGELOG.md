@@ -4,6 +4,38 @@ All notable changes to the Core Builds Icon Pack. Format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); versions follow
 [SemVer](https://semver.org/spec/v2.0.0.html).
 
+## [1.7.0] — 2026-08-21
+
+In-app wallpapers. The Core Builds wallpaper collection is now browsable and
+settable from inside the app, on Android TV / Google TV and (via the Pictures
+fallback) Fire TV.
+
+### Added
+- **Wallpapers browser** (`WallpapersActivity`): a night-chrome grid of the full
+  Core Builds collection with series filter chips. Thumbnails are bundled so the
+  grid renders instantly offline.
+- **Full-screen preview** (`WallpaperPreviewActivity`): shows the bundled thumb
+  immediately, then downloads the 4K image on demand with a byte progress label
+  and sets it in one press.
+- **30 new "Core Mark" wallpapers** (series 4, #41–#70): the lit hex + faceted
+  core diamond rendered from the Brand Guide v1.0 construction constants. Added
+  as 3840×2160 PNGs in `Wallpapers/series-4-core-mark/` with thumbs; collection
+  manifest bumped to **v3.0 (70 wallpapers)**.
+- **`WallpaperSetter`**: sets the system wallpaper through `WallpaperManager`
+  (the path Monet uses to extract its Material You palette). On devices that
+  block third-party writes (Fire TV) it saves to `Pictures/CoreBuilds` and opens
+  the system crop/set intent.
+- **`WallpaperDownloader`**: on-demand full-image fetch with a GitHub-host
+  allowlist, https-only, and a 12-file internal-storage LRU cache. Reuses the
+  app's no-library HTTPS discipline.
+- A `Wallpapers` entry chip on the main screen showing the live collection count.
+- `SET_WALLPAPER` permission (only consulted on API ≤ 28).
+- `tests/test_wallpapers.py` — 17 contract checks covering the manifest, bundled
+  thumbs, series-4 files, and Android wiring; wired into `build.yml`.
+
+### Changed
+- Version bumped to 1.7.0 (version code 10).
+
 ## [1.6.0] — 2026-08-20
 
 Projectivy-scale coverage and evidence-based launcher matching.

@@ -1,6 +1,5 @@
 package tv.corebuilds.iconpack
 
-import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -71,16 +70,23 @@ class MainActivity : AppCompatActivity() {
             findViewById<TextView>(R.id.apply_button).visibility = View.GONE
             findViewById<TextView>(R.id.apply_sub).visibility = View.GONE
             findViewById<LinearLayout>(R.id.update_bar).visibility = View.GONE
-            findViewById<TextView>(R.id.wallpapers_button).visibility = View.GONE
-        }
-
-        findViewById<TextView>(R.id.wallpapers_button).setOnClickListener {
-            startActivity(Intent(this, WallpaperActivity::class.java))
         }
 
         bindChips()
         bindSearch()
-        if (pickMode) bindPickShape() else bindApplyButton()
+        if (pickMode) {
+            // Icon-picker mode has no use for the wallpapers entry or apply.
+            findViewById<View>(R.id.wallpapers_entry).visibility = View.GONE
+            bindPickShape()
+        } else {
+            bindApplyButton()
+            val wpEntry = findViewById<TextView>(R.id.wallpapers_entry)
+            val wpCount = WallpaperCatalog.load(this).size
+            if (wpCount > 0) {
+                wpEntry.text = getString(R.string.wp_entry_sub_fmt, wpCount)
+            }
+            wpEntry.setOnClickListener { WallpapersActivity.start(this) }
+        }
     }
 
     private fun onIconChosen(item: IconAdapter.IconItem) {

@@ -1,35 +1,29 @@
 package tv.corebuilds.iconpack
 
-import android.graphics.Bitmap
+import android.content.Context
 import android.graphics.BitmapFactory
-import android.os.Handler
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import java.io.File
-import java.net.HttpURLConnection
-import java.net.URL
-import java.util.concurrent.ExecutorService
 
+/**
+ * Grid tile for a Core Builds wallpaper.
+ *
+ * Thumbs are ~5 KB JPEGs bundled in assets/wallpapers_thumbs, so the whole
+ * 70-wall grid renders instantly offline. We decode off the main thread and
+ * guard against view recycling with a tag check. No image-loading dependency.
+ */
 class WallpaperAdapter(
-    private val cacheDir: File,
-    private val io: ExecutorService,
-    private val main: Handler,
-    private val onActivate: (WallpaperActivity.WallpaperItem) -> Unit
+    private var items: List<Wallpaper>,
+    private val onSelect: (Wallpaper) -> Unit
 ) : RecyclerView.Adapter<WallpaperAdapter.VH>() {
 
-    private var items = listOf<WallpaperActivity.WallpaperItem>()
-    private val bitmapCache = HashMap<String, Bitmap>()
-    private val placeholder: Bitmap by lazy {
-        Bitmap.createBitmap(16, 9, Bitmap.Config.ARGB_8888)
-    }
-
     class VH(view: View) : RecyclerView.ViewHolder(view) {
-        val image: ImageView = view.findViewById(R.id.wallpaper_image)
-        val label: TextView = view.findViewById(R.id.wallpaper_name)
+        val image: ImageView = view.findViewById(R.id.wp_image)
+        val label: TextView = view.findViewById(R.id.wp_name)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): VH {
@@ -40,65 +34,31 @@ class WallpaperAdapter(
 
     override fun onBindViewHolder(holder: VH, position: Int) {
         val item = items[position]
-        holder.label.text = item.name
-        holder.itemView.contentDescription = item.name
-        holder.itemView.setOnClickListener { onActivate(item) }
-
-        val cached = bitmapCache[item.thumbUrl]
-        if (cached != null) {
-            holder.image.setImageBitmap(cached)
-            return
+        holder.image.setImageBitmap(null)
+        holder.image.tag = item.thumbAsset
+        loadThumb(holder.image.context, item.thumbAsset) { bmp ->
+            if (holder.image.tag == item.thumbAsset) holder.image.setImageBitmap(bmp)
         }
-
-        holder.image.setImageBitmap(placeholder)
-
-        val thumbUrl = item.thumbUrl
-        io.execute {
-            try {
-                val bitmap = loadThumb(thumbUrl)
-                bitmapCache[thumbUrl] = bitmap
-                main.post {
-                    val pos = holder.bindingAdapterPosition
-                    if (pos in items.indices && items[pos].thumbUrl == thumbUrl) {
-                        holder.image.setImageBitmap(bitmap)
-                    }
-                }
-            } catch (_: Exception) { }
-        }
+        holder.label.text = item.title
+        holder.itemView.contentDescription = item.title
+        holder.itemView.setOnClickListener { onSelect(item) }
     }
 
     override fun getItemCount() = items.size
 
-    fun submit(next: List<WallpaperActivity.WallpaperItem>) {
+    fun submit(next: List<Wallpaper>) {
         items = next
         notifyDataSetChanged()
     }
 
-    private fun loadThumb(url: String): Bitmap {
-        val filename = url.substringAfterLast("/")
-        val file = File(cacheDir, filename)
-
-        if (file.exists()) {
-            val bmp = BitmapFactory.decodeFile(file.absolutePath)
-            if (bmp != null) return bmp
-        }
-
-        val conn = (URL(url).openConnection() as HttpURLConnection).apply {
-            connectTimeout = 8000
-            readTimeout = 8000
-            requestMethod = "GET"
-        }
-        try {
-            if (conn.responseCode != 200) {
-                throw IllegalStateException("HTTP ${conn.responseCode}")
+    private fun loadThumb(context: Context, asset: String, onReady: (android.graphics.Bitmap?) -> Unit) {
+        Thread {
+            val bmp = try {
+                context.assets.open(asset).use { BitmapFactory.decodeStream(it) }
+            } catch (e: Exception) {
+                null
             }
-            conn.inputStream.use { input ->
-                file.outputStream().use { output -> input.copyTo(output) }
-            }
-            return BitmapFactory.decodeFile(file.absolutePath)
-                ?: throw IllegalStateException("decode failed")
-        } finally {
-            conn.disconnect()
-        }
+            android.os.Handler(android.os.Looper.getMainLooper()).post { onReady(bmp) }
+        }.start()
     }
 }
