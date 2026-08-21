@@ -7,7 +7,9 @@
     <item drawable="androidtv_3_banner" />
     <item drawable="arrowfilms_banner" />
     <item drawable="arvio_banner" />
+    <item drawable="begin_banner" />
     <item drawable="boosteroidtv_banner" />
+    <item drawable="chillio_banner" />
     <item drawable="cinemahd_banner" />
     <item drawable="cloudstream_banner" />
     <item drawable="watchcorridortv_banner" />
@@ -91,6 +93,7 @@
     <item drawable="fivetviptvbox_banner" />
     <item drawable="screen_banner" />
     <item drawable="hdtv_player_banner" />
+    <item drawable="myiptvonline_banner" />
     <item drawable="iptvextremepro_banner" />
     <item drawable="iptv_pro_banner" />
     <item drawable="iptvsmarterstvbox_banner" />
@@ -101,7 +104,6 @@
     <item drawable="lazyiptvdeluxe_banner" />
     <item drawable="livetv_banner" />
     <item drawable="m3u_iptv_banner" />
-    <item drawable="myiptvonline_banner" />
     <item drawable="myiptv_banner" />
     <item drawable="oktv22_banner" />
     <item drawable="owntv_banner" />
@@ -111,6 +113,7 @@
     <item drawable="streamvault_banner" />
     <item drawable="strexo_banner" />
     <item drawable="stv_player_banner" />
+    <item drawable="tapmad_banner" />
     <item drawable="telly_banner" />
     <item drawable="thundertv_banner" />
     <item drawable="tvplayer_banner" />
@@ -945,7 +948,9 @@
     <item drawable="androidtv_3" />
     <item drawable="arrowfilms" />
     <item drawable="arvio" />
+    <item drawable="begin" />
     <item drawable="boosteroidtv" />
+    <item drawable="chillio" />
     <item drawable="cinemahd" />
     <item drawable="cloudstream" />
     <item drawable="watchcorridortv" />
@@ -1029,6 +1034,7 @@
     <item drawable="fivetviptvbox" />
     <item drawable="screen" />
     <item drawable="hdtv_player" />
+    <item drawable="myiptvonline" />
     <item drawable="iptvextremepro" />
     <item drawable="iptv_pro" />
     <item drawable="iptvsmarterstvbox" />
@@ -1039,7 +1045,6 @@
     <item drawable="lazyiptvdeluxe" />
     <item drawable="livetv" />
     <item drawable="m3u_iptv" />
-    <item drawable="myiptvonline" />
     <item drawable="myiptv" />
     <item drawable="oktv22" />
     <item drawable="owntv" />
@@ -1049,6 +1054,7 @@
     <item drawable="streamvault" />
     <item drawable="strexo" />
     <item drawable="stv_player" />
+    <item drawable="tapmad" />
     <item drawable="telly" />
     <item drawable="thundertv" />
     <item drawable="tvplayer" />

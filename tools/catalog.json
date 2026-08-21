@@ -5,7 +5,8 @@
     "version": "1.6.0",
     "grid": 512,
     "safe_area": 432,
-    "note": "Brand-colored glyph on transparent, per Core Builds Brand Guide v1.0 §07. Glyphs are original geometry in Core Builds language (rounded ends, flat fills, no gradients from source logos)."
+    "note": "Brand-colored glyph on transparent, per Core Builds Brand Guide v1.0 §07. Glyphs are original geometry in Core Builds language (rounded ends, flat fills, no gradients from source logos).",
+    "count": 920
   },
   "icons": [
     {
@@ -4375,7 +4376,7 @@
       "category": "APP"
     },
     {
-      "name": "My IPTV Online",
+      "name": "iMPlayer",
       "drawable": "myiptvonline",
       "color": "#00BBF9",
       "glyph": "monogram_M",
@@ -11109,6 +11110,36 @@
         "com.zumba.consumerapp.tv/com.maz.activities.ViewerLaunchActivity"
       ],
       "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Chillio",
+      "drawable": "chillio",
+      "color": "#4DD0E1",
+      "glyph": "play_round",
+      "components": [
+        "app.lumoslabs.chillio/.MainActivity"
+      ],
+      "category": "STREAM"
+    },
+    {
+      "name": "begin",
+      "drawable": "begin",
+      "color": "#00C9B7",
+      "glyph": "monogram_B",
+      "components": [
+        "z2c.begin.tv/.MainActivity"
+      ],
+      "category": "STREAM"
+    },
+    {
+      "name": "tapmad",
+      "drawable": "tapmad",
+      "color": "#00E676",
+      "glyph": "tv_stack",
+      "components": [
+        "com.pitelevision.tapmadtv/.MainActivity"
+      ],
+      "category": "LIVE"
     }
   ]
 }

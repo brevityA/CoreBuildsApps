@@ -1,6 +1,6 @@
 # Supported applications
 
-`917` icons · `1090` mapped components · pack v1.6.0
+`920` icons · `1093` mapped components · pack v1.6.0
 
 Every app below auto-assigns in Projectivy. If one doesn't, the app ships a different launcher activity on your device — open an issue with the component name and it gets added.
 
@@ -83,6 +83,7 @@ Every app below auto-assigns in Projectivy. If one doesn't, the app ships a diff
 | BBC iPlayer | `iplayer` | `#F3722C` | `bbc.iplayer.android/external.androidtv.bbciplayer.deeplinking.DeepLinkActivity` |
 | BBC Iplayer | `bbc_iplayer` | `#9B5DE5` | `uk.co.freeview.bbc/uk.co.freeview.templatewrapper.MainActivity` |
 | BBC iPlayer TV | `bbciplayer` | `#1982C4` | `com.nvidia.bbciplayer/com.nvidia.bbciplayer.MainPlayerActivity` |
+| begin | `begin` | `#00C9B7` | `z2c.begin.tv/.MainActivity` |
 | Bell Fibe | `bellmediaplayer` | `#F7B32B` | `com.quickplay.android.bellmediaplayer/ca.bell.fiberemote.boot.BootstrapActivity`<br>`com.quickplay.android.bellmediaplayer/ca.bell.fiberemote.tv.MainTvActivity` |
 | Bet Plus | `bet_plus` | `#B5179E` | `com.viacom.betplus/com.vmn.playplex.tv.ui.splash.TvSplashActivity` |
 | BET+ | `shows` | `#00BBF9` | `com.bet.shows/com.vmn.playplex.tv.ui.splash.TvSplashActivity` |
@@ -120,6 +121,7 @@ Every app below auto-assigns in Projectivy. If one doesn't, the app ships a diff
 | Chaupal | `chaupal` | `#FF477E` | `video.laminar.tv.chaupal.android/com.yupptv.ott.ui.activity.SplashActivity` |
 | Chebut TV | `chebut` | `#4CC9F0` | `com.chebut.tv/com.ottplay.ottplas.StartActivity` |
 | ChillHub | `chillhub` | `#4DD0E1` | `app.lumoslabs.chillhub/app.lumoslabs.chillhub.LauncherActivity` |
+| Chillio | `chillio` | `#4DD0E1` | `app.lumoslabs.chillio/.MainActivity` |
 | Cinema HD | `cinemahd` | `#E5533D` | `flix.com.vision/.activities.SplashScreenActivity` |
 | Cinemaghar TV | `cinemaghar_tv` | `#FF6B35` | `com.thesunbi.cinemaghartv/com.thesunbi.cinemaghartv.ui.main.MainActivity` |
 | CinemaGlow | `danielkorgel` | `#90BE6D` | `com.danielkorgel.projectivy.plugin.cinemaglow/com.danielkorgel.projectivy.plugin.cinemaglow.SettingsActivity` |
@@ -336,6 +338,7 @@ Every app below auto-assigns in Projectivy. If one doesn't, the app ships a diff
 | Ignite TV | `ignitetv` | `#FEE440` | `com.rogers.ignitetv/com.xfinity.common.view.LaunchActivity` |
 | iHeartRadio | `clearchannel` | `#F7B32B` | `com.clearchannel.iheartradio.tv/com.iheartradio.tv.screen.container.ContainerActivity` |
 | Immich TV | `immich_tv` | `#6A4C93` | `nl.giejay.android.tv.immich/nl.giejay.android.tv.immich.MainActivity` |
+| iMPlayer | `myiptvonline` | `#00BBF9` | `com.myiptvonline.implayer/com.myiptvonline.implayer.a` |
 | Instagram | `instagram` | `#FF6B35` | `com.instagram.airwave/com.instagram.airwave.AirwaveMainActivity` |
 | InstantBits | `instantbits` | `#90BE6D` | `com.instantbits.cast.receiver/com.instantbits.android.receiver.MainActivity` |
 | Ip Address | `ip_address` | `#F15BB5` | `net.info.az/net.info.az.SplashActivity` |
@@ -471,7 +474,6 @@ Every app below auto-assigns in Projectivy. If one doesn't, the app ships a diff
 | MX Player | `mxplayer` | `#3AB4F2` | `com.mxtech.videoplayer.ad/.ActivityMediaList`<br>`com.mxtech.videoplayer.pro/.ActivityMediaList`<br>`com.mxtech.videoplayer.tv/.ActivityMediaList`<br>`com.mxtech.videoplayer.ad/com.mxtech.videoplayer.ad.ActivityWelcomeMX` |
 | MX Player TV | `videoplayer` | `#F7B32B` | `com.mxtech.videoplayer.television/com.mxtech.videoplayer.tv.home.HomeActivity` |
 | My Family Cinema Player | `my_family_cinema_player` | `#FF477E` | `com.rxrv.myfamilycpfst/com.atvapps.ibo.MainActivity`<br>`com.rxrv.myfamilycpfst/com.atvapps.ibo.MainTVActivity` |
-| My IPTV Online | `myiptvonline` | `#00BBF9` | `com.myiptvonline.implayer/com.myiptvonline.implayer.a` |
 | My5 | `channel5` | `#F3722C` | `com.channel5.my5/com.channel5.my5.tv.ui.splash.view.SplashActivity` |
 | Myiptv | `myiptv` | `#FEE440` | `com.iptv.myiptv/com.iptv.myiptv.main.activity.LoginActivity` |
 | MyRadar | `myradar` | `#90BE6D` | `com.acmeaom.android.myradar/com.acmeaom.android.tv.ui.MyRadarTvActivity` |
@@ -743,6 +745,7 @@ Every app below auto-assigns in Projectivy. If one doesn't, the app ships a diff
 | Talk TV | `talk_tv` | `#43AA8B` | `uk.co.news.talkradiotv/com.simplestream.presentation.startup.StartUpActivity` |
 | Talksport | `talksport` | `#F3722C` | `com.talksport.tsliveen/com.simplestream.presentation.startup.StartUpActivity` |
 | Tamashakhoneh TV | `tamashakhoneh_tv` | `#6A4C93` | `ir.tamashakhonehtv/ir.tamashakhonehtv.ui.splash.SplashActivity` |
+| tapmad | `tapmad` | `#00E676` | `com.pitelevision.tapmadtv/.MainActivity` |
 | Tasker | `tasker` | `#3DDC84` | `net.dinglisch.android.taskerm/.Kid`<br>`net.dinglisch.android.taskerm/net.dinglisch.android.taskerm.Tasker` |
 | Tbn Plus | `tbn_plus` | `#B5179E` | `tbn_mobile.android/com.applicaster.ui.activities.MainActivity` |
 | TBS | `tbs` | `#B5179E` | `com.turner.tbs.android.networkapp/com.wme.app.MainActivityTv` |

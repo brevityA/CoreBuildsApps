@@ -216,6 +216,9 @@
     <!-- BBC iPlayer TV -->
     <item component="ComponentInfo{com.nvidia.bbciplayer/com.nvidia.bbciplayer.MainPlayerActivity}" drawable="bbciplayer_banner"/>
     <item component="ComponentInfo{com.nvidia.bbciplayer/.MainPlayerActivity}" drawable="bbciplayer_banner"/>
+    <!-- begin -->
+    <item component="ComponentInfo{z2c.begin.tv/z2c.begin.tv.MainActivity}" drawable="begin_banner"/>
+    <item component="ComponentInfo{z2c.begin.tv/.MainActivity}" drawable="begin_banner"/>
     <!-- Bell Fibe -->
     <item component="ComponentInfo{com.quickplay.android.bellmediaplayer/ca.bell.fiberemote.boot.BootstrapActivity}" drawable="bellmediaplayer_banner"/>
     <item component="ComponentInfo{com.quickplay.android.bellmediaplayer/ca.bell.fiberemote.tv.MainTvActivity}" drawable="bellmediaplayer_banner"/>
@@ -310,6 +313,9 @@
     <!-- ChillHub -->
     <item component="ComponentInfo{app.lumoslabs.chillhub/app.lumoslabs.chillhub.LauncherActivity}" drawable="chillhub_banner"/>
     <item component="ComponentInfo{app.lumoslabs.chillhub/.LauncherActivity}" drawable="chillhub_banner"/>
+    <!-- Chillio -->
+    <item component="ComponentInfo{app.lumoslabs.chillio/app.lumoslabs.chillio.MainActivity}" drawable="chillio_banner"/>
+    <item component="ComponentInfo{app.lumoslabs.chillio/.MainActivity}" drawable="chillio_banner"/>
     <!-- Cinema HD -->
     <item component="ComponentInfo{flix.com.vision/flix.com.vision.activities.SplashScreenActivity}" drawable="cinemahd_banner"/>
     <item component="ComponentInfo{flix.com.vision/.activities.SplashScreenActivity}" drawable="cinemahd_banner"/>
@@ -922,6 +928,9 @@
     <!-- Immich TV -->
     <item component="ComponentInfo{nl.giejay.android.tv.immich/nl.giejay.android.tv.immich.MainActivity}" drawable="immich_tv_banner"/>
     <item component="ComponentInfo{nl.giejay.android.tv.immich/.MainActivity}" drawable="immich_tv_banner"/>
+    <!-- iMPlayer -->
+    <item component="ComponentInfo{com.myiptvonline.implayer/com.myiptvonline.implayer.a}" drawable="myiptvonline_banner"/>
+    <item component="ComponentInfo{com.myiptvonline.implayer/.a}" drawable="myiptvonline_banner"/>
     <!-- Instagram -->
     <item component="ComponentInfo{com.instagram.airwave/com.instagram.airwave.AirwaveMainActivity}" drawable="instagram_banner"/>
     <item component="ComponentInfo{com.instagram.airwave/.AirwaveMainActivity}" drawable="instagram_banner"/>
@@ -1310,9 +1319,6 @@
     <!-- My Family Cinema Player -->
     <item component="ComponentInfo{com.rxrv.myfamilycpfst/com.atvapps.ibo.MainActivity}" drawable="my_family_cinema_player_banner"/>
     <item component="ComponentInfo{com.rxrv.myfamilycpfst/com.atvapps.ibo.MainTVActivity}" drawable="my_family_cinema_player_banner"/>
-    <!-- My IPTV Online -->
-    <item component="ComponentInfo{com.myiptvonline.implayer/com.myiptvonline.implayer.a}" drawable="myiptvonline_banner"/>
-    <item component="ComponentInfo{com.myiptvonline.implayer/.a}" drawable="myiptvonline_banner"/>
     <!-- My5 -->
     <item component="ComponentInfo{com.channel5.my5/com.channel5.my5.tv.ui.splash.view.SplashActivity}" drawable="channel5_banner"/>
     <item component="ComponentInfo{com.channel5.my5/.tv.ui.splash.view.SplashActivity}" drawable="channel5_banner"/>
@@ -2072,6 +2078,9 @@
     <!-- Tamashakhoneh TV -->
     <item component="ComponentInfo{ir.tamashakhonehtv/ir.tamashakhonehtv.ui.splash.SplashActivity}" drawable="tamashakhoneh_tv_banner"/>
     <item component="ComponentInfo{ir.tamashakhonehtv/.ui.splash.SplashActivity}" drawable="tamashakhoneh_tv_banner"/>
+    <!-- tapmad -->
+    <item component="ComponentInfo{com.pitelevision.tapmadtv/com.pitelevision.tapmadtv.MainActivity}" drawable="tapmad_banner"/>
+    <item component="ComponentInfo{com.pitelevision.tapmadtv/.MainActivity}" drawable="tapmad_banner"/>
     <!-- Tasker -->
     <item component="ComponentInfo{net.dinglisch.android.taskerm/net.dinglisch.android.taskerm.Kid}" drawable="tasker_banner"/>
     <item component="ComponentInfo{net.dinglisch.android.taskerm/.Kid}" drawable="tasker_banner"/>
