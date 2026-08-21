@@ -39,4 +39,16 @@
     <string name="update_sub_install">APK saved. Press to open the system installer.</string>
     <string name="update_need_permission">Allow installs from this app, then press Install again.</string>
     <string name="update_permission_missing">Could not open install permission. Enable unknown sources for Core Builds, then retry.</string>
+    <string name="wallpapers_nav">Wallpapers</string>
+    <string name="wallpapers_kicker">CORE BUILDS · WALLPAPERS</string>
+    <string name="wallpapers_title">Wallpapers</string>
+    <string name="wallpapers_loading">Loading wallpapers…</string>
+    <string name="wallpapers_failed_fmt">Could not load wallpapers: %1$s</string>
+    <string name="wallpapers_preview_desc">Wallpaper preview</string>
+    <string name="wallpaper_count_fmt">%1$d wallpapers</string>
+    <string name="wallpaper_filter_fmt">%1$d of %2$d wallpapers</string>
+    <string name="wallpaper_back">Back</string>
+    <string name="wallpaper_apply">Set wallpaper</string>
+    <string name="wallpaper_applied_fmt">%1$s set as wallpaper.</string>
+    <string name="wallpaper_apply_failed_fmt">Could not set wallpaper: %1$s</string>
 </resources>

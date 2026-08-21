@@ -1,5 +1,6 @@
 package tv.corebuilds.iconpack
 
+import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -70,6 +71,11 @@ class MainActivity : AppCompatActivity() {
             findViewById<TextView>(R.id.apply_button).visibility = View.GONE
             findViewById<TextView>(R.id.apply_sub).visibility = View.GONE
             findViewById<LinearLayout>(R.id.update_bar).visibility = View.GONE
+            findViewById<TextView>(R.id.wallpapers_button).visibility = View.GONE
+        }
+
+        findViewById<TextView>(R.id.wallpapers_button).setOnClickListener {
+            startActivity(Intent(this, WallpaperActivity::class.java))
         }
 
         bindChips()
