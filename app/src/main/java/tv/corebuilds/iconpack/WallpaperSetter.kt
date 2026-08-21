@@ -31,7 +31,7 @@ import java.io.FileOutputStream
 object WallpaperSetter {
 
     private const val TAG = "CoreBuilds/Wallpaper"
-    private const val RELATIVE_PATH = "${Environment.DIRECTORY_PICTURES}/CoreBuilds"
+    private val RELATIVE_PATH = "${Environment.DIRECTORY_PICTURES}/CoreBuilds"
 
     sealed class Result {
         data class Set(val by: String) : Result()
