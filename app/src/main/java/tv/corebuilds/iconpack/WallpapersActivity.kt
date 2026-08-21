@@ -1,5 +1,7 @@
 package tv.corebuilds.iconpack
 
+import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
@@ -18,6 +20,12 @@ import androidx.recyclerview.widget.RecyclerView
  * night-chrome structure so the surfaces read as one app (Brand Guide §05).
  */
 class WallpapersActivity : AppCompatActivity() {
+
+    companion object {
+        fun start(context: Context) {
+            context.startActivity(Intent(context, WallpapersActivity::class.java))
+        }
+    }
 
     private lateinit var all: List<Wallpaper>
     private lateinit var adapter: WallpaperAdapter
