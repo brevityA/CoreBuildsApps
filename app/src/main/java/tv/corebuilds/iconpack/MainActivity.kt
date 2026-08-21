@@ -74,7 +74,19 @@ class MainActivity : AppCompatActivity() {
 
         bindChips()
         bindSearch()
-        if (pickMode) bindPickShape() else bindApplyButton()
+        if (pickMode) {
+            // Icon-picker mode has no use for the wallpapers entry or apply.
+            findViewById<View>(R.id.wallpapers_entry).visibility = View.GONE
+            bindPickShape()
+        } else {
+            bindApplyButton()
+            val wpEntry = findViewById<TextView>(R.id.wallpapers_entry)
+            val wpCount = WallpaperCatalog.load(this).size
+            if (wpCount > 0) {
+                wpEntry.text = getString(R.string.wp_entry_sub_fmt, wpCount)
+            }
+            wpEntry.setOnClickListener { WallpapersActivity.start(this) }
+        }
     }
 
     private fun onIconChosen(item: IconAdapter.IconItem) {

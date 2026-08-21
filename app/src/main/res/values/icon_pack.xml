@@ -79,6 +79,7 @@
         <item>iplayer</item>
         <item>bbc_iplayer</item>
         <item>bbciplayer</item>
+        <item>begin</item>
         <item>bellmediaplayer</item>
         <item>bet_plus</item>
         <item>shows</item>
@@ -116,6 +117,7 @@
         <item>chaupal</item>
         <item>chebut</item>
         <item>chillhub</item>
+        <item>chillio</item>
         <item>cinemahd</item>
         <item>cinemaghar_tv</item>
         <item>danielkorgel</item>
@@ -332,6 +334,7 @@
         <item>ignitetv</item>
         <item>clearchannel</item>
         <item>immich_tv</item>
+        <item>myiptvonline</item>
         <item>instagram</item>
         <item>instantbits</item>
         <item>ip_address</item>
@@ -467,7 +470,6 @@
         <item>mxplayer</item>
         <item>videoplayer</item>
         <item>my_family_cinema_player</item>
-        <item>myiptvonline</item>
         <item>channel5</item>
         <item>myiptv</item>
         <item>myradar</item>
@@ -739,6 +741,7 @@
         <item>talk_tv</item>
         <item>talksport</item>
         <item>tamashakhoneh_tv</item>
+        <item>tapmad</item>
         <item>tasker</item>
         <item>tbn_plus</item>
         <item>tbs</item>
@@ -998,6 +1001,7 @@
         <item>BBC iPlayer</item>
         <item>BBC Iplayer</item>
         <item>BBC iPlayer TV</item>
+        <item>begin</item>
         <item>Bell Fibe</item>
         <item>Bet Plus</item>
         <item>BET+</item>
@@ -1035,6 +1039,7 @@
         <item>Chaupal</item>
         <item>Chebut TV</item>
         <item>ChillHub</item>
+        <item>Chillio</item>
         <item>Cinema HD</item>
         <item>Cinemaghar TV</item>
         <item>CinemaGlow</item>
@@ -1251,6 +1256,7 @@
         <item>Ignite TV</item>
         <item>iHeartRadio</item>
         <item>Immich TV</item>
+        <item>iMPlayer</item>
         <item>Instagram</item>
         <item>InstantBits</item>
         <item>Ip Address</item>
@@ -1386,7 +1392,6 @@
         <item>MX Player</item>
         <item>MX Player TV</item>
         <item>My Family Cinema Player</item>
-        <item>My IPTV Online</item>
         <item>My5</item>
         <item>Myiptv</item>
         <item>MyRadar</item>
@@ -1658,6 +1663,7 @@
         <item>Talk TV</item>
         <item>Talksport</item>
         <item>Tamashakhoneh TV</item>
+        <item>tapmad</item>
         <item>Tasker</item>
         <item>Tbn Plus</item>
         <item>TBS</item>
@@ -1917,6 +1923,7 @@
         <item>APP</item>
         <item>PLAYER</item>
         <item>APP</item>
+        <item>STREAM</item>
         <item>APP</item>
         <item>APP</item>
         <item>VOD</item>
@@ -1954,6 +1961,7 @@
         <item>APP</item>
         <item>APP</item>
         <item>LAUNCHER</item>
+        <item>STREAM</item>
         <item>STREAM</item>
         <item>APP</item>
         <item>LAUNCHER</item>
@@ -2170,6 +2178,7 @@
         <item>APP</item>
         <item>MUSIC</item>
         <item>APP</item>
+        <item>LIVE</item>
         <item>APP</item>
         <item>APP</item>
         <item>TOOL</item>
@@ -2305,7 +2314,6 @@
         <item>PLAYER</item>
         <item>STREAM</item>
         <item>PLAYER</item>
-        <item>LIVE</item>
         <item>APP</item>
         <item>LIVE</item>
         <item>APP</item>
@@ -2577,6 +2585,7 @@
         <item>APP</item>
         <item>SPORT</item>
         <item>APP</item>
+        <item>LIVE</item>
         <item>TOOL</item>
         <item>APP</item>
         <item>APP</item>
@@ -2758,5 +2767,5 @@
         <item>APP</item>
         <item>APP</item>
     </string-array>
-    <integer name="icon_count">917</integer>
+    <integer name="icon_count">920</integer>
 </resources>

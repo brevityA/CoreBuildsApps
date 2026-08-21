@@ -77,6 +77,7 @@
     <item drawable="iplayer" />
     <item drawable="bbc_iplayer" />
     <item drawable="bbciplayer" />
+    <item drawable="begin" />
     <item drawable="bellmediaplayer" />
     <item drawable="bet_plus" />
     <item drawable="shows" />
@@ -114,6 +115,7 @@
     <item drawable="chaupal" />
     <item drawable="chebut" />
     <item drawable="chillhub" />
+    <item drawable="chillio" />
     <item drawable="cinemahd" />
     <item drawable="cinemaghar_tv" />
     <item drawable="danielkorgel" />
@@ -330,6 +332,7 @@
     <item drawable="ignitetv" />
     <item drawable="clearchannel" />
     <item drawable="immich_tv" />
+    <item drawable="myiptvonline" />
     <item drawable="instagram" />
     <item drawable="instantbits" />
     <item drawable="ip_address" />
@@ -465,7 +468,6 @@
     <item drawable="mxplayer" />
     <item drawable="videoplayer" />
     <item drawable="my_family_cinema_player" />
-    <item drawable="myiptvonline" />
     <item drawable="channel5" />
     <item drawable="myiptv" />
     <item drawable="myradar" />
@@ -737,6 +739,7 @@
     <item drawable="talk_tv" />
     <item drawable="talksport" />
     <item drawable="tamashakhoneh_tv" />
+    <item drawable="tapmad" />
     <item drawable="tasker" />
     <item drawable="tbn_plus" />
     <item drawable="tbs" />

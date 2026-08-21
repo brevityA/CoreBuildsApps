@@ -39,4 +39,28 @@
     <string name="update_sub_install">APK saved. Press to open the system installer.</string>
     <string name="update_need_permission">Allow installs from this app, then press Install again.</string>
     <string name="update_permission_missing">Could not open install permission. Enable unknown sources for Core Builds, then retry.</string>
+
+    <!-- Wallpapers -->
+    <string name="wp_entry">Wallpapers</string>
+    <string name="wp_entry_sub">30 Core Builds 4K wallpapers for Monet</string>
+    <string name="wp_kicker">CORE BUILDS · WALLPAPERS</string>
+    <string name="wp_title">Wallpapers</string>
+    <string name="wp_hint">Select a wallpaper to preview it full-screen, then press Set.</string>
+    <string name="wp_count_fmt">%1$d wallpapers</string>
+    <string name="wp_filter_fmt">%1$d of %2$d wallpapers</string>
+    <string name="wp_entry_sub_fmt">%1$d Core Builds 4K wallpapers for Monet</string>
+    <string name="wp_downloading_fmt">Downloading… %1$d KB</string>
+    <string name="wp_downloading_of_fmt">Downloading… %1$d of %2$d KB</string>
+    <string name="wp_download_failed_fmt">Download failed: %1$s</string>
+    <string name="wp_back">Back</string>
+    <string name="wp_set_wallpaper">Set wallpaper</string>
+    <string name="wp_applying">Applying…</string>
+    <string name="wp_sub_set">Sets the system home wallpaper. Monet re-themes its tiles from it.</string>
+    <string name="wp_sub_save">Saves to Pictures and opens the system setter (Fire TV fallback).</string>
+    <string name="wp_set_done">Wallpaper set.</string>
+    <string name="wp_saved">Saved to Pictures. Confirm in the system setter.</string>
+    <string name="wp_saved_hint">Saved to Pictures/CoreBuilds. Set it from Monet → Wallpaper.</string>
+    <string name="wp_load_failed">Could not load that wallpaper.</string>
+    <string name="wp_permission_denied">Wallpaper permission is required to set it.</string>
+    <string name="wp_set_failed_fmt">Could not set wallpaper: %1$s</string>
 </resources>

@@ -5,6 +5,10 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" />
+    <!-- SET_WALLPAPER is only required on API <= 28; on newer Android the
+         WallpaperManager write is granted at runtime without a manifest
+         permission. Declared for the legacy Fire TV / Android 9 floor. -->
+    <uses-permission android:name="android.permission.SET_WALLPAPER" />
 
     <uses-feature
         android:name="android.hardware.touchscreen"
@@ -153,5 +157,18 @@
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/file_paths" />
         </provider>
+
+        <!-- Bundled Core Builds wallpapers browser + full-screen preview.
+             Not exported (no launcher entry); opened from within the app. -->
+        <activity
+            android:name=".WallpapersActivity"
+            android:exported="false"
+            android:label="@string/wp_title"
+            android:theme="@style/Theme.CoreBuilds" />
+        <activity
+            android:name=".WallpaperPreviewActivity"
+            android:exported="false"
+            android:label="@string/wp_title"
+            android:theme="@style/Theme.CoreBuilds" />
     </application>
 </manifest>
