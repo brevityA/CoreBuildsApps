@@ -21,6 +21,7 @@ Checks:
 import json
 import os
 import sys
+from urllib.parse import urlparse
 
 REPO_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 MANIFEST = os.path.join(REPO_ROOT, "Motion", "manifest-motion.json")
@@ -100,7 +101,6 @@ def validate_manifest():
             check(fname not in filenames, f"duplicate filename: {fname}")
             filenames.add(fname)
 
-            from urllib.parse import urlparse
             host = urlparse(url_1080).hostname
             check(host in ALLOWED_HOSTS, f"'{label}' url_1080p host not allowed: {host}")
 
@@ -110,12 +110,16 @@ def validate_manifest():
 
         url_4k = v.get("url_4k")
         if url_4k:
+            host_4k = urlparse(url_4k).hostname
+            check(host_4k in ALLOWED_HOSTS, f"'{label}' url_4k host not allowed: {host_4k}")
             local_4k = url_to_local(url_4k)
             if local_4k:
                 check(os.path.isfile(local_4k), f"'{label}' 4K file missing: {local_4k}")
 
         thumb = v.get("thumb", "")
         if thumb:
+            host_thumb = urlparse(thumb).hostname
+            check(host_thumb in ALLOWED_HOSTS, f"'{label}' thumb host not allowed: {host_thumb}")
             local_thumb = url_to_local(thumb)
             if local_thumb:
                 check(os.path.isfile(local_thumb), f"'{label}' thumb missing: {local_thumb}")
