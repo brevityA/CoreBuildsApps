@@ -62,10 +62,14 @@ object MotionDownloader {
             conn = (parsed.openConnection() as HttpURLConnection).apply {
                 connectTimeout = TIMEOUT_MS
                 readTimeout = TIMEOUT_MS
+                // raw.githubusercontent.com can issue a 302 redirect (e.g. to
+                // media.githubusercontent.com). Follow it — same as the
+                // icon-pack app's downloader, which ships and works.
+                instanceFollowRedirects = true
                 requestMethod = "GET"
                 setRequestProperty("User-Agent", "CoreShift-Downloader")
             }
-            if (conn.responseCode != 200) {
+            if (conn.responseCode !in 200..299) {
                 return Result.Failed("HTTP ${conn.responseCode}")
             }
 

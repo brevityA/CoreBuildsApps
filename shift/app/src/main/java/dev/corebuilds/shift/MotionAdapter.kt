@@ -59,8 +59,15 @@ class MotionAdapter(
                         holder.btnDownload.setText(R.string.downloaded)
                     }
                     is MotionDownloader.Result.Failed -> {
-                        holder.btnDownload.setText(R.string.download_failed)
+                        // Reset to a retryable state and surface the actual
+                        // reason — the previous build hid it in logcat only.
+                        holder.btnDownload.setText(R.string.download)
                         holder.btnDownload.isEnabled = true
+                        android.widget.Toast.makeText(
+                            context,
+                            "Download failed: ${result.reason}",
+                            android.widget.Toast.LENGTH_LONG
+                        ).show()
                         Log.w("CoreShiftAdapter", "download failed: ${result.reason}")
                     }
                 }
