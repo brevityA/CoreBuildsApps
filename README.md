@@ -12,7 +12,7 @@
 
 > | App | What it does | Downloader | Release tag |
 > |---|---|---|---|
-> | **[Icon Pack](#-icon-pack)** | 917 transparent icons for Projectivy Launcher | `5270601` | [`v*`](../../releases) |
+> | **[Icon Pack](#-icon-pack)** | 921 transparent icons + 6 wallpapers for Projectivy Launcher | `5270601` | [`v*`](../../releases) |
 > | **[Core Line](#-core-line)** | Sports scores & channel RSS ticker (chyron) | `7375676` | [`coreline-v*`](../../releases) |
 >
 > Each app has its own CI workflow with path filters — changes to one never rebuild the other.
@@ -22,7 +22,7 @@
 ## 🔷 Icon Pack
 
 **Transparent app icons for Projectivy Launcher on Android TV.**
-`917 icons` · `v1.6.0`
+`921 icons` · `6 wallpapers` · `v1.7.1`
 
 The **Core Builds Icon Pack** is designed for the [Projectivy Launcher](https://play.google.com/store/apps/details?id=com.spocky.projengmenu) on Android TV and Google TV, built to the [Core Builds Brand & Style Guide v1.0](https://github.com/brevityA/Core-Builds).
 
@@ -54,13 +54,19 @@ Icons are **original geometry** drawn on a shared 512 grid — simple shapes, ro
 
 ### What's covered
 
-917 icons across 21 categories — streaming, media centres, debrid services, players, launchers, tools, stores, live TV, music, sport, gaming, VPN, browsers, files, and more.
+921 icons across 21 categories — streaming, media centres, debrid services, players, launchers, tools, stores, live TV, music, sport, gaming, VPN, browsers, files, and more.
 
-Highlights: Stremio, Kodi, Jellyfin, Emby, Plex, Nuvio TV, Syncler, Weyd, TorBox, Real-Debrid, AllDebrid, Premiumize, Trakt, VLC, MX Player, SmartTube, YouTube, Spotify, Twitch, Downloader, Aurora Store, TiviMate, TV Bro, SYNC, LocalSend, RS File Manager, Sparkle TV, DS file — plus Netflix, Prime Video, Disney+, Max, Apple TV, Stan, Binge, Kayo, ABC iview, 9Now, 7plus, 10 Play, SBS, and 870+ more.
+Highlights: Stremio, Kodi, Jellyfin, Emby, Plex, Nuvio TV, Syncler, Weyd, TorBox, Real-Debrid, AllDebrid, Premiumize, Trakt, VLC, MX Player, SmartTube, YouTube, Spotify, Twitch, Downloader, Aurora Store, TiviMate, TV Bro, SYNC, LocalSend, RS File Manager, Sparkle TV, DS file, Ultimate File Manager Pro — plus Netflix, Prime Video, Disney+, Max, Apple TV, Stan, Binge, Kayo, ABC iview, 9Now, 7plus, 10 Play, SBS, and 870+ more.
 
 Full table with every mapped component: [**docs/IconPackList.md**](docs/IconPackList.md)
 
 <div align="center"><img src="docs/preview.png" alt="All icons" width="760"></div>
+
+---
+
+### Wallpapers
+
+6 curated wallpapers — browse in the Wallpapers tab, preview full-screen, Set as device wallpaper or Save to `Pictures/CoreBuilds`. Multi-select export lets you bulk-save to the folder where launchers like Monet auto-rotate. Thumbnails are bundled; full 4K images download on demand from GitHub.
 
 ---
 
@@ -167,9 +173,9 @@ tools/build_icons.py         catalog → SVG, PNG, appfilter, docs
 tools/build_banners.py       catalog → 16:9 monoline banners
 tools/build_branding.py      launcher icon + Leanback banner
 tools/build_brand_preview.py branding preview sheet
-tools/validate.py            coherence checks (22,000+ at 917 icons)
-assets/svg/                  master vectors (917)
-assets/banners/              16:9 banners (917)
+tools/validate.py            coherence checks (22,800+ at 921 icons)
+assets/svg/                  master vectors (921)
+assets/banners/              16:9 banners (921)
 app/src/main/res/            the Android module
 Latestrelease/version.json   in-app update manifest
 docs/IconPackList.md         supported apps + components
@@ -180,7 +186,7 @@ ticker/                      Core Line — sports & channel ticker (see ticker/R
 
 ## 🔷 Core Line
 
-**TV-first sports & channel ticker (chyron).** `v1.0.1`
+**TV-first sports & channel ticker (chyron).** `v1.0.2`
 
 Not a player, not a playlist, not streams — a reader that crawls the listings other channel apps already publish as RSS:
 
