@@ -4,13 +4,7 @@
     android:height="108dp"
     android:viewportWidth="108"
     android:viewportHeight="108">
-    <!-- Core Builds hexagon mark — point-up, cyan on transparent.
-         Safe area 66dp centered in the 108dp adaptive icon canvas. -->
     <path
         android:fillColor="#00E5FF"
-        android:pathData="M54,24 L74,35.5 L74,58.5 L54,70 L34,58.5 L34,35.5 Z" />
-    <!-- Inner diamond facet -->
-    <path
-        android:fillColor="#0D1117"
-        android:pathData="M54,32 L64,40 L54,62 L44,40 Z" />
+        android:pathData="M54,30 L75,42 L75,66 L54,78 L33,66 L33,42 Z" />
 </vector>

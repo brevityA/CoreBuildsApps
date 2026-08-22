@@ -70,6 +70,25 @@ CLIPS = [
               f"maxiter=3000:end_pts={DURATION * FPS}"),
          vf="gblur=sigma=1.2",
          crf=28),
+    dict(slug="linear-blue", title="Linear Build Blue",
+         src=(f"gradients=size={W}x{H}:rate={FPS}:type=linear:nb_colors=3:"
+              f"c0={NIGHT}:c1={BUILD_BLUE}:c2={CYAN}:"
+              f"duration={DURATION}:speed=0.02:seed=555"),
+         vf=None, crf=20),
+    dict(slug="square-cyan", title="Square Cyan",
+         src=(f"gradients=size={W}x{H}:rate={FPS}:type=square:nb_colors=3:"
+              f"c0={NIGHT}:c1={CYAN}:c2={SIGNAL}:"
+              f"duration={DURATION}:speed=0.02:seed=666"),
+         vf=None, crf=20),
+    dict(slug="carpet", title="Carpet",
+         src=(f"sierpinski=size={W}x{H}:rate={FPS}:seed=42:jump=60:type=carpet"),
+         vf="colorize=hue=280:saturation=0.4:lightness=0",
+         crf=24),
+    dict(slug="spiral-blue", title="Spiral Build Blue",
+         src=(f"gradients=size={W}x{H}:rate={FPS}:type=spiral:nb_colors=3:"
+              f"c0={NIGHT}:c1={BUILD_BLUE}:c2={CYAN}:"
+              f"duration={DURATION}:speed=0.02:seed=777"),
+         vf=None, crf=20),
 ]
 
 
