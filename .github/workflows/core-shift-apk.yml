@@ -22,11 +22,6 @@ on:
   push:
     branches: [main]
     tags: ['shift-v*']
-    paths:
-      - 'shift/**'
-      - 'Motion/**'
-      - 'tools/validate_motion.py'
-      - '.github/workflows/core-shift-apk.yml'
 
 permissions:
   contents: write
