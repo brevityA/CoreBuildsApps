@@ -4,7 +4,7 @@
 
 # Core Builds Apps
 
-**Two Android TV apps. Same brand, same living-room bar.**
+**Three Android TV apps. Same brand, same living-room bar.**
 
 </div>
 
@@ -14,8 +14,9 @@
 > |---|---|---|---|
 > | **[Icon Pack](#-icon-pack)** | 921 transparent icons + 70 wallpapers for Projectivy Launcher | `5270601` | [`v*`](../../releases) |
 > | **[Core Line](#-core-line)** | Sports scores & channel RSS ticker (chyron) | `7375676` | [`coreline-v*`](../../releases) |
+> | **[Core Shift](#-core-shift)** | Motion wallpapers + static rotation for Monet Launcher | `8829421` | [`shift-v*`](../../releases) |
 >
-> Each app has its own CI workflow with path filters — changes to one never rebuild the other.
+> Each app has its own CI workflow — changes to one never rebuild the others.
 
 ---
 
@@ -162,6 +163,46 @@ Inherited from the brand guide, enforced by the generator and validator:
 
 ---
 
+## 🔷 Core Shift
+
+**Motion wallpapers + static rotation for Monet Launcher.** `v1.0.0`
+
+Delivers branded MP4 loops to `Movies/CoreBuilds` for Monet Premium's video wallpaper picker, and rotates static wallpapers from `Pictures/CoreBuilds` on a schedule via WorkManager.
+
+- 6 motion wallpapers (1080p H.264, 1 at 4K) with thumbnail previews
+- Remote manifest with bundled fallback — works offline after first sync
+- HTTPS-only downloads with host validation
+- Leanback UI built for D-pad navigation
+- Static wallpaper rotation with configurable interval
+
+### Install
+
+1. Download using **Downloader code `8829421`**, or use the permanent APK URL:
+
+   **https://github.com/brevityA/CoreBuildsApps/releases/download/shift/coreshift-release.apk**
+
+   Versioned builds remain available from [**Releases**](../../releases) under `shift-v*` tags. The `shift` release is a floating stable target.
+2. Sideload it (Downloader, `adb install`, or a file manager).
+3. Open the app — browse motion wallpapers and download them to `Movies/CoreBuilds`, then point Monet Premium's video wallpaper picker at that folder.
+
+### Building
+
+CI: [`.github/workflows/core-shift-apk.yml`](.github/workflows/core-shift-apk.yml) → push a `shift-v*` tag to cut a release. Debug APKs are uploaded as CI artifacts on every push.
+
+Locally (needs JDK 17 + Android SDK):
+
+```bash
+cd shift && ./gradlew :app:assembleDebug
+```
+
+Motion asset validation: `python tools/validate_motion.py` (120 checks).
+
+Release signing uses the same `KEYSTORE_BASE64`, `KEYSTORE_PASSWORD`, `KEY_ALIAS`, `KEY_PASSWORD` secrets as the icon pack and Core Line.
+
+Full architecture and remaining debt: [`shift/HANDOVER.md`](shift/HANDOVER.md).
+
+---
+
 ## 🔷 Repo Layout
 
 ```
@@ -180,6 +221,8 @@ app/src/main/res/            the Android module
 Latestrelease/version.json   in-app update manifest
 docs/IconPackList.md         supported apps + components
 ticker/                      Core Line — sports & channel ticker (see ticker/README.md)
+shift/                       Core Shift — motion wallpapers + static rotation (see shift/HANDOVER.md)
+Motion/                      Motion asset set (MP4 loops, thumbnails, manifests)
 ```
 
 ---
