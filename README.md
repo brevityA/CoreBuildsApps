@@ -187,7 +187,7 @@ Delivers branded MP4 loops to `Movies/CoreBuilds` for Monet Premium's video wall
 
 ### Building
 
-CI: [`.github/workflows/core-shift-apk.yml`](.github/workflows/core-shift-apk.yml) → push a `shift-v*` tag to cut a release. Debug APKs are uploaded as CI artifacts on every push.
+CI: [`.github/workflows/core-shift-apk.yml`](.github/workflows/core-shift-apk.yml) → push a `shift-v*` tag to cut a release. Debug APKs are uploaded as CI artifacts on pushes to `main` and matching pull requests.
 
 Locally (needs JDK 17 + Android SDK):
 
