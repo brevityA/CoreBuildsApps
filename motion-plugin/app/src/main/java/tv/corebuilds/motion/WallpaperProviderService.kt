@@ -23,7 +23,9 @@ class WallpaperProviderService : Service() {
         override fun getWallpapers(event: Event?): List<Wallpaper> {
             // A static feed doesn't care which event fired; return the set on
             // every request and let Projectivy's cache + interval do the pacing.
-            return MotionFeed.load(Preferences.feedUrl(this@WallpaperProviderService))
+            // Bundled Lottie vector loops come first, then the video feed.
+            return BundledAnimations.list(this@WallpaperProviderService) +
+                MotionFeed.load(Preferences.feedUrl(this@WallpaperProviderService))
         }
 
         override fun getPreferences(): String =
