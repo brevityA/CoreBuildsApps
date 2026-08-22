@@ -27,7 +27,7 @@ object LiveDownloader {
     private const val TAG = "CoreShift/Download"
     private const val CONNECT_TIMEOUT_MS = 20_000
     private const val READ_TIMEOUT_MS = 30_000
-    private const val RELATIVE_PATH = "${Environment.DIRECTORY_MOVIES}/CoreBuilds"
+    private val RELATIVE_PATH = "${Environment.DIRECTORY_MOVIES}/CoreBuilds"
 
     private val ALLOWED_HOSTS = setOf(
         "raw.githubusercontent.com",
