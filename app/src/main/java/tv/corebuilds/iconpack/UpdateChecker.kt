@@ -24,9 +24,12 @@ import java.util.concurrent.Executors
 object UpdateChecker {
 
     private const val TAG = "CoreBuildsUpdate"
-    private const val MANIFEST_URL =
+    private val MANIFEST_URLS = listOf(
+        "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/" +
+            "main/Latestrelease/version.json",
         "https://raw.githubusercontent.com/brevityA/CoreBuildsIconPack/" +
             "main/Latestrelease/version.json"
+    )
     private const val TIMEOUT_MS = 8000
 
     /** Outcome of a check. Never an unnamed error (§08). */
@@ -67,35 +70,46 @@ object UpdateChecker {
     }
 
     private fun fetch(installedCode: Int): Result {
-        val conn = (URL(MANIFEST_URL).openConnection() as HttpURLConnection).apply {
-            connectTimeout = TIMEOUT_MS
-            readTimeout = TIMEOUT_MS
-            requestMethod = "GET"
-            setRequestProperty("Accept", "application/json")
-        }
-        try {
-            val code = conn.responseCode
-            if (code != 200) {
-                return Result.Failed("update manifest returned HTTP $code")
+        var lastError: String? = null
+        for (url in MANIFEST_URLS) {
+            var conn: HttpURLConnection? = null
+            try {
+                conn = (URL(url).openConnection() as HttpURLConnection).apply {
+                    connectTimeout = TIMEOUT_MS
+                    readTimeout = TIMEOUT_MS
+                    requestMethod = "GET"
+                    setRequestProperty("Accept", "application/json")
+                    setRequestProperty("User-Agent", "CoreBuildsIconPack-Updater")
+                }
+                val code = conn.responseCode
+                if (code != 200) {
+                    lastError = "update manifest returned HTTP $code from $url"
+                    Log.w(TAG, lastError!!)
+                    continue
+                }
+                val body = conn.inputStream.bufferedReader().use { it.readText() }
+                val json = JSONObject(body)
+
+                val remoteCode = json.getInt("versionCode")
+                val remoteName = json.optString("versionName", "?")
+                val icons = json.optInt("iconCount", 0)
+                val apk = json.optString("apkUrl", "")
+
+                Log.i(TAG, "installed=$installedCode remote=$remoteCode from $url")
+
+                return if (remoteCode > installedCode) {
+                    Result.Available(remoteName, remoteCode, icons, apk)
+                } else {
+                    Result.UpToDate(remoteName)
+                }
+            } catch (e: Exception) {
+                lastError = e.message ?: e.javaClass.simpleName
+                Log.w(TAG, "manifest fetch failed $url: $lastError")
+            } finally {
+                try { conn?.disconnect() } catch (_: Exception) {}
             }
-            val body = conn.inputStream.bufferedReader().use { it.readText() }
-            val json = JSONObject(body)
-
-            val remoteCode = json.getInt("versionCode")
-            val remoteName = json.optString("versionName", "?")
-            val icons = json.optInt("iconCount", 0)
-            val apk = json.optString("apkUrl", "")
-
-            Log.i(TAG, "installed=$installedCode remote=$remoteCode")
-
-            return if (remoteCode > installedCode) {
-                Result.Available(remoteName, remoteCode, icons, apk)
-            } else {
-                Result.UpToDate(remoteName)
-            }
-        } finally {
-            conn.disconnect()
         }
+        return Result.Failed(lastError ?: "could not fetch update manifest")
     }
 
     private fun installedVersionCode(context: Context): Int = try {
