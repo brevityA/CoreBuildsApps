@@ -67,6 +67,8 @@ class MotionAdapter(
             }
         }
 
+        holder.thumb.setImageDrawable(null)
+        holder.thumb.tag = entry.thumb
         loadThumbnail(holder.thumb, entry.thumb)
     }
 
@@ -83,7 +85,13 @@ class MotionAdapter(
                 }
                 val bitmap = BitmapFactory.decodeStream(conn.getInputStream())
                 if (bitmap != null) {
-                    imageView.post { imageView.setImageBitmap(bitmap) }
+                    imageView.post {
+                        if (imageView.tag == url) {
+                            imageView.setImageBitmap(bitmap)
+                        } else {
+                            bitmap.recycle()
+                        }
+                    }
                 }
             } catch (e: Exception) {
                 Log.w("CoreShiftAdapter", "thumb load failed: ${e.message}")

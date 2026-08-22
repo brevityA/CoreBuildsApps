@@ -4,6 +4,7 @@ import android.content.Context
 import android.util.Log
 import org.json.JSONObject
 import java.net.HttpURLConnection
+import java.net.URI
 import java.net.URL
 import java.util.concurrent.Executors
 
@@ -71,20 +72,43 @@ object MotionCatalog {
         }
     }
 
+    private val ALLOWED_HOSTS = setOf(
+        "raw.githubusercontent.com",
+        "github.com",
+        "objects.githubusercontent.com"
+    )
+
+    private fun requireAllowedUrl(url: String, field: String) {
+        val host = URI(url).host
+        require(host in ALLOWED_HOSTS) { "$field host not allowed: $host" }
+        require(URI(url).scheme == "https") { "$field must use HTTPS" }
+    }
+
     private fun parseManifest(json: String): List<MotionEntry> {
         val root = JSONObject(json)
         val videos = root.getJSONArray("videos")
-        return (0 until videos.length()).map { i ->
+        return (0 until videos.length()).mapNotNull { i ->
             val v = videos.getJSONObject(i)
-            MotionEntry(
-                name = v.getString("name"),
-                series = v.optString("series", ""),
-                url1080p = v.getString("url_1080p"),
-                url4k = v.optString("url_4k", null),
-                thumb = v.optString("thumb", ""),
-                resolution = v.optString("resolution", "1920x1080"),
-                duration = v.optInt("duration", 20)
-            )
+            try {
+                val url1080p = v.getString("url_1080p")
+                val thumb = v.optString("thumb", "")
+                val url4k = v.optString("url_4k", null)
+                requireAllowedUrl(url1080p, "url_1080p")
+                if (thumb.isNotBlank()) requireAllowedUrl(thumb, "thumb")
+                if (!url4k.isNullOrBlank()) requireAllowedUrl(url4k, "url_4k")
+                MotionEntry(
+                    name = v.getString("name"),
+                    series = v.optString("series", ""),
+                    url1080p = url1080p,
+                    url4k = url4k,
+                    thumb = thumb,
+                    resolution = v.optString("resolution", "1920x1080"),
+                    duration = v.optInt("duration", 20)
+                )
+            } catch (e: Exception) {
+                Log.w(TAG, "skipping entry ${v.optString("name", "index $i")}: ${e.message}")
+                null
+            }
         }
     }
 }

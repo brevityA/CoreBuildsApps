@@ -16,7 +16,7 @@
     <string name="download">Download</string>
     <string name="downloading">Downloading…</string>
     <string name="downloaded">Saved</string>
-    <string name="download_failed">Download failed</string>
+    <string name="download_failed">Core Shift download failed</string>
     <string name="motion_empty">No motion wallpapers found</string>
     <string name="motion_hint">Downloaded loops appear in Monet → Custom Wallpapers → Your Videos (Premium required)</string>
 

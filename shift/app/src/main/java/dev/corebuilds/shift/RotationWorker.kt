@@ -53,8 +53,9 @@ class RotationWorker(
                 MediaStore.Images.Media._ID,
                 MediaStore.Images.Media.DISPLAY_NAME
             )
-            val selection = "${MediaStore.Images.Media.RELATIVE_PATH} LIKE ?"
-            val args = arrayOf("%CoreBuilds%")
+            val exactPath = "${Environment.DIRECTORY_PICTURES}/CoreBuilds/"
+            val selection = "${MediaStore.Images.Media.RELATIVE_PATH} = ?"
+            val args = arrayOf(exactPath)
             val cursor = context.contentResolver.query(
                 MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
                 projection, selection, args,
@@ -93,16 +94,18 @@ class RotationWorker(
         val wm = WallpaperManager.getInstance(context)
         when (source) {
             is WallpaperSource.MediaStoreUri -> {
-                context.contentResolver.openInputStream(source.uri)?.use { stream ->
-                    wm.setStream(stream)
-                }
+                val stream = context.contentResolver.openInputStream(source.uri)
+                    ?: throw IllegalStateException(
+                        "Core Shift could not open wallpaper stream for ${source.uri}"
+                    )
+                stream.use { wm.setStream(it) }
             }
             is WallpaperSource.FilePath -> {
                 val bitmap = BitmapFactory.decodeFile(source.file.absolutePath)
-                if (bitmap != null) {
-                    wm.setBitmap(bitmap)
-                    bitmap.recycle()
-                }
+                    ?: throw IllegalStateException(
+                        "Core Shift could not decode wallpaper ${source.file.name}"
+                    )
+                try { wm.setBitmap(bitmap) } finally { bitmap.recycle() }
             }
         }
     }

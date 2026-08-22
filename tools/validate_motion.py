@@ -82,6 +82,9 @@ def validate_manifest():
     filenames = set()
 
     for i, v in enumerate(videos):
+        if not isinstance(v, dict):
+            check(False, f"video at index {i} is not a JSON object")
+            continue
         label = v.get("name", f"index {i}")
 
         for field in REQUIRED_FIELDS:
@@ -146,6 +149,28 @@ def validate_feed(video_count):
             check(field in entry, f"feed '{label}' missing field '{field}'")
 
 
+BUNDLED_MANIFEST = os.path.join(
+    REPO_ROOT, "shift", "app", "src", "main", "assets", "manifest-motion.json"
+)
+
+
+def validate_bundled():
+    if not os.path.isfile(BUNDLED_MANIFEST):
+        warn(True, "bundled manifest not found (expected at shift/app/src/main/assets/)")
+        return
+
+    with open(MANIFEST) as f:
+        release = f.read()
+    with open(BUNDLED_MANIFEST) as f:
+        bundled = f.read()
+
+    check(
+        release == bundled,
+        f"bundled manifest differs from Motion/manifest-motion.json — "
+        f"copy the release manifest to {BUNDLED_MANIFEST}"
+    )
+
+
 def main():
     print("Core Builds Motion — validation")
     print("=" * 40)
@@ -153,6 +178,7 @@ def main():
     videos = validate_manifest()
     if videos:
         validate_feed(len(videos))
+    validate_bundled()
 
     print()
     if warnings:

@@ -50,6 +50,9 @@ object MotionDownloader {
 
     private fun doDownload(context: Context, url: String, filename: String): Result {
         val parsed = URL(url)
+        if (parsed.protocol != "https") {
+            return Result.Failed("Core Shift requires HTTPS, got ${parsed.protocol}")
+        }
         if (parsed.host !in ALLOWED_HOSTS) {
             return Result.Failed("host not allowed: ${parsed.host}")
         }
@@ -81,11 +84,19 @@ object MotionDownloader {
                 val resolver = context.contentResolver
                 val uri = resolver.insert(
                     MediaStore.Video.Media.EXTERNAL_CONTENT_URI, values
-                ) ?: return Result.Failed("MediaStore insert failed")
+                ) ?: return Result.Failed("Core Shift MediaStore insert failed for $filename")
 
-                resolver.openOutputStream(uri)?.use { out ->
-                    inputStream.copyTo(out)
-                } ?: return Result.Failed("could not open output stream")
+                try {
+                    resolver.openOutputStream(uri)?.use { out ->
+                        inputStream.copyTo(out)
+                    } ?: run {
+                        resolver.delete(uri, null, null)
+                        return Result.Failed("Core Shift could not open output for $filename")
+                    }
+                } catch (e: Exception) {
+                    resolver.delete(uri, null, null)
+                    throw e
+                }
 
                 values.clear()
                 values.put(MediaStore.Video.Media.IS_PENDING, 0)
@@ -117,9 +128,10 @@ object MotionDownloader {
     fun isDownloaded(context: Context, filename: String): Boolean {
         return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
             val projection = arrayOf(MediaStore.Video.Media._ID)
+            val exactPath = "${Environment.DIRECTORY_MOVIES}/$SUBFOLDER/"
             val selection = "${MediaStore.Video.Media.DISPLAY_NAME} = ? AND " +
-                "${MediaStore.Video.Media.RELATIVE_PATH} LIKE ?"
-            val args = arrayOf(filename, "%$SUBFOLDER%")
+                "${MediaStore.Video.Media.RELATIVE_PATH} = ?"
+            val args = arrayOf(filename, exactPath)
             val cursor = context.contentResolver.query(
                 MediaStore.Video.Media.EXTERNAL_CONTENT_URI,
                 projection, selection, args, null

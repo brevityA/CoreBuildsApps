@@ -30,7 +30,7 @@ These are done. Do not revisit without owner approval.
 
 ## What exists
 
-- `shift/` — complete Gradle project skeleton, builds with `:app:assembleDebug`
+- `shift/` — complete Gradle project skeleton, configured for `:app:assembleDebug` (not yet compiled — first build will be CI or local machine)
 - `Motion/` — 6 MP4 loops (1080p H.264, silent, 20s), 1 at 4K, 6 JPEG thumbs
 - `Motion/manifest-motion.json` — source of truth (6 entries)
 - `Motion/motion-feed.json` — Overflight-compatible feed
@@ -72,6 +72,6 @@ These are done. Do not revisit without owner approval.
 ## Commands
 
 ```bash
-cd shift && ./gradlew :app:assembleDebug   # first build (needs JDK 17 + Android SDK)
-python tools/validate_motion.py            # motion asset coherence (112 checks)
+python tools/validate_motion.py                  # motion asset coherence (112 checks)
+cd shift && ./gradlew :app:assembleDebug         # first build (needs JDK 17 + Android SDK)
 ```
