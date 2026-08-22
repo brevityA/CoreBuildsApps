@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="Theme.CoreShift" parent="Theme.AppCompat.NoActionBar">
+        <item name="android:windowBackground">@color/cb_night</item>
+        <item name="colorPrimary">@color/cb_cyan</item>
+        <item name="colorPrimaryDark">@color/cb_night</item>
+        <item name="colorAccent">@color/cb_cyan</item>
+        <item name="android:textColorPrimary">@color/cb_text_primary</item>
+        <item name="android:textColorSecondary">@color/cb_text_secondary</item>
+    </style>
+</resources>

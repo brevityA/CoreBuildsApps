@@ -1,40 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Core Shift</string>
-    <string name="motion_title">Motion Wallpapers</string>
-    <string name="rotation_title">Wallpaper Rotation</string>
-
-    <!-- Main screen -->
-    <string name="motion_browse">Browse Motion Loops</string>
-    <string name="motion_browse_desc">Download Core Builds motion wallpapers to Movies/CoreBuilds for Monet and Projectivy</string>
-    <string name="rotation_setup">Static Wallpaper Rotation</string>
-    <string name="rotation_setup_desc">Rotate system wallpaper on a timer (does not re-theme Monet)</string>
-    <string name="rotation_enabled">Rotation active</string>
-    <string name="rotation_disabled">Rotation off</string>
-
-    <!-- Motion screen -->
+    <string name="app_hint">Core Builds live wallpapers. Preview in-app, or download to Movies/CoreBuilds for Monet. Projectivy users: install the Core Motion plugin.</string>
+    <string name="preview">Preview</string>
     <string name="download">Download</string>
-    <string name="downloading">Downloading…</string>
-    <string name="downloaded">Saved</string>
-    <string name="download_failed">Core Shift download failed</string>
-    <string name="motion_empty">No motion wallpapers found</string>
-    <string name="motion_hint">Downloaded loops appear in Monet → Custom Wallpapers → Your Videos (Premium required)</string>
-
-    <!-- Rotation -->
-    <string name="rotation_interval">Rotation interval</string>
-    <string name="rotation_source">Wallpaper source</string>
-    <string name="rotation_source_bundled">Bundled wallpapers</string>
-    <string name="rotation_source_pictures">Pictures/CoreBuilds</string>
-    <string name="rotation_start">Start rotation</string>
-    <string name="rotation_stop">Stop rotation</string>
-    <string name="rotation_note">Sets the system wallpaper. Works for launchers that read the system wallpaper. Does not re-theme Monet — use motion wallpapers for that.</string>
-    <string name="no_wallpapers_found">No wallpapers found in source folder</string>
-
-    <!-- Intervals -->
-    <string name="interval_15m">15 minutes</string>
-    <string name="interval_30m">30 minutes</string>
-    <string name="interval_1h">1 hour</string>
-    <string name="interval_4h">4 hours</string>
-    <string name="interval_12h">12 hours</string>
-    <string name="interval_24h">24 hours</string>
+    <string name="saved">Saved</string>
+    <string name="preview_title">Live Wallpaper</string>
+    <string name="saved_hint">Saved to Movies/CoreBuilds — set it in Monet</string>
+    <string name="download_failed_fmt">Failed · %1$s</string>
+    <string name="permission_needed">Storage permission needed</string>
+    <string name="empty">No live wallpapers found</string>
+    <string name="preview_loading">Loading…</string>
+    <string name="preview_failed">Preview failed</string>
 </resources>

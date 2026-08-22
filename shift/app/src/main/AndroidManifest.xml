@@ -1,21 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
+    <!-- Stream + download the live-wallpaper videos. No analytics, no service. -->
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <!-- API <= 28 needs WRITE_EXTERNAL_STORAGE for Movies/CoreBuilds;
+    <!-- Writing loops to Movies/CoreBuilds for Monet. Only needed on API <= 28;
          API 29+ scoped storage needs no permission. -->
     <uses-permission
         android:name="android.permission.WRITE_EXTERNAL_STORAGE"
         android:maxSdkVersion="28" />
-    <uses-permission android:name="android.permission.SET_WALLPAPER" />
 
     <uses-feature
         android:name="android.hardware.touchscreen"
         android:required="false" />
     <uses-feature
         android:name="android.software.leanback"
-        android:required="true" />
+        android:required="false" />
 
     <application
         android:allowBackup="true"
@@ -36,11 +36,12 @@
             </intent-filter>
         </activity>
 
+        <!-- Full-screen looping preview. Opened from within the app. -->
         <activity
-            android:name=".MotionActivity"
+            android:name=".PreviewActivity"
             android:exported="false"
-            android:label="@string/motion_title"
-            android:theme="@style/Theme.CoreShift" />
-
+            android:label="@string/preview_title"
+            android:theme="@style/Theme.CoreShift"
+            android:configChanges="orientation|screenSize|keyboardHidden" />
     </application>
 </manifest>

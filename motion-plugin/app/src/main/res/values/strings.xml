@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Core Motion</string>
+    <string name="plugin_name">Core Motion</string>
+    <string name="plugin_description">Core Builds live wallpapers — a feed of animated loops in the Core Builds palette. Set it in Projectivy → Appearance → Wallpaper → Core Motion.</string>
+    <string name="plugin_uuid">295b637c-aa92-4d09-8f54-74c4806e1e80</string>
+    <string name="projectivy_not_installed">This plugin requires Projectivy Launcher, which does not seem to be installed.</string>
+
+    <string name="settings">Settings</string>
+    <string name="setting_feed_url_title">Feed URL</string>
+</resources>

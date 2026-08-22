@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Core Builds Brand Guide §03 -->
+    <color name="cb_night">#0D1117</color>
+    <color name="cb_cyan">#00E5FF</color>
+    <color name="cb_build_blue">#4FACFE</color>
+    <color name="cb_violet">#8A4890</color>
+    <color name="ic_launcher_background">#0D1117</color>
+</resources>

@@ -1,87 +1,103 @@
 package dev.corebuilds.shift
 
-import android.content.Intent
 import android.os.Bundle
-import android.widget.ArrayAdapter
-import android.widget.Button
-import android.widget.Spinner
+import android.os.Handler
+import android.os.Looper
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import java.util.concurrent.Executors
 
+/**
+ * Core Shift — the Core Builds live-wallpaper browser.
+ *
+ * Lists the Core Motion loops, plays each full-screen ([PreviewActivity]), and
+ * downloads them to `Movies/CoreBuilds` for Monet. The Projectivy-native route
+ * is the Core Motion plugin; this app covers preview + Monet folder delivery.
+ */
 class MainActivity : AppCompatActivity() {
 
-    private lateinit var prefs: RotationPreferences
-    private lateinit var btnToggle: Button
-    private lateinit var statusText: TextView
-    private lateinit var spinnerInterval: Spinner
+    private lateinit var adapter: LiveAdapter
+    private val io = Executors.newSingleThreadExecutor()
+    private val main = Handler(Looper.getMainLooper())
 
-    private val intervals = listOf(15L, 30L, 60L, 240L, 720L, 1440L)
-    private val intervalLabels by lazy {
-        listOf(
-            getString(R.string.interval_15m),
-            getString(R.string.interval_30m),
-            getString(R.string.interval_1h),
-            getString(R.string.interval_4h),
-            getString(R.string.interval_12h),
-            getString(R.string.interval_24h)
-        )
-    }
+    private var pending: Pair<LiveEntry, Int>? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        prefs = RotationPreferences(this)
-        btnToggle = findViewById(R.id.btn_rotation_toggle)
-        statusText = findViewById(R.id.status_text)
-        spinnerInterval = findViewById(R.id.spinner_interval)
+        val list: RecyclerView = findViewById(R.id.live_list)
+        list.layoutManager = LinearLayoutManager(this)
 
-        val versionText = findViewById<TextView>(R.id.version_text)
-        versionText.text = "v${BuildConfig.VERSION_NAME}"
+        val entries = LiveCatalog.load(this)
+        adapter = LiveAdapter(entries) { entry, pos -> download(entry, pos) }
+        list.adapter = adapter
 
-        setupIntervalSpinner()
-        updateRotationUI()
-
-        findViewById<android.view.View>(R.id.btn_motion).setOnClickListener {
-            startActivity(Intent(this, MotionActivity::class.java))
+        if (entries.isEmpty()) {
+            findViewById<TextView>(R.id.empty).visibility = android.view.View.VISIBLE
         }
+    }
 
-        btnToggle.setOnClickListener {
-            if (prefs.rotationEnabled) {
-                prefs.rotationEnabled = false
-                RotationScheduler.cancel(this)
-            } else {
-                val minutes = intervals[spinnerInterval.selectedItemPosition]
-                prefs.rotationEnabled = true
-                prefs.intervalMinutes = minutes
-                RotationScheduler.schedule(this, minutes)
+    private fun download(entry: LiveEntry, pos: Int) {
+        val perm = LiveDownloader.storagePermission()
+        if (perm != null && !LiveDownloader.hasStoragePermission(this)) {
+            pending = entry to pos
+            androidx.core.app.ActivityCompat.requestPermissions(this, arrayOf(perm), REQ_WRITE)
+            return
+        }
+        startDownload(entry, pos)
+    }
+
+    private fun startDownload(entry: LiveEntry, pos: Int) {
+        adapter.markBusy(pos)
+        io.execute {
+            val result = LiveDownloader.download(this, entry)
+            main.post {
+                if (isFinishing || isDestroyed) return@post
+                when (result) {
+                    is LiveDownloader.Result.Saved ->
+                        adapter.markSaved(pos, getString(R.string.saved_hint))
+                    is LiveDownloader.Result.NeedsPermission ->
+                        adapter.markFailed(pos, getString(R.string.permission_needed))
+                    is LiveDownloader.Result.Failed -> {
+                        adapter.markFailed(pos, getString(R.string.download_failed_fmt, result.reason))
+                        Toast.makeText(
+                            this, getString(R.string.download_failed_fmt, result.reason),
+                            Toast.LENGTH_LONG,
+                        ).show()
+                    }
+                }
             }
-            updateRotationUI()
         }
     }
 
-    override fun onResume() {
-        super.onResume()
-        updateRotationUI()
-    }
-
-    private fun setupIntervalSpinner() {
-        val adapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, intervalLabels)
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-        spinnerInterval.adapter = adapter
-
-        val saved = prefs.intervalMinutes
-        val idx = intervals.indexOf(saved)
-        if (idx >= 0) spinnerInterval.setSelection(idx)
-    }
-
-    private fun updateRotationUI() {
-        if (prefs.rotationEnabled) {
-            btnToggle.setText(R.string.rotation_stop)
-            statusText.setText(R.string.rotation_enabled)
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray,
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (requestCode != REQ_WRITE) return
+        val pending = pending ?: return
+        this.pending = null
+        if (grantResults.isNotEmpty() &&
+            grantResults[0] == android.content.pm.PackageManager.PERMISSION_GRANTED
+        ) {
+            startDownload(pending.first, pending.second)
         } else {
-            btnToggle.setText(R.string.rotation_start)
-            statusText.setText(R.string.rotation_disabled)
+            adapter.markFailed(pending.second, getString(R.string.permission_needed))
         }
+    }
+
+    override fun onDestroy() {
+        io.shutdown()
+        super.onDestroy()
+    }
+
+    companion object {
+        private const val REQ_WRITE = 102
     }
 }
