@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:ignore="MissingLeanbackLauncher">
+
+    <!-- Fetch the live-wallpaper feed (default: the repo's Motion/live-feed.json). -->
+    <uses-permission android:name="android.permission.INTERNET" />
+
+    <uses-feature
+        android:name="android.hardware.touchscreen"
+        android:required="false" />
+    <uses-feature
+        android:name="android.software.leanback"
+        android:required="true" />
+
+    <queries>
+        <package android:name="com.spocky.projengmenu" />
+    </queries>
+
+    <application
+        android:allowBackup="true"
+        android:label="@string/plugin_name"
+        android:supportsRtl="true"
+        android:icon="@mipmap/ic_launcher"
+        android:banner="@drawable/ic_plugin"
+        android:theme="@style/Theme.CoreMotion">
+
+        <activity
+            android:name=".SettingsActivity"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.LAUNCHER" />
+                <category android:name="android.intent.category.LEANBACK_LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <service
+            android:name=".WallpaperProviderService"
+            android:exported="true"
+            android:label="@string/plugin_name"
+            android:icon="@mipmap/ic_launcher"
+            android:banner="@drawable/ic_plugin"
+            tools:ignore="ExportedService">
+
+            <!-- Mandatory for the plugin to be detected by Projectivy. DO NOT CHANGE. -->
+            <intent-filter>
+                <action android:name="tv.projectivy.plugin.WALLPAPER_PROVIDER" />
+            </intent-filter>
+
+            <!-- Api version this plugin is compatible with -->
+            <meta-data
+                android:name="apiVersion"
+                android:value="1" />
+
+            <!-- Unique plugin id (UUID v4). Identifies this plugin to Projectivy. -->
+            <meta-data
+                android:name="uuid"
+                android:value="@string/plugin_uuid" />
+
+            <!-- Plugin name shown in Projectivy's wallpaper-source list -->
+            <meta-data
+                android:name="name"
+                android:value="@string/plugin_name" />
+
+            <!-- Activity Projectivy launches to configure the plugin -->
+            <meta-data
+                android:name="settingsActivity"
+                android:value=".SettingsActivity" />
+
+            <!-- How long Projectivy caches a fetched batch before re-asking -->
+            <meta-data
+                android:name="itemsCacheDurationMillis"
+                android:value="@integer/items_cache_duration_millis" />
+
+            <!-- TIME_ELAPSED only: a static feed cycles on the user's rotation interval -->
+            <meta-data
+                android:name="updateMode"
+                android:value="1" />
+        </service>
+
+    </application>
+</manifest>

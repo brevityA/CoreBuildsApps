@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="320dp"
+    android:height="180dp"
+    android:viewportWidth="320"
+    android:viewportHeight="180">
+    <!-- Core Motion banner: point-up hex on night. -->
+    <path
+        android:fillColor="#0D1117"
+        android:pathData="M0,0 L320,0 L320,180 L0,180 Z" />
+    <path
+        android:fillColor="#00E5FF"
+        android:pathData="M160,54 L196,75 L196,117 L160,138 L124,117 L124,75 Z" />
+</vector>

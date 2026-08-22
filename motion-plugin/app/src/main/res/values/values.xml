@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- 1 hour: how long Projectivy keeps a fetched batch before re-asking. -->
+    <integer name="items_cache_duration_millis">3600000</integer>
+    <integer name="update_mode_time_elapsed">1</integer>
+</resources>
