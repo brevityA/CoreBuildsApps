@@ -8,7 +8,7 @@ An Android TV icon pack for [Projectivy Launcher](https://play.google.com/store/
 
 Sibling project to [`brevityA/Core-Builds`](https://github.com/brevityA/Core-Builds) (AIOStreams templates). Same brand, same voice, same standards of proof.
 
-**This repo also hosts a second app: [Core Line](ticker/HANDOVER.md)**, the Android / TV sports & channel RSS ticker, under `ticker/`. It is self-contained (Node 20+, zero npm deps) and deliberately **not** part of the icon-pack Gradle build — it has its own project root at `ticker/android/`. See its handover doc before touching it; product decisions there are locked.
+**This repo also hosts two more apps:** **[Core Line](ticker/HANDOVER.md)** (Android / TV sports & channel RSS ticker, under `ticker/`) and **[Core Shift](shift/HANDOVER.md)** (motion wallpaper delivery + static rotation for Monet Launcher, under `shift/`). Both are self-contained — Core Line has its own project root at `ticker/android/`, Core Shift at `shift/`. Neither is part of the icon-pack Gradle build. See their handover docs before touching them; product decisions are locked.
 
 ## The one rule that governs everything
 
@@ -50,6 +50,15 @@ cd ticker/android && ./gradlew :app:assembleDebug   # APK (wrapper jar committed
 ```
 
 Core Line CI lives in `.github/workflows/core-line-apk.yml` (tests + debug APK) and triggers only on `ticker/**` changes, so icon-pack work never waits on it. The root `./gradlew` does **not** build it — `ticker/android` is a standalone Gradle root.
+
+### Core Shift (third app)
+
+```bash
+cd shift && ./gradlew :app:assembleDebug   # APK (wrapper jar committed)
+python tools/validate_motion.py            # 112 motion asset coherence checks
+```
+
+Core Shift CI lives in `.github/workflows/core-shift-apk.yml` (validate + debug APK) and triggers only on `shift/**` and `Motion/**` changes. The root `./gradlew` does **not** build it — `shift/` is a standalone Gradle root.
 
 ## Architecture
 
@@ -145,4 +154,4 @@ Claims in this repo are earned. Before saying something works:
 
 ## Scope
 
-This repo hosts **two apps**: the icon pack (everything above) and **Core Line** (`ticker/` — sports/channel RSS ticker with its own Android project and workflow). Template, configurator, and genie work belongs in `brevityA/Core-Builds`. Keep the brand consistent across all three; keep the code separate. `ticker/` is self-contained — it must never depend on `tools/` or `app/`, and the icon-pack build must never depend on `ticker/`.
+This repo hosts **three apps**: the icon pack (everything above), **Core Line** (`ticker/` — sports/channel RSS ticker with its own Android project and workflow), and **Core Shift** (`shift/` — motion wallpaper delivery + static rotation for Monet Launcher, with its own Gradle root and workflow). Template, configurator, and genie work belongs in `brevityA/Core-Builds`. Keep the brand consistent across all four; keep the code separate. `ticker/` and `shift/` are self-contained — they must never depend on `tools/` or `app/`, and the icon-pack build must never depend on them. `Motion/` holds the shared motion asset set used by Core Shift. See `shift/HANDOVER.md` before touching Core Shift; product decisions there are locked.

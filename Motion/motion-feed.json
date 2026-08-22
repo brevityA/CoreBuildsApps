@@ -1,0 +1,45 @@
+[
+  {
+    "location": "series-5-core-motion",
+    "title": "01 Hex Glow",
+    "author": "Core Builds",
+    "url_img": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Motion/thumbs/coremotion-01-hex-glow.jpg",
+    "url_1080p": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Motion/coremotion-01-hex-glow.mp4",
+    "url_4k": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Motion/coremotion-01-hex-glow-4k.mp4"
+  },
+  {
+    "location": "series-5-core-motion",
+    "title": "02 Signature",
+    "author": "Core Builds",
+    "url_img": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Motion/thumbs/coremotion-02-signature.jpg",
+    "url_1080p": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Motion/coremotion-02-signature.mp4"
+  },
+  {
+    "location": "series-5-core-motion",
+    "title": "03 Cyan Nebula",
+    "author": "Core Builds",
+    "url_img": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Motion/thumbs/coremotion-03-cyan-nebula.jpg",
+    "url_1080p": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Motion/coremotion-03-cyan-nebula.mp4"
+  },
+  {
+    "location": "series-5-core-motion",
+    "title": "04 Aurora",
+    "author": "Core Builds",
+    "url_img": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Motion/thumbs/coremotion-04-aurora.jpg",
+    "url_1080p": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Motion/coremotion-04-aurora.mp4"
+  },
+  {
+    "location": "series-5-core-motion",
+    "title": "05 Omni Diamond",
+    "author": "Core Builds",
+    "url_img": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Motion/thumbs/coremotion-05-omni-diamond.jpg",
+    "url_1080p": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Motion/coremotion-05-omni-diamond.mp4"
+  },
+  {
+    "location": "series-5-core-motion",
+    "title": "06 Zenith",
+    "author": "Core Builds",
+    "url_img": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Motion/thumbs/coremotion-06-zenith.jpg",
+    "url_1080p": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Motion/coremotion-06-zenith.mp4"
+  }
+]
