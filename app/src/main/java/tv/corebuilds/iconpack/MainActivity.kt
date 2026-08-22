@@ -1,5 +1,6 @@
 package tv.corebuilds.iconpack
 
+import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -85,7 +86,7 @@ class MainActivity : AppCompatActivity() {
             if (wpCount > 0) {
                 wpEntry.text = getString(R.string.wp_entry_sub_fmt, wpCount)
             }
-            wpEntry.setOnClickListener { WallpapersActivity.start(this) }
+            wpEntry.setOnClickListener { startActivity(Intent(this, WallpapersActivity::class.java)) }
         }
     }
 

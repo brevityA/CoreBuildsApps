@@ -104,6 +104,7 @@ jobs:
         run: |
           python tests/test_v151_robustness.py
           python tests/test_wallpapers.py
+          python tests/test_wallpaper_export.py
 
       - name: Set up JDK 17
         uses: actions/setup-java@v5

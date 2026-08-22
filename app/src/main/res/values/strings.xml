@@ -63,4 +63,30 @@
     <string name="wp_load_failed">Could not load that wallpaper.</string>
     <string name="wp_permission_denied">Wallpaper permission is required to set it.</string>
     <string name="wp_set_failed_fmt">Could not set wallpaper: %1$s</string>
+
+    <!-- Wallpaper export to Pictures (for launcher auto-rotation) -->
+    <string name="wp_export">Export</string>
+    <string name="wp_export_sub">Copy selected wallpapers to Pictures/CoreBuilds for Monet to rotate.</string>
+    <string name="wp_select">Select</string>
+    <string name="wp_cancel">Cancel</string>
+    <string name="wp_select_all">Select all</string>
+    <string name="wp_clear">Clear</string>
+    <string name="wp_export_n_fmt">Export %1$d</string>
+    <string name="wp_selected_fmt">%1$d selected</string>
+    <string name="wp_save">Save</string>
+    <string name="wp_saving">Saving…</string>
+    <string name="wp_save_done">Saved to Pictures/CoreBuilds.</string>
+    <string name="wp_export_title">Exporting wallpapers</string>
+    <string name="wp_export_progress_fmt">%1$d of %2$d · %3$s</string>
+    <string name="wp_export_done_fmt">%1$d saved to Pictures/CoreBuilds</string>
+    <string name="wp_export_skipped_fmt">%1$d already there</string>
+    <string name="wp_export_failed_fmt">%1$d failed — tap to retry</string>
+    <string name="wp_retry_failed">Retry failed</string>
+    <string name="wp_export_all_failed">Nothing was saved. Check your connection and storage, then retry.</string>
+    <string name="wp_export_space_fmt">Need about %1$d MB free to export these. Free space, then retry.</string>
+    <string name="wp_storage_permission">Core Builds needs storage access to copy wallpapers into Pictures. Tap to allow.</string>
+    <string name="wp_storage_permission_denied">Storage permission is required to export wallpapers.</string>
+    <string name="wp_after_export_hint">Open your launcher, pick the CoreBuilds folder, and turn on auto-rotate.</string>
+    <string name="wp_open_launcher">Open %1$s</string>
+    <string name="wp_done">Done</string>
 </resources>

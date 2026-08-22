@@ -147,7 +147,7 @@ class AndroidWiringTests(unittest.TestCase):
 
     def test_entry_point_wired_in_main(self):
         main = _read(JAVA / "MainActivity.kt")
-        self.assertIn("WallpapersActivity.start", main)
+        self.assertIn("WallpapersActivity", main)
         self.assertIn("wallpapers_entry", main)
 
     def test_no_full_wallpapers_bundled_into_apk(self):
