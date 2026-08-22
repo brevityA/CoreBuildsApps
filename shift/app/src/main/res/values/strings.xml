@@ -10,4 +10,6 @@
     <string name="download_failed_fmt">Failed · %1$s</string>
     <string name="permission_needed">Storage permission needed</string>
     <string name="empty">No live wallpapers found</string>
+    <string name="preview_loading">Loading…</string>
+    <string name="preview_failed">Preview failed</string>
 </resources>

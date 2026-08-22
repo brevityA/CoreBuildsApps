@@ -45,12 +45,14 @@ class LiveAdapter(
         holder.status.text = statuses[position] ?: ""
 
         holder.thumb.setImageDrawable(null)
-        try {
-            ctx.assets.open(item.thumbAsset).use { stream ->
-                holder.thumb.setImageBitmap(BitmapFactory.decodeStream(stream))
+        item.thumbAsset?.let { asset ->
+            try {
+                ctx.assets.open(asset).use { stream ->
+                    holder.thumb.setImageBitmap(BitmapFactory.decodeStream(stream))
+                }
+            } catch (_: Exception) {
+                // Leave the placeholder; the title still identifies the row.
             }
-        } catch (_: Exception) {
-            // Leave the placeholder; the title still identifies the row.
         }
 
         holder.btnPreview.setOnClickListener {

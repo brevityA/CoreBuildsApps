@@ -18,8 +18,9 @@ data class LiveEntry(
     val url1080p: String,
     /** Optional 4K MP4 URL, or null. */
     val url4k: String?,
-    /** Bundled poster-thumb asset path under assets/. */
-    val thumbAsset: String,
+    /** Bundled poster-thumb asset path under assets/, or null when the feed
+     *  entry has no `url_img`. */
+    val thumbAsset: String?,
 ) {
     /** Stable filename derived from the 1080p URL (always .mp4). */
     val cacheName: String get() = url1080p.substringAfterLast('/')
@@ -47,13 +48,18 @@ object LiveCatalog {
                 val url1080p = o.optString("url_1080p")
                 if (url1080p.isBlank()) null else {
                     val thumbUrl = o.optString("url_img")
+                    val thumbAsset = if (thumbUrl.isBlank()) {
+                        null
+                    } else {
+                        "$THUMB_DIR/${thumbUrl.substringAfterLast('/')}"
+                    }
                     LiveEntry(
                         title = o.optString("title", "Live ${i + 1}"),
                         location = o.optString("location"),
                         author = o.optString("author", "Core Builds"),
                         url1080p = url1080p,
                         url4k = o.optString("url_4k").ifBlank { null },
-                        thumbAsset = "$THUMB_DIR/${thumbUrl.substringAfterLast('/')}",
+                        thumbAsset = thumbAsset,
                     )
                 }
             }

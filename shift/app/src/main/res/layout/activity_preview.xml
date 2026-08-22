@@ -20,4 +20,15 @@
         android:background="@color/cb_night"
         android:textColor="@color/cb_cyan"
         android:textSize="18sp" />
+
+    <TextView
+        android:id="@+id/preview_status"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:padding="16dp"
+        android:background="@color/cb_night"
+        android:textColor="@color/cb_text_secondary"
+        android:textSize="16sp"
+        android:visibility="gone" />
 </FrameLayout>

@@ -57,7 +57,7 @@ object LiveDownloader {
             return Result.NeedsPermission(storagePermission()!!)
         }
         return try {
-            val file = fetchToCache(app, entry.url1080p, entry.cacheName)
+            val file = fetch(app, entry.url1080p, entry.cacheName)
                 ?: return Result.Failed("download failed")
             copyToMovies(app, file, entry.cacheName)
         } catch (e: Exception) {
@@ -66,7 +66,12 @@ object LiveDownloader {
         }
     }
 
-    private fun fetchToCache(context: Context, url: String, cacheName: String): File? {
+    /**
+     * Fetch [url] into the internal live cache, returning the local file.
+     * Public so [PreviewActivity] can play a cached copy instead of streaming
+     * from the remote host (which may not serve a video content-type or ranges).
+     */
+    fun fetch(context: Context, url: String, cacheName: String): File? {
         val host = try {
             URL(url).host
         } catch (_: Exception) {
