@@ -59,6 +59,42 @@
         <intent>
             <action android:name="com.spocky.projengmenu.APPLY_ICONPACK" />
         </intent>
+        <!-- Generic apply contracts. Declared as <intent> queries so an
+             unknown HOME launcher that supports a standard contract is still
+             visible on Android 11+ without a per-package entry. -->
+        <intent>
+            <action android:name="com.novalauncher.THEME" />
+        </intent>
+        <intent>
+            <action android:name="org.adw.launcher.THEMES" />
+        </intent>
+        <intent>
+            <action android:name="com.gau.go.launcherex.theme" />
+        </intent>
+        <intent>
+            <action android:name="com.anddoes.launcher.THEME" />
+        </intent>
+        <intent>
+            <action android:name="com.anddoes.launcher.SET_THEME" />
+        </intent>
+        <intent>
+            <action android:name="org.adw.launcher.SET_THEME" />
+        </intent>
+        <intent>
+            <action android:name="org.adwfreak.launcher.SET_THEME" />
+        </intent>
+        <intent>
+            <action android:name="ch.deletescape.lawnchair.APPLY_ICONS" />
+        </intent>
+        <intent>
+            <action android:name="ch.deletescape.lawnchair.ICONPACK" />
+        </intent>
+        <intent>
+            <action android:name="com.teslacoilsw.launcher.APPLY_ICON_THEME" />
+        </intent>
+        <intent>
+            <action android:name="com.fede.launcher.THEME_ICONPACK" />
+        </intent>
     </queries>
 
     <application
