@@ -12,7 +12,7 @@
 
 > | App | What it does | Downloader | Release tag |
 > |---|---|---|---|
-> | **[Icon Pack](#-icon-pack)** | 921 transparent icons + 6 wallpapers for Projectivy Launcher | `5270601` | [`v*`](../../releases) |
+> | **[Icon Pack](#-icon-pack)** | 921 transparent icons + 70 wallpapers for Projectivy Launcher | `5270601` | [`v*`](../../releases) |
 > | **[Core Line](#-core-line)** | Sports scores & channel RSS ticker (chyron) | `7375676` | [`coreline-v*`](../../releases) |
 >
 > Each app has its own CI workflow with path filters — changes to one never rebuild the other.
@@ -22,7 +22,7 @@
 ## 🔷 Icon Pack
 
 **Transparent app icons for Projectivy Launcher on Android TV.**
-`921 icons` · `6 wallpapers` · `v1.7.1`
+`921 icons` · `70 wallpapers` · `v1.7.1`
 
 The **Core Builds Icon Pack** is designed for the [Projectivy Launcher](https://play.google.com/store/apps/details?id=com.spocky.projengmenu) on Android TV and Google TV, built to the [Core Builds Brand & Style Guide v1.0](https://github.com/brevityA/Core-Builds).
 
@@ -66,7 +66,7 @@ Full table with every mapped component: [**docs/IconPackList.md**](docs/IconPack
 
 ### Wallpapers
 
-6 curated wallpapers — browse in the Wallpapers tab, preview full-screen, Set as device wallpaper or Save to `Pictures/CoreBuilds`. Multi-select export lets you bulk-save to the folder where launchers like Monet auto-rotate. Thumbnails are bundled; full 4K images download on demand from GitHub.
+70 curated wallpapers — browse in the Wallpapers tab, preview full-screen, Set as device wallpaper or Save to `Pictures/CoreBuilds`. Multi-select export lets you bulk-save to the folder where launchers like Monet auto-rotate. Thumbnails are bundled; full 4K images download on demand from GitHub.
 
 ---
 
@@ -116,7 +116,7 @@ pip install -r tools/requirements.txt
 python tools/build_icons.py      # SVGs, PNGs, appfilter, docs, preview
 python tools/build_banners.py    # 16:9 monoline banners
 python tools/build_branding.py   # launcher icon + TV banner
-python tools/validate.py         # 12800+ coherence checks
+python tools/validate.py         # 22,800+ coherence checks
 ```
 
 **Finding a component name** for an installed app:
