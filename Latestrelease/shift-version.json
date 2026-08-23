@@ -1,0 +1,8 @@
+{
+  "versionCode": 3,
+  "versionName": "2.0.1",
+  "releaseDate": "2026-08-23",
+  "apkUrl": "https://github.com/brevityA/CoreBuildsApps/releases/download/shift/coreshift-release.apk",
+  "releaseNotesUrl": "https://github.com/brevityA/CoreBuildsApps/releases",
+  "minSdk": 26
+}

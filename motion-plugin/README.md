@@ -20,12 +20,38 @@ Projectivy via the `tv.projectivy.plugin.WALLPAPER_PROVIDER` intent action.
 
 ## Install & use
 
-1. Build the APK (`./gradlew :app:assembleDebug`), sideload it.
-2. Projectivy → **Settings → Appearance → Wallpaper** → choose **Core Motion**.
+Grab the prebuilt APK — CI publishes one on every `motion-v*` tag, and the
+floating `motion` tag is always the current build:
+
+```
+https://github.com/brevityA/CoreBuildsApps/releases/download/motion/coremotion-release.apk
+```
+
+Or build it yourself: `cd motion-plugin && ./gradlew :app:assembleDebug`.
+
+1. Sideload the APK (Downloader, or `adb install -r --user 0 coremotion-release.apk`).
+2. Projectivy → **Settings → Appearance → Wallpaper → Launcher wallpaper** →
+   choose **Core Motion**.
 3. (Optional) open Core Motion's settings to change the feed URL.
 
 > Requires **Projectivy Launcher Premium** — the same as Overflight and every
 > wallpaper provider, because custom wallpaper providers are a Premium feature.
+
+Core Motion has no launcher icon of its own on some setups; it is configured
+from inside Projectivy, or from *Android Settings → Apps → Core Motion*.
+
+## If Projectivy doesn't list it
+
+Open the plugin's settings screen — it runs the **same `queryIntentServices`
+query Projectivy runs** and reports what it found, line by line. If every line
+is green, the plugin is discoverable and the problem is on the launcher side
+(Premium inactive, or a stale plugin list that a force-stop clears).
+
+Full root-cause guide, including `adb` commands:
+[`docs/PROJECTIVY_DETECTION.md`](../docs/PROJECTIVY_DETECTION.md).
+
+`python tools/verify_motion_plugin.py` checks the manifest contract and the
+vendored-API parity offline; CI runs it on every change to this directory.
 
 ## The contract (do not change)
 
@@ -61,3 +87,9 @@ AGP 8.5.2 / Kotlin 1.9.24 / compileSdk 34 / minSdk 26).
 
 `url_1080p`/`url_4k` → VIDEO wallpaper; `url_img` alone → IMAGE wallpaper.
 Regenerate the procedural set with `python tools/build_motion_feed.py`.
+
+## Other launchers
+
+Monet Launcher has no wallpaper-provider plugin API — this plugin cannot work
+there. The supported route is the Aerial Views bridge
+(`Motion/aerial-entries.json`); see [`docs/MONET_LAUNCHER.md`](../docs/MONET_LAUNCHER.md).

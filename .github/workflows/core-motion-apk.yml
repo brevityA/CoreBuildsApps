@@ -1,0 +1,214 @@
+name: Core Motion APK
+
+# Builds the Core Motion Projectivy wallpaper-provider plugin (motion-plugin/).
+#
+# This is the piece that was missing: the plugin has a full source tree and a
+# README that says "sideload the APK", but nothing ever built one, so there was
+# never anything for Projectivy to detect. See docs/PROJECTIVY_DETECTION.md.
+#
+# The plugin is a standalone Gradle root (motion-plugin/settings.gradle.kts),
+# same as shift/ and separate from the icon pack.
+#
+# CI:      push/PR touching motion-plugin/** or the feed → verify + debug APK
+# Release: push a motion-v* tag → verify + signed release APK → GitHub Release
+#          plus a force-moved floating `motion` tag for a stable Downloader URL.
+
+on:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - 'motion-plugin/**'
+      - 'Motion/live-feed.json'
+      - 'Motion/aerial-entries.json'
+      - 'tools/verify_motion_plugin.py'
+      - 'tools/build_aerial_feed.py'
+      - '.github/workflows/core-motion-apk.yml'
+  push:
+    branches: [main]
+    tags: ['motion-v*']
+
+permissions:
+  contents: write
+
+jobs:
+  verify:
+    name: Verify plugin contract
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      # Asserts the manifest still declares every key Projectivy reads, and
+      # that the vendored AIDL/parcelables still match Spocky's upstream API.
+      # A silent drift here is exactly what makes a plugin undetectable.
+      - name: Verify Projectivy plugin contract
+        run: python tools/verify_motion_plugin.py
+
+      # Monet Launcher has no plugin API; the supported route onto Monet is
+      # Aerial Views' custom-feed format. That feed is a projection of
+      # live-feed.json, so it must never drift. See docs/MONET_LAUNCHER.md.
+      - name: Verify the Aerial Views bridge feed is in sync
+        run: python tools/build_aerial_feed.py --check
+
+  apk:
+    name: Assemble plugin APK
+    needs: verify
+    runs-on: ubuntu-latest
+    env:
+      KEYSTORE_BASE64: ${{ secrets.KEYSTORE_BASE64 }}
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Refuse to build a tag that is not on main
+        if: startsWith(github.ref, 'refs/tags/motion-v')
+        run: |
+          git fetch origin main --depth=50
+          git merge-base --is-ancestor "$GITHUB_SHA" origin/main \
+            || { echo "::error::tag $GITHUB_REF_NAME is not an ancestor of main"; exit 1; }
+          TAG="${GITHUB_REF_NAME#motion-v}"
+          GRADLE=$(grep -oP 'versionName = "\K[^"]+' motion-plugin/app/build.gradle.kts)
+          [ "$TAG" = "$GRADLE" ] \
+            || { echo "::error::tag $TAG != versionName $GRADLE"; exit 1; }
+
+      - uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Set up Android SDK
+        uses: android-actions/setup-android@v3
+
+      - name: Install Android platform 34
+        run: sdkmanager "platforms;android-34" "build-tools;34.0.0"
+
+      - name: Set up Gradle
+        uses: gradle/actions/setup-gradle@v6
+
+      - name: Decode keystore
+        if: env.KEYSTORE_BASE64 != ''
+        run: |
+          echo "$KEYSTORE_BASE64" | base64 -d > "$RUNNER_TEMP/release.jks"
+          echo "KEYSTORE_PATH=$RUNNER_TEMP/release.jks" >> "$GITHUB_ENV"
+          echo "Keystore decoded — release will be signed."
+
+      - name: Assemble release APK
+        if: startsWith(github.ref, 'refs/tags/motion-v')
+        working-directory: motion-plugin
+        env:
+          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
+          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+        run: ./gradlew :app:assembleRelease --no-daemon --stacktrace
+
+      - name: Assemble debug APK
+        if: ${{ !startsWith(github.ref, 'refs/tags/motion-v') }}
+        working-directory: motion-plugin
+        run: ./gradlew :app:assembleDebug --no-daemon --stacktrace
+
+      # The single highest-value check in this workflow: prove the built APK
+      # really does expose the discovery intent + meta-data Projectivy needs.
+      # If aapt can't see it, no amount of on-device fiddling will help.
+      - name: Assert the built APK is discoverable by Projectivy
+        run: |
+          set -euo pipefail
+          if [ -d motion-plugin/app/build/outputs/apk/release ]; then
+            APK=$(ls motion-plugin/app/build/outputs/apk/release/*.apk | grep -v unsigned | head -1)
+          else
+            APK=$(ls motion-plugin/app/build/outputs/apk/debug/*.apk | head -1)
+          fi
+          echo "Inspecting $APK"
+          AAPT="$ANDROID_HOME/build-tools/34.0.0/aapt2"
+          DUMP=$("$AAPT" dump xmltree --file AndroidManifest.xml "$APK")
+
+          check() {
+            echo "$DUMP" | grep -q "$1" \
+              || { echo "::error::APK manifest is missing: $2"; exit 1; }
+            echo "  ok — $2"
+          }
+          check 'tv.projectivy.plugin.WALLPAPER_PROVIDER' 'discovery intent action'
+          check 'WallpaperProviderService'                'provider service'
+          check 'apiVersion'                              'apiVersion meta-data'
+          check 'uuid'                                    'uuid meta-data'
+          check 'settingsActivity'                        'settingsActivity meta-data'
+          check 'updateMode'                              'updateMode meta-data'
+
+          # A leanback hard requirement blocks install on Google TV / Fire TV
+          # variants that don't report the flag. Must be required=false.
+          if echo "$DUMP" | grep -A3 'android.software.leanback' | grep -q '0xffffffff'; then
+            echo "::error::android.software.leanback is required=true — this blocks install on some TV devices"
+            exit 1
+          fi
+          echo "APK is discoverable."
+
+      - name: Verify release APK is signed
+        if: startsWith(github.ref, 'refs/tags/motion-v')
+        run: |
+          APK=$(ls motion-plugin/app/build/outputs/apk/release/*.apk)
+          case "$APK" in
+            *-unsigned.apk)
+              echo "::error::$APK is unsigned — a tagged release must be installable."
+              exit 1
+              ;;
+          esac
+          "$ANDROID_HOME/build-tools/34.0.0/apksigner" verify --print-certs "$APK"
+
+      - name: Name the APK for the stable Downloader URL
+        if: startsWith(github.ref, 'refs/tags/motion-v')
+        run: |
+          SRC=$(ls motion-plugin/app/build/outputs/apk/release/*.apk | grep -v unsigned | head -1)
+          mkdir -p dist
+          cp "$SRC" dist/coremotion-release.apk
+          ls -lh dist/coremotion-release.apk
+
+      - name: Upload debug APK artifact
+        if: ${{ !startsWith(github.ref, 'refs/tags/motion-v') }}
+        uses: actions/upload-artifact@v7
+        with:
+          name: CoreMotion-debug
+          path: motion-plugin/app/build/outputs/apk/debug/*.apk
+          if-no-files-found: error
+
+      - name: Upload release APK artifact
+        if: startsWith(github.ref, 'refs/tags/motion-v')
+        uses: actions/upload-artifact@v7
+        with:
+          name: CoreMotion-release
+          path: dist/coremotion-release.apk
+          if-no-files-found: error
+
+      - name: Publish versioned release
+        if: startsWith(github.ref, 'refs/tags/motion-v')
+        uses: softprops/action-gh-release@v3
+        with:
+          files: dist/coremotion-release.apk
+          generate_release_notes: true
+          name: "Core Motion ${{ github.ref_name }}"
+          make_latest: false
+
+      - name: Point floating tag motion at this commit
+        if: startsWith(github.ref, 'refs/tags/motion-v')
+        run: |
+          git tag -f motion "$GITHUB_SHA"
+          git push -f origin refs/tags/motion
+
+      - name: Publish stable Downloader release
+        if: startsWith(github.ref, 'refs/tags/motion-v')
+        uses: softprops/action-gh-release@v3
+        with:
+          tag_name: motion
+          name: Core Motion (latest)
+          body: |
+            Always the current Core Motion APK — the Projectivy wallpaper-provider
+            plugin. Versioned notes live on `motion-v*` releases.
+
+            Install, then: Projectivy → Settings → Appearance → Wallpaper →
+            Launcher wallpaper → **Core Motion**. Requires Projectivy Premium.
+
+            Downloader (generate the numeric code **once** at https://go.aftvnews.com/):
+            https://github.com/brevityA/CoreBuildsApps/releases/download/motion/coremotion-release.apk
+          files: dist/coremotion-release.apk
+          fail_on_unmatched_files: true
+          make_latest: false

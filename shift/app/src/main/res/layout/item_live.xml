@@ -1,79 +1,104 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<!-- Row. The outer FrameLayout is the stable measurement box; `card` is what
+     scales and lifts on focus, so neighbouring rows never reflow. -->
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="horizontal"
-    android:gravity="center_vertical"
-    android:padding="12dp"
-    android:layout_marginBottom="8dp"
-    android:background="@drawable/card_bg"
-    android:descendantFocusability="afterDescendants">
-
-    <ImageView
-        android:id="@+id/thumb"
-        android:layout_width="128dp"
-        android:layout_height="72dp"
-        android:scaleType="centerCrop"
-        android:contentDescription="@null" />
+    android:clipChildren="false"
+    android:clipToPadding="false"
+    android:paddingTop="4dp"
+    android:paddingBottom="8dp">
 
     <LinearLayout
-        android:layout_width="0dp"
+        android:id="@+id/card"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:layout_marginStart="16dp"
-        android:orientation="vertical">
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:paddingTop="12dp"
+        android:paddingBottom="12dp"
+        android:paddingEnd="12dp"
+        android:paddingStart="0dp"
+        android:background="@drawable/card_bg"
+        android:clipChildren="false"
+        android:descendantFocusability="afterDescendants">
 
-        <TextView
-            android:id="@+id/title"
+        <!-- Leading accent spine. Wipes in on focus, running the suite ramp. -->
+        <View
+            android:id="@+id/spine"
+            android:layout_width="4dp"
+            android:layout_height="match_parent"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
+            android:layout_marginStart="4dp"
+            android:layout_marginEnd="8dp" />
+
+        <ImageView
+            android:id="@+id/thumb"
+            android:layout_width="128dp"
+            android:layout_height="72dp"
+            android:scaleType="centerCrop"
+            android:contentDescription="@null" />
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginStart="16dp"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/cb_text_primary"
+                android:textSize="18sp" />
+
+            <TextView
+                android:id="@+id/spec"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="monospace"
+                android:textColor="@color/cb_text_secondary"
+                android:textSize="13sp" />
+
+            <TextView
+                android:id="@+id/status"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="monospace"
+                android:textColor="@color/cb_cyan"
+                android:textSize="13sp" />
+        </LinearLayout>
+
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@color/cb_text_primary"
-            android:textSize="18sp" />
+            android:orientation="vertical">
 
-        <TextView
-            android:id="@+id/spec"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:fontFamily="monospace"
-            android:textColor="@color/cb_text_secondary"
-            android:textSize="13sp" />
+            <Button
+                android:id="@+id/btn_preview"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:minWidth="120dp"
+                android:text="@string/preview"
+                android:textSize="16sp"
+                android:textColor="@color/btn_text"
+                android:background="@drawable/btn_bg"
+                android:focusable="true"
+                android:nextFocusDown="@id/btn_download" />
 
-        <TextView
-            android:id="@+id/status"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:fontFamily="monospace"
-            android:textColor="@color/cb_cyan"
-            android:textSize="13sp" />
+            <Button
+                android:id="@+id/btn_download"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:minWidth="120dp"
+                android:text="@string/download"
+                android:textSize="16sp"
+                android:textColor="@color/btn_text"
+                android:background="@drawable/btn_bg"
+                android:focusable="true"
+                android:nextFocusUp="@id/btn_preview" />
+        </LinearLayout>
     </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
-
-        <Button
-            android:id="@+id/btn_preview"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:minWidth="120dp"
-            android:text="@string/preview"
-            android:textSize="16sp"
-            android:textColor="@color/btn_text"
-            android:background="@drawable/btn_bg"
-            android:focusable="true"
-            android:nextFocusDown="@id/btn_download" />
-
-        <Button
-            android:id="@+id/btn_download"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:minWidth="120dp"
-            android:text="@string/download"
-            android:textSize="16sp"
-            android:textColor="@color/btn_text"
-            android:background="@drawable/btn_bg"
-            android:focusable="true"
-            android:nextFocusUp="@id/btn_preview" />
-    </LinearLayout>
-</LinearLayout>
+</FrameLayout>

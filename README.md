@@ -236,7 +236,8 @@ Full architecture and remaining debt: [`ticker/HANDOVER.md`](ticker/HANDOVER.md)
 Two delivery paths for motion wallpapers on Android TV:
 
 - **Monet Launcher** — browse live wallpapers in-app, full-screen looping preview, download MP4 loops to `Movies/CoreBuilds`. Point Monet Premium's video wallpaper picker at that folder.
-- **Projectivy Launcher** — the **Core Motion** plugin (`motion-plugin/`, `tv.corebuilds.motion`) implements Spocky's `IWallpaperProviderService` AIDL. Serves an Overflight-compatible JSON feed as `VIDEO` wallpapers plus bundled Lottie vector loops. Sideload the plugin APK → Settings → Appearance → Wallpaper → Core Motion.
+- **Projectivy Launcher** — the **Core Motion** plugin (`motion-plugin/`, `tv.corebuilds.motion`) implements Spocky's `IWallpaperProviderService` AIDL. Serves an Overflight-compatible JSON feed as `VIDEO` wallpapers plus bundled Lottie vector loops. Install [`coremotion-release.apk`](https://github.com/brevityA/CoreBuildsApps/releases/download/motion/coremotion-release.apk) → Projectivy Settings → Appearance → Wallpaper → Launcher wallpaper → Core Motion. Requires Projectivy Premium. Not detected? See [`docs/PROJECTIVY_DETECTION.md`](docs/PROJECTIVY_DETECTION.md).
+- **Monet Launcher** — no plugin API exists, so the route is the **Aerial Views bridge**: point Aerial Views at [`Motion/aerial-entries.json`](Motion/aerial-entries.json), then set Monet's wallpaper source to Aerial. Auto-updating, and gives you a matching screensaver. Local-file fallback via Core Shift → `Movies/CoreBuilds`. See [`docs/MONET_LAUNCHER.md`](docs/MONET_LAUNCHER.md).
 
 Content pipeline: 10 ffmpeg-filter MP4 loops (1080p H.264), 3 self-authored GLSL shaders (hex plasma, starfield, flowing noise), and bundled Lottie vectors — all §03 palette.
 

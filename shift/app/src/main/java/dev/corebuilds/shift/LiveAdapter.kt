@@ -14,6 +14,11 @@ import androidx.recyclerview.widget.RecyclerView
  * Rows of the live-wallpaper browser: bundled poster thumb, title, spec, and
  * [Preview] + [Download] buttons. Per-position state so RecyclerView reuse
  * never mislabels an item.
+ *
+ * Focus motion lives in [RowMotion]. Note that the *row* is never focusable —
+ * the two buttons are — so the card's focused appearance is driven from the
+ * children's focus listeners rather than from a state selector, which would
+ * never see `state_focused` on the parent.
  */
 class LiveAdapter(
     private val items: List<LiveEntry>,
@@ -25,12 +30,29 @@ class LiveAdapter(
     private val busy = HashSet<Int>()
 
     class Holder(view: View) : RecyclerView.ViewHolder(view) {
+        val card: View = view.findViewById(R.id.card)
+        val spine: View = view.findViewById(R.id.spine)
         val thumb: ImageView = view.findViewById(R.id.thumb)
         val title: TextView = view.findViewById(R.id.title)
         val spec: TextView = view.findViewById(R.id.spec)
         val status: TextView = view.findViewById(R.id.status)
         val btnPreview: Button = view.findViewById(R.id.btn_preview)
         val btnDownload: Button = view.findViewById(R.id.btn_download)
+
+        val motion = RowMotion(card, spine, thumb)
+
+        init {
+            // Either button holding focus means "this row is the active one".
+            // Posting defers the read until focus has actually settled, so
+            // moving between the two buttons in a row doesn't flicker the card.
+            val listener = View.OnFocusChangeListener { _, _ ->
+                view.post {
+                    motion.setFocused(btnPreview.hasFocus() || btnDownload.hasFocus())
+                }
+            }
+            btnPreview.onFocusChangeListener = listener
+            btnDownload.onFocusChangeListener = listener
+        }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): Holder =
@@ -55,6 +77,12 @@ class LiveAdapter(
             }
         }
 
+        // Snap, don't animate: a recycled row must not replay a focus enter.
+        holder.motion.setFocused(
+            holder.btnPreview.hasFocus() || holder.btnDownload.hasFocus(),
+            animate = false,
+        )
+
         holder.btnPreview.setOnClickListener {
             val intent = Intent(ctx, PreviewActivity::class.java)
                 .putExtra(PreviewActivity.EXTRA_URL, item.url1080p)
@@ -69,29 +97,66 @@ class LiveAdapter(
         holder.btnDownload.setOnClickListener { onDownload(item, position) }
     }
 
+    override fun onViewRecycled(holder: Holder) {
+        // Animators hold hard references to their targets; a recycled row that
+        // is still sweeping will keep painting into whatever it gets rebound to.
+        holder.motion.release()
+        super.onViewRecycled(holder)
+    }
+
     override fun getItemCount(): Int = items.size
 
     fun setStatus(position: Int, text: String) {
         statuses[position] = text
-        notifyItemChanged(position)
+        notifyItemChanged(position, PAYLOAD_STATUS)
     }
 
     fun markBusy(position: Int) {
         busy.add(position)
         statuses[position] = ""
-        notifyItemChanged(position)
+        notifyItemChanged(position, PAYLOAD_STATUS)
     }
 
     fun markSaved(position: Int, text: String) {
         saved.add(position)
         busy.remove(position)
         statuses[position] = text
-        notifyItemChanged(position)
+        notifyItemChanged(position, PAYLOAD_STATUS)
     }
 
     fun markFailed(position: Int, text: String) {
         busy.remove(position)
         statuses[position] = text
-        notifyItemChanged(position)
+        notifyItemChanged(position, PAYLOAD_STATUS)
+    }
+
+    /**
+     * Partial rebind for status changes.
+     *
+     * Without this, a full [onBindViewHolder] during a download tears down and
+     * rebuilds the row — which drops focus and kills the focus animation
+     * mid-flight, exactly when the user is watching it. Payload binds touch
+     * only the text.
+     */
+    override fun onBindViewHolder(holder: Holder, position: Int, payloads: MutableList<Any>) {
+        if (payloads.contains(PAYLOAD_STATUS)) {
+            val ctx = holder.itemView.context
+            holder.status.text = statuses[position] ?: ""
+            val isSaved = saved.contains(position)
+            val isBusy = busy.contains(position)
+            holder.btnDownload.isEnabled = !isSaved && !isBusy
+            holder.btnDownload.text =
+                ctx.getString(if (isSaved) R.string.saved else R.string.download)
+
+            // Fade the status line in rather than popping it.
+            holder.status.alpha = 0f
+            holder.status.animate().alpha(1f).setDuration(180L).start()
+            return
+        }
+        super.onBindViewHolder(holder, position, payloads)
+    }
+
+    private companion object {
+        const val PAYLOAD_STATUS = "status"
     }
 }

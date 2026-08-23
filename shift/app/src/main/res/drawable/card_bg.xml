@@ -1,16 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<selector xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:state_focused="true">
-        <shape>
-            <solid android:color="#1B2634" />
-            <stroke android:width="2dp" android:color="@color/cb_cyan" />
-            <corners android:radius="8dp" />
-        </shape>
-    </item>
-    <item>
-        <shape>
-            <solid android:color="@color/cb_surface" />
-            <corners android:radius="8dp" />
-        </shape>
-    </item>
-</selector>
+<!-- Resting card. The focused appearance is built in code (RowMotion) because
+     the border colour travels through the wallpaper suite ramp and a selector
+     can only cut between static states. This stays as the fallback / preview. -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android">
+    <solid android:color="@color/cb_surface" />
+    <corners android:radius="12dp" />
+</shape>

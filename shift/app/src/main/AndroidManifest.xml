@@ -9,6 +9,7 @@
     <uses-permission
         android:name="android.permission.WRITE_EXTERNAL_STORAGE"
         android:maxSdkVersion="28" />
+    <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" />
 
     <uses-feature
         android:name="android.hardware.touchscreen"
@@ -43,5 +44,16 @@
             android:label="@string/preview_title"
             android:theme="@style/Theme.CoreShift"
             android:configChanges="orientation|screenSize|keyboardHidden" />
+
+        <!-- In-app updater. Authority must match UpdateInstaller.AUTHORITY. -->
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="dev.corebuilds.shift.update"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_paths" />
+        </provider>
     </application>
 </manifest>

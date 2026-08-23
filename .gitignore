@@ -3,8 +3,11 @@
 /local.properties
 /.idea/
 .DS_Store
-/build
-/app/build
+# Unanchored on purpose: shift/ and motion-plugin/ are standalone Gradle roots,
+# so /build and /app/build alone left their outputs untracked-but-not-ignored.
+build/
+captures/
+.gradle/
 /captures
 .externalNativeBuild
 .cxx
