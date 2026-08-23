@@ -384,6 +384,8 @@
         android:paddingStart="6dp"
         android:paddingEnd="6dp"
         android:paddingBottom="24dp"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
         android:descendantFocusability="afterDescendants"
         android:nextFocusUp="@id/content_btn" />
 
