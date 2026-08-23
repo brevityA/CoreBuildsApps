@@ -2,6 +2,7 @@ package dev.corebuilds.shift
 
 import android.content.Intent
 import android.graphics.BitmapFactory
+import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -21,7 +22,7 @@ import androidx.recyclerview.widget.RecyclerView
  * never see `state_focused` on the parent.
  */
 class LiveAdapter(
-    private val items: List<LiveEntry>,
+    private var items: List<LiveEntry>,
     private val onDownload: (LiveEntry, Int) -> Unit,
 ) : RecyclerView.Adapter<LiveAdapter.Holder>() {
 
@@ -67,13 +68,23 @@ class LiveAdapter(
         holder.status.text = statuses[position] ?: ""
 
         holder.thumb.setImageDrawable(null)
+        holder.thumb.setBackgroundColor(0xFF1B2634.toInt())
+        holder.thumb.tag = item.thumbAsset ?: item.thumbUrl
         item.thumbAsset?.let { asset ->
             try {
                 ctx.assets.open(asset).use { stream ->
                     holder.thumb.setImageBitmap(BitmapFactory.decodeStream(stream))
                 }
+                holder.thumb.setBackgroundColor(Color.TRANSPARENT)
             } catch (_: Exception) {
                 // Leave the placeholder; the title still identifies the row.
+            }
+        } ?: item.thumbUrl?.let { url ->
+            RemoteThumbLoader.load(ctx, url) { loadedUrl, bitmap ->
+                if (holder.thumb.tag == loadedUrl && bitmap != null) {
+                    holder.thumb.setBackgroundColor(Color.TRANSPARENT)
+                    holder.thumb.setImageBitmap(bitmap)
+                }
             }
         }
 
@@ -102,6 +113,12 @@ class LiveAdapter(
         // is still sweeping will keep painting into whatever it gets rebound to.
         holder.motion.release()
         super.onViewRecycled(holder)
+    }
+
+    /** Replace the visible catalog when a remote content feed arrives. */
+    fun submit(next: List<LiveEntry>) {
+        items = next
+        notifyDataSetChanged()
     }
 
     override fun getItemCount(): Int = items.size

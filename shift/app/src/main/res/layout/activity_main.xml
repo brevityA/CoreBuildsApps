@@ -66,6 +66,39 @@
             android:focusable="true" />
     </LinearLayout>
 
+    <!-- Content updates are independent from APK updates: the app can discover
+         a new prequel feed without waiting for a new Core Shift build. -->
+    <LinearLayout
+        android:id="@+id/content_banner"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:padding="12dp"
+        android:layout_marginBottom="8dp"
+        android:background="@drawable/card_bg"
+        android:visibility="gone">
+
+        <TextView
+            android:id="@+id/content_text"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:textColor="@color/cb_text_primary"
+            android:textSize="14sp" />
+
+        <Button
+            android:id="@+id/content_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:minWidth="100dp"
+            android:text="@string/content_refresh"
+            android:textSize="13sp"
+            android:textColor="@color/btn_text"
+            android:background="@drawable/btn_bg"
+            android:focusable="true" />
+    </LinearLayout>
+
     <!-- clipChildren/clipToPadding false so a focused card can scale and cast
          elevation past the list bounds instead of being sliced off. -->
     <androidx.recyclerview.widget.RecyclerView
