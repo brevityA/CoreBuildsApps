@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Core Shift — list motion preview</title>
+<style>
+  :root{
+    --night:#0D1117; --void:#04070F; --surface:#161B22; --surface-focus:#1B2634;
+    --cyan:#00E5FF; --signal:#00D4FF; --glow:#7EEEFF; --blue:#4FACFE;
+    --violet:#8A4890; --ember:#C03A20;
+    --text:#E6EDF3; --text-dim:#8B949E;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{
+    background:var(--night); color:var(--text);
+    font-family:'Segoe UI',system-ui,-apple-system,sans-serif;
+    padding:32px 40px 48px; min-height:100vh;
+  }
+  h1{font-size:28px;font-weight:700;color:var(--cyan);letter-spacing:.2px}
+  /* Spectrum rule — the wallpaper suite ramp, travelling. */
+  .rule{
+    width:220px;height:3px;margin-top:8px;border-radius:2px;
+    background:linear-gradient(90deg,var(--cyan),var(--glow),var(--blue),var(--violet),var(--ember),var(--cyan));
+    background-size:300% 100%;
+    animation:sweep 11s linear infinite;
+  }
+  @keyframes sweep{from{background-position:0% 0}to{background-position:300% 0}}
+  .hint{margin-top:12px;color:var(--text-dim);font-size:14px;max-width:760px;line-height:1.5}
+  .keys{margin-top:6px;color:var(--blue);font-size:13px;font-family:ui-monospace,monospace}
+
+  .list{margin-top:22px;display:flex;flex-direction:column;gap:0;perspective:1000px}
+
+  .row{padding:4px 0 8px;}
+  .card{
+    display:flex;align-items:center;gap:0;
+    background:var(--surface);
+    border:2px solid transparent;border-radius:12px;
+    padding:12px 12px 12px 0;
+    transform-origin:left center;
+    transition:transform .22s cubic-bezier(.2,.7,.3,1),
+               background-color .22s ease,
+               border-color .22s ease;
+    /* staggered entry */
+    opacity:0; animation:rise .3s cubic-bezier(.15,.8,.3,1) forwards;
+  }
+  @keyframes rise{
+    from{opacity:0;transform:translateY(14px) scale(.97)}
+    to  {opacity:1;transform:translateY(0) scale(1)}
+  }
+
+  .spine{
+    width:4px;align-self:stretch;margin:8px 8px 8px 4px;border-radius:2px;
+    background:linear-gradient(180deg,var(--cyan),var(--blue),var(--violet));
+    background-size:100% 250%;
+    opacity:0;transform:scaleY(.2);transform-origin:top;
+    transition:opacity .22s ease,transform .22s cubic-bezier(.2,.7,.3,1);
+  }
+
+  .thumbwrap{width:128px;height:72px;overflow:hidden;flex:0 0 auto;border-radius:3px}
+  .thumb{
+    width:100%;height:100%;
+    filter:saturate(.45);opacity:.8;
+    transition:filter .22s ease,opacity .22s ease,transform .22s ease;
+  }
+  .meta{flex:1;margin-left:16px;min-width:0}
+  .title{font-size:18px}
+  .spec,.status{font-family:ui-monospace,monospace;font-size:13px}
+  .spec{color:var(--text-dim);margin-top:2px}
+  .status{color:var(--cyan);margin-top:2px;min-height:17px}
+
+  .btns{display:flex;flex-direction:column;gap:6px}
+  .btn{
+    min-width:120px;padding:8px 14px;border-radius:6px;font-size:15px;
+    background:#1B2634;border:1px solid var(--text-dim);color:var(--text);
+    text-align:center;transition:all .15s ease;
+  }
+
+  /* ---- focused state ---- */
+  .row.on .card{
+    transform:scale(1.03);
+    background:var(--surface-focus);
+    box-shadow:0 10px 28px rgba(0,0,0,.55);
+    animation:rise .3s cubic-bezier(.15,.8,.3,1) forwards, border-sweep 7s linear infinite .3s;
+  }
+  @keyframes border-sweep{
+    0%  {border-color:var(--cyan)}
+    25% {border-color:var(--glow)}
+    50% {border-color:var(--blue)}
+    75% {border-color:var(--violet)}
+    100%{border-color:var(--cyan)}
+  }
+  .row.on .spine{opacity:1;transform:scaleY(1);animation:spine-sweep 7s linear infinite}
+  @keyframes spine-sweep{from{background-position:0 0}to{background-position:0 250%}}
+
+  .row.on .thumb{
+    filter:saturate(1);opacity:1;
+    animation:kenburns 6s ease-in-out infinite alternate;
+  }
+  @keyframes kenburns{from{transform:scale(1)}to{transform:scale(1.07)}}
+
+  .row.on .btn.sel{background:var(--cyan);color:#04070F;border-color:var(--cyan);font-weight:600}
+
+  .note{margin-top:34px;padding-top:18px;border-top:1px solid #1B2634;
+        color:var(--text-dim);font-size:13px;line-height:1.6;max-width:820px}
+  .note b{color:var(--text)}
+  code{color:var(--glow);font-family:ui-monospace,monospace}
+</style>
+</head>
+<body>
+  <h1>Core Shift</h1>
+  <div class="rule"></div>
+  <p class="hint">Core Builds live wallpapers. Preview in-app, or download to Movies/CoreBuilds for Monet. Projectivy users: install the Core Motion plugin.</p>
+  <p class="keys">↑ ↓ move focus &nbsp;·&nbsp; ← → switch button &nbsp;·&nbsp; this is a faithful mock of the Android focus motion, not the app</p>
+
+  <div class="list" id="list"></div>
+
+  <div class="note">
+    <b>What you're looking at.</b> Each row's focus state runs four things off one state change:
+    the card lifts (scale&nbsp;1.03 + elevation), the border travels the wallpaper suite's
+    <code>cyan → glow → build&nbsp;blue → dusk&nbsp;violet</code> ramp, the leading spine wipes in from
+    the top on the same phase, and the poster saturates from 45% to full while slowly drifting.
+    Resting rows stay desaturated — with ten cyan-heavy thumbs stacked up, that contrast is what
+    creates the depth. Entry is a 12%-staggered rise so the whole list settles in about 700&nbsp;ms.
+    The header rule is the only always-on animation; everything else is focus-driven, which keeps
+    idle CPU near zero on weak TV SoCs.
+  </div>
+
+<script>
+const items = [
+  ["Spiral Cyan","1080p · 20s loop","linear-gradient(135deg,#04070F 0%,#00E5FF 55%,#4FACFE 100%)"],
+  ["Spiral Ember","1080p · 20s loop","linear-gradient(135deg,#04070F 0%,#C03A20 55%,#8A4890 100%)"],
+  ["Radial Cyan","1080p · 20s loop","radial-gradient(circle at 35% 45%,#7EEEFF 0%,#00A0C0 35%,#04070F 75%)"],
+  ["Circular Void","1080p · 20s loop","radial-gradient(circle at 60% 50%,#4FACFE 0%,#0D1117 60%)"],
+  ["Circuit","1080p · 20s loop","linear-gradient(90deg,#04070F 0%,#00E5FF 30%,#04070F 60%,#4FACFE 100%)"],
+  ["Deep Zoom","4K · 20s loop","radial-gradient(circle at 50% 50%,#8A4890 0%,#00E5FF 40%,#04070F 85%)"],
+  ["Linear Blue","1080p · 20s loop","linear-gradient(160deg,#0D1117 0%,#4FACFE 70%,#7EEEFF 100%)"],
+  ["Square Cyan","1080p · 20s loop","conic-gradient(from 45deg,#00E5FF,#04070F,#4FACFE,#04070F,#00E5FF)"],
+];
+
+const list = document.getElementById('list');
+items.forEach((it,i)=>{
+  const row = document.createElement('div');
+  row.className = 'row';
+  row.innerHTML = `
+    <div class="card" style="animation-delay:${i*38}ms">
+      <div class="spine"></div>
+      <div class="thumbwrap"><div class="thumb" style="background:${it[2]}"></div></div>
+      <div class="meta">
+        <div class="title">${it[0]}</div>
+        <div class="spec">${it[1]}</div>
+        <div class="status"></div>
+      </div>
+      <div class="btns">
+        <div class="btn b0">Preview</div>
+        <div class="btn b1">Download</div>
+      </div>
+    </div>`;
+  list.appendChild(row);
+});
+
+let idx = 0, btn = 0;
+const rows = [...document.querySelectorAll('.row')];
+function paint(){
+  rows.forEach((r,i)=>{
+    r.classList.toggle('on', i===idx);
+    r.querySelector('.b0').classList.toggle('sel', i===idx && btn===0);
+    r.querySelector('.b1').classList.toggle('sel', i===idx && btn===1);
+  });
+  rows[idx].scrollIntoView({block:'nearest',behavior:'smooth'});
+}
+addEventListener('keydown',e=>{
+  if(e.key==='ArrowDown'){idx=Math.min(idx+1,rows.length-1);e.preventDefault()}
+  else if(e.key==='ArrowUp'){idx=Math.max(idx-1,0);e.preventDefault()}
+  else if(e.key==='ArrowRight'){btn=1;e.preventDefault()}
+  else if(e.key==='ArrowLeft'){btn=0;e.preventDefault()}
+  else return;
+  paint();
+});
+rows.forEach((r,i)=>r.addEventListener('mouseenter',()=>{idx=i;paint()}));
+setTimeout(paint, 400);
+</script>
+</body>
+</html>

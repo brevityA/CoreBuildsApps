@@ -9,12 +9,22 @@
     <uses-feature
         android:name="android.hardware.touchscreen"
         android:required="false" />
+    <!-- required=false on purpose. A hard leanback requirement blocks install on
+         Google TV / Fire TV builds that don't report the flag, and a failed
+         install is indistinguishable from "Projectivy can't see the plugin".
+         Projectivy does not require plugins to declare leanback. -->
     <uses-feature
         android:name="android.software.leanback"
-        android:required="true" />
+        android:required="false" />
 
     <queries>
         <package android:name="com.spocky.projengmenu" />
+        <!-- Lets the built-in diagnostic enumerate other installed wallpaper
+             providers as a control: if Overflight resolves here and Core Motion
+             doesn't, the fault is definitively in this APK. -->
+        <intent>
+            <action android:name="tv.projectivy.plugin.WALLPAPER_PROVIDER" />
+        </intent>
     </queries>
 
     <application
@@ -39,6 +49,8 @@
         <service
             android:name=".WallpaperProviderService"
             android:exported="true"
+            android:enabled="true"
+            android:directBootAware="false"
             android:label="@string/plugin_name"
             android:icon="@mipmap/ic_launcher"
             android:banner="@drawable/ic_plugin"

@@ -1,14 +1,17 @@
 package dev.corebuilds.shift
 
+import android.animation.ValueAnimator
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.view.View
+import android.view.animation.AnimationUtils
 import android.widget.Button
 import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import java.io.File
@@ -23,19 +26,46 @@ class MainActivity : AppCompatActivity() {
     private var pending: Pair<LiveEntry, Int>? = null
     private var pendingUpdate: UpdateChecker.Result.Available? = null
     private var installOffered = false
+    private var spectrum: ValueAnimator? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        // The header rule runs the wallpaper suite's ramp continuously. It is
+        // the only always-on animation in the app; everything else is
+        // focus-driven, which keeps idle CPU near zero on weak TV SoCs.
+        spectrum = CoreSpectrum.bindSweep(
+            findViewById(R.id.spectrum_rule),
+            periodMs = 11_000L,
+            cornerRadiusPx = 2f * resources.displayMetrics.density,
+        )
+
         val list: RecyclerView = findViewById(R.id.live_list)
         list.layoutManager = LinearLayoutManager(this)
+
+        // Rows lift on focus. ViewGroup sorts children by Z since API 21, so
+        // the raised card draws over its neighbours without any custom
+        // child-drawing-order plumbing.
+        list.itemAnimator = DefaultItemAnimator().apply {
+            addDuration = 200L
+            removeDuration = 160L
+            moveDuration = 200L
+            // Status updates are payload binds; a change animation on top of
+            // them would cross-fade two copies of the row over the focus ring.
+            changeDuration = 0L
+            supportsChangeAnimations = false
+        }
+        list.layoutAnimation =
+            AnimationUtils.loadLayoutAnimation(this, R.anim.live_layout_stagger)
 
         val entries = LiveCatalog.load(this)
         adapter = LiveAdapter(entries) { entry, pos -> download(entry, pos) }
         list.adapter = adapter
+        list.scheduleLayoutAnimation()
 
         if (entries.isEmpty()) {
+            list.visibility = View.GONE
             findViewById<TextView>(R.id.empty).visibility = View.VISIBLE
         }
 
@@ -165,6 +195,8 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onDestroy() {
+        spectrum?.cancel()
+        spectrum = null
         io.shutdown()
         super.onDestroy()
     }

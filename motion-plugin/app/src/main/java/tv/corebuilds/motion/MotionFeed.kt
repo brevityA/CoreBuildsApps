@@ -18,7 +18,22 @@ import java.net.URL
 object MotionFeed {
 
     private const val TAG = "CoreMotion"
-    private const val TIMEOUT_MS = 20_000
+
+    /** Projectivy calls getWallpapers() on a binder thread and waits. Spocky's
+     *  own guidance is to be frugal here, so keep the worst case well under
+     *  ~15s rather than the 40s a 20s connect + 20s read allows. A provider
+     *  that stalls looks broken and Projectivy falls back to its cache. */
+    private const val CONNECT_TIMEOUT_MS = 6_000
+    private const val READ_TIMEOUT_MS = 8_000
+
+    /** In-memory feed cache. Projectivy already caches results for
+     *  itemsCacheDurationMillis, but it re-binds the service freely and other
+     *  events can trigger extra calls; this makes those free. */
+    private const val CACHE_TTL_MS = 15 * 60 * 1000L
+
+    private var cachedUrl: String? = null
+    private var cachedAt: Long = 0L
+    private var cachedWallpapers: List<Wallpaper> = emptyList()
 
     const val DEFAULT_FEED_URL =
         "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Motion/live-feed.json"
@@ -30,9 +45,20 @@ object MotionFeed {
     )
 
     /** Fetch and parse [url]. Returns an empty list on any failure (Projectivy
-     *  keeps the current wallpaper rather than crashing). */
+     *  keeps the current wallpaper rather than crashing). Results are cached
+     *  for [CACHE_TTL_MS] so repeat binds don't re-hit the network. */
+    @Synchronized
     fun load(url: String): List<Wallpaper> {
         val resolved = url.ifBlank { DEFAULT_FEED_URL }
+
+        val now = System.currentTimeMillis()
+        if (resolved == cachedUrl &&
+            cachedWallpapers.isNotEmpty() &&
+            now - cachedAt < CACHE_TTL_MS
+        ) {
+            return cachedWallpapers
+        }
+
         val host = try {
             URL(resolved).host
         } catch (_: Exception) {
@@ -43,15 +69,15 @@ object MotionFeed {
             return emptyList()
         }
 
-        return try {
+        val fetched = try {
             val conn = URL(resolved).openConnection() as HttpURLConnection
-            conn.connectTimeout = TIMEOUT_MS
-            conn.readTimeout = TIMEOUT_MS
+            conn.connectTimeout = CONNECT_TIMEOUT_MS
+            conn.readTimeout = READ_TIMEOUT_MS
             conn.instanceFollowRedirects = true
             try {
                 if (conn.responseCode !in 200..299) {
                     Log.w(TAG, "feed HTTP ${conn.responseCode}")
-                    return emptyList()
+                    return staleOrEmpty(resolved)
                 }
                 val body = conn.inputStream.bufferedReader().use { it.readText() }
                 parse(body)
@@ -60,9 +86,22 @@ object MotionFeed {
             }
         } catch (e: Exception) {
             Log.w(TAG, "feed load failed", e)
-            emptyList()
+            return staleOrEmpty(resolved)
         }
+
+        if (fetched.isNotEmpty()) {
+            cachedUrl = resolved
+            cachedAt = now
+            cachedWallpapers = fetched
+        }
+        Log.i(TAG, "feed loaded: ${fetched.size} wallpapers from $resolved")
+        return fetched
     }
+
+    /** On a transient failure, serving the last good batch beats serving
+     *  nothing — an empty list makes the plugin look dead in Projectivy. */
+    private fun staleOrEmpty(url: String): List<Wallpaper> =
+        if (url == cachedUrl) cachedWallpapers else emptyList()
 
     private fun parse(json: String): List<Wallpaper> {
         return try {

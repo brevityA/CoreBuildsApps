@@ -8,4 +8,8 @@
 
     <string name="settings">Settings</string>
     <string name="setting_feed_url_title">Feed URL</string>
+
+    <!-- Discovery self-check shown in the plugin's settings screen. -->
+    <string name="diagnostics_title_ok">Projectivy discovery — OK</string>
+    <string name="diagnostics_title_problem">Projectivy discovery — problem found</string>
 </resources>
