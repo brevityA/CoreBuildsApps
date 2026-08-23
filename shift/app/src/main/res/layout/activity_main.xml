@@ -22,6 +22,37 @@
         android:textColor="@color/cb_text_secondary"
         android:textSize="14sp" />
 
+    <LinearLayout
+        android:id="@+id/update_banner"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:padding="12dp"
+        android:layout_marginBottom="8dp"
+        android:background="@drawable/card_bg"
+        android:visibility="gone">
+
+        <TextView
+            android:id="@+id/update_text"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:textColor="@color/cb_cyan"
+            android:textSize="15sp" />
+
+        <Button
+            android:id="@+id/update_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:minWidth="100dp"
+            android:text="@string/update_btn"
+            android:textSize="14sp"
+            android:textColor="@color/btn_text"
+            android:background="@drawable/btn_bg"
+            android:focusable="true" />
+    </LinearLayout>
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/live_list"
         android:layout_width="match_parent"

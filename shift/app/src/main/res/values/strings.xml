@@ -12,4 +12,11 @@
     <string name="empty">No live wallpapers found</string>
     <string name="preview_loading">Loading…</string>
     <string name="preview_failed">Preview failed</string>
+
+    <string name="update_available">v%1$s available</string>
+    <string name="update_btn">Update</string>
+    <string name="update_downloading">Downloading…</string>
+    <string name="update_installing">Ready — installing…</string>
+    <string name="update_failed_fmt">Update failed · %1$s</string>
+    <string name="update_permission">Allow installs from Core Shift first</string>
 </resources>
