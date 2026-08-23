@@ -57,6 +57,8 @@ class MainActivity : AppCompatActivity() {
     private var spectrum: ValueAnimator? = null
     private var contentRefreshing = false
     private var currentEntries: List<LiveEntry> = emptyList()
+    private var focusRunnable: Runnable? = null
+    private var focusRetries = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -122,6 +124,7 @@ class MainActivity : AppCompatActivity() {
         list.adapter = adapter
         list.scheduleLayoutAnimation()
         updateEmptyState(currentEntries)
+        requestInitialFocus()
 
         val firstPrequel = currentEntries.firstOrNull { it.scene != null }
         if (firstPrequel != null) {
@@ -130,8 +133,6 @@ class MainActivity : AppCompatActivity() {
         }
         contentButton.setOnClickListener { refreshContent() }
 
-        // The stage is a real animated procedural preview, not a static poster.
-        // The production MP4 feed still refreshes independently in the background.
         refreshContent()
         checkForUpdate()
     }
@@ -226,6 +227,7 @@ class MainActivity : AppCompatActivity() {
                 currentEntries = result.entries
                 adapter.submit(result.entries)
                 updateEmptyState(result.entries)
+                if (result.entries.isNotEmpty()) requestInitialFocus()
                 result.entries.firstOrNull { it.scene != null }?.let { selectStage(it) }
 
                 when {
@@ -339,6 +341,41 @@ class MainActivity : AppCompatActivity() {
             installOffered = true
             UpdateInstaller.install(this, updateFile)
         }
+        restoreLibraryFocus()
+    }
+
+    private fun requestInitialFocus() {
+        cancelFocusRunnable()
+        focusRetries = 0
+        val runnable = object : Runnable {
+            override fun run() {
+                val holder = list.findViewHolderForAdapterPosition(0)
+                if (holder != null) {
+                    holder.itemView.findViewById<Button>(R.id.btn_preview)?.requestFocus()
+                    focusRunnable = null
+                } else if (adapter.itemCount > 0 && focusRetries < MAX_FOCUS_RETRIES) {
+                    focusRetries++
+                    list.post(this)
+                } else {
+                    focusRunnable = null
+                }
+            }
+        }
+        focusRunnable = runnable
+        list.post(runnable)
+    }
+
+    private fun cancelFocusRunnable() {
+        focusRunnable?.let { list.removeCallbacks(it) }
+        focusRunnable = null
+    }
+
+    private fun restoreLibraryFocus() {
+        if (list.hasFocus() || currentEntries.isEmpty()) return
+        val focused = currentFocus
+        if (focused == null || focused == window.decorView.rootView) {
+            requestInitialFocus()
+        }
     }
 
     private fun download(entry: LiveEntry, pos: Int, quality: QualityTier) {
@@ -395,6 +432,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onDestroy() {
+        cancelFocusRunnable()
         spectrum?.cancel()
         spectrum = null
         io.shutdown()
@@ -403,5 +441,6 @@ class MainActivity : AppCompatActivity() {
 
     companion object {
         private const val REQ_WRITE = 102
+        private const val MAX_FOCUS_RETRIES = 10
     }
 }

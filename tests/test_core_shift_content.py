@@ -28,11 +28,11 @@ def test_remote_content_is_separate_from_apk_update():
     assert "UpdateChecker.check" in activity
     assert "networkSucceeded" in remote
     gradle = (ROOT / "shift/app/build.gradle.kts").read_text()
-    assert 'versionName = "2.3.1"' in gradle
-    assert 'versionCode = 7' in gradle
+    assert 'versionName = "2.3.2"' in gradle
+    assert 'versionCode = 8' in gradle
     update = (ROOT / "Latestrelease/shift-version.json").read_text()
-    assert '"versionName": "2.3.1"' in update
-    assert '"versionCode": 7' in update
+    assert '"versionName": "2.3.2"' in update
+    assert '"versionCode": 8' in update
     assert "content_banner" in (SHIFT / "res/layout/activity_main.xml").read_text()
     assert "motion-prequels/prequel-feed.json" in remote
 
