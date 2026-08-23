@@ -6,6 +6,23 @@
     <string name="stage_kicker">CORE PREQUEL ENGINE / NOW PREVIEWING</string>
     <string name="library_label">MOTION LIBRARY · SERIES 2 / 3 PREQUELS + CORE MOTION LOOPS</string>
     <string name="app_hint">Procedural motion for the Core Builds screen. Preview the scene locally, or download production MP4s to Movies/CoreBuilds for Monet.</string>
+    <string name="preview_motion_label">PREVIEW MOTION</string>
+    <string name="speed_slow">0.5×</string>
+    <string name="speed_normal">1×</string>
+    <string name="speed_normal_selected">1× ✓</string>
+    <string name="speed_fast">2×</string>
+    <string name="preview_length_label">LOOP LENGTH</string>
+    <string name="length_10">10s</string>
+    <string name="length_20">20s</string>
+    <string name="length_20_selected">20s ✓</string>
+    <string name="length_30">30s</string>
+    <string name="delivery_label">DELIVERY TIER</string>
+    <string name="quality_1080">1080p</string>
+    <string name="quality_1080_selected">1080p ✓</string>
+    <string name="quality_4k">4K</string>
+    <string name="quality_4k_selected">4K ✓</string>
+    <string name="quality_unavailable">%1$s unavailable</string>
+    <string name="delivery_tier_fmt">DOWNLOAD · %1$s</string>
     <string name="preview">Preview</string>
     <string name="preview_only">Preview only</string>
     <string name="download">Download</string>
@@ -21,6 +38,7 @@
     <string name="procedural_preview_kicker">CORE MOTION / PREQUEL ENGINE</string>
     <string name="procedural_live_badge">LIVE · PROCEDURAL · 20S LOOP</string>
     <string name="procedural_preview_meta">Scene %1$d · GPU preview · production MP4 available after render</string>
+    <string name="preview_controls_title">PREVIEW CONTROLS</string>
 
     <string name="update_available">v%1$s available</string>
     <string name="update_btn">Update</string>

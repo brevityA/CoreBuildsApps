@@ -36,10 +36,22 @@ class MainActivity : AppCompatActivity() {
     private lateinit var motionStage: CoreMotionPreviewView
     private lateinit var stageTitle: TextView
     private lateinit var stageMeta: TextView
+    private lateinit var quality1080: Button
+    private lateinit var quality4k: Button
+    private lateinit var qualityStatus: TextView
+    private lateinit var speedSlow: Button
+    private lateinit var speedNormal: Button
+    private lateinit var speedFast: Button
+    private lateinit var length10: Button
+    private lateinit var length20: Button
+    private lateinit var length30: Button
+    private var previewSpeed = 1f
+    private var previewLength = 20f
     private val io = Executors.newSingleThreadExecutor()
     private val main = Handler(Looper.getMainLooper())
 
-    private var pending: Pair<LiveEntry, Int>? = null
+    private var pending: Triple<LiveEntry, Int, QualityTier>? = null
+    private var selectedQuality = QualityTier.HD_1080
     private var pendingUpdate: UpdateChecker.Result.Available? = null
     private var installOffered = false
     private var spectrum: ValueAnimator? = null
@@ -64,6 +76,24 @@ class MainActivity : AppCompatActivity() {
         motionStage = findViewById(R.id.motion_stage)
         stageTitle = findViewById(R.id.stage_title)
         stageMeta = findViewById(R.id.stage_meta)
+        quality1080 = findViewById(R.id.quality_1080)
+        quality4k = findViewById(R.id.quality_4k)
+        qualityStatus = findViewById(R.id.quality_status)
+        quality1080.setOnClickListener { setQuality(QualityTier.HD_1080) }
+        quality4k.setOnClickListener { setQuality(QualityTier.UHD_4K) }
+        speedSlow = findViewById(R.id.speed_slow)
+        speedNormal = findViewById(R.id.speed_normal)
+        speedFast = findViewById(R.id.speed_fast)
+        length10 = findViewById(R.id.length_10)
+        length20 = findViewById(R.id.length_20)
+        length30 = findViewById(R.id.length_30)
+        speedSlow.setOnClickListener { setPreviewMotion(speed = .5f) }
+        speedNormal.setOnClickListener { setPreviewMotion(speed = 1f) }
+        speedFast.setOnClickListener { setPreviewMotion(speed = 2f) }
+        length10.setOnClickListener { setPreviewMotion(seconds = 10f) }
+        length20.setOnClickListener { setPreviewMotion(seconds = 20f) }
+        length30.setOnClickListener { setPreviewMotion(seconds = 30f) }
+        updatePreviewControls()
         list.layoutManager = LinearLayoutManager(this)
 
         list.itemAnimator = DefaultItemAnimator().apply {
@@ -85,9 +115,10 @@ class MainActivity : AppCompatActivity() {
         )
         adapter = LiveAdapter(
             currentEntries,
-            onDownload = { entry, pos -> download(entry, pos) },
+            onDownload = { entry, pos, quality -> download(entry, pos, quality) },
             onPreview = { entry -> openPreview(entry) },
         )
+        updateQualityUi()
         list.adapter = adapter
         list.scheduleLayoutAnimation()
         updateEmptyState(currentEntries)
@@ -103,6 +134,49 @@ class MainActivity : AppCompatActivity() {
         // The production MP4 feed still refreshes independently in the background.
         refreshContent()
         checkForUpdate()
+    }
+
+    private fun setPreviewMotion(speed: Float = previewSpeed, seconds: Float = previewLength) {
+        previewSpeed = speed.coerceIn(.5f, 2f)
+        previewLength = seconds.coerceIn(10f, 30f)
+        motionStage.setPlayback(previewSpeed, previewLength)
+        updatePreviewControls()
+    }
+
+    private fun updatePreviewControls() {
+        speedSlow.text = if (previewSpeed == .5f) "0.5× ✓" else getString(R.string.speed_slow)
+        speedNormal.text = if (previewSpeed == 1f) getString(R.string.speed_normal_selected) else getString(R.string.speed_normal)
+        speedFast.text = if (previewSpeed == 2f) "2× ✓" else getString(R.string.speed_fast)
+        length10.text = if (previewLength == 10f) "10s ✓" else getString(R.string.length_10)
+        length20.text = if (previewLength == 20f) getString(R.string.length_20_selected) else getString(R.string.length_20)
+        length30.text = if (previewLength == 30f) "30s ✓" else getString(R.string.length_30)
+    }
+
+    private fun setQuality(next: QualityTier) {
+        selectedQuality = next
+        adapter.setQuality(next)
+        updateQualityUi()
+    }
+
+    private fun updateQualityUi() {
+        quality1080.text = if (selectedQuality == QualityTier.HD_1080) {
+            getString(R.string.quality_1080_selected)
+        } else {
+            getString(R.string.quality_1080)
+        }
+        quality4k.text = if (selectedQuality == QualityTier.UHD_4K) {
+            getString(R.string.quality_4k_selected)
+        } else {
+            getString(R.string.quality_4k)
+        }
+        quality1080.alpha = if (selectedQuality == QualityTier.HD_1080) 1f else .72f
+        quality4k.alpha = if (selectedQuality == QualityTier.UHD_4K) 1f else .72f
+        val fourKCount = currentEntries.count { it.hasTier(QualityTier.UHD_4K) }
+        quality4k.isEnabled = fourKCount > 0
+        qualityStatus.text = getString(
+            R.string.delivery_tier_fmt,
+            selectedQuality.label,
+        )
     }
 
     private fun selectStage(entry: LiveEntry) {
@@ -125,7 +199,10 @@ class MainActivity : AppCompatActivity() {
         } else {
             startActivity(
                 Intent(this, PreviewActivity::class.java).apply {
-                    putExtra(PreviewActivity.EXTRA_URL, entry.url1080p)
+                    putExtra(
+                        PreviewActivity.EXTRA_URL,
+                        entry.urlFor(selectedQuality) ?: entry.url1080p,
+                    )
                     putExtra(PreviewActivity.EXTRA_TITLE, entry.title)
                 },
             )
@@ -264,21 +341,22 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun download(entry: LiveEntry, pos: Int) {
+    private fun download(entry: LiveEntry, pos: Int, quality: QualityTier) {
         if (!entry.mediaAvailable) return
+        if (!entry.hasTier(quality)) return
         val perm = LiveDownloader.storagePermission()
         if (perm != null && !LiveDownloader.hasStoragePermission(this)) {
-            pending = entry to pos
+            pending = Triple(entry, pos, quality)
             androidx.core.app.ActivityCompat.requestPermissions(this, arrayOf(perm), REQ_WRITE)
             return
         }
-        startDownload(entry, pos)
+        startDownload(entry, pos, quality)
     }
 
-    private fun startDownload(entry: LiveEntry, pos: Int) {
+    private fun startDownload(entry: LiveEntry, pos: Int, quality: QualityTier) {
         adapter.markBusy(pos)
         io.execute {
-            val result = LiveDownloader.download(this, entry)
+            val result = LiveDownloader.download(this, entry, quality)
             main.post {
                 if (isFinishing || isDestroyed) return@post
                 when (result) {
@@ -310,7 +388,7 @@ class MainActivity : AppCompatActivity() {
         if (grantResults.isNotEmpty() &&
             grantResults[0] == android.content.pm.PackageManager.PERMISSION_GRANTED
         ) {
-            startDownload(pending.first, pending.second)
+            startDownload(pending.first, pending.second, pending.third)
         } else {
             adapter.markFailed(pending.second, getString(R.string.permission_needed))
         }

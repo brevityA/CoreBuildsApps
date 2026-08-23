@@ -129,6 +129,154 @@
     </FrameLayout>
 
     <LinearLayout
+        android:id="@+id/preview_controls"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="7dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="monospace"
+            android:text="@string/preview_motion_label"
+            android:textColor="@color/cb_text_secondary"
+            android:textSize="11sp" />
+
+        <Button
+            android:id="@+id/speed_slow"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:minWidth="72dp"
+            android:text="@string/speed_slow"
+            android:textColor="@color/btn_text"
+            android:textSize="11sp"
+            android:background="@drawable/btn_bg"
+            android:focusable="true" />
+
+        <Button
+            android:id="@+id/speed_normal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="5dp"
+            android:minWidth="72dp"
+            android:text="@string/speed_normal_selected"
+            android:textColor="@color/btn_text"
+            android:textSize="11sp"
+            android:background="@drawable/btn_bg"
+            android:focusable="true" />
+
+        <Button
+            android:id="@+id/speed_fast"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="5dp"
+            android:minWidth="72dp"
+            android:text="@string/speed_fast"
+            android:textColor="@color/btn_text"
+            android:textSize="11sp"
+            android:background="@drawable/btn_bg"
+            android:focusable="true" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="18dp"
+            android:fontFamily="monospace"
+            android:text="@string/preview_length_label"
+            android:textColor="@color/cb_text_secondary"
+            android:textSize="11sp" />
+
+        <Button
+            android:id="@+id/length_10"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:minWidth="72dp"
+            android:text="@string/length_10"
+            android:textColor="@color/btn_text"
+            android:textSize="11sp"
+            android:background="@drawable/btn_bg"
+            android:focusable="true" />
+
+        <Button
+            android:id="@+id/length_20"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="5dp"
+            android:minWidth="72dp"
+            android:text="@string/length_20_selected"
+            android:textColor="@color/btn_text"
+            android:textSize="11sp"
+            android:background="@drawable/btn_bg"
+            android:focusable="true" />
+
+        <Button
+            android:id="@+id/length_30"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="5dp"
+            android:minWidth="72dp"
+            android:text="@string/length_30"
+            android:textColor="@color/btn_text"
+            android:textSize="11sp"
+            android:background="@drawable/btn_bg"
+            android:focusable="true" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/quality_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="7dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="monospace"
+            android:text="@string/delivery_label"
+            android:textColor="@color/cb_text_secondary"
+            android:textSize="11sp" />
+
+        <Button
+            android:id="@+id/quality_1080"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="12dp"
+            android:minWidth="105dp"
+            android:text="@string/quality_1080_selected"
+            android:textColor="@color/btn_text"
+            android:textSize="12sp"
+            android:background="@drawable/btn_bg"
+            android:focusable="true" />
+
+        <Button
+            android:id="@+id/quality_4k"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="7dp"
+            android:minWidth="105dp"
+            android:text="@string/quality_4k"
+            android:textColor="@color/btn_text"
+            android:textSize="12sp"
+            android:background="@drawable/btn_bg"
+            android:focusable="true" />
+
+        <TextView
+            android:id="@+id/quality_status"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="14dp"
+            android:fontFamily="monospace"
+            android:textColor="@color/cb_cyan"
+            android:textSize="11sp" />
+    </LinearLayout>
+
+    <LinearLayout
         android:id="@+id/update_banner"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
