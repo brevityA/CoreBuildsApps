@@ -7,7 +7,7 @@
     android:padding="12dp"
     android:layout_marginBottom="8dp"
     android:background="@drawable/card_bg"
-    android:focusable="true">
+    android:descendantFocusability="afterDescendants">
 
     <ImageView
         android:id="@+id/thumb"
