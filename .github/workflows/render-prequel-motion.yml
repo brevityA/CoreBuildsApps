@@ -31,13 +31,15 @@ on:
         default: ''
 
 permissions:
-  contents: write
+  contents: write   # required by softprops/action-gh-release
 
 jobs:
   render:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
 
       - name: Install Mesa software OpenGL and ffmpeg
         run: |
@@ -54,15 +56,19 @@ jobs:
       - name: Render prequel set
         env:
           LIBGL_ALWAYS_SOFTWARE: '1'
+          RENDER_SET: ${{ inputs.set }}
+          RENDER_RESOLUTION: ${{ inputs.resolution }}
+          RENDER_ONLY: ${{ inputs.only }}
         run: |
-          IFS=x read -r WIDTH HEIGHT <<< "${{ inputs.resolution }}"
-          EXTRA=''
-          if [ -n "${{ inputs.only }}" ]; then
-            IFS=',' read -ra PICKS <<< "${{ inputs.only }}"
-            for pick in "${PICKS[@]}"; do EXTRA="$EXTRA --only $pick"; done
+          set -euo pipefail
+          IFS=x read -r WIDTH HEIGHT <<< "$RENDER_RESOLUTION"
+          EXTRA=()
+          if [ -n "$RENDER_ONLY" ]; then
+            IFS=',' read -ra PICKS <<< "$RENDER_ONLY"
+            for pick in "${PICKS[@]}"; do EXTRA+=(--only "$pick"); done
           fi
           xvfb-run -a python tools/build_prequel_motion.py \
-            --set "${{ inputs.set }}" --width "$WIDTH" --height "$HEIGHT" $EXTRA
+            --set "$RENDER_SET" --width "$WIDTH" --height "$HEIGHT" "${EXTRA[@]}"
 
       - name: Validate generated clips and feed
         run: python tools/validate_prequel_motion.py --generated Motion/prequel

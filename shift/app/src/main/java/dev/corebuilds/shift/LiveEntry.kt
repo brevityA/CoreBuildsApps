@@ -67,18 +67,17 @@ object LiveCatalog {
             val arr = JSONArray(json)
             (0 until arr.length()).mapNotNull { i ->
                 val o = arr.getJSONObject(i)
-                val url1080p = o.optString("url_1080p")
-                // Core Shift needs a downloadable default tier. The Projectivy
-                // plugin can consume url_4k-only feeds, but this app is a TV
-                // browser/downloader and must not create a dead row.
-                if (url1080p.isBlank()) null else {
+                val url1080p = o.optString("url_1080p").ifBlank { null }
+                val url4k = o.optString("url_4k").ifBlank { null }
+                val playback = url1080p ?: url4k
+                if (playback == null) null else {
                     val thumbUrl = o.optString("url_img").ifBlank { null }
                     LiveEntry(
                         title = o.optString("title", "Live ${i + 1}"),
                         location = o.optString("location", "Core Motion"),
                         author = o.optString("author", "Core Builds"),
-                        url1080p = url1080p,
-                        url4k = o.optString("url_4k").ifBlank { null },
+                        url1080p = playback,
+                        url4k = url4k,
                         thumbAsset = if (bundledThumbs && thumbUrl != null) {
                             "$THUMB_DIR/${thumbUrl.substringAfterLast('/')}"
                         } else {

@@ -18,7 +18,7 @@ wallpapers.
   `Latestrelease/shift-version.json` and the Core Shift GitHub Release lane.
 
 The app update channel and content channel are separate: new code ships as an
-APK, while new wallpapers ship as a signed/allowlisted feed plus on-demand
+APK, while new wallpapers ship as an HTTPS/allowlisted feed plus on-demand
 media.
 
 ## The two delivery routes

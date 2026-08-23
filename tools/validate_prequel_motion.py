@@ -31,12 +31,11 @@ def catalog_presets() -> dict[str, dict]:
 def probe(path: Path) -> tuple[int, int, float]:
     cmd = [
         "ffprobe", "-v", "error", "-select_streams", "v:0",
-        "-show_entries", "stream=width,height,r_frame_rate",
+        "-show_entries", "stream=width,height",
         "-show_entries", "format=duration", "-of", "json", str(path),
     ]
     data = json.loads(subprocess.check_output(cmd, text=True))
     stream = data["streams"][0]
-    num, den = (int(x) for x in stream["r_frame_rate"].split("/"))
     return int(stream["width"]), int(stream["height"]), float(data["format"]["duration"])
 
 

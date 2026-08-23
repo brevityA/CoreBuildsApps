@@ -62,7 +62,7 @@ inspect the exact render plan on machines without OpenGL.
 Serve the repo root and open `/tools/motion-studio/`:
 
 ```bash
-python -m http.server 8000 --bind 0.0.0.0
+python -m http.server 8000 --bind 127.0.0.1
 ```
 
 The studio loads the preset catalog locally. It does not need the CORS proxy to

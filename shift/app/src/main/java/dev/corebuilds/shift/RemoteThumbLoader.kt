@@ -83,7 +83,15 @@ object RemoteThumbLoader {
                 if (tmp.exists()) tmp.delete()
             }
         }
-        return BitmapFactory.decodeFile(dest.absolutePath)
+        val opts = BitmapFactory.Options().apply { inJustDecodeBounds = true }
+        BitmapFactory.decodeFile(dest.absolutePath, opts)
+        val maxDim = 2048
+        if (opts.outWidth > maxDim || opts.outHeight > maxDim) {
+            val scale = maxOf(opts.outWidth, opts.outHeight) / maxDim.toFloat()
+            opts.inSampleSize = Integer.highestOneBit(scale.toInt().coerceAtLeast(1))
+        }
+        opts.inJustDecodeBounds = false
+        return BitmapFactory.decodeFile(dest.absolutePath, opts)
     }
 
     private fun sha256(value: String): String {
