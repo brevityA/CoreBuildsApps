@@ -158,6 +158,7 @@ def main() -> int:
             print(f"warning: single-tier render ({tiers[0]}); "
                   f"feed entries lack {missing}", flush=True)
 
+        effective_duration = args.duration / args.speed
         videos = []
         for entry in feed:
             videos.append({
@@ -168,7 +169,7 @@ def main() -> int:
                 "url_4k": entry.get("url_4k"),
                 "thumb": entry.get("url_img"),
                 "resolution": "1920x1080 + 3840x2160" if len(tiers) == 2 else ("3840x2160" if tiers[0] == "4k" else "1920x1080"),
-                "duration": round(args.duration),
+                "duration": round(effective_duration),
                 "fps": args.fps,
                 "motion_speed": args.speed,
                 "scene": entry.get("scene"),
