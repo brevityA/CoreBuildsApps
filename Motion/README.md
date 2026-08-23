@@ -3,6 +3,12 @@
 6 seamless looping video wallpapers, generated from the Core Builds still
 collection. Silent H.264, 20 s loops, 1080p default (+ one 4K flagship).
 
+The Series 2 and 3 prequel line is generated separately by the **Core Prequel
+Engine**: 16 real-time procedural scenes (orbitals, warp, fogbanks, spiral,
+slipstream, embers, tracer, pendulum, and eight horizon atmospheres). It is
+not a still-image zoom. See `docs/CORE_MOTION_PREQUELS.md` and
+`tools/motion-studio/`.
+
 These exist because Android TV launchers that support *video* wallpapers —
 Monet (Premium) and Projectivy (Premium) — play looping MP4 files, and the
 static collection had no video line. Motion is the missing format.

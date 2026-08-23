@@ -19,4 +19,11 @@
     <string name="update_installing">Ready — installing…</string>
     <string name="update_failed_fmt">Update failed · %1$s</string>
     <string name="update_permission">Allow installs from Core Shift first</string>
+
+    <string name="content_available_fmt">Core Motion library · %1$d prequels available</string>
+    <string name="content_updated_fmt">Core Motion updated · %1$d new prequel%2$s</string>
+    <string name="content_cached_fmt">Core Motion library · %1$d cached prequel%2$s</string>
+    <string name="content_checking">Checking for Core Motion updates…</string>
+    <string name="content_refresh">Refresh</string>
+    <string name="content_refreshing">Refreshing…</string>
 </resources>

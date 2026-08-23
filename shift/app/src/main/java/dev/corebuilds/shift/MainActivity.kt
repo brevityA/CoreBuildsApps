@@ -17,9 +17,22 @@ import androidx.recyclerview.widget.RecyclerView
 import java.io.File
 import java.util.concurrent.Executors
 
+/**
+ * Core Shift's user-facing live-wallpaper application.
+ *
+ * The bundled catalog renders immediately and the remote Core Motion prequel
+ * feed is refreshed in the background. APK updates and wallpaper/content
+ * updates are separate, so new Series 2/3 generations do not require a new
+ * APK every time.
+ */
 class MainActivity : AppCompatActivity() {
 
     private lateinit var adapter: LiveAdapter
+    private lateinit var list: RecyclerView
+    private lateinit var empty: TextView
+    private lateinit var contentBanner: LinearLayout
+    private lateinit var contentText: TextView
+    private lateinit var contentButton: Button
     private val io = Executors.newSingleThreadExecutor()
     private val main = Handler(Looper.getMainLooper())
 
@@ -27,6 +40,8 @@ class MainActivity : AppCompatActivity() {
     private var pendingUpdate: UpdateChecker.Result.Available? = null
     private var installOffered = false
     private var spectrum: ValueAnimator? = null
+    private var contentRefreshing = false
+    private var currentEntries: List<LiveEntry> = emptyList()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -41,35 +56,102 @@ class MainActivity : AppCompatActivity() {
             cornerRadiusPx = 2f * resources.displayMetrics.density,
         )
 
-        val list: RecyclerView = findViewById(R.id.live_list)
+        list = findViewById(R.id.live_list)
+        empty = findViewById(R.id.empty)
+        contentBanner = findViewById(R.id.content_banner)
+        contentText = findViewById(R.id.content_text)
+        contentButton = findViewById(R.id.content_btn)
         list.layoutManager = LinearLayoutManager(this)
 
         // Rows lift on focus. ViewGroup sorts children by Z since API 21, so
-        // the raised card draws over its neighbours without any custom
-        // child-drawing-order plumbing.
+        // the raised card draws over its neighbours without custom ordering.
         list.itemAnimator = DefaultItemAnimator().apply {
             addDuration = 200L
             removeDuration = 160L
             moveDuration = 200L
-            // Status updates are payload binds; a change animation on top of
-            // them would cross-fade two copies of the row over the focus ring.
+            // Status/content updates are payload binds; a change animation on
+            // top of them would cross-fade two copies of the row.
             changeDuration = 0L
             supportsChangeAnimations = false
         }
         list.layoutAnimation =
             AnimationUtils.loadLayoutAnimation(this, R.anim.live_layout_stagger)
 
-        val entries = LiveCatalog.load(this)
-        adapter = LiveAdapter(entries) { entry, pos -> download(entry, pos) }
+        val bundled = LiveCatalog.load(this)
+        val cachedPrequels = RemoteLiveCatalog.cached(this)
+        currentEntries = LiveCatalog.merge(bundled, cachedPrequels)
+        adapter = LiveAdapter(currentEntries) { entry, pos -> download(entry, pos) }
         list.adapter = adapter
         list.scheduleLayoutAnimation()
+        updateEmptyState(currentEntries)
 
-        if (entries.isEmpty()) {
-            list.visibility = View.GONE
-            findViewById<TextView>(R.id.empty).visibility = View.VISIBLE
+        if (cachedPrequels.isNotEmpty()) {
+            showCachedContent(cachedPrequels.size)
+        }
+        contentButton.setOnClickListener { refreshContent() }
+
+        // Content refresh is automatic on every app start and can also be
+        // retried from the banner. It never goes through browser CORS.
+        refreshContent()
+        checkForUpdate()
+    }
+
+    private fun refreshContent() {
+        if (contentRefreshing) return
+        contentRefreshing = true
+        contentButton.isEnabled = false
+        contentButton.text = getString(R.string.content_refreshing)
+        if (currentEntries.isEmpty()) {
+            empty.text = getString(R.string.content_checking)
         }
 
-        checkForUpdate()
+        RemoteLiveCatalog.refresh(this, currentEntries) { result ->
+            if (!isFinishing && !isDestroyed) {
+                contentRefreshing = false
+                contentButton.isEnabled = true
+                contentButton.text = getString(R.string.content_refresh)
+                currentEntries = result.entries
+                adapter.submit(result.entries)
+                updateEmptyState(result.entries)
+
+                when {
+                    result.networkSucceeded && result.newEntries > 0 ->
+                        showUpdatedContent(result.prequelCount, result.newEntries)
+                    result.fromCache -> showCachedContent(result.prequelCount)
+                    result.prequelCount > 0 -> showAvailableContent(result.prequelCount)
+                }
+            }
+        }
+    }
+
+    private fun updateEmptyState(entries: List<LiveEntry>) {
+        val hasEntries = entries.isNotEmpty()
+        list.visibility = if (hasEntries) View.VISIBLE else View.GONE
+        empty.visibility = if (hasEntries) View.GONE else View.VISIBLE
+        if (!hasEntries && !contentRefreshing) {
+            empty.text = getString(R.string.empty)
+        }
+    }
+
+    private fun showCachedContent(count: Int) {
+        contentBanner.visibility = View.VISIBLE
+        val suffix = if (count == 1) "" else "s"
+        contentText.text = getString(R.string.content_cached_fmt, count, suffix)
+    }
+
+    private fun showAvailableContent(count: Int) {
+        contentBanner.visibility = View.VISIBLE
+        contentText.text = getString(R.string.content_available_fmt, count)
+    }
+
+    private fun showUpdatedContent(total: Int, added: Int) {
+        contentBanner.visibility = View.VISIBLE
+        val suffix = if (added == 1) "" else "s"
+        contentText.text = getString(R.string.content_updated_fmt, added, suffix)
+        // Keep the total in the accessibility description without adding a
+        // second visual line to the compact TV banner.
+        contentBanner.contentDescription =
+            getString(R.string.content_available_fmt, total)
     }
 
     private fun checkForUpdate() {

@@ -1,0 +1,39 @@
+{
+  "engine": "core-prequel-engine",
+  "version": "1.0.0",
+  "loopSeconds": 20,
+  "fps": 30,
+  "defaultResolution": "1920x1080",
+  "series": [
+    {
+      "id": "series-2-motion",
+      "label": "Series 2 · Motion",
+      "description": "Long-exposure kinetics rebuilt as real-time fields, particles and trails.",
+      "presets": [
+        { "number": 25, "slug": "orbitals", "title": "Orbitals", "scene": 0, "seed": 25.1, "accent": "#00e5ff", "intensity": 0.82, "source": "Wallpapers/series-2-motion/corebuilds-25-orbitals.png" },
+        { "number": 26, "slug": "warp", "title": "Warp", "scene": 1, "seed": 26.2, "accent": "#4facfe", "intensity": 0.88, "source": "Wallpapers/series-2-motion/corebuilds-26-warp.png" },
+        { "number": 27, "slug": "fogbanks", "title": "Fogbanks", "scene": 2, "seed": 27.3, "accent": "#7eeeff", "intensity": 0.68, "source": "Wallpapers/series-2-motion/corebuilds-27-fogbanks.png" },
+        { "number": 28, "slug": "spiral", "title": "Spiral", "scene": 3, "seed": 28.4, "accent": "#8a4890", "intensity": 0.84, "source": "Wallpapers/series-2-motion/corebuilds-28-spiral.png" },
+        { "number": 29, "slug": "slipstream", "title": "Slipstream", "scene": 4, "seed": 29.5, "accent": "#00d4ff", "intensity": 0.9, "source": "Wallpapers/series-2-motion/corebuilds-29-slipstream.png" },
+        { "number": 30, "slug": "embers", "title": "Embers", "scene": 5, "seed": 30.6, "accent": "#c03a20", "intensity": 0.74, "source": "Wallpapers/series-2-motion/corebuilds-30-embers.png" },
+        { "number": 31, "slug": "tracer", "title": "Tracer", "scene": 6, "seed": 31.7, "accent": "#00e5ff", "intensity": 0.86, "source": "Wallpapers/series-2-motion/corebuilds-31-tracer.png" },
+        { "number": 32, "slug": "pendulum", "title": "Pendulum", "scene": 7, "seed": 32.8, "accent": "#4facfe", "intensity": 0.78, "source": "Wallpapers/series-2-motion/corebuilds-32-pendulum.png" }
+      ]
+    },
+    {
+      "id": "series-3-horizons",
+      "label": "Series 3 · Horizons",
+      "description": "A stable horizon line with slow atmosphere, signal and light changes above it.",
+      "presets": [
+        { "number": 33, "slug": "horizon-cyan", "title": "Horizon Cyan", "scene": 8, "seed": 33.1, "accent": "#00e5ff", "intensity": 0.7, "source": "Wallpapers/series-3-horizons/corebuilds-33-horizon-cyan.png" },
+        { "number": 34, "slug": "horizon-ember", "title": "Horizon Ember", "scene": 9, "seed": 34.2, "accent": "#c03a20", "intensity": 0.74, "source": "Wallpapers/series-3-horizons/corebuilds-34-horizon-ember.png" },
+        { "number": 35, "slug": "horizon-rose", "title": "Horizon Rose", "scene": 10, "seed": 35.3, "accent": "#d27891", "intensity": 0.64, "source": "Wallpapers/series-3-horizons/corebuilds-35-horizon-rose.png" },
+        { "number": 36, "slug": "horizon-labs", "title": "Horizon Labs", "scene": 11, "seed": 36.4, "accent": "#4facfe", "intensity": 0.82, "source": "Wallpapers/series-3-horizons/corebuilds-36-horizon-labs.png" },
+        { "number": 37, "slug": "horizon-verified", "title": "Horizon Verified", "scene": 12, "seed": 37.5, "accent": "#7eeeff", "intensity": 0.78, "source": "Wallpapers/series-3-horizons/corebuilds-37-horizon-verified.png" },
+        { "number": 38, "slug": "horizon-amber", "title": "Horizon Amber", "scene": 13, "seed": 38.6, "accent": "#e6a343", "intensity": 0.68, "source": "Wallpapers/series-3-horizons/corebuilds-38-horizon-amber.png" },
+        { "number": 39, "slug": "horizon-slate", "title": "Horizon Slate", "scene": 14, "seed": 39.7, "accent": "#8b949e", "intensity": 0.6, "source": "Wallpapers/series-3-horizons/corebuilds-39-horizon-slate.png" },
+        { "number": 40, "slug": "horizon-void", "title": "Horizon Void", "scene": 15, "seed": 40.8, "accent": "#00d4ff", "intensity": 0.72, "source": "Wallpapers/series-3-horizons/corebuilds-40-horizon-void.png" }
+      ]
+    }
+  ]
+}
