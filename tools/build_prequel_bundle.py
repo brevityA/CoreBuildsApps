@@ -151,8 +151,12 @@ def main() -> int:
             feed = merge_feeds(feeds["1080p"], feeds["4k"])
         else:
             feed = feeds[tiers[0]]
+            missing = "url_1080p" if tiers[0] == "4k" else "url_4k"
             for entry in feed:
                 entry["tiers"] = [tiers[0]]
+                entry.setdefault(missing, None)
+            print(f"warning: single-tier render ({tiers[0]}); "
+                  f"feed entries lack {missing}", flush=True)
 
         videos = []
         for entry in feed:

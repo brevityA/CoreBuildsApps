@@ -127,6 +127,9 @@ class LiveAdapter(
     fun setQuality(next: QualityTier) {
         if (quality == next) return
         quality = next
+        saved.clear()
+        busy.clear()
+        statuses.clear()
         notifyDataSetChanged()
     }
 
