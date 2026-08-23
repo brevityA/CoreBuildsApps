@@ -1,8 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Core Shift</string>
-    <string name="app_hint">Core Builds live wallpapers. Preview in-app, or download to Movies/CoreBuilds for Monet. Projectivy users: install the Core Motion plugin.</string>
+    <string name="app_kicker">CORE MOTION / PROCEDURAL WALLPAPERS</string>
+    <string name="live_badge">LIVE · 20S LOOPS</string>
+    <string name="stage_kicker">CORE PREQUEL ENGINE / NOW PREVIEWING</string>
+    <string name="library_label">MOTION LIBRARY · SERIES 2 / 3 PREQUELS + CORE MOTION LOOPS</string>
+    <string name="app_hint">Procedural motion for the Core Builds screen. Preview the scene locally, or download production MP4s to Movies/CoreBuilds for Monet.</string>
     <string name="preview">Preview</string>
+    <string name="preview_only">Preview only</string>
     <string name="download">Download</string>
     <string name="saved">Saved</string>
     <string name="preview_title">Live Wallpaper</string>
@@ -12,6 +17,10 @@
     <string name="empty">No live wallpapers found</string>
     <string name="preview_loading">Loading…</string>
     <string name="preview_failed">Preview failed</string>
+    <string name="procedural_preview_title">Core Motion Preview</string>
+    <string name="procedural_preview_kicker">CORE MOTION / PREQUEL ENGINE</string>
+    <string name="procedural_live_badge">LIVE · PROCEDURAL · 20S LOOP</string>
+    <string name="procedural_preview_meta">Scene %1$d · GPU preview · production MP4 available after render</string>
 
     <string name="update_available">v%1$s available</string>
     <string name="update_btn">Update</string>
@@ -20,6 +29,7 @@
     <string name="update_failed_fmt">Update failed · %1$s</string>
     <string name="update_permission">Allow installs from Core Shift first</string>
 
+    <string name="content_preview_fmt">Core Motion · %1$d procedural previews ready; MP4 release will unlock downloads</string>
     <string name="content_available_fmt">Core Motion library · %1$d prequels available</string>
     <string name="content_updated_fmt">Core Motion updated · %1$d new prequel%2$s</string>
     <string name="content_cached_fmt">Core Motion library · %1$d cached prequel%2$s</string>

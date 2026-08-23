@@ -45,6 +45,14 @@
             android:theme="@style/Theme.CoreShift"
             android:configChanges="orientation|screenSize|keyboardHidden" />
 
+        <activity
+            android:name=".ProceduralPreviewActivity"
+            android:exported="false"
+            android:label="@string/procedural_preview_title"
+            android:theme="@style/Theme.CoreShift"
+            android:screenOrientation="landscape"
+            android:configChanges="orientation|screenSize|keyboardHidden" />
+
         <!-- In-app updater. Authority must match UpdateInstaller.AUTHORITY. -->
         <provider
             android:name="androidx.core.content.FileProvider"

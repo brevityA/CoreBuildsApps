@@ -305,6 +305,8 @@ def build_feed(presets: list[dict[str, Any]], output_dir: Path, width: int, heig
                 "url_1080p": None if is_4k else video_url,
                 "url_4k": video_url if is_4k else None,
                 "series": "series-2-motion" if int(preset["scene"]) < 8 else "series-3-horizons",
+                "scene": int(preset["scene"]),
+                "accent": preset["accent"],
                 "engine": "core-prequel-engine@1.0.0",
             }
         )

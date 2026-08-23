@@ -24,24 +24,34 @@ data class LiveEntry(
     val thumbAsset: String?,
     /** Remote poster URL used when [thumbAsset] is unavailable. */
     val thumbUrl: String? = null,
+    /** Procedural scene id, or null for ordinary MP4 entries. */
+    val scene: Int? = null,
+    /** Accent used by the instant on-device procedural preview. */
+    val accent: Int = 0xFF00E5FF.toInt(),
+    /** False for the bundled procedural preview seed until an MP4 is published. */
+    val mediaAvailable: Boolean = true,
 ) {
     /** Stable filename derived from the 1080p URL (always .mp4). */
     val cacheName: String get() = url1080p.substringAfterLast('/')
 
+    val isPrequel: Boolean
+        get() = scene != null || location.contains("Prequel", ignoreCase = true)
+
     /** Human label shown in the list. */
     val specLabel: String
-        get() = if (location.contains("Prequel", ignoreCase = true)) {
-            if (url4k != null) "4K · 20s loop · Prequel" else "1080p · 20s loop · Prequel"
-        } else if (url4k != null) {
-            "4K · 20s loop"
-        } else {
-            "1080p · 20s loop"
+        get() = when {
+            isPrequel && !mediaAvailable -> "Procedural preview · MP4 publishing"
+            isPrequel && url4k != null -> "4K · 20s loop · Prequel"
+            isPrequel -> "1080p · 20s loop · Prequel"
+            url4k != null -> "4K · 20s loop"
+            else -> "1080p · 20s loop"
         }
 }
 
 object LiveCatalog {
 
     private const val MANIFEST = "manifest/live-feed.json"
+    private const val PREQUEL_SEEDS = "manifest/prequels.json"
     private const val THUMB_DIR = "live_thumbs"
 
     /** Parse the bundled feed. Empty on any error rather than crashing. */
@@ -51,18 +61,36 @@ object LiveCatalog {
         } catch (_: Exception) {
             return emptyList()
         }
-        return parse(json, bundledThumbs = true)
+        return parse(json, bundledThumbs = true, mediaAvailable = true)
+    }
+
+    /**
+     * Bundled metadata for all 16 prequels. These rows are useful immediately:
+     * they provide the procedural preview even before the release workflow has
+     * published the production MP4 files.
+     */
+    fun loadPrequelSeeds(context: Context): List<LiveEntry> {
+        val json = try {
+            context.assets.open(PREQUEL_SEEDS).bufferedReader().use { it.readText() }
+        } catch (_: Exception) {
+            return emptyList()
+        }
+        return parse(json, bundledThumbs = false, mediaAvailable = false)
     }
 
     /** Parse a previously cached remote prequel feed. */
     fun loadCachedPrequels(context: Context): List<LiveEntry> {
         val json = context.getSharedPreferences(PREFS, Context.MODE_PRIVATE)
             .getString(PREFS_FEED, null) ?: return emptyList()
-        return parse(json, bundledThumbs = false)
+        return parse(json, bundledThumbs = false, mediaAvailable = true)
     }
 
     /** Parse an Overflight-compatible feed. */
-    internal fun parse(json: String, bundledThumbs: Boolean): List<LiveEntry> {
+    internal fun parse(
+        json: String,
+        bundledThumbs: Boolean,
+        mediaAvailable: Boolean,
+    ): List<LiveEntry> {
         return try {
             val arr = JSONArray(json)
             (0 until arr.length()).mapNotNull { i ->
@@ -72,6 +100,11 @@ object LiveCatalog {
                 val playback = url1080p ?: url4k
                 if (playback == null) null else {
                     val thumbUrl = o.optString("url_img").ifBlank { null }
+                    val scene = if (o.has("scene") && !o.isNull("scene")) {
+                        o.optInt("scene", -1).takeIf { it >= 0 }
+                    } else {
+                        null
+                    }
                     LiveEntry(
                         title = o.optString("title", "Live ${i + 1}"),
                         location = o.optString("location", "Core Motion"),
@@ -84,6 +117,9 @@ object LiveCatalog {
                             null
                         },
                         thumbUrl = if (bundledThumbs) null else thumbUrl,
+                        scene = scene,
+                        accent = parseAccent(o.optString("accent")),
+                        mediaAvailable = mediaAvailable,
                     )
                 }
             }
@@ -97,11 +133,15 @@ object LiveCatalog {
         val byKey = LinkedHashMap<String, LiveEntry>(base.size + additions.size)
         for (entry in base + additions) {
             val key = entry.url1080p.ifBlank { entry.title }
-            // Remote metadata wins over an older cached copy while the
-            // original catalog order remains stable.
             byKey[key] = entry
         }
         return byKey.values.toList()
+    }
+
+    private fun parseAccent(value: String): Int {
+        return runCatching {
+            android.graphics.Color.parseColor(value)
+        }.getOrDefault(0xFF00E5FF.toInt())
     }
 
     internal const val PREFS = "core_motion_content"
