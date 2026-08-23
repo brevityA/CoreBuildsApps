@@ -19,7 +19,9 @@ on:
     paths:
       - 'motion-plugin/**'
       - 'Motion/live-feed.json'
+      - 'Motion/aerial-entries.json'
       - 'tools/verify_motion_plugin.py'
+      - 'tools/build_aerial_feed.py'
       - '.github/workflows/core-motion-apk.yml'
   push:
     branches: [main]
@@ -44,6 +46,12 @@ jobs:
       # A silent drift here is exactly what makes a plugin undetectable.
       - name: Verify Projectivy plugin contract
         run: python tools/verify_motion_plugin.py
+
+      # Monet Launcher has no plugin API; the supported route onto Monet is
+      # Aerial Views' custom-feed format. That feed is a projection of
+      # live-feed.json, so it must never drift. See docs/MONET_LAUNCHER.md.
+      - name: Verify the Aerial Views bridge feed is in sync
+        run: python tools/build_aerial_feed.py --check
 
   apk:
     name: Assemble plugin APK

@@ -1,0 +1,74 @@
+{
+  "assets": [
+    {
+      "id": "coremotion_live_01_spiral_cyan",
+      "accessibilityLabel": "Spiral Cyan \u2014 Core Motion by Core Builds",
+      "type": "aerial",
+      "timeOfDay": "night",
+      "url-1080-SDR": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Motion/live/coremotion-live-01-spiral-cyan.mp4"
+    },
+    {
+      "id": "coremotion_live_02_spiral_ember",
+      "accessibilityLabel": "Spiral Ember \u2014 Core Motion by Core Builds",
+      "type": "aerial",
+      "timeOfDay": "night",
+      "url-1080-SDR": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Motion/live/coremotion-live-02-spiral-ember.mp4"
+    },
+    {
+      "id": "coremotion_live_03_radial_cyan",
+      "accessibilityLabel": "Radial Cyan \u2014 Core Motion by Core Builds",
+      "type": "aerial",
+      "timeOfDay": "night",
+      "url-1080-SDR": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Motion/live/coremotion-live-03-radial-cyan.mp4"
+    },
+    {
+      "id": "coremotion_live_04_circular_void",
+      "accessibilityLabel": "Circular Void \u2014 Core Motion by Core Builds",
+      "type": "aerial",
+      "timeOfDay": "night",
+      "url-1080-SDR": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Motion/live/coremotion-live-04-circular-void.mp4"
+    },
+    {
+      "id": "coremotion_live_05_circuit",
+      "accessibilityLabel": "Circuit \u2014 Core Motion by Core Builds",
+      "type": "aerial",
+      "timeOfDay": "night",
+      "url-1080-SDR": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Motion/live/coremotion-live-05-circuit.mp4"
+    },
+    {
+      "id": "coremotion_live_06_deep_zoom",
+      "accessibilityLabel": "Deep Zoom \u2014 Core Motion by Core Builds",
+      "type": "aerial",
+      "timeOfDay": "night",
+      "url-1080-SDR": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Motion/live/coremotion-live-06-deep-zoom.mp4"
+    },
+    {
+      "id": "coremotion_live_07_linear_blue",
+      "accessibilityLabel": "Linear Build Blue \u2014 Core Motion by Core Builds",
+      "type": "aerial",
+      "timeOfDay": "night",
+      "url-1080-SDR": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Motion/live/coremotion-live-07-linear-blue.mp4"
+    },
+    {
+      "id": "coremotion_live_08_square_cyan",
+      "accessibilityLabel": "Square Cyan \u2014 Core Motion by Core Builds",
+      "type": "aerial",
+      "timeOfDay": "night",
+      "url-1080-SDR": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Motion/live/coremotion-live-08-square-cyan.mp4"
+    },
+    {
+      "id": "coremotion_live_09_carpet",
+      "accessibilityLabel": "Carpet \u2014 Core Motion by Core Builds",
+      "type": "aerial",
+      "timeOfDay": "night",
+      "url-1080-SDR": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Motion/live/coremotion-live-09-carpet.mp4"
+    },
+    {
+      "id": "coremotion_live_10_spiral_blue",
+      "accessibilityLabel": "Spiral Build Blue \u2014 Core Motion by Core Builds",
+      "type": "aerial",
+      "timeOfDay": "night",
+      "url-1080-SDR": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Motion/live/coremotion-live-10-spiral-blue.mp4"
+    }
+  ]
+}

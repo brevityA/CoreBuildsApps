@@ -87,3 +87,9 @@ AGP 8.5.2 / Kotlin 1.9.24 / compileSdk 34 / minSdk 26).
 
 `url_1080p`/`url_4k` → VIDEO wallpaper; `url_img` alone → IMAGE wallpaper.
 Regenerate the procedural set with `python tools/build_motion_feed.py`.
+
+## Other launchers
+
+Monet Launcher has no wallpaper-provider plugin API — this plugin cannot work
+there. The supported route is the Aerial Views bridge
+(`Motion/aerial-entries.json`); see [`docs/MONET_LAUNCHER.md`](../docs/MONET_LAUNCHER.md).
