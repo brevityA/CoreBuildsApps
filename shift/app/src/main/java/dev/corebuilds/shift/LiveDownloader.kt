@@ -51,15 +51,18 @@ object LiveDownloader {
     }
 
     /** Download [entry] and save into Movies/CoreBuilds. Never throws. */
-    fun download(context: Context, entry: LiveEntry): Result {
+    fun download(context: Context, entry: LiveEntry, quality: QualityTier = QualityTier.HD_1080): Result {
         val app = context.applicationContext
         if (!hasStoragePermission(app)) {
             return Result.NeedsPermission(storagePermission()!!)
         }
+        val sourceUrl = entry.urlFor(quality)
+            ?: return Result.Failed("${quality.label} version is unavailable")
+        val cacheName = sourceUrl.substringAfterLast('/')
         return try {
-            val file = fetch(app, entry.url1080p, entry.cacheName)
+            val file = fetch(app, sourceUrl, cacheName)
                 ?: return Result.Failed("download failed")
-            copyToMovies(app, file, entry.cacheName)
+            copyToMovies(app, file, cacheName)
         } catch (e: Exception) {
             Log.w(TAG, "download failed: ${entry.cacheName}", e)
             Result.Failed(e.message ?: e.javaClass.simpleName)

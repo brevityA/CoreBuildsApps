@@ -12,7 +12,7 @@ import android.graphics.Shader
 import android.util.AttributeSet
 import android.view.View
 import kotlin.math.cos
-import kotlin.math.min
+import kotlin.math.max
 import kotlin.math.sin
 
 /**
@@ -34,6 +34,8 @@ class CoreMotionPreviewView @JvmOverloads constructor(
     private val rect = RectF()
     private var scene = 0
     private var accent = Color.rgb(0, 229, 255)
+    private var playbackSpeed = 1f
+    private var loopSeconds = 20f
     private var startedNanos = System.nanoTime()
     private var attached = false
 
@@ -52,6 +54,17 @@ class CoreMotionPreviewView @JvmOverloads constructor(
         invalidate()
     }
 
+    /** Change preview playback without recreating the view or activity. */
+    fun setPlayback(speed: Float = playbackSpeed, seconds: Float = loopSeconds) {
+        playbackSpeed = speed.coerceIn(0.25f, 2.5f)
+        loopSeconds = seconds.coerceIn(5f, 60f)
+        startedNanos = System.nanoTime()
+        invalidate()
+    }
+
+    fun playbackSpeed(): Float = playbackSpeed
+    fun loopSeconds(): Float = loopSeconds
+
     override fun onAttachedToWindow() {
         super.onAttachedToWindow()
         attached = true
@@ -69,11 +82,18 @@ class CoreMotionPreviewView @JvmOverloads constructor(
         super.onDraw(canvas)
         if (width == 0 || height == 0) return
 
-        val scale = min(width / DESIGN_W, height / DESIGN_H)
+        // Fill/crop instead of letterboxing. The home-stage is intentionally
+        // much wider than 16:9; using min() created the narrow black pillarbox
+        // visible in the screenshot. max() gives a clean full-bleed surface.
+        val scale = max(width / DESIGN_W, height / DESIGN_H)
         val offsetX = (width - DESIGN_W * scale) / 2f
         val offsetY = (height - DESIGN_H * scale) / 2f
-        val phase = ((System.nanoTime() - startedNanos) / 1_000_000_000f % LOOP_SECONDS) /
-            LOOP_SECONDS * TAU
+        val elapsed = (System.nanoTime() - startedNanos) / 1_000_000_000f
+        val basePhase = (elapsed % loopSeconds) / loopSeconds * TAU
+        // Alter the velocity profile without breaking the phase at the loop
+        // boundary. This keeps 0.5× and 2× previews smooth and repeatable.
+        val phase = basePhase + (playbackSpeed - 1f) * .65f *
+            (1f - cos(basePhase.toDouble()).toFloat())
 
         canvas.save()
         canvas.translate(offsetX, offsetY)
@@ -435,7 +455,6 @@ class CoreMotionPreviewView @JvmOverloads constructor(
     private companion object {
         const val DESIGN_W = 1920f
         const val DESIGN_H = 1080f
-        const val LOOP_SECONDS = 20f
         const val TAU = 6.2831855f
         const val FRAME_MS = 33L
     }

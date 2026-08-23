@@ -22,9 +22,11 @@ import androidx.recyclerview.widget.RecyclerView
  */
 class LiveAdapter(
     private var items: List<LiveEntry>,
-    private val onDownload: (LiveEntry, Int) -> Unit,
+    private val onDownload: (LiveEntry, Int, QualityTier) -> Unit,
     private val onPreview: (LiveEntry) -> Unit,
 ) : RecyclerView.Adapter<LiveAdapter.Holder>() {
+
+    private var quality: QualityTier = QualityTier.HD_1080
 
     private val statuses = HashMap<Int, String>()
     private val saved = HashSet<Int>()
@@ -98,13 +100,15 @@ class LiveAdapter(
 
         val isSaved = saved.contains(position)
         val isBusy = busy.contains(position)
-        holder.btnDownload.isEnabled = item.mediaAvailable && !isSaved && !isBusy
+        val tierAvailable = item.hasTier(quality)
+        holder.btnDownload.isEnabled = item.mediaAvailable && tierAvailable && !isSaved && !isBusy
         holder.btnDownload.text = when {
             !item.mediaAvailable -> ctx.getString(R.string.preview_only)
+            !tierAvailable -> ctx.getString(R.string.quality_unavailable, quality.label)
             isSaved -> ctx.getString(R.string.saved)
             else -> ctx.getString(R.string.download)
         }
-        holder.btnDownload.setOnClickListener { onDownload(item, position) }
+        holder.btnDownload.setOnClickListener { onDownload(item, position, quality) }
     }
 
     override fun onViewRecycled(holder: Holder) {
@@ -117,6 +121,15 @@ class LiveAdapter(
     /** Replace the visible catalog when a remote content feed arrives. */
     fun submit(next: List<LiveEntry>) {
         items = next
+        notifyDataSetChanged()
+    }
+
+    fun setQuality(next: QualityTier) {
+        if (quality == next) return
+        quality = next
+        saved.clear()
+        busy.clear()
+        statuses.clear()
         notifyDataSetChanged()
     }
 
@@ -161,9 +174,11 @@ class LiveAdapter(
             val item = items[position]
             val isSaved = saved.contains(position)
             val isBusy = busy.contains(position)
-            holder.btnDownload.isEnabled = item.mediaAvailable && !isSaved && !isBusy
+            val tierAvailable = item.hasTier(quality)
+            holder.btnDownload.isEnabled = item.mediaAvailable && tierAvailable && !isSaved && !isBusy
             holder.btnDownload.text = when {
                 !item.mediaAvailable -> ctx.getString(R.string.preview_only)
+                !tierAvailable -> ctx.getString(R.string.quality_unavailable, quality.label)
                 isSaved -> ctx.getString(R.string.saved)
                 else -> ctx.getString(R.string.download)
             }
