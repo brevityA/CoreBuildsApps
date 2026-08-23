@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/cb_void">
+
+    <dev.corebuilds.shift.CoreMotionPreviewView
+        android:id="@+id/procedural_preview"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|start"
+        android:layout_marginStart="32dp"
+        android:layout_marginBottom="28dp"
+        android:orientation="vertical"
+        android:paddingStart="18dp"
+        android:paddingTop="13dp"
+        android:paddingEnd="22dp"
+        android:paddingBottom="13dp"
+        android:background="@drawable/procedural_overlay">
+
+        <TextView
+            android:id="@+id/procedural_kicker"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/procedural_preview_kicker"
+            android:textColor="@color/cb_cyan"
+            android:fontFamily="monospace"
+            android:textSize="11sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/procedural_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:textColor="@color/cb_text_primary"
+            android:textSize="26sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/procedural_meta"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:textColor="@color/cb_text_secondary"
+            android:fontFamily="monospace"
+            android:textSize="12sp" />
+    </LinearLayout>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="top|end"
+        android:layout_marginTop="26dp"
+        android:layout_marginEnd="30dp"
+        android:background="@drawable/procedural_chip"
+        android:paddingStart="12dp"
+        android:paddingTop="7dp"
+        android:paddingEnd="12dp"
+        android:paddingBottom="7dp"
+        android:text="@string/procedural_live_badge"
+        android:textColor="@color/cb_cyan"
+        android:fontFamily="monospace"
+        android:textSize="11sp" />
+</FrameLayout>

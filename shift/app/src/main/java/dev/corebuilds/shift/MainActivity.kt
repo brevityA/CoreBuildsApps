@@ -1,6 +1,7 @@
 package dev.corebuilds.shift
 
 import android.animation.ValueAnimator
+import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -20,10 +21,9 @@ import java.util.concurrent.Executors
 /**
  * Core Shift's user-facing live-wallpaper application.
  *
- * The bundled catalog renders immediately and the remote Core Motion prequel
- * feed is refreshed in the background. APK updates and wallpaper/content
- * updates are separate, so new Series 2/3 generations do not require a new
- * APK every time.
+ * The bundled catalog and procedural preview seeds render immediately. The
+ * remote Core Motion prequel feed is refreshed in the background so production
+ * MP4s can arrive independently from an APK update.
  */
 class MainActivity : AppCompatActivity() {
 
@@ -33,6 +33,9 @@ class MainActivity : AppCompatActivity() {
     private lateinit var contentBanner: LinearLayout
     private lateinit var contentText: TextView
     private lateinit var contentButton: Button
+    private lateinit var motionStage: CoreMotionPreviewView
+    private lateinit var stageTitle: TextView
+    private lateinit var stageMeta: TextView
     private val io = Executors.newSingleThreadExecutor()
     private val main = Handler(Looper.getMainLooper())
 
@@ -47,9 +50,6 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        // The header rule runs the wallpaper suite's ramp continuously. It is
-        // the only always-on animation in the app; everything else is
-        // focus-driven, which keeps idle CPU near zero on weak TV SoCs.
         spectrum = CoreSpectrum.bindSweep(
             findViewById(R.id.spectrum_rule),
             periodMs = 11_000L,
@@ -61,16 +61,15 @@ class MainActivity : AppCompatActivity() {
         contentBanner = findViewById(R.id.content_banner)
         contentText = findViewById(R.id.content_text)
         contentButton = findViewById(R.id.content_btn)
+        motionStage = findViewById(R.id.motion_stage)
+        stageTitle = findViewById(R.id.stage_title)
+        stageMeta = findViewById(R.id.stage_meta)
         list.layoutManager = LinearLayoutManager(this)
 
-        // Rows lift on focus. ViewGroup sorts children by Z since API 21, so
-        // the raised card draws over its neighbours without custom ordering.
         list.itemAnimator = DefaultItemAnimator().apply {
             addDuration = 200L
             removeDuration = 160L
             moveDuration = 200L
-            // Status/content updates are payload binds; a change animation on
-            // top of them would cross-fade two copies of the row.
             changeDuration = 0L
             supportsChangeAnimations = false
         }
@@ -78,22 +77,59 @@ class MainActivity : AppCompatActivity() {
             AnimationUtils.loadLayoutAnimation(this, R.anim.live_layout_stagger)
 
         val bundled = LiveCatalog.load(this)
+        val seeds = LiveCatalog.loadPrequelSeeds(this)
         val cachedPrequels = RemoteLiveCatalog.cached(this)
-        currentEntries = LiveCatalog.merge(bundled, cachedPrequels)
-        adapter = LiveAdapter(currentEntries) { entry, pos -> download(entry, pos) }
+        currentEntries = LiveCatalog.merge(
+            LiveCatalog.merge(bundled, seeds),
+            cachedPrequels,
+        )
+        adapter = LiveAdapter(
+            currentEntries,
+            onDownload = { entry, pos -> download(entry, pos) },
+            onPreview = { entry -> openPreview(entry) },
+        )
         list.adapter = adapter
         list.scheduleLayoutAnimation()
         updateEmptyState(currentEntries)
 
-        if (cachedPrequels.isNotEmpty()) {
-            showCachedContent(cachedPrequels.size)
+        val firstPrequel = currentEntries.firstOrNull { it.scene != null }
+        if (firstPrequel != null) {
+            selectStage(firstPrequel)
+            showPreviewContent(seeds.size)
         }
         contentButton.setOnClickListener { refreshContent() }
 
-        // Content refresh is automatic on every app start and can also be
-        // retried from the banner. It never goes through browser CORS.
+        // The stage is a real animated procedural preview, not a static poster.
+        // The production MP4 feed still refreshes independently in the background.
         refreshContent()
         checkForUpdate()
+    }
+
+    private fun selectStage(entry: LiveEntry) {
+        val scene = entry.scene ?: return
+        motionStage.setScene(scene, entry.accent)
+        stageTitle.text = entry.title
+        stageMeta.text = entry.specLabel
+    }
+
+    private fun openPreview(entry: LiveEntry) {
+        if (entry.scene != null) {
+            selectStage(entry)
+            startActivity(
+                Intent(this, ProceduralPreviewActivity::class.java).apply {
+                    putExtra(ProceduralPreviewActivity.EXTRA_SCENE, entry.scene)
+                    putExtra(ProceduralPreviewActivity.EXTRA_ACCENT, entry.accent)
+                    putExtra(ProceduralPreviewActivity.EXTRA_TITLE, entry.title)
+                },
+            )
+        } else {
+            startActivity(
+                Intent(this, PreviewActivity::class.java).apply {
+                    putExtra(PreviewActivity.EXTRA_URL, entry.url1080p)
+                    putExtra(PreviewActivity.EXTRA_TITLE, entry.title)
+                },
+            )
+        }
     }
 
     private fun refreshContent() {
@@ -113,6 +149,7 @@ class MainActivity : AppCompatActivity() {
                 currentEntries = result.entries
                 adapter.submit(result.entries)
                 updateEmptyState(result.entries)
+                result.entries.firstOrNull { it.scene != null }?.let { selectStage(it) }
 
                 when {
                     result.networkSucceeded && result.newEntries > 0 ->
@@ -133,6 +170,11 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    private fun showPreviewContent(count: Int) {
+        contentBanner.visibility = View.VISIBLE
+        contentText.text = getString(R.string.content_preview_fmt, count)
+    }
+
     private fun showCachedContent(count: Int) {
         contentBanner.visibility = View.VISIBLE
         val suffix = if (count == 1) "" else "s"
@@ -148,8 +190,6 @@ class MainActivity : AppCompatActivity() {
         contentBanner.visibility = View.VISIBLE
         val suffix = if (added == 1) "" else "s"
         contentText.text = getString(R.string.content_updated_fmt, added, suffix)
-        // Keep the total in the accessibility description without adding a
-        // second visual line to the compact TV banner.
         contentBanner.contentDescription =
             getString(R.string.content_available_fmt, total)
     }
@@ -172,7 +212,6 @@ class MainActivity : AppCompatActivity() {
 
         text.text = getString(R.string.update_available, update.versionName)
         banner.visibility = View.VISIBLE
-
         btn.setOnClickListener { startUpdateDownload(update) }
     }
 
@@ -226,6 +265,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun download(entry: LiveEntry, pos: Int) {
+        if (!entry.mediaAvailable) return
         val perm = LiveDownloader.storagePermission()
         if (perm != null && !LiveDownloader.hasStoragePermission(this)) {
             pending = entry to pos

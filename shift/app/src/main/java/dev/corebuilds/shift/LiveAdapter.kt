@@ -1,6 +1,5 @@
 package dev.corebuilds.shift
 
-import android.content.Intent
 import android.graphics.BitmapFactory
 import android.graphics.Color
 import android.view.LayoutInflater
@@ -24,6 +23,7 @@ import androidx.recyclerview.widget.RecyclerView
 class LiveAdapter(
     private var items: List<LiveEntry>,
     private val onDownload: (LiveEntry, Int) -> Unit,
+    private val onPreview: (LiveEntry) -> Unit,
 ) : RecyclerView.Adapter<LiveAdapter.Holder>() {
 
     private val statuses = HashMap<Int, String>()
@@ -94,17 +94,16 @@ class LiveAdapter(
             animate = false,
         )
 
-        holder.btnPreview.setOnClickListener {
-            val intent = Intent(ctx, PreviewActivity::class.java)
-                .putExtra(PreviewActivity.EXTRA_URL, item.url1080p)
-                .putExtra(PreviewActivity.EXTRA_TITLE, item.title)
-            ctx.startActivity(intent)
-        }
+        holder.btnPreview.setOnClickListener { onPreview(item) }
 
         val isSaved = saved.contains(position)
         val isBusy = busy.contains(position)
-        holder.btnDownload.isEnabled = !isSaved && !isBusy
-        holder.btnDownload.text = ctx.getString(if (isSaved) R.string.saved else R.string.download)
+        holder.btnDownload.isEnabled = item.mediaAvailable && !isSaved && !isBusy
+        holder.btnDownload.text = when {
+            !item.mediaAvailable -> ctx.getString(R.string.preview_only)
+            isSaved -> ctx.getString(R.string.saved)
+            else -> ctx.getString(R.string.download)
+        }
         holder.btnDownload.setOnClickListener { onDownload(item, position) }
     }
 
@@ -159,11 +158,15 @@ class LiveAdapter(
         if (payloads.contains(PAYLOAD_STATUS)) {
             val ctx = holder.itemView.context
             holder.status.text = statuses[position] ?: ""
+            val item = items[position]
             val isSaved = saved.contains(position)
             val isBusy = busy.contains(position)
-            holder.btnDownload.isEnabled = !isSaved && !isBusy
-            holder.btnDownload.text =
-                ctx.getString(if (isSaved) R.string.saved else R.string.download)
+            holder.btnDownload.isEnabled = item.mediaAvailable && !isSaved && !isBusy
+            holder.btnDownload.text = when {
+                !item.mediaAvailable -> ctx.getString(R.string.preview_only)
+                isSaved -> ctx.getString(R.string.saved)
+                else -> ctx.getString(R.string.download)
+            }
 
             // Fade the status line in rather than popping it.
             holder.status.alpha = 0f

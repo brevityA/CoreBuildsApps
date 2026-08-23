@@ -28,13 +28,28 @@ def test_remote_content_is_separate_from_apk_update():
     assert "UpdateChecker.check" in activity
     assert "networkSucceeded" in remote
     gradle = (ROOT / "shift/app/build.gradle.kts").read_text()
-    assert 'versionName = "2.2.0"' in gradle
-    assert 'versionCode = 5' in gradle
+    assert 'versionName = "2.3.0"' in gradle
+    assert 'versionCode = 6' in gradle
     update = (ROOT / "Latestrelease/shift-version.json").read_text()
-    assert '"versionName": "2.2.0"' in update
-    assert '"versionCode": 5' in update
+    assert '"versionName": "2.3.0"' in update
+    assert '"versionCode": 6' in update
     assert "content_banner" in (SHIFT / "res/layout/activity_main.xml").read_text()
     assert "motion-prequels/prequel-feed.json" in remote
+
+
+def test_app_has_immediate_procedural_seed_catalog_and_stage():
+    seeds = SHIFT / "assets/manifest/prequels.json"
+    stage = read("java/dev/corebuilds/shift/CoreMotionPreviewView.kt")
+    activity = read("java/dev/corebuilds/shift/ProceduralPreviewActivity.kt")
+    layout = (SHIFT / "res/layout/activity_main.xml").read_text()
+    import json
+    data = json.loads(seeds.read_text())
+    assert len(data) == 16
+    assert {entry["scene"] for entry in data} == set(range(16))
+    assert "drawOrbitals" in stage and "drawHorizon" in stage
+    assert "setScene" in activity
+    assert "motion_stage" in layout
+    assert "CORE PREQUEL ENGINE" in (SHIFT / "res/values/strings.xml").read_text()
 
 
 def test_remote_posters_are_bounded_and_recycled_safely():

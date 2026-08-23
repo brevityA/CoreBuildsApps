@@ -62,7 +62,7 @@ inspect the exact render plan on machines without OpenGL.
 Serve the repo root and open `/tools/motion-studio/`:
 
 ```bash
-python -m http.server 8000 --bind 127.0.0.1
+python -m http.server 8000 --bind 0.0.0.0
 ```
 
 The studio loads the preset catalog locally. It does not need the CORS proxy to
@@ -81,7 +81,7 @@ do not accept arbitrary `?url=` forwarding.
 ## Delivery
 
 Core Shift is the primary application surface. It already has the updater,
-D-pad browser, local MP4 preview and Monet export path. Version 2.2.0 checks the
+D-pad browser, local MP4 preview and Monet export path. Version 2.3.0 checks the
 prequel feed on launch, caches the last good feed, downloads remote thumbnails
 on demand, and appends new Series 2/3 entries to the existing Core Motion list.
 No browser CORS proxy is involved in the Android path.

@@ -100,7 +100,7 @@ object RemoteLiveCatalog {
                 val bytes = input.readBounded(MAX_FEED_BYTES)
                 bytes.toString(Charsets.UTF_8)
             }
-            val parsed = LiveCatalog.parse(body, bundledThumbs = false)
+            val parsed = LiveCatalog.parse(body, bundledThumbs = false, mediaAvailable = true)
             require(parsed.isNotEmpty()) { "feed is empty or invalid" }
             parsed to body
         } finally {

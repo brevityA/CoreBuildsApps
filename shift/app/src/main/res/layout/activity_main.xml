@@ -3,37 +3,130 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:paddingStart="24dp"
-    android:paddingEnd="24dp"
-    android:paddingTop="24dp"
-    android:paddingBottom="0dp">
+    android:paddingStart="28dp"
+    android:paddingEnd="28dp"
+    android:paddingTop="22dp"
+    android:paddingBottom="0dp"
+    android:background="@color/cb_night">
 
-    <TextView
-        android:id="@+id/header"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/app_name"
-        android:textColor="@color/cb_cyan"
-        android:textSize="28sp"
-        android:textStyle="bold" />
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
 
-    <!-- Spectrum rule: the wallpaper collection's cyan→violet→ember ramp,
-         travelling. It's the app's one piece of ambient motion and it ties the
-         header to the focus colour on the cards below. -->
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/header"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/app_name"
+                android:textColor="@color/cb_text_primary"
+                android:textSize="30sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="2dp"
+                android:fontFamily="monospace"
+                android:letterSpacing="0.12"
+                android:text="@string/app_kicker"
+                android:textColor="@color/cb_cyan"
+                android:textSize="10sp"
+                android:textStyle="bold" />
+        </LinearLayout>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/procedural_chip"
+            android:paddingStart="14dp"
+            android:paddingTop="8dp"
+            android:paddingEnd="14dp"
+            android:paddingBottom="8dp"
+            android:text="@string/live_badge"
+            android:textColor="@color/cb_cyan"
+            android:fontFamily="monospace"
+            android:textSize="11sp" />
+    </LinearLayout>
+
     <View
         android:id="@+id/spectrum_rule"
-        android:layout_width="220dp"
+        android:layout_width="260dp"
         android:layout_height="3dp"
-        android:layout_marginTop="6dp" />
+        android:layout_marginTop="7dp" />
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:layout_marginBottom="12dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="10dp"
         android:text="@string/app_hint"
         android:textColor="@color/cb_text_secondary"
         android:textSize="14sp" />
+
+    <!-- This is the visible procedural engine surface. It runs locally on the
+         TV even when the production MP4 release has not been published yet. -->
+    <FrameLayout
+        android:id="@+id/stage_card"
+        android:layout_width="match_parent"
+        android:layout_height="190dp"
+        android:layout_marginBottom="10dp"
+        android:background="@drawable/procedural_overlay"
+        android:clipChildren="true">
+
+        <dev.corebuilds.shift.CoreMotionPreviewView
+            android:id="@+id/motion_stage"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|start"
+            android:layout_marginStart="18dp"
+            android:layout_marginBottom="14dp"
+            android:orientation="vertical"
+            android:paddingStart="14dp"
+            android:paddingTop="9dp"
+            android:paddingEnd="18dp"
+            android:paddingBottom="9dp"
+            android:background="@drawable/procedural_overlay">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/stage_kicker"
+                android:textColor="@color/cb_cyan"
+                android:fontFamily="monospace"
+                android:textSize="10sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/stage_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="2dp"
+                android:textColor="@color/cb_text_primary"
+                android:textSize="22sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/stage_meta"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="1dp"
+                android:textColor="@color/cb_text_secondary"
+                android:fontFamily="monospace"
+                android:textSize="11sp" />
+        </LinearLayout>
+    </FrameLayout>
 
     <LinearLayout
         android:id="@+id/update_banner"
@@ -41,8 +134,8 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:gravity="center_vertical"
-        android:padding="12dp"
-        android:layout_marginBottom="8dp"
+        android:padding="10dp"
+        android:layout_marginBottom="7dp"
         android:background="@drawable/card_bg"
         android:visibility="gone">
 
@@ -52,7 +145,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:textColor="@color/cb_cyan"
-            android:textSize="15sp" />
+            android:textSize="14sp" />
 
         <Button
             android:id="@+id/update_btn"
@@ -60,22 +153,20 @@
             android:layout_height="wrap_content"
             android:minWidth="100dp"
             android:text="@string/update_btn"
-            android:textSize="14sp"
+            android:textSize="13sp"
             android:textColor="@color/btn_text"
             android:background="@drawable/btn_bg"
             android:focusable="true" />
     </LinearLayout>
 
-    <!-- Content updates are independent from APK updates: the app can discover
-         a new prequel feed without waiting for a new Core Shift build. -->
     <LinearLayout
         android:id="@+id/content_banner"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:gravity="center_vertical"
-        android:padding="12dp"
-        android:layout_marginBottom="8dp"
+        android:padding="10dp"
+        android:layout_marginBottom="7dp"
         android:background="@drawable/card_bg"
         android:visibility="gone">
 
@@ -85,22 +176,30 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:textColor="@color/cb_text_primary"
-            android:textSize="14sp" />
+            android:textSize="13sp" />
 
         <Button
             android:id="@+id/content_btn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:minWidth="100dp"
+            android:minWidth="95dp"
             android:text="@string/content_refresh"
-            android:textSize="13sp"
+            android:textSize="12sp"
             android:textColor="@color/btn_text"
             android:background="@drawable/btn_bg"
             android:focusable="true" />
     </LinearLayout>
 
-    <!-- clipChildren/clipToPadding false so a focused card can scale and cast
-         elevation past the list bounds instead of being sliced off. -->
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="3dp"
+        android:layout_marginBottom="5dp"
+        android:fontFamily="monospace"
+        android:text="@string/library_label"
+        android:textColor="@color/cb_text_secondary"
+        android:textSize="11sp" />
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/live_list"
         android:layout_width="match_parent"
