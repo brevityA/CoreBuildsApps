@@ -4,7 +4,7 @@
 
 # Core Builds Apps
 
-**Two Android TV apps. Same brand, same living-room bar.**
+**Three Android TV apps. Same brand, same living-room bar.**
 
 </div>
 
@@ -14,8 +14,9 @@
 > |---|---|---|---|
 > | **[Icon Pack](#-icon-pack)** | 921 transparent icons + 70 wallpapers for Projectivy Launcher | `5270601` | [`v*`](../../releases) |
 > | **[Core Line](#-core-line)** | Sports scores & channel RSS ticker (chyron) | `7375676` | [`coreline-v*`](../../releases) |
+> | **[Core Shift](#-core-shift)** | Live wallpaper browser + Projectivy plugin for Monet Launcher | `8829421` | [`shift-v*`](../../releases) |
 >
-> Each app has its own CI workflow with path filters — changes to one never rebuild the other.
+> Each app has its own CI workflow — changes to one never rebuild the others.
 
 ---
 
@@ -180,6 +181,10 @@ app/src/main/res/            the Android module
 Latestrelease/version.json   in-app update manifest
 docs/IconPackList.md         supported apps + components
 ticker/                      Core Line — sports & channel ticker (see ticker/README.md)
+shift/                       Core Shift — live wallpaper browser (see shift/HANDOVER.md)
+motion-plugin/               Core Motion — Projectivy wallpaper-provider plugin
+motion-shaders/              GLSL fragment shaders (hex plasma, starfield, flow)
+Motion/live/                 Motion asset set (MP4 loops, thumbnails, live-feed.json)
 ```
 
 ---
@@ -221,6 +226,50 @@ Tests: `cd ticker && npm test` (24 tests).
 Release signing uses the same `KEYSTORE_BASE64`, `KEYSTORE_PASSWORD`, `KEY_ALIAS`, `KEY_PASSWORD` secrets as the icon pack.
 
 Full architecture and remaining debt: [`ticker/HANDOVER.md`](ticker/HANDOVER.md) · Detailed readme: [`ticker/README.md`](ticker/README.md).
+
+---
+
+## 🔷 Core Shift
+
+**Live wallpaper browser + Projectivy plugin for Monet Launcher.** `v2.0.1`
+
+Two delivery paths for motion wallpapers on Android TV:
+
+- **Monet Launcher** — browse live wallpapers in-app, full-screen looping preview, download MP4 loops to `Movies/CoreBuilds`. Point Monet Premium's video wallpaper picker at that folder.
+- **Projectivy Launcher** — the **Core Motion** plugin (`motion-plugin/`, `tv.corebuilds.motion`) implements Spocky's `IWallpaperProviderService` AIDL. Serves an Overflight-compatible JSON feed as `VIDEO` wallpapers plus bundled Lottie vector loops. Sideload the plugin APK → Settings → Appearance → Wallpaper → Core Motion.
+
+Content pipeline: 10 ffmpeg-filter MP4 loops (1080p H.264), 3 self-authored GLSL shaders (hex plasma, starfield, flowing noise), and bundled Lottie vectors — all §03 palette.
+
+- HTTPS-only downloads with GitHub host allowlist
+- Leanback UI built for D-pad navigation
+- Remote manifest with bundled fallback — works offline after first sync
+- CI-validated motion asset set
+
+### Install
+
+1. Download using **Downloader code `8829421`**, or use the permanent APK URL:
+
+   **https://github.com/brevityA/CoreBuildsApps/releases/download/shift/coreshift-release.apk**
+
+   Versioned builds remain available from [**Releases**](../../releases) under `shift-v*` tags. The `shift` release is a floating stable target.
+2. Sideload it (Downloader, `adb install`, or a file manager).
+3. Open the app — browse live wallpapers, preview full-screen, and download to `Movies/CoreBuilds` for Monet.
+
+### Building
+
+CI: [`.github/workflows/core-shift-apk.yml`](.github/workflows/core-shift-apk.yml) → push a `shift-v*` tag to cut a release. Debug APKs are uploaded as CI artifacts on pushes to `main` and matching pull requests.
+
+Locally (needs JDK 17 + Android SDK):
+
+```bash
+cd shift && ./gradlew :app:assembleDebug
+```
+
+Motion asset validation: `python tools/validate_motion_feed.py`.
+
+Release signing uses the same `KEYSTORE_BASE64`, `KEYSTORE_PASSWORD`, `KEY_ALIAS`, `KEY_PASSWORD` secrets as the icon pack and Core Line.
+
+Full architecture and remaining debt: [`shift/HANDOVER.md`](shift/HANDOVER.md).
 
 ---
 
