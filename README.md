@@ -231,7 +231,7 @@ Full architecture and remaining debt: [`ticker/HANDOVER.md`](ticker/HANDOVER.md)
 
 ## 🔷 Core Shift
 
-**Live wallpaper browser + Projectivy plugin for Monet Launcher.** `v2.0.0`
+**Live wallpaper browser + Projectivy plugin for Monet Launcher.** `v2.0.1`
 
 Two delivery paths for motion wallpapers on Android TV:
 
