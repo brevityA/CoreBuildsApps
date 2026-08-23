@@ -122,6 +122,7 @@ class MainActivity : AppCompatActivity() {
         list.adapter = adapter
         list.scheduleLayoutAnimation()
         updateEmptyState(currentEntries)
+        requestInitialFocus()
 
         val firstPrequel = currentEntries.firstOrNull { it.scene != null }
         if (firstPrequel != null) {
@@ -130,8 +131,6 @@ class MainActivity : AppCompatActivity() {
         }
         contentButton.setOnClickListener { refreshContent() }
 
-        // The stage is a real animated procedural preview, not a static poster.
-        // The production MP4 feed still refreshes independently in the background.
         refreshContent()
         checkForUpdate()
     }
@@ -338,6 +337,28 @@ class MainActivity : AppCompatActivity() {
         if (updateFile.exists() && UpdateInstaller.canInstall(this) && !installOffered) {
             installOffered = true
             UpdateInstaller.install(this, updateFile)
+        }
+        restoreLibraryFocus()
+    }
+
+    private fun requestInitialFocus() {
+        list.post(object : Runnable {
+            override fun run() {
+                val holder = list.findViewHolderForAdapterPosition(0)
+                if (holder != null) {
+                    holder.itemView.findViewById<Button>(R.id.btn_preview)?.requestFocus()
+                } else if (adapter.itemCount > 0) {
+                    list.post(this)
+                }
+            }
+        })
+    }
+
+    private fun restoreLibraryFocus() {
+        if (list.hasFocus() || currentEntries.isEmpty()) return
+        val focused = currentFocus
+        if (focused == null || focused == window.decorView.rootView) {
+            requestInitialFocus()
         }
     }
 
