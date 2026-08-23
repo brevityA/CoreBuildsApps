@@ -30,6 +30,7 @@ android {
     buildTypes {
         release {
             isMinifyEnabled = false
+            isShrinkResources = false
             val ks = System.getenv("KEYSTORE_PATH")
             if (ks != null && file(ks).exists()) {
                 signingConfig = signingConfigs.getByName("release")
