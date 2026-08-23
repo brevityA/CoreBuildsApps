@@ -38,6 +38,7 @@ DEFAULT_DURATION = 20.0
 DEFAULT_WIDTH = 1920
 DEFAULT_HEIGHT = 1080
 DEFAULT_CRF = 18
+DEFAULT_SPEED = 1.0
 THUMB_W, THUMB_H = 480, 270
 
 VERTEX = """#version 330 core
@@ -129,16 +130,20 @@ def render_one(
     duration: float,
     fps: int,
     crf: int,
+    speed: float = DEFAULT_SPEED,
 ) -> None:
     import moderngl  # type: ignore
 
+    effective_duration = duration / speed
+
     program["u_resolution"] = (float(width), float(height))
     program["u_loop"] = float(duration)
+    program["u_speed"] = float(speed)
     program["u_scene"] = int(preset["scene"])
     program["u_seed"] = float(preset["seed"])
     program["u_intensity"] = float(preset["intensity"])
     program["u_accent"] = hex_rgb(preset["accent"])
-    frames = max(1, round(duration * fps))
+    frames = max(1, round(effective_duration * fps))
 
     cmd = [
         ffmpeg_exe(),
@@ -184,7 +189,10 @@ def render_one(
 
         # The encoded clip intentionally excludes the duplicate frame at t=T,
         # while this check renders it to prove the mathematical loop closes.
-        program["u_time"] = float(duration)
+        # At t=effective_duration, phase = TAU * fract(speed) = 0 for the
+        # allowed speed set {0.5, 1.0, 2.0} thanks to effective_duration =
+        # duration / speed making speed * effective_duration / duration = 1.
+        program["u_time"] = float(effective_duration)
         ctx.clear(0.0, 0.0, 0.0, 1.0)
         vao.render(moderngl.TRIANGLES)
         closing_frame = fbo.read(components=3, alignment=1)
@@ -258,8 +266,9 @@ def render_context(width: int, height: int) -> tuple[Any, Any, Any, Any]:
     return ctx, program, vao, fbo
 
 
-def build_manifest(presets: list[dict[str, Any]], output_dir: Path, width: int, height: int, duration: float, fps: int) -> None:
+def build_manifest(presets: list[dict[str, Any]], output_dir: Path, width: int, height: int, duration: float, fps: int, speed: float = DEFAULT_SPEED) -> None:
     is_4k = (width, height) == (3840, 2160)
+    effective_duration = duration / speed
     videos = []
     for preset in presets:
         video_url = f"{BASE_URL}/{output_name(preset, width, height)}"
@@ -273,14 +282,15 @@ def build_manifest(presets: list[dict[str, Any]], output_dir: Path, width: int, 
                 "url_4k": video_url if is_4k else None,
                 "thumb": f"{BASE_URL}/{thumbnail_name(preset, width, height)}",
                 "resolution": f"{width}x{height}",
-                "duration": round(duration),
+                "duration": round(effective_duration),
                 "fps": fps,
+                "motion_speed": speed,
                 "scene": int(preset["scene"]),
             }
         )
     manifest = {
         "collection": "Core Builds Motion · Series 2/3 Prequels",
-        "version": "1.0",
+        "version": "1.1",
         "author": "brevityA",
         "engine": "core-prequel-engine@1.0.0",
         "count": len(videos),
@@ -324,19 +334,24 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--duration", type=float, default=DEFAULT_DURATION)
     parser.add_argument("--fps", type=int, default=DEFAULT_FPS)
     parser.add_argument("--crf", type=int, default=DEFAULT_CRF)
+    parser.add_argument("--speed", type=float, default=DEFAULT_SPEED, help="motion speed multiplier (0.5–2.0)")
     parser.add_argument("--output-dir", type=Path, default=DEFAULT_OUTPUT)
     parser.add_argument("--dry-run", action="store_true", help="print the plan without requiring OpenGL or ffmpeg")
     args = parser.parse_args(argv)
 
     if args.width <= 0 or args.height <= 0 or args.fps <= 0 or args.duration <= 0:
         parser.error("width, height, fps and duration must be positive")
+    if not 0.5 <= args.speed <= 2.0:
+        parser.error("speed must be between 0.5 and 2.0")
 
     catalog = load_catalog()
     presets = select_presets(catalog, args.set, args.only)
     if not presets:
         parser.error("no presets selected")
 
-    print(f"Core Prequel Engine · {len(presets)} preset(s) · {args.width}x{args.height} · {args.duration:g}s · {args.fps}fps")
+    effective_duration = args.duration / args.speed
+    speed_label = f" · {args.speed:g}x" if args.speed != 1.0 else ""
+    print(f"Core Prequel Engine · {len(presets)} preset(s) · {args.width}x{args.height} · {effective_duration:g}s ({args.duration:g}s@{args.speed:g}x) · {args.fps}fps{speed_label}")
     for preset in presets:
         print(f"  {int(preset['number']):02d} {preset['title']:<18} scene={preset['scene']} -> {output_name(preset, args.width, args.height)}")
     if args.dry_run:
@@ -355,9 +370,9 @@ def main(argv: list[str] | None = None) -> int:
             clip = args.output_dir / output_name(preset, args.width, args.height)
             thumb = args.output_dir / thumbnail_name(preset, args.width, args.height)
             print(f"rendering {clip.name} ...", flush=True)
-            render_one(ctx, program, vao, fbo, preset, clip, args.width, args.height, args.duration, args.fps, args.crf)
-            build_thumbnail(clip, thumb, args.duration, args.fps)
-        build_manifest(presets, args.output_dir, args.width, args.height, args.duration, args.fps)
+            render_one(ctx, program, vao, fbo, preset, clip, args.width, args.height, args.duration, args.fps, args.crf, args.speed)
+            build_thumbnail(clip, thumb, effective_duration, args.fps)
+        build_manifest(presets, args.output_dir, args.width, args.height, args.duration, args.fps, args.speed)
         build_feed(presets, args.output_dir, args.width, args.height)
     finally:
         try:
@@ -368,7 +383,7 @@ def main(argv: list[str] | None = None) -> int:
         except Exception:
             pass
 
-    print(f"done: {len(presets)} prequel loops + {args.output_dir / 'prequel-feed.json'}")
+    print(f"done: {len(presets)} prequel loops ({effective_duration:g}s@{args.speed:g}x) + {args.output_dir / 'prequel-feed.json'}")
     return 0
 
 

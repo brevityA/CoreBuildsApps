@@ -9,6 +9,7 @@
 uniform vec2 u_resolution;
 uniform float u_time;
 uniform float u_loop;
+uniform float u_speed;
 uniform float u_seed;
 uniform float u_intensity;
 uniform vec3 u_accent;
@@ -305,7 +306,7 @@ vec3 sceneHorizon(vec2 p, float phase, int variant) {
 
 void main() {
     vec2 p = (2.0 * gl_FragCoord.xy - u_resolution.xy) / min(u_resolution.x, u_resolution.y);
-    float phase = TAU * fract(u_time / max(u_loop, 0.001));
+    float phase = TAU * fract(u_time * u_speed / max(u_loop, 0.001));
     vec3 col;
     if (u_scene == 0) col = sceneOrbitals(p, phase);
     else if (u_scene == 1) col = sceneWarp(p, phase);
