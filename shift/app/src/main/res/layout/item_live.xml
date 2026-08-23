@@ -58,7 +58,11 @@
             android:layout_height="wrap_content"
             android:minWidth="120dp"
             android:text="@string/preview"
-            android:textSize="16sp" />
+            android:textSize="16sp"
+            android:textColor="@color/btn_text"
+            android:background="@drawable/btn_bg"
+            android:focusable="true"
+            android:nextFocusDown="@id/btn_download" />
 
         <Button
             android:id="@+id/btn_download"
@@ -66,6 +70,10 @@
             android:layout_height="wrap_content"
             android:minWidth="120dp"
             android:text="@string/download"
-            android:textSize="16sp" />
+            android:textSize="16sp"
+            android:textColor="@color/btn_text"
+            android:background="@drawable/btn_bg"
+            android:focusable="true"
+            android:nextFocusUp="@id/btn_preview" />
     </LinearLayout>
 </LinearLayout>
