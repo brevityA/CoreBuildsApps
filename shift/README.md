@@ -46,7 +46,7 @@ cd shift && ./gradlew :app:assembleDebug    # JDK 17 + Android SDK
 
 Standalone Gradle root, package `dev.corebuilds.shift`, version 2.3.3 (versionCode 9),
 minSdk 26, target/compile 34, AGP 8.5.2 / Kotlin 1.9.24. Dependencies: appcompat,
-core-ktx, recyclerview.
+core-ktx, recyclerview, Media3 (ExoPlayer, UI, session).
 No WorkManager or background service is used; network refreshes happen only
 when the user opens the app or presses Refresh.
 

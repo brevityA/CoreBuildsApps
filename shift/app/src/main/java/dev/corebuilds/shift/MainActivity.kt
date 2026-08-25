@@ -129,6 +129,7 @@ class MainActivity : AppCompatActivity() {
             onDownload = { entry, pos, quality -> download(entry, pos, quality) },
             onPreview = { entry -> openPreview(entry) },
         )
+        adapter.setQuality(selectedQuality)
         updateQualityUi()
         list.adapter = adapter
         list.scheduleLayoutAnimation()

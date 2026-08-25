@@ -199,7 +199,8 @@ object LiveDownloader {
                     } ?: throw IllegalStateException("could not open output stream")
                     values.clear()
                     values.put(MediaStore.Video.Media.IS_PENDING, 0)
-                    context.contentResolver.update(uri, values, null, null)
+                    val rows = context.contentResolver.update(uri, values, null, null)
+                    if (rows != 1) throw IllegalStateException("MediaStore publish failed ($rows rows)")
                     Result.Saved(uri)
                 } catch (e: Exception) {
                     runCatching { context.contentResolver.delete(uri, null, null) }

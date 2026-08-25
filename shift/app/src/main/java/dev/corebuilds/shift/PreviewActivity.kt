@@ -30,6 +30,7 @@ class PreviewActivity : AppCompatActivity() {
     private var player: ExoPlayer? = null
     private var mediaSession: MediaSession? = null
     private var prepared = false
+    private var resumed = false
     private val io = Executors.newSingleThreadExecutor()
     private val main = Handler(Looper.getMainLooper())
 
@@ -72,7 +73,7 @@ class PreviewActivity : AppCompatActivity() {
                         if (playbackState == Player.STATE_READY) {
                             prepared = true
                             status.visibility = View.GONE
-                            exo.playWhenReady = true
+                            if (resumed) exo.playWhenReady = true
                         }
                     }
 
@@ -94,12 +95,14 @@ class PreviewActivity : AppCompatActivity() {
     }
 
     override fun onPause() {
+        resumed = false
         player?.pause()
         super.onPause()
     }
 
     override fun onResume() {
         super.onResume()
+        resumed = true
         if (prepared) player?.play()
     }
 
