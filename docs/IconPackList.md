@@ -122,7 +122,6 @@ Every app below auto-assigns in Projectivy. If one doesn't, the app ships a diff
 | Chebut TV | `chebut` | `#4CC9F0` | `com.chebut.tv/com.ottplay.ottplas.StartActivity` |
 | ChillHub | `chillhub` | `#4DD0E1` | `app.lumoslabs.chillhub/app.lumoslabs.chillhub.LauncherActivity` |
 | Chillio | `chillio` | `#4DD0E1` | `app.lumoslabs.chillio/.MainActivity` |
-| Cinema HD | `cinemahd` | `#E5533D` | `flix.com.vision/.activities.SplashScreenActivity` |
 | Cinemaghar TV | `cinemaghar_tv` | `#FF6B35` | `com.thesunbi.cinemaghartv/com.thesunbi.cinemaghartv.ui.main.MainActivity` |
 | CinemaGlow | `danielkorgel` | `#90BE6D` | `com.danielkorgel.projectivy.plugin.cinemaglow/com.danielkorgel.projectivy.plugin.cinemaglow.SettingsActivity` |
 | Cinemahd Stable | `cinemahd_stable` | `#FF6B35` | `com.yoku.marumovie/com.movie.ui.activity.SplashActivity` |
@@ -253,6 +252,7 @@ Every app below auto-assigns in Projectivy. If one doesn't, the app ships a diff
 | Flickfolio | `flickfolio` | `#6A4C93` | `com.snapwood.flickfolio/com.snapwood.flickfolio.SelectAlbumActivity` |
 | Flicky | `flicky` | `#00F5D4` | `app.flicky/app.flicky.MainActivity` |
 | Flix TV | `flix_tv` | `#90BE6D` | `com.tvflix.ippflixtvbox/com.tvflix.ippflixtvbox.view.activity.SplashActivity` |
+| Flix Vision | `flix_vision` | `#E5533D` | `flix.com.vision/.activities.SplashScreenActivity` |
 | Flixnest | `flixnest` | `#00BBF9` | `hu.kinetik.streamapp/hu.kinetik.streamapp.MainActivity` |
 | Flosports | `flosports` | `#F94144` | `tv.flosports/tv.flosports.TvActivity` |
 | Fluffy | `fluffy` | `#F7B32B` | `app.fluffy/app.fluffy.MainActivity` |

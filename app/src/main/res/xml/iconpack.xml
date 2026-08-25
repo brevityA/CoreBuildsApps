@@ -116,7 +116,6 @@
     <item drawable="chebut" />
     <item drawable="chillhub" />
     <item drawable="chillio" />
-    <item drawable="cinemahd" />
     <item drawable="cinemaghar_tv" />
     <item drawable="danielkorgel" />
     <item drawable="cinemahd_stable" />
@@ -247,6 +246,7 @@
     <item drawable="flickfolio" />
     <item drawable="flicky" />
     <item drawable="flix_tv" />
+    <item drawable="flix_vision" />
     <item drawable="flixnest" />
     <item drawable="flosports" />
     <item drawable="fluffy" />

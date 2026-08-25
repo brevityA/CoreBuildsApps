@@ -316,9 +316,6 @@
     <!-- Chillio -->
     <item component="ComponentInfo{app.lumoslabs.chillio/app.lumoslabs.chillio.MainActivity}" drawable="chillio_banner"/>
     <item component="ComponentInfo{app.lumoslabs.chillio/.MainActivity}" drawable="chillio_banner"/>
-    <!-- Cinema HD -->
-    <item component="ComponentInfo{flix.com.vision/flix.com.vision.activities.SplashScreenActivity}" drawable="cinemahd_banner"/>
-    <item component="ComponentInfo{flix.com.vision/.activities.SplashScreenActivity}" drawable="cinemahd_banner"/>
     <!-- Cinemaghar TV -->
     <item component="ComponentInfo{com.thesunbi.cinemaghartv/com.thesunbi.cinemaghartv.ui.main.MainActivity}" drawable="cinemaghar_tv_banner"/>
     <item component="ComponentInfo{com.thesunbi.cinemaghartv/.ui.main.MainActivity}" drawable="cinemaghar_tv_banner"/>
@@ -702,6 +699,9 @@
     <!-- Flix TV -->
     <item component="ComponentInfo{com.tvflix.ippflixtvbox/com.tvflix.ippflixtvbox.view.activity.SplashActivity}" drawable="flix_tv_banner"/>
     <item component="ComponentInfo{com.tvflix.ippflixtvbox/.view.activity.SplashActivity}" drawable="flix_tv_banner"/>
+    <!-- Flix Vision -->
+    <item component="ComponentInfo{flix.com.vision/flix.com.vision.activities.SplashScreenActivity}" drawable="flix_vision_banner"/>
+    <item component="ComponentInfo{flix.com.vision/.activities.SplashScreenActivity}" drawable="flix_vision_banner"/>
     <!-- Flixnest -->
     <item component="ComponentInfo{hu.kinetik.streamapp/hu.kinetik.streamapp.MainActivity}" drawable="flixnest_banner"/>
     <item component="ComponentInfo{hu.kinetik.streamapp/.MainActivity}" drawable="flixnest_banner"/>

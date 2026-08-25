@@ -118,7 +118,6 @@
         <item>chebut</item>
         <item>chillhub</item>
         <item>chillio</item>
-        <item>cinemahd</item>
         <item>cinemaghar_tv</item>
         <item>danielkorgel</item>
         <item>cinemahd_stable</item>
@@ -249,6 +248,7 @@
         <item>flickfolio</item>
         <item>flicky</item>
         <item>flix_tv</item>
+        <item>flix_vision</item>
         <item>flixnest</item>
         <item>flosports</item>
         <item>fluffy</item>
@@ -1041,7 +1041,6 @@
         <item>Chebut TV</item>
         <item>ChillHub</item>
         <item>Chillio</item>
-        <item>Cinema HD</item>
         <item>Cinemaghar TV</item>
         <item>CinemaGlow</item>
         <item>Cinemahd Stable</item>
@@ -1172,6 +1171,7 @@
         <item>Flickfolio</item>
         <item>Flicky</item>
         <item>Flix TV</item>
+        <item>Flix Vision</item>
         <item>Flixnest</item>
         <item>Flosports</item>
         <item>Fluffy</item>
@@ -1964,7 +1964,6 @@
         <item>APP</item>
         <item>LAUNCHER</item>
         <item>STREAM</item>
-        <item>STREAM</item>
         <item>APP</item>
         <item>LAUNCHER</item>
         <item>APP</item>
@@ -2095,6 +2094,7 @@
         <item>APP</item>
         <item>APP</item>
         <item>APP</item>
+        <item>STREAM</item>
         <item>APP</item>
         <item>SPORT</item>
         <item>APP</item>

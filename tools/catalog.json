@@ -1312,8 +1312,8 @@
       "category": "STREAM"
     },
     {
-      "name": "Cinema HD",
-      "drawable": "cinemahd",
+      "name": "Flix Vision",
+      "drawable": "flix_vision",
       "color": "#E5533D",
       "glyph": "film_reel",
       "components": [
