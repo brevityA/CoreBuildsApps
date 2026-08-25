@@ -33,7 +33,10 @@ class ProceduralPreviewActivity : AppCompatActivity() {
         val accent = intent.getIntExtra(EXTRA_ACCENT, 0xFF00E5FF.toInt())
         val title = intent.getStringExtra(EXTRA_TITLE).orEmpty()
         preview = findViewById(R.id.procedural_preview)
+        speed = intent.getFloatExtra(EXTRA_SPEED, 1f)
+        seconds = intent.getFloatExtra(EXTRA_LENGTH, 20f)
         preview.setScene(scene, accent)
+        preview.setPlayback(speed, seconds)
         findViewById<TextView>(R.id.procedural_title).text = title
         findViewById<TextView>(R.id.procedural_meta).text =
             getString(R.string.procedural_preview_meta, scene)
@@ -56,6 +59,10 @@ class ProceduralPreviewActivity : AppCompatActivity() {
     private fun setControls(nextSpeed: Float, nextSeconds: Float) {
         speed = nextSpeed
         seconds = nextSeconds
+        getSharedPreferences("core_shift_ui", MODE_PRIVATE).edit()
+            .putFloat("preview_speed", speed)
+            .putFloat("preview_length", seconds)
+            .apply()
         preview.setPlayback(speed, seconds)
         updateControls()
     }
@@ -81,5 +88,7 @@ class ProceduralPreviewActivity : AppCompatActivity() {
         const val EXTRA_SCENE = "procedural_scene"
         const val EXTRA_ACCENT = "procedural_accent"
         const val EXTRA_TITLE = "procedural_title"
+        const val EXTRA_SPEED = "procedural_speed"
+        const val EXTRA_LENGTH = "procedural_length"
     }
 }

@@ -38,12 +38,17 @@ class CoreMotionPreviewView @JvmOverloads constructor(
     private var loopSeconds = 20f
     private var startedNanos = System.nanoTime()
     private var attached = false
+    private var tickerRunning = false
+    private val frameDelayMs = if (
+        (context.getSystemService(Context.ACTIVITY_SERVICE) as? android.app.ActivityManager)
+            ?.isLowRamDevice == true
+    ) 66L else 33L
 
     private val ticker = object : Runnable {
         override fun run() {
-            if (!attached) return
+            if (!attached || !tickerRunning) return
             invalidate()
-            postDelayed(this, FRAME_MS)
+            postDelayed(this, frameDelayMs)
         }
     }
 
@@ -69,13 +74,29 @@ class CoreMotionPreviewView @JvmOverloads constructor(
         super.onAttachedToWindow()
         attached = true
         startedNanos = System.nanoTime()
-        post(ticker)
+        startTicker()
     }
 
     override fun onDetachedFromWindow() {
         attached = false
-        removeCallbacks(ticker)
+        stopTicker()
         super.onDetachedFromWindow()
+    }
+
+    override fun onWindowVisibilityChanged(visibility: Int) {
+        super.onWindowVisibilityChanged(visibility)
+        if (visibility == View.VISIBLE) startTicker() else stopTicker()
+    }
+
+    private fun startTicker() {
+        if (!attached || tickerRunning) return
+        tickerRunning = true
+        post(ticker)
+    }
+
+    private fun stopTicker() {
+        tickerRunning = false
+        removeCallbacks(ticker)
     }
 
     override fun onDraw(canvas: Canvas) {

@@ -77,14 +77,16 @@
         android:id="@+id/stage_card"
         android:layout_width="match_parent"
         android:layout_height="150dp"
-        android:layout_marginBottom="10dp"
+        android:layout_marginBottom="8dp"
         android:background="@drawable/procedural_overlay"
         android:clipChildren="true">
 
         <dev.corebuilds.shift.CoreMotionPreviewView
             android:id="@+id/motion_stage"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent"
+            android:contentDescription="@string/procedural_stage_description"
+            android:importantForAccessibility="no" />
 
         <LinearLayout
             android:layout_width="wrap_content"
@@ -154,8 +156,8 @@
             android:textColor="@color/btn_text"
             android:textSize="11sp"
             android:background="@drawable/btn_bg"
-            android:focusable="true"
-            android:nextFocusDown="@id/quality_1080" />
+            android:focusable="true" 
+            android:nextFocusDown="@id/quality_1080"/>
 
         <Button
             android:id="@+id/speed_normal"
@@ -167,8 +169,8 @@
             android:textColor="@color/btn_text"
             android:textSize="11sp"
             android:background="@drawable/btn_bg"
-            android:focusable="true"
-            android:nextFocusDown="@id/quality_1080" />
+            android:focusable="true" 
+            android:nextFocusDown="@id/quality_1080"/>
 
         <Button
             android:id="@+id/speed_fast"
@@ -180,8 +182,8 @@
             android:textColor="@color/btn_text"
             android:textSize="11sp"
             android:background="@drawable/btn_bg"
-            android:focusable="true"
-            android:nextFocusDown="@id/quality_1080" />
+            android:focusable="true" 
+            android:nextFocusDown="@id/quality_1080"/>
 
         <TextView
             android:layout_width="wrap_content"
@@ -202,8 +204,8 @@
             android:textColor="@color/btn_text"
             android:textSize="11sp"
             android:background="@drawable/btn_bg"
-            android:focusable="true"
-            android:nextFocusDown="@id/quality_1080" />
+            android:focusable="true" 
+            android:nextFocusDown="@id/quality_1080"/>
 
         <Button
             android:id="@+id/length_20"
@@ -215,8 +217,8 @@
             android:textColor="@color/btn_text"
             android:textSize="11sp"
             android:background="@drawable/btn_bg"
-            android:focusable="true"
-            android:nextFocusDown="@id/quality_1080" />
+            android:focusable="true" 
+            android:nextFocusDown="@id/quality_1080"/>
 
         <Button
             android:id="@+id/length_30"
@@ -228,8 +230,8 @@
             android:textColor="@color/btn_text"
             android:textSize="11sp"
             android:background="@drawable/btn_bg"
-            android:focusable="true"
-            android:nextFocusDown="@id/quality_1080" />
+            android:focusable="true" 
+            android:nextFocusDown="@id/quality_1080"/>
     </LinearLayout>
 
     <LinearLayout
@@ -258,8 +260,8 @@
             android:textColor="@color/btn_text"
             android:textSize="12sp"
             android:background="@drawable/btn_bg"
-            android:focusable="true"
-            android:nextFocusDown="@id/content_btn" />
+            android:focusable="true" 
+            android:nextFocusDown="@id/content_btn"/>
 
         <Button
             android:id="@+id/quality_4k"
@@ -271,8 +273,8 @@
             android:textColor="@color/btn_text"
             android:textSize="12sp"
             android:background="@drawable/btn_bg"
-            android:focusable="true"
-            android:nextFocusDown="@id/content_btn" />
+            android:focusable="true" 
+            android:nextFocusDown="@id/content_btn"/>
 
         <TextView
             android:id="@+id/quality_status"
@@ -312,7 +314,8 @@
             android:textSize="13sp"
             android:textColor="@color/btn_text"
             android:background="@drawable/btn_bg"
-            android:focusable="true" />
+            android:focusable="true" 
+            android:nextFocusDown="@id/content_btn"/>
     </LinearLayout>
 
     <LinearLayout
@@ -336,6 +339,8 @@
 
         <Button
             android:id="@+id/content_btn"
+            android:nextFocusDown="@id/live_list"
+            android:nextFocusUp="@id/quality_1080"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:minWidth="95dp"
@@ -343,36 +348,18 @@
             android:textSize="12sp"
             android:textColor="@color/btn_text"
             android:background="@drawable/btn_bg"
-            android:focusable="true"
-            android:nextFocusDown="@id/live_list" />
+            android:focusable="true" />
     </LinearLayout>
 
-    <LinearLayout
+    <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="3dp"
         android:layout_marginBottom="5dp"
-        android:gravity="center_vertical"
-        android:orientation="horizontal">
-
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:fontFamily="monospace"
-            android:text="@string/library_label"
-            android:textColor="@color/cb_text_secondary"
-            android:textSize="11sp" />
-
-        <TextView
-            android:id="@+id/nav_hint"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:fontFamily="monospace"
-            android:text="@string/nav_hint"
-            android:textColor="@color/cb_text_secondary"
-            android:textSize="10sp" />
-    </LinearLayout>
+        android:fontFamily="monospace"
+        android:text="@string/library_label"
+        android:textColor="@color/cb_text_secondary"
+        android:textSize="11sp" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/live_list"
@@ -383,11 +370,11 @@
         android:clipChildren="false"
         android:paddingStart="6dp"
         android:paddingEnd="6dp"
-        android:paddingBottom="24dp"
+        android:paddingBottom="24dp" 
         android:focusable="true"
         android:focusableInTouchMode="true"
         android:descendantFocusability="afterDescendants"
-        android:nextFocusUp="@id/content_btn" />
+        android:nextFocusUp="@id/content_btn"/>
 
     <TextView
         android:id="@+id/empty"

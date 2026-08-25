@@ -28,11 +28,11 @@ def test_remote_content_is_separate_from_apk_update():
     assert "UpdateChecker.check" in activity
     assert "networkSucceeded" in remote
     gradle = (ROOT / "shift/app/build.gradle.kts").read_text()
-    assert 'versionName = "2.3.2"' in gradle
-    assert 'versionCode = 8' in gradle
+    assert 'versionName = "2.3.3"' in gradle
+    assert 'versionCode = 9' in gradle
     update = (ROOT / "Latestrelease/shift-version.json").read_text()
-    assert '"versionName": "2.3.2"' in update
-    assert '"versionCode": 8' in update
+    assert '"versionName": "2.3.3"' in update
+    assert '"versionCode": 9' in update
     assert "content_banner" in (SHIFT / "res/layout/activity_main.xml").read_text()
     assert "motion-prequels/prequel-feed.json" in remote
 
@@ -50,6 +50,15 @@ def test_app_has_immediate_procedural_seed_catalog_and_stage():
     assert "setScene" in activity
     assert "motion_stage" in layout
     assert "CORE PREQUEL ENGINE" in (SHIFT / "res/values/strings.xml").read_text()
+
+
+def test_library_focus_path_is_explicit():
+    activity = read("java/dev/corebuilds/shift/MainActivity.kt")
+    layout = (SHIFT / "res/layout/activity_main.xml").read_text()
+    assert "requestInitialFocus" in activity
+    assert "requestFocus" in activity
+    assert "nextFocusDown=\"@id/live_list\"" in layout
+    assert "descendantFocusability=\"afterDescendants\"" in layout
 
 
 def test_all_preview_and_quality_buttons_are_wired():
@@ -81,6 +90,27 @@ def test_remote_posters_are_bounded_and_recycled_safely():
     assert "readBounded" in loader or "total <= MAX_BYTES" in loader
     assert "RemoteThumbLoader.load" in adapter
     assert "holder.thumb.tag == loadedUrl" in adapter
+
+
+def test_downloads_have_progress_bounded_integrity_and_retry_states():
+    downloader = read("java/dev/corebuilds/shift/LiveDownloader.kt")
+    adapter = read("java/dev/corebuilds/shift/LiveAdapter.kt")
+    activity = read("java/dev/corebuilds/shift/MainActivity.kt")
+    assert "MAX_VIDEO_BYTES" in downloader
+    assert "StatFs" in downloader
+    assert "isMp4" in downloader
+    assert "onProgress" in downloader and "download_progress_fmt" in activity
+    assert "retrying" in adapter and "R.string.retry" in adapter
+
+
+def test_video_preview_uses_tv_transport_controls():
+    activity = read("java/dev/corebuilds/shift/PreviewActivity.kt")
+    layout = (SHIFT / "res/layout/activity_preview.xml").read_text()
+    gradle = (ROOT / "shift/app/build.gradle.kts").read_text()
+    assert "ExoPlayer" in activity and "MediaSession" in activity
+    assert "KEEP_SCREEN_ON" in activity
+    assert "PlayerView" in layout and "use_controller" in layout
+    assert "media3-exoplayer" in gradle and "media3-session" in gradle
 
 
 def test_feed_and_asset_hosts_are_not_arbitrary_relays():
