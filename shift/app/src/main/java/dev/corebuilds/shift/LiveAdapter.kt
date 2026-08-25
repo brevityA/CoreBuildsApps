@@ -31,6 +31,7 @@ class LiveAdapter(
     private val statuses = HashMap<Int, String>()
     private val saved = HashSet<Int>()
     private val busy = HashSet<Int>()
+    private val retrying = HashSet<Int>()
 
     class Holder(view: View) : RecyclerView.ViewHolder(view) {
         val card: View = view.findViewById(R.id.card)
@@ -105,6 +106,7 @@ class LiveAdapter(
         holder.btnDownload.text = when {
             !item.mediaAvailable -> ctx.getString(R.string.preview_only)
             !tierAvailable -> ctx.getString(R.string.quality_unavailable, quality.label)
+            retrying.contains(position) -> ctx.getString(R.string.retry)
             isSaved -> ctx.getString(R.string.saved)
             else -> ctx.getString(R.string.download)
         }
@@ -127,9 +129,6 @@ class LiveAdapter(
     fun setQuality(next: QualityTier) {
         if (quality == next) return
         quality = next
-        saved.clear()
-        busy.clear()
-        statuses.clear()
         notifyDataSetChanged()
     }
 
@@ -142,6 +141,7 @@ class LiveAdapter(
 
     fun markBusy(position: Int) {
         busy.add(position)
+        retrying.remove(position)
         statuses[position] = ""
         notifyItemChanged(position, PAYLOAD_STATUS)
     }
@@ -149,12 +149,14 @@ class LiveAdapter(
     fun markSaved(position: Int, text: String) {
         saved.add(position)
         busy.remove(position)
+        retrying.remove(position)
         statuses[position] = text
         notifyItemChanged(position, PAYLOAD_STATUS)
     }
 
     fun markFailed(position: Int, text: String) {
         busy.remove(position)
+        retrying.add(position)
         statuses[position] = text
         notifyItemChanged(position, PAYLOAD_STATUS)
     }
@@ -179,6 +181,7 @@ class LiveAdapter(
             holder.btnDownload.text = when {
                 !item.mediaAvailable -> ctx.getString(R.string.preview_only)
                 !tierAvailable -> ctx.getString(R.string.quality_unavailable, quality.label)
+                retrying.contains(position) -> ctx.getString(R.string.retry)
                 isSaved -> ctx.getString(R.string.saved)
                 else -> ctx.getString(R.string.download)
             }

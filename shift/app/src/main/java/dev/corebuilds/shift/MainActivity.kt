@@ -47,6 +47,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var length30: Button
     private var previewSpeed = 1f
     private var previewLength = 20f
+    private val uiPrefs by lazy { getSharedPreferences("core_shift_ui", MODE_PRIVATE) }
     private val io = Executors.newSingleThreadExecutor()
     private val main = Handler(Looper.getMainLooper())
 
@@ -95,6 +96,14 @@ class MainActivity : AppCompatActivity() {
         length10.setOnClickListener { setPreviewMotion(seconds = 10f) }
         length20.setOnClickListener { setPreviewMotion(seconds = 20f) }
         length30.setOnClickListener { setPreviewMotion(seconds = 30f) }
+        selectedQuality = if (uiPrefs.getString(PREF_QUALITY, "1080p") == "4K") {
+            QualityTier.UHD_4K
+        } else {
+            QualityTier.HD_1080
+        }
+        previewSpeed = uiPrefs.getFloat(PREF_SPEED, 1f)
+        previewLength = uiPrefs.getFloat(PREF_LENGTH, 20f)
+        motionStage.setPlayback(previewSpeed, previewLength)
         updatePreviewControls()
         list.layoutManager = LinearLayoutManager(this)
 
@@ -124,6 +133,8 @@ class MainActivity : AppCompatActivity() {
         list.adapter = adapter
         list.scheduleLayoutAnimation()
         updateEmptyState(currentEntries)
+        // Start in the library, not on an off-screen control row. This makes
+        // D-pad Down/OK immediately browse and open a wallpaper.
         requestInitialFocus()
 
         val firstPrequel = currentEntries.firstOrNull { it.scene != null }
@@ -133,6 +144,8 @@ class MainActivity : AppCompatActivity() {
         }
         contentButton.setOnClickListener { refreshContent() }
 
+        // The stage is a real animated procedural preview, not a static poster.
+        // The production MP4 feed still refreshes independently in the background.
         refreshContent()
         checkForUpdate()
     }
@@ -140,6 +153,10 @@ class MainActivity : AppCompatActivity() {
     private fun setPreviewMotion(speed: Float = previewSpeed, seconds: Float = previewLength) {
         previewSpeed = speed.coerceIn(.5f, 2f)
         previewLength = seconds.coerceIn(10f, 30f)
+        uiPrefs.edit()
+            .putFloat(PREF_SPEED, previewSpeed)
+            .putFloat(PREF_LENGTH, previewLength)
+            .apply()
         motionStage.setPlayback(previewSpeed, previewLength)
         updatePreviewControls()
     }
@@ -155,6 +172,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun setQuality(next: QualityTier) {
         selectedQuality = next
+        uiPrefs.edit().putString(PREF_QUALITY, next.label).apply()
         adapter.setQuality(next)
         updateQualityUi()
     }
@@ -180,6 +198,38 @@ class MainActivity : AppCompatActivity() {
         )
     }
 
+    private fun hasActionableFocus(): Boolean {
+        val focused = currentFocus ?: return false
+        return focused.isShown && focused.isEnabled &&
+            focused !== motionStage && focused !== list
+    }
+
+    private fun requestInitialFocus() {
+        if (hasActionableFocus() || currentEntries.isEmpty()) return
+        focusRunnable?.let { list.removeCallbacks(it) }
+        focusRetries = 0
+        val runnable = object : Runnable {
+            override fun run() {
+                if (hasActionableFocus()) {
+                    focusRunnable = null
+                    return
+                }
+                val holder = list.findViewHolderForAdapterPosition(0)
+                if (holder != null) {
+                    holder.itemView.findViewById<Button>(R.id.btn_preview)?.requestFocus()
+                    focusRunnable = null
+                } else if (focusRetries < 10) {
+                    focusRetries += 1
+                    list.postDelayed(this, 120L)
+                } else {
+                    focusRunnable = null
+                }
+            }
+        }
+        focusRunnable = runnable
+        list.post(runnable)
+    }
+
     private fun selectStage(entry: LiveEntry) {
         val scene = entry.scene ?: return
         motionStage.setScene(scene, entry.accent)
@@ -195,6 +245,8 @@ class MainActivity : AppCompatActivity() {
                     putExtra(ProceduralPreviewActivity.EXTRA_SCENE, entry.scene)
                     putExtra(ProceduralPreviewActivity.EXTRA_ACCENT, entry.accent)
                     putExtra(ProceduralPreviewActivity.EXTRA_TITLE, entry.title)
+                    putExtra(ProceduralPreviewActivity.EXTRA_SPEED, previewSpeed)
+                    putExtra(ProceduralPreviewActivity.EXTRA_LENGTH, previewLength)
                 },
             )
         } else {
@@ -205,6 +257,7 @@ class MainActivity : AppCompatActivity() {
                         entry.urlFor(selectedQuality) ?: entry.url1080p,
                     )
                     putExtra(PreviewActivity.EXTRA_TITLE, entry.title)
+                    putExtra(PreviewActivity.EXTRA_QUALITY, selectedQuality.label)
                 },
             )
         }
@@ -227,7 +280,10 @@ class MainActivity : AppCompatActivity() {
                 currentEntries = result.entries
                 adapter.submit(result.entries)
                 updateEmptyState(result.entries)
-                if (result.entries.isNotEmpty()) requestInitialFocus()
+                // Refresh must never steal focus from a user who is already
+                // browsing. Only seed focus if the window has no actionable
+                // descendant (for example, on the very first load).
+                if (!hasActionableFocus()) requestInitialFocus()
                 result.entries.firstOrNull { it.scene != null }?.let { selectStage(it) }
 
                 when {
@@ -341,41 +397,7 @@ class MainActivity : AppCompatActivity() {
             installOffered = true
             UpdateInstaller.install(this, updateFile)
         }
-        restoreLibraryFocus()
-    }
-
-    private fun requestInitialFocus() {
-        cancelFocusRunnable()
-        focusRetries = 0
-        val runnable = object : Runnable {
-            override fun run() {
-                val holder = list.findViewHolderForAdapterPosition(0)
-                if (holder != null) {
-                    holder.itemView.findViewById<Button>(R.id.btn_preview)?.requestFocus()
-                    focusRunnable = null
-                } else if (adapter.itemCount > 0 && focusRetries < MAX_FOCUS_RETRIES) {
-                    focusRetries++
-                    list.post(this)
-                } else {
-                    focusRunnable = null
-                }
-            }
-        }
-        focusRunnable = runnable
-        list.post(runnable)
-    }
-
-    private fun cancelFocusRunnable() {
-        focusRunnable?.let { list.removeCallbacks(it) }
-        focusRunnable = null
-    }
-
-    private fun restoreLibraryFocus() {
-        if (list.hasFocus() || currentEntries.isEmpty()) return
-        val focused = currentFocus
-        if (focused == null || focused == window.decorView.rootView) {
-            requestInitialFocus()
-        }
+        if (!hasActionableFocus()) requestInitialFocus()
     }
 
     private fun download(entry: LiveEntry, pos: Int, quality: QualityTier) {
@@ -392,13 +414,30 @@ class MainActivity : AppCompatActivity() {
 
     private fun startDownload(entry: LiveEntry, pos: Int, quality: QualityTier) {
         adapter.markBusy(pos)
+        adapter.setStatus(pos, getString(R.string.download_starting_fmt, quality.label))
         io.execute {
-            val result = LiveDownloader.download(this, entry, quality)
+            var lastPercent = -1
+            val result = LiveDownloader.download(this, entry, quality) { received, total ->
+                if (total > 0L) {
+                    val percent = ((received * 100L) / total).toInt().coerceIn(0, 100)
+                    if (percent == 100 || percent - lastPercent >= 5) {
+                        lastPercent = percent
+                        main.post {
+                            if (!isFinishing && !isDestroyed) {
+                                adapter.setStatus(
+                                    pos,
+                                    getString(R.string.download_progress_fmt, quality.label, percent),
+                                )
+                            }
+                        }
+                    }
+                }
+            }
             main.post {
                 if (isFinishing || isDestroyed) return@post
                 when (result) {
                     is LiveDownloader.Result.Saved ->
-                        adapter.markSaved(pos, getString(R.string.saved_hint))
+                        adapter.markSaved(pos, getString(R.string.download_saved_fmt, quality.label))
                     is LiveDownloader.Result.NeedsPermission ->
                         adapter.markFailed(pos, getString(R.string.permission_needed))
                     is LiveDownloader.Result.Failed -> {
@@ -432,7 +471,8 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onDestroy() {
-        cancelFocusRunnable()
+        focusRunnable?.let { list.removeCallbacks(it) }
+        focusRunnable = null
         spectrum?.cancel()
         spectrum = null
         io.shutdown()
@@ -441,6 +481,8 @@ class MainActivity : AppCompatActivity() {
 
     companion object {
         private const val REQ_WRITE = 102
-        private const val MAX_FOCUS_RETRIES = 10
+        private const val PREF_QUALITY = "quality"
+        private const val PREF_SPEED = "preview_speed"
+        private const val PREF_LENGTH = "preview_length"
     }
 }

@@ -30,10 +30,17 @@
     <string name="preview_title">Live Wallpaper</string>
     <string name="saved_hint">Saved to Movies/CoreBuilds — set it in Monet</string>
     <string name="download_failed_fmt">Failed · %1$s</string>
+    <string name="download_starting_fmt">Starting %1$s download…</string>
+    <string name="download_progress_fmt">Downloading %1$s · %2$d%%</string>
+    <string name="download_verifying">Verifying downloaded video…</string>
+    <string name="download_saved_fmt">Saved %1$s to Movies/CoreBuilds</string>
+    <string name="retry">Retry</string>
     <string name="permission_needed">Storage permission needed</string>
     <string name="empty">No live wallpapers found</string>
     <string name="preview_loading">Loading…</string>
     <string name="preview_failed">Preview failed</string>
+    <string name="preview_error_fmt">Playback error · %1$s</string>
+    <string name="video_preview_description">Silent video wallpaper preview. Use the remote playback controls to pause, resume or seek.</string>
     <string name="procedural_preview_title">Core Motion Preview</string>
     <string name="procedural_preview_kicker">CORE MOTION / PREQUEL ENGINE</string>
     <string name="procedural_live_badge">LIVE · PROCEDURAL · 20S LOOP</string>
@@ -54,6 +61,4 @@
     <string name="content_checking">Checking for Core Motion updates…</string>
     <string name="content_refresh">Refresh</string>
     <string name="content_refreshing">Refreshing…</string>
-
-    <string name="nav_hint">↑↓ browse · OK select</string>
 </resources>

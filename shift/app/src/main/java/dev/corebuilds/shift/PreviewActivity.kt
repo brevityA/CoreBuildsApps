@@ -5,39 +5,50 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.view.View
+import android.view.WindowManager
 import android.widget.TextView
-import android.widget.VideoView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.media3.common.MediaItem
+import androidx.media3.common.PlaybackException
+import androidx.media3.common.Player
+import androidx.media3.exoplayer.ExoPlayer
+import androidx.media3.session.MediaSession
+import androidx.media3.ui.PlayerView
 import java.util.concurrent.Executors
 
 /**
- * Full-screen looping preview of one live wallpaper.
+ * Full-screen TV preview using Media3/ExoPlayer.
  *
- * Downloads the 1080p MP4 to the internal cache, then plays the *local* file
- * with [VideoView]. Playing the cached copy avoids two failure modes of
- * streaming straight from `raw.githubusercontent.com`: an unexpected
- * content-type and missing range-request support, both of which can make
- * MediaPlayer silently fail.
+ * The local cached copy gives reliable range/format behaviour, while Media3
+ * supplies familiar TV transport controls, MediaSession integration, looping,
+ * audio-off playback and a clean error callback.
  */
 class PreviewActivity : AppCompatActivity() {
 
-    private lateinit var video: VideoView
+    private lateinit var playerView: PlayerView
     private lateinit var status: TextView
-
+    private var player: ExoPlayer? = null
+    private var mediaSession: MediaSession? = null
+    private var prepared = false
     private val io = Executors.newSingleThreadExecutor()
     private val main = Handler(Looper.getMainLooper())
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_preview)
+        window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
 
         val url = intent.getStringExtra(EXTRA_URL) ?: run { finish(); return }
         val title = intent.getStringExtra(EXTRA_TITLE).orEmpty()
+        val quality = intent.getStringExtra(EXTRA_QUALITY).orEmpty()
 
-        video = findViewById(R.id.preview_video)
+        playerView = findViewById(R.id.preview_player)
         status = findViewById(R.id.preview_status)
         findViewById<TextView>(R.id.preview_title).text = title
-
+        findViewById<TextView>(R.id.preview_quality).apply {
+            text = quality
+            visibility = if (quality.isBlank()) View.GONE else View.VISIBLE
+        }
         status.visibility = View.VISIBLE
         status.text = getString(R.string.preview_loading)
 
@@ -50,28 +61,60 @@ class PreviewActivity : AppCompatActivity() {
                     status.text = getString(R.string.preview_failed)
                     return@post
                 }
-                status.visibility = View.GONE
-                video.setVideoURI(Uri.fromFile(file))
-                video.setOnPreparedListener { mp -> mp.isLooping = true }
-                video.setOnErrorListener { _, _, _ -> status.text = getString(R.string.preview_failed); true }
-                video.start()
+                val exo = ExoPlayer.Builder(this).build()
+                player = exo
+                mediaSession = MediaSession.Builder(this, exo).build()
+                exo.repeatMode = Player.REPEAT_MODE_ALL
+                exo.volume = 0f
+                exo.setMediaItem(MediaItem.fromUri(Uri.fromFile(file)))
+                exo.addListener(object : Player.Listener {
+                    override fun onPlaybackStateChanged(playbackState: Int) {
+                        if (playbackState == Player.STATE_READY) {
+                            prepared = true
+                            status.visibility = View.GONE
+                            exo.playWhenReady = true
+                        }
+                    }
+
+                    override fun onPlayerError(error: PlaybackException) {
+                        prepared = false
+                        status.visibility = View.VISIBLE
+                        status.text = getString(
+                            R.string.preview_error_fmt,
+                            error.errorCodeName,
+                        )
+                    }
+                })
+                playerView.player = exo
+                exo.prepare()
             }
         }
     }
 
     override fun onPause() {
+        player?.pause()
         super.onPause()
-        if (::video.isInitialized) video.pause()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        if (prepared) player?.play()
     }
 
     override fun onDestroy() {
-        io.shutdown()
-        if (::video.isInitialized) video.stopPlayback()
+        io.shutdownNow()
+        mediaSession?.release()
+        mediaSession = null
+        if (::playerView.isInitialized) playerView.player = null
+        player?.release()
+        player = null
+        window.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
         super.onDestroy()
     }
 
     companion object {
         const val EXTRA_URL = "preview_url"
         const val EXTRA_TITLE = "preview_title"
+        const val EXTRA_QUALITY = "preview_quality"
     }
 }

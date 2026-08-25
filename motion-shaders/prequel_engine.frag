@@ -306,7 +306,10 @@ vec3 sceneHorizon(vec2 p, float phase, int variant) {
 
 void main() {
     vec2 p = (2.0 * gl_FragCoord.xy - u_resolution.xy) / min(u_resolution.x, u_resolution.y);
-    float phase = TAU * fract(u_time * u_speed / max(u_loop, 0.001));
+    float basePhase = TAU * fract(u_time / max(u_loop, 0.001));
+    // Speed changes the velocity profile while preserving phase 0/TAU at the
+    // loop boundary, so non-integer preview speeds remain seamless.
+    float phase = basePhase + (u_speed - 1.0) * 0.65 * (1.0 - cos(basePhase));
     vec3 col;
     if (u_scene == 0) col = sceneOrbitals(p, phase);
     else if (u_scene == 1) col = sceneWarp(p, phase);

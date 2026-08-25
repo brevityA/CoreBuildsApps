@@ -7,7 +7,9 @@
     <dev.corebuilds.shift.CoreMotionPreviewView
         android:id="@+id/procedural_preview"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        android:contentDescription="@string/procedural_stage_description"
+        android:importantForAccessibility="no" />
 
     <LinearLayout
         android:layout_width="wrap_content"
