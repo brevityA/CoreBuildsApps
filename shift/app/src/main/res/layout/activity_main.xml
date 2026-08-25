@@ -5,7 +5,7 @@
     android:orientation="vertical"
     android:paddingStart="28dp"
     android:paddingEnd="28dp"
-    android:paddingTop="22dp"
+    android:paddingTop="14dp"
     android:paddingBottom="0dp"
     android:background="@color/cb_night">
 
@@ -65,8 +65,8 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:layout_marginBottom="10dp"
+        android:layout_marginTop="4dp"
+        android:layout_marginBottom="6dp"
         android:text="@string/app_hint"
         android:textColor="@color/cb_text_secondary"
         android:textSize="14sp" />
@@ -76,8 +76,8 @@
     <FrameLayout
         android:id="@+id/stage_card"
         android:layout_width="match_parent"
-        android:layout_height="150dp"
-        android:layout_marginBottom="8dp"
+        android:layout_height="100dp"
+        android:layout_marginBottom="5dp"
         android:background="@drawable/procedural_overlay"
         android:clipChildren="true">
 
@@ -92,13 +92,13 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom|start"
-            android:layout_marginStart="18dp"
-            android:layout_marginBottom="14dp"
+            android:layout_marginStart="14dp"
+            android:layout_marginBottom="8dp"
             android:orientation="vertical"
-            android:paddingStart="14dp"
-            android:paddingTop="9dp"
-            android:paddingEnd="18dp"
-            android:paddingBottom="9dp"
+            android:paddingStart="12dp"
+            android:paddingTop="6dp"
+            android:paddingEnd="14dp"
+            android:paddingBottom="6dp"
             android:background="@drawable/procedural_overlay">
 
             <TextView
@@ -114,9 +114,9 @@
                 android:id="@+id/stage_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="2dp"
+                android:layout_marginTop="1dp"
                 android:textColor="@color/cb_text_primary"
-                android:textSize="22sp"
+                android:textSize="18sp"
                 android:textStyle="bold" />
 
             <TextView
@@ -134,7 +134,7 @@
         android:id="@+id/preview_controls"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="7dp"
+        android:layout_marginBottom="4dp"
         android:gravity="center_vertical"
         android:orientation="horizontal">
 
@@ -238,7 +238,7 @@
         android:id="@+id/quality_bar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="7dp"
+        android:layout_marginBottom="4dp"
         android:gravity="center_vertical"
         android:orientation="horizontal">
 
@@ -292,8 +292,8 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:gravity="center_vertical"
-        android:padding="10dp"
-        android:layout_marginBottom="7dp"
+        android:padding="7dp"
+        android:layout_marginBottom="4dp"
         android:background="@drawable/card_bg"
         android:visibility="gone">
 
@@ -324,8 +324,8 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:gravity="center_vertical"
-        android:padding="10dp"
-        android:layout_marginBottom="7dp"
+        android:padding="7dp"
+        android:layout_marginBottom="4dp"
         android:background="@drawable/card_bg"
         android:visibility="gone">
 
@@ -354,8 +354,8 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="3dp"
-        android:layout_marginBottom="5dp"
+        android:layout_marginTop="2dp"
+        android:layout_marginBottom="3dp"
         android:fontFamily="monospace"
         android:text="@string/library_label"
         android:textColor="@color/cb_text_secondary"
