@@ -86,6 +86,8 @@ class PreviewActivity : AppCompatActivity() {
                     }
                 })
                 playerView.player = exo
+                playerView.controllerShowTimeoutMs = 3500
+                playerView.controllerHideOnTouch = false
                 exo.prepare()
             }
         }

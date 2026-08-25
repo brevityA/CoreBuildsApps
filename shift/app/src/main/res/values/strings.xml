@@ -46,6 +46,7 @@
     <string name="procedural_live_badge">LIVE · PROCEDURAL · 20S LOOP</string>
     <string name="procedural_preview_meta">Scene %1$d · GPU preview · production MP4 available after render</string>
     <string name="preview_controls_title">PREVIEW CONTROLS</string>
+    <string name="procedural_stage_description">Procedural motion preview stage</string>
 
     <string name="update_available">v%1$s available</string>
     <string name="update_btn">Update</string>

@@ -13,9 +13,7 @@
         android:contentDescription="@string/video_preview_description"
         app:resize_mode="zoom"
         app:show_buffering="when_playing"
-        app:use_controller="true"
-        app:controller_show_timeout_ms="3500"
-        app:controller_hide_on_touch="false" />
+        app:use_controller="true" />
 
     <LinearLayout
         android:layout_width="wrap_content"
