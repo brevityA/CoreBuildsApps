@@ -9,7 +9,11 @@
                     <corners android:radius="10dp" />
                 </shape>
             </item>
-            <item>
+            <item
+                android:left="2dp"
+                android:top="2dp"
+                android:right="2dp"
+                android:bottom="2dp">
                 <shape android:shape="rectangle">
                     <gradient android:angle="315" android:startColor="@color/cb_cta_start" android:endColor="@color/cb_cta_end" />
                     <corners android:radius="8dp" />
