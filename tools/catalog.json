@@ -1312,16 +1312,6 @@
       "category": "STREAM"
     },
     {
-      "name": "Cinema HD",
-      "drawable": "cinemahd",
-      "color": "#E5533D",
-      "glyph": "film_reel",
-      "components": [
-        "flix.com.vision/.activities.SplashScreenActivity"
-      ],
-      "category": "STREAM"
-    },
-    {
       "name": "Cinemaghar TV",
       "drawable": "cinemaghar_tv",
       "color": "#FF6B35",
@@ -2860,6 +2850,19 @@
         "com.tvflix.ippflixtvbox/com.tvflix.ippflixtvbox.view.activity.SplashActivity"
       ],
       "mapping_source": "Projectivy Icon Pack 1.1.9"
+    },
+    {
+      "name": "Flix Vision",
+      "drawable": "flix_vision",
+      "color": "#E5533D",
+      "glyph": "film_reel",
+      "components": [
+        "flix.com.vision/.activities.SplashScreenActivity"
+      ],
+      "unverified": [
+        "flix.com.vision/.activities.SplashScreenActivity"
+      ],
+      "category": "STREAM"
     },
     {
       "name": "Flixnest",

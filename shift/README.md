@@ -44,11 +44,22 @@ AIOStreams paths and is not used as an arbitrary wallpaper relay.
 cd shift && ./gradlew :app:assembleDebug    # JDK 17 + Android SDK
 ```
 
-Standalone Gradle root, package `dev.corebuilds.shift`, version 2.3.4 (versionCode 10),
+Standalone Gradle root, package `dev.corebuilds.shift`, version **2.3.5** (versionCode 11),
 minSdk 26, target/compile 34, AGP 8.5.2 / Kotlin 1.9.24. Dependencies: appcompat,
 core-ktx, recyclerview, Media3 (ExoPlayer, UI, session).
-No WorkManager or background service is used; network refreshes happen only
-when the user opens the app or presses Refresh.
+
+**Screensaver:** system `DreamService`. Settings → Screensaver → Core Shift, or
+the Screensaver button on the quality bar. Playlist: `Movies/CoreBuilds`, then
+the live cache, then the bundled catalog. Silent. No MediaSession.
+
+**Overflight / Aerial paste URL:**
+
+```
+https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Motion/overflight-feed.json
+```
+
+No WorkManager. Network refreshes happen only when the user opens the app or
+presses Refresh.
 
 ## Content generation
 

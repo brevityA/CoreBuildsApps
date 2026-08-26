@@ -8,9 +8,12 @@
     android:clickable="true"
     android:focusable="true"
     android:focusableInTouchMode="true"
+    android:fontFamily="monospace"
+    android:letterSpacing="0.04"
     android:paddingStart="14dp"
     android:paddingEnd="14dp"
     android:paddingTop="8dp"
     android:paddingBottom="8dp"
+    android:textAllCaps="true"
     android:textColor="@color/cb_ink"
-    android:textSize="12sp" />
+    android:textSize="11sp" />

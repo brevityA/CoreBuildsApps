@@ -1,17 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Signature gradient, §03: linear-gradient(135deg,#00abd3,#00d4ff). Never a flat cyan. -->
+<!-- Signature gradient, §03: linear-gradient(135deg,#00abd3,#00d4ff). 8dp radius, subtle glow on focus. -->
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
     <item android:state_focused="true">
-        <shape android:shape="rectangle">
-            <gradient android:angle="315" android:startColor="@color/cb_cta_start" android:endColor="@color/cb_cta_end" />
-            <corners android:radius="11dp" />
-            <stroke android:width="2dp" android:color="@color/cb_glow_cyan" />
-        </shape>
+        <layer-list>
+            <item>
+                <shape android:shape="rectangle">
+                    <solid android:color="#2000D4FF" />
+                    <corners android:radius="10dp" />
+                </shape>
+            </item>
+            <item
+                android:left="2dp"
+                android:top="2dp"
+                android:right="2dp"
+                android:bottom="2dp">
+                <shape android:shape="rectangle">
+                    <gradient android:angle="315" android:startColor="@color/cb_cta_start" android:endColor="@color/cb_cta_end" />
+                    <corners android:radius="8dp" />
+                    <stroke android:width="2dp" android:color="@color/cb_glow_cyan" />
+                </shape>
+            </item>
+        </layer-list>
     </item>
     <item>
         <shape android:shape="rectangle">
             <gradient android:angle="315" android:startColor="@color/cb_cta_start" android:endColor="@color/cb_cta_end" />
-            <corners android:radius="11dp" />
+            <corners android:radius="8dp" />
         </shape>
     </item>
 </selector>

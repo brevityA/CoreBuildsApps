@@ -10,7 +10,6 @@
     <item drawable="begin_banner" />
     <item drawable="boosteroidtv_banner" />
     <item drawable="chillio_banner" />
-    <item drawable="cinemahd_banner" />
     <item drawable="cloudstream_banner" />
     <item drawable="watchcorridortv_banner" />
     <item drawable="devinterestdev_banner" />
@@ -18,6 +17,7 @@
     <item drawable="ertflix_banner" />
     <item drawable="filmrise_banner" />
     <item drawable="platform_banner" />
+    <item drawable="flix_vision_banner" />
     <item drawable="androidtv_4_banner" />
     <item drawable="justwatch_banner" />
     <item drawable="androidtv_5_banner" />
@@ -952,7 +952,6 @@
     <item drawable="begin" />
     <item drawable="boosteroidtv" />
     <item drawable="chillio" />
-    <item drawable="cinemahd" />
     <item drawable="cloudstream" />
     <item drawable="watchcorridortv" />
     <item drawable="devinterestdev" />
@@ -960,6 +959,7 @@
     <item drawable="ertflix" />
     <item drawable="filmrise" />
     <item drawable="platform" />
+    <item drawable="flix_vision" />
     <item drawable="androidtv_4" />
     <item drawable="justwatch" />
     <item drawable="androidtv_5" />

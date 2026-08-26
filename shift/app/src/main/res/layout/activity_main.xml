@@ -284,6 +284,19 @@
             android:fontFamily="monospace"
             android:textColor="@color/cb_cyan"
             android:textSize="11sp" />
+
+        <Button
+            android:id="@+id/btn_screensaver"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="14dp"
+            android:minWidth="120dp"
+            android:text="@string/dream_action"
+            android:textColor="@color/btn_text"
+            android:textSize="12sp"
+            android:background="@drawable/btn_bg"
+            android:focusable="true"
+            android:nextFocusDown="@id/content_btn" />
     </LinearLayout>
 
     <LinearLayout
