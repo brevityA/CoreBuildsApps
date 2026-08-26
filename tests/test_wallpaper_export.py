@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Contracts for the wallpaper export feature (v1.7.1).
+Contracts for the wallpaper export feature (v1.7.2).
 
 Plain unittest over the repo tree, no Android SDK (mirrors the other test_*.py
 files). Guards the wiring that makes "Export to Pictures for Monet rotation"
@@ -184,8 +184,8 @@ class KotlinWiringTests(unittest.TestCase):
 class VersionTests(unittest.TestCase):
     def test_version_bumped_to_180(self):
         gradle = read("app/build.gradle.kts")
-        self.assertIn('versionCode = 11', gradle)
-        self.assertIn('versionName = "1.7.1"', gradle)
+        self.assertIn('versionCode = 12', gradle)
+        self.assertIn('versionName = "1.7.2"', gradle)
 
     def test_version_json_matches_gradle(self):
         import json
