@@ -84,6 +84,7 @@ class MainActivity : AppCompatActivity() {
         qualityStatus = findViewById(R.id.quality_status)
         quality1080.setOnClickListener { setQuality(QualityTier.HD_1080) }
         quality4k.setOnClickListener { setQuality(QualityTier.UHD_4K) }
+        findViewById<Button>(R.id.btn_screensaver).setOnClickListener { openScreensaverSettings() }
         speedSlow = findViewById(R.id.speed_slow)
         speedNormal = findViewById(R.id.speed_normal)
         speedFast = findViewById(R.id.speed_fast)
@@ -169,6 +170,22 @@ class MainActivity : AppCompatActivity() {
         length10.text = if (previewLength == 10f) "10s ✓" else getString(R.string.length_10)
         length20.text = if (previewLength == 20f) getString(R.string.length_20_selected) else getString(R.string.length_20)
         length30.text = if (previewLength == 30f) "30s ✓" else getString(R.string.length_30)
+    }
+
+    private fun openScreensaverSettings() {
+        val candidates = listOf(
+            android.provider.Settings.ACTION_DREAM_SETTINGS,
+            "android.settings.DREAM_SETTINGS",
+            "com.android.tv.settings.DISPLAY",
+        )
+        for (action in candidates) {
+            val intent = Intent(action).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            if (intent.resolveActivity(packageManager) != null) {
+                startActivity(intent)
+                return
+            }
+        }
+        Toast.makeText(this, getString(R.string.dream_open_failed), Toast.LENGTH_LONG).show()
     }
 
     private fun setQuality(next: QualityTier) {
