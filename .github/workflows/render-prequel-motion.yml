@@ -126,9 +126,9 @@ jobs:
             upload_with_retry "$file"
           done < <(find Motion/prequel -maxdepth 1 -type f -print0 | sort -z)
 
-          expected_names=$(find Motion/prequel -maxdepth 1 -type f -printf '%f\\n' | sort)
+          expected_names=$(find Motion/prequel -maxdepth 1 -type f -printf '%f\n' | sort)
           actual_names=$(gh release view "$TAG" --repo "$GITHUB_REPOSITORY" --json assets --jq '.assets[].name' | sort)
-          missing=$(comm -23 <(printf '%s\\n' "$expected_names") <(printf '%s\\n' "$actual_names"))
+          missing=$(comm -23 <(printf '%s\n' "$expected_names") <(printf '%s\n' "$actual_names"))
           if [ -n "$missing" ]; then
             echo "::error::Release is missing uploaded files:"
             echo "$missing"

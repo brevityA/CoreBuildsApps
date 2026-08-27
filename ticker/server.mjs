@@ -74,7 +74,7 @@ const server = http.createServer(async (req, res) => {
         json(res, { ok: false, error: safety.reason, events: [] }, 400);
         return;
       }
-      const result = await cached(`rss:${safety.url}`, () => fetchFeed(safety.url, { source: 'rss', label }));
+      const result = await cached(`rss:${safety.url}:${label}`, () => fetchFeed(safety.url, { source: 'rss', label }));
       json(res, result);
       return;
     }
@@ -83,12 +83,12 @@ const server = http.createServer(async (req, res) => {
         .split(',')
         .map((s) => s.trim().toLowerCase())
         .filter((id) => LEAGUES[id]);
-      const feeds = parseFeedsParam(url.searchParams.get('feeds') || '');
+      const feeds = parseFeedsParam(url.searchParams.get('feeds') || '').slice(0, 20);
       const [board, ...feedResults] = await Promise.all([
         getScoreboard(leagues),
         ...feeds.map((feed) => {
           if (isBundledSample(feed.url)) return readBundledSample(feed.label);
-          return cached(`rss:${feed.url}`, () => fetchFeed(feed.url, { source: 'rss', label: feed.label }));
+          return cached(`rss:${feed.url}:${feed.label}`, () => fetchFeed(feed.url, { source: 'rss', label: feed.label }));
         }),
       ]);
       const rssEvents = feedResults.flatMap((r) => r.events || []);
@@ -192,10 +192,21 @@ function parseFeedsParam(raw) {
   }).filter((f) => f.url);
 }
 
+const MAX_CACHE_KEYS = 200;
+
 async function cached(key, fn) {
   const hit = cache.get(key);
   if (hit && Date.now() - hit.at < CACHE_MS) return hit.value;
   const value = await fn();
+  if (cache.size >= MAX_CACHE_KEYS) {
+    const now = Date.now();
+    for (const [k, v] of cache.entries()) {
+      if (now - v.at >= CACHE_MS) cache.delete(k);
+    }
+    if (cache.size >= MAX_CACHE_KEYS) {
+      cache.delete(cache.keys().next().value);
+    }
+  }
   cache.set(key, { at: Date.now(), value });
   return value;
 }

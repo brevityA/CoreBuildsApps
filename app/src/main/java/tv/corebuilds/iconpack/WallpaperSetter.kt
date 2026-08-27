@@ -78,7 +78,13 @@ object WallpaperSetter {
      * Apply [bitmap] as the system home wallpaper. The caller owns the bitmap
      * and may recycle it after this returns.
      */
-    fun apply(context: Context, bitmap: Bitmap): Result {
+    /**
+     * Apply a wallpaper [file] as the system home wallpaper directly using an InputStream.
+     * This avoids loading the entire 4K uncompressed bitmap into the app's heap space,
+     * drastically reducing memory usage and preventing OOMs on low-RAM Android TVs.
+     * Also prevents quality loss from JPEG re-encoding during fallback.
+     */
+    fun apply(context: Context, file: File): Result {
         val perm = requiredPermission()
         if (perm != null &&
             ContextCompat.checkSelfPermission(context, perm) != PackageManager.PERMISSION_GRANTED
@@ -89,21 +95,25 @@ object WallpaperSetter {
             try {
                 val wm = WallpaperManager.getInstance(context)
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                    wm.setBitmap(bitmap, null, false, WallpaperManager.FLAG_SYSTEM)
+                    file.inputStream().use { stream ->
+                        wm.setStream(stream, null, false, WallpaperManager.FLAG_SYSTEM)
+                    }
                 } else {
                     @Suppress("DEPRECATION")
-                    wm.setBitmap(bitmap)
+                    file.inputStream().use { stream ->
+                        wm.setStream(stream)
+                    }
                 }
                 Result.Set("system")
             } catch (e: SecurityException) {
                 Log.w(TAG, "direct set denied, falling back to gallery", e)
-                saveBitmapToPictures(context, bitmap)
+                copyFileToPictures(context, file)
             } catch (e: Exception) {
                 Log.w(TAG, "direct set failed, falling back to gallery", e)
-                saveBitmapToPictures(context, bitmap)
+                copyFileToPictures(context, file)
             }
         } else {
-            saveBitmapToPictures(context, bitmap)
+            copyFileToPictures(context, file)
         }
     }
 
@@ -164,7 +174,9 @@ object WallpaperSetter {
                     return Result.Failed("Could not create Pictures/CoreBuilds")
                 }
                 val dest = File(dir, displayName)
-                file.inputStream().use { it.copyTo(dest.outputStream(), 64 * 1024) }
+                file.inputStream().use { inp ->
+                    dest.outputStream().use { out -> inp.copyTo(out, 64 * 1024) }
+                }
                 Result.SavedToGallery(Uri.fromFile(dest))
             }
         } catch (e: Exception) {
@@ -198,6 +210,19 @@ object WallpaperSetter {
     }
 
     /** Build an ACTION_ATTACH_DATA intent for the system crop/setter fallback. */
+
+    /** 
+     * Projectivy Launcher specific static wallpaper apply intent.
+     * Found via community research (Android TV intent sniffing).
+     */
+    fun setProjectivyIntent(uri: Uri): Intent =
+        Intent(Intent.ACTION_MAIN).apply {
+            setClassName("com.spocky.projengmenu", "com.spocky.projengmenu.ui.launcherActivities.SetBackgroundActivity")
+            putExtra("uri", uri.toString())
+            addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+        }
+
     fun setIntent(uri: Uri, mime: String = "image/jpeg"): Intent =
         Intent(Intent.ACTION_ATTACH_DATA)
             .setDataAndType(uri, mime)

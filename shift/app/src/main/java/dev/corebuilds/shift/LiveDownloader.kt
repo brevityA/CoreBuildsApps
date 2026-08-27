@@ -31,6 +31,7 @@ object LiveDownloader {
     private const val MIN_VIDEO_BYTES = 20_000L
     private const val MAX_VIDEO_BYTES = 256L * 1024L * 1024L
     private const val FREE_SPACE_MARGIN = 8L * 1024L * 1024L
+    private const val MAX_CACHE_FILES = 5
     private val RELATIVE_PATH = "${Environment.DIRECTORY_MOVIES}/CoreBuilds"
 
     private val ALLOWED_HOSTS = setOf(
@@ -102,6 +103,7 @@ object LiveDownloader {
         val dir = File(context.cacheDir, "live").apply { mkdirs() }
         val dest = File(dir, cacheName)
         if (dest.exists() && dest.length() > MIN_VIDEO_BYTES && isMp4(dest)) {
+            dest.setLastModified(System.currentTimeMillis())
             onProgress(dest.length(), dest.length())
             return dest
         }
@@ -113,16 +115,43 @@ object LiveDownloader {
             conn = (parsed.openConnection() as HttpURLConnection).apply {
                 connectTimeout = CONNECT_TIMEOUT_MS
                 readTimeout = READ_TIMEOUT_MS
-                instanceFollowRedirects = true
+                instanceFollowRedirects = false
                 requestMethod = "GET"
                 setRequestProperty("Accept", "video/mp4,video/*;q=0.8")
                 setRequestProperty("User-Agent", "CoreShift")
             }
-            if (conn.responseCode !in 200..299) {
-                Log.w(TAG, "HTTP ${conn.responseCode} for $cacheName")
+            var finalConn = conn!!
+            var hops = 0
+            while (finalConn.responseCode in 300..399 && hops < 5) {
+                val next = finalConn.getHeaderField("Location")
+                    ?: break
+                finalConn.disconnect()
+                val nextUrl = URL(URL(url), next)
+                if (nextUrl.protocol != "https" || nextUrl.host !in ALLOWED_HOSTS) {
+                    Log.w(TAG, "redirect left allowlist: $next")
+                    return null
+                }
+                finalConn = (nextUrl.openConnection() as HttpURLConnection).apply {
+                    connectTimeout = CONNECT_TIMEOUT_MS
+                    readTimeout = READ_TIMEOUT_MS
+                    instanceFollowRedirects = false
+                    requestMethod = "GET"
+                    setRequestProperty("Accept", "video/mp4,video/*;q=0.8")
+                    setRequestProperty("User-Agent", "CoreShift")
+                }
+                conn = finalConn
+                hops++
+            }
+            if (finalConn.responseCode !in 200..299) {
+                Log.w(TAG, "HTTP ${finalConn.responseCode} for $cacheName")
                 return null
             }
-            val declared = conn.contentLengthLong
+            val contentType = finalConn.contentType?.substringBefore(';')?.trim()?.lowercase()
+            if (contentType != null && !contentType.startsWith("video/") && contentType != "application/octet-stream") {
+                Log.w(TAG, "unexpected content-type $contentType for $cacheName")
+                return null
+            }
+            val declared = finalConn.contentLengthLong
             if (declared > MAX_VIDEO_BYTES) {
                 Log.w(TAG, "refusing oversized video ($declared bytes) for $cacheName")
                 return null
@@ -134,7 +163,7 @@ object LiveDownloader {
             }
 
             var received = 0L
-            conn.inputStream.use { input ->
+            finalConn.inputStream.use { input ->
                 tmp.outputStream().use { output ->
                     val buffer = ByteArray(64 * 1024)
                     while (true) {
@@ -158,6 +187,7 @@ object LiveDownloader {
             if (!tmp.renameTo(dest)) {
                 throw IllegalStateException("could not commit cached video")
             }
+            trimCache(context)
             onProgress(dest.length(), dest.length())
             dest
         } catch (e: Exception) {
@@ -230,5 +260,13 @@ object LiveDownloader {
             Log.w(TAG, "copy to Movies failed", e)
             Result.Failed(e.message ?: "could not save video")
         }
+    }
+    private fun trimCache(context: Context) {
+        val dir = File(context.cacheDir, "live")
+        val files = dir.listFiles()
+            ?.filter { !it.name.endsWith(".part") }
+            ?.sortedByDescending { it.lastModified() }
+            ?: return
+        files.drop(MAX_CACHE_FILES).forEach { runCatching { it.delete() } }
     }
 }

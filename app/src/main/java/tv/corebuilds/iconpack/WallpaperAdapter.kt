@@ -112,12 +112,18 @@ class WallpaperAdapter(
     fun selectedCount(): Int = selected.size
 
     private fun loadThumb(context: Context, asset: String, onReady: (android.graphics.Bitmap?) -> Unit) {
+        val cached = cache.get(asset)
+        if (cached != null) {
+            onReady(cached)
+            return
+        }
         io.execute {
             val bmp = try {
                 context.assets.open(asset).use { BitmapFactory.decodeStream(it) }
             } catch (e: Exception) {
                 null
             }
+            if (bmp != null) cache.put(asset, bmp)
             main.post { onReady(bmp) }
         }
     }
@@ -125,5 +131,6 @@ class WallpaperAdapter(
     companion object {
         private val io = Executors.newFixedThreadPool(2)
         private val main = Handler(Looper.getMainLooper())
+        private val cache = android.util.LruCache<String, android.graphics.Bitmap>(40)
     }
 }

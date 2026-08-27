@@ -37,6 +37,7 @@ class ExportProgressActivity : AppCompatActivity() {
     private var failed: List<Pair<String, String>> = emptyList()
     private var savedCount = 0
     private var skippedCount = 0
+    private var exportJob: java.util.concurrent.atomic.AtomicBoolean? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -70,7 +71,7 @@ class ExportProgressActivity : AppCompatActivity() {
     private fun runExport(targets: List<Wallpaper>) {
         if (targets.isEmpty()) return
         showRunning()
-        WallpaperExporter.export(this, targets) { event ->
+        exportJob = WallpaperExporter.export(this, targets) { event ->
             when (event) {
                 is WallpaperExporter.Event.Progress -> {
                     progress.isIndeterminate = false
@@ -105,6 +106,11 @@ class ExportProgressActivity : AppCompatActivity() {
                 }
             }
         }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        exportJob?.set(true)
     }
 
     private fun showRunning() {

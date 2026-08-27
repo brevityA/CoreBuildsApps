@@ -191,11 +191,15 @@ jobs:
           print(f'version.json -> {tag} / {code}')
           PY
           if ! git diff --quiet -- Latestrelease/version.json; then
+            cp Latestrelease/version.json /tmp/version.json
             git config user.name "github-actions[bot]"
             git config user.email "github-actions[bot]@users.noreply.github.com"
+            git fetch origin main --depth=50
+            git checkout -B _version-sync origin/main
+            cp /tmp/version.json Latestrelease/version.json
             git add Latestrelease/version.json
             git commit -m "chore: sync update manifest to ${GITHUB_REF_NAME}"
-            git push origin HEAD:main
+            git push origin _version-sync:main
           fi
 
       - name: Publish versioned release

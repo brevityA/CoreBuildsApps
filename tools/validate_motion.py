@@ -160,7 +160,7 @@ BUNDLED_MANIFEST = os.path.join(
 
 def validate_bundled():
     if not os.path.isfile(BUNDLED_MANIFEST):
-        warn(True, "bundled manifest not found (expected at shift/app/src/main/assets/)")
+        warn(False, "bundled manifest not found (expected at shift/app/src/main/assets/)")
         return
 
     with open(MANIFEST) as f:

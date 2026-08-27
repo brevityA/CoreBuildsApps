@@ -71,7 +71,18 @@ class LineWebClient(private val context: Context) : WebViewClient() {
                 return fetch(safety.url, hops + 1)
             }
             val raw = if (code in 200..299) conn.inputStream else (conn.errorStream ?: ByteArrayInputStream(ByteArray(0)))
-            val bytes = raw.use { it.readBytes().let { data -> if (data.size > MAX_BYTES) data.copyOf(MAX_BYTES) else data } }
+            val bytes = raw.use { stream ->
+                val buf = java.io.ByteArrayOutputStream(minOf(conn.contentLength.coerceAtLeast(0), MAX_BYTES))
+                val tmp = ByteArray(16 * 1024)
+                var total = 0
+                while (total < MAX_BYTES) {
+                    val n = stream.read(tmp, 0, minOf(tmp.size, MAX_BYTES - total))
+                    if (n < 0) break
+                    buf.write(tmp, 0, n)
+                    total += n
+                }
+                buf.toByteArray()
+            }
             val mime = conn.contentType?.substringBefore(';')?.trim()?.ifBlank { null } ?: "application/octet-stream"
             val message = conn.responseMessage ?: "OK"
             return WebResourceResponse(mime, "utf-8", code, message, CORS_HEADERS, ByteArrayInputStream(bytes))

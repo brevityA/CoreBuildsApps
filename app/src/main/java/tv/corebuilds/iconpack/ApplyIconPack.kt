@@ -230,12 +230,20 @@ object ApplyIconPack {
 
     private fun Context.isInstalledAny(l: Launcher) = l.packages.any { isInstalled(it) }
 
-    /** Package of the current HOME launcher, if any. */
+    /** Package of the current HOME launcher, checking both standard and Leanback categories. */
     fun homePackage(context: Context): String? = try {
-        val home = Intent(Intent.ACTION_MAIN).addCategory(Intent.CATEGORY_HOME)
-        context.packageManager
-            .resolveActivity(home, PackageManager.MATCH_DEFAULT_ONLY)
+        val pm = context.packageManager
+        val leanback = Intent(Intent.ACTION_MAIN).addCategory(Intent.CATEGORY_LEANBACK_LAUNCHER)
+        val leanbackPkg = pm.resolveActivity(leanback, PackageManager.MATCH_DEFAULT_ONLY)
             ?.activityInfo?.packageName
+
+        if (leanbackPkg != null && leanbackPkg != "android") {
+            leanbackPkg
+        } else {
+            val home = Intent(Intent.ACTION_MAIN).addCategory(Intent.CATEGORY_HOME)
+            pm.resolveActivity(home, PackageManager.MATCH_DEFAULT_ONLY)
+                ?.activityInfo?.packageName
+        }
     } catch (_: Exception) {
         null
     }

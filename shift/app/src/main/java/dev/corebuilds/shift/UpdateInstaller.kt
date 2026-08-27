@@ -97,7 +97,7 @@ object UpdateInstaller {
         }
         var url = apkUrl
         var conn: HttpURLConnection? = null
-        repeat(6) {
+        for (hop in 0 until 6) {
             val nextUrl = URL(url)
             if (nextUrl.protocol != "https" || nextUrl.host !in ALLOWED_HOSTS) {
                 throw IllegalStateException("redirect left GitHub ($url)")
@@ -117,7 +117,7 @@ object UpdateInstaller {
                 conn!!.disconnect()
                 url = if (next.startsWith("http")) next else URL(URL(url), next).toString()
             } else if (code == 200) {
-                return@repeat
+                break
             } else {
                 throw IllegalStateException("APK download returned HTTP $code")
             }

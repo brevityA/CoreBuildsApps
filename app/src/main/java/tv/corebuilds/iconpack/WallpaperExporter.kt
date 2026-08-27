@@ -7,6 +7,7 @@ import android.os.StatFs
 import android.util.Log
 import java.io.File
 import java.util.concurrent.Executors
+import java.util.concurrent.atomic.AtomicBoolean
 
 /**
  * Copies a set of wallpapers from the download cache into shared
@@ -54,20 +55,24 @@ object WallpaperExporter {
      * to use [WallpaperSetter.storagePermission] + a runtime request); if it
      * is missing, [Event.NeedsStoragePermission] is returned synchronously via
      * the listener.
+     *
+     * Returns an AtomicBoolean that the caller can set to true to cancel the
+     * background operation (e.g. on activity destroy).
      */
-    fun export(context: Context, wallpapers: List<Wallpaper>, listener: Listener) {
+    fun export(context: Context, wallpapers: List<Wallpaper>, listener: Listener): java.util.concurrent.atomic.AtomicBoolean {
+        val cancelled = java.util.concurrent.atomic.AtomicBoolean(false)
         val app = context.applicationContext
 
         if (!WallpaperSetter.hasStoragePermission(app)) {
             val perm = WallpaperSetter.storagePermission()
             if (perm != null) {
                 main.post { listener.onEvent(Event.NeedsStoragePermission) }
-                return
+                return cancelled
             }
         }
         if (wallpapers.isEmpty()) {
             main.post { listener.onEvent(Event.Done(emptyList(), emptyList(), emptyList())) }
-            return
+            return cancelled
         }
 
         io.execute {
@@ -78,8 +83,9 @@ object WallpaperExporter {
                 val failed = mutableListOf<Pair<String, String>>()
 
                 wallpapers.forEachIndexed { i, wp ->
+                    if (cancelled.get()) return@execute
                     val name = wp.title
-                    main.post { listener.onEvent(Event.Progress(i, wallpapers.size, name)) }
+                    main.post { if (!cancelled.get()) listener.onEvent(Event.Progress(i, wallpapers.size, name)) }
                     try {
                         val file = ensureDownloaded(app, wp)
                         val cacheName = wp.cacheName
@@ -90,8 +96,7 @@ object WallpaperExporter {
                         when (val r = WallpaperSetter.copyFileToPictures(app, file, cacheName)) {
                             is WallpaperSetter.Result.SavedToGallery -> saved += cacheName
                             is WallpaperSetter.Result.NeedsPermission -> {
-                                // Surface once and stop; caller re-requests.
-                                main.post { listener.onEvent(Event.NeedsStoragePermission) }
+                                main.post { if (!cancelled.get()) listener.onEvent(Event.NeedsStoragePermission) }
                                 return@execute
                             }
                             is WallpaperSetter.Result.Failed -> failed += (cacheName to r.reason)
@@ -102,14 +107,15 @@ object WallpaperExporter {
                         failed += (wp.cacheName to (e.message ?: e.javaClass.simpleName))
                     }
                 }
-                main.post { listener.onEvent(Event.Done(saved, skipped, failed)) }
+                main.post { if (!cancelled.get()) listener.onEvent(Event.Done(saved, skipped, failed)) }
             }.onFailure { e ->
                 Log.e(TAG, "export aborted", e)
                 main.post {
-                    listener.onEvent(Event.Failed(e.message ?: e.javaClass.simpleName))
+                    if (!cancelled.get()) listener.onEvent(Event.Failed(e.message ?: e.javaClass.simpleName))
                 }
             }
         }
+        return cancelled
     }
 
     /** Download [wp] if it isn't cached; blocks until ready or throws. */

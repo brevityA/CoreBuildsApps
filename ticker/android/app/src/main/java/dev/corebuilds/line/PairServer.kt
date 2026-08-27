@@ -11,6 +11,7 @@ import java.net.Socket
 import java.net.URLDecoder
 import java.nio.charset.StandardCharsets
 import java.util.concurrent.atomic.AtomicReference
+import java.util.concurrent.Executors
 import kotlin.concurrent.thread
 import kotlin.random.Random
 
@@ -21,6 +22,7 @@ class PairServer {
     private var worker: Thread? = null
     private val codeRef = AtomicReference("")
     private val inbox = AtomicReference<IncomingFeed?>(null)
+    private val pool = Executors.newFixedThreadPool(4)
 
     val port: Int = 8791
 
@@ -40,9 +42,7 @@ class PairServer {
                 } catch (_: Exception) {
                     break
                 }
-                thread(name = "coreline-pair-req", isDaemon = true) {
-                    handle(client, code)
-                }
+                pool.execute { handle(client, code) }
             }
         }
         val ip = lanIpv4()
