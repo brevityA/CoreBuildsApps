@@ -85,7 +85,7 @@ object WallpaperExporter {
                 wallpapers.forEachIndexed { i, wp ->
                     if (cancelled.get()) return@execute
                     val name = wp.title
-                    main.post { listener.onEvent(Event.Progress(i, wallpapers.size, name)) }
+                    main.post { if (!cancelled.get()) listener.onEvent(Event.Progress(i, wallpapers.size, name)) }
                     try {
                         val file = ensureDownloaded(app, wp)
                         val cacheName = wp.cacheName
@@ -96,8 +96,7 @@ object WallpaperExporter {
                         when (val r = WallpaperSetter.copyFileToPictures(app, file, cacheName)) {
                             is WallpaperSetter.Result.SavedToGallery -> saved += cacheName
                             is WallpaperSetter.Result.NeedsPermission -> {
-                                // Surface once and stop; caller re-requests.
-                                main.post { listener.onEvent(Event.NeedsStoragePermission) }
+                                main.post { if (!cancelled.get()) listener.onEvent(Event.NeedsStoragePermission) }
                                 return@execute
                             }
                             is WallpaperSetter.Result.Failed -> failed += (cacheName to r.reason)
@@ -108,11 +107,11 @@ object WallpaperExporter {
                         failed += (wp.cacheName to (e.message ?: e.javaClass.simpleName))
                     }
                 }
-                if (!cancelled.get()) main.post { listener.onEvent(Event.Done(saved, skipped, failed)) }
+                main.post { if (!cancelled.get()) listener.onEvent(Event.Done(saved, skipped, failed)) }
             }.onFailure { e ->
                 Log.e(TAG, "export aborted", e)
-                if (!cancelled.get()) main.post {
-                    listener.onEvent(Event.Failed(e.message ?: e.javaClass.simpleName))
+                main.post {
+                    if (!cancelled.get()) listener.onEvent(Event.Failed(e.message ?: e.javaClass.simpleName))
                 }
             }
         }

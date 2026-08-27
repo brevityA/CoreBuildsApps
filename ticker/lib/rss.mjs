@@ -23,6 +23,9 @@ export async function fetchFeed(rawUrl, meta = {}) {
     if (!res.ok) {
       return { ok: false, error: `feed returned ${res.status}`, events: [] };
     }
+    if (!res.body) {
+      return { ok: false, error: 'empty response body', events: [] };
+    }
     const chunks = [];
     let bytes = 0;
     for await (const chunk of res.body) {
@@ -56,6 +59,7 @@ export async function fetchJson(url, timeout = TIMEOUT_MS) {
       },
     });
     if (!res.ok) throw new Error(`http ${res.status}`);
+    if (!res.body) throw new Error('empty response body');
     const chunks = [];
     let bytes = 0;
     for await (const chunk of res.body) {

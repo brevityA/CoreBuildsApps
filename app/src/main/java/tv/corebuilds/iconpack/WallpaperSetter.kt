@@ -174,7 +174,9 @@ object WallpaperSetter {
                     return Result.Failed("Could not create Pictures/CoreBuilds")
                 }
                 val dest = File(dir, displayName)
-                file.inputStream().use { it.copyTo(dest.outputStream(), 64 * 1024) }
+                file.inputStream().use { inp ->
+                    dest.outputStream().use { out -> inp.copyTo(out, 64 * 1024) }
+                }
                 Result.SavedToGallery(Uri.fromFile(dest))
             }
         } catch (e: Exception) {

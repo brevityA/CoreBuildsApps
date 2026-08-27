@@ -233,8 +233,9 @@ class WallpaperPreviewActivity : AppCompatActivity() {
                             }
                         } else {
                             try {
+                                val mime = if (downloaded?.name?.endsWith(".png", ignoreCase = true) == true) "image/png" else "image/jpeg"
                                 openSetter.launch(
-                                    WallpaperSetter.setIntent(result.uri, "image/jpeg")
+                                    WallpaperSetter.setIntent(result.uri, mime)
                                 )
                             } catch (e: Exception) {
                                 if (homePkg == "com.klevico.monet") {

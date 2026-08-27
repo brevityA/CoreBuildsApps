@@ -74,7 +74,7 @@ const server = http.createServer(async (req, res) => {
         json(res, { ok: false, error: safety.reason, events: [] }, 400);
         return;
       }
-      const result = await cached(`rss:${safety.url}`, () => fetchFeed(safety.url, { source: 'rss', label }));
+      const result = await cached(`rss:${safety.url}:${label}`, () => fetchFeed(safety.url, { source: 'rss', label }));
       json(res, result);
       return;
     }
@@ -83,12 +83,12 @@ const server = http.createServer(async (req, res) => {
         .split(',')
         .map((s) => s.trim().toLowerCase())
         .filter((id) => LEAGUES[id]);
-      const feeds = parseFeedsParam(url.searchParams.get('feeds') || '');
+      const feeds = parseFeedsParam(url.searchParams.get('feeds') || '').slice(0, 20);
       const [board, ...feedResults] = await Promise.all([
         getScoreboard(leagues),
         ...feeds.map((feed) => {
           if (isBundledSample(feed.url)) return readBundledSample(feed.label);
-          return cached(`rss:${feed.url}`, () => fetchFeed(feed.url, { source: 'rss', label: feed.label }));
+          return cached(`rss:${feed.url}:${feed.label}`, () => fetchFeed(feed.url, { source: 'rss', label: feed.label }));
         }),
       ]);
       const rssEvents = feedResults.flatMap((r) => r.events || []);

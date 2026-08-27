@@ -28,7 +28,10 @@ object RemoteThumbLoader {
     )
     private val io = Executors.newFixedThreadPool(2)
     private val main = android.os.Handler(android.os.Looper.getMainLooper())
-    private val cache = android.util.LruCache<String, Bitmap>(40)
+    private const val MAX_CACHE_BYTES = 8 * 1024 * 1024
+    private val cache = object : android.util.LruCache<String, Bitmap>(MAX_CACHE_BYTES) {
+        override fun sizeOf(key: String, value: Bitmap): Int = value.byteCount
+    }
     private const val MAX_DISK_FILES = 100
 
     /** Callback receives the URL it requested so a recycled tile can guard it. */
