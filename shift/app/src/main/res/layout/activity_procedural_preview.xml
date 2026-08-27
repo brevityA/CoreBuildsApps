@@ -86,7 +86,7 @@
                 android:text="@string/speed_slow"
                 android:textColor="@color/btn_text"
                 android:textSize="10sp"
-                android:background="@drawable/btn_bg" />
+                android:background="@drawable/bg_chip_toggle" />
 
             <Button
                 android:id="@+id/proc_speed_normal"
@@ -97,7 +97,7 @@
                 android:text="@string/speed_normal_selected"
                 android:textColor="@color/btn_text"
                 android:textSize="10sp"
-                android:background="@drawable/btn_bg" />
+                android:background="@drawable/bg_chip_toggle" />
 
             <Button
                 android:id="@+id/proc_speed_fast"
@@ -108,7 +108,7 @@
                 android:text="@string/speed_fast"
                 android:textColor="@color/btn_text"
                 android:textSize="10sp"
-                android:background="@drawable/btn_bg" />
+                android:background="@drawable/bg_chip_toggle" />
         </LinearLayout>
 
         <LinearLayout
@@ -125,7 +125,7 @@
                 android:text="@string/length_10"
                 android:textColor="@color/btn_text"
                 android:textSize="10sp"
-                android:background="@drawable/btn_bg" />
+                android:background="@drawable/bg_chip_toggle" />
 
             <Button
                 android:id="@+id/proc_length_20"
@@ -136,7 +136,7 @@
                 android:text="@string/length_20_selected"
                 android:textColor="@color/btn_text"
                 android:textSize="10sp"
-                android:background="@drawable/btn_bg" />
+                android:background="@drawable/bg_chip_toggle" />
 
             <Button
                 android:id="@+id/proc_length_30"
@@ -147,7 +147,7 @@
                 android:text="@string/length_30"
                 android:textColor="@color/btn_text"
                 android:textSize="10sp"
-                android:background="@drawable/btn_bg" />
+                android:background="@drawable/bg_chip_toggle" />
         </LinearLayout>
     </LinearLayout>
 
