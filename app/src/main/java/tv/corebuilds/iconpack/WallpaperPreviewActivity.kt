@@ -122,9 +122,27 @@ class WallpaperPreviewActivity : AppCompatActivity() {
         }
     }
 
+    private fun calculateInSampleSize(options: BitmapFactory.Options, reqWidth: Int, reqHeight: Int): Int {
+        val (height: Int, width: Int) = options.outHeight to options.outWidth
+        var inSampleSize = 1
+        if (height > reqHeight || width > reqWidth) {
+            val halfHeight: Int = height / 2
+            val halfWidth: Int = width / 2
+            while (halfHeight / inSampleSize >= reqHeight && halfWidth / inSampleSize >= reqWidth) {
+                inSampleSize *= 2
+            }
+        }
+        return inSampleSize
+    }
+
     private fun decodeAndShow(file: File) {
         Thread {
-            val bmp = BitmapFactory.decodeFile(file.absolutePath)
+            val options = BitmapFactory.Options().apply { inJustDecodeBounds = true }
+            BitmapFactory.decodeFile(file.absolutePath, options)
+            options.inSampleSize = calculateInSampleSize(options, 1920, 1080)
+            options.inJustDecodeBounds = false
+            
+            val bmp = BitmapFactory.decodeFile(file.absolutePath, options)
             runOnUiThread {
                 if (destroyed) {
                     bmp?.recycle()
@@ -163,31 +181,68 @@ class WallpaperPreviewActivity : AppCompatActivity() {
     }
 
     private fun applyNow() {
-        val bmp = fullBitmap ?: run {
+        val file = downloaded ?: run {
             if (!loading) toast(getString(R.string.wp_load_failed))
             return
         }
         setButton.isEnabled = false
         setButton.text = getString(R.string.wp_applying)
         Thread {
-            val result = WallpaperSetter.apply(this, bmp)
+            val result = WallpaperSetter.apply(this, file)
             runOnUiThread {
                 if (destroyed) return@runOnUiThread
                 setButton.isEnabled = true
                 setButton.text = getString(R.string.wp_set_wallpaper)
                 when (result) {
                     is WallpaperSetter.Result.Set -> {
-                        toast(getString(R.string.wp_set_done))
-                        finish()
+                        val homePkg = ApplyIconPack.homePackage(this@WallpaperPreviewActivity)
+                        if (homePkg == "com.spocky.projengmenu") {
+                            // System wallpaper set successfully (good for Monet/Android), but Projectivy 
+                            // needs it via intent. We must save it to gallery to get a URI to send.
+                            Thread {
+                                val fallback = WallpaperSetter.copyFileToPictures(this@WallpaperPreviewActivity, downloaded!!, downloaded!!.name)
+                                runOnUiThread {
+                                    if (destroyed) return@runOnUiThread
+                                    if (fallback is WallpaperSetter.Result.SavedToGallery) {
+                                        try {
+                                            startActivity(WallpaperSetter.setProjectivyIntent(fallback.uri))
+                                            toast("Applied to Projectivy Launcher")
+                                        } catch (e: Exception) {
+                                            toast(getString(R.string.wp_set_done))
+                                        }
+                                    } else {
+                                        toast(getString(R.string.wp_set_done))
+                                    }
+                                    finish()
+                                }
+                            }.start()
+                        } else {
+                            toast(getString(R.string.wp_set_done))
+                            finish()
+                        }
                     }
                     is WallpaperSetter.Result.SavedToGallery -> {
                         toast(getString(R.string.wp_saved))
-                        try {
-                            openSetter.launch(
-                                WallpaperSetter.setIntent(result.uri, "image/jpeg")
-                            )
-                        } catch (e: Exception) {
-                            toast(getString(R.string.wp_saved_hint))
+                        val homePkg = ApplyIconPack.homePackage(this@WallpaperPreviewActivity)
+                        if (homePkg == "com.spocky.projengmenu") {
+                            try {
+                                startActivity(WallpaperSetter.setProjectivyIntent(result.uri))
+                                toast("Applied to Projectivy Launcher")
+                            } catch (e: Exception) {
+                                toast(getString(R.string.wp_saved_hint))
+                            }
+                        } else {
+                            try {
+                                openSetter.launch(
+                                    WallpaperSetter.setIntent(result.uri, "image/jpeg")
+                                )
+                            } catch (e: Exception) {
+                                if (homePkg == "com.klevico.monet") {
+                                    toast("Saved. Set via Monet Settings → Wallpaper → Your own images")
+                                } else {
+                                    toast(getString(R.string.wp_saved_hint))
+                                }
+                            }
                         }
                     }
                     is WallpaperSetter.Result.NeedsPermission ->

@@ -31,6 +31,7 @@ object LiveDownloader {
     private const val MIN_VIDEO_BYTES = 20_000L
     private const val MAX_VIDEO_BYTES = 256L * 1024L * 1024L
     private const val FREE_SPACE_MARGIN = 8L * 1024L * 1024L
+    private const val MAX_CACHE_FILES = 5
     private val RELATIVE_PATH = "${Environment.DIRECTORY_MOVIES}/CoreBuilds"
 
     private val ALLOWED_HOSTS = setOf(
@@ -102,11 +103,13 @@ object LiveDownloader {
         val dir = File(context.cacheDir, "live").apply { mkdirs() }
         val dest = File(dir, cacheName)
         if (dest.exists() && dest.length() > MIN_VIDEO_BYTES && isMp4(dest)) {
+            dest.setLastModified(System.currentTimeMillis())
             onProgress(dest.length(), dest.length())
             return dest
         }
         dest.delete()
 
+        trimCache(context)
         var conn: HttpURLConnection? = null
         val tmp = File(dir, "$cacheName.part")
         return try {
@@ -230,5 +233,13 @@ object LiveDownloader {
             Log.w(TAG, "copy to Movies failed", e)
             Result.Failed(e.message ?: "could not save video")
         }
+    }
+    private fun trimCache(context: Context) {
+        val dir = File(context.cacheDir, "live")
+        val files = dir.listFiles()
+            ?.filter { !it.name.endsWith(".part") }
+            ?.sortedByDescending { it.lastModified() }
+            ?: return
+        files.drop(MAX_CACHE_FILES).forEach { runCatching { it.delete() } }
     }
 }

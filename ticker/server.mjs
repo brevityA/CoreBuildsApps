@@ -192,10 +192,21 @@ function parseFeedsParam(raw) {
   }).filter((f) => f.url);
 }
 
+const MAX_CACHE_KEYS = 200;
+
 async function cached(key, fn) {
   const hit = cache.get(key);
   if (hit && Date.now() - hit.at < CACHE_MS) return hit.value;
   const value = await fn();
+  if (cache.size >= MAX_CACHE_KEYS) {
+    const now = Date.now();
+    for (const [k, v] of cache.entries()) {
+      if (now - v.at >= CACHE_MS) cache.delete(k);
+    }
+    if (cache.size >= MAX_CACHE_KEYS) {
+      cache.delete(cache.keys().next().value);
+    }
+  }
   cache.set(key, { at: Date.now(), value });
   return value;
 }

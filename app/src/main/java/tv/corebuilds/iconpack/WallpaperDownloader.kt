@@ -112,7 +112,10 @@ object WallpaperDownloader {
 
     private fun cachedFile(context: Context, cacheName: String): File? {
         val f = File(cacheDir(context), cacheName)
-        return if (f.exists() && f.length() >= MIN_BYTES) f else null
+        return if (f.exists() && f.length() >= MIN_BYTES) {
+            f.setLastModified(System.currentTimeMillis())
+            f
+        } else null
     }
 
     private fun download(

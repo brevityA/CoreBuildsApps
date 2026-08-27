@@ -28,12 +28,20 @@ object RemoteThumbLoader {
     )
     private val io = Executors.newFixedThreadPool(2)
     private val main = android.os.Handler(android.os.Looper.getMainLooper())
+    private val cache = android.util.LruCache<String, Bitmap>(40)
+    private const val MAX_DISK_FILES = 100
 
     /** Callback receives the URL it requested so a recycled tile can guard it. */
     fun load(context: Context, url: String, onReady: (String, Bitmap?) -> Unit) {
+        val cached = cache.get(url)
+        if (cached != null) {
+            onReady(url, cached)
+            return
+        }
         val app = context.applicationContext
         io.execute {
             val bitmap = runCatching { read(app, url) }.getOrNull()
+            if (bitmap != null) cache.put(url, bitmap)
             main.post { onReady(url, bitmap) }
         }
     }
@@ -45,6 +53,16 @@ object RemoteThumbLoader {
 
         val dir = File(context.cacheDir, "prequel-thumbs").apply { mkdirs() }
         val dest = File(dir, sha256(rawUrl) + ".jpg")
+        if (dest.exists() && dest.length() > 0L) {
+            dest.setLastModified(System.currentTimeMillis())
+            return BitmapFactory.decodeFile(dest.absolutePath)
+        }
+        
+        val files = dir.listFiles()
+            ?.filter { !it.name.endsWith(".part") }
+            ?.sortedByDescending { it.lastModified() }
+        files?.drop(MAX_DISK_FILES)?.forEach { runCatching { it.delete() } }
+
         if (!dest.exists() || dest.length() == 0L) {
             val tmp = File(dir, dest.name + ".part")
             val connection = (parsed.openConnection() as HttpURLConnection).apply {

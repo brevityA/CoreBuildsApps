@@ -23,10 +23,17 @@ export async function fetchFeed(rawUrl, meta = {}) {
     if (!res.ok) {
       return { ok: false, error: `feed returned ${res.status}`, events: [] };
     }
-    const buf = Buffer.from(await res.arrayBuffer());
-    if (buf.length > MAX_BYTES) {
-      return { ok: false, error: 'feed too large', events: [] };
+    const chunks = [];
+    let bytes = 0;
+    for await (const chunk of res.body) {
+      bytes += chunk.length;
+      if (bytes > MAX_BYTES) {
+        controller.abort();
+        return { ok: false, error: 'feed too large', events: [] };
+      }
+      chunks.push(chunk);
     }
+    const buf = Buffer.concat(chunks);
     const events = parseFeed(buf.toString('utf8'), meta);
     return { ok: true, events, bytes: buf.length };
   } catch (err) {
@@ -49,7 +56,17 @@ export async function fetchJson(url, timeout = TIMEOUT_MS) {
       },
     });
     if (!res.ok) throw new Error(`http ${res.status}`);
-    return await res.json();
+    const chunks = [];
+    let bytes = 0;
+    for await (const chunk of res.body) {
+      bytes += chunk.length;
+      if (bytes > MAX_BYTES) {
+        controller.abort();
+        throw new Error('feed too large');
+      }
+      chunks.push(chunk);
+    }
+    return JSON.parse(Buffer.concat(chunks).toString('utf8'));
   } finally {
     clearTimeout(timer);
   }
