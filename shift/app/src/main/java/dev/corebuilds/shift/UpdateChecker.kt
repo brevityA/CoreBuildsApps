@@ -11,8 +11,6 @@ object UpdateChecker {
 
     private const val TAG = "CoreShiftUpdate"
     private val MANIFEST_URLS = listOf(
-        "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/" +
-            "main/Latestrelease/shift-version.json",
         "https://raw.githubusercontent.com/brevityA/CoreBuildsIconPack/" +
             "main/Latestrelease/shift-version.json"
     )
@@ -33,10 +31,11 @@ object UpdateChecker {
     private val io = Executors.newSingleThreadExecutor()
 
     fun check(context: Context, onResult: (Result) -> Unit) {
-        val installed = installedVersionCode(context)
+        val installedCode = BuildConfig.VERSION_CODE
+        val installedName = BuildConfig.VERSION_NAME
         io.execute {
             val result = try {
-                fetch(installed)
+                fetch(installedCode, installedName)
             } catch (e: Exception) {
                 Result.Failed(e.message ?: e.javaClass.simpleName)
             }
@@ -44,7 +43,7 @@ object UpdateChecker {
         }
     }
 
-    private fun fetch(installedCode: Int): Result {
+    private fun fetch(installedCode: Int, installedName: String): Result {
         var lastError: String? = null
         for (url in MANIFEST_URLS) {
             var conn: HttpURLConnection? = null
@@ -69,9 +68,10 @@ object UpdateChecker {
                 val remoteName = json.optString("versionName", "?")
                 val apk = json.optString("apkUrl", "")
 
-                Log.i(TAG, "installed=$installedCode remote=$remoteCode from $url")
+                Log.i(TAG, "installed=$installedCode ($installedName) " +
+                    "remote=$remoteCode ($remoteName) from $url")
 
-                return if (remoteCode > installedCode) {
+                return if (remoteCode > installedCode && remoteName != installedName) {
                     Result.Available(remoteName, remoteCode, apk)
                 } else {
                     Result.UpToDate(remoteName)
@@ -84,18 +84,5 @@ object UpdateChecker {
             }
         }
         return Result.Failed(lastError ?: "could not fetch update manifest")
-    }
-
-    private fun installedVersionCode(context: Context): Int = try {
-        val pi = context.packageManager.getPackageInfo(context.packageName, 0)
-        @Suppress("DEPRECATION")
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.P) {
-            pi.longVersionCode.toInt()
-        } else {
-            pi.versionCode
-        }
-    } catch (e: Exception) {
-        Log.w(TAG, "could not read installed version: ${e.message}")
-        0
     }
 }
