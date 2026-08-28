@@ -9,7 +9,7 @@
  */
 
 import { createInterface } from "node:readline";
-import { execSync } from "node:child_process";
+import { execFileSync } from "node:child_process";
 import { readFileSync } from "node:fs";
 import { resolve, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -98,15 +98,16 @@ const TOOLS = [
 ];
 
 function runPython(script, args = []) {
-  const cmd = ["python3", resolve(REPO_ROOT, script), ...args].join(" ");
+  const execArgs = [resolve(REPO_ROOT, script), ...args];
+  const opts = {
+    cwd: REPO_ROOT,
+    encoding: "utf-8",
+    timeout: 120_000,
+    maxBuffer: 4 * 1024 * 1024,
+    env: { ...process.env, PYTHONDONTWRITEBYTECODE: "1" },
+  };
   try {
-    const stdout = execSync(cmd, {
-      cwd: REPO_ROOT,
-      encoding: "utf-8",
-      timeout: 120_000,
-      maxBuffer: 4 * 1024 * 1024,
-      env: { ...process.env, PYTHONDONTWRITEBYTECODE: "1" },
-    });
+    const stdout = execFileSync("python3", execArgs, opts);
     return { exitCode: 0, output: stdout.trimEnd() };
   } catch (err) {
     const output = (err.stdout || "") + (err.stderr || "");
@@ -315,13 +316,13 @@ function validateArgs(args, schema) {
   const props = schema.properties ?? {};
   if (schema.additionalProperties === false) {
     for (const key of Object.keys(args)) {
-      if (!(key in props)) {
+      if (!Object.hasOwn(props, key)) {
         errors.push(`unknown argument: ${key}`);
       }
     }
   }
   for (const [key, def] of Object.entries(props)) {
-    if (key in args && typeof args[key] !== def.type) {
+    if (Object.hasOwn(args, key) && typeof args[key] !== def.type) {
       errors.push(`${key} must be ${def.type}, got ${typeof args[key]}`);
     }
   }
@@ -358,8 +359,11 @@ function handleRequest(req) {
       return makeResponse(id, { tools: TOOLS });
 
     case "tools/call": {
-      const toolName = params?.name;
-      const toolArgs = params?.arguments === undefined ? {} : params.arguments;
+      if (typeof params !== "object" || params === null || typeof params.name !== "string") {
+        return makeError(id, -32602, "Invalid params: name must be a string");
+      }
+      const toolName = params.name;
+      const toolArgs = params.arguments === undefined ? {} : params.arguments;
       const toolDef = TOOLS.find((t) => t.name === toolName);
       if (!toolDef) {
         return makeResponse(id, {
