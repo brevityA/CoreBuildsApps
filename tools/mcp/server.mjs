@@ -60,13 +60,7 @@ const TOOLS = [
       "Returns the generator receipt (what was written, counted).",
     inputSchema: {
       type: "object",
-      properties: {
-        dry_run: {
-          type: "boolean",
-          description: "Print what would be written without writing files.",
-          default: false,
-        },
-      },
+      properties: {},
       additionalProperties: false,
     },
   },
@@ -187,6 +181,36 @@ function checkVersionSync() {
     mismatches++;
   }
 
+  // Treat missing required fields as mismatches
+  if (gradleCode === null) {
+    results.push("MISSING: versionCode not found in build.gradle.kts");
+    mismatches++;
+  }
+  if (gradleName === null) {
+    results.push("MISSING: versionName not found in build.gradle.kts");
+    mismatches++;
+  }
+  if (vjCode === null) {
+    results.push("MISSING: versionCode not found in version.json");
+    mismatches++;
+  }
+  if (vjName === null) {
+    results.push("MISSING: versionName not found in version.json");
+    mismatches++;
+  }
+  if (vjIconCount === null) {
+    results.push("MISSING: iconCount not found in version.json");
+    mismatches++;
+  }
+  if (catalogVersion === null) {
+    results.push("MISSING: meta.version not found in catalog.json");
+    mismatches++;
+  }
+  if (catalogCount === null) {
+    results.push("MISSING: meta.count not found in catalog.json");
+    mismatches++;
+  }
+
   // Cross-check
   if (gradleCode !== null && vjCode !== null && gradleCode !== vjCode) {
     results.push(
@@ -197,6 +221,18 @@ function checkVersionSync() {
   if (gradleName !== null && vjName !== null && gradleName !== vjName) {
     results.push(
       `MISMATCH: versionName — gradle="${gradleName}" vs version.json="${vjName}"`
+    );
+    mismatches++;
+  }
+  if (gradleName !== null && catalogVersion !== null && gradleName !== catalogVersion) {
+    results.push(
+      `MISMATCH: versionName — gradle="${gradleName}" vs catalog.json meta.version="${catalogVersion}"`
+    );
+    mismatches++;
+  }
+  if (vjName !== null && catalogVersion !== null && vjName !== catalogVersion) {
+    results.push(
+      `MISMATCH: versionName — version.json="${vjName}" vs catalog.json meta.version="${catalogVersion}"`
     );
     mismatches++;
   }
@@ -243,12 +279,6 @@ function handleTool(name, args = {}) {
       };
     }
     case "build_icons": {
-      if (args.dry_run) {
-        return {
-          ok: false,
-          output: "dry_run is not yet supported by build_icons.py — run without it to write files",
-        };
-      }
       const r = runPython("tools/build_icons.py");
       return {
         ok: r.exitCode === 0,
@@ -271,6 +301,27 @@ function handleTool(name, args = {}) {
     default:
       throw { code: -32601, message: `Unknown tool: ${name}` };
   }
+}
+
+function validateArgs(args, schema) {
+  const errors = [];
+  if (typeof args !== "object" || args === null || Array.isArray(args)) {
+    return ["arguments must be a JSON object"];
+  }
+  const props = schema.properties ?? {};
+  if (schema.additionalProperties === false) {
+    for (const key of Object.keys(args)) {
+      if (!(key in props)) {
+        errors.push(`unknown argument: ${key}`);
+      }
+    }
+  }
+  for (const [key, def] of Object.entries(props)) {
+    if (key in args && typeof args[key] !== def.type) {
+      errors.push(`${key} must be ${def.type}, got ${typeof args[key]}`);
+    }
+  }
+  return errors;
 }
 
 // JSON-RPC 2.0 + MCP protocol handling
@@ -305,6 +356,24 @@ function handleRequest(req) {
     case "tools/call": {
       const toolName = params?.name;
       const toolArgs = params?.arguments ?? {};
+      const toolDef = TOOLS.find((t) => t.name === toolName);
+      if (!toolDef) {
+        return makeResponse(id, {
+          content: [
+            { type: "text", text: JSON.stringify({ error: `Unknown tool: ${toolName}` }) },
+          ],
+          isError: true,
+        });
+      }
+      const argErrors = validateArgs(toolArgs, toolDef.inputSchema);
+      if (argErrors.length > 0) {
+        return makeResponse(id, {
+          content: [
+            { type: "text", text: JSON.stringify({ error: argErrors.join("; ") }) },
+          ],
+          isError: true,
+        });
+      }
       try {
         const result = handleTool(toolName, toolArgs);
         return makeResponse(id, {
@@ -334,20 +403,21 @@ function handleRequest(req) {
   }
 }
 
-// stdio transport — newline-delimited JSON
+// stdio transport — one JSON-RPC message per line
 
 const rl = createInterface({ input: process.stdin, terminal: false });
-let buffer = "";
 
 rl.on("line", (line) => {
-  buffer += line;
+  const trimmed = line.trim();
+  if (!trimmed) return;
   let parsed;
   try {
-    parsed = JSON.parse(buffer);
-    buffer = "";
+    parsed = JSON.parse(trimmed);
   } catch {
+    process.stderr.write(`mcp: ignoring malformed JSON line\n`);
     return;
   }
+  if (parsed === null || typeof parsed !== "object") return;
 
   const response = handleRequest(parsed);
   if (response !== null) {
