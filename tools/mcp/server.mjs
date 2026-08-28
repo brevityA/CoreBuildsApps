@@ -210,6 +210,10 @@ function checkVersionSync() {
     results.push("MISSING: meta.count not found in catalog.json");
     mismatches++;
   }
+  if (catalogIconsLength === null) {
+    results.push("MISSING: icons array not found in catalog.json");
+    mismatches++;
+  }
 
   // Cross-check
   if (gradleCode !== null && vjCode !== null && gradleCode !== vjCode) {
@@ -355,7 +359,7 @@ function handleRequest(req) {
 
     case "tools/call": {
       const toolName = params?.name;
-      const toolArgs = params?.arguments ?? {};
+      const toolArgs = params?.arguments === undefined ? {} : params.arguments;
       const toolDef = TOOLS.find((t) => t.name === toolName);
       if (!toolDef) {
         return makeResponse(id, {
@@ -414,13 +418,28 @@ rl.on("line", (line) => {
   try {
     parsed = JSON.parse(trimmed);
   } catch {
-    process.stderr.write(`mcp: ignoring malformed JSON line\n`);
+    const err = makeError(null, -32700, "Parse error");
+    process.stdout.write(JSON.stringify(err) + "\n");
     return;
   }
-  if (parsed === null || typeof parsed !== "object") return;
+  if (parsed === null || typeof parsed !== "object" || Array.isArray(parsed)) {
+    const err = makeError(null, -32600, "Invalid Request");
+    process.stdout.write(JSON.stringify(err) + "\n");
+    return;
+  }
+
+  const hasId = "id" in parsed;
+  if (hasId) {
+    const idType = typeof parsed.id;
+    if (idType !== "string" && idType !== "number") {
+      const err = makeError(null, -32600, "Invalid Request: id must be a string or number");
+      process.stdout.write(JSON.stringify(err) + "\n");
+      return;
+    }
+  }
 
   const response = handleRequest(parsed);
-  if (response !== null) {
+  if (response !== null && hasId) {
     process.stdout.write(JSON.stringify(response) + "\n");
   }
 });
