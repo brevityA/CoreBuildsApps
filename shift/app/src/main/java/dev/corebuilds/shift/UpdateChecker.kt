@@ -71,7 +71,7 @@ object UpdateChecker {
                 Log.i(TAG, "installed=$installedCode ($installedName) " +
                     "remote=$remoteCode ($remoteName) from $url")
 
-                return if (remoteCode > installedCode && remoteName != installedName) {
+                return if (remoteCode > installedCode) {
                     Result.Available(remoteName, remoteCode, apk)
                 } else {
                     Result.UpToDate(remoteName)
