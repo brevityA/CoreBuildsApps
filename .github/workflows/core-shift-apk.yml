@@ -36,7 +36,7 @@ jobs:
       - name: Check suite truth
         run: python tools/check_suite_truth.py
 
-      - uses: actions/setup-python@v5
+      - uses: actions/setup-python@v7
         with:
           python-version: '3.12'
 
