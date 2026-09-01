@@ -82,7 +82,7 @@ jobs:
       - name: Validate generated clips and feed
         run: python tools/validate_prequel_motion.py --generated Motion/prequel
 
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         with:
           name: core-motion-prequels-${{ inputs.set }}-${{ inputs.tier }}
           path: Motion/prequel/
