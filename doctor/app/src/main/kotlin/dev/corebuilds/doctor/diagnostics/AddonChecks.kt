@@ -1,10 +1,15 @@
 package dev.corebuilds.doctor.diagnostics
 
+import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.jsonArray
+import kotlinx.serialization.json.jsonObject
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import java.util.concurrent.TimeUnit
 
 object AddonChecks {
+
+    private val json = Json { ignoreUnknownKeys = true }
 
     private val client = OkHttpClient.Builder()
         .connectTimeout(10, TimeUnit.SECONDS)
@@ -33,21 +38,32 @@ object AddonChecks {
                         fix = "The addon host responded but returned no data. " +
                             "The host may be misconfigured."
                     )
-                } else if (isConfiguredAddon(addonUrl)) {
-                    CheckResult(
-                        name = "Addon manifest",
-                        verdict = Verdict.PASS,
-                        summary = "Manifest alive, addon is configured"
-                    )
                 } else {
-                    CheckResult(
-                        name = "Addon manifest",
-                        verdict = Verdict.WARN,
-                        summary = "Manifest alive but URL looks like a base install, " +
-                            "not a configured addon",
-                        fix = "Open AIOStreams/Stremio and configure the addon with " +
-                            "your credentials before testing."
-                    )
+                    val parsed = try { json.parseToJsonElement(body).jsonObject } catch (_: Exception) { null }
+                    if (parsed == null || !parsed.containsKey("id")) {
+                        CheckResult(
+                            name = "Addon manifest",
+                            verdict = Verdict.FAIL,
+                            summary = "Manifest is not valid JSON or missing required fields",
+                            fix = "The host returned a response but it is not a valid " +
+                                "Stremio addon manifest. Check the addon URL."
+                        )
+                    } else if (isConfiguredAddon(addonUrl)) {
+                        CheckResult(
+                            name = "Addon manifest",
+                            verdict = Verdict.PASS,
+                            summary = "Manifest alive, addon is configured"
+                        )
+                    } else {
+                        CheckResult(
+                            name = "Addon manifest",
+                            verdict = Verdict.WARN,
+                            summary = "Manifest alive but URL looks like a base install, " +
+                                "not a configured addon",
+                            fix = "Open AIOStreams/Stremio and configure the addon with " +
+                                "your credentials before testing."
+                        )
+                    }
                 }
             }
         } catch (e: Exception) {
@@ -75,24 +91,33 @@ object AddonChecks {
                         fix = "The addon is alive but could not return streams. " +
                             "Check that the addon is properly configured."
                     )
-                } else if (body != null &&
-                    body.contains("\"streams\"") &&
-                    !body.contains("\"streams\":[]") &&
-                    !body.contains("\"streams\": []")
-                ) {
-                    CheckResult(
-                        name = "Stream probe",
-                        verdict = Verdict.PASS,
-                        summary = "Streams returned for test title (The Matrix)"
-                    )
-                } else {
+                } else if (body.isNullOrBlank()) {
                     CheckResult(
                         name = "Stream probe",
                         verdict = Verdict.WARN,
-                        summary = "Addon responded but returned no streams for The Matrix",
-                        fix = "The addon is reachable but found no results. " +
+                        summary = "Addon responded but returned empty body",
+                        fix = "The addon is reachable but returned no data. " +
                             "Your debrid/scraper configuration may need attention."
                     )
+                } else {
+                    val streams = try {
+                        json.parseToJsonElement(body).jsonObject["streams"]?.jsonArray
+                    } catch (_: Exception) { null }
+                    if (streams != null && streams.isNotEmpty()) {
+                        CheckResult(
+                            name = "Stream probe",
+                            verdict = Verdict.PASS,
+                            summary = "Streams returned for test title (The Matrix)"
+                        )
+                    } else {
+                        CheckResult(
+                            name = "Stream probe",
+                            verdict = Verdict.WARN,
+                            summary = "Addon responded but returned no streams for The Matrix",
+                            fix = "The addon is reachable but found no results. " +
+                                "Your debrid/scraper configuration may need attention."
+                        )
+                    }
                 }
             }
         } catch (e: Exception) {

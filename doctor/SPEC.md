@@ -5,7 +5,7 @@
 
 ## What it is
 
-A free, local-only Android phone app that runs 4 diagnostic checks against the user's streaming infrastructure. No backend, no persistence, no analytics. Credentials stay on-device and are never logged or transmitted beyond the provider APIs they belong to.
+A free, local-only Android phone app that runs 6 diagnostic checks against the user's streaming infrastructure. No backend, no persistence, no analytics. Credentials stay on-device and are never logged or transmitted beyond the provider APIs they belong to.
 
 ## Check taxonomy
 
