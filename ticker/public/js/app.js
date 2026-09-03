@@ -7,12 +7,9 @@ import { qrDataUrl } from './qr.js';
 import { Ticker } from './ticker.js';
 import { startWatchdog } from './watchdog.js';
 
-window.__CORELINE_READY = true;
-clearTimeout(window.__CORELINE_BOOT);
-
 const params = new URLSearchParams(location.search);
-if (params.get('native') === '1') globalThis.CORELINE_NATIVE = true;
-if (params.get('tv') === '1') globalThis.CORELINE_TV = true;
+if (params.get('native') === '1') window.CORELINE_NATIVE = true;
+if (params.get('tv') === '1') window.CORELINE_TV = true;
 
 const SAMPLE_FEED = { url: `${location.origin}/feeds/sample-sports.xml`, label: 'Sample' };
 const LEAGUE_ORDER = ['ALL', 'LIVE', 'RSS', ...Object.values(LEAGUES).map((l) => l.label)];
@@ -29,6 +26,7 @@ let wakeLock = null;
 let clockTimer = null;
 let refreshTimer = null;
 let refreshing = false;
+let refreshQueued = false;
 let pairTimer = null;
 let ticker = null;
 let stopWatchdog = null;
@@ -36,7 +34,7 @@ let stopWatchdog = null;
 init();
 
 async function init() {
-  document.documentElement.toggleAttribute('data-tv', Boolean(globalThis.CORELINE_TV));
+  document.documentElement.toggleAttribute('data-tv', Boolean(window.CORELINE_TV));
   applyChrome();
   bind();
   initTvNav(document.getElementById('app'));
@@ -69,6 +67,11 @@ async function init() {
   if ('serviceWorker' in navigator && !isNativeShell()) {
     navigator.serviceWorker.register('./sw.js').catch(() => {});
   }
+
+  window.__CORELINE_READY = true;
+  clearTimeout(window.__CORELINE_BOOT);
+  const bootOverlay = document.getElementById('bootGuard');
+  if (bootOverlay) bootOverlay.hidden = true;
 }
 
 function effectiveSpeed() {
@@ -330,7 +333,10 @@ function renderLeagueToggles() {
 }
 
 async function refresh(manual = false) {
-  if (refreshing) return;
+  if (refreshing) {
+    refreshQueued = true;
+    return;
+  }
   refreshing = true;
   if (manual) toast('Refreshing slate...');
   try {
@@ -353,16 +359,22 @@ async function refresh(manual = false) {
     const cached = readCachedSlate();
     if (cached?.events?.length) {
       events = cached.events;
+      updateHealth('stale');
       render();
       toast('Could not refresh — showing last slate');
     } else {
       events = await localFallback();
+      updateHealth('degraded');
       render();
       toast('Offline slate');
     }
     console.warn(err);
   } finally {
     refreshing = false;
+    if (refreshQueued) {
+      refreshQueued = false;
+      void refresh();
+    }
   }
 }
 

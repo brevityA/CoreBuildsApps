@@ -151,10 +151,15 @@ async function resilientFeed(feed) {
   const bo = getFeedBackoff(key);
   if (bo.shouldSkip()) {
     const lg = lastGoodFeed.get(key) || [];
-    return { ok: true, events: lg, error: null, stale: lg.length > 0 };
+    return { ok: lg.length > 0, events: lg, error: lg.length > 0 ? null : 'source in backoff', stale: lg.length > 0 };
   }
   try {
     const result = await cached(JSON.stringify(['rss', key, feed.label]), () => fetchFeed(key, { source: 'rss', label: feed.label }));
+    if (!result.ok) {
+      bo.fail(null);
+      const lg = lastGoodFeed.get(key) || [];
+      return { ...result, events: lg, stale: lg.length > 0 };
+    }
     bo.succeed();
     lastGoodFeed.set(key, result.events || []);
     return { ...result, stale: false };
@@ -176,8 +181,13 @@ async function getScoreboard(leagues) {
       if (bo.shouldSkip()) {
         const lg = lastGoodLeague.get(id) || [];
         groups.push(lg);
-        sources.push({ id, provider: 'cached', ok: true, count: lg.length, stale: true });
-        anyStale = true;
+        if (lg.length > 0) {
+          sources.push({ id, provider: 'cached', ok: true, count: lg.length, stale: true });
+          anyStale = true;
+        } else {
+          sources.push({ id, provider: 'cached', ok: false, count: 0, stale: false });
+          anyDegraded = true;
+        }
         return;
       }
       const espnUrl = espnScoreboardUrl(id);

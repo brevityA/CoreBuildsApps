@@ -3,7 +3,8 @@ export class Ticker {
     this._container = container;
     this._trackA = container.querySelector('#crawlA') || container.children[0];
     this._trackB = container.querySelector('#crawlB') || container.children[1];
-    this._speed = speed;
+    this._speed = 80;
+    this.speed = speed;
     this._offset = 0;
     this._raf = null;
     this._lastTime = 0;
@@ -57,7 +58,7 @@ export class Ticker {
     this._lastTime = now;
 
     if (this._trackWidth > 0 && this._offset >= this._trackWidth) {
-      this._offset -= this._trackWidth;
+      this._offset %= this._trackWidth;
     }
 
     this._apply();

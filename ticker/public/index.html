@@ -11,7 +11,7 @@
   <title>Core Line</title>
   <script>window.CORELINE_NATIVE=window.CORELINE_NATIVE||false;window.CORELINE_TV=window.CORELINE_TV||false;</script>
   <script>
-  window.__CORELINE_BOOT=setTimeout(function(){if(!window.__CORELINE_READY){document.body.innerHTML='<div class="boot-guard"><h1>Core Line</h1><p>This device needs a newer System WebView to run Core Line.</p><p>Update Android System WebView from the Play Store, or upgrade to Fire OS 7 or later.</p></div>';}},4000);
+  window.__CORELINE_BOOT=setTimeout(function(){if(!window.__CORELINE_READY){var el=document.getElementById('bootGuard');if(el)el.removeAttribute('hidden');}},4000);
   </script>
   <link rel="icon" href="./icon.svg" type="image/svg+xml">
   <link rel="apple-touch-icon" href="./icons/core-line-icon.png">
@@ -168,6 +168,11 @@
   </div>
 
   <div class="toast" id="toast" hidden></div>
+  <div class="boot-guard" id="bootGuard" hidden>
+    <h1>Core Line</h1>
+    <p>This device needs a newer System WebView to run Core Line.</p>
+    <p>Update Android System WebView from the Play Store, or upgrade to Fire OS 7 or later.</p>
+  </div>
   <script type="module" src="./js/app.js"></script>
 </body>
 </html>
