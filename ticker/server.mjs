@@ -284,7 +284,9 @@ async function cached(key, fn) {
       cache.delete(cache.keys().next().value);
     }
   }
-  cache.set(key, { at: Date.now(), value });
+  if (value?.ok !== false) {
+    cache.set(key, { at: Date.now(), value });
+  }
   return value;
 }
 

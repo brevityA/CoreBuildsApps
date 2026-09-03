@@ -57,6 +57,12 @@ async function init() {
     events = buildDemoSlate();
   }
   render();
+
+  window.__CORELINE_READY = true;
+  clearTimeout(window.__CORELINE_BOOT);
+  const bootOverlay = document.getElementById('bootGuard');
+  if (bootOverlay) bootOverlay.hidden = true;
+
   await refresh();
   armRefreshInterval();
 
@@ -67,11 +73,6 @@ async function init() {
   if ('serviceWorker' in navigator && !isNativeShell()) {
     navigator.serviceWorker.register('./sw.js').catch(() => {});
   }
-
-  window.__CORELINE_READY = true;
-  clearTimeout(window.__CORELINE_BOOT);
-  const bootOverlay = document.getElementById('bootGuard');
-  if (bootOverlay) bootOverlay.hidden = true;
 }
 
 function effectiveSpeed() {
