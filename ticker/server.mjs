@@ -90,7 +90,7 @@ const server = http.createServer(async (req, res) => {
         json(res, { ok: false, error: safety.reason, events: [] }, 400);
         return;
       }
-      const result = await cached(`rss:${safety.url}:${label}`, () => fetchFeed(safety.url, { source: 'rss', label }));
+      const result = await cached(JSON.stringify(['rss', safety.url, label]), () => fetchFeed(safety.url, { source: 'rss', label }));
       json(res, result);
       return;
     }
@@ -154,7 +154,7 @@ async function resilientFeed(feed) {
     return { ok: true, events: lg, error: null, stale: lg.length > 0 };
   }
   try {
-    const result = await cached(`rss:${key}:${feed.label}`, () => fetchFeed(key, { source: 'rss', label: feed.label }));
+    const result = await cached(JSON.stringify(['rss', key, feed.label]), () => fetchFeed(key, { source: 'rss', label: feed.label }));
     bo.succeed();
     lastGoodFeed.set(key, result.events || []);
     return { ...result, stale: false };
