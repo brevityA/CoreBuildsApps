@@ -5,9 +5,12 @@ import kotlinx.serialization.json.jsonArray
 import kotlinx.serialization.json.jsonObject
 import okhttp3.OkHttpClient
 import okhttp3.Request
+import okhttp3.Response
 import java.util.concurrent.TimeUnit
 
 object AddonChecks {
+
+    private const val MAX_BODY_BYTES = 2L * 1024 * 1024 // 2 MB
 
     private val json = Json { ignoreUnknownKeys = true }
 
@@ -17,20 +20,38 @@ object AddonChecks {
         .followRedirects(true)
         .build()
 
+    private fun Response.boundedBody(): String? {
+        val source = body?.source() ?: return null
+        source.request(MAX_BODY_BYTES + 1)
+        if (source.buffer.size > MAX_BODY_BYTES) return null
+        val charset = body?.contentType()?.charset() ?: Charsets.UTF_8
+        return source.buffer.readString(charset)
+    }
+
     fun checkManifest(addonUrl: String): CheckResult {
         val url = addonUrl.trimEnd('/') + "/manifest.json"
         return try {
             val request = Request.Builder().url(url).get().build()
             client.newCall(request).execute().use { response ->
-                val body = response.body?.string()
                 if (response.code != 200) {
-                    CheckResult(
+                    return@use CheckResult(
                         name = "Addon manifest",
                         verdict = Verdict.FAIL,
                         summary = "Manifest returned HTTP ${response.code}",
                         fix = "Check the addon URL is correct and the host is online."
                     )
-                } else if (body.isNullOrBlank()) {
+                }
+                val body = response.boundedBody()
+                if (body == null) {
+                    return@use CheckResult(
+                        name = "Addon manifest",
+                        verdict = Verdict.FAIL,
+                        summary = "Manifest response too large (>2 MB)",
+                        fix = "The addon returned an unexpectedly large response. " +
+                            "Check the addon URL is correct."
+                    )
+                }
+                if (body.isBlank()) {
                     CheckResult(
                         name = "Addon manifest",
                         verdict = Verdict.FAIL,
@@ -82,16 +103,26 @@ object AddonChecks {
         return try {
             val request = Request.Builder().url(url).get().build()
             client.newCall(request).execute().use { response ->
-                val body = response.body?.string()
                 if (response.code != 200) {
-                    CheckResult(
+                    return@use CheckResult(
                         name = "Stream probe",
                         verdict = Verdict.FAIL,
                         summary = "Stream endpoint returned HTTP ${response.code}",
                         fix = "The addon is alive but could not return streams. " +
                             "Check that the addon is properly configured."
                     )
-                } else if (body.isNullOrBlank()) {
+                }
+                val body = response.boundedBody()
+                if (body == null) {
+                    return@use CheckResult(
+                        name = "Stream probe",
+                        verdict = Verdict.FAIL,
+                        summary = "Stream response too large (>2 MB)",
+                        fix = "The addon returned an unexpectedly large response. " +
+                            "Check the addon URL is correct."
+                    )
+                }
+                if (body.isBlank()) {
                     CheckResult(
                         name = "Stream probe",
                         verdict = Verdict.WARN,
