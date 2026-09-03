@@ -7,6 +7,8 @@
 import { extractChannels, splitChannelsBlob, normalizeChannel, peelChannels } from './channels.mjs';
 import { abbreviate } from './teams.mjs';
 
+export const MAX_ITEMS_PER_FEED = 100;
+
 const VS_RE = /\s+(?:vs\.?|v\.|versus|@|at)\s+/i;
 const SEP_RE = /\s*[-–—|:]\s*/;
 const LEAGUE_PREFIX = /^(nhl|nba|nfl|mlb|wnba|mls|epl|ufc|f1|ncaaf|ncaab|cfb|cbb|soccer|football|hockey|baseball|basketball)\s*[-–—:|]\s*/i;
@@ -29,7 +31,11 @@ export function decodeXmlEntities(value) {
 }
 
 export function stripTags(html) {
-  return decodeXmlEntities(String(html || '').replace(/<[^>]+>/g, ' ')).replace(/\s+/g, ' ').trim();
+  return decodeXmlEntities(
+    String(html || '')
+      .replace(/<!\[CDATA\[([\s\S]*?)\]\]>/g, '$1')
+      .replace(/<[^>]+>/g, ' ')
+  ).replace(/\s+/g, ' ').trim();
 }
 
 export function parseListing(title, extra = '') {
@@ -105,7 +111,7 @@ export function parseFeed(xmlOrJson, meta = {}) {
 
   const items = [];
   const itemBlocks = [...text.matchAll(/<(item|entry)\b[^>]*>([\s\S]*?)<\/\1>/gi)];
-  for (const block of itemBlocks) {
+  for (const block of itemBlocks.slice(0, MAX_ITEMS_PER_FEED)) {
     const body = block[2];
     const title = firstTag(body, 'title');
     const description = firstTag(body, 'description')
@@ -138,7 +144,7 @@ export function parseJsonFeed(text, meta = {}) {
     : data.items || data.events || data.games || data.entries || data.results || [];
   if (!Array.isArray(rows)) return [];
 
-  return rows.map((row, index) => {
+  return rows.slice(0, MAX_ITEMS_PER_FEED).filter((row) => row != null && typeof row !== 'boolean' && typeof row !== 'number').map((row, index) => {
     if (typeof row === 'string') {
       const event = parseListing(row);
       event.source = meta.source || 'rss';

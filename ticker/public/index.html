@@ -10,9 +10,9 @@
   <meta name="description" content="Sports and channel ticker for Android and TV. Team vs team — ESPN, TSN4, SN 3.">
   <title>Core Line</title>
   <script>window.CORELINE_NATIVE=window.CORELINE_NATIVE||false;window.CORELINE_TV=window.CORELINE_TV||false;</script>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Outfit:wght@400;600;700&display=swap" rel="stylesheet">
+  <script>
+  window.__CORELINE_BOOT=setTimeout(function(){if(!window.__CORELINE_READY){document.body.innerHTML='<div class="boot-guard"><h1>Core Line</h1><p>This device needs a newer System WebView to run Core Line.</p><p>Update Android System WebView from the Play Store, or upgrade to Fire OS 7 or later.</p></div>';}},4000);
+  </script>
   <link rel="icon" href="./icon.svg" type="image/svg+xml">
   <link rel="apple-touch-icon" href="./icons/core-line-icon.png">
   <link rel="manifest" href="./manifest.webmanifest">
@@ -32,11 +32,12 @@
         <div class="stat"><b id="statLive">0</b><span>Live</span></div>
         <div class="stat"><b id="statUp">0</b><span>Up</span></div>
         <div class="stat"><b id="statRss">0</b><span>RSS</span></div>
+        <span class="health" id="health" data-health="ok">ok</span>
       </div>
       <div class="top-actions">
-        <button class="icon-btn focusable" data-action="refresh" title="Refresh" aria-label="Refresh">↻</button>
-        <button class="icon-btn focusable" data-action="mode" title="Ticker only" aria-label="Ticker only">▬</button>
-        <button class="icon-btn focusable" data-action="settings" title="Settings" aria-label="Settings">⚙</button>
+        <button class="icon-btn focusable" data-action="refresh" title="Refresh" aria-label="Refresh">&#8635;</button>
+        <button class="icon-btn focusable" data-action="mode" title="Ticker only" aria-label="Ticker only">&#9644;</button>
+        <button class="icon-btn focusable" data-action="settings" title="Settings" aria-label="Settings">&#9881;</button>
       </div>
     </header>
 
@@ -54,7 +55,7 @@
       <section class="empty" id="empty" hidden>
         <div class="empty-kicker">No listings yet</div>
         <h2>Add a sports RSS feed</h2>
-        <p>The three channel apps already publish the slate. Core Line is the reader — a crawl that says <em>Team vs Team · ESPN, TSN4, SN 3</em>.</p>
+        <p>The three channel apps already publish the slate. Core Line is the reader &mdash; a crawl that says <em>Team vs Team &middot; ESPN, TSN4, SN 3</em>.</p>
         <button class="primary focusable" data-action="settings">Open settings</button>
       </section>
     </main>
@@ -66,12 +67,12 @@
             <div class="kicker">Setup</div>
             <h2>Feeds &amp; ticker</h2>
           </div>
-          <button class="icon-btn focusable" data-action="close-settings" aria-label="Close">✕</button>
+          <button class="icon-btn focusable" data-action="close-settings" id="drawerClose" aria-label="Close">&#10005;</button>
         </header>
 
         <section class="block">
           <h3>Your RSS feeds</h3>
-          <p class="hint">Paste any RSS, Atom, or JSON listing. Channel-list apps, sports blogs, or a homemade XML file all work. Core Line never plays video — it only reads names and channels.</p>
+          <p class="hint">Paste any RSS, Atom, or JSON listing. Channel-list apps, sports blogs, or a homemade XML file all work. Core Line never plays video &mdash; it only reads names and channels.</p>
           <div class="feed-add">
             <input class="focusable" id="feedUrl" type="url" placeholder="https://example.com/sports.xml" autocomplete="off" spellcheck="false">
             <input class="focusable" id="feedLabel" type="text" placeholder="Label" maxlength="24">
@@ -101,7 +102,11 @@
 
         <section class="block split">
           <label>Ticker speed
-            <input class="focusable" id="speed" type="range" min="20" max="120" value="52">
+            <div class="speed-stepper">
+              <button class="stepper-btn focusable" data-action="speed-down" aria-label="Slower">&minus;</button>
+              <span class="stepper-val" id="speedVal">80</span>
+              <button class="stepper-btn focusable" data-action="speed-up" aria-label="Faster">+</button>
+            </div>
           </label>
           <label>Favorite teams
             <input class="focusable" id="favorites" type="text" placeholder="TOR, LAL, KC, ARS">
@@ -125,9 +130,25 @@
               <option value="24">24-hour</option>
             </select>
           </label>
+          <label>Refresh
+            <select class="focusable" id="refreshSec">
+              <option value="15">15 s</option>
+              <option value="30">30 s</option>
+              <option value="60">60 s</option>
+              <option value="120">2 min</option>
+              <option value="300">5 min</option>
+              <option value="600">10 min</option>
+            </select>
+          </label>
+          <label>Ticker position
+            <select class="focusable" id="position">
+              <option value="bottom">Bottom</option>
+              <option value="top">Top</option>
+            </select>
+          </label>
         </section>
 
-        <p class="fineprint">D-pad: move · OK: select · Air mouse: point &amp; click · S: settings · T: ticker · R: refresh · F: fullscreen. This is a TV guide, not a player.</p>
+        <p class="fineprint">D-pad: move &middot; OK: select &middot; Air mouse: point &amp; click &middot; S: settings &middot; T: ticker &middot; R: refresh &middot; F: fullscreen. This is a TV guide, not a player.</p>
       </div>
     </aside>
 

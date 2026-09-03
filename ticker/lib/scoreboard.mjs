@@ -21,6 +21,9 @@ export const LEAGUES = {
   f1: { id: 'f1', label: 'F1', sport: 'racing', espn: 'racing/f1', accent: '#e10600' },
 };
 
+export const DEFAULT_LEAGUES = ['mlb', 'nfl', 'nba', 'nhl', 'epl', 'mls', 'wnba'];
+export const LEAGUE_LABELS = Object.values(LEAGUES).map((l) => l.label);
+
 export function espnScoreboardUrl(leagueId) {
   const league = LEAGUES[leagueId];
   if (!league) return null;

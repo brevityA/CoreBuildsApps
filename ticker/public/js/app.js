@@ -1,9 +1,14 @@
 import { toTickerText, parseFeed } from '/lib/parser.mjs';
 import { LEAGUES, compareEvents, buildDemoSlate, mergeEvents } from '/lib/scoreboard.mjs';
 import { buildClientSlate, isNativeShell } from '/lib/client-slate.mjs';
-import { loadState, saveState, cacheSlate, readCachedSlate } from './state.js';
-import { initTvNav } from './tv.js';
+import { loadState, saveState, DEFAULTS, cacheSlate, readCachedSlate } from './state.js';
+import { initTvNav, drawerOpened, drawerClosed, saveFocusId, restoreFocusId } from './tv.js';
 import { qrDataUrl } from './qr.js';
+import { Ticker } from './ticker.js';
+import { startWatchdog } from './watchdog.js';
+
+window.__CORELINE_READY = true;
+clearTimeout(window.__CORELINE_BOOT);
 
 const params = new URLSearchParams(location.search);
 if (params.get('native') === '1') globalThis.CORELINE_NATIVE = true;
@@ -11,6 +16,10 @@ if (params.get('tv') === '1') globalThis.CORELINE_TV = true;
 
 const SAMPLE_FEED = { url: `${location.origin}/feeds/sample-sports.xml`, label: 'Sample' };
 const LEAGUE_ORDER = ['ALL', 'LIVE', 'RSS', ...Object.values(LEAGUES).map((l) => l.label)];
+const LEAGUE_BY_LABEL = Object.fromEntries(Object.values(LEAGUES).map((l) => [l.label, l]));
+const SPEED_STEP = 10;
+const SPEED_MIN = 10;
+const SPEED_MAX = 200;
 
 const $ = (id) => document.getElementById(id);
 
@@ -18,8 +27,11 @@ const state = loadState();
 let events = [];
 let wakeLock = null;
 let clockTimer = null;
-let refreshGen = 0;
+let refreshTimer = null;
+let refreshing = false;
 let pairTimer = null;
+let ticker = null;
+let stopWatchdog = null;
 
 init();
 
@@ -30,6 +42,16 @@ async function init() {
   initTvNav(document.getElementById('app'));
   tickClock();
   clockTimer = setInterval(tickClock, 1000);
+
+  ticker = new Ticker($('crawl'), { speed: effectiveSpeed() });
+  ticker.start();
+  stopWatchdog = startWatchdog(ticker, {
+    onStall: () => {
+      renderCrawl(visibleEvents());
+      ticker.measure();
+    },
+  });
+
   const cached = readCachedSlate();
   if (cached?.events?.length) {
     events = cached.events;
@@ -38,10 +60,29 @@ async function init() {
   }
   render();
   await refresh();
-  setInterval(refresh, 60_000);
+  armRefreshInterval();
+
+  document.addEventListener('visibilitychange', () => {
+    if (!document.hidden) refresh();
+  });
+
   if ('serviceWorker' in navigator && !isNativeShell()) {
     navigator.serviceWorker.register('./sw.js').catch(() => {});
   }
+}
+
+function effectiveSpeed() {
+  let speed = state.speed;
+  if (window.matchMedia?.('(prefers-reduced-motion: reduce)').matches) {
+    speed = Math.min(speed, 12);
+  }
+  return speed;
+}
+
+function armRefreshInterval() {
+  clearInterval(refreshTimer);
+  const ms = (state.refreshSec || DEFAULTS.refreshSec) * 1000;
+  refreshTimer = setInterval(refresh, ms);
 }
 
 function bind() {
@@ -67,17 +108,14 @@ function bind() {
       persist();
       render();
     }
+    if (action === 'speed-down') adjustSpeed(-SPEED_STEP);
+    if (action === 'speed-up') adjustSpeed(SPEED_STEP);
   });
 
   $('sampleFeed').addEventListener('change', () => {
     state.sampleFeed = $('sampleFeed').checked;
     persist();
     refresh();
-  });
-  $('speed').addEventListener('input', () => {
-    state.speed = Number($('speed').value);
-    document.documentElement.style.setProperty('--crawl-s', `${state.speed}s`);
-    persist();
   });
   $('favorites').addEventListener('change', () => {
     state.favorites = $('favorites').value;
@@ -104,6 +142,16 @@ function bind() {
     persist();
     tickClock();
   });
+  $('refreshSec').addEventListener('change', () => {
+    state.refreshSec = Number($('refreshSec').value);
+    persist();
+    armRefreshInterval();
+  });
+  $('position').addEventListener('change', () => {
+    state.position = $('position').value;
+    persist();
+    applyPosition();
+  });
 
   window.addEventListener('keydown', (event) => {
     if (event.target.matches('input, textarea, select')) return;
@@ -119,21 +167,34 @@ function bind() {
   });
 }
 
+function adjustSpeed(delta) {
+  state.speed = Math.max(SPEED_MIN, Math.min(SPEED_MAX, state.speed + delta));
+  persist();
+  if (ticker) ticker.speed = effectiveSpeed();
+  $('speedVal').textContent = state.speed;
+}
+
 function applyChrome() {
   document.documentElement.dataset.theme = state.theme;
   document.documentElement.dataset.mode = state.mode;
-  document.documentElement.style.setProperty('--crawl-s', `${state.speed}s`);
   $('sampleFeed').checked = state.sampleFeed;
-  $('speed').value = state.speed;
+  $('speedVal').textContent = state.speed;
   $('favorites').value = state.favorites;
   $('showFinals').checked = state.showFinals;
   $('wakeLock').checked = state.wakeLock;
   $('theme').value = state.theme;
   $('clockFmt').value = state.clockFmt;
+  $('refreshSec').value = state.refreshSec;
+  $('position').value = state.position;
+  applyPosition();
   renderLeagueToggles();
   renderFeeds();
   if ($('pairBox')) $('pairBox').hidden = !isNativeShell();
   syncWakeLock();
+}
+
+function applyPosition() {
+  document.querySelector('.app')?.setAttribute('data-position', state.position);
 }
 
 function persist() {
@@ -142,14 +203,23 @@ function persist() {
 
 function openDrawer(open) {
   $('drawer').hidden = !open;
-  if (open && !globalThis.CORELINE_TV) $('feedUrl').focus();
-  if (!open) stopPair();
+  if (open) {
+    drawerOpened();
+    if (!globalThis.CORELINE_TV) $('feedUrl').focus();
+  } else {
+    drawerClosed();
+    stopPair();
+  }
 }
 
 function toggleMode() {
   state.mode = state.mode === 'crawl' ? 'board' : 'crawl';
   persist();
   applyChrome();
+  if (ticker) {
+    renderCrawl(visibleEvents());
+    ticker.measure();
+  }
 }
 
 function addFeed(rawUrl, rawLabel) {
@@ -260,8 +330,9 @@ function renderLeagueToggles() {
 }
 
 async function refresh(manual = false) {
-  if (manual) toast('Refreshing slate…');
-  const gen = ++refreshGen;
+  if (refreshing) return;
+  refreshing = true;
+  if (manual) toast('Refreshing slate...');
   try {
     const feeds = [
       ...state.feeds,
@@ -270,16 +341,15 @@ async function refresh(manual = false) {
     const data = isNativeShell()
       ? await buildClientSlate({ leagues: state.leagues, feeds })
       : await fetchSlateFromServer(state.leagues, feeds);
-    if (gen !== refreshGen) return; // a newer refresh superseded this one
     events = data.events || [];
     cacheSlate(data);
     $('brandSub').textContent = data.demo
-      ? 'Demo slate · live scoreboards unreachable'
+      ? 'Demo slate — live scoreboards unreachable'
       : `Updated ${new Date(data.generatedAt || Date.now()).toLocaleTimeString()}`;
+    updateHealth(data.health);
     render();
     if (manual) toast(data.demo ? 'Showing demo slate' : `Loaded ${events.length} listings`);
   } catch (err) {
-    if (gen !== refreshGen) return; // a newer refresh superseded this one
     const cached = readCachedSlate();
     if (cached?.events?.length) {
       events = cached.events;
@@ -291,7 +361,23 @@ async function refresh(manual = false) {
       toast('Offline slate');
     }
     console.warn(err);
+  } finally {
+    refreshing = false;
   }
+}
+
+function updateHealth(health) {
+  const el = $('health');
+  if (!el) return;
+  let worst = 'ok';
+  if (typeof health === 'string') {
+    worst = health;
+  } else if (health) {
+    if (health.leagues === 'degraded' || health.feeds === 'degraded') worst = 'degraded';
+    else if (health.leagues === 'stale' || health.feeds === 'stale') worst = 'stale';
+  }
+  el.dataset.health = worst;
+  el.textContent = worst;
 }
 
 async function fetchSlateFromServer(leagues, feeds) {
@@ -354,6 +440,7 @@ function render() {
   renderHero(list);
   renderGrid(list);
   renderCrawl(list);
+  if (ticker) ticker.measure();
   const next = list.find((e) => e.status === 'live') || list.find((e) => e.status === 'upcoming');
   if ($('bigNext') && next) {
     $('bigNext').textContent = toTickerText(next);
@@ -363,6 +450,7 @@ function render() {
 }
 
 function renderFilters() {
+  const focusKey = saveFocusId();
   const counts = { ALL: events.length, LIVE: events.filter((e) => e.status === 'live').length, RSS: events.filter((e) => e.source === 'rss').length };
   for (const label of Object.values(LEAGUES).map((l) => l.label)) {
     counts[label] = events.filter((e) => e.league === label).length;
@@ -374,6 +462,7 @@ function renderFilters() {
         ${label}${label === 'ALL' ? '' : ` ${counts[label] || ''}`}
       </button>
     `).join('');
+  restoreFocusId(focusKey);
 }
 
 function renderHero(list) {
@@ -426,13 +515,19 @@ function renderGrid(list) {
   ].join('');
 }
 
+function leagueAccentStyle(leagueLabel) {
+  const league = LEAGUE_BY_LABEL[leagueLabel];
+  return league?.accent ? ` data-accent style="--league-accent:${league.accent}"` : '';
+}
+
 function gameCard(ev) {
   const badge = ev.status === 'live' ? 'live' : ev.status === 'final' ? 'final' : 'upcoming';
   const label = ev.status === 'live' ? (ev.detail || 'LIVE') : ev.status === 'final' ? 'FINAL' : (ev.detail || 'UP');
+  const accent = leagueAccentStyle(ev.league);
   return `
     <article class="game focusable" tabindex="0">
       <div class="game-top">
-        <span class="league-tag">${esc(ev.league || ev.feed || 'RSS')}</span>
+        <span class="league-tag"${accent}>${esc(ev.league || ev.feed || 'RSS')}</span>
         <span class="badge ${badge}">${esc(label)}</span>
       </div>
       <div class="game-teams">
@@ -447,10 +542,11 @@ function gameCard(ev) {
 }
 
 function headlineCard(ev) {
+  const accent = leagueAccentStyle(ev.league);
   return `
     <article class="game focusable" tabindex="0">
       <div class="game-top">
-        <span class="league-tag">${esc(ev.league || ev.feed || 'RSS')}</span>
+        <span class="league-tag"${accent}>${esc(ev.league || ev.feed || 'RSS')}</span>
         <span class="badge ${ev.status}">${esc(ev.status.toUpperCase())}</span>
       </div>
       <div class="gt"><span class="who">${esc(ev.headline || ev.rawTitle || 'Listing')}</span></div>
@@ -460,7 +556,7 @@ function headlineCard(ev) {
 }
 
 function renderCrawl(list) {
-  const html = (list.length ? list : [{ headline: 'Add an RSS feed in settings — Team vs Team · ESPN, TSN4, SN 3', channels: [], status: 'upcoming' }])
+  const html = (list.length ? list : [{ headline: 'Add an RSS feed in settings — Team vs Team, ESPN, TSN4, SN 3', channels: [], status: 'upcoming' }])
     .map((ev) => {
       const text = toTickerText(ev);
       const kind = ev.status === 'live' ? 'LIVE' : ev.status === 'final' ? 'FINAL' : 'UP';
