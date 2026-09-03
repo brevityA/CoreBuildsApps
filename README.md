@@ -1,10 +1,10 @@
 <div align="center">
 
-<img src="docs/banner.png" alt="Core Builds Apps" width="420">
+<img src="docs/apps-banner.png" alt="Core Builds Apps" width="720">
 
 # Core Builds Apps
 
-**Three Android TV apps. Same brand, same living-room bar.**
+**Four Android apps. Same brand, same living-room bar.**
 
 </div>
 
@@ -15,6 +15,7 @@
 > | **[Icon Pack](#-icon-pack)** | 921 transparent icons + 70 wallpapers for Projectivy Launcher | `5270601` | [`v*`](../../releases) |
 > | **[Core Line](#-core-line)** | Sports scores & channel RSS ticker (chyron) | `7375676` | [`coreline-v*`](../../releases) |
 > | **[Core Shift](#-core-shift)** | Live wallpaper browser + Projectivy plugin for Monet Launcher | `8829421` | [`shift-v*`](../../releases) |
+> | **[Core Doctor](#-core-doctor)** | Streaming infrastructure diagnostics (phone) | `8664938` | [`doctor-v*`](../../releases) |
 >
 > Each app has its own CI workflow — changes to one never rebuild the others.
 
@@ -182,6 +183,7 @@ Latestrelease/version.json   in-app update manifest
 docs/IconPackList.md         supported apps + components
 ticker/                      Core Line — sports & channel ticker (see ticker/README.md)
 shift/                       Core Shift — live wallpaper browser (see shift/HANDOVER.md)
+doctor/                      Core Doctor — streaming diagnostics (see doctor/SPEC.md)
 motion-plugin/               Core Motion — Projectivy wallpaper-provider plugin
 motion-shaders/              GLSL fragment shaders (hex plasma, starfield, flow)
 Motion/live/                 Motion asset set (MP4 loops, thumbnails, live-feed.json)
@@ -271,6 +273,51 @@ Motion asset validation: `python tools/validate_motion_feed.py`.
 Release signing uses the same `KEYSTORE_BASE64`, `KEYSTORE_PASSWORD`, `KEY_ALIAS`, `KEY_PASSWORD` secrets as the icon pack and Core Line.
 
 Full architecture and remaining debt: [`shift/HANDOVER.md`](shift/HANDOVER.md).
+
+---
+
+## 🔷 Core Doctor
+
+**Streaming infrastructure diagnostics for your phone.** `v0.1.0`
+
+Not a TV app — Core Doctor runs on your phone and checks whether your streaming setup is healthy. Six checks, gated on what credentials you provide:
+
+| Check | Gate | What it tests |
+|---|---|---|
+| DNS resolution | Always | Resolves api.real-debrid.com, api.torbox.app, v6-4.aiostreams.elfhosted.com |
+| VPN detection | Always | ConnectivityManager TRANSPORT_VPN |
+| Addon manifest | Addon URL | HTTP GET {url}/manifest.json — validates JSON with `id` field |
+| Stream probe | Addon URL | HTTP GET {url}/stream/movie/tt0133093.json — checks for results |
+| Real-Debrid | RD key | GET api.real-debrid.com/rest/1.0/user — premium status, expiry |
+| TorBox | TB key | GET api.torbox.app/v1/api/user/me — plan status, expiry |
+
+- No backend, no persistence, no analytics — everything runs client-side
+- API keys are sent only to the provider they belong to (Bearer token)
+- Share reports are **redacted by construction** — `ReportCard.render()` emits verdicts and summaries only; keys and URLs are structurally excluded
+- `allowBackup=false`, no SharedPreferences, no Room, no files
+- Permissions: INTERNET, ACCESS_NETWORK_STATE — nothing else
+
+### Install
+
+1. Download using **Downloader code `8664938`**, or grab the APK from [**Releases**](../../releases) under `doctor-v*` tags.
+2. Sideload it (Downloader, `adb install`, or a file manager).
+3. Open the app — enter your addon URL and/or debrid API keys, tap Run.
+
+### Building
+
+CI: [`.github/workflows/core-doctor-apk.yml`](.github/workflows/core-doctor-apk.yml) → push a `doctor-v*` tag to cut a release.
+
+Locally (needs JDK 17 + Android SDK):
+
+```bash
+cd doctor && ./gradlew :app:assembleDebug
+```
+
+Tests: `cd doctor && ./gradlew test` (unit tests for JSON parsing).
+
+Release signing uses the same `KEYSTORE_BASE64`, `KEYSTORE_PASSWORD`, `KEY_ALIAS`, `KEY_PASSWORD` secrets as the other apps.
+
+Spec: [`doctor/SPEC.md`](doctor/SPEC.md).
 
 ---
 
