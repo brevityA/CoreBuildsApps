@@ -131,6 +131,9 @@
         <item>coji_tv_browser</item>
         <item>comedybox</item>
         <item>corebuilds</item>
+        <item>coredoctor</item>
+        <item>coreline</item>
+        <item>coreshift</item>
         <item>jamal2367</item>
         <item>watchcorridortv</item>
         <item>cosmote_tv</item>
@@ -1054,6 +1057,9 @@
         <item>Coji TV Browser</item>
         <item>Comedy Box</item>
         <item>Core Builds</item>
+        <item>Core Doctor</item>
+        <item>Core Line</item>
+        <item>Core Shift</item>
         <item>CoreELEC Helper</item>
         <item>Corridor</item>
         <item>Cosmote TV</item>
@@ -1977,6 +1983,9 @@
         <item>BROWSER</item>
         <item>APP</item>
         <item>CORE</item>
+        <item>CORE</item>
+        <item>CORE</item>
+        <item>CORE</item>
         <item>APP</item>
         <item>STREAM</item>
         <item>APP</item>
@@ -2770,5 +2779,5 @@
         <item>APP</item>
         <item>APP</item>
     </string-array>
-    <integer name="icon_count">921</integer>
+    <integer name="icon_count">924</integer>
 </resources>

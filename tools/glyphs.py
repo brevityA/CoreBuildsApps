@@ -2743,3 +2743,57 @@ GLYPHS.update({
     "mitv_mark": mitv_mark,
     "iptv_player": iptv_player,
 })
+
+
+# ==========================================================================
+# Core family — bespoke marks for the three sibling apps.
+#
+# All share the brand hex (§02 point-up) as the outer frame and use the same
+# accent cyan. Inner geometry differentiates each product's function.
+# ==========================================================================
+def coreline_ticker(c):
+    """Core Line: a scrolling ticker strip inside the brand hex.
+
+    The hex frame contains two horizontal crawl lines, suggesting the
+    chyron/lower-third that defines the app. A small dot-pair at the left
+    edge implies the live bug.
+    """
+    return (
+        f'<polygon points="{_hexpts(256, 256, 196)}" {_s(c, 34)}/>'
+        f'<path d="M 140 236 L 372 236" {_s(c, 28)}/>'
+        f'<path d="M 140 280 L 340 280" {_s(c, 24)}/>'
+        f'<circle cx="156" cy="236" r="10" {_f(c)}/>'
+    )
+
+
+def coreshift_frames(c):
+    """Core Shift: layered offset frames suggesting motion/transition.
+
+    The hex frame contains two overlapping rounded rectangles offset
+    diagonally, evoking a wallpaper shift or frame transition.
+    """
+    return (
+        f'<polygon points="{_hexpts(256, 256, 196)}" {_s(c, 34)}/>'
+        f'<rect x="170" y="186" width="120" height="90" rx="16" {_s(c, 26)}/>'
+        f'<rect x="222" y="236" width="120" height="90" rx="16" {_s(c, 26)}/>'
+    )
+
+
+def coredoctor_pulse(c):
+    """Core Doctor: a diagnostic pulse line inside the brand hex.
+
+    The hex frame contains a heartbeat-style pulse waveform — a flat
+    baseline with a sharp spike — suggesting health monitoring.
+    """
+    return (
+        f'<polygon points="{_hexpts(256, 256, 196)}" {_s(c, 34)}/>'
+        f'<path d="M 140 264 L 196 264 L 224 196 L 256 332 '
+        f'L 284 220 L 308 264 L 372 264" {_s(c, 28)}/>'
+    )
+
+
+GLYPHS.update({
+    "coreline_ticker": coreline_ticker,
+    "coreshift_frames": coreshift_frames,
+    "coredoctor_pulse": coredoctor_pulse,
+})

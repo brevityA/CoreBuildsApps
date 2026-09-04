@@ -6,7 +6,7 @@
     "grid": 512,
     "safe_area": 432,
     "note": "Brand-colored glyph on transparent, per Core Builds Brand Guide v1.0 §07. Glyphs are original geometry in Core Builds language (rounded ends, flat fills, no gradients from source logos).",
-    "count": 921
+    "count": 924
   },
   "icons": [
     {
@@ -1462,6 +1462,45 @@
         "tv.corebuilds.iconpack/.MainActivity"
       ],
       "banner_style": "glyph",
+      "category": "CORE"
+    },
+    {
+      "name": "Core Line",
+      "drawable": "coreline",
+      "color": "#00D4FF",
+      "glyph": "coreline_ticker",
+      "components": [
+        "dev.corebuilds.line/.MainActivity"
+      ],
+      "unverified": [
+        "dev.corebuilds.line/.MainActivity"
+      ],
+      "category": "CORE"
+    },
+    {
+      "name": "Core Shift",
+      "drawable": "coreshift",
+      "color": "#00D4FF",
+      "glyph": "coreshift_frames",
+      "components": [
+        "dev.corebuilds.shift/.MainActivity"
+      ],
+      "unverified": [
+        "dev.corebuilds.shift/.MainActivity"
+      ],
+      "category": "CORE"
+    },
+    {
+      "name": "Core Doctor",
+      "drawable": "coredoctor",
+      "color": "#00D4FF",
+      "glyph": "coredoctor_pulse",
+      "components": [
+        "dev.corebuilds.doctor/.MainActivity"
+      ],
+      "unverified": [
+        "dev.corebuilds.doctor/.MainActivity"
+      ],
       "category": "CORE"
     },
     {
