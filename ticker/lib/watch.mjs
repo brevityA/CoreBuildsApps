@@ -34,6 +34,8 @@ export const SPORTS_APPS = [
   { pkg: 'com.bellmedia.tsn', label: 'TSN' },
   { pkg: 'com.rogers.sportsnet', label: 'Sportsnet' },
   { pkg: 'com.apple.atve.android.appletv', label: 'Apple TV' },
+  // Niche / league-specific apps [UNVERIFIED]
+  { pkg: 'com.sync.tv', label: 'SYNC Sports' },
 ];
 
 const CURATED = new Map(SPORTS_APPS.map((a) => [a.pkg, a.label]));

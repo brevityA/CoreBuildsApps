@@ -19,7 +19,7 @@ import android.webkit.WebSettings
 import android.webkit.WebView
 
 /**
- * Phone floating ticker — the chyron drawn as a translucent, non-focusable,
+ * Floating ticker — the chyron drawn as a translucent, non-focusable,
  * touch-through overlay window above every other app.
  *
  * It reuses the SAME Core Line web app as the full screen (loaded from
@@ -28,9 +28,9 @@ import android.webkit.WebView
  * — the same localStorage settings as the main app. The overlay page strips
  * everything but the chyron via the [data-overlay] CSS.
  *
- * Android does NOT allow this on TV (no SYSTEM_ALERT_WINDOW on Android TV);
- * the service is phone/tablet only and the main app refuses to start it on a
- * leanback/fire_tv device.
+ * Supported on phone, tablet, and Android TV (Google TV, NVIDIA Shield, etc.)
+ * where SYSTEM_ALERT_WINDOW is granted. Fire TV blocks overlay windows at the
+ * OS level — the main app refuses to start the service on Fire TV devices.
  */
 class OverlayService : Service() {
     private var windowManager: WindowManager? = null
@@ -91,7 +91,11 @@ class OverlayService : Service() {
             @Suppress("DEPRECATION")
             WindowManager.LayoutParams.TYPE_PHONE
         }
-        val height = (56 * resources.displayMetrics.density).toInt().coerceAtLeast(96)
+        // TV gets a taller bar (80dp) for 10-foot readability; phone/tablet stays at 56dp.
+        val isTv = packageManager.hasSystemFeature(android.content.pm.PackageManager.FEATURE_LEANBACK)
+            || packageManager.hasSystemFeature(android.content.pm.PackageManager.FEATURE_TELEVISION)
+        val baseDp = if (isTv) 80 else 56
+        val height = (baseDp * resources.displayMetrics.density).toInt().coerceAtLeast(96)
         val params = WindowManager.LayoutParams(
             WindowManager.LayoutParams.MATCH_PARENT,
             height,
@@ -118,7 +122,9 @@ class OverlayService : Service() {
             webChromeClient = WebChromeClient()
         }
         configure(wv.settings)
-        wv.loadUrl("https://${LineWebClient.HOST}/index.html?native=1&overlay=1")
+        // Pass tv=1 so the web app applies the 10-foot CSS scale ladder.
+        val tvParam = if (isTv) "&tv=1" else ""
+        wv.loadUrl("https://${LineWebClient.HOST}/index.html?native=1&overlay=1$tvParam")
 
         try {
             wm.addView(wv, params)

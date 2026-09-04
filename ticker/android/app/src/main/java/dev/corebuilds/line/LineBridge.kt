@@ -47,6 +47,13 @@ class LineBridge(private val activity: MainActivity) {
     @JavascriptInterface
     fun overlayActive(): Boolean = activity.overlayActive()
 
+    /**
+     * Overlay platform status: "supported", "unsupported" (Fire TV), or
+     * "needs_permission" (permission not yet granted).
+     */
+    @JavascriptInterface
+    fun overlayPlatform(): String = activity.overlayPlatform()
+
     /** Start the floating ticker (opens the permission screen if needed). */
     @JavascriptInterface
     fun startOverlay(): Boolean = activity.startOverlay()
