@@ -20,6 +20,8 @@ export const DEFAULTS = {
   leagueFilter: 'ALL',
   refreshSec: 60,
   position: 'bottom',
+  watchApps: {},
+  overlay: false,
 };
 
 /**
@@ -46,6 +48,7 @@ export function sanitizeState(raw) {
   out.sampleFeed = Boolean(out.sampleFeed);
   out.showFinals = Boolean(out.showFinals);
   out.wakeLock = Boolean(out.wakeLock);
+  out.overlay = Boolean(out.overlay);
 
   out.speed = clampInt(out.speed, SPEED_MIN, SPEED_MAX, DEFAULTS.speed);
   out.refreshSec = REFRESH_CHOICES.includes(Number(out.refreshSec)) ? Number(out.refreshSec) : DEFAULTS.refreshSec;
@@ -56,6 +59,16 @@ export function sanitizeState(raw) {
   out.mode = out.mode === 'crawl' ? 'crawl' : 'board';
   out.theme = ['core', 'broadcast', 'stadium', 'mono'].includes(out.theme) ? out.theme : 'core';
   out.leagueFilter = typeof out.leagueFilter === 'string' ? out.leagueFilter : 'ALL';
+
+  // watchApps: leagueId → installed app package id (or the string 'web').
+  if (!out.watchApps || typeof out.watchApps !== 'object' || Array.isArray(out.watchApps)) {
+    out.watchApps = {};
+  }
+  out.watchApps = Object.fromEntries(
+    Object.entries(out.watchApps)
+      .filter(([k, v]) => typeof k === 'string' && typeof v === 'string')
+      .map(([k, v]) => [k, v.slice(0, 200)]),
+  );
 
   return out;
 }

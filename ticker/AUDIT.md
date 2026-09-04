@@ -147,9 +147,9 @@ Legend — **P0** blank/crash · **P1** degraded/self-healing gap · **P2** poli
 
 See `VERIFICATION.md` for full detail. Summary:
 
-- **Tests:** 77/77 pass (`npm test`) — 24 baseline + backoff, source-registry, parser-robustness, client-slate-resilience, ticker, watchdog, and feedback suites.
+- **Tests:** 88/88 pass (`npm test`) — 24 baseline + backoff, source-registry, parser-robustness, client-slate-resilience, ticker, watchdog, feedback, watch, and version suites.
 - **Failure injection:** dead-feed isolation, last-good retention, backoff skip, malformed/empty/garbage bodies, real-socket 502 route — all verified without a single blank slate.
 - **Soak:** 3,000-cycle (~50 h) in-process soak — 0 blank, 7.11 MB heap growth; 70-cycle real-socket server soak — 70/70 responses, 0 kB VmRSS growth.
 - **Browser smoke (headless Chromium):** drawer hidden on first paint (A3 fixed), ribbon moving, fonts loaded, 0 console errors.
-- **Release build:** `releases/CoreLine-debug-v1.0.2.apk` and `CoreLine-release-unsigned-v1.0.2.apk` built with JDK 21 + SDK 34; manifest/leanback/asset contents verified. Clean-install on a device/emulator remains [USER TO SUPPLY].
+- **Release build:** `releases/CoreLine-debug-v1.2.0.apk` and `CoreLine-release-unsigned-v1.2.0.apk` built with JDK 21 + SDK 34; manifest/leanback/FileProvider/asset contents verified (versionCode 5). Clean-install on a device/emulator remains [USER TO SUPPLY].
 - **Correction:** `fonts/outfit-var.woff2` is a real variable font (fontTools: `fvar`, wght 100–900) — F4 was a false alarm.

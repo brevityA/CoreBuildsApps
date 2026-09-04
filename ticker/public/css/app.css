@@ -404,10 +404,80 @@ input, select {
 .pair-url { font-size: .95rem; word-break: break-all; margin: 8px 0 4px; color: var(--text); }
 .pair-code { font-family: var(--font); font-size: 2.2rem; letter-spacing: .28em; color: var(--line); font-weight: 800; margin-bottom: 10px; }
 .check { display: flex; gap: 10px; align-items: flex-start; color: var(--muted); font-size: .86rem; }
-.check input { width: 18px; height: 18px; margin-top: 2px; }
+.check input { width: 18px; height: 18px; margin-top: 2px; flex: 0 0 auto; }
 .chip-grid { display: flex; flex-wrap: wrap; gap: 8px; }
 .split { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
 .split label { display: grid; gap: 6px; font-size: .8rem; color: var(--muted); }
+.split.checks { margin-top: 18px; }
+
+/* ---- settings: rail + section panes ------------------------------------ */
+.drawer-body { display: flex; flex-direction: column; min-height: 0; }
+.drawer-rail {
+  display: flex; gap: 8px; overflow-x: auto; margin-bottom: 20px;
+  padding: 2px; scrollbar-width: none;
+}
+.drawer-rail::-webkit-scrollbar { display: none; }
+.rail-item {
+  display: inline-flex; align-items: center; gap: 8px;
+  border: 1px solid var(--border); background: var(--panel); color: var(--muted);
+  border-radius: 999px; padding: 9px 16px; font-size: .95rem; letter-spacing: .04em;
+  white-space: nowrap; cursor: pointer;
+}
+.rail-item:hover { border-color: var(--line); color: var(--text); }
+.rail-item.is-active { color: #041018; background: var(--line); border-color: var(--line); }
+.rail-ic { font-size: 1.02rem; }
+.drawer-sections { min-height: 0; }
+.drawer-section { display: none; }
+.drawer-section.is-active { display: block; }
+
+/* ---- watch apps -------------------------------------------------------- */
+.watch-list { display: grid; gap: 10px; }
+.watch-row { display: grid; grid-template-columns: 96px 1fr; gap: 12px; align-items: center; }
+.watch-league { font-family: var(--font); font-weight: 700; letter-spacing: .08em; color: var(--text); }
+.watch-league::before {
+  content: ""; display: inline-block; width: 8px; height: 8px; border-radius: 2px;
+  margin-right: 8px; background: var(--acc, var(--line));
+}
+.watch-row select { width: 100%; }
+.hint.small { font-size: .72rem; }
+
+/* ---- updates panel ------------------------------------------------------ */
+.update-row { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; padding: 2px 0; }
+.update-label { color: var(--muted); font-size: .82rem; letter-spacing: .04em; }
+.update-value { font-family: var(--font); font-size: 1.1rem; letter-spacing: .06em; color: var(--text); }
+.update-note { color: var(--muted); font-size: .82rem; margin: 8px 0; }
+.update-note.ok { color: #39d98a; }
+.update-note.error { color: var(--live); }
+.update-note.checking { color: var(--line); }
+.update-note.checking::before { content: ""; display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: var(--line); margin-right: 8px; animation: pulse 1.2s ease-in-out infinite; }
+.update-banner {
+  border: 1px solid rgba(0,212,255,.35);
+  background: var(--line-dim);
+  border-radius: 14px;
+  padding: 14px 16px;
+  margin: 10px 0;
+}
+.update-banner-title { font-family: var(--font); font-size: 1.25rem; letter-spacing: .04em; color: var(--line); }
+.update-notes { color: var(--muted); font-size: .78rem; line-height: 1.5; margin-top: 6px; white-space: pre-wrap; word-break: break-word; }
+.update-row + .update-banner, .update-row + .update-note { margin-top: 10px; }
+
+.watch-btn {
+  font-family: var(--font); font-weight: 700; letter-spacing: .08em;
+  background: var(--line); color: #041018; border: none; border-radius: 999px;
+  padding: 10px 18px; font-size: 1.05rem; display: inline-flex; align-items: center; gap: 6px;
+  cursor: pointer;
+}
+.watch-btn:hover, .watch-btn:focus-visible, [data-tv] .watch-btn:focus { filter: brightness(1.15); }
+.watch-mini {
+  width: 30px; height: 30px; border-radius: 50%; display: grid; place-items: center;
+  border: 1px solid var(--border); background: transparent; color: var(--line); font-size: .8rem; padding: 0;
+  cursor: pointer;
+}
+.watch-mini:hover, .watch-mini:focus-visible, [data-tv] .watch-mini:focus { background: var(--line-dim); border-color: var(--line); }
+
+/* ---- D-pad scroll-into-view breathing room ----------------------------- */
+.stage { scroll-padding: 14px 0; }
+.focusable { scroll-margin: 14px; }
 
 .chyron {
   height: var(--chyron-h);
@@ -554,38 +624,118 @@ input, select {
   .badge.live { animation: none; }
 }
 
-/* ---- TV / 10-foot scaling (AUDIT F3) ---------------------------------- */
+/* ========================================================================
+   TV / 10-foot pass (AUDIT F3).
+   ONE coherent scale ladder so nothing is blown out or stranded tiny:
+   root 20px (= 1.25x phone) is applied uniformly, then every role sits on the
+   SAME rung — micro .8rem / body .95rem / control 1.1rem / title 1.3rem /
+   display 2rem. Every square control is 56px (48px in-card). No element may
+   skip the ladder; that's what made TV look inconsistent.
+   ======================================================================== */
 [data-tv] {
   --chyron-h: 96px;
   --overscan: 40px;
-  /* Scale the whole rem-based UI ~25% for a 10-foot couch, not a phone. */
   font-size: 20px;
 }
-[data-tv] .tick { font-size: 2.05rem; letter-spacing: .04em; }
-[data-tv] .tick .k { font-size: 1.4rem; }
-[data-tv] .chyron-clock { font-size: 2.1rem; min-width: 150px; }
-[data-tv] .bug-live { font-size: .92rem; }
-[data-tv] .bug-name { font-size: 1.7rem; }
-[data-tv] .league-chip { font-size: 1.45rem; padding: 12px 24px; }
-[data-tv] .gt .who, [data-tv] .gt .sc { font-size: 2.2rem; }
-[data-tv] .badge { font-size: 1.05rem; padding: 4px 12px; }
-[data-tv] .league-tag { font-size: .85rem; }
-[data-tv] .ch { font-size: 1rem; padding: 3px 8px; }
-[data-tv] .game { min-height: 200px; padding: 20px 22px 18px; }
-[data-tv] .grid { grid-template-columns: repeat(auto-fill, minmax(360px, 1fr)); gap: 16px; }
-[data-tv] .fav-star { width: 46px; height: 46px; font-size: 1.4rem; }
-[data-tv] .team-chip { font-size: 1.1rem; padding: 8px 16px; }
-[data-tv] .icon-btn { width: 56px; height: 56px; font-size: 1.4rem; }
-[data-tv] .drawer-panel { width: min(640px, 100%); }
-[data-tv] .drawer h2 { font-size: 2rem; }
-[data-tv] .drawer .block h3 { font-size: 1.05rem; }
-[data-tv] .drawer input, [data-tv] .drawer select { font-size: 1.05rem; padding: 14px; }
-[data-tv] .ghost { padding: 10px 14px; font-size: 1rem; }
-[data-tv] .stat b { font-size: 1.8rem; }
+
+/* chyron (broadcast strip) */
+[data-tv] .tick { font-size: 2rem; letter-spacing: .04em; }
+[data-tv] .tick .k { font-size: 1.2rem; }
+[data-tv] .chyron-clock { font-size: 2rem; min-width: 150px; }
+[data-tv] .bug-live { font-size: .85rem; }
+[data-tv] .bug-name { font-size: 1.6rem; }
+
+/* topbar */
 [data-tv] .brand-name { font-size: 2rem; }
-[data-tv] .bigclock-next { font-size: 2.2rem; }
+[data-tv] .brand-sub { font-size: .8rem; }
+[data-tv] .health { font-size: .8rem; padding: 6px 14px; }
+[data-tv] .icon-btn { width: 56px; height: 56px; font-size: 1.4rem; }
 /* 10-foot: hide the dense header count stats; brand + health + actions remain. */
 [data-tv] .topbar .stats { display: none; }
+
+/* league chips + stage */
+[data-tv] .league-chip { font-size: 1.3rem; padding: 13px 26px; }
+[data-tv] .grid { grid-template-columns: repeat(auto-fill, minmax(360px, 1fr)); gap: 16px; }
+[data-tv] .game { min-height: 200px; padding: 20px 22px 18px; }
+[data-tv] .gt .who, [data-tv] .gt .sc { font-size: 2rem; }
+[data-tv] .badge { font-size: 1rem; padding: 4px 12px; }
+[data-tv] .league-tag { font-size: .8rem; }
+[data-tv] .ch { font-size: .95rem; padding: 3px 9px; }
+[data-tv] .when { font-size: .8rem; }
+[data-tv] .fav-star { width: 48px; height: 48px; font-size: 1.3rem; }
+[data-tv] .watch-mini { width: 48px; height: 48px; font-size: 1.1rem; }
+
+/* hero — tame the huge numerals so they relate to the cards below */
+[data-tv] .hero-meta { font-size: .8rem; }
+[data-tv] .abbr { font-size: 2.4rem; }
+[data-tv] .score { font-size: 2.8rem; }
+[data-tv] .pill { font-size: 1rem; padding: 5px 11px; }
+
+/* drawer */
+[data-tv] .drawer-panel { width: min(820px, 96vw); }
+[data-tv] .drawer h2 { font-size: 2rem; }
+[data-tv] .kicker { font-size: .8rem; }
+[data-tv] .drawer .block h3 { font-size: 1.3rem; }
+[data-tv] .hint, [data-tv] .fineprint { font-size: .95rem; }
+[data-tv] .drawer input, [data-tv] .drawer select { font-size: 1.1rem; padding: 14px; }
+[data-tv] .check { font-size: 1.1rem; }
+[data-tv] .check input { width: 26px; height: 26px; margin-top: 1px; }
+[data-tv] .feed-list span { font-size: .85rem; }
+[data-tv] .feed-list b { font-size: 1.1rem; }
+[data-tv] .pair-url { font-size: 1rem; }
+[data-tv] .speed-val { font-size: 1.1rem; }
+
+/* updates panel */
+[data-tv] .update-label, [data-tv] .update-note { font-size: .95rem; }
+[data-tv] .update-value { font-size: 1.2rem; }
+[data-tv] .update-banner-title { font-size: 1.3rem; }
+
+/* empty state */
+[data-tv] .empty p { font-size: .95rem; }
+
+/* drawer: left rail + right content pane (standard 10-foot settings layout) */
+[data-tv] .drawer-body {
+  display: grid;
+  grid-template-columns: 224px minmax(0, 1fr);
+  gap: 24px;
+  min-height: 0;
+}
+[data-tv] .drawer-rail {
+  flex-direction: column;
+  align-items: stretch;
+  gap: 6px;
+  overflow-x: visible;
+  overflow-y: auto;
+  margin-bottom: 0;
+  padding-right: 6px;
+}
+[data-tv] .rail-item {
+  justify-content: flex-start;
+  border-radius: 14px;
+  padding: 15px 16px;
+  font-size: 1.1rem;
+  font-family: var(--ui);
+}
+[data-tv] .rail-ic { font-size: 1.25rem; }
+[data-tv] .drawer-sections { overflow-y: auto; min-height: 0; padding-right: 8px; }
+[data-tv] .drawer-section.is-active { padding-bottom: 4px; }
+
+/* watch apps */
+[data-tv] .watch-row { grid-template-columns: 130px 1fr; }
+[data-tv] .watch-league { font-size: 1.3rem; }
+[data-tv] .watch-btn { padding: 16px 28px; font-size: 1.3rem; }
+
+/* controls — every square button is 56px, ghost text one size */
+[data-tv] .row-actions .ghost { min-width: 56px; height: 56px; font-size: 1.1rem; }
+[data-tv] .stepper .ghost { width: 56px; height: 56px; font-size: 1.5rem; }
+[data-tv] .ghost { padding: 12px 18px; font-size: 1.1rem; }
+[data-tv] .team-chip { font-size: 1.1rem; padding: 10px 18px; }
+
+/* ticker-only mode */
+[data-tv] .bigclock-next { font-size: 2rem; }
+
+/* focus: one ring everywhere, sized for the larger UI */
+[data-tv] .focusable:focus { outline: 6px solid var(--line); outline-offset: 4px; }
 
 /* ---- settings rows: steppers & reorder (AUDIT E2/D7) ------------------ */
 .stepper {
@@ -644,3 +794,143 @@ input, select {
 /* `hidden` must always win over component display rules (the drawer is
    `display:flex` and used to show through its hidden attribute — P0 fix). */
 [hidden] { display: none; }
+
+/* ========================================================================
+   UI polish pass — typography, tactile states, scrollbars, broadcast fades.
+   Kept purely cosmetic: no selector names are changed, nothing re-laid-out.
+   ======================================================================== */
+
+html {
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+::selection { background: var(--line); color: #041018; }
+
+/* ---- tactile buttons + transitions ------------------------------------ */
+.icon-btn, .primary, .ghost, .league-chip, .rail-item, .fav-star,
+.watch-btn, .watch-mini, .team-chip, .row-actions .ghost, .stepper .ghost {
+  transition: border-color .16s ease, color .16s ease, background .16s ease,
+    transform .1s ease, box-shadow .16s ease, filter .16s ease;
+}
+.icon-btn:active, .primary:active, .ghost:active, .league-chip:active,
+.rail-item:active, .fav-star:active, .watch-btn:active, .watch-mini:active,
+.team-chip:active, .row-actions .ghost:active { transform: scale(.96); }
+.primary:active { filter: brightness(.95); }
+.league-chip[aria-pressed="true"] { box-shadow: 0 0 0 1px var(--line); }
+
+/* ---- inputs: focus + accent colour ------------------------------------ */
+input, select { transition: border-color .16s ease, box-shadow .16s ease; }
+input::placeholder { color: var(--faint); }
+input:focus-visible, select:focus-visible {
+  outline: none;
+  border-color: var(--line);
+  box-shadow: 0 0 0 3px var(--line-dim);
+}
+input[type="checkbox"], input[type="radio"], input[type="range"] { accent-color: var(--line); }
+[data-tv] input:focus, [data-tv] select:focus {
+  outline: none;
+  border-color: var(--line);
+  box-shadow: 0 0 0 3px var(--line-dim);
+}
+
+/* ---- scrollbars (desktop web; TVs have no pointer wheel) -------------- */
+.stage, .drawer-panel, .drawer-sections, .team-picker, .drawer-rail {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255,255,255,.18) transparent;
+}
+.stage::-webkit-scrollbar, .drawer-panel::-webkit-scrollbar,
+.drawer-sections::-webkit-scrollbar, .team-picker::-webkit-scrollbar,
+.drawer-rail::-webkit-scrollbar { width: 8px; height: 8px; }
+.stage::-webkit-scrollbar-thumb, .drawer-panel::-webkit-scrollbar-thumb,
+.drawer-sections::-webkit-scrollbar-thumb, .team-picker::-webkit-scrollbar-thumb,
+.drawer-rail::-webkit-scrollbar-thumb {
+  background: rgba(255,255,255,.14); border-radius: 999px;
+}
+.stage::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,.26); }
+
+/* ---- cards ------------------------------------------------------------- */
+.game { box-shadow: 0 1px 0 rgba(0,0,0,.25); }
+.game:hover { box-shadow: 0 10px 30px rgba(0,0,0,.35); }
+.gt .who, .team-name, .abbr {
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.badge.live { box-shadow: 0 0 14px rgba(255,45,85,.35); }
+.hero-card { box-shadow: 0 18px 50px rgba(0,0,0,.35); }
+.stat b, .score, .chyron-clock { font-variant-numeric: tabular-nums; }
+
+/* ---- chyron: edge fades so the crawl melts into the bug + clock -------- */
+.crawl-mask { position: relative; }
+.crawl-mask::before, .crawl-mask::after {
+  content: ""; position: absolute; top: 0; bottom: 0; width: 46px;
+  z-index: 1; pointer-events: none;
+}
+.crawl-mask::before { left: 0; background: linear-gradient(90deg, #05070a, rgba(5,7,10,0)); }
+.crawl-mask::after  { right: 0; background: linear-gradient(270deg, #05070a, rgba(5,7,10,0)); }
+.health { transition: color .3s ease, border-color .3s ease; }
+
+/* ---- drawer ------------------------------------------------------------- */
+.drawer-panel { box-shadow: -28px 0 80px rgba(0,0,0,.55); }
+.drawer-panel { animation: drawer-in .22s ease; }
+.drawer h2 { font-weight: 800; }
+.block h3 {
+  display: flex; align-items: center; gap: 8px;
+  letter-spacing: .12em; text-transform: uppercase; color: var(--muted);
+}
+.block h3::before {
+  content: ""; width: 3px; height: 1em; border-radius: 2px; background: var(--line);
+}
+.feed-list li:hover { border-color: var(--line); }
+.rail-item:active { transform: scale(.98); }
+
+/* ---- toast -------------------------------------------------------------- */
+.toast { box-shadow: 0 12px 40px rgba(0,0,0,.5); animation: toast-in .18s ease; }
+
+/* ---- big clock (ticker-only mode) --------------------------------------- */
+.bigclock-time { text-shadow: 0 0 48px rgba(0,212,255,.22); }
+
+/* ---- empty state --------------------------------------------------------- */
+.empty { margin: 0 auto; text-align: center; }
+.empty .primary { margin-top: 6px; }
+
+@keyframes drawer-in { from { transform: translateX(28px); opacity: .5; } to { transform: none; opacity: 1; } }
+@keyframes toast-in { from { transform: translate(-50%, 8px); opacity: 0; } to { transform: translate(-50%, 0); opacity: 1; } }
+@media (prefers-reduced-motion: reduce) {
+  .drawer-panel, .toast { animation: none; }
+  .icon-btn, .primary, .ghost, .league-chip, .rail-item, .fav-star,
+  .watch-btn, .watch-mini, .team-chip { transition: none; }
+}
+
+/* ========================================================================
+   Phone floating overlay (OverlayService.kt) — the same app with everything
+   except the chyron stripped out. The window itself is translucent and
+   touch-through; the strip needs enough ink to stay legible over any app.
+   ======================================================================== */
+[data-overlay] { background: transparent; }
+[data-overlay] body {
+  background: transparent;
+  background-image: none;
+}
+[data-overlay] .bootfallback,
+[data-overlay] .topbar,
+[data-overlay] .leagues,
+[data-overlay] .stage,
+[data-overlay] .drawer,
+[data-overlay] .toast { display: none !important; }
+[data-overlay] .app {
+  display: block;
+  height: 100%;
+  padding: 0;
+}
+[data-overlay] .chyron {
+  height: 100%;
+  border: 0;
+  box-shadow: none;
+  background: linear-gradient(180deg, rgba(5,7,10,.92), rgba(5,7,10,.82));
+}
+[data-overlay] .chyron-bug { min-width: 68px; padding: 0 12px; border-right-color: rgba(255,255,255,.12); }
+[data-overlay] .bug-name { font-size: 1.05rem; }
+[data-overlay] .bug-live { font-size: .58rem; }
+[data-overlay] .tick { font-size: 1.02rem; padding: 0 20px; gap: 8px; }
+[data-overlay] .tick::after { margin-left: 18px; }
+[data-overlay] .tick .k { font-size: .8rem; }
+[data-overlay] .chyron-clock { min-width: 76px; font-size: 1.05rem; }

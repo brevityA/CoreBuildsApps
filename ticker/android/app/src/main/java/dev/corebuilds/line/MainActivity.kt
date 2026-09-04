@@ -2,13 +2,16 @@ package dev.corebuilds.line
 
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.content.Intent
 import android.content.pm.PackageManager
+import android.net.Uri
 import android.os.Bundle
 import android.view.View
 import android.view.WindowManager
 import android.webkit.WebChromeClient
 import android.webkit.WebSettings
 import android.webkit.WebView
+import org.json.JSONArray
 import org.json.JSONObject
 
 class MainActivity : Activity() {
@@ -75,6 +78,119 @@ class MainActivity : Activity() {
             if (on) window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
             else window.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
         }
+    }
+
+    /**
+     * Enumerate installed, launchable apps for the "Watch apps" picker.
+     * Returns a JSON array [{pkg, label}] (LEANBACK_LAUNCHER first so TV apps
+     * sort naturally; deduped; self excluded). Needs the <queries> MAIN/
+     * LAUNCHER + LEANBACK_LAUNCHER block in the manifest on Android 11+.
+     */
+    @Suppress("DEPRECATION")
+    fun listLaunchableApps(): String {
+        return try {
+            val pm = packageManager
+            val seen = LinkedHashMap<String, String>()
+            val intents = listOf(
+                Intent(Intent.ACTION_MAIN).addCategory(Intent.CATEGORY_LEANBACK_LAUNCHER),
+                Intent(Intent.ACTION_MAIN).addCategory(Intent.CATEGORY_LAUNCHER),
+            )
+            for (intent in intents) {
+                val resolved = pm.queryIntentActivities(intent, 0)
+                for (ri in resolved) {
+                    val pkg = ri.activityInfo?.packageName ?: continue
+                    if (pkg == packageName) continue
+                    val label = ri.loadLabel(pm)?.toString()?.take(48) ?: pkg
+                    seen.putIfAbsent(pkg, label)
+                }
+            }
+            val arr = JSONArray()
+            for ((pkg, label) in seen) {
+                arr.put(JSONObject().put("pkg", pkg).put("label", label))
+            }
+            arr.toString()
+        } catch (err: Exception) {
+            "[]"
+        }
+    }
+
+    /** Launch an installed app by package id (Leanback launch intent first). */
+    fun openApp(packageName: String): Boolean {
+        return try {
+            var intent = packageManager.getLeanbackLaunchIntentForPackage(packageName)
+                ?: packageManager.getLaunchIntentForPackage(packageName)
+            if (intent == null) return false
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED)
+            startActivity(intent)
+            true
+        } catch (err: Exception) {
+            false
+        }
+    }
+
+    /** Current app version ("1.2.0") for the in-app Updates panel. */
+    fun getVersion(): String = dev.corebuilds.line.BuildConfig.VERSION_NAME
+
+    /** Download + hand off a newer APK to the system installer (async). */
+    fun installUpdate(url: String): Boolean = UpdateManager.downloadAndInstall(this, url)
+
+    /** Open a URL in whatever app handles it (usually the browser). */
+    fun openUrl(url: String): Boolean {
+        return try {
+            val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            startActivity(intent)
+            true
+        } catch (err: Exception) {
+            false
+        }
+    }
+
+    /** True when the OS has granted "display over other apps". */
+    fun canDrawOverlays(): Boolean = android.provider.Settings.canDrawOverlays(this)
+
+    /** Is the floating ticker window currently up? */
+    fun overlayActive(): Boolean = OverlayService.running
+
+    /** Open the system overlay-permission screen for this app. */
+    fun openOverlaySettings(): Boolean {
+        return try {
+            val intent = Intent(
+                android.provider.Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
+                Uri.parse("package:$packageName"),
+            ).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            startActivity(intent)
+            true
+        } catch (err: Exception) {
+            false
+        }
+    }
+
+    /**
+     * Start the floating ticker. Returns false (no-op) on TV — Android TV has
+     * no overlay windows — or when the user hasn't granted the permission yet
+     * (in that case the system settings screen is opened for them).
+     */
+    fun startOverlay(): Boolean {
+        if (isTelevision()) return false
+        if (!android.provider.Settings.canDrawOverlays(this)) {
+            openOverlaySettings()
+            return false
+        }
+        // Android 13+: ask for notifications so the "tap to stop" control shows.
+        if (android.os.Build.VERSION.SDK_INT >= 33 &&
+            checkSelfPermission(android.Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED
+        ) {
+            requestPermissions(arrayOf(android.Manifest.permission.POST_NOTIFICATIONS), 7)
+        }
+        OverlayService.start(this)
+        return true
+    }
+
+    /** Stop the floating ticker. */
+    fun stopOverlay(): Boolean {
+        OverlayService.stop(this)
+        return true
     }
 
     @Deprecated("Deprecated in Java")

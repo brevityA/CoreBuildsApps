@@ -10,7 +10,7 @@ Chromium (Playwright) for browser smoke tests, and JDK 21 + Android SDK 34 for t
 cd ticker && npm test
 ```
 
-**77 tests, 77 passing** (up from the 24 baseline tests). New coverage:
+**88 tests, 88 passing** (up from the 24 baseline tests). New coverage:
 
 | File | Covers (req) |
 |---|---|
@@ -21,6 +21,8 @@ cd ticker && npm test
 | `tests/ticker.test.mjs` | constant px/s loop math, wrap at seq width, short-content padding, dt clamping, stop/restart keeps position (req 8) |
 | `tests/watchdog.test.mjs` | stall → `onStall` after two unchanged samples, no false stalls while moving, wake on visibility, background pages ignored (req 6) |
 | `tests/feedback.test.mjs` | pins the 2026-09-04 supporter complaints: live/final/replay status rules, college leagues in defaults, `leagueFromCategory`, RSS/JSON category bucketing, rss.app JSON shape |
+| `tests/watch.test.mjs` | `lib/watch.mjs`: app-picker sort/dedupe, `leagueIdForLabel`, `espnWebUrl` (game page + search fallback), `watchChoiceFor` assignment |
+| `tests/version.test.mjs` | `lib/version.mjs`: semver ordering, `coreline-v*` tag parsing, newest-release selection, update-status (newer / up-to-date / no-asset) |
 
 ## 2. Failure injection (req 14)
 
@@ -81,7 +83,7 @@ Loaded the real app at `http://localhost:8787/` (1280×720 viewport), waited for
 
 ## 5. Manual / soak checklist (run on device)
 
-- [ ] Sideload `releases/CoreLine-debug-v1.0.2.apk` on a Shield / Google TV / Fire TV (Fire OS 7+).
+- [ ] Sideload `releases/CoreLine-debug-v1.2.0.apk` on a Shield / Google TV / Fire TV (Fire OS 7+).
 - [ ] First launch (no network): crawl is populated (demo slate + bundled sample) — **never a blank screen**.
 - [ ] Airplane mode 2 min → health pill turns amber ("retrying") and the ribbon keeps moving with last-good content; re-enable network → pill returns green within one refresh interval.
 - [ ] Inject a malformed feed (a URL that returns HTML or garbage) via Settings → Add; the other feeds and scoreboards keep scrolling.
@@ -91,25 +93,27 @@ Loaded the real app at `http://localhost:8787/` (1280×720 viewport), waited for
 - [ ] Multi-hour soak (≥ 6 h): note memory in `adb shell dumpsys meminfo dev.corebuilds.line` at T+0 and T+6 h; the ribbon must still be moving (watchdog restarts it if it ever stalls).
 - [ ] Screen off → on (and daydream if enabled): the clock is correct on resume and the ribbon is moving.
 - [ ] 10-foot check: ticker and card text legible from ~3 m; no content under overscan on a classic TV (adjust `--overscan` if needed).
+- [ ] Settings → Updates: shows the installed version; “Check for updates” reaches the GitHub release feed; with a newer `coreline-v*` release published, “Download & install” hands the APK to the system installer (unknown-sources prompt appears).
 
 ## 6. Release build (req 15)
 
 Both variants built in-sandbox with JDK 21 + Android SDK 34 (AGP 8.5.2 / Kotlin 1.9.24 / Gradle 8.7, memory capped at 896 MB heap + 2 GB swap):
 
-- **`releases/CoreLine-debug-v1.0.2.apk`** (1.82 MB, debug-signed, installable) — the sideload artifact.
-- **`releases/CoreLine-release-unsigned-v1.0.2.apk`** (1.29 MB) — release variant compiles; signing is skipped because `KEYSTORE_PATH` is unset (by design: `app/build.gradle.kts` only signs release when a keystore is provided).
+- **`releases/CoreLine-debug-v1.2.0.apk`** (3.08 MB, debug-signed, installable) — the sideload artifact.
+- **`releases/CoreLine-release-unsigned-v1.2.0.apk`** (2.26 MB) — release variant compiles; signing is skipped because `KEYSTORE_PATH` is unset (by design: `app/build.gradle.kts` only signs release when a keystore is provided).
 
 APK manifest verification (aapt2):
 ```
-package: dev.corebuilds.line  versionCode 3  versionName 1.0.2
+package: dev.corebuilds.line  versionCode 5  versionName 1.2.0
 sdkVersion 24   targetSdkVersion 34
-permissions: INTERNET, ACCESS_NETWORK_STATE, WAKE_LOCK
+permissions: INTERNET, ACCESS_NETWORK_STATE, WAKE_LOCK, REQUEST_INSTALL_PACKAGES
 label: "Core Line"
 ```
 
 APK contents verified:
-- All 26 web assets bundled (`index.html`, `css/app.css`, `js/*.js`, `lib/*.mjs`, `fonts/*.woff2`, bundled sample feed) — including the `[hidden]` CSS fix, `watchdog.js`, `ticker.js`, `backoff.mjs`, `source-registry.mjs`.
+- All 28 web assets bundled (`index.html`, `css/app.css`, `js/*.js`, `lib/*.mjs`, `fonts/*.woff2`, bundled sample feed) — including the `[hidden]` CSS fix, `watchdog.js`, `ticker.js`, `backoff.mjs`, `source-registry.mjs`, `watch.mjs`, `version.mjs`.
 - `android.software.leanback` uses-feature + `CATEGORY_LEANBACK_LAUNCHER` + `@drawable/tv_banner` present → the app appears in the Android TV launcher.
+- `FileProvider` authority `dev.corebuilds.line.fileprovider` (exported=false, grantUriPermissions=true) backed by `file_paths.xml` exposing only `cache/updates/` → the sideload updater can hand the downloaded APK to the system installer.
 
 **Clean install + first run on a real Android TV target (or emulator) remains [USER TO SUPPLY]** — say which device/emulator when reporting back; the sandbox has no display. The production signing path is the CI workflow `ticker/android/github-workflow-core-line-apk.yml` (land at `.github/workflows/core-line-apk.yml`): `npm test` then `assembleDebug` on push/PR, and a **signed release** on a `coreline-v*` tag with the keystore from GitHub Secrets.
 
@@ -141,3 +145,151 @@ Owner approved: sport super-tabs, favorites via card-star + checklist, and a ful
 - **Sport super-tabs** — `SPORT_GROUPS` in `lib/scoreboard.mjs`; filter chips `Football` (= NFL+NCAAF), `Basketball` (= NBA+NCAAB+WNBA), `Baseball`, `Hockey`, `Soccer` (= EPL+MLS+UCL), `MMA`, `Racing`, shown before league chips when that sport has events. Verified: `Football 42`, `Basketball 63` chips appear; clicking Basketball filters cards to NBA/WNBA/NCAAB only.
 - **Favorites on TV** — (a) every game card has a ★ button (focusable; OK on it toggles both teams, filled when favorited); (b) settings has a `teamPicker` checklist of teams from the **current tab** (capped at 100, D-pad operable) that toggles favorites without typing. Verified: card ★ → `favorites: "KC, BUF"`; picker chip → appended.
 - **10-foot pass** — `[data-tv]` now: root `font-size: 20px`, grid `minmax(360px,1fr)` (fewer cards/row), 5px focus ring, bigger chips/badges/scores, header `.stats` counts hidden. Verified at 1920×1080 `?tv=1`: stats `display:none`, cards ~419px wide, focused outline `5px solid`, 0 console errors.
+
+### 8.2 Third pass — D-pad, settings, watch apps (2026-09-04)
+
+Owner asked: "make the d-pad selection better, research other Android TV apps,
+make the settings menu very refined, allow any sport application to be assigned
+to open a game." Researched official TV navigation guidance (always keep an item
+focused; uniform focus indication; D-pad must reach every control; multi-pane
+layouts for easy reachability) and the standard TV settings pattern (left rail +
+content pane — Netflix/Leanback). Shipped and verified (88/88 tests, headless
+Chromium 1920×1080 `?tv=1` + 390×844 mobile, 0 console errors):
+
+- **D-pad nav rewritten** (`public/js/tv.js`): candidates must lie in the pressed
+  direction; **cross-axis overlap preference** (the item directly above/below or
+  in-row wins over a diagonal neighbour); focused item auto-scrolls into view
+  (`scrollIntoView` + CSS `scroll-margin`/`scroll-padding`). Verified: `ArrowDown`
+  moves rail→rail, `ArrowRight` enters the active section's content, focus never
+  drops to `<body>`.
+- **Refined settings menu** (`public/index.html`, `public/css/app.css`): the
+  drawer is now a **left rail (Feeds / Scoreboards / Ticker & display / Watch
+  apps / Help) + right content pane** on TV (grid `208px 1fr`); focusing a rail
+  item switches its section (Netflix-style). On phone the rail is horizontal
+  pills. Verified: rail focus switches sections; 12 league toggles reachable.
+- **Watch apps** (new `lib/watch.mjs`, `public/js/state.js`, `public/js/app.js`,
+  `LineBridge.kt`, `MainActivity.kt`, `AndroidManifest.xml`): assign any installed
+  app per league in Settings → Watch apps; `▶ Watch` on the hero card / `▶` on
+  each game card / the `W` key opens the assigned app (or the ESPN game page in
+  the browser). Android 11+ package visibility handled with `<queries>` for
+  `MAIN`/`LAUNCHER` + `LEANBACK_LAUNCHER` (no `QUERY_ALL_PACKAGES`); launch uses
+  `getLeanbackLaunchIntentForPackage` → `getLaunchIntentForPackage` fallback.
+  Verified: APK manifest contains the `<queries>` block; `lib/watch.mjs` covered
+  by `tests/watch.test.mjs` (URL building, assignment, picker sort).
+  [UNVERIFIED on-device] the curated package-id list (`SPORTS_APPS`) drifts across
+  storefronts — the full installed-app list is what the picker actually uses.
+
+Rebuilt both APKs with the changes (now `releases/CoreLine-debug-v1.2.0.apk`,
+3.08 MB, and `CoreLine-release-unsigned-v1.2.0.apk`, 2.26 MB).
+
+### 8.3 Fourth pass — in-app updates + full UI polish (2026-09-04)
+
+Owner asked: (1) check the current GitHub version; (2) polish the UI — "leave
+nothing untouched, make the UI as clean as possible"; (3) add in-app updates
+(the app is sideloaded; no Play Store).
+
+**GitHub state checked:** `main` ticker is versionCode 4 / versionName 1.1.0
+(`coreline-v1.1.0` release, asset `coreline-release.apk`); local is now ahead at
+**versionCode 5 / versionName 1.2.0**. CI: `.github/workflows/core-line-apk.yml`
+builds on ticker pushes/PRs and releases on a `coreline-v*` tag equal to the
+Gradle `versionName` and an ancestor of `main`.
+
+Shipped and verified (88/88 tests, headless Chromium smoke, full Android build):
+
+- **In-app update logic** (`lib/version.mjs` + `tests/version.test.mjs`): pure
+  `compareVersions`, `versionFromCorelineTag`, `latestCorelineRelease`,
+  `updateStatus`. Verified against the real GitHub releases JSON — newest
+  `coreline-v*` release with a `coreline-release.apk` asset is picked.
+- **Updates settings pane** (`public/index.html`, `public/js/app.js`,
+  `public/css/app.css`): Settings → Updates shows the installed version (via
+  `LineBridge.getVersion()` → `BuildConfig.VERSION_NAME`), a “Check for updates”
+  action (GitHub releases API through the native `/api/proxy` so it passes
+  `SafeUrl`), an update banner with flattened release notes, and
+  “Download & install” on native. Verified headless: web build reports “Update
+  1.1.0 is available”, TV hint shown, 0 console errors.
+- **Android updater** (`UpdateManager.kt`, `MainActivity.kt`, `LineBridge.kt`,
+  `AndroidManifest.xml`, `file_paths.xml`, `app/build.gradle.kts`): download the
+  release APK over a host-allowlisted URL (github.com / *.github.com /
+  release-assets.githubusercontent.com / objects.githubusercontent.com, redirects
+  followed) → `cache/updates/` (80 MB cap) → `FileProvider` `ACTION_VIEW` to the
+  system installer. `REQUEST_INSTALL_PACKAGES` declared; `androidx.core:core-ktx`
+  added. Verified via aapt2: versionCode 5, permission present, FileProvider
+  present and scoped to `cache/updates/`. [UNVERIFIED on-device] the actual
+  unknown-sources prompt — no emulator/device in the sandbox.
+- **UI polish pass** (`public/css/app.css`): tactile press states, focus rings,
+  input accent colour, broadcast-style uppercase section labels with accent bar,
+  chyron edge fades into the bug/clock, tabular numerals, thin scrollbars, card
+  and badge shadows, reduced-motion support. Verified: headless smoke at
+  1440×900 / 390×844 / 1920×1080 `?tv=1` all render with 0 console errors.
+
+
+### 8.4 Fifth pass — phone floating overlay (2026-09-04)
+
+Owner asked to "allow the ticker to display as a widget or over the screen."
+Platform reality (researched live, cited):
+
+- **TV home-screen widget** — not supported. Launchers decide widget support and
+  Google's TV launcher (and Fire TV) deliberately omit it; only niche
+  third-party launchers add it (StackOverflow 76549233).
+- **TV ticker over other apps** — not supported. Android TV has no
+  SYSTEM_ALERT_WINDOW for a sideloaded app, and PIP is reserved for video. The
+  supported idle path is a Daydream **screen saver**, which on many Google TV /
+  Fire OS devices can only be set via a one-time ADB
+  `settings put secure screensaver_components …` (AerialViews README).
+- **Phone home widget** — possible but RemoteViews only (no animated crawl).
+- **Phone floating overlay** — feasible: translucent always-on-top window
+  hosting the existing WebView renderer. **Built this.**
+
+Shipped and verified (88/88 tests, headless overlay smoke, full Android build):
+
+- **OverlayService.kt** — foreground service (`foregroundServiceType=specialUse`
+  + `PROPERTY_SPECIAL_USE_FGS_SUBTYPE`), translucent `TYPE_APPLICATION_OVERLAY`
+  (pre-26: `TYPE_PHONE`) window, `FLAG_NOT_FOCUSABLE | FLAG_NOT_TOUCH_MODAL |
+  FLAG_NOT_TOUCHABLE`, full-width ~56dp strip, transparent WebView loading the
+  same app with `?native=1&overlay=1`. Ongoing notification with a Stop action.
+- **Reuse, not rewrite** — the overlay is the same `index.html`; it shares the
+  parser, the `/api/proxy` data path, and (same origin) the app's localStorage,
+  so speed/theme/position/feeds all carry over. `[data-overlay]` CSS strips the
+  topbar/leagues/stage/drawer and renders only the chyron.
+- **Control** — Settings → Ticker & display gains a "Floating ticker over other
+  apps (phone)" checkbox (native + non-TV only). Toggling on calls
+  `LineBridge.startOverlay()`, which opens the system "display over other apps"
+  screen if permission is missing, and refuses on TV (`isTelevision()`).
+- **Verified**: aapt2 shows `SYSTEM_ALERT_WINDOW`, `FOREGROUND_SERVICE`,
+  `FOREGROUND_SERVICE_SPECIAL_USE`, `POST_NOTIFICATIONS` and the `OverlayService`
+  with `foregroundServiceType=0x40000000 (specialUse)`. Headless Chromium
+  `?native=1&overlay=1` at 390×64: `data-overlay` set, topbar/stage/drawer hidden,
+  chyron visible, body background transparent, ticks render, no JS errors.
+  [UNVERIFIED on-device] the actual overlay window over another app and the
+  unknown-sources/overlay permission prompts — no device/emulator in the sandbox.
+
+### 8.5 Sixth pass — Android TV UI consistency (2026-09-04)
+
+Owner: "Fix the UI … it is too inconsistent on Android TV, blown out."
+
+Measured the TV (1920×1080 `?tv=1`) before fixing: text sizes were scattered
+from **13.2px** (health pill, `.when`) up to **68px** (hero `.score`), the
+checkboxes were **16px** (smaller than their own labels), and the square
+controls came in four sizes (44/46/52/56px). The root cause: the 10-foot pass
+had a 20px root (1.25× phone) plus a pile of ad-hoc `[data-tv]` rem overrides
+that each assumed a different multiplier (1.47×–1.77×).
+
+Fix (in `public/css/app.css`, `[data-tv]` block rewritten): ONE coherent scale
+ladder on the 20px root —
+
+- micro **.8rem (16px)**: health, brand-sub, kicker, league-tag, `.when`
+- body **.95rem (19px)**: hint/fineprint, `.ch`, update-notes
+- control **1.1rem (22px)**: rail-item, ghost, team-chip, check labels, inputs
+- title **1.3rem (26px)**: block h3, watch-league, chip
+- display **2rem (40px)**: brand-name, drawer h2, `.gt .who`/`.sc`, tick, clock
+
+plus: every square control 56px (48px in-card); hero numerals tamed to
+abbr 48px / score 56px (with an `.abbr` ellipsis guard so a long abbreviation
+can't overflow its 88px column); checkboxes 26px with `flex: 0 0 auto`;
+focus ring 6px.
+
+Verified headless (pinned in `tests/smoke-updates.mjs`): health ≥16px,
+`.when` ≥16px, chyron tick 40px, card team names == brand size (40px == 40px),
+abbr ≤ score, no abbreviation overflow; 88/88 unit tests; desktop/mobile/TV/
+overlay smoke all 0 console errors. Phone layout untouched (all changes under
+`[data-tv]`).
