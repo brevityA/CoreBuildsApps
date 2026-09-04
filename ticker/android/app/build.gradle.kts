@@ -11,8 +11,8 @@ android {
         applicationId = "dev.corebuilds.line"
         minSdk = 24
         targetSdk = 34
-        versionCode = 4
-        versionName = "1.1.0"
+        versionCode = 5
+        versionName = "1.2.0"
     }
 
     signingConfigs {
@@ -52,6 +52,11 @@ android {
     buildFeatures {
         buildConfig = true
     }
+}
+
+dependencies {
+    // FileProvider + main-executor for the sideload updater (UpdateManager.kt).
+    implementation("androidx.core:core-ktx:1.13.1")
 }
 
 val webPublic = rootProject.file("../public")

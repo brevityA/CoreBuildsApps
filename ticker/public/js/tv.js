@@ -27,6 +27,9 @@ export function initTvNav(root) {
     if (next) {
       event.preventDefault();
       next.focus();
+      // Keep the focused item fully visible (grid rows below the fold, the
+      // horizontally scrolling filter row, and the drawer sections).
+      try { next.scrollIntoView({ block: 'nearest', inline: 'nearest' }); } catch { /* older WebView */ }
     }
   };
   window.addEventListener('keydown', onKey);
@@ -50,21 +53,30 @@ function nearest(current, dir) {
   });
   if (!nodes.length) return null;
   if (!current || !nodes.includes(current)) return nodes[0];
+
   const a = box(current);
+  const horiz = dir === 'left' || dir === 'right';
+  const sign = dir === 'left' || dir === 'up' ? -1 : 1;
+
   let best = null;
   let bestScore = Infinity;
   for (const node of nodes) {
     if (node === current) continue;
     const b = box(node);
-    const dx = b.cx - a.cx;
-    const dy = b.cy - a.cy;
-    const aligned = Math.abs(dir === 'left' || dir === 'right' ? dy : dx);
-    if (dir === 'left' && dx >= -4) continue;
-    if (dir === 'right' && dx <= 4) continue;
-    if (dir === 'up' && dy >= -4) continue;
-    if (dir === 'down' && dy <= 4) continue;
-    const along = Math.abs(dir === 'left' || dir === 'right' ? dx : dy);
-    const score = along + aligned * 2.4;
+    const along = (horiz ? b.cx - a.cx : b.cy - a.cy) * sign;
+    if (along <= 4) continue; // candidate must lie in the pressed direction
+
+    // Cross-axis overlap: prefer the item directly above/below (or left/right
+    // in the same row) over a diagonal neighbour — "down means down".
+    const cross = horiz ? Math.abs(b.cy - a.cy) : Math.abs(b.cx - a.cx);
+    const overlap = horiz
+      ? Math.min(a.y2, b.y2) - Math.max(a.y1, b.y1)
+      : Math.min(a.x2, b.x2) - Math.max(a.x1, b.x1);
+    const minSpan = Math.min(horiz ? a.h : a.w, horiz ? b.h : b.w);
+    const aligned = overlap > minSpan * 0.35;
+
+    // Aligned candidates are strongly preferred; diagonal ones pay a penalty.
+    const score = aligned ? along + cross * 0.5 : along + cross * 2.4 + 1000;
     if (score < bestScore) {
       bestScore = score;
       best = node;
@@ -75,7 +87,11 @@ function nearest(current, dir) {
 
 function box(el) {
   const r = el.getBoundingClientRect();
-  return { cx: r.left + r.width / 2, cy: r.top + r.height / 2 };
+  return {
+    cx: r.left + r.width / 2, cy: r.top + r.height / 2,
+    x1: r.left, x2: r.right, y1: r.top, y2: r.bottom,
+    w: r.width, h: r.height,
+  };
 }
 
 function visible(el) {

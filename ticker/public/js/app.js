@@ -1,5 +1,7 @@
 import { toTickerText, parseFeed } from '/lib/parser.mjs';
 import { LEAGUES, LEAGUE_LABELS, SPORT_GROUPS, compareEvents, buildDemoSlate, mergeEvents } from '/lib/scoreboard.mjs';
+import { WATCH_WEB, sortAppsForPicker, espnWebUrl, watchChoiceFor } from '/lib/watch.mjs';
+import { updateStatus as buildUpdateStatus } from '/lib/version.mjs';
 import { buildClientSlate, isNativeShell, hydrateClientSlateRegistry, getClientSlateRegistry } from '/lib/client-slate.mjs';
 import { isSafeFeedUrl } from '/lib/ssrf.mjs';
 import { loadState, saveState, cacheSlate, readCachedSlate, REFRESH_CHOICES, SPEED_MIN, SPEED_MAX } from './state.js';
@@ -11,6 +13,7 @@ import { startWatchdog } from './watchdog.js';
 const params = new URLSearchParams(location.search);
 if (params.get('native') === '1') globalThis.CORELINE_NATIVE = true;
 if (params.get('tv') === '1') globalThis.CORELINE_TV = true;
+if (params.get('overlay') === '1') globalThis.CORELINE_OVERLAY = true;
 
 // Boot guard for ancient WebViews (AUDIT.md A1): module support detected by
 // the fact that this file runs at all.
@@ -38,6 +41,12 @@ let refreshGen = 0;
 let refreshing = false;
 let pairTimer = null;
 let lastFocusBeforeDrawer = null;
+let installedApps = [];
+let updateInfo = null;
+let updateChecking = false;
+
+const UPDATE_RELEASES_URL = 'https://api.github.com/repos/brevityA/CoreBuildsApps/releases?per_page=30';
+const UPDATE_APK_NAME = 'coreline-release.apk';
 let lastHealth = { demo: false, degraded: 0, stale: 0 };
 
 let ticker = null;
@@ -46,11 +55,12 @@ init();
 
 async function init() {
   document.documentElement.toggleAttribute('data-tv', Boolean(globalThis.CORELINE_TV));
+  document.documentElement.toggleAttribute('data-overlay', Boolean(globalThis.CORELINE_OVERLAY));
   document.documentElement.dataset.position = state.position;
   hydrateClientSlateRegistry();
   applyChrome();
   bind();
-  initTvNav(document.getElementById('app'));
+  if (!globalThis.CORELINE_OVERLAY) initTvNav(document.getElementById('app'));
 
   ticker = new Ticker({
     track: $('crawl'),
@@ -91,6 +101,7 @@ async function init() {
 
   await refresh();
   armRefreshTimer();
+  if (isNativeShell() && !globalThis.CORELINE_OVERLAY) loadInstalledApps();
   if ('serviceWorker' in navigator && !isNativeShell()) {
     navigator.serviceWorker.register('./sw.js').catch(() => {});
   }
@@ -125,6 +136,10 @@ function bind() {
     if (action === 'speed-down') nudgeSpeed(-4);
     if (action === 'toggle-team') toggleTeam(btn.dataset.abbr);
     if (action === 'toggle-card-fav') toggleCardFav(btn.dataset.id);
+    if (action === 'watch') watchEventById(btn.dataset.id);
+    if (action === 'drawer-section') activateDrawerSection(btn.dataset.section);
+    if (action === 'check-updates') checkForUpdates(true);
+    if (action === 'install-update') installUpdateFlow();
     if (action === 'filter') {
       state.leagueFilter = btn.dataset.league;
       persist();
@@ -177,17 +192,42 @@ function bind() {
     document.documentElement.dataset.position = state.position;
   });
 
+  $('overlayEnabled')?.addEventListener('change', () => {
+    const on = $('overlayEnabled').checked;
+    if (on) {
+      const started = nativeBridge()?.startOverlay?.() === true;
+      $('overlayEnabled').checked = nativeBridge()?.overlayActive?.() === true;
+      if (!started) toast('Allow “display over other apps” for Core Line, then retick');
+    } else {
+      nativeBridge()?.stopOverlay?.();
+    }
+    state.overlay = Boolean(nativeBridge()?.overlayActive?.());
+    persist();
+  });
+
   window.addEventListener('keydown', (event) => {
     if (event.target.matches('input, textarea, select')) return;
     const key = event.key.toLowerCase();
     if (key === 's') openDrawer(true);
     if (key === 't') toggleMode();
     if (key === 'r') refresh(true);
+    if (key === 'w') {
+      const featured = events.find((e) => e.status === 'live' && e.away && e.home)
+        || events.find((e) => e.status === 'upcoming' && e.away && e.home);
+      if (featured) watchEventById(featured.id);
+    }
     if (key === 'f') document.documentElement.requestFullscreen?.().catch(() => {});
   });
 
   $('drawer').addEventListener('click', (event) => {
     if (event.target.id === 'drawer') openDrawer(false);
+  });
+
+  // TV sidebar behaviour: focusing a rail item selects its section, so
+  // D-pad up/down through the rail shows each section as you pass it.
+  $('drawerRail').addEventListener('focusin', (event) => {
+    const btn = event.target.closest('[data-section]');
+    if (btn) activateDrawerSection(btn.dataset.section);
   });
 }
 
@@ -249,7 +289,13 @@ function applyChrome() {
   renderLeagueToggles();
   renderFeeds();
   if ($('pairBox')) $('pairBox').hidden = !isNativeShell();
-  syncWakeLock();
+  if ($('overlayBlock')) {
+    $('overlayBlock').hidden = !(isNativeShell() && !globalThis.CORELINE_TV);
+  }
+  if ($('overlayEnabled')) {
+    $('overlayEnabled').checked = Boolean(nativeBridge()?.overlayActive?.());
+  }
+  if (!globalThis.CORELINE_OVERLAY) syncWakeLock();
 }
 
 function persist() {
@@ -262,10 +308,15 @@ function openDrawer(open) {
   if (open) {
     lastFocusBeforeDrawer = document.activeElement;
     document.body.classList.add('drawer-open');
-    const closeBtn = drawer.querySelector('[data-action="close-settings"]');
-    const first = drawer.querySelector('.focusable');
-    if (globalThis.CORELINE_TV) (closeBtn || first)?.focus();
-    else $('feedUrl').focus();
+    const rail = $('drawerRail');
+    const firstRail = rail?.querySelector('.rail-item');
+    if (globalThis.CORELINE_TV) {
+      activateDrawerSection(firstRail?.dataset.section || 'feeds');
+      (firstRail || drawer.querySelector('[data-action="close-settings"]'))?.focus();
+    } else {
+      activateDrawerSection('feeds');
+      $('feedUrl').focus();
+    }
   } else {
     document.body.classList.remove('drawer-open');
     stopPair();
@@ -273,6 +324,146 @@ function openDrawer(open) {
       lastFocusBeforeDrawer.focus();
     }
   }
+}
+
+function activateDrawerSection(name) {
+  document.querySelectorAll('#drawerRail .rail-item').forEach((b) => {
+    b.classList.toggle('is-active', b.dataset.section === name);
+    b.setAttribute('aria-pressed', b.dataset.section === name ? 'true' : 'false');
+  });
+  document.querySelectorAll('.drawer-section').forEach((s) => {
+    s.classList.toggle('is-active', s.dataset.panel === name);
+  });
+  if (name === 'watch') renderWatchApps();
+  if (name === 'updates') {
+    renderUpdates();
+    if (!updateInfo && !updateChecking) checkForUpdates(false);
+  }
+}
+
+function currentVersion() {
+  try {
+    const v = nativeBridge()?.getVersion?.();
+    return typeof v === 'string' && v ? v : null;
+  } catch {
+    return null;
+  }
+}
+
+/** GitHub release bodies arrive as markdown; flatten to plain panel text. */
+function cleanNotes(body) {
+  return String(body || '')
+    .replace(/^#+\s*/gm, '')
+    .replace(/^\s*[-*]\s+/gm, '· ')
+    .replace(/[*_`~]/g, '')
+    .replace(/\[([^\]]+)\]\([^)]*\)/g, '$1')
+    .replace(/\s{2,}/g, ' ')
+    .trim();
+}
+
+function renderUpdates() {
+  const el = $('updatePanel');
+  if (!el) return;
+  const native = isNativeShell();
+  const current = currentVersion();
+  const rows = [];
+
+  if (current) {
+    rows.push(`<div class="update-row"><span class="update-label">Current version</span><span class="update-value">${esc(current)}</span></div>`);
+  } else {
+    rows.push(`<div class="update-row"><span class="update-label">Build</span><span class="update-value">${native ? 'TV app' : 'Web build'}</span></div>`);
+  }
+
+  if (updateChecking) {
+    rows.push(`<div class="update-note checking">Checking for updates…</div>`);
+  } else if (updateInfo && updateInfo.ok) {
+    if (updateInfo.newer) {
+      rows.push(`<div class="update-banner">
+        <div class="update-banner-title">Update ${esc(updateInfo.latest)} is available</div>
+        ${updateInfo.notes ? `<div class="update-notes">${esc(cleanNotes(updateInfo.notes).slice(0, 300))}</div>` : ''}
+      </div>`);
+      if (native) {
+        rows.push(`<button class="primary focusable" data-action="install-update">Download &amp; install ${esc(updateInfo.latest)}</button>`);
+      } else {
+        rows.push(`<div class="update-note">Updates install on the Android TV app (Settings → Updates).</div>`);
+      }
+    } else {
+      rows.push(`<div class="update-note ok">You’re up to date${updateInfo.latest ? ` (latest ${esc(updateInfo.latest)})` : ''}.</div>`);
+    }
+  } else if (updateInfo && !updateInfo.ok) {
+    rows.push(`<div class="update-note error">${esc(updateInfo.error || 'Update check failed.')}</div>`);
+  } else {
+    rows.push(`<div class="update-note">Not checked yet.</div>`);
+  }
+
+  rows.push(`<button class="ghost focusable" data-action="check-updates" ${updateChecking ? 'disabled' : ''}>Check for updates</button>`);
+  el.innerHTML = rows.join('');
+}
+
+async function checkForUpdates(manual = false) {
+  if (updateChecking) return;
+  updateChecking = true;
+  renderUpdates();
+  try {
+    const url = isNativeShell()
+      ? `/api/proxy?url=${encodeURIComponent(UPDATE_RELEASES_URL)}`
+      : UPDATE_RELEASES_URL;
+    const res = await fetch(url, { headers: { Accept: 'application/json' }, signal: AbortSignal.timeout(20000) });
+    if (!res.ok) throw new Error('http ' + res.status);
+    const releases = await res.json();
+    updateInfo = buildUpdateStatus(releases, currentVersion() || '0', UPDATE_APK_NAME);
+  } catch (err) {
+    updateInfo = { ok: false, error: 'Could not reach the update server' };
+  }
+  updateChecking = false;
+  renderUpdates();
+  if (manual) {
+    toast(updateInfo?.newer ? 'Update available' : updateInfo?.ok ? 'You are up to date' : 'Update check failed');
+  }
+}
+
+function installUpdateFlow() {
+  const url = updateInfo?.apkUrl;
+  if (!url) return;
+  const bridge = nativeBridge();
+  if (bridge?.installUpdate) {
+    try {
+      if (bridge.installUpdate(url)) {
+        toast('Downloading update — the installer opens when ready');
+        return;
+      }
+    } catch { /* fall back to browser */ }
+  }
+  if (bridge?.openUrl) {
+    try {
+      bridge.openUrl(`https://github.com/brevityA/CoreBuildsApps/releases/tag/${encodeURIComponent(updateInfo.tag || 'coreline-v' + updateInfo.latest)}`);
+      return;
+    } catch { /* ignore */ }
+  }
+  toast('Could not start the update');
+}
+
+/** Open the app (or web page) assigned to a game's league. */
+async function watchEventById(id) {
+  const ev = events.find((e) => e.id === id);
+  if (!ev) return;
+  const choice = watchChoiceFor(state.watchApps, ev.league);
+  const url = espnWebUrl(ev);
+  const bridge = nativeBridge();
+  if (choice !== WATCH_WEB && bridge?.openApp) {
+    try {
+      const ok = bridge.openApp(choice);
+      toast(ok ? 'Opening game in app…' : 'Could not open that app');
+      return;
+    } catch {
+      /* fall through to web */
+    }
+  }
+  if (bridge?.openUrl) {
+    try { bridge.openUrl(url); return; } catch { /* ignore */ }
+  }
+  try { window.open(url, '_blank', 'noopener'); } catch { /* ignore */ }
+  toast('Opening in browser');
 }
 
 function toggleMode() {
@@ -583,6 +774,52 @@ function toggleTeam(abbr) {
   if (chip) chip.focus();
 }
 
+function renderWatchApps() {
+  const el = $('watchList');
+  if (!el) return;
+  const leagues = state.leagues.length ? state.leagues : Object.keys(LEAGUES);
+  el.innerHTML = leagues.map((id) => {
+    const league = LEAGUES[id];
+    if (!league) return '';
+    const choice = watchChoiceFor(state.watchApps, league.label);
+    const opts = [
+      `<option value="${WATCH_WEB}" ${choice === WATCH_WEB ? 'selected' : ''}>Web browser</option>`,
+      ...installedApps.map((a) =>
+        `<option value="${esc(a.pkg)}" ${choice === a.pkg ? 'selected' : ''}>${esc(a.label)}</option>`),
+    ].join('');
+    return `
+      <div class="watch-row">
+        <span class="watch-league" style="--acc:${esc(league.accent)}">${league.label}</span>
+        <select class="focusable" data-watch-league="${id}" aria-label="App to open ${league.label} games">${opts}</select>
+      </div>`;
+  }).join('') || '<p class="hint">Enable leagues under Scoreboards to assign watch apps.</p>';
+  el.querySelectorAll('select').forEach((s) => {
+    s.addEventListener('change', () => {
+      state.watchApps[s.dataset.watchLeague] = s.value;
+      persist();
+    });
+  });
+  const status = $('watchAppsStatus');
+  if (status) {
+    status.textContent = installedApps.length
+      ? `Detected ${installedApps.length} installed apps on this device.`
+      : 'App list loads from the TV shell — install apps like ESPN, Fox Sports, or DAZN to pick them here.';
+  }
+}
+
+async function loadInstalledApps() {
+  try {
+    const raw = nativeBridge()?.listLaunchableApps?.();
+    if (!raw) return;
+    const parsed = JSON.parse(raw);
+    if (!Array.isArray(parsed)) return;
+    installedApps = sortAppsForPicker(parsed);
+    renderWatchApps();
+  } catch {
+    /* non-native (web) has no app list — keep Web browser only */
+  }
+}
+
 function cardFavTeams(ev) {
   return [ev.away?.abbr, ev.home?.abbr].filter(Boolean).map((s) => String(s).toUpperCase());
 }
@@ -707,6 +944,7 @@ function renderHero(list) {
       </div>
       <div class="hero-side">
         <div class="pills">${(featured.channels || []).map((c) => `<span class="pill">${esc(c)}</span>`).join('')}</div>
+        <button class="watch-btn focusable" data-action="watch" data-id="${esc(featured.id)}">▶ Watch</button>
         <div class="when">${esc(featured.venue || featured.feed || '')}</div>
       </div>
     </article>
@@ -746,6 +984,7 @@ function gameCard(ev) {
         <div class="game-top-right">
           <span class="badge ${badge}">${esc(label)}</span>
           <button class="fav-star focusable ${favOn ? 'on' : ''}" data-action="toggle-card-fav" data-id="${esc(ev.id)}" aria-label="${favOn ? 'Unfavorite' : 'Favorite'} these teams" aria-pressed="${favOn}">★</button>
+          <button class="watch-mini focusable" data-action="watch" data-id="${esc(ev.id)}" aria-label="Watch in app" title="Watch in app">▶</button>
         </div>
       </div>
       <div class="game-teams">

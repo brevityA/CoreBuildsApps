@@ -34,7 +34,7 @@ Node 20+, zero npm runtime deps. The rest of the repo is unrelated.
 | 1 Never blank | backoff, per-source last-good, parser hardening, isolation | ✅ done, tested |
 | 2 Broadcast polish | constant px/s ribbon, watchdog, bundled fonts, TV scale, overscan | ✅ done, tested |
 | 3 D-pad / settings | focus trap, reorder, refresh interval, speed/position | ✅ done, tested |
-| 4 Tests + verification + build | 77/77 tests, soaks, failure injection, 2 APKs | ✅ done (see §9) |
+| 4 Tests + verification + build | 88/88 tests, soaks, failure injection, 2 APKs | ✅ done (see §9) |
 
 **Only one thing is still outside the sandbox:** clean-install + first-run on a
 real device/emulator and the multi-hour device soak. That is **[USER TO SUPPLY]**
@@ -48,7 +48,59 @@ real device/emulator and the multi-hour device soak. That is **[USER TO SUPPLY]*
 (`content_html`/`date_published`); (5) sport super-tabs (`SPORT_GROUPS`); (6)
 favorites on TV (card ★ button + settings team checklist); (7) `[data-tv]` 10-foot
 pass (root 20px, minmax(360px,1fr) grid, 5px focus ring, header stats hidden).
-77/77 tests.
+
+**2026-09-04 second round — D-pad, settings, watch apps** (see `VERIFICATION.md` §8.2):
+(8) rewritten spatial D-pad nav (`tv.js`) — cross-axis overlap preference
+("down means down", not diagonal), auto-scroll focused item into view, focus never
+dies; (9) settings menu restructured into a **left rail + content pane** (the
+standard TV pattern — Netflix/Leanback style), with Feeds / Scoreboards /
+Ticker & display / Watch apps / Help sections; (10) **Watch apps** — assign any
+installed app per league, then ▶ Watch on a game (or the W key) opens it;
+web fallback opens the ESPN game page. Android side: `LineBridge.listLaunchableApps()`
+/ `openApp()` / `openUrl()` + manifest `<queries>` (MAIN/LAUNCHER +
+LEANBACK_LAUNCHER, no QUERY_ALL_PACKAGES). 88/88 tests.
+
+**2026-09-04 third round — in-app updates + full UI polish** (see `VERIFICATION.md` §8.3):
+(11) **in-app updates** (sideload, no Play Store) — `lib/version.mjs` (semver
+compare + GitHub-release parse/status, unit-tested), an **Updates** settings
+pane (current version, update banner, release notes, check/download/install
+buttons), and an Android updater (`UpdateManager.kt`): download the
+`coreline-release.apk` through a host-allowlisted URL (github.com /
+*.github.com / release-assets.githubusercontent.com), write to `cache/updates/`,
+then `ACTION_VIEW` via a scoped FileProvider (`file_paths.xml` exposes only
+`cache/updates/`). `REQUEST_INSTALL_PACKAGES` declared so the system installer
+can prompt for unknown-sources. `MainActivity.getVersion()` /
+`installUpdate(url)` + `LineBridge` bindings; `BuildConfig.VERSION_NAME` feeds
+the comparison. (12) **UI polish pass** — tactile button states, focus rings,
+input accent colours, broadcast-style section labels, chyron edge fades, thin
+scrollbars, tabular numerals, card/toggle shadows, reduced-motion support.
+Local version bumped to **versionCode 5 / versionName 1.2.0** (ahead of
+GitHub's 1.1.0). 88/88 tests.
+
+**2026-09-04 fourth round — phone floating overlay** (see `VERIFICATION.md` §8.4):
+(13) **ticker over other apps on phones/tablets** — `OverlayService.kt` draws
+the chyron as a translucent, touch-through, always-on-top window above every
+other app (foreground service, `TYPE_APPLICATION_OVERLAY`). It reuses the SAME
+web app (`https://coreline.local/index.html?native=1&overlay=1`) so it shares
+the parser, the `/api/proxy` data path, and the app's localStorage settings;
+the overlay page strips everything but the chyron via `[data-overlay]` CSS.
+Toggle lives in Settings → Ticker & display (phone/native only). Needs
+`SYSTEM_ALERT_WINDOW` (Settings → display over other apps); on Android TV the
+app refuses to start it (TV has no overlay windows). Stop via the notification
+or the checkbox. `MainActivity`/`LineBridge` add `canDrawOverlays` /
+`overlayActive` / `startOverlay` / `stopOverlay`.
+
+**2026-09-04 fifth round — Android TV UI consistency** (see `VERIFICATION.md` §8.5):
+(14) the TV (10-foot) pass was **inconsistent and blown out** — text sizes
+scattered from 13.2px (health pill, `.when`) to 68px (hero score), checkboxes
+(16px) smaller than their labels, square controls at 44/46/52/56px. Replaced
+the ad-hoc `[data-tv]` overrides in `public/css/app.css` with ONE coherent
+scale ladder on the 20px root — micro .8rem / body .95rem / control 1.1rem /
+title 1.3rem / display 2rem; every square control 56px (48px in-card); hero
+numerals tamed to 48/56px; checkboxes 26px (and `flex: 0 0 auto` so they can't
+shrink); `.abbr` gets an ellipsis guard. Pinned by headless TV checks in
+`tests/smoke-updates.mjs` (health ≥16px, team names == brand size, no abbr
+overflow). Phone layout untouched.
 
 ---
 
@@ -86,16 +138,22 @@ sources. It is a TV *guide*; the user pastes their own RSS.
 | Path | What it is |
 |---|---|
 | `AUDIT.md` | Phase 0 audit — authoritative findings A1–F7 + fix→requirement map + verification status (§5 of that file) |
-| `VERIFICATION.md` | Phase 4 report: 77/77 tests, failure injection, soaks, browser smoke, APK build + manifest checks, manual/soak checklist, and the 2026-09-04 supporter-feedback round (§8–8.1) |
+| `VERIFICATION.md` | Phase 4 report: 88/88 tests, failure injection, soaks, browser smoke, APK build + manifest checks, manual/soak checklist, and the 2026-09-04 supporter-feedback + D-pad/settings/watch-apps + updates/polish + overlay + TV-consistency rounds (§8–8.5) |
 | `lib/backoff.mjs` | `createBackoff()` — exp backoff + jitter, cap, `Retry-After` parser. Shared (server + client). |
 | `lib/source-registry.mjs` | `SourceRegistry` — per-league (`league:id`) and per-feed (`feed:url`) keys; backoff state, `lastGood[]`, `lastError`, `health`, hydrate/dehydrate; `MAX_ITEMS_PER_SOURCE = 100`. |
+| `lib/watch.mjs` | Watch integration: curated sports-app list, `sortAppsForPicker`, `espnWebUrl`, `watchChoiceFor`, `leagueIdForLabel` — pure logic for "open a game in an assigned app". |
+| `lib/version.mjs` | In-app update logic: `compareVersions`, `versionFromCorelineTag`, `latestCorelineRelease`, `updateStatus` — pure, unit-tested. |
+| `android/app/src/main/java/dev/corebuilds/line/UpdateManager.kt` | Sideload updater: host-allowlisted download → `cache/updates/` → FileProvider `ACTION_VIEW` to the system installer. |
+| `android/app/src/main/res/xml/file_paths.xml` | FileProvider paths — exposes only `cache/updates/`. |
+| `android/app/src/main/java/dev/corebuilds/line/OverlayService.kt` | Phone floating ticker: translucent touch-through `TYPE_APPLICATION_OVERLAY` window hosting the same WebView app (`?native=1&overlay=1`); foreground service w/ stop notification; TV refused. |
+| `android/app/src/main/res/drawable/ic_notification.xml` | Ticker-strip glyph for the overlay foreground-service notification. |
 | `public/js/ticker.js` | `Ticker` class — constant px/s `translate3d` ribbon, rAF loop, seamless wrap, ResizeObserver re-measure. Replaces the CSS-keyframe crawl. |
 | `public/js/watchdog.js` | `startWatchdog()` — samples ribbon progress, fires stall callback, wakes on visibility/page/focus. |
-| `tests/backoff.test.mjs`, `tests/source-registry.test.mjs`, `tests/parser-robustness.test.mjs`, `tests/client-slate-resilience.test.mjs`, `tests/ticker.test.mjs`, `tests/watchdog.test.mjs`, `tests/feedback.test.mjs` | New unit suites (53 of the 77 tests; `feedback.test.mjs` pins the 2026-09-04 supporter complaints) |
+| `tests/backoff.test.mjs`, `tests/source-registry.test.mjs`, `tests/parser-robustness.test.mjs`, `tests/client-slate-resilience.test.mjs`, `tests/ticker.test.mjs`, `tests/watchdog.test.mjs`, `tests/feedback.test.mjs`, `tests/watch.test.mjs`, `tests/version.test.mjs` | New unit suites (64 of the 88 tests; `feedback.test.mjs` pins the supporter complaints, `watch.test.mjs` pins the watch-app URL/assignment logic, `version.test.mjs` pins the in-app update semver/tag/status logic) |
 | `tests/soak.mjs` | Standalone accelerated in-process soak (`node tests/soak.mjs`; not part of `npm test`) |
 | `tests/mockfeeds.mjs` | Hostile fixture server on 127.0.0.1:8799 (`/good` 200 RSS, `/down` 502) for real-socket server soaks |
-| `releases/CoreLine-debug-v1.0.2.apk` | **Installable, debug-signed** sideload APK (1.82 MB) |
-| `releases/CoreLine-release-unsigned-v1.0.2.apk` | Release variant, unsigned (1.29 MB) — sign via CI keystore |
+| `releases/CoreLine-debug-v1.2.0.apk` | **Installable, debug-signed** sideload APK (3.08 MB) |
+| `releases/CoreLine-release-unsigned-v1.2.0.apk` | Release variant, unsigned (2.26 MB) — sign via CI keystore |
 
 ### Modified files
 | Path | Change |
@@ -104,13 +162,15 @@ sources. It is a TV *guide*; the user pastes their own RSS.
 | `lib/parser.mjs` | Exports `MAX_ITEMS_PER_FEED = 100`; RSS/JSON capped; `stripTags` CDATA-safe; JSON `null`/non-object rows skipped |
 | `lib/scoreboard.mjs` | Exports `DEFAULT_LEAGUES` + `LEAGUE_LABELS` (single source for defaults) |
 | `server.mjs` | Uses `createBackoff` + `DEFAULT_LEAGUES`; `/api/rss` and `/api/slate` use `resilientFeed`; per-league scoreboard slots w/ backoff + last-good; slate adds `feeds[].stale` and `health` |
-| `public/js/app.js` | Rewritten wiring: single-flight refresh, silent resume refresh, `prefers-reduced-motion` clamps speed ≤12 px/s, ticker/watchdog integration, health pill |
-| `public/js/state.js` | Rewritten sanitizer/defaults/cache |
-| `public/js/tv.js` | Drawer focus confinement + focus restore |
-| `public/index.html` | Boot guard (old-WebView message), health pill, speed stepper, refresh/position selects, `crawl-mask` id; **no Google Fonts link** |
+| `public/js/app.js` | Rewritten wiring: single-flight refresh, silent resume refresh, `prefers-reduced-motion` clamps speed ≤12 px/s, ticker/watchdog integration, health pill; sport super-tabs, per-feed 📡 tabs, favorites (card ★ + team picker), Watch buttons + `openGame`, drawer rail sections, `W` key; Updates panel (`renderUpdates` / `checkForUpdates` / `installUpdateFlow`) |
+| `public/js/state.js` | Rewritten sanitizer/defaults/cache; adds `watchApps` (leagueId → app pkg or `web`) |
+| `public/js/tv.js` | Spatial D-pad nav: cross-axis overlap preference, scroll-into-view, focus confinement in the drawer |
+| `public/index.html` | Boot guard (old-WebView message), health pill, speed stepper, refresh/position selects, `crawl-mask` id; **no Google Fonts link**; drawer restructured into a rail + 5 sections (Feeds / Scoreboards / Ticker & display / Watch apps / Help) |
 | `public/css/app.css` | Local `@font-face`s, TV/overscan/top-position styles, `.health` states, league-accent cards, JS-transform crawl styling, reduced-motion/TV scaling, stepper/reorder/boot-fallback CSS, and the global fix `[hidden] { display: none; }` (see A3) |
 | `android/.../LineWebClient.kt` | Oversized fetched bodies → HTTP 502 (not silent truncation) |
-| `android/.../MainActivity.kt` | `OnBackInvokedDispatcher` on API 33+, shared `handleBack()` with the deprecated callback |
+| `android/.../MainActivity.kt` | `OnBackInvokedDispatcher` on API 33+, shared `handleBack()`; adds `listLaunchableApps()` / `openApp()` / `openUrl()` for the Watch feature; `getVersion()` / `installUpdate(url)` for in-app updates |
+| `android/.../LineBridge.kt` | JS bridge: `listLaunchableApps`, `openApp`, `openUrl`, `getVersion`, `installUpdate`, `canDrawOverlays`, `overlayActive`, `startOverlay`, `stopOverlay` |
+| `android/.../AndroidManifest.xml` | `<queries>` MAIN/LAUNCHER + LEANBACK_LAUNCHER + VIEW/https (package visibility for the app picker); `REQUEST_INSTALL_PACKAGES` + `FileProvider` (${applicationId}.fileprovider) for the sideload updater; `SYSTEM_ALERT_WINDOW` + `FOREGROUND_SERVICE(_SPECIAL_USE)` + `POST_NOTIFICATIONS` + `OverlayService` (`foregroundServiceType="specialUse"`) for the phone overlay |
 
 ### Fixed during this engagement (notable)
 - **A3 (P0, visual):** the settings drawer's `hidden` attribute was overridden by its `display:flex` rule, so the dimmed overlay was **visible on first paint** over the whole board. Fix: `[hidden] { display: none; }` appended to `app.css`. Verified in jsdom and real Chromium.
@@ -163,7 +223,7 @@ No API keys anywhere. `lib/rss.mjs` uses Node `Buffer` — **do not import it in
 ```bash
 cd /home/user/CoreBuildsApps/ticker
 node server.mjs          # serves on 0.0.0.0:8787
-npm test                 # node --test tests/*.test.mjs  → 77/77
+npm test                 # node --test tests/*.test.mjs  → 88/88
 node tests/soak.mjs      # standalone soak (NOT in npm test)
 ```
 Keyboard (web): D-pad move · Enter select · `S` settings · `T` ticker-only · `R` refresh · `F` fullscreen.
@@ -242,8 +302,10 @@ Node 20 (`webidl.util.markAsUncloneable is not a function`).
 
 ## 9. Verification results (all exact)
 
-- **Tests:** `npm test` → **77/77 pass** (~947 ms). 24 baseline
-  (client-slate, parser, scoreboard, ssrf) + 39 new.
+- **Tests:** `npm test` → **88/88 pass**. 24 baseline
+  (client-slate, parser, scoreboard, ssrf) + 64 new (backoff, source-registry,
+  parser-robustness, client-slate-resilience, ticker, watchdog, feedback,
+  watch, version).
 - **Accelerated in-process soak** (`node tests/soak.mjs`): 3,000 cycles ≈ 50 h →
   0 blank cycles, 1,000 flaky stale hits (last-good kept), heap growth **7.11 MB**.
 - **Real-socket server soak:** 70 cycles / 91 s against good+down mock feeds →
@@ -253,11 +315,14 @@ Node 20 (`webidl.util.markAsUncloneable is not a function`).
 - **Browser smoke (headless Chromium, 1280×720):** drawer `display:none` on first
   paint (A3 fix confirmed), ribbon transform advancing, health pill “All sources
   live”, bundled fonts loaded, crawl-mode big clock `flex`, **0 console errors**.
-- **APK manifest (aapt2):** `dev.corebuilds.line` v1.0.2 (code 3), minSdk 24,
-  targetSdk 34, permissions INTERNET/ACCESS_NETWORK_STATE/WAKE_LOCK, label
-  “Core Line”, `LEANBACK_LAUNCHER` + `tv_banner` + `uses-feature leanback`
-  present; all 26 web assets bundled (incl. `[hidden]` fix, `ticker.js`,
-  `watchdog.js`, `backoff.mjs`, `source-registry.mjs`).
+- **APK manifest (aapt2):** `dev.corebuilds.line` v1.2.0 (code 5), minSdk 24,
+  targetSdk 34, permissions INTERNET/ACCESS_NETWORK_STATE/WAKE_LOCK +
+  REQUEST_INSTALL_PACKAGES, label “Core Line”, `LEANBACK_LAUNCHER` + `tv_banner`
+  + `uses-feature leanback` present; `FileProvider`
+  (`dev.corebuilds.line.fileprovider`, exported=false, grantUriPermissions=true)
+  wired to `file_paths.xml` (cache/updates only); all 28 web assets bundled
+  (incl. `[hidden]` fix, `ticker.js`, `watchdog.js`, `backoff.mjs`,
+  `source-registry.mjs`, `watch.mjs`, `version.mjs`).
 - **Live API sample:** `leagues=mlb` + good/down mock feeds → 16 MLB events both
   calls; down feed went `502 → backoff`; health `degraded:1, stale:0`.
 
@@ -265,7 +330,7 @@ Node 20 (`webidl.util.markAsUncloneable is not a function`).
 
 ## 10. What remains (prioritized)
 
-1. **[USER TO SUPPLY] Sideload + first-run + manual checklist** — `releases/CoreLine-debug-v1.0.2.apk` onto a Shield/Google TV/Fire TV (Fire OS 7+); run `VERIFICATION.md` §5 (first launch crawls offline, airplane-mode 2 min, malformed/empty feed injection, full D-pad walk incl. reorder + interval + position, back-behavior, ≥6 h memory soak, 10-foot legibility). Report which device/emulator.
+1. **[USER TO SUPPLY] Sideload + first-run + manual checklist** — `releases/CoreLine-debug-v1.2.0.apk` onto a Shield/Google TV/Fire TV (Fire OS 7+); run `VERIFICATION.md` §5 (first launch crawls offline, airplane-mode 2 min, malformed/empty feed injection, full D-pad walk incl. reorder + interval + position, back-behavior, ≥6 h memory soak, 10-foot legibility). Also exercise Settings → Updates (check + install flow needs a published `coreline-v*` release to be fully end-to-end). Report which device/emulator.
 2. **[USER TO SUPPLY] Signed release** — land `ticker/android/github-workflow-core-line-apk.yml` at `.github/workflows/core-line-apk.yml` (owner copy, since the CI bot can't push `.github/workflows/*`); push a `coreline-v*` tag with the keystore in GitHub Secrets. Local release APK is currently unsigned by design.
 3. **Tester round-trip** — send the 2026-09-04 fixes back: rerun the pasted feed, confirm the rerun no longer shows LIVE, confirm college games appear, try the 📡 feed tab + ★ favorites + sport super-tabs on the TV. Ask for the **exact title** of any item that still shows a wrong LIVE/FINAL badge so the parser rules can be tuned (a title alone can't always distinguish "NFL Live" the show from a live game).
 4. **Repo hygiene — `.git` was lost from the workspace** (code is intact): re-`git init` or re-clone from `brevityA/CoreBuildsApps` and re-apply `ticker/` before pushing. The zip in `releases/../` ships the full `ticker/` tree, so nothing is missing.
@@ -285,7 +350,8 @@ Product: Android/TV sports + channel ticker (chyron). "Team vs Team · ESPN, TSN
 Sideload APK. Public scoreboards + user-pasted RSS only. Same-Wi-Fi QR to add feeds.
 First launch already crawling — never blank, never a settings wall.
 
-Status as of 2026-09-04 (audit + polish + supporter-feedback round, all shipped):
+Status as of 2026-09-04 (audit + reliability + polish + feedback + D-pad + in-app
+updates rounds, all shipped):
 - Audit: ticker/AUDIT.md (A1–F7, each with file:line, severity, fix).
 - Reliability: per-source backoff + last-good (lib/backoff.mjs,
   lib/source-registry.mjs), hardened parser (lib/parser.mjs), client/server
@@ -295,14 +361,25 @@ Status as of 2026-09-04 (audit + polish + supporter-feedback round, all shipped)
 - Feedback round: LIVE-on-rerun parser fix, NCAAF/NCAAB by default, per-feed 📡
   tabs, sport super-tabs, card ★ + settings team-picker favorites, rss.app JSON,
   fuller [data-tv] 10-foot pass. See VERIFICATION.md §8–8.1.
-- Verified: npm test = 77/77; 50 h soak + real-socket soak = 0 blank, ~0 memory
+- D-pad/settings/watch-apps round: spatial D-pad nav (tv.js), left-rail settings,
+  Watch-apps assignment. See VERIFICATION.md §8.2.
+- Updates + polish round: in-app updates (lib/version.mjs + UpdateManager.kt +
+  FileProvider + Updates pane) and a full cosmetic polish pass; local version is
+  1.2.0 (code 5). See VERIFICATION.md §8.3.
+- Overlay round: phone floating ticker over other apps (OverlayService.kt,
+  translucent touch-through window reusing the same WebView app). TV overlay /
+  home-screen widget are NOT possible on Android TV — see VERIFICATION.md §8.4.
+- Verified: npm test = 88/88; 50 h soak + real-socket soak = 0 blank, ~0 memory
   growth; headless-Chromium smoke clean. See ticker/VERIFICATION.md.
-- Built: ticker/releases/CoreLine-debug-v1.0.2.apk (installable) and
-  CoreLine-release-unsigned-v1.0.2.apk. Manifest/leanback/assets verified.
+- Built: ticker/releases/CoreLine-debug-v1.2.0.apk (installable) and
+  CoreLine-release-unsigned-v1.2.0.apk. Manifest/leanback/FileProvider/assets
+  verified.
 
 Remaining (owner actions, cannot be done in sandbox — no device, no /dev/kvm):
-1. Sideload the debug APK and run VERIFICATION.md §5 manual/soak checklist.
-2. Land .github/workflows/core-line-apk.yml and tag coreline-v* for a signed release.
+1. Sideload the debug APK and run VERIFICATION.md §5 manual/soak checklist
+   (incl. Settings → Updates).
+2. Land .github/workflows/core-line-apk.yml and tag coreline-v1.2.0 for a signed
+   release — this also makes the in-app updater live for existing 1.1.0 devices.
 
 Hard no: video playback, IPTV playlists, bundled illegal sources, native rewrite
 of the board (WebView + shared JS parser IS the product).
