@@ -195,6 +195,7 @@ class VersionAndCiTests(unittest.TestCase):
     def test_gradle_and_version_json_agree(self):
         gradle = read("app/build.gradle.kts")
         ver = json.loads(read("Latestrelease/version.json"))
+        catalog = json.loads(read("tools/catalog.json"))
         g_code = int(re.search(r"versionCode\s*=\s*(\d+)", gradle).group(1))
         g_name = re.search(r'versionName\s*=\s*"([^"]+)"', gradle).group(1)
         # The two sources must agree (the updater would otherwise advertise a
@@ -202,7 +203,7 @@ class VersionAndCiTests(unittest.TestCase):
         # number, so a version bump doesn't break this test — only a mismatch does.
         self.assertEqual(ver["versionCode"], g_code)
         self.assertEqual(ver["versionName"], g_name)
-        self.assertEqual(ver["iconCount"], 921)
+        self.assertEqual(ver["iconCount"], catalog["meta"]["count"])
         self.assertEqual(
             ver["apkUrl"],
             "https://github.com/brevityA/CoreBuildsApps/releases/download/iconpack/iconpack-release.apk",
