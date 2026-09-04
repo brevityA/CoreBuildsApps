@@ -19,11 +19,12 @@ export const WATCH_WEB = 'web';
  */
 export const SPORTS_APPS = [
   { pkg: 'com.espn.score_center', label: 'ESPN' },
-  { pkg: 'com.foxsports.videogo', label: 'Fox Sports' },
-  { pkg: 'com.nbcuni.nbcsports', label: 'NBC Sports' },
+  { pkg: 'com.foxsports.android', label: 'Fox Sports' },
+  { pkg: 'com.foxsports.videogo', label: 'FanDuel Sports Network' },
+  { pkg: 'com.nbcsports.apps.tv', label: 'NBC Sports' },
   { pkg: 'com.peacocktv.peacockandroid', label: 'Peacock' },
   { pkg: 'com.cbs.ott', label: 'Paramount+' },
-  { pkg: 'com.paramountplus.android', label: 'Paramount+' },
+  { pkg: 'com.cbs.ca', label: 'Paramount+ (CA)' },
   { pkg: 'com.dazn', label: 'DAZN' },
   { pkg: 'com.google.android.apps.youtube.unplugged', label: 'YouTube TV' },
   { pkg: 'com.hulu.livingroomplus', label: 'Hulu' },
@@ -42,10 +43,11 @@ export const SPORTS_APPS = [
   { pkg: 'com.nhl.gc1112.free', label: 'NHL' },
   { pkg: 'com.neulion.android.tablet.nfl.wnfln', label: 'NFL Network' },
   { pkg: 'tv.flosports', label: 'FloSports' },
-  { pkg: 'com.ballyscorp.ballylive', label: 'Bally Sports' },
+  { pkg: 'com.ballyscorp.ballylive', label: 'Bally Sports Live' },
   { pkg: 'com.fanduel.sportsbook', label: 'FanDuel' },
   { pkg: 'com.draftkings.sportsbook', label: 'DraftKings' },
-  { pkg: 'com.bet365.sportsclient', label: 'bet365' },
+  { pkg: 'com.bet365Wrapper.Bet365_Application', label: 'bet365' },
+  { pkg: 'com.bet365SportsCA.Bet365_Application', label: 'bet365 (CA)' },
 ];
 
 const CURATED = new Map(SPORTS_APPS.map((a) => [a.pkg, a.label]));

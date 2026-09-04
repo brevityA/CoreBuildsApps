@@ -73,7 +73,13 @@ function nearest(current, dir) {
       })
     : nodes;
 
-  return geometricNearest(current, dir, candidates.length ? candidates : nodes);
+  // Try to find a target within the current zone first
+  const inZone = candidates.length ? geometricNearest(current, dir, candidates) : null;
+  // Zone-edge fallback: when nothing lies in the pressed direction inside the
+  // current zone (e.g. Up from the top of the sections pane), fall back to the
+  // full drawer set so focus is never trapped and the header close button
+  // stays reachable by D-pad.
+  return inZone ?? geometricNearest(current, dir, nodes);
 }
 
 function geometricNearest(current, dir, nodes) {

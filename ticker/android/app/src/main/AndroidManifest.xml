@@ -39,11 +39,12 @@
         <!-- Explicit package visibility for known sports/streaming apps
              (Android 11+ hides packages not matched by intent queries). -->
         <package android:name="com.espn.score_center" />
+        <package android:name="com.foxsports.android" />
         <package android:name="com.foxsports.videogo" />
-        <package android:name="com.nbcuni.nbcsports" />
+        <package android:name="com.nbcsports.apps.tv" />
         <package android:name="com.peacocktv.peacockandroid" />
         <package android:name="com.cbs.ott" />
-        <package android:name="com.paramountplus.android" />
+        <package android:name="com.cbs.ca" />
         <package android:name="com.dazn" />
         <package android:name="com.google.android.apps.youtube.unplugged" />
         <package android:name="com.hulu.livingroomplus" />
@@ -65,7 +66,8 @@
         <package android:name="com.ballyscorp.ballylive" />
         <package android:name="com.fanduel.sportsbook" />
         <package android:name="com.draftkings.sportsbook" />
-        <package android:name="com.bet365.sportsclient" />
+        <package android:name="com.bet365Wrapper.Bet365_Application" />
+        <package android:name="com.bet365SportsCA.Bet365_Application" />
     </queries>
 
     <application
