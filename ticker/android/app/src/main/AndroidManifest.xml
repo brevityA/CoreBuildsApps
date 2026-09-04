@@ -55,6 +55,17 @@
         <package android:name="com.rogers.sportsnet" />
         <package android:name="com.apple.atve.android.appletv" />
         <package android:name="com.sync.tv" />
+        <!-- Niche / league-specific apps -->
+        <package android:name="com.gotv.nflgamecenter.us.lite" />
+        <package android:name="com.nbaimd.gametime.nba2011" />
+        <package android:name="com.bamnetworks.mobile.android.gameday.atbat" />
+        <package android:name="com.nhl.gc1112.free" />
+        <package android:name="com.neulion.android.tablet.nfl.wnfln" />
+        <package android:name="tv.flosports" />
+        <package android:name="com.ballyscorp.ballylive" />
+        <package android:name="com.fanduel.sportsbook" />
+        <package android:name="com.draftkings.sportsbook" />
+        <package android:name="com.bet365.sportsclient" />
     </queries>
 
     <application

@@ -34,8 +34,18 @@ export const SPORTS_APPS = [
   { pkg: 'com.bellmedia.tsn', label: 'TSN' },
   { pkg: 'com.rogers.sportsnet', label: 'Sportsnet' },
   { pkg: 'com.apple.atve.android.appletv', label: 'Apple TV' },
-  // Niche / league-specific apps [UNVERIFIED]
   { pkg: 'com.sync.tv', label: 'SYNC Sports' },
+  // Niche / league-specific apps [UNVERIFIED]
+  { pkg: 'com.gotv.nflgamecenter.us.lite', label: 'NFL' },
+  { pkg: 'com.nbaimd.gametime.nba2011', label: 'NBA' },
+  { pkg: 'com.bamnetworks.mobile.android.gameday.atbat', label: 'MLB' },
+  { pkg: 'com.nhl.gc1112.free', label: 'NHL' },
+  { pkg: 'com.neulion.android.tablet.nfl.wnfln', label: 'NFL Network' },
+  { pkg: 'tv.flosports', label: 'FloSports' },
+  { pkg: 'com.ballyscorp.ballylive', label: 'Bally Sports' },
+  { pkg: 'com.fanduel.sportsbook', label: 'FanDuel' },
+  { pkg: 'com.draftkings.sportsbook', label: 'DraftKings' },
+  { pkg: 'com.bet365.sportsclient', label: 'bet365' },
 ];
 
 const CURATED = new Map(SPORTS_APPS.map((a) => [a.pkg, a.label]));
