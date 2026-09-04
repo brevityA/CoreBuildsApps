@@ -1,22 +1,31 @@
 import { toTickerText, parseFeed } from '/lib/parser.mjs';
-import { LEAGUES, compareEvents, buildDemoSlate, mergeEvents } from '/lib/scoreboard.mjs';
-import { buildClientSlate, isNativeShell } from '/lib/client-slate.mjs';
-import { loadState, saveState, DEFAULTS, cacheSlate, readCachedSlate } from './state.js';
-import { initTvNav, drawerOpened, drawerClosed, saveFocusId, restoreFocusId } from './tv.js';
+import { LEAGUES, LEAGUE_LABELS, SPORT_GROUPS, compareEvents, buildDemoSlate, mergeEvents } from '/lib/scoreboard.mjs';
+import { buildClientSlate, isNativeShell, hydrateClientSlateRegistry, getClientSlateRegistry } from '/lib/client-slate.mjs';
+import { isSafeFeedUrl } from '/lib/ssrf.mjs';
+import { loadState, saveState, cacheSlate, readCachedSlate, REFRESH_CHOICES, SPEED_MIN, SPEED_MAX } from './state.js';
+import { initTvNav } from './tv.js';
 import { qrDataUrl } from './qr.js';
 import { Ticker } from './ticker.js';
 import { startWatchdog } from './watchdog.js';
 
 const params = new URLSearchParams(location.search);
-if (params.get('native') === '1') window.CORELINE_NATIVE = true;
-if (params.get('tv') === '1') window.CORELINE_TV = true;
+if (params.get('native') === '1') globalThis.CORELINE_NATIVE = true;
+if (params.get('tv') === '1') globalThis.CORELINE_TV = true;
+
+// Boot guard for ancient WebViews (AUDIT.md A1): module support detected by
+// the fact that this file runs at all.
+if (window.__CORELINE_BOOT) {
+  window.__CORELINE_BOOT.ready = true;
+  clearTimeout(window.__CORELINE_BOOT.t);
+}
 
 const SAMPLE_FEED = { url: `${location.origin}/feeds/sample-sports.xml`, label: 'Sample' };
-const LEAGUE_ORDER = ['ALL', 'LIVE', 'RSS', ...Object.values(LEAGUES).map((l) => l.label)];
-const LEAGUE_BY_LABEL = Object.fromEntries(Object.values(LEAGUES).map((l) => [l.label, l]));
-const SPEED_STEP = 10;
-const SPEED_MIN = 10;
-const SPEED_MAX = 200;
+const LEAGUE_ORDER = ['ALL', 'LIVE', 'RSS', ...LEAGUE_LABELS];
+const SPORT_LABELS = Object.fromEntries(
+  SPORT_GROUPS.map((g) => [g.id, new Set(g.leagues.map((id) => LEAGUES[id]?.label).filter(Boolean))]),
+);
+const REFRESH_TIMEOUT_MS = 25_000;
+const MAX_FEEDS = 20;
 
 const $ = (id) => document.getElementById(id);
 
@@ -25,30 +34,51 @@ let events = [];
 let wakeLock = null;
 let clockTimer = null;
 let refreshTimer = null;
+let refreshGen = 0;
 let refreshing = false;
-let refreshQueued = false;
 let pairTimer = null;
+let lastFocusBeforeDrawer = null;
+let lastHealth = { demo: false, degraded: 0, stale: 0 };
+
 let ticker = null;
-let stopWatchdog = null;
 
 init();
 
 async function init() {
-  document.documentElement.toggleAttribute('data-tv', Boolean(window.CORELINE_TV));
+  document.documentElement.toggleAttribute('data-tv', Boolean(globalThis.CORELINE_TV));
+  document.documentElement.dataset.position = state.position;
+  hydrateClientSlateRegistry();
   applyChrome();
   bind();
   initTvNav(document.getElementById('app'));
-  tickClock();
-  clockTimer = setInterval(tickClock, 1000);
 
-  ticker = new Ticker($('crawl'), { speed: effectiveSpeed() });
-  ticker.start();
-  stopWatchdog = startWatchdog(ticker, {
+  ticker = new Ticker({
+    track: $('crawl'),
+    seqA: $('crawlA'),
+    seqB: $('crawlB'),
+    mask: $('crawl-mask'),
+    speed: state.speed,
+  });
+  if (typeof matchMedia !== 'undefined' && matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    ticker.setSpeed(Math.min(state.speed, 12)); // slow, still informative
+  }
+
+  startWatchdog({
+    getProgress: () => ticker.progress(),
+    isRunning: () => ticker.running,
     onStall: () => {
-      renderCrawl(visibleEvents());
-      ticker.measure();
+      console.warn('core-line: ribbon stalled — restarting loop');
+      ticker.restart();
+      tickClock();
+    },
+    onWake: () => {
+      ticker.restart();
+      refresh(false); // silent resume refresh (no toast spam on focus/page-show)
     },
   });
+
+  tickClock();
+  clockTimer = setInterval(tickClock, 1000);
 
   const cached = readCachedSlate();
   if (cached?.events?.length) {
@@ -57,36 +87,18 @@ async function init() {
     events = buildDemoSlate();
   }
   render();
-
-  window.__CORELINE_READY = true;
-  clearTimeout(window.__CORELINE_BOOT);
-  const bootOverlay = document.getElementById('bootGuard');
-  if (bootOverlay) bootOverlay.hidden = true;
+  ticker.start();
 
   await refresh();
-  armRefreshInterval();
-
-  document.addEventListener('visibilitychange', () => {
-    if (!document.hidden) refresh();
-  });
-
+  armRefreshTimer();
   if ('serviceWorker' in navigator && !isNativeShell()) {
     navigator.serviceWorker.register('./sw.js').catch(() => {});
   }
 }
 
-function effectiveSpeed() {
-  let speed = state.speed;
-  if (window.matchMedia?.('(prefers-reduced-motion: reduce)').matches) {
-    speed = Math.min(speed, 12);
-  }
-  return speed;
-}
-
-function armRefreshInterval() {
+function armRefreshTimer() {
   clearInterval(refreshTimer);
-  const ms = (state.refreshSec || DEFAULTS.refreshSec) * 1000;
-  refreshTimer = setInterval(refresh, ms);
+  refreshTimer = setInterval(refresh, state.refreshSec * 1000);
 }
 
 function bind() {
@@ -107,19 +119,27 @@ function bind() {
       renderFeeds();
       refresh();
     }
+    if (action === 'feed-up' || action === 'feed-down') moveFeed(btn.dataset.url, action === 'feed-up' ? -1 : 1);
+    if (action === 'league-up' || action === 'league-down') moveLeague(btn.dataset.leagueId, action === 'league-up' ? -1 : 1);
+    if (action === 'speed-up') nudgeSpeed(4);
+    if (action === 'speed-down') nudgeSpeed(-4);
+    if (action === 'toggle-team') toggleTeam(btn.dataset.abbr);
+    if (action === 'toggle-card-fav') toggleCardFav(btn.dataset.id);
     if (action === 'filter') {
       state.leagueFilter = btn.dataset.league;
       persist();
       render();
     }
-    if (action === 'speed-down') adjustSpeed(-SPEED_STEP);
-    if (action === 'speed-up') adjustSpeed(SPEED_STEP);
   });
 
   $('sampleFeed').addEventListener('change', () => {
     state.sampleFeed = $('sampleFeed').checked;
     persist();
     refresh();
+  });
+  $('speed').addEventListener('input', () => {
+    state.speed = clampInt($('speed').value, SPEED_MIN, SPEED_MAX);
+    onSpeedChanged();
   });
   $('favorites').addEventListener('change', () => {
     state.favorites = $('favorites').value;
@@ -149,12 +169,12 @@ function bind() {
   $('refreshSec').addEventListener('change', () => {
     state.refreshSec = Number($('refreshSec').value);
     persist();
-    armRefreshInterval();
+    armRefreshTimer();
   });
   $('position').addEventListener('change', () => {
     state.position = $('position').value;
     persist();
-    applyPosition();
+    document.documentElement.dataset.position = state.position;
   });
 
   window.addEventListener('keydown', (event) => {
@@ -171,34 +191,65 @@ function bind() {
   });
 }
 
-function adjustSpeed(delta) {
-  state.speed = Math.max(SPEED_MIN, Math.min(SPEED_MAX, state.speed + delta));
+function onSpeedChanged() {
+  document.documentElement.style.setProperty('--crawl-s', `${state.speed}s`); // kept for any CSS fallback
+  $('speed').value = state.speed;
+  $('speedVal').textContent = `${state.speed} px/s`;
+  ticker?.setSpeed(state.speed);
   persist();
-  if (ticker) ticker.speed = effectiveSpeed();
-  $('speedVal').textContent = state.speed;
+}
+
+function nudgeSpeed(delta) {
+  state.speed = clampInt(state.speed + delta, SPEED_MIN, SPEED_MAX);
+  onSpeedChanged();
+}
+
+function clampInt(value, min, max) {
+  const n = Number(value);
+  if (!Number.isFinite(n)) return min;
+  return Math.max(min, Math.min(max, Math.round(n)));
+}
+
+function moveFeed(url, delta) {
+  const i = state.feeds.findIndex((f) => f.url === url);
+  const j = i + delta;
+  if (i < 0 || j < 0 || j >= state.feeds.length) return;
+  const [item] = state.feeds.splice(i, 1);
+  state.feeds.splice(j, 0, item);
+  persist();
+  renderFeeds();
+  refresh();
+}
+
+function moveLeague(id, delta) {
+  const i = state.leagues.indexOf(id);
+  const j = i + delta;
+  if (i < 0 || j < 0 || j >= state.leagues.length) return;
+  const [item] = state.leagues.splice(i, 1);
+  state.leagues.splice(j, 0, item);
+  persist();
+  renderLeagueToggles();
+  refresh();
 }
 
 function applyChrome() {
   document.documentElement.dataset.theme = state.theme;
   document.documentElement.dataset.mode = state.mode;
+  document.documentElement.dataset.position = state.position;
   $('sampleFeed').checked = state.sampleFeed;
-  $('speedVal').textContent = state.speed;
+  $('speed').value = state.speed;
+  $('speedVal').textContent = `${state.speed} px/s`;
   $('favorites').value = state.favorites;
   $('showFinals').checked = state.showFinals;
   $('wakeLock').checked = state.wakeLock;
   $('theme').value = state.theme;
   $('clockFmt').value = state.clockFmt;
-  $('refreshSec').value = state.refreshSec;
+  $('refreshSec').value = String(state.refreshSec);
   $('position').value = state.position;
-  applyPosition();
   renderLeagueToggles();
   renderFeeds();
   if ($('pairBox')) $('pairBox').hidden = !isNativeShell();
   syncWakeLock();
-}
-
-function applyPosition() {
-  document.querySelector('.app')?.setAttribute('data-position', state.position);
 }
 
 function persist() {
@@ -206,13 +257,21 @@ function persist() {
 }
 
 function openDrawer(open) {
-  $('drawer').hidden = !open;
+  const drawer = $('drawer');
+  drawer.hidden = !open;
   if (open) {
-    drawerOpened();
-    if (!globalThis.CORELINE_TV) $('feedUrl').focus();
+    lastFocusBeforeDrawer = document.activeElement;
+    document.body.classList.add('drawer-open');
+    const closeBtn = drawer.querySelector('[data-action="close-settings"]');
+    const first = drawer.querySelector('.focusable');
+    if (globalThis.CORELINE_TV) (closeBtn || first)?.focus();
+    else $('feedUrl').focus();
   } else {
-    drawerClosed();
+    document.body.classList.remove('drawer-open');
     stopPair();
+    if (lastFocusBeforeDrawer && document.contains(lastFocusBeforeDrawer)) {
+      lastFocusBeforeDrawer.focus();
+    }
   }
 }
 
@@ -220,32 +279,25 @@ function toggleMode() {
   state.mode = state.mode === 'crawl' ? 'board' : 'crawl';
   persist();
   applyChrome();
-  if (ticker) {
-    renderCrawl(visibleEvents());
-    ticker.measure();
-  }
 }
 
 function addFeed(rawUrl, rawLabel) {
   const url = (rawUrl ?? $('feedUrl').value).trim();
-  const label = (rawLabel ?? $('feedLabel').value).trim() || 'RSS';
+  const label = (rawLabel ?? $('feedLabel').value).trim().slice(0, 24) || 'RSS';
   if (!url) return toast('Paste a feed URL first');
-  try {
-    const parsed = new URL(url);
-    if (!['http:', 'https:'].includes(parsed.protocol)) throw new Error('bad');
-    if (state.feeds.some((f) => f.url === parsed.href)) return toast('Already added');
-    state.feeds.push({ url: parsed.href, label });
-    if (!rawUrl) {
-      $('feedUrl').value = '';
-      $('feedLabel').value = '';
-    }
-    persist();
-    renderFeeds();
-    refresh(true);
-    toast(`Added ${label}`);
-  } catch {
-    toast('Need a full http(s) URL');
+  if (state.feeds.length >= MAX_FEEDS) return toast(`At most ${MAX_FEEDS} feeds`);
+  const safety = isSafeFeedUrl(url);
+  if (!safety.ok) return toast(safety.reason);
+  if (state.feeds.some((f) => f.url === safety.url)) return toast('Already added');
+  state.feeds.push({ url: safety.url, label });
+  if (!rawUrl) {
+    $('feedUrl').value = '';
+    $('feedLabel').value = '';
   }
+  persist();
+  renderFeeds();
+  refresh(true);
+  toast(`Added ${label}`);
 }
 
 function nativeBridge() {
@@ -276,6 +328,7 @@ function startPair() {
   const dataUrl = qrDataUrl(info.url, 6);
   if (dataUrl) {
     qr.src = dataUrl;
+    qr.style.display = 'block';
   } else {
     qr.style.display = 'none';
   }
@@ -306,21 +359,43 @@ function pollPairInbox() {
 }
 
 function renderFeeds() {
-  $('feedList').innerHTML = state.feeds.map((feed) => `
+  $('feedList').innerHTML = state.feeds.map((feed, i) => `
     <li>
-      <div><b>${esc(feed.label)}</b><span>${esc(feed.url)}</span></div>
-      <button class="ghost focusable" data-action="remove-feed" data-url="${esc(feed.url)}">Remove</button>
+      <div class="feed-meta"><b>${esc(feed.label)}</b><span>${esc(feed.url)}</span></div>
+      <div class="row-actions">
+        <button class="ghost focusable" data-action="feed-up" data-url="${esc(feed.url)}" aria-label="Move ${esc(feed.label)} up" ${i === 0 ? 'disabled' : ''}>▲</button>
+        <button class="ghost focusable" data-action="feed-down" data-url="${esc(feed.url)}" aria-label="Move ${esc(feed.label)} down" ${i === state.feeds.length - 1 ? 'disabled' : ''}>▼</button>
+        <button class="ghost focusable" data-action="remove-feed" data-url="${esc(feed.url)}">Remove</button>
+      </div>
     </li>
   `).join('') || '<li class="hint">No custom feeds yet — add one above or keep the sample on.</li>';
 }
 
 function renderLeagueToggles() {
-  $('leagueToggles').innerHTML = Object.values(LEAGUES).map((league) => `
-    <label class="check">
-      <input class="focusable" type="checkbox" data-league-id="${league.id}" ${state.leagues.includes(league.id) ? 'checked' : ''}>
-      <span>${league.label}</span>
-    </label>
-  `).join('');
+  // Show every known league (not just the enabled ones) so a league can be
+  // added later — e.g. college football, which was invisible before because it
+  // wasn't in the default set and never appeared in this list to enable.
+  const ids = Object.keys(LEAGUES);
+  $('leagueToggles').innerHTML = ids.map((id) => {
+    const league = LEAGUES[id];
+    if (!league) return '';
+    const checked = state.leagues.includes(id);
+    const pos = state.leagues.indexOf(id);
+    return `
+      <div class="league-toggle">
+        <label class="check">
+          <input class="focusable" type="checkbox" data-league-id="${id}" ${checked ? 'checked' : ''}>
+          <span>${league.label}</span>
+        </label>
+        ${checked ? `
+        <div class="row-actions">
+          <button class="ghost focusable" data-action="league-up" data-league-id="${id}" aria-label="Move ${league.label} up" ${pos === 0 ? 'disabled' : ''}>▲</button>
+          <button class="ghost focusable" data-action="league-down" data-league-id="${id}" aria-label="Move ${league.label} down" ${pos === state.leagues.length - 1 ? 'disabled' : ''}>▼</button>
+        </div>
+        ` : ''}
+      </div>
+    `;
+  }).join('');
   $('leagueToggles').querySelectorAll('input').forEach((input) => {
     input.addEventListener('change', () => {
       const id = input.dataset.leagueId;
@@ -328,69 +403,89 @@ function renderLeagueToggles() {
         ? [...new Set([...state.leagues, id])]
         : state.leagues.filter((x) => x !== id);
       persist();
+      renderLeagueToggles();
       refresh();
     });
   });
 }
 
 async function refresh(manual = false) {
-  if (refreshing) {
-    refreshQueued = true;
-    return;
-  }
+  if (refreshing) return; // single-flight (AUDIT.md B3)
   refreshing = true;
-  if (manual) toast('Refreshing slate...');
+  if (manual) toast('Refreshing slate…');
+  const gen = ++refreshGen;
   try {
     const feeds = [
       ...state.feeds,
       ...(state.sampleFeed ? [SAMPLE_FEED] : []),
-    ];
-    const data = isNativeShell()
-      ? await buildClientSlate({ leagues: state.leagues, feeds })
-      : await fetchSlateFromServer(state.leagues, feeds);
+    ].slice(0, MAX_FEEDS);
+
+    const work = isNativeShell()
+      ? buildClientSlate({ leagues: state.leagues, feeds })
+      : fetchSlateFromServer(state.leagues, feeds);
+    const data = await Promise.race([work, timeout(REFRESH_TIMEOUT_MS)]);
+    if (!data) throw new Error('refresh timed out');
+    if (gen !== refreshGen) return; // superseded by a newer refresh
+
     events = data.events || [];
     cacheSlate(data);
+    updateHealth(data);
     $('brandSub').textContent = data.demo
-      ? 'Demo slate — live scoreboards unreachable'
+      ? 'Demo slate · live scoreboards unreachable'
       : `Updated ${new Date(data.generatedAt || Date.now()).toLocaleTimeString()}`;
-    updateHealth(data.health);
     render();
     if (manual) toast(data.demo ? 'Showing demo slate' : `Loaded ${events.length} listings`);
   } catch (err) {
+    if (gen !== refreshGen) return;
     const cached = readCachedSlate();
     if (cached?.events?.length) {
       events = cached.events;
-      updateHealth('stale');
       render();
-      toast('Could not refresh — showing last slate');
+      if (manual) toast('Could not refresh — showing last slate');
     } else {
       events = await localFallback();
-      updateHealth('degraded');
       render();
-      toast('Offline slate');
+      if (manual) toast('Offline slate');
     }
-    console.warn(err);
+    updateHealth({ demo: false, health: { degraded: 1, stale: 0 } });
+    console.warn('core-line refresh failed', err);
   } finally {
     refreshing = false;
-    if (refreshQueued) {
-      refreshQueued = false;
-      void refresh();
-    }
   }
 }
 
-function updateHealth(health) {
+function timeout(ms) {
+  return new Promise((resolve) => setTimeout(() => resolve(null), ms));
+}
+
+function updateHealth(data) {
+  const demo = Boolean(data?.demo);
+  const degraded = Number(data?.health?.degraded || 0) + Number(data?.feeds?.filter((f) => !f.ok).length || 0) + Number(data?.sources?.filter((s) => !s.ok).length || 0);
+  const stale = Number(data?.health?.stale || 0) + Number(data?.feeds?.filter((f) => f.stale).length || 0);
+  lastHealth = { demo, degraded: degraded > 0 ? degraded : 0, stale };
+  paintHealth();
+}
+
+function paintHealth() {
   const el = $('health');
   if (!el) return;
-  let worst = 'ok';
-  if (typeof health === 'string') {
-    worst = health;
-  } else if (health) {
-    if (health.leagues === 'degraded' || health.feeds === 'degraded') worst = 'degraded';
-    else if (health.leagues === 'stale' || health.feeds === 'stale') worst = 'stale';
+  const { demo, degraded, stale } = lastHealth;
+  let klass = 'ok';
+  let text = 'All sources live';
+  if (demo) {
+    klass = 'demo';
+    text = 'Demo slate — scoreboards unreachable';
+  } else if (degraded > 0 && stale > 0) {
+    klass = 'degraded';
+    text = `${degraded} source${degraded === 1 ? '' : 's'} retrying · showing last-good`;
+  } else if (degraded > 0) {
+    klass = 'degraded';
+    text = `${degraded} source${degraded === 1 ? '' : 's'} retrying`;
   }
-  el.dataset.health = worst;
-  el.textContent = worst;
+  el.className = `health ${klass}`;
+  el.title = text;
+  el.setAttribute('aria-label', text);
+  el.textContent = text;
 }
 
 async function fetchSlateFromServer(leagues, feeds) {
@@ -429,6 +524,8 @@ function matchesFilter(ev, filter) {
   if (!filter || filter === 'ALL') return true;
   if (filter === 'LIVE') return ev.status === 'live';
   if (filter === 'RSS') return ev.source === 'rss';
+  if (filter.startsWith('sport:')) return SPORT_LABELS[filter]?.has(ev.league) ?? false;
+  if (filter.startsWith('feed:')) return ev.feed === filter.slice(5);
   return ev.league === filter;
 }
 
@@ -438,7 +535,79 @@ function isFav(ev, favs) {
   return favs.some((f) => bag.some((b) => b.includes(f)));
 }
 
+function favSet() {
+  return new Set(String(state.favorites || '').split(/[,\s]+/).map((s) => s.trim().toUpperCase()).filter(Boolean));
+}
+
+function applyFavorites(set) {
+  state.favorites = [...set].join(', ');
+  persist();
+  $('favorites').value = state.favorites;
+  render(); // re-sorts by favorite + refreshes the team picker
+}
+
+function teamListFromEvents() {
+  // Follow the active filter tab so the picker stays short enough to walk
+  // with a remote (college sports alone would otherwise list hundreds).
+  const seen = new Map();
+  for (const ev of visibleEvents()) {
+    for (const team of [ev.away, ev.home]) {
+      if (!team?.abbr) continue;
+      const key = String(team.abbr).toUpperCase();
+      if (!seen.has(key)) seen.set(key, { abbr: key, name: team.name || key });
+    }
+  }
+  return [...seen.values()].sort((a, b) => a.abbr.localeCompare(b.abbr)).slice(0, 100);
+}
+
+function renderTeamPicker() {
+  const el = $('teamPicker');
+  if (!el) return;
+  const set = favSet();
+  const teams = teamListFromEvents();
+  el.innerHTML = teams.length
+    ? teams.map((t) => `
+      <button class="team-chip focusable ${set.has(t.abbr) ? 'on' : ''}" data-action="toggle-team" data-abbr="${esc(t.abbr)}" aria-pressed="${set.has(t.abbr)}" title="${esc(t.name)}">
+        ${set.has(t.abbr) ? '★' : '☆'} ${esc(t.abbr)}
+      </button>`).join('')
+    : '<span class="hint">No teams yet — add a feed or wait for the next refresh.</span>';
+}
+
+function toggleTeam(abbr) {
+  const key = String(abbr).toUpperCase();
+  const set = favSet();
+  if (set.has(key)) set.delete(key); else set.add(key);
+  applyFavorites(set);
+  // keep the just-toggled chip focused after the picker re-renders
+  const chip = $('teamPicker')?.querySelector(`[data-abbr="${CSS.escape(key)}"]`);
+  if (chip) chip.focus();
+}
+
+function cardFavTeams(ev) {
+  return [ev.away?.abbr, ev.home?.abbr].filter(Boolean).map((s) => String(s).toUpperCase());
+}
+
+function toggleCardFav(id) {
+  const ev = events.find((e) => e.id === id);
+  if (!ev) return;
+  const teams = cardFavTeams(ev);
+  if (!teams.length) return;
+  const set = favSet();
+  const allFav = teams.every((t) => set.has(t));
+  if (allFav) teams.forEach((t) => set.delete(t));
+  else teams.forEach((t) => set.add(t));
+  applyFavorites(set);
+}
+
+function accentFor(ev) {
+  for (const league of Object.values(LEAGUES)) {
+    if (league.label === ev.league) return league.accent;
+  }
+  return 'var(--line)';
+}
+
 function render() {
+  const focusSnap = captureFocus();
   const list = visibleEvents();
   const live = events.filter((e) => e.status === 'live').length;
   const up = events.filter((e) => e.status === 'upcoming').length;
@@ -453,29 +622,65 @@ function render() {
   renderHero(list);
   renderGrid(list);
   renderCrawl(list);
-  if (ticker) ticker.measure();
   const next = list.find((e) => e.status === 'live') || list.find((e) => e.status === 'upcoming');
   if ($('bigNext') && next) {
     $('bigNext').textContent = toTickerText(next);
   }
   $('empty').hidden = list.length > 0;
   $('grid').hidden = list.length === 0;
+  restoreFocus(focusSnap);
+  renderTeamPicker();
+}
+
+function captureFocus() {
+  const el = document.activeElement;
+  if (!el || !el.classList || !el.classList.contains('focusable')) return null;
+  const container = el.closest('#leagues, #grid, #hero');
+  if (!container) return null;
+  const nodes = [...container.querySelectorAll('.focusable')];
+  return { id: container.id, idx: nodes.indexOf(el) };
+}
+
+function restoreFocus(snap) {
+  if (!snap || snap.idx < 0) return;
+  const container = document.getElementById(snap.id);
+  if (!container) return;
+  const nodes = [...container.querySelectorAll('.focusable')];
+  const target = nodes[Math.min(snap.idx, nodes.length - 1)];
+  if (target) target.focus();
 }
 
 function renderFilters() {
-  const focusKey = saveFocusId();
   const counts = { ALL: events.length, LIVE: events.filter((e) => e.status === 'live').length, RSS: events.filter((e) => e.source === 'rss').length };
-  for (const label of Object.values(LEAGUES).map((l) => l.label)) {
+  for (const label of LEAGUE_LABELS) {
     counts[label] = events.filter((e) => e.league === label).length;
   }
-  $('leagues').innerHTML = LEAGUE_ORDER
-    .filter((label) => label === 'ALL' || counts[label])
-    .map((label) => `
-      <button class="league-chip focusable" data-action="filter" data-league="${label}" aria-pressed="${state.leagueFilter === label}">
-        ${label}${label === 'ALL' ? '' : ` ${counts[label] || ''}`}
-      </button>
-    `).join('');
-  restoreFocusId(focusKey);
+  const chips = ['ALL', 'LIVE', 'RSS'].map((label) => filterChip(label, label, counts[label]));
+  // Sport super-tabs ("Football" = NFL + NCAAF, …) sit before the league tabs.
+  for (const g of SPORT_GROUPS) {
+    const n = g.leagues.reduce((sum, id) => sum + (counts[LEAGUES[id]?.label] || 0), 0);
+    if (n) chips.push(filterChip(g.id, g.label, n));
+  }
+  for (const label of LEAGUE_LABELS) {
+    if (counts[label]) chips.push(filterChip(label, label, counts[label]));
+  }
+  // Each custom feed gets its own tab so a pasted feed can be viewed whole,
+  // instead of being scattered across auto-detected league tabs (AUDIT A-group).
+  const feedChips = state.feeds
+    .map((f) => f.label)
+    .filter((label) => events.some((e) => e.feed === label));
+  for (const label of feedChips) {
+    chips.push(filterChip(`feed:${label}`, `📡 ${label}`, events.filter((e) => e.feed === label).length));
+  }
+  $('leagues').innerHTML = chips.join('');
+}
+
+function filterChip(filterKey, display, count) {
+  return `
+    <button class="league-chip focusable" data-action="filter" data-league="${esc(filterKey)}" aria-pressed="${state.leagueFilter === filterKey}">
+      ${esc(display)}${filterKey === 'ALL' ? '' : ` ${count || ''}`}
+    </button>
+  `;
 }
 
 function renderHero(list) {
@@ -488,7 +693,7 @@ function renderHero(list) {
   }
   hero.hidden = false;
   hero.innerHTML = `
-    <article class="hero-card focusable" tabindex="0">
+    <article class="hero-card focusable" tabindex="0" style="--acc:${esc(accentFor(featured))}">
       <div>
         <div class="hero-meta">
           <span class="badge live">LIVE</span>
@@ -528,20 +733,20 @@ function renderGrid(list) {
   ].join('');
 }
 
-function leagueAccentStyle(leagueLabel) {
-  const league = LEAGUE_BY_LABEL[leagueLabel];
-  return league?.accent ? ` data-accent style="--league-accent:${league.accent}"` : '';
-}
-
 function gameCard(ev) {
   const badge = ev.status === 'live' ? 'live' : ev.status === 'final' ? 'final' : 'upcoming';
   const label = ev.status === 'live' ? (ev.detail || 'LIVE') : ev.status === 'final' ? 'FINAL' : (ev.detail || 'UP');
-  const accent = leagueAccentStyle(ev.league);
+  const favs = favSet();
+  const teams = cardFavTeams(ev);
+  const favOn = teams.length > 0 && teams.every((t) => favs.has(t));
   return `
-    <article class="game focusable" tabindex="0">
+    <article class="game focusable" tabindex="0" style="--acc:${esc(accentFor(ev))}">
       <div class="game-top">
-        <span class="league-tag"${accent}>${esc(ev.league || ev.feed || 'RSS')}</span>
-        <span class="badge ${badge}">${esc(label)}</span>
+        <span class="league-tag">${esc(ev.league || ev.feed || 'RSS')}</span>
+        <div class="game-top-right">
+          <span class="badge ${badge}">${esc(label)}</span>
+          <button class="fav-star focusable ${favOn ? 'on' : ''}" data-action="toggle-card-fav" data-id="${esc(ev.id)}" aria-label="${favOn ? 'Unfavorite' : 'Favorite'} these teams" aria-pressed="${favOn}">★</button>
+        </div>
       </div>
       <div class="game-teams">
         <div class="gt ${ev.away?.winner ? 'win' : ''}"><span class="who">${esc(ev.away.abbr)}</span><span class="sc">${ev.away.score ?? ''}</span></div>
@@ -555,11 +760,10 @@ function gameCard(ev) {
 }
 
 function headlineCard(ev) {
-  const accent = leagueAccentStyle(ev.league);
   return `
-    <article class="game focusable" tabindex="0">
+    <article class="game focusable" tabindex="0" style="--acc:${esc(accentFor(ev))}">
       <div class="game-top">
-        <span class="league-tag"${accent}>${esc(ev.league || ev.feed || 'RSS')}</span>
+        <span class="league-tag">${esc(ev.league || ev.feed || 'RSS')}</span>
         <span class="badge ${ev.status}">${esc(ev.status.toUpperCase())}</span>
       </div>
       <div class="gt"><span class="who">${esc(ev.headline || ev.rawTitle || 'Listing')}</span></div>
@@ -569,20 +773,18 @@ function headlineCard(ev) {
 }
 
 function renderCrawl(list) {
-  const html = (list.length ? list : [{ headline: 'Add an RSS feed in settings — Team vs Team, ESPN, TSN4, SN 3', channels: [], status: 'upcoming' }])
+  const html = (list.length ? list : [{ headline: 'Add an RSS feed in settings — Team vs Team · ESPN, TSN4, SN 3', channels: [], status: 'upcoming' }])
     .map((ev) => {
-      const text = toTickerText(ev);
       const kind = ev.status === 'live' ? 'LIVE' : ev.status === 'final' ? 'FINAL' : 'UP';
       const klass = ev.status === 'live' ? 'k' : ev.status === 'final' ? 'k final' : 'k up';
       const channels = (ev.channels || []).join('  ');
       const body = ev.away && ev.home
         ? `${esc(ev.away.abbr)}${ev.status !== 'upcoming' && ev.away.score != null ? ` ${esc(ev.away.score)}-${esc(ev.home.score)} ` : ' vs '}${esc(ev.home.abbr)}`
-        : esc(ev.headline || ev.rawTitle || text);
+        : esc(ev.headline || ev.rawTitle || toTickerText(ev));
       return `<span class="tick"><span class="${klass}">${kind}</span> ${body}${channels ? ` <span class="chs">${esc(channels)}</span>` : ''}</span>`;
     })
     .join('');
-  $('crawlA').innerHTML = html;
-  $('crawlB').innerHTML = html;
+  ticker.setItems(html);
 }
 
 function tickClock() {
@@ -625,3 +827,11 @@ function esc(value) {
     .replace(/"/g, '&quot;')
     .replace(/'/g, '&#39;');
 }
+
+// Expose a few internals for the manual/soak test harness (window-only).
+window.__CORELINE__ = {
+  getState: () => state,
+  getEvents: () => events,
+  getRegistry: () => getClientSlateRegistry(),
+  refresh,
+};

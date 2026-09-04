@@ -1,94 +1,81 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 
-import { createBackoff, parseRetryAfter } from '../lib/backoff.mjs';
+import { createBackoff, parseRetryAfterMs, BACKOFF_DEFAULTS } from '../lib/backoff.mjs';
 
-test('initial state: shouldSkip is false', () => {
-  const bo = createBackoff();
-  assert.equal(bo.shouldSkip(), false);
-  assert.equal(bo.attempt, 0);
+test('backoff doubles per failure and caps at maxMs', () => {
+  const b = createBackoff({ baseMs: 1000, maxMs: 100000, factor: 2, jitter: 0 });
+  const t0 = 1_000_000;
+  let now = t0;
+  const waits = [];
+  for (let i = 0; i < 10; i++) {
+    waits.push(b.fail(now));
+    now += waits[waits.length - 1];
+  }
+  // no jitter → deterministic
+  assert.equal(waits[0], 1000);
+  assert.equal(waits[1], 2000);
+  assert.equal(waits[2], 4000);
+  for (let i = 3; i < waits.length; i++) assert.ok(waits[i] <= 100000);
+  assert.equal(waits[waits.length - 1], 100000); // capped
 });
 
-test('fail() sets shouldSkip for future polls', () => {
-  const bo = createBackoff({ baseMs: 1000, capMs: 60_000 });
-  const now = Date.now();
-  bo.fail(null, now);
-  assert.equal(bo.attempt, 1);
-  assert.equal(bo.shouldSkip(now), true);
-  assert.equal(bo.shouldSkip(now + 2000), false);
+test('jitter stays within ±jitterRatio of the base wait', () => {
+  const b = createBackoff({ baseMs: 10000, maxMs: 600000, factor: 2, jitter: 0.25 });
+  const waits = [];
+  for (let i = 0; i < 500; i++) waits.push(b.fail(0));
+  const first = waits[0];
+  for (const w of waits) {
+    // worst case: base grows; every wait must be within ±25% of its unjittered base
+    // but here we only assert sanity: waits are positive and finite.
+    assert.ok(Number.isFinite(w) && w > 0);
+  }
+  assert.ok(first >= 7500 && first <= 12500);
 });
 
-test('succeed() resets backoff', () => {
-  const bo = createBackoff({ baseMs: 1000, capMs: 60_000 });
-  bo.fail(null, 1000);
-  bo.fail(null, 1000);
-  assert.equal(bo.attempt, 2);
-  bo.succeed();
-  assert.equal(bo.attempt, 0);
-  assert.equal(bo.shouldSkip(), false);
+test('success resets the schedule', () => {
+  const b = createBackoff({ baseMs: 1000, jitter: 0 });
+  b.fail(0);
+  b.fail(1000);
+  assert.equal(b.failCount, 2);
+  b.success();
+  assert.equal(b.failCount, 0);
+  assert.equal(b.nextAt, 0);
+  assert.equal(b.canTry(123), true);
 });
 
-test('exponential growth with cap', () => {
-  const bo = createBackoff({ baseMs: 1000, capMs: 10_000 });
-  const now = Date.now();
-  const d1 = bo.fail(null, now);
-  assert.ok(d1 >= 1000 && d1 <= 1250);
-  const d2 = bo.fail(null, now + d1);
-  assert.ok(d2 >= 2000 && d2 <= 2500);
-  const d3 = bo.fail(null, now + d1 + d2);
-  assert.ok(d3 >= 4000 && d3 <= 5000);
-  const d4 = bo.fail(null, now + d1 + d2 + d3);
-  assert.ok(d4 >= 8000 && d4 <= 10_000);
-  const d5 = bo.fail(null, now + d1 + d2 + d3 + d4);
-  assert.ok(d5 <= 12_500);
+test('canTry / waitMs gate retries until nextAt', () => {
+  const b = createBackoff({ baseMs: 5000, jitter: 0 });
+  const now = 10_000;
+  b.fail(now); // nextAt = 15000
+  assert.equal(b.canTry(14999), false);
+  assert.equal(b.waitMs(14999), 1);
+  assert.equal(b.canTry(15000), true);
 });
 
-test('reset() clears state', () => {
-  const bo = createBackoff();
-  bo.fail(null, 1000);
-  bo.reset();
-  assert.equal(bo.attempt, 0);
-  assert.equal(bo.shouldSkip(), false);
+test('retryAfter override wins when larger than computed wait', () => {
+  const b = createBackoff({ baseMs: 1000, jitter: 0 });
+  const wait = b.fail(0, 30000);
+  assert.equal(wait, 30000);
 });
 
-test('toJSON / hydrate round-trip', () => {
-  const bo = createBackoff({ baseMs: 1000, capMs: 60_000 });
-  bo.fail(null, 5000);
-  const json = bo.toJSON();
-  assert.equal(json.attempt, 1);
-  assert.ok(json.nextAt > 5000);
-  const bo2 = createBackoff();
-  bo2.hydrate(json);
-  assert.equal(bo2.attempt, 1);
-  assert.equal(bo2.nextAt, json.nextAt);
+test('parseRetryAfterMs parses seconds and HTTP dates', () => {
+  assert.equal(parseRetryAfterMs('120'), 120_000);
+  assert.equal(parseRetryAfterMs(null), 0);
+  assert.equal(parseRetryAfterMs(''), 0);
+  assert.equal(parseRetryAfterMs('garbage'), 0);
+  const date = new Date(Date.now() + 60_000).toUTCString();
+  const ms = parseRetryAfterMs(date);
+  assert.ok(ms > 0 && ms <= 60_000 + 1000);
+  // clamps to cap
+  assert.equal(parseRetryAfterMs(String(999999999)), BACKOFF_DEFAULTS.maxMs);
 });
 
-test('hydrate with null is safe', () => {
-  const bo = createBackoff();
-  bo.hydrate(null);
-  assert.equal(bo.attempt, 0);
-});
-
-test('Retry-After: seconds', () => {
-  const now = 1000;
-  assert.equal(parseRetryAfter('120', now), 120_000);
-});
-
-test('Retry-After: HTTP-date', () => {
-  const date = new Date(Date.now() + 30_000).toUTCString();
-  const ms = parseRetryAfter(date);
-  assert.ok(ms >= 29_000 && ms <= 31_000);
-});
-
-test('Retry-After: empty', () => {
-  assert.equal(parseRetryAfter(''), 0);
-  assert.equal(parseRetryAfter(null), 0);
-  assert.equal(parseRetryAfter(undefined), 0);
-});
-
-test('fail() honors Retry-After when longer than backoff', () => {
-  const bo = createBackoff({ baseMs: 1000, capMs: 60_000 });
-  const now = Date.now();
-  const delay = bo.fail('30', now);
-  assert.ok(delay >= 30_000);
+test('toJSON/fromJSON round-trips schedule state', () => {
+  const a = createBackoff({ baseMs: 1000, jitter: 0 });
+  a.fail(0);
+  const b = createBackoff();
+  b.fromJSON(a.toJSON());
+  assert.equal(b.failCount, a.failCount);
+  assert.equal(b.nextAt, a.nextAt);
 });

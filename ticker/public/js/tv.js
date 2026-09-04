@@ -1,5 +1,3 @@
-let _drawerFocusRestore = null;
-
 export function initTvNav(root) {
   const onKey = (event) => {
     if (isEditing(event.target)) return;
@@ -18,9 +16,8 @@ export function initTvNav(root) {
       return;
     }
     if (dir === 'back') {
-      const drawer = document.getElementById('drawer');
       const close = root.querySelector('[data-action="close-settings"]');
-      if (close && drawer && !drawer.hidden) {
+      if (close && !document.getElementById('drawer').hidden) {
         event.preventDefault();
         close.click();
       }
@@ -43,62 +40,20 @@ export function initTvNav(root) {
   return () => window.removeEventListener('keydown', onKey);
 }
 
-export function drawerOpened() {
-  _drawerFocusRestore = document.activeElement;
-  const close = document.getElementById('drawerClose');
-  if (close) close.focus();
-}
-
-export function drawerClosed() {
-  if (_drawerFocusRestore && _drawerFocusRestore.isConnected) {
-    _drawerFocusRestore.focus();
-  } else {
-    document.querySelector('.focusable')?.focus();
-  }
-  _drawerFocusRestore = null;
-}
-
-export function saveFocusId() {
-  const el = document.activeElement;
-  if (!el || el === document.body) return null;
-  return el.dataset?.action
-    ? `action:${el.dataset.action}${el.dataset.league ? `:${el.dataset.league}` : ''}`
-    : el.id || null;
-}
-
-export function restoreFocusId(key) {
-  if (!key) return;
-  let el = null;
-  if (key.startsWith('action:')) {
-    const parts = key.slice('action:'.length).split(':');
-    const action = parts[0];
-    const league = parts[1];
-    el = league
-      ? document.querySelector(`[data-action="${action}"][data-league="${league}"]`)
-      : document.querySelector(`[data-action="${action}"]`);
-  } else {
-    el = document.getElementById(key);
-  }
-  if (el && el.classList.contains('focusable') && visible(el)) {
-    el.focus();
-  }
-}
-
-function isDrawerOpen() {
-  const drawer = document.getElementById('drawer');
-  return drawer && !drawer.hidden;
-}
-
 function nearest(current, dir) {
-  const scope = isDrawerOpen()
-    ? [...document.querySelectorAll('#drawer .focusable')].filter((el) => visible(el))
-    : [...document.querySelectorAll('.focusable')].filter((el) => visible(el));
-  if (!scope.length) return null;
-  if (!current || !scope.includes(current)) return scope[0];
+  const drawerOpen = drawerShown();
+  const nodes = [...document.querySelectorAll('.focusable')].filter((el) => {
+    if (!visible(el)) return false;
+    // While the settings drawer is open, D-pad must stay inside it (AUDIT D1).
+    if (drawerOpen && !el.closest('#drawer')) return false;
+    return true;
+  });
+  if (!nodes.length) return null;
+  if (!current || !nodes.includes(current)) return nodes[0];
   const a = box(current);
   let best = null;
   let bestScore = Infinity;
-  for (const node of scope) {
+  for (const node of nodes) {
     if (node === current) continue;
     const b = box(node);
     const dx = b.cx - a.cx;
@@ -130,13 +85,18 @@ function visible(el) {
   return r.width > 0 && r.height > 0;
 }
 
+function drawerShown() {
+  const drawer = document.getElementById('drawer');
+  return Boolean(drawer && !drawer.hidden);
+}
+
 function isEditing(el) {
   if (!el || el === document.body) return false;
   const tag = (el.tagName || '').toLowerCase();
   if (tag === 'textarea' || tag === 'select') return true;
   if (tag === 'input') {
     const type = (el.type || 'text').toLowerCase();
-    return !['button', 'submit', 'checkbox', 'radio'].includes(type);
+    return !['button', 'submit', 'checkbox', 'radio', 'range'].includes(type);
   }
   return Boolean(el.isContentEditable);
 }

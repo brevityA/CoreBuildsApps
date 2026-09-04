@@ -7,8 +7,7 @@ import { normalizeChannel, extractChannels } from './channels.mjs';
 import { teamFromName } from './parser.mjs';
 
 export const LEAGUES = {
-  nfl: { id: 'nfl', label: 'NFL', sport: 'football', espn: 'football/nfl', accent: '#013369' },
-  nba: { id: 'nba', label: 'NBA', sport: 'basketball', espn: 'basketball/nba', accent: '#c8102e' },
+  nfl: { id: 'nfl', label: 'NFL', sport: 'football', espn: 'football/nfl', accent: '#013369' },  nba: { id: 'nba', label: 'NBA', sport: 'basketball', espn: 'basketball/nba', accent: '#c8102e' },
   mlb: { id: 'mlb', label: 'MLB', sport: 'baseball', espn: 'baseball/mlb', accent: '#002d72' },
   nhl: { id: 'nhl', label: 'NHL', sport: 'hockey', espn: 'hockey/nhl', accent: '#a2aaad' },
   ncaaf: { id: 'ncaaf', label: 'NCAAF', sport: 'football', espn: 'football/college-football', accent: '#9e7c0c' },
@@ -21,7 +20,24 @@ export const LEAGUES = {
   f1: { id: 'f1', label: 'F1', sport: 'racing', espn: 'racing/f1', accent: '#e10600' },
 };
 
-export const DEFAULT_LEAGUES = ['mlb', 'nfl', 'nba', 'nhl', 'epl', 'mls', 'wnba'];
+/** Single source of truth for the out-of-the-box league set (client + server). */
+export const DEFAULT_LEAGUES = ['mlb', 'nfl', 'ncaaf', 'nba', 'ncaab', 'nhl', 'epl', 'mls', 'wnba'];
+
+/**
+ * Sport-level groupings for the filter row ("Football" = NFL + NCAAF, …).
+ * Supporter request: "if you just coded football it would pull all games".
+ */
+export const SPORT_GROUPS = [
+  { id: 'sport:football', label: 'Football', leagues: ['nfl', 'ncaaf'] },
+  { id: 'sport:basketball', label: 'Basketball', leagues: ['nba', 'ncaab', 'wnba'] },
+  { id: 'sport:baseball', label: 'Baseball', leagues: ['mlb'] },
+  { id: 'sport:hockey', label: 'Hockey', leagues: ['nhl'] },
+  { id: 'sport:soccer', label: 'Soccer', leagues: ['epl', 'mls', 'ucl'] },
+  { id: 'sport:mma', label: 'MMA', leagues: ['ufc'] },
+  { id: 'sport:racing', label: 'Racing', leagues: ['f1'] },
+];
+
+/** Order the filter row / settings chips use. */
 export const LEAGUE_LABELS = Object.values(LEAGUES).map((l) => l.label);
 
 export function espnScoreboardUrl(leagueId) {

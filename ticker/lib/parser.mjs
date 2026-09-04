@@ -7,12 +7,18 @@
 import { extractChannels, splitChannelsBlob, normalizeChannel, peelChannels } from './channels.mjs';
 import { abbreviate } from './teams.mjs';
 
+/** Hard cap on items parsed from any single feed (bounded DOM, no runaway renders). */
 export const MAX_ITEMS_PER_FEED = 100;
 
 const VS_RE = /\s+(?:vs\.?|v\.|versus|@|at)\s+/i;
 const SEP_RE = /\s*[-–—|:]\s*/;
 const LEAGUE_PREFIX = /^(nhl|nba|nfl|mlb|wnba|mls|epl|ufc|f1|ncaaf|ncaab|cfb|cbb|soccer|football|hockey|baseball|basketball)\s*[-–—:|]\s*/i;
-const LIVE_PREFIX = /^(?:\[?live\]?|in progress|now playing)\s*[-–—:|]?\s*/i;
+const LIVE_PREFIX = /^(?:\[?live\]?\b|in progress\b|now playing\b)\s*[-–—:|]?\s*/i;
+const FINAL_PREFIX = /^(?:final\b|ft\b|full[- ]time)\s*[-–—:|]?\s*/i;
+const REPLAY_RE = /\b(replay|re-?run|on[- ]demand|encore|highlights?)\b/i;
+/** Like LEAGUE_PREFIX but the separator is optional — used only to peel a
+ *  leading league word ("NFL LIVE - X vs Y") before testing LIVE/FINAL. */
+const LEAGUE_WORD = /^(?:nhl|nba|nfl|mlb|wnba|mls|epl|ufc|f1|ncaaf|ncaab|cfb|cbb|soccer|football|hockey|baseball|basketball)\s*[-–—:|]?\s*/i;
 const TIME_RE = /\b((?:1[0-2]|0?[1-9])(?::[0-5]\d)?\s*(?:am|pm)|(?:[01]?\d|2[0-3]):[0-5]\d)\b/i;
 
 export function decodeXmlEntities(value) {
@@ -31,11 +37,17 @@ export function decodeXmlEntities(value) {
 }
 
 export function stripTags(html) {
-  return decodeXmlEntities(
-    String(html || '')
-      .replace(/<!\[CDATA\[([\s\S]*?)\]\]>/g, '$1')
-      .replace(/<[^>]+>/g, ' ')
-  ).replace(/\s+/g, ' ').trim();
+  // CDATA sections are literal text and may contain `<`, `>`, or whole tag-like
+  // shapes. Hoist them out first so the tag-stripper cannot eat their contents
+  // (a real bug: `<![CDATA[Leafs <vs> Habs]]>` used to collapse to ">").
+  const cdata = [];
+  let source = String(html || '').replace(/<!\[CDATA\[([\s\S]*?)\]\]>/g, (_, inner) => {
+    cdata.push(inner);
+    return `\u0000${cdata.length - 1}\u0000`;
+  });
+  source = decodeXmlEntities(source.replace(/<[^>]+>/g, ' '));
+  source = source.replace(/\u0000(\d+)\u0000/g, (_, i) => cdata[Number(i)] ?? '');
+  return source.replace(/\s+/g, ' ').trim();
 }
 
 export function parseListing(title, extra = '') {
@@ -81,13 +93,21 @@ export function parseListing(title, extra = '') {
     && !VS_RE.test(rawExtra);
 
   const timeMatch = combined.match(TIME_RE);
-  const isLive = LIVE_PREFIX.test(rawTitle) || /\blive\b/i.test(rawTitle);
+  // A stray "live" anywhere in the title used to flip an item to LIVE — so a
+  // "NFL Live" show, a "watch live replay", or any replay/rerun title showed a
+  // red LIVE badge over a game that isn't live. Only a LEADING live indicator
+  // (optionally after a league prefix) counts, and replay markers win.
+  const afterLeague = rawTitle.replace(LEAGUE_WORD, '');
+  const isReplay = REPLAY_RE.test(`${rawTitle} ${rawExtra}`);
+  const isFinal = (FINAL_PREFIX.test(rawTitle) || FINAL_PREFIX.test(afterLeague))
+    && !/final four/i.test(rawTitle);
+  const isLive = !isReplay && (LIVE_PREFIX.test(rawTitle) || LIVE_PREFIX.test(afterLeague));
 
   const event = {
     id: slugId(rawTitle || combined),
     source: 'rss',
     league: league || guessLeague(combined, channels),
-    status: isLive ? 'live' : 'upcoming',
+    status: isLive ? 'live' : isFinal ? 'final' : 'upcoming',
     start: null,
     detail: timeMatch ? timeMatch[1].toUpperCase() : '',
     away: away ? teamFromName(away) : null,
@@ -111,7 +131,7 @@ export function parseFeed(xmlOrJson, meta = {}) {
 
   const items = [];
   const itemBlocks = [...text.matchAll(/<(item|entry)\b[^>]*>([\s\S]*?)<\/\1>/gi)];
-  for (const block of itemBlocks.slice(0, MAX_ITEMS_PER_FEED)) {
+  for (const block of itemBlocks) {
     const body = block[2];
     const title = firstTag(body, 'title');
     const description = firstTag(body, 'description')
@@ -121,6 +141,8 @@ export function parseFeed(xmlOrJson, meta = {}) {
     const category = allTags(body, 'category').join(', ');
     const pub = firstTag(body, 'pubDate') || firstTag(body, 'updated') || firstTag(body, 'published');
     const event = parseListing(title, [description, category].filter(Boolean).join(', '));
+    const catLeague = leagueFromCategory(category);
+    if (catLeague && (!event.league || event.league === 'RSS')) event.league = catLeague;
     event.source = meta.source || 'rss';
     event.feed = meta.label || meta.source || 'RSS';
     if (pub) {
@@ -129,7 +151,7 @@ export function parseFeed(xmlOrJson, meta = {}) {
     }
     items.push(event);
   }
-  return items;
+  return items.slice(0, MAX_ITEMS_PER_FEED);
 }
 
 export function parseJsonFeed(text, meta = {}) {
@@ -143,8 +165,10 @@ export function parseJsonFeed(text, meta = {}) {
     ? data
     : data.items || data.events || data.games || data.entries || data.results || [];
   if (!Array.isArray(rows)) return [];
+  const limited = rows.slice(0, MAX_ITEMS_PER_FEED);
 
-  return rows.slice(0, MAX_ITEMS_PER_FEED).filter((row) => row != null && typeof row !== 'boolean' && typeof row !== 'number').map((row, index) => {
+  return limited.map((row, index) => {
+    if (row == null) return null; // skip null rows instead of crashing (AUDIT B-group)
     if (typeof row === 'string') {
       const event = parseListing(row);
       event.source = meta.source || 'rss';
@@ -152,10 +176,11 @@ export function parseJsonFeed(text, meta = {}) {
       event.id = event.id || `json-${index}`;
       return event;
     }
+    if (typeof row !== 'object') return null; // numbers, booleans, etc.
     const title = row.title || row.name || row.headline || row.event || '';
     const extra = row.channels
       ? (Array.isArray(row.channels) ? row.channels.join(', ') : String(row.channels))
-      : row.description || row.summary || row.networks || row.tv || '';
+      : row.description || row.summary || row.content_html || row.content_text || row.networks || row.tv || '';
     const event = parseListing(title, extra);
     if (Array.isArray(row.channels)) {
       event.channels = unique([
@@ -170,16 +195,20 @@ export function parseJsonFeed(text, meta = {}) {
       if (row.away?.score != null) event.away.score = String(row.away.score);
     }
     if (row.league) event.league = String(row.league).toUpperCase();
+    if (row.category || row.categories) {
+      const catLeague = leagueFromCategory(String(row.category || row.categories));
+      if (catLeague && (!event.league || event.league === 'RSS')) event.league = catLeague;
+    }
     if (row.status) event.status = normalizeStatus(row.status);
-    if (row.start || row.date || row.time) {
-      const ms = Date.parse(row.start || row.date || row.time);
+    if (row.start || row.date || row.time || row.date_published || row.published) {
+      const ms = Date.parse(row.start || row.date || row.time || row.date_published || row.published);
       if (!Number.isNaN(ms)) event.start = new Date(ms).toISOString();
     }
     event.source = meta.source || 'rss';
     event.feed = meta.label || row.feed || 'RSS';
     event.id = row.id || event.id || `json-${index}`;
     return event;
-  });
+  }).filter(Boolean);
 }
 
 export function toTickerText(event) {
@@ -201,9 +230,11 @@ export function toTickerText(event) {
 
 export function guessLeague(text, channels = []) {
   const blob = `${text} ${channels.join(' ')}`.toLowerCase();
+  if (/\bncaaf|college football|cfb\b/.test(blob)) return 'NCAAF';
+  if (/\bncaab|college basketball|march madness|cbb\b/.test(blob)) return 'NCAAB';
   if (/\bnhl|hockey|maple leafs|canadiens|oilers\b/.test(blob)) return 'NHL';
-  if (/\bnba|lakers|celtics|knicks|warriors\b/.test(blob)) return 'NBA';
-  if (/\bnfl|chiefs|bills|cowboys|super bowl\b/.test(blob)) return 'NFL';
+  if (/\bnba\b|lakers|celtics|knicks|warriors\b/.test(blob)) return 'NBA';
+  if (/\bnfl\b|chiefs|bills|cowboys|super bowl\b/.test(blob)) return 'NFL';
   if (/\bmlb|yankees|dodgers|blue jays|world series\b/.test(blob)) return 'MLB';
   if (/\bwnba\b/.test(blob)) return 'WNBA';
   if (/\bepl|premier league|arsenal|chelsea|liverpool\b/.test(blob)) return 'EPL';
@@ -212,6 +243,28 @@ export function guessLeague(text, channels = []) {
   if (/\bf1|formula 1|grand prix\b/.test(blob)) return 'F1';
   if (channels.some((c) => /^TSN|^SN/.test(c))) return 'SN';
   return 'RSS';
+}
+
+/**
+ * Map an explicit category/league string (RSS `<category>`, JSON `category`
+ * field) to a known league id. Only unambiguous matches; returns null when the
+ * text is generic (e.g. bare "football") so we never mis-bucket a feed.
+ */
+export function leagueFromCategory(text) {
+  const t = String(text || '').toLowerCase();
+  if (!t) return null;
+  if (/\bncaaf\b|college football|cfb/.test(t)) return 'NCAAF';
+  if (/\bncaab\b|college basketball|march madness|cbb/.test(t)) return 'NCAAB';
+  if (/\bwnba\b|women.{0,4}basketball/.test(t)) return 'WNBA';
+  if (/\bnhl\b|hockey/.test(t)) return 'NHL';
+  if (/\bnba\b/.test(t)) return 'NBA';
+  if (/\bnfl\b/.test(t)) return 'NFL';
+  if (/\bmlb\b|baseball/.test(t)) return 'MLB';
+  if (/\bmls\b|major league soccer/.test(t)) return 'MLS';
+  if (/\bepl\b|premier league/.test(t)) return 'EPL';
+  if (/\bufc\b|mma/.test(t)) return 'UFC';
+  if (/\bf1\b|formula 1|grand prix/.test(t)) return 'F1';
+  return null;
 }
 
 function firstTag(xml, name) {
