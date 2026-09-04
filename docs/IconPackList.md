@@ -14,14 +14,14 @@ Every app below auto-assigns in Projectivy. If one doesn't, the app ships a diff
 | A 8k Player Vip | `a_8k_player_vip` | `#9B5DE5` | `com.shadeed.S4kvip/com.shadeed.ibopro.MainActivity` |
 | A&E | `androidtv_3` | `#F94144` | `com.aetn.aetv.watch.androidtv/com.aetn.android.tveapps.app.MainActivity` |
 | ABC iview | `abciview` | `#00B6E4` | `au.net.abc.iview/.MainActivity`<br>`au.net.abc.iview.tv/.MainActivity`<br>`au.net.abc.iview/au.net.abc.iview.ui.MainActivity` |
-| ABC News | `abcnews` | `#F15BB5` | `com.abc.abcnews/com.disney.datg.android.androidtv.splash.AbcNewsSplashScreenActivity` |
+| ABC News | `abcnews` | `#000000` | `com.abc.abcnews/com.disney.datg.android.androidtv.splash.AbcNewsSplashScreenActivity` |
 | Ace Stream | `ace_stream` | `#F94144` | `org.acestream.node/org.acestream.engine.ui.MainWebViewActivity` |
 | Acontra Plus | `acontraplus` | `#F94144` | `com.acontraplus.android/com.magine.android.mamo.ui.splash.SplashActivity` |
-| Acorn TV | `androidtv_2` | `#B5179E` | `com.acorntv.androidtv/com.globallogic.acorntv.ui.MainActivity` |
+| Acorn TV | `androidtv_2` | `#77B829` | `com.acorntv.androidtv/com.globallogic.acorntv.ui.MainActivity` |
 | ADB App Control | `adbappcontrol` | `#3DDC84` | `com.cybercat.adbappcontrol.tv/.ui.presentation.StartScreenActivity` |
 | ADB WiFi | `dinhlap` | `#FF6B35` | `com.dinhlap.adb/com.dinhlap.adb.ConnectActivity` |
-| AdGuard | `adguard` | `#FF477E` | `com.adguard.android/com.adguard.android.ui.activity.SplashActivity` |
-| AdGuard VPN | `adguard_2` | `#9B5DE5` | `com.adguard.vpn/com.adguard.vpn.ui.routing_activity.SplashActivity` |
+| AdGuard | `adguard` | `#68BC71` | `com.adguard.android/com.adguard.android.ui.activity.SplashActivity` |
+| AdGuard VPN | `adguard_2` | `#68BC71` | `com.adguard.vpn/com.adguard.vpn.ui.routing_activity.SplashActivity` |
 | Aerial Views | `aerialviews` | `#F3722C` | `com.neilturner.aerialviews/com.neilturner.aerialviews.ui.MainActivity` |
 | AI Cam View | `aicamview` | `#FEE440` | `com.kapron.ap.aicamview.tv/com.kapron.ap.aicamview.tv.CameraListActivityTv` |
 | AIDA64 | `finalwire` | `#FF6B35` | `com.finalwire.aida64/com.finalwire.aida64.HHMainActivity`<br>`com.finalwire.aida64/com.finalwire.aida64.TVMainActivity` |
@@ -32,15 +32,15 @@ Every app below auto-assigns in Projectivy. If one doesn't, the app ships a diff
 | AirPlay Receiver | `receiver` | `#43AA8B` | `com.boost.airplay.receiver/com.boost.airplay.receiver.ui.activity.SplashActivity` |
 | Airreceiverlite | `airreceiverlite` | `#8AC926` | `com.softmedia.receiver.lite/com.softmedia.receiver.app.SplashActivity` |
 | Airscreen | `airscreen` | `#FEE440` | `com.ionitech.airscreen/com.ionitech.airscreen.ui.activity.welcome.StreamAssistantIndexActivity` |
-| Al Jazeera | `al_jazeera` | `#577590` | `net.aljazeera.english/net.aljazeera.english.MainActivity` |
+| Al Jazeera | `al_jazeera` | `#D4A843` | `net.aljazeera.english/net.aljazeera.english.MainActivity` |
 | AllDebrid | `alldebrid` | `#FF7A00` | `com.alldebrid.app/.MainActivity` |
 | AllSaves Social | `allsaversocial` | `#F15BB5` | `com.allsaversocial.gl/com.allsaversocial.gl.MainActivityVer2` |
 | Aloula TV | `aloulatv` | `#00BBF9` | `com.aloulatv/com.shashatcom.view.activities.SplashActivity` |
 | Amazing Classics | `amazing_classics` | `#4CC9F0` | `stormcastcinema.amazing.classics/stormcastcinema.westernmania.ui.splash.SplashActivity` |
 | Amazon Freevee | `livingroom` | `#4CC9F0` | `com.imdbtv.livingroom/com.amazon.ignition.MainActivity` |
-| Amazon Music | `amazon` | `#E71D36` | `com.amazon.music.tv/com.amazon.music.MainActivity` |
-| AMC | `amcnetworks` | `#00BBF9` | `com.amcnetworks.cbscatchup/com.simplestream.presentation.startup.StartUpActivity` |
-| AMC+ | `amcandroidtv` | `#FF6B35` | `com.amcplus.amcandroidtv/com.amcplus.tv.MainActivity` |
+| Amazon Music | `amazon` | `#25D1DA` | `com.amazon.music.tv/com.amazon.music.MainActivity` |
+| AMC | `amcnetworks` | `#D10000` | `com.amcnetworks.cbscatchup/com.simplestream.presentation.startup.StartUpActivity` |
+| AMC+ | `amcandroidtv` | `#000000` | `com.amcplus.amcandroidtv/com.amcplus.tv.MainActivity` |
 | Amnis | `amnis` | `#FEE440` | `com.amnis/com.amnis.gui.MainActivity` |
 | Analiti | `fastest` | `#1982C4` | `com.analiti.fastest.android/com.analiti.fastest.android.TVActivity` |
 | Anexplorer Pro | `anexplorer_pro` | `#B5179E` | `dev.dworks.apps.anexplorer.pro/dev.dworks.apps.anexplorer.DocumentsActivity` |
@@ -50,7 +50,7 @@ Every app below auto-assigns in Projectivy. If one doesn't, the app ships a diff
 | Anime One | `anime` | `#00F5D4` | `com.dev.anime.one/com.dev.anime.one.MainActivity` |
 | Ant1 | `ant1` | `#43AA8B` | `gr.antenna.ant1/com.arxnet.soeasytv.MainActivity` |
 | Anten TV | `antentv` | `#6A4C93` | `com.farakav.antentv/com.farakav.antentv.app.SplashActivity` |
-| AnyDesk | `anydeskandroid` | `#43AA8B` | `com.anydesk.anydeskandroid/com.anydesk.anydeskandroid.gui.activity.HubActivity` |
+| AnyDesk | `anydeskandroid` | `#EF443B` | `com.anydesk.anydeskandroid/com.anydesk.anydeskandroid.gui.activity.HubActivity` |
 | Aparat Sport | `aparatsport` | `#B5179E` | `com.aparatsport.tv/com.aparatsport.tv.ui.main.TvActivity` |
 | Apk Installer | `apk_installer` | `#00BBF9` | `com.uptodown.installer/com.uptodown.installer.activity.SplashActivity` |
 | APK Updater | `apkupdater` | `#F94144` | `com.apkupdater/com.apkupdater.ui.activity.MainActivity` |
@@ -60,7 +60,7 @@ Every app below auto-assigns in Projectivy. If one doesn't, the app ships a diff
 | Aplicativo X | `aplicativox` | `#F7B32B` | `com.aplicativox.supremetv/com.lck.lxtream.SplashActivity` |
 | App Generation | `appgeneration` | `#43AA8B` | `com.appgeneration.itunerfree/com.appgeneration.mytunertv.activities.TvActivity` |
 | App Notifier | `appnotifier` | `#6A4C93` | `com.farmerbb.appnotifier/com.farmerbb.appnotifier.ui.MainActivity` |
-| Apple TV | `appletv` | `#E6EDF3` | `com.apple.atve.androidtv.appletv/.MainActivity`<br>`com.apple.atve.amazon.appletv/.MainActivity` |
+| Apple TV | `appletv` | `#000000` | `com.apple.atve.androidtv.appletv/.MainActivity`<br>`com.apple.atve.amazon.appletv/.MainActivity` |
 | AppLinked | `applinkednew` | `#B5179E` | `com.i4apps.applinkednew/com.applinked.applinkedapp.SplashScreenActivity` |
 | Aptoide TV | `aptoide` | `#F26522` | `cm.aptoidetv.pt/.activity.MainActivity` |
 | Arc Browser | `arc_browser` | `#577590` | `net.floatingpoint.android.arcturus/net.floatingpoint.android.arcturus.MainActivity` |
@@ -80,24 +80,24 @@ Every app below auto-assigns in Projectivy. If one doesn't, the app ships a diff
 | Baby Einstein | `babyeinstein` | `#90BE6D` | `com.giant.babyeinstein/com.codes.ui.SplashActivity` |
 | Background Apps And Process List | `background_apps_and_process_list` | `#FF6B35` | `io.github.visnkmr.bapl/io.github.visnkmr.bapl.MainActivity` |
 | Bally Sports | `ballyscorp` | `#4CC9F0` | `com.ballyscorp.ballylive/tv.vizbee.readyapp.firetvandroidtv.SplashActivity` |
-| BBC iPlayer | `iplayer` | `#F3722C` | `bbc.iplayer.android/external.androidtv.bbciplayer.deeplinking.DeepLinkActivity` |
-| BBC Iplayer | `bbc_iplayer` | `#9B5DE5` | `uk.co.freeview.bbc/uk.co.freeview.templatewrapper.MainActivity` |
-| BBC iPlayer TV | `bbciplayer` | `#1982C4` | `com.nvidia.bbciplayer/com.nvidia.bbciplayer.MainPlayerActivity` |
+| BBC iPlayer | `iplayer` | `#FF4C98` | `bbc.iplayer.android/external.androidtv.bbciplayer.deeplinking.DeepLinkActivity` |
+| BBC Iplayer | `bbc_iplayer` | `#FF4C98` | `uk.co.freeview.bbc/uk.co.freeview.templatewrapper.MainActivity` |
+| BBC iPlayer TV | `bbciplayer` | `#FF4C98` | `com.nvidia.bbciplayer/com.nvidia.bbciplayer.MainPlayerActivity` |
 | begin | `begin` | `#00C9B7` | `z2c.begin.tv/.MainActivity` |
 | Bell Fibe | `bellmediaplayer` | `#F7B32B` | `com.quickplay.android.bellmediaplayer/ca.bell.fiberemote.boot.BootstrapActivity`<br>`com.quickplay.android.bellmediaplayer/ca.bell.fiberemote.tv.MainTvActivity` |
-| Bet Plus | `bet_plus` | `#B5179E` | `com.viacom.betplus/com.vmn.playplex.tv.ui.splash.TvSplashActivity` |
-| BET+ | `shows` | `#00BBF9` | `com.bet.shows/com.vmn.playplex.tv.ui.splash.TvSplashActivity` |
+| Bet Plus | `bet_plus` | `#000000` | `com.viacom.betplus/com.vmn.playplex.tv.ui.splash.TvSplashActivity` |
+| BET+ | `shows` | `#000000` | `com.bet.shows/com.vmn.playplex.tv.ui.splash.TvSplashActivity` |
 | Better XC | `betterxc` | `#F15BB5` | `com.redphx.betterxc/com.redphx.betterxc.activity.MainActivity` |
 | Binge | `binge` | `#E6007E` | `au.com.streamotion.ares/.MainActivity`<br>`au.com.binge.tv/.MainActivity` |
-| Bitdefender | `bitdefender` | `#4CC9F0` | `com.bitdefender.vpn/com.bitdefender.vpn.MainActivity` |
+| Bitdefender | `bitdefender` | `#ED1C24` | `com.bitdefender.vpn/com.bitdefender.vpn.MainActivity` |
 | Blip | `blip` | `#8AC926` | `net.blip.android/net.blip.android.MainActivity` |
-| Blokada | `blokada` | `#2EC4B6` | `org.blokada.fyra/core.PanelActivity` |
+| Blokada | `blokada` | `#F5A200` | `org.blokada.fyra/core.PanelActivity` |
 | Bloomberg TV+ | `bloomberg` | `#2EC4B6` | `com.bloomberg.btva/tv.accedo.one.app.bootstrap.BootstrapActivity` |
 | BODi | `beachbody` | `#8AC926` | `com.beachbody.bod/com.beachbody.bodfiretv.activities.SplashActivity` |
 | Boosteroid | `boosteroidtv` | `#F3722C` | `com.boosteroidtv.streaming/com.boosteroidtv.streaming.UI.tv.StartActivity` |
 | BP Box | `box` | `#B5179E` | `com.bp.box/com.bp.box.activities.SplashActivity` |
 | Bravia Core | `bravia_core` | `#577590` | `com.sonypicturescore/com.sphe.bravialounge.SplashActivity` |
-| BritBox | `britbox` | `#577590` | `com.britbox.tv/axis.androidtv.sdk.app.MainActivity` |
+| BritBox | `britbox` | `#C41A3B` | `com.britbox.tv/axis.androidtv.sdk.app.MainActivity` |
 | Brkchen Music | `brkchen` | `#B5179E` | `com.brkchen.music/com.brkchen.music.MainActivity` |
 | Brollie | `brollie` | `#F94144` | `com.shift72.brollie/com.sh72apps.MainActivity`<br>`com.shift72.brollie/com.sh72apps.TVMainActivity` |
 | Browsehere | `browsehere` | `#4CC9F0` | `com.tcl.browser/com.tcl.browser.portal.home.activity.HomePageActivity` |
@@ -113,10 +113,10 @@ Every app below auto-assigns in Projectivy. If one doesn't, the app ships a diff
 | Cast4K | `cast4k` | `#B5179E` | `com.bigint.cast4k/com.bigint.iptv.presentation.MainActivity` |
 | Catch-On TV | `catchontv` | `#FEE440` | `app.sbox.leanback.catchontv/app.sbox.leanback.catchontv.MainActivity` |
 | CBC Gem | `cbctv` | `#F15BB5` | `ca.cbc.android.cbctv/tv.tou.android.splash.views.activities.SplashScreenActivity` |
-| CBS News | `cbsnews` | `#F3722C` | `com.cbsnews.ott/com.cbs.commonui.homepage.HomePageActivity` |
+| CBS News | `cbsnews` | `#0052A5` | `com.cbsnews.ott/com.cbs.commonui.homepage.HomePageActivity` |
 | Cda Pl | `cda_pl` | `#B5179E` | `pl.cda.tv/pl.cda.tv.ui.welcome.WelcomeActivity` |
 | CGTN America | `cgtnamericanow` | `#43AA8B` | `com.cgtnamericanow/tv.vhx.LauncherActivity`<br>`com.cgtnamericanow/tv.vhx.tv.home.TvHomeActivity` |
-| Channel 4 | `ondemand` | `#90BE6D` | `com.channel4.ondemand/external.androidtv.psbwrapper.deeplinking.DeepLinkActivity` |
+| Channel 4 | `ondemand` | `#000000` | `com.channel4.ondemand/external.androidtv.psbwrapper.deeplinking.DeepLinkActivity` |
 | Channels | `getchannels` | `#F94144` | `com.getchannels.dvr.app/com.getchannels.android.MainActivity` |
 | Chaupal | `chaupal` | `#FF477E` | `video.laminar.tv.chaupal.android/com.yupptv.ott.ui.activity.SplashActivity` |
 | Chebut TV | `chebut` | `#4CC9F0` | `com.chebut.tv/com.ottplay.ottplas.StartActivity` |
@@ -130,8 +130,8 @@ Every app below auto-assigns in Projectivy. If one doesn't, the app ships a diff
 | Clip TV | `clip_tv` | `#6A4C93` | `vn.com.vega.clipvn.tv/com.vega.cliptv.auth.AuthActivity` |
 | Clone Hero | `clone_hero` | `#F7B32B` | `com.srylain.CloneHero/com.unity3d.player.UnityPlayerActivity` |
 | CloudStream | `cloudstream` | `#4FACFE` | `com.lagradost.cloudstream3/com.lagradost.cloudstream3.ui.account.AccountSelectActivity` |
-| CNBC | `cnbc` | `#F3722C` | `com.cnbc.client/com.nbc.androidottweb.main.MainActivity` |
-| CNN | `cnn` | `#9B5DE5` | `com.cnn.mobile.android.tv/com.cnn.ctv.MainActivity` |
+| CNBC | `cnbc` | `#005E9E` | `com.cnbc.client/com.nbc.androidottweb.main.MainActivity` |
+| CNN | `cnn` | `#CC0000` | `com.cnn.mobile.android.tv/com.cnn.ctv.MainActivity` |
 | Coji TV Browser | `coji_tv_browser` | `#FF477E` | `mvl.studio.tvlite/mvl.studio.tvlite.android_tv.presentation.ui.TabletLauncherActivity`<br>`mvl.studio.tvlite/mvl.studio.tvlite.android_tv.presentation.ui.HomeLauncherActivity` |
 | Comedy Box | `comedybox` | `#90BE6D` | `com.comedybox.app/com.android.comedybox.ui.TvSplashActivity` |
 | Core Builds | `corebuilds` | `#00D4FF` | `tv.corebuilds.iconpack/.MainActivity` |
@@ -147,18 +147,18 @@ Every app below auto-assigns in Projectivy. If one doesn't, the app ships a diff
 | Crunchyroll | `crunchyroid` | `#F7B32B` | `com.crunchyroll.crunchyroid/com.crunchyroll.crunchyroid.splash.ui.SplashActivity` |
 | CTV | `ctvgo` | `#9B5DE5` | `ca.ctv.ctvgo/axis.androidtv.sdk.app.MainActivity` |
 | Cue New | `cuenew2` | `#1982C4` | `com.cuenew2/com.pythonott.MainActivity` |
-| Curiosity Stream | `curiositystream` | `#E71D36` | `com.curiosity.curiositystream.androidtv/com.curiosity.curiositystream.MainActivity` |
+| Curiosity Stream | `curiositystream` | `#1F619E` | `com.curiosity.curiositystream.androidtv/com.curiosity.curiositystream.MainActivity` |
 | CX File Explorer | `cxinventor` | `#577590` | `com.cxinventor.file.explorer/com.alphainventor.filemanager.activity.MainActivity`<br>`com.alphainventor.filemanager/.activity.MainActivity`<br>`com.alphainventor.filemanager/com.alphainventor.filemanager.activity.MainActivity` |
 | Cyberflix | `cybermedia` | `#6A4C93` | `com.cybermedia.cyberflx/com.cybermedia.cyberflix.ui.activity.HomeActivity` |
-| Cyberghost | `cyberghost` | `#F3722C` | `de.mobileconcepts.cyberghost/de.mobileconcepts.cyberghost.view.app.AppActivity` |
+| Cyberghost | `cyberghost` | `#FDCB58` | `de.mobileconcepts.cyberghost/de.mobileconcepts.cyberghost.view.app.AppActivity` |
 | D-Smart | `dogusdigital` | `#F7B32B` | `com.dogusdigital.puhutv/com.dogusdigital.puhutv.TVActivity` |
 | Daijishou | `digdroid` | `#2EC4B6` | `com.digdroid.alman.dig/com.digdroid.alman.dig.MainActivity`<br>`com.digdroid.alman.dig/com.digdroid.alman.dig.TVActivity` |
 | Daijishou | `magneticchen` | `#6A4C93` | `com.magneticchen.daijishou/com.magneticchen.daijishou.activities.BootstrapActivity` |
-| Dailymotion | `dailymotion` | `#F7B32B` | `com.dailymotion.dailymotion/com.dotscreen.ethanol.tv.ui.MainActivity` |
+| Dailymotion | `dailymotion` | `#0066DC` | `com.dailymotion.dailymotion/com.dotscreen.ethanol.tv.ui.MainActivity` |
 | Damonte | `damontecres` | `#2EC4B6` | `com.github.damontecres.stashapp/com.github.damontecres.stashapp.RootActivity` |
 | Dangbei | `zhushou` | `#90BE6D` | `com.dangbei.zhushou/com.dangbei.zhushou.tuitu` |
 | Dansk Filmskat | `egmont` | `#577590` | `com.egmont.dfs/egmont.danskfilmskat.MainActivity` |
-| DAZN | `dazn` | `#B5179E` | `com.dazn/com.dazn.MainActivity` |
+| DAZN | `dazn` | `#F5F500` | `com.dazn/com.dazn.MainActivity` |
 | DCS IPTV | `dcsapp` | `#F94144` | `com.dcsapp.iptv/fr.nextv.atv.foundation.TvActivity` |
 | Debrid Em All | `debrid_em_all` | `#F7B32B` | `com.yablio.debridemall/com.yablio.debridemall.StartActivity` |
 | Debrid Stream | `debridstream` | `#00BBF9` | `com.debridstream.tv/com.debridstream.tv.MainActivity` |
@@ -170,16 +170,16 @@ Every app below auto-assigns in Projectivy. If one doesn't, the app ships a diff
 | Digi TV | `digi_tv` | `#E71D36` | `ro.digionline.tv/ro.digionline.tv.MainActivity` |
 | Direct One | `direct_one` | `#90BE6D` | `nl.streamgroup.upcdirect/tv.solocoo.htmlapp.FullscreenActivity` |
 | DIRECTV | `att` | `#90BE6D` | `com.att.tv/com.clientapp.MainActivity` |
-| Discovery | `discovery` | `#B5179E` | `com.discovery.dplay/com.discovery.plus.presentation.activities.TVSplashActivity`<br>`com.discovery.dplay/com.wbd.beam.BeamActivity` |
-| Discovery+ | `discoveryplus` | `#00F5D4` | `com.discovery.discoveryplus.mobile/com.wbd.beam.BeamActivity` |
+| Discovery | `discovery` | `#003B73` | `com.discovery.dplay/com.discovery.plus.presentation.activities.TVSplashActivity`<br>`com.discovery.dplay/com.wbd.beam.BeamActivity` |
+| Discovery+ | `discoveryplus` | `#003B73` | `com.discovery.discoveryplus.mobile/com.wbd.beam.BeamActivity` |
 | Dish Anywhere | `dish_anywhere` | `#00BBF9` | `com.sm.SlingGuide.Dish/com.sm.SlingGuide.Dish.MainActivity` |
 | Dish Home | `dishnepal` | `#6A4C93` | `com.conax.golive.dishnepal/com.conax.golive.LoginActivity` |
-| Disney+ | `disneyplus` | `#1F80E0` | `com.disney.disneyplus/com.bamtechmedia.dominguez.main.MainActivity`<br>`com.disney.disneyplus/.MainActivity`<br>`com.disney.disneyplus.tv/.MainActivity` |
+| Disney+ | `disneyplus` | `#113CCF` | `com.disney.disneyplus/com.bamtechmedia.dominguez.main.MainActivity`<br>`com.disney.disneyplus/.MainActivity`<br>`com.disney.disneyplus.tv/.MainActivity` |
 | DistroTV | `distroscale` | `#F15BB5` | `com.distroscale.tv.android/com.distroscale.tv.firetv.MainActivity` |
 | Dixmax | `dixmax` | `#FF6B35` | `es.shufflex.dixmax.android/es.shufflex.dixmax.android.Main`<br>`es.shufflex.dixmax.android/es.shufflex.dixmax.android.activities.tv.activities.LoginActivity` |
 | DNS Changer | `dnschanger` | `#FF477E` | `com.aykutcevik.dnschanger/com.aykutcevik.dnssetter.Activities.MainActivity` |
 | Dodo Stream | `dodostream` | `#FBBF24` | `app.dodora.dodostream/app.dodora.dodostream.MainActivity` |
-| Dolphin Emulator | `dolphin_emulator` | `#FF477E` | `org.dolphinemu.dolphinemu/org.dolphinemu.dolphinemu.ui.main.MainActivity`<br>`org.dolphinemu.dolphinemu/org.dolphinemu.dolphinemu.ui.main.TvMainActivity` |
+| Dolphin Emulator | `dolphin_emulator` | `#2196F3` | `org.dolphinemu.dolphinemu/org.dolphinemu.dolphinemu.ui.main.MainActivity`<br>`org.dolphinemu.dolphinemu/org.dolphinemu.dolphinemu.ui.main.TvMainActivity` |
 | Download Navi | `download_navi` | `#4CC9F0` | `com.tachibana.downloader/com.tachibana.downloader.ui.main.MainActivity` |
 | Downloader | `downloader` | `#F0913A` | `com.esaba.downloader/.ui.main.MainActivity`<br>`com.esaba.downloader/.MainActivity`<br>`com.esaba.downloader/com.esaba.downloader.MainActivity` |
 | Dr Nettools | `dr_nettools` | `#2EC4B6` | `pl.dronline.nettools/pl.dronline.nettools.activity.CoreActivity` |
@@ -187,7 +187,7 @@ Every app below auto-assigns in Projectivy. If one doesn't, the app ships a diff
 | Dramox | `dramox` | `#90BE6D` | `cz.dramox.dramox/com.elevup.panda.MainActivity` |
 | Dream Player TV | `dream_player_tv` | `#4CC9F0` | `de.cyberdream.dreamepg.tv.player/de.cyberdream.dreamepg.MainActivityTV` |
 | DRM Info | `androidfung` | `#F7B32B` | `com.androidfung.drminfo/com.androidfung.drminfo.MobileActivity`<br>`com.androidfung.drminfo/com.androidfung.drminfo.TvActivity` |
-| Dropbox | `dropbox` | `#90BE6D` | `com.dropbox.android/com.dropbox.android.activity.DropboxBrowser` |
+| Dropbox | `dropbox` | `#0061FF` | `com.dropbox.android/com.dropbox.android.activity.DropboxBrowser` |
 | Dropout | `collegehumor` | `#FF6B35` | `com.collegehumor.chdropout/tv.vhx.LauncherActivity`<br>`com.collegehumor.chdropout/tv.vhx.tv.home.TvHomeActivity` |
 | Dropsync | `dropsync` | `#FF477E` | `com.ttxapps.dropsync/com.ttxapps.sync.app.MainActivity` |
 | Drtv | `drtv` | `#E71D36` | `dk.dr.tvplayer/axis.androidtv.sdk.app.MainActivity` |
@@ -199,7 +199,7 @@ Every app below auto-assigns in Projectivy. If one doesn't, the app ships a diff
 | DS photo | `dsphoto` | `#34D399` | `com.synology.dsphoto/com.synology.dsphoto.ui.SplashActivity`<br>`com.synology.dsphoto/.ui.SplashActivity`<br>`com.synology.dsphoto/com.synology.dsphoto.MainActivity` |
 | Ds TV Mobile | `dstvmobile` | `#F15BB5` | `com.dstvmobile.android/com.dstv.androidtv.RootActivity` |
 | DS video | `dsvideo` | `#00D4FF` | `com.synology.dsvideo/com.synology.dsvideo.ui.SplashActivity`<br>`com.synology.dsvideo/.ui.SplashActivity`<br>`com.synology.dsvideo/com.synology.dsvideo.MainActivity`<br>`com.synology.dsvideo/com.synology.dsvideo.ui.WelcomeActivity` |
-| DuckDuckGo | `duckduckgo` | `#00F5D4` | `com.duckduckgo.mobile.android/com.duckduckgo.app.launch.Launcher` |
+| DuckDuckGo | `duckduckgo` | `#DE5833` | `com.duckduckgo.mobile.android/com.duckduckgo.app.launch.Launcher` |
 | Dudeperfect | `dudeperfect` | `#F3722C` | `tv.kidoodle.android.dudeperfect/tv.kidoodle.android.ui.MainActivity` |
 | Dw | `dw` | `#4CC9F0` | `dw.com.androidtv.live/com.dw.app.dwforsmarttv.MainActivity` |
 | EarthCam | `earthcamtv` | `#1982C4` | `com.earthcam.earthcamtv.android/com.earthcam.earthcamtv.mainmvp.MainActivity` |
@@ -214,16 +214,16 @@ Every app below auto-assigns in Projectivy. If one doesn't, the app ships a diff
 | ERTFLIX | `ertflix` | `#FEE440` | `com.ertflix.app/com.ertflix.app.MainActivity` |
 | Ertflix | `ertflix_2` | `#9B5DE5` | `t.yi.erthybrid/com.arxnet.soeasytv.MainActivity` |
 | Es De Frontend | `es_de_frontend` | `#43AA8B` | `org.es_de.frontend/org.es_de.frontend.TvActivity` |
-| ES File Explorer | `estrongs` | `#F3722C` | `com.estrongs.android.pop/com.estrongs.android.pop.app.openscreenad.NewSplashActivity` |
-| ESPN | `score_center` | `#90BE6D` | `com.espn.score_center/com.espn.startup.presentation.StartupActivity` |
+| ES File Explorer | `estrongs` | `#1976D2` | `com.estrongs.android.pop/com.estrongs.android.pop.app.openscreenad.NewSplashActivity` |
+| ESPN | `score_center` | `#CC0000` | `com.espn.score_center/com.espn.startup.presentation.StartupActivity` |
 | Eternal TV | `eternaltviptvbox` | `#577590` | `com.eternaltv.eternaltviptvbox/com.eternaltv.eternaltviptvbox.view.activity.SplashActivity` |
 | Eternal TV (Nath) | `nathnetwork` | `#6A4C93` | `com.nathnetwork.eternaltv/com.nathnetwork.eternaltv.SplashVideoActivity` |
 | Etube | `etube` | `#F94144` | `com.vietts.etube/com.vietts.etube.MainActivity` |
 | eTVnet | `androidtv_6` | `#43AA8B` | `com.etvnet.androidtv.tvstore/com.etvnet.androidtv.ui.init.InitActivity` |
 | Euronews | `euronews` | `#F94144` | `com.alteox.euronews/com.alteox.euronews.MainActivity` |
-| ExpressVPN | `expressvpn` | `#FF6B35` | `com.expressvpn.vpn/com.expressvpn.vpn.splash.ClassicAlias` |
-| F Droid | `f_droid` | `#F3722C` | `org.fdroid.fdroid/org.fdroid.fdroid.views.main.MainActivity` |
-| F1 TV | `production` | `#2EC4B6` | `com.formulaone.production/com.avs.f1.ui.splash.SplashActivity` |
+| ExpressVPN | `expressvpn` | `#DA3940` | `com.expressvpn.vpn/com.expressvpn.vpn.splash.ClassicAlias` |
+| F Droid | `f_droid` | `#1976D2` | `org.fdroid.fdroid/org.fdroid.fdroid.views.main.MainActivity` |
+| F1 TV | `production` | `#E10600` | `com.formulaone.production/com.avs.f1.ui.splash.SplashActivity` |
 | Falcon Cast | `falconcast` | `#1982C4` | `com.falconcast.live/com.falconcast.live.SplashActivity`<br>`com.falconcast.live/com.falconcast.live.tv.TvSplashActivity` |
 | FANE TV | `fanetv` | `#E71D36` | `com.fanetv/tv.vhx.LauncherActivity`<br>`com.fanetv/tv.vhx.tv.home.TvHomeActivity` |
 | FC Porto TV | `fcportotv` | `#00F5D4` | `com.fcp.fcportotv/com.fcp.fcportotv.SplashActivity` |
@@ -263,22 +263,22 @@ Every app below auto-assigns in Projectivy. If one doesn't, the app ships a diff
 | Forja TV | `forja_tv` | `#577590` | `ma.snrt.forja.android.app/com.ebplatformtv.MainActivity` |
 | FORMED | `formed` | `#577590` | `com.ai.formed.formed/tv.vhx.LauncherActivity` |
 | Fotoo | `fotoo` | `#577590` | `com.bo.fotoo/com.bo.fotoo.ui.splash.FTSplashActivity` |
-| Fox Nation | `foxnation` | `#F15BB5` | `com.fng.foxnation/com.fox.app.MainActivity` |
-| Fox News | `foxnews` | `#9B5DE5` | `com.foxnews.android/com.foxnews.androidtv.ui.splash.SplashScreenActivity` |
+| Fox Nation | `foxnation` | `#003580` | `com.fng.foxnation/com.fox.app.MainActivity` |
+| Fox News | `foxnews` | `#003580` | `com.foxnews.android/com.foxnews.androidtv.ui.splash.SplashScreenActivity` |
 | FOX One | `foxone` | `#F7B32B` | `com.fox.foxone/com.app.android.MainActivity` |
-| Fox Sports | `foxsports` | `#90BE6D` | `com.foxsports.android/com.fox.app.MainActivity` |
+| Fox Sports | `foxsports` | `#003580` | `com.foxsports.android/com.fox.app.MainActivity` |
 | Fox Sports Go | `foxsports_2` | `#FEE440` | `com.foxsports.videogo/com.ballysports.tv.ui.screens.main.TvMainActivity` |
-| Foxtel | `foxtel` | `#F15BB5` | `au.com.foxtel.atv/foxtel.play.droid.atv.SplashView` |
+| Foxtel | `foxtel` | `#EE5100` | `au.com.foxtel.atv/foxtel.play.droid.atv.SplashView` |
 | FP Basquetebol | `fpbasquetebol` | `#9B5DE5` | `com.fpbasquetebol.fpbtv/com.fpbasquetebol.fpbtv.MainActivity` |
 | Fpt Play | `fpt_play` | `#90BE6D` | `net.fptplay.ottbox/com.tear.modules.tv.welcome.WelcomeActivity` |
-| France 24 | `androidapp_2` | `#F7B32B` | `com.france24.androidapp.gtv/com.france24.androidapp.features.skeleton.SplashActivity` |
+| France 24 | `androidapp_2` | `#00AFF0` | `com.france24.androidapp.gtv/com.france24.androidapp.features.skeleton.SplashActivity` |
 | Francetv | `francetv` | `#E71D36` | `fr.francetv.pluzz/fr.francetv.androidtv.main.MainActivity` |
 | Free TV | `free_tv` | `#4CC9F0` | `net.oqee.androidtv.store/net.oqee.androidtv.ui.splash.SplashActivity` |
 | Freeflix Hq | `freeflix_hq` | `#2EC4B6` | `tonybits.com.ffhq/tonybits.com.ffhq.activities.SplashScreenActivity` |
 | Freevee | `spiderpork` | `#F7B32B` | `com.amazon.spiderpork/com.amazon.spiderpork.activities.MainActivity` |
 | Fresh Drama | `fresh_drama` | `#E71D36` | `com.skylinktv.freshdrama/co.unreel.videoapp.PreSplashActivity`<br>`com.skylinktv.freshdrama/co.unreel.tvapp.ui.activity.SplashActivity` |
 | Ftp Server | `ftp_server` | `#8AC926` | `net.xnano.android.ftpserver.tv/net.xnano.android.ftpserver.MainActivity` |
-| Fubo | `screen` | `#90BE6D` | `com.fubo.firetv.screen/tv.fubo.mobile.presentation.onboarding.dispatch.controller.DispatchActivity` |
+| Fubo | `screen` | `#FA4616` | `com.fubo.firetv.screen/tv.fubo.mobile.presentation.onboarding.dispatch.controller.DispatchActivity` |
 | Full Episodes | `fullepisodes` | `#FF477E` | `com.cw.fullepisodes.android/com.cw.fullepisodes.android.TvActivity` |
 | FX File Explorer | `fxfile` | `#00D4FF` | `nextapp.fx/.FX`<br>`nextapp.fx/nextapp.fx.ui.ExplorerActivity` |
 | Gain | `gain` | `#F94144` | `com.trgain.mikrogain/com.gain.mikrogain.TVMainActivity` |
@@ -286,7 +286,7 @@ Every app below auto-assigns in Projectivy. If one doesn't, the app ships a diff
 | Gallery 3D | `gallery3d` | `#6A4C93` | `com.android.gallery3d/com.android.gallery3d.app.GalleryActivity` |
 | Game Launcher | `gamelauncher` | `#F94144` | `com.radikal.gamelauncher/com.radikal.gamelauncher.MainActivity` |
 | Gb News | `gb_news` | `#F94144` | `uk.gbnews.app/com.simplestream.presentation.startup.StartUpActivity` |
-| GeForce Now | `tegrazone3` | `#00BBF9` | `com.nvidia.tegrazone3/com.nvidia.geforcenow.LaunchActivity` |
+| GeForce Now | `tegrazone3` | `#76B900` | `com.nvidia.tegrazone3/com.nvidia.geforcenow.LaunchActivity` |
 | GenPlay | `genplay` | `#4CC9F0` | `com.genplay.apps/com.genplay.apps.MainActivity` |
 | Get Icon | `get_icon` | `#2EC4B6` | `de.lemke.geticon/de.lemke.geticon.ui.MainActivity` |
 | Getflix VPN | `digiport` | `#9B5DE5` | `com.digiport.getflix.vpn/com.digiport.vpnapp.ui.modules.MainActivity` |
@@ -295,16 +295,16 @@ Every app below auto-assigns in Projectivy. If one doesn't, the app ships a diff
 | Globoplay | `globotv` | `#4CC9F0` | `com.globo.globotv/com.globo.globotv.splashtv.SplashActivity` |
 | Go3 | `go3` | `#B5179E` | `lt.go3.android.tv/pl.atende.mobile.tv.ui.gui.main.activity.SplashActivity` |
 | Good Tools | `goodtoolapps` | `#9B5DE5` | `com.goodtoolapps.zeus/com.goodtoolapps.zeus.MainActivity` |
-| Google Play Games | `games` | `#00F5D4` | `com.google.android.play.games/com.google.android.apps.play.games.app.atv.features.home.HomeActivity` |
+| Google Play Games | `games` | `#0F9D58` | `com.google.android.play.games/com.google.android.apps.play.games.app.atv.features.home.HomeActivity` |
 | Google Play Store | `playstore` | `#00A0FF` | `com.android.vending/com.google.android.finsky.tvmainactivity.TvMainActivity` |
-| Google TV | `videos` | `#8AC926` | `com.google.android.videos/com.google.android.videos.tv.presenter.activity.TvLauncherActivity` |
+| Google TV | `videos` | `#4285F4` | `com.google.android.videos/com.google.android.videos.tv.presenter.activity.TvLauncherActivity` |
 | GoPlay | `goplay` | `#8AC926` | `com.eitv.goplay/com.eitv.eitvplay.activities.SplashActivity` |
 | Gotham Sports | `gothamsports` | `#90BE6D` | `com.gothamsports.gotham.tv/com.game.tv.TVMainActivity` |
 | Great American Pure Flix | `great` | `#43AA8B` | `com.great.tv.android/tv.accedo.one.app.bootstrap.BootstrapActivity` |
 | GT Share | `gtshare` | `#F94144` | `com.gtmedia.gtshare/com.winsat.gtshare.MainActivity` |
 | GuidePlus | `guideplus` | `#FF6B35` | `com.guideplus.co/com.guideplus.co.SplashActivity` |
 | Gymondo | `gymondo` | `#FEE440` | `de.gymondo.app.gymondo/com.gymondo.presentation.features.startup.StartupTvActivity` |
-| Hallmark Channel | `hallmarkchannel` | `#2EC4B6` | `com.hallmarkchannel.awe/tv.accedo.one.app.bootstrap.BootstrapActivity` |
+| Hallmark Channel | `hallmarkchannel` | `#9C1D2B` | `com.hallmarkchannel.awe/tv.accedo.one.app.bootstrap.BootstrapActivity` |
 | Haystack News | `haystack` | `#F3722C` | `com.haystack.android/com.haystack.android.tv.ui.activities.LoadingActivity` |
 | Hayu | `hayu` | `#F15BB5` | `com.upst.hayu/com.upst.hayu.tv.main.MainActivity` |
 | Hd Streamz | `hd_streamz` | `#4CC9F0` | `insure.cable.estate/com.android.vending.a.UI`<br>`insure.cable.estate/com.android.vending.a.TV` |
@@ -323,23 +323,23 @@ Every app below auto-assigns in Projectivy. If one doesn't, the app ships a diff
 | Home Automation TV Dashboard | `home_automation_tv_dashboard` | `#F15BB5` | `io.homeassistant.companion.androidtv/io.homeassistant.companion.androidtv.DefaultLauncherAlias` |
 | Home Button | `homebutton` | `#9E9E9E` | `flar2.homebutton/a.a` |
 | Home Workout | `home_workout` | `#FF6B35` | `com.sugarapple.workout/com.sugarapple.workout.MainActivity` |
-| Hoopla | `hoopladigital` | `#2EC4B6` | `com.hoopladigital.android/com.hoopladigital.android.ui.activity.SplashScreenActivity`<br>`com.hoopladigital.android/com.hoopladigital.android.ui.activity.leanback.LeanbackSplashScreenActivity` |
-| Hotspot Shield VPN | `hotspot_shield_vpn` | `#F15BB5` | `hotspotshield.android.vpn/com.anchorfree.hotspotshield.ui.HssActivity`<br>`hotspotshield.android.vpn/com.anchorfree.hotspotshield.ui.tv.HssTvActivity` |
+| Hoopla | `hoopladigital` | `#EA4C2C` | `com.hoopladigital.android/com.hoopladigital.android.ui.activity.SplashScreenActivity`<br>`com.hoopladigital.android/com.hoopladigital.android.ui.activity.leanback.LeanbackSplashScreenActivity` |
+| Hotspot Shield VPN | `hotspot_shield_vpn` | `#2196F3` | `hotspotshield.android.vpn/com.anchorfree.hotspotshield.ui.HssActivity`<br>`hotspotshield.android.vpn/com.anchorfree.hotspotshield.ui.tv.HssTvActivity` |
 | Hrti | `hrti` | `#577590` | `hr.hrt.hrti/hr.cs.aviion.ui.splash.SplashActivity` |
 | Hubitat | `jpage4500` | `#F94144` | `com.jpage4500.hubitat/com.jpage4500.hubitat.ui.activities.MainActivity` |
 | Hue Shortcuts | `hueshortcuts` | `#00F5D4` | `app.mcneill.hueshortcuts/app.mcneill.hueshortcuts.MainActivity` |
 | Hueessentials | `hueessentials` | `#FEE440` | `com.superthomaslab.hueessentials/com.superthomaslab.hueessentials.MainActivity` |
-| Hulu | `livingroomplus` | `#1982C4` | `com.hulu.livingroomplus/com.hulu.livingroomplus.WKFactivity` |
+| Hulu | `livingroomplus` | `#1CE783` | `com.hulu.livingroomplus/com.hulu.livingroomplus.WKFactivity` |
 | Hyperion Grabber | `hyperiongrabber` | `#1982C4` | `com.abrenoch.hyperiongrabber/com.abrenoch.hyperiongrabber.common.ToggleActivity`<br>`com.abrenoch.hyperiongrabber/com.abrenoch.hyperiongrabber.tv.activities.MainActivity` |
 | Hyperspin | `hyperspin` | `#F7B32B` | `com.shieldcade.hyperspin/com.shieldcade.hyperspin.HSFENativeActivity` |
 | IB Player | `ib` | `#6A4C93` | `com.ib.player/com.ib.player.MainActivity` |
 | Ici Tou TV | `ici_tou_tv` | `#4CC9F0` | `tv.toutv.androidtv/tv.tou.android.splash.views.activities.SplashScreenActivity`<br>`tv.tou.android/tv.tou.android.splash.views.activities.SplashScreenActivity` |
 | Iflix | `iflix` | `#43AA8B` | `iflix.play/com.ktcp.video.activity.HomeActivity` |
 | Ignite TV | `ignitetv` | `#FEE440` | `com.rogers.ignitetv/com.xfinity.common.view.LaunchActivity` |
-| iHeartRadio | `clearchannel` | `#F7B32B` | `com.clearchannel.iheartradio.tv/com.iheartradio.tv.screen.container.ContainerActivity` |
+| iHeartRadio | `clearchannel` | `#C6002B` | `com.clearchannel.iheartradio.tv/com.iheartradio.tv.screen.container.ContainerActivity` |
 | Immich TV | `immich_tv` | `#6A4C93` | `nl.giejay.android.tv.immich/nl.giejay.android.tv.immich.MainActivity` |
 | iMPlayer | `myiptvonline` | `#00BBF9` | `com.myiptvonline.implayer/com.myiptvonline.implayer.a` |
-| Instagram | `instagram` | `#FF6B35` | `com.instagram.airwave/com.instagram.airwave.AirwaveMainActivity` |
+| Instagram | `instagram` | `#E4405F` | `com.instagram.airwave/com.instagram.airwave.AirwaveMainActivity` |
 | InstantBits | `instantbits` | `#90BE6D` | `com.instantbits.cast.receiver/com.instantbits.android.receiver.MainActivity` |
 | Ip Address | `ip_address` | `#F15BB5` | `net.info.az/net.info.az.SplashActivity` |
 | IP Tools | `iptools` | `#43AA8B` | `com.ddm.iptools/com.ddm.iptools.ui.MainActivity` |
@@ -348,14 +348,14 @@ Every app below auto-assigns in Projectivy. If one doesn't, the app ships a diff
 | IPTV Smarters | `iptvsmarterstvbox` | `#1982C4` | `com.nst.iptvsmarterstvbox/com.nst.iptvsmarterstvbox.view.activity.SplashActivity` |
 | IPTV Smarters Plus | `iptv_smarters_plus` | `#F7B32B` | `iptv.smarters.plus/flix.pro.player.SplashActivity` |
 | IPTV3u | `iptv3u` | `#4CC9F0` | `com.iptv3u/app.dimplay.activities.SplashActivity` |
-| IPVanish | `ipvanish` | `#2EC4B6` | `com.ixolit.ipvanish/com.ixolit.ipvanish.presentation.features.launch.SplashActivity` |
+| IPVanish | `ipvanish` | `#6DB33F` | `com.ixolit.ipvanish/com.ixolit.ipvanish.presentation.features.launch.SplashActivity` |
 | iQIYI | `iqiyi` | `#43AA8B` | `com.iqiyi.i18n.tv/com.iqiyi.i18n.tv.launch.LaunchActivity` |
-| ITV Hub | `itvmobileplayer` | `#FF477E` | `air.ITVMobilePlayer/com.itv.tenft.itvhub.MainActivity` |
+| ITV Hub | `itvmobileplayer` | `#00B4E5` | `air.ITVMobilePlayer/com.itv.tenft.itvhub.MainActivity` |
 | Ivysiilani | `ivysiilani` | `#577590` | `cz.ceskatelevize.ivysilani.tvapp/cz.ceskatelevize.ivysilani.tvapp.MainActivity` |
 | Janky Player | `janky` | `#FFC107` | `com.player.janky/.MainActivity` |
 | Jawwy TV | `intigral` | `#6A4C93` | `com.intigral.jawwytv/com.intigral.jawwytv.standalone.StandaloneSplashActivity` |
 | Jawwy TV | `jawwy_tv` | `#9B5DE5` | `net.intigral.jawwytv/com.intigral.jawwytv.standalone.StandaloneSplashActivity` |
-| Jellyfin | `jellyfin` | `#AA5CC3` | `org.jellyfin.androidtv/.ui.startup.StartupActivity`<br>`org.jellyfin.androidtv/org.jellyfin.androidtv.ui.startup.StartupActivity`<br>`org.jellyfin.mobile/.MainActivity` |
+| Jellyfin | `jellyfin` | `#00A4DC` | `org.jellyfin.androidtv/.ui.startup.StartupActivity`<br>`org.jellyfin.androidtv/org.jellyfin.androidtv.ui.startup.StartupActivity`<br>`org.jellyfin.mobile/.MainActivity` |
 | Jellyfin Enhanced | `enhanced` | `#9B5DE5` | `Dune.enhanced.tv/org.jellyfin.androidtv.ui.startup.StartupActivity` |
 | Jio TV Plus | `jiotvplus` | `#FF6B35` | `com.jio.media.jiotvplus/com.jio.media.stb.ondemand.patchwall.views.MainActivity` |
 | Jiohotstar | `jiohotstar` | `#B5179E` | `in.startv.hotstar/com.hotstar.MainActivity` |
@@ -363,11 +363,11 @@ Every app below auto-assigns in Projectivy. If one doesn't, the app ships a diff
 | Joyn | `joyn` | `#F7B32B` | `de.prosiebensat1digital.seventv/de.joyn.mobile.app.splash.SplashActivity` |
 | Jtv Go Server | `jtv_go_server` | `#F3722C` | `com.skylake.skytv.jgorunner/com.skylake.skytv.jgorunner.Default` |
 | Just Player | `justplayer` | `#03A9F4` | `com.brouken.player/.PlayerActivity`<br>`com.brouken.player/.MainActivity` |
-| JustWatch | `justwatch` | `#00BBF9` | `com.justwatch.justwatch/com.justwatch.justwatch.MainActivity` |
+| JustWatch | `justwatch` | `#FEC500` | `com.justwatch.justwatch/com.justwatch.justwatch.MainActivity` |
 | Juuno | `juuno` | `#43AA8B` | `co.juuno.player.android/co.juuno.player.android.MainActivity`<br>`co.juuno.player.android/co.juuno.player.android.TvActivity` |
 | K+ | `irdeto` | `#2EC4B6` | `com.irdeto.kplus/tv.solocoo.htmlapp.FullscreenActivity` |
 | Kamal TV | `androidtv_7` | `#9B5DE5` | `com.kamal.androidtv/com.kamal.androidtv.App` |
-| Kanopy | `kanopy` | `#FF477E` | `com.kanopy.tvapp/com.kanopy.tvapp.MainActivity` |
+| Kanopy | `kanopy` | `#6CC24A` | `com.kanopy.tvapp/com.kanopy.tvapp.MainActivity` |
 | Karaoke | `kfandroid` | `#4CC9F0` | `com.recisio.kfandroid/com.recisio.kfandroid.start.StartActivity` |
 | Kayo | `kayo` | `#00E676` | `au.com.kayosports.tv/.MainActivity`<br>`au.com.streamotion.hyperion/.MainActivity`<br>`au.com.kayosports.tv/au.com.foxsports.martian.tv.main.MainActivity` |
 | KDE Connect | `kde_connect` | `#4CC9F0` | `org.kde.kdeconnect_tp/org.kde.kdeconnect.UserInterface.MainActivity` |
@@ -375,7 +375,7 @@ Every app below auto-assigns in Projectivy. If one doesn't, the app ships a diff
 | Kemo Stream | `streamingkemo` | `#2EC4B6` | `com.kemoiptv.streamingkemo/com.kemoiptv.streamingkemo.MainActivity` |
 | Kennytv | `kennytv` | `#6A4C93` | `de.wabosh.kenny_tv/de.wabosh.kenny_tv.MainActivity` |
 | Kernel Media | `kernelmedia` | `#577590` | `androidtv.kernelmedia.tv/androidtv.kernelmedia.tv.ui.MainActivity` |
-| Kick | `kick` | `#1982C4` | `com.kick.mobile/com.kick.mobile.app.MainActivity`<br>`com.kick.mobile/com.kick.tv.MainActivity` |
+| Kick | `kick` | `#53FC18` | `com.kick.mobile/com.kick.mobile.app.MainActivity`<br>`com.kick.mobile/com.kick.tv.MainActivity` |
 | Kijk | `kijk` | `#FF477E` | `nl.sbs.kijk/nl.sbs.kijk.ui.activity.LaunchActivity` |
 | Kika | `kika` | `#F15BB5` | `de.kika.player.androidtv/de.kika.player.androidtv.MainActivity`<br>`de.kika.player.androidtv/com.mitxp.androidtv.MainActivity` |
 | Kinopoisk | `kinopoisk` | `#F94144` | `ru.kinopoisk.tv/ru.kinopoisk.tv.presentation.splash.SplashActivity` |
@@ -446,7 +446,7 @@ Every app below auto-assigns in Projectivy. If one doesn't, the app ships a diff
 | Mi TV Plus | `mitvplus` | `#F3722C` | `com.mitv.tvhome.mitvplus/com.mitv.tvhome.mitvplus.app.BannerLogoFree24` |
 | Miracast | `miracast` | `#F15BB5` | `com.xiaomi.mitv.smartshare/com.xiaomi.mitv.smartshare.wifidisplay.WfdActivity` |
 | MiXplorer | `mixplorer` | `#F15BB5` | `com.mixplorer.silver/com.mixplorer.activities.BrowseActivity`<br>`com.mixplorer/.activities.BrowseActivity`<br>`com.mixplorer/com.mixplorer.activities.BrowseActivity` |
-| MLB | `bamnetworks` | `#00F5D4` | `com.bamnetworks.mobile.android.gameday.atbat/mlb.atbat.activity.MainActivity` |
+| MLB | `bamnetworks` | `#002D72` | `com.bamnetworks.mobile.android.gameday.atbat/mlb.atbat.activity.MainActivity` |
 | Mo 4media | `mo_4media` | `#4CC9F0` | `dancingtree.mo4media/crc64fc68bfe11eb03c38.MainActivity`<br>`dancingtree.mo4media/crc64fc68bfe11eb03c38.TVMainActivity` |
 | Mobily TV | `mobily` | `#F7B32B` | `com.mobily.tvapp/com.parsifal.starz.ui.features.launcher.LauncherActivity` |
 | Molotov TV | `molotov_tv` | `#F7B32B` | `tv.molotov.app/tv.molotov.android.splash.SplashActivity` |
@@ -461,15 +461,15 @@ Every app below auto-assigns in Projectivy. If one doesn't, the app ships a diff
 | Movieark | `movieark` | `#577590` | `com.tcl.movieark/com.tcl.waterfall.overseas.main.MainActivity` |
 | MovieBox Pro | `movieboxpro` | `#43AA8B` | `com.movieboxpro.androidtv/com.movieboxpro.android.view.activity.SplashActivity` |
 | MovieLab | `movielab` | `#FF477E` | `com.movielab.tv/com.movielab.MainActivity` |
-| Movies Anywhere | `moviesanywhere` | `#E71D36` | `com.moviesanywhere.goo/com.disney.brooklyn.tv.ui.signin.TVSignInActivity` |
+| Movies Anywhere | `moviesanywhere` | `#082E5B` | `com.moviesanywhere.goo/com.disney.brooklyn.tv.ui.signin.TVSignInActivity` |
 | Movies By Fawesome | `moviesbyfawesomeandroidtv` | `#00F5D4` | `com.future.moviesByFawesomeAndroidTV/com.future.moviesByFawesomeAndroidTV.SplashActivity` |
 | Movistar Plus | `movistar_plus` | `#43AA8B` | `es.plus.yomvi/com.movistar.android.views.HomeActivity` |
 | Mpv | `mpv` | `#FEE440` | `is.xyz.mpv/is.xyz.mpv.MainActivity` |
 | MSM Video | `msmvideo` | `#577590` | `com.msmvideo.tv/com.example.msmvideo.ui.SplashActivity` |
 | Mst3k | `mst3k` | `#9B5DE5` | `ott.mst3k/tv.vhx.LauncherActivity`<br>`ott.mst3k/tv.vhx.tv.home.TvHomeActivity` |
 | Mtv Katsomo | `mtv_katsomo` | `#9B5DE5` | `fi.mtvkatsomo/se.tv4.tv4play.ui.tv.navigation.TvHubActivity` |
-| MUBI | `mubi` | `#2EC4B6` | `com.mubi/com.mubi.ui.MainActivity`<br>`com.mubi/com.mubi.ui.TvMainActivity` |
-| Mullvad VPN | `mullvad_vpn` | `#E71D36` | `net.mullvad.mullvadvpn/net.mullvad.mullvadvpn.ui.MainActivity` |
+| MUBI | `mubi` | `#001529` | `com.mubi/com.mubi.ui.MainActivity`<br>`com.mubi/com.mubi.ui.TvMainActivity` |
+| Mullvad VPN | `mullvad_vpn` | `#294D73` | `net.mullvad.mullvadvpn/net.mullvad.mullvadvpn.ui.MainActivity` |
 | MUTV | `manutd` | `#E71D36` | `com.mutv.manutd/com.oneproduct.TvActivity` |
 | MX Player | `mxplayer` | `#3AB4F2` | `com.mxtech.videoplayer.ad/.ActivityMediaList`<br>`com.mxtech.videoplayer.pro/.ActivityMediaList`<br>`com.mxtech.videoplayer.tv/.ActivityMediaList`<br>`com.mxtech.videoplayer.ad/com.mxtech.videoplayer.ad.ActivityWelcomeMX` |
 | MX Player TV | `videoplayer` | `#F7B32B` | `com.mxtech.videoplayer.television/com.mxtech.videoplayer.tv.home.HomeActivity` |
@@ -481,9 +481,9 @@ Every app below auto-assigns in Projectivy. If one doesn't, the app ships a diff
 | Māori+ | `maoritelevision` | `#F7B32B` | `com.maoritelevision.newsapp/tv.accedo.xdk.app.MainActivity` |
 | Namava | `namava` | `#FEE440` | `com.shatelland.namava.tv/com.shatelland.namava.splash_tv.splash.SplashActivity` |
 | Nasa | `nasa` | `#8AC926` | `gov.nasa/gov.nasa.nasatabs.SplashActivity` |
-| NBA | `gametime` | `#9B5DE5` | `com.nbaimd.gametime.nba2011/com.nba.tv.ui.splash.SplashActivity` |
-| NBC News | `nbc_news` | `#00BBF9` | `com.zumobi.msnbc/com.nbc.androidottweb.main.MainActivity` |
-| NBC Sports | `nbcsports` | `#00BBF9` | `com.nbcsports.apps.tv/com.nbc.nbctvapp.ui.main.view.MainActivity` |
+| NBA | `gametime` | `#1D428A` | `com.nbaimd.gametime.nba2011/com.nba.tv.ui.splash.SplashActivity` |
+| NBC News | `nbc_news` | `#0072CE` | `com.zumobi.msnbc/com.nbc.androidottweb.main.MainActivity` |
+| NBC Sports | `nbcsports` | `#107534` | `com.nbcsports.apps.tv/com.nbc.nbctvapp.ui.main.view.MainActivity` |
 | Nebula | `nebula` | `#577590` | `tv.standard.nebula/tv.standard.nebula.tv.features.splash.view.activities.SplashActivity` |
 | Neon | `neon` | `#F3722C` | `nz.co.lightbox/nz.co.lightbox.splash.SplashActivity` |
 | Netflix | `netflix` | `#E50914` | `com.netflix.ninja/.MainActivity`<br>`com.netflix.mediaclient/.ui.launch.UIWebViewActivity` |
@@ -493,19 +493,19 @@ Every app below auto-assigns in Projectivy. If one doesn't, the app ships a diff
 | NetMirror TV | `netmirrortv` | `#1982C4` | `app.netmirror.netmirrortv/app.netmirror.netmirrortv.MainActivity` |
 | Nettv | `nettv` | `#8AC926` | `np.com.androidtv.nettv/com.np.androidTV.main.TVMainActivity` |
 | Netzkino | `netzkino` | `#E71D36` | `de.netzkino.android.ics/de.netzkino.android.ics.SplashActivity` |
-| Newpipe | `newpipe` | `#B5179E` | `org.schabi.newpipe/org.schabi.newpipe.MainActivity` |
+| Newpipe | `newpipe` | `#E53935` | `org.schabi.newpipe/org.schabi.newpipe.MainActivity` |
 | Nextup Watch Stand Up Comedy | `nextup_watch_stand_up_comedy` | `#2EC4B6` | `tv.vhx.nextup/com.example.videoapp.MainActivity` |
 | NFB | `nitobi` | `#B5179E` | `com.nitobi.nfb/com.nitobi.nfb.MainActivity` |
-| NFL | `nflgamecenter` | `#00BBF9` | `com.gotv.nflgamecenter.us.lite/com.nfl.connected.SplashActivity` |
+| NFL | `nflgamecenter` | `#013369` | `com.gotv.nflgamecenter.us.lite/com.nfl.connected.SplashActivity` |
 | Nfolio | `nfolio` | `#F3722C` | `com.snapwood.nfolio/com.snapwood.gfolio.SelectAlbumActivity` |
 | Nhk Plus | `nhk_plus` | `#2EC4B6` | `jp.nhk.plus/jp.nhk.simul.view.activity.SplashActivity` |
 | Nhk World Japan | `nhk_world_japan` | `#FEE440` | `jp.or.nhk.nhkworld.tv/jp.or.nhk.nhkworld.tv.ui.MainActivity` |
-| NHL | `nhl` | `#9B5DE5` | `com.nhl.tv/com.viewlift.tv.AppCmsTVSplashActivity` |
+| NHL | `nhl` | `#000000` | `com.nhl.tv/com.viewlift.tv.AppCmsTVSplashActivity` |
 | Njpw World | `njpw_world` | `#90BE6D` | `com.tvasahi.njpwworld/uk.tva.template.LaunchScreenActivity` |
 | Nlziet | `nlziet` | `#6A4C93` | `nl.nlziet/nl.nlziet.tv.app.di.tv.InjectActivity` |
 | Noovo | `noovo` | `#FEE440` | `com.vmediagroup.noovo/entpay.awl.tv.splash.SplashActivity` |
 | Nordisk Film+ | `nordiskfilmplus` | `#F94144` | `com.nordiskfilmplus.android/com.nordiskfilmplus.android.ui.splash.SplashActivity` |
-| NordVPN | `nordvpn` | `#F3722C` | `com.nordvpn.android/com.nordvpn.android.tv.MainActivity` |
+| NordVPN | `nordvpn` | `#4687FF` | `com.nordvpn.android/com.nordvpn.android.tv.MainActivity` |
 | Norton Clean | `norton_clean` | `#F15BB5` | `com.symantec.cleansweep/com.avast.android.cleaner.activity.StartActivity` |
 | Nos | `nos` | `#90BE6D` | `nl.nos.app/tv.mauna.app.MainActivity` |
 | Nostalgia TV | `nostalgiatv` | `#8AC926` | `com.nostalgiatv/com.nostalgiatv.MainActivity` |
@@ -536,7 +536,7 @@ Every app below auto-assigns in Projectivy. If one doesn't, the app ships a diff
 | OnePix | `onepixmedia` | `#90BE6D` | `app1.onepixmedia/app1.onepixmedia.empezar` |
 | Onstream | `maertsno` | `#00F5D4` | `com.maertsno.tv/com.maertsno.tv.ui.activity.TvActivity` |
 | OnTV | `andevapps` | `#F94144` | `com.andevapps.ontv/limehd.ru.ctv.MainActivity` |
-| Openvpn For Android | `openvpn_for_android` | `#F94144` | `de.blinkt.openvpn/de.blinkt.openvpn.activities.MainActivity` |
+| Openvpn For Android | `openvpn_for_android` | `#EA7E20` | `de.blinkt.openvpn/de.blinkt.openvpn.activities.MainActivity` |
 | Opta / SIC | `impresa` | `#00BBF9` | `com.impresa.opta/com.magycal.androidott.ui.tv.TVBaseActivity` |
 | Oqee By Free | `oqee_by_free` | `#F7B32B` | `net.oqee.androidmobile/net.oqee.android.ui.splash.SplashActivity` |
 | Orange TV Go | `orange_tv_go` | `#6A4C93` | `ro.orange.tvlive/tv.solocoo.htmlapp.FullscreenActivity` |
@@ -551,16 +551,16 @@ Every app below auto-assigns in Projectivy. If one doesn't, the app ships a diff
 | Pac Man 256 | `pac_man_256` | `#FF6B35` | `eu.bandainamcoent.pacman256/com.unity3d.player.UnityPlayerActivity` |
 | Package Explorer | `package_explorer` | `#B5179E` | `com.yugandhar_kumar.packageexplorer/com.yugandhar_kumar.packageexplorer.applist.AppListActivity` |
 | Panda Plus | `panda_plus` | `#9B5DE5` | `pt.dreamia.pandaplus/com.magycal.androidott.ui.tv.TVBaseActivity` |
-| Pandora | `pandora` | `#FEE440` | `com.pandora.android.atv/com.pandora.android.MainActivity` |
+| Pandora | `pandora` | `#00A0EE` | `com.pandora.android.atv/com.pandora.android.MainActivity` |
 | Pano Scrobbler | `scrobble` | `#577590` | `com.arn.scrobble/com.arn.scrobble.main.MainActivity` |
-| Paramount+ | `ott` | `#2EC4B6` | `com.cbs.ott/com.paramount.android.pplus.features.splash.tv.SplashMediatorActivity` |
+| Paramount+ | `ott` | `#0064FF` | `com.cbs.ott/com.paramount.android.pplus.features.splash.tv.SplashMediatorActivity` |
 | Paramount+ Canada | `cbs` | `#E71D36` | `com.cbs.ca/com.paramount.android.pplus.features.splash.tv.SplashMediatorActivity` |
 | Paramount+ TVE | `tve` | `#6A4C93` | `com.cbs.tve/com.paramount.android.pplus.features.splash.tv.SplashMediatorActivity` |
-| Parsec | `parsec` | `#9B5DE5` | `tv.parsec.client/tv.parsec.client.MainActivity` |
+| Parsec | `parsec` | `#E94C89` | `tv.parsec.client/tv.parsec.client.MainActivity` |
 | Pathethuis | `pathethuis` | `#FF477E` | `nl.pathe.thuis/nl.pathe.thuis.LaunchActivity` |
-| PBS | `video` | `#2EC4B6` | `com.pbs.video/com.pbs.video.StartupActivity` |
+| PBS | `video` | `#283990` | `com.pbs.video/com.pbs.video.StartupActivity` |
 | PBS Kids | `pbs_kids` | `#FEE440` | `org.pbskids.video/org.pbskids.video.ui.root.MainActivity` |
-| Peacock | `peacockandroid` | `#577590` | `com.peacocktv.peacockandroid/com.peacock.peacocktv.GoogleMainActivity` |
+| Peacock | `peacockandroid` | `#000000` | `com.peacocktv.peacockandroid/com.peacock.peacocktv.GoogleMainActivity` |
 | Peloton | `onepeloton` | `#B5179E` | `com.onepeloton.callisto/com.onepeloton.callisto.MainActivity` |
 | Pepperbox TV | `pepperbox_tv` | `#90BE6D` | `com.watchvelocity.android/com.corridordigital.watchcorridortv.feature.main.MainActivity` |
 | Perfect Player | `niklabs` | `#2EC4B6` | `com.niklabs.pp/com.niklabs.perfectplayer.MainActivity` |
@@ -581,7 +581,7 @@ Every app below auto-assigns in Projectivy. If one doesn't, the app ships a diff
 | Plex | `plex` | `#E5A00D` | `com.plexapp.android/com.plexapp.plex.activities.SplashActivity`<br>`com.plexapp.mediaserver.smb/.MainActivity` |
 | Plexamp | `plexamp` | `#577590` | `tv.plex.labs.plexamp/com.plexamp.MainActivity` |
 | Plus Messenger | `telegram` | `#4CC9F0` | `cassian.telegram.ooa.pro/not.a.bug.notificationcenter.MainActivity` |
-| Pluto TV | `pluto_tv` | `#F3722C` | `tv.pluto.android/tv.pluto.android.EntryPoint` |
+| Pluto TV | `pluto_tv` | `#000000` | `tv.pluto.android/tv.pluto.android.EntryPoint` |
 | Podcast Addict | `podcastaddict` | `#FF477E` | `com.bambuna.podcastaddict/com.bambuna.podcastaddict.activity.PodcastListActivity` |
 | Polsat Box Go | `polsat_box_go` | `#F94144` | `pl.cyfrowypolsat.cpgo/pl.cyfrowypolsat.cpframework.presentation.mobile.launch.LaunchActivity`<br>`pl.cyfrowypolsat.cpgo/pl.cyfrowypolsat.cpframework.presentation.tv.launch.TvLaunchActivity` |
 | Polygon Player | `videoplayer_2` | `#43AA8B` | `com.polygon.videoplayer/com.polygon.videoplayer.SplashActivity` |
@@ -593,15 +593,15 @@ Every app below auto-assigns in Projectivy. If one doesn't, the app ships a diff
 | Premiumize TV | `premiumize_tv` | `#9B5DE5` | `me.premiumize.pmtvfire/me.premiumize.pmtvandroid.MainActivity` |
 | Prime Video | `primevideo` | `#00A8E1` | `com.amazon.amazonvideo.livingroom/com.amazon.ignition.IgnitionActivity`<br>`com.amazon.amazonvideo.livingroom/.ui.LauncherActivity`<br>`com.amazon.avod.thirdpartyclient/.LauncherActivity` |
 | Privado VPN | `privado_vpn` | `#6A4C93` | `io.privado.android/io.privado.android.ui.splash.SplashActivity` |
-| Private Internet Access | `privateinternetaccess` | `#8AC926` | `com.privateinternetaccess.android/com.kape.vpn.MainActivity` |
+| Private Internet Access | `privateinternetaccess` | `#4BB543` | `com.privateinternetaccess.android/com.kape.vpn.MainActivity` |
 | Projectivy Blueprint | `projectivy_blueprint` | `#00E5FF` | `dev.projectivy.blueprint.app/.MainActivity` |
 | Projectivy Launcher | `projectivy` | `#00BCD4` | `com.spocky.projengmenu/.ui.home.MainActivity`<br>`com.spocky.projengmenu/.ui.tvinput.TvInputActivity`<br>`com.spocky.projengmenu/com.spocky.projengmenu.ui.MainActivity` |
 | Projectivy Overflight | `projectivy_overflight` | `#FF6B35` | `tv.projectivy.plugin.wallpaperprovider.overflight/tv.projectivy.plugin.wallpaperprovider.overflight.SettingsActivity` |
-| Proton VPN | `protonvpn` | `#F94144` | `ch.protonvpn.android/com.protonvpn.android.tv.main.TvMainActivity` |
+| Proton VPN | `protonvpn` | `#66B245` | `ch.protonvpn.android/com.protonvpn.android.tv.main.TvMainActivity` |
 | Psiphon | `subscription` | `#9B5DE5` | `com.psiphon3.subscription/com.psiphon3.MainActivity` |
 | Puffin TV | `cloudmosa` | `#00F5D4` | `com.cloudmosa.puffinTV/com.cloudmosa.appTV.classic.ClassicTVActivity` |
 | Pure Flix | `pureflix` | `#577590` | `com.pureflix/com.applicaster.ui.activities.MainActivity` |
-| PureVPN | `purevpnics` | `#B5179E` | `com.gaditek.purevpnics/com.purevpn.SplashActivity` |
+| PureVPN | `purevpnics` | `#7B2BFC` | `com.gaditek.purevpnics/com.purevpn.SplashActivity` |
 | Put Io | `put_io` | `#4CC9F0` | `io.put.putio/io.put.putio.MainActivity` |
 | Qobuz | `music` | `#F7B32B` | `com.qobuz.music/com.qobuz.android.tv.app.launcher.LauncherActivity` |
 | Quasitv | `quasitv` | `#43AA8B` | `gonemad.quasi.tv/gonemad.quasi.tv.ui.MainActivity` |
@@ -613,7 +613,7 @@ Every app below auto-assigns in Projectivy. If one doesn't, the app ships a diff
 | Radioline | `radioline` | `#FF477E` | `com.radioline.android.radioline/com.radioline.android.radioline.MainActivity` |
 | Radioplayer | `radioplayer` | `#FF6B35` | `com.radioplayer.mobile/com.radioplayer.mobile.MainActivity` |
 | Raiplay | `raiplay` | `#F7B32B` | `it.rainet.androidtv/it.rainet.androidtv.ui.MainLeanbackActivity` |
-| Rakuten TV | `rakuten_tv` | `#4CC9F0` | `tv.wuaki.apptv/tv.wuaki.apptv.activity.TVLaunchActivity` |
+| Rakuten TV | `rakuten_tv` | `#BF0000` | `tv.wuaki.apptv/tv.wuaki.apptv.activity.TVLaunchActivity` |
 | Rally TV | `rally_tv` | `#8AC926` | `laola1.wrc/com.redbull.rallytv.core.MainActivity` |
 | RAM TV | `ram` | `#FF477E` | `com.ram.tv/com.ram.tv.Update_done.MySplash` |
 | Rapid Streamz | `rapid_streamz` | `#B5179E` | `com.rpstreamz.live/com.rpstreamz.live.activity.SplashActivity` |
@@ -623,7 +623,7 @@ Every app below auto-assigns in Projectivy. If one doesn't, the app ships a diff
 | Real-Debrid | `realdebrid` | `#7BC144` | `debrid.real.app/.MainActivity`<br>`com.realdebrid.app/.MainActivity` |
 | Real-Debrid App | `realdebrid_2` | `#1982C4` | `com.realdebrid.realdebrid/com.realdebrid.realdebrid.MainActivity` |
 | Realstream TV | `realstream_tv` | `#00BBF9` | `com.doctor.realstream_tv/com.doctor.realstream.ComposeMainActivity` |
-| Red Bull TV | `nousguide` | `#6A4C93` | `com.nousguide.android.rbtv/com.redbull.rbtv.core.MainActivity` |
+| Red Bull TV | `nousguide` | `#DB0A40` | `com.nousguide.android.rbtv/com.redbull.rbtv.core.MainActivity` |
 | Redream | `redream` | `#6A4C93` | `io.recompiled.redream/io.recompiled.redream.MainActivity` |
 | Refreshrate | `refreshrate` | `#FF477E` | `mobi.bytearray.refreshrate/mobi.bytearray.refreshrate.SettingsActivity` |
 | Remote Capture | `remote_capture` | `#00F5D4` | `com.emanuelef.remote_capture/com.emanuelef.remote_capture.activities.MainActivity` |
@@ -645,7 +645,7 @@ Every app below auto-assigns in Projectivy. If one doesn't, the app ships a diff
 | RTP Play | `rtp_play` | `#4CC9F0` | `pt.rtp.play/pt.rtp.play.IntroActivity` |
 | RTVE Play | `rtve_play` | `#F3722C` | `com.rtve.androidtv/com.rtve.androidtv.Activity.SplashActivity` |
 | Rugbypass TV | `rugbypass_tv` | `#F7B32B` | `com.worldrugbypass.app/com.worldrugbypass.app.MainActivity` |
-| Rumble | `rumble` | `#6A4C93` | `com.rumble.battles/com.rumble.battles.LauncherActivity` |
+| Rumble | `rumble` | `#85C742` | `com.rumble.battles/com.rumble.battles.LauncherActivity` |
 | Rustore | `rustore` | `#4CC9F0` | `ru.vk.store.tv/ru.vk.store.tv.app.presentation.MainActivity` |
 | Rutube | `rutube` | `#43AA8B` | `ru.rutube.app.tv/ru.rutube.app.SplashActivity` |
 | S0undTV | `s0undtv` | `#A78BFA` | `com.s0und.s0undtv/.MainActivity`<br>`com.s0und.s0undtv/com.s0und.s0undtv.MainActivity`<br>`com.s0und.s0undtv/com.s0und.s0undtv.activities.FireTVMainActivity`<br>`com.s0und.s0undtv/com.s0und.s0undtv.activities.MainActivity` |
@@ -672,17 +672,17 @@ Every app below auto-assigns in Projectivy. If one doesn't, the app ships a diff
 | Shizuku | `shizuku` | `#FBBF24` | `moe.shizuku.privileged.api/rikka.shizuku.manager.MainActivity`<br>`moe.shizuku.privileged.api/moe.shizuku.manager.MainActivity` |
 | Shout TV | `shout_tv` | `#FF6B35` | `com.shoutfactory.app/com.shoutfactory.app.MainActivity` |
 | Showmax | `showmax` | `#577590` | `com.showmax.showmax.google/com.peacock.peacocktv.GoogleMainActivity` |
-| Shudder | `dramafever` | `#43AA8B` | `com.dramafever.shudder/amcsvod.shudder.view.activity.LauncherActivity` |
+| Shudder | `dramafever` | `#242424` | `com.dramafever.shudder/amcsvod.shudder.view.activity.LauncherActivity` |
 | Sideload Launcher | `sideload_launcher` | `#90BE6D` | `eu.chainfire.tv.sideloadlauncher/eu.chainfire.tv.sideloadlauncher.MainActivity`<br>`net.easyjoin.applauncher/net.easyjoin.applauncher.activity.MainActivityTV` |
 | Simple Player | `simpleplayer` | `#F15BB5` | `com.drama.simpleplayer/com.drama.simpleplayer.MainActivity` |
 | SimpliTV | `androidtv` | `#8AC926` | `at.simplitv.ott.androidtv/tv.threess.threeready.ui.generic.activity.MainActivity` |
 | SIPTV | `siptv` | `#1982C4` | `app.siptv.android/siptv.app.AccessActivity` |
 | Sirius | `sirius` | `#9B5DE5` | `com.sirius/sxmp.app.welcome.WelcomeActivity` |
-| Sky News | `sky_news` | `#F94144` | `com.sky.news.androidtv/com.easeltv.falconheavy.tv.splash.view.SplashIntroVideoActivity` |
-| Sky+ | `skymais` | `#F94144` | `br.com.skymais/com.directvgo.feature.tv.splash.SplashActivity` |
+| Sky News | `sky_news` | `#9C0000` | `com.sky.news.androidtv/com.easeltv.falconheavy.tv.splash.view.SplashIntroVideoActivity` |
+| Sky+ | `skymais` | `#0072C6` | `br.com.skymais/com.directvgo.feature.tv.splash.SplashActivity` |
 | Skyshowtime | `skyshowtime` | `#9B5DE5` | `com.skyshowtime.skyshowtime.google/com.peacock.peacocktv.GoogleMainActivity` |
 | Sledovani | `sledovani` | `#FEE440` | `cz.sledovanitv.android/cz.sledovanitv.androidtv.entry.EntryActivity` |
-| Sling TV | `sling_tv` | `#B5179E` | `com.sling/com.sling.MainActivity` |
+| Sling TV | `sling_tv` | `#FF6D01` | `com.sling/com.sling.MainActivity` |
 | Smart Tube | `smarttube` | `#FF0000` | `com.teamsmart.videomanager.tv/com.liskovsoft.smartyoutubetv2.tv.ui.main.SplashActivity` |
 | SmartTube Next | `smarttubenext` | `#E62117` | `org.smarttube.stable/com.liskovsoft.smartyoutubetv2.tv.ui.main.SplashActivity`<br>`com.liskovsoft.smarttubetv.beta/com.liskovsoft.smartyoutubetv2.tv.ui.main.SplashActivity`<br>`org.smarttube.beta/com.liskovsoft.smartyoutubetv2.tv.ui.main.SplashActivity` |
 | SmartTwitchTV | `twitch_2` | `#6A4C93` | `com.fgl27.twitch/com.fgl27.twitch.PlayerActivity` |
@@ -694,10 +694,10 @@ Every app below auto-assigns in Projectivy. If one doesn't, the app ships a diff
 | SomaFM | `radiomg` | `#FEE440` | `com.dgmltn.radiomg.somafm/com.dgmltn.radiomg.ui.main.MainActivity` |
 | Sonyliv | `sonyliv` | `#FF6B35` | `com.sonyliv/com.sonyliv.ui.splash.SplashActivity` |
 | Sooner | `sooner` | `#43AA8B` | `sooner.app.de/de.eyzmedia.sooner.MainActivity` |
-| Soundcloud | `soundcloud` | `#6A4C93` | `com.soundcloud.android/com.soundcloud.android.tv.app.TvMainActivity` |
+| Soundcloud | `soundcloud` | `#FF5500` | `com.soundcloud.android/com.soundcloud.android.tv.app.TvMainActivity` |
 | Sparkle TV | `sparkletv` | `#A78BFA` | `se.hedekonsult.sparkle/se.hedekonsult.sparkle.MainActivity` |
 | Speaker Boost | `booster` | `#B5179E` | `com.goodev.volume.booster/com.goodev.volume.booster.SpeakerBoost` |
-| Speedtest TV | `speedtesttv` | `#00BBF9` | `com.rma.speedtesttv/com.rma.speedtesttv.ui.SplashActivity` |
+| Speedtest TV | `speedtesttv` | `#141526` | `com.rma.speedtesttv/com.rma.speedtesttv.ui.SplashActivity` |
 | Sport TV | `sport_tv` | `#B5179E` | `pt.sporttv.app.androidtv/pt.sporttv.app.ui.SplashScreenTVActivity` |
 | Sports Everywhere | `sportseverywhere` | `#6A4C93` | `com.Arena4Viewer.Sportseverywhere/com.Arena4Viewer.Sportseverywhere.MainActivitysplachscren` |
 | Sportscaster | `sportscaster` | `#F7B32B` | `com.handmark.sportscaster.androidtv/com.cbs.commonui.homepage.HomePageActivity` |
@@ -709,9 +709,9 @@ Every app below auto-assigns in Projectivy. If one doesn't, the app ships a diff
 | Sstream | `sstream` | `#90BE6D` | `cloud.app.sstream/cloud.app.sstream.MainActivity` |
 | Stan | `stan` | `#0091EA` | `au.com.stan.and/au.com.stan.presentation.tv.splash.SplashScreenActivity`<br>`au.com.stan.and/.MainActivity`<br>`au.com.stan.and.tv/.MainActivity`<br>`au.com.stan.and/au.com.stan.and.ui.screens.splash.SplashActivity` |
 | Stand-Up Comedy TV | `standupcomedytv` | `#F7B32B` | `com.pnm.standupcomedytv/com.tv.playnowmedia.ui.launcher.LauncherActivity` |
-| STARZ | `bydeluxe` | `#FEE440` | `com.bydeluxe.d3.android.program.starz/com.starz.amznfiretv.SplashActivity` |
+| STARZ | `bydeluxe` | `#000000` | `com.bydeluxe.d3.android.program.starz/com.starz.amznfiretv.SplashActivity` |
 | STB Emu | `mvas` | `#F15BB5` | `com.mvas.stb.emu.free/com.mvas.stbemu.activities.MainActivity` |
-| Steam Link | `steam_link` | `#2EC4B6` | `com.valvesoftware.steamlink/com.valvesoftware.steamlink.SteamShellActivity` |
+| Steam Link | `steam_link` | `#1B2838` | `com.valvesoftware.steamlink/com.valvesoftware.steamlink.SteamShellActivity` |
 | Stream Fire | `stream_fire` | `#FEE440` | `com.streamfire.app/com.streamfire.app.ui.HomeActivity` |
 | Stream Vault | `streamvault` | `#9B59B6` | `com.streamvault.app/com.streamvault.app.MainActivity` |
 | Streamflix | `streamflix` | `#E50914` | `com.streamflixreborn.streamflix/com.streamflixreborn.streamflix.activities.main.MainTvActivity` |
@@ -726,7 +726,7 @@ Every app below auto-assigns in Projectivy. If one doesn't, the app ships a diff
 | Strongvpn | `strongvpn` | `#4CC9F0` | `com.strongvpn/com.strongvpn.ui.activities.SplashActivity` |
 | Stv Player | `stv_player` | `#9B5DE5` | `tv.stv.android.player/tv.stv.android.commontv.screens.TvActivity` |
 | Sunnxt | `sunnxt` | `#F15BB5` | `com.suntv.sunnxt/com.androidtv.myplex.ui.activity.SPlashActivity` |
-| Surfshark | `surfshark` | `#FF6B35` | `com.surfshark.vpnclient.android/com.surfshark.vpnclient.android.StartActivity` |
+| Surfshark | `surfshark` | `#178588` | `com.surfshark.vpnclient.android/com.surfshark.vpnclient.android.StartActivity` |
 | SVT | `svt` | `#B5179E` | `se.svt.android.svtplay/se.svt.svtplay.ui.mobile.MainActivity`<br>`se.svt.android.svtplay/se.svt.svtplay.ui.tv.profile.ProfilePickerActivity` |
 | Swac TV | `swac_tv` | `#4CC9F0` | `video.gideo.swactv/gideo.video.MainActivity` |
 | Swampdog Media | `swampdog_media` | `#2EC4B6` | `com.semperpax.eumc16/org.xbmc.kodi.Splash` |
@@ -741,7 +741,7 @@ Every app below auto-assigns in Projectivy. If one doesn't, the app ships a diff
 | Synologyphotos | `synologyphotos` | `#F94144` | `com.synology.projectkailash/com.synology.projectkailash.ui.login.LoginActivity` |
 | Tabii | `tabii` | `#6A4C93` | `com.trt.tabii.android/com.trt.tabii.android.tv.MainActivity` |
 | Tablo | `tablofast` | `#B5179E` | `com.nuvyyo.TabloFAST/com.nuvyyo.tablo.LaunchActivity` |
-| Tailscale | `tailscale` | `#9B5DE5` | `com.tailscale.ipn/com.tailscale.ipn.MainActivity` |
+| Tailscale | `tailscale` | `#222222` | `com.tailscale.ipn/com.tailscale.ipn.MainActivity` |
 | Talk TV | `talk_tv` | `#43AA8B` | `uk.co.news.talkradiotv/com.simplestream.presentation.startup.StartUpActivity` |
 | Talksport | `talksport` | `#F3722C` | `com.talksport.tsliveen/com.simplestream.presentation.startup.StartUpActivity` |
 | Tamashakhoneh TV | `tamashakhoneh_tv` | `#6A4C93` | `ir.tamashakhonehtv/ir.tamashakhonehtv.ui.splash.SplashActivity` |
@@ -764,7 +764,7 @@ Every app below auto-assigns in Projectivy. If one doesn't, the app ships a diff
 | Tencent | `tencent` | `#FF6B35` | `com.tencent.qqlive/com.tencent.qqlive.ona.activity.SplashHomeActivity` |
 | Tennis Channel | `tennis_channel` | `#8AC926` | `com.tennischannel.foxxum.amazon/com.foxxum.tennis.MainActivity`<br>`com.tennischannel.tceverywhere.amazon/com.foxxum.webapp.MainActivity` |
 | Tennistv | `tennistv` | `#00BBF9` | `com.tennistv.cdtv/com.tennistv.cdtv.MainActivity` |
-| Termux | `termux` | `#00BBF9` | `com.termux/com.termux.app.TermuxActivity` |
+| Termux | `termux` | `#000000` | `com.termux/com.termux.app.TermuxActivity` |
 | Texttv | `texttv` | `#B5179E` | `com.vonlegohufvud.texttvsv/com.vonlegohufvud.texttvsv.MainActivity` |
 | Tf1 | `tf1` | `#2EC4B6` | `fr.tf1.mytf1/fr.tf1.mytf1.MainActivity` |
 | TFC | `tfctv` | `#F15BB5` | `com.absi.tfctv/com.absi.tfctv.MainActivity` |
@@ -776,7 +776,7 @@ Every app below auto-assigns in Projectivy. If one doesn't, the app ships a diff
 | Thmanyah | `thmanyah` | `#90BE6D` | `com.thmanyah.shasha.tv/com.thmanyah.shasha.SplashActivity` |
 | ThreeNow | `mediaworks` | `#FF477E` | `com.mediaworks.android.tv/nz.co.mediaworks.vod.ui.MainActivity` |
 | Thunder TV | `thundertv` | `#6A4C93` | `com.iptv.thundertv/com.iptv.vsaclient.Main` |
-| TIDAL | `aspiro` | `#E71D36` | `com.aspiro.tidal/com.aspiro.wamp.tv.TvLauncherActivity` |
+| TIDAL | `aspiro` | `#000000` | `com.aspiro.tidal/com.aspiro.wamp.tv.TvLauncherActivity` |
 | Timvision | `timvision` | `#E71D36` | `it.telecomitalia.cubovision/com.canal.ui.tv.TvMainActivity` |
 | Tivify | `tivify` | `#9B5DE5` | `com.tvup.tivify.app.tv/com.tvup.tvapp.view.activity.MainActivityTVup` |
 | TiviMate | `tvplayer` | `#F5A623` | `ar.tvplayer.tv/ar.tvplayer.tv.ui.MainActivity`<br>`ar.tvplayer.tv/.ui.MainActivity` |
@@ -788,7 +788,7 @@ Every app below auto-assigns in Projectivy. If one doesn't, the app ships a diff
 | Toggo | `toggo` | `#8AC926` | `de.toggo/de.toggo.vod.ui.MainActivityToggo` |
 | Top Radio | `top_radio` | `#B5179E` | `nl.angrybytes.apps.topradio/nl.angrybytes.apps.topradio.Activities.TVActivity` |
 | TorBox | `torbox` | `#1E9BFF` | `com.torbox.app/.MainActivity`<br>`app.torbox.android/.MainActivity` |
-| Torguard | `torguard` | `#00BBF9` | `net.torguard.openvpn.client/net.torguard.openvpn.client.LauncherActivity` |
+| Torguard | `torguard` | `#CC0000` | `net.torguard.openvpn.client/net.torguard.openvpn.client.LauncherActivity` |
 | Torrent Search | `torrentsearchengine` | `#4CC9F0` | `biz.softwareits.torrentsearchengine/com.abc.abc.torrent_search_app_flutter.MainActivity` |
 | Torrserve | `torrserve` | `#43AA8B` | `ru.yourok.torrserve/ru.yourok.torrserve.ui.activities.main.MainActivity` |
 | Total Commander | `totalcommander` | `#1982C4` | `com.ghisler.android.TotalCommander/com.ghisler.android.TotalCommander.TotalCommander` |
@@ -797,8 +797,8 @@ Every app below auto-assigns in Projectivy. If one doesn't, the app ships a diff
 | Trublu | `trublu` | `#577590` | `ott.trublu/tv.vhx.LauncherActivity`<br>`ott.trublu/tv.vhx.tv.home.TvHomeActivity` |
 | TSN | `tsn` | `#577590` | `ca.tsn.mobile.android/ca.tsn.mobile.android.main.activity.MainActivity` |
 | Tt | `tt` | `#00BBF9` | `ott.ttplus/tv.vhx.tv.home.TvHomeActivity` |
-| Tubi | `tubi` | `#2EC4B6` | `com.tubitv/com.tubitv.activities.MainActivity` |
-| Tunein Radio | `tunein_radio` | `#F7B32B` | `tunein.player/tunein.ui.leanback.ui.activities.TvHomeActivity` |
+| Tubi | `tubi` | `#FA382F` | `com.tubitv/com.tubitv.activities.MainActivity` |
+| Tunein Radio | `tunein_radio` | `#14D8CC` | `tunein.player/tunein.ui.leanback.ui.activities.TvHomeActivity` |
 | TV 2 Play | `tv_2_play` | `#4CC9F0` | `no.tv2.sumo/no.tv2.android.ui.LauncherBridgeActivity` |
 | TV App Repo | `tv_app_repo` | `#F94144` | `news.androidtv.tvapprepo.playstore/news.androidtv.tvapprepo.activities.MainActivity` |
 | TV Bro | `tvwebbrowser` | `#F5E71B` | `com.phlox.tvwebbrowser/com.phlox.tvwebbrowser.activity.main.MainActivity` |
@@ -832,7 +832,7 @@ Every app below auto-assigns in Projectivy. If one doesn't, the app ships a diff
 | UAE4ARM | `uae4arm` | `#FEE440` | `atua.anddev.uae4arm/atua.anddev.uae4arm.MainActivity` |
 | Ucom TV | `smarttvapp` | `#FF6B35` | `am.ucom.smarttvapp/tv.smartlabs.framework.MainActivity` |
 | UEFA TV | `uefa_tv` | `#FF6B35` | `com.uefa.uefatv.androidtv/com.uefa.uefatv.androidtv.MainActivity` |
-| UFC | `smartphone` | `#577590` | `com.neulion.smartphone.ufc.android/com.neulion.smartphone.ufc.android.MainActivity` |
+| UFC | `smartphone` | `#D20A0A` | `com.neulion.smartphone.ufc.android/com.neulion.smartphone.ufc.android.MainActivity` |
 | Ugreen NAS | `ugreen_nas` | `#577590` | `com.ugreen.nasprotv/com.ugreen.nasprotv.LaunchActivity` |
 | Ukiku | `ukiku` | `#6A4C93` | `knf.kuma.tv/knf.kuma.tv.ui.TVMain` |
 | Ultimate File Manager Pro | `ultimatefilemanager` | `#1982C4` | `za.kilowatch.ultimatefilemanager/.MainActivity`<br>`za.kilowatch.ultimatefilemanager/za.kilowatch.ultimatefilemanager.MainActivity` |
@@ -853,7 +853,7 @@ Every app below auto-assigns in Projectivy. If one doesn't, the app ships a diff
 | Vidio | `vidio` | `#F94144` | `com.vidio.android.tv/com.vidio.android.tv.splashscreen.SplashScreenActivity` |
 | Vieon | `vieon` | `#E71D36` | `com.vieon.tv/com.my.app.MainActivity` |
 | Viki | `viki` | `#2EC4B6` | `com.viki.android/com.viki.android.ui.splash.SplashActivity` |
-| Vimeo | `vimeo` | `#FF6B35` | `com.vimeo.android.videoapp/com.vimeo.android.videoapp.launch.LaunchActivity` |
+| Vimeo | `vimeo` | `#1AB7EA` | `com.vimeo.android.videoapp/com.vimeo.android.videoapp.launch.LaunchActivity` |
 | Vimu Player | `vimu` | `#F0913A` | `net.gtvbox.videoplayer/net.gtvbox.vimuhd.VimuHDActivity` |
 | Virtualhere USB Server | `virtualhere_usb_server` | `#FF6B35` | `com.virtualhere.androidserver/com.virtualhere.androidserver.GUI` |
 | Viu | `viu` | `#6A4C93` | `com.viu.tv/com.viu.tv.mvp.ui.activity.WelcomeActivity` |
@@ -871,7 +871,7 @@ Every app below auto-assigns in Projectivy. If one doesn't, the app ships a diff
 | VTM GO | `zenderapp` | `#9B5DE5` | `be.vmma.vtm.zenderapp/be.persgroep.vtmgo.presentation.VtmGoMainActivity` |
 | Vtvcab On TV | `vtvcab_on_tv` | `#9B5DE5` | `com.vtvcab.onTV/com.vtvcab.activities.NewSplashActivity` |
 | Vtvgo TV | `vtvgo_tv` | `#F7B32B` | `vn.vtv.vtvgotv/com.vtvcab.activities.NewSplashActivity` |
-| Vudu | `downloadertablet` | `#FF477E` | `air.com.vudu.air.DownloaderTablet/air.com.vudu.air.DownloaderTablet.SplashActivity` |
+| Vudu | `downloadertablet` | `#2F7DED` | `air.com.vudu.air.DownloaderTablet/air.com.vudu.air.DownloaderTablet.SplashActivity` |
 | Waipu TV | `waipu_tv` | `#90BE6D` | `de.exaring.waipu/de.exaring.waipu.ui.login.LoginActivity` |
 | Wako | `wako` | `#B5179E` | `app.wako/app.wako.MainActivity` |
 | WATCHA | `frograms` | `#8AC926` | `com.frograms.wplay/com.frograms.wplay.activity.InitActivity` |
@@ -886,9 +886,9 @@ Every app below auto-assigns in Projectivy. If one doesn't, the app ships a diff
 | Wholphin | `damontecres_2` | `#00F5D4` | `com.github.damontecres.wholphin/com.github.damontecres.wholphin.MainActivity` |
 | WiFi File Explorer | `wififileexplorer` | `#FF477E` | `com.dooblou.WiFiFileExplorer/com.dooblou.WiFiFileExplorerLib.Start` |
 | WiiM | `linkplay` | `#1982C4` | `com.linkplay.wiimtv/com.linkplay.wiimtv.home.SplashActivity` |
-| Windscribe | `windscribe` | `#F7B32B` | `com.windscribe.vpn/com.windscribe.tv.splash.SplashActivity` |
+| Windscribe | `windscribe` | `#2F66FF` | `com.windscribe.vpn/com.windscribe.tv.splash.SplashActivity` |
 | Wink | `wink` | `#6A4C93` | `ru.rt.video.app.tv/ru.rt.video.app.splash.view.SplashActivity` |
-| Wireguard | `wireguard` | `#F15BB5` | `com.wireguard.android/com.wireguard.android.activity.TvMainActivity` |
+| Wireguard | `wireguard` | `#88171A` | `com.wireguard.android/com.wireguard.android.activity.TvMainActivity` |
 | Wondery | `wondery` | `#43AA8B` | `com.wondery/com.ensemble.streams.android.app.wonderytv.app.MainActivity` |
 | World Radios | `worldradios` | `#FF6B35` | `com.digitalapps.worldradios/com.digitalapps.worldradios.activities.ActivitySplash` |
 | Wow | `wow` | `#6A4C93` | `tv.vhx.worldofwonder/tv.vhx.LauncherActivity`<br>`tv.vhx.worldofwonder/tv.vhx.tv.home.TvHomeActivity` |
@@ -913,8 +913,8 @@ Every app below auto-assigns in Projectivy. If one doesn't, the app ships a diff
 | Youku | `youku` | `#43AA8B` | `com.youku.intl.tv/com.youku.tv.home.activity.HomeActivity` |
 | Yousee Play | `yousee_play` | `#00BBF9` | `dk.yousee.tv.leanback/dk.yousee.ott.leanback.main.MainActivity` |
 | YouTube | `youtube` | `#FF0000` | `com.google.android.youtube.tv/com.google.android.apps.youtube.tv.activity.ShellActivity`<br>`com.google.android.youtube/.HomeActivity` |
-| YouTube Kids | `youtube_2` | `#1982C4` | `com.google.android.youtube.tvkids/com.google.android.apps.youtube.tvkids.activity.MainActivity` |
-| YouTube Music | `tvmusic` | `#577590` | `com.google.android.youtube.tvmusic/com.google.android.apps.youtube.tvmusic.activity.MainActivity` |
+| YouTube Kids | `youtube_2` | `#FF0000` | `com.google.android.youtube.tvkids/com.google.android.apps.youtube.tvkids.activity.MainActivity` |
+| YouTube Music | `tvmusic` | `#FF0000` | `com.google.android.youtube.tvmusic/com.google.android.apps.youtube.tvmusic.activity.MainActivity` |
 | Yowindow | `yowindow` | `#FF6B35` | `yo.app.free/yo.activity.MainActivity`<br>`yo.app.free/yo.tv.TvActivity` |
 | Zaap TV | `zaap_tv` | `#F7B32B` | `com.zaaptv.mw.client.atv/com.alphaott.webtv.client.launcher.SystemLauncherActivity` |
 | Zank Remote | `zank_remote` | `#E71D36` | `zank.remote/zank.remote.MainActivity`<br>`zank.remote/zank.remote.AndroidTV` |

@@ -5,7 +5,7 @@
     "version": "1.6.0",
     "grid": 512,
     "safe_area": 432,
-    "note": "Brand-colored glyph on transparent, per Core Builds Brand Guide v1.0 \u00a707. Glyphs are original geometry in Core Builds language (rounded ends, flat fills, no gradients from source logos).",
+    "note": "Brand-colored glyph on transparent, per Core Builds Brand Guide v1.0 §07. Glyphs are original geometry in Core Builds language (rounded ends, flat fills, no gradients from source logos).",
     "count": 921
   },
   "icons": [
@@ -108,7 +108,7 @@
     {
       "name": "ABC News",
       "drawable": "abcnews",
-      "color": "#F15BB5",
+      "color": "#000000",
       "glyph": "abcnews_mark",
       "components": [
         "com.abc.abcnews/com.disney.datg.android.androidtv.splash.AbcNewsSplashScreenActivity"
@@ -142,7 +142,7 @@
     {
       "name": "Acorn TV",
       "drawable": "androidtv_2",
-      "color": "#B5179E",
+      "color": "#77B829",
       "glyph": "acorn_mark",
       "components": [
         "com.acorntv.androidtv/com.globallogic.acorntv.ui.MainActivity"
@@ -172,7 +172,7 @@
     {
       "name": "AdGuard",
       "drawable": "adguard",
-      "color": "#FF477E",
+      "color": "#68BC71",
       "glyph": "adguard_shield",
       "components": [
         "com.adguard.android/com.adguard.android.ui.activity.SplashActivity"
@@ -182,7 +182,7 @@
     {
       "name": "AdGuard VPN",
       "drawable": "adguard_2",
-      "color": "#9B5DE5",
+      "color": "#68BC71",
       "glyph": "adguard_shield",
       "components": [
         "com.adguard.vpn/com.adguard.vpn.ui.routing_activity.SplashActivity"
@@ -305,7 +305,7 @@
     {
       "name": "Al Jazeera",
       "drawable": "al_jazeera",
-      "color": "#577590",
+      "color": "#D4A843",
       "glyph": "tile_A",
       "components": [
         "net.aljazeera.english/net.aljazeera.english.MainActivity"
@@ -373,7 +373,7 @@
     {
       "name": "Amazon Music",
       "drawable": "amazon",
-      "color": "#E71D36",
+      "color": "#25D1DA",
       "glyph": "amazon_smile",
       "components": [
         "com.amazon.music.tv/com.amazon.music.MainActivity"
@@ -383,7 +383,7 @@
     {
       "name": "AMC",
       "drawable": "amcnetworks",
-      "color": "#00BBF9",
+      "color": "#D10000",
       "glyph": "amc_a",
       "components": [
         "com.amcnetworks.cbscatchup/com.simplestream.presentation.startup.StartUpActivity"
@@ -393,7 +393,7 @@
     {
       "name": "AMC+",
       "drawable": "amcandroidtv",
-      "color": "#FF6B35",
+      "color": "#000000",
       "glyph": "amc_a",
       "components": [
         "com.amcplus.amcandroidtv/com.amcplus.tv.MainActivity"
@@ -507,7 +507,7 @@
     {
       "name": "AnyDesk",
       "drawable": "anydeskandroid",
-      "color": "#43AA8B",
+      "color": "#EF443B",
       "glyph": "tile_A",
       "components": [
         "com.anydesk.anydeskandroid/com.anydesk.anydeskandroid.gui.activity.HubActivity"
@@ -615,7 +615,7 @@
     {
       "name": "Apple TV",
       "drawable": "appletv",
-      "color": "#E6EDF3",
+      "color": "#000000",
       "glyph": "apple_tv",
       "components": [
         "com.apple.atve.androidtv.appletv/.MainActivity",
@@ -837,7 +837,7 @@
     {
       "name": "BBC iPlayer",
       "drawable": "iplayer",
-      "color": "#F3722C",
+      "color": "#FF4C98",
       "glyph": "tile_I",
       "components": [
         "bbc.iplayer.android/external.androidtv.bbciplayer.deeplinking.DeepLinkActivity"
@@ -847,7 +847,7 @@
     {
       "name": "BBC Iplayer",
       "drawable": "bbc_iplayer",
-      "color": "#9B5DE5",
+      "color": "#FF4C98",
       "glyph": "iplayer_play",
       "components": [
         "uk.co.freeview.bbc/uk.co.freeview.templatewrapper.MainActivity"
@@ -861,7 +861,7 @@
     {
       "name": "BBC iPlayer TV",
       "drawable": "bbciplayer",
-      "color": "#1982C4",
+      "color": "#FF4C98",
       "glyph": "tile_B",
       "components": [
         "com.nvidia.bbciplayer/com.nvidia.bbciplayer.MainPlayerActivity"
@@ -892,7 +892,7 @@
     {
       "name": "Bet Plus",
       "drawable": "bet_plus",
-      "color": "#B5179E",
+      "color": "#000000",
       "glyph": "tile_B",
       "components": [
         "com.viacom.betplus/com.vmn.playplex.tv.ui.splash.TvSplashActivity"
@@ -906,7 +906,7 @@
     {
       "name": "BET+",
       "drawable": "shows",
-      "color": "#00BBF9",
+      "color": "#000000",
       "glyph": "tile_S",
       "components": [
         "com.bet.shows/com.vmn.playplex.tv.ui.splash.TvSplashActivity"
@@ -937,7 +937,7 @@
     {
       "name": "Bitdefender",
       "drawable": "bitdefender",
-      "color": "#4CC9F0",
+      "color": "#ED1C24",
       "glyph": "tile_B",
       "components": [
         "com.bitdefender.vpn/com.bitdefender.vpn.MainActivity"
@@ -961,7 +961,7 @@
     {
       "name": "Blokada",
       "drawable": "blokada",
-      "color": "#2EC4B6",
+      "color": "#F5A200",
       "glyph": "tile_B",
       "components": [
         "org.blokada.fyra/core.PanelActivity"
@@ -1029,7 +1029,7 @@
     {
       "name": "BritBox",
       "drawable": "britbox",
-      "color": "#577590",
+      "color": "#C41A3B",
       "glyph": "britbox_mark",
       "components": [
         "com.britbox.tv/axis.androidtv.sdk.app.MainActivity"
@@ -1215,7 +1215,7 @@
     {
       "name": "CBS News",
       "drawable": "cbsnews",
-      "color": "#F3722C",
+      "color": "#0052A5",
       "glyph": "cbs_eye",
       "components": [
         "com.cbsnews.ott/com.cbs.commonui.homepage.HomePageActivity"
@@ -1250,7 +1250,7 @@
     {
       "name": "Channel 4",
       "drawable": "ondemand",
-      "color": "#90BE6D",
+      "color": "#000000",
       "glyph": "c4_block",
       "components": [
         "com.channel4.ondemand/external.androidtv.psbwrapper.deeplinking.DeepLinkActivity"
@@ -1410,7 +1410,7 @@
     {
       "name": "CNBC",
       "drawable": "cnbc",
-      "color": "#F3722C",
+      "color": "#005E9E",
       "glyph": "tile_C",
       "components": [
         "com.cnbc.client/com.nbc.androidottweb.main.MainActivity"
@@ -1420,7 +1420,7 @@
     {
       "name": "CNN",
       "drawable": "cnn",
-      "color": "#9B5DE5",
+      "color": "#CC0000",
       "glyph": "cnn_mark",
       "components": [
         "com.cnn.mobile.android.tv/com.cnn.ctv.MainActivity"
@@ -1602,7 +1602,7 @@
     {
       "name": "Curiosity Stream",
       "drawable": "curiositystream",
-      "color": "#E71D36",
+      "color": "#1F619E",
       "glyph": "curiosity_eye",
       "components": [
         "com.curiosity.curiositystream.androidtv/com.curiosity.curiositystream.MainActivity"
@@ -1634,7 +1634,7 @@
     {
       "name": "Cyberghost",
       "drawable": "cyberghost",
-      "color": "#F3722C",
+      "color": "#FDCB58",
       "glyph": "cyberghost_mark",
       "components": [
         "de.mobileconcepts.cyberghost/de.mobileconcepts.cyberghost.view.app.AppActivity"
@@ -1679,7 +1679,7 @@
     {
       "name": "Dailymotion",
       "drawable": "dailymotion",
-      "color": "#F7B32B",
+      "color": "#0066DC",
       "glyph": "dailymotion_mark",
       "components": [
         "com.dailymotion.dailymotion/com.dotscreen.ethanol.tv.ui.MainActivity"
@@ -1719,7 +1719,7 @@
     {
       "name": "DAZN",
       "drawable": "dazn",
-      "color": "#B5179E",
+      "color": "#F5F500",
       "glyph": "dazn_bars",
       "components": [
         "com.dazn/com.dazn.MainActivity"
@@ -1861,7 +1861,7 @@
     {
       "name": "Discovery",
       "drawable": "discovery",
-      "color": "#B5179E",
+      "color": "#003B73",
       "glyph": "discovery_sunburst",
       "components": [
         "com.discovery.dplay/com.discovery.plus.presentation.activities.TVSplashActivity",
@@ -1872,7 +1872,7 @@
     {
       "name": "Discovery+",
       "drawable": "discoveryplus",
-      "color": "#00F5D4",
+      "color": "#003B73",
       "glyph": "discovery_sunburst",
       "components": [
         "com.discovery.discoveryplus.mobile/com.wbd.beam.BeamActivity"
@@ -1906,7 +1906,7 @@
     {
       "name": "Disney+",
       "drawable": "disneyplus",
-      "color": "#1F80E0",
+      "color": "#113CCF",
       "glyph": "plus_star",
       "components": [
         "com.disney.disneyplus/com.bamtechmedia.dominguez.main.MainActivity",
@@ -1964,7 +1964,7 @@
     {
       "name": "Dolphin Emulator",
       "drawable": "dolphin_emulator",
-      "color": "#FF477E",
+      "color": "#2196F3",
       "glyph": "dolfin_mark",
       "components": [
         "org.dolphinemu.dolphinemu/org.dolphinemu.dolphinemu.ui.main.MainActivity",
@@ -2073,7 +2073,7 @@
     {
       "name": "Dropbox",
       "drawable": "dropbox",
-      "color": "#90BE6D",
+      "color": "#0061FF",
       "glyph": "dropbox_boxes",
       "components": [
         "com.dropbox.android/com.dropbox.android.activity.DropboxBrowser"
@@ -2254,7 +2254,7 @@
     {
       "name": "DuckDuckGo",
       "drawable": "duckduckgo",
-      "color": "#00F5D4",
+      "color": "#DE5833",
       "glyph": "duckdg_egg",
       "components": [
         "com.duckduckgo.mobile.android/com.duckduckgo.app.launch.Launcher"
@@ -2425,7 +2425,7 @@
     {
       "name": "ES File Explorer",
       "drawable": "estrongs",
-      "color": "#F3722C",
+      "color": "#1976D2",
       "glyph": "esfile_mark",
       "components": [
         "com.estrongs.android.pop/com.estrongs.android.pop.app.openscreenad.NewSplashActivity"
@@ -2435,7 +2435,7 @@
     {
       "name": "ESPN",
       "drawable": "score_center",
-      "color": "#90BE6D",
+      "color": "#CC0000",
       "glyph": "espn_e",
       "components": [
         "com.espn.score_center/com.espn.startup.presentation.StartupActivity"
@@ -2499,7 +2499,7 @@
     {
       "name": "ExpressVPN",
       "drawable": "expressvpn",
-      "color": "#FF6B35",
+      "color": "#DA3940",
       "glyph": "expressvpn_mark",
       "components": [
         "com.expressvpn.vpn/com.expressvpn.vpn.splash.ClassicAlias"
@@ -2509,7 +2509,7 @@
     {
       "name": "F Droid",
       "drawable": "f_droid",
-      "color": "#F3722C",
+      "color": "#1976D2",
       "glyph": "tile_F",
       "components": [
         "org.fdroid.fdroid/org.fdroid.fdroid.views.main.MainActivity"
@@ -2523,7 +2523,7 @@
     {
       "name": "F1 TV",
       "drawable": "production",
-      "color": "#2EC4B6",
+      "color": "#E10600",
       "glyph": "f1_wing",
       "components": [
         "com.formulaone.production/com.avs.f1.ui.splash.SplashActivity"
@@ -2987,7 +2987,7 @@
     {
       "name": "Fox Nation",
       "drawable": "foxnation",
-      "color": "#F15BB5",
+      "color": "#003580",
       "glyph": "flosports_mark",
       "components": [
         "com.fng.foxnation/com.fox.app.MainActivity"
@@ -2997,7 +2997,7 @@
     {
       "name": "Fox News",
       "drawable": "foxnews",
-      "color": "#9B5DE5",
+      "color": "#003580",
       "glyph": "foxnews_mark",
       "components": [
         "com.foxnews.android/com.foxnews.androidtv.ui.splash.SplashScreenActivity"
@@ -3017,7 +3017,7 @@
     {
       "name": "Fox Sports",
       "drawable": "foxsports",
-      "color": "#90BE6D",
+      "color": "#003580",
       "glyph": "foxsports_mark",
       "components": [
         "com.foxsports.android/com.fox.app.MainActivity"
@@ -3037,7 +3037,7 @@
     {
       "name": "Foxtel",
       "drawable": "foxtel",
-      "color": "#F15BB5",
+      "color": "#EE5100",
       "glyph": "fox_network",
       "components": [
         "au.com.foxtel.atv/foxtel.play.droid.atv.SplashView"
@@ -3071,7 +3071,7 @@
     {
       "name": "France 24",
       "drawable": "androidapp_2",
-      "color": "#F7B32B",
+      "color": "#00AFF0",
       "glyph": "tile_A",
       "components": [
         "com.france24.androidapp.gtv/com.france24.androidapp.features.skeleton.SplashActivity"
@@ -3163,7 +3163,7 @@
     {
       "name": "Fubo",
       "drawable": "screen",
-      "color": "#90BE6D",
+      "color": "#FA4616",
       "glyph": "fubo_mark",
       "components": [
         "com.fubo.firetv.screen/tv.fubo.mobile.presentation.onboarding.dispatch.controller.DispatchActivity"
@@ -3259,7 +3259,7 @@
     {
       "name": "GeForce Now",
       "drawable": "tegrazone3",
-      "color": "#00BBF9",
+      "color": "#76B900",
       "glyph": "nvidia_eye",
       "components": [
         "com.nvidia.tegrazone3/com.nvidia.geforcenow.LaunchActivity"
@@ -3366,7 +3366,7 @@
     {
       "name": "Google Play Games",
       "drawable": "games",
-      "color": "#00F5D4",
+      "color": "#0F9D58",
       "glyph": "gplay_games",
       "components": [
         "com.google.android.play.games/com.google.android.apps.play.games.app.atv.features.home.HomeActivity"
@@ -3386,7 +3386,7 @@
     {
       "name": "Google TV",
       "drawable": "videos",
-      "color": "#8AC926",
+      "color": "#4285F4",
       "glyph": "google_tv",
       "components": [
         "com.google.android.videos/com.google.android.videos.tv.presenter.activity.TvLauncherActivity"
@@ -3460,7 +3460,7 @@
     {
       "name": "Hallmark Channel",
       "drawable": "hallmarkchannel",
-      "color": "#2EC4B6",
+      "color": "#9C1D2B",
       "glyph": "hallmark_mark",
       "components": [
         "com.hallmarkchannel.awe/tv.accedo.one.app.bootstrap.BootstrapActivity"
@@ -3694,7 +3694,7 @@
     {
       "name": "Hoopla",
       "drawable": "hoopladigital",
-      "color": "#2EC4B6",
+      "color": "#EA4C2C",
       "glyph": "hoopla_mark",
       "components": [
         "com.hoopladigital.android/com.hoopladigital.android.ui.activity.SplashScreenActivity",
@@ -3705,7 +3705,7 @@
     {
       "name": "Hotspot Shield VPN",
       "drawable": "hotspot_shield_vpn",
-      "color": "#F15BB5",
+      "color": "#2196F3",
       "glyph": "tile_H",
       "components": [
         "hotspotshield.android.vpn/com.anchorfree.hotspotshield.ui.HssActivity",
@@ -3769,7 +3769,7 @@
     {
       "name": "Hulu",
       "drawable": "livingroomplus",
-      "color": "#1982C4",
+      "color": "#1CE783",
       "glyph": "hulu_mark",
       "components": [
         "com.hulu.livingroomplus/com.hulu.livingroomplus.WKFactivity"
@@ -3854,7 +3854,7 @@
     {
       "name": "iHeartRadio",
       "drawable": "clearchannel",
-      "color": "#F7B32B",
+      "color": "#C6002B",
       "glyph": "iheart_mark",
       "components": [
         "com.clearchannel.iheartradio.tv/com.iheartradio.tv.screen.container.ContainerActivity"
@@ -3888,7 +3888,7 @@
     {
       "name": "Instagram",
       "drawable": "instagram",
-      "color": "#FF6B35",
+      "color": "#E4405F",
       "glyph": "instagram_camera",
       "components": [
         "com.instagram.airwave/com.instagram.airwave.AirwaveMainActivity"
@@ -3990,7 +3990,7 @@
     {
       "name": "IPVanish",
       "drawable": "ipvanish",
-      "color": "#2EC4B6",
+      "color": "#6DB33F",
       "glyph": "ipvanish_mark",
       "components": [
         "com.ixolit.ipvanish/com.ixolit.ipvanish.presentation.features.launch.SplashActivity"
@@ -4010,7 +4010,7 @@
     {
       "name": "ITV Hub",
       "drawable": "itvmobileplayer",
-      "color": "#FF477E",
+      "color": "#00B4E5",
       "glyph": "itv_hub",
       "components": [
         "air.ITVMobilePlayer/com.itv.tenft.itvhub.MainActivity"
@@ -4068,7 +4068,7 @@
     {
       "name": "Jellyfin",
       "drawable": "jellyfin",
-      "color": "#AA5CC3",
+      "color": "#00A4DC",
       "glyph": "jellyfin_chevrons",
       "components": [
         "org.jellyfin.androidtv/.ui.startup.StartupActivity",
@@ -4164,7 +4164,7 @@
     {
       "name": "JustWatch",
       "drawable": "justwatch",
-      "color": "#00BBF9",
+      "color": "#FEC500",
       "glyph": "justwatch_finder",
       "components": [
         "com.justwatch.justwatch/com.justwatch.justwatch.MainActivity"
@@ -4205,7 +4205,7 @@
     {
       "name": "Kanopy",
       "drawable": "kanopy",
-      "color": "#FF477E",
+      "color": "#6CC24A",
       "glyph": "kanopy_mark",
       "components": [
         "com.kanopy.tvapp/com.kanopy.tvapp.MainActivity"
@@ -4302,7 +4302,7 @@
     {
       "name": "Kick",
       "drawable": "kick",
-      "color": "#1982C4",
+      "color": "#53FC18",
       "glyph": "kick_mark",
       "components": [
         "com.kick.mobile/com.kick.mobile.app.MainActivity",
@@ -5159,7 +5159,7 @@
     {
       "name": "MLB",
       "drawable": "bamnetworks",
-      "color": "#00F5D4",
+      "color": "#002D72",
       "glyph": "mlb_homeplate",
       "components": [
         "com.bamnetworks.mobile.android.gameday.atbat/mlb.atbat.activity.MainActivity"
@@ -5332,7 +5332,7 @@
     {
       "name": "Movies Anywhere",
       "drawable": "moviesanywhere",
-      "color": "#E71D36",
+      "color": "#082E5B",
       "glyph": "moviesanywhere_mark",
       "components": [
         "com.moviesanywhere.goo/com.disney.brooklyn.tv.ui.signin.TVSignInActivity"
@@ -5420,7 +5420,7 @@
     {
       "name": "MUBI",
       "drawable": "mubi",
-      "color": "#2EC4B6",
+      "color": "#001529",
       "glyph": "mubi_mark",
       "components": [
         "com.mubi/com.mubi.ui.MainActivity",
@@ -5431,7 +5431,7 @@
     {
       "name": "Mullvad VPN",
       "drawable": "mullvad_vpn",
-      "color": "#E71D36",
+      "color": "#294D73",
       "glyph": "mullvad_shield",
       "components": [
         "net.mullvad.mullvadvpn/net.mullvad.mullvadvpn.ui.MainActivity"
@@ -5539,7 +5539,7 @@
       "mapping_source": "Projectivy Icon Pack 1.1.9"
     },
     {
-      "name": "M\u0101ori+",
+      "name": "Māori+",
       "drawable": "maoritelevision",
       "color": "#F7B32B",
       "glyph": "tile_M",
@@ -5579,7 +5579,7 @@
     {
       "name": "NBA",
       "drawable": "gametime",
-      "color": "#9B5DE5",
+      "color": "#1D428A",
       "glyph": "nba_ball",
       "components": [
         "com.nbaimd.gametime.nba2011/com.nba.tv.ui.splash.SplashActivity"
@@ -5589,7 +5589,7 @@
     {
       "name": "NBC News",
       "drawable": "nbc_news",
-      "color": "#00BBF9",
+      "color": "#0072CE",
       "glyph": "ncbc_mark",
       "components": [
         "com.zumobi.msnbc/com.nbc.androidottweb.main.MainActivity"
@@ -5603,7 +5603,7 @@
     {
       "name": "NBC Sports",
       "drawable": "nbcsports",
-      "color": "#00BBF9",
+      "color": "#107534",
       "glyph": "nbc_peacock",
       "components": [
         "com.nbcsports.apps.tv/com.nbc.nbctvapp.ui.main.view.MainActivity"
@@ -5724,7 +5724,7 @@
     {
       "name": "Newpipe",
       "drawable": "newpipe",
-      "color": "#B5179E",
+      "color": "#E53935",
       "glyph": "newpipe_mark",
       "components": [
         "org.schabi.newpipe/org.schabi.newpipe.MainActivity"
@@ -5762,7 +5762,7 @@
     {
       "name": "NFL",
       "drawable": "nflgamecenter",
-      "color": "#00BBF9",
+      "color": "#013369",
       "glyph": "nfl_ball",
       "components": [
         "com.gotv.nflgamecenter.us.lite/com.nfl.connected.SplashActivity"
@@ -5814,7 +5814,7 @@
     {
       "name": "NHL",
       "drawable": "nhl",
-      "color": "#9B5DE5",
+      "color": "#000000",
       "glyph": "nhl_mark",
       "components": [
         "com.nhl.tv/com.viewlift.tv.AppCmsTVSplashActivity"
@@ -5876,7 +5876,7 @@
     {
       "name": "NordVPN",
       "drawable": "nordvpn",
-      "color": "#F3722C",
+      "color": "#4687FF",
       "glyph": "nordvpn_arrow",
       "components": [
         "com.nordvpn.android/com.nordvpn.android.tv.MainActivity"
@@ -6251,7 +6251,7 @@
     {
       "name": "Openvpn For Android",
       "drawable": "openvpn_for_android",
-      "color": "#F94144",
+      "color": "#EA7E20",
       "glyph": "openvpn_mark",
       "components": [
         "de.blinkt.openvpn/de.blinkt.openvpn.activities.MainActivity"
@@ -6437,7 +6437,7 @@
     {
       "name": "Pandora",
       "drawable": "pandora",
-      "color": "#FEE440",
+      "color": "#00A0EE",
       "glyph": "pandora_halo",
       "components": [
         "com.pandora.android.atv/com.pandora.android.MainActivity"
@@ -6457,7 +6457,7 @@
     {
       "name": "Paramount+",
       "drawable": "ott",
-      "color": "#2EC4B6",
+      "color": "#0064FF",
       "glyph": "paramount_peak",
       "components": [
         "com.cbs.ott/com.paramount.android.pplus.features.splash.tv.SplashMediatorActivity"
@@ -6487,7 +6487,7 @@
     {
       "name": "Parsec",
       "drawable": "parsec",
-      "color": "#9B5DE5",
+      "color": "#E94C89",
       "glyph": "parsec_mark",
       "components": [
         "tv.parsec.client/tv.parsec.client.MainActivity"
@@ -6515,7 +6515,7 @@
     {
       "name": "PBS",
       "drawable": "video",
-      "color": "#2EC4B6",
+      "color": "#283990",
       "glyph": "pbs_mark",
       "components": [
         "com.pbs.video/com.pbs.video.StartupActivity"
@@ -6539,7 +6539,7 @@
     {
       "name": "Peacock",
       "drawable": "peacockandroid",
-      "color": "#577590",
+      "color": "#000000",
       "glyph": "peacock_fan",
       "components": [
         "com.peacocktv.peacockandroid/com.peacock.peacocktv.GoogleMainActivity"
@@ -6764,7 +6764,7 @@
     {
       "name": "Pluto TV",
       "drawable": "pluto_tv",
-      "color": "#F3722C",
+      "color": "#000000",
       "glyph": "pluto_planet",
       "components": [
         "tv.pluto.android/tv.pluto.android.EntryPoint"
@@ -6912,7 +6912,7 @@
     {
       "name": "Private Internet Access",
       "drawable": "privateinternetaccess",
-      "color": "#8AC926",
+      "color": "#4BB543",
       "glyph": "tile_P",
       "components": [
         "com.privateinternetaccess.android/com.kape.vpn.MainActivity"
@@ -6958,7 +6958,7 @@
     {
       "name": "Proton VPN",
       "drawable": "protonvpn",
-      "color": "#F94144",
+      "color": "#66B245",
       "glyph": "proton_shield",
       "components": [
         "ch.protonvpn.android/com.protonvpn.android.tv.main.TvMainActivity"
@@ -6998,7 +6998,7 @@
     {
       "name": "PureVPN",
       "drawable": "purevpnics",
-      "color": "#B5179E",
+      "color": "#7B2BFC",
       "glyph": "tile_P",
       "components": [
         "com.gaditek.purevpnics/com.purevpn.SplashActivity"
@@ -7147,7 +7147,7 @@
     {
       "name": "Rakuten TV",
       "drawable": "rakuten_tv",
-      "color": "#4CC9F0",
+      "color": "#BF0000",
       "glyph": "rakuten_r",
       "components": [
         "tv.wuaki.apptv/tv.wuaki.apptv.activity.TVLaunchActivity"
@@ -7260,7 +7260,7 @@
     {
       "name": "Red Bull TV",
       "drawable": "nousguide",
-      "color": "#6A4C93",
+      "color": "#DB0A40",
       "glyph": "redbull_sun",
       "components": [
         "com.nousguide.android.rbtv/com.redbull.rbtv.core.MainActivity"
@@ -7528,7 +7528,7 @@
     {
       "name": "Rumble",
       "drawable": "rumble",
-      "color": "#6A4C93",
+      "color": "#85C742",
       "glyph": "rumble_mark",
       "components": [
         "com.rumble.battles/com.rumble.battles.LauncherActivity"
@@ -7877,7 +7877,7 @@
     {
       "name": "Shudder",
       "drawable": "dramafever",
-      "color": "#43AA8B",
+      "color": "#242424",
       "glyph": "shudder_mark",
       "components": [
         "com.dramafever.shudder/amcsvod.shudder.view.activity.LauncherActivity"
@@ -7947,7 +7947,7 @@
     {
       "name": "Sky News",
       "drawable": "sky_news",
-      "color": "#F94144",
+      "color": "#9C0000",
       "glyph": "sky_swoosh",
       "components": [
         "com.sky.news.androidtv/com.easeltv.falconheavy.tv.splash.view.SplashIntroVideoActivity"
@@ -7961,7 +7961,7 @@
     {
       "name": "Sky+",
       "drawable": "skymais",
-      "color": "#F94144",
+      "color": "#0072C6",
       "glyph": "tile_S",
       "components": [
         "br.com.skymais/com.directvgo.feature.tv.splash.SplashActivity"
@@ -7999,7 +7999,7 @@
     {
       "name": "Sling TV",
       "drawable": "sling_tv",
-      "color": "#B5179E",
+      "color": "#FF6D01",
       "glyph": "sling_s",
       "components": [
         "com.sling/com.sling.MainActivity"
@@ -8159,7 +8159,7 @@
     {
       "name": "Soundcloud",
       "drawable": "soundcloud",
-      "color": "#6A4C93",
+      "color": "#FF5500",
       "glyph": "soundcloud_cloud",
       "components": [
         "com.soundcloud.android/com.soundcloud.android.tv.app.TvMainActivity"
@@ -8196,7 +8196,7 @@
     {
       "name": "Speedtest TV",
       "drawable": "speedtesttv",
-      "color": "#00BBF9",
+      "color": "#141526",
       "glyph": "speedtest_gauge",
       "components": [
         "com.rma.speedtesttv/com.rma.speedtesttv.ui.SplashActivity"
@@ -8336,7 +8336,7 @@
     {
       "name": "STARZ",
       "drawable": "bydeluxe",
-      "color": "#FEE440",
+      "color": "#000000",
       "glyph": "starz_mark",
       "components": [
         "com.bydeluxe.d3.android.program.starz/com.starz.amznfiretv.SplashActivity"
@@ -8356,7 +8356,7 @@
     {
       "name": "Steam Link",
       "drawable": "steam_link",
-      "color": "#2EC4B6",
+      "color": "#1B2838",
       "glyph": "steam_mark",
       "components": [
         "com.valvesoftware.steamlink/com.valvesoftware.steamlink.SteamShellActivity"
@@ -8543,7 +8543,7 @@
     {
       "name": "Surfshark",
       "drawable": "surfshark",
-      "color": "#FF6B35",
+      "color": "#178588",
       "glyph": "surfshark_mark",
       "components": [
         "com.surfshark.vpnclient.android/com.surfshark.vpnclient.android.StartActivity"
@@ -8743,7 +8743,7 @@
     {
       "name": "Tailscale",
       "drawable": "tailscale",
-      "color": "#9B5DE5",
+      "color": "#222222",
       "glyph": "tailscale_mark",
       "components": [
         "com.tailscale.ipn/com.tailscale.ipn.MainActivity"
@@ -9061,7 +9061,7 @@
     {
       "name": "Termux",
       "drawable": "termux",
-      "color": "#00BBF9",
+      "color": "#000000",
       "glyph": "termux_mark",
       "components": [
         "com.termux/com.termux.app.TermuxActivity"
@@ -9209,7 +9209,7 @@
     {
       "name": "TIDAL",
       "drawable": "aspiro",
-      "color": "#E71D36",
+      "color": "#000000",
       "glyph": "tidal_wave",
       "components": [
         "com.aspiro.tidal/com.aspiro.wamp.tv.TvLauncherActivity"
@@ -9355,7 +9355,7 @@
     {
       "name": "Torguard",
       "drawable": "torguard",
-      "color": "#00BBF9",
+      "color": "#CC0000",
       "glyph": "tile_T",
       "components": [
         "net.torguard.openvpn.client/net.torguard.openvpn.client.LauncherActivity"
@@ -9475,7 +9475,7 @@
     {
       "name": "Tubi",
       "drawable": "tubi",
-      "color": "#2EC4B6",
+      "color": "#FA382F",
       "glyph": "tubi_mark",
       "components": [
         "com.tubitv/com.tubitv.activities.MainActivity"
@@ -9489,7 +9489,7 @@
     {
       "name": "Tunein Radio",
       "drawable": "tunein_radio",
-      "color": "#F7B32B",
+      "color": "#14D8CC",
       "glyph": "tunein_circle",
       "components": [
         "tunein.player/tunein.ui.leanback.ui.activities.TvHomeActivity"
@@ -9934,7 +9934,7 @@
     {
       "name": "UFC",
       "drawable": "smartphone",
-      "color": "#577590",
+      "color": "#D20A0A",
       "glyph": "ufc_octagon",
       "components": [
         "com.neulion.smartphone.ufc.android/com.neulion.smartphone.ufc.android.MainActivity"
@@ -10215,7 +10215,7 @@
     {
       "name": "Vimeo",
       "drawable": "vimeo",
-      "color": "#FF6B35",
+      "color": "#1AB7EA",
       "glyph": "vimeo_mark",
       "components": [
         "com.vimeo.android.videoapp/com.vimeo.android.videoapp.launch.LaunchActivity"
@@ -10445,7 +10445,7 @@
     {
       "name": "Vudu",
       "drawable": "downloadertablet",
-      "color": "#FF477E",
+      "color": "#2F7DED",
       "glyph": "vudu_mark",
       "components": [
         "air.com.vudu.air.DownloaderTablet/air.com.vudu.air.DownloaderTablet.SplashActivity"
@@ -10619,7 +10619,7 @@
     {
       "name": "Windscribe",
       "drawable": "windscribe",
-      "color": "#F7B32B",
+      "color": "#2F66FF",
       "glyph": "windscribe_mark",
       "components": [
         "com.windscribe.vpn/com.windscribe.tv.splash.SplashActivity"
@@ -10647,7 +10647,7 @@
     {
       "name": "Wireguard",
       "drawable": "wireguard",
-      "color": "#F15BB5",
+      "color": "#88171A",
       "glyph": "wireguard_mark",
       "components": [
         "com.wireguard.android/com.wireguard.android.activity.TvMainActivity"
@@ -10976,7 +10976,7 @@
     {
       "name": "YouTube Kids",
       "drawable": "youtube_2",
-      "color": "#1982C4",
+      "color": "#FF0000",
       "glyph": "yt_kids",
       "components": [
         "com.google.android.youtube.tvkids/com.google.android.apps.youtube.tvkids.activity.MainActivity"
@@ -10986,7 +10986,7 @@
     {
       "name": "YouTube Music",
       "drawable": "tvmusic",
-      "color": "#577590",
+      "color": "#FF0000",
       "glyph": "yt_music",
       "components": [
         "com.google.android.youtube.tvmusic/com.google.android.apps.youtube.tvmusic.activity.MainActivity"
