@@ -48,7 +48,12 @@ export function sanitizeState(raw) {
   out.sampleFeed = Boolean(out.sampleFeed);
   out.showFinals = Boolean(out.showFinals);
   out.wakeLock = Boolean(out.wakeLock);
-  out.overlay = Boolean(out.overlay);
+  // overlay: accept booleans, or string "true"/"false" from legacy persisted data
+  if (out.overlay === true || out.overlay === 'true') {
+    out.overlay = true;
+  } else {
+    out.overlay = false;
+  }
 
   out.speed = clampInt(out.speed, SPEED_MIN, SPEED_MAX, DEFAULTS.speed);
   out.refreshSec = REFRESH_CHOICES.includes(Number(out.refreshSec)) ? Number(out.refreshSec) : DEFAULTS.refreshSec;
@@ -82,10 +87,10 @@ function clampInt(value, min, max, fallback) {
 export function loadState() {
   try {
     const raw = localStorage.getItem(KEY);
-    if (!raw) return { ...DEFAULTS };
+    if (!raw) return { ...DEFAULTS, watchApps: { ...DEFAULTS.watchApps } };
     return sanitizeState(JSON.parse(raw));
   } catch {
-    return { ...DEFAULTS };
+    return { ...DEFAULTS, watchApps: { ...DEFAULTS.watchApps } };
   }
 }
 

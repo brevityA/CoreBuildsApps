@@ -123,6 +123,7 @@ class OverlayService : Service() {
         try {
             wm.addView(wv, params)
         } catch (err: Exception) {
+            wv.destroy() // clean up before stopping so no WebView leaks
             stopSelf() // permission was revoked mid-flight
             return
         }
@@ -155,9 +156,6 @@ class OverlayService : Service() {
         settings.setSupportZoom(false)
         settings.builtInZoomControls = false
         settings.displayZoomControls = false
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            settings.safeBrowsingEnabled = false
-        }
     }
 
     companion object {

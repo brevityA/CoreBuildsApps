@@ -35,11 +35,45 @@ test('latestCorelineRelease picks the newest coreline tag and its apk asset', ()
   assert.equal(best.apkUrl, 'https://x/new.apk');
 });
 
-test('latestCorelineRelease returns null without a matching asset', () => {
+test('latestCorelineRelease returns null when no release has the APK asset', () => {
   const releases = [{ tag_name: 'coreline-v1.2.0', assets: [] }];
   const best = latestCorelineRelease(releases);
-  assert.equal(best.apkUrl, null);
-  assert.equal(best.version, '1.2.0');
+  assert.equal(best, null);
+});
+
+test('compareVersions handles prerelease ordering', () => {
+  // Prerelease sorts below its stable release
+  assert.equal(compareVersions('1.2.0-rc1', '1.2.0'), -1);
+  assert.equal(compareVersions('1.2.0', '1.2.0-rc1'), 1);
+  // Numeric prerelease identifiers compared numerically
+  assert.equal(compareVersions('1.2.0-rc1', '1.2.0-rc2'), -1);
+  // String prereleases compared lexically
+  assert.equal(compareVersions('1.2.0-alpha', '1.2.0-beta'), -1);
+  // Same prerelease is equal
+  assert.equal(compareVersions('1.2.0-rc1', '1.2.0-rc1'), 0);
+});
+
+test('latestCorelineRelease skips releases without the APK asset', () => {
+  const releases = [
+    // Newer release but no APK asset — should be skipped
+    { tag_name: 'coreline-v2.0.0', assets: [] },
+    // Older release with the APK — should be picked
+    { tag_name: 'coreline-v1.5.0', assets: [{ name: 'coreline-release.apk', browser_download_url: 'https://x/old.apk' }] },
+  ];
+  const best = latestCorelineRelease(releases);
+  assert.equal(best.version, '1.5.0');
+  assert.equal(best.apkUrl, 'https://x/old.apk');
+});
+
+test('updateStatus falls back to older installable release when newest lacks APK', () => {
+  const releases = [
+    { tag_name: 'coreline-v2.0.0', assets: [{ name: 'other.apk', browser_download_url: 'https://x/other.apk' }] },
+    { tag_name: 'coreline-v1.5.0', assets: [{ name: 'coreline-release.apk', browser_download_url: 'https://x/good.apk' }] },
+  ];
+  const status = updateStatus(releases, '1.0.0');
+  assert.equal(status.newer, true);
+  assert.equal(status.latest, '1.5.0');
+  assert.equal(status.apkUrl, 'https://x/good.apk');
 });
 
 test('updateStatus flags newer and survives empty/absent releases', () => {
@@ -47,6 +81,8 @@ test('updateStatus flags newer and survives empty/absent releases', () => {
   assert.equal(updateStatus(rels, '1.1.0').newer, true);
   assert.equal(updateStatus(rels, '1.2.0').newer, false);
   assert.equal(updateStatus(rels, '1.3.0').newer, false);
+  // Prerelease current is older than its stable
+  assert.equal(updateStatus(rels, '1.2.0-rc1').newer, true);
   const none = updateStatus(null, '1.1.0');
   assert.equal(none.ok, true);
   assert.equal(none.newer, false);

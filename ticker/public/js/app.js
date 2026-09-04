@@ -408,7 +408,10 @@ async function checkForUpdates(manual = false) {
     const url = isNativeShell()
       ? `/api/proxy?url=${encodeURIComponent(UPDATE_RELEASES_URL)}`
       : UPDATE_RELEASES_URL;
-    const res = await fetch(url, { headers: { Accept: 'application/json' }, signal: AbortSignal.timeout(20000) });
+    const signal = typeof AbortSignal?.timeout === 'function'
+      ? AbortSignal.timeout(20000)
+      : (() => { const ac = new AbortController(); setTimeout(() => ac.abort(), 20000); return ac.signal; })();
+    const res = await fetch(url, { headers: { Accept: 'application/json' }, signal });
     if (!res.ok) throw new Error('http ' + res.status);
     const releases = await res.json();
     updateInfo = buildUpdateStatus(releases, currentVersion() || '0', UPDATE_APK_NAME);
@@ -782,11 +785,17 @@ function renderWatchApps() {
     const league = LEAGUES[id];
     if (!league) return '';
     const choice = watchChoiceFor(state.watchApps, league.label);
+    const installedPkgs = new Set(installedApps.map((a) => a.pkg));
     const opts = [
       `<option value="${WATCH_WEB}" ${choice === WATCH_WEB ? 'selected' : ''}>Web browser</option>`,
+      // If the stored choice is neither 'web' nor a known installed app,
+      // still include it as a selected option so the picker preserves it.
+      (choice !== WATCH_WEB && !installedPkgs.has(choice))
+        ? `<option value="${esc(choice)}" selected>${esc(choice)}</option>`
+        : '',
       ...installedApps.map((a) =>
         `<option value="${esc(a.pkg)}" ${choice === a.pkg ? 'selected' : ''}>${esc(a.label)}</option>`),
-    ].join('');
+    ].filter(Boolean).join('');
     return `
       <div class="watch-row">
         <span class="watch-league" style="--acc:${esc(league.accent)}">${league.label}</span>
