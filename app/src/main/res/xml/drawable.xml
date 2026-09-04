@@ -3,6 +3,9 @@
 <resources>
     <category title="Banners · Core Builds" />
     <item drawable="corebuilds_banner" />
+    <item drawable="coredoctor_banner" />
+    <item drawable="coreline_banner" />
+    <item drawable="coreshift_banner" />
     <category title="Banners · Streaming" />
     <item drawable="androidtv_3_banner" />
     <item drawable="arrowfilms_banner" />
@@ -945,6 +948,9 @@
     <item drawable="zumba_banner" />
     <category title="Square · Core Builds" />
     <item drawable="corebuilds" />
+    <item drawable="coredoctor" />
+    <item drawable="coreline" />
+    <item drawable="coreshift" />
     <category title="Square · Streaming" />
     <item drawable="androidtv_3" />
     <item drawable="arrowfilms" />

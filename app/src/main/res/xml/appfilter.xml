@@ -350,6 +350,15 @@
     <!-- Core Builds -->
     <item component="ComponentInfo{tv.corebuilds.iconpack/tv.corebuilds.iconpack.MainActivity}" drawable="corebuilds_banner"/>
     <item component="ComponentInfo{tv.corebuilds.iconpack/.MainActivity}" drawable="corebuilds_banner"/>
+    <!-- Core Doctor -->
+    <item component="ComponentInfo{dev.corebuilds.doctor/dev.corebuilds.doctor.MainActivity}" drawable="coredoctor_banner"/>
+    <item component="ComponentInfo{dev.corebuilds.doctor/.MainActivity}" drawable="coredoctor_banner"/>
+    <!-- Core Line -->
+    <item component="ComponentInfo{dev.corebuilds.line/dev.corebuilds.line.MainActivity}" drawable="coreline_banner"/>
+    <item component="ComponentInfo{dev.corebuilds.line/.MainActivity}" drawable="coreline_banner"/>
+    <!-- Core Shift -->
+    <item component="ComponentInfo{dev.corebuilds.shift/dev.corebuilds.shift.MainActivity}" drawable="coreshift_banner"/>
+    <item component="ComponentInfo{dev.corebuilds.shift/.MainActivity}" drawable="coreshift_banner"/>
     <!-- CoreELEC Helper -->
     <item component="ComponentInfo{com.jamal2367.coreelec/com.jamal2367.coreelec.MainActivity}" drawable="jamal2367_banner"/>
     <item component="ComponentInfo{com.jamal2367.coreelec/.MainActivity}" drawable="jamal2367_banner"/>

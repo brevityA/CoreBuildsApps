@@ -1,6 +1,6 @@
 # Supported applications
 
-`921` icons · `1095` mapped components · pack v1.8.1
+`924` icons · `1098` mapped components · pack v1.8.1
 
 Every app below auto-assigns in Projectivy. If one doesn't, the app ships a different launcher activity on your device — open an issue with the component name and it gets added.
 
@@ -135,6 +135,9 @@ Every app below auto-assigns in Projectivy. If one doesn't, the app ships a diff
 | Coji TV Browser | `coji_tv_browser` | `#FF477E` | `mvl.studio.tvlite/mvl.studio.tvlite.android_tv.presentation.ui.TabletLauncherActivity`<br>`mvl.studio.tvlite/mvl.studio.tvlite.android_tv.presentation.ui.HomeLauncherActivity` |
 | Comedy Box | `comedybox` | `#90BE6D` | `com.comedybox.app/com.android.comedybox.ui.TvSplashActivity` |
 | Core Builds | `corebuilds` | `#00D4FF` | `tv.corebuilds.iconpack/.MainActivity` |
+| Core Doctor | `coredoctor` | `#00D4FF` | `dev.corebuilds.doctor/.MainActivity` |
+| Core Line | `coreline` | `#00D4FF` | `dev.corebuilds.line/.MainActivity` |
+| Core Shift | `coreshift` | `#00D4FF` | `dev.corebuilds.shift/.MainActivity` |
 | CoreELEC Helper | `jamal2367` | `#2EC4B6` | `com.jamal2367.coreelec/com.jamal2367.coreelec.MainActivity` |
 | Corridor | `watchcorridortv` | `#9B5DE5` | `com.corridordigital.watchcorridortv/com.corridordigital.watchcorridortv.feature.main.MainActivity` |
 | Cosmote TV | `cosmote_tv` | `#F15BB5` | `gr.cosmote.cosmotetv.androidtv/dt.ote.poc.presentation.view.tv.TvActivity` |
