@@ -182,10 +182,10 @@ class KotlinWiringTests(unittest.TestCase):
 
 
 class VersionTests(unittest.TestCase):
-    def test_version_bumped_to_180(self):
+    def test_version_bumped_to_181(self):
         gradle = read("app/build.gradle.kts")
-        self.assertIn('versionCode = 13', gradle)
-        self.assertIn('versionName = "1.8.0"', gradle)
+        self.assertIn('versionCode = 14', gradle)
+        self.assertIn('versionName = "1.8.1"', gradle)
 
     def test_version_json_matches_gradle(self):
         import json
