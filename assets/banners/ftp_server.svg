@@ -1,7 +1,7 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1280" height="720" viewBox="0 0 1280 720">
   <g transform="translate(29.0,0.0)">
   <defs><linearGradient id="cbRail" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#00d4ff"/><stop offset="100%" stop-color="#a78bfa"/></linearGradient></defs><rect x="70" y="168" width="16" height="384" rx="8.0" fill="url(#cbRail)"/>
-  <g transform="translate(160,180) scale(0.70312)"><path d="M148.31311706629054 406.0V106.0H224.0535966149506V406.0ZM208.39774330042312 293.87023977433006V229.9774330042313H356.91678420310296V293.87023977433006ZM208.39774330042312 169.89280677009873V106.0H363.68688293370946V169.89280677009873Z" fill="#8AC926" stroke="none"/></g>
+  <g transform="translate(160,180) scale(0.70312)"><rect x="64" y="64" width="384" height="384" rx="88" fill="none" stroke="#8AC926" stroke-width="32.0" stroke-linecap="round" stroke-linejoin="round"/><path d="M166.26093088857544 381.0V131.0H229.37799717912552V381.0ZM216.33145275035258 287.558533145275V234.31452750352608H340.0973201692525V287.558533145275ZM216.33145275035258 184.24400564174894V131.0H345.73906911142456V184.24400564174894Z" fill="#8AC926" stroke="none"/><circle cx="392" cy="120" r="18" fill="#8AC926" stroke="none"/></g>
   <path d="M569.4480000000001 301.75V269.274H576.6700000000001V301.75ZM574.9680000000001 289.008V282.798H591.206V289.008ZM574.9680000000001 275.484V269.274H591.942V275.484Z" fill="#00d4ff" stroke="none"/>
   <path d="M596.5880000000001 301.75V269.274H603.8100000000001V301.75Z" fill="#00d4ff" stroke="none"/>
   <path d="M610.066 301.75V269.274H617.288V301.75ZM615.632 301.75V295.402H631.686V301.75Z" fill="#00d4ff" stroke="none"/>

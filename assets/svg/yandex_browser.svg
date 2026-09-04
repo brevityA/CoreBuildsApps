@@ -1,3 +1,3 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
-  <path d="M227.65021156558532 298.524682651622 112.98166431593792 106.0H199.72355430183356L287.311706629055 262.13540197461214H226.3808180535966L313.96897038081806 106.0H399.01833568406204L283.50352609308885 298.524682651622ZM218.7644569816643 406.0V267.6361071932299H294.50493653032436V406.0Z" fill="#00BBF9" stroke="none"/>
+  <circle cx="256" cy="256" r="150" fill="none" stroke="#00BBF9" stroke-width="32.0" stroke-linecap="round" stroke-linejoin="round"/><path d="M 256 106 L 256 406" fill="none" stroke="#00BBF9" stroke-width="21.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M 106 256 L 406 256" fill="none" stroke="#00BBF9" stroke-width="21.8" stroke-linecap="round" stroke-linejoin="round"/><ellipse cx="256" cy="256" rx="150" ry="56" fill="none" stroke="#00BBF9" stroke-width="21.8" stroke-linecap="round" stroke-linejoin="round"/>
 </svg>

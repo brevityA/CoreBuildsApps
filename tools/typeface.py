@@ -182,3 +182,39 @@ def monogram_text(text, color):
         if d:
             out.append(f'<path d="{d}" fill="{color}" stroke="none"/>')
     return "".join(out)
+
+
+def monogram_scaled(letter, color, cap_h=250, cx=GRID / 2, cy=GRID / 2):
+    """One filled letter, rendered to a requested cap height and centre.
+
+    Used to place a monogram inside a contained mark (a tile/badge) rather
+    than full-bleed. `cap_h` scales the shared cap-box; `cx`/`cy` reposition
+    the ink box. Same typeface and optical treatment as monogram_body.
+    """
+    font = _font(str(FONT_MONOGRAM))
+    glyphset = font.getGlyphSet()
+    cmap = _cmap(font)
+    upem = font["head"].unitsPerEm
+    name = cmap.get(ord(letter), ".notdef")
+    glyph = glyphset[name]
+
+    bounds = BoundsPen(glyphset)
+    glyph.draw(bounds)
+    if not bounds.bounds:
+        return ""
+    xmin, ymin, xmax, ymax = bounds.bounds
+    gw, gh = xmax - xmin, ymax - ymin
+    if gw <= 0 or gh <= 0:
+        return ""
+
+    scale = cap_h / gh
+    if gw * scale > 380:
+        scale = 380 / gw
+    ink_cx, ink_cy = (xmin + xmax) / 2, (ymin + ymax) / 2
+    xf = Transform(scale, 0, 0, -scale,
+                   cx - ink_cx * scale,
+                   cy + ink_cy * scale)
+    pen = SVGPathPen(glyphset)
+    glyph.draw(TransformPen(pen, xf))
+    d = pen.getCommands()
+    return f'<path d="{d}" fill="{color}" stroke="none"/>'
