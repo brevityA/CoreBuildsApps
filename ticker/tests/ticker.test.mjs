@@ -1,138 +1,92 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 
-let rafEnabled = false;
-globalThis.requestAnimationFrame = (cb) => rafEnabled ? setTimeout(cb, 0) : -1;
-globalThis.cancelAnimationFrame = (id) => clearTimeout(id);
-
 import { Ticker } from '../public/js/ticker.js';
 
-function makeContainer() {
-  const trackA = { offsetWidth: 1000 };
-  const trackB = { offsetWidth: 1000 };
-  const container = {
-    children: [trackA, trackB],
-    querySelector(sel) {
-      if (sel === '#crawlA') return trackA;
-      if (sel === '#crawlB') return trackB;
-      return null;
-    },
+// Minimal DOM stand-ins so the loop math is testable without a browser.
+function fakeSeq(width) {
+  return {
+    innerHTML: '',
     style: {},
+    getBoundingClientRect: () => ({ width }),
+    offsetWidth: width,
   };
-  return { container, trackA, trackB };
 }
 
-test('constructor sets default speed', () => {
-  const { container } = makeContainer();
-  const t = new Ticker(container);
-  assert.equal(t.speed, 80);
-  assert.equal(t.offset, 0);
+globalThis.requestAnimationFrame = () => 1;
+globalThis.cancelAnimationFrame = () => {};
+globalThis.ResizeObserver = class { observe() {} disconnect() {} };
+
+function makeTicker({ seqW = 800, maskW = 500, speed = 50 } = {}) {
+  const seqA = fakeSeq(seqW);
+  const seqB = fakeSeq(seqW);
+  const track = { style: {} };
+  const mask = { clientWidth: maskW };
+  const t = new Ticker({ track, seqA, seqB, mask, speed });
+  return { t, seqA, seqB, track };
+}
+
+// Simulate a running loop: mark running and drive frames by hand.
+function arm(t, offset = 0) {
+  t.running = true;
+  t.offset = offset;
+  t._last = 0;
+}
+
+test('setItems writes both copies and measures width', () => {
+  const { t, seqA, seqB } = makeTicker({ seqW: 800 });
+  t.setItems('<span class="tick">X</span>');
+  assert.equal(seqA.innerHTML, '<span class="tick">X</span>');
+  assert.equal(seqB.innerHTML, '<span class="tick">X</span>');
+  assert.equal(t.seqWidth, 800);
 });
 
-test('constructor accepts custom speed', () => {
-  const { container } = makeContainer();
-  const t = new Ticker(container, { speed: 120 });
-  assert.equal(t.speed, 120);
-});
-
-test('speed setter clamps: Number(0)||80 gives 80, negative gives 1', () => {
-  const { container } = makeContainer();
-  const t = new Ticker(container);
-  t.speed = 0;
-  assert.equal(t.speed, 80);
-  t.speed = -50;
-  assert.equal(t.speed, 1);
-});
-
-test('speed setter defaults NaN to 80', () => {
-  const { container } = makeContainer();
-  const t = new Ticker(container);
-  t.speed = 'garbage';
-  assert.equal(t.speed, 80);
-});
-
-test('measure reads offsetWidth', () => {
-  const { container, trackA } = makeContainer();
-  const t = new Ticker(container);
-  trackA.offsetWidth = 2000;
+test('short content is padded to at least the mask width (no blank edge)', () => {
+  const { t, seqA, seqB } = makeTicker({ seqW: 300, maskW: 640 });
   t.measure();
-  assert.equal(t._trackWidth, 2000);
+  assert.equal(t.seqWidth, 640);
+  assert.equal(seqA.style.minWidth, '640px');
+  assert.equal(seqB.style.minWidth, '640px');
 });
 
-test('measure with no trackA sets width to 0', () => {
-  const container = {
-    children: [],
-    querySelector() { return null; },
-    style: {},
-  };
-  const t = new Ticker(container);
-  t.measure();
-  assert.equal(t._trackWidth, 0);
+test('offset advances at constant px/s (frame dt clamped to 100 ms)', () => {
+  const { t, track } = makeTicker({ speed: 50 });
+  arm(t);
+  t._tick(1000); // 1000 ms since last → clamped to 0.1 s → +5 px
+  assert.equal(t.offset, 5);
+  assert.equal(track.style.transform, 'translate3d(-5px,0,0)');
+  t._tick(1100); // 100 ms later → another +5 px
+  assert.equal(t.offset, 10);
 });
 
-test('reset sets offset to 0 and applies transform', () => {
-  const { container } = makeContainer();
-  const t = new Ticker(container);
-  t._offset = 500;
-  t.reset();
-  assert.equal(t.offset, 0);
-  assert.equal(container.style.transform, 'translate3d(0px, 0, 0)');
+test('offset wraps at seqWidth (seamless loop)', () => {
+  const { t } = makeTicker({ speed: 120 });
+  t.seqWidth = 100;
+  arm(t, 95);
+  t._tick(1000); // +12 px (120 * 0.1) → 107 → wraps to 7
+  assert.equal(t.offset, 7);
 });
 
-test('_apply sets translate3d on container', () => {
-  const { container } = makeContainer();
-  const t = new Ticker(container);
-  t._offset = 123.5;
-  t._apply();
-  assert.equal(container.style.transform, 'translate3d(-123.5px, 0, 0)');
+test('progress() is the watchdog readout and moves with the loop', () => {
+  const { t } = makeTicker({ speed: 10 });
+  arm(t);
+  t._tick(1000); // +1 px
+  assert.equal(t.progress(), 1);
 });
 
-test('_tick advances offset based on speed and delta time', () => {
-  const { container } = makeContainer();
-  const t = new Ticker(container, { speed: 100 });
-  t._running = true;
-  t._trackWidth = 10000;
-  t._tick(1000);
-  assert.equal(t.offset, 0);
-  t._running = false;
-  t._lastTime = 1000;
-  t._running = true;
-  t._tick(1500);
-  t._running = false;
-  assert.ok(t.offset > 0);
-  assert.ok(Math.abs(t.offset - 50) < 0.01);
+test('stop halts the loop; restart resumes from current offset', () => {
+  const { t } = makeTicker({ speed: 50 });
+  arm(t, 40);
+  t.stop();
+  assert.equal(t.running, false);
+  t.restart();
+  assert.equal(t.running, true);
+  assert.equal(t.offset, 40, 'restart keeps position — no teleport');
 });
 
-test('_tick wraps offset when exceeding trackWidth', () => {
-  const { container } = makeContainer();
-  const t = new Ticker(container, { speed: 100 });
-  t._running = true;
-  t._trackWidth = 200;
-  t._offset = 190;
-  t._lastTime = 1000;
-  t._tick(1200);
-  t._running = false;
-  assert.ok(t.offset < 200);
-  assert.ok(t.offset >= 0);
-});
-
-test('_tick skips dt >= 1 second (tab was backgrounded)', () => {
-  const { container } = makeContainer();
-  const t = new Ticker(container, { speed: 100 });
-  t._running = true;
-  t._trackWidth = 10000;
-  t._lastTime = 1000;
-  t._tick(3000);
-  t._running = false;
-  assert.equal(t.offset, 0);
-});
-
-test('_tick does nothing when not running', () => {
-  const { container } = makeContainer();
-  const t = new Ticker(container, { speed: 100 });
-  t._running = false;
-  t._trackWidth = 1000;
-  t._lastTime = 1000;
-  t._tick(2000);
-  assert.equal(t.offset, 0);
+test('background-tab time jumps are clamped (no teleport after resume)', () => {
+  const { t } = makeTicker({ speed: 50 });
+  arm(t);
+  t._tick(60_000); // 60 s jump clamped to 0.1 s → +5 px, not +3000 px
+  assert.equal(t.offset, 5);
 });

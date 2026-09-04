@@ -35,21 +35,6 @@ const MIME = {
 const cache = new Map();
 const CACHE_MS = 45_000;
 
-const leagueBackoffs = new Map();
-const feedBackoffs = new Map();
-const lastGoodLeague = new Map();
-const lastGoodFeed = new Map();
-
-function getLeagueBackoff(id) {
-  if (!leagueBackoffs.has(id)) leagueBackoffs.set(id, createBackoff());
-  return leagueBackoffs.get(id);
-}
-
-function getFeedBackoff(key) {
-  if (!feedBackoffs.has(key)) feedBackoffs.set(key, createBackoff());
-  return feedBackoffs.get(key);
-}
-
 const server = http.createServer(async (req, res) => {
   try {
     const url = new URL(req.url || '/', `http://${req.headers.host || 'localhost'}`);
@@ -62,7 +47,7 @@ const server = http.createServer(async (req, res) => {
       return;
     }
     if (url.pathname === '/api/health') {
-      json(res, { ok: true, name: 'core-line', version: '1.0.2' });
+      json(res, { ok: true, name: 'core-line', version: '1.0.0' });
       return;
     }
     if (url.pathname === '/api/leagues') {
@@ -90,7 +75,7 @@ const server = http.createServer(async (req, res) => {
         json(res, { ok: false, error: safety.reason, events: [] }, 400);
         return;
       }
-      const result = await cached(JSON.stringify(['rss', safety.url, label]), () => fetchFeed(safety.url, { source: 'rss', label }));
+      const result = await resilientFeed(safety.url, label);
       json(res, result);
       return;
     }
@@ -102,19 +87,14 @@ const server = http.createServer(async (req, res) => {
       const feeds = parseFeedsParam(url.searchParams.get('feeds') || '').slice(0, 20);
       const [board, ...feedResults] = await Promise.all([
         getScoreboard(leagues),
-        ...feeds.map((feed) => resilientFeed(feed)),
+        ...feeds.map((feed) => resilientFeed(feed.url, feed.label)),
       ]);
       const rssEvents = feedResults.flatMap((r) => r.events || []);
-      const allOk = feedResults.every((r) => r.ok);
-      const someStale = feedResults.some((r) => r.stale);
+      const staleFeeds = feedResults.filter((r) => r.stale).length;
       json(res, {
         ok: true,
         generatedAt: new Date().toISOString(),
         demo: board.demo,
-        health: {
-          leagues: board.health || 'ok',
-          feeds: allOk ? (someStale ? 'stale' : 'ok') : 'degraded',
-        },
         sources: board.sources,
         feeds: feedResults.map((r, i) => ({
           label: feeds[i].label,
@@ -122,8 +102,9 @@ const server = http.createServer(async (req, res) => {
           ok: r.ok,
           error: r.error || null,
           count: (r.events || []).length,
-          stale: r.stale || false,
+          stale: Boolean(r.stale),
         })),
+        health: { degraded: feedResults.filter((r) => !r.ok).length, stale: staleFeeds },
         events: mergeEvents([board.events, rssEvents]),
       });
       return;
@@ -139,94 +120,27 @@ server.listen(PORT, HOST, () => {
   console.log(`Core Line listening on http://${HOST}:${PORT}`);
 });
 
-async function resilientFeed(feed) {
-  if (isBundledSample(feed.url)) {
-    return { ...(await readBundledSample(feed.label)), stale: false };
-  }
-  const safety = isSafeFeedUrl(feed.url);
-  if (!safety.ok) {
-    return { ok: false, events: [], error: safety.reason, stale: false };
-  }
-  const key = safety.url;
-  const bo = getFeedBackoff(key);
-  if (bo.shouldSkip()) {
-    const lg = lastGoodFeed.get(key) || [];
-    return { ok: lg.length > 0, events: lg, error: lg.length > 0 ? null : 'source in backoff', stale: lg.length > 0 };
-  }
-  try {
-    const result = await cached(JSON.stringify(['rss', key, feed.label]), () => fetchFeed(key, { source: 'rss', label: feed.label }));
-    if (!result.ok) {
-      bo.fail(null);
-      const lg = lastGoodFeed.get(key) || [];
-      return { ...result, events: lg, stale: lg.length > 0 };
-    }
-    bo.succeed();
-    lastGoodFeed.set(key, result.events || []);
-    return { ...result, stale: false };
-  } catch (err) {
-    bo.fail(null);
-    const lg = lastGoodFeed.get(key) || [];
-    return { ok: false, events: lg, error: err?.message || 'fetch failed', stale: lg.length > 0 };
-  }
-}
-
 async function getScoreboard(leagues) {
   return cached(`board:${leagues.join(',')}`, async () => {
     const sources = [];
     const groups = [];
-    let anyDegraded = false;
-    let anyStale = false;
     await Promise.all(leagues.map(async (id) => {
-      const bo = getLeagueBackoff(id);
-      if (bo.shouldSkip()) {
-        const lg = lastGoodLeague.get(id) || [];
-        groups.push(lg);
-        if (lg.length > 0) {
-          sources.push({ id, provider: 'cached', ok: true, count: lg.length, stale: true });
-          anyStale = true;
-        } else {
-          sources.push({ id, provider: 'cached', ok: false, count: 0, stale: false });
-          anyDegraded = true;
-        }
+      const slot = leagueSlot(id);
+      if (!slot.backoff.canTry()) {
+        if (slot.lastGood.length) groups.push(slot.lastGood);
+        sources.push({ id, provider: 'espn', ok: false, error: 'backoff', count: slot.lastGood.length, stale: slot.lastGood.length > 0 });
         return;
       }
-      const espnUrl = espnScoreboardUrl(id);
-      try {
-        const data = await fetchJson(espnUrl);
-        const events = eventsFromEspn(data, id);
-        groups.push(events);
-        sources.push({ id, provider: 'espn', ok: true, count: events.length });
-        bo.succeed();
-        lastGoodLeague.set(id, events);
-      } catch (err) {
-        if (id === 'nhl') {
-          try {
-            const data = await fetchJson('https://api-web.nhle.com/v1/score/now');
-            const events = eventsFromNhl(data);
-            groups.push(events);
-            sources.push({ id, provider: 'nhl', ok: true, count: events.length });
-            bo.succeed();
-            lastGoodLeague.set(id, events);
-            return;
-          } catch { /* fall through */ }
-        }
-        if (id === 'mlb') {
-          try {
-            const today = new Date().toISOString().slice(0, 10);
-            const data = await fetchJson(`https://statsapi.mlb.com/api/v1/schedule?sportId=1&date=${today}&hydrate=team,linescore,broadcasts(all)`);
-            const events = eventsFromMlb(data);
-            groups.push(events);
-            sources.push({ id, provider: 'mlb', ok: true, count: events.length });
-            bo.succeed();
-            lastGoodLeague.set(id, events);
-            return;
-          } catch { /* fall through */ }
-        }
-        bo.fail(null);
-        const lg = lastGoodLeague.get(id) || [];
-        groups.push(lg);
-        sources.push({ id, provider: 'espn', ok: false, error: err?.message || 'fetch failed', count: lg.length, stale: lg.length > 0 });
-        if (lg.length) anyStale = true; else anyDegraded = true;
+      const res = await fetchLeagueServer(id);
+      if (res.ok) {
+        slot.backoff.success();
+        if (res.events.length) slot.lastGood = res.events;
+        groups.push(res.events);
+        sources.push(res.report);
+      } else {
+        slot.backoff.fail();
+        if (slot.lastGood.length) groups.push(slot.lastGood);
+        sources.push({ ...res.report, stale: slot.lastGood.length > 0, count: slot.lastGood.length });
       }
     }));
 
@@ -240,11 +154,78 @@ async function getScoreboard(leagues) {
       ok: true,
       demo,
       generatedAt: new Date().toISOString(),
-      health: anyDegraded ? 'degraded' : anyStale ? 'stale' : 'ok',
       sources,
       events,
     };
   });
+}
+
+async function fetchLeagueServer(id) {
+  try {
+    const data = await fetchJson(espnScoreboardUrl(id));
+    const events = eventsFromEspn(data, id);
+    return { ok: true, events, report: { id, provider: 'espn', ok: true, count: events.length } };
+  } catch (err) {
+    if (id === 'nhl') {
+      try {
+        const data = await fetchJson('https://api-web.nhle.com/v1/score/now');
+        const events = eventsFromNhl(data);
+        return { ok: true, events, report: { id, provider: 'nhl', ok: true, count: events.length } };
+      } catch { /* fall through */ }
+    }
+    if (id === 'mlb') {
+      try {
+        const today = new Date().toISOString().slice(0, 10);
+        const data = await fetchJson(`https://statsapi.mlb.com/api/v1/schedule?sportId=1&date=${today}&hydrate=team,linescore,broadcasts(all)`);
+        const events = eventsFromMlb(data);
+        return { ok: true, events, report: { id, provider: 'mlb', ok: true, count: events.length } };
+      } catch { /* fall through */ }
+    }
+    return { ok: false, events: [], report: { id, provider: 'espn', ok: false, error: err?.message || 'fetch failed', count: 0 } };
+  }
+}
+
+// --- per-source backoff + last-good (server side of AUDIT B1/B2) ------------
+
+const feedState = new Map();
+const leagueState = new Map();
+
+function feedSlot(url) {
+  let slot = feedState.get(url);
+  if (!slot) {
+    slot = { backoff: createBackoff(), lastGood: [] };
+    feedState.set(url, slot);
+  }
+  return slot;
+}
+
+function leagueSlot(id) {
+  let slot = leagueState.get(id);
+  if (!slot) {
+    slot = { backoff: createBackoff(), lastGood: [] };
+    leagueState.set(id, slot);
+  }
+  return slot;
+}
+
+async function resilientFeed(url, label) {
+  const slot = feedSlot(url);
+  if (!slot.backoff.canTry()) {
+    return { ok: false, error: 'backoff', events: slot.lastGood, stale: slot.lastGood.length > 0 };
+  }
+  let result;
+  if (isBundledSample(url)) {
+    result = await readBundledSample(label);
+  } else {
+    result = await cached(`rss:${url}:${label}`, () => fetchFeed(url, { source: 'rss', label }));
+  }
+  if (result.ok) {
+    slot.backoff.success();
+    if (result.events && result.events.length) slot.lastGood = result.events;
+    return result;
+  }
+  slot.backoff.fail();
+  return { ...result, events: slot.lastGood, stale: slot.lastGood.length > 0 };
 }
 
 function isBundledSample(raw) {
@@ -284,9 +265,7 @@ async function cached(key, fn) {
       cache.delete(cache.keys().next().value);
     }
   }
-  if (value?.ok !== false) {
-    cache.set(key, { at: Date.now(), value });
-  }
+  cache.set(key, { at: Date.now(), value });
   return value;
 }
 

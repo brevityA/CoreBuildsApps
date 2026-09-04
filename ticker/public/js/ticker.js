@@ -1,73 +1,104 @@
+/**
+ * Constant-speed chyron ribbon.
+ *
+ * Replaces the old CSS `@keyframes crawl` (which moved at "seconds per half
+ * ribbon", so pixel speed varied with content length, and which seam-jumped
+ * when item widths changed mid-animation).
+ *
+ * This loop moves the ribbon at a fixed px/s via a composited translate3d,
+ * wraps at one copy's width, and re-measures on content change + resize, so
+ * swapping in fresh slate content never teleports the ribbon. GPU-cheap:
+ * only the transform of a single compositor-promoted element is written.
+ */
+
 export class Ticker {
-  constructor(container, { speed = 80 } = {}) {
-    this._container = container;
-    this._trackA = container.querySelector('#crawlA') || container.children[0];
-    this._trackB = container.querySelector('#crawlB') || container.children[1];
-    this._speed = 80;
-    this.speed = speed;
-    this._offset = 0;
-    this._raf = null;
-    this._lastTime = 0;
-    this._trackWidth = 0;
-    this._running = false;
-    this._observer = null;
+  constructor({ track, seqA, seqB, speed = 52, mask = null }) {
+    this.track = track; // #crawl — the moving element (two identical copies)
+    this.seqA = seqA;   // #crawlA — first copy
+    this.seqB = seqB;   // #crawlB — duplicate for a seamless wrap
+    this.mask = mask;   // #crawl-mask — clip region
+    this.speed = speed; // px per second
+    this.offset = 0;
+    this.seqWidth = 0;
+    this.running = false;
+    this._raf = 0;
+    this._last = 0;
+    this._resizeObserver = null;
+
+    if (typeof ResizeObserver !== 'undefined') {
+      this._resizeObserver = new ResizeObserver(() => this.measure());
+      this._resizeObserver.observe(this.seqA);
+    }
   }
 
-  get speed() { return this._speed; }
-  set speed(v) { this._speed = Math.max(1, Number(v) || 80); }
+  setSpeed(px) {
+    this.speed = Number(px) || 0;
+  }
 
-  get offset() { return this._offset; }
+  /** Replace the ribbon content (same HTML in both copies). */
+  setItems(html) {
+    this.seqA.innerHTML = html;
+    this.seqB.innerHTML = html;
+    this.measure();
+  }
 
   measure() {
-    this._trackWidth = this._trackA ? this._trackA.offsetWidth : 0;
+    const width = this.seqA.getBoundingClientRect().width || this.seqA.offsetWidth || 0;
+    // Guarantee each copy is at least as wide as the visible window so a
+    // short slate still covers the mask edge-to-edge.
+    if (this.mask) {
+      const visible = this.mask.clientWidth;
+      if (width < visible) {
+        this.seqA.style.minWidth = `${visible}px`;
+        this.seqB.style.minWidth = `${visible}px`;
+        this.seqWidth = visible;
+        return;
+      }
+    }
+    this.seqWidth = width;
+  }
+
+  /** Readout for the watchdog (px offset; changes whenever the loop is alive). */
+  progress() {
+    return this.offset;
   }
 
   start() {
-    if (this._running) return;
-    this._running = true;
+    if (this.running || this.speed <= 0) return;
+    this.running = true;
     this.measure();
-    this._lastTime = 0;
-    this._observer = typeof ResizeObserver !== 'undefined'
-      ? new ResizeObserver(() => this.measure())
-      : null;
-    if (this._observer && this._trackA) this._observer.observe(this._trackA);
-    this._tick(performance.now());
-  }
-
-  stop() {
-    this._running = false;
-    if (this._raf) cancelAnimationFrame(this._raf);
-    this._raf = null;
-    if (this._observer) this._observer.disconnect();
-    this._observer = null;
-  }
-
-  reset() {
-    this._offset = 0;
-    this._apply();
-  }
-
-  _tick(now) {
-    if (!this._running) return;
-    if (this._lastTime > 0) {
-      const dt = (now - this._lastTime) / 1000;
-      if (dt > 0 && dt < 1) {
-        this._offset += this._speed * dt;
-      }
-    }
-    this._lastTime = now;
-
-    if (this._trackWidth > 0 && this._offset >= this._trackWidth) {
-      this._offset %= this._trackWidth;
-    }
-
-    this._apply();
+    this._last = performance.now();
     this._raf = requestAnimationFrame((t) => this._tick(t));
   }
 
-  _apply() {
-    if (this._container) {
-      this._container.style.transform = `translate3d(${-this._offset}px, 0, 0)`;
+  stop() {
+    this.running = false;
+    cancelAnimationFrame(this._raf);
+  }
+
+  /** Restart from the current position (used by the watchdog on stall). */
+  restart() {
+    this.stop();
+    this.start();
+  }
+
+  _tick(now) {
+    if (!this.running) return;
+    const dt = Math.min((now - this._last) / 1000, 0.1); // clamp background-tab jumps
+    this._last = now;
+    this.offset += this.speed * dt;
+    if (this.seqWidth > 0 && this.offset >= this.seqWidth) {
+      this.offset -= this.seqWidth;
+    }
+    this.track.style.transform = `translate3d(${-this.offset}px,0,0)`;
+    this._raf = requestAnimationFrame((t) => this._tick(t));
+  }
+
+  destroy() {
+    this.stop();
+    if (this._resizeObserver) {
+      this._resizeObserver.disconnect();
+      this._resizeObserver = null;
     }
   }
 }

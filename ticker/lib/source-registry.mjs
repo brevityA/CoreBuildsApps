@@ -1,117 +1,129 @@
+/**
+ * Per-source state registry: backoff schedule + last-good events.
+ *
+ * This is the "per-source isolation + self-healing" heart of the ticker.
+ * Each scoreboard league and each RSS/JSON feed gets its own slot, so:
+ *   - one dead feed never blocks (or blanks) the others,
+ *   - a failing source is retried with exponential backoff + jitter,
+ *   - the last successfully-parsed items are kept and re-shown while the
+ *     source is failing (the ribbon keeps its content instead of dropping it).
+ *
+ * Runs in both the browser/WebView and Node (tests). localStorage
+ * persistence is optional and guarded so Node tests stay isolated.
+ */
+
 import { createBackoff } from './backoff.mjs';
 
-const MAX_ITEMS_PER_SOURCE = 100;
-const STORAGE_KEY = 'coreline.v1.sources';
+export const MAX_ITEMS_PER_SOURCE = 100;
 
 export class SourceRegistry {
   constructor() {
-    this._entries = new Map();
+    this.sources = new Map(); // key -> { backoff, lastGood, lastError, label }
   }
 
-  _ensure(key) {
-    if (!this._entries.has(key)) {
-      this._entries.set(key, {
-        backoff: createBackoff(),
-        lastGood: [],
-        lastError: null,
-        health: 'unknown',
-        stale: false,
-      });
+  keyForLeague(id) {
+    return `league:${id}`;
+  }
+
+  keyForFeed(url) {
+    return `feed:${url}`;
+  }
+
+  _slot(key, label) {
+    let slot = this.sources.get(key);
+    if (!slot) {
+      slot = { backoff: createBackoff(), lastGood: [], lastError: null, label };
+      this.sources.set(key, slot);
     }
-    return this._entries.get(key);
+    if (label) slot.label = label;
+    return slot;
   }
 
-  shouldSkip(key, now = Date.now()) {
-    const e = this._entries.get(key);
-    return e ? e.backoff.shouldSkip(now) : false;
+  canTry(key, now = Date.now()) {
+    const slot = this.sources.get(key);
+    return !slot || slot.backoff.canTry(now);
   }
 
-  recordSuccess(key, items) {
-    const e = this._ensure(key);
-    e.backoff.succeed();
-    e.lastGood = (items || []).slice(0, MAX_ITEMS_PER_SOURCE);
-    e.lastError = null;
-    e.health = 'ok';
-    e.stale = false;
+  waitMs(key, now = Date.now()) {
+    const slot = this.sources.get(key);
+    return slot ? slot.backoff.waitMs(now) : 0;
   }
 
-  recordFailure(key, error, retryAfterHeader) {
-    const e = this._ensure(key);
-    e.backoff.fail(retryAfterHeader);
-    e.lastError = String(error || 'unknown');
-    e.health = e.lastGood.length ? 'stale' : 'degraded';
-    e.stale = true;
+  recordSuccess(key, label, events) {
+    const slot = this._slot(key, label);
+    slot.backoff.success();
+    slot.lastGood = Array.isArray(events) ? events.slice(0, MAX_ITEMS_PER_SOURCE) : [];
+    slot.lastError = null;
   }
 
-  getLastGood(key) {
-    const e = this._entries.get(key);
-    return e ? e.lastGood : [];
+  recordFailure(key, label, error, retryAfterMs = 0) {
+    const slot = this._slot(key, label);
+    slot.backoff.fail(Date.now(), retryAfterMs);
+    slot.lastError = error || 'source failed';
   }
 
-  getHealth(key) {
-    const e = this._entries.get(key);
-    return e ? e.health : 'unknown';
+  setLastGood(key, label, events) {
+    const slot = this._slot(key, label);
+    if (Array.isArray(events)) slot.lastGood = events.slice(0, MAX_ITEMS_PER_SOURCE);
   }
 
-  isStale(key) {
-    const e = this._entries.get(key);
-    return e ? e.stale : false;
+  lastGood(key) {
+    const slot = this.sources.get(key);
+    return slot ? slot.lastGood : [];
   }
 
-  summary() {
-    let ok = 0, degraded = 0, stale = 0;
-    for (const e of this._entries.values()) {
-      if (e.health === 'ok') ok++;
-      else if (e.health === 'degraded') degraded++;
-      else if (e.health === 'stale') stale++;
+  isDegraded(key) {
+    const slot = this.sources.get(key);
+    return Boolean(slot && slot.lastError);
+  }
+
+  lastError(key) {
+    const slot = this.sources.get(key);
+    return slot ? slot.lastError : null;
+  }
+
+  /** { ok: n, degraded: n, backingOff: n } across all registered sources. */
+  health() {
+    let degraded = 0;
+    let backingOff = 0;
+    for (const slot of this.sources.values()) {
+      if (slot.lastError) {
+        degraded += 1;
+        if (!slot.backoff.canTry()) backingOff += 1;
+      }
     }
-    const total = this._entries.size;
-    let label = 'All sources live';
-    if (degraded > 0) label = `${degraded} retrying`;
-    else if (stale > 0) label = 'Showing cached';
-    return { total, ok, degraded, stale, label };
-  }
-
-  dehydrate() {
-    const out = {};
-    for (const [key, e] of this._entries) {
-      out[key] = {
-        backoff: e.backoff.toJSON(),
-        lastGood: e.lastGood,
-        lastError: e.lastError,
-        health: e.health,
-        stale: e.stale,
-      };
-    }
-    return out;
-  }
-
-  hydrate(obj) {
-    if (!obj || typeof obj !== 'object') return;
-    for (const [key, data] of Object.entries(obj)) {
-      const e = this._ensure(key);
-      if (data.backoff) e.backoff.hydrate(data.backoff);
-      if (Array.isArray(data.lastGood)) e.lastGood = data.lastGood.slice(0, MAX_ITEMS_PER_SOURCE);
-      if (data.lastError !== undefined) e.lastError = data.lastError;
-      if (data.health) e.health = data.health;
-      if (data.stale !== undefined) e.stale = data.stale;
-    }
-  }
-
-  persist() {
-    try {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(this.dehydrate()));
-    } catch { /* quota */ }
-  }
-
-  restore() {
-    try {
-      const raw = localStorage.getItem(STORAGE_KEY);
-      if (raw) this.hydrate(JSON.parse(raw));
-    } catch { /* corrupt */ }
+    return { total: this.sources.size, degraded, backingOff };
   }
 
   clear() {
-    this._entries.clear();
+    this.sources.clear();
+  }
+
+  // --- optional persistence (browser only) ---------------------------------
+
+  hydrate(json) {
+    if (!json) return;
+    try {
+      const data = JSON.parse(json);
+      const lastGood = data?.lastGood;
+      if (!lastGood || typeof lastGood !== 'object') return;
+      for (const [key, entry] of Object.entries(lastGood)) {
+        if (entry && Array.isArray(entry.events)) {
+          this.setLastGood(key, entry.label || '', entry.events);
+        }
+      }
+    } catch {
+      /* corrupt cache is not an error */
+    }
+  }
+
+  dehydrate() {
+    const lastGood = {};
+    for (const [key, slot] of this.sources.entries()) {
+      if (slot.lastGood.length) {
+        lastGood[key] = { label: slot.label || '', events: slot.lastGood };
+      }
+    }
+    return JSON.stringify({ lastGood });
   }
 }

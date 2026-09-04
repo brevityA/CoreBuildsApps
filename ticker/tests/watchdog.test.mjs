@@ -1,74 +1,84 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 
-test('startWatchdog calls onStall when offset stalls', async () => {
-  const { startWatchdog } = await import('../public/js/watchdog.js');
+import { startWatchdog } from '../public/js/watchdog.js';
 
-  let stallCount = 0;
-  const fakeTicker = { offset: 100, speed: 80, measure() {} };
-
-  const stop = startWatchdog(fakeTicker, {
-    interval: 20,
-    onStall() { stallCount++; },
-  });
-
-  await new Promise((r) => setTimeout(r, 80));
-  stop();
-  assert.ok(stallCount >= 1, `expected at least 1 stall callback, got ${stallCount}`);
-});
-
-test('startWatchdog does not stall when offset advances', async () => {
-  const { startWatchdog } = await import('../public/js/watchdog.js');
-
-  let stallCount = 0;
-  let offsetVal = 0;
-  const fakeTicker = {
-    get offset() { return offsetVal; },
-    speed: 80,
-    measure() {},
+// Fake browser globals (watchdog is DOM-timer logic; no real browser needed).
+function installGlobals() {
+  const listeners = { doc: {}, win: {} };
+  globalThis.document = {
+    hidden: false,
+    addEventListener: (e, fn) => { listeners.doc[e] = fn; },
+    removeEventListener: (e) => { delete listeners.doc[e]; },
   };
+  globalThis.window = {
+    addEventListener: (e, fn) => { listeners.win[e] = fn; },
+    removeEventListener: (e) => { delete listeners.win[e]; },
+  };
+  let intervalCb = null;
+  globalThis.setInterval = (cb) => { intervalCb = cb; return 7; };
+  globalThis.clearInterval = () => { intervalCb = null; };
+  return { listeners, tick: () => intervalCb && intervalCb() };
+}
 
-  const stop = startWatchdog(fakeTicker, {
-    interval: 20,
-    onStall() { stallCount++; },
+test('stalls fire onStall after two unchanged samples', () => {
+  const { tick } = installGlobals();
+  let progress = 10; // frozen
+  let stalls = 0;
+  startWatchdog({
+    getProgress: () => progress,
+    isRunning: () => true,
+    onStall: () => { stalls += 1; },
+    onWake: () => {},
   });
-
-  const advancer = setInterval(() => { offsetVal += 10; }, 10);
-  await new Promise((r) => setTimeout(r, 80));
-  clearInterval(advancer);
-  stop();
-  assert.equal(stallCount, 0);
+  tick(); // baseline sample
+  tick(); // unchanged #1
+  tick(); // unchanged #2 → stall
+  assert.equal(stalls, 1);
 });
 
-test('startWatchdog does not stall when speed is 0', async () => {
-  const { startWatchdog } = await import('../public/js/watchdog.js');
-
-  let stallCount = 0;
-  const fakeTicker = { offset: 50, speed: 0, measure() {} };
-
-  const stop = startWatchdog(fakeTicker, {
-    interval: 20,
-    onStall() { stallCount++; },
+test('a moving ribbon never fires onStall', () => {
+  const { tick } = installGlobals();
+  let progress = 0;
+  let stalls = 0;
+  startWatchdog({
+    getProgress: () => progress,
+    isRunning: () => true,
+    onStall: () => { stalls += 1; },
+    onWake: () => {},
   });
-
-  await new Promise((r) => setTimeout(r, 80));
-  stop();
-  assert.equal(stallCount, 0);
+  progress += 5; tick();
+  progress += 5; tick();
+  progress += 5; tick();
+  assert.equal(stalls, 0);
 });
 
-test('stop cleans up interval', async () => {
-  const { startWatchdog } = await import('../public/js/watchdog.js');
-
-  let stallCount = 0;
-  const fakeTicker = { offset: 100, speed: 80, measure() {} };
-
-  const stop = startWatchdog(fakeTicker, {
-    interval: 20,
-    onStall() { stallCount++; },
+test('visibilitychange → visible fires onWake', () => {
+  const { listeners } = installGlobals();
+  let wakes = 0;
+  startWatchdog({
+    getProgress: () => 0,
+    isRunning: () => true,
+    onStall: () => {},
+    onWake: () => { wakes += 1; },
   });
+  document.hidden = true;
+  listeners.doc.visibilitychange?.();
+  document.hidden = false;
+  listeners.doc.visibilitychange?.();
+  assert.equal(wakes, 1);
+});
 
-  stop();
-  const countAtStop = stallCount;
-  await new Promise((r) => setTimeout(r, 60));
-  assert.equal(stallCount, countAtStop);
+test('hidden pages are ignored (no false stalls while backgrounded)', () => {
+  const { tick } = installGlobals();
+  document.hidden = true;
+  let stalls = 0;
+  startWatchdog({
+    getProgress: () => 0,
+    isRunning: () => true,
+    onStall: () => { stalls += 1; },
+    onWake: () => {},
+  });
+  tick(); tick(); tick();
+  assert.equal(stalls, 0);
 });

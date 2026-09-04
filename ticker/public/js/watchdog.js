@@ -1,50 +1,65 @@
-export function startWatchdog(ticker, { interval = 3000, onStall } = {}) {
-  let lastOffset = -1;
-  let timer = null;
-  let running = true;
+/**
+ * Frozen-ribbon watchdog (AUDIT.md C1).
+ *
+ * A broadcast chyron that runs for days must notice when its own scroll
+ * loop has stalled (WebView compositor pause after sleep/resume, a dropped
+ * animation frame, an aggressive memory reclaim) and restart it.
+ *
+ * Strategy: sample the ticker's scroll offset every SAMPLES_MS. If it has
+ * not moved across two consecutive samples while the page is visible and the
+ * loop should be running, fire onStall (the app restarts the loop and shows
+ * a quiet "restarted ribbon" notice). Also kicks the loop on
+ * visibilitychange → visible and on pageshow, which is what a TV WebView
+ * delivers after resume.
+ */
 
-  function check() {
-    if (!running) return;
-    const current = ticker.offset;
-    if (lastOffset >= 0 && current === lastOffset && ticker.speed > 0) {
-      if (typeof onStall === 'function') onStall();
+const SAMPLE_MS = 5000;
+const STALL_SAMPLES = 2;
+
+export function startWatchdog({ getProgress, isRunning, onStall, onWake }) {
+  let lastProgress = null;
+  let unchanged = 0;
+
+  const sample = () => {
+    const running = isRunning ? isRunning() : true;
+    const hidden = typeof document !== 'undefined' && document.hidden;
+    if (!running || hidden) {
+      lastProgress = null;
+      unchanged = 0;
+      return;
     }
-    lastOffset = current;
-  }
-
-  timer = setInterval(check, interval);
-
-  function onVisibility() {
-    if (document.visibilityState === 'visible') {
-      lastOffset = -1;
-      ticker.measure();
+    const p = getProgress();
+    if (lastProgress != null && Math.abs(p - lastProgress) < 0.01) {
+      unchanged += 1;
+      if (unchanged >= STALL_SAMPLES) {
+        unchanged = 0;
+        lastProgress = null;
+        if (onStall) onStall();
+        return;
+      }
+    } else {
+      unchanged = 0;
     }
-  }
+    lastProgress = p;
+  };
 
-  function onPageShow(e) {
-    if (e.persisted) {
-      lastOffset = -1;
-      ticker.measure();
-    }
-  }
+  const timer = setInterval(sample, SAMPLE_MS);
 
-  function onFocus() {
-    lastOffset = -1;
-  }
+  const wake = () => {
+    lastProgress = null;
+    unchanged = 0;
+    if (onWake) onWake();
+  };
+  document.addEventListener('visibilitychange', () => {
+    if (!document.hidden) wake();
+  });
+  window.addEventListener('pageshow', wake);
+  window.addEventListener('focus', wake);
 
-  if (typeof document !== 'undefined') {
-    document.addEventListener('visibilitychange', onVisibility);
-    window.addEventListener('pageshow', onPageShow);
-    window.addEventListener('focus', onFocus);
-  }
-
-  return function stop() {
-    running = false;
+  return () => {
     clearInterval(timer);
-    if (typeof document !== 'undefined') {
-      document.removeEventListener('visibilitychange', onVisibility);
-      window.removeEventListener('pageshow', onPageShow);
-      window.removeEventListener('focus', onFocus);
-    }
+    document.removeEventListener('visibilitychange', wake);
+    window.removeEventListener('pageshow', wake);
+    window.removeEventListener('focus', wake);
   };
 }

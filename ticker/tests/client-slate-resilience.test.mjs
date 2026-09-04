@@ -1,80 +1,108 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 
-import { SourceRegistry } from '../lib/source-registry.mjs';
+import { buildClientSlate, getClientSlateRegistry } from '../lib/client-slate.mjs';
 
-test('registry returns lastGood on failure after prior success', () => {
-  const reg = new SourceRegistry();
-  const items = [{ id: 'g1', title: 'Game 1' }];
-  reg.recordSuccess('league:nfl', items);
-  reg.recordFailure('league:nfl', new Error('timeout'), null);
-  assert.deepEqual(reg.getLastGood('league:nfl'), items);
+const FEED_A = 'https://feeds.example/a.xml';
+const FEED_B = 'https://feeds.example/b.xml';
+
+const GOOD_RSS = `<rss><channel>
+  <item><title>Leafs vs Habs — TSN4, SN 3</title></item>
+</channel></rss>`;
+
+function resetRegistry() {
+  getClientSlateRegistry().clear();
+}
+
+test('one dead feed never blanks the slate and never blocks the healthy feed', async (t) => {
+  resetRegistry();
+  t.mock.method(globalThis, 'fetch', async (input) => {
+    const url = String(input);
+    if (url.includes('/api/proxy')) {
+      const target = decodeURIComponent(url.split('url=')[1]);
+      if (target === FEED_A) return new Response(GOOD_RSS, { status: 200 });
+      return new Response('nope', { status: 500 });
+    }
+    if (url.includes('site.api.espn.com')) return new Response('{}', { status: 200 });
+    if (url.includes(FEED_A)) return new Response(GOOD_RSS, { status: 200 });
+    if (url.includes(FEED_B)) return new Response('boom', { status: 500 });
+    return new Response('not found', { status: 404 });
+  });
+
+  const slate = await buildClientSlate({
+    leagues: [],
+    feeds: [
+      { url: FEED_A, label: 'A' },
+      { url: FEED_B, label: 'B' },
+    ],
+  });
+
+  assert.equal(slate.ok, true);
+  assert.equal(slate.demo, false);
+  assert.ok(slate.events.length > 0, 'healthy feed still contributes');
+  const a = slate.feeds.find((f) => f.url === FEED_A);
+  const b = slate.feeds.find((f) => f.url === FEED_B);
+  assert.equal(a.ok, true);
+  assert.equal(b.ok, false);
+  assert.equal(b.count, 0); // no last-good yet
+  assert.equal(slate.health.degraded, 1);
 });
 
-test('registry returns empty array when no lastGood exists', () => {
-  const reg = new SourceRegistry();
-  reg.recordFailure('feed:bad', new Error('404'), null);
-  assert.deepEqual(reg.getLastGood('feed:bad'), []);
+test('a failing feed keeps its last-good items on screen (stale flag)', async (t) => {
+  resetRegistry();
+  let failB = false;
+  t.mock.method(globalThis, 'fetch', async (input) => {
+    const url = String(input);
+    if (url.includes('site.api.espn.com')) return new Response('{}', { status: 200 });
+    if (url.includes(FEED_A)) return new Response(GOOD_RSS, { status: 200 });
+    if (url.includes(FEED_B)) {
+      return failB
+        ? new Response('down', { status: 500 })
+        : new Response(`<rss><channel><item><title>Blue Jays vs Yankees — SN 1</title></item></channel></rss>`, { status: 200 });
+    }
+    return new Response('not found', { status: 404 });
+  });
+
+  const feeds = [{ url: FEED_A, label: 'A' }, { url: FEED_B, label: 'B' }];
+
+  const first = await buildClientSlate({ leagues: [], feeds });
+  assert.equal(first.feeds.find((f) => f.url === FEED_B).ok, true);
+
+  failB = true;
+  const second = await buildClientSlate({ leagues: [], feeds });
+  const b = second.feeds.find((f) => f.url === FEED_B);
+  assert.equal(b.ok, false);
+  assert.equal(b.stale, true);
+  assert.equal(b.count, 1, 'last-good items retained for the dead feed');
+  assert.ok(second.events.some((e) => e.rawTitle.includes('Blue Jays')), 'dead feed content still on the ribbon');
 });
 
-test('shouldSkip returns false initially and true after failure', () => {
-  const reg = new SourceRegistry();
-  assert.equal(reg.shouldSkip('league:nba'), false);
-  reg.recordFailure('league:nba', new Error('500'), null);
-  assert.equal(reg.shouldSkip('league:nba'), true);
+test('a repeatedly-failing source is skipped (backoff) instead of re-fetched every cycle', async (t) => {
+  resetRegistry();
+  let calls = 0;
+  t.mock.method(globalThis, 'fetch', async (input) => {
+    const url = String(input);
+    if (url.includes('site.api.espn.com')) return new Response('{}', { status: 200 });
+    if (url.includes(FEED_B)) {
+      calls += 1;
+      return new Response('down', { status: 500 });
+    }
+    return new Response('not found', { status: 404 });
+  });
+
+  const feeds = [{ url: FEED_B, label: 'B' }];
+  await buildClientSlate({ leagues: [], feeds });
+  const afterFail = calls;
+  await buildClientSlate({ leagues: [], feeds }); // immediately again
+  assert.equal(calls, afterFail, 'second call must skip the backing-off source');
+  const b = (await buildClientSlate({ leagues: [], feeds })).feeds[0];
+  assert.equal(b.skipped, true);
 });
 
-test('shouldSkip resets to false after success', () => {
-  const reg = new SourceRegistry();
-  reg.recordFailure('feed:x', new Error('err'), null);
-  assert.equal(reg.shouldSkip('feed:x'), true);
-  reg.recordSuccess('feed:x', [{ id: '1' }]);
-  assert.equal(reg.shouldSkip('feed:x'), false);
-});
-
-test('health transitions: unknown -> degraded -> ok -> stale', () => {
-  const reg = new SourceRegistry();
-  assert.equal(reg.getHealth('k'), 'unknown');
-  reg.recordFailure('k', 'err', null);
-  assert.equal(reg.getHealth('k'), 'degraded');
-  reg.recordSuccess('k', [{ id: '1' }]);
-  assert.equal(reg.getHealth('k'), 'ok');
-  reg.recordFailure('k', 'err2', null);
-  assert.equal(reg.getHealth('k'), 'stale');
-});
-
-test('summary aggregates multiple sources correctly', () => {
-  const reg = new SourceRegistry();
-  reg.recordSuccess('league:nfl', [{ id: '1' }]);
-  reg.recordSuccess('league:nba', [{ id: '2' }]);
-  reg.recordFailure('feed:rss1', 'err', null);
-  reg.recordSuccess('league:mlb', []);
-  reg.recordFailure('league:nhl', 'err', null);
-  const s = reg.summary();
-  assert.equal(s.total, 5);
-  assert.equal(s.ok, 3);
-  assert.equal(s.degraded, 2);
-});
-
-test('persist and restore round-trip via dehydrate/hydrate', () => {
-  const reg = new SourceRegistry();
-  reg.recordSuccess('league:nfl', [{ id: 'g1' }]);
-  reg.recordFailure('feed:dead', 'gone', null);
-  const json = reg.dehydrate();
-
-  const reg2 = new SourceRegistry();
-  reg2.hydrate(json);
-  assert.deepEqual(reg2.getLastGood('league:nfl'), [{ id: 'g1' }]);
-  assert.equal(reg2.getHealth('feed:dead'), 'degraded');
-  assert.equal(reg2.getHealth('league:nfl'), 'ok');
-});
-
-test('multiple failures increase backoff window', () => {
-  const reg = new SourceRegistry();
-  reg.recordFailure('k', 'err1', null);
-  const skip1 = reg.shouldSkip('k');
-  reg.recordFailure('k', 'err2', null);
-  const skip2 = reg.shouldSkip('k');
-  assert.equal(skip1, true);
-  assert.equal(skip2, true);
+test('demo slate appears only when there is nothing at all (no fresh, no last-good)', async (t) => {
+  resetRegistry();
+  t.mock.method(globalThis, 'fetch', async () => new Response('{}', { status: 200 }));
+  const slate = await buildClientSlate({ leagues: [], feeds: [] });
+  assert.equal(slate.demo, true);
+  assert.ok(slate.events.length > 0);
 });

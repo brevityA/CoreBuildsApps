@@ -1,61 +1,83 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 
-import { parseFeed, parseJsonFeed, stripTags, MAX_ITEMS_PER_FEED } from '../lib/parser.mjs';
+import { parseFeed, parseJsonFeed, parseListing, decodeXmlEntities, MAX_ITEMS_PER_FEED } from '../lib/parser.mjs';
 
-test('MAX_ITEMS_PER_FEED is 100', () => {
-  assert.equal(MAX_ITEMS_PER_FEED, 100);
+// AUDIT B-group: malformed/empty external data must never crash the loop.
+
+test('parseFeed returns [] for empty and whitespace input', () => {
+  assert.deepEqual(parseFeed(''), []);
+  assert.deepEqual(parseFeed('   \n\t '), []);
+  assert.deepEqual(parseFeed(null), []);
+  assert.deepEqual(parseFeed(undefined), []);
 });
 
-test('parseFeed caps items at MAX_ITEMS_PER_FEED', () => {
-  const items = Array.from({ length: 150 }, (_, i) =>
-    `<item><title>Event ${i}</title><description>Team A vs Team B espn</description></item>`
-  ).join('');
+test('parseFeed returns [] for garbage that is not XML/JSON', () => {
+  assert.deepEqual(parseFeed('\x00\x01\x02binary\u0000garbage'), []);
+  assert.deepEqual(parseFeed('definitely not a feed'), []);
+});
+
+test('parseFeed skips truncated/unclosed items without throwing', () => {
+  const xml = `<rss><channel><item><title>Broken`;
+  const items = parseFeed(xml);
+  assert.ok(Array.isArray(items));
+  assert.equal(items.length, 0);
+});
+
+test('parseFeed tolerates malformed siblings around good items', () => {
+  const xml = `<rss><channel>
+    <item><title>Good vs Team — ESPN</title></item>
+    <item><title>unclosed
+    <<<junk>>>
+    <item><title>Another vs One — TSN1</title></item>
+  </channel></rss>`;
+  const items = parseFeed(xml);
+  // The regex parser never throws on unclosed items; the well-formed item
+  // must survive. (Unclosed siblings may greedily absorb later text — that
+  // is acceptable garbling, not a crash.)
+  assert.ok(Array.isArray(items));
+  assert.ok(items.some((i) => i.rawTitle.startsWith('Good vs')));
+});
+
+test('parseFeed caps a huge feed at MAX_ITEMS_PER_FEED', () => {
+  const items = Array.from({ length: 300 }, (_, i) => `<item><title>Game ${i} vs Team ${i}</title></item>`).join('');
   const xml = `<rss><channel>${items}</channel></rss>`;
-  const result = parseFeed(xml, { source: 'rss', label: 'Test' });
-  assert.ok(result.length <= MAX_ITEMS_PER_FEED);
+  const parsed = parseFeed(xml);
+  assert.equal(parsed.length, MAX_ITEMS_PER_FEED);
 });
 
-test('parseJsonFeed caps items at MAX_ITEMS_PER_FEED', () => {
-  const items = Array.from({ length: 150 }, (_, i) => ({ title: `Event ${i}` }));
-  const json = JSON.stringify({ version: 'https://jsonfeed.org/version/1.1', items });
-  const result = parseJsonFeed(json, { source: 'rss', label: 'Test' });
-  assert.ok(result.length <= MAX_ITEMS_PER_FEED);
+test('parseJsonFeed returns [] for invalid JSON', () => {
+  assert.deepEqual(parseJsonFeed('{ nope'), []);
+  assert.deepEqual(parseJsonFeed(''), []);
 });
 
-test('parseJsonFeed skips null, boolean, and number rows but keeps strings and objects', () => {
-  const json = JSON.stringify({
-    version: 'https://jsonfeed.org/version/1.1',
-    items: [null, true, 42, { title: 'Real event' }, false, 'text entry'],
-  });
-  const result = parseJsonFeed(json, { source: 'rss', label: 'Test' });
-  assert.equal(result.length, 2);
+test('parseJsonFeed skips non-object rows without throwing', () => {
+  const json = JSON.stringify([null, 42, 'string row', { title: 'Real vs Fake' }]);
+  const parsed = parseJsonFeed(json);
+  assert.equal(parsed.length, 2); // the string row + the object row
+  assert.ok(parsed.some((e) => e.rawTitle === 'Real vs Fake'));
 });
 
-test('stripTags handles CDATA before stripping HTML', () => {
-  const input = '<![CDATA[<b>Bold</b> text]]>';
-  assert.equal(stripTags(input), 'Bold text');
+test('decodeXmlEntities handles weird but legal numeric entities', () => {
+  assert.equal(decodeXmlEntities('&#65;&#66;&#67;'), 'ABC');
+  assert.equal(decodeXmlEntities('&#x41;&#x42;'), 'AB');
+  // Out-of-range code units degrade gracefully instead of throwing.
+  assert.doesNotThrow(() => decodeXmlEntities('&#99999999;'));
 });
 
-test('stripTags handles nested CDATA safely', () => {
-  assert.equal(stripTags('<![CDATA[plain]]>'), 'plain');
-  assert.equal(stripTags('<![CDATA[a <em>b</em> c]]>'), 'a b c');
+test('CDATA content is extracted and not treated as a tag', () => {
+  const xml = `<rss><channel><item><title><![CDATA[Leafs <vs> Habs]]></title></item></channel></rss>`;
+  const items = parseFeed(xml);
+  assert.equal(items.length, 1);
+  assert.ok(items[0].rawTitle.includes('Leafs'));
+  assert.ok(items[0].rawTitle.includes('Habs'));
 });
 
-test('parseFeed with empty string returns empty array', () => {
-  assert.deepEqual(parseFeed('', {}), []);
-});
-
-test('parseFeed with garbage XML returns empty array', () => {
-  assert.deepEqual(parseFeed('not xml at all {}[]', {}), []);
-});
-
-test('parseFeed with valid XML but no items returns empty array', () => {
-  const xml = '<rss><channel><title>Empty</title></channel></rss>';
-  assert.deepEqual(parseFeed(xml, {}), []);
-});
-
-test('parseJsonFeed with empty items returns empty array', () => {
-  const json = JSON.stringify({ version: 'https://jsonfeed.org/version/1.1', items: [] });
-  assert.deepEqual(parseJsonFeed(json, {}), []);
+test('parseListing never throws on adversarial titles', () => {
+  assert.doesNotThrow(() => parseListing('<script>alert(1)</script>'));
+  assert.doesNotThrow(() => parseListing('a'.repeat(5000)));
+  const e = parseListing('<script>alert(1)</script> vs <img src=x onerror=alert(1)>');
+  // Both tags are stripped; the matchup collapses to empty team names and
+  // yields null teams — no throw, a sane event object back.
+  assert.ok(e && typeof e.league === 'string');
 });

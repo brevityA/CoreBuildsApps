@@ -1,30 +1,33 @@
+/* Bundled fonts (AUDIT.md F4): Barlow Condensed 600/700/800 + Outfit variable.
+   OFL-licensed, served from the app itself so there is no CDN, no FOUT, and
+   the ribbon renders identically offline. */
 @font-face {
   font-family: "Barlow Condensed";
   font-style: normal;
   font-weight: 600;
   font-display: swap;
-  src: url("../fonts/barlow-condensed-600-latin.woff2") format("woff2");
+  src: url("../fonts/barlow-condensed-600.woff2") format("woff2");
 }
 @font-face {
   font-family: "Barlow Condensed";
   font-style: normal;
   font-weight: 700;
   font-display: swap;
-  src: url("../fonts/barlow-condensed-700-latin.woff2") format("woff2");
+  src: url("../fonts/barlow-condensed-700.woff2") format("woff2");
 }
 @font-face {
   font-family: "Barlow Condensed";
   font-style: normal;
   font-weight: 800;
   font-display: swap;
-  src: url("../fonts/barlow-condensed-800-latin.woff2") format("woff2");
+  src: url("../fonts/barlow-condensed-800.woff2") format("woff2");
 }
 @font-face {
   font-family: "Outfit";
   font-style: normal;
   font-weight: 100 900;
   font-display: swap;
-  src: url("../fonts/outfit-var.woff2") format("woff2-variations");
+  src: url("../fonts/outfit-var.woff2") format("woff2");
 }
 
 :root {
@@ -35,18 +38,21 @@
   --line-dim: rgba(0, 212, 255, .16);
   --live: #ff2d55;
   --up: #f5c518;
-  --final: #a8b2bd;
+  --final: #9aa4af;
   --text: #f2f5f8;
-  --muted: #a0a8b4;
-  --faint: #6b7280;
+  --muted: #9aa4af;
+  --faint: #6b7683;
   --border: rgba(255,255,255,.08);
   --safe-x: max(24px, env(safe-area-inset-left), 3vw);
   --safe-y: max(16px, env(safe-area-inset-top), 2vh);
-  --overscan: 0px;
+  /* Classic TVs overscan ~2.5–5%: keep content inside the safe frame (AUDIT F3). */
+  --overscan: 28px;
   --chyron-h: 72px;
+  --crawl-s: 52s;
   --radius: 16px;
   --font: "Barlow Condensed", "Arial Narrow", "Oswald", Impact, sans-serif;
   --ui: "Outfit", "Sora", "Segoe UI", system-ui, sans-serif;
+  --acc: var(--line);
 }
 [data-theme="broadcast"] {
   --bg: #050506;
@@ -76,8 +82,6 @@
   --muted: #bbb;
 }
 
-[hidden] { display: none !important; }
-
 * { box-sizing: border-box; margin: 0; padding: 0; }
 html, body { height: 100%; background: var(--bg); color: var(--text); }
 body {
@@ -93,19 +97,41 @@ button { cursor: pointer; }
 :focus { outline: none; }
 .focusable:focus-visible, .focusable.is-focused,
 [data-tv] .focusable:focus {
-  outline: 3px solid var(--line);
+  outline: 5px solid var(--line);
+  outline-offset: 4px;
+}
+/* D-pad focus ring around whole labelled controls (AUDIT D3). */
+[data-tv] .check:focus-within,
+[data-tv] .league-toggle:focus-within,
+[data-tv] label:has(.focusable:focus) {
+  outline: 2px solid var(--line);
   outline-offset: 3px;
+  border-radius: 8px;
+}
+[data-tv] .game:focus,
+[data-tv] .hero-card:focus {
+  border-color: var(--line);
+  box-shadow: 0 0 0 1px var(--line), 0 6px 24px rgba(0, 0, 0, .35);
+  transform: translateY(-1px);
+}
+[data-tv] button.focusable:disabled {
+  opacity: .35;
+  outline: none;
 }
 
 .app {
   height: 100dvh;
   display: grid;
   grid-template-rows: auto auto 1fr var(--chyron-h);
-  padding: var(--safe-y) 0 0;
+  padding: var(--safe-y) var(--overscan) 0;
 }
-.app[data-position="top"] {
+[data-position="top"] .app {
   grid-template-rows: var(--chyron-h) auto auto 1fr;
 }
+[data-position="top"] .chyron { grid-row: 1; border-top: 0; border-bottom: 2px solid var(--line); }
+[data-position="top"] .topbar { grid-row: 2; }
+[data-position="top"] .leagues { grid-row: 3; }
+[data-position="top"] .stage { grid-row: 4; }
 
 .topbar {
   display: flex;
@@ -128,7 +154,34 @@ button { cursor: pointer; }
 .stat { text-align: center; min-width: 52px; }
 .stat b { display: block; font-family: var(--font); font-size: 1.5rem; line-height: 1; color: var(--line); }
 .stat span { font-size: .62rem; letter-spacing: .14em; text-transform: uppercase; color: var(--muted); }
-.top-actions { display: flex; gap: 8px; align-items: center; }
+/* Source-health pill (AUDIT B2/B1): subtle, self-updating, never blocks the ribbon. */
+.health {
+  font-size: .66rem;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  padding: 4px 10px;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  color: var(--muted);
+  white-space: nowrap;
+  max-width: 30vw;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  align-self: center;
+}
+.health.ok { color: #39d98a; border-color: rgba(57, 217, 138, .35); }
+.health.degraded { color: var(--up); border-color: rgba(245, 197, 24, .35); }
+.health.demo { color: var(--live); border-color: rgba(255, 45, 85, .35); }
+.health::before {
+  content: "";
+  display: inline-block;
+  width: 7px; height: 7px;
+  border-radius: 50%;
+  margin-right: 7px;
+  background: currentColor;
+  vertical-align: 1px;
+}
+.top-actions { display: flex; gap: 8px; }
 .icon-btn {
   width: 44px; height: 44px; border-radius: 12px;
   background: var(--panel); border: 1px solid var(--border); color: var(--text);
@@ -138,21 +191,6 @@ button { cursor: pointer; }
 .league-chip:hover { border-color: var(--line); color: var(--text); }
 .ghost:hover { border-color: var(--line); color: var(--line); }
 .primary:hover { filter: brightness(1.12); }
-
-.health {
-  font-family: var(--font);
-  font-size: .68rem;
-  letter-spacing: .1em;
-  text-transform: uppercase;
-  padding: 4px 10px;
-  border-radius: 999px;
-  border: 1px solid var(--border);
-  background: var(--panel);
-  color: var(--muted);
-}
-.health[data-health="ok"] { color: #4ade80; border-color: rgba(74,222,128,.3); }
-.health[data-health="stale"] { color: var(--up); border-color: rgba(245,197,24,.3); }
-.health[data-health="degraded"] { color: var(--live); border-color: rgba(255,45,85,.3); }
 
 .leagues {
   display: flex; gap: 8px; padding: 0 var(--safe-x) 12px;
@@ -226,6 +264,7 @@ button { cursor: pointer; }
 .game {
   background: var(--card);
   border: 1px solid var(--border);
+  border-left: 3px solid var(--acc, var(--line));
   border-radius: var(--radius);
   padding: 14px 16px 12px;
   min-height: 148px;
@@ -234,12 +273,24 @@ button { cursor: pointer; }
   gap: 10px;
   transition: border-color .15s, transform .15s;
 }
-.game:hover, .game:focus-visible, [data-tv] .game:focus { border-color: var(--line); transform: translateY(-1px); }
+.game:hover, .game.is-focused { border-color: var(--acc, var(--line)); transform: translateY(-1px); }
 .game-top { display: flex; justify-content: space-between; align-items: center; }
 .league-tag {
-  font-size: .66rem; letter-spacing: .14em; text-transform: uppercase; font-weight: 700;
+  font-size: .66rem;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--acc, var(--muted));
+  font-weight: 700;
 }
-.league-tag[data-accent] { border-left: 3px solid var(--league-accent, var(--muted)); padding-left: 6px; }
+.league-tag::before {
+  content: "";
+  display: inline-block;
+  width: 7px; height: 7px;
+  border-radius: 1px;
+  margin-right: 7px;
+  background: var(--acc, var(--muted));
+  vertical-align: 1px;
+}
 .badge {
   font-family: var(--font);
   font-size: .78rem;
@@ -267,6 +318,36 @@ button { cursor: pointer; }
   background: rgba(255,255,255,.05);
   color: var(--text);
 }
+
+/* ---- favorite teams (card star + settings picker) -------------------- */
+.game-top-right { display: flex; align-items: center; gap: 6px; }
+.fav-star {
+  width: 30px; height: 30px;
+  display: grid; place-items: center;
+  border: 1px solid var(--border);
+  border-radius: 50%;
+  background: transparent;
+  color: var(--muted);
+  font-size: 1rem;
+  line-height: 1;
+  padding: 0;
+}
+.fav-star.on { color: #f5c518; border-color: rgba(245,197,24,.55); background: rgba(245,197,24,.08); }
+.fav-star:hover, .fav-star:focus-visible,
+[data-tv] .fav-star:focus { color: #f5c518; border-color: #f5c518; }
+.fav-block { min-width: 0; }
+.team-picker { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; max-height: 148px; overflow: auto; }
+.team-chip {
+  border: 1px solid var(--border);
+  background: var(--panel);
+  color: var(--text);
+  border-radius: 999px;
+  padding: 6px 12px;
+  font-family: var(--font);
+  font-size: .95rem;
+  letter-spacing: .05em;
+}
+.team-chip.on { color: #041018; background: var(--line); border-color: var(--line); }
 .when { color: var(--muted); font-size: .72rem; letter-spacing: .04em; white-space: nowrap; }
 
 .empty { max-width: 560px; padding: 40px 8px; }
@@ -328,20 +409,6 @@ input, select {
 .split { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
 .split label { display: grid; gap: 6px; font-size: .8rem; color: var(--muted); }
 
-.speed-stepper {
-  display: flex; gap: 6px; align-items: center;
-}
-.speed-stepper .stepper-btn {
-  width: 36px; height: 36px; border-radius: 8px;
-  background: var(--panel); border: 1px solid var(--border); color: var(--text);
-  font-size: 1.1rem; font-weight: 700;
-  display: grid; place-items: center;
-}
-.speed-stepper .stepper-val {
-  font-family: var(--font); font-size: 1.1rem; font-weight: 700;
-  min-width: 48px; text-align: center;
-}
-
 .chyron {
   height: var(--chyron-h);
   display: grid;
@@ -351,12 +418,6 @@ input, select {
   border-top: 2px solid var(--line);
   box-shadow: 0 -12px 40px rgba(0,0,0,.45);
   position: relative;
-}
-.app[data-position="top"] .chyron {
-  order: -1;
-  border-top: none;
-  border-bottom: 2px solid var(--line);
-  box-shadow: 0 12px 40px rgba(0,0,0,.45);
 }
 .chyron::after {
   content: "";
@@ -382,7 +443,11 @@ input, select {
 .crawl-mask { overflow: hidden; display: flex; align-items: center; }
 .crawl {
   display: flex; width: max-content;
+  /* Moved by JS at constant px/s (public/js/ticker.js). Only the transform
+     of this single compositor-promoted element is written each frame. */
   will-change: transform;
+  transform: translate3d(0, 0, 0);
+  backface-visibility: hidden;
 }
 .crawl-seq { display: flex; align-items: center; white-space: nowrap; }
 .tick {
@@ -392,11 +457,11 @@ input, select {
   font-size: 1.55rem;
   letter-spacing: .03em;
 }
-.tick + .tick::before {
-  content: "\25C6";
+.tick::after {
+  content: "◆";
   color: var(--line);
   font-size: .8rem;
-  margin-right: 28px;
+  margin-left: 28px;
   opacity: .85;
 }
 .tick .k { color: var(--live); font-weight: 800; letter-spacing: .12em; font-size: 1.05rem; }
@@ -424,10 +489,11 @@ input, select {
 [data-mode="crawl"] .hero,
 [data-mode="crawl"] .grid,
 [data-mode="crawl"] .empty { display: none !important; }
-[data-mode="crawl"] .bigclock { display: flex !important; }
+[data-mode="crawl"] .bigclock { display: flex; }
 [data-mode="crawl"] .app { grid-template-rows: auto 1fr var(--chyron-h); }
 [data-mode="crawl"] .topbar { opacity: .72; }
 .bigclock {
+  display: none;
   height: 100%;
   flex-direction: column;
   align-items: center;
@@ -461,29 +527,7 @@ input, select {
   border-radius: 999px; padding: 3px 8px;
 }
 
-.boot-guard {
-  position: fixed; inset: 0;
-  display: flex; flex-direction: column; align-items: center; justify-content: center;
-  text-align: center; padding: 24px;
-  background: #07090d; color: #f2f5f8;
-  font-family: system-ui, sans-serif;
-  z-index: 9999;
-}
-.boot-guard h1 { font-size: 1.4rem; margin-bottom: 12px; }
-.boot-guard p { color: #8b949e; max-width: 400px; line-height: 1.5; }
-
 @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: .62; } }
-
-[data-tv] .topbar { padding: calc(var(--overscan) + 4px) calc(var(--overscan) + var(--safe-x)) 10px; }
-[data-tv] .leagues { padding-left: calc(var(--overscan) + var(--safe-x)); padding-right: calc(var(--overscan) + var(--safe-x)); }
-[data-tv] .stage { padding-left: calc(var(--overscan) + var(--safe-x)); padding-right: calc(var(--overscan) + var(--safe-x)); }
-[data-tv] .tick { font-size: 1.9rem; }
-[data-tv] .chyron { --chyron-h: 88px; }
-[data-tv] .abbr { font-size: 3.6rem; }
-[data-tv] .score { font-size: 3.9rem; }
-[data-tv] .gt .who { font-size: 1.8rem; }
-[data-tv] .gt .sc { font-size: 1.8rem; }
-[data-tv] .bug-name { font-size: 1.55rem; }
 
 @media (max-width: 720px) {
   :root { --chyron-h: 56px; --safe-x: 14px; }
@@ -509,3 +553,94 @@ input, select {
 @media (prefers-reduced-motion: reduce) {
   .badge.live { animation: none; }
 }
+
+/* ---- TV / 10-foot scaling (AUDIT F3) ---------------------------------- */
+[data-tv] {
+  --chyron-h: 96px;
+  --overscan: 40px;
+  /* Scale the whole rem-based UI ~25% for a 10-foot couch, not a phone. */
+  font-size: 20px;
+}
+[data-tv] .tick { font-size: 2.05rem; letter-spacing: .04em; }
+[data-tv] .tick .k { font-size: 1.4rem; }
+[data-tv] .chyron-clock { font-size: 2.1rem; min-width: 150px; }
+[data-tv] .bug-live { font-size: .92rem; }
+[data-tv] .bug-name { font-size: 1.7rem; }
+[data-tv] .league-chip { font-size: 1.45rem; padding: 12px 24px; }
+[data-tv] .gt .who, [data-tv] .gt .sc { font-size: 2.2rem; }
+[data-tv] .badge { font-size: 1.05rem; padding: 4px 12px; }
+[data-tv] .league-tag { font-size: .85rem; }
+[data-tv] .ch { font-size: 1rem; padding: 3px 8px; }
+[data-tv] .game { min-height: 200px; padding: 20px 22px 18px; }
+[data-tv] .grid { grid-template-columns: repeat(auto-fill, minmax(360px, 1fr)); gap: 16px; }
+[data-tv] .fav-star { width: 46px; height: 46px; font-size: 1.4rem; }
+[data-tv] .team-chip { font-size: 1.1rem; padding: 8px 16px; }
+[data-tv] .icon-btn { width: 56px; height: 56px; font-size: 1.4rem; }
+[data-tv] .drawer-panel { width: min(640px, 100%); }
+[data-tv] .drawer h2 { font-size: 2rem; }
+[data-tv] .drawer .block h3 { font-size: 1.05rem; }
+[data-tv] .drawer input, [data-tv] .drawer select { font-size: 1.05rem; padding: 14px; }
+[data-tv] .ghost { padding: 10px 14px; font-size: 1rem; }
+[data-tv] .stat b { font-size: 1.8rem; }
+[data-tv] .brand-name { font-size: 2rem; }
+[data-tv] .bigclock-next { font-size: 2.2rem; }
+/* 10-foot: hide the dense header count stats; brand + health + actions remain. */
+[data-tv] .topbar .stats { display: none; }
+
+/* ---- settings rows: steppers & reorder (AUDIT E2/D7) ------------------ */
+.stepper {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.stepper input[type="range"] { flex: 1; min-width: 0; }
+.stepper .ghost {
+  width: 44px; height: 44px;
+  font-size: 1.3rem;
+  line-height: 1;
+  display: grid;
+  place-items: center;
+}
+.speed-val {
+  font-family: var(--font);
+  color: var(--line);
+  letter-spacing: .08em;
+  font-size: 1rem;
+}
+.league-toggle, .feed-list li {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+.league-toggle {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 8px 10px;
+  min-width: 148px;
+}
+.row-actions { display: flex; gap: 6px; }
+.row-actions .ghost { padding: 5px 9px; font-size: .85rem; line-height: 1; }
+
+/* ---- boot fallback for ancient WebViews (AUDIT A1) -------------------- */
+.bootfallback {
+  position: fixed; inset: 0; z-index: 999;
+  display: grid; place-items: center;
+  background: #07090d; color: #f2f5f8;
+  font-family: system-ui, sans-serif; text-align: center; padding: 24px;
+}
+.bootfallback[hidden] { display: none; }
+.bootfallback-card {
+  max-width: 520px; padding: 32px 28px; border: 1px solid rgba(255,255,255,.12);
+  border-radius: 16px; background: #0e131b; line-height: 1.6;
+}
+.bootfallback-mark {
+  font-weight: 800; letter-spacing: .3em; color: #00d4ff; margin-bottom: 14px;
+}
+.bootfallback p { color: #9aa4af; margin-bottom: 8px; }
+.bootfallback b { color: #f2f5f8; }
+
+/* `hidden` must always win over component display rules (the drawer is
+   `display:flex` and used to show through its hidden attribute — P0 fix). */
+[hidden] { display: none; }

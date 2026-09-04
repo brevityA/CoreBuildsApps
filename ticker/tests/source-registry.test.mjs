@@ -1,91 +1,75 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 
-import { SourceRegistry } from '../lib/source-registry.mjs';
+import { SourceRegistry, MAX_ITEMS_PER_SOURCE } from '../lib/source-registry.mjs';
 
-test('new registry: shouldSkip is false for unknown key', () => {
-  const reg = new SourceRegistry();
-  assert.equal(reg.shouldSkip('league:nfl'), false);
+test('recordSuccess stores last-good and clears the error', () => {
+  const r = new SourceRegistry();
+  const key = r.keyForFeed('https://example.com/feed.xml');
+  r.recordSuccess(key, 'Example', [{ id: 'a' }, { id: 'b' }]);
+  assert.equal(r.lastGood(key).length, 2);
+  assert.equal(r.isDegraded(key), false);
+  assert.equal(r.canTry(key), true);
 });
 
-test('recordSuccess stores lastGood', () => {
-  const reg = new SourceRegistry();
-  const items = [{ id: '1' }, { id: '2' }];
-  reg.recordSuccess('league:nfl', items);
-  assert.deepEqual(reg.getLastGood('league:nfl'), items);
-  assert.equal(reg.getHealth('league:nfl'), 'ok');
+test('recordFailure keeps last-good and marks degraded + backoff', () => {
+  const r = new SourceRegistry();
+  const key = r.keyForFeed('https://example.com/feed.xml');
+  r.recordSuccess(key, 'Example', [{ id: 'a' }]);
+  r.recordFailure(key, 'Example', 'http 500');
+  assert.equal(r.isDegraded(key), true);
+  assert.equal(r.lastGood(key).length, 1);
+  assert.equal(r.lastError(key), 'http 500');
+  // freshly failed → cannot retry immediately
+  assert.equal(r.canTry(key), false);
 });
 
-test('recordFailure returns lastGood and marks stale', () => {
-  const reg = new SourceRegistry();
-  reg.recordSuccess('feed:x', [{ id: 'a' }]);
-  reg.recordFailure('feed:x', new Error('timeout'), null);
-  assert.deepEqual(reg.getLastGood('feed:x'), [{ id: 'a' }]);
-  assert.equal(reg.getHealth('feed:x'), 'stale');
-  assert.equal(reg.isStale('feed:x'), true);
+test('canTry restores after the backoff window', () => {
+  const r = new SourceRegistry();
+  const key = r.keyForFeed('https://example.com/feed.xml');
+  // A big Retry-After overrides the computed wait, giving a deterministic window.
+  r.recordFailure(key, 'Example', 'boom', 100_000);
+  const now = Date.now();
+  assert.equal(r.canTry(key, now), false);
+  assert.equal(r.canTry(key, now + 50_000), false);
+  assert.equal(r.canTry(key, now + 101_000), true);
 });
 
-test('recordFailure with no lastGood marks degraded', () => {
-  const reg = new SourceRegistry();
-  reg.recordFailure('feed:y', new Error('404'), null);
-  assert.deepEqual(reg.getLastGood('feed:y'), []);
-  assert.equal(reg.getHealth('feed:y'), 'degraded');
+test('health() counts degraded sources', () => {
+  const r = new SourceRegistry();
+  const a = r.keyForFeed('https://a.example/feed.xml');
+  const b = r.keyForFeed('https://b.example/feed.xml');
+  r.recordSuccess(a, 'A', [{ id: 1 }]);
+  r.recordFailure(b, 'B', 'down');
+  const h = r.health();
+  assert.equal(h.total, 2);
+  assert.equal(h.degraded, 1);
 });
 
-test('lastGood capped at 100 items', () => {
-  const reg = new SourceRegistry();
-  const big = Array.from({ length: 150 }, (_, i) => ({ id: String(i) }));
-  reg.recordSuccess('feed:big', big);
-  assert.equal(reg.getLastGood('feed:big').length, 100);
+test('last-good is capped at MAX_ITEMS_PER_SOURCE', () => {
+  const r = new SourceRegistry();
+  const key = r.keyForFeed('https://example.com/big.xml');
+  const events = Array.from({ length: 500 }, (_, i) => ({ id: String(i) }));
+  r.recordSuccess(key, 'Big', events);
+  assert.equal(r.lastGood(key).length, MAX_ITEMS_PER_SOURCE);
 });
 
-test('summary counts correctly', () => {
-  const reg = new SourceRegistry();
-  reg.recordSuccess('a', []);
-  reg.recordSuccess('b', [{ id: '1' }]);
-  reg.recordFailure('c', 'err', null);
-  const s = reg.summary();
-  assert.equal(s.total, 3);
-  assert.equal(s.ok, 2);
-  assert.equal(s.degraded, 1);
+test('hydrate/dehydrate round-trips last-good events', () => {
+  const a = new SourceRegistry();
+  a.recordSuccess(a.keyForFeed('https://x.example/feed.xml'), 'X', [{ id: 'keep' }]);
+  const json = a.dehydrate();
+
+  const b = new SourceRegistry();
+  b.hydrate(json);
+  const key = b.keyForFeed('https://x.example/feed.xml');
+  assert.equal(b.lastGood(key).length, 1);
+  assert.equal(b.lastGood(key)[0].id, 'keep');
+  // hydrate is not degraded (no failure recorded yet)
+  assert.equal(b.isDegraded(key), false);
 });
 
-test('dehydrate / hydrate round-trip', () => {
-  const reg = new SourceRegistry();
-  reg.recordSuccess('league:mlb', [{ id: 'g1' }]);
-  reg.recordFailure('feed:dead', 'gone', null);
-  const json = reg.dehydrate();
-  const reg2 = new SourceRegistry();
-  reg2.hydrate(json);
-  assert.deepEqual(reg2.getLastGood('league:mlb'), [{ id: 'g1' }]);
-  assert.equal(reg2.getHealth('feed:dead'), 'degraded');
-});
-
-test('hydrate with null is safe', () => {
-  const reg = new SourceRegistry();
-  reg.hydrate(null);
-  assert.equal(reg.summary().total, 0);
-});
-
-test('clear removes all entries', () => {
-  const reg = new SourceRegistry();
-  reg.recordSuccess('a', []);
-  reg.recordSuccess('b', []);
-  reg.clear();
-  assert.equal(reg.summary().total, 0);
-  assert.deepEqual(reg.getLastGood('a'), []);
-});
-
-test('getHealth returns unknown for untracked key', () => {
-  const reg = new SourceRegistry();
-  assert.equal(reg.getHealth('nonexistent'), 'unknown');
-});
-
-test('success after failure resets health to ok', () => {
-  const reg = new SourceRegistry();
-  reg.recordFailure('k', 'err', null);
-  assert.equal(reg.getHealth('k'), 'degraded');
-  reg.recordSuccess('k', [{ id: '1' }]);
-  assert.equal(reg.getHealth('k'), 'ok');
-  assert.equal(reg.isStale('k'), false);
+test('hydrate survives corrupt input', () => {
+  const r = new SourceRegistry();
+  assert.doesNotThrow(() => r.hydrate('not-json{'));
+  assert.doesNotThrow(() => r.hydrate(null));
 });

@@ -71,6 +71,7 @@ class LineWebClient(private val context: Context) : WebViewClient() {
                 return fetch(safety.url, hops + 1)
             }
             val raw = if (code in 200..299) conn.inputStream else (conn.errorStream ?: ByteArrayInputStream(ByteArray(0)))
+            var truncated = false
             val bytes = raw.use { stream ->
                 val buf = java.io.ByteArrayOutputStream(minOf(conn.contentLength.coerceAtLeast(0), MAX_BYTES))
                 val tmp = ByteArray(16 * 1024)
@@ -81,8 +82,12 @@ class LineWebClient(private val context: Context) : WebViewClient() {
                     buf.write(tmp, 0, n)
                     total += n
                 }
+                // If a byte remains past the cap, the body is oversized — fail
+                // loudly instead of handing the parser a truncated feed (AUDIT B5).
+                if (total >= MAX_BYTES && stream.read() >= 0) truncated = true
                 buf.toByteArray()
             }
+            if (truncated) return text(502, "text/plain", "feed too large")
             val mime = conn.contentType?.substringBefore(';')?.trim()?.ifBlank { null } ?: "application/octet-stream"
             val message = conn.responseMessage ?: "OK"
             return WebResourceResponse(mime, "utf-8", code, message, CORS_HEADERS, ByteArrayInputStream(bytes))

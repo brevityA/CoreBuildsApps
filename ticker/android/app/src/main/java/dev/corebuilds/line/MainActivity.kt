@@ -39,6 +39,12 @@ class MainActivity : Activity() {
             if (tv) append("&tv=1")
         }
         webView.loadUrl("https://${LineWebClient.HOST}/index.html?$query")
+
+        if (android.os.Build.VERSION.SDK_INT >= 33) {
+            onBackInvokedDispatcher.registerOnBackInvokedCallback(
+                android.window.OnBackInvokedDispatcher.PRIORITY_DEFAULT,
+            ) { handleBack() }
+        }
     }
 
     fun startPair(): String = synchronized(pairServer) {
@@ -73,6 +79,15 @@ class MainActivity : Activity() {
 
     @Deprecated("Deprecated in Java")
     override fun onBackPressed() {
+        handleBack()
+    }
+
+    /**
+     * Back closes the settings drawer first, then backgrounds the app.
+     * Uses the modern OnBackInvokedDispatcher on API 33+ (registered in
+     * onCreate) and falls back to the deprecated callback below it.
+     */
+    private fun handleBack() {
         webView.evaluateJavascript(
             """
             (function(){
