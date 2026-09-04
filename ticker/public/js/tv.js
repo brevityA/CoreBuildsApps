@@ -47,13 +47,36 @@ function nearest(current, dir) {
   const drawerOpen = drawerShown();
   const nodes = [...document.querySelectorAll('.focusable')].filter((el) => {
     if (!visible(el)) return false;
-    // While the settings drawer is open, D-pad must stay inside it (AUDIT D1).
     if (drawerOpen && !el.closest('#drawer')) return false;
     return true;
   });
   if (!nodes.length) return null;
   if (!current || !nodes.includes(current)) return nodes[0];
 
+  const inRail = current.closest('.drawer-rail');
+  const inSections = current.closest('.drawer-sections');
+
+  if (drawerOpen && inRail && dir === 'right') {
+    const active = document.querySelector('.drawer-section.is-active .focusable');
+    if (active && visible(active)) return active;
+  }
+  if (drawerOpen && inSections && dir === 'left') {
+    const active = document.querySelector('.rail-item.is-active');
+    if (active && visible(active)) return active;
+  }
+
+  const candidates = drawerOpen && (dir === 'up' || dir === 'down')
+    ? nodes.filter((el) => {
+        if (inRail) return el.closest('.drawer-rail');
+        if (inSections) return el.closest('.drawer-sections');
+        return true;
+      })
+    : nodes;
+
+  return geometricNearest(current, dir, candidates.length ? candidates : nodes);
+}
+
+function geometricNearest(current, dir, nodes) {
   const a = box(current);
   const horiz = dir === 'left' || dir === 'right';
   const sign = dir === 'left' || dir === 'up' ? -1 : 1;
@@ -64,10 +87,8 @@ function nearest(current, dir) {
     if (node === current) continue;
     const b = box(node);
     const along = (horiz ? b.cx - a.cx : b.cy - a.cy) * sign;
-    if (along <= 4) continue; // candidate must lie in the pressed direction
+    if (along <= 4) continue;
 
-    // Cross-axis overlap: prefer the item directly above/below (or left/right
-    // in the same row) over a diagonal neighbour — "down means down".
     const cross = horiz ? Math.abs(b.cy - a.cy) : Math.abs(b.cx - a.cx);
     const overlap = horiz
       ? Math.min(a.y2, b.y2) - Math.max(a.y1, b.y1)
@@ -75,7 +96,6 @@ function nearest(current, dir) {
     const minSpan = Math.min(horiz ? a.h : a.w, horiz ? b.h : b.w);
     const aligned = overlap > minSpan * 0.35;
 
-    // Aligned candidates are strongly preferred; diagonal ones pay a penalty.
     const score = aligned ? along + cross * 0.5 : along + cross * 2.4 + 1000;
     if (score < bestScore) {
       bestScore = score;

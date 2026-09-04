@@ -672,7 +672,7 @@ input, select {
 [data-tv] .pill { font-size: 1rem; padding: 5px 11px; }
 
 /* drawer */
-[data-tv] .drawer-panel { width: min(820px, 96vw); }
+[data-tv] .drawer-panel { width: min(900px, 96vw); }
 [data-tv] .drawer h2 { font-size: 2rem; }
 [data-tv] .kicker { font-size: .8rem; }
 [data-tv] .drawer .block h3 { font-size: 1.3rem; }
@@ -696,14 +696,14 @@ input, select {
 /* drawer: left rail + right content pane (standard 10-foot settings layout) */
 [data-tv] .drawer-body {
   display: grid;
-  grid-template-columns: 224px minmax(0, 1fr);
-  gap: 24px;
+  grid-template-columns: 270px minmax(0, 1fr);
+  gap: 28px;
   min-height: 0;
 }
 [data-tv] .drawer-rail {
   flex-direction: column;
   align-items: stretch;
-  gap: 6px;
+  gap: 10px;
   overflow-x: visible;
   overflow-y: auto;
   margin-bottom: 0;
@@ -712,11 +712,11 @@ input, select {
 [data-tv] .rail-item {
   justify-content: flex-start;
   border-radius: 14px;
-  padding: 15px 16px;
-  font-size: 1.1rem;
+  padding: 18px 20px;
+  font-size: 1.15rem;
   font-family: var(--ui);
 }
-[data-tv] .rail-ic { font-size: 1.25rem; }
+[data-tv] .rail-ic { font-size: 1.3rem; }
 [data-tv] .drawer-sections { overflow-y: auto; min-height: 0; padding-right: 8px; }
 [data-tv] .drawer-section.is-active { padding-bottom: 4px; }
 
