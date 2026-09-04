@@ -152,6 +152,21 @@ class MainActivity : Activity() {
     /** Is the floating ticker window currently up? */
     fun overlayActive(): Boolean = OverlayService.running
 
+    /**
+     * Overlay platform status for the JS bridge. Returns one of:
+     * - "supported"       — overlay works (phone, tablet, or Android TV with permission)
+     * - "unsupported"     — Fire TV blocks SYSTEM_ALERT_WINDOW at the OS level
+     * - "needs_permission" — Android TV, but the user hasn't granted overlay permission yet
+     */
+    fun overlayPlatform(): String {
+        if (isFireTv()) return "unsupported"
+        if (!android.provider.Settings.canDrawOverlays(this)) {
+            if (isTelevision()) return "needs_permission"
+            return "needs_permission" // phone/tablet also needs permission
+        }
+        return "supported"
+    }
+
     /** Open the system overlay-permission screen for this app. */
     fun openOverlaySettings(): Boolean {
         return try {
@@ -167,12 +182,13 @@ class MainActivity : Activity() {
     }
 
     /**
-     * Start the floating ticker. Returns false (no-op) on TV — Android TV has
-     * no overlay windows — or when the user hasn't granted the permission yet
-     * (in that case the system settings screen is opened for them).
+     * Start the floating ticker. Works on phone, tablet, and Android TV
+     * (some devices require the overlay permission to be granted first via
+     * Settings or ADB). Returns false on Fire TV, which blocks
+     * SYSTEM_ALERT_WINDOW at the OS level.
      */
     fun startOverlay(): Boolean {
-        if (isTelevision()) return false
+        if (isFireTv()) return false
         if (!android.provider.Settings.canDrawOverlays(this)) {
             openOverlaySettings()
             return false
@@ -260,7 +276,15 @@ class MainActivity : Activity() {
         val pm = packageManager
         return pm.hasSystemFeature(PackageManager.FEATURE_LEANBACK)
             || pm.hasSystemFeature(PackageManager.FEATURE_TELEVISION)
-            || pm.hasSystemFeature("amazon.hardware.fire_tv")
+            || isFireTv()
+    }
+
+    /**
+     * Fire TV devices block SYSTEM_ALERT_WINDOW at the OS level — overlay
+     * windows cannot be shown regardless of permission settings.
+     */
+    private fun isFireTv(): Boolean {
+        return packageManager.hasSystemFeature("amazon.hardware.fire_tv")
     }
 
     @Suppress("DEPRECATION")

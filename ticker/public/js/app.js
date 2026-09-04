@@ -194,10 +194,22 @@ function bind() {
 
   $('overlayEnabled')?.addEventListener('change', () => {
     const on = $('overlayEnabled').checked;
+    const platform = nativeBridge()?.overlayPlatform?.();
     if (on) {
+      if (platform === 'unsupported') {
+        $('overlayEnabled').checked = false;
+        toast('Floating ticker is not supported on Fire TV');
+        return;
+      }
       const started = nativeBridge()?.startOverlay?.() === true;
       $('overlayEnabled').checked = nativeBridge()?.overlayActive?.() === true;
-      if (!started) toast('Allow “display over other apps” for Core Line, then retick');
+      if (!started) {
+        if (globalThis.CORELINE_TV) {
+          toast('Enable “Display over other apps” for Core Line in Settings, then retick');
+        } else {
+          toast('Allow “display over other apps” for Core Line, then retick');
+        }
+      }
     } else {
       nativeBridge()?.stopOverlay?.();
     }
@@ -290,10 +302,23 @@ function applyChrome() {
   renderFeeds();
   if ($('pairBox')) $('pairBox').hidden = !isNativeShell();
   if ($('overlayBlock')) {
-    $('overlayBlock').hidden = !(isNativeShell() && !globalThis.CORELINE_TV);
+    $('overlayBlock').hidden = !isNativeShell();
   }
   if ($('overlayEnabled')) {
     $('overlayEnabled').checked = Boolean(nativeBridge()?.overlayActive?.());
+  }
+  // Update overlay hint based on platform capabilities
+  const overlayHint = $('overlayHint');
+  if (overlayHint && isNativeShell()) {
+    const platform = nativeBridge()?.overlayPlatform?.();
+    if (platform === 'unsupported') {
+      overlayHint.textContent = 'Floating ticker is not available on Fire TV. The operating system blocks overlay windows on all Fire TV devices.';
+      if ($('overlayEnabled')) $('overlayEnabled').disabled = true;
+    } else if (globalThis.CORELINE_TV) {
+      overlayHint.textContent = 'Draws the crawl on top of every app. If the toggle does not work, grant the permission via Settings → Apps → Special app access → Display over other apps, or run: adb shell appops set dev.corebuilds.line SYSTEM_ALERT_WINDOW allow';
+    } else {
+      overlayHint.textContent = 'Draws the crawl on top of every app, edge to edge. Stop it from the notification or untick this box.';
+    }
   }
   if (!globalThis.CORELINE_OVERLAY) syncWakeLock();
 }
@@ -408,7 +433,10 @@ async function checkForUpdates(manual = false) {
     const url = isNativeShell()
       ? `/api/proxy?url=${encodeURIComponent(UPDATE_RELEASES_URL)}`
       : UPDATE_RELEASES_URL;
-    const res = await fetch(url, { headers: { Accept: 'application/json' }, signal: AbortSignal.timeout(20000) });
+    const signal = typeof AbortSignal?.timeout === 'function'
+      ? AbortSignal.timeout(20000)
+      : (() => { const ac = new AbortController(); setTimeout(() => ac.abort(), 20000); return ac.signal; })();
+    const res = await fetch(url, { headers: { Accept: 'application/json' }, signal });
     if (!res.ok) throw new Error('http ' + res.status);
     const releases = await res.json();
     updateInfo = buildUpdateStatus(releases, currentVersion() || '0', UPDATE_APK_NAME);
@@ -782,11 +810,17 @@ function renderWatchApps() {
     const league = LEAGUES[id];
     if (!league) return '';
     const choice = watchChoiceFor(state.watchApps, league.label);
+    const installedPkgs = new Set(installedApps.map((a) => a.pkg));
     const opts = [
       `<option value="${WATCH_WEB}" ${choice === WATCH_WEB ? 'selected' : ''}>Web browser</option>`,
+      // If the stored choice is neither 'web' nor a known installed app,
+      // still include it as a selected option so the picker preserves it.
+      (choice !== WATCH_WEB && !installedPkgs.has(choice))
+        ? `<option value="${esc(choice)}" selected>${esc(choice)}</option>`
+        : '',
       ...installedApps.map((a) =>
         `<option value="${esc(a.pkg)}" ${choice === a.pkg ? 'selected' : ''}>${esc(a.label)}</option>`),
-    ].join('');
+    ].filter(Boolean).join('');
     return `
       <div class="watch-row">
         <span class="watch-league" style="--acc:${esc(league.accent)}">${league.label}</span>

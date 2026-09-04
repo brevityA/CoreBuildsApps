@@ -6,8 +6,8 @@
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <!-- Sideload updater: lets the system installer prompt for "install unknown apps". -->
     <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" />
-    <!-- Phone floating ticker: draw the chyron above other apps (granted via
-         Settings.canDrawOverlays, blocked on Android TV). -->
+    <!-- Floating ticker: draw the chyron above other apps (granted via
+         Settings.canDrawOverlays; blocked on Fire TV only). -->
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_SPECIAL_USE" />
@@ -36,6 +36,25 @@
             <category android:name="android.intent.category.BROWSABLE" />
             <data android:scheme="https" />
         </intent>
+        <!-- Explicit package visibility for known sports/streaming apps
+             (Android 11+ hides packages not matched by intent queries). -->
+        <package android:name="com.espn.score_center" />
+        <package android:name="com.foxsports.videogo" />
+        <package android:name="com.nbcuni.nbcsports" />
+        <package android:name="com.peacocktv.peacockandroid" />
+        <package android:name="com.cbs.ott" />
+        <package android:name="com.paramountplus.android" />
+        <package android:name="com.dazn" />
+        <package android:name="com.google.android.apps.youtube.unplugged" />
+        <package android:name="com.hulu.livingroomplus" />
+        <package android:name="com.sling" />
+        <package android:name="tv.fubo.mobile" />
+        <package android:name="com.amazon.amazonvideo.livingroom" />
+        <package android:name="com.wbd.stream" />
+        <package android:name="com.bellmedia.tsn" />
+        <package android:name="com.rogers.sportsnet" />
+        <package android:name="com.apple.atve.android.appletv" />
+        <package android:name="com.sync.tv" />
     </queries>
 
     <application

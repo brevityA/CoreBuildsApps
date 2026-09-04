@@ -24,11 +24,18 @@ import java.net.URL
 object UpdateManager {
     private const val TAG = "CoreLineUpdate"
     private const val MAX_APK_BYTES = 80L * 1024 * 1024
+    private const val MAX_REDIRECTS = 5
 
     /** Only the GitHub release CDN is a legitimate download source. */
     fun isAllowed(rawUrl: String?): Boolean {
+        val uri = try {
+            URI(rawUrl?.trim().orEmpty())
+        } catch (_: Exception) {
+            return false
+        }
+        if (uri.scheme?.lowercase() != "https") return false
         val host = try {
-            URI(rawUrl?.trim().orEmpty()).host?.lowercase()?.trim('[', ']')
+            uri.host?.lowercase()?.trim('[', ']')
         } catch (_: Exception) {
             null
         } ?: return false
@@ -46,7 +53,7 @@ object UpdateManager {
     fun downloadAndInstall(context: Context, rawUrl: String): Boolean {
         if (!isAllowed(rawUrl)) return false
         val cacheDir = File(context.cacheDir, "updates").apply { mkdirs() }
-        val apk = File(cacheDir, "coreline-update.apk")
+        val apk = File(cacheDir, "coreline-update-${System.currentTimeMillis()}.apk")
         val main = ContextCompat.getMainExecutor(context)
         Thread {
             val ok = try {
@@ -64,32 +71,50 @@ object UpdateManager {
     }
 
     private fun download(rawUrl: String, apk: File): Boolean {
-        val conn = URL(rawUrl).openConnection() as HttpURLConnection
-        try {
-            conn.instanceFollowRedirects = true
-            conn.connectTimeout = 20_000
-            conn.readTimeout = 180_000
-            conn.setRequestProperty("User-Agent", "CoreLineUpdater/1.0")
-            if (conn.responseCode !in 200..299) return false
-            conn.inputStream.use { input ->
-                FileOutputStream(apk).use { out ->
-                    val buf = ByteArray(64 * 1024)
-                    var total = 0L
-                    while (true) {
-                        val n = input.read(buf)
-                        if (n < 0) break
-                        total += n
-                        if (total > MAX_APK_BYTES) {
-                            throw IllegalStateException("update larger than ${MAX_APK_BYTES / (1024 * 1024)} MB")
+        var currentUrl = rawUrl
+        var redirects = 0
+        while (redirects <= MAX_REDIRECTS) {
+            val conn = URL(currentUrl).openConnection() as HttpURLConnection
+            try {
+                conn.instanceFollowRedirects = false
+                conn.connectTimeout = 20_000
+                conn.readTimeout = 180_000
+                conn.setRequestProperty("User-Agent", "CoreLineUpdater/1.0")
+                val code = conn.responseCode
+                if (code in 300..399) {
+                    val location = conn.getHeaderField("Location")
+                        ?: return false
+                    if (!isAllowed(location)) {
+                        Log.w(TAG, "redirect to disallowed host rejected")
+                        return false
+                    }
+                    currentUrl = location
+                    redirects++
+                    continue
+                }
+                if (code !in 200..299) return false
+                conn.inputStream.use { input ->
+                    FileOutputStream(apk).use { out ->
+                        val buf = ByteArray(64 * 1024)
+                        var total = 0L
+                        while (true) {
+                            val n = input.read(buf)
+                            if (n < 0) break
+                            total += n
+                            if (total > MAX_APK_BYTES) {
+                                throw IllegalStateException("update larger than ${MAX_APK_BYTES / (1024 * 1024)} MB")
+                            }
+                            out.write(buf, 0, n)
                         }
-                        out.write(buf, 0, n)
                     }
                 }
+                return apk.length() > 0
+            } finally {
+                conn.disconnect()
             }
-            return apk.length() > 0
-        } finally {
-            conn.disconnect()
         }
+        Log.w(TAG, "too many redirects")
+        return false
     }
 
     private fun launchInstaller(context: Context, apk: File) {

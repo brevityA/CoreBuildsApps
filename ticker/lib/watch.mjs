@@ -34,6 +34,8 @@ export const SPORTS_APPS = [
   { pkg: 'com.bellmedia.tsn', label: 'TSN' },
   { pkg: 'com.rogers.sportsnet', label: 'Sportsnet' },
   { pkg: 'com.apple.atve.android.appletv', label: 'Apple TV' },
+  // Niche / league-specific apps [UNVERIFIED]
+  { pkg: 'com.sync.tv', label: 'SYNC Sports' },
 ];
 
 const CURATED = new Map(SPORTS_APPS.map((a) => [a.pkg, a.label]));
@@ -75,15 +77,37 @@ export function leagueIdForLabel(label) {
 }
 
 /**
- * Build the best web URL for a game. ESPN-sourced events with a numeric id get
- * the canonical ESPN game page; everything else falls back to an ESPN search.
+ * Build the best web URL for a game. ESPN-sourced events get league-specific
+ * routes: soccer uses the match page, UFC uses the MMA fightcenter, F1 uses
+ * race results; all others use the generic game page. Falls back to an ESPN
+ * search for non-numeric ids or unknown leagues.
  */
 export function espnWebUrl(event) {
   const leagueId = leagueIdForLabel(event?.league);
-  const espnPath = leagueId ? (LEAGUES[leagueId]?.espn || '').split('/').pop() : '';
+  const league = leagueId ? LEAGUES[leagueId] : null;
+  const sport = league?.sport || '';
   const gameId = /^\d+$/.test(String(event?.id || '')) ? event.id : null;
-  if (espnPath && gameId) {
-    return `https://www.espn.com/${espnPath}/game/_/gameId/${gameId}`;
+
+  if (league) {
+    if (sport === 'soccer' && gameId) {
+      // Soccer uses the match route: /soccer/match/_/gameId/{id}
+      const espnPath = league.espn || '';
+      return `https://www.espn.com/soccer/match/_/gameId/${gameId}`;
+    }
+    if (sport === 'mma' && gameId) {
+      // UFC uses the fightcenter route: /mma/fightcenter/_/fightId/{id}
+      return `https://www.espn.com/mma/fightcenter/_/fightId/${gameId}`;
+    }
+    if (sport === 'racing' && gameId) {
+      // F1 uses the race results route: /f1/race/_/raceId/{id}
+      return `https://www.espn.com/f1/race/_/raceId/${gameId}`;
+    }
+    if (gameId) {
+      const espnPath = (league.espn || '').split('/').pop();
+      if (espnPath) {
+        return `https://www.espn.com/${espnPath}/game/_/gameId/${gameId}`;
+      }
+    }
   }
   const q = [event?.away?.name, event?.home?.name].filter(Boolean).join(' vs ') || event?.rawTitle || event?.league || '';
   return `https://www.espn.com/search/_/q/${encodeURIComponent(q)}`;

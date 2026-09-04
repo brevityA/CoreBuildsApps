@@ -50,6 +50,21 @@ test('espnWebUrl falls back to a search URL for non-numeric ids', () => {
   assert.ok(url.includes('Maple'));
 });
 
+test('espnWebUrl uses soccer match route for soccer leagues', () => {
+  const url = espnWebUrl({ league: 'EPL', id: '4012345' });
+  assert.equal(url, 'https://www.espn.com/soccer/match/_/gameId/4012345');
+});
+
+test('espnWebUrl uses UFC fightcenter route for MMA', () => {
+  const url = espnWebUrl({ league: 'UFC', id: '4012345' });
+  assert.equal(url, 'https://www.espn.com/mma/fightcenter/_/fightId/4012345');
+});
+
+test('espnWebUrl uses F1 race results route for racing', () => {
+  const url = espnWebUrl({ league: 'F1', id: '4012345' });
+  assert.equal(url, 'https://www.espn.com/f1/race/_/raceId/4012345');
+});
+
 test('watchChoiceFor defaults to web and honours per-league assignment', () => {
   assert.equal(watchChoiceFor({}, 'NFL'), WATCH_WEB);
   assert.equal(watchChoiceFor({ nfl: 'com.espn.score_center' }, 'NFL'), 'com.espn.score_center');
