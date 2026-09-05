@@ -131,7 +131,7 @@ class MainActivity : Activity() {
     /**
      * Hand a playlist stream URL to an external player (TiviMate, VLC, …).
      * Core Line never plays video itself — this is a pure handoff. Tries the
-     * HLS mime first for better player targeting, then generic video/*.
+     * HLS mime first for better player targeting, then a generic video type.
      */
     fun openStream(url: String): Boolean {
         if (url.isBlank()) return false
