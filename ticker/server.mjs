@@ -8,6 +8,7 @@ import { fetchFeed, fetchJson } from './lib/rss.mjs';
 import { isSafeFeedUrl } from './lib/ssrf.mjs';
 import { parseFeed } from './lib/parser.mjs';
 import { createBackoff } from './lib/backoff.mjs';
+import { parseM3U } from './lib/playlist.mjs';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const PUBLIC_DIR = path.join(__dirname, 'public');
@@ -79,6 +80,18 @@ const server = http.createServer(async (req, res) => {
       json(res, result);
       return;
     }
+    if (url.pathname === '/api/playlist') {
+      // IPTV M3U import — same SSRF/fetch posture as /api/rss.
+      const target = url.searchParams.get('url') || '';
+      const safety = isSafeFeedUrl(target);
+      if (!safety.ok) {
+        json(res, { ok: false, error: safety.reason, count: 0, channels: [] }, 400);
+        return;
+      }
+      const payload = await cached(`playlist:${safety.url}`, () => fetchPlaylist(safety.url));
+      json(res, payload);
+      return;
+    }
     if (url.pathname === '/api/slate') {
       const leagues = (url.searchParams.get('leagues') || DEFAULT_LEAGUES.join(','))
         .split(',')
@@ -119,6 +132,46 @@ const server = http.createServer(async (req, res) => {
 server.listen(PORT, HOST, () => {
   console.log(`Core Line listening on http://${HOST}:${PORT}`);
 });
+
+const PLAYLIST_MAX_BYTES = 4_000_000;
+const PLAYLIST_TIMEOUT_MS = 12_000;
+
+/** Fetch and parse an M3U playlist (SSRF check happens at the route). */
+async function fetchPlaylist(url) {
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), PLAYLIST_TIMEOUT_MS);
+  try {
+    const res = await fetch(url, {
+      signal: controller.signal,
+      headers: {
+        'user-agent': 'CoreLine/1.0 (+https://github.com/brevityA/CoreBuildsApps)',
+        accept: '*/*',
+      },
+      redirect: 'follow',
+    });
+    if (!res.ok) return { ok: false, error: `playlist returned ${res.status}`, count: 0, channels: [] };
+    if (!res.body) return { ok: false, error: 'empty response body', count: 0, channels: [] };
+    const chunks = [];
+    let bytes = 0;
+    for await (const chunk of res.body) {
+      bytes += chunk.length;
+      if (bytes > PLAYLIST_MAX_BYTES) {
+        controller.abort();
+        return { ok: false, error: 'playlist too large', count: 0, channels: [] };
+      }
+      chunks.push(chunk);
+    }
+    const text = Buffer.concat(chunks).toString('utf8');
+    const parsed = parseM3U(text);
+    if (!parsed.ok) return { ok: false, error: parsed.error || 'unparseable playlist', count: 0, channels: [] };
+    return { ok: true, count: parsed.count, channels: parsed.channels };
+  } catch (err) {
+    const message = err?.name === 'AbortError' ? 'playlist timed out' : (err?.message || 'fetch failed');
+    return { ok: false, error: message, count: 0, channels: [] };
+  } finally {
+    clearTimeout(timer);
+  }
+}
 
 async function getScoreboard(leagues) {
   return cached(`board:${leagues.join(',')}`, async () => {

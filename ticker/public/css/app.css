@@ -934,3 +934,68 @@ input[type="checkbox"], input[type="radio"], input[type="range"] { accent-color:
 [data-overlay] .tick::after { margin-left: 18px; }
 [data-overlay] .tick .k { font-size: .8rem; }
 [data-overlay] .chyron-clock { min-width: 76px; font-size: 1.05rem; }
+
+/* ============================================================
+   Game Detail modal — ScoreBox-style channel matching + handoff
+   ============================================================ */
+.game-detail {
+  position: fixed;
+  inset: 0;
+  z-index: 70;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 22px;
+  background: rgba(4, 9, 15, .66);
+}
+.game-detail[hidden] { display: none; }
+.game-detail-panel {
+  width: min(720px, 96vw);
+  max-height: min(84vh, 760px);
+  overflow-y: auto;
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  padding: 20px 22px 22px;
+  box-shadow: 0 30px 90px rgba(0, 0, 0, .55);
+  animation: drawer-in .18s ease;
+}
+.gd-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; }
+.gd-meta {
+  display: flex; gap: 10px; align-items: center; flex-wrap: wrap;
+  color: var(--muted); font-size: .8rem;
+  text-transform: uppercase; letter-spacing: .08em;
+}
+.gd-teams .team-row { padding: 8px 0; }
+.gd-pills { display: flex; flex-wrap: wrap; gap: 6px; margin: 10px 0 2px; }
+.gd-actions { display: flex; gap: 10px; margin: 14px 0 4px; flex-wrap: wrap; }
+.gd-section {
+  margin: 16px 0 8px; font-size: .78rem; color: var(--faint);
+  text-transform: uppercase; letter-spacing: .12em;
+}
+.gd-row {
+  display: flex; width: 100%; align-items: center; gap: 10px;
+  text-align: left; padding: 11px 12px; margin: 6px 0;
+  border-radius: 12px; background: var(--card);
+  border: 1px solid var(--border); color: var(--text); font: inherit;
+  cursor: pointer;
+}
+.gd-row .gd-ch { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.gd-why {
+  font-size: .68rem; letter-spacing: .08em; color: var(--faint);
+  border: 1px solid var(--border); padding: 2px 7px; border-radius: 999px;
+  white-space: nowrap;
+}
+.gd-star { color: var(--up); }
+.gd-open { color: var(--line); font-size: .82rem; white-space: nowrap; }
+.gd-foot { margin-top: 12px; color: var(--faint); font-size: .78rem; }
+.game.focusable, .hero-card.focusable { cursor: pointer; }
+
+[data-tv] .game-detail-panel { width: min(860px, 94vw); padding: 28px 30px; }
+[data-tv] .gd-row { padding: 16px 18px; font-size: 1.15rem; margin: 8px 0; }
+[data-tv] .gd-meta { font-size: 1rem; }
+[data-tv] .gd-why { font-size: .78rem; }
+[data-tv] .gd-actions .watch-btn, [data-tv] .gd-actions .ghost { font-size: 1.1rem; padding: 12px 22px; }
+@media (prefers-reduced-motion: reduce) {
+  .game-detail-panel { animation: none; }
+}

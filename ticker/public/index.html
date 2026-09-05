@@ -95,6 +95,7 @@
             <button class="rail-item focusable" data-action="drawer-section" data-section="scoreboards" aria-pressed="false"><span class="rail-ic">🏆</span> Scoreboards</button>
             <button class="rail-item focusable" data-action="drawer-section" data-section="ticker" aria-pressed="false"><span class="rail-ic">🎚️</span> Ticker &amp; display</button>
             <button class="rail-item focusable" data-action="drawer-section" data-section="watch" aria-pressed="false"><span class="rail-ic">▶️</span> Watch apps</button>
+            <button class="rail-item focusable" data-action="drawer-section" data-section="channels" aria-pressed="false"><span class="rail-ic">📺</span> Channels</button>
             <button class="rail-item focusable" data-action="drawer-section" data-section="updates" aria-pressed="false"><span class="rail-ic">⬇️</span> Updates</button>
             <button class="rail-item focusable" data-action="drawer-section" data-section="about" aria-pressed="false"><span class="rail-ic">?</span> Help &amp; about</button>
           </nav>
@@ -196,6 +197,18 @@
               <p class="hint small" id="watchAppsStatus"></p>
             </section>
 
+            <section class="block drawer-section" data-panel="channels">
+              <h3>IPTV playlist (M3U)</h3>
+              <p class="hint">Import the M3U link from your IPTV provider (Xtream “m3u_plus” links work too). Game details then list your channels that carry the game, and open them in your player app — Core Line itself never plays video.</p>
+              <div class="feed-add">
+                <input class="focusable" id="playlistUrl" type="url" placeholder="https://provider.example/get.php?…m3u_plus" autocomplete="off" spellcheck="false">
+                <button class="primary focusable" data-action="playlist-import" id="playlistImportBtn">Import</button>
+              </div>
+              <p class="hint small" id="playlistStatus"></p>
+              <button class="ghost focusable" data-action="playlist-clear" id="playlistClearBtn" hidden>Remove playlist</button>
+              <p class="hint small">The link is fetched by Core Line on this device and never leaves it. Opening a channel needs a player that accepts stream links — TiviMate, VLC, or similar.</p>
+            </section>
+
             <section class="block drawer-section" data-panel="updates">
               <h3>Updates</h3>
               <p class="hint">Core Line updates come from the GitHub release feed. On a TV, download the new APK and the system installer takes over — your settings are kept.</p>
@@ -225,6 +238,10 @@
       </div>
       <div class="chyron-clock" id="clock">00:00</div>
     </footer>
+  </div>
+
+  <div class="game-detail" id="gameDetail" hidden>
+    <div class="game-detail-panel" id="gameDetailPanel" role="dialog" aria-modal="true" aria-label="Game detail"></div>
   </div>
 
   <div class="toast" id="toast" hidden></div>

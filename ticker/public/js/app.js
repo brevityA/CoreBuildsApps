@@ -1,10 +1,11 @@
 import { toTickerText, parseFeed } from '/lib/parser.mjs';
 import { LEAGUES, LEAGUE_LABELS, SPORT_GROUPS, compareEvents, buildDemoSlate, mergeEvents } from '/lib/scoreboard.mjs';
 import { WATCH_WEB, sortAppsForPicker, espnWebUrl, watchChoiceFor } from '/lib/watch.mjs';
+import { matchChannels } from '/lib/playlist.mjs';
 import { updateStatus as buildUpdateStatus } from '/lib/version.mjs';
 import { buildClientSlate, isNativeShell, hydrateClientSlateRegistry, getClientSlateRegistry } from '/lib/client-slate.mjs';
 import { isSafeFeedUrl } from '/lib/ssrf.mjs';
-import { loadState, saveState, cacheSlate, readCachedSlate, REFRESH_CHOICES, SPEED_MIN, SPEED_MAX } from './state.js';
+import { loadState, saveState, cacheSlate, readCachedSlate, REFRESH_CHOICES, SPEED_MIN, SPEED_MAX, DEFAULTS, savePlaylistChannels, readPlaylistChannels } from './state.js';
 import { initTvNav } from './tv.js';
 import { qrDataUrl } from './qr.js';
 import { Ticker } from './ticker.js';
@@ -33,6 +34,13 @@ const MAX_FEEDS = 20;
 const $ = (id) => document.getElementById(id);
 
 const state = loadState();
+
+// Imported IPTV playlist (ScoreBox-style channel matching). The channel list
+// is big, so it lives under its own storage key; state only keeps metadata.
+let playlistChannels = readPlaylistChannels();
+let detailEvent = null;
+let detailMatches = [];
+let lastFocusBeforeDetail = null;
 let events = [];
 let wakeLock = null;
 let clockTimer = null;
@@ -137,6 +145,17 @@ function bind() {
     if (action === 'toggle-team') toggleTeam(btn.dataset.abbr);
     if (action === 'toggle-card-fav') toggleCardFav(btn.dataset.id);
     if (action === 'watch') watchEventById(btn.dataset.id);
+    if (action === 'watch-web') openWebForEvent(btn.dataset.id);
+    if (action === 'game-detail') openGameDetail(btn.dataset.id);
+    if (action === 'detail-close') closeGameDetail();
+    if (action === 'open-channel') openMatchedChannel(Number(btn.dataset.mindex));
+    if (action === 'open-channels-settings') {
+      closeGameDetail();
+      openDrawer(true);
+      activateDrawerSection('channels');
+    }
+    if (action === 'playlist-import') importPlaylist();
+    if (action === 'playlist-clear') clearPlaylist();
     if (action === 'drawer-section') activateDrawerSection(btn.dataset.section);
     if (action === 'check-updates') checkForUpdates(true);
     if (action === 'install-update') installUpdateFlow();
@@ -224,6 +243,12 @@ function bind() {
     if (key === 't') toggleMode();
     if (key === 'r') refresh(true);
     if (key === 'w') {
+      // While Game Detail is open, W targets the game in the modal — not a
+      // background one.
+      if (detailEvent) {
+        if (detailEvent.away && detailEvent.home) watchEventById(detailEvent.id);
+        return;
+      }
       const featured = events.find((e) => e.status === 'live' && e.away && e.home)
         || events.find((e) => e.status === 'upcoming' && e.away && e.home);
       if (featured) watchEventById(featured.id);
@@ -234,6 +259,14 @@ function bind() {
   $('drawer').addEventListener('click', (event) => {
     if (event.target.id === 'drawer') openDrawer(false);
   });
+
+  // Game Detail modal: click the backdrop to close (D-pad Back does the same).
+  const gd = $('gameDetail');
+  if (gd) {
+    gd.addEventListener('click', (event) => {
+      if (event.target.id === 'gameDetail') closeGameDetail();
+    });
+  }
 
   // TV sidebar behaviour: focusing a rail item selects its section, so
   // D-pad up/down through the rail shows each section as you pass it.
@@ -320,6 +353,7 @@ function applyChrome() {
       overlayHint.textContent = 'Draws the crawl on top of every app, edge to edge. Stop it from the notification or untick this box.';
     }
   }
+  renderChannelsPanel();
   if (!globalThis.CORELINE_OVERLAY) syncWakeLock();
 }
 
@@ -329,6 +363,7 @@ function persist() {
 
 function openDrawer(open) {
   const drawer = $('drawer');
+  if (open && !$('gameDetail').hidden) closeGameDetail(); // one modal at a time
   drawer.hidden = !open;
   if (open) {
     lastFocusBeforeDrawer = document.activeElement;
@@ -360,6 +395,7 @@ function activateDrawerSection(name) {
     s.classList.toggle('is-active', s.dataset.panel === name);
   });
   if (name === 'watch') renderWatchApps();
+  if (name === 'channels') renderChannelsPanel();
   if (name === 'updates') {
     renderUpdates();
     if (!updateInfo && !updateChecking) checkForUpdates(false);
@@ -492,6 +528,169 @@ async function watchEventById(id) {
   }
   try { window.open(url, '_blank', 'noopener'); } catch { /* ignore */ }
   toast('Opening in browser');
+}
+
+/** Open a game's ESPN page directly (web fallback from Game Detail). */
+function openWebForEvent(id) {
+  const ev = events.find((e) => e.id === id);
+  if (!ev) return;
+  const url = espnWebUrl(ev);
+  const bridge = nativeBridge();
+  if (bridge?.openUrl) {
+    try { if (bridge.openUrl(url)) return; } catch { /* ignore */ }
+  }
+  try { window.open(url, '_blank', 'noopener'); } catch { /* ignore */ }
+  toast('Opening in browser');
+}
+
+/* ------------------------------------------------------------------ *
+ * IPTV playlist — ScoreBox-style channel matching + handoff.
+ * Core Line matches games to the user's own channels and opens them in
+ * an external player; it never plays video itself.
+ * ------------------------------------------------------------------ */
+
+function renderChannelsPanel() {
+  const input = $('playlistUrl');
+  if (!input) return;
+  if (state.playlist.url && document.activeElement !== input) input.value = state.playlist.url;
+  const n = playlistChannels.length;
+  const when = state.playlist.importedAt ? ` · imported ${new Date(state.playlist.importedAt).toLocaleDateString()}` : '';
+  $('playlistStatus').textContent = n
+    ? `${n} channels${when}${n !== state.playlist.count ? ' (cached)' : ''}`
+    : 'No playlist imported yet.';
+  const clearBtn = $('playlistClearBtn');
+  if (clearBtn) clearBtn.hidden = !n && !state.playlist.url;
+}
+
+async function importPlaylist() {
+  const url = $('playlistUrl')?.value.trim();
+  if (!url) { toast('Paste your M3U link first'); return; }
+  const btn = $('playlistImportBtn');
+  if (btn) btn.disabled = true;
+  $('playlistStatus').textContent = 'Importing…';
+  try {
+    const res = await fetch(`/api/playlist?url=${encodeURIComponent(url)}`);
+    const data = await res.json().catch(() => ({ ok: false, error: 'bad response' }));
+    if (!data.ok) {
+      toast(`Import failed: ${data.error || 'unknown error'}`);
+      return;
+    }
+    playlistChannels = data.channels || [];
+    const stored = savePlaylistChannels(playlistChannels);
+    state.playlist = { url, importedAt: Date.now(), count: data.count || playlistChannels.length };
+    persist();
+    toast(`Imported ${data.count || playlistChannels.length} channels${stored ? '' : ' — storage full, kept for this session'}`);
+  } catch (err) {
+    toast(`Import failed: ${err?.message || 'network error'}`);
+  } finally {
+    if (btn) btn.disabled = false;
+    renderChannelsPanel();
+  }
+}
+
+function clearPlaylist() {
+  playlistChannels = [];
+  savePlaylistChannels([]);
+  state.playlist = { ...DEFAULTS.playlist };
+  state.preferredChannels = {};
+  persist();
+  renderChannelsPanel();
+  toast('Playlist removed');
+}
+
+function openGameDetail(id) {
+  const ev = events.find((e) => e.id === id);
+  if (!ev) return;
+  detailEvent = ev;
+  detailMatches = playlistChannels.length
+    ? matchChannels(ev, playlistChannels, { limit: 6, preferred: state.preferredChannels })
+    : [];
+  lastFocusBeforeDetail = document.activeElement;
+  $('gameDetailPanel').innerHTML = gameDetailHtml(ev, detailMatches, playlistChannels.length > 0);
+  const overlay = $('gameDetail');
+  overlay.hidden = false;
+  overlay.querySelector('.focusable')?.focus();
+}
+
+function closeGameDetail() {
+  const overlay = $('gameDetail');
+  if (overlay.hidden) return;
+  overlay.hidden = true;
+  detailEvent = null;
+  detailMatches = [];
+  if (lastFocusBeforeDetail && document.contains(lastFocusBeforeDetail)) {
+    lastFocusBeforeDetail.focus();
+  } else {
+    document.querySelector('.stage .focusable')?.focus();
+  }
+  lastFocusBeforeDetail = null;
+}
+
+function gameDetailHtml(ev, matches, hasPlaylist) {
+  const badge = ev.status === 'live' ? 'live' : ev.status === 'final' ? 'final' : 'upcoming';
+  const label = ev.status === 'live' ? (ev.detail || 'LIVE') : ev.status === 'final' ? 'FINAL' : (ev.detail || 'UPCOMING');
+  const pills = (ev.channels || []).map((c) => `<span class="pill">${esc(c)}</span>`).join('');
+  const teams = ev.away && ev.home
+    ? `<div class="teams">${teamLine(ev.away, ev)}${teamLine(ev.home, ev)}</div>`
+    : (ev.headline ? `<p class="hint">${esc(ev.headline)}</p>` : '');
+
+  let channelBlock;
+  if (!hasPlaylist) {
+    channelBlock = `
+      <p class="hint">Import your IPTV playlist to see which of your channels carry this game.</p>
+      <button class="ghost focusable" data-action="open-channels-settings">Set up in Settings → Channels</button>`;
+  } else if (!matches.length) {
+    channelBlock = `
+      <p class="hint">No channels matched ${esc((ev.channels || []).join(', ') || 'this game')}. Your provider may carry it under a different network name.</p>`;
+  } else {
+    channelBlock = matches.map((m, i) => `
+      <button class="gd-row focusable" data-action="open-channel" data-mindex="${i}">
+        <span class="gd-ch">${esc(m.name)}</span>
+        ${m.group ? `<span class="gd-why">${esc(m.group)}</span>` : ''}
+        <span class="gd-why">${m.reason === 'network' ? 'NETWORK' : 'TEAM'}</span>
+        ${m.preferred ? '<span class="gd-star" title="Preferred channel">★</span>' : ''}
+        <span class="gd-open">Open ▸</span>
+      </button>`).join('');
+  }
+
+  return `
+    <header class="gd-head">
+      <div class="gd-meta">
+        <span class="badge ${badge}">${esc(label)}</span>
+        <span>${esc(ev.league || ev.feed || '')}</span>
+      </div>
+      <button class="icon-btn focusable" data-action="detail-close" aria-label="Close">✕</button>
+    </header>
+    ${teams}
+    ${pills ? `<div class="gd-pills">${pills}</div>` : ''}
+    <div class="gd-actions">
+      ${ev.away && ev.home ? `<button class="watch-btn focusable" data-action="watch" data-id="${esc(ev.id)}">▶ Watch</button>` : ''}
+      <button class="ghost focusable" data-action="watch-web" data-id="${esc(ev.id)}">Web page</button>
+    </div>
+    <div class="gd-section">Your channels</div>
+    ${channelBlock}
+    <div class="gd-foot">${esc(ev.venue || ev.feed || '')}</div>
+  `;
+}
+
+/** Open a matched playlist channel in an external player; remember the choice. */
+function openMatchedChannel(i) {
+  const m = detailMatches[i];
+  if (!m) return;
+  if (m.bug) {
+    state.preferredChannels[m.bug] = m.name;
+    persist();
+  }
+  const bridge = nativeBridge();
+  if (bridge?.openStream) {
+    try {
+      const ok = bridge.openStream(m.url);
+      if (ok) { toast('Opening in player…'); return; }
+      toast('No player found — try TiviMate or VLC');
+    } catch { /* fall through to web */ }
+  }
+  try { window.open(m.url, '_blank', 'noopener'); toast('Opening stream link'); } catch { /* ignore */ }
+  toast('Could not open stream');
 }
 
 function toggleMode() {
@@ -964,7 +1163,7 @@ function renderHero(list) {
   }
   hero.hidden = false;
   hero.innerHTML = `
-    <article class="hero-card focusable" tabindex="0" style="--acc:${esc(accentFor(featured))}">
+    <article class="hero-card focusable" tabindex="0" data-action="game-detail" data-id="${esc(featured.id)}" style="--acc:${esc(accentFor(featured))}">
       <div>
         <div class="hero-meta">
           <span class="badge live">LIVE</span>
@@ -1012,7 +1211,7 @@ function gameCard(ev) {
   const teams = cardFavTeams(ev);
   const favOn = teams.length > 0 && teams.every((t) => favs.has(t));
   return `
-    <article class="game focusable" tabindex="0" style="--acc:${esc(accentFor(ev))}">
+    <article class="game focusable" tabindex="0" data-action="game-detail" data-id="${esc(ev.id)}" style="--acc:${esc(accentFor(ev))}">
       <div class="game-top">
         <span class="league-tag">${esc(ev.league || ev.feed || 'RSS')}</span>
         <div class="game-top-right">
@@ -1034,7 +1233,7 @@ function gameCard(ev) {
 
 function headlineCard(ev) {
   return `
-    <article class="game focusable" tabindex="0" style="--acc:${esc(accentFor(ev))}">
+    <article class="game focusable" tabindex="0" data-action="game-detail" data-id="${esc(ev.id)}" style="--acc:${esc(accentFor(ev))}">
       <div class="game-top">
         <span class="league-tag">${esc(ev.league || ev.feed || 'RSS')}</span>
         <span class="badge ${ev.status}">${esc(ev.status.toUpperCase())}</span>

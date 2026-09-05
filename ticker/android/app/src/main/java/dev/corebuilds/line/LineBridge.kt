@@ -27,6 +27,10 @@ class LineBridge(private val activity: MainActivity) {
     @JavascriptInterface
     fun openApp(packageName: String): Boolean = activity.openApp(packageName)
 
+    /** Hand a playlist stream URL to an external player. Returns success. */
+    @JavascriptInterface
+    fun openStream(url: String): Boolean = activity.openStream(url)
+
     /** Open a URL in the system browser. Returns success. */
     @JavascriptInterface
     fun openUrl(url: String): Boolean = activity.openUrl(url)

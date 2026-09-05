@@ -128,6 +128,33 @@ class MainActivity : Activity() {
         }
     }
 
+    /**
+     * Hand a playlist stream URL to an external player (TiviMate, VLC, …).
+     * Core Line never plays video itself — this is a pure handoff. Tries the
+     * HLS mime first for better player targeting, then a generic video type.
+     */
+    fun openStream(url: String): Boolean {
+        if (url.isBlank()) return false
+        val path = url.substringBefore('?').lowercase()
+        val mimes = if (path.endsWith(".m3u8") || path.endsWith(".m3u")) {
+            listOf("application/vnd.apple.mpegurl", "video/*")
+        } else {
+            listOf("video/*", "application/vnd.apple.mpegurl")
+        }
+        for (mime in mimes) {
+            try {
+                val intent = Intent(Intent.ACTION_VIEW)
+                    .setDataAndType(Uri.parse(url), mime)
+                    .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                startActivity(intent)
+                return true
+            } catch (err: Exception) {
+                // no activity for this mime — try the next
+            }
+        }
+        return false
+    }
+
     /** Current app version ("1.2.0") for the in-app Updates panel. */
     fun getVersion(): String = dev.corebuilds.line.BuildConfig.VERSION_NAME
 
