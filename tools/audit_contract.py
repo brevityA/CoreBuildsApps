@@ -71,44 +71,12 @@ def gradle_value(source: str, name: str) -> str:
 
 
 def check_version_truth() -> None:
-    icon_gradle = text("app/build.gradle.kts")
-    icon_code = int(gradle_value(icon_gradle, "versionCode"))
-    icon_name = gradle_value(icon_gradle, "versionName")
-    catalog = json.loads(text("tools/catalog.json"))
-    latest = json.loads(text("Latestrelease/version.json"))
-    icon_count = len(catalog.get("icons", []))
-    component_count = sum(len(i.get("components", [])) for i in catalog.get("icons", []))
-    if catalog.get("meta", {}).get("version") != icon_name:
-        fail(f"tools/catalog.json version {catalog.get('meta', {}).get('version')} != Gradle {icon_name}")
-    if catalog.get("meta", {}).get("count") != icon_count:
-        fail("tools/catalog.json meta.count does not match icons length")
-    if latest.get("versionCode") != icon_code or latest.get("versionName") != icon_name:
-        fail("Latestrelease/version.json does not match Icon Pack Gradle version")
-    if latest.get("iconCount") != icon_count or latest.get("componentCount") != component_count:
-        fail("Latestrelease/version.json counts do not match catalog")
-
-    readme = text("README.md")
-    claude = text("CLAUDE.md")
-    icon_list = text("docs/IconPackList.md")
-    for stale in ["v1.7.1", "pack v1.8.1", "`921 icons`", "921 transparent icons", "40 icons", "78 components", "Four Android apps", "four apps"]:
-        if stale in readme or stale in claude:
-            fail(f"stale product/agent claim still present: {stale}")
-    required_readme = [
-        "Five Android apps",
-        f"`v{icon_name}`",
-        f"{icon_count} transparent icons",
-        "**[Core Motion](#-core-motion)**",
-        "`v1.3.0`",
-        "`v2.3.5`",
-        "`v1.0.0`",
-        "`v0.1.0`",
-        "5270601", "7375676", "8829421", "8664938",
-    ]
-    for needle in required_readme:
-        if needle not in readme:
-            fail(f"README missing suite truth: {needle}")
-    if f"`{icon_count}` icons" not in icon_list or f"pack v{icon_name}" not in icon_list:
-        fail("docs/IconPackList.md header does not match catalog/Gradle")
+    import importlib.util
+    spec = importlib.util.spec_from_file_location("check_suite_truth", ROOT / "tools" / "check_suite_truth.py")
+    module = importlib.util.module_from_spec(spec)
+    assert spec and spec.loader
+    spec.loader.exec_module(module)
+    module.main()
 
 
 def check_workflows() -> None:

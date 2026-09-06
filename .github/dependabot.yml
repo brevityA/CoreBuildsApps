@@ -4,6 +4,11 @@ updates:
     directory: "/"
     schedule:
       interval: "weekly"
+    ignore:
+      - dependency-name: "com.android.application"
+        versions: [">=9"]
+      - dependency-name: "org.gradle"
+        versions: [">=9"]
     groups:
       android-root:
         patterns: ["*"]
@@ -11,6 +16,11 @@ updates:
     directory: "/ticker/android"
     schedule:
       interval: "weekly"
+    ignore:
+      - dependency-name: "com.android.application"
+        versions: [">=9"]
+      - dependency-name: "org.gradle"
+        versions: [">=9"]
     groups:
       core-line-android:
         patterns: ["*"]
@@ -18,6 +28,11 @@ updates:
     directory: "/shift"
     schedule:
       interval: "weekly"
+    ignore:
+      - dependency-name: "com.android.application"
+        versions: [">=9"]
+      - dependency-name: "org.gradle"
+        versions: [">=9"]
     groups:
       core-shift:
         patterns: ["*"]
@@ -25,6 +40,11 @@ updates:
     directory: "/doctor"
     schedule:
       interval: "weekly"
+    ignore:
+      - dependency-name: "com.android.application"
+        versions: [">=9"]
+      - dependency-name: "org.gradle"
+        versions: [">=9"]
     groups:
       core-doctor:
         patterns: ["*"]
@@ -32,6 +52,11 @@ updates:
     directory: "/motion-plugin"
     schedule:
       interval: "weekly"
+    ignore:
+      - dependency-name: "com.android.application"
+        versions: [">=9"]
+      - dependency-name: "org.gradle"
+        versions: [">=9"]
     groups:
       core-motion:
         patterns: ["*"]

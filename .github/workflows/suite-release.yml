@@ -55,6 +55,9 @@ jobs:
       KEYSTORE_BASE64: ${{ secrets.KEYSTORE_BASE64 }}
     steps:
       - uses: actions/checkout@v4
+
+      - name: Check suite truth
+        run: python tools/check_suite_truth.py
       - uses: actions/setup-java@v4
         with:
           distribution: temurin

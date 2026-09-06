@@ -46,14 +46,14 @@ Until then, current paths are canonical.
    - README must list five products, current versions, stable release tags, and Downloader status.
    - CI must fail if README/agent docs drift back to stale counts or versions.
 2. **Kill stale agent docs**
-   - `CLAUDE.md` must describe five apps, 924 icons, 1098 mapped components, and the current validator receipt.
+   - `AGENTS.md` must describe five apps, 924 icons, 1098 mapped components, and the current validator receipt.
    - Remove old “40 icons / 78 components / four apps” language from agent-facing docs.
 3. **README as suite product page**
    - Five rows: Icon Pack, Core Line, Core Shift, Core Motion, Core Doctor.
    - Motion gets its own row and section, not a footnote inside Shift.
    - Downloader codes are explicit; if a code is not assigned, say `[USER TO SUPPLY]` rather than inventing it.
 
-Exit criteria: suite CI green, existing app workflows green, no stale `1.7.1`, `1.8.1`, `921 icons`, or `40 icons` claims in product/agent docs.
+Exit criteria: suite CI green, existing app workflows green, no stale version/count claims in product/agent docs.
 
 ## Week 2 — Docs attic + GitHub release drafts
 
@@ -86,11 +86,11 @@ Exit criteria: TV smoke passes for Line first-run and Shift screensaver enter/ex
 
 ## Done checklist
 
-- [ ] README has five app rows with current versions and Downloader status.
-- [ ] `tools/audit_contract.py` fails on stale Icon Pack catalog/README/agent-doc truth.
-- [ ] `CLAUDE.md` contains no stale 40-icon/four-app language.
-- [ ] Existing floating Downloader releases are untouched.
-- [ ] Package IDs are unchanged.
+- [x] README has five app rows with current versions and Downloader status.
+- [x] `tools/audit_contract.py` fails on stale Icon Pack catalog/README/agent-doc truth.
+- [x] `AGENTS.md` replaces stale agent docs.
+- [x] Existing floating Downloader releases are untouched.
+- [x] Package IDs are unchanged.
 - [ ] Suite CI green.
 - [ ] Existing per-app workflows green.
 - [ ] No folder moves before Week 1 is boringly green.

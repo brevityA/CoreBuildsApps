@@ -46,7 +46,9 @@ object WallpaperSetter {
             val wm = WallpaperManager.getInstance(context)
             // isSetWallpaperAllowed() returns false on locked-down devices
             // (notably Fire TV), where the write is a no-op or throws.
-            wm.isSetWallpaperAllowed && wm.isWallpaperSupported
+            wm.isSetWallpaperAllowed && (
+                Build.VERSION.SDK_INT < Build.VERSION_CODES.M || wm.isWallpaperSupported
+            )
         } catch (e: Exception) {
             false
         }

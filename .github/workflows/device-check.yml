@@ -36,6 +36,9 @@ jobs:
     steps:
       - uses: actions/checkout@v7
 
+      - name: Check suite truth
+        run: python tools/check_suite_truth.py
+
       - name: Enable KVM
         # ubuntu-latest ships /dev/kvm but not with permissions the emulator
         # can use. Without this the emulator falls back to software rendering
