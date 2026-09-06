@@ -158,8 +158,13 @@ class MainActivity : Activity() {
     /** Current app version ("1.2.0") for the in-app Updates panel. */
     fun getVersion(): String = dev.corebuilds.line.BuildConfig.VERSION_NAME
 
+    fun getVersionCode(): Int = dev.corebuilds.line.BuildConfig.VERSION_CODE
+
     /** Download + hand off a newer APK to the system installer (async). */
     fun installUpdate(url: String): Boolean = UpdateManager.downloadAndInstall(this, url)
+
+    fun installUpdateVerified(url: String, sha256: String, versionCode: Int): Boolean =
+        UpdateManager.downloadAndInstall(this, url, versionCode, sha256)
 
     /** Open a URL in whatever app handles it (usually the browser). */
     fun openUrl(url: String): Boolean {

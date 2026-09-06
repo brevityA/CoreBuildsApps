@@ -100,6 +100,27 @@ class CoreDreamService : DreamService() {
         status.visibility = View.GONE
     }
 
+    override fun onDreamingStarted() {
+        super.onDreamingStarted()
+        handler.removeCallbacks(bufferTimeout)
+        player?.let { exo ->
+            if (exo.playbackState == Player.STATE_IDLE) {
+                exo.prepare()
+            }
+            exo.playWhenReady = true
+            exo.play()
+        }
+    }
+
+    override fun onDreamingStopped() {
+        handler.removeCallbacks(bufferTimeout)
+        player?.let { exo ->
+            exo.playWhenReady = false
+            exo.pause()
+        }
+        super.onDreamingStopped()
+    }
+
     override fun onDetachedFromWindow() {
         handler.removeCallbacks(bufferTimeout)
         val view = findViewById<PlayerView>(R.id.dream_player)

@@ -4,6 +4,13 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
+    <queries>
+        <package android:name="tv.corebuilds.iconpack" />
+        <package android:name="dev.corebuilds.line" />
+        <package android:name="dev.corebuilds.shift" />
+        <package android:name="tv.corebuilds.motion" />
+    </queries>
+
     <application
         android:allowBackup="false"
         android:label="@string/app_name"

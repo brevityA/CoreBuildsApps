@@ -30,9 +30,9 @@ object ReportCard {
                     Verdict.FAIL -> "[FAIL]"
                 }
                 appendLine("$icon ${result.name}")
-                appendLine("      ${result.summary}")
+                appendLine("      ${Redactor.clean(result.summary)}")
                 if (result.fix != null) {
-                    appendLine("      Fix: ${result.fix}")
+                    appendLine("      Fix: ${Redactor.clean(result.fix)}")
                 }
                 appendLine()
             }

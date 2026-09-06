@@ -210,7 +210,7 @@ class MainActivity : AppCompatActivity() {
         val button = findViewById<TextView>(R.id.update_button)
         button.isEnabled = false
         button.text = getString(R.string.update_checking)
-        UpdateInstaller.download(this, update.apkUrl) { event ->
+        UpdateInstaller.download(this, update.apkUrl, update.versionCode, update.apkSha256) { event ->
             when (event) {
                 is UpdateInstaller.Event.Progress -> {
                     label.text = progressLabel(event.received, event.total)

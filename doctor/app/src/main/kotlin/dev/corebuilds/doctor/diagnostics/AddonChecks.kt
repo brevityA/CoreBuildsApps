@@ -93,7 +93,7 @@ object AddonChecks {
                 verdict = Verdict.FAIL,
                 summary = "Could not reach manifest: ${e.javaClass.simpleName}",
                 fix = "Check your internet connection and verify the addon URL. " +
-                    "Error: ${e.message}"
+                    "Error: ${Redactor.clean(e.message)}"
             )
         }
     }
@@ -156,7 +156,7 @@ object AddonChecks {
                 name = "Stream probe",
                 verdict = Verdict.FAIL,
                 summary = "Stream probe failed: ${e.javaClass.simpleName}",
-                fix = "Could not reach the stream endpoint. Error: ${e.message}"
+                fix = "Could not reach the stream endpoint. Error: ${Redactor.clean(e.message)}"
             )
         }
     }

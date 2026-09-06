@@ -5,7 +5,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 
 import {
-  compareVersions, versionFromCorelineTag, latestCorelineRelease, updateStatus,
+  compareVersions, versionFromCorelineTag, latestCorelineRelease, updateStatus, updateStatusFromManifest,
 } from '../lib/version.mjs';
 
 test('compareVersions orders dotted versions numerically', () => {
@@ -87,4 +87,24 @@ test('updateStatus flags newer and survives empty/absent releases', () => {
   assert.equal(none.ok, true);
   assert.equal(none.newer, false);
   assert.equal(none.latest, null);
+});
+
+
+test('updateStatusFromManifest compares authoritative versionCode and carries checksum', () => {
+  const status = updateStatusFromManifest({
+    versionCode: 7,
+    versionName: '1.3.1',
+    apkUrl: 'https://github.com/brevityA/CoreBuildsApps/releases/download/coreline/coreline-release.apk',
+    apkSha256: 'a'.repeat(64),
+  }, 6, '1.3.0');
+  assert.equal(status.ok, true);
+  assert.equal(status.newer, true);
+  assert.equal(status.latestCode, 7);
+  assert.equal(status.apkSha256, 'a'.repeat(64));
+});
+
+test('updateStatusFromManifest refuses missing current versionCode instead of code-zero fallback', () => {
+  const status = updateStatusFromManifest({ versionCode: 7, versionName: '1.3.1' }, 0, '1.3.0');
+  assert.equal(status.ok, false);
+  assert.match(status.error, /Current build versionCode/);
 });

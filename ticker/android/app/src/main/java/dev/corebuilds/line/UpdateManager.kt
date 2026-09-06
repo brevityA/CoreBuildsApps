@@ -2,12 +2,18 @@ package dev.corebuilds.line
 
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageInfo
+import android.content.pm.PackageManager
+import android.os.Build
 import android.util.Log
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import java.io.File
 import java.io.FileOutputStream
 import java.net.HttpURLConnection
+import java.security.MessageDigest
+import java.util.Locale
+import java.util.zip.ZipFile
 import java.net.URI
 import java.net.URL
 
@@ -50,7 +56,15 @@ object UpdateManager {
      * the main thread. @return true when the download started (install happens
      * asynchronously after it completes).
      */
-    fun downloadAndInstall(context: Context, rawUrl: String): Boolean {
+    fun downloadAndInstall(context: Context, rawUrl: String): Boolean =
+        downloadAndInstall(context, rawUrl, BuildConfig.VERSION_CODE + 1, null)
+
+    fun downloadAndInstall(
+        context: Context,
+        rawUrl: String,
+        expectedVersionCode: Int,
+        expectedSha256: String?,
+    ): Boolean {
         if (!isAllowed(rawUrl)) return false
         val cacheDir = File(context.cacheDir, "updates").apply { mkdirs() }
         val apk = File(cacheDir, "coreline-update-${System.currentTimeMillis()}.apk")
@@ -58,6 +72,8 @@ object UpdateManager {
         Thread {
             val ok = try {
                 download(rawUrl, apk)
+                verifyDownloadedApk(context.applicationContext, apk, expectedVersionCode, expectedSha256)
+                true
             } catch (err: Exception) {
                 Log.w(TAG, "update download failed", err)
                 false
@@ -108,13 +124,92 @@ object UpdateManager {
                         }
                     }
                 }
-                return apk.length() > 0
+                if (apk.length() <= 0) return false
+                ZipFile(apk).use { zip ->
+                    zip.getEntry("AndroidManifest.xml") ?: return false
+                }
+                return true
             } finally {
                 conn.disconnect()
             }
         }
         Log.w(TAG, "too many redirects")
         return false
+    }
+
+    private fun verifyDownloadedApk(
+        context: Context,
+        apk: File,
+        expectedVersionCode: Int,
+        expectedSha256: String?,
+    ) {
+        val expectedHash = expectedSha256?.trim()?.lowercase(Locale.US).orEmpty()
+        if (expectedHash.isNotEmpty()) {
+            require(expectedHash.matches(Regex("^[0-9a-f]{64}$"))) { "invalid apkSha256 in update metadata" }
+            if (sha256(apk) != expectedHash) throw IllegalStateException("APK checksum mismatch")
+        }
+        val pm = context.packageManager
+        val archive = archivePackageInfo(pm, apk)
+            ?: throw IllegalStateException("downloaded file is not an installable APK")
+        if (archive.packageName != context.packageName) {
+            throw IllegalStateException("APK package mismatch: ${archive.packageName}")
+        }
+        val archiveCode = versionCodeOf(archive)
+        if (archiveCode != expectedVersionCode || archiveCode <= BuildConfig.VERSION_CODE) {
+            throw IllegalStateException("APK version $archiveCode does not match expected newer version $expectedVersionCode")
+        }
+        val installed = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+            pm.getPackageInfo(context.packageName, PackageManager.GET_SIGNING_CERTIFICATES)
+        } else {
+            @Suppress("DEPRECATION")
+            pm.getPackageInfo(context.packageName, PackageManager.GET_SIGNATURES)
+        }
+        val installedCerts = signingCertDigests(installed)
+        val archiveCerts = signingCertDigests(archive)
+        if (installedCerts.isEmpty() || archiveCerts.isEmpty() || installedCerts.intersect(archiveCerts).isEmpty()) {
+            throw IllegalStateException("APK signature does not match installed app")
+        }
+    }
+
+    private fun archivePackageInfo(pm: PackageManager, file: File): PackageInfo? {
+        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+            pm.getPackageArchiveInfo(file.absolutePath, PackageManager.GET_SIGNING_CERTIFICATES)
+        } else {
+            @Suppress("DEPRECATION")
+            pm.getPackageArchiveInfo(file.absolutePath, PackageManager.GET_SIGNATURES)
+        }
+    }
+
+    private fun versionCodeOf(info: PackageInfo): Int {
+        @Suppress("DEPRECATION")
+        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) info.longVersionCode.toInt() else info.versionCode
+    }
+
+    private fun signingCertDigests(info: PackageInfo): Set<String> {
+        val signatures = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+            val signing = info.signingInfo ?: return emptySet()
+            if (signing.hasMultipleSigners()) signing.apkContentsSigners else signing.signingCertificateHistory
+        } else {
+            @Suppress("DEPRECATION")
+            info.signatures
+        } ?: return emptySet()
+        return signatures.map { sig -> sha256(sig.toByteArray()) }.toSet()
+    }
+
+    private fun sha256(file: File): String = file.inputStream().use { input ->
+        val md = MessageDigest.getInstance("SHA-256")
+        val buf = ByteArray(64 * 1024)
+        while (true) {
+            val n = input.read(buf)
+            if (n <= 0) break
+            md.update(buf, 0, n)
+        }
+        md.digest().joinToString("") { "%02x".format(it) }
+    }
+
+    private fun sha256(bytes: ByteArray): String {
+        val md = MessageDigest.getInstance("SHA-256")
+        return md.digest(bytes).joinToString("") { "%02x".format(it) }
     }
 
     private fun launchInstaller(context: Context, apk: File) {

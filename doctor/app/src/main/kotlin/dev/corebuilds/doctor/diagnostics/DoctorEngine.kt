@@ -11,6 +11,7 @@ object DoctorEngine {
     fun run(context: Context, input: DoctorInput): Flow<CheckResult> = flow {
         emit(NetworkChecks.checkDns())
         emit(NetworkChecks.checkVpn(context))
+        emit(SuiteHealthChecks.check(context))
 
         if (input.addonUrl.isNotBlank()) {
             emit(AddonChecks.checkManifest(input.addonUrl))
