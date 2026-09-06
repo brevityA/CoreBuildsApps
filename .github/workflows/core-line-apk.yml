@@ -34,6 +34,9 @@ jobs:
     steps:
       - uses: actions/checkout@v7
 
+      - name: Check suite truth
+        run: python tools/check_suite_truth.py
+
       - uses: actions/setup-node@v7
         with:
           node-version: 22
@@ -48,6 +51,9 @@ jobs:
       KEYSTORE_BASE64: ${{ secrets.KEYSTORE_BASE64 }}
     steps:
       - uses: actions/checkout@v7
+
+      - name: Check suite truth
+        run: python tools/check_suite_truth.py
 
       - name: Refuse to build a tag that is not on main
         if: startsWith(github.ref, 'refs/tags/coreline-v')

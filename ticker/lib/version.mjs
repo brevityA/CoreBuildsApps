@@ -114,3 +114,34 @@ export function updateStatus(releases, currentVersion, apkName) {
     checked: true,
   };
 }
+
+
+/**
+ * Build update status from Latestrelease/coreline-version.json. VersionCode is
+ * authoritative in the Android shell; versionName is display-only. apkSha256 is
+ * optional for backward-compatible metadata, but native install verifies it when
+ * present and always verifies package signature.
+ */
+export function updateStatusFromManifest(manifest, currentVersionCode, currentVersionName = '0') {
+  const code = Number(manifest?.versionCode);
+  const currentCode = Number(currentVersionCode);
+  if (!Number.isInteger(code) || code <= 0) {
+    return { ok: false, error: 'Update metadata is missing versionCode' };
+  }
+  if (!Number.isInteger(currentCode) || currentCode <= 0) {
+    return { ok: false, error: 'Current build versionCode is unavailable' };
+  }
+  const latest = String(manifest?.versionName || code);
+  return {
+    ok: true,
+    current: String(currentVersionName || currentCode),
+    currentCode,
+    latest,
+    latestCode: code,
+    apkUrl: String(manifest?.apkUrl || ''),
+    apkSha256: String(manifest?.apkSha256 || ''),
+    notesUrl: String(manifest?.releaseNotesUrl || ''),
+    newer: code > currentCode,
+    checked: true,
+  };
+}

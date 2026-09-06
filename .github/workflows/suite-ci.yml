@@ -1,0 +1,113 @@
+name: Suite CI gate
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  contracts:
+    name: Release/update contracts
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check suite truth
+        run: python tools/check_suite_truth.py
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Assert every shippable app has CI, metadata, and hardened updater contracts
+        run: python tools/audit_contract.py
+
+  android:
+    name: ${{ matrix.name }} build lint tests
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: Icon Pack
+            dir: .
+            tasks: :app:lintDebug :app:testDebugUnitTest :app:assembleDebug
+            gradle: app/build.gradle.kts
+            workflow: .github/workflows/build.yml
+            artifact: app/build/outputs/apk/debug/*.apk
+          - name: Core Line
+            dir: ticker/android
+            tasks: :app:lintDebug :app:testDebugUnitTest :app:assembleDebug
+            gradle: ticker/android/app/build.gradle.kts
+            workflow: .github/workflows/core-line-apk.yml
+            artifact: ticker/android/app/build/outputs/apk/debug/*.apk
+          - name: Core Shift
+            dir: shift
+            tasks: :app:lintDebug :app:testDebugUnitTest :app:assembleDebug
+            gradle: shift/app/build.gradle.kts
+            workflow: .github/workflows/core-shift-apk.yml
+            artifact: shift/app/build/outputs/apk/debug/*.apk
+          - name: Core Doctor
+            dir: doctor
+            tasks: :app:lintDebug :app:testDebugUnitTest :app:assembleDebug
+            gradle: doctor/app/build.gradle.kts
+            workflow: .github/workflows/core-doctor-apk.yml
+            artifact: doctor/app/build/outputs/apk/debug/*.apk
+          - name: Core Motion plugin
+            dir: motion-plugin
+            tasks: :app:lintDebug :app:testDebugUnitTest :app:assembleDebug
+            gradle: motion-plugin/app/build.gradle.kts
+            workflow: .github/workflows/core-motion-apk.yml
+            artifact: motion-plugin/app/build/outputs/apk/debug/*.apk
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check suite truth
+        run: python tools/check_suite_truth.py
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - uses: android-actions/setup-android@v3
+      - uses: gradle/actions/setup-gradle@v4
+      - name: Verify tracked workflow/build files exist
+        run: |
+          test -f "${{ matrix.gradle }}"
+          test -f "${{ matrix.workflow }}"
+      - name: Build, lint, and unit test
+        working-directory: ${{ matrix.dir }}
+        run: ./gradlew ${{ matrix.tasks }} --no-daemon --stacktrace
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.name }} debug APK
+          path: ${{ matrix.artifact }}
+          if-no-files-found: error
+
+  web-and-content:
+    name: Web/content tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check suite truth
+        run: python tools/check_suite_truth.py
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Core Line parser/network tests
+        run: cd ticker && npm test
+      - name: Install Python content deps
+        run: pip install --quiet -r tools/requirements.txt
+      - name: Python content tests
+        run: |
+          python tests/test_v151_robustness.py
+          python tests/test_wallpapers.py
+          python tests/test_wallpaper_export.py
+          python tests/test_core_shift_content.py
+          python tests/test_core_shift_screensaver.py
+          python tests/test_prequel_engine.py

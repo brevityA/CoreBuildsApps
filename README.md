@@ -4,27 +4,29 @@
 
 # Core Builds Apps
 
-**Four Android apps. Same brand, same living-room bar.**
+**Five Android apps. Same brand, same living-room bar.**
 
 </div>
 
 ---
 
-> | App | What it does | Downloader | Release tag |
-> |---|---|---|---|
-> | **[Icon Pack](#-icon-pack)** | 921 transparent icons + 70 wallpapers for Projectivy Launcher | `5270601` | [`v*`](../../releases) |
-> | **[Core Line](#-core-line)** | Sports scores & channel RSS ticker (chyron) | `7375676` | [`coreline-v*`](../../releases) |
-> | **[Core Shift](#-core-shift)** | Live wallpaper browser + Projectivy plugin for Monet Launcher | `8829421` | [`shift-v*`](../../releases) |
-> | **[Core Doctor](#-core-doctor)** | Streaming infrastructure diagnostics (phone) | `8664938` | [`doctor-v*`](../../releases) |
+<!-- suite-stamp:start -->
+> | App | Current | What it does | Downloader | Release tag |
+> |---|---:|---|---|---|
+> | **[Core Builds Icon Pack](#-icon-pack)** | `v1.8.2` | 924 transparent icons + 70 wallpapers for Projectivy Launcher | `5270601` | [`v*` / `iconpack`](../../releases) |
+> | **[Core Line](#-core-line)** | `v1.3.0` | Sports scores & channel RSS ticker (chyron) | `7375676` | [`coreline-v*` / `coreline`](../../releases) |
+> | **[Core Shift](#-core-shift)** | `v2.3.5` | Android TV screensaver + motion wallpaper browser | `8829421` | [`shift-v*` / `shift`](../../releases) |
+> | **[Core Motion](#-core-motion)** | `v1.0.0` | Projectivy wallpaper-provider plugin for Core Motion loops | `[USER TO SUPPLY]` | [`motion-v*` / `motion`](../../releases) |
+> | **[Core Doctor](#-core-doctor)** | `v0.1.0` | Local-only streaming and suite diagnostics (phone) | `8664938` | [`doctor-v*` / `doctor`](../../releases) |
 >
-> Each app has its own CI workflow — changes to one never rebuild the others.
-
+> Each app has its own Gradle root and CI workflow. Do not merge roots, split the repo, or repoint floating Downloader tags.
+<!-- suite-stamp:end -->
 ---
 
 ## 🔷 Icon Pack
 
 **Transparent app icons for Projectivy Launcher on Android TV.**
-`921 icons` · `70 wallpapers` · `v1.7.1`
+`924 icons` · `70 wallpapers` · `v1.8.2`
 
 The **Core Builds Icon Pack** is designed for the [Projectivy Launcher](https://play.google.com/store/apps/details?id=com.spocky.projengmenu) on Android TV and Google TV, built to the [Core Builds Brand & Style Guide v1.0](https://github.com/brevityA/Core-Builds).
 
@@ -56,9 +58,9 @@ Icons are **original geometry** drawn on a shared 512 grid — simple shapes, ro
 
 ### What's covered
 
-921 icons across 21 categories — streaming, media centres, debrid services, players, launchers, tools, stores, live TV, music, sport, gaming, VPN, browsers, files, and more.
+924 icons across 21 categories — streaming, media centres, debrid services, players, launchers, tools, stores, live TV, music, sport, gaming, VPN, browsers, files, and more.
 
-Highlights: Stremio, Kodi, Jellyfin, Emby, Plex, Nuvio TV, Syncler, Weyd, TorBox, Real-Debrid, AllDebrid, Premiumize, Trakt, VLC, MX Player, SmartTube, YouTube, Spotify, Twitch, Downloader, Aurora Store, TiviMate, TV Bro, SYNC, LocalSend, RS File Manager, Sparkle TV, DS file, Ultimate File Manager Pro — plus Netflix, Prime Video, Disney+, Max, Apple TV, Stan, Binge, Kayo, ABC iview, 9Now, 7plus, 10 Play, SBS, and 870+ more.
+Highlights: Stremio, Kodi, Jellyfin, Emby, Plex, Nuvio TV, Syncler, Weyd, TorBox, Real-Debrid, AllDebrid, Premiumize, Trakt, VLC, MX Player, SmartTube, YouTube, Spotify, Twitch, Downloader, Aurora Store, TiviMate, TV Bro, SYNC, LocalSend, RS File Manager, Sparkle TV, DS file, Ultimate File Manager Pro — plus Netflix, Prime Video, Disney+, Max, Apple TV, Stan, Binge, Kayo, ABC iview, 9Now, 7plus, 10 Play, SBS, and 860+ more.
 
 Full table with every mapped component: [**docs/IconPackList.md**](docs/IconPackList.md)
 
@@ -175,9 +177,9 @@ tools/build_icons.py         catalog → SVG, PNG, appfilter, docs
 tools/build_banners.py       catalog → 16:9 monoline banners
 tools/build_branding.py      launcher icon + Leanback banner
 tools/build_brand_preview.py branding preview sheet
-tools/validate.py            coherence checks (22,800+ at 921 icons)
-assets/svg/                  master vectors (921)
-assets/banners/              16:9 banners (921)
+tools/validate.py            coherence checks (20,000+ at 924 icons)
+assets/svg/                  master vectors (924)
+assets/banners/              16:9 banners (924)
 app/src/main/res/            the Android module
 Latestrelease/version.json   in-app update manifest
 docs/IconPackList.md         supported apps + components
@@ -193,7 +195,7 @@ Motion/live/                 Motion asset set (MP4 loops, thumbnails, live-feed.
 
 ## 🔷 Core Line
 
-**TV-first sports & channel ticker (chyron).** `v1.0.2`
+**TV-first sports & channel ticker (chyron).** `v1.3.0`
 
 Not a player, not a playlist, not streams — a reader that crawls the listings other channel apps already publish as RSS:
 
@@ -223,7 +225,7 @@ Locally (needs JDK 17 + Android SDK):
 cd ticker/android && ./gradlew :app:assembleDebug
 ```
 
-Tests: `cd ticker && npm test` (24 tests).
+Tests: `cd ticker && npm test` (114 tests in the current suite).
 
 Release signing uses the same `KEYSTORE_BASE64`, `KEYSTORE_PASSWORD`, `KEY_ALIAS`, `KEY_PASSWORD` secrets as the icon pack.
 
@@ -233,7 +235,7 @@ Full architecture and remaining debt: [`ticker/HANDOVER.md`](ticker/HANDOVER.md)
 
 ## 🔷 Core Shift
 
-**Live wallpaper browser + Projectivy plugin for Monet Launcher.** `v2.0.1`
+**Android TV screensaver + motion wallpaper browser.** `v2.3.5`
 
 Two delivery paths for motion wallpapers on Android TV:
 
@@ -273,6 +275,36 @@ Motion asset validation: `python tools/validate_motion_feed.py`.
 Release signing uses the same `KEYSTORE_BASE64`, `KEYSTORE_PASSWORD`, `KEY_ALIAS`, `KEY_PASSWORD` secrets as the icon pack and Core Line.
 
 Full architecture and remaining debt: [`shift/HANDOVER.md`](shift/HANDOVER.md).
+
+---
+
+## 🔷 Core Motion
+
+**Projectivy wallpaper-provider plugin for Core Motion loops.** `v1.0.0`
+
+Core Motion is the Projectivy-side delivery app: a small APK detected by Projectivy Premium as a wallpaper source. It serves the GitHub-hosted Core Motion feed plus bundled vector loops; it is separate from Core Shift so Monet/Aerial and Projectivy paths can evolve without coupling.
+
+### Install
+
+1. Download the stable APK directly:
+
+   **https://github.com/brevityA/CoreBuildsApps/releases/download/motion/coremotion-release.apk**
+
+   Downloader code: **[USER TO SUPPLY]**. Versioned builds remain under `motion-v*`; the `motion` release is the floating stable target and must not be moved to a different asset name.
+2. Sideload it.
+3. In Projectivy: **Settings → Appearance → Wallpaper → Launcher wallpaper → Core Motion**. Requires Projectivy Premium.
+
+### Building
+
+CI: [`.github/workflows/core-motion-apk.yml`](.github/workflows/core-motion-apk.yml) → push a `motion-v*` tag to cut a release.
+
+Locally (needs JDK 17 + Android SDK):
+
+```bash
+cd motion-plugin && ./gradlew :app:assembleDebug
+```
+
+Plugin details: [`motion-plugin/README.md`](motion-plugin/README.md) · Detection notes: [`docs/PROJECTIVY_DETECTION.md`](docs/PROJECTIVY_DETECTION.md).
 
 ---
 

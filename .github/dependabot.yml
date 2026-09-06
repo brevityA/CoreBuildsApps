@@ -1,17 +1,70 @@
 version: 2
 updates:
-  - package-ecosystem: gradle
+  - package-ecosystem: "gradle"
     directory: "/"
     schedule:
-      interval: monthly
+      interval: "weekly"
     ignore:
-      - dependency-name: "androidx.core:core-ktx"
-        update-types: ["version-update:semver-minor", "version-update:semver-major"]
-      - dependency-name: "androidx.recyclerview:recyclerview"
-        update-types: ["version-update:semver-minor", "version-update:semver-major"]
-      - dependency-name: "androidx.appcompat:appcompat"
-        update-types: ["version-update:semver-minor", "version-update:semver-major"]
-  - package-ecosystem: github-actions
+      - dependency-name: "com.android.application"
+        versions: [">=9"]
+      - dependency-name: "org.gradle"
+        versions: [">=9"]
+    groups:
+      android-root:
+        patterns: ["*"]
+  - package-ecosystem: "gradle"
+    directory: "/ticker/android"
+    schedule:
+      interval: "weekly"
+    ignore:
+      - dependency-name: "com.android.application"
+        versions: [">=9"]
+      - dependency-name: "org.gradle"
+        versions: [">=9"]
+    groups:
+      core-line-android:
+        patterns: ["*"]
+  - package-ecosystem: "gradle"
+    directory: "/shift"
+    schedule:
+      interval: "weekly"
+    ignore:
+      - dependency-name: "com.android.application"
+        versions: [">=9"]
+      - dependency-name: "org.gradle"
+        versions: [">=9"]
+    groups:
+      core-shift:
+        patterns: ["*"]
+  - package-ecosystem: "gradle"
+    directory: "/doctor"
+    schedule:
+      interval: "weekly"
+    ignore:
+      - dependency-name: "com.android.application"
+        versions: [">=9"]
+      - dependency-name: "org.gradle"
+        versions: [">=9"]
+    groups:
+      core-doctor:
+        patterns: ["*"]
+  - package-ecosystem: "gradle"
+    directory: "/motion-plugin"
+    schedule:
+      interval: "weekly"
+    ignore:
+      - dependency-name: "com.android.application"
+        versions: [">=9"]
+      - dependency-name: "org.gradle"
+        versions: [">=9"]
+    groups:
+      core-motion:
+        patterns: ["*"]
+  - package-ecosystem: "npm"
+    directory: "/ticker"
+    schedule:
+      interval: "weekly"
+  - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
-      interval: monthly
+      interval: "weekly"

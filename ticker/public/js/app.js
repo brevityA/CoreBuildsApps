@@ -2,7 +2,7 @@ import { toTickerText, parseFeed } from '/lib/parser.mjs';
 import { LEAGUES, LEAGUE_LABELS, SPORT_GROUPS, compareEvents, buildDemoSlate, mergeEvents } from '/lib/scoreboard.mjs';
 import { WATCH_WEB, sortAppsForPicker, espnWebUrl, watchChoiceFor } from '/lib/watch.mjs';
 import { matchChannels } from '/lib/playlist.mjs';
-import { updateStatus as buildUpdateStatus } from '/lib/version.mjs';
+import { updateStatus as buildUpdateStatus, updateStatusFromManifest } from '/lib/version.mjs';
 import { buildClientSlate, isNativeShell, hydrateClientSlateRegistry, getClientSlateRegistry } from '/lib/client-slate.mjs';
 import { isSafeFeedUrl } from '/lib/ssrf.mjs';
 import { loadState, saveState, cacheSlate, readCachedSlate, REFRESH_CHOICES, SPEED_MIN, SPEED_MAX, DEFAULTS, savePlaylistChannels, readPlaylistChannels } from './state.js';
@@ -53,6 +53,7 @@ let installedApps = [];
 let updateInfo = null;
 let updateChecking = false;
 
+const UPDATE_MANIFEST_URL = 'https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Latestrelease/coreline-version.json';
 const UPDATE_RELEASES_URL = 'https://api.github.com/repos/brevityA/CoreBuildsApps/releases?per_page=30';
 const UPDATE_APK_NAME = 'coreline-release.apk';
 let lastHealth = { demo: false, degraded: 0, stale: 0 };
@@ -466,16 +467,17 @@ async function checkForUpdates(manual = false) {
   updateChecking = true;
   renderUpdates();
   try {
-    const url = isNativeShell()
-      ? `/api/proxy?url=${encodeURIComponent(UPDATE_RELEASES_URL)}`
-      : UPDATE_RELEASES_URL;
     const signal = typeof AbortSignal?.timeout === 'function'
       ? AbortSignal.timeout(20000)
       : (() => { const ac = new AbortController(); setTimeout(() => ac.abort(), 20000); return ac.signal; })();
-    const res = await fetch(url, { headers: { Accept: 'application/json' }, signal });
+    const manifestUrl = isNativeShell()
+      ? `/api/proxy?url=${encodeURIComponent(UPDATE_MANIFEST_URL)}`
+      : UPDATE_MANIFEST_URL;
+    const res = await fetch(manifestUrl, { headers: { Accept: 'application/json' }, signal });
     if (!res.ok) throw new Error('http ' + res.status);
-    const releases = await res.json();
-    updateInfo = buildUpdateStatus(releases, currentVersion() || '0', UPDATE_APK_NAME);
+    const manifest = await res.json();
+    const currentCode = nativeBridge()?.getVersionCode ? Number(nativeBridge().getVersionCode()) : Number(manifest?.versionCode || 0);
+    updateInfo = updateStatusFromManifest(manifest, currentCode, currentVersion() || '0');
   } catch (err) {
     updateInfo = { ok: false, error: 'Could not reach the update server' };
   }
@@ -490,6 +492,14 @@ function installUpdateFlow() {
   const url = updateInfo?.apkUrl;
   if (!url) return;
   const bridge = nativeBridge();
+  if (bridge?.installUpdateVerified) {
+    try {
+      if (bridge.installUpdateVerified(url, updateInfo?.apkSha256 || '', Number(updateInfo?.latestCode || 0))) {
+        toast('Downloading verified update — the installer opens when ready');
+        return;
+      }
+    } catch { /* fall back to legacy/native */ }
+  }
   if (bridge?.installUpdate) {
     try {
       if (bridge.installUpdate(url)) {

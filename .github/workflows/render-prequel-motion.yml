@@ -53,6 +53,9 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Check suite truth
+        run: python tools/check_suite_truth.py
+
       - name: Install Mesa software OpenGL and ffmpeg
         run: |
           sudo apt-get update -qq

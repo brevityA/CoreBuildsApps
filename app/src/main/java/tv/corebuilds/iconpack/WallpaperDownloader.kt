@@ -143,7 +143,8 @@ object WallpaperDownloader {
             if (code !in 200..299) {
                 throw IllegalStateException("HTTP $code fetching wallpaper")
             }
-            val total = conn.contentLengthLong.coerceAtLeast(0L)
+            @Suppress("DEPRECATION")
+            val total = conn.contentLength.toLong().coerceAtLeast(0L)
             conn.inputStream.use { input ->
                 tmp.outputStream().use { out ->
                     val buf = ByteArray(64 * 1024)

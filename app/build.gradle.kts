@@ -51,6 +51,10 @@ android {
         jvmTarget = "17"
     }
 
+    buildFeatures {
+        buildConfig = true
+    }
+
     androidResources {
         // PNGs are already optimized by the pipeline; don't re-crunch.
         noCompress += listOf("png")

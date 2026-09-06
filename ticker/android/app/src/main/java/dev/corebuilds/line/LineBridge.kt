@@ -39,9 +39,18 @@ class LineBridge(private val activity: MainActivity) {
     @JavascriptInterface
     fun getVersion(): String = activity.getVersion()
 
+    /** Current app versionCode from BuildConfig, never a package-info fallback. */
+    @JavascriptInterface
+    fun getVersionCode(): Int = activity.getVersionCode()
+
     /** Download a newer APK and hand it to the system installer (async). */
     @JavascriptInterface
     fun installUpdate(url: String): Boolean = activity.installUpdate(url)
+
+    /** Download + verify package/version/signature/hash before install. */
+    @JavascriptInterface
+    fun installUpdateVerified(url: String, sha256: String, versionCode: Int): Boolean =
+        activity.installUpdateVerified(url, sha256, versionCode)
 
     /** "Display over other apps" granted? */
     @JavascriptInterface

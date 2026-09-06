@@ -49,6 +49,13 @@ android {
     kotlinOptions {
         jvmTarget = "17"
     }
+
+    lint {
+        // Media3 PlayerView/ExoPlayer are intentionally used for TV preview and
+        // Dream playback. Source and layout entry points are annotated/suppressed,
+        // but AGP lint still reports the generated references as fatal.
+        disable += "UnsafeOptInUsageError"
+    }
 }
 
 dependencies {

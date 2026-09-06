@@ -374,7 +374,7 @@ class MainActivity : AppCompatActivity() {
         btn.isEnabled = false
         text.text = getString(R.string.update_downloading)
 
-        UpdateInstaller.download(this, update.apkUrl) { event ->
+        UpdateInstaller.download(this, update.apkUrl, update.versionCode, update.apkSha256) { event ->
             when (event) {
                 is UpdateInstaller.Event.Progress -> {
                     if (event.total > 0) {

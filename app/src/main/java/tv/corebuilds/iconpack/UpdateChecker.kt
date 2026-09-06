@@ -26,11 +26,10 @@ object UpdateChecker {
     private const val TAG = "CoreBuildsUpdate"
     private val MANIFEST_URLS = listOf(
         "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/" +
-            "main/Latestrelease/version.json",
-        "https://raw.githubusercontent.com/brevityA/CoreBuildsIconPack/" +
             "main/Latestrelease/version.json"
     )
     private const val TIMEOUT_MS = 8000
+    private const val MAX_MANIFEST_BYTES = 64 * 1024
 
     /** Outcome of a check. Never an unnamed error (§08). */
     sealed class Result {
@@ -39,7 +38,8 @@ object UpdateChecker {
             val versionName: String,
             val versionCode: Int,
             val iconCount: Int,
-            val apkUrl: String
+            val apkUrl: String,
+            val apkSha256: String?
         ) : Result()
 
         /** Installed build is current. */
@@ -57,7 +57,7 @@ object UpdateChecker {
      * @param onResult always called exactly once.
      */
     fun check(context: Context, onResult: (Result) -> Unit) {
-        val installed = installedVersionCode(context)
+        val installed = BuildConfig.VERSION_CODE
         io.execute {
             val result = try {
                 fetch(installed)
@@ -87,18 +87,19 @@ object UpdateChecker {
                     Log.w(TAG, lastError!!)
                     continue
                 }
-                val body = conn.inputStream.bufferedReader().use { it.readText() }
+                val body = readBounded(conn, MAX_MANIFEST_BYTES)
                 val json = JSONObject(body)
 
                 val remoteCode = json.getInt("versionCode")
                 val remoteName = json.optString("versionName", "?")
                 val icons = json.optInt("iconCount", 0)
                 val apk = json.optString("apkUrl", "")
+                val sha256 = json.optString("apkSha256", "").takeIf { it.isNotBlank() }
 
                 Log.i(TAG, "installed=$installedCode remote=$remoteCode from $url")
 
                 return if (remoteCode > installedCode) {
-                    Result.Available(remoteName, remoteCode, icons, apk)
+                    Result.Available(remoteName, remoteCode, icons, apk, sha256)
                 } else {
                     Result.UpToDate(remoteName)
                 }
@@ -112,16 +113,25 @@ object UpdateChecker {
         return Result.Failed(lastError ?: "could not fetch update manifest")
     }
 
-    private fun installedVersionCode(context: Context): Int = try {
-        val pi = context.packageManager.getPackageInfo(context.packageName, 0)
-        @Suppress("DEPRECATION")
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.P) {
-            pi.longVersionCode.toInt()
-        } else {
-            pi.versionCode
+    private fun readBounded(conn: HttpURLConnection, maxBytes: Int): String {
+        val declared = conn.contentLength
+        if (declared > maxBytes) {
+            throw IllegalStateException("update manifest exceeds ${maxBytes}B")
         }
-    } catch (e: Exception) {
-        Log.w(TAG, "could not read installed version: ${e.message}")
-        0
+        val out = java.io.ByteArrayOutputStream()
+        conn.inputStream.use { input ->
+            val buf = ByteArray(4096)
+            var total = 0
+            while (true) {
+                val n = input.read(buf)
+                if (n <= 0) break
+                total += n
+                if (total > maxBytes) {
+                    throw IllegalStateException("update manifest exceeds ${maxBytes}B")
+                }
+                out.write(buf, 0, n)
+            }
+        }
+        return out.toString(Charsets.UTF_8.name())
     }
 }
