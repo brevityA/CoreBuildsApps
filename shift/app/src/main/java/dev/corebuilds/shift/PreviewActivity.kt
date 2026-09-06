@@ -24,7 +24,8 @@ import java.util.concurrent.Executors
  * supplies familiar TV transport controls, MediaSession integration, looping,
  * audio-off playback and a clean error callback.
  */
-@OptIn(UnstableApi::class)
+@androidx.annotation.OptIn(UnstableApi::class)
+@UnstableApi
 class PreviewActivity : AppCompatActivity() {
 
     private lateinit var playerView: PlayerView

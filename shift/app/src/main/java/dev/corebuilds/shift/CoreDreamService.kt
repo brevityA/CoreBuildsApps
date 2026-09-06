@@ -17,7 +17,8 @@ import androidx.media3.ui.PlayerView
  * Settings → Screensaver can pick. Projectivy / Monet wallpaper is unchanged.
  * No MediaSession — a dream must not steal the TV's now-playing slot.
  */
-@OptIn(UnstableApi::class)
+@androidx.annotation.OptIn(UnstableApi::class)
+@UnstableApi
 class CoreDreamService : DreamService() {
 
     private var player: ExoPlayer? = null
