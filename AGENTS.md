@@ -7,6 +7,7 @@
 | Product | Path | Package ID | Version | Downloader / stable tag |
 |---|---|---|---:|---|
 | Core Builds Icon Pack | `app/` with repo-root Gradle | `tv.corebuilds.iconpack` | `1.8.2` | `5270601` / `iconpack` |
+| Core Builds Pixel Neon | `pixel-neon/` | `tv.corebuilds.pixelneon` | `0.1.0` | `[USER TO SUPPLY]` / `pixel-neon` |
 | Core Line | `ticker/` + `ticker/android/` | `dev.corebuilds.line` | `1.3.0` | `7375676` / `coreline` |
 | Core Shift | `shift/` | `dev.corebuilds.shift` | `2.3.5` | `8829421` / `shift` |
 | Core Motion | `motion-plugin/` | `tv.corebuilds.motion` | `1.0.0` | `[USER TO SUPPLY]` / `motion` |
@@ -45,6 +46,7 @@ python tools/audit_contract.py
 ## Product verification shortcuts
 
 - Icon Pack: four generators + `python tools/validate.py`.
+- Pixel Neon: `python tools/build_pixel_neon.py`, `python tools/validate_pixel_neon.py`, plus `cd pixel-neon && ./gradlew :app:lintDebug :app:assembleDebug`.
 - Core Line: `cd ticker && npm test`.
 - Core Shift: `python tools/validate_motion_feed.py` plus Android lint/build in CI.
 - Core Motion: `python tools/validate_projectivy_plugin.py` plus Android lint/build in CI.

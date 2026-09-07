@@ -1,0 +1,10 @@
+{
+  "versionCode": 1,
+  "versionName": "0.1.0",
+  "iconCount": 924,
+  "componentCount": 1098,
+  "releaseDate": "2026-09-07",
+  "apkUrl": "https://github.com/brevityA/CoreBuildsApps/releases/download/pixel-neon/pixel-neon-release.apk",
+  "releaseNotesUrl": "https://github.com/brevityA/CoreBuildsApps/blob/main/pixel-neon/README.md",
+  "minSdk": 21
+}
