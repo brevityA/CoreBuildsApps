@@ -7,16 +7,12 @@ on:
       - 'pixel-neon/**'
       - 'tools/catalog.json'
       - 'tools/build_pixel_neon.py'
-      - 'assets/svg/**'
-      - 'assets/banners/**'
       - '.github/workflows/pixel-neon-apk.yml'
   pull_request:
     paths:
       - 'pixel-neon/**'
       - 'tools/catalog.json'
       - 'tools/build_pixel_neon.py'
-      - 'assets/svg/**'
-      - 'assets/banners/**'
       - '.github/workflows/pixel-neon-apk.yml'
   workflow_dispatch:
 

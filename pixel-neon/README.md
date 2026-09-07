@@ -7,15 +7,19 @@ bright 8-bit arcade sprite set for Projectivy Launcher and Android TV.
 
 ## The look
 
-- **64 px arcade grid** — every square icon is snapped to hard pixels and
-  nearest-neighbour scaled to 512×512.
+- **32 px arcade sprites** — every square icon is drawn on a small hard-pixel
+  canvas and nearest-neighbour scaled to 512×512.
+- **Unique silhouettes** — category-aware sprite recipes vary the object,
+  proportions, pose, internal pattern, and signature pixels per app; no icon is
+  a pixelated copy of the monoline set.
 - **Neon bloom** — a compact violet/cyan halo sits behind each sprite without
   painting a background into the transparent icon.
 - **Pixel bevel** — one-pixel top-left highlights and a darker bottom-right
   edge keep symbols legible from the sofa.
 - **Transparent by default** — the launcher still owns the card colour.
-- **16:9 companion banners** — existing wide-card layouts are pixelated too,
-  so cards and square picker icons feel like one set.
+- **16:9 companion banners** — each banner is composed from the sprite and a
+  tiny bitmap label in one of three arcade sign layouts, rather than reusing
+  the original rail-and-wordmark banner.
 
 The pack is intentionally icon-only for its first release. It does not bundle
 Core Builds wallpapers, so it stays a small companion install beside the
@@ -41,19 +45,18 @@ The two packs have different package IDs and can be installed side by side:
 
 `tools/catalog.json` remains the only source of truth for names, components,
 colours, and glyphs. The alternate renderer does not copy or fork the catalog.
-Run the normal vector/banner generators first, then build the second pack:
+From the repository root, build the alternate art directly from the catalog:
 
 ```bash
 pip install -r tools/requirements.txt
-python tools/build_icons.py
-python tools/build_banners.py
 python tools/build_pixel_neon.py
 python tools/validate_pixel_neon.py
 ```
 
 Generated output is under `pixel-neon/app/src/main/res/`, with the compact
 review sheet at `pixel-neon/docs/preview.png`. `pixel-neon/docs/build-receipt.json`
-records the catalog and appfilter counts for the build.
+records the catalog, appfilter, and unique-sprite counts for the build. The
+source art direction is documented in [`DESIGN.md`](DESIGN.md).
 
 ## Build the APK
 

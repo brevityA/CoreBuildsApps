@@ -1,8 +1,8 @@
 # Core Builds Pixel Neon · supported applications
 
-`924` pixel-neon icons · `1098` catalog components · pack v0.1.0
+`924` individually generated pixel sprites · `1098` catalog components · pack v0.1.0
 
-This is the alternate 8-bit neon treatment of the Core Builds catalog. Mappings and coverage are shared with the original pack; only the art changes.
+This is the alternate 8-bit neon treatment of the Core Builds catalog. Each row gets a hash-seeded sprite recipe; this pack does not reuse the monoline SVG geometry or banner lockups.
 
 | App | Drawable | Neon source accent | Components |
 | --- | --- | --- | --- |

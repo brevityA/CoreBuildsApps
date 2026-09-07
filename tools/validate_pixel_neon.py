@@ -2,6 +2,7 @@
 """Validate the generated Core Builds Pixel Neon companion pack."""
 from __future__ import annotations
 
+import hashlib
 import json
 import re
 import struct
@@ -63,6 +64,7 @@ def main() -> int:
     check(data["meta"]["count"] == len(icons), "catalog meta.count drifted")
 
     square_dir = RES / "drawable-nodpi"
+    sprite_hashes: set[str] = set()
     for icon in icons:
         square = square_dir / f"{icon['drawable']}.png"
         banner = square_dir / f"{icon['drawable']}_banner.png"
@@ -72,10 +74,13 @@ def main() -> int:
             header = png_size(square)
             check(header == (512, 512, 6),
                   f"{icon['name']}: square header {header}, expected 512x512 RGBA")
+            sprite_hashes.add(hashlib.sha256(square.read_bytes()).hexdigest())
         if banner.exists():
             header = png_size(banner)
             check(header == (320, 180, 6),
                   f"{icon['name']}: banner header {header}, expected 320x180 RGBA")
+    check(len(sprite_hashes) == len(icons),
+          f"only {len(sprite_hashes)} unique sprite files for {len(icons)} catalog rows")
 
     appfilter_path = RES / "xml" / "appfilter.xml"
     appfilter = ET.parse(appfilter_path).getroot()
@@ -126,10 +131,14 @@ def main() -> int:
           "Pixel Neon adaptive foreground is missing")
 
     receipt = json.loads((PACK / "docs" / "build-receipt.json").read_text())
-    check(receipt.get("pixelGrid") == 64, "build receipt does not record the 64px grid")
+    check(receipt.get("pixelGrid") == 32, "build receipt does not record the 32px sprite grid")
+    check(receipt.get("uniqueSprites") == len(icons), "build receipt does not prove unique sprites")
     check(receipt.get("icons") == len(icons), "build receipt icon count drifted")
     check(receipt.get("catalogComponents") == sum(len(i["components"]) for i in icons),
           "build receipt component count drifted")
+    source = (ROOT / "tools" / "build_pixel_neon.py").read_text(encoding="utf-8")
+    check("BASE_SVG" not in source and "BASE_BANNERS" not in source,
+          "Pixel Neon renderer still depends on monoline source assets")
 
     if failures:
         print(f"Pixel Neon validation failed — {len(failures)} problem(s)")

@@ -173,9 +173,11 @@ Inherited from the brand guide, enforced by the generator and validator:
 `924 icons` · `0.1.0` · clean monoline sibling: **Core Builds Icon Pack**
 
 If the original pack is the quiet night-mode set, **Core Builds Pixel Neon** is
-its arcade cabinet: the same mappings and coverage, but every mark is snapped
-to a 64 px grid, given a violet/cyan bloom, and scaled with hard nearest-neighbour
-pixels. The PNGs remain transparent, so the launcher still owns the card colour.
+its arcade cabinet: the same mappings and coverage, but every mark is drawn as
+a unique 32 px sprite, given a violet/cyan bloom, and scaled with hard
+nearest-neighbour pixels. Category-aware recipes vary the silhouette, internal
+pattern, and pose instead of reusing the monoline geometry. The PNGs remain
+transparent, so the launcher still owns the card colour.
 
 ![Core Builds Pixel Neon preview](pixel-neon/docs/preview.png)
 
@@ -192,12 +194,15 @@ separate and can be selected independently:
 Open the app and press **Apply**, or choose it manually in **Projectivy Launcher
 Settings → Appearance → Cards → Icon Pack → Core Builds Pixel Neon Icon Pack**.
 The pack includes the same full/short component mappings and 16:9 banner
-fallback as the original, plus the square pixel sprites for per-app selection.
+fallback as the original, plus individually generated square pixel sprites for
+per-app selection. Banners use three arcade sign layouts rather than the
+original rail-and-wordmark treatment.
 
 This first release is intentionally icon-only: no wallpaper bundle is shipped.
 The renderer is derived from the one source catalog, so new component coverage
 lands in both packs together. See [`pixel-neon/README.md`](pixel-neon/README.md)
-for the build and regeneration commands.
+for the build and regeneration commands. The research-informed sprite rules
+are documented in [`pixel-neon/DESIGN.md`](pixel-neon/DESIGN.md).
 
 ---
 
