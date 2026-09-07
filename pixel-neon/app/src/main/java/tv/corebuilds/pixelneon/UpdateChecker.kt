@@ -23,7 +23,7 @@ import java.util.concurrent.Executors
  */
 object UpdateChecker {
 
-    private const val TAG = "CoreBuildsPixelNeonUpdate"
+    private const val TAG = "PixelNeonUpdate"
     private val MANIFEST_URLS = listOf(
         "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/" +
             "main/Latestrelease/pixel-neon-version.json"
