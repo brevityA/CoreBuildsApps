@@ -72,7 +72,7 @@
                 android:background="@drawable/bg_cta"
                 android:focusable="true"
                 android:focusableInTouchMode="true"
-                android:nextFocusDown="@id/chip_row"
+                android:nextFocusDown="@id/wallpapers_entry"
                 android:clickable="true"
                 android:paddingStart="24dp"
                 android:paddingEnd="24dp"
@@ -198,7 +198,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="18dp"
         android:clipToPadding="false"
-        android:nextFocusUp="@id/apply_button"
+        android:nextFocusUp="@id/wallpapers_entry"
         android:nextFocusDown="@id/search"
         android:orientation="horizontal" />
 

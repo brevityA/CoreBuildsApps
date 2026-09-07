@@ -118,6 +118,10 @@ class WallpaperAdapter(
             return
         }
         io.execute {
+            cache.get(asset)?.let { hit ->
+                main.post { onReady(hit) }
+                return@execute
+            }
             val bmp = try {
                 context.assets.open(asset).use { BitmapFactory.decodeStream(it) }
             } catch (e: Exception) {

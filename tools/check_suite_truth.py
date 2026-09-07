@@ -82,6 +82,44 @@ def check_iconpack_truth(suite: dict) -> None:
         fail("docs/IconPackList.md header drifted from suite/catalog")
 
 
+def check_pixelneon_truth(suite: dict) -> None:
+    """Keep the alternate pack's metadata tied to the shared source catalog."""
+    pixel = suite["apps"]["pixelneon"]
+    catalog = json.loads(read("tools/catalog.json"))
+    latest = json.loads(read("Latestrelease/pixel-neon-version.json"))
+    icons = catalog.get("icons", [])
+    icon_count = len(icons)
+    component_count = sum(len(row.get("components", [])) for row in icons)
+
+    if pixel.get("iconCount") != icon_count or pixel.get("componentCount") != component_count:
+        fail("suite.json pixelneon counts must match catalog")
+    if (
+        latest.get("versionName") != pixel["versionName"]
+        or latest.get("versionCode") != pixel["versionCode"]
+    ):
+        fail("Latestrelease/pixel-neon-version.json must match Pixel Neon suite/Gradle version")
+    if (
+        latest.get("iconCount") != icon_count
+        or latest.get("componentCount") != component_count
+    ):
+        fail("Latestrelease/pixel-neon-version.json counts must match catalog")
+
+    icon_list = read("pixel-neon/docs/IconPackList.md")
+    if (
+        f"`{icon_count}` individually generated pixel sprites" not in icon_list
+        or f"`{component_count}` catalog components" not in icon_list
+        or f"pack v{pixel['versionName']}" not in icon_list
+    ):
+        fail("pixel-neon/docs/IconPackList.md header drifted from suite/catalog")
+
+    readme_claim = (
+        f"{icon_count} transparent 8-bit neon icons + 70 wallpapers "
+        "for Projectivy Launcher"
+    )
+    if readme_claim not in read("README.md"):
+        fail("README Pixel Neon icon count drifted from tools/catalog.json")
+
+
 def check_readme_stamp(suite: dict) -> None:
     readme = read("README.md")
     if README_START not in readme or README_END not in readme:
@@ -129,6 +167,7 @@ def check_line_v_trap() -> None:
 def main() -> int:
     suite = check_suite_json()
     check_iconpack_truth(suite)
+    check_pixelneon_truth(suite)
     check_readme_stamp(suite)
     check_stale_claims()
     check_line_v_trap()

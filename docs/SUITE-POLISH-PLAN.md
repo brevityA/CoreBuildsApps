@@ -4,9 +4,9 @@ Download this file from GitHub as the working plan for the next three weeks. The
 
 ## Non-negotiables
 
-- Do **not** merge the four standalone Gradle roots.
+- Do **not** merge the six standalone Gradle roots.
 - Do **not** split this GitHub repository.
-- Do **not** touch or rename the floating Downloader release tags: `iconpack`, `coreline`, `shift`, `motion`, `doctor`.
+- Do **not** touch or rename the floating Downloader release tags: `iconpack`, `pixel-neon`, `coreline`, `shift`, `motion`, `doctor`.
 - Do **not** change package IDs without a dedicated migration/reinstall plan.
 
 ## Package-ID freeze
@@ -14,6 +14,7 @@ Download this file from GitHub as the working plan for the next three weeks. The
 | Product | Gradle root | Package ID | Release tags | Stable asset |
 |---|---|---|---|---|
 | Icon Pack | `/` + `app/` | `tv.corebuilds.iconpack` | `v*`, `iconpack` | `iconpack-release.apk` + legacy `app-release.apk` |
+| Pixel Neon | `pixel-neon/` | `tv.corebuilds.pixelneon` | `pixel-neon-v*`, `pixel-neon` | `pixel-neon-release.apk` |
 | Core Line | `ticker/android/` | `dev.corebuilds.line` | `coreline-v*`, `coreline` | `coreline-release.apk` |
 | Core Shift | `shift/` | `dev.corebuilds.shift` | `shift-v*`, `shift` | `coreshift-release.apk` |
 | Core Motion | `motion-plugin/` | `tv.corebuilds.motion` | `motion-v*`, `motion` | `coremotion-release.apk` |
@@ -26,6 +27,7 @@ Do not start folder moves in this PR. The target can be introduced only after We
 ```text
 apps/
   icon-pack/        # current app/ + root Gradle project only after migration plan
+  pixel-neon/       # current pixel-neon/
   core-line/        # current ticker/android + ticker web assets after path audit
   core-shift/       # current shift/
   core-motion/      # current motion-plugin/

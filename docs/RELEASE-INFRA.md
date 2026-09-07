@@ -90,14 +90,14 @@ Runtime behavior:
 ## Cutting a sideload/GitHub release
 
 1. Bump the selected app's `versionCode` and `versionName` in its Gradle file.
-2. Update the matching `Latestrelease/*.json` version fields. `apkSha256` can be omitted before the first workflow run; the release workflow generates it in `dist/update-metadata.json`.
+2. Update the matching `Latestrelease/*.json` version fields and explicit `releaseDate` (`YYYY-MM-DD`). `apkSha256` can be omitted before the first workflow run; the release workflow preserves that date and generates the hash in `dist/update-metadata.json`.
 3. Run locally where Android SDK exists, or open a PR and let `Suite CI gate` run:
    - `python tools/audit_contract.py`
    - app lint/tests/build from `suite-ci.yml`
 4. Merge to main.
 5. Push the appropriate release tag, or run `Suite release` manually with `publish=false` first.
 6. Confirm artifacts:
-   - stable APK filename (`iconpack-release.apk`, `coreline-release.apk`, `coreshift-release.apk`, `coredoctor-release.apk`, or `coremotion-release.apk`)
+   - stable APK filename (`iconpack-release.apk`, `pixel-neon-release.apk`, `coreline-release.apk`, `coreshift-release.apk`, `coredoctor-release.apk`, or `coremotion-release.apk`)
    - AAB
    - `update-metadata.json` for in-app-updater apps
    - checklist summary

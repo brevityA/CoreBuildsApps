@@ -37,6 +37,7 @@ class WallpaperPreviewActivity : AppCompatActivity() {
 
     private var fullBitmap: Bitmap? = null
     private var downloaded: File? = null
+    private var pendingProjectivyFile: File? = null
     private var loading = false
     private var destroyed = false
 
@@ -47,7 +48,13 @@ class WallpaperPreviewActivity : AppCompatActivity() {
 
     private val requestStoragePermission =
         registerForActivityResult(ActivityResultContracts.RequestPermission()) { granted ->
-            if (granted) saveNow() else toast(getString(R.string.wp_storage_permission_denied))
+            val projectivyFile = pendingProjectivyFile
+            pendingProjectivyFile = null
+            if (granted) {
+                if (projectivyFile != null) shareWithProjectivy(projectivyFile) else saveNow()
+            } else {
+                toast(getString(R.string.wp_storage_permission_denied))
+            }
         }
 
     private val openSetter =
@@ -197,25 +204,9 @@ class WallpaperPreviewActivity : AppCompatActivity() {
                     is WallpaperSetter.Result.Set -> {
                         val homePkg = ApplyIconPack.homePackage(this@WallpaperPreviewActivity)
                         if (homePkg == "com.spocky.projengmenu") {
-                            // System wallpaper set successfully (good for Monet/Android), but Projectivy
-                            // needs it via intent. We must save it to gallery to get a URI to send.
-                            Thread {
-                                val fallback = WallpaperSetter.copyFileToPictures(this@WallpaperPreviewActivity, downloaded!!, downloaded!!.name)
-                                runOnUiThread {
-                                    if (destroyed) return@runOnUiThread
-                                    if (fallback is WallpaperSetter.Result.SavedToGallery) {
-                                        try {
-                                            startActivity(WallpaperSetter.setProjectivyIntent(fallback.uri))
-                                            toast("Applied to Projectivy Launcher")
-                                        } catch (e: Exception) {
-                                            toast(getString(R.string.wp_set_done))
-                                        }
-                                    } else {
-                                        toast(getString(R.string.wp_set_done))
-                                    }
-                                    finish()
-                                }
-                            }.start()
+                            // Android accepted the system wallpaper, but Projectivy
+                            // needs a readable content URI through its own intent.
+                            shareWithProjectivy(file)
                         } else {
                             toast(getString(R.string.wp_set_done))
                             finish()
@@ -227,7 +218,7 @@ class WallpaperPreviewActivity : AppCompatActivity() {
                         if (homePkg == "com.spocky.projengmenu") {
                             try {
                                 startActivity(WallpaperSetter.setProjectivyIntent(result.uri))
-                                toast("Applied to Projectivy Launcher")
+                                toast(getString(R.string.wp_projectivy_applied))
                             } catch (e: Exception) {
                                 toast(getString(R.string.wp_saved_hint))
                             }
@@ -255,9 +246,45 @@ class WallpaperPreviewActivity : AppCompatActivity() {
         }.start()
     }
 
+    /** Save [file] to a grantable URI and hand it to Projectivy. */
+    private fun shareWithProjectivy(file: File) {
+        setButton.isEnabled = false
+        setButton.text = getString(R.string.wp_applying)
+        Thread {
+            val result = WallpaperSetter.copyFileToPictures(this, file, file.name)
+            runOnUiThread {
+                if (destroyed) return@runOnUiThread
+                setButton.isEnabled = true
+                setButton.text = getString(R.string.wp_set_wallpaper)
+                when (result) {
+                    is WallpaperSetter.Result.SavedToGallery -> {
+                        try {
+                            startActivity(WallpaperSetter.setProjectivyIntent(result.uri))
+                            toast(getString(R.string.wp_projectivy_applied))
+                            finish()
+                        } catch (e: Exception) {
+                            // The system wallpaper was set, but Projectivy did
+                            // not accept its own hand-off. Do not claim it did.
+                            toast(getString(R.string.wp_saved_hint))
+                        }
+                    }
+                    is WallpaperSetter.Result.NeedsPermission -> {
+                        pendingProjectivyFile = file
+                        requestStoragePermission.launch(result.permission)
+                    }
+                    is WallpaperSetter.Result.Failed ->
+                        toast(getString(R.string.wp_set_failed_fmt, result.reason))
+                    is WallpaperSetter.Result.Set ->
+                        toast(getString(R.string.wp_set_done))
+                }
+            }
+        }.start()
+    }
+
     // ---- Save ----------------------------------------------------------------
 
     private fun onSaveClicked() {
+        pendingProjectivyFile = null
         val perm = WallpaperSetter.storagePermission()
         if (perm != null &&
             ContextCompat.checkSelfPermission(this, perm) != PackageManager.PERMISSION_GRANTED
@@ -276,12 +303,17 @@ class WallpaperPreviewActivity : AppCompatActivity() {
         saveButton.isEnabled = false
         saveButton.text = getString(R.string.wp_saving)
         Thread {
-            val result = WallpaperSetter.copyFileToPictures(this, file, file.name)
+            val result = if (WallpaperSetter.alreadyExported(this, file.name, file.length())) {
+                null
+            } else {
+                WallpaperSetter.copyFileToPictures(this, file, file.name)
+            }
             runOnUiThread {
                 if (destroyed) return@runOnUiThread
                 saveButton.isEnabled = true
                 saveButton.text = getString(R.string.wp_save)
                 when (result) {
+                    null -> toast(getString(R.string.wp_save_done))
                     is WallpaperSetter.Result.SavedToGallery ->
                         toast(getString(R.string.wp_save_done))
                     is WallpaperSetter.Result.NeedsPermission ->

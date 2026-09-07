@@ -30,6 +30,7 @@ Icon pack bump:
 - [ ] `python tools/validate.py` — paste last line:
 
 Pixel Neon:
+- [ ] `python tools/build_pixel_neon_wallpapers.py`
 - [ ] `python tools/build_pixel_neon.py`
 - [ ] `python tools/validate_pixel_neon.py`
 - [ ] `cd pixel-neon && ./gradlew :app:assembleDebug`

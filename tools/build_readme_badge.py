@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 from __future__ import annotations
+
 import json
 from pathlib import Path
 
@@ -8,8 +9,6 @@ START = "<!-- suite-stamp:start -->"
 END = "<!-- suite-stamp:end -->"
 
 WHAT = {
-    "iconpack": "924 transparent icons + 70 wallpapers for Projectivy Launcher",
-    "pixelneon": "924 transparent 8-bit neon icons + 70 wallpapers for Projectivy Launcher",
     "line": "Sports scores & channel RSS ticker (chyron)",
     "shift": "Android TV screensaver + motion wallpaper browser",
     "motion": "Projectivy wallpaper-provider plugin for Core Motion loops",
@@ -24,7 +23,23 @@ ANCHOR = {
     "doctor": "core-doctor",
 }
 
+
+def catalog_icon_count() -> int:
+    """Return the shared icon catalog count used by both visual treatments."""
+    catalog = json.loads((ROOT / "tools/catalog.json").read_text(encoding="utf-8"))
+    return len(catalog["icons"])
+
+
+def description(key: str, icon_count: int) -> str:
+    if key == "iconpack":
+        return f"{icon_count} transparent icons + 70 wallpapers for Projectivy Launcher"
+    if key == "pixelneon":
+        return f"{icon_count} transparent 8-bit neon icons + 70 wallpapers for Projectivy Launcher"
+    return WHAT[key]
+
+
 def block(suite: dict) -> str:
+    icon_count = catalog_icon_count()
     lines = [
         START,
         "> | App | Current | What it does | Downloader | Release tag |",
@@ -37,7 +52,7 @@ def block(suite: dict) -> str:
         tag = f"[`{app['tagPrefix']}*` / `{app['floatingTag']}`]({releases})"
         lines.append(
             f"> | **[{app['name']}](#-{ANCHOR[key]})** | `v{app['versionName']}` | "
-            f"{WHAT[key]} | `{downloader}` | {tag} |"
+            f"{description(key, icon_count)} | `{downloader}` | {tag} |"
         )
     lines += [
         ">",
@@ -46,10 +61,11 @@ def block(suite: dict) -> str:
     ]
     return "\n".join(lines)
 
+
 def main() -> int:
-    suite = json.loads((ROOT / "suite.json").read_text())
+    suite = json.loads((ROOT / "suite.json").read_text(encoding="utf-8"))
     readme_path = ROOT / "README.md"
-    readme = readme_path.read_text()
+    readme = readme_path.read_text(encoding="utf-8")
     stamped = block(suite)
     if START in readme and END in readme:
         before, rest = readme.split(START, 1)
@@ -62,9 +78,10 @@ def main() -> int:
         before = readme[:readme.index(marker)]
         after = readme[readme.index("\n---", readme.index(marker)):]
         new = before + stamped + after
-    readme_path.write_text(new)
-    print("README suite stamp updated from suite.json")
+    readme_path.write_text(new, encoding="utf-8")
+    print("README suite stamp updated from suite.json and tools/catalog.json")
     return 0
+
 
 if __name__ == "__main__":
     raise SystemExit(main())

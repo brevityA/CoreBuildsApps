@@ -30,7 +30,6 @@
       "gradle": "pixel-neon/app/build.gradle.kts",
       "path": "pixel-neon/",
       "stableApk": "pixel-neon-release.apk",
-      "legacyApk": "pixelneon-release.apk",
       "metadata": "Latestrelease/pixel-neon-version.json",
       "section": "pixel-neon",
       "iconCount": 924,

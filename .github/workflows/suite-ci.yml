@@ -135,6 +135,7 @@ jobs:
           python tests/test_v151_robustness.py
           python tests/test_wallpapers.py
           python tests/test_wallpaper_export.py
+          python tests/test_pixel_neon_review.py
           python tests/test_core_shift_content.py
           python tests/test_core_shift_screensaver.py
           python tests/test_prequel_engine.py

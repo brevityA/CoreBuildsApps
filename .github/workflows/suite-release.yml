@@ -107,7 +107,21 @@ jobs:
       - name: Generate updater metadata with SHA-256
         if: contains('iconpack pixelneon coreline coreshift', needs.select.outputs.app)
         run: |
-          python tools/generate_release_metadata.py "${{ needs.select.outputs.app }}" --apk dist/*-release.apk --out dist/update-metadata.json
+          set -euo pipefail
+          case "${{ needs.select.outputs.app }}" in
+            iconpack) META=Latestrelease/version.json ;;
+            pixelneon) META=Latestrelease/pixel-neon-version.json ;;
+            coreline) META=Latestrelease/coreline-version.json ;;
+            coreshift) META=Latestrelease/shift-version.json ;;
+          esac
+          # The release PR owns this date. Reading it from tracked metadata
+          # keeps reruns for the same APK/version byte-for-byte reproducible.
+          RELEASE_DATE=$(python -c 'import json,sys; print(json.load(open(sys.argv[1]))["releaseDate"])' "$META")
+          python tools/generate_release_metadata.py \
+            "${{ needs.select.outputs.app }}" \
+            --apk dist/*-release.apk \
+            --release-date "$RELEASE_DATE" \
+            --out dist/update-metadata.json
       - name: Sync updater metadata back to main
         if: needs.select.outputs.publish == 'true' && contains('iconpack pixelneon coreline coreshift', needs.select.outputs.app)
         run: |

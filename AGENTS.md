@@ -46,7 +46,7 @@ python tools/audit_contract.py
 ## Product verification shortcuts
 
 - Icon Pack: four generators + `python tools/validate.py`.
-- Pixel Neon: `python tools/build_pixel_neon.py`, `python tools/validate_pixel_neon.py`, plus `cd pixel-neon && ./gradlew :app:lintDebug :app:assembleDebug`.
+- Pixel Neon: `python tools/build_pixel_neon_wallpapers.py`, `python tools/build_pixel_neon.py`, `python tools/validate_pixel_neon.py`, plus `cd pixel-neon && ./gradlew :app:lintDebug :app:assembleDebug`.
 - Core Line: `cd ticker && npm test`.
 - Core Shift: `python tools/validate_motion_feed.py` plus Android lint/build in CI.
 - Core Motion: `python tools/validate_projectivy_plugin.py` plus Android lint/build in CI.

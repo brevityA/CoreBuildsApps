@@ -55,7 +55,17 @@ jobs:
         # stack ("PNG bytes move with the rasteriser's version"). The preview
         # stays committed and human-reviewed; it is not a shipping asset.
         run: |
-          DRIFT=$(git status --porcelain -- PixelNeonWallpapers pixel-neon/docs pixel-neon/app/src/main/assets pixel-neon/app/src/main/res/xml pixel-neon/app/src/main/res/values/icon_pack.xml ':(exclude)pixel-neon/docs/preview.png' | grep -v '^?? ' || true)
+          DRIFT=$(git status --porcelain --untracked-files=all -- \
+            PixelNeonWallpapers \
+            pixel-neon/docs \
+            pixel-neon/app/src/main/assets \
+            pixel-neon/app/src/main/res/drawable-nodpi \
+            pixel-neon/app/src/main/res/mipmap-anydpi-v26 \
+            pixel-neon/app/src/main/res/mipmap-xhdpi \
+            pixel-neon/app/src/main/res/mipmap-xxhdpi \
+            pixel-neon/app/src/main/res/xml \
+            pixel-neon/app/src/main/res/values/icon_pack.xml \
+            ':(exclude)pixel-neon/docs/preview.png')
           if [ -n "$DRIFT" ]; then
             echo "::error::Pixel Neon generated assets drift from the wallpaper/icon sources. Run: python tools/build_pixel_neon_wallpapers.py && python tools/build_pixel_neon.py"
             # One annotation per drifted file so the diff is readable without

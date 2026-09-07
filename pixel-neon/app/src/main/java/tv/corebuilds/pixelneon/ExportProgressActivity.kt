@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.View
 import android.widget.ProgressBar
 import android.widget.TextView
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -37,7 +38,21 @@ class ExportProgressActivity : AppCompatActivity() {
     private var failed: List<Pair<String, String>> = emptyList()
     private var savedCount = 0
     private var skippedCount = 0
+    private var permissionNeeded = false
+    private var pendingPermissionTargets: List<Wallpaper> = emptyList()
     private var exportJob: java.util.concurrent.atomic.AtomicBoolean? = null
+
+    private val requestStoragePermission =
+        registerForActivityResult(ActivityResultContracts.RequestPermission()) { granted ->
+            val targets = pendingPermissionTargets
+            pendingPermissionTargets = emptyList()
+            if (granted && targets.isNotEmpty()) {
+                runExport(targets)
+            } else if (!granted) {
+                state.text = getString(R.string.wp_storage_permission_denied)
+                retry.requestFocus()
+            }
+        }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -62,10 +77,25 @@ class ExportProgressActivity : AppCompatActivity() {
         progress.isIndeterminate = false
 
         done.setOnClickListener { finish() }
-        retry.setOnClickListener { runExport(failed.mapNotNull { (name, _) -> wallpapers.firstOrNull { it.cacheName == name } }) }
+        retry.setOnClickListener { retryFailed() }
         findViewById<TextView>(R.id.export_cancel).setOnClickListener { finish() }
 
         runExport(wallpapers)
+    }
+
+    private fun retryFailed() {
+        val targets = failed.mapNotNull { (name, _) ->
+            wallpapers.firstOrNull { it.cacheName == name }
+        }
+        if (targets.isEmpty()) return
+
+        val permission = WallpaperSetter.storagePermission()
+        if (permission != null && !WallpaperSetter.hasStoragePermission(this)) {
+            pendingPermissionTargets = targets
+            requestStoragePermission.launch(permission)
+        } else {
+            runExport(targets)
+        }
     }
 
     private fun runExport(targets: List<Wallpaper>) {
@@ -93,10 +123,11 @@ class ExportProgressActivity : AppCompatActivity() {
                     showResult()
                 }
                 is WallpaperExporter.Event.NeedsStoragePermission -> {
-                    // The caller in WallpapersActivity gated this; reaching here
-                    // on API <=28 means the user revoked it. Surface plainly.
+                    // The browser gates this before opening us; reaching here
+                    // means access was revoked or lost during the export.
+                    permissionNeeded = true
                     state.text = getString(R.string.wp_storage_permission)
-                    progress.isIndeterminate = true
+                    progress.isIndeterminate = false
                 }
                 is WallpaperExporter.Event.Failed -> {
                     state.text = getString(R.string.wp_export_all_failed)
@@ -117,6 +148,7 @@ class ExportProgressActivity : AppCompatActivity() {
     }
 
     private fun showRunning() {
+        permissionNeeded = false
         state.visibility = View.VISIBLE
         progress.visibility = View.VISIBLE
         progress.isIndeterminate = true
@@ -129,13 +161,21 @@ class ExportProgressActivity : AppCompatActivity() {
 
     private fun showResult() {
         progress.isIndeterminate = false
-        progress.progress = progress.max
+        val hasExports = savedCount > 0 || skippedCount > 0
+        progress.progress = if (hasExports) progress.max else 0
         findViewById<View>(R.id.export_cancel).visibility = View.GONE
 
         val parts = mutableListOf<String>()
         if (savedCount > 0) parts += getString(R.string.wp_export_done_fmt, savedCount)
         if (skippedCount > 0) parts += getString(R.string.wp_export_skipped_fmt, skippedCount)
-        state.text = parts.joinToString("  ·  ")
+        val receipt = parts.joinToString("  ·  ")
+        state.text = when {
+            permissionNeeded && receipt.isNotEmpty() ->
+                "$receipt  ·  ${getString(R.string.wp_storage_permission)}"
+            permissionNeeded -> getString(R.string.wp_storage_permission)
+            receipt.isEmpty() -> getString(R.string.wp_export_all_failed)
+            else -> receipt
+        }
 
         if (failed.isNotEmpty()) {
             title.text = getString(R.string.wp_export_failed_fmt, failed.size)
@@ -146,14 +186,19 @@ class ExportProgressActivity : AppCompatActivity() {
             retry.visibility = View.GONE
         }
 
-        afterHint.visibility = View.VISIBLE
+        afterHint.visibility = if (hasExports) View.VISIBLE else View.GONE
         afterHint.text = getString(R.string.wp_after_export_hint)
 
-        bindLaunchers()
+        if (hasExports) bindLaunchers() else launcherRow.visibility = View.GONE
 
         done.visibility = View.VISIBLE
-        // Focus the first launcher if there is one, else Done.
-        val firstTarget = if (launcherRow.visibility == View.VISIBLE) launcherRow else done
+        // Failures are actionable before launcher hand-off; otherwise focus
+        // the first launcher when present, then fall back to Done.
+        val firstTarget = when {
+            retry.visibility == View.VISIBLE -> retry
+            launcherRow.visibility == View.VISIBLE -> launcherRow
+            else -> done
+        }
         firstTarget.post { firstTarget.requestFocus() }
     }
 

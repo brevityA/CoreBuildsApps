@@ -1698,7 +1698,7 @@ def brand_assets(core_final, core_small) -> None:
     for y in range(8, 512, 16):
         drawer.rectangle((0, y, 511, y + 1), fill=(0, 229, 255, 12))
     for folder, size in (("mipmap-xhdpi", 96), ("mipmap-xxhdpi", 144)):
-        write(res / folder / "ic_launcher.png", _png_bytes(cabinet.resize((size, size), Image.Resampling.LANCZOS)))
+        write(res / folder / "ic_launcher.png", _png_bytes(cabinet.resize((size, size), Image.Resampling.NEAREST)))
 
     fg = Image.new("RGBA", (512, 512), (0, 0, 0, 0))
     mark = core_final.resize((318, 318), Image.Resampling.NEAREST)

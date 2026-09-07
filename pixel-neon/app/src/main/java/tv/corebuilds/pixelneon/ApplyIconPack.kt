@@ -134,9 +134,9 @@ object ApplyIconPack {
         displayName = "FLauncher",
         packages = listOf("me.efesser.flauncher", "com.kfaraj.launcher"),
         intent = { ctx, self ->
-            val pkg = listOf("me.efesser.flauncher", "com.kfaraj.launcher")
-                .firstOrNull { ctx.isInstalled(it) } ?: return@Launcher null
-            tryStandardApply(ctx, pkg, self)
+            listOf("me.efesser.flauncher", "com.kfaraj.launcher")
+                .firstOrNull { ctx.isInstalled(it) }
+                ?.let { pkg -> tryStandardApply(ctx, pkg, self) }
         },
         manualPath = "FLauncher Settings → Appearance → Icon pack"
     )

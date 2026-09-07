@@ -1,12 +1,16 @@
 package tv.corebuilds.pixelneon
 
 import android.content.Context
+import android.os.Environment
 import android.os.Handler
 import android.os.Looper
 import android.os.StatFs
 import android.util.Log
 import java.io.File
+import java.io.InterruptedIOException
+import java.util.concurrent.CountDownLatch
 import java.util.concurrent.Executors
+import java.util.concurrent.TimeUnit
 import java.util.concurrent.atomic.AtomicBoolean
 
 /**
@@ -29,7 +33,10 @@ import java.util.concurrent.atomic.AtomicBoolean
 object WallpaperExporter {
 
     private const val TAG = "PixelNeon/Export"
-    private const val HEADROOM_BYTES = 10L * 1024 * 1024   // keep 10 MB free
+    private const val HEADROOM_BYTES = 10L * 1024 * 1024
+    private const val ESTIMATED_WALLPAPER_BYTES = 5L * 1024 * 1024
+    private const val DOWNLOAD_TIMEOUT_SECONDS = 90L
+    private const val CANCEL_POLL_MILLIS = 250L
     private val io = Executors.newSingleThreadExecutor()
     private val main = Handler(Looper.getMainLooper())
 
@@ -52,105 +59,178 @@ object WallpaperExporter {
     /**
      * Export [wallpapers]. Delivers events on the main thread. Must be called
      * after storage permission is granted on API ≤ 28 (the caller is expected
-     * to use [WallpaperSetter.storagePermission] + a runtime request); if it
-     * is missing, [Event.NeedsStoragePermission] is returned synchronously via
-     * the listener.
+     * to use [WallpaperSetter.storagePermission] + a runtime request). If
+     * access is lost before or during the run, the listener receives
+     * [Event.NeedsStoragePermission] followed by a terminal [Event.Done] with
+     * every unprocessed item reported as failed.
      *
-     * Returns an AtomicBoolean that the caller can set to true to cancel the
-     * background operation (e.g. on activity destroy).
+     * Returns an [AtomicBoolean] that the caller can set to true to cancel the
+     * background operation (for example, when its activity is destroyed).
      */
-    fun export(context: Context, wallpapers: List<Wallpaper>, listener: Listener): java.util.concurrent.atomic.AtomicBoolean {
-        val cancelled = java.util.concurrent.atomic.AtomicBoolean(false)
+    fun export(
+        context: Context,
+        wallpapers: List<Wallpaper>,
+        listener: Listener
+    ): AtomicBoolean {
+        val cancelled = AtomicBoolean(false)
         val app = context.applicationContext
 
-        if (!WallpaperSetter.hasStoragePermission(app)) {
-            val perm = WallpaperSetter.storagePermission()
-            if (perm != null) {
-                main.post { listener.onEvent(Event.NeedsStoragePermission) }
-                return cancelled
-            }
-        }
         if (wallpapers.isEmpty()) {
             main.post { listener.onEvent(Event.Done(emptyList(), emptyList(), emptyList())) }
             return cancelled
         }
+        if (!WallpaperSetter.hasStoragePermission(app)) {
+            val permission = WallpaperSetter.storagePermission()
+            if (permission != null) {
+                val failed = wallpapers.map { it.cacheName to PERMISSION_FAILURE }
+                main.post {
+                    if (!cancelled.get()) {
+                        listener.onEvent(Event.NeedsStoragePermission)
+                        listener.onEvent(Event.Done(emptyList(), emptyList(), failed))
+                    }
+                }
+                return cancelled
+            }
+        }
 
-        io.execute {
-            runCatching {
+        io.execute task@{
+            try {
                 ensureSpace(app, wallpapers)
                 val saved = mutableListOf<String>()
                 val skipped = mutableListOf<String>()
                 val failed = mutableListOf<Pair<String, String>>()
 
-                wallpapers.forEachIndexed { i, wp ->
-                    if (cancelled.get()) return@execute
-                    val name = wp.title
-                    main.post { if (!cancelled.get()) listener.onEvent(Event.Progress(i, wallpapers.size, name)) }
+                wallpapers.forEachIndexed { index, wallpaper ->
+                    if (cancelled.get()) return@task
+                    main.post {
+                        if (!cancelled.get()) {
+                            listener.onEvent(
+                                Event.Progress(index, wallpapers.size, wallpaper.title)
+                            )
+                        }
+                    }
                     try {
-                        val file = ensureDownloaded(app, wp)
-                        val cacheName = wp.cacheName
+                        val file = ensureDownloaded(app, wallpaper, cancelled)
+                        if (cancelled.get()) return@task
+                        val cacheName = wallpaper.cacheName
                         if (WallpaperSetter.alreadyExported(app, cacheName, file.length())) {
                             skipped += cacheName
                             return@forEachIndexed
                         }
-                        when (val r = WallpaperSetter.copyFileToPictures(app, file, cacheName)) {
+                        when (val result = WallpaperSetter.copyFileToPictures(app, file, cacheName)) {
                             is WallpaperSetter.Result.SavedToGallery -> saved += cacheName
                             is WallpaperSetter.Result.NeedsPermission -> {
-                                main.post { if (!cancelled.get()) listener.onEvent(Event.NeedsStoragePermission) }
-                                return@execute
+                                val remaining = wallpapers.drop(index)
+                                    .map { it.cacheName to PERMISSION_FAILURE }
+                                val done = Event.Done(
+                                    saved.toList(),
+                                    skipped.toList(),
+                                    failed.toList() + remaining
+                                )
+                                main.post {
+                                    if (!cancelled.get()) {
+                                        listener.onEvent(Event.NeedsStoragePermission)
+                                        listener.onEvent(done)
+                                    }
+                                }
+                                return@task
                             }
-                            is WallpaperSetter.Result.Failed -> failed += (cacheName to r.reason)
-                            else -> failed += (cacheName to "unexpected result")
+                            is WallpaperSetter.Result.Failed ->
+                                failed += cacheName to result.reason
+                            else -> failed += cacheName to "unexpected result"
                         }
                     } catch (e: Exception) {
-                        Log.w(TAG, "export failed for ${wp.cacheName}", e)
-                        failed += (wp.cacheName to (e.message ?: e.javaClass.simpleName))
+                        if (cancelled.get()) return@task
+                        Log.w(TAG, "export failed for ${wallpaper.cacheName}", e)
+                        failed += wallpaper.cacheName to
+                            (e.message ?: e.javaClass.simpleName)
                     }
                 }
-                main.post { if (!cancelled.get()) listener.onEvent(Event.Done(saved, skipped, failed)) }
-            }.onFailure { e ->
+
+                val done = Event.Done(saved.toList(), skipped.toList(), failed.toList())
+                main.post { if (!cancelled.get()) listener.onEvent(done) }
+            } catch (e: Exception) {
+                if (cancelled.get()) return@task
                 Log.e(TAG, "export aborted", e)
                 main.post {
-                    if (!cancelled.get()) listener.onEvent(Event.Failed(e.message ?: e.javaClass.simpleName))
+                    if (!cancelled.get()) {
+                        listener.onEvent(Event.Failed(e.message ?: e.javaClass.simpleName))
+                    }
                 }
             }
         }
         return cancelled
     }
 
-    /** Download [wp] if it isn't cached; blocks until ready or throws. */
-    private fun ensureDownloaded(context: Context, wp: Wallpaper): File {
-        WallpaperDownloader.cached(context, wp)?.let { return it }
-        val latch = java.util.concurrent.CountDownLatch(1)
+    /** Download [wallpaper] if it is not cached; blocks until ready or throws. */
+    private fun ensureDownloaded(
+        context: Context,
+        wallpaper: Wallpaper,
+        cancelled: AtomicBoolean
+    ): File {
+        if (cancelled.get()) throw InterruptedIOException("Export cancelled")
+        WallpaperDownloader.cached(context, wallpaper)?.let { return it }
+
+        val latch = CountDownLatch(1)
         var result: File? = null
         var error: String? = null
-        WallpaperDownloader.fetch(context, wp) { event ->
+        WallpaperDownloader.fetch(context, wallpaper) { event ->
             when (event) {
-                is WallpaperDownloader.Event.Ready -> { result = event.file; latch.countDown() }
-                is WallpaperDownloader.Event.Failed -> { error = event.reason; latch.countDown() }
-                else -> { /* progress: nothing to do */ }
+                is WallpaperDownloader.Event.Ready -> {
+                    result = event.file
+                    latch.countDown()
+                }
+                is WallpaperDownloader.Event.Failed -> {
+                    error = event.reason
+                    latch.countDown()
+                }
+                else -> Unit
             }
         }
-        if (!latch.await(90, java.util.concurrent.TimeUnit.SECONDS)) {
-            throw java.io.IOException("Download timed out")
+
+        val deadline = System.nanoTime() +
+            TimeUnit.SECONDS.toNanos(DOWNLOAD_TIMEOUT_SECONDS)
+        while (true) {
+            if (cancelled.get()) throw InterruptedIOException("Export cancelled")
+            val remaining = deadline - System.nanoTime()
+            if (remaining <= 0L) throw java.io.IOException("Download timed out")
+            val slice = minOf(
+                remaining,
+                TimeUnit.MILLISECONDS.toNanos(CANCEL_POLL_MILLIS)
+            )
+            if (latch.await(slice, TimeUnit.NANOSECONDS)) break
         }
+
+        if (cancelled.get()) throw InterruptedIOException("Export cancelled")
         result?.let { return it }
         throw java.io.IOException("Download failed: ${error ?: "unknown"}")
     }
 
     /**
-     * Best-effort space check against the cache + export target. We don't know
-     * exact on-wire sizes without a HEAD per file (costly), so we use a
-     * conservative 5 MB per-file ceiling for 4K sources.
+     * Best-effort space checks for both filesystems involved in an export.
+     * The entire batch accumulates in shared Pictures, while the internal
+     * download cache is bounded by [WallpaperDownloader.MAX_CACHE_FILES].
      */
     private fun ensureSpace(context: Context, wallpapers: List<Wallpaper>) {
-        val bytesNeeded = wallpapers.size * 5L * 1024 * 1024 + HEADROOM_BYTES
-        val stat = StatFs(context.cacheDir.absolutePath)
-        val available = stat.availableBytes
+        val destinationBytes =
+            wallpapers.size * ESTIMATED_WALLPAPER_BYTES + HEADROOM_BYTES
+        val sharedVolume = context.getExternalFilesDir(Environment.DIRECTORY_PICTURES)
+            ?: throw java.io.IOException("Shared Pictures storage is unavailable")
+        ensureAvailable(sharedVolume, destinationBytes, "shared Pictures")
+
+        val cacheFiles = minOf(wallpapers.size, WallpaperDownloader.MAX_CACHE_FILES)
+        val cacheBytes = cacheFiles * ESTIMATED_WALLPAPER_BYTES + HEADROOM_BYTES
+        ensureAvailable(WallpaperDownloader.cacheDir(context), cacheBytes, "download cache")
+    }
+
+    private fun ensureAvailable(path: File, bytesNeeded: Long, destination: String) {
+        val available = StatFs(path.absolutePath).availableBytes
         if (available < bytesNeeded) {
             throw java.io.IOException(
-                "Not enough space — need ~${bytesNeeded / (1024 * 1024)} MB free"
+                "Not enough $destination space — need ~${bytesNeeded / (1024 * 1024)} MB free"
             )
         }
     }
+
+    private const val PERMISSION_FAILURE = "storage permission required"
 }

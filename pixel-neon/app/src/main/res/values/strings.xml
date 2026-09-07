@@ -60,6 +60,7 @@
     <string name="wp_sub_set">Sets the system home wallpaper. Monet re-themes its tiles from it.</string>
     <string name="wp_sub_save">Saves to Pictures and opens the system setter (Fire TV fallback).</string>
     <string name="wp_set_done">Wallpaper set.</string>
+    <string name="wp_projectivy_applied">Applied to Projectivy Launcher.</string>
     <string name="wp_saved">Saved to Pictures. Confirm in the system setter.</string>
     <string name="wp_saved_hint">Saved to Pictures/CoreBuilds. Set it from Monet → Wallpaper.</string>
     <string name="wp_load_failed">Could not load that wallpaper.</string>

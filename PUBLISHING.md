@@ -19,7 +19,7 @@ Do not create `line-v*` tags. Core Line is `coreline-v*`.
 1. Update `suite.json`.
 2. Update the selected app Gradle `versionName` and `versionCode`.
 3. For Icon Pack, also update `tools/catalog.json` `meta.version`, `Latestrelease/version.json`, and run all four generators.
-4. For updater apps, ensure matching metadata in `Latestrelease/`.
+4. For updater apps, ensure matching metadata in `Latestrelease/`, including an explicit `releaseDate` (`YYYY-MM-DD`).
 5. Run:
 
 ```bash
