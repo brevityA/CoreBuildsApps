@@ -23,6 +23,16 @@ The art decisions are based on these references:
 - [Pixel Art Complete Tutorial](https://generalistprogrammer.com/tutorials/pixel-art-complete-tutorial)
   reinforces intentional low colour counts, readable silhouettes, and avoiding
   anti-aliased scaling for small sprites.
+- [Creating Depth & Immersion: Parallax](https://gamemaker.io/en/blog/creating-depth-and-immersion-parallax)
+  translates layered motion into art direction: a static sky, distant
+  background, midground, and restrained foreground; leading lines and negative
+  space are as important as detail.
+- [Pixel art backgrounds: build worlds that feel alive](https://www.sprite-ai.art/blog/pixel-art-backgrounds)
+  reinforces atmospheric colour depth, matching pixel density, selective
+  dithering, and keeping the foreground more contrasty than distant layers.
+- [Dive into Pixel Art](https://tips.clip-studio.com/en-us/articles/5277)
+  was used for the technical treatment: a small grid, hard edges, nearest
+  neighbour scaling, and a deliberately limited palette.
 - [IconPackSupporter](https://github.com/sigv/IconPackSupporter) and the
   [Projectivy Icon Pack example](https://github.com/SicMundus86/ProjectivyIconPack)
   were used as format references: transparent icon resources, an
@@ -75,14 +85,21 @@ The generated pack keeps the Android icon-pack contract:
   `tools/validate_pixel_neon.py` verifies those claims, dimensions, mappings,
   and asset parity.
 
-The wallpaper companion has its own 8-bit scene language: the 70 source images
-are original low-resolution pixel compositions across arcade grids, cyber
-circuits, space runs, neon nature, and boss-stage arenas. They do not reuse or
-recolour the original pack's wallpapers. The manifest and small thumbnail
-JPEGs are bundled for offline browsing, while the full 4K PNG sources stay in
-`PixelNeonWallpapers/` and are downloaded and cached only when a user previews,
-sets, or exports one. The browser keeps the night/pixel chrome, series chips,
-name search, full-screen preview, direct system setter, Android TV save
+The wallpaper companion has its own environment-led 8-bit scene language: the
+70 source images are original low-resolution pixel compositions across arcade
+cityscapes, cyber districts, orbital landscapes, neon nature, and empty
+boss-stage architecture. They are built on a **320×180 logical canvas** and
+scaled 12× with nearest neighbour to 3840×2160. Each scene uses a static sky,
+distant silhouettes, a midground anchor, and a restrained foreground frame;
+farther layers lose contrast and saturation, while neon is reserved for local
+lights, windows, reflections, and focal objects. Rule-of-thirds placement,
+leading lines, negative space, and selective pixel dithering keep the wallpaper
+readable without characters, generic emblems, or full-frame visual noise. They
+do not reuse or recolour the original pack's wallpapers. The manifest and small
+thumbnail JPEGs are bundled for offline browsing, while the full 4K PNG sources
+stay in `PixelNeonWallpapers/` and are downloaded and cached only when a user
+previews, sets, or exports one. The browser keeps the night/pixel chrome, series
+chips, name search, full-screen preview, direct system setter, Android TV save
 fallback, and `Pictures/CoreBuilds` bulk-export flow.
 
 This keeps the product compatible with the existing Android delivery format
