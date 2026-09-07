@@ -50,6 +50,11 @@ XML_DIR = OUT / "app" / "src" / "main" / "res" / "xml"
 ASSETS_DIR = OUT / "app" / "src" / "main" / "assets"
 VAL_DIR = OUT / "app" / "src" / "main" / "res" / "values"
 DOC_DIR = OUT / "docs"
+# Preview text is rendered with repo-bundled DejaVu (same license-friendly
+# pattern as the Outfit faces above it). The system DejaVu differs between
+# machines and CI images, which silently drifted docs/preview.png under the
+# regenerate-and-diff gate.
+FONTS_DIR = Path(__file__).resolve().parent / "fonts"
 WALLPAPER_MANIFEST_SOURCE = ROOT / "PixelNeonWallpapers" / "manifest.json"
 WALLPAPER_THUMBS_SOURCE = ROOT / "PixelNeonWallpapers" / "thumbs"
 WALLPAPER_MANIFEST_OUT = ASSETS_DIR / "manifest" / "wallpapers.json"
@@ -69,6 +74,19 @@ sys.path.insert(0, str(ROOT / "tools"))
 
 def esc(value: str) -> str:
     return xml_escape(str(value), {"'": "&apos;", '"': "&quot;"})
+
+
+def esc_values_item(value: str) -> str:
+    """esc() plus Android values-file apostrophe handling.
+
+    AAPT2's values compiler un-entitizes an element before applying string
+    semantics, so &apos; inside <item> reaches it as a bare apostrophe and
+    mergeDebugResources dies with a NullPointerException (StAX
+    Attribute.getValue()) instead of a readable error. Classic's generator
+    emits \\' for the same catalog entry (tools/build_icons.py esc_android);
+    the two packs must stay byte-equivalent in escaping style.
+    """
+    return xml_escape(str(value).replace("'", "\\'"), {'"': "&quot;"})
 
 
 def color_tuple(value: str) -> tuple[int, int, int]:
@@ -1609,11 +1627,11 @@ def values_xml(icons: list[dict]) -> str:
         '<resources>',
         '    <string-array name="icon_pack">',
     ]
-    lines += [f'        <item>{esc(i["drawable"])}</item>' for i in icons]
+    lines += [f'        <item>{esc_values_item(i["drawable"])}</item>' for i in icons]
     lines += ['    </string-array>', '    <string-array name="icon_names">']
-    lines += [f'        <item>{esc(i["name"])}</item>' for i in icons]
+    lines += [f'        <item>{esc_values_item(i["name"])}</item>' for i in icons]
     lines += ['    </string-array>', '    <string-array name="icon_categories">']
-    lines += [f'        <item>{esc(i.get("category") or "APP")}</item>' for i in icons]
+    lines += [f'        <item>{esc_values_item(i.get("category") or "APP")}</item>' for i in icons]
     lines += ['    </string-array>', f'    <integer name="icon_count">{len(icons)}</integer>', '</resources>']
     return "\n".join(lines) + "\n"
 
@@ -1645,9 +1663,9 @@ def preview(icons: list[dict], rendered: dict[str, tuple], source_components: in
     sheet = Image.new("RGBA", (cols * cell, top + rows * cell), color_tuple(VOID) + (255,))
     draw = ImageDraw.Draw(sheet)
     try:
-        title_font = ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSansMono-Bold.ttf", 28)
-        sub_font = ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSansMono.ttf", 14)
-        label_font = ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSansMono.ttf", 12)
+        title_font = ImageFont.truetype(str(FONTS_DIR / "DejaVuSansMono-Bold.ttf"), 28)
+        sub_font = ImageFont.truetype(str(FONTS_DIR / "DejaVuSansMono.ttf"), 14)
+        label_font = ImageFont.truetype(str(FONTS_DIR / "DejaVuSansMono.ttf"), 12)
     except OSError:
         title_font = sub_font = label_font = ImageFont.load_default()
     draw.text((24, 18), "CORE BUILDS / PIXEL NEON", fill=HIGHLIGHT, font=title_font)

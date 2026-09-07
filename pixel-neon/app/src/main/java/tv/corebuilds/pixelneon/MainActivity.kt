@@ -246,6 +246,10 @@ class MainActivity : AppCompatActivity() {
             return
         }
         try {
+            // Mark offered when the installer is actually dispatched: without
+            // this, onResume re-launches the installer every time the user
+            // cancels it, and there is no way back into the app.
+            installOffered = true
             UpdateInstaller.install(this, file)
         } catch (e: Exception) {
             toast(getString(R.string.update_failed_fmt, e.message ?: "installer refused"))

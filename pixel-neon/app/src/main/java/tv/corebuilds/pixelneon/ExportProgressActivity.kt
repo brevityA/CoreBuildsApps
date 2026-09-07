@@ -70,6 +70,9 @@ class ExportProgressActivity : AppCompatActivity() {
 
     private fun runExport(targets: List<Wallpaper>) {
         if (targets.isEmpty()) return
+        // A retry runs only the failed subset; keep the bar scaled to what
+        // this run actually carries, not the original batch size.
+        progress.max = targets.size
         showRunning()
         exportJob = WallpaperExporter.export(this, targets) { event ->
             when (event) {

@@ -49,7 +49,7 @@ object IconPicker {
         result.putExtra(
             Intent.EXTRA_SHORTCUT_ICON_RESOURCE,
             Intent.ShortcutIconResource.fromContext(activity, resId))
-        val bitmap = rasterise(activity, resId)
+        val bitmap = rasterise(activity, resId)?.let { bounded(it) }
         if (bitmap != null) {
             result.putExtra(Intent.EXTRA_SHORTCUT_ICON, bitmap)
             result.putExtra("icon", bitmap)
@@ -77,5 +77,19 @@ object IconPicker {
         return bmp
     }
 
+    /** Bound the returned bitmap. At the full 512px sprite size the same
+     *  Bitmap is parceled into two extras (~1 MB each) and can exceed the
+     *  1 MB Binder transaction limit, so the launcher never receives the
+     *  result. 192px is comfortably inside it and above launcher grid size. */
+    private fun bounded(src: Bitmap): Bitmap {
+        val longEdge = maxOf(src.width, src.height)
+        if (longEdge <= MAX_RESULT_PX) return src
+        val scale = MAX_RESULT_PX.toFloat() / longEdge
+        val w = (src.width * scale).toInt().coerceAtLeast(1)
+        val h = (src.height * scale).toInt().coerceAtLeast(1)
+        return Bitmap.createScaledBitmap(src, w, h, true)
+    }
+
     private const val FALLBACK_PX = 192
+    private const val MAX_RESULT_PX = 192
 }
