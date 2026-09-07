@@ -175,7 +175,9 @@ Inherited from the brand guide, enforced by the generator and validator:
 If the original pack is the quiet night-mode set, **Core Builds Pixel Neon** is
 its arcade cabinet: the same mappings and coverage, but every mark is drawn as
 a unique 32 px sprite, given a violet/cyan bloom, and scaled with hard
-nearest-neighbour pixels. Category-aware recipes vary the silhouette, internal
+nearest-neighbour pixels. Brand glyph cues from the catalog become
+independently drawn tile monograms, play marks, eyes, shields, waves, and other
+recognizable pixel signals; each sprite also varies in silhouette, internal
 pattern, and pose instead of reusing the monoline geometry. The PNGs remain
 transparent, so the launcher still owns the card colour.
 

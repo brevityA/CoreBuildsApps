@@ -9,9 +9,11 @@ bright 8-bit arcade sprite set for Projectivy Launcher and Android TV.
 
 - **32 px arcade sprites** — every square icon is drawn on a small hard-pixel
   canvas and nearest-neighbour scaled to 512×512.
-- **Unique silhouettes** — category-aware sprite recipes vary the object,
-  proportions, pose, internal pattern, and signature pixels per app; no icon is
-  a pixelated copy of the monoline set.
+- **Brand-aware silhouettes** — the catalog's semantic glyph cue chooses the
+  brand family (tile monogram, play mark, eye, shield, wave, folder, sport
+  mark, and more), then hash-seeded proportions, pose, internal pattern, and
+  signature pixels make each app's sprite distinct. No icon is a pixelated copy
+  of the monoline set.
 - **Neon bloom** — a compact violet/cyan halo sits behind each sprite without
   painting a background into the transparent icon.
 - **Pixel bevel** — one-pixel top-left highlights and a darker bottom-right
@@ -44,7 +46,8 @@ The two packs have different package IDs and can be installed side by side:
 ## Regenerating the art
 
 `tools/catalog.json` remains the only source of truth for names, components,
-colours, and glyphs. The alternate renderer does not copy or fork the catalog.
+colours, and semantic brand glyph cues. The alternate renderer does not copy or
+fork the catalog, and it never imports the monoline SVG paths.
 From the repository root, build the alternate art directly from the catalog:
 
 ```bash

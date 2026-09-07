@@ -2,7 +2,7 @@
 
 `924` individually generated pixel sprites · `1098` catalog components · pack v0.1.0
 
-This is the alternate 8-bit neon treatment of the Core Builds catalog. Each row gets a hash-seeded sprite recipe; this pack does not reuse the monoline SVG geometry or banner lockups.
+This is the alternate 8-bit neon treatment of the Core Builds catalog. Each row uses its semantic brand glyph cue, then gets a hash-seeded pixel recipe; this pack does not reuse the monoline SVG geometry or banner lockups.
 
 | App | Drawable | Neon source accent | Components |
 | --- | --- | --- | --- |

@@ -4,15 +4,16 @@
 This is intentionally *not* a pixelated export of the monoline pack. The
 original pack's SVG masters, banners, paths, and layout are not read here.
 Each catalog row is drawn from a small-pixel sprite recipe selected by its
-category/name hash, with different silhouettes, poses, internal details, and
-neon palettes. The catalog still owns names and component mappings; this file
-owns the alternate art direction.
+brand glyph plus a category/name hash, with different silhouettes, poses,
+internal details, and neon palettes. The catalog still owns names, brand glyph
+cues, and component mappings; this file owns the alternate art direction.
 
 Design constraints:
   * 32x32 source sprites: a classic, readable icon scale rather than a
     downsampled 512px vector.
   * 4-8 practical sprite colours plus a controlled bloom.
-  * silhouette first, no anti-aliasing, hard pixel edges, top-left highlights.
+  * semantic brand cue first, then silhouette-first composition; no
+    anti-aliasing, hard pixel edges, top-left highlights.
   * no baked background in app icons; launcher cards remain visible through
     transparent pixels.
 
@@ -185,8 +186,10 @@ class SpritePainter:
 
 # ---------------------------------------------------------------------------
 # Pixel sprite recipes. These are filled sprites and stepped silhouettes, not
-# traces of the monoline glyph library. The same recipe has multiple positions,
-# proportions, highlights, and internal patterns through SpritePainter.rng.
+# traces of the monoline glyph library. Brand-aware constructions below use the
+# catalog's semantic glyph cue (tile, eye, shield, play, wave, etc.) and then
+# vary positions, proportions, highlights, and internal patterns through
+# SpritePainter.rng.
 # ---------------------------------------------------------------------------
 def motif_screen(p: SpritePainter):
     x, y = p.rng.choice([4, 5, 6]), p.rng.choice([5, 6, 7])
@@ -542,6 +545,12 @@ SPECIAL_MOTIFS = {
 
 
 def choose_motif(icon: dict, ordinal: int, rng: random.Random) -> str:
+    # The catalog's glyph is the brand cue. Category recipes remain a safe
+    # fallback for future rows without a glyph, but known catalog rows should
+    # never become a random generic screen/portal just because they share a
+    # category with another app.
+    if icon.get("glyph"):
+        return "brand"
     drawable = icon["drawable"]
     if drawable in SPECIAL_MOTIFS:
         return SPECIAL_MOTIFS[drawable]
@@ -648,6 +657,358 @@ def draw_pixel_text(draw, text: str, x: int, y: int, color: str, scale: int = 1,
                                     y + row * scale + scale - 1), fill=color)
         cursor += len(pattern[0]) * scale + scale
     return cursor - x
+
+
+def brand_initials(name: str) -> str:
+    """Return a compact brand token that remains legible on the 32px grid."""
+    words = [word for word in clean_label(name).split() if word]
+    if not words:
+        return "CB"
+    if len(words) == 1:
+        word = words[0]
+        return word[:2]
+    return "".join(word[0] for word in words)[:3]
+
+
+def brand_text(p: SpritePainter, text: str, x: int, y: int, color: str,
+               scale: int = 1, max_width: int | None = None) -> int:
+    return draw_pixel_text(p.draw, text, x, y, color, scale=scale, max_width=max_width)
+
+
+def brand_tile(p: SpritePainter, icon: dict, glyph: str):
+    """Pixel-native brand monograms with varied containers for tile glyphs."""
+    token = glyph.removeprefix("tile_")
+    label = token if token in {"10", "7", "9", "N"} else brand_initials(icon["name"])
+    variant = 0 if token in {"10", "7", "9"} else p.rng.randrange(4)
+
+    if variant == 0:
+        x, y = p.rng.choice([3, 4, 5]), p.rng.choice([3, 4, 5])
+        w, h = p.rng.choice([22, 23, 24]), p.rng.choice([22, 23, 24])
+        p.stepped_box(x + 1, y + 1, w, h, p.shadow, 2)
+        p.stepped_box(x, y, w, h, p.primary, 2)
+        p.r((x + 3, y + 3, x + w - 4, y + h - 4), p.void)
+        tx, ty, max_width = x + 3, y + 3, w - 6
+    elif variant == 1:
+        x, y = p.rng.choice([3, 4]), p.rng.choice([8, 9, 10])
+        w, h = p.rng.choice([24, 25]), p.rng.choice([13, 14])
+        p.stepped_box(x + 1, y + 1, w, h, p.shadow, 3)
+        p.stepped_box(x, y, w, h, p.primary, 3)
+        p.r((x + 3, y + 3, x + w - 4, y + h - 4), p.void)
+        p.r((x + 4, y + h - 4, x + w - 5, y + h - 3), p.secondary)
+        tx, ty, max_width = x + 3, y + 3, w - 6
+    elif variant == 2:
+        cx, cy = p.rng.choice([15, 16, 17]), p.rng.choice([14, 15, 16])
+        r = p.rng.choice([10, 11])
+        p.poly([(cx, cy - r - 1), (cx + r, cy - 4), (cx + r + 1, cy + 4),
+                (cx, cy + r + 1), (cx - r - 1, cy + 4), (cx - r, cy - 4)], p.shadow)
+        p.poly([(cx, cy - r), (cx + r - 1, cy - 3), (cx + r, cy + 3),
+                (cx, cy + r), (cx - r, cy + 3), (cx - r + 1, cy - 3)], p.primary)
+        p.r((cx - r + 3, cy - 5, cx + r - 3, cy + 5), p.void)
+        tx, ty, max_width = cx - r + 3, cy - 3, (r * 2) - 6
+    else:
+        x, y = 4, p.rng.choice([5, 6, 7])
+        w, h = p.rng.choice([22, 23]), p.rng.choice([20, 21])
+        p.r((x + 1, y + 1, x + w, y + h), p.shadow)
+        p.r((x, y, x + w - 1, y + h - 1), p.primary)
+        p.r((x + 3, y + 3, x + w - 4, y + h - 4), p.void)
+        p.r((x + w - 6, y + 3, x + w - 4, y + h - 4), p.secondary)
+        tx, ty, max_width = x + 3, y + 6, w - 10
+
+    scale = 2 if text_width(label, 2) <= max_width else 1
+    width = text_width(label, scale)
+    tx += max(0, (max_width - width) // 2)
+    brand_text(p, label, tx, ty + max(0, (10 - 5 * scale) // 2),
+               p.secondary, scale=scale, max_width=max_width)
+    p.glint(6, 6)
+
+
+def brand_play(p: SpritePainter, icon: dict, glyph: str):
+    """Rebuild play brands as stepped badges, not as the monoline play path."""
+    if glyph == "play_store_tri":
+        p.poly([(7, 4), (7, 28), (26, 16)], p.shadow)
+        p.poly([(6, 3), (6, 27), (25, 15)], p.primary)
+        p.poly([(8, 5), (8, 25), (17, 15)], p.secondary)
+        p.poly([(8, 5), (17, 15), (22, 12)], p.highlight)
+        return
+    if glyph == "plus_star":
+        # A tiny castle silhouette is the Disney+ cue; the star/plus is kept
+        # abstract so it remains an independent pixel recipe.
+        p.r((5, 15, 27, 26), p.shadow)
+        p.r((6, 14, 26, 25), p.primary)
+        p.r((9, 10, 13, 24), p.secondary)
+        p.r((15, 7, 19, 24), p.secondary)
+        p.r((21, 12, 23, 24), p.secondary)
+        p.poly([(17, 3), (18, 6), (21, 6), (19, 8), (20, 11), (17, 9),
+                (14, 11), (15, 8), (13, 6), (16, 6)], p.highlight)
+        return
+    x, y = p.rng.choice([4, 5, 6]), p.rng.choice([5, 6, 7])
+    w, h = p.rng.choice([21, 22]), p.rng.choice([15, 16])
+    p.stepped_box(x + 1, y + 1, w, h, p.shadow, 2)
+    p.stepped_box(x, y, w, h, p.primary, 2)
+    p.r((x + 3, y + 3, x + w - 4, y + h - 4), p.void)
+    cx, cy = x + w // 2, y + h // 2
+    p.poly([(cx - 3, cy - 5), (cx + 5, cy), (cx - 3, cy + 5)], p.secondary)
+    p.dot(cx - 3, cy - 5, p.highlight)
+    if glyph in {"play_round", "stremio_square", "smarttube_play", "yt_play"}:
+        p.dot(x + w - 4, y + 3, p.highlight)
+
+
+def brand_eye(p: SpritePainter, icon: dict, glyph: str):
+    cx, cy = p.rng.choice([14, 15, 16, 17]), p.rng.choice([14, 15, 16])
+    p.poly([(cx - 11, cy), (cx - 6, cy - 5), (cx, cy - 7),
+            (cx + 7, cy - 5), (cx + 11, cy), (cx + 6, cy + 5),
+            (cx, cy + 7), (cx - 7, cy + 5)], p.shadow)
+    p.poly([(cx - 10, cy), (cx - 5, cy - 4), (cx, cy - 6),
+            (cx + 6, cy - 4), (cx + 10, cy), (cx + 5, cy + 4),
+            (cx, cy + 6), (cx - 6, cy + 4)], p.primary)
+    p.stepped_box(cx - 4, cy - 4, 8, 8, p.void, 2)
+    p.r((cx - 2, cy - 2, cx + 2, cy + 2), p.secondary)
+    p.dot(cx - 2, cy - 2, p.highlight)
+
+
+def brand_shield(p: SpritePainter, icon: dict, glyph: str):
+    motif_shield(p)
+    cx = 15 if glyph == "adguard_shield" else 16
+    if glyph in {"adguard_shield", "mullvad_shield", "proton_shield"}:
+        p.stair([(cx - 4, 15), (cx - 1, 18), (cx + 5, 11)], p.highlight)
+    elif glyph == "emby_shield":
+        p.poly([(cx - 3, 12), (cx + 4, 16), (cx - 3, 20)], p.secondary)
+    elif glyph == "shield_key":
+        p.r((cx - 1, 12, cx + 1, 20), p.secondary)
+        p.r((cx - 4, 15, cx + 2, 17), p.secondary)
+        p.r((cx + 2, 18, cx + 4, 20), p.highlight)
+
+
+def brand_wave(p: SpritePainter, icon: dict, glyph: str):
+    """Pixel reinterpretations of wave, arc, and equalizer brand cues."""
+    if glyph == "spotify_arcs":
+        p.poly([(16, 3), (24, 6), (28, 15), (24, 25), (16, 29), (8, 25),
+                (4, 16), (8, 6)], p.shadow)
+        p.poly([(16, 2), (23, 5), (27, 15), (23, 24), (16, 28), (9, 24),
+                (5, 15), (9, 5)], p.primary)
+        p.stair([(9, 11), (13, 10), (18, 10), (23, 12)], p.void)
+        p.stair([(10, 15), (14, 14), (18, 14), (22, 16)], p.void)
+        p.stair([(11, 19), (15, 18), (18, 18), (21, 20)], p.void)
+        p.dot(9, 6, p.highlight)
+        return
+    if glyph in {"equalizer", "dazn_bars", "sbs_bars", "deezer_columns"}:
+        x0 = p.rng.choice([7, 8, 9])
+        for index, x in enumerate(range(x0, x0 + 20, 5)):
+            height = p.rng.choice([5, 7, 9])
+            p.r((x, 25 - height, x + 2, 25), p.secondary if index % 2 else p.primary)
+            p.r((x, 25 - height, x + 2, 25 - height + 1), p.highlight)
+        if glyph == "dazn_bars":
+            p.stepped_box(5, 4, 22, 22, p.shadow, 2)
+            p.stepped_box(4, 3, 22, 22, p.primary, 2)
+            brand_text(p, "DAZN", 8, 13, p.secondary, scale=1, max_width=14)
+        return
+    if glyph in {"tidal_wave", "stan_wave", "binge_wave", "max_wave"}:
+        cx, cy = 16, 15
+        p.stair([(5, 15), (9, 11), (13, 15), (17, 19), (21, 15), (27, 9)], p.shadow)
+        p.stair([(4, 14), (8, 10), (12, 14), (16, 18), (20, 14), (26, 8)], p.primary)
+        p.stair([(6, 22), (11, 22), (15, 19), (20, 22), (25, 22)], p.secondary)
+        p.dot(cx, cy, p.highlight)
+        return
+    motif_wave(p)
+    # A second line keeps generic signal marks distinct while preserving the
+    # brand glyph's wave language.
+    p.stair([(7, 22), (11, 20), (15, 20), (19, 22), (24, 22)], p.highlight)
+
+
+def brand_folder(p: SpritePainter, icon: dict, glyph: str):
+    motif_folder(p)
+    label = brand_initials(icon["name"])
+    width = text_width(label, 1)
+    brand_text(p, label, 15 - width // 2, 13, p.highlight, scale=1, max_width=14)
+    if "wifi" in glyph:
+        p.stair([(22, 7), (24, 5), (26, 7)], p.secondary)
+
+
+def brand_globe(p: SpritePainter, icon: dict, glyph: str):
+    motif_globe(p)
+    label = brand_initials(icon["name"])
+    if glyph == "browser_globe2":
+        label = "B"
+    width = text_width(label, 1)
+    brand_text(p, label, 16 - width // 2, 13, p.highlight, scale=1, max_width=12)
+
+
+def brand_note(p: SpritePainter, icon: dict, glyph: str):
+    motif_note(p)
+    if glyph == "qobuz_note":
+        p.r((8, 8, 12, 10), p.highlight)
+    else:
+        label = brand_initials(icon["name"])
+        brand_text(p, label[:2], 14, 10, p.highlight, scale=1, max_width=7)
+
+
+def brand_sports(p: SpritePainter, icon: dict, glyph: str):
+    if glyph in {"nba_ball", "nfl_ball", "mlb_homeplate", "tennis_mark"}:
+        motif_ball(p)
+    elif glyph in {"uefa_star", "redbull_sun", "discovery_sunburst", "peacock_fan"}:
+        cx, cy = 16, 15
+        for index in range(8):
+            if index % 2 == 0:
+                p.stair([(cx, cy), (cx + (index - 3) * 3, cy + (index % 3 - 1) * 4)], p.secondary)
+        p.dot(cx, cy, p.highlight)
+    else:
+        motif_trophy(p)
+    label = brand_initials(icon["name"])
+    width = text_width(label, 1)
+    brand_text(p, label, 16 - width // 2, 25, p.highlight, scale=1, max_width=12)
+
+
+def brand_arrow(p: SpritePainter, icon: dict, glyph: str):
+    if "bolt" in glyph or glyph in {"kayo_bolt", "debrid_bolt"}:
+        p.poly([(18, 3), (8, 18), (14, 18), (11, 29), (24, 12), (18, 12)], p.shadow)
+        p.poly([(17, 2), (7, 17), (13, 17), (10, 28), (23, 11), (17, 11)], p.primary)
+        p.r((14, 15, 17, 17), p.highlight)
+    else:
+        p.r((14, 4, 17, 24), p.secondary)
+        p.poly([(8, 19), (15, 27), (23, 19), (20, 19), (16, 23), (11, 19)], p.primary)
+        p.r((8, 27, 23, 29), p.mid)
+
+
+def brand_apple(p: SpritePainter, icon: dict, glyph: str):
+    p.poly([(12, 10), (9, 12), (8, 18), (11, 24), (15, 27), (19, 25),
+            (23, 25), (25, 19), (23, 13), (19, 10), (16, 12)], p.shadow)
+    p.poly([(12, 9), (9, 11), (8, 17), (11, 23), (15, 26), (19, 24),
+            (23, 24), (24, 18), (22, 12), (18, 9), (16, 11)], p.primary)
+    p.r((20, 12, 23, 14), p.void)  # pixel bite
+    p.poly([(16, 8), (17, 4), (21, 3), (20, 7)], p.secondary)
+    p.r((13, 28, 19, 29), p.highlight)
+
+
+def brand_amazon(p: SpritePainter, icon: dict, glyph: str):
+    brand_text(p, "A", 12, 5, p.primary, scale=4, max_width=12)
+    p.stair([(7, 23), (11, 25), (17, 26), (23, 24), (26, 21)], p.secondary)
+    p.poly([(23, 21), (27, 20), (25, 24)], p.highlight)
+
+
+def brand_acorn(p: SpritePainter, icon: dict, glyph: str):
+    cx = p.rng.choice([15, 16, 17])
+    p.poly([(cx, 4), (cx + 8, 10), (cx + 6, 22), (cx, 27),
+            (cx - 7, 22), (cx - 8, 10)], p.shadow)
+    p.poly([(cx, 3), (cx + 7, 9), (cx + 5, 21), (cx, 26),
+            (cx - 6, 21), (cx - 7, 9)], p.primary)
+    p.r((cx - 7, 8, cx + 7, 12), p.secondary)
+    p.stair([(cx - 2, 6), (cx - 4, 3), (cx - 1, 2)], p.highlight)
+
+
+def brand_netflix(p: SpritePainter, icon: dict, glyph: str):
+    p.r((7, 4, 11, 28), p.shadow)
+    p.r((20, 4, 24, 28), p.shadow)
+    p.stair([(10, 5), (21, 27)], p.primary)
+    p.r((7, 3, 11, 27), p.primary)
+    p.r((20, 3, 24, 27), p.primary)
+    p.stair([(10, 4), (21, 26)], p.secondary)
+    p.r((8, 4, 10, 7), p.highlight)
+
+
+def brand_castle(p: SpritePainter, icon: dict, glyph: str):
+    p.r((5, 17, 27, 27), p.shadow)
+    p.r((6, 16, 26, 26), p.primary)
+    for x, h in ((8, 8), (14, 12), (21, 9)):
+        p.r((x, 16 - h // 2, x + 4, 25), p.secondary)
+        p.r((x + 1, 14 - h // 2, x + 3, 16 - h // 2), p.highlight)
+    p.r((9, 21, 11, 26), p.void)
+    p.r((17, 19, 19, 26), p.void)
+    p.r((23, 21, 25, 26), p.void)
+
+
+def brand_mark_badge(p: SpritePainter, icon: dict, glyph: str):
+    """Fallback for a named mark: brand initials inside a glyph-specific badge."""
+    label_overrides = {
+        "a_e_mark": "A&E", "abcnews_mark": "ABC", "amc_a": "AMC",
+        "c4_block": "C4", "cnn_mark": "CNN", "espn_e": "E",
+        "f1_wing": "F1", "netflix_ribbon": "N", "nasa_mark": "NASA",
+        "pbs_mark": "PBS", "tbs_mark": "TBS", "tnt_mark": "TNT",
+        "ufc_octagon": "UFC", "uefa_star": "UEFA", "zee5_mark": "Z5",
+    }
+    label = label_overrides.get(glyph, brand_initials(icon["name"]))
+    if glyph in {"c4_block", "ufc_octagon"} or "octagon" in glyph:
+        p.stepped_box(4, 5, 23, 21, p.shadow, 3)
+        p.stepped_box(3, 4, 23, 21, p.primary, 3)
+    elif "circle" in glyph or "halo" in glyph or "ring" in glyph:
+        p.poly([(16, 3), (25, 7), (28, 16), (25, 25), (16, 29), (7, 25),
+                (4, 16), (7, 7)], p.shadow)
+        p.poly([(16, 2), (24, 6), (27, 16), (24, 24), (16, 28), (8, 24),
+                (5, 16), (8, 6)], p.primary)
+    elif "star" in glyph or "sun" in glyph or "burst" in glyph:
+        p.poly([(16, 2), (19, 11), (28, 8), (21, 15), (28, 21), (19, 20),
+                (16, 29), (13, 20), (4, 22), (11, 15), (4, 9), (13, 11)], p.primary)
+    elif "ribbon" in glyph or "swoosh" in glyph:
+        p.stair([(6, 8), (12, 13), (18, 18), (26, 24)], p.primary)
+        p.stair([(6, 12), (12, 17), (18, 22), (26, 27)], p.secondary)
+    else:
+        p.stepped_box(4, 5, 23, 21, p.shadow, 2)
+        p.stepped_box(3, 4, 23, 21, p.primary, 2)
+        p.r((6, 7, 23, 22), p.void)
+    scale = 1
+    if text_width(label, 2) <= 17:
+        scale = 2
+    width = text_width(label, scale)
+    brand_text(p, label, max(2, 16 - width // 2), 13 if scale == 1 else 11,
+               p.secondary, scale=scale, max_width=26)
+    p.glint(7, 7)
+
+
+def brand_symbol(p: SpritePainter, icon: dict, ordinal: int) -> None:
+    """Select an independent pixel construction from the catalog brand cue."""
+    glyph = (icon.get("glyph") or "").lower()
+    if glyph.startswith("tile_"):
+        brand_tile(p, icon, glyph)
+    elif glyph == "plus_star":
+        brand_castle(p, icon, glyph)
+    elif glyph in {"iptv_player", "monitor_wave", "tivimate_grid", "tv_stack", "google_tv"}:
+        brand_play(p, icon, glyph)
+    elif glyph in {"play_round", "play_rect", "play_hex", "stremio_square",
+                   "play_store_tri", "iplayer_play", "smarttube_play", "yt_play",
+                   "yt_kids", "yt_music", "nova_play", "janky_play", "bag_play"}:
+        brand_play(p, icon, glyph)
+    elif glyph in {"eye", "cbs_eye", "crunchyroll_eye",
+                   "curiosity_eye", "nvidia_eye", "showmax_eye"}:
+        brand_eye(p, icon, glyph)
+    elif "shield" in glyph or glyph in {"adguard_shield", "emby_shield", "shield_key"}:
+        brand_shield(p, icon, glyph)
+    elif glyph in {"folder", "folder_fx", "folder_rs", "folder_solid", "folder_wifi",
+                   "nas_stack", "nas_image", "nas_play"}:
+        brand_folder(p, icon, glyph)
+    elif "globe" in glyph:
+        brand_globe(p, icon, glyph)
+    elif "note" in glyph or glyph in {"music_note", "qobuz_note"}:
+        brand_note(p, icon, glyph)
+    elif any(token in glyph for token in ("wave", "arcs", "equalizer", "bars")):
+        brand_wave(p, icon, glyph)
+    elif any(token in glyph for token in ("ball", "star", "sun", "sports", "tennis")):
+        brand_sports(p, icon, glyph)
+    elif "arrow" in glyph or "bolt" in glyph or glyph in {"download_arrow", "send_arrow"}:
+        brand_arrow(p, icon, glyph)
+    elif glyph == "amazon_smile":
+        brand_amazon(p, icon, glyph)
+    elif glyph == "apple_tv":
+        brand_apple(p, icon, glyph)
+    elif glyph == "acorn_mark":
+        brand_acorn(p, icon, glyph)
+    elif glyph == "netflix_ribbon":
+        brand_netflix(p, icon, glyph)
+    elif glyph in {"satellite", "radar_dish", "dish_mark"}:
+        motif_antenna(p)
+        brand_text(p, brand_initials(icon["name"]), 10, 7, p.highlight, scale=1, max_width=13)
+    elif glyph in {"gamepad", "gamelauncher_mark", "pacman_mark"}:
+        motif_game(p)
+    elif glyph in {"cloud_box", "soundcloud_cloud"}:
+        motif_cloud(p)
+        brand_text(p, brand_initials(icon["name"]), 10, 13, p.highlight, scale=1, max_width=12)
+    elif glyph in {"camera", "instagram_camera"}:
+        motif_camera(p)
+    elif glyph == "podcast_mic":
+        p.stepped_box(11, 5, 10, 15, p.shadow, 4)
+        p.stepped_box(10, 4, 10, 15, p.primary, 4)
+        p.r((14, 8, 17, 17), p.void)
+        p.stair([(8, 15), (8, 22), (16, 27), (24, 22), (24, 15)], p.secondary)
+    else:
+        brand_mark_badge(p, icon, glyph)
 
 
 def clean_label(name: str) -> str:
@@ -802,7 +1163,8 @@ def docs_list(icons: list[dict], source_components: int) -> str:
         "# Core Builds Pixel Neon · supported applications", "",
         f"`{len(icons)}` individually generated pixel sprites · `{source_components}` catalog components · pack v0.1.0", "",
         "This is the alternate 8-bit neon treatment of the Core Builds catalog. "
-        "Each row gets a hash-seeded sprite recipe; this pack does not reuse the monoline SVG geometry or banner lockups.", "",
+        "Each row uses its semantic brand glyph cue, then gets a hash-seeded pixel recipe; "
+        "this pack does not reuse the monoline SVG geometry or banner lockups.", "",
         "| App | Drawable | Neon source accent | Components |", "| --- | --- | --- | --- |",
     ]
     for icon in icons:
@@ -828,7 +1190,7 @@ def preview(icons: list[dict], rendered: dict[str, tuple], source_components: in
         title_font = sub_font = label_font = ImageFont.load_default()
     draw.text((24, 18), "CORE BUILDS / PIXEL NEON", fill=HIGHLIGHT, font=title_font)
     draw.text((24, 57), f"{len(icons)} sprites · {source_components} catalog components · 32px source grid", fill="#9AA8C7", font=sub_font)
-    draw.text((24, 78), "unique silhouettes · hard pixels · transparent app art", fill="#00E5FF", font=sub_font)
+    draw.text((24, 78), "brand-aware marks · hard pixels · transparent app art", fill="#00E5FF", font=sub_font)
     for n, icon in enumerate(sample):
         x, y = (n % cols) * cell, top + (n // cols) * cell
         draw.rectangle((x + 8, y + 5, x + cell - 8, y + cell - 28),
@@ -905,8 +1267,10 @@ def main() -> int:
         palette = palette_for(icon, ordinal)
         painter = SpritePainter(palette, seed)
         motif_name = choose_motif(icon, ordinal, painter.rng)
-        motif = MOTIFS[motif_name]
-        motif(painter)
+        if motif_name == "brand":
+            brand_symbol(painter, icon, ordinal)
+        else:
+            MOTIFS[motif_name](painter)
         final, small, mask = render_sprite(painter)
         # The catalog has 924 rows; enforce one distinct raster for every row,
         # even if future recipe changes accidentally produce a collision.
@@ -949,7 +1313,7 @@ def main() -> int:
         "appfilterEntries": emitted,
         "pixelGrid": SPRITE_GRID,
         "uniqueSprites": len(used_hashes),
-        "artSource": "tools/build_pixel_neon.py sprite recipes",
+        "artSource": "tools/build_pixel_neon.py brand glyph sprite recipes",
         "generatedBy": "tools/build_pixel_neon.py",
     }
     write(DOC_DIR / "build-receipt.json", json.dumps(receipt, indent=2) + "\n")

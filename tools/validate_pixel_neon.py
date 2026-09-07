@@ -136,9 +136,13 @@ def main() -> int:
     check(receipt.get("icons") == len(icons), "build receipt icon count drifted")
     check(receipt.get("catalogComponents") == sum(len(i["components"]) for i in icons),
           "build receipt component count drifted")
+    check("brand glyph" in receipt.get("artSource", ""),
+          "build receipt does not record brand-aware sprite recipes")
     source = (ROOT / "tools" / "build_pixel_neon.py").read_text(encoding="utf-8")
     check("BASE_SVG" not in source and "BASE_BANNERS" not in source,
           "Pixel Neon renderer still depends on monoline source assets")
+    check("icon.get(\"glyph\")" in source and "brand_symbol" in source,
+          "Pixel Neon renderer does not use catalog brand glyph cues")
 
     if failures:
         print(f"Pixel Neon validation failed — {len(failures)} problem(s)")

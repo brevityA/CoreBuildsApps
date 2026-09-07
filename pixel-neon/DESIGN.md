@@ -29,10 +29,12 @@ The resulting rules are:
 
 1. Draw on a **32×32 integer pixel canvas**. Upscale with nearest-neighbour to
    the 512×512 icon resource; never downsample the monoline SVGs.
-2. Start from a **category silhouette**, not a logo outline. The recipe families
-   are screens, portals, reels, tickets, antennas, waves, notes, folders,
-   terminals, shields, globes, controllers, carts, balls, remotes, crystals,
-   clouds, trophies, cameras, and chat bubbles.
+2. Start from the catalog's **semantic brand glyph cue**, not a copied logo
+   outline. Tile glyphs become compact brand monograms; named cues become
+   independently drawn pixel families for plays, eyes, shields, waves, folders,
+   sports marks, stars, arrows, clouds, satellites, and other recognizable
+   brand signals. Category silhouettes remain the fallback for future rows with
+   no brand cue.
 3. Keep the visible sprite to a small palette: one primary neon, one secondary
    accent, dark outline/shadow, a midtone, and a single light highlight. The
    glow is a restrained raster halo around the sprite, not a baked card
@@ -49,9 +51,10 @@ The resulting rules are:
 ## Delivery contract
 
 `tools/build_pixel_neon.py` reads only `tools/catalog.json` for product names,
-components, source accent colours, and categories. Its sprite recipes are
-owned by the alternate renderer. It has no read path to `assets/svg` or
-`assets/banners`.
+components, source accent colours, categories, and semantic brand glyph cues.
+Its sprite recipes are owned by the alternate renderer, so the brand cues are
+reinterpreted as pixel art rather than converted from vector paths. It has no
+read path to `assets/svg` or `assets/banners`.
 
 The generated pack keeps the Android icon-pack contract:
 
@@ -63,9 +66,10 @@ The generated pack keeps the Android icon-pack contract:
   `res/values/icon_pack.xml` expose the square and banner catalog to the
   picker.
 - `app/src/main/assets/` mirrors the launcher XML resources.
-- `docs/build-receipt.json` records `pixelGrid: 32` and
-  `uniqueSprites: 924`; `tools/validate_pixel_neon.py` verifies those claims,
-  dimensions, mappings, and asset parity.
+- `docs/build-receipt.json` records `pixelGrid: 32`,
+  `uniqueSprites: 924`, and the brand-glyph recipe source;
+  `tools/validate_pixel_neon.py` verifies those claims, dimensions, mappings,
+  and asset parity.
 
 This keeps the product compatible with the existing Android delivery format
 while making the visual source and composition genuinely independent.
