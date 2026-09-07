@@ -4,8 +4,8 @@
 The icon pack and the wallpaper pack share a palette language, not artwork. This
 renderer works on a 240x135 logical canvas, uses a small indexed palette, then
 upscales with nearest-neighbour to 3840x2160. Every scene is made from integer
-pixel primitives and deterministic seeds; no Core Builds wallpaper source is
-read or recoloured.
+pixel primitives and deterministic seeds, with an original game-character
+render in the foreground; no Core Builds wallpaper source is read or recoloured.
 
 Run from the repository root:
 
@@ -223,6 +223,185 @@ def pixel_ship(draw: ImageDraw.ImageDraw, x: int, y: int, colour: int, glow: int
                 max(x - 7 * direction, x - direction), y + 7), glow)
 
 
+def avatar(
+    draw: ImageDraw.ImageDraw,
+    rng: random.Random,
+    kind: int,
+    cx: int,
+    ground: int,
+    pose: int,
+    primary: int,
+    accent: int,
+    light: int,
+    shadow: int,
+) -> None:
+    """Draw an original game-like character render on the logical pixel grid.
+
+    The character is built from silhouette-first clusters rather than a traced
+    game asset. Each archetype has one readable signature: helmet, hood, staff,
+    shield, visor, antenna, bow, dagger, or horns. That keeps the foreground
+    legible at TV distance while the pose/placement/colour seed makes each
+    wallpaper a different scene.
+    """
+    x = cx - 15
+    bob = (pose % 3) - 1
+    top = ground - 52 + bob
+    lean = -2 if pose % 4 == 1 else 2 if pose % 4 == 2 else 0
+    # Feet and the two-pixel ground contact establish a strong silhouette.
+    rect(draw, (x + 7 + lean, ground - 7, x + 13 + lean, ground + 1), shadow)
+    rect(draw, (x + 20 + lean, ground - 7, x + 26 + lean, ground + 1), shadow)
+    rect(draw, (x + 8 + lean, ground - 8, x + 12 + lean, ground - 1), primary)
+    rect(draw, (x + 21 + lean, ground - 8, x + 25 + lean, ground - 1), primary)
+    if pose % 2:
+        rect(draw, (x + 5 + lean, ground - 2, x + 13 + lean, ground + 1), accent)
+
+    # Cloak/coat silhouette and interior light-facing plane.
+    poly(draw, [(x + 7, top + 22), (x + 23, top + 20), (x + 30, ground - 10),
+                (x + 2, ground - 10)], shadow)
+    if kind in {1, 5, 6, 8}:
+        poly(draw, [(x + 4, top + 23), (x + 13, top + 20), (x + 12, ground - 9),
+                    (x + 1, ground - 11)], primary)
+    rect(draw, (x + 12 + lean, top + 23, x + 22 + lean, ground - 10), primary)
+    rect(draw, (x + 14 + lean, top + 25, x + 20 + lean, ground - 12), light)
+    rect(draw, (x + 13 + lean, top + 33, x + 21 + lean, top + 36), shadow)
+    rect(draw, (x + 16 + lean, top + 29, x + 18 + lean, top + 32), accent)
+
+    # Arms use stepped blocks; the alternating pose changes the gesture.
+    if pose % 2 == 0:
+        rect(draw, (x + 2, top + 25, x + 9, top + 31), primary)
+        rect(draw, (x + 1, top + 30, x + 6, top + 34), shadow)
+        rect(draw, (x + 23, top + 24, x + 30, top + 29), primary)
+        rect(draw, (x + 29, top + 28, x + 34, top + 31), accent)
+    else:
+        rect(draw, (x + 2, top + 23, x + 8, top + 28), accent)
+        rect(draw, (x + 0, top + 27, x + 5, top + 32), primary)
+        rect(draw, (x + 24, top + 25, x + 31, top + 33), primary)
+        rect(draw, (x + 29, top + 31, x + 33, top + 34), light)
+
+    # Head, hair/helmet and the two-pixel face read.
+    if kind == 2:  # mage hood and broad hat
+        poly(draw, [(x + 4, top + 13), (x + 10, top + 5), (x + 22, top + 5),
+                    (x + 28, top + 13)], shadow)
+        rect(draw, (x + 2, top + 11, x + 30, top + 15), primary)
+        rect(draw, (x + 8, top + 13, x + 24, top + 24), shadow)
+        rect(draw, (x + 11, top + 15, x + 21, top + 24), primary)
+    elif kind == 3:  # pilot visor
+        stepped = [(x + 8, top + 6), (x + 22, top + 6), (x + 27, top + 11),
+                   (x + 25, top + 23), (x + 7, top + 23), (x + 4, top + 15)]
+        poly(draw, stepped, shadow)
+        poly(draw, [(x + 9, top + 8), (x + 21, top + 8), (x + 24, top + 12),
+                    (x + 22, top + 20), (x + 9, top + 20), (x + 7, top + 14)], primary)
+        rect(draw, (x + 9, top + 12, x + 23, top + 16), accent)
+        rect(draw, (x + 11, top + 12, x + 15, top + 13), light)
+    elif kind == 4:  # android square head and antenna
+        rect(draw, (x + 6, top + 6, x + 26, top + 23), shadow)
+        rect(draw, (x + 8, top + 8, x + 24, top + 21), primary)
+        rect(draw, (x + 11, top + 14, x + 13, top + 16), light)
+        rect(draw, (x + 19, top + 14, x + 21, top + 16), light)
+        line(draw, [(x + 16, top + 6), (x + 16, top + 1)], accent)
+        rect(draw, (x + 15, top, x + 17, top + 2), light)
+    elif kind == 7:  # alien ears and a tail-like silhouette
+        poly(draw, [(x + 7, top + 14), (x + 2, top + 6), (x + 11, top + 10),
+                    (x + 21, top + 9), (x + 29, top + 5), (x + 25, top + 16),
+                    (x + 24, top + 23), (x + 8, top + 23)], shadow)
+        rect(draw, (x + 9, top + 11, x + 24, top + 22), primary)
+        rect(draw, (x + 12, top + 15, x + 14, top + 17), light)
+        rect(draw, (x + 19, top + 15, x + 21, top + 17), light)
+    else:  # runner, knight, ranger, rogue, and boss helmets/hoods
+        poly(draw, [(x + 7, top + 12), (x + 11, top + 5), (x + 22, top + 5),
+                    (x + 27, top + 12), (x + 25, top + 24), (x + 8, top + 24)], shadow)
+        rect(draw, (x + 9, top + 10, x + 24, top + 22), primary)
+        if kind == 1:  # knight crest
+            poly(draw, [(x + 13, top + 7), (x + 16, top + 1), (x + 19, top + 7)], accent)
+            rect(draw, (x + 9, top + 14, x + 24, top + 17), shadow)
+        elif kind in {5, 6}:
+            rect(draw, (x + 6, top + 10, x + 26, top + 14), shadow)
+            rect(draw, (x + 12, top + 15, x + 14, top + 17), light)
+            rect(draw, (x + 20, top + 15, x + 22, top + 17), light)
+        else:
+            rect(draw, (x + 12, top + 15, x + 14, top + 17), light)
+            rect(draw, (x + 20, top + 15, x + 22, top + 17), accent)
+
+    # Class prop: one iconographic object per character, all original shapes.
+    if kind == 0:  # runner blaster + speed trail
+        rect(draw, (x + 28, top + 24, x + 39, top + 28), shadow)
+        rect(draw, (x + 30, top + 23, x + 38, top + 25), accent)
+        rect(draw, (x + 38, top + 24, x + 42, top + 25), light)
+        line(draw, [(x - 7, ground - 16), (x - 1, ground - 16)], accent)
+        rect(draw, (x - 11, ground - 12, x - 4, ground - 11), primary)
+    elif kind == 1:  # shield and sword
+        poly(draw, [(x - 7, top + 26), (x + 1, top + 24), (x + 4, top + 34),
+                    (x - 2, top + 40), (x - 8, top + 34)], shadow)
+        poly(draw, [(x - 5, top + 27), (x + 0, top + 26), (x + 2, top + 33),
+                    (x - 2, top + 37), (x - 6, top + 33)], accent)
+        line(draw, [(x + 26, top + 31), (x + 39, top + 17)], light, 2)
+        rect(draw, (x + 24, top + 31, x + 31, top + 33), accent)
+    elif kind == 2:  # staff and spell orb
+        line(draw, [(x + 33, top + 9), (x + 33, ground - 2)], shadow, 2)
+        line(draw, [(x + 30, top + 12), (x + 36, top + 12)], accent)
+        stepped_circle(draw, x + 33, top + 7, 5, accent)
+        rect(draw, (x + 32, top + 5, x + 34, top + 7), light)
+    elif kind == 3:  # jetpack exhaust
+        rect(draw, (x + 3, top + 25, x + 6, ground - 11), shadow)
+        rect(draw, (x + 25, top + 25, x + 28, ground - 11), shadow)
+        poly(draw, [(x + 3, ground - 10), (x + 7, ground - 10), (x + 5, ground - 1)], accent)
+        poly(draw, [(x + 25, ground - 10), (x + 29, ground - 10), (x + 27, ground - 1)], light)
+    elif kind == 4:  # android chest port and cable
+        rect(draw, (x + 15, top + 28, x + 19, top + 34), light)
+        line(draw, [(x + 19, top + 31), (x + 29, top + 39), (x + 34, top + 37)], accent)
+        rect(draw, (x + 32, top + 36, x + 35, top + 39), light)
+    elif kind == 5:  # ranger bow and arrow
+        line(draw, [(x - 4, top + 22), (x - 9, top + 31), (x - 4, top + 40)], accent)
+        line(draw, [(x - 4, top + 22), (x - 4, top + 40)], light)
+        line(draw, [(x - 4, top + 31), (x + 11, top + 31)], primary)
+        rect(draw, (x + 10, top + 30, x + 14, top + 32), light)
+    elif kind == 6:  # rogue twin daggers
+        line(draw, [(x - 1, top + 31), (x - 8, top + 39)], light, 2)
+        line(draw, [(x + 28, top + 31), (x + 35, top + 39)], accent, 2)
+        rect(draw, (x - 4, top + 30, x + 2, top + 32), shadow)
+        rect(draw, (x + 25, top + 30, x + 31, top + 32), shadow)
+    elif kind == 7:  # alien tail and antenna glow
+        line(draw, [(x + 24, ground - 14), (x + 34, ground - 10),
+                    (x + 38, ground - 16), (x + 43, ground - 14)], accent, 2)
+        line(draw, [(x + 13, top + 7), (x + 10, top + 1)], light)
+        rect(draw, (x + 9, top, x + 11, top + 2), accent)
+    else:  # boss horns and core
+        poly(draw, [(x + 8, top + 9), (x + 3, top + 1), (x + 12, top + 5)], accent)
+        poly(draw, [(x + 22, top + 5), (x + 30, top + 1), (x + 26, top + 11)], accent)
+        rect(draw, (x + 13, top + 28, x + 21, top + 35), light)
+        rect(draw, (x + 15, top + 30, x + 19, top + 33), accent)
+
+
+def boss_render(draw: ImageDraw.ImageDraw, rng: random.Random, cx: int, ground: int, pose: int, primary: int, accent: int, light: int, shadow: int) -> None:
+    """Large original boss silhouette for the arena series."""
+    x = cx - 29
+    top = ground - 67 + (pose % 3)
+    # Broad wing/shoulder silhouette first.
+    poly(draw, [(x + 19, top + 12), (x + 5, top + 20), (x, top + 42),
+                (x + 13, top + 38), (x + 9, ground - 5), (x + 49, ground - 5),
+                (x + 45, top + 38), (x + 58, top + 42), (x + 53, top + 20),
+                (x + 39, top + 12)], shadow)
+    poly(draw, [(x + 21, top + 17), (x + 9, top + 23), (x + 7, top + 35),
+                (x + 17, top + 33), (x + 15, ground - 8), (x + 43, ground - 8),
+                (x + 41, top + 33), (x + 51, top + 35), (x + 49, top + 23),
+                (x + 37, top + 17)], primary)
+    # Head/face and horns.
+    poly(draw, [(x + 16, top + 16), (x + 22, top + 5), (x + 30, top + 12),
+                (x + 38, top + 5), (x + 44, top + 16), (x + 40, top + 30),
+                (x + 20, top + 30)], shadow)
+    rect(draw, (x + 21, top + 16, x + 39, top + 27), accent)
+    rect(draw, (x + 24, top + 19, x + 27, top + 21), light)
+    rect(draw, (x + 33, top + 19, x + 36, top + 21), light)
+    rect(draw, (x + 26, top + 25, x + 34, top + 27), shadow)
+    # Energy claws/weapon and a ground contact glow.
+    for side in (-1, 1):
+        line(draw, [(cx + side * 22, top + 34), (cx + side * 34, top + 48)], accent, 2)
+        rect(draw, (cx + side * 36 - 1, top + 48, cx + side * 36 + 1, top + 52), light)
+    rect(draw, (x + 12, ground - 4, x + 46, ground - 1), light)
+    for xx in range(x + 16, x + 45, 7):
+        rect(draw, (xx, ground - 9 - ((xx + pose) % 4), xx + 2, ground - 6), accent)
+
+
 def central_emblem(draw: ImageDraw.ImageDraw, rng: random.Random, primary: int, accent: int, light: int, mode: int) -> None:
     cx, cy = WIDTH // 2 + rng.randrange(-8, 9), rng.randrange(43, 70)
     if mode == 0:
@@ -272,6 +451,8 @@ def scene_arcade(draw: ImageDraw.ImageDraw, palette: list[str], rng: random.Rand
     else:
         for xx in range(20, WIDTH - 20, 18):
             rect(draw, (xx, horizon - 3, xx + 7, horizon - 2), 6)
+    avatar(draw, rng, variant % 8, 120 + rng.randrange(-28, 29), 124, variant,
+           4 if variant % 2 else 5, 7, 14, 2)
 
 
 def scene_cyber(draw: ImageDraw.ImageDraw, palette: list[str], rng: random.Random, variant: int) -> None:
@@ -295,6 +476,8 @@ def scene_cyber(draw: ImageDraw.ImageDraw, palette: list[str], rng: random.Rando
         line(draw, [(0, 118), (WIDTH - 1, 118)], 5)
         for x in range(8, WIDTH, 17):
             rect(draw, (x, 116, x + 2, 120), 5)
+    avatar(draw, rng, (variant + 2) % 9, 120 + rng.randrange(-30, 31), 122, variant + 1,
+           4 if variant % 2 == 0 else 7, 5 if variant % 2 == 0 else 4, 9, 2)
 
 
 def scene_space(draw: ImageDraw.ImageDraw, palette: list[str], rng: random.Random, variant: int) -> None:
@@ -319,6 +502,8 @@ def scene_space(draw: ImageDraw.ImageDraw, palette: list[str], rng: random.Rando
     elif variant % 4 == 2:
         line(draw, [(26, 18), (26, 40), (39, 40)], 5)
         rect(draw, (23, 16, 29, 20), 8)
+    avatar(draw, rng, (variant + 3) % 8, 122 + rng.randrange(-34, 35), 124, variant + 2,
+           4 if variant % 2 else 6, 5 if variant % 2 else 7, 8, 2)
 
 
 def scene_nature(draw: ImageDraw.ImageDraw, palette: list[str], rng: random.Random, variant: int) -> None:
@@ -351,6 +536,8 @@ def scene_nature(draw: ImageDraw.ImageDraw, palette: list[str], rng: random.Rand
         for x in range(18, 225, 22):
             rect(draw, (x, rng.randrange(102, 118), x + 2, 127), 6)
             rect(draw, (x - 4, 113, x + 6, 115), 7)
+    avatar(draw, rng, (variant + 4) % 8, 120 + rng.randrange(-32, 33), 125, variant + 3,
+           4 if variant % 2 == 0 else 5, 6, 14, 2)
 
 
 def scene_boss(draw: ImageDraw.ImageDraw, palette: list[str], rng: random.Random, variant: int) -> None:
@@ -382,6 +569,10 @@ def scene_boss(draw: ImageDraw.ImageDraw, palette: list[str], rng: random.Random
         for yy in range(cy - 20, cy + 22, 8):
             rect(draw, (cx - 31, yy, cx + 31, yy + 2), 5 if yy % 16 else 7)
         rect(draw, (cx - 5, cy - 26, cx + 5, cy + 26), 9)
+    avatar(draw, rng, (variant + 5) % 7, 56 + rng.randrange(-8, 9), 125, variant + 4,
+           5 if variant % 2 else 7, 6, 9, 2)
+    boss_render(draw, rng, 164 + rng.randrange(-10, 11), 125, variant,
+                5 if variant % 2 else 7, 7 if variant % 2 else 4, 9, 2)
     rect(draw, (0, floor + 2, WIDTH - 1, floor + 3), 8)
 
 
