@@ -141,7 +141,7 @@ object WallpaperExporter {
     /**
      * Best-effort space check against the cache + export target. We don't know
      * exact on-wire sizes without a HEAD per file (costly), so we use a
-     * conservative per-file ceiling of 5 MB — real 4K PNGs are 2–3 MB.
+     * conservative 5 MB per-file ceiling for 4K sources.
      */
     private fun ensureSpace(context: Context, wallpapers: List<Wallpaper>) {
         val bytesNeeded = wallpapers.size * 5L * 1024 * 1024 + HEADROOM_BYTES

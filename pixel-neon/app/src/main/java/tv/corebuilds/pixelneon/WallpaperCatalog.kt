@@ -7,17 +7,17 @@ import org.json.JSONObject
 import java.util.Locale
 
 /**
- * Metadata for one wallpaper in the Core Builds collection.
+ * Metadata for one wallpaper in the Pixel Neon collection.
  *
  * The catalog is driven by `assets/manifest/wallpapers.json` (a copy of the
- * repo's `Wallpapers/manifest.json`). Thumbs are bundled so the browser grid
+ * repo's `PixelNeonWallpapers/manifest.json`). Thumbs are bundled so the browser grid
  * is instant offline; the full 4K image is downloaded on demand from [url]
  * (raw GitHub) and cached by [WallpaperDownloader].
  *
  * Parcelable so the browser can hand a selection to [ExportProgressActivity].
  */
 data class Wallpaper(
-    /** Display name, e.g. "41 Core Mark · Signature". */
+    /** Display name, e.g. "01 Raster Rise". */
     val name: String,
     /** Series folder id, e.g. "series-4-core-mark". Drives the filter chips. */
     val series: String,

@@ -75,12 +75,15 @@ The generated pack keeps the Android icon-pack contract:
   `tools/validate_pixel_neon.py` verifies those claims, dimensions, mappings,
   and asset parity.
 
-The wallpaper companion follows the same delivery boundary: the manifest and
-70 small thumbnail JPEGs are bundled for offline browsing, while the full 4K
-PNG sources stay in `Wallpapers/` and are downloaded and cached only when a
-user previews, sets, or exports one. The browser keeps the night/pixel chrome,
-series chips, name search, full-screen preview, direct system setter, Android
-TV save fallback, and `Pictures/CoreBuilds` bulk-export flow.
+The wallpaper companion has its own 8-bit scene language: the 70 source images
+are original low-resolution pixel compositions across arcade grids, cyber
+circuits, space runs, neon nature, and boss-stage arenas. They do not reuse or
+recolour the original pack's wallpapers. The manifest and small thumbnail
+JPEGs are bundled for offline browsing, while the full 4K PNG sources stay in
+`PixelNeonWallpapers/` and are downloaded and cached only when a user previews,
+sets, or exports one. The browser keeps the night/pixel chrome, series chips,
+name search, full-screen preview, direct system setter, Android TV save
+fallback, and `Pictures/CoreBuilds` bulk-export flow.
 
 This keeps the product compatible with the existing Android delivery format
 while making the visual source and composition genuinely independent.

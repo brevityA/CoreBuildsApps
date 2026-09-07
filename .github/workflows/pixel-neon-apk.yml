@@ -7,14 +7,16 @@ on:
       - 'pixel-neon/**'
       - 'tools/catalog.json'
       - 'tools/build_pixel_neon.py'
-      - 'Wallpapers/**'
+      - 'tools/build_pixel_neon_wallpapers.py'
+      - 'PixelNeonWallpapers/**'
       - '.github/workflows/pixel-neon-apk.yml'
   pull_request:
     paths:
       - 'pixel-neon/**'
       - 'tools/catalog.json'
       - 'tools/build_pixel_neon.py'
-      - 'Wallpapers/**'
+      - 'tools/build_pixel_neon_wallpapers.py'
+      - 'PixelNeonWallpapers/**'
       - '.github/workflows/pixel-neon-apk.yml'
   workflow_dispatch:
 
@@ -35,7 +37,10 @@ jobs:
       - name: Install pixel renderer
         run: pip install --quiet -r tools/requirements.txt
 
-      - name: Regenerate Pixel Neon assets
+      - name: Regenerate Pixel Neon wallpaper sources
+        run: python tools/build_pixel_neon_wallpapers.py
+
+      - name: Regenerate Pixel Neon icon and app assets
         run: python tools/build_pixel_neon.py
 
       - name: Validate Pixel Neon mappings and raster dimensions
@@ -43,10 +48,10 @@ jobs:
 
       - name: Verify generated assets are committed
         run: |
-          DRIFT=$(git status --porcelain -- pixel-neon/docs pixel-neon/app/src/main/assets pixel-neon/app/src/main/res/xml pixel-neon/app/src/main/res/values/icon_pack.xml | grep -v '^?? ' || true)
+          DRIFT=$(git status --porcelain -- PixelNeonWallpapers pixel-neon/docs pixel-neon/app/src/main/assets pixel-neon/app/src/main/res/xml pixel-neon/app/src/main/res/values/icon_pack.xml | grep -v '^?? ' || true)
           if [ -n "$DRIFT" ]; then
-            echo "::error::Pixel Neon generated text assets drift from tools/catalog.json."
-            echo "Run: python tools/build_pixel_neon.py"
+            echo "::error::Pixel Neon generated assets drift from the wallpaper/icon sources."
+            echo "Run: python tools/build_pixel_neon_wallpapers.py && python tools/build_pixel_neon.py"
             echo "$DRIFT"
             exit 1
           fi

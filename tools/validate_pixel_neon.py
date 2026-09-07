@@ -13,6 +13,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent
 CATALOG = ROOT / "tools" / "catalog.json"
 PACK = ROOT / "pixel-neon"
+PIXEL_WALLPAPERS = ROOT / "PixelNeonWallpapers"
 RES = PACK / "app" / "src" / "main" / "res"
 failures: list[str] = []
 checks = 0
@@ -123,16 +124,20 @@ def main() -> int:
                   f"assets/{filename} differs from res/xml/{filename}")
 
     # Wallpaper browsing is offline-ready: only the catalog and lightweight
-    # JPEG thumbs are bundled. Full-resolution PNGs remain download-on-demand.
+    # JPEG thumbs are bundled. Pixel Neon owns the full-resolution 8-bit
+    # sources, but those PNGs stay outside the APK and download on demand.
     wallpaper_manifest_path = assets / "manifest" / "wallpapers.json"
     wallpaper_thumb_dir = assets / "wallpapers_thumbs"
+    source_manifest_path = PIXEL_WALLPAPERS / "manifest.json"
     check(wallpaper_manifest_path.exists(), "assets/manifest/wallpapers.json is missing")
     check(wallpaper_thumb_dir.is_dir(), "assets/wallpapers_thumbs is missing")
+    check(source_manifest_path.exists(), "PixelNeonWallpapers/manifest.json is missing")
     full_wallpaper_assets = list(assets.rglob("*.png"))
     check(not full_wallpaper_assets,
           "full-resolution wallpaper PNGs must stay download-on-demand: "
           + ", ".join(str(path.relative_to(ROOT)) for path in full_wallpaper_assets))
     wallpaper_entries: list[dict] = []
+    source_entries: list[dict] = []
     if wallpaper_manifest_path.exists():
         try:
             wallpaper_manifest = json.loads(wallpaper_manifest_path.read_text(encoding="utf-8"))
@@ -143,19 +148,55 @@ def main() -> int:
                   f"wallpaper manifest has {len(wallpaper_entries)} entries, expected 70")
         except Exception as exc:
             failures.append(f"wallpaper manifest is unreadable: {exc}")
+    if source_manifest_path.exists():
+        try:
+            source_manifest = json.loads(source_manifest_path.read_text(encoding="utf-8"))
+            source_entries = source_manifest.get("wallpapers", [])
+            check(source_manifest.get("count") == len(source_entries),
+                  "Pixel Neon wallpaper source count does not match entries")
+            check("Pixel Neon" in source_manifest.get("collection", ""),
+                  "Pixel Neon wallpaper source manifest is not independently branded")
+            check(source_entries == wallpaper_entries,
+                  "bundled Pixel Neon wallpaper manifest differs from its source manifest")
+        except Exception as exc:
+            failures.append(f"Pixel Neon wallpaper source manifest is unreadable: {exc}")
     expected_thumbs = set()
+    source_hashes: set[str] = set()
     for entry in wallpaper_entries:
-        url_name = Path(str(entry.get("url", ""))).name
+        url = str(entry.get("url", ""))
+        url_name = Path(url).name
         thumb_name = f"{Path(url_name).stem}.jpg"
         expected_thumbs.add(thumb_name)
         thumb = wallpaper_thumb_dir / thumb_name
+        check("/PixelNeonWallpapers/" in url,
+              f"wallpaper {entry.get('name', url_name)}: URL is not Pixel Neon-owned")
         check(thumb.exists(), f"wallpaper {entry.get('name', url_name)}: missing bundled thumb")
         if thumb.exists():
             check(thumb.read_bytes()[:2] == b"\xff\xd8",
                   f"wallpaper {entry.get('name', url_name)}: thumb is not JPEG")
+        try:
+            relative = url.split("/PixelNeonWallpapers/", 1)[1]
+            source_file = PIXEL_WALLPAPERS / relative
+        except IndexError:
+            source_file = PIXEL_WALLPAPERS / "missing.png"
+        check(source_file.exists(),
+              f"wallpaper {entry.get('name', url_name)}: missing 4K source")
+        if source_file.exists():
+            header = png_size(source_file)
+            check(header is not None and header[:2] == (3840, 2160),
+                  f"wallpaper {entry.get('name', url_name)}: source header {header}, expected 3840x2160")
+            if header is not None:
+                check(header[2] in (2, 3, 6),
+                      f"wallpaper {entry.get('name', url_name)}: unsupported PNG colour type {header[2]}")
+            source_hashes.add(hashlib.sha256(source_file.read_bytes()).hexdigest())
     actual_thumbs = {path.name for path in wallpaper_thumb_dir.glob("*.jpg")}
     check(actual_thumbs == expected_thumbs,
           f"bundled wallpaper thumbs {len(actual_thumbs)} != catalog thumbs {len(expected_thumbs)}")
+    source_files = list(PIXEL_WALLPAPERS.glob("series-*/*.png"))
+    check(len(source_files) == len(wallpaper_entries),
+          f"Pixel Neon source files {len(source_files)} != catalog entries {len(wallpaper_entries)}")
+    check(len(source_hashes) == len(wallpaper_entries),
+          f"only {len(source_hashes)} unique Pixel Neon wallpaper rasters for {len(wallpaper_entries)} entries")
 
     arrays = (RES / "values" / "icon_pack.xml").read_text(encoding="utf-8")
     check(arrays.count("<item>") == 3 * len(icons),
@@ -173,6 +214,10 @@ def main() -> int:
           "build receipt wallpaper count drifted")
     check(receipt.get("wallpaperThumbs") == len(expected_thumbs),
           "build receipt wallpaper thumb count drifted")
+    check(receipt.get("wallpaperSource") == "PixelNeonWallpapers",
+          "build receipt wallpaper source is not Pixel Neon-owned")
+    check("8-bit" in receipt.get("wallpaperStyle", ""),
+          "build receipt does not record the Pixel Neon 8-bit wallpaper style")
     check(receipt.get("catalogComponents") == sum(len(i["components"]) for i in icons),
           "build receipt component count drifted")
     check("brand glyph" in receipt.get("artSource", ""),

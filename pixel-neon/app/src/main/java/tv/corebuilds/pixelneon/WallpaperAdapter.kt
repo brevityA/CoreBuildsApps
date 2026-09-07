@@ -13,7 +13,7 @@ import androidx.recyclerview.widget.RecyclerView
 import java.util.concurrent.Executors
 
 /**
- * Grid tile for a Core Builds wallpaper.
+ * Grid tile for a Pixel Neon wallpaper.
  *
  * Thumbs are ~5 KB JPEGs bundled in assets/wallpapers_thumbs, so the whole
  * 70-wall grid renders instantly offline. Decode runs on a shared 2-thread

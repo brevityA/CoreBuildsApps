@@ -200,15 +200,17 @@ fallback as the original, plus individually generated square pixel sprites for
 per-app selection. Banners use three arcade sign layouts rather than the
 original rail-and-wordmark treatment.
 
-Pixel Neon also includes the same 70-wallpaper browser: thumbnails and the
-manifest are bundled for offline browsing, while full 4K sources download only
-when a preview or export needs them. Set a preview directly when supported,
-save it to `Pictures/CoreBuilds` for launcher rotation, or bulk-export a
-selection with progress, cancellation, and retry support. The renderer is
-derived from the one source catalog, so new component coverage lands in both
-packs together. See [`pixel-neon/README.md`](pixel-neon/README.md) for the
-build and regeneration commands. The research-informed sprite rules are
-documented in [`pixel-neon/DESIGN.md`](pixel-neon/DESIGN.md).
+Pixel Neon also includes its own 70-wallpaper 8-bit collection: original
+pixel-art scenes across arcade grids, cyber circuits, space runs, neon nature,
+and boss-stage arenas. Thumbnails and the manifest are bundled for offline
+browsing, while full 4K sources download only when a preview or export needs
+them. Set a preview directly when supported, save it to `Pictures/CoreBuilds`
+for launcher rotation, or bulk-export a selection with progress, cancellation,
+and retry support. The renderer is derived from the one source catalog, so new
+component coverage lands in both packs together. See
+[`pixel-neon/README.md`](pixel-neon/README.md) for the build and regeneration
+commands. The research-informed sprite rules are documented in
+[`pixel-neon/DESIGN.md`](pixel-neon/DESIGN.md).
 
 ---
 
@@ -223,13 +225,15 @@ tools/build_icons.py         catalog → SVG, PNG, appfilter, docs
 tools/build_banners.py       catalog → 16:9 monoline banners
 tools/build_branding.py      launcher icon + Leanback banner
 tools/build_brand_preview.py branding preview sheet
-tools/build_pixel_neon.py    catalog → 8-bit neon companion pack
-tools/validate_pixel_neon.py alternate-pack coherence checks
+tools/build_pixel_neon_wallpapers.py  original 8-bit Pixel Neon wallpapers
+tools/build_pixel_neon.py              catalog → 8-bit neon companion pack
+tools/validate_pixel_neon.py           alternate-pack coherence checks
 tools/validate.py            coherence checks (20,000+ at 924 icons)
 assets/svg/                  master vectors (924)
 assets/banners/              16:9 banners (924)
 app/src/main/res/            the original icon-pack Android module
 pixel-neon/                   8-bit neon companion pack + its Gradle root
+PixelNeonWallpapers/          original 8-bit Pixel Neon sources + manifest
 Latestrelease/version.json   original pack update manifest
 Latestrelease/pixel-neon-version.json  Pixel Neon update manifest
 docs/IconPackList.md         original supported apps + components

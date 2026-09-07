@@ -28,7 +28,7 @@ object WallpaperDownloader {
     private const val TAG = "PixelNeon/WP"
     private const val CONNECT_TIMEOUT_MS = 15_000
     private const val READ_TIMEOUT_MS = 20_000
-    private const val MAX_CACHE_FILES = 12       // ~30 MB ceiling at ~2.5 MB/file
+    private const val MAX_CACHE_FILES = 12       // bounded repeat-preview cache
     private const val MIN_BYTES = 20_000L        // a real wallpaper is far larger
 
     private val ALLOWED_HOSTS = setOf(

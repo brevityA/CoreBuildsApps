@@ -17,7 +17,7 @@ import androidx.recyclerview.widget.RecyclerView
  * Browsable grid of the Pixel Neon wallpaper collection.
  *
  * Catalog comes from the bundled manifest (assets/manifest/wallpapers.json), a
- * copy of the repo's Wallpapers/manifest.json. Thumbnails are bundled so the
+ * copy of the repo's PixelNeonWallpapers/manifest.json. Thumbnails are bundled so the
  * grid is instant; full 4K images download on demand from the preview screen.
  *
  * Long-press (or the header Export button's long-press hint) enters selection

@@ -19,14 +19,16 @@ Design constraints:
 
 Generated files live under ``pixel-neon/``. Run from the repository root:
 
+    python tools/build_pixel_neon_wallpapers.py
     python tools/build_pixel_neon.py
     python tools/validate_pixel_neon.py
 
 The regular icon generators are deliberately not a prerequisite. This pack
 can never silently fall back to the monoline geometry because it has no import
-or path to assets/svg or assets/banners. It also mirrors the shared wallpaper
-manifest and JPEG thumbnails into the APK assets; full-resolution wallpaper
-sources stay remote and are fetched by the app on demand.
+or path to assets/svg or assets/banners. Its separate wallpaper renderer makes
+an original 8-bit collection, then the pack builder mirrors that manifest and
+its JPEG thumbnails into the APK assets; full-resolution wallpaper sources
+stay outside the APK and are fetched by the app on demand.
 """
 from __future__ import annotations
 
@@ -48,8 +50,8 @@ XML_DIR = OUT / "app" / "src" / "main" / "res" / "xml"
 ASSETS_DIR = OUT / "app" / "src" / "main" / "assets"
 VAL_DIR = OUT / "app" / "src" / "main" / "res" / "values"
 DOC_DIR = OUT / "docs"
-WALLPAPER_MANIFEST_SOURCE = ROOT / "Wallpapers" / "manifest.json"
-WALLPAPER_THUMBS_SOURCE = ROOT / "Wallpapers" / "thumbs"
+WALLPAPER_MANIFEST_SOURCE = ROOT / "PixelNeonWallpapers" / "manifest.json"
+WALLPAPER_THUMBS_SOURCE = ROOT / "PixelNeonWallpapers" / "thumbs"
 WALLPAPER_MANIFEST_OUT = ASSETS_DIR / "manifest" / "wallpapers.json"
 WALLPAPER_THUMBS_OUT = ASSETS_DIR / "wallpapers_thumbs"
 
@@ -1492,11 +1494,11 @@ def write(path: Path, data: str | bytes) -> None:
 
 
 def copy_wallpaper_assets() -> tuple[int, int]:
-    """Bundle the shared wallpaper catalog without bundling the 4K sources.
+    """Bundle Pixel Neon wallpaper metadata without bundling the 4K sources.
 
-    Pixel Neon should have the same instant, offline browser as the original
-    pack, but its APK should not contain every full-resolution wallpaper. The
-    repository's canonical manifest and small JPEG thumbs are copied into the
+    Pixel Neon gets an instant, offline browser with its own 8-bit wallpaper
+    set, but its APK should not contain every full-resolution wallpaper. The
+    repository's Pixel Neon manifest and small JPEG thumbs are copied into the
     companion module; WallpaperDownloader continues to fetch/cache the PNG
     source only after a user opens a preview or starts an export.
     """
@@ -1772,6 +1774,8 @@ def main() -> int:
         "icons": len(icons),
         "wallpapers": wallpaper_count,
         "wallpaperThumbs": wallpaper_thumb_count,
+        "wallpaperSource": "PixelNeonWallpapers",
+        "wallpaperStyle": "original 8-bit pixel scenes",
         "catalogComponents": source_components,
         "appfilterEntries": emitted,
         "pixelGrid": SPRITE_GRID,
