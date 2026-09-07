@@ -7,6 +7,7 @@
   "appfilterEntries": 1661,
   "pixelGrid": 32,
   "uniqueSprites": 924,
-  "artSource": "tools/build_pixel_neon.py brand glyph sprite recipes",
+  "researchedBrandRecipes": 33,
+  "artSource": "tools/build_pixel_neon.py researched brand glyph sprite recipes",
   "generatedBy": "tools/build_pixel_neon.py"
 }

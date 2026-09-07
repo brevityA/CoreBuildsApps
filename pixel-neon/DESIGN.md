@@ -9,6 +9,10 @@ thumbnail size.
 
 The art decisions are based on these references:
 
+- The repository's [Logo Fidelity Research & Audit](../docs/logo-research/ICON_LOGO_RESEARCH.md)
+  is the brand-fidelity source for the researched overrides. It distinguishes
+  real marks from long-tail apps whose public identity is wordmark-only or
+  unknown.
 - [Google's Android launcher icon codelab](https://codelabs.developers.google.com/design-android-launcher)
   recommends simple, recognizable artwork, a grid/keyline approach, contrast,
   and safe zones. It also calls out that fine details and many effects are lost

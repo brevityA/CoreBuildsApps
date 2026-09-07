@@ -11,9 +11,10 @@ bright 8-bit arcade sprite set for Projectivy Launcher and Android TV.
   canvas and nearest-neighbour scaled to 512×512.
 - **Brand-aware silhouettes** — the catalog's semantic glyph cue chooses the
   brand family (tile monogram, play mark, eye, shield, wave, folder, sport
-  mark, and more), then hash-seeded proportions, pose, internal pattern, and
-  signature pixels make each app's sprite distinct. No icon is a pixelated copy
-  of the monoline set.
+  mark, and more). The 33 researched overrides cover marks such as MUBI's
+  seven dots, Netflix's folded ribbon, YouTube's filled play badge, the
+  NFL/MLB/NBA plates, and wordmark-led brands. Hash-seeded variations keep
+  every app distinct without pixelating the monoline set.
 - **Neon bloom** — a compact violet/cyan halo sits behind each sprite without
   painting a background into the transparent icon.
 - **Pixel bevel** — one-pixel top-left highlights and a darker bottom-right

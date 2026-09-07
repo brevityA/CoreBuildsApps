@@ -953,9 +953,422 @@ def brand_mark_badge(p: SpritePainter, icon: dict, glyph: str):
     p.glint(7, 7)
 
 
+BRAND_PALETTES = {
+    "mubi": ("#5B35B5", "#F5F1FF"),
+    "sbs": ("#F0A500", "#211B00"),
+    "pluto tv": ("#7D4DFF", "#00E5FF"),
+    "al jazeera": ("#E28B20", "#FFF3CE"),
+    "france 24": ("#00AFF0", "#FFFFFF"),
+    "sky news": ("#9C0000", "#FFFFFF"),
+    "foxtel": ("#EE5100", "#FFFFFF"),
+    "kayo": ("#00E676", "#FFE45E"),
+    "rakuten tv": ("#BF0000", "#FFFFFF"),
+    "vimeo": ("#1AB7EA", "#FFFFFF"),
+    "mgm+": ("#D4AF37", "#211A00"),
+    "netflix": ("#E50914", "#FFB3B9"),
+    "discovery": ("#003B73", "#6ED6FF"),
+    "disney+": ("#113CCF", "#FFFFFF"),
+    "peacock": ("#00A651", "#F5A623"),
+    "paramount+": ("#0064FF", "#FFFFFF"),
+    "crunchyroll": ("#F47521", "#FFF3D6"),
+    "youtube": ("#FF0000", "#FFFFFF"),
+    "nfl": ("#013369", "#FFFFFF"),
+    "mlb": ("#002D72", "#E31837"),
+    "nba": ("#1D428A", "#C8102E"),
+    "cnn": ("#CC0000", "#FFFFFF"),
+    "espn": ("#CC0000", "#FFFFFF"),
+    "red bull tv": ("#DB0A40", "#F7D117"),
+    "mullvad vpn": ("#FFD500", "#171717"),
+    "wireguard": ("#88171A", "#F3D36B"),
+    "britbox": ("#C41A3B", "#19B5D1"),
+    "hulu": ("#1CE783", "#FFFFFF"),
+    "duckduckgo": ("#DE5833", "#FFCB05"),
+    "tubi": ("#FFD400", "#171717"),
+    "sling tv": ("#0084FF", "#FF6D01"),
+    "max": ("#7B5CFF", "#FFFFFF"),
+    "spotify": ("#1ED760", "#0B0D22"),
+    "tidal": ("#00E5FF", "#FFFFFF"),
+}
+
+
+def use_brand_palette(p: SpritePainter, name: str) -> None:
+    colors = BRAND_PALETTES.get(name.casefold())
+    if colors is None:
+        return
+    p.primary, p.secondary = colors
+    p.palette["primary"] = p.primary
+    p.palette["secondary"] = p.secondary
+    base = color_tuple(p.primary)
+    dark = color_tuple(VOID)
+    p.shadow = rgb_hex(tuple(round(channel * 0.28 + shade * 0.72)
+                        for channel, shade in zip(base, dark)))
+    p.mid = rgb_hex(tuple(round(channel * 0.52 + shade * 0.48)
+                     for channel, shade in zip(base, dark)))
+    p.palette["shadow"] = p.shadow
+    p.palette["mid"] = p.mid
+
+
+# The repository's logo-fidelity audit identifies these marks as the
+# recognisable brands where a generic letter tile is not accurate enough. These
+# are independent 32px reconstructions from the documented visual cues; they
+# do not rasterise or import the monoline SVG library.
+def research_mubi(p: SpritePainter, icon: dict):
+    for x, y in ((8, 7), (13, 7), (18, 7), (8, 12), (13, 12), (18, 12), (13, 17)):
+        p.r((x, y, x + 2, y + 2), p.shadow)
+        p.r((x, y - 1, x + 2, y + 1), p.primary)
+        p.dot(x, y - 1, p.highlight)
+    brand_text(p, "MUBI", 8, 24, p.secondary, scale=1, max_width=16)
+
+
+def research_sbs(p: SpritePainter, icon: dict):
+    p.poly([(16, 3), (25, 7), (28, 16), (25, 25), (16, 29), (7, 25),
+            (4, 16), (7, 7)], p.shadow)
+    p.poly([(16, 2), (24, 6), (27, 16), (24, 24), (16, 28), (8, 24),
+            (5, 16), (8, 6)], p.primary)
+    p.r((8, 9, 24, 23), p.void)
+    # Five curved Mercator-style globe splices.
+    for x, bend in ((9, -3), (12, -1), (15, 0), (18, 1), (21, 3)):
+        p.stair([(x, 9), (x + bend, 13), (x + bend, 19), (x, 23)], p.secondary)
+    p.r((8, 15, 24, 16), p.mid)
+    p.dot(8, 8, p.highlight)
+
+
+def research_pluto(p: SpritePainter, icon: dict):
+    p.stair([(4, 22), (9, 17), (15, 13), (22, 10), (28, 8)], p.secondary)
+    p.poly([(16, 5), (23, 8), (26, 15), (23, 23), (16, 26), (9, 23),
+            (6, 15), (9, 8)], p.shadow)
+    p.poly([(16, 4), (22, 7), (25, 15), (22, 22), (16, 25), (10, 22),
+            (7, 15), (10, 7)], p.primary)
+    p.r((12, 12, 20, 19), p.void)
+    brand_text(p, "TV", 13, 13, p.highlight, scale=1, max_width=7)
+    p.stair([(5, 25), (12, 28), (20, 28), (27, 24)], p.secondary)
+
+
+def research_al_jazeera(p: SpritePainter, icon: dict):
+    p.stepped_box(4, 3, 24, 25, p.shadow, 2)
+    p.stepped_box(3, 2, 24, 25, p.primary, 2)
+    p.r((7, 6, 23, 23), p.void)
+    # A pointed calligraphic/flame drop, not an A tile.
+    p.poly([(16, 6), (20, 12), (19, 18), (16, 23), (12, 19), (13, 14)], p.highlight)
+    p.stair([(15, 9), (14, 14), (16, 17), (14, 21)], p.secondary)
+    p.r((10, 22, 21, 23), p.highlight)
+
+
+def research_france24(p: SpritePainter, icon: dict):
+    p.stepped_box(4, 3, 24, 25, p.shadow, 2)
+    p.stepped_box(3, 2, 24, 25, p.primary, 2)
+    brand_text(p, "24", 8, 10, p.highlight, scale=3, max_width=16)
+    p.r((8, 25, 23, 26), p.secondary)
+
+
+def research_sky(p: SpritePainter, icon: dict):
+    brand_text(p, "SKY", 5, 9, p.highlight, scale=2, max_width=22)
+    p.stair([(5, 24), (10, 26), (17, 26), (24, 23), (27, 18)], p.secondary)
+    p.dot(26, 18, p.highlight)
+
+
+def research_foxtel(p: SpritePainter, icon: dict):
+    p.poly([(8, 13), (8, 8), (13, 11), (16, 7), (19, 11), (24, 8),
+            (24, 14), (22, 22), (16, 26), (10, 22)], p.shadow)
+    p.poly([(9, 12), (9, 7), (14, 10), (16, 6), (19, 10), (23, 7),
+            (23, 13), (21, 21), (16, 24), (11, 21)], p.primary)
+    p.dot(13, 14, p.highlight)
+    p.dot(19, 14, p.highlight)
+    p.r((14, 18, 18, 19), p.void)
+    brand_text(p, "FOX", 10, 26, p.secondary, scale=1, max_width=12)
+
+
+def research_kayo(p: SpritePainter, icon: dict):
+    p.stair([(4, 19), (8, 14), (12, 17), (16, 21), (20, 17), (27, 11)], p.primary)
+    p.stair([(5, 24), (10, 21), (14, 22), (19, 25), (25, 21)], p.secondary)
+    p.poly([(25, 4), (26, 9), (30, 10), (27, 12), (28, 16), (25, 13),
+            (22, 16), (23, 12), (20, 10), (24, 9)], p.highlight)
+    brand_text(p, "K", 7, 6, p.highlight, scale=2, max_width=6)
+
+
+def research_rakuten(p: SpritePainter, icon: dict):
+    brand_text(p, "RAKU", 4, 7, p.highlight, scale=1, max_width=20)
+    brand_text(p, "TV", 13, 14, p.secondary, scale=1, max_width=7)
+    p.poly([(7, 23), (24, 23), (27, 20), (24, 26), (7, 26)], p.primary)
+    p.dot(7, 23, p.highlight)
+
+
+def research_vimeo(p: SpritePainter, icon: dict):
+    brand_text(p, "VIMEO", 4, 11, p.highlight, scale=1, max_width=23)
+    p.stair([(6, 22), (11, 24), (17, 24), (23, 22), (27, 18)], p.secondary)
+
+
+def research_mgm(p: SpritePainter, icon: dict):
+    p.poly([(16, 3), (24, 7), (28, 15), (24, 24), (16, 29), (8, 24),
+            (4, 15), (8, 7)], p.shadow)
+    p.poly([(16, 4), (23, 8), (26, 15), (23, 23), (16, 27), (9, 23),
+            (6, 15), (9, 8)], p.primary)
+    p.r((10, 10, 22, 21), p.void)
+    p.r((12, 12, 20, 18), p.secondary)
+    p.dot(14, 14, p.highlight)
+    p.dot(18, 14, p.highlight)
+    p.r((14, 17, 18, 18), p.outline)
+    for x, y in ((8, 7), (24, 7), (6, 15), (26, 15), (8, 24), (24, 24)):
+        p.dot(x, y, p.highlight)
+
+
+def research_discovery(p: SpritePainter, icon: dict):
+    brand_text(p, "DISC", 3, 12, p.highlight, scale=1, max_width=17)
+    cx, cy = 25, 15
+    p.poly([(cx, cy - 7), (cx + 5, cy - 3), (cx + 7, cy), (cx + 3, cy + 5),
+            (cx, cy + 7), (cx - 5, cy + 3), (cx - 7, cy), (cx - 3, cy - 5)], p.primary)
+    p.r((cx - 1, cy - 1, cx + 1, cy + 1), p.highlight)
+    p.stair([(cx - 1, cy), (cx + 5, cy - 4)], p.secondary)
+
+
+def research_disney(p: SpritePainter, icon: dict):
+    # Pixel D plus arc/plus, rather than a generic star or castle.
+    p.r((6, 7, 9, 25), p.primary)
+    p.r((8, 6, 17, 9), p.primary)
+    p.r((8, 23, 17, 26), p.primary)
+    p.stair([(17, 8), (21, 11), (22, 16), (20, 21), (16, 24)], p.primary)
+    p.stair([(7, 5), (12, 3), (18, 3), (24, 6), (28, 11)], p.secondary)
+    p.r((24, 13, 26, 22), p.highlight)
+    p.r((21, 16, 29, 18), p.highlight)
+
+
+def research_peacock(p: SpritePainter, icon: dict):
+    feathers = [(7, 14, p.secondary), (10, 9, p.primary), (14, 6, p.highlight),
+                (18, 6, p.secondary), (22, 9, p.primary), (25, 14, p.highlight)]
+    for x, top, color in feathers:
+        p.poly([(16, 24), (x - 2, top + 4), (x, top), (x + 3, top + 3),
+                (x + 3, top + 8)], color)
+        p.r((x, top + 3, x + 1, top + 5), p.highlight)
+    p.poly([(13, 21), (16, 17), (19, 21), (18, 27), (14, 27)], p.primary)
+    p.dot(16, 21, p.highlight)
+
+
+def research_paramount(p: SpritePainter, icon: dict):
+    p.stair([(5, 23), (10, 19), (13, 14), (16, 7), (19, 14), (22, 19), (27, 23)], p.primary)
+    p.poly([(16, 6), (24, 23), (8, 23)], p.secondary)
+    p.stair([(5, 23), (8, 18), (12, 14), (16, 12), (20, 14), (24, 18), (27, 23)], p.highlight)
+    for x, y in ((8, 8), (12, 5), (16, 3), (20, 5), (24, 8), (6, 14), (26, 14)):
+        p.dot(x, y, p.highlight)
+
+
+def research_crunchyroll(p: SpritePainter, icon: dict):
+    # Orange eye/sushi-roll: the inner crescent is intentionally offset.
+    p.poly([(16, 3), (24, 7), (28, 15), (24, 24), (16, 28), (8, 24),
+            (4, 15), (8, 7)], p.shadow)
+    p.poly([(16, 2), (23, 6), (27, 15), (23, 23), (16, 27), (9, 23),
+            (5, 15), (9, 6)], p.primary)
+    p.poly([(11, 9), (19, 8), (23, 12), (24, 17), (21, 21), (15, 23),
+            (10, 19), (9, 14)], p.highlight)
+    p.poly([(15, 10), (20, 10), (22, 13), (21, 17), (18, 19), (14, 20),
+            (12, 17), (13, 13)], p.primary)
+    p.dot(20, 11, p.secondary)
+
+
+def research_youtube(p: SpritePainter, icon: dict):
+    p.stepped_box(4, 7, 24, 18, p.shadow, 3)
+    p.stepped_box(3, 6, 24, 18, p.primary, 3)
+    p.poly([(13, 11), (13, 21), (22, 16)], p.highlight)
+    p.dot(13, 11, p.highlight)
+
+
+def research_nfl(p: SpritePainter, icon: dict):
+    p.poly([(16, 3), (24, 7), (25, 20), (20, 26), (16, 29), (12, 26),
+            (7, 20), (8, 7)], p.shadow)
+    p.poly([(16, 2), (23, 6), (24, 19), (20, 25), (16, 28), (12, 25),
+            (8, 19), (9, 6)], p.primary)
+    p.r((10, 10, 22, 11), p.highlight)
+    p.r((10, 14, 22, 15), p.highlight)
+    p.r((11, 18, 21, 19), p.highlight)
+    p.r((14, 11, 18, 20), p.secondary)
+    p.r((14, 13, 18, 14), p.highlight)
+
+
+def research_mlb(p: SpritePainter, icon: dict):
+    # MLB's horizontal red/blue batter badge, reduced to a 32px capsule.
+    p.stepped_box(3, 8, 26, 16, p.shadow, 3)
+    p.stepped_box(2, 7, 26, 16, p.primary, 3)
+    p.r((3, 8, 15, 22), p.secondary)
+    p.r((16, 8, 25, 22), p.primary)
+    p.dot(16, 11, p.highlight)
+    p.r((15, 11, 17, 20), p.highlight)
+    p.r((12, 13, 20, 15), p.highlight)
+    p.stair([(15, 19), (11, 23)], p.highlight)
+    p.stair([(17, 19), (21, 23)], p.highlight)
+    p.stair([(18, 10), (23, 8)], p.highlight)
+
+
+def research_nba(p: SpritePainter, icon: dict):
+    # NBA's red/blue vertical logo plate with the white player silhouette.
+    p.stepped_box(7, 3, 18, 25, p.shadow, 3)
+    p.stepped_box(6, 2, 18, 25, p.primary, 3)
+    p.r((7, 3, 15, 26), p.secondary)
+    p.r((16, 3, 23, 26), p.primary)
+    p.dot(16, 8, p.highlight)
+    p.r((15, 10, 17, 19), p.highlight)
+    p.r((12, 12, 20, 14), p.highlight)
+    p.stair([(15, 18), (11, 24)], p.highlight)
+    p.stair([(17, 18), (21, 24)], p.highlight)
+
+
+def research_cnn(p: SpritePainter, icon: dict):
+    p.stepped_box(3, 7, 25, 18, p.shadow, 2)
+    p.stepped_box(2, 6, 25, 18, p.primary, 2)
+    brand_text(p, "CNN", 6, 12, p.highlight, scale=2, max_width=19)
+    p.stair([(7, 22), (12, 20), (17, 22), (22, 20)], p.secondary)
+
+
+def research_espn(p: SpritePainter, icon: dict):
+    p.stepped_box(4, 7, 23, 18, p.shadow, 2)
+    p.stepped_box(3, 6, 23, 18, p.primary, 2)
+    p.r((8, 11, 11, 21), p.highlight)
+    p.r((9, 10, 22, 13), p.highlight)
+    p.r((9, 15, 19, 17), p.highlight)
+    p.r((9, 20, 22, 22), p.highlight)
+    p.stair([(7, 22), (23, 10)], p.secondary)
+
+
+def research_redbull(p: SpritePainter, icon: dict):
+    p.poly([(16, 4), (23, 7), (27, 14), (26, 21), (21, 26), (16, 28),
+            (11, 26), (6, 21), (5, 14), (9, 7)], p.secondary)
+    p.poly([(16, 5), (22, 8), (25, 14), (24, 20), (20, 24), (16, 26),
+            (12, 24), (8, 20), (7, 14), (10, 8)], p.highlight)
+    # Two charging silhouettes around the sun.
+    for side in (-1, 1):
+        p.poly([(16 + side * 2, 15), (16 + side * 7, 12), (16 + side * 10, 14),
+                (16 + side * 7, 16), (16 + side * 4, 18), (16 + side, 18)], p.primary)
+        p.stair([(16 + side * 6, 12), (16 + side * 8, 10), (16 + side * 10, 11)], p.primary)
+    p.dot(16, 15, p.highlight)
+
+
+def research_mullvad(p: SpritePainter, icon: dict):
+    # Mullvad's mark is a yellow duck head, not a shield.
+    p.poly([(11, 7), (15, 4), (20, 6), (24, 11), (24, 17), (21, 22),
+            (16, 25), (11, 22), (8, 18), (8, 12)], p.shadow)
+    p.poly([(11, 6), (15, 3), (20, 5), (23, 10), (23, 16), (20, 21),
+            (16, 24), (12, 21), (9, 17), (9, 11)], p.primary)
+    p.poly([(18, 13), (27, 14), (23, 18), (18, 17)], p.secondary)
+    p.dot(13, 12, p.void)
+    p.dot(19, 11, p.void)
+    p.r((12, 7, 15, 8), p.highlight)
+    p.stair([(10, 8), (8, 6), (10, 4)], p.highlight)
+
+
+def research_wireguard(p: SpritePainter, icon: dict):
+    p.stair([(6, 9), (10, 6), (15, 7), (18, 11), (17, 16), (13, 20),
+             (10, 24), (14, 27), (20, 26), (25, 22)], p.primary)
+    p.stair([(6, 14), (10, 11), (14, 12), (16, 15), (15, 19), (12, 22)], p.secondary)
+    p.stair([(18, 6), (22, 9), (25, 13), (24, 17), (21, 20)], p.highlight)
+    p.dot(6, 9, p.highlight)
+
+
+def research_britbox(p: SpritePainter, icon: dict):
+    p.stepped_box(4, 5, 24, 22, p.shadow, 2)
+    p.stepped_box(3, 4, 24, 22, p.primary, 2)
+    p.r((7, 8, 23, 22), p.void)
+    p.r((14, 8, 16, 22), p.secondary)
+    p.r((7, 14, 23, 16), p.secondary)
+    brand_text(p, "B", 9, 11, p.highlight, scale=1, max_width=4)
+
+
+def research_hulu(p: SpritePainter, icon: dict):
+    brand_text(p, "HULU", 4, 11, p.primary, scale=2, max_width=24)
+    p.stair([(5, 22), (10, 24), (17, 24), (24, 22)], p.secondary)
+
+
+def research_duckduckgo(p: SpritePainter, icon: dict):
+    p.stepped_box(4, 4, 24, 24, p.shadow, 3)
+    p.stepped_box(3, 3, 24, 24, p.secondary, 3)
+    p.poly([(16, 7), (22, 10), (24, 17), (21, 23), (16, 26), (10, 22),
+            (8, 16), (10, 10)], p.primary)
+    p.poly([(17, 16), (26, 17), (23, 21), (17, 20)], p.highlight)
+    p.dot(13, 14, p.void)
+    p.dot(14, 14, p.highlight)
+    p.stair([(11, 10), (14, 7), (18, 7)], p.highlight)
+
+
+def research_tubi(p: SpritePainter, icon: dict):
+    brand_text(p, "TUBI", 4, 10, p.highlight, scale=2, max_width=24)
+    p.r((7, 22, 25, 24), p.primary)
+    p.dot(7, 23, p.secondary)
+
+
+def research_sling(p: SpritePainter, icon: dict):
+    p.stair([(5, 10), (10, 14), (15, 18), (21, 21), (27, 20)], p.secondary)
+    p.stair([(5, 15), (10, 19), (15, 23), (21, 26), (27, 23)], p.primary)
+    p.stair([(7, 7), (12, 10), (17, 13), (22, 14), (26, 12)], p.highlight)
+
+
+def research_tidal(p: SpritePainter, icon: dict):
+    # TIDAL's compact black 3+1 diamond wave translated to hard pixels.
+    p.poly([(16, 3), (27, 14), (27, 18), (16, 29), (5, 18), (5, 14)], p.shadow)
+    p.poly([(16, 2), (26, 14), (26, 17), (16, 28), (6, 17), (6, 14)], p.primary)
+    p.poly([(8, 14), (11, 9), (14, 14), (17, 9), (20, 14), (23, 9),
+            (25, 14), (20, 14), (17, 19), (14, 14), (11, 19)], p.highlight)
+    p.poly([(13, 18), (16, 23), (19, 18), (16, 20)], p.secondary)
+
+
+def research_max(p: SpritePainter, icon: dict):
+    brand_text(p, "MAX", 5, 9, p.highlight, scale=2, max_width=22)
+    p.r((8, 23, 24, 25), p.primary)
+    p.r((14, 22, 18, 26), p.secondary)
+
+
+def research_netflix(p: SpritePainter, icon: dict):
+    brand_netflix(p, icon, "netflix_ribbon")
+
+
+RESEARCHED_BY_NAME = {
+    "mubi": research_mubi,
+    "sbs": research_sbs,
+    "pluto tv": research_pluto,
+    "al jazeera": research_al_jazeera,
+    "france 24": research_france24,
+    "sky news": research_sky,
+    "foxtel": research_foxtel,
+    "kayo": research_kayo,
+    "rakuten tv": research_rakuten,
+    "vimeo": research_vimeo,
+    "mgm+": research_mgm,
+    "netflix": research_netflix,
+    "discovery": research_discovery,
+    "disney+": research_disney,
+    "peacock": research_peacock,
+    "paramount+": research_paramount,
+    "crunchyroll": research_crunchyroll,
+    "youtube": research_youtube,
+    "nfl": research_nfl,
+    "mlb": research_mlb,
+    "nba": research_nba,
+    "cnn": research_cnn,
+    "espn": research_espn,
+    "red bull tv": research_redbull,
+    "mullvad vpn": research_mullvad,
+    "wireguard": research_wireguard,
+    "britbox": research_britbox,
+    "hulu": research_hulu,
+    "duckduckgo": research_duckduckgo,
+    "tubi": research_tubi,
+    "sling tv": research_sling,
+    "max": research_max,
+    "tidal": research_tidal,
+}
+
+
+def researched_brand(p: SpritePainter, icon: dict) -> bool:
+    key = icon["name"].casefold()
+    renderer = RESEARCHED_BY_NAME.get(key)
+    if renderer is None:
+        return False
+    use_brand_palette(p, key)
+    renderer(p, icon)
+    return True
+
+
 def brand_symbol(p: SpritePainter, icon: dict, ordinal: int) -> None:
     """Select an independent pixel construction from the catalog brand cue."""
     glyph = (icon.get("glyph") or "").lower()
+    if researched_brand(p, icon):
+        return
     if glyph.startswith("tile_"):
         brand_tile(p, icon, glyph)
     elif glyph == "plus_star":
@@ -1177,7 +1590,9 @@ def preview(icons: list[dict], rendered: dict[str, tuple], source_components: in
     """Make a compact review sheet with hard-edged sample tiles."""
     from PIL import Image, ImageDraw, ImageFont
 
-    sample = icons[:48]
+    featured = [icon for icon in icons if icon["name"].casefold() in RESEARCHED_BY_NAME]
+    remainder = [icon for icon in icons if icon not in featured]
+    sample = (featured + remainder)[:48]
     cols, cell, top = 8, 150, 112
     rows = (len(sample) + cols - 1) // cols
     sheet = Image.new("RGBA", (cols * cell, top + rows * cell), color_tuple(VOID) + (255,))
@@ -1189,7 +1604,7 @@ def preview(icons: list[dict], rendered: dict[str, tuple], source_components: in
     except OSError:
         title_font = sub_font = label_font = ImageFont.load_default()
     draw.text((24, 18), "CORE BUILDS / PIXEL NEON", fill=HIGHLIGHT, font=title_font)
-    draw.text((24, 57), f"{len(icons)} sprites · {source_components} catalog components · 32px source grid", fill="#9AA8C7", font=sub_font)
+    draw.text((24, 57), f"{len(icons)} sprites · {source_components} components · {len(RESEARCHED_BY_NAME)} researched brand marks · 32px grid", fill="#9AA8C7", font=sub_font)
     draw.text((24, 78), "brand-aware marks · hard pixels · transparent app art", fill="#00E5FF", font=sub_font)
     for n, icon in enumerate(sample):
         x, y = (n % cols) * cell, top + (n // cols) * cell
@@ -1313,7 +1728,8 @@ def main() -> int:
         "appfilterEntries": emitted,
         "pixelGrid": SPRITE_GRID,
         "uniqueSprites": len(used_hashes),
-        "artSource": "tools/build_pixel_neon.py brand glyph sprite recipes",
+        "researchedBrandRecipes": len(RESEARCHED_BY_NAME),
+        "artSource": "tools/build_pixel_neon.py researched brand glyph sprite recipes",
         "generatedBy": "tools/build_pixel_neon.py",
     }
     write(DOC_DIR / "build-receipt.json", json.dumps(receipt, indent=2) + "\n")

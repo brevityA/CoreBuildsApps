@@ -138,6 +138,8 @@ def main() -> int:
           "build receipt component count drifted")
     check("brand glyph" in receipt.get("artSource", ""),
           "build receipt does not record brand-aware sprite recipes")
+    check(receipt.get("researchedBrandRecipes") == 33,
+          "build receipt does not record all researched brand recipes")
     source = (ROOT / "tools" / "build_pixel_neon.py").read_text(encoding="utf-8")
     check("BASE_SVG" not in source and "BASE_BANNERS" not in source,
           "Pixel Neon renderer still depends on monoline source assets")
