@@ -98,10 +98,15 @@ object UpdateChecker {
 
                 Log.i(TAG, "installed=$installedCode remote=$remoteCode from $url")
 
-                return if (remoteCode > installedCode) {
-                    Result.Available(remoteName, remoteCode, icons, apk, sha256)
-                } else {
-                    Result.UpToDate(remoteName)
+                return when {
+                    remoteCode > installedCode && apk.isNotBlank() ->
+                        Result.Available(remoteName, remoteCode, icons, apk, sha256)
+                    remoteCode > installedCode ->
+                        // A newer release is advertised but carries no
+                        // installable artifact: fail loudly instead of
+                        // offering to download an empty URL.
+                        Result.Failed("release $remoteCode has no apkUrl in the manifest")
+                    else -> Result.UpToDate(remoteName)
                 }
             } catch (e: Exception) {
                 lastError = e.message ?: e.javaClass.simpleName

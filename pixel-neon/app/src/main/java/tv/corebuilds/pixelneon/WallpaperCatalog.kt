@@ -56,9 +56,13 @@ data class Wallpaper(
         override fun createFromParcel(parcel: Parcel): Wallpaper = Wallpaper(parcel)
         override fun newArray(size: Int): Array<Wallpaper?> = arrayOfNulls(size)
     }
-    /** Short title without the leading number/series prefix. */
+    /** Short title without the leading number/series prefix — the generator
+     *  emits "NN Title" (e.g. "35 Red Planet Run"), not "NN · Title". */
     val title: String
-        get() = name.substringAfter("· ", name).trim()
+        get() {
+            val withoutOrdinal = name.replaceFirst(Regex("^\\d{1,3}\\s+"), "")
+            return withoutOrdinal.substringAfter("· ", withoutOrdinal).trim()
+        }
 
     /** Stable cache filename derived from the URL (always .png). */
     val cacheName: String
