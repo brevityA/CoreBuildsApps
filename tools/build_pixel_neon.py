@@ -76,6 +76,19 @@ def esc(value: str) -> str:
     return xml_escape(str(value), {"'": "&apos;", '"': "&quot;"})
 
 
+def esc_values_item(value: str) -> str:
+    """esc() plus Android values-file apostrophe handling.
+
+    AAPT2's values compiler un-entitizes an element before applying string
+    semantics, so &apos; inside <item> reaches it as a bare apostrophe and
+    mergeDebugResources dies with a NullPointerException (StAX
+    Attribute.getValue()) instead of a readable error. Classic's generator
+    emits \\' for the same catalog entry (tools/build_icons.py esc_android);
+    the two packs must stay byte-equivalent in escaping style.
+    """
+    return xml_escape(str(value).replace("'", "\\'"), {'"': "&quot;"})
+
+
 def color_tuple(value: str) -> tuple[int, int, int]:
     value = value.lstrip("#")
     return tuple(int(value[i:i + 2], 16) for i in (0, 2, 4))
@@ -1614,11 +1627,11 @@ def values_xml(icons: list[dict]) -> str:
         '<resources>',
         '    <string-array name="icon_pack">',
     ]
-    lines += [f'        <item>{esc(i["drawable"])}</item>' for i in icons]
+    lines += [f'        <item>{esc_values_item(i["drawable"])}</item>' for i in icons]
     lines += ['    </string-array>', '    <string-array name="icon_names">']
-    lines += [f'        <item>{esc(i["name"])}</item>' for i in icons]
+    lines += [f'        <item>{esc_values_item(i["name"])}</item>' for i in icons]
     lines += ['    </string-array>', '    <string-array name="icon_categories">']
-    lines += [f'        <item>{esc(i.get("category") or "APP")}</item>' for i in icons]
+    lines += [f'        <item>{esc_values_item(i.get("category") or "APP")}</item>' for i in icons]
     lines += ['    </string-array>', f'    <integer name="icon_count">{len(icons)}</integer>', '</resources>']
     return "\n".join(lines) + "\n"
 
