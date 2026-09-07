@@ -9,6 +9,7 @@ END = "<!-- suite-stamp:end -->"
 
 WHAT = {
     "iconpack": "924 transparent icons + 70 wallpapers for Projectivy Launcher",
+    "pixelneon": "924 transparent 8-bit neon icons for Projectivy Launcher",
     "line": "Sports scores & channel RSS ticker (chyron)",
     "shift": "Android TV screensaver + motion wallpaper browser",
     "motion": "Projectivy wallpaper-provider plugin for Core Motion loops",
@@ -16,6 +17,7 @@ WHAT = {
 }
 ANCHOR = {
     "iconpack": "icon-pack",
+    "pixelneon": "pixel-neon-icon-pack",
     "line": "core-line",
     "shift": "core-shift",
     "motion": "core-motion",
@@ -28,7 +30,7 @@ def block(suite: dict) -> str:
         "> | App | Current | What it does | Downloader | Release tag |",
         "> |---|---:|---|---|---|",
     ]
-    for key in ["iconpack", "line", "shift", "motion", "doctor"]:
+    for key in ["iconpack", "pixelneon", "line", "shift", "motion", "doctor"]:
         app = suite["apps"][key]
         releases = "../../releases"
         downloader = app["downloader"]

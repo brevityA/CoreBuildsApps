@@ -43,13 +43,13 @@ Until then, current paths are canonical.
 
 1. **Version-truth CI**
    - `tools/catalog.json`, `app/build.gradle.kts`, `Latestrelease/version.json`, `docs/IconPackList.md`, and `README.md` must agree on Icon Pack `1.8.2` and `924` icons.
-   - README must list five products, current versions, stable release tags, and Downloader status.
+   - README must list six products, current versions, stable release tags, and Downloader status.
    - CI must fail if README/agent docs drift back to stale counts or versions.
 2. **Kill stale agent docs**
-   - `AGENTS.md` must describe five apps, 924 icons, 1098 mapped components, and the current validator receipt.
+   - `AGENTS.md` must describe the six registered apps, 924 icons, 1098 mapped components, and the current validator receipt.
    - Remove old “40 icons / 78 components / four apps” language from agent-facing docs.
 3. **README as suite product page**
-   - Five rows: Icon Pack, Core Line, Core Shift, Core Motion, Core Doctor.
+   - Six rows: Icon Pack, Pixel Neon, Core Line, Core Shift, Core Motion, Core Doctor.
    - Motion gets its own row and section, not a footnote inside Shift.
    - Downloader codes are explicit; if a code is not assigned, say `[USER TO SUPPLY]` rather than inventing it.
 
@@ -86,7 +86,7 @@ Exit criteria: TV smoke passes for Line first-run and Shift screensaver enter/ex
 
 ## Done checklist
 
-- [x] README has five app rows with current versions and Downloader status.
+- [x] README has six app rows with current versions and Downloader status.
 - [x] `tools/audit_contract.py` fails on stale Icon Pack catalog/README/agent-doc truth.
 - [x] `AGENTS.md` replaces stale agent docs.
 - [x] Existing floating Downloader releases are untouched.

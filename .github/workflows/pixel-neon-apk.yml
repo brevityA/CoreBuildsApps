@@ -1,0 +1,82 @@
+name: Pixel Neon APK
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'pixel-neon/**'
+      - 'tools/catalog.json'
+      - 'tools/build_pixel_neon.py'
+      - 'assets/svg/**'
+      - 'assets/banners/**'
+      - '.github/workflows/pixel-neon-apk.yml'
+  pull_request:
+    paths:
+      - 'pixel-neon/**'
+      - 'tools/catalog.json'
+      - 'tools/build_pixel_neon.py'
+      - 'assets/svg/**'
+      - 'assets/banners/**'
+      - '.github/workflows/pixel-neon-apk.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install pixel renderer
+        run: pip install --quiet -r tools/requirements.txt
+
+      - name: Regenerate Pixel Neon assets
+        run: python tools/build_pixel_neon.py
+
+      - name: Validate Pixel Neon mappings and raster dimensions
+        run: python tools/validate_pixel_neon.py
+
+      - name: Verify generated text assets are committed
+        run: |
+          DRIFT=$(git status --porcelain -- pixel-neon/docs pixel-neon/app/src/main/assets pixel-neon/app/src/main/res/xml pixel-neon/app/src/main/res/values/icon_pack.xml | grep -v '^?? ' || true)
+          if [ -n "$DRIFT" ]; then
+            echo "::error::Pixel Neon generated text assets drift from tools/catalog.json."
+            echo "Run: python tools/build_pixel_neon.py"
+            echo "$DRIFT"
+            exit 1
+          fi
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Set up Android SDK
+        uses: android-actions/setup-android@v3
+
+      - name: Set up Gradle
+        uses: gradle/actions/setup-gradle@v4
+
+      - name: Build and lint debug APK
+        working-directory: pixel-neon
+        run: ./gradlew :app:lintDebug :app:testDebugUnitTest :app:assembleDebug --no-daemon --stacktrace
+
+      - name: Upload Pixel Neon debug APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: core-builds-pixel-neon-debug
+          path: pixel-neon/app/build/outputs/apk/debug/*.apk
+          if-no-files-found: error
+
+      # Published tags are handled by suite-release.yml, which signs and names
+      # the artifact pixel-neon-release.apk for the stable floating release.
+      - name: Stable release filename
+        run: echo "suite-release.yml publishes pixel-neon-release.apk"

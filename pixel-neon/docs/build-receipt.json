@@ -1,0 +1,10 @@
+{
+  "pack": "Core Builds Pixel Neon",
+  "sourceCatalog": "tools/catalog.json",
+  "version": "0.1.0",
+  "icons": 924,
+  "catalogComponents": 1098,
+  "appfilterEntries": 1661,
+  "pixelGrid": 64,
+  "generatedBy": "tools/build_pixel_neon.py"
+}

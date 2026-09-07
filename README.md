@@ -4,7 +4,7 @@
 
 # Core Builds Apps
 
-**Five Android apps. Same brand, same living-room bar.**
+**Six Android apps. Same brand, same living-room bar.**
 
 </div>
 
@@ -14,6 +14,7 @@
 > | App | Current | What it does | Downloader | Release tag |
 > |---|---:|---|---|---|
 > | **[Core Builds Icon Pack](#-icon-pack)** | `v1.8.2` | 924 transparent icons + 70 wallpapers for Projectivy Launcher | `5270601` | [`v*` / `iconpack`](../../releases) |
+> | **[Core Builds Pixel Neon](#-pixel-neon-icon-pack)** | `v0.1.0` | 924 transparent 8-bit neon icons for Projectivy Launcher | `[USER TO SUPPLY]` | [`pixel-neon-v*` / `pixel-neon`](../../releases) |
 > | **[Core Line](#-core-line)** | `v1.3.0` | Sports scores & channel RSS ticker (chyron) | `7375676` | [`coreline-v*` / `coreline`](../../releases) |
 > | **[Core Shift](#-core-shift)** | `v2.3.5` | Android TV screensaver + motion wallpaper browser | `8829421` | [`shift-v*` / `shift`](../../releases) |
 > | **[Core Motion](#-core-motion)** | `v1.0.0` | Projectivy wallpaper-provider plugin for Core Motion loops | `[USER TO SUPPLY]` | [`motion-v*` / `motion`](../../releases) |
@@ -166,6 +167,40 @@ Inherited from the brand guide, enforced by the generator and validator:
 
 ---
 
+## 🔷 Pixel Neon Icon Pack
+
+**The 8-bit neon companion pack for Projectivy Launcher on Android TV.**
+`924 icons` · `0.1.0` · clean monoline sibling: **Core Builds Icon Pack**
+
+If the original pack is the quiet night-mode set, **Core Builds Pixel Neon** is
+its arcade cabinet: the same mappings and coverage, but every mark is snapped
+to a 64 px grid, given a violet/cyan bloom, and scaled with hard nearest-neighbour
+pixels. The PNGs remain transparent, so the launcher still owns the card colour.
+
+![Core Builds Pixel Neon preview](pixel-neon/docs/preview.png)
+
+### Install
+
+Download the `pixel-neon-release.apk` asset from the [**Pixel Neon stable
+release**](../../releases/tag/pixel-neon), or use the versioned `pixel-neon-v*`
+release tags. Sideload it beside the original pack — the two packages are
+separate and can be selected independently:
+
+- **Core Builds Icon Pack** — `tv.corebuilds.iconpack`
+- **Core Builds Pixel Neon** — `tv.corebuilds.pixelneon`
+
+Open the app and press **Apply**, or choose it manually in **Projectivy Launcher
+Settings → Appearance → Cards → Icon Pack → Core Builds Pixel Neon Icon Pack**.
+The pack includes the same full/short component mappings and 16:9 banner
+fallback as the original, plus the square pixel sprites for per-app selection.
+
+This first release is intentionally icon-only: no wallpaper bundle is shipped.
+The renderer is derived from the one source catalog, so new component coverage
+lands in both packs together. See [`pixel-neon/README.md`](pixel-neon/README.md)
+for the build and regeneration commands.
+
+---
+
 ## 🔷 Repo Layout
 
 ```
@@ -177,12 +212,16 @@ tools/build_icons.py         catalog → SVG, PNG, appfilter, docs
 tools/build_banners.py       catalog → 16:9 monoline banners
 tools/build_branding.py      launcher icon + Leanback banner
 tools/build_brand_preview.py branding preview sheet
+tools/build_pixel_neon.py    catalog → 8-bit neon companion pack
+tools/validate_pixel_neon.py alternate-pack coherence checks
 tools/validate.py            coherence checks (20,000+ at 924 icons)
 assets/svg/                  master vectors (924)
 assets/banners/              16:9 banners (924)
-app/src/main/res/            the Android module
-Latestrelease/version.json   in-app update manifest
-docs/IconPackList.md         supported apps + components
+app/src/main/res/            the original icon-pack Android module
+pixel-neon/                   8-bit neon companion pack + its Gradle root
+Latestrelease/version.json   original pack update manifest
+Latestrelease/pixel-neon-version.json  Pixel Neon update manifest
+docs/IconPackList.md         original supported apps + components
 ticker/                      Core Line — sports & channel ticker (see ticker/README.md)
 shift/                       Core Shift — live wallpaper browser (see shift/HANDOVER.md)
 doctor/                      Core Doctor — streaming diagnostics (see doctor/SPEC.md)
