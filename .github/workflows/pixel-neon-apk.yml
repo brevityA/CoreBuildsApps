@@ -50,8 +50,13 @@ jobs:
         run: |
           DRIFT=$(git status --porcelain -- PixelNeonWallpapers pixel-neon/docs pixel-neon/app/src/main/assets pixel-neon/app/src/main/res/xml pixel-neon/app/src/main/res/values/icon_pack.xml | grep -v '^?? ' || true)
           if [ -n "$DRIFT" ]; then
-            echo "::error::Pixel Neon generated assets drift from the wallpaper/icon sources."
-            echo "Run: python tools/build_pixel_neon_wallpapers.py && python tools/build_pixel_neon.py"
+            echo "::error::Pixel Neon generated assets drift from the wallpaper/icon sources. Run: python tools/build_pixel_neon_wallpapers.py && python tools/build_pixel_neon.py"
+            # One annotation per drifted file so the diff is readable without
+            # downloading job logs.
+            while IFS= read -r line; do
+              f=$(echo "$line" | awk '{print $2}')
+              echo "::error file=$f::generated asset drift ($line)"
+            done <<< "$DRIFT"
             echo "$DRIFT"
             exit 1
           fi

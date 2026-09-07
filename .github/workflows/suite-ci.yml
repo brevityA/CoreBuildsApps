@@ -85,6 +85,23 @@ jobs:
       - name: Build, lint, and unit test
         working-directory: ${{ matrix.dir }}
         run: ./gradlew ${{ matrix.tasks }} --no-daemon --stacktrace
+      - name: Surface build errors as annotations
+        if: failure()
+        working-directory: ${{ matrix.dir }}
+        run: |
+          # Re-run just compilation (cached config, cheap) so the first
+          # Kotlin/javac errors land in the GitHub annotation stream and are
+          # readable without downloading job logs.
+          ./gradlew :app:compileDebugKotlin --no-daemon 2> compile_stderr.txt || true
+          grep -E "^e: |error: " compile_stderr.txt | head -10 > build_errors.txt || true
+          LINT_TXT=$(find app/build/reports -name "lint-results-*.txt" 2>/dev/null | head -1)
+          if [ -n "$LINT_TXT" ]; then
+            grep -iE "error" "$LINT_TXT" | head -10 >> build_errors.txt || true
+          fi
+          sort -u build_errors.txt | while IFS= read -r line; do
+            echo "::error::${line:0:400}"
+          done
+          exit 0
       - uses: actions/upload-artifact@v4
         with:
           name: ${{ matrix.name }} debug APK
