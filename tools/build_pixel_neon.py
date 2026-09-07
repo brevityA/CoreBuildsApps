@@ -50,6 +50,11 @@ XML_DIR = OUT / "app" / "src" / "main" / "res" / "xml"
 ASSETS_DIR = OUT / "app" / "src" / "main" / "assets"
 VAL_DIR = OUT / "app" / "src" / "main" / "res" / "values"
 DOC_DIR = OUT / "docs"
+# Preview text is rendered with repo-bundled DejaVu (same license-friendly
+# pattern as the Outfit faces above it). The system DejaVu differs between
+# machines and CI images, which silently drifted docs/preview.png under the
+# regenerate-and-diff gate.
+FONTS_DIR = Path(__file__).resolve().parent / "fonts"
 WALLPAPER_MANIFEST_SOURCE = ROOT / "PixelNeonWallpapers" / "manifest.json"
 WALLPAPER_THUMBS_SOURCE = ROOT / "PixelNeonWallpapers" / "thumbs"
 WALLPAPER_MANIFEST_OUT = ASSETS_DIR / "manifest" / "wallpapers.json"
@@ -1645,9 +1650,9 @@ def preview(icons: list[dict], rendered: dict[str, tuple], source_components: in
     sheet = Image.new("RGBA", (cols * cell, top + rows * cell), color_tuple(VOID) + (255,))
     draw = ImageDraw.Draw(sheet)
     try:
-        title_font = ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSansMono-Bold.ttf", 28)
-        sub_font = ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSansMono.ttf", 14)
-        label_font = ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSansMono.ttf", 12)
+        title_font = ImageFont.truetype(str(FONTS_DIR / "DejaVuSansMono-Bold.ttf"), 28)
+        sub_font = ImageFont.truetype(str(FONTS_DIR / "DejaVuSansMono.ttf"), 14)
+        label_font = ImageFont.truetype(str(FONTS_DIR / "DejaVuSansMono.ttf"), 12)
     except OSError:
         title_font = sub_font = label_font = ImageFont.load_default()
     draw.text((24, 18), "CORE BUILDS / PIXEL NEON", fill=HIGHLIGHT, font=title_font)
