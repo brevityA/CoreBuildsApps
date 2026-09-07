@@ -26,16 +26,13 @@ bright 8-bit arcade sprite set for Projectivy Launcher and Android TV.
 
 Pixel Neon also includes its own 70-wallpaper 8-bit collection. The scenes are
 original pixel-art compositions—arcade grids, cyber circuits, space runs, neon
-nature, and boss-stage arenas—built around a rotating cast of original game-like
-character renders, not copies or recolours of the original pack's wallpapers.
-The render rules follow the research-led sprite language: a fixed logical grid,
-limited palette, hard nearest-neighbour edges, silhouette-first poses, and one
-readable class signature per character. Manifest entries and lightweight
-thumbnails are bundled for immediate offline browsing. Open a tile to preview
-it full-screen; the 4K source downloads and caches only when needed, so the APK
-stays compact. Set it directly when the platform supports it, save it to
-`Pictures/CoreBuilds` for launcher rotation, or multi-select and export a
-collection with progress, retry, and cancellation.
+nature, and boss-stage arenas—not copies or recolours of the original pack's
+wallpapers. Manifest entries and lightweight thumbnails are bundled for
+immediate offline browsing. Open a tile to preview it full-screen; the 4K
+source downloads and caches only when needed, so the APK stays compact. Set it
+directly when the platform supports it, save it to `Pictures/CoreBuilds` for
+launcher rotation, or multi-select and export a collection with progress,
+retry, and cancellation.
 
 ## Install
 

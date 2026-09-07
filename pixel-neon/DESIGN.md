@@ -77,17 +77,12 @@ The generated pack keeps the Android icon-pack contract:
 
 The wallpaper companion has its own 8-bit scene language: the 70 source images
 are original low-resolution pixel compositions across arcade grids, cyber
-circuits, space runs, neon nature, and boss-stage arenas. A rotating cast of
-original game-like characters is the dominant foreground subject: runners,
-knights, mages, pilots, androids, rangers, rogues, alien scouts, and large
-arena bosses. Each render is silhouette-first, assembled from hard-edged pixel
-clusters, limited to the scene palette, posed with a readable class prop, and
-kept independent from recognizable copyrighted game characters. They do not
-reuse or recolour the original pack's wallpapers. The manifest and small
-thumbnail JPEGs are bundled for offline browsing, while the full 4K PNG sources
-stay in `PixelNeonWallpapers/` and are downloaded and cached only when a user
-previews, sets, or exports one. The browser keeps the night/pixel chrome, series
-chips, name search, full-screen preview, direct system setter, Android TV save
+circuits, space runs, neon nature, and boss-stage arenas. They do not reuse or
+recolour the original pack's wallpapers. The manifest and small thumbnail
+JPEGs are bundled for offline browsing, while the full 4K PNG sources stay in
+`PixelNeonWallpapers/` and are downloaded and cached only when a user previews,
+sets, or exports one. The browser keeps the night/pixel chrome, series chips,
+name search, full-screen preview, direct system setter, Android TV save
 fallback, and `Pictures/CoreBuilds` bulk-export flow.
 
 This keeps the product compatible with the existing Android delivery format
