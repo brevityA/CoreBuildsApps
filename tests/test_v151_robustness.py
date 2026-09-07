@@ -90,7 +90,25 @@ class UpdateInstallerTests(unittest.TestCase):
         )
 
     def test_authority_matches_manifest(self):
-        self.assertIn('AUTHORITY = "tv.corebuilds.iconpack.update"', self.src)
+        # AUTHORITY is BuildConfig-supplied so :app and :pop compile this same
+        # file with per-pack authorities (two installed packages may not share
+        # a FileProvider authority). The contract is a chain: the Gradle
+        # buildConfigField must equal the manifest authority, and the code must
+        # defer to BuildConfig rather than hardcode either pack's value.
+        self.assertIn(
+            "val AUTHORITY: String = BuildConfig.UPDATE_AUTHORITY",
+            self.src,
+            "AUTHORITY must come from BuildConfig (per-pack), not a literal",
+        )
+        manifest = read("app/src/main/AndroidManifest.xml")
+        authority = re.search(r'android:authorities="([^"]+)"', manifest)
+        self.assertIsNotNone(authority, "FileProvider authority missing")
+        gradle = read("app/build.gradle.kts")
+        self.assertIn(
+            f'\\"{authority.group(1)}\\"',
+            gradle,
+            "UPDATE_AUTHORITY buildConfigField must equal the manifest authority",
+        )
 
     def test_github_hosts_allowlisted(self):
         for host in (
