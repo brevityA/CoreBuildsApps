@@ -24,7 +24,9 @@ import java.util.zip.ZipFile
  */
 object UpdateInstaller {
 
-    const val AUTHORITY = "tv.corebuilds.iconpack.update"
+    // Per-pack, not per-source-tree: :app and :pop compile this same file
+    // and two installed packages may not share a FileProvider authority.
+    val AUTHORITY: String = BuildConfig.UPDATE_AUTHORITY
     private const val TIMEOUT_MS = 30_000
     private const val MIN_APK_BYTES = 200_000L
     private const val MAX_APK_BYTES = 120L * 1024L * 1024L

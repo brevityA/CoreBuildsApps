@@ -1,0 +1,93 @@
+{
+  "collection": "Core Builds Pop Wallpapers",
+  "version": "1.0",
+  "author": "brevityA",
+  "brand_guide": "Core Builds Pop \u2014 16 locked swatches, ink and cream",
+  "count": 12,
+  "wallpapers": [
+    {
+      "name": "01 Ben-Day Dawn",
+      "series": "series-5-pop",
+      "url": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/series-5-pop/corepop-01-benday-dawn.png",
+      "thumb": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/thumbs/corepop-01-benday-dawn.jpg",
+      "resolution": "3840x2160"
+    },
+    {
+      "name": "02 Speed Lines",
+      "series": "series-5-pop",
+      "url": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/series-5-pop/corepop-02-speed-lines.png",
+      "thumb": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/thumbs/corepop-02-speed-lines.jpg",
+      "resolution": "3840x2160"
+    },
+    {
+      "name": "03 Impact Burst",
+      "series": "series-5-pop",
+      "url": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/series-5-pop/corepop-03-impact-burst.png",
+      "thumb": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/thumbs/corepop-03-impact-burst.jpg",
+      "resolution": "3840x2160"
+    },
+    {
+      "name": "04 Panel Grid",
+      "series": "series-5-pop",
+      "url": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/series-5-pop/corepop-04-panel-grid.png",
+      "thumb": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/thumbs/corepop-04-panel-grid.jpg",
+      "resolution": "3840x2160"
+    },
+    {
+      "name": "05 Ink Bleed",
+      "series": "series-5-pop",
+      "url": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/series-5-pop/corepop-05-ink-bleed.png",
+      "thumb": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/thumbs/corepop-05-ink-bleed.jpg",
+      "resolution": "3840x2160"
+    },
+    {
+      "name": "06 Dot Ramp",
+      "series": "series-5-pop",
+      "url": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/series-5-pop/corepop-06-dot-ramp.png",
+      "thumb": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/thumbs/corepop-06-dot-ramp.jpg",
+      "resolution": "3840x2160"
+    },
+    {
+      "name": "07 Hex Pop",
+      "series": "series-5-pop",
+      "url": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/series-5-pop/corepop-07-hex-pop.png",
+      "thumb": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/thumbs/corepop-07-hex-pop.jpg",
+      "resolution": "3840x2160"
+    },
+    {
+      "name": "08 Screen Tone",
+      "series": "series-5-pop",
+      "url": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/series-5-pop/corepop-08-screen-tone.png",
+      "thumb": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/thumbs/corepop-08-screen-tone.jpg",
+      "resolution": "3840x2160"
+    },
+    {
+      "name": "09 Colour Blocks",
+      "series": "series-5-pop",
+      "url": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/series-5-pop/corepop-09-colour-blocks.png",
+      "thumb": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/thumbs/corepop-09-colour-blocks.jpg",
+      "resolution": "3840x2160"
+    },
+    {
+      "name": "10 Zip Ribbon",
+      "series": "series-5-pop",
+      "url": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/series-5-pop/corepop-10-zip-ribbon.png",
+      "thumb": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/thumbs/corepop-10-zip-ribbon.jpg",
+      "resolution": "3840x2160"
+    },
+    {
+      "name": "11 Sunburst",
+      "series": "series-5-pop",
+      "url": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/series-5-pop/corepop-11-sunburst.png",
+      "thumb": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/thumbs/corepop-11-sunburst.jpg",
+      "resolution": "3840x2160"
+    },
+    {
+      "name": "12 Night Panel",
+      "series": "series-5-pop",
+      "url": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/series-5-pop/corepop-12-night-panel.png",
+      "thumb": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/thumbs/corepop-12-night-panel.jpg",
+      "resolution": "3840x2160"
+    }
+  ]
+}
