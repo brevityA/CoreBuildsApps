@@ -135,6 +135,17 @@ def snap(accent: str) -> tuple[str, str]:
     Returns (swatch_name, swatch_hex). Pure and deterministic: the pack must
     not reshuffle its own colours between builds.
     """
+    # Closed over the palette. Without this, snap is not idempotent: the two
+    # neutrals are selected by saturation/value thresholds that their own hex
+    # values do not satisfy, so snap(SWATCHES["pop_slate"]) returned marine.
+    # Nothing in the icon pipeline snapped twice, so it never showed up there —
+    # it surfaced the moment something asked for a specific swatch by value.
+    # A palette you cannot round-trip through your own mapper is a trap.
+    exact = accent.strip().upper()
+    for name, hexv in SWATCHES.items():
+        if hexv.upper() == exact:
+            return name, hexv
+
     r, g, b = _hex_to_rgb(accent)
     h, s, v = colorsys.rgb_to_hsv(r, g, b)
     if v < _VAL_FLOOR:
@@ -437,6 +448,75 @@ def render_icon(glyph_name: str, accent: str, uid: str = "i") -> str:
         f'<g transform="translate({fx},{fy})">{mark}</g>\n'
         f'</svg>\n'
     )
+
+
+# --------------------------------------------------------------------------
+# Fallback furniture for apps the pack does not cover.
+#
+# The ADW standard lets a pack hand the launcher a background, a clip mask, an
+# overlay and a scale factor; the launcher composites the app's *own* icon onto
+# them. Nova, Apex, ADW, Lawnchair and Blueprint-based packs all implement it.
+#
+# This matters more for Pop than for a transparent pack. Pop's entire claim is
+# "one container, 924 times" — and a single unthemed app sitting next to them
+# breaks that claim on sight. With this furniture the claim becomes "every app
+# on your device", which is what the commercial competition advertises.
+#
+# Multiple iconbacks are allowed and the launcher picks one per app, so we ship
+# all sixteen swatches and let unthemed apps land across the whole palette.
+# --------------------------------------------------------------------------
+def render_iconback(field: str, uid: str = "k") -> str:
+    """The Pop container with no mark in it — field, halftone, keyline, ledge."""
+    path = squircle_path(BOX_X, BOX_Y, BOX_S)
+    return (
+        f'{_SVG_OPEN} viewBox="0 0 {GRID} {GRID}" '
+        f'width="{GRID}" height="{GRID}">\n'
+        f'{_field_stack(uid, path, field, shade(field, 0.70), GRID, GRID, KEYLINE, SHADOW_DY, HALFTONE_PITCH, HALFTONE_R)}'
+        f'</svg>\n'
+    )
+
+
+def render_iconmask() -> str:
+    """Opaque squircle on transparent — clips a square app icon to Pop's shape.
+
+    Polarity is the one thing here that is not settled by the spec: launchers
+    disagree about whether the mask's opaque region is kept or removed. This
+    follows the majority convention (opaque = visible). Verify on hardware.
+    """
+    return (
+        f'{_SVG_OPEN} viewBox="0 0 {GRID} {GRID}" '
+        f'width="{GRID}" height="{GRID}">\n'
+        f'<path d="{squircle_path(BOX_X, BOX_Y, BOX_S)}" fill="#000000"/>\n'
+        f'</svg>\n'
+    )
+
+
+def render_iconupon() -> str:
+    """The ink keyline, drawn on top so a full-bleed app icon cannot cover it.
+
+    Without this the borrowed icon paints over the keyline and the container
+    stops reading as a Pop card — which is the whole point of the exercise.
+    """
+    return (
+        f'{_SVG_OPEN} viewBox="0 0 {GRID} {GRID}" '
+        f'width="{GRID}" height="{GRID}">\n'
+        f'<path d="{squircle_path(BOX_X, BOX_Y, BOX_S)}" fill="none" '
+        f'stroke="{INK}" stroke-width="{KEYLINE}" stroke-linejoin="round"/>\n'
+        f'</svg>\n'
+    )
+
+
+# How far the launcher shrinks the borrowed icon before compositing.
+#
+# Not TARGET_INK/GRID: that is sized for a *stroked mark*, whose ink box is a
+# thin skeleton, and applying it to a solid square app icon would leave it
+# marooned in the middle of the field. This is a geometric fit instead — the
+# largest square inside the container, less the keyline on both sides, less a
+# breathing margin so the borrowed art does not crowd the ink.
+#
+# The superellipse is n=4.6, so it is close enough to square that the inscribed
+# square is effectively the inner width.
+FALLBACK_SCALE = round((BOX_S - 2 * KEYLINE) * 0.88 / GRID, 2)
 
 
 BANNER_W, BANNER_H = 1280, 720

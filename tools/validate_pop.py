@@ -151,6 +151,13 @@ def main() -> int:
         check(dominant >= MIN_DOMINANT_CONTRAST,
               f"swatch {name} {hexv}: dominant contrast {dominant:.2f} "
               f"< {MIN_DOMINANT_CONTRAST}")
+        # The palette must be closed under its own mapper. If snapping a
+        # swatch does not return that swatch, then asking for a colour by
+        # value silently gets you a different one — which is exactly how the
+        # Projectivy internal cards came out marine instead of slate.
+        check(snap(hexv) == (name, hexv),
+              f"snap is not idempotent for {name} {hexv}: "
+              f"it returns {snap(hexv)[0]}")
         check(hexv.upper() not in seen_hex,
               f"swatch {name} duplicates {seen_hex.get(hexv.upper())} "
               f"({hexv}) — 16 swatches must be 16 colours")
@@ -175,6 +182,7 @@ def main() -> int:
 
     # ---- mapping --------------------------------------------------------
     drawables = {i["drawable"] for i in icons}
+    internals = {f"pl_{d}" for d, _ in build_pop.PROJECTIVY_INTERNALS}
     for xml_path in (POP_XML / "appfilter.xml", POP_ASSETS / "appfilter.xml"):
         root = ET.fromstring(xml_path.read_text(encoding="utf-8"))
         items = root.findall("item")
@@ -183,10 +191,38 @@ def main() -> int:
             drawable = item.get("drawable", "")
             base = drawable[:-len("_banner")] if drawable.endswith("_banner") \
                 else drawable
-            check(base in drawables,
+            check(base in drawables or base in internals,
                   f"{xml_path.name}: '{drawable}' maps to no catalog icon")
             check((POP_PNG / f"{drawable}.png").exists(),
                   f"{xml_path.name}: '{drawable}' has no PNG")
+
+        # Fallback furniture. Every drawable the launcher is told to composite
+        # has to exist, or unthemed apps render as a hole instead of a card.
+        backs = root.findall("iconback")
+        check(len(backs) == 1, f"{xml_path.name}: expected exactly one iconback")
+        for tag, attr_prefix in (("iconback", "img"), ("iconmask", "img"),
+                                 ("iconupon", "img")):
+            for node in root.findall(tag):
+                imgs = [v for k, v in node.attrib.items()
+                        if k.startswith(attr_prefix)]
+                check(imgs, f"{xml_path.name}: <{tag}> declares no images")
+                for img in imgs:
+                    check((POP_PNG / f"{img}.png").exists(),
+                          f"{xml_path.name}: <{tag}> references missing "
+                          f"drawable '{img}'")
+        for node in root.findall("iconback"):
+            check(len(node.attrib) == len(SWATCHES),
+                  f"{xml_path.name}: iconback should offer all "
+                  f"{len(SWATCHES)} swatches, found {len(node.attrib)}")
+        scale = root.find("scale")
+        check(scale is not None, f"{xml_path.name}: no <scale> for unthemed apps")
+        if scale is not None:
+            f = float(scale.get("factor", "0"))
+            # Below ~0.5 the borrowed icon is marooned in the field; above
+            # ~0.85 it collides with the keyline.
+            check(0.55 <= f <= 0.85,
+                  f"{xml_path.name}: scale factor {f} outside the range where "
+                  f"a borrowed icon sits correctly inside the container")
 
     a = (POP_XML / "appfilter.xml").read_text(encoding="utf-8")
     b = (POP_ASSETS / "appfilter.xml").read_text(encoding="utf-8")
@@ -199,9 +235,16 @@ def main() -> int:
         return {m.group(1) for m in
                 re.finditer(r'component="ComponentInfo\{([^}]+)\}"', text)}
 
-    check(components(a) == components(classic),
-          "Pop and the classic pack disagree about which components are "
-          "mapped — both are generated from tools/catalog.json and must not")
+    # Pop additionally maps Projectivy's own internal activities (4.70+),
+    # which the classic pack does not yet. Everything sourced from the shared
+    # catalog must still match exactly.
+    extra = components(a) - components(classic)
+    check(all(build_pop.PROJECTIVY_PKG in c for c in extra),
+          f"Pop maps components the classic pack does not, and they are not "
+          f"Projectivy internals: {sorted(extra)[:5]}")
+    check(components(classic) - components(a) == set(),
+          "the classic pack maps components Pop does not — both are generated "
+          "from tools/catalog.json and must not disagree")
 
     # ---- mirror ---------------------------------------------------------
     for rel in build_pop.MIRROR_FILES:

@@ -103,11 +103,47 @@ class CoverageTests(unittest.TestCase):
         def comps(p: Path) -> set[str]:
             return {m.group(1) for m in re.finditer(
                 r'component="ComponentInfo\{([^}]+)\}"', read(p))}
+        import build_pop
         classic = comps(APP / "res" / "xml" / "appfilter.xml")
         pop = comps(POP_RES / "xml" / "appfilter.xml")
-        self.assertEqual(classic, pop,
+        self.assertEqual(classic - pop, set(),
                          "both packs generate from tools/catalog.json and must "
                          "not disagree about coverage")
+        # Pop maps Projectivy's internal activities on top (4.70+).
+        self.assertTrue(all(build_pop.PROJECTIVY_PKG in c for c in pop - classic),
+                        f"unexpected extra Pop components: {sorted(pop - classic)[:5]}")
+
+    def test_unthemed_apps_still_get_the_container(self):
+        # Pop's whole claim is "one container". An app the pack does not cover
+        # must still land in one, or the claim dies on the user's first screen.
+        import build_pop
+        from popart import SWATCHES
+        xml = read(POP_RES / "xml" / "appfilter.xml")
+        self.assertIn("<iconback ", xml)
+        self.assertIn("<iconmask ", xml)
+        self.assertIn("<iconupon ", xml)
+        self.assertIn("<scale ", xml)
+        for name in SWATCHES:
+            stem = f"pop_back_{name.replace('pop_', '')}"
+            self.assertTrue((POP_PNG / f"{stem}.png").exists(), stem)
+        for stem in ("pop_mask", "pop_upon"):
+            self.assertTrue((POP_PNG / f"{stem}.png").exists(), stem)
+
+    def test_projectivy_internal_cards_exist(self):
+        import build_pop
+        for drawable, acts in build_pop.PROJECTIVY_INTERNALS:
+            self.assertTrue((POP_PNG / f"pl_{drawable}_banner.png").exists(),
+                            drawable)
+            self.assertIn(drawable, build_pop.INTERNAL_GLYPH)
+            self.assertIn(drawable, build_pop.INTERNAL_ACCENT)
+            self.assertTrue(acts)
+
+    def test_furniture_is_not_offered_as_a_pickable_icon(self):
+        # iconback/mask/upon are compositing inputs. Listing them in the
+        # picker grid invites users to assign a blank card to an app.
+        grid = read(POP_RES / "xml" / "drawable.xml")
+        for bad in ("pop_mask", "pop_upon", "pop_back_"):
+            self.assertNotIn(f'drawable="{bad}', grid)
 
     def test_bundled_appfilter_matches_res(self):
         self.assertEqual(read(POP_RES / "xml" / "appfilter.xml"),
@@ -132,6 +168,13 @@ class CoverageTests(unittest.TestCase):
         from popart import snap
         for i in ICONS[:120]:
             self.assertEqual(snap(i["color"]), snap(i["color"]))
+
+    def test_snap_is_closed_over_the_palette(self):
+        # snap(swatch) must be that swatch. Otherwise any code that asks for a
+        # specific colour by value gets a different one, silently.
+        from popart import SWATCHES, snap
+        for name, hexv in SWATCHES.items():
+            self.assertEqual(snap(hexv), (name, hexv), name)
 
     def test_every_used_glyph_is_measured(self):
         metrics = json.loads(

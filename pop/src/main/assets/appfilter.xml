@@ -2585,4 +2585,32 @@
     <item component="ComponentInfo{mobi.zona/.ui.MainActivity}" drawable="zona_banner"/>
     <!-- Zumba -->
     <item component="ComponentInfo{com.zumba.consumerapp.tv/com.maz.activities.ViewerLaunchActivity}" drawable="zumba_banner"/>
+    <!-- Projectivy Launcher internal activities (4.70+) -->
+    <item component="ComponentInfo{com.spocky.projengmenu/com.spocky.projengmenu.ui.settings.SettingsActivity}" drawable="pl_gear_banner"/>
+    <item component="ComponentInfo{com.spocky.projengmenu/.ui.settings.SettingsActivity}" drawable="pl_gear_banner"/>
+    <item component="ComponentInfo{com.spocky.projengmenu/com.spocky.projengmenu.ui.guidedActions.activities.settings.AppSettingsActivity}" drawable="pl_gear_banner"/>
+    <item component="ComponentInfo{com.spocky.projengmenu/.ui.guidedActions.activities.settings.AppSettingsActivity}" drawable="pl_gear_banner"/>
+    <item component="ComponentInfo{com.spocky.projengmenu/com.spocky.projengmenu.ui.guidedActions.activities.shortcut.CategoryShortcutActivity}" drawable="pl_folder_banner"/>
+    <item component="ComponentInfo{com.spocky.projengmenu/.ui.guidedActions.activities.shortcut.CategoryShortcutActivity}" drawable="pl_folder_banner"/>
+    <item component="ComponentInfo{com.spocky.projengmenu/com.spocky.projengmenu.ui.launcherActivities.CategoryShortcutActivity}" drawable="pl_folder_banner"/>
+    <item component="ComponentInfo{com.spocky.projengmenu/.ui.launcherActivities.CategoryShortcutActivity}" drawable="pl_folder_banner"/>
+    <item component="ComponentInfo{com.spocky.projengmenu/com.spocky.projengmenu.ui.guidedActions.activities.shortcut.ChannelShortcutActivity}" drawable="pl_tv_stack_banner"/>
+    <item component="ComponentInfo{com.spocky.projengmenu/.ui.guidedActions.activities.shortcut.ChannelShortcutActivity}" drawable="pl_tv_stack_banner"/>
+    <item component="ComponentInfo{com.spocky.projengmenu/com.spocky.projengmenu.ui.launcherActivities.ChannelShortcutActivity}" drawable="pl_tv_stack_banner"/>
+    <item component="ComponentInfo{com.spocky.projengmenu/.ui.launcherActivities.ChannelShortcutActivity}" drawable="pl_tv_stack_banner"/>
+    <item component="ComponentInfo{com.spocky.projengmenu/com.spocky.projengmenu.ui.guidedActions.activities.input.SourceHDMI1Activity}" drawable="pl_hdmi1_banner"/>
+    <item component="ComponentInfo{com.spocky.projengmenu/.ui.guidedActions.activities.input.SourceHDMI1Activity}" drawable="pl_hdmi1_banner"/>
+    <item component="ComponentInfo{com.spocky.projengmenu/com.spocky.projengmenu.ui.guidedActions.activities.input.SourceHDMI2Activity}" drawable="pl_hdmi2_banner"/>
+    <item component="ComponentInfo{com.spocky.projengmenu/.ui.guidedActions.activities.input.SourceHDMI2Activity}" drawable="pl_hdmi2_banner"/>
+    <item component="ComponentInfo{com.spocky.projengmenu/com.spocky.projengmenu.ui.guidedActions.activities.input.SourceHDMI3Activity}" drawable="pl_hdmi3_banner"/>
+    <item component="ComponentInfo{com.spocky.projengmenu/.ui.guidedActions.activities.input.SourceHDMI3Activity}" drawable="pl_hdmi3_banner"/>
+    <item component="ComponentInfo{com.spocky.projengmenu/com.spocky.projengmenu.ui.guidedActions.activities.input.SourceHDMI4Activity}" drawable="pl_hdmi4_banner"/>
+    <item component="ComponentInfo{com.spocky.projengmenu/.ui.guidedActions.activities.input.SourceHDMI4Activity}" drawable="pl_hdmi4_banner"/>
+    <item component="ComponentInfo{com.spocky.projengmenu/com.spocky.projengmenu.ui.guidedActions.activities.input.SourceAVActivity}" drawable="pl_av_banner"/>
+    <item component="ComponentInfo{com.spocky.projengmenu/.ui.guidedActions.activities.input.SourceAVActivity}" drawable="pl_av_banner"/>
+    <!-- Unthemed apps get the Pop container anyway -->
+    <iconback img1="pop_back_red" img2="pop_back_blaze" img3="pop_back_amber" img4="pop_back_sun" img5="pop_back_acid" img6="pop_back_green" img7="pop_back_jade" img8="pop_back_aqua" img9="pop_back_blue" img10="pop_back_marine" img11="pop_back_grape" img12="pop_back_orchid" img13="pop_back_magenta" img14="pop_back_rose" img15="pop_back_slate" img16="pop_back_graphite"/>
+    <iconmask img1="pop_mask"/>
+    <iconupon img1="pop_upon"/>
+    <scale factor="0.69"/>
 </resources>

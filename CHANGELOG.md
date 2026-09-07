@@ -28,6 +28,27 @@ update manifest. Nothing about the classic pack's shipped product changes.
 - Research: `docs/research/iconpack-demand-2026.md` and
   `docs/research/wallpaper-directions.md`.
 
+- **Fallback masking for unthemed apps.** `iconback` (all 16 swatches),
+  `iconmask`, `iconupon` and `scale="0.69"`. Apps the pack does not cover still
+  get the Pop container, so the pack's claim is "every app on your device", not
+  "924 icons". Nobody else on Android TV ships this.
+- **Projectivy Launcher's own cards are themed** — settings, categories,
+  channels, and HDMI 1–4 / AV inputs, numbered so they are told apart at a
+  glance. Uses the internal-activity mapping added in Projectivy 4.70
+  ([miproja1#512](https://github.com/spocky/miproja1/issues/512)); 22 entries,
+  both component name forms.
+- Research: `docs/research/android-tv-icon-packs.md` — launcher landscape,
+  ADW spec gaps, and a prioritised roadmap.
+
+### Fixed
+- **`popart.snap()` was not idempotent.** `snap(SWATCHES["pop_slate"])` returned
+  `pop_marine`: the two neutral swatches are chosen by saturation/value
+  thresholds their own hex values do not satisfy. Invisible in the icon
+  pipeline, which never snaps twice — it surfaced when the new launcher-
+  furniture cards asked for slate by value and rendered blue. `snap` now
+  exact-matches its own palette first. No catalog accent equals a swatch hex,
+  so none of the 924 icons changed. Invariant now enforced.
+
 ### Changed
 - **`UpdateInstaller.AUTHORITY` and `UpdateChecker`'s manifest URL now come
   from `BuildConfig`.** Both packs compile the same Kotlin; two installed

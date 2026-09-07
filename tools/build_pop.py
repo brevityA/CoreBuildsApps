@@ -276,6 +276,73 @@ def mirror_shared_resources() -> int:
     return copied
 
 
+
+# Projectivy 4.70 (Jun 2026) added the ability to map its *own* internal
+# activities through an icon pack — issue spocky/miproja1#512. Settings, the
+# category and channel shortcuts, and the HDMI/AV input cards can all be
+# themed now. As of writing no pack ships this, and there is a posted request
+# for exactly it on r/Projectivy_Launcher:
+#
+#   "just a banner shaped icon for SmartTube and TV ... and my HDMI outputs so
+#    I don't have the square HDMI icon that Projectivy use which don't fit
+#    with the other app icons"
+#
+# Activity paths come from the issue. Both the fully-qualified and the
+# shorthand form are emitted, same as for third-party apps, because we cannot
+# see which form Projectivy resolves internally. Entries that match nothing
+# are inert, so over-mapping costs nothing and under-mapping costs the feature.
+PROJECTIVY_PKG = "com.spocky.projengmenu"
+PROJECTIVY_INTERNALS = [
+    ("gear", [
+        "ui.settings.SettingsActivity",
+        "ui.guidedActions.activities.settings.AppSettingsActivity",
+    ]),
+    ("folder", [
+        "ui.guidedActions.activities.shortcut.CategoryShortcutActivity",
+        "ui.launcherActivities.CategoryShortcutActivity",
+    ]),
+    ("tv_stack", [
+        "ui.guidedActions.activities.shortcut.ChannelShortcutActivity",
+        "ui.launcherActivities.ChannelShortcutActivity",
+    ]),
+    # Inputs get numbered rather than sharing one mark. The complaint that
+    # prompted this was that Projectivy's stock input icons "don't fit with the
+    # other app icons" — replacing four identical cards with four identical
+    # cards would fix the style and keep the actual problem, which is that you
+    # cannot tell HDMI 2 from HDMI 3 at a glance.
+    ("hdmi1", ["ui.guidedActions.activities.input.SourceHDMI1Activity"]),
+    ("hdmi2", ["ui.guidedActions.activities.input.SourceHDMI2Activity"]),
+    ("hdmi3", ["ui.guidedActions.activities.input.SourceHDMI3Activity"]),
+    ("hdmi4", ["ui.guidedActions.activities.input.SourceHDMI4Activity"]),
+    ("av", ["ui.guidedActions.activities.input.SourceAVActivity"]),
+]
+
+# drawable name -> the glyph that draws it.
+INTERNAL_GLYPH = {
+    "gear": "gear",
+    "folder": "folder",
+    "tv_stack": "tv_stack",
+    "hdmi1": "tile_1",
+    "hdmi2": "tile_2",
+    "hdmi3": "tile_3",
+    "hdmi4": "tile_4",
+    "av": "monitor_wave",
+}
+
+# Which Pop swatch each internal card gets. Launcher furniture should read as
+# furniture, so these sit in the neutral end of the palette rather than
+# competing with the app cards around them.
+INTERNAL_ACCENT = {
+    "gear": "#59637A",      # pop_slate
+    "folder": "#59637A",
+    "tv_stack": "#59637A",
+    "hdmi1": "#333A4B",     # pop_graphite — inputs read as one family
+    "hdmi2": "#333A4B",
+    "hdmi3": "#333A4B",
+    "hdmi4": "#333A4B",
+    "av": "#333A4B",
+}
+
 _STRING_RE = re.compile(r'(<string name="([^"]+)">)(.*?)(</string>)', re.S)
 
 
@@ -368,6 +435,31 @@ def main() -> int:
             write_png((BANNER_DIR / f"{d}.svg").read_text(encoding="utf-8"),
                       POP_PNG / f"{d}_banner.png", BANNER_W, BANNER_H)
             png_written += 2
+
+        # Projectivy's own cards. Rendered through the same render_banner as
+        # every app card, so launcher furniture sits in the row looking like it
+        # belongs there rather than like a system icon that wandered in.
+        for drawable, _acts in PROJECTIVY_INTERNALS:
+            svg = render_banner(INTERNAL_GLYPH[drawable],
+                                INTERNAL_ACCENT[drawable], uid=f"pl{drawable}")
+            write(BANNER_DIR / f"pl_{drawable}.svg", svg)
+            write_png(svg, POP_PNG / f"pl_{drawable}_banner.png",
+                      BANNER_W, BANNER_H)
+            png_written += 1
+
+        # Fallback furniture for apps the pack does not cover.
+        for name, hexv in SWATCHES.items():
+            back = popart.render_iconback(hexv, uid=f"kb{name}")
+            stem = f"pop_back_{name.replace('pop_', '')}"
+            write(SVG_DIR / f"{stem}.svg", back)
+            write_png(back, POP_PNG / f"{stem}.png", PNG_SIZE, PNG_SIZE)
+            png_written += 1
+        for stem, svg in (("pop_mask", popart.render_iconmask()),
+                          ("pop_upon", popart.render_iconupon())):
+            write(SVG_DIR / f"{stem}.svg", svg)
+            write_png(svg, POP_PNG / f"{stem}.png", PNG_SIZE, PNG_SIZE)
+            png_written += 1
+
         print(f"\u2713 PNG written ({png_written}, indexed {PNG_COLORS}-colour) "
               f"\u2192 pop/res/drawable-nodpi/")
     except (ImportError, OSError) as exc:
@@ -392,12 +484,39 @@ def main() -> int:
                     f'    <item component="ComponentInfo{{{esc(variant)}}}" '
                     f'drawable="{i["drawable"]}_banner"/>')
                 emitted += 1
+    internal = 0
+    lines.append('    <!-- Projectivy Launcher internal activities (4.70+) -->')
+    for drawable, activities in PROJECTIVY_INTERNALS:
+        for act in activities:
+            for variant in (f"{PROJECTIVY_PKG}/{PROJECTIVY_PKG}.{act}",
+                            f"{PROJECTIVY_PKG}/.{act}"):
+                if variant in seen:
+                    continue
+                seen.add(variant)
+                lines.append(
+                    f'    <item component="ComponentInfo{{{esc(variant)}}}" '
+                    f'drawable="pl_{drawable}_banner"/>')
+                internal += 1
+
+    # Fallback furniture: the launcher composites an unthemed app's own icon
+    # onto these. Without it, Pop's "one container" claim dies the moment the
+    # user has an app we do not cover. Sixteen backs so unthemed apps land
+    # across the whole palette rather than all going one colour.
+    backs = " ".join(f'img{n + 1}="pop_back_{name.replace("pop_", "")}"'
+                     for n, name in enumerate(SWATCHES))
+    lines += ['    <!-- Unthemed apps get the Pop container anyway -->',
+              f'    <iconback {backs}/>',
+              '    <iconmask img1="pop_mask"/>',
+              '    <iconupon img1="pop_upon"/>',
+              f'    <scale factor="{popart.FALLBACK_SCALE}"/>']
+
     lines.append('</resources>')
     appfilter = "\n".join(lines) + "\n"
     write(POP_XML / "appfilter.xml", appfilter)
     write(POP_ASSETS / "appfilter.xml", appfilter)
     print(f"\u2713 appfilter.xml written — {comp_count} catalog components "
           f"\u2192 {emitted} entries (both name forms) "
+          f"+ {internal} Projectivy internals + fallback furniture "
           f"\u2192 {len(icons)} drawables (res/xml + assets)")
 
     # 4. browser grid
@@ -410,6 +529,13 @@ def main() -> int:
     d = ['<?xml version="1.0" encoding="utf-8"?>',
          '<!-- Generated by tools/build_pop.py. Do not edit by hand. -->',
          '<resources>']
+    # Launcher furniture first: these are the cards a Projectivy user most
+    # wants to find, and burying them under 924 app banners means nobody does.
+    # The iconback/mask/upon drawables are deliberately NOT listed — they are
+    # compositing inputs, not icons, and showing them in a picker is noise.
+    d.append('    <category title="Banners \u00b7 Projectivy Launcher" />')
+    for drawable, _acts in PROJECTIVY_INTERNALS:
+        d.append(f'    <item drawable="pl_{drawable}_banner" />')
     for cat in order:
         d.append(f'    <category title="Banners \u00b7 '
                  f'{esc(CAT_LABEL.get(cat, cat.title()))}" />')

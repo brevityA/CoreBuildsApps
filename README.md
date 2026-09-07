@@ -208,6 +208,22 @@ a letter inside a rounded box; Pop's container **is** that box, so the box is
 dropped and the letter is scaled to the same ink box as every other mark. The
 letters roughly double in size.
 
+### Covers apps it has never seen
+
+Pop's whole claim is one container, and a single unthemed app breaks that claim
+on sight. So the pack hands the launcher the furniture to build one: an
+`iconback` in each of the 16 swatches, an `iconmask`, an `iconupon` keyline and
+a `scale` factor. Apps we do not cover get the Pop field, halftone and ink
+keyline with their own icon composited inside — so the answer to "924 icons" is
+really *every app on your device*. No other Android TV pack ships this.
+
+Pop also themes **Projectivy's own cards** — settings, categories, channels and
+HDMI 1–4 / AV inputs, numbered so you can tell which input is which. That uses
+the internal-activity mapping Projectivy added in 4.70
+([miproja1#512](https://github.com/spocky/miproja1/issues/512)), answering a
+[posted request](https://www.reddit.com/r/Projectivy_Launcher/comments/1icfbn7/how_to_i_install_icon_packs_also_can_i_make_my/)
+that no pack had filled.
+
 ### Matching wallpapers
 
 Twelve 4K walls in `series-5-pop`, built from the same primitives as the icons
@@ -251,7 +267,10 @@ glyph geometry actually changes.
 ### Why this pack exists
 
 Full research, with sources: [**docs/research/iconpack-demand-2026.md**](docs/research/iconpack-demand-2026.md)
-and [**docs/research/wallpaper-directions.md**](docs/research/wallpaper-directions.md).
+[**docs/research/wallpaper-directions.md**](docs/research/wallpaper-directions.md),
+and [**docs/research/android-tv-icon-packs.md**](docs/research/android-tv-icon-packs.md)
+— the launcher landscape, the ADW spec features packs leave unused, and a
+prioritised roadmap.
 
 The short version: Android TV has roughly three icon packs, and all three are
 minimal line art. Pop art / cartoon sells well on phones — the leading pack in
