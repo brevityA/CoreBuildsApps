@@ -7,12 +7,14 @@ on:
       - 'pixel-neon/**'
       - 'tools/catalog.json'
       - 'tools/build_pixel_neon.py'
+      - 'Wallpapers/**'
       - '.github/workflows/pixel-neon-apk.yml'
   pull_request:
     paths:
       - 'pixel-neon/**'
       - 'tools/catalog.json'
       - 'tools/build_pixel_neon.py'
+      - 'Wallpapers/**'
       - '.github/workflows/pixel-neon-apk.yml'
   workflow_dispatch:
 
@@ -39,7 +41,7 @@ jobs:
       - name: Validate Pixel Neon mappings and raster dimensions
         run: python tools/validate_pixel_neon.py
 
-      - name: Verify generated text assets are committed
+      - name: Verify generated assets are committed
         run: |
           DRIFT=$(git status --porcelain -- pixel-neon/docs pixel-neon/app/src/main/assets pixel-neon/app/src/main/res/xml pixel-neon/app/src/main/res/values/icon_pack.xml | grep -v '^?? ' || true)
           if [ -n "$DRIFT" ]; then

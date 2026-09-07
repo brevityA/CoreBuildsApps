@@ -9,7 +9,7 @@ END = "<!-- suite-stamp:end -->"
 
 WHAT = {
     "iconpack": "924 transparent icons + 70 wallpapers for Projectivy Launcher",
-    "pixelneon": "924 transparent 8-bit neon icons for Projectivy Launcher",
+    "pixelneon": "924 transparent 8-bit neon icons + 70 wallpapers for Projectivy Launcher",
     "line": "Sports scores & channel RSS ticker (chyron)",
     "shift": "Android TV screensaver + motion wallpaper browser",
     "motion": "Projectivy wallpaper-provider plugin for Core Motion loops",

@@ -3,6 +3,8 @@
   "sourceCatalog": "tools/catalog.json",
   "version": "0.1.0",
   "icons": 924,
+  "wallpapers": 70,
+  "wallpaperThumbs": 70,
   "catalogComponents": 1098,
   "appfilterEntries": 1661,
   "pixelGrid": 32,

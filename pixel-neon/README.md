@@ -24,9 +24,12 @@ bright 8-bit arcade sprite set for Projectivy Launcher and Android TV.
   tiny bitmap label in one of three arcade sign layouts, rather than reusing
   the original rail-and-wordmark banner.
 
-The pack is intentionally icon-only for its first release. It does not bundle
-Core Builds wallpapers, so it stays a small companion install beside the
-original pack.
+Pixel Neon also includes the shared Core Builds wallpaper experience: 70
+wallpaper entries and lightweight thumbnails are bundled for immediate offline
+browsing. Open a tile to preview it full-screen; the 4K source downloads and
+caches only when needed, so the APK stays compact. Set it directly when the
+platform supports it, save it to `Pictures/CoreBuilds` for launcher rotation,
+or multi-select and export a collection with progress, retry, and cancellation.
 
 ## Install
 
@@ -58,9 +61,12 @@ python tools/validate_pixel_neon.py
 ```
 
 Generated output is under `pixel-neon/app/src/main/res/`, with the compact
-review sheet at `pixel-neon/docs/preview.png`. `pixel-neon/docs/build-receipt.json`
-records the catalog, appfilter, and unique-sprite counts for the build. The
-source art direction is documented in [`DESIGN.md`](DESIGN.md).
+review sheet at `pixel-neon/docs/preview.png`. The build also mirrors the
+canonical wallpaper manifest and 70 lightweight JPEG thumbs into
+`app/src/main/assets/`; full-resolution wallpaper PNGs remain remote and are
+fetched on demand. `pixel-neon/docs/build-receipt.json` records the catalog,
+appfilter, unique-sprite, and wallpaper counts for the build. The source art
+direction is documented in [`DESIGN.md`](DESIGN.md).
 
 ## Build the APK
 

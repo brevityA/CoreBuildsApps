@@ -17,7 +17,7 @@ import java.io.File
 
 /**
  * Front door. Apply targets the Home launcher. An update bar appears
- * when the Pixel Neon update manifest is newer; Download pulls the APK and
+ * when Latestrelease/pixel-neon-version.json is newer; Download pulls the APK and
  * hands it to the system installer.
  */
 class MainActivity : AppCompatActivity() {
@@ -76,9 +76,17 @@ class MainActivity : AppCompatActivity() {
         bindChips()
         bindSearch()
         if (pickMode) {
+            // Icon-picker mode has no use for the wallpapers entry or apply.
+            findViewById<View>(R.id.wallpapers_entry).visibility = View.GONE
             bindPickShape()
         } else {
             bindApplyButton()
+            val wpEntry = findViewById<TextView>(R.id.wallpapers_entry)
+            val wpCount = WallpaperCatalog.load(this).size
+            if (wpCount > 0) {
+                wpEntry.text = getString(R.string.wp_entry_sub_fmt, wpCount)
+            }
+            wpEntry.setOnClickListener { startActivity(Intent(this, WallpapersActivity::class.java)) }
         }
     }
 

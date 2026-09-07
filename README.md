@@ -14,7 +14,7 @@
 > | App | Current | What it does | Downloader | Release tag |
 > |---|---:|---|---|---|
 > | **[Core Builds Icon Pack](#-icon-pack)** | `v1.8.2` | 924 transparent icons + 70 wallpapers for Projectivy Launcher | `5270601` | [`v*` / `iconpack`](../../releases) |
-> | **[Core Builds Pixel Neon](#-pixel-neon-icon-pack)** | `v0.1.0` | 924 transparent 8-bit neon icons for Projectivy Launcher | `[USER TO SUPPLY]` | [`pixel-neon-v*` / `pixel-neon`](../../releases) |
+> | **[Core Builds Pixel Neon](#-pixel-neon-icon-pack)** | `v0.1.0` | 924 transparent 8-bit neon icons + 70 wallpapers for Projectivy Launcher | `[USER TO SUPPLY]` | [`pixel-neon-v*` / `pixel-neon`](../../releases) |
 > | **[Core Line](#-core-line)** | `v1.3.0` | Sports scores & channel RSS ticker (chyron) | `7375676` | [`coreline-v*` / `coreline`](../../releases) |
 > | **[Core Shift](#-core-shift)** | `v2.3.5` | Android TV screensaver + motion wallpaper browser | `8829421` | [`shift-v*` / `shift`](../../releases) |
 > | **[Core Motion](#-core-motion)** | `v1.0.0` | Projectivy wallpaper-provider plugin for Core Motion loops | `[USER TO SUPPLY]` | [`motion-v*` / `motion`](../../releases) |
@@ -170,7 +170,7 @@ Inherited from the brand guide, enforced by the generator and validator:
 ## 🔷 Pixel Neon Icon Pack
 
 **The 8-bit neon companion pack for Projectivy Launcher on Android TV.**
-`924 icons` · `0.1.0` · clean monoline sibling: **Core Builds Icon Pack**
+`924 icons` · `70 wallpapers` · `0.1.0` · clean monoline sibling: **Core Builds Icon Pack**
 
 If the original pack is the quiet night-mode set, **Core Builds Pixel Neon** is
 its arcade cabinet: the same mappings and coverage, but every mark is drawn as
@@ -200,11 +200,15 @@ fallback as the original, plus individually generated square pixel sprites for
 per-app selection. Banners use three arcade sign layouts rather than the
 original rail-and-wordmark treatment.
 
-This first release is intentionally icon-only: no wallpaper bundle is shipped.
-The renderer is derived from the one source catalog, so new component coverage
-lands in both packs together. See [`pixel-neon/README.md`](pixel-neon/README.md)
-for the build and regeneration commands. The research-informed sprite rules
-are documented in [`pixel-neon/DESIGN.md`](pixel-neon/DESIGN.md).
+Pixel Neon also includes the same 70-wallpaper browser: thumbnails and the
+manifest are bundled for offline browsing, while full 4K sources download only
+when a preview or export needs them. Set a preview directly when supported,
+save it to `Pictures/CoreBuilds` for launcher rotation, or bulk-export a
+selection with progress, cancellation, and retry support. The renderer is
+derived from the one source catalog, so new component coverage lands in both
+packs together. See [`pixel-neon/README.md`](pixel-neon/README.md) for the
+build and regeneration commands. The research-informed sprite rules are
+documented in [`pixel-neon/DESIGN.md`](pixel-neon/DESIGN.md).
 
 ---
 

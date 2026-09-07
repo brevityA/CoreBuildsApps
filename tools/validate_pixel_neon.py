@@ -122,6 +122,41 @@ def main() -> int:
             check(asset_file.read_bytes() == res_file.read_bytes(),
                   f"assets/{filename} differs from res/xml/{filename}")
 
+    # Wallpaper browsing is offline-ready: only the catalog and lightweight
+    # JPEG thumbs are bundled. Full-resolution PNGs remain download-on-demand.
+    wallpaper_manifest_path = assets / "manifest" / "wallpapers.json"
+    wallpaper_thumb_dir = assets / "wallpapers_thumbs"
+    check(wallpaper_manifest_path.exists(), "assets/manifest/wallpapers.json is missing")
+    check(wallpaper_thumb_dir.is_dir(), "assets/wallpapers_thumbs is missing")
+    full_wallpaper_assets = list(assets.rglob("*.png"))
+    check(not full_wallpaper_assets,
+          "full-resolution wallpaper PNGs must stay download-on-demand: "
+          + ", ".join(str(path.relative_to(ROOT)) for path in full_wallpaper_assets))
+    wallpaper_entries: list[dict] = []
+    if wallpaper_manifest_path.exists():
+        try:
+            wallpaper_manifest = json.loads(wallpaper_manifest_path.read_text(encoding="utf-8"))
+            wallpaper_entries = wallpaper_manifest.get("wallpapers", [])
+            check(wallpaper_manifest.get("count") == len(wallpaper_entries),
+                  "wallpaper manifest count does not match entries")
+            check(len(wallpaper_entries) == 70,
+                  f"wallpaper manifest has {len(wallpaper_entries)} entries, expected 70")
+        except Exception as exc:
+            failures.append(f"wallpaper manifest is unreadable: {exc}")
+    expected_thumbs = set()
+    for entry in wallpaper_entries:
+        url_name = Path(str(entry.get("url", ""))).name
+        thumb_name = f"{Path(url_name).stem}.jpg"
+        expected_thumbs.add(thumb_name)
+        thumb = wallpaper_thumb_dir / thumb_name
+        check(thumb.exists(), f"wallpaper {entry.get('name', url_name)}: missing bundled thumb")
+        if thumb.exists():
+            check(thumb.read_bytes()[:2] == b"\xff\xd8",
+                  f"wallpaper {entry.get('name', url_name)}: thumb is not JPEG")
+    actual_thumbs = {path.name for path in wallpaper_thumb_dir.glob("*.jpg")}
+    check(actual_thumbs == expected_thumbs,
+          f"bundled wallpaper thumbs {len(actual_thumbs)} != catalog thumbs {len(expected_thumbs)}")
+
     arrays = (RES / "values" / "icon_pack.xml").read_text(encoding="utf-8")
     check(arrays.count("<item>") == 3 * len(icons),
           "icon_pack.xml does not contain three complete generated arrays")
@@ -134,6 +169,10 @@ def main() -> int:
     check(receipt.get("pixelGrid") == 32, "build receipt does not record the 32px sprite grid")
     check(receipt.get("uniqueSprites") == len(icons), "build receipt does not prove unique sprites")
     check(receipt.get("icons") == len(icons), "build receipt icon count drifted")
+    check(receipt.get("wallpapers") == len(wallpaper_entries),
+          "build receipt wallpaper count drifted")
+    check(receipt.get("wallpaperThumbs") == len(expected_thumbs),
+          "build receipt wallpaper thumb count drifted")
     check(receipt.get("catalogComponents") == sum(len(i["components"]) for i in icons),
           "build receipt component count drifted")
     check("brand glyph" in receipt.get("artSource", ""),

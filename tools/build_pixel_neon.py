@@ -24,7 +24,9 @@ Generated files live under ``pixel-neon/``. Run from the repository root:
 
 The regular icon generators are deliberately not a prerequisite. This pack
 can never silently fall back to the monoline geometry because it has no import
-or path to assets/svg or assets/banners.
+or path to assets/svg or assets/banners. It also mirrors the shared wallpaper
+manifest and JPEG thumbnails into the APK assets; full-resolution wallpaper
+sources stay remote and are fetched by the app on demand.
 """
 from __future__ import annotations
 
@@ -33,6 +35,7 @@ import hashlib
 import io
 import json
 import random
+import shutil
 import sys
 from pathlib import Path
 from xml.sax.saxutils import escape as xml_escape
@@ -45,6 +48,10 @@ XML_DIR = OUT / "app" / "src" / "main" / "res" / "xml"
 ASSETS_DIR = OUT / "app" / "src" / "main" / "assets"
 VAL_DIR = OUT / "app" / "src" / "main" / "res" / "values"
 DOC_DIR = OUT / "docs"
+WALLPAPER_MANIFEST_SOURCE = ROOT / "Wallpapers" / "manifest.json"
+WALLPAPER_THUMBS_SOURCE = ROOT / "Wallpapers" / "thumbs"
+WALLPAPER_MANIFEST_OUT = ASSETS_DIR / "manifest" / "wallpapers.json"
+WALLPAPER_THUMBS_OUT = ASSETS_DIR / "wallpapers_thumbs"
 
 SPRITE_GRID = 32
 ICON_SIZE = 512
@@ -1484,6 +1491,44 @@ def write(path: Path, data: str | bytes) -> None:
         path.write_text(data, encoding="utf-8")
 
 
+def copy_wallpaper_assets() -> tuple[int, int]:
+    """Bundle the shared wallpaper catalog without bundling the 4K sources.
+
+    Pixel Neon should have the same instant, offline browser as the original
+    pack, but its APK should not contain every full-resolution wallpaper. The
+    repository's canonical manifest and small JPEG thumbs are copied into the
+    companion module; WallpaperDownloader continues to fetch/cache the PNG
+    source only after a user opens a preview or starts an export.
+    """
+    if not WALLPAPER_MANIFEST_SOURCE.exists():
+        raise SystemExit(f"missing wallpaper manifest: {WALLPAPER_MANIFEST_SOURCE}")
+    if not WALLPAPER_THUMBS_SOURCE.exists():
+        raise SystemExit(f"missing wallpaper thumbs: {WALLPAPER_THUMBS_SOURCE}")
+
+    manifest = json.loads(WALLPAPER_MANIFEST_SOURCE.read_text(encoding="utf-8"))
+    entries = manifest.get("wallpapers", [])
+    declared = manifest.get("count")
+    if declared != len(entries):
+        raise SystemExit(
+            f"wallpaper manifest count {declared!r} != {len(entries)} entries"
+        )
+    expected_thumbs = {Path(entry["thumb"]).name for entry in entries}
+    available_thumbs = {path.name for path in WALLPAPER_THUMBS_SOURCE.glob("*.jpg")}
+    missing = sorted(expected_thumbs - available_thumbs)
+    if missing:
+        raise SystemExit("missing wallpaper thumbs: " + ", ".join(missing))
+
+    WALLPAPER_MANIFEST_OUT.parent.mkdir(parents=True, exist_ok=True)
+    shutil.copy2(WALLPAPER_MANIFEST_SOURCE, WALLPAPER_MANIFEST_OUT)
+    WALLPAPER_THUMBS_OUT.mkdir(parents=True, exist_ok=True)
+    for old in WALLPAPER_THUMBS_OUT.glob("*.jpg"):
+        if old.name not in expected_thumbs:
+            old.unlink()
+    for name in sorted(expected_thumbs):
+        shutil.copy2(WALLPAPER_THUMBS_SOURCE / name, WALLPAPER_THUMBS_OUT / name)
+    return len(entries), len(expected_thumbs)
+
+
 def expand(component: str) -> list[str]:
     package, _, activity = component.partition("/")
     if not activity:
@@ -1673,6 +1718,7 @@ def main() -> int:
     icons = sorted(data["icons"], key=lambda i: i["name"].lower())
     for path in (PNG_DIR, XML_DIR, ASSETS_DIR, VAL_DIR, DOC_DIR):
         path.mkdir(parents=True, exist_ok=True)
+    wallpaper_count, wallpaper_thumb_count = copy_wallpaper_assets()
 
     rendered: dict[str, tuple] = {}
     used_hashes: set[str] = set()
@@ -1724,6 +1770,8 @@ def main() -> int:
         "sourceCatalog": "tools/catalog.json",
         "version": "0.1.0",
         "icons": len(icons),
+        "wallpapers": wallpaper_count,
+        "wallpaperThumbs": wallpaper_thumb_count,
         "catalogComponents": source_components,
         "appfilterEntries": emitted,
         "pixelGrid": SPRITE_GRID,
@@ -1734,7 +1782,8 @@ def main() -> int:
     }
     write(DOC_DIR / "build-receipt.json", json.dumps(receipt, indent=2) + "\n")
     print(f"Pixel Neon complete — {len(icons)} unique sprites, {source_components} catalog components, "
-          f"{emitted} appfilter entries, {SPRITE_GRID}px source grid.")
+          f"{emitted} appfilter entries, {wallpaper_count} wallpaper thumbs, "
+          f"{SPRITE_GRID}px source grid.")
     return 0
 
 
