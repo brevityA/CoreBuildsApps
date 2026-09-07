@@ -4,8 +4,9 @@
 The icon pack and the wallpaper pack share a palette language, not artwork. This
 renderer builds each scene on a 320x180 logical canvas, then upscales with
 nearest-neighbour to 3840x2160. Every frame is made from integer pixel clusters,
-layered depth, deliberate negative space, and deterministic seeds; no Core
-Builds wallpaper source is read or recoloured.
+layered depth, deliberate negative space, and deterministic seeds. The shared
+art direction pairs cyber-noir infrastructure with bioluminescent ecology; no
+Core Builds wallpaper source is read or recoloured.
 
 Run from the repository root:
 
@@ -643,6 +644,57 @@ def draw_nebula(draw: ImageDraw.ImageDraw, rng: random.Random, colour_a: int, co
         pixel_cloud(draw, x, y, rng.randrange(35, 90), rng.randrange(8, 23), colour_a if rng.random() < 0.6 else colour_b)
 
 
+def draw_lumen_reeds(
+    draw: ImageDraw.ImageDraw,
+    rng: random.Random,
+    base: int,
+    bodies: tuple[int, ...],
+    glow: int,
+    count: int = 12,
+) -> None:
+    """Add restrained bioluminescent growth that bridges nature and technology."""
+    for _ in range(count):
+        x = rng.randrange(8, WIDTH - 8)
+        height = rng.randrange(10, 34)
+        width = rng.randrange(3, 8)
+        body = rng.choice(bodies)
+        poly(draw, [(x, base), (x - width, base), (x - 1, base - height),
+                    (x + 2, base - height - rng.randrange(1, 6)), (x + width, base)], body)
+        rect(draw, (x - 1, base - height + 5, x + 2, base - height + 8), glow)
+        if rng.random() < 0.45:
+            line(draw, [(x + width, base - 2), (x + width + 5, base - height // 2)], glow)
+
+
+def draw_signal_pylon(draw: ImageDraw.ImageDraw, x: int, base: int, body: int, trim: int, glow: int) -> None:
+    """A small useful-looking relay marker for the nature/city hybrid scenes."""
+    line(draw, [(x, base), (x, base - 41)], body, 2)
+    rect(draw, (x - 6, base - 46, x + 6, base - 40), trim)
+    rect(draw, (x - 3, base - 51, x + 3, base - 46), glow)
+    rect(draw, (x - 9, base - 2, x + 9, base + 2), body)
+    line(draw, [(x - 5, base - 34), (x - 19, base - 23)], trim)
+    line(draw, [(x + 5, base - 34), (x + 19, base - 23)], trim)
+
+
+def draw_lumen_vines(draw: ImageDraw.ImageDraw, rng: random.Random, colour: int, node: int, count: int = 5) -> None:
+    for _ in range(count):
+        x = rng.choice([rng.randrange(8, 54), rng.randrange(266, 313)])
+        y = rng.randrange(22, 89)
+        points = [(x, y)]
+        for _ in range(rng.randrange(2, 5)):
+            x += rng.choice([-1, 1]) * rng.randrange(7, 18)
+            y += rng.randrange(8, 19)
+            points.append((x, y))
+        cable(draw, points, colour, node)
+
+
+def draw_atmospheric_glints(draw: ImageDraw.ImageDraw, rng: random.Random, colour: int, count: int = 20) -> None:
+    """Sparse soft-looking pixel clusters without introducing a smooth effect."""
+    for _ in range(count):
+        x = rng.randrange(10, WIDTH - 10)
+        y = rng.randrange(42, 126)
+        rect(draw, (x, y, x + rng.choice([0, 1]), y), colour)
+
+
 def scene_arcade(draw: ImageDraw.ImageDraw, palette: list[str], rng: random.Random, variant: int) -> None:
     mode = variant % 7
     if mode in (0, 1, 2, 4):
@@ -664,6 +716,12 @@ def scene_arcade(draw: ImageDraw.ImageDraw, palette: list[str], rng: random.Rand
 
     mountain_ridge(draw, rng, 106, 3, 10, 10)
     city_layer(draw, rng, 122, 76, (1, 2, 11), (4, 7, 8), True)
+    # The city series now carries a small living-light layer: reeds and vines
+    # frame the infrastructure without turning the road into a forest.
+    if mode in (1, 3, 6):
+        draw_lumen_reeds(draw, rng, 128, (11, 12), 9, 9)
+        draw_lumen_vines(draw, rng, 10, 8, 3)
+        draw_atmospheric_glints(draw, rng, 9, 12)
 
     if mode == 0:  # Sunset boulevard: a single road and the sun do the directing.
         perspective_floor(draw, rng.randrange(108, 116), 74 + rng.randrange(-8, 9), 12, 3, 4, 6)
@@ -722,6 +780,12 @@ def scene_cyber(draw: ImageDraw.ImageDraw, palette: list[str], rng: random.Rando
     dither_transition(draw, rng, 40, 98, 3, 0.33)
     city_layer(draw, rng, 119, 61, (1, 2, 3), (4, 5, 8), mode not in (0, 5))
     rain(draw, rng, 9, 133, (4, 5, 8), 74 if mode != 2 else 48)
+    # Cyber-noir gets the hybrid treatment most directly: wet infrastructure
+    # is threaded with small mint growth, signal vines, and atmospheric glints.
+    if mode in (0, 2, 3, 5):
+        draw_lumen_reeds(draw, rng, 132, (11, 12), 8, 11)
+        draw_lumen_vines(draw, rng, 5, 8, 5)
+        draw_atmospheric_glints(draw, rng, 8, 16)
 
     if mode == 0:  # Narrow alley framed by two walls and a bright wet vanishing point.
         rect(draw, (0, 48, 69, 138), 12)
@@ -861,6 +925,8 @@ def scene_space(draw: ImageDraw.ImageDraw, palette: list[str], rng: random.Rando
         line(draw, [(171, 130), (171, 91)], 11, 2)
         rect(draw, (164, 87, 178, 92), 4)
         rect(draw, (167, 84, 175, 87), 8)
+        draw_signal_pylon(draw, 56, 147, 11, 4, 8)
+        draw_lumen_reeds(draw, rng, 145, (11, 12), 8, 7)
     elif mode == 5:  # Comet over a cratered foreground.
         pixel_disc(draw, 240, 50, 17, 7)
         line(draw, [(218, 59), (178, 69), (130, 91), (91, 104)], 5, 4)
@@ -878,6 +944,8 @@ def scene_space(draw: ImageDraw.ImageDraw, palette: list[str], rng: random.Rando
         for x in range(173, 319, 33):
             rect(draw, (x, 129 + (x % 7), x + 9, 132 + (x % 7)), 4 if x % 2 else 8)
         cable(draw, [(101, 91), (157, 69), (214, 82), (320, 55)], 10, 8)
+        draw_lumen_reeds(draw, rng, 145, (11, 12), 8, 8)
+        draw_atmospheric_glints(draw, rng, 9, 14)
         pixel_disc(draw, 39, 45, 15, 3)
 
 
@@ -952,6 +1020,14 @@ def scene_nature(draw: ImageDraw.ImageDraw, palette: list[str], rng: random.Rand
         wet_reflections(draw, rng, water_y + 8, (3, 4, 7, 8), 63)
         line(draw, [(0, 135), (61, 130), (124, 137), (198, 131), (320, 138)], 4)
 
+    # A small amount of infrastructure makes the natural series feel like the
+    # same world as the cyber series rather than a disconnected palette swap.
+    if mode in (0, 1, 3, 6):
+        draw_signal_pylon(draw, 57 + (variant % 3) * 34, 151, 11, 4, 8)
+    if mode in (2, 4, 5):
+        draw_lumen_vines(draw, rng, 8, 9, 3)
+    draw_atmospheric_glints(draw, rng, 9, 10)
+
 
 def scene_boss(draw: ImageDraw.ImageDraw, palette: list[str], rng: random.Random, variant: int) -> None:
     mode = variant % 7
@@ -1013,6 +1089,12 @@ def scene_boss(draw: ImageDraw.ImageDraw, palette: list[str], rng: random.Random
             draw_obelisk(draw, 160 + side * 87, floor, 73, 11, 4, 7)
         line(draw, [(74, floor - 76), (160, floor - 108), (246, floor - 76)], 5, 2)
         rect(draw, (151, floor - 115, 169, floor - 109), 8)
+
+    # Empty arenas carry the same living-light vocabulary as the nature scenes:
+    # a few edge vines and low growth, never a creature or a repeated avatar.
+    if mode in (0, 2, 4, 5, 6):
+        draw_lumen_vines(draw, rng, 6, 8, 2)
+        draw_atmospheric_glints(draw, rng, 9, 8)
 
     # Keep the lower edge quiet so the arena architecture, not a repeated
     # foreground-bar pattern, remains the focal point.

@@ -1793,7 +1793,7 @@ def main() -> int:
         "wallpapers": wallpaper_count,
         "wallpaperThumbs": wallpaper_thumb_count,
         "wallpaperSource": "PixelNeonWallpapers",
-        "wallpaperStyle": "original layered 8-bit environment scenes",
+        "wallpaperStyle": "original hybrid 8-bit cyber-noir environment scenes",
         "catalogComponents": source_components,
         "appfilterEntries": emitted,
         "pixelGrid": SPRITE_GRID,

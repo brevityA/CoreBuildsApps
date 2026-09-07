@@ -94,8 +94,11 @@ distant silhouettes, a midground anchor, and a restrained foreground frame;
 farther layers lose contrast and saturation, while neon is reserved for local
 lights, windows, reflections, and focal objects. Rule-of-thirds placement,
 leading lines, negative space, and selective pixel dithering keep the wallpaper
-readable without characters, generic emblems, or full-frame visual noise. They
-do not reuse or recolour the original pack's wallpapers. The manifest and small
+readable without characters, generic emblems, or full-frame visual noise. The
+shared hybrid vocabulary connects cyber-noir infrastructure with bioluminescent
+nature through wet streets, cables, reeds, pylons, signal vines, and
+mint/cyan light accents. They do not reuse or recolour the original pack's
+wallpapers. The manifest and small
 thumbnail JPEGs are bundled for offline browsing, while the full 4K PNG sources
 stay in `PixelNeonWallpapers/` and are downloaded and cached only when a user
 previews, sets, or exports one. The browser keeps the night/pixel chrome, series
