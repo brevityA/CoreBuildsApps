@@ -11,11 +11,11 @@ Source accents are retained in the catalog. **On dark** is the shared square/ban
 | 10 Play | `tenplay` | `#0047F4` | `#0049FA` | `au.com.tenplay/com.tenplay.MainActivity`<br>`au.com.tenplay/.MainActivity`<br>`com.network10.tenplay/.MainActivity`<br>`au.com.tenplay/tv.youi.networktentv.MainActivity` |
 | 3Player | `threeplayer` | `#8AC926` | `#8AC926` | `com.axonista.threeplayer/com.simplestream.presentation.startup.StartUpActivity` |
 | 7plus | `sevenplus` | `#E81820` | `#E81820` | `au.com.seven.inferno/.MainActivity` |
-| 9Now | `ninenow` | `#00A0DC` | `#00A0DC` | `com.mi9.gomi/.MainActivity`<br>`au.com.nine.now.tv/.MainActivity` |
-| 9Now CTV | `ninenow_2` | `#00A0DC` | `#00A0DC` | `au.com.ninenow.ctv/au.com.ninenow.ctv.TvActivity` |
+| 9Now | `ninenow` | `#1048E0` | `#124EEE` | `com.mi9.gomi/.MainActivity`<br>`au.com.nine.now.tv/.MainActivity` |
+| 9Now CTV | `ninenow_2` | `#1048E0` | `#124EEE` | `au.com.ninenow.ctv/au.com.ninenow.ctv.TvActivity` |
 | A 8k Player Vip | `a_8k_player_vip` | `#9B5DE5` | `#9B5DE5` | `com.shadeed.S4kvip/com.shadeed.ibopro.MainActivity` |
 | A&E | `androidtv_3` | `#F94144` | `#F94144` | `com.aetn.aetv.watch.androidtv/com.aetn.android.tveapps.app.MainActivity` |
-| ABC iview | `abciview` | `#00B6E4` | `#00B6E4` | `au.net.abc.iview/.MainActivity`<br>`au.net.abc.iview.tv/.MainActivity`<br>`au.net.abc.iview/au.net.abc.iview.ui.MainActivity` |
+| ABC iview | `abciview` | `#20B8B8` | `#20B8B8` | `au.net.abc.iview/.MainActivity`<br>`au.net.abc.iview.tv/.MainActivity`<br>`au.net.abc.iview/au.net.abc.iview.ui.MainActivity` |
 | ABC News | `abcnews` | `#000000` | `#E6EDF3` | `com.abc.abcnews/com.disney.datg.android.androidtv.splash.AbcNewsSplashScreenActivity` |
 | Ace Stream | `ace_stream` | `#F94144` | `#F94144` | `org.acestream.node/org.acestream.engine.ui.MainWebViewActivity` |
 | Acontra Plus | `acontraplus` | `#F94144` | `#F94144` | `com.acontraplus.android/com.magine.android.mamo.ui.splash.SplashActivity` |
@@ -374,7 +374,7 @@ Source accents are retained in the catalog. **On dark** is the shared square/ban
 | Kamal TV | `androidtv_7` | `#9B5DE5` | `#9B5DE5` | `com.kamal.androidtv/com.kamal.androidtv.App` |
 | Kanopy | `kanopy` | `#6CC24A` | `#6CC24A` | `com.kanopy.tvapp/com.kanopy.tvapp.MainActivity` |
 | Karaoke | `kfandroid` | `#4CC9F0` | `#4CC9F0` | `com.recisio.kfandroid/com.recisio.kfandroid.start.StartActivity` |
-| Kayo | `kayo` | `#00E676` | `#00E676` | `au.com.kayosports.tv/.MainActivity`<br>`au.com.streamotion.hyperion/.MainActivity`<br>`au.com.kayosports.tv/au.com.foxsports.martian.tv.main.MainActivity` |
+| Kayo | `kayo` | `#58B068` | `#58B068` | `au.com.kayosports.tv/.MainActivity`<br>`au.com.streamotion.hyperion/.MainActivity`<br>`au.com.kayosports.tv/au.com.foxsports.martian.tv.main.MainActivity` |
 | KDE Connect | `kde_connect` | `#4CC9F0` | `#4CC9F0` | `org.kde.kdeconnect_tp/org.kde.kdeconnect.UserInterface.MainActivity` |
 | Kemo IPTV | `kemo_iptv` | `#00BBF9` | `#00BBF9` | `de.cyberdream.iptv.tv.player/de.cyberdream.dreamepg.MainActivityTV` |
 | Kemo Stream | `streamingkemo` | `#2EC4B6` | `#2EC4B6` | `com.kemoiptv.streamingkemo/com.kemoiptv.streamingkemo.MainActivity` |
@@ -658,7 +658,7 @@ Source accents are retained in the catalog. **On dark** is the shared square/ban
 | Saff | `saff` | `#43AA8B` | `#43AA8B` | `sa.saffplus/com.mottostreaming.android.tv.MainActivity` |
 | SAI | `sai` | `#3DDC84` | `#3DDC84` | `com.apkpreem.sai/.ui.activities.MainActivity` |
 | SBS | `sbs` | `#F0A500` | `#F0A500` | `au.com.sbs.ondemand.tv/.MainActivity`<br>`au.com.sbs.ondemand/.MainActivity` |
-| Sbsondemand | `sbsondemand` | `#6A4C93` | `#70519C` | `com.sbs.ondemand.tv/com.sbs.ondemand.tv.MainActivity` |
+| Sbsondemand | `sbsondemand` | `#182020` | `#E6EDF3` | `com.sbs.ondemand.tv/com.sbs.ondemand.tv.MainActivity` |
 | Scb Next | `scb_next` | `#8AC926` | `#8AC926` | `com.scb.next/com.scb.next.SplashActivity` |
 | Scholastic | `scholastic` | `#E71D36` | `#E71D36` | `com.future.scholastic/com.future.scholastic.SplashActivity` |
 | Screenscape | `screenscape` | `#F7B32B` | `#F7B32B` | `com.screenscape/com.screenscape.MainActivity` |

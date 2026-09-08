@@ -429,13 +429,13 @@ def monoline(body, weight=MONOLINE):
     return _SW_RE.sub(repl, body)
 
 
-def render_svg(glyph_name, color, glow=False):
+def render_svg(glyph_name, color, glow=False, *, monochrome=False):
     """
     Render the transparent Classic glyph in the common monoline treatment.
 
     Glow is opt-in for legacy experiments, never used by the pack generators.
     """
-    color = display_accent(color)
+    color = display_accent(color, monochrome=monochrome)
     body = monoline(GLYPHS[glyph_name](color))
     if glow:
         body = lit(body, color)

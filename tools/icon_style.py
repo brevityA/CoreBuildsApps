@@ -26,7 +26,7 @@ def contrast(a: str, b: str = CARD) -> float:
     return (high + 0.05) / (low + 0.05)
 
 
-def display_accent(accent: str) -> str:
+def display_accent(accent: str, *, monochrome: bool = False) -> str:
     """Make a source accent legible on the dark card without losing its hue.
 
     Accents that already clear MIN_CONTRAST pass through untouched. Dark ones
@@ -38,6 +38,10 @@ def display_accent(accent: str) -> str:
     BET+ all rendered as identical white linework. That is still the right
     answer for genuinely achromatic accents, which have no hue to preserve.
 
+    Pass monochrome=True for brands whose mark is confirmed monochrome ink —
+    sampled near-blacks may carry residual saturation from photography, but
+    the brand has no hue to preserve, so they take the light-ink path.
+
     Idempotent by construction: the returned colour clears MIN_CONTRAST, so a
     second call takes the pass-through branch. tests/test_icon_identity.py
     asserts both properties.
@@ -48,7 +52,7 @@ def display_accent(accent: str) -> str:
 
     rgb = tuple(int(colour[pos:pos + 2], 16) / 255 for pos in (1, 3, 5))
     hue, light, sat = colorsys.rgb_to_hls(*rgb)
-    if sat < _MIN_SATURATION:
+    if monochrome or sat < _MIN_SATURATION:
         # No hue to preserve — pure blacks and near-greys. Unchanged from the
         # original policy so sibling packs and existing marks stay identical.
         return LIGHT_INK

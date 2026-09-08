@@ -56,7 +56,7 @@
     {
       "name": "9Now",
       "drawable": "ninenow",
-      "color": "#00A0DC",
+      "color": "#1048E0",
       "glyph": "tile_9",
       "components": [
         "com.mi9.gomi/.MainActivity",
@@ -64,21 +64,23 @@
       ],
       "category": "VOD",
       "brand": "9now",
-      "color_source": "brand reference (pre-provenance, unverified)",
-      "color_reviewed": null
+      "color_source": "sampled (Nine Network blue mark) — avid.wiki/Nine_Network_Productions",
+      "color_reviewed": "2026-09-08",
+      "color_note": null
     },
     {
       "name": "9Now CTV",
       "drawable": "ninenow_2",
-      "color": "#00A0DC",
+      "color": "#1048E0",
       "glyph": "tile_9",
       "components": [
         "au.com.ninenow.ctv/au.com.ninenow.ctv.TvActivity"
       ],
       "category": "VOD",
       "brand": "9now",
-      "color_source": "brand reference (pre-provenance, unverified)",
-      "color_reviewed": null
+      "color_source": "sampled (Nine Network blue mark) — avid.wiki/Nine_Network_Productions",
+      "color_reviewed": "2026-09-08",
+      "color_note": null
     },
     {
       "name": "A 8k Player Vip",
@@ -111,7 +113,7 @@
     {
       "name": "ABC iview",
       "drawable": "abciview",
-      "color": "#00B6E4",
+      "color": "#20B8B8",
       "glyph": "eye",
       "components": [
         "au.net.abc.iview/.MainActivity",
@@ -122,8 +124,9 @@
       "unverified": [
         "au.net.abc.iview/au.net.abc.iview.ui.MainActivity"
       ],
-      "color_source": "brand reference (pre-provenance, unverified)",
-      "color_reviewed": null
+      "color_source": "sampled (current mark, teal) — logos.fandom.com/wiki/ABC_iview",
+      "color_reviewed": "2026-09-08",
+      "color_note": null
     },
     {
       "name": "ABC News",
@@ -5016,7 +5019,7 @@
     {
       "name": "Kayo",
       "drawable": "kayo",
-      "color": "#00E676",
+      "color": "#58B068",
       "glyph": "kayo_bolt",
       "components": [
         "au.com.kayosports.tv/.MainActivity",
@@ -5027,8 +5030,9 @@
       "unverified": [
         "au.com.kayosports.tv/au.com.foxsports.martian.tv.main.MainActivity"
       ],
-      "color_source": "brand reference (pre-provenance, unverified)",
-      "color_reviewed": null
+      "color_source": "sampled (current logo green)",
+      "color_reviewed": "2026-09-08",
+      "color_note": null
     },
     {
       "name": "KDE Connect",
@@ -6555,7 +6559,7 @@
       "color_reviewed": null
     },
     {
-      "name": "M\u0101ori+",
+      "name": "Māori+",
       "drawable": "maoritelevision",
       "color": "#F7B32B",
       "glyph": "tile_M",
@@ -9025,7 +9029,7 @@
     {
       "name": "Sbsondemand",
       "drawable": "sbsondemand",
-      "color": "#6A4C93",
+      "color": "#182020",
       "glyph": "tile_S",
       "components": [
         "com.sbs.ondemand.tv/com.sbs.ondemand.tv.MainActivity"
@@ -9035,8 +9039,9 @@
         "com.sbs.ondemand.tv/com.sbs.ondemand.tv.MainActivity"
       ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled (monochrome ink mark) — seeklogo.com/vector-logo/484707/sbs-tv-on-demand",
+      "color_reviewed": "2026-09-08",
+      "color_note": "monochrome"
     },
     {
       "name": "Scb Next",

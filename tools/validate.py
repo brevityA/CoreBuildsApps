@@ -43,7 +43,8 @@ def main():
         if path.exists():
             root = ET.parse(path).getroot()
             body = "".join(ET.tostring(node, encoding="unicode") for node in root)
-            errors = core_monoline_errors(body, display_accent(icon["color"]))
+            mono = icon.get("color_note") == "monochrome"
+            errors = core_monoline_errors(body, display_accent(icon["color"], monochrome=mono))
             check(not errors, f"{icon['name']}: shipped SVG violates Core monoline: {errors}")
         banner = ROOT / "assets/banners" / f"{icon['drawable']}.svg"
         check(banner.exists() and 'id="cbRail"' in banner.read_text(),
@@ -53,7 +54,8 @@ def main():
     # on the documented dark card. Source accents stay untouched for Pop/Neon.
     brands = {}
     for icon in icons:
-        check(contrast(display_accent(icon["color"])) >= MIN_CONTRAST,
+        mono = icon.get("color_note") == "monochrome"
+        check(contrast(display_accent(icon["color"], monochrome=mono)) >= MIN_CONTRAST,
               f"{icon['name']}: effective classic accent is below 3:1 on dark")
         if brand := icon.get("brand"):
             identity = (icon["glyph"], icon["color"].upper())

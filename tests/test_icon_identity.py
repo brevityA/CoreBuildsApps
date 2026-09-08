@@ -90,20 +90,25 @@ class IdentityTests(unittest.TestCase):
 
     def test_square_banner_and_mark_only_share_colour_policy(self):
         for icon in (BY_ID["mubi"], BY_ID["spotify"], BY_ID["nobuffr"]):
-            colour = display_accent(icon["color"])
-            for svg in (render_svg(icon["glyph"], icon["color"]),
-                        render(icon["name"], icon["glyph"], icon["color"]),
-                        render_glyph_only(icon["glyph"], icon["color"])):
+            mono = icon.get("color_note") == "monochrome"
+            colour = display_accent(icon["color"], monochrome=mono)
+            for svg in (render_svg(icon["glyph"], icon["color"], monochrome=mono),
+                        render(icon["name"], icon["glyph"], icon["color"], monochrome=mono),
+                        render_glyph_only(icon["glyph"], icon["color"], monochrome=mono)):
                 self.assertIn(f'stroke="{colour}"', svg)
 
     def test_committed_square_vectors_match_the_generator(self):
         for icon in ICONS:
             path = ROOT / "assets/svg" / f"{icon['drawable']}.svg"
-            self.assertEqual(path.read_text(), render_svg(icon["glyph"], icon["color"]), icon["name"])
+            mono = icon.get("color_note") == "monochrome"
+            self.assertEqual(path.read_text(),
+                             render_svg(icon["glyph"], icon["color"], monochrome=mono),
+                             icon["name"])
 
     def test_no_night_coloured_fake_holes_in_generated_squares(self):
         for icon in ICONS:
-            body = render_svg(icon["glyph"], icon["color"]).lower()
+            mono = icon.get("color_note") == "monochrome"
+            body = render_svg(icon["glyph"], icon["color"], monochrome=mono).lower()
             self.assertNotIn('fill="#0d1117"', body, icon["name"])
 
     def test_youtube_play_counter_is_really_transparent(self):
