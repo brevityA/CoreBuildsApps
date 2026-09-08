@@ -19,4 +19,17 @@
     <color name="cb_success">#34D399</color>
     <color name="cb_warning">#FBBF24</color>
     <color name="cb_error">#F87171</color>
+
+    <!-- UI-role colours, not brand accents. Each has exactly one meaning slot,
+         per the §03 rule above: these describe interaction state, so they may
+         not be reused for identity or artwork. -->
+
+    <!-- Focus halo behind the 3dp ring. Sits outside the gap so focus reads
+         at 3m without the ring itself needing to grow. -->
+    <color name="cb_focus_glow">#3300D4FF</color>
+    <!-- Press feedback. Feeds colorControlHighlight so the ripple is brand
+         cyan instead of the platform grey. -->
+    <color name="cb_ripple">#2E00D4FF</color>
+    <!-- Resting border on cards and fields: 1dp at 6% white. -->
+    <color name="cb_hairline">#0FFFFFFF</color>
 </resources>

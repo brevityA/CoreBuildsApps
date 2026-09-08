@@ -1,39 +1,57 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Category filter chip: 6dp radius. Activated = cyan tint, focused = warm glow ring. -->
+<!--
+  Category filter chip, Brand Guide v1.0 §05. Pill radius.
+
+  Selected and focused used to be the same idea in two weights: activated was
+  a 1dp cyan stroke on a tint, focus was a 2dp cyan stroke on a panel. At 3m
+  those are the same chip. Now selection is a *filled* CTA gradient and focus
+  is a *ring* — different shapes, not different thicknesses of one shape.
+
+  Chips take no focus inset. At 48dp tall, a 6dp inset would eat a quarter of
+  the control; GradientDrawable draws the stroke inside the bounds instead, so
+  every state has identical geometry.
+-->
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:state_activated="true" android:state_focused="false">
+
+    <!-- Selected and focused: filled, plus the ring so you can see where
+         focus is while the filter is active. -->
+    <item android:state_activated="true" android:state_focused="true">
         <shape android:shape="rectangle">
-            <solid android:color="#1A00D4FF" />
-            <corners android:radius="6dp" />
-            <stroke android:width="1dp" android:color="@color/cb_signal_cyan" />
+            <gradient android:angle="315"
+                android:startColor="@color/cb_cta_start"
+                android:endColor="@color/cb_cta_end" />
+            <corners android:radius="@dimen/cb_radius_pill" />
+            <stroke android:width="@dimen/cb_focus_ring"
+                android:color="@color/cb_glow_cyan" />
         </shape>
     </item>
-    <item android:state_focused="true">
-        <layer-list>
-            <item>
-                <shape android:shape="rectangle">
-                    <solid android:color="#1400D4FF" />
-                    <corners android:radius="8dp" />
-                </shape>
-            </item>
-            <item
-                android:left="2dp"
-                android:top="2dp"
-                android:right="2dp"
-                android:bottom="2dp">
-                <shape android:shape="rectangle">
-                    <solid android:color="@color/cb_panel" />
-                    <corners android:radius="6dp" />
-                    <stroke android:width="2dp" android:color="@color/cb_signal_cyan" />
-                </shape>
-            </item>
-        </layer-list>
+
+    <!-- Selected, not focused. -->
+    <item android:state_activated="true">
+        <shape android:shape="rectangle">
+            <gradient android:angle="315"
+                android:startColor="@color/cb_cta_start"
+                android:endColor="@color/cb_cta_end" />
+            <corners android:radius="@dimen/cb_radius_pill" />
+        </shape>
     </item>
+
+    <!-- Focused, not selected. -->
+    <item android:state_focused="true">
+        <shape android:shape="rectangle">
+            <solid android:color="@color/cb_panel" />
+            <corners android:radius="@dimen/cb_radius_pill" />
+            <stroke android:width="@dimen/cb_focus_ring"
+                android:color="@color/cb_signal_cyan" />
+        </shape>
+    </item>
+
+    <!-- Resting. -->
     <item>
         <shape android:shape="rectangle">
             <solid android:color="@color/cb_card" />
-            <corners android:radius="6dp" />
-            <stroke android:width="1dp" android:color="#0FFFFFFF" />
+            <corners android:radius="@dimen/cb_radius_pill" />
+            <stroke android:width="1dp" android:color="@color/cb_hairline" />
         </shape>
     </item>
 </selector>

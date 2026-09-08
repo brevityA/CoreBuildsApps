@@ -151,7 +151,7 @@ def hex_host(cx, cy, r, color):  # retired in style AA
             f'stroke-linejoin="round"/>')
 
 
-def render(name, glyph, accent, category=None):
+def render(name, glyph, accent, category=None, *, monochrome=False):
     """
     Centred glyph + wordmark, with the Core Builds signature:
 
@@ -164,7 +164,7 @@ def render(name, glyph, accent, category=None):
     whatever colour the user picked behind them. Rail, kicker and glyph are
     all drawn ink, so they survive any card colour.
     """
-    accent = display_accent(accent)
+    accent = display_accent(accent, monochrome=monochrome)
     lines = split_name(name)
     size = fit_type(lines)
     text_w = max(_measure(l, size) for l in lines)
@@ -214,9 +214,9 @@ def render(name, glyph, accent, category=None):
     )
 
 
-def render_glyph_only(glyph, accent):
+def render_glyph_only(glyph, accent, *, monochrome=False):
     """Mark-only variant — used when a name adds nothing (e.g. Core Builds)."""
-    accent = display_accent(accent)
+    accent = display_accent(accent, monochrome=monochrome)
     box = 380
     scale = box / 512
     return (
@@ -278,11 +278,12 @@ def main():
 
     SVG_DIR.mkdir(parents=True, exist_ok=True)
     for i in targets:
+        mono = i.get("color_note") == "monochrome"
         if i.get("banner_style") == "glyph":
-            svg = render_glyph_only(i["glyph"], i["color"])
+            svg = render_glyph_only(i["glyph"], i["color"], monochrome=mono)
         else:
             svg = render(i["name"], i["glyph"], i["color"],
-                         i.get("category"))
+                         i.get("category"), monochrome=mono)
             svg = recentre(svg)
         (SVG_DIR / f"{i['drawable']}.svg").write_text(svg, encoding="utf-8")
     print(f"\u2713 banner SVGs written ({len(targets)}/{len(targets)}) "

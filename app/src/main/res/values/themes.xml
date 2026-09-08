@@ -1,4 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!--
+  Core Builds night chrome, Brand Guide v1.0 §05.
+
+  AppCompat, not MaterialComponents: the app has no Material dependency and
+  adding one to theme seven layouts would be a bigger change than the theme
+  warrants. Focus and selection are handled by the drawable selectors.
+-->
 <resources>
     <style name="Theme.CoreBuilds" parent="Theme.AppCompat.NoActionBar">
         <item name="android:windowBackground">@color/cb_night</item>
@@ -6,5 +13,19 @@
         <item name="android:textColorPrimary">@color/cb_ink</item>
         <item name="android:textColorSecondary">@color/cb_slate</item>
         <item name="android:statusBarColor">@color/cb_night</item>
+        <item name="android:navigationBarColor">@color/cb_night</item>
+
+        <!-- Brand-cyan press feedback. Without these the shared layouts'
+             ?attr/selectableItemBackground resolves to the platform's grey
+             ripple, which is the only off-palette colour in the app. Both
+             namespaces are set: AppCompat reads the support attr, and the
+             framework reads the android one on views inflated pre-23. -->
+        <item name="colorControlHighlight">@color/cb_ripple</item>
+        <item name="android:colorControlHighlight">@color/cb_ripple</item>
+
+        <!-- Focus is drawn by the selectors, but set the highlight too so any
+             control that falls back to framework drawing still shows cyan. -->
+        <item name="colorAccent">@color/cb_signal_cyan</item>
+        <item name="android:colorAccent">@color/cb_signal_cyan</item>
     </style>
 </resources>

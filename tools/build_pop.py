@@ -78,11 +78,15 @@ PNG_COLORS = 64
 
 # Resources that belong to the app, not to either pack's art. Copied from app/
 # so there is one editable copy and CI can prove the mirror is current.
-MIRROR_DIRS = ["layout", "drawable", "values-v21"]
+MIRROR_DIRS = ["layout", "drawable", "values-v21", "color"]
 MIRROR_FILES = [
     "xml/file_paths.xml",
     "values/colors.xml",
     "values/themes.xml",
+    # Shared UI metrics. Layouts in MIRROR_DIRS reference @dimen/*, so Pop
+    # cannot build without this file present — omitting it fails resource
+    # linking on both packs' shared layouts, not just one.
+    "values/dimens.xml",
 ]
 
 # Pop's own identity. Everything else in strings.xml is shared UI copy.

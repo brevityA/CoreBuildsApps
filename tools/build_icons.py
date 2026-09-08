@@ -75,7 +75,8 @@ def validate(icons, artwork=None):
             if i.get("banner_style", "standard") != "standard":
                 errors.append(f"{n}: Core monoline apps must use the standard Outfit/category/rail banner")
             if i.get("glyph") in GLYPHS and re.fullmatch(r"#[0-9A-Fa-f]{6}", i.get("color", "")):
-                accent = display_accent(i["color"])
+                accent = display_accent(i["color"],
+                                       monochrome=i.get("color_note") == "monochrome")
                 body = monoline(GLYPHS[i["glyph"]](accent))
                 errors.extend(f"{n}: {e}" for e in core_monoline_errors(body, accent))
         for comp in i.get("components", []):
@@ -115,7 +116,9 @@ def main():
 
     # 1. master SVGs
     for i in icons:
-        write(SVG_DIR / f"{i['drawable']}.svg", render_svg(i["glyph"], i["color"]))
+        mono = i.get("color_note") == "monochrome"
+        write(SVG_DIR / f"{i['drawable']}.svg",
+              render_svg(i["glyph"], i["color"], monochrome=mono))
     print(f"\u2713 SVG masters written ({len(icons)}/{len(icons)}) \u2192 assets/svg/")
 
     # 2. PNGs
@@ -282,7 +285,8 @@ def main():
     for i in icons:
         comps = "<br>".join(f"`{c}`" for c in i["components"])
         label = f"[{i['name']}]({i['download_url']})" if i.get("download_url") else i["name"]
-        md.append(f"| {label} | `{i['drawable']}` | `{i['color']}` | `{display_accent(i['color'])}` | {comps} |")
+        mono = i.get("color_note") == "monochrome"
+        md.append(f"| {label} | `{i['drawable']}` | `{i['color']}` | `{display_accent(i['color'], monochrome=mono)}` | {comps} |")
     write(DOC_DIR / "IconPackList.md", "\n".join(md) + "\n")
     print(f"\u2713 docs/IconPackList.md written ({len(icons)} rows)")
 
@@ -301,7 +305,8 @@ def main():
          f'v{data["meta"]["version"]}</text>']
     for n, i in enumerate(icons):
         cx, cy = (n % cols) * cell, 78 + (n // cols) * cell
-        inner = monoline(GLYPHS[i["glyph"]](display_accent(i["color"])))
+        mono = i.get("color_note") == "monochrome"
+        inner = monoline(GLYPHS[i["glyph"]](display_accent(i["color"], monochrome=mono)))
         s.append(f'<rect x="{cx + 9}" y="{cy + 5}" width="{cell - 18}" '
                  f'height="{cell - 34}" rx="16" fill="#151923" '
                  f'stroke="rgba(255,255,255,.06)"/>')
