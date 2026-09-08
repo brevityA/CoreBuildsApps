@@ -4,6 +4,29 @@ All notable changes to the Core Builds Icon Pack. Format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); versions follow
 [SemVer](https://semver.org/spec/v2.0.0.html).
 
+## [1.8.8] — 2026-09-08
+
+**Brand-colour remediation.** A 925-icon colour audit identified 32 icons
+whose catalog hex was wrong — cycled palette colours or inaccurate brand
+references. All 32 are now corrected across four batches, with provenance
+fields (`color_source`, `color_reviewed`, `color_note`) on every catalog entry.
+Prepared as `versionCode 18`. Coverage remains **925 icons / 1099 catalog
+components / 1661 expanded Classic mappings**.
+
+### Colour accuracy (batches 1–4)
+- **Batch 1–2 (24 icons):** provenance pass + hue-preserving tonal ramp
+  infrastructure in `display_accent()`. Dark accents now lighten along their
+  own hue to clear 3:1 contrast on `#0D1117`. Achromatic accents map to
+  `LIGHT_INK` (`#E6EDF3`). New `monochrome` flag for brands with near-black
+  marks above the 0.08 saturation threshold.
+- **Batch 3 (4 icons):** ABC iview `#00B6E4→#20B8B8`, 9Now `#00A0DC→#1048E0`,
+  SBS On Demand `#6A4C93→#182020` (monochrome), Kayo `#00E676→#58B068`.
+- **Batch 4 (8 icons):** FIFA+ `#2EC4B6→#326295`, Maze `#2EC4B6→#000000`
+  (monochrome), Mpv `#FEE440→#691F69`, NOW `#4CC9F0→#001211` (monochrome),
+  Peloton `#B5179E→#181A1D` (monochrome), RetroArch `#F7B32B→#000000`
+  (monochrome), Shadow `#F94144→#0A0C0D` (monochrome),
+  Binge `#E6007E→#B80472` (gradient brand).
+
 ## [1.8.7] — Unreleased
 
 **Core Builds identity first.** The initial candidate used filled vendor
