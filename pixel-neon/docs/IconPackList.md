@@ -1,6 +1,6 @@
 # Core Builds Pixel Neon · supported applications
 
-`924` individually generated pixel sprites · `1098` catalog components · pack v0.1.0
+`925` individually generated pixel sprites · `1099` catalog components · pack v0.1.0
 
 This is the alternate 8-bit neon treatment of the Core Builds catalog. Each row uses its semantic brand glyph cue, then gets a hash-seeded pixel recipe; this pack does not reuse the monoline SVG geometry or banner lockups.
 
@@ -10,7 +10,7 @@ This is the alternate 8-bit neon treatment of the Core Builds catalog. Each row 
 | 3Player | `threeplayer` | `#8AC926` | `com.axonista.threeplayer/com.simplestream.presentation.startup.StartUpActivity` |
 | 7plus | `sevenplus` | `#0072CE` | `au.com.seven.inferno/.MainActivity` |
 | 9Now | `ninenow` | `#00A0DC` | `com.mi9.gomi/.MainActivity`<br>`au.com.nine.now.tv/.MainActivity` |
-| 9Now CTV | `ninenow_2` | `#F94144` | `au.com.ninenow.ctv/au.com.ninenow.ctv.TvActivity` |
+| 9Now CTV | `ninenow_2` | `#00A0DC` | `au.com.ninenow.ctv/au.com.ninenow.ctv.TvActivity` |
 | A 8k Player Vip | `a_8k_player_vip` | `#9B5DE5` | `com.shadeed.S4kvip/com.shadeed.ibopro.MainActivity` |
 | A&E | `androidtv_3` | `#F94144` | `com.aetn.aetv.watch.androidtv/com.aetn.android.tveapps.app.MainActivity` |
 | ABC iview | `abciview` | `#00B6E4` | `au.net.abc.iview/.MainActivity`<br>`au.net.abc.iview.tv/.MainActivity`<br>`au.net.abc.iview/au.net.abc.iview.ui.MainActivity` |
@@ -80,9 +80,9 @@ This is the alternate 8-bit neon treatment of the Core Builds catalog. Each row 
 | Baby Einstein | `babyeinstein` | `#90BE6D` | `com.giant.babyeinstein/com.codes.ui.SplashActivity` |
 | Background Apps And Process List | `background_apps_and_process_list` | `#FF6B35` | `io.github.visnkmr.bapl/io.github.visnkmr.bapl.MainActivity` |
 | Bally Sports | `ballyscorp` | `#4CC9F0` | `com.ballyscorp.ballylive/tv.vizbee.readyapp.firetvandroidtv.SplashActivity` |
-| BBC iPlayer | `iplayer` | `#FF0000` | `bbc.iplayer.android/external.androidtv.bbciplayer.deeplinking.DeepLinkActivity` |
-| BBC Iplayer | `bbc_iplayer` | `#FF0000` | `uk.co.freeview.bbc/uk.co.freeview.templatewrapper.MainActivity` |
-| BBC iPlayer TV | `bbciplayer` | `#FF0000` | `com.nvidia.bbciplayer/com.nvidia.bbciplayer.MainPlayerActivity` |
+| BBC iPlayer | `iplayer` | `#FF4C98` | `bbc.iplayer.android/external.androidtv.bbciplayer.deeplinking.DeepLinkActivity` |
+| BBC iPlayer (Freeview) | `bbc_iplayer` | `#FF4C98` | `uk.co.freeview.bbc/uk.co.freeview.templatewrapper.MainActivity` |
+| BBC iPlayer TV | `bbciplayer` | `#FF4C98` | `com.nvidia.bbciplayer/com.nvidia.bbciplayer.MainPlayerActivity` |
 | begin | `begin` | `#00C9B7` | `z2c.begin.tv/.MainActivity` |
 | Bell Fibe | `bellmediaplayer` | `#F7B32B` | `com.quickplay.android.bellmediaplayer/ca.bell.fiberemote.boot.BootstrapActivity`<br>`com.quickplay.android.bellmediaplayer/ca.bell.fiberemote.tv.MainTvActivity` |
 | Bet Plus | `bet_plus` | `#000000` | `com.viacom.betplus/com.vmn.playplex.tv.ui.splash.TvSplashActivity` |
@@ -147,7 +147,7 @@ This is the alternate 8-bit neon treatment of the Core Builds catalog. Each row 
 | Cricfy | `cricfy` | `#9B5DE5` | `com.cricfy.tv/com.android.vending.tv.activities.Splash` |
 | Criterion Channel | `criterionchannel` | `#00F5D4` | `com.criterionchannel/tv.vhx.LauncherActivity`<br>`com.criterionchannel/tv.vhx.tv.home.TvHomeActivity` |
 | Crossy Road | `crossy_road` | `#90BE6D` | `com.yodo1.crossyroad/com.google.firebase.MessagingUnityPlayerActivity` |
-| Crunchyroll | `crunchyroid` | `#F7B32B` | `com.crunchyroll.crunchyroid/com.crunchyroll.crunchyroid.splash.ui.SplashActivity` |
+| Crunchyroll | `crunchyroid` | `#FF5E00` | `com.crunchyroll.crunchyroid/com.crunchyroll.crunchyroid.splash.ui.SplashActivity` |
 | CTV | `ctvgo` | `#9B5DE5` | `ca.ctv.ctvgo/axis.androidtv.sdk.app.MainActivity` |
 | Cue New | `cuenew2` | `#1982C4` | `com.cuenew2/com.pythonott.MainActivity` |
 | Curiosity Stream | `curiositystream` | `#1F619E` | `com.curiosity.curiositystream.androidtv/com.curiosity.curiositystream.MainActivity` |
@@ -166,7 +166,7 @@ This is the alternate 8-bit neon treatment of the Core Builds catalog. Each row 
 | Debrid Em All | `debrid_em_all` | `#F7B32B` | `com.yablio.debridemall/com.yablio.debridemall.StartActivity` |
 | Debrid Stream | `debridstream` | `#00BBF9` | `com.debridstream.tv/com.debridstream.tv.MainActivity` |
 | Debrify | `debrify` | `#00C48C` | `com.debrify.app/com.debrify.app.MainActivity` |
-| Deezer | `deezer` | `#9B5DE5` | `deezer.android.app/deezer.android.app.navigation.ui.MainNavigationActivity`<br>`deezer.android.tv/com.deezer.android.ui.activity.LauncherActivity` |
+| Deezer | `deezer` | `#A238FF` | `deezer.android.app/deezer.android.app.navigation.ui.MainNavigationActivity`<br>`deezer.android.tv/com.deezer.android.ui.activity.LauncherActivity` |
 | Delta TV | `deltatv` | `#F7B32B` | `com.nowcast.deltatv/com.nowcasttv.SplashActivity` |
 | Developer Tools | `developer_tools` | `#F94144` | `com.roysolberg.android.developertools/com.roysolberg.android.developertools.ui.activity.MainActivity` |
 | DevInterest | `devinterestdev` | `#577590` | `com.devinterestdev.streamshow/com.devinterestdev.streamshow.TvActivity` |
@@ -384,7 +384,7 @@ This is the alternate 8-bit neon treatment of the Core Builds catalog. Each row 
 | Kinopoisk | `kinopoisk` | `#F94144` | `ru.kinopoisk.tv/ru.kinopoisk.tv.presentation.splash.SplashActivity` |
 | Knowledge Network | `knowledge` | `#E71D36` | `ca.knowledge.kapp/ca.knowledge.kapp.Main2Activity`<br>`ca.knowledge.kapp/ca.knowledge.kapp.SplashActivity` |
 | Kocowa | `kocowa` | `#8AC926` | `com.kocowa.android.tv/com.kocowa.base.a_view.launcher.LauncherActivity` |
-| Kodi | `kodi` | `#3EBBF0` | `org.xbmc.kodi/.Splash`<br>`org.xbmc.kodi/org.xbmc.kodi.Splash`<br>`org.xbmc.kodi_touch/.Splash` |
+| Kodi | `kodi` | `#17B2E7` | `org.xbmc.kodi/.Splash`<br>`org.xbmc.kodi/org.xbmc.kodi.Splash`<br>`org.xbmc.kodi_touch/.Splash` |
 | Kore | `kore` | `#3EBBF0` | `org.xbmc.kore/.ui.sections.hosts.AddHostActivity`<br>`org.xbmc.kore/.ui.sections.remote.RemoteActivity` |
 | KPN | `kpnandroidtv` | `#90BE6D` | `com.kpn.kpnandroidtv/com.kpn.tvplusapp.MainActivity` |
 | Kreate | `kreate` | `#90BE6D` | `me.knighthat.kreate/it.fast4x.rimusic.MainActivity` |
@@ -471,7 +471,7 @@ This is the alternate 8-bit neon treatment of the Core Builds catalog. Each row 
 | MSM Video | `msmvideo` | `#577590` | `com.msmvideo.tv/com.example.msmvideo.ui.SplashActivity` |
 | Mst3k | `mst3k` | `#9B5DE5` | `ott.mst3k/tv.vhx.LauncherActivity`<br>`ott.mst3k/tv.vhx.tv.home.TvHomeActivity` |
 | Mtv Katsomo | `mtv_katsomo` | `#9B5DE5` | `fi.mtvkatsomo/se.tv4.tv4play.ui.tv.navigation.TvHubActivity` |
-| MUBI | `mubi` | `#001529` | `com.mubi/com.mubi.ui.MainActivity`<br>`com.mubi/com.mubi.ui.TvMainActivity` |
+| MUBI | `mubi` | `#000000` | `com.mubi/com.mubi.ui.MainActivity`<br>`com.mubi/com.mubi.ui.TvMainActivity` |
 | Mullvad VPN | `mullvad_vpn` | `#294D73` | `net.mullvad.mullvadvpn/net.mullvad.mullvadvpn.ui.MainActivity` |
 | MUTV | `manutd` | `#E71D36` | `com.mutv.manutd/com.oneproduct.TvActivity` |
 | MX Player | `mxplayer` | `#3AB4F2` | `com.mxtech.videoplayer.ad/.ActivityMediaList`<br>`com.mxtech.videoplayer.pro/.ActivityMediaList`<br>`com.mxtech.videoplayer.tv/.ActivityMediaList`<br>`com.mxtech.videoplayer.ad/com.mxtech.videoplayer.ad.ActivityWelcomeMX` |
@@ -506,6 +506,7 @@ This is the alternate 8-bit neon treatment of the Core Builds catalog. Each row 
 | NHL | `nhl` | `#000000` | `com.nhl.tv/com.viewlift.tv.AppCmsTVSplashActivity` |
 | Njpw World | `njpw_world` | `#90BE6D` | `com.tvasahi.njpwworld/uk.tva.template.LaunchScreenActivity` |
 | Nlziet | `nlziet` | `#6A4C93` | `nl.nlziet/nl.nlziet.tv.app.di.tv.InjectActivity` |
+| NoBuffr | `nobuffr` | `#56C8F0` | `com.nobuffr.app/tv.tivitime.compose.app.AppActivity` |
 | Noovo | `noovo` | `#FEE440` | `com.vmediagroup.noovo/entpay.awl.tv.splash.SplashActivity` |
 | Nordisk Film+ | `nordiskfilmplus` | `#F94144` | `com.nordiskfilmplus.android/com.nordiskfilmplus.android.ui.splash.SplashActivity` |
 | NordVPN | `nordvpn` | `#4687FF` | `com.nordvpn.android/com.nordvpn.android.tv.MainActivity` |
@@ -557,8 +558,8 @@ This is the alternate 8-bit neon treatment of the Core Builds catalog. Each row 
 | Pandora | `pandora` | `#00A0EE` | `com.pandora.android.atv/com.pandora.android.MainActivity` |
 | Pano Scrobbler | `scrobble` | `#577590` | `com.arn.scrobble/com.arn.scrobble.main.MainActivity` |
 | Paramount+ | `ott` | `#0064FF` | `com.cbs.ott/com.paramount.android.pplus.features.splash.tv.SplashMediatorActivity` |
-| Paramount+ Canada | `cbs` | `#E71D36` | `com.cbs.ca/com.paramount.android.pplus.features.splash.tv.SplashMediatorActivity` |
-| Paramount+ TVE | `tve` | `#6A4C93` | `com.cbs.tve/com.paramount.android.pplus.features.splash.tv.SplashMediatorActivity` |
+| Paramount+ Canada | `cbs` | `#0064FF` | `com.cbs.ca/com.paramount.android.pplus.features.splash.tv.SplashMediatorActivity` |
+| Paramount+ TVE | `tve` | `#0064FF` | `com.cbs.tve/com.paramount.android.pplus.features.splash.tv.SplashMediatorActivity` |
 | Parsec | `parsec` | `#E94C89` | `tv.parsec.client/tv.parsec.client.MainActivity` |
 | Pathethuis | `pathethuis` | `#FF477E` | `nl.pathe.thuis/nl.pathe.thuis.LaunchActivity` |
 | PBS | `video` | `#283990` | `com.pbs.video/com.pbs.video.StartupActivity` |
@@ -581,7 +582,7 @@ This is the alternate 8-bit neon treatment of the Core Builds catalog. Each row 
 | PlayKids | `playkids` | `#F3722C` | `com.movile.playkids/com.movile.playkids.MainActivity` |
 | PlayLatin | `apksrebrand` | `#F15BB5` | `boxbr.apksrebrand.playlatin/boxbr.apksrebrand.smarters.view.activity.SplashActivity` |
 | PlayNet | `androidtv_10` | `#90BE6D` | `com.playnet.androidtv.pro/com.playnet.androidtv.pro.DdfzCtdEstCn`<br>`com.playnet.androidtv.pro/com.playnet.androidtv.pro.plBqnAaqDlEns` |
-| Plex | `plex` | `#E5A00D` | `com.plexapp.android/com.plexapp.plex.activities.SplashActivity`<br>`com.plexapp.mediaserver.smb/.MainActivity` |
+| Plex | `plex` | `#EBAF00` | `com.plexapp.android/com.plexapp.plex.activities.SplashActivity`<br>`com.plexapp.mediaserver.smb/.MainActivity` |
 | Plexamp | `plexamp` | `#577590` | `tv.plex.labs.plexamp/com.plexamp.MainActivity` |
 | Plus Messenger | `telegram` | `#4CC9F0` | `cassian.telegram.ooa.pro/not.a.bug.notificationcenter.MainActivity` |
 | Pluto TV | `pluto_tv` | `#000000` | `tv.pluto.android/tv.pluto.android.EntryPoint` |
@@ -600,7 +601,7 @@ This is the alternate 8-bit neon treatment of the Core Builds catalog. Each row 
 | Projectivy Blueprint | `projectivy_blueprint` | `#00E5FF` | `dev.projectivy.blueprint.app/.MainActivity` |
 | Projectivy Launcher | `projectivy` | `#00BCD4` | `com.spocky.projengmenu/.ui.home.MainActivity`<br>`com.spocky.projengmenu/.ui.tvinput.TvInputActivity`<br>`com.spocky.projengmenu/com.spocky.projengmenu.ui.MainActivity` |
 | Projectivy Overflight | `projectivy_overflight` | `#FF6B35` | `tv.projectivy.plugin.wallpaperprovider.overflight/tv.projectivy.plugin.wallpaperprovider.overflight.SettingsActivity` |
-| Proton VPN | `protonvpn` | `#66B245` | `ch.protonvpn.android/com.protonvpn.android.tv.main.TvMainActivity` |
+| Proton VPN | `protonvpn` | `#66DEB1` | `ch.protonvpn.android/com.protonvpn.android.tv.main.TvMainActivity` |
 | Psiphon | `subscription` | `#9B5DE5` | `com.psiphon3.subscription/com.psiphon3.MainActivity` |
 | Puffin TV | `cloudmosa` | `#00F5D4` | `com.cloudmosa.puffinTV/com.cloudmosa.appTV.classic.ClassicTVActivity` |
 | Pure Flix | `pureflix` | `#577590` | `com.pureflix/com.applicaster.ui.activities.MainActivity` |
@@ -687,7 +688,7 @@ This is the alternate 8-bit neon treatment of the Core Builds catalog. Each row 
 | Sledovani | `sledovani` | `#FEE440` | `cz.sledovanitv.android/cz.sledovanitv.androidtv.entry.EntryActivity` |
 | Sling TV | `sling_tv` | `#FF6D01` | `com.sling/com.sling.MainActivity` |
 | Smart Tube | `smarttube` | `#FF0000` | `com.teamsmart.videomanager.tv/com.liskovsoft.smartyoutubetv2.tv.ui.main.SplashActivity` |
-| SmartTube Next | `smarttubenext` | `#E62117` | `org.smarttube.stable/com.liskovsoft.smartyoutubetv2.tv.ui.main.SplashActivity`<br>`com.liskovsoft.smarttubetv.beta/com.liskovsoft.smartyoutubetv2.tv.ui.main.SplashActivity`<br>`org.smarttube.beta/com.liskovsoft.smartyoutubetv2.tv.ui.main.SplashActivity` |
+| SmartTube Next | `smarttubenext` | `#FF0000` | `org.smarttube.stable/com.liskovsoft.smartyoutubetv2.tv.ui.main.SplashActivity`<br>`com.liskovsoft.smarttubetv.beta/com.liskovsoft.smartyoutubetv2.tv.ui.main.SplashActivity`<br>`org.smarttube.beta/com.liskovsoft.smartyoutubetv2.tv.ui.main.SplashActivity` |
 | SmartTwitchTV | `twitch_2` | `#6A4C93` | `com.fgl27.twitch/com.fgl27.twitch.PlayerActivity` |
 | Smugmug | `smugmug` | `#2EC4B6` | `com.snapwood.smugfolio/com.smugmug.android.activities.SmugMainActivity` |
 | Snapcast | `snapcast` | `#F3722C` | `de.badaix.snapcast/de.badaix.snapcast.MainActivity` |
@@ -707,7 +708,7 @@ This is the alternate 8-bit neon treatment of the Core Builds catalog. Each row 
 | Sportsfire | `sportsfire` | `#9B5DE5` | `com.leed.sportsfire/com.leed.sportsfire.ui.HomeActivity` |
 | Sportsnet | `sportsnet` | `#FF6B35` | `com.rogers.sportsnet.sportsnet/com.rogers.sportsnet.tv.ui.AppActivity` |
 | Sportzx | `sportzx` | `#F94144` | `com.sportzx.live/com.sportzx.live.activities.SplashActivity` |
-| Spotify | `spotify` | `#1DB954` | `com.spotify.tv.android/com.spotify.app.androidtv.MainActivity`<br>`com.spotify.tv.android/.SpotifyTVActivity`<br>`com.spotify.music/.MainActivity` |
+| Spotify | `spotify` | `#1ED760` | `com.spotify.tv.android/com.spotify.app.androidtv.MainActivity`<br>`com.spotify.tv.android/.SpotifyTVActivity`<br>`com.spotify.music/.MainActivity` |
 | SRF Play | `srfplayer` | `#F94144` | `ch.srf.mobile.srfplayer/ch.srg.srgplayer.tv.MainActivity` |
 | Sstream | `sstream` | `#90BE6D` | `cloud.app.sstream/cloud.app.sstream.MainActivity` |
 | Stan | `stan` | `#0091EA` | `au.com.stan.and/au.com.stan.presentation.tv.splash.SplashScreenActivity`<br>`au.com.stan.and/.MainActivity`<br>`au.com.stan.and.tv/.MainActivity`<br>`au.com.stan.and/au.com.stan.and.ui.screens.splash.SplashActivity` |
@@ -722,7 +723,7 @@ This is the alternate 8-bit neon treatment of the Core Builds catalog. Each row 
 | Streamlocator VPN | `streamlocator_vpn` | `#F94144` | `com.streamlocator.vpn/com.streamlocator.vpn.ui.tv.home.TVHomeActivity` |
 | Streamyfin | `fredrikburmester` | `#F94144` | `com.fredrikburmester.streamyfin/com.fredrikburmester.streamyfin.MainActivity` |
 | Streamz | `dpgmedia` | `#FEE440` | `be.dpgmedia.streamz/be.persgroep.streamz.StreamzMainActivity` |
-| Stremio | `stremio` | `#7B5BF5` | `com.stremio.one/com.stremio.one.MainActivity`<br>`com.stremio.one/.MainActivity`<br>`com.stremio.one/com.stremio.tv.MainActivity` |
+| Stremio | `stremio` | `#685CEE` | `com.stremio.one/com.stremio.one.MainActivity`<br>`com.stremio.one/.MainActivity`<br>`com.stremio.one/com.stremio.tv.MainActivity` |
 | Strexo Player | `strexo` | `#E91E63` | `com.callum.strexoplayer/.LoginActivity` |
 | Strim | `strim` | `#FF477E` | `no.strim.atv/no.rikstv.atv.MainActivity` |
 | Strmr | `strmr` | `#FF3366` | `com.strmr.ps/com.strmr.ps.ui.auth.SignInActivity`<br>`com.strmr.ps/.ui.auth.SignInActivity` |
@@ -738,8 +739,8 @@ This is the alternate 8-bit neon treatment of the Core Builds catalog. Each row 
 | Symfonik | `symfonik` | `#00F5D4` | `app.symfonik.music.player/app.symfonik.ui.MainActivity`<br>`app.symfonik.music.player/app.symfonik.ui.StartActivity` |
 | SYNC | `sync_sports` | `#C8CED6` | `com.sync.tv/.MainActivity`<br>`tv.sync.app/.MainActivity` |
 | Syncler | `syncler` | `#00BFA5` | `com.wolfpack.syncler/.ui.SplashActivity`<br>`com.wolfpack.syncler/com.wolfpack.syncler.MainActivity` |
-| Syncler | `syncler_2` | `#6A4C93` | `com.syncler/urbanMedia.android.touchDevice.ui.activities.StartUpSplashActivity`<br>`com.syncler/com.swordfish.ui.screen.splash.StartUpSplashActivity` |
-| Syncler Beta | `syncler_beta` | `#43AA8B` | `com.syncler.beta/com.swordfish.ui.screen.splash.StartUpSplashActivity` |
+| Syncler | `syncler_2` | `#00BFA5` | `com.syncler/urbanMedia.android.touchDevice.ui.activities.StartUpSplashActivity`<br>`com.syncler/com.swordfish.ui.screen.splash.StartUpSplashActivity` |
+| Syncler Beta | `syncler_beta` | `#00BFA5` | `com.syncler.beta/com.swordfish.ui.screen.splash.StartUpSplashActivity` |
 | Synology Drive | `synologydrive` | `#4FACFE` | `com.synology.server.SynologyDrive/com.synology.server.SynologyDrive.ui.SplashActivity`<br>`com.synology.dscloud/com.synology.dscloud.ui.SplashActivity`<br>`com.synology.dscloud/.ui.SplashActivity` |
 | Synologyphotos | `synologyphotos` | `#F94144` | `com.synology.projectkailash/com.synology.projectkailash.ui.login.LoginActivity` |
 | Tabii | `tabii` | `#6A4C93` | `com.trt.tabii.android/com.trt.tabii.android.tv.MainActivity` |
@@ -811,7 +812,7 @@ This is the alternate 8-bit neon treatment of the Core Builds catalog. Each row 
 | TV Manager | `tv_manager` | `#4CC9F0` | `com.xiaomi.mitv.tvmanager/com.xiaomi.mitv.tvmanager.MainTvManagerActivity` |
 | TV on OS | `deadlyduck` | `#1982C4` | `com.deadlyduck.tvonos/com.deadlyduck.tvonos.TvActivity` |
 | TV Quick Actions | `tvquickactions` | `#00E676` | `dev.vodik7.tvquickactions/.MainActivity` |
-| TV Quick Actions | `tv_quick_actions` | `#B5179E` | `dev.vodik7.tvquickactions.free/dev.vodik7.tvquickactions.MainActivity` |
+| TV Quick Actions | `tv_quick_actions` | `#00E676` | `dev.vodik7.tvquickactions.free/dev.vodik7.tvquickactions.MainActivity` |
 | TV Unplugged | `tvunplugged` | `#1982C4` | `com.google.android.youtube.tvunplugged/com.google.android.apps.youtube.tvunplugged.activity.MainActivity` |
 | TV Vlaanderen | `tv_vlaanderen` | `#90BE6D` | `nl.streamgroup.vlaanderen/tv.solocoo.htmlapp.FullscreenActivity` |
 | TV Web Browser | `tv_web_browser` | `#F3722C` | `jp.co.rarity.tvweb/jp.co.rarity.tvweb.MainActivity` |
@@ -885,7 +886,7 @@ This is the alternate 8-bit neon treatment of the Core Builds catalog. Each row 
 | WeatherYou | `rodrigmatrix` | `#90BE6D` | `com.rodrigmatrix.weatheryou/com.rodrigmatrix.weatheryou.tv.presentation.navigation.MainActivity` |
 | Wetv | `wetv` | `#4CC9F0` | `com.tencent.qqlivei18n/com.ktcp.video.activity.MainActivity`<br>`com.tencent.qqlivei18n/com.ktcp.video.activity.HomeActivity` |
 | Weyd | `weyd` | `#6C5CE7` | `com.weyd.app/.MainActivity` |
-| Weyd Player | `weyd_2` | `#FEE440` | `app.weyd.player/app.weyd.player.ui.SplashScreenActivity` |
+| Weyd Player | `weyd_2` | `#6C5CE7` | `app.weyd.player/app.weyd.player.ui.SplashScreenActivity` |
 | Wholphin | `damontecres_2` | `#00F5D4` | `com.github.damontecres.wholphin/com.github.damontecres.wholphin.MainActivity` |
 | WiFi File Explorer | `wififileexplorer` | `#FF477E` | `com.dooblou.WiFiFileExplorer/com.dooblou.WiFiFileExplorerLib.Start` |
 | WiiM | `linkplay` | `#1982C4` | `com.linkplay.wiimtv/com.linkplay.wiimtv.home.SplashActivity` |

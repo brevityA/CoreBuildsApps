@@ -138,6 +138,7 @@ jobs:
         run: python tools/validate_pixel_neon.py
       - name: Python content tests
         run: |
+          python tests/test_icon_identity.py
           python tests/test_v151_robustness.py
           python tests/test_wallpapers.py
           python tests/test_wallpaper_export.py

@@ -1,6 +1,6 @@
 # Core Builds Pixel Neon
 
-The second Core Builds icon pack: the same 924-app coverage, rebuilt as a
+The second Core Builds icon pack: the same 925-app coverage, rebuilt as a
 bright 8-bit arcade sprite set for Projectivy Launcher and Android TV.
 
 ![Pixel Neon preview](docs/preview.png)

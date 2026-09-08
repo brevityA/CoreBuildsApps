@@ -4,6 +4,86 @@ All notable changes to the Core Builds Icon Pack. Format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); versions follow
 [SemVer](https://semver.org/spec/v2.0.0.html).
 
+## [1.8.7] — Unreleased
+
+Source-level logo/colour corrections after v1.8.6, plus NoBuffr. Prepared as
+`versionCode 17`; no floating release tag or Downloader URL is moved by this
+change. Coverage is **925 icons / 1099 catalog components** (1661 expanded
+Classic mappings). Counts include regional/build variants, not unique brands.
+
+### Added
+- **NoBuffr**, from the exact supplied URL
+  `https://downloads.nobuffr.com/android/nobuffr.apk`. Static inspection of
+  version `1.0.0` / code `210246` verified
+  `com.nobuffr.app/tv.tivitime.compose.app.AppActivity` with phone and TV launcher
+  categories. APK SHA-256:
+  `ec835a672087b5cb56700ddc3ed4e050519f5829d10e86800d5506d79afda5bf`.
+  Its stacked lettering and interrupted underline are derived from the actual
+  adaptive foreground, with a flat cyan underline instead of the source
+  gradient. Squares, banners, browser arrays and mappings ship in all three
+  packs; the Classic app list links to the supplied APK.
+- Committed **small source-artwork/manifest receipts**, not the APK, and
+  `tools/inspect_icon_apk.py` for future static checks. The workspace could not
+  reach the vendor host, so a temporary branch-only CI job fetched/inspected
+  it; that trigger was removed afterward. Normal builds remain offline.
+- **26 identity regression tests** covering canonical variant groups, shared
+  dark-card contrast, local source hashes, proportional safe-area fitting,
+  real alpha counters, MUBI's seven dots, NoBuffr's source silhouette and all
+  three pack mappings, plus launcher-alias and resource-path inspection.
+- A sourced request audit and prioritised queue in
+  `docs/research/icon-fidelity-and-demand-2026-09.md`, and a reproducible compact
+  preview from `tools/build_icon_review.py`. Genuine gaps include TDUK Cache
+  Cleaner/App Killer, Tata Play Binge and Beacon; Wholphin/Nuvio/ZEE5 are already
+  mapped and need fidelity review rather than duplicate icon counts.
+
+### Fixed
+- **16 existing brands now use source-checked silhouettes** instead of loose
+  approximations: Netflix, Spotify, Kodi, Jellyfin, Stremio, Crunchyroll,
+  Twitch, NordVPN, MUBI, Deezer, Proton VPN, Plex, Paramount+, YouTube,
+  YouTube Kids and YouTube Music. Source files are local and hash-pinned in
+  the catalog, with explicit provenance/rights in `THIRD_PARTY_NOTICES.md`.
+  These are flat-colour interpretations, not a claim of brand endorsement or
+  reproduction of every original gradient/shading treatment.
+- **iPlayer is pink, not BBC News red.** This corrects v1.8.6's mistaken colour
+  claim. All three variants now use `#FF4C98` and one reference-informed
+  three-beam mark, not unrelated I/B tiles and a generic play square. Research
+  sources and the distinction between an adaptation and an official asset are
+  recorded in the fidelity notes.
+- **Seven variant groups share one glyph/accent:** iPlayer, 9Now, Paramount+,
+  Syncler, Weyd, SmartTube and tvQuickActions. Drawable names and existing
+  launcher components are retained; the generator rejects future group drift.
+- **79 dark accents no longer vanish on Classic's recommended `#0D1117`
+  cards.** Squares, banners and the preview share a 3:1 floor and one light-ink
+  alternative, `#E6EDF3`. The source colour remains unchanged in the catalog
+  for provenance and for the sibling styles. The app list shows both values.
+- YouTube's play counter and the equaliser faders use **real transparency**,
+  not a painted night-colour hole. MUBI's source geometry has seven dots in
+  **2–3–2 rows**, correcting the old reconstruction and Pixel Neon motif.
+- Wordmark-only banners use their actual ink bounds instead of compressing
+  wide lettering into the old square glyph footprint. Plex is not labelled
+  twice.
+- Pixel Neon's validator derives coverage from the catalog/suite instead of
+  pinning 924 icons/1661 entries; it now rejects duplicate, extra and wrongly
+  assigned components too. The README stamp also derives its icon counts.
+- Branding/brand-preview generation uses the existing self-contained SVG
+  renderer instead of unconditionally requiring a system Cairo library.
+
+### Verification
+- All four Classic generators, Pop (including measured glyph metrics), and
+  Pixel Neon regenerated from the catalog. No generated icons/XML were patched
+  by hand. The new visual receipt is generated from those resources.
+- `Validated 925 icons · 1661 components · 24702 checks run`.
+- `Validated 925 icons · 1099 components · 16 swatches · 13890 checks run`;
+  Pop's 28 tests pass.
+- `Validated Pixel Neon · 925 icons · 1099 catalog components · 12520 checks run`.
+- Identity tests: `Ran 26 tests ... OK`. Existing Python content suites pass
+  (24 robustness, 21 wallpapers, 22 export, 10 Shift content, 6 screensaver,
+  3 prequel checks); suite truth and release/update contracts pass.
+- **Not claimed by these receipts:** physical-device Projectivy auto-assignment,
+  universal contrast on arbitrary wallpapers, or verification of all long-tail
+  logos (614 letter-tile entries remain). Android SDK/lint/build verification
+  belongs to CI; this workspace has no local Android SDK/JDK.
+
 ## [1.8.6] — 2026-09-08
 
 Corrected landing of PR #88 ("icon pack consistency & wallpaper series

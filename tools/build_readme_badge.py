@@ -8,9 +8,9 @@ START = "<!-- suite-stamp:start -->"
 END = "<!-- suite-stamp:end -->"
 
 WHAT = {
-    "iconpack": "924 transparent icons + 50 wallpapers for Projectivy Launcher",
-    "pixelneon": "924 transparent 8-bit neon icons + 70 wallpapers for Projectivy Launcher",
-    "pop": "The same 924 apps, pop-art cartoon: 16 swatches, one container",
+    "iconpack": "{iconCount} transparent icons + 50 wallpapers for Projectivy Launcher",
+    "pixelneon": "{iconCount} transparent 8-bit neon icons + 70 wallpapers for Projectivy Launcher",
+    "pop": "The same {iconCount} icons, pop-art cartoon: 16 swatches, one container",
     "line": "Sports scores & channel RSS ticker (chyron)",
     "shift": "Android TV screensaver + motion wallpaper browser",
     "motion": "Projectivy wallpaper-provider plugin for Core Motion loops",
@@ -39,7 +39,7 @@ def block(suite: dict) -> str:
         tag = f"[`{app['tagPrefix']}*` / `{app['floatingTag']}`]({releases})"
         lines.append(
             f"> | **[{app['name']}](#-{ANCHOR[key]})** | `v{app['versionName']}` | "
-            f"{WHAT[key]} | `{downloader}` | {tag} |"
+            f"{WHAT[key].format(**app)} | `{downloader}` | {tag} |"
         )
     lines += [
         ">",

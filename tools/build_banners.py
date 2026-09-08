@@ -14,9 +14,9 @@ language. What was measured from their pack, over a 150-icon sample:
     composition     glyph + wordmark side by side, or wordmark alone
 
 Those are their structural rules and they are sound for a 10-foot UI. What we
-do NOT copy is the art: their icons are official third-party logos placed
-as-is. Ours are original geometry in the Core Builds icon language — simple
-shapes, rounded ends, one accent colour per app (Brand Guide §07).
+share is the catalog artwork: source-checked brand silhouettes where available,
+original monoline geometry elsewhere. One shared accent policy keeps squares,
+banners and previews in sync; provenance is recorded in tools/catalog.json.
 
 No pack branding appears on any banner. Their DAZN icon is just DAZN; a
 "CORE BUILDS" label on someone else's card is noise. The brand reads through
@@ -34,6 +34,7 @@ from pathlib import Path
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from glyphs import GLYPHS, monoline  # noqa: E402
+from icon_style import display_accent  # noqa: E402
 from typeface import FONT_WORDMARK, measure as type_measure, wordmark_spans  # noqa: E402
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -163,6 +164,7 @@ def render(name, glyph, accent, category=None):
     whatever colour the user picked behind them. Rail, kicker and halo are
     all drawn ink, so they survive any card colour.
     """
+    accent = display_accent(accent)
     lines = split_name(name)
     size = fit_type(lines)
     text_w = max(_measure(l, size) for l in lines)
@@ -214,6 +216,19 @@ def render(name, glyph, accent, category=None):
 
 def render_glyph_only(glyph, accent):
     """Mark-only variant — used when a name adds nothing (e.g. Core Builds)."""
+    accent = display_accent(accent)
+    if bounds := getattr(GLYPHS[glyph], "ink_bounds", None):
+        # Wordmark-only sources (Plex, NoBuffr) should fill the same ink budget,
+        # not be squeezed into the old square glyph's 80px-wide footprint.
+        l, t, r, b = bounds
+        scale = min(INK_W / (r - l), INK_H / (b - t))
+        tx, ty = W / 2 - (l + r) * scale / 2, H / 2 - (t + b) * scale / 2
+        return (
+            f'<svg xmlns="http://www.w3.org/2000/svg" width="{W}" height="{H}" '
+            f'viewBox="0 0 {W} {H}">\n'
+            f'  <g transform="translate({tx:.3f},{ty:.3f}) scale({scale:.5f})">'
+            f'{monoline(GLYPHS[glyph](accent))}</g>\n</svg>\n'
+        )
     box = 380
     scale = box / 512
     return (

@@ -6,7 +6,7 @@ Generates the pack's own branding assets from the Core Builds mark:
 Geometry follows Assets/core_icon.svg exactly (Brand Guide §02).
 """
 from pathlib import Path
-import cairosvg
+from svg_renderer import svg2png
 
 ROOT = Path(__file__).resolve().parent.parent
 RES = ROOT / "app" / "src" / "main" / "res"
@@ -56,7 +56,7 @@ def svg(w, h, body, bg=None):
 
 def png(svg_text, out, w, h):
     out.parent.mkdir(parents=True, exist_ok=True)
-    cairosvg.svg2png(bytestring=svg_text.encode(), write_to=str(out),
+    svg2png(bytestring=svg_text.encode(), write_to=str(out),
                      output_width=w, output_height=h, background_color=None)
 
 

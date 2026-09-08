@@ -53,9 +53,12 @@
     <item drawable="stremio_banner" />
     <item drawable="strmr_banner" />
     <item drawable="syncler_banner" />
+    <item drawable="syncler_2_banner" />
+    <item drawable="syncler_beta_banner" />
     <item drawable="thecomedychannel_banner" />
     <item drawable="venevision_banner" />
     <item drawable="weyd_banner" />
+    <item drawable="weyd_2_banner" />
     <item drawable="wuplay_banner" />
     <category title="Banners · Media centres" />
     <item drawable="dsvideo_banner" />
@@ -67,10 +70,14 @@
     <item drawable="tenplay_banner" />
     <item drawable="sevenplus_banner" />
     <item drawable="ninenow_banner" />
+    <item drawable="ninenow_2_banner" />
     <item drawable="abciview_banner" />
     <item drawable="androidtv_2_banner" />
     <item drawable="livingroom_banner" />
     <item drawable="appletv_banner" />
+    <item drawable="iplayer_banner" />
+    <item drawable="bbc_iplayer_banner" />
+    <item drawable="bbciplayer_banner" />
     <item drawable="shows_banner" />
     <item drawable="binge_banner" />
     <item drawable="beachbody_banner" />
@@ -136,13 +143,13 @@
     <item drawable="zeniptv_banner" />
     <category title="Banners · Players" />
     <item drawable="a_8k_player_vip_banner" />
-    <item drawable="bbc_iplayer_banner" />
     <item drawable="dream_player_tv_banner" />
     <item drawable="janky_banner" />
     <item drawable="justplayer_banner" />
     <item drawable="monplayer_banner" />
     <item drawable="mxplayer_banner" />
     <item drawable="my_family_cinema_player_banner" />
+    <item drawable="nobuffr_banner" />
     <item drawable="nova_video_player_banner" />
     <item drawable="ottplayer_banner" />
     <item drawable="player_banner" />
@@ -325,6 +332,7 @@
     <item drawable="termux_banner" />
     <item drawable="tv_manager_banner" />
     <item drawable="tvquickactions_banner" />
+    <item drawable="tv_quick_actions_banner" />
     <item drawable="virtualhere_usb_server_banner" />
     <item drawable="zank_remote_banner" />
     <category title="Banners · Stores" />
@@ -398,7 +406,6 @@
     <item drawable="trakt_banner" />
     <category title="Banners · Apps" />
     <item drawable="threeplayer_banner" />
-    <item drawable="ninenow_2_banner" />
     <item drawable="ace_stream_banner" />
     <item drawable="acontraplus_banner" />
     <item drawable="adguard_banner" />
@@ -439,8 +446,6 @@
     <item drawable="babyeinstein_banner" />
     <item drawable="background_apps_and_process_list_banner" />
     <item drawable="ballyscorp_banner" />
-    <item drawable="iplayer_banner" />
-    <item drawable="bbciplayer_banner" />
     <item drawable="bellmediaplayer_banner" />
     <item drawable="bet_plus_banner" />
     <item drawable="betterxc_banner" />
@@ -831,8 +836,6 @@
     <item drawable="swampdog_media_banner" />
     <item drawable="sweet_tv_banner" />
     <item drawable="androidtv_8_banner" />
-    <item drawable="syncler_2_banner" />
-    <item drawable="syncler_beta_banner" />
     <item drawable="synologyphotos_banner" />
     <item drawable="tabii_banner" />
     <item drawable="tablofast_banner" />
@@ -876,7 +879,6 @@
     <item drawable="tveverywhere_banner" />
     <item drawable="tv_garden_banner" />
     <item drawable="deadlyduck_banner" />
-    <item drawable="tv_quick_actions_banner" />
     <item drawable="tv_vlaanderen_banner" />
     <item drawable="tv2_play_banner" />
     <item drawable="tv360_banner" />
@@ -925,7 +927,6 @@
     <item drawable="watcher_tv_banner" />
     <item drawable="watcho_banner" />
     <item drawable="wetv_banner" />
-    <item drawable="weyd_2_banner" />
     <item drawable="damontecres_2_banner" />
     <item drawable="linkplay_banner" />
     <item drawable="windscribe_banner" />
@@ -998,9 +999,12 @@
     <item drawable="stremio" />
     <item drawable="strmr" />
     <item drawable="syncler" />
+    <item drawable="syncler_2" />
+    <item drawable="syncler_beta" />
     <item drawable="thecomedychannel" />
     <item drawable="venevision" />
     <item drawable="weyd" />
+    <item drawable="weyd_2" />
     <item drawable="wuplay" />
     <category title="Square · Media centres" />
     <item drawable="dsvideo" />
@@ -1012,10 +1016,14 @@
     <item drawable="tenplay" />
     <item drawable="sevenplus" />
     <item drawable="ninenow" />
+    <item drawable="ninenow_2" />
     <item drawable="abciview" />
     <item drawable="androidtv_2" />
     <item drawable="livingroom" />
     <item drawable="appletv" />
+    <item drawable="iplayer" />
+    <item drawable="bbc_iplayer" />
+    <item drawable="bbciplayer" />
     <item drawable="shows" />
     <item drawable="binge" />
     <item drawable="beachbody" />
@@ -1081,13 +1089,13 @@
     <item drawable="zeniptv" />
     <category title="Square · Players" />
     <item drawable="a_8k_player_vip" />
-    <item drawable="bbc_iplayer" />
     <item drawable="dream_player_tv" />
     <item drawable="janky" />
     <item drawable="justplayer" />
     <item drawable="monplayer" />
     <item drawable="mxplayer" />
     <item drawable="my_family_cinema_player" />
+    <item drawable="nobuffr" />
     <item drawable="nova_video_player" />
     <item drawable="ottplayer" />
     <item drawable="player" />
@@ -1270,6 +1278,7 @@
     <item drawable="termux" />
     <item drawable="tv_manager" />
     <item drawable="tvquickactions" />
+    <item drawable="tv_quick_actions" />
     <item drawable="virtualhere_usb_server" />
     <item drawable="zank_remote" />
     <category title="Square · Stores" />
@@ -1343,7 +1352,6 @@
     <item drawable="trakt" />
     <category title="Square · Apps" />
     <item drawable="threeplayer" />
-    <item drawable="ninenow_2" />
     <item drawable="ace_stream" />
     <item drawable="acontraplus" />
     <item drawable="adguard" />
@@ -1384,8 +1392,6 @@
     <item drawable="babyeinstein" />
     <item drawable="background_apps_and_process_list" />
     <item drawable="ballyscorp" />
-    <item drawable="iplayer" />
-    <item drawable="bbciplayer" />
     <item drawable="bellmediaplayer" />
     <item drawable="bet_plus" />
     <item drawable="betterxc" />
@@ -1776,8 +1782,6 @@
     <item drawable="swampdog_media" />
     <item drawable="sweet_tv" />
     <item drawable="androidtv_8" />
-    <item drawable="syncler_2" />
-    <item drawable="syncler_beta" />
     <item drawable="synologyphotos" />
     <item drawable="tabii" />
     <item drawable="tablofast" />
@@ -1821,7 +1825,6 @@
     <item drawable="tveverywhere" />
     <item drawable="tv_garden" />
     <item drawable="deadlyduck" />
-    <item drawable="tv_quick_actions" />
     <item drawable="tv_vlaanderen" />
     <item drawable="tv2_play" />
     <item drawable="tv360" />
@@ -1870,7 +1873,6 @@
     <item drawable="watcher_tv" />
     <item drawable="watcho" />
     <item drawable="wetv" />
-    <item drawable="weyd_2" />
     <item drawable="damontecres_2" />
     <item drawable="linkplay" />
     <item drawable="windscribe" />

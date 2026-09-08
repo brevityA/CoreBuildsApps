@@ -9,6 +9,8 @@ import json
 import re
 import sys
 import xml.etree.ElementTree as ET
+
+from icon_style import MIN_CONTRAST, contrast, display_accent
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -31,6 +33,18 @@ def main():
     data = json.loads(CATALOG.read_text(encoding="utf-8"))
     icons = data["icons"]
     names = {i["drawable"] for i in icons}
+
+    # Brand variants share one identity; every Classic accent remains readable
+    # on the documented dark card. Source accents stay untouched for Pop/Neon.
+    brands = {}
+    for icon in icons:
+        check(contrast(display_accent(icon["color"])) >= MIN_CONTRAST,
+              f"{icon['name']}: effective classic accent is below 3:1 on dark")
+        if brand := icon.get("brand"):
+            identity = (icon["glyph"], icon["color"].upper())
+            check(brand not in brands or brands[brand] == identity,
+                  f"{icon['name']}: {brand} variants disagree on glyph/colour")
+            brands[brand] = identity
 
     # 1. every drawable has a rendered PNG
     for i in icons:

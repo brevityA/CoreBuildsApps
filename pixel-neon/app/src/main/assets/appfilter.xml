@@ -213,7 +213,7 @@
     <item component="ComponentInfo{com.ballyscorp.ballylive/tv.vizbee.readyapp.firetvandroidtv.SplashActivity}" drawable="ballyscorp_banner"/>
     <!-- BBC iPlayer -->
     <item component="ComponentInfo{bbc.iplayer.android/external.androidtv.bbciplayer.deeplinking.DeepLinkActivity}" drawable="iplayer_banner"/>
-    <!-- BBC Iplayer -->
+    <!-- BBC iPlayer (Freeview) -->
     <item component="ComponentInfo{uk.co.freeview.bbc/uk.co.freeview.templatewrapper.MainActivity}" drawable="bbc_iplayer_banner"/>
     <!-- BBC iPlayer TV -->
     <item component="ComponentInfo{com.nvidia.bbciplayer/com.nvidia.bbciplayer.MainPlayerActivity}" drawable="bbciplayer_banner"/>
@@ -1404,6 +1404,8 @@
     <!-- Nlziet -->
     <item component="ComponentInfo{nl.nlziet/nl.nlziet.tv.app.di.tv.InjectActivity}" drawable="nlziet_banner"/>
     <item component="ComponentInfo{nl.nlziet/.tv.app.di.tv.InjectActivity}" drawable="nlziet_banner"/>
+    <!-- NoBuffr -->
+    <item component="ComponentInfo{com.nobuffr.app/tv.tivitime.compose.app.AppActivity}" drawable="nobuffr_banner"/>
     <!-- Noovo -->
     <item component="ComponentInfo{com.vmediagroup.noovo/entpay.awl.tv.splash.SplashActivity}" drawable="noovo_banner"/>
     <!-- Nordisk Film+ -->

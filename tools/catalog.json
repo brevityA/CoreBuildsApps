@@ -2,11 +2,11 @@
   "$schema": "./catalog.schema.json",
   "meta": {
     "pack": "Core Builds Icon Pack",
-    "version": "1.8.6",
+    "version": "1.8.7",
     "grid": 512,
     "safe_area": 432,
-    "note": "Brand-colored glyph on transparent, per Core Builds Brand Guide v1.0 §07. Glyphs are original geometry in Core Builds language (rounded ends, flat fills, no gradients from source logos).",
-    "count": 924
+    "note": "Transparent, source-checked brand silhouettes where available; original monoline geometry for the long tail. One shared accent per brand, with a consistent light-ink fallback for dark-card legibility. Sourced artwork provenance is recorded in artwork; no network is used when building.",
+    "count": 925
   },
   "icons": [
     {
@@ -54,17 +54,19 @@
         "com.mi9.gomi/.MainActivity",
         "au.com.nine.now.tv/.MainActivity"
       ],
-      "category": "VOD"
+      "category": "VOD",
+      "brand": "9now"
     },
     {
       "name": "9Now CTV",
       "drawable": "ninenow_2",
-      "color": "#F94144",
-      "glyph": "tile_N",
+      "color": "#00A0DC",
+      "glyph": "tile_9",
       "components": [
         "au.com.ninenow.ctv/au.com.ninenow.ctv.TvActivity"
       ],
-      "category": "APP"
+      "category": "VOD",
+      "brand": "9now"
     },
     {
       "name": "A 8k Player Vip",
@@ -837,36 +839,39 @@
     {
       "name": "BBC iPlayer",
       "drawable": "iplayer",
-      "color": "#FF0000",
-      "glyph": "tile_I",
+      "color": "#FF4C98",
+      "glyph": "iplayer_play",
       "components": [
         "bbc.iplayer.android/external.androidtv.bbciplayer.deeplinking.DeepLinkActivity"
       ],
-      "category": "APP"
+      "category": "VOD",
+      "brand": "bbciplayer"
     },
     {
-      "name": "BBC Iplayer",
+      "name": "BBC iPlayer (Freeview)",
       "drawable": "bbc_iplayer",
-      "color": "#FF0000",
+      "color": "#FF4C98",
       "glyph": "iplayer_play",
       "components": [
         "uk.co.freeview.bbc/uk.co.freeview.templatewrapper.MainActivity"
       ],
-      "category": "PLAYER",
+      "category": "VOD",
       "unverified": [
         "uk.co.freeview.bbc/uk.co.freeview.templatewrapper.MainActivity"
       ],
-      "mapping_source": "Projectivy Icon Pack 1.1.9"
+      "mapping_source": "Projectivy Icon Pack 1.1.9",
+      "brand": "bbciplayer"
     },
     {
       "name": "BBC iPlayer TV",
       "drawable": "bbciplayer",
-      "color": "#FF0000",
-      "glyph": "tile_B",
+      "color": "#FF4C98",
+      "glyph": "iplayer_play",
       "components": [
         "com.nvidia.bbciplayer/com.nvidia.bbciplayer.MainPlayerActivity"
       ],
-      "category": "APP"
+      "category": "VOD",
+      "brand": "bbciplayer"
     },
     {
       "name": "begin",
@@ -1465,6 +1470,19 @@
       "category": "CORE"
     },
     {
+      "name": "Core Doctor",
+      "drawable": "coredoctor",
+      "color": "#00D4FF",
+      "glyph": "coredoctor_pulse",
+      "components": [
+        "dev.corebuilds.doctor/.MainActivity"
+      ],
+      "unverified": [
+        "dev.corebuilds.doctor/.MainActivity"
+      ],
+      "category": "CORE"
+    },
+    {
       "name": "Core Line",
       "drawable": "coreline",
       "color": "#00D4FF",
@@ -1487,19 +1505,6 @@
       ],
       "unverified": [
         "dev.corebuilds.shift/.MainActivity"
-      ],
-      "category": "CORE"
-    },
-    {
-      "name": "Core Doctor",
-      "drawable": "coredoctor",
-      "color": "#00D4FF",
-      "glyph": "coredoctor_pulse",
-      "components": [
-        "dev.corebuilds.doctor/.MainActivity"
-      ],
-      "unverified": [
-        "dev.corebuilds.doctor/.MainActivity"
       ],
       "category": "CORE"
     },
@@ -1611,12 +1616,13 @@
     {
       "name": "Crunchyroll",
       "drawable": "crunchyroid",
-      "color": "#F7B32B",
+      "color": "#FF5E00",
       "glyph": "crunchyroll_eye",
       "components": [
         "com.crunchyroll.crunchyroid/com.crunchyroll.crunchyroid.splash.ui.SplashActivity"
       ],
-      "category": "VOD"
+      "category": "VOD",
+      "brand": "crunchyroll"
     },
     {
       "name": "CTV",
@@ -1812,7 +1818,7 @@
     {
       "name": "Deezer",
       "drawable": "deezer",
-      "color": "#9B5DE5",
+      "color": "#A238FF",
       "glyph": "deezer_columns",
       "components": [
         "deezer.android.app/deezer.android.app.navigation.ui.MainNavigationActivity",
@@ -1823,7 +1829,8 @@
         "deezer.android.app/deezer.android.app.navigation.ui.MainNavigationActivity",
         "deezer.android.tv/com.deezer.android.ui.activity.LauncherActivity"
       ],
-      "mapping_source": "Projectivy Icon Pack 1.1.9"
+      "mapping_source": "Projectivy Icon Pack 1.1.9",
+      "brand": "deezer"
     },
     {
       "name": "Delta TV",
@@ -4114,7 +4121,8 @@
         "org.jellyfin.androidtv/org.jellyfin.androidtv.ui.startup.StartupActivity",
         "org.jellyfin.mobile/.MainActivity"
       ],
-      "category": "MEDIA"
+      "category": "MEDIA",
+      "brand": "jellyfin"
     },
     {
       "name": "Jellyfin Enhanced",
@@ -4417,14 +4425,15 @@
     {
       "name": "Kodi",
       "drawable": "kodi",
-      "color": "#3EBBF0",
+      "color": "#17B2E7",
       "glyph": "kodi_box",
       "components": [
         "org.xbmc.kodi/.Splash",
         "org.xbmc.kodi/org.xbmc.kodi.Splash",
         "org.xbmc.kodi_touch/.Splash"
       ],
-      "category": "MEDIA"
+      "category": "MEDIA",
+      "brand": "kodi"
     },
     {
       "name": "Kore",
@@ -5459,13 +5468,14 @@
     {
       "name": "MUBI",
       "drawable": "mubi",
-      "color": "#001529",
+      "color": "#000000",
       "glyph": "mubi_mark",
       "components": [
         "com.mubi/com.mubi.ui.MainActivity",
         "com.mubi/com.mubi.ui.TvMainActivity"
       ],
-      "category": "VOD"
+      "category": "VOD",
+      "brand": "mubi"
     },
     {
       "name": "Mullvad VPN",
@@ -5686,7 +5696,8 @@
         "com.netflix.ninja/.MainActivity",
         "com.netflix.mediaclient/.ui.launch.UIWebViewActivity"
       ],
-      "category": "VOD"
+      "category": "VOD",
+      "brand": "netflix"
     },
     {
       "name": "Netfly",
@@ -5889,6 +5900,20 @@
       "mapping_source": "Projectivy Icon Pack 1.1.9"
     },
     {
+      "name": "NoBuffr",
+      "drawable": "nobuffr",
+      "color": "#56C8F0",
+      "glyph": "nobuffr_mark",
+      "components": [
+        "com.nobuffr.app/tv.tivitime.compose.app.AppActivity"
+      ],
+      "category": "PLAYER",
+      "brand": "nobuffr",
+      "banner_style": "glyph",
+      "download_url": "https://downloads.nobuffr.com/android/nobuffr.apk",
+      "mapping_source": "tools/reference/nobuffr/receipt.json"
+    },
+    {
       "name": "Noovo",
       "drawable": "noovo",
       "color": "#FEE440",
@@ -5920,7 +5945,8 @@
       "components": [
         "com.nordvpn.android/com.nordvpn.android.tv.MainActivity"
       ],
-      "category": "VPN"
+      "category": "VPN",
+      "brand": "nordvpn"
     },
     {
       "name": "Norton Clean",
@@ -6501,27 +6527,30 @@
       "components": [
         "com.cbs.ott/com.paramount.android.pplus.features.splash.tv.SplashMediatorActivity"
       ],
-      "category": "VOD"
+      "category": "VOD",
+      "brand": "paramountplus"
     },
     {
       "name": "Paramount+ Canada",
       "drawable": "cbs",
-      "color": "#E71D36",
-      "glyph": "tile_C",
+      "color": "#0064FF",
+      "glyph": "paramount_peak",
       "components": [
         "com.cbs.ca/com.paramount.android.pplus.features.splash.tv.SplashMediatorActivity"
       ],
-      "category": "VOD"
+      "category": "VOD",
+      "brand": "paramountplus"
     },
     {
       "name": "Paramount+ TVE",
       "drawable": "tve",
-      "color": "#6A4C93",
-      "glyph": "tile_T",
+      "color": "#0064FF",
+      "glyph": "paramount_peak",
       "components": [
         "com.cbs.tve/com.paramount.android.pplus.features.splash.tv.SplashMediatorActivity"
       ],
-      "category": "VOD"
+      "category": "VOD",
+      "brand": "paramountplus"
     },
     {
       "name": "Parsec",
@@ -6768,13 +6797,15 @@
     {
       "name": "Plex",
       "drawable": "plex",
-      "color": "#E5A00D",
+      "color": "#EBAF00",
       "glyph": "plex_chevron",
       "components": [
         "com.plexapp.android/com.plexapp.plex.activities.SplashActivity",
         "com.plexapp.mediaserver.smb/.MainActivity"
       ],
-      "category": "MEDIA"
+      "category": "MEDIA",
+      "brand": "plex",
+      "banner_style": "glyph"
     },
     {
       "name": "Plexamp",
@@ -6997,12 +7028,13 @@
     {
       "name": "Proton VPN",
       "drawable": "protonvpn",
-      "color": "#66B245",
+      "color": "#66DEB1",
       "glyph": "proton_shield",
       "components": [
         "ch.protonvpn.android/com.protonvpn.android.tv.main.TvMainActivity"
       ],
-      "category": "VPN"
+      "category": "VPN",
+      "brand": "protonvpn"
     },
     {
       "name": "Psiphon",
@@ -8057,12 +8089,13 @@
       "components": [
         "com.teamsmart.videomanager.tv/com.liskovsoft.smartyoutubetv2.tv.ui.main.SplashActivity"
       ],
-      "category": "VIDEO"
+      "category": "VIDEO",
+      "brand": "smarttube"
     },
     {
       "name": "SmartTube Next",
       "drawable": "smarttubenext",
-      "color": "#E62117",
+      "color": "#FF0000",
       "glyph": "smarttube_play",
       "components": [
         "org.smarttube.stable/com.liskovsoft.smartyoutubetv2.tv.ui.main.SplashActivity",
@@ -8072,7 +8105,8 @@
       "category": "VIDEO",
       "unverified": [
         "org.smarttube.beta/com.liskovsoft.smartyoutubetv2.tv.ui.main.SplashActivity"
-      ]
+      ],
+      "brand": "smarttube"
     },
     {
       "name": "SmartTwitchTV",
@@ -8317,14 +8351,15 @@
     {
       "name": "Spotify",
       "drawable": "spotify",
-      "color": "#1DB954",
+      "color": "#1ED760",
       "glyph": "spotify_arcs",
       "components": [
         "com.spotify.tv.android/com.spotify.app.androidtv.MainActivity",
         "com.spotify.tv.android/.SpotifyTVActivity",
         "com.spotify.music/.MainActivity"
       ],
-      "category": "MUSIC"
+      "category": "MUSIC",
+      "brand": "spotify"
     },
     {
       "name": "SRF Play",
@@ -8493,14 +8528,15 @@
     {
       "name": "Stremio",
       "drawable": "stremio",
-      "color": "#7B5BF5",
+      "color": "#685CEE",
       "glyph": "stremio_square",
       "components": [
         "com.stremio.one/com.stremio.one.MainActivity",
         "com.stremio.one/.MainActivity",
         "com.stremio.one/com.stremio.tv.MainActivity"
       ],
-      "category": "STREAM"
+      "category": "STREAM",
+      "brand": "stremio"
     },
     {
       "name": "Strexo Player",
@@ -8692,37 +8728,40 @@
         "com.wolfpack.syncler/.ui.SplashActivity",
         "com.wolfpack.syncler/com.wolfpack.syncler.MainActivity"
       ],
-      "category": "STREAM"
+      "category": "STREAM",
+      "brand": "syncler"
     },
     {
       "name": "Syncler",
       "drawable": "syncler_2",
-      "color": "#6A4C93",
-      "glyph": "tile_S",
+      "color": "#00BFA5",
+      "glyph": "sync_ring",
       "components": [
         "com.syncler/urbanMedia.android.touchDevice.ui.activities.StartUpSplashActivity",
         "com.syncler/com.swordfish.ui.screen.splash.StartUpSplashActivity"
       ],
-      "category": "APP",
+      "category": "STREAM",
       "unverified": [
         "com.syncler/urbanMedia.android.touchDevice.ui.activities.StartUpSplashActivity",
         "com.syncler/com.swordfish.ui.screen.splash.StartUpSplashActivity"
       ],
-      "mapping_source": "Projectivy Icon Pack 1.1.9"
+      "mapping_source": "Projectivy Icon Pack 1.1.9",
+      "brand": "syncler"
     },
     {
       "name": "Syncler Beta",
       "drawable": "syncler_beta",
-      "color": "#43AA8B",
-      "glyph": "tile_S",
+      "color": "#00BFA5",
+      "glyph": "sync_ring",
       "components": [
         "com.syncler.beta/com.swordfish.ui.screen.splash.StartUpSplashActivity"
       ],
-      "category": "APP",
+      "category": "STREAM",
       "unverified": [
         "com.syncler.beta/com.swordfish.ui.screen.splash.StartUpSplashActivity"
       ],
-      "mapping_source": "Projectivy Icon Pack 1.1.9"
+      "mapping_source": "Projectivy Icon Pack 1.1.9",
+      "brand": "syncler"
     },
     {
       "name": "Synology Drive",
@@ -9643,21 +9682,23 @@
       "components": [
         "dev.vodik7.tvquickactions/.MainActivity"
       ],
-      "category": "TOOL"
+      "category": "TOOL",
+      "brand": "tvquickactions"
     },
     {
       "name": "TV Quick Actions",
       "drawable": "tv_quick_actions",
-      "color": "#B5179E",
-      "glyph": "tile_T",
+      "color": "#00E676",
+      "glyph": "automation",
       "components": [
         "dev.vodik7.tvquickactions.free/dev.vodik7.tvquickactions.MainActivity"
       ],
-      "category": "APP",
+      "category": "TOOL",
       "unverified": [
         "dev.vodik7.tvquickactions.free/dev.vodik7.tvquickactions.MainActivity"
       ],
-      "mapping_source": "Projectivy Icon Pack 1.1.9"
+      "mapping_source": "Projectivy Icon Pack 1.1.9",
+      "brand": "tvquickactions"
     },
     {
       "name": "TV Unplugged",
@@ -9892,7 +9933,8 @@
       "unverified": [
         "tv.twitch.android.app/tv.twitch.android.apps.TwitchActivity"
       ],
-      "category": "VIDEO"
+      "category": "VIDEO",
+      "brand": "twitch"
     },
     {
       "name": "Twodf Tivi",
@@ -10613,17 +10655,19 @@
       "components": [
         "com.weyd.app/.MainActivity"
       ],
-      "category": "STREAM"
+      "category": "STREAM",
+      "brand": "weyd"
     },
     {
       "name": "Weyd Player",
       "drawable": "weyd_2",
-      "color": "#FEE440",
+      "color": "#6C5CE7",
       "glyph": "tile_W",
       "components": [
         "app.weyd.player/app.weyd.player.ui.SplashScreenActivity"
       ],
-      "category": "APP"
+      "category": "STREAM",
+      "brand": "weyd"
     },
     {
       "name": "Wholphin",
@@ -11010,7 +11054,8 @@
         "com.google.android.youtube.tv/com.google.android.apps.youtube.tv.activity.ShellActivity",
         "com.google.android.youtube/.HomeActivity"
       ],
-      "category": "VIDEO"
+      "category": "VIDEO",
+      "brand": "youtube"
     },
     {
       "name": "YouTube Kids",
@@ -11020,7 +11065,8 @@
       "components": [
         "com.google.android.youtube.tvkids/com.google.android.apps.youtube.tvkids.activity.MainActivity"
       ],
-      "category": "VIDEO"
+      "category": "VIDEO",
+      "brand": "youtubekids"
     },
     {
       "name": "YouTube Music",
@@ -11030,7 +11076,8 @@
       "components": [
         "com.google.android.youtube.tvmusic/com.google.android.apps.youtube.tvmusic.activity.MainActivity"
       ],
-      "category": "MUSIC"
+      "category": "MUSIC",
+      "brand": "youtubemusic"
     },
     {
       "name": "Yowindow",
@@ -11198,5 +11245,160 @@
       ],
       "mapping_source": "Projectivy Icon Pack 1.1.9"
     }
-  ]
+  ],
+  "artwork": {
+    "netflix_ribbon": {
+      "file": "tools/brandmarks/netflix.svg",
+      "sha256": "67dbc495988bd5667a09ed4f56e14db4070a44c7a74e297b146c229f70fd6f6e",
+      "source": "https://brand.netflix.com/en/assets/logos",
+      "upstream": "https://github.com/simple-icons/simple-icons/blob/777807a262bb7384ff406fd4b35fdcd02e9514c3/icons/netflix.svg",
+      "license": "CC0-1.0 (vector); brand rights retained by owner",
+      "reviewed": "2026-09-08",
+      "treatment": "Source silhouette, flat catalog accent; light ink on dark cards if needed."
+    },
+    "spotify_arcs": {
+      "file": "tools/brandmarks/spotify.svg",
+      "sha256": "b9ec9bec7769c35643981586d6ea0d675aaf3871b32f8a291bcac7a87fff0bc1",
+      "source": "https://developer.spotify.com/documentation/general/design-and-branding/#using-our-logo",
+      "upstream": "https://github.com/simple-icons/simple-icons/blob/777807a262bb7384ff406fd4b35fdcd02e9514c3/icons/spotify.svg",
+      "license": "CC0-1.0 (vector); brand rights retained by owner",
+      "reviewed": "2026-09-08",
+      "treatment": "Source silhouette, flat catalog accent; light ink on dark cards if needed."
+    },
+    "kodi_box": {
+      "file": "tools/brandmarks/kodi.svg",
+      "sha256": "839728a9a99747ee450e82f55865d88f75a2eebc1bfdf8f355b63362fcacdafa",
+      "source": "https://kodi.tv",
+      "upstream": "https://github.com/simple-icons/simple-icons/blob/777807a262bb7384ff406fd4b35fdcd02e9514c3/icons/kodi.svg",
+      "license": "CC0-1.0 (vector); brand rights retained by owner",
+      "reviewed": "2026-09-08",
+      "treatment": "Source silhouette, flat catalog accent; light ink on dark cards if needed."
+    },
+    "jellyfin_chevrons": {
+      "file": "tools/brandmarks/jellyfin.svg",
+      "sha256": "244d6b19135189140acff6f8c1c7937a3064912b48229ab75f26f7e37124bb92",
+      "source": "https://jellyfin.org/docs/general/contributing/branding.html",
+      "upstream": "https://github.com/simple-icons/simple-icons/blob/777807a262bb7384ff406fd4b35fdcd02e9514c3/icons/jellyfin.svg",
+      "license": "CC0-1.0 (vector); brand rights retained by owner",
+      "reviewed": "2026-09-08",
+      "treatment": "Source silhouette, flat catalog accent; light ink on dark cards if needed."
+    },
+    "plex_chevron": {
+      "file": "tools/brandmarks/plex.svg",
+      "sha256": "129500c2bda2175c95402d12e0a96642de61a2561d45a4d9719edc8abd43c8ea",
+      "source": "https://brand.plex.tv",
+      "upstream": "https://github.com/simple-icons/simple-icons/blob/777807a262bb7384ff406fd4b35fdcd02e9514c3/icons/plex.svg",
+      "license": "CC0-1.0 (vector); brand rights retained by owner",
+      "reviewed": "2026-09-08",
+      "treatment": "Source silhouette, flat catalog accent; light ink on dark cards if needed."
+    },
+    "crunchyroll_eye": {
+      "file": "tools/brandmarks/crunchyroll.svg",
+      "sha256": "3b9c3d87339e18ec09f25e0c3eaffdc5ad4630df3d108fcd907e1b64c4cd13ea",
+      "source": "https://www.crunchyroll.com",
+      "upstream": "https://github.com/simple-icons/simple-icons/blob/777807a262bb7384ff406fd4b35fdcd02e9514c3/icons/crunchyroll.svg",
+      "license": "CC0-1.0 (vector); brand rights retained by owner",
+      "reviewed": "2026-09-08",
+      "treatment": "Source silhouette, flat catalog accent; light ink on dark cards if needed."
+    },
+    "chat_screen": {
+      "file": "tools/brandmarks/twitch.svg",
+      "sha256": "dbe27bc02a01b8d89b6259cacef328c9fa70bb13c29f38c36eb1421863f6f0b6",
+      "source": "https://brand.twitch.tv",
+      "upstream": "https://github.com/simple-icons/simple-icons/blob/777807a262bb7384ff406fd4b35fdcd02e9514c3/icons/twitch.svg",
+      "license": "CC0-1.0 (vector); brand rights retained by owner",
+      "reviewed": "2026-09-08",
+      "treatment": "Source silhouette, flat catalog accent; light ink on dark cards if needed."
+    },
+    "nordvpn_arrow": {
+      "file": "tools/brandmarks/nordvpn.svg",
+      "sha256": "67b6ef11503f19d465d2e4534baddb79fabaa083e01945675b5a9faba7fce3a1",
+      "source": "https://nordvpn.com/press-area/",
+      "upstream": "https://github.com/simple-icons/simple-icons/blob/777807a262bb7384ff406fd4b35fdcd02e9514c3/icons/nordvpn.svg",
+      "license": "CC0-1.0 (vector); brand rights retained by owner",
+      "reviewed": "2026-09-08",
+      "treatment": "Source silhouette, flat catalog accent; light ink on dark cards if needed."
+    },
+    "mubi_mark": {
+      "file": "tools/brandmarks/mubi.svg",
+      "sha256": "f49ca57d4efb9356a76088e0148b2f9c6d253dccb20ae5fba8d108d82b80e290",
+      "source": "https://mubi.com",
+      "upstream": "https://github.com/simple-icons/simple-icons/blob/777807a262bb7384ff406fd4b35fdcd02e9514c3/icons/mubi.svg",
+      "license": "CC0-1.0 (vector); brand rights retained by owner",
+      "reviewed": "2026-09-08",
+      "treatment": "Source silhouette, flat catalog accent; light ink on dark cards if needed."
+    },
+    "deezer_columns": {
+      "file": "tools/brandmarks/deezer.svg",
+      "sha256": "928ee1c513ccf49c125956f8cb300558701a112eb2adaede966d032408cc480c",
+      "source": "https://deezerbrand.com/document/37#/-/logo",
+      "upstream": "https://github.com/simple-icons/simple-icons/blob/777807a262bb7384ff406fd4b35fdcd02e9514c3/icons/deezer.svg",
+      "license": "CC0-1.0 (vector); brand rights retained by owner",
+      "reviewed": "2026-09-08",
+      "treatment": "Source silhouette, flat catalog accent; light ink on dark cards if needed."
+    },
+    "proton_shield": {
+      "file": "tools/brandmarks/protonvpn.svg",
+      "sha256": "d6ba996e987cfef04a0f4aa765c1f2164096737d8f31551f552ce6c5d9f19f2b",
+      "source": "https://proton.me/media/kit",
+      "upstream": "https://github.com/simple-icons/simple-icons/blob/777807a262bb7384ff406fd4b35fdcd02e9514c3/icons/protonvpn.svg",
+      "license": "CC0-1.0 (vector); brand rights retained by owner",
+      "reviewed": "2026-09-08",
+      "treatment": "Source silhouette, flat catalog accent; light ink on dark cards if needed."
+    },
+    "yt_play": {
+      "file": "tools/brandmarks/youtube.svg",
+      "sha256": "5038808acbbc4e6edda16cbeb1cc6dec80e4e4ee4e227e039c41229fa222aa8c",
+      "source": "https://www.youtube.com/howyoutubeworks/resources/brand-resources/#logos-icons-and-colors",
+      "upstream": "https://github.com/simple-icons/simple-icons/blob/777807a262bb7384ff406fd4b35fdcd02e9514c3/icons/youtube.svg",
+      "license": "CC0-1.0 (vector); brand rights retained by owner",
+      "reviewed": "2026-09-08",
+      "treatment": "Source silhouette, flat catalog accent; light ink on dark cards if needed."
+    },
+    "yt_music": {
+      "file": "tools/brandmarks/youtubemusic.svg",
+      "sha256": "f96c8a67f93717df8f9f57b0e96638b19e8fd80a165ddf83598592b5342612f5",
+      "source": "https://partnermarketinghub.withgoogle.com/#/brands",
+      "upstream": "https://github.com/simple-icons/simple-icons/blob/777807a262bb7384ff406fd4b35fdcd02e9514c3/icons/youtubemusic.svg",
+      "license": "CC0-1.0 (vector); brand rights retained by owner",
+      "reviewed": "2026-09-08",
+      "treatment": "Source silhouette, flat catalog accent; light ink on dark cards if needed."
+    },
+    "yt_kids": {
+      "file": "tools/brandmarks/youtubekids.svg",
+      "sha256": "82de3dffb25285c3e7a74453d77ffaf8d8260789b9fecb982c4c06726864fc25",
+      "source": "https://www.youtube.com/intl/ALL_us/kids",
+      "upstream": "https://github.com/simple-icons/simple-icons/blob/777807a262bb7384ff406fd4b35fdcd02e9514c3/icons/youtubekids.svg",
+      "license": "CC0-1.0 (vector); brand rights retained by owner",
+      "reviewed": "2026-09-08",
+      "treatment": "Source silhouette, flat catalog accent; light ink on dark cards if needed."
+    },
+    "paramount_peak": {
+      "file": "tools/brandmarks/paramountplus.svg",
+      "sha256": "6b8a777222266eefdb08b9737cef97cdecf10143f5402d06634f615b127851f9",
+      "source": "https://www.paramount.com/brand/paramount-plus",
+      "upstream": "https://github.com/simple-icons/simple-icons/blob/777807a262bb7384ff406fd4b35fdcd02e9514c3/icons/paramountplus.svg",
+      "license": "CC0-1.0 (vector); brand rights retained by owner",
+      "reviewed": "2026-09-08",
+      "treatment": "Source silhouette, flat catalog accent; light ink on dark cards if needed."
+    },
+    "stremio_square": {
+      "file": "tools/brandmarks/stremio.svg",
+      "sha256": "88b47bc8690fee5b98ba89972446d4ad86c7f14f77dc6a1260ec1ba8f506130b",
+      "source": "https://github.com/Stremio/stremio-brand/blob/3f3743087b11e81374cf943aaf1e041af1c97ee3/logos/SVG/stremio-logo-icon-only-fullcolor.svg",
+      "upstream": "https://github.com/simple-icons/simple-icons/blob/777807a262bb7384ff406fd4b35fdcd02e9514c3/icons/stremio.svg",
+      "license": "CC0-1.0 (vector); brand rights retained by owner",
+      "reviewed": "2026-09-08",
+      "treatment": "Source silhouette, flat catalog accent; light ink on dark cards if needed."
+    },
+    "nobuffr_mark": {
+      "file": "tools/brandmarks/nobuffr.svg",
+      "sha256": "c50c3a1f3dbdd59047e5d40c1156f9abe37b72201caae2bf6c89eaab76e195f0",
+      "source": "https://downloads.nobuffr.com/android/nobuffr.apk",
+      "reference": "tools/reference/nobuffr/receipt.json",
+      "license": "NoBuffr brand artwork; rights retained by owner",
+      "reviewed": "2026-09-08",
+      "treatment": "APK foreground letter silhouettes vectorised; white type and one flat cyan underline in place of the source gradient."
+    }
+  }
 }

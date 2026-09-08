@@ -1,13 +1,14 @@
 import re
 
 from typeface import monogram_body, monogram_text, monogram_scaled
+from icon_style import display_accent
 """
 Core Builds Icon Pack — glyph library.
 
-Every glyph is original geometry written in the Core Builds icon language
-(Brand Guide v1.0 §07): simple geometry, rounded ends, flat fills, one accent
-colour per meaning. Nothing here traces a third-party logo; marks are
-suggestive silhouettes drawn on our own 512 grid.
+Original glyphs use the Core Builds icon language: simple geometry, rounded
+ends, flat fills and one accent per meaning. Source-checked brand silhouettes
+registered at the end replace the historical approximations where available;
+their files, hashes and provenance live in tools/catalog.json artwork.
 
 Grid:   512 x 512
 Safe:   432 (40px margin all sides)
@@ -431,6 +432,7 @@ def render_svg(glyph_name, color, glow=False):
     The halo is applied here rather than inside each of the 40+ glyph
     functions: one treatment, one place to tune, and no glyph can forget it.
     """
+    color = display_accent(color)
     body = monoline(GLYPHS[glyph_name](color))
     if glow:
         body = lit(body, color)
@@ -612,16 +614,12 @@ def vault_lock(c):
 
 
 def equalizer(c):
-    """Poweramp EQ / music: slider bars."""
-    return (f'<path d="M 130 108 L 130 404" {_s(c, 32)}/>'
-            f'<path d="M 256 108 L 256 404" {_s(c, 32)}/>'
-            f'<path d="M 382 108 L 382 404" {_s(c, 32)}/>'
-            f'<circle cx="130" cy="188" r="34" fill="#0d1117" stroke="{c}" '
-            f'stroke-width="24"/>'
-            f'<circle cx="256" cy="310" r="34" fill="#0d1117" stroke="{c}" '
-            f'stroke-width="24"/>'
-            f'<circle cx="382" cy="232" r="34" fill="#0d1117" stroke="{c}" '
-            f'stroke-width="24"/>')
+    """Three faders with genuinely transparent centres, not night-colour plugs."""
+    out = []
+    for x, knob in ((130, 188), (256, 310), (382, 232)):
+        out.append(f'<path d="M {x} 108 V {knob - 34} M {x} {knob + 34} V 404" {_s(c, 32)}/>')
+        out.append(f'<circle cx="{x}" cy="{knob}" r="34" {_s(c, 24)}/>')
+    return "".join(out)
 
 
 def music_note(c):
@@ -1237,9 +1235,14 @@ def soundcloud_cloud(c):
 
 
 def iplayer_play(c):
-    """BBC iPlayer: a rounded play frame with a notched play — 'on demand'."""
-    return (f'<rect x="72" y="72" width="368" height="368" rx="92" {_s(c, 32)}/>'
-            f'<path d="M 216 176 L 216 336 L 348 256 Z" {_s(c, 32)}/>')
+    """iPlayer's three separated beams in a play formation, not a letter tile.
+
+    Constructed on our grid from the BBC's 2021 service-icon reference.
+    Monochrome pink adaptation; not BBC News red. See the 2026 fidelity notes.
+    """
+    return (f'<path d="M 52 148 H 140 V 402 H 52 Z '
+            f'M 194 44 L 416 172 L 372 248 L 150 120 Z '
+            f'M 416 264 L 460 340 L 238 468 L 194 392 Z" {_f(c)}/>')
 
 
 def tubi_mark(c):
@@ -2797,3 +2800,9 @@ GLYPHS.update({
     "coreshift_frames": coreshift_frames,
     "coredoctor_pulse": coredoctor_pulse,
 })
+
+
+# Reviewed brand geometry takes precedence over the historical approximations
+# above. Files are local, hash-checked inputs; never fetched during a build.
+from brandmarks import catalog_glyphs  # noqa: E402
+GLYPHS.update(catalog_glyphs())
