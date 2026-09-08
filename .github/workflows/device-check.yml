@@ -24,6 +24,10 @@ name: Device check
 # containers do not — that is why this cannot be run locally.
 
 on:
+  # Temporary source-fetch trigger; removed after the APK has been inspected.
+  push:
+    branches: ['arena/01a07f7b-corebuildsapps']
+    paths: ['.github/workflows/device-check.yml']
   workflow_dispatch:
     inputs:
       inspect_nobuffr:
@@ -48,7 +52,7 @@ jobs:
   # as research inputs only, never installed/executed or bundled in our packs.
   nobuffr-source:
     name: Download NoBuffr source APK (no execution)
-    if: github.event_name == 'workflow_dispatch' && inputs.inspect_nobuffr
+    if: github.event_name == 'push' || (github.event_name == 'workflow_dispatch' && inputs.inspect_nobuffr)
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
@@ -70,7 +74,7 @@ jobs:
           if-no-files-found: error
 
   emulator:
-    if: github.event_name != 'workflow_dispatch' || !inputs.inspect_nobuffr
+    if: github.event_name == 'pull_request' || (github.event_name == 'workflow_dispatch' && !inputs.inspect_nobuffr)
     name: Install and launch on Android TV
     runs-on: ubuntu-latest
     timeout-minutes: 40
