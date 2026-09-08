@@ -44,7 +44,7 @@ def readme_stamp(suite: dict) -> str:
 def check_suite_json() -> None:
     suite = json.loads(read("suite.json"))
     apps = suite.get("apps", {})
-    expected = ["iconpack", "pixelneon", "line", "shift", "motion", "doctor"]
+    expected = ["iconpack", "pixelneon", "pop", "line", "shift", "motion", "doctor"]
     if list(apps.keys()) != expected:
         fail(f"suite.json apps must be in order {expected}")
     for key, app in apps.items():
@@ -58,6 +58,31 @@ def check_suite_json() -> None:
         if f'applicationId = "{app["applicationId"]}"' not in gradle:
             fail(f"suite.json {key}.applicationId does not match {app['gradle']}")
     return suite
+
+
+def check_pop_truth(suite: dict) -> None:
+    """Pop renders the same catalog as the classic pack, so its counts are not
+    an independent fact — they are the catalog's, and drift means one of the
+    two packs is lying about its own coverage."""
+    catalog = json.loads(read("tools/catalog.json"))
+    icons = catalog.get("icons", [])
+    icon_count = len(icons)
+    component_count = sum(len(row.get("components", [])) for row in icons)
+    pop = suite["apps"]["pop"]
+    latest = json.loads(read(pop["metadata"]))
+    if pop.get("iconCount") != icon_count or pop.get("componentCount") != component_count:
+        fail("suite.json pop counts must match catalog")
+    if latest.get("versionName") != pop["versionName"] or latest.get("versionCode") != pop["versionCode"]:
+        fail(f"{pop['metadata']} must match Pop suite/Gradle version")
+    if latest.get("iconCount") != icon_count or latest.get("componentCount") != component_count:
+        fail(f"{pop['metadata']} counts must match catalog")
+    if pop["applicationId"] == suite["apps"]["iconpack"]["applicationId"]:
+        fail("Pop must not share the classic pack's applicationId")
+    if pop["tagPrefix"] == suite["apps"]["iconpack"]["tagPrefix"]:
+        fail("Pop must not share the classic pack's release tag prefix")
+    pop_list = read("docs/PopIconList.md")
+    if f"`{icon_count}` icons" not in pop_list or f"pack v{pop['versionName']}" not in pop_list:
+        fail("docs/PopIconList.md header drifted from suite/catalog")
 
 
 def check_iconpack_truth(suite: dict) -> None:
@@ -129,6 +154,7 @@ def check_line_v_trap() -> None:
 def main() -> int:
     suite = check_suite_json()
     check_iconpack_truth(suite)
+    check_pop_truth(suite)
     check_readme_stamp(suite)
     check_stale_claims()
     check_line_v_trap()

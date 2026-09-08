@@ -31,6 +31,17 @@ APPS = {
         "checker": "pixel-neon/app/src/main/java/tv/corebuilds/pixelneon/UpdateChecker.kt",
         "installer": "pixel-neon/app/src/main/java/tv/corebuilds/pixelneon/UpdateInstaller.kt",
     },
+    "pop": {
+        "gradle": "pop/build.gradle.kts",
+        "metadata": "Latestrelease/pop-version.json",
+        "workflow": ".github/workflows/pop-apk.yml",
+        "apk": "corepop-release.apk",
+        # Pop compiles the icon pack's Kotlin; the updater hardening it must
+        # satisfy is therefore the same file, checked once per app so a
+        # regression cannot slip in behind "but the other pack passes".
+        "checker": "app/src/main/java/tv/corebuilds/iconpack/UpdateChecker.kt",
+        "installer": "app/src/main/java/tv/corebuilds/iconpack/UpdateInstaller.kt",
+    },
     "coreline": {
         "gradle": "ticker/android/app/build.gradle.kts",
         "metadata": "Latestrelease/coreline-version.json",

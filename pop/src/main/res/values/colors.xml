@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Core Builds palette, Brand Guide v1.0 §03. Do not add accents without a meaning slot. -->
+<resources>
+    <color name="cb_core_cyan">#00E5FF</color>
+    <color name="cb_signal_cyan">#00D4FF</color>
+    <color name="cb_glow_cyan">#7EEEFF</color>
+    <color name="cb_build_blue">#4FACFE</color>
+    <color name="cb_dusk_violet">#8A4890</color>
+    <color name="cb_ember">#C03A20</color>
+    <color name="cb_night">#0D1117</color>
+    <color name="cb_panel">#1A2030</color>
+    <color name="cb_card">#151923</color>
+    <color name="cb_void">#04070F</color>
+    <color name="cb_slate">#8B949E</color>
+    <color name="cb_ink">#E6EDF3</color>
+    <color name="cb_cta_start">#00ABD3</color>
+    <color name="cb_cta_end">#00D4FF</color>
+    <color name="cb_cta_ink">#04202B</color>
+    <color name="cb_success">#34D399</color>
+    <color name="cb_warning">#FBBF24</color>
+    <color name="cb_error">#F87171</color>
+</resources>
