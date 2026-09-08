@@ -80,9 +80,9 @@ Every app below auto-assigns in Projectivy. If one doesn't, the app ships a diff
 | Baby Einstein | `babyeinstein` | `#90BE6D` | `com.giant.babyeinstein/com.codes.ui.SplashActivity` |
 | Background Apps And Process List | `background_apps_and_process_list` | `#FF6B35` | `io.github.visnkmr.bapl/io.github.visnkmr.bapl.MainActivity` |
 | Bally Sports | `ballyscorp` | `#4CC9F0` | `com.ballyscorp.ballylive/tv.vizbee.readyapp.firetvandroidtv.SplashActivity` |
-| BBC iPlayer | `iplayer` | `#FF4C98` | `bbc.iplayer.android/external.androidtv.bbciplayer.deeplinking.DeepLinkActivity` |
-| BBC Iplayer | `bbc_iplayer` | `#FF4C98` | `uk.co.freeview.bbc/uk.co.freeview.templatewrapper.MainActivity` |
-| BBC iPlayer TV | `bbciplayer` | `#FF4C98` | `com.nvidia.bbciplayer/com.nvidia.bbciplayer.MainPlayerActivity` |
+| BBC iPlayer | `iplayer` | `#FF0000` | `bbc.iplayer.android/external.androidtv.bbciplayer.deeplinking.DeepLinkActivity` |
+| BBC Iplayer | `bbc_iplayer` | `#FF0000` | `uk.co.freeview.bbc/uk.co.freeview.templatewrapper.MainActivity` |
+| BBC iPlayer TV | `bbciplayer` | `#FF0000` | `com.nvidia.bbciplayer/com.nvidia.bbciplayer.MainPlayerActivity` |
 | begin | `begin` | `#00C9B7` | `z2c.begin.tv/.MainActivity` |
 | Bell Fibe | `bellmediaplayer` | `#F7B32B` | `com.quickplay.android.bellmediaplayer/ca.bell.fiberemote.boot.BootstrapActivity`<br>`com.quickplay.android.bellmediaplayer/ca.bell.fiberemote.tv.MainTvActivity` |
 | Bet Plus | `bet_plus` | `#000000` | `com.viacom.betplus/com.vmn.playplex.tv.ui.splash.TvSplashActivity` |
@@ -930,3 +930,4 @@ Every app below auto-assigns in Projectivy. If one doesn't, the app ships a diff
 | Ziggo Go TV | `ziggo_go_tv` | `#9B5DE5` | `com.ziggo.tv/com.libertyglobal.horizonx.MainActivity` |
 | Zona | `zona` | `#8AC926` | `mobi.zona/mobi.zona.ui.MainActivity` |
 | Zumba | `zumba` | `#FF477E` | `com.zumba.consumerapp.tv/com.maz.activities.ViewerLaunchActivity` |
+| NoBuffr | `nobuffr` | `#00ACC1` | 
