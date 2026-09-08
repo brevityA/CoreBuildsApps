@@ -27,3 +27,49 @@ def contrast(a: str, b: str = CARD) -> float:
 def display_accent(accent: str) -> str:
     colour = accent.upper()
     return colour if contrast(colour) >= MIN_CONTRAST else LIGHT_INK
+
+
+# Existing Core Builds grammar, not a new theme. Keep the two detail weights
+# subordinate rather than flattening all three levels to 32px.
+CORE_MONOLINE = "core_monoline"
+CORE_STROKES = frozenset({32.0, 26.2, 21.8})
+
+
+def core_monoline_errors(body: str, accent: str) -> list[str]:
+    """Check glyph ink before the common banner placement transform.
+
+    A vendor silhouette or fixed-white wordmark must fail even if its brand
+    proportions are correct. Original fallback letters are not opted into
+    this contract; the catalog marks the reviewed brand constructions.
+    """
+    import xml.etree.ElementTree as ET
+
+    errors = []
+    try:
+        root = ET.fromstring(f"<g>{body}</g>")
+    except ET.ParseError:
+        return ["invalid glyph XML"]
+    primitives = {"path", "circle", "ellipse", "rect", "line", "polyline", "polygon"}
+    if not len(root):
+        return ["empty monoline glyph"]
+    for node in root.iter():
+        if node is root:
+            continue
+        tag = node.tag.split("}")[-1]
+        if tag not in primitives:
+            errors.append(f"{tag}: only original line primitives are allowed")
+        if any(key in node.attrib for key in ("style", "transform", "filter", "opacity", "mask", "clip-path")):
+            errors.append(f"{tag}: no private transforms/effects or CSS overrides")
+        if node.get("fill") != "none":
+            errors.append(f"{tag}: monoline glyphs cannot use solid fills")
+        if node.get("stroke", "").upper() != accent.upper():
+            errors.append(f"{tag}: glyph must use its one shared accent")
+        try:
+            weight = float(node.get("stroke-width", "nan"))
+        except ValueError:
+            weight = float("nan")
+        if weight not in CORE_STROKES:
+            errors.append(f"{tag}: stroke must be 32 / 26.2 / 21.8 after normalisation")
+        if node.get("stroke-linecap") != "round" or node.get("stroke-linejoin") != "round":
+            errors.append(f"{tag}: caps and joins must be round")
+    return errors

@@ -1,60 +1,80 @@
-# Icon fidelity and real requests — 8 September 2026
+# Core Builds identity, brand cues and real requests — 8 September 2026
 
-Scope: the **Classic Icon Pack after v1.8.6**, with shared coverage regenerated
-for Pop and Pixel Neon. This is a targeted correction, **not a claim that all
-925 catalog entries now use verified official logos**. There are still 614
-letter-tile entries. Counts include regional/build variants, not 925 unique
-services.
+Scope: the **Classic Icon Pack v1.8.7 candidate**, with shared coverage in Pop
+and Pixel Neon. **The pack's identity comes first.** This is not a collection
+of unmodified vendor logos, nor a claim that all 925 entries have verified
+brand artwork. Counts include regional/build variants. The 614 existing
+Outfit letter-tile entries are unchanged by this style correction.
 
-![Fidelity pass and NoBuffr preview](../icon-fidelity-preview.png)
+![Mixed Classic row and uniform NoBuffr banner](../icon-fidelity-preview.png)
 
-## What was checked and changed
+## Correction after visual review
 
-### 1. Use real silhouettes where there is a trustworthy source
+The first pass solved some brand-reference problems but created a new one:
+filled vendor silhouettes displaced Core Builds' rounded geometric linework,
+and NoBuffr became a standalone white custom wordmark. **The user explicitly
+rejected that loss of pack identity.** An isolated gallery of corrected logos
+hid the mismatch with the rest of the pack.
 
-Sixteen existing brands now render the source silhouette rather than a loose
-invention or a letter in a box:
+The correction keeps the useful research, canonical colours, variant groups
+and verified mappings, but changes the actual artwork acceptance criteria:
 
-| Brand | Correction |
+| Contract | Applied treatment |
 |---|---|
-| Netflix | Filled ribbon silhouette instead of slanted monoline sticks; monochrome, not the vendor's multi-red shading |
-| Spotify | Filled disc with three transparent curved counters; logo green `#1ED760` |
-| Kodi | Diamond/K construction, not a K in a rounded square; `#17B2E7` |
-| Jellyfin | Rounded triangular construction, not two straight outlined triangles |
-| Stremio | Diamond/play silhouette, not a rounded-square play; `#685CEE` |
-| Crunchyroll | Circular asymmetric crescent, not a horizontal eye; `#FF5E00` |
-| Twitch | Glitch/speech-mark silhouette and counters |
-| NordVPN | Mountain/dome silhouette, not an invented shield/arrow |
-| MUBI | Seven dots in **2–3–2 rows**, not 3–3–1; visible light-ink treatment on dark cards |
-| Deezer | Current heart/equaliser silhouette, not the older generic columns; `#A238FF` |
-| Proton VPN | Triangular ribbon mark, not a generic shield |
-| Plex | Actual wordmark rather than a boxed chevron; banner uses the wordmark alone |
-| Paramount+ | Mountain/star silhouette; Canada/TVE variants no longer get unrelated letter tiles |
-| YouTube | Source button silhouette with a **transparent** play counter, not a dark painted plug |
-| YouTube Kids | Distinct slanted button silhouette |
-| YouTube Music | Disc/ring/play silhouette |
+| Authorship | Original constructions in `tools/glyphs.py`; no direct vendor-path registry |
+| Main line | Canonical **32px**, round caps and joins |
+| Detail | Existing **26.2px / 21.8px** subordinate weights, not flattened to 32px |
+| Paint | One accent, transparent interiors, no solid vendor-logo slabs or fixed-white logotypes |
+| Composition | Shared 512 grid and safe area; no extra host tile, glow or private scaling |
+| Banner | Same monoline glyph + Outfit name + category + cyan/violet rail |
+| Reference | Catalog `artwork` records are `usage: reference-only`, still local and hash-checked |
+| Review | Mixed rows with unchanged Core Builds, Emby, TiviMate and Syncler neighbours; actual 320×180 banners |
 
-These are locally pinned Simple Icons vectors, checked against the upstream
-brand-reference URLs recorded in the catalog. The individual source URL,
-immutable upstream revision, SHA-256, review date and treatment are in
-[`tools/catalog.json` → `artwork`](../../tools/catalog.json). Builds never fetch
-logos from the network. Rights and adaptations are explicit in
-[`THIRD_PARTY_NOTICES.md`](../../THIRD_PARTY_NOTICES.md).
+The contract explicitly covers **18 brand constructions / 22 catalog entries**:
+16 reviewed existing brands, the three iPlayer variants and NoBuffr, including
+Paramount+ regional variants. It does not redesign the whole long tail or the
+parent Core Builds mark.
 
-**Do not treat the old `docs/logo-research/` text as authority.** It is a dated
-research snapshot and contains mistaken descriptions (MUBI's dot arrangement
-is one example). This pass checks source geometry, not that prose alone.
+### Recognisable cues, interpreted consistently
 
-### 2. Correct iPlayer, including the previous release's mistaken colour claim
+| Brand | Core Builds construction |
+|---|---|
+| Netflix | Clean upright N in rounded linework, not a filled ribbon slab |
+| Spotify | Open ring and three subordinate curved strokes; `#1ED760` |
+| Kodi | Split diamond/K in rounded outlines, not the former K-in-a-box |
+| Jellyfin | Rounded nested triangular contours |
+| Stremio | Diamond/play in monoline, not a filled vendor tile |
+| Crunchyroll | Circular crescent/curl, not the old horizontal eye; `#FF5E00` |
+| Twitch | Stepped chat contour and twin bars with rounded joins |
+| NordVPN | Open dome and mountain peaks, not the generic shield |
+| MUBI | Seven round **outlines in 2–3–2 rows**, readable in light ink |
+| Deezer | Separated round-ended strokes forming the heart waveform; `#A238FF` |
+| Proton VPN | Two contours suggesting the folded triangular ribbon |
+| Plex | Outlined chevron; the name is the standard Outfit label, not vendor typography |
+| Paramount+ | Mountain, snow fold and seven stylised star glints, simplified for TV rather than a filled seal |
+| YouTube | Outlined button and play, with a genuinely transparent interior |
+| YouTube Kids | Slanted button/play using the same line grammar |
+| YouTube Music | Open disc/ring/play construction |
+| BBC iPlayer | Three separate round-ended pink beams in play formation |
+| NoBuffr | Lowercase **no** and the observed interrupted buffer underline, all in one accent |
 
-BBC's 2021 service refresh introduced three blocks/beams in a play formation
-**in shades of pink**. The v1.8.6 claim that BBC iPlayer should be BBC News red
-is not supported by that reference. All three iPlayer variants now share
-`#FF4C98` and an original, single-pink three-beam construction. This is a
-reference-informed adaptation, not an imported/officially approved BBC asset.
+The underlying brand-reference URLs, immutable source revisions, hashes and
+rights are retained in [`tools/catalog.json` → `artwork`](../../tools/catalog.json).
+They establish cues and colours, not a mandate to paste the vendor's artwork
+into the pack. See [`THIRD_PARTY_NOTICES.md`](../../THIRD_PARTY_NOTICES.md).
+
+## Colour and mapping fixes retained
+
+### iPlayer and variant consistency
+
+The v1.8.6 claim that BBC iPlayer should be BBC News red was incorrect. BBC's
+2021 service refresh uses three blocks/beams in a play formation in shades of
+pink. All three variants retain `#FF4C98`, now expressed in the pack's rounded
+line weight, not large filled beams. This is an original interpretation, not
+an imported or officially approved BBC asset.
 [1](https://www.designweek.co.uk/issues/18-24-october-2021/bbc-logos-update/)
 
-The same-identity groups enforced by the generator and tests are:
+Seven curated groups still share one glyph and accent:
 
 - BBC iPlayer / Freeview / TV
 - 9Now / 9Now CTV
@@ -64,139 +84,135 @@ The same-identity groups enforced by the generator and tests are:
 - SmartTube / SmartTube Next
 - tvQuickActions / free build
 
-The last four and 9Now are **consistency fixes to the existing primary entry**,
-not a claim of newly verified vendor artwork or colours. Separate products and
-forks are not automatically merged just because their names resemble each
-other. Existing drawable names and launcher mappings are retained.
+9Now and the last four are consistency fixes to the existing primary entry,
+not claims of newly verified vendor colours/artwork. Unrelated products are
+not merged just because they share a primitive or similar name.
 
-### 3. Keep dark colours readable without randomly changing brand hue
+### Dark-card readability
 
-Classic's recommended card is `#0D1117`. Source accents below a **3:1** contrast
-ratio use one light ink, `#E6EDF3`, in squares, banners and the preview. This
-currently affects 79 entries, including black/near-black MUBI, Apple TV and
-Pluto TV artwork. The source accent stays in the catalog for provenance and
-for the sibling packs; this is a display treatment, not a rewritten brand
-colour. The generated app list exposes both values.
+The shared Classic colour policy remains: source accents below **3:1** on
+`#0D1117` use `#E6EDF3` light ink. It currently affects **79 entries**. Squares,
+banners and previews agree, while the original colour remains in the catalog
+for provenance and sibling styles. The generated app list shows both values.
+This is not a universal contrast guarantee for arbitrary wallpapers/cards or
+an accessibility certification. The YouTube interior and equaliser faders use
+real alpha, not a painted night-colour plug.
 
-This is a practical dark-card floor, **not** a guarantee of contrast on every
-wallpaper/card colour, nor a claim of accessibility certification. Pop and
-Pixel Neon retain their deliberately different palettes. YouTube's counter
-and the equaliser faders now use real alpha, so they do not show a dark plug
-when the user changes their card colour.
-
-### 4. Add NoBuffr from the actual APK supplied
+## NoBuffr: correct identity, uniform artwork
 
 NoBuffr is an M3U/XTREAM player whose vendor lists Android and Android TV among
-its supported platforms. This task is a direct user request, not an inference
-that it has the highest market share. [1](https://nobuffr.com/)
+its supported platforms. This task is a direct user request, not an inferred
+market-share ranking. [1](https://nobuffr.com/)
 
-The supplied link was successfully fetched on a GitHub Actions runner after
-the workspace could not reach its host directly. The APK was **statically
-inspected, not executed**:
+The exact supplied APK was downloaded on a GitHub Actions runner after the
+workspace could not reach its host, then **statically inspected, not executed**:
 
 - URL: <https://downloads.nobuffr.com/android/nobuffr.apk>
 - Observed version: `1.0.0` / `210246`; 33,628,207 bytes.
 - SHA-256: `ec835a672087b5cb56700ddc3ed4e050519f5829d10e86800d5506d79afda5bf`.
 - Actual component: **`com.nobuffr.app/tv.tivitime.compose.app.AppActivity`**.
-- Its launcher activity declares MAIN intents with `LAUNCHER` and `LEANBACK_LAUNCHER`.
-- White stacked lettering and the interrupted underline come from the APK's
-  adaptive foreground, not an invented N/play icon. The source gradient is
-  intentionally flattened to a cyan underline in Classic.
-- Square and banner resources, browser arrays and auto-assignment mappings
-  exist in all three packs. The generated Classic app list also links directly
-  to the supplied download.
+- MAIN launcher intents include phone `LAUNCHER` and TV `LEANBACK_LAUNCHER`.
 
-Reproducible receipt, artwork resources and method:
-[`tools/reference/nobuffr/`](../../tools/reference/nobuffr/). The activity is in a
-different namespace: inventing `com.nobuffr.app/.MainActivity` would silently
-fail. No APK is bundled in this repository or in an icon-pack APK. The
-one-off branch fetch trigger has been removed.
+**None of that mapping evidence changes with the style correction.** The
+activity is in another namespace; `com.nobuffr.app/.MainActivity` is not a valid
+substitute. The receipt and original resources are retained in
+[`tools/reference/nobuffr/`](../../tools/reference/nobuffr/). No APK is committed
+or bundled; the one-off download workflow was removed.
+
+The observed source logo has stacked **no / buffr** lettering and an interrupted
+underline. The rendered Classic icon now reduces this to a **single-accent,
+rounded-line no + interrupted underline** motif. Its full name appears in the
+standard Outfit-labelled PLAYER banner with the Core Builds rail. The traced
+white wordmark is reference-only and no longer a rendering option. This is a
+Core Builds interpretation, not a claim to reproduce every vendor letter.
+
+All three packs retain their square/banner resources and exact component
+mapping. Pop consumes the revised base geometry within its own container/ink
+style. Pixel Neon keeps its independent pixel construction.
 
 ## Which icons do people actually need next?
 
 ### Method and limitations
 
-This is a **qualitative request audit**, not a popularity poll. I checked named
-requests in public Projectivy threads, a maintainer discussion, official store
-links and the live catalog by **name, drawable and package**. A missing word in
-a README is not evidence that an icon is absent. The reference pack's GitHub
-issue tracker was disabled when checked, so it cannot supply a reliable live
-ranking; no issue counts or download-based demand rankings are invented here.
+This is a qualitative request audit, not a popularity poll. Named requests in
+public Projectivy threads, a maintainer discussion and official store links
+were checked against the live catalog by **name, drawable and package**. A
+missing README word is not proof of a missing icon. The reference pack's issue
+tracker was disabled when checked; no live issue-count or download ranking is
+invented here.
 
-Community requests explicitly call out full transparent coverage and working
-automatic mapping: a mixture of themed and unthemed apps is the complaint, not
-simply wanting a larger advertised number.
+Community comments stress whole-row transparent consistency and working
+automatic mapping, rather than simply a larger advertised count.
 [1](https://www.reddit.com/r/Projectivy_Launcher/comments/1mjkdhs/request_transparent_icon_pack/)
 
 ### Prioritised queue
 
-| Priority | Request | What the evidence says | Our status / next action |
+| Priority | Request | Evidence | Our status / next action |
 |---|---|---|---|
-| P0 | **NoBuffr** | Direct request in this task; vendor Android/TV support [1](https://nobuffr.com/) | **Added** with APK-verified component and source-derived mark |
-| P1 | **TDUK Cache Cleaner** | Explicit request, including alongside Unlinked and Analiti [3](https://www.reddit.com/r/Projectivy_Launcher/comments/1j3848y/borderless_transparent_icons/) | Genuine catalog gap. Obtain a legitimate APK/device launcher dump and current logo before adding |
-| P1 | **TDUK App Killer** | Named with Cache Cleaner in a separate launch thread [2](https://www.reddit.com/r/Projectivy_Launcher/comments/1mtmall/introducing_the_projectivy_icon_pack/) | Genuine gap; do not confuse it with the already covered TDUK Screensaver Manager |
-| P1 | **Tata Play Binge** | Explicit request with a Play link [1](https://www.reddit.com/r/Projectivy_Launcher/comments/1j3848y/borderless_transparent_icons/) | Genuine gap. Verify the actual TV build/activity, not just mobile package `com.tataskymore.open.uat` |
-| P1 | **Wholphin artwork** | Dedicated icon request; maintainer points to the app's source artwork [1](https://github.com/damontecres/Wholphin/discussions/312) | Already mapped as `damontecres_2`, but still a D tile. **Fidelity fix**, not an extra icon count |
-| P2 | **Beacon Game Launcher** | Explicit Projectivy request [2](https://www.reddit.com/r/Projectivy_Launcher/comments/1mtmall/introducing_the_projectivy_icon_pack/); official store identifies it as a launcher, not an emulator [2](https://play.google.com/store/apps/details?id=com.radikal.gamelauncher&hl=en_US) | Genuine gap. Verify TV/controller use and a legitimate installed build's component; do not use a cracked APK |
-| P2 | **Nuvio TV artwork** | Explicit request in the transparent-icon thread [1](https://www.reddit.com/r/Projectivy_Launcher/comments/1j3848y/borderless_transparent_icons/) | Already `nuvio`; next source/fidelity pass, not new coverage |
-| P2 | **ZEE5 current logo** | The request specifically asks for the new logo [1](https://www.reddit.com/r/Projectivy_Launcher/comments/1j3848y/borderless_transparent_icons/) | Already `graymatrix`; check current identity before another redraw |
-| P3 | **ActionDash / Wavelet** | Named in the same request list [1](https://www.reddit.com/r/Projectivy_Launcher/comments/1j3848y/borderless_transparent_icons/) | Not present. Establish TV relevance/launchability first; phone-list requests alone do not outrank TV gaps |
+| P0 | **NoBuffr** | Direct task request; vendor Android/TV support [1](https://nobuffr.com/) | **Added**, APK-verified mapping retained, artwork corrected to Core Builds style |
+| P1 | **TDUK Cache Cleaner** | Explicit request alongside Unlinked/Analiti [3](https://www.reddit.com/r/Projectivy_Launcher/comments/1j3848y/borderless_transparent_icons/) | Genuine gap; obtain a legitimate APK/device component and current logo reference |
+| P1 | **TDUK App Killer** | Named with Cache Cleaner in the launch thread [2](https://www.reddit.com/r/Projectivy_Launcher/comments/1mtmall/introducing_the_projectivy_icon_pack/) | Genuine gap; not the already-covered TDUK Screensaver Manager |
+| P1 | **Tata Play Binge** | Explicit request with Play link [1](https://www.reddit.com/r/Projectivy_Launcher/comments/1j3848y/borderless_transparent_icons/) | Genuine gap; verify the TV activity, not just mobile package `com.tataskymore.open.uat` |
+| P1 | **Wholphin artwork** | Dedicated request; maintainer points to source artwork [1](https://github.com/damontecres/Wholphin/discussions/312) | Already `damontecres_2`, still a D tile; improve its Core Builds interpretation, not the icon count |
+| P2 | **Beacon Game Launcher** | Explicit Projectivy request [2](https://www.reddit.com/r/Projectivy_Launcher/comments/1mtmall/introducing_the_projectivy_icon_pack/); official launcher listing [2](https://play.google.com/store/apps/details?id=com.radikal.gamelauncher&hl=en_US) | Genuine gap; verify TV/controller use and legitimate installed-build component, never a cracked APK |
+| P2 | **Nuvio TV artwork** | Named request in the transparent-icon thread [1](https://www.reddit.com/r/Projectivy_Launcher/comments/1j3848y/borderless_transparent_icons/) | Already `nuvio`; next reference-informed style pass, not new coverage |
+| P2 | **ZEE5 logo update** | Request specifically asks for the new logo [1](https://www.reddit.com/r/Projectivy_Launcher/comments/1j3848y/borderless_transparent_icons/) | Already `graymatrix`; verify current cues and adapt them to the pack |
+| P3 | **ActionDash / Wavelet** | Named in the same request list [1](https://www.reddit.com/r/Projectivy_Launcher/comments/1j3848y/borderless_transparent_icons/) | Absent; establish TV relevance/launchability before prioritising phone-list requests |
 
-**Why Cache Cleaner is not an automatic addition yet:** the reference pack's
-own historical release labels it and App Killer with an asterisk meaning
-**manual assignment only**. Copying that pack's existence is not evidence of a
-working component. [1](https://newreleases.io/project/github/SicMundus86/ProjectivyIconPack/release/1.0.1)
+The reference pack's historical release marks TDUK Cache Cleaner/App Killer as
+**manual assignment only**. Their existence in another pack is not evidence
+of a working launcher component.
+[1](https://newreleases.io/project/github/SicMundus86/ProjectivyIconPack/release/1.0.1)
 
-### Common requests with existing mappings
+### Requests with existing mappings
 
-The public thread also requests NordVPN, UniFi Protect, Tubi, Pluto TV, S0undTV,
-PBS, tvQuickActions, GeForce Now, File Manager+, Button Mapper, PrivadoVPN,
+The thread also requests NordVPN, UniFi Protect, Tubi, Pluto TV, S0undTV, PBS,
+tvQuickActions, GeForce Now, File Manager+, Button Mapper, PrivadoVPN,
 Background Apps and Process List, Aerial Views, Proton VPN and others.
 [1](https://www.reddit.com/r/Projectivy_Launcher/comments/1j3848y/borderless_transparent_icons/)
 
-Catalog examples worth checking before counting another “new” icon:
-
-| Requested name | Existing drawable |
+| Requested name | Existing catalog entry |
 |---|---|
 | ZEE5 | `graymatrix` |
 | Analiti | `fastest` |
 | GeForce Now | `tegrazone3` |
-| File Manager+ | `cxinventor` (its package shares the CX File Explorer entry; identity review needed) |
 | Wholphin | `damontecres_2` |
 | S0undTV | `s0undtv` |
 | Nuvio TV | `nuvio` |
 | Kayo / Kick / Unlinked | `kayo` / `kick` / `unlinked` |
+| File Manager+ | Its package shares `cxinventor`; identity review/split needed |
 
-Mappings are established by the local catalog, **not by this external thread**.
-File Manager+ is an important exception to treating a mapping as finished
-coverage: `com.alphainventor.filemanager` currently shares the CX File Explorer
-entry, so a separate, source-checked identity is a follow-up, not a reason to
-claim that its requested logo is already correct.
-For an already-covered app, diagnose activity/package drift or logo quality
-before creating another drawable. In particular, this pass changes **924 →
-925**, not an inflated count including existing aliases.
+Those mappings are verified against the local catalog, not inferred from the
+thread. File Manager+ is a warning against treating any mapping as finished:
+`com.alphainventor.filemanager` shares the CX File Explorer entry, so it still
+needs a separate source-checked identity. This pass remains **924 → 925**, not
+an inflated count that treats existing aliases as new apps.
 
 ## Admission and regression rules
 
-1. A request needs an official store/download link and, preferably, a TV
-   launcher component. A real APK can be statically inspected when the requester
-   cannot supply the component. Never invent a package/activity to make a count.
-2. Record source, version/hash, observed launcher categories and artwork
-   provenance. “Manifest verified” and “tested on a physical TV” are distinct.
-3. Check current catalog names, drawables and packages, including regional
-   variants and existing apps whose drawables are named after developers.
-4. Use a source-checked mark or explicitly retain an original fallback. Do not
-   describe a generated monogram as the official logo.
-5. Regenerate Classic, Pop and Pixel Neon together and test their mappings.
+1. Obtain an official link and real TV component, or statically inspect an APK.
+   Never invent an activity to increase the count.
+2. Keep version/hash, observed launcher categories and artwork-reference
+   provenance. Manifest verification and device testing are different claims.
+3. Dedupe names, drawables, packages, regional builds and developer-named entries.
+4. **Adapt the cue to Core Builds.** A source reference is not permission to
+   bypass the uniform line/colour/typography/banner system.
+5. Regenerate the affected packs and inspect the new icon alongside established
+   neighbours, at actual TV sizes. A correct isolated logo is insufficient.
 
-`tests/test_icon_identity.py` covers the colour policy, brand groups, source
-checksums, 432px proportional fitting, transparent counters, MUBI's dot layout,
-NoBuffr's source silhouette and mapping in all three packs, and safe static
-inspection of launcher activities/aliases. The Pixel Neon validator now derives
-coverage from the catalog/suite instead of pinning yesterday's icon count; it
-also checks the exact component-to-drawable map, not just the number of rows.
+`tests/test_icon_identity.py` now has **35 regressions**: the original evidence,
+colour, mapping and static-inspection checks, plus style gates, mutation tests,
+open-ink/safe-area checks and the exact common banner recipe. It rejects fills,
+fixed-white logotypes, square caps, overweight strokes, private transforms and
+wordmark-only exceptions. The previous NoBuffr silhouette-similarity test was
+replaced because it rewarded the result the user rejected; APK/hash/component
+checks remain intact.
 
-**Not yet verified:** physical Projectivy auto-assignment on a phone/TV, tinted
-card behaviour on several real panels, and any unresearched long-tail logo.
-Android compilation/lint results must be recorded separately from the Python
-asset checks; a successful asset generator is not an APK build.
+Source and generated-SVG style checks also run in the Classic validator, and
+Classic/Pop share catalog validation. Pixel Neon's validator continues to
+verify the exact mapping set and catalog-derived counts.
+
+**Not claimed here:** physical-device Projectivy auto-assignment, contrast on
+every possible card/wallpaper, official brand approval, or a full long-tail
+logo audit. Android compilation, lint and emulator results are recorded for
+the particular PR head, separately from Python rendering receipts.

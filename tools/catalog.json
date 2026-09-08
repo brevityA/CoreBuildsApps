@@ -5,7 +5,7 @@
     "version": "1.8.7",
     "grid": 512,
     "safe_area": 432,
-    "note": "Transparent, source-checked brand silhouettes where available; original monoline geometry for the long tail. One shared accent per brand, with a consistent light-ink fallback for dark-card legibility. Sourced artwork provenance is recorded in artwork; no network is used when building.",
+    "note": "Core Builds-authored geometric icons on a shared 512 grid. Reviewed brand glyphs use rounded monoline strokes and one accent, not imported vendor silhouettes. Common Outfit/category/rail banners; artwork is reference-only. Canonical brand colours and the dark-card contrast policy remain shared.",
     "count": 925
   },
   "icons": [
@@ -845,7 +845,8 @@
         "bbc.iplayer.android/external.androidtv.bbciplayer.deeplinking.DeepLinkActivity"
       ],
       "category": "VOD",
-      "brand": "bbciplayer"
+      "brand": "bbciplayer",
+      "style": "core_monoline"
     },
     {
       "name": "BBC iPlayer (Freeview)",
@@ -860,7 +861,8 @@
         "uk.co.freeview.bbc/uk.co.freeview.templatewrapper.MainActivity"
       ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
-      "brand": "bbciplayer"
+      "brand": "bbciplayer",
+      "style": "core_monoline"
     },
     {
       "name": "BBC iPlayer TV",
@@ -871,7 +873,8 @@
         "com.nvidia.bbciplayer/com.nvidia.bbciplayer.MainPlayerActivity"
       ],
       "category": "VOD",
-      "brand": "bbciplayer"
+      "brand": "bbciplayer",
+      "style": "core_monoline"
     },
     {
       "name": "begin",
@@ -1622,7 +1625,8 @@
         "com.crunchyroll.crunchyroid/com.crunchyroll.crunchyroid.splash.ui.SplashActivity"
       ],
       "category": "VOD",
-      "brand": "crunchyroll"
+      "brand": "crunchyroll",
+      "style": "core_monoline"
     },
     {
       "name": "CTV",
@@ -1830,7 +1834,8 @@
         "deezer.android.tv/com.deezer.android.ui.activity.LauncherActivity"
       ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
-      "brand": "deezer"
+      "brand": "deezer",
+      "style": "core_monoline"
     },
     {
       "name": "Delta TV",
@@ -4122,7 +4127,8 @@
         "org.jellyfin.mobile/.MainActivity"
       ],
       "category": "MEDIA",
-      "brand": "jellyfin"
+      "brand": "jellyfin",
+      "style": "core_monoline"
     },
     {
       "name": "Jellyfin Enhanced",
@@ -4433,7 +4439,8 @@
         "org.xbmc.kodi_touch/.Splash"
       ],
       "category": "MEDIA",
-      "brand": "kodi"
+      "brand": "kodi",
+      "style": "core_monoline"
     },
     {
       "name": "Kore",
@@ -5475,7 +5482,8 @@
         "com.mubi/com.mubi.ui.TvMainActivity"
       ],
       "category": "VOD",
-      "brand": "mubi"
+      "brand": "mubi",
+      "style": "core_monoline"
     },
     {
       "name": "Mullvad VPN",
@@ -5697,7 +5705,8 @@
         "com.netflix.mediaclient/.ui.launch.UIWebViewActivity"
       ],
       "category": "VOD",
-      "brand": "netflix"
+      "brand": "netflix",
+      "style": "core_monoline"
     },
     {
       "name": "Netfly",
@@ -5909,9 +5918,9 @@
       ],
       "category": "PLAYER",
       "brand": "nobuffr",
-      "banner_style": "glyph",
       "download_url": "https://downloads.nobuffr.com/android/nobuffr.apk",
-      "mapping_source": "tools/reference/nobuffr/receipt.json"
+      "mapping_source": "tools/reference/nobuffr/receipt.json",
+      "style": "core_monoline"
     },
     {
       "name": "Noovo",
@@ -5946,7 +5955,8 @@
         "com.nordvpn.android/com.nordvpn.android.tv.MainActivity"
       ],
       "category": "VPN",
-      "brand": "nordvpn"
+      "brand": "nordvpn",
+      "style": "core_monoline"
     },
     {
       "name": "Norton Clean",
@@ -6528,7 +6538,8 @@
         "com.cbs.ott/com.paramount.android.pplus.features.splash.tv.SplashMediatorActivity"
       ],
       "category": "VOD",
-      "brand": "paramountplus"
+      "brand": "paramountplus",
+      "style": "core_monoline"
     },
     {
       "name": "Paramount+ Canada",
@@ -6539,7 +6550,8 @@
         "com.cbs.ca/com.paramount.android.pplus.features.splash.tv.SplashMediatorActivity"
       ],
       "category": "VOD",
-      "brand": "paramountplus"
+      "brand": "paramountplus",
+      "style": "core_monoline"
     },
     {
       "name": "Paramount+ TVE",
@@ -6550,7 +6562,8 @@
         "com.cbs.tve/com.paramount.android.pplus.features.splash.tv.SplashMediatorActivity"
       ],
       "category": "VOD",
-      "brand": "paramountplus"
+      "brand": "paramountplus",
+      "style": "core_monoline"
     },
     {
       "name": "Parsec",
@@ -6805,7 +6818,7 @@
       ],
       "category": "MEDIA",
       "brand": "plex",
-      "banner_style": "glyph"
+      "style": "core_monoline"
     },
     {
       "name": "Plexamp",
@@ -7034,7 +7047,8 @@
         "ch.protonvpn.android/com.protonvpn.android.tv.main.TvMainActivity"
       ],
       "category": "VPN",
-      "brand": "protonvpn"
+      "brand": "protonvpn",
+      "style": "core_monoline"
     },
     {
       "name": "Psiphon",
@@ -8359,7 +8373,8 @@
         "com.spotify.music/.MainActivity"
       ],
       "category": "MUSIC",
-      "brand": "spotify"
+      "brand": "spotify",
+      "style": "core_monoline"
     },
     {
       "name": "SRF Play",
@@ -8536,7 +8551,8 @@
         "com.stremio.one/com.stremio.tv.MainActivity"
       ],
       "category": "STREAM",
-      "brand": "stremio"
+      "brand": "stremio",
+      "style": "core_monoline"
     },
     {
       "name": "Strexo Player",
@@ -9934,7 +9950,8 @@
         "tv.twitch.android.app/tv.twitch.android.apps.TwitchActivity"
       ],
       "category": "VIDEO",
-      "brand": "twitch"
+      "brand": "twitch",
+      "style": "core_monoline"
     },
     {
       "name": "Twodf Tivi",
@@ -11055,7 +11072,8 @@
         "com.google.android.youtube/.HomeActivity"
       ],
       "category": "VIDEO",
-      "brand": "youtube"
+      "brand": "youtube",
+      "style": "core_monoline"
     },
     {
       "name": "YouTube Kids",
@@ -11066,7 +11084,8 @@
         "com.google.android.youtube.tvkids/com.google.android.apps.youtube.tvkids.activity.MainActivity"
       ],
       "category": "VIDEO",
-      "brand": "youtubekids"
+      "brand": "youtubekids",
+      "style": "core_monoline"
     },
     {
       "name": "YouTube Music",
@@ -11077,7 +11096,8 @@
         "com.google.android.youtube.tvmusic/com.google.android.apps.youtube.tvmusic.activity.MainActivity"
       ],
       "category": "MUSIC",
-      "brand": "youtubemusic"
+      "brand": "youtubemusic",
+      "style": "core_monoline"
     },
     {
       "name": "Yowindow",
@@ -11254,7 +11274,8 @@
       "upstream": "https://github.com/simple-icons/simple-icons/blob/777807a262bb7384ff406fd4b35fdcd02e9514c3/icons/netflix.svg",
       "license": "CC0-1.0 (vector); brand rights retained by owner",
       "reviewed": "2026-09-08",
-      "treatment": "Source silhouette, flat catalog accent; light ink on dark cards if needed."
+      "treatment": "Reference for recognisable brand cues and colour only. Rendered by the Core Builds-authored rounded-monoline glyph in tools/glyphs.py; vendor paths and typography are not shipped as icons.",
+      "usage": "reference-only"
     },
     "spotify_arcs": {
       "file": "tools/brandmarks/spotify.svg",
@@ -11263,7 +11284,8 @@
       "upstream": "https://github.com/simple-icons/simple-icons/blob/777807a262bb7384ff406fd4b35fdcd02e9514c3/icons/spotify.svg",
       "license": "CC0-1.0 (vector); brand rights retained by owner",
       "reviewed": "2026-09-08",
-      "treatment": "Source silhouette, flat catalog accent; light ink on dark cards if needed."
+      "treatment": "Reference for recognisable brand cues and colour only. Rendered by the Core Builds-authored rounded-monoline glyph in tools/glyphs.py; vendor paths and typography are not shipped as icons.",
+      "usage": "reference-only"
     },
     "kodi_box": {
       "file": "tools/brandmarks/kodi.svg",
@@ -11272,7 +11294,8 @@
       "upstream": "https://github.com/simple-icons/simple-icons/blob/777807a262bb7384ff406fd4b35fdcd02e9514c3/icons/kodi.svg",
       "license": "CC0-1.0 (vector); brand rights retained by owner",
       "reviewed": "2026-09-08",
-      "treatment": "Source silhouette, flat catalog accent; light ink on dark cards if needed."
+      "treatment": "Reference for recognisable brand cues and colour only. Rendered by the Core Builds-authored rounded-monoline glyph in tools/glyphs.py; vendor paths and typography are not shipped as icons.",
+      "usage": "reference-only"
     },
     "jellyfin_chevrons": {
       "file": "tools/brandmarks/jellyfin.svg",
@@ -11281,7 +11304,8 @@
       "upstream": "https://github.com/simple-icons/simple-icons/blob/777807a262bb7384ff406fd4b35fdcd02e9514c3/icons/jellyfin.svg",
       "license": "CC0-1.0 (vector); brand rights retained by owner",
       "reviewed": "2026-09-08",
-      "treatment": "Source silhouette, flat catalog accent; light ink on dark cards if needed."
+      "treatment": "Reference for recognisable brand cues and colour only. Rendered by the Core Builds-authored rounded-monoline glyph in tools/glyphs.py; vendor paths and typography are not shipped as icons.",
+      "usage": "reference-only"
     },
     "plex_chevron": {
       "file": "tools/brandmarks/plex.svg",
@@ -11290,7 +11314,8 @@
       "upstream": "https://github.com/simple-icons/simple-icons/blob/777807a262bb7384ff406fd4b35fdcd02e9514c3/icons/plex.svg",
       "license": "CC0-1.0 (vector); brand rights retained by owner",
       "reviewed": "2026-09-08",
-      "treatment": "Source silhouette, flat catalog accent; light ink on dark cards if needed."
+      "treatment": "Reference for recognisable brand cues and colour only. Rendered by the Core Builds-authored rounded-monoline glyph in tools/glyphs.py; vendor paths and typography are not shipped as icons.",
+      "usage": "reference-only"
     },
     "crunchyroll_eye": {
       "file": "tools/brandmarks/crunchyroll.svg",
@@ -11299,7 +11324,8 @@
       "upstream": "https://github.com/simple-icons/simple-icons/blob/777807a262bb7384ff406fd4b35fdcd02e9514c3/icons/crunchyroll.svg",
       "license": "CC0-1.0 (vector); brand rights retained by owner",
       "reviewed": "2026-09-08",
-      "treatment": "Source silhouette, flat catalog accent; light ink on dark cards if needed."
+      "treatment": "Reference for recognisable brand cues and colour only. Rendered by the Core Builds-authored rounded-monoline glyph in tools/glyphs.py; vendor paths and typography are not shipped as icons.",
+      "usage": "reference-only"
     },
     "chat_screen": {
       "file": "tools/brandmarks/twitch.svg",
@@ -11308,7 +11334,8 @@
       "upstream": "https://github.com/simple-icons/simple-icons/blob/777807a262bb7384ff406fd4b35fdcd02e9514c3/icons/twitch.svg",
       "license": "CC0-1.0 (vector); brand rights retained by owner",
       "reviewed": "2026-09-08",
-      "treatment": "Source silhouette, flat catalog accent; light ink on dark cards if needed."
+      "treatment": "Reference for recognisable brand cues and colour only. Rendered by the Core Builds-authored rounded-monoline glyph in tools/glyphs.py; vendor paths and typography are not shipped as icons.",
+      "usage": "reference-only"
     },
     "nordvpn_arrow": {
       "file": "tools/brandmarks/nordvpn.svg",
@@ -11317,7 +11344,8 @@
       "upstream": "https://github.com/simple-icons/simple-icons/blob/777807a262bb7384ff406fd4b35fdcd02e9514c3/icons/nordvpn.svg",
       "license": "CC0-1.0 (vector); brand rights retained by owner",
       "reviewed": "2026-09-08",
-      "treatment": "Source silhouette, flat catalog accent; light ink on dark cards if needed."
+      "treatment": "Reference for recognisable brand cues and colour only. Rendered by the Core Builds-authored rounded-monoline glyph in tools/glyphs.py; vendor paths and typography are not shipped as icons.",
+      "usage": "reference-only"
     },
     "mubi_mark": {
       "file": "tools/brandmarks/mubi.svg",
@@ -11326,7 +11354,8 @@
       "upstream": "https://github.com/simple-icons/simple-icons/blob/777807a262bb7384ff406fd4b35fdcd02e9514c3/icons/mubi.svg",
       "license": "CC0-1.0 (vector); brand rights retained by owner",
       "reviewed": "2026-09-08",
-      "treatment": "Source silhouette, flat catalog accent; light ink on dark cards if needed."
+      "treatment": "Reference for recognisable brand cues and colour only. Rendered by the Core Builds-authored rounded-monoline glyph in tools/glyphs.py; vendor paths and typography are not shipped as icons.",
+      "usage": "reference-only"
     },
     "deezer_columns": {
       "file": "tools/brandmarks/deezer.svg",
@@ -11335,7 +11364,8 @@
       "upstream": "https://github.com/simple-icons/simple-icons/blob/777807a262bb7384ff406fd4b35fdcd02e9514c3/icons/deezer.svg",
       "license": "CC0-1.0 (vector); brand rights retained by owner",
       "reviewed": "2026-09-08",
-      "treatment": "Source silhouette, flat catalog accent; light ink on dark cards if needed."
+      "treatment": "Reference for recognisable brand cues and colour only. Rendered by the Core Builds-authored rounded-monoline glyph in tools/glyphs.py; vendor paths and typography are not shipped as icons.",
+      "usage": "reference-only"
     },
     "proton_shield": {
       "file": "tools/brandmarks/protonvpn.svg",
@@ -11344,7 +11374,8 @@
       "upstream": "https://github.com/simple-icons/simple-icons/blob/777807a262bb7384ff406fd4b35fdcd02e9514c3/icons/protonvpn.svg",
       "license": "CC0-1.0 (vector); brand rights retained by owner",
       "reviewed": "2026-09-08",
-      "treatment": "Source silhouette, flat catalog accent; light ink on dark cards if needed."
+      "treatment": "Reference for recognisable brand cues and colour only. Rendered by the Core Builds-authored rounded-monoline glyph in tools/glyphs.py; vendor paths and typography are not shipped as icons.",
+      "usage": "reference-only"
     },
     "yt_play": {
       "file": "tools/brandmarks/youtube.svg",
@@ -11353,7 +11384,8 @@
       "upstream": "https://github.com/simple-icons/simple-icons/blob/777807a262bb7384ff406fd4b35fdcd02e9514c3/icons/youtube.svg",
       "license": "CC0-1.0 (vector); brand rights retained by owner",
       "reviewed": "2026-09-08",
-      "treatment": "Source silhouette, flat catalog accent; light ink on dark cards if needed."
+      "treatment": "Reference for recognisable brand cues and colour only. Rendered by the Core Builds-authored rounded-monoline glyph in tools/glyphs.py; vendor paths and typography are not shipped as icons.",
+      "usage": "reference-only"
     },
     "yt_music": {
       "file": "tools/brandmarks/youtubemusic.svg",
@@ -11362,7 +11394,8 @@
       "upstream": "https://github.com/simple-icons/simple-icons/blob/777807a262bb7384ff406fd4b35fdcd02e9514c3/icons/youtubemusic.svg",
       "license": "CC0-1.0 (vector); brand rights retained by owner",
       "reviewed": "2026-09-08",
-      "treatment": "Source silhouette, flat catalog accent; light ink on dark cards if needed."
+      "treatment": "Reference for recognisable brand cues and colour only. Rendered by the Core Builds-authored rounded-monoline glyph in tools/glyphs.py; vendor paths and typography are not shipped as icons.",
+      "usage": "reference-only"
     },
     "yt_kids": {
       "file": "tools/brandmarks/youtubekids.svg",
@@ -11371,7 +11404,8 @@
       "upstream": "https://github.com/simple-icons/simple-icons/blob/777807a262bb7384ff406fd4b35fdcd02e9514c3/icons/youtubekids.svg",
       "license": "CC0-1.0 (vector); brand rights retained by owner",
       "reviewed": "2026-09-08",
-      "treatment": "Source silhouette, flat catalog accent; light ink on dark cards if needed."
+      "treatment": "Reference for recognisable brand cues and colour only. Rendered by the Core Builds-authored rounded-monoline glyph in tools/glyphs.py; vendor paths and typography are not shipped as icons.",
+      "usage": "reference-only"
     },
     "paramount_peak": {
       "file": "tools/brandmarks/paramountplus.svg",
@@ -11380,7 +11414,8 @@
       "upstream": "https://github.com/simple-icons/simple-icons/blob/777807a262bb7384ff406fd4b35fdcd02e9514c3/icons/paramountplus.svg",
       "license": "CC0-1.0 (vector); brand rights retained by owner",
       "reviewed": "2026-09-08",
-      "treatment": "Source silhouette, flat catalog accent; light ink on dark cards if needed."
+      "treatment": "Reference for recognisable brand cues and colour only. Rendered by the Core Builds-authored rounded-monoline glyph in tools/glyphs.py; vendor paths and typography are not shipped as icons.",
+      "usage": "reference-only"
     },
     "stremio_square": {
       "file": "tools/brandmarks/stremio.svg",
@@ -11389,7 +11424,8 @@
       "upstream": "https://github.com/simple-icons/simple-icons/blob/777807a262bb7384ff406fd4b35fdcd02e9514c3/icons/stremio.svg",
       "license": "CC0-1.0 (vector); brand rights retained by owner",
       "reviewed": "2026-09-08",
-      "treatment": "Source silhouette, flat catalog accent; light ink on dark cards if needed."
+      "treatment": "Reference for recognisable brand cues and colour only. Rendered by the Core Builds-authored rounded-monoline glyph in tools/glyphs.py; vendor paths and typography are not shipped as icons.",
+      "usage": "reference-only"
     },
     "nobuffr_mark": {
       "file": "tools/brandmarks/nobuffr.svg",
@@ -11398,7 +11434,8 @@
       "reference": "tools/reference/nobuffr/receipt.json",
       "license": "NoBuffr brand artwork; rights retained by owner",
       "reviewed": "2026-09-08",
-      "treatment": "APK foreground letter silhouettes vectorised; white type and one flat cyan underline in place of the source gradient."
+      "treatment": "APK verifies identity and the lowercase no / interrupted-underline cue. Classic uses an original single-accent monoline motif and the standard Outfit/category/rail banner, not the traced white wordmark.",
+      "usage": "reference-only"
     }
   }
 }

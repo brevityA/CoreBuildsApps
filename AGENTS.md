@@ -34,10 +34,10 @@ python tools/build_banners.py
 python tools/build_branding.py
 python tools/build_brand_preview.py
 python tools/validate.py
-python tests/test_icon_identity.py    # 26 source/colour/mapping regressions (after all packs build)
+python tests/test_icon_identity.py    # 35 style/colour/reference/mapping regressions (after all packs build)
 ```
 
-Paste the validator receipt. Current receipt: `Validated 925 icons · 1661 components · 24702 checks run`.
+Paste the validator receipt. Current receipt: `Validated 925 icons · 1661 components · 24769 checks run`.
 
 Anything touching the catalog, `tools/glyphs.py`, or shared `app/` resources also rebuilds Pop, because Pop mirrors those resources and renders the same catalog:
 
@@ -49,13 +49,21 @@ python tests/test_pop.py
 
 Pop receipts: `Validated 925 icons · 1099 components · 16 swatches · 13890 checks run` and `Ran 28 tests ... OK`.
 
-Catalog `artwork` entries pin local SVG source hashes, URLs and rights. Keep
-`tools/brandmarks/` offline; do not fetch vendor logos during normal builds.
+**The pack identity takes precedence over literal vendor-logo reproduction.**
+Reviewed brand entries use `style: core_monoline`: 32px rounded primary strokes,
+26.2px / 21.8px detail, no solid fills/effects/containers, and one accent. Keep
+the common Outfit + category + cyan/violet rail banner for NoBuffr and every
+other reviewed app. Do not reintroduce vendor-wordmark-only banners.
+
+Catalog `artwork` entries are `usage: reference-only`: pinned SVG hashes, URLs
+and rights, never a live glyph registry. Actual geometry belongs in
+`tools/glyphs.py`. Both Classic and Pop use the shared catalog/style validator.
 `brand` groups must share glyph and accent. Classic applies its shared
 `tools/icon_style.py` contrast fallback without rewriting the source accent.
 See `THIRD_PARTY_NOTICES.md` and `docs/research/icon-fidelity-and-demand-2026-09.md`.
-For a compact visual receipt, run `python tools/build_icon_review.py` after all
-three packs have built.
+For the visual receipt, run `python tools/build_icon_review.py` after Classic
+has built. It must show the new icons beside established, unchanged Classic
+neighbours and actual-size banners, not only an isolated vendor-logo gallery.
 
 `tools/pop_glyph_metrics.json` is committed on purpose. `popart.py` must stay a pure function of committed inputs — measuring glyph bounding boxes at render time makes output depend on the installed rasteriser version and blows up the SVG drift gate on an unrelated dependency bump. Re-run `tools/measure_pop_glyphs.py` (~33 s) only when glyph geometry changes, and rebuild Pop after.
 

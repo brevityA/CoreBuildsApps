@@ -1,15 +1,12 @@
-"""Offline, provenance-checked brand silhouettes from tools/catalog.json.
+"""Offline, hash-checked brand REFERENCES, never the Classic rendering registry.
 
-Brand sources are deliberately a tiny SVG subset: a viewBox and filled paths,
-no scripts, text/fonts, image links, transforms or network access. Their paths
-are fitted mathematically to the shared 432px safe area (without stretching).
-Flattening into the 512 grid also lets Pop apply its post-scale ink weight
-without a nested source transform multiplying that weight by 18.
+The final icons are Core Builds-authored monoline geometry in glyphs.py.
+This parser only validates and normalises the reference paths for audit/tests;
+it intentionally cannot register a vendor SVG as a renderable pack glyph.
 """
 from __future__ import annotations
 
 import hashlib
-import json
 import math
 import re
 from pathlib import Path
@@ -39,7 +36,10 @@ def load_source(spec: dict) -> tuple[tuple[str, str, str], ...]:
         raise ValueError(f"brand source checksum changed: {spec['file']}")
     if b"<!DOCTYPE" in raw.upper() or b"<!ENTITY" in raw.upper():
         raise ValueError(f"brand sources cannot declare entities: {spec['file']}")
-    root = ET.fromstring(raw)
+    try:
+        root = ET.fromstring(raw)
+    except ET.ParseError as exc:
+        raise ValueError(f"invalid reference SVG: {spec['file']}") from exc
     if root.tag.split("}")[-1] != "svg":
         raise ValueError(f"brand source is not SVG: {spec['file']}")
     bounds = BoundsPen(None)
@@ -73,24 +73,3 @@ def load_source(spec: dict) -> tuple[tuple[str, str, str], ...]:
         parse_path(d, TransformPen(pen, xf))
         fitted.append((pen.getCommands(), fill, rule))
     return tuple(fitted)
-
-
-def glyph_from_source(spec: dict):
-    paths = load_source(spec)
-
-    def render(accent: str) -> str:
-        return "".join(
-            f'<path d="{d}" fill="{accent if fill == "currentColor" else fill}" '
-            f'fill-rule="{rule}" stroke="none"/>'
-            for d, fill, rule in paths)
-    bounds = BoundsPen(None)
-    for d, _, _ in paths:
-        parse_path(d, bounds)
-    render.ink_bounds = bounds.bounds
-    return render
-
-
-def catalog_glyphs() -> dict:
-    catalog = json.loads((ROOT / "tools" / "catalog.json").read_text(encoding="utf-8"))
-    return {name: glyph_from_source(spec)
-            for name, spec in catalog.get("artwork", {}).items()}

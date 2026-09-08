@@ -47,7 +47,7 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
 import popart  # noqa: E402
 from popart import PALETTE, SWATCHES, render_banner, render_icon, snap  # noqa: E402
-from glyphs import GLYPHS  # noqa: E402
+from build_icons import validate  # noqa: E402 — shared catalog/style contract
 from svg_renderer import svg2png  # noqa: E402
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -95,8 +95,6 @@ STRING_OVERRIDES = {
     "cta_sub_apply_fmt":
         "Sets Core Builds Pop as the icon pack in %1$s. Reversible — pick another pack any time.",
 }
-
-DRAWABLE_RE = re.compile(r"^[a-z][a-z0-9_]*$")
 
 CAT_LABEL = {
     "STREAM": "Streaming", "MEDIA": "Media centres", "VOD": "On demand",
@@ -155,28 +153,6 @@ def expand(component: str) -> list[str]:
     return [component]
 
 
-def validate(icons: list[dict]) -> list[str]:
-    errors, seen_d, seen_c = [], {}, {}
-    for i in icons:
-        d, n = i.get("drawable", ""), i.get("name", "<unnamed>")
-        if not DRAWABLE_RE.match(d):
-            errors.append(f"{n}: drawable '{d}' must match [a-z][a-z0-9_]*")
-        if d in seen_d:
-            errors.append(f"{n}: drawable '{d}' already used by {seen_d[d]}")
-        seen_d[d] = n
-        if i.get("glyph") not in GLYPHS:
-            errors.append(f"{n}: unknown glyph '{i.get('glyph')}'")
-        if not re.match(r"^#[0-9A-Fa-f]{6}$", i.get("color", "")):
-            errors.append(f"{n}: color '{i.get('color')}' must be #RRGGBB")
-        if not i.get("components"):
-            errors.append(f"{n}: no components — icon would never auto-assign")
-        for comp in i.get("components", []):
-            if "/" not in comp:
-                errors.append(f"{n}: component '{comp}' missing '/activity'")
-            if comp in seen_c:
-                errors.append(f"{n}: component '{comp}' duplicates {seen_c[comp]}")
-            seen_c[comp] = n
-    return errors
 
 
 # --------------------------------------------------------------------------
@@ -409,7 +385,7 @@ def main() -> int:
     version = json.loads((ROOT / "suite.json").read_text(
         encoding="utf-8"))["apps"]["pop"]["versionName"]
 
-    errs = validate(icons)
+    errs = validate(icons, data.get("artwork"))
     if errs:
         print("Catalog rejected — %d problem(s):" % len(errs))
         for e in errs:

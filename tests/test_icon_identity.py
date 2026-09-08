@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Offline regression tests for sourced logos, colour parity and APK evidence.
+"""Offline regressions for Core Builds style, colour parity and APK evidence.
 
 Run after the generators: python tests/test_icon_identity.py
 No downloaded APK, device, network, or optional APK parser is needed.
@@ -23,11 +23,12 @@ sys.path.insert(0, str(ROOT / "tools"))
 import brandmarks
 from build_banners import render, render_glyph_only
 from build_icons import validate
-from glyphs import GLYPHS, render_svg
-from icon_style import CARD, LIGHT_INK, MIN_CONTRAST, contrast, display_accent
+from glyphs import GLYPHS, monoline, render_svg
+from icon_style import (CARD, CORE_MONOLINE, CORE_STROKES, LIGHT_INK, MIN_CONTRAST,
+                        core_monoline_errors, contrast, display_accent)
 from inspect_icon_apk import activity_name, launcher_components, resource_path
 from svg_renderer import svg2png
-from PIL import Image, ImageChops
+from PIL import Image
 from fontTools.pens.boundsPen import BoundsPen
 from fontTools.svgLib.path import parse_path
 
@@ -39,7 +40,7 @@ NS = "http://schemas.android.com/apk/res/android"
 
 class IdentityTests(unittest.TestCase):
     def test_catalog_accepts_every_icon(self):
-        self.assertEqual(validate(ICONS), [])
+        self.assertEqual(validate(ICONS, CATALOG["artwork"]), [])
 
     def test_same_brand_must_not_drift_in_colour_or_glyph(self):
         for field, wrong in (("color", "#FF0000"), ("glyph", "tile_N")):
@@ -93,7 +94,7 @@ class IdentityTests(unittest.TestCase):
             for svg in (render_svg(icon["glyph"], icon["color"]),
                         render(icon["name"], icon["glyph"], icon["color"]),
                         render_glyph_only(icon["glyph"], icon["color"])):
-                self.assertIn(f'fill="{colour}"', svg)
+                self.assertIn(f'stroke="{colour}"', svg)
 
     def test_committed_square_vectors_match_the_generator(self):
         for icon in ICONS:
@@ -108,8 +109,9 @@ class IdentityTests(unittest.TestCase):
     def test_youtube_play_counter_is_really_transparent(self):
         image = Image.open(ROOT / "app/src/main/res/drawable-nodpi/youtube.png").convert("RGBA")
         self.assertEqual(image.getpixel((256, 256))[3], 0)
-        self.assertEqual(image.getpixel((100, 256))[:3], (255, 0, 0))
+        self.assertEqual(image.getpixel((64, 256))[:3], (255, 0, 0))
         self.assertEqual(image.getpixel((0, 0))[3], 0)
+        self.assertEqual(image.getpixel((100, 256))[3], 0)  # no solid button fill
         for background in ("#334155", "#7C3AED"):
             card = Image.new("RGBA", image.size, background)
             composited = Image.alpha_composite(card, image)
@@ -149,6 +151,81 @@ class IdentityTests(unittest.TestCase):
         self.assertEqual([count for _, count in rows], [2, 3, 2])
 
 
+class CoreStyleTests(unittest.TestCase):
+    def revised(self):
+        return [i for i in ICONS if i.get("style") == CORE_MONOLINE]
+
+    def test_every_reviewed_brand_is_opted_into_core_style(self):
+        for icon in ICONS:
+            if icon["glyph"] in CATALOG["artwork"] or icon["glyph"] == "iplayer_play":
+                self.assertEqual(icon.get("style"), CORE_MONOLINE, icon["name"])
+
+    def test_all_revised_glyphs_obey_the_same_rounded_line_contract(self):
+        for icon in self.revised():
+            with self.subTest(icon=icon["name"]):
+                accent = display_accent(icon["color"])
+                body = monoline(GLYPHS[icon["glyph"]](accent))
+                self.assertEqual(core_monoline_errors(body, accent), [])
+
+    def test_subordinate_stroke_weights_survive_normalisation(self):
+        body = '<path stroke-width="40"/><path stroke-width="26"/><path stroke-width="20"/>'
+        root = ET.fromstring(f"<g>{monoline(body)}</g>")
+        self.assertEqual([float(p.get("stroke-width")) for p in root], [32.0, 26.2, 21.8])
+
+    def test_style_gate_rejects_fills_white_wordmarks_square_caps_and_rescaling(self):
+        accent = "#56C8F0"
+        valid = monoline(GLYPHS["nobuffr_mark"](accent))
+        wrong = (
+            valid.replace('fill="none"', f'fill="{accent}"', 1),
+            valid.replace(f'stroke="{accent}"', 'stroke="#FFFFFF"', 1),
+            valid.replace('stroke-width="32.0"', 'stroke-width="80"', 1),
+            valid.replace('stroke-linecap="round"', 'stroke-linecap="square"', 1),
+            f'<g transform="scale(2)">{valid}</g>',
+            valid.replace('<path ', '<path style="fill:white" ', 1),
+            '<image href="vendor-wordmark.png"/>',
+        )
+        for body in wrong:
+            self.assertTrue(core_monoline_errors(body, accent), body[:160])
+
+    def test_catalog_rejects_a_private_wordmark_only_banner(self):
+        icon = copy.deepcopy(BY_ID["nobuffr"])
+        icon["banner_style"] = "glyph"
+        self.assertTrue(any("standard Outfit" in e for e in validate([icon])))
+
+    def test_catalog_rejects_direct_rendering_of_reference_art(self):
+        refs = copy.deepcopy(CATALOG["artwork"])
+        refs["nobuffr_mark"]["usage"] = "render"
+        self.assertTrue(any("reference-only" in e for e in validate(ICONS, refs)))
+
+    def test_shipped_revised_vectors_have_not_bypassed_core_style(self):
+        for icon in self.revised():
+            svg = ET.parse(ROOT / "assets/svg" / f"{icon['drawable']}.svg").getroot()
+            body = "".join(ET.tostring(node, encoding="unicode") for node in svg)
+            self.assertEqual(core_monoline_errors(body, display_accent(icon["color"])), [], icon["name"])
+
+    def test_standard_banner_recipe_is_used_for_every_revised_app(self):
+        from build_banners import recentre
+        for icon in self.revised():
+            actual = (ROOT / "assets/banners" / f"{icon['drawable']}.svg").read_text()
+            expected = recentre(render(icon["name"], icon["glyph"], icon["color"], icon.get("category", "")))
+            self.assertEqual(actual, expected, icon["name"])
+            self.assertIn('id="cbRail"', actual)
+            self.assertIn('fill="#E6EDF3"', actual)  # common Outfit label, not vendor type
+
+    def test_revised_rasters_are_open_ink_and_clear_the_shared_safe_area(self):
+        for icon in self.revised():
+            with self.subTest(icon=icon["name"]):
+                alpha = Image.open(ROOT / "app/src/main/res/drawable-nodpi" / f"{icon['drawable']}.png").convert("RGBA").getchannel("A")
+                binary = alpha.point(lambda p: 255 if p >= 128 else 0)
+                left, top, right, bottom = binary.getbbox()
+                self.assertGreaterEqual(min(left, top), 40)
+                self.assertLessEqual(max(right, bottom), 472)
+                self.assertGreaterEqual(max(right-left, bottom-top), 320)
+                coverage = binary.histogram()[255] / (512 * 512)
+                self.assertLess(coverage, 0.29)  # no return to heavy vendor slabs
+                self.assertGreater(coverage, 0.025)
+
+
 class SourceTests(unittest.TestCase):
     def test_every_source_has_provenance_and_is_used(self):
         used = {i["glyph"] for i in ICONS}
@@ -158,10 +235,12 @@ class SourceTests(unittest.TestCase):
             self.assertTrue(spec["source"].startswith("https://"))
             self.assertTrue(spec["license"])
             self.assertTrue(spec["treatment"])
+            self.assertEqual(spec["usage"], "reference-only")
+            self.assertEqual(GLYPHS[name].__module__, "glyphs")
             self.assertRegex(spec["reviewed"], r"^\d{4}-\d{2}-\d{2}$")
             self.assertTrue(brandmarks.load_source(spec))  # includes source hash check
 
-    def test_every_sourced_mark_is_fitted_without_stretching_or_nested_scale(self):
+    def test_reference_geometry_is_auditable_but_not_registered_as_live_art(self):
         for name, spec in CATALOG["artwork"].items():
             with self.subTest(glyph=name):
                 pen = BoundsPen(None)
@@ -221,16 +300,19 @@ class SourceTests(unittest.TestCase):
             self.assertEqual(hashlib.sha256((directory / item["path"]).read_bytes()).hexdigest(), item["export_sha256"])
         self.assertEqual(list(directory.rglob("*.apk")), [])
 
-    def test_nobuffr_typography_matches_the_apk_foreground_silhouette(self):
-        source = Image.open(ROOT / "tools/reference/nobuffr/res/5c.webp").convert("RGBA")
-        expected = source.getchannel("A").point(lambda p: 255 if p >= 128 else 0)
-        expected = expected.crop(expected.getbbox())
-        actual = Image.open(ROOT / "app/src/main/res/drawable-nodpi/nobuffr.png").convert("RGBA")
-        actual = actual.getchannel("A").point(lambda p: 255 if p >= 128 else 0)
-        actual = actual.crop(actual.getbbox()).resize(expected.size, Image.Resampling.NEAREST)
-        intersection = sum(v > 0 for v in ImageChops.darker(actual, expected).getdata())
-        union = sum(v > 0 for v in ImageChops.lighter(actual, expected).getdata())
-        self.assertGreater(intersection / union, 0.93)
+    def test_nobuffr_uses_the_observed_cue_in_one_colour_linework(self):
+        icon = BY_ID["nobuffr"]
+        self.assertEqual(icon["style"], CORE_MONOLINE)
+        self.assertNotEqual(icon.get("banner_style"), "glyph")
+        accent = display_accent(icon["color"])
+        body = monoline(GLYPHS[icon["glyph"]](accent))
+        self.assertEqual(core_monoline_errors(body, accent), [])
+        self.assertNotIn("#FFFFFF", body.upper())
+        root = ET.fromstring(f"<g>{body}</g>")
+        self.assertEqual(len(root.findall("ellipse")), 1)  # the lowercase o
+        self.assertEqual(len(root.findall("path")), 3)  # n, three ticks, long underline
+        self.assertNotEqual(body, monoline(GLYPHS["tile_N"](accent)))
+        self.assertFalse(hasattr(brandmarks, "catalog_glyphs"))  # no vendor override route
 
     def test_nobuffr_maps_to_banner_in_all_three_packs(self):
         expected = "ComponentInfo{com.nobuffr.app/tv.tivitime.compose.app.AppActivity}"

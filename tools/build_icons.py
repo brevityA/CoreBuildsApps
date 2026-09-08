@@ -22,7 +22,8 @@ from pathlib import Path
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from glyphs import GLYPHS, monoline, render_svg  # noqa: E402
-from icon_style import display_accent  # noqa: E402
+from icon_style import CORE_MONOLINE, core_monoline_errors, display_accent  # noqa: E402
+from brandmarks import load_source  # noqa: E402
 
 ROOT = Path(__file__).resolve().parent.parent
 CATALOG = ROOT / "tools" / "catalog.json"
@@ -46,7 +47,7 @@ def esc_android(s):
     return esc(s).replace("'", "\\'")
 
 
-def validate(icons):
+def validate(icons, artwork=None):
     """Fail loudly and by name. No unnamed errors (Brand Guide §08)."""
     errors, seen_d, seen_c, seen_brand = [], {}, {}, {}
     for i in icons:
@@ -67,12 +68,32 @@ def validate(icons):
             if brand in seen_brand and seen_brand[brand] != identity:
                 errors.append(f"{n}: brand {brand!r} has inconsistent glyph/colour")
             seen_brand[brand] = identity
+        style = i.get("style")
+        if style is not None and style != CORE_MONOLINE:
+            errors.append(f"{n}: unknown Classic style {style!r}")
+        if style == CORE_MONOLINE:
+            if i.get("banner_style", "standard") != "standard":
+                errors.append(f"{n}: Core monoline apps must use the standard Outfit/category/rail banner")
+            if i.get("glyph") in GLYPHS and re.fullmatch(r"#[0-9A-Fa-f]{6}", i.get("color", "")):
+                accent = display_accent(i["color"])
+                body = monoline(GLYPHS[i["glyph"]](accent))
+                errors.extend(f"{n}: {e}" for e in core_monoline_errors(body, accent))
         for comp in i.get("components", []):
             if "/" not in comp:
                 errors.append(f"{n}: component '{comp}' missing '/activity'")
             if comp in seen_c:
                 errors.append(f"{n}: component '{comp}' duplicates {seen_c[comp]}")
             seen_c[comp] = n
+    for glyph, spec in (artwork or {}).items():
+        if spec.get("usage") != "reference-only":
+            errors.append(f"{glyph}: brand artwork is reference-only, not a rendering override")
+        matching = [i for i in icons if i.get("glyph") == glyph]
+        if not matching or any(i.get("style") != CORE_MONOLINE for i in matching):
+            errors.append(f"{glyph}: referenced brands must use the Core monoline contract")
+        try:
+            load_source(spec)
+        except (ValueError, KeyError, OSError) as exc:
+            errors.append(f"{glyph}: invalid artwork reference: {exc}")
     return errors
 
 
@@ -85,7 +106,7 @@ def main():
     data = json.loads(CATALOG.read_text(encoding="utf-8"))
     icons = sorted(data["icons"], key=lambda i: i["name"].lower())
 
-    errs = validate(icons)
+    errs = validate(icons, data.get("artwork"))
     if errs:
         print("Catalog rejected — %d problem(s):" % len(errs))
         for e in errs:
@@ -254,7 +275,7 @@ def main():
           "ships a different launcher activity on your device \u2014 open an issue "
           "with the component name and it gets added.",
           "",
-          "Source accents are retained in the catalog. **On dark** is the shared square/banner colour; low-contrast accents use light ink rather than disappearing. [Artwork sources and research](research/icon-fidelity-and-demand-2026-09.md).",
+          "Source accents are retained in the catalog. **On dark** is the shared square/banner colour; low-contrast accents use light ink rather than disappearing. Brand references guide the Core Builds monoline constructions; vendor silhouettes/wordmarks are not rendered directly. [Style and research](research/icon-fidelity-and-demand-2026-09.md).",
           "",
           "| App | Drawable | Source accent | On dark | Components |",
           "| --- | --- | --- | --- | --- |"]

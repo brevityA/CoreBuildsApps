@@ -4,7 +4,7 @@
 
 Every app below auto-assigns in Projectivy. If one doesn't, the app ships a different launcher activity on your device — open an issue with the component name and it gets added.
 
-Source accents are retained in the catalog. **On dark** is the shared square/banner colour; low-contrast accents use light ink rather than disappearing. [Artwork sources and research](research/icon-fidelity-and-demand-2026-09.md).
+Source accents are retained in the catalog. **On dark** is the shared square/banner colour; low-contrast accents use light ink rather than disappearing. Brand references guide the Core Builds monoline constructions; vendor silhouettes/wordmarks are not rendered directly. [Style and research](research/icon-fidelity-and-demand-2026-09.md).
 
 | App | Drawable | Source accent | On dark | Components |
 | --- | --- | --- | --- | --- |

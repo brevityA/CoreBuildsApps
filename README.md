@@ -32,9 +32,9 @@
 
 The **Core Builds Icon Pack** is designed for the [Projectivy Launcher](https://play.google.com/store/apps/details?id=com.spocky.projengmenu) on Android TV and Google TV, built to the [Core Builds Brand & Style Guide v1.0](https://github.com/brevityA/Core-Builds).
 
-Icons share a 512 grid and transparent backgrounds. **Source-checked brand silhouettes** replace generic approximations where available; the long tail keeps the pack's original monoline geometry. Source accents are preserved, with one light-ink fallback when a colour would disappear on the recommended dark card. [Artwork provenance and rights](THIRD_PARTY_NOTICES.md).
+Icons share the **Core Builds visual language**: original geometry, rounded-line brand motifs, one accent and transparent backgrounds. The reviewed glyphs use the canonical **32px main stroke**, with 26.2px / 21.8px detail. Brand references inform the recognisable cue and colour; they do **not** replace the pack's style with filled vendor silhouettes or custom logotypes. The existing Outfit fallback letters remain unchanged. [Reference provenance and rights](THIRD_PARTY_NOTICES.md).
 
-**v1.8.7 candidate:** NoBuffr added from the supplied APK, 16 existing brands source-checked, seven variant groups unified, and iPlayer's pink three-beam identity restored. [Preview and request research](docs/research/icon-fidelity-and-demand-2026-09.md). This is a targeted pass, not a claim of 925 verified official logos.
+**v1.8.7 candidate — identity corrected:** NoBuffr keeps its APK-verified mapping but now uses a single-accent monoline **no + interrupted underline** motif and the standard banner. The 16 reviewed existing brands and iPlayer are re-drawn in the same Core Builds language, not pasted vendor logos. Seven variant groups remain unified and dark accents stay readable. [Mixed-row preview and research](docs/research/icon-fidelity-and-demand-2026-09.md).
 
 > **Tip:** Use a **dark card background** in Projectivy. These icons are drawn for night chrome (`#0d1117`).
 
@@ -80,7 +80,7 @@ Full table with every mapped component: [**docs/IconPackList.md**](docs/IconPack
 
 ### 16:9 Banners
 
-Every icon ships a **320×180 transparent banner** for Projectivy's wide-card layout. One glyph, cyan→violet rail and path-outlined Outfit Bold app label; sourced wordmarks can stand alone without a duplicate label — generated from `tools/build_banners.py`.
+Every icon ships a **320×180 transparent banner** for Projectivy's wide-card layout. Third-party app banners use the same **monoline glyph + cyan→violet rail + category + path-outlined Outfit Bold name** — including NoBuffr and Plex. No standalone vendor-wordmark exception. The pack's own Core Builds mark remains unchanged. Generated from `tools/build_banners.py`.
 
 Appfilter maps to banners by default; square icons stay opt-in via `drawable.xml`.
 
@@ -162,8 +162,8 @@ Inherited from the brand guide, enforced by the generator and validator:
 | --- | --- |
 | Transparent background, always | the launcher owns the card colour |
 | 512 grid · 432 safe area · 34 stroke | survives 10-foot downscaling |
-| One source accent per brand, flat, with neutral details | variants share an identity instead of unrelated palette colours |
-| Source-checked marks where available; original fallbacks elsewhere | provenance and rights are recorded, not assumed |
+| One accent per glyph; 32px round primary strokes with subordinate detail | reviewed brands use the same geometric language, not a collection of vendor styles |
+| Original Core Builds linework; vendor material is reference-only | brand recognition must not override the pack's identity |
 | The hex stance is never rotated | the point-up hexagon is load-bearing |
 | Shared 3:1 dark-card contrast floor | squares, banners and previews use the same light-ink alternative when needed |
 | `isShrinkResources = false` | drawables resolve by name at runtime |
@@ -331,8 +331,8 @@ the open axis.
 
 ```
 tools/catalog.json           the single source of truth
-tools/glyphs.py              glyph primitives + source-checked mark registration
-tools/brandmarks/            pinned SVG sources (provenance in catalog)
+tools/glyphs.py              original Core Builds glyph primitives (no vendor override)
+tools/brandmarks/            pinned reference-only SVGs (provenance in catalog)
 tools/icon_style.py          shared Classic dark-card colour policy
 tools/typeface.py            Outfit Bold/ExtraBold → SVG paths
 tools/fonts/                 Outfit OFL sources for wordmarks + monograms
@@ -536,6 +536,6 @@ Spec: [`doctor/SPEC.md`](doctor/SPEC.md).
 
 ## 🔷 Credits
 
-Icon-pack conventions follow the approach proven by [Projectivy Icon Pack](https://github.com/SicMundus86/ProjectivyIconPack) by SicMundus86. Projectivy Launcher is by Spocky. App names and trademarks belong to their respective owners; see [artwork sources and notices](THIRD_PARTY_NOTICES.md) for the source-checked marks and original adaptations. No endorsement is implied.
+Icon-pack conventions follow the approach proven by [Projectivy Icon Pack](https://github.com/SicMundus86/ProjectivyIconPack) by SicMundus86. Projectivy Launcher is by Spocky. App names and trademarks belong to their respective owners; see [artwork sources and notices](THIRD_PARTY_NOTICES.md) for the offline references and original Core Builds interpretations. No endorsement is implied.
 
 Part of the [Core Builds](https://github.com/brevityA/Core-Builds) ecosystem · [ko-fi.com/branding_brevity](https://ko-fi.com/branding_brevity)

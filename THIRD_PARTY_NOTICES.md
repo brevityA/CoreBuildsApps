@@ -1,19 +1,30 @@
-# Icon artwork sources and rights
+# Brand references and rights
 
 The code and original Core Builds artwork remain under the repository's MIT
 licence. **That licence does not grant rights to third-party brands or imply
-endorsement.** Brand names, logos and trademarks belong to their owners and are
-used here to identify the installed apps they represent.
+endorsement.** App names, logos and trademarks belong to their respective
+owners and are used to identify the apps represented by the pack.
 
-## Source-checked silhouettes
+## Core Builds renders its own icon language
 
-The `artwork` section of [`tools/catalog.json`](tools/catalog.json) records the
-source URL, immutable upstream revision (where available), file checksum,
-review date, licence description and intentional adaptation for every sourced
-mark. It is the source registry for the renderer, not a live download list.
+The Classic icons are **Core Builds-authored geometric interpretations**, not
+vendor silhouettes pasted into an icon pack. The reviewed glyphs use rounded
+monoline strokes, one accent, transparent interiors and the same Outfit /
+category / cyan-violet-rail banner as their neighbours. The original fallback
+letters remain the pack's bundled, path-outlined Outfit typography.
 
-The following files in `tools/brandmarks/` are taken from **Simple Icons**,
-which dedicates its vector contributions under **CC0 1.0 Universal**:
+The `artwork` section of [`tools/catalog.json`](tools/catalog.json) is a
+**reference registry**, not a rendering registry. Each entry has
+`usage: reference-only`, a source URL, local file checksum, review date, rights
+notice and treatment. `tools/brandmarks.py` can inspect these references but
+cannot register them as pack glyphs. Actual icon geometry is in
+`tools/glyphs.py`.
+
+## Simple Icons reference files
+
+The following files in `tools/brandmarks/` are retained as **offline reference
+material** from Simple Icons, whose vector contributions are dedicated under
+**CC0 1.0 Universal**:
 
 - `crunchyroll.svg`
 - `deezer.svg`
@@ -34,36 +45,37 @@ which dedicates its vector contributions under **CC0 1.0 Universal**:
 
 The full CC0 text is in
 [`tools/brandmarks/LICENSE-CC0.md`](tools/brandmarks/LICENSE-CC0.md).
-Upstream: <https://github.com/simple-icons/simple-icons>. CC0 for those vector
-contributions does **not** waive an owner's trademark or other brand rights.
-The catalog links the underlying brand reference as well as the upstream file.
-
-These are **flat-colour adaptations**, not certifications of brand-guideline
-compliance. Paths keep their proportions and transparent counters; Classic
-uses a light-ink alternative when the catalog accent is unreadable on its
-recommended dark cards. Pop and Pixel Neon deliberately use their own palettes
-and treatments. In particular, Netflix's monochrome silhouette does not
-reproduce the original multi-red shading.
+Upstream: <https://github.com/simple-icons/simple-icons>. The immutable upstream
+file and underlying brand reference are linked in the catalog. CC0 for the
+vector contribution does **not** waive an owner's trademark/brand rights.
+These files are not rendered directly or bundled as vendor logos in our APKs.
 
 ## NoBuffr
 
-[`tools/reference/nobuffr/`](tools/reference/nobuffr/) contains the small
-launcher-artwork resources extracted from the publicly supplied vendor APK,
-plus a SHA-256 receipt and the actual launcher component. No APK is included,
-installed, executed, or redistributed as part of this pack.
+[`tools/reference/nobuffr/`](tools/reference/nobuffr/) retains the small original
+artwork resources extracted from the supplied vendor APK, plus its SHA-256
+receipt and the actual launcher component. No APK is committed, installed,
+executed or redistributed with this pack.
 
-`tools/brandmarks/nobuffr.svg` is vectorised from the alpha silhouettes of that
-APK's 432px adaptive foreground. It preserves the stacked lettering and the
-interrupted underline. Classic keeps the white lettering and uses a flat cyan
-sample from the source underline rather than claiming to reproduce its gradient.
-The NoBuffr artwork remains its owner's property; it is **not** offered here
-under MIT or Simple Icons' CC0 dedication. Source:
+`tools/brandmarks/nobuffr.svg` is the previous vectorised lettering/underline
+reference. It is **not the rendered icon**. The rejected standalone white
+wordmark has been removed from the icon and banner rendering route.
+
+The actual Classic glyph is an original Core Builds monoline construction:
+the observed lowercase **no** cue and interrupted buffer underline, in one
+accent. The full **NoBuffr** name is supplied by the standard Outfit banner
+label, not vendor typography. This is an explicit stylistic interpretation,
+not a claim to reproduce every letter of the vendor logo.
+
+NoBuffr's original/reference artwork remains its owner's property and is not
+covered by MIT or Simple Icons' CC0 dedication. Source:
 <https://downloads.nobuffr.com/android/nobuffr.apk>.
 
-## Original reference-informed geometry
+## Interpretation is not endorsement
 
-The remaining functions in `tools/glyphs.py` are original Core Builds geometry.
-The BBC iPlayer three-beam construction is a single-pink interpretation of its
-service icon, not an imported BBC asset. Unresearched long-tail glyphs remain
-labelled as such in the fidelity/demand notes; having a catalog entry does not
-mean the official logo has been verified.
+The sources establish recognisable cues and colours; they are not permission
+to claim official approval. Classic's light-ink fallback is a readability
+treatment for dark cards, not a brand-colour change. Pop and Pixel Neon retain
+their separate, deliberately stylised treatments. Source/reference materials
+are distinguished from the Core Builds-authored output throughout the catalog
+and fidelity notes.
