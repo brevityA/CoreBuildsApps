@@ -9,6 +9,7 @@ file-copy path, and the idempotency/space checks.
 """
 from __future__ import annotations
 
+import json
 import re
 import unittest
 from pathlib import Path
@@ -182,10 +183,34 @@ class KotlinWiringTests(unittest.TestCase):
 
 
 class VersionTests(unittest.TestCase):
-    def test_version_bumped_to_182(self):
+    """The pack still ships what this feature needs, and the version moves up.
+
+    This used to pin `versionCode = 15` / `versionName = "1.8.2"` verbatim, which
+    turned every release into a test edit and made the suite fail for the wrong
+    reason — shipping a newer version is not a regression. What actually matters
+    here is that the release carrying export is still the floor, so an APK built
+    from this tree can do the thing under test. Gradle, suite.json, the catalog,
+    and `Latestrelease/version.json` are kept in lockstep by
+    `tools/check_suite_truth.py`, which is the right place for exact equality.
+    """
+
+    # v1.7.2 introduced multi-select export (CHANGELOG), versionCode 12.
+    EXPORT_CODE = 12
+    EXPORT_NAME = (1, 7, 2)
+
+    def _version(self):
         gradle = read("app/build.gradle.kts")
-        self.assertIn('versionCode = 15', gradle)
-        self.assertIn('versionName = "1.8.2"', gradle)
+        code = int(re.search(r"versionCode\s*=\s*(\d+)", gradle).group(1))
+        name = tuple(int(x) for x in
+                     re.search(r'versionName\s*=\s*"([0-9.]+)"', gradle).group(1).split("."))
+        return code, name
+
+    def test_version_is_at_or_above_the_export_release(self):
+        code, name = self._version()
+        self.assertGreaterEqual(code, self.EXPORT_CODE,
+                                "versionCode went below the release that shipped export")
+        self.assertGreaterEqual(name, self.EXPORT_NAME,
+                                "versionName went below the release that shipped export")
 
     def test_version_json_matches_gradle(self):
         import json

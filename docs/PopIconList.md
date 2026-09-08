@@ -80,9 +80,9 @@ Pop is drawn from the same `tools/catalog.json` as the classic Core Builds Icon 
 | Baby Einstein | `babyeinstein` | `#90BE6D` | `pop_green` `#3F9C35` | `com.giant.babyeinstein/com.codes.ui.SplashActivity` |
 | Background Apps And Process List | `background_apps_and_process_list` | `#FF6B35` | `pop_blaze` `#F05A22` | `io.github.visnkmr.bapl/io.github.visnkmr.bapl.MainActivity` |
 | Bally Sports | `ballyscorp` | `#4CC9F0` | `pop_aqua` `#0C8AAE` | `com.ballyscorp.ballylive/tv.vizbee.readyapp.firetvandroidtv.SplashActivity` |
-| BBC iPlayer | `iplayer` | `#FF4C98` | `pop_magenta` `#CE2C78` | `bbc.iplayer.android/external.androidtv.bbciplayer.deeplinking.DeepLinkActivity` |
-| BBC Iplayer | `bbc_iplayer` | `#FF4C98` | `pop_magenta` `#CE2C78` | `uk.co.freeview.bbc/uk.co.freeview.templatewrapper.MainActivity` |
-| BBC iPlayer TV | `bbciplayer` | `#FF4C98` | `pop_magenta` `#CE2C78` | `com.nvidia.bbciplayer/com.nvidia.bbciplayer.MainPlayerActivity` |
+| BBC iPlayer | `iplayer` | `#FF0000` | `pop_red` `#E03127` | `bbc.iplayer.android/external.androidtv.bbciplayer.deeplinking.DeepLinkActivity` |
+| BBC Iplayer | `bbc_iplayer` | `#FF0000` | `pop_red` `#E03127` | `uk.co.freeview.bbc/uk.co.freeview.templatewrapper.MainActivity` |
+| BBC iPlayer TV | `bbciplayer` | `#FF0000` | `pop_red` `#E03127` | `com.nvidia.bbciplayer/com.nvidia.bbciplayer.MainPlayerActivity` |
 | begin | `begin` | `#00C9B7` | `pop_jade` `#0E9077` | `z2c.begin.tv/.MainActivity` |
 | Bell Fibe | `bellmediaplayer` | `#F7B32B` | `pop_amber` `#E8880F` | `com.quickplay.android.bellmediaplayer/ca.bell.fiberemote.boot.BootstrapActivity`<br>`com.quickplay.android.bellmediaplayer/ca.bell.fiberemote.tv.MainTvActivity` |
 | Bet Plus | `bet_plus` | `#000000` | `pop_graphite` `#333A4B` | `com.viacom.betplus/com.vmn.playplex.tv.ui.splash.TvSplashActivity` |

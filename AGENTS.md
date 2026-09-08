@@ -6,7 +6,7 @@
 
 | Product | Path | Package ID | Version | Downloader / stable tag |
 |---|---|---|---:|---|
-| Core Builds Icon Pack | `app/` with repo-root Gradle | `tv.corebuilds.iconpack` | `1.8.2` | `5270601` / `iconpack` |
+| Core Builds Icon Pack | `app/` with repo-root Gradle | `tv.corebuilds.iconpack` | `1.8.6` | `5270601` / `iconpack` |
 | Core Builds Pixel Neon | `pixel-neon/` | `tv.corebuilds.pixelneon` | `0.1.0` | `[USER TO SUPPLY]` / `pixel-neon` |
 | Core Builds Pop | `pop/` with repo-root Gradle | `tv.corebuilds.iconpack.pop` | `1.0.0` | `[USER TO SUPPLY]` / `pop` |
 | Core Line | `ticker/` + `ticker/android/` | `dev.corebuilds.line` | `1.3.0` | `7375676` / `coreline` |
@@ -46,7 +46,7 @@ python tools/validate_pop.py
 python tests/test_pop.py
 ```
 
-Pop receipts: `Validated 924 icons · 1098 components · 16 swatches · 13722 checks run` and `Ran 24 tests ... OK`.
+Pop receipts: `Validated 924 icons · 1098 components · 16 swatches · 13877 checks run` and `Ran 28 tests ... OK`.
 
 `tools/pop_glyph_metrics.json` is committed on purpose. `popart.py` must stay a pure function of committed inputs — measuring glyph bounding boxes at render time makes output depend on the installed rasteriser version and blows up the SVG drift gate on an unrelated dependency bump. Re-run `tools/measure_pop_glyphs.py` (~33 s) only when glyph geometry changes, and rebuild Pop after.
 

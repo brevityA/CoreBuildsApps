@@ -4,6 +4,99 @@ All notable changes to the Core Builds Icon Pack. Format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); versions follow
 [SemVer](https://semver.org/spec/v2.0.0.html).
 
+## [1.8.6] — 2026-09-08
+
+Corrected landing of PR #88 ("icon pack consistency & wallpaper series
+replacement"). Half of that PR was a real fix applied in the wrong place; the
+other half was a misreading of generated output. Both are resolved here at the
+source of truth, `tools/catalog.json`.
+
+### Fixed
+- **BBC iPlayer accent is red, not pink.** All three iPlayer drawables
+  (`iplayer`, `bbc_iplayer`, `bbciplayer`) shipped `#FF4C98`, a palette pink that
+  no BBC surface uses. Now `#FF0000`. The PR hand-edited the generated
+  `assets/svg/*.svg` files, which the drift gate in `build.yml` rejects by
+  design; the colour now lives in the catalog, so the SVG masters, 924 icon
+  PNGs, 924 banners, Pop, and Pixel Neon were re-rendered from it together.
+- **Wallpaper swap is complete.** PR #88 deleted `Wallpapers/series-4-core-mark/`
+  and its manifest entries but left the thumbnails in `Wallpapers/thumbs/` and in
+  `app/src/main/assets/wallpapers_thumbs/`, and never touched the bundled
+  `app/src/main/assets/manifest/wallpapers.json` — so the in-app grid pointed at
+  404s and `tests/test_wallpapers.py` failed. Files, thumbs, repo manifest and
+  bundled copy now agree.
+
+### Changed
+- **Wallpaper collection v3.0 → v4.0: 70 → 50 wallpapers.** The 30-wall
+  `series-4-core-mark` series is retired and replaced by ten lit-circuit
+  `series-6-circuit-core` wallpapers (numbers 41–50, 2.1 MB). Index 5 stays
+  Pop's, so the two collections never share a series number.
+- `tests/test_wallpaper_export.py` no longer pins `versionCode = 15` verbatim; it
+  asserts the export release (v1.7.2 / code 12) as a floor, so shipping a newer
+  version stops failing a test. Exact version equality stays with
+  `tools/check_suite_truth.py`.
+- Series 6 is honestly labelled `1376x768`. It is not 4K, and the sources are
+  JPEGs, so upscaling to make the old claim true would only buy soft edges and
+  ~4 MB per file. The in-app browser and Monet extraction do not care.
+
+### Added
+- `tests/test_wallpapers.py` gates the parts that PR #88 got wrong: every entry's
+  `resolution` must equal the decoded pixels of the file on disk; the bundled
+  thumb set must equal the manifest set exactly; a series retired in the
+  manifest must be gone from disk, and no directory may sit unindexed. Plus a
+  16:9 aspect check per shipped file, since the system setter crops.
+
+### Fixed — tests that could not fail
+- `tests/test_core_shift_content.py` and `tests/test_prequel_engine.py` were lists
+  of bare `test_*` functions with **no runner**: `python tests/<file>` exited 0
+  having asserted nothing, so CI's "Python content tests" step counted them as
+  green while the expectations inside went stale (the shift file still pinned
+  v2.3.4/code 10 while shift ships 2.3.5/11). Both now run every test they define,
+  discovered from the module rather than hand-listed, so a new test cannot escape
+  the run — and the shift version check reads `suite.json` instead of a literal.
+
+### Rejected from PR #88, on purpose
+- **"Unify stroke-width to 32.0 across all 925 SVGs."** The 26.2/21.8 values are
+  not drift: `tools/glyphs.py` `monoline()` snaps strokes ≥30 to the canonical
+  32.0 and scales lighter detail to 0.82×/0.68× so film-reel perforations and
+  equaliser knobs stay subordinate to the primary line. Flattening them would
+  rewrite all 924 icons to one uniform weight and undo style AA.
+- **Eight "new icons" → zero.** `kick`, `kayo`, and `unlinked` already ship;
+  ZEE5 ships as `graymatrix` and Analiti as `fastest`, which is why searching the
+  catalog by app name missed them. That leaves NoBuffr, Tata Play Binge, and TDUK
+  Cache Cleaner, and `build_icons.py` refuses a catalog entry with no components
+  ("icon would never auto-assign"). Their launch activities are not in
+  `tools/reference/projectivy-1.1.9-appfilter.xml` or `docs/logo-research/`, and
+  guessing them is the documented top cause of icons that silently never apply —
+  so they need a `./tools/scan_device.sh` pass, not a placeholder rectangle.
+  The count therefore stays 924, and the PR's "932" was 924 plus eight rows,
+  five of which were already in the pack.
+- `banner.png` / `banner_320x180.png` at the repo root (2.6 MB) — no generator
+  writes those paths; the README banner is `docs/banner.png` from
+  `tools/build_branding.py`.
+- `ICONPACK_REVIEW.md` — its stroke-width and fill findings are both misreadings
+  of generator output, recorded above instead.
+
+### Verification
+- `python tools/build_icons.py && python tools/build_banners.py` → 924 icons,
+  1098 components. `tools/build_branding.py` / `build_brand_preview.py` not
+  re-run: they render the Core Builds mark and five fixed icons
+  (stremio, kodi, jellyfin, plex, youtube), none of which changed.
+- `python tools/validate.py` → `Validated 924 icons · 1660 components · 23743 checks run`.
+- `python tools/build_pop.py && python tools/validate_pop.py && python tests/test_pop.py`
+  → `Validated 924 icons · 1098 components · 16 swatches · 13877 checks run` and
+  `Ran 28 tests ... OK`. `tools/pop_glyph_metrics.json` untouched: no glyph geometry
+  changed, so no re-measure is due. `python tools/build_pixel_neon.py && python tools/validate_pixel_neon.py`
+  → `Validated Pixel Neon · 924 icons · 1098 catalog components · 9188 checks run`.
+- `python tools/check_suite_truth.py && python tools/audit_contract.py` → both pass.
+- `python tests/test_wallpapers.py` (21 checks), `test_wallpaper_export.py`,
+  `test_v151_robustness.py`, `test_core_shift_content.py`,
+  `test_core_shift_screensaver.py`, `test_prequel_engine.py` → all pass.
+- `cd ticker && npm test` → pass. Android `:app:lintDebug :app:testDebugUnitTest
+  :app:assembleDebug` not run locally: no Android SDK in this environment. CI
+  covers it.
+- Version note: this is 1.8.6, not the 1.8.3 in PR #88's title — tags
+  `v1.8.3`–`v1.8.5` already exist in the repo.
+
 ## [Pop 1.0.0] — 2026-09-07
 
 First release of **Core Builds Pop**, a second icon pack generated from the

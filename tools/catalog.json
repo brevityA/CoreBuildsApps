@@ -2,7 +2,7 @@
   "$schema": "./catalog.schema.json",
   "meta": {
     "pack": "Core Builds Icon Pack",
-    "version": "1.8.2",
+    "version": "1.8.6",
     "grid": 512,
     "safe_area": 432,
     "note": "Brand-colored glyph on transparent, per Core Builds Brand Guide v1.0 §07. Glyphs are original geometry in Core Builds language (rounded ends, flat fills, no gradients from source logos).",
@@ -837,7 +837,7 @@
     {
       "name": "BBC iPlayer",
       "drawable": "iplayer",
-      "color": "#FF4C98",
+      "color": "#FF0000",
       "glyph": "tile_I",
       "components": [
         "bbc.iplayer.android/external.androidtv.bbciplayer.deeplinking.DeepLinkActivity"
@@ -847,7 +847,7 @@
     {
       "name": "BBC Iplayer",
       "drawable": "bbc_iplayer",
-      "color": "#FF4C98",
+      "color": "#FF0000",
       "glyph": "iplayer_play",
       "components": [
         "uk.co.freeview.bbc/uk.co.freeview.templatewrapper.MainActivity"
@@ -861,7 +861,7 @@
     {
       "name": "BBC iPlayer TV",
       "drawable": "bbciplayer",
-      "color": "#FF4C98",
+      "color": "#FF0000",
       "glyph": "tile_B",
       "components": [
         "com.nvidia.bbciplayer/com.nvidia.bbciplayer.MainPlayerActivity"

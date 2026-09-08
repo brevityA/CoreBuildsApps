@@ -8,7 +8,7 @@ START = "<!-- suite-stamp:start -->"
 END = "<!-- suite-stamp:end -->"
 
 WHAT = {
-    "iconpack": "924 transparent icons + 70 wallpapers for Projectivy Launcher",
+    "iconpack": "924 transparent icons + 50 wallpapers for Projectivy Launcher",
     "pixelneon": "924 transparent 8-bit neon icons + 70 wallpapers for Projectivy Launcher",
     "pop": "The same 924 apps, pop-art cartoon: 16 swatches, one container",
     "line": "Sports scores & channel RSS ticker (chyron)",
