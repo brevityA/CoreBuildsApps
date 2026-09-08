@@ -502,6 +502,7 @@
         <item>nhl</item>
         <item>njpw_world</item>
         <item>nlziet</item>
+        <item>nobuffr</item>
         <item>noovo</item>
         <item>nordiskfilmplus</item>
         <item>nordvpn</item>
@@ -1003,7 +1004,7 @@
         <item>Background Apps And Process List</item>
         <item>Bally Sports</item>
         <item>BBC iPlayer</item>
-        <item>BBC Iplayer</item>
+        <item>BBC iPlayer (Freeview)</item>
         <item>BBC iPlayer TV</item>
         <item>begin</item>
         <item>Bell Fibe</item>
@@ -1428,6 +1429,7 @@
         <item>NHL</item>
         <item>Njpw World</item>
         <item>Nlziet</item>
+        <item>NoBuffr</item>
         <item>Noovo</item>
         <item>Nordisk Film+</item>
         <item>NordVPN</item>
@@ -1858,7 +1860,7 @@
         <item>APP</item>
         <item>VOD</item>
         <item>VOD</item>
-        <item>APP</item>
+        <item>VOD</item>
         <item>PLAYER</item>
         <item>STREAM</item>
         <item>VOD</item>
@@ -1928,9 +1930,9 @@
         <item>APP</item>
         <item>APP</item>
         <item>APP</item>
-        <item>APP</item>
-        <item>PLAYER</item>
-        <item>APP</item>
+        <item>VOD</item>
+        <item>VOD</item>
+        <item>VOD</item>
         <item>STREAM</item>
         <item>APP</item>
         <item>APP</item>
@@ -2354,6 +2356,7 @@
         <item>APP</item>
         <item>APP</item>
         <item>APP</item>
+        <item>PLAYER</item>
         <item>APP</item>
         <item>VOD</item>
         <item>VPN</item>
@@ -2586,8 +2589,8 @@
         <item>MUSIC</item>
         <item>SPORT</item>
         <item>STREAM</item>
-        <item>APP</item>
-        <item>APP</item>
+        <item>STREAM</item>
+        <item>STREAM</item>
         <item>FILES</item>
         <item>APP</item>
         <item>APP</item>
@@ -2659,7 +2662,7 @@
         <item>TOOL</item>
         <item>APP</item>
         <item>TOOL</item>
-        <item>APP</item>
+        <item>TOOL</item>
         <item>VIDEO</item>
         <item>APP</item>
         <item>BROWSER</item>
@@ -2733,7 +2736,7 @@
         <item>SPORT</item>
         <item>APP</item>
         <item>STREAM</item>
-        <item>APP</item>
+        <item>STREAM</item>
         <item>APP</item>
         <item>FILES</item>
         <item>APP</item>
@@ -2779,5 +2782,5 @@
         <item>APP</item>
         <item>APP</item>
     </string-array>
-    <integer name="icon_count">924</integer>
+    <integer name="icon_count">925</integer>
 </resources>

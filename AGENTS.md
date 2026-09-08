@@ -6,7 +6,7 @@
 
 | Product | Path | Package ID | Version | Downloader / stable tag |
 |---|---|---|---:|---|
-| Core Builds Icon Pack | `app/` with repo-root Gradle | `tv.corebuilds.iconpack` | `1.8.6` | `5270601` / `iconpack` |
+| Core Builds Icon Pack | `app/` with repo-root Gradle | `tv.corebuilds.iconpack` | `1.8.7` | `5270601` / `iconpack` |
 | Core Builds Pixel Neon | `pixel-neon/` | `tv.corebuilds.pixelneon` | `0.1.0` | `[USER TO SUPPLY]` / `pixel-neon` |
 | Core Builds Pop | `pop/` with repo-root Gradle | `tv.corebuilds.iconpack.pop` | `1.0.0` | `[USER TO SUPPLY]` / `pop` |
 | Core Line | `ticker/` + `ticker/android/` | `dev.corebuilds.line` | `1.3.0` | `7375676` / `coreline` |
@@ -34,19 +34,36 @@ python tools/build_banners.py
 python tools/build_branding.py
 python tools/build_brand_preview.py
 python tools/validate.py
+python tests/test_icon_identity.py    # 35 style/colour/reference/mapping regressions (after all packs build)
 ```
 
-Paste the validator receipt. Current receipt: `Validated 924 icons · 1660 components · 23743 checks run`.
+Paste the validator receipt. Current receipt: `Validated 925 icons · 1661 components · 24769 checks run`.
 
 Anything touching the catalog, `tools/glyphs.py`, or shared `app/` resources also rebuilds Pop, because Pop mirrors those resources and renders the same catalog:
 
 ```bash
-python tools/build_pop.py            # ~5 min: 1848 PNGs, 1848 SVGs, XML, branding, docs
+python tools/build_pop.py            # ~5 min: 1850 icon/banner PNGs, 1850 SVGs, XML, branding, docs
 python tools/validate_pop.py
 python tests/test_pop.py
 ```
 
-Pop receipts: `Validated 924 icons · 1098 components · 16 swatches · 13877 checks run` and `Ran 28 tests ... OK`.
+Pop receipts: `Validated 925 icons · 1099 components · 16 swatches · 13890 checks run` and `Ran 28 tests ... OK`.
+
+**The pack identity takes precedence over literal vendor-logo reproduction.**
+Reviewed brand entries use `style: core_monoline`: 32px rounded primary strokes,
+26.2px / 21.8px detail, no solid fills/effects/containers, and one accent. Keep
+the common Outfit + category + cyan/violet rail banner for NoBuffr and every
+other reviewed app. Do not reintroduce vendor-wordmark-only banners.
+
+Catalog `artwork` entries are `usage: reference-only`: pinned SVG hashes, URLs
+and rights, never a live glyph registry. Actual geometry belongs in
+`tools/glyphs.py`. Both Classic and Pop use the shared catalog/style validator.
+`brand` groups must share glyph and accent. Classic applies its shared
+`tools/icon_style.py` contrast fallback without rewriting the source accent.
+See `THIRD_PARTY_NOTICES.md` and `docs/research/icon-fidelity-and-demand-2026-09.md`.
+For the visual receipt, run `python tools/build_icon_review.py` after Classic
+has built. It must show the new icons beside established, unchanged Classic
+neighbours and actual-size banners, not only an isolated vendor-logo gallery.
 
 `tools/pop_glyph_metrics.json` is committed on purpose. `popart.py` must stay a pure function of committed inputs — measuring glyph bounding boxes at render time makes output depend on the installed rasteriser version and blows up the SVG drift gate on an unrelated dependency bump. Re-run `tools/measure_pop_glyphs.py` (~33 s) only when glyph geometry changes, and rebuild Pop after.
 
@@ -56,7 +73,7 @@ Pop wallpapers are separate and rarely need rebuilding:
 python tools/build_pop_wallpapers.py  # ~70 s
 ```
 
-`Wallpapers/manifest.json` belongs to the classic pack and stays at 70 entries. Pop uses `Wallpapers/pop-manifest.json`. The two collections are asserted disjoint.
+`Wallpapers/manifest.json` belongs to the classic pack and stays at 50 entries. Pop uses `Wallpapers/pop-manifest.json`. The two collections are asserted disjoint.
 
 ## Truth gates
 

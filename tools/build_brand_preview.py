@@ -9,7 +9,7 @@ Pure composition of assets that already exist; generates no new geometry.
 import base64
 from pathlib import Path
 
-import cairosvg
+from svg_renderer import svg2png
 
 ROOT = Path(__file__).resolve().parent.parent
 RES = ROOT / "app" / "src" / "main" / "res"
@@ -145,7 +145,7 @@ def main():
     s.append('</svg>')
 
     OUT.parent.mkdir(parents=True, exist_ok=True)
-    cairosvg.svg2png(bytestring="\n".join(s).encode(), write_to=str(OUT),
+    svg2png(bytestring="\n".join(s).encode(), write_to=str(OUT),
                      output_width=W, output_height=H,
                      background_color="#0d1117")
     print(f"\u2713 docs/brand-preview.png written ({W}\u00d7{H})")

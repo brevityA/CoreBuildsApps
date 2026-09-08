@@ -9,6 +9,9 @@ import json
 import re
 import sys
 import xml.etree.ElementTree as ET
+
+from icon_style import CORE_MONOLINE, MIN_CONTRAST, core_monoline_errors, contrast, display_accent
+from build_icons import validate as validate_catalog
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -31,6 +34,32 @@ def main():
     data = json.loads(CATALOG.read_text(encoding="utf-8"))
     icons = data["icons"]
     names = {i["drawable"] for i in icons}
+    issues = validate_catalog(icons, data.get("artwork"))
+    check(not issues, "catalog style/reference contract: " + "; ".join(issues))
+    for icon in icons:
+        if icon.get("style") != CORE_MONOLINE:
+            continue
+        path = ROOT / "assets/svg" / f"{icon['drawable']}.svg"
+        if path.exists():
+            root = ET.parse(path).getroot()
+            body = "".join(ET.tostring(node, encoding="unicode") for node in root)
+            errors = core_monoline_errors(body, display_accent(icon["color"]))
+            check(not errors, f"{icon['name']}: shipped SVG violates Core monoline: {errors}")
+        banner = ROOT / "assets/banners" / f"{icon['drawable']}.svg"
+        check(banner.exists() and 'id="cbRail"' in banner.read_text(),
+              f"{icon['name']}: standard Core banner rail is missing")
+
+    # Brand variants share one identity; every Classic accent remains readable
+    # on the documented dark card. Source accents stay untouched for Pop/Neon.
+    brands = {}
+    for icon in icons:
+        check(contrast(display_accent(icon["color"])) >= MIN_CONTRAST,
+              f"{icon['name']}: effective classic accent is below 3:1 on dark")
+        if brand := icon.get("brand"):
+            identity = (icon["glyph"], icon["color"].upper())
+            check(brand not in brands or brands[brand] == identity,
+                  f"{icon['name']}: {brand} variants disagree on glyph/colour")
+            brands[brand] = identity
 
     # 1. every drawable has a rendered PNG
     for i in icons:

@@ -61,7 +61,11 @@ def main() -> int:
     data = json.loads(CATALOG.read_text(encoding="utf-8"))
     icons = sorted(data["icons"], key=lambda i: i["name"].lower())
     names = {icon["drawable"] for icon in icons}
-    check(len(icons) == 924, f"catalog has {len(icons)} icons, expected 924")
+    pack = json.loads((ROOT / "suite.json").read_text())["apps"]["pixelneon"]
+    check(len(icons) == pack["iconCount"],
+          f"catalog has {len(icons)} icons, suite Pixel Neon count is {pack['iconCount']}")
+    check(sum(len(i["components"]) for i in icons) == pack["componentCount"],
+          "suite Pixel Neon component count differs from catalog")
     check(data["meta"]["count"] == len(icons), "catalog meta.count drifted")
 
     square_dir = RES / "drawable-nodpi"
@@ -87,9 +91,17 @@ def main() -> int:
     appfilter = ET.parse(appfilter_path).getroot()
     emitted: set[str] = set()
     drawables: set[str] = set()
+    expected = {f"ComponentInfo{{{spelling}}}": f"{icon['drawable']}_banner"
+                for icon in icons for component in icon["components"]
+                for spelling in expand(component)}
+    own = f"ComponentInfo{{{pack['applicationId']}/{pack['applicationId']}.MainActivity}}"
+    expected[own] = "corebuilds_banner"
     for item in appfilter.findall("item"):
         component = item.get("component", "")
         drawable = item.get("drawable", "")
+        check(component not in emitted, f"appfilter: duplicate component {component}")
+        check(expected.get(component) == drawable,
+              f"appfilter: {component} maps to {drawable}, expected {expected.get(component)}")
         emitted.add(component)
         drawables.add(drawable)
         check(drawable.endswith("_banner"),
@@ -98,8 +110,9 @@ def main() -> int:
               f"appfilter: {drawable} has no catalog square")
     check('ComponentInfo{tv.corebuilds.pixelneon/tv.corebuilds.pixelneon.MainActivity}' in emitted,
           "appfilter: Pixel Neon launcher component is not mapped")
-    check(len(emitted) == 1661,
-          f"appfilter emits {len(emitted)} entries, expected 1661 including own launcher")
+    check(emitted == set(expected),
+          f"appfilter component set differs from catalog + own launcher: "
+          f"missing {sorted(set(expected) - emitted)}, extra {sorted(emitted - set(expected))}")
 
     canonical_emitted = {canonical(item) for item in emitted}
     for icon in icons:

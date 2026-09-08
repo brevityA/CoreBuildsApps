@@ -1018,11 +1018,13 @@ BRAND_PALETTES = {
 }
 
 
-def use_brand_palette(p: SpritePainter, name: str) -> None:
+def use_brand_palette(p: SpritePainter, name: str, accent: str | None = None) -> None:
     colors = BRAND_PALETTES.get(name.casefold())
     if colors is None:
         return
     p.primary, p.secondary = colors
+    if accent is not None:
+        p.primary = neon_color(accent, name)
     p.palette["primary"] = p.primary
     p.palette["secondary"] = p.secondary
     base = color_tuple(p.primary)
@@ -1040,11 +1042,26 @@ def use_brand_palette(p: SpritePainter, name: str) -> None:
 # are independent 32px reconstructions from the documented visual cues; they
 # do not rasterise or import the monoline SVG library.
 def research_mubi(p: SpritePainter, icon: dict):
-    for x, y in ((8, 7), (13, 7), (18, 7), (8, 12), (13, 12), (18, 12), (13, 17)):
+    for x, y in ((8, 7), (15, 7), (8, 14), (15, 14), (22, 14), (8, 21), (15, 21)):
         p.r((x, y, x + 2, y + 2), p.shadow)
         p.r((x, y - 1, x + 2, y + 1), p.primary)
         p.dot(x, y - 1, p.highlight)
     brand_text(p, "MUBI", 8, 24, p.secondary, scale=1, max_width=16)
+
+
+def research_nobuffr(p: SpritePainter, icon: dict):
+    """The APK's stacked name and interrupted underline, not a generic N tile."""
+    brand_text(p, "NO", 5, 4, p.highlight, scale=2, max_width=21)
+    brand_text(p, "BUFFR", 5, 17, p.highlight, scale=1, max_width=25)
+    for left, right in ((5, 5), (7, 7), (9, 9), (11, 27)):
+        p.r((left, 25, right, 27), p.primary)
+
+
+def research_iplayer(p: SpritePainter, icon: dict):
+    """BBC's three beams, in the catalog's pink, for every iPlayer variant."""
+    p.r((5, 10, 9, 25), p.primary)
+    p.poly([(14, 3), (27, 11), (24, 16), (11, 8)], p.primary)
+    p.poly([(26, 17), (29, 22), (16, 29), (13, 24)], p.primary)
 
 
 def research_sbs(p: SpritePainter, icon: dict):
@@ -1383,10 +1400,19 @@ RESEARCHED_BY_NAME = {
 
 def researched_brand(p: SpritePainter, icon: dict) -> bool:
     key = icon["name"].casefold()
+    if icon.get("brand") == "nobuffr":
+        research_nobuffr(p, icon)
+        return True
+    if icon.get("brand") == "bbciplayer":
+        research_iplayer(p, icon)
+        return True
+    if icon.get("brand") == "paramountplus":
+        key = "paramount+"
     renderer = RESEARCHED_BY_NAME.get(key)
     if renderer is None:
         return False
-    use_brand_palette(p, key)
+    accent = icon["color"] if icon.get("brand") in {"crunchyroll", "paramountplus"} else None
+    use_brand_palette(p, key, accent=accent)
     renderer(p, icon)
     return True
 

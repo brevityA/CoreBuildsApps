@@ -81,7 +81,7 @@ The generated pack keeps the Android icon-pack contract:
   picker.
 - `app/src/main/assets/` mirrors the launcher XML resources.
 - `docs/build-receipt.json` records `pixelGrid: 32`,
-  `uniqueSprites: 924`, and the brand-glyph recipe source;
+  `uniqueSprites: 925`, and the brand-glyph recipe source;
   `tools/validate_pixel_neon.py` verifies those claims, dimensions, mappings,
   and asset parity.
 
