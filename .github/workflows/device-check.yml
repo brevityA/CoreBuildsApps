@@ -25,6 +25,11 @@ name: Device check
 
 on:
   workflow_dispatch:
+    inputs:
+      inspect_nobuffr:
+        description: 'Download NoBuffr for static icon/mapping inspection (skip emulator)'
+        type: boolean
+        default: false
   pull_request:
     paths:
       - 'app/**'
@@ -38,7 +43,34 @@ permissions:
   contents: read
 
 jobs:
+  # Some contributor networks cannot reach the vendor's download host. Keep
+  # this opt-in and separate from the emulator: third-party APKs are downloaded
+  # as research inputs only, never installed/executed or bundled in our packs.
+  nobuffr-source:
+    name: Download NoBuffr source APK (no execution)
+    if: github.event_name == 'workflow_dispatch' && inputs.inspect_nobuffr
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Fetch the vendor APK
+        run: |
+          mkdir -p source-apk
+          curl --fail --location --proto '=https' --proto-redir '=https' \
+            --max-time 180 --retry 2 \
+            'https://downloads.nobuffr.com/android/nobuffr.apk' \
+            --output source-apk/nobuffr.apk
+          cd source-apk
+          sha256sum nobuffr.apk | tee SHA256SUMS
+          unzip -t nobuffr.apk >/dev/null
+      - uses: actions/upload-artifact@v7
+        with:
+          name: nobuffr-source-apk
+          path: source-apk/
+          retention-days: 1
+          if-no-files-found: error
+
   emulator:
+    if: github.event_name != 'workflow_dispatch' || !inputs.inspect_nobuffr
     name: Install and launch on Android TV
     runs-on: ubuntu-latest
     timeout-minutes: 40
