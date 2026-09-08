@@ -16,7 +16,7 @@ import java.util.concurrent.Executors
  * Grid tile for a Core Builds wallpaper.
  *
  * Thumbs are ~5 KB JPEGs bundled in assets/wallpapers_thumbs, so the whole
- * 70-wall grid renders instantly offline. Decode runs on a shared 2-thread
+ * 50-wall grid renders instantly offline. Decode runs on a shared 2-thread
  * pool (not one raw Thread per bind) with a tag guard against view recycling.
  * No image-loading dependency.
  *

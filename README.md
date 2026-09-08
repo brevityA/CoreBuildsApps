@@ -13,7 +13,7 @@
 <!-- suite-stamp:start -->
 > | App | Current | What it does | Downloader | Release tag |
 > |---|---:|---|---|---|
-> | **[Core Builds Icon Pack](#-icon-pack)** | `v1.8.2` | 924 transparent icons + 70 wallpapers for Projectivy Launcher | `5270601` | [`v*` / `iconpack`](../../releases) |
+> | **[Core Builds Icon Pack](#-icon-pack)** | `v1.8.6` | 924 transparent icons + 50 wallpapers for Projectivy Launcher | `5270601` | [`v*` / `iconpack`](../../releases) |
 > | **[Core Builds Pixel Neon](#-pixel-neon-icon-pack)** | `v0.1.0` | 924 transparent 8-bit neon icons + 70 wallpapers for Projectivy Launcher | `[USER TO SUPPLY]` | [`pixel-neon-v*` / `pixel-neon`](../../releases) |
 > | **[Core Builds Pop](#-core-builds-pop)** | `v1.0.0` | The same 924 apps, pop-art cartoon: 16 swatches, one container | `[USER TO SUPPLY]` | [`pop-v*` / `pop`](../../releases) |
 > | **[Core Line](#-core-line)** | `v1.3.0` | Sports scores & channel RSS ticker (chyron) | `7375676` | [`coreline-v*` / `coreline`](../../releases) |
@@ -28,7 +28,7 @@
 ## 🔷 Icon Pack
 
 **Transparent app icons for Projectivy Launcher on Android TV.**
-`924 icons` · `70 wallpapers` · `v1.8.2`
+`924 icons` · `50 wallpapers` · `v1.8.6`
 
 The **Core Builds Icon Pack** is designed for the [Projectivy Launcher](https://play.google.com/store/apps/details?id=com.spocky.projengmenu) on Android TV and Google TV, built to the [Core Builds Brand & Style Guide v1.0](https://github.com/brevityA/Core-Builds).
 
@@ -72,7 +72,7 @@ Full table with every mapped component: [**docs/IconPackList.md**](docs/IconPack
 
 ### Wallpapers
 
-70 curated wallpapers — browse in the Wallpapers tab, preview full-screen, Set as device wallpaper or Save to `Pictures/CoreBuilds`. Multi-select export lets you bulk-save to the folder where launchers like Monet auto-rotate. Thumbnails are bundled; full 4K images download on demand from GitHub.
+50 curated wallpapers in four series — browse in the Wallpapers tab, preview full-screen, Set as device wallpaper or Save to `Pictures/CoreBuilds`. Multi-select export lets you bulk-save to the folder where launchers like Monet auto-rotate. Thumbnails are bundled; the full images download on demand from GitHub, at the resolution each series was authored at (`1376×768` for series 5, 4K for series 1–3). Series 4 "Core Mark" was retired in v1.8.6 — see [`Wallpapers/README.md`](Wallpapers/README.md).
 
 ---
 

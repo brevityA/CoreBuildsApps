@@ -11,12 +11,20 @@ The answer to (1) turned out to constrain (2) far more than the art style did.
 
 ## 1. What already ships
 
-`Wallpapers/manifest.json` v3.0 — 70 wallpapers, 137 MB, five series:
+At the time of writing: `Wallpapers/manifest.json` v4.0 — 50 wallpapers, 125 MB,
+four indexed series plus an unindexed originals folder:
 
 | Series | Content |
 |---|---|
 | `series-0-originals` | 4K JPEG photographic/abstract originals |
-| `series-1` … `series-4` | Generated gradient and mesh sets |
+| `series-1` … `series-3` | Generated gradient and mesh sets, 4K PNG |
+| `series-6-circuit-core` | Lit-circuit fields, 1376×768 JPEG |
+
+`series-4-core-mark` (30 × 4K PNGs) shipped in v1.7.0 and was retired in v1.8.6 in
+favour of series 6. Two lessons from that swap, both now enforced by
+`tests/test_wallpapers.py`: a series is only retired when its files, its thumbs, and
+its bundled manifest copy go with it; and a `resolution` field is a promise about the
+bytes, not a wish — the test decodes every file and compares.
 
 Delivery is two-tier and worth preserving: full-size files are fetched over
 HTTPS from `raw.githubusercontent.com` on demand, while **thumbnails are
