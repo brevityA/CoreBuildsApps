@@ -1104,15 +1104,15 @@
     {
       "name": "Binge",
       "drawable": "binge",
-      "color": "#E6007E",
+      "color": "#B80472",
       "glyph": "binge_wave",
       "components": [
         "au.com.streamotion.ares/.MainActivity",
         "au.com.binge.tv/.MainActivity"
       ],
       "category": "VOD",
-      "color_source": "brand reference (pre-provenance, unverified)",
-      "color_reviewed": null
+      "color_source": "sampled (gradient brand mark, dominant magenta)",
+      "color_reviewed": "2026-09-08"
     },
     {
       "name": "Bitdefender",
@@ -3123,14 +3123,14 @@
     {
       "name": "FIFA+",
       "drawable": "fifa",
-      "color": "#2EC4B6",
+      "color": "#326295",
       "glyph": "tile_F",
       "components": [
         "com.fifa.plus.android/com.fifa.tv.FifaTvSplashActivity"
       ],
       "category": "SPORT",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "simple-icons reference (FIFA brand blue)",
+      "color_reviewed": "2026-09-08"
     },
     {
       "name": "File Commander",
@@ -5897,14 +5897,15 @@
     {
       "name": "Maze",
       "drawable": "powerpoint45",
-      "color": "#2EC4B6",
+      "color": "#000000",
       "glyph": "tile_P",
       "components": [
         "com.powerpoint45.maze/com.powerpoint45.maze.MainMenuActivity"
       ],
       "category": "APP",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "simple-icons reference (monochrome mark)",
+      "color_note": "monochrome",
+      "color_reviewed": "2026-09-08"
     },
     {
       "name": "Mecool File Manager",
@@ -6356,7 +6357,7 @@
     {
       "name": "Mpv",
       "drawable": "mpv",
-      "color": "#FEE440",
+      "color": "#691F69",
       "glyph": "tile_M",
       "components": [
         "is.xyz.mpv/is.xyz.mpv.MainActivity"
@@ -6366,8 +6367,8 @@
         "is.xyz.mpv/is.xyz.mpv.MainActivity"
       ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "simple-icons reference (mpv brand purple)",
+      "color_reviewed": "2026-09-08"
     },
     {
       "name": "MSM Video",
@@ -7081,14 +7082,15 @@
     {
       "name": "NOW",
       "drawable": "nowtv",
-      "color": "#4CC9F0",
+      "color": "#001211",
       "glyph": "tile_N",
       "components": [
         "com.bskyb.nowtv.beta/com.peacock.peacocktv.GoogleMainActivity"
       ],
       "category": "APP",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "simple-icons reference (monochrome ink mark)",
+      "color_note": "monochrome",
+      "color_reviewed": "2026-09-08"
     },
     {
       "name": "Nowo TV",
@@ -7767,14 +7769,15 @@
     {
       "name": "Peloton",
       "drawable": "onepeloton",
-      "color": "#B5179E",
+      "color": "#181A1D",
       "glyph": "tile_O",
       "components": [
         "com.onepeloton.callisto/com.onepeloton.callisto.MainActivity"
       ],
       "category": "APP",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "simple-icons reference (monochrome ink mark)",
+      "color_note": "monochrome",
+      "color_reviewed": "2026-09-08"
     },
     {
       "name": "Pepperbox TV",
@@ -8692,14 +8695,15 @@
     {
       "name": "RetroArch",
       "drawable": "retroarch",
-      "color": "#F7B32B",
+      "color": "#000000",
       "glyph": "retroarch_mark",
       "components": [
         "com.retroarch/com.retroarch.browser.mainmenu.MainMenuActivity"
       ],
       "category": "GAMING",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "simple-icons reference (monochrome mark)",
+      "color_note": "monochrome",
+      "color_reviewed": "2026-09-08"
     },
     {
       "name": "RetroX",
@@ -9237,14 +9241,15 @@
     {
       "name": "Shadow",
       "drawable": "shadowcloudgaming",
-      "color": "#F94144",
+      "color": "#0A0C0D",
       "glyph": "tile_S",
       "components": [
         "com.blade.shadowcloudgaming/com.blade.shadow.dispatcher.DispatcherActivity"
       ],
       "category": "APP",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "simple-icons reference (monochrome ink mark)",
+      "color_note": "monochrome",
+      "color_reviewed": "2026-09-08"
     },
     {
       "name": "Shahid",
