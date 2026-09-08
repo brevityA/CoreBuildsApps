@@ -4,6 +4,60 @@ All notable changes to the Core Builds Icon Pack. Format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); versions follow
 [SemVer](https://semver.org/spec/v2.0.0.html).
 
+## [Pop 1.0.0] — 2026-09-07
+
+First release of **Core Builds Pop**, a second icon pack generated from the
+same `tools/catalog.json` as the classic pack. Separate package
+(`tv.corebuilds.iconpack.pop`), separate release tag (`pop-v*`), separate
+update manifest. Nothing about the classic pack's shipped product changes.
+
+### Added
+- **924 pop-art icons + 924 banners.** One superellipse container, a heavy ink
+  keyline, a cream mark, and a Ben-Day halftone screen on every one.
+- **A locked 16-swatch palette.** 169 catalog accents snap by hue to 16
+  swatches, so colour still carries brand meaning while saturation and value
+  stop varying. Census: `docs/pop-palette.png`.
+- **Optical size normalisation.** Every mark is scaled so its inked bounding
+  box matches one target, ending the 2×+ size variance in the source glyphs.
+  The 601 letter-tile icons drop their inner box and roughly double in size.
+- **12 matching 4K wallpapers** (`Wallpapers/series-5-pop`, 2.5 MB total) with
+  their own manifest and bundled thumbnails.
+- `tools/popart.py` render engine, `tools/build_pop.py`,
+  `tools/build_pop_wallpapers.py`, `tools/validate_pop.py` (13,722 checks),
+  `tests/test_pop.py` (24 contract tests), and `.github/workflows/pop-apk.yml`.
+- Research: `docs/research/iconpack-demand-2026.md` and
+  `docs/research/wallpaper-directions.md`.
+
+- **Fallback masking for unthemed apps.** `iconback` (all 16 swatches),
+  `iconmask`, `iconupon` and `scale="0.69"`. Apps the pack does not cover still
+  get the Pop container, so the pack's claim is "every app on your device", not
+  "924 icons". Nobody else on Android TV ships this.
+- **Projectivy Launcher's own cards are themed** — settings, categories,
+  channels, and HDMI 1–4 / AV inputs, numbered so they are told apart at a
+  glance. Uses the internal-activity mapping added in Projectivy 4.70
+  ([miproja1#512](https://github.com/spocky/miproja1/issues/512)); 22 entries,
+  both component name forms.
+- Research: `docs/research/android-tv-icon-packs.md` — launcher landscape,
+  ADW spec gaps, and a prioritised roadmap.
+
+### Fixed
+- **`popart.snap()` was not idempotent.** `snap(SWATCHES["pop_slate"])` returned
+  `pop_marine`: the two neutral swatches are chosen by saturation/value
+  thresholds their own hex values do not satisfy. Invisible in the icon
+  pipeline, which never snaps twice — it surfaced when the new launcher-
+  furniture cards asked for slate by value and rendered blue. `snap` now
+  exact-matches its own palette first. No catalog accent equals a swatch hex,
+  so none of the 924 icons changed. Invariant now enforced.
+
+### Changed
+- **`UpdateInstaller.AUTHORITY` and `UpdateChecker`'s manifest URL now come
+  from `BuildConfig`.** Both packs compile the same Kotlin; two installed
+  packages may not share a FileProvider authority, and Pop must poll its own
+  release manifest. Values for the classic pack are unchanged, so its
+  behaviour is identical.
+- `tools/validate.py` follows that indirection instead of grepping the
+  constant, and now asserts the Gradle field matches the manifest.
+
 ## [1.7.1] — 2026-08-21
 
 Hot patch on 1.7.0: export wallpapers to `Pictures/CoreBuilds/` for launcher

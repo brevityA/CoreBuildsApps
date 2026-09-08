@@ -8,6 +8,14 @@ Dusk Violet #8a4890 · Ember #c03a20 · Night #0d1117 · Void #04070f.
 `thumb` URL, its `series`, and `resolution`. Both the repo's README and the
 in-app browser read this same file — there is one source of truth.
 
+**Two collections, two manifests.** `manifest.json` is the classic Core Builds
+Icon Pack's 70. `pop-manifest.json` is Core Builds Pop's 12, bundled into that
+APK at `pop/src/main/assets/manifest/wallpapers.json`. They are kept disjoint
+and asserted so in `tests/test_pop.py`: a shipped pack should not have its
+advertised contents change because a *different* pack was rebuilt. Rationale
+and the wallpaper research behind series 5 is in
+[`docs/research/wallpaper-directions.md`](../docs/research/wallpaper-directions.md).
+
 ## Series
 
 | Series | # | Theme |
@@ -16,6 +24,7 @@ in-app browser read this same file — there is one source of truth.
 | `series-1-fieldwork` | 01–24 | Mesh gradients, aurora, light trails, topo, deepfield |
 | `series-2-motion` | 25–32 | Long-exposure kinetics: orbitals, warp, fogbanks, spiral, slipstream |
 | `series-3-horizons` | 33–40 | One horizon, eight meanings — the §03 semantic accent slots as landscapes |
+| `series-5-pop` | (separate manifest) | **Core Builds Pop.** 12 walls built from `tools/popart.py`'s own primitives — the 16 Pop swatches, ink `#151019`, cream `#FFF4E0`, one halftone screen. Flat art, so no grain dither is needed and 128-colour PNG is lossless: 12 × 4K in **2.5 MB**. Indexed in `pop-manifest.json`, not `manifest.json`. |
 | `series-4-core-mark` | 41–70 | **The lit hex + faceted core diamond**, rendered from the Brand Guide v1.0 construction constants: hex outline `#00e5ff→#4facfe` (22/512 stroke), core diamond `#4facfe→#8a4890→#c03a20`, cyan/violet ambient washes. Six compositional groups: Core, Atmosphere, Engine, Skins (Omni/Zenith/Nexus/Minimal/TV), Receipts voice ("279 passed", Preflight ledger, "Mixed — cached first"), and Architectural. |
 
 ## In-app browser

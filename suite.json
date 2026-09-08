@@ -1,6 +1,6 @@
 {
   "suite": "Core Builds Apps",
-  "asOf": "2026-09-06",
+  "asOf": "2026-09-07",
   "apps": {
     "iconpack": {
       "name": "Core Builds Icon Pack",
@@ -16,6 +16,22 @@
       "legacyApk": "app-release.apk",
       "metadata": "Latestrelease/version.json",
       "section": "icon-pack",
+      "iconCount": 924,
+      "componentCount": 1098
+    },
+    "pop": {
+      "name": "Core Builds Pop",
+      "versionName": "1.0.0",
+      "versionCode": 1,
+      "tagPrefix": "pop-v",
+      "floatingTag": "pop",
+      "downloader": "[USER TO SUPPLY]",
+      "applicationId": "tv.corebuilds.iconpack.pop",
+      "gradle": "pop/build.gradle.kts",
+      "path": "pop/",
+      "stableApk": "corepop-release.apk",
+      "metadata": "Latestrelease/pop-version.json",
+      "section": "core-builds-pop",
       "iconCount": 924,
       "componentCount": 1098
     },

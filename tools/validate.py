@@ -223,8 +223,19 @@ def main():
     check(inst.exists(), "UpdateInstaller.kt is missing")
     if inst.exists():
         it = inst.read_text()
-        check('AUTHORITY = "tv.corebuilds.iconpack.update"' in it,
-              "UpdateInstaller authority must match the FileProvider")
+        # The authority moved to BuildConfig when :pop started compiling this
+        # same file — two installed packages may not share a FileProvider
+        # authority. The check still has to prove the value reaching
+        # getUriForFile matches the manifest, so it now follows the
+        # indirection to the Gradle field instead of grepping the constant.
+        check("BuildConfig.UPDATE_AUTHORITY" in it,
+              "UpdateInstaller must take its authority from BuildConfig so "
+              "each pack gets a distinct one")
+        gradle = (ROOT / "app" / "build.gradle.kts").read_text()
+        check('"UPDATE_AUTHORITY",\n            "\\"tv.corebuilds.iconpack.update\\""'
+              in gradle,
+              "app/build.gradle.kts UPDATE_AUTHORITY must match the "
+              "FileProvider authority in the manifest")
         check("github.com" in it and "objects.githubusercontent.com" in it,
               "UpdateInstaller must allowlist GitHub download hosts")
 

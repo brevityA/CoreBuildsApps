@@ -37,6 +37,12 @@ jobs:
             gradle: app/build.gradle.kts
             workflow: .github/workflows/build.yml
             artifact: app/build/outputs/apk/debug/*.apk
+          - name: Core Builds Pop
+            dir: .
+            tasks: :pop:lintDebug :pop:testDebugUnitTest :pop:assembleDebug
+            gradle: pop/build.gradle.kts
+            workflow: .github/workflows/pop-apk.yml
+            artifact: pop/build/outputs/apk/debug/*.apk
           - name: Core Line
             dir: ticker/android
             tasks: :app:lintDebug :app:testDebugUnitTest :app:assembleDebug
@@ -111,3 +117,4 @@ jobs:
           python tests/test_core_shift_content.py
           python tests/test_core_shift_screensaver.py
           python tests/test_prequel_engine.py
+          python tests/test_pop.py

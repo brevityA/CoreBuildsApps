@@ -4,7 +4,7 @@
 
 # Core Builds Apps
 
-**Five Android apps. Same brand, same living-room bar.**
+**Six Android apps. Same brand, same living-room bar.**
 
 </div>
 
@@ -14,12 +14,13 @@
 > | App | Current | What it does | Downloader | Release tag |
 > |---|---:|---|---|---|
 > | **[Core Builds Icon Pack](#-icon-pack)** | `v1.8.2` | 924 transparent icons + 70 wallpapers for Projectivy Launcher | `5270601` | [`v*` / `iconpack`](../../releases) |
+> | **[Core Builds Pop](#-core-builds-pop)** | `v1.0.0` | The same 924 apps, pop-art cartoon: 16 swatches, one container | `[USER TO SUPPLY]` | [`pop-v*` / `pop`](../../releases) |
 > | **[Core Line](#-core-line)** | `v1.3.0` | Sports scores & channel RSS ticker (chyron) | `7375676` | [`coreline-v*` / `coreline`](../../releases) |
 > | **[Core Shift](#-core-shift)** | `v2.3.5` | Android TV screensaver + motion wallpaper browser | `8829421` | [`shift-v*` / `shift`](../../releases) |
 > | **[Core Motion](#-core-motion)** | `v1.0.0` | Projectivy wallpaper-provider plugin for Core Motion loops | `[USER TO SUPPLY]` | [`motion-v*` / `motion`](../../releases) |
 > | **[Core Doctor](#-core-doctor)** | `v0.1.0` | Local-only streaming and suite diagnostics (phone) | `8664938` | [`doctor-v*` / `doctor`](../../releases) |
 >
-> Each app has its own Gradle root and CI workflow. Do not merge roots, split the repo, or repoint floating Downloader tags.
+> Each app has its own CI workflow and release tag. Do not merge Gradle roots, split the repo, or repoint floating Downloader tags.
 <!-- suite-stamp:end -->
 ---
 
@@ -166,6 +167,119 @@ Inherited from the brand guide, enforced by the generator and validator:
 
 ---
 
+## 🔷 Core Builds Pop
+
+**The same 924 apps, drawn as pop art.** Android TV's only cartoon icon pack.
+`924 icons` · `12 wallpapers` · `16 swatches` · `v1.0.0`
+
+<p align="center"><img src="docs/pop-preview.png" alt="Core Builds Pop contact sheet" width="820"></p>
+
+Where the classic pack is transparent and lets Projectivy own the card, **Pop
+brings its own card**: one superellipse container, a heavy ink keyline, a cream
+mark, and a Ben-Day halftone screen — the neo-brutalist / comic-book language,
+executed as a system rather than as a mood.
+
+Both packs are generated from the same `tools/catalog.json`, so **coverage can
+never diverge** — a component mapped in one is mapped in the other, and
+`tests/test_pop.py` fails the build if that stops being true.
+
+### Uniform, by construction
+
+The brief was "uniform but high quality", and those usually fight. Pop resolves
+it by making the loudness the constant. Five invariants, each enforced in
+`tools/popart.py` and checked by `tools/validate_pop.py` — not written down in
+a style guide and hoped for:
+
+| Invariant | What it replaces |
+|---|---|
+| One superellipse container on all 924 | no container; every launcher looked different |
+| 169 brand accents → **16 locked swatches**, snapped by hue | 169 unbounded accents |
+| Every mark optically normalised to one ink box | mark sizes varying by more than 2× |
+| Line weight snapped **after** scaling, not before | strokes thinning as glyphs grew |
+| One halftone screen, one angle, one pitch | — |
+
+The palette keeps colour-as-language — Netflix stays red, Spotify stays green —
+and takes away only the saturation and value, which were never carrying
+meaning. Every swatch, its app count, and a real icon rendered in it:
+[**docs/pop-palette.png**](docs/pop-palette.png).
+
+The biggest single legibility win is the third rule. 601 of the 924 icons were
+a letter inside a rounded box; Pop's container **is** that box, so the box is
+dropped and the letter is scaled to the same ink box as every other mark. The
+letters roughly double in size.
+
+### Covers apps it has never seen
+
+Pop's whole claim is one container, and a single unthemed app breaks that claim
+on sight. So the pack hands the launcher the furniture to build one: an
+`iconback` in each of the 16 swatches, an `iconmask`, an `iconupon` keyline and
+a `scale` factor. Apps we do not cover get the Pop field, halftone and ink
+keyline with their own icon composited inside — so the answer to "924 icons" is
+really *every app on your device*. No other Android TV pack ships this.
+
+Pop also themes **Projectivy's own cards** — settings, categories, channels and
+HDMI 1–4 / AV inputs, numbered so you can tell which input is which. That uses
+the internal-activity mapping Projectivy added in 4.70
+([miproja1#512](https://github.com/spocky/miproja1/issues/512)), answering a
+[posted request](https://www.reddit.com/r/Projectivy_Launcher/comments/1icfbn7/how_to_i_install_icon_packs_also_can_i_make_my/)
+that no pack had filled.
+
+### Matching wallpapers
+
+Twelve 4K walls in `series-5-pop`, built from the same primitives as the icons
+— same swatches, same ink, same halftone. Dark-weighted with a calm lower half,
+because that is where Projectivy draws its card rows.
+
+<p align="center"><img src="docs/pop-wallpapers.png" alt="Core Builds Pop wallpapers" width="820"></p>
+
+Flat art needs no grain dither, which means it survives an indexed palette
+losslessly: the whole 12-wall 4K series is **2.5 MB**.
+
+### Install
+
+Pop is a **separate APK with its own package**, so you can install it alongside
+the classic pack and switch between them in Projectivy's own icon-pack list.
+
+1. **https://github.com/brevityA/CoreBuildsApps/releases/download/pop/corepop-release.apk**
+   (versioned builds under `pop-v*` tags)
+2. Sideload, open, press **apply**.
+3. Or: **Projectivy Settings** → **Appearance** → **Cards** → **Icon Pack** → **Core Builds Pop**
+
+> **Tip:** Pop icons carry their own field colour, so set Projectivy's card
+> background to something dark and neutral and let the icons do the colour.
+
+### Build it
+
+```bash
+python tools/build_pop.py              # 924 icons + 924 banners + branding (~5 min)
+python tools/build_pop_wallpapers.py   # 12 × 4K walls + thumbs + manifest (~70 s)
+python tools/validate_pop.py           # 13,700+ coherence checks
+python tests/test_pop.py               # 24 contract tests
+```
+
+`tools/pop_glyph_metrics.json` is a committed measurement of every glyph's ink
+bounding box. It exists so the generators are a pure function of committed
+inputs — measuring at render time would make the output depend on which
+rasteriser version CI happened to install, and the SVG drift gate would fail on
+an unrelated dependency bump. Re-run `tools/measure_pop_glyphs.py` only when
+glyph geometry actually changes.
+
+### Why this pack exists
+
+Full research, with sources: [**docs/research/iconpack-demand-2026.md**](docs/research/iconpack-demand-2026.md)
+[**docs/research/wallpaper-directions.md**](docs/research/wallpaper-directions.md),
+and [**docs/research/android-tv-icon-packs.md**](docs/research/android-tv-icon-packs.md)
+— the launcher landscape, the ADW spec features packs leave unused, and a
+prioritised roadmap.
+
+The short version: Android TV has roughly three icon packs, and all three are
+minimal line art. Pop art / cartoon sells well on phones — the leading pack in
+that style ships 7,850 icons and bundles matching halftone wallpapers — and
+nobody ships it on TV. Coverage was already won here at 924 icons; style was
+the open axis.
+
+---
+
 ## 🔷 Repo Layout
 
 ```
@@ -178,11 +292,23 @@ tools/build_banners.py       catalog → 16:9 monoline banners
 tools/build_branding.py      launcher icon + Leanback banner
 tools/build_brand_preview.py branding preview sheet
 tools/validate.py            coherence checks (20,000+ at 924 icons)
+tools/popart.py              Pop render engine (container, ink, halftone, fit)
+tools/measure_pop_glyphs.py  one-off glyph ink-bbox measurement
+tools/pop_glyph_metrics.json committed metrics, so renders are reproducible
+tools/build_pop.py           catalog → the whole Pop module
+tools/build_pop_wallpapers.py catalog-free: 12 × 4K Pop walls + manifest
+tools/validate_pop.py        Pop coherence checks (13,700+)
 assets/svg/                  master vectors (924)
 assets/banners/              16:9 banners (924)
 app/src/main/res/            the Android module
+pop/                         Core Builds Pop — second pack, shares app/'s Kotlin
+assets/pop/                  Pop master vectors (924 square + 924 banner)
+Wallpapers/series-5-pop/     12 × 4K Pop wallpapers (2.5 MB total)
 Latestrelease/version.json   in-app update manifest
 docs/IconPackList.md         supported apps + components
+docs/PopIconList.md          the same apps, with their Pop swatch
+docs/research/               why this pack exists, with sources
+Latestrelease/pop-version.json  Pop's in-app update manifest
 ticker/                      Core Line — sports & channel ticker (see ticker/README.md)
 shift/                       Core Shift — live wallpaper browser (see shift/HANDOVER.md)
 doctor/                      Core Doctor — streaming diagnostics (see doctor/SPEC.md)

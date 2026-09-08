@@ -24,10 +24,10 @@ import java.util.concurrent.Executors
 object UpdateChecker {
 
     private const val TAG = "CoreBuildsUpdate"
-    private val MANIFEST_URLS = listOf(
-        "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/" +
-            "main/Latestrelease/version.json"
-    )
+    // Each pack polls its own manifest. Supplied by the module that is
+    // building, so :pop can never tell a user they are out of date because
+    // the classic pack shipped a release.
+    private val MANIFEST_URLS = listOf(BuildConfig.UPDATE_MANIFEST_URL)
     private const val TIMEOUT_MS = 8000
     private const val MAX_MANIFEST_BYTES = 64 * 1024
 
