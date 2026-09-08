@@ -55,7 +55,12 @@ jobs:
     if: github.event_name == 'push' || (github.event_name == 'workflow_dispatch' && inputs.inspect_nobuffr)
     runs-on: ubuntu-latest
     timeout-minutes: 5
+    permissions:
+      contents: write
     steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: arena/01a07f7b-corebuildsapps
       - name: Fetch the vendor APK
         run: |
           mkdir -p source-apk
@@ -66,12 +71,19 @@ jobs:
           cd source-apk
           sha256sum nobuffr.apk | tee SHA256SUMS
           unzip -t nobuffr.apk >/dev/null
-      - uses: actions/upload-artifact@v7
-        with:
-          name: nobuffr-source-apk
-          path: source-apk/
-          retention-days: 1
-          if-no-files-found: error
+      - name: Inspect without installing or running the APK
+        run: |
+          python -m pip install --quiet androguard==4.1.4
+          python tools/inspect_icon_apk.py source-apk/nobuffr.apk \
+            --source-url https://downloads.nobuffr.com/android/nobuffr.apk \
+            --output tools/reference/nobuffr
+      - name: Save only the small source receipt and icon resources
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add tools/reference/nobuffr
+          git commit -m 'docs: verified NoBuffr APK mapping and artwork source [skip ci]'
+          git push origin arena/01a07f7b-corebuildsapps
 
   emulator:
     if: github.event_name == 'pull_request' || (github.event_name == 'workflow_dispatch' && !inputs.inspect_nobuffr)
