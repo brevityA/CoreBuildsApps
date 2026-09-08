@@ -19,6 +19,23 @@
       "iconCount": 924,
       "componentCount": 1098
     },
+    "pixelneon": {
+      "name": "Core Builds Pixel Neon",
+      "versionName": "0.1.0",
+      "versionCode": 1,
+      "tagPrefix": "pixel-neon-v",
+      "floatingTag": "pixel-neon",
+      "downloader": "[USER TO SUPPLY]",
+      "applicationId": "tv.corebuilds.pixelneon",
+      "gradle": "pixel-neon/app/build.gradle.kts",
+      "path": "pixel-neon/",
+      "stableApk": "pixel-neon-release.apk",
+      "legacyApk": "pixelneon-release.apk",
+      "metadata": "Latestrelease/pixel-neon-version.json",
+      "section": "pixel-neon",
+      "iconCount": 924,
+      "componentCount": 1098
+    },
     "pop": {
       "name": "Core Builds Pop",
       "versionName": "1.0.0",

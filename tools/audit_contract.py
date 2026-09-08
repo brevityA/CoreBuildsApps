@@ -23,6 +23,14 @@ APPS = {
         "checker": "app/src/main/java/tv/corebuilds/iconpack/UpdateChecker.kt",
         "installer": "app/src/main/java/tv/corebuilds/iconpack/UpdateInstaller.kt",
     },
+    "pixelneon": {
+        "gradle": "pixel-neon/app/build.gradle.kts",
+        "metadata": "Latestrelease/pixel-neon-version.json",
+        "workflow": ".github/workflows/pixel-neon-apk.yml",
+        "apk": "pixel-neon-release.apk",
+        "checker": "pixel-neon/app/src/main/java/tv/corebuilds/pixelneon/UpdateChecker.kt",
+        "installer": "pixel-neon/app/src/main/java/tv/corebuilds/pixelneon/UpdateInstaller.kt",
+    },
     "pop": {
         "gradle": "pop/build.gradle.kts",
         "metadata": "Latestrelease/pop-version.json",

@@ -4,7 +4,7 @@
 
 # Core Builds Apps
 
-**Six Android apps. Same brand, same living-room bar.**
+**Seven Android apps. Same brand, same living-room bar.**
 
 </div>
 
@@ -14,6 +14,7 @@
 > | App | Current | What it does | Downloader | Release tag |
 > |---|---:|---|---|---|
 > | **[Core Builds Icon Pack](#-icon-pack)** | `v1.8.2` | 924 transparent icons + 70 wallpapers for Projectivy Launcher | `5270601` | [`v*` / `iconpack`](../../releases) |
+> | **[Core Builds Pixel Neon](#-pixel-neon-icon-pack)** | `v0.1.0` | 924 transparent 8-bit neon icons + 70 wallpapers for Projectivy Launcher | `[USER TO SUPPLY]` | [`pixel-neon-v*` / `pixel-neon`](../../releases) |
 > | **[Core Builds Pop](#-core-builds-pop)** | `v1.0.0` | The same 924 apps, pop-art cartoon: 16 swatches, one container | `[USER TO SUPPLY]` | [`pop-v*` / `pop`](../../releases) |
 > | **[Core Line](#-core-line)** | `v1.3.0` | Sports scores & channel RSS ticker (chyron) | `7375676` | [`coreline-v*` / `coreline`](../../releases) |
 > | **[Core Shift](#-core-shift)** | `v2.3.5` | Android TV screensaver + motion wallpaper browser | `8829421` | [`shift-v*` / `shift`](../../releases) |
@@ -167,6 +168,50 @@ Inherited from the brand guide, enforced by the generator and validator:
 
 ---
 
+## 🔷 Pixel Neon Icon Pack
+
+**The 8-bit neon companion pack for Projectivy Launcher on Android TV.**
+`924 icons` · `70 wallpapers` · `0.1.0` · clean monoline sibling: **Core Builds Icon Pack**
+
+If the original pack is the quiet night-mode set, **Core Builds Pixel Neon** is
+its arcade cabinet: the same mappings and coverage, but every mark is drawn as
+a unique 32 px sprite, given a violet/cyan bloom, and scaled with hard
+nearest-neighbour pixels. Brand glyph cues from the catalog become
+independently drawn tile monograms, play marks, eyes, shields, waves, and other
+recognizable pixel signals; each sprite also varies in silhouette, internal
+pattern, and pose instead of reusing the monoline geometry. The PNGs remain
+transparent, so the launcher still owns the card colour.
+
+![Core Builds Pixel Neon preview](pixel-neon/docs/preview.png)
+
+### Install
+
+Download the `pixel-neon-release.apk` asset from the [**Pixel Neon stable
+release**](../../releases/tag/pixel-neon), or use the versioned `pixel-neon-v*`
+release tags. Sideload it beside the original pack — the two packages are
+separate and can be selected independently:
+
+- **Core Builds Icon Pack** — `tv.corebuilds.iconpack`
+- **Core Builds Pixel Neon** — `tv.corebuilds.pixelneon`
+
+Open the app and press **Apply**, or choose it manually in **Projectivy Launcher
+Settings → Appearance → Cards → Icon Pack → Core Builds Pixel Neon Icon Pack**.
+The pack includes the same full/short component mappings and 16:9 banner
+fallback as the original, plus individually generated square pixel sprites for
+per-app selection. Banners use three arcade sign layouts rather than the
+original rail-and-wordmark treatment.
+
+Pixel Neon also includes its own 70-wallpaper 8-bit collection: original
+pixel-art scenes across arcade grids, cyber circuits, space runs, neon nature,
+and boss-stage arenas. Thumbnails and the manifest are bundled for offline
+browsing, while full 4K sources download only when a preview or export needs
+them. Set a preview directly when supported, save it to `Pictures/CoreBuilds`
+for launcher rotation, or bulk-export a selection with progress, cancellation,
+and retry support. The renderer is derived from the one source catalog, so new
+component coverage lands in both packs together. See
+[`pixel-neon/README.md`](pixel-neon/README.md) for the build and regeneration
+commands. The research-informed sprite rules are documented in
+[`pixel-neon/DESIGN.md`](pixel-neon/DESIGN.md).
 ## 🔷 Core Builds Pop
 
 **The same 924 apps, drawn as pop art.** Android TV's only cartoon icon pack.
@@ -291,6 +336,9 @@ tools/build_icons.py         catalog → SVG, PNG, appfilter, docs
 tools/build_banners.py       catalog → 16:9 monoline banners
 tools/build_branding.py      launcher icon + Leanback banner
 tools/build_brand_preview.py branding preview sheet
+tools/build_pixel_neon_wallpapers.py  original 8-bit Pixel Neon wallpapers
+tools/build_pixel_neon.py              catalog → 8-bit neon companion pack
+tools/validate_pixel_neon.py           alternate-pack coherence checks
 tools/validate.py            coherence checks (20,000+ at 924 icons)
 tools/popart.py              Pop render engine (container, ink, halftone, fit)
 tools/measure_pop_glyphs.py  one-off glyph ink-bbox measurement
@@ -300,15 +348,18 @@ tools/build_pop_wallpapers.py catalog-free: 12 × 4K Pop walls + manifest
 tools/validate_pop.py        Pop coherence checks (13,700+)
 assets/svg/                  master vectors (924)
 assets/banners/              16:9 banners (924)
-app/src/main/res/            the Android module
+app/src/main/res/            the original icon-pack Android module
+pixel-neon/                   8-bit neon companion pack + its Gradle root
+PixelNeonWallpapers/          original 8-bit Pixel Neon sources + manifest
 pop/                         Core Builds Pop — second pack, shares app/'s Kotlin
 assets/pop/                  Pop master vectors (924 square + 924 banner)
 Wallpapers/series-5-pop/     12 × 4K Pop wallpapers (2.5 MB total)
-Latestrelease/version.json   in-app update manifest
-docs/IconPackList.md         supported apps + components
+Latestrelease/version.json   Icon Pack update manifest
+Latestrelease/pixel-neon-version.json  Pixel Neon update manifest
+Latestrelease/pop-version.json  Pop's in-app update manifest
+docs/IconPackList.md         original supported apps + components
 docs/PopIconList.md          the same apps, with their Pop swatch
 docs/research/               why this pack exists, with sources
-Latestrelease/pop-version.json  Pop's in-app update manifest
 ticker/                      Core Line — sports & channel ticker (see ticker/README.md)
 shift/                       Core Shift — live wallpaper browser (see shift/HANDOVER.md)
 doctor/                      Core Doctor — streaming diagnostics (see doctor/SPEC.md)
