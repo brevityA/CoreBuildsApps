@@ -1,19 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!--
+  Category filter chip, pill radius.
+
+  minHeight is the 48dp Material floor — the previous chip was ~31dp tall, and
+  this is the most-pressed control on the home screen. Label colour comes from
+  the cb_chip_text selector so an activated chip, which is filled with the CTA
+  gradient, gets the dark ink the buttons use instead of light-on-light.
+-->
 <TextView xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/chip_label"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:layout_marginEnd="8dp"
+    android:minHeight="@dimen/cb_target_min"
+    android:gravity="center"
+    android:layout_marginEnd="@dimen/cb_space_sm"
     android:background="@drawable/bg_chip_toggle"
     android:clickable="true"
     android:focusable="true"
     android:focusableInTouchMode="true"
-    android:fontFamily="monospace"
-    android:letterSpacing="0.04"
-    android:paddingStart="14dp"
-    android:paddingEnd="14dp"
-    android:paddingTop="8dp"
-    android:paddingBottom="8dp"
-    android:textAllCaps="true"
-    android:textColor="@color/cb_ink"
-    android:textSize="11sp" />
+    android:letterSpacing="0.02"
+    android:paddingStart="@dimen/cb_space_md"
+    android:paddingEnd="@dimen/cb_space_md"
+    android:paddingTop="@dimen/cb_space_sm"
+    android:paddingBottom="@dimen/cb_space_sm"
+    android:textColor="@color/cb_chip_text"
+    android:textSize="@dimen/cb_text_label"
+    android:textStyle="bold" />

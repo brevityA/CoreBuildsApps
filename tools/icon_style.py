@@ -7,6 +7,8 @@ This is a legibility adaptation, not a claim that a brand changed its colour.
 """
 from __future__ import annotations
 
+import colorsys
+
 CARD = "#0D1117"
 LIGHT_INK = "#E6EDF3"
 MIN_CONTRAST = 3.0
@@ -25,8 +27,53 @@ def contrast(a: str, b: str = CARD) -> float:
 
 
 def display_accent(accent: str) -> str:
+    """Make a source accent legible on the dark card without losing its hue.
+
+    Accents that already clear MIN_CONTRAST pass through untouched. Dark ones
+    are lightened along their own hue to the *minimum* lightness that clears
+    the threshold, so the icon still reads as its brand.
+
+    The previous policy collapsed every sub-threshold accent to LIGHT_INK,
+    which was legible but flattened 79 icons — Apple TV, MUBI, ABC News and
+    BET+ all rendered as identical white linework. That is still the right
+    answer for genuinely achromatic accents, which have no hue to preserve.
+
+    Idempotent by construction: the returned colour clears MIN_CONTRAST, so a
+    second call takes the pass-through branch. tests/test_icon_identity.py
+    asserts both properties.
+    """
     colour = accent.upper()
-    return colour if contrast(colour) >= MIN_CONTRAST else LIGHT_INK
+    if contrast(colour) >= MIN_CONTRAST:
+        return colour
+
+    rgb = tuple(int(colour[pos:pos + 2], 16) / 255 for pos in (1, 3, 5))
+    hue, light, sat = colorsys.rgb_to_hls(*rgb)
+    if sat < _MIN_SATURATION:
+        # No hue to preserve — pure blacks and near-greys. Unchanged from the
+        # original policy so sibling packs and existing marks stay identical.
+        return LIGHT_INK
+
+    # Binary-search the lowest lightness on this hue that is legible. hi is
+    # always a valid candidate (lightness 1.0 is white, contrast ~21).
+    lo, hi = light, 1.0
+    for _ in range(24):
+        mid = (lo + hi) / 2
+        if contrast(_hls_hex(hue, mid, sat)) >= MIN_CONTRAST:
+            hi = mid
+        else:
+            lo = mid
+    return _hls_hex(hue, hi, sat)
+
+
+# Below this an accent has no meaningful hue to carry, so it takes the light
+# ink rather than being "lightened" into a different grey.
+_MIN_SATURATION = 0.08
+
+
+def _hls_hex(hue: float, light: float, sat: float) -> str:
+    r, g, b = colorsys.hls_to_rgb(hue, light, sat)
+    return "#{:02X}{:02X}{:02X}".format(
+        *(max(0, min(255, round(v * 255))) for v in (r, g, b)))
 
 
 # Existing Core Builds grammar, not a new theme. Keep the two detail weights

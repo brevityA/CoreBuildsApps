@@ -1,32 +1,70 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Icon card: 10dp radius, softer border. Focus gets cyan ring + warm glow. -->
+<!--
+  Icon / content card, Brand Guide v1.0 §05.
+
+  Both states carry the same cb_focus_inset, so the card surface sits at the
+  same place focused or not. The previous version inset only the focused
+  state, which visibly jumped the artwork 2dp every time focus arrived — on a
+  D-pad that happens on every key press.
+
+  The inset also gives the grid its gutters: RecyclerView adds no
+  ItemDecoration here, so the ring margin is what stops tiles touching.
+
+  Focus = 3dp cyan ring, 3dp gap of night, then the card. The gap is what
+  separates focus from the filled selected-chip state at 3m.
+-->
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
     <item android:state_focused="true">
         <layer-list>
+            <!-- Glow, outside the ring so focus reads across the room. -->
             <item>
                 <shape android:shape="rectangle">
-                    <solid android:color="#1800D4FF" />
-                    <corners android:radius="12dp" />
+                    <solid android:color="@color/cb_focus_glow" />
+                    <corners android:radius="@dimen/cb_radius_card" />
                 </shape>
             </item>
+            <!-- Ring. -->
+            <item>
+                <shape android:shape="rectangle">
+                    <solid android:color="@android:color/transparent" />
+                    <corners android:radius="@dimen/cb_radius_card" />
+                    <stroke android:width="@dimen/cb_focus_ring"
+                        android:color="@color/cb_signal_cyan" />
+                </shape>
+            </item>
+            <!-- Card, inset by ring + gap. -->
             <item
-                android:left="2dp"
-                android:top="2dp"
-                android:right="2dp"
-                android:bottom="2dp">
+                android:left="@dimen/cb_focus_inset"
+                android:top="@dimen/cb_focus_inset"
+                android:right="@dimen/cb_focus_inset"
+                android:bottom="@dimen/cb_focus_inset">
                 <shape android:shape="rectangle">
                     <solid android:color="@color/cb_panel" />
-                    <corners android:radius="10dp" />
-                    <stroke android:width="2dp" android:color="@color/cb_signal_cyan" />
+                    <corners android:radius="@dimen/cb_radius_card_inner" />
                 </shape>
             </item>
         </layer-list>
     </item>
     <item>
-        <shape android:shape="rectangle">
-            <solid android:color="@color/cb_card" />
-            <corners android:radius="10dp" />
-            <stroke android:width="1dp" android:color="#0FFFFFFF" />
-        </shape>
+        <layer-list>
+            <!-- Same insets, transparent ring: identical geometry at rest. -->
+            <item>
+                <shape android:shape="rectangle">
+                    <solid android:color="@android:color/transparent" />
+                    <corners android:radius="@dimen/cb_radius_card" />
+                </shape>
+            </item>
+            <item
+                android:left="@dimen/cb_focus_inset"
+                android:top="@dimen/cb_focus_inset"
+                android:right="@dimen/cb_focus_inset"
+                android:bottom="@dimen/cb_focus_inset">
+                <shape android:shape="rectangle">
+                    <solid android:color="@color/cb_card" />
+                    <corners android:radius="@dimen/cb_radius_card_inner" />
+                    <stroke android:width="1dp" android:color="@color/cb_hairline" />
+                </shape>
+            </item>
+        </layer-list>
     </item>
 </selector>

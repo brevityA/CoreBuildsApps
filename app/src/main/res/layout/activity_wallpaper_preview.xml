@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- Full-screen wallpaper preview. The image fills the canvas; the title and
      CTA float over a bottom scrim so the cyan-on-night glass stays legible
-     against any of the 30 wallpapers (Brand Guide §05). -->
+     against any wallpaper in the collection (Brand Guide §05). -->
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -26,8 +26,8 @@
         android:layout_gravity="bottom"
         android:gravity="center_vertical"
         android:orientation="horizontal"
-        android:paddingStart="44dp"
-        android:paddingEnd="44dp"
+        android:paddingStart="@dimen/cb_gutter_side"
+        android:paddingEnd="@dimen/cb_gutter_side"
         android:paddingTop="24dp"
         android:paddingBottom="36dp">
 
@@ -41,9 +41,10 @@
                 android:id="@+id/preview_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:fontFamily="serif"
+                android:letterSpacing="-0.02"
                 android:textColor="@color/cb_ink"
-                android:textSize="30sp" />
+                android:textSize="@dimen/cb_text_title"
+                android:textStyle="bold" />
 
             <TextView
                 android:id="@+id/preview_sub"
@@ -52,45 +53,49 @@
                 android:layout_marginTop="4dp"
                 android:fontFamily="monospace"
                 android:textColor="@color/cb_glow_cyan"
-                android:textSize="13sp" />
+                android:textSize="@dimen/cb_text_label" />
         </LinearLayout>
 
         <TextView
             android:id="@+id/preview_back"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="14dp"
+            android:layout_marginEnd="@dimen/cb_space_sm"
             android:background="@drawable/bg_ghost"
+            android:minHeight="@dimen/cb_target_min"
+            android:gravity="center"
             android:clickable="true"
             android:focusable="true"
             android:focusableInTouchMode="true"
             android:nextFocusRight="@id/preview_save"
-            android:paddingStart="22dp"
+            android:paddingStart="@dimen/cb_space_md"
             android:paddingTop="13dp"
-            android:paddingEnd="22dp"
+            android:paddingEnd="@dimen/cb_space_md"
             android:paddingBottom="13dp"
             android:text="@string/wp_back"
             android:textColor="@color/cb_slate"
-            android:textSize="14sp"
+            android:textSize="@dimen/cb_text_body"
             android:textStyle="bold" />
 
         <TextView
             android:id="@+id/preview_save"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="14dp"
+            android:layout_marginEnd="@dimen/cb_space_sm"
             android:background="@drawable/bg_ghost"
+            android:minHeight="@dimen/cb_target_min"
+            android:gravity="center"
             android:clickable="true"
             android:focusable="true"
             android:focusableInTouchMode="true"
             android:nextFocusRight="@id/preview_set"
-            android:paddingStart="22dp"
+            android:paddingStart="@dimen/cb_space_md"
             android:paddingTop="13dp"
-            android:paddingEnd="22dp"
+            android:paddingEnd="@dimen/cb_space_md"
             android:paddingBottom="13dp"
             android:text="@string/wp_save"
             android:textColor="@color/cb_slate"
-            android:textSize="14sp"
+            android:textSize="@dimen/cb_text_body"
             android:textStyle="bold" />
 
         <TextView
@@ -98,6 +103,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@drawable/bg_cta"
+            android:minHeight="@dimen/cb_target_min"
+            android:gravity="center"
             android:clickable="true"
             android:focusable="true"
             android:focusableInTouchMode="true"
@@ -108,7 +115,7 @@
             android:paddingBottom="13dp"
             android:text="@string/wp_set_wallpaper"
             android:textColor="@color/cb_cta_ink"
-            android:textSize="15sp"
+            android:textSize="@dimen/cb_text_body"
             android:textStyle="bold" />
     </LinearLayout>
 </FrameLayout>

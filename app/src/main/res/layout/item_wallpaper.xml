@@ -1,11 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- One wallpaper in the browser grid. 16:9 thumbnail on a glass card,
-     same focus treatment as item_icon (Brand Guide §05). In selection mode
-     a cyan ring marks chosen tiles. -->
+<!--
+  One wallpaper in the browser grid. 16:9 thumbnail on a glass card, same focus
+  treatment as item_icon (Brand Guide §05). In selection mode a cyan frame
+  marks chosen tiles.
+
+  No android:foreground ripple here. It pointed at
+  ?android:attr/selectableItemBackground, which resolves to the platform's grey
+  highlight — the only off-palette colour in the app — and it sat on this
+  FrameLayout while the focus ring is drawn on the inner card, so press and
+  focus highlighted two different rectangles. Press feedback now comes from the
+  theme's colorControlHighlight, in brand cyan, on the same surface as focus.
+-->
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:foreground="?android:attr/selectableItemBackground"
     android:padding="0dp">
 
     <LinearLayout
@@ -16,30 +24,33 @@
         android:focusable="true"
         android:focusableInTouchMode="true"
         android:gravity="center_horizontal"
+        android:minHeight="@dimen/cb_target_min"
         android:orientation="vertical"
-        android:padding="8dp">
+        android:padding="@dimen/cb_card_padding">
 
         <ImageView
             android:id="@+id/wp_image"
             android:layout_width="match_parent"
-            android:layout_height="110dp"
+            android:layout_height="@dimen/cb_wp_thumb"
             android:contentDescription="@null"
+            android:importantForAccessibility="no"
             android:scaleType="centerCrop" />
 
         <TextView
             android:id="@+id/wp_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="@dimen/cb_space_sm"
             android:ellipsize="end"
             android:gravity="center"
             android:maxLines="1"
             android:textColor="@color/cb_ink"
-            android:textSize="12sp"
+            android:textSize="@dimen/cb_text_label"
             android:textStyle="bold" />
     </LinearLayout>
 
-    <!-- Selection-mode ring + check. Drawn on top; visibility toggled by the adapter. -->
+    <!-- Selection-mode frame. Drawn on top; visibility toggled by the adapter.
+         Inset to the card edge so it never coincides with the focus ring. -->
     <View
         android:id="@+id/wp_selected_ring"
         android:layout_width="match_parent"

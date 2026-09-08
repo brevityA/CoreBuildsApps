@@ -6,9 +6,9 @@ Pop is drawn from the same `tools/catalog.json` as the classic Core Builds Icon 
 
 | App | Drawable | Brand accent | Pop swatch | Components |
 | --- | --- | --- | --- | --- |
-| 10 Play | `tenplay` | `#E9142B` | `pop_red` `#E03127` | `au.com.tenplay/com.tenplay.MainActivity`<br>`au.com.tenplay/.MainActivity`<br>`com.network10.tenplay/.MainActivity`<br>`au.com.tenplay/tv.youi.networktentv.MainActivity` |
+| 10 Play | `tenplay` | `#0047F4` | `pop_marine` `#3A4CC4` | `au.com.tenplay/com.tenplay.MainActivity`<br>`au.com.tenplay/.MainActivity`<br>`com.network10.tenplay/.MainActivity`<br>`au.com.tenplay/tv.youi.networktentv.MainActivity` |
 | 3Player | `threeplayer` | `#8AC926` | `pop_acid` `#9DBB1F` | `com.axonista.threeplayer/com.simplestream.presentation.startup.StartUpActivity` |
-| 7plus | `sevenplus` | `#0072CE` | `pop_blue` `#1C79D2` | `au.com.seven.inferno/.MainActivity` |
+| 7plus | `sevenplus` | `#E81820` | `pop_red` `#E03127` | `au.com.seven.inferno/.MainActivity` |
 | 9Now | `ninenow` | `#00A0DC` | `pop_aqua` `#0C8AAE` | `com.mi9.gomi/.MainActivity`<br>`au.com.nine.now.tv/.MainActivity` |
 | 9Now CTV | `ninenow_2` | `#00A0DC` | `pop_aqua` `#0C8AAE` | `au.com.ninenow.ctv/au.com.ninenow.ctv.TvActivity` |
 | A 8k Player Vip | `a_8k_player_vip` | `#9B5DE5` | `pop_grape` `#7440C6` | `com.shadeed.S4kvip/com.shadeed.ibopro.MainActivity` |
@@ -73,7 +73,7 @@ Pop is drawn from the same `tools/catalog.json` as the classic Core Builds Icon 
 | ATRESplayer | `atresplayer` | `#43AA8B` | `pop_jade` `#0E9077` | `com.antena3.atresplayer.tv/com.antena3.atresplayer.tv.ui.splash.SplashActivity` |
 | ATV Tools Server | `atvtools` | `#8B949E` | `pop_slate` `#59637A` | `dev.vodik7.atvtoolsserver/.MainActivity` |
 | Audials | `audials` | `#90BE6D` | `pop_green` `#3F9C35` | `com.audials.paid/com.audials.main.SplashScreenActivity` |
-| Audiomack | `audiomack` | `#90BE6D` | `pop_green` `#3F9C35` | `com.audiomack/com.audiomack.ui.splash.SplashActivity` |
+| Audiomack | `audiomack` | `#FFA200` | `pop_amber` `#E8880F` | `com.audiomack/com.audiomack.ui.splash.SplashActivity` |
 | Aurora Store | `aurora_store` | `#00C2FF` | `pop_aqua` `#0C8AAE` | `com.aurora.store/.MainActivity` |
 | Avoid | `hritwik` | `#B5179E` | `pop_orchid` `#A934B6` | `com.hritwik.avoid/com.hritwik.avoid.MainActivity` |
 | Award VPN | `award` | `#00BBF9` | `pop_aqua` `#0C8AAE` | `com.award.VPN/app.award.update.SplashActivity` |
@@ -116,7 +116,7 @@ Pop is drawn from the same `tools/catalog.json` as the classic Core Builds Icon 
 | CBS News | `cbsnews` | `#0052A5` | `pop_blue` `#1C79D2` | `com.cbsnews.ott/com.cbs.commonui.homepage.HomePageActivity` |
 | Cda Pl | `cda_pl` | `#B5179E` | `pop_orchid` `#A934B6` | `pl.cda.tv/pl.cda.tv.ui.welcome.WelcomeActivity` |
 | CGTN America | `cgtnamericanow` | `#43AA8B` | `pop_jade` `#0E9077` | `com.cgtnamericanow/tv.vhx.LauncherActivity`<br>`com.cgtnamericanow/tv.vhx.tv.home.TvHomeActivity` |
-| Channel 4 | `ondemand` | `#000000` | `pop_graphite` `#333A4B` | `com.channel4.ondemand/external.androidtv.psbwrapper.deeplinking.DeepLinkActivity` |
+| Channel 4 | `ondemand` | `#AAFF89` | `pop_green` `#3F9C35` | `com.channel4.ondemand/external.androidtv.psbwrapper.deeplinking.DeepLinkActivity` |
 | Channels | `getchannels` | `#F94144` | `pop_red` `#E03127` | `com.getchannels.dvr.app/com.getchannels.android.MainActivity` |
 | Chaupal | `chaupal` | `#FF477E` | `pop_rose` `#E0405E` | `video.laminar.tv.chaupal.android/com.yupptv.ott.ui.activity.SplashActivity` |
 | Chebut TV | `chebut` | `#4CC9F0` | `pop_aqua` `#0C8AAE` | `com.chebut.tv/com.ottplay.ottplas.StartActivity` |
@@ -281,7 +281,7 @@ Pop is drawn from the same `tools/catalog.json` as the classic Core Builds Icon 
 | Freevee | `spiderpork` | `#F7B32B` | `pop_amber` `#E8880F` | `com.amazon.spiderpork/com.amazon.spiderpork.activities.MainActivity` |
 | Fresh Drama | `fresh_drama` | `#E71D36` | `pop_rose` `#E0405E` | `com.skylinktv.freshdrama/co.unreel.videoapp.PreSplashActivity`<br>`com.skylinktv.freshdrama/co.unreel.tvapp.ui.activity.SplashActivity` |
 | Ftp Server | `ftp_server` | `#8AC926` | `pop_acid` `#9DBB1F` | `net.xnano.android.ftpserver.tv/net.xnano.android.ftpserver.MainActivity` |
-| Fubo | `screen` | `#FA4616` | `pop_blaze` `#F05A22` | `com.fubo.firetv.screen/tv.fubo.mobile.presentation.onboarding.dispatch.controller.DispatchActivity` |
+| Fubo | `screen` | `#C83D1E` | `pop_blaze` `#F05A22` | `com.fubo.firetv.screen/tv.fubo.mobile.presentation.onboarding.dispatch.controller.DispatchActivity` |
 | Full Episodes | `fullepisodes` | `#FF477E` | `pop_rose` `#E0405E` | `com.cw.fullepisodes.android/com.cw.fullepisodes.android.TvActivity` |
 | FX File Explorer | `fxfile` | `#00D4FF` | `pop_aqua` `#0C8AAE` | `nextapp.fx/.FX`<br>`nextapp.fx/nextapp.fx.ui.ExplorerActivity` |
 | Gain | `gain` | `#F94144` | `pop_red` `#E03127` | `com.trgain.mikrogain/com.gain.mikrogain.TVMainActivity` |
@@ -342,7 +342,7 @@ Pop is drawn from the same `tools/catalog.json` as the classic Core Builds Icon 
 | iHeartRadio | `clearchannel` | `#C6002B` | `pop_rose` `#E0405E` | `com.clearchannel.iheartradio.tv/com.iheartradio.tv.screen.container.ContainerActivity` |
 | Immich TV | `immich_tv` | `#6A4C93` | `pop_grape` `#7440C6` | `nl.giejay.android.tv.immich/nl.giejay.android.tv.immich.MainActivity` |
 | iMPlayer | `myiptvonline` | `#00BBF9` | `pop_aqua` `#0C8AAE` | `com.myiptvonline.implayer/com.myiptvonline.implayer.a` |
-| Instagram | `instagram` | `#E4405F` | `pop_rose` `#E0405E` | `com.instagram.airwave/com.instagram.airwave.AirwaveMainActivity` |
+| Instagram | `instagram` | `#FF0069` | `pop_magenta` `#CE2C78` | `com.instagram.airwave/com.instagram.airwave.AirwaveMainActivity` |
 | InstantBits | `instantbits` | `#90BE6D` | `pop_green` `#3F9C35` | `com.instantbits.cast.receiver/com.instantbits.android.receiver.MainActivity` |
 | Ip Address | `ip_address` | `#F15BB5` | `pop_magenta` `#CE2C78` | `net.info.az/net.info.az.SplashActivity` |
 | IP Tools | `iptools` | `#43AA8B` | `pop_jade` `#0E9077` | `com.ddm.iptools/com.ddm.iptools.ui.MainActivity` |
@@ -381,7 +381,7 @@ Pop is drawn from the same `tools/catalog.json` as the classic Core Builds Icon 
 | Kick | `kick` | `#53FC18` | `pop_green` `#3F9C35` | `com.kick.mobile/com.kick.mobile.app.MainActivity`<br>`com.kick.mobile/com.kick.tv.MainActivity` |
 | Kijk | `kijk` | `#FF477E` | `pop_rose` `#E0405E` | `nl.sbs.kijk/nl.sbs.kijk.ui.activity.LaunchActivity` |
 | Kika | `kika` | `#F15BB5` | `pop_magenta` `#CE2C78` | `de.kika.player.androidtv/de.kika.player.androidtv.MainActivity`<br>`de.kika.player.androidtv/com.mitxp.androidtv.MainActivity` |
-| Kinopoisk | `kinopoisk` | `#F94144` | `pop_red` `#E03127` | `ru.kinopoisk.tv/ru.kinopoisk.tv.presentation.splash.SplashActivity` |
+| Kinopoisk | `kinopoisk` | `#FF5500` | `pop_blaze` `#F05A22` | `ru.kinopoisk.tv/ru.kinopoisk.tv.presentation.splash.SplashActivity` |
 | Knowledge Network | `knowledge` | `#E71D36` | `pop_rose` `#E0405E` | `ca.knowledge.kapp/ca.knowledge.kapp.Main2Activity`<br>`ca.knowledge.kapp/ca.knowledge.kapp.SplashActivity` |
 | Kocowa | `kocowa` | `#8AC926` | `pop_acid` `#9DBB1F` | `com.kocowa.android.tv/com.kocowa.base.a_view.launcher.LauncherActivity` |
 | Kodi | `kodi` | `#17B2E7` | `pop_aqua` `#0C8AAE` | `org.xbmc.kodi/.Splash`<br>`org.xbmc.kodi/org.xbmc.kodi.Splash`<br>`org.xbmc.kodi_touch/.Splash` |
@@ -413,7 +413,7 @@ Pop is drawn from the same `tools/catalog.json` as the classic Core Builds Icon 
 | Liverpool FC | `liverpoolfc` | `#00BBF9` | `pop_aqua` `#0C8AAE` | `com.liverpoolfc.goapp/com.applicaster.ui.activities.MainActivity` |
 | Localnow | `localnow` | `#43AA8B` | `pop_jade` `#0E9077` | `com.weathergroup.localnow/com.weathergroup.localnow.MainActivity` |
 | Locals Google TV | `googletv` | `#F7B32B` | `pop_amber` `#E8880F` | `com.locals.googletv/com.aloteq.flutter_tv.MainActivity` |
-| LocalSend | `localsend` | `#00D4FF` | `pop_aqua` `#0C8AAE` | `org.localsend.localsend_app/org.localsend.localsend_app.MainActivity` |
+| LocalSend | `localsend` | `#008080` | `pop_aqua` `#0C8AAE` | `org.localsend.localsend_app/org.localsend.localsend_app.MainActivity` |
 | Loco | `loco` | `#F3722C` | `pop_blaze` `#F05A22` | `com.showtimeapp/com.showtimeapp.MainActivity` |
 | Lrt | `lrt` | `#4CC9F0` | `pop_aqua` `#0C8AAE` | `lt.lrt.androidtv/com.applicaster.ui.activities.MainActivity` |
 | Lumera | `lumera` | `#FFC53D` | `pop_sun` `#E0AF0C` | `com.lumera.app/com.lumera.app.MainActivity` |
@@ -449,7 +449,7 @@ Pop is drawn from the same `tools/catalog.json` as the classic Core Builds Icon 
 | Mi TV Plus | `mitvplus` | `#F3722C` | `pop_blaze` `#F05A22` | `com.mitv.tvhome.mitvplus/com.mitv.tvhome.mitvplus.app.BannerLogoFree24` |
 | Miracast | `miracast` | `#F15BB5` | `pop_magenta` `#CE2C78` | `com.xiaomi.mitv.smartshare/com.xiaomi.mitv.smartshare.wifidisplay.WfdActivity` |
 | MiXplorer | `mixplorer` | `#F15BB5` | `pop_magenta` `#CE2C78` | `com.mixplorer.silver/com.mixplorer.activities.BrowseActivity`<br>`com.mixplorer/.activities.BrowseActivity`<br>`com.mixplorer/com.mixplorer.activities.BrowseActivity` |
-| MLB | `bamnetworks` | `#002D72` | `pop_blue` `#1C79D2` | `com.bamnetworks.mobile.android.gameday.atbat/mlb.atbat.activity.MainActivity` |
+| MLB | `bamnetworks` | `#041E42` | `pop_graphite` `#333A4B` | `com.bamnetworks.mobile.android.gameday.atbat/mlb.atbat.activity.MainActivity` |
 | Mo 4media | `mo_4media` | `#4CC9F0` | `pop_aqua` `#0C8AAE` | `dancingtree.mo4media/crc64fc68bfe11eb03c38.MainActivity`<br>`dancingtree.mo4media/crc64fc68bfe11eb03c38.TVMainActivity` |
 | Mobily TV | `mobily` | `#F7B32B` | `pop_amber` `#E8880F` | `com.mobily.tvapp/com.parsifal.starz.ui.features.launcher.LauncherActivity` |
 | Molotov TV | `molotov_tv` | `#F7B32B` | `pop_amber` `#E8880F` | `tv.molotov.app/tv.molotov.android.splash.SplashActivity` |
@@ -483,12 +483,12 @@ Pop is drawn from the same `tools/catalog.json` as the classic Core Builds Icon 
 | Mytvonline | `mytvonline` | `#E71D36` | `pop_rose` `#E0405E` | `m.formuler.mol.plus/m.formuler.mol.plus.IntroActivity` |
 | Māori+ | `maoritelevision` | `#F7B32B` | `pop_amber` `#E8880F` | `com.maoritelevision.newsapp/tv.accedo.xdk.app.MainActivity` |
 | Namava | `namava` | `#FEE440` | `pop_sun` `#E0AF0C` | `com.shatelland.namava.tv/com.shatelland.namava.splash_tv.splash.SplashActivity` |
-| Nasa | `nasa` | `#8AC926` | `pop_acid` `#9DBB1F` | `gov.nasa/gov.nasa.nasatabs.SplashActivity` |
+| Nasa | `nasa` | `#E03C31` | `pop_red` `#E03127` | `gov.nasa/gov.nasa.nasatabs.SplashActivity` |
 | NBA | `gametime` | `#1D428A` | `pop_blue` `#1C79D2` | `com.nbaimd.gametime.nba2011/com.nba.tv.ui.splash.SplashActivity` |
 | NBC News | `nbc_news` | `#0072CE` | `pop_blue` `#1C79D2` | `com.zumobi.msnbc/com.nbc.androidottweb.main.MainActivity` |
 | NBC Sports | `nbcsports` | `#107534` | `pop_jade` `#0E9077` | `com.nbcsports.apps.tv/com.nbc.nbctvapp.ui.main.view.MainActivity` |
-| Nebula | `nebula` | `#577590` | `pop_blue` `#1C79D2` | `tv.standard.nebula/tv.standard.nebula.tv.features.splash.view.activities.SplashActivity` |
-| Neon | `neon` | `#F3722C` | `pop_blaze` `#F05A22` | `nz.co.lightbox/nz.co.lightbox.splash.SplashActivity` |
+| Nebula | `nebula` | `#2CADFE` | `pop_blue` `#1C79D2` | `tv.standard.nebula/tv.standard.nebula.tv.features.splash.view.activities.SplashActivity` |
+| Neon | `neon` | `#34D59A` | `pop_jade` `#0E9077` | `nz.co.lightbox/nz.co.lightbox.splash.SplashActivity` |
 | Netflix | `netflix` | `#E50914` | `pop_red` `#E03127` | `com.netflix.ninja/.MainActivity`<br>`com.netflix.mediaclient/.ui.launch.UIWebViewActivity` |
 | Netfly | `netfly` | `#2EC4B6` | `pop_jade` `#0E9077` | `br.com.netfly.oletv/br.tv.ole.oletv.MainActivity` |
 | Netfly TV | `netfly_tv` | `#F94144` | `pop_red` `#E03127` | `xyz.netfly/com.video_cloud.SplashActivity` |
@@ -496,7 +496,7 @@ Pop is drawn from the same `tools/catalog.json` as the classic Core Builds Icon 
 | NetMirror TV | `netmirrortv` | `#1982C4` | `pop_blue` `#1C79D2` | `app.netmirror.netmirrortv/app.netmirror.netmirrortv.MainActivity` |
 | Nettv | `nettv` | `#8AC926` | `pop_acid` `#9DBB1F` | `np.com.androidtv.nettv/com.np.androidTV.main.TVMainActivity` |
 | Netzkino | `netzkino` | `#E71D36` | `pop_rose` `#E0405E` | `de.netzkino.android.ics/de.netzkino.android.ics.SplashActivity` |
-| Newpipe | `newpipe` | `#E53935` | `pop_red` `#E03127` | `org.schabi.newpipe/org.schabi.newpipe.MainActivity` |
+| Newpipe | `newpipe` | `#CD201F` | `pop_red` `#E03127` | `org.schabi.newpipe/org.schabi.newpipe.MainActivity` |
 | Nextup Watch Stand Up Comedy | `nextup_watch_stand_up_comedy` | `#2EC4B6` | `pop_jade` `#0E9077` | `tv.vhx.nextup/com.example.videoapp.MainActivity` |
 | NFB | `nitobi` | `#B5179E` | `pop_orchid` `#A934B6` | `com.nitobi.nfb/com.nitobi.nfb.MainActivity` |
 | NFL | `nflgamecenter` | `#013369` | `pop_blue` `#1C79D2` | `com.gotv.nflgamecenter.us.lite/com.nfl.connected.SplashActivity` |
@@ -526,7 +526,7 @@ Pop is drawn from the same `tools/catalog.json` as the classic Core Builds Icon 
 | Nxsha | `nxsha` | `#E71D36` | `pop_rose` `#E0405E` | `com.nxsha/com.nxsha.MainActivity` |
 | NZR+ | `nzrplus` | `#6A4C93` | `pop_grape` `#7440C6` | `com.nzrplus.app/com.nzrplus.app.MainActivity` |
 | Oblivion | `oblivion` | `#FF477E` | `pop_rose` `#E0405E` | `org.bepass.oblivion/org.bepass.oblivion.ui.SplashScreenActivity` |
-| Obtainium | `obtainium` | `#F3722C` | `pop_blaze` `#F05A22` | `dev.imranr.obtainium.fdroid/dev.imranr.obtainium.MainActivity` |
+| Obtainium | `obtainium` | `#D2BCFD` | `pop_grape` `#7440C6` | `dev.imranr.obtainium.fdroid/dev.imranr.obtainium.MainActivity` |
 | Ocean Streamz | `ocean_streamz` | `#B5179E` | `pop_orchid` `#A934B6` | `streamzy.com.ocean/streamzy.com.ocean.activities.SplashScreenActivity` |
 | Odidotv | `odidotv` | `#FF477E` | `pop_rose` `#E0405E` | `com.tmobile.tv.nl/com.zodiac.tv.presentation.common.layouts.ZodiacActivity` |
 | Offshore | `offshore` | `#90BE6D` | `pop_green` `#3F9C35` | `com.offshore.pikachu/com.offshore.pikachu.view.Splash` |
@@ -586,7 +586,7 @@ Pop is drawn from the same `tools/catalog.json` as the classic Core Builds Icon 
 | Plexamp | `plexamp` | `#577590` | `pop_blue` `#1C79D2` | `tv.plex.labs.plexamp/com.plexamp.MainActivity` |
 | Plus Messenger | `telegram` | `#4CC9F0` | `pop_aqua` `#0C8AAE` | `cassian.telegram.ooa.pro/not.a.bug.notificationcenter.MainActivity` |
 | Pluto TV | `pluto_tv` | `#000000` | `pop_graphite` `#333A4B` | `tv.pluto.android/tv.pluto.android.EntryPoint` |
-| Podcast Addict | `podcastaddict` | `#FF477E` | `pop_rose` `#E0405E` | `com.bambuna.podcastaddict/com.bambuna.podcastaddict.activity.PodcastListActivity` |
+| Podcast Addict | `podcastaddict` | `#F4842D` | `pop_amber` `#E8880F` | `com.bambuna.podcastaddict/com.bambuna.podcastaddict.activity.PodcastListActivity` |
 | Polsat Box Go | `polsat_box_go` | `#F94144` | `pop_red` `#E03127` | `pl.cyfrowypolsat.cpgo/pl.cyfrowypolsat.cpframework.presentation.mobile.launch.LaunchActivity`<br>`pl.cyfrowypolsat.cpgo/pl.cyfrowypolsat.cpframework.presentation.tv.launch.TvLaunchActivity` |
 | Polygon Player | `videoplayer_2` | `#43AA8B` | `pop_jade` `#0E9077` | `com.polygon.videoplayer/com.polygon.videoplayer.SplashActivity` |
 | Poweramp Equalizer | `poweramp_eq` | `#FF6D00` | `pop_amber` `#E8880F` | `com.maxmpz.equalizer/.StartupActivity` |
@@ -597,7 +597,7 @@ Pop is drawn from the same `tools/catalog.json` as the classic Core Builds Icon 
 | Premiumize TV | `premiumize_tv` | `#9B5DE5` | `pop_grape` `#7440C6` | `me.premiumize.pmtvfire/me.premiumize.pmtvandroid.MainActivity` |
 | Prime Video | `primevideo` | `#00A8E1` | `pop_aqua` `#0C8AAE` | `com.amazon.amazonvideo.livingroom/com.amazon.ignition.IgnitionActivity`<br>`com.amazon.amazonvideo.livingroom/.ui.LauncherActivity`<br>`com.amazon.avod.thirdpartyclient/.LauncherActivity` |
 | Privado VPN | `privado_vpn` | `#6A4C93` | `pop_grape` `#7440C6` | `io.privado.android/io.privado.android.ui.splash.SplashActivity` |
-| Private Internet Access | `privateinternetaccess` | `#4BB543` | `pop_green` `#3F9C35` | `com.privateinternetaccess.android/com.kape.vpn.MainActivity` |
+| Private Internet Access | `privateinternetaccess` | `#1E811F` | `pop_green` `#3F9C35` | `com.privateinternetaccess.android/com.kape.vpn.MainActivity` |
 | Projectivy Blueprint | `projectivy_blueprint` | `#00E5FF` | `pop_aqua` `#0C8AAE` | `dev.projectivy.blueprint.app/.MainActivity` |
 | Projectivy Launcher | `projectivy` | `#00BCD4` | `pop_aqua` `#0C8AAE` | `com.spocky.projengmenu/.ui.home.MainActivity`<br>`com.spocky.projengmenu/.ui.tvinput.TvInputActivity`<br>`com.spocky.projengmenu/com.spocky.projengmenu.ui.MainActivity` |
 | Projectivy Overflight | `projectivy_overflight` | `#FF6B35` | `pop_blaze` `#F05A22` | `tv.projectivy.plugin.wallpaperprovider.overflight/tv.projectivy.plugin.wallpaperprovider.overflight.SettingsActivity` |
@@ -644,7 +644,7 @@ Pop is drawn from the same `tools/catalog.json` as the classic Core Builds Icon 
 | RSI Play | `rsi` | `#00F5D4` | `pop_jade` `#0E9077` | `ch.rsi.player/ch.srg.srgplayer.tv.MainActivity` |
 | RTBF Auvio | `auvio` | `#00BBF9` | `pop_aqua` `#0C8AAE` | `be.rtbf.auvio/com.dotscreen.ethanol.tv.ui.MainActivity` |
 | RTE Player | `minimal` | `#6A4C93` | `pop_grape` `#7440C6` | `air.RTE.OSMF.Minimal/com.finconsgroup.droid.activities.MainActivity`<br>`air.RTE.OSMF.Minimal/com.finconsgroup.droid.activities.TvActivity` |
-| RTL | `rtl` | `#FF6B35` | `pop_blaze` `#F05A22` | `de.rtli.tvnow/de.rtl.plus.RtlPlusLauncherActivity` |
+| RTL | `rtl` | `#FA002E` | `pop_rose` `#E0405E` | `de.rtli.tvnow/de.rtl.plus.RtlPlusLauncherActivity` |
 | RTL Play | `rtl_play` | `#FEE440` | `pop_sun` `#E0AF0C` | `com.tapptic.rtl.tvi/be.persgroep.rtlplay.RtlPlayMainActivity` |
 | RTP Play | `rtp_play` | `#4CC9F0` | `pop_aqua` `#0C8AAE` | `pt.rtp.play/pt.rtp.play.IntroActivity` |
 | RTVE Play | `rtve_play` | `#F3722C` | `pop_blaze` `#F05A22` | `com.rtve.androidtv/com.rtve.androidtv.Activity.SplashActivity` |
@@ -690,7 +690,7 @@ Pop is drawn from the same `tools/catalog.json` as the classic Core Builds Icon 
 | Smart Tube | `smarttube` | `#FF0000` | `pop_red` `#E03127` | `com.teamsmart.videomanager.tv/com.liskovsoft.smartyoutubetv2.tv.ui.main.SplashActivity` |
 | SmartTube Next | `smarttubenext` | `#FF0000` | `pop_red` `#E03127` | `org.smarttube.stable/com.liskovsoft.smartyoutubetv2.tv.ui.main.SplashActivity`<br>`com.liskovsoft.smarttubetv.beta/com.liskovsoft.smartyoutubetv2.tv.ui.main.SplashActivity`<br>`org.smarttube.beta/com.liskovsoft.smartyoutubetv2.tv.ui.main.SplashActivity` |
 | SmartTwitchTV | `twitch_2` | `#6A4C93` | `pop_grape` `#7440C6` | `com.fgl27.twitch/com.fgl27.twitch.PlayerActivity` |
-| Smugmug | `smugmug` | `#2EC4B6` | `pop_jade` `#0E9077` | `com.snapwood.smugfolio/com.smugmug.android.activities.SmugMainActivity` |
+| Smugmug | `smugmug` | `#6DB944` | `pop_green` `#3F9C35` | `com.snapwood.smugfolio/com.smugmug.android.activities.SmugMainActivity` |
 | Snapcast | `snapcast` | `#F3722C` | `pop_blaze` `#F05A22` | `de.badaix.snapcast/de.badaix.snapcast.MainActivity` |
 | Snrt Live | `snrt_live` | `#E71D36` | `pop_rose` `#E0405E` | `ma.snrt.live/ma.snrt.snrtLive.snrt_live_tv_app.MainActivity` |
 | Sofascore | `sofascore` | `#43AA8B` | `pop_jade` `#0E9077` | `com.sofascore.results/com.sofascore.results.main.MainActivity` |
@@ -730,7 +730,7 @@ Pop is drawn from the same `tools/catalog.json` as the classic Core Builds Icon 
 | Strongvpn | `strongvpn` | `#4CC9F0` | `pop_aqua` `#0C8AAE` | `com.strongvpn/com.strongvpn.ui.activities.SplashActivity` |
 | Stv Player | `stv_player` | `#9B5DE5` | `pop_grape` `#7440C6` | `tv.stv.android.player/tv.stv.android.commontv.screens.TvActivity` |
 | Sunnxt | `sunnxt` | `#F15BB5` | `pop_magenta` `#CE2C78` | `com.suntv.sunnxt/com.androidtv.myplex.ui.activity.SPlashActivity` |
-| Surfshark | `surfshark` | `#178588` | `pop_aqua` `#0C8AAE` | `com.surfshark.vpnclient.android/com.surfshark.vpnclient.android.StartActivity` |
+| Surfshark | `surfshark` | `#1EBFBF` | `pop_aqua` `#0C8AAE` | `com.surfshark.vpnclient.android/com.surfshark.vpnclient.android.StartActivity` |
 | SVT | `svt` | `#B5179E` | `pop_orchid` `#A934B6` | `se.svt.android.svtplay/se.svt.svtplay.ui.mobile.MainActivity`<br>`se.svt.android.svtplay/se.svt.svtplay.ui.tv.profile.ProfilePickerActivity` |
 | Swac TV | `swac_tv` | `#4CC9F0` | `pop_aqua` `#0C8AAE` | `video.gideo.swactv/gideo.video.MainActivity` |
 | Swampdog Media | `swampdog_media` | `#2EC4B6` | `pop_jade` `#0E9077` | `com.semperpax.eumc16/org.xbmc.kodi.Splash` |
@@ -758,7 +758,7 @@ Pop is drawn from the same `tools/catalog.json` as the classic Core Builds Icon 
 | Tcn | `tcn` | `#FF6B35` | `pop_blaze` `#F05A22` | `com.tuckercarlson.tv/tv.accedo.one.app.bootstrap.BootstrapActivity` |
 | Tdtchannels Player | `tdtchannels_player` | `#8AC926` | `pop_acid` `#9DBB1F` | `com.tdtchannels.player/com.tdtchannels.player.SplashScreenActivity` |
 | Tduk Screensaver Manager | `tduk_screensaver_manager` | `#90BE6D` | `pop_green` `#3F9C35` | `com.tduk.scrmgr/dev.vodik7.tdukscrmng.MainActivity` |
-| Ted | `ted` | `#F7B32B` | `pop_amber` `#E8880F` | `com.ted.android.tv/com.ted.android.tv.view.MainActivity` |
+| Ted | `ted` | `#E62B1E` | `pop_red` `#E03127` | `com.ted.android.tv/com.ted.android.tv.view.MainActivity` |
 | Tele Quebec | `tele_quebec` | `#4CC9F0` | `pop_aqua` `#0C8AAE` | `tv.telequebec/uk.tva.template.LaunchScreenActivity` |
 | Tele2 Play | `tele2_play` | `#B5179E` | `pop_orchid` `#A934B6` | `com.tivo.android.comhem/com.comhem.mandel.mobile.presentation.NavigationActivity`<br>`com.tivo.android.comhem/tv.threess.threeready.ui.generic.activity.MainActivity` |
 | Telenet | `telenet` | `#6A4C93` | `pop_grape` `#7440C6` | `be.telenet.tv/com.libertyglobal.horizonx.MainActivity` |
@@ -818,7 +818,7 @@ Pop is drawn from the same `tools/catalog.json` as the classic Core Builds Icon 
 | TV Web Browser | `tv_web_browser` | `#F3722C` | `pop_blaze` `#F05A22` | `jp.co.rarity.tvweb/jp.co.rarity.tvweb.MainActivity` |
 | Tv2 Play | `tv2_play` | `#FF477E` | `pop_rose` `#E0405E` | `dk.tv2.tv2play/dk.tv2.tv2play.ui.main.MainActivity` |
 | Tv360 | `tv360` | `#FF477E` | `pop_rose` `#E0405E` | `com.viettel.tv360.tv/com.viettel.tv360.tv.screen.splash.SplashActivity` |
-| Tv4 Play | `tv4_play` | `#E71D36` | `pop_rose` `#E0405E` | `se.tv4.tv4playtab/se.tv4.tv4play.ui.mobile.main.BottomNavigationActivity`<br>`se.tv4.tv4playtab/se.tv4.tv4play.ui.tv.navigation.TvHubActivity` |
+| Tv4 Play | `tv4_play` | `#E0001C` | `pop_rose` `#E0405E` | `se.tv4.tv4playtab/se.tv4.tv4play.ui.mobile.main.BottomNavigationActivity`<br>`se.tv4.tv4playtab/se.tv4.tv4play.ui.tv.navigation.TvHubActivity` |
 | TVA+ | `tvaplus` | `#00BBF9` | `pop_aqua` `#0C8AAE` | `com.numeriq.tvaplus/ade.tv.main.ui.splash.SplashActivity` |
 | Tvi Player | `tvi_player` | `#9B5DE5` | `pop_grape` `#7440C6` | `pt.iol.tviplayer.androidtv/pt.iol.tviplayer.androidtv.MainActivity` |
 | Tving | `tving` | `#E71D36` | `pop_rose` `#E0405E` | `net.cj.cjhv.gs.tving/net.cj.cjhv.gs.tving.view.scaleup.ScaleupIntroActivity` |
@@ -849,7 +849,7 @@ Pop is drawn from the same `tools/catalog.json` as the classic Core Builds Icon 
 | Ve Plus | `venevision` | `#2EC4B6` | `pop_jade` `#0E9077` | `com.cisneros.venevision.app/com.interfacectvapp.MainActivity` |
 | Veezie | `veezie` | `#00BBF9` | `pop_aqua` `#0C8AAE` | `st.veezie/st.veezie.MainActivity` |
 | Vewd Internet Browser | `vewd_internet_browser` | `#00BBF9` | `pop_aqua` `#0C8AAE` | `com.vewd.core.integration.dia/com.vewd.core.browser.BrowserActivity`<br>`com.vewd.core.integration.dia/com.vewd.core.browser.TVActivity` |
-| Viaplay | `viaplay` | `#F94144` | `pop_red` `#E03127` | `com.viaplay.android/com.viaplay.android.features.home.HomeActivity` |
+| Viaplay | `viaplay` | `#FE365F` | `pop_rose` `#E0405E` | `com.viaplay.android/com.viaplay.android.features.home.HomeActivity` |
 | Vibra | `vibra` | `#9B5DE5` | `pop_grape` `#7440C6` | `com.vibra/com.ryanheise.audioservice.AudioServiceActivity` |
 | Victory Plus | `victory_plus` | `#9B5DE5` | `pop_grape` `#7440C6` | `tv.apmc.android.victorysports/tv.kidoodle.android.ui.MainActivity` |
 | Vidangel | `vidangel` | `#FF477E` | `pop_rose` `#E0405E` | `com.vidangel.tvapp/com.vidangel.tvapp.activities.IntroActivity` |
@@ -924,7 +924,7 @@ Pop is drawn from the same `tools/catalog.json` as the classic Core Builds Icon 
 | Zank Remote | `zank_remote` | `#E71D36` | `pop_rose` `#E0405E` | `zank.remote/zank.remote.MainActivity`<br>`zank.remote/zank.remote.AndroidTV` |
 | Zapp | `zapp` | `#F15BB5` | `pop_magenta` `#CE2C78` | `de.christinecoenen.code.zapp/de.christinecoenen.code.zapp.tv.main.MainActivity` |
 | Zattoo | `zattoo` | `#2EC4B6` | `pop_jade` `#0E9077` | `com.zattoo.player/com.utv.MainActivity` |
-| Zdf | `zdf` | `#F15BB5` | `pop_magenta` `#CE2C78` | `com.zdf.android.mediathek/com.zdf.android.mediathek.tv.MainActivity` |
+| Zdf | `zdf` | `#FA7D19` | `pop_amber` `#E8880F` | `com.zdf.android.mediathek/com.zdf.android.mediathek.tv.MainActivity` |
 | ZEE5 | `graymatrix` | `#FF6B35` | `pop_blaze` `#F05A22` | `com.graymatrix.did/com.zee5.android.launch.presentation.AppStartActivity` |
 | Zen IPTV | `zeniptv` | `#1982C4` | `pop_blue` `#1C79D2` | `app.zeniptv.mobile/app.zeniptv.mobile.MainActivity` |
 | Zeus | `zeus` | `#4CC9F0` | `pop_aqua` `#0C8AAE` | `com.thezeusnetwork.www/tv.vhx.LauncherActivity`<br>`com.thezeusnetwork.www/tv.vhx.tv.home.TvHomeActivity` |

@@ -1,4 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!--
+  One icon tile.
+
+  The card surface is drawn inset by cb_focus_inset inside bg_card, so the
+  padding here is measured from the tile bounds and lands ~8dp inside the
+  visible card. minHeight keeps the D-pad target at the 48dp floor without
+  stretching the artwork.
+-->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -7,24 +15,27 @@
     android:focusable="true"
     android:focusableInTouchMode="true"
     android:gravity="center_horizontal"
+    android:minHeight="@dimen/cb_target_min"
     android:orientation="vertical"
-    android:padding="8dp">
+    android:padding="@dimen/cb_card_padding">
 
     <ImageView
         android:id="@+id/icon_image"
         android:layout_width="match_parent"
-        android:layout_height="72dp"
+        android:layout_height="@dimen/cb_card_icon"
         android:contentDescription="@null"
+        android:importantForAccessibility="no"
         android:scaleType="fitCenter" />
 
     <TextView
         android:id="@+id/icon_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="6dp"
+        android:layout_marginTop="@dimen/cb_space_sm"
         android:ellipsize="end"
         android:gravity="center"
+        android:lineSpacingExtra="1dp"
         android:maxLines="2"
         android:textColor="@color/cb_ink"
-        android:textSize="11sp" />
+        android:textSize="@dimen/cb_text_label" />
 </LinearLayout>

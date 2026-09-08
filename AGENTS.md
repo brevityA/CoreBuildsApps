@@ -47,7 +47,7 @@ python tools/validate_pop.py
 python tests/test_pop.py
 ```
 
-Pop receipts: `Validated 925 icons · 1099 components · 16 swatches · 13890 checks run` and `Ran 28 tests ... OK`.
+Pop receipts: `Validated 925 icons · 1099 components · 16 swatches · 13892 checks run` and `Ran 28 tests ... OK`.
 
 **The pack identity takes precedence over literal vendor-logo reproduction.**
 Reviewed brand entries use `style: core_monoline`: 32px rounded primary strokes,
