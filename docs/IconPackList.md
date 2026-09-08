@@ -931,3 +931,11 @@ Every app below auto-assigns in Projectivy. If one doesn't, the app ships a diff
 | Zona | `zona` | `#8AC926` | `mobi.zona/mobi.zona.ui.MainActivity` |
 | Zumba | `zumba` | `#FF477E` | `com.zumba.consumerapp.tv/com.maz.activities.ViewerLaunchActivity` |
 | NoBuffr | `nobuffr` | `#00ACC1` | 
+
+| Kick | `kick` | `#FF0000` |  |
+| Zee5 | `zee5` | `#FF0000` |  |
+| Kayo | `kayo` | `#00B4E5` |  |
+| TDUK Cache Cleaner | `tdk_cache_cleaner` | `#0066CC` |  |
+| Unlinked | `unlinked` | `#00B8D9` |  |
+| Analiti | `analiti` | `#0066CC` |  |
+| TataPlay Binge | `tataplay_binge` | `#FF0000` |  |
