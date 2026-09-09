@@ -11,6 +11,7 @@ import android.widget.Button
 import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -55,6 +56,7 @@ class MainActivity : AppCompatActivity() {
     private var selectedQuality = QualityTier.HD_1080
     private var pendingUpdate: UpdateChecker.Result.Available? = null
     private var installOffered = false
+    private var updateDialog: AlertDialog? = null
     private var spectrum: ValueAnimator? = null
     private var contentRefreshing = false
     private var currentEntries: List<LiveEntry> = emptyList()
@@ -359,16 +361,75 @@ class MainActivity : AppCompatActivity() {
 
     private fun showUpdateAvailable(update: UpdateChecker.Result.Available) {
         pendingUpdate = update
+        showUpdateDialog(update)
+    }
+
+    private fun showUpdateDialog(update: UpdateChecker.Result.Available) {
+        if (isFinishing || isDestroyed) return
+        updateDialog?.dismiss()
+
+        val dialog = AlertDialog.Builder(this, R.style.Theme_CoreShift_Dialog)
+            .setTitle(getString(R.string.update_dialog_title))
+            .setMessage(getString(R.string.update_dialog_message, update.versionName))
+            .setPositiveButton(getString(R.string.update_dialog_download), null)
+            .setNegativeButton(getString(R.string.update_dialog_later)) { d, _ ->
+                d.dismiss()
+                showUpdateBanner(update)
+            }
+            .setCancelable(true)
+            .setOnCancelListener { showUpdateBanner(update) }
+            .create()
+
+        dialog.setOnShowListener {
+            val downloadBtn = dialog.getButton(AlertDialog.BUTTON_POSITIVE)
+            downloadBtn.setOnClickListener {
+                downloadBtn.isEnabled = false
+                startDialogDownload(dialog, update)
+            }
+        }
+        dialog.show()
+        updateDialog = dialog
+    }
+
+    private fun showUpdateBanner(update: UpdateChecker.Result.Available) {
         val banner: LinearLayout = findViewById(R.id.update_banner)
         val text: TextView = findViewById(R.id.update_text)
         val btn: Button = findViewById(R.id.update_btn)
 
         text.text = getString(R.string.update_available, update.versionName)
         banner.visibility = View.VISIBLE
-        btn.setOnClickListener { startUpdateDownload(update) }
+        btn.setOnClickListener { startBannerDownload(update) }
     }
 
-    private fun startUpdateDownload(update: UpdateChecker.Result.Available) {
+    private fun startDialogDownload(dialog: AlertDialog, update: UpdateChecker.Result.Available) {
+        dialog.setMessage(getString(R.string.update_downloading))
+        dialog.setCancelable(false)
+
+        UpdateInstaller.download(this, update.apkUrl) { event ->
+            if (isFinishing || isDestroyed) return@download
+            when (event) {
+                is UpdateInstaller.Event.Progress -> {
+                    if (event.total > 0) {
+                        val pct = (event.received * 100 / event.total).toInt()
+                        dialog.setMessage(
+                            getString(R.string.update_dialog_progress_fmt, update.versionName, pct),
+                        )
+                    }
+                }
+                is UpdateInstaller.Event.Ready -> {
+                    dialog.dismiss()
+                    promptInstall(event.file)
+                }
+                is UpdateInstaller.Event.Failed -> {
+                    dialog.setMessage(getString(R.string.update_failed_fmt, event.reason))
+                    dialog.setCancelable(true)
+                    dialog.getButton(AlertDialog.BUTTON_POSITIVE)?.isEnabled = true
+                }
+            }
+        }
+    }
+
+    private fun startBannerDownload(update: UpdateChecker.Result.Available) {
         val text: TextView = findViewById(R.id.update_text)
         val btn: Button = findViewById(R.id.update_btn)
         btn.isEnabled = false
@@ -491,6 +552,8 @@ class MainActivity : AppCompatActivity() {
     override fun onDestroy() {
         focusRunnable?.let { list.removeCallbacks(it) }
         focusRunnable = null
+        updateDialog?.dismiss()
+        updateDialog = null
         spectrum?.cancel()
         spectrum = null
         io.shutdown()
