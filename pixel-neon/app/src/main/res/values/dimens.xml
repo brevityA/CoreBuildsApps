@@ -60,10 +60,9 @@
     <!-- Type scale. 12sp is the floor — nothing in the app renders smaller,
          because a TV is read at ~3m, not at arm's length. -->
     <dimen name="cb_text_kicker">12sp</dimen>
-    <!-- TV labels need to remain readable at a 10-foot viewing distance. -->
-    <dimen name="cb_text_data">14sp</dimen>
-    <dimen name="cb_text_label">16sp</dimen>
-    <dimen name="cb_text_body">17sp</dimen>
+    <dimen name="cb_text_data">13sp</dimen>
+    <dimen name="cb_text_label">13sp</dimen>
+    <dimen name="cb_text_body">15sp</dimen>
     <dimen name="cb_text_section">19sp</dimen>
     <dimen name="cb_text_title">32sp</dimen>
     <dimen name="cb_text_display">34sp</dimen>
