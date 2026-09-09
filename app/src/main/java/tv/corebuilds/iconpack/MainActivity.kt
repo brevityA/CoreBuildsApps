@@ -70,9 +70,9 @@ class MainActivity : AppCompatActivity() {
         }
 
         if (pickMode) {
-            findViewById<TextView>(R.id.picker_hint).visibility = View.VISIBLE
-            findViewById<TextView>(R.id.picker_hint).text =
-                getString(R.string.picker_hint_banner)
+            val pickerHint = findViewById<TextView>(R.id.picker_hint)
+            pickerHint.visibility = View.VISIBLE
+            pickerHint.text = getString(R.string.picker_hint_banner)
             findViewById<TextView>(R.id.apply_button).visibility = View.GONE
             findViewById<TextView>(R.id.apply_sub).visibility = View.GONE
             findViewById<LinearLayout>(R.id.update_bar).visibility = View.GONE
