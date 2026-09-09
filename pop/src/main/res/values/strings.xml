@@ -9,7 +9,7 @@
     <!-- Version comes from BuildConfig.VERSION_NAME at runtime, never from
          here. This string shipped "pack v1.5.1" hardcoded for every release
          from 1.5.1 to 1.8.8. -->
-    <string name="icon_count_fmt">%1$d icons · pack v%2$s</string>
+    <string name="icon_count_fmt">%1$d icons installed · pack v%2$s</string>
     <string name="icon_filter_fmt">%1$d of %2$d icons</string>
 
     <!-- Empty state. Without it a filter with no match renders a blank grid

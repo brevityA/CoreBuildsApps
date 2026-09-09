@@ -18,6 +18,8 @@
     android:clickable="true"
     android:focusable="true"
     android:focusableInTouchMode="true"
+    android:nextFocusUp="@id/apply_button"
+    android:nextFocusDown="@id/grid"
     android:letterSpacing="0.02"
     android:paddingStart="@dimen/cb_space_md"
     android:paddingEnd="@dimen/cb_space_md"
