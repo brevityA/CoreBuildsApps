@@ -72,6 +72,7 @@
     <string name="wp_downloading_of_fmt">Downloading… %1$d of %2$d KB</string>
     <string name="wp_download_failed_fmt">Download failed: %1$s</string>
     <string name="wp_back">Back</string>
+    <string name="wp_position_fmt">%1$d of %2$d</string>
     <string name="wp_set_wallpaper">Set wallpaper</string>
     <string name="wp_applying">Applying…</string>
     <string name="wp_sub_set">Sets the system home wallpaper. Monet re-themes its tiles from it.</string>
