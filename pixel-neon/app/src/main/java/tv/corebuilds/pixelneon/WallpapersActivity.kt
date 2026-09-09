@@ -67,10 +67,14 @@ class WallpapersActivity : AppCompatActivity() {
         count.text = getString(R.string.wp_count_fmt, all.size)
 
         adapter = WallpaperAdapter(all) { item ->
+            val visible = adapter.currentItems()
+            val index = visible.indexOfFirst { it.url == item.url }.coerceAtLeast(0)
             startActivity(
                 Intent(this, WallpaperPreviewActivity::class.java).apply {
-                    putExtra(WallpaperPreviewActivity.EXTRA_URL, item.url)
-                    putExtra(WallpaperPreviewActivity.EXTRA_TITLE, item.title)
+                    putParcelableArrayListExtra(
+                        WallpaperPreviewActivity.EXTRA_WALLPAPERS, ArrayList(visible)
+                    )
+                    putExtra(WallpaperPreviewActivity.EXTRA_INDEX, index)
                 }
             )
         }
