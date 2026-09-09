@@ -75,70 +75,70 @@ def save_wall(im: Image.Image, series_dir: Path, stem: str):
 # Series 2: Motion — kinetic energy, orbital paths, dynamic fields
 # ---------------------------------------------------------------------------
 
+def _bottom_fade(arr, start_frac=0.45):
+    """Fade pixel array to VOID from start_frac downward."""
+    fade_start = int(H * start_frac)
+    fade_len = H - fade_start
+    if fade_len <= 0:
+        return arr
+    void = np.array(VOID, dtype="float32")
+    t = np.linspace(0, 1, fade_len, dtype="float32") ** 1.2
+    t = t[:, None, None]
+    arr[fade_start:] = arr[fade_start:] * (1 - t) + void[None, None, :] * t
+    return arr
+
+
 def w51_vortex() -> Image.Image:
-    """Tight spiral vortex pulling toward upper-left, cyan trails on void."""
+    """Three-arm spiral vortex, cyan trails on void. Drawn with thick lines + glow blur."""
     im = Image.new("RGB", (W, H), VOID)
     draw = ImageDraw.Draw(im)
-    cx, cy = W * 0.38, H * 0.32
-    for i in range(600):
-        t = i / 600.0
-        angle = t * 14 * math.pi
-        r = 40 + t * 1800
-        x = cx + r * math.cos(angle)
-        y = cy + r * math.sin(angle)
-        # Trail width thins outward
-        width = max(1, int(8 - t * 7))
-        alpha = max(0.05, 1.0 - t * 1.1)
-        c = lerp_color(CYAN, VOID, 1.0 - alpha)
-        # Short segment from previous point
-        t_prev = max(0, (i - 1) / 600.0)
-        angle_prev = t_prev * 14 * math.pi
-        r_prev = 40 + t_prev * 1800
-        x_prev = cx + r_prev * math.cos(angle_prev)
-        y_prev = cy + r_prev * math.sin(angle_prev)
-        draw.line([(x_prev, y_prev), (x, y)], fill=c, width=width)
-    # Fade bottom half to void
-    for y in range(H // 2, H):
-        t = (y - H // 2) / (H // 2)
-        alpha = int(t * 255)
-        draw.line([(0, y), (W, y)], fill=(*VOID, 255), width=1)
-    overlay = Image.new("RGB", (W, H), VOID)
-    mask = Image.new("L", (W, H), 0)
-    mask_draw = ImageDraw.Draw(mask)
-    for y in range(H // 2, H):
-        t = (y - H // 2) / (H // 2)
-        val = int(t * 255)
-        mask_draw.line([(0, y), (W, y)], fill=val)
-    im = Image.composite(overlay, im, mask)
-    return im
+    cx, cy = W * 0.36, H * 0.30
+    for arm in range(3):
+        arm_offset = arm * 2.0 * math.pi / 3.0
+        prev = None
+        for i in range(800):
+            t = i / 800.0
+            angle = t * 16 * math.pi + arm_offset
+            r = 30 + t * 2100
+            px = cx + r * math.cos(angle)
+            py = cy + r * math.sin(angle)
+            if prev is not None:
+                brightness = max(0.08, 1.0 - t * 0.9)
+                c = lerp_color(VOID, GLOW_CYAN if t < 0.12 else CYAN, brightness)
+                width = max(3, int(20 - t * 17))
+                draw.line([prev, (px, py)], fill=c, width=width)
+            prev = (px, py)
+    glow = im.filter(ImageFilter.GaussianBlur(radius=12))
+    im = Image.blend(im, glow, 0.5)
+    arr = np.asarray(im, dtype="float32").copy()
+    arr = _bottom_fade(arr, 0.42)
+    return Image.fromarray(np.clip(arr, 0, 255).astype("uint8"))
 
 
 def w52_shockwave() -> Image.Image:
-    """Concentric rings expanding from center-right, ember to void."""
+    """Concentric rings expanding from center-right, ember to void. Thick rings + glow."""
     im = Image.new("RGB", (W, H), VOID)
     draw = ImageDraw.Draw(im)
-    cx, cy = W * 0.62, H * 0.36
-    for i in range(80, 0, -1):
-        r = i * 28
-        t = i / 80.0
-        c = lerp_color(VOID, EMBER, t * 0.7)
-        width = max(2, int(4 * t))
+    cx, cy = W * 0.60, H * 0.34
+    for i in range(60, 0, -1):
+        r = i * 36
+        t = i / 60.0
+        c = lerp_color(VOID, EMBER, t * 0.85)
+        width = max(3, int(10 * t + 4))
         bbox = [cx - r, cy - r, cx + r, cy + r]
         draw.ellipse(bbox, outline=c, width=width)
-    # Bright core
-    for i in range(12):
-        r = 20 + i * 8
-        c = lerp_color(GLOW_CYAN, CYAN, i / 12.0)
-        draw.ellipse([cx - r, cy - r, cx + r, cy + r], outline=c, width=3)
-    # Fade bottom
-    overlay = Image.new("RGB", (W, H), VOID)
-    mask = Image.new("L", (W, H), 0)
-    mask_draw = ImageDraw.Draw(mask)
-    for y in range(int(H * 0.45), H):
-        t = (y - H * 0.45) / (H * 0.55)
-        mask_draw.line([(0, y), (W, y)], fill=int(min(1, t * 1.3) * 255))
-    im = Image.composite(overlay, im, mask)
-    return im
+    for i in range(20):
+        r = 15 + i * 12
+        blend = i / 20.0
+        c = lerp_color(GLOW_CYAN, CYAN, blend)
+        draw.ellipse([cx - r, cy - r, cx + r, cy + r], outline=c, width=6)
+    r_core = 25
+    draw.ellipse([cx - r_core, cy - r_core, cx + r_core, cy + r_core], fill=GLOW_CYAN)
+    glow = im.filter(ImageFilter.GaussianBlur(radius=10))
+    im = Image.blend(im, glow, 0.45)
+    arr = np.asarray(im, dtype="float32").copy()
+    arr = _bottom_fade(arr, 0.40)
+    return Image.fromarray(np.clip(arr, 0, 255).astype("uint8"))
 
 
 def w53_cascade() -> Image.Image:
@@ -146,31 +146,23 @@ def w53_cascade() -> Image.Image:
     im = Image.new("RGB", (W, H), VOID)
     draw = ImageDraw.Draw(im)
     rng = np.random.RandomState(42)
-    for _ in range(280):
+    for _ in range(600):
         x = rng.randint(0, W)
-        y_start = rng.randint(0, int(H * 0.65))
-        length = rng.randint(60, 400)
-        width = rng.choice([1, 1, 2, 2, 3])
-        brightness = rng.uniform(0.15, 0.85)
+        y_start = rng.randint(0, int(H * 0.6))
+        length = rng.randint(80, 600)
+        width = rng.choice([2, 3, 3, 4, 5, 6])
+        brightness = rng.uniform(0.15, 0.9)
         c = lerp_color(VOID, CYAN, brightness)
         draw.line([(x, y_start), (x, y_start + length)], fill=c, width=width)
-    # Bright accent particles
-    for _ in range(30):
+    for _ in range(60):
         x = rng.randint(0, W)
-        y = rng.randint(0, int(H * 0.5))
-        r = rng.randint(2, 5)
+        y = rng.randint(0, int(H * 0.45))
+        r = rng.randint(3, 10)
         draw.ellipse([x - r, y - r, x + r, y + r], fill=GLOW_CYAN)
-    # Fade bottom
-    overlay = Image.new("RGB", (W, H), VOID)
-    mask = Image.new("L", (W, H), 0)
-    mask_draw = ImageDraw.Draw(mask)
-    for y in range(int(H * 0.5), H):
-        t = (y - H * 0.5) / (H * 0.5)
-        mask_draw.line([(0, y), (W, y)], fill=int(min(1, t * 1.4) * 255))
-    im = Image.composite(overlay, im, mask)
-    # Subtle blur for glow effect
-    im = im.filter(ImageFilter.GaussianBlur(radius=2))
-    return im
+    im = im.filter(ImageFilter.GaussianBlur(radius=3))
+    arr = np.asarray(im, dtype="float32")
+    arr = _bottom_fade(arr.copy(), 0.45)
+    return Image.fromarray(np.clip(arr, 0, 255).astype("uint8"))
 
 
 def w54_drift_field() -> Image.Image:
@@ -178,14 +170,12 @@ def w54_drift_field() -> Image.Image:
     im = Image.new("RGB", (W, H), VOID)
     draw = ImageDraw.Draw(im)
     rng = np.random.RandomState(7)
-    # Flow field: each particle traces a path influenced by noise-like angles
-    for _ in range(400):
+    for _ in range(800):
         x = rng.uniform(0, W)
         y = rng.uniform(0, H * 0.7)
         points = [(x, y)]
-        brightness = rng.uniform(0.2, 0.7)
-        for step in range(60):
-            # Angle from a simple flow pattern
+        brightness = rng.uniform(0.2, 0.75)
+        for step in range(80):
             angle = (math.sin(x / 300) * math.cos(y / 200) * math.pi +
                      math.sin(y / 400 + x / 500) * 0.8)
             x += math.cos(angle) * 8
@@ -195,144 +185,113 @@ def w54_drift_field() -> Image.Image:
                 break
         if len(points) > 2:
             c = lerp_color(VOID, BUILD_BLUE, brightness)
-            draw.line(points, fill=c, width=1)
-    # A few bright accent lines
-    for _ in range(20):
-        x = rng.uniform(W * 0.2, W * 0.8)
-        y = rng.uniform(H * 0.1, H * 0.4)
+            draw.line(points, fill=c, width=rng.choice([2, 2, 3, 3, 4]))
+    for _ in range(50):
+        x = rng.uniform(W * 0.1, W * 0.9)
+        y = rng.uniform(H * 0.05, H * 0.45)
         points = [(x, y)]
-        for step in range(80):
+        for step in range(100):
             angle = (math.sin(x / 300) * math.cos(y / 200) * math.pi +
                      math.sin(y / 400 + x / 500) * 0.8)
             x += math.cos(angle) * 8
             y += math.sin(angle) * 8
             points.append((x, y))
         if len(points) > 2:
-            draw.line(points, fill=CYAN, width=2)
-    # Fade bottom
-    overlay = Image.new("RGB", (W, H), VOID)
-    mask = Image.new("L", (W, H), 0)
-    mask_draw = ImageDraw.Draw(mask)
-    for y in range(int(H * 0.5), H):
-        t = (y - H * 0.5) / (H * 0.5)
-        mask_draw.line([(0, y), (W, y)], fill=int(min(1, t * 1.5) * 255))
-    im = Image.composite(overlay, im, mask)
-    im = im.filter(ImageFilter.GaussianBlur(radius=1.5))
-    return im
+            draw.line(points, fill=CYAN, width=rng.choice([3, 4, 5]))
+    im = im.filter(ImageFilter.GaussianBlur(radius=2))
+    arr = np.asarray(im, dtype="float32")
+    arr = _bottom_fade(arr.copy(), 0.45)
+    return Image.fromarray(np.clip(arr, 0, 255).astype("uint8"))
 
 
 # ---------------------------------------------------------------------------
 # Series 3: Horizons — atmospheric gradient landscapes, single accent
 # ---------------------------------------------------------------------------
 
+def _horizon(accent, glow_color, horizon_frac=0.32, accent_strength=0.55,
+              glow_strength=0.35, glow_radius=100):
+    """Build a horizon wallpaper with smooth gradient and additive glow.
+
+    Uses numpy arrays: base gradient void->accent->void, then additive
+    glow band, then hard fade to void for the lower third.
+    """
+    void = np.array(VOID, dtype="float32")
+    acc = np.array(accent, dtype="float32")
+    gl = np.array(glow_color, dtype="float32")
+    arr = np.zeros((H, W, 3), dtype="float32")
+    horizon_y = int(H * horizon_frac)
+    ys = np.arange(H, dtype="float32")
+    for y_idx in range(H):
+        y = float(y_idx)
+        if y_idx < horizon_y:
+            t = (y / horizon_y) ** 1.6
+            row_c = void + (acc - void) * t * accent_strength
+        else:
+            t = ((y - horizon_y) / (H - horizon_y))
+            row_c = acc * accent_strength + void * (1 - accent_strength)
+            fade = t ** 0.7
+            row_c = row_c * (1 - fade) + void * fade
+        arr[y_idx, :] = row_c[None, :]
+    dist_from_horizon = np.abs(ys - horizon_y)
+    glow_mask = np.exp(-(dist_from_horizon ** 2) / (2 * glow_radius ** 2))
+    glow_mask = glow_mask * glow_strength
+    arr += glow_mask[:, None, None] * (gl[None, None, :] - arr) * 0.6
+    arr += glow_mask[:, None, None] * gl[None, None, :] * 0.15
+    thin_mask = np.exp(-(dist_from_horizon ** 2) / (2 * 8 ** 2)) * 0.5
+    arr += thin_mask[:, None, None] * gl[None, None, :] * 0.3
+    lower_start = int(H * 0.55)
+    for y_idx in range(lower_start, H):
+        t = ((y_idx - lower_start) / (H - lower_start)) ** 1.0
+        arr[y_idx] = arr[y_idx] * (1 - t) + void * t
+    return Image.fromarray(np.clip(arr, 0, 255).astype("uint8"))
+
+
 def w55_horizon_dusk() -> Image.Image:
     """Dusk violet horizon with purple-to-void gradient."""
-    im = Image.new("RGB", (W, H), VOID)
-    draw = ImageDraw.Draw(im)
-    horizon_y = H * 0.35
-    # Sky gradient: void -> dusk violet -> void
-    for y in range(H):
-        if y < horizon_y:
-            t = y / horizon_y
-            # Dark at top, dusk at horizon
-            c = lerp_color(VOID, DUSK, t ** 1.5 * 0.6)
-        else:
-            t = (y - horizon_y) / (H - horizon_y)
-            c = lerp_color(DUSK, VOID, t ** 0.6)
-            # Fade to near-black quickly
-            dark_t = min(1, t * 1.8)
-            c = lerp_color(c, VOID, dark_t * 0.7)
-        draw.line([(0, y), (W, y)], fill=c)
-    # Bright horizon line
-    for dy in range(-4, 5):
-        y = int(horizon_y) + dy
-        alpha = 1.0 - abs(dy) / 5.0
-        c = lerp_color(VOID, (180, 100, 200), alpha * 0.5)
-        draw.line([(0, y), (W, y)], fill=c)
-    # Subtle glow at horizon
-    for dy in range(-40, 41):
-        y = int(horizon_y) + dy
-        if 0 <= y < H:
-            alpha = (1.0 - abs(dy) / 40.0) ** 2 * 0.15
-            c = lerp_color(VOID, (160, 80, 180), alpha)
-            draw.line([(0, y), (W, y)], fill=c)
-    return im
+    return _horizon(
+        accent=DUSK,
+        glow_color=(180, 100, 200),
+        horizon_frac=0.32,
+        accent_strength=0.6,
+        glow_strength=0.4,
+        glow_radius=120,
+    )
 
 
 def w56_horizon_frost() -> Image.Image:
     """Ice-blue horizon — cool whites fading to void."""
-    im = Image.new("RGB", (W, H), VOID)
-    draw = ImageDraw.Draw(im)
-    horizon_y = H * 0.33
-    frost = (180, 210, 230)
-    ice = (100, 160, 200)
-    for y in range(H):
-        if y < horizon_y:
-            t = y / horizon_y
-            c = lerp_color(VOID, ice, t ** 1.8 * 0.45)
-        else:
-            t = (y - horizon_y) / (H - horizon_y)
-            c = lerp_color(ice, VOID, t ** 0.5)
-            c = lerp_color(c, VOID, min(1, t * 1.6) * 0.8)
-        draw.line([(0, y), (W, y)], fill=c)
-    # Bright frost band at horizon
-    for dy in range(-30, 31):
-        y = int(horizon_y) + dy
-        if 0 <= y < H:
-            alpha = (1.0 - abs(dy) / 30.0) ** 2 * 0.25
-            c = lerp_color(VOID, frost, alpha)
-            draw.line([(0, y), (W, y)], fill=c)
-    return im
+    return _horizon(
+        accent=(90, 140, 180),
+        glow_color=(170, 210, 235),
+        horizon_frac=0.30,
+        accent_strength=0.5,
+        glow_strength=0.35,
+        glow_radius=100,
+    )
 
 
 def w57_horizon_signal() -> Image.Image:
     """Signal cyan horizon — the brand colour as landscape."""
-    im = Image.new("RGB", (W, H), VOID)
-    draw = ImageDraw.Draw(im)
-    horizon_y = H * 0.34
-    for y in range(H):
-        if y < horizon_y:
-            t = y / horizon_y
-            c = lerp_color(NIGHT, CYAN, t ** 2.0 * 0.35)
-        else:
-            t = (y - horizon_y) / (H - horizon_y)
-            base = lerp_color(CYAN, VOID, t ** 0.4)
-            c = lerp_color(base, VOID, min(1, t * 1.5) * 0.85)
-        draw.line([(0, y), (W, y)], fill=c)
-    # Cyan glow band
-    for dy in range(-50, 51):
-        y = int(horizon_y) + dy
-        if 0 <= y < H:
-            alpha = (1.0 - abs(dy) / 50.0) ** 2 * 0.3
-            c = lerp_color(VOID, GLOW_CYAN, alpha)
-            draw.line([(0, y), (W, y)], fill=c)
-    return im
+    return _horizon(
+        accent=CYAN,
+        glow_color=GLOW_CYAN,
+        horizon_frac=0.31,
+        accent_strength=0.4,
+        glow_strength=0.4,
+        glow_radius=130,
+    )
 
 
 def w58_horizon_ember() -> Image.Image:
     """Deep ember horizon — warm glow at the edge of night."""
-    im = Image.new("RGB", (W, H), VOID)
-    draw = ImageDraw.Draw(im)
-    horizon_y = H * 0.36
-    warm = (220, 90, 30)
-    deep_ember = (140, 40, 15)
-    for y in range(H):
-        if y < horizon_y:
-            t = y / horizon_y
-            c = lerp_color(VOID, deep_ember, t ** 1.6 * 0.4)
-        else:
-            t = (y - horizon_y) / (H - horizon_y)
-            base = lerp_color(deep_ember, VOID, t ** 0.5)
-            c = lerp_color(base, VOID, min(1, t * 1.4) * 0.75)
-        draw.line([(0, y), (W, y)], fill=c)
-    # Warm glow at horizon
-    for dy in range(-35, 36):
-        y = int(horizon_y) + dy
-        if 0 <= y < H:
-            alpha = (1.0 - abs(dy) / 35.0) ** 2 * 0.35
-            c = lerp_color(VOID, warm, alpha)
-            draw.line([(0, y), (W, y)], fill=c)
-    return im
+    return _horizon(
+        accent=(140, 40, 15),
+        glow_color=(220, 90, 30),
+        horizon_frac=0.33,
+        accent_strength=0.5,
+        glow_strength=0.4,
+        glow_radius=90,
+    )
 
 
 # ---------------------------------------------------------------------------
