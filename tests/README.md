@@ -1,7 +1,8 @@
-# v1.5.1 robustness tests
+# Suite tests
 
 ```bash
 python3 tests/test_v151_robustness.py
+python tests/test_ui_generator.py   # UI Studio: presets, D-pad audit, spec validation
 ```
 
 See CHANGELOG.md for what v1.5.1 added.

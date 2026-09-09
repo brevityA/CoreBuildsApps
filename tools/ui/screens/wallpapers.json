@@ -1,0 +1,19 @@
+{
+  "screen": "WallBrowser",
+  "blocks": [
+    {
+      "type": "header",
+      "kicker": "@string/wp_kicker",
+      "title": "Wallpapers",
+      "side": [
+        {"id": "wbrowser_export", "style": "cta", "text": "@string/wp_export"},
+        {"id": "wbrowser_back", "style": "ghost", "text": "@string/wp_back"}
+      ]
+    },
+    {"type": "selectionbar", "id": "wbrowser_selection"},
+    {"type": "chips", "id": "wbrowser_chips", "fromCatalog": true},
+    {"type": "hint", "text": "@string/wp_hint"},
+    {"type": "grid", "id": "wbrowser_grid", "source": "walls", "cellDp": 220}
+  ],
+  "dpad": {"initialFocus": "wbrowser_export"}
+}

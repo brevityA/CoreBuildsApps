@@ -45,10 +45,14 @@ from pathlib import Path
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
-import popart  # noqa: E402
-from popart import PALETTE, SWATCHES, render_banner, render_icon, snap  # noqa: E402
-from build_icons import validate  # noqa: E402 — shared catalog/style contract
-from svg_renderer import svg2png  # noqa: E402
+# Render imports stay lazy: --mirror-only must run on stdlib alone (it only
+# copies layouts/strings/manifest), including machines without the render
+# venv that tools/requirements.txt installs.
+if "--mirror-only" not in sys.argv:
+    import popart  # noqa: E402
+    from popart import PALETTE, SWATCHES, render_banner, render_icon, snap  # noqa: E402
+    from build_icons import validate  # noqa: E402 — shared catalog/style contract
+    from svg_renderer import svg2png  # noqa: E402
 
 ROOT = Path(__file__).resolve().parent.parent
 CATALOG = ROOT / "tools" / "catalog.json"
@@ -383,7 +387,18 @@ def mirror_strings() -> int:
 
 
 # --------------------------------------------------------------------------
-def main() -> int:
+def main(argv: list[str] | None = None) -> int:
+    # Fast path for UI work: refresh the app/ -> pop/ resource mirror
+    # (layouts, strings, manifest) without re-rendering 1,850 PNGs.
+    # tools/build_ui.py --apply uses this so a new screen compiles in both
+    # packs seconds after it lands in app/.
+    if (argv if argv is not None else sys.argv[1:]) == ["--mirror-only"]:
+        mirrored = mirror_shared_resources()
+        overridden = mirror_strings()
+        mirror_manifest()
+        print(f"mirror-only: {mirrored} shared resource file(s) + "
+              f"AndroidManifest from app/, {overridden} string(s) re-pointed")
+        return 0
     data = json.loads(CATALOG.read_text(encoding="utf-8"))
     icons = sorted(data["icons"], key=lambda i: i["name"].lower())
     version = json.loads((ROOT / "suite.json").read_text(

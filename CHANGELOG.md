@@ -4,6 +4,30 @@ All notable changes to the Core Builds Icon Pack. Format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); versions follow
 [SemVer](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+**UI Studio: a TV screen generator for the icon packs.** New screens
+(layout + Activity + adapter + strings + manifest) with correct D-pad wiring
+and smooth focus motion, from a visual designer or one CLI command.
+
+- `tools/ui/studio.html` — offline visual designer: block palette, 16:9
+  preview with a tile-accurate D-pad simulator (arrow keys / on-screen
+  remote), motion tuning, live checks, and layout/Activity/adapter/strings/
+  spec export. Tested headless in Node for structural parity with the CLI.
+- `tools/build_ui.py` — CLI with five presets (`browser`, `wallpapers`,
+  `details`, `settings`, `onboarding`); `--apply` installs into `app/`,
+  merges strings, patches the manifest, and refreshes the Pop mirror.
+- `tools/validate_ui.py` — D-pad + motion auditor for any layout (explicit
+  links, reachability, hidden-bar exemption, motion wiring). All seven
+  shipped layouts pass with zero errors.
+- `tv.corebuilds.iconpack.ui` — `TvFocus` (focus zoom, staggered enter,
+  bar reveal) + `DpadNav` (chains, grid top-edge escape, span math),
+  compiled by both packs, dependency-free.
+- `tools/build_pop.py --mirror-only` — refresh the `app/ → pop/` resource
+  mirror in seconds; render imports stay lazy so it runs on stdlib alone.
+- `tests/test_ui_generator.py` — 9 regressions, wired into the suite-ci
+  contracts job. See `docs/UI_STUDIO.md`.
+
 ## [1.8.8] — 2026-09-08
 
 **Brand-colour remediation.** A 925-icon colour audit identified 32 icons

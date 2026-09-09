@@ -23,6 +23,8 @@ jobs:
           python-version: '3.12'
       - name: Assert every shippable app has CI, metadata, and hardened updater contracts
         run: python tools/audit_contract.py
+      - name: UI Studio generator regressions
+        run: python tests/test_ui_generator.py
 
   android:
     name: ${{ matrix.name }} build lint tests

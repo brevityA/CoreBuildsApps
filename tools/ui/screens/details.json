@@ -1,0 +1,29 @@
+{
+  "screen": "Details",
+  "blocks": [
+    {
+      "type": "header",
+      "title": "Details",
+      "showCount": false,
+      "side": [
+        {"id": "details_close", "style": "ghost", "text": "Back"}
+      ]
+    },
+    {
+      "type": "hero",
+      "kicker": "STREAMING",
+      "title": "Stremio",
+      "meta": "4 components · one accent"
+    },
+    {
+      "type": "actions",
+      "buttons": [
+        {"id": "details_apply", "style": "cta", "text": "Apply icon"},
+        {"id": "details_preview", "style": "ghost", "text": "Preview banner"}
+      ]
+    },
+    {"type": "hint", "text": "Banners are 320×180 for Projectivy wide cards."},
+    {"type": "grid", "id": "details_grid", "source": "custom"}
+  ],
+  "dpad": {"initialFocus": "details_apply"}
+}

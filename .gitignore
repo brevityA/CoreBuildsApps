@@ -24,3 +24,6 @@ tools/device_scan.txt
 # Local render venvs for the icon generators (per-machine, not repo state)
 .venv-pop/
 .venv/
+
+# UI Studio staging dir (tools/build_ui.py output before --apply)
+tools/ui/out/

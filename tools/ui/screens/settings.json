@@ -1,0 +1,22 @@
+{
+  "screen": "Settings",
+  "blocks": [
+    {"type": "header", "title": "Settings", "showCount": false},
+    {
+      "type": "settings",
+      "rows": [
+        {"id": "set_theme", "label": "Card style", "value": "Night"},
+        {"id": "set_columns", "label": "Grid columns", "value": "Auto"},
+        {"id": "set_motion", "label": "Animations", "value": "On"},
+        {"id": "set_about", "label": "About", "value": "Core Builds"}
+      ]
+    },
+    {
+      "type": "actions",
+      "buttons": [
+        {"id": "set_done", "style": "cta", "text": "Done"}
+      ]
+    }
+  ],
+  "dpad": {"initialFocus": "set_theme"}
+}

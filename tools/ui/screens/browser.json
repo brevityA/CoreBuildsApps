@@ -1,0 +1,36 @@
+{
+  "screen": "IconBrowser",
+  "blocks": [
+    {
+      "type": "header",
+      "title": "Icon browser",
+      "side": [
+        {"id": "browse_apply", "style": "cta", "text": "Apply in Projectivy"},
+        {"id": "browse_walls", "style": "ghost", "text": "@string/wp_entry",
+         "go": "WallpapersActivity"}
+      ]
+    },
+    {"type": "targets", "id": "browse_targets"},
+    {
+      "type": "updatebar",
+      "id": "browse_update",
+      "label": "Update available",
+      "sub": "A newer build of the pack is ready to download.",
+      "button": "Download"
+    },
+    {
+      "type": "filterrow",
+      "chips_id": "browse_chips",
+      "search_id": "browse_search",
+      "keys": ["ALL", "STREAM", "MEDIA", "VOD", "PLAYER", "LIVE", "MUSIC", "SPORT",
+               "TOOL", "STORE", "LAUNCHER", "VPN", "GAMING", "DEBRID", "BROWSER",
+               "VIDEO", "FILES", "SYSTEM", "APP"],
+      "labels": ["All", "Streaming", "Media", "On demand", "Players", "Live TV",
+                 "Music", "Sport", "Tools", "Stores", "Launchers", "VPN", "Gaming",
+                 "Debrid", "Browsers", "Video", "Files", "System", "Apps"]
+    },
+    {"type": "empty", "id": "browse_empty"},
+    {"type": "grid", "id": "browse_grid", "source": "icons"}
+  ],
+  "dpad": {"initialFocus": "browse_apply"}
+}

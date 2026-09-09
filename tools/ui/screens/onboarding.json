@@ -1,0 +1,23 @@
+{
+  "screen": "Welcome",
+  "blocks": [
+    {"type": "header", "title": "Welcome", "showCount": false},
+    {
+      "type": "hero",
+      "kicker": "CORE BUILDS",
+      "title": "One pack, every app",
+      "meta": "Transparent icons plus wallpapers for Projectivy."
+    },
+    {
+      "type": "actions",
+      "buttons": [
+        {"id": "welcome_apply", "style": "cta", "text": "Apply the pack"},
+        {"id": "welcome_browse", "style": "ghost", "text": "Browse icons",
+         "go": "MainActivity"}
+      ]
+    },
+    {"type": "hint", "text": "Works with Projectivy Launcher on Android TV."}
+  ],
+  "dpad": {"initialFocus": "welcome_apply"},
+  "anim": {"focusScale": 1.08, "enter": true}
+}
