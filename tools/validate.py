@@ -188,7 +188,7 @@ def main():
     # full-size 320x180 banner and a sufficiently large xhdpi launcher icon.
     def png_size(path):
         raw = path.read_bytes()
-        if raw[:8] != b"\\x89PNG\\r\\n\\x1a\\n" or len(raw) < 24:
+        if raw[:8] != b"\x89PNG\r\n\x1a\n" or len(raw) < 24:
             return None
         import struct
         return struct.unpack(">II", raw[16:24])
