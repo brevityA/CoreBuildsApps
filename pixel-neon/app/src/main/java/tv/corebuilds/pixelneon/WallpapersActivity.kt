@@ -7,6 +7,7 @@ import android.text.TextWatcher
 import android.view.View
 import android.widget.EditText
 import android.widget.TextView
+import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.GridLayoutManager
@@ -112,16 +113,15 @@ class WallpapersActivity : AppCompatActivity() {
         }
 
         bindChips()
+        bindBackNavigation()
     }
 
-    @Deprecated("Deprecated in Java")
-    override fun onBackPressed() {
-        if (adapter.selectionMode) {
-            exitSelectionMode()
-        } else {
-            @Suppress("DEPRECATION")
-            super.onBackPressed()
-        }
+    private fun bindBackNavigation() {
+        onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                if (adapter.selectionMode) exitSelectionMode() else finish()
+            }
+        })
     }
 
     private fun onHeaderExport() {
