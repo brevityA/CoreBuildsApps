@@ -53,6 +53,10 @@
     <!-- Minimum touch / D-pad target. Material floor. -->
     <dimen name="cb_target_min">48dp</dimen>
 
+    <!-- Stacked action buttons share a minimum width so they align as a column
+         instead of jagging to their text length. -->
+    <dimen name="cb_button_min_width">220dp</dimen>
+
     <!-- Type scale. 12sp is the floor — nothing in the app renders smaller,
          because a TV is read at ~3m, not at arm's length. -->
     <dimen name="cb_text_kicker">12sp</dimen>

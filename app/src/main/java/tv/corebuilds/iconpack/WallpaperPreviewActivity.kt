@@ -5,6 +5,7 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.view.KeyEvent
+import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
@@ -96,8 +97,16 @@ class WallpaperPreviewActivity : AppCompatActivity() {
     override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
         if (wallpapers.size <= 1) return super.onKeyDown(keyCode, event)
         return when (keyCode) {
-            KeyEvent.KEYCODE_DPAD_LEFT -> { navigate(-1); true }
-            KeyEvent.KEYCODE_DPAD_RIGHT -> { navigate(1); true }
+            KeyEvent.KEYCODE_DPAD_LEFT -> {
+                if (currentFocus?.focusSearch(View.FOCUS_LEFT) != null)
+                    super.onKeyDown(keyCode, event)
+                else { navigate(-1); true }
+            }
+            KeyEvent.KEYCODE_DPAD_RIGHT -> {
+                if (currentFocus?.focusSearch(View.FOCUS_RIGHT) != null)
+                    super.onKeyDown(keyCode, event)
+                else { navigate(1); true }
+            }
             else -> super.onKeyDown(keyCode, event)
         }
     }
