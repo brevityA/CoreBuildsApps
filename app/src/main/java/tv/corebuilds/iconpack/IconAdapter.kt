@@ -3,6 +3,7 @@ package tv.corebuilds.iconpack
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.DecelerateInterpolator
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.DiffUtil
@@ -19,6 +20,10 @@ class IconAdapter(
     private var items: List<IconItem>,
     private val onActivate: (IconItem) -> Unit
 ) : RecyclerView.Adapter<IconAdapter.VH>() {
+
+    // Resource lookup is relatively expensive on lower-memory TV sticks. The
+    // grid rebinds frequently while filtering, so resolve each drawable once.
+    private val resourceIds = HashMap<String, Int>()
 
     data class IconItem(
         val drawable: String,
@@ -48,14 +53,42 @@ class IconAdapter(
     override fun onBindViewHolder(holder: VH, position: Int) {
         val item = items[position]
         val ctx = holder.image.context
-        val id = ctx.resources.getIdentifier(item.drawable, "drawable", ctx.packageName)
+        val id = resourceIds.getOrPut(item.drawable) {
+            ctx.resources.getIdentifier(item.drawable, "drawable", ctx.packageName)
+        }
         if (id != 0) holder.image.setImageResource(id)
         holder.label.text = item.name
-        holder.itemView.contentDescription = item.name
+        holder.itemView.contentDescription = "${item.name}, ${item.category.lowercase()} icon"
+        holder.itemView.isFocusable = true
         holder.itemView.setOnClickListener { onActivate(item) }
+
+        // A TV cursor should feel attached to the tile, not blink between
+        // positions. Reset recycled views first, then use a short scale and
+        // elevation lift that is easy to track with peripheral vision.
+        holder.itemView.animate().cancel()
+        holder.itemView.scaleX = 1f
+        holder.itemView.scaleY = 1f
+        holder.itemView.elevation = 0f
+        holder.itemView.setOnFocusChangeListener { view, focused ->
+            view.animate().cancel()
+            view.animate()
+                .scaleX(if (focused) 1.035f else 1f)
+                .scaleY(if (focused) 1.035f else 1f)
+                .setDuration(160L)
+                .setInterpolator(DecelerateInterpolator())
+                .start()
+            view.animate()
+                .translationZ(if (focused) 8f else 0f)
+                .setDuration(160L)
+                .setInterpolator(DecelerateInterpolator())
+                .start()
+        }
     }
 
     override fun getItemCount() = items.size
+
+    /** Used by the activity to restore the focused icon after filtering. */
+    fun itemAt(position: Int): IconItem? = items.getOrNull(position)
 
     fun submit(next: List<IconItem>) {
         val previous = items

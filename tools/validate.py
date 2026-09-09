@@ -178,6 +178,34 @@ def main():
           "manifest: missing LEANBACK_LAUNCHER — pack won't show on Android TV")
     check("android:banner" in mf,
           "manifest: missing android:banner — required for the ATV home row")
+    check('android:name="android.hardware.touchscreen"' in mf and
+          'android:required="false"' in mf,
+          "manifest: touchscreen must be explicitly optional for TV")
+    check('android:screenOrientation="landscape"' in mf,
+          "manifest: MainActivity must be landscape for TV")
+
+    # 5a1. Android TV launcher assets. Google TV quality checks require a
+    # full-size 320x180 banner and a sufficiently large xhdpi launcher icon.
+    def png_size(path):
+        raw = path.read_bytes()
+        if raw[:8] != b"\\x89PNG\\r\\n\\x1a\\n" or len(raw) < 24:
+            return None
+        import struct
+        return struct.unpack(">II", raw[16:24])
+
+    tv_banner = RES / "drawable-xhdpi" / "cb_banner.png"
+    tv_icon = RES / "mipmap-xhdpi" / "ic_launcher.png"
+    check(tv_banner.exists(),
+          "TV assets: drawable-xhdpi/cb_banner.png is missing")
+    if tv_banner.exists():
+        check(png_size(tv_banner) == (320, 180),
+              f"TV assets: xhdpi banner is {png_size(tv_banner)}, expected 320x180")
+    check(tv_icon.exists(),
+          "TV assets: mipmap-xhdpi/ic_launcher.png is missing")
+    if tv_icon.exists():
+        size = png_size(tv_icon)
+        check(size is not None and size[0] >= 160 and size[1] >= 160,
+              f"TV assets: xhdpi icon is {size}, expected at least 160x160")
 
     # 5a2. both component name forms must be present.
     # Launchers match the literal string in ComponentInfo{...} and do not all

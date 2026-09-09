@@ -63,6 +63,10 @@ class MainActivity : AppCompatActivity() {
             layoutManager = GridLayoutManager(this@MainActivity, spanForScreen())
             adapter = this@MainActivity.adapter
             setHasFixedSize(true)
+            // Filtering should not animate every one of the 900+ tiles. The
+            // tile itself owns the small focus animation, so D-pad focus stays
+            // stable while DiffUtil updates the data set.
+            itemAnimator = null
         }
 
         if (pickMode) {
@@ -96,6 +100,21 @@ class MainActivity : AppCompatActivity() {
                 ""
             }
             wpEntry.setOnClickListener { startActivity(Intent(this, WallpapersActivity::class.java)) }
+        }
+
+        // Give a physical remote a deterministic starting point. Without an
+        // initial target Android may leave focus on the decor view, requiring
+        // an extra key press before the first D-pad move does anything.
+        window.decorView.post {
+            if (pickMode) {
+                val chips = findViewById<RecyclerView>(R.id.chip_row)
+                chips.post {
+                    val firstChip = chips.layoutManager?.findViewByPosition(0)
+                    (firstChip ?: chips).requestFocus()
+                }
+            } else {
+                findViewById<View>(R.id.apply_button).requestFocus()
+            }
         }
     }
 
@@ -184,7 +203,30 @@ class MainActivity : AppCompatActivity() {
                 || item.drawable.contains(q)
             catOk && qOk
         }
+        val grid = findViewById<RecyclerView>(R.id.grid)
+        // Keep the remote cursor attached to the same icon when a query or
+        // category changes. Losing focus after every keystroke is especially
+        // disorienting on TV because there is no touch position to recover.
+        val focusedDrawable = (0 until adapter.itemCount)
+            .firstOrNull { position ->
+                grid.findViewHolderForAdapterPosition(position)?.itemView?.hasFocus() == true
+            }
+            ?.let(adapter::itemAt)
+            ?.drawable
+
         adapter.submit(filtered)
+        if (focusedDrawable != null) {
+            grid.post {
+                val nextPosition = filtered.indexOfFirst { it.drawable == focusedDrawable }
+                if (nextPosition >= 0) {
+                    grid.layoutManager?.scrollToPosition(nextPosition)
+                    grid.post {
+                        grid.findViewHolderForAdapterPosition(nextPosition)
+                            ?.itemView?.requestFocus()
+                    }
+                }
+            }
+        }
         findViewById<TextView>(R.id.count).text =
             if (filtered.size == all.size) {
                 getString(R.string.icon_count_fmt, all.size, BuildConfig.VERSION_NAME)
@@ -460,8 +502,11 @@ class MainActivity : AppCompatActivity() {
             "GAMING" to "Gaming",
             "DEBRID" to "Debrid",
             "BROWSER" to "Browsers",
+            "REMOTE" to "Remotes",
             "VIDEO" to "Video",
             "SYSTEM" to "System",
+            "TRACK" to "Tracking",
+            "CORE" to "Core Builds",
             "APP" to "Apps"
         )
     }
