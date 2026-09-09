@@ -10,26 +10,29 @@
   The inset also gives the grid its gutters: RecyclerView adds no
   ItemDecoration here, so the ring margin is what stops tiles touching.
 
-  Focus = 3dp cyan ring, 3dp gap of night, then the card. The gap is what
-  separates focus from the filled selected-chip state at 3m.
+  Focus = solid 3dp cyan ring, 3dp gap of night, then the card. Three opaque
+  layers instead of a stroke on a glow — the ring is sharp and the gap reads
+  as true background at 3m.
 -->
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
     <item android:state_focused="true">
         <layer-list>
-            <!-- Glow, outside the ring so focus reads across the room. -->
+            <!-- Ring: solid cyan fill at full bounds. -->
             <item>
                 <shape android:shape="rectangle">
-                    <solid android:color="@color/cb_focus_glow" />
+                    <solid android:color="@color/cb_signal_cyan" />
                     <corners android:radius="@dimen/cb_radius_card" />
                 </shape>
             </item>
-            <!-- Ring. -->
-            <item>
+            <!-- Gap: night fill, inset by ring width. -->
+            <item
+                android:left="@dimen/cb_focus_ring"
+                android:top="@dimen/cb_focus_ring"
+                android:right="@dimen/cb_focus_ring"
+                android:bottom="@dimen/cb_focus_ring">
                 <shape android:shape="rectangle">
-                    <solid android:color="@android:color/transparent" />
-                    <corners android:radius="@dimen/cb_radius_card" />
-                    <stroke android:width="@dimen/cb_focus_ring"
-                        android:color="@color/cb_signal_cyan" />
+                    <solid android:color="@color/cb_night" />
+                    <corners android:radius="@dimen/cb_radius_card_gap" />
                 </shape>
             </item>
             <!-- Card, inset by ring + gap. -->
