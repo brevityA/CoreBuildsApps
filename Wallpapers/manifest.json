@@ -3,7 +3,7 @@
   "version": "4.0",
   "author": "brevityA",
   "brand_guide": "Core-Builds Brand Guide v1.0 (2026-08-11)",
-  "count": 50,
+  "count": 58,
   "wallpapers": [
     {
       "name": "01 Mesh Drift",
@@ -230,6 +230,34 @@
       "resolution": "3840x2160"
     },
     {
+      "name": "51 Vortex",
+      "series": "series-2-motion",
+      "url": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/series-2-motion/corebuilds-51-vortex.png",
+      "thumb": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/thumbs/corebuilds-51-vortex.jpg",
+      "resolution": "3840x2160"
+    },
+    {
+      "name": "52 Shockwave",
+      "series": "series-2-motion",
+      "url": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/series-2-motion/corebuilds-52-shockwave.png",
+      "thumb": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/thumbs/corebuilds-52-shockwave.jpg",
+      "resolution": "3840x2160"
+    },
+    {
+      "name": "53 Cascade",
+      "series": "series-2-motion",
+      "url": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/series-2-motion/corebuilds-53-cascade.png",
+      "thumb": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/thumbs/corebuilds-53-cascade.jpg",
+      "resolution": "3840x2160"
+    },
+    {
+      "name": "54 Drift Field",
+      "series": "series-2-motion",
+      "url": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/series-2-motion/corebuilds-54-drift-field.png",
+      "thumb": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/thumbs/corebuilds-54-drift-field.jpg",
+      "resolution": "3840x2160"
+    },
+    {
       "name": "33 Horizon Cyan",
       "series": "series-3-horizons",
       "url": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/series-3-horizons/corebuilds-33-horizon-cyan.png",
@@ -283,6 +311,34 @@
       "series": "series-3-horizons",
       "url": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/series-3-horizons/corebuilds-40-horizon-void.png",
       "thumb": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/thumbs/corebuilds-40-horizon-void.jpg",
+      "resolution": "3840x2160"
+    },
+    {
+      "name": "55 Horizon Dusk",
+      "series": "series-3-horizons",
+      "url": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/series-3-horizons/corebuilds-55-horizon-dusk.png",
+      "thumb": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/thumbs/corebuilds-55-horizon-dusk.jpg",
+      "resolution": "3840x2160"
+    },
+    {
+      "name": "56 Horizon Frost",
+      "series": "series-3-horizons",
+      "url": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/series-3-horizons/corebuilds-56-horizon-frost.png",
+      "thumb": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/thumbs/corebuilds-56-horizon-frost.jpg",
+      "resolution": "3840x2160"
+    },
+    {
+      "name": "57 Horizon Signal",
+      "series": "series-3-horizons",
+      "url": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/series-3-horizons/corebuilds-57-horizon-signal.png",
+      "thumb": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/thumbs/corebuilds-57-horizon-signal.jpg",
+      "resolution": "3840x2160"
+    },
+    {
+      "name": "58 Horizon Ember Deep",
+      "series": "series-3-horizons",
+      "url": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/series-3-horizons/corebuilds-58-horizon-ember-deep.png",
+      "thumb": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/thumbs/corebuilds-58-horizon-ember-deep.jpg",
       "resolution": "3840x2160"
     },
     {
