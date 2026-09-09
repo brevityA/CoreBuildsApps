@@ -192,6 +192,25 @@
             android:textStyle="bold" />
     </LinearLayout>
 
+    <EditText
+        android:id="@+id/wp_search"
+        android:layout_width="match_parent"
+        android:layout_height="52dp"
+        android:layout_marginTop="@dimen/cb_space_sm"
+        android:background="@drawable/bg_search"
+        android:hint="@string/wp_search_hint"
+        android:imeOptions="actionDone"
+        android:inputType="text"
+        android:maxLines="1"
+        android:nextFocusDown="@id/wp_chips"
+        android:nextFocusUp="@id/wp_export"
+        android:paddingStart="@dimen/cb_space_md"
+        android:paddingEnd="@dimen/cb_space_md"
+        android:singleLine="true"
+        android:textColor="@color/cb_ink"
+        android:textColorHint="@color/cb_slate"
+        android:textSize="@dimen/cb_text_label" />
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/wp_chips"
         android:layout_width="match_parent"
