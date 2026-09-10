@@ -235,6 +235,11 @@ def layout_ids(path: Path) -> set[str]:
 
 def main() -> int:
     all_ids: dict[str, set[str]] = {}
+    # Every file the loop below visits, parsed or not. Only app/ and pop/ go
+    # through it; the focus pass also reads pixel-neon, so it has to report a
+    # parse error there itself rather than assume this loop already did —
+    # tracking only the successful parses would double-report the failures.
+    visited: set[Path] = set()
     for mod, main in MODULES.items():
         res = main / "res"
         if not res.is_dir():
@@ -243,6 +248,7 @@ def main() -> int:
         have = declared_resources(res)
 
         for xml in sorted(res.rglob("*.xml")):
+            visited.add(xml)
             try:
                 ET.parse(xml)
             except ET.ParseError as e:
@@ -282,8 +288,10 @@ def main() -> int:
             try:
                 for gap in focus_chain_gaps(xml):
                     fail(gap)
-            except ET.ParseError:
-                continue  # already reported as not well-formed above
+            except ET.ParseError as e:
+                if xml not in visited:
+                    fail(f"{xml.relative_to(ROOT)}: not well-formed ({e})")
+                continue
 
     if FAIL:
         print(f"FAILED — {len(FAIL)} problem(s):\n")
