@@ -212,10 +212,52 @@ class KotlinWiringTests(unittest.TestCase):
         self.assertIn("KEYCODE_DPAD_LEFT", code)
         self.assertIn("wp_grid", code)
 
+    def test_wallpaper_chip_rebind_is_payload_only(self):
+        """A payload-less notifyItemChanged still triggers the default
+        RecyclerView change animation: the pressed chip is detached and
+        cross-faded with a fresh ViewHolder, dropping D-pad focus and its
+        highlight on the press that moved it. The selection rebind must carry
+        a payload so the focused ViewHolder is reused in place.
+        """
+        src = self.files["WallpaperChipAdapter.kt"]
+        self.assertRegex(src, r"notifyItemChanged\([^,]+,\s*\w*SELECTION\w*\)")
+        self.assertIn("onBindViewHolder(holder: VH, position: Int, payloads", src)
+
+    def test_wallpaper_lists_disable_change_animations(self):
+        """The main screen sets itemAnimator = null on its chip/grid lists for
+        exactly this reason. The wallpaper screen must do the same for both
+        the chip strip and the tile grid.
+        """
+        src = self.files["WallpapersActivity.kt"]
+        self.assertGreaterEqual(src.count("itemAnimator = null"), 2)
+
+    def test_wallpaper_screen_sets_initial_focus(self):
+        """The main screen's own rule: without a deterministic initial target
+        Android can leave focus on the decor view, so the wallpaper menu opens
+        with no highlighted control and the first D-pad press does nothing.
+        The first chip ("All") must take focus once it is laid out.
+        """
+        src = self.files["WallpapersActivity.kt"]
+        self.assertIn("findViewByPosition(0)", src)
+        self.assertRegex(src, r"\(firstChip \?[:] chips\)\.requestFocus\(\)")
+
     def test_wallpaper_tile_requests_item_focus(self):
         src = self.files["WallpaperAdapter.kt"]
         self.assertIn("itemView.isFocusable = true", src)
         self.assertIn("setOnFocusChangeListener", src)
+
+    def test_wallpaper_tile_selection_keeps_focus(self):
+        """Long-press selection toggles the focused tile. A payload-less
+        notifyItemChanged there detaches the tile under the D-pad, so the
+        focus ring and the selection frame can never show together.
+        """
+        src = self.files["WallpaperAdapter.kt"]
+        self.assertRegex(
+            src, re.compile(r"notifyItemChanged\(.*?SELECTION_PAYLOAD\s*\)", re.DOTALL)
+        )
+        self.assertIn("onBindViewHolder(holder: VH, position: Int, payloads", src)
+        # Selection-mode sweeps reuse holders in place via payload too.
+        self.assertIn("notifyItemRangeChanged(0, itemCount, SELECTION_PAYLOAD)", src)
 
 
 class VersionTests(unittest.TestCase):
