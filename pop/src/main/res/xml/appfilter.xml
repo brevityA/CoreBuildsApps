@@ -1858,6 +1858,9 @@
     <!-- Seven Plus -->
     <item component="ComponentInfo{com.swm.live/au.com.seven.inferno.ui.setup.SetupActivity}" drawable="seven_plus_banner"/>
     <item component="ComponentInfo{com.swm.live/au.com.seven.inferno.ui.tv.setup.SetupTvActivity}" drawable="seven_plus_banner"/>
+    <item component="ComponentInfo{com.swm.live/au.com.seven.inferno.MainActivity}" drawable="seven_plus_banner"/>
+    <item component="ComponentInfo{com.swm.live/com.swm.live.MainActivity}" drawable="seven_plus_banner"/>
+    <item component="ComponentInfo{com.swm.live/.MainActivity}" drawable="seven_plus_banner"/>
     <!-- Sfjazz At Home -->
     <item component="ComponentInfo{com.sfjazzdigital/tv.vhx.LauncherActivity}" drawable="sfjazz_at_home_banner"/>
     <item component="ComponentInfo{com.sfjazzdigital/tv.vhx.tv.home.TvHomeActivity}" drawable="sfjazz_at_home_banner"/>
@@ -2004,8 +2007,6 @@
     <!-- Streamflix -->
     <item component="ComponentInfo{com.tanasi.streamflix/com.tanasi.streamflix.activities.main.MainTvActivity}" drawable="streamflix_2_banner"/>
     <item component="ComponentInfo{com.tanasi.streamflix/.activities.main.MainTvActivity}" drawable="streamflix_2_banner"/>
-    <item component="ComponentInfo{com.weatherbug.firetv/com.weatherbug.firetv.MainActivity}" drawable="streamflix_2_banner"/>
-    <item component="ComponentInfo{com.weatherbug.firetv/.MainActivity}" drawable="streamflix_2_banner"/>
     <!-- Streamlocator VPN -->
     <item component="ComponentInfo{com.streamlocator.vpn/com.streamlocator.vpn.ui.tv.home.TVHomeActivity}" drawable="streamlocator_vpn_banner"/>
     <item component="ComponentInfo{com.streamlocator.vpn/.ui.tv.home.TVHomeActivity}" drawable="streamlocator_vpn_banner"/>
@@ -2458,6 +2459,9 @@
     <item component="ComponentInfo{com.smartwave.wave_iptv/.SplashActivity}" drawable="wave_iptv_banner"/>
     <!-- Wave TV Player -->
     <item component="ComponentInfo{com.smartwave.wavetvplayer/com.smartwave.wave_iptv.SplashActivity}" drawable="wavetv_banner"/>
+    <!-- WeatherBug -->
+    <item component="ComponentInfo{com.weatherbug.firetv/com.weatherbug.firetv.MainActivity}" drawable="weatherbug_banner"/>
+    <item component="ComponentInfo{com.weatherbug.firetv/.MainActivity}" drawable="weatherbug_banner"/>
     <!-- WeatherYou -->
     <item component="ComponentInfo{com.rodrigmatrix.weatheryou/com.rodrigmatrix.weatheryou.tv.presentation.navigation.MainActivity}" drawable="rodrigmatrix_banner"/>
     <item component="ComponentInfo{com.rodrigmatrix.weatheryou/.tv.presentation.navigation.MainActivity}" drawable="rodrigmatrix_banner"/>

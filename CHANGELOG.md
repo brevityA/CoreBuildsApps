@@ -4,6 +4,25 @@ All notable changes to the Core Builds Icon Pack. Format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); versions follow
 [SemVer](https://semver.org/spec/v2.0.0.html).
 
+## [1.8.11] — 2026-09-10
+
+**WeatherBug uncoupled from Streamflix, 7plus mapping widened, Pixel Neon chip highlight.**
+
+### Fixed
+- **WeatherBug applied the Streamflix icon.** `com.weatherbug.firetv` was a
+  component of `streamflix_2`, copied from Projectivy 1.1.9. It now has its
+  own catalog entry (`weatherbug`, `#2F6F8C` `tile_W`).
+- **7plus on `com.swm.live` only mapped setup activities.** Added
+  `au.com.seven.inferno.MainActivity` and `.MainActivity` (unverified) so the
+  live Play Store package has a chance of matching the Leanback/home
+  activity, not just first-run setup.
+- **Pixel Neon category chips dropped D-pad highlight on press.** Same
+  `notifyDataSetChanged()` bug #101 fixed on the wallpaper chips; the icon
+  filter row now uses targeted `notifyItemChanged`.
+
+Coverage: **926 icons / 1101 catalog components / 58 classic wallpapers**.
+versionName 1.8.11, versionCode 21.
+
 ## [1.8.10] — 2026-09-10
 
 **Post-1.8.9 hotfix: TV focus reachability, 7plus artwork, launcher-neutral

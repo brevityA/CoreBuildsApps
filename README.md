@@ -13,9 +13,9 @@
 <!-- suite-stamp:start -->
 > | App | Current | What it does | Downloader | Release tag |
 > |---|---:|---|---|---|
-> | **[Core Builds Icon Pack](#-icon-pack)** | `v1.8.10` | 925 transparent icons + 58 wallpapers for Projectivy Launcher | `5270601` | [`v*` / `iconpack`](../../releases) |
-> | **[Core Builds Pixel Neon](#-pixel-neon-icon-pack)** | `v0.1.0` | 925 transparent 8-bit neon icons + 70 wallpapers for Projectivy Launcher | `[USER TO SUPPLY]` | [`pixel-neon-v*` / `pixel-neon`](../../releases) |
-> | **[Core Builds Pop](#-core-builds-pop)** | `v1.0.0` | The same 925 icons, pop-art cartoon: 16 swatches, one container | `[USER TO SUPPLY]` | [`pop-v*` / `pop`](../../releases) |
+> | **[Core Builds Icon Pack](#-icon-pack)** | `v1.8.11` | 926 transparent icons + 58 wallpapers for Projectivy Launcher | `5270601` | [`v*` / `iconpack`](../../releases) |
+> | **[Core Builds Pixel Neon](#-pixel-neon-icon-pack)** | `v0.1.0` | 926 transparent 8-bit neon icons + 70 wallpapers for Projectivy Launcher | `[USER TO SUPPLY]` | [`pixel-neon-v*` / `pixel-neon`](../../releases) |
+> | **[Core Builds Pop](#-core-builds-pop)** | `v1.0.0` | The same 926 icons, pop-art cartoon: 16 swatches, one container | `[USER TO SUPPLY]` | [`pop-v*` / `pop`](../../releases) |
 > | **[Core Line](#-core-line)** | `v1.3.0` | Sports scores & channel RSS ticker (chyron) | `7375676` | [`coreline-v*` / `coreline`](../../releases) |
 > | **[Core Shift](#-core-shift)** | `v2.3.5` | Android TV screensaver + motion wallpaper browser | `8829421` | [`shift-v*` / `shift`](../../releases) |
 > | **[Core Motion](#-core-motion)** | `v1.0.0` | Projectivy wallpaper-provider plugin for Core Motion loops | `[USER TO SUPPLY]` | [`motion-v*` / `motion`](../../releases) |

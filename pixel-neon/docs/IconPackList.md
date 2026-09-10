@@ -1,6 +1,6 @@
 # Core Builds Pixel Neon · supported applications
 
-`925` individually generated pixel sprites · `1099` catalog components · pack v0.1.0
+`926` individually generated pixel sprites · `1101` catalog components · pack v0.1.0
 
 This is the alternate 8-bit neon treatment of the Core Builds catalog. Each row uses its semantic brand glyph cue, then gets a hash-seeded pixel recipe; this pack does not reuse the monoline SVG geometry or banner lockups.
 
@@ -667,7 +667,7 @@ This is the alternate 8-bit neon treatment of the Core Builds catalog. Each row 
 | SeriesGuide | `battlelancer` | `#FEE440` | `com.battlelancer.seriesguide/com.battlelancer.seriesguide.ui.ShowsActivity` |
 | SetEdit | `setedit22` | `#8AC926` | `by4a.setedit22/by4a.setedit.EditorActivity` |
 | Settings | `settings` | `#9AA0A6` | `com.android.tv.settings/.MainSettings`<br>`com.android.settings/.Settings`<br>`com.android.tv.settings/com.android.tv.settings.SettingsActivity`<br>`com.android.tv.settings/com.android.tv.settings.SetupActivity` |
-| Seven Plus | `seven_plus` | `#E81820` | `com.swm.live/au.com.seven.inferno.ui.setup.SetupActivity`<br>`com.swm.live/au.com.seven.inferno.ui.tv.setup.SetupTvActivity` |
+| Seven Plus | `seven_plus` | `#E81820` | `com.swm.live/au.com.seven.inferno.ui.setup.SetupActivity`<br>`com.swm.live/au.com.seven.inferno.ui.tv.setup.SetupTvActivity`<br>`com.swm.live/au.com.seven.inferno.MainActivity`<br>`com.swm.live/.MainActivity` |
 | Sfjazz At Home | `sfjazz_at_home` | `#B5179E` | `com.sfjazzdigital/tv.vhx.LauncherActivity`<br>`com.sfjazzdigital/tv.vhx.tv.home.TvHomeActivity` |
 | Sfr TV | `sfr_tv` | `#FEE440` | `com.sfr.androidtv.gen8/com.sfr.androidtv.gen8.ui.Tv8MainActivity` |
 | Shadow | `shadowcloudgaming` | `#0A0C0D` | `com.blade.shadowcloudgaming/com.blade.shadow.dispatcher.DispatcherActivity` |
@@ -719,7 +719,7 @@ This is the alternate 8-bit neon treatment of the Core Builds catalog. Each row 
 | Stream Fire | `stream_fire` | `#FEE440` | `com.streamfire.app/com.streamfire.app.ui.HomeActivity` |
 | Stream Vault | `streamvault` | `#9B59B6` | `com.streamvault.app/com.streamvault.app.MainActivity` |
 | Streamflix | `streamflix` | `#E50914` | `com.streamflixreborn.streamflix/com.streamflixreborn.streamflix.activities.main.MainTvActivity` |
-| Streamflix | `streamflix_2` | `#577590` | `com.tanasi.streamflix/com.tanasi.streamflix.activities.main.MainTvActivity`<br>`com.weatherbug.firetv/com.weatherbug.firetv.MainActivity` |
+| Streamflix | `streamflix_2` | `#577590` | `com.tanasi.streamflix/com.tanasi.streamflix.activities.main.MainTvActivity` |
 | Streamlocator VPN | `streamlocator_vpn` | `#F94144` | `com.streamlocator.vpn/com.streamlocator.vpn.ui.tv.home.TVHomeActivity` |
 | Streamyfin | `fredrikburmester` | `#F94144` | `com.fredrikburmester.streamyfin/com.fredrikburmester.streamyfin.MainActivity` |
 | Streamz | `dpgmedia` | `#FEE440` | `be.dpgmedia.streamz/be.persgroep.streamz.StreamzMainActivity` |
@@ -883,6 +883,7 @@ This is the alternate 8-bit neon treatment of the Core Builds catalog. Each row 
 | Watcho | `watcho` | `#FF477E` | `com.watcho_multi/com.yupptv.ott.ui.activity.SplashActivity` |
 | Wave IPTV | `wave_iptv` | `#FF6B35` | `com.smartwave.wave_iptv/com.smartwave.wave_iptv.SplashActivity` |
 | Wave TV Player | `wavetv` | `#2196F3` | `com.smartwave.wavetvplayer/com.smartwave.wave_iptv.SplashActivity` |
+| WeatherBug | `weatherbug` | `#2F6F8C` | `com.weatherbug.firetv/com.weatherbug.firetv.MainActivity` |
 | WeatherYou | `rodrigmatrix` | `#90BE6D` | `com.rodrigmatrix.weatheryou/com.rodrigmatrix.weatheryou.tv.presentation.navigation.MainActivity` |
 | Wetv | `wetv` | `#4CC9F0` | `com.tencent.qqlivei18n/com.ktcp.video.activity.MainActivity`<br>`com.tencent.qqlivei18n/com.ktcp.video.activity.HomeActivity` |
 | Weyd | `weyd` | `#6C5CE7` | `com.weyd.app/.MainActivity` |
