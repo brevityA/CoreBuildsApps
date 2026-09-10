@@ -41,14 +41,26 @@ class WallpaperChipAdapter(
         return VH(v)
     }
 
-    override fun onBindViewHolder(holder: VH, position: Int) {
-        val key = keys[position]
-        val selected = key == selectedKey
-        holder.view.text = labels[position]
+    override fun onBindViewHolder(holder: VH, position: Int, payloads: MutableList<Any>) {
+        if (payloads.contains(SELECTION_PAYLOAD)) {
+            bindSelection(holder, position)
+            return
+        }
+        onBindViewHolder(holder, position)
+    }
+
+    private fun bindSelection(holder: VH, position: Int) {
+        val selected = keys[position] == selectedKey
         holder.view.isActivated = selected
         holder.view.isSelected = selected
         holder.view.contentDescription =
             "${labels[position]}, filter${if (selected) ", selected" else ""}"
+    }
+
+    override fun onBindViewHolder(holder: VH, position: Int) {
+        val key = keys[position]
+        holder.view.text = labels[position]
+        bindSelection(holder, position)
         holder.view.nextFocusUpId = R.id.wp_selection_bar
         holder.view.nextFocusDownId = R.id.wp_grid
         holder.view.setOnClickListener { select(key) }
@@ -93,8 +105,15 @@ class WallpaperChipAdapter(
         val previous = keys.indexOf(selectedKey)
         selectedKey = key
         val next = keys.indexOf(key)
-        if (previous >= 0) notifyItemChanged(previous)
-        if (next >= 0) notifyItemChanged(next)
+        if (previous >= 0) notifyItemChanged(previous, SELECTION_PAYLOAD)
+        if (next >= 0) notifyItemChanged(next, SELECTION_PAYLOAD)
         onPick(key)
+    }
+
+    companion object {
+        // Partial-bind payload: refreshes only activated/selected state so the
+        // chip ViewHolder (and its D-pad focus/highlight) is reused in place
+        // instead of being replaced by the RecyclerView change animation.
+        private const val SELECTION_PAYLOAD = "selection"
     }
 }

@@ -926,6 +926,7 @@
     <item drawable="frograms_banner" />
     <item drawable="watcher_tv_banner" />
     <item drawable="watcho_banner" />
+    <item drawable="weatherbug_banner" />
     <item drawable="wetv_banner" />
     <item drawable="damontecres_2_banner" />
     <item drawable="linkplay_banner" />
@@ -1872,6 +1873,7 @@
     <item drawable="frograms" />
     <item drawable="watcher_tv" />
     <item drawable="watcho" />
+    <item drawable="weatherbug" />
     <item drawable="wetv" />
     <item drawable="damontecres_2" />
     <item drawable="linkplay" />

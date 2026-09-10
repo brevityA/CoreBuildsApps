@@ -6,7 +6,7 @@
 
 | Product | Path | Package ID | Version | Downloader / stable tag |
 |---|---|---|---:|---|
-| Core Builds Icon Pack | `app/` with repo-root Gradle | `tv.corebuilds.iconpack` | `1.8.10` | `5270601` / `iconpack` |
+| Core Builds Icon Pack | `app/` with repo-root Gradle | `tv.corebuilds.iconpack` | `1.8.11` | `5270601` / `iconpack` |
 | Core Builds Pixel Neon | `pixel-neon/` | `tv.corebuilds.pixelneon` | `0.1.0` | `[USER TO SUPPLY]` / `pixel-neon` |
 | Core Builds Pop | `pop/` with repo-root Gradle | `tv.corebuilds.iconpack.pop` | `1.0.0` | `[USER TO SUPPLY]` / `pop` |
 | Core Line | `ticker/` + `ticker/android/` | `dev.corebuilds.line` | `1.3.0` | `7375676` / `coreline` |
@@ -37,7 +37,7 @@ python tools/validate.py
 python tests/test_icon_identity.py    # 35 style/colour/reference/mapping regressions (after all packs build)
 ```
 
-Paste the validator receipt. Current receipt: `Validated 925 icons · 1661 components · 24769 checks run`.
+Paste the validator receipt. Current receipt: `Validated 926 icons · 1664 components · 24814 checks run`.
 
 Anything touching the catalog, `tools/glyphs.py`, or shared `app/` resources also rebuilds Pop, because Pop mirrors those resources and renders the same catalog:
 
@@ -47,7 +47,7 @@ python tools/validate_pop.py
 python tests/test_pop.py
 ```
 
-Pop receipts: `Validated 925 icons · 1099 components · 16 swatches · 13892 checks run` and `Ran 28 tests ... OK`.
+Pop receipts: `Validated 926 icons · 1101 components · 16 swatches · 13911 checks run` and `Ran 28 tests ... OK`.
 
 **The pack identity takes precedence over literal vendor-logo reproduction.**
 Reviewed brand entries use `style: core_monoline`: 32px rounded primary strokes,
