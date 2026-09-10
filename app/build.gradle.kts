@@ -11,8 +11,8 @@ android {
         applicationId = "tv.corebuilds.iconpack"
         minSdk = 21
         targetSdk = 34
-        versionCode = 19
-        versionName = "1.8.9"
+        versionCode = 20
+        versionName = "1.8.10"
 
         // Read by the shared updater code, which :pop also compiles. Values
         // are the classic pack's existing ones, so behaviour is unchanged.
