@@ -123,7 +123,13 @@ def check_stale_claims() -> None:
     for file in files:
         text = read(file)
         for needle in stale:
-            if needle in text:
+            # Version-shaped needles need a trailing boundary: "pack v1.8.1"
+            # is stale, but "pack v1.8.10" merely contains it. Without the
+            # lookahead, every 1.8.1x release trips its own staleness guard.
+            pattern = re.escape(needle)
+            if re.fullmatch(r"(?:pack )?v\d+\.\d+\.\d+", needle):
+                pattern += r"(?!\d)"
+            if re.search(pattern, text):
                 fail(f"stale suite truth in {file}: {needle}")
     for old in ["CLAUDE.md", "START_HERE_CLAUDE.md", "patches/START_HERE_CLAUDE.md", "README-EXTRACT.txt"]:
         if (ROOT / old).exists():
