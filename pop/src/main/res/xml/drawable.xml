@@ -101,6 +101,7 @@
     <item drawable="peacockandroid_banner" />
     <item drawable="primevideo_banner" />
     <item drawable="sbs_banner" />
+    <item drawable="seven_plus_banner" />
     <item drawable="dramafever_banner" />
     <item drawable="stan_banner" />
     <item drawable="bydeluxe_banner" />
@@ -803,7 +804,6 @@
     <item drawable="sd_maid_banner" />
     <item drawable="seerrtv_banner" />
     <item drawable="setedit22_banner" />
-    <item drawable="seven_plus_banner" />
     <item drawable="sfjazz_at_home_banner" />
     <item drawable="sfr_tv_banner" />
     <item drawable="shadowcloudgaming_banner" />
@@ -1047,6 +1047,7 @@
     <item drawable="peacockandroid" />
     <item drawable="primevideo" />
     <item drawable="sbs" />
+    <item drawable="seven_plus" />
     <item drawable="dramafever" />
     <item drawable="stan" />
     <item drawable="bydeluxe" />
@@ -1749,7 +1750,6 @@
     <item drawable="sd_maid" />
     <item drawable="seerrtv" />
     <item drawable="setedit22" />
-    <item drawable="seven_plus" />
     <item drawable="sfjazz_at_home" />
     <item drawable="sfr_tv" />
     <item drawable="shadowcloudgaming" />

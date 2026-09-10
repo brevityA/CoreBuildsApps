@@ -669,7 +669,7 @@ Source accents are retained in the catalog. **On dark** is the shared square/ban
 | SeriesGuide | `battlelancer` | `#FEE440` | `#FEE440` | `com.battlelancer.seriesguide/com.battlelancer.seriesguide.ui.ShowsActivity` |
 | SetEdit | `setedit22` | `#8AC926` | `#8AC926` | `by4a.setedit22/by4a.setedit.EditorActivity` |
 | Settings | `settings` | `#9AA0A6` | `#9AA0A6` | `com.android.tv.settings/.MainSettings`<br>`com.android.settings/.Settings`<br>`com.android.tv.settings/com.android.tv.settings.SettingsActivity`<br>`com.android.tv.settings/com.android.tv.settings.SetupActivity` |
-| Seven Plus | `seven_plus` | `#FF6B35` | `#FF6B35` | `com.swm.live/au.com.seven.inferno.ui.setup.SetupActivity`<br>`com.swm.live/au.com.seven.inferno.ui.tv.setup.SetupTvActivity` |
+| Seven Plus | `seven_plus` | `#E81820` | `#E81820` | `com.swm.live/au.com.seven.inferno.ui.setup.SetupActivity`<br>`com.swm.live/au.com.seven.inferno.ui.tv.setup.SetupTvActivity` |
 | Sfjazz At Home | `sfjazz_at_home` | `#B5179E` | `#B5179E` | `com.sfjazzdigital/tv.vhx.LauncherActivity`<br>`com.sfjazzdigital/tv.vhx.tv.home.TvHomeActivity` |
 | Sfr TV | `sfr_tv` | `#FEE440` | `#FEE440` | `com.sfr.androidtv.gen8/com.sfr.androidtv.gen8.ui.Tv8MainActivity` |
 | Shadow | `shadowcloudgaming` | `#0A0C0D` | `#E6EDF3` | `com.blade.shadowcloudgaming/com.blade.shadow.dispatcher.DispatcherActivity` |

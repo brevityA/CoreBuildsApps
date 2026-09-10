@@ -43,7 +43,7 @@
 
     <!-- Wallpapers -->
     <string name="wp_entry">Wallpapers</string>
-    <string name="wp_entry_sub">70 Pixel Neon 4K wallpapers for Monet</string>
+    <string name="wp_entry_sub">70 Pixel Neon 4K wallpapers</string>
     <string name="wp_kicker">PIXEL NEON · WALLPAPERS</string>
     <string name="wp_title">Wallpapers</string>
     <string name="wp_search_hint">Find a wallpaper by name or series</string>
@@ -52,7 +52,7 @@
     <string name="wp_hint">Select a wallpaper to preview it full-screen, then press Set.</string>
     <string name="wp_count_fmt">%1$d wallpapers</string>
     <string name="wp_filter_fmt">%1$d of %2$d wallpapers</string>
-    <string name="wp_entry_sub_fmt">%1$d Pixel Neon 4K wallpapers for Monet</string>
+    <string name="wp_entry_sub_fmt">%1$d Pixel Neon 4K wallpapers</string>
     <string name="wp_downloading_fmt">Downloading… %1$d KB</string>
     <string name="wp_downloading_of_fmt">Downloading… %1$d of %2$d KB</string>
     <string name="wp_download_failed_fmt">Download failed: %1$s</string>
@@ -60,18 +60,18 @@
     <string name="wp_position_fmt">%1$d of %2$d</string>
     <string name="wp_set_wallpaper">Set wallpaper</string>
     <string name="wp_applying">Applying…</string>
-    <string name="wp_sub_set">Sets the system home wallpaper. Monet re-themes its tiles from it.</string>
+    <string name="wp_sub_set">Sets the system home wallpaper. Your launcher re-themes its tiles from it.</string>
     <string name="wp_sub_save">Saves to Pictures and opens the system setter (Fire TV fallback).</string>
     <string name="wp_set_done">Wallpaper set.</string>
     <string name="wp_saved">Saved to Pictures. Confirm in the system setter.</string>
-    <string name="wp_saved_hint">Saved to Pictures/CoreBuilds. Set it from Monet → Wallpaper.</string>
+    <string name="wp_saved_hint">Saved to Pictures/CoreBuilds. Set it from your launcher settings.</string>
     <string name="wp_load_failed">Could not load that wallpaper.</string>
     <string name="wp_permission_denied">Wallpaper permission is required to set it.</string>
     <string name="wp_set_failed_fmt">Could not set wallpaper: %1$s</string>
 
     <!-- Wallpaper export to Pictures (for launcher auto-rotation) -->
     <string name="wp_export">Export</string>
-    <string name="wp_export_sub">Copy selected wallpapers to Pictures/CoreBuilds for Monet to rotate.</string>
+    <string name="wp_export_sub">Copy selected wallpapers to Pictures/CoreBuilds for your launcher to rotate.</string>
     <string name="wp_select">Select</string>
     <string name="wp_cancel">Cancel</string>
     <string name="wp_select_all">Select all</string>
