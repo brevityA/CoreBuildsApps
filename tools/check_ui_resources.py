@@ -5,10 +5,10 @@ There is no Android SDK in this environment, so `assembleDebug` cannot run.
 This does the part of resource linking that actually catches mistakes:
 
   1. every modified XML file is well-formed
-  2. every @dimen/@color/@drawable/@string/@array reference in app/ and pop/
-     resolves to a declared resource in that same module
-  3. every R.id / R.string / R.drawable referenced from the shared Kotlin
-     exists in the layouts and values of the module that compiles it
+  2. every @dimen/@color/@drawable/@string/@array reference in app/, pop/ and
+     pixel-neon/ resolves to a declared resource in that same module
+  3. every R.id / R.string / R.drawable referenced from the Kotlin a module
+     compiles exists in that module's own layouts and values
   4. every @+id declared in a layout is unique within that layout
   5. no focusable view is stranded by an explicit nextFocus chain that hops
      over it (the class of bug that made the wallpapers button unreachable)
@@ -25,12 +25,21 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent
 ANDROID = "{http://schemas.android.com/apk/res/android}"
 
-# Pop compiles ../app/src/main/java, so its Kotlin must resolve against pop/.
+# module -> (res/values root, the Kotlin that module actually compiles).
+#
+# Pop compiles ../app/src/main/java, so app/'s Kotlin must resolve against
+# pop/'s resources as well as app/'s. Pixel Neon keeps its own fork of that
+# Kotlin under its own package, so it needs its own pairing — omitting it is
+# what let R.color.cb_hairline reach main and break the Pixel Neon build while
+# this checker reported OK.
 MODULES = {
-    "app": ROOT / "app" / "src" / "main",
-    "pop": ROOT / "pop" / "src" / "main",
+    "app": (ROOT / "app" / "src" / "main",
+            ROOT / "app/src/main/java/tv/corebuilds/iconpack"),
+    "pop": (ROOT / "pop" / "src" / "main",
+            ROOT / "app/src/main/java/tv/corebuilds/iconpack"),
+    "pixel-neon": (ROOT / "pixel-neon/app/src/main",
+                   ROOT / "pixel-neon/app/src/main/java/tv/corebuilds/pixelneon"),
 }
-KOTLIN = ROOT / "app" / "src" / "main" / "java" / "tv" / "corebuilds" / "iconpack"
 
 FAIL: list[str] = []
 
@@ -235,12 +244,12 @@ def layout_ids(path: Path) -> set[str]:
 
 def main() -> int:
     all_ids: dict[str, set[str]] = {}
-    # Every file the loop below visits, parsed or not. Only app/ and pop/ go
-    # through it; the focus pass also reads pixel-neon, so it has to report a
-    # parse error there itself rather than assume this loop already did —
-    # tracking only the successful parses would double-report the failures.
+    # Every file the loop below visits, parsed or not, so the focus pass can
+    # tell "already reported" from "not seen" without double-reporting.
+    # Tracking only the successful parses would report each malformed file
+    # twice.
     visited: set[Path] = set()
-    for mod, main in MODULES.items():
+    for mod, (main, kotlin) in MODULES.items():
         res = main / "res"
         if not res.is_dir():
             fail(f"{mod}: no res/ tree")
@@ -258,8 +267,8 @@ def main() -> int:
             if xml.parent.name == "layout":
                 all_ids.setdefault(mod, set()).update(layout_ids(xml))
 
-        # Kotlin references. Both modules compile this same source tree.
-        for kt in sorted(KOTLIN.glob("*.kt")):
+        # Kotlin references, against whichever source tree this module builds.
+        for kt in sorted(kotlin.glob("*.kt")):
             src = kt.read_text(encoding="utf-8")
             for kind in ("id", "string", "drawable", "dimen", "color", "array"):
                 for name in re.findall(rf"R\.{kind}\.([A-Za-z0-9_]+)", src):
@@ -298,9 +307,10 @@ def main() -> int:
         for f in FAIL:
             print("  \u2717 " + f)
         return 1
-    print("OK — XML well-formed, every resource reference resolves in both "
-          "modules, every R.* in the shared Kotlin exists, no duplicate ids, "
-          "no focusable view stranded by a nextFocus chain.")
+    print(f"OK — XML well-formed, every resource reference resolves in all "
+          f"{len(MODULES)} modules ({', '.join(MODULES)}), every R.* in the "
+          f"Kotlin each one compiles exists, no duplicate ids, no focusable "
+          f"view stranded by a nextFocus chain.")
     return 0
 
 

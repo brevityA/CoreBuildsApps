@@ -18,4 +18,9 @@
     <color name="cb_cta_ink">#04202B</color>
     <color name="cb_success">#34D399</color>
     <color name="cb_warning">#FBBF24</color>
+    <!-- Resting border on cards and fields: 1dp at 6% white. Same value as
+         app/ and pop/. WallpaperPreviewActivity draws the seed-palette
+         swatch borders with it; Pixel Neon carries its own copy of that
+         Kotlin, so it needs its own copy of the colour. -->
+    <color name="cb_hairline">#0FFFFFFF</color>
 </resources>
