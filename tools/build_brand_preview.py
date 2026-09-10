@@ -70,7 +70,7 @@ def main():
 
     # ---------------- 2. launcher icon at true sizes
     title(430, 168, "Launcher icon · true pixel sizes")
-    sub(430, 190, "mipmap ic_launcher.png — 144 / 96 / 48 / 24 px")
+    sub(430, 190, "mipmap ic_launcher.png — 240 / 160 / 48 / 24 px")
     x = 430
     for size in [144, 96, 48, 24]:
         y = 206 + (144 - size)

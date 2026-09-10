@@ -170,7 +170,7 @@ BRAND_ACCENT = "#E03127"     # snaps to pop_red
 def build_branding() -> int:
     written = 0
     icon_svg = render_icon(BRAND_GLYPH, BRAND_ACCENT, uid="brand")
-    for dpi, size in (("xhdpi", 96), ("xxhdpi", 144)):
+    for dpi, size in (("xhdpi", 160), ("xxhdpi", 240)):
         write_png(icon_svg, POP_RES / f"mipmap-{dpi}" / "ic_launcher.png", size, size)
         written += 1
     # Adaptive foreground: the mark alone at 66% of the 108dp canvas, because
