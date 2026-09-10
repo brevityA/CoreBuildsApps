@@ -130,7 +130,7 @@
                     android:focusable="true"
                     android:focusableInTouchMode="true"
                     android:nextFocusUp="@id/apply_button"
-                    android:nextFocusDown="@id/chip_row"
+                    android:nextFocusDown="@id/apply_targets"
                     android:paddingStart="@dimen/cb_space_lg"
                     android:paddingEnd="@dimen/cb_space_lg"
                     android:paddingTop="@dimen/cb_space_sm"
@@ -151,6 +151,18 @@
         </LinearLayout>
     </LinearLayout>
 
+    <!-- The vertical chain runs THROUGH apply_targets and update_bar, not
+         around them: pointing wallpapers_entry straight at chip_row is what
+         made both unreachable by remote. FocusFinder follows a GONE target's
+         own nextFocus in the same direction, so the chain collapses to the
+         next visible stop by itself when either is hidden.
+
+         Inbound focus must name the container, never update_button: the
+         Kotlin toggles update_bar's visibility while the button inside it
+         stays VISIBLE, and FocusFinder tests the target's OWN visibility
+         flag. Naming the button would hand focus to an invisible view. The
+         container is focusable + afterDescendants so it passes focus down to
+         the button when the bar is actually shown. -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/apply_targets"
         android:layout_width="match_parent"
@@ -158,6 +170,8 @@
         android:layout_marginTop="@dimen/cb_space_sm"
         android:clipToPadding="false"
         android:descendantFocusability="afterDescendants"
+        android:nextFocusUp="@id/wallpapers_entry"
+        android:nextFocusDown="@id/update_bar"
         android:orientation="horizontal"
         android:visibility="gone" />
 
@@ -167,7 +181,11 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/cb_space_md"
         android:background="@drawable/bg_update"
+        android:descendantFocusability="afterDescendants"
+        android:focusable="true"
         android:gravity="center_vertical"
+        android:nextFocusUp="@id/apply_targets"
+        android:nextFocusDown="@id/chip_row"
         android:orientation="horizontal"
         android:paddingStart="@dimen/cb_space_md"
         android:paddingEnd="@dimen/cb_space_md"
@@ -210,6 +228,8 @@
             android:background="@drawable/bg_cta"
             android:clickable="true"
             android:focusable="true"
+            android:nextFocusUp="@id/apply_targets"
+            android:nextFocusDown="@id/chip_row"
             android:paddingStart="@dimen/cb_space_lg"
             android:paddingEnd="@dimen/cb_space_lg"
             android:paddingTop="@dimen/cb_space_sm"
@@ -245,7 +265,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:clipToPadding="false"
-            android:nextFocusUp="@id/wallpapers_entry"
+            android:nextFocusUp="@id/update_bar"
             android:nextFocusDown="@id/grid"
             android:orientation="horizontal" />
 
@@ -262,7 +282,7 @@
             android:imeOptions="actionSearch"
             android:importantForAutofill="no"
             android:inputType="text"
-            android:nextFocusUp="@id/wallpapers_entry"
+            android:nextFocusUp="@id/update_bar"
             android:nextFocusDown="@id/grid"
             android:paddingStart="@dimen/cb_space_md"
             android:paddingEnd="@dimen/cb_space_md"

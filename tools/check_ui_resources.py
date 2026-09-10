@@ -10,6 +10,8 @@ This does the part of resource linking that actually catches mistakes:
   3. every R.id / R.string / R.drawable referenced from the shared Kotlin
      exists in the layouts and values of the module that compiles it
   4. every @+id declared in a layout is unique within that layout
+  5. no focusable view is stranded by an explicit nextFocus chain that hops
+     over it (the class of bug that made the wallpapers button unreachable)
 
 Exits non-zero on the first class of failure, listing all of them.
 """
@@ -104,6 +106,120 @@ def check_refs(path: Path, res: Path, have: dict[str, set[str]]) -> None:
                  f"{path.parent.parent.parent.parent.name}/")
 
 
+FOCUS_EXEMPT = {
+    # empty_state and grid are mutually exclusive: when one is VISIBLE the
+    # other is GONE, so chip_row's nextFocusDown="@id/grid" dead-ends on a
+    # GONE view and FocusFinder falls back to the geometric search, which
+    # finds these. Nothing routes around them while they are on screen.
+    "empty_clear_search",
+    "empty_clear_filter",
+}
+
+
+def focus_chain_gaps(path: Path) -> list[str]:
+    """Report focusable views that an explicit nextFocus chain hops over.
+
+    A view is only reachable by D-pad if some neighbour points at it. When a
+    conditionally-visible view sits between two views whose chain names each
+    other directly, the remote can never land on it — this is what made the
+    wallpapers button, the update button, the 'Also <launcher>' row and the
+    wallpaper selection bar unreachable. FocusFinder follows a GONE target's
+    own nextFocus in the same direction, so the fix is always to route the
+    chain *through* such a view rather than around it.
+    """
+    if path.name.startswith("item_"):
+        return []  # RecyclerView row templates; the list owns their focus
+    root = ET.parse(path).getroot()
+    order: list[str] = []
+    focusable: dict[str, str] = {}
+    edges: list[tuple[str, str, str]] = []
+    targets: set[str] = set()
+    # Path of child indices from the root, with the index zeroed wherever the
+    # parent lays its children out horizontally. Two views then share a path
+    # exactly when they sit side by side in the same row (chips + search, or
+    # the three selection-bar buttons), which is one vertical stop, not
+    # several — comparing raw document order there reports false gaps.
+    vpath: dict[str, tuple[int, ...]] = {}
+
+    def horizontal(el) -> bool:
+        tag = el.tag.split(".")[-1]
+        if tag != "LinearLayout":
+            return False
+        # LinearLayout defaults to horizontal when orientation is omitted.
+        return el.get(ANDROID + "orientation", "horizontal") == "horizontal"
+
+    def walk(el, prefix: tuple[int, ...]) -> None:
+        raw = el.get(ANDROID + "id")
+        vid = raw.split("/")[-1] if raw else None
+        # RecyclerView makes itself focusable in code, and anything carrying a
+        # nextFocus attribute is by definition a stop on the chain — neither
+        # shows up as android:focusable in the XML.
+        is_focus = (el.get(ANDROID + "focusable") == "true"
+                    or el.get(ANDROID + "clickable") == "true"
+                    or el.get(ANDROID + "descendantFocusability")
+                    == "afterDescendants"
+                    or el.tag.split(".")[-1] == "RecyclerView"
+                    or any(k.startswith(ANDROID + "nextFocus")
+                           for k in el.attrib))
+        if vid and is_focus:
+            order.append(vid)
+            focusable[vid] = el.tag.split(".")[-1]
+            vpath[vid] = prefix
+        for key, val in el.attrib.items():
+            if not key.startswith(ANDROID + "nextFocus"):
+                continue
+            if not val.startswith("@id/"):
+                continue
+            targets.add(val.split("/")[-1])
+            direction = key[len(ANDROID) + len("nextFocus"):]
+            if vid and direction in ("Up", "Down"):
+                edges.append((vid, direction, val.split("/")[-1]))
+        side_by_side = horizontal(el)
+        for idx, child in enumerate(el):
+            walk(child, prefix + (0 if side_by_side else idx,))
+
+    walk(root, ())
+
+    # A container that is itself a focus target with afterDescendants hands
+    # focus straight to its focusable children (update_bar -> update_button,
+    # wp_selection_bar -> its three buttons), so those children are reachable
+    # even though no chain names them directly.
+    for el in root.iter():
+        raw = el.get(ANDROID + "id")
+        vid = raw.split("/")[-1] if raw else None
+        if not vid or vid not in targets:
+            continue
+        if el.get(ANDROID + "descendantFocusability") != "afterDescendants":
+            continue
+        for child in el.iter():
+            craw = child.get(ANDROID + "id")
+            if craw:
+                targets.add(craw.split("/")[-1])
+
+    bands: list[tuple[int, ...]] = []
+    for vid in order:
+        if vpath[vid] not in bands:
+            bands.append(vpath[vid])
+    bands.sort()
+    rank = {vid: bands.index(vpath[vid]) for vid in order}
+    gaps = []
+    for src, direction, dst in edges:
+        if src not in rank or dst not in rank:
+            continue
+        lo, hi = sorted((rank[src], rank[dst]))
+        for vid in order:
+            if not lo < rank[vid] < hi:
+                continue
+            if vid in targets or vid in FOCUS_EXEMPT:
+                continue
+            gaps.append(
+                f"{path.relative_to(ROOT)}: {vid} ({focusable[vid]}) is "
+                f"unreachable — {src}'s nextFocus{direction}=\"@id/{dst}\" "
+                f"hops over it and nothing points at it"
+            )
+    return sorted(set(gaps))
+
+
 def layout_ids(path: Path) -> set[str]:
     root = ET.parse(path).getroot()
     ids: list[str] = []
@@ -152,13 +268,31 @@ def main() -> int:
                             "color" if kind == "color" else "array", set()):
                         fail(f"{kt.name} ({mod}): R.{kind}.{name} does not resolve")
 
+    # Focus reachability. Layout-only, so it covers pixel-neon too even though
+    # that module keeps its own Kotlin and resources.
+    layout_dirs = [
+        ROOT / "app" / "src" / "main" / "res" / "layout",
+        ROOT / "pop" / "src" / "main" / "res" / "layout",
+        ROOT / "pixel-neon" / "app" / "src" / "main" / "res" / "layout",
+    ]
+    for layout_dir in layout_dirs:
+        if not layout_dir.is_dir():
+            continue
+        for xml in sorted(layout_dir.glob("*.xml")):
+            try:
+                for gap in focus_chain_gaps(xml):
+                    fail(gap)
+            except ET.ParseError:
+                continue  # already reported as not well-formed above
+
     if FAIL:
         print(f"FAILED — {len(FAIL)} problem(s):\n")
         for f in FAIL:
             print("  \u2717 " + f)
         return 1
     print("OK — XML well-formed, every resource reference resolves in both "
-          "modules, every R.* in the shared Kotlin exists, no duplicate ids.")
+          "modules, every R.* in the shared Kotlin exists, no duplicate ids, "
+          "no focusable view stranded by a nextFocus chain.")
     return 0
 
 
