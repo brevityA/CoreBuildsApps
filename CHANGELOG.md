@@ -4,6 +4,16 @@ All notable changes to the Core Builds Icon Pack. Format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); versions follow
 [SemVer](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Added
+- **Wallpaper preview shows the launcher seed palette.** Five chips under the
+  title (seed, secondary, tertiary, container, on-seed) extracted from the
+  image via `WallpaperColors` on API 27+ and a chromatic 32×32 sample below
+  that. They preview what Monet / a tinting launcher will pick up after Set.
+  Display-only — not focusable, not in the D-pad chain. Icon rasters are
+  unchanged.
+
 ## [1.8.11] — 2026-09-10
 
 **The rest of the D-pad dead ends, two mis-mapped apps, and the checks that

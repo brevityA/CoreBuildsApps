@@ -246,6 +246,74 @@ class KotlinWiringTests(unittest.TestCase):
         self.assertIn("itemView.isFocusable = true", src)
         self.assertIn("setOnFocusChangeListener", src)
 
+    def test_preview_extracts_seed_palette(self):
+        src = self.files["WallpaperPreviewActivity.kt"]
+        self.assertIn("WallpaperSeed.from", src)
+        self.assertIn("paintSeed", src)
+        self.assertIn("seed_row", src)
+        seed = (KT / "WallpaperSeed.kt").read_text(encoding="utf-8")
+        self.assertIn("WallpaperColors.fromBitmap", seed)
+        self.assertNotIn("com.google.android.material", seed)
+        self.assertNotIn("DynamicColors", seed)
+
+    def test_seed_chips_are_not_focusable(self):
+        """Seed chips are a readout, not a control. A focusable chip would
+        steal D-pad from Back/Save/Set the same way nested wallpaper tiles
+        used to steal OK from the card root.
+        """
+        ns = "{http://schemas.android.com/apk/res/android}"
+        xml = read("app/src/main/res/layout/activity_wallpaper_preview.xml")
+        root = ET.fromstring(xml)
+        self.assertIn("seed_row", xml)
+        self.assertIn("wp_seed_label", xml)
+        chips = []
+        row = None
+        for el in root.iter():
+            vid = (el.get(ns + "id") or "").split("/")[-1]
+            if vid == "seed_row":
+                row = el
+                self.assertEqual(el.get(ns + "descendantFocusability"),
+                                 "blocksDescendants")
+                self.assertEqual(el.get(ns + "visibility"), "gone")
+            if vid.startswith("seed_") and vid[-1].isdigit():
+                chips.append(el)
+                self.assertNotEqual(el.get(ns + "focusable"), "true", vid)
+                self.assertNotEqual(el.get(ns + "clickable"), "true", vid)
+        self.assertEqual(len(chips), 5, "five seed swatches")
+        self.assertIsNotNone(row)
+        for key in (
+            "wp_seed_label", "wp_seed_desc",
+        ):
+            self.assertRegex(
+                read("app/src/main/res/values/strings.xml"),
+                rf'<string name="{key}"',
+            )
+            self.assertRegex(
+                read("pop/src/main/res/values/strings.xml"),
+                rf'<string name="{key}"',
+            )
+            self.assertRegex(
+                read("pixel-neon/app/src/main/res/values/strings.xml"),
+                rf'<string name="{key}"',
+            )
+
+    def test_pixel_neon_preview_mirrors_seed_wiring(self):
+        neon = ROOT / "pixel-neon/app/src/main"
+        preview = (neon / "java/tv/corebuilds/pixelneon/WallpaperPreviewActivity.kt"
+                   ).read_text(encoding="utf-8")
+        self.assertIn("package tv.corebuilds.pixelneon", preview)
+        self.assertIn("WallpaperSeed.from", preview)
+        self.assertIn("seed_row", preview)
+        seed = (neon / "java/tv/corebuilds/pixelneon/WallpaperSeed.kt"
+                ).read_text(encoding="utf-8")
+        self.assertIn("package tv.corebuilds.pixelneon", seed)
+        self.assertIn("WallpaperColors.fromBitmap", seed)
+        layout = (neon / "res/layout/activity_wallpaper_preview.xml").read_text()
+        self.assertIn("seed_row", layout)
+        self.assertIn("cb_seed_swatch", layout)
+        dimens = (neon / "res/values/dimens.xml").read_text()
+        self.assertIn("cb_seed_swatch", dimens)
+
     def test_wallpaper_tile_selection_keeps_focus(self):
         """Long-press selection toggles the focused tile. A payload-less
         notifyItemChanged there detaches the tile under the D-pad, so the
