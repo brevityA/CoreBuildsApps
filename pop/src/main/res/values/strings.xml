@@ -80,6 +80,8 @@
     <string name="wp_applying">Applying…</string>
     <string name="wp_sub_set">Sets the system home wallpaper. Your launcher re-themes its tiles from it.</string>
     <string name="wp_sub_save">Saves to Pictures and opens the system setter (Fire TV fallback).</string>
+    <string name="wp_seed_label">Launcher seed</string>
+    <string name="wp_seed_desc">Seed colours this wallpaper gives a launcher to theme tiles from.</string>
     <string name="wp_set_done">Wallpaper set.</string>
     <string name="wp_saved">Saved to Pictures. Confirm in the system setter.</string>
     <string name="wp_saved_hint">Saved to Pictures/CoreBuilds. Set it from your launcher settings.</string>

@@ -3,10 +3,12 @@ package tv.corebuilds.iconpack
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.graphics.drawable.GradientDrawable
 import android.os.Bundle
 import android.view.KeyEvent
 import android.view.View
 import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
@@ -20,9 +22,12 @@ import java.io.File
  * The bundled thumb is shown instantly while the full 4K image downloads from
  * the repo (cached by [WallpaperDownloader]); once decoded it replaces the
  * thumb. Two actions:
- *  - **Set** writes the system wallpaper (Monet re-themes from it).
+ *  - **Set** writes the system wallpaper. Launchers that theme from it
+ *    (Monet via Material You, Projectivy via card tint) pick up the seed.
  *  - **Save** copies the original file to Pictures/CoreBuilds (for launcher
  *    wallpaper rotation).
+ * Five seed chips under the title preview the palette; they are not in the
+ * D-pad chain.
  *
  * D-pad left/right cycles through the wallpaper list passed from the browser.
  * A generation counter guards against stale download callbacks firing after
@@ -35,6 +40,8 @@ class WallpaperPreviewActivity : AppCompatActivity() {
     private lateinit var sub: TextView
     private lateinit var image: ImageView
     private lateinit var titleView: TextView
+    private lateinit var seedRow: LinearLayout
+    private lateinit var seedChips: List<View>
 
     private var wallpapers: List<Wallpaper> = emptyList()
     private var currentIndex = 0
@@ -67,6 +74,14 @@ class WallpaperPreviewActivity : AppCompatActivity() {
         setButton = findViewById(R.id.preview_set)
         saveButton = findViewById(R.id.preview_save)
         sub = findViewById(R.id.preview_sub)
+        seedRow = findViewById(R.id.seed_row)
+        seedChips = listOf(
+            findViewById(R.id.seed_0),
+            findViewById(R.id.seed_1),
+            findViewById(R.id.seed_2),
+            findViewById(R.id.seed_3),
+            findViewById(R.id.seed_4),
+        )
 
         @Suppress("DEPRECATION")
         val list = intent.getParcelableArrayListExtra<Wallpaper>(EXTRA_WALLPAPERS)
@@ -132,6 +147,7 @@ class WallpaperPreviewActivity : AppCompatActivity() {
         saveButton.isEnabled = false
         setButton.text = getString(R.string.wp_set_wallpaper)
         saveButton.text = getString(R.string.wp_save)
+        seedRow.visibility = View.GONE
 
         titleView.text = wp.title
         if (wallpapers.size > 1) {
@@ -157,6 +173,7 @@ class WallpaperPreviewActivity : AppCompatActivity() {
                     image.setImageBitmap(bmp)
                 }
             }
+            if (bmp != null) extractSeed(bmp, gen)
         }.start()
     }
 
@@ -212,6 +229,9 @@ class WallpaperPreviewActivity : AppCompatActivity() {
             options.inJustDecodeBounds = false
 
             val bmp = BitmapFactory.decodeFile(file.absolutePath, options)
+            val palette = if (bmp != null) {
+                try { WallpaperSeed.from(bmp) } catch (_: Exception) { null }
+            } else null
             runOnUiThread {
                 if (destroyed || gen != generation) {
                     bmp?.recycle()
@@ -241,9 +261,32 @@ class WallpaperPreviewActivity : AppCompatActivity() {
                         getString(R.string.wp_sub_save)
                     }
                 }
+                if (palette != null) paintSeed(palette)
                 setButton.requestFocus()
             }
         }.start()
+    }
+
+    private fun extractSeed(bmp: Bitmap, gen: Int) {
+        val palette = try { WallpaperSeed.from(bmp) } catch (_: Exception) { null } ?: return
+        runOnUiThread {
+            if (!destroyed && gen == generation && fullBitmap == null) paintSeed(palette)
+        }
+    }
+
+    private fun paintSeed(palette: WallpaperSeed.Palette) {
+        val radius = resources.getDimension(R.dimen.cb_radius_button)
+        val stroke = (resources.displayMetrics.density + 0.5f).toInt().coerceAtLeast(1)
+        val hairline = ContextCompat.getColor(this, R.color.cb_hairline)
+        palette.swatches().forEachIndexed { i, color ->
+            val d = GradientDrawable()
+            d.shape = GradientDrawable.RECTANGLE
+            d.cornerRadius = radius
+            d.setColor(color)
+            d.setStroke(stroke, hairline)
+            seedChips[i].background = d
+        }
+        seedRow.visibility = View.VISIBLE
     }
 
     // ---- Set -----------------------------------------------------------------
