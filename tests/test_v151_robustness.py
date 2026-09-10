@@ -252,6 +252,36 @@ class VersionAndCiTests(unittest.TestCase):
         self.assertNotIn("make_latest: true", wf)
 
 
+class MappingAndFocusTests(unittest.TestCase):
+    def test_weatherbug_is_not_streamflix(self):
+        catalog = json.loads(read("tools/catalog.json"))
+        by = {i["drawable"]: i for i in catalog["icons"]}
+        self.assertIn("weatherbug", by)
+        self.assertEqual(
+            by["weatherbug"]["components"],
+            ["com.weatherbug.firetv/com.weatherbug.firetv.MainActivity"],
+        )
+        joined = " ".join(by["streamflix_2"]["components"])
+        self.assertNotIn("weatherbug", joined)
+
+    def test_seven_plus_maps_the_live_play_store_package(self):
+        catalog = json.loads(read("tools/catalog.json"))
+        by = {i["drawable"]: i for i in catalog["icons"]}
+        comps = by["seven_plus"]["components"]
+        self.assertIn("com.swm.live/au.com.seven.inferno.MainActivity", comps)
+        self.assertIn("com.swm.live/.MainActivity", comps)
+
+    def test_pixel_neon_chips_keep_focus_on_pick(self):
+        src = read(
+            "pixel-neon/app/src/main/java/tv/corebuilds/pixelneon/ChipAdapter.kt"
+        )
+        no_block = re.sub(r"/\*.*?\*/", "", src, flags=re.DOTALL)
+        code = "\n".join(line.split("//", 1)[0] for line in no_block.splitlines())
+        self.assertNotIn("notifyDataSetChanged()", code)
+        self.assertIn("notifyItemChanged", code)
+        self.assertIn("KEYCODE_DPAD_LEFT", code)
+
+
 if __name__ == "__main__":
     print(f"repo {ROOT}", file=sys.stderr)
     suite = unittest.defaultTestLoader.loadTestsFromModule(sys.modules[__name__])

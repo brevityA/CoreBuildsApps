@@ -1,6 +1,6 @@
 # Core Builds Pop — supported applications
 
-`925` icons · `1099` mapped components · pack v1.0.0
+`926` icons · `1101` mapped components · pack v1.0.0
 
 Pop is drawn from the same `tools/catalog.json` as the classic Core Builds Icon Pack, so coverage is identical and always will be. What differs is the render: one container, one keyline weight, one halftone screen, and 16 locked swatches instead of 169 accents.
 
@@ -667,7 +667,7 @@ Pop is drawn from the same `tools/catalog.json` as the classic Core Builds Icon 
 | SeriesGuide | `battlelancer` | `#FEE440` | `pop_sun` `#E0AF0C` | `com.battlelancer.seriesguide/com.battlelancer.seriesguide.ui.ShowsActivity` |
 | SetEdit | `setedit22` | `#8AC926` | `pop_acid` `#9DBB1F` | `by4a.setedit22/by4a.setedit.EditorActivity` |
 | Settings | `settings` | `#9AA0A6` | `pop_slate` `#59637A` | `com.android.tv.settings/.MainSettings`<br>`com.android.settings/.Settings`<br>`com.android.tv.settings/com.android.tv.settings.SettingsActivity`<br>`com.android.tv.settings/com.android.tv.settings.SetupActivity` |
-| Seven Plus | `seven_plus` | `#E81820` | `pop_red` `#E03127` | `com.swm.live/au.com.seven.inferno.ui.setup.SetupActivity`<br>`com.swm.live/au.com.seven.inferno.ui.tv.setup.SetupTvActivity` |
+| Seven Plus | `seven_plus` | `#E81820` | `pop_red` `#E03127` | `com.swm.live/au.com.seven.inferno.ui.setup.SetupActivity`<br>`com.swm.live/au.com.seven.inferno.ui.tv.setup.SetupTvActivity`<br>`com.swm.live/au.com.seven.inferno.MainActivity`<br>`com.swm.live/.MainActivity` |
 | Sfjazz At Home | `sfjazz_at_home` | `#B5179E` | `pop_orchid` `#A934B6` | `com.sfjazzdigital/tv.vhx.LauncherActivity`<br>`com.sfjazzdigital/tv.vhx.tv.home.TvHomeActivity` |
 | Sfr TV | `sfr_tv` | `#FEE440` | `pop_sun` `#E0AF0C` | `com.sfr.androidtv.gen8/com.sfr.androidtv.gen8.ui.Tv8MainActivity` |
 | Shadow | `shadowcloudgaming` | `#0A0C0D` | `pop_graphite` `#333A4B` | `com.blade.shadowcloudgaming/com.blade.shadow.dispatcher.DispatcherActivity` |
@@ -719,7 +719,7 @@ Pop is drawn from the same `tools/catalog.json` as the classic Core Builds Icon 
 | Stream Fire | `stream_fire` | `#FEE440` | `pop_sun` `#E0AF0C` | `com.streamfire.app/com.streamfire.app.ui.HomeActivity` |
 | Stream Vault | `streamvault` | `#9B59B6` | `pop_orchid` `#A934B6` | `com.streamvault.app/com.streamvault.app.MainActivity` |
 | Streamflix | `streamflix` | `#E50914` | `pop_red` `#E03127` | `com.streamflixreborn.streamflix/com.streamflixreborn.streamflix.activities.main.MainTvActivity` |
-| Streamflix | `streamflix_2` | `#577590` | `pop_blue` `#1C79D2` | `com.tanasi.streamflix/com.tanasi.streamflix.activities.main.MainTvActivity`<br>`com.weatherbug.firetv/com.weatherbug.firetv.MainActivity` |
+| Streamflix | `streamflix_2` | `#577590` | `pop_blue` `#1C79D2` | `com.tanasi.streamflix/com.tanasi.streamflix.activities.main.MainTvActivity` |
 | Streamlocator VPN | `streamlocator_vpn` | `#F94144` | `pop_red` `#E03127` | `com.streamlocator.vpn/com.streamlocator.vpn.ui.tv.home.TVHomeActivity` |
 | Streamyfin | `fredrikburmester` | `#F94144` | `pop_red` `#E03127` | `com.fredrikburmester.streamyfin/com.fredrikburmester.streamyfin.MainActivity` |
 | Streamz | `dpgmedia` | `#FEE440` | `pop_sun` `#E0AF0C` | `be.dpgmedia.streamz/be.persgroep.streamz.StreamzMainActivity` |
@@ -883,6 +883,7 @@ Pop is drawn from the same `tools/catalog.json` as the classic Core Builds Icon 
 | Watcho | `watcho` | `#FF477E` | `pop_rose` `#E0405E` | `com.watcho_multi/com.yupptv.ott.ui.activity.SplashActivity` |
 | Wave IPTV | `wave_iptv` | `#FF6B35` | `pop_blaze` `#F05A22` | `com.smartwave.wave_iptv/com.smartwave.wave_iptv.SplashActivity` |
 | Wave TV Player | `wavetv` | `#2196F3` | `pop_blue` `#1C79D2` | `com.smartwave.wavetvplayer/com.smartwave.wave_iptv.SplashActivity` |
+| WeatherBug | `weatherbug` | `#2F6F8C` | `pop_aqua` `#0C8AAE` | `com.weatherbug.firetv/com.weatherbug.firetv.MainActivity` |
 | WeatherYou | `rodrigmatrix` | `#90BE6D` | `pop_green` `#3F9C35` | `com.rodrigmatrix.weatheryou/com.rodrigmatrix.weatheryou.tv.presentation.navigation.MainActivity` |
 | Wetv | `wetv` | `#4CC9F0` | `pop_aqua` `#0C8AAE` | `com.tencent.qqlivei18n/com.ktcp.video.activity.MainActivity`<br>`com.tencent.qqlivei18n/com.ktcp.video.activity.HomeActivity` |
 | Weyd | `weyd` | `#6C5CE7` | `pop_marine` `#3A4CC4` | `com.weyd.app/.MainActivity` |

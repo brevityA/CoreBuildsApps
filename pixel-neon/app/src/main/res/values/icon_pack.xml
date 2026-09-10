@@ -879,6 +879,7 @@
         <item>watcho</item>
         <item>wave_iptv</item>
         <item>wavetv</item>
+        <item>weatherbug</item>
         <item>rodrigmatrix</item>
         <item>wetv</item>
         <item>weyd</item>
@@ -1806,6 +1807,7 @@
         <item>Watcho</item>
         <item>Wave IPTV</item>
         <item>Wave TV Player</item>
+        <item>WeatherBug</item>
         <item>WeatherYou</item>
         <item>Wetv</item>
         <item>Weyd</item>
@@ -2733,6 +2735,7 @@
         <item>APP</item>
         <item>LIVE</item>
         <item>LIVE</item>
+        <item>APP</item>
         <item>SPORT</item>
         <item>APP</item>
         <item>STREAM</item>
@@ -2782,5 +2785,5 @@
         <item>APP</item>
         <item>APP</item>
     </string-array>
-    <integer name="icon_count">925</integer>
+    <integer name="icon_count">926</integer>
 </resources>
