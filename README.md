@@ -13,7 +13,7 @@
 <!-- suite-stamp:start -->
 > | App | Current | What it does | Downloader | Release tag |
 > |---|---:|---|---|---|
-> | **[Core Builds Icon Pack](#-icon-pack)** | `v1.8.10` | 925 transparent icons + 58 wallpapers for Projectivy Launcher | `5270601` | [`v*` / `iconpack`](../../releases) |
+> | **[Core Builds Icon Pack](#-icon-pack)** | `v1.8.11` | 925 transparent icons + 58 wallpapers for Projectivy Launcher | `5270601` | [`v*` / `iconpack`](../../releases) |
 > | **[Core Builds Pixel Neon](#-pixel-neon-icon-pack)** | `v0.1.0` | 925 transparent 8-bit neon icons + 70 wallpapers for Projectivy Launcher | `[USER TO SUPPLY]` | [`pixel-neon-v*` / `pixel-neon`](../../releases) |
 > | **[Core Builds Pop](#-core-builds-pop)** | `v1.0.0` | The same 925 icons, pop-art cartoon: 16 swatches, one container | `[USER TO SUPPLY]` | [`pop-v*` / `pop`](../../releases) |
 > | **[Core Line](#-core-line)** | `v1.3.0` | Sports scores & channel RSS ticker (chyron) | `7375676` | [`coreline-v*` / `coreline`](../../releases) |
@@ -28,13 +28,13 @@
 ## 🔷 Icon Pack
 
 **Transparent app icons for Projectivy Launcher on Android TV.**
-`925 icons` · `58 wallpapers` · `v1.8.10`
+`925 icons` · `58 wallpapers` · `v1.8.11`
 
 The **Core Builds Icon Pack** is designed for the [Projectivy Launcher](https://play.google.com/store/apps/details?id=com.spocky.projengmenu) on Android TV and Google TV, built to the [Core Builds Brand & Style Guide v1.0](https://github.com/brevityA/Core-Builds).
 
 Icons share the **Core Builds visual language**: original geometry, rounded-line brand motifs, one accent and transparent backgrounds. The reviewed glyphs use the canonical **32px main stroke**, with 26.2px / 21.8px detail. Brand references inform the recognisable cue and colour; they do **not** replace the pack's style with filled vendor silhouettes or custom logotypes. The existing Outfit fallback letters remain unchanged. [Reference provenance and rights](THIRD_PARTY_NOTICES.md).
 
-**v1.8.10 — TV focus & 7plus hotfix:** the Wallpapers button is reachable by D-pad straight from Apply (mirrored in Pixel Neon and Pop), the 7plus setup-activity mapping now renders the same red monoline artwork as the primary icon — no more legacy blue/orange tiles — and wallpaper copy describes any launcher instead of Monet. The v1.8.9 Android TV hardening and the 925-icon Core Builds monoline system remain intact. [Mixed-row preview and research](docs/research/icon-fidelity-and-demand-2026-09.md).
+**v1.8.11 — the rest of the D-pad dead ends:** v1.8.10 made the Wallpapers button reachable; this release finishes the job. The update **Download/Install** button, the **"Also &lt;launcher&gt;"** row, the wallpapers **Back** button and the **Select all / Clear / Export** bar were all stranded by focus chains that hopped over them — an available update could not be installed by remote, and multi-select export was unreachable once focus moved. Wallpaper chips also keep their highlight when pressed, and tiles no longer split the focus ring from the click target. A new static check fails the build if any control is left unreachable again. The v1.8.9 Android TV hardening and the 925-icon Core Builds monoline system remain intact. [Mixed-row preview and research](docs/research/icon-fidelity-and-demand-2026-09.md).
 
 > **Tip:** Use a **dark card background** in Projectivy. These icons are drawn for night chrome (`#0d1117`).
 
