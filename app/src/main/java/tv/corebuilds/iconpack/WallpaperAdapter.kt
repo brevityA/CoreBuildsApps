@@ -69,6 +69,8 @@ class WallpaperAdapter(
 
     override fun getItemCount() = items.size
 
+    fun currentItems(): List<Wallpaper> = items
+
     fun submit(next: List<Wallpaper>) {
         items = next
         // Drop selections that are no longer visible after filtering.

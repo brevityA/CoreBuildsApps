@@ -4,6 +4,8 @@ import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.os.Bundle
+import android.view.KeyEvent
+import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
@@ -13,7 +15,7 @@ import androidx.core.content.ContextCompat
 import java.io.File
 
 /**
- * Full-screen preview of one wallpaper.
+ * Full-screen preview of one wallpaper with D-pad left/right navigation.
  *
  * The bundled thumb is shown instantly while the full 4K image downloads from
  * the repo (cached by [WallpaperDownloader]); once decoded it replaces the
@@ -22,18 +24,21 @@ import java.io.File
  *  - **Save** copies the original file to Pictures/CoreBuilds (for launcher
  *    wallpaper rotation).
  *
- * All background work posts back only while the activity is alive, and the
- * decoded bitmap is detached from the ImageView before recycling to avoid
- * "Canvas: trying to use a recycled bitmap".
+ * D-pad left/right cycles through the wallpaper list passed from the browser.
+ * A generation counter guards against stale download callbacks firing after
+ * the user has already moved on.
  */
 class WallpaperPreviewActivity : AppCompatActivity() {
 
-    private lateinit var url: String
-    private lateinit var title: String
     private lateinit var setButton: TextView
     private lateinit var saveButton: TextView
     private lateinit var sub: TextView
     private lateinit var image: ImageView
+    private lateinit var titleView: TextView
+
+    private var wallpapers: List<Wallpaper> = emptyList()
+    private var currentIndex = 0
+    private var generation = 0
 
     private var fullBitmap: Bitmap? = null
     private var downloaded: File? = null
@@ -58,31 +63,89 @@ class WallpaperPreviewActivity : AppCompatActivity() {
         setContentView(R.layout.activity_wallpaper_preview)
 
         image = findViewById(R.id.preview_image)
-        url = intent.getStringExtra(EXTRA_URL).orEmpty()
-        title = intent.getStringExtra(EXTRA_TITLE).orEmpty()
-        if (url.isEmpty()) { finish(); return }
+        titleView = findViewById(R.id.preview_title)
         setButton = findViewById(R.id.preview_set)
         saveButton = findViewById(R.id.preview_save)
         sub = findViewById(R.id.preview_sub)
-        findViewById<TextView>(R.id.preview_title).text = title
+
+        @Suppress("DEPRECATION")
+        val list = intent.getParcelableArrayListExtra<Wallpaper>(EXTRA_WALLPAPERS)
+        if (list != null && list.isNotEmpty()) {
+            wallpapers = list
+            currentIndex = intent.getIntExtra(EXTRA_INDEX, 0).coerceIn(0, list.size - 1)
+        } else {
+            val url = intent.getStringExtra(EXTRA_URL).orEmpty()
+            val title = intent.getStringExtra(EXTRA_TITLE).orEmpty()
+            if (url.isEmpty()) { finish(); return }
+            wallpapers = listOf(
+                Wallpaper(name = title, series = "", url = url,
+                    thumbUrl = "", resolution = "",
+                    thumbAsset = "${WallpaperCatalog.THUMB_DIR}/${url.substringAfterLast('/').substringBeforeLast('.')}.jpg")
+            )
+            currentIndex = 0
+        }
 
         val back = findViewById<TextView>(R.id.preview_back)
         back.setOnClickListener { finish() }
         setButton.setOnClickListener { onSetClicked() }
         saveButton.setOnClickListener { onSaveClicked() }
 
-        setButton.isEnabled = false
-        saveButton.isEnabled = false
-        // Request focus once the view tree is laid out; doing it directly in
-        // onCreate is unreliable on TV.
         back.post { back.requestFocus() }
-        loadThumb()
-        beginDownload()
+        showWallpaper()
     }
 
-    private fun loadThumb() {
-        val name = url.substringAfterLast('/').substringBeforeLast('.')
-        val asset = "${WallpaperCatalog.THUMB_DIR}/$name.jpg"
+    override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
+        if (wallpapers.size <= 1) return super.onKeyDown(keyCode, event)
+        return when (keyCode) {
+            KeyEvent.KEYCODE_DPAD_LEFT -> {
+                if (currentFocus?.focusSearch(View.FOCUS_LEFT) != null)
+                    super.onKeyDown(keyCode, event)
+                else { navigate(-1); true }
+            }
+            KeyEvent.KEYCODE_DPAD_RIGHT -> {
+                if (currentFocus?.focusSearch(View.FOCUS_RIGHT) != null)
+                    super.onKeyDown(keyCode, event)
+                else { navigate(1); true }
+            }
+            else -> super.onKeyDown(keyCode, event)
+        }
+    }
+
+    private fun navigate(delta: Int) {
+        val next = (currentIndex + delta + wallpapers.size) % wallpapers.size
+        if (next == currentIndex) return
+        currentIndex = next
+        showWallpaper()
+    }
+
+    private fun showWallpaper() {
+        generation++
+        val gen = generation
+        val wp = wallpapers[currentIndex]
+
+        image.setImageDrawable(null)
+        fullBitmap?.recycle()
+        fullBitmap = null
+        downloaded = null
+        loading = true
+        setButton.isEnabled = false
+        saveButton.isEnabled = false
+        setButton.text = getString(R.string.wp_set_wallpaper)
+        saveButton.text = getString(R.string.wp_save)
+
+        titleView.text = wp.title
+        if (wallpapers.size > 1) {
+            sub.text = getString(R.string.wp_position_fmt, currentIndex + 1, wallpapers.size)
+        } else {
+            sub.text = ""
+        }
+
+        loadThumb(wp, gen)
+        beginDownload(wp, gen)
+    }
+
+    private fun loadThumb(wp: Wallpaper, gen: Int) {
+        val asset = wp.thumbAsset
         Thread {
             val bmp = try {
                 assets.open(asset).use { BitmapFactory.decodeStream(it) }
@@ -90,28 +153,34 @@ class WallpaperPreviewActivity : AppCompatActivity() {
                 null
             }
             runOnUiThread {
-                if (!destroyed && bmp != null && fullBitmap == null) image.setImageBitmap(bmp)
+                if (!destroyed && gen == generation && bmp != null && fullBitmap == null) {
+                    image.setImageBitmap(bmp)
+                }
             }
         }.start()
     }
 
-    private fun beginDownload() {
-        loading = true
-        WallpaperDownloader.fetchUrl(this, url, url.substringAfterLast('/')) { event ->
-            if (destroyed) return@fetchUrl
+    private fun beginDownload(wp: Wallpaper, gen: Int) {
+        WallpaperDownloader.fetchUrl(this, wp.url, wp.cacheName) { event ->
+            if (destroyed || gen != generation) return@fetchUrl
             when (event) {
                 is WallpaperDownloader.Event.Progress -> {
                     val rec = event.received / 1024
                     val tot = event.total
-                    sub.text = if (tot > 0) {
+                    val progress = if (tot > 0) {
                         getString(R.string.wp_downloading_of_fmt, rec, tot / 1024)
                     } else {
                         getString(R.string.wp_downloading_fmt, rec)
                     }
+                    sub.text = if (wallpapers.size > 1) {
+                        "${getString(R.string.wp_position_fmt, currentIndex + 1, wallpapers.size)} · $progress"
+                    } else {
+                        progress
+                    }
                 }
                 is WallpaperDownloader.Event.Ready -> {
                     downloaded = event.file
-                    decodeAndShow(event.file)
+                    decodeAndShow(event.file, gen)
                 }
                 is WallpaperDownloader.Event.Failed -> {
                     loading = false
@@ -135,7 +204,7 @@ class WallpaperPreviewActivity : AppCompatActivity() {
         return inSampleSize
     }
 
-    private fun decodeAndShow(file: File) {
+    private fun decodeAndShow(file: File, gen: Int) {
         Thread {
             val options = BitmapFactory.Options().apply { inJustDecodeBounds = true }
             BitmapFactory.decodeFile(file.absolutePath, options)
@@ -144,7 +213,7 @@ class WallpaperPreviewActivity : AppCompatActivity() {
 
             val bmp = BitmapFactory.decodeFile(file.absolutePath, options)
             runOnUiThread {
-                if (destroyed) {
+                if (destroyed || gen != generation) {
                     bmp?.recycle()
                     return@runOnUiThread
                 }
@@ -157,10 +226,20 @@ class WallpaperPreviewActivity : AppCompatActivity() {
                 image.setImageBitmap(bmp)
                 setButton.isEnabled = true
                 saveButton.isEnabled = true
-                sub.text = if (WallpaperSetter.canSetDirectly(this)) {
-                    getString(R.string.wp_sub_set)
+                sub.text = if (wallpapers.size > 1) {
+                    val pos = getString(R.string.wp_position_fmt, currentIndex + 1, wallpapers.size)
+                    val hint = if (WallpaperSetter.canSetDirectly(this)) {
+                        getString(R.string.wp_sub_set)
+                    } else {
+                        getString(R.string.wp_sub_save)
+                    }
+                    "$pos · $hint"
                 } else {
-                    getString(R.string.wp_sub_save)
+                    if (WallpaperSetter.canSetDirectly(this)) {
+                        getString(R.string.wp_sub_set)
+                    } else {
+                        getString(R.string.wp_sub_save)
+                    }
                 }
                 setButton.requestFocus()
             }
@@ -197,8 +276,6 @@ class WallpaperPreviewActivity : AppCompatActivity() {
                     is WallpaperSetter.Result.Set -> {
                         val homePkg = ApplyIconPack.homePackage(this@WallpaperPreviewActivity)
                         if (homePkg == "com.spocky.projengmenu") {
-                            // System wallpaper set successfully (good for Monet/Android), but Projectivy
-                            // needs it via intent. We must save it to gallery to get a URI to send.
                             Thread {
                                 val fallback = WallpaperSetter.copyFileToPictures(this@WallpaperPreviewActivity, downloaded!!, downloaded!!.name)
                                 runOnUiThread {
@@ -296,7 +373,6 @@ class WallpaperPreviewActivity : AppCompatActivity() {
 
     override fun onDestroy() {
         destroyed = true
-        // Detach first so the ImageView never paints a recycled bitmap.
         image.setImageDrawable(null)
         fullBitmap?.recycle()
         fullBitmap = null
@@ -309,5 +385,7 @@ class WallpaperPreviewActivity : AppCompatActivity() {
     companion object {
         const val EXTRA_URL = "url"
         const val EXTRA_TITLE = "title"
+        const val EXTRA_WALLPAPERS = "wallpapers"
+        const val EXTRA_INDEX = "index"
     }
 }

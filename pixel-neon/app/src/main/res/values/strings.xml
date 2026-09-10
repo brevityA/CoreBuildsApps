@@ -47,6 +47,8 @@
     <string name="wp_kicker">PIXEL NEON · WALLPAPERS</string>
     <string name="wp_title">Wallpapers</string>
     <string name="wp_search_hint">Find a wallpaper by name or series</string>
+    <string name="empty_clear_search">Clear search</string>
+    <string name="empty_clear_filter">Show all %1$d icons</string>
     <string name="wp_hint">Select a wallpaper to preview it full-screen, then press Set.</string>
     <string name="wp_count_fmt">%1$d wallpapers</string>
     <string name="wp_filter_fmt">%1$d of %2$d wallpapers</string>
@@ -55,6 +57,7 @@
     <string name="wp_downloading_of_fmt">Downloading… %1$d of %2$d KB</string>
     <string name="wp_download_failed_fmt">Download failed: %1$s</string>
     <string name="wp_back">Back</string>
+    <string name="wp_position_fmt">%1$d of %2$d</string>
     <string name="wp_set_wallpaper">Set wallpaper</string>
     <string name="wp_applying">Applying…</string>
     <string name="wp_sub_set">Sets the system home wallpaper. Monet re-themes its tiles from it.</string>

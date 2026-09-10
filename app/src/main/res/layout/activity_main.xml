@@ -79,6 +79,7 @@
                 android:id="@+id/apply_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:minWidth="@dimen/cb_button_min_width"
                 android:minHeight="@dimen/cb_target_min"
                 android:gravity="center"
                 android:background="@drawable/bg_cta"
@@ -121,6 +122,7 @@
                     android:id="@+id/wallpapers_entry"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:minWidth="@dimen/cb_button_min_width"
                     android:minHeight="@dimen/cb_target_min"
                     android:gravity="center"
                     android:background="@drawable/bg_ghost"
@@ -129,13 +131,13 @@
                     android:focusableInTouchMode="true"
                     android:nextFocusUp="@id/apply_button"
                     android:nextFocusDown="@id/chip_row"
-                    android:paddingStart="@dimen/cb_space_md"
-                    android:paddingEnd="@dimen/cb_space_md"
+                    android:paddingStart="@dimen/cb_space_lg"
+                    android:paddingEnd="@dimen/cb_space_lg"
                     android:paddingTop="@dimen/cb_space_sm"
                     android:paddingBottom="@dimen/cb_space_sm"
                     android:text="@string/wp_entry"
                     android:textColor="@color/cb_ink"
-                    android:textSize="@dimen/cb_text_label"
+                    android:textSize="@dimen/cb_text_body"
                     android:textStyle="bold" />
 
                 <TextView
@@ -208,13 +210,13 @@
             android:background="@drawable/bg_cta"
             android:clickable="true"
             android:focusable="true"
-            android:paddingStart="@dimen/cb_space_md"
-            android:paddingEnd="@dimen/cb_space_md"
+            android:paddingStart="@dimen/cb_space_lg"
+            android:paddingEnd="@dimen/cb_space_lg"
             android:paddingTop="@dimen/cb_space_sm"
             android:paddingBottom="@dimen/cb_space_sm"
             android:text="@string/update_download"
             android:textColor="@color/cb_cta_ink"
-            android:textSize="@dimen/cb_text_label"
+            android:textSize="@dimen/cb_text_body"
             android:textStyle="bold" />
     </LinearLayout>
 
@@ -319,13 +321,13 @@
                 android:clickable="true"
                 android:focusable="true"
                 android:focusableInTouchMode="true"
-                android:paddingStart="@dimen/cb_space_md"
-                android:paddingEnd="@dimen/cb_space_md"
+                android:paddingStart="@dimen/cb_space_lg"
+                android:paddingEnd="@dimen/cb_space_lg"
                 android:paddingTop="@dimen/cb_space_sm"
                 android:paddingBottom="@dimen/cb_space_sm"
                 android:text="@string/empty_clear_search"
                 android:textColor="@color/cb_cta_ink"
-                android:textSize="@dimen/cb_text_label"
+                android:textSize="@dimen/cb_text_body"
                 android:textStyle="bold" />
 
             <TextView
@@ -338,13 +340,13 @@
                 android:clickable="true"
                 android:focusable="true"
                 android:focusableInTouchMode="true"
-                android:paddingStart="@dimen/cb_space_md"
-                android:paddingEnd="@dimen/cb_space_md"
+                android:paddingStart="@dimen/cb_space_lg"
+                android:paddingEnd="@dimen/cb_space_lg"
                 android:paddingTop="@dimen/cb_space_sm"
                 android:paddingBottom="@dimen/cb_space_sm"
                 android:text="@string/empty_clear_filter"
                 android:textColor="@color/cb_slate"
-                android:textSize="@dimen/cb_text_label"
+                android:textSize="@dimen/cb_text_body"
                 android:textStyle="bold" />
         </LinearLayout>
     </LinearLayout>

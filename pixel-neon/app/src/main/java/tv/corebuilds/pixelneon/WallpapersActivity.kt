@@ -7,6 +7,7 @@ import android.text.TextWatcher
 import android.view.View
 import android.widget.EditText
 import android.widget.TextView
+import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.GridLayoutManager
@@ -67,10 +68,14 @@ class WallpapersActivity : AppCompatActivity() {
         count.text = getString(R.string.wp_count_fmt, all.size)
 
         adapter = WallpaperAdapter(all) { item ->
+            val visible = adapter.currentItems()
+            val index = visible.indexOfFirst { it.url == item.url }.coerceAtLeast(0)
             startActivity(
                 Intent(this, WallpaperPreviewActivity::class.java).apply {
-                    putExtra(WallpaperPreviewActivity.EXTRA_URL, item.url)
-                    putExtra(WallpaperPreviewActivity.EXTRA_TITLE, item.title)
+                    putParcelableArrayListExtra(
+                        WallpaperPreviewActivity.EXTRA_WALLPAPERS, ArrayList(visible)
+                    )
+                    putExtra(WallpaperPreviewActivity.EXTRA_INDEX, index)
                 }
             )
         }
@@ -108,16 +113,15 @@ class WallpapersActivity : AppCompatActivity() {
         }
 
         bindChips()
+        bindBackNavigation()
     }
 
-    @Deprecated("Deprecated in Java")
-    override fun onBackPressed() {
-        if (adapter.selectionMode) {
-            exitSelectionMode()
-        } else {
-            @Suppress("DEPRECATION")
-            super.onBackPressed()
-        }
+    private fun bindBackNavigation() {
+        onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                if (adapter.selectionMode) exitSelectionMode() else finish()
+            }
+        })
     }
 
     private fun onHeaderExport() {

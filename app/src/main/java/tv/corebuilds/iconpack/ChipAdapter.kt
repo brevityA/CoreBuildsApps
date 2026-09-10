@@ -1,7 +1,9 @@
 package tv.corebuilds.iconpack
 
+import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import android.view.animation.DecelerateInterpolator
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 
@@ -39,8 +41,45 @@ class ChipAdapter(
     override fun onBindViewHolder(holder: VH, position: Int) {
         val key = keys[position]
         holder.view.text = labels[position]
-        holder.view.isActivated = key == selectedKey
+        val selected = key == selectedKey
+        holder.view.isActivated = selected
+        holder.view.isSelected = selected
+        holder.view.contentDescription = "${labels[position]}, filter${if (selected) ", selected" else ""}"
         holder.view.setOnClickListener { select(key) }
+        holder.view.setOnKeyListener { view, keyCode, event ->
+            if (event.action != KeyEvent.ACTION_DOWN) return@setOnKeyListener false
+            val direction = when (keyCode) {
+                KeyEvent.KEYCODE_DPAD_LEFT -> -1
+                KeyEvent.KEYCODE_DPAD_RIGHT -> 1
+                else -> 0
+            }
+            if (direction == 0) return@setOnKeyListener false
+            val positionNow = holder.bindingAdapterPosition
+            if (positionNow == RecyclerView.NO_POSITION) return@setOnKeyListener false
+            val target = (view.parent as? RecyclerView)
+                ?.layoutManager
+                ?.findViewByPosition(positionNow + direction)
+            if (target != null) {
+                target.requestFocus()
+                true
+            } else {
+                // Let Android handle the edge of the row normally. This keeps
+                // the user from getting trapped in the chip strip.
+                false
+            }
+        }
+        holder.view.animate().cancel()
+        holder.view.scaleX = 1f
+        holder.view.scaleY = 1f
+        holder.view.setOnFocusChangeListener { view, focused ->
+            view.animate().cancel()
+            view.animate()
+                .scaleX(if (focused) 1.04f else 1f)
+                .scaleY(if (focused) 1.04f else 1f)
+                .setDuration(140L)
+                .setInterpolator(DecelerateInterpolator())
+                .start()
+        }
     }
 
     override fun getItemCount() = keys.size

@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Core Builds UI metrics, Brand Guide v1.0 §05.
+
+  One place to tune density and screen size, instead of literals repeated
+  across every layout. This file is mirrored into pop/ by tools/build_pop.py
+  (see MIRROR_FILES) — edit it here, never in the Pop copy.
+
+  Scale is 8dp-based. Every focusable control reaches the 48dp Material
+  minimum through padding rather than minHeight, so the visual chip stays
+  slim while the hit area is real.
+-->
+<resources>
+
+    <!-- Screen gutters. Side padding is inset-aware (see activity_main). -->
+    <dimen name="cb_gutter_side">48dp</dimen>
+    <dimen name="cb_gutter_top">40dp</dimen>
+    <dimen name="cb_gutter_bottom">24dp</dimen>
+    <!-- Narrow fallback for 720p / legacy panels that overscan. -->
+    <dimen name="cb_gutter_side_narrow">32dp</dimen>
+
+    <!-- Spacing rhythm. -->
+    <dimen name="cb_space_xs">8dp</dimen>
+    <dimen name="cb_space_sm">12dp</dimen>
+    <dimen name="cb_space_md">16dp</dimen>
+    <dimen name="cb_space_lg">26dp</dimen>
+    <dimen name="cb_space_xl">30dp</dimen>
+
+    <!-- Grid. The gap is delivered by the card focus inset, so tiles never
+         touch even though RecyclerView adds no ItemDecoration. -->
+    <dimen name="cb_card_padding">14dp</dimen>
+    <dimen name="cb_card_icon">76dp</dimen>
+    <dimen name="cb_wp_thumb">118dp</dimen>
+
+    <!-- Radii. Chip is a pill. -->
+    <dimen name="cb_radius_card">14dp</dimen>
+    <dimen name="cb_radius_button">10dp</dimen>
+    <dimen name="cb_radius_field">10dp</dimen>
+    <dimen name="cb_radius_pill">999dp</dimen>
+    <!-- Card radius minus cb_focus_inset, so the inner fill stays concentric
+         with the ring instead of looking pinched at the corners. -->
+    <dimen name="cb_radius_card_inner">8dp</dimen>
+    <!-- Card radius minus cb_focus_ring, for the gap layer between ring and
+         card in bg_card. Keeps the three concentric shapes aligned. -->
+    <dimen name="cb_radius_card_gap">11dp</dimen>
+
+    <!-- Focus: a 3dp ring, a 3dp gap of background, then the card. The gap
+         keeps focus and the filled selected-chip state unmistakable at 3m. -->
+    <dimen name="cb_focus_ring">3dp</dimen>
+    <dimen name="cb_focus_gap">3dp</dimen>
+    <dimen name="cb_focus_inset">6dp</dimen>
+
+    <!-- Minimum touch / D-pad target. Material floor. -->
+    <dimen name="cb_target_min">48dp</dimen>
+
+    <!-- Stacked action buttons share a minimum width so they align as a column
+         instead of jagging to their text length. -->
+    <dimen name="cb_button_min_width">220dp</dimen>
+
+    <!-- Type scale. 12sp is the floor — nothing in the app renders smaller,
+         because a TV is read at ~3m, not at arm's length. -->
+    <dimen name="cb_text_kicker">12sp</dimen>
+    <dimen name="cb_text_data">13sp</dimen>
+    <dimen name="cb_text_label">13sp</dimen>
+    <dimen name="cb_text_body">15sp</dimen>
+    <dimen name="cb_text_section">19sp</dimen>
+    <dimen name="cb_text_title">32sp</dimen>
+    <dimen name="cb_text_display">34sp</dimen>
+
+</resources>

@@ -4,6 +4,25 @@ All notable changes to the Core Builds Icon Pack. Format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); versions follow
 [SemVer](https://semver.org/spec/v2.0.0.html).
 
+## [1.8.9] — 2026-09-10
+
+**Android TV hardening and wallpaper expansion.** This release makes Core Builds more reliable from a 10-foot viewing distance and adds eight new 4K wallpapers.
+
+### Android TV and launcher UX
+- Added correctly sized Android TV banner and launcher resources.
+- Improved D-pad focus, focus restoration, chip navigation, accessibility labels, and TV typography.
+- Corrected Home launcher detection so the icon pack cannot detect itself as the launcher.
+- Removed misleading FLauncher apply support because FLauncher does not support icon packs.
+- Added Core Builds, Remotes, and Tracking filters.
+- Cached drawable resource lookups for lower-end TV devices.
+
+### Wallpapers
+- Added Motion wallpapers 51–54 and Horizons wallpapers 55–58.
+- Added D-pad Left/Right wallpaper preview navigation while preserving button focus behavior.
+- Rebuilt new wallpaper artwork for stronger 4K visibility and cleaner gradients.
+
+Coverage remains **925 icons / 1099 catalog components / 1661 expanded mappings / 58 classic wallpapers**.
+
 ## [1.8.8] — 2026-09-08
 
 **Brand-colour remediation.** A 925-icon colour audit identified 32 icons

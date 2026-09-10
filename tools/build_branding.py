@@ -65,7 +65,7 @@ def main():
 
     # launcher icon, legacy densities
     icon = svg(512, 512, mark())
-    for folder, size in [("mipmap-xhdpi", 96), ("mipmap-xxhdpi", 144)]:
+    for folder, size in [("mipmap-xhdpi", 160), ("mipmap-xxhdpi", 240)]:
         p = RES / folder / "ic_launcher.png"
         png(icon, p, size, size)
         written.append(f"{folder}/ic_launcher.png ({size}px)")

@@ -9,7 +9,7 @@
     <!-- Version comes from BuildConfig.VERSION_NAME at runtime, never from
          here. This string shipped "pack v1.5.1" hardcoded for every release
          from 1.5.1 to 1.8.8. -->
-    <string name="icon_count_fmt">%1$d icons · pack v%2$s</string>
+    <string name="icon_count_fmt">%1$d icons installed · pack v%2$s</string>
     <string name="icon_filter_fmt">%1$d of %2$d icons</string>
 
     <!-- Empty state. Without it a filter with no match renders a blank grid
@@ -40,7 +40,7 @@
     <string name="cta_sub_apply_fmt">Sets Core Builds Pop as the icon pack in %1$s. Reversible — pick another pack any time.</string>
     <string name="cta_sub_home_fmt">%1$s is your Home launcher. Other installed launchers are listed below.</string>
     <string name="cta_no_launcher">No supported launcher found</string>
-    <string name="cta_sub_no_launcher">Install Projectivy Launcher, then reopen this app to apply in one press.</string>
+    <string name="cta_sub_no_launcher">Google TV Home does not accept third-party packs directly. Install Projectivy or another supported launcher to apply CoreBuilds.</string>
     <string name="apply_handed_off_fmt">Sent to %1$s. If the icons don\'t change, restart the launcher.</string>
     <string name="apply_not_installed_fmt">%1$s is not installed.</string>
     <string name="apply_manual_fmt">%1$s didn\'t accept direct apply. Set it here: %2$s</string>
@@ -75,6 +75,7 @@
     <string name="wp_downloading_of_fmt">Downloading… %1$d of %2$d KB</string>
     <string name="wp_download_failed_fmt">Download failed: %1$s</string>
     <string name="wp_back">Back</string>
+    <string name="wp_position_fmt">%1$d of %2$d</string>
     <string name="wp_set_wallpaper">Set wallpaper</string>
     <string name="wp_applying">Applying…</string>
     <string name="wp_sub_set">Sets the system home wallpaper. Monet re-themes its tiles from it.</string>

@@ -18,7 +18,6 @@
     <color name="cb_cta_ink">#04202B</color>
     <color name="cb_success">#34D399</color>
     <color name="cb_warning">#FBBF24</color>
-    <color name="cb_error">#F87171</color>
 
     <!-- UI-role colours, not brand accents. Each has exactly one meaning slot,
          per the §03 rule above: these describe interaction state, so they may
