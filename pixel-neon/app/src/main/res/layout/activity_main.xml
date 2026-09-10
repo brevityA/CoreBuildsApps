@@ -85,7 +85,7 @@
                 android:background="@drawable/bg_cta"
                 android:focusable="true"
                 android:focusableInTouchMode="true"
-                android:nextFocusDown="@id/chip_row"
+                android:nextFocusDown="@id/wallpapers_entry"
                 android:clickable="true"
                 android:paddingStart="@dimen/cb_space_lg"
                 android:paddingEnd="@dimen/cb_space_lg"
@@ -245,7 +245,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:clipToPadding="false"
-            android:nextFocusUp="@id/apply_button"
+            android:nextFocusUp="@id/wallpapers_entry"
             android:nextFocusDown="@id/grid"
             android:orientation="horizontal" />
 
@@ -262,7 +262,7 @@
             android:imeOptions="actionSearch"
             android:importantForAutofill="no"
             android:inputType="text"
-            android:nextFocusUp="@id/apply_button"
+            android:nextFocusUp="@id/wallpapers_entry"
             android:nextFocusDown="@id/grid"
             android:paddingStart="@dimen/cb_space_md"
             android:paddingEnd="@dimen/cb_space_md"

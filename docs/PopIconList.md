@@ -667,7 +667,7 @@ Pop is drawn from the same `tools/catalog.json` as the classic Core Builds Icon 
 | SeriesGuide | `battlelancer` | `#FEE440` | `pop_sun` `#E0AF0C` | `com.battlelancer.seriesguide/com.battlelancer.seriesguide.ui.ShowsActivity` |
 | SetEdit | `setedit22` | `#8AC926` | `pop_acid` `#9DBB1F` | `by4a.setedit22/by4a.setedit.EditorActivity` |
 | Settings | `settings` | `#9AA0A6` | `pop_slate` `#59637A` | `com.android.tv.settings/.MainSettings`<br>`com.android.settings/.Settings`<br>`com.android.tv.settings/com.android.tv.settings.SettingsActivity`<br>`com.android.tv.settings/com.android.tv.settings.SetupActivity` |
-| Seven Plus | `seven_plus` | `#FF6B35` | `pop_blaze` `#F05A22` | `com.swm.live/au.com.seven.inferno.ui.setup.SetupActivity`<br>`com.swm.live/au.com.seven.inferno.ui.tv.setup.SetupTvActivity` |
+| Seven Plus | `seven_plus` | `#E81820` | `pop_red` `#E03127` | `com.swm.live/au.com.seven.inferno.ui.setup.SetupActivity`<br>`com.swm.live/au.com.seven.inferno.ui.tv.setup.SetupTvActivity` |
 | Sfjazz At Home | `sfjazz_at_home` | `#B5179E` | `pop_orchid` `#A934B6` | `com.sfjazzdigital/tv.vhx.LauncherActivity`<br>`com.sfjazzdigital/tv.vhx.tv.home.TvHomeActivity` |
 | Sfr TV | `sfr_tv` | `#FEE440` | `pop_sun` `#E0AF0C` | `com.sfr.androidtv.gen8/com.sfr.androidtv.gen8.ui.Tv8MainActivity` |
 | Shadow | `shadowcloudgaming` | `#0A0C0D` | `pop_graphite` `#333A4B` | `com.blade.shadowcloudgaming/com.blade.shadow.dispatcher.DispatcherActivity` |
