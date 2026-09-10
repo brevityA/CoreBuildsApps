@@ -78,6 +78,23 @@ class ResourceTests(unittest.TestCase):
         xml = read("app/src/main/res/layout/item_wallpaper.xml")
         self.assertIn("wp_selected_ring", xml)
 
+    def test_item_wallpaper_root_is_the_focus_target(self):
+        """D-pad highlight and OK must land on the same view as the click
+        listener (itemView). Nested focusable cards split those two, so the
+        cyan ring never tracked the focused tile and centre-press did nothing.
+        """
+        ns = "{http://schemas.android.com/apk/res/android}"
+        root = ET.fromstring(read("app/src/main/res/layout/item_wallpaper.xml"))
+        self.assertEqual(root.get(ns + "focusable"), "true", "root must be focusable")
+        self.assertEqual(root.get(ns + "clickable"), "true", "root must be clickable")
+        self.assertEqual(root.get(ns + "background"), "@drawable/bg_card")
+        self.assertEqual(root.get(ns + "descendantFocusability"), "blocksDescendants")
+        nested = [
+            el for el in root.iter()
+            if el is not root and el.get(ns + "focusable") == "true"
+        ]
+        self.assertEqual(nested, [], "nested focusable views steal D-pad highlight")
+
 
 class KotlinWiringTests(unittest.TestCase):
     def setUp(self):
@@ -180,6 +197,25 @@ class KotlinWiringTests(unittest.TestCase):
         self.assertIn("selectionMode", src)
         # onBackPressed should exit selection instead of finishing when in mode.
         self.assertRegex(src, r"if\s*\(adapter\.selectionMode\)")
+
+    def test_wallpaper_chips_keep_focus_on_pick(self):
+        """notifyDataSetChanged on a chip press drops D-pad highlight — the
+        exact bug ChipAdapter already documents. Targeted notifyItemChanged
+        keeps the focused chip attached.
+        """
+        src = self.files["WallpaperChipAdapter.kt"]
+        no_block = re.sub(r"/\*.*?\*/", "", src, flags=re.DOTALL)
+        code = "\n".join(line.split("//", 1)[0] for line in no_block.splitlines())
+        self.assertNotIn("notifyDataSetChanged()", code)
+        self.assertIn("notifyItemChanged", code)
+        self.assertIn("isSelected", code)
+        self.assertIn("KEYCODE_DPAD_LEFT", code)
+        self.assertIn("wp_grid", code)
+
+    def test_wallpaper_tile_requests_item_focus(self):
+        src = self.files["WallpaperAdapter.kt"]
+        self.assertIn("itemView.isFocusable = true", src)
+        self.assertIn("setOnFocusChangeListener", src)
 
 
 class VersionTests(unittest.TestCase):

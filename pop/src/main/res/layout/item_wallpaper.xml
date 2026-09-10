@@ -4,25 +4,30 @@
   treatment as item_icon (Brand Guide §05). In selection mode a cyan frame
   marks chosen tiles.
 
-  No android:foreground ripple here. It pointed at
-  ?android:attr/selectableItemBackground, which resolves to the platform's grey
-  highlight — the only off-palette colour in the app — and it sat on this
-  FrameLayout while the focus ring is drawn on the inner card, so press and
-  focus highlighted two different rectangles. Press feedback now comes from the
-  theme's colorControlHighlight, in brand cyan, on the same surface as focus.
+  The ROOT is the focusable card. A previous revision put clickable/focusable
+  + bg_card on the inner LinearLayout and the click listener on this
+  FrameLayout, so D-pad highlight and OK landed on two different views —
+  the cyan ring never tracked the focused tile, and centre-press did nothing.
+  Press feedback comes from the theme's colorControlHighlight, in brand cyan,
+  on the same surface as focus. No platform selectableItemBackground: that
+  resolves to the grey highlight, the only off-palette colour in the app.
 -->
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:background="@drawable/bg_card"
+    android:clickable="true"
+    android:descendantFocusability="blocksDescendants"
+    android:focusable="true"
+    android:focusableInTouchMode="true"
+    android:minHeight="@dimen/cb_target_min"
     android:padding="0dp">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/bg_card"
-        android:clickable="true"
-        android:focusable="true"
-        android:focusableInTouchMode="true"
+        android:clickable="false"
+        android:focusable="false"
         android:gravity="center_horizontal"
         android:minHeight="@dimen/cb_target_min"
         android:orientation="vertical"
