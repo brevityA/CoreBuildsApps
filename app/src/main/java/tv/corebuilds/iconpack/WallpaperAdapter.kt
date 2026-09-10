@@ -7,6 +7,7 @@ import android.os.Looper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.DecelerateInterpolator
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
@@ -53,6 +54,8 @@ class WallpaperAdapter(
         }
         holder.label.text = item.title
         holder.itemView.contentDescription = item.title
+        holder.itemView.isFocusable = true
+        holder.itemView.isFocusableInTouchMode = true
 
         val isSelected = selected.contains(item.cacheName)
         holder.ring.visibility = if (selectionMode && isSelected) View.VISIBLE else View.GONE
@@ -64,6 +67,25 @@ class WallpaperAdapter(
             if (!selectionMode) enterSelectionMode()
             toggle(item)
             true
+        }
+
+        holder.itemView.animate().cancel()
+        holder.itemView.scaleX = 1f
+        holder.itemView.scaleY = 1f
+        holder.itemView.elevation = 0f
+        holder.itemView.setOnFocusChangeListener { view, focused ->
+            view.animate().cancel()
+            view.animate()
+                .scaleX(if (focused) 1.035f else 1f)
+                .scaleY(if (focused) 1.035f else 1f)
+                .setDuration(160L)
+                .setInterpolator(DecelerateInterpolator())
+                .start()
+            view.animate()
+                .translationZ(if (focused) 8f else 0f)
+                .setDuration(160L)
+                .setInterpolator(DecelerateInterpolator())
+                .start()
         }
     }
 
