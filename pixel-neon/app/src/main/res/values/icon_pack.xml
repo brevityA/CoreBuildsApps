@@ -151,7 +151,6 @@
         <item>cybermedia</item>
         <item>cyberghost</item>
         <item>dogusdigital</item>
-        <item>digdroid</item>
         <item>magneticchen</item>
         <item>dailymotion</item>
         <item>damontecres</item>
@@ -166,6 +165,7 @@
         <item>deltatv</item>
         <item>developer_tools</item>
         <item>devinterestdev</item>
+        <item>digdroid</item>
         <item>digi_tv</item>
         <item>direct_one</item>
         <item>att</item>
@@ -1080,7 +1080,6 @@
         <item>Cyberghost</item>
         <item>D-Smart</item>
         <item>Daijishou</item>
-        <item>Daijishou</item>
         <item>Dailymotion</item>
         <item>Damonte</item>
         <item>Dangbei</item>
@@ -1094,6 +1093,7 @@
         <item>Delta TV</item>
         <item>Developer Tools</item>
         <item>DevInterest</item>
+        <item>DIG</item>
         <item>Digi TV</item>
         <item>Direct One</item>
         <item>DIRECTV</item>
@@ -1139,7 +1139,7 @@
         <item>ePSXe</item>
         <item>Eros Now</item>
         <item>ERTFLIX</item>
-        <item>Ertflix</item>
+        <item>ERTFLIX</item>
         <item>Es De Frontend</item>
         <item>ES File Explorer</item>
         <item>ESPN</item>
@@ -1833,7 +1833,7 @@
         <item>Xumo Play</item>
         <item>Yacine TV</item>
         <item>Yandex Browser</item>
-        <item>Yettel TV</item>
+        <item>Yettel Selfcare</item>
         <item>Yettel TV</item>
         <item>Yippee</item>
         <item>Yle Areena</item>
@@ -2008,7 +2008,6 @@
         <item>APP</item>
         <item>APP</item>
         <item>APP</item>
-        <item>APP</item>
         <item>VIDEO</item>
         <item>APP</item>
         <item>APP</item>
@@ -2022,6 +2021,7 @@
         <item>APP</item>
         <item>TOOL</item>
         <item>STREAM</item>
+        <item>APP</item>
         <item>APP</item>
         <item>APP</item>
         <item>APP</item>
@@ -2067,7 +2067,7 @@
         <item>APP</item>
         <item>APP</item>
         <item>STREAM</item>
-        <item>APP</item>
+        <item>STREAM</item>
         <item>APP</item>
         <item>FILES</item>
         <item>SPORT</item>

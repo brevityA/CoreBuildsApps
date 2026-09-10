@@ -60,12 +60,48 @@ class IdentityTests(unittest.TestCase):
             ("smarttube", "smarttubenext"),
             ("ott", "cbs", "tve"),
             ("tvquickactions", "tv_quick_actions"),
+            ("intigral", "jawwy_tv"),
+            ("ertflix", "ertflix_2"),
         ]
         for group in groups:
             with self.subTest(group=group):
                 rows = [BY_ID[d] for d in group]
                 self.assertEqual(len({r["brand"] for r in rows}), 1)
                 self.assertEqual(len({(r["glyph"], r["color"]) for r in rows}), 1)
+
+    def test_unrelated_homonyms_keep_distinct_marks(self):
+        """Same display name, different products → different (glyph, colour).
+        Same-product package variants belong in a brand group instead."""
+        from collections import defaultdict
+        by_name = defaultdict(list)
+        for icon in ICONS:
+            by_name[icon["name"].casefold()].append(icon)
+        for name, rows in by_name.items():
+            brands = {r.get("brand") for r in rows}
+            if len(brands) == 1 and None not in brands:
+                continue
+            marks = {(r["glyph"], r["color"]) for r in rows}
+            self.assertEqual(len(marks), len(rows), name)
+
+    def test_dig_is_not_labelled_daijishou(self):
+        self.assertEqual(BY_ID["digdroid"]["name"], "DIG")
+        self.assertEqual(BY_ID["magneticchen"]["name"], "Daijishou")
+        self.assertNotEqual(BY_ID["digdroid"]["glyph"], BY_ID["magneticchen"]["glyph"])
+
+    def test_wholphin_is_not_damontes_letter_tile(self):
+        self.assertEqual(BY_ID["damontecres_2"]["name"], "Wholphin")
+        self.assertEqual(BY_ID["damontecres_2"]["glyph"], "wholphin_arc")
+        self.assertNotEqual(BY_ID["damontecres"]["glyph"], "wholphin_arc")
+        self.assertEqual(BY_ID["damontecres_2"].get("style"), CORE_MONOLINE)
+
+    def test_yettel_selfcare_is_not_yettel_tv(self):
+        self.assertEqual(BY_ID["selfcare"]["name"], "Yettel Selfcare")
+        self.assertEqual(BY_ID["yettel_tv"]["name"], "Yettel TV")
+
+    def test_tanasi_streamflix_is_not_the_reborn_f(self):
+        self.assertEqual(BY_ID["streamflix"]["glyph"], "flix_f")
+        self.assertEqual(BY_ID["streamflix_2"]["glyph"], "stream_window")
+        self.assertNotEqual(BY_ID["streamflix"]["color"], BY_ID["streamflix_2"]["color"])
 
     def test_reference_accents_are_not_random_palette_colours(self):
         expected = {"spotify": "#1ED760", "crunchyroid": "#FF5E00",

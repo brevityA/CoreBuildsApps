@@ -149,7 +149,6 @@
     <item drawable="cybermedia" />
     <item drawable="cyberghost" />
     <item drawable="dogusdigital" />
-    <item drawable="digdroid" />
     <item drawable="magneticchen" />
     <item drawable="dailymotion" />
     <item drawable="damontecres" />
@@ -164,6 +163,7 @@
     <item drawable="deltatv" />
     <item drawable="developer_tools" />
     <item drawable="devinterestdev" />
+    <item drawable="digdroid" />
     <item drawable="digi_tv" />
     <item drawable="direct_one" />
     <item drawable="att" />

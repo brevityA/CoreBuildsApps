@@ -2777,3 +2777,28 @@ def nobuffr_mark(c):
 
 
 GLYPHS["nobuffr_mark"] = nobuffr_mark
+
+
+def wholphin_arc(c):
+    """Wholphin: whale-back arc and a small eye. Original, not a vendor mark."""
+    return (
+        f'<path d="M 88 300 C 120 168 200 120 256 120 '
+        f'C 360 120 430 200 440 312" {_s(c, 32)}/>'
+        f'<path d="M 88 300 C 150 372 220 400 300 392 '
+        f'C 360 386 400 350 428 312" {_s(c, 26.2)}/>'
+        f'<circle cx="352" cy="208" r="16" {_s(c, 21.8)}/>'
+    )
+
+
+def stream_window(c):
+    """Tanasi Streamflix fork: flow bars and a play wedge. Not the reborn F."""
+    return (
+        f'<path d="M 112 176 H 268" {_s(c, 32)}/>'
+        f'<path d="M 112 256 H 236" {_s(c, 32)}/>'
+        f'<path d="M 112 336 H 200" {_s(c, 32)}/>'
+        f'<path d="M 300 176 L 300 336 L 424 256 Z" {_s(c, 32)}/>'
+    )
+
+
+GLYPHS["wholphin_arc"] = wholphin_arc
+GLYPHS["stream_window"] = stream_window

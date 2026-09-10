@@ -59,7 +59,7 @@ Constraints, all enforced by review:
 | --- | --- |
 | Canvas | 512 × 512 |
 | Safe area | 432 (40px margin) |
-| Default stroke | 34 (never below 26) |
+| Primary stroke | 32 (detail 26.2 / 21.8) |
 | Caps and joins | round |
 | Fill | one flat accent colour, no gradients |
 | Geometry | **original** — never trace a vendor logo |

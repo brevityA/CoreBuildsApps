@@ -14,6 +14,13 @@ All notable changes to the Core Builds Icon Pack. Format follows
   Display-only — not focusable, not in the D-pad chain. Icon rasters are
   unchanged.
 
+### Changed
+- **Same-name marks that were two products, or one product with two tiles.**
+  DIG is no longer labelled Daijishou. Jawwy TV and ERTFLIX package
+  migrations share one glyph and accent. Wholphin leaves the Damonte D-tile
+  for a whale-back construction. The Tanasi Streamflix fork is a flow/play
+  mark, not a letter S. Yettel Selfcare is named apart from Yettel TV.
+
 ## [1.8.11] — 2026-09-10
 
 **The rest of the D-pad dead ends, two mis-mapped apps, and the checks that
