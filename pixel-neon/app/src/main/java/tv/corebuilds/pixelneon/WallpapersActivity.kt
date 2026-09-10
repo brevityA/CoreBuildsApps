@@ -92,6 +92,10 @@ class WallpapersActivity : AppCompatActivity() {
             layoutManager = GridLayoutManager(this@WallpapersActivity, spanForScreen())
             adapter = this@WallpapersActivity.adapter
             setHasFixedSize(true)
+            // Same guard as the icon grid: the default change animation
+            // detaches a rebound tile and drops D-pad focus on long-press
+            // selection. The tile owns its own focus animation instead.
+            itemAnimator = null
         }
 
         findViewById<TextView>(R.id.wp_back).setOnClickListener {
@@ -174,6 +178,10 @@ class WallpapersActivity : AppCompatActivity() {
             layoutManager = LinearLayoutManager(
                 this@WallpapersActivity, LinearLayoutManager.HORIZONTAL, false
             )
+            // The main screen sets this on its chip row. Without it, the
+            // default RecyclerView change animation replaces the pressed chip
+            // with a fresh ViewHolder and drops the D-pad highlight on press.
+            itemAnimator = null
             adapter = WallpaperChipAdapter(labels, keys, null) { key ->
                 series = key
                 applyFilter()
