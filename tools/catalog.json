@@ -49,6 +49,7 @@
         "au.com.seven.inferno/.MainActivity"
       ],
       "category": "VOD",
+      "brand": "7plus",
       "color_source": "sampled from the official 7plus logo",
       "color_reviewed": "2026-09-08",
       "color_note": "sampled from the official 7plus logo (Seven Network red origami 7 + red wordmark) 2026-09-08; replaces pre-provenance blue #0072CE"
@@ -213,6 +214,7 @@
         "com.adguard.android/com.adguard.android.ui.activity.SplashActivity"
       ],
       "category": "APP",
+      "brand": "adguard",
       "color_source": "brand reference (pre-provenance, unverified)",
       "color_reviewed": null
     },
@@ -225,6 +227,7 @@
         "com.adguard.vpn/com.adguard.vpn.ui.routing_activity.SplashActivity"
       ],
       "category": "VPN",
+      "brand": "adguard",
       "color_source": "brand reference (pre-provenance, unverified)",
       "color_reviewed": null
     },
@@ -2260,6 +2263,7 @@
         "com.discovery.dplay/com.wbd.beam.BeamActivity"
       ],
       "category": "VOD",
+      "brand": "discovery",
       "color_source": "brand reference (pre-provenance, unverified)",
       "color_reviewed": null
     },
@@ -2272,6 +2276,7 @@
         "com.discovery.discoveryplus.mobile/com.wbd.beam.BeamActivity"
       ],
       "category": "VOD",
+      "brand": "discovery",
       "color_source": "brand reference (pre-provenance, unverified)",
       "color_reviewed": null
     },
@@ -9196,6 +9201,7 @@
         "com.swm.live/au.com.seven.inferno.ui.tv.setup.SetupTvActivity"
       ],
       "category": "VOD",
+      "brand": "7plus",
       "unverified": [
         "com.swm.live/au.com.seven.inferno.ui.setup.SetupActivity",
         "com.swm.live/au.com.seven.inferno.ui.tv.setup.SetupTvActivity"

@@ -157,6 +157,34 @@ def check_line_v_trap() -> None:
         fail("line-v* release prefix trap present outside docs warning: " + ", ".join(sorted(set(offenders))))
 
 
+def check_agents_guide(suite: dict) -> None:
+    """AGENTS.md is outside the README stamp, so its suite table and wallpaper
+    count can rot without any other gate noticing. Hold them to suite.json and
+    Wallpapers/manifest.json the same way the README stamp is held."""
+    agents = read("AGENTS.md")
+    by_id = {app["applicationId"]: (key, app["versionName"])
+             for key, app in suite["apps"].items()}
+    seen: set[str] = set()
+    for pkg, ver in re.findall(
+        r"^\| [^|\n]+\| [^|\n]+\| `([a-zA-Z0-9._]+)` \| `([^`]+)` \|",
+        agents,
+        flags=re.M,
+    ):
+        if pkg not in by_id:
+            fail(f"AGENTS.md suite table has unknown package {pkg}")
+        key, expected = by_id[pkg]
+        if ver != expected:
+            fail(f"AGENTS.md suite table {key} version {ver} != suite.json {expected}")
+        seen.add(pkg)
+    missing = [key for key, app in suite["apps"].items()
+               if app["applicationId"] not in seen]
+    if missing:
+        fail("AGENTS.md suite table missing apps: " + ", ".join(missing))
+    count = json.loads(read("Wallpapers/manifest.json"))["count"]
+    if not re.search(rf"currently has {count} entries", agents):
+        fail(f"AGENTS.md must state classic wallpaper count as 'currently has {count} entries'")
+
+
 def main() -> int:
     suite = check_suite_json()
     check_iconpack_truth(suite)
@@ -164,6 +192,7 @@ def main() -> int:
     check_readme_stamp(suite)
     check_stale_claims()
     check_line_v_trap()
+    check_agents_guide(suite)
     print("suite truth checks passed")
     return 0
 
