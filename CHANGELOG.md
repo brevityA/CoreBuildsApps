@@ -4,6 +4,33 @@ All notable changes to the Core Builds Icon Pack. Format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); versions follow
 [SemVer](https://semver.org/spec/v2.0.0.html).
 
+## [1.8.10] — 2026-09-10
+
+**Post-1.8.9 hotfix: TV focus reachability, 7plus artwork, launcher-neutral
+wallpaper copy.**
+
+### Fixed
+- **Wallpapers button unreachable by D-pad.** `apply_button.nextFocusDown`
+  skipped past `wallpapers_entry` and went straight to the chip row, so the
+  entry button could not be reached from the keyboard path at all. The focus
+  chain is now Apply → Wallpapers → chips/search → grid and back; mirrored in
+  the Pixel Neon and Pop layouts.
+- **7plus showed the wrong artwork.** The secondary/legacy `seven_plus`
+  catalog entry (the `com.swm.live` setup activities) carried a stale orange
+  accent and generic `tile_S` glyph while the primary `sevenplus` entry
+  (au.com.seven.inferno) is brand red. Both now resolve to the same red
+  `#E81820` `tile_7` artwork, category VOD, with regenerated icons and
+  banners across all three packs; Pixel Neon rasters were additionally
+  refreshed from the current catalog, which also retired a stale blue
+  7plus tile that predated the v1.8.8 colour remediation.
+- **Wallpaper copy over-stated Monet.** In-app strings (and mirrored Pixel
+  Neon/Pop strings, plus the README) now describe setting, rotating and
+  exporting wallpapers as works with any launcher or the system wallpaper
+  flow, not a Monet-only feature.
+
+Coverage unchanged: **925 icons / 1099 catalog components / 58 classic
+wallpapers**. versionName 1.8.10, versionCode 20.
+
 ## [1.8.9] — 2026-09-10
 
 **Android TV hardening and wallpaper expansion.** This release makes Core Builds more reliable from a 10-foot viewing distance and adds eight new 4K wallpapers.

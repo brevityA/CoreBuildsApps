@@ -2,7 +2,7 @@
   "$schema": "./catalog.schema.json",
   "meta": {
     "pack": "Core Builds Icon Pack",
-    "version": "1.8.9",
+    "version": "1.8.10",
     "grid": 512,
     "safe_area": 432,
     "note": "Core Builds-authored geometric icons on a shared 512 grid. Reviewed brand glyphs use rounded monoline strokes and one accent, not imported vendor silhouettes. Common Outfit/category/rail banners; artwork is reference-only. Canonical brand colours and the dark-card contrast policy remain shared.",
@@ -9189,20 +9189,21 @@
     {
       "name": "Seven Plus",
       "drawable": "seven_plus",
-      "color": "#FF6B35",
-      "glyph": "tile_S",
+      "color": "#E81820",
+      "glyph": "tile_7",
       "components": [
         "com.swm.live/au.com.seven.inferno.ui.setup.SetupActivity",
         "com.swm.live/au.com.seven.inferno.ui.tv.setup.SetupTvActivity"
       ],
-      "category": "APP",
+      "category": "VOD",
       "unverified": [
         "com.swm.live/au.com.seven.inferno.ui.setup.SetupActivity",
         "com.swm.live/au.com.seven.inferno.ui.tv.setup.SetupTvActivity"
       ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled from the official 7plus logo",
+      "color_reviewed": "2026-09-10",
+      "color_note": "aligned with sevenplus entry — same app (Seven Network 7plus) under com.swm.live package"
     },
     {
       "name": "Sfjazz At Home",

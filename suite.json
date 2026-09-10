@@ -4,8 +4,8 @@
   "apps": {
     "iconpack": {
       "name": "Core Builds Icon Pack",
-      "versionName": "1.8.9",
-      "versionCode": 19,
+      "versionName": "1.8.10",
+      "versionCode": 20,
       "tagPrefix": "v",
       "floatingTag": "iconpack",
       "downloader": "5270601",
