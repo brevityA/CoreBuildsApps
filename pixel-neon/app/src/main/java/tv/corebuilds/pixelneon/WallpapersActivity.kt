@@ -118,6 +118,18 @@ class WallpapersActivity : AppCompatActivity() {
 
         bindChips()
         bindBackNavigation()
+
+        // Deterministic starting point: the chip strip, not the search field
+        // (focusing an EditText on entry would pop the IME over the grid).
+        // Without an initial target Android can leave the menu with no
+        // highlighted control and a dead first D-pad press.
+        findViewById<RecyclerView>(R.id.wp_chips).post {
+            if (currentFocus == null || currentFocus === window.decorView) {
+                val chips = findViewById<RecyclerView>(R.id.wp_chips)
+                val firstChip = chips.layoutManager?.findViewByPosition(0)
+                (firstChip ?: chips).requestFocus()
+            }
+        }
     }
 
     private fun bindBackNavigation() {

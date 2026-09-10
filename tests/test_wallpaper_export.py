@@ -231,6 +231,16 @@ class KotlinWiringTests(unittest.TestCase):
         src = self.files["WallpapersActivity.kt"]
         self.assertGreaterEqual(src.count("itemAnimator = null"), 2)
 
+    def test_wallpaper_screen_sets_initial_focus(self):
+        """The main screen's own rule: without a deterministic initial target
+        Android can leave focus on the decor view, so the wallpaper menu opens
+        with no highlighted control and the first D-pad press does nothing.
+        The first chip ("All") must take focus once it is laid out.
+        """
+        src = self.files["WallpapersActivity.kt"]
+        self.assertIn("findViewByPosition(0)", src)
+        self.assertRegex(src, r"\(firstChip \?[:] chips\)\.requestFocus\(\)")
+
     def test_wallpaper_tile_requests_item_focus(self):
         src = self.files["WallpaperAdapter.kt"]
         self.assertIn("itemView.isFocusable = true", src)

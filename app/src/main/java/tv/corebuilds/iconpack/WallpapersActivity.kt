@@ -105,6 +105,18 @@ class WallpapersActivity : AppCompatActivity() {
 
         bindChips()
         bindBackNavigation()
+
+        // Deterministic starting point, same contract as the main screen:
+        // without it Android can leave focus on the decor view and the menu
+        // opens with no highlighted chip and no response to the first D-pad
+        // press. The "All" chip is always laid out at position 0.
+        findViewById<RecyclerView>(R.id.wp_chips).post {
+            if (currentFocus == null || currentFocus === window.decorView) {
+                val chips = findViewById<RecyclerView>(R.id.wp_chips)
+                val firstChip = chips.layoutManager?.findViewByPosition(0)
+                (firstChip ?: chips).requestFocus()
+            }
+        }
     }
 
     private fun bindBackNavigation() {
