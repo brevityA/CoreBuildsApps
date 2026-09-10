@@ -47,15 +47,27 @@ jobs:
         run: python tools/validate_pixel_neon.py
 
       - name: Verify generated assets are committed
-        # Scoped like the classic and Pop packs: mapping/definitional files
-        # are gated byte-exactly, plus every raster we have proven stable
-        # across environments. The one exemption is docs/preview.png: it is
-        # the only asset rendered through FreeType text, whose hinting pulls
-        # in the OS libm — pixel output legitimately varies by rasteriser
-        # stack ("PNG bytes move with the rasteriser's version"). The preview
-        # stays committed and human-reviewed; it is not a shipping asset.
+        # Gate everything the two generators above write, the way the classic
+        # pack gates '*.png' globally. The previous scope named five paths and
+        # left out res/drawable-nodpi — the 1800+ shipping rasters — so a stale
+        # icon passed CI silently: that is how the blue `sevenplus` tile
+        # survived the v1.8.8 brand-colour remediation and shipped until
+        # v1.8.10 regenerated it. res/mipmap-* and res/layout were ungated for
+        # the same reason. An allowlist of generated paths cannot help here,
+        # because the failure mode is a path nobody remembered to add.
+        #
+        # Hand-written sources under pixel-neon/ never trip this: the check
+        # runs after the generators and reports only what they rewrote
+        # relative to the commit under test.
+        #
+        # The one exemption stays docs/preview.png: it is the only asset
+        # rendered through FreeType text, whose hinting pulls in the OS libm —
+        # pixel output legitimately varies by rasteriser stack ("PNG bytes
+        # move with the rasteriser's version"). It stays committed and
+        # human-reviewed; it is not a shipping asset. Everything else here
+        # reproduces byte-identically.
         run: |
-          DRIFT=$(git status --porcelain -- PixelNeonWallpapers pixel-neon/docs pixel-neon/app/src/main/assets pixel-neon/app/src/main/res/xml pixel-neon/app/src/main/res/values/icon_pack.xml ':(exclude)pixel-neon/docs/preview.png' | grep -v '^?? ' || true)
+          DRIFT=$(git status --porcelain -- PixelNeonWallpapers pixel-neon ':(exclude)pixel-neon/docs/preview.png' | grep -v '^?? ' || true)
           if [ -n "$DRIFT" ]; then
             echo "::error::Pixel Neon generated assets drift from the wallpaper/icon sources. Run: python tools/build_pixel_neon_wallpapers.py && python tools/build_pixel_neon.py"
             # One annotation per drifted file so the diff is readable without
