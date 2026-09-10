@@ -52,6 +52,9 @@ class IdentityTests(unittest.TestCase):
         groups = [
             ("iplayer", "bbc_iplayer", "bbciplayer"),
             ("ninenow", "ninenow_2"),
+            ("sevenplus", "seven_plus"),
+            ("adguard", "adguard_2"),
+            ("discovery", "discoveryplus"),
             ("syncler", "syncler_2", "syncler_beta"),
             ("weyd", "weyd_2"),
             ("smarttube", "smarttubenext"),
