@@ -151,7 +151,6 @@
         <item>cybermedia</item>
         <item>cyberghost</item>
         <item>dogusdigital</item>
-        <item>digdroid</item>
         <item>magneticchen</item>
         <item>dailymotion</item>
         <item>damontecres</item>
@@ -166,6 +165,7 @@
         <item>deltatv</item>
         <item>developer_tools</item>
         <item>devinterestdev</item>
+        <item>digdroid</item>
         <item>digi_tv</item>
         <item>direct_one</item>
         <item>att</item>
@@ -502,6 +502,7 @@
         <item>nhl</item>
         <item>njpw_world</item>
         <item>nlziet</item>
+        <item>nobuffr</item>
         <item>noovo</item>
         <item>nordiskfilmplus</item>
         <item>nordvpn</item>
@@ -878,6 +879,7 @@
         <item>watcho</item>
         <item>wave_iptv</item>
         <item>wavetv</item>
+        <item>weatherbug</item>
         <item>rodrigmatrix</item>
         <item>wetv</item>
         <item>weyd</item>
@@ -1003,7 +1005,7 @@
         <item>Background Apps And Process List</item>
         <item>Bally Sports</item>
         <item>BBC iPlayer</item>
-        <item>BBC Iplayer</item>
+        <item>BBC iPlayer (Freeview)</item>
         <item>BBC iPlayer TV</item>
         <item>begin</item>
         <item>Bell Fibe</item>
@@ -1078,7 +1080,6 @@
         <item>Cyberghost</item>
         <item>D-Smart</item>
         <item>Daijishou</item>
-        <item>Daijishou</item>
         <item>Dailymotion</item>
         <item>Damonte</item>
         <item>Dangbei</item>
@@ -1092,6 +1093,7 @@
         <item>Delta TV</item>
         <item>Developer Tools</item>
         <item>DevInterest</item>
+        <item>DIG</item>
         <item>Digi TV</item>
         <item>Direct One</item>
         <item>DIRECTV</item>
@@ -1137,7 +1139,7 @@
         <item>ePSXe</item>
         <item>Eros Now</item>
         <item>ERTFLIX</item>
-        <item>Ertflix</item>
+        <item>ERTFLIX</item>
         <item>Es De Frontend</item>
         <item>ES File Explorer</item>
         <item>ESPN</item>
@@ -1428,6 +1430,7 @@
         <item>NHL</item>
         <item>Njpw World</item>
         <item>Nlziet</item>
+        <item>NoBuffr</item>
         <item>Noovo</item>
         <item>Nordisk Film+</item>
         <item>NordVPN</item>
@@ -1804,6 +1807,7 @@
         <item>Watcho</item>
         <item>Wave IPTV</item>
         <item>Wave TV Player</item>
+        <item>WeatherBug</item>
         <item>WeatherYou</item>
         <item>Wetv</item>
         <item>Weyd</item>
@@ -1829,7 +1833,7 @@
         <item>Xumo Play</item>
         <item>Yacine TV</item>
         <item>Yandex Browser</item>
-        <item>Yettel TV</item>
+        <item>Yettel Selfcare</item>
         <item>Yettel TV</item>
         <item>Yippee</item>
         <item>Yle Areena</item>
@@ -1858,7 +1862,7 @@
         <item>APP</item>
         <item>VOD</item>
         <item>VOD</item>
-        <item>APP</item>
+        <item>VOD</item>
         <item>PLAYER</item>
         <item>STREAM</item>
         <item>VOD</item>
@@ -1928,9 +1932,9 @@
         <item>APP</item>
         <item>APP</item>
         <item>APP</item>
-        <item>APP</item>
-        <item>PLAYER</item>
-        <item>APP</item>
+        <item>VOD</item>
+        <item>VOD</item>
+        <item>VOD</item>
         <item>STREAM</item>
         <item>APP</item>
         <item>APP</item>
@@ -2000,7 +2004,6 @@
         <item>APP</item>
         <item>VOD</item>
         <item>FILES</item>
-        <item>APP</item>
         <item>APP</item>
         <item>APP</item>
         <item>APP</item>
@@ -2021,6 +2024,7 @@
         <item>APP</item>
         <item>APP</item>
         <item>APP</item>
+        <item>APP</item>
         <item>VOD</item>
         <item>VOD</item>
         <item>APP</item>
@@ -2063,7 +2067,7 @@
         <item>APP</item>
         <item>APP</item>
         <item>STREAM</item>
-        <item>APP</item>
+        <item>STREAM</item>
         <item>APP</item>
         <item>FILES</item>
         <item>SPORT</item>
@@ -2354,6 +2358,7 @@
         <item>APP</item>
         <item>APP</item>
         <item>APP</item>
+        <item>PLAYER</item>
         <item>APP</item>
         <item>VOD</item>
         <item>VPN</item>
@@ -2514,7 +2519,7 @@
         <item>STREAM</item>
         <item>APP</item>
         <item>SYSTEM</item>
-        <item>APP</item>
+        <item>VOD</item>
         <item>APP</item>
         <item>APP</item>
         <item>APP</item>
@@ -2586,8 +2591,8 @@
         <item>MUSIC</item>
         <item>SPORT</item>
         <item>STREAM</item>
-        <item>APP</item>
-        <item>APP</item>
+        <item>STREAM</item>
+        <item>STREAM</item>
         <item>FILES</item>
         <item>APP</item>
         <item>APP</item>
@@ -2659,7 +2664,7 @@
         <item>TOOL</item>
         <item>APP</item>
         <item>TOOL</item>
-        <item>APP</item>
+        <item>TOOL</item>
         <item>VIDEO</item>
         <item>APP</item>
         <item>BROWSER</item>
@@ -2730,10 +2735,11 @@
         <item>APP</item>
         <item>LIVE</item>
         <item>LIVE</item>
+        <item>APP</item>
         <item>SPORT</item>
         <item>APP</item>
         <item>STREAM</item>
-        <item>APP</item>
+        <item>STREAM</item>
         <item>APP</item>
         <item>FILES</item>
         <item>APP</item>
@@ -2779,5 +2785,5 @@
         <item>APP</item>
         <item>APP</item>
     </string-array>
-    <integer name="icon_count">924</integer>
+    <integer name="icon_count">926</integer>
 </resources>

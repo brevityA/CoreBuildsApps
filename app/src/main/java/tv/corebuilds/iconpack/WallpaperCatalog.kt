@@ -19,7 +19,7 @@ import java.util.Locale
 data class Wallpaper(
     /** Display name, e.g. "41 Core Mark · Signature". */
     val name: String,
-    /** Series folder id, e.g. "series-4-core-mark". Drives the filter chips. */
+    /** Series folder id, e.g. "series-6-circuit-core". Drives the filter chips. */
     val series: String,
     /** Full-resolution image URL (raw GitHub, 4K PNG). */
     val url: String,
@@ -101,7 +101,7 @@ object WallpaperCatalog {
     }
 
     /**
-     * Human label for a series id, e.g. "series-4-core-mark" -> "Core Mark".
+     * Human label for a series id, e.g. "series-6-circuit-core" -> "Circuit Core".
      *
      * Strips the leading "series-N-" index prefix (the number is an ordering
      * aid, not a word) and title-cases the remainder. Uses `toUpperCase(Locale)`

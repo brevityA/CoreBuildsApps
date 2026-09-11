@@ -6,10 +6,11 @@ The suite now has one central PR gate plus the existing per-app workflows.
 
 - `.github/workflows/suite-ci.yml`
   - `contracts`: runs `python tools/audit_contract.py` and fails if any shippable app is missing a tracked workflow/artifact path, updater metadata drifts from Gradle, an updater regresses to stale manifest URLs / code-0 fallback / unbounded reads, or keystore-like files appear in git.
-  - `android`: matrix builds every Android app (`Icon Pack`, `Core Line`, `Core Shift`, `Core Doctor`, `Core Motion plugin`) with `lintDebug`, unit tests, and `assembleDebug`, then uploads the debug APK artifact.
+  - `android`: matrix builds every Android app (`Icon Pack`, `Pixel Neon Icon Pack`, `Core Line`, `Core Shift`, `Core Doctor`, `Core Motion plugin`) with `lintDebug`, unit tests, and `assembleDebug`, then uploads the debug APK artifact.
   - `web-and-content`: runs Core Line Node parser/update/feed tests and Python content/validator tests.
 - Existing per-app workflows remain for compatibility with current release tags and Downloader flows:
   - `build.yml` — Icon Pack.
+  - `pixel-neon-apk.yml` — Pixel Neon Icon Pack.
   - `core-line-apk.yml` — Core Line.
   - `core-shift-apk.yml` — Core Shift.
   - `core-doctor-apk.yml` — Core Doctor.
@@ -23,6 +24,7 @@ Triggers:
 
 - Tag push:
   - `iconpack-v*`
+  - `pixel-neon-v*`
   - `coreline-v*`
   - `shift-v*`
   - `doctor-v*`
@@ -60,6 +62,7 @@ Play credentials are intentionally not in the repo. If Play upload automation is
 Updater metadata lives in `Latestrelease/` and is backward-compatible JSON:
 
 - `Latestrelease/version.json` — Icon Pack.
+- `Latestrelease/pixel-neon-version.json` — Pixel Neon Icon Pack.
 - `Latestrelease/coreline-version.json` — Core Line.
 - `Latestrelease/shift-version.json` — Core Shift.
 

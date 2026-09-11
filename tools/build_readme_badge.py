@@ -8,7 +8,9 @@ START = "<!-- suite-stamp:start -->"
 END = "<!-- suite-stamp:end -->"
 
 WHAT = {
-    "iconpack": "924 transparent icons + 70 wallpapers for Projectivy Launcher",
+    "iconpack": "{iconCount} transparent icons + 58 wallpapers for Projectivy Launcher",
+    "pixelneon": "{iconCount} transparent 8-bit neon icons + 70 wallpapers for Projectivy Launcher",
+    "pop": "The same {iconCount} icons, pop-art cartoon: 16 swatches, one container",
     "line": "Sports scores & channel RSS ticker (chyron)",
     "shift": "Android TV screensaver + motion wallpaper browser",
     "motion": "Projectivy wallpaper-provider plugin for Core Motion loops",
@@ -16,6 +18,8 @@ WHAT = {
 }
 ANCHOR = {
     "iconpack": "icon-pack",
+    "pixelneon": "pixel-neon-icon-pack",
+    "pop": "core-builds-pop",
     "line": "core-line",
     "shift": "core-shift",
     "motion": "core-motion",
@@ -28,18 +32,18 @@ def block(suite: dict) -> str:
         "> | App | Current | What it does | Downloader | Release tag |",
         "> |---|---:|---|---|---|",
     ]
-    for key in ["iconpack", "line", "shift", "motion", "doctor"]:
+    for key in ["iconpack", "pixelneon", "pop", "line", "shift", "motion", "doctor"]:
         app = suite["apps"][key]
         releases = "../../releases"
         downloader = app["downloader"]
         tag = f"[`{app['tagPrefix']}*` / `{app['floatingTag']}`]({releases})"
         lines.append(
             f"> | **[{app['name']}](#-{ANCHOR[key]})** | `v{app['versionName']}` | "
-            f"{WHAT[key]} | `{downloader}` | {tag} |"
+            f"{WHAT[key].format(**app)} | `{downloader}` | {tag} |"
         )
     lines += [
         ">",
-        "> Each app has its own Gradle root and CI workflow. Do not merge roots, split the repo, or repoint floating Downloader tags.",
+        "> Each app has its own CI workflow and release tag. Do not merge Gradle roots, split the repo, or repoint floating Downloader tags.",
         END,
     ]
     return "\n".join(lines)
