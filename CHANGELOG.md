@@ -39,6 +39,8 @@ compiling, and the pack's own banner with its last letter cut off.**
   (SIL OFL), and an `assert` measures the lockup against the 5% overscan
   margin.
 
+- **Three gates, because each of these was silent.** A test measures the rendered alpha of all 322 glyphs against SAFE. `pop_glyph_metrics.json` carries a `geometry_sha256` of the bodies it was measured from, so editing a glyph without re-running the measurement is caught rather than leaving Pop scaling a mark to an ink box it no longer has. `check_ui_resources.py` now pairs every module with the Kotlin it actually compiles — it had hardcoded one path, which is why it printed OK on a tree that could not build.
+
 ### Added
 - **Prefilled icon-request issue links.** `tools/build_issue_prefills.py` reads
   `.github/ISSUE_TEMPLATE/*.yml` and writes the README's **Request an icon**
@@ -54,7 +56,21 @@ compiling, and the pack's own banner with its last letter cut off.**
   Display-only — not focusable, not in the D-pad chain. Icon rasters are
   unchanged.
 
-- **Three gates, because each of these was silent.** A test measures the rendered alpha of all 322 glyphs against SAFE. `pop_glyph_metrics.json` carries a `geometry_sha256` of the bodies it was measured from, so editing a glyph without re-running the measurement is caught rather than leaving Pop scaling a mark to an ink box it no longer has. `check_ui_resources.py` now pairs every module with the Kotlin it actually compiles — it had hardcoded one path, which is why it printed OK on a tree that could not build.
+
+- **Six generic letter tiles became researched brand marks.** New monoline
+  `aljazeera_flame`, `france24_mark`, `cbc_gem`, `cnbc_peacock` and
+  `mgm_reel`; `sbsondemand` joins `sbs` on the five-splice globe. Tile share
+  66.4% → 65.9% (615 → 610 of 926), bespoke marks 311 → 316, with a
+  tile-share ceiling and bespoke floor added as tests so the number can only
+  move the right way. Original linework throughout — no vendor silhouette or
+  wordmark.
+
+### Changed
+- **Same-name marks that were two products, or one product with two tiles.**
+  DIG is no longer labelled Daijishou. Jawwy TV and ERTFLIX package
+  migrations share one glyph and accent. Wholphin leaves the Damonte D-tile
+  for a whale-back construction. The Tanasi Streamflix fork is a flow/play
+  mark, not a letter S. Yettel Selfcare is named apart from Yettel TV.
 
 Coverage: **926 icons / 1101 catalog components / 58 classic wallpapers**.
 versionName 1.8.12, versionCode 22.

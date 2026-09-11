@@ -60,12 +60,48 @@ class IdentityTests(unittest.TestCase):
             ("smarttube", "smarttubenext"),
             ("ott", "cbs", "tve"),
             ("tvquickactions", "tv_quick_actions"),
+            ("intigral", "jawwy_tv"),
+            ("ertflix", "ertflix_2"),
         ]
         for group in groups:
             with self.subTest(group=group):
                 rows = [BY_ID[d] for d in group]
                 self.assertEqual(len({r["brand"] for r in rows}), 1)
                 self.assertEqual(len({(r["glyph"], r["color"]) for r in rows}), 1)
+
+    def test_unrelated_homonyms_keep_distinct_marks(self):
+        """Same display name, different products → different (glyph, colour).
+        Same-product package variants belong in a brand group instead."""
+        from collections import defaultdict
+        by_name = defaultdict(list)
+        for icon in ICONS:
+            by_name[icon["name"].casefold()].append(icon)
+        for name, rows in by_name.items():
+            brands = {r.get("brand") for r in rows}
+            if len(brands) == 1 and None not in brands:
+                continue
+            marks = {(r["glyph"], r["color"]) for r in rows}
+            self.assertEqual(len(marks), len(rows), name)
+
+    def test_dig_is_not_labelled_daijishou(self):
+        self.assertEqual(BY_ID["digdroid"]["name"], "DIG")
+        self.assertEqual(BY_ID["magneticchen"]["name"], "Daijishou")
+        self.assertNotEqual(BY_ID["digdroid"]["glyph"], BY_ID["magneticchen"]["glyph"])
+
+    def test_wholphin_is_not_damontes_letter_tile(self):
+        self.assertEqual(BY_ID["damontecres_2"]["name"], "Wholphin")
+        self.assertEqual(BY_ID["damontecres_2"]["glyph"], "wholphin_arc")
+        self.assertNotEqual(BY_ID["damontecres"]["glyph"], "wholphin_arc")
+        self.assertEqual(BY_ID["damontecres_2"].get("style"), CORE_MONOLINE)
+
+    def test_yettel_selfcare_is_not_yettel_tv(self):
+        self.assertEqual(BY_ID["selfcare"]["name"], "Yettel Selfcare")
+        self.assertEqual(BY_ID["yettel_tv"]["name"], "Yettel TV")
+
+    def test_tanasi_streamflix_is_not_the_reborn_f(self):
+        self.assertEqual(BY_ID["streamflix"]["glyph"], "flix_f")
+        self.assertEqual(BY_ID["streamflix_2"]["glyph"], "stream_window")
+        self.assertNotEqual(BY_ID["streamflix"]["color"], BY_ID["streamflix_2"]["color"])
 
     def test_reference_accents_are_not_random_palette_colours(self):
         expected = {"spotify": "#1ED760", "crunchyroid": "#FF5E00",
@@ -363,6 +399,46 @@ class SourceTests(unittest.TestCase):
     def test_download_link_is_in_generated_catalog_documentation(self):
         self.assertIn("[NoBuffr](https://downloads.nobuffr.com/android/nobuffr.apk)",
                       (ROOT / "docs/IconPackList.md").read_text())
+
+
+class DiversityTests(unittest.TestCase):
+    """Recognisability can only move one way.
+
+    docs/research/iconpack-design-upgrade-2026-09.md measures the pack at 66%
+    generic letter tiles — the one axis where Projectivy Icon Pack still wins.
+    A catalog addition lands on a letter tile by default, so without a gate
+    the share ratchets up with every release. The ceiling and floor below pin
+    the number, and the researched-emblem set prevents a named brand from
+    silently regressing to a tile.
+    """
+
+    # Brands with a verified public emblem. Grows as each logo audit lands;
+    # a regression here is a silent quality loss, not a count change.
+    RESEARCHED_EMBLEMS = {
+        "al_jazeera", "androidapp_2",   # Al Jazeera, France 24
+        "cbctv", "cnbc",                # CBC Gem, CNBC (NBC peacock)
+        "sbs", "sbsondemand",           # SBS five-splice Mercator globe
+        "epix",                         # MGM+ film-reel device
+    }
+
+    def _tiles(self):
+        return [i for i in ICONS if i["glyph"].startswith("tile_")]
+
+    def test_letter_tile_share_has_a_ceiling(self):
+        share = len(self._tiles()) / len(ICONS)
+        self.assertLessEqual(share, 0.66,
+                             f"{share:.2%} of icons are letter tiles, above the 66% ceiling")
+
+    def test_bespoke_mark_count_has_a_floor(self):
+        bespoke = len(ICONS) - len(self._tiles())
+        self.assertGreaterEqual(bespoke, 315,
+                                f"only {bespoke} icons on bespoke marks, below the 315 floor")
+
+    def test_researched_emblems_are_never_letter_tiles(self):
+        for icon in ICONS:
+            if icon["drawable"] in self.RESEARCHED_EMBLEMS:
+                self.assertFalse(icon["glyph"].startswith("tile_"),
+                                 f"{icon['name']} regressed to a letter tile")
 
 
 class ApkInspectorTests(unittest.TestCase):
