@@ -97,6 +97,8 @@ prefills `input`/`textarea` fields only, and the tool refuses to promise more.
 ## Product verification shortcuts
 
 - Icon Pack: four generators + `python tools/validate.py`.
+  Square PNGs get a raster presence pass (`tools/presence.py`) after svg2png —
+  night keyline + accent bloom as rings. Vectors stay style-AA. Banners skip it.
 - Pixel Neon: `python tools/build_pixel_neon.py`, `python tools/validate_pixel_neon.py`, plus `cd pixel-neon && ./gradlew :app:lintDebug :app:assembleDebug`.
 - Core Builds Pop: `python tools/build_pop.py` + `python tools/validate_pop.py` + `python tests/test_pop.py`.
 - Core Line: `cd ticker && npm test`.
