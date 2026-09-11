@@ -21,5 +21,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
 App names, trademarks, and brand colours referenced in tools/catalog.json are
-the property of their respective owners. All icon artwork in this repository is
-original geometry created for Core Builds.
+the property of their respective owners. Original Core Builds artwork and
+code are licensed above. Third-party brand artwork and source-vector licence
+exceptions are recorded in THIRD_PARTY_NOTICES.md; the MIT licence does not
+grant trademark rights or imply endorsement.

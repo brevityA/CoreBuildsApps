@@ -27,6 +27,7 @@ class MainActivity : AppCompatActivity() {
     private var pickMode = false
     private lateinit var all: List<IconAdapter.IconItem>
     private lateinit var adapter: IconAdapter
+    private lateinit var chipAdapter: ChipAdapter
     private var category = ALL
     private var query = ""
     private var pickBanners = true
@@ -55,19 +56,23 @@ class MainActivity : AppCompatActivity() {
         }
 
         findViewById<TextView>(R.id.count).text =
-            getString(R.string.icon_count_fmt, all.size)
+            getString(R.string.icon_count_fmt, all.size, BuildConfig.VERSION_NAME)
 
         adapter = IconAdapter(all) { item -> onIconChosen(item) }
         findViewById<RecyclerView>(R.id.grid).apply {
             layoutManager = GridLayoutManager(this@MainActivity, spanForScreen())
             adapter = this@MainActivity.adapter
             setHasFixedSize(true)
+            // Filtering should not animate every one of the 900+ tiles. The
+            // tile itself owns the small focus animation, so D-pad focus stays
+            // stable while DiffUtil updates the data set.
+            itemAnimator = null
         }
 
         if (pickMode) {
-            findViewById<TextView>(R.id.picker_hint).visibility = View.VISIBLE
-            findViewById<TextView>(R.id.picker_hint).text =
-                getString(R.string.picker_hint_banner)
+            val pickerHint = findViewById<TextView>(R.id.picker_hint)
+            pickerHint.visibility = View.VISIBLE
+            pickerHint.text = getString(R.string.picker_hint_banner)
             findViewById<TextView>(R.id.apply_button).visibility = View.GONE
             findViewById<TextView>(R.id.apply_sub).visibility = View.GONE
             findViewById<LinearLayout>(R.id.update_bar).visibility = View.GONE
@@ -75,18 +80,56 @@ class MainActivity : AppCompatActivity() {
 
         bindChips()
         bindSearch()
+        bindEmptyActions()
         if (pickMode) {
             // Icon-picker mode has no use for the wallpapers entry or apply.
-            findViewById<View>(R.id.wallpapers_entry).visibility = View.GONE
+            findViewById<View>(R.id.wallpapers_group).visibility = View.GONE
             bindPickShape()
         } else {
             bindApplyButton()
+            // The button keeps the short title; the count moves to a subtitle.
+            // Overwriting the label with the long sentence made the affordance
+            // read as prose rather than as something you press.
             val wpEntry = findViewById<TextView>(R.id.wallpapers_entry)
+            val wpSub = findViewById<TextView>(R.id.wallpapers_entry_sub)
             val wpCount = WallpaperCatalog.load(this).size
-            if (wpCount > 0) {
-                wpEntry.text = getString(R.string.wp_entry_sub_fmt, wpCount)
+            // No subtitle rather than repeating the button's own label.
+            wpSub.text = if (wpCount > 0) {
+                getString(R.string.wp_entry_sub_fmt, wpCount)
+            } else {
+                ""
             }
             wpEntry.setOnClickListener { startActivity(Intent(this, WallpapersActivity::class.java)) }
+        }
+
+        // Give a physical remote a deterministic starting point. Without an
+        // initial target Android may leave focus on the decor view, requiring
+        // an extra key press before the first D-pad move does anything.
+        window.decorView.post {
+            if (pickMode) {
+                val chips = findViewById<RecyclerView>(R.id.chip_row)
+                chips.post {
+                    val firstChip = chips.layoutManager?.findViewByPosition(0)
+                    (firstChip ?: chips).requestFocus()
+                }
+            } else {
+                findViewById<View>(R.id.apply_button).requestFocus()
+            }
+        }
+    }
+
+    private fun bindEmptyActions() {
+        findViewById<TextView>(R.id.empty_clear_search).setOnClickListener {
+            val search = findViewById<EditText>(R.id.search)
+            search.setText("")
+            query = ""
+            applyFilter()
+            search.requestFocus()
+        }
+        findViewById<TextView>(R.id.empty_clear_filter).setOnClickListener {
+            // select() drives the chip highlight and calls back into
+            // applyFilter through the same path a D-pad press would take.
+            chipAdapter.select(ALL)
         }
     }
 
@@ -128,14 +171,15 @@ class MainActivity : AppCompatActivity() {
                 labels += label
             }
         }
+        chipAdapter = ChipAdapter(labels, keys, ALL) { picked ->
+            category = picked
+            applyFilter()
+        }
         findViewById<RecyclerView>(R.id.chip_row).apply {
             layoutManager = LinearLayoutManager(
                 this@MainActivity, LinearLayoutManager.HORIZONTAL, false
             )
-            adapter = ChipAdapter(labels, keys, ALL) { picked ->
-                category = picked
-                applyFilter()
-            }
+            adapter = chipAdapter
         }
     }
 
@@ -159,14 +203,83 @@ class MainActivity : AppCompatActivity() {
                 || item.drawable.contains(q)
             catOk && qOk
         }
+        val grid = findViewById<RecyclerView>(R.id.grid)
+        // Keep the remote cursor attached to the same icon when a query or
+        // category changes. Losing focus after every keystroke is especially
+        // disorienting on TV because there is no touch position to recover.
+        val focusedDrawable = (0 until adapter.itemCount)
+            .firstOrNull { position ->
+                grid.findViewHolderForAdapterPosition(position)?.itemView?.hasFocus() == true
+            }
+            ?.let(adapter::itemAt)
+            ?.drawable
+
         adapter.submit(filtered)
+        if (focusedDrawable != null) {
+            grid.post {
+                val nextPosition = filtered.indexOfFirst { it.drawable == focusedDrawable }
+                if (nextPosition >= 0) {
+                    grid.layoutManager?.scrollToPosition(nextPosition)
+                    grid.post {
+                        grid.findViewHolderForAdapterPosition(nextPosition)
+                            ?.itemView?.requestFocus()
+                    }
+                }
+            }
+        }
         findViewById<TextView>(R.id.count).text =
             if (filtered.size == all.size) {
-                getString(R.string.icon_count_fmt, all.size)
+                getString(R.string.icon_count_fmt, all.size, BuildConfig.VERSION_NAME)
             } else {
                 getString(R.string.icon_filter_fmt, filtered.size, all.size)
             }
+        bindEmptyState(filtered.size, q)
     }
+
+    /**
+     * A filter with no match used to render a blank grid with no message and no
+     * way back except backspacing. Say what happened and offer the undo.
+     */
+    private fun bindEmptyState(shown: Int, q: String) {
+        val empty = findViewById<View>(R.id.empty_state)
+        val grid = findViewById<View>(R.id.grid)
+        if (shown > 0) {
+            empty.visibility = View.GONE
+            grid.visibility = View.VISIBLE
+            return
+        }
+        grid.visibility = View.GONE
+        empty.visibility = View.VISIBLE
+
+        findViewById<TextView>(R.id.empty_title).text =
+            if (q.isEmpty()) {
+                getString(R.string.empty_title_category_fmt, categoryLabel(category))
+            } else {
+                getString(R.string.empty_title_fmt, query.trim())
+            }
+
+        findViewById<TextView>(R.id.empty_body).text =
+            if (q.isEmpty()) {
+                getString(R.string.empty_body_plain)
+            } else {
+                getString(
+                    R.string.empty_body_query_fmt,
+                    categoryLabel(category),
+                    all.count { it.category == category }
+                )
+            }
+
+        // Offer whichever undo actually applies: the search, the filter, or both.
+        val clearSearch = findViewById<TextView>(R.id.empty_clear_search)
+        val clearFilter = findViewById<TextView>(R.id.empty_clear_filter)
+        clearSearch.visibility = if (q.isEmpty()) View.GONE else View.VISIBLE
+        clearFilter.visibility = if (category == ALL) View.GONE else View.VISIBLE
+        clearFilter.text =
+            getString(R.string.empty_clear_filter, all.count { it.category == category })
+    }
+
+    private fun categoryLabel(key: String): String =
+        CHIP_ORDER.firstOrNull { it.first == key }?.second ?: getString(R.string.chip_all)
 
     private fun checkForUpdate() {
         UpdateChecker.check(this) { result ->
@@ -389,8 +502,11 @@ class MainActivity : AppCompatActivity() {
             "GAMING" to "Gaming",
             "DEBRID" to "Debrid",
             "BROWSER" to "Browsers",
+            "REMOTE" to "Remotes",
             "VIDEO" to "Video",
             "SYSTEM" to "System",
+            "TRACK" to "Tracking",
+            "CORE" to "Core Builds",
             "APP" to "Apps"
         )
     }

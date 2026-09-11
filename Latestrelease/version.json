@@ -1,9 +1,9 @@
 {
-  "versionCode": 15,
-  "versionName": "1.8.2",
-  "iconCount": 924,
-  "componentCount": 1098,
-  "releaseDate": "2026-09-04",
+  "versionCode": 22,
+  "versionName": "1.8.12",
+  "iconCount": 926,
+  "componentCount": 1101,
+  "releaseDate": "2026-09-10",
   "apkUrl": "https://github.com/brevityA/CoreBuildsApps/releases/download/iconpack/iconpack-release.apk",
   "releaseNotesUrl": "https://github.com/brevityA/CoreBuildsApps/blob/main/CHANGELOG.md",
   "minSdk": 21

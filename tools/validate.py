@@ -9,6 +9,9 @@ import json
 import re
 import sys
 import xml.etree.ElementTree as ET
+
+from icon_style import CORE_MONOLINE, MIN_CONTRAST, core_monoline_errors, contrast, display_accent
+from build_icons import validate as validate_catalog
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -31,6 +34,34 @@ def main():
     data = json.loads(CATALOG.read_text(encoding="utf-8"))
     icons = data["icons"]
     names = {i["drawable"] for i in icons}
+    issues = validate_catalog(icons, data.get("artwork"))
+    check(not issues, "catalog style/reference contract: " + "; ".join(issues))
+    for icon in icons:
+        if icon.get("style") != CORE_MONOLINE:
+            continue
+        path = ROOT / "assets/svg" / f"{icon['drawable']}.svg"
+        if path.exists():
+            root = ET.parse(path).getroot()
+            body = "".join(ET.tostring(node, encoding="unicode") for node in root)
+            mono = icon.get("color_note") == "monochrome"
+            errors = core_monoline_errors(body, display_accent(icon["color"], monochrome=mono))
+            check(not errors, f"{icon['name']}: shipped SVG violates Core monoline: {errors}")
+        banner = ROOT / "assets/banners" / f"{icon['drawable']}.svg"
+        check(banner.exists() and 'id="cbRail"' in banner.read_text(),
+              f"{icon['name']}: standard Core banner rail is missing")
+
+    # Brand variants share one identity; every Classic accent remains readable
+    # on the documented dark card. Source accents stay untouched for Pop/Neon.
+    brands = {}
+    for icon in icons:
+        mono = icon.get("color_note") == "monochrome"
+        check(contrast(display_accent(icon["color"], monochrome=mono)) >= MIN_CONTRAST,
+              f"{icon['name']}: effective classic accent is below 3:1 on dark")
+        if brand := icon.get("brand"):
+            identity = (icon["glyph"], icon["color"].upper())
+            check(brand not in brands or brands[brand] == identity,
+                  f"{icon['name']}: {brand} variants disagree on glyph/colour")
+            brands[brand] = identity
 
     # 1. every drawable has a rendered PNG
     for i in icons:
@@ -147,6 +178,34 @@ def main():
           "manifest: missing LEANBACK_LAUNCHER — pack won't show on Android TV")
     check("android:banner" in mf,
           "manifest: missing android:banner — required for the ATV home row")
+    check('android:name="android.hardware.touchscreen"' in mf and
+          'android:required="false"' in mf,
+          "manifest: touchscreen must be explicitly optional for TV")
+    check('android:screenOrientation="landscape"' in mf,
+          "manifest: MainActivity must be landscape for TV")
+
+    # 5a1. Android TV launcher assets. Google TV quality checks require a
+    # full-size 320x180 banner and a sufficiently large xhdpi launcher icon.
+    def png_size(path):
+        raw = path.read_bytes()
+        if raw[:8] != b"\x89PNG\r\n\x1a\n" or len(raw) < 24:
+            return None
+        import struct
+        return struct.unpack(">II", raw[16:24])
+
+    tv_banner = RES / "drawable-xhdpi" / "cb_banner.png"
+    tv_icon = RES / "mipmap-xhdpi" / "ic_launcher.png"
+    check(tv_banner.exists(),
+          "TV assets: drawable-xhdpi/cb_banner.png is missing")
+    if tv_banner.exists():
+        check(png_size(tv_banner) == (320, 180),
+              f"TV assets: xhdpi banner is {png_size(tv_banner)}, expected 320x180")
+    check(tv_icon.exists(),
+          "TV assets: mipmap-xhdpi/ic_launcher.png is missing")
+    if tv_icon.exists():
+        size = png_size(tv_icon)
+        check(size is not None and size[0] >= 160 and size[1] >= 160,
+              f"TV assets: xhdpi icon is {size}, expected at least 160x160")
 
     # 5a2. both component name forms must be present.
     # Launchers match the literal string in ComponentInfo{...} and do not all
@@ -223,8 +282,19 @@ def main():
     check(inst.exists(), "UpdateInstaller.kt is missing")
     if inst.exists():
         it = inst.read_text()
-        check('AUTHORITY = "tv.corebuilds.iconpack.update"' in it,
-              "UpdateInstaller authority must match the FileProvider")
+        # The authority moved to BuildConfig when :pop started compiling this
+        # same file — two installed packages may not share a FileProvider
+        # authority. The check still has to prove the value reaching
+        # getUriForFile matches the manifest, so it now follows the
+        # indirection to the Gradle field instead of grepping the constant.
+        check("BuildConfig.UPDATE_AUTHORITY" in it,
+              "UpdateInstaller must take its authority from BuildConfig so "
+              "each pack gets a distinct one")
+        gradle = (ROOT / "app" / "build.gradle.kts").read_text()
+        check('"UPDATE_AUTHORITY",\n            "\\"tv.corebuilds.iconpack.update\\""'
+              in gradle,
+              "app/build.gradle.kts UPDATE_AUTHORITY must match the "
+              "FileProvider authority in the manifest")
         check("github.com" in it and "objects.githubusercontent.com" in it,
               "UpdateInstaller must allowlist GitHub download hosts")
 

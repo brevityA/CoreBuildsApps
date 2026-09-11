@@ -90,7 +90,25 @@ class UpdateInstallerTests(unittest.TestCase):
         )
 
     def test_authority_matches_manifest(self):
-        self.assertIn('AUTHORITY = "tv.corebuilds.iconpack.update"', self.src)
+        # AUTHORITY is BuildConfig-supplied so :app and :pop compile this same
+        # file with per-pack authorities (two installed packages may not share
+        # a FileProvider authority). The contract is a chain: the Gradle
+        # buildConfigField must equal the manifest authority, and the code must
+        # defer to BuildConfig rather than hardcode either pack's value.
+        self.assertIn(
+            "val AUTHORITY: String = BuildConfig.UPDATE_AUTHORITY",
+            self.src,
+            "AUTHORITY must come from BuildConfig (per-pack), not a literal",
+        )
+        manifest = read("app/src/main/AndroidManifest.xml")
+        authority = re.search(r'android:authorities="([^"]+)"', manifest)
+        self.assertIsNotNone(authority, "FileProvider authority missing")
+        gradle = read("app/build.gradle.kts")
+        self.assertIn(
+            f'\\"{authority.group(1)}\\"',
+            gradle,
+            "UPDATE_AUTHORITY buildConfigField must equal the manifest authority",
+        )
 
     def test_github_hosts_allowlisted(self):
         for host in (
@@ -232,6 +250,36 @@ class VersionAndCiTests(unittest.TestCase):
             "both Core Line versioned and floating releases must opt out of Latest",
         )
         self.assertNotIn("make_latest: true", wf)
+
+
+class MappingAndFocusTests(unittest.TestCase):
+    def test_weatherbug_is_not_streamflix(self):
+        catalog = json.loads(read("tools/catalog.json"))
+        by = {i["drawable"]: i for i in catalog["icons"]}
+        self.assertIn("weatherbug", by)
+        self.assertEqual(
+            by["weatherbug"]["components"],
+            ["com.weatherbug.firetv/com.weatherbug.firetv.MainActivity"],
+        )
+        joined = " ".join(by["streamflix_2"]["components"])
+        self.assertNotIn("weatherbug", joined)
+
+    def test_seven_plus_maps_the_live_play_store_package(self):
+        catalog = json.loads(read("tools/catalog.json"))
+        by = {i["drawable"]: i for i in catalog["icons"]}
+        comps = by["seven_plus"]["components"]
+        self.assertIn("com.swm.live/au.com.seven.inferno.MainActivity", comps)
+        self.assertIn("com.swm.live/.MainActivity", comps)
+
+    def test_pixel_neon_chips_keep_focus_on_pick(self):
+        src = read(
+            "pixel-neon/app/src/main/java/tv/corebuilds/pixelneon/ChipAdapter.kt"
+        )
+        no_block = re.sub(r"/\*.*?\*/", "", src, flags=re.DOTALL)
+        code = "\n".join(line.split("//", 1)[0] for line in no_block.splitlines())
+        self.assertNotIn("notifyDataSetChanged()", code)
+        self.assertIn("notifyItemChanged", code)
+        self.assertIn("KEYCODE_DPAD_LEFT", code)
 
 
 if __name__ == "__main__":
