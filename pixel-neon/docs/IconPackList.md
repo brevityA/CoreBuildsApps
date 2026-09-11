@@ -155,7 +155,6 @@ This is the alternate 8-bit neon treatment of the Core Builds catalog. Each row 
 | Cyberflix | `cybermedia` | `#6A4C93` | `com.cybermedia.cyberflx/com.cybermedia.cyberflix.ui.activity.HomeActivity` |
 | Cyberghost | `cyberghost` | `#FDCB58` | `de.mobileconcepts.cyberghost/de.mobileconcepts.cyberghost.view.app.AppActivity` |
 | D-Smart | `dogusdigital` | `#F7B32B` | `com.dogusdigital.puhutv/com.dogusdigital.puhutv.TVActivity` |
-| Daijishou | `digdroid` | `#2EC4B6` | `com.digdroid.alman.dig/com.digdroid.alman.dig.MainActivity`<br>`com.digdroid.alman.dig/com.digdroid.alman.dig.TVActivity` |
 | Daijishou | `magneticchen` | `#6A4C93` | `com.magneticchen.daijishou/com.magneticchen.daijishou.activities.BootstrapActivity` |
 | Dailymotion | `dailymotion` | `#0066DC` | `com.dailymotion.dailymotion/com.dotscreen.ethanol.tv.ui.MainActivity` |
 | Damonte | `damontecres` | `#2EC4B6` | `com.github.damontecres.stashapp/com.github.damontecres.stashapp.RootActivity` |
@@ -170,6 +169,7 @@ This is the alternate 8-bit neon treatment of the Core Builds catalog. Each row 
 | Delta TV | `deltatv` | `#F7B32B` | `com.nowcast.deltatv/com.nowcasttv.SplashActivity` |
 | Developer Tools | `developer_tools` | `#F94144` | `com.roysolberg.android.developertools/com.roysolberg.android.developertools.ui.activity.MainActivity` |
 | DevInterest | `devinterestdev` | `#577590` | `com.devinterestdev.streamshow/com.devinterestdev.streamshow.TvActivity` |
+| DIG | `digdroid` | `#2EC4B6` | `com.digdroid.alman.dig/com.digdroid.alman.dig.MainActivity`<br>`com.digdroid.alman.dig/com.digdroid.alman.dig.TVActivity` |
 | Digi TV | `digi_tv` | `#E71D36` | `ro.digionline.tv/ro.digionline.tv.MainActivity` |
 | Direct One | `direct_one` | `#90BE6D` | `nl.streamgroup.upcdirect/tv.solocoo.htmlapp.FullscreenActivity` |
 | DIRECTV | `att` | `#90BE6D` | `com.att.tv/com.clientapp.MainActivity` |
@@ -215,7 +215,7 @@ This is the alternate 8-bit neon treatment of the Core Builds catalog. Each row 
 | ePSXe | `epsxe` | `#F15BB5` | `com.epsxe.ePSXe/com.epsxe.ePSXe.ePSXe` |
 | Eros Now | `eros` | `#F94144` | `com.eros.now/com.eros.now.launchscreen.SplashActivity` |
 | ERTFLIX | `ertflix` | `#FEE440` | `com.ertflix.app/com.ertflix.app.MainActivity` |
-| Ertflix | `ertflix_2` | `#9B5DE5` | `t.yi.erthybrid/com.arxnet.soeasytv.MainActivity` |
+| ERTFLIX | `ertflix_2` | `#FEE440` | `t.yi.erthybrid/com.arxnet.soeasytv.MainActivity` |
 | Es De Frontend | `es_de_frontend` | `#43AA8B` | `org.es_de.frontend/org.es_de.frontend.TvActivity` |
 | ES File Explorer | `estrongs` | `#1976D2` | `com.estrongs.android.pop/com.estrongs.android.pop.app.openscreenad.NewSplashActivity` |
 | ESPN | `score_center` | `#CC0000` | `com.espn.score_center/com.espn.startup.presentation.StartupActivity` |
@@ -356,7 +356,7 @@ This is the alternate 8-bit neon treatment of the Core Builds catalog. Each row 
 | ITV Hub | `itvmobileplayer` | `#00B4E5` | `air.ITVMobilePlayer/com.itv.tenft.itvhub.MainActivity` |
 | Ivysiilani | `ivysiilani` | `#577590` | `cz.ceskatelevize.ivysilani.tvapp/cz.ceskatelevize.ivysilani.tvapp.MainActivity` |
 | Janky Player | `janky` | `#FFC107` | `com.player.janky/.MainActivity` |
-| Jawwy TV | `intigral` | `#6A4C93` | `com.intigral.jawwytv/com.intigral.jawwytv.standalone.StandaloneSplashActivity` |
+| Jawwy TV | `intigral` | `#9B5DE5` | `com.intigral.jawwytv/com.intigral.jawwytv.standalone.StandaloneSplashActivity` |
 | Jawwy TV | `jawwy_tv` | `#9B5DE5` | `net.intigral.jawwytv/com.intigral.jawwytv.standalone.StandaloneSplashActivity` |
 | Jellyfin | `jellyfin` | `#00A4DC` | `org.jellyfin.androidtv/.ui.startup.StartupActivity`<br>`org.jellyfin.androidtv/org.jellyfin.androidtv.ui.startup.StartupActivity`<br>`org.jellyfin.mobile/.MainActivity` |
 | Jellyfin Enhanced | `enhanced` | `#9B5DE5` | `Dune.enhanced.tv/org.jellyfin.androidtv.ui.startup.StartupActivity` |
@@ -909,7 +909,7 @@ This is the alternate 8-bit neon treatment of the Core Builds catalog. Each row 
 | Xumo Play | `xumo_play` | `#6A4C93` | `com.xumo.xumo/com.xumo.xumo.activity.SplashActivity` |
 | Yacine TV | `yacine_tv` | `#F7B32B` | `ver3.ycntivi.off/dev.google.yacinetv.ui.splash.SplashActivity`<br>`ver3.ycntivi.off/dev.google.yacinetv.tvui.splash.SplashActivity` |
 | Yandex Browser | `yandex_browser` | `#00BBF9` | `com.yandex.browser.tv/com.yandex.browser.tv.tvactivity.TvActivity` |
-| Yettel TV | `selfcare` | `#00F5D4` | `bg.yettel.tv.selfcare/bg.yettel.tv.selfcare.MainActivity` |
+| Yettel Selfcare | `selfcare` | `#00F5D4` | `bg.yettel.tv.selfcare/bg.yettel.tv.selfcare.MainActivity` |
 | Yettel TV | `yettel_tv` | `#2EC4B6` | `rs.yettel.tv/rs.yettel.tv.MainActivity` |
 | Yippee | `yippee` | `#90BE6D` | `com.yippeeentertainment/tv.vhx.tv.home.TvHomeActivity` |
 | Yle Areena | `yle_areena` | `#F3722C` | `com.yle.webtv/fi.yle.areena.leanback.ui.LaunchActivity` |

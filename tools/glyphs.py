@@ -2804,3 +2804,139 @@ def nobuffr_mark(c):
 
 
 GLYPHS["nobuffr_mark"] = nobuffr_mark
+
+
+def wholphin_arc(c):
+    """Wholphin: whale-back arc and a small eye. Original, not a vendor mark."""
+    return (
+        f'<path d="M 88 300 C 120 168 200 120 256 120 '
+        f'C 360 120 430 200 440 312" {_s(c, 32)}/>'
+        f'<path d="M 88 300 C 150 372 220 400 300 392 '
+        f'C 360 386 400 350 428 312" {_s(c, 26.2)}/>'
+        f'<circle cx="352" cy="208" r="16" {_s(c, 21.8)}/>'
+    )
+
+
+def stream_window(c):
+    """Tanasi Streamflix fork: flow bars and a play wedge. Not the reborn F."""
+    return (
+        f'<path d="M 112 176 H 268" {_s(c, 32)}/>'
+        f'<path d="M 112 256 H 236" {_s(c, 32)}/>'
+        f'<path d="M 112 336 H 200" {_s(c, 32)}/>'
+        f'<path d="M 300 176 L 300 336 L 424 256 Z" {_s(c, 32)}/>'
+    )
+
+
+GLYPHS["wholphin_arc"] = wholphin_arc
+GLYPHS["stream_window"] = stream_window
+
+
+# ==========================================================================
+# Recognisable brand marks — researched emblems, drawn in Core Builds linework.
+#
+# Cues researched in docs/logo-research/ICON_LOGO_RESEARCH.md and
+# docs/research/iconpack-design-upgrade-2026-09.md. Each mark keeps the pack's
+# contract: rounded monoline strokes, one accent, transparent interiors, no
+# vendor silhouette or wordmark. CBC Gem's "exploding pizza" and CNBC's
+# peacock are public emblems; Al Jazeera's flame and France 24's cyan square
+# are the cues the logo audit flagged as missing from the letter tiles.
+# ==========================================================================
+
+def _arc(c, cx, cy, r, a0, a1, w):
+    """A stroked circular arc segment centred on (cx, cy)."""
+    import math
+    a0, a1 = math.radians(a0), math.radians(a1)
+    x0, y0 = cx + r * math.cos(a0), cy + r * math.sin(a0)
+    x1, y1 = cx + r * math.cos(a1), cy + r * math.sin(a1)
+    large = 1 if (a1 - a0) > math.pi else 0
+    return (f'<path d="M {x0:.1f} {y0:.1f} A {r:.1f} {r:.1f} 0 {large} 1 '
+            f'{x1:.1f} {y1:.1f}" {_s(c, w)}/>')
+
+
+def aljazeera_flame(c):
+    """Al Jazeera: gold rounded square + the calligraphic flame/teardrop.
+
+    The logo audit records the mark as an orange square with a flowing
+    stylised flame/water-drop. Interpreted as one open teardrop with an inner
+    curl, in the pack's single accent — not an imported calligraphic trace.
+    """
+    return (f'<rect x="88" y="88" width="336" height="336" rx="80" {_s(c, 30)}/>'
+            f'<path d="M 256 150 C 204 214 192 260 214 300 '
+            f'C 230 328 282 328 298 300 '
+            f'C 320 260 308 214 256 150 Z" {_s(c, 28)}/>'
+            f'<path d="M 256 200 C 238 234 232 258 238 278" {_s(c, 20)}/>')
+
+
+def france24_mark(c):
+    """France 24: cyan rounded square with a large '24' — round-the-clock news.
+
+    The audit records a bright cyan square with a large white '24'. The digits
+    reuse the same Outfit ExtraBold outlines as the pack's monograms (stroked,
+    not filled), so they render identically everywhere and stay inside the
+    monoline contract.
+    """
+    from typeface import monogram_outline
+    digits = monogram_outline("24", c, cap_h=190, weight=20, max_width=268)
+    return f'<rect x="88" y="88" width="336" height="336" rx="80" {_s(c, 30)}/>{digits}'
+
+
+def cbc_gem(c):
+    """CBC Gem: the 'exploding pizza' — a ring with arches and semi-arches.
+
+    Burton Kramer's 1974 mark: a wide-open ring with arches, semi-arches and
+    smaller fragments radiating around it. Rendered as concentric stroked arcs
+    of graduated weight, one accent.
+    """
+    import math
+    out = f'<circle cx="256" cy="256" r="96" {_s(c, 30)}/>'
+    for centre in (0, 90, 180, 270):
+        out += _arc(c, 256, 256, 162, centre - 30, centre + 30, 26)
+    for centre in (45, 135, 225, 315):
+        out += _arc(c, 256, 256, 130, centre - 21, centre + 21, 20)
+    return out
+
+
+def cnbc_peacock(c):
+    """CNBC: the NBC peacock fan — six feathers over a stem, stroke-only.
+
+    CNBC's brand is the peacock (shared with NBCUniversal). A clean fan of
+    six tapering strokes reads as the peacock without the filled dot tips the
+    standalone peacock_fan uses, so this mark stays inside the monoline
+    contract.
+    """
+    import math
+    out = ''
+    for i in range(6):
+        a = math.radians(-168 + i * 26)
+        bx, by = 256 + 20 * math.cos(a), 424 + 20 * math.sin(a)
+        tx, ty = 256 + 174 * math.cos(a), 424 + 174 * math.sin(a)
+        w = 32 if i % 2 == 0 else 26
+        out += f'<path d="M {bx:.1f} {by:.1f} L {tx:.1f} {ty:.1f}" {_s(c, w)}/>'
+    out += f'<path d="M 256 404 L 256 454" {_s(c, 28)}/>'
+    return out
+
+
+def mgm_reel(c):
+    """MGM+: a film reel — ring, sprocket perforations and hub.
+
+    MGM+ has no standalone 'M' emblem; the brand's recognisable device is the
+    lion in a film-reel ring. The audit's instruction is 'at least a
+    lion/film-reel device', so the reel is drawn here as the shared cue.
+    """
+    import math
+    out = (f'<circle cx="256" cy="256" r="158" {_s(c, 30)}/>'
+           f'<circle cx="256" cy="256" r="56" {_s(c, 26)}/>')
+    for i in range(8):
+        a = math.radians(i * 45)
+        x, y = 256 + 108 * math.cos(a), 256 + 108 * math.sin(a)
+        out += f'<circle cx="{x:.1f}" cy="{y:.1f}" r="13" {_s(c, 18)}/>'
+    return out
+
+
+GLYPHS.update({
+    "aljazeera_flame": aljazeera_flame,
+    "france24_mark": france24_mark,
+    "cbc_gem": cbc_gem,
+    "cnbc_peacock": cnbc_peacock,
+    "mgm_reel": mgm_reel,
+})
