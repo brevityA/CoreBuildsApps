@@ -1,0 +1,9 @@
+{
+  "id": "cairo",
+  "version": "1.0.0",
+  "name": "Cairo (icon-pack renderer)",
+  "description": "libcairo2 + headers for cairosvg / the Classic and Pop generators. Does not install Python packages — those come from tools/requirements.txt in postCreate.",
+  "installsAfter": [
+    "ghcr.io/devcontainers/features/common-utils"
+  ]
+}
