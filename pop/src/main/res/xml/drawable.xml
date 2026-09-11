@@ -27,6 +27,7 @@
     <item drawable="devinterestdev_banner" />
     <item drawable="dodostream_banner" />
     <item drawable="ertflix_banner" />
+    <item drawable="ertflix_2_banner" />
     <item drawable="filmrise_banner" />
     <item drawable="platform_banner" />
     <item drawable="flix_vision_banner" />
@@ -493,13 +494,13 @@
     <item drawable="cybermedia_banner" />
     <item drawable="cyberghost_banner" />
     <item drawable="dogusdigital_banner" />
-    <item drawable="digdroid_banner" />
     <item drawable="magneticchen_banner" />
     <item drawable="damontecres_banner" />
     <item drawable="zhushou_banner" />
     <item drawable="egmont_banner" />
     <item drawable="debrid_em_all_banner" />
     <item drawable="deltatv_banner" />
+    <item drawable="digdroid_banner" />
     <item drawable="digi_tv_banner" />
     <item drawable="direct_one_banner" />
     <item drawable="att_banner" />
@@ -526,7 +527,6 @@
     <item drawable="epicchannel_banner" />
     <item drawable="epsxe_banner" />
     <item drawable="eros_banner" />
-    <item drawable="ertflix_2_banner" />
     <item drawable="es_de_frontend_banner" />
     <item drawable="nathnetwork_banner" />
     <item drawable="etube_banner" />
@@ -974,6 +974,7 @@
     <item drawable="devinterestdev" />
     <item drawable="dodostream" />
     <item drawable="ertflix" />
+    <item drawable="ertflix_2" />
     <item drawable="filmrise" />
     <item drawable="platform" />
     <item drawable="flix_vision" />
@@ -1440,13 +1441,13 @@
     <item drawable="cybermedia" />
     <item drawable="cyberghost" />
     <item drawable="dogusdigital" />
-    <item drawable="digdroid" />
     <item drawable="magneticchen" />
     <item drawable="damontecres" />
     <item drawable="zhushou" />
     <item drawable="egmont" />
     <item drawable="debrid_em_all" />
     <item drawable="deltatv" />
+    <item drawable="digdroid" />
     <item drawable="digi_tv" />
     <item drawable="direct_one" />
     <item drawable="att" />
@@ -1473,7 +1474,6 @@
     <item drawable="epicchannel" />
     <item drawable="epsxe" />
     <item drawable="eros" />
-    <item drawable="ertflix_2" />
     <item drawable="es_de_frontend" />
     <item drawable="nathnetwork" />
     <item drawable="etube" />

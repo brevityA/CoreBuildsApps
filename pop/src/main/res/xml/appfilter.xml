@@ -407,11 +407,6 @@
     <item component="ComponentInfo{com.dogusdigital.puhutv/com.dogusdigital.puhutv.TVActivity}" drawable="dogusdigital_banner"/>
     <item component="ComponentInfo{com.dogusdigital.puhutv/.TVActivity}" drawable="dogusdigital_banner"/>
     <!-- Daijishou -->
-    <item component="ComponentInfo{com.digdroid.alman.dig/com.digdroid.alman.dig.MainActivity}" drawable="digdroid_banner"/>
-    <item component="ComponentInfo{com.digdroid.alman.dig/.MainActivity}" drawable="digdroid_banner"/>
-    <item component="ComponentInfo{com.digdroid.alman.dig/com.digdroid.alman.dig.TVActivity}" drawable="digdroid_banner"/>
-    <item component="ComponentInfo{com.digdroid.alman.dig/.TVActivity}" drawable="digdroid_banner"/>
-    <!-- Daijishou -->
     <item component="ComponentInfo{com.magneticchen.daijishou/com.magneticchen.daijishou.activities.BootstrapActivity}" drawable="magneticchen_banner"/>
     <item component="ComponentInfo{com.magneticchen.daijishou/.activities.BootstrapActivity}" drawable="magneticchen_banner"/>
     <!-- Dailymotion -->
@@ -450,6 +445,11 @@
     <!-- DevInterest -->
     <item component="ComponentInfo{com.devinterestdev.streamshow/com.devinterestdev.streamshow.TvActivity}" drawable="devinterestdev_banner"/>
     <item component="ComponentInfo{com.devinterestdev.streamshow/.TvActivity}" drawable="devinterestdev_banner"/>
+    <!-- DIG -->
+    <item component="ComponentInfo{com.digdroid.alman.dig/com.digdroid.alman.dig.MainActivity}" drawable="digdroid_banner"/>
+    <item component="ComponentInfo{com.digdroid.alman.dig/.MainActivity}" drawable="digdroid_banner"/>
+    <item component="ComponentInfo{com.digdroid.alman.dig/com.digdroid.alman.dig.TVActivity}" drawable="digdroid_banner"/>
+    <item component="ComponentInfo{com.digdroid.alman.dig/.TVActivity}" drawable="digdroid_banner"/>
     <!-- Digi TV -->
     <item component="ComponentInfo{ro.digionline.tv/ro.digionline.tv.MainActivity}" drawable="digi_tv_banner"/>
     <item component="ComponentInfo{ro.digionline.tv/.MainActivity}" drawable="digi_tv_banner"/>
@@ -599,7 +599,7 @@
     <!-- ERTFLIX -->
     <item component="ComponentInfo{com.ertflix.app/com.ertflix.app.MainActivity}" drawable="ertflix_banner"/>
     <item component="ComponentInfo{com.ertflix.app/.MainActivity}" drawable="ertflix_banner"/>
-    <!-- Ertflix -->
+    <!-- ERTFLIX -->
     <item component="ComponentInfo{t.yi.erthybrid/com.arxnet.soeasytv.MainActivity}" drawable="ertflix_2_banner"/>
     <!-- Es De Frontend -->
     <item component="ComponentInfo{org.es_de.frontend/org.es_de.frontend.TvActivity}" drawable="es_de_frontend_banner"/>
@@ -2531,7 +2531,7 @@
     <!-- Yandex Browser -->
     <item component="ComponentInfo{com.yandex.browser.tv/com.yandex.browser.tv.tvactivity.TvActivity}" drawable="yandex_browser_banner"/>
     <item component="ComponentInfo{com.yandex.browser.tv/.tvactivity.TvActivity}" drawable="yandex_browser_banner"/>
-    <!-- Yettel TV -->
+    <!-- Yettel Selfcare -->
     <item component="ComponentInfo{bg.yettel.tv.selfcare/bg.yettel.tv.selfcare.MainActivity}" drawable="selfcare_banner"/>
     <item component="ComponentInfo{bg.yettel.tv.selfcare/.MainActivity}" drawable="selfcare_banner"/>
     <!-- Yettel TV -->

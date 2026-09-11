@@ -2019,7 +2019,7 @@
       "color_reviewed": null
     },
     {
-      "name": "Daijishou",
+      "name": "DIG",
       "drawable": "digdroid",
       "color": "#2EC4B6",
       "glyph": "tile_D",
@@ -2879,23 +2879,25 @@
       ],
       "category": "STREAM",
       "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_reviewed": null,
+      "brand": "ertflix"
     },
     {
-      "name": "Ertflix",
+      "name": "ERTFLIX",
       "drawable": "ertflix_2",
-      "color": "#9B5DE5",
+      "color": "#FEE440",
       "glyph": "tile_E",
       "components": [
         "t.yi.erthybrid/com.arxnet.soeasytv.MainActivity"
       ],
-      "category": "APP",
+      "category": "STREAM",
       "unverified": [
         "t.yi.erthybrid/com.arxnet.soeasytv.MainActivity"
       ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_reviewed": null,
+      "brand": "ertflix"
     },
     {
       "name": "Es De Frontend",
@@ -4817,14 +4819,15 @@
     {
       "name": "Jawwy TV",
       "drawable": "intigral",
-      "color": "#6A4C93",
-      "glyph": "tile_I",
+      "color": "#9B5DE5",
+      "glyph": "tile_J",
       "components": [
         "com.intigral.jawwytv/com.intigral.jawwytv.standalone.StandaloneSplashActivity"
       ],
       "category": "APP",
       "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_reviewed": null,
+      "brand": "jawwy"
     },
     {
       "name": "Jawwy TV",
@@ -4840,7 +4843,8 @@
       ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_reviewed": null,
+      "brand": "jawwy"
     },
     {
       "name": "Jellyfin",
@@ -9970,7 +9974,7 @@
       "name": "Streamflix",
       "drawable": "streamflix_2",
       "color": "#577590",
-      "glyph": "tile_S",
+      "glyph": "stream_window",
       "components": [
         "com.tanasi.streamflix/com.tanasi.streamflix.activities.main.MainTvActivity"
       ],
@@ -12520,13 +12524,14 @@
       "name": "Wholphin",
       "drawable": "damontecres_2",
       "color": "#00F5D4",
-      "glyph": "tile_D",
+      "glyph": "wholphin_arc",
       "components": [
         "com.github.damontecres.wholphin/com.github.damontecres.wholphin.MainActivity"
       ],
       "category": "APP",
       "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_reviewed": null,
+      "style": "core_monoline"
     },
     {
       "name": "WiFi File Explorer",
@@ -12827,7 +12832,7 @@
       "color_reviewed": null
     },
     {
-      "name": "Yettel TV",
+      "name": "Yettel Selfcare",
       "drawable": "selfcare",
       "color": "#00F5D4",
       "glyph": "tile_S",
