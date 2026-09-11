@@ -44,7 +44,7 @@ def readme_stamp(suite: dict) -> str:
 def check_suite_json() -> None:
     suite = json.loads(read("suite.json"))
     apps = suite.get("apps", {})
-    expected = ["iconpack", "line", "shift", "motion", "doctor"]
+    expected = ["iconpack", "pixelneon", "pop", "line", "shift", "motion", "doctor"]
     if list(apps.keys()) != expected:
         fail(f"suite.json apps must be in order {expected}")
     for key, app in apps.items():
@@ -58,6 +58,31 @@ def check_suite_json() -> None:
         if f'applicationId = "{app["applicationId"]}"' not in gradle:
             fail(f"suite.json {key}.applicationId does not match {app['gradle']}")
     return suite
+
+
+def check_pop_truth(suite: dict) -> None:
+    """Pop renders the same catalog as the classic pack, so its counts are not
+    an independent fact — they are the catalog's, and drift means one of the
+    two packs is lying about its own coverage."""
+    catalog = json.loads(read("tools/catalog.json"))
+    icons = catalog.get("icons", [])
+    icon_count = len(icons)
+    component_count = sum(len(row.get("components", [])) for row in icons)
+    pop = suite["apps"]["pop"]
+    latest = json.loads(read(pop["metadata"]))
+    if pop.get("iconCount") != icon_count or pop.get("componentCount") != component_count:
+        fail("suite.json pop counts must match catalog")
+    if latest.get("versionName") != pop["versionName"] or latest.get("versionCode") != pop["versionCode"]:
+        fail(f"{pop['metadata']} must match Pop suite/Gradle version")
+    if latest.get("iconCount") != icon_count or latest.get("componentCount") != component_count:
+        fail(f"{pop['metadata']} counts must match catalog")
+    if pop["applicationId"] == suite["apps"]["iconpack"]["applicationId"]:
+        fail("Pop must not share the classic pack's applicationId")
+    if pop["tagPrefix"] == suite["apps"]["iconpack"]["tagPrefix"]:
+        fail("Pop must not share the classic pack's release tag prefix")
+    pop_list = read("docs/PopIconList.md")
+    if f"`{icon_count}` icons" not in pop_list or f"pack v{pop['versionName']}" not in pop_list:
+        fail("docs/PopIconList.md header drifted from suite/catalog")
 
 
 def check_iconpack_truth(suite: dict) -> None:
@@ -98,7 +123,13 @@ def check_stale_claims() -> None:
     for file in files:
         text = read(file)
         for needle in stale:
-            if needle in text:
+            # Version-shaped needles need a trailing boundary: "pack v1.8.1"
+            # is stale, but "pack v1.8.10" merely contains it. Without the
+            # lookahead, every 1.8.1x release trips its own staleness guard.
+            pattern = re.escape(needle)
+            if re.fullmatch(r"(?:pack )?v\d+\.\d+\.\d+", needle):
+                pattern += r"(?!\d)"
+            if re.search(pattern, text):
                 fail(f"stale suite truth in {file}: {needle}")
     for old in ["CLAUDE.md", "START_HERE_CLAUDE.md", "patches/START_HERE_CLAUDE.md", "README-EXTRACT.txt"]:
         if (ROOT / old).exists():
@@ -126,12 +157,42 @@ def check_line_v_trap() -> None:
         fail("line-v* release prefix trap present outside docs warning: " + ", ".join(sorted(set(offenders))))
 
 
+def check_agents_guide(suite: dict) -> None:
+    """AGENTS.md is outside the README stamp, so its suite table and wallpaper
+    count can rot without any other gate noticing. Hold them to suite.json and
+    Wallpapers/manifest.json the same way the README stamp is held."""
+    agents = read("AGENTS.md")
+    by_id = {app["applicationId"]: (key, app["versionName"])
+             for key, app in suite["apps"].items()}
+    seen: set[str] = set()
+    for pkg, ver in re.findall(
+        r"^\| [^|\n]+\| [^|\n]+\| `([a-zA-Z0-9._]+)` \| `([^`]+)` \|",
+        agents,
+        flags=re.M,
+    ):
+        if pkg not in by_id:
+            fail(f"AGENTS.md suite table has unknown package {pkg}")
+        key, expected = by_id[pkg]
+        if ver != expected:
+            fail(f"AGENTS.md suite table {key} version {ver} != suite.json {expected}")
+        seen.add(pkg)
+    missing = [key for key, app in suite["apps"].items()
+               if app["applicationId"] not in seen]
+    if missing:
+        fail("AGENTS.md suite table missing apps: " + ", ".join(missing))
+    count = json.loads(read("Wallpapers/manifest.json"))["count"]
+    if not re.search(rf"currently has {count} entries", agents):
+        fail(f"AGENTS.md must state classic wallpaper count as 'currently has {count} entries'")
+
+
 def main() -> int:
     suite = check_suite_json()
     check_iconpack_truth(suite)
+    check_pop_truth(suite)
     check_readme_stamp(suite)
     check_stale_claims()
     check_line_v_trap()
+    check_agents_guide(suite)
     print("suite truth checks passed")
     return 0
 

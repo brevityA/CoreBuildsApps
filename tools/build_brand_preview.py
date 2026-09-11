@@ -9,7 +9,7 @@ Pure composition of assets that already exist; generates no new geometry.
 import base64
 from pathlib import Path
 
-import cairosvg
+from svg_renderer import svg2png
 
 ROOT = Path(__file__).resolve().parent.parent
 RES = ROOT / "app" / "src" / "main" / "res"
@@ -70,7 +70,7 @@ def main():
 
     # ---------------- 2. launcher icon at true sizes
     title(430, 168, "Launcher icon · true pixel sizes")
-    sub(430, 190, "mipmap ic_launcher.png — 144 / 96 / 48 / 24 px")
+    sub(430, 190, "mipmap ic_launcher.png — 240 / 160 / 48 / 24 px")
     x = 430
     for size in [144, 96, 48, 24]:
         y = 206 + (144 - size)
@@ -145,7 +145,7 @@ def main():
     s.append('</svg>')
 
     OUT.parent.mkdir(parents=True, exist_ok=True)
-    cairosvg.svg2png(bytestring="\n".join(s).encode(), write_to=str(OUT),
+    svg2png(bytestring="\n".join(s).encode(), write_to=str(OUT),
                      output_width=W, output_height=H,
                      background_color="#0d1117")
     print(f"\u2713 docs/brand-preview.png written ({W}\u00d7{H})")

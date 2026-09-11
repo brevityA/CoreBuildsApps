@@ -1,0 +1,66 @@
+{
+  "name": "Core Builds · Android",
+  "image": "mcr.microsoft.com/devcontainers/base:ubuntu-24.04",
+  "features": {
+    "ghcr.io/devcontainers/features/common-utils:2": {
+      "installZsh": false,
+      "upgradePackages": true
+    },
+    "ghcr.io/devcontainers/features/python:1": {
+      "version": "3.12",
+      "installTools": false
+    },
+    "ghcr.io/devcontainers/features/node:1": {
+      "version": "22"
+    },
+    "ghcr.io/devcontainers/features/github-cli:1": {
+      "version": "latest"
+    },
+    "ghcr.io/devcontainers/features/java:1": {
+      "version": "17",
+      "jdkDistro": "tem",
+      "installGradle": false,
+      "installMaven": false
+    },
+    "../features/cairo": {},
+    "../features/android-sdk": {
+      "packages": "platform-tools,platforms;android-34,platforms;android-35,build-tools;34.0.0,build-tools;35.0.0"
+    }
+  },
+  "overrideFeatureInstallOrder": [
+    "ghcr.io/devcontainers/features/common-utils",
+    "ghcr.io/devcontainers/features/python",
+    "ghcr.io/devcontainers/features/node",
+    "ghcr.io/devcontainers/features/github-cli",
+    "ghcr.io/devcontainers/features/java",
+    "../features/cairo",
+    "../features/android-sdk"
+  ],
+  "postCreateCommand": "bash .devcontainer/android/post-create.sh",
+  "waitFor": "postCreateCommand",
+  "hostRequirements": {
+    "cpus": 8,
+    "memory": "16gb",
+    "storage": "64gb"
+  },
+  "remoteUser": "vscode",
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "ms-python.python",
+        "vscjava.vscode-java-pack",
+        "fwcd.kotlin"
+      ],
+      "settings": {
+        "java.configuration.updateBuildConfiguration": "automatic",
+        "files.watcherExclude": {
+          "**/build/**": true,
+          "**/.gradle/**": true
+        }
+      }
+    },
+    "codespaces": {
+      "openFiles": ["CONTRIBUTING.md", ".devcontainer/README.md"]
+    }
+  }
+}

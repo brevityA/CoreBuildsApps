@@ -1,5 +1,6 @@
 """Source-level contracts for the Core Shift content update path."""
 
+import json
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -27,12 +28,23 @@ def test_remote_content_is_separate_from_apk_update():
     remote = read("java/dev/corebuilds/shift/RemoteLiveCatalog.kt")
     assert "UpdateChecker.check" in activity
     assert "networkSucceeded" in remote
+    # The version pair is checked as agreement with the registry, not against a
+    # literal. A test that names "the current release" has to be edited on every
+    # release, and it fails for shipping a newer one — which is exactly how this
+    # one ended up stale (2.3.4/10, while shift shipped 2.3.5/11) invisible: the
+    # file had no runner. suite.json is the registry, and
+    # tools/check_suite_truth.py already holds Gradle to it.
+    suite = json.loads((ROOT / "suite.json").read_text())["apps"]["shift"]
     gradle = (ROOT / "shift/app/build.gradle.kts").read_text()
-    assert 'versionName = "2.3.4"' in gradle
-    assert 'versionCode = 10' in gradle
+    assert f'versionName = "{suite["versionName"]}"' in gradle, \
+        "shift Gradle versionName disagrees with suite.json"
+    assert f'versionCode = {suite["versionCode"]}' in gradle, \
+        "shift Gradle versionCode disagrees with suite.json"
     update = (ROOT / "Latestrelease/shift-version.json").read_text()
-    assert '"versionName": "2.3.4"' in update
-    assert '"versionCode": 10' in update
+    assert f'"versionName": "{suite["versionName"]}"' in update, \
+        "shift update manifest is not on the shipped version — users are told they are current"
+    assert f'"versionCode": {suite["versionCode"]}' in update, \
+        "shift update manifest code is not on the shipped version"
     assert "content_banner" in (SHIFT / "res/layout/activity_main.xml").read_text()
     assert "motion-prequels/prequel-feed.json" in remote
 
@@ -120,3 +132,27 @@ def test_feed_and_asset_hosts_are_not_arbitrary_relays():
         assert "ALLOWED_" in source
         assert "protocol == \"https\"" in source
         assert "allowlisted" in source
+def main() -> int:
+    """Run every ``test_*`` in this module and report.
+
+    This file used to be a list of bare test functions with no runner, so
+    `python tests/<this file>` exited 0 having asserted nothing — every
+    expectation inside it could rot silently, and some of them had.
+    Discovering the functions here means a new test cannot escape the run.
+    """
+    tests = [(n, f) for n, f in sorted(globals().items())
+             if n.startswith("test_") and callable(f)]
+    failed = 0
+    for name, fn in tests:
+        try:
+            fn()
+            print(f"ok  {name}")
+        except Exception as exc:
+            failed += 1
+            print(f"FAIL {name}: {exc!r}")
+    print(f"{len(tests) - failed}/{len(tests)} passed")
+    return 1 if failed else 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

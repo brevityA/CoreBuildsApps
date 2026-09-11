@@ -153,6 +153,17 @@ version, and whether the APK is Play, Amazon, or sideloaded. New mappings are
 marked unverified until hardware evidence is available; inherited 1.1.9
 mappings retain explicit `mapping_source` provenance.
 
+The request forms take those values as URL prefills, so a reply can carry one link
+instead of a template to copy from:
+
+```bash
+python tools/build_issue_prefills.py --app <name> --template 2.icon_not_applying.yml \
+    --component <package/activity>
+```
+
+The README's links are generated from the forms; `python tools/build_issue_prefills.py
+--check` fails them if a form changes.
+
 ## Artwork sizing
 
 Android TV's legacy xhdpi banner size is **320×180** and the launcher icon is

@@ -1,17 +1,18 @@
 import re
 
 from typeface import monogram_body, monogram_text, monogram_scaled
+from icon_style import display_accent
 """
 Core Builds Icon Pack — glyph library.
 
-Every glyph is original geometry written in the Core Builds icon language
-(Brand Guide v1.0 §07): simple geometry, rounded ends, flat fills, one accent
-colour per meaning. Nothing here traces a third-party logo; marks are
-suggestive silhouettes drawn on our own 512 grid.
+Core Builds comes first: original geometric constructions, rounded ends,
+one accent and a canonical 32px primary line. Brand references inform the
+recognisable cue; they never replace our linework with a vendor silhouette
+or custom wordmark. Reference hashes/provenance live in catalog.json artwork.
 
 Grid:   512 x 512
 Safe:   432 (40px margin all sides)
-Stroke: 34 default (heavy enough to survive 10-foot UI downscaling)
+Stroke: 32 primary after normalisation; 26.2 / 21.8 subordinate detail
 """
 
 GRID = 512
@@ -122,15 +123,19 @@ def play_rect(c):
 
 
 def kodi_box(c):
-    """Kodi's boxed 'K': upright stem plus the open wedge, inside the frame."""
-    return (f'<rect x="64" y="64" width="384" height="384" rx="72" {_s(c, 30)}/>'
-            f'<path d="M 168 138 L 168 374" {_s(c, 38)}/>'
-            f'<path d="M 336 138 L 232 256 L 336 374" {_s(c, 38)}/>')
+    """Kodi's split diamond/K, reconstructed in the pack's rounded line weight."""
+    return (f'<path d="M 238 72 L 322 156 L 178 300 V 132 Z" {_s(c, 32)}/>'
+            f'<path d="M 362 184 L 434 256 L 362 328 L 290 256 Z" {_s(c, 32)}/>'
+            f'<path d="M 256 310 L 328 382 L 256 454 L 184 382 Z" {_s(c, 32)}/>'
+            f'<path d="M 126 214 L 84 256 L 126 298 Z" {_s(c, 32)}/>')
 
 
 def jellyfin_chevrons(c):
-    return (f'<path d="M 256 120 L 396 350 L 116 350 Z" {_s(c, 34)}/>'
-            f'<path d="M 256 226 L 316 320 L 196 320 Z" {_s(c, 30)}/>')
+    """Rounded nested triangles: Jellyfin's cue, not its filled vendor artwork."""
+    return (f'<path d="M 256 76 C 222 76 82 406 103 426 '
+            f'C 142 450 370 450 409 426 C 430 406 290 76 256 76 Z" {_s(c, 32)}/>'
+            f'<path d="M 256 214 C 240 214 180 325 190 340 '
+            f'C 208 350 304 350 322 340 C 332 325 272 214 256 214 Z" {_s(c, 26)}/>')
 
 
 def emby_shield(c):
@@ -140,9 +145,9 @@ def emby_shield(c):
 
 
 def plex_chevron(c):
-    """Official silhouette: one chevron inside a rounded square."""
-    return (f'<rect x="76" y="76" width="360" height="360" rx="76" {_s(c, 34)}/>'
-            f'<path d="M 214 152 L 318 256 L 214 360" {_s(c, 42)}/>')
+    """Plex's chevron as an open-ink ribbon, not a vendor-font wordmark."""
+    return (f'<path d="M 166 100 H 262 L 362 256 L 262 412 H 166 '
+            f'L 266 256 Z" {_s(c, 32)}/>')
 
 
 def nuvio_wave(c):
@@ -245,10 +250,10 @@ def waves_circle(c):
 
 
 def chat_screen(c):
-    return (f'<path d="M 88 116 L 424 116 L 424 320 L 328 320 L 256 392 '
-            f'L 256 320 L 88 320 Z" {_s(c, 34)}/>'
-            f'<path d="M 208 186 L 208 258" {_s(c, 32)}/>'
-            f'<path d="M 304 186 L 304 258" {_s(c, 32)}/>')
+    """Twitch's stepped chat/twin-bar cue with Core Builds' rounded joins."""
+    return (f'<path d="M 124 84 H 428 V 294 L 324 398 H 228 '
+            f'L 156 454 V 398 H 84 V 136 Z" {_s(c, 32)}/>'
+            f'<path d="M 230 168 V 266 M 324 168 V 266" {_s(c, 32)}/>')
 
 
 def gear(c):
@@ -424,13 +429,13 @@ def monoline(body, weight=MONOLINE):
     return _SW_RE.sub(repl, body)
 
 
-def render_svg(glyph_name, color, glow=False):
+def render_svg(glyph_name, color, glow=False, *, monochrome=False):
     """
-    Render a glyph, lit.
+    Render the transparent Classic glyph in the common monoline treatment.
 
-    The halo is applied here rather than inside each of the 40+ glyph
-    functions: one treatment, one place to tune, and no glyph can forget it.
+    Glow is opt-in for legacy experiments, never used by the pack generators.
     """
+    color = display_accent(color, monochrome=monochrome)
     body = monoline(GLYPHS[glyph_name](color))
     if glow:
         body = lit(body, color)
@@ -448,25 +453,25 @@ def render_svg(glyph_name, color, glow=False):
 # ==========================================================================
 
 def yt_play(c):
-    """YouTube: the solid rounded-rect badge with a filled white play.
-
-    The play is cut as a filled notch (background colour) so the badge reads as
-    the classic solid red YouTube button rather than an outline.
-    """
-    return (f'<rect x="40" y="124" width="432" height="264" rx="74" {_f(c)}/>'
-            f'<path d="M 214 196 L 214 316 L 336 256 Z" fill="#0d1117" '
-            f'stroke="none"/>')
+    """YouTube button/play in uniform linework; the entire interior is alpha."""
+    return (f'<rect x="64" y="128" width="384" height="256" rx="64" {_s(c, 32)}/>'
+            f'<path d="M 216 192 L 328 256 L 216 320 Z" {_s(c, 32)}/>')
 
 
 def smarttube_play(c):
-    """SmartTube: YouTube silhouette with a corner cut — the fork tell."""
-    return (f'<path d="M 110 118 L 402 118 C 444 118 478 152 478 194 '
-            f'L 478 318 C 478 360 444 394 402 394 L 110 394 '
-            f'C 68 394 34 360 34 318 L 34 194 C 34 152 68 118 110 118 Z" '
+    """SmartTube: YouTube silhouette with a corner cut — the fork tell.
+
+    Body narrowed from 444 to 400 wide: the 32 stroke on the old box put ink
+    at x=18 and x=494, outside SAFE. The corner-cut rules move with the right
+    edge so the tell stays on the corner it cuts.
+    """
+    return (f'<path d="M 132 118 L 380 118 C 422 118 456 152 456 194 '
+            f'L 456 318 C 456 360 422 394 380 394 L 132 394 '
+            f'C 90 394 56 360 56 318 L 56 194 C 56 152 90 118 132 118 Z" '
             f'{_s(c, 34)}/>'
             f'<path d="M 218 200 L 218 312 L 326 256 Z" {_s(c, 30)}/>'
-            f'<path d="M 388 150 L 458 150" {_s(c, 22)}/>'
-            f'<path d="M 388 190 L 458 190" {_s(c, 22)}/>')
+            f'<path d="M 366 150 L 436 150" {_s(c, 22)}/>'
+            f'<path d="M 366 190 L 436 190" {_s(c, 22)}/>')
 
 
 def tizen_play(c):
@@ -507,9 +512,9 @@ def yinyang_play(c):
 
 
 def stremio_square(c):
-    """Stremio: rounded square with the play as outline (monoline)."""
-    return (f'<rect x="66" y="66" width="380" height="380" rx="102" {_s(c, 34)}/>'
-            f'<path d="M 212 178 L 212 334 L 340 256 Z" {_s(c, 32)}/>')
+    """Stremio's diamond/play motif, kept in Core Builds' monoline language."""
+    return (f'<path d="M 256 76 L 436 256 L 256 436 L 76 256 Z" {_s(c, 32)}/>'
+            f'<path d="M 214 182 L 328 256 L 214 330 Z" {_s(c, 32)}/>')
 
 
 def arvio_a(c):
@@ -612,16 +617,12 @@ def vault_lock(c):
 
 
 def equalizer(c):
-    """Poweramp EQ / music: slider bars."""
-    return (f'<path d="M 130 108 L 130 404" {_s(c, 32)}/>'
-            f'<path d="M 256 108 L 256 404" {_s(c, 32)}/>'
-            f'<path d="M 382 108 L 382 404" {_s(c, 32)}/>'
-            f'<circle cx="130" cy="188" r="34" fill="#0d1117" stroke="{c}" '
-            f'stroke-width="24"/>'
-            f'<circle cx="256" cy="310" r="34" fill="#0d1117" stroke="{c}" '
-            f'stroke-width="24"/>'
-            f'<circle cx="382" cy="232" r="34" fill="#0d1117" stroke="{c}" '
-            f'stroke-width="24"/>')
+    """Three faders with genuinely transparent centres, not night-colour plugs."""
+    out = []
+    for x, knob in ((130, 188), (256, 310), (382, 232)):
+        out.append(f'<path d="M {x} 108 V {knob - 34} M {x} {knob + 34} V 404" {_s(c, 32)}/>')
+        out.append(f'<circle cx="{x}" cy="{knob}" r="34" {_s(c, 24)}/>')
+    return "".join(out)
 
 
 def music_note(c):
@@ -902,7 +903,9 @@ def browser_globe(c):
     globe. A wordmark cannot survive the downscale, so the globe carries it:
     it is the browser idea, and it is what stays legible small.
     """
-    return (f'<rect x="52" y="96" width="408" height="284" rx="72" {_s(c, 32)}/>'
+    # Screen is 400 wide, not 408 — see tivimate_grid: a 408 box plus the 32
+    # stroke lands ink 4px outside SAFE on each side.
+    return (f'<rect x="56" y="96" width="400" height="284" rx="72" {_s(c, 32)}/>'
             f'<circle cx="256" cy="238" r="104" {_s(c, 28)}/>'
             f'<path d="M 152 238 L 360 238" {_s(c, 24)}/>'
             f'<path d="M 256 134 C 300 172 300 304 256 342" {_s(c, 24)}/>'
@@ -944,12 +947,14 @@ def tivimate_grid(c):
     IPTV guide rather than generic player, and is nothing like the twenty
     other apps that were sharing monogram_T.
     """
-    return (f'<rect x="52" y="104" width="408" height="268" rx="40" {_s(c, 32)}/>'
+    # Screen is 400 wide, not 408: the 32 stroke on a 408 box put ink at x=36
+    # and x=476, 4px outside SAFE on both sides.
+    return (f'<rect x="56" y="104" width="400" height="268" rx="40" {_s(c, 32)}/>'
             # channel column divider
             f'<path d="M 158 104 L 158 372" {_s(c, 24)}/>'
             # programme rows
-            f'<path d="M 52 192 L 460 192" {_s(c, 22)}/>'
-            f'<path d="M 52 284 L 460 284" {_s(c, 22)}/>'
+            f'<path d="M 56 192 L 456 192" {_s(c, 22)}/>'
+            f'<path d="M 56 284 L 456 284" {_s(c, 22)}/>'
             # 'now' cell, filled to read as the highlight
             f'<rect x="196" y="212" width="128" height="52" rx="12" {_f(c)}/>'
             # stand
@@ -1126,50 +1131,29 @@ def _tile(c, x=64, y=64, w=384, h=384, rx=88, sw=30):
 
 
 def netflix_ribbon(c):
-    """Netflix: the ribbon 'N' with a fold — a near-solid N with depth.
-
-    Built as two heavy slanted stems plus a diagonal that reads as the folded
-    ribbon; the leading edge is drawn thicker to suggest the 2016 ribbon depth.
-    """
-    return (f'<path d="M 216 104 L 184 408" {_s(c, 52)}/>'
-            f'<path d="M 368 104 L 336 408" {_s(c, 52)}/>'
-            f'<path d="M 216 104 L 336 408" {_s(c, 46)}/>'
-            f'<path d="M 216 104 L 348 380" {_s(c, 20)}/>')
+    """Upright ribbon-N cue in one clean rounded line, not a solid logo slab."""
+    return f'<path d="M 154 416 V 96 L 358 416 V 96" {_s(c, 32)}/>'
 
 
 def crunchyroll_eye(c):
-    """Crunchyroll: the orange eye/sushi-roll — an outer ring with an off-centre
-    crescent pupil, matching the brand's asymmetric eye."""
-    import math
-    # outer ellipse
-    body = f'<path d="M 84 256 C 84 206 162 174 256 174 C 350 174 428 206 ' \
-            f'428 256 C 428 306 350 338 256 338 C 162 338 84 306 84 256 Z" ' \
-            f'{_s(c, 30)}/>'
-    # off-centre crescent: a thick C-like arc inside, on the right
-    body += f'<path d="M 206 210 C 300 190 340 240 322 286 C 306 326 236 330 ' \
-            f'210 300" {_s(c, 24)}/>'
-    # small pupil dot in the counter
-    body += f'<circle cx="262" cy="272" r="14" {_f(c)}/>'
-    return body
+    """Circular crescent/curl rather than the old horizontal eye or a filled disc."""
+    return (f'<circle cx="256" cy="256" r="180" {_s(c, 32)}/>'
+            f'<path d="M 360 162 C 270 124 164 190 160 278 '
+            f'C 156 352 212 398 282 398 C 344 398 393 356 414 300" {_s(c, 26)}/>'
+            f'<path d="M 360 162 C 322 188 324 244 360 260 '
+            f'C 382 270 406 264 424 248" {_s(c, 26)}/>')
 
 
 def paramount_peak(c):
-    """Paramount+: the mountain peak ringed by stars inside an arc.
-
-    The majestic mountain with a snowline; a subtle arc of small stars cradles
-    the peak, echoing the 22-star ring of the classic mark.
-    """
+    """Mountain, snow fold and seven readable star glints, not a filled seal."""
     import math
-    out = f'<path d="M 256 78 L 418 344 L 94 344 Z" {_s(c, 32)}/>'
-    out += f'<path d="M 256 78 L 300 168" {_s(c, 22)}/>'
-    out += f'<path d="M 170 268 L 340 268" {_s(c, 22)}/>'
-    # arc of stars around the peak
-    for i in range(7):
-        a = math.radians(140 + i * (100 / 6))
-        x = 256 + 250 * math.cos(a)
-        y = 120 + 250 * math.sin(a)
-        if 100 < x < 412:
-            out += f'<circle cx="{x:.0f}" cy="{y:.0f}" r="12" {_f(c)}/>'
+    out = (f'<path d="M 118 386 L 256 172 L 394 386 Z" {_s(c, 32)}/>'
+           f'<path d="M 208 250 L 236 238 L 256 260 L 276 242 L 306 274" {_s(c, 26)}/>')
+    for degrees in (200, 223, 246, 270, 294, 317, 340):
+        a = math.radians(degrees)
+        x, y = 256 + 172 * math.cos(a), 272 + 172 * math.sin(a)
+        out += (f'<path d="M {x - 7:.1f} {y:.1f} H {x + 7:.1f} '
+                f'M {x:.1f} {y - 7:.1f} V {y + 7:.1f}" {_s(c, 20)}/>')
     return out
 
 
@@ -1216,13 +1200,12 @@ def steam_mark(c):
 
 
 def deezer_columns(c):
-    """Deezer: the staircase of audio bars — verticals of growing height."""
-    bars = []
-    tops = [(150, 330), (188, 292), (226, 254), (264, 216), (302, 292), (340, 254)]
-    for i, (x, top) in enumerate(tops):
-        y2 = 384 if i % 2 == 0 else 312
-        bars.append(f'<path d="M {x} {top} L {x} {y2}" {_s(c, 26)}/>')
-    return "".join(bars)
+    """Deezer's heart waveform in separated round-ended strokes, not a solid heart."""
+    bars = ((84, 204, 246), (128, 144, 300), (172, 112, 340),
+            (216, 132, 384), (260, 184, 414), (304, 132, 384),
+            (348, 112, 340), (392, 144, 300), (436, 204, 246))
+    return "".join(f'<path d="M {x} {top} V {bottom}" {_s(c, 32)}/>'
+                   for x, top, bottom in bars)
 
 
 def soundcloud_cloud(c):
@@ -1237,9 +1220,9 @@ def soundcloud_cloud(c):
 
 
 def iplayer_play(c):
-    """BBC iPlayer: a rounded play frame with a notched play — 'on demand'."""
-    return (f'<rect x="72" y="72" width="368" height="368" rx="92" {_s(c, 32)}/>'
-            f'<path d="M 216 176 L 216 336 L 348 256 Z" {_s(c, 32)}/>')
+    """iPlayer's three-beam play cue, pink and in the canonical rounded line weight."""
+    return (f'<path d="M 100 160 V 384 M 208 84 L 424 208 '
+            f'M 424 304 L 208 428" {_s(c, 32)}/>')
 
 
 def tubi_mark(c):
@@ -1257,12 +1240,17 @@ def justwatch_finder(c):
 
 
 def acorn_mark(c):
-    """Acorn TV: the acorn — cap roundel over a tapered nut."""
-    return (f'<path d="M 256 96 L 256 150" {_s(c, 28)}/>'
-            f'<path d="M 148 150 L 364 150" {_s(c, 32)}/>'
-            f'<path d="M 148 150 A 108 108 0 0 1 364 150" {_s(c, 30)}/>'
-            f'<path d="M 176 232 C 176 300 216 356 256 392 '
-            f'C 296 356 336 300 336 232 Z" {_s(c, 32)}/>')
+    """Acorn TV: the acorn — cap roundel over a tapered nut.
+
+    Sat 39px high on the grid: the cap arc bulges to y=42, and the 32 stroke
+    put ink at y=26 against a SAFE floor of 40. Shifted down to centre the
+    mark; the construction is otherwise unchanged.
+    """
+    return (f'<path d="M 256 135 L 256 189" {_s(c, 28)}/>'
+            f'<path d="M 148 189 L 364 189" {_s(c, 32)}/>'
+            f'<path d="M 148 189 A 108 108 0 0 1 364 189" {_s(c, 30)}/>'
+            f'<path d="M 176 271 C 176 339 216 395 256 431 '
+            f'C 296 395 336 339 336 271 Z" {_s(c, 32)}/>')
 
 
 def tidal_wave(c):
@@ -1287,19 +1275,11 @@ def max_wave(c):
 
 
 def mubi_mark(c):
-    """MUBI: seven dots in a 3-3-1 arrangement — cinema, the 7th art.
-
-    Simplified to the printed mark: three dots on the top line, three on the
-    middle, and one below, so it reads at 512 without the wordmark.
-    """
-    import math
-    pts = []
-    rows = [(256, 128, 3), (256, 256, 3), (256, 384, 1)]
-    for cx, cy, n in rows:
-        for i in range(n):
-            x = cx + (i - (n - 1) / 2) * 92
-            pts.append(f'<circle cx="{x:.0f}" cy="{cy}" r="26" {_f(c)}/>')
-    return "".join(pts)
+    """Seven round outlines in MUBI's 2-3-2 arrangement, in the pack's linework."""
+    points = ((124, 124), (256, 124), (124, 256), (256, 256),
+              (388, 256), (124, 388), (256, 388))
+    return "".join(f'<circle cx="{x}" cy="{y}" r="34" {_s(c, 32)}/>'
+                   for x, y in points)
 
 
 def pandora_halo(c):
@@ -1561,9 +1541,10 @@ def sky_swoosh(c):
 
 
 def yt_music(c):
-    """YouTube Music: the note — a play circle with a stem flag."""
-    return (f'<circle cx="256" cy="256" r="178" {_s(c, 34)}/>'
-            f'<path d="M 230 200 L 230 312 L 300 256 Z" {_s(c, 30)}/>')
+    """YouTube Music's disc/ring/play motif without any solid vendor fills."""
+    return (f'<circle cx="256" cy="256" r="188" {_s(c, 32)}/>'
+            f'<circle cx="256" cy="256" r="124" {_s(c, 26)}/>'
+            f'<path d="M 224 198 L 310 256 L 224 314 Z" {_s(c, 26)}/>')
 
 
 def wetv_w(c):
@@ -1592,21 +1573,23 @@ def redbull_sun(c):
     leaning bodies) — the two-bulls-into-the-sun device.
     """
     import math
-    out = f'<circle cx="256" cy="240" r="150" {_s(c, 22)}/>'
+    # The mark was authored about cy=240, 16px above the grid centre, which
+    # put the topmost sun bar at y=30 — inside the 40px SAFE margin. Centred.
+    out = f'<circle cx="256" cy="256" r="150" {_s(c, 22)}/>'
     # radiating sun bars
     for i in range(8):
         a = math.radians(-160 + i * 46)
         x1 = 256 + 168 * math.cos(a)
-        y1 = 240 - 168 * math.sin(a)
+        y1 = 256 - 168 * math.sin(a)
         x2 = 256 + 212 * math.cos(a)
-        y2 = 240 - 212 * math.sin(a)
+        y2 = 256 - 212 * math.sin(a)
         out += f'<path d="M {x1:.0f} {y1:.0f} L {x2:.0f} {y2:.0f}" {_s(c, 22)}/>'
     # left bull (lean head + horn)
-    out += (f'<path d="M 150 300 C 160 250 180 226 214 218 C 190 244 190 286 '
-            f'214 310 C 234 328 278 328 300 310" {_s(c, 24)}/>')
+    out += (f'<path d="M 150 316 C 160 266 180 242 214 234 C 190 260 190 302 '
+            f'214 326 C 234 344 278 344 300 326" {_s(c, 24)}/>')
     # right bull (mirror)
-    out += (f'<path d="M 362 300 C 352 250 332 226 298 218 C 322 244 322 286 '
-            f'298 310 C 278 328 234 328 212 310" {_s(c, 24)}/>')
+    out += (f'<path d="M 362 316 C 352 266 332 242 298 234 C 322 260 322 302 '
+            f'298 326 C 278 344 234 344 212 326" {_s(c, 24)}/>')
     return out
 
 
@@ -1869,18 +1852,16 @@ GLYPHS.update({
 # Tier 6 — VPN, browsers, files and gaming marks.
 # ==========================================================================
 def nordvpn_arrow(c):
-    """NordVPN: the shield-arrow — a shield with an upward chevron."""
-    return (f'<path d="M 256 84 L 392 140 L 392 268 C 392 352 336 400 256 424 '
-            f'C 176 400 120 352 120 268 L 120 140 Z" {_s(c, 32)}/>'
-            f'<path d="M 180 268 L 256 190 L 332 268" {_s(c, 32)}/>')
+    """NordVPN's mountain/dome, not a generic shield; all ink is monoline."""
+    return (f'<path d="M 112 364 A 180 180 0 1 1 400 364" {_s(c, 32)}/>'
+            f'<path d="M 112 364 L 220 202 L 258 266 L 286 166 L 400 364" {_s(c, 32)}/>')
 
 
 def proton_shield(c):
-    """Proton: the shield — a shield with a key cut."""
-    return (f'<path d="M 256 92 L 384 148 L 384 270 C 384 356 330 404 256 428 '
-            f'C 182 404 128 356 128 270 L 128 148 Z" {_s(c, 32)}/>'
-            f'<circle cx="256" cy="250" r="40" {_s(c, 24)}/>'
-            f'<path d="M 256 290 L 256 360" {_s(c, 24)}/>')
+    """Proton VPN's folded triangle reduced to two rounded line contours."""
+    return (f'<path d="M 104 112 L 416 152 Q 444 156 426 188 '
+            f'L 258 418 Q 248 436 234 414 L 90 146 Q 78 120 104 112 Z" {_s(c, 32)}/>'
+            f'<path d="M 116 166 L 338 194 Q 364 198 348 222 L 226 374" {_s(c, 26)}/>')
 
 
 def expressvpn_mark(c):
@@ -1942,12 +1923,18 @@ def pacman_mark(c):
 
 
 def retroarch_mark(c):
-    """RetroArch: the game pad — a controller with a d-pad."""
-    return (f'<path d="M 130 200 C 130 150 190 130 230 160 L 280 200 C 296 214 '
-            f'330 214 346 200 L 396 160 C 436 130 496 150 496 200 '
-            f'C 496 268 470 360 420 372 C 386 380 360 340 352 310 '
-            f'C 340 284 316 270 256 270 C 196 270 172 284 160 310 '
-            f'C 152 340 126 380 92 372 C 42 360 16 268 16 200 Z" {_s(c, 28)}/>')
+    """RetroArch: the game pad — a controller with a d-pad.
+
+    Drawn to a 406-wide body, not 480: at the old width the 26.2 stroke put
+    ink at x=2.9 and x=509.1 on a 512 grid, 3px of margin where SAFE promises
+    40. Uniformly rescaled about the grid centre so the pad keeps its
+    proportions and the stroke keeps its monoline weight.
+    """
+    return (f'<path d="M 150 210 C 150 167 200 150 234 176 L 276 210 C 290 221 '
+            f'319 221 332 210 L 374 176 C 408 150 459 167 459 210 '
+            f'C 459 267 437 345 395 355 C 366 362 344 328 337 302 '
+            f'C 327 281 307 269 256 269 C 205 269 185 281 175 302 '
+            f'C 168 328 146 362 117 355 C 75 345 53 267 53 210 Z" {_s(c, 28)}/>')
 
 
 def sideload_mark(c):
@@ -1975,11 +1962,16 @@ GLYPHS.update({
 # Tier 7 — music and tool marks.
 # ==========================================================================
 def sirius_satellite(c):
-    """Sirius: the satellite — a dish with radiating orbit."""
-    return (f'<path d="M 104 396 C 104 300 180 224 276 224" {_s(c, 32)}/>'
-            f'<circle cx="128" cy="372" r="26" {_f(c)}/>'
-            f'<path d="M 300 160 C 360 160 420 220 420 280" {_s(c, 26)}/>'
-            f'<path d="M 300 104 C 388 104 476 192 476 280" {_s(c, 26)}/>')
+    """Sirius: the satellite — a dish with radiating orbit.
+
+    Shifted 20px left. The outer wave arc reached x=476, which the 26.2
+    stroke pushed to 489 — outside SAFE — while the dish left only 88px of
+    margin on the other side. The diagonal composition is unchanged.
+    """
+    return (f'<path d="M 84 396 C 84 300 160 224 256 224" {_s(c, 32)}/>'
+            f'<circle cx="108" cy="372" r="26" {_f(c)}/>'
+            f'<path d="M 280 160 C 340 160 400 220 400 280" {_s(c, 26)}/>'
+            f'<path d="M 280 104 C 368 104 456 192 456 280" {_s(c, 26)}/>')
 
 
 def podcast_mic(c):
@@ -2553,10 +2545,11 @@ def google_tv(c):
 
 
 def yt_kids(c):
-    """YouTube Kids: the play chair — a play flipped with a smile."""
-    return (f'<path d="M 96 140 C 96 100 150 92 172 120 L 200 160" {_s(c, 28)}/>'
-            f'<rect x="40" y="124" width="432" height="264" rx="74" {_s(c, 30)}/>'
-            f'<path d="M 200 250 L 200 330 L 290 290 Z" {_s(c, 26)}/>')
+    """Slanted Kids button/play, with the same stroke and no extra cartoon appendage."""
+    return (f'<path d="M 104 142 L 370 104 Q 412 100 418 142 '
+            f'L 444 328 Q 450 370 408 380 L 150 414 Q 108 420 102 378 '
+            f'L 76 194 Q 70 154 104 142 Z" {_s(c, 32)}/>'
+            f'<path d="M 216 206 L 330 254 L 232 320 Z" {_s(c, 32)}/>')
 
 
 def adguard_shield(c):
@@ -2796,4 +2789,154 @@ GLYPHS.update({
     "coreline_ticker": coreline_ticker,
     "coreshift_frames": coreshift_frames,
     "coredoctor_pulse": coredoctor_pulse,
+})
+
+
+# NoBuffr uses an observed cue from the APK, not a pasted white vendor wordmark.
+# Keep the full name in the same Outfit-labelled banner as every neighbouring app.
+def nobuffr_mark(c):
+    """Lowercase 'no' + interrupted buffer line, authored in Core Builds linework."""
+    return (f'<path d="M 104 292 V 148 M 104 208 '
+            f'C 104 128 232 128 232 208 V 292" {_s(c, 32)}/>'
+            f'<ellipse cx="352" cy="220" rx="64" ry="80" {_s(c, 32)}/>'
+            f'<path d="M 104 360 V 380 M 142 360 V 380 M 180 360 V 380" {_s(c, 20)}/>'
+            f'<path d="M 232 370 H 416" {_s(c, 26)}/>')
+
+
+GLYPHS["nobuffr_mark"] = nobuffr_mark
+
+
+def wholphin_arc(c):
+    """Wholphin: whale-back arc and a small eye. Original, not a vendor mark."""
+    return (
+        f'<path d="M 88 300 C 120 168 200 120 256 120 '
+        f'C 360 120 430 200 440 312" {_s(c, 32)}/>'
+        f'<path d="M 88 300 C 150 372 220 400 300 392 '
+        f'C 360 386 400 350 428 312" {_s(c, 26.2)}/>'
+        f'<circle cx="352" cy="208" r="16" {_s(c, 21.8)}/>'
+    )
+
+
+def stream_window(c):
+    """Tanasi Streamflix fork: flow bars and a play wedge. Not the reborn F."""
+    return (
+        f'<path d="M 112 176 H 268" {_s(c, 32)}/>'
+        f'<path d="M 112 256 H 236" {_s(c, 32)}/>'
+        f'<path d="M 112 336 H 200" {_s(c, 32)}/>'
+        f'<path d="M 300 176 L 300 336 L 424 256 Z" {_s(c, 32)}/>'
+    )
+
+
+GLYPHS["wholphin_arc"] = wholphin_arc
+GLYPHS["stream_window"] = stream_window
+
+
+# ==========================================================================
+# Recognisable brand marks — researched emblems, drawn in Core Builds linework.
+#
+# Cues researched in docs/logo-research/ICON_LOGO_RESEARCH.md and
+# docs/research/iconpack-design-upgrade-2026-09.md. Each mark keeps the pack's
+# contract: rounded monoline strokes, one accent, transparent interiors, no
+# vendor silhouette or wordmark. CBC Gem's "exploding pizza" and CNBC's
+# peacock are public emblems; Al Jazeera's flame and France 24's cyan square
+# are the cues the logo audit flagged as missing from the letter tiles.
+# ==========================================================================
+
+def _arc(c, cx, cy, r, a0, a1, w):
+    """A stroked circular arc segment centred on (cx, cy)."""
+    import math
+    a0, a1 = math.radians(a0), math.radians(a1)
+    x0, y0 = cx + r * math.cos(a0), cy + r * math.sin(a0)
+    x1, y1 = cx + r * math.cos(a1), cy + r * math.sin(a1)
+    large = 1 if (a1 - a0) > math.pi else 0
+    return (f'<path d="M {x0:.1f} {y0:.1f} A {r:.1f} {r:.1f} 0 {large} 1 '
+            f'{x1:.1f} {y1:.1f}" {_s(c, w)}/>')
+
+
+def aljazeera_flame(c):
+    """Al Jazeera: gold rounded square + the calligraphic flame/teardrop.
+
+    The logo audit records the mark as an orange square with a flowing
+    stylised flame/water-drop. Interpreted as one open teardrop with an inner
+    curl, in the pack's single accent — not an imported calligraphic trace.
+    """
+    return (f'<rect x="88" y="88" width="336" height="336" rx="80" {_s(c, 30)}/>'
+            f'<path d="M 256 150 C 204 214 192 260 214 300 '
+            f'C 230 328 282 328 298 300 '
+            f'C 320 260 308 214 256 150 Z" {_s(c, 28)}/>'
+            f'<path d="M 256 200 C 238 234 232 258 238 278" {_s(c, 20)}/>')
+
+
+def france24_mark(c):
+    """France 24: cyan rounded square with a large '24' — round-the-clock news.
+
+    The audit records a bright cyan square with a large white '24'. The digits
+    reuse the same Outfit ExtraBold outlines as the pack's monograms (stroked,
+    not filled), so they render identically everywhere and stay inside the
+    monoline contract.
+    """
+    from typeface import monogram_outline
+    digits = monogram_outline("24", c, cap_h=190, weight=20, max_width=268)
+    return f'<rect x="88" y="88" width="336" height="336" rx="80" {_s(c, 30)}/>{digits}'
+
+
+def cbc_gem(c):
+    """CBC Gem: the 'exploding pizza' — a ring with arches and semi-arches.
+
+    Burton Kramer's 1974 mark: a wide-open ring with arches, semi-arches and
+    smaller fragments radiating around it. Rendered as concentric stroked arcs
+    of graduated weight, one accent.
+    """
+    import math
+    out = f'<circle cx="256" cy="256" r="96" {_s(c, 30)}/>'
+    for centre in (0, 90, 180, 270):
+        out += _arc(c, 256, 256, 162, centre - 30, centre + 30, 26)
+    for centre in (45, 135, 225, 315):
+        out += _arc(c, 256, 256, 130, centre - 21, centre + 21, 20)
+    return out
+
+
+def cnbc_peacock(c):
+    """CNBC: the NBC peacock fan — six feathers over a stem, stroke-only.
+
+    CNBC's brand is the peacock (shared with NBCUniversal). A clean fan of
+    six tapering strokes reads as the peacock without the filled dot tips the
+    standalone peacock_fan uses, so this mark stays inside the monoline
+    contract.
+    """
+    import math
+    out = ''
+    for i in range(6):
+        a = math.radians(-168 + i * 26)
+        bx, by = 256 + 20 * math.cos(a), 424 + 20 * math.sin(a)
+        tx, ty = 256 + 174 * math.cos(a), 424 + 174 * math.sin(a)
+        w = 32 if i % 2 == 0 else 26
+        out += f'<path d="M {bx:.1f} {by:.1f} L {tx:.1f} {ty:.1f}" {_s(c, w)}/>'
+    out += f'<path d="M 256 404 L 256 454" {_s(c, 28)}/>'
+    return out
+
+
+def mgm_reel(c):
+    """MGM+: a film reel — ring, sprocket perforations and hub.
+
+    MGM+ has no standalone 'M' emblem; the brand's recognisable device is the
+    lion in a film-reel ring. The audit's instruction is 'at least a
+    lion/film-reel device', so the reel is drawn here as the shared cue.
+    """
+    import math
+    out = (f'<circle cx="256" cy="256" r="158" {_s(c, 30)}/>'
+           f'<circle cx="256" cy="256" r="56" {_s(c, 26)}/>')
+    for i in range(8):
+        a = math.radians(i * 45)
+        x, y = 256 + 108 * math.cos(a), 256 + 108 * math.sin(a)
+        out += f'<circle cx="{x:.1f}" cy="{y:.1f}" r="13" {_s(c, 18)}/>'
+    return out
+
+
+GLYPHS.update({
+    "aljazeera_flame": aljazeera_flame,
+    "france24_mark": france24_mark,
+    "cbc_gem": cbc_gem,
+    "cnbc_peacock": cnbc_peacock,
+    "mgm_reel": mgm_reel,
 })
