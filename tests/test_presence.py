@@ -69,6 +69,35 @@ class PresenceTests(unittest.TestCase):
                         todo.append(q)
         self.assertEqual(components, 7)
 
+    def test_presence_never_pushes_ink_outside_the_safe_area(self):
+        """The vector gate is not enough once a raster pass widens the mark.
+
+        `test_no_glyph_puts_ink_outside_the_safe_area` measures `render_svg`,
+        so it cannot see a keyline added after rasterisation. #110 left four
+        marks flush at exactly SAFE; an unbounded 11px ring would have spent
+        that margin and shipped outside it with the vector test still green.
+        Every shipped PNG is checked here instead.
+        """
+        from glyphs import GRID, SAFE
+
+        import json
+        pad = (GRID - SAFE) / 2
+        png_dir = ROOT / "app/src/main/res/drawable-nodpi"
+        icons = json.loads((ROOT / "tools/catalog.json").read_text())["icons"]
+        for icon in icons:
+            path = png_dir / f"{icon['drawable']}.png"
+            if not path.exists():
+                continue
+            box = Image.open(path).convert("RGBA").getchannel("A").getbbox()
+            if box is None:
+                continue
+            margin = min(box[0], box[1], GRID - box[2], GRID - box[3])
+            with self.subTest(icon=icon["drawable"]):
+                self.assertGreaterEqual(
+                    margin, pad,
+                    f"{icon['drawable']}: shipped raster leaves {margin}px, "
+                    f"SAFE={SAFE} requires {pad:.0f}")
+
 
 if __name__ == "__main__":
     unittest.main()

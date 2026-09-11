@@ -20,6 +20,8 @@ from __future__ import annotations
 
 from PIL import Image, ImageChops, ImageFilter
 
+from glyphs import GRID, SAFE
+
 # Night ink, not the card colour — a keyline the same as #0D1117 would vanish
 # on Projectivy's recommended dark card. Slightly deeper so it still reads
 # on #0D1117 and on Monet's void.
@@ -38,14 +40,39 @@ def _coverage(alpha: Image.Image, threshold: int = 128) -> float:
     return hist[255] / (alpha.size[0] * alpha.size[1])
 
 
+def _safe_headroom(alpha: Image.Image) -> int:
+    """Pixels the ring may grow outward before ink leaves the safe area.
+
+    The ring dilates in every direction, so a mark already flush against
+    SAFE has nowhere to put a keyline. `glyphs.SAFE` promises 40px of margin
+    on the 512 grid and #110 left four marks sitting at exactly that, which
+    an 11px ring would spend — the vector would still pass the safe-area
+    test while the shipped PNG did not. Cap the ring at the margin actually
+    available instead of assuming there is room.
+    """
+    box = alpha.getbbox()
+    if not box:
+        return 0
+    w, h = alpha.size
+    margin = min(box[0], box[1], w - box[2], h - box[3])
+    pad = round((GRID - SAFE) / 2 * (w / GRID))
+    return max(0, margin - pad)
+
+
 def keyline_radius(alpha: Image.Image) -> int:
-    """Dense marks get a shorter ring so they do not turn into slabs."""
+    """Dense marks get a shorter ring so they do not turn into slabs.
+
+    Bounded by the safe-area headroom, so the pass never pushes ink outside
+    SAFE to buy contrast.
+    """
     covered = _coverage(alpha)
     if covered > 0.22:
-        return 5
-    if covered > 0.16:
-        return 8
-    return KEYLINE_RADIUS
+        want = 5
+    elif covered > 0.16:
+        want = 8
+    else:
+        want = KEYLINE_RADIUS
+    return min(want, _safe_headroom(alpha))
 
 
 def apply_presence(image: Image.Image) -> Image.Image:
