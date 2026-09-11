@@ -4,7 +4,16 @@ All notable changes to the Core Builds Icon Pack. Format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); versions follow
 [SemVer](https://semver.org/spec/v2.0.0.html).
 
-## [1.8.12] — 2026-09-11
+## [1.8.13] — 2026-09-11
+
+**A safe-area constant that nothing enforced, a module that stopped
+compiling, the pack's own banner with its last letter cut off, and marks
+that now hold against a bright wallpaper.**
+
+1.8.12 was prepared but never published — its tag was pushed at a commit
+that still read versionName 1.8.11, and `build.yml` refused it before
+building anything. Its notes are folded in here rather than left pointing
+at a release that does not exist.
 
 **A safe-area constant that nothing enforced, a module that stopped
 compiling, and the pack's own banner with its last letter cut off.**
@@ -65,6 +74,15 @@ compiling, and the pack's own banner with its last letter cut off.**
   move the right way. Original linework throughout — no vendor silhouette or
   wordmark.
 
+- **Marks that vanished on a bright wallpaper now hold.** A raster presence
+  pass adds a night keyline and a short accent bloom *after* rasterisation,
+  so the SVG masters stay style-AA monoline and the identity gates are
+  untouched. Both layers are rings around existing ink, not dilations, so
+  open interiors stay open — YouTube's play counter and MUBI's seven islands
+  are unchanged. The ring is bounded by the safe-area margin actually
+  available: 920 of 926 icons get a keyline, 183 at the full 11px, and six
+  marks sitting flush at SAFE get none rather than ship outside it.
+
 ### Changed
 - **Same-name marks that were two products, or one product with two tiles.**
   DIG is no longer labelled Daijishou. Jawwy TV and ERTFLIX package
@@ -73,7 +91,7 @@ compiling, and the pack's own banner with its last letter cut off.**
   mark, not a letter S. Yettel Selfcare is named apart from Yettel TV.
 
 Coverage: **926 icons / 1101 catalog components / 58 classic wallpapers**.
-versionName 1.8.12, versionCode 22.
+versionName 1.8.13, versionCode 23.
 
 ## [1.8.11] — 2026-09-10
 
