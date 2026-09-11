@@ -10,6 +10,8 @@ pip install -r tools/requirements.txt   # needs libcairo2 on Linux
 
 That's the whole toolchain for asset work. Building the APK additionally needs JDK 17 + the Android SDK.
 
+**Codespaces / Dev Containers.** Two configs live in [`.devcontainer/`](.devcontainer/README.md). The default (**Python**) is python 3.12, Node 22, GitHub CLI, and Cairo — enough for the catalog, validators, and `cd ticker && npm test`. Switch to **Android** for JDK 17 + the command-line SDK (`assembleDebug`). There is no emulator; `device-check.yml` stays in Actions. Do not copy the release keystore into a codespace.
+
 ## Adding an icon
 
 1. Find the component name on a device that has the app:
