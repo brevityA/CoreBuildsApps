@@ -13,7 +13,7 @@
 <!-- suite-stamp:start -->
 > | App | Current | What it does | Downloader | Release tag |
 > |---|---:|---|---|---|
-> | **[Core Builds Icon Pack](#-icon-pack)** | `v1.8.11` | 926 transparent icons + 58 wallpapers for Projectivy Launcher | `5270601` | [`v*` / `iconpack`](../../releases) |
+> | **[Core Builds Icon Pack](#-icon-pack)** | `v1.8.12` | 926 transparent icons + 58 wallpapers for Projectivy Launcher | `5270601` | [`v*` / `iconpack`](../../releases) |
 > | **[Core Builds Pixel Neon](#-pixel-neon-icon-pack)** | `v0.1.0` | 926 transparent 8-bit neon icons + 70 wallpapers for Projectivy Launcher | `[USER TO SUPPLY]` | [`pixel-neon-v*` / `pixel-neon`](../../releases) |
 > | **[Core Builds Pop](#-core-builds-pop)** | `v1.0.0` | The same 926 icons, pop-art cartoon: 16 swatches, one container | `[USER TO SUPPLY]` | [`pop-v*` / `pop`](../../releases) |
 > | **[Core Line](#-core-line)** | `v1.3.0` | Sports scores & channel RSS ticker (chyron) | `7375676` | [`coreline-v*` / `coreline`](../../releases) |
@@ -28,13 +28,13 @@
 ## 🔷 Icon Pack
 
 **Transparent app icons for Projectivy Launcher on Android TV.**
-`926 icons` · `58 wallpapers` · `v1.8.11`
+`926 icons` · `58 wallpapers` · `v1.8.12`
 
 The **Core Builds Icon Pack** is designed for the [Projectivy Launcher](https://play.google.com/store/apps/details?id=com.spocky.projengmenu) on Android TV and Google TV, built to the [Core Builds Brand & Style Guide v1.0](https://github.com/brevityA/Core-Builds).
 
 Icons share the **Core Builds visual language**: original geometry, rounded-line brand motifs, one accent and transparent backgrounds. The reviewed glyphs use the canonical **32px main stroke**, with 26.2px / 21.8px detail. Brand references inform the recognisable cue and colour; they do **not** replace the pack's style with filled vendor silhouettes or custom logotypes. The existing Outfit fallback letters remain unchanged. [Reference provenance and rights](THIRD_PARTY_NOTICES.md).
 
-**v1.8.11 — the rest of the D-pad dead ends, plus two mis-mapped apps:** v1.8.10 made the Wallpapers button reachable; this release finishes the job. The update **Download/Install** button, the **"Also &lt;launcher&gt;"** row, the wallpapers **Back** button and the **Select all / Clear / Export** bar were all stranded by focus chains that hopped over them — an available update could not be installed by remote, and multi-select export was unreachable once focus moved. Wallpaper chips now keep their highlight when pressed, and tiles no longer split the focus ring from the click target. **WeatherBug** was applying the Streamflix icon and now has its own entry, and **7plus** on the live `com.swm.live` package gains candidate home-activity mappings alongside the first-run setup ones it had — unverified, pending confirmation on a device. A new static check fails the build if any control is left unreachable again. The v1.8.9 Android TV hardening and the 926-icon Core Builds monoline system remain intact. [Mixed-row preview and research](docs/research/icon-fidelity-and-demand-2026-09.md).
+**v1.8.12 — a safe-area constant nothing enforced, a module that stopped compiling, and a banner missing its last letter:** `SAFE = 432` had sat in `glyphs.py` unchecked, and seven glyphs hung ink past it — RetroArch was drawn to `x=496`, which the 26.2 monoline pushed to **509.1 on a 512 grid**, 3px of margin where SAFE promises 40. Fixed in the geometry, so no stroke weight changed: **8 Classic icons and 11 Pop assets** move. Pixel Neon had stopped compiling since 1.8.11 — the wallpaper seed palette declared `cb_hairline` in `app/` and `pop/` but not in the module that forks that Kotlin — and **46 of its icons** had drifted from the catalog, because the sprite seed includes each icon's *positional index* and splitting WeatherBug out of Streamflix shifted every entry after it. The pack's own Leanback banner shipped `for Projectivy · Android T`, the V cut by the canvas edge; its text is now outlined from `tools/fonts` rather than naming Georgia, which was never licensed for redistribution. Three new gates cover the silent failures: rendered-alpha safe-area measurement across all 322 glyphs, a geometry digest on the Pop metrics table, and a resource checker that pairs every module with the Kotlin it actually compiles.
 
 > **Tip:** Use a **dark card background** in Projectivy. These icons are drawn for night chrome (`#0d1117`).
 
