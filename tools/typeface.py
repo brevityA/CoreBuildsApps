@@ -72,17 +72,20 @@ def _line_paths(text, size, x, baseline, font_path):
     return ds, cursor - x
 
 
-def wordmark_spans(lines, size, tx, baselines, fill):
+def wordmark_spans(lines, size, tx, baselines, fill, font_path=None):
     """
     Path-based wordmark, same layout the old <text> block used.
 
     Returns (svg_markup, ink_width) so the banner lockup can be measured
     without relying on a host font.
+
+    `font_path` defaults to Outfit Bold, which is what every app banner uses.
+    The pack's own Leanback banner passes the mono face for its strapline.
     """
     parts = []
     max_w = 0.0
     for line, baseline in zip(lines, baselines):
-        ds, w = _line_paths(line, size, tx, baseline, FONT_WORDMARK)
+        ds, w = _line_paths(line, size, tx, baseline, font_path or FONT_WORDMARK)
         max_w = max(max_w, w)
         for d in ds:
             parts.append(f'<path d="{d}" fill="{fill}" stroke="none"/>')
