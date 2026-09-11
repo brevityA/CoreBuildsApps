@@ -339,6 +339,46 @@ class SourceTests(unittest.TestCase):
                       (ROOT / "docs/IconPackList.md").read_text())
 
 
+class DiversityTests(unittest.TestCase):
+    """Recognisability can only move one way.
+
+    docs/research/iconpack-design-upgrade-2026-09.md measures the pack at 66%
+    generic letter tiles — the one axis where Projectivy Icon Pack still wins.
+    A catalog addition lands on a letter tile by default, so without a gate
+    the share ratchets up with every release. The ceiling and floor below pin
+    the number, and the researched-emblem set prevents a named brand from
+    silently regressing to a tile.
+    """
+
+    # Brands with a verified public emblem. Grows as each logo audit lands;
+    # a regression here is a silent quality loss, not a count change.
+    RESEARCHED_EMBLEMS = {
+        "al_jazeera", "androidapp_2",   # Al Jazeera, France 24
+        "cbctv", "cnbc",                # CBC Gem, CNBC (NBC peacock)
+        "sbs", "sbsondemand",           # SBS five-splice Mercator globe
+        "epix",                         # MGM+ film-reel device
+    }
+
+    def _tiles(self):
+        return [i for i in ICONS if i["glyph"].startswith("tile_")]
+
+    def test_letter_tile_share_has_a_ceiling(self):
+        share = len(self._tiles()) / len(ICONS)
+        self.assertLessEqual(share, 0.66,
+                             f"{share:.2%} of icons are letter tiles, above the 66% ceiling")
+
+    def test_bespoke_mark_count_has_a_floor(self):
+        bespoke = len(ICONS) - len(self._tiles())
+        self.assertGreaterEqual(bespoke, 315,
+                                f"only {bespoke} icons on bespoke marks, below the 315 floor")
+
+    def test_researched_emblems_are_never_letter_tiles(self):
+        for icon in ICONS:
+            if icon["drawable"] in self.RESEARCHED_EMBLEMS:
+                self.assertFalse(icon["glyph"].startswith("tile_"),
+                                 f"{icon['name']} regressed to a letter tile")
+
+
 class ApkInspectorTests(unittest.TestCase):
     def manifest(self, activities: str):
         return ET.fromstring(f'<manifest xmlns:android="{NS}" package="com.test.app">'
