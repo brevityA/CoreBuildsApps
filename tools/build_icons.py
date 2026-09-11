@@ -125,12 +125,15 @@ def main():
     png_written = 0
     try:
         from svg_renderer import svg2png
+        from presence import apply_presence_file
         for i in icons:
+            dest = PNG_DIR / f"{i['drawable']}.png"
             svg2png(
                 url=str(SVG_DIR / f"{i['drawable']}.svg"),
-                write_to=str(PNG_DIR / f"{i['drawable']}.png"),
+                write_to=str(dest),
                 output_width=PNG_SIZE, output_height=PNG_SIZE,
                 background_color=None)
+            apply_presence_file(dest)
             png_written += 1
         print(f"\u2713 PNG {PNG_SIZE}px transparent written "
               f"({png_written}/{len(icons)}) \u2192 res/drawable-nodpi/")
