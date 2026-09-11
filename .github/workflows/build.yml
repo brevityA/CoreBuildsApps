@@ -77,6 +77,7 @@ jobs:
           python tools/build_banners.py
           python tools/build_branding.py
           python tools/build_brand_preview.py
+          python tools/build_icon_review.py
 
       - name: Verify committed assets match the catalog
         # The repo must never disagree with its own generator.
@@ -105,9 +106,11 @@ jobs:
 
       - name: Run robustness + wallpapers tests
         run: |
+          python tests/test_icon_identity.py
           python tests/test_v151_robustness.py
           python tests/test_wallpapers.py
           python tests/test_wallpaper_export.py
+          python tests/test_resource_parity.py
 
       - name: Set up JDK 17
         uses: actions/setup-java@v6

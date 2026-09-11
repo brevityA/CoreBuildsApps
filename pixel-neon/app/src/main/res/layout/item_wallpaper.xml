@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  One wallpaper in the browser grid. 16:9 thumbnail on a glass card, same focus
+  treatment as item_icon (Brand Guide §05). In selection mode a cyan frame
+  marks chosen tiles.
+
+  The ROOT is the focusable card. A previous revision put clickable/focusable
+  + bg_card on the inner LinearLayout and the click listener on this
+  FrameLayout, so D-pad highlight and OK landed on two different views.
+  No platform selectableItemBackground: that resolves to the grey highlight.
+-->
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/bg_card"
+    android:clickable="true"
+    android:descendantFocusability="blocksDescendants"
+    android:focusable="true"
+    android:focusableInTouchMode="true"
+    android:minHeight="@dimen/cb_target_min"
+    android:padding="0dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:clickable="false"
+        android:focusable="false"
+        android:gravity="center_horizontal"
+        android:minHeight="@dimen/cb_target_min"
+        android:orientation="vertical"
+        android:padding="@dimen/cb_card_padding">
+
+        <ImageView
+            android:id="@+id/wp_image"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/cb_wp_thumb"
+            android:contentDescription="@null"
+            android:importantForAccessibility="no"
+            android:scaleType="centerCrop" />
+
+        <TextView
+            android:id="@+id/wp_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/cb_space_sm"
+            android:ellipsize="end"
+            android:gravity="center"
+            android:maxLines="1"
+            android:textColor="@color/cb_ink"
+            android:textSize="@dimen/cb_text_label"
+            android:textStyle="bold" />
+    </LinearLayout>
+
+    <View
+        android:id="@+id/wp_selected_ring"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/bg_wp_selected"
+        android:clickable="false"
+        android:focusable="false"
+        android:visibility="gone" />
+</FrameLayout>

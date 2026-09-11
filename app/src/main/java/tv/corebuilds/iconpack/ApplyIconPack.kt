@@ -129,17 +129,10 @@ object ApplyIconPack {
         manualPath = "L TV Launcher Settings → Icon pack"
     )
 
-    val FLAUNCHER = Launcher(
-        key = "flauncher",
-        displayName = "FLauncher",
-        packages = listOf("me.efesser.flauncher", "com.kfaraj.launcher"),
-        intent = { ctx, self ->
-            val pkg = listOf("me.efesser.flauncher", "com.kfaraj.launcher")
-                .firstOrNull { ctx.isInstalled(it) } ?: return@Launcher null
-            tryStandardApply(ctx, pkg, self)
-        },
-        manualPath = "FLauncher Settings → Appearance → Icon pack"
-    )
+    // FLauncher is intentionally not listed as an applicable launcher. Its
+    // upstream project states that icon-pack support is not planned, so
+    // advertising an apply/manual flow here would be misleading and would
+    // make the primary action appear to succeed when nothing can change.
 
     val CHILLHUB = Launcher(
         key = "chillhub",
@@ -217,7 +210,7 @@ object ApplyIconPack {
 
     /** Known launchers. HOME detection walks this list. Projectivy first. */
     val ALL = listOf(
-        PROJECTIVY, MONET, AT4K, LEANBACK, LTV, FLAUNCHER, CHILLHUB,
+        PROJECTIVY, MONET, AT4K, LEANBACK, LTV, CHILLHUB,
         NOVA, LAWNCHAIR, APEX, ADW
     )
 
@@ -230,20 +223,14 @@ object ApplyIconPack {
 
     private fun Context.isInstalledAny(l: Launcher) = l.packages.any { isInstalled(it) }
 
-    /** Package of the current HOME launcher, checking both standard and Leanback categories. */
+    /** Package of the current HOME launcher. */
     fun homePackage(context: Context): String? = try {
-        val pm = context.packageManager
-        val leanback = Intent(Intent.ACTION_MAIN).addCategory(Intent.CATEGORY_LEANBACK_LAUNCHER)
-        val leanbackPkg = pm.resolveActivity(leanback, PackageManager.MATCH_DEFAULT_ONLY)
+        // CATEGORY_LEANBACK_LAUNCHER identifies TV apps, not the current HOME
+        // activity. Resolving it here can return this icon-pack activity (it
+        // also declares LEANBACK_LAUNCHER), causing a false launcher match.
+        val home = Intent(Intent.ACTION_MAIN).addCategory(Intent.CATEGORY_HOME)
+        context.packageManager.resolveActivity(home, PackageManager.MATCH_DEFAULT_ONLY)
             ?.activityInfo?.packageName
-
-        if (leanbackPkg != null && leanbackPkg != "android") {
-            leanbackPkg
-        } else {
-            val home = Intent(Intent.ACTION_MAIN).addCategory(Intent.CATEGORY_HOME)
-            pm.resolveActivity(home, PackageManager.MATCH_DEFAULT_ONLY)
-                ?.activityInfo?.packageName
-        }
     } catch (_: Exception) {
         null
     }
