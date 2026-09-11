@@ -6,13 +6,13 @@
 
 | Product | Path | Package ID | Version | Downloader / stable tag |
 |---|---|---|---:|---|
-| Core Builds Icon Pack | `app/` with repo-root Gradle | `tv.corebuilds.iconpack` | `1.8.11` | `5270601` / `iconpack` |
+| Core Builds Icon Pack | `app/` with repo-root Gradle | `tv.corebuilds.iconpack` | `1.8.12` | `5270601` / `iconpack` |
 | Core Builds Pixel Neon | `pixel-neon/` | `tv.corebuilds.pixelneon` | `0.1.0` | `[USER TO SUPPLY]` / `pixel-neon` |
 | Core Builds Pop | `pop/` with repo-root Gradle | `tv.corebuilds.iconpack.pop` | `1.0.0` | `[USER TO SUPPLY]` / `pop` |
 | Core Line | `ticker/` + `ticker/android/` | `dev.corebuilds.line` | `1.3.0` | `7375676` / `coreline` |
 | Core Shift | `shift/` | `dev.corebuilds.shift` | `2.3.5` | `8829421` / `shift` |
 | Core Motion | `motion-plugin/` | `tv.corebuilds.motion` | `1.0.0` | `[USER TO SUPPLY]` / `motion` |
-| Core Doctor | `doctor/` | `dev.corebuilds.doctor` | `0.1.0` | `8664938` / `doctor` |
+| Core Doctor | `doctor/` | `dev.corebuilds.doctor` | `0.1.0` | `[USER TO SUPPLY]` / `doctor` |
 
 `pop/` is the one intentional exception to "one app, one Gradle root": it is a
 second module on the repo-root build that compiles `app/src/main/java` rather
@@ -60,7 +60,7 @@ and rights, never a live glyph registry. Actual geometry belongs in
 `tools/glyphs.py`. Both Classic and Pop use the shared catalog/style validator.
 `brand` groups must share glyph and accent. Classic applies its shared
 `tools/icon_style.py` contrast fallback without rewriting the source accent.
-See `THIRD_PARTY_NOTICES.md` and `docs/research/icon-fidelity-and-demand-2026-09.md`.
+See `THIRD_PARTY_NOTICES.md` and `docs/research/icon-fidelity-and-demand-2026-09.md`. Brand language for this suite: `docs/BRAND-GUIDE.md`.
 For the visual receipt, run `python tools/build_icon_review.py` after Classic
 has built. It must show the new icons beside established, unchanged Classic
 neighbours and actual-size banners, not only an isolated vendor-logo gallery.
