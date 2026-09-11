@@ -1,9 +1,9 @@
 {
   "collection": "Core Builds Wallpapers",
-  "version": "3.0",
+  "version": "4.0",
   "author": "brevityA",
   "brand_guide": "Core-Builds Brand Guide v1.0 (2026-08-11)",
-  "count": 70,
+  "count": 58,
   "wallpapers": [
     {
       "name": "01 Mesh Drift",
@@ -230,6 +230,34 @@
       "resolution": "3840x2160"
     },
     {
+      "name": "51 Vortex",
+      "series": "series-2-motion",
+      "url": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/series-2-motion/corebuilds-51-vortex.png",
+      "thumb": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/thumbs/corebuilds-51-vortex.jpg",
+      "resolution": "3840x2160"
+    },
+    {
+      "name": "52 Shockwave",
+      "series": "series-2-motion",
+      "url": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/series-2-motion/corebuilds-52-shockwave.png",
+      "thumb": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/thumbs/corebuilds-52-shockwave.jpg",
+      "resolution": "3840x2160"
+    },
+    {
+      "name": "53 Cascade",
+      "series": "series-2-motion",
+      "url": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/series-2-motion/corebuilds-53-cascade.png",
+      "thumb": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/thumbs/corebuilds-53-cascade.jpg",
+      "resolution": "3840x2160"
+    },
+    {
+      "name": "54 Drift Field",
+      "series": "series-2-motion",
+      "url": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/series-2-motion/corebuilds-54-drift-field.png",
+      "thumb": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/thumbs/corebuilds-54-drift-field.jpg",
+      "resolution": "3840x2160"
+    },
+    {
       "name": "33 Horizon Cyan",
       "series": "series-3-horizons",
       "url": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/series-3-horizons/corebuilds-33-horizon-cyan.png",
@@ -286,214 +314,102 @@
       "resolution": "3840x2160"
     },
     {
-      "name": "41 Core Mark \u00b7 Signature",
-      "series": "series-4-core-mark",
-      "url": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/series-4-core-mark/corebuilds-41-core-mark-signature.png",
-      "thumb": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/thumbs/corebuilds-41-core-mark-signature.jpg",
+      "name": "55 Horizon Dusk",
+      "series": "series-3-horizons",
+      "url": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/series-3-horizons/corebuilds-55-horizon-dusk.png",
+      "thumb": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/thumbs/corebuilds-55-horizon-dusk.jpg",
       "resolution": "3840x2160"
     },
     {
-      "name": "42 Core Mark \u00b7 Centered Glow",
-      "series": "series-4-core-mark",
-      "url": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/series-4-core-mark/corebuilds-42-core-mark-centered-glow.png",
-      "thumb": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/thumbs/corebuilds-42-core-mark-centered-glow.jpg",
+      "name": "56 Horizon Frost",
+      "series": "series-3-horizons",
+      "url": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/series-3-horizons/corebuilds-56-horizon-frost.png",
+      "thumb": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/thumbs/corebuilds-56-horizon-frost.jpg",
       "resolution": "3840x2160"
     },
     {
-      "name": "43 Core Mark \u00b7 Primary Mark",
-      "series": "series-4-core-mark",
-      "url": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/series-4-core-mark/corebuilds-43-core-mark-flat-logo.png",
-      "thumb": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/thumbs/corebuilds-43-core-mark-flat-logo.jpg",
+      "name": "57 Horizon Signal",
+      "series": "series-3-horizons",
+      "url": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/series-3-horizons/corebuilds-57-horizon-signal.png",
+      "thumb": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/thumbs/corebuilds-57-horizon-signal.jpg",
       "resolution": "3840x2160"
     },
     {
-      "name": "44 Core Mark \u00b7 Offset Left",
-      "series": "series-4-core-mark",
-      "url": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/series-4-core-mark/corebuilds-44-core-mark-offset-left.png",
-      "thumb": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/thumbs/corebuilds-44-core-mark-offset-left.jpg",
+      "name": "58 Horizon Ember Deep",
+      "series": "series-3-horizons",
+      "url": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/series-3-horizons/corebuilds-58-horizon-ember-deep.png",
+      "thumb": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/thumbs/corebuilds-58-horizon-ember-deep.jpg",
       "resolution": "3840x2160"
     },
     {
-      "name": "45 Core Mark \u00b7 Offset Right",
-      "series": "series-4-core-mark",
-      "url": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/series-4-core-mark/corebuilds-45-core-mark-offset-right.png",
-      "thumb": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/thumbs/corebuilds-45-core-mark-offset-right.jpg",
-      "resolution": "3840x2160"
+      "name": "41 Circuit Bloom",
+      "series": "series-6-circuit-core",
+      "url": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/series-6-circuit-core/corebuilds-41-circuit-bloom.jpg",
+      "thumb": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/thumbs/corebuilds-41-circuit-bloom.jpg",
+      "resolution": "1376x768"
     },
     {
-      "name": "46 Core Mark \u00b7 Low Horizon",
-      "series": "series-4-core-mark",
-      "url": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/series-4-core-mark/corebuilds-46-core-mark-low-horizon.png",
-      "thumb": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/thumbs/corebuilds-46-core-mark-low-horizon.jpg",
-      "resolution": "3840x2160"
+      "name": "42 Violet Shards",
+      "series": "series-6-circuit-core",
+      "url": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/series-6-circuit-core/corebuilds-42-circuit-shards.jpg",
+      "thumb": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/thumbs/corebuilds-42-circuit-shards.jpg",
+      "resolution": "1376x768"
     },
     {
-      "name": "47 Core Mark \u00b7 Cyan Nebula",
-      "series": "series-4-core-mark",
-      "url": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/series-4-core-mark/corebuilds-47-core-mark-cyan-nebula.png",
-      "thumb": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/thumbs/corebuilds-47-core-mark-cyan-nebula.jpg",
-      "resolution": "3840x2160"
+      "name": "43 Cinder Core",
+      "series": "series-6-circuit-core",
+      "url": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/series-6-circuit-core/corebuilds-43-circuit-cinder.jpg",
+      "thumb": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/thumbs/corebuilds-43-circuit-cinder.jpg",
+      "resolution": "1376x768"
     },
     {
-      "name": "48 Core Mark \u00b7 Violet Night",
-      "series": "series-4-core-mark",
-      "url": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/series-4-core-mark/corebuilds-48-core-mark-violet-night.png",
-      "thumb": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/thumbs/corebuilds-48-core-mark-violet-night.jpg",
-      "resolution": "3840x2160"
+      "name": "44 Monolith Grid",
+      "series": "series-6-circuit-core",
+      "url": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/series-6-circuit-core/corebuilds-44-circuit-monolith.jpg",
+      "thumb": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/thumbs/corebuilds-44-circuit-monolith.jpg",
+      "resolution": "1376x768"
     },
     {
-      "name": "49 Core Mark \u00b7 Ember Dusk",
-      "series": "series-4-core-mark",
-      "url": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/series-4-core-mark/corebuilds-49-core-mark-ember-dusk.png",
-      "thumb": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/thumbs/corebuilds-49-core-mark-ember-dusk.jpg",
-      "resolution": "3840x2160"
+      "name": "45 Violet Foundry",
+      "series": "series-6-circuit-core",
+      "url": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/series-6-circuit-core/corebuilds-45-circuit-foundry.jpg",
+      "thumb": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/thumbs/corebuilds-45-circuit-foundry.jpg",
+      "resolution": "1376x768"
     },
     {
-      "name": "50 Core Mark \u00b7 North Star",
-      "series": "series-4-core-mark",
-      "url": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/series-4-core-mark/corebuilds-50-core-mark-north-star.png",
-      "thumb": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/thumbs/corebuilds-50-core-mark-north-star.jpg",
-      "resolution": "3840x2160"
+      "name": "46 Conduit Flare",
+      "series": "series-6-circuit-core",
+      "url": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/series-6-circuit-core/corebuilds-46-circuit-conduit.jpg",
+      "thumb": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/thumbs/corebuilds-46-circuit-conduit.jpg",
+      "resolution": "1376x768"
     },
     {
-      "name": "51 Core Mark \u00b7 Depth Void",
-      "series": "series-4-core-mark",
-      "url": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/series-4-core-mark/corebuilds-51-core-mark-depth-void.png",
-      "thumb": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/thumbs/corebuilds-51-core-mark-depth-void.jpg",
-      "resolution": "3840x2160"
+      "name": "47 Trace Skyline",
+      "series": "series-6-circuit-core",
+      "url": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/series-6-circuit-core/corebuilds-47-circuit-skyline.jpg",
+      "thumb": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/thumbs/corebuilds-47-circuit-skyline.jpg",
+      "resolution": "1376x768"
     },
     {
-      "name": "52 Core Mark \u00b7 Aurora",
-      "series": "series-4-core-mark",
-      "url": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/series-4-core-mark/corebuilds-52-core-mark-aurora.png",
-      "thumb": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/thumbs/corebuilds-52-core-mark-aurora.jpg",
-      "resolution": "3840x2160"
+      "name": "48 Ember Works",
+      "series": "series-6-circuit-core",
+      "url": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/series-6-circuit-core/corebuilds-48-circuit-works.jpg",
+      "thumb": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/thumbs/corebuilds-48-circuit-works.jpg",
+      "resolution": "1376x768"
     },
     {
-      "name": "53 Core Mark \u00b7 Grid Floor",
-      "series": "series-4-core-mark",
-      "url": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/series-4-core-mark/corebuilds-53-core-mark-grid-floor.png",
-      "thumb": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/thumbs/corebuilds-53-core-mark-grid-floor.jpg",
-      "resolution": "3840x2160"
+      "name": "49 Trace Rise",
+      "series": "series-6-circuit-core",
+      "url": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/series-6-circuit-core/corebuilds-49-circuit-rise.jpg",
+      "thumb": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/thumbs/corebuilds-49-circuit-rise.jpg",
+      "resolution": "1376x768"
     },
     {
-      "name": "54 Core Mark \u00b7 Hex Field",
-      "series": "series-4-core-mark",
-      "url": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/series-4-core-mark/corebuilds-54-core-mark-hex-field.png",
-      "thumb": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/thumbs/corebuilds-54-core-mark-hex-field.jpg",
-      "resolution": "3840x2160"
-    },
-    {
-      "name": "55 Core Mark \u00b7 Conduits",
-      "series": "series-4-core-mark",
-      "url": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/series-4-core-mark/corebuilds-55-core-mark-conduits.png",
-      "thumb": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/thumbs/corebuilds-55-core-mark-conduits.jpg",
-      "resolution": "3840x2160"
-    },
-    {
-      "name": "56 Core Mark \u00b7 Signal Trace",
-      "series": "series-4-core-mark",
-      "url": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/series-4-core-mark/corebuilds-56-core-mark-signal-trace.png",
-      "thumb": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/thumbs/corebuilds-56-core-mark-signal-trace.jpg",
-      "resolution": "3840x2160"
-    },
-    {
-      "name": "57 Core Mark \u00b7 Resolution 4K",
-      "series": "series-4-core-mark",
-      "url": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/series-4-core-mark/corebuilds-57-core-mark-resolution-4k.png",
-      "thumb": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/thumbs/corebuilds-57-core-mark-resolution-4k.jpg",
-      "resolution": "3840x2160"
-    },
-    {
-      "name": "58 Core Mark \u00b7 Bitrate Cap",
-      "series": "series-4-core-mark",
-      "url": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/series-4-core-mark/corebuilds-58-core-mark-bitrate.png",
-      "thumb": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/thumbs/corebuilds-58-core-mark-bitrate.jpg",
-      "resolution": "3840x2160"
-    },
-    {
-      "name": "59 Core Mark \u00b7 Omni Diamond",
-      "series": "series-4-core-mark",
-      "url": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/series-4-core-mark/corebuilds-59-core-mark-omni-diamond.png",
-      "thumb": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/thumbs/corebuilds-59-core-mark-omni-diamond.jpg",
-      "resolution": "3840x2160"
-    },
-    {
-      "name": "60 Core Mark \u00b7 Zenith",
-      "series": "series-4-core-mark",
-      "url": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/series-4-core-mark/corebuilds-60-core-mark-zenith.png",
-      "thumb": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/thumbs/corebuilds-60-core-mark-zenith.jpg",
-      "resolution": "3840x2160"
-    },
-    {
-      "name": "61 Core Mark \u00b7 Nexus Prime",
-      "series": "series-4-core-mark",
-      "url": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/series-4-core-mark/corebuilds-61-core-mark-nexus-prime.png",
-      "thumb": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/thumbs/corebuilds-61-core-mark-nexus-prime.jpg",
-      "resolution": "3840x2160"
-    },
-    {
-      "name": "62 Core Mark \u00b7 Midnight Slate",
-      "series": "series-4-core-mark",
-      "url": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/series-4-core-mark/corebuilds-62-core-mark-midnight-slate.png",
-      "thumb": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/thumbs/corebuilds-62-core-mark-midnight-slate.jpg",
-      "resolution": "3840x2160"
-    },
-    {
-      "name": "63 Core Mark \u00b7 Minimal",
-      "series": "series-4-core-mark",
-      "url": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/series-4-core-mark/corebuilds-63-core-mark-minimal.png",
-      "thumb": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/thumbs/corebuilds-63-core-mark-minimal.jpg",
-      "resolution": "3840x2160"
-    },
-    {
-      "name": "64 Core Mark \u00b7 TV Skin",
-      "series": "series-4-core-mark",
-      "url": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/series-4-core-mark/corebuilds-64-core-mark-tv-skin.png",
-      "thumb": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/thumbs/corebuilds-64-core-mark-tv-skin.jpg",
-      "resolution": "3840x2160"
-    },
-    {
-      "name": "65 Core Mark \u00b7 279 Passed",
-      "series": "series-4-core-mark",
-      "url": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/series-4-core-mark/corebuilds-65-core-mark-verified.png",
-      "thumb": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/thumbs/corebuilds-65-core-mark-verified.jpg",
-      "resolution": "3840x2160"
-    },
-    {
-      "name": "66 Core Mark \u00b7 Preflight Receipt",
-      "series": "series-4-core-mark",
-      "url": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/series-4-core-mark/corebuilds-66-core-mark-receipt.png",
-      "thumb": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/thumbs/corebuilds-66-core-mark-receipt.jpg",
-      "resolution": "3840x2160"
-    },
-    {
-      "name": "67 Core Mark \u00b7 Mixed Mode",
-      "series": "series-4-core-mark",
-      "url": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/series-4-core-mark/corebuilds-67-core-mark-modes.png",
-      "thumb": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/thumbs/corebuilds-67-core-mark-modes.jpg",
-      "resolution": "3840x2160"
-    },
-    {
-      "name": "68 Core Mark \u00b7 Hex Outline",
-      "series": "series-4-core-mark",
-      "url": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/series-4-core-mark/corebuilds-68-core-mark-hex-outline.png",
-      "thumb": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/thumbs/corebuilds-68-core-mark-hex-outline.jpg",
-      "resolution": "3840x2160"
-    },
-    {
-      "name": "69 Core Mark \u00b7 Glass Panel",
-      "series": "series-4-core-mark",
-      "url": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/series-4-core-mark/corebuilds-69-core-mark-glass-panel.png",
-      "thumb": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/thumbs/corebuilds-69-core-mark-glass-panel.jpg",
-      "resolution": "3840x2160"
-    },
-    {
-      "name": "70 Core Mark \u00b7 Banner Wall",
-      "series": "series-4-core-mark",
-      "url": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/series-4-core-mark/corebuilds-70-core-mark-banner-wall.png",
-      "thumb": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/thumbs/corebuilds-70-core-mark-banner-wall.jpg",
-      "resolution": "3840x2160"
+      "name": "50 Deep Core",
+      "series": "series-6-circuit-core",
+      "url": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/series-6-circuit-core/corebuilds-50-circuit-deepcore.jpg",
+      "thumb": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/thumbs/corebuilds-50-circuit-deepcore.jpg",
+      "resolution": "1376x768"
     }
   ]
 }

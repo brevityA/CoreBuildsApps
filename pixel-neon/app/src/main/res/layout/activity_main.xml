@@ -1,0 +1,370 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  TV-first: no NestedScrollView wrapping the grid. D-pad moves
+  apply → chips → search → tiles. Brand Guide §05 night chrome.
+
+  Metrics come from values/dimens.xml so density and small-panel overrides have
+  one home. Titles are sans, not serif: the pack's own identity is monoline and
+  technical, and a Times-class serif was the one place the app read as a
+  different product. Nothing renders below cb_text_kicker (12sp) — a TV is read
+  at ~3m.
+-->
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/cb_night"
+    android:paddingStart="@dimen/cb_gutter_side"
+    android:paddingEnd="@dimen/cb_gutter_side"
+    android:paddingTop="@dimen/cb_gutter_top"
+    android:paddingBottom="@dimen/cb_gutter_bottom">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="top"
+        android:orientation="horizontal">
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/kicker"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/bg_chip"
+                android:fontFamily="monospace"
+                android:paddingStart="@dimen/cb_space_sm"
+                android:paddingEnd="@dimen/cb_space_sm"
+                android:paddingTop="7dp"
+                android:paddingBottom="7dp"
+                android:letterSpacing="0.18"
+                android:text="@string/kicker"
+                android:textColor="@color/cb_signal_cyan"
+                android:textSize="@dimen/cb_text_kicker"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/cb_space_md"
+                android:letterSpacing="-0.025"
+                android:text="@string/app_name"
+                android:textColor="@color/cb_ink"
+                android:textSize="@dimen/cb_text_display"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/count"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/cb_space_xs"
+                android:fontFamily="monospace"
+                android:letterSpacing="0.02"
+                android:textColor="@color/cb_slate"
+                android:textSize="@dimen/cb_text_data" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="end"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/apply_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:minWidth="@dimen/cb_button_min_width"
+                android:minHeight="@dimen/cb_target_min"
+                android:gravity="center"
+                android:background="@drawable/bg_cta"
+                android:focusable="true"
+                android:focusableInTouchMode="true"
+                android:nextFocusDown="@id/wallpapers_entry"
+                android:clickable="true"
+                android:paddingStart="@dimen/cb_space_lg"
+                android:paddingEnd="@dimen/cb_space_lg"
+                android:paddingTop="@dimen/cb_space_sm"
+                android:paddingBottom="@dimen/cb_space_sm"
+                android:text="@string/cta_open_projectivy"
+                android:textColor="@color/cb_cta_ink"
+                android:textSize="@dimen/cb_text_body"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/apply_sub"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/cb_space_xs"
+                android:gravity="end"
+                android:lineSpacingExtra="2dp"
+                android:maxWidth="440dp"
+                android:text="@string/cta_sub"
+                android:textColor="@color/cb_slate"
+                android:textSize="@dimen/cb_text_data" />
+
+            <!-- Wallpapers. Title on the button, count underneath: the old
+                 single label put a whole sentence on the affordance. -->
+            <LinearLayout
+                android:id="@+id/wallpapers_group"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/cb_space_sm"
+                android:gravity="end"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/wallpapers_entry"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:minWidth="@dimen/cb_button_min_width"
+                    android:minHeight="@dimen/cb_target_min"
+                    android:gravity="center"
+                    android:background="@drawable/bg_ghost"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:focusableInTouchMode="true"
+                    android:nextFocusUp="@id/apply_button"
+                    android:nextFocusDown="@id/apply_targets"
+                    android:paddingStart="@dimen/cb_space_lg"
+                    android:paddingEnd="@dimen/cb_space_lg"
+                    android:paddingTop="@dimen/cb_space_sm"
+                    android:paddingBottom="@dimen/cb_space_sm"
+                    android:text="@string/wp_entry"
+                    android:textColor="@color/cb_ink"
+                    android:textSize="@dimen/cb_text_body"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/wallpapers_entry_sub"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="6dp"
+                    android:textColor="@color/cb_slate"
+                    android:textSize="@dimen/cb_text_data" />
+            </LinearLayout>
+        </LinearLayout>
+    </LinearLayout>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/apply_targets"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/cb_space_sm"
+        android:clipToPadding="false"
+        android:descendantFocusability="afterDescendants"
+        android:nextFocusUp="@id/wallpapers_entry"
+        android:nextFocusDown="@id/update_bar"
+        android:orientation="horizontal"
+        android:visibility="gone" />
+
+    <LinearLayout
+        android:id="@+id/update_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/cb_space_md"
+        android:background="@drawable/bg_update"
+        android:descendantFocusability="afterDescendants"
+        android:focusable="true"
+        android:gravity="center_vertical"
+        android:nextFocusUp="@id/apply_targets"
+        android:nextFocusDown="@id/chip_row"
+        android:orientation="horizontal"
+        android:paddingStart="@dimen/cb_space_md"
+        android:paddingEnd="@dimen/cb_space_md"
+        android:paddingTop="@dimen/cb_space_md"
+        android:paddingBottom="@dimen/cb_space_md"
+        android:visibility="gone">
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/update_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/cb_ink"
+                android:textSize="@dimen/cb_text_label"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/update_sub"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="3dp"
+                android:lineSpacingExtra="2dp"
+                android:text="@string/update_sub_download"
+                android:textColor="@color/cb_slate"
+                android:textSize="@dimen/cb_text_data" />
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/update_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:minHeight="@dimen/cb_target_min"
+            android:gravity="center"
+            android:layout_marginStart="@dimen/cb_space_md"
+            android:background="@drawable/bg_cta"
+            android:clickable="true"
+            android:focusable="true"
+            android:nextFocusUp="@id/apply_targets"
+            android:nextFocusDown="@id/chip_row"
+            android:paddingStart="@dimen/cb_space_lg"
+            android:paddingEnd="@dimen/cb_space_lg"
+            android:paddingTop="@dimen/cb_space_sm"
+            android:paddingBottom="@dimen/cb_space_sm"
+            android:text="@string/update_download"
+            android:textColor="@color/cb_cta_ink"
+            android:textSize="@dimen/cb_text_body"
+            android:textStyle="bold" />
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/picker_hint"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/cb_space_xs"
+        android:text="@string/picker_hint"
+        android:textColor="@color/cb_signal_cyan"
+        android:textSize="@dimen/cb_text_label"
+        android:visibility="gone" />
+
+    <!-- Chips and search share a row: both are filter controls, and stacking
+         them cost a full grid row of vertical space on a 1080p panel. -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/cb_space_lg"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/chip_row"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:clipToPadding="false"
+            android:nextFocusUp="@id/update_bar"
+            android:nextFocusDown="@id/grid"
+            android:orientation="horizontal" />
+
+        <EditText
+            android:id="@+id/search"
+            android:layout_width="400dp"
+            android:layout_height="wrap_content"
+            android:minHeight="@dimen/cb_target_min"
+            android:layout_marginStart="@dimen/cb_space_md"
+            android:background="@drawable/bg_search"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            android:hint="@string/search_hint"
+            android:imeOptions="actionSearch"
+            android:importantForAutofill="no"
+            android:inputType="text"
+            android:nextFocusUp="@id/update_bar"
+            android:nextFocusDown="@id/grid"
+            android:paddingStart="@dimen/cb_space_md"
+            android:paddingEnd="@dimen/cb_space_md"
+            android:paddingTop="@dimen/cb_space_sm"
+            android:paddingBottom="@dimen/cb_space_sm"
+            android:textColor="@color/cb_ink"
+            android:textColorHint="@color/cb_slate"
+            android:textSize="@dimen/cb_text_label" />
+    </LinearLayout>
+
+    <!-- No-results state. Without this a filter with no match renders an empty
+         grid and gives the user nothing to undo. -->
+    <LinearLayout
+        android:id="@+id/empty_state"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:layout_marginTop="@dimen/cb_space_xl"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:visibility="gone">
+
+        <TextView
+            android:id="@+id/empty_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/cb_ink"
+            android:textSize="@dimen/cb_text_section"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/empty_body"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/cb_space_xs"
+            android:gravity="center"
+            android:lineSpacingExtra="3dp"
+            android:maxWidth="620dp"
+            android:textColor="@color/cb_slate"
+            android:textSize="@dimen/cb_text_label" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/cb_space_md"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/empty_clear_search"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:minHeight="@dimen/cb_target_min"
+                android:gravity="center"
+                android:layout_marginEnd="@dimen/cb_space_sm"
+                android:background="@drawable/bg_cta"
+                android:clickable="true"
+                android:focusable="true"
+                android:focusableInTouchMode="true"
+                android:paddingStart="@dimen/cb_space_lg"
+                android:paddingEnd="@dimen/cb_space_lg"
+                android:paddingTop="@dimen/cb_space_sm"
+                android:paddingBottom="@dimen/cb_space_sm"
+                android:text="@string/empty_clear_search"
+                android:textColor="@color/cb_cta_ink"
+                android:textSize="@dimen/cb_text_body"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/empty_clear_filter"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:minHeight="@dimen/cb_target_min"
+                android:gravity="center"
+                android:background="@drawable/bg_ghost"
+                android:clickable="true"
+                android:focusable="true"
+                android:focusableInTouchMode="true"
+                android:paddingStart="@dimen/cb_space_lg"
+                android:paddingEnd="@dimen/cb_space_lg"
+                android:paddingTop="@dimen/cb_space_sm"
+                android:paddingBottom="@dimen/cb_space_sm"
+                android:text="@string/empty_clear_filter"
+                android:textColor="@color/cb_slate"
+                android:textSize="@dimen/cb_text_body"
+                android:textStyle="bold" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/grid"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginTop="@dimen/cb_space_md"
+        android:layout_weight="1"
+        android:clipToPadding="false"
+        android:nextFocusUp="@id/search" />
+</LinearLayout>

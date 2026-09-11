@@ -1,0 +1,240 @@
+package tv.corebuilds.pixelneon
+
+import android.content.Intent
+import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
+import android.view.View
+import android.widget.EditText
+import android.widget.TextView
+import androidx.activity.OnBackPressedCallback
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+
+/**
+ * Browsable grid of the Pixel Neon wallpaper collection.
+ *
+ * Catalog comes from the bundled manifest (assets/manifest/wallpapers.json), a
+ * copy of the repo's PixelNeonWallpapers/manifest.json. Thumbnails are bundled so the
+ * grid is instant; full 4K images download on demand from the preview screen.
+ *
+ * Long-press (or the header Export button's long-press hint) enters selection
+ * mode for bulk export to Pictures/CoreBuilds, where launchers like Monet can
+ * auto-rotate the folder. The header Export button also starts with all visible
+ * wallpapers selected if not already in selection mode.
+ *
+ * TV-first D-pad flow: export/back → search → series chips → grid.
+ */
+class WallpapersActivity : AppCompatActivity() {
+
+    private lateinit var all: List<Wallpaper>
+    private lateinit var adapter: WallpaperAdapter
+    private lateinit var count: TextView
+    private lateinit var search: EditText
+    private lateinit var selectionBar: View
+    private lateinit var selectionCount: TextView
+    private lateinit var exportSelected: TextView
+
+    private var series: String? = null
+    private var query = ""
+
+    private val requestStorage =
+        registerForActivityResult(ActivityResultContracts.RequestPermission()) { granted ->
+            if (granted) startExport(adapter.selectedItems()) else
+                toast(getString(R.string.wp_storage_permission_denied))
+        }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_wallpapers)
+
+        all = WallpaperCatalog.load(this)
+        count = findViewById(R.id.wp_count)
+        search = findViewById(R.id.wp_search)
+        search.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) = Unit
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) = Unit
+            override fun afterTextChanged(s: Editable?) {
+                query = s?.toString().orEmpty()
+                applyFilter()
+            }
+        })
+        selectionBar = findViewById(R.id.wp_selection_bar)
+        selectionCount = findViewById(R.id.wp_selection_count)
+        exportSelected = findViewById(R.id.wp_export_selected)
+        count.text = getString(R.string.wp_count_fmt, all.size)
+
+        adapter = WallpaperAdapter(all) { item ->
+            val visible = adapter.currentItems()
+            val index = visible.indexOfFirst { it.url == item.url }.coerceAtLeast(0)
+            startActivity(
+                Intent(this, WallpaperPreviewActivity::class.java).apply {
+                    putParcelableArrayListExtra(
+                        WallpaperPreviewActivity.EXTRA_WALLPAPERS, ArrayList(visible)
+                    )
+                    putExtra(WallpaperPreviewActivity.EXTRA_INDEX, index)
+                }
+            )
+        }
+        // Keep the action bar in sync as selection changes from the adapter's
+        // long-press/toggle path.
+        adapter.registerAdapterDataObserver(object : RecyclerView.AdapterDataObserver() {
+            override fun onChanged() = refreshSelectionUi()
+            override fun onItemRangeChanged(positionStart: Int, itemCount: Int) = refreshSelectionUi()
+            override fun onItemRangeInserted(positionStart: Int, itemCount: Int) = refreshSelectionUi()
+            override fun onItemRangeRemoved(positionStart: Int, itemCount: Int) = refreshSelectionUi()
+        })
+
+        findViewById<RecyclerView>(R.id.wp_grid).apply {
+            layoutManager = GridLayoutManager(this@WallpapersActivity, spanForScreen())
+            adapter = this@WallpapersActivity.adapter
+            setHasFixedSize(true)
+            // Same guard as the icon grid: the default change animation
+            // detaches a rebound tile and drops D-pad focus on long-press
+            // selection. The tile owns its own focus animation instead.
+            itemAnimator = null
+        }
+
+        findViewById<TextView>(R.id.wp_back).setOnClickListener {
+            if (adapter.selectionMode) exitSelectionMode() else finish()
+        }
+
+        findViewById<TextView>(R.id.wp_export).setOnClickListener { onHeaderExport() }
+        findViewById<TextView>(R.id.wp_select_all).setOnClickListener {
+            adapter.selectAll()
+            refreshSelectionUi()
+        }
+        findViewById<TextView>(R.id.wp_clear).setOnClickListener {
+            adapter.clearSelection()
+            refreshSelectionUi()
+        }
+        exportSelected.setOnClickListener {
+            val picked = adapter.selectedItems()
+            if (picked.isNotEmpty()) beginExport(picked)
+        }
+
+        bindChips()
+        bindBackNavigation()
+
+        // Deterministic starting point: the chip strip, not the search field
+        // (focusing an EditText on entry would pop the IME over the grid).
+        // Without an initial target Android can leave the menu with no
+        // highlighted control and a dead first D-pad press.
+        findViewById<RecyclerView>(R.id.wp_chips).post {
+            if (currentFocus == null || currentFocus === window.decorView) {
+                val chips = findViewById<RecyclerView>(R.id.wp_chips)
+                val firstChip = chips.layoutManager?.findViewByPosition(0)
+                (firstChip ?: chips).requestFocus()
+            }
+        }
+    }
+
+    private fun bindBackNavigation() {
+        onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                if (adapter.selectionMode) exitSelectionMode() else finish()
+            }
+        })
+    }
+
+    private fun onHeaderExport() {
+        if (!adapter.selectionMode) {
+            // First press: select everything currently visible and enter mode.
+            adapter.enterSelectionMode()
+            adapter.selectAll()
+            refreshSelectionUi()
+            exportSelected.requestFocus()
+        } else {
+            val picked = adapter.selectedItems()
+            if (picked.isNotEmpty()) beginExport(picked)
+        }
+    }
+
+    private fun exitSelectionMode() {
+        adapter.exitSelectionMode()
+        refreshSelectionUi()
+        findViewById<TextView>(R.id.wp_export).requestFocus()
+    }
+
+    private fun refreshSelectionUi() {
+        val inMode = adapter.selectionMode
+        selectionBar.visibility = if (inMode) View.VISIBLE else View.GONE
+        val n = adapter.selectedCount()
+        selectionCount.text = getString(R.string.wp_selected_fmt, n)
+        exportSelected.isEnabled = n > 0
+        exportSelected.alpha = if (n > 0) 1f else 0.5f
+        if (inMode) {
+            exportSelected.text = getString(R.string.wp_export_n_fmt, n)
+        }
+        count.text = if (inMode) {
+            getString(R.string.wp_selected_fmt, n)
+        } else if (adapter.itemCount == all.size) {
+            getString(R.string.wp_count_fmt, all.size)
+        } else {
+            getString(R.string.wp_filter_fmt, adapter.itemCount, all.size)
+        }
+    }
+
+    private fun bindChips() {
+        val present = all.map { it.series }.distinct()
+        val labels = mutableListOf(getString(R.string.chip_all))
+        val keys = mutableListOf<String?>(null)
+        for (s in present) {
+            labels += WallpaperCatalog.seriesLabel(s)
+            keys += s
+        }
+        findViewById<RecyclerView>(R.id.wp_chips).apply {
+            layoutManager = LinearLayoutManager(
+                this@WallpapersActivity, LinearLayoutManager.HORIZONTAL, false
+            )
+            // The main screen sets this on its chip row. Without it, the
+            // default RecyclerView change animation replaces the pressed chip
+            // with a fresh ViewHolder and drops the D-pad highlight on press.
+            itemAnimator = null
+            adapter = WallpaperChipAdapter(labels, keys, null) { key ->
+                series = key
+                applyFilter()
+            }
+        }
+    }
+
+    private fun applyFilter() {
+        val q = query.trim().lowercase()
+        val filtered = all.filter { item ->
+            val seriesOk = series == null || item.series == series
+            val searchText = "${item.name} ${item.title} ${item.series}".lowercase()
+            seriesOk && (q.isEmpty() || searchText.contains(q))
+        }
+        adapter.submit(filtered)
+        refreshSelectionUi()
+    }
+
+    private fun beginExport(wallpapers: List<Wallpaper>) {
+        val perm = WallpaperSetter.storagePermission()
+        if (perm != null && !WallpaperSetter.hasStoragePermission(this)) {
+            requestStorage.launch(perm)
+            return
+        }
+        startExport(wallpapers)
+    }
+
+    private fun startExport(wallpapers: List<Wallpaper>) {
+        val arr = ArrayList(wallpapers)
+        startActivity(
+            Intent(this, ExportProgressActivity::class.java).apply {
+                putParcelableArrayListExtra(ExportProgressActivity.EXTRA_WALLPAPERS, arr)
+            }
+        )
+    }
+
+    private fun spanForScreen(): Int {
+        val dp = resources.configuration.screenWidthDp
+        return (dp / 220).coerceIn(3, 6)
+    }
+
+    private fun toast(msg: String) =
+        android.widget.Toast.makeText(this, msg, android.widget.Toast.LENGTH_LONG).show()
+}

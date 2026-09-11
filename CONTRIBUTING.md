@@ -10,6 +10,8 @@ pip install -r tools/requirements.txt   # needs libcairo2 on Linux
 
 That's the whole toolchain for asset work. Building the APK additionally needs JDK 17 + the Android SDK.
 
+**Codespaces / Dev Containers.** Two configs live in [`.devcontainer/`](.devcontainer/README.md). The default (**Python**) is python 3.12, Node 22, GitHub CLI, and Cairo — enough for the catalog, validators, and `cd ticker && npm test`. Switch to **Android** for JDK 17 + the command-line SDK (`assembleDebug`). There is no emulator; `device-check.yml` stays in Actions. Do not copy the release keystore into a codespace.
+
 ## Adding an icon
 
 1. Find the component name on a device that has the app:
@@ -43,6 +45,25 @@ That's the whole toolchain for asset work. Building the APK additionally needs J
 
 Multiple components per icon is normal and encouraged — Fire TV, mobile variants, and regional forks often expose different activities.
 
+## Requesting an icon instead
+
+An app you cannot map yourself belongs in an issue form, not a PR. Both forms are
+deep-linked in the README — right template, title prefix and label, plus field values —
+and those links are generated, so never hand-edit an `issues/new?...` URL in
+`README.md`:
+
+```bash
+python tools/build_issue_prefills.py            # rewrite the README block
+python tools/build_issue_prefills.py --check     # what Suite CI runs
+python tools/build_issue_prefills.py --app Stremio --template 2.icon_not_applying.yml \
+    --component com.stremio.one/com.stremio.tv.MainActivity
+```
+
+The generator reads `.github/ISSUE_TEMPLATE/*.yml`, so a new field shows up in the
+README table by itself. GitHub prefills `input` and `textarea` fields only, and the
+tool refuses to promise anything more: a required dropdown or a confirm box cannot be
+answered from a URL, so no link pretends to have answered it.
+
 ## Adding a glyph
 
 Add a function to `tools/glyphs.py` and register it in the `GLYPHS` dict:
@@ -59,7 +80,7 @@ Constraints, all enforced by review:
 | --- | --- |
 | Canvas | 512 × 512 |
 | Safe area | 432 (40px margin) |
-| Default stroke | 34 (never below 26) |
+| Primary stroke | 32 (detail 26.2 / 21.8) |
 | Caps and joins | round |
 | Fill | one flat accent colour, no gradients |
 | Geometry | **original** — never trace a vendor logo |
