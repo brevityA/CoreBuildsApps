@@ -243,14 +243,20 @@ def layout_ids(path: Path) -> set[str]:
 
 
 def main() -> int:
+    """Run every check over every module, then report all failures at once.
+
+    Each module is checked against its own resources and the Kotlin it
+    actually compiles, so a module that forks the shared source tree is held
+    to its own `res/` rather than a sibling's.
+    """
     all_ids: dict[str, set[str]] = {}
     # Every file the loop below visits, parsed or not, so the focus pass can
     # tell "already reported" from "not seen" without double-reporting.
     # Tracking only the successful parses would report each malformed file
     # twice.
     visited: set[Path] = set()
-    for mod, (main, kotlin) in MODULES.items():
-        res = main / "res"
+    for mod, (module_root, kotlin) in MODULES.items():
+        res = module_root / "res"
         if not res.is_dir():
             fail(f"{mod}: no res/ tree")
             continue
