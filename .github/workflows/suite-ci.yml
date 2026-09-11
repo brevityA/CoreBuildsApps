@@ -85,7 +85,7 @@ jobs:
           distribution: temurin
           java-version: '17'
       - uses: android-actions/setup-android@v3
-      - uses: gradle/actions/setup-gradle@v4
+      - uses: gradle/actions/setup-gradle@v6
       - name: Verify tracked workflow/build files exist
         run: |
           test -f "${{ matrix.gradle }}"
