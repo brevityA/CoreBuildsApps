@@ -11,8 +11,22 @@ android {
         applicationId = "tv.corebuilds.iconpack"
         minSdk = 21
         targetSdk = 34
-        versionCode = 15
-        versionName = "1.8.2"
+        versionCode = 22
+        versionName = "1.8.12"
+
+        // Read by the shared updater code, which :pop also compiles. Values
+        // are the classic pack's existing ones, so behaviour is unchanged.
+        buildConfigField(
+            "String",
+            "UPDATE_AUTHORITY",
+            "\"tv.corebuilds.iconpack.update\"",
+        )
+        buildConfigField(
+            "String",
+            "UPDATE_MANIFEST_URL",
+            "\"https://raw.githubusercontent.com/brevityA/CoreBuildsApps/" +
+                "main/Latestrelease/version.json\"",
+        )
     }
 
     signingConfigs {

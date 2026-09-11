@@ -4,6 +4,7 @@ on:
   push:
     tags:
       - 'iconpack-v*'
+      - 'pixel-neon-v*'
       - 'coreline-v*'
       - 'shift-v*'
       - 'doctor-v*'
@@ -15,7 +16,7 @@ on:
         type: choice
         required: true
         default: coreline
-        options: [iconpack, coreline, coreshift, coredoctor, coremotion]
+        options: [iconpack, pixelneon, coreline, coreshift, coredoctor, coremotion]
       publish:
         description: Publish GitHub Release assets (false = dry-run artifacts only)
         type: boolean
@@ -39,6 +40,7 @@ jobs:
           else
             case "${GITHUB_REF_NAME}" in
               iconpack-v*) echo "app=iconpack" >> "$GITHUB_OUTPUT" ;;
+              pixel-neon-v*) echo "app=pixelneon" >> "$GITHUB_OUTPUT" ;;
               coreline-v*) echo "app=coreline" >> "$GITHUB_OUTPUT" ;;
               shift-v*) echo "app=coreshift" >> "$GITHUB_OUTPUT" ;;
               doctor-v*) echo "app=coredoctor" >> "$GITHUB_OUTPUT" ;;
@@ -86,6 +88,7 @@ jobs:
           set -euo pipefail
           case "${{ needs.select.outputs.app }}" in
             iconpack) DIR=. ; APK=app/build/outputs/apk/release/*.apk ; AAB=app/build/outputs/bundle/release/*.aab ; OUT=iconpack-release.apk ;;
+            pixelneon) DIR=pixel-neon ; APK=pixel-neon/app/build/outputs/apk/release/*.apk ; AAB=pixel-neon/app/build/outputs/bundle/release/*.aab ; OUT=pixel-neon-release.apk ;;
             coreline) DIR=ticker/android ; APK=ticker/android/app/build/outputs/apk/release/*.apk ; AAB=ticker/android/app/build/outputs/bundle/release/*.aab ; OUT=coreline-release.apk ;;
             coreshift) DIR=shift ; APK=shift/app/build/outputs/apk/release/*.apk ; AAB=shift/app/build/outputs/bundle/release/*.aab ; OUT=coreshift-release.apk ;;
             coredoctor) DIR=doctor ; APK=doctor/app/build/outputs/apk/release/*.apk ; AAB=doctor/app/build/outputs/bundle/release/*.aab ; OUT=coredoctor-release.apk ;;
@@ -102,15 +105,16 @@ jobs:
           APK=$(ls dist/*-release.apk)
           "$ANDROID_HOME/build-tools/35.0.0/apksigner" verify --print-certs "$APK"
       - name: Generate updater metadata with SHA-256
-        if: contains('iconpack coreline coreshift', needs.select.outputs.app)
+        if: contains('iconpack pixelneon coreline coreshift', needs.select.outputs.app)
         run: |
           python tools/generate_release_metadata.py "${{ needs.select.outputs.app }}" --apk dist/*-release.apk --out dist/update-metadata.json
       - name: Sync updater metadata back to main
-        if: needs.select.outputs.publish == 'true' && contains('iconpack coreline coreshift', needs.select.outputs.app)
+        if: needs.select.outputs.publish == 'true' && contains('iconpack pixelneon coreline coreshift', needs.select.outputs.app)
         run: |
           set -euo pipefail
           case "${{ needs.select.outputs.app }}" in
             iconpack) META=Latestrelease/version.json ;;
+            pixelneon) META=Latestrelease/pixel-neon-version.json ;;
             coreline) META=Latestrelease/coreline-version.json ;;
             coreshift) META=Latestrelease/shift-version.json ;;
           esac

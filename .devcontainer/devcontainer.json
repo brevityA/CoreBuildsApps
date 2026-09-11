@@ -1,0 +1,43 @@
+{
+  "name": "Core Builds · Python",
+  "image": "mcr.microsoft.com/devcontainers/base:ubuntu-24.04",
+  "features": {
+    "ghcr.io/devcontainers/features/common-utils:2": {
+      "installZsh": false,
+      "upgradePackages": true
+    },
+    "ghcr.io/devcontainers/features/python:1": {
+      "version": "3.12",
+      "installTools": false
+    },
+    "ghcr.io/devcontainers/features/node:1": {
+      "version": "22"
+    },
+    "ghcr.io/devcontainers/features/github-cli:1": {
+      "version": "latest"
+    },
+    "./features/cairo": {}
+  },
+  "postCreateCommand": "pip3 install --user -r tools/requirements.txt && python3 tools/check_suite_truth.py",
+  "waitFor": "postCreateCommand",
+  "hostRequirements": {
+    "cpus": 2,
+    "memory": "8gb",
+    "storage": "32gb"
+  },
+  "remoteUser": "vscode",
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "ms-python.python",
+        "ms-python.vscode-pylance"
+      ],
+      "settings": {
+        "python.defaultInterpreterPath": "python3"
+      }
+    },
+    "codespaces": {
+      "openFiles": ["CONTRIBUTING.md", ".devcontainer/README.md"]
+    }
+  }
+}

@@ -24,10 +24,10 @@ import java.util.concurrent.Executors
 object UpdateChecker {
 
     private const val TAG = "CoreBuildsUpdate"
-    private val MANIFEST_URLS = listOf(
-        "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/" +
-            "main/Latestrelease/version.json"
-    )
+    // Each pack polls its own manifest. Supplied by the module that is
+    // building, so :pop can never tell a user they are out of date because
+    // the classic pack shipped a release.
+    private val MANIFEST_URLS = listOf(BuildConfig.UPDATE_MANIFEST_URL)
     private const val TIMEOUT_MS = 8000
     private const val MAX_MANIFEST_BYTES = 64 * 1024
 
@@ -95,6 +95,16 @@ object UpdateChecker {
                 val icons = json.optInt("iconCount", 0)
                 val apk = json.optString("apkUrl", "")
                 val sha256 = json.optString("apkSha256", "").takeIf { it.isNotBlank() }
+                require(remoteCode > 0) { "update manifest has invalid versionCode" }
+                require(icons >= 0) { "update manifest has invalid iconCount" }
+                require(apk.startsWith("https://github.com/brevityA/CoreBuildsApps/releases/download/")) {
+                    "update manifest APK URL is not an approved release URL"
+                }
+                if (sha256 != null) {
+                    require(sha256.matches(Regex("[A-Fa-f0-9]{64}"))) {
+                        "update manifest SHA-256 is invalid"
+                    }
+                }
 
                 Log.i(TAG, "installed=$installedCode remote=$remoteCode from $url")
 

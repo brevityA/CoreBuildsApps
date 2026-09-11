@@ -72,17 +72,20 @@ def _line_paths(text, size, x, baseline, font_path):
     return ds, cursor - x
 
 
-def wordmark_spans(lines, size, tx, baselines, fill):
+def wordmark_spans(lines, size, tx, baselines, fill, font_path=None):
     """
     Path-based wordmark, same layout the old <text> block used.
 
     Returns (svg_markup, ink_width) so the banner lockup can be measured
     without relying on a host font.
+
+    `font_path` defaults to Outfit Bold, which is what every app banner uses.
+    The pack's own Leanback banner passes the mono face for its strapline.
     """
     parts = []
     max_w = 0.0
     for line, baseline in zip(lines, baselines):
-        ds, w = _line_paths(line, size, tx, baseline, FONT_WORDMARK)
+        ds, w = _line_paths(line, size, tx, baseline, font_path or FONT_WORDMARK)
         max_w = max(max_w, w)
         for d in ds:
             parts.append(f'<path d="{d}" fill="{fill}" stroke="none"/>')
@@ -181,6 +184,60 @@ def monogram_text(text, color):
         d = pen.getCommands()
         if d:
             out.append(f'<path d="{d}" fill="{color}" stroke="none"/>')
+    return "".join(out)
+
+
+def monogram_outline(text, color, cap_h=210, weight=20, max_width=296):
+    """Stroked (open-ink) version of `monogram_text` for the monoline pack.
+
+    Same optical placement as the filled monograms, but each contour is
+    emitted as an outline stroke instead of a fill, so it satisfies the
+    core_monoline contract (no solid fills, one accent, round caps). Used by
+    marks whose brand cue is a numeral lockup (e.g. France 24's '24').
+    """
+    font = _font(str(FONT_MONOGRAM))
+    glyphset = font.getGlyphSet()
+    cmap = _cmap(font)
+    upem = font["head"].unitsPerEm
+
+    cursor = 0.0
+    pieces = []
+    xmin = ymin = 1e9
+    xmax = ymax = -1e9
+    for ch in text:
+        name = cmap.get(ord(ch), ".notdef")
+        glyph = glyphset[name]
+        bounds = BoundsPen(glyphset)
+        glyph.draw(bounds)
+        if bounds.bounds:
+            bx0, by0, bx1, by1 = bounds.bounds
+            xmin = min(xmin, cursor + bx0)
+            ymin = min(ymin, by0)
+            xmax = max(xmax, cursor + bx1)
+            ymax = max(ymax, by1)
+        pieces.append((glyph, cursor))
+        cursor += glyph.width
+
+    gw, gh = xmax - xmin, ymax - ymin
+    if gw <= 0 or gh <= 0:
+        return ""
+    scale = cap_h / gh
+    if gw * scale > max_width:
+        scale = max_width / gw
+    cx, cy = GRID / 2, GRID / 2
+    ink_cx, ink_cy = (xmin + xmax) / 2, (ymin + ymax) / 2
+    out = []
+    for glyph, origin in pieces:
+        xf = Transform(scale, 0, 0, -scale,
+                       cx - (ink_cx - origin) * scale,
+                       cy + ink_cy * scale)
+        pen = SVGPathPen(glyphset)
+        glyph.draw(TransformPen(pen, xf))
+        d = pen.getCommands()
+        if d:
+            out.append(f'<path d="{d}" fill="none" stroke="{color}" '
+                       f'stroke-width="{weight}" stroke-linecap="round" '
+                       f'stroke-linejoin="round"/>')
     return "".join(out)
 
 

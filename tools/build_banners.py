@@ -14,9 +14,9 @@ language. What was measured from their pack, over a 150-icon sample:
     composition     glyph + wordmark side by side, or wordmark alone
 
 Those are their structural rules and they are sound for a 10-foot UI. What we
-do NOT copy is the art: their icons are official third-party logos placed
-as-is. Ours are original geometry in the Core Builds icon language — simple
-shapes, rounded ends, one accent colour per app (Brand Guide §07).
+keep is the Core Builds identity: original rounded-line glyphs, one accent,
+one Outfit label/category/rail lockup. Vendor artwork is reference material,
+not a second icon style. Colour and provenance remain in tools/catalog.json.
 
 No pack branding appears on any banner. Their DAZN icon is just DAZN; a
 "CORE BUILDS" label on someone else's card is noise. The brand reads through
@@ -34,6 +34,7 @@ from pathlib import Path
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from glyphs import GLYPHS, monoline  # noqa: E402
+from icon_style import display_accent  # noqa: E402
 from typeface import FONT_WORDMARK, measure as type_measure, wordmark_spans  # noqa: E402
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -150,19 +151,20 @@ def hex_host(cx, cy, r, color):  # retired in style AA
             f'stroke-linejoin="round"/>')
 
 
-def render(name, glyph, accent, category=None):
+def render(name, glyph, accent, category=None, *, monochrome=False):
     """
     Centred glyph + wordmark, with the Core Builds signature:
 
       * a cyan->violet rail on the left edge (concept H)
       * an uppercase mono category kicker above the name (concept H)
-      * the glyph's own halo, already applied by lit() (concept D)
+      * the same single-accent rounded-line glyph as the square icon
 
     Concepts E/G/I were rejected: their signal lives in the card BACKGROUND,
     which we do not own — these PNGs are transparent and Projectivy draws
-    whatever colour the user picked behind them. Rail, kicker and halo are
+    whatever colour the user picked behind them. Rail, kicker and glyph are
     all drawn ink, so they survive any card colour.
     """
+    accent = display_accent(accent, monochrome=monochrome)
     lines = split_name(name)
     size = fit_type(lines)
     text_w = max(_measure(l, size) for l in lines)
@@ -212,8 +214,9 @@ def render(name, glyph, accent, category=None):
     )
 
 
-def render_glyph_only(glyph, accent):
+def render_glyph_only(glyph, accent, *, monochrome=False):
     """Mark-only variant — used when a name adds nothing (e.g. Core Builds)."""
+    accent = display_accent(accent, monochrome=monochrome)
     box = 380
     scale = box / 512
     return (
@@ -275,11 +278,12 @@ def main():
 
     SVG_DIR.mkdir(parents=True, exist_ok=True)
     for i in targets:
+        mono = i.get("color_note") == "monochrome"
         if i.get("banner_style") == "glyph":
-            svg = render_glyph_only(i["glyph"], i["color"])
+            svg = render_glyph_only(i["glyph"], i["color"], monochrome=mono)
         else:
             svg = render(i["name"], i["glyph"], i["color"],
-                         i.get("category"))
+                         i.get("category"), monochrome=mono)
             svg = recentre(svg)
         (SVG_DIR / f"{i['drawable']}.svg").write_text(svg, encoding="utf-8")
     print(f"\u2713 banner SVGs written ({len(targets)}/{len(targets)}) "

@@ -6,6 +6,7 @@ from pathlib import Path
 
 APPS = {
   'iconpack': {'gradle':'app/build.gradle.kts','metadata':'Latestrelease/version.json','apk':'iconpack-release.apk','tag':'iconpack','minSdk':21},
+  'pixelneon': {'gradle':'pixel-neon/app/build.gradle.kts','metadata':'Latestrelease/pixel-neon-version.json','apk':'pixel-neon-release.apk','tag':'pixel-neon','minSdk':21},
   'coreline': {'gradle':'ticker/android/app/build.gradle.kts','metadata':'Latestrelease/coreline-version.json','apk':'coreline-release.apk','tag':'coreline','minSdk':24},
   'coreshift': {'gradle':'shift/app/build.gradle.kts','metadata':'Latestrelease/shift-version.json','apk':'coreshift-release.apk','tag':'shift','minSdk':26},
 }

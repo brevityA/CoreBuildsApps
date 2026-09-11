@@ -1,0 +1,156 @@
+{
+  "source_url": "https://downloads.nobuffr.com/android/nobuffr.apk",
+  "retrieved_at": "2026-09-08T06:08:02+00:00",
+  "apk_sha256": "ec835a672087b5cb56700ddc3ed4e050519f5829d10e86800d5506d79afda5bf",
+  "apk_bytes": 33628207,
+  "app_name": "NoBuffr",
+  "package": "com.nobuffr.app",
+  "version_name": "1.0.0",
+  "version_code": 210246,
+  "verification": "Static manifest/resource inspection only; not installed or device-tested.",
+  "launchers": [
+    {
+      "component": "com.nobuffr.app/tv.tivitime.compose.app.AppActivity",
+      "kind": "activity",
+      "categories": [
+        "android.intent.category.LAUNCHER",
+        "android.intent.category.LEANBACK_LAUNCHER"
+      ]
+    }
+  ],
+  "application_artwork": {
+    "icon": "@7F0F0001",
+    "banner": "@7F0F0000"
+  },
+  "resolved_artwork_values": {
+    "@7F0F0001": [
+      "res/BW.xml",
+      "res/MO.webp",
+      "res/Sn.webp",
+      "res/d2.webp",
+      "res/qs.webp",
+      "res/sK.webp"
+    ],
+    "@7F0F0002": [
+      "res/ER.webp",
+      "res/ak.webp",
+      "res/du.webp",
+      "res/eg.webp",
+      "res/y5.webp"
+    ],
+    "@7F0F0003": [
+      "res/13.webp",
+      "res/5c.webp",
+      "res/9Q.webp",
+      "res/Nt.webp",
+      "res/iE.webp"
+    ],
+    "@7F0F0000": [
+      "res/aC.png"
+    ]
+  },
+  "resources": [
+    {
+      "path": "res/13.webp",
+      "apk_sha256": "494d9f7682ad2eb67feebc7605b8441a43b0c33449031685676c92006011dcb9",
+      "export_sha256": "494d9f7682ad2eb67feebc7605b8441a43b0c33449031685676c92006011dcb9",
+      "decoded_binary_xml": false
+    },
+    {
+      "path": "res/5c.webp",
+      "apk_sha256": "a3421c905cdf5f4440cab04072c094806d06c77cc7ec55d30864eb045524ced5",
+      "export_sha256": "a3421c905cdf5f4440cab04072c094806d06c77cc7ec55d30864eb045524ced5",
+      "decoded_binary_xml": false
+    },
+    {
+      "path": "res/9Q.webp",
+      "apk_sha256": "9b846c7970245c5f527e1266046f2109e7650ad366e0174ba0fc414f8a0a1c6b",
+      "export_sha256": "9b846c7970245c5f527e1266046f2109e7650ad366e0174ba0fc414f8a0a1c6b",
+      "decoded_binary_xml": false
+    },
+    {
+      "path": "res/BW.xml",
+      "apk_sha256": "8f8e772806829c7fe6a03bf907fd091a65411c513cd1b028c53b6b08ba1bc278",
+      "export_sha256": "8374a6f3d278c5d591a0edb1456484bf7ba8593708ef1ba5ec5ea096650843ab",
+      "decoded_binary_xml": true
+    },
+    {
+      "path": "res/ER.webp",
+      "apk_sha256": "9399135149c0d76c725f697483eea4407f8ec5cf81305190e7287e8586cb7bd6",
+      "export_sha256": "9399135149c0d76c725f697483eea4407f8ec5cf81305190e7287e8586cb7bd6",
+      "decoded_binary_xml": false
+    },
+    {
+      "path": "res/MO.webp",
+      "apk_sha256": "78a47cd7fc3881a4714572621d6707cc2b48080a3b6523e5d78f63f560bb910d",
+      "export_sha256": "78a47cd7fc3881a4714572621d6707cc2b48080a3b6523e5d78f63f560bb910d",
+      "decoded_binary_xml": false
+    },
+    {
+      "path": "res/Nt.webp",
+      "apk_sha256": "fe7a3eae3f58abfbe83b212af644fc720599e0e4380e3d32e44ba024934b8c33",
+      "export_sha256": "fe7a3eae3f58abfbe83b212af644fc720599e0e4380e3d32e44ba024934b8c33",
+      "decoded_binary_xml": false
+    },
+    {
+      "path": "res/Sn.webp",
+      "apk_sha256": "5d0ff481ae847d75d216662dd0644823a04d426c27a8688a7adc6b9cfce78892",
+      "export_sha256": "5d0ff481ae847d75d216662dd0644823a04d426c27a8688a7adc6b9cfce78892",
+      "decoded_binary_xml": false
+    },
+    {
+      "path": "res/aC.png",
+      "apk_sha256": "441b7ac2215e816e7d7f5cb779fefc5fb485cc81d6b1b318ebb55d874520c9fe",
+      "export_sha256": "441b7ac2215e816e7d7f5cb779fefc5fb485cc81d6b1b318ebb55d874520c9fe",
+      "decoded_binary_xml": false
+    },
+    {
+      "path": "res/ak.webp",
+      "apk_sha256": "03f991f703ab2fa8c8caf90dd38cb720a627b3b214aa9d9f60fde13ff8a689b5",
+      "export_sha256": "03f991f703ab2fa8c8caf90dd38cb720a627b3b214aa9d9f60fde13ff8a689b5",
+      "decoded_binary_xml": false
+    },
+    {
+      "path": "res/d2.webp",
+      "apk_sha256": "093c1cf49a45e00ab76f92c0fdfebfb84217e7e6dd1ba7b787237eb43f40b85c",
+      "export_sha256": "093c1cf49a45e00ab76f92c0fdfebfb84217e7e6dd1ba7b787237eb43f40b85c",
+      "decoded_binary_xml": false
+    },
+    {
+      "path": "res/du.webp",
+      "apk_sha256": "2f7f8a73dc469670b163a4c02041f8d8acf686fd729a3d49627b6247df2da094",
+      "export_sha256": "2f7f8a73dc469670b163a4c02041f8d8acf686fd729a3d49627b6247df2da094",
+      "decoded_binary_xml": false
+    },
+    {
+      "path": "res/eg.webp",
+      "apk_sha256": "0d26417d4ff535fda70823ec908f197d6090d790e79e2e331df2932a4a9a9ec8",
+      "export_sha256": "0d26417d4ff535fda70823ec908f197d6090d790e79e2e331df2932a4a9a9ec8",
+      "decoded_binary_xml": false
+    },
+    {
+      "path": "res/iE.webp",
+      "apk_sha256": "8d6a2d6bbe6c86242409918355594b39f0b5cd971729a80da5bdf932b6060d12",
+      "export_sha256": "8d6a2d6bbe6c86242409918355594b39f0b5cd971729a80da5bdf932b6060d12",
+      "decoded_binary_xml": false
+    },
+    {
+      "path": "res/qs.webp",
+      "apk_sha256": "adb8ce2a78970e4beac9856dc9e27a8f3036121f6974e5af88f1e6b42ffe0a96",
+      "export_sha256": "adb8ce2a78970e4beac9856dc9e27a8f3036121f6974e5af88f1e6b42ffe0a96",
+      "decoded_binary_xml": false
+    },
+    {
+      "path": "res/sK.webp",
+      "apk_sha256": "49cd2e728bbd73ee3db2ab231e1eea30b5fc08b443a4e253f748b1a3e3a45556",
+      "export_sha256": "49cd2e728bbd73ee3db2ab231e1eea30b5fc08b443a4e253f748b1a3e3a45556",
+      "decoded_binary_xml": false
+    },
+    {
+      "path": "res/y5.webp",
+      "apk_sha256": "1e21a624981e2b03b51fc2103f6244ae3ec3b463c652b8cf61544b7d7f12e757",
+      "export_sha256": "1e21a624981e2b03b51fc2103f6244ae3ec3b463c652b8cf61544b7d7f12e757",
+      "decoded_binary_xml": false
+    }
+  ]
+}

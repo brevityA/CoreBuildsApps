@@ -1,0 +1,17 @@
+{
+  "pack": "Core Builds Pixel Neon",
+  "sourceCatalog": "tools/catalog.json",
+  "version": "0.1.0",
+  "icons": 926,
+  "wallpapers": 70,
+  "wallpaperThumbs": 70,
+  "wallpaperSource": "PixelNeonWallpapers",
+  "wallpaperStyle": "original hybrid 8-bit cyber-noir environment scenes",
+  "catalogComponents": 1101,
+  "appfilterEntries": 1665,
+  "pixelGrid": 32,
+  "uniqueSprites": 926,
+  "researchedBrandRecipes": 33,
+  "artSource": "tools/build_pixel_neon.py researched brand glyph sprite recipes",
+  "generatedBy": "tools/build_pixel_neon.py"
+}
