@@ -148,3 +148,4 @@ jobs:
           python tests/test_core_shift_screensaver.py
           python tests/test_prequel_engine.py
           python tests/test_pop.py
+          python tests/test_devcontainer.py
