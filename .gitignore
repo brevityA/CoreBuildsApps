@@ -20,3 +20,7 @@ __pycache__/
 # Device scans are per-machine, not repo state
 tools/device_scan.json
 tools/device_scan.txt
+
+# Local render venvs for the icon generators (per-machine, not repo state)
+.venv-pop/
+.venv/

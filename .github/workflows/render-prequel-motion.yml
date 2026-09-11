@@ -51,7 +51,7 @@ jobs:
   render:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - name: Check suite truth
         run: python tools/check_suite_truth.py
@@ -61,7 +61,7 @@ jobs:
           sudo apt-get update -qq
           sudo apt-get install -y -qq libgl1-mesa-dri libegl1 xvfb ffmpeg
 
-      - uses: actions/setup-python@v5
+      - uses: actions/setup-python@v7
         with:
           python-version: '3.12'
 
@@ -85,7 +85,7 @@ jobs:
       - name: Validate generated clips and feed
         run: python tools/validate_prequel_motion.py --generated Motion/prequel
 
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         with:
           name: core-motion-prequels-${{ inputs.set }}-${{ inputs.tier }}
           path: Motion/prequel/

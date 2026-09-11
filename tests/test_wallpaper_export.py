@@ -9,6 +9,7 @@ file-copy path, and the idempotency/space checks.
 """
 from __future__ import annotations
 
+import json
 import re
 import unittest
 from pathlib import Path
@@ -76,6 +77,23 @@ class ResourceTests(unittest.TestCase):
     def test_item_wallpaper_has_selection_ring(self):
         xml = read("app/src/main/res/layout/item_wallpaper.xml")
         self.assertIn("wp_selected_ring", xml)
+
+    def test_item_wallpaper_root_is_the_focus_target(self):
+        """D-pad highlight and OK must land on the same view as the click
+        listener (itemView). Nested focusable cards split those two, so the
+        cyan ring never tracked the focused tile and centre-press did nothing.
+        """
+        ns = "{http://schemas.android.com/apk/res/android}"
+        root = ET.fromstring(read("app/src/main/res/layout/item_wallpaper.xml"))
+        self.assertEqual(root.get(ns + "focusable"), "true", "root must be focusable")
+        self.assertEqual(root.get(ns + "clickable"), "true", "root must be clickable")
+        self.assertEqual(root.get(ns + "background"), "@drawable/bg_card")
+        self.assertEqual(root.get(ns + "descendantFocusability"), "blocksDescendants")
+        nested = [
+            el for el in root.iter()
+            if el is not root and el.get(ns + "focusable") == "true"
+        ]
+        self.assertEqual(nested, [], "nested focusable views steal D-pad highlight")
 
 
 class KotlinWiringTests(unittest.TestCase):
@@ -180,12 +198,165 @@ class KotlinWiringTests(unittest.TestCase):
         # onBackPressed should exit selection instead of finishing when in mode.
         self.assertRegex(src, r"if\s*\(adapter\.selectionMode\)")
 
+    def test_wallpaper_chips_keep_focus_on_pick(self):
+        """notifyDataSetChanged on a chip press drops D-pad highlight — the
+        exact bug ChipAdapter already documents. Targeted notifyItemChanged
+        keeps the focused chip attached.
+        """
+        src = self.files["WallpaperChipAdapter.kt"]
+        no_block = re.sub(r"/\*.*?\*/", "", src, flags=re.DOTALL)
+        code = "\n".join(line.split("//", 1)[0] for line in no_block.splitlines())
+        self.assertNotIn("notifyDataSetChanged()", code)
+        self.assertIn("notifyItemChanged", code)
+        self.assertIn("isSelected", code)
+        self.assertIn("KEYCODE_DPAD_LEFT", code)
+        self.assertIn("wp_grid", code)
+
+    def test_wallpaper_chip_rebind_is_payload_only(self):
+        """A payload-less notifyItemChanged still triggers the default
+        RecyclerView change animation: the pressed chip is detached and
+        cross-faded with a fresh ViewHolder, dropping D-pad focus and its
+        highlight on the press that moved it. The selection rebind must carry
+        a payload so the focused ViewHolder is reused in place.
+        """
+        src = self.files["WallpaperChipAdapter.kt"]
+        self.assertRegex(src, r"notifyItemChanged\([^,]+,\s*\w*SELECTION\w*\)")
+        self.assertIn("onBindViewHolder(holder: VH, position: Int, payloads", src)
+
+    def test_wallpaper_lists_disable_change_animations(self):
+        """The main screen sets itemAnimator = null on its chip/grid lists for
+        exactly this reason. The wallpaper screen must do the same for both
+        the chip strip and the tile grid.
+        """
+        src = self.files["WallpapersActivity.kt"]
+        self.assertGreaterEqual(src.count("itemAnimator = null"), 2)
+
+    def test_wallpaper_screen_sets_initial_focus(self):
+        """The main screen's own rule: without a deterministic initial target
+        Android can leave focus on the decor view, so the wallpaper menu opens
+        with no highlighted control and the first D-pad press does nothing.
+        The first chip ("All") must take focus once it is laid out.
+        """
+        src = self.files["WallpapersActivity.kt"]
+        self.assertIn("findViewByPosition(0)", src)
+        self.assertRegex(src, r"\(firstChip \?[:] chips\)\.requestFocus\(\)")
+
+    def test_wallpaper_tile_requests_item_focus(self):
+        src = self.files["WallpaperAdapter.kt"]
+        self.assertIn("itemView.isFocusable = true", src)
+        self.assertIn("setOnFocusChangeListener", src)
+
+    def test_preview_extracts_seed_palette(self):
+        src = self.files["WallpaperPreviewActivity.kt"]
+        self.assertIn("WallpaperSeed.from", src)
+        self.assertIn("paintSeed", src)
+        self.assertIn("seed_row", src)
+        seed = (KT / "WallpaperSeed.kt").read_text(encoding="utf-8")
+        self.assertIn("WallpaperColors.fromBitmap", seed)
+        self.assertNotIn("com.google.android.material", seed)
+        self.assertNotIn("DynamicColors", seed)
+
+    def test_seed_chips_are_not_focusable(self):
+        """Seed chips are a readout, not a control. A focusable chip would
+        steal D-pad from Back/Save/Set the same way nested wallpaper tiles
+        used to steal OK from the card root.
+        """
+        ns = "{http://schemas.android.com/apk/res/android}"
+        xml = read("app/src/main/res/layout/activity_wallpaper_preview.xml")
+        root = ET.fromstring(xml)
+        self.assertIn("seed_row", xml)
+        self.assertIn("wp_seed_label", xml)
+        chips = []
+        row = None
+        for el in root.iter():
+            vid = (el.get(ns + "id") or "").split("/")[-1]
+            if vid == "seed_row":
+                row = el
+                self.assertEqual(el.get(ns + "descendantFocusability"),
+                                 "blocksDescendants")
+                self.assertEqual(el.get(ns + "visibility"), "gone")
+            if vid.startswith("seed_") and vid[-1].isdigit():
+                chips.append(el)
+                self.assertNotEqual(el.get(ns + "focusable"), "true", vid)
+                self.assertNotEqual(el.get(ns + "clickable"), "true", vid)
+        self.assertEqual(len(chips), 5, "five seed swatches")
+        self.assertIsNotNone(row)
+        for key in (
+            "wp_seed_label", "wp_seed_desc",
+        ):
+            self.assertRegex(
+                read("app/src/main/res/values/strings.xml"),
+                rf'<string name="{key}"',
+            )
+            self.assertRegex(
+                read("pop/src/main/res/values/strings.xml"),
+                rf'<string name="{key}"',
+            )
+            self.assertRegex(
+                read("pixel-neon/app/src/main/res/values/strings.xml"),
+                rf'<string name="{key}"',
+            )
+
+    def test_pixel_neon_preview_mirrors_seed_wiring(self):
+        neon = ROOT / "pixel-neon/app/src/main"
+        preview = (neon / "java/tv/corebuilds/pixelneon/WallpaperPreviewActivity.kt"
+                   ).read_text(encoding="utf-8")
+        self.assertIn("package tv.corebuilds.pixelneon", preview)
+        self.assertIn("WallpaperSeed.from", preview)
+        self.assertIn("seed_row", preview)
+        seed = (neon / "java/tv/corebuilds/pixelneon/WallpaperSeed.kt"
+                ).read_text(encoding="utf-8")
+        self.assertIn("package tv.corebuilds.pixelneon", seed)
+        self.assertIn("WallpaperColors.fromBitmap", seed)
+        layout = (neon / "res/layout/activity_wallpaper_preview.xml").read_text()
+        self.assertIn("seed_row", layout)
+        self.assertIn("cb_seed_swatch", layout)
+        dimens = (neon / "res/values/dimens.xml").read_text()
+        self.assertIn("cb_seed_swatch", dimens)
+
+    def test_wallpaper_tile_selection_keeps_focus(self):
+        """Long-press selection toggles the focused tile. A payload-less
+        notifyItemChanged there detaches the tile under the D-pad, so the
+        focus ring and the selection frame can never show together.
+        """
+        src = self.files["WallpaperAdapter.kt"]
+        self.assertRegex(
+            src, re.compile(r"notifyItemChanged\(.*?SELECTION_PAYLOAD\s*\)", re.DOTALL)
+        )
+        self.assertIn("onBindViewHolder(holder: VH, position: Int, payloads", src)
+        # Selection-mode sweeps reuse holders in place via payload too.
+        self.assertIn("notifyItemRangeChanged(0, itemCount, SELECTION_PAYLOAD)", src)
+
 
 class VersionTests(unittest.TestCase):
-    def test_version_bumped_to_182(self):
+    """The pack still ships what this feature needs, and the version moves up.
+
+    This used to pin `versionCode = 15` / `versionName = "1.8.2"` verbatim, which
+    turned every release into a test edit and made the suite fail for the wrong
+    reason — shipping a newer version is not a regression. What actually matters
+    here is that the release carrying export is still the floor, so an APK built
+    from this tree can do the thing under test. Gradle, suite.json, the catalog,
+    and `Latestrelease/version.json` are kept in lockstep by
+    `tools/check_suite_truth.py`, which is the right place for exact equality.
+    """
+
+    # v1.7.2 introduced multi-select export (CHANGELOG), versionCode 12.
+    EXPORT_CODE = 12
+    EXPORT_NAME = (1, 7, 2)
+
+    def _version(self):
         gradle = read("app/build.gradle.kts")
-        self.assertIn('versionCode = 15', gradle)
-        self.assertIn('versionName = "1.8.2"', gradle)
+        code = int(re.search(r"versionCode\s*=\s*(\d+)", gradle).group(1))
+        name = tuple(int(x) for x in
+                     re.search(r'versionName\s*=\s*"([0-9.]+)"', gradle).group(1).split("."))
+        return code, name
+
+    def test_version_is_at_or_above_the_export_release(self):
+        code, name = self._version()
+        self.assertGreaterEqual(code, self.EXPORT_CODE,
+                                "versionCode went below the release that shipped export")
+        self.assertGreaterEqual(name, self.EXPORT_NAME,
+                                "versionName went below the release that shipped export")
 
     def test_version_json_matches_gradle(self):
         import json

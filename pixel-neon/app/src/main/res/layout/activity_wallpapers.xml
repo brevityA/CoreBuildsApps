@@ -1,0 +1,251 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Wallpapers browser. Same night chrome, kicker and title treatment as the
+     main screen so the two surfaces read as one app (Brand Guide §05).
+     Metrics come from values/dimens.xml. -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/cb_night"
+    android:orientation="vertical"
+    android:paddingStart="@dimen/cb_gutter_side"
+    android:paddingEnd="@dimen/cb_gutter_side"
+    android:paddingTop="@dimen/cb_gutter_top"
+    android:paddingBottom="@dimen/cb_gutter_bottom">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="top"
+        android:orientation="horizontal">
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/bg_chip"
+                android:fontFamily="monospace"
+                android:letterSpacing="0.18"
+                android:paddingStart="@dimen/cb_space_sm"
+                android:paddingTop="7dp"
+                android:paddingEnd="@dimen/cb_space_sm"
+                android:paddingBottom="7dp"
+                android:text="@string/wp_kicker"
+                android:textColor="@color/cb_signal_cyan"
+                android:textSize="@dimen/cb_text_kicker"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/cb_space_md"
+                android:letterSpacing="-0.025"
+                android:text="@string/wp_title"
+                android:textColor="@color/cb_ink"
+                android:textSize="@dimen/cb_text_display"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/wp_count"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/cb_space_xs"
+                android:fontFamily="monospace"
+                android:letterSpacing="0.02"
+                android:textColor="@color/cb_slate"
+                android:textSize="@dimen/cb_text_data" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="end"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/wp_export"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:minWidth="@dimen/cb_button_min_width"
+                android:minHeight="@dimen/cb_target_min"
+                android:gravity="center"
+                android:background="@drawable/bg_cta"
+                android:clickable="true"
+                android:focusable="true"
+                android:focusableInTouchMode="true"
+                android:nextFocusDown="@id/wp_back"
+                android:paddingStart="@dimen/cb_space_lg"
+                android:paddingTop="@dimen/cb_space_sm"
+                android:paddingEnd="@dimen/cb_space_lg"
+                android:paddingBottom="@dimen/cb_space_sm"
+                android:text="@string/wp_export"
+                android:textColor="@color/cb_cta_ink"
+                android:textSize="@dimen/cb_text_body"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/wp_back"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/cb_space_xs"
+                android:minWidth="@dimen/cb_button_min_width"
+                android:minHeight="@dimen/cb_target_min"
+                android:gravity="center"
+                android:background="@drawable/bg_ghost"
+                android:clickable="true"
+                android:focusable="true"
+                android:focusableInTouchMode="true"
+                android:nextFocusUp="@id/wp_export"
+                android:nextFocusDown="@id/wp_selection_bar"
+                android:paddingStart="@dimen/cb_space_lg"
+                android:paddingTop="@dimen/cb_space_sm"
+                android:paddingEnd="@dimen/cb_space_lg"
+                android:paddingBottom="@dimen/cb_space_sm"
+                android:text="@string/wp_back"
+                android:textColor="@color/cb_slate"
+                android:textSize="@dimen/cb_text_body"
+                android:textStyle="bold" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <!-- Contextual selection bar: hidden until the user long-presses a tile.
+         Back exits selection mode; Export N starts the export. -->
+    <LinearLayout
+        android:id="@+id/wp_selection_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/cb_space_sm"
+        android:descendantFocusability="afterDescendants"
+        android:focusable="true"
+        android:gravity="center_vertical"
+        android:nextFocusUp="@id/wp_back"
+        android:nextFocusDown="@id/wp_search"
+        android:orientation="horizontal"
+        android:visibility="gone">
+
+        <TextView
+            android:id="@+id/wp_selection_count"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:fontFamily="monospace"
+            android:textColor="@color/cb_signal_cyan"
+            android:textSize="@dimen/cb_text_label" />
+
+        <TextView
+            android:id="@+id/wp_select_all"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/cb_space_sm"
+            android:background="@drawable/bg_chip_toggle"
+            android:minHeight="@dimen/cb_target_min"
+            android:gravity="center"
+            android:clickable="true"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            android:nextFocusUp="@id/wp_back"
+            android:nextFocusDown="@id/wp_search"
+            android:paddingStart="@dimen/cb_space_lg"
+            android:paddingTop="@dimen/cb_space_sm"
+            android:paddingEnd="@dimen/cb_space_lg"
+            android:paddingBottom="@dimen/cb_space_sm"
+            android:text="@string/wp_select_all"
+            android:textColor="@color/cb_ink"
+            android:textSize="@dimen/cb_text_label"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/wp_clear"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/cb_space_sm"
+            android:background="@drawable/bg_chip_toggle"
+            android:minHeight="@dimen/cb_target_min"
+            android:gravity="center"
+            android:clickable="true"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            android:nextFocusUp="@id/wp_back"
+            android:nextFocusDown="@id/wp_search"
+            android:paddingStart="@dimen/cb_space_lg"
+            android:paddingTop="@dimen/cb_space_sm"
+            android:paddingEnd="@dimen/cb_space_lg"
+            android:paddingBottom="@dimen/cb_space_sm"
+            android:text="@string/wp_clear"
+            android:textColor="@color/cb_ink"
+            android:textSize="@dimen/cb_text_label"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/wp_export_selected"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/bg_cta"
+            android:minHeight="@dimen/cb_target_min"
+            android:gravity="center"
+            android:clickable="true"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            android:nextFocusUp="@id/wp_back"
+            android:nextFocusDown="@id/wp_search"
+            android:paddingStart="@dimen/cb_space_lg"
+            android:paddingTop="@dimen/cb_space_sm"
+            android:paddingEnd="@dimen/cb_space_lg"
+            android:paddingBottom="@dimen/cb_space_sm"
+            android:text="@string/wp_export"
+            android:textColor="@color/cb_cta_ink"
+            android:textSize="@dimen/cb_text_label"
+            android:textStyle="bold" />
+    </LinearLayout>
+
+    <EditText
+        android:id="@+id/wp_search"
+        android:layout_width="match_parent"
+        android:layout_height="52dp"
+        android:layout_marginTop="@dimen/cb_space_sm"
+        android:background="@drawable/bg_search"
+        android:hint="@string/wp_search_hint"
+        android:imeOptions="actionDone"
+        android:inputType="text"
+        android:maxLines="1"
+        android:nextFocusDown="@id/wp_chips"
+        android:nextFocusUp="@id/wp_selection_bar"
+        android:paddingStart="@dimen/cb_space_md"
+        android:paddingEnd="@dimen/cb_space_md"
+        android:singleLine="true"
+        android:textColor="@color/cb_ink"
+        android:textColorHint="@color/cb_slate"
+        android:textSize="@dimen/cb_text_label" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/wp_chips"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/cb_space_md"
+        android:clipToPadding="false"
+        android:nextFocusUp="@id/wp_search"
+        android:nextFocusDown="@id/wp_grid"
+        android:orientation="horizontal" />
+
+    <TextView
+        android:id="@+id/wp_hint"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/cb_space_xs"
+        android:text="@string/wp_hint"
+        android:textColor="@color/cb_signal_cyan"
+        android:textSize="@dimen/cb_text_label" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/wp_grid"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginTop="@dimen/cb_space_sm"
+        android:layout_weight="1"
+        android:clipToPadding="false"
+        android:nextFocusUp="@id/wp_chips" />
+</LinearLayout>

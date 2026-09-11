@@ -1,0 +1,109 @@
+name: Pixel Neon APK
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'pixel-neon/**'
+      - 'tools/catalog.json'
+      - 'tools/build_pixel_neon.py'
+      - 'tools/build_pixel_neon_wallpapers.py'
+      - 'PixelNeonWallpapers/**'
+      - '.github/workflows/pixel-neon-apk.yml'
+  pull_request:
+    paths:
+      - 'pixel-neon/**'
+      - 'tools/catalog.json'
+      - 'tools/build_pixel_neon.py'
+      - 'tools/build_pixel_neon_wallpapers.py'
+      - 'PixelNeonWallpapers/**'
+      - '.github/workflows/pixel-neon-apk.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install pixel renderer
+        run: pip install --quiet -r tools/requirements.txt
+
+      - name: Regenerate Pixel Neon wallpaper sources
+        run: python tools/build_pixel_neon_wallpapers.py
+
+      - name: Regenerate Pixel Neon icon and app assets
+        run: python tools/build_pixel_neon.py
+
+      - name: Validate Pixel Neon mappings and raster dimensions
+        run: python tools/validate_pixel_neon.py
+
+      - name: Verify generated assets are committed
+        # Gate everything the two generators above write, the way the classic
+        # pack gates '*.png' globally. The previous scope named five paths and
+        # left out res/drawable-nodpi — the 1800+ shipping rasters — so a stale
+        # icon passed CI silently: that is how the blue `sevenplus` tile
+        # survived the v1.8.8 brand-colour remediation and shipped until
+        # v1.8.10 regenerated it. res/mipmap-* and res/layout were ungated for
+        # the same reason. An allowlist of generated paths cannot help here,
+        # because the failure mode is a path nobody remembered to add.
+        #
+        # Hand-written sources under pixel-neon/ never trip this: the check
+        # runs after the generators and reports only what they rewrote
+        # relative to the commit under test.
+        #
+        # The one exemption stays docs/preview.png: it is the only asset
+        # rendered through FreeType text, whose hinting pulls in the OS libm —
+        # pixel output legitimately varies by rasteriser stack ("PNG bytes
+        # move with the rasteriser's version"). It stays committed and
+        # human-reviewed; it is not a shipping asset. Everything else here
+        # reproduces byte-identically.
+        run: |
+          DRIFT=$(git status --porcelain -- PixelNeonWallpapers pixel-neon ':(exclude)pixel-neon/docs/preview.png' | grep -v '^?? ' || true)
+          if [ -n "$DRIFT" ]; then
+            echo "::error::Pixel Neon generated assets drift from the wallpaper/icon sources. Run: python tools/build_pixel_neon_wallpapers.py && python tools/build_pixel_neon.py"
+            # One annotation per drifted file so the diff is readable without
+            # downloading job logs.
+            while IFS= read -r line; do
+              f=$(echo "$line" | awk '{print $2}')
+              echo "::error file=$f::generated asset drift ($line)"
+            done <<< "$DRIFT"
+            echo "$DRIFT"
+            exit 1
+          fi
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Set up Android SDK
+        uses: android-actions/setup-android@v3
+
+      - name: Set up Gradle
+        uses: gradle/actions/setup-gradle@v4
+
+      - name: Build and lint debug APK
+        working-directory: pixel-neon
+        run: ./gradlew :app:lintDebug :app:testDebugUnitTest :app:assembleDebug --no-daemon --stacktrace
+
+      - name: Upload Pixel Neon debug APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: core-builds-pixel-neon-debug
+          path: pixel-neon/app/build/outputs/apk/debug/*.apk
+          if-no-files-found: error
+
+      # Published tags are handled by suite-release.yml, which signs and names
+      # the artifact pixel-neon-release.apk for the stable floating release.
+      - name: Stable release filename
+        run: echo "suite-release.yml publishes pixel-neon-release.apk"

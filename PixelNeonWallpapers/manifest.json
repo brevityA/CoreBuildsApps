@@ -1,0 +1,499 @@
+{
+  "collection": "Core Builds Pixel Neon Wallpapers",
+  "version": "1.0",
+  "author": "brevityA",
+  "brand_guide": "Core Builds Pixel Neon 8-bit Art Direction v1.0",
+  "count": 70,
+  "wallpapers": [
+    {
+      "name": "01 Raster Rise",
+      "series": "series-1-arcade-grid",
+      "url": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/PixelNeonWallpapers/series-1-arcade-grid/pixel-neon-01-raster-rise.png",
+      "thumb": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/PixelNeonWallpapers/thumbs/pixel-neon-01-raster-rise.jpg",
+      "resolution": "3840x2160"
+    },
+    {
+      "name": "02 Sunset Circuit",
+      "series": "series-1-arcade-grid",
+      "url": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/PixelNeonWallpapers/series-1-arcade-grid/pixel-neon-02-sunset-circuit.png",
+      "thumb": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/PixelNeonWallpapers/thumbs/pixel-neon-02-sunset-circuit.jpg",
+      "resolution": "3840x2160"
+    },
+    {
+      "name": "03 Vector Boulevard",
+      "series": "series-1-arcade-grid",
+      "url": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/PixelNeonWallpapers/series-1-arcade-grid/pixel-neon-03-vector-boulevard.png",
+      "thumb": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/PixelNeonWallpapers/thumbs/pixel-neon-03-vector-boulevard.jpg",
+      "resolution": "3840x2160"
+    },
+    {
+      "name": "04 Night Drive",
+      "series": "series-1-arcade-grid",
+      "url": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/PixelNeonWallpapers/series-1-arcade-grid/pixel-neon-04-night-drive.png",
+      "thumb": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/PixelNeonWallpapers/thumbs/pixel-neon-04-night-drive.jpg",
+      "resolution": "3840x2160"
+    },
+    {
+      "name": "05 Grid Runner",
+      "series": "series-1-arcade-grid",
+      "url": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/PixelNeonWallpapers/series-1-arcade-grid/pixel-neon-05-grid-runner.png",
+      "thumb": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/PixelNeonWallpapers/thumbs/pixel-neon-05-grid-runner.jpg",
+      "resolution": "3840x2160"
+    },
+    {
+      "name": "06 Vapor Skyline",
+      "series": "series-1-arcade-grid",
+      "url": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/PixelNeonWallpapers/series-1-arcade-grid/pixel-neon-06-vapor-skyline.png",
+      "thumb": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/PixelNeonWallpapers/thumbs/pixel-neon-06-vapor-skyline.jpg",
+      "resolution": "3840x2160"
+    },
+    {
+      "name": "07 Pixel Highway",
+      "series": "series-1-arcade-grid",
+      "url": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/PixelNeonWallpapers/series-1-arcade-grid/pixel-neon-07-pixel-highway.png",
+      "thumb": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/PixelNeonWallpapers/thumbs/pixel-neon-07-pixel-highway.jpg",
+      "resolution": "3840x2160"
+    },
+    {
+      "name": "08 Neon Overpass",
+      "series": "series-1-arcade-grid",
+      "url": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/PixelNeonWallpapers/series-1-arcade-grid/pixel-neon-08-neon-overpass.png",
+      "thumb": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/PixelNeonWallpapers/thumbs/pixel-neon-08-neon-overpass.jpg",
+      "resolution": "3840x2160"
+    },
+    {
+      "name": "09 Afterimage City",
+      "series": "series-1-arcade-grid",
+      "url": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/PixelNeonWallpapers/series-1-arcade-grid/pixel-neon-09-afterimage-city.png",
+      "thumb": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/PixelNeonWallpapers/thumbs/pixel-neon-09-afterimage-city.jpg",
+      "resolution": "3840x2160"
+    },
+    {
+      "name": "10 Quarter Turn",
+      "series": "series-1-arcade-grid",
+      "url": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/PixelNeonWallpapers/series-1-arcade-grid/pixel-neon-10-quarter-turn.png",
+      "thumb": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/PixelNeonWallpapers/thumbs/pixel-neon-10-quarter-turn.jpg",
+      "resolution": "3840x2160"
+    },
+    {
+      "name": "11 Lumen District",
+      "series": "series-1-arcade-grid",
+      "url": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/PixelNeonWallpapers/series-1-arcade-grid/pixel-neon-11-lumen-district.png",
+      "thumb": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/PixelNeonWallpapers/thumbs/pixel-neon-11-lumen-district.jpg",
+      "resolution": "3840x2160"
+    },
+    {
+      "name": "12 Checkpoint",
+      "series": "series-1-arcade-grid",
+      "url": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/PixelNeonWallpapers/series-1-arcade-grid/pixel-neon-12-checkpoint.png",
+      "thumb": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/PixelNeonWallpapers/thumbs/pixel-neon-12-checkpoint.jpg",
+      "resolution": "3840x2160"
+    },
+    {
+      "name": "13 Coin Op Horizon",
+      "series": "series-1-arcade-grid",
+      "url": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/PixelNeonWallpapers/series-1-arcade-grid/pixel-neon-13-coin-op-horizon.png",
+      "thumb": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/PixelNeonWallpapers/thumbs/pixel-neon-13-coin-op-horizon.jpg",
+      "resolution": "3840x2160"
+    },
+    {
+      "name": "14 Final Lap",
+      "series": "series-1-arcade-grid",
+      "url": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/PixelNeonWallpapers/series-1-arcade-grid/pixel-neon-14-final-lap.png",
+      "thumb": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/PixelNeonWallpapers/thumbs/pixel-neon-14-final-lap.jpg",
+      "resolution": "3840x2160"
+    },
+    {
+      "name": "15 Signal Rain",
+      "series": "series-2-cyber-night",
+      "url": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/PixelNeonWallpapers/series-2-cyber-night/pixel-neon-15-signal-rain.png",
+      "thumb": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/PixelNeonWallpapers/thumbs/pixel-neon-15-signal-rain.jpg",
+      "resolution": "3840x2160"
+    },
+    {
+      "name": "16 Blue Terminal",
+      "series": "series-2-cyber-night",
+      "url": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/PixelNeonWallpapers/series-2-cyber-night/pixel-neon-16-blue-terminal.png",
+      "thumb": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/PixelNeonWallpapers/thumbs/pixel-neon-16-blue-terminal.jpg",
+      "resolution": "3840x2160"
+    },
+    {
+      "name": "17 Circuit Bloom",
+      "series": "series-2-cyber-night",
+      "url": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/PixelNeonWallpapers/series-2-cyber-night/pixel-neon-17-circuit-bloom.png",
+      "thumb": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/PixelNeonWallpapers/thumbs/pixel-neon-17-circuit-bloom.jpg",
+      "resolution": "3840x2160"
+    },
+    {
+      "name": "18 Midnight Relay",
+      "series": "series-2-cyber-night",
+      "url": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/PixelNeonWallpapers/series-2-cyber-night/pixel-neon-18-midnight-relay.png",
+      "thumb": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/PixelNeonWallpapers/thumbs/pixel-neon-18-midnight-relay.jpg",
+      "resolution": "3840x2160"
+    },
+    {
+      "name": "19 Data Alley",
+      "series": "series-2-cyber-night",
+      "url": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/PixelNeonWallpapers/series-2-cyber-night/pixel-neon-19-data-alley.png",
+      "thumb": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/PixelNeonWallpapers/thumbs/pixel-neon-19-data-alley.jpg",
+      "resolution": "3840x2160"
+    },
+    {
+      "name": "20 Ghost Protocol",
+      "series": "series-2-cyber-night",
+      "url": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/PixelNeonWallpapers/series-2-cyber-night/pixel-neon-20-ghost-protocol.png",
+      "thumb": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/PixelNeonWallpapers/thumbs/pixel-neon-20-ghost-protocol.jpg",
+      "resolution": "3840x2160"
+    },
+    {
+      "name": "21 Neon Switchboard",
+      "series": "series-2-cyber-night",
+      "url": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/PixelNeonWallpapers/series-2-cyber-night/pixel-neon-21-neon-switchboard.png",
+      "thumb": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/PixelNeonWallpapers/thumbs/pixel-neon-21-neon-switchboard.jpg",
+      "resolution": "3840x2160"
+    },
+    {
+      "name": "22 Packet Storm",
+      "series": "series-2-cyber-night",
+      "url": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/PixelNeonWallpapers/series-2-cyber-night/pixel-neon-22-packet-storm.png",
+      "thumb": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/PixelNeonWallpapers/thumbs/pixel-neon-22-packet-storm.jpg",
+      "resolution": "3840x2160"
+    },
+    {
+      "name": "23 Chrome Relay",
+      "series": "series-2-cyber-night",
+      "url": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/PixelNeonWallpapers/series-2-cyber-night/pixel-neon-23-chrome-relay.png",
+      "thumb": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/PixelNeonWallpapers/thumbs/pixel-neon-23-chrome-relay.jpg",
+      "resolution": "3840x2160"
+    },
+    {
+      "name": "24 Static Garden",
+      "series": "series-2-cyber-night",
+      "url": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/PixelNeonWallpapers/series-2-cyber-night/pixel-neon-24-static-garden.png",
+      "thumb": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/PixelNeonWallpapers/thumbs/pixel-neon-24-static-garden.jpg",
+      "resolution": "3840x2160"
+    },
+    {
+      "name": "25 Byte Cathedral",
+      "series": "series-2-cyber-night",
+      "url": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/PixelNeonWallpapers/series-2-cyber-night/pixel-neon-25-byte-cathedral.png",
+      "thumb": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/PixelNeonWallpapers/thumbs/pixel-neon-25-byte-cathedral.jpg",
+      "resolution": "3840x2160"
+    },
+    {
+      "name": "26 Pulse Array",
+      "series": "series-2-cyber-night",
+      "url": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/PixelNeonWallpapers/series-2-cyber-night/pixel-neon-26-pulse-array.png",
+      "thumb": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/PixelNeonWallpapers/thumbs/pixel-neon-26-pulse-array.jpg",
+      "resolution": "3840x2160"
+    },
+    {
+      "name": "27 Deep Link",
+      "series": "series-2-cyber-night",
+      "url": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/PixelNeonWallpapers/series-2-cyber-night/pixel-neon-27-deep-link.png",
+      "thumb": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/PixelNeonWallpapers/thumbs/pixel-neon-27-deep-link.jpg",
+      "resolution": "3840x2160"
+    },
+    {
+      "name": "28 Firewall Dawn",
+      "series": "series-2-cyber-night",
+      "url": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/PixelNeonWallpapers/series-2-cyber-night/pixel-neon-28-firewall-dawn.png",
+      "thumb": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/PixelNeonWallpapers/thumbs/pixel-neon-28-firewall-dawn.jpg",
+      "resolution": "3840x2160"
+    },
+    {
+      "name": "29 Star Hopper",
+      "series": "series-3-space-run",
+      "url": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/PixelNeonWallpapers/series-3-space-run/pixel-neon-29-star-hopper.png",
+      "thumb": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/PixelNeonWallpapers/thumbs/pixel-neon-29-star-hopper.jpg",
+      "resolution": "3840x2160"
+    },
+    {
+      "name": "30 Orbit Breaker",
+      "series": "series-3-space-run",
+      "url": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/PixelNeonWallpapers/series-3-space-run/pixel-neon-30-orbit-breaker.png",
+      "thumb": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/PixelNeonWallpapers/thumbs/pixel-neon-30-orbit-breaker.jpg",
+      "resolution": "3840x2160"
+    },
+    {
+      "name": "31 Moonbase Zero",
+      "series": "series-3-space-run",
+      "url": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/PixelNeonWallpapers/series-3-space-run/pixel-neon-31-moonbase-zero.png",
+      "thumb": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/PixelNeonWallpapers/thumbs/pixel-neon-31-moonbase-zero.jpg",
+      "resolution": "3840x2160"
+    },
+    {
+      "name": "32 Comet Lane",
+      "series": "series-3-space-run",
+      "url": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/PixelNeonWallpapers/series-3-space-run/pixel-neon-32-comet-lane.png",
+      "thumb": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/PixelNeonWallpapers/thumbs/pixel-neon-32-comet-lane.jpg",
+      "resolution": "3840x2160"
+    },
+    {
+      "name": "33 Void Courier",
+      "series": "series-3-space-run",
+      "url": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/PixelNeonWallpapers/series-3-space-run/pixel-neon-33-void-courier.png",
+      "thumb": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/PixelNeonWallpapers/thumbs/pixel-neon-33-void-courier.jpg",
+      "resolution": "3840x2160"
+    },
+    {
+      "name": "34 Astro Arcade",
+      "series": "series-3-space-run",
+      "url": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/PixelNeonWallpapers/series-3-space-run/pixel-neon-34-astro-arcade.png",
+      "thumb": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/PixelNeonWallpapers/thumbs/pixel-neon-34-astro-arcade.jpg",
+      "resolution": "3840x2160"
+    },
+    {
+      "name": "35 Red Planet Run",
+      "series": "series-3-space-run",
+      "url": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/PixelNeonWallpapers/series-3-space-run/pixel-neon-35-red-planet-run.png",
+      "thumb": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/PixelNeonWallpapers/thumbs/pixel-neon-35-red-planet-run.jpg",
+      "resolution": "3840x2160"
+    },
+    {
+      "name": "36 Ring Station",
+      "series": "series-3-space-run",
+      "url": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/PixelNeonWallpapers/series-3-space-run/pixel-neon-36-ring-station.png",
+      "thumb": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/PixelNeonWallpapers/thumbs/pixel-neon-36-ring-station.jpg",
+      "resolution": "3840x2160"
+    },
+    {
+      "name": "37 Cosmic Drift",
+      "series": "series-3-space-run",
+      "url": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/PixelNeonWallpapers/series-3-space-run/pixel-neon-37-cosmic-drift.png",
+      "thumb": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/PixelNeonWallpapers/thumbs/pixel-neon-37-cosmic-drift.jpg",
+      "resolution": "3840x2160"
+    },
+    {
+      "name": "38 Nebula Sprint",
+      "series": "series-3-space-run",
+      "url": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/PixelNeonWallpapers/series-3-space-run/pixel-neon-38-nebula-sprint.png",
+      "thumb": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/PixelNeonWallpapers/thumbs/pixel-neon-38-nebula-sprint.jpg",
+      "resolution": "3840x2160"
+    },
+    {
+      "name": "39 Gravity Well",
+      "series": "series-3-space-run",
+      "url": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/PixelNeonWallpapers/series-3-space-run/pixel-neon-39-gravity-well.png",
+      "thumb": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/PixelNeonWallpapers/thumbs/pixel-neon-39-gravity-well.jpg",
+      "resolution": "3840x2160"
+    },
+    {
+      "name": "40 Sunflare",
+      "series": "series-3-space-run",
+      "url": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/PixelNeonWallpapers/series-3-space-run/pixel-neon-40-sunflare.png",
+      "thumb": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/PixelNeonWallpapers/thumbs/pixel-neon-40-sunflare.jpg",
+      "resolution": "3840x2160"
+    },
+    {
+      "name": "41 Meteor Bloom",
+      "series": "series-3-space-run",
+      "url": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/PixelNeonWallpapers/series-3-space-run/pixel-neon-41-meteor-bloom.png",
+      "thumb": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/PixelNeonWallpapers/thumbs/pixel-neon-41-meteor-bloom.jpg",
+      "resolution": "3840x2160"
+    },
+    {
+      "name": "42 Last Launch",
+      "series": "series-3-space-run",
+      "url": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/PixelNeonWallpapers/series-3-space-run/pixel-neon-42-last-launch.png",
+      "thumb": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/PixelNeonWallpapers/thumbs/pixel-neon-42-last-launch.jpg",
+      "resolution": "3840x2160"
+    },
+    {
+      "name": "43 Electric Pines",
+      "series": "series-4-neon-nature",
+      "url": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/PixelNeonWallpapers/series-4-neon-nature/pixel-neon-43-electric-pines.png",
+      "thumb": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/PixelNeonWallpapers/thumbs/pixel-neon-43-electric-pines.jpg",
+      "resolution": "3840x2160"
+    },
+    {
+      "name": "44 Glow Valley",
+      "series": "series-4-neon-nature",
+      "url": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/PixelNeonWallpapers/series-4-neon-nature/pixel-neon-44-glow-valley.png",
+      "thumb": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/PixelNeonWallpapers/thumbs/pixel-neon-44-glow-valley.jpg",
+      "resolution": "3840x2160"
+    },
+    {
+      "name": "45 Luminous Tide",
+      "series": "series-4-neon-nature",
+      "url": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/PixelNeonWallpapers/series-4-neon-nature/pixel-neon-45-luminous-tide.png",
+      "thumb": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/PixelNeonWallpapers/thumbs/pixel-neon-45-luminous-tide.jpg",
+      "resolution": "3840x2160"
+    },
+    {
+      "name": "46 Moonlit Ridge",
+      "series": "series-4-neon-nature",
+      "url": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/PixelNeonWallpapers/series-4-neon-nature/pixel-neon-46-moonlit-ridge.png",
+      "thumb": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/PixelNeonWallpapers/thumbs/pixel-neon-46-moonlit-ridge.jpg",
+      "resolution": "3840x2160"
+    },
+    {
+      "name": "47 Crystal Grove",
+      "series": "series-4-neon-nature",
+      "url": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/PixelNeonWallpapers/series-4-neon-nature/pixel-neon-47-crystal-grove.png",
+      "thumb": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/PixelNeonWallpapers/thumbs/pixel-neon-47-crystal-grove.jpg",
+      "resolution": "3840x2160"
+    },
+    {
+      "name": "48 Aurora Steps",
+      "series": "series-4-neon-nature",
+      "url": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/PixelNeonWallpapers/series-4-neon-nature/pixel-neon-48-aurora-steps.png",
+      "thumb": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/PixelNeonWallpapers/thumbs/pixel-neon-48-aurora-steps.jpg",
+      "resolution": "3840x2160"
+    },
+    {
+      "name": "49 Laser Waterfall",
+      "series": "series-4-neon-nature",
+      "url": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/PixelNeonWallpapers/series-4-neon-nature/pixel-neon-49-laser-waterfall.png",
+      "thumb": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/PixelNeonWallpapers/thumbs/pixel-neon-49-laser-waterfall.jpg",
+      "resolution": "3840x2160"
+    },
+    {
+      "name": "50 Cyan Meadow",
+      "series": "series-4-neon-nature",
+      "url": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/PixelNeonWallpapers/series-4-neon-nature/pixel-neon-50-cyan-meadow.png",
+      "thumb": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/PixelNeonWallpapers/thumbs/pixel-neon-50-cyan-meadow.jpg",
+      "resolution": "3840x2160"
+    },
+    {
+      "name": "51 Ember Canopy",
+      "series": "series-4-neon-nature",
+      "url": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/PixelNeonWallpapers/series-4-neon-nature/pixel-neon-51-ember-canopy.png",
+      "thumb": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/PixelNeonWallpapers/thumbs/pixel-neon-51-ember-canopy.jpg",
+      "resolution": "3840x2160"
+    },
+    {
+      "name": "52 Signal River",
+      "series": "series-4-neon-nature",
+      "url": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/PixelNeonWallpapers/series-4-neon-nature/pixel-neon-52-signal-river.png",
+      "thumb": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/PixelNeonWallpapers/thumbs/pixel-neon-52-signal-river.jpg",
+      "resolution": "3840x2160"
+    },
+    {
+      "name": "53 Night Orchard",
+      "series": "series-4-neon-nature",
+      "url": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/PixelNeonWallpapers/series-4-neon-nature/pixel-neon-53-night-orchard.png",
+      "thumb": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/PixelNeonWallpapers/thumbs/pixel-neon-53-night-orchard.jpg",
+      "resolution": "3840x2160"
+    },
+    {
+      "name": "54 Violet Peaks",
+      "series": "series-4-neon-nature",
+      "url": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/PixelNeonWallpapers/series-4-neon-nature/pixel-neon-54-violet-peaks.png",
+      "thumb": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/PixelNeonWallpapers/thumbs/pixel-neon-54-violet-peaks.jpg",
+      "resolution": "3840x2160"
+    },
+    {
+      "name": "55 Prism Rain",
+      "series": "series-4-neon-nature",
+      "url": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/PixelNeonWallpapers/series-4-neon-nature/pixel-neon-55-prism-rain.png",
+      "thumb": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/PixelNeonWallpapers/thumbs/pixel-neon-55-prism-rain.jpg",
+      "resolution": "3840x2160"
+    },
+    {
+      "name": "56 Wild Frequency",
+      "series": "series-4-neon-nature",
+      "url": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/PixelNeonWallpapers/series-4-neon-nature/pixel-neon-56-wild-frequency.png",
+      "thumb": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/PixelNeonWallpapers/thumbs/pixel-neon-56-wild-frequency.jpg",
+      "resolution": "3840x2160"
+    },
+    {
+      "name": "57 Portal Keep",
+      "series": "series-5-boss-stage",
+      "url": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/PixelNeonWallpapers/series-5-boss-stage/pixel-neon-57-portal-keep.png",
+      "thumb": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/PixelNeonWallpapers/thumbs/pixel-neon-57-portal-keep.jpg",
+      "resolution": "3840x2160"
+    },
+    {
+      "name": "58 Arcade Colossus",
+      "series": "series-5-boss-stage",
+      "url": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/PixelNeonWallpapers/series-5-boss-stage/pixel-neon-58-arcade-colossus.png",
+      "thumb": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/PixelNeonWallpapers/thumbs/pixel-neon-58-arcade-colossus.jpg",
+      "resolution": "3840x2160"
+    },
+    {
+      "name": "59 Boss Chamber",
+      "series": "series-5-boss-stage",
+      "url": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/PixelNeonWallpapers/series-5-boss-stage/pixel-neon-59-boss-chamber.png",
+      "thumb": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/PixelNeonWallpapers/thumbs/pixel-neon-59-boss-chamber.jpg",
+      "resolution": "3840x2160"
+    },
+    {
+      "name": "60 Final Gate",
+      "series": "series-5-boss-stage",
+      "url": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/PixelNeonWallpapers/series-5-boss-stage/pixel-neon-60-final-gate.png",
+      "thumb": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/PixelNeonWallpapers/thumbs/pixel-neon-60-final-gate.jpg",
+      "resolution": "3840x2160"
+    },
+    {
+      "name": "61 Shield Core",
+      "series": "series-5-boss-stage",
+      "url": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/PixelNeonWallpapers/series-5-boss-stage/pixel-neon-61-shield-core.png",
+      "thumb": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/PixelNeonWallpapers/thumbs/pixel-neon-61-shield-core.jpg",
+      "resolution": "3840x2160"
+    },
+    {
+      "name": "62 Phantom Arena",
+      "series": "series-5-boss-stage",
+      "url": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/PixelNeonWallpapers/series-5-boss-stage/pixel-neon-62-phantom-arena.png",
+      "thumb": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/PixelNeonWallpapers/thumbs/pixel-neon-62-phantom-arena.jpg",
+      "resolution": "3840x2160"
+    },
+    {
+      "name": "63 Power Shrine",
+      "series": "series-5-boss-stage",
+      "url": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/PixelNeonWallpapers/series-5-boss-stage/pixel-neon-63-power-shrine.png",
+      "thumb": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/PixelNeonWallpapers/thumbs/pixel-neon-63-power-shrine.jpg",
+      "resolution": "3840x2160"
+    },
+    {
+      "name": "64 Overdrive",
+      "series": "series-5-boss-stage",
+      "url": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/PixelNeonWallpapers/series-5-boss-stage/pixel-neon-64-overdrive.png",
+      "thumb": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/PixelNeonWallpapers/thumbs/pixel-neon-64-overdrive.jpg",
+      "resolution": "3840x2160"
+    },
+    {
+      "name": "65 Star Fortress",
+      "series": "series-5-boss-stage",
+      "url": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/PixelNeonWallpapers/series-5-boss-stage/pixel-neon-65-star-fortress.png",
+      "thumb": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/PixelNeonWallpapers/thumbs/pixel-neon-65-star-fortress.jpg",
+      "resolution": "3840x2160"
+    },
+    {
+      "name": "66 Rival Signal",
+      "series": "series-5-boss-stage",
+      "url": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/PixelNeonWallpapers/series-5-boss-stage/pixel-neon-66-rival-signal.png",
+      "thumb": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/PixelNeonWallpapers/thumbs/pixel-neon-66-rival-signal.jpg",
+      "resolution": "3840x2160"
+    },
+    {
+      "name": "67 Titan Room",
+      "series": "series-5-boss-stage",
+      "url": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/PixelNeonWallpapers/series-5-boss-stage/pixel-neon-67-titan-room.png",
+      "thumb": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/PixelNeonWallpapers/thumbs/pixel-neon-67-titan-room.jpg",
+      "resolution": "3840x2160"
+    },
+    {
+      "name": "68 Critical Hit",
+      "series": "series-5-boss-stage",
+      "url": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/PixelNeonWallpapers/series-5-boss-stage/pixel-neon-68-critical-hit.png",
+      "thumb": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/PixelNeonWallpapers/thumbs/pixel-neon-68-critical-hit.jpg",
+      "resolution": "3840x2160"
+    },
+    {
+      "name": "69 Last Continue",
+      "series": "series-5-boss-stage",
+      "url": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/PixelNeonWallpapers/series-5-boss-stage/pixel-neon-69-last-continue.png",
+      "thumb": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/PixelNeonWallpapers/thumbs/pixel-neon-69-last-continue.jpg",
+      "resolution": "3840x2160"
+    },
+    {
+      "name": "70 Victory Screen",
+      "series": "series-5-boss-stage",
+      "url": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/PixelNeonWallpapers/series-5-boss-stage/pixel-neon-70-victory-screen.png",
+      "thumb": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/PixelNeonWallpapers/thumbs/pixel-neon-70-victory-screen.jpg",
+      "resolution": "3840x2160"
+    }
+  ]
+}
