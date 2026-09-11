@@ -182,6 +182,23 @@ class CoverageTests(unittest.TestCase):
         used = {i["glyph"] for i in ICONS}
         self.assertEqual(used - set(metrics), set())
 
+    def test_measured_boxes_match_the_glyphs_they_were_measured_from(self):
+        """A present box is not a current box.
+
+        The table is committed so popart stays a pure function of committed
+        inputs, which means editing a glyph in glyphs.py leaves Pop scaling
+        the mark to its previous size until someone remembers to re-run
+        tools/measure_pop_glyphs.py. Nothing used to notice.
+        """
+        from measure_pop_glyphs import geometry_fingerprint
+
+        table = json.loads(read(ROOT / "tools" / "pop_glyph_metrics.json"))
+        self.assertEqual(
+            table.get("geometry_sha256"), geometry_fingerprint(),
+            "glyph geometry has changed since the Pop metrics were measured "
+            "— run: python3 tools/measure_pop_glyphs.py && "
+            "python3 tools/build_pop.py")
+
 
 class MirrorTests(unittest.TestCase):
     def test_mirrored_resources_are_current(self):

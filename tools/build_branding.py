@@ -7,6 +7,9 @@ Geometry follows Assets/core_icon.svg exactly (Brand Guide §02).
 """
 from pathlib import Path
 from svg_renderer import svg2png
+from typeface import FONTS, measure as type_measure, wordmark_spans
+
+FONT_MONO = FONTS / "DejaVuSansMono.ttf"
 
 ROOT = Path(__file__).resolve().parent.parent
 RES = ROOT / "app" / "src" / "main" / "res"
@@ -82,17 +85,37 @@ def main():
         png(fg, p, size, size)
         written.append(f"{folder}/ic_launcher_foreground.png ({size}px)")
 
-    # Leanback banner 320x180 — night chrome, mark left, serif wordmark right
+    # Leanback banner 320x180 — night chrome, mark left, wordmark right.
+    #
+    # Text is outlined to paths rather than <text>. It used to name
+    # "Georgia,serif" and "ui-monospace", so what shipped depended on whichever
+    # fonts the build host happened to have, and Georgia is not licensed for
+    # redistribution. All 926 app banners already outline Outfit through
+    # typeface.py; the pack's own banner was the last asset that did not.
+    #
+    # The strapline also overran the canvas: 27 mono characters from x=164
+    # ended at 326.6 on a 320 box, so "Android TV" shipped with the V clipped.
+    # The assert keeps the lockup inside the 5% overscan margin (TV-OV) instead
+    # of trusting the numbers to stay correct.
+    TV_SAFE = 16                      # 5% of 320
+    TEXT_X = 164                      # clear of the mark, which ends near 150
+    limit = 320 - TV_SAFE
+
+    wm, _ = wordmark_spans(["Core Builds"], 23, TEXT_X, [82], "#e6edf3")
+    sub, _ = wordmark_spans(["Icon Pack"], 19, TEXT_X, [106], "#00d4ff")
+
+    strap, strap_size = "Projectivy \u00b7 Android TV", 9
+    strap_w = type_measure(strap, strap_size, FONT_MONO)
+    assert TEXT_X + strap_w <= limit, (
+        f"banner strapline overruns the safe area: ends at "
+        f"{TEXT_X + strap_w:.1f}, limit {limit}")
+    tag, _ = wordmark_spans([strap], strap_size, TEXT_X, [130], "#8b949e",
+                            font_path=FONT_MONO)
+
     banner = svg(
         320, 180,
         f'<g transform="translate(14,22) scale(0.265)">{mark(disc=False)}</g>'
-        f'<text x="164" y="82" fill="#e6edf3" font-family="Georgia,serif" '
-        f'font-size="23">Core Builds</text>'
-        f'<text x="164" y="106" fill="#00d4ff" font-family="Georgia,serif" '
-        f'font-size="19">Icon Pack</text>'
-        f'<text x="164" y="130" fill="#8b949e" '
-        f'font-family="ui-monospace,monospace" font-size="10">'
-        f'for Projectivy \u00b7 Android TV</text>',
+        f'{wm}{sub}{tag}',
         bg="#0d1117")
     p = RES / "drawable-nodpi" / "cb_banner.png"
     png(banner, p, 640, 360)

@@ -459,14 +459,19 @@ def yt_play(c):
 
 
 def smarttube_play(c):
-    """SmartTube: YouTube silhouette with a corner cut — the fork tell."""
-    return (f'<path d="M 110 118 L 402 118 C 444 118 478 152 478 194 '
-            f'L 478 318 C 478 360 444 394 402 394 L 110 394 '
-            f'C 68 394 34 360 34 318 L 34 194 C 34 152 68 118 110 118 Z" '
+    """SmartTube: YouTube silhouette with a corner cut — the fork tell.
+
+    Body narrowed from 444 to 400 wide: the 32 stroke on the old box put ink
+    at x=18 and x=494, outside SAFE. The corner-cut rules move with the right
+    edge so the tell stays on the corner it cuts.
+    """
+    return (f'<path d="M 132 118 L 380 118 C 422 118 456 152 456 194 '
+            f'L 456 318 C 456 360 422 394 380 394 L 132 394 '
+            f'C 90 394 56 360 56 318 L 56 194 C 56 152 90 118 132 118 Z" '
             f'{_s(c, 34)}/>'
             f'<path d="M 218 200 L 218 312 L 326 256 Z" {_s(c, 30)}/>'
-            f'<path d="M 388 150 L 458 150" {_s(c, 22)}/>'
-            f'<path d="M 388 190 L 458 190" {_s(c, 22)}/>')
+            f'<path d="M 366 150 L 436 150" {_s(c, 22)}/>'
+            f'<path d="M 366 190 L 436 190" {_s(c, 22)}/>')
 
 
 def tizen_play(c):
@@ -898,7 +903,9 @@ def browser_globe(c):
     globe. A wordmark cannot survive the downscale, so the globe carries it:
     it is the browser idea, and it is what stays legible small.
     """
-    return (f'<rect x="52" y="96" width="408" height="284" rx="72" {_s(c, 32)}/>'
+    # Screen is 400 wide, not 408 — see tivimate_grid: a 408 box plus the 32
+    # stroke lands ink 4px outside SAFE on each side.
+    return (f'<rect x="56" y="96" width="400" height="284" rx="72" {_s(c, 32)}/>'
             f'<circle cx="256" cy="238" r="104" {_s(c, 28)}/>'
             f'<path d="M 152 238 L 360 238" {_s(c, 24)}/>'
             f'<path d="M 256 134 C 300 172 300 304 256 342" {_s(c, 24)}/>'
@@ -940,12 +947,14 @@ def tivimate_grid(c):
     IPTV guide rather than generic player, and is nothing like the twenty
     other apps that were sharing monogram_T.
     """
-    return (f'<rect x="52" y="104" width="408" height="268" rx="40" {_s(c, 32)}/>'
+    # Screen is 400 wide, not 408: the 32 stroke on a 408 box put ink at x=36
+    # and x=476, 4px outside SAFE on both sides.
+    return (f'<rect x="56" y="104" width="400" height="268" rx="40" {_s(c, 32)}/>'
             # channel column divider
             f'<path d="M 158 104 L 158 372" {_s(c, 24)}/>'
             # programme rows
-            f'<path d="M 52 192 L 460 192" {_s(c, 22)}/>'
-            f'<path d="M 52 284 L 460 284" {_s(c, 22)}/>'
+            f'<path d="M 56 192 L 456 192" {_s(c, 22)}/>'
+            f'<path d="M 56 284 L 456 284" {_s(c, 22)}/>'
             # 'now' cell, filled to read as the highlight
             f'<rect x="196" y="212" width="128" height="52" rx="12" {_f(c)}/>'
             # stand
@@ -1231,12 +1240,17 @@ def justwatch_finder(c):
 
 
 def acorn_mark(c):
-    """Acorn TV: the acorn — cap roundel over a tapered nut."""
-    return (f'<path d="M 256 96 L 256 150" {_s(c, 28)}/>'
-            f'<path d="M 148 150 L 364 150" {_s(c, 32)}/>'
-            f'<path d="M 148 150 A 108 108 0 0 1 364 150" {_s(c, 30)}/>'
-            f'<path d="M 176 232 C 176 300 216 356 256 392 '
-            f'C 296 356 336 300 336 232 Z" {_s(c, 32)}/>')
+    """Acorn TV: the acorn — cap roundel over a tapered nut.
+
+    Sat 39px high on the grid: the cap arc bulges to y=42, and the 32 stroke
+    put ink at y=26 against a SAFE floor of 40. Shifted down to centre the
+    mark; the construction is otherwise unchanged.
+    """
+    return (f'<path d="M 256 135 L 256 189" {_s(c, 28)}/>'
+            f'<path d="M 148 189 L 364 189" {_s(c, 32)}/>'
+            f'<path d="M 148 189 A 108 108 0 0 1 364 189" {_s(c, 30)}/>'
+            f'<path d="M 176 271 C 176 339 216 395 256 431 '
+            f'C 296 395 336 339 336 271 Z" {_s(c, 32)}/>')
 
 
 def tidal_wave(c):
@@ -1559,21 +1573,23 @@ def redbull_sun(c):
     leaning bodies) — the two-bulls-into-the-sun device.
     """
     import math
-    out = f'<circle cx="256" cy="240" r="150" {_s(c, 22)}/>'
+    # The mark was authored about cy=240, 16px above the grid centre, which
+    # put the topmost sun bar at y=30 — inside the 40px SAFE margin. Centred.
+    out = f'<circle cx="256" cy="256" r="150" {_s(c, 22)}/>'
     # radiating sun bars
     for i in range(8):
         a = math.radians(-160 + i * 46)
         x1 = 256 + 168 * math.cos(a)
-        y1 = 240 - 168 * math.sin(a)
+        y1 = 256 - 168 * math.sin(a)
         x2 = 256 + 212 * math.cos(a)
-        y2 = 240 - 212 * math.sin(a)
+        y2 = 256 - 212 * math.sin(a)
         out += f'<path d="M {x1:.0f} {y1:.0f} L {x2:.0f} {y2:.0f}" {_s(c, 22)}/>'
     # left bull (lean head + horn)
-    out += (f'<path d="M 150 300 C 160 250 180 226 214 218 C 190 244 190 286 '
-            f'214 310 C 234 328 278 328 300 310" {_s(c, 24)}/>')
+    out += (f'<path d="M 150 316 C 160 266 180 242 214 234 C 190 260 190 302 '
+            f'214 326 C 234 344 278 344 300 326" {_s(c, 24)}/>')
     # right bull (mirror)
-    out += (f'<path d="M 362 300 C 352 250 332 226 298 218 C 322 244 322 286 '
-            f'298 310 C 278 328 234 328 212 310" {_s(c, 24)}/>')
+    out += (f'<path d="M 362 316 C 352 266 332 242 298 234 C 322 260 322 302 '
+            f'298 326 C 278 344 234 344 212 326" {_s(c, 24)}/>')
     return out
 
 
@@ -1907,12 +1923,18 @@ def pacman_mark(c):
 
 
 def retroarch_mark(c):
-    """RetroArch: the game pad — a controller with a d-pad."""
-    return (f'<path d="M 130 200 C 130 150 190 130 230 160 L 280 200 C 296 214 '
-            f'330 214 346 200 L 396 160 C 436 130 496 150 496 200 '
-            f'C 496 268 470 360 420 372 C 386 380 360 340 352 310 '
-            f'C 340 284 316 270 256 270 C 196 270 172 284 160 310 '
-            f'C 152 340 126 380 92 372 C 42 360 16 268 16 200 Z" {_s(c, 28)}/>')
+    """RetroArch: the game pad — a controller with a d-pad.
+
+    Drawn to a 406-wide body, not 480: at the old width the 26.2 stroke put
+    ink at x=2.9 and x=509.1 on a 512 grid, 3px of margin where SAFE promises
+    40. Uniformly rescaled about the grid centre so the pad keeps its
+    proportions and the stroke keeps its monoline weight.
+    """
+    return (f'<path d="M 150 210 C 150 167 200 150 234 176 L 276 210 C 290 221 '
+            f'319 221 332 210 L 374 176 C 408 150 459 167 459 210 '
+            f'C 459 267 437 345 395 355 C 366 362 344 328 337 302 '
+            f'C 327 281 307 269 256 269 C 205 269 185 281 175 302 '
+            f'C 168 328 146 362 117 355 C 75 345 53 267 53 210 Z" {_s(c, 28)}/>')
 
 
 def sideload_mark(c):
@@ -1940,11 +1962,16 @@ GLYPHS.update({
 # Tier 7 — music and tool marks.
 # ==========================================================================
 def sirius_satellite(c):
-    """Sirius: the satellite — a dish with radiating orbit."""
-    return (f'<path d="M 104 396 C 104 300 180 224 276 224" {_s(c, 32)}/>'
-            f'<circle cx="128" cy="372" r="26" {_f(c)}/>'
-            f'<path d="M 300 160 C 360 160 420 220 420 280" {_s(c, 26)}/>'
-            f'<path d="M 300 104 C 388 104 476 192 476 280" {_s(c, 26)}/>')
+    """Sirius: the satellite — a dish with radiating orbit.
+
+    Shifted 20px left. The outer wave arc reached x=476, which the 26.2
+    stroke pushed to 489 — outside SAFE — while the dish left only 88px of
+    margin on the other side. The diagonal composition is unchanged.
+    """
+    return (f'<path d="M 84 396 C 84 300 160 224 256 224" {_s(c, 32)}/>'
+            f'<circle cx="108" cy="372" r="26" {_f(c)}/>'
+            f'<path d="M 280 160 C 340 160 400 220 400 280" {_s(c, 26)}/>'
+            f'<path d="M 280 104 C 368 104 456 192 456 280" {_s(c, 26)}/>')
 
 
 def podcast_mic(c):
