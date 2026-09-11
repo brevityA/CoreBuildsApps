@@ -92,6 +92,10 @@ class WallpapersActivity : AppCompatActivity() {
             layoutManager = GridLayoutManager(this@WallpapersActivity, spanForScreen())
             adapter = this@WallpapersActivity.adapter
             setHasFixedSize(true)
+            // Same guard as the icon grid: the default change animation
+            // detaches a rebound tile and drops D-pad focus on long-press
+            // selection. The tile owns its own focus animation instead.
+            itemAnimator = null
         }
 
         findViewById<TextView>(R.id.wp_back).setOnClickListener {
@@ -114,6 +118,18 @@ class WallpapersActivity : AppCompatActivity() {
 
         bindChips()
         bindBackNavigation()
+
+        // Deterministic starting point: the chip strip, not the search field
+        // (focusing an EditText on entry would pop the IME over the grid).
+        // Without an initial target Android can leave the menu with no
+        // highlighted control and a dead first D-pad press.
+        findViewById<RecyclerView>(R.id.wp_chips).post {
+            if (currentFocus == null || currentFocus === window.decorView) {
+                val chips = findViewById<RecyclerView>(R.id.wp_chips)
+                val firstChip = chips.layoutManager?.findViewByPosition(0)
+                (firstChip ?: chips).requestFocus()
+            }
+        }
     }
 
     private fun bindBackNavigation() {
@@ -174,6 +190,10 @@ class WallpapersActivity : AppCompatActivity() {
             layoutManager = LinearLayoutManager(
                 this@WallpapersActivity, LinearLayoutManager.HORIZONTAL, false
             )
+            // The main screen sets this on its chip row. Without it, the
+            // default RecyclerView change animation replaces the pressed chip
+            // with a fresh ViewHolder and drops the D-pad highlight on press.
+            itemAnimator = null
             adapter = WallpaperChipAdapter(labels, keys, null) { key ->
                 series = key
                 applyFilter()

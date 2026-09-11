@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Full-screen wallpaper preview. The image fills the canvas; the title and
-     CTA float over a bottom scrim so the cyan-on-night glass stays legible
-     against any wallpaper in the collection (Brand Guide §05). -->
+<!-- Full-screen wallpaper preview. The image fills the canvas; the title,
+     seed chips and CTA float over a bottom scrim so the cyan-on-night glass
+     stays legible against any wallpaper (Brand Guide §05). Seed chips are
+     display-only: not focusable, not in the D-pad chain. -->
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -16,7 +17,7 @@
 
     <View
         android:layout_width="match_parent"
-        android:layout_height="200dp"
+        android:layout_height="248dp"
         android:layout_gravity="bottom"
         android:background="@drawable/bg_scrim" />
 
@@ -54,6 +55,78 @@
                 android:fontFamily="monospace"
                 android:textColor="@color/cb_glow_cyan"
                 android:textSize="@dimen/cb_text_label" />
+
+            <LinearLayout
+                android:id="@+id/seed_row"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/cb_space_sm"
+                android:contentDescription="@string/wp_seed_desc"
+                android:descendantFocusability="blocksDescendants"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:visibility="gone">
+
+                <TextView
+                    android:id="@+id/seed_label"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="@dimen/cb_space_sm"
+                    android:fontFamily="monospace"
+                    android:text="@string/wp_seed_label"
+                    android:textAllCaps="true"
+                    android:textColor="@color/cb_slate"
+                    android:textSize="@dimen/cb_text_kicker" />
+
+                <View
+                    android:id="@+id/seed_0"
+                    android:layout_width="@dimen/cb_seed_swatch"
+                    android:layout_height="@dimen/cb_seed_swatch"
+                    android:layout_marginEnd="@dimen/cb_space_xs"
+                    android:background="@color/cb_panel"
+                    android:clickable="false"
+                    android:focusable="false"
+                    android:importantForAccessibility="no" />
+
+                <View
+                    android:id="@+id/seed_1"
+                    android:layout_width="@dimen/cb_seed_swatch"
+                    android:layout_height="@dimen/cb_seed_swatch"
+                    android:layout_marginEnd="@dimen/cb_space_xs"
+                    android:background="@color/cb_panel"
+                    android:clickable="false"
+                    android:focusable="false"
+                    android:importantForAccessibility="no" />
+
+                <View
+                    android:id="@+id/seed_2"
+                    android:layout_width="@dimen/cb_seed_swatch"
+                    android:layout_height="@dimen/cb_seed_swatch"
+                    android:layout_marginEnd="@dimen/cb_space_xs"
+                    android:background="@color/cb_panel"
+                    android:clickable="false"
+                    android:focusable="false"
+                    android:importantForAccessibility="no" />
+
+                <View
+                    android:id="@+id/seed_3"
+                    android:layout_width="@dimen/cb_seed_swatch"
+                    android:layout_height="@dimen/cb_seed_swatch"
+                    android:layout_marginEnd="@dimen/cb_space_xs"
+                    android:background="@color/cb_panel"
+                    android:clickable="false"
+                    android:focusable="false"
+                    android:importantForAccessibility="no" />
+
+                <View
+                    android:id="@+id/seed_4"
+                    android:layout_width="@dimen/cb_seed_swatch"
+                    android:layout_height="@dimen/cb_seed_swatch"
+                    android:background="@color/cb_panel"
+                    android:clickable="false"
+                    android:focusable="false"
+                    android:importantForAccessibility="no" />
+            </LinearLayout>
         </LinearLayout>
 
         <TextView

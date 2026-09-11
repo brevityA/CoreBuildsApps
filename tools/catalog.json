@@ -2,11 +2,11 @@
   "$schema": "./catalog.schema.json",
   "meta": {
     "pack": "Core Builds Icon Pack",
-    "version": "1.8.10",
+    "version": "1.8.11",
     "grid": 512,
     "safe_area": 432,
     "note": "Core Builds-authored geometric icons on a shared 512 grid. Reviewed brand glyphs use rounded monoline strokes and one accent, not imported vendor silhouettes. Common Outfit/category/rail banners; artwork is reference-only. Canonical brand colours and the dark-card contrast policy remain shared.",
-    "count": 925
+    "count": 926
   },
   "icons": [
     {
@@ -9198,13 +9198,17 @@
       "glyph": "tile_7",
       "components": [
         "com.swm.live/au.com.seven.inferno.ui.setup.SetupActivity",
-        "com.swm.live/au.com.seven.inferno.ui.tv.setup.SetupTvActivity"
+        "com.swm.live/au.com.seven.inferno.ui.tv.setup.SetupTvActivity",
+        "com.swm.live/au.com.seven.inferno.MainActivity",
+        "com.swm.live/.MainActivity"
       ],
       "category": "VOD",
       "brand": "7plus",
       "unverified": [
         "com.swm.live/au.com.seven.inferno.ui.setup.SetupActivity",
-        "com.swm.live/au.com.seven.inferno.ui.tv.setup.SetupTvActivity"
+        "com.swm.live/au.com.seven.inferno.ui.tv.setup.SetupTvActivity",
+        "com.swm.live/au.com.seven.inferno.MainActivity",
+        "com.swm.live/.MainActivity"
       ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "sampled from the official 7plus logo",
@@ -9958,13 +9962,11 @@
       "color": "#577590",
       "glyph": "tile_S",
       "components": [
-        "com.tanasi.streamflix/com.tanasi.streamflix.activities.main.MainTvActivity",
-        "com.weatherbug.firetv/com.weatherbug.firetv.MainActivity"
+        "com.tanasi.streamflix/com.tanasi.streamflix.activities.main.MainTvActivity"
       ],
       "category": "APP",
       "unverified": [
-        "com.tanasi.streamflix/com.tanasi.streamflix.activities.main.MainTvActivity",
-        "com.weatherbug.firetv/com.weatherbug.firetv.MainActivity"
+        "com.tanasi.streamflix/com.tanasi.streamflix.activities.main.MainTvActivity"
       ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
@@ -12443,6 +12445,22 @@
       "category": "SPORT",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
+    },
+    {
+      "name": "WeatherBug",
+      "drawable": "weatherbug",
+      "color": "#2F6F8C",
+      "glyph": "tile_W",
+      "components": [
+        "com.weatherbug.firetv/com.weatherbug.firetv.MainActivity"
+      ],
+      "category": "APP",
+      "unverified": [
+        "com.weatherbug.firetv/com.weatherbug.firetv.MainActivity"
+      ],
+      "mapping_source": "Projectivy Icon Pack 1.1.9 (was mis-assigned to streamflix_2)",
+      "color_source": "BrandColorCode WeatherBug primary blue #2F6F8C",
+      "color_reviewed": "2026-09-10"
     },
     {
       "name": "Wetv",

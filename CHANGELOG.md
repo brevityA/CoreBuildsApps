@@ -4,6 +4,67 @@ All notable changes to the Core Builds Icon Pack. Format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); versions follow
 [SemVer](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Added
+- **Wallpaper preview shows the launcher seed palette.** Five chips under the
+  title (seed, secondary, tertiary, container, on-seed) extracted from the
+  image via `WallpaperColors` on API 27+ and a chromatic 32×32 sample below
+  that. They preview what Monet / a tinting launcher will pick up after Set.
+  Display-only — not focusable, not in the D-pad chain. Icon rasters are
+  unchanged.
+
+## [1.8.11] — 2026-09-10
+
+**The rest of the D-pad dead ends, two mis-mapped apps, and the checks that
+should have caught both.**
+
+### Fixed
+- **Four more controls unreachable by D-pad.** 1.8.10 fixed the Wallpapers
+  button by rewiring a single `nextFocus` edge; the same bug class survived in
+  four more places, in all three packs. The update **Download/Install** button
+  was reachable only via the one-shot focus grab when the update bar appeared
+  — once focus moved, the remote could never return to it, so an available
+  update could not be installed. The **"Also &lt;launcher&gt;"** row was never
+  reachable at all when a second supported launcher was installed. On the
+  wallpapers screen the on-screen **Back** button was unreachable, and
+  **Select all / Clear / Export N** could not be returned to once focus left,
+  which broke multi-select export outright. Focus chains now route *through*
+  these views rather than around them, so a hidden control collapses to the
+  next visible one instead of stranding whatever sits between.
+- **Wallpaper chips lost their highlight on press.** `WallpaperChipAdapter`
+  rebound the whole list on every series press, dropping focus from the chip
+  the user had just pressed. Wallpaper tiles also split the focus highlight
+  and the click target across two views; the focusable card is now the root,
+  with the selection ring as a non-focusable overlay.
+- **WeatherBug applied the Streamflix icon.** `com.weatherbug.firetv` was a
+  component of `streamflix_2`, copied from Projectivy 1.1.9. It now has its
+  own catalog entry (`weatherbug`, `#2F6F8C` `tile_W`).
+- **7plus on `com.swm.live` only mapped setup activities.** Added
+  `au.com.seven.inferno.MainActivity` and `.MainActivity` (unverified) so the
+  live Play Store package has a chance of matching the Leanback/home
+  activity, not just first-run setup.
+- **Pixel Neon category chips dropped D-pad highlight on press.** Same
+  `notifyDataSetChanged()` bug fixed on the wallpaper chips; the icon filter
+  row now uses targeted `notifyItemChanged`.
+
+### Added
+- **Focus-reachability check in `check_ui_resources.py`.** A fifth static
+  check reports any focusable view that an explicit `nextFocus` chain hops
+  over. It flags all four regressions above *and* the original 1.8.10 one when
+  run against the pre-fix layouts — nothing in CI would have caught either
+  before.
+
+### Internal
+- **Pixel Neon asset drift is now gated in full.** The CI check listed five
+  paths and omitted `res/drawable-nodpi`, the 1851 shipping rasters, so a
+  stale icon passed CI silently — that is how a blue 7plus tile survived the
+  1.8.8 colour remediation and shipped until 1.8.10 regenerated it. The gate
+  now covers the whole generated tree.
+
+Coverage: **926 icons / 1101 catalog components / 58 classic wallpapers**.
+versionName 1.8.11, versionCode 21.
+
 ## [1.8.10] — 2026-09-10
 
 **Post-1.8.9 hotfix: TV focus reachability, 7plus artwork, launcher-neutral
