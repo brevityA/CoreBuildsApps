@@ -8,7 +8,7 @@ body:
       value: |
         One app per issue, please — it keeps the queue countable.
 
-        Before opening: check [docs/IconPackList.md](../blob/main/docs/IconPackList.md). If the app is listed but the icon isn't applying, use the **Icon not auto-assigning** template instead.
+        Before opening: check [docs/IconPackList.md](https://github.com/brevityA/CoreBuildsApps/blob/main/docs/IconPackList.md) by name, drawable and package (for example, ZEE5 is `graymatrix`). If the app is listed but the icon isn't applying, use the **Icon not auto-assigning** template instead.
 
   - type: input
     id: app_name
@@ -24,17 +24,18 @@ body:
     attributes:
       label: Component name
       description: |
-        The package + launcher activity. Get it over ADB with:
-        `adb shell cmd package resolve-activity --brief com.example.tv | tail -1`
-      placeholder: com.example.tv/.MainActivity
+        The package + actual TV launcher activity. Prefer:
+        `adb shell cmd package resolve-activity --brief -a android.intent.action.MAIN -c android.intent.category.LEANBACK_LAUNCHER com.example.tv`
+        If you cannot obtain it, leave this blank and provide an official APK link below so it can be statically inspected. Do not guess MainActivity.
+      placeholder: com.example.tv/com.vendor.tv.LaunchActivity
     validations:
-      required: true
+      required: false
 
   - type: input
     id: store_link
     attributes:
       label: Store or download link
-      description: Play Store, APKMirror, or the official site — so the mark can be referenced.
+      description: Prefer the official APK, official site, or Play Store. Include the app version/region in the notes; a real APK can supply both the logo and launcher mapping.
       placeholder: https://play.google.com/store/apps/details?id=com.example.tv
     validations:
       required: true

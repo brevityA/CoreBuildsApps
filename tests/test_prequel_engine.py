@@ -42,3 +42,27 @@ def test_shader_has_real_scene_dispatch_and_periodic_clock():
     # Guard against regressing to a still-image transform-only renderer.
     for token in ("segmentDistance", "fbm", "fract", "sin(", "cos("):
         assert token in shader
+def main() -> int:
+    """Run every ``test_*`` in this module and report.
+
+    This file used to be a list of bare test functions with no runner, so
+    `python tests/<this file>` exited 0 having asserted nothing — every
+    expectation inside it could rot silently, and some of them had.
+    Discovering the functions here means a new test cannot escape the run.
+    """
+    tests = [(n, f) for n, f in sorted(globals().items())
+             if n.startswith("test_") and callable(f)]
+    failed = 0
+    for name, fn in tests:
+        try:
+            fn()
+            print(f"ok  {name}")
+        except Exception as exc:
+            failed += 1
+            print(f"FAIL {name}: {exc!r}")
+    print(f"{len(tests) - failed}/{len(tests)} passed")
+    return 1 if failed else 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

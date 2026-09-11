@@ -1,0 +1,25 @@
+{
+  "id": "android-sdk",
+  "version": "1.0.0",
+  "name": "Android SDK (no emulator)",
+  "description": "Command-line Android SDK for assembleDebug / lint. No system image, no emulator — Codespaces has no KVM; device-check.yml stays in Actions.",
+  "options": {
+    "cmdlineToolsVersion": {
+      "type": "string",
+      "default": "11076708",
+      "description": "Google commandlinetools-linux zip build number"
+    },
+    "packages": {
+      "type": "string",
+      "default": "platform-tools,platforms;android-34,platforms;android-35,build-tools;34.0.0,build-tools;35.0.0",
+      "description": "Comma-separated sdkmanager packages"
+    }
+  },
+  "installsAfter": [
+    "ghcr.io/devcontainers/features/java"
+  ],
+  "containerEnv": {
+    "ANDROID_HOME": "/usr/local/lib/android/sdk",
+    "ANDROID_SDK_ROOT": "/usr/local/lib/android/sdk"
+  }
+}

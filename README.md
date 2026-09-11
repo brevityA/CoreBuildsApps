@@ -4,7 +4,7 @@
 
 # Core Builds Apps
 
-**Five Android apps. Same brand, same living-room bar.**
+**Seven Android apps. Same brand, same living-room bar.**
 
 </div>
 
@@ -13,28 +13,66 @@
 <!-- suite-stamp:start -->
 > | App | Current | What it does | Downloader | Release tag |
 > |---|---:|---|---|---|
-> | **[Core Builds Icon Pack](#-icon-pack)** | `v1.8.2` | 924 transparent icons + 70 wallpapers for Projectivy Launcher | `5270601` | [`v*` / `iconpack`](../../releases) |
+> | **[Core Builds Icon Pack](#-icon-pack)** | `v1.8.12` | 926 transparent icons + 58 wallpapers for Projectivy Launcher | `5270601` | [`v*` / `iconpack`](../../releases) |
+> | **[Core Builds Pixel Neon](#-pixel-neon-icon-pack)** | `v0.1.0` | 926 transparent 8-bit neon icons + 70 wallpapers for Projectivy Launcher | `[USER TO SUPPLY]` | [`pixel-neon-v*` / `pixel-neon`](../../releases) |
+> | **[Core Builds Pop](#-core-builds-pop)** | `v1.0.0` | The same 926 icons, pop-art cartoon: 16 swatches, one container | `[USER TO SUPPLY]` | [`pop-v*` / `pop`](../../releases) |
 > | **[Core Line](#-core-line)** | `v1.3.0` | Sports scores & channel RSS ticker (chyron) | `7375676` | [`coreline-v*` / `coreline`](../../releases) |
 > | **[Core Shift](#-core-shift)** | `v2.3.5` | Android TV screensaver + motion wallpaper browser | `8829421` | [`shift-v*` / `shift`](../../releases) |
 > | **[Core Motion](#-core-motion)** | `v1.0.0` | Projectivy wallpaper-provider plugin for Core Motion loops | `[USER TO SUPPLY]` | [`motion-v*` / `motion`](../../releases) |
 > | **[Core Doctor](#-core-doctor)** | `v0.1.0` | Local-only streaming and suite diagnostics (phone) | `8664938` | [`doctor-v*` / `doctor`](../../releases) |
 >
-> Each app has its own Gradle root and CI workflow. Do not merge roots, split the repo, or repoint floating Downloader tags.
+> Each app has its own CI workflow and release tag. Do not merge Gradle roots, split the repo, or repoint floating Downloader tags.
 <!-- suite-stamp:end -->
 ---
 
 ## 🔷 Icon Pack
 
 **Transparent app icons for Projectivy Launcher on Android TV.**
-`924 icons` · `70 wallpapers` · `v1.8.2`
+`926 icons` · `58 wallpapers` · `v1.8.12`
 
 The **Core Builds Icon Pack** is designed for the [Projectivy Launcher](https://play.google.com/store/apps/details?id=com.spocky.projengmenu) on Android TV and Google TV, built to the [Core Builds Brand & Style Guide v1.0](https://github.com/brevityA/Core-Builds).
 
-Icons are **original geometry** drawn on a shared 512 grid — simple shapes, rounded ends, one accent colour per app — not traced vendor logos. Backgrounds are **fully transparent**, so the launcher's own card colour shows through.
+Icons share the **Core Builds visual language**: original geometry, rounded-line brand motifs, one accent and transparent backgrounds. The reviewed glyphs use the canonical **32px main stroke**, with 26.2px / 21.8px detail. Brand references inform the recognisable cue and colour; they do **not** replace the pack's style with filled vendor silhouettes or custom logotypes. The existing Outfit fallback letters remain unchanged. [Reference provenance and rights](THIRD_PARTY_NOTICES.md).
+
+**v1.8.12 — a safe-area constant nothing enforced, a module that stopped compiling, and a banner missing its last letter:** `SAFE = 432` had sat in `glyphs.py` unchecked, and seven glyphs hung ink past it — RetroArch was drawn to `x=496`, which the 26.2 monoline pushed to **509.1 on a 512 grid**, 3px of margin where SAFE promises 40. Fixed in the geometry, so no stroke weight changed: **8 Classic icons and 11 Pop assets** move. Pixel Neon had stopped compiling since 1.8.11 — the wallpaper seed palette declared `cb_hairline` in `app/` and `pop/` but not in the module that forks that Kotlin — and **46 of its icons** had drifted from the catalog, because the sprite seed includes each icon's *positional index* and splitting WeatherBug out of Streamflix shifted every entry after it. The pack's own Leanback banner shipped `for Projectivy · Android T`, the V cut by the canvas edge; its text is now outlined from `tools/fonts` rather than naming Georgia, which was never licensed for redistribution. Three new gates cover the silent failures: rendered-alpha safe-area measurement across all 322 glyphs, a geometry digest on the Pop metrics table, and a resource checker that pairs every module with the Kotlin it actually compiles.
 
 > **Tip:** Use a **dark card background** in Projectivy. These icons are drawn for night chrome (`#0d1117`).
 
-> **Note:** Designed and mapped against Android TV / Google TV builds of each app. Devices running mobile variants sometimes expose a different launcher activity — if an icon doesn't auto-assign, [open an issue](../../issues) with the component name and it gets added.
+> **Note:** Designed and mapped against Android TV / Google TV builds of each app. Devices running mobile variants sometimes expose a different launcher activity — if an icon doesn't auto-assign, [open a prefilled issue](#request-an-icon) with the component name and it gets added.
+
+<!-- issue-prefills:start -->
+### Request an icon
+
+Both issue forms are deep-linked: a report opens on the right template with
+the right title and label already set — no chooser, no retyping the prefix.
+Field values ride on the same URL. Only `input` and `textarea` fields accept
+a prefill, so every required dropdown and confirm box is still answered by
+the reporter — a link can never tick a gate for them.
+
+| Open | Use it when | A link can prefill | Only in the form | Title / label |
+|---|---|---|---|---|
+| [🎨 New icon request](https://github.com/brevityA/CoreBuildsApps/issues/new?assignees=&labels=icon+request&projects=&template=1.new_icon_request.yml&title=%5BIcon%5D+) | Request an icon for an app that isn't in the pack yet. | App name\* · Component name · Store or download link\* · Anything else | Device type\* · Confirm | `[Icon]` · `icon request` |
+| [🔧 Icon not auto-assigning](https://github.com/brevityA/CoreBuildsApps/issues/new?assignees=&labels=mapping&projects=&template=2.icon_not_applying.yml&title=%5BNot+applying%5D+) | The app is in the pack, but its icon doesn't appear on your device. | App name\* · The component name on YOUR device\* · Device and OS\* | Launcher\* · Confirm | `[Not applying]` · `mapping` |
+
+One app per issue, and check [docs/IconPackList.md](docs/IconPackList.md) by
+name, drawable and package first — a listed app that isn't applying belongs
+on the other form.
+
+For one specific app, let the generator build the link you paste into a reply:
+
+```bash
+python tools/build_issue_prefills.py --app Stremio \
+    --template 2.icon_not_applying.yml \
+    --component com.stremio.one/com.stremio.tv.MainActivity
+```
+
+```text
+https://github.com/brevityA/CoreBuildsApps/issues/new?assignees=&labels=mapping&projects=&template=2.icon_not_applying.yml&title=%5BNot+applying%5D+Stremio&app_name=Stremio&component=com.stremio.one%2Fcom.stremio.tv.MainActivity
+```
+
+Generated from `.github/ISSUE_TEMPLATE/` by `tools/build_issue_prefills.py`.
+Edit the forms, re-run the generator — `--check` fails this block on drift.
+<!-- issue-prefills:end -->
 
 ---
 
@@ -58,9 +96,9 @@ Icons are **original geometry** drawn on a shared 512 grid — simple shapes, ro
 
 ### What's covered
 
-924 icons across 21 categories — streaming, media centres, debrid services, players, launchers, tools, stores, live TV, music, sport, gaming, VPN, browsers, files, and more.
+925 icons across 21 categories — streaming, media centres, debrid services, players, launchers, tools, stores, live TV, music, sport, gaming, VPN, browsers, files, and more.
 
-Highlights: Stremio, Kodi, Jellyfin, Emby, Plex, Nuvio TV, Syncler, Weyd, TorBox, Real-Debrid, AllDebrid, Premiumize, Trakt, VLC, MX Player, SmartTube, YouTube, Spotify, Twitch, Downloader, Aurora Store, TiviMate, TV Bro, SYNC, LocalSend, RS File Manager, Sparkle TV, DS file, Ultimate File Manager Pro — plus Netflix, Prime Video, Disney+, Max, Apple TV, Stan, Binge, Kayo, ABC iview, 9Now, 7plus, 10 Play, SBS, and 860+ more.
+Highlights: **[NoBuffr](https://downloads.nobuffr.com/android/nobuffr.apk)**, Stremio, Kodi, Jellyfin, Emby, Plex, Nuvio TV, Syncler, Weyd, TorBox, Real-Debrid, AllDebrid, Premiumize, Trakt, VLC, MX Player, SmartTube, YouTube, Spotify, Twitch, Downloader, Aurora Store, TiviMate, TV Bro, SYNC, LocalSend, RS File Manager, Sparkle TV, DS file, Ultimate File Manager Pro — plus Netflix, Prime Video, Disney+, Max, Apple TV, Stan, Binge, Kayo, ABC iview, 9Now, 7plus, 10 Play, SBS, and 860+ more.
 
 Full table with every mapped component: [**docs/IconPackList.md**](docs/IconPackList.md)
 
@@ -70,13 +108,13 @@ Full table with every mapped component: [**docs/IconPackList.md**](docs/IconPack
 
 ### Wallpapers
 
-70 curated wallpapers — browse in the Wallpapers tab, preview full-screen, Set as device wallpaper or Save to `Pictures/CoreBuilds`. Multi-select export lets you bulk-save to the folder where launchers like Monet auto-rotate. Thumbnails are bundled; full 4K images download on demand from GitHub.
+58 curated wallpapers in four active series — browse in the Wallpapers tab, preview full-screen, Set as device wallpaper or Save to `Pictures/CoreBuilds`. Multi-select export lets you bulk-save to a folder any launcher (or the system wallpaper picker) can rotate from. Thumbnails are bundled; the full images download on demand from GitHub, at the resolution each series was authored at (`1376×768` for series 6, 4K for series 1–3). Series 4 "Core Mark" was retired in v1.8.6 — see [`Wallpapers/README.md`](Wallpapers/README.md).
 
 ---
 
 ### 16:9 Banners
 
-Every icon ships a **320×180 monoline banner** for Projectivy's wide-card layout. One glyph, cyan→violet rail, Outfit Bold wordmark (path-outlined so every machine renders the same) — generated from `tools/build_banners.py`.
+Every icon ships a **320×180 transparent banner** for Projectivy's wide-card layout. Third-party app banners use the same **monoline glyph + cyan→violet rail + category + path-outlined Outfit Bold name** — including NoBuffr and Plex. No standalone vendor-wordmark exception. The pack's own Core Builds mark remains unchanged. Generated from `tools/build_banners.py`.
 
 Appfilter maps to banners by default; square icons stay opt-in via `drawable.xml`.
 
@@ -158,11 +196,168 @@ Inherited from the brand guide, enforced by the generator and validator:
 | --- | --- |
 | Transparent background, always | the launcher owns the card colour |
 | 512 grid · 432 safe area · 34 stroke | survives 10-foot downscaling |
-| One accent colour per icon, flat | colour-as-language stays legible |
-| Original geometry, never traced logos | ours to ship, ours to license |
+| One accent per glyph; 32px round primary strokes with subordinate detail | reviewed brands use the same geometric language, not a collection of vendor styles |
+| Original Core Builds linework; vendor material is reference-only | brand recognition must not override the pack's identity |
 | The hex stance is never rotated | the point-up hexagon is load-bearing |
-| Palette locked to §03 swatches | new accents need a meaning slot first |
+| Shared 3:1 dark-card contrast floor | squares, banners and previews use the same light-ink alternative when needed |
 | `isShrinkResources = false` | drawables resolve by name at runtime |
+
+---
+
+## 🔷 Pixel Neon Icon Pack
+
+**The 8-bit neon companion pack for Projectivy Launcher on Android TV.**
+`925 icons` · `70 wallpapers` · `0.1.0` · clean monoline sibling: **Core Builds Icon Pack**
+
+If the original pack is the quiet night-mode set, **Core Builds Pixel Neon** is
+its arcade cabinet: the same mappings and coverage, but every mark is drawn as
+a unique 32 px sprite, given a violet/cyan bloom, and scaled with hard
+nearest-neighbour pixels. Brand glyph cues from the catalog become
+independently drawn tile monograms, play marks, eyes, shields, waves, and other
+recognizable pixel signals; each sprite also varies in silhouette, internal
+pattern, and pose instead of reusing the monoline geometry. The PNGs remain
+transparent, so the launcher still owns the card colour.
+
+![Core Builds Pixel Neon preview](pixel-neon/docs/preview.png)
+
+### Install
+
+Download the `pixel-neon-release.apk` asset from the [**Pixel Neon stable
+release**](../../releases/tag/pixel-neon), or use the versioned `pixel-neon-v*`
+release tags. Sideload it beside the original pack — the two packages are
+separate and can be selected independently:
+
+- **Core Builds Icon Pack** — `tv.corebuilds.iconpack`
+- **Core Builds Pixel Neon** — `tv.corebuilds.pixelneon`
+
+Open the app and press **Apply**, or choose it manually in **Projectivy Launcher
+Settings → Appearance → Cards → Icon Pack → Core Builds Pixel Neon Icon Pack**.
+The pack includes the same full/short component mappings and 16:9 banner
+fallback as the original, plus individually generated square pixel sprites for
+per-app selection. Banners use three arcade sign layouts rather than the
+original rail-and-wordmark treatment.
+
+Pixel Neon also includes its own 70-wallpaper 8-bit collection: original
+pixel-art scenes across arcade grids, cyber circuits, space runs, neon nature,
+and boss-stage arenas. Thumbnails and the manifest are bundled for offline
+browsing, while full 4K sources download only when a preview or export needs
+them. Set a preview directly when supported, save it to `Pictures/CoreBuilds`
+for launcher rotation, or bulk-export a selection with progress, cancellation,
+and retry support. The renderer is derived from the one source catalog, so new
+component coverage lands in both packs together. See
+[`pixel-neon/README.md`](pixel-neon/README.md) for the build and regeneration
+commands. The research-informed sprite rules are documented in
+[`pixel-neon/DESIGN.md`](pixel-neon/DESIGN.md).
+## 🔷 Core Builds Pop
+
+**The same 925 icons, drawn as pop art.** Android TV's only cartoon icon pack.
+`925 icons` · `12 wallpapers` · `16 swatches` · `v1.0.0`
+
+<p align="center"><img src="docs/pop-preview.png" alt="Core Builds Pop contact sheet" width="820"></p>
+
+Where the classic pack is transparent and lets Projectivy own the card, **Pop
+brings its own card**: one superellipse container, a heavy ink keyline, a cream
+mark, and a Ben-Day halftone screen — the neo-brutalist / comic-book language,
+executed as a system rather than as a mood.
+
+Both packs are generated from the same `tools/catalog.json`, so **coverage can
+never diverge** — a component mapped in one is mapped in the other, and
+`tests/test_pop.py` fails the build if that stops being true.
+
+### Uniform, by construction
+
+The brief was "uniform but high quality", and those usually fight. Pop resolves
+it by making the loudness the constant. Five invariants, each enforced in
+`tools/popart.py` and checked by `tools/validate_pop.py` — not written down in
+a style guide and hoped for:
+
+| Invariant | What it replaces |
+|---|---|
+| One superellipse container on all 925 | no container; every launcher looked different |
+| 171 brand accents → **16 locked swatches**, snapped by hue | 171 unbounded accents |
+| Every mark optically normalised to one ink box | mark sizes varying by more than 2× |
+| Line weight snapped **after** scaling, not before | strokes thinning as glyphs grew |
+| One halftone screen, one angle, one pitch | — |
+
+The palette keeps colour-as-language — Netflix stays red, Spotify stays green —
+and takes away only the saturation and value, which were never carrying
+meaning. Every swatch, its app count, and a real icon rendered in it:
+[**docs/pop-palette.png**](docs/pop-palette.png).
+
+The biggest single legibility win is the third rule. 614 of the 925 icons were
+a letter inside a rounded box; Pop's container **is** that box, so the box is
+dropped and the letter is scaled to the same ink box as every other mark. The
+letters roughly double in size.
+
+### Covers apps it has never seen
+
+Pop's whole claim is one container, and a single unthemed app breaks that claim
+on sight. So the pack hands the launcher the furniture to build one: an
+`iconback` in each of the 16 swatches, an `iconmask`, an `iconupon` keyline and
+a `scale` factor. Apps we do not cover get the Pop field, halftone and ink
+keyline with their own icon composited inside — so the answer to "925 icons" is
+really *every app on your device*. No other Android TV pack ships this.
+
+Pop also themes **Projectivy's own cards** — settings, categories, channels and
+HDMI 1–4 / AV inputs, numbered so you can tell which input is which. That uses
+the internal-activity mapping Projectivy added in 4.70
+([miproja1#512](https://github.com/spocky/miproja1/issues/512)), answering a
+[posted request](https://www.reddit.com/r/Projectivy_Launcher/comments/1icfbn7/how_to_i_install_icon_packs_also_can_i_make_my/)
+that no pack had filled.
+
+### Matching wallpapers
+
+Twelve 4K walls in `series-5-pop`, built from the same primitives as the icons
+— same swatches, same ink, same halftone. Dark-weighted with a calm lower half,
+because that is where Projectivy draws its card rows.
+
+<p align="center"><img src="docs/pop-wallpapers.png" alt="Core Builds Pop wallpapers" width="820"></p>
+
+Flat art needs no grain dither, which means it survives an indexed palette
+losslessly: the whole 12-wall 4K series is **2.5 MB**.
+
+### Install
+
+Pop is a **separate APK with its own package**, so you can install it alongside
+the classic pack and switch between them in Projectivy's own icon-pack list.
+
+1. **https://github.com/brevityA/CoreBuildsApps/releases/download/pop/corepop-release.apk**
+   (versioned builds under `pop-v*` tags)
+2. Sideload, open, press **apply**.
+3. Or: **Projectivy Settings** → **Appearance** → **Cards** → **Icon Pack** → **Core Builds Pop**
+
+> **Tip:** Pop icons carry their own field colour, so set Projectivy's card
+> background to something dark and neutral and let the icons do the colour.
+
+### Build it
+
+```bash
+python tools/build_pop.py              # 925 icons + 925 banners + branding (~5 min)
+python tools/build_pop_wallpapers.py   # 12 × 4K walls + thumbs + manifest (~70 s)
+python tools/validate_pop.py           # 13,700+ coherence checks
+python tests/test_pop.py               # 24 contract tests
+```
+
+`tools/pop_glyph_metrics.json` is a committed measurement of every glyph's ink
+bounding box. It exists so the generators are a pure function of committed
+inputs — measuring at render time would make the output depend on which
+rasteriser version CI happened to install, and the SVG drift gate would fail on
+an unrelated dependency bump. Re-run `tools/measure_pop_glyphs.py` only when
+glyph geometry actually changes.
+
+### Why this pack exists
+
+Full research, with sources: [**docs/research/iconpack-demand-2026.md**](docs/research/iconpack-demand-2026.md)
+[**docs/research/wallpaper-directions.md**](docs/research/wallpaper-directions.md),
+and [**docs/research/android-tv-icon-packs.md**](docs/research/android-tv-icon-packs.md)
+— the launcher landscape, the ADW spec features packs leave unused, and a
+prioritised roadmap.
+
+The short version: Android TV has roughly three icon packs, and all three are
+minimal line art. Pop art / cartoon sells well on phones — the leading pack in
+that style ships 7,850 icons and bundles matching halftone wallpapers — and
+nobody ships it on TV. Coverage was already won here at 925 icons; style was
+the open axis.
 
 ---
 
@@ -170,19 +365,39 @@ Inherited from the brand guide, enforced by the generator and validator:
 
 ```
 tools/catalog.json           the single source of truth
-tools/glyphs.py              glyph primitives, original geometry
+tools/glyphs.py              original Core Builds glyph primitives (no vendor override)
+tools/brandmarks/            pinned reference-only SVGs (provenance in catalog)
+tools/icon_style.py          shared Classic dark-card colour policy
 tools/typeface.py            Outfit Bold/ExtraBold → SVG paths
 tools/fonts/                 Outfit OFL sources for wordmarks + monograms
 tools/build_icons.py         catalog → SVG, PNG, appfilter, docs
 tools/build_banners.py       catalog → 16:9 monoline banners
 tools/build_branding.py      launcher icon + Leanback banner
 tools/build_brand_preview.py branding preview sheet
-tools/validate.py            coherence checks (20,000+ at 924 icons)
-assets/svg/                  master vectors (924)
-assets/banners/              16:9 banners (924)
-app/src/main/res/            the Android module
-Latestrelease/version.json   in-app update manifest
-docs/IconPackList.md         supported apps + components
+tools/build_pixel_neon_wallpapers.py  original 8-bit Pixel Neon wallpapers
+tools/build_pixel_neon.py              catalog → 8-bit neon companion pack
+tools/validate_pixel_neon.py           alternate-pack coherence checks
+tools/validate.py            coherence checks (20,000+ at 925 icons)
+tools/popart.py              Pop render engine (container, ink, halftone, fit)
+tools/measure_pop_glyphs.py  one-off glyph ink-bbox measurement
+tools/pop_glyph_metrics.json committed metrics, so renders are reproducible
+tools/build_pop.py           catalog → the whole Pop module
+tools/build_pop_wallpapers.py catalog-free: 12 × 4K Pop walls + manifest
+tools/validate_pop.py        Pop coherence checks (13,700+)
+assets/svg/                  master vectors (925)
+assets/banners/              16:9 banners (925)
+app/src/main/res/            the original icon-pack Android module
+pixel-neon/                   8-bit neon companion pack + its Gradle root
+PixelNeonWallpapers/          original 8-bit Pixel Neon sources + manifest
+pop/                         Core Builds Pop — second pack, shares app/'s Kotlin
+assets/pop/                  Pop master vectors (925 square + 925 banner)
+Wallpapers/series-5-pop/     12 × 4K Pop wallpapers (2.5 MB total)
+Latestrelease/version.json   Icon Pack update manifest
+Latestrelease/pixel-neon-version.json  Pixel Neon update manifest
+Latestrelease/pop-version.json  Pop's in-app update manifest
+docs/IconPackList.md         original supported apps + components
+docs/PopIconList.md          the same apps, with their Pop swatch
+docs/research/               why this pack exists, with sources
 ticker/                      Core Line — sports & channel ticker (see ticker/README.md)
 shift/                       Core Shift — live wallpaper browser (see shift/HANDOVER.md)
 doctor/                      Core Doctor — streaming diagnostics (see doctor/SPEC.md)
@@ -355,6 +570,6 @@ Spec: [`doctor/SPEC.md`](doctor/SPEC.md).
 
 ## 🔷 Credits
 
-Icon-pack conventions follow the approach proven by [Projectivy Icon Pack](https://github.com/SicMundus86/ProjectivyIconPack) by SicMundus86. Projectivy Launcher is by Spocky. App names and trademarks belong to their respective owners; this pack ships original artwork only.
+Icon-pack conventions follow the approach proven by [Projectivy Icon Pack](https://github.com/SicMundus86/ProjectivyIconPack) by SicMundus86. Projectivy Launcher is by Spocky. App names and trademarks belong to their respective owners; see [artwork sources and notices](THIRD_PARTY_NOTICES.md) for the offline references and original Core Builds interpretations. No endorsement is implied.
 
 Part of the [Core Builds](https://github.com/brevityA/Core-Builds) ecosystem · [ko-fi.com/branding_brevity](https://ko-fi.com/branding_brevity)
