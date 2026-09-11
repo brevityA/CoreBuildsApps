@@ -4,7 +4,42 @@ All notable changes to the Core Builds Icon Pack. Format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); versions follow
 [SemVer](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [1.8.12] — 2026-09-11
+
+**A safe-area constant that nothing enforced, a module that stopped
+compiling, and the pack's own banner with its last letter cut off.**
+
+### Fixed
+- **Seven glyphs put ink outside the safe area.** `SAFE = 432` had been a
+  constant in `glyphs.py` that nothing checked. The glyphs place coordinates,
+  not ink, so a path drawn to the safe edge still hangs its stroke half-width
+  past it. RetroArch was drawn to `x=496`; the 26.2 monoline put ink at
+  **509.1 on a 512 grid** — 3px of margin where SAFE promises 40. Two separate
+  faults: four marks genuinely oversized, three the right size but drawn
+  off-centre (Acorn sat 39px high, Red Bull was built about `cy=240`). Fixed in
+  the geometry, not with a render-time transform, so no stroke weight changed
+  and the monoline reads the same. **8 Classic icons and 11 Pop assets** move.
+- **Pixel Neon did not compile.** 1.8.11's wallpaper seed palette drew its
+  swatch borders with `R.color.cb_hairline` and declared the colour in `app/`
+  and `pop/` only. Pixel Neon forks that Kotlin under its own package, so the
+  module broke and every pull request opened afterwards was red on a failure
+  unrelated to itself.
+- **46 Pixel Neon icons had drifted from the catalog.** 94 files no longer
+  matched what the generator produces. The sprite seed includes the icon's
+  *positional index*, so inserting one catalog entry silently re-rolls every
+  sprite after it — splitting WeatherBug out of Streamflix in 1.8.11 did
+  exactly that. Regenerated here; the seed itself is tracked separately.
+- **The pack's own Leanback banner clipped its last letter.** It shipped
+  `for Projectivy · Android T` — 27 monospace characters from `x=164` ending at
+  326.6 on a 320-wide canvas. A plain **TV-OV** failure on the one asset every
+  Android TV home row shows for this app. The wordmark also named
+  `Georgia,serif` and the strapline `ui-monospace` as `<text>`, so what shipped
+  depended on the build host's fonts; Georgia is not licensed for
+  redistribution either. Both are now outlined to paths from `tools/fonts`
+  (SIL OFL), and an `assert` measures the lockup against the 5% overscan
+  margin.
+
+- **Three gates, because each of these was silent.** A test measures the rendered alpha of all 322 glyphs against SAFE. `pop_glyph_metrics.json` carries a `geometry_sha256` of the bodies it was measured from, so editing a glyph without re-running the measurement is caught rather than leaving Pop scaling a mark to an ink box it no longer has. `check_ui_resources.py` now pairs every module with the Kotlin it actually compiles — it had hardcoded one path, which is why it printed OK on a tree that could not build.
 
 ### Added
 - **Prefilled icon-request issue links.** `tools/build_issue_prefills.py` reads
@@ -21,12 +56,24 @@ All notable changes to the Core Builds Icon Pack. Format follows
   Display-only — not focusable, not in the D-pad chain. Icon rasters are
   unchanged.
 
+
+- **Six generic letter tiles became researched brand marks.** New monoline
+  `aljazeera_flame`, `france24_mark`, `cbc_gem`, `cnbc_peacock` and
+  `mgm_reel`; `sbsondemand` joins `sbs` on the five-splice globe. Tile share
+  66.4% → 65.9% (615 → 610 of 926), bespoke marks 311 → 316, with a
+  tile-share ceiling and bespoke floor added as tests so the number can only
+  move the right way. Original linework throughout — no vendor silhouette or
+  wordmark.
+
 ### Changed
 - **Same-name marks that were two products, or one product with two tiles.**
   DIG is no longer labelled Daijishou. Jawwy TV and ERTFLIX package
   migrations share one glyph and accent. Wholphin leaves the Damonte D-tile
   for a whale-back construction. The Tanasi Streamflix fork is a flow/play
   mark, not a letter S. Yettel Selfcare is named apart from Yettel TV.
+
+Coverage: **926 icons / 1101 catalog components / 58 classic wallpapers**.
+versionName 1.8.12, versionCode 22.
 
 ## [1.8.11] — 2026-09-10
 
