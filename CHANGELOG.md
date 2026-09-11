@@ -7,6 +7,13 @@ All notable changes to the Core Builds Icon Pack. Format follows
 ## [Unreleased]
 
 ### Added
+- **Prefilled icon-request issue links.** `tools/build_issue_prefills.py` reads
+  `.github/ISSUE_TEMPLATE/*.yml` and writes the README's **Request an icon**
+  block: both forms open on the right template with the right title prefix and
+  label, and `--app`/`--component`/`--field` build a link for one specific app —
+  the thing to paste into a reply. GitHub only fills `input`/`textarea`, so the
+  generator refuses to prefill a dropdown or tick a confirm box, and `--check`
+  (now in Suite CI) fails the block if a form or the stamp drifts.
 - **Wallpaper preview shows the launcher seed palette.** Five chips under the
   title (seed, secondary, tertiary, container, on-seed) extracted from the
   image via `WallpaperColors` on API 27+ and a chromatic 32×32 sample below

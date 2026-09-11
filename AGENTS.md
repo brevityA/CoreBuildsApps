@@ -83,9 +83,16 @@ Before any PR:
 python tools/build_readme_badge.py
 python tools/check_suite_truth.py
 python tools/audit_contract.py
+python tools/build_issue_prefills.py --check
 ```
 
 `check_suite_truth.py` fails stale README/agent/doc claims, catalog/Gradle/version metadata drift, an AGENTS.md suite-table or wallpaper-count mismatch, missing stamped README block, and the `line-v*` trap. Core Line's prefix is `coreline-v*`.
+
+`build_issue_prefills.py --check` holds the README's prefilled icon-request links to
+`.github/ISSUE_TEMPLATE/`: a renamed form file, a new or shadowing field `id`, or a
+hand-edited `<!-- issue-prefills -->` stamp fails it. Regenerate with
+`python tools/build_issue_prefills.py` — never hand-edit an `issues/new?...` URL. GitHub
+prefills `input`/`textarea` fields only, and the tool refuses to promise more.
 
 ## Product verification shortcuts
 

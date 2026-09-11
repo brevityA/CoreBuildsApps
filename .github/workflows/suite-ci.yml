@@ -23,6 +23,8 @@ jobs:
           python-version: '3.12'
       - name: Assert every shippable app has CI, metadata, and hardened updater contracts
         run: python tools/audit_contract.py
+      - name: Check prefilled icon-request links against the issue forms
+        run: python tools/build_issue_prefills.py --check
 
   android:
     name: ${{ matrix.name }} build lint tests

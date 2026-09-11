@@ -43,6 +43,25 @@ That's the whole toolchain for asset work. Building the APK additionally needs J
 
 Multiple components per icon is normal and encouraged — Fire TV, mobile variants, and regional forks often expose different activities.
 
+## Requesting an icon instead
+
+An app you cannot map yourself belongs in an issue form, not a PR. Both forms are
+deep-linked in the README — right template, title prefix and label, plus field values —
+and those links are generated, so never hand-edit an `issues/new?...` URL in
+`README.md`:
+
+```bash
+python tools/build_issue_prefills.py            # rewrite the README block
+python tools/build_issue_prefills.py --check     # what Suite CI runs
+python tools/build_issue_prefills.py --app Stremio --template 2.icon_not_applying.yml \
+    --component com.stremio.one/com.stremio.tv.MainActivity
+```
+
+The generator reads `.github/ISSUE_TEMPLATE/*.yml`, so a new field shows up in the
+README table by itself. GitHub prefills `input` and `textarea` fields only, and the
+tool refuses to promise anything more: a required dropdown or a confirm box cannot be
+answered from a URL, so no link pretends to have answered it.
+
 ## Adding a glyph
 
 Add a function to `tools/glyphs.py` and register it in the `GLYPHS` dict:

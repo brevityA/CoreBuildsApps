@@ -38,7 +38,41 @@ Icons share the **Core Builds visual language**: original geometry, rounded-line
 
 > **Tip:** Use a **dark card background** in Projectivy. These icons are drawn for night chrome (`#0d1117`).
 
-> **Note:** Designed and mapped against Android TV / Google TV builds of each app. Devices running mobile variants sometimes expose a different launcher activity — if an icon doesn't auto-assign, [open an issue](../../issues) with the component name and it gets added.
+> **Note:** Designed and mapped against Android TV / Google TV builds of each app. Devices running mobile variants sometimes expose a different launcher activity — if an icon doesn't auto-assign, [open a prefilled issue](#request-an-icon) with the component name and it gets added.
+
+<!-- issue-prefills:start -->
+### Request an icon
+
+Both issue forms are deep-linked: a report opens on the right template with
+the right title and label already set — no chooser, no retyping the prefix.
+Field values ride on the same URL. Only `input` and `textarea` fields accept
+a prefill, so every required dropdown and confirm box is still answered by
+the reporter — a link can never tick a gate for them.
+
+| Open | Use it when | A link can prefill | Only in the form | Title / label |
+|---|---|---|---|---|
+| [🎨 New icon request](https://github.com/brevityA/CoreBuildsApps/issues/new?assignees=&labels=icon+request&projects=&template=1.new_icon_request.yml&title=%5BIcon%5D+) | Request an icon for an app that isn't in the pack yet. | App name\* · Component name · Store or download link\* · Anything else | Device type\* · Confirm | `[Icon]` · `icon request` |
+| [🔧 Icon not auto-assigning](https://github.com/brevityA/CoreBuildsApps/issues/new?assignees=&labels=mapping&projects=&template=2.icon_not_applying.yml&title=%5BNot+applying%5D+) | The app is in the pack, but its icon doesn't appear on your device. | App name\* · The component name on YOUR device\* · Device and OS\* | Launcher\* · Confirm | `[Not applying]` · `mapping` |
+
+One app per issue, and check [docs/IconPackList.md](docs/IconPackList.md) by
+name, drawable and package first — a listed app that isn't applying belongs
+on the other form.
+
+For one specific app, let the generator build the link you paste into a reply:
+
+```bash
+python tools/build_issue_prefills.py --app Stremio \
+    --template 2.icon_not_applying.yml \
+    --component com.stremio.one/com.stremio.tv.MainActivity
+```
+
+```text
+https://github.com/brevityA/CoreBuildsApps/issues/new?assignees=&labels=mapping&projects=&template=2.icon_not_applying.yml&title=%5BNot+applying%5D+Stremio&app_name=Stremio&component=com.stremio.one%2Fcom.stremio.tv.MainActivity
+```
+
+Generated from `.github/ISSUE_TEMPLATE/` by `tools/build_issue_prefills.py`.
+Edit the forms, re-run the generator — `--check` fails this block on drift.
+<!-- issue-prefills:end -->
 
 ---
 
