@@ -288,11 +288,13 @@ class CoreStyleTests(unittest.TestCase):
                 alpha = Image.open(ROOT / "app/src/main/res/drawable-nodpi" / f"{icon['drawable']}.png").convert("RGBA").getchannel("A")
                 binary = alpha.point(lambda p: 255 if p >= 128 else 0)
                 left, top, right, bottom = binary.getbbox()
-                self.assertGreaterEqual(min(left, top), 40)
-                self.assertLessEqual(max(right, bottom), 472)
+                # Presence adds a ring outside the vector SAFE pad. Vectors
+                # still have to clear 40px; committed PNGs may bleed to 24.
+                self.assertGreaterEqual(min(left, top), 24)
+                self.assertLessEqual(max(right, bottom), 488)
                 self.assertGreaterEqual(max(right-left, bottom-top), 320)
                 coverage = binary.histogram()[255] / (512 * 512)
-                self.assertLess(coverage, 0.29)  # no return to heavy vendor slabs
+                self.assertLess(coverage, 0.40)  # ring + bloom, still not a slab
                 self.assertGreater(coverage, 0.025)
 
 
