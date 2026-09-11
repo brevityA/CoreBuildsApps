@@ -20,6 +20,7 @@ Re-run only when glyphs.py changes shape geometry.
 """
 from __future__ import annotations
 
+import hashlib
 import io
 import json
 import os
@@ -64,6 +65,23 @@ def geometry_bbox(glyph: str) -> tuple[float, float, float, float] | None:
     return tuple(round(v * k, 2) for v in box)
 
 
+def geometry_fingerprint() -> str:
+    """Digest of the exact geometry this table was measured from.
+
+    "Re-run only when glyphs.py changes shape geometry" was an instruction
+    to remember, and nothing caught it when someone didn't: a stale box makes
+    Pop scale a mark it has already stopped matching, silently. Hashing the
+    same hairline bodies the measurement consumes gives the test a way to say
+    so. It is pure string work, so the check stays free of the rasteriser —
+    which is the whole reason this table is committed rather than computed.
+    """
+    h = hashlib.sha256()
+    for name in sorted(GLYPHS):
+        h.update(name.encode("utf-8"))
+        h.update(strip_weights(pop_body(name), HAIRLINE).encode("utf-8"))
+    return h.hexdigest()
+
+
 def main() -> int:
     metrics: dict[str, list[float]] = {}
     missing: list[str] = []
@@ -80,6 +98,7 @@ def main() -> int:
                  "tools/measure_pop_glyphs.py — do not hand-edit."),
         "grid": GRID,
         "count": len(metrics),
+        "geometry_sha256": geometry_fingerprint(),
         "metrics": metrics,
     }
     OUT.write_text(json.dumps(payload, indent=2, sort_keys=False) + "\n",

@@ -125,6 +125,32 @@ class IdentityTests(unittest.TestCase):
             composited = Image.alpha_composite(card, image)
             self.assertEqual(composited.getpixel((256, 256)), card.getpixel((256, 256)))
 
+    def test_no_glyph_puts_ink_outside_the_safe_area(self):
+        """SAFE=432 was a constant nothing enforced.
+
+        The glyphs place coordinates, not ink, so a path drawn to the safe
+        edge still hangs its stroke half-width past it. Seven did: retroarch
+        reached x=509 on a 512 grid, 3px of margin where SAFE promises 40.
+        Harmless while the pack ships unmasked, and clipped the moment a
+        launcher applies an iconmask. Measured on the rendered alpha, which
+        is the only thing that knows where the stroke actually lands.
+        """
+        from glyphs import GRID, SAFE
+
+        pad = (GRID - SAFE) / 2
+        for name in sorted(GLYPHS):
+            png = svg2png(bytestring=render_svg(name, "#00d4ff").encode(),
+                          output_width=GRID, output_height=GRID)
+            bbox = Image.open(io.BytesIO(png)).convert("RGBA").getchannel("A").getbbox()
+            self.assertIsNotNone(bbox, f"{name}: renders no ink")
+            x0, y0, x1, y1 = bbox
+            margin = min(x0, y0, GRID - x1, GRID - y1)
+            with self.subTest(glyph=name):
+                self.assertGreaterEqual(
+                    margin, pad,
+                    f"{name}: ink {x1 - x0}x{y1 - y0} at {bbox} leaves "
+                    f"{margin}px of margin, SAFE={SAFE} requires {pad:.0f}")
+
     def test_equalizer_centres_do_not_depend_on_card_background(self):
         png = svg2png(bytestring=render_svg("equalizer", "#FF6D00").encode(), output_width=512, output_height=512)
         alpha = Image.open(io.BytesIO(png)).convert("RGBA").getchannel("A")
