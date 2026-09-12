@@ -1,0 +1,54 @@
+name: Probe Monet manifest
+
+# Temporary research job: dumps the public Monet Launcher APK manifest so we
+# can see which intents it actually accepts (apply icon pack, share-to-set
+# wallpaper). Read-only; nothing is published.
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: Monet release tag (e.g. v1.0.84)
+        default: v1.0.84
+
+permissions:
+  contents: read
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Download APK
+        run: |
+          V="${{ github.event.inputs.version }}"
+          curl -sSL -o monet.apk "https://github.com/Klevico/Monet-Launcher/releases/download/${V}/monet-${V#v}.apk"
+          ls -la monet.apk
+      - name: Dump manifest
+        run: |
+          BT=$(ls -d "$ANDROID_HOME"/build-tools/* | sort -V | tail -1)
+          echo "=====MANIFEST====="
+          "$BT/aapt2" dump xmltree --file AndroidManifest.xml monet.apk
+          echo "=====BADGING====="
+          "$BT/aapt" dump badging monet.apk | head -40 || true
+      - name: Grep dex for intent/extra strings
+        run: |
+          pip install --quiet androguard
+          python3 - <<'EOF'
+          import re, zipfile
+          z = zipfile.ZipFile("monet.apk")
+          names = [n for n in z.namelist() if n.endswith(".dex")]
+          pat = re.compile(rb'[\x20-\x7e]{6,200}')
+          hits = set()
+          for n in names:
+              data = z.read(n)
+              for m in pat.finditer(data):
+                  s = m.group().decode()
+                  ls = s.lower()
+                  if any(k in ls for k in ("iconpack", "icon_pack", "icon pack", "wallpaper", "extra.", ".action.", "apply", "com.klevico.monet.", "attach_data", "action_send", "picturesfolder", "pictures/")):
+                      hits.add(s)
+          print("=====DEX STRINGS=====")
+          for s in sorted(hits):
+              print(s)
+          print("=====END=====", len(hits))
+          EOF
