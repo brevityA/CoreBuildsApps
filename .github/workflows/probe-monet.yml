@@ -70,6 +70,75 @@ jobs:
             unzip -l /tmp/monet.apk | awk '{print $4}' | grep "^res/xml" | sort
           } > docs/research/monet-probe/monet-${V}-files.txt
           wc -l docs/research/monet-probe/*
+      - name: Decompile relevant classes
+        run: |
+          pip install --quiet androguard
+          BT=$(ls -d "$ANDROID_HOME"/build-tools/* | sort -V | tail -1)
+          "$BT/aapt2" dump strings /tmp/monet.apk 2>/dev/null \
+            | grep -i -E "icon pack|iconpack|icon shape|wallpaper|folder|share|premium|rotation|library|apply|your own|image" \
+            | sed -E 's/^ *String #[0-9]+ : //' | sort -u > docs/research/monet-probe/monet-${V}-res-strings.txt || true
+          python3 - <<'EOF' > docs/research/monet-probe/monet-${V}-classes.txt 2>/dev/null
+          import re, logging
+          logging.disable(logging.CRITICAL)
+          from androguard.misc import AnalyzeAPK
+          a, ds, dx = AnalyzeAPK("/tmp/monet.apk")
+          want = re.compile(r"WallpaperShare|IconPack|iconPack|WallpaperFolder|WallpaperRotationSource|ScreensaverWallpaperSource|ProjectivyWallpaper|Projectivy", re.I)
+          seen = 0
+          for cls in dx.get_classes():
+              name = cls.name
+              if not name.startswith("Lcom/klevico/"):
+                  continue
+              if not want.search(name):
+                  continue
+              seen += 1
+              print("=" * 100)
+              print("CLASS", name, "extends", cls.extends)
+              try:
+                  c = cls.get_vm_class()
+                  for f in c.get_fields():
+                      print("  FIELD", f.get_name(), f.get_descriptor(), f.get_access_flags_string())
+              except Exception as e:
+                  print("  (fields err)", e)
+              for m in cls.get_methods():
+                  print("  METHOD", m.name, m.descriptor)
+                  strings = set()
+                  calls = []
+                  try:
+                      for _, call, _ in m.get_xref_to():
+                          cn = call.class_name
+                          if cn.startswith("Lcom/klevico/") or cn.startswith("Landroid/") or cn.startswith("Ltv/projectivy") or cn.startswith("Landroidx/core/content/") or cn.startswith("Landroidx/documentfile"):
+                              calls.append(f"{cn}->{call.name}{call.descriptor}")
+                  except Exception:
+                      pass
+                  try:
+                      mm = m.get_method()
+                      if hasattr(mm, "get_instructions"):
+                          for ins in mm.get_instructions():
+                              out = ins.get_output()
+                              if "const-string" in ins.get_name():
+                                  strings.add(out.split(", ", 1)[1] if ", " in out else out)
+                  except Exception:
+                      pass
+                  for s_ in sorted(strings):
+                      print("     STR", s_)
+                  for c_ in sorted(set(calls)):
+                      print("     CALL", c_)
+              if seen > 80:
+                  break
+          print("TOTAL CLASSES", seen)
+          # enum values for anything IconPack / WallpaperRotationSource / ScreensaverWallpaperSource
+          print("=" * 100)
+          print("ENUM-LIKE FIELDS")
+          for cls in dx.get_classes():
+              n = cls.name
+              if n.startswith("Lcom/klevico/") and re.search(r"IconPack(Mode|Variant)|WallpaperRotationSource|ScreensaverWallpaperSource|WallpaperSource|IconShape|TileStyle", n):
+                  try:
+                      c = cls.get_vm_class()
+                      print(n, [f.get_name() for f in c.get_fields() if "static" in f.get_access_flags_string()])
+                  except Exception as e:
+                      print(n, "err", e)
+          EOF
+          wc -l docs/research/monet-probe/*
       - name: Commit results
         run: |
           git config user.name "monet-probe"
