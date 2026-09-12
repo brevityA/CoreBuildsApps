@@ -56,7 +56,7 @@ android {
 
 dependencies {
     // FileProvider + main-executor for the sideload updater (UpdateManager.kt).
-    implementation("androidx.core:core-ktx:1.13.1")
+    implementation("androidx.core:core-ktx:1.19.0")
 }
 
 val webPublic = rootProject.file("../public")
