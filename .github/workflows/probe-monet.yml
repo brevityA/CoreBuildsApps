@@ -2,7 +2,7 @@ name: Probe Monet manifest
 
 # Temporary research job: dumps the public Monet Launcher APK manifest so we
 # can see which intents it actually accepts (apply icon pack, share-to-set
-# wallpaper). Read-only; nothing is published.
+# wallpaper). Results are committed to the research branch as a text file.
 
 on:
   push:
@@ -15,43 +15,65 @@ on:
         default: v1.0.84
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
   probe:
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
+      - uses: actions/checkout@v4
       - name: Download APK
         run: |
           V="${{ github.event.inputs.version || 'v1.0.84' }}"
-          curl -sSL -o monet.apk "https://github.com/Klevico/Monet-Launcher/releases/download/${V}/monet-${V#v}.apk"
-          ls -la monet.apk
-      - name: Dump manifest
+          echo "V=$V" >> "$GITHUB_ENV"
+          curl -sSL -o /tmp/monet.apk "https://github.com/Klevico/Monet-Launcher/releases/download/${V}/monet-${V#v}.apk"
+          ls -la /tmp/monet.apk
+      - name: Dump manifest and strings
         run: |
+          set -e
+          mkdir -p docs/research/monet-probe
+          OUT=docs/research/monet-probe/monet-${V}-manifest.txt
           BT=$(ls -d "$ANDROID_HOME"/build-tools/* | sort -V | tail -1)
-          echo "=====MANIFEST====="
-          "$BT/aapt2" dump xmltree --file AndroidManifest.xml monet.apk
-          echo "=====BADGING====="
-          "$BT/aapt" dump badging monet.apk | head -40 || true
-      - name: Grep dex for intent/extra strings
-        run: |
-          pip install --quiet androguard
-          python3 - <<'EOF'
+          {
+            echo "=====BADGING====="
+            "$BT/aapt" dump badging /tmp/monet.apk | grep -v "^application-icon\|^locales\|^densities" || true
+            echo "=====MANIFEST====="
+            "$BT/aapt2" dump xmltree --file AndroidManifest.xml /tmp/monet.apk
+          } > "$OUT"
+          python3 - <<'EOF' > docs/research/monet-probe/monet-${V}-dex-strings.txt
           import re, zipfile
-          z = zipfile.ZipFile("monet.apk")
+          z = zipfile.ZipFile("/tmp/monet.apk")
           names = [n for n in z.namelist() if n.endswith(".dex")]
-          pat = re.compile(rb'[\x20-\x7e]{6,200}')
+          pat = re.compile(rb'[\x20-\x7e]{6,240}')
+          keys = ("iconpack", "icon_pack", "icon pack", "wallpaper", "extra.", ".action.",
+                  "apply", "com.klevico.monet.", "attach_data", "action_send", "pictures",
+                  "adw.launcher", "novalauncher", "lawnchair", "gau.go", "anddoes", "fede",
+                  "themes", "appfilter", "drawable.xml", "iconback", "iconmask", "iconupon",
+                  "content://", "deeplink", "monet://", "shortcut", "settings")
           hits = set()
           for n in names:
               data = z.read(n)
               for m in pat.finditer(data):
                   s = m.group().decode()
                   ls = s.lower()
-                  if any(k in ls for k in ("iconpack", "icon_pack", "icon pack", "wallpaper", "extra.", ".action.", "apply", "com.klevico.monet.", "attach_data", "action_send", "picturesfolder", "pictures/")):
+                  if any(k in ls for k in keys):
                       hits.add(s)
-          print("=====DEX STRINGS=====")
           for s in sorted(hits):
               print(s)
           print("=====END=====", len(hits))
           EOF
+          {
+            echo "=====ASSETS====="
+            unzip -l /tmp/monet.apk | awk '{print $4}' | grep -v "^res/\|^META-INF\|^kotlin/\|\.dex$\|^lib/" | sort
+            echo "=====RES/XML====="
+            unzip -l /tmp/monet.apk | awk '{print $4}' | grep "^res/xml" | sort
+          } > docs/research/monet-probe/monet-${V}-files.txt
+          wc -l docs/research/monet-probe/*
+      - name: Commit results
+        run: |
+          git config user.name "monet-probe"
+          git config user.email "monet-probe@users.noreply.github.com"
+          git add docs/research/monet-probe
+          git commit -m "research: Monet ${V} manifest probe output [skip ci]" || echo "nothing to commit"
+          git push origin HEAD:${GITHUB_REF_NAME}
