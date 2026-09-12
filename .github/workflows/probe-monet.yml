@@ -329,7 +329,7 @@ jobs:
           wc -l docs/research/monet-probe/*
       - name: Variant pass (iconPackVariant semantics)
         run: |
-          python3 - <<'EOF' > docs/research/monet-probe/monet-${V}-variant.txt 2>&1 || true
+          python3 - <<'EOF' > docs/research/monet-probe/monet-${V}-variant.txt 2>/dev/null || true
           import re, logging, traceback
           logging.disable(logging.CRITICAL)
           from androguard.misc import AnalyzeAPK
@@ -353,11 +353,11 @@ jobs:
           import sys
           sys.excepthook = lambda *a: traceback.print_exception(*a)
           for cls in dx.get_classes():
+              if cls.is_external(): continue
               try:
-                  c = cls.get_vm_class()
+                  c = cls.get_vm_class(); names = [f.get_name() for f in c.get_fields()]
               except Exception:
                   continue
-              names = [f.get_name() for f in c.get_fields()]
               if "iconPackVariant" in names or "iconPackRenderPx" in names:
                   print(cls.name, [(f.get_name(), f.get_descriptor()) for f in c.get_fields() if "icon" in f.get_name().lower()])
                   for f in c.get_fields():
@@ -365,7 +365,7 @@ jobs:
                           targets.add(f.get_descriptor())
           print("=====VARIANT TYPES=====", targets)
           for cls in dx.get_classes():
-              if cls.name in targets:
+              if cls.name in targets and not cls.is_external():
                   print("=" * 80); print("CLASS", cls.name, "extends", cls.extends)
                   try:
                       for f in cls.get_vm_class().get_fields():
@@ -395,6 +395,22 @@ jobs:
                       if re.search(r"const-string|getIdentifier|iconPackVariant|iconPackRenderPx|append|_banner|toLowerCase|concat", l):
                           print("   ", l[:220])
                   if n > 12: break
+          # 3b. methods mentioning BANNER / FREE_BANNER / noBannerIconFallback / standard-no-banner
+          print("=====BANNER METHODS=====")
+          n=0
+          for m in dx.get_methods():
+              if m.is_external(): continue
+              try:
+                  ins_list = list(m.get_method().get_instructions())
+              except Exception: continue
+              txt = "\n".join(f"{i.get_name()} {i.get_output()}" for i in ins_list)
+              if re.search(r'"(BANNER|FREE_BANNER|noBannerIconFallback|.*no-banner.*)"', txt):
+                  n+=1
+                  print("-"*80); print("METHOD", m.class_name, m.name, m.descriptor)
+                  for l in txt.splitlines():
+                      if re.search(r"const-string|getIdentifier|Banner|banner|iconPack|sput|append", l):
+                          print("   ", l[:220])
+                  if n > 10: break
           # 4. the method that builds the drawable name list (wj1.j callers)
           print("=====CALLERS OF wj1.j (bitmap loader)=====")
           for cls in dx.get_classes():
