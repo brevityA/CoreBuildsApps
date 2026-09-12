@@ -1142,11 +1142,18 @@ def folder_solid(c):
 
 
 def radar_dish(c):
-    """DS finder — a dish sweeping for a NAS on the LAN."""
+    """DS finder - a dish sweeping for a NAS on the LAN.
+
+    The pivot was radius 28 under a 26.2 stroke: a 15px counter, which is
+    under three pixels on a real Projectivy tile and closes into a dot.
+    Radius 42 on a lighter stroke gives a 31px counter that survives. Found
+    by tools/check_glyph.py, not by looking at the 512px master, where it
+    reads perfectly well.
+    """
     return (
         f'<path d="M 96 392 C 96 250 210 136 352 136" {_s(c, 34)}/>'
-        f'<circle cx="124" cy="368" r="28" {_s(c, 26)}/>'
-        f'<path d="M 124 368 L 256 236" {_s(c, 26)}/>'
+        f'<circle cx="128" cy="364" r="42" {_s(c, 22)}/>'
+        f'<path d="M 158 334 L 256 236" {_s(c, 26)}/>'
         f'<path d="M 300 96 C 372 96 448 172 448 244" {_s(c, 26)}/>'
         f'<path d="M 324 148 C 368 148 412 192 412 236" {_s(c, 26)}/>'
     )
