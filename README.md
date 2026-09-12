@@ -13,7 +13,7 @@
 <!-- suite-stamp:start -->
 > | App | Current | What it does | Downloader | Release tag |
 > |---|---:|---|---|---|
-> | **[Core Builds Icon Pack](#-icon-pack)** | `v1.8.14` | 926 transparent icons + 58 wallpapers for Projectivy Launcher | `5270601` | [`v*` / `iconpack`](../../releases) |
+> | **[Core Builds Icon Pack](#-icon-pack)** | `v1.8.15` | 926 transparent icons + 58 wallpapers for Projectivy Launcher | `5270601` | [`v*` / `iconpack`](../../releases) |
 > | **[Core Builds Pixel Neon](#-pixel-neon-icon-pack)** | `v0.1.0` | 926 transparent 8-bit neon icons + 70 wallpapers for Projectivy Launcher | `[USER TO SUPPLY]` | [`pixel-neon-v*` / `pixel-neon`](../../releases) |
 > | **[Core Builds Pop](#-core-builds-pop)** | `v1.0.0` | The same 926 icons, pop-art cartoon: 16 swatches, one container | `[USER TO SUPPLY]` | [`pop-v*` / `pop`](../../releases) |
 > | **[Core Line](#-core-line)** | `v1.3.0` | Sports scores & channel RSS ticker (chyron) | `7375676` | [`coreline-v*` / `coreline`](../../releases) |
@@ -28,11 +28,13 @@
 ## 🔷 Icon Pack
 
 **Transparent app icons for Projectivy Launcher on Android TV.**
-`926 icons` · `58 wallpapers` · `v1.8.14`
+`926 icons` · `58 wallpapers` · `v1.8.15`
 
 The **Core Builds Icon Pack** is designed for the [Projectivy Launcher](https://play.google.com/store/apps/details?id=com.spocky.projengmenu) on Android TV and Google TV, built to the [Core Builds Brand & Style Guide v1.0](https://github.com/brevityA/Core-Builds).
 
 Icons share the **Core Builds visual language**: original geometry, rounded-line brand motifs, one accent and transparent backgrounds. The reviewed glyphs use the canonical **32px main stroke**, with 26.2px / 21.8px detail. Brand references inform the recognisable cue and colour; they do **not** replace the pack's style with filled vendor silhouettes or custom logotypes. The existing Outfit fallback letters remain unchanged. [Reference provenance and rights](THIRD_PARTY_NOTICES.md).
+
+**v1.8.15 — Monet Launcher never reads the system wallpaper, so "Set wallpaper" was a no-op on every Monet home screen.** Found by decompiling Monet v1.0.84: the APK has no `WallpaperManager` reference at all, but since v1.0.72 it exports a share target that copies images into Monet's own background library. The preview button now reads **Send to Monet** when Monet is HOME and hands the cached file straight over (no permissions, no export first); the export screen offers **Send N to Monet** for a whole selection. Icon apply to Monet stays manual — v1.0.84 has no inbound apply intent — but the path now names the 1.0.80 layout, *Settings → Apps → Icon pack*. Research and APK evidence in `docs/MONET_LAUNCHER.md`.
 
 **v1.8.14 — two thirds of the pack was a letter in a box, and 429 icons shipped the same picture as another icon:** hashing all 926 drawables returned only **655 distinct images**. 608 fell back to a `tile_*` monogram and accents come from a cycled palette of 49, so a shared letter plus a shared palette slot produced a byte-identical PNG — one file served seven apps. **56 new marks now cover 58 apps** in the categories a Core Builds user actually runs: debrid clients, players, launchers, browsers, file and network tools. **74 monograms showed a letter the app name does not contain** (Corridor showed W, Crave showed B); 72 are repointed. **30 marks collapsed at a 48px Projectivy tile** — MUBI lost all seven counters and read as a solid rectangle, DS file sat at 53% ink — so **36 glyph shapes** are redrawn to a 32px minimum counter. Two needed the raster pipeline to get right: `presence.py` dilates every edge by the keyline radius, so MUBI's rings merged even with the vector counters open. Duplicates **429 → 34**, distinct artworks **655 → 902**, glyphs losing counters **30 → 0**. 549 icons are still letter tiles; that tail is a programme, not a sprint.
 

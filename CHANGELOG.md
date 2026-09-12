@@ -4,7 +4,7 @@ All notable changes to the Core Builds Icon Pack. Format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); versions follow
 [SemVer](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [1.8.15] — 2026-09-13
 
 **Monet Launcher never reads the system wallpaper, so "Set wallpaper" was a
 no-op on every Monet home screen.**

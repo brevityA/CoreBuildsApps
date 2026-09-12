@@ -31,7 +31,7 @@ import java.io.FileOutputStream
  *  - [monetShareIntent] hands the file straight to **Monet Launcher**. Monet
  *    never reads the system wallpaper (no `WallpaperManager` reference in the
  *    v1.0.84 APK); its exported `WallpaperShareActivity` accepts
- *    `ACTION_SEND` / `ACTION_SEND_MULTIPLE` `image/*` and copies the file into
+ *    `ACTION_SEND` / `ACTION_SEND_MULTIPLE` with an image MIME and copies the file into
  *    Monet's own background library, then themes from it. Custom backgrounds
  *    are a Monet Premium feature — Monet shows its own toast either way.
  *  - [copyFileToPictures] copies the original bytes to `Pictures/CoreBuilds`
@@ -228,8 +228,8 @@ object WallpaperSetter {
     /**
      * Monet's exported share target. Decompiled from Monet v1.0.84
      * (versionCode 118, 2026-09-12): `<intent-filter>` for ACTION_SEND,
-     * ACTION_SEND_MULTIPLE and ACTION_ATTACH_DATA with `image/*` and
-     * `video/*`; category DEFAULT; `excludeFromRecents`, own task affinity.
+     * ACTION_SEND_MULTIPLE and ACTION_ATTACH_DATA with image and video
+     * MIME types; category DEFAULT; `excludeFromRecents`, own task affinity.
      * It reads `intent.data`, EXTRA_STREAM (single or list) and `clipData`,
      * resolves the MIME through ContentResolver → extension → `intent.type`,
      * and needs FLAG_GRANT_READ_URI_PERMISSION on content URIs.

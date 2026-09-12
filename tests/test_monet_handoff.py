@@ -184,6 +184,62 @@ class IconApplyTests(unittest.TestCase):
             self.assertIn(f'<package android:name="{MONET_PKG}"', read(m), m)
 
 
+class KotlinCommentTests(unittest.TestCase):
+    """Kotlin block comments nest. A literal `image/*` inside a KDoc opens a
+    second comment that swallows the rest of the file — WallpaperSetter.kt
+    failed to compile exactly this way in CI (PR #120). No SDK here, so
+    guard the shared Kotlin by hand."""
+
+    @staticmethod
+    def _nested_openers(text: str) -> list[int]:
+        """Line numbers where `/*` appears inside an open block comment.
+        Skips string literals and `//` line comments; good enough for the
+        shared Kotlin, which has no raw strings containing comment tokens."""
+        hits, in_block = [], False
+        for n, line in enumerate(text.splitlines(), 1):
+            i, in_str = 0, False
+            while i < len(line):
+                two = line[i:i + 2]
+                if in_block:
+                    if two == "*/":
+                        in_block = False
+                        i += 2
+                        continue
+                    if two == "/*":
+                        hits.append(n)
+                elif in_str:
+                    if line[i] == "\\":
+                        i += 2
+                        continue
+                    if line[i] == '"':
+                        in_str = False
+                elif line[i] == '"':
+                    in_str = True
+                elif two == "//":
+                    break
+                elif two == "/*":
+                    in_block = True
+                    i += 2
+                    continue
+                i += 1
+        return hits
+
+    def test_scanner_catches_the_pr120_shape(self):
+        bad = "/**\n * accepts `image/*` shares\n */\nobject X"
+        self.assertEqual(self._nested_openers(bad), [2])
+        ok = 'fun f() = Intent().setType("image/*") /* trailing */'
+        self.assertEqual(self._nested_openers(ok), [])
+
+    def test_no_nested_block_comment_openers(self):
+        offenders = []
+        for base in (APP / "java/tv/corebuilds/iconpack",
+                     NEON / "java/tv/corebuilds/pixelneon"):
+            for kt in sorted(base.glob("*.kt")):
+                for n in self._nested_openers(read(kt)):
+                    offenders.append(f"{kt.relative_to(ROOT)}:{n}")
+        self.assertEqual(offenders, [], "nested /* inside a Kotlin block comment")
+
+
 class ProbeCleanupTests(unittest.TestCase):
     def test_temporary_probe_workflow_is_gone(self):
         self.assertFalse((ROOT / ".github/workflows/probe-monet.yml").exists(),
