@@ -216,6 +216,61 @@ jobs:
                       pass
           EOF
           wc -l docs/research/monet-probe/*
+      - name: Bytecode dump (share activity + icon pack loader)
+        run: |
+          python3 - <<'EOF' > docs/research/monet-probe/monet-${V}-bytecode.txt 2>/dev/null
+          import re, logging
+          logging.disable(logging.CRITICAL)
+          from androguard.misc import AnalyzeAPK
+          a, ds, dx = AnalyzeAPK("/tmp/monet.apk")
+          res = a.get_android_resources()
+          pkg = a.get_package()
+          def resname(rid):
+              try:
+                  return res.get_resource_xml_name(rid, pkg)
+              except Exception:
+                  return None
+          def resstr(rid):
+              try:
+                  return res.get_string(pkg, resname(rid).split('/')[-1])[1]
+              except Exception:
+                  return None
+          targets = {"Lcom/klevico/monet/WallpaperShareActivity;", "La/wj1;", "La/vj1;", "La/nu1;", "La/tj1;"}
+          # also any class with a field named iconPackVariant / IconPackVariant enum
+          for cls in dx.get_classes():
+              n = cls.name
+              if re.search(r"IconPackVariant|IconPackMode|WallpaperRotationSource|ScreensaverWallpaperSource", n):
+                  targets.add(n)
+          for cls in dx.get_classes():
+              if cls.name not in targets:
+                  continue
+              print("=" * 100)
+              print("CLASS", cls.name, "extends", cls.extends)
+              try:
+                  c = cls.get_vm_class()
+                  for f in c.get_fields():
+                      print("  FIELD", f.get_access_flags_string(), f.get_descriptor(), f.get_name())
+              except Exception:
+                  pass
+              for m in cls.get_methods():
+                  if m.is_external():
+                      continue
+                  print("  METHOD", m.name, m.descriptor)
+                  try:
+                      mm = m.get_method()
+                      for ins in mm.get_instructions():
+                          name = ins.get_name(); out = ins.get_output()
+                          if name.startswith(("const-string", "invoke", "const/4", "const/16", "const ", "if-", "new-instance", "sget-object", "iget-object", "return", "check-cast", "const/high16", "const-class")):
+                              line = f"      {name} {out}"
+                              mres = re.search(r"0x7f[0-9a-f]{6}", out)
+                              if mres:
+                                  rid = int(mres.group(), 16)
+                                  line += f"   ; {resname(rid)} = {resstr(rid)!r}"
+                              print(line[:400])
+                  except Exception as e:
+                      print("      (err)", e)
+          EOF
+          wc -l docs/research/monet-probe/*
       - name: Commit results
         run: |
           git config user.name "monet-probe"
