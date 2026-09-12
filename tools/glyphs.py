@@ -966,21 +966,24 @@ GLYPHS.update({"stadium": stadium, "browser_globe": browser_globe})
 # ==========================================================================
 
 def janky_play(c):
-    """Janky Player - a play wedge knocked off true inside a straight ring.
+    """Janky Player - the spoked wheel with the wordmark's A through it.
 
-    The name is the idea, but the first attempt carried it by splitting the
-    wedge into two offset halves, and a split wedge reads as a letter B - at
-    512px, at 96px and at 48px. That is the exact look the pack exists to get
-    away from, on an app that already had its own glyph.
+    Two earlier attempts missed. The first split a play wedge into two offset
+    halves to pun on the name, which reads as a letter B at every size. The
+    second tilted a whole wedge 16 degrees, which read as a play button but
+    had nothing to do with the app: Janky's mark is not a play triangle at
+    all. It is a spoked wheel with the A of the wordmark rising through it.
 
-    The wit now lives in the angle: one whole wedge, rotated 16 degrees inside
-    a true ring. The play silhouette survives the downscale and the lean is
-    still obvious against every other play mark in the set. Rotation is baked
-    into the path coordinates, not a transform attribute, because the monoline
-    gate rejects transforms.
+    This is that cue in our linework - ring, hub, four spokes and the A - not
+    a trace of the vendor mark. The spokes stop at 55% of the radius on
+    purpose: run to the rim they cut the interior into sectors and five of
+    them close at tile size. Held short, the interior stays one region and
+    every counter survives the downscale.
     """
-    return (f'<circle cx="256" cy="256" r="182" {_s(c, 32)}/>'
-            f'<path d="M 226 143 348 282 171 336 Z" {_s(c, 30)}/>')
+    return (f'<circle cx="256" cy="272" r="170" {_s(c, 32)}/>'
+            f'<circle cx="256" cy="272" r="30" {_s(c, 22)}/>'
+            f'<path d="M 277 251 L 332 196 M 277 293 L 332 348 M 235 293 L 180 348 M 235 251 L 180 196" {_s(c, 20)}/>'
+            f'<path d="M 172 336 L 256 84 L 340 336" {_s(c, 26)}/>')
 
 
 def tivimate_grid(c):
