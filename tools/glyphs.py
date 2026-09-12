@@ -966,30 +966,32 @@ GLYPHS.update({"stadium": stadium, "browser_globe": browser_globe})
 # ==========================================================================
 
 def janky_play(c):
-    """Janky Player - the hamster in its wheel.
+    """Janky Player - the hamster, face on, inside its wheel.
 
-    Three attempts to get here, and the first two were inventions. A split
-    play wedge (reads as a letter B at every size), then a play wedge tilted
-    16 degrees (reads as a play button, but Janky is not one). The owner's
-    logo settled it: the wordmark's A sits inside a hamster wheel, and the
-    shape in the wheel is a hamster. The joke is the app running on a hamster
-    wheel, and neither wedge had anything to do with it.
+    Fourth composition, and the first three failed for reasons worth keeping:
 
-    Ring, fourteen rungs hanging inside the rim, and the animal. The rungs
-    are held short of the hub on purpose: run to the centre they cut the
-    interior into sectors that close at tile size. At 48px the hamster is a
-    blob, which is the honest limit of a 3px stroke - but "something small
-    inside a running wheel" is the read, and that survives.
+      split play wedge    reads as a letter B at every size
+      wedge tilted 16deg  reads as a play button; Janky is not one
+      wheel + profile     three elements competing - a rung texture that
+                          reads as a clock bezel, a hamster too small to be
+                          the subject, and a ring scaled for neither
 
-    Stroke weights are written for what monoline() does to them: it snaps 24
-    to 26.2 and 30 to 32, so tuning against the raw source numbers loses
-    counters that the normalised render does not have room for.
+    The marks that work in this pack (Trakt, Weyd, MUBI) commit to one idea
+    at generous scale, so this does too: the animal is the subject and the
+    ring is just the wheel around it. A face survives the downscale where a
+    body profile cannot - two ears and a muzzle are three bold shapes, and a
+    silhouette is one lumpy one.
+
+    Ear proportion is deliberate. Set large and high the face reads as a
+    bear; small, wide and low at 30 degrees it reads as a rodent.
+
+    Stroke weights account for monoline() snapping 24 to 26.2 and 30 to 32.
     """
-    return (f'<circle cx="256" cy="258" r="178" {_s(c, 32)}/>'
-            f'<path d="M 411 299 L 385 293 M 377 362 L 358 345 M 320 405 L 310 381 M 250 418 L 251 392 M 181 399 L 193 376 M 127 353 L 148 338 M 99 288 L 124 283 M 101 217 L 127 223 M 135 154 L 154 171 M 192 111 L 202 135 M 262 98 L 261 124 M 331 117 L 319 140 M 385 163 L 364 178 M 413 228 L 388 233" {_s(c, 20)}/>'
-            f'<path d="M 186 352 C 180 318 196 290 227 288 C 247 286 254 290 262 293 C 270 277 291 275 300 293 C 308 309 301 326 288 334 C 272 346 239 359 211 359 C 196 359 188 355 186 352 Z" {_s(c, 26)}/>'
-            f'<circle cx="283" cy="275" r="12" {_s(c, 20)}/>'
-            f'<path d="M 216 359 L 216 375 M 260 357 L 260 373" {_s(c, 20)}/>')
+    return (f'<circle cx="256" cy="256" r="186" {_s(c, 30)}/>'
+            f'<circle cx="142" cy="210" r="24" {_s(c, 24)}/>'
+            f'<circle cx="370" cy="210" r="24" {_s(c, 24)}/>'
+            f'<path d="M 256 153 C 393 162 393 367 256 383 C 119 367 119 162 256 153 Z" {_s(c, 30)}/>'
+            f'<circle cx="256" cy="318" r="20" {_s(c, 22)}/>')
 
 
 def tivimate_grid(c):
