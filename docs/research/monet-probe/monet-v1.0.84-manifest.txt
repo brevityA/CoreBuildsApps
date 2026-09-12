@@ -1,0 +1,622 @@
+=====BADGING=====
+package: name='com.klevico.monet' versionCode='118' versionName='1.0.84' platformBuildVersionName='16' platformBuildVersionCode='36' compileSdkVersion='36' compileSdkVersionCodename='16'
+sdkVersion:'26'
+targetSdkVersion:'35'
+uses-permission: name='android.permission.ACCESS_COARSE_LOCATION'
+uses-permission: name='android.permission.ACCESS_NETWORK_STATE'
+uses-permission: name='android.permission.ACCESS_WIFI_STATE'
+uses-permission: name='android.permission.BLUETOOTH_CONNECT'
+uses-permission: name='android.permission.BLUETOOTH_SCAN'
+uses-permission: name='android.permission.BLUETOOTH' maxSdkVersion='30'
+uses-permission: name='android.permission.BLUETOOTH_ADMIN' maxSdkVersion='30'
+uses-permission: name='android.permission.INTERNET'
+uses-permission: name='android.permission.WRITE_SECURE_SETTINGS'
+uses-permission: name='android.permission.KILL_BACKGROUND_PROCESSES'
+uses-permission: name='android.permission.READ_TV_LISTINGS'
+uses-permission: name='android.permission.REQUEST_DELETE_PACKAGES'
+uses-permission: name='android.permission.RECEIVE_BOOT_COMPLETED'
+uses-permission: name='android.permission.POST_NOTIFICATIONS'
+uses-permission: name='android.permission.WAKE_LOCK'
+uses-permission: name='android.permission.FOREGROUND_SERVICE'
+uses-permission: name='android.permission.FOREGROUND_SERVICE_MEDIA_PLAYBACK'
+uses-permission: name='android.permission.FOREGROUND_SERVICE_SYSTEM_EXEMPTED'
+uses-permission: name='android.permission.SCHEDULE_EXACT_ALARM'
+uses-permission: name='android.permission.READ_EXTERNAL_STORAGE' maxSdkVersion='32'
+uses-permission: name='android.permission.READ_MEDIA_IMAGES'
+uses-permission: name='android.permission.READ_MEDIA_VIDEO'
+uses-permission: name='android.permission.READ_MEDIA_VISUAL_USER_SELECTED'
+uses-permission: name='com.android.vending.BILLING'
+uses-permission: name='com.klevico.monet.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION'
+application-label:'Monet'
+application-label-af:'Monet'
+application-label-am:'Monet'
+application-label-ar:'Monet'
+application-label-as:'Monet'
+application-label-az:'Monet'
+application-label-be:'Monet'
+application-label-bg:'Monet'
+application-label-bn:'Monet'
+application-label-bs:'Monet'
+application-label-ca:'Monet'
+application-label-cs:'Monet'
+application-label-da:'Monet'
+application-label-de:'Monet'
+application-label-el:'Monet'
+application-label-en-AU:'Monet'
+application-label-en-CA:'Monet'
+application-label-en-GB:'Monet'
+application-label-en-IN:'Monet'
+application-label-en-XC:'Monet'
+application-label-es:'Monet'
+application-label-es-419:'Monet'
+application-label-es-US:'Monet'
+application-label-et:'Monet'
+application-label-eu:'Monet'
+application-label-fa:'Monet'
+application-label-fi:'Monet'
+application-label-fr:'Monet'
+application-label-fr-CA:'Monet'
+application-label-gl:'Monet'
+application-label-gu:'Monet'
+application-label-hi:'Monet'
+application-label-hr:'Monet'
+application-label-hu:'Monet'
+application-label-hy:'Monet'
+application-label-id:'Monet'
+application-label-in:'Monet'
+application-label-is:'Monet'
+application-label-it:'Monet'
+application-label-iw:'Monet'
+application-label-ja:'Monet'
+application-label-ka:'Monet'
+application-label-kk:'Monet'
+application-label-km:'Monet'
+application-label-kn:'Monet'
+application-label-ko:'Monet'
+application-label-ky:'Monet'
+application-label-lo:'Monet'
+application-label-lt:'Monet'
+application-label-lv:'Monet'
+application-label-mk:'Monet'
+application-label-ml:'Monet'
+application-label-mn:'Monet'
+application-label-mr:'Monet'
+application-label-ms:'Monet'
+application-label-my:'Monet'
+application-label-nb:'Monet'
+application-label-ne:'Monet'
+application-label-nl:'Monet'
+application-label-or:'Monet'
+application-label-pa:'Monet'
+application-label-pl:'Monet'
+application-label-pt:'Monet'
+application-label-pt-BR:'Monet'
+application-label-pt-PT:'Monet'
+application-label-ro:'Monet'
+application-label-ru:'Monet'
+application-label-si:'Monet'
+application-label-sk:'Monet'
+application-label-sl:'Monet'
+application-label-sq:'Monet'
+application-label-sr:'Monet'
+application-label-sr-Latn:'Monet'
+application-label-sv:'Monet'
+application-label-sw:'Monet'
+application-label-ta:'Monet'
+application-label-te:'Monet'
+application-label-th:'Monet'
+application-label-tl:'Monet'
+application-label-tr:'Monet'
+application-label-uk:'Monet'
+application-label-ur:'Monet'
+application-label-uz:'Monet'
+application-label-vi:'Monet'
+application-label-zh-CN:'Monet'
+application-label-zh-HK:'Monet'
+application-label-zh-TW:'Monet'
+application-label-zu:'Monet'
+application: label='Monet' icon='res/d2.webp' banner='res/fx.webp'
+launchable-activity: name='com.klevico.monet.HomeActivity'  label='' icon=''
+leanback-launchable-activity: name='com.klevico.monet.HomeActivity'  label='' icon='' banner=''
+uses-library-not-required:'androidx.window.extensions'
+uses-library-not-required:'androidx.window.sidecar'
+feature-group: label=''
+  uses-feature-not-required: name='android.hardware.bluetooth'
+  uses-feature-not-required: name='android.hardware.location'
+  uses-feature-not-required: name='android.hardware.touchscreen'
+  uses-feature-not-required: name='android.hardware.wifi'
+  uses-feature: name='android.software.leanback'
+  uses-feature: name='android.hardware.screen.landscape'
+  uses-implied-feature: name='android.hardware.screen.landscape' reason='one or more activities have specified a landscape orientation'
+provides-component:'accessibility'
+provides-component:'launcher'
+provides-component:'notification-listener'
+provides-component:'dream'
+main
+other-activities
+other-receivers
+other-services
+supports-screens: 'small' 'normal' 'large' 'xlarge'
+supports-any-density: 'true'
+native-code: 'arm64-v8a' 'armeabi-v7a' 'x86' 'x86_64'
+=====MANIFEST=====
+N: android=http://schemas.android.com/apk/res/android (line=2)
+  E: manifest (line=2)
+    A: http://schemas.android.com/apk/res/android:versionCode(0x0101021b)=118
+    A: http://schemas.android.com/apk/res/android:versionName(0x0101021c)="1.0.84" (Raw: "1.0.84")
+    A: http://schemas.android.com/apk/res/android:compileSdkVersion(0x01010572)=36
+    A: http://schemas.android.com/apk/res/android:compileSdkVersionCodename(0x01010573)="16" (Raw: "16")
+    A: package="com.klevico.monet" (Raw: "com.klevico.monet")
+    A: platformBuildVersionCode=36
+    A: platformBuildVersionName=16
+      E: uses-sdk (line=7)
+        A: http://schemas.android.com/apk/res/android:minSdkVersion(0x0101020c)=26
+        A: http://schemas.android.com/apk/res/android:targetSdkVersion(0x01010270)=35
+      E: uses-feature (line=11)
+        A: http://schemas.android.com/apk/res/android:name(0x01010003)="android.software.leanback" (Raw: "android.software.leanback")
+        A: http://schemas.android.com/apk/res/android:required(0x0101028e)=true
+      E: uses-feature (line=14)
+        A: http://schemas.android.com/apk/res/android:name(0x01010003)="android.hardware.touchscreen" (Raw: "android.hardware.touchscreen")
+        A: http://schemas.android.com/apk/res/android:required(0x0101028e)=false
+      E: uses-feature (line=17)
+        A: http://schemas.android.com/apk/res/android:name(0x01010003)="android.hardware.bluetooth" (Raw: "android.hardware.bluetooth")
+        A: http://schemas.android.com/apk/res/android:required(0x0101028e)=false
+      E: uses-feature (line=20)
+        A: http://schemas.android.com/apk/res/android:name(0x01010003)="android.hardware.wifi" (Raw: "android.hardware.wifi")
+        A: http://schemas.android.com/apk/res/android:required(0x0101028e)=false
+      E: uses-feature (line=23)
+        A: http://schemas.android.com/apk/res/android:name(0x01010003)="android.hardware.location" (Raw: "android.hardware.location")
+        A: http://schemas.android.com/apk/res/android:required(0x0101028e)=false
+      E: uses-permission (line=27)
+        A: http://schemas.android.com/apk/res/android:name(0x01010003)="android.permission.ACCESS_COARSE_LOCATION" (Raw: "android.permission.ACCESS_COARSE_LOCATION")
+      E: uses-permission (line=28)
+        A: http://schemas.android.com/apk/res/android:name(0x01010003)="android.permission.ACCESS_NETWORK_STATE" (Raw: "android.permission.ACCESS_NETWORK_STATE")
+      E: uses-permission (line=33)
+        A: http://schemas.android.com/apk/res/android:name(0x01010003)="android.permission.ACCESS_WIFI_STATE" (Raw: "android.permission.ACCESS_WIFI_STATE")
+      E: uses-permission (line=34)
+        A: http://schemas.android.com/apk/res/android:name(0x01010003)="android.permission.BLUETOOTH_CONNECT" (Raw: "android.permission.BLUETOOTH_CONNECT")
+      E: uses-permission (line=40)
+        A: http://schemas.android.com/apk/res/android:name(0x01010003)="android.permission.BLUETOOTH_SCAN" (Raw: "android.permission.BLUETOOTH_SCAN")
+        A: http://schemas.android.com/apk/res/android:usesPermissionFlags(0x01010644)=0x00010000
+      E: uses-permission (line=49)
+        A: http://schemas.android.com/apk/res/android:name(0x01010003)="android.permission.BLUETOOTH" (Raw: "android.permission.BLUETOOTH")
+        A: http://schemas.android.com/apk/res/android:maxSdkVersion(0x01010271)=30
+      E: uses-permission (line=57)
+        A: http://schemas.android.com/apk/res/android:name(0x01010003)="android.permission.BLUETOOTH_ADMIN" (Raw: "android.permission.BLUETOOTH_ADMIN")
+        A: http://schemas.android.com/apk/res/android:maxSdkVersion(0x01010271)=30
+      E: uses-permission (line=60)
+        A: http://schemas.android.com/apk/res/android:name(0x01010003)="android.permission.INTERNET" (Raw: "android.permission.INTERNET")
+      E: uses-permission (line=67)
+        A: http://schemas.android.com/apk/res/android:name(0x01010003)="android.permission.WRITE_SECURE_SETTINGS" (Raw: "android.permission.WRITE_SECURE_SETTINGS")
+      E: uses-permission (line=72)
+        A: http://schemas.android.com/apk/res/android:name(0x01010003)="android.permission.KILL_BACKGROUND_PROCESSES" (Raw: "android.permission.KILL_BACKGROUND_PROCESSES")
+      E: uses-permission (line=73)
+        A: http://schemas.android.com/apk/res/android:name(0x01010003)="android.permission.READ_TV_LISTINGS" (Raw: "android.permission.READ_TV_LISTINGS")
+      E: uses-permission (line=74)
+        A: http://schemas.android.com/apk/res/android:name(0x01010003)="android.permission.REQUEST_DELETE_PACKAGES" (Raw: "android.permission.REQUEST_DELETE_PACKAGES")
+      E: uses-permission (line=75)
+        A: http://schemas.android.com/apk/res/android:name(0x01010003)="android.permission.RECEIVE_BOOT_COMPLETED" (Raw: "android.permission.RECEIVE_BOOT_COMPLETED")
+      E: uses-permission (line=76)
+        A: http://schemas.android.com/apk/res/android:name(0x01010003)="android.permission.POST_NOTIFICATIONS" (Raw: "android.permission.POST_NOTIFICATIONS")
+      E: uses-permission (line=77)
+        A: http://schemas.android.com/apk/res/android:name(0x01010003)="android.permission.WAKE_LOCK" (Raw: "android.permission.WAKE_LOCK")
+      E: uses-permission (line=78)
+        A: http://schemas.android.com/apk/res/android:name(0x01010003)="android.permission.FOREGROUND_SERVICE" (Raw: "android.permission.FOREGROUND_SERVICE")
+      E: uses-permission (line=79)
+        A: http://schemas.android.com/apk/res/android:name(0x01010003)="android.permission.FOREGROUND_SERVICE_MEDIA_PLAYBACK" (Raw: "android.permission.FOREGROUND_SERVICE_MEDIA_PLAYBACK")
+      E: uses-permission (line=80)
+        A: http://schemas.android.com/apk/res/android:name(0x01010003)="android.permission.FOREGROUND_SERVICE_SYSTEM_EXEMPTED" (Raw: "android.permission.FOREGROUND_SERVICE_SYSTEM_EXEMPTED")
+      E: uses-permission (line=86)
+        A: http://schemas.android.com/apk/res/android:name(0x01010003)="android.permission.SCHEDULE_EXACT_ALARM" (Raw: "android.permission.SCHEDULE_EXACT_ALARM")
+      E: uses-permission (line=87)
+        A: http://schemas.android.com/apk/res/android:name(0x01010003)="android.permission.READ_EXTERNAL_STORAGE" (Raw: "android.permission.READ_EXTERNAL_STORAGE")
+        A: http://schemas.android.com/apk/res/android:maxSdkVersion(0x01010271)=32
+      E: uses-permission (line=90)
+        A: http://schemas.android.com/apk/res/android:name(0x01010003)="android.permission.READ_MEDIA_IMAGES" (Raw: "android.permission.READ_MEDIA_IMAGES")
+      E: uses-permission (line=91)
+        A: http://schemas.android.com/apk/res/android:name(0x01010003)="android.permission.READ_MEDIA_VIDEO" (Raw: "android.permission.READ_MEDIA_VIDEO")
+      E: uses-permission (line=92)
+        A: http://schemas.android.com/apk/res/android:name(0x01010003)="android.permission.READ_MEDIA_VISUAL_USER_SELECTED" (Raw: "android.permission.READ_MEDIA_VISUAL_USER_SELECTED")
+      E: queries (line=94)
+          E: package (line=95)
+            A: http://schemas.android.com/apk/res/android:name(0x01010003)="com.android.tv.settings" (Raw: "com.android.tv.settings")
+          E: package (line=96)
+            A: http://schemas.android.com/apk/res/android:name(0x01010003)="com.sony.dtv.settings" (Raw: "com.sony.dtv.settings")
+          E: package (line=97)
+            A: http://schemas.android.com/apk/res/android:name(0x01010003)="com.philips.tv.settings" (Raw: "com.philips.tv.settings")
+          E: package (line=99)
+            A: http://schemas.android.com/apk/res/android:name(0x01010003)="com.neilturner.aerialviews" (Raw: "com.neilturner.aerialviews")
+          E: package (line=108)
+            A: http://schemas.android.com/apk/res/android:name(0x01010003)="com.ionitech.airscreen" (Raw: "com.ionitech.airscreen")
+          E: package (line=109)
+            A: http://schemas.android.com/apk/res/android:name(0x01010003)="com.ionitech.airscreen.tv" (Raw: "com.ionitech.airscreen.tv")
+          E: package (line=110)
+            A: http://schemas.android.com/apk/res/android:name(0x01010003)="com.softmedia.receiver" (Raw: "com.softmedia.receiver")
+          E: package (line=111)
+            A: http://schemas.android.com/apk/res/android:name(0x01010003)="com.softmedia.receiver.lite" (Raw: "com.softmedia.receiver.lite")
+          E: package (line=112)
+            A: http://schemas.android.com/apk/res/android:name(0x01010003)="com.softmedia.receiverfree" (Raw: "com.softmedia.receiverfree")
+          E: package (line=113)
+            A: http://schemas.android.com/apk/res/android:name(0x01010003)="com.wangj.airpin" (Raw: "com.wangj.airpin")
+          E: package (line=114)
+            A: http://schemas.android.com/apk/res/android:name(0x01010003)="com.wangj.airpinpro" (Raw: "com.wangj.airpinpro")
+          E: package (line=115)
+            A: http://schemas.android.com/apk/res/android:name(0x01010003)="com.ecloud.eshare.server" (Raw: "com.ecloud.eshare.server")
+          E: package (line=116)
+            A: http://schemas.android.com/apk/res/android:name(0x01010003)="com.ecloud.eshare.server.googleplay" (Raw: "com.ecloud.eshare.server.googleplay")
+          E: package (line=117)
+            A: http://schemas.android.com/apk/res/android:name(0x01010003)="com.eshare.server" (Raw: "com.eshare.server")
+          E: package (line=118)
+            A: http://schemas.android.com/apk/res/android:name(0x01010003)="com.hpplay.happyplay.aw" (Raw: "com.hpplay.happyplay.aw")
+          E: package (line=119)
+            A: http://schemas.android.com/apk/res/android:name(0x01010003)="com.hpplay.happycast" (Raw: "com.hpplay.happycast")
+          E: intent (line=121)
+              E: action (line=122)
+                A: http://schemas.android.com/apk/res/android:name(0x01010003)="android.intent.action.MAIN" (Raw: "android.intent.action.MAIN")
+              E: category (line=124)
+                A: http://schemas.android.com/apk/res/android:name(0x01010003)="android.intent.category.LEANBACK_SETTINGS" (Raw: "android.intent.category.LEANBACK_SETTINGS")
+          E: intent (line=126)
+              E: action (line=127)
+                A: http://schemas.android.com/apk/res/android:name(0x01010003)="android.settings.SLICE_SETTINGS" (Raw: "android.settings.SLICE_SETTINGS")
+          E: intent (line=129)
+              E: action (line=130)
+                A: http://schemas.android.com/apk/res/android:name(0x01010003)="com.android.tv.settings.CONNECTED_DEVICES" (Raw: "com.android.tv.settings.CONNECTED_DEVICES")
+          E: intent (line=133)
+              E: action (line=134)
+                A: http://schemas.android.com/apk/res/android:name(0x01010003)="com.google.android.pano.action.SLEEP" (Raw: "com.google.android.pano.action.SLEEP")
+          E: intent (line=143)
+              E: action (line=144)
+                A: http://schemas.android.com/apk/res/android:name(0x01010003)="com.android.tv.action.VIEW_INPUTS" (Raw: "com.android.tv.action.VIEW_INPUTS")
+          E: intent (line=146)
+              E: action (line=147)
+                A: http://schemas.android.com/apk/res/android:name(0x01010003)="com.google.android.tv.action.DISPLAY_INPUTS" (Raw: "com.google.android.tv.action.DISPLAY_INPUTS")
+          E: intent (line=149)
+              E: action (line=150)
+                A: http://schemas.android.com/apk/res/android:name(0x01010003)="com.android.tv.intent.action.OPEN_INPUTS" (Raw: "com.android.tv.intent.action.OPEN_INPUTS")
+          E: intent (line=152)
+              E: action (line=153)
+                A: http://schemas.android.com/apk/res/android:name(0x01010003)="android.intent.action.VIEW" (Raw: "android.intent.action.VIEW")
+              E: data (line=155)
+                A: http://schemas.android.com/apk/res/android:scheme(0x01010027)="content" (Raw: "content")
+                A: http://schemas.android.com/apk/res/android:host(0x01010028)="android.media.tv" (Raw: "android.media.tv")
+          E: intent (line=166)
+              E: action (line=167)
+                A: http://schemas.android.com/apk/res/android:name(0x01010003)="android.intent.action.VIEW" (Raw: "android.intent.action.VIEW")
+              E: data (line=169)
+                A: http://schemas.android.com/apk/res/android:mimeType(0x01010026)="vnd.android.cursor.item/channel" (Raw: "vnd.android.cursor.item/channel")
+          E: intent (line=171)
+              E: action (line=172)
+                A: http://schemas.android.com/apk/res/android:name(0x01010003)="android.intent.action.MAIN" (Raw: "android.intent.action.MAIN")
+              E: category (line=174)
+                A: http://schemas.android.com/apk/res/android:name(0x01010003)="android.intent.category.LEANBACK_LAUNCHER" (Raw: "android.intent.category.LEANBACK_LAUNCHER")
+          E: intent (line=176)
+              E: action (line=177)
+                A: http://schemas.android.com/apk/res/android:name(0x01010003)="android.intent.action.MAIN" (Raw: "android.intent.action.MAIN")
+              E: category (line=179)
+                A: http://schemas.android.com/apk/res/android:name(0x01010003)="android.intent.category.LAUNCHER" (Raw: "android.intent.category.LAUNCHER")
+          E: intent (line=190)
+              E: action (line=191)
+                A: http://schemas.android.com/apk/res/android:name(0x01010003)="android.intent.action.MAIN" (Raw: "android.intent.action.MAIN")
+              E: category (line=193)
+                A: http://schemas.android.com/apk/res/android:name(0x01010003)="android.intent.category.HOME" (Raw: "android.intent.category.HOME")
+          E: intent (line=200)
+              E: action (line=201)
+                A: http://schemas.android.com/apk/res/android:name(0x01010003)="android.intent.action.ASSIST" (Raw: "android.intent.action.ASSIST")
+          E: intent (line=203)
+              E: action (line=204)
+                A: http://schemas.android.com/apk/res/android:name(0x01010003)="android.intent.action.DELETE" (Raw: "android.intent.action.DELETE")
+              E: data (line=206)
+                A: http://schemas.android.com/apk/res/android:scheme(0x01010027)="package" (Raw: "package")
+          E: intent (line=208)
+              E: action (line=209)
+                A: http://schemas.android.com/apk/res/android:name(0x01010003)="com.android.vending.billing.InAppBillingService.BIND" (Raw: "com.android.vending.billing.InAppBillingService.BIND")
+          E: intent (line=221)
+              E: action (line=222)
+                A: http://schemas.android.com/apk/res/android:name(0x01010003)="android.intent.action.OPEN_DOCUMENT" (Raw: "android.intent.action.OPEN_DOCUMENT")
+              E: data (line=224)
+                A: http://schemas.android.com/apk/res/android:mimeType(0x01010026)="*/*" (Raw: "*/*")
+          E: intent (line=226)
+              E: action (line=227)
+                A: http://schemas.android.com/apk/res/android:name(0x01010003)="android.intent.action.GET_CONTENT" (Raw: "android.intent.action.GET_CONTENT")
+              E: data (line=229)
+                A: http://schemas.android.com/apk/res/android:mimeType(0x01010026)="*/*" (Raw: "*/*")
+          E: intent (line=231)
+              E: action (line=232)
+                A: http://schemas.android.com/apk/res/android:name(0x01010003)="android.intent.action.CREATE_DOCUMENT" (Raw: "android.intent.action.CREATE_DOCUMENT")
+              E: data (line=234)
+                A: http://schemas.android.com/apk/res/android:mimeType(0x01010026)="*/*" (Raw: "*/*")
+          E: intent (line=236)
+              E: action (line=237)
+                A: http://schemas.android.com/apk/res/android:name(0x01010003)="android.intent.action.OPEN_DOCUMENT_TREE" (Raw: "android.intent.action.OPEN_DOCUMENT_TREE")
+          E: intent (line=250)
+              E: action (line=251)
+                A: http://schemas.android.com/apk/res/android:name(0x01010003)="android.settings.NOTIFICATION_LISTENER_DETAIL_SETTINGS" (Raw: "android.settings.NOTIFICATION_LISTENER_DETAIL_SETTINGS")
+          E: intent (line=253)
+              E: action (line=254)
+                A: http://schemas.android.com/apk/res/android:name(0x01010003)="android.settings.ACTION_NOTIFICATION_LISTENER_SETTINGS" (Raw: "android.settings.ACTION_NOTIFICATION_LISTENER_SETTINGS")
+          E: intent (line=256)
+              E: action (line=257)
+                A: http://schemas.android.com/apk/res/android:name(0x01010003)="android.settings.SETTINGS" (Raw: "android.settings.SETTINGS")
+          E: intent (line=265)
+              E: action (line=266)
+                A: http://schemas.android.com/apk/res/android:name(0x01010003)="android.net.VpnService" (Raw: "android.net.VpnService")
+          E: intent (line=268)
+              E: action (line=269)
+                A: http://schemas.android.com/apk/res/android:name(0x01010003)="com.google.android.apps.play.billingtestcompanion.BillingOverrideService.BIND" (Raw: "com.google.android.apps.play.billingtestcompanion.BillingOverrideService.BIND")
+      E: uses-permission (line=273)
+        A: http://schemas.android.com/apk/res/android:name(0x01010003)="com.android.vending.BILLING" (Raw: "com.android.vending.BILLING")
+      E: permission (line=275)
+        A: http://schemas.android.com/apk/res/android:name(0x01010003)="com.klevico.monet.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION" (Raw: "com.klevico.monet.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION")
+        A: http://schemas.android.com/apk/res/android:protectionLevel(0x01010009)=0x00000002
+      E: uses-permission (line=279)
+        A: http://schemas.android.com/apk/res/android:name(0x01010003)="com.klevico.monet.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION" (Raw: "com.klevico.monet.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION")
+      E: application (line=288)
+        A: http://schemas.android.com/apk/res/android:theme(0x01010000)=@0x7f120278
+        A: http://schemas.android.com/apk/res/android:label(0x01010001)=@0x7f1100f0
+        A: http://schemas.android.com/apk/res/android:icon(0x01010002)=@0x7f0e0001
+        A: http://schemas.android.com/apk/res/android:name(0x01010003)="com.klevico.monet.MonetApplication" (Raw: "com.klevico.monet.MonetApplication")
+        A: http://schemas.android.com/apk/res/android:allowBackup(0x01010280)=true
+        A: http://schemas.android.com/apk/res/android:supportsRtl(0x010103af)=true
+        A: http://schemas.android.com/apk/res/android:banner(0x010103f2)=@0x7f0e0000
+        A: http://schemas.android.com/apk/res/android:extractNativeLibs(0x010104ea)=false
+        A: http://schemas.android.com/apk/res/android:fullBackupContent(0x010104eb)=@0x7f140000
+        A: http://schemas.android.com/apk/res/android:usesCleartextTraffic(0x010104ec)=true
+        A: http://schemas.android.com/apk/res/android:roundIcon(0x0101052c)=@0x7f0e0001
+        A: http://schemas.android.com/apk/res/android:appComponentFactory(0x0101057a)="androidx.core.app.CoreComponentFactory" (Raw: "androidx.core.app.CoreComponentFactory")
+        A: http://schemas.android.com/apk/res/android:dataExtractionRules(0x0101063e)=@0x7f140002
+          E: receiver (line=302)
+            A: http://schemas.android.com/apk/res/android:name(0x01010003)="com.klevico.monet.BluetoothNotificationReceiver" (Raw: "com.klevico.monet.BluetoothNotificationReceiver")
+            A: http://schemas.android.com/apk/res/android:enabled(0x0101000e)=false
+            A: http://schemas.android.com/apk/res/android:exported(0x01010010)=true
+              E: intent-filter (line=306)
+                  E: action (line=307)
+                    A: http://schemas.android.com/apk/res/android:name(0x01010003)="android.bluetooth.device.action.ACL_CONNECTED" (Raw: "android.bluetooth.device.action.ACL_CONNECTED")
+                  E: action (line=308)
+                    A: http://schemas.android.com/apk/res/android:name(0x01010003)="android.bluetooth.device.action.ACL_DISCONNECTED" (Raw: "android.bluetooth.device.action.ACL_DISCONNECTED")
+          E: profileable (line=317)
+            A: http://schemas.android.com/apk/res/android:shell(0x01010594)=true
+          E: activity (line=319)
+            A: http://schemas.android.com/apk/res/android:theme(0x01010000)=@0x7f120278
+            A: http://schemas.android.com/apk/res/android:name(0x01010003)="com.klevico.monet.MainActivity" (Raw: "com.klevico.monet.MainActivity")
+            A: http://schemas.android.com/apk/res/android:exported(0x01010010)=false
+            A: http://schemas.android.com/apk/res/android:launchMode(0x0101001d)=2
+            A: http://schemas.android.com/apk/res/android:screenOrientation(0x0101001e)=0
+            A: http://schemas.android.com/apk/res/android:configChanges(0x0101001f)=0x400034f4
+          E: activity (line=326)
+            A: http://schemas.android.com/apk/res/android:theme(0x01010000)=@0x7f120279
+            A: http://schemas.android.com/apk/res/android:name(0x01010003)="com.klevico.monet.LauncherRestartActivity" (Raw: "com.klevico.monet.LauncherRestartActivity")
+            A: http://schemas.android.com/apk/res/android:exported(0x01010010)=false
+            A: http://schemas.android.com/apk/res/android:process(0x01010011)=":restart" (Raw: ":restart")
+            A: http://schemas.android.com/apk/res/android:taskAffinity(0x01010012)="com.klevico.monet.restart" (Raw: "com.klevico.monet.restart")
+            A: http://schemas.android.com/apk/res/android:excludeFromRecents(0x01010017)=true
+            A: http://schemas.android.com/apk/res/android:screenOrientation(0x0101001e)=0
+          E: activity (line=334)
+            A: http://schemas.android.com/apk/res/android:theme(0x01010000)=@0x7f120278
+            A: http://schemas.android.com/apk/res/android:name(0x01010003)="com.klevico.monet.HomeActivity" (Raw: "com.klevico.monet.HomeActivity")
+            A: http://schemas.android.com/apk/res/android:exported(0x01010010)=true
+            A: http://schemas.android.com/apk/res/android:launchMode(0x0101001d)=2
+            A: http://schemas.android.com/apk/res/android:screenOrientation(0x0101001e)=0
+            A: http://schemas.android.com/apk/res/android:configChanges(0x0101001f)=0x400034f4
+              E: intent-filter (line=341)
+                  E: action (line=342)
+                    A: http://schemas.android.com/apk/res/android:name(0x01010003)="android.intent.action.MAIN" (Raw: "android.intent.action.MAIN")
+                  E: category (line=344)
+                    A: http://schemas.android.com/apk/res/android:name(0x01010003)="android.intent.category.HOME" (Raw: "android.intent.category.HOME")
+                  E: category (line=345)
+                    A: http://schemas.android.com/apk/res/android:name(0x01010003)="android.intent.category.DEFAULT" (Raw: "android.intent.category.DEFAULT")
+              E: intent-filter (line=347)
+                  E: action (line=348)
+                    A: http://schemas.android.com/apk/res/android:name(0x01010003)="android.intent.action.MAIN" (Raw: "android.intent.action.MAIN")
+                  E: category (line=350)
+                    A: http://schemas.android.com/apk/res/android:name(0x01010003)="android.intent.category.LAUNCHER" (Raw: "android.intent.category.LAUNCHER")
+              E: intent-filter (line=352)
+                  E: action (line=353)
+                    A: http://schemas.android.com/apk/res/android:name(0x01010003)="android.intent.action.MAIN" (Raw: "android.intent.action.MAIN")
+                  E: category (line=355)
+                    A: http://schemas.android.com/apk/res/android:name(0x01010003)="android.intent.category.LEANBACK_LAUNCHER" (Raw: "android.intent.category.LEANBACK_LAUNCHER")
+          E: activity (line=365)
+            A: http://schemas.android.com/apk/res/android:theme(0x01010000)=@0x7f120279
+            A: http://schemas.android.com/apk/res/android:name(0x01010003)="com.klevico.monet.ui.GlobalScreensaverActivity" (Raw: "com.klevico.monet.ui.GlobalScreensaverActivity")
+            A: http://schemas.android.com/apk/res/android:exported(0x01010010)=false
+            A: http://schemas.android.com/apk/res/android:taskAffinity(0x01010012)="com.klevico.monet.screensaver" (Raw: "com.klevico.monet.screensaver")
+            A: http://schemas.android.com/apk/res/android:excludeFromRecents(0x01010017)=true
+            A: http://schemas.android.com/apk/res/android:launchMode(0x0101001d)=2
+            A: http://schemas.android.com/apk/res/android:screenOrientation(0x0101001e)=0
+            A: http://schemas.android.com/apk/res/android:configChanges(0x0101001f)=0x400034f4
+            A: http://schemas.android.com/apk/res/android:resizeableActivity(0x010104f6)=false
+          E: activity (line=382)
+            A: http://schemas.android.com/apk/res/android:theme(0x01010000)=@0x7f120279
+            A: http://schemas.android.com/apk/res/android:name(0x01010003)="com.klevico.monet.ui.OpaqueScreenOffActivity" (Raw: "com.klevico.monet.ui.OpaqueScreenOffActivity")
+            A: http://schemas.android.com/apk/res/android:exported(0x01010010)=false
+            A: http://schemas.android.com/apk/res/android:taskAffinity(0x01010012)="com.klevico.monet.screenoff" (Raw: "com.klevico.monet.screenoff")
+            A: http://schemas.android.com/apk/res/android:excludeFromRecents(0x01010017)=true
+            A: http://schemas.android.com/apk/res/android:launchMode(0x0101001d)=2
+            A: http://schemas.android.com/apk/res/android:screenOrientation(0x0101001e)=0
+            A: http://schemas.android.com/apk/res/android:configChanges(0x0101001f)=0x400034f4
+            A: http://schemas.android.com/apk/res/android:resizeableActivity(0x010104f6)=false
+          E: activity (line=398)
+            A: http://schemas.android.com/apk/res/android:theme(0x01010000)=@0x7f120279
+            A: http://schemas.android.com/apk/res/android:name(0x01010003)="com.klevico.monet.ui.OpaqueAlarmActivity" (Raw: "com.klevico.monet.ui.OpaqueAlarmActivity")
+            A: http://schemas.android.com/apk/res/android:exported(0x01010010)=false
+            A: http://schemas.android.com/apk/res/android:taskAffinity(0x01010012)="com.klevico.monet.alarm" (Raw: "com.klevico.monet.alarm")
+            A: http://schemas.android.com/apk/res/android:excludeFromRecents(0x01010017)=true
+            A: http://schemas.android.com/apk/res/android:launchMode(0x0101001d)=2
+            A: http://schemas.android.com/apk/res/android:screenOrientation(0x0101001e)=0
+            A: http://schemas.android.com/apk/res/android:configChanges(0x0101001f)=0x400034f4
+            A: http://schemas.android.com/apk/res/android:resizeableActivity(0x010104f6)=false
+          E: service (line=415)
+            A: http://schemas.android.com/apk/res/android:name(0x01010003)="com.klevico.monet.ui.MonetDreamService" (Raw: "com.klevico.monet.ui.MonetDreamService")
+            A: http://schemas.android.com/apk/res/android:permission(0x01010006)="android.permission.BIND_DREAM_SERVICE" (Raw: "android.permission.BIND_DREAM_SERVICE")
+            A: http://schemas.android.com/apk/res/android:exported(0x01010010)=true
+              E: intent-filter (line=419)
+                  E: action (line=420)
+                    A: http://schemas.android.com/apk/res/android:name(0x01010003)="android.service.dreams.DreamService" (Raw: "android.service.dreams.DreamService")
+                  E: category (line=422)
+                    A: http://schemas.android.com/apk/res/android:name(0x01010003)="android.intent.category.DEFAULT" (Raw: "android.intent.category.DEFAULT")
+              E: meta-data (line=425)
+                A: http://schemas.android.com/apk/res/android:name(0x01010003)="android.service.dream" (Raw: "android.service.dream")
+                A: http://schemas.android.com/apk/res/android:resource(0x01010025)=@0x7f140004
+          E: activity (line=441)
+            A: http://schemas.android.com/apk/res/android:theme(0x01010000)=@0x01030010
+            A: http://schemas.android.com/apk/res/android:label(0x01010001)=@0x7f110593
+            A: http://schemas.android.com/apk/res/android:name(0x01010003)="com.klevico.monet.WallpaperShareActivity" (Raw: "com.klevico.monet.WallpaperShareActivity")
+            A: http://schemas.android.com/apk/res/android:exported(0x01010010)=true
+            A: http://schemas.android.com/apk/res/android:taskAffinity(0x01010012)="com.klevico.monet.share" (Raw: "com.klevico.monet.share")
+            A: http://schemas.android.com/apk/res/android:excludeFromRecents(0x01010017)=true
+            A: http://schemas.android.com/apk/res/android:configChanges(0x0101001f)=0x400034f4
+              E: intent-filter (line=449)
+                  E: action (line=450)
+                    A: http://schemas.android.com/apk/res/android:name(0x01010003)="android.intent.action.SEND" (Raw: "android.intent.action.SEND")
+                  E: category (line=452)
+                    A: http://schemas.android.com/apk/res/android:name(0x01010003)="android.intent.category.DEFAULT" (Raw: "android.intent.category.DEFAULT")
+                  E: data (line=454)
+                    A: http://schemas.android.com/apk/res/android:mimeType(0x01010026)="image/*" (Raw: "image/*")
+                  E: data (line=455)
+                    A: http://schemas.android.com/apk/res/android:mimeType(0x01010026)="video/*" (Raw: "video/*")
+              E: intent-filter (line=457)
+                  E: action (line=458)
+                    A: http://schemas.android.com/apk/res/android:name(0x01010003)="android.intent.action.SEND_MULTIPLE" (Raw: "android.intent.action.SEND_MULTIPLE")
+                  E: category (line=460)
+                    A: http://schemas.android.com/apk/res/android:name(0x01010003)="android.intent.category.DEFAULT" (Raw: "android.intent.category.DEFAULT")
+                  E: data (line=462)
+                    A: http://schemas.android.com/apk/res/android:mimeType(0x01010026)="image/*" (Raw: "image/*")
+                  E: data (line=463)
+                    A: http://schemas.android.com/apk/res/android:mimeType(0x01010026)="video/*" (Raw: "video/*")
+              E: intent-filter (line=469)
+                  E: action (line=470)
+                    A: http://schemas.android.com/apk/res/android:name(0x01010003)="android.intent.action.ATTACH_DATA" (Raw: "android.intent.action.ATTACH_DATA")
+                  E: category (line=472)
+                    A: http://schemas.android.com/apk/res/android:name(0x01010003)="android.intent.category.DEFAULT" (Raw: "android.intent.category.DEFAULT")
+                  E: data (line=474)
+                    A: http://schemas.android.com/apk/res/android:mimeType(0x01010026)="image/*" (Raw: "image/*")
+                  E: data (line=475)
+                    A: http://schemas.android.com/apk/res/android:mimeType(0x01010026)="video/*" (Raw: "video/*")
+          E: activity (line=483)
+            A: http://schemas.android.com/apk/res/android:theme(0x01010000)=@0x01030011
+            A: http://schemas.android.com/apk/res/android:name(0x01010003)="com.klevico.monet.PostOnboardingPermissionsActivity" (Raw: "com.klevico.monet.PostOnboardingPermissionsActivity")
+            A: http://schemas.android.com/apk/res/android:exported(0x01010010)=false
+            A: http://schemas.android.com/apk/res/android:taskAffinity(0x01010012)="com.klevico.monet.permissions" (Raw: "com.klevico.monet.permissions")
+            A: http://schemas.android.com/apk/res/android:excludeFromRecents(0x01010017)=true
+            A: http://schemas.android.com/apk/res/android:launchMode(0x0101001d)=2
+            A: http://schemas.android.com/apk/res/android:configChanges(0x0101001f)=0x400034f0
+          E: service (line=492)
+            A: http://schemas.android.com/apk/res/android:label(0x01010001)=@0x7f1100f0
+            A: http://schemas.android.com/apk/res/android:name(0x01010003)="com.klevico.monet.LauncherAccessibilityService" (Raw: "com.klevico.monet.LauncherAccessibilityService")
+            A: http://schemas.android.com/apk/res/android:permission(0x01010006)="android.permission.BIND_ACCESSIBILITY_SERVICE" (Raw: "android.permission.BIND_ACCESSIBILITY_SERVICE")
+            A: http://schemas.android.com/apk/res/android:exported(0x01010010)=false
+              E: intent-filter (line=497)
+                  E: action (line=498)
+                    A: http://schemas.android.com/apk/res/android:name(0x01010003)="android.accessibilityservice.AccessibilityService" (Raw: "android.accessibilityservice.AccessibilityService")
+              E: meta-data (line=501)
+                A: http://schemas.android.com/apk/res/android:name(0x01010003)="android.accessibilityservice" (Raw: "android.accessibilityservice")
+                A: http://schemas.android.com/apk/res/android:resource(0x01010025)=@0x7f140003
+          E: service (line=505)
+            A: http://schemas.android.com/apk/res/android:label(0x01010001)=@0x7f1100f0
+            A: http://schemas.android.com/apk/res/android:name(0x01010003)="com.klevico.monet.LauncherNotificationListenerService" (Raw: "com.klevico.monet.LauncherNotificationListenerService")
+            A: http://schemas.android.com/apk/res/android:permission(0x01010006)="android.permission.BIND_NOTIFICATION_LISTENER_SERVICE" (Raw: "android.permission.BIND_NOTIFICATION_LISTENER_SERVICE")
+            A: http://schemas.android.com/apk/res/android:exported(0x01010010)=true
+              E: intent-filter (line=510)
+                  E: action (line=511)
+                    A: http://schemas.android.com/apk/res/android:name(0x01010003)="android.service.notification.NotificationListenerService" (Raw: "android.service.notification.NotificationListenerService")
+          E: service (line=514)
+            A: http://schemas.android.com/apk/res/android:name(0x01010003)="com.klevico.monet.AlarmRingingService" (Raw: "com.klevico.monet.AlarmRingingService")
+            A: http://schemas.android.com/apk/res/android:exported(0x01010010)=false
+            A: http://schemas.android.com/apk/res/android:stopWithTask(0x0101036a)=false
+            A: http://schemas.android.com/apk/res/android:foregroundServiceType(0x01010599)=0x00000402
+          E: receiver (line=520)
+            A: http://schemas.android.com/apk/res/android:name(0x01010003)="com.klevico.monet.BootReceiver" (Raw: "com.klevico.monet.BootReceiver")
+            A: http://schemas.android.com/apk/res/android:enabled(0x0101000e)=true
+            A: http://schemas.android.com/apk/res/android:exported(0x01010010)=false
+            A: http://schemas.android.com/apk/res/android:directBootAware(0x01010505)=true
+              E: intent-filter (line=525)
+                  E: action (line=536)
+                    A: http://schemas.android.com/apk/res/android:name(0x01010003)="android.intent.action.BOOT_COMPLETED" (Raw: "android.intent.action.BOOT_COMPLETED")
+                  E: action (line=537)
+                    A: http://schemas.android.com/apk/res/android:name(0x01010003)="android.intent.action.MY_PACKAGE_REPLACED" (Raw: "android.intent.action.MY_PACKAGE_REPLACED")
+                  E: action (line=543)
+                    A: http://schemas.android.com/apk/res/android:name(0x01010003)="android.intent.action.USER_PRESENT" (Raw: "android.intent.action.USER_PRESENT")
+                  E: action (line=544)
+                    A: http://schemas.android.com/apk/res/android:name(0x01010003)="android.intent.action.TIME_SET" (Raw: "android.intent.action.TIME_SET")
+                  E: action (line=545)
+                    A: http://schemas.android.com/apk/res/android:name(0x01010003)="android.intent.action.TIMEZONE_CHANGED" (Raw: "android.intent.action.TIMEZONE_CHANGED")
+                  E: action (line=546)
+                    A: http://schemas.android.com/apk/res/android:name(0x01010003)="android.app.action.SCHEDULE_EXACT_ALARM_PERMISSION_STATE_CHANGED" (Raw: "android.app.action.SCHEDULE_EXACT_ALARM_PERMISSION_STATE_CHANGED")
+          E: receiver (line=549)
+            A: http://schemas.android.com/apk/res/android:name(0x01010003)="com.klevico.monet.AlarmReminderReceiver" (Raw: "com.klevico.monet.AlarmReminderReceiver")
+            A: http://schemas.android.com/apk/res/android:enabled(0x0101000e)=true
+            A: http://schemas.android.com/apk/res/android:exported(0x01010010)=false
+          E: meta-data (line=554)
+            A: http://schemas.android.com/apk/res/android:name(0x01010003)="com.google.android.play.billingclient.version" (Raw: "com.google.android.play.billingclient.version")
+            A: http://schemas.android.com/apk/res/android:value(0x01010024)="8.0.0" (Raw: "8.0.0")
+          E: activity (line=558)
+            A: http://schemas.android.com/apk/res/android:theme(0x01010000)=@0x01030010
+            A: http://schemas.android.com/apk/res/android:name(0x01010003)="com.android.billingclient.api.ProxyBillingActivity" (Raw: "com.android.billingclient.api.ProxyBillingActivity")
+            A: http://schemas.android.com/apk/res/android:exported(0x01010010)=false
+            A: http://schemas.android.com/apk/res/android:configChanges(0x0101001f)=0x000005b0
+          E: activity (line=563)
+            A: http://schemas.android.com/apk/res/android:theme(0x01010000)=@0x01030010
+            A: http://schemas.android.com/apk/res/android:name(0x01010003)="com.android.billingclient.api.ProxyBillingActivityV2" (Raw: "com.android.billingclient.api.ProxyBillingActivityV2")
+            A: http://schemas.android.com/apk/res/android:exported(0x01010010)=false
+            A: http://schemas.android.com/apk/res/android:configChanges(0x0101001f)=0x000005b0
+          E: activity (line=568)
+            A: http://schemas.android.com/apk/res/android:theme(0x01010000)=@0x01030010
+            A: http://schemas.android.com/apk/res/android:name(0x01010003)="com.google.android.gms.common.api.GoogleApiActivity" (Raw: "com.google.android.gms.common.api.GoogleApiActivity")
+            A: http://schemas.android.com/apk/res/android:exported(0x01010010)=false
+          E: meta-data (line=573)
+            A: http://schemas.android.com/apk/res/android:name(0x01010003)="com.google.android.gms.version" (Raw: "com.google.android.gms.version")
+            A: http://schemas.android.com/apk/res/android:value(0x01010024)=@0x7f0a0008
+          E: provider (line=577)
+            A: http://schemas.android.com/apk/res/android:name(0x01010003)="androidx.startup.InitializationProvider" (Raw: "androidx.startup.InitializationProvider")
+            A: http://schemas.android.com/apk/res/android:exported(0x01010010)=false
+            A: http://schemas.android.com/apk/res/android:authorities(0x01010018)="com.klevico.monet.androidx-startup" (Raw: "com.klevico.monet.androidx-startup")
+              E: meta-data (line=581)
+                A: http://schemas.android.com/apk/res/android:name(0x01010003)="androidx.emoji2.text.EmojiCompatInitializer" (Raw: "androidx.emoji2.text.EmojiCompatInitializer")
+                A: http://schemas.android.com/apk/res/android:value(0x01010024)="androidx.startup" (Raw: "androidx.startup")
+              E: meta-data (line=584)
+                A: http://schemas.android.com/apk/res/android:name(0x01010003)="androidx.lifecycle.ProcessLifecycleInitializer" (Raw: "androidx.lifecycle.ProcessLifecycleInitializer")
+                A: http://schemas.android.com/apk/res/android:value(0x01010024)="androidx.startup" (Raw: "androidx.startup")
+              E: meta-data (line=587)
+                A: http://schemas.android.com/apk/res/android:name(0x01010003)="androidx.profileinstaller.ProfileInstallerInitializer" (Raw: "androidx.profileinstaller.ProfileInstallerInitializer")
+                A: http://schemas.android.com/apk/res/android:value(0x01010024)="androidx.startup" (Raw: "androidx.startup")
+          E: uses-library (line=592)
+            A: http://schemas.android.com/apk/res/android:name(0x01010003)="androidx.window.extensions" (Raw: "androidx.window.extensions")
+            A: http://schemas.android.com/apk/res/android:required(0x0101028e)=false
+          E: uses-library (line=595)
+            A: http://schemas.android.com/apk/res/android:name(0x01010003)="androidx.window.sidecar" (Raw: "androidx.window.sidecar")
+            A: http://schemas.android.com/apk/res/android:required(0x0101028e)=false
+          E: receiver (line=599)
+            A: http://schemas.android.com/apk/res/android:name(0x01010003)="androidx.profileinstaller.ProfileInstallReceiver" (Raw: "androidx.profileinstaller.ProfileInstallReceiver")
+            A: http://schemas.android.com/apk/res/android:permission(0x01010006)="android.permission.DUMP" (Raw: "android.permission.DUMP")
+            A: http://schemas.android.com/apk/res/android:enabled(0x0101000e)=true
+            A: http://schemas.android.com/apk/res/android:exported(0x01010010)=true
+            A: http://schemas.android.com/apk/res/android:directBootAware(0x01010505)=false
+              E: intent-filter (line=605)
+                  E: action (line=606)
+                    A: http://schemas.android.com/apk/res/android:name(0x01010003)="androidx.profileinstaller.action.INSTALL_PROFILE" (Raw: "androidx.profileinstaller.action.INSTALL_PROFILE")
+              E: intent-filter (line=608)
+                  E: action (line=609)
+                    A: http://schemas.android.com/apk/res/android:name(0x01010003)="androidx.profileinstaller.action.SKIP_FILE" (Raw: "androidx.profileinstaller.action.SKIP_FILE")
+              E: intent-filter (line=611)
+                  E: action (line=612)
+                    A: http://schemas.android.com/apk/res/android:name(0x01010003)="androidx.profileinstaller.action.SAVE_PROFILE" (Raw: "androidx.profileinstaller.action.SAVE_PROFILE")
+              E: intent-filter (line=614)
+                  E: action (line=615)
+                    A: http://schemas.android.com/apk/res/android:name(0x01010003)="androidx.profileinstaller.action.BENCHMARK_OPERATION" (Raw: "androidx.profileinstaller.action.BENCHMARK_OPERATION")
+          E: service (line=619)
+            A: http://schemas.android.com/apk/res/android:name(0x01010003)="com.google.android.datatransport.runtime.backends.TransportBackendDiscovery" (Raw: "com.google.android.datatransport.runtime.backends.TransportBackendDiscovery")
+            A: http://schemas.android.com/apk/res/android:exported(0x01010010)=false
+              E: meta-data (line=622)
+                A: http://schemas.android.com/apk/res/android:name(0x01010003)="backend:com.google.android.datatransport.cct.CctBackendFactory" (Raw: "backend:com.google.android.datatransport.cct.CctBackendFactory")
+                A: http://schemas.android.com/apk/res/android:value(0x01010024)="cct" (Raw: "cct")
+          E: service (line=626)
+            A: http://schemas.android.com/apk/res/android:name(0x01010003)="com.google.android.datatransport.runtime.scheduling.jobscheduling.JobInfoSchedulerService" (Raw: "com.google.android.datatransport.runtime.scheduling.jobscheduling.JobInfoSchedulerService")
+            A: http://schemas.android.com/apk/res/android:permission(0x01010006)="android.permission.BIND_JOB_SERVICE" (Raw: "android.permission.BIND_JOB_SERVICE")
+            A: http://schemas.android.com/apk/res/android:exported(0x01010010)=false
+          E: receiver (line=632)
+            A: http://schemas.android.com/apk/res/android:name(0x01010003)="com.google.android.datatransport.runtime.scheduling.jobscheduling.AlarmManagerSchedulerBroadcastReceiver" (Raw: "com.google.android.datatransport.runtime.scheduling.jobscheduling.AlarmManagerSchedulerBroadcastReceiver")
+            A: http://schemas.android.com/apk/res/android:exported(0x01010010)=false
+          E: activity (line=635)
+            A: http://schemas.android.com/apk/res/android:theme(0x01010000)=@0x7f12027a
+            A: http://schemas.android.com/apk/res/android:name(0x01010003)="com.google.android.play.core.common.PlayCoreDialogWrapperActivity" (Raw: "com.google.android.play.core.common.PlayCoreDialogWrapperActivity")
+            A: http://schemas.android.com/apk/res/android:exported(0x01010010)=false
+            A: http://schemas.android.com/apk/res/android:stateNotNeeded(0x01010016)=true
