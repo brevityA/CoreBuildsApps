@@ -1,3 +1,3 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
-  <circle cx="256" cy="256" r="120" fill="none" stroke="#2CADFE" stroke-width="32.0" stroke-linecap="round" stroke-linejoin="round"/><ellipse cx="256" cy="256" rx="180" ry="66" fill="none" stroke="#2CADFE" stroke-width="26.2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="256" cy="256" r="26" fill="#2CADFE" stroke="none"/>
+  <circle cx="256" cy="256" r="128" fill="none" stroke="#2CADFE" stroke-width="32.0" stroke-linecap="round" stroke-linejoin="round"/><ellipse cx="256" cy="256" rx="192" ry="74" fill="none" stroke="#2CADFE" stroke-width="26.2" stroke-linecap="round" stroke-linejoin="round"/>
 </svg>
