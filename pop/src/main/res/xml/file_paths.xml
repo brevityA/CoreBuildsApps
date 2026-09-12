@@ -1,4 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <paths>
+    <!-- Downloaded release APKs handed to the package installer. -->
     <cache-path name="updates" path="updates/" />
+    <!-- Cached wallpaper downloads (WallpaperDownloader.cacheDir). Shared
+         read-only, per-URI, to Monet Launcher's WallpaperShareActivity so a
+         cached file can be set as a Monet background without an export. -->
+    <cache-path name="wallpapers" path="wallpapers/" />
 </paths>

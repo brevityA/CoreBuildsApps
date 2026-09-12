@@ -42,10 +42,15 @@ The icon-pack app ships a built-in Wallpapers screen:
 - **Full images download on demand** from the raw URLs below and are cached in
   internal storage (12-file LRU, ~30 MB ceiling) — the APK stays small. Series 1–3
   are 4K PNG, series 6 is 1376×768 JPEG; `resolution` per entry is the truth.
-- **Set** writes the system wallpaper via `WallpaperManager`. Monet Launcher
-  extracts its Material You accent from it, so Core Cyan carries through to the
-  tiles. On Fire TV — which blocks third-party wallpaper writes — the image is
-  saved to `Pictures/CoreBuilds` and handed to the system crop/setter.
+- **Set** writes the system wallpaper via `WallpaperManager` for launchers
+  that theme from it. On Fire TV — which blocks third-party wallpaper writes —
+  the image is saved to `Pictures/CoreBuilds` and handed to the system
+  crop/setter.
+- **Send to Monet** replaces Set when Monet Launcher is HOME. Monet does not
+  read the system wallpaper at all; the cached file is shared straight into
+  Monet's `WallpaperShareActivity`, which copies it into Monet's own background
+  library and themes from it. Requires Monet 1.0.72+ and Monet Premium (Monet
+  says so itself if not). See `docs/MONET_LAUNCHER.md`.
 
 ## Adding a wallpaper
 
@@ -81,8 +86,13 @@ gradient banding on TV panels. Do not run lossy/palette PNG optimizers over them
 https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/manifest.json
 ```
 
-## Monet Launcher (manual)
+## Monet Launcher
 
-Settings → Appearance → Wallpaper → Custom — sideload the PNGs or use any
-file's raw GitHub URL. Cyan-dominant by design, so Monet's dynamic theming
-pulls Core Cyan as the accent.
+In the app: open a wallpaper → **Send to Monet** (single), or select several →
+**Export** → **Send N to Monet** (they land in Monet → Settings → Background →
+Gallery). Custom backgrounds are a Monet Premium feature.
+
+Manual, Monet 1.0.80+ layout: Settings → Background → Sources → **Choose
+folder** → `Pictures/CoreBuilds` (after an Export), then turn on **Wallpaper
+rotation** under the same screen. Cyan-dominant by design, so Monet's dynamic
+theming pulls Core Cyan as the accent.

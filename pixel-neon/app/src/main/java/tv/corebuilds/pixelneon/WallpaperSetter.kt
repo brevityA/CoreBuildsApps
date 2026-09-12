@@ -2,6 +2,7 @@ package tv.corebuilds.pixelneon
 
 import android.Manifest
 import android.app.WallpaperManager
+import android.content.ClipData
 import android.content.ContentValues
 import android.content.Context
 import android.content.Intent
@@ -13,20 +14,28 @@ import android.os.Environment
 import android.provider.MediaStore
 import android.util.Log
 import androidx.core.content.ContextCompat
+import androidx.core.content.FileProvider
 import java.io.File
 import java.io.FileOutputStream
 
 /**
- * Applies a downloaded wallpaper bitmap to the home screen, and copies
- * wallpaper files into shared storage for launchers that run their own
- * wallpaper rotation (Monet, etc.).
+ * Applies a downloaded wallpaper file to the home screen, hands it to
+ * launchers that keep their own wallpaper library, and copies wallpaper files
+ * into shared storage for launchers that run their own rotation.
  *
- * Monet Launcher extracts its Material You palette from the system wallpaper,
- * so setting it through [WallpaperManager] is the path that actually re-themes
- * the launcher. On stock Android TV / Google TV this "just works". Amazon Fire
- * TV blocks third-party wallpaper writes, so we fall back to saving the image
- * into the device Pictures folder and opening the system crop/set intent — the
- * same workaround Monet's own docs recommend.
+ * Three delivery paths, picked by the caller:
+ *  - [apply] writes the **system** wallpaper via [WallpaperManager]. Stock
+ *    Android TV / Google TV and launchers that theme from the system wallpaper
+ *    pick it up. Amazon Fire TV blocks third-party wallpaper writes, so we fall
+ *    back to saving into Pictures and opening the system crop/set intent.
+ *  - [monetShareIntent] hands the file straight to **Monet Launcher**. Monet
+ *    never reads the system wallpaper (no `WallpaperManager` reference in the
+ *    v1.0.84 APK); its exported `WallpaperShareActivity` accepts
+ *    `ACTION_SEND` / `ACTION_SEND_MULTIPLE` `image/*` and copies the file into
+ *    Monet's own background library, then themes from it. Custom backgrounds
+ *    are a Monet Premium feature — Monet shows its own toast either way.
+ *  - [copyFileToPictures] copies the original bytes to `Pictures/CoreBuilds`
+ *    for launchers that rotate from a folder (Monet "Choose folder", etc.).
  */
 object WallpaperSetter {
 
@@ -211,7 +220,82 @@ object WallpaperSetter {
         }
     }
 
-    /** Build an ACTION_ATTACH_DATA intent for the system crop/setter fallback. */
+    // ---- Monet Launcher ------------------------------------------------------
+
+    /** Monet Launcher package (Klevico). */
+    const val MONET_PACKAGE = "com.klevico.monet"
+
+    /**
+     * Monet's exported share target. Decompiled from Monet v1.0.84
+     * (versionCode 118, 2026-09-12): `<intent-filter>` for ACTION_SEND,
+     * ACTION_SEND_MULTIPLE and ACTION_ATTACH_DATA with `image/*` and
+     * `video/*`; category DEFAULT; `excludeFromRecents`, own task affinity.
+     * It reads `intent.data`, EXTRA_STREAM (single or list) and `clipData`,
+     * resolves the MIME through ContentResolver → extension → `intent.type`,
+     * and needs FLAG_GRANT_READ_URI_PERMISSION on content URIs.
+     */
+    const val MONET_SHARE_ACTIVITY = "com.klevico.monet.WallpaperShareActivity"
+
+    /** True when an installed Monet exposes the share target (v1.0.72+). */
+    fun canShareToMonet(context: Context): Boolean = try {
+        val probe = Intent(Intent.ACTION_SEND)
+            .setClassName(MONET_PACKAGE, MONET_SHARE_ACTIVITY)
+            .setType("image/*")
+        context.packageManager.resolveActivity(probe, 0) != null
+    } catch (_: Exception) {
+        false
+    }
+
+    /**
+     * A `content://` URI for a cached wallpaper [file] via this pack's
+     * FileProvider (`xml/file_paths.xml` exposes `cache/wallpapers/`). Lets us
+     * hand the cached download to Monet without first exporting it to Pictures.
+     * Returns null when [file] is outside the exported paths.
+     */
+    fun contentUri(context: Context, file: File): Uri? = try {
+        FileProvider.getUriForFile(context, UpdateInstaller.AUTHORITY, file)
+    } catch (e: IllegalArgumentException) {
+        Log.w(TAG, "file is outside FileProvider paths: $file", e)
+        null
+    }
+
+    fun mimeFor(name: String): String =
+        if (name.endsWith(".png", ignoreCase = true)) "image/png" else "image/jpeg"
+
+    /**
+     * Explicit ACTION_SEND into Monet's [MONET_SHARE_ACTIVITY]. Explicit so no
+     * chooser appears on a TV remote flow. Monet copies the bytes into its own
+     * `files/backgrounds/` and toasts "Set as background" — or "Custom
+     * backgrounds are part of Monet Premium." on the free tier.
+     */
+    fun monetShareIntent(uri: Uri, mime: String = "image/jpeg"): Intent =
+        Intent(Intent.ACTION_SEND).apply {
+            setClassName(MONET_PACKAGE, MONET_SHARE_ACTIVITY)
+            type = mime
+            putExtra(Intent.EXTRA_STREAM, uri)
+            clipData = ClipData.newRawUri("wallpaper", uri)
+            addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+            addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+        }
+
+    /**
+     * Explicit ACTION_SEND_MULTIPLE into Monet. Monet adds every image to its
+     * background library ("%d wallpapers added") and keeps the current one;
+     * the user picks or rotates from Monet → Settings → Background → Gallery.
+     */
+    fun monetShareIntent(uris: List<Uri>): Intent =
+        Intent(Intent.ACTION_SEND_MULTIPLE).apply {
+            setClassName(MONET_PACKAGE, MONET_SHARE_ACTIVITY)
+            type = "image/*"
+            putParcelableArrayListExtra(Intent.EXTRA_STREAM, ArrayList(uris))
+            if (uris.isNotEmpty()) {
+                val clip = ClipData.newRawUri("wallpaper", uris.first())
+                uris.drop(1).forEach { clip.addItem(ClipData.Item(it)) }
+                clipData = clip
+            }
+            addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+            addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+        }
 
     /**
      * Projectivy Launcher specific static wallpaper apply intent.
@@ -225,6 +309,7 @@ object WallpaperSetter {
             addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
         }
 
+    /** Build an ACTION_ATTACH_DATA intent for the system crop/setter fallback. */
     fun setIntent(uri: Uri, mime: String = "image/jpeg"): Intent =
         Intent(Intent.ACTION_ATTACH_DATA)
             .setDataAndType(uri, mime)
