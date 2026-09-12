@@ -139,6 +139,83 @@ jobs:
                       print(n, "err", e)
           EOF
           wc -l docs/research/monet-probe/*
+      - name: Deep pass (icon pack parsing, settings labels)
+        run: |
+          python3 - <<'EOF' > docs/research/monet-probe/monet-${V}-deep.txt 2>/dev/null
+          import re, logging
+          logging.disable(logging.CRITICAL)
+          from androguard.misc import AnalyzeAPK
+          a, ds, dx = AnalyzeAPK("/tmp/monet.apk")
+
+          # 1. Default-locale English strings, all of them (for settings labels).
+          print("=====DEFAULT STRINGS=====")
+          res = a.get_android_resources()
+          pkg = a.get_package()
+          try:
+              for locale, d in res.get_resolved_strings()[pkg]["string"].items():
+                  if locale in ("DEFAULT", "\x00\x00"):
+                      for k, v in sorted(d.items()):
+                          print(f"{k} = {v}")
+          except Exception as e:
+              print("resolved_strings err", e)
+              try:
+                  for k, v in sorted(res.get_string_resources(pkg).items()):
+                      print(f"{k} = {v}")
+              except Exception as e2:
+                  print("fallback err", e2)
+
+          # 2. Every method whose const-strings mention icon-pack parsing / share / folders.
+          print("=====ICON PACK METHODS=====")
+          want = re.compile(r"appfilter|drawable\.xml|iconback|iconmask|iconupon|_banner|iconPackVariant|iconPackRenderPx|icon_pack|org\.adw\.launcher\.THEMES|com\.novalauncher\.THEME|ComponentInfo|Unable to get icon package|wallpaper_folder|addWallpaperFolder|EXTRA_STREAM|extra\.STREAM|image/|Pictures", re.I)
+          shown = 0
+          for m in dx.get_methods():
+              if m.is_external():
+                  continue
+              try:
+                  mm = m.get_method()
+                  strs = []
+                  for ins in mm.get_instructions():
+                      if "const-string" in ins.get_name():
+                          out = ins.get_output()
+                          strs.append(out.split(", ", 1)[1] if ", " in out else out)
+              except Exception:
+                  continue
+              joined = "\n".join(strs)
+              if not want.search(joined):
+                  continue
+              shown += 1
+              print("-" * 90)
+              print("METHOD", m.class_name, m.name, m.descriptor)
+              for s_ in strs:
+                  print("   STR", s_)
+              calls = set()
+              try:
+                  for _, call, _ in m.get_xref_to():
+                      cn = call.class_name
+                      if cn.startswith(("Landroid/", "Lcom/klevico/", "Lorg/xmlpull/", "Landroidx/documentfile/", "Landroidx/core/content/")):
+                          calls.add(f"{cn}->{call.name}{call.descriptor}")
+              except Exception:
+                  pass
+              for c_ in sorted(calls):
+                  print("   CALL", c_)
+              if shown > 60:
+                  break
+          print("TOTAL METHODS", shown)
+
+          # 3. Enum-ish classes under com.klevico.monet.model.LauncherPreferences$*
+          print("=====PREF ENUMS=====")
+          for cls in dx.get_classes():
+              n = cls.name
+              if "LauncherPreferences$" in n or re.search(r"IconPack|IconShape|TileStyle|WallpaperSource|RotationSource", n):
+                  try:
+                      c = cls.get_vm_class()
+                      names = [f.get_name() for f in c.get_fields() if "static" in f.get_access_flags_string() and "final" in f.get_access_flags_string() and f.get_descriptor() == n]
+                      if names:
+                          print(n, names)
+                  except Exception:
+                      pass
+          EOF
+          wc -l docs/research/monet-probe/*
       - name: Commit results
         run: |
           git config user.name "monet-probe"
