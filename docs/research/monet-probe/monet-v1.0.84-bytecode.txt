@@ -1,0 +1,913 @@
+====================================================================================================
+CLASS La/nu1; extends La/xi5;
+  FIELD public final synthetic I p
+  FIELD public final synthetic Landroid/content/Context; q
+  FIELD public final synthetic Ljava/lang/String; r
+  METHOD <init> (Landroid/content/Context; Ljava/lang/String; La/se0; I)V
+      const/4 v1, 2
+      invoke-direct v0, v1, v3, La/xi5;-><init>(I La/se0;)V
+      return-void 
+  METHOD f (Ljava/lang/Object; Ljava/lang/Object;)Ljava/lang/Object;
+      sget-object v1, La/m46;->a La/m46;
+      check-cast v3, La/mg0;
+      check-cast v4, La/se0;
+      invoke-virtual v2, v4, v3, La/nu1;->q(La/se0; Ljava/lang/Object;)La/se0;
+      check-cast v2, La/nu1;
+      invoke-virtual v2, v1, La/nu1;->t(Ljava/lang/Object;)Ljava/lang/Object;
+      return-object v2
+      invoke-virtual v2, v4, v3, La/nu1;->q(La/se0; Ljava/lang/Object;)La/se0;
+      check-cast v2, La/nu1;
+      invoke-virtual v2, v1, La/nu1;->t(Ljava/lang/Object;)Ljava/lang/Object;
+      return-object v2
+      invoke-virtual v2, v4, v3, La/nu1;->q(La/se0; Ljava/lang/Object;)La/se0;
+      check-cast v2, La/nu1;
+      invoke-virtual v2, v1, La/nu1;->t(Ljava/lang/Object;)Ljava/lang/Object;
+      return-object v2
+  METHOD q (La/se0; Ljava/lang/Object;)La/se0;
+      iget-object v0, v2, La/nu1;->r Ljava/lang/String;
+      iget-object v2, v2, La/nu1;->q Landroid/content/Context;
+      new-instance v4, La/nu1;
+      const/4 v1, 2
+      invoke-direct v4, v2, v0, v3, v1, La/nu1;-><init>(Landroid/content/Context; Ljava/lang/String; La/se0; I)V
+      return-object v4
+      new-instance v4, La/nu1;
+      const/4 v1, 1
+      invoke-direct v4, v2, v0, v3, v1, La/nu1;-><init>(Landroid/content/Context; Ljava/lang/String; La/se0; I)V
+      return-object v4
+      new-instance v4, La/nu1;
+      const/4 v1, 0
+      invoke-direct v4, v2, v0, v3, v1, La/nu1;-><init>(Landroid/content/Context; Ljava/lang/String; La/se0; I)V
+      return-object v4
+  METHOD t (Ljava/lang/Object;)Ljava/lang/Object;
+      iget-object v1, v14, La/nu1;->r Ljava/lang/String;
+      iget-object v14, v14, La/nu1;->q Landroid/content/Context;
+      invoke-static v15, La/g54;->P(Ljava/lang/Object;)V
+      sget-object v15, La/jb6;->a Ljava/util/concurrent/ConcurrentHashMap;
+      invoke-static v14, v1, La/jb6;->b(Landroid/content/Context; Ljava/lang/String;)Ljava/lang/String;
+      invoke-static v14, v1, La/jb6;->d(Landroid/content/Context; Ljava/lang/String;)Ljava/util/List;
+      new-instance v0, La/qb4;
+      invoke-direct v0, v15, v14, La/qb4;-><init>(Ljava/lang/Object; Ljava/lang/Object;)V
+      return-object v0
+      invoke-static v15, La/g54;->P(Ljava/lang/Object;)V
+      sget-object v15, La/wj1;->a Ljava/util/List;
+      invoke-virtual v14, Ljava/lang/Object;->getClass()Ljava/lang/Class;
+      invoke-static v1, La/wj1;->k(Ljava/lang/String;)La/qb4;
+      iget-object v15, v15, La/qb4;->l Ljava/lang/Object;
+      check-cast v15, Ljava/lang/String;
+      sget-object v0, La/wj1;->f Ljava/util/concurrent/ConcurrentHashMap;
+      invoke-virtual v0, v15, Ljava/util/concurrent/ConcurrentHashMap;->get(Ljava/lang/Object;)Ljava/lang/Object;
+      check-cast v1, Ljava/util/List;
+      if-eqz v1, +004h
+      invoke-virtual v14, Landroid/content/Context;->getPackageManager()Landroid/content/pm/PackageManager;
+      invoke-virtual v1, v15, Landroid/content/pm/PackageManager;->getResourcesForApplication(Ljava/lang/String;)Landroid/content/res/Resources;
+      new-instance v2, La/lu4;
+      invoke-direct v2, v1, La/lu4;-><init>(Ljava/lang/Throwable;)V
+      const/4 v3, 0
+      if-eqz v2, +003h
+      check-cast v1, Landroid/content/res/Resources;
+      const/4 v2, 0
+      const-string v4, "drawable"
+      if-eqz v1, +010h
+      invoke-static v1, v15, v4, La/wj1;->h(Landroid/content/res/Resources; Ljava/lang/String; Ljava/lang/String;)Ljava/util/List;
+      if-nez v5, +008h
+      const-string v5, "icon_pack"
+      invoke-static v1, v15, v5, La/wj1;->h(Landroid/content/res/Resources; Ljava/lang/String; Ljava/lang/String;)Ljava/util/List;
+      if-nez v5, +045h
+      invoke-virtual v14, v15, v2, Landroid/content/Context;->createPackageContext(Ljava/lang/String; I)Landroid/content/Context;
+      invoke-virtual v5, Landroid/content/Context;->getAssets()Landroid/content/res/AssetManager;
+      const-string v6, "drawable.xml"
+      invoke-virtual v5, v6, Landroid/content/res/AssetManager;->open(Ljava/lang/String;)Ljava/io/InputStream;
+      invoke-static Lorg/xmlpull/v1/XmlPullParserFactory;->newInstance()Lorg/xmlpull/v1/XmlPullParserFactory;
+      invoke-virtual v6, Lorg/xmlpull/v1/XmlPullParserFactory;->newPullParser()Lorg/xmlpull/v1/XmlPullParser;
+      const-string v7, "utf-8"
+      invoke-interface v6, v5, v7, Lorg/xmlpull/v1/XmlPullParser;->setInput(Ljava/io/InputStream; Ljava/lang/String;)V
+      invoke-static v6, La/wj1;->g(Lorg/xmlpull/v1/XmlPullParser;)Ljava/util/ArrayList;
+      invoke-static v5, v3, La/dp1;->n(Ljava/io/Closeable; Ljava/lang/Throwable;)V
+      invoke-static v5, v6, La/dp1;->n(Ljava/io/Closeable; Ljava/lang/Throwable;)V
+      new-instance v6, La/lu4;
+      invoke-direct v6, v5, La/lu4;-><init>(Ljava/lang/Throwable;)V
+      if-eqz v5, +003h
+      check-cast v6, Ljava/util/List;
+      if-eqz v6, +00ah
+      invoke-interface v6, Ljava/util/Collection;->isEmpty()Z
+      if-nez v5, +004h
+      invoke-static v14, v15, La/wj1;->d(Landroid/content/Context; Ljava/lang/String;)La/vj1;
+      iget-object v6, v6, La/vj1;->b Ljava/util/Map;
+      invoke-interface v6, Ljava/util/Map;->values()Ljava/util/Collection;
+      check-cast v6, Ljava/lang/Iterable;
+      invoke-static v6, La/q70;->E0(Ljava/lang/Iterable;)Ljava/util/List;
+      new-instance v7, La/lu4;
+      invoke-direct v7, v6, La/lu4;-><init>(Ljava/lang/Throwable;)V
+      sget-object v8, La/iy0;->l La/iy0;
+      if-eqz v7, +003h
+      check-cast v6, Ljava/util/List;
+      invoke-virtual v14, Landroid/content/Context;->getPackageManager()Landroid/content/pm/PackageManager;
+      invoke-virtual v7, v15, Landroid/content/pm/PackageManager;->getResourcesForApplication(Ljava/lang/String;)Landroid/content/res/Resources;
+      invoke-virtual v7, Ljava/lang/Object;->getClass()Ljava/lang/Class;
+      invoke-static v14, v15, La/wj1;->d(Landroid/content/Context; Ljava/lang/String;)La/vj1;
+      iget-object v14, v14, La/vj1;->b Ljava/util/Map;
+      invoke-interface v14, Ljava/util/Map;->values()Ljava/util/Collection;
+      check-cast v14, Ljava/lang/Iterable;
+      invoke-static v14, La/q70;->f0(Ljava/lang/Iterable;)Ljava/lang/Object;
+      check-cast v14, Ljava/lang/String;
+      new-instance v9, La/lu4;
+      invoke-direct v9, v14, La/lu4;-><init>(Ljava/lang/Throwable;)V
+      if-eqz v9, +003h
+      check-cast v14, Ljava/lang/String;
+      if-nez v14, +005h
+      invoke-virtual v7, v14, v4, v15, Landroid/content/res/Resources;->getIdentifier(Ljava/lang/String; Ljava/lang/String; Ljava/lang/String;)I
+      if-nez v14, +003h
+      const/high16 v9, -65536
+      new-instance v9, Ljava/util/ArrayList;
+      const/16 v10, 2048
+      invoke-direct v9, v10, Ljava/util/ArrayList;-><init>(I)V
+      if-gt v10, v12, +051h
+      const/16 v12, 512
+      if-ge v11, v12, +04dh
+      invoke-virtual v7, v12, Landroid/content/res/Resources;->getResourceEntryName(I)Ljava/lang/String;
+      new-instance v13, La/lu4;
+      invoke-direct v13, v12, La/lu4;-><init>(Ljava/lang/Throwable;)V
+      if-eqz v13, +003h
+      check-cast v12, Ljava/lang/String;
+      if-eqz v12, +02bh
+      sget-object v11, La/wj1;->h Ljava/util/List;
+      if-eqz v11, +00bh
+      invoke-interface v11, Ljava/util/Collection;->isEmpty()Z
+      if-eqz v13, +005h
+      invoke-interface v11, Ljava/lang/Iterable;->iterator()Ljava/util/Iterator;
+      invoke-interface v11, Ljava/util/Iterator;->hasNext()Z
+      if-eqz v13, +00fh
+      invoke-interface v11, Ljava/util/Iterator;->next()Ljava/lang/Object;
+      check-cast v13, Ljava/lang/String;
+      invoke-static v12, v13, v2, La/fh5;->I0(Ljava/lang/String; Ljava/lang/String; Z)Z
+      if-eqz v13, -010h
+      invoke-virtual v9, v12, Ljava/util/ArrayList;->add(Ljava/lang/Object;)Z
+      new-instance v9, La/lu4;
+      invoke-direct v9, v14, La/lu4;-><init>(Ljava/lang/Throwable;)V
+      if-eqz v14, +003h
+      check-cast v9, Ljava/util/List;
+      if-nez v5, +003h
+      invoke-static v6, v5, La/q70;->s0(Ljava/util/Collection; Ljava/lang/Iterable;)Ljava/util/ArrayList;
+      invoke-static v14, v9, La/q70;->s0(Ljava/util/Collection; Ljava/lang/Iterable;)Ljava/util/ArrayList;
+      invoke-static v14, La/q70;->G0(Ljava/lang/Iterable;)Ljava/util/Set;
+      invoke-static v14, La/q70;->E0(Ljava/lang/Iterable;)Ljava/util/List;
+      if-eqz v1, +024h
+      new-instance v2, Ljava/util/ArrayList;
+      invoke-direct v2, Ljava/util/ArrayList;-><init>()V
+      invoke-interface v14, Ljava/lang/Iterable;->iterator()Ljava/util/Iterator;
+      invoke-interface v14, Ljava/util/Iterator;->hasNext()Z
+      if-eqz v3, +013h
+      invoke-interface v14, Ljava/util/Iterator;->next()Ljava/lang/Object;
+      check-cast v5, Ljava/lang/String;
+      invoke-virtual v1, v5, v4, v15, Landroid/content/res/Resources;->getIdentifier(Ljava/lang/String; Ljava/lang/String; Ljava/lang/String;)I
+      if-eqz v5, -011h
+      invoke-virtual v2, v3, Ljava/util/ArrayList;->add(Ljava/lang/Object;)Z
+      invoke-virtual v0, v15, v1, Ljava/util/concurrent/ConcurrentHashMap;->put(Ljava/lang/Object; Ljava/lang/Object;)Ljava/lang/Object;
+      return-object v1
+      invoke-static v15, La/g54;->P(Ljava/lang/Object;)V
+      invoke-static v14, v1, La/nw3;->b(Landroid/content/Context; Ljava/lang/String;)Z
+      invoke-static v14, Ljava/lang/Boolean;->valueOf(Z)Ljava/lang/Boolean;
+      return-object v14
+====================================================================================================
+CLASS La/tj1; extends Ljava/lang/Object;
+  FIELD public final synthetic I l
+  FIELD public final synthetic Landroid/content/Context; m
+  FIELD public final synthetic Ljava/lang/String; n
+  METHOD <init> (La/jg3; Landroid/content/Context; Ljava/lang/String;)V
+      const/4 v1, 4
+      invoke-direct v0, Ljava/lang/Object;-><init>()V
+      return-void 
+  METHOD <init> (Landroid/content/Context; Ljava/lang/String; I)V
+      invoke-direct v0, Ljava/lang/Object;-><init>()V
+      return-void 
+  METHOD <init> (Ljava/lang/String; Landroid/content/Context; I)V
+      invoke-direct v0, Ljava/lang/Object;-><init>()V
+      return-void 
+  METHOD b ()Ljava/lang/Object;
+      const/4 v1, 0
+      iget-object v2, v4, La/tj1;->n Ljava/lang/String;
+      iget-object v4, v4, La/tj1;->m Landroid/content/Context;
+      sget-object v0, La/mj4;->a La/re0;
+      invoke-virtual v4, Ljava/lang/Object;->getClass()Ljava/lang/Class;
+      invoke-static v4, v2, La/mj4;->c(Landroid/content/Context; Ljava/lang/String;)Ljava/io/File;
+      return-object v4
+      new-instance v0, Landroid/content/Intent;
+      const-string v1, "android.intent.action.VIEW"
+      invoke-static v2, Landroid/net/Uri;->parse(Ljava/lang/String;)Landroid/net/Uri;
+      invoke-direct v0, v1, v2, Landroid/content/Intent;-><init>(Ljava/lang/String; Landroid/net/Uri;)V
+      const/high16 v1, 268435456
+      invoke-virtual v0, v1, Landroid/content/Intent;->addFlags(I)Landroid/content/Intent;
+      invoke-virtual v4, v0, Landroid/content/Context;->startActivity(Landroid/content/Intent;)V
+      sget-object v4, La/m46;->a La/m46;
+      return-object v4
+      invoke-static v4, v2, v1, Landroid/widget/Toast;->makeText(Landroid/content/Context; Ljava/lang/CharSequence; I)Landroid/widget/Toast;
+      invoke-virtual v4, Landroid/widget/Toast;->show()V
+      sget-object v4, Ljava/lang/Boolean;->TRUE Ljava/lang/Boolean;
+      return-object v4
+      invoke-static v4, v2, v1, Landroid/widget/Toast;->makeText(Landroid/content/Context; Ljava/lang/CharSequence; I)Landroid/widget/Toast;
+      invoke-virtual v4, Landroid/widget/Toast;->show()V
+      sget-object v4, Ljava/lang/Boolean;->TRUE Ljava/lang/Boolean;
+      return-object v4
+      new-instance v0, Ljava/io/File;
+      invoke-virtual v4, Landroid/content/Context;->getFilesDir()Ljava/io/File;
+      const-string v1, "datastore/"
+      const-string v3, ".preferences_pb"
+      invoke-static v1, v2, v3, La/aq6;->c(Ljava/lang/String; Ljava/lang/String; Ljava/lang/String;)Ljava/lang/String;
+      invoke-direct v0, v4, v1, Ljava/io/File;-><init>(Ljava/io/File; Ljava/lang/String;)V
+      return-object v0
+      invoke-virtual v4, Landroid/content/Context;->getPackageManager()Landroid/content/pm/PackageManager;
+      invoke-virtual v0, v2, Landroid/content/pm/PackageManager;->getResourcesForApplication(Ljava/lang/String;)Landroid/content/res/Resources;
+      invoke-virtual v0, Ljava/lang/Object;->getClass()Ljava/lang/Class;
+      const-string v3, "appfilter"
+      invoke-static v0, v2, v3, La/wj1;->i(Landroid/content/res/Resources; Ljava/lang/String; Ljava/lang/String;)Ljava/util/Map;
+      if-nez v3, +049h
+      const-string v3, "icon_pack"
+      invoke-static v0, v2, v3, La/wj1;->i(Landroid/content/res/Resources; Ljava/lang/String; Ljava/lang/String;)Ljava/util/Map;
+      if-nez v3, +041h
+      const/4 v0, 0
+      invoke-virtual v4, v2, v1, Landroid/content/Context;->createPackageContext(Ljava/lang/String; I)Landroid/content/Context;
+      invoke-virtual v4, Landroid/content/Context;->getAssets()Landroid/content/res/AssetManager;
+      const-string v1, "appfilter.xml"
+      invoke-virtual v4, v1, Landroid/content/res/AssetManager;->open(Ljava/lang/String;)Ljava/io/InputStream;
+      invoke-static Lorg/xmlpull/v1/XmlPullParserFactory;->newInstance()Lorg/xmlpull/v1/XmlPullParserFactory;
+      invoke-virtual v1, Lorg/xmlpull/v1/XmlPullParserFactory;->newPullParser()Lorg/xmlpull/v1/XmlPullParser;
+      const-string v3, "utf-8"
+      invoke-interface v1, v4, v3, Lorg/xmlpull/v1/XmlPullParser;->setInput(Ljava/io/InputStream; Ljava/lang/String;)V
+      invoke-static v1, La/wj1;->f(Lorg/xmlpull/v1/XmlPullParser;)Ljava/util/HashMap;
+      invoke-static v4, v0, La/dp1;->n(Ljava/io/Closeable; Ljava/lang/Throwable;)V
+      invoke-static v4, v1, La/dp1;->n(Ljava/io/Closeable; Ljava/lang/Throwable;)V
+      new-instance v1, La/lu4;
+      invoke-direct v1, v4, La/lu4;-><init>(Ljava/lang/Throwable;)V
+      if-eqz v4, +003h
+      check-cast v3, Ljava/util/Map;
+      if-nez v3, +004h
+      sget-object v3, La/jy0;->l La/jy0;
+      new-instance v4, La/vj1;
+      invoke-direct v4, v2, v3, La/vj1;-><init>(Ljava/lang/String; Ljava/util/Map;)V
+      return-object v4
+====================================================================================================
+CLASS La/vj1; extends Ljava/lang/Object;
+  FIELD public final Ljava/lang/String; a
+  FIELD public final Ljava/util/Map; b
+  METHOD <init> (Ljava/lang/String; Ljava/util/Map;)V
+      invoke-virtual v1, Ljava/lang/Object;->getClass()Ljava/lang/Class;
+      invoke-direct v0, Ljava/lang/Object;-><init>()V
+      return-void 
+  METHOD equals (Ljava/lang/Object;)Z
+      if-ne v2, v3, +003h
+      if-nez v0, +003h
+      check-cast v3, La/vj1;
+      iget-object v0, v2, La/vj1;->a Ljava/lang/String;
+      iget-object v1, v3, La/vj1;->a Ljava/lang/String;
+      invoke-static v0, v1, La/dp1;->h(Ljava/lang/Object; Ljava/lang/Object;)Z
+      if-nez v0, +003h
+      iget-object v2, v2, La/vj1;->b Ljava/util/Map;
+      iget-object v3, v3, La/vj1;->b Ljava/util/Map;
+      invoke-virtual v2, v3, Ljava/lang/Object;->equals(Ljava/lang/Object;)Z
+      if-nez v2, +004h
+      const/4 v2, 0
+      return v2
+      const/4 v2, 1
+      return v2
+  METHOD hashCode ()I
+      iget-object v0, v1, La/vj1;->a Ljava/lang/String;
+      invoke-virtual v0, Ljava/lang/String;->hashCode()I
+      iget-object v1, v1, La/vj1;->b Ljava/util/Map;
+      invoke-virtual v1, Ljava/lang/Object;->hashCode()I
+      return v1
+  METHOD toString ()Ljava/lang/String;
+      new-instance v0, Ljava/lang/StringBuilder;
+      const-string v1, "LoadedPack(packageName="
+      invoke-direct v0, v1, Ljava/lang/StringBuilder;-><init>(Ljava/lang/String;)V
+      iget-object v1, v2, La/vj1;->a Ljava/lang/String;
+      invoke-virtual v0, v1, Ljava/lang/StringBuilder;->append(Ljava/lang/String;)Ljava/lang/StringBuilder;
+      const-string v1, ", componentMap="
+      invoke-virtual v0, v1, Ljava/lang/StringBuilder;->append(Ljava/lang/String;)Ljava/lang/StringBuilder;
+      iget-object v2, v2, La/vj1;->b Ljava/util/Map;
+      invoke-virtual v0, v2, Ljava/lang/StringBuilder;->append(Ljava/lang/Object;)Ljava/lang/StringBuilder;
+      const-string v2, ")"
+      invoke-virtual v0, v2, Ljava/lang/StringBuilder;->append(Ljava/lang/String;)Ljava/lang/StringBuilder;
+      invoke-virtual v0, Ljava/lang/StringBuilder;->toString()Ljava/lang/String;
+      return-object v2
+====================================================================================================
+CLASS La/wj1; extends Ljava/lang/Object;
+  FIELD public static final Ljava/util/List; a
+  FIELD public static final Ljava/util/LinkedHashMap; b
+  FIELD public static final La/c7; c
+  FIELD public static final La/ec4; d
+  FIELD public static final Ljava/util/concurrent/ConcurrentHashMap; e
+  FIELD public static final Ljava/util/concurrent/ConcurrentHashMap; f
+  FIELD public static bridge Ljava/util/List; g
+  FIELD public static final Ljava/util/List; h
+  METHOD <clinit> ()V
+      const-string v6, "net.oneplus.launcher.icons.ACTION_PICK_ICON"
+      const-string v7, "ch.deletescape.lawnchair.ICONPACK"
+      const-string v0, "org.adw.launcher.THEMES"
+      const-string v1, "com.anddoes.launcher.THEME"
+      const-string v2, "com.gau.go.launcherex.theme"
+      const-string v3, "com.novalauncher.THEME"
+      const-string v4, "com.teslacoilsw.launcher.THEME"
+      const-string v5, "com.fede.launcher.THEME_ICONPACK"
+      invoke-static v0, La/r70;->E([Ljava/lang/Object;)Ljava/util/List;
+      new-instance v0, Ljava/util/LinkedHashMap;
+      invoke-direct v0, Ljava/util/LinkedHashMap;-><init>()V
+      new-instance v0, La/c7;
+      new-instance v1, La/w4;
+      const/16 v2, 29
+      invoke-direct v1, v2, La/w4;-><init>(I)V
+      new-instance v2, La/rf;
+      const/16 v3, 12
+      invoke-direct v2, v3, La/rf;-><init>(I)V
+      invoke-direct v0, v1, v2, La/c7;-><init>(La/va1; La/jb1;)V
+      new-instance v0, La/ec4;
+      const/4 v1, 0
+      invoke-direct v0, v1, La/ec4;-><init>(I)V
+      new-instance v0, Ljava/util/concurrent/ConcurrentHashMap;
+      invoke-direct v0, Ljava/util/concurrent/ConcurrentHashMap;-><init>()V
+      new-instance v0, Ljava/util/concurrent/ConcurrentHashMap;
+      invoke-direct v0, Ljava/util/concurrent/ConcurrentHashMap;-><init>()V
+      const-string v17, "ic_commit"
+      const-string v18, "ic_search_api"
+      const-string v1, "abc_"
+      const-string v2, "material_"
+      const-string v3, "mtrl_"
+      const-string v4, "design_"
+      const-string v5, "notification"
+      const-string v6, "androidx"
+      const-string v7, "common_"
+      const-string v8, "googleg_"
+      const-string v9, "preference_"
+      const-string v10, "tooltip_"
+      const-string v11, "btn_"
+      const-string v12, "ic_arrow"
+      const-string v13, "ic_clear"
+      const-string v14, "ic_menu"
+      const-string v15, "ic_go"
+      const-string v16, "ic_voice"
+      invoke-static v0, La/r70;->E([Ljava/lang/Object;)Ljava/util/List;
+      return-void 
+  METHOD a ()La/ec4;
+      sget-object v0, La/wj1;->d La/ec4;
+      return-object v0
+  METHOD b (Landroid/content/Context; Ljava/lang/String; Ljava/lang/String; Ljava/lang/String;)Z
+      invoke-virtual v5, Ljava/lang/Object;->getClass()Ljava/lang/Class;
+      invoke-virtual v6, Ljava/lang/Object;->getClass()Ljava/lang/Class;
+      invoke-virtual v7, Ljava/lang/Object;->getClass()Ljava/lang/Class;
+      invoke-virtual v8, Ljava/lang/Object;->getClass()Ljava/lang/Class;
+      invoke-static v6, La/wj1;->k(Ljava/lang/String;)La/qb4;
+      iget-object v0, v6, La/qb4;->l Ljava/lang/Object;
+      check-cast v0, Ljava/lang/String;
+      iget-object v6, v6, La/qb4;->m Ljava/lang/Object;
+      check-cast v6, Ljava/lang/String;
+      const/4 v1, 1
+      if-eqz v6, +003h
+      return v1
+      new-instance v6, Ljava/lang/StringBuilder;
+      invoke-direct v6, Ljava/lang/StringBuilder;-><init>()V
+      invoke-virtual v6, v0, Ljava/lang/StringBuilder;->append(Ljava/lang/String;)Ljava/lang/StringBuilder;
+      const-string v2, "|"
+      invoke-virtual v6, v2, Ljava/lang/StringBuilder;->append(Ljava/lang/String;)Ljava/lang/StringBuilder;
+      invoke-virtual v6, v7, Ljava/lang/StringBuilder;->append(Ljava/lang/String;)Ljava/lang/StringBuilder;
+      const-string v2, "|"
+      invoke-virtual v6, v2, Ljava/lang/StringBuilder;->append(Ljava/lang/String;)Ljava/lang/StringBuilder;
+      invoke-virtual v6, v8, Ljava/lang/StringBuilder;->append(Ljava/lang/String;)Ljava/lang/StringBuilder;
+      invoke-virtual v6, Ljava/lang/StringBuilder;->toString()Ljava/lang/String;
+      sget-object v2, La/wj1;->e Ljava/util/concurrent/ConcurrentHashMap;
+      invoke-virtual v2, v6, Ljava/util/concurrent/ConcurrentHashMap;->get(Ljava/lang/Object;)Ljava/lang/Object;
+      check-cast v2, Ljava/lang/Boolean;
+      if-eqz v2, +007h
+      invoke-virtual v2, Ljava/lang/Boolean;->booleanValue()Z
+      return v5
+      sget-object v2, La/wj1;->b Ljava/util/LinkedHashMap;
+      invoke-virtual v2, v0, Ljava/util/LinkedHashMap;->get(Ljava/lang/Object;)Ljava/lang/Object;
+      check-cast v3, La/vj1;
+      const/4 v2, 0
+      if-nez v3, +025h
+      invoke-static Landroid/os/Looper;->myLooper()Landroid/os/Looper;
+      invoke-static Landroid/os/Looper;->getMainLooper()Landroid/os/Looper;
+      if-ne v3, v4, +003h
+      invoke-static v5, v0, La/wj1;->d(Landroid/content/Context; Ljava/lang/String;)La/vj1;
+      new-instance v3, La/lu4;
+      invoke-direct v3, v5, La/lu4;-><init>(Ljava/lang/Throwable;)V
+      if-eqz v3, +003h
+      const/4 v5, 0
+      check-cast v3, La/vj1;
+      if-nez v3, +003h
+      return v2
+      invoke-static v3, v7, v8, La/wj1;->e(La/vj1; Ljava/lang/String; Ljava/lang/String;)Ljava/lang/String;
+      if-eqz v5, +003h
+      sget-object v5, La/wj1;->b Ljava/util/LinkedHashMap;
+      invoke-virtual v5, v0, Ljava/util/LinkedHashMap;->get(Ljava/lang/Object;)Ljava/lang/Object;
+      if-ne v7, v3, +00eh
+      sget-object v7, La/wj1;->e Ljava/util/concurrent/ConcurrentHashMap;
+      invoke-static v1, Ljava/lang/Boolean;->valueOf(Z)Ljava/lang/Boolean;
+      invoke-virtual v7, v6, v8, Ljava/util/concurrent/ConcurrentHashMap;->put(Ljava/lang/Object; Ljava/lang/Object;)Ljava/lang/Object;
+      return v1
+  METHOD c (Landroid/content/Context; Z)Ljava/util/List;
+      invoke-virtual v5, Ljava/lang/Object;->getClass()Ljava/lang/Class;
+      if-nez v6, +007h
+      sget-object v6, La/wj1;->g Ljava/util/List;
+      if-eqz v6, +003h
+      return-object v6
+      invoke-virtual v5, Landroid/content/Context;->getPackageManager()Landroid/content/pm/PackageManager;
+      new-instance v6, Ljava/util/LinkedHashMap;
+      invoke-direct v6, Ljava/util/LinkedHashMap;-><init>()V
+      sget-object v0, La/wj1;->a Ljava/util/List;
+      invoke-interface v0, Ljava/util/List;->iterator()Ljava/util/Iterator;
+      invoke-interface v0, Ljava/util/Iterator;->hasNext()Z
+      if-eqz v1, +067h
+      invoke-interface v0, Ljava/util/Iterator;->next()Ljava/lang/Object;
+      check-cast v1, Ljava/lang/String;
+      new-instance v2, Landroid/content/Intent;
+      invoke-direct v2, v1, Landroid/content/Intent;-><init>(Ljava/lang/String;)V
+      const/4 v1, 0
+      invoke-virtual v5, v2, v1, Landroid/content/pm/PackageManager;->queryIntentActivities(Landroid/content/Intent; I)Ljava/util/List;
+      new-instance v2, La/lu4;
+      invoke-direct v2, v1, La/lu4;-><init>(Ljava/lang/Throwable;)V
+      sget-object v2, La/iy0;->l La/iy0;
+      if-eqz v3, +003h
+      check-cast v1, Ljava/util/List;
+      invoke-interface v1, Ljava/util/List;->iterator()Ljava/util/Iterator;
+      invoke-interface v1, Ljava/util/Iterator;->hasNext()Z
+      if-eqz v2, -02fh
+      invoke-interface v1, Ljava/util/Iterator;->next()Ljava/lang/Object;
+      check-cast v2, Landroid/content/pm/ResolveInfo;
+      iget-object v3, v2, Landroid/content/pm/ResolveInfo;->activityInfo Landroid/content/pm/ActivityInfo;
+      if-eqz v3, -00eh
+      iget-object v3, v3, Landroid/content/pm/ActivityInfo;->packageName Ljava/lang/String;
+      if-nez v3, +003h
+      invoke-interface v6, v3, Ljava/util/Map;->containsKey(Ljava/lang/Object;)Z
+      if-nez v4, -019h
+      iget-object v2, v2, Landroid/content/pm/ResolveInfo;->activityInfo Landroid/content/pm/ActivityInfo;
+      iget-object v2, v2, Landroid/content/pm/ActivityInfo;->applicationInfo Landroid/content/pm/ApplicationInfo;
+      invoke-virtual v5, v2, Landroid/content/pm/PackageManager;->getApplicationLabel(Landroid/content/pm/ApplicationInfo;)Ljava/lang/CharSequence;
+      invoke-virtual v2, Ljava/lang/Object;->toString()Ljava/lang/String;
+      new-instance v4, La/lu4;
+      invoke-direct v4, v2, La/lu4;-><init>(Ljava/lang/Throwable;)V
+      if-eqz v4, +003h
+      check-cast v2, Ljava/lang/String;
+      new-instance v4, La/uj1;
+      invoke-direct v4, v3, v2, La/uj1;-><init>(Ljava/lang/String; Ljava/lang/String;)V
+      invoke-interface v6, v3, v4, Ljava/util/Map;->put(Ljava/lang/Object; Ljava/lang/Object;)Ljava/lang/Object;
+      invoke-virtual v6, Ljava/util/LinkedHashMap;->values()Ljava/util/Collection;
+      invoke-virtual v5, Ljava/lang/Object;->getClass()Ljava/lang/Class;
+      invoke-interface v5, Ljava/util/Collection;->size()I
+      const/4 v0, 2
+      if-ge v6, v0, +009h
+      check-cast v5, Ljava/lang/Iterable;
+      invoke-static v5, La/q70;->E0(Ljava/lang/Iterable;)Ljava/util/List;
+      new-instance v6, Ljava/util/ArrayList;
+      invoke-interface v5, Ljava/util/Collection;->size()I
+      invoke-direct v6, v0, Ljava/util/ArrayList;-><init>(I)V
+      invoke-interface v5, Ljava/util/Collection;->iterator()Ljava/util/Iterator;
+      invoke-interface v0, Ljava/util/Iterator;->hasNext()Z
+      if-eqz v1, +01ch
+      invoke-interface v0, Ljava/util/Iterator;->next()Ljava/lang/Object;
+      check-cast v1, La/uj1;
+      new-instance v2, La/un1;
+      iget-object v3, v1, La/uj1;->b Ljava/lang/String;
+      sget-object v4, Ljava/util/Locale;->ROOT Ljava/util/Locale;
+      invoke-virtual v3, v4, Ljava/lang/String;->toLowerCase(Ljava/util/Locale;)Ljava/lang/String;
+      invoke-virtual v3, Ljava/lang/Object;->getClass()Ljava/lang/Class;
+      invoke-direct v2, v1, v3, La/un1;-><init>(La/uj1; Ljava/lang/String;)V
+      invoke-virtual v6, v2, Ljava/util/ArrayList;->add(Ljava/lang/Object;)Z
+      invoke-virtual v6, Ljava/util/ArrayList;->size()I
+      const/4 v1, 1
+      if-le v0, v1, +00ch
+      new-instance v0, La/y71;
+      const/16 v1, 22
+      invoke-direct v0, v1, La/y71;-><init>(I)V
+      invoke-static v6, v0, La/v70;->U(Ljava/util/List; Ljava/util/Comparator;)V
+      new-instance v0, Ljava/util/ArrayList;
+      invoke-interface v5, Ljava/util/Collection;->size()I
+      invoke-direct v0, v5, Ljava/util/ArrayList;-><init>(I)V
+      invoke-virtual v6, Ljava/util/ArrayList;->iterator()Ljava/util/Iterator;
+      invoke-virtual v5, Ljava/lang/Object;->getClass()Ljava/lang/Class;
+      invoke-interface v5, Ljava/util/Iterator;->hasNext()Z
+      if-eqz v6, +011h
+      invoke-interface v5, Ljava/util/Iterator;->next()Ljava/lang/Object;
+      invoke-virtual v6, Ljava/lang/Object;->getClass()Ljava/lang/Class;
+      check-cast v6, La/un1;
+      iget-object v6, v6, La/un1;->a La/uj1;
+      invoke-virtual v0, v6, Ljava/util/ArrayList;->add(Ljava/lang/Object;)Z
+      return-object v5
+  METHOD d (Landroid/content/Context; Ljava/lang/String;)La/vj1;
+      new-instance v0, La/tj1;
+      const/4 v1, 0
+      invoke-direct v0, v2, v3, v1, La/tj1;-><init>(Landroid/content/Context; Ljava/lang/String; I)V
+      sget-object v2, La/wj1;->c La/c7;
+      invoke-virtual v2, v3, v0, La/c7;->j(Ljava/lang/String; La/ta1;)Ljava/lang/Object;
+      if-eqz v2, +005h
+      check-cast v2, La/vj1;
+      return-object v2
+      const-string v2, "Required value was null."
+      invoke-static v2, La/xj0;->m(Ljava/lang/String;)V
+      const/4 v2, 0
+      return-object v2
+  METHOD e (La/vj1; Ljava/lang/String; Ljava/lang/String;)Ljava/lang/String;
+      iget-object v3, v3, La/vj1;->b Ljava/util/Map;
+      const-string v0, "}"
+      const-string v1, "ComponentInfo{"
+      const-string v2, "/"
+      invoke-static v1, v4, v2, v5, v0, La/pe0;->m(Ljava/lang/String; Ljava/lang/String; Ljava/lang/String; Ljava/lang/String; Ljava/lang/String;)Ljava/lang/String;
+      invoke-interface v3, v0, Ljava/util/Map;->get(Ljava/lang/Object;)Ljava/lang/Object;
+      check-cast v0, Ljava/lang/String;
+      if-eqz v0, +003h
+      return-object v0
+      new-instance v0, Ljava/lang/StringBuilder;
+      invoke-direct v0, Ljava/lang/StringBuilder;-><init>()V
+      invoke-virtual v0, v4, Ljava/lang/StringBuilder;->append(Ljava/lang/String;)Ljava/lang/StringBuilder;
+      invoke-virtual v0, v2, Ljava/lang/StringBuilder;->append(Ljava/lang/String;)Ljava/lang/StringBuilder;
+      invoke-virtual v0, v5, Ljava/lang/StringBuilder;->append(Ljava/lang/String;)Ljava/lang/StringBuilder;
+      invoke-virtual v0, Ljava/lang/StringBuilder;->toString()Ljava/lang/String;
+      invoke-interface v3, v4, Ljava/util/Map;->get(Ljava/lang/Object;)Ljava/lang/Object;
+      check-cast v3, Ljava/lang/String;
+      return-object v3
+  METHOD f (Lorg/xmlpull/v1/XmlPullParser;)Ljava/util/HashMap;
+      new-instance v0, Ljava/util/HashMap;
+      invoke-direct v0, Ljava/util/HashMap;-><init>()V
+      invoke-interface v4, Lorg/xmlpull/v1/XmlPullParser;->getEventType()I
+      const/4 v2, 1
+      if-eq v1, v2, +038h
+      const/4 v2, 2
+      if-ne v1, v2, +030h
+      invoke-interface v4, Lorg/xmlpull/v1/XmlPullParser;->getName()Ljava/lang/String;
+      const-string v2, "item"
+      invoke-static v1, v2, La/dp1;->h(Ljava/lang/Object; Ljava/lang/Object;)Z
+      if-eqz v1, +024h
+      const-string v1, "component"
+      const/4 v2, 0
+      invoke-interface v4, v2, v1, Lorg/xmlpull/v1/XmlPullParser;->getAttributeValue(Ljava/lang/String; Ljava/lang/String;)Ljava/lang/String;
+      const-string v3, "drawable"
+      invoke-interface v4, v2, v3, Lorg/xmlpull/v1/XmlPullParser;->getAttributeValue(Ljava/lang/String; Ljava/lang/String;)Ljava/lang/String;
+      if-eqz v1, +015h
+      invoke-static v1, La/yg5;->W0(Ljava/lang/CharSequence;)Z
+      if-eqz v3, +003h
+      if-eqz v2, +00ch
+      invoke-static v2, La/yg5;->W0(Ljava/lang/CharSequence;)Z
+      if-eqz v3, +003h
+      invoke-virtual v0, v1, v2, Ljava/util/HashMap;->put(Ljava/lang/Object; Ljava/lang/Object;)Ljava/lang/Object;
+      invoke-interface v4, Lorg/xmlpull/v1/XmlPullParser;->next()I
+      return-object v0
+  METHOD g (Lorg/xmlpull/v1/XmlPullParser;)Ljava/util/ArrayList;
+      new-instance v0, Ljava/util/ArrayList;
+      invoke-direct v0, Ljava/util/ArrayList;-><init>()V
+      invoke-interface v3, Lorg/xmlpull/v1/XmlPullParser;->getEventType()I
+      const/4 v2, 1
+      if-eq v1, v2, +029h
+      const/4 v2, 2
+      if-ne v1, v2, +021h
+      invoke-interface v3, Lorg/xmlpull/v1/XmlPullParser;->getName()Ljava/lang/String;
+      const-string v2, "item"
+      invoke-static v1, v2, La/dp1;->h(Ljava/lang/Object; Ljava/lang/Object;)Z
+      if-eqz v1, +015h
+      const/4 v1, 0
+      const-string v2, "drawable"
+      invoke-interface v3, v1, v2, Lorg/xmlpull/v1/XmlPullParser;->getAttributeValue(Ljava/lang/String; Ljava/lang/String;)Ljava/lang/String;
+      if-eqz v1, +00ch
+      invoke-static v1, La/yg5;->W0(Ljava/lang/CharSequence;)Z
+      if-eqz v2, +003h
+      invoke-virtual v0, v1, Ljava/util/ArrayList;->add(Ljava/lang/Object;)Z
+      invoke-interface v3, Lorg/xmlpull/v1/XmlPullParser;->next()I
+      return-object v0
+  METHOD h (Landroid/content/res/Resources; Ljava/lang/String; Ljava/lang/String;)Ljava/util/List;
+      const-string v0, "xml"
+      invoke-virtual v1, v3, v0, v2, Landroid/content/res/Resources;->getIdentifier(Ljava/lang/String; Ljava/lang/String; Ljava/lang/String;)I
+      const/4 v3, 0
+      if-nez v2, +003h
+      return-object v3
+      invoke-virtual v1, v2, Landroid/content/res/Resources;->getXml(I)Landroid/content/res/XmlResourceParser;
+      invoke-virtual v1, Ljava/lang/Object;->getClass()Ljava/lang/Class;
+      invoke-static v1, La/wj1;->g(Lorg/xmlpull/v1/XmlPullParser;)Ljava/util/ArrayList;
+      invoke-interface v1, Landroid/content/res/XmlResourceParser;->close()V
+      invoke-interface v1, Landroid/content/res/XmlResourceParser;->close()V
+      new-instance v2, La/lu4;
+      invoke-direct v2, v1, La/lu4;-><init>(Ljava/lang/Throwable;)V
+      if-eqz v1, +003h
+      check-cast v2, Ljava/util/List;
+      if-eqz v2, +009h
+      invoke-interface v2, Ljava/util/Collection;->isEmpty()Z
+      if-nez v1, +003h
+      return-object v3
+  METHOD i (Landroid/content/res/Resources; Ljava/lang/String; Ljava/lang/String;)Ljava/util/Map;
+      const-string v0, "xml"
+      invoke-virtual v1, v3, v0, v2, Landroid/content/res/Resources;->getIdentifier(Ljava/lang/String; Ljava/lang/String; Ljava/lang/String;)I
+      const/4 v3, 0
+      if-nez v2, +003h
+      return-object v3
+      invoke-virtual v1, v2, Landroid/content/res/Resources;->getXml(I)Landroid/content/res/XmlResourceParser;
+      invoke-virtual v1, Ljava/lang/Object;->getClass()Ljava/lang/Class;
+      invoke-static v1, La/wj1;->f(Lorg/xmlpull/v1/XmlPullParser;)Ljava/util/HashMap;
+      invoke-interface v1, Landroid/content/res/XmlResourceParser;->close()V
+      invoke-interface v1, Landroid/content/res/XmlResourceParser;->close()V
+      new-instance v2, La/lu4;
+      invoke-direct v2, v1, La/lu4;-><init>(Ljava/lang/Throwable;)V
+      if-eqz v1, +003h
+      check-cast v3, Ljava/util/Map;
+      return-object v3
+  METHOD j (Landroid/content/Context; Ljava/lang/String; Ljava/lang/String; I)Landroid/graphics/Bitmap;
+      const/4 v0, 0
+      invoke-virtual v6, Landroid/content/Context;->getPackageManager()Landroid/content/pm/PackageManager;
+      invoke-virtual v6, v7, Landroid/content/pm/PackageManager;->getResourcesForApplication(Ljava/lang/String;)Landroid/content/res/Resources;
+      invoke-virtual v6, Ljava/lang/Object;->getClass()Ljava/lang/Class;
+      const-string v1, "drawable"
+      invoke-virtual v6, v8, v1, v7, Landroid/content/res/Resources;->getIdentifier(Ljava/lang/String; Ljava/lang/String; Ljava/lang/String;)I
+      if-nez v7, +005h
+      invoke-virtual v6, v7, v0, Landroid/content/res/Resources;->getDrawable(I Landroid/content/res/Resources$Theme;)Landroid/graphics/drawable/Drawable;
+      if-nez v6, +003h
+      const/16 v7, 96
+      if-ge v9, v7, +003h
+      invoke-virtual v6, Landroid/graphics/drawable/Drawable;->getIntrinsicWidth()I
+      invoke-virtual v6, Landroid/graphics/drawable/Drawable;->getIntrinsicHeight()I
+      if-lez v7, +04ah
+      if-gtz v8, +003h
+      if-ne v7, v8, +012h
+      invoke-static v9, Ljava/lang/Integer;->valueOf(I)Ljava/lang/Integer;
+      invoke-static v9, Ljava/lang/Integer;->valueOf(I)Ljava/lang/Integer;
+      new-instance v9, La/qb4;
+      invoke-direct v9, v7, v8, La/qb4;-><init>(Ljava/lang/Object; Ljava/lang/Object;)V
+      const/4 v1, 1
+      if-le v7, v8, +01ah
+      invoke-static v9, Ljava/lang/Integer;->valueOf(I)Ljava/lang/Integer;
+      if-ge v7, v1, +003h
+      invoke-static v1, Ljava/lang/Integer;->valueOf(I)Ljava/lang/Integer;
+      new-instance v9, La/qb4;
+      invoke-direct v9, v2, v7, La/qb4;-><init>(Ljava/lang/Object; Ljava/lang/Object;)V
+      if-ge v7, v1, +003h
+      invoke-static v1, Ljava/lang/Integer;->valueOf(I)Ljava/lang/Integer;
+      invoke-static v9, Ljava/lang/Integer;->valueOf(I)Ljava/lang/Integer;
+      new-instance v9, La/qb4;
+      invoke-direct v9, v7, v8, La/qb4;-><init>(Ljava/lang/Object; Ljava/lang/Object;)V
+      invoke-static v9, Ljava/lang/Integer;->valueOf(I)Ljava/lang/Integer;
+      invoke-static v9, Ljava/lang/Integer;->valueOf(I)Ljava/lang/Integer;
+      new-instance v9, La/qb4;
+      invoke-direct v9, v7, v8, La/qb4;-><init>(Ljava/lang/Object; Ljava/lang/Object;)V
+      iget-object v7, v9, La/qb4;->l Ljava/lang/Object;
+      check-cast v7, Ljava/lang/Number;
+      invoke-virtual v7, Ljava/lang/Number;->intValue()I
+      iget-object v8, v9, La/qb4;->m Ljava/lang/Object;
+      check-cast v8, Ljava/lang/Number;
+      invoke-virtual v8, Ljava/lang/Number;->intValue()I
+      sget-object v9, Landroid/graphics/Bitmap$Config;->ARGB_8888 Landroid/graphics/Bitmap$Config;
+      invoke-static v6, v7, v8, v9, La/s90;->N(Landroid/graphics/drawable/Drawable; I I Landroid/graphics/Bitmap$Config;)Landroid/graphics/Bitmap;
+      new-instance v7, La/lu4;
+      invoke-direct v7, v6, La/lu4;-><init>(Ljava/lang/Throwable;)V
+      if-eqz v7, +003h
+      check-cast v0, Landroid/graphics/Bitmap;
+      return-object v0
+  METHOD k (Ljava/lang/String;)La/qb4;
+      const/4 v0, 6
+      const-string v1, " "
+      const/4 v2, 0
+      invoke-static v3, v1, v2, v2, v0, La/yg5;->U0(Ljava/lang/CharSequence; Ljava/lang/String; I Z I)I
+      const/4 v1, 0
+      if-gez v0, +008h
+      new-instance v0, La/qb4;
+      invoke-direct v0, v3, v1, La/qb4;-><init>(Ljava/lang/Object; Ljava/lang/Object;)V
+      return-object v0
+      invoke-virtual v3, v2, v0, Ljava/lang/String;->substring(I I)Ljava/lang/String;
+      invoke-virtual v3, v0, Ljava/lang/String;->substring(I)Ljava/lang/String;
+      invoke-static v3, La/yg5;->W0(Ljava/lang/CharSequence;)Z
+      if-nez v0, +003h
+      new-instance v3, La/qb4;
+      invoke-direct v3, v2, v1, La/qb4;-><init>(Ljava/lang/Object; Ljava/lang/Object;)V
+      return-object v3
+====================================================================================================
+CLASS Lcom/klevico/monet/WallpaperShareActivity; extends La/pa0;
+  FIELD public static final synthetic I E
+  FIELD public final La/jj5; D
+  METHOD <init> ()V
+      invoke-direct v2, La/pa0;-><init>()V
+      new-instance v0, La/k84;
+      const/16 v1, 17
+      invoke-direct v0, v2, v1, La/k84;-><init>(Ljava/lang/Object; I)V
+      new-instance v1, La/jj5;
+      invoke-direct v1, v0, La/jj5;-><init>(La/ta1;)V
+      return-void 
+  METHOD k (Lcom/klevico/monet/WallpaperShareActivity; Ljava/lang/String; La/qr2;)Ljava/lang/Object;
+      sget-object v0, La/ks0;->a La/ym0;
+      sget-object v0, La/or3;->a La/gg1;
+      new-instance v1, La/dr3;
+      const/4 v2, 0
+      const/16 v3, 11
+      invoke-direct v1, v4, v5, v2, v3, La/dr3;-><init>(Ljava/lang/Object; Ljava/lang/Object; La/se0; I)V
+      invoke-static v0, v1, v6, La/pj6;->b0(La/cg0; La/jb1; La/se0;)Ljava/lang/Object;
+      sget-object v5, La/ng0;->l La/ng0;
+      if-ne v4, v5, +003h
+      return-object v4
+      sget-object v4, La/m46;->a La/m46;
+      return-object v4
+  METHOD m (Landroid/content/Intent;)Ljava/util/List;
+      const/4 v0, 0
+      const-string v1, "android.intent.extra.STREAM"
+      const/16 v3, 34
+      if-lt v2, v3, +007h
+      invoke-static v5, La/v2;->c(Landroid/content/Intent;)Ljava/util/ArrayList;
+      invoke-virtual v5, v1, Landroid/content/Intent;->getParcelableArrayListExtra(Ljava/lang/String;)Ljava/util/ArrayList;
+      if-eqz v5, +01ah
+      new-instance v1, Ljava/util/ArrayList;
+      invoke-direct v1, Ljava/util/ArrayList;-><init>()V
+      invoke-virtual v5, Ljava/util/ArrayList;->size()I
+      const/4 v3, 0
+      if-ge v3, v2, +016h
+      invoke-virtual v5, v3, Ljava/util/ArrayList;->get(I)Ljava/lang/Object;
+      if-eqz v4, -008h
+      invoke-virtual v1, v4, Ljava/util/ArrayList;->add(Ljava/lang/Object;)Z
+      new-instance v1, La/lu4;
+      invoke-direct v1, v5, La/lu4;-><init>(Ljava/lang/Throwable;)V
+      if-eqz v5, +003h
+      check-cast v0, Ljava/util/List;
+      if-nez v0, +004h
+      sget-object v0, La/iy0;->l La/iy0;
+      return-object v0
+  METHOD n (Landroid/content/Intent;)Landroid/net/Uri;
+      const/4 v0, 0
+      const-string v1, "android.intent.extra.STREAM"
+      const-class v2, Landroid/net/Uri;
+      const/16 v4, 34
+      if-lt v3, v4, +007h
+      invoke-static v5, v1, v2, La/v2;->d(Landroid/content/Intent; Ljava/lang/String; Ljava/lang/Class;)Ljava/lang/Object;
+      invoke-virtual v5, v1, Landroid/content/Intent;->getParcelableExtra(Ljava/lang/String;)Landroid/os/Parcelable;
+      invoke-virtual v2, v5, Ljava/lang/Class;->isInstance(Ljava/lang/Object;)Z
+      if-eqz v1, +003h
+      check-cast v5, Landroid/net/Uri;
+      new-instance v1, La/lu4;
+      invoke-direct v1, v5, La/lu4;-><init>(Ljava/lang/Throwable;)V
+      if-eqz v1, +003h
+      check-cast v0, Landroid/net/Uri;
+      return-object v0
+  METHOD attachBaseContext (Landroid/content/Context;)V
+      invoke-virtual v4, Ljava/lang/Object;->getClass()Ljava/lang/Class;
+      const/16 v1, 33
+      if-lt v0, v1, +003h
+      const-string v0, "locale_prefs"
+      const/4 v1, 0
+      invoke-virtual v4, v0, v1, Landroid/content/Context;->getSharedPreferences(Ljava/lang/String; I)Landroid/content/SharedPreferences;
+      const-string v1, "language_tag"
+      const-string v2, ""
+      invoke-interface v0, v1, v2, Landroid/content/SharedPreferences;->getString(Ljava/lang/String; Ljava/lang/String;)Ljava/lang/String;
+      if-nez v0, +003h
+      invoke-interface v2, Ljava/lang/CharSequence;->length()I
+      if-nez v0, +003h
+      new-instance v0, Landroid/content/res/Configuration;
+      invoke-virtual v4, Landroid/content/Context;->getResources()Landroid/content/res/Resources;
+      invoke-virtual v1, Landroid/content/res/Resources;->getConfiguration()Landroid/content/res/Configuration;
+      invoke-direct v0, v1, Landroid/content/res/Configuration;-><init>(Landroid/content/res/Configuration;)V
+      invoke-static v2, Ljava/util/Locale;->forLanguageTag(Ljava/lang/String;)Ljava/util/Locale;
+      invoke-virtual v0, v1, Landroid/content/res/Configuration;->setLocale(Ljava/util/Locale;)V
+      invoke-virtual v4, v0, Landroid/content/Context;->createConfigurationContext(Landroid/content/res/Configuration;)Landroid/content/Context;
+      invoke-virtual v4, Ljava/lang/Object;->getClass()Ljava/lang/Class;
+      invoke-super v3, v4, Landroid/content/ContextWrapper;->attachBaseContext(Landroid/content/Context;)V
+      return-void 
+  METHOD l ()Landroid/content/Context;
+      iget-object v0, v0, Lcom/klevico/monet/WallpaperShareActivity;->D La/jj5;
+      invoke-virtual v0, La/jj5;->getValue()Ljava/lang/Object;
+      check-cast v0, Landroid/content/Context;
+      return-object v0
+  METHOD onCreate (Landroid/os/Bundle;)V
+      invoke-super v12, v13, La/pa0;->onCreate(Landroid/os/Bundle;)V
+      invoke-virtual v12, Landroid/app/Activity;->getIntent()Landroid/content/Intent;
+      const/4 v1, 0
+      if-nez v13, +007h
+      sget-object v13, La/iy0;->l La/iy0;
+      invoke-virtual v13, Landroid/content/Intent;->getAction()Ljava/lang/String;
+      const-string v2, "android.intent.action.SEND_MULTIPLE"
+      invoke-static v0, v2, La/dp1;->h(Ljava/lang/Object; Ljava/lang/Object;)Z
+      invoke-static La/r70;->q()La/rl3;
+      invoke-virtual v13, Landroid/content/Intent;->getData()Landroid/net/Uri;
+      if-eqz v3, +005h
+      invoke-virtual v2, v3, La/rl3;->add(Ljava/lang/Object;)Z
+      if-eqz v0, +019h
+      invoke-static v13, Lcom/klevico/monet/WallpaperShareActivity;->m(Landroid/content/Intent;)Ljava/util/List;
+      invoke-virtual v2, v0, La/rl3;->addAll(Ljava/util/Collection;)Z
+      invoke-virtual v2, La/rl3;->isEmpty()Z
+      if-eqz v0, +022h
+      invoke-static v13, Lcom/klevico/monet/WallpaperShareActivity;->n(Landroid/content/Intent;)Landroid/net/Uri;
+      if-eqz v0, +01ch
+      invoke-virtual v2, v0, La/rl3;->add(Ljava/lang/Object;)Z
+      invoke-static v13, Lcom/klevico/monet/WallpaperShareActivity;->n(Landroid/content/Intent;)Landroid/net/Uri;
+      if-eqz v0, +005h
+      invoke-virtual v2, v0, La/rl3;->add(Ljava/lang/Object;)Z
+      invoke-virtual v2, La/rl3;->isEmpty()Z
+      if-eqz v0, +009h
+      invoke-static v13, Lcom/klevico/monet/WallpaperShareActivity;->m(Landroid/content/Intent;)Ljava/util/List;
+      invoke-virtual v2, v0, La/rl3;->addAll(Ljava/util/Collection;)Z
+      invoke-virtual v13, Landroid/content/Intent;->getClipData()Landroid/content/ClipData;
+      new-instance v0, La/lu4;
+      invoke-direct v0, v13, La/lu4;-><init>(Ljava/lang/Throwable;)V
+      if-eqz v0, +003h
+      check-cast v13, Landroid/content/ClipData;
+      const/4 v3, 0
+      if-eqz v13, +01bh
+      invoke-virtual v13, Landroid/content/ClipData;->getItemCount()I
+      if-ge v4, v0, +014h
+      invoke-virtual v13, v4, Landroid/content/ClipData;->getItemAt(I)Landroid/content/ClipData$Item;
+      if-eqz v5, +00bh
+      invoke-virtual v5, Landroid/content/ClipData$Item;->getUri()Landroid/net/Uri;
+      if-eqz v5, +005h
+      invoke-virtual v2, v5, La/rl3;->add(Ljava/lang/Object;)Z
+      invoke-static v2, La/r70;->l(La/rl3;)La/rl3;
+      invoke-static v13, La/q70;->b0(Ljava/lang/Iterable;)Ljava/util/List;
+      new-instance v2, Ljava/util/ArrayList;
+      invoke-direct v2, Ljava/util/ArrayList;-><init>()V
+      invoke-interface v13, Ljava/lang/Iterable;->iterator()Ljava/util/Iterator;
+      invoke-interface v13, Ljava/util/Iterator;->hasNext()Z
+      if-eqz v0, +0d9h
+      invoke-interface v13, Ljava/util/Iterator;->next()Ljava/lang/Object;
+      check-cast v5, Landroid/net/Uri;
+      invoke-virtual v5, Landroid/net/Uri;->getScheme()Ljava/lang/String;
+      const-string v6, "file"
+      invoke-static v0, v6, La/fh5;->E0(Ljava/lang/String; Ljava/lang/String;)Z
+      if-eqz v0, +05eh
+      invoke-virtual v5, Landroid/net/Uri;->getPath()Ljava/lang/String;
+      if-eqz v0, +00eh
+      new-instance v6, Ljava/io/File;
+      invoke-direct v6, v0, Ljava/io/File;-><init>(Ljava/lang/String;)V
+      invoke-virtual v6, Ljava/io/File;->getCanonicalPath()Ljava/lang/String;
+      new-instance v6, La/lu4;
+      invoke-direct v6, v0, La/lu4;-><init>(Ljava/lang/Throwable;)V
+      if-eqz v6, +003h
+      check-cast v6, Ljava/lang/String;
+      if-nez v6, +003h
+      invoke-virtual v12, Landroid/content/Context;->getFilesDir()Ljava/io/File;
+      invoke-virtual v0, Ljava/io/File;->getParentFile()Ljava/io/File;
+      if-eqz v0, +009h
+      invoke-virtual v0, Ljava/io/File;->getCanonicalPath()Ljava/lang/String;
+      new-instance v7, La/lu4;
+      invoke-direct v7, v0, La/lu4;-><init>(Ljava/lang/Throwable;)V
+      if-eqz v7, +003h
+      check-cast v0, Ljava/lang/String;
+      if-eqz v0, +015h
+      invoke-virtual v6, v0, Ljava/lang/Object;->equals(Ljava/lang/Object;)Z
+      if-nez v7, -066h
+      const-string v7, "/"
+      invoke-virtual v0, v7, Ljava/lang/String;->concat(Ljava/lang/String;)Ljava/lang/String;
+      invoke-static v6, v0, v3, La/fh5;->I0(Ljava/lang/String; Ljava/lang/String; Z)Z
+      if-eqz v0, +003h
+      invoke-virtual v12, Landroid/content/Context;->getContentResolver()Landroid/content/ContentResolver;
+      invoke-virtual v0, v5, Landroid/content/ContentResolver;->getType(Landroid/net/Uri;)Ljava/lang/String;
+      new-instance v6, La/lu4;
+      invoke-direct v6, v0, La/lu4;-><init>(Ljava/lang/Throwable;)V
+      if-eqz v6, +003h
+      check-cast v0, Ljava/lang/String;
+      if-nez v0, +03bh
+      invoke-virtual v5, Landroid/net/Uri;->toString()Ljava/lang/String;
+      invoke-static v0, Landroid/webkit/MimeTypeMap;->getFileExtensionFromUrl(Ljava/lang/String;)Ljava/lang/String;
+      if-eqz v0, +01eh
+      invoke-static v0, La/yg5;->W0(Ljava/lang/CharSequence;)Z
+      if-nez v5, +003h
+      if-eqz v0, +014h
+      invoke-static Landroid/webkit/MimeTypeMap;->getSingleton()Landroid/webkit/MimeTypeMap;
+      sget-object v6, Ljava/util/Locale;->ROOT Ljava/util/Locale;
+      invoke-virtual v0, v6, Ljava/lang/String;->toLowerCase(Ljava/util/Locale;)Ljava/lang/String;
+      invoke-virtual v0, Ljava/lang/Object;->getClass()Ljava/lang/Class;
+      invoke-virtual v5, v0, Landroid/webkit/MimeTypeMap;->getMimeTypeFromExtension(Ljava/lang/String;)Ljava/lang/String;
+      if-nez v0, +012h
+      invoke-virtual v12, Landroid/app/Activity;->getIntent()Landroid/content/Intent;
+      if-eqz v0, +007h
+      invoke-virtual v0, Landroid/content/Intent;->getType()Ljava/lang/String;
+      if-nez v0, +004h
+      const-string v5, "image/"
+      invoke-static v0, v5, v3, La/fh5;->I0(Ljava/lang/String; Ljava/lang/String; Z)Z
+      if-nez v5, +00ah
+      const-string v5, "video/"
+      invoke-static v0, v5, v3, La/fh5;->I0(Ljava/lang/String; Ljava/lang/String; Z)Z
+      if-eqz v0, -0d6h
+      invoke-virtual v2, v4, Ljava/util/ArrayList;->add(Ljava/lang/Object;)Z
+      invoke-interface v9, Ljava/util/List;->isEmpty()Z
+      const/4 v0, 1
+      if-eqz v13, +014h
+      invoke-virtual v12, Lcom/klevico/monet/WallpaperShareActivity;->l()Landroid/content/Context;
+      invoke-static v1, v13, v0, Landroid/widget/Toast;->makeText(Landroid/content/Context; I I)Landroid/widget/Toast;
+      invoke-virtual v13, Landroid/widget/Toast;->show()V
+      invoke-virtual v12, Landroid/app/Activity;->finishAndRemoveTask()V
+      return-void 
+      invoke-virtual v12, Landroid/app/Activity;->getIntent()Landroid/content/Intent;
+      if-eqz v13, +008h
+      invoke-virtual v13, Landroid/content/Intent;->getType()Ljava/lang/String;
+      sget-object v13, La/fx1;->x La/ee0;
+      invoke-virtual v13, v12, La/ee0;->y(Landroid/content/Context;)La/fx1;
+      iget-object v13, v7, La/fx1;->e La/iu;
+      iget-object v13, v13, La/iu;->d La/pp4;
+      iget-object v13, v13, La/pp4;->l La/yf5;
+      invoke-virtual v13, La/yf5;->getValue()Ljava/lang/Object;
+      check-cast v13, Ljava/lang/Boolean;
+      invoke-virtual v13, Ljava/lang/Boolean;->booleanValue()Z
+      if-nez v8, +014h
+      invoke-virtual v12, Lcom/klevico/monet/WallpaperShareActivity;->l()Landroid/content/Context;
+      invoke-static v1, v13, v0, Landroid/widget/Toast;->makeText(Landroid/content/Context; I I)Landroid/widget/Toast;
+      invoke-virtual v13, Landroid/widget/Toast;->show()V
+      invoke-virtual v12, Landroid/app/Activity;->finishAndRemoveTask()V
+      return-void 
+      iget-object v13, v7, La/fx1;->n La/re0;
+      new-instance v5, La/qr2;
+      const/4 v11, 0
+      invoke-direct/range v5 ... v11, La/qr2;-><init>(Lcom/klevico/monet/WallpaperShareActivity; La/fx1; Z Ljava/util/List; Ljava/lang/String; La/se0;)V
+      const/4 v12, 3
+      invoke-static v13, v1, v1, v5, v12, La/pj6;->Q(La/mg0; La/cg0; La/pg0; La/jb1; I)La/kf5;
+      invoke-static v6, La/e90;->y(La/qk3;)La/kk3;
+      new-instance v2, La/mq4;
+      const/16 v3, 8
+      invoke-direct v2, v13, v6, v1, v3, La/mq4;-><init>(Ljava/lang/Object; Ljava/lang/Object; La/se0; I)V
+      invoke-static v0, v1, v1, v2, v12, La/pj6;->Q(La/mg0; La/cg0; La/pg0; La/jb1; I)La/kf5;
+      return-void 
