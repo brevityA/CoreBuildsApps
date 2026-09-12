@@ -4839,7 +4839,8 @@
       ],
       "category": "PLAYER",
       "color_source": "brand reference (pre-provenance, unverified)",
-      "color_reviewed": null
+      "color_reviewed": null,
+      "style": "core_monoline"
     },
     {
       "name": "Jawwy TV",

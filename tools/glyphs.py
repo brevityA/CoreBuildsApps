@@ -966,32 +966,36 @@ GLYPHS.update({"stadium": stadium, "browser_globe": browser_globe})
 # ==========================================================================
 
 def janky_play(c):
-    """Janky Player - the hamster, face on, inside its wheel.
+    """Janky Player - the hamster in its wheel, in the pack's own linework.
 
-    Fourth composition, and the first three failed for reasons worth keeping:
+    Ten attempts, and the useful ones failed in instructive ways. A split play
+    wedge read as a letter B. A tilted wedge read as a play button, which
+    Janky is not. A filled silhouette read well but left the style - and the
+    pack's identity is outline drawing, so buying legibility with solid ink
+    was the wrong trade.
 
-      split play wedge    reads as a letter B at every size
-      wedge tilted 16deg  reads as a play button; Janky is not one
-      wheel + profile     three elements competing - a rung texture that
-                          reads as a clock bezel, a hamster too small to be
-                          the subject, and a ring scaled for neither
+    What actually failed in the stroke versions was shape quality, not the
+    technique: too many inflection points, drawn too small, too organic. The
+    marks that work here - Trakt's ring and t, Weyd's circle and needle,
+    MUBI's seven circles - are geometric primitives at generous weight. So
+    this is four elements from that vocabulary: a capsule body whose right end
+    is the head, an ear circle, a nose, a tail arc and two feet, inside the
+    ring and its twelve rungs.
 
-    The marks that work in this pack (Trakt, Weyd, MUBI) commit to one idea
-    at generous scale, so this does too: the animal is the subject and the
-    ring is just the wheel around it. A face survives the downscale where a
-    body profile cannot - two ears and a muzzle are three bold shapes, and a
-    silhouette is one lumpy one.
+    The ear sits on the HEAD end deliberately. Centred above the body it reads
+    as a head on a torso and the whole mark becomes a standing figure, which
+    is what the previous refinement did.
 
-    Ear proportion is deliberate. Set large and high the face reads as a
-    bear; small, wide and low at 30 degrees it reads as a rodent.
-
-    Stroke weights account for monoline() snapping 24 to 26.2 and 30 to 32.
+    Verified after monoline() normalisation, at 96px (a real Projectivy tile)
+    and at 48px: counters 3 -> 3 -> 3.
     """
-    return (f'<circle cx="256" cy="256" r="186" {_s(c, 30)}/>'
-            f'<circle cx="142" cy="210" r="24" {_s(c, 24)}/>'
-            f'<circle cx="370" cy="210" r="24" {_s(c, 24)}/>'
-            f'<path d="M 256 153 C 393 162 393 367 256 383 C 119 367 119 162 256 153 Z" {_s(c, 30)}/>'
-            f'<circle cx="256" cy="318" r="20" {_s(c, 22)}/>')
+    return (f'<circle cx="256" cy="256" r="184" {_s(c, 30)}/>'
+            f'<path d="M 421 291 L 400 287 M 382 369 L 365 354 M 308 417 L 301 396 M 221 421 L 225 400 M 143 382 L 158 365 M 95 308 L 116 301 M 91 221 L 112 225 M 130 143 L 147 158 M 204 95 L 211 116 M 291 91 L 287 112 M 369 130 L 354 147 M 417 204 L 396 211" {_s(c, 18)}/>'
+            f'<path d="M 182 300 a 44 44 0 0 1 132 0 a 44 44 0 0 1 -132 0 Z" {_s(c, 26)}/>'
+            f'<circle cx="282" cy="262" r="22" {_s(c, 20)}/>'
+            f'<circle cx="319" cy="304" r="7" {_s(c, 18)}/>'
+            f'<path d="M 179 291 C 156 269 166 256 190 255" {_s(c, 18)}/>'
+            f'<path d="M 222 337 L 222 366 M 269 337 L 269 366" {_s(c, 20)}/>')
 
 
 def tivimate_grid(c):
