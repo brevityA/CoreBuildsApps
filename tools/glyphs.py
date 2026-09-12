@@ -966,36 +966,37 @@ GLYPHS.update({"stadium": stadium, "browser_globe": browser_globe})
 # ==========================================================================
 
 def janky_play(c):
-    """Janky Player - the hamster in its wheel, in the pack's own linework.
+    """Janky Player - its own wheel mark, measured off the supplied logo.
 
-    Ten attempts, and the useful ones failed in instructive ways. A split play
-    wedge read as a letter B. A tilted wedge read as a play button, which
-    Janky is not. A filled silhouette read well but left the style - and the
-    pack's identity is outline drawing, so buying legibility with solid ink
-    was the wrong trade.
+    Every earlier attempt here drew a hamster and put a ring round it. That
+    was the mistake: in Janky's logo the hamster is a small cut-out, and the
+    elements doing the recognition work are the plain ring, a wide A whose
+    apex sits high in it, and a thick arm off the A's right flank running out
+    to the rim at two o'clock. An earlier pass invented twelve spokes the logo
+    does not have and dropped the A entirely, which is the one shape nobody
+    would miss.
 
-    What actually failed in the stroke versions was shape quality, not the
-    technique: too many inflection points, drawn too small, too organic. The
-    marks that work here - Trakt's ring and t, Weyd's circle and needle,
-    MUBI's seven circles - are geometric primitives at generous weight. So
-    this is four elements from that vocabulary: a capsule body whose right end
-    is the head, an ear circle, a nose, a tail arc and two feet, inside the
-    ring and its twelve rungs.
+    So the ring is plain, the A is the dominant element at the logo's own
+    proportions - apex y=120, feet splayed to y=420 - and the creature is a
+    flattened capsule sitting in the A's bowl, facing right: ear on the head
+    end, snout past it. The feet and tail of the previous version are gone;
+    at the ~100px a Projectivy tile actually occupies they were mush, and the
+    logo's own creature reads by silhouette, not by limbs.
 
-    The ear sits on the HEAD end deliberately. Centred above the body it reads
-    as a head on a torso and the whole mark becomes a standing figure, which
-    is what the previous refinement did.
+    The ear is drawn at r=24 rather than the r=18 that looked right at
+    authoring size: monoline() snaps its stroke to 21.8, which leaves an r=18
+    ear barely a pixel of counter at 48px and closes it into a blob. Sized up,
+    it survives every step down.
 
-    Verified after monoline() normalisation, at 96px (a real Projectivy tile)
-    and at 48px: counters 3 -> 3 -> 3.
+    Verified after monoline() normalisation at 96px (a real tile) and 48px:
+    counters 7 -> 7 -> 7, 27 percent ink, core_monoline clean.
     """
-    return (f'<circle cx="256" cy="256" r="184" {_s(c, 30)}/>'
-            f'<path d="M 421 291 L 400 287 M 382 369 L 365 354 M 308 417 L 301 396 M 221 421 L 225 400 M 143 382 L 158 365 M 95 308 L 116 301 M 91 221 L 112 225 M 130 143 L 147 158 M 204 95 L 211 116 M 291 91 L 287 112 M 369 130 L 354 147 M 417 204 L 396 211" {_s(c, 18)}/>'
-            f'<path d="M 182 300 a 44 44 0 0 1 132 0 a 44 44 0 0 1 -132 0 Z" {_s(c, 26)}/>'
-            f'<circle cx="282" cy="262" r="22" {_s(c, 20)}/>'
-            f'<circle cx="319" cy="304" r="7" {_s(c, 18)}/>'
-            f'<path d="M 179 291 C 156 269 166 256 190 255" {_s(c, 18)}/>'
-            f'<path d="M 222 337 L 222 366 M 269 337 L 269 366" {_s(c, 20)}/>')
+    return (f'<circle cx="256" cy="256" r="180" {_s(c, 32)}/>'
+            f'<path d="M 136 420 L 256 120 L 376 420" {_s(c, 30)}/>'
+            f'<path d="M 294 214 L 430 234" {_s(c, 26)}/>'
+            f'<path d="M 190 344 a 34 34 0 0 1 132 0 a 34 34 0 0 1 -132 0 Z" {_s(c, 26)}/>'
+            f'<circle cx="290" cy="306" r="24" {_s(c, 20)}/>'
+            f'<circle cx="324" cy="349" r="7" {_s(c, 18)}/>')
 
 
 def tivimate_grid(c):
