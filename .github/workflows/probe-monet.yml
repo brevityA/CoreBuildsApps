@@ -329,8 +329,8 @@ jobs:
           wc -l docs/research/monet-probe/*
       - name: Variant pass (iconPackVariant semantics)
         run: |
-          python3 - <<'EOF' > docs/research/monet-probe/monet-${V}-variant.txt 2>/dev/null
-          import re, logging
+          python3 - <<'EOF' > docs/research/monet-probe/monet-${V}-variant.txt 2>&1 || true
+          import re, logging, traceback
           logging.disable(logging.CRITICAL)
           from androguard.misc import AnalyzeAPK
           a, ds, dx = AnalyzeAPK("/tmp/monet.apk")
@@ -350,6 +350,8 @@ jobs:
           # 2. classes with a field named iconPackVariant, and enum classes whose values look like variants
           print("=====CLASSES WITH iconPackVariant FIELD=====")
           targets=set()
+          import sys
+          sys.excepthook = lambda *a: traceback.print_exception(*a)
           for cls in dx.get_classes():
               try:
                   c = cls.get_vm_class()
