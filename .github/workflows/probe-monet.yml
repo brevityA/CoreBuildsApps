@@ -5,6 +5,9 @@ name: Probe Monet manifest
 # wallpaper). Read-only; nothing is published.
 
 on:
+  push:
+    branches: ['arena/01a095ef-corebuildsapps']
+    paths: ['.github/workflows/probe-monet.yml']
   workflow_dispatch:
     inputs:
       version:
@@ -21,7 +24,7 @@ jobs:
     steps:
       - name: Download APK
         run: |
-          V="${{ github.event.inputs.version }}"
+          V="${{ github.event.inputs.version || 'v1.0.84' }}"
           curl -sSL -o monet.apk "https://github.com/Klevico/Monet-Launcher/releases/download/${V}/monet-${V#v}.apk"
           ls -la monet.apk
       - name: Dump manifest
