@@ -966,37 +966,37 @@ GLYPHS.update({"stadium": stadium, "browser_globe": browser_globe})
 # ==========================================================================
 
 def janky_play(c):
-    """Janky Player - its own wheel mark, measured off the supplied logo.
+    """Janky Player - the anarchy A, which is what the logo actually is.
 
-    Every earlier attempt here drew a hamster and put a ring round it. That
-    was the mistake: in Janky's logo the hamster is a small cut-out, and the
-    elements doing the recognition work are the plain ring, a wide A whose
-    apex sits high in it, and a thick arm off the A's right flank running out
-    to the rim at two o'clock. An earlier pass invented twelve spokes the logo
-    does not have and dropped the A entirely, which is the one shape nobody
-    would miss.
+    Several passes here drew a hamster and wrapped a ring round it, and one
+    read the diagonal as a short arm off the A's flank. Both miss the point.
+    Janky's mark is an ANARCHY A: the defining feature of that symbol is the
+    crossbar breaking past the letter on both sides to touch the circle, and
+    drawing it as a stub keeps the stroke but loses the reference entirely.
 
-    So the ring is plain, the A is the dominant element at the logo's own
-    proportions - apex y=120, feet splayed to y=420 - and the creature is a
-    flattened capsule sitting in the A's bowl, facing right: ear on the head
-    end, snout past it. The feet and tail of the previous version are gone;
-    at the ~100px a Projectivy tile actually occupies they were mush, and the
-    logo's own creature reads by silhouette, not by limbs.
+    So the slash runs rim to rim - (81,298) to (422,187) - and the A stands
+    with its apex high and its feet splayed past the ring's lower arc, at the
+    proportions measured off the supplied artwork: apex y=111, feet +/-113 at
+    y=447. Three strokes, nothing else.
 
-    The ear is drawn at r=24 rather than the r=18 that looked right at
-    authoring size: monoline() snaps its stroke to 21.8, which leaves an r=18
-    ear barely a pixel of counter at 48px and closes it into a blob. Sized up,
-    it survives every step down.
+    The bite is the fourth cue and the hard one. A bite is a SUBTRACTIVE
+    shape, and core_monoline forbids fills, masks and clip-paths - the only
+    three ways to subtract - so the style can add strokes and nothing else.
+    Four approximations were built and measured against each other: scalloping
+    the centreline reads as a lumpy wiggle, a gap reads as a severed leg, a
+    circle set against the edge reads as a stray dot, and the right leg
+    detouring around one shallow arc reads as a curve rather than a bite.
+    Brevity picked the shallow arc, so that is what ships: the leg bows out
+    around r=54 between y=300 and y=364 before running on to the foot.
 
-    Verified after monoline() normalisation at 96px (a real tile) and 48px:
-    counters 7 -> 7 -> 7, 27 percent ink, core_monoline clean.
+    Verified after monoline() normalisation at 96px (a real tile), 48px and
+    32px: counters 5 -> 6 -> 6 -> 6, 25 percent ink, safe-area margin 49px
+    against the 40px floor, core_monoline clean.
     """
     return (f'<circle cx="256" cy="256" r="180" {_s(c, 32)}/>'
-            f'<path d="M 136 420 L 256 120 L 376 420" {_s(c, 30)}/>'
-            f'<path d="M 294 214 L 430 234" {_s(c, 26)}/>'
-            f'<path d="M 190 344 a 34 34 0 0 1 132 0 a 34 34 0 0 1 -132 0 Z" {_s(c, 26)}/>'
-            f'<circle cx="290" cy="306" r="24" {_s(c, 20)}/>'
-            f'<circle cx="324" cy="349" r="7" {_s(c, 18)}/>')
+            f'<path d="M 256 111 L 143 447" {_s(c, 30)}/>'
+            f'<path d="M 256 111 L 320 300 A 54 54 0 0 0 341 364 L 369 447" {_s(c, 30)}/>'
+            f'<path d="M 81 298 L 422 187" {_s(c, 26)}/>')
 
 
 def tivimate_grid(c):
