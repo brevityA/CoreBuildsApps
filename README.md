@@ -13,7 +13,7 @@
 <!-- suite-stamp:start -->
 > | App | Current | What it does | Downloader | Release tag |
 > |---|---:|---|---|---|
-> | **[Core Builds Icon Pack](#-icon-pack)** | `v1.8.13` | 926 transparent icons + 58 wallpapers for Projectivy Launcher | `5270601` | [`v*` / `iconpack`](../../releases) |
+> | **[Core Builds Icon Pack](#-icon-pack)** | `v1.8.14` | 926 transparent icons + 58 wallpapers for Projectivy Launcher | `5270601` | [`v*` / `iconpack`](../../releases) |
 > | **[Core Builds Pixel Neon](#-pixel-neon-icon-pack)** | `v0.1.0` | 926 transparent 8-bit neon icons + 70 wallpapers for Projectivy Launcher | `[USER TO SUPPLY]` | [`pixel-neon-v*` / `pixel-neon`](../../releases) |
 > | **[Core Builds Pop](#-core-builds-pop)** | `v1.0.0` | The same 926 icons, pop-art cartoon: 16 swatches, one container | `[USER TO SUPPLY]` | [`pop-v*` / `pop`](../../releases) |
 > | **[Core Line](#-core-line)** | `v1.3.0` | Sports scores & channel RSS ticker (chyron) | `7375676` | [`coreline-v*` / `coreline`](../../releases) |
@@ -28,13 +28,13 @@
 ## 🔷 Icon Pack
 
 **Transparent app icons for Projectivy Launcher on Android TV.**
-`926 icons` · `58 wallpapers` · `v1.8.13`
+`926 icons` · `58 wallpapers` · `v1.8.14`
 
 The **Core Builds Icon Pack** is designed for the [Projectivy Launcher](https://play.google.com/store/apps/details?id=com.spocky.projengmenu) on Android TV and Google TV, built to the [Core Builds Brand & Style Guide v1.0](https://github.com/brevityA/Core-Builds).
 
 Icons share the **Core Builds visual language**: original geometry, rounded-line brand motifs, one accent and transparent backgrounds. The reviewed glyphs use the canonical **32px main stroke**, with 26.2px / 21.8px detail. Brand references inform the recognisable cue and colour; they do **not** replace the pack's style with filled vendor silhouettes or custom logotypes. The existing Outfit fallback letters remain unchanged. [Reference provenance and rights](THIRD_PARTY_NOTICES.md).
 
-**v1.8.12 — a safe-area constant nothing enforced, a module that stopped compiling, and a banner missing its last letter:** `SAFE = 432` had sat in `glyphs.py` unchecked, and seven glyphs hung ink past it — RetroArch was drawn to `x=496`, which the 26.2 monoline pushed to **509.1 on a 512 grid**, 3px of margin where SAFE promises 40. Fixed in the geometry, so no stroke weight changed: **8 Classic icons and 11 Pop assets** move. Pixel Neon had stopped compiling since 1.8.11 — the wallpaper seed palette declared `cb_hairline` in `app/` and `pop/` but not in the module that forks that Kotlin — and **46 of its icons** had drifted from the catalog, because the sprite seed includes each icon's *positional index* and splitting WeatherBug out of Streamflix shifted every entry after it. The pack's own Leanback banner shipped `for Projectivy · Android T`, the V cut by the canvas edge; its text is now outlined from `tools/fonts` rather than naming Georgia, which was never licensed for redistribution. Three new gates cover the silent failures: rendered-alpha safe-area measurement across all 322 glyphs, a geometry digest on the Pop metrics table, and a resource checker that pairs every module with the Kotlin it actually compiles.
+**v1.8.14 — two thirds of the pack was a letter in a box, and 429 icons shipped the same picture as another icon:** hashing all 926 drawables returned only **655 distinct images**. 608 fell back to a `tile_*` monogram and accents come from a cycled palette of 49, so a shared letter plus a shared palette slot produced a byte-identical PNG — one file served seven apps. **56 new marks now cover 58 apps** in the categories a Core Builds user actually runs: debrid clients, players, launchers, browsers, file and network tools. **74 monograms showed a letter the app name does not contain** (Corridor showed W, Crave showed B); 72 are repointed. **30 marks collapsed at a 48px Projectivy tile** — MUBI lost all seven counters and read as a solid rectangle, DS file sat at 53% ink — so **36 glyph shapes** are redrawn to a 32px minimum counter. Two needed the raster pipeline to get right: `presence.py` dilates every edge by the keyline radius, so MUBI's rings merged even with the vector counters open. Duplicates **429 → 34**, distinct artworks **655 → 902**, glyphs losing counters **30 → 0**. 549 icons are still letter tiles; that tail is a programme, not a sprint.
 
 > **Tip:** Use a **dark card background** in Projectivy. These icons are drawn for night chrome (`#0d1117`).
 
@@ -96,7 +96,7 @@ Edit the forms, re-run the generator — `--check` fails this block on drift.
 
 ### What's covered
 
-925 icons across 21 categories — streaming, media centres, debrid services, players, launchers, tools, stores, live TV, music, sport, gaming, VPN, browsers, files, and more.
+926 icons across 21 categories — streaming, media centres, debrid services, players, launchers, tools, stores, live TV, music, sport, gaming, VPN, browsers, files, and more.
 
 Highlights: **[NoBuffr](https://downloads.nobuffr.com/android/nobuffr.apk)**, Stremio, Kodi, Jellyfin, Emby, Plex, Nuvio TV, Syncler, Weyd, TorBox, Real-Debrid, AllDebrid, Premiumize, Trakt, VLC, MX Player, SmartTube, YouTube, Spotify, Twitch, Downloader, Aurora Store, TiviMate, TV Bro, SYNC, LocalSend, RS File Manager, Sparkle TV, DS file, Ultimate File Manager Pro — plus Netflix, Prime Video, Disney+, Max, Apple TV, Stan, Binge, Kayo, ABC iview, 9Now, 7plus, 10 Play, SBS, and 860+ more.
 
@@ -207,7 +207,7 @@ Inherited from the brand guide, enforced by the generator and validator:
 ## 🔷 Pixel Neon Icon Pack
 
 **The 8-bit neon companion pack for Projectivy Launcher on Android TV.**
-`925 icons` · `70 wallpapers` · `0.1.0` · clean monoline sibling: **Core Builds Icon Pack**
+`926 icons` · `70 wallpapers` · `0.1.0` · clean monoline sibling: **Core Builds Icon Pack**
 
 If the original pack is the quiet night-mode set, **Core Builds Pixel Neon** is
 its arcade cabinet: the same mappings and coverage, but every mark is drawn as
@@ -250,8 +250,8 @@ commands. The research-informed sprite rules are documented in
 [`pixel-neon/DESIGN.md`](pixel-neon/DESIGN.md).
 ## 🔷 Core Builds Pop
 
-**The same 925 icons, drawn as pop art.** Android TV's only cartoon icon pack.
-`925 icons` · `12 wallpapers` · `16 swatches` · `v1.0.0`
+**The same 926 icons, drawn as pop art.** Android TV's only cartoon icon pack.
+`926 icons` · `12 wallpapers` · `16 swatches` · `v1.0.0`
 
 <p align="center"><img src="docs/pop-preview.png" alt="Core Builds Pop contact sheet" width="820"></p>
 
@@ -273,7 +273,7 @@ a style guide and hoped for:
 
 | Invariant | What it replaces |
 |---|---|
-| One superellipse container on all 925 | no container; every launcher looked different |
+| One superellipse container on all 926 | no container; every launcher looked different |
 | 171 brand accents → **16 locked swatches**, snapped by hue | 171 unbounded accents |
 | Every mark optically normalised to one ink box | mark sizes varying by more than 2× |
 | Line weight snapped **after** scaling, not before | strokes thinning as glyphs grew |
@@ -284,7 +284,7 @@ and takes away only the saturation and value, which were never carrying
 meaning. Every swatch, its app count, and a real icon rendered in it:
 [**docs/pop-palette.png**](docs/pop-palette.png).
 
-The biggest single legibility win is the third rule. 614 of the 925 icons were
+The biggest single legibility win is the third rule. 549 of the 926 icons are
 a letter inside a rounded box; Pop's container **is** that box, so the box is
 dropped and the letter is scaled to the same ink box as every other mark. The
 letters roughly double in size.
@@ -295,7 +295,7 @@ Pop's whole claim is one container, and a single unthemed app breaks that claim
 on sight. So the pack hands the launcher the furniture to build one: an
 `iconback` in each of the 16 swatches, an `iconmask`, an `iconupon` keyline and
 a `scale` factor. Apps we do not cover get the Pop field, halftone and ink
-keyline with their own icon composited inside — so the answer to "925 icons" is
+keyline with their own icon composited inside — so the answer to "926 icons" is
 really *every app on your device*. No other Android TV pack ships this.
 
 Pop also themes **Projectivy's own cards** — settings, categories, channels and
@@ -332,7 +332,7 @@ the classic pack and switch between them in Projectivy's own icon-pack list.
 ### Build it
 
 ```bash
-python tools/build_pop.py              # 925 icons + 925 banners + branding (~5 min)
+python tools/build_pop.py              # 926 icons + 926 banners + branding (~5 min)
 python tools/build_pop_wallpapers.py   # 12 × 4K walls + thumbs + manifest (~70 s)
 python tools/validate_pop.py           # 13,700+ coherence checks
 python tests/test_pop.py               # 24 contract tests
@@ -356,7 +356,7 @@ prioritised roadmap.
 The short version: Android TV has roughly three icon packs, and all three are
 minimal line art. Pop art / cartoon sells well on phones — the leading pack in
 that style ships 7,850 icons and bundles matching halftone wallpapers — and
-nobody ships it on TV. Coverage was already won here at 925 icons; style was
+nobody ships it on TV. Coverage was already won here at 926 icons; style was
 the open axis.
 
 ---
@@ -377,20 +377,20 @@ tools/build_brand_preview.py branding preview sheet
 tools/build_pixel_neon_wallpapers.py  original 8-bit Pixel Neon wallpapers
 tools/build_pixel_neon.py              catalog → 8-bit neon companion pack
 tools/validate_pixel_neon.py           alternate-pack coherence checks
-tools/validate.py            coherence checks (20,000+ at 925 icons)
+tools/validate.py            coherence checks (20,000+ at 926 icons)
 tools/popart.py              Pop render engine (container, ink, halftone, fit)
 tools/measure_pop_glyphs.py  one-off glyph ink-bbox measurement
 tools/pop_glyph_metrics.json committed metrics, so renders are reproducible
 tools/build_pop.py           catalog → the whole Pop module
 tools/build_pop_wallpapers.py catalog-free: 12 × 4K Pop walls + manifest
 tools/validate_pop.py        Pop coherence checks (13,700+)
-assets/svg/                  master vectors (925)
-assets/banners/              16:9 banners (925)
+assets/svg/                  master vectors (926)
+assets/banners/              16:9 banners (926)
 app/src/main/res/            the original icon-pack Android module
 pixel-neon/                   8-bit neon companion pack + its Gradle root
 PixelNeonWallpapers/          original 8-bit Pixel Neon sources + manifest
 pop/                         Core Builds Pop — second pack, shares app/'s Kotlin
-assets/pop/                  Pop master vectors (925 square + 925 banner)
+assets/pop/                  Pop master vectors (926 square + 926 banner)
 Wallpapers/series-5-pop/     12 × 4K Pop wallpapers (2.5 MB total)
 Latestrelease/version.json   Icon Pack update manifest
 Latestrelease/pixel-neon-version.json  Pixel Neon update manifest

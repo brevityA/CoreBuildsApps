@@ -4,6 +4,67 @@ All notable changes to the Core Builds Icon Pack. Format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); versions follow
 [SemVer](https://semver.org/spec/v2.0.0.html).
 
+## [1.8.14] — 2026-09-12
+
+**Two thirds of the pack was a letter in a box, 429 icons shipped the same
+picture as another icon, and thirty marks collapsed at tile size.**
+
+Found by measuring the shipped pack rather than reading it: hashing all 926
+drawables returned only 655 distinct images. 608 icons fell back to a
+`tile_*` monogram and accents come from a cycled palette of 49, so a shared
+letter plus a shared palette slot produced a byte-identical PNG. One image
+served seven apps — Plus Messenger, Tele Quebec, Telly, Torrent Search,
+TV 2 Play, TV Manager and Twilight were the same file.
+
+### Added
+- **56 new marks covering 58 apps** — debrid clients, players, launchers,
+  browsers, file and network tools: the categories a Core Builds user
+  actually has installed. Utilities are drawn by what they do, because
+  nobody recognises "Dr Nettools" by its logo but a network tool reads as a
+  node graph with a pulse. Where a brand owns a device, the device wins:
+  Arrow's arrow, Streamyfin's fin, Weyd's compass.
+- All 58 are stroke-only and opt into `style: core_monoline`, so the strict
+  gate now covers **86 icons instead of 28**.
+
+### Fixed
+- **74 monograms showed a letter the app name does not contain** — Corridor
+  showed W, Crave showed B, Channels showed G; 55 showed a letter absent
+  from the name entirely. 72 are repointed at the app's first alphanumeric.
+  Seven Plus keeps its 7 (it is the network's 7plus) and Daijishou takes the
+  gamepad, both deliberate.
+- **30 marks lost their structure at a 48px Projectivy tile.** MUBI lost all
+  seven counters and read as a solid rectangle; France 24 lost twelve of
+  sixteen; DS file sat at 53% ink. 36 glyph shapes are redrawn to a 32px
+  minimum counter on the 512 grid. The recurring cause was a container or a
+  detail tracing another contour a stroke's width away, so the fix is almost
+  always fewer elements rather than thinner ones.
+- Two of those needed the raster pipeline, not the vector: `presence.py`
+  dilates every edge by the keyline radius on the shipped PNG, so MUBI's
+  rings merged into one component even with the vector counters open.
+  Spacing moved 136 to 146 and the dots are seven shapes again.
+- Accents are spread within each glyph group so no two apps on one mark
+  share a colour. Only the icons whose `color_source` reads "core-builds
+  palette (no published brand colour found)" are moved — a citable brand
+  colour is never touched, which is why BBC iPlayer, Paramount+ and Syncler
+  still match across their duplicate catalog entries.
+
+### Numbers
+```
+byte-identical icons      429 -> 34
+distinct artworks         655 -> 902
+letter tiles              608 -> 549
+glyph shapes              274 -> 330
+icons under core_monoline  28 -> 86
+worst mark at tile size   53% ink -> 30%
+glyphs losing counters     30 -> 0
+```
+
+### Known
+549 icons (59%) are still letter tiles, and 455 of those sit in the generic
+`APP` category — regional broadcasters and niche utilities. That tail is a
+programme, not a sprint, and is not addressed here. 436 colours remain
+flagged `unverified` against a real brand source.
+
 ## [1.8.13] — 2026-09-11
 
 **A safe-area constant that nothing enforced, a module that stopped
