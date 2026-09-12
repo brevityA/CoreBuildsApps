@@ -271,6 +271,62 @@ jobs:
                       print("      (err)", e)
           EOF
           wc -l docs/research/monet-probe/*
+      - name: Final pass (english strings, share coroutine, folder enumeration)
+        run: |
+          python3 - <<'EOF' > docs/research/monet-probe/monet-${V}-final.txt 2>/dev/null
+          import re, logging
+          logging.disable(logging.CRITICAL)
+          from androguard.misc import AnalyzeAPK
+          a, ds, dx = AnalyzeAPK("/tmp/monet.apk")
+          res = a.get_android_resources()
+          pkg = a.get_package()
+          print("=====ENGLISH STRINGS (default locale)=====")
+          try:
+              xml = res.get_string_resources(pkg, locale='\x00\x00')
+              if isinstance(xml, bytes): xml = xml.decode("utf-8", "replace")
+              for m in re.finditer(r'<string name="([^"]+)">(.*?)</string>', xml, re.S):
+                  print(f"{m.group(1)} = {m.group(2)}")
+          except Exception as e:
+              print("err", e)
+          def resname(rid):
+              try: return res.get_resource_xml_name(rid, pkg)
+              except Exception: return None
+          def dump(cls):
+              print("=" * 100)
+              print("CLASS", cls.name, "extends", cls.extends)
+              try:
+                  for f in cls.get_vm_class().get_fields():
+                      print("  FIELD", f.get_access_flags_string(), f.get_descriptor(), f.get_name())
+              except Exception: pass
+              for m in cls.get_methods():
+                  if m.is_external(): continue
+                  print("  METHOD", m.name, m.descriptor)
+                  try:
+                      for ins in m.get_method().get_instructions():
+                          name = ins.get_name(); out = ins.get_output()
+                          if name.startswith(("const", "invoke", "if-", "new-instance", "sget", "iget", "iput", "sput", "return", "check-cast")):
+                              line = f"      {name} {out}"
+                              mres = re.search(r"\b(2130\d{6}|2131\d{6}|2132\d{6}|2133\d{6}|0x7f[0-9a-f]{6})\b", out)
+                              if mres:
+                                  v = mres.group(1); rid = int(v, 16) if v.startswith("0x") else int(v)
+                                  line += f"   ; {resname(rid)}"
+                              print(line[:400])
+                  except Exception as e:
+                      print("      (err)", e)
+          targets = {"La/qr2;", "La/mq4;", "La/ax0;", "Lcom/klevico/monet/WallpaperShareActivity;"}
+          # classes mentioning bucket_display_name or wallpaper_folder_uris / addWallpaperFolder
+          for m in dx.get_methods():
+              if m.is_external(): continue
+              try:
+                  strs = " ".join(ins.get_output() for ins in m.get_method().get_instructions() if "const-string" in ins.get_name())
+              except Exception: continue
+              if re.search(r"bucket_display_name|bucket_id|Could not address wallpaper folder|DocumentsProvider returned no wallpaper folder|MediaStore returned no cursor for wallpaper folder|Blank wallpaper folder URI", strs):
+                  targets.add(m.class_name)
+          for cls in dx.get_classes():
+              if cls.name in targets:
+                  dump(cls)
+          EOF
+          wc -l docs/research/monet-probe/*
       - name: Commit results
         run: |
           git config user.name "monet-probe"
