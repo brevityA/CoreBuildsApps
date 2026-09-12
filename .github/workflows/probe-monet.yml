@@ -327,6 +327,87 @@ jobs:
                   dump(cls)
           EOF
           wc -l docs/research/monet-probe/*
+      - name: Variant pass (iconPackVariant semantics)
+        run: |
+          python3 - <<'EOF' > docs/research/monet-probe/monet-${V}-variant.txt 2>/dev/null
+          import re, logging
+          logging.disable(logging.CRITICAL)
+          from androguard.misc import AnalyzeAPK
+          a, ds, dx = AnalyzeAPK("/tmp/monet.apk")
+          res = a.get_android_resources(); pkg = a.get_package()
+          def resname(rid):
+              try: return res.get_resource_xml_name(rid, pkg)
+              except Exception: return None
+          # 1. all dex strings containing banner / variant / wide / landscape / 16:9
+          print("=====STRINGS=====")
+          seen=set()
+          for d in ds:
+              for st in d.get_strings():
+                  v = str(st)
+                  if re.search(r"banner|variant|wide|landscape|16:9|_round|_square|iconPackRenderPx|render_px|_tv$|leanback", v, re.I) and len(v) < 200:
+                      if v not in seen:
+                          seen.add(v); print(v)
+          # 2. classes with a field named iconPackVariant, and enum classes whose values look like variants
+          print("=====CLASSES WITH iconPackVariant FIELD=====")
+          targets=set()
+          for cls in dx.get_classes():
+              try:
+                  c = cls.get_vm_class()
+              except Exception:
+                  continue
+              names = [f.get_name() for f in c.get_fields()]
+              if "iconPackVariant" in names or "iconPackRenderPx" in names:
+                  print(cls.name, [(f.get_name(), f.get_descriptor()) for f in c.get_fields() if "icon" in f.get_name().lower()])
+                  for f in c.get_fields():
+                      if f.get_name() == "iconPackVariant":
+                          targets.add(f.get_descriptor())
+          print("=====VARIANT TYPES=====", targets)
+          for cls in dx.get_classes():
+              if cls.name in targets:
+                  print("=" * 80); print("CLASS", cls.name, "extends", cls.extends)
+                  try:
+                      for f in cls.get_vm_class().get_fields():
+                          print("  FIELD", f.get_access_flags_string(), f.get_descriptor(), f.get_name())
+                  except Exception: pass
+                  for m in cls.get_methods():
+                      if m.is_external(): continue
+                      print("  METHOD", m.name, m.descriptor)
+                      try:
+                          for ins in m.get_method().get_instructions():
+                              if ins.get_name().startswith(("const-string", "sput", "new-instance", "invoke")):
+                                  print("      ", ins.get_name(), ins.get_output()[:200])
+                      except Exception: pass
+          # 3. methods that read iconPackVariant and use a suffix / getIdentifier
+          print("=====METHODS USING iconPackVariant=====")
+          n=0
+          for m in dx.get_methods():
+              if m.is_external(): continue
+              try:
+                  ins_list = list(m.get_method().get_instructions())
+              except Exception: continue
+              txt = "\n".join(f"{i.get_name()} {i.get_output()}" for i in ins_list)
+              if "iconPackVariant" in txt and ("getIdentifier" in txt or "const-string" in txt):
+                  n+=1
+                  print("-"*80); print("METHOD", m.class_name, m.name, m.descriptor)
+                  for l in txt.splitlines():
+                      if re.search(r"const-string|getIdentifier|iconPackVariant|iconPackRenderPx|append|_banner|toLowerCase|concat", l):
+                          print("   ", l[:220])
+                  if n > 12: break
+          # 4. the method that builds the drawable name list (wj1.j callers)
+          print("=====CALLERS OF wj1.j (bitmap loader)=====")
+          for cls in dx.get_classes():
+              if cls.name == "La/wj1;":
+                  for m in cls.get_methods():
+                      if m.name == "j":
+                          for _, caller, _ in m.get_xref_from():
+                              print("  ", caller.class_name, caller.name, caller.descriptor)
+                              try:
+                                  for i in caller.get_method().get_instructions():
+                                      if i.get_name().startswith("const-string") or "append" in i.get_output() or "iconPack" in i.get_output():
+                                          print("        ", i.get_name(), i.get_output()[:200])
+                              except Exception: pass
+          EOF
+          wc -l docs/research/monet-probe/*
       - name: Commit results
         run: |
           git config user.name "monet-probe"
