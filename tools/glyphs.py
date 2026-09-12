@@ -966,24 +966,30 @@ GLYPHS.update({"stadium": stadium, "browser_globe": browser_globe})
 # ==========================================================================
 
 def janky_play(c):
-    """Janky Player - the spoked wheel with the wordmark's A through it.
+    """Janky Player - the hamster in its wheel.
 
-    Two earlier attempts missed. The first split a play wedge into two offset
-    halves to pun on the name, which reads as a letter B at every size. The
-    second tilted a whole wedge 16 degrees, which read as a play button but
-    had nothing to do with the app: Janky's mark is not a play triangle at
-    all. It is a spoked wheel with the A of the wordmark rising through it.
+    Three attempts to get here, and the first two were inventions. A split
+    play wedge (reads as a letter B at every size), then a play wedge tilted
+    16 degrees (reads as a play button, but Janky is not one). The owner's
+    logo settled it: the wordmark's A sits inside a hamster wheel, and the
+    shape in the wheel is a hamster. The joke is the app running on a hamster
+    wheel, and neither wedge had anything to do with it.
 
-    This is that cue in our linework - ring, hub, four spokes and the A - not
-    a trace of the vendor mark. The spokes stop at 55% of the radius on
-    purpose: run to the rim they cut the interior into sectors and five of
-    them close at tile size. Held short, the interior stays one region and
-    every counter survives the downscale.
+    Ring, fourteen rungs hanging inside the rim, and the animal. The rungs
+    are held short of the hub on purpose: run to the centre they cut the
+    interior into sectors that close at tile size. At 48px the hamster is a
+    blob, which is the honest limit of a 3px stroke - but "something small
+    inside a running wheel" is the read, and that survives.
+
+    Stroke weights are written for what monoline() does to them: it snaps 24
+    to 26.2 and 30 to 32, so tuning against the raw source numbers loses
+    counters that the normalised render does not have room for.
     """
-    return (f'<circle cx="256" cy="272" r="170" {_s(c, 32)}/>'
-            f'<circle cx="256" cy="272" r="30" {_s(c, 22)}/>'
-            f'<path d="M 277 251 L 332 196 M 277 293 L 332 348 M 235 293 L 180 348 M 235 251 L 180 196" {_s(c, 20)}/>'
-            f'<path d="M 172 336 L 256 84 L 340 336" {_s(c, 26)}/>')
+    return (f'<circle cx="256" cy="258" r="178" {_s(c, 32)}/>'
+            f'<path d="M 411 299 L 385 293 M 377 362 L 358 345 M 320 405 L 310 381 M 250 418 L 251 392 M 181 399 L 193 376 M 127 353 L 148 338 M 99 288 L 124 283 M 101 217 L 127 223 M 135 154 L 154 171 M 192 111 L 202 135 M 262 98 L 261 124 M 331 117 L 319 140 M 385 163 L 364 178 M 413 228 L 388 233" {_s(c, 20)}/>'
+            f'<path d="M 186 352 C 180 318 196 290 227 288 C 247 286 254 290 262 293 C 270 277 291 275 300 293 C 308 309 301 326 288 334 C 272 346 239 359 211 359 C 196 359 188 355 186 352 Z" {_s(c, 26)}/>'
+            f'<circle cx="283" cy="275" r="12" {_s(c, 20)}/>'
+            f'<path d="M 216 359 L 216 375 M 260 357 L 260 373" {_s(c, 20)}/>')
 
 
 def tivimate_grid(c):
