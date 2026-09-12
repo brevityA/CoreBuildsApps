@@ -1,7 +1,7 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1280" height="720" viewBox="0 0 1280 720">
   <g transform="translate(65.0,0.0)">
   <defs><linearGradient id="cbRail" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#00d4ff"/><stop offset="100%" stop-color="#a78bfa"/></linearGradient></defs><rect x="70" y="168" width="16" height="384" rx="8.0" fill="url(#cbRail)"/>
-  <g transform="translate(230,180) scale(0.70312)"><path d="M 80 152 L 216 152 L 258 206 L 432 206 L 432 372 C 432 384 422 394 410 394 L 102 394 C 90 394 80 384 80 372 Z" fill="none" stroke="#FF477E" stroke-width="32.0" stroke-linecap="round" stroke-linejoin="round"/></g>
+  <g transform="translate(230,180) scale(0.70312)"><path d="M 80 152 L 216 152 L 258 206 L 432 206 L 432 372 C 432 384 422 394 410 394 L 102 394 C 90 394 80 384 80 372 Z" fill="none" stroke="#FEC500" stroke-width="32.0" stroke-linecap="round" stroke-linejoin="round"/></g>
   <path d="M638.8660000000001 299.49V267.014H646.0880000000001V299.49ZM644.3860000000001 286.748V280.538H660.624V286.748ZM644.3860000000001 273.224V267.014H661.36V273.224Z" fill="#00d4ff" stroke="none"/>
   <path d="M666.0060000000001 299.49V267.014H673.2280000000001V299.49Z" fill="#00d4ff" stroke="none"/>
   <path d="M679.484 299.49V267.014H686.706V299.49ZM685.05 299.49V293.142H701.104V299.49Z" fill="#00d4ff" stroke="none"/>

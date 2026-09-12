@@ -123,11 +123,15 @@ def play_rect(c):
 
 
 def kodi_box(c):
-    """Kodi's split diamond/K, reconstructed in the pack's rounded line weight."""
+    """Kodi's split diamond/K, reconstructed in the pack's rounded line weight.
+
+    The small left diamond was 42px across a 32 stroke and closed at tile
+    size. Enlarging it keeps the four-part split intact.
+    """
     return (f'<path d="M 238 72 L 322 156 L 178 300 V 132 Z" {_s(c, 32)}/>'
             f'<path d="M 362 184 L 434 256 L 362 328 L 290 256 Z" {_s(c, 32)}/>'
             f'<path d="M 256 310 L 328 382 L 256 454 L 184 382 Z" {_s(c, 32)}/>'
-            f'<path d="M 126 214 L 84 256 L 126 298 Z" {_s(c, 32)}/>')
+            f'<path d="M 134 190 L 68 256 L 134 322 Z" {_s(c, 32)}/>')
 
 
 def jellyfin_chevrons(c):
@@ -139,9 +143,14 @@ def jellyfin_chevrons(c):
 
 
 def emby_shield(c):
-    return (f'<path d="M 256 92 L 404 152 L 404 268 C 404 350 336 400 256 424 '
-            f'C 176 400 108 350 108 268 L 108 152 Z" {_s(c, 34)}/>'
-            f'<path d="M 226 200 L 316 258 L 226 316 Z" {_s(c, 30)}/>')
+    """Emby: the shield with its play.
+
+    The play wedge sat close enough to the shield wall to close the gap on one
+    side. Shrinking it and centring it keeps a clear margin all round.
+    """
+    return (f'<path d="M 256 88 L 408 150 L 408 268 C 408 352 338 404 256 428 '
+            f'C 174 404 104 352 104 268 L 104 150 Z" {_s(c, 34)}/>'
+            f'<path d="M 224 208 L 306 258 L 224 308 Z" {_s(c, 30)}/>')
 
 
 def plex_chevron(c):
@@ -317,11 +326,17 @@ def gamepad(c):
 
 
 def tools_wrench(c):
-    """Utilities / tweaks — wrench."""
-    return (f'<path d="M 352 96 C 300 82 250 118 250 174 C 250 190 254 204 '
-            f'260 216 L 116 360 C 98 378 98 404 116 422 C 134 440 160 440 '
-            f'178 422 L 322 278 C 334 284 348 288 364 288 C 420 288 456 238 '
-            f'442 186 L 392 236 L 342 226 L 332 176 Z" {_s(c, 30)}/>')
+    """Utilities / tweaks - the ring spanner.
+
+    The open-jaw wrench had one counter, the jaw notch, and it pinched shut at
+    tile size; widening the jaw pushed ink 22px outside SAFE. A ring spanner
+    carries the same idea with a socket that cannot close, and it sits inside
+    the margin.
+    """
+    return (f'<circle cx="332" cy="180" r="88" {_s(c, 30)}/>'
+            f'<circle cx="332" cy="180" r="46" {_s(c, 22)}/>'
+            f'<path d="M 272 242 L 140 374 C 122 392 122 420 140 438 '
+            f'C 158 456 186 456 204 438 L 336 306" {_s(c, 30)}/>')
 
 
 def send_arrow(c):
@@ -331,10 +346,14 @@ def send_arrow(c):
 
 
 def broom(c):
-    """Cleaner / maintenance."""
-    return (f'<path d="M 384 96 L 236 244" {_s(c, 34)}/>'
-            f'<path d="M 268 208 L 176 300 L 246 370 L 338 278 Z" {_s(c, 30)}/>'
-            f'<path d="M 176 300 L 96 416 L 246 370" {_s(c, 30)}/>')
+    """Cleaner / maintenance.
+
+    The head and the fan shared an edge, and the wedge between them closed.
+    Separating the fan from the head keeps both shapes readable.
+    """
+    return (f'<path d="M 396 88 L 258 226" {_s(c, 34)}/>'
+            f'<path d="M 286 194 L 180 300 L 254 374 L 360 268 Z" {_s(c, 30)}/>'
+            f'<path d="M 166 314 L 96 424 L 208 388" {_s(c, 30)}/>')
 
 
 def shield_key(c):
@@ -475,25 +494,30 @@ def smarttube_play(c):
 
 
 def tizen_play(c):
-    """TizenTube: play inside a soft square, ad-blocked slash."""
+    """TizenTube: play inside a soft square, ad-blocked slash.
+
+    The slash crossed the wedge and closed it. Running the slash clear of the
+    play keeps both marks whole.
+    """
     return (f'<rect x="70" y="112" width="372" height="288" rx="64" {_s(c, 34)}/>'
-            f'<path d="M 216 196 L 216 316 L 326 256 Z" {_s(c, 30)}/>'
-            f'<path d="M 118 372 L 396 132" {_s(c, 30)}/>')
+            f'<path d="M 226 192 L 226 320 L 340 256 Z" {_s(c, 30)}/>'
+            f'<path d="M 108 398 L 196 310" {_s(c, 30)}/>')
 
 
 def film_reel(c):
-    """Cinema HD: film strip — perforated frame."""
+    """Cinema HD: film strip - perforated frame.
+
+    The eight perforations were solid dots inside the sprocket lanes, and two
+    of them closed the lane they sat in. Cutting them to four larger openings
+    per lane keeps the perforated read and stops the lanes filling.
+    """
     return (f'<rect x="74" y="126" width="364" height="260" rx="34" {_s(c, 32)}/>'
-            f'<path d="M 74 190 L 438 190" {_s(c, 24)}/>'
-            f'<path d="M 74 322 L 438 322" {_s(c, 24)}/>'
-            f'<circle cx="132" cy="158" r="15" {_f(c)}/>'
-            f'<circle cx="222" cy="158" r="15" {_f(c)}/>'
-            f'<circle cx="312" cy="158" r="15" {_f(c)}/>'
-            f'<circle cx="392" cy="158" r="15" {_f(c)}/>'
-            f'<circle cx="132" cy="354" r="15" {_f(c)}/>'
-            f'<circle cx="222" cy="354" r="15" {_f(c)}/>'
-            f'<circle cx="312" cy="354" r="15" {_f(c)}/>'
-            f'<circle cx="392" cy="354" r="15" {_f(c)}/>')
+            f'<path d="M 74 196 L 438 196" {_s(c, 24)}/>'
+            f'<path d="M 74 316 L 438 316" {_s(c, 24)}/>'
+            f'<path d="M 140 161 L 180 161 M 236 161 L 276 161 '
+            f'M 332 161 L 372 161" {_s(c, 22)}/>'
+            f'<path d="M 140 351 L 180 351 M 236 351 L 276 351 '
+            f'M 332 351 L 372 351" {_s(c, 22)}/>')
 
 
 def flix_f(c):
@@ -503,12 +527,16 @@ def flix_f(c):
 
 
 def yinyang_play(c):
-    """WuPlay: yin-yang drawn as contour, with two small play marks."""
+    """WuPlay: yin-yang drawn as contour, with two play marks.
+
+    The two play wedges were 56px tall against a 22 stroke, so both closed at
+    tile size. Larger wedges sit in the same positions and stay open.
+    """
     return (f'<circle cx="256" cy="256" r="186" {_s(c, 32)}/>'
             f'<path d="M 256 70 A 93 93 0 0 1 256 256 A 93 93 0 0 0 256 442" '
             f'{_s(c, 32)}/>'
-            f'<path d="M 226 140 L 226 196 L 274 168 Z" {_s(c, 22)}/>'
-            f'<path d="M 286 316 L 286 372 L 238 344 Z" {_s(c, 22)}/>')
+            f'<path d="M 216 124 L 216 212 L 290 168 Z" {_s(c, 22)}/>'
+            f'<path d="M 296 300 L 296 388 L 222 344 Z" {_s(c, 22)}/>')
 
 
 def stremio_square(c):
@@ -524,11 +552,15 @@ def arvio_a(c):
 
 
 def lumera_beam(c):
-    """Lumera: a lit lamp/prism — the 'lumen' idea."""
+    """Lumera: a lit lamp/prism - the 'lumen' idea.
+
+    A filament line ran the full height of the prism and split it into two
+    slivers, one of which closed. A shorter filament leaves the prism open.
+    """
     return (f'<path d="M 256 96 L 372 300 L 140 300 Z" {_s(c, 34)}/>'
             f'<path d="M 186 300 L 186 372 C 186 410 218 436 256 436 '
             f'C 294 436 326 410 326 372 L 326 300" {_s(c, 32)}/>'
-            f'<path d="M 256 156 L 256 300" {_s(c, 24)}/>')
+            f'<path d="M 256 214 L 256 262" {_s(c, 24)}/>')
 
 
 def debrid_bolt(c):
@@ -607,13 +639,14 @@ def satellite(c):
 
 
 def vault_lock(c):
-    """StreamVault: a vault door."""
-    return (f'<rect x="76" y="76" width="360" height="360" rx="48" {_s(c, 32)}/>'
-            f'<circle cx="256" cy="256" r="104" {_s(c, 30)}/>'
-            f'<path d="M 256 152 L 256 118" {_s(c, 24)}/>'
-            f'<path d="M 256 360 L 256 394" {_s(c, 24)}/>'
-            f'<path d="M 152 256 L 118 256" {_s(c, 24)}/>'
-            f'<path d="M 360 256 L 394 256" {_s(c, 24)}/>')
+    """StreamVault: a vault door.
+
+    Four spokes radiating from the dial into the door wall closed the gap
+    between them. The dial inside the door is the vault.
+    """
+    return (f'<rect x="76" y="76" width="360" height="360" rx="52" {_s(c, 32)}/>'
+            f'<circle cx="256" cy="256" r="112" {_s(c, 30)}/>'
+            f'<path d="M 256 144 L 256 196" {_s(c, 24)}/>')
 
 
 def equalizer(c):
@@ -647,21 +680,29 @@ def aurora_a(c):
 
 
 def launcher_grid(c):
-    """Launchers: a card grid."""
-    return (f'<rect x="72" y="96" width="164" height="140" rx="24" {_s(c, 30)}/>'
-            f'<rect x="276" y="96" width="164" height="140" rx="24" {_s(c, 30)}/>'
-            f'<rect x="72" y="276" width="164" height="140" rx="24" {_s(c, 30)}/>'
-            f'<rect x="276" y="276" width="164" height="140" rx="24" {_s(c, 30)}/>')
+    """Launchers: a card grid.
+
+    Four cards at 164x140 with 40px channels put 37.8 percent ink on the tile.
+    Smaller cards on wider channels read as a grid at a third less ink.
+    """
+    return (f'<rect x="86" y="106" width="148" height="122" rx="26" {_s(c, 30)}/>'
+            f'<rect x="278" y="106" width="148" height="122" rx="26" {_s(c, 30)}/>'
+            f'<rect x="86" y="284" width="148" height="122" rx="26" {_s(c, 30)}/>'
+            f'<rect x="278" y="284" width="148" height="122" rx="26" {_s(c, 30)}/>')
 
 
 def rocket(c):
-    """AT4K / performance launchers."""
+    """AT4K / performance launchers.
+
+    The two fins folded back against the body and the notch inside each one
+    closed. Opening the fins away from the hull keeps them readable.
+    """
     return (f'<path d="M 256 68 C 320 130 348 218 340 306 L 172 306 '
             f'C 164 218 192 130 256 68 Z" {_s(c, 32)}/>'
-            f'<circle cx="256" cy="196" r="40" {_s(c, 26)}/>'
-            f'<path d="M 172 268 L 108 330 L 156 342" {_s(c, 26)}/>'
-            f'<path d="M 340 268 L 404 330 L 356 342" {_s(c, 26)}/>'
-            f'<path d="M 216 348 L 256 444 L 296 348" {_s(c, 28)}/>')
+            f'<circle cx="256" cy="196" r="44" {_s(c, 26)}/>'
+            f'<path d="M 170 258 L 96 340" {_s(c, 26)}/>'
+            f'<path d="M 342 258 L 416 340" {_s(c, 26)}/>'
+            f'<path d="M 212 350 L 256 444 L 300 350" {_s(c, 28)}/>')
 
 
 def droplet(c):
@@ -896,21 +937,19 @@ def stadium(c):
 
 
 def browser_globe(c):
-    """
-    TV Bro — a globe inside a rounded screen.
+    """TV Bro - a globe inside a rounded screen.
 
     Its own icon is neon 'TV BRO' lettering wrapping a remote and a wire
-    globe. A wordmark cannot survive the downscale, so the globe carries it:
-    it is the browser idea, and it is what stays legible small.
+    globe. A wordmark cannot survive the downscale, so the globe carries it.
+
+    The two meridians plus the equator cut the globe into six cells, four of
+    which closed at tile size and took the mark to 36 percent ink. One
+    meridian and the equator keep the wire-globe read.
     """
-    # Screen is 400 wide, not 408 — see tivimate_grid: a 408 box plus the 32
-    # stroke lands ink 4px outside SAFE on each side.
     return (f'<rect x="56" y="96" width="400" height="284" rx="72" {_s(c, 32)}/>'
-            f'<circle cx="256" cy="238" r="104" {_s(c, 28)}/>'
-            f'<path d="M 152 238 L 360 238" {_s(c, 24)}/>'
-            f'<path d="M 256 134 C 300 172 300 304 256 342" {_s(c, 24)}/>'
-            f'<path d="M 256 134 C 212 172 212 304 256 342" {_s(c, 24)}/>'
-            # stand
+            f'<circle cx="256" cy="238" r="108" {_s(c, 28)}/>'
+            f'<path d="M 148 238 L 364 238" {_s(c, 24)}/>'
+            f'<path d="M 256 130 C 306 172 306 304 256 346" {_s(c, 24)}/>'
             f'<path d="M 176 434 L 336 434" {_s(c, 28)}/>'
             f'<path d="M 256 380 L 256 434" {_s(c, 24)}/>')
 
@@ -940,24 +979,17 @@ def janky_play(c):
 
 
 def tivimate_grid(c):
-    """
-    TiviMate — an EPG grid: the programme guide is the app.
+    """TiviMate - an EPG grid: the programme guide is the app.
 
-    A screen split into channel rows with a highlighted 'now' cell. Says
-    IPTV guide rather than generic player, and is nothing like the twenty
-    other apps that were sharing monogram_T.
+    The filled 'now' cell was a solid block inside an already dense grid and
+    took the mark to 35 percent ink. Drawing the cell as an outline keeps the
+    highlight and opens the row back up - and it drops the one solid fill in
+    the mark, so the glyph is now stroke-only like the rest.
     """
-    # Screen is 400 wide, not 408: the 32 stroke on a 408 box put ink at x=36
-    # and x=476, 4px outside SAFE on both sides.
     return (f'<rect x="56" y="104" width="400" height="268" rx="40" {_s(c, 32)}/>'
-            # channel column divider
             f'<path d="M 158 104 L 158 372" {_s(c, 24)}/>'
-            # programme rows
-            f'<path d="M 56 192 L 456 192" {_s(c, 22)}/>'
-            f'<path d="M 56 284 L 456 284" {_s(c, 22)}/>'
-            # 'now' cell, filled to read as the highlight
-            f'<rect x="196" y="212" width="128" height="52" rx="12" {_f(c)}/>'
-            # stand
+            f'<path d="M 158 238 L 456 238" {_s(c, 22)}/>'
+            f'<rect x="196" y="142" width="146" height="62" rx="16" {_s(c, 22)}/>'
             f'<path d="M 176 428 L 336 428" {_s(c, 28)}/>'
             f'<path d="M 256 372 L 256 428" {_s(c, 24)}/>')
 
@@ -1013,27 +1045,29 @@ def sparkle_burst(c):
 
 
 def nas_stack(c):
-    """Synology / NAS — three stacked drive bays. The disk shelf is the product."""
+    """Synology / NAS - the drive shelf.
+
+    At 53 percent ink this was the densest mark in the pack: three bays, three
+    status dots and three rules stacked into one box. The bays alone are the
+    product, and one status dot per bay is enough to say 'drive'.
+    """
     return (
-        f'<rect x="86" y="92" width="340" height="92" rx="22" {_s(c, 30)}/>'
-        f'<rect x="86" y="210" width="340" height="92" rx="22" {_s(c, 30)}/>'
-        f'<rect x="86" y="328" width="340" height="92" rx="22" {_s(c, 30)}/>'
-        f'<circle cx="138" cy="138" r="14" {_f(c)}/>'
-        f'<circle cx="138" cy="256" r="14" {_f(c)}/>'
-        f'<circle cx="138" cy="374" r="14" {_f(c)}/>'
-        f'<path d="M 178 138 L 372 138" {_s(c, 22)}/>'
-        f'<path d="M 178 256 L 372 256" {_s(c, 22)}/>'
-        f'<path d="M 178 374 L 372 374" {_s(c, 22)}/>'
+        f'<rect x="86" y="100" width="340" height="96" rx="24" {_s(c, 30)}/>'
+        f'<rect x="86" y="220" width="340" height="96" rx="24" {_s(c, 30)}/>'
+        f'<rect x="86" y="340" width="340" height="96" rx="24" {_s(c, 30)}/>'
     )
 
 
 def nas_play(c):
-    """DS video — drive shelf with a play wedge."""
+    """DS video - drive shelf with a play wedge.
+
+    Two shelf rules plus a wedge left three narrow bands. One rule under the
+    wedge keeps the shelf read at a third of the ink.
+    """
     return (
         f'<rect x="72" y="118" width="368" height="276" rx="36" {_s(c, 32)}/>'
-        f'<path d="M 72 210 L 440 210" {_s(c, 24)}/>'
-        f'<path d="M 72 302 L 440 302" {_s(c, 24)}/>'
-        f'<path d="M 214 168 L 214 344 L 348 256 Z" {_s(c, 30)}/>'
+        f'<path d="M 72 190 L 440 190" {_s(c, 24)}/>'
+        f'<path d="M 206 232 L 206 352 L 330 292 Z" {_s(c, 30)}/>'
     )
 
 
@@ -1136,12 +1170,15 @@ def netflix_ribbon(c):
 
 
 def crunchyroll_eye(c):
-    """Circular crescent/curl rather than the old horizontal eye or a filled disc."""
-    return (f'<circle cx="256" cy="256" r="180" {_s(c, 32)}/>'
-            f'<path d="M 360 162 C 270 124 164 190 160 278 '
-            f'C 156 352 212 398 282 398 C 344 398 393 356 414 300" {_s(c, 26)}/>'
-            f'<path d="M 360 162 C 322 188 324 244 360 260 '
-            f'C 382 270 406 264 424 248" {_s(c, 26)}/>')
+    """Crunchyroll: the curl inside its ring.
+
+    The old mark traced the curl twice, and the tail hugged the ring closely
+    enough to close the gap between them. One sweeping curl, held clear of the
+    ring, keeps the tell.
+    """
+    return (f'<circle cx="256" cy="256" r="182" {_s(c, 32)}/>'
+            f'<path d="M 344 168 C 258 132 166 196 166 278 '
+            f'C 166 344 220 386 284 386 C 330 386 368 364 392 330" {_s(c, 26)}/>')
 
 
 def paramount_peak(c):
@@ -1233,10 +1270,14 @@ def tubi_mark(c):
 
 
 def justwatch_finder(c):
-    """JustWatch: the streaming search — magnifier with a play inside."""
-    return (f'<circle cx="232" cy="236" r="132" {_s(c, 34)}/>'
-            f'<path d="M 214 186 L 214 286 L 300 236 Z" {_s(c, 28)}/>'
-            f'<path d="M 322 322 L 428 428" {_s(c, 40)}/>')
+    """JustWatch: the streaming search - magnifier with a play inside.
+
+    The play filled most of the lens, leaving a ring of background too thin to
+    survive. A smaller play inside a larger lens keeps both shapes open.
+    """
+    return (f'<circle cx="228" cy="230" r="146" {_s(c, 34)}/>'
+            f'<path d="M 200 180 L 200 280 L 286 230 Z" {_s(c, 28)}/>'
+            f'<path d="M 336 338 L 424 426" {_s(c, 40)}/>')
 
 
 def acorn_mark(c):
@@ -1275,10 +1316,19 @@ def max_wave(c):
 
 
 def mubi_mark(c):
-    """Seven round outlines in MUBI's 2-3-2 arrangement, in the pack's linework."""
-    points = ((124, 124), (256, 124), (124, 256), (256, 256),
-              (388, 256), (124, 388), (256, 388))
-    return "".join(f'<circle cx="{x}" cy="{y}" r="34" {_s(c, 32)}/>'
+    """Seven round outlines in MUBI's 2-3-2 arrangement, in the pack's linework.
+
+    Radius 34 against a 32 stroke left an 18px counter - under two pixels on a
+    Projectivy tile, so all seven filled in and the mark read as a solid block.
+
+    Radius alone was not enough: presence.py dilates every edge by the keyline
+    radius on the shipped PNG, so at the old 136px spacing the fattened rings
+    bridged into one shape. Widening the spacing to 146 keeps the seven dots
+    seven separate components after the keyline, with a 30px counter each.
+    """
+    points = ((110, 110), (256, 110), (110, 256), (256, 256),
+              (402, 256), (110, 402), (256, 402))
+    return "".join(f'<circle cx="{x}" cy="{y}" r="46" {_s(c, 32)}/>'
                    for x, y in points)
 
 
@@ -1434,18 +1484,15 @@ def stan_wave(c):
 
 
 def sbs_tile_word(c):
-    """SBS (Australia): the five 'Mercator' globe splices.
+    """SBS (Australia): the Mercator splices, thinned to three.
 
-    Five curved splices broadly resembling the Mercator globe's continents and
-    the tilt of the Earth's axis, gathered around a shared midpoint.
+    Five splices packed into the upper half left three sub-30px wedges that
+    closed at tile size. Three crests over one sweep keeps the folded-globe
+    read with counters that survive.
     """
-    # five curved splices: three crests up top, two set lower, all sweeping
-    # around a common centre to evoke the folded Mercator globe.
-    return (f'<path d="M 130 180 C 176 120 232 150 216 218" {_s(c, 26)}/>'
-            f'<path d="M 210 180 C 244 130 300 140 292 210" {_s(c, 24)}/>'
-            f'<path d="M 296 186 C 332 146 372 168 366 216" {_s(c, 22)}/>'
-            f'<path d="M 156 268 C 200 300 300 300 356 268" {_s(c, 26)}/>'
-            f'<path d="M 116 318 C 170 356 342 356 396 318" {_s(c, 26)}/>')
+    return (f'<path d="M 118 206 C 174 122 246 160 226 244" {_s(c, 26)}/>'
+            f'<path d="M 242 196 C 296 128 362 158 350 240" {_s(c, 26)}/>'
+            f'<path d="M 120 306 C 190 360 322 360 392 306" {_s(c, 26)}/>')
 
 
 def binge_wave(c):
@@ -1491,11 +1538,15 @@ GLYPHS.update({
 # Tier 3 — another wave of recognisable signature marks.
 # ==========================================================================
 def instagram_camera(c):
-    """Instagram: the camera — rounded body, lens, and a top flash dot."""
+    """Instagram: the camera - rounded body, lens, and a flash dot.
+
+    Body, lens and inner lens were three concentric contours plus a solid
+    flash, at 34 percent ink. Body and lens carry the camera; the flash is an
+    outline so the glyph is stroke-only.
+    """
     return (f'<rect x="96" y="122" width="320" height="300" rx="96" {_s(c, 34)}/>'
-            f'<circle cx="256" cy="272" r="92" {_s(c, 32)}/>'
-            f'<circle cx="256" cy="272" r="34" {_s(c, 24)}/>'
-            f'<circle cx="340" cy="182" r="20" {_f(c)}/>')
+            f'<circle cx="256" cy="276" r="88" {_s(c, 32)}/>'
+            f'<circle cx="348" cy="186" r="20" {_s(c, 22)}/>')
 
 
 def amazon_smile(c):
@@ -1511,16 +1562,13 @@ def sling_s(c):
 
 
 def pluto_planet(c):
-    """Pluto TV: the 'planetary echo' — a large planet ring around a tiny core.
+    """Pluto TV: the planetary echo - a world crossed by its ring.
 
-    Reads as the planet Pluto (a small, bright world) orbited by a bold ring,
-    matching the 'planetary echo' device around the tv wordmark.
+    Two filled satellites sat inside the disc and closed the ring gap. The
+    planet and the ring alone carry the device.
     """
-    return (f'<circle cx="256" cy="256" r="160" {_s(c, 30)}/>'
-            f'<path d="M 96 180 C 140 138 372 138 416 180 C 372 222 140 222 '
-            f'96 180 Z" {_s(c, 22)}/>'
-            f'<circle cx="150" cy="256" r="22" {_f(c)}/>'
-            f'<circle cx="256" cy="300" r="14" {_f(c)}/>')
+    return (f'<circle cx="256" cy="256" r="164" {_s(c, 30)}/>'
+            f'<path d="M 84 186 C 140 136 372 136 428 186" {_s(c, 24)}/>')
 
 
 def nvidia_eye(c):
@@ -1541,10 +1589,13 @@ def sky_swoosh(c):
 
 
 def yt_music(c):
-    """YouTube Music's disc/ring/play motif without any solid vendor fills."""
-    return (f'<circle cx="256" cy="256" r="188" {_s(c, 32)}/>'
-            f'<circle cx="256" cy="256" r="124" {_s(c, 26)}/>'
-            f'<path d="M 224 198 L 310 256 L 224 314 Z" {_s(c, 26)}/>')
+    """YouTube Music's disc and play.
+
+    Three concentric contours around a play wedge put 39 percent ink on the
+    tile and closed the inner ring. The outer disc plus the play is the mark.
+    """
+    return (f'<circle cx="256" cy="256" r="190" {_s(c, 32)}/>'
+            f'<path d="M 212 176 L 212 336 L 344 256 Z" {_s(c, 30)}/>')
 
 
 def wetv_w(c):
@@ -1675,19 +1726,25 @@ def mlb_homeplate(c):
 
 
 def nfl_ball(c):
-    """NFL: the shield — an NFL-style crest with a ball at its heart."""
-    return (f'<path d="M 256 92 L 388 148 L 388 268 C 388 354 336 406 256 428 '
-            f'C 176 406 124 354 124 268 L 124 148 Z" {_s(c, 30)}/>'
-            f'<ellipse cx="256" cy="276" rx="70" ry="44" {_s(c, 24)}/>'
-            f'<path d="M 200 150 L 312 150 M 200 192 L 312 192" {_s(c, 20)}/>')
+    """NFL: the shield with a ball at its heart.
+
+    Two lace rules ran across the top of the shield and closed the band they
+    sat in. The ball carries the mark without them.
+    """
+    return (f'<path d="M 256 88 L 392 146 L 392 268 C 392 356 338 408 256 430 '
+            f'C 174 408 120 356 120 268 L 120 146 Z" {_s(c, 30)}/>'
+            f'<ellipse cx="256" cy="262" rx="80" ry="52" {_s(c, 24)}/>')
 
 
 def nba_ball(c):
-    """NBA: the red/blue shield with the silhouette — a crest + an arc player."""
-    return (f'<path d="M 188 160 L 324 160 L 324 290 L 256 420 L 188 290 Z" '
+    """NBA: the crest with a player at its heart.
+
+    The seam line bisected a 42px circle and closed both halves. The circle
+    alone, larger, keeps the crest reading as a crest.
+    """
+    return (f'<path d="M 176 148 L 336 148 L 336 292 L 256 424 L 176 292 Z" '
             f'{_s(c, 30)}/>'
-            f'<circle cx="256" cy="256" r="42" {_s(c, 22)}/>'
-            f'<path d="M 256 214 L 256 298" {_s(c, 18)}/>')
+            f'<circle cx="256" cy="250" r="56" {_s(c, 22)}/>')
 
 
 def foxnews_mark(c):
@@ -1781,10 +1838,14 @@ def showmax_eye(c):
 
 
 def nebula_dot(c):
-    """Nebula: the cosmic dot — a circle with a ringed orbit."""
-    return (f'<circle cx="256" cy="256" r="120" {_s(c, 32)}/>'
-            f'<ellipse cx="256" cy="256" rx="180" ry="66" {_s(c, 26)}/>'
-            f'<circle cx="256" cy="256" r="26" {_f(c)}/>')
+    """Nebula: a world inside its ring.
+
+    The filled core sat inside two concentric contours and closed the space
+    between them. Dropping it leaves the ring crossing the disc, which is the
+    part that reads as an orbit.
+    """
+    return (f'<circle cx="256" cy="256" r="128" {_s(c, 32)}/>'
+            f'<ellipse cx="256" cy="256" rx="192" ry="74" {_s(c, 26)}/>')
 
 
 def roku_house(c):
@@ -1858,10 +1919,16 @@ def nordvpn_arrow(c):
 
 
 def proton_shield(c):
-    """Proton VPN's folded triangle reduced to two rounded line contours."""
-    return (f'<path d="M 104 112 L 416 152 Q 444 156 426 188 '
-            f'L 258 418 Q 248 436 234 414 L 90 146 Q 78 120 104 112 Z" {_s(c, 32)}/>'
-            f'<path d="M 116 166 L 338 194 Q 364 198 348 222 L 226 374" {_s(c, 26)}/>')
+    """Proton VPN's folded triangle, as one contour plus one fold.
+
+    The old inner fold traced most of the outer contour a stroke's width
+    inside it, which is the classic way to lose a counter: eleven of thirteen
+    closed at tile size. The fold now crosses the interior instead of
+    shadowing the edge, so there is one large opening either side of it.
+    """
+    return (f'<path d="M 104 118 L 408 156 Q 436 160 418 192 '
+            f'L 258 410 Q 248 428 234 406 L 90 150 Q 78 124 104 118 Z" {_s(c, 32)}/>'
+            f'<path d="M 168 208 L 330 230" {_s(c, 24)}/>')
 
 
 def expressvpn_mark(c):
@@ -1874,29 +1941,30 @@ def expressvpn_mark(c):
 
 
 def wireguard_mark(c):
-    """WireGuard: the wave-key — a coil of curved lines.
+    """WireGuard: the wave-key.
 
-    Three interlocking S-curved lines spiral around a centre, evoking the
-    WireGuard wave-key (a key whose teeth are curved waves) rather than a set
-    of separate dots.
+    The old construction doubled back on itself three times and carried a
+    filled core, which closed the loops it was meant to sit inside. Two clean
+    waves and an open eye say the same thing and survive the downscale.
     """
-    return (f'<path d="M 150 170 C 130 220 382 220 362 270 C 342 320 130 320 '
-            f'150 270 C 170 220 382 220 362 270" {_s(c, 24)}/>'
-            f'<path d="M 196 120 C 176 170 428 170 408 220" {_s(c, 24)}/>'
-            f'<circle cx="256" cy="256" r="26" {_f(c)}/>')
+    return (f'<circle cx="256" cy="256" r="58" {_s(c, 32)}/>'
+            f'<path d="M 96 168 C 150 112 206 224 260 168 C 314 112 370 224 '
+            f'424 168" {_s(c, 26)}/>'
+            f'<path d="M 96 366 C 150 310 206 422 260 366 C 314 310 370 422 '
+            f'424 366" {_s(c, 26)}/>')
 
 
 def mullvad_shield(c):
-    """Mullvad: the duck head — a rounded bird profile in a rounded square.
+    """Mullvad: the bird head.
 
-    The Mullvad brand mark is a stylised duck/bird head; simplified to a titled
-    circle head with a beak and eye inside a soft tile.
+    The head sat inside a rounded tile, and the band between the two closed at
+    tile size. Dropping the tile lets the head fill the safe area, which is
+    also how the brand mark is actually used.
     """
-    return (f'<rect x="80" y="90" width="352" height="352" rx="92" {_s(c, 30)}/>'
-            f'<path d="M 150 320 C 130 250 170 200 250 200 C 330 200 360 250 '
-            f'340 320 C 320 372 200 372 150 320 Z" {_s(c, 24)}/>'
-            f'<path d="M 150 320 L 128 334" {_s(c, 20)}/>'
-            f'<circle cx="250" cy="266" r="15" {_f(c)}/>')
+    return (f'<path d="M 134 348 C 106 244 166 168 256 168 C 346 168 406 244 '
+            f'378 348 C 348 424 164 424 134 348 Z" {_s(c, 30)}/>'
+            f'<path d="M 134 348 L 92 372" {_s(c, 24)}/>'
+            f'<circle cx="256" cy="256" r="26" {_s(c, 24)}/>')
 
 
 def dropbox_boxes(c):
@@ -2276,9 +2344,13 @@ def sportsnet_mark(c):
 
 
 def nhl_mark(c):
-    """NHL: the puck — an ellipse puck with a star notch."""
-    return (f'<ellipse cx="256" cy="282" rx="150" ry="88" {_s(c, 32)}/>'
-            f'<path d="M 256 150 L 280 170 L 256 190 L 232 170 Z" {_s(c, 22)}/>')
+    """NHL: the puck - an ellipse puck with a star notch.
+
+    The notch was 48px wide under a 22 stroke and closed. A larger diamond
+    keeps the notch legible above the puck.
+    """
+    return (f'<ellipse cx="256" cy="288" rx="150" ry="88" {_s(c, 32)}/>'
+            f'<path d="M 256 112 L 300 156 L 256 200 L 212 156 Z" {_s(c, 22)}/>')
 
 
 def tsn_mark(c):
@@ -2425,10 +2497,14 @@ def apkmirror_mark(c):
 
 
 def rustore_mark(c):
-    """RuStore: the store tile — a stacked tile with a spark."""
-    return (f'<rect x="110" y="150" width="130" height="130" rx="24" {_s(c, 28)}/>'
-            f'<rect x="272" y="150" width="130" height="130" rx="24" {_s(c, 28)}/>'
-            f'<rect x="110" y="312" width="292" height="80" rx="24" {_s(c, 26)}/>')
+    """RuStore: the store tiles.
+
+    The lower bar sat 32px under the upper tiles with a 26 stroke between
+    them, so the channel closed. Wider gaps, same arrangement.
+    """
+    return (f'<rect x="104" y="132" width="138" height="138" rx="26" {_s(c, 28)}/>'
+            f'<rect x="278" y="132" width="138" height="138" rx="26" {_s(c, 28)}/>'
+            f'<rect x="104" y="316" width="312" height="88" rx="26" {_s(c, 26)}/>')
 
 
 def obtainium_mark(c):
@@ -2438,9 +2514,13 @@ def obtainium_mark(c):
 
 
 def iflix_mark(c):
-    """iflix: the play ribbon — a play with a ribbon tail."""
-    return (f'<path d="M 200 200 L 200 312 L 310 256 Z" {_s(c, 34)}/>'
-            f'<path d="M 200 312 L 340 360" {_s(c, 26)}/>')
+    """iflix: the play ribbon.
+
+    The wedge was 112px across a 34 stroke, so its single counter shut at tile
+    size. A larger wedge keeps an open triangle.
+    """
+    return (f'<path d="M 176 160 L 176 352 L 336 256 Z" {_s(c, 34)}/>'
+            f'<path d="M 176 352 L 356 406" {_s(c, 26)}/>')
 
 
 GLYPHS.update({
@@ -2716,9 +2796,13 @@ def gamelauncher_mark(c):
 
 
 def mitv_mark(c):
-    """Mi TV Plus: the Mi TV — a rounded screen with the Mi."""
-    return (f'<rect x="80" y="140" width="352" height="220" rx="40" {_s(c, 30)}/>'
-            f'<path d="M 210 320 L 210 180 M 256 320 L 256 180 M 302 320 L 302 180" '
+    """Mi TV Plus: a rounded screen with the Mi bars.
+
+    Bars were 46px apart carrying a 26px stroke, so the gaps were 20px and
+    closed at tile size. Three bars at 88px centres keep a 62px channel.
+    """
+    return (f'<rect x="80" y="140" width="352" height="228" rx="44" {_s(c, 30)}/>'
+            f'<path d="M 168 316 L 168 192 M 256 316 L 256 192 M 344 316 L 344 192" '
             f'{_s(c, 26)}/>')
 
 
@@ -2760,15 +2844,16 @@ def coreline_ticker(c):
 
 
 def coreshift_frames(c):
-    """Core Shift: layered offset frames suggesting motion/transition.
+    """Core Shift: two offset frames inside the brand hexagon.
 
-    The hex frame contains two overlapping rounded rectangles offset
-    diagonally, evoking a wallpaper shift or frame transition.
+    The frames overlapped, and the sliver where they crossed closed at tile
+    size. Offsetting them so they touch corner to corner keeps the shift read
+    and leaves both openings whole.
     """
     return (
-        f'<polygon points="{_hexpts(256, 256, 196)}" {_s(c, 34)}/>'
-        f'<rect x="170" y="186" width="120" height="90" rx="16" {_s(c, 26)}/>'
-        f'<rect x="222" y="236" width="120" height="90" rx="16" {_s(c, 26)}/>'
+        f'<polygon points="{_hexpts(256, 256, 198)}" {_s(c, 34)}/>'
+        f'<rect x="150" y="166" width="128" height="104" rx="18" {_s(c, 26)}/>'
+        f'<rect x="234" y="246" width="128" height="104" rx="18" {_s(c, 26)}/>'
     )
 
 
@@ -2807,13 +2892,17 @@ GLYPHS["nobuffr_mark"] = nobuffr_mark
 
 
 def wholphin_arc(c):
-    """Wholphin: whale-back arc and a small eye. Original, not a vendor mark."""
+    """Wholphin: whale-back arc and an eye. Original, not a vendor mark.
+
+    The eye was radius 16 under a 21.8 stroke - a five-pixel counter that
+    closed into a dot. Radius 28 keeps it an eye.
+    """
     return (
         f'<path d="M 88 300 C 120 168 200 120 256 120 '
         f'C 360 120 430 200 440 312" {_s(c, 32)}/>'
         f'<path d="M 88 300 C 150 372 220 400 300 392 '
         f'C 360 386 400 350 428 312" {_s(c, 26.2)}/>'
-        f'<circle cx="352" cy="208" r="16" {_s(c, 21.8)}/>'
+        f'<circle cx="350" cy="212" r="28" {_s(c, 21.8)}/>'
     )
 
 
@@ -2868,16 +2957,17 @@ def aljazeera_flame(c):
 
 
 def france24_mark(c):
-    """France 24: cyan rounded square with a large '24' — round-the-clock news.
+    """France 24: the round-the-clock '24', drawn large enough to stay a '24'.
 
-    The audit records a bright cyan square with a large white '24'. The digits
-    reuse the same Outfit ExtraBold outlines as the pack's monograms (stroked,
-    not filled), so they render identically everywhere and stay inside the
-    monoline contract.
+    The enclosing rounded square was the problem, not the digits. It added a
+    fourth concentric contour around numerals whose own counters were already
+    the smallest shapes in the mark, and at tile size twelve of sixteen
+    counters closed - the icon read as a filled square. The container carried
+    no information the digits did not, so it is gone and the numerals take the
+    whole safe area.
     """
     from typeface import monogram_outline
-    digits = monogram_outline("24", c, cap_h=190, weight=20, max_width=268)
-    return f'<rect x="88" y="88" width="336" height="336" rx="80" {_s(c, 30)}/>{digits}'
+    return monogram_outline("24", c, cap_h=300, weight=32, max_width=392)
 
 
 def cbc_gem(c):
@@ -2917,19 +3007,21 @@ def cnbc_peacock(c):
 
 
 def mgm_reel(c):
-    """MGM+: a film reel — ring, sprocket perforations and hub.
+    """MGM+: a film reel - ring, sprocket perforations and hub.
 
     MGM+ has no standalone 'M' emblem; the brand's recognisable device is the
-    lion in a film-reel ring. The audit's instruction is 'at least a
-    lion/film-reel device', so the reel is drawn here as the shared cue.
+    lion in a film-reel ring, and the audit asks for the reel as the shared
+    cue. Eight perforations at radius 13 under a 21.8 stroke left a two-pixel
+    counter each and all eight closed - the reel became a dotted ring of
+    blobs. Five larger perforations keep the reel read and survive.
     """
     import math
-    out = (f'<circle cx="256" cy="256" r="158" {_s(c, 30)}/>'
-           f'<circle cx="256" cy="256" r="56" {_s(c, 26)}/>')
-    for i in range(8):
-        a = math.radians(i * 45)
-        x, y = 256 + 108 * math.cos(a), 256 + 108 * math.sin(a)
-        out += f'<circle cx="{x:.1f}" cy="{y:.1f}" r="13" {_s(c, 18)}/>'
+    out = (f'<circle cx="256" cy="256" r="164" {_s(c, 30)}/>'
+           f'<circle cx="256" cy="256" r="54" {_s(c, 26)}/>')
+    for i in range(5):
+        a = math.radians(i * 72 - 90)
+        x, y = 256 + 110 * math.cos(a), 256 + 110 * math.sin(a)
+        out += f'<circle cx="{x:.1f}" cy="{y:.1f}" r="26" {_s(c, 18)}/>'
     return out
 
 
@@ -2939,4 +3031,569 @@ GLYPHS.update({
     "cbc_gem": cbc_gem,
     "cnbc_peacock": cnbc_peacock,
     "mgm_reel": mgm_reel,
+})
+
+
+# ==========================================================================
+# Ecosystem marks.
+#
+# 608 of 926 icons fell back to a letter tile, and because accents come from
+# a cycled palette that produced 429 icons byte-identical to another icon. A
+# letter carries no app identity, so the ones a Core Builds user actually has
+# on their home screen - debrid clients, players, launchers, file and network
+# tools - are drawn here instead.
+#
+# Utilities are drawn by what they DO. Nobody recognises "Dr Nettools" by its
+# logo, but a network tool reads as a node graph with a pulse, and that is the
+# cue that survives a 48px tile. Where a brand does have a device (Arrow's
+# arrow, Streamyfin's fin) the device wins.
+#
+# Stroke-only throughout, so every mark here satisfies core_monoline.
+# ==========================================================================
+
+def _browser_frame(c, w=32):
+    """Shared chrome: a screen with a title bar. The browsers differ below it."""
+    return (f'<rect x="64" y="104" width="384" height="304" rx="48" {_s(c, w)}/>'
+            f'<path d="M 64 186 L 448 186" {_s(c, 24)}/>')
+
+
+def coji_browser(c):
+    """Coji TV Browser - the browser with a face; 'coji' is the emoji tell."""
+    return (_browser_frame(c)
+            + f'<circle cx="200" cy="272" r="22" {_s(c, 22)}/>'
+            + f'<circle cx="312" cy="272" r="22" {_s(c, 22)}/>'
+            + f'<path d="M 186 330 C 216 366 296 366 326 330" {_s(c, 26)}/>')
+
+
+def tv_browser_bar(c):
+    """TV Browser - the address bar is the app."""
+    return (_browser_frame(c)
+            + f'<rect x="112" y="240" width="288" height="76" rx="38" {_s(c, 26)}/>'
+            + f'<path d="M 168 278 L 300 278" {_s(c, 20)}/>')
+
+
+def tv_web_browser(c):
+    """TV Web Browser - a page with lines of text under the chrome."""
+    return (_browser_frame(c)
+            + f'<path d="M 128 254 L 384 254" {_s(c, 24)}/>'
+            + f'<path d="M 128 318 L 384 318" {_s(c, 24)}/>'
+            + f'<path d="M 128 372 L 280 372" {_s(c, 24)}/>')
+
+
+def vewd_browser(c):
+    """Vewd - the forward chevron inside the chrome."""
+    return (_browser_frame(c)
+            + f'<path d="M 206 240 L 296 300 L 206 360" {_s(c, 30)}/>')
+
+
+def debrid_cloud_play(c):
+    """Debrid Stream - the cloud that plays. Unrestricting, then streaming."""
+    return (f'<path d="M 158 348 C 104 348 70 310 70 264 C 70 218 108 184 '
+            f'154 188 C 168 136 216 100 272 100 C 340 100 392 152 394 218 '
+            f'C 428 228 448 258 448 292 C 448 324 424 348 388 348 Z" {_s(c, 32)}/>'
+            f'<path d="M 216 388 L 216 456 L 296 422 Z" {_s(c, 26)}/>')
+
+
+def debrid_cloud_link(c):
+    """Real-Debrid - the cloud plus the link it unrestricts."""
+    return (f'<path d="M 158 322 C 104 322 70 284 70 238 C 70 192 108 158 '
+            f'154 162 C 168 110 216 74 272 74 C 340 74 392 126 394 192 '
+            f'C 428 202 448 232 448 266 C 448 298 424 322 388 322 Z" {_s(c, 32)}/>'
+            f'<path d="M 196 420 L 162 420 C 130 420 104 400 104 372 '
+            f'C 104 344 130 324 162 324" {_s(c, 26)}/>'
+            f'<path d="M 316 420 L 350 420 C 382 420 408 400 408 372 '
+            f'C 408 344 382 324 350 324" {_s(c, 26)}/>'
+            f'<path d="M 206 372 L 306 372" {_s(c, 24)}/>')
+
+
+def _folder(c, w=32):
+    return (f'<path d="M 68 156 L 210 156 L 248 206 L 444 206 L 444 386 '
+            f'C 444 408 428 424 406 424 L 106 424 C 84 424 68 408 68 386 Z" '
+            f'{_s(c, w)}/>')
+
+
+def folder_tree(c):
+    """Anexplorer - the file tree."""
+    return (f'<path d="M 96 118 L 96 372 C 96 392 112 406 132 406 L 210 406" '
+            f'{_s(c, 28)}/>'
+            f'<path d="M 96 262 L 210 262" {_s(c, 24)}/>'
+            f'<rect x="226" y="88" width="196" height="76" rx="24" {_s(c, 30)}/>'
+            f'<rect x="226" y="224" width="196" height="76" rx="24" {_s(c, 30)}/>'
+            f'<rect x="226" y="368" width="196" height="76" rx="24" {_s(c, 30)}/>')
+
+
+def folder_sync_one(c):
+    """FileSynced - a folder under a sync arc."""
+    return (_folder(c)
+            + f'<path d="M 176 320 C 176 276 214 244 258 244 C 296 244 328 '
+              f'266 340 298" {_s(c, 24)}/>'
+            + f'<path d="M 300 298 L 344 298 L 344 254" {_s(c, 22)}/>')
+
+
+def folder_sync_two(c):
+    """Folder Sync - two folders and the round trip between them."""
+    return (f'<path d="M 56 118 L 148 118 L 176 154 L 250 154 L 250 258 '
+            f'C 250 274 238 286 222 286 L 84 286 C 68 286 56 274 56 258 Z" '
+            f'{_s(c, 30)}/>'
+            f'<path d="M 262 226 L 354 226 L 382 262 L 456 262 L 456 366 '
+            f'C 456 382 444 394 428 394 L 290 394 C 274 394 262 382 262 366 Z" '
+            f'{_s(c, 30)}/>'
+            f'<path d="M 108 340 C 108 384 146 416 190 416" {_s(c, 24)}/>'
+            f'<path d="M 160 396 L 190 416 L 160 440" {_s(c, 22)}/>')
+
+
+def ftp_server(c):
+    """Ftp Server - a rack that sends and receives."""
+    return (f'<rect x="96" y="96" width="320" height="112" rx="30" {_s(c, 30)}/>'
+            f'<rect x="96" y="252" width="320" height="112" rx="30" {_s(c, 30)}/>'
+            f'<path d="M 190 418 L 190 460" {_s(c, 22)}/>'
+            f'<path d="M 322 418 L 322 460" {_s(c, 22)}/>'
+            f'<path d="M 190 460 L 322 460" {_s(c, 22)}/>')
+
+
+def folder_grid(c):
+    """Mecool File Manager - a folder full of tiles."""
+    return (_folder(c)
+            + f'<rect x="126" y="256" width="112" height="72" rx="18" {_s(c, 22)}/>'
+            + f'<rect x="274" y="256" width="112" height="72" rx="18" {_s(c, 22)}/>')
+
+
+def package_find(c):
+    """Package Explorer - the parcel, inspected."""
+    return (f'<path d="M 96 176 L 256 96 L 416 176 L 416 336 L 256 416 '
+            f'L 96 336 Z" {_s(c, 32)}/>'
+            f'<path d="M 96 176 L 256 256 L 416 176" {_s(c, 24)}/>'
+            f'<path d="M 256 256 L 256 416" {_s(c, 24)}/>')
+
+
+def nas_tower(c):
+    """Ugreen NAS - the tower on the network."""
+    return (f'<rect x="150" y="80" width="212" height="300" rx="42" {_s(c, 32)}/>'
+            f'<path d="M 200 152 L 312 152" {_s(c, 22)}/>'
+            f'<path d="M 200 226 L 312 226" {_s(c, 22)}/>'
+            f'<path d="M 256 380 L 256 432" {_s(c, 24)}/>'
+            f'<path d="M 152 432 L 360 432" {_s(c, 26)}/>')
+
+
+def catch_hook(c):
+    """Catch-On TV - the screen and the catch."""
+    return (f'<rect x="64" y="88" width="384" height="268" rx="52" {_s(c, 32)}/>'
+            f'<path d="M 256 152 L 256 244 C 256 280 224 300 194 284" {_s(c, 28)}/>'
+            f'<path d="M 176 412 L 336 412" {_s(c, 28)}/>'
+            f'<path d="M 256 356 L 256 412" {_s(c, 24)}/>')
+
+
+def cinema_glow(c):
+    """CinemaGlow - the lit screen."""
+    return (f'<rect x="96" y="150" width="320" height="230" rx="44" {_s(c, 32)}/>'
+            f'<path d="M 256 60 L 256 108" {_s(c, 24)}/>'
+            f'<path d="M 128 82 L 156 122" {_s(c, 22)}/>'
+            f'<path d="M 384 82 L 356 122" {_s(c, 22)}/>'
+            f'<path d="M 224 226 L 224 306 L 296 266 Z" {_s(c, 26)}/>')
+
+
+def overflight(c):
+    """Projectivy Overflight - the aerial horizon the screensaver flies over."""
+    return (f'<path d="M 64 356 L 176 232 L 262 320 L 340 238 L 448 356 Z" '
+            f'{_s(c, 30)}/>'
+            f'<circle cx="358" cy="132" r="44" {_s(c, 26)}/>'
+            f'<path d="M 84 160 C 148 108 236 108 300 160" {_s(c, 22)}/>')
+
+
+def media_wave_play(c):
+    """Xiaomi Media Player - the play riding a waveform."""
+    return (f'<circle cx="256" cy="256" r="182" {_s(c, 32)}/>'
+            f'<path d="M 214 184 L 214 328 L 330 256 Z" {_s(c, 28)}/>'
+            f'<path d="M 130 256 L 168 256" {_s(c, 22)}/>')
+
+
+def store_globe(c):
+    """Overseas App Store - the bag from abroad."""
+    return (f'<path d="M 106 176 L 406 176 L 386 408 C 384 424 372 434 356 434 '
+            f'L 156 434 C 140 434 128 424 126 408 Z" {_s(c, 32)}/>'
+            f'<path d="M 186 224 L 186 148 C 186 108 218 78 256 78 '
+            f'C 294 78 326 108 326 148 L 326 224" {_s(c, 26)}/>')
+
+
+def net_screen(c):
+    """eTVnet - the screen on a network."""
+    return (f'<rect x="64" y="118" width="384" height="252" rx="48" {_s(c, 32)}/>'
+            f'<circle cx="256" cy="244" r="42" {_s(c, 24)}/>'
+            f'<path d="M 176 180 C 132 224 132 264 176 308" {_s(c, 22)}/>'
+            f'<path d="M 336 180 C 380 224 380 264 336 308" {_s(c, 22)}/>'
+            f'<path d="M 176 428 L 336 428" {_s(c, 28)}/>')
+
+
+def arrow_mark(c):
+    """Arrow (Arrow Films) - the arrow, which is the whole brand."""
+    return (f'<path d="M 256 78 L 256 434" {_s(c, 34)}/>'
+            f'<path d="M 142 192 L 256 78 L 370 192" {_s(c, 34)}/>')
+
+
+def corridor_mark(c):
+    """Corridor - the receding corridor."""
+    return (f'<rect x="70" y="70" width="372" height="372" rx="56" {_s(c, 32)}/>'
+            f'<rect x="188" y="188" width="136" height="136" rx="28" {_s(c, 26)}/>'
+            f'<path d="M 70 70 L 188 188" {_s(c, 20)}/>'
+            f'<path d="M 442 70 L 324 188" {_s(c, 20)}/>'
+            f'<path d="M 70 442 L 188 324" {_s(c, 20)}/>'
+            f'<path d="M 442 442 L 324 324" {_s(c, 20)}/>')
+
+
+def dev_play(c):
+    """DevInterest - brackets around a play."""
+    return (f'<path d="M 158 148 L 82 256 L 158 364" {_s(c, 32)}/>'
+            f'<path d="M 354 148 L 430 256 L 354 364" {_s(c, 32)}/>'
+            f'<path d="M 214 190 L 214 322 L 318 256 Z" {_s(c, 28)}/>')
+
+
+def ertflix_mark(c):
+    """ERTFLIX - a play inside the broadcaster's rounded block."""
+    return (f'<rect x="72" y="120" width="368" height="272" rx="72" {_s(c, 32)}/>'
+            f'<path d="M 216 186 L 216 326 L 330 256 Z" {_s(c, 30)}/>'
+            f'<path d="M 118 392 L 118 120" {_s(c, 24)}/>')
+
+
+def film_play(c):
+    """Filmzie - a film frame with a play."""
+    return (f'<rect x="80" y="128" width="352" height="256" rx="40" {_s(c, 32)}/>'
+            f'<path d="M 80 196 L 432 196" {_s(c, 22)}/>'
+            f'<path d="M 224 246 L 224 344 L 310 296 Z" {_s(c, 26)}/>')
+
+
+def heart_play(c):
+    """Lifetime - the drama channel; a heart that plays."""
+    return (f'<path d="M 256 424 C 130 336 76 268 76 196 C 76 140 120 100 174 100 '
+            f'C 208 100 238 118 256 148 C 274 118 304 100 338 100 '
+            f'C 392 100 436 140 436 196 C 436 268 382 336 256 424 Z" {_s(c, 32)}/>'
+            f'<path d="M 224 176 L 224 264 L 302 220 Z" {_s(c, 26)}/>')
+
+
+def movie_box(c):
+    """MovieBox Pro - the box of films."""
+    return (f'<rect x="76" y="140" width="360" height="268" rx="40" {_s(c, 32)}/>'
+            f'<path d="M 76 216 L 436 216" {_s(c, 24)}/>'
+            f'<path d="M 150 140 L 200 216" {_s(c, 20)}/>'
+            f'<path d="M 280 140 L 330 216" {_s(c, 20)}/>'
+            f'<path d="M 216 286 L 216 358 L 292 322 Z" {_s(c, 24)}/>')
+
+
+def movie_lab(c):
+    """MovieLab - the flask; an experiment in film."""
+    return (f'<path d="M 208 80 L 208 206 L 110 380 C 96 404 112 434 140 434 '
+            f'L 372 434 C 400 434 416 404 402 380 L 304 206 L 304 80 Z" '
+            f'{_s(c, 32)}/>'
+            f'<path d="M 186 80 L 326 80" {_s(c, 26)}/>'
+            f'<path d="M 160 306 L 352 306" {_s(c, 22)}/>')
+
+
+def star_play(c):
+    """Movies By Fawesome - the star, with a play at its heart."""
+    return (f'<path d="M 256 74 L 312 190 L 440 208 L 348 298 L 370 426 '
+            f'L 256 366 L 142 426 L 164 298 L 72 208 L 200 190 Z" {_s(c, 30)}/>'
+            f'<path d="M 228 216 L 228 296 L 300 256 Z" {_s(c, 22)}/>')
+
+
+def projector(c):
+    """Old Movies - the projector; the classic-cinema tell."""
+    return (f'<circle cx="196" cy="184" r="94" {_s(c, 30)}/>'
+            f'<circle cx="346" cy="214" r="64" {_s(c, 26)}/>'
+            f'<rect x="86" y="298" width="340" height="110" rx="32" {_s(c, 30)}/>'
+            f'<path d="M 150 408 L 150 444" {_s(c, 22)}/>'
+            f'<path d="M 362 408 L 362 444" {_s(c, 22)}/>')
+
+
+def signal_play(c):
+    """Realstream TV - the live signal, playing.
+
+    The outer arcs originally swung to x=20 and x=492, well outside SAFE.
+    Both pairs now bulge inside the 40px margin and still read as broadcast.
+    """
+    return (f'<path d="M 224 200 L 224 312 L 318 256 Z" {_s(c, 28)}/>'
+            f'<path d="M 154 176 C 116 216 116 296 154 336" {_s(c, 26)}/>'
+            f'<path d="M 358 176 C 396 216 396 296 358 336" {_s(c, 26)}/>'
+            f'<path d="M 106 124 C 48 200 48 312 106 388" {_s(c, 22)}/>'
+            f'<path d="M 406 124 C 464 200 464 312 406 388" {_s(c, 22)}/>')
+
+
+def series_calendar(c):
+    """SeriesGuide - the episode calendar, ticked off."""
+    return (f'<rect x="72" y="110" width="368" height="316" rx="46" {_s(c, 32)}/>'
+            f'<path d="M 72 200 L 440 200" {_s(c, 24)}/>'
+            f'<path d="M 160 68 L 160 140" {_s(c, 24)}/>'
+            f'<path d="M 352 68 L 352 140" {_s(c, 24)}/>'
+            f'<path d="M 168 314 L 226 370 L 344 250" {_s(c, 28)}/>')
+
+
+def stream_wave(c):
+    """Sstream - the double wave."""
+    return (f'<path d="M 64 200 C 112 148 176 148 224 200 '
+            f'C 272 252 336 252 384 200" {_s(c, 30)}/>'
+            f'<path d="M 128 312 C 176 260 240 260 288 312 '
+            f'C 336 364 400 364 448 312" {_s(c, 30)}/>')
+
+
+def fin_wave(c):
+    """Streamyfin - the fin above the water; a Jellyfin client."""
+    return (f'<path d="M 132 330 C 200 190 300 116 396 104 '
+            f'C 388 200 330 296 216 330 Z" {_s(c, 32)}/>'
+            f'<path d="M 72 396 C 120 358 176 358 224 396 '
+            f'C 272 434 328 434 376 396" {_s(c, 26)}/>')
+
+
+def bolt_screen(c):
+    """Streamz - the bolt on the screen."""
+    return (f'<rect x="64" y="104" width="384" height="276" rx="48" {_s(c, 32)}/>'
+            f'<path d="M 280 150 L 202 262 L 262 262 L 232 336 L 314 222 '
+            f'L 252 222 Z" {_s(c, 26)}/>'
+            f'<path d="M 176 434 L 336 434" {_s(c, 28)}/>')
+
+
+def chevron_plus(c):
+    """Ve Plus - the chevron and the plus.
+
+    The plus reached x=477, five pixels past SAFE. Pulled inside the margin.
+    """
+    return (f'<path d="M 84 148 L 200 372 L 316 148" {_s(c, 34)}/>'
+            f'<path d="M 386 172 L 386 284" {_s(c, 26)}/>'
+            f'<path d="M 330 228 L 442 228" {_s(c, 26)}/>')
+
+
+def weyd_mark(c):
+    """Weyd - the way marker; a compass rose set for the route."""
+    return (f'<circle cx="256" cy="256" r="182" {_s(c, 32)}/>'
+            f'<path d="M 330 182 L 284 284 L 182 330 L 228 228 Z" {_s(c, 28)}/>')
+
+
+def begin_play(c):
+    """begin - the play leaving the starting line."""
+    return (f'<path d="M 118 96 L 118 416" {_s(c, 32)}/>'
+            f'<path d="M 210 172 L 210 340 L 388 256 Z" {_s(c, 32)}/>')
+
+
+def adb_wifi(c):
+    """ADB WiFi - the debug bridge, over the air."""
+    return (f'<path d="M 96 250 C 184 162 328 162 416 250" {_s(c, 30)}/>'
+            f'<path d="M 152 312 C 212 252 300 252 360 312" {_s(c, 26)}/>'
+            f'<circle cx="256" cy="392" r="30" {_s(c, 24)}/>'
+            f'<path d="M 186 118 L 186 74" {_s(c, 22)}/>'
+            f'<path d="M 326 118 L 326 74" {_s(c, 22)}/>')
+
+
+def analiti_meter(c):
+    """Analiti - the signal meter."""
+    return (f'<path d="M 110 400 L 110 318" {_s(c, 30)}/>'
+            f'<path d="M 208 400 L 208 254" {_s(c, 30)}/>'
+            f'<path d="M 306 400 L 306 188" {_s(c, 30)}/>'
+            f'<path d="M 404 400 L 404 118" {_s(c, 30)}/>')
+
+
+def dev_gear(c):
+    """Developer Tools - brackets and a gear."""
+    return (f'<path d="M 166 130 L 84 256 L 166 382" {_s(c, 30)}/>'
+            f'<path d="M 346 130 L 428 256 L 346 382" {_s(c, 30)}/>'
+            f'<circle cx="256" cy="256" r="64" {_s(c, 26)}/>')
+
+
+def download_navi(c):
+    """Download Navi - the download, steered."""
+    return (f'<path d="M 256 96 L 256 306" {_s(c, 32)}/>'
+            f'<path d="M 166 220 L 256 306 L 346 220" {_s(c, 32)}/>'
+            f'<path d="M 104 370 C 152 418 360 418 408 370" {_s(c, 26)}/>')
+
+
+def net_pulse(c):
+    """Dr Nettools - the network, with a pulse across it."""
+    return (f'<circle cx="118" cy="150" r="46" {_s(c, 26)}/>'
+            f'<circle cx="394" cy="150" r="46" {_s(c, 26)}/>'
+            f'<circle cx="256" cy="382" r="46" {_s(c, 26)}/>'
+            f'<path d="M 160 172 L 352 172" {_s(c, 22)}/>'
+            f'<path d="M 144 192 L 226 344" {_s(c, 22)}/>'
+            f'<path d="M 368 192 L 286 344" {_s(c, 22)}/>')
+
+
+def cast_receiver(c):
+    """FCast Receiver - the screen receiving a cast.
+
+    The source dot was radius 22 under a 21.8 stroke - an eleven-pixel
+    counter that shut at tile size. Radius 34 keeps it an open ring.
+    """
+    return (f'<rect x="150" y="104" width="298" height="222" rx="44" {_s(c, 32)}/>'
+            f'<path d="M 96 316 C 128 316 156 344 156 376" {_s(c, 26)}/>'
+            f'<path d="M 96 244 C 168 244 228 304 228 376" {_s(c, 26)}/>'
+            f'<circle cx="90" cy="386" r="34" {_s(c, 22)}/>')
+
+
+def toolbox(c):
+    """Good Tools - the toolbox."""
+    return (f'<rect x="68" y="186" width="376" height="228" rx="42" {_s(c, 32)}/>'
+            f'<path d="M 180 186 L 180 144 C 180 118 200 98 226 98 '
+            f'L 286 98 C 312 98 332 118 332 144 L 332 186" {_s(c, 26)}/>'
+            f'<path d="M 68 282 L 444 282" {_s(c, 24)}/>')
+
+
+def ip_globe(c):
+    """IP Tools - the network, addressed."""
+    return (f'<circle cx="256" cy="256" r="180" {_s(c, 32)}/>'
+            f'<path d="M 76 256 L 436 256" {_s(c, 24)}/>'
+            f'<path d="M 256 76 C 312 136 312 376 256 436" {_s(c, 24)}/>'
+            f'<path d="M 256 76 C 200 136 200 376 256 436" {_s(c, 24)}/>')
+
+
+def ip_tag(c):
+    """Ip Address - the address label."""
+    return (f'<path d="M 78 198 L 250 198 L 250 314 L 78 314 Z" {_s(c, 30)}/>'
+            f'<path d="M 250 198 L 434 198 C 448 198 448 314 434 314 L 250 314" '
+            f'{_s(c, 30)}/>'
+            f'<path d="M 128 256 L 200 256" {_s(c, 22)}/>'
+            f'<path d="M 300 256 L 372 256" {_s(c, 22)}/>')
+
+
+def server_play(c):
+    """Jtv Go Server - the server that streams."""
+    return (f'<rect x="86" y="88" width="340" height="116" rx="32" {_s(c, 30)}/>'
+            f'<path d="M 216 266 L 216 400 L 348 334 Z" {_s(c, 30)}/>'
+            f'<path d="M 146 146 L 190 146" {_s(c, 22)}/>')
+
+
+def cursor_mark(c):
+    """Matvt Mouse - the pointer the app puts on the television."""
+    return (f'<path d="M 140 84 L 140 388 L 222 310 L 278 428 L 344 396 '
+            f'L 288 282 L 396 268 Z" {_s(c, 32)}/>')
+
+
+def bell(c):
+    """Notifications for Android TV."""
+    return (f'<path d="M 130 344 C 160 314 168 282 168 226 '
+            f'C 168 152 208 108 256 108 C 304 108 344 152 344 226 '
+            f'C 344 282 352 314 382 344 Z" {_s(c, 32)}/>'
+            f'<path d="M 256 108 L 256 66" {_s(c, 24)}/>'
+            f'<path d="M 212 344 C 212 384 230 406 256 406 '
+            f'C 282 406 300 384 300 344" {_s(c, 26)}/>')
+
+
+def home_bar(c):
+    """Quickbars for Home Assistant - the house, with its quick bar."""
+    return (f'<path d="M 78 250 L 256 96 L 434 250" {_s(c, 32)}/>'
+            f'<path d="M 130 252 L 130 400 C 130 418 144 430 162 430 '
+            f'L 350 430 C 368 430 382 418 382 400 L 382 252" {_s(c, 30)}/>'
+            f'<path d="M 190 344 L 322 344" {_s(c, 24)}/>')
+
+
+def capture_dot(c):
+    """Remote Capture - the screen, recording."""
+    return (f'<rect x="64" y="112" width="384" height="272" rx="48" {_s(c, 32)}/>'
+            f'<circle cx="256" cy="248" r="54" {_s(c, 26)}/>'
+            f'<path d="M 176 434 L 336 434" {_s(c, 28)}/>')
+
+
+def remote_play(c):
+    """Remote Starter for Yatse - the handset that starts playback."""
+    return (f'<rect x="164" y="64" width="184" height="384" rx="60" {_s(c, 32)}/>'
+            f'<path d="M 230 150 L 230 226 L 296 188 Z" {_s(c, 24)}/>'
+            f'<circle cx="256" cy="318" r="28" {_s(c, 22)}/>')
+
+
+def tv_sliders(c):
+    """TV Manager - the screen and its settings.
+
+    The knobs sat on the rails they controlled, and each one pinched its rail
+    shut at tile size. Lifting the knobs clear of the rails keeps four
+    separate shapes.
+    """
+    return (f'<rect x="64" y="104" width="384" height="276" rx="48" {_s(c, 32)}/>'
+            f'<path d="M 128 186 L 384 186" {_s(c, 22)}/>'
+            f'<path d="M 128 298 L 384 298" {_s(c, 22)}/>'
+            f'<circle cx="214" cy="242" r="30" {_s(c, 22)}/>'
+            f'<path d="M 176 434 L 336 434" {_s(c, 28)}/>')
+
+
+def screensaver_moon(c):
+    """Tduk Screensaver Manager - the screen at rest."""
+    return (f'<rect x="64" y="104" width="384" height="276" rx="48" {_s(c, 32)}/>'
+            f'<path d="M 306 160 C 250 174 212 222 212 280 '
+            f'C 212 306 222 330 238 348 C 172 342 128 292 128 234 '
+            f'C 128 178 182 140 246 148 C 268 150 290 154 306 160 Z" {_s(c, 26)}/>'
+            f'<path d="M 176 434 L 336 434" {_s(c, 28)}/>')
+
+
+def usb_plug(c):
+    """Virtualhere USB Server - the shared USB device.
+
+    The connector block was 72x60 under a 26 stroke, so its opening shut. A
+    larger block and a wider branch keep both ends readable.
+    """
+    return (f'<path d="M 256 440 L 256 128" {_s(c, 32)}/>'
+            f'<path d="M 192 192 L 256 128 L 320 192" {_s(c, 32)}/>'
+            f'<circle cx="128" cy="330" r="40" {_s(c, 26)}/>'
+            f'<path d="M 128 290 L 128 258 L 256 258" {_s(c, 24)}/>'
+            f'<rect x="326" y="288" width="94" height="84" rx="20" {_s(c, 26)}/>'
+            f'<path d="M 326 330 L 256 330" {_s(c, 24)}/>')
+
+
+def remote_pad(c):
+    """Zank Remote - the handset with a D-pad."""
+    return (f'<rect x="152" y="56" width="208" height="400" rx="64" {_s(c, 32)}/>'
+            f'<circle cx="256" cy="200" r="66" {_s(c, 26)}/>'
+            f'<path d="M 200 350 L 312 350" {_s(c, 22)}/>'
+            f'<path d="M 200 412 L 312 412" {_s(c, 22)}/>')
+
+
+GLYPHS.update({
+    "coji_browser": coji_browser,
+    "tv_browser_bar": tv_browser_bar,
+    "tv_web_browser": tv_web_browser,
+    "vewd_browser": vewd_browser,
+    "debrid_cloud_play": debrid_cloud_play,
+    "debrid_cloud_link": debrid_cloud_link,
+    "folder_tree": folder_tree,
+    "folder_sync_one": folder_sync_one,
+    "folder_sync_two": folder_sync_two,
+    "ftp_server": ftp_server,
+    "folder_grid": folder_grid,
+    "package_find": package_find,
+    "nas_tower": nas_tower,
+    "catch_hook": catch_hook,
+    "cinema_glow": cinema_glow,
+    "overflight": overflight,
+    "media_wave_play": media_wave_play,
+    "store_globe": store_globe,
+    "net_screen": net_screen,
+    "arrow_mark": arrow_mark,
+    "corridor_mark": corridor_mark,
+    "dev_play": dev_play,
+    "ertflix_mark": ertflix_mark,
+    "film_play": film_play,
+    "heart_play": heart_play,
+    "movie_box": movie_box,
+    "movie_lab": movie_lab,
+    "star_play": star_play,
+    "projector": projector,
+    "signal_play": signal_play,
+    "series_calendar": series_calendar,
+    "stream_wave": stream_wave,
+    "fin_wave": fin_wave,
+    "bolt_screen": bolt_screen,
+    "chevron_plus": chevron_plus,
+    "weyd_mark": weyd_mark,
+    "begin_play": begin_play,
+    "adb_wifi": adb_wifi,
+    "analiti_meter": analiti_meter,
+    "dev_gear": dev_gear,
+    "download_navi": download_navi,
+    "net_pulse": net_pulse,
+    "cast_receiver": cast_receiver,
+    "toolbox": toolbox,
+    "ip_globe": ip_globe,
+    "ip_tag": ip_tag,
+    "server_play": server_play,
+    "cursor_mark": cursor_mark,
+    "bell": bell,
+    "home_bar": home_bar,
+    "capture_dot": capture_dot,
+    "remote_play": remote_play,
+    "tv_sliders": tv_sliders,
+    "screensaver_moon": screensaver_moon,
+    "usb_plug": usb_plug,
+    "remote_pad": remote_pad,
 })
