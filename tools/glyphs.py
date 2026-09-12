@@ -124,10 +124,10 @@ def play_rect(c):
 
 def kodi_box(c):
     """Kodi's split diamond/K, reconstructed in the pack's rounded line weight."""
-    return (f'<path d="M 238 72 L 322 156 L 178 300 V 132 Z" {_s(c, 32)}/>'
-            f'<path d="M 362 184 L 434 256 L 362 328 L 290 256 Z" {_s(c, 32)}/>'
-            f'<path d="M 256 310 L 328 382 L 256 454 L 184 382 Z" {_s(c, 32)}/>'
-            f'<path d="M 126 214 L 84 256 L 126 298 Z" {_s(c, 32)}/>')
+    return (f'<path d="M 238.174 73.7789 L 321.362 156.967 L 178.754 299.575 V 133.199 Z" {_s(c, 32)}/>'
+            f'<path d="M 360.975 184.696 L 432.279 256 L 360.975 327.304 L 289.671 256 Z" {_s(c, 32)}/>'
+            f'<path d="M 256 309.478 L 327.304 380.782 L 256 452.086 L 184.696 380.782 Z" {_s(c, 32)}/>'
+            f'<path d="M 127.257 214.406 L 85.6629 256 L 127.257 297.594 Z" {_s(c, 32)}/>')
 
 
 def jellyfin_chevrons(c):
@@ -251,9 +251,9 @@ def waves_circle(c):
 
 def chat_screen(c):
     """Twitch's stepped chat/twin-bar cue with Core Builds' rounded joins."""
-    return (f'<path d="M 124 84 H 428 V 294 L 324 398 H 228 '
-            f'L 156 454 V 398 H 84 V 136 Z" {_s(c, 32)}/>'
-            f'<path d="M 230 168 V 266 M 324 168 V 266" {_s(c, 32)}/>')
+    return (f'<path d="M 125.276 85.6629 H 426.337 V 293.633 L 323.343 396.627 H 228.271 '
+            f'L 156.967 452.086 V 396.627 H 85.6629 V 137.16 Z" {_s(c, 32)}/>'
+            f'<path d="M 230.251 168.851 V 265.903 M 323.343 168.851 V 265.903" {_s(c, 32)}/>')
 
 
 def gear(c):
@@ -407,7 +407,7 @@ GLYPHS = {
 # monoline weight, scaled by how heavy the original was so genuinely fine
 # detail (film-reel perforations, equaliser knobs) stays subordinate.
 # --------------------------------------------------------------------------
-MONOLINE = 32          # the single canonical weight on the 512 grid
+MONOLINE = 36          # the single canonical weight on the 512 grid
 _SW_RE = re.compile(r'stroke-width="(\d+(?:\.\d+)?)"')
 
 
@@ -465,13 +465,13 @@ def smarttube_play(c):
     at x=18 and x=494, outside SAFE. The corner-cut rules move with the right
     edge so the tell stays on the corner it cuts.
     """
-    return (f'<path d="M 132 118 L 380 118 C 422 118 456 152 456 194 '
-            f'L 456 318 C 456 360 422 394 380 394 L 132 394 '
-            f'C 90 394 56 360 56 318 L 56 194 C 56 152 90 118 132 118 Z" '
+    return (f'<path d="M 134.434 120.709 L 377.566 120.709 C 418.742 120.709 452.074 154.041 452.074 195.217 '
+            f'L 452.074 316.783 C 452.074 357.959 418.742 391.291 377.566 391.291 L 134.434 391.291 '
+            f'C 93.2584 391.291 59.9258 357.959 59.9258 316.783 L 59.9258 195.217 C 59.9258 154.041 93.2584 120.709 134.434 120.709 Z" '
             f'{_s(c, 34)}/>'
-            f'<path d="M 218 200 L 218 312 L 326 256 Z" {_s(c, 30)}/>'
-            f'<path d="M 366 150 L 436 150" {_s(c, 22)}/>'
-            f'<path d="M 366 190 L 436 190" {_s(c, 22)}/>')
+            f'<path d="M 218.746 201.099 L 218.746 310.901 L 324.626 256 Z" {_s(c, 30)}/>'
+            f'<path d="M 363.841 152.081 L 432.467 152.081" {_s(c, 22)}/>'
+            f'<path d="M 363.841 191.296 L 432.467 191.296" {_s(c, 22)}/>')
 
 
 def tizen_play(c):
@@ -888,11 +888,11 @@ def stadium(c):
     survive the downscale, which the masts never did.
     """
     return (
-        f'<path d="M 56 262 C 56 190 146 138 256 138 C 366 138 456 190 456 262 '
-        f'C 456 334 366 386 256 386 C 146 386 56 334 56 262 Z" {_s(c, 32)}/>'
-        f'<path d="M 132 262 C 132 220 188 194 256 194 C 324 194 380 220 380 262 '
-        f'C 380 304 324 330 256 330 C 188 330 132 304 132 262 Z" {_s(c, 26)}/>'
-        f'<path d="M 256 194 L 256 330" {_s(c, 20)}/>')
+        f'<path d="M 59.9258 261.882 C 59.9258 191.296 148.159 140.316 256 140.316 C 363.841 140.316 452.074 191.296 452.074 261.882 '
+        f'C 452.074 332.469 363.841 383.448 256 383.448 C 148.159 383.448 59.9258 332.469 59.9258 261.882 Z" {_s(c, 32)}/>'
+        f'<path d="M 134.434 261.882 C 134.434 220.707 189.335 195.217 256 195.217 C 322.665 195.217 377.566 220.707 377.566 261.882 '
+        f'C 377.566 303.058 322.665 328.547 256 328.547 C 189.335 328.547 134.434 303.058 134.434 261.882 Z" {_s(c, 26)}/>'
+        f'<path d="M 256 195.217 L 256 328.547" {_s(c, 20)}/>')
 
 
 def browser_globe(c):
@@ -905,14 +905,14 @@ def browser_globe(c):
     """
     # Screen is 400 wide, not 408 — see tivimate_grid: a 408 box plus the 32
     # stroke lands ink 4px outside SAFE on each side.
-    return (f'<rect x="56" y="96" width="400" height="284" rx="72" {_s(c, 32)}/>'
-            f'<circle cx="256" cy="238" r="104" {_s(c, 28)}/>'
-            f'<path d="M 152 238 L 360 238" {_s(c, 24)}/>'
-            f'<path d="M 256 134 C 300 172 300 304 256 342" {_s(c, 24)}/>'
-            f'<path d="M 256 134 C 212 172 212 304 256 342" {_s(c, 24)}/>'
+    return (f'<rect x="59.9258" y="99.1406" width="392.148" height="278.425" rx="70.5867" {_s(c, 32)}/>'
+            f'<circle cx="256" cy="238.353" r="101.959" {_s(c, 28)}/>'
+            f'<path d="M 154.041 238.353 L 357.959 238.353" {_s(c, 24)}/>'
+            f'<path d="M 256 136.395 C 299.136 173.649 299.136 303.058 256 340.312" {_s(c, 24)}/>'
+            f'<path d="M 256 136.395 C 212.864 173.649 212.864 303.058 256 340.312" {_s(c, 24)}/>'
             # stand
-            f'<path d="M 176 434 L 336 434" {_s(c, 28)}/>'
-            f'<path d="M 256 380 L 256 434" {_s(c, 24)}/>')
+            f'<path d="M 177.57 430.506 L 334.43 430.506" {_s(c, 28)}/>'
+            f'<path d="M 256 377.566 L 256 430.506" {_s(c, 24)}/>')
 
 
 GLYPHS.update({"stadium": stadium, "browser_globe": browser_globe})
@@ -949,17 +949,17 @@ def tivimate_grid(c):
     """
     # Screen is 400 wide, not 408: the 32 stroke on a 408 box put ink at x=36
     # and x=476, 4px outside SAFE on both sides.
-    return (f'<rect x="56" y="104" width="400" height="268" rx="40" {_s(c, 32)}/>'
+    return (f'<rect x="59.9258" y="106.984" width="392.148" height="262.739" rx="39.2148" {_s(c, 32)}/>'
             # channel column divider
-            f'<path d="M 158 104 L 158 372" {_s(c, 24)}/>'
+            f'<path d="M 159.924 106.984 L 159.924 369.723" {_s(c, 24)}/>'
             # programme rows
-            f'<path d="M 56 192 L 456 192" {_s(c, 22)}/>'
-            f'<path d="M 56 284 L 456 284" {_s(c, 22)}/>'
+            f'<path d="M 59.9258 193.256 L 452.074 193.256" {_s(c, 22)}/>'
+            f'<path d="M 59.9258 283.45 L 452.074 283.45" {_s(c, 22)}/>'
             # 'now' cell, filled to read as the highlight
-            f'<rect x="196" y="212" width="128" height="52" rx="12" {_f(c)}/>'
+            f'<rect x="197.178" y="212.864" width="125.487" height="50.9793" rx="11.7645" {_f(c)}/>'
             # stand
-            f'<path d="M 176 428 L 336 428" {_s(c, 28)}/>'
-            f'<path d="M 256 372 L 256 428" {_s(c, 24)}/>')
+            f'<path d="M 177.57 424.624 L 334.43 424.624" {_s(c, 28)}/>'
+            f'<path d="M 256 369.723 L 256 424.624" {_s(c, 24)}/>')
 
 
 def downloader_arrow(c):
@@ -1930,11 +1930,11 @@ def retroarch_mark(c):
     40. Uniformly rescaled about the grid centre so the pad keeps its
     proportions and the stroke keeps its monoline weight.
     """
-    return (f'<path d="M 150 210 C 150 167 200 150 234 176 L 276 210 C 290 221 '
-            f'319 221 332 210 L 374 176 C 408 150 459 167 459 210 '
-            f'C 459 267 437 345 395 355 C 366 362 344 328 337 302 '
-            f'C 327 281 307 269 256 269 C 205 269 185 281 175 302 '
-            f'C 168 328 146 362 117 355 C 75 345 53 267 53 210 Z" {_s(c, 28)}/>')
+    return (f'<path d="M 151.739 210.755 C 151.739 168.46 200.919 151.739 234.361 177.312 L 275.672 210.755 C 289.442 221.574 '
+            f'317.966 221.574 330.753 210.755 L 372.064 177.312 C 405.506 151.739 455.67 168.46 455.67 210.755 '
+            f'C 455.67 266.82 434.03 343.54 392.72 353.376 C 364.195 360.261 342.556 326.819 335.671 301.245 '
+            f'C 325.835 280.59 306.163 268.787 256 268.787 C 205.837 268.787 186.165 280.59 176.329 301.245 '
+            f'C 169.444 326.819 147.805 360.261 119.28 353.376 C 77.9695 343.54 56.3305 266.82 56.3305 210.755 Z" {_s(c, 28)}/>')
 
 
 def sideload_mark(c):
@@ -1968,10 +1968,10 @@ def sirius_satellite(c):
     stroke pushed to 489 — outside SAFE — while the dish left only 88px of
     margin on the other side. The diagonal composition is unchanged.
     """
-    return (f'<path d="M 84 396 C 84 300 160 224 256 224" {_s(c, 32)}/>'
-            f'<circle cx="108" cy="372" r="26" {_f(c)}/>'
-            f'<path d="M 280 160 C 340 160 400 220 400 280" {_s(c, 26)}/>'
-            f'<path d="M 280 104 C 368 104 456 192 456 280" {_s(c, 26)}/>')
+    return (f'<path d="M 84.252 395.795 C 84.252 299.936 160.141 224.047 256 224.047" {_s(c, 32)}/>'
+            f'<circle cx="108.217" cy="371.83" r="25.9619" {_f(c)}/>'
+            f'<path d="M 279.965 160.141 C 339.877 160.141 399.789 220.053 399.789 279.965" {_s(c, 26)}/>'
+            f'<path d="M 279.965 104.223 C 367.836 104.223 455.707 192.094 455.707 279.965" {_s(c, 26)}/>')
 
 
 def podcast_mic(c):

@@ -394,9 +394,9 @@ def main():
               f"{sorted(widths)} — monoline allows at most 3 "
               f"(primary + two subordinate)")
         if widths:
-            check(max(widths) <= 34,
+            check(max(widths) <= 36,
                   f"{i['name']}: heaviest stroke is {max(widths)}px, "
-                  f"over the 34px monoline ceiling")
+                  f"over the 36px monoline ceiling")
 
     # 5j. The update manifest must agree with the build it ships beside.
     # Latestrelease/version.json is what the in-app updater polls; if its

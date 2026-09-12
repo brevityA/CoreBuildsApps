@@ -83,7 +83,7 @@ def _hls_hex(hue: float, light: float, sat: float) -> str:
 # Existing Core Builds grammar, not a new theme. Keep the two detail weights
 # subordinate rather than flattening all three levels to 32px.
 CORE_MONOLINE = "core_monoline"
-CORE_STROKES = frozenset({32.0, 26.2, 21.8})
+CORE_STROKES = frozenset({36.0, 29.5, 24.5})
 
 
 def core_monoline_errors(body: str, accent: str) -> list[str]:
@@ -120,7 +120,7 @@ def core_monoline_errors(body: str, accent: str) -> list[str]:
         except ValueError:
             weight = float("nan")
         if weight not in CORE_STROKES:
-            errors.append(f"{tag}: stroke must be 32 / 26.2 / 21.8 after normalisation")
+            errors.append(f"{tag}: stroke must be 36 / 29.5 / 24.5 after normalisation")
         if node.get("stroke-linecap") != "round" or node.get("stroke-linejoin") != "round":
             errors.append(f"{tag}: caps and joins must be round")
     return errors

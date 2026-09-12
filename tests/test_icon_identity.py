@@ -240,7 +240,7 @@ class CoreStyleTests(unittest.TestCase):
     def test_subordinate_stroke_weights_survive_normalisation(self):
         body = '<path stroke-width="40"/><path stroke-width="26"/><path stroke-width="20"/>'
         root = ET.fromstring(f"<g>{monoline(body)}</g>")
-        self.assertEqual([float(p.get("stroke-width")) for p in root], [32.0, 26.2, 21.8])
+        self.assertEqual([float(p.get("stroke-width")) for p in root], [36.0, 29.5, 24.5])
 
     def test_style_gate_rejects_fills_white_wordmarks_square_caps_and_rescaling(self):
         accent = "#56C8F0"
@@ -248,7 +248,7 @@ class CoreStyleTests(unittest.TestCase):
         wrong = (
             valid.replace('fill="none"', f'fill="{accent}"', 1),
             valid.replace(f'stroke="{accent}"', 'stroke="#FFFFFF"', 1),
-            valid.replace('stroke-width="32.0"', 'stroke-width="80"', 1),
+            valid.replace('stroke-width="36.0"', 'stroke-width="80"', 1),
             valid.replace('stroke-linecap="round"', 'stroke-linecap="square"', 1),
             f'<g transform="scale(2)">{valid}</g>',
             valid.replace('<path ', '<path style="fill:white" ', 1),

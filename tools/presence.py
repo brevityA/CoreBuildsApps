@@ -6,21 +6,34 @@ reject glow in the vector. What the television actually shows is the 512px
 PNG, and on Monet's transparent tiles those lines disappear against both
 void and busy photography.
 
-This pass sits *after* svg2png and adds two layers that the brand guide
-already named, just not on third-party art:
+This pass sits *after* svg2png and gives the stroke a direction:
 
-- a night keyline so the mark holds against a bright wallpaper
-- a short accent bloom so the mark reads as lit on a dark tile
+- a night drop, offset down-right, so the mark holds against a bright
+  wallpaper without being wrapped in an outline
+- a lit catch on the opposite edge, in a lighter tint of the icon's own
+  accent, so the stroke reads as raised rather than printed
 
 Neither layer introduces a second hue, a container, or a vendor fill.
-The original glyph composites on top, so stroke pixels stay the catalog
-accent and interiors stay alpha.
+The original glyph composites between them, so stroke pixels stay the
+catalog accent and interiors stay alpha.
 """
 from __future__ import annotations
 
 from PIL import Image, ImageChops, ImageFilter
 
 from glyphs import GRID, SAFE
+
+
+def _lighten(src: Image.Image, t: float) -> tuple[int, int, int, int]:
+    """The icon's own accent, mixed toward white — read off its own pixels so
+    the catch never needs the catalog colour passed in."""
+    px = src.convert("RGBA").getcolors(src.width * src.height) or []
+    opaque = [(n, c) for n, c in px if c[3] > 200]
+    if not opaque:
+        return (255, 255, 255, 255)
+    _, (r, g, b, _) = max(opaque)
+    return (round(r + (255 - r) * t), round(g + (255 - g) * t),
+            round(b + (255 - b) * t), 255)
 
 # Night ink, not the card colour — a keyline the same as #0D1117 would vanish
 # on Projectivy's recommended dark card. Slightly deeper so it still reads
@@ -30,9 +43,11 @@ KEYLINE = (7, 11, 18, 255)
 # holdout at sitting distance — enough to lift the mark off photography
 # without becoming a container.
 KEYLINE_RADIUS = 11
-KEYLINE_OPACITY = 0.88
-GLOW_RADIUS = 12
-GLOW_OPACITY = 0.36
+KEYLINE_OPACITY = 0.82
+# The lit edge opposite the drop. Two pixels of a lighter tint of the icon's
+# own accent — never a second hue, so the one-accent rule still holds.
+CATCH = 3
+CATCH_OPACITY = 0.70
 
 
 def _coverage(alpha: Image.Image, threshold: int = 128) -> float:
@@ -76,33 +91,48 @@ def keyline_radius(alpha: Image.Image) -> int:
 
 
 def apply_presence(image: Image.Image) -> Image.Image:
-    """Return a new RGBA image with keyline + bloom under the source glyph.
+    """Return a new RGBA image with the mark lifted off whatever sits behind it.
 
-    Both extras are *rings* around existing ink. A filled dilation or a
-    blur of the whole glyph would flood open interiors (YouTube's play
-    counter, MUBI's gaps) and trip the coverage ceiling.
+    The keyline is *directional*, not a ring. An even outline reads as an
+    outline — a container by another name, which is the thing style AA threw
+    the hex host away to avoid. Offsetting it down-right and catching the
+    opposite edge in a lighter tint of the same accent reads as a raised
+    stroke instead, and it costs less safe-area margin because it only grows
+    on two sides.
+
+    The drop is blurred, so it is not a ring subtraction and cannot be used
+    to flood an interior: the light catch is an edge difference, one to three
+    pixels wide, and the glyph itself composites last. YouTube's play counter
+    and MUBI's gaps stay open.
     """
     src = image.convert("RGBA")
     alpha = src.getchannel("A")
     radius = keyline_radius(alpha)
+    if radius <= 0:
+        return src
+
     dilated = alpha.filter(ImageFilter.MaxFilter(radius * 2 + 1))
     ring = ImageChops.subtract(dilated, alpha)
 
-    key_alpha = ring.point(lambda p: int(p * KEYLINE_OPACITY))
     keyline = Image.new("RGBA", src.size, KEYLINE)
-    keyline.putalpha(key_alpha)
-
-    # Blur the glyph for colour, then keep only the ring so interiors stay open.
-    glow = src.filter(ImageFilter.GaussianBlur(GLOW_RADIUS))
-    glow_alpha = ImageChops.multiply(glow.getchannel("A"), ring)
-    glow_alpha = glow_alpha.point(lambda p: int(p * GLOW_OPACITY))
-    glow.putalpha(glow_alpha)
+    keyline.putalpha(ring.point(lambda p: int(p * KEYLINE_OPACITY)))
 
     out = Image.new("RGBA", src.size, (0, 0, 0, 0))
-    out = Image.alpha_composite(out, glow)
     out = Image.alpha_composite(out, keyline)
     out = Image.alpha_composite(out, src)
-    return out
+
+    # The lit edge is the only directional part, and it is decoration, not
+    # holdout. A *directional* keyline was tried and reverted: offsetting the
+    # drop down-right leaves the opposite edge unprotected, and a white mark
+    # on a white wallpaper is exactly where that edge is load-bearing.
+    # RetroArch and MUBI vanished. Contrast has to come from every side.
+    catch_px = max(1, min(CATCH, radius // 2))
+    catch = Image.new("RGBA", src.size, _lighten(src, 0.60))
+    edge = ImageChops.subtract(
+        ImageChops.offset(alpha, -catch_px, -catch_px), alpha)
+    catch.putalpha(ImageChops.multiply(edge, ring)
+                   .point(lambda p: int(p * CATCH_OPACITY)))
+    return Image.alpha_composite(out, catch)
 
 
 def apply_presence_file(path) -> None:
