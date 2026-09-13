@@ -224,6 +224,7 @@
         <item>f_droid</item>
         <item>production</item>
         <item>falconcast</item>
+        <item>fandango_at_home</item>
         <item>fanetv</item>
         <item>fcportotv</item>
         <item>fctv77</item>
@@ -314,6 +315,7 @@
         <item>hdtv_player</item>
         <item>heinetworktv</item>
         <item>watcher</item>
+        <item>hi_browser</item>
         <item>hideme</item>
         <item>hidive</item>
         <item>livingwithhippos</item>
@@ -658,6 +660,7 @@
         <item>sbsondemand</item>
         <item>scb_next</item>
         <item>scholastic</item>
+        <item>screen_recording_app</item>
         <item>screenscape</item>
         <item>sd_maid</item>
         <item>sdmaid</item>
@@ -875,7 +878,6 @@
         <item>zenderapp</item>
         <item>vtvcab_on_tv</item>
         <item>vtvgo_tv</item>
-        <item>downloadertablet</item>
         <item>waipu_tv</item>
         <item>wako</item>
         <item>frograms</item>
@@ -1157,6 +1159,7 @@
         <item>F Droid</item>
         <item>F1 TV</item>
         <item>Falcon Cast</item>
+        <item>Fandango at Home</item>
         <item>FANE TV</item>
         <item>FC Porto TV</item>
         <item>FC TV</item>
@@ -1247,6 +1250,7 @@
         <item>Hdtv Player</item>
         <item>HEI Network</item>
         <item>HGTV</item>
+        <item>Hi Browser</item>
         <item>Hideme</item>
         <item>Hidive</item>
         <item>Hippos</item>
@@ -1591,6 +1595,7 @@
         <item>Sbsondemand</item>
         <item>Scb Next</item>
         <item>Scholastic</item>
+        <item>Screen Recording App</item>
         <item>Screenscape</item>
         <item>Sd Maid</item>
         <item>SD Maid SE</item>
@@ -1808,7 +1813,6 @@
         <item>VTM GO</item>
         <item>Vtvcab On TV</item>
         <item>Vtvgo TV</item>
-        <item>Vudu</item>
         <item>Waipu TV</item>
         <item>Wako</item>
         <item>WATCHA</item>
@@ -2090,6 +2094,7 @@
         <item>APP</item>
         <item>SPORT</item>
         <item>APP</item>
+        <item>STORE</item>
         <item>APP</item>
         <item>APP</item>
         <item>APP</item>
@@ -2180,6 +2185,7 @@
         <item>LIVE</item>
         <item>APP</item>
         <item>VOD</item>
+        <item>BROWSER</item>
         <item>APP</item>
         <item>APP</item>
         <item>APP</item>
@@ -2524,6 +2530,7 @@
         <item>APP</item>
         <item>APP</item>
         <item>APP</item>
+        <item>TOOL</item>
         <item>APP</item>
         <item>APP</item>
         <item>TOOL</item>
@@ -2741,7 +2748,6 @@
         <item>APP</item>
         <item>APP</item>
         <item>APP</item>
-        <item>STORE</item>
         <item>APP</item>
         <item>APP</item>
         <item>APP</item>
@@ -2800,5 +2806,5 @@
         <item>APP</item>
         <item>APP</item>
     </string-array>
-    <integer name="icon_count">931</integer>
+    <integer name="icon_count">933</integer>
 </resources>

@@ -4,6 +4,60 @@ All notable changes to the Core Builds Icon Pack. Format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); versions follow
 [SemVer](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+**Feedback pass: the TizenTube stray line, the Nuvio lookalike, and the
+six-app request list (Fandango at Home, Pluto TV, Tubi, LocalSend,
+Hi Browser, Screen Recording App).** 931 → 933 icons, 1120 → 1126 components.
+
+### Changed
+- **TizenTube** (`tizentube`): the diagonal no longer floats as a stub off
+  the bottom-left corner. An earlier legibility pass had moved the
+  ad-block slash clear of the play wedge and orphaned it; the official
+  mark runs that diagonal as a chord from the rim, under the wedge,
+  ending in a detached dot — so the line is back inside the construction
+  (circle + wedge + chord + dot) instead of reading as a stray stroke.
+- **Nuvio TV** (`nuvio`): the pre-research wave-in-a-circle — a mark Nuvio
+  does not have — is replaced by the official nested play wedges, and the
+  guessed rose accent becomes the brand violet `#A238F0` sampled from the
+  lockup's cyan→violet gradient.
+- **Pluto TV** (`pluto_tv`): planet-with-orbit becomes the disc with its
+  planetary echo arcs (2020 lockup device), and the black accent — which
+  the contrast policy had to substitute anyway — becomes the 2024 disc
+  yellow `#FFF200`.
+- **Tubi** (`tubi`): the invented bare-T gate becomes the brand's actual
+  identity, the rounded lowercase wordmark, drawn as monoline type with
+  the shortened t-bar; accent corrected to the wordmark yellow `#F5E600`.
+- **LocalSend** (`localsend`): the two-phone packet becomes the official
+  hub disc ringed by eight beam dashes — a broadcast, not a transfer.
+- **Vudu → Fandango at Home**: the entry is renamed and redrawn as the
+  notched orange ticket stub with its cut F (`fandango_ticket`,
+  `#FF7300`). The app rebranded in place and keeps the Vudu package, so
+  the existing `air.com.vudu.air.DownloaderTablet` mapping carries over.
+
+### Added
+- **Hi Browser** (`hi_browser`, `com.hisense.odinbrowser`): Hisense's
+  Android TV browser on a globe crossed by its orbit ring, brand teal
+  `#00A8A8`. Launcher activity is a Play-listing guess, flagged
+  unverified in the catalog.
+- **Screen Recording App** (`screen_recording_app`,
+  `de.twokit.screen.recording.app`): 2kit's TV-first recorder on a screen
+  holding the record target. Activity guesses flagged unverified.
+- `docs/icon-feedback-pass-2026-09.png`: visual receipt — every changed
+  mark beside unchanged Classic neighbours, actual-size banners, and a
+  48px dock-size legibility strip.
+
+### Receipts
+- Classic: `Validated 933 icons · 1708 components · 25332 checks run`,
+  `Ran 44 tests ... OK`.
+- Pop: `Validated 933 icons · 1126 components · 16 swatches ·
+  14476 checks run`, `Ran 29 tests ... OK` (glyph metrics re-measured
+  first, as geometry changed).
+- Pixel Neon: `Validated Pixel Neon · 933 icons · 1126 catalog
+  components · 12789 checks run`.
+- Truth gates: suite truth, contract audit, issue-prefill stamp and
+  README badge all pass.
+
 ## [1.8.17] — 2026-09-13
 
 **The launcher icon stops being a brand scene and becomes a pack icon — and

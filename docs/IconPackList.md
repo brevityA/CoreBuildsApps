@@ -1,6 +1,6 @@
 # Supported applications
 
-`931` icons · `1120` mapped components · pack v1.8.17
+`933` icons · `1126` mapped components · pack v1.8.17
 
 Every app below auto-assigns in Projectivy. If one doesn't, the app ships a different launcher activity on your device — open an issue with the component name and it gets added.
 
@@ -230,6 +230,7 @@ Source accents are retained in the catalog. **On dark** is the shared square/ban
 | F Droid | `f_droid` | `#1976D2` | `#1976D2` | `org.fdroid.fdroid/org.fdroid.fdroid.views.main.MainActivity` |
 | F1 TV | `production` | `#E10600` | `#E10600` | `com.formulaone.production/com.avs.f1.ui.splash.SplashActivity` |
 | Falcon Cast | `falconcast` | `#1982C4` | `#1982C4` | `com.falconcast.live/com.falconcast.live.SplashActivity`<br>`com.falconcast.live/com.falconcast.live.tv.TvSplashActivity` |
+| Fandango at Home | `fandango_at_home` | `#FF7300` | `#FF7300` | `air.com.vudu.air.DownloaderTablet/air.com.vudu.air.DownloaderTablet.SplashActivity` |
 | FANE TV | `fanetv` | `#53FC18` | `#53FC18` | `com.fanetv/tv.vhx.LauncherActivity`<br>`com.fanetv/tv.vhx.tv.home.TvHomeActivity` |
 | FC Porto TV | `fcportotv` | `#FF0000` | `#FF0000` | `com.fcp.fcportotv/com.fcp.fcportotv.SplashActivity` |
 | FC TV | `fctv77` | `#FDCB58` | `#FDCB58` | `com.fctv77.tv/com.rblive.launcher.splash.SplashActivity` |
@@ -320,6 +321,7 @@ Source accents are retained in the catalog. **On dark** is the shared square/ban
 | Hdtv Player | `hdtv_player` | `#F15BB5` | `#F15BB5` | `com.zva3.mobile.litetvandroid/com.zva3.mobile.litetvandroid.MainActivity`<br>`com.zva3.mobile.litetvandroid/com.zva3.mobile.litetvandroid.TvActivity` |
 | HEI Network | `heinetworktv` | `#0061FF` | `#0061FF` | `com.heinetwork.HEINetworkTV/com.heinetwork.HEINetworkTV.MainActivity` |
 | HGTV | `watcher` | `#1E811F` | `#1E811F` | `com.hgtv.watcher/com.discovery.tve.presentation.activities.SplashActivity` |
+| Hi Browser | `hi_browser` | `#00A8A8` | `#00A8A8` | `com.hisense.odinbrowser/com.hisense.odinbrowser.MainActivity`<br>`com.hisense.odinbrowser/com.hisense.odinbrowser.ui.MainActivity`<br>`com.hisense.odinbrowser/com.hisense.odinbrowser.browser.MainActivity` |
 | Hideme | `hideme` | `#53FC18` | `#53FC18` | `hideme.android.vpn/com.android.vpn.activities.LoginActivity` |
 | Hidive | `hidive` | `#0061FF` | `#0061FF` | `com.twentyfouri.androidtv.hidive/com.twentyfouri.androidtv.hidive.MainActivity` |
 | Hippos | `livingwithhippos` | `#FFFFFF` | `#FFFFFF` | `com.github.livingwithhippos.unchained/com.github.livingwithhippos.unchained.base.MainActivity` |
@@ -525,7 +527,7 @@ Source accents are retained in the catalog. **On dark** is the shared square/ban
 | Npo Start | `npo_start` | `#008080` | `#008080` | `nl.uitzendinggemist/nl.uitzendinggemist.tv.presentation.activities.main.MainActivity` |
 | Nrk TV | `nrk_tv` | `#F5F500` | `#F5F500` | `no.nrk.tv/no.nrk.tv.view.MobileSplashScreenActivity`<br>`no.nrk.tv/no.nrk.tv.view.TvSplashScreenActivity` |
 | NT at Home | `ntathome` | `#53FC18` | `#53FC18` | `com.ntathome/tv.vhx.LauncherActivity`<br>`com.ntathome/tv.vhx.tv.home.TvHomeActivity` |
-| Nuvio TV | `nuvio` | `#E23E57` | `#E23E57` | `com.nuvio.app/com.nuvio.tv.MainActivity`<br>`com.nuvio.tv/.MainActivity`<br>`com.nuvio.tv/com.nuvio.tv.MainActivity`<br>`com.nuviodebug.com/com.nuvio.tv.MainActivity` |
+| Nuvio TV | `nuvio` | `#A238F0` | `#A238F0` | `com.nuvio.app/com.nuvio.tv.MainActivity`<br>`com.nuvio.tv/.MainActivity`<br>`com.nuvio.tv/com.nuvio.tv.MainActivity`<br>`com.nuviodebug.com/com.nuvio.tv.MainActivity` |
 | NV Player | `nvplayer` | `#FA7D19` | `#FA7D19` | `com.acb.nvplayer/com.ae.video.bplayer.ui.SplashActivity` |
 | Nxsha | `nxsha` | `#FF9800` | `#FF9800` | `com.nxsha/com.nxsha.MainActivity` |
 | NZR+ | `nzrplus` | `#00D4FF` | `#00D4FF` | `com.nzrplus.app/com.nzrplus.app.MainActivity` |
@@ -590,7 +592,7 @@ Source accents are retained in the catalog. **On dark** is the shared square/ban
 | Plex | `plex` | `#EBAF00` | `#EBAF00` | `com.plexapp.android/com.plexapp.plex.activities.SplashActivity`<br>`com.plexapp.mediaserver.smb/.MainActivity` |
 | Plexamp | `plexamp` | `#0061FF` | `#0061FF` | `tv.plex.labs.plexamp/com.plexamp.MainActivity` |
 | Plus Messenger | `telegram` | `#F15BB5` | `#F15BB5` | `cassian.telegram.ooa.pro/not.a.bug.notificationcenter.MainActivity` |
-| Pluto TV | `pluto_tv` | `#000000` | `#E6EDF3` | `tv.pluto.android/tv.pluto.android.EntryPoint` |
+| Pluto TV | `pluto_tv` | `#FFF200` | `#FFF200` | `tv.pluto.android/tv.pluto.android.EntryPoint` |
 | Podcast Addict | `podcastaddict` | `#F4842D` | `#F4842D` | `com.bambuna.podcastaddict/com.bambuna.podcastaddict.activity.PodcastListActivity` |
 | Polsat Box Go | `polsat_box_go` | `#1982C4` | `#1982C4` | `pl.cyfrowypolsat.cpgo/pl.cyfrowypolsat.cpframework.presentation.mobile.launch.LaunchActivity`<br>`pl.cyfrowypolsat.cpgo/pl.cyfrowypolsat.cpframework.presentation.tv.launch.TvLaunchActivity` |
 | Polygon Player | `videoplayer_2` | `#00F5D4` | `#00F5D4` | `com.polygon.videoplayer/com.polygon.videoplayer.SplashActivity` |
@@ -664,6 +666,7 @@ Source accents are retained in the catalog. **On dark** is the shared square/ban
 | Sbsondemand | `sbsondemand` | `#182020` | `#E6EDF3` | `com.sbs.ondemand.tv/com.sbs.ondemand.tv.MainActivity` |
 | Scb Next | `scb_next` | `#0061FF` | `#0061FF` | `com.scb.next/com.scb.next.SplashActivity` |
 | Scholastic | `scholastic` | `#0061FF` | `#0061FF` | `com.future.scholastic/com.future.scholastic.SplashActivity` |
+| Screen Recording App | `screen_recording_app` | `#FF3B30` | `#FF3B30` | `de.twokit.screen.recording.app/de.twokit.screen.recording.app.MainActivity`<br>`de.twokit.screen.recording.app/de.twokit.screen.recording.app.ui.MainActivity`<br>`de.twokit.screen.recording.app/de.twokit.screen.recording.app.tv.TvMainActivity` |
 | Screenscape | `screenscape` | `#53FC18` | `#53FC18` | `com.screenscape/com.screenscape.MainActivity` |
 | Sd Maid | `sd_maid` | `#FF0000` | `#FF0000` | `eu.thedarken.sdm/eu.thedarken.sdm.main.ui.SDMMainActivity` |
 | SD Maid SE | `sdmaid` | `#8BC34A` | `#8BC34A` | `eu.darken.sdmse/.main.ui.MainActivity` |
@@ -807,7 +810,7 @@ Source accents are retained in the catalog. **On dark** is the shared square/ban
 | Trublu | `trublu` | `#D4A843` | `#D4A843` | `ott.trublu/tv.vhx.LauncherActivity`<br>`ott.trublu/tv.vhx.tv.home.TvHomeActivity` |
 | TSN | `tsn` | `#0061FF` | `#0061FF` | `ca.tsn.mobile.android/ca.tsn.mobile.android.main.activity.MainActivity` |
 | Tt | `tt` | `#90BE6D` | `#90BE6D` | `ott.ttplus/tv.vhx.tv.home.TvHomeActivity` |
-| Tubi | `tubi` | `#FA382F` | `#FA382F` | `com.tubitv/com.tubitv.activities.MainActivity` |
+| Tubi | `tubi` | `#F5E600` | `#F5E600` | `com.tubitv/com.tubitv.activities.MainActivity` |
 | Tunein Radio | `tunein_radio` | `#14D8CC` | `#14D8CC` | `tunein.player/tunein.ui.leanback.ui.activities.TvHomeActivity` |
 | TV 2 Play | `tv_2_play` | `#2F7DED` | `#2F7DED` | `no.tv2.sumo/no.tv2.android.ui.LauncherBridgeActivity` |
 | TV App Repo | `tv_app_repo` | `#0061FF` | `#0061FF` | `news.androidtv.tvapprepo.playstore/news.androidtv.tvapprepo.activities.MainActivity` |
@@ -881,7 +884,6 @@ Source accents are retained in the catalog. **On dark** is the shared square/ban
 | VTM GO | `zenderapp` | `#107534` | `#107534` | `be.vmma.vtm.zenderapp/be.persgroep.vtmgo.presentation.VtmGoMainActivity` |
 | Vtvcab On TV | `vtvcab_on_tv` | `#F15BB5` | `#F15BB5` | `com.vtvcab.onTV/com.vtvcab.activities.NewSplashActivity` |
 | Vtvgo TV | `vtvgo_tv` | `#1982C4` | `#1982C4` | `vn.vtv.vtvgotv/com.vtvcab.activities.NewSplashActivity` |
-| Vudu | `downloadertablet` | `#2F7DED` | `#2F7DED` | `air.com.vudu.air.DownloaderTablet/air.com.vudu.air.DownloaderTablet.SplashActivity` |
 | Waipu TV | `waipu_tv` | `#0061FF` | `#0061FF` | `de.exaring.waipu/de.exaring.waipu.ui.login.LoginActivity` |
 | Wako | `wako` | `#0061FF` | `#0061FF` | `app.wako/app.wako.MainActivity` |
 | WATCHA | `frograms` | `#53FC18` | `#53FC18` | `com.frograms.wplay/com.frograms.wplay.activity.InitActivity` |

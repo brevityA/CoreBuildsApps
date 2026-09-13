@@ -222,6 +222,7 @@
     <item drawable="f_droid" />
     <item drawable="production" />
     <item drawable="falconcast" />
+    <item drawable="fandango_at_home" />
     <item drawable="fanetv" />
     <item drawable="fcportotv" />
     <item drawable="fctv77" />
@@ -312,6 +313,7 @@
     <item drawable="hdtv_player" />
     <item drawable="heinetworktv" />
     <item drawable="watcher" />
+    <item drawable="hi_browser" />
     <item drawable="hideme" />
     <item drawable="hidive" />
     <item drawable="livingwithhippos" />
@@ -656,6 +658,7 @@
     <item drawable="sbsondemand" />
     <item drawable="scb_next" />
     <item drawable="scholastic" />
+    <item drawable="screen_recording_app" />
     <item drawable="screenscape" />
     <item drawable="sd_maid" />
     <item drawable="sdmaid" />
@@ -873,7 +876,6 @@
     <item drawable="zenderapp" />
     <item drawable="vtvcab_on_tv" />
     <item drawable="vtvgo_tv" />
-    <item drawable="downloadertablet" />
     <item drawable="waipu_tv" />
     <item drawable="wako" />
     <item drawable="frograms" />
