@@ -13,7 +13,7 @@
 <!-- suite-stamp:start -->
 > | App | Current | What it does | Downloader | Release tag |
 > |---|---:|---|---|---|
-> | **[Core Builds Icon Pack](#-icon-pack)** | `v1.8.15` | 926 transparent icons + 58 wallpapers for Projectivy Launcher | `5270601` | [`v*` / `iconpack`](../../releases) |
+> | **[Core Builds Icon Pack](#-icon-pack)** | `v1.8.16` | 926 transparent icons + 58 wallpapers for Projectivy Launcher | `5270601` | [`v*` / `iconpack`](../../releases) |
 > | **[Core Builds Pixel Neon](#-pixel-neon-icon-pack)** | `v0.1.0` | 926 transparent 8-bit neon icons + 70 wallpapers for Projectivy Launcher | `[USER TO SUPPLY]` | [`pixel-neon-v*` / `pixel-neon`](../../releases) |
 > | **[Core Builds Pop](#-core-builds-pop)** | `v1.0.0` | The same 926 icons, pop-art cartoon: 16 swatches, one container | `[USER TO SUPPLY]` | [`pop-v*` / `pop`](../../releases) |
 > | **[Core Line](#-core-line)** | `v1.3.0` | Sports scores & channel RSS ticker (chyron) | `7375676` | [`coreline-v*` / `coreline`](../../releases) |
@@ -33,6 +33,8 @@
 The **Core Builds Icon Pack** is designed for the [Projectivy Launcher](https://play.google.com/store/apps/details?id=com.spocky.projengmenu) on Android TV and Google TV, built to the [Core Builds Brand & Style Guide v1.0](https://github.com/brevityA/Core-Builds).
 
 Icons share the **Core Builds visual language**: original geometry, rounded-line brand motifs, one accent and transparent backgrounds. The reviewed glyphs use the canonical **32px main stroke**, with 26.2px / 21.8px detail. Brand references inform the recognisable cue and colour; they do **not** replace the pack's style with filled vendor silhouettes or custom logotypes. The existing Outfit fallback letters remain unchanged. [Reference provenance and rights](THIRD_PARTY_NOTICES.md).
+
+**v1.8.16 — the pack's own launcher badge finally looks like the brand.** The old icon was a thin wireframe mark on flat night that all but disappeared on dark living-room launchers. The generator now renders a depth-gradient disc with an edge keyline, heavier glowing hexagon linework and a lit diamond, and the adaptive icon gets a real gradient-field background behind the lit mark. Everything still comes from `tools/build_branding.py`; before/after in `docs/icon-before-after.png`.
 
 **v1.8.15 — Monet Launcher never reads the system wallpaper, so "Set wallpaper" was a no-op on every Monet home screen.** Found by decompiling Monet v1.0.84: the APK has no `WallpaperManager` reference at all, but since v1.0.72 it exports a share target that copies images into Monet's own background library. The preview button now reads **Send to Monet** when Monet is HOME and hands the cached file straight over (no permissions, no export first); the export screen offers **Send N to Monet** for a whole selection. Icon apply to Monet stays manual — v1.0.84 has no inbound apply intent — but the path now names the 1.0.80 layout, *Settings → Apps → Icon pack*. Research and APK evidence in `docs/MONET_LAUNCHER.md`.
 
