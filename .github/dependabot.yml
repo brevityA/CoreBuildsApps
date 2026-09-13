@@ -5,10 +5,17 @@ updates:
     schedule:
       interval: "weekly"
     ignore:
+      # AGP 9 is a breaking major (built-in Kotlin, new DSL defaults).
       - dependency-name: "com.android.application"
         versions: [">=9"]
+      # Gradle 9.6 removed the internal Problems API that every AGP 8.x
+      # release binds to (gradle/gradle#38073), so the wrapper must stay on
+      # 9.5.x until we move to AGP 9. Dependabot names the wrapper
+      # "gradle-wrapper", not "org.gradle".
+      - dependency-name: "gradle-wrapper"
+        versions: [">=9.6"]
       - dependency-name: "org.gradle"
-        versions: [">=9"]
+        versions: [">=9.6"]
     groups:
       android-root:
         patterns: ["*"]
@@ -17,10 +24,17 @@ updates:
     schedule:
       interval: "weekly"
     ignore:
+      # AGP 9 is a breaking major (built-in Kotlin, new DSL defaults).
       - dependency-name: "com.android.application"
         versions: [">=9"]
+      # Gradle 9.6 removed the internal Problems API that every AGP 8.x
+      # release binds to (gradle/gradle#38073), so the wrapper must stay on
+      # 9.5.x until we move to AGP 9. Dependabot names the wrapper
+      # "gradle-wrapper", not "org.gradle".
+      - dependency-name: "gradle-wrapper"
+        versions: [">=9.6"]
       - dependency-name: "org.gradle"
-        versions: [">=9"]
+        versions: [">=9.6"]
     groups:
       core-line-android:
         patterns: ["*"]
@@ -29,10 +43,17 @@ updates:
     schedule:
       interval: "weekly"
     ignore:
+      # AGP 9 is a breaking major (built-in Kotlin, new DSL defaults).
       - dependency-name: "com.android.application"
         versions: [">=9"]
+      # Gradle 9.6 removed the internal Problems API that every AGP 8.x
+      # release binds to (gradle/gradle#38073), so the wrapper must stay on
+      # 9.5.x until we move to AGP 9. Dependabot names the wrapper
+      # "gradle-wrapper", not "org.gradle".
+      - dependency-name: "gradle-wrapper"
+        versions: [">=9.6"]
       - dependency-name: "org.gradle"
-        versions: [">=9"]
+        versions: [">=9.6"]
     groups:
       core-shift:
         patterns: ["*"]
@@ -41,10 +62,17 @@ updates:
     schedule:
       interval: "weekly"
     ignore:
+      # AGP 9 is a breaking major (built-in Kotlin, new DSL defaults).
       - dependency-name: "com.android.application"
         versions: [">=9"]
+      # Gradle 9.6 removed the internal Problems API that every AGP 8.x
+      # release binds to (gradle/gradle#38073), so the wrapper must stay on
+      # 9.5.x until we move to AGP 9. Dependabot names the wrapper
+      # "gradle-wrapper", not "org.gradle".
+      - dependency-name: "gradle-wrapper"
+        versions: [">=9.6"]
       - dependency-name: "org.gradle"
-        versions: [">=9"]
+        versions: [">=9.6"]
     groups:
       core-doctor:
         patterns: ["*"]
@@ -53,10 +81,17 @@ updates:
     schedule:
       interval: "weekly"
     ignore:
+      # AGP 9 is a breaking major (built-in Kotlin, new DSL defaults).
       - dependency-name: "com.android.application"
         versions: [">=9"]
+      # Gradle 9.6 removed the internal Problems API that every AGP 8.x
+      # release binds to (gradle/gradle#38073), so the wrapper must stay on
+      # 9.5.x until we move to AGP 9. Dependabot names the wrapper
+      # "gradle-wrapper", not "org.gradle".
+      - dependency-name: "gradle-wrapper"
+        versions: [">=9.6"]
       - dependency-name: "org.gradle"
-        versions: [">=9"]
+        versions: [">=9.6"]
     groups:
       core-motion:
         patterns: ["*"]
