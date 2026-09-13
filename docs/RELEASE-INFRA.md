@@ -94,7 +94,12 @@ Runtime behavior:
 3. Run locally where Android SDK exists, or open a PR and let `Suite CI gate` run:
    - `python tools/audit_contract.py`
    - app lint/tests/build from `suite-ci.yml`
-4. Merge to main.
+4. Merge to main. **Squash merges copy every commit body into the merge
+   commit** — if any commit on the branch says `[skip ci]`, the squash commit
+   inherits it, GitHub skips the `main` push workflows, and a tag pointing at
+   that commit never builds (v1.8.15 hit this; the tag had to be moved to the
+   next commit). Check `git show -s --format=%B origin/main | grep -i 'skip ci'`
+   before tagging, or edit the squash message to drop the marker.
 5. Push the appropriate release tag, or run `Suite release` manually with `publish=false` first.
 6. Confirm artifacts:
    - stable APK filename (`iconpack-release.apk`, `coreline-release.apk`, `coreshift-release.apk`, `coredoctor-release.apk`, or `coremotion-release.apk`)
