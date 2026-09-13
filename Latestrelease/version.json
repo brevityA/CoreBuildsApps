@@ -5,6 +5,7 @@
   "componentCount": 1101,
   "releaseDate": "2026-09-13",
   "apkUrl": "https://github.com/brevityA/CoreBuildsApps/releases/download/iconpack/iconpack-release.apk",
-  "releaseNotesUrl": "https://github.com/brevityA/CoreBuildsApps/blob/main/CHANGELOG.md",
-  "minSdk": 21
+  "releaseNotesUrl": "https://github.com/brevityA/CoreBuildsApps/releases",
+  "minSdk": 21,
+  "apkSha256": "e6f87576b88cc136accbe1092321704455109bbfda701cf117a07bc324e0d80a"
 }
