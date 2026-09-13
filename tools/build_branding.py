@@ -1,9 +1,13 @@
 #!/usr/bin/env python3
 """
 Generates the pack's own branding assets from the Core Builds mark:
-  mipmap ic_launcher (legacy + adaptive foreground)
+  mipmap ic_launcher (legacy + adaptive background/foreground + adaptive xml)
   drawable cb_banner  (320x180 Leanback TV banner, required for ATV home rows)
-Geometry follows Assets/core_icon.svg exactly (Brand Guide §02).
+Geometry follows the Brand Guide mark: point-up hexagon, centred diamond,
+glow as a local signal. The launcher icon gets a richer scene than the bare
+mark (depth gradient disc, edge keyline, heavier glowing linework) so the app
+reads as a finished object on dark living-room launchers instead of a thin
+wireframe floating on flat black.
 """
 from pathlib import Path
 from svg_renderer import svg2png
@@ -30,6 +34,17 @@ MARK_DEFS = '''
       <feComposite in="SourceGraphic" in2="blur" operator="over"/>
     </filter>
     <filter id="softGlow"><feGaussianBlur stdDeviation="24"/></filter>
+    <filter id="diaGlow"><feGaussianBlur stdDeviation="12"/></filter>
+    <radialGradient id="discBg" cx="50%" cy="42%" r="70%">
+      <stop offset="0%" stop-color="#1b2432"/>
+      <stop offset="55%" stop-color="#0d1117"/>
+      <stop offset="100%" stop-color="#04070f"/>
+    </radialGradient>
+    <radialGradient id="fieldBg" cx="50%" cy="45%" r="75%">
+      <stop offset="0%" stop-color="#1b2432"/>
+      <stop offset="60%" stop-color="#0d1117"/>
+      <stop offset="100%" stop-color="#04070f"/>
+    </radialGradient>
   </defs>'''
 
 HEX = "256,41 442,149 442,363 256,471 70,363 70,149"
@@ -51,6 +66,47 @@ def mark(scale=1.0, dx=0, dy=0, disc=True):
   </g>'''
 
 
+def launcher_mark(stroke=30):
+    """The mark, tuned for launcher sizes: heavier glowing linework and a lit
+    diamond. The banner keeps the lighter mark() so its lockup is unchanged."""
+    return f'''
+  <polygon points="{HEX}" fill="#00e5ff" opacity="0.05" filter="url(#softGlow)"/>
+  <polygon points="{DIA}" fill="#8a4890" opacity="0.10" filter="url(#softGlow)"/>
+  <polygon points="{HEX}" fill="none" stroke="#00e5ff" stroke-width="{stroke + 12}"
+    stroke-linejoin="round" opacity="0.3" filter="url(#hexGlow)"/>
+  <polygon points="{HEX}" fill="none" stroke="url(#hexGrad)" stroke-width="{stroke}"
+    stroke-linejoin="round"/>
+  <polygon points="{DIA}" fill="url(#diamGrad)" opacity="0.5" filter="url(#diaGlow)"/>
+  <polygon points="{DIA}" fill="url(#diamGrad)"/>'''
+
+
+def launcher_legacy_body():
+    """Full badge: depth disc + edge keyline so the icon keeps a visible rim on
+    near-black launchers, with the lit mark centred."""
+    return f'''{MARK_DEFS}
+  <circle cx="256" cy="256" r="252" fill="url(#discBg)"/>
+  <circle cx="256" cy="256" r="242" fill="none" stroke="#4facfe"
+    stroke-opacity="0.30" stroke-width="2.5"/>
+  {launcher_mark()}'''
+
+
+def launcher_background_body():
+    """Adaptive background layer: the same depth field plus a whisper of the
+    mark's glow, so masked icons never sit on flat black."""
+    return f'''{MARK_DEFS}
+  <rect width="512" height="512" fill="url(#fieldBg)"/>
+  <polygon points="{HEX}" fill="#00e5ff" opacity="0.05" filter="url(#softGlow)"/>
+  <polygon points="{DIA}" fill="#8a4890" opacity="0.08" filter="url(#softGlow)"/>'''
+
+
+ADAPTIVE_XML = '''<?xml version="1.0" encoding="utf-8"?>
+<adaptive-icon xmlns:android="http://schemas.android.com/apk/res/android">
+    <background android:drawable="@mipmap/ic_launcher_background" />
+    <foreground android:drawable="@mipmap/ic_launcher_foreground" />
+</adaptive-icon>
+'''
+
+
 def svg(w, h, body, bg=None):
     b = f'<rect width="{w}" height="{h}" fill="{bg}"/>' if bg else ""
     return (f'<svg xmlns="http://www.w3.org/2000/svg" width="{w}" height="{h}" '
@@ -67,7 +123,7 @@ def main():
     written = []
 
     # launcher icon, legacy densities
-    icon = svg(512, 512, mark())
+    icon = svg(512, 512, launcher_legacy_body())
     for folder, size in [("mipmap-xhdpi", 160), ("mipmap-xxhdpi", 240)]:
         p = RES / folder / "ic_launcher.png"
         png(icon, p, size, size)
@@ -78,12 +134,24 @@ def main():
     # undersized inside circle masks.
     _S = 66.0 / 108.0
     _off = 512 * (1 - _S) / 2
-    fg = svg(512, 512, f'<g transform="translate({_off:.1f},{_off:.1f}) '
-                       f'scale({_S:.4f})">{mark(disc=False)}</g>')
+    fg = svg(512, 512, MARK_DEFS +
+             f'<g transform="translate({_off:.1f},{_off:.1f}) '
+             f'scale({_S:.4f})">{launcher_mark()}</g>')
+    bg = svg(512, 512, launcher_background_body())
     for folder, size in [("mipmap-xhdpi", 216), ("mipmap-xxhdpi", 324)]:
         p = RES / folder / "ic_launcher_foreground.png"
         png(fg, p, size, size)
         written.append(f"{folder}/ic_launcher_foreground.png ({size}px)")
+        p = RES / folder / "ic_launcher_background.png"
+        png(bg, p, size, size)
+        written.append(f"{folder}/ic_launcher_background.png ({size}px)")
+
+    # Adaptive wiring: gradient field behind, lit mark in front. Written by the
+    # generator so the layer drawables and the xml can never disagree.
+    for name in ("ic_launcher.xml", "ic_launcher_round.xml"):
+        p = RES / "mipmap-anydpi-v26" / name
+        p.write_text(ADAPTIVE_XML)
+        written.append(f"mipmap-anydpi-v26/{name}")
 
     # Leanback banner 320x180 — night chrome, mark left, wordmark right.
     #
