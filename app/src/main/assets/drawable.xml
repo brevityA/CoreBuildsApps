@@ -43,6 +43,7 @@
     <item drawable="fredrikburmester_banner" />
     <item drawable="dpgmedia_banner" />
     <item drawable="stremio_banner" />
+    <item drawable="stremize_banner" />
     <item drawable="strmr_banner" />
     <item drawable="syncler_banner" />
     <item drawable="syncler_2_banner" />
@@ -250,12 +251,15 @@
     <item drawable="moonlight_banner" />
     <item drawable="gametime_banner" />
     <item drawable="nflgamecenter_banner" />
+    <item drawable="nintendo_switch_banner" />
     <item drawable="pac_man_256_banner" />
+    <item drawable="playstation_banner" />
     <item drawable="redream_banner" />
     <item drawable="retroarch_banner" />
     <item drawable="archain_banner" />
     <item drawable="mvas_banner" />
     <item drawable="steam_link_banner" />
+    <item drawable="xbox_banner" />
     <category title="Banners · Debrid" />
     <item drawable="alldebrid_banner" />
     <item drawable="debridstream_banner" />
@@ -394,6 +398,7 @@
     <item drawable="kore_banner" />
     <category title="Banners · System" />
     <item drawable="files_banner" />
+    <item drawable="hdmi_source_banner" />
     <item drawable="settings_banner" />
     <category title="Banners · Tracking" />
     <item drawable="trakt_banner" />
@@ -990,6 +995,7 @@
     <item drawable="fredrikburmester" />
     <item drawable="dpgmedia" />
     <item drawable="stremio" />
+    <item drawable="stremize" />
     <item drawable="strmr" />
     <item drawable="syncler" />
     <item drawable="syncler_2" />
@@ -1197,12 +1203,15 @@
     <item drawable="moonlight" />
     <item drawable="gametime" />
     <item drawable="nflgamecenter" />
+    <item drawable="nintendo_switch" />
     <item drawable="pac_man_256" />
+    <item drawable="playstation" />
     <item drawable="redream" />
     <item drawable="retroarch" />
     <item drawable="archain" />
     <item drawable="mvas" />
     <item drawable="steam_link" />
+    <item drawable="xbox" />
     <category title="Square · Debrid" />
     <item drawable="alldebrid" />
     <item drawable="debridstream" />
@@ -1341,6 +1350,7 @@
     <item drawable="kore" />
     <category title="Square · System" />
     <item drawable="files" />
+    <item drawable="hdmi_source" />
     <item drawable="settings" />
     <category title="Square · Tracking" />
     <item drawable="trakt" />

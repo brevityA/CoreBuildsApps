@@ -4,6 +4,49 @@ All notable changes to the Core Builds Icon Pack. Format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); versions follow
 [SemVer](https://semver.org/spec/v2.0.0.html).
 
+## [1.8.17] — 2026-09-13
+
+**The launcher icon stops being a brand scene and becomes a pack icon — and
+the inputs row finally gets marks of its own.**
+
+### Changed
+- Launcher icon redrawn AS A PACK ICON in `tools/build_branding.py`: the
+  rounded app tile holding a 2x2 grid of marks, drawn to the catalog's own
+  Core monoline grammar (32 / 26.2 rounded strokes, one accent #00D4FF,
+  no fills, no effects, transparent ground). The script now asserts the mark
+  against `icon_style.core_monoline_errors` before writing any asset, and the
+  legacy PNG gets the same raster presence pass as every square icon. The
+  adaptive background keeps the night card so OEM masks never crop onto flat
+  black. `cb_banner` and `docs/banner.png` carry the new mark.
+- Core Builds itself now gets the standard Outfit/category/rail banner like
+  every other icon; the mark-only `banner_style: glyph` exception is retired.
+
+### Added
+- **Stremize** (`com.stremize.player`) on a new `stremize_z` mark.
+- **Input/source marks** for the devices that reach the TV over HDMI:
+  `xbox_orb` (Xbox), `switch_joycons` (Nintendo Switch),
+  `playstation_shapes` (PlayStation), `hdmi_connector` (HDMI Source).
+  - HDMI Source maps Projectivy's `SourceHDMI1`–`SourceHDMI4` activities on
+    BOTH activity paths — the legacy `.activities.input.*` and the 4.0.1+
+    `.ui.guidedActions.activities.input.*` — so the tile themes on old and
+    new launcher builds alike (HDMI tiles auto-theme in Projectivy).
+  - Console icons map the companion packages users keep beside the box
+    (Xbox Game Pass; PS Remote Play + PlayStation App; Nintendo Switch
+    Online) for manual theming, mirrored in `unverified` until seen on a
+    device.
+- Binge gains the Foxtel platform main activity on `au.com.binge.tv` and
+  `au.com.streamotion.ares`; Kayo gains it on `au.com.streamotion.hyperion`;
+  Launcher Manager gains the `com.wolf.lms` build (both name forms).
+- `docs/research/icon-craft-2026-09.md` — this tranche's icon research.
+- `docs/research/infra-backend-frontend-2026-09.md` — updater/release
+  infrastructure roadmap (phases 1-3).
+
+### Receipts
+- Classic `validate.py`: 931 icons · 1696 components · 25232 checks, all
+  passing. Pop: 931 icons · 1120 components · 16 swatches · 14410 checks.
+  Pixel Neon: 931 icons · 1120 components · 12721 checks. Suite truth,
+  contracts, prefills and the 44-test icon identity suite pass.
+
 ## [1.8.16] — 2026-09-13
 
 **The pack's own launcher badge finally looks like the brand.**

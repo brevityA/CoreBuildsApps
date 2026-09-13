@@ -234,6 +234,8 @@
     <item component="ComponentInfo{au.com.streamotion.ares/.MainActivity}" drawable="binge_banner"/>
     <item component="ComponentInfo{au.com.binge.tv/au.com.binge.tv.MainActivity}" drawable="binge_banner"/>
     <item component="ComponentInfo{au.com.binge.tv/.MainActivity}" drawable="binge_banner"/>
+    <item component="ComponentInfo{au.com.binge.tv/au.com.foxsports.martian.tv.main.MainActivity}" drawable="binge_banner"/>
+    <item component="ComponentInfo{au.com.streamotion.ares/au.com.foxsports.martian.tv.main.MainActivity}" drawable="binge_banner"/>
     <!-- Bitdefender -->
     <item component="ComponentInfo{com.bitdefender.vpn/com.bitdefender.vpn.MainActivity}" drawable="bitdefender_banner"/>
     <item component="ComponentInfo{com.bitdefender.vpn/.MainActivity}" drawable="bitdefender_banner"/>
@@ -852,6 +854,23 @@
     <!-- Hdhomerun -->
     <item component="ComponentInfo{com.silicondust.view/com.silicondust.view.App}" drawable="hdhomerun_banner"/>
     <item component="ComponentInfo{com.silicondust.view/.App}" drawable="hdhomerun_banner"/>
+    <!-- HDMI Source -->
+    <item component="ComponentInfo{com.spocky.projengmenu/com.spocky.projengmenu.activities.input.SourceHDMI1Activity}" drawable="hdmi_source_banner"/>
+    <item component="ComponentInfo{com.spocky.projengmenu/.activities.input.SourceHDMI1Activity}" drawable="hdmi_source_banner"/>
+    <item component="ComponentInfo{com.spocky.projengmenu/com.spocky.projengmenu.activities.input.SourceHDMI2Activity}" drawable="hdmi_source_banner"/>
+    <item component="ComponentInfo{com.spocky.projengmenu/.activities.input.SourceHDMI2Activity}" drawable="hdmi_source_banner"/>
+    <item component="ComponentInfo{com.spocky.projengmenu/com.spocky.projengmenu.activities.input.SourceHDMI3Activity}" drawable="hdmi_source_banner"/>
+    <item component="ComponentInfo{com.spocky.projengmenu/.activities.input.SourceHDMI3Activity}" drawable="hdmi_source_banner"/>
+    <item component="ComponentInfo{com.spocky.projengmenu/com.spocky.projengmenu.activities.input.SourceHDMI4Activity}" drawable="hdmi_source_banner"/>
+    <item component="ComponentInfo{com.spocky.projengmenu/.activities.input.SourceHDMI4Activity}" drawable="hdmi_source_banner"/>
+    <item component="ComponentInfo{com.spocky.projengmenu/com.spocky.projengmenu.ui.guidedActions.activities.input.SourceHDMI1Activity}" drawable="hdmi_source_banner"/>
+    <item component="ComponentInfo{com.spocky.projengmenu/.ui.guidedActions.activities.input.SourceHDMI1Activity}" drawable="hdmi_source_banner"/>
+    <item component="ComponentInfo{com.spocky.projengmenu/com.spocky.projengmenu.ui.guidedActions.activities.input.SourceHDMI2Activity}" drawable="hdmi_source_banner"/>
+    <item component="ComponentInfo{com.spocky.projengmenu/.ui.guidedActions.activities.input.SourceHDMI2Activity}" drawable="hdmi_source_banner"/>
+    <item component="ComponentInfo{com.spocky.projengmenu/com.spocky.projengmenu.ui.guidedActions.activities.input.SourceHDMI3Activity}" drawable="hdmi_source_banner"/>
+    <item component="ComponentInfo{com.spocky.projengmenu/.ui.guidedActions.activities.input.SourceHDMI3Activity}" drawable="hdmi_source_banner"/>
+    <item component="ComponentInfo{com.spocky.projengmenu/com.spocky.projengmenu.ui.guidedActions.activities.input.SourceHDMI4Activity}" drawable="hdmi_source_banner"/>
+    <item component="ComponentInfo{com.spocky.projengmenu/.ui.guidedActions.activities.input.SourceHDMI4Activity}" drawable="hdmi_source_banner"/>
     <!-- Hdo Box -->
     <item component="ComponentInfo{com.tv.hdobox/com.tv.hdobox.MainActivity}" drawable="hdo_box_banner"/>
     <item component="ComponentInfo{com.tv.hdobox/.MainActivity}" drawable="hdo_box_banner"/>
@@ -1033,6 +1052,7 @@
     <item component="ComponentInfo{au.com.streamotion.hyperion/au.com.streamotion.hyperion.MainActivity}" drawable="kayo_banner"/>
     <item component="ComponentInfo{au.com.streamotion.hyperion/.MainActivity}" drawable="kayo_banner"/>
     <item component="ComponentInfo{au.com.kayosports.tv/au.com.foxsports.martian.tv.main.MainActivity}" drawable="kayo_banner"/>
+    <item component="ComponentInfo{au.com.streamotion.hyperion/au.com.foxsports.martian.tv.main.MainActivity}" drawable="kayo_banner"/>
     <!-- KDE Connect -->
     <item component="ComponentInfo{org.kde.kdeconnect_tp/org.kde.kdeconnect.UserInterface.MainActivity}" drawable="kde_connect_banner"/>
     <!-- Kemo IPTV -->
@@ -1107,6 +1127,9 @@
     <!-- Launcher Manager -->
     <item component="ComponentInfo{com.wolf.lm/com.wolf.lm.main.MainActivity}" drawable="launcher_manager_banner"/>
     <item component="ComponentInfo{com.wolf.lm/.main.MainActivity}" drawable="launcher_manager_banner"/>
+    <item component="ComponentInfo{com.wolf.lms/com.wolf.lm.main.MainActivity}" drawable="launcher_manager_banner"/>
+    <item component="ComponentInfo{com.wolf.lms/com.wolf.lms.MainActivity}" drawable="launcher_manager_banner"/>
+    <item component="ComponentInfo{com.wolf.lms/.MainActivity}" drawable="launcher_manager_banner"/>
     <!-- Lazy IPTV Deluxe -->
     <item component="ComponentInfo{com.lcs.lazyiptvdeluxe/com.lcs.lazyiptvdeluxe.ActivityStart}" drawable="lazyiptvdeluxe_banner"/>
     <item component="ComponentInfo{com.lcs.lazyiptvdeluxe/.ActivityStart}" drawable="lazyiptvdeluxe_banner"/>
@@ -1397,6 +1420,9 @@
     <item component="ComponentInfo{jp.or.nhk.nhkworld.tv/.ui.MainActivity}" drawable="nhk_world_japan_banner"/>
     <!-- NHL -->
     <item component="ComponentInfo{com.nhl.tv/com.viewlift.tv.AppCmsTVSplashActivity}" drawable="nhl_banner"/>
+    <!-- Nintendo Switch -->
+    <item component="ComponentInfo{com.nintendo.znba/com.nintendo.znba.MainActivity}" drawable="nintendo_switch_banner"/>
+    <item component="ComponentInfo{com.nintendo.znba/.MainActivity}" drawable="nintendo_switch_banner"/>
     <!-- Njpw World -->
     <item component="ComponentInfo{com.tvasahi.njpwworld/uk.tva.template.LaunchScreenActivity}" drawable="njpw_world_banner"/>
     <!-- Nlziet -->
@@ -1604,6 +1630,11 @@
     <item component="ComponentInfo{com.playnet.androidtv.pro/.DdfzCtdEstCn}" drawable="androidtv_10_banner"/>
     <item component="ComponentInfo{com.playnet.androidtv.pro/com.playnet.androidtv.pro.plBqnAaqDlEns}" drawable="androidtv_10_banner"/>
     <item component="ComponentInfo{com.playnet.androidtv.pro/.plBqnAaqDlEns}" drawable="androidtv_10_banner"/>
+    <!-- PlayStation -->
+    <item component="ComponentInfo{com.playstation.remoteplay/com.playstation.remoteplay.MainActivity}" drawable="playstation_banner"/>
+    <item component="ComponentInfo{com.playstation.remoteplay/.MainActivity}" drawable="playstation_banner"/>
+    <item component="ComponentInfo{com.scee.psxandroid/com.scee.psxandroid.MainActivity}" drawable="playstation_banner"/>
+    <item component="ComponentInfo{com.scee.psxandroid/.MainActivity}" drawable="playstation_banner"/>
     <!-- Plex -->
     <item component="ComponentInfo{com.plexapp.android/com.plexapp.plex.activities.SplashActivity}" drawable="plex_banner"/>
     <item component="ComponentInfo{com.plexapp.mediaserver.smb/com.plexapp.mediaserver.smb.MainActivity}" drawable="plex_banner"/>
@@ -2019,6 +2050,9 @@
     <item component="ComponentInfo{com.stremio.one/com.stremio.one.MainActivity}" drawable="stremio_banner"/>
     <item component="ComponentInfo{com.stremio.one/.MainActivity}" drawable="stremio_banner"/>
     <item component="ComponentInfo{com.stremio.one/com.stremio.tv.MainActivity}" drawable="stremio_banner"/>
+    <!-- Stremize -->
+    <item component="ComponentInfo{com.stremize.player/com.stremize.player.MainActivity}" drawable="stremize_banner"/>
+    <item component="ComponentInfo{com.stremize.player/.MainActivity}" drawable="stremize_banner"/>
     <!-- Strexo Player -->
     <item component="ComponentInfo{com.callum.strexoplayer/com.callum.strexoplayer.LoginActivity}" drawable="strexo_banner"/>
     <item component="ComponentInfo{com.callum.strexoplayer/.LoginActivity}" drawable="strexo_banner"/>
@@ -2511,6 +2545,9 @@
     <!-- X-plore -->
     <item component="ComponentInfo{com.lonelycatgames.Xplore/com.lonelycatgames.Xplore.Browser}" drawable="lonelycatgames_banner"/>
     <item component="ComponentInfo{com.lonelycatgames.Xplore/.Browser}" drawable="lonelycatgames_banner"/>
+    <!-- Xbox -->
+    <item component="ComponentInfo{com.microsoft.xboxone.gamepass/com.microsoft.xboxone.gamepass.MainActivity}" drawable="xbox_banner"/>
+    <item component="ComponentInfo{com.microsoft.xboxone.gamepass/.MainActivity}" drawable="xbox_banner"/>
     <!-- XC IPTV -->
     <item component="ComponentInfo{com.nathnetwork.xciptv/com.nathnetwork.xciptv.SplashVideoActivity}" drawable="nathnetwork_2_banner"/>
     <item component="ComponentInfo{com.nathnetwork.xciptv/.SplashVideoActivity}" drawable="nathnetwork_2_banner"/>
