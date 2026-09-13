@@ -966,16 +966,37 @@ GLYPHS.update({"stadium": stadium, "browser_globe": browser_globe})
 # ==========================================================================
 
 def janky_play(c):
-    """
-    Janky Player — a play triangle with a deliberate stagger.
+    """Janky Player - the anarchy A, which is what the logo actually is.
 
-    The name is the idea: the wedge is split and offset, so it reads as a
-    play mark that is slightly out of joint. Distinguishes it from the four
-    other players that were all sharing play_round.
+    Several passes here drew a hamster and wrapped a ring round it, and one
+    read the diagonal as a short arm off the A's flank. Both miss the point.
+    Janky's mark is an ANARCHY A: the defining feature of that symbol is the
+    crossbar breaking past the letter on both sides to touch the circle, and
+    drawing it as a stub keeps the stroke but loses the reference entirely.
+
+    So the slash runs rim to rim - (81,298) to (422,187) - and the A stands
+    with its apex high and its feet splayed past the ring's lower arc, at the
+    proportions measured off the supplied artwork: apex y=111, feet +/-113 at
+    y=447. Three strokes, nothing else.
+
+    The bite is the fourth cue and the hard one. A bite is a SUBTRACTIVE
+    shape, and core_monoline forbids fills, masks and clip-paths - the only
+    three ways to subtract - so the style can add strokes and nothing else.
+    Four approximations were built and measured against each other: scalloping
+    the centreline reads as a lumpy wiggle, a gap reads as a severed leg, a
+    circle set against the edge reads as a stray dot, and the right leg
+    detouring around one shallow arc reads as a curve rather than a bite.
+    Brevity picked the shallow arc, so that is what ships: the leg bows out
+    around r=54 between y=300 and y=364 before running on to the foot.
+
+    Verified after monoline() normalisation at 96px (a real tile), 48px and
+    32px: counters 5 -> 6 -> 6 -> 6, 25 percent ink, safe-area margin 49px
+    against the 40px floor, core_monoline clean.
     """
-    return (f'<circle cx="256" cy="256" r="182" {_s(c, 32)}/>'
-            f'<path d="M 210 168 L 330 232 L 210 254 Z" {_s(c, 26)}/>'
-            f'<path d="M 222 272 L 342 294 L 222 358 Z" {_s(c, 26)}/>')
+    return (f'<circle cx="256" cy="256" r="180" {_s(c, 32)}/>'
+            f'<path d="M 256 111 L 143 447" {_s(c, 30)}/>'
+            f'<path d="M 256 111 L 320 300 A 54 54 0 0 0 341 364 L 369 447" {_s(c, 30)}/>'
+            f'<path d="M 81 298 L 422 187" {_s(c, 26)}/>')
 
 
 def tivimate_grid(c):
@@ -1126,11 +1147,18 @@ def folder_solid(c):
 
 
 def radar_dish(c):
-    """DS finder — a dish sweeping for a NAS on the LAN."""
+    """DS finder - a dish sweeping for a NAS on the LAN.
+
+    The pivot was radius 28 under a 26.2 stroke: a 15px counter, which is
+    under three pixels on a real Projectivy tile and closes into a dot.
+    Radius 42 on a lighter stroke gives a 31px counter that survives. Found
+    by tools/check_glyph.py, not by looking at the 512px master, where it
+    reads perfectly well.
+    """
     return (
         f'<path d="M 96 392 C 96 250 210 136 352 136" {_s(c, 34)}/>'
-        f'<circle cx="124" cy="368" r="28" {_s(c, 26)}/>'
-        f'<path d="M 124 368 L 256 236" {_s(c, 26)}/>'
+        f'<circle cx="128" cy="364" r="42" {_s(c, 22)}/>'
+        f'<path d="M 158 334 L 256 236" {_s(c, 26)}/>'
         f'<path d="M 300 96 C 372 96 448 172 448 244" {_s(c, 26)}/>'
         f'<path d="M 324 148 C 368 148 412 192 412 236" {_s(c, 26)}/>'
     )
@@ -3597,3 +3625,219 @@ GLYPHS.update({
     "usb_plug": usb_plug,
     "remote_pad": remote_pad,
 })
+
+
+# ==========================================================================
+# Category containers.
+#
+# 549 icons still fell back to `tile_X`: one letter in one rounded box,
+# separated only by accent. The accent spread in v1.8.14 made them distinct
+# files, but not distinguishable at a glance - a home screen of 549 identical
+# squircles is scanned letter by letter, which is exactly the work an icon is
+# supposed to save.
+#
+# These replace the single squircle with a container per FUNCTION, so the
+# silhouette answers "what kind of app is this" before the letter is read.
+# The category comes from the package id and name (tools/classify_families.py),
+# not from a guess at the brand: nothing here invents a vendor mark, and an
+# app whose function cannot be read keeps the neutral squircle.
+#
+# The monogram stays the identity. Cap heights are set per container from the
+# interior actually available, and every one is checked at 48px - a letter
+# whose counters close is worse than the tile it replaced.
+# ==========================================================================
+
+def _fam(letter, color, shell, cap_h=210, cy=GRID / 2):
+    """A category shell with the app's monogram inside it."""
+    return shell + monogram_scaled(letter, color, cap_h=cap_h, cy=cy)
+
+
+def shell_broadcast(c):
+    """A screen on legs with an aerial: any channel, network or catch-up app."""
+    return (f'<rect x="72" y="128" width="368" height="252" rx="44" {_s(c, 30)}/>'
+            f'<path d="M 196 128 L 148 72" {_s(c, 22)}/>'
+            f'<path d="M 316 128 L 364 72" {_s(c, 22)}/>'
+            f'<path d="M 180 428 L 332 428" {_s(c, 26)}/>')
+
+
+def shell_app(c):
+    """The neutral squircle, kept for apps whose function cannot be read."""
+    return _tile(c)
+
+
+def shell_tool(c):
+    """A nut seen face on: utilities, remotes, system tweaks."""
+    return f'<polygon points="{_hexpts(256, 256, 196)}" {_s(c, 30)}/>'
+
+
+def shell_sport(c):
+    """A ball."""
+    return f'<circle cx="256" cy="256" r="188" {_s(c, 30)}/>'
+
+
+def shell_music(c):
+    """A tile with sound leaving it: radio, music, podcasts.
+
+    The outer arc reached x=495 on the 512 grid; both arcs are pulled inside
+    the 40px margin.
+    """
+    return (f'<rect x="56" y="96" width="300" height="320" rx="70" {_s(c, 30)}/>'
+            f'<path d="M 392 196 C 420 230 420 282 392 316" {_s(c, 24)}/>'
+            f'<path d="M 428 158 C 470 212 470 300 428 354" {_s(c, 20)}/>')
+
+
+def shell_gaming(c):
+    """A gamepad: body with two grips hanging below it.
+
+    The first attempt was a single lobed outline that read as goggles rather
+    than a controller, and its interior left the monogram too small to tell a
+    C from a G. Splitting the grips off the body gives the letter the whole
+    body to sit in and makes the silhouette unambiguous.
+    """
+    return (f'<rect x="76" y="112" width="360" height="196" rx="58" {_s(c, 30)}/>'
+            f'<path d="M 132 302 C 104 372 120 430 164 430 '
+            f'C 202 430 214 388 210 330" {_s(c, 26)}/>'
+            f'<path d="M 380 302 C 408 372 392 430 348 430 '
+            f'C 310 430 298 388 302 330" {_s(c, 26)}/>')
+
+
+def shell_vpn(c):
+    """A shield: VPN, proxy, privacy."""
+    return (f'<path d="M 256 68 L 424 132 L 424 268 C 424 360 352 418 256 444 '
+            f'C 160 418 88 360 88 268 L 88 132 Z" {_s(c, 30)}/>')
+
+
+def shell_film(c):
+    """A film frame with its sprocket lanes: cinema and movie VOD."""
+    return (f'<rect x="64" y="112" width="384" height="288" rx="36" {_s(c, 30)}/>'
+            f'<path d="M 124 148 L 164 148 M 224 148 L 264 148 '
+            f'M 324 148 L 364 148" {_s(c, 20)}/>'
+            f'<path d="M 124 364 L 164 364 M 224 364 L 264 364 '
+            f'M 324 364 L 364 364" {_s(c, 20)}/>')
+
+
+def shell_store(c):
+    """A shopping bag: stores, installers, sideload managers."""
+    return (f'<path d="M 92 168 L 420 168 L 400 424 C 398 438 388 446 374 446 '
+            f'L 138 446 C 124 446 114 438 112 424 Z" {_s(c, 30)}/>'
+            f'<path d="M 176 208 L 176 136 C 176 100 212 72 256 72 '
+            f'C 300 72 336 100 336 136 L 336 208" {_s(c, 24)}/>')
+
+
+def shell_photos(c):
+    """A print with its caption band: photo, gallery and slideshow apps.
+
+    A camera body with a viewfinder hump read as a briefcase at tile size -
+    the hump was too small to carry the meaning. A print is a plainer idea and
+    survives the downscale: the band under the image is the whole tell.
+    """
+    return (f'<rect x="76" y="72" width="360" height="368" rx="40" {_s(c, 30)}/>'
+            f'<path d="M 76 348 L 436 348" {_s(c, 24)}/>')
+
+
+def shell_debrid(c):
+    """A cloud: debrid, remote storage, torrent and usenet clients.
+
+    Narrowed from a 482px right edge so the stroke stays inside SAFE.
+    """
+    return (f'<path d="M 158 392 C 108 392 76 354 76 308 C 76 260 114 226 158 230 '
+            f'C 174 174 220 136 276 136 C 344 136 396 190 398 258 '
+            f'C 430 268 450 298 450 332 C 450 364 426 392 392 392 Z" {_s(c, 30)}/>')
+
+
+def shell_browser(c):
+    """A window with a title bar."""
+    return (f'<rect x="64" y="104" width="384" height="304" rx="48" {_s(c, 30)}/>'
+            f'<path d="M 64 180 L 448 180" {_s(c, 22)}/>')
+
+
+def shell_anime(c):
+    """A tile with a spark: anime and manga services.
+
+    Two passes to fit: the spark's right arm first put ink at x=489, and
+    shifting the tile to x=46 then put its left wall at x=31. At x=58 with a
+    30 stroke the wall lands on 43 and the spark ends on 465 - both inside
+    the 40px margin.
+    """
+    return (_tile(c, x=58, y=92, w=330, h=340, rx=80) +
+            f'<path d="M 424 122 L 424 182 M 394 152 L 454 152" {_s(c, 22)}/>')
+
+
+def shell_kids(c):
+    """A tile with ears: kids and family services.
+
+    Ears were clipped at y=35; the whole lockup sits 12px lower.
+    """
+    return (_tile(c, x=64, y=126, w=384, h=330, rx=82) +
+            f'<circle cx="144" cy="102" r="38" {_s(c, 24)}/>'
+            f'<circle cx="368" cy="102" r="38" {_s(c, 24)}/>')
+
+
+def shell_files(c):
+    """A folder."""
+    return (f'<path d="M 64 148 L 212 148 L 252 200 L 448 200 L 448 400 '
+            f'C 448 422 430 440 408 440 L 104 440 C 82 440 64 422 64 400 Z" '
+            f'{_s(c, 30)}/>')
+
+
+# Cap height and optical centre per shell: each interior is a different shape,
+# and a monogram sized for the squircle either overflows the cloud or floats
+# in the shield. Values are tuned against the 48px check, not by eye.
+FAMILY_SHELLS = {
+    "broadcast": (shell_broadcast, 150, 254),
+    "app":       (shell_app,       200, 256),
+    "tool":      (shell_tool,      200, 264),
+    "sport":     (shell_sport,     210, 256),
+    "music":     (shell_music,     200, 256),
+    "gaming":    (shell_gaming,    150, 240),
+    "vpn":       (shell_vpn,       190, 250),
+    "film":      (shell_film,      170, 256),
+    "store":     (shell_store,     180, 320),
+    "photos":    (shell_photos,    160, 290),
+    "debrid":    (shell_debrid,    150, 290),
+    "browser":   (shell_browser,   180, 300),
+    "anime":     (shell_anime,     190, 262),
+    "kids":      (shell_kids,      210, 296),
+    "files":     (shell_files,     180, 330),
+}
+
+
+def _mk_family(family, letter):
+    shell, cap_h, cy = FAMILY_SHELLS[family]
+    return lambda c: _fam(letter, c, shell(c), cap_h=cap_h, cy=cy)
+
+
+_family_names = {}
+for _fam_key in FAMILY_SHELLS:
+    for _ch in "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789":
+        _family_names[f"{_fam_key}_{_ch}"] = _mk_family(_fam_key, _ch)
+GLYPHS.update(_family_names)
+
+
+def trakt_mark(c):
+    """Trakt: the ring with its 't'.
+
+    Trakt was in the pack but shared `sync_ring` with Syncler x3 and Synology
+    Drive - a generic tracking arrow, so the one app whose whole job is
+    tracking had no mark of its own. The brand cue is a circle carrying a
+    lowercase t; drawn here in our linework rather than lifted.
+    """
+    return (f'<circle cx="256" cy="256" r="182" {_s(c, 32)}/>'
+            f'<path d="M 226 136 L 226 306 C 226 336 246 352 276 352 '
+            f'L 312 352" {_s(c, 30)}/>'
+            f'<path d="M 168 198 L 292 198" {_s(c, 26)}/>')
+
+
+def drive_sync(c):
+    """Synology Drive: a disc platter under sync arrows.
+
+    Split off `sync_ring` so it no longer shares a picture with Syncler and
+    Trakt. The platter says storage; the arrows say sync.
+    """
+    return (f'<ellipse cx="256" cy="300" rx="168" ry="96" {_s(c, 30)}/>'
+            f'<circle cx="256" cy="300" r="42" {_s(c, 24)}/>'
+            f'<path d="M 150 148 C 200 104 312 104 362 148" {_s(c, 26)}/>'
+            f'<path d="M 318 116 L 368 152 L 330 190" {_s(c, 22)}/>')
+
+
+GLYPHS.update({"trakt_mark": trakt_mark, "drive_sync": drive_sync})
