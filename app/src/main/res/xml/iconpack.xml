@@ -306,6 +306,7 @@
     <item drawable="hayu" />
     <item drawable="hd_streamz" />
     <item drawable="hdhomerun" />
+    <item drawable="hdmi_source" />
     <item drawable="hdo_box" />
     <item drawable="falcofemoralis" />
     <item drawable="hdtv_player" />
@@ -498,6 +499,7 @@
     <item drawable="nhk_plus" />
     <item drawable="nhk_world_japan" />
     <item drawable="nhl" />
+    <item drawable="nintendo_switch" />
     <item drawable="njpw_world" />
     <item drawable="nlziet" />
     <item drawable="nobuffr" />
@@ -576,6 +578,7 @@
     <item drawable="playkids" />
     <item drawable="apksrebrand" />
     <item drawable="androidtv_10" />
+    <item drawable="playstation" />
     <item drawable="plex" />
     <item drawable="plexamp" />
     <item drawable="telegram" />
@@ -718,6 +721,7 @@
     <item drawable="fredrikburmester" />
     <item drawable="dpgmedia" />
     <item drawable="stremio" />
+    <item drawable="stremize" />
     <item drawable="strexo" />
     <item drawable="strim" />
     <item drawable="strmr" />
@@ -896,6 +900,7 @@
     <item drawable="wuplay" />
     <item drawable="x_tv" />
     <item drawable="lonelycatgames" />
+    <item drawable="xbox" />
     <item drawable="nathnetwork_2" />
     <item drawable="xiaomi_media_player" />
     <item drawable="xstream_play" />

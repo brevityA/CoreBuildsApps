@@ -308,6 +308,7 @@
         <item>hayu</item>
         <item>hd_streamz</item>
         <item>hdhomerun</item>
+        <item>hdmi_source</item>
         <item>hdo_box</item>
         <item>falcofemoralis</item>
         <item>hdtv_player</item>
@@ -500,6 +501,7 @@
         <item>nhk_plus</item>
         <item>nhk_world_japan</item>
         <item>nhl</item>
+        <item>nintendo_switch</item>
         <item>njpw_world</item>
         <item>nlziet</item>
         <item>nobuffr</item>
@@ -578,6 +580,7 @@
         <item>playkids</item>
         <item>apksrebrand</item>
         <item>androidtv_10</item>
+        <item>playstation</item>
         <item>plex</item>
         <item>plexamp</item>
         <item>telegram</item>
@@ -720,6 +723,7 @@
         <item>fredrikburmester</item>
         <item>dpgmedia</item>
         <item>stremio</item>
+        <item>stremize</item>
         <item>strexo</item>
         <item>strim</item>
         <item>strmr</item>
@@ -898,6 +902,7 @@
         <item>wuplay</item>
         <item>x_tv</item>
         <item>lonelycatgames</item>
+        <item>xbox</item>
         <item>nathnetwork_2</item>
         <item>xiaomi_media_player</item>
         <item>xstream_play</item>
@@ -1236,6 +1241,7 @@
         <item>Hayu</item>
         <item>Hd Streamz</item>
         <item>Hdhomerun</item>
+        <item>HDMI Source</item>
         <item>Hdo Box</item>
         <item>HDRezka</item>
         <item>Hdtv Player</item>
@@ -1428,6 +1434,7 @@
         <item>Nhk Plus</item>
         <item>Nhk World Japan</item>
         <item>NHL</item>
+        <item>Nintendo Switch</item>
         <item>Njpw World</item>
         <item>Nlziet</item>
         <item>NoBuffr</item>
@@ -1506,6 +1513,7 @@
         <item>PlayKids</item>
         <item>PlayLatin</item>
         <item>PlayNet</item>
+        <item>PlayStation</item>
         <item>Plex</item>
         <item>Plexamp</item>
         <item>Plus Messenger</item>
@@ -1648,6 +1656,7 @@
         <item>Streamyfin</item>
         <item>Streamz</item>
         <item>Stremio</item>
+        <item>Stremize</item>
         <item>Strexo Player</item>
         <item>Strim</item>
         <item>Strmr</item>
@@ -1826,6 +1835,7 @@
         <item>WuPlay</item>
         <item>X TV</item>
         <item>X-plore</item>
+        <item>Xbox</item>
         <item>XC IPTV</item>
         <item>Xiaomi Media Player</item>
         <item>Xstream Play</item>
@@ -2164,6 +2174,7 @@
         <item>APP</item>
         <item>APP</item>
         <item>APP</item>
+        <item>SYSTEM</item>
         <item>APP</item>
         <item>APP</item>
         <item>LIVE</item>
@@ -2356,6 +2367,7 @@
         <item>APP</item>
         <item>APP</item>
         <item>APP</item>
+        <item>GAMING</item>
         <item>APP</item>
         <item>APP</item>
         <item>PLAYER</item>
@@ -2434,6 +2446,7 @@
         <item>APP</item>
         <item>APP</item>
         <item>APP</item>
+        <item>GAMING</item>
         <item>MEDIA</item>
         <item>APP</item>
         <item>APP</item>
@@ -2573,6 +2586,7 @@
         <item>STREAM</item>
         <item>APP</item>
         <item>VPN</item>
+        <item>STREAM</item>
         <item>STREAM</item>
         <item>STREAM</item>
         <item>STREAM</item>
@@ -2754,6 +2768,7 @@
         <item>STREAM</item>
         <item>APP</item>
         <item>FILES</item>
+        <item>GAMING</item>
         <item>LIVE</item>
         <item>PLAYER</item>
         <item>APP</item>
@@ -2785,5 +2800,5 @@
         <item>APP</item>
         <item>APP</item>
     </string-array>
-    <integer name="icon_count">926</integer>
+    <integer name="icon_count">931</integer>
 </resources>

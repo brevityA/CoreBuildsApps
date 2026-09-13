@@ -2,11 +2,11 @@
   "$schema": "./catalog.schema.json",
   "meta": {
     "pack": "Core Builds Icon Pack",
-    "version": "1.8.16",
+    "version": "1.8.17",
     "grid": 512,
     "safe_area": 432,
     "note": "Core Builds-authored geometric icons on a shared 512 grid. Reviewed brand glyphs use rounded monoline strokes and one accent, not imported vendor silhouettes. Common Outfit/category/rail banners; artwork is reference-only. Canonical brand colours and the dark-card contrast policy remain shared.",
-    "count": 926
+    "count": 931
   },
   "icons": [
     {
@@ -1118,11 +1118,17 @@
       "glyph": "binge_wave",
       "components": [
         "au.com.streamotion.ares/.MainActivity",
-        "au.com.binge.tv/.MainActivity"
+        "au.com.binge.tv/.MainActivity",
+        "au.com.binge.tv/au.com.foxsports.martian.tv.main.MainActivity",
+        "au.com.streamotion.ares/au.com.foxsports.martian.tv.main.MainActivity"
       ],
       "category": "VOD",
       "color_source": "sampled (gradient brand mark, dominant magenta)",
-      "color_reviewed": "2026-09-08"
+      "color_reviewed": "2026-09-08",
+      "unverified": [
+        "au.com.binge.tv/au.com.foxsports.martian.tv.main.MainActivity",
+        "au.com.streamotion.ares/au.com.foxsports.martian.tv.main.MainActivity"
+      ]
     },
     {
       "name": "Bitdefender",
@@ -1749,7 +1755,6 @@
       "components": [
         "tv.corebuilds.iconpack/.MainActivity"
       ],
-      "banner_style": "glyph",
       "category": "CORE",
       "color_source": "brand reference (pre-provenance, unverified)",
       "color_reviewed": null
@@ -4231,6 +4236,37 @@
       "color_reviewed": null
     },
     {
+      "name": "HDMI Source",
+      "drawable": "hdmi_source",
+      "color": "#00D4FF",
+      "glyph": "hdmi_connector",
+      "components": [
+        "com.spocky.projengmenu/.activities.input.SourceHDMI1Activity",
+        "com.spocky.projengmenu/.activities.input.SourceHDMI2Activity",
+        "com.spocky.projengmenu/.activities.input.SourceHDMI3Activity",
+        "com.spocky.projengmenu/.activities.input.SourceHDMI4Activity",
+        "com.spocky.projengmenu/.ui.guidedActions.activities.input.SourceHDMI1Activity",
+        "com.spocky.projengmenu/.ui.guidedActions.activities.input.SourceHDMI2Activity",
+        "com.spocky.projengmenu/.ui.guidedActions.activities.input.SourceHDMI3Activity",
+        "com.spocky.projengmenu/.ui.guidedActions.activities.input.SourceHDMI4Activity"
+      ],
+      "unverified": [
+        "com.spocky.projengmenu/.activities.input.SourceHDMI1Activity",
+        "com.spocky.projengmenu/.activities.input.SourceHDMI2Activity",
+        "com.spocky.projengmenu/.activities.input.SourceHDMI3Activity",
+        "com.spocky.projengmenu/.activities.input.SourceHDMI4Activity",
+        "com.spocky.projengmenu/.ui.guidedActions.activities.input.SourceHDMI1Activity",
+        "com.spocky.projengmenu/.ui.guidedActions.activities.input.SourceHDMI2Activity",
+        "com.spocky.projengmenu/.ui.guidedActions.activities.input.SourceHDMI3Activity",
+        "com.spocky.projengmenu/.ui.guidedActions.activities.input.SourceHDMI4Activity"
+      ],
+      "category": "SYSTEM",
+      "brand": "hdmi",
+      "style": "core_monoline",
+      "color_source": "core-builds palette (no published brand colour found)",
+      "color_reviewed": null
+    },
+    {
       "name": "Hdo Box",
       "drawable": "hdo_box",
       "color": "#FDCB58",
@@ -5068,11 +5104,13 @@
       "components": [
         "au.com.kayosports.tv/.MainActivity",
         "au.com.streamotion.hyperion/.MainActivity",
-        "au.com.kayosports.tv/au.com.foxsports.martian.tv.main.MainActivity"
+        "au.com.kayosports.tv/au.com.foxsports.martian.tv.main.MainActivity",
+        "au.com.streamotion.hyperion/au.com.foxsports.martian.tv.main.MainActivity"
       ],
       "category": "VOD",
       "unverified": [
-        "au.com.kayosports.tv/au.com.foxsports.martian.tv.main.MainActivity"
+        "au.com.kayosports.tv/au.com.foxsports.martian.tv.main.MainActivity",
+        "au.com.streamotion.hyperion/au.com.foxsports.martian.tv.main.MainActivity"
       ],
       "color_source": "sampled (current logo green)",
       "color_reviewed": "2026-09-08",
@@ -5430,11 +5468,15 @@
       "color": "#53FC18",
       "glyph": "flauncher_mark",
       "components": [
-        "com.wolf.lm/com.wolf.lm.main.MainActivity"
+        "com.wolf.lm/com.wolf.lm.main.MainActivity",
+        "com.wolf.lms/com.wolf.lm.main.MainActivity",
+        "com.wolf.lms/.MainActivity"
       ],
       "category": "LAUNCHER",
       "unverified": [
-        "com.wolf.lm/com.wolf.lm.main.MainActivity"
+        "com.wolf.lm/com.wolf.lm.main.MainActivity",
+        "com.wolf.lms/com.wolf.lm.main.MainActivity",
+        "com.wolf.lms/.MainActivity"
       ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
@@ -6948,6 +6990,23 @@
       "color_reviewed": null
     },
     {
+      "name": "Nintendo Switch",
+      "drawable": "nintendo_switch",
+      "color": "#E60012",
+      "glyph": "switch_joycons",
+      "components": [
+        "com.nintendo.znba/.MainActivity"
+      ],
+      "unverified": [
+        "com.nintendo.znba/.MainActivity"
+      ],
+      "category": "GAMING",
+      "brand": "nintendo",
+      "style": "core_monoline",
+      "color_source": "brand reference (pre-provenance, unverified)",
+      "color_reviewed": null
+    },
+    {
       "name": "Njpw World",
       "drawable": "njpw_world",
       "color": "#FF4C98",
@@ -8035,6 +8094,25 @@
       ],
       "category": "APP",
       "color_source": "core-builds palette (no published brand colour found)",
+      "color_reviewed": null
+    },
+    {
+      "name": "PlayStation",
+      "drawable": "playstation",
+      "color": "#0070D1",
+      "glyph": "playstation_shapes",
+      "components": [
+        "com.playstation.remoteplay/.MainActivity",
+        "com.scee.psxandroid/.MainActivity"
+      ],
+      "unverified": [
+        "com.playstation.remoteplay/.MainActivity",
+        "com.scee.psxandroid/.MainActivity"
+      ],
+      "category": "GAMING",
+      "brand": "playstation",
+      "style": "core_monoline",
+      "color_source": "brand reference (pre-provenance, unverified)",
       "color_reviewed": null
     },
     {
@@ -10087,6 +10165,25 @@
       "brand": "stremio",
       "style": "core_monoline",
       "color_source": "brand reference (pre-provenance, unverified)",
+      "color_reviewed": null
+    },
+    {
+      "name": "Stremize",
+      "drawable": "stremize",
+      "color": "#6C5CE7",
+      "glyph": "stremize_z",
+      "components": [
+        "com.stremize.player/.MainActivity",
+        "com.stremize.player/com.stremize.player.MainActivity"
+      ],
+      "unverified": [
+        "com.stremize.player/.MainActivity",
+        "com.stremize.player/com.stremize.player.MainActivity"
+      ],
+      "category": "STREAM",
+      "brand": "stremize",
+      "style": "core_monoline",
+      "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
     },
     {
@@ -12782,6 +12879,23 @@
       ],
       "category": "FILES",
       "color_source": "core-builds palette (no published brand colour found)",
+      "color_reviewed": null
+    },
+    {
+      "name": "Xbox",
+      "drawable": "xbox",
+      "color": "#107C10",
+      "glyph": "xbox_orb",
+      "components": [
+        "com.microsoft.xboxone.gamepass/.MainActivity"
+      ],
+      "unverified": [
+        "com.microsoft.xboxone.gamepass/.MainActivity"
+      ],
+      "category": "GAMING",
+      "brand": "xbox",
+      "style": "core_monoline",
+      "color_source": "brand reference (pre-provenance, unverified)",
       "color_reviewed": null
     },
     {

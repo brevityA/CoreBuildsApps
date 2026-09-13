@@ -3567,6 +3567,54 @@ def remote_pad(c):
             f'<path d="M 200 412 L 312 412" {_s(c, 22)}/>')
 
 
+# --------------------------------------------------------------------------
+# Source & input marks (v1.8.17).
+#
+# Consoles reach the TV through HDMI, so on a Projectivy home they exist as
+# input tiles, not apps. These marks give those tiles — and the companion
+# apps users keep beside them — the same rounded-line identity as everything
+# else. The constructions are ours: the recognisable cue (an orb crossed
+# by flowing lines, detached rails, the four button shapes, the plug face)
+# is drawn as open linework, never as a vendor silhouette.
+# --------------------------------------------------------------------------
+def xbox_orb(c):
+    """Xbox - the orb, read by its crossed-flow interior."""
+    return (f'<circle cx="256" cy="256" r="176" {_s(c, 32)}/>'
+            f'<path d="M 150 150 Q 256 280 362 362" {_s(c, 26)}/>'
+            f'<path d="M 362 150 Q 256 280 150 362" {_s(c, 26)}/>')
+
+
+def switch_joycons(c):
+    """Nintendo Switch - the two detached rails, sticks on opposite corners."""
+    return (f'<rect x="96" y="96" width="128" height="320" rx="64" {_s(c, 32)}/>'
+            f'<rect x="288" y="96" width="128" height="320" rx="64" {_s(c, 32)}/>'
+            f'<circle cx="160" cy="176" r="26" {_s(c, 26)}/>'
+            f'<circle cx="352" cy="336" r="26" {_s(c, 26)}/>')
+
+
+def playstation_shapes(c):
+    """PlayStation - the four button shapes, one per quadrant."""
+    return (f'<path d="M 160 100 L 224 214 L 96 214 Z" {_s(c, 26)}/>'
+            f'<circle cx="352" cy="157" r="62" {_s(c, 26)}/>'
+            f'<path d="M 112 304 L 208 400" {_s(c, 26)}/>'
+            f'<path d="M 208 304 L 112 400" {_s(c, 26)}/>'
+            f'<rect x="292" y="292" width="120" height="120" rx="14" {_s(c, 26)}/>')
+
+
+def hdmi_connector(c):
+    """HDMI - the plug face: square shoulders, cut lower corners, pin ticks."""
+    return (f'<path d="M 104 156 L 408 156 L 408 262 L 362 356 '
+            f'L 150 356 L 104 262 Z" {_s(c, 32)}/>'
+            f'<path d="M 200 208 L 200 264" {_s(c, 22)}/>'
+            f'<path d="M 256 208 L 256 264" {_s(c, 22)}/>'
+            f'<path d="M 312 208 L 312 264" {_s(c, 22)}/>')
+
+
+def stremize_z(c):
+    """Stremize - the Z of the all-in-one debrid/playlist player."""
+    return (f'<path d="M 104 140 L 408 140 L 104 372 L 408 372" {_s(c, 32)}/>')
+
+
 GLYPHS.update({
     "coji_browser": coji_browser,
     "tv_browser_bar": tv_browser_bar,
@@ -3624,6 +3672,11 @@ GLYPHS.update({
     "screensaver_moon": screensaver_moon,
     "usb_plug": usb_plug,
     "remote_pad": remote_pad,
+    "xbox_orb": xbox_orb,
+    "switch_joycons": switch_joycons,
+    "playstation_shapes": playstation_shapes,
+    "hdmi_connector": hdmi_connector,
+    "stremize_z": stremize_z,
 })
 
 
