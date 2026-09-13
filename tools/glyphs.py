@@ -160,9 +160,21 @@ def plex_chevron(c):
 
 
 def nuvio_wave(c):
-    return (f'<circle cx="256" cy="256" r="182" {_s(c, 34)}/>'
-            f'<path d="M 156 276 C 196 196 236 196 256 256 '
-            f'C 276 316 316 316 356 236" {_s(c, 34)}/>')
+    """Nuvio TV: the rounded play triangle — the brand's gradient play in stroke-only.
+
+    Nuvio's real mark is a large rounded play triangle (blue→purple/cyan
+    gradient) with a black inner triangle and a white play wedge. The previous
+    pack glyph was a circle + abstract sine wave, which shared nothing with
+    that silhouette — users rightly noted it looked nothing like the app.
+
+    This is the pack's own construction, not a pasted silhouette: a large
+    outer triangle with the same rounded-corner proportions plus a smaller
+    centred play wedge, one accent (#E23E57), transparent interiors, rounded
+    caps/joins. Verified with tools/check_glyph.py at 96/48px: outer+inner
+    stay as two open counters and the annulus never closes.
+    """
+    return (f'<path d="M 110 90 L 430 256 L 110 422 Z" {_s(c, 34)}/>'
+            f'<path d="M 200 170 L 200 342 L 332 256 Z" {_s(c, 32)}/>')
 
 
 def projector_beam(c):
@@ -494,14 +506,21 @@ def smarttube_play(c):
 
 
 def tizen_play(c):
-    """TizenTube: play inside a soft square, ad-blocked slash.
+    """TizenTube: play inside a soft square — YouTube lineage, ad-free.
 
-    The slash crossed the wedge and closed it. Running the slash clear of the
-    play keeps both marks whole.
+    TizenTube Cobalt is a YouTube Leanback fork (SponsorBlock/ad-block) whose
+    own banners and store listings reuse the YouTube play button; the Cobalt
+    build ships with \"YouTube style\" icons. The previous glyph added a stray
+    diagonal slash that emerged from the rounded-rect border and stopped under
+    the play wedge — at tile size it read as a random dangling line and closed
+    the lower-left corner. Removed: the clean play + soft square already says
+    YouTube-derived without extra marks, and keeps the pack's monoline grammar.
+
+    If an ad-block cue is wanted later, it should sit outside the frame as a
+    small badge, not as a slash through the mark's border.
     """
     return (f'<rect x="70" y="112" width="372" height="288" rx="64" {_s(c, 34)}/>'
-            f'<path d="M 226 192 L 226 320 L 340 256 Z" {_s(c, 30)}/>'
-            f'<path d="M 108 398 L 196 310" {_s(c, 30)}/>')
+            f'<path d="M 226 192 L 226 320 L 340 256 Z" {_s(c, 30)}/>')
 
 
 def film_reel(c):
