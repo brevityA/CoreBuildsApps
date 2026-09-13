@@ -4,6 +4,23 @@ All notable changes to the Core Builds Icon Pack. Format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); versions follow
 [SemVer](https://semver.org/spec/v2.0.0.html).
 
+## [1.8.16] — 2026-09-13
+
+**The pack's own launcher badge finally looks like the brand.**
+
+### Changed
+- Launcher icon rebuilt in `tools/build_branding.py`: depth-gradient disc
+  (panel ink to void), edge keyline for a visible rim on near-black
+  launchers, heavier glowing hexagon linework and a lit gradient diamond.
+- Adaptive icon split into a gradient-field background layer plus the lit
+  mark foreground; the `mipmap-anydpi-v26` XML is now generator-written so
+  the layers and their wiring cannot disagree.
+
+### Added
+- `docs/icon-before-after.png` — old vs new badge on a dark shelf.
+- Receipts: `validate.py` 926 icons · 1664 components · 24957 checks;
+  suite truth, contracts, prefills and the 44-test icon identity suite pass.
+
 ## [1.8.15] — 2026-09-13
 
 **Monet Launcher never reads the system wallpaper, so "Set wallpaper" was a
