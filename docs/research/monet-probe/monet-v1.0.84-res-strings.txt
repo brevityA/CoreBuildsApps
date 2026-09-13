@@ -1,0 +1,777 @@
+%1$d imagens
+%1$d images
+%1$s: Changes apply only to this app
+%d wallpaper ditambahkan
+%s karşılığında Premium'u aç
+%s में Premium अनलॉक करें
+A Premium aktív
+A curated canvas for your wallpaper
+A saját háttérképek a Monet Premium részei.
+A vásárlás függőben van. A Premium automatikusan feloldódik, amint a fizetés befejeződik.
+ANTEPRIMA PREMIUM
+APERÇU PREMIUM
+Aankoop in behandeling. Premium wordt automatisch ontgrendeld zodra de betaling is voltooid.
+Abra o Monet para mudar a imagem de fundo
+Acest folder este gol
+Achat en attente. Premium sera débloqué automatiquement dès que le paiement sera terminé.
+Achiziția este în așteptare. Premium se va debloca automat imediat ce plata este finalizată.
+Acquisto in sospeso. Premium si sbloccherà automaticamente non appena il pagamento sarà completato.
+Activar Premium
+Activate Premium
+Activează Premium
+Activer Premium
+Adapter la fréquence d'images au contenu
+Adapter l’image aux formes des icônes et à la barre supérieure ronde.
+Adaugă aplicații în folder
+Adaugă în folder
+Add apps to folder
+Add to folder
+Affiche toujours l'image du jour.
+Affiche un verre dépoli adaptatif derrière le panneau. Les fonds vidéo utilisent une image fixe floutée.
+After a pause, Monet fades the Home screen items so more of your wallpaper stays visible. Any input brings them back.
+Ajustar a imagem às formas dos ícones e à barra superior redonda.
+Ajustar la imagen a las formas de los iconos y a la barra superior redonda.
+Aktifkan Premium
+Aktiver Premium
+Aktivera Premium
+Aktiviraj Premium
+Aktivoi Premium
+Aktivoinnin jälkeen tämä TV ei enää koskaan tarvitse internetyhteyttä Premiumia varten.
+Aktivovat Premium
+Aktiválás után ez a TV soha többé nem igényel internetkapcsolatot a Premium használatához.
+Aktivér Premium
+Aktywuj Premium
+Alcune impostazioni di questo codice richiedono Premium e non verranno applicate.
+Alege alt nume de folder
+Alege folder
+Algumas configurações deste código precisam de Premium e não serão aplicadas.
+Algunos ajustes de este código requieren Premium y no se aplicarán.
+All wallpapers
+Alla bilder i en mapp ingår i rotationen.
+Alle billeder i en mappe indgår i rotationen.
+Animasi pergantian wallpaper
+Anna avain ostovahvistuksestasi. Se avaa Premiumin myös tälle TV:lle.
+Anteprima dal vivo delle funzionalità Premium
+Anteprima gratuita. Applica con Premium.
+Apaga todas as configurações e o teu conteúdo (favoritos, pastas, linhas próprias) e reinicia o launcher. O Premium comprado mantém-se.
+Aperçu en direct des fonctionnalités Premium
+Aperçu gratuit. Application avec Premium.
+Aplicații și foldere
+Aplicațiile din folder rămân instalate
+Aplikacje i foldery
+Aplikacje w folderze pozostają zainstalowane
+Aplikasi dan folder
+Aplikasi di folder tetap terpasang
+Apply
+Apply a shared setup
+Apps and folders
+Asignar imagen
+Assign image
+Ativar Premium
+Atribuir imagem
+Attiva Premium
+Attribuer une image
+Aucun dossier d'images trouvé sur ce téléviseur.
+Aucune image chargée.
+Aucune image dans ce dossier.
+Aucune image ni vidéo trouvée sur cet appareil.
+Aucune image trouvée sur cet appareil.
+Aucune publication compatible avec une image, un GIF ou une vidéo n'a été trouvée.
+Avaa Premium
+Avaa Premium · 4,99 USD
+Avautuu Premiumilla
+Back to the shared widget look
+Bakgrundsrotation
+Beberapa pengaturan dalam kode ini membutuhkan Premium dan tidak akan diterapkan.
+Belum ada folder
+Belum ada video. Tambahkan video dulu di menu wallpaper.
+Bem-vindo ao Premium!
+Benvenuto in Premium!
+Besplatan pregled. Primijeni uz Premium.
+Bezpłatny podgląd. Zastosuj z Premium.
+Bienvenue dans Premium !
+Bilder für Rotation
+Bilder i rotationen
+Billeder til rotation
+Bine ai venit la Premium!
+Borra todos los ajustes y tu contenido (favoritos, carpetas, filas personalizadas) y reinicia el launcher. Tu Premium sigue activo.
+Brak obrazów w tym folderze.
+Brezplačen predogled. Uporabi s Premium.
+Browse images & videos
+Bu koddaki bazı ayarlar Premium gerektiriyor ve uygulanmayacak.
+Buat folder
+Built-in & your own
+Buka Monet untuk mengganti wallpaper
+Buka Premium
+Buka Premium · USD 4.99
+Cada imagem de uma pasta entra na rotação.
+Captura de tela salva em Imagens/Screenshots
+Capture d'écran enregistrée dans Images/Screenshots
+Carregando imagens…
+Certains paramètres de ce code nécessitent Premium et ne seront pas appliqués.
+Change appearance for this folder only
+Chaque image d'un dossier rejoint la rotation.
+Chargement des images…
+Choisir une image ci-dessous désactive cette option.
+Choisir une image ou une vidéo
+Choisissez une image ou une vidéo depuis votre appareil.
+Choose a different folder name
+Choose a symbol or your own picture.
+Choose folder
+Choose image or video
+Choose library wallpapers
+Choose one of your own videos. Add videos in the Background menu.
+Choose wallpaper or video as background.
+Chào mừng đến với Premium!
+Cinematic wallpaper can’t be combined with wallpaper rotation.
+Cinematic wallpaper isn’t available with %1$s.
+Colors, wallpaper and layout stay editable.
+Compra pendente. O Premium será desbloqueado automaticamente assim que o pagamento for concluído.
+Compra pendiente. Premium se desbloqueará automáticamente cuando se complete el pago.
+Copies qu'aucun fond, rotation ou économiseur n'utilise plus.
+Copies that no wallpaper, rotation, or screensaver uses anymore.
+Couldn't apply the code.
+Couldn’t load Wallhaven wallpapers.
+Create folder
+Creează folder
+Current wallpaper
+Custom backgrounds are part of Monet Premium.
+Custom image
+Custom wallpapers & videos
+Dados do clima por Open-Meteo e Bright Sky/DWD. Dados desportivos por OpenLigaDB.de (ODbL). Papéis de parede Reddit exibem imagens de posts do Reddit. Aerial: Projectivy Wallpaper Provider API (Apache 2.0).
+Dane pogodowe: Open-Meteo i Bright Sky/DWD. Dane sportowe: OpenLigaDB.de (ODbL). Tapety Reddit pokazują obrazy z postów Reddit. Aerial: Projectivy Wallpaper Provider API (Apache 2.0).
+Data cuaca dari Open-Meteo dan Bright Sky/DWD. Data olahraga dari OpenLigaDB.de (ODbL). Wallpaper Reddit menampilkan gambar dari postingan Reddit. Aerial: Projectivy Wallpaper Provider API (Apache 2.0).
+Data o počasí: Open-Meteo a Bright Sky/DWD. Sportovní data od OpenLigaDB.de (ODbL). Tapety z Redditu zobrazují obrázky z příspěvků. Aerial: Projectivy Wallpaper Provider API (Apache 2.0).
+Date meteo de la Open-Meteo și Bright Sky/DWD. Date sportive de la OpenLigaDB.de (ODbL). Fundalurile Reddit afișează imagini din postări Reddit. Aerial: Projectivy Wallpaper Provider API (Apache 2.0).
+Dati meteo da Open-Meteo e Bright Sky/DWD. Dati sportivi da OpenLigaDB.de (ODbL). Gli sfondi Reddit mostrano immagini dai post Reddit. Aerial: Projectivy Wallpaper Provider API (Apache 2.0).
+Datos del tiempo de Open-Meteo y Bright Sky/DWD. Datos deportivos de OpenLigaDB.de (ODbL). Los fondos de Reddit muestran imágenes de publicaciones de Reddit. Aerial: Projectivy Wallpaper Provider API (Apache 2.0).
+Deblochează Premium
+Deblochează Premium · 4,99 USD
+Delete all custom wallpapers
+Delete folder
+Delete folder?
+Depois de ativada, esta TV nunca mais precisa de ligação à internet para o Premium.
+Der Kino-Hintergrund lässt sich nicht mit der Hintergrund-Rotation kombinieren.
+Desbloquear Premium
+Desbloquear Premium · USD 4.99
+Desbloqueia com o Premium
+Deschide selectorul de foldere al sistemului. Găsește foldere care nu sunt încă în listă.
+Dette sletter alle innstillinger og alt innholdet ditt (favoritter, mapper, egne rader), og starter launcheren på nytt. Kjøpt Premium beholdes.
+Dinamis (wallpaper)
+Disetel sebagai wallpaper
+Dit verwijdert alle instellingen en je inhoud (favorieten, mappen, eigen rijen) en herstart de launcher. Gekocht Premium blijft behouden.
+Doar dezînregistrează folderul. Niciun fișier nu este șters.
+Dobrodošli u Premium!
+Dobrodošli v Premium!
+Dodaj aplikacje do folderu
+Dodaj do folderu
+Données météo par Open-Meteo et Bright Sky/DWD. Données sportives par OpenLigaDB.de (ODbL). Les fonds d’écran Reddit affichent des images de publications Reddit. Aerial: Projectivy Wallpaper Provider API (Apache 2.0).
+Dynamic (wallpaper)
+Débloquer Premium
+Débloquer Premium · 4,99 USD
+Dữ liệu thời tiết từ Open-Meteo và Bright Sky/DWD. Dữ liệu thể thao từ OpenLigaDB.de (ODbL). Hình nền Reddit hiển thị ảnh từ bài đăng Reddit. Aerial: Projectivy Wallpaper Provider API (Apache 2.0).
+Eenmaal geactiveerd heeft deze tv nooit meer een internetverbinding nodig voor Premium.
+Egna bakgrunder ingår i Monet Premium.
+Egne baggrunde er en del af Monet Premium.
+Egne bakgrunner er en del av Monet Premium.
+Eigen achtergronden horen bij Monet Premium.
+Eigene Hintergründe gehören zu Monet Premium.
+Einige Einstellungen aus dem Code brauchen Premium und werden nicht übernommen.
+Elegir imagen o vídeo
+Elegir una imagen abajo lo desactiva.
+Elige una imagen o un video de tu dispositivo.
+Elimina tutte le impostazioni e i tuoi contenuti (preferiti, cartelle, righe personali) e riavvia il launcher. Il Premium acquistato resta.
+Elimină din folder
+Elimină folderul
+Ennek a kódnak néhány beállítása Premiumot igényel, és nem kerül alkalmazásra.
+Escolhe uma imagem ou um vídeo do teu dispositivo.
+Escolher imagem ou vídeo
+Escolher uma imagem abaixo desativa isto.
+Esikatsele ilmaiseksi. Ota käyttöön Premiumilla.
+Esikatsele premium-ominaisuuksia
+Etkinleştirildikten sonra bu TV, Premium için bir daha internet bağlantısına ihtiyaç duymaz.
+Every picture in a folder joins the rotation.
+Fiecare imagine dintr-un folder participă la rotație.
+File ini tidak dapat digunakan sebagai wallpaper.
+Filmiska bakgrunder kan inte kombineras med bakgrundsrotation.
+Fit the image to icon shapes and the round status bar.
+Folder
+Folder baru
+Folder berpindah ke “Semua aplikasi”
+Folder ini kosong
+Folder moves to "All Apps"
+Folder nou
+Folder przeniesie się do „Wszystkich aplikacji”
+Folder “%1$s” akan dihapus. Aplikasi di dalamnya tetap terinstal.
+Folder „%1$s” zostanie usunięty. Aplikacje wewnątrz pozostaną zainstalowane.
+Folderul trece în „Toate aplicațiile”
+Folderul „%1$s” va fi șters. Aplicațiile rămân instalate.
+Forhåndsvis gratis. Bruk med Premium.
+Fundalurile personalizate fac parte din Monet Premium.
+Förhandsvisa gratis. Använd med Premium.
+Ganti nama folder
+Giao dịch mua đang chờ xử lý. Premium sẽ tự động mở khóa ngay khi thanh toán hoàn tất.
+Gli sfondi personalizzati fanno parte di Monet Premium.
+Gratis bekijken. Toepassen met Premium.
+Hanya melepas folder. Tidak ada file yang dihapus.
+Hapus dari folder
+Hapus folder
+Hapus folder?
+Hapus semua wallpaper sendiri
+Hava durumu verileri Open-Meteo ve Bright Sky/DWD’den. Spor verileri OpenLigaDB.de'den (ODbL). Reddit duvar kağıtları Reddit gönderilerindeki görselleri gösterir. Aerial: Projectivy Wallpaper Provider API (Apache 2.0).
+Hình nền riêng là một phần của Monet Premium.
+Icon pack
+Icon pack, icon & more
+Icon packs
+Icon packs on Android come as installable APK apps. Download one from its project page or a trusted APK mirror, copy the APK to this TV with a file manager or USB drive, and install it via Android settings. Once installed it will show up here.
+Icon shape
+Időjárási adatok: Open-Meteo és Bright Sky/DWD. Sportadatok: OpenLigaDB.de (ODbL). A Reddit-háttérképek Reddit-bejegyzések képeit mutatják. Aerial: Projectivy Wallpaper Provider API (Apache 2.0).
+Image
+Image d’application d’origine
+Image personnalisée
+Image size
+Imagem
+Imagem original do app
+Imagem personalizada
+Imagen
+Imagen original de la app
+Imagen personalizada
+Imagens
+Imagens da rotação
+Images
+Images de la rotation
+Ingyenes előnézet. Alkalmazás Premiummal.
+Izbriše vse nastavitve in vašo vsebino (priljubljene, mape, lastne vrstice) ter znova zažene zaganjalnik. Kupljeni Premium ostane.
+Jedes Bild eines Ordners kommt in die Rotation.
+Jeszcze brak folderu
+Kanvas pilihan untuk wallpaper kamu
+Kauf ausstehend. Premium wird automatisch freigeschaltet, sobald die Zahlung abgeschlossen ist.
+Każdy obraz z folderu bierze udział w rotacji.
+Kendi duvar kağıtlarınız Monet Premium'un bir parçasıdır.
+Kinematisk baggrund kan ikke kombineres med rotation af baggrunden.
+Kjøpet venter. Premium låses opp automatisk når betalingen er fullført.
+Ko je aktiviran, ta TV ne bo nikoli več potreboval internetne povezave za Premium.
+Kopien, die kein Hintergrund, keine Rotation und kein Bildschirmschoner mehr nutzt.
+Kopier som ingen baggrund, rotation eller pauseskærm bruger længere.
+Kopior som ingen bakgrund, rotation eller skärmsläckare använder längre.
+Kostenlos ansehen. Mit Premium anwenden.
+Kupnja je na čekanju. Premium će se automatski otključati čim plaćanje bude dovršeno.
+Kupovina je na čekanju. Premium će se automatski otključati čim plaćanje bude završeno.
+Kích hoạt Premium
+Köpet väntar. Premium låses upp automatiskt när betalningen är slutförd.
+Købet afventer. Premium låses automatisk op, når betalingen er gennemført.
+L'application vidéo doit gérer l'adaptation de la fréquence d'images. Avec Toujours, un écran noir peut s'afficher brièvement pendant que le téléviseur change de fréquence.
+Lastna ozadja so del Monet Premium.
+Le code contient uniquement votre style. Sans appli, image, profil, code PIN ni vos propres lignes. Pour cela, utilisez la sauvegarde. Rien n'est envoyé en ligne.
+Le fond d’écran cinématique ne peut pas être combiné avec la rotation du fond d’écran.
+Les fonds d'écran personnels font partie de Monet Premium.
+Live forhåndsvisning av premium-funksjoner
+Live preview of premium features
+Live voorbeeld van Premium-functies
+Live-Vorschau von Premium-Funktionen
+Live-forhåndsvisning af premium-funktioner
+Live-förhandsvisning av premiumfunktioner
+Loading Wallhaven wallpapers…
+Loading folders…
+Los fondos personalizados forman parte de Monet Premium.
+Lås Premium op
+Lås Premium op · 4,99 USD
+Lås opp Premium
+Lås opp Premium · USD 4.99
+Lås upp Premium
+Lås upp Premium · 4,99 USD
+Låses op med Premium
+Låses opp med Premium
+Låses upp med Premium
+Löscht alle Einstellungen und deine Inhalte (Favoriten, Ordner, eigene Reihen) und startet den Launcher neu. Gekauftes Premium bleibt.
+Membuka pemilih folder sistem. Menemukan folder yang belum ada di daftar.
+Memuat folder…
+Memuat wallpaper Wallhaven…
+Menampilkan kaca buram adaptif di belakang panel. Wallpaper video menggunakan bingkai diam yang diburamkan.
+Menggunakan wallpaper-mu dengan desain baru.
+Menghapus semua pengaturan dan konten Anda (favorit, folder, baris kustom), lalu memulai ulang peluncur. Premium yang dibeli tetap ada.
+Mit Premium freischalten
+Monet a besoin d'accéder à vos images et vidéos pour les afficher en fond d'écran.
+Monet a besoin d’accéder à vos images pour les afficher sur les cartes d’apps.
+Monet cannot read screen text or window contents. Service data is processed only on your device and is not stored, uploaded, sold, shared, used for ads, or used to control other apps.
+Monet needs access to your images and videos to show them as a background.
+Monet needs access to your images to show them on app cards.
+Monet, galeri, dan folder
+Monet, galeria i foldery
+Monet, galerija i folderi
+Monet, gallery and folders
+More wallpapers
+Mostra sempre a imagem de hoje.
+Muestra siempre la imagen de hoy.
+My wallpaper
+Một số cài đặt trong mã này cần Premium và sẽ không được áp dụng.
+Mở khóa Premium
+Mở khóa Premium · USD 4.99
+Mở khóa với Premium
+Nach der Aktivierung braucht dieser TV für Premium nie wieder eine Internetverbindung.
+Nakon aktivacije ovaj TV nikad više neće trebati internet vezu za Premium.
+Nakon aktivacije ovaj TV nikad više neće trebati internetsku vezu za Premium.
+Nakup je v obdelavi. Premium se bo samodejno odklenil takoj, ko bo plačilo potrjeno.
+Nekatere nastavitve v tej kodi zahtevajo Premium in ne bodo uporabljene.
+Neke postavke u ovom kodu zahtijevaju Premium i neće biti primijenjene.
+Nenhuma imagem carregada.
+Nenhuma imagem encontrada neste dispositivo.
+Nenhuma publicação compatível com imagem, GIF ou vídeo encontrada.
+New folder
+Next live wallpaper
+Next wallpaper
+Nicio imagine în acest folder.
+Nie znaleziono folderów ze zdjęciami na tym telewizorze.
+Niektóre ustawienia w tym kodzie wymagają Premium i nie zostaną zastosowane.
+No compatible image, GIF, or video posts found.
+No folder yet
+No images found on this device.
+No images or videos found on this device.
+No matching wallpapers found.
+No picture folders found on this TV.
+No pictures in this folder.
+Noen innstillinger i denne koden krever Premium og blir ikke brukt.
+Nogle indstillinger i denne kode kræver Premium og bliver ikke anvendt.
+Nowy folder
+Nu s-au găsit foldere cu imagini pe acest televizor.
+NÁHLED PREMIUM
+Náhled zdarma. Použití s Premium.
+Nákup čeká na vyřízení. Premium se odemkne automaticky po dokončení platby.
+Não foram encontradas imagens ou vídeos neste dispositivo.
+Não foram encontradas pastas de imagens neste televisor.
+Nächstes Live-Wallpaper
+När den är aktiverad behöver den här TV:n aldrig internet för Premium igen.
+Når den er aktivert, trenger denne TV-en aldri internett for Premium igjen.
+Når det er aktiveret, får dette TV aldrig brug for internet til Premium igen.
+Některá nastavení v tomto kódu vyžadují Premium a nebudou použita.
+O Monet precisa acessar suas imagens para exibi-las nos cartões de apps.
+O Monet precisa de aceder às tuas imagens e vídeos para os mostrar como fundo.
+O código guarda apenas o teu design. Sem apps, imagens, perfis, PINs ou linhas próprias. Para essas, usa a cópia de segurança. Nada é carregado.
+Obtener la imagen de hoy
+Obtenir l'image du jour
+Obter a imagem de hoje
+Odată activat, acest TV nu va mai avea nevoie de conexiune la internet pentru Premium.
+Odblokuj Premium
+Odblokuj Premium · 4,99 USD
+Odblokujesz z Premium
+Odemkne se s Premium
+Odemknout Premium
+Odemknout Premium · 4,99 USD
+Odklene se s Premiumom
+Odkleni Premium
+Odkleni Premium · USD 4.99
+Omat taustat kuuluvat Monet Premiumiin.
+Once activated, this TV never needs an internet connection for Premium again.
+Only unregisters the folder. No file is deleted.
+Ontgrendelen met Premium
+Open Monet to change the wallpaper
+Opens the system folder picker. Finds folders that are not in the list yet.
+Original app image
+Os fundos personalizados fazem parte do Monet Premium.
+Osa tämän koodin asetuksista vaatii Premiumin, eikä niitä oteta käyttöön.
+Ostosi on vielä käsittelyssä. Premium avautuu automaattisesti, kun maksu on suoritettu.
+Otključaj Premium
+Otključaj Premium · USD 4.99
+Otključava se uz Premium
+Otwiera systemowy wybór folderów. Znajduje foldery, których nie ma jeszcze na liście.
+Ovo briše sve postavke i vaš sadržaj (favorite, mape, vlastite redove) te ponovno pokreće pokretač. Kupljeni Premium ostaje.
+Ovo briše sve postavke i vaš sadržaj (favorite, mape, vlastite redove) te restartuje pokretač. Kupljeni Premium ostaje.
+PODGLĄD PREMIUM
+PRATINJAU PREMIUM
+PREMIUM ELŐNÉZET
+PREMIUM PREDOGLED
+PREMIUM PREGLED
+PREMIUM PREVIEW
+PREMIUM ÖNİZLEME
+PREMIUM ΠΡΟΕΠΙΣΚΟΠΗΣΗ
+PREMIUM ПРЕГЛЕД
+PREMIUM 預覽
+PREMIUM-ESIKATSELU
+PREMIUM-FORHÅNDSVISNING
+PREMIUM-FÖRHANDSVISNING
+PREMIUM-VOORBEELD
+PREMIUM-VORSCHAU
+PREVIZUALIZARE PREMIUM
+PRÉ-VISUALIZAÇÃO PREMIUM
+Parcourir les images et vidéos
+Pembelian tertunda. Premium akan terbuka otomatis setelah pembayaran selesai.
+Pick an image or video from your device.
+Pilih folder
+Pilih nama folder berbeda
+Pilih salah satu video Anda. Tambahkan video di menu wallpaper.
+Pilih wallpaper atau video sebagai latar belakang.
+Pilih wallpaper dari pustaka
+Po aktivaci už tato TV nikdy nebude potřebovat internet pro Premium.
+Po aktywacji ten telewizor nigdy więcej nie będzie potrzebował internetu dla Premium.
+Podaci o vremenu: Open-Meteo i Bright Sky/DWD. Sportski podaci s OpenLigaDB.de (ODbL). Reddit pozadine prikazuju slike iz Reddit objava. Aerial: Projectivy Wallpaper Provider API (Apache 2.0).
+Podaci o vremenu: Open-Meteo i Bright Sky/DWD. Sportski podaci sa OpenLigaDB.de (ODbL). Reddit pozadine prikazuju slike iz Reddit objava. Aerial: Projectivy Wallpaper Provider API (Apache 2.0).
+Podatki o vremenu: Open-Meteo in Bright Sky/DWD. Podatki o športu: OpenLigaDB.de (ODbL). Reddit ozadja prikazujejo slike iz objav Reddit. Aerial: Projectivy Wallpaper Provider API (Apache 2.0).
+Podgląd funkcji premium na żywo
+Poistaa kaikki asetukset ja sisältösi (suosikit, kansiot, omat rivit) sekä käynnistää käynnistimen uudelleen. Ostettu Premium säilyy.
+Poster rotation interval
+Poster-Rotationsintervall
+Pratinjau gratis. Terapkan dengan Premium.
+Pratinjau langsung fitur Premium
+Predogled Premium funkcij v živo
+Pregled Premium funkcija uživo
+Pregled Premium značajki uživo
+Premium
+Premium activeren
+Premium aktif
+Premium aktivieren
+Premium aktiválása
+Premium er aktiv
+Premium est actif
+Premium este activ
+Premium está activo
+Premium está ativo
+Premium feloldása
+Premium feloldása · 4,99 USD
+Premium freischalten
+Premium freischalten · 4,99 USD
+Premium ile açılır
+Premium is actief
+Premium is active
+Premium ist aktiv
+Premium je aktivan
+Premium je aktiven
+Premium je aktivní
+Premium jest aktywne
+Premium on aktiivinen
+Premium ontgrendelen
+Premium ontgrendelen · USD 4,99
+Premium är aktivt
+Premium è attivo
+Premium özelliklerin canlı önizlemesi
+Premium đã kích hoạt
+Premium активен
+Premium активний
+Premium е активен
+Premium је активан
+Premium פעיל
+Premium مفعّل
+Premium अनलॉक करें
+Premium अनलॉक करें · USD 4.99
+Premium सक्रिय करें
+Premium सक्रिय है
+Premium เปิดใช้งานแล้ว
+Premium が有効です
+Premium 功能的即時預覽
+Premium 已啟用
+Premium 已激活
+Premium 구매 (%s)
+Premium 잠금 해제
+Premium 잠금 해제 · USD 4.99
+Premium 활성화
+Premium'a Hoş Geldiniz!
+Premium'u Aç
+Premium'u Aç · USD 4.99
+Premium'u Etkinleştir
+Premiumをアンロック
+Premiumをアンロック · USD 4.99
+Premiumを有効化
+Premium에 오신 것을 환영합니다!
+Premium이 활성화되었습니다
+Preview for free. Apply with Premium.
+Previzualizare gratuită. Aplică prin Premium.
+Previzualizare live a funcțiilor Premium
+Procurar imagens e vídeos
+Pré-visualização ao vivo de recursos Premium
+Pré-visualização grátis. Aplica com Premium.
+Próxima imagem de fundo
+Purchase pending. Premium unlocks automatically once your payment is complete.
+Raderar alla inställningar och allt ditt innehåll (favoriter, mappar, egna rader) och startar om launchern. Köpt Premium finns kvar.
+Reddit wallpapers
+Redenumire folder
+Remove folder
+Remove from folder
+Rename folder
+Restaurar imagem padrão
+Restaurar imagen predeterminada
+Restaurer image par défaut
+Restore default image
+Rotasi wallpaper
+Rotasi wallpaper Monet juga
+Rotate Monet wallpapers too
+Rotation
+Rotation des fonds d’écran
+Rotation images
+Salinan yang tidak lagi dipakai wallpaper, rotasi, atau screensaver mana pun.
+Satın alma beklemede. Ödeme tamamlanınca Premium otomatik olarak açılır.
+Sau khi kích hoạt, TV này không cần kết nối internet để dùng Premium nữa.
+Sblocca Premium
+Sblocca Premium · USD 4.99
+Schimbă aspectul doar pentru acest folder
+Se deblochează cu Premium
+Se desbloquea con Premium
+Se débloque avec Premium
+Se gratis forhåndsvisning. Anvend med Premium.
+Se încarcă folderele…
+Seguir la imagen diaria
+Selamat datang di Premium!
+Sem imagens nesta pasta.
+Semua wallpaper
+Setel sebagai wallpaper
+Setelah diaktifkan, TV ini tidak akan pernah butuh koneksi internet untuk Premium lagi.
+Setelah jeda, Monet memudarkan item di Layar utama agar lebih banyak wallpaper terlihat. Semua input akan menampilkannya kembali.
+Setiap gambar dalam folder ikut dalam rotasi.
+Share your code or find new setups on r/monetlauncher.
+Share your look or apply someone else's
+Shows adaptive frosted glass behind the panel. Video wallpapers use a blurred still frame.
+Si sblocca con Premium
+Sletter alle indstillinger og dit indhold (favoritter, mapper, egne rækker) og genstarter launcheren. Købt Premium bevares.
+Smaže všechna nastavení a váš obsah (oblíbené, složky, vlastní řádky) a restartuje spouštěč. Zakoupené Premium zůstane.
+Some settings in this code need Premium and won't be applied.
+Sommige instellingen in deze code vereisen Premium en worden niet toegepast.
+Supprime tous les paramètres et votre contenu (favoris, dossiers, lignes personnalisées), puis redémarre le launcher. Le Premium acheté est conservé.
+Säätiedot: Open-Meteo ja Bright Sky/DWD. Urheilutiedot: OpenLigaDB.de (ODbL). Reddit-taustakuvat näyttävät kuvia Reddit-julkaisuista. Aerial: Projectivy Wallpaper Provider API (Apache 2.0).
+Taille de l’image
+Tamanho da imagem
+Tamaño de imagen
+Tambah ke folder
+Tambahkan aplikasi ke folder
+Ten folder jest pusty
+Terbuka dengan Premium
+Tervetuloa Premiumiin!
+The code only holds your design. No apps, images, profiles, PINs or your own rows. Use Backup to move those to another TV. Nothing is uploaded.
+The folder "%1$s" will be deleted. Apps inside stay installed.
+The weather widget and ambient wallpapers use your approximate location, nothing more precise. Android will now ask for location access.
+Theme wallpaper
+This deletes all settings and your content (favorites, folders, custom rows) and restarts the launcher. Purchased Premium stays.
+This folder is empty
+This icon shape cannot mix with the shared app-card shape. Circle and squircle can mix; the other shapes can mix with each other.
+Tidak ada folder gambar yang ditemukan di TV ini.
+Tidak ada gambar di folder ini.
+Tidak ada wallpaper yang cocok.
+Tylko wyrejestrowuje folder. Żaden plik nie zostaje usunięty.
+Type it out or snap a photo to share it, e.g. on r/monetlauncher
+Törli az összes beállítást és a tartalmaidat (kedvencek, mappák, saját sorok), majd újraindítja az indítót. A megvásárolt Premium megmarad.
+Tüm ayarlarınızı ve içeriklerinizi (favoriler, klasörler, özel satırlar) siler ve Launcher'ı yeniden başlatır. Satın alınan Premium kalır.
+Ubah tampilan hanya untuk folder ini
+Uma imagem nova do Bing todos os dias.
+Una imagen nueva de Bing cada día.
+Una vez activado, este TV nunca más necesita conexión a internet para Premium.
+Una volta attivata, questa TV non avrà più bisogno di connessione internet per Premium.
+Une fois activé, ce téléviseur n'a plus jamais besoin d'internet pour Premium.
+Une nouvelle image Bing chaque jour.
+Unele setări din acest cod necesită Premium și nu vor fi aplicate.
+Unlock Premium
+Unlock Premium · USD 4.99
+Unlocks with Premium
+Use shared app appearance
+Uses your wallpaper with the new design.
+Usunąć folder?
+Usuwa wszystkie ustawienia i Twoje treści (ulubione, foldery, własne wiersze), a następnie ponownie uruchamia launcher. Wykupione Premium zostaje.
+Usuń folder
+Usuń z folderu
+Utwórz folder
+VISTA PREVIA PREMIUM
+Vejrdata fra Open-Meteo og Bright Sky/DWD. Sportsdata fra OpenLigaDB.de (ODbL). Reddit-baggrunde viser billeder fra Reddit-opslag. Aerial: Projectivy Wallpaper Provider API (Apache 2.0).
+Velkommen til Premium!
+Vissa inställningar i den här koden kräver Premium och tillämpas inte.
+Vista previa en vivo de funciones Premium
+Vista previa gratis. Aplica con Premium.
+Vlastite pozadine dio su Monet Premiuma.
+Vlastite pozadine su dio Monet Premiuma.
+Vlastní tapety jsou součástí Monet Premium.
+Väderdata från Open-Meteo och Bright Sky/DWD. Sportdata från OpenLigaDB.de (ODbL). Reddit-bakgrunder visar bilder från Reddit-inlägg. Aerial: Projectivy Wallpaper Provider API (Apache 2.0).
+Välkommen till Premium!
+Værdata fra Open-Meteo og Bright Sky/DWD. Sportdata fra OpenLigaDB.de (ODbL). Reddit-bakgrunner viser bilder fra Reddit-innlegg. Aerial: Projectivy Wallpaper Provider API (Apache 2.0).
+Vítejte v Premium!
+Wallhaven wallpapers
+Wallpaper
+Wallpaper Reddit
+Wallpaper Wallhaven
+Wallpaper Wallhaven tidak dapat dimuat.
+Wallpaper berikutnya
+Wallpaper dan video kustom
+Wallpaper kustom adalah bagian dari Monet Premium.
+Wallpaper lainnya
+Wallpaper langsung berikutnya
+Wallpaper rotation
+Wallpaper saat ini
+Wallpaper saya
+Wallpaper sinematik tidak dapat digabungkan dengan rotasi wallpaper.
+Wallpaper sinematik tidak tersedia dengan %1$s.
+Wallpaper switch animation
+Wallpaper tema
+Warna, wallpaper, dan tata letak tetap bisa diubah.
+Weather data by Open-Meteo and Bright Sky/DWD. Sports data by OpenLigaDB.de (ODbL). Reddit wallpapers show images from Reddit posts. Aerial: Projectivy Wallpaper Provider API (Apache 2.0).
+Weergegevens van Open-Meteo en Bright Sky/DWD. Sportgegevens van OpenLigaDB.de (ODbL). Reddit-achtergronden tonen afbeeldingen uit Reddit-posts. Aerial: Projectivy Wallpaper Provider API (Apache 2.0).
+Welcome to Premium!
+Welkom bij Premium!
+Wetterdaten von Open-Meteo und Bright Sky/DWD. Sportdaten von OpenLigaDB.de (ODbL). Reddit-Wallpaper zeigen Bilder aus Reddit-Posts. Aerial: Projectivy Wallpaper Provider API (Apache 2.0).
+Widget cuaca dan wallpaper bernuansa hanya menggunakan lokasi perkiraan Anda, bukan yang lebih presisi. Android sekarang akan meminta akses lokasi.
+Willkommen bei Premium!
+Witamy w Premium!
+Wybierz folder
+Wybierz inną nazwę folderu
+Własne tapety są częścią Monet Premium.
+XEM TRƯỚC PREMIUM
+Xem trước miễn phí. Áp dụng với Premium.
+Xem trước trực tiếp các tính năng Premium
+Xóa tất cả cài đặt và nội dung của bạn (mục yêu thích, thư mục, hàng riêng), sau đó khởi động lại trình khởi chạy. Premium đã mua vẫn được giữ nguyên.
+Yksi ostos avaa Premiumin jopa 5 TV:lle.
+Your key stays on this device. Don't share it. balldontlie.io's plan and terms apply.
+Your key stays on this device. Wallhaven’s terms apply.
+Your own rows stay as they are. Move them with Backup.
+Zakup w toku. Premium odblokuje się automatycznie po zakończeniu płatności.
+Zmień nazwę folderu
+Zmień wygląd tylko tego folderu
+wallpaper
+¡Bienvenido a Premium!
+Élő előnézet Premium funkciókhoz
+Încă niciun folder
+Ücretsiz önizle. Premium ile uygula.
+Ładowanie folderów…
+Șterge folder
+Șterge folderul
+Șterge folderul?
+Șterge toate setările și conținutul tău (favorite, foldere, rânduri proprii) și repornește launcherul. Premium cumpărat rămâne activ.
+Δεδομένα καιρού από Open-Meteo και Bright Sky/DWD. Αθλητικά δεδομένα από το OpenLigaDB.de (ODbL). Οι ταπετσαρίες Reddit δείχνουν εικόνες από αναρτήσεις Reddit. Aerial: Projectivy Wallpaper Provider API (Apache 2.0).
+Δωρεάν προεπισκόπηση. Εφαρμογή με Premium.
+Ενεργοποίηση Premium
+Ζωντανή προεπισκόπηση Premium λειτουργιών
+Η αγορά εκκρεμεί. Το Premium θα ξεκλειδωθεί αυτόματα μόλις ολοκληρωθεί η πληρωμή.
+Θα διαγραφούν όλες οι ρυθμίσεις και το περιεχόμενό σας (αγαπημένα, φάκελοι, δικές σας σειρές) και ο launcher θα επανεκκινηθεί. Το Premium που αγοράσατε παραμένει.
+Καλώς ήρθατε στο Premium!
+Μόλις ενεργοποιηθεί, αυτή η τηλεόραση δεν θα χρειαστεί ξανά σύνδεση στο διαδίκτυο για το Premium.
+Ξεκλείδωμα Premium
+Ξεκλείδωμα Premium · USD 4.99
+Ξεκλειδώνει με το Premium
+Ορισμένες ρυθμίσεις σε αυτόν τον κωδικό απαιτούν Premium και δεν θα εφαρμοστούν.
+Τα προσαρμοσμένα φόντα είναι μέρος του Monet Premium.
+Το Premium είναι ενεργό
+Активиране на Premium
+Активирај Premium
+Активировать Premium
+Активувати Premium
+Безкоштовний перегляд. Застосування з Premium.
+Безплатен преглед. Прилагане с Premium.
+Бесплатан преглед. Примени уз Premium.
+Бесплатный просмотр. Применение с Premium.
+Брише сва подешавања и ваш садржај (омиљене, фасцикле, сопствене редове) и рестартује покретач. Купљени Premium остаје.
+Будут удалены все настройки и ваши данные (избранное, папки, свои ряды), после чего лаунчер перезапустится. Купленный Premium останется.
+Видалить усі налаштування та ваш вміст (улюблені, папки, власні ряди) і перезапустить лаунчер. Куплений Premium залишиться.
+Власні шпалери є частиною Monet Premium.
+Відкривається з Premium
+Данни за времето от Open-Meteo и Bright Sky/DWD. Спортни данни от OpenLigaDB.de (ODbL). Тапетите от Reddit показват изображения от публикации в Reddit. Aerial: Projectivy Wallpaper Provider API (Apache 2.0).
+Дані погоди: Open-Meteo і Bright Sky/DWD. Дані спорту: OpenLigaDB.de (ODbL). Шпалери Reddit показують зображення з дописів Reddit. Aerial: Projectivy Wallpaper Provider API (Apache 2.0).
+Деякі налаштування в цьому коді потребують Premium і не будуть застосовані.
+Добре дошли в Premium!
+Добро пожаловать в Premium!
+Добродошли у Premium!
+Живий перегляд функцій Premium
+Живой предпросмотр функций Premium
+Изтриват се всички настройки и вашето съдържание (любими, папки, собствени редове), а лаунчърът се рестартира. Закупеният Premium остава.
+Куповина је на чекању. Premium ће се аутоматски откључати чим плаћање буде завршено.
+Ласкаво просимо до Premium!
+Након активације, овом телевизору интернет за Premium више није потребан.
+Некоторые настройки в этом коде требуют Premium и не будут применены.
+Някои настройки в този код изискват Premium и няма да бъдат приложени.
+Овај код садржи подешавања којима је потребан Premium и она неће бити примењена.
+Оплата ещё обрабатывается. Premium разблокируется автоматически, как только она будет завершена.
+Отключва се с Premium
+Отключване на Premium
+Отключи Premium
+Отключи Premium · USD 4.99
+Открывается с Premium
+Откључава се уз Premium
+Откључај Premium
+Откључај Premium · USD 4.99
+ПОПЕРЕДНІЙ ПЕРЕГЛЯД PREMIUM
+ПРЕДПРОСМОТР PREMIUM
+Погодные данные: Open-Meteo и Bright Sky/DWD. Спортивные данные: OpenLigaDB.de (ODbL). Обои Reddit показывают изображения из публикаций Reddit. Aerial: Projectivy Wallpaper Provider API (Apache 2.0).
+Подаци о времену: Open-Meteo и Bright Sky/DWD. Подаци о спорту: OpenLigaDB.de (ODbL). Reddit позадине приказују слике из Reddit објава. Aerial: Projectivy Wallpaper Provider API (Apache 2.0).
+Покупка в очікуванні. Premium розблокується автоматично після завершення оплати.
+Покупката е в изчакване. Premium ще се отключи автоматично след завършване на плащането.
+После активации этому телевизору больше не нужно подключение к интернету для Premium.
+Преглед на живо на Premium функции
+Преглед уживо Premium функција
+Після активації цьому телевізору більше не знадобиться інтернет для Premium.
+Разблокировать Premium
+Разблокировать Premium · USD 4.99
+Розблокувати Premium
+Розблокувати Premium · USD 4.99
+Свои обои — часть Monet Premium.
+След активиране този телевизор никога повече няма да се нуждае от интернет връзка за Premium.
+Собствените тапети са част от Monet Premium.
+Сопствене позадине су део Monet Premium-а.
+ברוך הבא ל-Premium!
+הפעלת Premium
+הרכישה ממתינה. Premium ייפתח אוטומטית ברגע שהתשלום יושלם.
+חלק מההגדרות בקוד הזה דורשות Premium ולא יוחלו.
+טפטים מותאמים אישית הם חלק מ-Monet Premium.
+כל ההגדרות והתוכן שלך (מועדפים, תיקיות, שורות מותאמות אישית) יימחקו, והמשגר יופעל מחדש. Premium שרכשת נשאר.
+לאחר ההפעלה, הטלוויזיה הזו לא תזדקק שוב לחיבור אינטרנט עבור Premium.
+נפתח עם Premium
+נתוני מזג אוויר מ-Open-Meteo ומ-Bright Sky/DWD. נתוני ספורט מ-OpenLigaDB.de (ODbL). טפטי Reddit מציגים תמונות מפוסטים ב-Reddit. Aerial: Projectivy Wallpaper Provider API (Apache 2.0).
+פתיחת Premium
+פתיחת Premium · USD 4.99
+תצוגה מקדימה בחינם. יישום עם Premium.
+תצוגה מקדימה חיה של תכונות Premium
+תצוגה מקדימה של PREMIUM
+أدخل المفتاح من تأكيد الشراء، وسيُفتح Premium على هذا التلفزيون أيضًا.
+إذا سبق أن دفعت مقابل Premium
+الخلفيات المخصّصة جزء من Monet Premium.
+بعد التفعيل، لن يحتاج هذا التلفزيون إلى اتصال بالإنترنت من أجل Premium بعد الآن.
+بعض الإعدادات في هذا الرمز تحتاج إلى Premium ولن تُطبَّق.
+بيانات الطقس من Open-Meteo و Bright Sky/DWD. بيانات رياضية من OpenLigaDB.de (ODbL). خلفيات Reddit تعرض صوراً من منشورات Reddit. Aerial: Projectivy Wallpaper Provider API (Apache 2.0).
+تفعيل Premium
+ستُحذف جميع الإعدادات ومحتواك (المفضلة والمجلدات وصفوفك المخصصة) وسيُعاد تشغيل المشغّل. Premium المشترى يبقى.
+عملية الشراء قيد الانتظار. سيتم فتح Premium تلقائيًا فور اكتمال الدفع.
+فتح Premium · USD 4.99
+معاينة مجانية. طبّقه مع Premium.
+इस कोड की कुछ सेटिंग्स के लिए Premium चाहिए, इसलिए वे लागू नहीं होंगी।
+इससे सभी सेटिंग्स और आपकी सामग्री (पसंदीदा, फ़ोल्डर, आपकी पंक्तियाँ) मिट जाती हैं और लॉन्चर रीस्टार्ट होता है। खरीदा हुआ Premium बना रहता है।
+कस्टम वॉलपेपर Monet Premium का हिस्सा हैं.
+खरीदारी लंबित है। भुगतान पूरा होते ही Premium अपने आप अनलॉक हो जाएगा।
+मुफ़्त प्रीव्यू। Premium के साथ लागू करें।
+मौसम डेटा: Open-Meteo और Bright Sky/DWD. खेल डेटा: OpenLigaDB.de (ODbL). Reddit वॉलपेपर Reddit पोस्ट की तस्वीरें दिखाते हैं. Aerial: Projectivy Wallpaper Provider API (Apache 2.0).
+सक्रिय होने के बाद, इस टीवी को Premium के लिए फिर कभी इंटरनेट कनेक्शन की ज़रूरत नहीं होगी।
+การซื้ออยู่ระหว่างดำเนินการ Premium จะปลดล็อกโดยอัตโนมัติเมื่อการชำระเงินเสร็จสมบูรณ์
+ข้อมูลสภาพอากาศจาก Open-Meteo และ Bright Sky/DWD. ข้อมูลกีฬาจาก OpenLigaDB.de (ODbL). วอลเปเปอร์ Reddit แสดงภาพจากโพสต์ Reddit. Aerial: Projectivy Wallpaper Provider API (Apache 2.0).
+ดูตัวอย่างฟรี ใช้ได้ด้วย Premium
+ดูตัวอย่างสดของฟีเจอร์ Premium
+ตัวอย่าง PREMIUM
+บางการตั้งค่าในโค้ดนี้ต้องใช้ Premium และจะไม่ถูกนำไปใช้
+ปลดล็อก Premium
+ปลดล็อก Premium · USD 4.99
+ปลดล็อกด้วย Premium
+ยินดีต้อนรับสู่ Premium!
+ลบการตั้งค่าทั้งหมดและเนื้อหาของคุณ (รายการโปรด, โฟลเดอร์, แถวของคุณ) แล้วเริ่มตัวเปิดแอปใหม่ Premium ที่ซื้อไว้ยังคงอยู่
+วอลเปเปอร์ที่กำหนดเองเป็นส่วนหนึ่งของ Monet Premium
+หลังเปิดใช้งานแล้ว ทีวีเครื่องนี้ไม่ต้องเชื่อมต่ออินเทอร์เน็ตเพื่อใช้ Premium อีกเลย
+เปิดใช้งาน Premium
+オリジナルの壁紙は Monet Premium の機能です。
+以 Premium 解鎖
+免費預覽。使用 Premium 套用。
+免费预览。使用 Premium 应用。
+啟用 Premium
+啟用後，這台電視的 Premium 就不再需要網路連線。
+天气数据来自 Open-Meteo 和 Bright Sky/DWD。体育数据来自 OpenLigaDB.de (ODbL)。Reddit 壁纸显示 Reddit 帖子中的图片。 Aerial: Projectivy Wallpaper Provider API (Apache 2.0).
+天気データは Open-Meteo と Bright Sky/DWD 提供。スポーツデータは OpenLigaDB.de (ODbL) 提供。Reddit 壁紙は Reddit 投稿の画像を表示します。 Aerial: Projectivy Wallpaper Provider API (Apache 2.0).
+天氣資料來自 Open-Meteo 和 Bright Sky/DWD。運動資料來自 OpenLigaDB.de (ODbL)。Reddit 桌布顯示 Reddit 貼文中的圖片。 Aerial: Projectivy Wallpaper Provider API (Apache 2.0).
+有効化後は、このテレビでPremiumを使うのにインターネット接続は不要です。
+歡迎使用 Premium!
+此設定碼中的部分設定需要 Premium，不會套用。
+此设置码中的部分设置需要 Premium，不会被应用。
+激活 Premium
+激活后，这台电视使用 Premium 无需再联网。
+無料でプレビュー。Premiumで適用。
+自定义壁纸是 Monet Premium 的功能。
+自訂桌布是 Monet Premium 的功能。
+解鎖 Premium
+解鎖 Premium · USD 4.99
+解锁 Premium
+解锁 Premium · USD 4.99
+購入は保留中です。支払いが完了すると Premium は自動的にアンロックされます。
+購買處理中。付款完成後，Premium 將自動解鎖。
+购买待处理。付款完成后 Premium 将自动解锁。
+这会删除所有设置和你的内容（收藏、文件夹、自定义行），并重启启动器。已购买的 Premium 将保留。
+這會刪除所有設定與你的內容（收藏、資料夾、自訂列），並重新啟動啟動器。已購買的 Premium 會保留。
+구매가 대기 중입니다. 결제가 완료되면 Premium이 자동으로 잠금 해제됩니다.
+날씨 데이터는 Open-Meteo 및 Bright Sky/DWD에서 제공합니다. 스포츠 데이터는 OpenLigaDB.de(ODbL)에서 제공합니다. Reddit 배경화면은 Reddit 게시물의 이미지를 표시합니다. Aerial: Projectivy Wallpaper Provider API (Apache 2.0).
+무료로 미리보기. Premium으로 적용.
+사용자 지정 배경은 Monet Premium 기능입니다.
+활성화 후에는 이 TV에서 Premium을 사용할 때 인터넷 연결이 필요하지 않습니다.

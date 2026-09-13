@@ -23,7 +23,10 @@ import java.io.File
  * the repo (cached by [WallpaperDownloader]); once decoded it replaces the
  * thumb. Two actions:
  *  - **Set** writes the system wallpaper. Launchers that theme from it
- *    (Monet via Material You, Projectivy via card tint) pick up the seed.
+ *    (Projectivy via card tint, stock Google TV) pick up the seed. When Monet
+ *    Launcher is HOME the same button reads "Send to Monet" and hands the
+ *    cached file to Monet's share target instead — Monet ignores the system
+ *    wallpaper and themes only from its own background library.
  *  - **Save** copies the original file to Pictures/CoreBuilds (for launcher
  *    wallpaper rotation).
  * Five seed chips under the title preview the palette; they are not in the
@@ -64,6 +67,16 @@ class WallpaperPreviewActivity : AppCompatActivity() {
 
     private val openSetter =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { }
+
+    /** True when Monet is HOME and exposes its share target (v1.0.72+). */
+    private val monetIsHome: Boolean
+        get() = ApplyIconPack.homePackage(this) == WallpaperSetter.MONET_PACKAGE &&
+            WallpaperSetter.canShareToMonet(this)
+
+    /** Label for the primary action — names the actual destination. */
+    private fun setLabel(): String =
+        if (monetIsHome) getString(R.string.wp_send_to_monet)
+        else getString(R.string.wp_set_wallpaper)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -145,7 +158,7 @@ class WallpaperPreviewActivity : AppCompatActivity() {
         loading = true
         setButton.isEnabled = false
         saveButton.isEnabled = false
-        setButton.text = getString(R.string.wp_set_wallpaper)
+        setButton.text = setLabel()
         saveButton.text = getString(R.string.wp_save)
         seedRow.visibility = View.GONE
 
@@ -292,6 +305,10 @@ class WallpaperPreviewActivity : AppCompatActivity() {
     // ---- Set -----------------------------------------------------------------
 
     private fun onSetClicked() {
+        if (monetIsHome) {
+            sendToMonet()
+            return
+        }
         val perm = WallpaperSetter.requiredPermission()
         if (perm != null &&
             ContextCompat.checkSelfPermission(this, perm) != PackageManager.PERMISSION_GRANTED
@@ -314,7 +331,7 @@ class WallpaperPreviewActivity : AppCompatActivity() {
             runOnUiThread {
                 if (destroyed) return@runOnUiThread
                 setButton.isEnabled = true
-                setButton.text = getString(R.string.wp_set_wallpaper)
+                setButton.text = setLabel()
                 when (result) {
                     is WallpaperSetter.Result.Set -> {
                         val homePkg = ApplyIconPack.homePackage(this@WallpaperPreviewActivity)
@@ -358,8 +375,8 @@ class WallpaperPreviewActivity : AppCompatActivity() {
                                     WallpaperSetter.setIntent(result.uri, mime)
                                 )
                             } catch (e: Exception) {
-                                if (homePkg == "com.klevico.monet") {
-                                    toast("Saved. Set via Monet Settings → Wallpaper → Your own images")
+                                if (homePkg == WallpaperSetter.MONET_PACKAGE) {
+                                    toast(getString(R.string.wp_saved_monet_hint))
                                 } else {
                                     toast(getString(R.string.wp_saved_hint))
                                 }
@@ -373,6 +390,34 @@ class WallpaperPreviewActivity : AppCompatActivity() {
                 }
             }
         }.start()
+    }
+
+    /**
+     * Monet path. No SET_WALLPAPER or storage permission involved: the cached
+     * download is shared through our FileProvider straight into Monet's
+     * `WallpaperShareActivity`, which copies it into Monet's background library
+     * and applies it. Monet toasts the outcome itself ("Set as background", or
+     * "Custom backgrounds are part of Monet Premium." on the free tier), so we
+     * only speak when the hand-off could not start.
+     */
+    private fun sendToMonet() {
+        val file = downloaded ?: run {
+            if (!loading) toast(getString(R.string.wp_load_failed))
+            return
+        }
+        val uri = WallpaperSetter.contentUri(this, file)
+        if (uri == null) {
+            toast(getString(R.string.wp_monet_share_failed))
+            return
+        }
+        try {
+            // Monet toasts the receipt itself; a second toast from us would
+            // stack on top of it.
+            startActivity(WallpaperSetter.monetShareIntent(uri, WallpaperSetter.mimeFor(file.name)))
+            finish()
+        } catch (e: Exception) {
+            toast(getString(R.string.wp_monet_share_failed))
+        }
     }
 
     // ---- Save ----------------------------------------------------------------

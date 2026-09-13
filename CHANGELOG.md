@@ -4,6 +4,43 @@ All notable changes to the Core Builds Icon Pack. Format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); versions follow
 [SemVer](https://semver.org/spec/v2.0.0.html).
 
+## [1.8.15] — 2026-09-13
+
+**Monet Launcher never reads the system wallpaper, so "Set wallpaper" was a
+no-op on every Monet home screen.**
+
+Found by decompiling Monet v1.0.84 (versionCode 118) rather than reading its
+Play listing: the APK contains no `WallpaperManager` reference at all. What it
+does contain, since v1.0.72, is an exported `WallpaperShareActivity` that takes
+`ACTION_SEND` / `ACTION_SEND_MULTIPLE` `image/*` and copies the file into
+Monet's own background library. Research and raw probe output are in
+`docs/MONET_LAUNCHER.md` and `docs/research/monet-probe/`.
+
+### Added
+- **Send to Monet.** When Monet is the HOME launcher and exposes the share
+  target, the preview's primary button reads *Send to Monet* and hands the
+  cached download straight to Monet — no `SET_WALLPAPER`, no storage
+  permission, no export first. Monet toasts the outcome itself, including its
+  Premium notice on the free tier.
+- **Send N to Monet** on the export result screen: one `ACTION_SEND_MULTIPLE`
+  puts the whole selection into Monet → Settings → Background → Gallery.
+- FileProvider now exports `cache/wallpapers/` (read-only, per-URI grant)
+  alongside `cache/updates/`, in all three packs.
+- `tests/test_monet_handoff.py` pins the share contract, the provider path,
+  the Pixel Neon mirror and the Pop mirror.
+
+### Fixed
+- Monet manual path said *Settings → Icons → Icon pack*; Monet 1.0.80 moved it
+  to *Settings → Apps → Icon pack*. The "Saved" fallback hint likewise named a
+  *Wallpaper → Your own images* screen that no longer exists.
+- `docs/PLUGIN_RESEARCH.md` §2 claimed Monet re-themes from the system
+  wallpaper; marked superseded with the dex evidence.
+
+### Unchanged, on purpose
+- Icon apply to Monet stays **Manual**. v1.0.84 has no inbound apply intent
+  and its settings activity is not exported; the pack is discovered through
+  the standard actions already in the manifest and picked inside Monet.
+
 ## [1.8.14] — 2026-09-12
 
 **Two thirds of the pack was a letter in a box, 429 icons shipped the same

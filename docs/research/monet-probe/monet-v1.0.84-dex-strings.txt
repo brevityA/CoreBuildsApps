@@ -1,0 +1,701 @@
+ , onAddRedditWallpaperSubreddit=
+ , onOpenDefaultLauncherSettings=
+ , selectedBingWallpaperIdentity=
+ , selectedRedditWallpaperAuthor=
+ , selectedWallhavenWallpaperUrl=
+ , wallpaperLastRotationAtMillis=
+ , wallpaperRotationExcludedUris=
+ ThemePresetApplyOutcome(applied=
+ access$applyPausedPrecomposition
+ android.intent.action.SCREEN_OFF
+ android.speech.action.WEB_SEARCH
+ android.speech.extra.MAX_RESULTS
+ com.fede.launcher.THEME_ICONPACK
+ openNotificationListenerSettings
+ requestSettingsImportFromFile()V
+ setCinematicWallpaperEnabled(Z)V
+ setIconPackDynamicBackground(Z)V
+ setRedditWallpaperTonesIfCurrent
+ setShowCompactTopBarSettings(Z)V
+ settings activities
+ wallpaper_rotation_aerial_cursor
+ wallpaper_rotation_excluded_uris
+!, onBingWallpaperAutoDailyChange=
+!, onSetCinematicWallpaperEnabled=
+!, redditWallpaperRotationEnabled=
+!, selectedBingWallpaperCopyright=
+!, selectedRedditWallpaperToneUrl=
+!, videoWallpaperSoundVolumeLevel=
+!BingWallpaperRefreshRequest(mode=
+!LauncherWallpaperPalette(primary=
+!Settings import was not committed
+!ThemeSettingsRouteRecovery(route=
+!ThemeSettingsSidebarItem(section=
+!ThemeShellLibraryMoveDraft(items=
+!WallpaperVolumeEditorState(level=
+!android.intent.action.GET_CONTENT
+!android.intent.action.MEDIA_EJECT
+!android.intent.extra.PROCESS_TEXT
+!ch.deletescape.lawnchair.ICONPACK
+!com.android.tv.action.VIEW_INPUTS
+!com.klevico.monet.LauncherRestart
+!reddit_wallpaper_last_rotation_at
+!reddit_wallpaper_rotation_enabled
+!setVideoWallpaperSoundEnabled(Z)V
+!setVideoWallpaperSoundVolumeLevel
+!setWallpaperRotationSourceEnabled
+!wallhaven_wallpaper_thumbnail_url
+!wallpaper_rotation_library_cursor
+", onSettingsPanelFrostLevelChange=
+", selectedWallhavenWallpaperTones=
+", wallpaperSwitchAnimationEnabled=
+"Landroid/provider/Settings$Global;
+"Landroid/provider/Settings$Secure;
+"LauncherNavigation(onOpenSettings=
+"LauncherThemeState(homeShellStyle=
+"ThemeShellActions(onFavoriteClick=
+"ThemeShellLibrarySearchEntry(item=
+"afterVideoWallpaperDecoderReleases
+"android.intent.action.PROCESS_TEXT
+"android.intent.action.USER_PRESENT
+"android.intent.extra.RETURN_RESULT
+"android.provider.extra.INITIAL_URI
+"android.settings.WIRELESS_SETTINGS
+"applyScreenOffOverlayBrightnessOff
+"reddit_wallpaper_rotation_interval
+"setWallpaperSwitchAnimationEnabled
+"wallpaper_switch_animation_enabled
+#, onRemoveRedditWallpaperSubreddit=
+#, onSettingsPanelCustomColorChange=
+#, onWallpaperBrightnessLevelChange=
+#, onWallpaperSwitchAnimationChange=
+#, selectedRedditWallpaperPermalink=
+#, selectedRedditWallpaperSubreddit=
+#, wallpaperRotationIncludeBuiltIns=
+#, wallpaperRotationIntervalMinutes=
+#Automatic settings backup not found
+#Download/monet_settings_backup.json
+#Missing apply key for preset field 
+#SettingsHomeRowFocusRequest(rowKey=
+#VideoWallpaperBlur(processingWidth=
+#android.bluetooth.device.extra.NAME
+#android.intent.action.MEDIA_MOUNTED
+#android.intent.action.OPEN_DOCUMENT
+#android.intent.action.PACKAGE_ADDED
+#android.intent.action.SEND_MULTIPLE
+#android.intent.action.USER_UNLOCKED
+#android.speech.extra.LANGUAGE_MODEL
+#com.klevico.monet.extra.RESTART_PID
+#openNotificationListenerSettings()V
+#setWallhavenWallpaperTonesIfCurrent
+#setWallpaperRotationIncludeBuiltIns
+#setWallpaperRotationIntervalMinutes
+#wallpaper_rotation_include_builtins
+#wallpaper_rotation_sources_migrated
+$, cinematicWallpaperRotationSeconds=
+$, onIconPackDynamicBackgroundChange=
+$, onShowCompactTopBarSettingsChange=
+$, onVideoWallpaperSoundVolumeChange=
+$, onWallpaperRotationIntervalChange=
+$, selectedRedditWallpaperPreviewUrl=
+$, selectedWallhavenWallpaperPageUrl=
+$, selectedWallhavenWallpaperToneUrl=
+$Apply is called on deactivated node 
+$RedditWallpaperPageCursor(selection=
+$ThemeShellLibraryMoveLayout(compact=
+$android.intent.action.BOOT_COMPLETED
+$android.media.action.HDMI_AUDIO_PLUG
+$android.media.extra.AUDIO_PLUG_STATE
+$cinematic_wallpaper_rotation_seconds
+$com.android.tv.settings.FallbackHome
+$com.google.android.pano.action.SLEEP
+$setCinematicWallpaperRotationSeconds
+$video wallpaper gate opened at boot+
+%, onScreensaverSingleWallpaperChange=
+%, onScreensaverWallpaperSourceChange=
+%CINEMATIC_WALLPAPER_ROTATION_CONFLICT
+%WallpaperBrightnessEditorState(level=
+%android.bluetooth.device.action.FOUND
+%android.bluetooth.device.extra.DEVICE
+%android.intent.action.CREATE_DOCUMENT
+%android.intent.action.PACKAGE_CHANGED
+%android.intent.action.PACKAGE_REMOVED
+%android.media.extra.MAX_CHANNEL_COUNT
+%android.support.action.semanticAction
+%applyScreenOffOverlayBrightnessOff()V
+%com.android.tv.settings.ACCESSIBILITY
+%requestLocationPermissionFromSettings
+%setVideoWallpaperSoundVolumeLevel(I)V
+&, redditWallpaperLastRotationAtMillis=
+&android.intent.action.DREAMING_STARTED
+&android.intent.action.DREAMING_STOPPED
+&android.intent.action.TIMEZONE_CHANGED
+&android.speech.action.RECOGNIZE_SPEECH
+&applyPausedPrecomposition$lambda$0$0$0
+&ensurePendingThemePresetApplyRecovered
+&requestBluetoothPermissionFromSettings
+&setWallpaperSwitchAnimationEnabled(Z)V
+&settings_panel_frost_level_10_migrated
+', onWallpaperRotationUriExcludedChange=
+'MaterialTVLauncher/settings_backup.json
+'ThemeShellLibraryFocusAnchor(stableKey=
+'android.settings.ACCESSIBILITY_SETTINGS
+'androidx.content.action.LOAD_EMOJI_FONT
+'androidx.core.app.extra.COMPAT_TEMPLATE
+'com.klevico.monet.action.ALARM_REMINDER
+'com.klevico.monet.extra.RESTART_HANDOFF
+'com.klevico.monet.extra.RESTART_STARTED
+'requestTvListingsPermissionFromSettings
+'setIconPackPackage(Ljava/lang/String;)V
+'setWallpaperRotationIncludeBuiltIns(Z)V
+'setWallpaperRotationIntervalMinutes(I)V
+'tv.projectivy.plugin.WALLPAPER_PROVIDER
+(, onOpenGenericSettingsForAccessibility=
+(ThemeShellFavoriteFocusAnchor(stableKey=
+(WallpaperFolderReadGrantAttempt(durable=
+(addWallpaperFolder(Ljava/lang/String;Z)V
+(android.bluetooth.device.extra.TRANSPORT
+(android.intent.action.OPEN_DOCUMENT_TREE
+(android.permission.WRITE_SECURE_SETTINGS
+(com.android.tv.intent.action.OPEN_INPUTS
+(requestLocationPermissionFromSettings()V
+(setCinematicWallpaperRotationSeconds(I)V
+) android.permission.WRITE_SECURE_SETTINGS
+), onSetCinematicWallpaperRotationSeconds=
+), onWallpaperRotationSourceEnabledChange=
+), redditWallpaperRotationIntervalMinutes=
+), selectedWallhavenWallpaperThumbnailUrl=
+)LegacyWallpaperRotationMigration(enabled=
+)android.bluetooth.device.extra.BOND_STATE
+)android.intent.action.MY_PACKAGE_REPLACED
+)android.intent.category.LEANBACK_SETTINGS
+)android.support.action.showsUserInterface
+)applyFocusProperties called on wrong node
+)com.klevico.monet.action.AUTOSTART_LAUNCH
+)com.klevico.monet.action.AUTOSTART_UNLOCK
+)requestBluetoothPermissionFromSettings()V
+*BingWallpaperRefreshGuard(backgroundStyle=
+*LauncherSettingsActions(onResetUiSettings=
+*Lcom/klevico/monet/WallpaperShareActivity;
+*android.intent.extra.PROCESS_TEXT_READONLY
+*android.settings.ACCESSIBILITY_TV_OEM_LINK
+*android.speech.extra.RESULTS_PENDINGINTENT
+*androidx.profileinstaller.action.SKIP_FILE
+*removeWallpaperFolder(Ljava/lang/String;)V
+*requestTvListingsPermissionFromSettings()V
++, onWallpaperRotationIncludeBuiltInsChange=
++Could not address wallpaper folder children
++Expected applyChanges() to have been called
++Monet/1.0.84 (Android TV; wallpaper client)
++ThemePresetApplyCancellation(transactionId=
++ThemeSettingsTitleBarFocusRoute(horizontal=
++applyProfileBootChoice(Ljava/lang/String;)V
++com.android.tv.settings.system.FallbackHome
++com.google.android.tv.action.DISPLAY_INPUTS
++com.klevico.monet.action.STOP_RINGING_ALARM
++setBingWallpaperMarket(Ljava/lang/String;)V
++wallpaper_switch_animation_default_migrated
+, activeThemeStateRaw=
+, aerialWallpaperUris=
+, applyCore=
+, applyKey=
+, applyTransactionId=
+, applyWallpaper=
+, bingWallpaperAutoDaily=
+, bingWallpaperMarket=
+, cinematicWallpaperEnabled=
+, conflictingApplyKeys=
+, dismissSettings=
+, fontFeatureSettings=
+, iconPackDynamicBackground=
+, iconPackMode=
+, iconPackPackage=
+, iconPackRenderPx=
+, iconPackVariant=
+, initialWallpaperPolicy=
+, isSettingsOpen=
+, keepSettingsOpen=
+, launcherThemeState=
+, onAddWallpaperFolder=
+, onApplySetupCode=
+, onApplyThemePreset=
+, onBingWallpaperMarketChange=
+, onCancelThemePresetApply=
+, onDeactivateAerialWallpaper=
+, onDismissSettings=
+, onExportSettings=
+, onIconPackChange=
+, onImportSettings=
+, onImportSettingsFromFile=
+, onLanguageSettingsReopened=
+, onOpenAccessibilitySettings=
+, onOpenAppSettings=
+, onOpenNetworkSettings=
+, onOpenSettings=
+, onPickWallpaperFolder=
+, onRedditWallpaperSortChange=
+, onRefreshBingWallpaper=
+, onRemoveWallpaperFolder=
+, onRotateAerialWallpaper=
+, onRotateWallpaper=
+, onSelectAerialWallpaper=
+, onSelectBingWallpaper=
+, onSelectRedditWallpaper=
+, onSelectWallhavenWallpaper=
+, onSelectWallpaperFolderImage=
+, onVideoWallpaperSoundChange=
+, onWallpaperBlurLevelChange=
+, presetWallpaperApplyKeys=
+, previousApplyTransactionId=
+, probeWallpaperFolderPicker=
+, redditWallpaperSort=
+, redditWallpaperSubreddits=
+, redditWallpaperUrl=null, redditWallpaperTitle=null, redditWallpaperSubreddit=null, redditWallpaperAuthor=null, redditWallpaperPermalink=null, wallpaperBlurLevel=null, wallpaperBrightnessLevel=null, appSizeLevel=
+, reopenLanguageSettings=
+, returnToSettings=
+, screensaverSingleWallpaper=
+, screensaverWallpaperSource=
+, selectedBingWallpaperTitle=
+, selectedBingWallpaperToneUrl=
+, selectedBingWallpaperTones=
+, selectedBingWallpaperUrl=
+, selectedRedditWallpaperTitle=
+, selectedRedditWallpaperTones=
+, selectedRedditWallpaperUrl=
+, selectedWallhavenWallpaperId=
+, settingsFrost=
+, settingsPanelCustomColor=
+, settingsPanelFrostLevel=
+, settingsSurface=
+, shouldApplyImmediately=
+, showCompactTopBarSettings=
+, showSettings=
+, themeShellCatalog=
+, usedRedditWallpaperUrls=
+, usedWallhavenWallpaperUrls=
+, userOwnedApplyKeys=
+, variationSettings=
+, videoWallpaperSoundEnabled=
+, wallpaper=
+, wallpaperBlurLevel=
+, wallpaperBrightnessLevel=
+, wallpaperFieldKeys=
+, wallpaperFlatness=
+, wallpaperFolderUris=
+, wallpaperPolicy=
+, wallpaperRotationAtMillis=
+, wallpaperRotationEnabled=
+, wallpaperRotationState=
+, weatherWallpaperDaytime=
+, weatherWallpaperScene=
+,Could not finalize automatic settings backup
+,com.klevico.monet.action.START_RINGING_ALARM
+-AirPlay without launcher/settings tile among 
+-Missing apply key for preset wallpaper field 
+-android.bluetooth.device.action.ACL_CONNECTED
+-android.settings.APPLICATION_DETAILS_SETTINGS
+-android.settings.MANAGE_APPLICATIONS_SETTINGS
+-android.settings.REQUEST_SCHEDULE_EXACT_ALARM
+-androidx.profileinstaller.action.SAVE_PROFILE
+-called outside of runRecomposeAndApplyChanges
+-com.klevico.monet.extra.AUTOMATED_HOME_RETURN
+-openInstalledAppSettings(Ljava/lang/String;)V
+.PendingThemePresetPurchaseApplyOutcome(result=
+.android.bluetooth.adapter.action.STATE_CHANGED
+.com.klevico.monet.LauncherAccessibilityService
+/Landroid/view/View$OnApplyWindowInsetsListener;
+/com.klevico.monet.action.DISMISS_ALERT_FALLBACK
+0addRedditWallpaperSubreddit(Ljava/lang/String;)V
+0android.bluetooth.device.action.ACL_DISCONNECTED
+0androidx.profileinstaller.action.INSTALL_PROFILE
+0selectWallpaperFolderImage(Ljava/lang/String;Z)V
+1. Go to Settings > System > Languages&input > Advanced
+1. Go to Settings > System > Languages&input > Advanced > Autofill Service
+1WallpaperRotationVisibleIdentity(backgroundStyle=
+1android.speech.extra.RESULTS_PENDINGINTENT_BUNDLE
+1com.klevico.monet.extra.USER_INITIATED_HOME_NONCE
+1setSettingsPanelCustomColor(Ljava/lang/Integer;)V
+2. Click on the settings icon next to the Autofill Service
+2Ltv/projectivy/plugin/wallpaperprovider/api/Event;
+2MediaStore returned no cursor for wallpaper folder
+2android.bluetooth.device.action.BOND_STATE_CHANGED
+2com.klevico.monet.extra.USER_INITIATED_HOME_RETURN
+2setScreensaverSingleWallpaper(Ljava/lang/String;)V
+3DocumentsProvider returned no wallpaper folder root
+3[Ltv/projectivy/plugin/wallpaperprovider/api/Event;
+3android.bluetooth.adapter.action.DISCOVERY_FINISHED
+3android.provider.extra.ACCEPT_ORIGINAL_MEDIA_FORMAT
+3android.settings.panel.action.INTERNET_CONNECTIVITY
+3androidx.activity.result.contract.extra.PERMISSIONS
+3removeRedditWallpaperSubreddit(Ljava/lang/String;)V
+4androidx.profileinstaller.action.BENCHMARK_OPERATION
+4com.android.tv.settings.system.AccessibilityActivity
+5LauncherMaintenance(onWallpaperRotationEnabledChange=
+5android.intent.action.EXTERNAL_APPLICATIONS_AVAILABLE
+5com.klevico.monet.LauncherNotificationListenerService
+5setWallpaperRotationUriExcluded(Ljava/lang/String;Z)V
+6Ltv/projectivy/plugin/wallpaperprovider/api/Wallpaper;
+6android.settings.ACTION_NOTIFICATION_LISTENER_SETTINGS
+6android.settings.NOTIFICATION_LISTENER_DETAIL_SETTINGS
+6android.view.ViewStructure.extra.EXTRA_VIEW_NODE_INDEX
+6com.klevico.monet.extra.RESET_HOME_AFTER_VISIBLE_PRESS
+7[Ltv/projectivy/plugin/wallpaperprovider/api/Wallpaper;
+7android.intent.action.EXTERNAL_APPLICATIONS_UNAVAILABLE
+9DocumentsProvider returned no cursor for wallpaper folder
+9Error while applying EditCommand batch to buffer (length=
+9android.view.accessibility.action.ARGUMENT_PROGRESS_VALUE
+9com.sony.dtv.settings.accessibility.AccessibilityActivity
+:Ltv/projectivy/plugin/wallpaperprovider/api/Event$CREATOR;
+:Ltv/projectivy/plugin/wallpaperprovider/api/WallpaperType;
+:discarded stale theme preset apply marker before hydration
+;You should only apply non-linear scaling to font scales > 1
+;android.provider.extra.NOTIFICATION_LISTENER_COMPONENT_NAME
+;com.philips.tv.settings.accessibility.AccessibilityActivity
+;rolled back unconfirmed theme preset apply before hydration
+<androidx.activity.result.contract.action.REQUEST_PERMISSIONS
+=LegacyAutoPresentationShapeStabilization(activeThemeStateRaw=
+=androidx.activity.result.contract.extra.INTENT_SENDER_REQUEST
+=androidx.activity.result.contract.extra.SEND_INTENT_EXCEPTION
+=com.android.tv.settings.oemlink.AccessibilitySettingsActivity
+>Ltv/projectivy/plugin/wallpaperprovider/api/Event$CardFocused;
+>Ltv/projectivy/plugin/wallpaperprovider/api/Event$TimeElapsed;
+>Ltv/projectivy/plugin/wallpaperprovider/api/Wallpaper$Creator;
+>Pausable composition is complete and apply() should be applied
+>androidx.activity.result.contract.action.INTENT_SENDER_REQUEST
+?[Ltv/projectivy/plugin/wallpaperprovider/api/Event$CardFocused;
+?[Ltv/projectivy/plugin/wallpaperprovider/api/Event$TimeElapsed;
+?androidx.activity.result.contract.extra.ACTIVITY_OPTIONS_BUNDLE
+?com.google.android.gms.common.internal.ClientSettings.sessionId
+@android.app.action.SCHEDULE_EXACT_ALARM_PERMISSION_STATE_CHANGED
+@androidx.activity.result.contract.extra.PERMISSION_GRANT_RESULTS
+@selectBingWallpaper(Lcom/klevico/monet/data/BingWallpaperItem;)V
+AESSettingsCipherMode 
+ALtv/projectivy/plugin/wallpaperprovider/api/WallpaperDisplayMode;
+ASettings must not be null; use Settings.DEFAULT_SETTINGS instead.
+Aandroid.view.accessibility.extra.DATA_TEXT_CHARACTER_LOCATION_KEY
+ActiveThemeState(presetId=
+ApplyPending
+AutomaticSettingsBackup(id=
+AutostartSettings(mode=
+BfavoriteFocusChanged(Lcom/klevico/monet/ui/ThemeShellFavorite;IZ)V
+BingWallpaperItem(id=
+Blank wallpaper folder URI
+CLOSE_TO_SETTINGS
+CameraSettingsIFDPointer
+Candroid.view.accessibility.extra.EXTRA_DATA_TEST_TRAVERSALAFTER_VAL
+ClassifiedWallpaperSource(uri=
+Compose:applyChanges
+DLtv/projectivy/plugin/wallpaperprovider/api/Event$NowPlayingChanged;
+DLtv/projectivy/plugin/wallpaperprovider/api/WallpaperType$Companion;
+Dandroid.view.accessibility.extra.EXTRA_DATA_TEST_TRAVERSALBEFORE_VAL
+DselectRedditWallpaper(Lcom/klevico/monet/data/RedditWallpaperItem;)V
+Dtv.projectivy.plugin.wallpaperprovider.api.IWallpaperProviderService
+ELtv/projectivy/plugin/wallpaperprovider/api/Event$ProgramCardFocused;
+ELtv/projectivy/plugin/wallpaperprovider/api/WallpaperUpdateEventType;
+E[Ltv/projectivy/plugin/wallpaperprovider/api/Event$NowPlayingChanged;
+EafterVideoWallpaperDecoderReleases(Lkotlin/jvm/functions/Function0;)V
+FLtv/projectivy/plugin/wallpaperprovider/api/Event$CardFocused$Creator;
+FLtv/projectivy/plugin/wallpaperprovider/api/Event$TimeElapsed$Creator;
+FLtv/projectivy/plugin/wallpaperprovider/api/IWallpaperProviderService;
+F[Ltv/projectivy/plugin/wallpaperprovider/api/Event$ProgramCardFocused;
+FrostedWallpaperProduct(bitmap=
+Gcom.neilturner.aerialviews.services.projectivy.WallpaperProviderService
+HORIZON_SETTINGS
+HThemeShellLibraryMoveDialog$discard([ZLkotlin/jvm/functions/Function0;)V
+Handroid.view.accessibility.extra.DATA_TEXT_CHARACTER_LOCATION_ARG_LENGTH
+ICON_PACK
+JLtv/projectivy/plugin/wallpaperprovider/api/Event$LauncherIdleModeChanged;
+JselectWallhavenWallpaper(Lcom/klevico/monet/data/WallhavenWallpaperItem;)V
+KLtv/projectivy/plugin/wallpaperprovider/api/IWallpaperProviderService$Stub;
+KLtv/projectivy/plugin/wallpaperprovider/api/WallpaperDisplayMode$Companion;
+K[Ltv/projectivy/plugin/wallpaperprovider/api/Event$LauncherIdleModeChanged;
+LLtv/projectivy/plugin/wallpaperprovider/api/Event$NowPlayingChanged$Creator;
+LUMA_SETTINGS
+Lcalling recordModificationsOf and applyChanges concurrently is not supported
+LiveWallpaperBlurSpec(width=
+MLtv/projectivy/plugin/wallpaperprovider/api/Event$ProgramCardFocused$Creator;
+Mandroid.view.accessibility.extra.DATA_TEXT_CHARACTER_LOCATION_ARG_START_INDEX
+MonetAlarmSettings
+MonetVideoWallpaper
+NCannot apply the global snapshot directly. Call Snapshot.advanceGlobalSnapshot
+NLtv/projectivy/plugin/wallpaperprovider/api/IWallpaperProviderService$Default;
+NLtv/projectivy/plugin/wallpaperprovider/api/IWallpaperProviderService$_Parcel;
+Not a Monet settings backup
+Nothing to apply!
+OLtv/projectivy/plugin/wallpaperprovider/api/WallpaperUpdateEventType$Companion;
+PROFILE_SETTINGS
+PausedComposition:applyChanges
+PreparedWallpaperBitmap(bitmap=
+PreviewHandoff(settingsVisible=
+QLtv/projectivy/plugin/wallpaperprovider/api/IWallpaperProviderService$Stub$Proxy;
+RLtv/projectivy/plugin/wallpaperprovider/api/Event$LauncherIdleModeChanged$Creator;
+RedditWallpaperItem(id=
+RedditWallpaperMedia(url=
+RedditWallpaperPage(items=
+Rounded.PowerSettingsNew
+Rounded.Settings
+Rounded.SettingsInputHdmi
+Rounded.SettingsRemote
+Rounded.SettingsSystemDaydream
+Rounded.Wallpaper
+RowSettings
+SETTINGS
+SETTINGS_PANEL
+SETTINGS_PANEL_FROST
+SETTINGS_RAIL
+Settings backup exceeds 
+SettingsAlarmReminderAnchor(id=
+SettingsFocusRestoreKey(parent=
+SettingsKeyRemapAnchor(keyCode=
+SettingsMockupRow(label=
+SettingsPanel$goBack(Lcom/klevico/monet/ui/LauncherNavigation;Landroidx/compose/runtime/MutableState;Landroidx/compose/ui/focus/FocusManager;Landroidx/compose/runtime/MutableState;)Z
+SettingsPanel$navigate(Lcom/klevico/monet/model/HomeShellStyle;Landroidx/compose/runtime/MutableState;Lkotlin/jvm/functions/Function1;Landroidx/compose/ui/focus/FocusManager;Landroidx/compose/runtime/MutableState;Lcom/klevico/monet/ui/Setti
+SettingsPanel$navigateThemeSection(Landroidx/compose/runtime/MutableState;Landroidx/compose/ui/focus/FocusManager;Landroidx/compose/runtime/MutableState;Lcom/klevico/monet/ui/SettingsRoute;)V
+SettingsPanel$startPreview(Lkotlin/jvm/functions/Function1;Landroidx/compose/runtime/MutableState;Landroidx/compose/runtime/MutableState;Lcom/klevico/monet/ui/PreviewState;Ljava/util/List;)V
+TRANSACTION_getWallpapers
+ThemeSettingsVisuals(style=
+ThemeShellBindings(style=
+ThemeShellCatalog(favorites=
+ThemeShellInvariant(shellStyle=
+ThemeShellLibraryMoveDialog$commit([ZLkotlin/jvm/functions/Function2;Lkotlin/jvm/functions/Function0;Landroidx/compose/runtime/State;Landroidx/compose/runtime/MutableState;)V
+Unable to get icon package
+WALLPAPER
+WALLPAPER_BLUR
+WALLPAPER_BRIGHTNESS
+WALLPAPER_SOUND_VOLUME
+WallhavenWallpaperCursor(page=
+WallhavenWallpaperItem(id=
+WallhavenWallpaperPage(items=
+WallhavenWallpapersScreen$loadMore(Lkotlinx/coroutines/CoroutineScope;Landroidx/compose/runtime/MutableState;Landroidx/compose/runtime/MutableState;Landroidx/compose/runtime/MutableState;Landroidx/compose/runtime/MutableIntState;Landroidx/c
+Wallpaper(uri=
+WallpaperBlurEditorState(level=
+WallpaperBlurResult(source=
+WallpaperLibraryTarget(style=
+WallpaperRecipe(style=
+WallpaperRotationState(sources=
+WallpaperTones(primary=
+ZensurePendingThemePresetApplyRecovered(Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+ZsetRedditWallpaperSort(Lcom/klevico/monet/model/LauncherPreferences$RedditWallpaperSort;)V
+[setBingWallpaperTonesIfCurrent(Ljava/lang/String;Lcom/klevico/monet/model/WallpaperTones;)V
+]setRedditWallpaperTonesIfCurrent(Ljava/lang/String;Lcom/klevico/monet/model/WallpaperTones;)V
+^setCustomBackgroundTonesIfCurrent(Ljava/lang/String;Lcom/klevico/monet/model/WallpaperTones;)V
+^setWeatherWallpaperScene(Lcom/klevico/monet/model/LauncherPreferences$WeatherWallpaperScene;)V
+__action_monet_settings__
+__action_next_wallpaper__
+__action_system_settings__
+`setWallhavenWallpaperTonesIfCurrent(Ljava/lang/String;Lcom/klevico/monet/model/WallpaperTones;)V
+addRedditWallpaperSubreddit
+addWallpaperFolder
+aerial_wallpaper_fetched_at
+aerial_wallpaper_uris
+android.intent.action.ASSIST
+android.intent.action.DELETE
+android.intent.action.MAIN
+android.intent.action.SCREEN_ON
+android.intent.action.SEARCH
+android.intent.action.TIME_SET
+android.intent.action.TIME_TICK
+android.intent.action.VIEW
+android.intent.extra.MIME_TYPES
+android.intent.extra.STREAM
+android.intent.extra.TITLE
+android.media.extra.ENCODINGS
+android.media.tv.extra.INPUT_ID
+android.settings.DREAM_SETTINGS
+android.settings.HOME_SETTINGS
+android.settings.SETTINGS
+android.settings.SLICE_SETTINGS
+android.settings.WIFI_SETTINGS
+android.speech.extra.LANGUAGE
+android.speech.extra.PROMPT
+animated_wallpapers
+appSettings
+appfilter
+appfilter.xml
+apply 
+applyAsDouble
+applyAsInt
+applyAsLong
+applyDimension
+applyPausedPrecomposition
+applyProfileBootChoice
+applyThemePreset
+applyTransactionId
+applyVideoEndStateOnce
+automatic_settings_backups/
+autostart_settings
+bing-wallpaper
+bing-wallpaper|
+bing_wallpaper_auto_daily
+bing_wallpaper_copyright
+bing_wallpaper_fetched_at
+bing_wallpaper_market
+bing_wallpaper_title
+bing_wallpaper_tone_url
+bing_wallpaper_tones
+bing_wallpaper_url
+bsetWeatherWallpaperDaytime(Lcom/klevico/monet/model/LauncherPreferences$WeatherWallpaperDaytime;)V
+cancelThemePresetApply
+cancelThemePresetApply()V
+cinematic_wallpaper_enabled
+com.anddoes.launcher.THEME
+com.android.settings
+com.android.tv.settings
+com.gau.go.launcherex.theme
+com.klevico.monet.HomeActivity
+com.novalauncher.THEME
+com.philips.tv.settings
+com.sony.dtv.settings
+compose:lazy:prefetch:apply
+content://android.media.tv/
+content://media/
+custom-wallpaper
+custom-wallpaper|
+dispatchApplyWindowInsets
+dispatchKeyShortcutEvent
+drawable-wallpaper:
+drawable.xml
+font_variation_settings
+fromFontVariationSettings
+getFontFeatureSettings
+getFontVariationSettings
+getWallpapers
+hsetScreensaverWallpaperSource(Lcom/klevico/monet/model/LauncherPreferences$ScreensaverWallpaperSource;)V
+iconPackDynamicBackground
+iconPackMode
+iconPackPackage
+iconPackVariant
+icon_pack
+icon_pack_dynamic_background
+icon_pack_package
+invalidate wallpaper key failed
+invokeSuspend$applyVideoEndStateOnce(Lkotlin/jvm/internal/Ref$BooleanRef;Ljava/lang/String;Lcom/klevico/monet/ui/theme/DisplayedLauncherTheme;Lcom/klevico/monet/ui/theme/ThemeChangeRevealState;Landroidx/compose/runtime/State;Landroidx/compo
+jsetWallpaperRotationSourceEnabled(Lcom/klevico/monet/model/LauncherPreferences$WallpaperRotationSource;Z)V
+leagueShortcut
+monet_settings_backup.json
+navigateThemeSection
+onApplyWindowInsets
+openAppSettingsFor
+openAppSettingsFor(I)V
+openBluetoothSettings
+openBluetoothSettings()V
+openInstalledAppSettings
+openLauncherSettings
+openLauncherSettings()V
+openNetworkSettings
+openNetworkSettings()V
+org.adw.launcher.THEMES
+reddit-wallpaper
+reddit-wallpaper|
+reddit_wallpaper_author
+reddit_wallpaper_permalink
+reddit_wallpaper_preview_url
+reddit_wallpaper_sort
+reddit_wallpaper_subreddit
+reddit_wallpaper_subreddits
+reddit_wallpaper_title
+reddit_wallpaper_tone_url
+reddit_wallpaper_tones
+reddit_wallpaper_url
+reddit_wallpaper_used_urls
+refreshBingWallpaper
+refreshBingWallpaper(Z)V
+removeRedditWallpaperSubreddit
+removeWallpaperFolder
+rename wallpaper image failed
+rename wallpaper key failed
+reopen_language_settings
+requestApplyInsets
+requestSettingsExport
+requestSettingsExport()V
+requestSettingsImport
+requestSettingsImport()V
+requestSettingsImportFromFile
+requestWallpaperFolder
+requestWallpaperFolder(Z)V
+rotateAerialWallpaper
+rotateAerialWallpaper(Z)V
+rotateWallpaper
+rotateWallpaper(Z)Z
+sapplyThemePreset(Ljava/lang/String;Lcom/klevico/monet/model/ThemeWallpaperPolicy;Lkotlin/jvm/functions/Function1;)V
+screensaver-wallpaper
+screensaver_single_wallpaper
+screensaver_wallpaper_source
+selectBingWallpaper
+selectRedditWallpaper
+selectWallhavenWallpaper
+selectWallpaperFolderImage
+setBingWallpaperAutoDaily
+setBingWallpaperAutoDaily(Z)V
+setBingWallpaperMarket
+setBingWallpaperTonesIfCurrent
+setCinematicWallpaperEnabled
+setFontFeatureSettings
+setFontVariationSettings
+setIconPackDynamicBackground
+setIconPackPackage
+setOnApplyWindowInsetsListener
+setRedditWallpaperSort
+setScreensaverAmbienceMood(Lcom/klevico/monet/model/LauncherPreferences$WeatherWallpaperScene;Lcom/klevico/monet/model/LauncherPreferences$WeatherWallpaperDaytime;)V
+setScreensaverSingleWallpaper
+setScreensaverWallpaperSource
+setSettingsPanelCustomColor
+setSettingsPanelFrostLevel
+setSettingsPanelFrostLevel(I)V
+setSettingsText
+setShortcutId
+setShowCompactTopBarSettings
+setVideoWallpaperSoundEnabled
+setWallpaperBlurLevel
+setWallpaperBlurLevel(I)V
+setWallpaperBrightnessLevel
+setWallpaperBrightnessLevel(I)V
+setWallpaperRotationEnabled
+setWallpaperRotationEnabled(Z)V
+setWallpaperRotationUriExcluded
+setWeatherWallpaperDaytime
+setWeatherWallpaperScene
+settings
+settings put secure 
+settingsActions
+settings_
+settings_backup.json
+settings_group
+settings_label
+settings_panel_custom_color
+settings_panel_frost_level
+settings_row
+show_compact_top_bar_settings
+theme_preset_apply_transaction
+theme_preset_pending_apply
+uApplyHdrToSdrToneMapping
+video wallpaper deferred 
+video-wallpaper:
+video-wallpaper:latest:
+video-wallpaper|
+video_wallpaper_sound_enabled
+video_wallpaper_sound_volume
+wallhaven-wallpaper
+wallhaven-wallpaper|
+wallhaven.cc/settings/account
+wallhaven_wallpaper_id
+wallhaven_wallpaper_page_url
+wallhaven_wallpaper_tone_url
+wallhaven_wallpaper_tones
+wallhaven_wallpaper_url
+wallpaper
+wallpaperKeys
+wallpaperPalette
+wallpaperPolicy
+wallpaper_blur_level
+wallpaper_brightness_level
+wallpaper_folder_uris
+wallpaper_last_rotation_at
+wallpaper_lkg
+wallpaper_rotation_enabled
+wallpaper_rotation_interval
+wallpaper_rotation_last_source
+wallpaper_rotation_sources
+weather_wallpaper_daytime
+weather_wallpaper_scene
+=====END===== 700

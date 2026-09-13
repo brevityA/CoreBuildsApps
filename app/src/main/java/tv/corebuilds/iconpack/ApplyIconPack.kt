@@ -93,14 +93,20 @@ object ApplyIconPack {
         key = "monet",
         displayName = "Monet Launcher",
         packages = listOf("com.klevico.monet"),
-        // Monet 1.0.76 (decompiled 2026-08-19) has no incoming apply extra.
-        // It lists packs via Nova/ADW/GO/Lawnchair/Fede discovery actions,
-        // then setIconPackPackage() from its own settings. tryStandardApply
-        // is a best-effort; expect Manual on current builds.
+        // Monet 1.0.84 (decompiled 2026-09-12; re-confirms 1.0.76) has
+        // no incoming apply extra. Its only exported activities are
+        // HomeActivity and WallpaperShareActivity; the settings activity is
+        // exported=false, so there is no deep link. It discovers packs via the
+        // Nova/ADW/Apex/GO/Fede/Lawnchair/OnePlus/Tesla discovery actions
+        // (all declared in our manifest) and reads `xml/appfilter`, then the
+        // user picks the pack in Monet's own settings. tryStandardApply is a
+        // best-effort; expect Manual on current builds. Icon packs are a Monet
+        // Premium feature.
         intent = { ctx, self ->
             tryStandardApply(ctx, "com.klevico.monet", self)
         },
-        manualPath = "Monet Settings → Icons → Icon pack → Core Builds Icon Pack"
+        // 1.0.80 reorganised Settings: the "Icons" category became "Apps".
+        manualPath = "Monet Settings → Apps → Icon pack → Core Builds Icon Pack"
     )
 
     val AT4K = Launcher(

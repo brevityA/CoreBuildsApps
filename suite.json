@@ -1,11 +1,11 @@
 {
   "suite": "Core Builds Apps",
-  "asOf": "2026-09-12",
+  "asOf": "2026-09-13",
   "apps": {
     "iconpack": {
       "name": "Core Builds Icon Pack",
-      "versionName": "1.8.14",
-      "versionCode": 24,
+      "versionName": "1.8.15",
+      "versionCode": 25,
       "tagPrefix": "v",
       "floatingTag": "iconpack",
       "downloader": "5270601",

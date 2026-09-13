@@ -1,0 +1,57 @@
+====================================================================================================
+CLASS Lcom/klevico/monet/WallpaperShareActivity; extends La/pa0;
+  FIELD E I public static final synthetic
+  FIELD D La/jj5; public final
+  METHOD <init> ()V
+  METHOD k (Lcom/klevico/monet/WallpaperShareActivity; Ljava/lang/String; La/qr2;)Ljava/lang/Object;
+  METHOD m (Landroid/content/Intent;)Ljava/util/List;
+     STR "android.intent.extra.STREAM"
+     CALL Landroid/content/Intent;->getParcelableArrayListExtra(Ljava/lang/String;)Ljava/util/ArrayList;
+  METHOD n (Landroid/content/Intent;)Landroid/net/Uri;
+     STR "android.intent.extra.STREAM"
+     CALL Landroid/content/Intent;->getParcelableExtra(Ljava/lang/String;)Landroid/os/Parcelable;
+  METHOD attachBaseContext (Landroid/content/Context;)V
+     STR ""
+     STR "language_tag"
+     STR "locale_prefs"
+     CALL Landroid/content/Context;->createConfigurationContext(Landroid/content/res/Configuration;)Landroid/content/Context;
+     CALL Landroid/content/Context;->getResources()Landroid/content/res/Resources;
+     CALL Landroid/content/Context;->getSharedPreferences(Ljava/lang/String; I)Landroid/content/SharedPreferences;
+     CALL Landroid/content/ContextWrapper;->attachBaseContext(Landroid/content/Context;)V
+     CALL Landroid/content/SharedPreferences;->getString(Ljava/lang/String; Ljava/lang/String;)Ljava/lang/String;
+     CALL Landroid/content/res/Configuration;-><init>(Landroid/content/res/Configuration;)V
+     CALL Landroid/content/res/Configuration;->setLocale(Ljava/util/Locale;)V
+     CALL Landroid/content/res/Resources;->getConfiguration()Landroid/content/res/Configuration;
+  METHOD l ()Landroid/content/Context;
+  METHOD onCreate (Landroid/os/Bundle;)V
+     STR "/"
+     STR "android.intent.action.SEND_MULTIPLE"
+     STR "file"
+     STR "image/"
+     STR "video/"
+     CALL Landroid/app/Activity;->finishAndRemoveTask()V
+     CALL Landroid/app/Activity;->getIntent()Landroid/content/Intent;
+     CALL Landroid/content/ClipData$Item;->getUri()Landroid/net/Uri;
+     CALL Landroid/content/ClipData;->getItemAt(I)Landroid/content/ClipData$Item;
+     CALL Landroid/content/ClipData;->getItemCount()I
+     CALL Landroid/content/ContentResolver;->getType(Landroid/net/Uri;)Ljava/lang/String;
+     CALL Landroid/content/Context;->getContentResolver()Landroid/content/ContentResolver;
+     CALL Landroid/content/Context;->getFilesDir()Ljava/io/File;
+     CALL Landroid/content/Intent;->getAction()Ljava/lang/String;
+     CALL Landroid/content/Intent;->getClipData()Landroid/content/ClipData;
+     CALL Landroid/content/Intent;->getData()Landroid/net/Uri;
+     CALL Landroid/content/Intent;->getType()Ljava/lang/String;
+     CALL Landroid/net/Uri;->getPath()Ljava/lang/String;
+     CALL Landroid/net/Uri;->getScheme()Ljava/lang/String;
+     CALL Landroid/net/Uri;->toString()Ljava/lang/String;
+     CALL Landroid/webkit/MimeTypeMap;->getFileExtensionFromUrl(Ljava/lang/String;)Ljava/lang/String;
+     CALL Landroid/webkit/MimeTypeMap;->getMimeTypeFromExtension(Ljava/lang/String;)Ljava/lang/String;
+     CALL Landroid/webkit/MimeTypeMap;->getSingleton()Landroid/webkit/MimeTypeMap;
+     CALL Landroid/widget/Toast;->makeText(Landroid/content/Context; I I)Landroid/widget/Toast;
+     CALL Landroid/widget/Toast;->show()V
+     CALL Lcom/klevico/monet/WallpaperShareActivity;->l()Landroid/content/Context;
+     CALL Lcom/klevico/monet/WallpaperShareActivity;->m(Landroid/content/Intent;)Ljava/util/List;
+     CALL Lcom/klevico/monet/WallpaperShareActivity;->n(Landroid/content/Intent;)Landroid/net/Uri;
+TOTAL CLASSES 1
+====================================================================================================
+ENUM-LIKE FIELDS

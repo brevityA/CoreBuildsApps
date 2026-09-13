@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.View
 import android.widget.ProgressBar
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -15,7 +16,10 @@ import androidx.recyclerview.widget.RecyclerView
  * "N of M · Current name" label. On completion, shows:
  *  - saved / skipped / failed counts (the receipts voice — name what happened)
  *  - a row of installed launchers so the user can open the one they rotate in,
- *    plus a one-line instruction.
+ *    plus a one-line instruction. When Monet Launcher is installed the row
+ *    leads with "Send N to Monet": Monet does not watch Pictures, so the
+ *    exported set is also handed to its share target (ACTION_SEND_MULTIPLE)
+ *    and lands in Monet → Settings → Background → Gallery in one step.
  *  - Retry failed (if any) and Done.
  *
  * The export itself runs in [WallpaperExporter] on a worker thread; this
@@ -144,7 +148,10 @@ class ExportProgressActivity : AppCompatActivity() {
         }
 
         afterHint.visibility = View.VISIBLE
-        afterHint.text = getString(R.string.wp_after_export_hint)
+        afterHint.text = getString(
+            if (WallpaperSetter.canShareToMonet(this)) R.string.wp_after_export_hint_monet
+            else R.string.wp_after_export_hint
+        )
 
         bindLaunchers()
 
@@ -158,7 +165,12 @@ class ExportProgressActivity : AppCompatActivity() {
         // Only offer launchers we can actually open (getLaunchIntentForPackage).
         val installed = ApplyIconPack.installed(this)
             .filter { l -> l.packages.any { p -> packageManager.getLaunchIntentForPackage(p) != null } }
-        if (installed.isEmpty()) {
+        // Everything the export touched is in the download cache, so it can be
+        // shared to Monet without re-reading Pictures.
+        val monetShareable =
+            if (WallpaperSetter.canShareToMonet(this)) wallpapers.filter { WallpaperDownloader.cached(this, it) != null }
+            else emptyList()
+        if (installed.isEmpty() && monetShareable.isEmpty()) {
             launcherRow.visibility = View.GONE
             return
         }
@@ -166,17 +178,48 @@ class ExportProgressActivity : AppCompatActivity() {
         launcherRow.layoutManager = LinearLayoutManager(
             this, LinearLayoutManager.HORIZONTAL, false
         )
-        val labels = installed.map { getString(R.string.wp_open_launcher, it.displayName) }
-        launcherRow.adapter = ChipAdapter(
-            labels,
-            installed.map { it.key },
-            selected = ""
-        ) { key ->
-            installed.firstOrNull { it.key == key }?.let { ApplyIconPack.openLauncher(this, it) }
+        val labels = mutableListOf<String>()
+        val keys = mutableListOf<String>()
+        if (monetShareable.isNotEmpty()) {
+            labels += getString(R.string.wp_send_n_to_monet, monetShareable.size)
+            keys += MONET_SHARE_KEY
+        }
+        labels += installed.map { getString(R.string.wp_open_launcher, it.displayName) }
+        keys += installed.map { it.key }
+        launcherRow.adapter = ChipAdapter(labels, keys, selected = "") { key ->
+            if (key == MONET_SHARE_KEY) {
+                sendToMonet(monetShareable)
+            } else {
+                installed.firstOrNull { it.key == key }?.let { ApplyIconPack.openLauncher(this, it) }
+            }
         }
     }
 
+    /**
+     * Hand the cached files to Monet's WallpaperShareActivity as one
+     * ACTION_SEND_MULTIPLE. Monet copies them into its library and toasts
+     * "N wallpapers added" (or its Premium notice) itself.
+     */
+    private fun sendToMonet(targets: List<Wallpaper>) {
+        val uris = targets.mapNotNull { wp ->
+            WallpaperDownloader.cached(this, wp)?.let { WallpaperSetter.contentUri(this, it) }
+        }
+        if (uris.isEmpty()) {
+            toast(getString(R.string.wp_monet_share_failed))
+            return
+        }
+        try {
+            // Monet toasts "N wallpapers added" itself.
+            startActivity(WallpaperSetter.monetShareIntent(uris))
+        } catch (e: Exception) {
+            toast(getString(R.string.wp_monet_share_failed))
+        }
+    }
+
+    private fun toast(msg: String) = Toast.makeText(this, msg, Toast.LENGTH_LONG).show()
+
     companion object {
         const val EXTRA_WALLPAPERS = "wallpapers"
+        private const val MONET_SHARE_KEY = "__monet_share__"
     }
 }

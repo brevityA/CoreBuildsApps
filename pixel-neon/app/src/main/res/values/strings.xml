@@ -70,6 +70,15 @@
     <string name="wp_load_failed">Could not load that wallpaper.</string>
     <string name="wp_permission_denied">Wallpaper permission is required to set it.</string>
     <string name="wp_set_failed_fmt">Could not set wallpaper: %1$s</string>
+    <!-- Monet Launcher hand-off. Monet never reads the system wallpaper; its
+         exported WallpaperShareActivity (v1.0.72+) accepts image/* shares and
+         copies them into Monet's own background library. Custom backgrounds
+         are Monet Premium — Monet toasts that itself. -->
+    <string name="wp_send_to_monet">Send to Monet</string>
+    <string name="wp_send_n_to_monet">Send %1$d to Monet</string>
+    <string name="wp_monet_share_failed">Monet didn\'t accept the wallpaper. Update Monet to 1.0.72 or newer.</string>
+    <string name="wp_saved_monet_hint">Saved. Monet Settings → Background → Sources → Choose folder → Pictures/CoreBuilds</string>
+    <string name="wp_after_export_hint_monet">Send them to Monet, or pick the CoreBuilds folder under Monet Settings → Background → Sources.</string>
 
     <!-- Wallpaper export to Pictures (for launcher auto-rotation) -->
     <string name="wp_export">Export</string>

@@ -129,6 +129,15 @@ settings screen**. The service is Projectivy-only. The feed and the *idea*
 
 ## 2. Monet — why the *system wallpaper* is the integration
 
+> **Superseded 2026-09-12.** Decompiling Monet v1.0.84 showed the second
+> bullet below is wrong: Monet contains **no `WallpaperManager` reference at
+> all** — it never reads the system wallpaper and themes only from its own
+> background library. The working hand-off is Monet's exported
+> `WallpaperShareActivity` (`ACTION_SEND`/`ACTION_SEND_MULTIPLE` `image/*`,
+> v1.0.72+, Premium-gated), which the icon pack app now uses. The
+> launcher-agnostic system-wallpaper argument still holds for stock Google TV
+> and Projectivy; it does not hold for Monet. See `docs/MONET_LAUNCHER.md`.
+
 Monet (`com.klevico.monet`, Klevico) is a Material You TV launcher. Its headline
 feature is **dynamic colour**: it pulls an accent palette from the wallpaper and
 recolours the entire UI in real time. Key facts for us:

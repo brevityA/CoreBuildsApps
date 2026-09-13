@@ -1,151 +1,227 @@
-# Core Motion on Monet Launcher
+# Core Builds on Monet Launcher
 
-How to get the Core Builds live wallpapers onto **Monet Launcher**
-(`com.klevico.monet`), and why it can't be done the same way as Projectivy.
+How the Core Builds apps hand **icons** and **wallpapers** to Monet Launcher
+(`com.klevico.monet`, Klevico), what Monet actually accepts, and what it does
+not. Ground truth is the decompiled **Monet v1.0.84** APK (versionCode 118,
+released 2026-09-10, decompiled 2026-09-12); raw probe output lives in
+`docs/research/monet-probe/`.
 
 ---
 
 ## The short version
 
-**The Core Motion plugin cannot work with Monet, and no amount of work on our
-side will change that.** Monet has no wallpaper-provider plugin API. There is no
-intent action to answer, no AIDL to implement, no service to export. Projectivy
-is the outlier here — Spocky publishes a documented plugin contract; Klevico
-does not.
+| What | Can we push it into Monet? | How |
+|---|---|---|
+| **A wallpaper** | **Yes** (Monet 1.0.72+, Monet Premium) | `ACTION_SEND image/*` → `com.klevico.monet.WallpaperShareActivity`. Wired into the app as **Send to Monet**. |
+| **Several wallpapers** | **Yes** (same) | `ACTION_SEND_MULTIPLE image/*` → same activity. Wired into Export as **Send N to Monet**. |
+| **A folder to rotate** | Manual | Export to `Pictures/CoreBuilds`, then Monet → Settings → Background → Sources → Choose folder. |
+| **The icon pack** | **No** — Manual | Monet has no apply intent and no exported settings activity. It *discovers* packs through the standard actions we already declare; the user picks it under Settings → Apps → Icon pack. |
+| **Live wallpapers (Core Motion)** | Indirectly | Monet is a *client* of the Projectivy wallpaper-provider API (it binds Aerial Views through it). A built and released `motion-plugin/` would be a candidate source. Not verified end to end. |
 
-Monet's wallpaper sources are a fixed list, baked into the closed-source APK:
+Two things that were assumed in this repo and are **false**, both settled by
+the dex:
 
-| Source | Third-party extensible? |
-|---|---|
-| Your own images | no — user picks files |
-| Your own videos | **yes, indirectly** — user picks files |
-| Built-in wallpapers | no |
-| Reddit | no — hardcoded subreddits |
-| **Aerial Views** | **yes** — Aerial Views itself takes custom feeds |
-| Cinematic movie posters | no |
-
-So there are exactly two routes, and one of them is good.
+1. *"Monet re-themes from the system wallpaper."* It does not. There is no
+   `android.app.WallpaperManager` reference anywhere in Monet. Setting the
+   system wallpaper changes nothing on a Monet home screen.
+2. *"There is no way to hand Monet a file."* There is, since v1.0.72 ("set any
+   image as wallpaper by sharing it from a file manager").
 
 ---
 
-## Route A — the Aerial Views bridge (recommended)
+## What the APK says
 
-Monet added *"Aerial Views as a live wallpaper and screensaver, plus your own
-videos"* in v1.0.45. Aerial Views (`com.neilturner.aerialviews`, GPLv3) supports
-**custom remote feeds** in the "community" `entries.json` format.
+### Exported surface
 
-Chain the two and Monet gets our catalogue, auto-updating, without Klevico
-having to know we exist:
+Only two activities are exported:
 
-```
-Motion/aerial-entries.json  ──▶  Aerial Views (custom feed)  ──▶  Monet Launcher
-        (we publish)                  (user pastes URL once)        (picks Aerial as source)
-```
+- `com.klevico.monet.HomeActivity` — HOME / LAUNCHER / LEANBACK_LAUNCHER.
+- `com.klevico.monet.WallpaperShareActivity` — `exported=true`,
+  `taskAffinity=com.klevico.monet.share`, `excludeFromRecents=true`, filters:
+  - `ACTION_SEND` — `image/*`, `video/*`
+  - `ACTION_SEND_MULTIPLE` — `image/*`, `video/*`
+  - `ACTION_ATTACH_DATA` — `image/*`, `video/*`
+  - category `DEFAULT`; share-sheet label "Set as background".
 
-This is the closest thing to feature parity with the Projectivy plugin: one URL,
-set once, and new loops appear as we ship them. It also gets the user a matching
-*screensaver* for free, which the Projectivy plugin doesn't do.
+The settings activity (`MainActivity`) is `exported=false`, so **no deep link
+into Monet settings exists**. No exported receiver or service takes an icon
+pack. Monet's `<queries>` block lists TV settings packages, Aerial Views, a
+dozen cast receivers, and Leanback settings intents — nothing about icon-pack
+apply actions.
 
-### The feed
+### `WallpaperShareActivity.onCreate`, in order
 
-`tools/build_aerial_feed.py` projects `Motion/live-feed.json` (Overflight
-format, the source of truth) into Aerial Views' format. Never hand-edit the
-output; CI checks the two stay in sync.
+1. Collect URIs from `intent.data`, `EXTRA_STREAM` (single or list) and
+   `clipData`. `file://` URIs pointing inside Monet's own `filesDir` are
+   rejected.
+2. MIME per URI: `ContentResolver.getType` → `MimeTypeMap` by extension →
+   `intent.type`. Must start with `image/` or `video/`. Nothing valid →
+   toast *"This file can't be used as a background."* and
+   `finishAndRemoveTask()`.
+3. Premium flag false → toast *"Custom backgrounds are part of Monet
+   Premium."* and finish. **Custom backgrounds are Premium; the share target
+   does not bypass that.**
+4. Otherwise each file is copied into `files/backgrounds/bg_<…>.<ext>`; a
+   single image toasts *"Set as background"*, several toast *"%d wallpapers
+   added"* then *"Open Monet to change the wallpaper"*. Copied images appear
+   under Settings → Background → **Gallery**; videos keep their original
+   location when possible.
+
+Consequences for a sender: use an explicit component (no chooser on a
+remote), put the URI in both `EXTRA_STREAM` and `clipData`, set
+`FLAG_GRANT_READ_URI_PERMISSION`, and let Monet do the talking — it toasts
+success, Premium, and failure itself.
+
+### Icon-pack support is outbound only
+
+Classes `a/wj1` / `a/tj1` query the package manager for the usual discovery
+actions — `org.adw.launcher.THEMES`, `com.novalauncher.THEME`,
+`com.anddoes.launcher.THEME`, `com.gau.go.launcherex.theme`,
+`com.fede.launcher.THEME_ICONPACK`, `ch.deletescape.lawnchair.ICONPACK`,
+`net.oneplus.launcher.icons.ACTION_PICK_ICON`,
+`com.teslacoilsw.launcher.THEME` — all of which our manifests already declare,
+so all three packs show up in Monet's picker. Monet then loads `appfilter.xml`
+via `res.getIdentifier("appfilter","xml",pkg)`, falling back to `icon_pack`
+xml and `assets/appfilter.xml`, and looks up `ComponentInfo{pkg/cls}` →
+`pkg/cls` → `pkg`. `assets/drawable.xml` feeds its icon browser for per-app
+overrides.
+
+There is **no incoming apply action or extra**. The selected pack is written
+to Monet's own preferences (`icon_pack_package`, plus `iconPackVariant`,
+`iconPackDynamicBackground`, `noBannerIconFallback`, `app_tile_presentation`
+= `AUTO | ICON | BANNER`). `iconPackVariant` is an enum inside Monet's per-app
+`AppAppearanceOverride` — it selects how Monet renders the pack drawable in a
+tile, not a second drawable set from the pack, so **packs do not need to ship
+`_banner` variants for Monet**. Icon packs are a Premium feature.
+
+Settings were reorganised in 1.0.80: the icon-pack picker now lives under
+**Settings → Apps → Icon pack** (old copy in this repo said "Icons").
+
+### Other facts worth keeping
+
+- `minSdk 26`, `targetSdk 35`, R8-obfuscated, Play Billing 8 with an offline
+  activation key. Distributed on Play and as sideload APKs from
+  `Klevico/Monet-Launcher` (releases only, no source).
+- Monet binds Aerial Views' `WallpaperProviderService` over
+  `tv.projectivy.plugin.WALLPAPER_PROVIDER` — the same AIDL contract
+  `motion-plugin/` implements. Help text credits "Projectivy Wallpaper
+  Provider API (Apache 2.0)".
+- Monet's wallpaper library keys: `custom_background_uris`,
+  `selected_custom_background_uri`, `wallpaper_folder_uris`,
+  `wallpaper_rotation_sources`, `background_style=CUSTOM`. The folder picker
+  enumerates MediaStore buckets and `OPEN_DOCUMENT_TREE`, so an exported
+  `Pictures/CoreBuilds` is a valid rotation source.
+- Uses an accessibility service for HOME-key override and `WRITE_SECURE_SETTINGS`
+  via ADB for setting itself as default on locked-down boxes.
+
+---
+
+## What the app does now
+
+### Wallpapers
+
+- **Preview → Set.** When Monet is the HOME launcher *and* resolves the share
+  target, the primary button reads **Send to Monet** and fires
+  `WallpaperSetter.monetShareIntent(uri)` with a `content://` URI from our
+  FileProvider (`cache/wallpapers/` is now exported alongside `cache/updates/`).
+  No `SET_WALLPAPER` or storage permission is touched. Any other HOME keeps the
+  old `WallpaperManager` path.
+- **Export → result.** If Monet is installed, the launcher row leads with
+  **Send N to Monet** (`ACTION_SEND_MULTIPLE` over the cached files) and the
+  hint names the 1.0.80 path for folder rotation. Existing "Open <launcher>"
+  chips remain.
+- **Fallback copy** that used to say "Wallpaper → Your own images" now names
+  Settings → Background → Sources → Choose folder.
+
+Monet's own toasts carry the outcome. On the free tier the user sees
+*"Custom backgrounds are part of Monet Premium."* — from Monet, which is the
+honest place for it.
+
+### Icons
+
+Unchanged mechanics; corrected copy. `ApplyIconPack.MONET` still tries the
+generic apply contracts and falls to Manual, with `manualPath` now
+"Monet Settings → Apps → Icon pack → Core Builds Icon Pack".
+
+---
+
+## Routes for Core Motion (video)
+
+### Route A — Aerial Views bridge (works today)
+
+Monet consumes Aerial Views as a background source over the Projectivy
+provider API. Aerial Views accepts custom remote feeds, and
+`tools/build_aerial_feed.py` publishes ours:
 
 ```
 https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Motion/aerial-entries.json
 ```
 
-Format mapping:
+1. Install Aerial Views; Settings → Custom feeds → paste the URL.
+2. Monet → Settings → Background → Sources → **Aerial Views** → "Use as
+   background".
 
-| Overflight (`live-feed.json`) | Aerial Views (`aerial-entries.json`) |
+Format mapping (`Motion/live-feed.json` is the source of truth):
+
+| Overflight | Aerial Views |
 |---|---|
 | `url_1080p` | `url-1080-SDR` |
 | `url_4k` | `url-4K-SDR` |
-| `title` + `location` + `author` | `accessibilityLabel` (only place attribution surfaces) |
-| filename stem | `id` — stable, so favourites survive a retitle |
-| — | `type: "aerial"` |
-| — | `timeOfDay: "night"` |
+| `title` + `location` + `author` | `accessibilityLabel` |
+| filename stem | `id` |
+| — | `type: "aerial"`, `timeOfDay: "night"` |
 
-`timeOfDay` matters: the Core Builds palette is dark-first (Night `#0D1117`,
-Void `#04070F`). Tagging these `day` makes Aerial Views skip them for anyone
-using time-of-day filtering, which reads to the user as a broken feed.
+### Route B — local files (works today)
 
-### User steps
+Core Shift downloads loops to `Movies/CoreBuilds`; Monet → Settings →
+Background → Sources → Choose image or video. Manual and one at a time. Since
+Monet's share target also accepts `video/*`, Core Shift could `ACTION_SEND` the
+downloaded `.mp4` the same way the icon pack sends images — an obvious follow-up.
 
-1. Install **Aerial Views** (Play Store, Amazon Appstore, or GitHub APK).
-2. Aerial Views → `Settings → Custom feeds` (or `Custom Media URLs`) → add:
-   `https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Motion/aerial-entries.json`
-3. Optionally disable the Apple/Amazon/Jetson sources so only Core Motion plays.
-4. Monet → `Settings → Wallpaper → Source → Aerial`.
-5. Monet extracts its Material You palette from the video frames — Core Cyan
-   `#00E5FF` carries into the tiles and accents.
+### Route C — ask Klevico (long game)
 
-Same feed also works in Projectivy via Overflight, and Aerial Views is *itself*
-a Projectivy wallpaper provider, so this one file covers three launchers.
+Two small requests, both cheap given what the APK already contains:
 
----
+1. An **apply intent for icon packs** (e.g. accept
+   `com.novalauncher.THEME` with `ICON_THEME_PACKAGE`, or its own extra). Monet
+   already discovers packs through those actions; accepting the inbound form
+   is the missing half.
+2. Bind **any** `tv.projectivy.plugin.WALLPAPER_PROVIDER` service, not just
+   Aerial Views (or expose a "custom feed URL" field). The AIDL client exists.
 
-## Route B — local files (already works today)
+Klevico ships fixes within days via the internal test channel; file on
+`Klevico/Monet-Launcher` issues.
 
-Monet plays videos from local storage. Core Shift already downloads loops to
-`Movies/CoreBuilds`, which is exactly the right shape for this:
+### Route D — release `motion-plugin/`
 
-1. Core Shift → pick a loop → **Download**.
-2. Monet → `Settings → Wallpaper → Your own videos` → browse to
-   `Movies/CoreBuilds` → pick the `.mp4`.
-
-Offline and reliable, but manual, one-at-a-time, and doesn't auto-update. Worth
-keeping as the fallback for anyone who won't install a second app — and it's the
-only route on Fire TV if Aerial Views' storage permissions get awkward.
-
-**Improvement worth making:** Core Shift's success message currently says
-*"Saved to Movies/CoreBuilds — set it in Monet"*, which leaves the user to find
-the folder themselves. Firing an `ACTION_VIEW` on the saved file, or at minimum
-naming the exact path in the toast, would close that gap. Low effort, real payoff.
-
----
-
-## Route C — ask Klevico for a provider API (long game)
-
-Worth opening as a feature request on `Klevico/Monet-Launcher`, because Monet
-already has the two pieces that make it cheap:
-
-- it consumes remote video lists (the Aerial integration proves the plumbing);
-- it already supports third-party **icon packs**, so it has a precedent for
-  reading from other installed apps.
-
-The concrete ask is small: let a user paste an arbitrary
-`entries.json`/Overflight URL directly into Monet's wallpaper settings, skipping
-Aerial Views. That's a text field and an HTTP fetch, and it would serve every
-wallpaper project on Android TV, not just ours.
-
-A full Projectivy-style AIDL plugin API is the bigger ask and much less likely
-to land.
+Monet's provider client may be pinned to Aerial Views' component
+(`com.neilturner.aerialviews.services.projectivy.WallpaperProviderService`
+is a literal in the dex) or may enumerate the action. The dump does not settle
+which. Building and installing Core Motion on a Monet box is the only way to
+know; if it enumerates, Core Motion appears in Background → Sources for free.
 
 ---
 
 ## What we are NOT going to do
 
-- **Ship a Monet "plugin".** There is no plugin surface. Anything claiming to be
-  one would be a lie.
-- **Set the system wallpaper via `WallpaperManager`.** Monet themes from *its
-  own* wallpaper setting, not the system one, so this changes nothing on the
-  home screen. (It also fails outright on Fire TV, which blocks third-party
-  wallpaper writes — the icon pack already works around this by saving to
-  `Pictures/CoreBuilds`.)
-- **Reverse-engineer Monet's preference store** to inject a wallpaper path.
-  It's closed source, unsigned-writable only via root, and would break on every
-  update.
+- **Set the system wallpaper for Monet.** Proven no-op.
+- **Ship a Monet "plugin".** There is no plugin surface beyond the Projectivy
+  provider API Monet already speaks.
+- **Reverse-engineer Monet's preference store** to inject `icon_pack_package`.
+  Closed source, private storage, breaks every update.
+- **Invent a Monet apply action.** `tests/test_v151_robustness.py` guards
+  against `com.klevico.monet.APPLY_ICONPACK` for that reason.
 
 ---
 
 ## Summary
 
-| Launcher | Route | Auto-updating | Status |
+| Launcher | Asset | Route | Status |
 |---|---|---|---|
-| Projectivy | Core Motion plugin (AIDL) | yes | shipping — see `docs/PROJECTIVY_DETECTION.md` |
-| Projectivy | Overflight + our feed URL | yes | works today, no install needed |
-| Monet | Aerial Views + `aerial-entries.json` | yes | **feed shipping now** |
-| Monet | Core Shift → `Movies/CoreBuilds` | no | works today |
-| Any | Aerial Views as screensaver | yes | free side-effect of Route A |
+| Monet | wallpaper | `ACTION_SEND` → `WallpaperShareActivity` | **shipping** (Send to Monet) |
+| Monet | wallpaper set | `ACTION_SEND_MULTIPLE` → same | **shipping** (Send N to Monet) |
+| Monet | folder rotation | Export → Background → Sources → Choose folder | works, manual |
+| Monet | icon pack | discovery + Settings → Apps → Icon pack | Manual (no inbound API) |
+| Monet | Core Motion video | Aerial Views + `aerial-entries.json` | works today |
+| Monet | Core Motion video | `motion-plugin/` as provider | unverified (Route D) |
+| Projectivy | icon pack / wallpaper | own apply intents | shipping — `docs/PROJECTIVY_DETECTION.md` |
