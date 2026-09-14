@@ -88,6 +88,20 @@ All notable changes to the Core Builds Icon Pack. Format follows
   the nine tranche-2 drawables.
 - Seven new marks join the `core_monoline` style contract; the banner, Pop,
   and Pixel Neon sets are regenerated to match.
+- **Letter-mark pass (owner direction)** — a single letter is only carried
+  when the letter itself is part of the original logo; the four wordmark
+  brands that shipped invented initials are redesigned against their marks:
+  Crave (`bellmedia`) becomes `crave_c`, the wordmark's leading c in its
+  own case, in the published CraveBlue `#00A9EE` (was a palette purple);
+  Hayu (`hayu`) becomes `hayu_y`, the 2022 wordmark's signature y with its
+  sweeping descender, in the rebrand's pink-red `#FF285A` (was palette
+  red); Neon (`neon`) becomes `neon_tube_n`, the app mark's own bent-tube
+  segments with open joints, in the app icon's acid green `#C8FB34` (was a
+  simple-icons green); and Magenta Sport (`magenta_sport`) gains the
+  Telekom t-dot at the crossbar shoulder — the parent brand's actual mark,
+  which also closes the Magenta Sport wordmark. Single letters that are
+  the logo (the 7+, 9 and 10 network numerals) are untouched. Receipt:
+  `docs/icon-lettermarks-2026-09.png`.
 
 ### Removed
 

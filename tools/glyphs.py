@@ -4066,10 +4066,16 @@ GLYPHS.update({"trakt_mark": trakt_mark, "drive_sync": drive_sync})
 # seven network numerals and the two Australian free-to-air pairs get marks
 # built from the brand's actual device (the 7, the 9, the 10, the ABC
 # lollipops, the koru), Hotstar gets its literal name, Magenta Sport gets
-# the Telekom T — and the three wordmark brands (Neon, Crave, Hayu) take
-# Outfit monograms like every other wordmark brand since v1.8.18.
+# the Telekom t with its dot.
 #
-# All seven constructions are monoline: flat primitives, one accent,
+# Owner direction (2026-09-14): a single letter is only carried when the
+# letter itself is part of the original logo (network numerals; the
+# Telekom t; a wordmark's signature letterform). Wordmark-only brands whose
+# initial has no device get a construction instead: Crave sets the
+# wordmark's leading c in its case, Hayu carries the y with its sweeping
+# descender, and Neon draws the N as the app mark's own neon-tube segments.
+#
+# All of these constructions are monoline: flat primitives, one accent,
 # rounded caps, weights 30/26/24 so normalisation lands on 32/26.2/21.8.
 # ==========================================================================
 
@@ -4166,14 +4172,53 @@ def hotstar_spark(c):
 
 
 def magenta_t(c):
-    """Magenta Sport — the T of the Telekom Magenta brand.
+    """Magenta Sport — Telekom's t with its dot, the parent brand's mark.
 
     The crossbar bows upward like a broadcast signal and the stem drops
-    from its crest; the brand's magenta (#E20074 in the catalog) does the
-    rest of the talking.
+    from its crest; the round-capped dot at the right shoulder is the
+    Telekom t-dot that also closes the Magenta Sport wordmark, so the
+    mark quotes the parent brand's actual device rather than a bare T.
     """
     return (f'<path d="M 108 172 C 176 140 336 140 404 172" {_s(c, 30)}/>'
-            f'<path d="M 256 152 L 256 404" {_s(c, 30)}/>')
+            f'<path d="M 256 152 L 256 404" {_s(c, 30)}/>'
+            f'<path d="M 382 106 L 382.5 106" {_s(c, 30)}/>')
+
+
+def crave_c(c):
+    """Crave — the wordmark's leading c, lowercase, in the pack's own face.
+
+    Crave's 2018 identity (Ronald Ruiz) is a purely geometric lowercase
+    wordmark in CraveBlue — there is no emblem or device to carry, so the
+    icon sets the mark's opening letter in the wordmark's case and in the
+    pack's own face, in the canonical wordmark blue. The uppercase C tile
+    was an invention and is retired.
+    """
+    return monogram_body("c", c)
+
+
+def hayu_y(c):
+    """Hayu — the wordmark's y and its long sweeping descender.
+
+    The 2022 rebrand wordmark is a bold lowercase hayu in pink-red; the
+    y's curved tail is the one letterform that identifies it, so the icon
+    carries that letterform alone. The word has no capital H, so the old
+    H tile was an invention and is retired.
+    """
+    return (f'<path d="M 198 146 L 267 322" {_s(c, 30)}/>'
+            f'<path d="M 342 138 L 264 330 C 246 388 192 424 116 408" {_s(c, 30)}/>')
+
+
+def neon_tube_n(c):
+    """Neon — an N built from bent-tube segments, the app mark's own construction.
+
+    The NEON app icon sets its letters in acid green as separate
+    neon-tube strokes with rounded ends and open gaps at the joints; the
+    icon excerpt is the brand's construction language, not an initial
+    tile, so the N reads as a lit tube rather than a letter.
+    """
+    return (f'<path d="M 140 140 L 140 408" {_s(c, 30)}/>'
+            f'<path d="M 202 172 L 310 376" {_s(c, 30)}/>'
+            f'<path d="M 372 140 L 372 408" {_s(c, 30)}/>')
 
 
 GLYPHS.update({
@@ -4184,4 +4229,7 @@ GLYPHS.update({
     "maori_koru": maori_koru,
     "hotstar_spark": hotstar_spark,
     "magenta_t": magenta_t,
+    "crave_c": crave_c,
+    "hayu_y": hayu_y,
+    "neon_tube_n": neon_tube_n,
 })

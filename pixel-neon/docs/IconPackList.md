@@ -145,7 +145,7 @@ This is the alternate 8-bit neon treatment of the Core Builds catalog. Each row 
 | Cosmote TV | `cosmote_tv` | `#D2BCFD` | `gr.cosmote.cosmotetv.androidtv/dt.ote.poc.presentation.view.tv.TvActivity` |
 | Couch Puzzles | `couch_puzzles` | `#53FC18` | `com.roysolberg.couchpuzzles/com.roysolberg.couchpuzzles.AndroidLauncher` |
 | CPU Info | `cpuinfo` | `#008080` | `com.kgurgul.cpuinfo/com.kgurgul.cpuinfo.HostActivity`<br>`com.kgurgul.cpuinfo/com.kgurgul.cpuinfo.tv.TvActivity` |
-| Crave | `bellmedia` | `#A238FF` | `ca.bellmedia.cravetv/axis.androidtv.sdk.app.MainActivity`<br>`ca.bellmedia.cravetv/entpay.awl.awetv.MainActivity` |
+| Crave | `bellmedia` | `#00A9EE` | `ca.bellmedia.cravetv/axis.androidtv.sdk.app.MainActivity`<br>`ca.bellmedia.cravetv/entpay.awl.awetv.MainActivity` |
 | Cricfy | `cricfy` | `#00D4FF` | `com.cricfy.tv/com.android.vending.tv.activities.Splash` |
 | Criterion Channel | `criterionchannel` | `#0061FF` | `com.criterionchannel/tv.vhx.LauncherActivity`<br>`com.criterionchannel/tv.vhx.tv.home.TvHomeActivity` |
 | Crossy Road | `crossy_road` | `#FF0000` | `com.yodo1.crossyroad/com.google.firebase.MessagingUnityPlayerActivity` |
@@ -312,7 +312,7 @@ This is the alternate 8-bit neon treatment of the Core Builds catalog. Each row 
 | Gymondo | `gymondo` | `#107534` | `de.gymondo.app.gymondo/com.gymondo.presentation.features.startup.StartupTvActivity` |
 | Hallmark Channel | `hallmarkchannel` | `#9C1D2B` | `com.hallmarkchannel.awe/tv.accedo.one.app.bootstrap.BootstrapActivity` |
 | Haystack News | `haystack` | `#53FC18` | `com.haystack.android/com.haystack.android.tv.ui.activities.LoadingActivity` |
-| Hayu | `hayu` | `#FF0000` | `com.upst.hayu/com.upst.hayu.tv.main.MainActivity` |
+| Hayu | `hayu` | `#FF285A` | `com.upst.hayu/com.upst.hayu.tv.main.MainActivity` |
 | Hd Streamz | `hd_streamz` | `#0061FF` | `insure.cable.estate/com.android.vending.a.UI`<br>`insure.cable.estate/com.android.vending.a.TV` |
 | Hdhomerun | `hdhomerun` | `#7B2BFC` | `com.silicondust.view/com.silicondust.view.App` |
 | HDMI Source | `hdmi_source` | `#00D4FF` | `com.spocky.projengmenu/.activities.input.SourceHDMI1Activity`<br>`com.spocky.projengmenu/.activities.input.SourceHDMI2Activity`<br>`com.spocky.projengmenu/.activities.input.SourceHDMI3Activity`<br>`com.spocky.projengmenu/.activities.input.SourceHDMI4Activity`<br>`com.spocky.projengmenu/.ui.guidedActions.activities.input.SourceHDMI1Activity`<br>`com.spocky.projengmenu/.ui.guidedActions.activities.input.SourceHDMI2Activity`<br>`com.spocky.projengmenu/.ui.guidedActions.activities.input.SourceHDMI3Activity`<br>`com.spocky.projengmenu/.ui.guidedActions.activities.input.SourceHDMI4Activity` |
@@ -492,7 +492,7 @@ This is the alternate 8-bit neon treatment of the Core Builds catalog. Each row 
 | NBC News | `nbc_news` | `#0072CE` | `com.zumobi.msnbc/com.nbc.androidottweb.main.MainActivity` |
 | NBC Sports | `nbcsports` | `#107534` | `com.nbcsports.apps.tv/com.nbc.nbctvapp.ui.main.view.MainActivity` |
 | Nebula | `nebula` | `#2CADFE` | `tv.standard.nebula/tv.standard.nebula.tv.features.splash.view.activities.SplashActivity` |
-| Neon | `neon` | `#34D59A` | `nz.co.lightbox/nz.co.lightbox.splash.SplashActivity` |
+| Neon | `neon` | `#C8FB34` | `nz.co.lightbox/nz.co.lightbox.splash.SplashActivity` |
 | Netflix | `netflix` | `#E50914` | `com.netflix.ninja/.MainActivity`<br>`com.netflix.mediaclient/.ui.launch.UIWebViewActivity` |
 | Netfly | `netfly` | `#FF0000` | `br.com.netfly.oletv/br.tv.ole.oletv.MainActivity` |
 | Netfly TV | `netfly_tv` | `#7B2BFC` | `xyz.netfly/com.video_cloud.SplashActivity` |

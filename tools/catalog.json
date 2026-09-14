@@ -1762,15 +1762,15 @@
     {
       "name": "Crave",
       "drawable": "bellmedia",
-      "color": "#A238FF",
-      "glyph": "monogram_C",
+      "color": "#00A9EE",
+      "glyph": "crave_c",
       "components": [
         "ca.bellmedia.cravetv/axis.androidtv.sdk.app.MainActivity",
         "ca.bellmedia.cravetv/entpay.awl.awetv.MainActivity"
       ],
       "category": "APP",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "Crave wordmark (Ronald Ruiz, 2018, CraveBlue), measured from Bell Media press art",
+      "color_reviewed": "2026-09-14"
     },
     {
       "name": "Cricfy",
@@ -3921,15 +3921,15 @@
     {
       "name": "Hayu",
       "drawable": "hayu",
-      "color": "#FF0000",
-      "glyph": "monogram_H",
+      "color": "#FF285A",
+      "glyph": "hayu_y",
       "components": [
         "com.upst.hayu/com.upst.hayu.tv.main.MainActivity"
       ],
       "category": "APP",
       "mapping_source": "Projectivy Icon Pack 1.1.9",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "Hayu 2022 rebrand wordmark (Nomad), measured from the published logo",
+      "color_reviewed": "2026-09-14"
     },
     {
       "name": "Hd Streamz",
@@ -6284,16 +6284,15 @@
     {
       "name": "Neon",
       "drawable": "neon",
-      "color": "#34D59A",
-      "glyph": "monogram_N",
+      "color": "#C8FB34",
+      "glyph": "neon_tube_n",
       "components": [
         "nz.co.lightbox/nz.co.lightbox.splash.SplashActivity"
       ],
       "category": "APP",
       "mapping_source": "Projectivy Icon Pack 1.1.9",
-      "color_source": "https://simpleicons.org/?q=neon",
-      "color_note": "simple-icons brand accent",
-      "color_reviewed": "2026-09-08"
+      "color_source": "NEON app icon (nz.co.skytv.neontv), measured 2026-09",
+      "color_reviewed": "2026-09-14"
     },
     {
       "name": "Netflix",

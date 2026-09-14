@@ -453,7 +453,11 @@ class DiversityTests(unittest.TestCase):
         "abciview",                     # the ABC lollipops
         "maoritelevision",              # the koru
         "jiohotstar",                   # the hot star
-        "magenta_sport",                # the Telekom Magenta T
+        "magenta_sport",                # the Telekom t with its dot
+        # Letter-mark pass (2026-09): wordmark brands off invented initials
+        "bellmedia",                    # Crave — the wordmark's leading c
+        "hayu",                         # the wordmark's y and its tail
+        "neon",                         # the app mark's neon-tube segments
     }
 
     @staticmethod
