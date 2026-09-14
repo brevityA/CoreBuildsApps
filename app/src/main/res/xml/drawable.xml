@@ -11,6 +11,7 @@
     <item drawable="arrowfilms_banner" />
     <item drawable="arvio_banner" />
     <item drawable="begin_banner" />
+    <item drawable="bit_tv_banner" />
     <item drawable="boosteroidtv_banner" />
     <item drawable="chillio_banner" />
     <item drawable="cloudstream_banner" />
@@ -25,7 +26,6 @@
     <item drawable="androidtv_4_banner" />
     <item drawable="justwatch_banner" />
     <item drawable="androidtv_5_banner" />
-    <item drawable="live_streaming_tv_banner" />
     <item drawable="lumera_banner" />
     <item drawable="moviehd_banner" />
     <item drawable="movieboxpro_banner" />
@@ -320,6 +320,7 @@
     <item drawable="remote_capture_banner" />
     <item drawable="remote_starter_for_yatse_banner" />
     <item drawable="sai_banner" />
+    <item drawable="screen_recording_app_banner" />
     <item drawable="sdmaid_banner" />
     <item drawable="sendfilestotv_banner" />
     <item drawable="shizuku_banner" />
@@ -338,10 +339,10 @@
     <item drawable="aptoide_banner" />
     <item drawable="aurora_store_banner" />
     <item drawable="androidtv_6_banner" />
+    <item drawable="fandango_at_home_banner" />
     <item drawable="playstore_banner" />
     <item drawable="appstore_banner" />
     <item drawable="unlinked_banner" />
-    <item drawable="downloadertablet_banner" />
     <category title="Banners · Launchers" />
     <item drawable="at4k_banner" />
     <item drawable="catchontv_banner" />
@@ -386,6 +387,7 @@
     <category title="Banners · Browsers" />
     <item drawable="arc_browser_banner" />
     <item drawable="coji_tv_browser_banner" />
+    <item drawable="hi_browser_banner" />
     <item drawable="mediabrowser_banner" />
     <item drawable="cloudmosa_banner" />
     <item drawable="tvwebbrowser_banner" />
@@ -963,6 +965,7 @@
     <item drawable="arrowfilms" />
     <item drawable="arvio" />
     <item drawable="begin" />
+    <item drawable="bit_tv" />
     <item drawable="boosteroidtv" />
     <item drawable="chillio" />
     <item drawable="cloudstream" />
@@ -977,7 +980,6 @@
     <item drawable="androidtv_4" />
     <item drawable="justwatch" />
     <item drawable="androidtv_5" />
-    <item drawable="live_streaming_tv" />
     <item drawable="lumera" />
     <item drawable="moviehd" />
     <item drawable="movieboxpro" />
@@ -1272,6 +1274,7 @@
     <item drawable="remote_capture" />
     <item drawable="remote_starter_for_yatse" />
     <item drawable="sai" />
+    <item drawable="screen_recording_app" />
     <item drawable="sdmaid" />
     <item drawable="sendfilestotv" />
     <item drawable="shizuku" />
@@ -1290,10 +1293,10 @@
     <item drawable="aptoide" />
     <item drawable="aurora_store" />
     <item drawable="androidtv_6" />
+    <item drawable="fandango_at_home" />
     <item drawable="playstore" />
     <item drawable="appstore" />
     <item drawable="unlinked" />
-    <item drawable="downloadertablet" />
     <category title="Square · Launchers" />
     <item drawable="at4k" />
     <item drawable="catchontv" />
@@ -1338,6 +1341,7 @@
     <category title="Square · Browsers" />
     <item drawable="arc_browser" />
     <item drawable="coji_tv_browser" />
+    <item drawable="hi_browser" />
     <item drawable="mediabrowser" />
     <item drawable="cloudmosa" />
     <item drawable="tvwebbrowser" />

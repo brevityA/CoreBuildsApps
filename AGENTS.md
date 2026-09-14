@@ -6,7 +6,7 @@
 
 | Product | Path | Package ID | Version | Downloader / stable tag |
 |---|---|---|---:|---|
-| Core Builds Icon Pack | `app/` with repo-root Gradle | `tv.corebuilds.iconpack` | `1.8.17` | `5270601` / `iconpack` |
+| Core Builds Icon Pack | `app/` with repo-root Gradle | `tv.corebuilds.iconpack` | `1.8.18` | `5270601` / `iconpack` |
 | Core Builds Pixel Neon | `pixel-neon/` | `tv.corebuilds.pixelneon` | `0.1.0` | `[USER TO SUPPLY]` / `pixel-neon` |
 | Core Builds Pop | `pop/` with repo-root Gradle | `tv.corebuilds.iconpack.pop` | `1.0.0` | `[USER TO SUPPLY]` / `pop` |
 | Core Line | `ticker/` + `ticker/android/` | `dev.corebuilds.line` | `1.3.0` | `7375676` / `coreline` |
@@ -73,7 +73,7 @@ Pop wallpapers are separate and rarely need rebuilding:
 python tools/build_pop_wallpapers.py  # ~70 s
 ```
 
-`Wallpapers/manifest.json` belongs to the classic pack and currently has 58 entries. Pop uses `Wallpapers/pop-manifest.json`. The two collections are asserted disjoint.
+`Wallpapers/manifest.json` belongs to the classic pack and currently has 68 entries. Pop uses `Wallpapers/pop-manifest.json`. The two collections are asserted disjoint.
 
 ## Truth gates
 

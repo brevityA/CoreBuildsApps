@@ -2,11 +2,11 @@
   "$schema": "./catalog.schema.json",
   "meta": {
     "pack": "Core Builds Icon Pack",
-    "version": "1.8.17",
+    "version": "1.8.18",
     "grid": 512,
     "safe_area": 432,
     "note": "Core Builds-authored geometric icons on a shared 512 grid. Reviewed brand glyphs use rounded monoline strokes and one accent, not imported vendor silhouettes. Common Outfit/category/rail banners; artwork is reference-only. Canonical brand colours and the dark-card contrast policy remain shared.",
-    "count": 931
+    "count": 933
   },
   "icons": [
     {
@@ -3079,6 +3079,19 @@
       "color_reviewed": null
     },
     {
+      "name": "Fandango at Home",
+      "drawable": "fandango_at_home",
+      "color": "#FF7300",
+      "glyph": "fandango_ticket",
+      "components": [
+        "air.com.vudu.air.DownloaderTablet/air.com.vudu.air.DownloaderTablet.SplashActivity"
+      ],
+      "category": "STORE",
+      "color_source": "brand reference — Fandango at Home ticket orange (sampled 2026-09-14)",
+      "color_reviewed": "2026-09-14",
+      "note": "Renamed from the Vudu entry: the app rebranded in place and keeps the Vudu package, so the mapping carries over."
+    },
+    {
       "name": "FANE TV",
       "drawable": "fanetv",
       "color": "#53FC18",
@@ -4335,6 +4348,26 @@
       "category": "VOD",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
+    },
+    {
+      "name": "Hi Browser",
+      "drawable": "hi_browser",
+      "color": "#00A8A8",
+      "glyph": "hi_browser_ring",
+      "components": [
+        "com.hisense.odinbrowser/com.hisense.odinbrowser.MainActivity",
+        "com.hisense.odinbrowser/com.hisense.odinbrowser.ui.MainActivity",
+        "com.hisense.odinbrowser/com.hisense.odinbrowser.browser.MainActivity"
+      ],
+      "unverified": [
+        "com.hisense.odinbrowser/com.hisense.odinbrowser.MainActivity",
+        "com.hisense.odinbrowser/com.hisense.odinbrowser.ui.MainActivity",
+        "com.hisense.odinbrowser/com.hisense.odinbrowser.browser.MainActivity"
+      ],
+      "category": "BROWSER",
+      "mapping_source": "Play listing com.hisense.odinbrowser; launcher activity guessed, unverified on device",
+      "color_source": "brand reference — Hi Browser icon teal (sampled 2026-09-14)",
+      "color_reviewed": "2026-09-14"
     },
     {
       "name": "Hideme",
@@ -5618,16 +5651,23 @@
       "color_reviewed": null
     },
     {
-      "name": "Live Streaming TV",
-      "drawable": "live_streaming_tv",
-      "color": "#FDCB58",
-      "glyph": "iptv_player",
+      "name": "BitTV",
+      "drawable": "bit_tv",
+      "color": "#008FD7",
+      "glyph": "bit_tv_mono",
       "components": [
-        "com.live_streaming_tv.online_tv/com.live_streaming_tv.online_tv.BitTVActivity"
+        "com.live_streaming_tv.online_tv/com.live_streaming_tv.online_tv.BitTVActivity",
+        "com.bittv.androiddigitaltvapp/com.bittv.androiddigitaltvapp.MainActivity",
+        "com.bittv.androiddigitaltvapp/com.bittv.androiddigitaltvapp.ui.MainActivity"
       ],
       "category": "STREAM",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "brand reference — BitTV icon blue (sampled 2026-09-14)",
+      "color_reviewed": "2026-09-14",
+      "unverified": [
+        "com.bittv.androiddigitaltvapp/com.bittv.androiddigitaltvapp.MainActivity",
+        "com.bittv.androiddigitaltvapp/com.bittv.androiddigitaltvapp.ui.MainActivity"
+      ],
+      "mapping_source": "Play listing 'BitTV: Android Digital TV' (com.live_streaming_tv.online_tv); com.bittv.androiddigitaltvapp via appbrain, activity guessed"
     },
     {
       "name": "Live TV",
@@ -5685,7 +5725,7 @@
       "name": "LocalSend",
       "drawable": "localsend",
       "color": "#008080",
-      "glyph": "localsend_nodes",
+      "glyph": "localsend_sun",
       "category": "FILES",
       "components": [
         "org.localsend.localsend_app/org.localsend.localsend_app.MainActivity"
@@ -7270,8 +7310,8 @@
     {
       "name": "Nuvio TV",
       "drawable": "nuvio",
-      "color": "#E23E57",
-      "glyph": "nuvio_wave",
+      "color": "#A238F0",
+      "glyph": "nuvio_plays",
       "components": [
         "com.nuvio.app/com.nuvio.tv.MainActivity",
         "com.nuvio.tv/.MainActivity",
@@ -7279,8 +7319,12 @@
         "com.nuviodebug.com/com.nuvio.tv.MainActivity"
       ],
       "category": "STREAM",
-      "color_source": "brand reference (pre-provenance, unverified)",
-      "color_reviewed": null
+      "color_source": "brand reference — nuvio lockup gradient, violet end (sampled 2026-09-14)",
+      "color_reviewed": "2026-09-14",
+      "gradient": [
+        "#2FCCE6",
+        "#A238F0"
+      ]
     },
     {
       "name": "NV Player",
@@ -8161,8 +8205,8 @@
     {
       "name": "Pluto TV",
       "drawable": "pluto_tv",
-      "color": "#000000",
-      "glyph": "pluto_planet",
+      "color": "#FFF200",
+      "glyph": "pluto_echo",
       "components": [
         "tv.pluto.android/tv.pluto.android.EntryPoint"
       ],
@@ -8171,8 +8215,8 @@
         "tv.pluto.android/tv.pluto.android.EntryPoint"
       ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
-      "color_source": "brand reference (pre-provenance, unverified)",
-      "color_reviewed": null
+      "color_source": "brand reference — Pluto TV 2024 disc yellow (sampled 2026-09-14)",
+      "color_reviewed": "2026-09-14"
     },
     {
       "name": "Podcast Addict",
@@ -9213,6 +9257,26 @@
       ],
       "category": "APP",
       "color_source": "core-builds palette (no published brand colour found)",
+      "color_reviewed": null
+    },
+    {
+      "name": "Screen Recording App",
+      "drawable": "screen_recording_app",
+      "color": "#FF3B30",
+      "glyph": "screen_record_mark",
+      "components": [
+        "de.twokit.screen.recording.app/de.twokit.screen.recording.app.MainActivity",
+        "de.twokit.screen.recording.app/de.twokit.screen.recording.app.ui.MainActivity",
+        "de.twokit.screen.recording.app/de.twokit.screen.recording.app.tv.TvMainActivity"
+      ],
+      "unverified": [
+        "de.twokit.screen.recording.app/de.twokit.screen.recording.app.MainActivity",
+        "de.twokit.screen.recording.app/de.twokit.screen.recording.app.ui.MainActivity",
+        "de.twokit.screen.recording.app/de.twokit.screen.recording.app.tv.TvMainActivity"
+      ],
+      "category": "TOOL",
+      "mapping_source": "Play listing de.twokit.screen.recording.app (screenrecording.app); launcher activity guessed, unverified on device",
+      "color_source": "core-builds palette (record red; no published brand colour found)",
       "color_reviewed": null
     },
     {
@@ -11360,8 +11424,8 @@
     {
       "name": "Tubi",
       "drawable": "tubi",
-      "color": "#FA382F",
-      "glyph": "tubi_mark",
+      "color": "#F5E600",
+      "glyph": "tubi_mono",
       "components": [
         "com.tubitv/com.tubitv.activities.MainActivity"
       ],
@@ -11370,8 +11434,8 @@
         "com.tubitv/com.tubitv.activities.MainActivity"
       ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
-      "color_source": "brand reference (pre-provenance, unverified)",
-      "color_reviewed": null
+      "color_source": "brand reference — Tubi wordmark yellow (sampled 2026-09-14)",
+      "color_reviewed": "2026-09-14"
     },
     {
       "name": "Tunein Radio",
@@ -12176,18 +12240,21 @@
     {
       "name": "Vidio",
       "drawable": "vidio",
-      "color": "#0061FF",
-      "glyph": "megogo_zone",
+      "color": "#FB0E4D",
+      "glyph": "vidio_mono",
       "components": [
-        "com.vidio.android.tv/com.vidio.android.tv.splashscreen.SplashScreenActivity"
+        "com.vidio.android.tv/com.vidio.android.tv.splashscreen.SplashScreenActivity",
+        "com.vidio.android/com.vidio.android.splashscreen.SplashScreenActivity",
+        "com.vidio.android/com.vidio.android.MainActivity"
       ],
       "category": "APP",
       "unverified": [
-        "com.vidio.android.tv/com.vidio.android.tv.splashscreen.SplashScreenActivity"
+        "com.vidio.android/com.vidio.android.splashscreen.SplashScreenActivity",
+        "com.vidio.android/com.vidio.android.MainActivity"
       ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "brand reference — Vidio lockup pink-red (sampled 2026-09-14)",
+      "color_reviewed": "2026-09-14"
     },
     {
       "name": "Vieon",
@@ -12486,18 +12553,6 @@
       ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
-    },
-    {
-      "name": "Vudu",
-      "drawable": "downloadertablet",
-      "color": "#2F7DED",
-      "glyph": "vudu_mark",
-      "components": [
-        "air.com.vudu.air.DownloaderTablet/air.com.vudu.air.DownloaderTablet.SplashActivity"
-      ],
-      "category": "STORE",
-      "color_source": "brand reference (pre-provenance, unverified)",
       "color_reviewed": null
     },
     {

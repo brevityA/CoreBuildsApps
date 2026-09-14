@@ -159,10 +159,40 @@ def plex_chevron(c):
             f'L 266 256 Z" {_s(c, 32)}/>')
 
 
-def nuvio_wave(c):
-    return (f'<circle cx="256" cy="256" r="182" {_s(c, 34)}/>'
-            f'<path d="M 156 276 C 196 196 236 196 256 256 '
-            f'C 276 316 316 316 356 236" {_s(c, 34)}/>')
+def nuvio_plays(c):
+    """Nuvio: the gradient wedge and its inner play.
+
+    The official mark is a rounded play triangle lit cyan at the top and
+    violet at the bottom, holding a dark knock-out triangle with a light
+    play inside. The silhouette and the play are drawn flat here; the
+    Classic render runs them through the catalog's cyan→violet gradient
+    (see render_svg `gradient`), and on a dark card the knock-out centre
+    reads as the card itself, exactly as the logo does.
+    """
+    return (f'<path d="M 148 96 L 428 256 L 148 416 Z" {_s(c, 34)}/>'
+            f'<path d="M 232 208 L 324 256 L 232 304 Z" {_s(c, 26)}/>')
+
+
+def tubi_mono(c):
+    """Tubi: the brand's lowercase t as an Outfit ExtraBold monogram.
+
+    Wordmarks are banner business; the icon carries a single glyph set in
+    the pack's own typeface, in the wordmark yellow. A lone t reads as a
+    cross, so the wordmark's detached shoulder dot sits at the crossbar —
+    the brand quirk, kept as a glyph cue.
+    """
+    return (monogram_body("t", c) +
+            f'<circle cx="396" cy="204" r="34" fill="{c}" stroke="none"/>')
+
+
+def vidio_mono(c):
+    """Vidio: the lowercase v as an Outfit ExtraBold monogram."""
+    return monogram_body("v", c)
+
+
+def bit_tv_mono(c):
+    """BitTV: the lowercase b as an Outfit ExtraBold monogram."""
+    return monogram_body("b", c)
 
 
 def projector_beam(c):
@@ -400,7 +430,7 @@ GLYPHS = {
     "play_hex": play_hex, "play_round": play_round, "play_rect": play_rect,
     "kodi_box": kodi_box, "jellyfin_chevrons": jellyfin_chevrons,
     "emby_shield": emby_shield, "plex_chevron": plex_chevron,
-    "nuvio_wave": nuvio_wave, "projector_beam": projector_beam,
+    "nuvio_plays": nuvio_plays, "projector_beam": projector_beam,
     "download_arrow": download_arrow, "cloud_box": cloud_box,
     "link_chain": link_chain, "sync_ring": sync_ring, "cone": cone,
     "remote": remote, "smile_arrow": smile_arrow, "plus_star": plus_star,
@@ -448,18 +478,40 @@ def monoline(body, weight=MONOLINE):
     return _SW_RE.sub(repl, body)
 
 
-def render_svg(glyph_name, color, glow=False, *, monochrome=False):
+def render_svg(glyph_name, color, glow=False, *, monochrome=False,
+               gradient=None):
     """
     Render the transparent Classic glyph in the common monoline treatment.
 
     Glow is opt-in for legacy experiments, never used by the pack generators.
+    `gradient` is a pair of hexes: the rendered stroke then runs through a
+    vertical userSpace linear gradient instead of the flat accent. It is a
+    Classic-render treatment (catalog `gradient` field), so Pop and Pixel
+    Neon — which repaint every path in their own inks — stay flat.
     """
     color = display_accent(color, monochrome=monochrome)
     body = monoline(GLYPHS[glyph_name](color))
     if glow:
         body = lit(body, color)
+    if gradient and not monochrome:
+        body = apply_gradient(body, color, gradient)
     return (f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {GRID} {GRID}" '
             f'width="{GRID}" height="{GRID}">\n  {body}\n</svg>\n')
+
+
+def gradient_defs(stops, y0=80, y1=432, gid="cbGrad"):
+    """Vertical userSpace gradient spanning the glyph ink box."""
+    return (f'<defs><linearGradient id="{gid}" gradientUnits="userSpaceOnUse" '
+            f'x1="256" y1="{y0}" x2="256" y2="{y1}">'
+            f'<stop offset="0" stop-color="{stops[0]}"/>'
+            f'<stop offset="1" stop-color="{stops[-1]}"/>'
+            f'</linearGradient></defs>')
+
+
+def apply_gradient(body, color, stops):
+    """Repaint every flat stroke of `color` with the gradient reference."""
+    return gradient_defs(stops) + body.replace(f'stroke="{color}"',
+                                               'stroke="url(#cbGrad)"')
 
 
 # ==========================================================================
@@ -494,14 +546,18 @@ def smarttube_play(c):
 
 
 def tizen_play(c):
-    """TizenTube: play inside a soft square, ad-blocked slash.
+    """TizenTube: the official globe — play wedge, chord and detached dot.
 
-    The slash crossed the wedge and closed it. Running the slash clear of the
-    play keeps both marks whole.
+    An earlier legibility pass moved the ad-block slash clear of the wedge
+    and left it as a stub off the bottom-left corner, which read as a stray
+    line. The official mark runs its diagonal as a chord from the rim, under
+    the wedge, ending in a detached dot before the rim again — so the chord
+    returns to the circle and the dot keeps its brand gap instead of floating.
     """
-    return (f'<rect x="70" y="112" width="372" height="288" rx="64" {_s(c, 34)}/>'
-            f'<path d="M 226 192 L 226 320 L 340 256 Z" {_s(c, 30)}/>'
-            f'<path d="M 108 398 L 196 310" {_s(c, 30)}/>')
+    return (f'<circle cx="256" cy="256" r="196" {_s(c, 34)}/>'
+            f'<path d="M 176 152 L 176 320 L 372 236 Z" {_s(c, 30)}/>'
+            f'<path d="M 98 372 L 352 318" {_s(c, 24)}/>'
+            f'<path d="M 400 283 L 404 281" {_s(c, 24)}/>')
 
 
 def film_reel(c):
@@ -713,6 +769,84 @@ def droplet(c):
             f'<path d="M 316 236 C 344 272 352 306 340 340" {_s(c, 26)}/>')
 
 
+def fandango_ticket(c):
+    """Fandango at Home: the notched ticket stub with its cut F.
+
+    Vudu relaunched as Fandango at Home on an orange ticket stub — a
+    rounded square with semicircular notch cuts in the side edges and a
+    knocked-out F. Drawn upright: the notched stub outline carries the
+    primary stroke, the F sits subordinate inside it.
+    """
+    return (f'<path d="M 152 116 H 360 C 380 116 396 132 396 152 V 220 '
+            f'A 36 36 0 0 0 396 292 V 360 C 396 380 380 396 360 396 H 152 '
+            f'C 132 396 116 380 116 360 V 292 A 36 36 0 0 0 116 220 V 152 '
+            f'C 116 132 132 116 152 116 Z" {_s(c, 34)}/>'
+            f'<path d="M 216 176 L 216 336" {_s(c, 26)}/>'
+            f'<path d="M 216 176 L 308 176" {_s(c, 26)}/>'
+            f'<path d="M 216 256 L 288 256" {_s(c, 26)}/>')
+
+
+def hi_browser_ring(c):
+    """Hi Browser: the globe crossed by its orbit ring.
+
+    Hisense's Android TV browser mark is a globe with one orbit swoosh
+    running in front low and behind high. A single tilted ellipse keeps
+    both passes of the ring readable without fills to hide behind.
+    """
+    return (f'<circle cx="256" cy="256" r="140" {_s(c, 34)}/>'
+            f'<path d="M 62 319 A 204 64 -18 0 1 450 193 '
+            f'A 204 64 -18 0 1 62 319 Z" {_s(c, 26)}/>')
+
+
+def screen_record_mark(c):
+    """Screen Recording App: a screen holding the record target.
+
+    2kit's Screen Recording App is the TV-first recorder (D-pad native,
+    internal audio). The universal recorder cue is the record target —
+    ring and centre dot — so it sits inside a rounded screen frame.
+    """
+    return (f'<rect x="96" y="128" width="320" height="256" rx="48" {_s(c, 34)}/>'
+            f'<circle cx="256" cy="256" r="64" {_s(c, 26)}/>'
+            f'<path d="M 254 256 L 258 256" {_s(c, 26)}/>')
+
+
+def bit_tv_mark(c):
+    """BitTV: the 'bit' wordmark closing on its play-tile mark.
+
+    BitTV (Duktek's Android digital TV, sideloaded and on Play as
+    'BitTV: Android Digital TV') sets a white lowercase 'bit' plus a
+    stemmed play wedge on its blue tile. Drawn as monoline type: b, i,
+    t, then the stem-and-wedge mark; the vendor's trailing tick is
+    dropped rather than crowding the safe area.
+    """
+    return (f'<path d="M 76 140 L 76 336" {_s(c, 34)}/>'
+            f'<circle cx="116" cy="296" r="40" {_s(c, 34)}/>'
+            f'<path d="M 200 208 L 200 336" {_s(c, 34)}/>'
+            f'<path d="M 200 150 L 200 156" {_s(c, 34)}/>'
+            f'<path d="M 252 140 L 252 336" {_s(c, 34)}/>'
+            f'<path d="M 244 208 L 284 208" {_s(c, 34)}/>'
+            f'<path d="M 332 150 L 332 336" {_s(c, 34)}/>'
+            f'<path d="M 332 176 L 412 250 L 332 324" {_s(c, 34)}/>')
+
+
+def vidio_wordmark(c):
+    """Vidio: the lowercase wordmark as monoline type.
+
+    Indonesia's Vidio is wordmark-first — a script lockup on the brand
+    pink-red, no standalone emblem. The shared play-banner glyph it
+    borrowed read as Megogo, not Vidio, so the five letters are drawn at
+    pack proportions in the sampled lockup red instead.
+    """
+    return (f'<path d="M 56 208 L 80 336 L 104 208" {_s(c, 34)}/>'
+            f'<path d="M 148 208 L 148 336" {_s(c, 34)}/>'
+            f'<path d="M 148 150 L 148 156" {_s(c, 34)}/>'
+            f'<circle cx="232" cy="296" r="40" {_s(c, 34)}/>'
+            f'<path d="M 272 140 L 272 336" {_s(c, 34)}/>'
+            f'<path d="M 316 208 L 316 336" {_s(c, 34)}/>'
+            f'<path d="M 316 150 L 316 156" {_s(c, 34)}/>'
+            f'<circle cx="408" cy="272" r="48" {_s(c, 34)}/>')
+
+
 GLYPHS.update({
     "yt_play": yt_play, "smarttube_play": smarttube_play,
     "tizen_play": tizen_play, "film_reel": film_reel, "flix_f": flix_f,
@@ -726,6 +860,11 @@ GLYPHS.update({
     "vault_lock": vault_lock, "equalizer": equalizer, "music_note": music_note,
     "bag_play": bag_play, "aurora_a": aurora_a, "launcher_grid": launcher_grid,
     "rocket": rocket, "droplet": droplet,
+    "fandango_ticket": fandango_ticket, "hi_browser_ring": hi_browser_ring,
+    "screen_record_mark": screen_record_mark,
+    "bit_tv_mark": bit_tv_mark, "vidio_wordmark": vidio_wordmark,
+    "tubi_mono": tubi_mono, "vidio_mono": vidio_mono,
+    "bit_tv_mono": bit_tv_mono,
 })
 
 
@@ -1041,15 +1180,24 @@ GLYPHS.update({
 # ==========================================================================
 
 
-def localsend_nodes(c):
-    """LocalSend — two devices passing a packet across the LAN."""
+def localsend_sun(c):
+    """LocalSend: the hub disc ringed by eight beam dashes.
+
+    The official mark is a centre disc inside a dashed ring of eight
+    rounded beams — one device talking to every neighbour at once. The
+    old two-phone packet read as a transfer between two devices, not the
+    broadcast the brand draws.
+    """
     return (
-        f'<rect x="64" y="150" width="148" height="212" rx="36" {_s(c, 32)}/>'
-        f'<rect x="300" y="150" width="148" height="212" rx="36" {_s(c, 32)}/>'
-        f'<path d="M 228 220 L 284 220" {_s(c, 28)}/>'
-        f'<path d="M 256 198 L 284 220 L 256 242" {_s(c, 28)}/>'
-        f'<path d="M 284 292 L 228 292" {_s(c, 28)}/>'
-        f'<path d="M 256 270 L 228 292 L 256 314" {_s(c, 28)}/>'
+        f'<circle cx="256" cy="256" r="80" {_s(c, 26)}/>'
+        f'<path d="M 420 221 A 168 168 0 0 1 420 291" {_s(c, 34)}/>'
+        f'<path d="M 397 348 A 168 168 0 0 1 348 397" {_s(c, 34)}/>'
+        f'<path d="M 291 420 A 168 168 0 0 1 221 420" {_s(c, 34)}/>'
+        f'<path d="M 165 397 A 168 168 0 0 1 115 348" {_s(c, 34)}/>'
+        f'<path d="M 92 291 A 168 168 0 0 1 92 221" {_s(c, 34)}/>'
+        f'<path d="M 115 165 A 168 168 0 0 1 165 115" {_s(c, 34)}/>'
+        f'<path d="M 221 92 A 168 168 0 0 1 291 92" {_s(c, 34)}/>'
+        f'<path d="M 348 115 A 168 168 0 0 1 397 164" {_s(c, 34)}/>'
     )
 
 
@@ -1165,7 +1313,7 @@ def radar_dish(c):
 
 
 GLYPHS.update({
-    "localsend_nodes": localsend_nodes,
+    "localsend_sun": localsend_sun,
     "sparkle_burst": sparkle_burst,
     "nas_stack": nas_stack,
     "nas_play": nas_play,
@@ -1290,11 +1438,22 @@ def iplayer_play(c):
             f'M 424 304 L 208 428" {_s(c, 32)}/>')
 
 
-def tubi_mark(c):
-    """Tubi: a rounded 'T' that reads as the library gate — T over a base."""
-    return (f'<path d="M 168 128 L 344 128" {_s(c, 44)}/>'
-            f'<path d="M 256 128 L 256 384" {_s(c, 44)}/>'
-            f'<path d="M 150 432 L 362 432" {_s(c, 30)}/>')
+def tubi_wordmark(c):
+    """Tubi: the lowercase wordmark drawn as monoline type.
+
+    Tubi has no emblem — the identity is the rounded lowercase wordmark
+    with a shortened t-bar. A bare T over a base invented a gate the brand
+    never had, so the four letters are drawn at Outfit proportions on the
+    pack grid: t, u, b, i, ascenders and baseline shared.
+    """
+    return (f'<path d="M 100 140 L 100 336" {_s(c, 34)}/>'
+            f'<path d="M 68 208 L 132 208" {_s(c, 34)}/>'
+            f'<path d="M 184 208 L 184 300 C 184 336 248 336 248 300 '
+            f'L 248 208" {_s(c, 34)}/>'
+            f'<path d="M 296 140 L 296 336" {_s(c, 34)}/>'
+            f'<circle cx="336" cy="296" r="40" {_s(c, 34)}/>'
+            f'<path d="M 436 208 L 436 336" {_s(c, 34)}/>'
+            f'<path d="M 436 150 L 436 156" {_s(c, 34)}/>')
 
 
 def justwatch_finder(c):
@@ -1420,7 +1579,7 @@ GLYPHS.update({
     "deezer_columns": deezer_columns,
     "soundcloud_cloud": soundcloud_cloud,
     "iplayer_play": iplayer_play,
-    "tubi_mark": tubi_mark,
+    "tubi_wordmark": tubi_wordmark,
     "justwatch_finder": justwatch_finder,
     "acorn_mark": acorn_mark,
     "tidal_wave": tidal_wave,
@@ -1589,14 +1748,18 @@ def sling_s(c):
             f'276 366 C 256 404 208 410 172 392" {_s(c, 42)}/>')
 
 
-def pluto_planet(c):
-    """Pluto TV: the planetary echo - a world crossed by its ring.
+def pluto_echo(c):
+    """Pluto TV: the disc with its planetary echo arcs.
 
-    Two filled satellites sat inside the disc and closed the ring gap. The
-    planet and the ring alone carry the device.
+    The 2020 lockup is a solid disc trailed by concentric echo crescents;
+    the 2024 lockup keeps the disc and knocks the wordmark out of it. A
+    lone orbit arc over a circle read as a generic planet, so the echo
+    returns as two subordinate arcs hugging the disc's left rim, in the
+    brand's yellow.
     """
-    return (f'<circle cx="256" cy="256" r="164" {_s(c, 30)}/>'
-            f'<path d="M 84 186 C 140 136 372 136 428 186" {_s(c, 24)}/>')
+    return (f'<circle cx="316" cy="256" r="132" {_s(c, 34)}/>'
+            f'<path d="M 158 322 A 132 132 0 0 1 158 190" {_s(c, 26)}/>'
+            f'<path d="M 110 322 A 132 132 0 0 1 110 190" {_s(c, 20)}/>')
 
 
 def nvidia_eye(c):
@@ -1701,7 +1864,7 @@ GLYPHS.update({
     "instagram_camera": instagram_camera,
     "amazon_smile": amazon_smile,
     "sling_s": sling_s,
-    "pluto_planet": pluto_planet,
+    "pluto_echo": pluto_echo,
     "nvidia_eye": nvidia_eye,
     "sky_swoosh": sky_swoosh,
     "yt_music": yt_music,

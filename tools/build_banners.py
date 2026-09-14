@@ -33,7 +33,7 @@ import sys
 from pathlib import Path
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-from glyphs import GLYPHS, monoline  # noqa: E402
+from glyphs import GLYPHS, apply_gradient, monoline  # noqa: E402
 from icon_style import display_accent  # noqa: E402
 from typeface import FONT_WORDMARK, measure as type_measure, wordmark_spans  # noqa: E402
 
@@ -151,7 +151,8 @@ def hex_host(cx, cy, r, color):  # retired in style AA
             f'stroke-linejoin="round"/>')
 
 
-def render(name, glyph, accent, category=None, *, monochrome=False):
+def render(name, glyph, accent, category=None, *, monochrome=False,
+         gradient=None):
     """
     Centred glyph + wordmark, with the Core Builds signature:
 
@@ -209,12 +210,12 @@ def render(name, glyph, accent, category=None, *, monochrome=False):
         f'viewBox="0 0 {W} {H}">\n'
         f'  {rail}\n'
         f'  <g transform="translate({start_x:.0f},{gy:.0f}) '
-        f'scale({scale:.5f})">{monoline(GLYPHS[glyph](accent))}</g>\n'
+        f'scale({scale:.5f})">{apply_gradient(monoline(GLYPHS[glyph](accent)), accent, gradient) if gradient and not monochrome else monoline(GLYPHS[glyph](accent))}</g>\n'
         f'  {spans}</svg>\n'
     )
 
 
-def render_glyph_only(glyph, accent, *, monochrome=False):
+def render_glyph_only(glyph, accent, *, monochrome=False, gradient=None):
     """Mark-only variant — used when a name adds nothing (e.g. Core Builds)."""
     accent = display_accent(accent, monochrome=monochrome)
     box = 380
@@ -223,7 +224,7 @@ def render_glyph_only(glyph, accent, *, monochrome=False):
         f'<svg xmlns="http://www.w3.org/2000/svg" width="{W}" height="{H}" '
         f'viewBox="0 0 {W} {H}">\n'
         f'  <g transform="translate({(W - box) / 2:.0f},{(H - box) / 2:.0f}) '
-        f'scale({scale:.5f})">{monoline(GLYPHS[glyph](accent))}</g>\n'
+        f'scale({scale:.5f})">{apply_gradient(monoline(GLYPHS[glyph](accent)), accent, gradient) if gradient and not monochrome else monoline(GLYPHS[glyph](accent))}</g>\n'
         f'</svg>\n'
     )
 
@@ -280,10 +281,15 @@ def main():
     for i in targets:
         mono = i.get("color_note") == "monochrome"
         if i.get("banner_style") == "glyph":
-            svg = render_glyph_only(i["glyph"], i["color"], monochrome=mono)
+            svg = render_glyph_only(i["glyph"], i["color"], monochrome=mono,
+                                    gradient=i.get("gradient"))
+            # Wordmark marks are not ink-centred on the 512 grid either; the
+            # banner centring audit holds them to the same 3px tolerance.
+            svg = recentre(svg)
         else:
             svg = render(i["name"], i["glyph"], i["color"],
-                         i.get("category"), monochrome=mono)
+                         i.get("category"), monochrome=mono,
+                         gradient=i.get("gradient"))
             svg = recentre(svg)
         (SVG_DIR / f"{i['drawable']}.svg").write_text(svg, encoding="utf-8")
     print(f"\u2713 banner SVGs written ({len(targets)}/{len(targets)}) "

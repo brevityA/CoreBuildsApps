@@ -4,6 +4,118 @@ All notable changes to the Core Builds Icon Pack. Format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); versions follow
 [SemVer](https://semver.org/spec/v2.0.0.html).
 
+## [1.8.18] — 2026-09-14
+
+**Feedback pass: the TizenTube stray line, the Nuvio lookalike, the
+six-app request list (Fandango at Home, Pluto TV, Tubi, LocalSend,
+Hi Browser, Screen Recording App), the Indonesia pair (BitTV, Vidio),
+and the retrowave wallpaper series.** 931 → 933 icons, 1120 → 1130 components.
+
+### Changed
+- **TizenTube** (`tizentube`): the diagonal no longer floats as a stub off
+  the bottom-left corner. An earlier legibility pass had moved the
+  ad-block slash clear of the play wedge and orphaned it; the official
+  mark runs that diagonal as a chord from the rim, under the wedge,
+  ending in a detached dot — so the line is back inside the construction
+  (circle + wedge + chord + dot) instead of reading as a stray stroke.
+- **Nuvio TV** (`nuvio`): the pre-research wave-in-a-circle — a mark Nuvio
+  does not have — is replaced by the official wedge, and the guessed rose
+  accent becomes the brand violet `#A238F0`. Second pass: the recreation
+  runs the brand's real gradient — cyan `#2FCCE6` at the top fading to
+  the violet `#A238F0` below, painted at render time as a vertical
+  `linearGradient` (`tools/glyphs.py` gradient support) — superseding the
+  interim two-ink split; the knocked-out centre still reads via the dark
+  card. The Pop Art and Pixel Neon variants stay flat by design, since
+  those pipelines repaint strokes from a sentinel colour.
+- **Icons are glyphs, never wordmarks.** Per the owner's rule an icon
+  carries a single letterform, not a name: Tubi, Vidio and BitTV — which
+  drew their wordmark (or store mark) as the icon glyph — now wear monogram
+  letters cut from the pack's own typeface, Outfit ExtraBold via
+  `tools/typeface.py`: Tubi a `t` carrying the brand's shoulder dot (a lone
+  t otherwise reads as a plus), Vidio a `v`, BitTV a `b`, each in its brand
+  colour. Their banners return to the standard lockup — mark beside the
+  printed name, said once — so the interim mark-only `banner_style` is
+  withdrawn, and a new test forbids any `wordmark` glyph re-entering the
+  catalog.
+- **Pluto TV** (`pluto_tv`): planet-with-orbit becomes the disc with its
+  planetary echo arcs (2020 lockup device), and the black accent — which
+  the contrast policy had to substitute anyway — becomes the 2024 disc
+  yellow `#FFF200`.
+- **Tubi** (`tubi`): the invented bare-T gate becomes the brand's actual
+  identity: first the rounded lowercase wordmark, then — under the glyph
+  rule above — the Outfit ExtraBold monogram `t` with its shoulder dot;
+  accent corrected to the wordmark yellow `#F5E600`.
+- **LocalSend** (`localsend`): the two-phone packet becomes the official
+  hub disc ringed by eight beam dashes — a broadcast, not a transfer.
+- **Vudu → Fandango at Home**: the entry is renamed and redrawn as the
+  notched orange ticket stub with its cut F (`fandango_ticket`,
+  `#FF7300`). The app rebranded in place and keeps the Vudu package, so
+  the existing `air.com.vudu.air.DownloaderTablet` mapping carries over.
+
+### Added
+- **Hi Browser** (`hi_browser`, `com.hisense.odinbrowser`): Hisense's
+  Android TV browser on a globe crossed by its orbit ring, brand teal
+  `#00A8A8`. Launcher activity is a Play-listing guess, flagged
+  unverified in the catalog.
+- **Screen Recording App** (`screen_recording_app`,
+  `de.twokit.screen.recording.app`): 2kit's TV-first recorder on a screen
+  holding the record target. Activity guesses flagged unverified.
+- **BitTV** (`bit_tv`): the Indonesian sideload/Play digital-TV app
+  (com.live_streaming_tv.online_tv, also shipped as
+  com.bittv.androiddigitaltvapp) previously rode the shared
+  `iptv_player` glyph under the store name "Live Streaming TV" in
+  yellow. Renamed and redrawn in the brand blue `#008FD7` — the icon glyph
+  now the Outfit monogram `b` (glyph rule above), the banner the printed
+  lockup.
+- **Vidio** (`vidio`): Indonesia's Vidio was borrowing Megogo's
+  play-banner in a guessed blue. Now drawn in the sampled lockup pink-red
+  `#FB0E4D` — icon glyph the Outfit monogram `v` (glyph rule above),
+  banner the printed lockup — with the
+  mobile `com.vidio.android` package mapped beside the TV one
+  (activities guessed, flagged unverified).
+- `docs/icon-feedback-pass-2026-09.png`: visual receipt — every changed
+  mark beside unchanged Classic neighbours, actual-size banners, and a
+  48px dock-size legibility strip.
+- `docs/icon-indonesia-request-2026-09.png`: same receipt for the
+  BitTV/Vidio pass.
+- **series-7-retrowave** (`corebuilds-59`–`corebuilds-68`, ten 4K walls):
+  the pack's first retrowave/synthwave series, built on the 2026
+  trend research (nostalgic retro-gradient / Y2K among the most-searched
+  device-wallpaper genres; Pinterest's 2026 colour forecast feeding the
+  palettes). Sliced gradient suns, perspective grids, chrome ridges and
+  starfields on the night ground, via the new
+  `tools/build_synthwave_wallpapers.py`. Classic manifest 58 → 68;
+  `docs/retrowave-series-preview.png` is the contact sheet.
+- `docs/icon-monogram-gradient-2026-09.png`: receipt for the gradient
+  Nuvio wedge and the Outfit monogram icons — squares above, actual-size
+  banner lockups below. (`docs/icon-wordmark-banners-2026-09.png` remains
+  as the record of the interim mark-only banner pass.)
+
+### Fixed
+- The bundled wallpaper manifest
+  (`app/src/main/assets/manifest/wallpapers.json`) still shipped the
+  pre-retrowave 58 entries while the repo manifest and the bundled thumbs
+  had moved on to 68 — so the in-app grid could never list series 7. The
+  bundled copy is re-synced with `Wallpapers/manifest.json`, and the full
+  `unittest discover` sweep (193 tests, incl. `test_wallpapers`) is now
+  part of the standing pre-release run that caught it.
+- README suite stamp said "58 wallpapers" for the Icon Pack row; the badge
+  generator's template now prints the true 68.
+
+### Receipts
+- Classic: `Validated 933 icons · 1716 components · 25373 checks run`,
+  `Ran 46 tests ... OK` (icon identity, incl. the new gradient and
+  no-wordmark-glyph guards).
+- Pop: `Validated 933 icons · 1126 components · 16 swatches ·
+  14510 checks run`, `Ran 29 tests ... OK` (glyph metrics re-measured
+  first, as geometry changed).
+- Pixel Neon: `Validated Pixel Neon · 933 icons · 1130 catalog
+  components · 12829 checks run`.
+- Truth gates: suite truth, contract audit, issue-prefill stamp and
+  README badge all pass.
+- Full sweep: `Ran 193 tests ... OK` across every test module, wallpaper
+  manifest and thumbnail gates included.
+
 ## [1.8.17] — 2026-09-13
 
 **The launcher icon stops being a brand scene and becomes a pack icon — and

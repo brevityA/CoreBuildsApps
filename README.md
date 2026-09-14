@@ -13,9 +13,9 @@
 <!-- suite-stamp:start -->
 > | App | Current | What it does | Downloader | Release tag |
 > |---|---:|---|---|---|
-> | **[Core Builds Icon Pack](#-icon-pack)** | `v1.8.17` | 931 transparent icons + 58 wallpapers for Projectivy Launcher | `5270601` | [`v*` / `iconpack`](../../releases) |
-> | **[Core Builds Pixel Neon](#-pixel-neon-icon-pack)** | `v0.1.0` | 931 transparent 8-bit neon icons + 70 wallpapers for Projectivy Launcher | `[USER TO SUPPLY]` | [`pixel-neon-v*` / `pixel-neon`](../../releases) |
-> | **[Core Builds Pop](#-core-builds-pop)** | `v1.0.0` | The same 931 icons, pop-art cartoon: 16 swatches, one container | `[USER TO SUPPLY]` | [`pop-v*` / `pop`](../../releases) |
+> | **[Core Builds Icon Pack](#-icon-pack)** | `v1.8.18` | 933 transparent icons + 68 wallpapers for Projectivy Launcher | `5270601` | [`v*` / `iconpack`](../../releases) |
+> | **[Core Builds Pixel Neon](#-pixel-neon-icon-pack)** | `v0.1.0` | 933 transparent 8-bit neon icons + 70 wallpapers for Projectivy Launcher | `[USER TO SUPPLY]` | [`pixel-neon-v*` / `pixel-neon`](../../releases) |
+> | **[Core Builds Pop](#-core-builds-pop)** | `v1.0.0` | The same 933 icons, pop-art cartoon: 16 swatches, one container | `[USER TO SUPPLY]` | [`pop-v*` / `pop`](../../releases) |
 > | **[Core Line](#-core-line)** | `v1.3.0` | Sports scores & channel RSS ticker (chyron) | `7375676` | [`coreline-v*` / `coreline`](../../releases) |
 > | **[Core Shift](#-core-shift)** | `v2.3.5` | Android TV screensaver + motion wallpaper browser | `8829421` | [`shift-v*` / `shift`](../../releases) |
 > | **[Core Motion](#-core-motion)** | `v1.0.0` | Projectivy wallpaper-provider plugin for Core Motion loops | `[USER TO SUPPLY]` | [`motion-v*` / `motion`](../../releases) |
@@ -28,7 +28,7 @@
 ## 🔷 Icon Pack
 
 **Transparent app icons for Projectivy Launcher on Android TV.**
-`926 icons` · `58 wallpapers` · `v1.8.15`
+`933 icons` · `68 wallpapers` · `v1.8.18`
 
 The **Core Builds Icon Pack** is designed for the [Projectivy Launcher](https://play.google.com/store/apps/details?id=com.spocky.projengmenu) on Android TV and Google TV, built to the [Core Builds Brand & Style Guide v1.0](https://github.com/brevityA/Core-Builds).
 
@@ -112,7 +112,7 @@ Full table with every mapped component: [**docs/IconPackList.md**](docs/IconPack
 
 ### Wallpapers
 
-58 curated wallpapers in four active series — browse in the Wallpapers tab, preview full-screen, Set as device wallpaper or Save to `Pictures/CoreBuilds`. Multi-select export lets you bulk-save to a folder any launcher (or the system wallpaper picker) can rotate from. Thumbnails are bundled; the full images download on demand from GitHub, at the resolution each series was authored at (`1376×768` for series 6, 4K for series 1–3). Series 4 "Core Mark" was retired in v1.8.6 — see [`Wallpapers/README.md`](Wallpapers/README.md).
+68 curated wallpapers in five active series — browse in the Wallpapers tab, preview full-screen, Set as device wallpaper or Save to `Pictures/CoreBuilds`. Multi-select export lets you bulk-save to a folder any launcher (or the system wallpaper picker) can rotate from. Thumbnails are bundled; the full images download on demand from GitHub, at the resolution each series was authored at (`1376×768` for series 6, 4K for series 1–3 and 7). Series 4 "Core Mark" was retired in v1.8.6 — see [`Wallpapers/README.md`](Wallpapers/README.md).
 
 ---
 
@@ -211,7 +211,7 @@ Inherited from the brand guide, enforced by the generator and validator:
 ## 🔷 Pixel Neon Icon Pack
 
 **The 8-bit neon companion pack for Projectivy Launcher on Android TV.**
-`926 icons` · `70 wallpapers` · `0.1.0` · clean monoline sibling: **Core Builds Icon Pack**
+`933 icons` · `70 wallpapers` · `0.1.0` · clean monoline sibling: **Core Builds Icon Pack**
 
 If the original pack is the quiet night-mode set, **Core Builds Pixel Neon** is
 its arcade cabinet: the same mappings and coverage, but every mark is drawn as
@@ -255,7 +255,7 @@ commands. The research-informed sprite rules are documented in
 ## 🔷 Core Builds Pop
 
 **The same 926 icons, drawn as pop art.** Android TV's only cartoon icon pack.
-`926 icons` · `12 wallpapers` · `16 swatches` · `v1.0.0`
+`933 icons` · `12 wallpapers` · `16 swatches` · `v1.0.0`
 
 <p align="center"><img src="docs/pop-preview.png" alt="Core Builds Pop contact sheet" width="820"></p>
 

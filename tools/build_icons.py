@@ -118,7 +118,8 @@ def main():
     for i in icons:
         mono = i.get("color_note") == "monochrome"
         write(SVG_DIR / f"{i['drawable']}.svg",
-              render_svg(i["glyph"], i["color"], monochrome=mono))
+              render_svg(i["glyph"], i["color"], monochrome=mono,
+                         gradient=i.get("gradient")))
     print(f"\u2713 SVG masters written ({len(icons)}/{len(icons)}) \u2192 assets/svg/")
 
     # 2. PNGs

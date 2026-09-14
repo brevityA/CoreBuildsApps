@@ -141,8 +141,24 @@ class IdentityTests(unittest.TestCase):
             path = ROOT / "assets/svg" / f"{icon['drawable']}.svg"
             mono = icon.get("color_note") == "monochrome"
             self.assertEqual(path.read_text(),
-                             render_svg(icon["glyph"], icon["color"], monochrome=mono),
+                             render_svg(icon["glyph"], icon["color"],
+                                        monochrome=mono,
+                                        gradient=icon.get("gradient")),
                              icon["name"])
+
+    def test_nuvio_square_runs_the_brand_gradient(self):
+        """The owner asked for the real gradient, not a flat stand-in."""
+        body = (ROOT / "assets/svg" / "nuvio.svg").read_text()
+        self.assertIn("linearGradient", body)
+        self.assertIn("#2FCCE6", body)
+        self.assertIn("#A238F0", body)
+        self.assertIn('stroke="url(#cbGrad)"', body)
+
+    def test_no_icon_uses_a_wordmark_glyph(self):
+        """Icons carry glyphs; wordmarks are banner business only."""
+        for icon in ICONS:
+            with self.subTest(icon=icon["name"]):
+                self.assertNotIn("wordmark", icon["glyph"])
 
     def test_no_night_coloured_fake_holes_in_generated_squares(self):
         for icon in ICONS:
