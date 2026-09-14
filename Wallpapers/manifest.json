@@ -3,7 +3,7 @@
   "version": "4.0",
   "author": "brevityA",
   "brand_guide": "Core-Builds Brand Guide v1.0 (2026-08-11)",
-  "count": 58,
+  "count": 68,
   "wallpapers": [
     {
       "name": "01 Mesh Drift",
@@ -410,6 +410,76 @@
       "url": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/series-6-circuit-core/corebuilds-50-circuit-deepcore.jpg",
       "thumb": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/thumbs/corebuilds-50-circuit-deepcore.jpg",
       "resolution": "1376x768"
+    },
+    {
+      "name": "59 Synth Miami",
+      "series": "series-7-retrowave",
+      "url": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/series-7-retrowave/corebuilds-59-synth-miami.png",
+      "thumb": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/thumbs/corebuilds-59-synth-miami.jpg",
+      "resolution": "3840x2160"
+    },
+    {
+      "name": "60 Synth Dusk",
+      "series": "series-7-retrowave",
+      "url": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/series-7-retrowave/corebuilds-60-synth-dusk.png",
+      "thumb": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/thumbs/corebuilds-60-synth-dusk.jpg",
+      "resolution": "3840x2160"
+    },
+    {
+      "name": "61 Chrome Sunset",
+      "series": "series-7-retrowave",
+      "url": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/series-7-retrowave/corebuilds-61-synth-chrome.png",
+      "thumb": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/thumbs/corebuilds-61-synth-chrome.jpg",
+      "resolution": "3840x2160"
+    },
+    {
+      "name": "62 Synth Ultra",
+      "series": "series-7-retrowave",
+      "url": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/series-7-retrowave/corebuilds-62-synth-ultra.png",
+      "thumb": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/thumbs/corebuilds-62-synth-ultra.jpg",
+      "resolution": "3840x2160"
+    },
+    {
+      "name": "63 Synth Jade",
+      "series": "series-7-retrowave",
+      "url": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/series-7-retrowave/corebuilds-63-synth-jade.png",
+      "thumb": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/thumbs/corebuilds-63-synth-jade.jpg",
+      "resolution": "3840x2160"
+    },
+    {
+      "name": "64 Synth Noir",
+      "series": "series-7-retrowave",
+      "url": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/series-7-retrowave/corebuilds-64-synth-noir.png",
+      "thumb": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/thumbs/corebuilds-64-synth-noir.jpg",
+      "resolution": "3840x2160"
+    },
+    {
+      "name": "65 Synth Wasabi",
+      "series": "series-7-retrowave",
+      "url": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/series-7-retrowave/corebuilds-65-synth-wasabi.png",
+      "thumb": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/thumbs/corebuilds-65-synth-wasabi.jpg",
+      "resolution": "3840x2160"
+    },
+    {
+      "name": "66 Outrun Grid",
+      "series": "series-7-retrowave",
+      "url": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/series-7-retrowave/corebuilds-66-synth-outrun.png",
+      "thumb": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/thumbs/corebuilds-66-synth-outrun.jpg",
+      "resolution": "3840x2160"
+    },
+    {
+      "name": "67 Chrome Ridge",
+      "series": "series-7-retrowave",
+      "url": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/series-7-retrowave/corebuilds-67-synth-ridge.png",
+      "thumb": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/thumbs/corebuilds-67-synth-ridge.jpg",
+      "resolution": "3840x2160"
+    },
+    {
+      "name": "68 Neon Starfield",
+      "series": "series-7-retrowave",
+      "url": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/series-7-retrowave/corebuilds-68-synth-starfield.png",
+      "thumb": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/thumbs/corebuilds-68-synth-starfield.jpg",
+      "resolution": "3840x2160"
     }
   ]
 }

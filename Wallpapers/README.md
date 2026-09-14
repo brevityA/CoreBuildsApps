@@ -1,6 +1,6 @@
 # Core Builds — Wallpaper Collection v4.0
 
-50 wallpapers · 3840×2160 (series 1–3) and 1376×768 (series 6) · 125 MB ·
+68 wallpapers · 3840×2160 (series 1–3, 7) and 1376×768 (series 6) · 125 MB ·
 Core Builds palette:
 Core Cyan #00e5ff · Signal #00d4ff · Glow #7eeeff · Build Blue #4facfe ·
 Dusk Violet #8a4890 · Ember #c03a20 · Night #0d1117 · Void #04070f.
@@ -27,11 +27,12 @@ and the wallpaper research behind series 5 is in
 | `series-3-horizons` | 33–40 | One horizon, eight meanings — the §03 semantic accent slots as landscapes |
 | `series-5-pop` | (separate manifest) | **Core Builds Pop.** 12 walls built from `tools/popart.py`'s own primitives — the 16 Pop swatches, ink `#151019`, cream `#FFF4E0`, one halftone screen. Flat art, so no grain dither is needed and 128-colour PNG is lossless: 12 × 4K in **2.5 MB**. Indexed in `pop-manifest.json`, not `manifest.json`. |
 | `series-6-circuit-core` | 41–50 | **Circuit Core.** Ten lit-circuit fields on near-black — the same §06 lighting language the retired Core Mark series used (cyan first, violet/ember ambient), authored at 1376×768 rather than 4K. Replaced `series-4-core-mark` in v1.8.6. |
+| `series-7-retrowave` | 59–68 | **Retrowave.** Ten 4K walls in 2026's nostalgic retro-gradient genre: sliced gradient suns, perspective grids, chrome ridges and starfields on the night ground, per `tools/build_synthwave_wallpapers.py`. |
 
 Retired: `series-4-core-mark` (41–70, 30 × 4K PNGs of the lit hex + faceted core
 diamond) shipped in v1.7.0 and was removed in v1.8.6. Series index 4 stays empty
 and 5 is left to Pop, so the two collections never share a number — the classic
-pack's new series is 6.
+pack's new series is 7.
 
 ## In-app browser
 

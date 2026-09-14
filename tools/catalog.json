@@ -5667,7 +5667,9 @@
         "com.bittv.androiddigitaltvapp/com.bittv.androiddigitaltvapp.MainActivity",
         "com.bittv.androiddigitaltvapp/com.bittv.androiddigitaltvapp.ui.MainActivity"
       ],
-      "mapping_source": "Play listing 'BitTV: Android Digital TV' (com.live_streaming_tv.online_tv); com.bittv.androiddigitaltvapp via appbrain, activity guessed"
+      "mapping_source": "Play listing 'BitTV: Android Digital TV' (com.live_streaming_tv.online_tv); com.bittv.androiddigitaltvapp via appbrain, activity guessed",
+      "banner_style": "glyph",
+      "banner_note": "wordmark glyph: a printed name beside it would say the name twice"
     },
     {
       "name": "Live TV",
@@ -11431,7 +11433,9 @@
       ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "brand reference — Tubi wordmark yellow (sampled 2026-09-14)",
-      "color_reviewed": "2026-09-14"
+      "color_reviewed": "2026-09-14",
+      "banner_style": "glyph",
+      "banner_note": "wordmark glyph: a printed name beside it would say the name twice"
     },
     {
       "name": "Tunein Radio",
@@ -12250,7 +12254,9 @@
       ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "brand reference — Vidio lockup pink-red (sampled 2026-09-14)",
-      "color_reviewed": "2026-09-14"
+      "color_reviewed": "2026-09-14",
+      "banner_style": "glyph",
+      "banner_note": "wordmark glyph: a printed name beside it would say the name twice"
     },
     {
       "name": "Vieon",

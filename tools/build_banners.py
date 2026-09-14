@@ -281,6 +281,9 @@ def main():
         mono = i.get("color_note") == "monochrome"
         if i.get("banner_style") == "glyph":
             svg = render_glyph_only(i["glyph"], i["color"], monochrome=mono)
+            # Wordmark marks are not ink-centred on the 512 grid either; the
+            # banner centring audit holds them to the same 3px tolerance.
+            svg = recentre(svg)
         else:
             svg = render(i["name"], i["glyph"], i["color"],
                          i.get("category"), monochrome=mono)

@@ -160,15 +160,19 @@ def plex_chevron(c):
 
 
 def nuvio_plays(c):
-    """Nuvio: the nested play wedges of the official lockup.
+    """Nuvio: the gradient wedge split into its two brand inks.
 
-    The pre-research wave-in-a-circle invented a mark Nuvio does not have;
-    the brand is a rounded play triangle holding a smaller play triangle.
-    Two rounded wedge outlines carry that at dock size, where the vendor
-    gradient (cyan to violet) reduces to the pack's single violet accent.
+    The official mark is a rounded play triangle lit cyan at the top and
+    violet at the bottom, holding a dark knock-out triangle with a light
+    play inside. One accent flattened all of that, so the silhouette is
+    drawn as two strokes — cyan over the top edge, the app accent under
+    the bottom — with the inner play in the lighting cyan; on a dark card
+    the knock-out reads as the card itself, exactly as the logo does.
     """
-    return (f'<path d="M 148 96 L 428 256 L 148 416 Z" {_s(c, 34)}/>'
-            f'<path d="M 216 190 L 348 256 L 216 322 Z" {_s(c, 26)}/>')
+    cyan = "#2FCCE6"
+    return (f'<path d="M 148 256 L 148 96 L 428 256" {_s(cyan, 34)}/>'
+            f'<path d="M 428 256 L 148 416 L 148 256" {_s(c, 34)}/>'
+            f'<path d="M 232 208 L 324 256 L 232 304 Z" {_s(cyan, 26)}/>')
 
 
 def projector_beam(c):

@@ -18,9 +18,17 @@ Hi Browser, Screen Recording App, BitTV, Vidio).** 931 → 933 icons, 1120 → 1
   ending in a detached dot — so the line is back inside the construction
   (circle + wedge + chord + dot) instead of reading as a stray stroke.
 - **Nuvio TV** (`nuvio`): the pre-research wave-in-a-circle — a mark Nuvio
-  does not have — is replaced by the official nested play wedges, and the
-  guessed rose accent becomes the brand violet `#A238F0` sampled from the
-  lockup's cyan→violet gradient.
+  does not have — is replaced by the official wedge, and the guessed rose
+  accent becomes the brand violet `#A238F0`. Second pass: the recreation
+  is now two inks, as the owner allowed — cyan over the top edge and the
+  inner play (the logo's lighting), violet under the bottom edge — so the
+  split silhouette reads as the cyan→violet gradient wedge with its
+  knocked-out centre, which the dark card supplies for free.
+- **Wordmark banners say the name once.** Tubi, Vidio and BitTV draw their
+  name as the glyph, so printing it again beside the mark read twice.
+  Those three entries take `banner_style: glyph` (mark-only banner), and
+  `build_banners.py` now recentres glyph-only banners to the same 3px
+  tolerance as the text lockups.
 - **Pluto TV** (`pluto_tv`): planet-with-orbit becomes the disc with its
   planetary echo arcs (2020 lockup device), and the black accent — which
   the contrast policy had to substitute anyway — becomes the 2024 disc
@@ -60,6 +68,16 @@ Hi Browser, Screen Recording App, BitTV, Vidio).** 931 → 933 icons, 1120 → 1
   48px dock-size legibility strip.
 - `docs/icon-indonesia-request-2026-09.png`: same receipt for the
   BitTV/Vidio pass.
+- **series-7-retrowave** (`corebuilds-59`–`corebuilds-68`, ten 4K walls):
+  the pack's first retrowave/synthwave series, built on the 2026
+  trend research (nostalgic retro-gradient / Y2K among the most-searched
+  device-wallpaper genres; Pinterest's 2026 colour forecast feeding the
+  palettes). Sliced gradient suns, perspective grids, chrome ridges and
+  starfields on the night ground, via the new
+  `tools/build_synthwave_wallpapers.py`. Classic manifest 58 → 68;
+  `docs/retrowave-series-preview.png` is the contact sheet.
+- `docs/icon-wordmark-banners-2026-09.png`: receipt for the mark-only
+  wordmark banners and the two-ink Nuvio.
 
 ### Receipts
 - Classic: `Validated 933 icons · 1716 components · 25376 checks run`,
