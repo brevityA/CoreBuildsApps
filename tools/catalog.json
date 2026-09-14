@@ -10205,8 +10205,12 @@
         "io.gh.reisxd.tizentube.cobalt/dev.cobalt.app.MainActivity"
       ],
       "category": "VIDEO",
-      "color_source": "TizenTube cyan — official app icon (@Zyborg777 art): field/lens measured (71,221,255), banner lens (82,222,255), 2026-09-14",
-      "color_reviewed": "2026-09-14"
+      "color_source": "TizenTube field gradient — official app icon (@Zyborg777 art): top (71,221,255), bottom (197,233,255); base colour the top stop, 2026-09-14",
+      "color_reviewed": "2026-09-14",
+      "gradient": [
+        "#47DDFF",
+        "#C5E9FF"
+      ]
     },
     {
       "name": "TLC",

@@ -149,13 +149,26 @@ class IdentityTests(unittest.TestCase):
                 self.assertIn(bg, GLYPHS, icon["name"])
                 self.assertNotEqual(bg, icon["glyph"], icon["name"])
                 expected = recentre(render(icon["name"], bg, icon["color"],
-                                            icon.get("category", "")))
+                                            icon.get("category", ""),
+                                            gradient=icon.get("gradient")))
                 self.assertEqual(
                     (ROOT / "assets/banners" / f"{icon['drawable']}.svg").read_text(),
                     expected, icon["name"])
                 self.assertEqual(
                     (ROOT / "assets/svg" / f"{icon['drawable']}.svg").read_text(),
-                    render_svg(icon["glyph"], icon["color"]), icon["name"])
+                    render_svg(icon["glyph"], icon["color"],
+                               gradient=icon.get("gradient")), icon["name"])
+
+    def test_tizentube_runs_the_measured_field_gradient(self):
+        """The owner wants the real logo's ramp: field cyan to pale blue,
+        painted at render time (the Nuvio pattern), flat in Pop/Pixel."""
+        square = (ROOT / "assets/svg" / "tizentube.svg").read_text()
+        for stop in ("#47DDFF", "#C5E9FF"):
+            self.assertIn(stop, square)
+        self.assertIn("linearGradient", square)
+        self.assertIn('stroke="url(#cbGrad)"', square)
+        banner = (ROOT / "assets/banners" / "tizentube.svg").read_text()
+        self.assertIn('fill="url(#cbGrad)"', banner)  # the banner dot rides the ramp
 
     def test_committed_square_vectors_match_the_generator(self):
         for icon in ICONS:

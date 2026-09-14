@@ -509,9 +509,12 @@ def gradient_defs(stops, y0=80, y1=432, gid="cbGrad"):
 
 
 def apply_gradient(body, color, stops):
-    """Repaint every flat stroke of `color` with the gradient reference."""
-    return gradient_defs(stops) + body.replace(f'stroke="{color}"',
-                                               'stroke="url(#cbGrad)"')
+    """Repaint every flat stroke (and fill) of `color` with the gradient
+    reference. Fills join the ramp so accent dots ride the same paint as
+    the strokes (TizenTube's tip dot); stroke-only glyphs are untouched."""
+    return (gradient_defs(stops)
+            + body.replace(f'stroke="{color}"', 'stroke="url(#cbGrad)"')
+            .replace(f'fill="{color}"', 'fill="url(#cbGrad)"'))
 
 
 # ==========================================================================
@@ -570,11 +573,11 @@ def tizen_play(c):
 def tizen_play_dot(c):
     """TizenTube banner mark — tizen_play plus the emblem's tip dot.
 
-    Dot at (327,252): on the bottom edge's extension line (~10px off,
-    matching the real emblem's ~11px), 9px clear of the chord and
-    11px from the cap.
+    Dot at (317,247): centred on the bottom edge's extension line (the
+    edge points at it, as in the real logo), 5px from the cap and
+    8.4px from the chord.
     """
-    return tizen_play(c) + f'<circle cx="327" cy="252" r="19" fill="{c}" stroke="none"/>'
+    return tizen_play(c) + f'<circle cx="317" cy="247" r="19" fill="{c}" stroke="none"/>'
 
 
 def film_reel(c):

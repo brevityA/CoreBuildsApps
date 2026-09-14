@@ -116,12 +116,15 @@ All notable changes to the Core Builds Icon Pack. Format follows
   the emblem's own construction, not a generic slash. The 16:9 card
   (the appfilter's auto-assign target) rides the `banner_glyph` field
   added earlier today — `tizen_play_dot`, the same lockup plus the tip
-  dot placed on the bottom edge's extension line (the edge points at
-  it, as in the real logo), with the measured clearances to chord and
-  cap. The accent leaves the placeholder red for the brand's true
-  colour: TizenTube cyan `#47DDFF`, measured from the official app
-  icon's field/lens (71,221,255; banner lens 82,222,255) — the same
-  blue the app ships as, and a colour the square now owes the red
+  dot centred exactly on the bottom edge's extension line — the edge
+  points at it, centred on the line rather than the real logo's
+  ~10 px offset, with clearances to chord and cap. The accent is the
+  brand's true paint: the official icon's field gradient `#47DDFF` →
+  `#C5E9FF` (measured top (71,221,255) and bottom (197,233,255) of the
+  icon's field; the banner lens 82,222,255 sits between), applied at
+  render time through the catalog `gradient` field — the Nuvio pattern
+  — so Pop and Pixel Neon keep their flat strokes. That blue is the
+  same one the app ships as, and what the square now owes the red
   YouTube icon next to it its distinction. Decision records
   `docs/tizentube-options-2026-09.png`, `docs/tizentube-emblem-2026-09.png`
   and `docs/tizentube-frame-2026-09.png` (the interim passes); receipt
