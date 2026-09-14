@@ -17,7 +17,7 @@
       "metadata": "Latestrelease/version.json",
       "section": "icon-pack",
       "iconCount": 933,
-      "componentCount": 1126
+      "componentCount": 1130
     },
     "pixelneon": {
       "name": "Core Builds Pixel Neon",
@@ -34,7 +34,7 @@
       "metadata": "Latestrelease/pixel-neon-version.json",
       "section": "pixel-neon",
       "iconCount": 933,
-      "componentCount": 1126
+      "componentCount": 1130
     },
     "pop": {
       "name": "Core Builds Pop",
@@ -50,7 +50,7 @@
       "metadata": "Latestrelease/pop-version.json",
       "section": "core-builds-pop",
       "iconCount": 933,
-      "componentCount": 1126
+      "componentCount": 1130
     },
     "line": {
       "name": "Core Line",

@@ -84,6 +84,7 @@
     <item drawable="betterxc" />
     <item drawable="binge" />
     <item drawable="bitdefender" />
+    <item drawable="bit_tv" />
     <item drawable="blip" />
     <item drawable="blokada" />
     <item drawable="bloomberg" />
@@ -405,7 +406,6 @@
     <item drawable="ligaportugal" />
     <item drawable="ligueunpass" />
     <item drawable="tv" />
-    <item drawable="live_streaming_tv" />
     <item drawable="livetv" />
     <item drawable="liverpoolfc" />
     <item drawable="localnow" />

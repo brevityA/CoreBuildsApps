@@ -8,7 +8,7 @@ All notable changes to the Core Builds Icon Pack. Format follows
 
 **Feedback pass: the TizenTube stray line, the Nuvio lookalike, and the
 six-app request list (Fandango at Home, Pluto TV, Tubi, LocalSend,
-Hi Browser, Screen Recording App).** 931 → 933 icons, 1120 → 1126 components.
+Hi Browser, Screen Recording App, BitTV, Vidio).** 931 → 933 icons, 1120 → 1130 components.
 
 ### Changed
 - **TizenTube** (`tizentube`): the diagonal no longer floats as a stub off
@@ -43,18 +43,32 @@ Hi Browser, Screen Recording App).** 931 → 933 icons, 1120 → 1126 components
 - **Screen Recording App** (`screen_recording_app`,
   `de.twokit.screen.recording.app`): 2kit's TV-first recorder on a screen
   holding the record target. Activity guesses flagged unverified.
+- **BitTV** (`bit_tv`): the Indonesian sideload/Play digital-TV app
+  (com.live_streaming_tv.online_tv, also shipped as
+  com.bittv.androiddigitaltvapp) previously rode the shared
+  `iptv_player` glyph under the store name "Live Streaming TV" in
+  yellow. Renamed and redrawn as its own mark — the white `bit`
+  wordmark closing on the stemmed play wedge — in the brand blue
+  `#008FD7`.
+- **Vidio** (`vidio`): Indonesia's Vidio was borrowing Megogo's
+  play-banner in a guessed blue. Now the lowercase wordmark drawn as
+  monoline type in the sampled lockup pink-red `#FB0E4D`, with the
+  mobile `com.vidio.android` package mapped beside the TV one
+  (activities guessed, flagged unverified).
 - `docs/icon-feedback-pass-2026-09.png`: visual receipt — every changed
   mark beside unchanged Classic neighbours, actual-size banners, and a
   48px dock-size legibility strip.
+- `docs/icon-indonesia-request-2026-09.png`: same receipt for the
+  BitTV/Vidio pass.
 
 ### Receipts
-- Classic: `Validated 933 icons · 1708 components · 25332 checks run`,
+- Classic: `Validated 933 icons · 1716 components · 25376 checks run`,
   `Ran 44 tests ... OK`.
 - Pop: `Validated 933 icons · 1126 components · 16 swatches ·
-  14476 checks run`, `Ran 29 tests ... OK` (glyph metrics re-measured
+  14510 checks run`, `Ran 29 tests ... OK` (glyph metrics re-measured
   first, as geometry changed).
-- Pixel Neon: `Validated Pixel Neon · 933 icons · 1126 catalog
-  components · 12789 checks run`.
+- Pixel Neon: `Validated Pixel Neon · 933 icons · 1130 catalog
+  components · 12829 checks run`.
 - Truth gates: suite truth, contract audit, issue-prefill stamp and
   README badge all pass.
 

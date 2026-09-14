@@ -1,6 +1,6 @@
 # Supported applications
 
-`933` icons · `1126` mapped components · pack v1.8.17
+`933` icons · `1130` mapped components · pack v1.8.17
 
 Every app below auto-assigns in Projectivy. If one doesn't, the app ships a different launcher activity on your device — open an issue with the component name and it gets added.
 
@@ -92,6 +92,7 @@ Source accents are retained in the catalog. **On dark** is the shared square/ban
 | Better XC | `betterxc` | `#0061FF` | `#0061FF` | `com.redphx.betterxc/com.redphx.betterxc.activity.MainActivity` |
 | Binge | `binge` | `#B80472` | `#BA0473` | `au.com.streamotion.ares/.MainActivity`<br>`au.com.binge.tv/.MainActivity`<br>`au.com.binge.tv/au.com.foxsports.martian.tv.main.MainActivity`<br>`au.com.streamotion.ares/au.com.foxsports.martian.tv.main.MainActivity` |
 | Bitdefender | `bitdefender` | `#ED1C24` | `#ED1C24` | `com.bitdefender.vpn/com.bitdefender.vpn.MainActivity` |
+| BitTV | `bit_tv` | `#008FD7` | `#008FD7` | `com.live_streaming_tv.online_tv/com.live_streaming_tv.online_tv.BitTVActivity`<br>`com.bittv.androiddigitaltvapp/com.bittv.androiddigitaltvapp.MainActivity`<br>`com.bittv.androiddigitaltvapp/com.bittv.androiddigitaltvapp.ui.MainActivity` |
 | Blip | `blip` | `#0061FF` | `#0061FF` | `net.blip.android/net.blip.android.MainActivity` |
 | Blokada | `blokada` | `#F5A200` | `#F5A200` | `org.blokada.fyra/core.PanelActivity` |
 | Bloomberg TV+ | `bloomberg` | `#53FC18` | `#53FC18` | `com.bloomberg.btva/tv.accedo.one.app.bootstrap.BootstrapActivity` |
@@ -413,7 +414,6 @@ Source accents are retained in the catalog. **On dark** is the shared square/ban
 | Liga Portugal | `ligaportugal` | `#FEC500` | `#FEC500` | `com.ligaportugal.ligatv/com.ligaportugal.ligatv.SplashActivity` |
 | Ligue 1+ | `ligueunpass` | `#FFFFFF` | `#FFFFFF` | `com.ligueunpass.app/com.ligueunpass.app.MainActivity` |
 | Live Channels | `tv` | `#FEC500` | `#FEC500` | `com.google.android.tv/com.android.tv.TvActivity` |
-| Live Streaming TV | `live_streaming_tv` | `#FDCB58` | `#FDCB58` | `com.live_streaming_tv.online_tv/com.live_streaming_tv.online_tv.BitTVActivity` |
 | Live TV | `livetv` | `#00BCD4` | `#00BCD4` | `com.mediatek.wwtv.tvcenter/.nav.TurnkeyUiMainActivity` |
 | Liverpool FC | `liverpoolfc` | `#107534` | `#107534` | `com.liverpoolfc.goapp/com.applicaster.ui.activities.MainActivity` |
 | Localnow | `localnow` | `#53FC18` | `#53FC18` | `com.weathergroup.localnow/com.weathergroup.localnow.MainActivity` |
@@ -863,7 +863,7 @@ Source accents are retained in the catalog. **On dark** is the shared square/ban
 | Victory Plus | `victory_plus` | `#0061FF` | `#0061FF` | `tv.apmc.android.victorysports/tv.kidoodle.android.ui.MainActivity` |
 | Vidangel | `vidangel` | `#00D4FF` | `#00D4FF` | `com.vidangel.tvapp/com.vidangel.tvapp.activities.IntroActivity` |
 | Videoland | `videoland` | `#0061FF` | `#0061FF` | `nl.rtl.videoland.v2/com.bedrockstreaming.shared.tv.activity.SplashActivity` |
-| Vidio | `vidio` | `#0061FF` | `#0061FF` | `com.vidio.android.tv/com.vidio.android.tv.splashscreen.SplashScreenActivity` |
+| Vidio | `vidio` | `#FB0E4D` | `#FB0E4D` | `com.vidio.android.tv/com.vidio.android.tv.splashscreen.SplashScreenActivity`<br>`com.vidio.android/com.vidio.android.splashscreen.SplashScreenActivity`<br>`com.vidio.android/com.vidio.android.MainActivity` |
 | Vieon | `vieon` | `#53FC18` | `#53FC18` | `com.vieon.tv/com.my.app.MainActivity` |
 | Viki | `viki` | `#FFFFFF` | `#FFFFFF` | `com.viki.android/com.viki.android.ui.splash.SplashActivity` |
 | Vimeo | `vimeo` | `#1AB7EA` | `#1AB7EA` | `com.vimeo.android.videoapp/com.vimeo.android.videoapp.launch.LaunchActivity` |

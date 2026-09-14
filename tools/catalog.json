@@ -5651,16 +5651,23 @@
       "color_reviewed": null
     },
     {
-      "name": "Live Streaming TV",
-      "drawable": "live_streaming_tv",
-      "color": "#FDCB58",
-      "glyph": "iptv_player",
+      "name": "BitTV",
+      "drawable": "bit_tv",
+      "color": "#008FD7",
+      "glyph": "bit_tv_mark",
       "components": [
-        "com.live_streaming_tv.online_tv/com.live_streaming_tv.online_tv.BitTVActivity"
+        "com.live_streaming_tv.online_tv/com.live_streaming_tv.online_tv.BitTVActivity",
+        "com.bittv.androiddigitaltvapp/com.bittv.androiddigitaltvapp.MainActivity",
+        "com.bittv.androiddigitaltvapp/com.bittv.androiddigitaltvapp.ui.MainActivity"
       ],
       "category": "STREAM",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "brand reference — BitTV icon blue (sampled 2026-09-14)",
+      "color_reviewed": "2026-09-14",
+      "unverified": [
+        "com.bittv.androiddigitaltvapp/com.bittv.androiddigitaltvapp.MainActivity",
+        "com.bittv.androiddigitaltvapp/com.bittv.androiddigitaltvapp.ui.MainActivity"
+      ],
+      "mapping_source": "Play listing 'BitTV: Android Digital TV' (com.live_streaming_tv.online_tv); com.bittv.androiddigitaltvapp via appbrain, activity guessed"
     },
     {
       "name": "Live TV",
@@ -12229,18 +12236,21 @@
     {
       "name": "Vidio",
       "drawable": "vidio",
-      "color": "#0061FF",
-      "glyph": "megogo_zone",
+      "color": "#FB0E4D",
+      "glyph": "vidio_wordmark",
       "components": [
-        "com.vidio.android.tv/com.vidio.android.tv.splashscreen.SplashScreenActivity"
+        "com.vidio.android.tv/com.vidio.android.tv.splashscreen.SplashScreenActivity",
+        "com.vidio.android/com.vidio.android.splashscreen.SplashScreenActivity",
+        "com.vidio.android/com.vidio.android.MainActivity"
       ],
       "category": "APP",
       "unverified": [
-        "com.vidio.android.tv/com.vidio.android.tv.splashscreen.SplashScreenActivity"
+        "com.vidio.android/com.vidio.android.splashscreen.SplashScreenActivity",
+        "com.vidio.android/com.vidio.android.MainActivity"
       ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "brand reference — Vidio lockup pink-red (sampled 2026-09-14)",
+      "color_reviewed": "2026-09-14"
     },
     {
       "name": "Vieon",

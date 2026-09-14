@@ -239,6 +239,13 @@
     <!-- Bitdefender -->
     <item component="ComponentInfo{com.bitdefender.vpn/com.bitdefender.vpn.MainActivity}" drawable="bitdefender_banner"/>
     <item component="ComponentInfo{com.bitdefender.vpn/.MainActivity}" drawable="bitdefender_banner"/>
+    <!-- BitTV -->
+    <item component="ComponentInfo{com.live_streaming_tv.online_tv/com.live_streaming_tv.online_tv.BitTVActivity}" drawable="bit_tv_banner"/>
+    <item component="ComponentInfo{com.live_streaming_tv.online_tv/.BitTVActivity}" drawable="bit_tv_banner"/>
+    <item component="ComponentInfo{com.bittv.androiddigitaltvapp/com.bittv.androiddigitaltvapp.MainActivity}" drawable="bit_tv_banner"/>
+    <item component="ComponentInfo{com.bittv.androiddigitaltvapp/.MainActivity}" drawable="bit_tv_banner"/>
+    <item component="ComponentInfo{com.bittv.androiddigitaltvapp/com.bittv.androiddigitaltvapp.ui.MainActivity}" drawable="bit_tv_banner"/>
+    <item component="ComponentInfo{com.bittv.androiddigitaltvapp/.ui.MainActivity}" drawable="bit_tv_banner"/>
     <!-- Blip -->
     <item component="ComponentInfo{net.blip.android/net.blip.android.MainActivity}" drawable="blip_banner"/>
     <item component="ComponentInfo{net.blip.android/.MainActivity}" drawable="blip_banner"/>
@@ -1168,9 +1175,6 @@
     <item component="ComponentInfo{com.ligueunpass.app/.MainActivity}" drawable="ligueunpass_banner"/>
     <!-- Live Channels -->
     <item component="ComponentInfo{com.google.android.tv/com.android.tv.TvActivity}" drawable="tv_banner"/>
-    <!-- Live Streaming TV -->
-    <item component="ComponentInfo{com.live_streaming_tv.online_tv/com.live_streaming_tv.online_tv.BitTVActivity}" drawable="live_streaming_tv_banner"/>
-    <item component="ComponentInfo{com.live_streaming_tv.online_tv/.BitTVActivity}" drawable="live_streaming_tv_banner"/>
     <!-- Live TV -->
     <item component="ComponentInfo{com.mediatek.wwtv.tvcenter/com.mediatek.wwtv.tvcenter.nav.TurnkeyUiMainActivity}" drawable="livetv_banner"/>
     <item component="ComponentInfo{com.mediatek.wwtv.tvcenter/.nav.TurnkeyUiMainActivity}" drawable="livetv_banner"/>
@@ -2433,6 +2437,10 @@
     <!-- Vidio -->
     <item component="ComponentInfo{com.vidio.android.tv/com.vidio.android.tv.splashscreen.SplashScreenActivity}" drawable="vidio_banner"/>
     <item component="ComponentInfo{com.vidio.android.tv/.splashscreen.SplashScreenActivity}" drawable="vidio_banner"/>
+    <item component="ComponentInfo{com.vidio.android/com.vidio.android.splashscreen.SplashScreenActivity}" drawable="vidio_banner"/>
+    <item component="ComponentInfo{com.vidio.android/.splashscreen.SplashScreenActivity}" drawable="vidio_banner"/>
+    <item component="ComponentInfo{com.vidio.android/com.vidio.android.MainActivity}" drawable="vidio_banner"/>
+    <item component="ComponentInfo{com.vidio.android/.MainActivity}" drawable="vidio_banner"/>
     <!-- Vieon -->
     <item component="ComponentInfo{com.vieon.tv/com.my.app.MainActivity}" drawable="vieon_banner"/>
     <!-- Viki -->

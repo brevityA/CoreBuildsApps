@@ -86,6 +86,7 @@
         <item>betterxc</item>
         <item>binge</item>
         <item>bitdefender</item>
+        <item>bit_tv</item>
         <item>blip</item>
         <item>blokada</item>
         <item>bloomberg</item>
@@ -407,7 +408,6 @@
         <item>ligaportugal</item>
         <item>ligueunpass</item>
         <item>tv</item>
-        <item>live_streaming_tv</item>
         <item>livetv</item>
         <item>liverpoolfc</item>
         <item>localnow</item>
@@ -1021,6 +1021,7 @@
         <item>Better XC</item>
         <item>Binge</item>
         <item>Bitdefender</item>
+        <item>BitTV</item>
         <item>Blip</item>
         <item>Blokada</item>
         <item>Bloomberg TV+</item>
@@ -1342,7 +1343,6 @@
         <item>Liga Portugal</item>
         <item>Ligue 1+</item>
         <item>Live Channels</item>
-        <item>Live Streaming TV</item>
         <item>Live TV</item>
         <item>Liverpool FC</item>
         <item>Localnow</item>
@@ -1956,6 +1956,7 @@
         <item>APP</item>
         <item>VOD</item>
         <item>VPN</item>
+        <item>STREAM</item>
         <item>APP</item>
         <item>VPN</item>
         <item>APP</item>
@@ -2277,7 +2278,6 @@
         <item>APP</item>
         <item>APP</item>
         <item>APP</item>
-        <item>STREAM</item>
         <item>LIVE</item>
         <item>APP</item>
         <item>APP</item>

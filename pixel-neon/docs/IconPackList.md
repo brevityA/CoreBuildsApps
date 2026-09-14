@@ -1,6 +1,6 @@
 # Core Builds Pixel Neon · supported applications
 
-`933` individually generated pixel sprites · `1126` catalog components · pack v0.1.0
+`933` individually generated pixel sprites · `1130` catalog components · pack v0.1.0
 
 This is the alternate 8-bit neon treatment of the Core Builds catalog. Each row uses its semantic brand glyph cue, then gets a hash-seeded pixel recipe; this pack does not reuse the monoline SVG geometry or banner lockups.
 
@@ -90,6 +90,7 @@ This is the alternate 8-bit neon treatment of the Core Builds catalog. Each row 
 | Better XC | `betterxc` | `#0061FF` | `com.redphx.betterxc/com.redphx.betterxc.activity.MainActivity` |
 | Binge | `binge` | `#B80472` | `au.com.streamotion.ares/.MainActivity`<br>`au.com.binge.tv/.MainActivity`<br>`au.com.binge.tv/au.com.foxsports.martian.tv.main.MainActivity`<br>`au.com.streamotion.ares/au.com.foxsports.martian.tv.main.MainActivity` |
 | Bitdefender | `bitdefender` | `#ED1C24` | `com.bitdefender.vpn/com.bitdefender.vpn.MainActivity` |
+| BitTV | `bit_tv` | `#008FD7` | `com.live_streaming_tv.online_tv/com.live_streaming_tv.online_tv.BitTVActivity`<br>`com.bittv.androiddigitaltvapp/com.bittv.androiddigitaltvapp.MainActivity`<br>`com.bittv.androiddigitaltvapp/com.bittv.androiddigitaltvapp.ui.MainActivity` |
 | Blip | `blip` | `#0061FF` | `net.blip.android/net.blip.android.MainActivity` |
 | Blokada | `blokada` | `#F5A200` | `org.blokada.fyra/core.PanelActivity` |
 | Bloomberg TV+ | `bloomberg` | `#53FC18` | `com.bloomberg.btva/tv.accedo.one.app.bootstrap.BootstrapActivity` |
@@ -411,7 +412,6 @@ This is the alternate 8-bit neon treatment of the Core Builds catalog. Each row 
 | Liga Portugal | `ligaportugal` | `#FEC500` | `com.ligaportugal.ligatv/com.ligaportugal.ligatv.SplashActivity` |
 | Ligue 1+ | `ligueunpass` | `#FFFFFF` | `com.ligueunpass.app/com.ligueunpass.app.MainActivity` |
 | Live Channels | `tv` | `#FEC500` | `com.google.android.tv/com.android.tv.TvActivity` |
-| Live Streaming TV | `live_streaming_tv` | `#FDCB58` | `com.live_streaming_tv.online_tv/com.live_streaming_tv.online_tv.BitTVActivity` |
 | Live TV | `livetv` | `#00BCD4` | `com.mediatek.wwtv.tvcenter/.nav.TurnkeyUiMainActivity` |
 | Liverpool FC | `liverpoolfc` | `#107534` | `com.liverpoolfc.goapp/com.applicaster.ui.activities.MainActivity` |
 | Localnow | `localnow` | `#53FC18` | `com.weathergroup.localnow/com.weathergroup.localnow.MainActivity` |
@@ -861,7 +861,7 @@ This is the alternate 8-bit neon treatment of the Core Builds catalog. Each row 
 | Victory Plus | `victory_plus` | `#0061FF` | `tv.apmc.android.victorysports/tv.kidoodle.android.ui.MainActivity` |
 | Vidangel | `vidangel` | `#00D4FF` | `com.vidangel.tvapp/com.vidangel.tvapp.activities.IntroActivity` |
 | Videoland | `videoland` | `#0061FF` | `nl.rtl.videoland.v2/com.bedrockstreaming.shared.tv.activity.SplashActivity` |
-| Vidio | `vidio` | `#0061FF` | `com.vidio.android.tv/com.vidio.android.tv.splashscreen.SplashScreenActivity` |
+| Vidio | `vidio` | `#FB0E4D` | `com.vidio.android.tv/com.vidio.android.tv.splashscreen.SplashScreenActivity`<br>`com.vidio.android/com.vidio.android.splashscreen.SplashScreenActivity`<br>`com.vidio.android/com.vidio.android.MainActivity` |
 | Vieon | `vieon` | `#53FC18` | `com.vieon.tv/com.my.app.MainActivity` |
 | Viki | `viki` | `#FFFFFF` | `com.viki.android/com.viki.android.ui.splash.SplashActivity` |
 | Vimeo | `vimeo` | `#1AB7EA` | `com.vimeo.android.videoapp/com.vimeo.android.videoapp.launch.LaunchActivity` |

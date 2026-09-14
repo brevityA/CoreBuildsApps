@@ -1,6 +1,6 @@
 # Core Builds Pop — supported applications
 
-`933` icons · `1126` mapped components · pack v1.0.0
+`933` icons · `1130` mapped components · pack v1.0.0
 
 Pop is drawn from the same `tools/catalog.json` as the classic Core Builds Icon Pack, so coverage is identical and always will be. What differs is the render: one container, one keyline weight, one halftone screen, and 16 locked swatches instead of 169 accents.
 
@@ -90,6 +90,7 @@ Pop is drawn from the same `tools/catalog.json` as the classic Core Builds Icon 
 | Better XC | `betterxc` | `#0061FF` | `pop_blue` `#1C79D2` | `com.redphx.betterxc/com.redphx.betterxc.activity.MainActivity` |
 | Binge | `binge` | `#B80472` | `pop_magenta` `#CE2C78` | `au.com.streamotion.ares/.MainActivity`<br>`au.com.binge.tv/.MainActivity`<br>`au.com.binge.tv/au.com.foxsports.martian.tv.main.MainActivity`<br>`au.com.streamotion.ares/au.com.foxsports.martian.tv.main.MainActivity` |
 | Bitdefender | `bitdefender` | `#ED1C24` | `pop_red` `#E03127` | `com.bitdefender.vpn/com.bitdefender.vpn.MainActivity` |
+| BitTV | `bit_tv` | `#008FD7` | `pop_aqua` `#0C8AAE` | `com.live_streaming_tv.online_tv/com.live_streaming_tv.online_tv.BitTVActivity`<br>`com.bittv.androiddigitaltvapp/com.bittv.androiddigitaltvapp.MainActivity`<br>`com.bittv.androiddigitaltvapp/com.bittv.androiddigitaltvapp.ui.MainActivity` |
 | Blip | `blip` | `#0061FF` | `pop_blue` `#1C79D2` | `net.blip.android/net.blip.android.MainActivity` |
 | Blokada | `blokada` | `#F5A200` | `pop_amber` `#E8880F` | `org.blokada.fyra/core.PanelActivity` |
 | Bloomberg TV+ | `bloomberg` | `#53FC18` | `pop_green` `#3F9C35` | `com.bloomberg.btva/tv.accedo.one.app.bootstrap.BootstrapActivity` |
@@ -411,7 +412,6 @@ Pop is drawn from the same `tools/catalog.json` as the classic Core Builds Icon 
 | Liga Portugal | `ligaportugal` | `#FEC500` | `pop_sun` `#E0AF0C` | `com.ligaportugal.ligatv/com.ligaportugal.ligatv.SplashActivity` |
 | Ligue 1+ | `ligueunpass` | `#FFFFFF` | `pop_slate` `#59637A` | `com.ligueunpass.app/com.ligueunpass.app.MainActivity` |
 | Live Channels | `tv` | `#FEC500` | `pop_sun` `#E0AF0C` | `com.google.android.tv/com.android.tv.TvActivity` |
-| Live Streaming TV | `live_streaming_tv` | `#FDCB58` | `pop_sun` `#E0AF0C` | `com.live_streaming_tv.online_tv/com.live_streaming_tv.online_tv.BitTVActivity` |
 | Live TV | `livetv` | `#00BCD4` | `pop_aqua` `#0C8AAE` | `com.mediatek.wwtv.tvcenter/.nav.TurnkeyUiMainActivity` |
 | Liverpool FC | `liverpoolfc` | `#107534` | `pop_jade` `#0E9077` | `com.liverpoolfc.goapp/com.applicaster.ui.activities.MainActivity` |
 | Localnow | `localnow` | `#53FC18` | `pop_green` `#3F9C35` | `com.weathergroup.localnow/com.weathergroup.localnow.MainActivity` |
@@ -861,7 +861,7 @@ Pop is drawn from the same `tools/catalog.json` as the classic Core Builds Icon 
 | Victory Plus | `victory_plus` | `#0061FF` | `pop_blue` `#1C79D2` | `tv.apmc.android.victorysports/tv.kidoodle.android.ui.MainActivity` |
 | Vidangel | `vidangel` | `#00D4FF` | `pop_aqua` `#0C8AAE` | `com.vidangel.tvapp/com.vidangel.tvapp.activities.IntroActivity` |
 | Videoland | `videoland` | `#0061FF` | `pop_blue` `#1C79D2` | `nl.rtl.videoland.v2/com.bedrockstreaming.shared.tv.activity.SplashActivity` |
-| Vidio | `vidio` | `#0061FF` | `pop_blue` `#1C79D2` | `com.vidio.android.tv/com.vidio.android.tv.splashscreen.SplashScreenActivity` |
+| Vidio | `vidio` | `#FB0E4D` | `pop_rose` `#E0405E` | `com.vidio.android.tv/com.vidio.android.tv.splashscreen.SplashScreenActivity`<br>`com.vidio.android/com.vidio.android.splashscreen.SplashScreenActivity`<br>`com.vidio.android/com.vidio.android.MainActivity` |
 | Vieon | `vieon` | `#53FC18` | `pop_green` `#3F9C35` | `com.vieon.tv/com.my.app.MainActivity` |
 | Viki | `viki` | `#FFFFFF` | `pop_slate` `#59637A` | `com.viki.android/com.viki.android.ui.splash.SplashActivity` |
 | Vimeo | `vimeo` | `#1AB7EA` | `pop_aqua` `#0C8AAE` | `com.vimeo.android.videoapp/com.vimeo.android.videoapp.launch.LaunchActivity` |

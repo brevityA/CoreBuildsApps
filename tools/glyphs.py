@@ -764,6 +764,43 @@ def screen_record_mark(c):
             f'<path d="M 254 256 L 258 256" {_s(c, 26)}/>')
 
 
+def bit_tv_mark(c):
+    """BitTV: the 'bit' wordmark closing on its play-tile mark.
+
+    BitTV (Duktek's Android digital TV, sideloaded and on Play as
+    'BitTV: Android Digital TV') sets a white lowercase 'bit' plus a
+    stemmed play wedge on its blue tile. Drawn as monoline type: b, i,
+    t, then the stem-and-wedge mark; the vendor's trailing tick is
+    dropped rather than crowding the safe area.
+    """
+    return (f'<path d="M 76 140 L 76 336" {_s(c, 34)}/>'
+            f'<circle cx="116" cy="296" r="40" {_s(c, 34)}/>'
+            f'<path d="M 200 208 L 200 336" {_s(c, 34)}/>'
+            f'<path d="M 200 150 L 200 156" {_s(c, 34)}/>'
+            f'<path d="M 252 140 L 252 336" {_s(c, 34)}/>'
+            f'<path d="M 244 208 L 284 208" {_s(c, 34)}/>'
+            f'<path d="M 332 150 L 332 336" {_s(c, 34)}/>'
+            f'<path d="M 332 176 L 412 250 L 332 324" {_s(c, 34)}/>')
+
+
+def vidio_wordmark(c):
+    """Vidio: the lowercase wordmark as monoline type.
+
+    Indonesia's Vidio is wordmark-first — a script lockup on the brand
+    pink-red, no standalone emblem. The shared play-banner glyph it
+    borrowed read as Megogo, not Vidio, so the five letters are drawn at
+    pack proportions in the sampled lockup red instead.
+    """
+    return (f'<path d="M 56 208 L 80 336 L 104 208" {_s(c, 34)}/>'
+            f'<path d="M 148 208 L 148 336" {_s(c, 34)}/>'
+            f'<path d="M 148 150 L 148 156" {_s(c, 34)}/>'
+            f'<circle cx="232" cy="296" r="40" {_s(c, 34)}/>'
+            f'<path d="M 272 140 L 272 336" {_s(c, 34)}/>'
+            f'<path d="M 316 208 L 316 336" {_s(c, 34)}/>'
+            f'<path d="M 316 150 L 316 156" {_s(c, 34)}/>'
+            f'<circle cx="408" cy="272" r="48" {_s(c, 34)}/>')
+
+
 GLYPHS.update({
     "yt_play": yt_play, "smarttube_play": smarttube_play,
     "tizen_play": tizen_play, "film_reel": film_reel, "flix_f": flix_f,
@@ -779,6 +816,7 @@ GLYPHS.update({
     "rocket": rocket, "droplet": droplet,
     "fandango_ticket": fandango_ticket, "hi_browser_ring": hi_browser_ring,
     "screen_record_mark": screen_record_mark,
+    "bit_tv_mark": bit_tv_mark, "vidio_wordmark": vidio_wordmark,
 })
 
 

@@ -11,6 +11,7 @@
     <item drawable="arrowfilms_banner" />
     <item drawable="arvio_banner" />
     <item drawable="begin_banner" />
+    <item drawable="bit_tv_banner" />
     <item drawable="boosteroidtv_banner" />
     <item drawable="chillio_banner" />
     <item drawable="cloudstream_banner" />
@@ -25,7 +26,6 @@
     <item drawable="androidtv_4_banner" />
     <item drawable="justwatch_banner" />
     <item drawable="androidtv_5_banner" />
-    <item drawable="live_streaming_tv_banner" />
     <item drawable="lumera_banner" />
     <item drawable="moviehd_banner" />
     <item drawable="movieboxpro_banner" />
@@ -965,6 +965,7 @@
     <item drawable="arrowfilms" />
     <item drawable="arvio" />
     <item drawable="begin" />
+    <item drawable="bit_tv" />
     <item drawable="boosteroidtv" />
     <item drawable="chillio" />
     <item drawable="cloudstream" />
@@ -979,7 +980,6 @@
     <item drawable="androidtv_4" />
     <item drawable="justwatch" />
     <item drawable="androidtv_5" />
-    <item drawable="live_streaming_tv" />
     <item drawable="lumera" />
     <item drawable="moviehd" />
     <item drawable="movieboxpro" />
