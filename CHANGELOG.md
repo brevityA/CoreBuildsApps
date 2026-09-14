@@ -4,11 +4,12 @@ All notable changes to the Core Builds Icon Pack. Format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); versions follow
 [SemVer](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [1.8.18] — 2026-09-14
 
-**Feedback pass: the TizenTube stray line, the Nuvio lookalike, and the
+**Feedback pass: the TizenTube stray line, the Nuvio lookalike, the
 six-app request list (Fandango at Home, Pluto TV, Tubi, LocalSend,
-Hi Browser, Screen Recording App, BitTV, Vidio).** 931 → 933 icons, 1120 → 1130 components.
+Hi Browser, Screen Recording App), the Indonesia pair (BitTV, Vidio),
+and the retrowave wallpaper series.** 931 → 933 icons, 1120 → 1130 components.
 
 ### Changed
 - **TizenTube** (`tizentube`): the diagonal no longer floats as a stub off
@@ -24,8 +25,8 @@ Hi Browser, Screen Recording App, BitTV, Vidio).** 931 → 933 icons, 1120 → 1
   the violet `#A238F0` below, painted at render time as a vertical
   `linearGradient` (`tools/glyphs.py` gradient support) — superseding the
   interim two-ink split; the knocked-out centre still reads via the dark
-  card. Pop Art and Pixel Neon stays stay flat by design, since those
-  pipelines repaint strokes from a sentinel colour.
+  card. The Pop Art and Pixel Neon variants stay flat by design, since
+  those pipelines repaint strokes from a sentinel colour.
 - **Icons are glyphs, never wordmarks.** Per the owner's rule an icon
   carries a single letterform, not a name: Tubi, Vidio and BitTV — which
   drew their wordmark (or store mark) as the icon glyph — now wear monogram
@@ -90,6 +91,17 @@ Hi Browser, Screen Recording App, BitTV, Vidio).** 931 → 933 icons, 1120 → 1
   banner lockups below. (`docs/icon-wordmark-banners-2026-09.png` remains
   as the record of the interim mark-only banner pass.)
 
+### Fixed
+- The bundled wallpaper manifest
+  (`app/src/main/assets/manifest/wallpapers.json`) still shipped the
+  pre-retrowave 58 entries while the repo manifest and the bundled thumbs
+  had moved on to 68 — so the in-app grid could never list series 7. The
+  bundled copy is re-synced with `Wallpapers/manifest.json`, and the full
+  `unittest discover` sweep (193 tests, incl. `test_wallpapers`) is now
+  part of the standing pre-release run that caught it.
+- README suite stamp said "58 wallpapers" for the Icon Pack row; the badge
+  generator's template now prints the true 68.
+
 ### Receipts
 - Classic: `Validated 933 icons · 1716 components · 25373 checks run`,
   `Ran 46 tests ... OK` (icon identity, incl. the new gradient and
@@ -101,6 +113,8 @@ Hi Browser, Screen Recording App, BitTV, Vidio).** 931 → 933 icons, 1120 → 1
   components · 12829 checks run`.
 - Truth gates: suite truth, contract audit, issue-prefill stamp and
   README badge all pass.
+- Full sweep: `Ran 193 tests ... OK` across every test module, wallpaper
+  manifest and thumbnail gates included.
 
 ## [1.8.17] — 2026-09-13
 
