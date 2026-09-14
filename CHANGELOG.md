@@ -104,22 +104,28 @@ All notable changes to the Core Builds Icon Pack. Format follows
   `docs/icon-lettermarks-2026-09.png`.
 - **TizenTube** (`tizentube`) — the v1.8.18 fix read as "kinda random"
   (its chord floated under the wedge, a stroke the real mark does not
-  have), and the day's first rebuild — the measured globe emblem — was
-  traded for the frame direction the owner picked on the second sheet:
-  the square icon is now the pack's own YouTube outline (the `yt_play`
-  construction, never the vendor logo) crossed by the no-ads strike,
-  rim to rim, so it reads at a glance beside the real YouTube as
-  "YouTube, minus the ads" — the in-house fork-tell pattern SmartTube
-  sets with its corner cut. The 16:9 card (the appfilter's auto-assign
-  target) runs the fuller lockup: frame + strike + the tip dot measured
-  off the official emblem (reisxd/TizenTube banner, art by @Zyborg777),
-  keeping the brand cue the square leaves out at dock size. That split
-  rides a new per-icon `banner_glyph` catalog field — the banner renders
-  the named mark, the square keeps the icon glyph, in Classic and Pop —
-  validated in `build_icons` and test-pinned. Single-accent red
-  `#FF4B4B` throughout. Decision records `docs/tizentube-options-2026-09.png`
-  and `docs/tizentube-emblem-2026-09.png` (the interim measured-emblem
-  pass); receipt `docs/tizentube-frame-2026-09.png`.
+  have), and this day's iterations — the measured globe emblem, then the
+  frame with a generic strike — traded one true association for the
+  other. The final direction mixes both: the square icon is the pack's
+  own YouTube outline (the `yt_play` construction, never the vendor
+  logo) carrying the official emblem's wedge — the ad-block chord is
+  the wedge's top edge running rim to rim, meeting the frame at
+  3 o'clock, the left stroke runs rim to rim, and the bottom edge
+  leaves the rim and ends in a free rounded cap, exactly as measured on
+  the reisxd/TizenTube mark (art by @Zyborg777). The "no ads" story is
+  the emblem's own construction, not a generic slash. The 16:9 card
+  (the appfilter's auto-assign target) rides the `banner_glyph` field
+  added earlier today — `tizen_play_dot`, the same lockup plus the tip
+  dot placed on the bottom edge's extension line (the edge points at
+  it, as in the real logo), with the measured clearances to chord and
+  cap. The accent leaves the placeholder red for the brand's true
+  colour: TizenTube cyan `#47DDFF`, measured from the official app
+  icon's field/lens (71,221,255; banner lens 82,222,255) — the same
+  blue the app ships as, and a colour the square now owes the red
+  YouTube icon next to it its distinction. Decision records
+  `docs/tizentube-options-2026-09.png`, `docs/tizentube-emblem-2026-09.png`
+  and `docs/tizentube-frame-2026-09.png` (the interim passes); receipt
+  `docs/tizentube-hybrid-2026-09.png`.
 
 ### Removed
 

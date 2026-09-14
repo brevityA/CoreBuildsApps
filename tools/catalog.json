@@ -10198,15 +10198,15 @@
     {
       "name": "TizenTube",
       "drawable": "tizentube",
-      "color": "#FF4B4B",
+      "color": "#47DDFF",
       "glyph": "tizen_play",
       "banner_glyph": "tizen_play_dot",
       "components": [
         "io.gh.reisxd.tizentube.cobalt/dev.cobalt.app.MainActivity"
       ],
       "category": "VIDEO",
-      "color_source": "brand reference (pre-provenance, unverified)",
-      "color_reviewed": null
+      "color_source": "TizenTube cyan — official app icon (@Zyborg777 art): field/lens measured (71,221,255), banner lens (82,222,255), 2026-09-14",
+      "color_reviewed": "2026-09-14"
     },
     {
       "name": "TLC",

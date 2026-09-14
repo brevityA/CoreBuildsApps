@@ -795,7 +795,7 @@ Pop is drawn from the same `tools/catalog.json` as the classic Core Builds Icon 
 | Timvision | `timvision` | `#9E9E9E` | `pop_slate` `#59637A` | `it.telecomitalia.cubovision/com.canal.ui.tv.TvMainActivity` |
 | Tivify | `tivify` | `#76B900` | `pop_acid` `#9DBB1F` | `com.tvup.tivify.app.tv/com.tvup.tvapp.view.activity.MainActivityTVup` |
 | TiviMate | `tvplayer` | `#F5A623` | `pop_amber` `#E8880F` | `ar.tvplayer.tv/ar.tvplayer.tv.ui.MainActivity`<br>`ar.tvplayer.tv/.ui.MainActivity` |
-| TizenTube | `tizentube` | `#FF4B4B` | `pop_red` `#E03127` | `io.gh.reisxd.tizentube.cobalt/dev.cobalt.app.MainActivity` |
+| TizenTube | `tizentube` | `#47DDFF` | `pop_aqua` `#0C8AAE` | `io.gh.reisxd.tizentube.cobalt/dev.cobalt.app.MainActivity` |
 | TLC | `discovery_2` | `#1982C4` | `pop_blue` `#1C79D2` | `com.discovery.tlctve/com.discovery.tve.presentation.activities.SplashActivity` |
 | TNA Wrestling | `fight` | `#FF0000` | `pop_red` `#E03127` | `com.fight.tna/com.fight.tna.MainActivity` |
 | TNT | `tnt` | `#0061FF` | `pop_blue` `#1C79D2` | `com.turner.tnt.android.networkapp/com.wme.app.MainActivityTv` |

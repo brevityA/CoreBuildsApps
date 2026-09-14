@@ -797,7 +797,7 @@ Source accents are retained in the catalog. **On dark** is the shared square/ban
 | Timvision | `timvision` | `#9E9E9E` | `#9E9E9E` | `it.telecomitalia.cubovision/com.canal.ui.tv.TvMainActivity` |
 | Tivify | `tivify` | `#76B900` | `#76B900` | `com.tvup.tivify.app.tv/com.tvup.tvapp.view.activity.MainActivityTVup` |
 | TiviMate | `tvplayer` | `#F5A623` | `#F5A623` | `ar.tvplayer.tv/ar.tvplayer.tv.ui.MainActivity`<br>`ar.tvplayer.tv/.ui.MainActivity` |
-| TizenTube | `tizentube` | `#FF4B4B` | `#FF4B4B` | `io.gh.reisxd.tizentube.cobalt/dev.cobalt.app.MainActivity` |
+| TizenTube | `tizentube` | `#47DDFF` | `#47DDFF` | `io.gh.reisxd.tizentube.cobalt/dev.cobalt.app.MainActivity` |
 | TLC | `discovery_2` | `#1982C4` | `#1982C4` | `com.discovery.tlctve/com.discovery.tve.presentation.activities.SplashActivity` |
 | TNA Wrestling | `fight` | `#FF0000` | `#FF0000` | `com.fight.tna/com.fight.tna.MainActivity` |
 | TNT | `tnt` | `#0061FF` | `#0061FF` | `com.turner.tnt.android.networkapp/com.wme.app.MainActivityTv` |
