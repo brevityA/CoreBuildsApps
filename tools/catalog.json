@@ -13,7 +13,7 @@
       "name": "10 Play",
       "drawable": "tenplay",
       "color": "#0047F4",
-      "glyph": "tile_10",
+      "glyph": "ten_mark",
       "components": [
         "au.com.tenplay/com.tenplay.MainActivity",
         "au.com.tenplay/.MainActivity",
@@ -21,12 +21,10 @@
         "au.com.tenplay/tv.youi.networktentv.MainActivity"
       ],
       "category": "VOD",
-      "unverified": [
-        "au.com.tenplay/tv.youi.networktentv.MainActivity"
-      ],
       "color_source": "Brandfetch 10play.com.au primary \"Blue Ribbon\" #0047F4",
       "color_note": "Brandfetch 10play.com.au primary \"Blue Ribbon\" #0047F4 (2026-09-08); dark navy lightened by display ramp for card legibility",
-      "color_reviewed": "2026-09-08"
+      "color_reviewed": "2026-09-08",
+      "style": "core_monoline"
     },
     {
       "name": "3Player",
@@ -44,7 +42,7 @@
       "name": "7plus",
       "drawable": "sevenplus",
       "color": "#E81820",
-      "glyph": "broadcast_7",
+      "glyph": "seven_plusmark",
       "components": [
         "au.com.seven.inferno/.MainActivity"
       ],
@@ -52,13 +50,14 @@
       "brand": "7plus",
       "color_source": "sampled from the official 7plus logo",
       "color_reviewed": "2026-09-08",
-      "color_note": "sampled from the official 7plus logo (Seven Network red origami 7 + red wordmark) 2026-09-08; replaces pre-provenance blue #0072CE"
+      "color_note": "sampled from the official 7plus logo (Seven Network red origami 7 + red wordmark) 2026-09-08; replaces pre-provenance blue #0072CE",
+      "style": "core_monoline"
     },
     {
       "name": "9Now",
       "drawable": "ninenow",
       "color": "#1048E0",
-      "glyph": "broadcast_9",
+      "glyph": "ninenow_mark",
       "components": [
         "com.mi9.gomi/.MainActivity",
         "au.com.nine.now.tv/.MainActivity"
@@ -67,13 +66,14 @@
       "brand": "9now",
       "color_source": "sampled (Nine Network blue mark) — avid.wiki/Nine_Network_Productions",
       "color_reviewed": "2026-09-08",
-      "color_note": null
+      "color_note": null,
+      "style": "core_monoline"
     },
     {
       "name": "9Now CTV",
       "drawable": "ninenow_2",
       "color": "#1048E0",
-      "glyph": "broadcast_9",
+      "glyph": "ninenow_mark",
       "components": [
         "au.com.ninenow.ctv/au.com.ninenow.ctv.TvActivity"
       ],
@@ -81,7 +81,8 @@
       "brand": "9now",
       "color_source": "sampled (Nine Network blue mark) — avid.wiki/Nine_Network_Productions",
       "color_reviewed": "2026-09-08",
-      "color_note": null
+      "color_note": null,
+      "style": "core_monoline"
     },
     {
       "name": "A 8k Player Vip",
@@ -92,9 +93,6 @@
         "com.shadeed.S4kvip/com.shadeed.ibopro.MainActivity"
       ],
       "category": "PLAYER",
-      "unverified": [
-        "com.shadeed.S4kvip/com.shadeed.ibopro.MainActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
@@ -115,19 +113,17 @@
       "name": "ABC iview",
       "drawable": "abciview",
       "color": "#20B8B8",
-      "glyph": "eye",
+      "glyph": "abc_lollipops",
       "components": [
         "au.net.abc.iview/.MainActivity",
         "au.net.abc.iview.tv/.MainActivity",
         "au.net.abc.iview/au.net.abc.iview.ui.MainActivity"
       ],
       "category": "VOD",
-      "unverified": [
-        "au.net.abc.iview/au.net.abc.iview.ui.MainActivity"
-      ],
       "color_source": "sampled (current mark, teal) — logos.fandom.com/wiki/ABC_iview",
       "color_reviewed": "2026-09-08",
-      "color_note": null
+      "color_note": null,
+      "style": "core_monoline"
     },
     {
       "name": "ABC News",
@@ -150,9 +146,6 @@
         "org.acestream.node/org.acestream.engine.ui.MainWebViewActivity"
       ],
       "category": "APP",
-      "unverified": [
-        "org.acestream.node/org.acestream.engine.ui.MainWebViewActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
@@ -302,9 +295,6 @@
         "com.smartdevice.tv.aircast/com.coocaa.icast.ui.home.SplashActivity"
       ],
       "category": "APP",
-      "unverified": [
-        "com.smartdevice.tv.aircast/com.coocaa.icast.ui.home.SplashActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
@@ -318,9 +308,6 @@
         "com.waxrain.airplaydmr/com.waxrain.ui.WaxPlayerSetting"
       ],
       "category": "APP",
-      "unverified": [
-        "com.waxrain.airplaydmr/com.waxrain.ui.WaxPlayerSetting"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
@@ -346,9 +333,6 @@
         "com.softmedia.receiver.lite/com.softmedia.receiver.app.SplashActivity"
       ],
       "category": "APP",
-      "unverified": [
-        "com.softmedia.receiver.lite/com.softmedia.receiver.app.SplashActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
@@ -376,9 +360,6 @@
       "category": "APP",
       "brand": "aljazeera",
       "style": "core_monoline",
-      "unverified": [
-        "net.aljazeera.english/net.aljazeera.english.MainActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "logo audit 2026-09-03: gold flame/teardrop in an orange square (gold since 2021)",
       "color_reviewed": null
@@ -428,9 +409,6 @@
         "stormcastcinema.amazing.classics/stormcastcinema.westernmania.ui.splash.SplashActivity"
       ],
       "category": "APP",
-      "unverified": [
-        "stormcastcinema.amazing.classics/stormcastcinema.westernmania.ui.splash.SplashActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
@@ -517,9 +495,6 @@
         "dev.dworks.apps.anexplorer.pro/dev.dworks.apps.anexplorer.DocumentsActivity"
       ],
       "category": "FILES",
-      "unverified": [
-        "dev.dworks.apps.anexplorer.pro/dev.dworks.apps.anexplorer.DocumentsActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null,
@@ -559,10 +534,6 @@
         "csc.app.anime.cast/csc.app.app.movil.activity.Splash"
       ],
       "category": "APP",
-      "unverified": [
-        "csc.app.anime.cast/csc.app.app.tv.activity.Splash",
-        "csc.app.anime.cast/csc.app.app.movil.activity.Splash"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
@@ -588,9 +559,6 @@
         "gr.antenna.ant1/com.arxnet.soeasytv.MainActivity"
       ],
       "category": "APP",
-      "unverified": [
-        "gr.antenna.ant1/com.arxnet.soeasytv.MainActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
@@ -640,9 +608,6 @@
         "com.uptodown.installer/com.uptodown.installer.activity.SplashActivity"
       ],
       "category": "APP",
-      "unverified": [
-        "com.uptodown.installer/com.uptodown.installer.activity.SplashActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
@@ -693,9 +658,6 @@
         "com.apktime.apktime/com.apktime.apktime.SplashActivity"
       ],
       "category": "TOOL",
-      "unverified": [
-        "com.apktime.apktime/com.apktime.apktime.SplashActivity"
-      ],
       "color_source": "brand reference (pre-provenance, unverified)",
       "color_reviewed": null
     },
@@ -781,9 +743,6 @@
         "net.floatingpoint.android.arcturus/net.floatingpoint.android.arcturus.MainActivity"
       ],
       "category": "BROWSER",
-      "unverified": [
-        "net.floatingpoint.android.arcturus/net.floatingpoint.android.arcturus.MainActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
@@ -797,9 +756,6 @@
         "de.swr.avp.ard.tv/de.swr.avp.ard.tv.TvActivity"
       ],
       "category": "APP",
-      "unverified": [
-        "de.swr.avp.ard.tv/de.swr.avp.ard.tv.TvActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
@@ -827,9 +783,6 @@
         "tv.arte.plus7/tv.arte.plus7.leanback.MainActivity"
       ],
       "category": "APP",
-      "unverified": [
-        "tv.arte.plus7/tv.arte.plus7.leanback.MainActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
@@ -843,9 +796,6 @@
         "io.artlume.mobile/io.artlume.tv.presentation.MainActivity"
       ],
       "category": "APP",
-      "unverified": [
-        "io.artlume.mobile/io.artlume.tv.presentation.MainActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
@@ -980,9 +930,6 @@
         "io.github.visnkmr.bapl/io.github.visnkmr.bapl.MainActivity"
       ],
       "category": "APP",
-      "unverified": [
-        "io.github.visnkmr.bapl/io.github.visnkmr.bapl.MainActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
@@ -1022,9 +969,6 @@
         "uk.co.freeview.bbc/uk.co.freeview.templatewrapper.MainActivity"
       ],
       "category": "VOD",
-      "unverified": [
-        "uk.co.freeview.bbc/uk.co.freeview.templatewrapper.MainActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "brand": "bbciplayer",
       "style": "core_monoline",
@@ -1080,9 +1024,6 @@
         "com.viacom.betplus/com.vmn.playplex.tv.ui.splash.TvSplashActivity"
       ],
       "category": "APP",
-      "unverified": [
-        "com.viacom.betplus/com.vmn.playplex.tv.ui.splash.TvSplashActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "brand reference (pre-provenance, unverified)",
       "color_reviewed": null
@@ -1151,9 +1092,6 @@
         "net.blip.android/net.blip.android.MainActivity"
       ],
       "category": "APP",
-      "unverified": [
-        "net.blip.android/net.blip.android.MainActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
@@ -1167,9 +1105,6 @@
         "org.blokada.fyra/core.PanelActivity"
       ],
       "category": "VPN",
-      "unverified": [
-        "org.blokada.fyra/core.PanelActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "brand reference (pre-provenance, unverified)",
       "color_reviewed": null
@@ -1231,9 +1166,6 @@
         "com.sonypicturescore/com.sphe.bravialounge.SplashActivity"
       ],
       "category": "APP",
-      "unverified": [
-        "com.sonypicturescore/com.sphe.bravialounge.SplashActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
@@ -1272,10 +1204,6 @@
         "com.shift72.brollie/com.sh72apps.TVMainActivity"
       ],
       "category": "APP",
-      "unverified": [
-        "com.shift72.brollie/com.sh72apps.MainActivity",
-        "com.shift72.brollie/com.sh72apps.TVMainActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
@@ -1289,9 +1217,6 @@
         "com.tcl.browser/com.tcl.browser.portal.home.activity.HomePageActivity"
       ],
       "category": "APP",
-      "unverified": [
-        "com.tcl.browser/com.tcl.browser.portal.home.activity.HomePageActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
@@ -1329,9 +1254,6 @@
         "io.github.romanvht.byedpi/io.github.dovecoteescapee.byedpi.activities.MainActivity"
       ],
       "category": "APP",
-      "unverified": [
-        "io.github.romanvht.byedpi/io.github.dovecoteescapee.byedpi.activities.MainActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
@@ -1345,9 +1267,6 @@
         "org.byutv.android/org.byutv.android.MainActivity"
       ],
       "category": "APP",
-      "unverified": [
-        "org.byutv.android/org.byutv.android.MainActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
@@ -1373,9 +1292,6 @@
         "es.caixaforum.cxplus/com.mediapro.caixaforum.view.splash.SplashActivity"
       ],
       "category": "APP",
-      "unverified": [
-        "es.caixaforum.cxplus/com.mediapro.caixaforum.view.splash.SplashActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
@@ -1413,9 +1329,6 @@
         "studio.goodegg.capsule/studio.goodegg.capsule.tv.MainActivity"
       ],
       "category": "APP",
-      "unverified": [
-        "studio.goodegg.capsule/studio.goodegg.capsule.tv.MainActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
@@ -1480,9 +1393,6 @@
         "pl.cda.tv/pl.cda.tv.ui.welcome.WelcomeActivity"
       ],
       "category": "APP",
-      "unverified": [
-        "pl.cda.tv/pl.cda.tv.ui.welcome.WelcomeActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
@@ -1534,9 +1444,6 @@
         "video.laminar.tv.chaupal.android/com.yupptv.ott.ui.activity.SplashActivity"
       ],
       "category": "APP",
-      "unverified": [
-        "video.laminar.tv.chaupal.android/com.yupptv.ott.ui.activity.SplashActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
@@ -1586,9 +1493,6 @@
         "com.thesunbi.cinemaghartv/com.thesunbi.cinemaghartv.ui.main.MainActivity"
       ],
       "category": "APP",
-      "unverified": [
-        "com.thesunbi.cinemaghartv/com.thesunbi.cinemaghartv.ui.main.MainActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
@@ -1615,9 +1519,6 @@
         "com.yoku.marumovie/com.movie.ui.activity.SplashActivity"
       ],
       "category": "APP",
-      "unverified": [
-        "com.yoku.marumovie/com.movie.ui.activity.SplashActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
@@ -1655,9 +1556,6 @@
         "vn.com.vega.clipvn.tv/com.vega.cliptv.auth.AuthActivity"
       ],
       "category": "APP",
-      "unverified": [
-        "vn.com.vega.clipvn.tv/com.vega.cliptv.auth.AuthActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
@@ -1671,9 +1569,6 @@
         "com.srylain.CloneHero/com.unity3d.player.UnityPlayerActivity"
       ],
       "category": "GAMING",
-      "unverified": [
-        "com.srylain.CloneHero/com.unity3d.player.UnityPlayerActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
@@ -1726,10 +1621,6 @@
         "mvl.studio.tvlite/mvl.studio.tvlite.android_tv.presentation.ui.HomeLauncherActivity"
       ],
       "category": "BROWSER",
-      "unverified": [
-        "mvl.studio.tvlite/mvl.studio.tvlite.android_tv.presentation.ui.TabletLauncherActivity",
-        "mvl.studio.tvlite/mvl.studio.tvlite.android_tv.presentation.ui.HomeLauncherActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null,
@@ -1838,9 +1729,6 @@
         "gr.cosmote.cosmotetv.androidtv/dt.ote.poc.presentation.view.tv.TvActivity"
       ],
       "category": "APP",
-      "unverified": [
-        "gr.cosmote.cosmotetv.androidtv/dt.ote.poc.presentation.view.tv.TvActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
@@ -1854,9 +1742,6 @@
         "com.roysolberg.couchpuzzles/com.roysolberg.couchpuzzles.AndroidLauncher"
       ],
       "category": "APP",
-      "unverified": [
-        "com.roysolberg.couchpuzzles/com.roysolberg.couchpuzzles.AndroidLauncher"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
@@ -1878,7 +1763,7 @@
       "name": "Crave",
       "drawable": "bellmedia",
       "color": "#A238FF",
-      "glyph": "broadcast_C",
+      "glyph": "monogram_C",
       "components": [
         "ca.bellmedia.cravetv/axis.androidtv.sdk.app.MainActivity",
         "ca.bellmedia.cravetv/entpay.awl.awetv.MainActivity"
@@ -1921,9 +1806,6 @@
         "com.yodo1.crossyroad/com.google.firebase.MessagingUnityPlayerActivity"
       ],
       "category": "GAMING",
-      "unverified": [
-        "com.yodo1.crossyroad/com.google.firebase.MessagingUnityPlayerActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
@@ -2013,9 +1895,6 @@
         "de.mobileconcepts.cyberghost/de.mobileconcepts.cyberghost.view.app.AppActivity"
       ],
       "category": "APP",
-      "unverified": [
-        "de.mobileconcepts.cyberghost/de.mobileconcepts.cyberghost.view.app.AppActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "brand reference (pre-provenance, unverified)",
       "color_reviewed": null
@@ -2138,9 +2017,6 @@
         "com.yablio.debridemall/com.yablio.debridemall.StartActivity"
       ],
       "category": "APP",
-      "unverified": [
-        "com.yablio.debridemall/com.yablio.debridemall.StartActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
@@ -2180,10 +2056,6 @@
         "deezer.android.tv/com.deezer.android.ui.activity.LauncherActivity"
       ],
       "category": "MUSIC",
-      "unverified": [
-        "deezer.android.app/deezer.android.app.navigation.ui.MainNavigationActivity",
-        "deezer.android.tv/com.deezer.android.ui.activity.LauncherActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "brand": "deezer",
       "style": "core_monoline",
@@ -2211,9 +2083,6 @@
         "com.roysolberg.android.developertools/com.roysolberg.android.developertools.ui.activity.MainActivity"
       ],
       "category": "TOOL",
-      "unverified": [
-        "com.roysolberg.android.developertools/com.roysolberg.android.developertools.ui.activity.MainActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null,
@@ -2241,9 +2110,6 @@
         "ro.digionline.tv/ro.digionline.tv.MainActivity"
       ],
       "category": "APP",
-      "unverified": [
-        "ro.digionline.tv/ro.digionline.tv.MainActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
@@ -2257,9 +2123,6 @@
         "nl.streamgroup.upcdirect/tv.solocoo.htmlapp.FullscreenActivity"
       ],
       "category": "APP",
-      "unverified": [
-        "nl.streamgroup.upcdirect/tv.solocoo.htmlapp.FullscreenActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
@@ -2312,9 +2175,6 @@
         "com.sm.SlingGuide.Dish/com.sm.SlingGuide.Dish.MainActivity"
       ],
       "category": "APP",
-      "unverified": [
-        "com.sm.SlingGuide.Dish/com.sm.SlingGuide.Dish.MainActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
@@ -2367,10 +2227,6 @@
         "es.shufflex.dixmax.android/es.shufflex.dixmax.android.activities.tv.activities.LoginActivity"
       ],
       "category": "APP",
-      "unverified": [
-        "es.shufflex.dixmax.android/es.shufflex.dixmax.android.Main",
-        "es.shufflex.dixmax.android/es.shufflex.dixmax.android.activities.tv.activities.LoginActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
@@ -2409,10 +2265,6 @@
         "org.dolphinemu.dolphinemu/org.dolphinemu.dolphinemu.ui.main.TvMainActivity"
       ],
       "category": "GAMING",
-      "unverified": [
-        "org.dolphinemu.dolphinemu/org.dolphinemu.dolphinemu.ui.main.MainActivity",
-        "org.dolphinemu.dolphinemu/org.dolphinemu.dolphinemu.ui.main.TvMainActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "brand reference (pre-provenance, unverified)",
       "color_reviewed": null
@@ -2426,9 +2278,6 @@
         "com.tachibana.downloader/com.tachibana.downloader.ui.main.MainActivity"
       ],
       "category": "TOOL",
-      "unverified": [
-        "com.tachibana.downloader/com.tachibana.downloader.ui.main.MainActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null,
@@ -2457,9 +2306,6 @@
         "pl.dronline.nettools/pl.dronline.nettools.activity.CoreActivity"
       ],
       "category": "TOOL",
-      "unverified": [
-        "pl.dronline.nettools/pl.dronline.nettools.activity.CoreActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null,
@@ -2474,9 +2320,6 @@
         "com.sneig.livedrama/com.sneig.livedrama.activities.StartActivity"
       ],
       "category": "LIVE",
-      "unverified": [
-        "com.sneig.livedrama/com.sneig.livedrama.activities.StartActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
@@ -2490,9 +2333,6 @@
         "cz.dramox.dramox/com.elevup.panda.MainActivity"
       ],
       "category": "APP",
-      "unverified": [
-        "cz.dramox.dramox/com.elevup.panda.MainActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
@@ -2506,9 +2346,6 @@
         "de.cyberdream.dreamepg.tv.player/de.cyberdream.dreamepg.MainActivityTV"
       ],
       "category": "PLAYER",
-      "unverified": [
-        "de.cyberdream.dreamepg.tv.player/de.cyberdream.dreamepg.MainActivityTV"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
@@ -2560,9 +2397,6 @@
         "com.ttxapps.dropsync/com.ttxapps.sync.app.MainActivity"
       ],
       "category": "APP",
-      "unverified": [
-        "com.ttxapps.dropsync/com.ttxapps.sync.app.MainActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
@@ -2576,9 +2410,6 @@
         "dk.dr.tvplayer/axis.androidtv.sdk.app.MainActivity"
       ],
       "category": "APP",
-      "unverified": [
-        "dk.dr.tvplayer/axis.androidtv.sdk.app.MainActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
@@ -2593,10 +2424,6 @@
         "com.vidangel.drybarcomedy/tv.vhx.tv.home.TvHomeActivity"
       ],
       "category": "APP",
-      "unverified": [
-        "com.vidangel.drybarcomedy/tv.vhx.LauncherActivity",
-        "com.vidangel.drybarcomedy/tv.vhx.tv.home.TvHomeActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
@@ -2725,8 +2552,7 @@
       "unverified": [
         "com.synology.dsvideo/com.synology.dsvideo.ui.SplashActivity",
         "com.synology.dsvideo/.ui.SplashActivity",
-        "com.synology.dsvideo/com.synology.dsvideo.MainActivity",
-        "com.synology.dsvideo/com.synology.dsvideo.ui.WelcomeActivity"
+        "com.synology.dsvideo/com.synology.dsvideo.MainActivity"
       ],
       "color_source": "brand reference (pre-provenance, unverified)",
       "color_reviewed": null
@@ -2752,9 +2578,6 @@
         "tv.kidoodle.android.dudeperfect/tv.kidoodle.android.ui.MainActivity"
       ],
       "category": "APP",
-      "unverified": [
-        "tv.kidoodle.android.dudeperfect/tv.kidoodle.android.ui.MainActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
@@ -2768,9 +2591,6 @@
         "dw.com.androidtv.live/com.dw.app.dwforsmarttv.MainActivity"
       ],
       "category": "APP",
-      "unverified": [
-        "dw.com.androidtv.live/com.dw.app.dwforsmarttv.MainActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
@@ -2845,9 +2665,6 @@
         "com.ug.eon.android.tv/com.ug.eon.android.tv.TvActivity"
       ],
       "category": "APP",
-      "unverified": [
-        "com.ug.eon.android.tv/com.ug.eon.android.tv.TvActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
@@ -2911,9 +2728,6 @@
         "t.yi.erthybrid/com.arxnet.soeasytv.MainActivity"
       ],
       "category": "STREAM",
-      "unverified": [
-        "t.yi.erthybrid/com.arxnet.soeasytv.MainActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null,
@@ -2929,9 +2743,6 @@
         "org.es_de.frontend/org.es_de.frontend.TvActivity"
       ],
       "category": "APP",
-      "unverified": [
-        "org.es_de.frontend/org.es_de.frontend.TvActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
@@ -2993,9 +2804,6 @@
         "com.vietts.etube/com.vietts.etube.MainActivity"
       ],
       "category": "APP",
-      "unverified": [
-        "com.vietts.etube/com.vietts.etube.MainActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
@@ -3046,9 +2854,6 @@
         "org.fdroid.fdroid/org.fdroid.fdroid.views.main.MainActivity"
       ],
       "category": "APP",
-      "unverified": [
-        "org.fdroid.fdroid/org.fdroid.fdroid.views.main.MainActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "brand reference (pre-provenance, unverified)",
       "color_reviewed": null
@@ -3150,9 +2955,6 @@
         "com.topspeed.febbox2/com.snowtop.diskpanda.view.activity.SplashActivity"
       ],
       "category": "APP",
-      "unverified": [
-        "com.topspeed.febbox2/com.snowtop.diskpanda.view.activity.SplashActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
@@ -3233,9 +3035,6 @@
         "com.sabaidea.filimo.tv/com.bluevod.android.tv.ui.activities.MainActivity"
       ],
       "category": "APP",
-      "unverified": [
-        "com.sabaidea.filimo.tv/com.bluevod.android.tv.ui.activities.MainActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
@@ -3249,9 +3048,6 @@
         "de.filmfriend/crc64a5e6c5f1927a9b79.MainActivity"
       ],
       "category": "APP",
-      "unverified": [
-        "de.filmfriend/crc64a5e6c5f1927a9b79.MainActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
@@ -3265,9 +3061,6 @@
         "ir.filmnet.android.tv/ir.filmnet.android.ui.MainActivity"
       ],
       "category": "APP",
-      "unverified": [
-        "ir.filmnet.android.tv/ir.filmnet.android.ui.MainActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
@@ -3318,9 +3111,6 @@
         "com.solarized.firedown/com.solarized.firedown.phone.BrowserActivity"
       ],
       "category": "APP",
-      "unverified": [
-        "com.solarized.firedown/com.solarized.firedown.phone.BrowserActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
@@ -3382,9 +3172,6 @@
         "nl.jknaapen.fladder/nl.jknaapen.fladder.MainActivity"
       ],
       "category": "APP",
-      "unverified": [
-        "nl.jknaapen.fladder/nl.jknaapen.fladder.MainActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
@@ -3423,9 +3210,6 @@
         "com.snapwood.flickfolio/com.snapwood.flickfolio.SelectAlbumActivity"
       ],
       "category": "APP",
-      "unverified": [
-        "com.snapwood.flickfolio/com.snapwood.flickfolio.SelectAlbumActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
@@ -3451,9 +3235,6 @@
         "com.tvflix.ippflixtvbox/com.tvflix.ippflixtvbox.view.activity.SplashActivity"
       ],
       "category": "APP",
-      "unverified": [
-        "com.tvflix.ippflixtvbox/com.tvflix.ippflixtvbox.view.activity.SplashActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
@@ -3464,9 +3245,6 @@
       "color": "#E5533D",
       "glyph": "film_reel",
       "components": [
-        "flix.com.vision/.activities.SplashScreenActivity"
-      ],
-      "unverified": [
         "flix.com.vision/.activities.SplashScreenActivity"
       ],
       "category": "STREAM",
@@ -3482,9 +3260,6 @@
         "hu.kinetik.streamapp/hu.kinetik.streamapp.MainActivity"
       ],
       "category": "APP",
-      "unverified": [
-        "hu.kinetik.streamapp/hu.kinetik.streamapp.MainActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
@@ -3498,9 +3273,6 @@
         "tv.flosports/tv.flosports.TvActivity"
       ],
       "category": "SPORT",
-      "unverified": [
-        "tv.flosports/tv.flosports.TvActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
@@ -3538,9 +3310,6 @@
         "dk.tacit.android.foldersync.lite/dk.tacit.android.foldersync.activity.MainActivity"
       ],
       "category": "FILES",
-      "unverified": [
-        "dk.tacit.android.foldersync.lite/dk.tacit.android.foldersync.activity.MainActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null,
@@ -3555,9 +3324,6 @@
         "tv.football360.androidtv/tv.football360.androidtv.MainActivity"
       ],
       "category": "SPORT",
-      "unverified": [
-        "tv.football360.androidtv/tv.football360.androidtv.MainActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
@@ -3583,9 +3349,6 @@
         "ma.snrt.forja.android.app/com.ebplatformtv.MainActivity"
       ],
       "category": "APP",
-      "unverified": [
-        "ma.snrt.forja.android.app/com.ebplatformtv.MainActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
@@ -3707,9 +3470,6 @@
         "net.fptplay.ottbox/com.tear.modules.tv.welcome.WelcomeActivity"
       ],
       "category": "APP",
-      "unverified": [
-        "net.fptplay.ottbox/com.tear.modules.tv.welcome.WelcomeActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
@@ -3737,9 +3497,6 @@
         "fr.francetv.pluzz/fr.francetv.androidtv.main.MainActivity"
       ],
       "category": "APP",
-      "unverified": [
-        "fr.francetv.pluzz/fr.francetv.androidtv.main.MainActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
@@ -3753,9 +3510,6 @@
         "net.oqee.androidtv.store/net.oqee.androidtv.ui.splash.SplashActivity"
       ],
       "category": "APP",
-      "unverified": [
-        "net.oqee.androidtv.store/net.oqee.androidtv.ui.splash.SplashActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
@@ -3769,9 +3523,6 @@
         "tonybits.com.ffhq/tonybits.com.ffhq.activities.SplashScreenActivity"
       ],
       "category": "APP",
-      "unverified": [
-        "tonybits.com.ffhq/tonybits.com.ffhq.activities.SplashScreenActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
@@ -3798,10 +3549,6 @@
         "com.skylinktv.freshdrama/co.unreel.tvapp.ui.activity.SplashActivity"
       ],
       "category": "APP",
-      "unverified": [
-        "com.skylinktv.freshdrama/co.unreel.videoapp.PreSplashActivity",
-        "com.skylinktv.freshdrama/co.unreel.tvapp.ui.activity.SplashActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
@@ -3815,9 +3562,6 @@
         "net.xnano.android.ftpserver.tv/net.xnano.android.ftpserver.MainActivity"
       ],
       "category": "FILES",
-      "unverified": [
-        "net.xnano.android.ftpserver.tv/net.xnano.android.ftpserver.MainActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null,
@@ -3858,9 +3602,6 @@
         "nextapp.fx/.FX",
         "nextapp.fx/nextapp.fx.ui.ExplorerActivity"
       ],
-      "unverified": [
-        "nextapp.fx/nextapp.fx.ui.ExplorerActivity"
-      ],
       "color_source": "brand reference (pre-provenance, unverified)",
       "color_reviewed": null
     },
@@ -3873,9 +3614,6 @@
         "com.trgain.mikrogain/com.gain.mikrogain.TVMainActivity"
       ],
       "category": "APP",
-      "unverified": [
-        "com.trgain.mikrogain/com.gain.mikrogain.TVMainActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
@@ -3889,9 +3627,6 @@
         "movies.fimplus.vn.andtv/movies.fimplus.vn.andtv.v2.activity.HomeActivityV2"
       ],
       "category": "APP",
-      "unverified": [
-        "movies.fimplus.vn.andtv/movies.fimplus.vn.andtv.v2.activity.HomeActivityV2"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
@@ -3929,9 +3664,6 @@
         "uk.gbnews.app/com.simplestream.presentation.startup.StartUpActivity"
       ],
       "category": "APP",
-      "unverified": [
-        "uk.gbnews.app/com.simplestream.presentation.startup.StartUpActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
@@ -3969,9 +3701,6 @@
         "de.lemke.geticon/de.lemke.geticon.ui.MainActivity"
       ],
       "category": "APP",
-      "unverified": [
-        "de.lemke.geticon/de.lemke.geticon.ui.MainActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
@@ -4014,9 +3743,6 @@
         "com.shawmedia.smglobal/com.corusent.stream.activity.SplashScreenActivity"
       ],
       "category": "APP",
-      "unverified": [
-        "com.shawmedia.smglobal/com.corusent.stream.activity.SplashScreenActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
@@ -4042,9 +3768,6 @@
         "lt.go3.android.tv/pl.atende.mobile.tv.ui.gui.main.activity.SplashActivity"
       ],
       "category": "APP",
-      "unverified": [
-        "lt.go3.android.tv/pl.atende.mobile.tv.ui.gui.main.activity.SplashActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
@@ -4167,9 +3890,6 @@
         "de.gymondo.app.gymondo/com.gymondo.presentation.features.startup.StartupTvActivity"
       ],
       "category": "APP",
-      "unverified": [
-        "de.gymondo.app.gymondo/com.gymondo.presentation.features.startup.StartupTvActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
@@ -4202,14 +3922,11 @@
       "name": "Hayu",
       "drawable": "hayu",
       "color": "#FF0000",
-      "glyph": "broadcast_H",
+      "glyph": "monogram_H",
       "components": [
         "com.upst.hayu/com.upst.hayu.tv.main.MainActivity"
       ],
       "category": "APP",
-      "unverified": [
-        "com.upst.hayu/com.upst.hayu.tv.main.MainActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
@@ -4224,10 +3941,6 @@
         "insure.cable.estate/com.android.vending.a.TV"
       ],
       "category": "APP",
-      "unverified": [
-        "insure.cable.estate/com.android.vending.a.UI",
-        "insure.cable.estate/com.android.vending.a.TV"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
@@ -4241,9 +3954,6 @@
         "com.silicondust.view/com.silicondust.view.App"
       ],
       "category": "APP",
-      "unverified": [
-        "com.silicondust.view/com.silicondust.view.App"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
@@ -4288,9 +3998,6 @@
         "com.tv.hdobox/com.tv.hdobox.MainActivity"
       ],
       "category": "APP",
-      "unverified": [
-        "com.tv.hdobox/com.tv.hdobox.MainActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
@@ -4317,10 +4024,6 @@
         "com.zva3.mobile.litetvandroid/com.zva3.mobile.litetvandroid.TvActivity"
       ],
       "category": "LIVE",
-      "unverified": [
-        "com.zva3.mobile.litetvandroid/com.zva3.mobile.litetvandroid.MainActivity",
-        "com.zva3.mobile.litetvandroid/com.zva3.mobile.litetvandroid.TvActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
@@ -4378,9 +4081,6 @@
         "hideme.android.vpn/com.android.vpn.activities.LoginActivity"
       ],
       "category": "APP",
-      "unverified": [
-        "hideme.android.vpn/com.android.vpn.activities.LoginActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
@@ -4394,9 +4094,6 @@
         "com.twentyfouri.androidtv.hidive/com.twentyfouri.androidtv.hidive.MainActivity"
       ],
       "category": "APP",
-      "unverified": [
-        "com.twentyfouri.androidtv.hidive/com.twentyfouri.androidtv.hidive.MainActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
@@ -4446,9 +4143,6 @@
         "com.viewlift.hoichoi/com.viewlift.hoichoi.ui.splash.MainActivity"
       ],
       "category": "APP",
-      "unverified": [
-        "com.viewlift.hoichoi/com.viewlift.hoichoi.ui.splash.MainActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
@@ -4462,9 +4156,6 @@
         "io.homeassistant.companion.androidtv/io.homeassistant.companion.androidtv.DefaultLauncherAlias"
       ],
       "category": "APP",
-      "unverified": [
-        "io.homeassistant.companion.androidtv/io.homeassistant.companion.androidtv.DefaultLauncherAlias"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
@@ -4490,9 +4181,6 @@
         "com.sugarapple.workout/com.sugarapple.workout.MainActivity"
       ],
       "category": "SPORT",
-      "unverified": [
-        "com.sugarapple.workout/com.sugarapple.workout.MainActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
@@ -4520,10 +4208,6 @@
         "hotspotshield.android.vpn/com.anchorfree.hotspotshield.ui.tv.HssTvActivity"
       ],
       "category": "VPN",
-      "unverified": [
-        "hotspotshield.android.vpn/com.anchorfree.hotspotshield.ui.HssActivity",
-        "hotspotshield.android.vpn/com.anchorfree.hotspotshield.ui.tv.HssTvActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "brand reference (pre-provenance, unverified)",
       "color_reviewed": null
@@ -4537,9 +4221,6 @@
         "hr.hrt.hrti/hr.cs.aviion.ui.splash.SplashActivity"
       ],
       "category": "APP",
-      "unverified": [
-        "hr.hrt.hrti/hr.cs.aviion.ui.splash.SplashActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
@@ -4577,9 +4258,6 @@
         "com.superthomaslab.hueessentials/com.superthomaslab.hueessentials.MainActivity"
       ],
       "category": "APP",
-      "unverified": [
-        "com.superthomaslab.hueessentials/com.superthomaslab.hueessentials.MainActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
@@ -4618,9 +4296,6 @@
         "com.shieldcade.hyperspin/com.shieldcade.hyperspin.HSFENativeActivity"
       ],
       "category": "GAMING",
-      "unverified": [
-        "com.shieldcade.hyperspin/com.shieldcade.hyperspin.HSFENativeActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
@@ -4647,10 +4322,6 @@
         "tv.tou.android/tv.tou.android.splash.views.activities.SplashScreenActivity"
       ],
       "category": "APP",
-      "unverified": [
-        "tv.toutv.androidtv/tv.tou.android.splash.views.activities.SplashScreenActivity",
-        "tv.tou.android/tv.tou.android.splash.views.activities.SplashScreenActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
@@ -4664,9 +4335,6 @@
         "iflix.play/com.ktcp.video.activity.HomeActivity"
       ],
       "category": "APP",
-      "unverified": [
-        "iflix.play/com.ktcp.video.activity.HomeActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
@@ -4704,9 +4372,6 @@
         "nl.giejay.android.tv.immich/nl.giejay.android.tv.immich.MainActivity"
       ],
       "category": "APP",
-      "unverified": [
-        "nl.giejay.android.tv.immich/nl.giejay.android.tv.immich.MainActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
@@ -4757,9 +4422,6 @@
         "net.info.az/net.info.az.SplashActivity"
       ],
       "category": "TOOL",
-      "unverified": [
-        "net.info.az/net.info.az.SplashActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null,
@@ -4799,9 +4461,6 @@
         "ru.iptvremote.android.iptv.pro/ru.iptvremote.android.iptv.pro.ChannelsActivity"
       ],
       "category": "LIVE",
-      "unverified": [
-        "ru.iptvremote.android.iptv.pro/ru.iptvremote.android.iptv.pro.ChannelsActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
@@ -4827,9 +4486,6 @@
         "iptv.smarters.plus/flix.pro.player.SplashActivity"
       ],
       "category": "LIVE",
-      "unverified": [
-        "iptv.smarters.plus/flix.pro.player.SplashActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
@@ -4891,9 +4547,6 @@
         "cz.ceskatelevize.ivysilani.tvapp/cz.ceskatelevize.ivysilani.tvapp.MainActivity"
       ],
       "category": "APP",
-      "unverified": [
-        "cz.ceskatelevize.ivysilani.tvapp/cz.ceskatelevize.ivysilani.tvapp.MainActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
@@ -4933,9 +4586,6 @@
         "net.intigral.jawwytv/com.intigral.jawwytv.standalone.StandaloneSplashActivity"
       ],
       "category": "APP",
-      "unverified": [
-        "net.intigral.jawwytv/com.intigral.jawwytv.standalone.StandaloneSplashActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null,
@@ -4985,17 +4635,15 @@
       "name": "Jiohotstar",
       "drawable": "jiohotstar",
       "color": "#0061FF",
-      "glyph": "app_J",
+      "glyph": "hotstar_spark",
       "components": [
         "in.startv.hotstar/com.hotstar.MainActivity"
       ],
       "category": "APP",
-      "unverified": [
-        "in.startv.hotstar/com.hotstar.MainActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_reviewed": null,
+      "style": "core_monoline"
     },
     {
       "name": "Jojoy",
@@ -5019,9 +4667,6 @@
         "de.prosiebensat1digital.seventv/de.joyn.mobile.app.splash.SplashActivity"
       ],
       "category": "APP",
-      "unverified": [
-        "de.prosiebensat1digital.seventv/de.joyn.mobile.app.splash.SplashActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
@@ -5035,9 +4680,6 @@
         "com.skylake.skytv.jgorunner/com.skylake.skytv.jgorunner.Default"
       ],
       "category": "TOOL",
-      "unverified": [
-        "com.skylake.skytv.jgorunner/com.skylake.skytv.jgorunner.Default"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null,
@@ -5142,7 +4784,6 @@
       ],
       "category": "VOD",
       "unverified": [
-        "au.com.kayosports.tv/au.com.foxsports.martian.tv.main.MainActivity",
         "au.com.streamotion.hyperion/au.com.foxsports.martian.tv.main.MainActivity"
       ],
       "color_source": "sampled (current logo green)",
@@ -5158,9 +4799,6 @@
         "org.kde.kdeconnect_tp/org.kde.kdeconnect.UserInterface.MainActivity"
       ],
       "category": "FILES",
-      "unverified": [
-        "org.kde.kdeconnect_tp/org.kde.kdeconnect.UserInterface.MainActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
@@ -5174,9 +4812,6 @@
         "de.cyberdream.iptv.tv.player/de.cyberdream.dreamepg.MainActivityTV"
       ],
       "category": "LIVE",
-      "unverified": [
-        "de.cyberdream.iptv.tv.player/de.cyberdream.dreamepg.MainActivityTV"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
@@ -5202,9 +4837,6 @@
         "de.wabosh.kenny_tv/de.wabosh.kenny_tv.MainActivity"
       ],
       "category": "APP",
-      "unverified": [
-        "de.wabosh.kenny_tv/de.wabosh.kenny_tv.MainActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
@@ -5243,9 +4875,6 @@
         "nl.sbs.kijk/nl.sbs.kijk.ui.activity.LaunchActivity"
       ],
       "category": "APP",
-      "unverified": [
-        "nl.sbs.kijk/nl.sbs.kijk.ui.activity.LaunchActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
@@ -5260,10 +4889,6 @@
         "de.kika.player.androidtv/com.mitxp.androidtv.MainActivity"
       ],
       "category": "APP",
-      "unverified": [
-        "de.kika.player.androidtv/de.kika.player.androidtv.MainActivity",
-        "de.kika.player.androidtv/com.mitxp.androidtv.MainActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
@@ -5277,9 +4902,6 @@
         "ru.kinopoisk.tv/ru.kinopoisk.tv.presentation.splash.SplashActivity"
       ],
       "category": "APP",
-      "unverified": [
-        "ru.kinopoisk.tv/ru.kinopoisk.tv.presentation.splash.SplashActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "https://simpleicons.org/?q=kinopoisk",
       "color_note": "simple-icons brand accent",
@@ -5360,9 +4982,6 @@
         "me.knighthat.kreate/it.fast4x.rimusic.MainActivity"
       ],
       "category": "APP",
-      "unverified": [
-        "me.knighthat.kreate/it.fast4x.rimusic.MainActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
@@ -5376,9 +4995,6 @@
         "com.vlv.aravali.reels/com.vlv.aravali.television.MainActivity"
       ],
       "category": "APP",
-      "unverified": [
-        "com.vlv.aravali.reels/com.vlv.aravali.television.MainActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
@@ -5392,9 +5008,6 @@
         "lequipe.fr/com.dotscreen.ethanol.tv.ui.MainActivity"
       ],
       "category": "APP",
-      "unverified": [
-        "lequipe.fr/com.dotscreen.ethanol.tv.ui.MainActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
@@ -5420,9 +5033,6 @@
         "la.liga.sports.tv.deporte/la.liga.sports.tv.deporte.features.splash.TvSplashActivity"
       ],
       "category": "SPORT",
-      "unverified": [
-        "la.liga.sports.tv.deporte/la.liga.sports.tv.deporte.features.splash.TvSplashActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
@@ -5436,9 +5046,6 @@
         "top.rootu.lampa/top.rootu.lampa.MainActivity"
       ],
       "category": "APP",
-      "unverified": [
-        "top.rootu.lampa/top.rootu.lampa.MainActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
@@ -5476,9 +5083,6 @@
         "com.unbrokensoftware.launchbox/crc640d6c5ebcc48c6177.MainActivity"
       ],
       "category": "APP",
-      "unverified": [
-        "com.unbrokensoftware.launchbox/crc640d6c5ebcc48c6177.MainActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
@@ -5507,7 +5111,6 @@
       ],
       "category": "LAUNCHER",
       "unverified": [
-        "com.wolf.lm/com.wolf.lm.main.MainActivity",
         "com.wolf.lms/com.wolf.lm.main.MainActivity",
         "com.wolf.lms/.MainActivity"
       ],
@@ -5560,9 +5163,6 @@
         "org.liskovsoft.androidtv.rukeyboard/com.liskovsoft.leankeyboard.activity.settings.KbSettingsActivity2"
       ],
       "category": "APP",
-      "unverified": [
-        "org.liskovsoft.androidtv.rukeyboard/com.liskovsoft.leankeyboard.activity.settings.KbSettingsActivity2"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
@@ -5576,9 +5176,6 @@
         "jp.ne.docomo.lemino.androidtv/jp.ne.docomo.lemino.androidtv.activities.SplashActivity"
       ],
       "category": "APP",
-      "unverified": [
-        "jp.ne.docomo.lemino.androidtv/jp.ne.docomo.lemino.androidtv.activities.SplashActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
@@ -5593,10 +5190,6 @@
         "com.swordfish.lemuroid/com.swordfish.lemuroid.app.tv.main.MainTVActivity"
       ],
       "category": "GAMING",
-      "unverified": [
-        "com.swordfish.lemuroid/com.swordfish.lemuroid.app.mobile.feature.main.MainActivity",
-        "com.swordfish.lemuroid/com.swordfish.lemuroid.app.tv.main.MainTVActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
@@ -5702,9 +5295,6 @@
         "com.weathergroup.localnow/com.weathergroup.localnow.MainActivity"
       ],
       "category": "APP",
-      "unverified": [
-        "com.weathergroup.localnow/com.weathergroup.localnow.MainActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
@@ -5730,9 +5320,6 @@
       "components": [
         "org.localsend.localsend_app/org.localsend.localsend_app.MainActivity"
       ],
-      "unverified": [
-        "org.localsend.localsend_app/org.localsend.localsend_app.MainActivity"
-      ],
       "color_source": "https://simpleicons.org/?q=localsend",
       "color_note": "simple-icons brand accent; catalog had the pack's own cyan",
       "color_reviewed": "2026-09-08"
@@ -5746,9 +5333,6 @@
         "com.showtimeapp/com.showtimeapp.MainActivity"
       ],
       "category": "APP",
-      "unverified": [
-        "com.showtimeapp/com.showtimeapp.MainActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
@@ -5762,9 +5346,6 @@
         "lt.lrt.androidtv/com.applicaster.ui.activities.MainActivity"
       ],
       "category": "APP",
-      "unverified": [
-        "lt.lrt.androidtv/com.applicaster.ui.activities.MainActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
@@ -5791,10 +5372,6 @@
         "de.herber_edevelopment.m3uiptv/de.herber_edevelopment.m3uiptv.TvActivity"
       ],
       "category": "LIVE",
-      "unverified": [
-        "de.herber_edevelopment.m3uiptv/de.herber_edevelopment.m3uiptv.MainActivity",
-        "de.herber_edevelopment.m3uiptv/de.herber_edevelopment.m3uiptv.TvActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
@@ -5808,9 +5385,6 @@
         "fr.m6.m6replay/com.bedrockstreaming.shared.tv.activity.SplashActivity"
       ],
       "category": "APP",
-      "unverified": [
-        "fr.m6.m6replay/com.bedrockstreaming.shared.tv.activity.SplashActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
@@ -5824,9 +5398,6 @@
         "org.mupen64plusae.v3.fzurita/paulscode.android.mupen64plusae.SplashActivity"
       ],
       "category": "APP",
-      "unverified": [
-        "org.mupen64plusae.v3.fzurita/paulscode.android.mupen64plusae.SplashActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
@@ -5846,18 +5417,16 @@
     {
       "name": "Magenta Sport",
       "drawable": "magenta_sport",
-      "color": "#0061FF",
-      "glyph": "sport_M",
+      "color": "#E20074",
+      "glyph": "magenta_t",
       "components": [
         "com.telekom.androidtv.sport/com.telekom.firetv.sport.ui.launcher.LauncherActivity"
       ],
       "category": "SPORT",
-      "unverified": [
-        "com.telekom.androidtv.sport/com.telekom.firetv.sport.ui.launcher.LauncherActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "Telekom Magenta #E20074 — the brand colour of Magenta Sport (Telekom)",
+      "color_reviewed": "2026-09-14",
+      "style": "core_monoline"
     },
     {
       "name": "Magenta TV",
@@ -5869,10 +5438,6 @@
         "de.telekom.magentatv.androidtv/de.telekom.magentatv.androidtv.ApplicationMainActivity"
       ],
       "category": "APP",
-      "unverified": [
-        "cz.tmobile.tvgo/com.telekom.tv.player.StbPlayerActivity",
-        "de.telekom.magentatv.androidtv/de.telekom.magentatv.androidtv.ApplicationMainActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
@@ -5886,9 +5451,6 @@
         "com.telekom.magiogo/com.telekom.tv.player.StbPlayerActivity"
       ],
       "category": "APP",
-      "unverified": [
-        "com.telekom.magiogo/com.telekom.tv.player.StbPlayerActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
@@ -5902,9 +5464,6 @@
         "com.seleuco.mame4droid/com.seleuco.mame4droid.MAME4droid"
       ],
       "category": "GAMING",
-      "unverified": [
-        "com.seleuco.mame4droid/com.seleuco.mame4droid.MAME4droid"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
@@ -5947,9 +5506,6 @@
         "io.github.virresh.matvt/io.github.virresh.matvt.gui.GuiActivity"
       ],
       "category": "TOOL",
-      "unverified": [
-        "io.github.virresh.matvt/io.github.virresh.matvt.gui.GuiActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null,
@@ -5968,9 +5524,6 @@
         "com.wbd.stream/com.wbd.beam.BeamActivity"
       ],
       "category": "VOD",
-      "unverified": [
-        "com.wbd.stream/com.wbd.beam.BeamActivity"
-      ],
       "color_source": "brand reference (pre-provenance, unverified)",
       "color_reviewed": null
     },
@@ -6044,9 +5597,6 @@
         "com.tvonline.filewizard/com.tvonline.filewizard.ui.MainActivity"
       ],
       "category": "FILES",
-      "unverified": [
-        "com.tvonline.filewizard/com.tvonline.filewizard.ui.MainActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null,
@@ -6085,9 +5635,6 @@
         "it.mediaset.infinitytv/it.mediaset.mediasetplay.ctv.MainActivity"
       ],
       "category": "APP",
-      "unverified": [
-        "it.mediaset.infinitytv/it.mediaset.mediasetplay.ctv.MainActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
@@ -6125,9 +5672,6 @@
         "com.mercadolibre.android.mplay_tv/com.mercadolibre.android.mplay_tv.app.feature.splash.SplashActivity"
       ],
       "category": "APP",
-      "unverified": [
-        "com.mercadolibre.android.mplay_tv/com.mercadolibre.android.mplay_tv.app.feature.splash.SplashActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
@@ -6154,9 +5698,6 @@
         "sg.mediacorp.android/axis.androidtv.sdk.app.startup.ui.StartupActivity"
       ],
       "category": "APP",
-      "unverified": [
-        "sg.mediacorp.android/axis.androidtv.sdk.app.startup.ui.StartupActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
@@ -6220,9 +5761,6 @@
         "com.xiaomi.mitv.smartshare/com.xiaomi.mitv.smartshare.wifidisplay.WfdActivity"
       ],
       "category": "APP",
-      "unverified": [
-        "com.xiaomi.mitv.smartshare/com.xiaomi.mitv.smartshare.wifidisplay.WfdActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
@@ -6264,10 +5802,6 @@
         "dancingtree.mo4media/crc64fc68bfe11eb03c38.TVMainActivity"
       ],
       "category": "APP",
-      "unverified": [
-        "dancingtree.mo4media/crc64fc68bfe11eb03c38.MainActivity",
-        "dancingtree.mo4media/crc64fc68bfe11eb03c38.TVMainActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
@@ -6293,9 +5827,6 @@
         "tv.molotov.app/tv.molotov.android.splash.SplashActivity"
       ],
       "category": "APP",
-      "unverified": [
-        "tv.molotov.app/tv.molotov.android.splash.SplashActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
@@ -6322,9 +5853,6 @@
         "org.monplayer.mpapp/org.monplayer.mpapp.MainActivity"
       ],
       "category": "PLAYER",
-      "unverified": [
-        "org.monplayer.mpapp/org.monplayer.mpapp.MainActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
@@ -6338,9 +5866,6 @@
         "org.moonfin.androidtv/org.jellyfin.androidtv.ui.startup.StartupActivity"
       ],
       "category": "APP",
-      "unverified": [
-        "org.moonfin.androidtv/org.jellyfin.androidtv.ui.startup.StartupActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
@@ -6414,9 +5939,6 @@
         "com.tcl.movieark/com.tcl.waterfall.overseas.main.MainActivity"
       ],
       "category": "APP",
-      "unverified": [
-        "com.tcl.movieark/com.tcl.waterfall.overseas.main.MainActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
@@ -6481,9 +6003,6 @@
         "es.plus.yomvi/com.movistar.android.views.HomeActivity"
       ],
       "category": "APP",
-      "unverified": [
-        "es.plus.yomvi/com.movistar.android.views.HomeActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
@@ -6497,9 +6016,6 @@
         "is.xyz.mpv/is.xyz.mpv.MainActivity"
       ],
       "category": "APP",
-      "unverified": [
-        "is.xyz.mpv/is.xyz.mpv.MainActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "simple-icons reference (mpv brand purple)",
       "color_reviewed": "2026-09-08"
@@ -6526,10 +6042,6 @@
         "ott.mst3k/tv.vhx.tv.home.TvHomeActivity"
       ],
       "category": "APP",
-      "unverified": [
-        "ott.mst3k/tv.vhx.LauncherActivity",
-        "ott.mst3k/tv.vhx.tv.home.TvHomeActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
@@ -6543,9 +6055,6 @@
         "fi.mtvkatsomo/se.tv4.tv4play.ui.tv.navigation.TvHubActivity"
       ],
       "category": "APP",
-      "unverified": [
-        "fi.mtvkatsomo/se.tv4.tv4play.ui.tv.navigation.TvHubActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
@@ -6574,9 +6083,6 @@
         "net.mullvad.mullvadvpn/net.mullvad.mullvadvpn.ui.MainActivity"
       ],
       "category": "VPN",
-      "unverified": [
-        "net.mullvad.mullvadvpn/net.mullvad.mullvadvpn.ui.MainActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "brand reference (pre-provenance, unverified)",
       "color_reviewed": null
@@ -6605,9 +6111,6 @@
         "com.mxtech.videoplayer.ad/com.mxtech.videoplayer.ad.ActivityWelcomeMX"
       ],
       "category": "PLAYER",
-      "unverified": [
-        "com.mxtech.videoplayer.ad/com.mxtech.videoplayer.ad.ActivityWelcomeMX"
-      ],
       "color_source": "brand reference (pre-provenance, unverified)",
       "color_reviewed": null
     },
@@ -6633,10 +6136,6 @@
         "com.rxrv.myfamilycpfst/com.atvapps.ibo.MainTVActivity"
       ],
       "category": "PLAYER",
-      "unverified": [
-        "com.rxrv.myfamilycpfst/com.atvapps.ibo.MainActivity",
-        "com.rxrv.myfamilycpfst/com.atvapps.ibo.MainTVActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
@@ -6686,9 +6185,6 @@
         "m.formuler.mol.plus/m.formuler.mol.plus.IntroActivity"
       ],
       "category": "APP",
-      "unverified": [
-        "m.formuler.mol.plus/m.formuler.mol.plus.IntroActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
@@ -6697,13 +6193,14 @@
       "name": "Māori+",
       "drawable": "maoritelevision",
       "color": "#53FC18",
-      "glyph": "sport_M",
+      "glyph": "maori_koru",
       "components": [
         "com.maoritelevision.newsapp/tv.accedo.xdk.app.MainActivity"
       ],
       "category": "SPORT",
       "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_reviewed": null,
+      "style": "core_monoline"
     },
     {
       "name": "Namava",
@@ -6714,9 +6211,6 @@
         "com.shatelland.namava.tv/com.shatelland.namava.splash_tv.splash.SplashActivity"
       ],
       "category": "APP",
-      "unverified": [
-        "com.shatelland.namava.tv/com.shatelland.namava.splash_tv.splash.SplashActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
@@ -6730,9 +6224,6 @@
         "gov.nasa/gov.nasa.nasatabs.SplashActivity"
       ],
       "category": "FILES",
-      "unverified": [
-        "gov.nasa/gov.nasa.nasatabs.SplashActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "https://simpleicons.org/?q=nasa",
       "color_note": "NASA insignia red",
@@ -6760,9 +6251,6 @@
         "com.zumobi.msnbc/com.nbc.androidottweb.main.MainActivity"
       ],
       "category": "APP",
-      "unverified": [
-        "com.zumobi.msnbc/com.nbc.androidottweb.main.MainActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "brand reference (pre-provenance, unverified)",
       "color_reviewed": null
@@ -6788,9 +6276,6 @@
         "tv.standard.nebula/tv.standard.nebula.tv.features.splash.view.activities.SplashActivity"
       ],
       "category": "APP",
-      "unverified": [
-        "tv.standard.nebula/tv.standard.nebula.tv.features.splash.view.activities.SplashActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "https://simpleicons.org/?q=nebula",
       "color_note": "simple-icons brand accent",
@@ -6800,14 +6285,11 @@
       "name": "Neon",
       "drawable": "neon",
       "color": "#34D59A",
-      "glyph": "app_N",
+      "glyph": "monogram_N",
       "components": [
         "nz.co.lightbox/nz.co.lightbox.splash.SplashActivity"
       ],
       "category": "APP",
-      "unverified": [
-        "nz.co.lightbox/nz.co.lightbox.splash.SplashActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "https://simpleicons.org/?q=neon",
       "color_note": "simple-icons brand accent",
@@ -6849,9 +6331,6 @@
         "xyz.netfly/com.video_cloud.SplashActivity"
       ],
       "category": "APP",
-      "unverified": [
-        "xyz.netfly/com.video_cloud.SplashActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
@@ -6889,9 +6368,6 @@
         "np.com.androidtv.nettv/com.np.androidTV.main.TVMainActivity"
       ],
       "category": "APP",
-      "unverified": [
-        "np.com.androidtv.nettv/com.np.androidTV.main.TVMainActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
@@ -6905,9 +6381,6 @@
         "de.netzkino.android.ics/de.netzkino.android.ics.SplashActivity"
       ],
       "category": "APP",
-      "unverified": [
-        "de.netzkino.android.ics/de.netzkino.android.ics.SplashActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
@@ -6921,9 +6394,6 @@
         "org.schabi.newpipe/org.schabi.newpipe.MainActivity"
       ],
       "category": "APP",
-      "unverified": [
-        "org.schabi.newpipe/org.schabi.newpipe.MainActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "https://simpleicons.org/?q=newpipe",
       "color_note": "simple-icons brand accent",
@@ -6938,9 +6408,6 @@
         "tv.vhx.nextup/com.example.videoapp.MainActivity"
       ],
       "category": "APP",
-      "unverified": [
-        "tv.vhx.nextup/com.example.videoapp.MainActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
@@ -6978,9 +6445,6 @@
         "com.snapwood.nfolio/com.snapwood.gfolio.SelectAlbumActivity"
       ],
       "category": "APP",
-      "unverified": [
-        "com.snapwood.nfolio/com.snapwood.gfolio.SelectAlbumActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
@@ -6994,9 +6458,6 @@
         "jp.nhk.plus/jp.nhk.simul.view.activity.SplashActivity"
       ],
       "category": "APP",
-      "unverified": [
-        "jp.nhk.plus/jp.nhk.simul.view.activity.SplashActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
@@ -7010,9 +6471,6 @@
         "jp.or.nhk.nhkworld.tv/jp.or.nhk.nhkworld.tv.ui.MainActivity"
       ],
       "category": "APP",
-      "unverified": [
-        "jp.or.nhk.nhkworld.tv/jp.or.nhk.nhkworld.tv.ui.MainActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
@@ -7055,9 +6513,6 @@
         "com.tvasahi.njpwworld/uk.tva.template.LaunchScreenActivity"
       ],
       "category": "APP",
-      "unverified": [
-        "com.tvasahi.njpwworld/uk.tva.template.LaunchScreenActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
@@ -7071,9 +6526,6 @@
         "nl.nlziet/nl.nlziet.tv.app.di.tv.InjectActivity"
       ],
       "category": "APP",
-      "unverified": [
-        "nl.nlziet/nl.nlziet.tv.app.di.tv.InjectActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
@@ -7103,9 +6555,6 @@
         "com.vmediagroup.noovo/entpay.awl.tv.splash.SplashActivity"
       ],
       "category": "APP",
-      "unverified": [
-        "com.vmediagroup.noovo/entpay.awl.tv.splash.SplashActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
@@ -7145,9 +6594,6 @@
         "com.symantec.cleansweep/com.avast.android.cleaner.activity.StartActivity"
       ],
       "category": "APP",
-      "unverified": [
-        "com.symantec.cleansweep/com.avast.android.cleaner.activity.StartActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
@@ -7161,9 +6607,6 @@
         "nl.nos.app/tv.mauna.app.MainActivity"
       ],
       "category": "APP",
-      "unverified": [
-        "nl.nos.app/tv.mauna.app.MainActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
@@ -7190,10 +6633,6 @@
         "de.cyberdream.androidtv.notifications.google/de.cyberdream.smarttv.leanback.MainActivityLeanBack"
       ],
       "category": "TOOL",
-      "unverified": [
-        "de.cyberdream.androidtv.notifications.google/de.cyberdream.androidtv.notifications.StartActivity",
-        "de.cyberdream.androidtv.notifications.google/de.cyberdream.smarttv.leanback.MainActivityLeanBack"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null,
@@ -7208,9 +6647,6 @@
         "com.ycngmn.notubetv/com.ycngmn.notubetv.MainActivity"
       ],
       "category": "APP",
-      "unverified": [
-        "com.ycngmn.notubetv/com.ycngmn.notubetv.MainActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
@@ -7224,9 +6660,6 @@
         "org.courville.nova/com.archos.mediacenter.video.leanback.MainActivityLeanback"
       ],
       "category": "PLAYER",
-      "unverified": [
-        "org.courville.nova/com.archos.mediacenter.video.leanback.MainActivityLeanback"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
@@ -7253,9 +6686,6 @@
         "pt.nowo.nowotv.androidtv/com.androme.andrometv.ui.boot.SplashScreenActivity"
       ],
       "category": "APP",
-      "unverified": [
-        "pt.nowo.nowotv.androidtv/com.androme.andrometv.ui.boot.SplashScreenActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
@@ -7269,9 +6699,6 @@
         "nl.uitzendinggemist/nl.uitzendinggemist.tv.presentation.activities.main.MainActivity"
       ],
       "category": "APP",
-      "unverified": [
-        "nl.uitzendinggemist/nl.uitzendinggemist.tv.presentation.activities.main.MainActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
@@ -7286,10 +6713,6 @@
         "no.nrk.tv/no.nrk.tv.view.TvSplashScreenActivity"
       ],
       "category": "APP",
-      "unverified": [
-        "no.nrk.tv/no.nrk.tv.view.MobileSplashScreenActivity",
-        "no.nrk.tv/no.nrk.tv.view.TvSplashScreenActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
@@ -7371,9 +6794,6 @@
         "org.bepass.oblivion/org.bepass.oblivion.ui.SplashScreenActivity"
       ],
       "category": "APP",
-      "unverified": [
-        "org.bepass.oblivion/org.bepass.oblivion.ui.SplashScreenActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
@@ -7387,9 +6807,6 @@
         "dev.imranr.obtainium.fdroid/dev.imranr.obtainium.MainActivity"
       ],
       "category": "APP",
-      "unverified": [
-        "dev.imranr.obtainium.fdroid/dev.imranr.obtainium.MainActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "https://simpleicons.org/?q=obtainium",
       "color_note": "simple-icons brand accent",
@@ -7404,9 +6821,6 @@
         "streamzy.com.ocean/streamzy.com.ocean.activities.SplashScreenActivity"
       ],
       "category": "APP",
-      "unverified": [
-        "streamzy.com.ocean/streamzy.com.ocean.activities.SplashScreenActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
@@ -7420,9 +6834,6 @@
         "com.tmobile.tv.nl/com.zodiac.tv.presentation.common.layouts.ZodiacActivity"
       ],
       "category": "APP",
-      "unverified": [
-        "com.tmobile.tv.nl/com.zodiac.tv.presentation.common.layouts.ZodiacActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
@@ -7472,9 +6883,6 @@
         "ru.ok.androidtv/ru.ok.androidtv.activities.MainActivity"
       ],
       "category": "VIDEO",
-      "unverified": [
-        "ru.ok.androidtv/ru.ok.androidtv.activities.MainActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
@@ -7526,9 +6934,6 @@
         "net.cme.voyo.cz.tvapp/net.cme.voyo.cz.tvapp.MainActivity"
       ],
       "category": "APP",
-      "unverified": [
-        "net.cme.voyo.cz.tvapp/net.cme.voyo.cz.tvapp.MainActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
@@ -7578,9 +6983,6 @@
         "de.blinkt.openvpn/de.blinkt.openvpn.activities.MainActivity"
       ],
       "category": "VPN",
-      "unverified": [
-        "de.blinkt.openvpn/de.blinkt.openvpn.activities.MainActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "brand reference (pre-provenance, unverified)",
       "color_reviewed": null
@@ -7606,9 +7008,6 @@
         "net.oqee.androidmobile/net.oqee.android.ui.splash.SplashActivity"
       ],
       "category": "APP",
-      "unverified": [
-        "net.oqee.androidmobile/net.oqee.android.ui.splash.SplashActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
@@ -7622,9 +7021,6 @@
         "ro.orange.tvlive/tv.solocoo.htmlapp.FullscreenActivity"
       ],
       "category": "APP",
-      "unverified": [
-        "ro.orange.tvlive/tv.solocoo.htmlapp.FullscreenActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
@@ -7662,9 +7058,6 @@
         "com.t100v.otf/com.t100v.otf.intro"
       ],
       "category": "APP",
-      "unverified": [
-        "com.t100v.otf/com.t100v.otf.intro"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
@@ -7678,9 +7071,6 @@
         "studio.scillarium.ottnavigator/studio.scillarium.ottnavigator.MainActivity"
       ],
       "category": "APP",
-      "unverified": [
-        "studio.scillarium.ottnavigator/studio.scillarium.ottnavigator.MainActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
@@ -7706,9 +7096,6 @@
         "es.ottplayer.tv/es.ottplayer.tv.SplashActivity"
       ],
       "category": "PLAYER",
-      "unverified": [
-        "es.ottplayer.tv/es.ottplayer.tv.SplashActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
@@ -7747,9 +7134,6 @@
         "eu.bandainamcoent.pacman256/com.unity3d.player.UnityPlayerActivity"
       ],
       "category": "GAMING",
-      "unverified": [
-        "eu.bandainamcoent.pacman256/com.unity3d.player.UnityPlayerActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
@@ -7763,9 +7147,6 @@
         "com.yugandhar_kumar.packageexplorer/com.yugandhar_kumar.packageexplorer.applist.AppListActivity"
       ],
       "category": "FILES",
-      "unverified": [
-        "com.yugandhar_kumar.packageexplorer/com.yugandhar_kumar.packageexplorer.applist.AppListActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null,
@@ -7780,9 +7161,6 @@
         "pt.dreamia.pandaplus/com.magycal.androidott.ui.tv.TVBaseActivity"
       ],
       "category": "APP",
-      "unverified": [
-        "pt.dreamia.pandaplus/com.magycal.androidott.ui.tv.TVBaseActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
@@ -7862,9 +7240,6 @@
         "tv.parsec.client/tv.parsec.client.MainActivity"
       ],
       "category": "APP",
-      "unverified": [
-        "tv.parsec.client/tv.parsec.client.MainActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "brand reference (pre-provenance, unverified)",
       "color_reviewed": null
@@ -7878,9 +7253,6 @@
         "nl.pathe.thuis/nl.pathe.thuis.LaunchActivity"
       ],
       "category": "APP",
-      "unverified": [
-        "nl.pathe.thuis/nl.pathe.thuis.LaunchActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
@@ -7906,9 +7278,6 @@
         "org.pbskids.video/org.pbskids.video.ui.root.MainActivity"
       ],
       "category": "APP",
-      "unverified": [
-        "org.pbskids.video/org.pbskids.video.ui.root.MainActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
@@ -7947,9 +7316,6 @@
         "com.watchvelocity.android/com.corridordigital.watchcorridortv.feature.main.MainActivity"
       ],
       "category": "APP",
-      "unverified": [
-        "com.watchvelocity.android/com.corridordigital.watchcorridortv.feature.main.MainActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
@@ -8084,9 +7450,6 @@
         "pl.tvn.player.tv/pl.redlabs.redcdn.portal.ui.main.MainActivity"
       ],
       "category": "PLAYER",
-      "unverified": [
-        "pl.tvn.player.tv/pl.redlabs.redcdn.portal.ui.main.MainActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
@@ -8183,9 +7546,6 @@
         "tv.plex.labs.plexamp/com.plexamp.MainActivity"
       ],
       "category": "APP",
-      "unverified": [
-        "tv.plex.labs.plexamp/com.plexamp.MainActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
@@ -8211,9 +7571,6 @@
         "tv.pluto.android/tv.pluto.android.EntryPoint"
       ],
       "category": "APP",
-      "unverified": [
-        "tv.pluto.android/tv.pluto.android.EntryPoint"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "brand reference — Pluto TV 2024 disc yellow (sampled 2026-09-14)",
       "color_reviewed": "2026-09-14"
@@ -8241,10 +7598,6 @@
         "pl.cyfrowypolsat.cpgo/pl.cyfrowypolsat.cpframework.presentation.tv.launch.TvLaunchActivity"
       ],
       "category": "APP",
-      "unverified": [
-        "pl.cyfrowypolsat.cpgo/pl.cyfrowypolsat.cpframework.presentation.mobile.launch.LaunchActivity",
-        "pl.cyfrowypolsat.cpgo/pl.cyfrowypolsat.cpframework.presentation.tv.launch.TvLaunchActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
@@ -8282,9 +7635,6 @@
         "org.ppsspp.ppsspp/org.ppsspp.ppsspp.PpssppActivity"
       ],
       "category": "APP",
-      "unverified": [
-        "org.ppsspp.ppsspp/org.ppsspp.ppsspp.PpssppActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
@@ -8298,9 +7648,6 @@
         "premierplayer.premiersports.com.premierplayer/com.premiersports.premiersportstv.ui.login.DeviceLinkActivity"
       ],
       "category": "SPORT",
-      "unverified": [
-        "premierplayer.premiersports.com.premierplayer/com.premiersports.premiersportstv.ui.login.DeviceLinkActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
@@ -8338,9 +7685,6 @@
         "me.premiumize.pmtvfire/me.premiumize.pmtvandroid.MainActivity"
       ],
       "category": "APP",
-      "unverified": [
-        "me.premiumize.pmtvfire/me.premiumize.pmtvandroid.MainActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
@@ -8368,9 +7712,6 @@
         "io.privado.android/io.privado.android.ui.splash.SplashActivity"
       ],
       "category": "VPN",
-      "unverified": [
-        "io.privado.android/io.privado.android.ui.splash.SplashActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
@@ -8423,9 +7764,6 @@
         "tv.projectivy.plugin.wallpaperprovider.overflight/tv.projectivy.plugin.wallpaperprovider.overflight.SettingsActivity"
       ],
       "category": "LAUNCHER",
-      "unverified": [
-        "tv.projectivy.plugin.wallpaperprovider.overflight/tv.projectivy.plugin.wallpaperprovider.overflight.SettingsActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null,
@@ -8502,9 +7840,6 @@
         "io.put.putio/io.put.putio.MainActivity"
       ],
       "category": "APP",
-      "unverified": [
-        "io.put.putio/io.put.putio.MainActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
@@ -8530,9 +7865,6 @@
         "gonemad.quasi.tv/gonemad.quasi.tv.ui.MainActivity"
       ],
       "category": "APP",
-      "unverified": [
-        "gonemad.quasi.tv/gonemad.quasi.tv.ui.MainActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
@@ -8546,9 +7878,6 @@
         "dev.trooped.tvquickbars/dev.trooped.tvquickbars.ui.SplashActivity"
       ],
       "category": "TOOL",
-      "unverified": [
-        "dev.trooped.tvquickbars/dev.trooped.tvquickbars.ui.SplashActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null,
@@ -8563,9 +7892,6 @@
         "com.teamviewer.quicksupport.market/com.teamviewer.quicksupport.ui.QSActivity"
       ],
       "category": "APP",
-      "unverified": [
-        "com.teamviewer.quicksupport.market/com.teamviewer.quicksupport.ui.QSActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
@@ -8579,9 +7905,6 @@
         "de.radio.android/de.radio.android.tv.activities.TvMainActivity"
       ],
       "category": "MUSIC",
-      "unverified": [
-        "de.radio.android/de.radio.android.tv.activities.TvMainActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
@@ -8595,9 +7918,6 @@
         "de.fitzood.radio.tv/de.fitzood.radio.tv.MainActivity"
       ],
       "category": "MUSIC",
-      "unverified": [
-        "de.fitzood.radio.tv/de.fitzood.radio.tv.MainActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
@@ -8648,9 +7968,6 @@
         "it.rainet.androidtv/it.rainet.androidtv.ui.MainLeanbackActivity"
       ],
       "category": "APP",
-      "unverified": [
-        "it.rainet.androidtv/it.rainet.androidtv.ui.MainLeanbackActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
@@ -8664,9 +7981,6 @@
         "tv.wuaki.apptv/tv.wuaki.apptv.activity.TVLaunchActivity"
       ],
       "category": "APP",
-      "unverified": [
-        "tv.wuaki.apptv/tv.wuaki.apptv.activity.TVLaunchActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "brand reference (pre-provenance, unverified)",
       "color_reviewed": null
@@ -8680,9 +7994,6 @@
         "laola1.wrc/com.redbull.rallytv.core.MainActivity"
       ],
       "category": "SPORT",
-      "unverified": [
-        "laola1.wrc/com.redbull.rallytv.core.MainActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
@@ -8708,9 +8019,6 @@
         "com.rpstreamz.live/com.rpstreamz.live.activity.SplashActivity"
       ],
       "category": "APP",
-      "unverified": [
-        "com.rpstreamz.live/com.rpstreamz.live.activity.SplashActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
@@ -8811,9 +8119,6 @@
         "io.recompiled.redream/io.recompiled.redream.MainActivity"
       ],
       "category": "GAMING",
-      "unverified": [
-        "io.recompiled.redream/io.recompiled.redream.MainActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
@@ -8827,9 +8132,6 @@
         "mobi.bytearray.refreshrate/mobi.bytearray.refreshrate.SettingsActivity"
       ],
       "category": "APP",
-      "unverified": [
-        "mobi.bytearray.refreshrate/mobi.bytearray.refreshrate.SettingsActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
@@ -8856,9 +8158,6 @@
         "tv.yatse.android.remotestarter/tv.yatse.android.remotestarter.ui.MainActivity"
       ],
       "category": "TOOL",
-      "unverified": [
-        "tv.yatse.android.remotestarter/tv.yatse.android.remotestarter.ui.MainActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null,
@@ -8910,9 +8209,6 @@
         "ru.astroapps.hdrezka/ru.astroapps.hdrezka.MainActivity"
       ],
       "category": "APP",
-      "unverified": [
-        "ru.astroapps.hdrezka/ru.astroapps.hdrezka.MainActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
@@ -8926,9 +8222,6 @@
         "no.rikstv.atv/no.rikstv.atv.MainActivity"
       ],
       "category": "APP",
-      "unverified": [
-        "no.rikstv.atv/no.rikstv.atv.MainActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
@@ -8982,8 +8275,7 @@
       ],
       "unverified": [
         "com.rs.explorer.filemanager/com.rs.explorer.filemanager.MainActivity",
-        "com.rs.explorer.filemanager/.MainActivity",
-        "com.rs.explorer.filemanager/com.edili.filemanager.module.activity.FirstActivity"
+        "com.rs.explorer.filemanager/.MainActivity"
       ],
       "color_source": "brand reference (pre-provenance, unverified)",
       "color_reviewed": null
@@ -9034,9 +8326,6 @@
         "de.rtli.tvnow/de.rtl.plus.RtlPlusLauncherActivity"
       ],
       "category": "APP",
-      "unverified": [
-        "de.rtli.tvnow/de.rtl.plus.RtlPlusLauncherActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "https://simpleicons.org/?q=rtl",
       "color_note": "RTL brand red",
@@ -9051,9 +8340,6 @@
         "com.tapptic.rtl.tvi/be.persgroep.rtlplay.RtlPlayMainActivity"
       ],
       "category": "APP",
-      "unverified": [
-        "com.tapptic.rtl.tvi/be.persgroep.rtlplay.RtlPlayMainActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
@@ -9067,9 +8353,6 @@
         "pt.rtp.play/pt.rtp.play.IntroActivity"
       ],
       "category": "APP",
-      "unverified": [
-        "pt.rtp.play/pt.rtp.play.IntroActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
@@ -9083,9 +8366,6 @@
         "com.rtve.androidtv/com.rtve.androidtv.Activity.SplashActivity"
       ],
       "category": "APP",
-      "unverified": [
-        "com.rtve.androidtv/com.rtve.androidtv.Activity.SplashActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
@@ -9099,9 +8379,6 @@
         "com.worldrugbypass.app/com.worldrugbypass.app.MainActivity"
       ],
       "category": "SPORT",
-      "unverified": [
-        "com.worldrugbypass.app/com.worldrugbypass.app.MainActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
@@ -9115,9 +8392,6 @@
         "com.rumble.battles/com.rumble.battles.LauncherActivity"
       ],
       "category": "VIDEO",
-      "unverified": [
-        "com.rumble.battles/com.rumble.battles.LauncherActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "brand reference (pre-provenance, unverified)",
       "color_reviewed": null
@@ -9131,9 +8405,6 @@
         "ru.vk.store.tv/ru.vk.store.tv.app.presentation.MainActivity"
       ],
       "category": "APP",
-      "unverified": [
-        "ru.vk.store.tv/ru.vk.store.tv.app.presentation.MainActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
@@ -9147,9 +8418,6 @@
         "ru.rutube.app.tv/ru.rutube.app.SplashActivity"
       ],
       "category": "APP",
-      "unverified": [
-        "ru.rutube.app.tv/ru.rutube.app.SplashActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
@@ -9166,10 +8434,6 @@
         "com.s0und.s0undtv/com.s0und.s0undtv.activities.MainActivity"
       ],
       "category": "VIDEO",
-      "unverified": [
-        "com.s0und.s0undtv/com.s0und.s0undtv.activities.FireTVMainActivity",
-        "com.s0und.s0undtv/com.s0und.s0undtv.activities.MainActivity"
-      ],
       "color_source": "brand reference (pre-provenance, unverified)",
       "color_reviewed": null
     },
@@ -9182,9 +8446,6 @@
         "sa.saffplus/com.mottostreaming.android.tv.MainActivity"
       ],
       "category": "APP",
-      "unverified": [
-        "sa.saffplus/com.mottostreaming.android.tv.MainActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
@@ -9223,9 +8484,6 @@
         "com.sbs.ondemand.tv/com.sbs.ondemand.tv.MainActivity"
       ],
       "category": "APP",
-      "unverified": [
-        "com.sbs.ondemand.tv/com.sbs.ondemand.tv.MainActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "sampled (monochrome ink mark) — seeklogo.com/vector-logo/484707/sbs-tv-on-demand",
       "color_reviewed": "2026-09-08",
@@ -9240,9 +8498,6 @@
         "com.scb.next/com.scb.next.SplashActivity"
       ],
       "category": "APP",
-      "unverified": [
-        "com.scb.next/com.scb.next.SplashActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
@@ -9288,9 +8543,6 @@
         "com.screenscape/com.screenscape.MainActivity"
       ],
       "category": "APP",
-      "unverified": [
-        "com.screenscape/com.screenscape.MainActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
@@ -9304,9 +8556,6 @@
         "eu.thedarken.sdm/eu.thedarken.sdm.main.ui.SDMMainActivity"
       ],
       "category": "APP",
-      "unverified": [
-        "eu.thedarken.sdm/eu.thedarken.sdm.main.ui.SDMMainActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
@@ -9384,10 +8633,6 @@
         "com.android.tv.settings/com.android.tv.settings.SetupActivity"
       ],
       "category": "SYSTEM",
-      "unverified": [
-        "com.android.tv.settings/com.android.tv.settings.SettingsActivity",
-        "com.android.tv.settings/com.android.tv.settings.SetupActivity"
-      ],
       "color_source": "brand reference (pre-provenance, unverified)",
       "color_reviewed": null
     },
@@ -9395,7 +8640,7 @@
       "name": "Seven Plus",
       "drawable": "seven_plus",
       "color": "#E81820",
-      "glyph": "broadcast_7",
+      "glyph": "seven_plusmark",
       "components": [
         "com.swm.live/au.com.seven.inferno.ui.setup.SetupActivity",
         "com.swm.live/au.com.seven.inferno.ui.tv.setup.SetupTvActivity",
@@ -9405,15 +8650,14 @@
       "category": "VOD",
       "brand": "7plus",
       "unverified": [
-        "com.swm.live/au.com.seven.inferno.ui.setup.SetupActivity",
-        "com.swm.live/au.com.seven.inferno.ui.tv.setup.SetupTvActivity",
         "com.swm.live/au.com.seven.inferno.MainActivity",
         "com.swm.live/.MainActivity"
       ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "sampled from the official 7plus logo",
       "color_reviewed": "2026-09-10",
-      "color_note": "aligned with sevenplus entry — same app (Seven Network 7plus) under com.swm.live package"
+      "color_note": "aligned with sevenplus entry — same app (Seven Network 7plus) under com.swm.live package",
+      "style": "core_monoline"
     },
     {
       "name": "Sfjazz At Home",
@@ -9425,10 +8669,6 @@
         "com.sfjazzdigital/tv.vhx.tv.home.TvHomeActivity"
       ],
       "category": "APP",
-      "unverified": [
-        "com.sfjazzdigital/tv.vhx.LauncherActivity",
-        "com.sfjazzdigital/tv.vhx.tv.home.TvHomeActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
@@ -9442,9 +8682,6 @@
         "com.sfr.androidtv.gen8/com.sfr.androidtv.gen8.ui.Tv8MainActivity"
       ],
       "category": "APP",
-      "unverified": [
-        "com.sfr.androidtv.gen8/com.sfr.androidtv.gen8.ui.Tv8MainActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
@@ -9471,9 +8708,6 @@
         "net.mbc.shahidTV/net.mbc.shahidTV.MainActivity"
       ],
       "category": "APP",
-      "unverified": [
-        "net.mbc.shahidTV/net.mbc.shahidTV.MainActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
@@ -9500,9 +8734,6 @@
         "moe.shizuku.privileged.api/moe.shizuku.manager.MainActivity"
       ],
       "category": "TOOL",
-      "unverified": [
-        "moe.shizuku.privileged.api/moe.shizuku.manager.MainActivity"
-      ],
       "color_source": "brand reference (pre-provenance, unverified)",
       "color_reviewed": null
     },
@@ -9515,9 +8746,6 @@
         "com.shoutfactory.app/com.shoutfactory.app.MainActivity"
       ],
       "category": "APP",
-      "unverified": [
-        "com.shoutfactory.app/com.shoutfactory.app.MainActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
@@ -9531,9 +8759,6 @@
         "com.showmax.showmax.google/com.peacock.peacocktv.GoogleMainActivity"
       ],
       "category": "APP",
-      "unverified": [
-        "com.showmax.showmax.google/com.peacock.peacocktv.GoogleMainActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
@@ -9560,10 +8785,6 @@
         "net.easyjoin.applauncher/net.easyjoin.applauncher.activity.MainActivityTV"
       ],
       "category": "LAUNCHER",
-      "unverified": [
-        "eu.chainfire.tv.sideloadlauncher/eu.chainfire.tv.sideloadlauncher.MainActivity",
-        "net.easyjoin.applauncher/net.easyjoin.applauncher.activity.MainActivityTV"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
@@ -9613,9 +8834,6 @@
         "com.sirius/sxmp.app.welcome.WelcomeActivity"
       ],
       "category": "MUSIC",
-      "unverified": [
-        "com.sirius/sxmp.app.welcome.WelcomeActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
@@ -9629,9 +8847,6 @@
         "com.sky.news.androidtv/com.easeltv.falconheavy.tv.splash.view.SplashIntroVideoActivity"
       ],
       "category": "APP",
-      "unverified": [
-        "com.sky.news.androidtv/com.easeltv.falconheavy.tv.splash.view.SplashIntroVideoActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "brand reference (pre-provenance, unverified)",
       "color_reviewed": null
@@ -9657,9 +8872,6 @@
         "com.skyshowtime.skyshowtime.google/com.peacock.peacocktv.GoogleMainActivity"
       ],
       "category": "APP",
-      "unverified": [
-        "com.skyshowtime.skyshowtime.google/com.peacock.peacocktv.GoogleMainActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
@@ -9673,9 +8885,6 @@
         "cz.sledovanitv.android/cz.sledovanitv.androidtv.entry.EntryActivity"
       ],
       "category": "APP",
-      "unverified": [
-        "cz.sledovanitv.android/cz.sledovanitv.androidtv.entry.EntryActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
@@ -9689,9 +8898,6 @@
         "com.sling/com.sling.MainActivity"
       ],
       "category": "APP",
-      "unverified": [
-        "com.sling/com.sling.MainActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "brand reference (pre-provenance, unverified)",
       "color_reviewed": null
@@ -9720,9 +8926,6 @@
         "org.smarttube.beta/com.liskovsoft.smartyoutubetv2.tv.ui.main.SplashActivity"
       ],
       "category": "VIDEO",
-      "unverified": [
-        "org.smarttube.beta/com.liskovsoft.smartyoutubetv2.tv.ui.main.SplashActivity"
-      ],
       "brand": "smarttube",
       "color_source": "brand reference (pre-provenance, unverified)",
       "color_reviewed": null
@@ -9748,9 +8951,6 @@
         "com.snapwood.smugfolio/com.smugmug.android.activities.SmugMainActivity"
       ],
       "category": "APP",
-      "unverified": [
-        "com.snapwood.smugfolio/com.smugmug.android.activities.SmugMainActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "https://simpleicons.org/?q=smugmug",
       "color_note": "simple-icons brand accent",
@@ -9765,9 +8965,6 @@
         "de.badaix.snapcast/de.badaix.snapcast.MainActivity"
       ],
       "category": "APP",
-      "unverified": [
-        "de.badaix.snapcast/de.badaix.snapcast.MainActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
@@ -9781,9 +8978,6 @@
         "ma.snrt.live/ma.snrt.snrtLive.snrt_live_tv_app.MainActivity"
       ],
       "category": "LIVE",
-      "unverified": [
-        "ma.snrt.live/ma.snrt.snrtLive.snrt_live_tv_app.MainActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
@@ -9797,9 +8991,6 @@
         "com.sofascore.results/com.sofascore.results.main.MainActivity"
       ],
       "category": "APP",
-      "unverified": [
-        "com.sofascore.results/com.sofascore.results.main.MainActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
@@ -9817,8 +9008,7 @@
       ],
       "unverified": [
         "pl.solidexplorer2/pl.solidexplorer2.SolidExplorer",
-        "pl.solidexplorer2/.SolidExplorer",
-        "pl.solidexplorer2/pl.solidexplorer.SolidExplorer"
+        "pl.solidexplorer2/.SolidExplorer"
       ],
       "color_source": "brand reference (pre-provenance, unverified)",
       "color_reviewed": null
@@ -9844,9 +9034,6 @@
         "com.sonyliv/com.sonyliv.ui.splash.SplashActivity"
       ],
       "category": "APP",
-      "unverified": [
-        "com.sonyliv/com.sonyliv.ui.splash.SplashActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
@@ -9860,9 +9047,6 @@
         "sooner.app.de/de.eyzmedia.sooner.MainActivity"
       ],
       "category": "APP",
-      "unverified": [
-        "sooner.app.de/de.eyzmedia.sooner.MainActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
@@ -9876,9 +9060,6 @@
         "com.soundcloud.android/com.soundcloud.android.tv.app.TvMainActivity"
       ],
       "category": "MUSIC",
-      "unverified": [
-        "com.soundcloud.android/com.soundcloud.android.tv.app.TvMainActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "brand reference (pre-provenance, unverified)",
       "color_reviewed": null
@@ -9890,9 +9071,6 @@
       "glyph": "sparkle_burst",
       "category": "LIVE",
       "components": [
-        "se.hedekonsult.sparkle/se.hedekonsult.sparkle.MainActivity"
-      ],
-      "unverified": [
         "se.hedekonsult.sparkle/se.hedekonsult.sparkle.MainActivity"
       ],
       "color_source": "brand reference (pre-provenance, unverified)",
@@ -9931,9 +9109,6 @@
         "pt.sporttv.app.androidtv/pt.sporttv.app.ui.SplashScreenTVActivity"
       ],
       "category": "SPORT",
-      "unverified": [
-        "pt.sporttv.app.androidtv/pt.sporttv.app.ui.SplashScreenTVActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
@@ -9983,9 +9158,6 @@
         "com.rogers.sportsnet.sportsnet/com.rogers.sportsnet.tv.ui.AppActivity"
       ],
       "category": "SPORT",
-      "unverified": [
-        "com.rogers.sportsnet.sportsnet/com.rogers.sportsnet.tv.ui.AppActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
@@ -9999,9 +9171,6 @@
         "com.sportzx.live/com.sportzx.live.activities.SplashActivity"
       ],
       "category": "SPORT",
-      "unverified": [
-        "com.sportzx.live/com.sportzx.live.activities.SplashActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
@@ -10059,9 +9228,6 @@
         "au.com.stan.and/au.com.stan.and.ui.screens.splash.SplashActivity"
       ],
       "category": "VOD",
-      "unverified": [
-        "au.com.stan.and/au.com.stan.and.ui.screens.splash.SplashActivity"
-      ],
       "color_source": "brand reference (pre-provenance, unverified)",
       "color_reviewed": null
     },
@@ -10110,9 +9276,6 @@
         "com.valvesoftware.steamlink/com.valvesoftware.steamlink.SteamShellActivity"
       ],
       "category": "GAMING",
-      "unverified": [
-        "com.valvesoftware.steamlink/com.valvesoftware.steamlink.SteamShellActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "brand reference (pre-provenance, unverified)",
       "color_reviewed": null
@@ -10126,9 +9289,6 @@
         "com.streamfire.app/com.streamfire.app.ui.HomeActivity"
       ],
       "category": "APP",
-      "unverified": [
-        "com.streamfire.app/com.streamfire.app.ui.HomeActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
@@ -10166,9 +9326,6 @@
         "com.tanasi.streamflix/com.tanasi.streamflix.activities.main.MainTvActivity"
       ],
       "category": "APP",
-      "unverified": [
-        "com.tanasi.streamflix/com.tanasi.streamflix.activities.main.MainTvActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
@@ -10182,9 +9339,6 @@
         "com.streamlocator.vpn/com.streamlocator.vpn.ui.tv.home.TVHomeActivity"
       ],
       "category": "VPN",
-      "unverified": [
-        "com.streamlocator.vpn/com.streamlocator.vpn.ui.tv.home.TVHomeActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
@@ -10271,9 +9425,6 @@
         "no.strim.atv/no.rikstv.atv.MainActivity"
       ],
       "category": "APP",
-      "unverified": [
-        "no.strim.atv/no.rikstv.atv.MainActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
@@ -10300,9 +9451,6 @@
         "com.strongvpn/com.strongvpn.ui.activities.SplashActivity"
       ],
       "category": "VPN",
-      "unverified": [
-        "com.strongvpn/com.strongvpn.ui.activities.SplashActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
@@ -10316,9 +9464,6 @@
         "tv.stv.android.player/tv.stv.android.commontv.screens.TvActivity"
       ],
       "category": "LIVE",
-      "unverified": [
-        "tv.stv.android.player/tv.stv.android.commontv.screens.TvActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
@@ -10332,9 +9477,6 @@
         "com.suntv.sunnxt/com.androidtv.myplex.ui.activity.SPlashActivity"
       ],
       "category": "APP",
-      "unverified": [
-        "com.suntv.sunnxt/com.androidtv.myplex.ui.activity.SPlashActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
@@ -10348,9 +9490,6 @@
         "com.surfshark.vpnclient.android/com.surfshark.vpnclient.android.StartActivity"
       ],
       "category": "APP",
-      "unverified": [
-        "com.surfshark.vpnclient.android/com.surfshark.vpnclient.android.StartActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "https://simpleicons.org/?q=surfshark",
       "color_note": "simple-icons brand accent",
@@ -10366,10 +9505,6 @@
         "se.svt.android.svtplay/se.svt.svtplay.ui.tv.profile.ProfilePickerActivity"
       ],
       "category": "APP",
-      "unverified": [
-        "se.svt.android.svtplay/se.svt.svtplay.ui.mobile.MainActivity",
-        "se.svt.android.svtplay/se.svt.svtplay.ui.tv.profile.ProfilePickerActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
@@ -10383,9 +9518,6 @@
         "video.gideo.swactv/gideo.video.MainActivity"
       ],
       "category": "APP",
-      "unverified": [
-        "video.gideo.swactv/gideo.video.MainActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
@@ -10399,9 +9531,6 @@
         "com.semperpax.eumc16/org.xbmc.kodi.Splash"
       ],
       "category": "APP",
-      "unverified": [
-        "com.semperpax.eumc16/org.xbmc.kodi.Splash"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
@@ -10415,9 +9544,6 @@
         "tv.sweet.tvplayer/tv.sweet.tvplayer.MainActivity"
       ],
       "category": "APP",
-      "unverified": [
-        "tv.sweet.tvplayer/tv.sweet.tvplayer.MainActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
@@ -10484,10 +9610,6 @@
         "com.syncler/com.swordfish.ui.screen.splash.StartUpSplashActivity"
       ],
       "category": "STREAM",
-      "unverified": [
-        "com.syncler/urbanMedia.android.touchDevice.ui.activities.StartUpSplashActivity",
-        "com.syncler/com.swordfish.ui.screen.splash.StartUpSplashActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "brand": "syncler",
       "color_source": "brand reference (pre-provenance, unverified)",
@@ -10502,9 +9624,6 @@
         "com.syncler.beta/com.swordfish.ui.screen.splash.StartUpSplashActivity"
       ],
       "category": "STREAM",
-      "unverified": [
-        "com.syncler.beta/com.swordfish.ui.screen.splash.StartUpSplashActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "brand": "syncler",
       "color_source": "brand reference (pre-provenance, unverified)",
@@ -10539,9 +9658,6 @@
         "com.synology.projectkailash/com.synology.projectkailash.ui.login.LoginActivity"
       ],
       "category": "APP",
-      "unverified": [
-        "com.synology.projectkailash/com.synology.projectkailash.ui.login.LoginActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
@@ -10555,9 +9671,6 @@
         "com.trt.tabii.android/com.trt.tabii.android.tv.MainActivity"
       ],
       "category": "APP",
-      "unverified": [
-        "com.trt.tabii.android/com.trt.tabii.android.tv.MainActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
@@ -10583,9 +9696,6 @@
         "com.tailscale.ipn/com.tailscale.ipn.MainActivity"
       ],
       "category": "VPN",
-      "unverified": [
-        "com.tailscale.ipn/com.tailscale.ipn.MainActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "brand reference (pre-provenance, unverified)",
       "color_reviewed": null
@@ -10599,9 +9709,6 @@
         "uk.co.news.talkradiotv/com.simplestream.presentation.startup.StartUpActivity"
       ],
       "category": "APP",
-      "unverified": [
-        "uk.co.news.talkradiotv/com.simplestream.presentation.startup.StartUpActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
@@ -10615,9 +9722,6 @@
         "com.talksport.tsliveen/com.simplestream.presentation.startup.StartUpActivity"
       ],
       "category": "SPORT",
-      "unverified": [
-        "com.talksport.tsliveen/com.simplestream.presentation.startup.StartUpActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
@@ -10631,9 +9735,6 @@
         "ir.tamashakhonehtv/ir.tamashakhonehtv.ui.splash.SplashActivity"
       ],
       "category": "APP",
-      "unverified": [
-        "ir.tamashakhonehtv/ir.tamashakhonehtv.ui.splash.SplashActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
@@ -10660,9 +9761,6 @@
         "net.dinglisch.android.taskerm/net.dinglisch.android.taskerm.Tasker"
       ],
       "category": "TOOL",
-      "unverified": [
-        "net.dinglisch.android.taskerm/net.dinglisch.android.taskerm.Tasker"
-      ],
       "color_source": "brand reference (pre-provenance, unverified)",
       "color_reviewed": null
     },
@@ -10675,9 +9773,6 @@
         "tbn_mobile.android/com.applicaster.ui.activities.MainActivity"
       ],
       "category": "APP",
-      "unverified": [
-        "tbn_mobile.android/com.applicaster.ui.activities.MainActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
@@ -10691,9 +9786,6 @@
         "com.turner.tbs.android.networkapp/com.wme.app.MainActivityTv"
       ],
       "category": "APP",
-      "unverified": [
-        "com.turner.tbs.android.networkapp/com.wme.app.MainActivityTv"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
@@ -10707,9 +9799,6 @@
         "com.tcl.waterfall.overseas/com.tcl.waterfall.overseas.main.MainActivity"
       ],
       "category": "APP",
-      "unverified": [
-        "com.tcl.waterfall.overseas/com.tcl.waterfall.overseas.main.MainActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
@@ -10723,9 +9812,6 @@
         "com.tcl.tclhome/com.tcl.bmmain.SplashActivity"
       ],
       "category": "APP",
-      "unverified": [
-        "com.tcl.tclhome/com.tcl.bmmain.SplashActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
@@ -10739,9 +9825,6 @@
         "com.tuckercarlson.tv/tv.accedo.one.app.bootstrap.BootstrapActivity"
       ],
       "category": "APP",
-      "unverified": [
-        "com.tuckercarlson.tv/tv.accedo.one.app.bootstrap.BootstrapActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
@@ -10755,9 +9838,6 @@
         "com.tdtchannels.player/com.tdtchannels.player.SplashScreenActivity"
       ],
       "category": "PLAYER",
-      "unverified": [
-        "com.tdtchannels.player/com.tdtchannels.player.SplashScreenActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
@@ -10771,9 +9851,6 @@
         "com.tduk.scrmgr/dev.vodik7.tdukscrmng.MainActivity"
       ],
       "category": "TOOL",
-      "unverified": [
-        "com.tduk.scrmgr/dev.vodik7.tdukscrmng.MainActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null,
@@ -10788,9 +9865,6 @@
         "com.ted.android.tv/com.ted.android.tv.view.MainActivity"
       ],
       "category": "APP",
-      "unverified": [
-        "com.ted.android.tv/com.ted.android.tv.view.MainActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "https://simpleicons.org/?q=ted",
       "color_note": "TED brand red",
@@ -10805,9 +9879,6 @@
         "tv.telequebec/uk.tva.template.LaunchScreenActivity"
       ],
       "category": "APP",
-      "unverified": [
-        "tv.telequebec/uk.tva.template.LaunchScreenActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
@@ -10822,10 +9893,6 @@
         "com.tivo.android.comhem/tv.threess.threeready.ui.generic.activity.MainActivity"
       ],
       "category": "APP",
-      "unverified": [
-        "com.tivo.android.comhem/com.comhem.mandel.mobile.presentation.NavigationActivity",
-        "com.tivo.android.comhem/tv.threess.threeready.ui.generic.activity.MainActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
@@ -10851,9 +9918,6 @@
         "tv.telewebion/tv.telewebion.ui.main.MainActivity"
       ],
       "category": "APP",
-      "unverified": [
-        "tv.telewebion/tv.telewebion.ui.main.MainActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
@@ -10867,9 +9931,6 @@
         "lt.telia.tv/lt.telia.tv.MainActivity"
       ],
       "category": "APP",
-      "unverified": [
-        "lt.telia.tv/lt.telia.tv.MainActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
@@ -10883,9 +9944,6 @@
         "tv.fournetwork.android.box.digi/tv.fournetwork.android.box.MainActivity"
       ],
       "category": "LIVE",
-      "unverified": [
-        "tv.fournetwork.android.box.digi/tv.fournetwork.android.box.MainActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
@@ -10899,9 +9957,6 @@
         "com.tencent.qqlive/com.tencent.qqlive.ona.activity.SplashHomeActivity"
       ],
       "category": "APP",
-      "unverified": [
-        "com.tencent.qqlive/com.tencent.qqlive.ona.activity.SplashHomeActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
@@ -10916,10 +9971,6 @@
         "com.tennischannel.tceverywhere.amazon/com.foxxum.webapp.MainActivity"
       ],
       "category": "SPORT",
-      "unverified": [
-        "com.tennischannel.foxxum.amazon/com.foxxum.tennis.MainActivity",
-        "com.tennischannel.tceverywhere.amazon/com.foxxum.webapp.MainActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
@@ -10933,9 +9984,6 @@
         "com.tennistv.cdtv/com.tennistv.cdtv.MainActivity"
       ],
       "category": "SPORT",
-      "unverified": [
-        "com.tennistv.cdtv/com.tennistv.cdtv.MainActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
@@ -10949,9 +9997,6 @@
         "com.termux/com.termux.app.TermuxActivity"
       ],
       "category": "TOOL",
-      "unverified": [
-        "com.termux/com.termux.app.TermuxActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "brand reference (pre-provenance, unverified)",
       "color_reviewed": null
@@ -10965,9 +10010,6 @@
         "com.vonlegohufvud.texttvsv/com.vonlegohufvud.texttvsv.MainActivity"
       ],
       "category": "APP",
-      "unverified": [
-        "com.vonlegohufvud.texttvsv/com.vonlegohufvud.texttvsv.MainActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
@@ -10981,9 +10023,6 @@
         "fr.tf1.mytf1/fr.tf1.mytf1.MainActivity"
       ],
       "category": "APP",
-      "unverified": [
-        "fr.tf1.mytf1/fr.tf1.mytf1.MainActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
@@ -11009,9 +10048,6 @@
         "com.tflix.live/com.tflix.live.tv.TvSplashActivity"
       ],
       "category": "APP",
-      "unverified": [
-        "com.tflix.live/com.tflix.live.tv.TvSplashActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
@@ -11025,9 +10061,6 @@
         "ie.bytes.tg4.tg4videoapp/ie.bytes.tg4.tg4videoapp.tv.TVActivity"
       ],
       "category": "PLAYER",
-      "unverified": [
-        "ie.bytes.tg4.tg4videoapp/ie.bytes.tg4.tg4videoapp.tv.TVActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
@@ -11053,9 +10086,6 @@
         "com.roku.web.trc/com.roku.web.trc.MainActivity"
       ],
       "category": "APP",
-      "unverified": [
-        "com.roku.web.trc/com.roku.web.trc.MainActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
@@ -11081,9 +10111,6 @@
         "com.thmanyah.shasha.tv/com.thmanyah.shasha.SplashActivity"
       ],
       "category": "APP",
-      "unverified": [
-        "com.thmanyah.shasha.tv/com.thmanyah.shasha.SplashActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
@@ -11133,9 +10160,6 @@
         "it.telecomitalia.cubovision/com.canal.ui.tv.TvMainActivity"
       ],
       "category": "APP",
-      "unverified": [
-        "it.telecomitalia.cubovision/com.canal.ui.tv.TvMainActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
@@ -11149,9 +10173,6 @@
         "com.tvup.tivify.app.tv/com.tvup.tvapp.view.activity.MainActivityTVup"
       ],
       "category": "APP",
-      "unverified": [
-        "com.tvup.tivify.app.tv/com.tvup.tvapp.view.activity.MainActivityTVup"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
@@ -11214,9 +10235,6 @@
         "com.turner.tnt.android.networkapp/com.wme.app.MainActivityTv"
       ],
       "category": "APP",
-      "unverified": [
-        "com.turner.tnt.android.networkapp/com.wme.app.MainActivityTv"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
@@ -11230,9 +10248,6 @@
         "com.todtv.tod/com.todtv.tod.MainActivity"
       ],
       "category": "APP",
-      "unverified": [
-        "com.todtv.tod/com.todtv.tod.MainActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
@@ -11246,9 +10261,6 @@
         "de.toggo/de.toggo.vod.ui.MainActivityToggo"
       ],
       "category": "APP",
-      "unverified": [
-        "de.toggo/de.toggo.vod.ui.MainActivityToggo"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
@@ -11262,9 +10274,6 @@
         "nl.angrybytes.apps.topradio/nl.angrybytes.apps.topradio.Activities.TVActivity"
       ],
       "category": "MUSIC",
-      "unverified": [
-        "nl.angrybytes.apps.topradio/nl.angrybytes.apps.topradio.Activities.TVActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
@@ -11291,9 +10300,6 @@
         "net.torguard.openvpn.client/net.torguard.openvpn.client.LauncherActivity"
       ],
       "category": "VPN",
-      "unverified": [
-        "net.torguard.openvpn.client/net.torguard.openvpn.client.LauncherActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "brand reference (pre-provenance, unverified)",
       "color_reviewed": null
@@ -11319,9 +10325,6 @@
         "ru.yourok.torrserve/ru.yourok.torrserve.ui.activities.main.MainActivity"
       ],
       "category": "APP",
-      "unverified": [
-        "ru.yourok.torrserve/ru.yourok.torrserve.ui.activities.main.MainActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
@@ -11349,10 +10352,6 @@
         "tv.trakt.trakt/tv.trakt.trakt.ui.main.MainActivity"
       ],
       "category": "TRACK",
-      "unverified": [
-        "tv.trakt.trakt/tv.trakt.trakt.app.TvActivity",
-        "tv.trakt.trakt/tv.trakt.trakt.ui.main.MainActivity"
-      ],
       "color_source": "brand reference (pre-provenance, unverified)",
       "color_reviewed": null,
       "style": "core_monoline"
@@ -11367,10 +10366,6 @@
         "ott.trilogyplus/tv.vhx.tv.home.TvHomeActivity"
       ],
       "category": "APP",
-      "unverified": [
-        "ott.trilogyplus/tv.vhx.LauncherActivity",
-        "ott.trilogyplus/tv.vhx.tv.home.TvHomeActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
@@ -11385,10 +10380,6 @@
         "ott.trublu/tv.vhx.tv.home.TvHomeActivity"
       ],
       "category": "APP",
-      "unverified": [
-        "ott.trublu/tv.vhx.LauncherActivity",
-        "ott.trublu/tv.vhx.tv.home.TvHomeActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
@@ -11414,9 +10405,6 @@
         "ott.ttplus/tv.vhx.tv.home.TvHomeActivity"
       ],
       "category": "APP",
-      "unverified": [
-        "ott.ttplus/tv.vhx.tv.home.TvHomeActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
@@ -11430,9 +10418,6 @@
         "com.tubitv/com.tubitv.activities.MainActivity"
       ],
       "category": "APP",
-      "unverified": [
-        "com.tubitv/com.tubitv.activities.MainActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "brand reference — Tubi wordmark yellow (sampled 2026-09-14)",
       "color_reviewed": "2026-09-14"
@@ -11446,9 +10431,6 @@
         "tunein.player/tunein.ui.leanback.ui.activities.TvHomeActivity"
       ],
       "category": "MUSIC",
-      "unverified": [
-        "tunein.player/tunein.ui.leanback.ui.activities.TvHomeActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "brand reference (pre-provenance, unverified)",
       "color_reviewed": null
@@ -11462,9 +10444,6 @@
         "no.tv2.sumo/no.tv2.android.ui.LauncherBridgeActivity"
       ],
       "category": "APP",
-      "unverified": [
-        "no.tv2.sumo/no.tv2.android.ui.LauncherBridgeActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
@@ -11478,9 +10457,6 @@
         "news.androidtv.tvapprepo.playstore/news.androidtv.tvapprepo.activities.MainActivity"
       ],
       "category": "APP",
-      "unverified": [
-        "news.androidtv.tvapprepo.playstore/news.androidtv.tvapprepo.activities.MainActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
@@ -11531,9 +10507,6 @@
         "com.tvgarden/com.tvgarden.MainActivity"
       ],
       "category": "APP",
-      "unverified": [
-        "com.tvgarden/com.tvgarden.MainActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
@@ -11547,9 +10520,6 @@
         "com.xiaomi.mitv.tvmanager/com.xiaomi.mitv.tvmanager.MainTvManagerActivity"
       ],
       "category": "TOOL",
-      "unverified": [
-        "com.xiaomi.mitv.tvmanager/com.xiaomi.mitv.tvmanager.MainTvManagerActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null,
@@ -11589,9 +10559,6 @@
         "dev.vodik7.tvquickactions.free/dev.vodik7.tvquickactions.MainActivity"
       ],
       "category": "TOOL",
-      "unverified": [
-        "dev.vodik7.tvquickactions.free/dev.vodik7.tvquickactions.MainActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "brand": "tvquickactions",
       "color_source": "brand reference (pre-provenance, unverified)",
@@ -11618,9 +10585,6 @@
         "nl.streamgroup.vlaanderen/tv.solocoo.htmlapp.FullscreenActivity"
       ],
       "category": "APP",
-      "unverified": [
-        "nl.streamgroup.vlaanderen/tv.solocoo.htmlapp.FullscreenActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
@@ -11634,9 +10598,6 @@
         "jp.co.rarity.tvweb/jp.co.rarity.tvweb.MainActivity"
       ],
       "category": "BROWSER",
-      "unverified": [
-        "jp.co.rarity.tvweb/jp.co.rarity.tvweb.MainActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null,
@@ -11651,9 +10612,6 @@
         "dk.tv2.tv2play/dk.tv2.tv2play.ui.main.MainActivity"
       ],
       "category": "APP",
-      "unverified": [
-        "dk.tv2.tv2play/dk.tv2.tv2play.ui.main.MainActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
@@ -11667,9 +10625,6 @@
         "com.viettel.tv360.tv/com.viettel.tv360.tv.screen.splash.SplashActivity"
       ],
       "category": "APP",
-      "unverified": [
-        "com.viettel.tv360.tv/com.viettel.tv360.tv.screen.splash.SplashActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
@@ -11684,10 +10639,6 @@
         "se.tv4.tv4playtab/se.tv4.tv4play.ui.tv.navigation.TvHubActivity"
       ],
       "category": "APP",
-      "unverified": [
-        "se.tv4.tv4playtab/se.tv4.tv4play.ui.mobile.main.BottomNavigationActivity",
-        "se.tv4.tv4playtab/se.tv4.tv4play.ui.tv.navigation.TvHubActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "https://simpleicons.org/?q=tv4play",
       "color_note": "simple-icons brand accent",
@@ -11714,9 +10665,6 @@
         "pt.iol.tviplayer.androidtv/pt.iol.tviplayer.androidtv.MainActivity"
       ],
       "category": "PLAYER",
-      "unverified": [
-        "pt.iol.tviplayer.androidtv/pt.iol.tviplayer.androidtv.MainActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
@@ -11730,9 +10678,6 @@
         "net.cj.cjhv.gs.tving/net.cj.cjhv.gs.tving.view.scaleup.ScaleupIntroActivity"
       ],
       "category": "APP",
-      "unverified": [
-        "net.cj.cjhv.gs.tving/net.cj.cjhv.gs.tving.view.scaleup.ScaleupIntroActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
@@ -11746,9 +10691,6 @@
         "nz.co.tvnz.ondemand.tv/nz.co.tvnz.ondemand.SplashScreenTVActivity"
       ],
       "category": "APP",
-      "unverified": [
-        "nz.co.tvnz.ondemand.tv/nz.co.tvnz.ondemand.SplashScreenTVActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
@@ -11762,9 +10704,6 @@
         "com.tvokids.tvokids/tv.accedo.one.app.bootstrap.BootstrapActivity"
       ],
       "category": "APP",
-      "unverified": [
-        "com.tvokids.tvokids/tv.accedo.one.app.bootstrap.BootstrapActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
@@ -11778,9 +10717,6 @@
         "org.tvo.tvoott/tv.accedo.one.app.bootstrap.BootstrapActivity"
       ],
       "category": "APP",
-      "unverified": [
-        "org.tvo.tvoott/tv.accedo.one.app.bootstrap.BootstrapActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
@@ -11794,9 +10730,6 @@
         "com.tabdeveloper.tvoverlay/com.tabdeveloper.tvoverlay.SetupActivity"
       ],
       "category": "APP",
-      "unverified": [
-        "com.tabdeveloper.tvoverlay/com.tabdeveloper.tvoverlay.SetupActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
@@ -11810,9 +10743,6 @@
         "com.tvp.vodtv.tv/com.redgemediaportaltv.MainActivity"
       ],
       "category": "APP",
-      "unverified": [
-        "com.tvp.vodtv.tv/com.redgemediaportaltv.MainActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
@@ -11826,9 +10756,6 @@
         "pl.tvp.sport.tv/pl.tvp.sport.tv.presentation.MainActivity"
       ],
       "category": "SPORT",
-      "unverified": [
-        "pl.tvp.sport.tv/pl.tvp.sport.tv.presentation.MainActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
@@ -11842,9 +10769,6 @@
         "com.urbandroid.lux/com.urbandroid.lux.TvActivity"
       ],
       "category": "APP",
-      "unverified": [
-        "com.urbandroid.lux/com.urbandroid.lux.TvActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
@@ -11879,9 +10803,6 @@
         "de.zdf.mediathek.tivi/de.zdf.mediathek.tivi.ui.splash.SplashActivity"
       ],
       "category": "APP",
-      "unverified": [
-        "de.zdf.mediathek.tivi/de.zdf.mediathek.tivi.ui.splash.SplashActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
@@ -11895,9 +10816,6 @@
         "uk.co.uktv.dave/uk.co.uktv.dave.UKTVPlayActivity"
       ],
       "category": "APP",
-      "unverified": [
-        "uk.co.uktv.dave/uk.co.uktv.dave.UKTVPlayActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
@@ -11911,9 +10829,6 @@
         "jp.unext.mediaplayer/jp.unext.mediaplayer.main.MainActivity"
       ],
       "category": "APP",
-      "unverified": [
-        "jp.unext.mediaplayer/jp.unext.mediaplayer.main.MainActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
@@ -11951,9 +10866,6 @@
         "com.uefa.uefatv.androidtv/com.uefa.uefatv.androidtv.MainActivity"
       ],
       "category": "SPORT",
-      "unverified": [
-        "com.uefa.uefatv.androidtv/com.uefa.uefatv.androidtv.MainActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
@@ -11979,9 +10891,6 @@
         "com.ugreen.nasprotv/com.ugreen.nasprotv.LaunchActivity"
       ],
       "category": "FILES",
-      "unverified": [
-        "com.ugreen.nasprotv/com.ugreen.nasprotv.LaunchActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null,
@@ -11996,9 +10905,6 @@
         "knf.kuma.tv/knf.kuma.tv.ui.TVMain"
       ],
       "category": "APP",
-      "unverified": [
-        "knf.kuma.tv/knf.kuma.tv.ui.TVMain"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
@@ -12029,9 +10935,6 @@
         "com.ubnt.unifi.protect/com.ubnt.sections.splash.AuthenticationActivity"
       ],
       "category": "APP",
-      "unverified": [
-        "com.ubnt.unifi.protect/com.ubnt.sections.splash.AuthenticationActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
@@ -12045,9 +10948,6 @@
         "com.tm.playtv/com.tm.ott.module.login.activity.LoginActivity"
       ],
       "category": "APP",
-      "unverified": [
-        "com.tm.playtv/com.tm.ott.module.login.activity.LoginActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
@@ -12073,9 +10973,6 @@
         "com.yablio.realdebridtv/com.yablio.realdebridtv.StartActivity"
       ],
       "category": "APP",
-      "unverified": [
-        "com.yablio.realdebridtv/com.yablio.realdebridtv.StartActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
@@ -12101,9 +10998,6 @@
         "dce.fivb.volleyballtv/com.applicaster.ui.activities.MainActivity"
       ],
       "category": "APP",
-      "unverified": [
-        "dce.fivb.volleyballtv/com.applicaster.ui.activities.MainActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
@@ -12130,9 +11024,6 @@
         "st.veezie/st.veezie.MainActivity"
       ],
       "category": "APP",
-      "unverified": [
-        "st.veezie/st.veezie.MainActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
@@ -12147,10 +11038,6 @@
         "com.vewd.core.integration.dia/com.vewd.core.browser.TVActivity"
       ],
       "category": "BROWSER",
-      "unverified": [
-        "com.vewd.core.integration.dia/com.vewd.core.browser.BrowserActivity",
-        "com.vewd.core.integration.dia/com.vewd.core.browser.TVActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null,
@@ -12165,9 +11052,6 @@
         "com.viaplay.android/com.viaplay.android.features.home.HomeActivity"
       ],
       "category": "APP",
-      "unverified": [
-        "com.viaplay.android/com.viaplay.android.features.home.HomeActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "https://simpleicons.org/?q=viaplay",
       "color_note": "simple-icons brand accent",
@@ -12182,9 +11066,6 @@
         "com.vibra/com.ryanheise.audioservice.AudioServiceActivity"
       ],
       "category": "APP",
-      "unverified": [
-        "com.vibra/com.ryanheise.audioservice.AudioServiceActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
@@ -12198,9 +11079,6 @@
         "tv.apmc.android.victorysports/tv.kidoodle.android.ui.MainActivity"
       ],
       "category": "APP",
-      "unverified": [
-        "tv.apmc.android.victorysports/tv.kidoodle.android.ui.MainActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
@@ -12214,9 +11092,6 @@
         "com.vidangel.tvapp/com.vidangel.tvapp.activities.IntroActivity"
       ],
       "category": "APP",
-      "unverified": [
-        "com.vidangel.tvapp/com.vidangel.tvapp.activities.IntroActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
@@ -12230,9 +11105,6 @@
         "nl.rtl.videoland.v2/com.bedrockstreaming.shared.tv.activity.SplashActivity"
       ],
       "category": "VIDEO",
-      "unverified": [
-        "nl.rtl.videoland.v2/com.bedrockstreaming.shared.tv.activity.SplashActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
@@ -12265,9 +11137,6 @@
         "com.vieon.tv/com.my.app.MainActivity"
       ],
       "category": "APP",
-      "unverified": [
-        "com.vieon.tv/com.my.app.MainActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
@@ -12281,9 +11150,6 @@
         "com.viki.android/com.viki.android.ui.splash.SplashActivity"
       ],
       "category": "APP",
-      "unverified": [
-        "com.viki.android/com.viki.android.ui.splash.SplashActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
@@ -12297,9 +11163,6 @@
         "com.vimeo.android.videoapp/com.vimeo.android.videoapp.launch.LaunchActivity"
       ],
       "category": "APP",
-      "unverified": [
-        "com.vimeo.android.videoapp/com.vimeo.android.videoapp.launch.LaunchActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "brand reference (pre-provenance, unverified)",
       "color_reviewed": null
@@ -12325,9 +11188,6 @@
         "com.virtualhere.androidserver/com.virtualhere.androidserver.GUI"
       ],
       "category": "TOOL",
-      "unverified": [
-        "com.virtualhere.androidserver/com.virtualhere.androidserver.GUI"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null,
@@ -12342,9 +11202,6 @@
         "com.viu.tv/com.viu.tv.mvp.ui.activity.WelcomeActivity"
       ],
       "category": "APP",
-      "unverified": [
-        "com.viu.tv/com.viu.tv.mvp.ui.activity.WelcomeActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
@@ -12358,9 +11215,6 @@
         "com.viva.vivaone/com.viva.vivamax.activity.SplashActivity"
       ],
       "category": "APP",
-      "unverified": [
-        "com.viva.vivaone/com.viva.vivamax.activity.SplashActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
@@ -12374,9 +11228,6 @@
         "com.univision.prendetv/com.univision.descarga.tv.ui.MainActivity"
       ],
       "category": "APP",
-      "unverified": [
-        "com.univision.prendetv/com.univision.descarga.tv.ui.MainActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
@@ -12404,9 +11255,6 @@
         "com.viva.vivamax/com.viva.vivamax.activity.SplashActivity"
       ],
       "category": "APP",
-      "unverified": [
-        "com.viva.vivamax/com.viva.vivamax.activity.SplashActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
@@ -12420,9 +11268,6 @@
         "com.vodafone.vtv.atv.pt/com.witsoftware.vodafonetv.view.splash.SplashActivity"
       ],
       "category": "APP",
-      "unverified": [
-        "com.vodafone.vtv.atv.pt/com.witsoftware.vodafonetv.view.splash.SplashActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
@@ -12436,9 +11281,6 @@
         "net.cme.voyo.sk.tvapp/net.cme.voyo.sk.tvapp.MainActivity"
       ],
       "category": "APP",
-      "unverified": [
-        "net.cme.voyo.sk.tvapp/net.cme.voyo.sk.tvapp.MainActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
@@ -12464,9 +11306,6 @@
         "com.simplexsolutionsinc.vpn_unlimited/com.simplexsolutionsinc.vpn_unlimited.ui.screens.splash.SplashScreenActivity"
       ],
       "category": "VPN",
-      "unverified": [
-        "com.simplexsolutionsinc.vpn_unlimited/com.simplexsolutionsinc.vpn_unlimited.ui.screens.splash.SplashScreenActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
@@ -12504,9 +11343,6 @@
         "com.vs.vsplayer/com.vs.vsplayer.common.view.SplashActivity"
       ],
       "category": "PLAYER",
-      "unverified": [
-        "com.vs.vsplayer/com.vs.vsplayer.common.view.SplashActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
@@ -12532,9 +11368,6 @@
         "com.vtvcab.onTV/com.vtvcab.activities.NewSplashActivity"
       ],
       "category": "APP",
-      "unverified": [
-        "com.vtvcab.onTV/com.vtvcab.activities.NewSplashActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
@@ -12548,9 +11381,6 @@
         "vn.vtv.vtvgotv/com.vtvcab.activities.NewSplashActivity"
       ],
       "category": "APP",
-      "unverified": [
-        "vn.vtv.vtvgotv/com.vtvcab.activities.NewSplashActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
@@ -12564,9 +11394,6 @@
         "de.exaring.waipu/de.exaring.waipu.ui.login.LoginActivity"
       ],
       "category": "APP",
-      "unverified": [
-        "de.exaring.waipu/de.exaring.waipu.ui.login.LoginActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
@@ -12605,10 +11432,6 @@
         "ott.watcherentertainment/tv.vhx.tv.home.TvHomeActivity"
       ],
       "category": "APP",
-      "unverified": [
-        "ott.watcherentertainment/tv.vhx.LauncherActivity",
-        "ott.watcherentertainment/tv.vhx.tv.home.TvHomeActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
@@ -12622,9 +11445,6 @@
         "com.watcho_multi/com.yupptv.ott.ui.activity.SplashActivity"
       ],
       "category": "APP",
-      "unverified": [
-        "com.watcho_multi/com.yupptv.ott.ui.activity.SplashActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
@@ -12638,9 +11458,6 @@
         "com.smartwave.wave_iptv/com.smartwave.wave_iptv.SplashActivity"
       ],
       "category": "LIVE",
-      "unverified": [
-        "com.smartwave.wave_iptv/com.smartwave.wave_iptv.SplashActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
@@ -12678,9 +11495,6 @@
         "com.weatherbug.firetv/com.weatherbug.firetv.MainActivity"
       ],
       "category": "APP",
-      "unverified": [
-        "com.weatherbug.firetv/com.weatherbug.firetv.MainActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9 (was mis-assigned to streamflix_2)",
       "color_source": "BrandColorCode WeatherBug primary blue #2F6F8C",
       "color_reviewed": "2026-09-10"
@@ -12695,10 +11509,6 @@
         "com.tencent.qqlivei18n/com.ktcp.video.activity.HomeActivity"
       ],
       "category": "APP",
-      "unverified": [
-        "com.tencent.qqlivei18n/com.ktcp.video.activity.MainActivity",
-        "com.tencent.qqlivei18n/com.ktcp.video.activity.HomeActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
@@ -12777,9 +11587,6 @@
         "com.windscribe.vpn/com.windscribe.tv.splash.SplashActivity"
       ],
       "category": "APP",
-      "unverified": [
-        "com.windscribe.vpn/com.windscribe.tv.splash.SplashActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "brand reference (pre-provenance, unverified)",
       "color_reviewed": null
@@ -12793,9 +11600,6 @@
         "ru.rt.video.app.tv/ru.rt.video.app.splash.view.SplashActivity"
       ],
       "category": "APP",
-      "unverified": [
-        "ru.rt.video.app.tv/ru.rt.video.app.splash.view.SplashActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
@@ -12809,9 +11613,6 @@
         "com.wireguard.android/com.wireguard.android.activity.TvMainActivity"
       ],
       "category": "VPN",
-      "unverified": [
-        "com.wireguard.android/com.wireguard.android.activity.TvMainActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "brand reference (pre-provenance, unverified)",
       "color_reviewed": null
@@ -12825,9 +11626,6 @@
         "com.wondery/com.ensemble.streams.android.app.wonderytv.app.MainActivity"
       ],
       "category": "APP",
-      "unverified": [
-        "com.wondery/com.ensemble.streams.android.app.wonderytv.app.MainActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
@@ -12854,10 +11652,6 @@
         "tv.vhx.worldofwonder/tv.vhx.tv.home.TvHomeActivity"
       ],
       "category": "APP",
-      "unverified": [
-        "tv.vhx.worldofwonder/tv.vhx.LauncherActivity",
-        "tv.vhx.worldofwonder/tv.vhx.tv.home.TvHomeActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
@@ -12871,9 +11665,6 @@
         "de.sky.online/com.peacock.peacocktv.GoogleMainActivity"
       ],
       "category": "APP",
-      "unverified": [
-        "de.sky.online/com.peacock.peacocktv.GoogleMainActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
@@ -12887,9 +11678,6 @@
         "com.wrestle_universe/com.wrestle_universe.MainActivity"
       ],
       "category": "APP",
-      "unverified": [
-        "com.wrestle_universe/com.wrestle_universe.MainActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
@@ -12916,9 +11704,6 @@
         "com.x.xtv/com.x.xtv.MainActivity"
       ],
       "category": "APP",
-      "unverified": [
-        "com.x.xtv/com.x.xtv.MainActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
@@ -12974,9 +11759,6 @@
         "com.xiaomi.mitv.mediaexplorer/com.xiaomi.mitv.mediaexplorer.NewScraperMainEntryActivity"
       ],
       "category": "PLAYER",
-      "unverified": [
-        "com.xiaomi.mitv.mediaexplorer/com.xiaomi.mitv.mediaexplorer.NewScraperMainEntryActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null,
@@ -12991,9 +11773,6 @@
         "tv.airtel.xstream.tvapp/tv.airtel.xstream.login.LoginActivity"
       ],
       "category": "APP",
-      "unverified": [
-        "tv.airtel.xstream.tvapp/tv.airtel.xstream.login.LoginActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
@@ -13019,9 +11798,6 @@
         "com.xumo.xumo/com.xumo.xumo.activity.SplashActivity"
       ],
       "category": "APP",
-      "unverified": [
-        "com.xumo.xumo/com.xumo.xumo.activity.SplashActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
@@ -13036,10 +11812,6 @@
         "ver3.ycntivi.off/dev.google.yacinetv.tvui.splash.SplashActivity"
       ],
       "category": "APP",
-      "unverified": [
-        "ver3.ycntivi.off/dev.google.yacinetv.ui.splash.SplashActivity",
-        "ver3.ycntivi.off/dev.google.yacinetv.tvui.splash.SplashActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
@@ -13053,9 +11825,6 @@
         "com.yandex.browser.tv/com.yandex.browser.tv.tvactivity.TvActivity"
       ],
       "category": "BROWSER",
-      "unverified": [
-        "com.yandex.browser.tv/com.yandex.browser.tv.tvactivity.TvActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
@@ -13081,9 +11850,6 @@
         "rs.yettel.tv/rs.yettel.tv.MainActivity"
       ],
       "category": "APP",
-      "unverified": [
-        "rs.yettel.tv/rs.yettel.tv.MainActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
@@ -13097,9 +11863,6 @@
         "com.yippeeentertainment/tv.vhx.tv.home.TvHomeActivity"
       ],
       "category": "APP",
-      "unverified": [
-        "com.yippeeentertainment/tv.vhx.tv.home.TvHomeActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
@@ -13113,9 +11876,6 @@
         "com.yle.webtv/fi.yle.areena.leanback.ui.LaunchActivity"
       ],
       "category": "APP",
-      "unverified": [
-        "com.yle.webtv/fi.yle.areena.leanback.ui.LaunchActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
@@ -13129,9 +11889,6 @@
         "com.yogadownload.andtv/com.yogadownload.andtv.SplashScreen"
       ],
       "category": "SPORT",
-      "unverified": [
-        "com.yogadownload.andtv/com.yogadownload.andtv.SplashScreen"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
@@ -13145,9 +11902,6 @@
         "com.world.youcinetv/com.interactive.brasiliptv.ui.activity.WelcomeActivity"
       ],
       "category": "APP",
-      "unverified": [
-        "com.world.youcinetv/com.interactive.brasiliptv.ui.activity.WelcomeActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
@@ -13161,9 +11915,6 @@
         "com.youku.intl.tv/com.youku.tv.home.activity.HomeActivity"
       ],
       "category": "APP",
-      "unverified": [
-        "com.youku.intl.tv/com.youku.tv.home.activity.HomeActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
@@ -13177,9 +11928,6 @@
         "dk.yousee.tv.leanback/dk.yousee.ott.leanback.main.MainActivity"
       ],
       "category": "APP",
-      "unverified": [
-        "dk.yousee.tv.leanback/dk.yousee.ott.leanback.main.MainActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
@@ -13237,10 +11985,6 @@
         "yo.app.free/yo.tv.TvActivity"
       ],
       "category": "APP",
-      "unverified": [
-        "yo.app.free/yo.activity.MainActivity",
-        "yo.app.free/yo.tv.TvActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
@@ -13254,9 +11998,6 @@
         "com.zaaptv.mw.client.atv/com.alphaott.webtv.client.launcher.SystemLauncherActivity"
       ],
       "category": "APP",
-      "unverified": [
-        "com.zaaptv.mw.client.atv/com.alphaott.webtv.client.launcher.SystemLauncherActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
@@ -13271,10 +12012,6 @@
         "zank.remote/zank.remote.AndroidTV"
       ],
       "category": "TOOL",
-      "unverified": [
-        "zank.remote/zank.remote.MainActivity",
-        "zank.remote/zank.remote.AndroidTV"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null,
@@ -13289,9 +12026,6 @@
         "de.christinecoenen.code.zapp/de.christinecoenen.code.zapp.tv.main.MainActivity"
       ],
       "category": "APP",
-      "unverified": [
-        "de.christinecoenen.code.zapp/de.christinecoenen.code.zapp.tv.main.MainActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
@@ -13305,9 +12039,6 @@
         "com.zattoo.player/com.utv.MainActivity"
       ],
       "category": "APP",
-      "unverified": [
-        "com.zattoo.player/com.utv.MainActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
@@ -13321,9 +12052,6 @@
         "com.zdf.android.mediathek/com.zdf.android.mediathek.tv.MainActivity"
       ],
       "category": "APP",
-      "unverified": [
-        "com.zdf.android.mediathek/com.zdf.android.mediathek.tv.MainActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "https://simpleicons.org/?q=zdf",
       "color_note": "ZDF brand orange",
@@ -13363,10 +12091,6 @@
         "com.thezeusnetwork.www/tv.vhx.tv.home.TvHomeActivity"
       ],
       "category": "APP",
-      "unverified": [
-        "com.thezeusnetwork.www/tv.vhx.LauncherActivity",
-        "com.thezeusnetwork.www/tv.vhx.tv.home.TvHomeActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
@@ -13380,9 +12104,6 @@
         "com.ziggo.tv/com.libertyglobal.horizonx.MainActivity"
       ],
       "category": "APP",
-      "unverified": [
-        "com.ziggo.tv/com.libertyglobal.horizonx.MainActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
@@ -13396,9 +12117,6 @@
         "mobi.zona/mobi.zona.ui.MainActivity"
       ],
       "category": "APP",
-      "unverified": [
-        "mobi.zona/mobi.zona.ui.MainActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
@@ -13412,9 +12130,6 @@
         "com.zumba.consumerapp.tv/com.maz.activities.ViewerLaunchActivity"
       ],
       "category": "APP",
-      "unverified": [
-        "com.zumba.consumerapp.tv/com.maz.activities.ViewerLaunchActivity"
-      ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null

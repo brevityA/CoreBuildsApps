@@ -71,9 +71,13 @@ The icon-pack app ships a built-in Wallpapers screen:
      "resolution": "3840x2160"
    }
    ```
-4. Copy the thumb into `app/src/main/assets/wallpapers_thumbs/` and the manifest
-   into `app/src/main/assets/manifest/wallpapers.json` (CI's wallpaper tests
-   enforce that the bundled copies stay in sync).
+4. Run `python tools/sync_wallpaper_manifest.py`. It verifies every manifest
+   entry against the files on disk, copies the classic manifest into
+   `app/src/main/assets/manifest/wallpapers.json` (and the Pop manifest into
+   `pop/src/main/assets/manifest/wallpapers.json`), and keeps the bundled
+   thumb sets exactly the manifest's set — it removes stale thumbs and adds
+   missing ones (CI's wallpaper tests enforce that the bundled copies stay
+   in sync; `--check` reports drift without writing).
 5. Bump `manifest.json` `version` and `count`.
 6. Run `python tests/test_wallpapers.py`. It is the gate that keeps the repo
    manifest, the bundled copies, the files on disk, and the claimed resolutions

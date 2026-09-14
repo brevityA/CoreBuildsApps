@@ -4057,3 +4057,131 @@ def drive_sync(c):
 
 
 GLYPHS.update({"trakt_mark": trakt_mark, "drive_sync": drive_sync})
+
+
+# ==========================================================================
+# Recognisability tranche 2 (2026-09).
+#
+# Twelve entries leave category shells and letter tiles for constructions:
+# seven network numerals and the two Australian free-to-air pairs get marks
+# built from the brand's actual device (the 7, the 9, the 10, the ABC
+# lollipops, the koru), Hotstar gets its literal name, Magenta Sport gets
+# the Telekom T — and the three wordmark brands (Neon, Crave, Hayu) take
+# Outfit monograms like every other wordmark brand since v1.8.18.
+#
+# All seven constructions are monoline: flat primitives, one accent,
+# rounded caps, weights 30/26/24 so normalisation lands on 32/26.2/21.8.
+# ==========================================================================
+
+def seven_plusmark(c):
+    """7plus / Seven Plus — the Seven Network's 7, carrying the plus.
+
+    A bold 7 (crossbar + diagonal leg) with the small plus sitting in the
+    open space the leg clears: the network's numeral plus the service's
+    name, no container.
+    """
+    return (f'<path d="M 108 146 L 352 146 L 184 390" {_s(c, 30)}/>'
+            f'<path d="M 372 266 L 372 370" {_s(c, 26)}/>'
+            f'<path d="M 320 318 L 424 318" {_s(c, 26)}/>')
+
+
+def ninenow_mark(c):
+    """9Now / 9Now CTV — the nine, and the play that says "now".
+
+    The bowl and stem of the 9 hold the upper field; the play triangle
+    lands lower right, where the brand's Now wordmark sits in the
+    real lockup.
+    """
+    return (f'<circle cx="204" cy="196" r="108" {_s(c, 30)}/>'
+            f'<path d="M 300 248 C 316 316 312 366 286 404" {_s(c, 30)}/>'
+            f'<path d="M 348 306 L 348 374 L 408 340 Z" {_s(c, 24)}/>')
+
+
+def ten_mark(c):
+    """10 Play — the numeral is the brand: 1 and 0 as one lockup.
+
+    France24's precedent: when the digits are the identity, they take the
+    whole safe area. The 1 keeps its flag, the 0 is a tall ring, and no
+    container carries the pair — this retires the last tile_*.
+    """
+    return (f'<path d="M 104 168 L 168 120 L 168 408" {_s(c, 30)}/>'
+            f'<ellipse cx="316" cy="264" rx="100" ry="144" {_s(c, 30)}/>')
+
+
+def abc_lollipops(c):
+    """ABC iview — the lollipops: centre seed with its petal ring.
+
+    The ABC identity is a cluster of circles, recognisable in silhouette.
+    Seven stroked circles in one accent; the iview wordmark stays off the
+    tile per the monogram rule.
+    """
+    import math
+    out = f'<circle cx="256" cy="256" r="52" {_s(c, 30)}/>'
+    for i in range(6):
+        a = math.radians(90 + i * 60)
+        x = 256 + 148 * math.cos(a)
+        y = 256 + 148 * math.sin(a)
+        out += f'<circle cx="{x:.1f}" cy="{y:.1f}" r="44" {_s(c, 30)}/>'
+    return out
+
+
+def maori_koru(c):
+    """Māori+ — the koru, the unfurling fern frond.
+
+    One stroke from the frond head tightening into a two-turn spiral; the
+    rounded cap at the head is the frond's bud. Turn count is set so the
+    counters stay open at 48px.
+    """
+    import math
+    pts = []
+    turns, steps = 2.0, 120
+    for i in range(steps + 1):
+        t = i / steps
+        theta = math.radians(115) - t * turns * 2 * math.pi
+        r = 190 - 126 * t
+        x = 256 + r * math.cos(theta)
+        y = 256 + r * math.sin(theta)
+        pts.append(f"{'M' if i == 0 else 'L'} {x:.1f} {y:.1f}")
+    return f'<path d="{" ".join(pts)}" {_s(c, 30)}/>'
+
+
+def hotstar_spark(c):
+    """JioHotstar — the hot star: five points with the glint.
+
+    The star is the brand's literal name; the four-ray spark upper right
+    is the "hot" tell, two crossed strokes so it stays monoline.
+    """
+    import math
+    cx, cy, R, r = 236, 284, 148, 72
+    pts = []
+    for i in range(10):
+        a = math.radians(-90 + i * 36)
+        rad = R if i % 2 == 0 else r
+        x = cx + rad * math.cos(a)
+        y = cy + rad * math.sin(a)
+        pts.append(f"{'M' if i == 0 else 'L'} {x:.1f} {y:.1f}")
+    return (f'<path d="{" ".join(pts)} Z" {_s(c, 30)}/>'
+            f'<path d="M 396 84 L 396 168" {_s(c, 24)}/>'
+            f'<path d="M 354 126 L 438 126" {_s(c, 24)}/>')
+
+
+def magenta_t(c):
+    """Magenta Sport — the T of the Telekom Magenta brand.
+
+    The crossbar bows upward like a broadcast signal and the stem drops
+    from its crest; the brand's magenta (#E20074 in the catalog) does the
+    rest of the talking.
+    """
+    return (f'<path d="M 108 172 C 176 140 336 140 404 172" {_s(c, 30)}/>'
+            f'<path d="M 256 152 L 256 404" {_s(c, 30)}/>')
+
+
+GLYPHS.update({
+    "seven_plusmark": seven_plusmark,
+    "ninenow_mark": ninenow_mark,
+    "ten_mark": ten_mark,
+    "abc_lollipops": abc_lollipops,
+    "maori_koru": maori_koru,
+    "hotstar_spark": hotstar_spark,
+    "magenta_t": magenta_t,
+})

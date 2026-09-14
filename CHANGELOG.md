@@ -4,6 +4,52 @@ All notable changes to the Core Builds Icon Pack. Format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); versions follow
 [SemVer](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Added
+
+- **Recognisability tranche 2** — twelve entries leave category shells and
+  letter tiles for constructions, off the 57.7%-and-falling generic share:
+  7plus / Seven Plus get `seven_plusmark` (the Seven Network's 7 carrying the
+  plus), 9Now / 9Now CTV get `ninenow_mark` (the nine with the play that says
+  "now"), 10 Play gets `ten_mark` (the 10 lockup — the last `tile_*` retired),
+  ABC iview gets `abc_lollipops` (the centre seed with its petal ring), Māori+
+  gets `maori_koru` (the unfurling fern frond), JioHotstar gets
+  `hotstar_spark` (the star with its glint), and Magenta Sport gets
+  `magenta_t`. Neon, Crave and Hayu take Outfit monograms like every other
+  wordmark brand since v1.8.18. Receipt: `docs/icon-tranche2-2026-09.png`.
+- **Verification tranche** — 464 of the 533 `unverified` components are
+  cleared as corroborated verbatim by the published Projectivy Icon Pack
+  1.1.9 appfilter (the reference-pack inheritances the mapping was seeded
+  from). 69 remain, and `MappingHygieneTests` ratchets the count: the
+  ceiling may only move down, and a re-added corroborated component fails
+  the suite. Protocol: `docs/research/mapping-verification-2026-09.md`.
+- `tools/verify_mappings.py` — report/clear corroborated components against
+  the reference pack; the next tranche (the surviving 69) is one command.
+- `tools/prepare_release.py` — stamps all eight version surfaces (Gradle
+  name/code, catalog, `Latestrelease/version.json`, `suite.json`, README
+  suite-stamp, `docs/IconPackList.md`, CHANGELOG), rebuilds the five
+  text-asset builders, and runs the gate suite before the commit.
+- `tools/sync_wallpaper_manifest.py` — keeps the bundled wallpaper
+  manifests and thumb sets in the APKs byte-identical to the repo;
+  `Wallpapers/README.md` step 4 now runs it instead of copying by hand.
+
+### Changed
+
+- Magenta Sport's accent is now Telekom Magenta `#E20074` (it was carrying a
+  borrowed Jio blue); `magenta_t` reads in the brand's own colour.
+- The diversity gate in `tests/test_icon_identity.py` re-based to the wider
+  "generic" definition (a `tile_*` or any category shell carrying a bare
+  letter/digit; Outfit monograms stay bespoke): ceiling 57.7%, floor 395,
+  and a test that no `tile_*` glyph remains. The researched-emblem set gains
+  the nine tranche-2 drawables.
+- Seven new marks join the `core_monoline` style contract; the banner, Pop,
+  and Pixel Neon sets are regenerated to match.
+
+### Removed
+
+- The last `tile_*` glyph (`tile_10` on 10 Play).
+
 ## [1.8.18] — 2026-09-14
 
 **Feedback pass: the TizenTube stray line, the Nuvio lookalike, the

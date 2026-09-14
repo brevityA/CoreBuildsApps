@@ -946,11 +946,14 @@ def brand_castle(p: SpritePainter, icon: dict, glyph: str):
 def brand_mark_badge(p: SpritePainter, icon: dict, glyph: str):
     """Fallback for a named mark: brand initials inside a glyph-specific badge."""
     label_overrides = {
-        "a_e_mark": "A&E", "abcnews_mark": "ABC", "amc_a": "AMC",
-        "c4_block": "C4", "cnn_mark": "CNN", "espn_e": "E",
-        "f1_wing": "F1", "netflix_ribbon": "N", "nasa_mark": "NASA",
-        "pbs_mark": "PBS", "tbs_mark": "TBS", "tnt_mark": "TNT",
-        "ufc_octagon": "UFC", "uefa_star": "UEFA", "zee5_mark": "Z5",
+        "a_e_mark": "A&E", "abc_lollipops": "ABC", "abcnews_mark": "ABC",
+        "amc_a": "AMC", "c4_block": "C4", "cnn_mark": "CNN",
+        "espn_e": "E", "f1_wing": "F1", "hotstar_spark": "HS",
+        "maori_koru": "M+", "magenta_t": "M", "netflix_ribbon": "N",
+        "nasa_mark": "NASA", "ninenow_mark": "9N", "pbs_mark": "PBS",
+        "seven_plusmark": "7+", "ten_mark": "10", "tbs_mark": "TBS",
+        "tnt_mark": "TNT", "ufc_octagon": "UFC", "uefa_star": "UEFA",
+        "zee5_mark": "Z5",
     }
     label = label_overrides.get(glyph, brand_initials(icon["name"]))
     if glyph in {"c4_block", "ufc_octagon"} or "octagon" in glyph:

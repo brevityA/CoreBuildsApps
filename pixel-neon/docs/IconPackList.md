@@ -424,7 +424,7 @@ This is the alternate 8-bit neon treatment of the Core Builds catalog. Each row 
 | M6 Plus | `m6_plus` | `#53FC18` | `fr.m6.m6replay/com.bedrockstreaming.shared.tv.activity.SplashActivity` |
 | M64plus Fz | `m64plus_fz` | `#53FC18` | `org.mupen64plusae.v3.fzurita/paulscode.android.mupen64plusae.SplashActivity` |
 | MagellanTV | `magellantv` | `#FF0000` | `com.abide.magellantv/com.magellan.tv.splash.SplashActivity` |
-| Magenta Sport | `magenta_sport` | `#0061FF` | `com.telekom.androidtv.sport/com.telekom.firetv.sport.ui.launcher.LauncherActivity` |
+| Magenta Sport | `magenta_sport` | `#E20074` | `com.telekom.androidtv.sport/com.telekom.firetv.sport.ui.launcher.LauncherActivity` |
 | Magenta TV | `magenta_tv` | `#FFFFFF` | `cz.tmobile.tvgo/com.telekom.tv.player.StbPlayerActivity`<br>`de.telekom.magentatv.androidtv/de.telekom.magentatv.androidtv.ApplicationMainActivity` |
 | Magio TV | `magio_tv` | `#FEC500` | `com.telekom.magiogo/com.telekom.tv.player.StbPlayerActivity` |
 | Mame4droid | `mame4droid` | `#0061FF` | `com.seleuco.mame4droid/com.seleuco.mame4droid.MAME4droid` |

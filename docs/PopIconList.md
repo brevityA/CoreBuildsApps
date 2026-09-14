@@ -424,7 +424,7 @@ Pop is drawn from the same `tools/catalog.json` as the classic Core Builds Icon 
 | M6 Plus | `m6_plus` | `#53FC18` | `pop_green` `#3F9C35` | `fr.m6.m6replay/com.bedrockstreaming.shared.tv.activity.SplashActivity` |
 | M64plus Fz | `m64plus_fz` | `#53FC18` | `pop_green` `#3F9C35` | `org.mupen64plusae.v3.fzurita/paulscode.android.mupen64plusae.SplashActivity` |
 | MagellanTV | `magellantv` | `#FF0000` | `pop_red` `#E03127` | `com.abide.magellantv/com.magellan.tv.splash.SplashActivity` |
-| Magenta Sport | `magenta_sport` | `#0061FF` | `pop_blue` `#1C79D2` | `com.telekom.androidtv.sport/com.telekom.firetv.sport.ui.launcher.LauncherActivity` |
+| Magenta Sport | `magenta_sport` | `#E20074` | `pop_magenta` `#CE2C78` | `com.telekom.androidtv.sport/com.telekom.firetv.sport.ui.launcher.LauncherActivity` |
 | Magenta TV | `magenta_tv` | `#FFFFFF` | `pop_slate` `#59637A` | `cz.tmobile.tvgo/com.telekom.tv.player.StbPlayerActivity`<br>`de.telekom.magentatv.androidtv/de.telekom.magentatv.androidtv.ApplicationMainActivity` |
 | Magio TV | `magio_tv` | `#FEC500` | `pop_sun` `#E0AF0C` | `com.telekom.magiogo/com.telekom.tv.player.StbPlayerActivity` |
 | Mame4droid | `mame4droid` | `#0061FF` | `pop_blue` `#1C79D2` | `com.seleuco.mame4droid/com.seleuco.mame4droid.MAME4droid` |
