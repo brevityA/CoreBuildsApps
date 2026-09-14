@@ -102,19 +102,24 @@ All notable changes to the Core Builds Icon Pack. Format follows
   which also closes the Magenta Sport wordmark. Single letters that are
   the logo (the 7+, 9 and 10 network numerals) are untouched. Receipt:
   `docs/icon-lettermarks-2026-09.png`.
-- **TizenTube** (`tizentube`) — the v1.8.18 fix still read as "kinda
-  random": its chord floated under the wedge, a stroke the real emblem
-  does not have. Rebuilt from the measured geometry of the official
-  reisxd/TizenTube banner mark (art by @Zyborg777): the chord is the
-  wedge's own top edge, rim to rim, meeting the rim at 3 o'clock, and
-  the left stroke runs rim to rim as the wedge's left edge, tilted as in
-  the original; the wedge's bottom edge is a free stroke ending in a
-  rounded cap inside the rim rather than closing at the rim; the dot
-  sits between the chord and the bottom edge. Single-accent red
-  `#FF4B4B` is kept — the banner's eggplant/teal was offered and passed
-  over. The dot is a circle in the house language, not the banner's
-  tilted ellipse. Decision record `docs/tizentube-options-2026-09.png`;
-  receipt `docs/tizentube-emblem-2026-09.png`.
+- **TizenTube** (`tizentube`) — the v1.8.18 fix read as "kinda random"
+  (its chord floated under the wedge, a stroke the real mark does not
+  have), and the day's first rebuild — the measured globe emblem — was
+  traded for the frame direction the owner picked on the second sheet:
+  the square icon is now the pack's own YouTube outline (the `yt_play`
+  construction, never the vendor logo) crossed by the no-ads strike,
+  rim to rim, so it reads at a glance beside the real YouTube as
+  "YouTube, minus the ads" — the in-house fork-tell pattern SmartTube
+  sets with its corner cut. The 16:9 card (the appfilter's auto-assign
+  target) runs the fuller lockup: frame + strike + the tip dot measured
+  off the official emblem (reisxd/TizenTube banner, art by @Zyborg777),
+  keeping the brand cue the square leaves out at dock size. That split
+  rides a new per-icon `banner_glyph` catalog field — the banner renders
+  the named mark, the square keeps the icon glyph, in Classic and Pop —
+  validated in `build_icons` and test-pinned. Single-accent red
+  `#FF4B4B` throughout. Decision records `docs/tizentube-options-2026-09.png`
+  and `docs/tizentube-emblem-2026-09.png` (the interim measured-emblem
+  pass); receipt `docs/tizentube-frame-2026-09.png`.
 
 ### Removed
 

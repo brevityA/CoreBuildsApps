@@ -10200,6 +10200,7 @@
       "drawable": "tizentube",
       "color": "#FF4B4B",
       "glyph": "tizen_play",
+      "banner_glyph": "tizen_play_dot",
       "components": [
         "io.gh.reisxd.tizentube.cobalt/dev.cobalt.app.MainActivity"
       ],

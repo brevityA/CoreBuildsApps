@@ -287,7 +287,9 @@ def main():
             # banner centring audit holds them to the same 3px tolerance.
             svg = recentre(svg)
         else:
-            svg = render(i["name"], i["glyph"], i["color"],
+            # banner_glyph overrides the square icon's mark on the 16:9 card
+            # (e.g. TizenTube: banner carries the emblem's tip dot).
+            svg = render(i["name"], i.get("banner_glyph", i["glyph"]), i["color"],
                          i.get("category"), monochrome=mono,
                          gradient=i.get("gradient"))
             svg = recentre(svg)

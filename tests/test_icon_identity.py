@@ -136,6 +136,27 @@ class IdentityTests(unittest.TestCase):
                         render_glyph_only(icon["glyph"], icon["color"], monochrome=mono)):
                 self.assertIn(f'stroke="{colour}"', svg)
 
+    def test_banner_glyph_override_carries_a_real_banner_mark(self):
+        """banner_glyph (TizenTube) splits the square from the 16:9 card:
+        the committed banner must be that mark, and the square keeps the
+        icon glyph."""
+        from build_banners import recentre
+        for icon in ICONS:
+            bg = icon.get("banner_glyph")
+            if not bg:
+                continue
+            with self.subTest(icon=icon["name"]):
+                self.assertIn(bg, GLYPHS, icon["name"])
+                self.assertNotEqual(bg, icon["glyph"], icon["name"])
+                expected = recentre(render(icon["name"], bg, icon["color"],
+                                            icon.get("category", "")))
+                self.assertEqual(
+                    (ROOT / "assets/banners" / f"{icon['drawable']}.svg").read_text(),
+                    expected, icon["name"])
+                self.assertEqual(
+                    (ROOT / "assets/svg" / f"{icon['drawable']}.svg").read_text(),
+                    render_svg(icon["glyph"], icon["color"]), icon["name"])
+
     def test_committed_square_vectors_match_the_generator(self):
         for icon in ICONS:
             path = ROOT / "assets/svg" / f"{icon['drawable']}.svg"

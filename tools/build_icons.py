@@ -59,6 +59,8 @@ def validate(icons, artwork=None):
         seen_d[d] = n
         if i.get("glyph") not in GLYPHS:
             errors.append(f"{n}: unknown glyph '{i.get('glyph')}'")
+        if i.get("banner_glyph") and i["banner_glyph"] not in GLYPHS:
+            errors.append(f"{n}: unknown banner glyph '{i.get('banner_glyph')}'")
         if not re.match(r"^#[0-9A-Fa-f]{6}$", i.get("color", "")):
             errors.append(f"{n}: color '{i.get('color')}' must be #RRGGBB")
         if not i.get("components"):

@@ -546,20 +546,28 @@ def smarttube_play(c):
 
 
 def tizen_play(c):
-    """TizenTube: the official emblem, rebuilt from the measured logo.
+    """TizenTube — the ad-free YouTube button.
 
-    A globe whose play wedge is struck through: the "no-ads" chord runs
-    rim to rim from the top point to the three-o'clock rim as the wedge's
-    top edge, the bottom edge leaves the bottom point and ends in a free
-    rounded cap before the rim, and the dot sits in the open blue above
-    that cap, clear of the chord and the rim — exactly how the official
-    mark (reisxd/TizenTube banner, @Zyborg777) sits its parts.
+    The frame direction the owner picked off the 2026-09-14 decision sheet:
+    the pack's own YouTube outline (the yt_play construction, never the
+    vendor logo) carrying TizenTube's no-ads strike, rim to rim across the
+    play. In a dock next to YouTube it says what the app is at a glance —
+    YouTube, minus the ads — the same in-house fork-tell pattern SmartTube
+    sets with its corner cut.
+
+    The banner runs tizen_play_dot: the same lockup plus the tip dot
+    measured off the official emblem (reisxd/TizenTube banner, art by
+    @Zyborg777), so the 16:9 card keeps the brand cue the icon leaves out
+    at dock size.
     """
-    return (f'<circle cx="256" cy="256" r="196" {_s(c, 34)}/>'
-            f'<path d="M 189 72 L 174 424" {_s(c, 30)}/>'
-            f'<path d="M 189 72 L 451 272" {_s(c, 30)}/>'
-            f'<path d="M 174 424 L 341 299" {_s(c, 30)}/>'
-            f'<circle cx="386" cy="282" r="19" fill="{c}" stroke="none"/>')
+    return (f'<rect x="64" y="128" width="384" height="256" rx="64" {_s(c, 34)}/>'
+            f'<path d="M 216 192 L 328 256 L 216 320 Z" {_s(c, 34)}/>'
+            f'<path d="M 156 156 L 356 356" {_s(c, 34)}/>')
+
+
+def tizen_play_dot(c):
+    """TizenTube banner mark — tizen_play plus the emblem's tip dot."""
+    return tizen_play(c) + f'<circle cx="372" cy="300" r="19" fill="{c}" stroke="none"/>'
 
 
 def film_reel(c):
@@ -851,7 +859,8 @@ def vidio_wordmark(c):
 
 GLYPHS.update({
     "yt_play": yt_play, "smarttube_play": smarttube_play,
-    "tizen_play": tizen_play, "film_reel": film_reel, "flix_f": flix_f,
+    "tizen_play": tizen_play, "tizen_play_dot": tizen_play_dot,
+    "film_reel": film_reel, "flix_f": flix_f,
     "yinyang_play": yinyang_play, "stremio_square": stremio_square,
     "arvio_a": arvio_a, "lumera_beam": lumera_beam,
     "debrid_bolt": debrid_bolt, "alldebrid_infinity": alldebrid_infinity,
