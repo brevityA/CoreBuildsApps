@@ -102,6 +102,19 @@ All notable changes to the Core Builds Icon Pack. Format follows
   which also closes the Magenta Sport wordmark. Single letters that are
   the logo (the 7+, 9 and 10 network numerals) are untouched. Receipt:
   `docs/icon-lettermarks-2026-09.png`.
+- **TizenTube** (`tizentube`) — the v1.8.18 fix still read as "kinda
+  random": its chord floated under the wedge, a stroke the real emblem
+  does not have. Rebuilt from the measured geometry of the official
+  reisxd/TizenTube banner mark (art by @Zyborg777): the chord is the
+  wedge's own top edge, rim to rim, meeting the rim at 3 o'clock, and
+  the left stroke runs rim to rim as the wedge's left edge, tilted as in
+  the original; the wedge's bottom edge is a free stroke ending in a
+  rounded cap inside the rim rather than closing at the rim; the dot
+  sits between the chord and the bottom edge. Single-accent red
+  `#FF4B4B` is kept — the banner's eggplant/teal was offered and passed
+  over. The dot is a circle in the house language, not the banner's
+  tilted ellipse. Decision record `docs/tizentube-options-2026-09.png`;
+  receipt `docs/tizentube-emblem-2026-09.png`.
 
 ### Removed
 

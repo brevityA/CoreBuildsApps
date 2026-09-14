@@ -546,18 +546,20 @@ def smarttube_play(c):
 
 
 def tizen_play(c):
-    """TizenTube: the official globe — play wedge, chord and detached dot.
+    """TizenTube: the official emblem, rebuilt from the measured logo.
 
-    An earlier legibility pass moved the ad-block slash clear of the wedge
-    and left it as a stub off the bottom-left corner, which read as a stray
-    line. The official mark runs its diagonal as a chord from the rim, under
-    the wedge, ending in a detached dot before the rim again — so the chord
-    returns to the circle and the dot keeps its brand gap instead of floating.
+    A globe whose play wedge is struck through: the "no-ads" chord runs
+    rim to rim from the top point to the three-o'clock rim as the wedge's
+    top edge, the bottom edge leaves the bottom point and ends in a free
+    rounded cap before the rim, and the dot sits in the open blue above
+    that cap, clear of the chord and the rim — exactly how the official
+    mark (reisxd/TizenTube banner, @Zyborg777) sits its parts.
     """
     return (f'<circle cx="256" cy="256" r="196" {_s(c, 34)}/>'
-            f'<path d="M 176 152 L 176 320 L 372 236 Z" {_s(c, 30)}/>'
-            f'<path d="M 98 372 L 352 318" {_s(c, 24)}/>'
-            f'<path d="M 400 283 L 404 281" {_s(c, 24)}/>')
+            f'<path d="M 189 72 L 174 424" {_s(c, 30)}/>'
+            f'<path d="M 189 72 L 451 272" {_s(c, 30)}/>'
+            f'<path d="M 174 424 L 341 299" {_s(c, 30)}/>'
+            f'<circle cx="386" cy="282" r="19" fill="{c}" stroke="none"/>')
 
 
 def film_reel(c):

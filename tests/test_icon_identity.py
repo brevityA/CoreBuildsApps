@@ -458,6 +458,8 @@ class DiversityTests(unittest.TestCase):
         "bellmedia",                    # Crave — the wordmark's leading c
         "hayu",                         # the wordmark's y and its tail
         "neon",                         # the app mark's neon-tube segments
+        # TizenTube emblem pass (2026-09): rebuilt from the measured logo
+        "tizentube",                    # globe, struck-through wedge, dot
     }
 
     @staticmethod
