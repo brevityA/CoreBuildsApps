@@ -69,6 +69,7 @@
     <item drawable="audials" />
     <item drawable="audiomack" />
     <item drawable="aurora_store" />
+    <item drawable="av_source" />
     <item drawable="hritwik" />
     <item drawable="award" />
     <item drawable="babyeinstein" />
@@ -598,8 +599,11 @@
     <item drawable="privado_vpn" />
     <item drawable="privateinternetaccess" />
     <item drawable="projectivy_blueprint" />
+    <item drawable="projectivy_categories" />
+    <item drawable="projectivy_channels" />
     <item drawable="projectivy" />
     <item drawable="projectivy_overflight" />
+    <item drawable="projectivy_settings" />
     <item drawable="protonvpn" />
     <item drawable="subscription" />
     <item drawable="cloudmosa" />

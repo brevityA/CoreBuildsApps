@@ -399,8 +399,12 @@
     <item drawable="homebutton_banner" />
     <item drawable="kore_banner" />
     <category title="Banners · System" />
+    <item drawable="av_source_banner" />
     <item drawable="files_banner" />
     <item drawable="hdmi_source_banner" />
+    <item drawable="projectivy_categories_banner" />
+    <item drawable="projectivy_channels_banner" />
+    <item drawable="projectivy_settings_banner" />
     <item drawable="settings_banner" />
     <category title="Banners · Tracking" />
     <item drawable="trakt_banner" />
@@ -1353,8 +1357,12 @@
     <item drawable="homebutton" />
     <item drawable="kore" />
     <category title="Square · System" />
+    <item drawable="av_source" />
     <item drawable="files" />
     <item drawable="hdmi_source" />
+    <item drawable="projectivy_categories" />
+    <item drawable="projectivy_channels" />
+    <item drawable="projectivy_settings" />
     <item drawable="settings" />
     <category title="Square · Tracking" />
     <item drawable="trakt" />

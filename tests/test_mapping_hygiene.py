@@ -32,7 +32,12 @@ REFERENCE = ROOT / "tools" / "reference" / "projectivy-1.1.9-appfilter.xml"
 
 # Ratchet ceiling: unverified components remaining after the 2026-09
 # verification tranche (464 of 533 cleared against Projectivy 1.1.9).
-UNVERIFIED_CEILING = 69
+# 69 -> 77: the Projectivy internal cards batch (2026-09-14) adds 8
+# launcher-internal components (AV input, Settings, Categories, Channels)
+# that cannot be device-verified without a Projectivy 4.70 install; they are
+# expected to clear at the next ADB scan (docs/research/community-input-icons-
+# 2026-09.md). The ceiling may only move back down.
+UNVERIFIED_CEILING = 77
 
 
 def _canonical(component: str) -> str:

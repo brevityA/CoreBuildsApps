@@ -16,8 +16,8 @@
       "legacyApk": "app-release.apk",
       "metadata": "Latestrelease/version.json",
       "section": "icon-pack",
-      "iconCount": 933,
-      "componentCount": 1130
+      "iconCount": 937,
+      "componentCount": 1144
     },
     "pixelneon": {
       "name": "Core Builds Pixel Neon",
@@ -33,8 +33,8 @@
       "legacyApk": "pixelneon-release.apk",
       "metadata": "Latestrelease/pixel-neon-version.json",
       "section": "pixel-neon",
-      "iconCount": 933,
-      "componentCount": 1130
+      "iconCount": 937,
+      "componentCount": 1144
     },
     "pop": {
       "name": "Core Builds Pop",
@@ -49,8 +49,8 @@
       "stableApk": "corepop-release.apk",
       "metadata": "Latestrelease/pop-version.json",
       "section": "core-builds-pop",
-      "iconCount": 933,
-      "componentCount": 1130
+      "iconCount": 937,
+      "componentCount": 1144
     },
     "line": {
       "name": "Core Line",

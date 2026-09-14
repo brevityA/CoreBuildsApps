@@ -1,6 +1,6 @@
 # Core Builds Pixel Neon · supported applications
 
-`933` individually generated pixel sprites · `1130` catalog components · pack v0.1.0
+`937` individually generated pixel sprites · `1144` catalog components · pack v0.1.0
 
 This is the alternate 8-bit neon treatment of the Core Builds catalog. Each row uses its semantic brand glyph cue, then gets a hash-seeded pixel recipe; this pack does not reuse the monoline SVG geometry or banner lockups.
 
@@ -75,6 +75,7 @@ This is the alternate 8-bit neon treatment of the Core Builds catalog. Each row 
 | Audials | `audials` | `#00D4FF` | `com.audials.paid/com.audials.main.SplashScreenActivity` |
 | Audiomack | `audiomack` | `#FFA200` | `com.audiomack/com.audiomack.ui.splash.SplashActivity` |
 | Aurora Store | `aurora_store` | `#00C2FF` | `com.aurora.store/.MainActivity` |
+| AV Source | `av_source` | `#00D4FF` | `com.spocky.projengmenu/.activities.input.SourceAVActivity`<br>`com.spocky.projengmenu/.ui.guidedActions.activities.input.SourceAVActivity` |
 | Avoid | `hritwik` | `#FFFFFF` | `com.hritwik.avoid/com.hritwik.avoid.MainActivity` |
 | Award VPN | `award` | `#0061FF` | `com.award.VPN/app.award.update.SplashActivity` |
 | Baby Einstein | `babyeinstein` | `#0061FF` | `com.giant.babyeinstein/com.codes.ui.SplashActivity` |
@@ -525,7 +526,7 @@ This is the alternate 8-bit neon treatment of the Core Builds catalog. Each row 
 | Npo Start | `npo_start` | `#008080` | `nl.uitzendinggemist/nl.uitzendinggemist.tv.presentation.activities.main.MainActivity` |
 | Nrk TV | `nrk_tv` | `#F5F500` | `no.nrk.tv/no.nrk.tv.view.MobileSplashScreenActivity`<br>`no.nrk.tv/no.nrk.tv.view.TvSplashScreenActivity` |
 | NT at Home | `ntathome` | `#53FC18` | `com.ntathome/tv.vhx.LauncherActivity`<br>`com.ntathome/tv.vhx.tv.home.TvHomeActivity` |
-| Nuvio TV | `nuvio` | `#A238F0` | `com.nuvio.app/com.nuvio.tv.MainActivity`<br>`com.nuvio.tv/.MainActivity`<br>`com.nuvio.tv/com.nuvio.tv.MainActivity`<br>`com.nuviodebug.com/com.nuvio.tv.MainActivity` |
+| Nuvio TV | `nuvio` | `#A238F0` | `com.nuvio.app/com.nuvio.tv.MainActivity`<br>`com.nuvio.tv/.MainActivity`<br>`com.nuvio.tv/com.nuvio.tv.MainActivity`<br>`com.nuviodebug.com/com.nuvio.tv.MainActivity`<br>`com.nuvio.tv/.launcher.AppIconDefault`<br>`com.nuvio.tv/.launcher.AppIconArcticBlue`<br>`com.nuvio.tv/.launcher.AppIconEmerald`<br>`com.nuvio.tv/.launcher.AppIconRoseGold`<br>`com.nuvio.tv/.launcher.AppIconCopper`<br>`com.nuvio.tv/.launcher.AppIconGraphite` |
 | NV Player | `nvplayer` | `#FA7D19` | `com.acb.nvplayer/com.ae.video.bplayer.ui.SplashActivity` |
 | Nxsha | `nxsha` | `#FF9800` | `com.nxsha/com.nxsha.MainActivity` |
 | NZR+ | `nzrplus` | `#00D4FF` | `com.nzrplus.app/com.nzrplus.app.MainActivity` |
@@ -604,8 +605,11 @@ This is the alternate 8-bit neon treatment of the Core Builds catalog. Each row 
 | Privado VPN | `privado_vpn` | `#FF0000` | `io.privado.android/io.privado.android.ui.splash.SplashActivity` |
 | Private Internet Access | `privateinternetaccess` | `#1E811F` | `com.privateinternetaccess.android/com.kape.vpn.MainActivity` |
 | Projectivy Blueprint | `projectivy_blueprint` | `#00E5FF` | `dev.projectivy.blueprint.app/.MainActivity` |
+| Projectivy Categories | `projectivy_categories` | `#59637A` | `com.spocky.projengmenu/.ui.guidedActions.activities.shortcut.CategoryShortcutActivity`<br>`com.spocky.projengmenu/.ui.launcherActivities.CategoryShortcutActivity` |
+| Projectivy Channels | `projectivy_channels` | `#59637A` | `com.spocky.projengmenu/.ui.guidedActions.activities.shortcut.ChannelShortcutActivity`<br>`com.spocky.projengmenu/.ui.launcherActivities.ChannelShortcutActivity` |
 | Projectivy Launcher | `projectivy` | `#00BCD4` | `com.spocky.projengmenu/.ui.home.MainActivity`<br>`com.spocky.projengmenu/.ui.tvinput.TvInputActivity`<br>`com.spocky.projengmenu/com.spocky.projengmenu.ui.MainActivity` |
 | Projectivy Overflight | `projectivy_overflight` | `#0061FF` | `tv.projectivy.plugin.wallpaperprovider.overflight/tv.projectivy.plugin.wallpaperprovider.overflight.SettingsActivity` |
+| Projectivy Settings | `projectivy_settings` | `#59637A` | `com.spocky.projengmenu/.ui.settings.SettingsActivity`<br>`com.spocky.projengmenu/.ui.guidedActions.activities.settings.AppSettingsActivity` |
 | Proton VPN | `protonvpn` | `#66DEB1` | `ch.protonvpn.android/com.protonvpn.android.tv.main.TvMainActivity` |
 | Psiphon | `subscription` | `#03A9F4` | `com.psiphon3.subscription/com.psiphon3.MainActivity` |
 | Puffin TV | `cloudmosa` | `#FF0000` | `com.cloudmosa.puffinTV/com.cloudmosa.appTV.classic.ClassicTVActivity` |

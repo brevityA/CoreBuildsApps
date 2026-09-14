@@ -8,6 +8,49 @@ All notable changes to the Core Builds Icon Pack. Format follows
 
 ### Added
 
+- **Projectivy internal cards** — the long-posted r/Projectivy_Launcher
+  request ("a banner shaped icon for … my HDMI outputs so I don't have the
+  square HDMI icon that Projectivy use") gets four new entries, all rendered
+  from existing glyphs, zero new art: `av_source` (the AV input card,
+  `monitor_wave`, the input family's cyan alongside `hdmi_source`),
+  `projectivy_settings` (gear), `projectivy_categories` (folder) and
+  `projectivy_channels` (tv_stack), mapped to Projectivy 4.70's internal
+  activities (Settings + AppSettings, Category/Channel shortcuts, SourceAV)
+  in both name forms. All eight components are `unverified` — the launcher is
+  closed-source, so they clear at the next ADB device scan; the
+  `MappingHygieneTests` ratchet moves 69 → 77 for the batch and is expected
+  only to fall from there. HDMI 1–4 keeps the unified `hdmi_source` mark;
+  the four numbered input marks are deferred until on-device confirmation of
+  whether the launcher labels the cards (see
+  `docs/research/community-input-icons-2026-09.md`).
+- **Nuvio TV launcher activities** — the entry mapped only `.MainActivity`,
+  which in the official manifest carries deep links only; on a real device
+  the icon resolved from the LAUNCHER activity and so never applied. All six
+  launcher activities from the official manifest (`launcher.AppIconDefault`
+  plus the five user-switchable icon variants) are now mapped — 12
+  components, manifest-verified against NuvioMedia/NuvioTV `dev`
+  (2026-09-12), so they cost no unverified budget.
+
+### Fixed
+
+- **GeForce Now** (`tegrazone3`) — shipped in v1.8.18 but never documented
+  in that release's notes, which is how it surfaced as a user report: the
+  card showed a "T" letter tile (the launcher's fallback for the Tegra Zone
+  label — the legacy brand of the same app, package `com.nvidia.tegrazone3`)
+  instead of the mark, and a per-app reset restored the native icon at its
+  native size. The shipped asset and the appfilter entry were verified to
+  match the reference pack's mapping exactly, so the failure is a launcher
+  that could not resolve the drawable from the installed pack's resources —
+  a stale pack install or a stale launcher resource cache after a pack
+  update. Remedy on-device: update to the latest pack and force a launcher
+  refresh (reboot, or re-apply the pack from Projectivy settings). The
+  failure class is now closed at the source: new CI gate
+  `tools/check_appfilter_integrity.py` verifies that every drawable named by
+  every appfilter (Icon Pack, Pop, Pixel Neon — res/xml and assets copies)
+  exists in that pack's res tree, and `tools/build_icons.py` refuses to
+  write an appfilter that references a missing drawable instead of warning
+  and shipping it.
+
 - **Recognisability tranche 2** — twelve entries leave category shells and
   letter tiles for constructions, off the 57.7%-and-falling generic share:
   7plus / Seven Plus get `seven_plusmark` (the Seven Network's 7 carrying the

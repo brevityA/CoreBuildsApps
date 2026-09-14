@@ -1,6 +1,6 @@
 # Core Builds Pop — supported applications
 
-`933` icons · `1130` mapped components · pack v1.0.0
+`937` icons · `1144` mapped components · pack v1.0.0
 
 Pop is drawn from the same `tools/catalog.json` as the classic Core Builds Icon Pack, so coverage is identical and always will be. What differs is the render: one container, one keyline weight, one halftone screen, and 16 locked swatches instead of 169 accents.
 
@@ -75,6 +75,7 @@ Pop is drawn from the same `tools/catalog.json` as the classic Core Builds Icon 
 | Audials | `audials` | `#00D4FF` | `pop_aqua` `#0C8AAE` | `com.audials.paid/com.audials.main.SplashScreenActivity` |
 | Audiomack | `audiomack` | `#FFA200` | `pop_amber` `#E8880F` | `com.audiomack/com.audiomack.ui.splash.SplashActivity` |
 | Aurora Store | `aurora_store` | `#00C2FF` | `pop_aqua` `#0C8AAE` | `com.aurora.store/.MainActivity` |
+| AV Source | `av_source` | `#00D4FF` | `pop_aqua` `#0C8AAE` | `com.spocky.projengmenu/.activities.input.SourceAVActivity`<br>`com.spocky.projengmenu/.ui.guidedActions.activities.input.SourceAVActivity` |
 | Avoid | `hritwik` | `#FFFFFF` | `pop_slate` `#59637A` | `com.hritwik.avoid/com.hritwik.avoid.MainActivity` |
 | Award VPN | `award` | `#0061FF` | `pop_blue` `#1C79D2` | `com.award.VPN/app.award.update.SplashActivity` |
 | Baby Einstein | `babyeinstein` | `#0061FF` | `pop_blue` `#1C79D2` | `com.giant.babyeinstein/com.codes.ui.SplashActivity` |
@@ -525,7 +526,7 @@ Pop is drawn from the same `tools/catalog.json` as the classic Core Builds Icon 
 | Npo Start | `npo_start` | `#008080` | `pop_aqua` `#0C8AAE` | `nl.uitzendinggemist/nl.uitzendinggemist.tv.presentation.activities.main.MainActivity` |
 | Nrk TV | `nrk_tv` | `#F5F500` | `pop_acid` `#9DBB1F` | `no.nrk.tv/no.nrk.tv.view.MobileSplashScreenActivity`<br>`no.nrk.tv/no.nrk.tv.view.TvSplashScreenActivity` |
 | NT at Home | `ntathome` | `#53FC18` | `pop_green` `#3F9C35` | `com.ntathome/tv.vhx.LauncherActivity`<br>`com.ntathome/tv.vhx.tv.home.TvHomeActivity` |
-| Nuvio TV | `nuvio` | `#A238F0` | `pop_grape` `#7440C6` | `com.nuvio.app/com.nuvio.tv.MainActivity`<br>`com.nuvio.tv/.MainActivity`<br>`com.nuvio.tv/com.nuvio.tv.MainActivity`<br>`com.nuviodebug.com/com.nuvio.tv.MainActivity` |
+| Nuvio TV | `nuvio` | `#A238F0` | `pop_grape` `#7440C6` | `com.nuvio.app/com.nuvio.tv.MainActivity`<br>`com.nuvio.tv/.MainActivity`<br>`com.nuvio.tv/com.nuvio.tv.MainActivity`<br>`com.nuviodebug.com/com.nuvio.tv.MainActivity`<br>`com.nuvio.tv/.launcher.AppIconDefault`<br>`com.nuvio.tv/.launcher.AppIconArcticBlue`<br>`com.nuvio.tv/.launcher.AppIconEmerald`<br>`com.nuvio.tv/.launcher.AppIconRoseGold`<br>`com.nuvio.tv/.launcher.AppIconCopper`<br>`com.nuvio.tv/.launcher.AppIconGraphite` |
 | NV Player | `nvplayer` | `#FA7D19` | `pop_amber` `#E8880F` | `com.acb.nvplayer/com.ae.video.bplayer.ui.SplashActivity` |
 | Nxsha | `nxsha` | `#FF9800` | `pop_amber` `#E8880F` | `com.nxsha/com.nxsha.MainActivity` |
 | NZR+ | `nzrplus` | `#00D4FF` | `pop_aqua` `#0C8AAE` | `com.nzrplus.app/com.nzrplus.app.MainActivity` |
@@ -604,8 +605,11 @@ Pop is drawn from the same `tools/catalog.json` as the classic Core Builds Icon 
 | Privado VPN | `privado_vpn` | `#FF0000` | `pop_red` `#E03127` | `io.privado.android/io.privado.android.ui.splash.SplashActivity` |
 | Private Internet Access | `privateinternetaccess` | `#1E811F` | `pop_green` `#3F9C35` | `com.privateinternetaccess.android/com.kape.vpn.MainActivity` |
 | Projectivy Blueprint | `projectivy_blueprint` | `#00E5FF` | `pop_aqua` `#0C8AAE` | `dev.projectivy.blueprint.app/.MainActivity` |
+| Projectivy Categories | `projectivy_categories` | `#59637A` | `pop_slate` `#59637A` | `com.spocky.projengmenu/.ui.guidedActions.activities.shortcut.CategoryShortcutActivity`<br>`com.spocky.projengmenu/.ui.launcherActivities.CategoryShortcutActivity` |
+| Projectivy Channels | `projectivy_channels` | `#59637A` | `pop_slate` `#59637A` | `com.spocky.projengmenu/.ui.guidedActions.activities.shortcut.ChannelShortcutActivity`<br>`com.spocky.projengmenu/.ui.launcherActivities.ChannelShortcutActivity` |
 | Projectivy Launcher | `projectivy` | `#00BCD4` | `pop_aqua` `#0C8AAE` | `com.spocky.projengmenu/.ui.home.MainActivity`<br>`com.spocky.projengmenu/.ui.tvinput.TvInputActivity`<br>`com.spocky.projengmenu/com.spocky.projengmenu.ui.MainActivity` |
 | Projectivy Overflight | `projectivy_overflight` | `#0061FF` | `pop_blue` `#1C79D2` | `tv.projectivy.plugin.wallpaperprovider.overflight/tv.projectivy.plugin.wallpaperprovider.overflight.SettingsActivity` |
+| Projectivy Settings | `projectivy_settings` | `#59637A` | `pop_slate` `#59637A` | `com.spocky.projengmenu/.ui.settings.SettingsActivity`<br>`com.spocky.projengmenu/.ui.guidedActions.activities.settings.AppSettingsActivity` |
 | Proton VPN | `protonvpn` | `#66DEB1` | `pop_jade` `#0E9077` | `ch.protonvpn.android/com.protonvpn.android.tv.main.TvMainActivity` |
 | Psiphon | `subscription` | `#03A9F4` | `pop_aqua` `#0C8AAE` | `com.psiphon3.subscription/com.psiphon3.MainActivity` |
 | Puffin TV | `cloudmosa` | `#FF0000` | `pop_red` `#E03127` | `com.cloudmosa.puffinTV/com.cloudmosa.appTV.classic.ClassicTVActivity` |

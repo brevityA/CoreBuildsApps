@@ -6,7 +6,7 @@
     "grid": 512,
     "safe_area": 432,
     "note": "Core Builds-authored geometric icons on a shared 512 grid. Reviewed brand glyphs use rounded monoline strokes and one accent, not imported vendor silhouettes. Common Outfit/category/rail banners; artwork is reference-only. Canonical brand colours and the dark-card contrast policy remain shared.",
-    "count": 933
+    "count": 937
   },
   "icons": [
     {
@@ -6739,7 +6739,13 @@
         "com.nuvio.app/com.nuvio.tv.MainActivity",
         "com.nuvio.tv/.MainActivity",
         "com.nuvio.tv/com.nuvio.tv.MainActivity",
-        "com.nuviodebug.com/com.nuvio.tv.MainActivity"
+        "com.nuviodebug.com/com.nuvio.tv.MainActivity",
+        "com.nuvio.tv/.launcher.AppIconDefault",
+        "com.nuvio.tv/.launcher.AppIconArcticBlue",
+        "com.nuvio.tv/.launcher.AppIconEmerald",
+        "com.nuvio.tv/.launcher.AppIconRoseGold",
+        "com.nuvio.tv/.launcher.AppIconCopper",
+        "com.nuvio.tv/.launcher.AppIconGraphite"
       ],
       "category": "STREAM",
       "color_source": "brand reference — nuvio lockup gradient, violet end (sampled 2026-09-14)",
@@ -12131,6 +12137,82 @@
       ],
       "category": "APP",
       "mapping_source": "Projectivy Icon Pack 1.1.9",
+      "color_source": "core-builds palette (no published brand colour found)",
+      "color_reviewed": null
+    },
+    {
+      "name": "AV Source",
+      "drawable": "av_source",
+      "color": "#00D4FF",
+      "glyph": "monitor_wave",
+      "components": [
+        "com.spocky.projengmenu/.activities.input.SourceAVActivity",
+        "com.spocky.projengmenu/.ui.guidedActions.activities.input.SourceAVActivity"
+      ],
+      "unverified": [
+        "com.spocky.projengmenu/.activities.input.SourceAVActivity",
+        "com.spocky.projengmenu/.ui.guidedActions.activities.input.SourceAVActivity"
+      ],
+      "category": "SYSTEM",
+      "brand": "projectivy_av",
+      "style": "core_monoline",
+      "color_source": "core-builds palette (no published brand colour found)",
+      "color_reviewed": null
+    },
+    {
+      "name": "Projectivy Settings",
+      "drawable": "projectivy_settings",
+      "color": "#59637A",
+      "glyph": "gear",
+      "components": [
+        "com.spocky.projengmenu/.ui.settings.SettingsActivity",
+        "com.spocky.projengmenu/.ui.guidedActions.activities.settings.AppSettingsActivity"
+      ],
+      "unverified": [
+        "com.spocky.projengmenu/.ui.settings.SettingsActivity",
+        "com.spocky.projengmenu/.ui.guidedActions.activities.settings.AppSettingsActivity"
+      ],
+      "category": "SYSTEM",
+      "brand": "projectivy_settings",
+      "style": "core_monoline",
+      "color_source": "core-builds palette (no published brand colour found)",
+      "color_reviewed": null
+    },
+    {
+      "name": "Projectivy Categories",
+      "drawable": "projectivy_categories",
+      "color": "#59637A",
+      "glyph": "folder",
+      "components": [
+        "com.spocky.projengmenu/.ui.guidedActions.activities.shortcut.CategoryShortcutActivity",
+        "com.spocky.projengmenu/.ui.launcherActivities.CategoryShortcutActivity"
+      ],
+      "unverified": [
+        "com.spocky.projengmenu/.ui.guidedActions.activities.shortcut.CategoryShortcutActivity",
+        "com.spocky.projengmenu/.ui.launcherActivities.CategoryShortcutActivity"
+      ],
+      "category": "SYSTEM",
+      "brand": "projectivy_categories",
+      "style": "core_monoline",
+      "color_source": "core-builds palette (no published brand colour found)",
+      "color_reviewed": null
+    },
+    {
+      "name": "Projectivy Channels",
+      "drawable": "projectivy_channels",
+      "color": "#59637A",
+      "glyph": "tv_stack",
+      "components": [
+        "com.spocky.projengmenu/.ui.guidedActions.activities.shortcut.ChannelShortcutActivity",
+        "com.spocky.projengmenu/.ui.launcherActivities.ChannelShortcutActivity"
+      ],
+      "unverified": [
+        "com.spocky.projengmenu/.ui.guidedActions.activities.shortcut.ChannelShortcutActivity",
+        "com.spocky.projengmenu/.ui.launcherActivities.ChannelShortcutActivity"
+      ],
+      "category": "SYSTEM",
+      "brand": "projectivy_channels",
+      "style": "core_monoline",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
     }
