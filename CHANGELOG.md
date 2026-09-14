@@ -20,22 +20,30 @@ Hi Browser, Screen Recording App, BitTV, Vidio).** 931 → 933 icons, 1120 → 1
 - **Nuvio TV** (`nuvio`): the pre-research wave-in-a-circle — a mark Nuvio
   does not have — is replaced by the official wedge, and the guessed rose
   accent becomes the brand violet `#A238F0`. Second pass: the recreation
-  is now two inks, as the owner allowed — cyan over the top edge and the
-  inner play (the logo's lighting), violet under the bottom edge — so the
-  split silhouette reads as the cyan→violet gradient wedge with its
-  knocked-out centre, which the dark card supplies for free.
-- **Wordmark banners say the name once.** Tubi, Vidio and BitTV draw their
-  name as the glyph, so printing it again beside the mark read twice.
-  Those three entries take `banner_style: glyph` (mark-only banner), and
-  `build_banners.py` now recentres glyph-only banners to the same 3px
-  tolerance as the text lockups.
+  runs the brand's real gradient — cyan `#2FCCE6` at the top fading to
+  the violet `#A238F0` below, painted at render time as a vertical
+  `linearGradient` (`tools/glyphs.py` gradient support) — superseding the
+  interim two-ink split; the knocked-out centre still reads via the dark
+  card. Pop Art and Pixel Neon stays stay flat by design, since those
+  pipelines repaint strokes from a sentinel colour.
+- **Icons are glyphs, never wordmarks.** Per the owner's rule an icon
+  carries a single letterform, not a name: Tubi, Vidio and BitTV — which
+  drew their wordmark (or store mark) as the icon glyph — now wear monogram
+  letters cut from the pack's own typeface, Outfit ExtraBold via
+  `tools/typeface.py`: Tubi a `t` carrying the brand's shoulder dot (a lone
+  t otherwise reads as a plus), Vidio a `v`, BitTV a `b`, each in its brand
+  colour. Their banners return to the standard lockup — mark beside the
+  printed name, said once — so the interim mark-only `banner_style` is
+  withdrawn, and a new test forbids any `wordmark` glyph re-entering the
+  catalog.
 - **Pluto TV** (`pluto_tv`): planet-with-orbit becomes the disc with its
   planetary echo arcs (2020 lockup device), and the black accent — which
   the contrast policy had to substitute anyway — becomes the 2024 disc
   yellow `#FFF200`.
 - **Tubi** (`tubi`): the invented bare-T gate becomes the brand's actual
-  identity, the rounded lowercase wordmark, drawn as monoline type with
-  the shortened t-bar; accent corrected to the wordmark yellow `#F5E600`.
+  identity: first the rounded lowercase wordmark, then — under the glyph
+  rule above — the Outfit ExtraBold monogram `t` with its shoulder dot;
+  accent corrected to the wordmark yellow `#F5E600`.
 - **LocalSend** (`localsend`): the two-phone packet becomes the official
   hub disc ringed by eight beam dashes — a broadcast, not a transfer.
 - **Vudu → Fandango at Home**: the entry is renamed and redrawn as the
@@ -55,12 +63,13 @@ Hi Browser, Screen Recording App, BitTV, Vidio).** 931 → 933 icons, 1120 → 1
   (com.live_streaming_tv.online_tv, also shipped as
   com.bittv.androiddigitaltvapp) previously rode the shared
   `iptv_player` glyph under the store name "Live Streaming TV" in
-  yellow. Renamed and redrawn as its own mark — the white `bit`
-  wordmark closing on the stemmed play wedge — in the brand blue
-  `#008FD7`.
+  yellow. Renamed and redrawn in the brand blue `#008FD7` — the icon glyph
+  now the Outfit monogram `b` (glyph rule above), the banner the printed
+  lockup.
 - **Vidio** (`vidio`): Indonesia's Vidio was borrowing Megogo's
-  play-banner in a guessed blue. Now the lowercase wordmark drawn as
-  monoline type in the sampled lockup pink-red `#FB0E4D`, with the
+  play-banner in a guessed blue. Now drawn in the sampled lockup pink-red
+  `#FB0E4D` — icon glyph the Outfit monogram `v` (glyph rule above),
+  banner the printed lockup — with the
   mobile `com.vidio.android` package mapped beside the TV one
   (activities guessed, flagged unverified).
 - `docs/icon-feedback-pass-2026-09.png`: visual receipt — every changed
@@ -76,12 +85,15 @@ Hi Browser, Screen Recording App, BitTV, Vidio).** 931 → 933 icons, 1120 → 1
   starfields on the night ground, via the new
   `tools/build_synthwave_wallpapers.py`. Classic manifest 58 → 68;
   `docs/retrowave-series-preview.png` is the contact sheet.
-- `docs/icon-wordmark-banners-2026-09.png`: receipt for the mark-only
-  wordmark banners and the two-ink Nuvio.
+- `docs/icon-monogram-gradient-2026-09.png`: receipt for the gradient
+  Nuvio wedge and the Outfit monogram icons — squares above, actual-size
+  banner lockups below. (`docs/icon-wordmark-banners-2026-09.png` remains
+  as the record of the interim mark-only banner pass.)
 
 ### Receipts
-- Classic: `Validated 933 icons · 1716 components · 25376 checks run`,
-  `Ran 44 tests ... OK`.
+- Classic: `Validated 933 icons · 1716 components · 25373 checks run`,
+  `Ran 46 tests ... OK` (icon identity, incl. the new gradient and
+  no-wordmark-glyph guards).
 - Pop: `Validated 933 icons · 1126 components · 16 swatches ·
   14510 checks run`, `Ran 29 tests ... OK` (glyph metrics re-measured
   first, as geometry changed).

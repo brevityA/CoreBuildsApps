@@ -160,19 +160,39 @@ def plex_chevron(c):
 
 
 def nuvio_plays(c):
-    """Nuvio: the gradient wedge split into its two brand inks.
+    """Nuvio: the gradient wedge and its inner play.
 
     The official mark is a rounded play triangle lit cyan at the top and
     violet at the bottom, holding a dark knock-out triangle with a light
-    play inside. One accent flattened all of that, so the silhouette is
-    drawn as two strokes — cyan over the top edge, the app accent under
-    the bottom — with the inner play in the lighting cyan; on a dark card
-    the knock-out reads as the card itself, exactly as the logo does.
+    play inside. The silhouette and the play are drawn flat here; the
+    Classic render runs them through the catalog's cyan→violet gradient
+    (see render_svg `gradient`), and on a dark card the knock-out centre
+    reads as the card itself, exactly as the logo does.
     """
-    cyan = "#2FCCE6"
-    return (f'<path d="M 148 256 L 148 96 L 428 256" {_s(cyan, 34)}/>'
-            f'<path d="M 428 256 L 148 416 L 148 256" {_s(c, 34)}/>'
-            f'<path d="M 232 208 L 324 256 L 232 304 Z" {_s(cyan, 26)}/>')
+    return (f'<path d="M 148 96 L 428 256 L 148 416 Z" {_s(c, 34)}/>'
+            f'<path d="M 232 208 L 324 256 L 232 304 Z" {_s(c, 26)}/>')
+
+
+def tubi_mono(c):
+    """Tubi: the brand's lowercase t as an Outfit ExtraBold monogram.
+
+    Wordmarks are banner business; the icon carries a single glyph set in
+    the pack's own typeface, in the wordmark yellow. A lone t reads as a
+    cross, so the wordmark's detached shoulder dot sits at the crossbar —
+    the brand quirk, kept as a glyph cue.
+    """
+    return (monogram_body("t", c) +
+            f'<circle cx="396" cy="204" r="34" fill="{c}" stroke="none"/>')
+
+
+def vidio_mono(c):
+    """Vidio: the lowercase v as an Outfit ExtraBold monogram."""
+    return monogram_body("v", c)
+
+
+def bit_tv_mono(c):
+    """BitTV: the lowercase b as an Outfit ExtraBold monogram."""
+    return monogram_body("b", c)
 
 
 def projector_beam(c):
@@ -458,18 +478,40 @@ def monoline(body, weight=MONOLINE):
     return _SW_RE.sub(repl, body)
 
 
-def render_svg(glyph_name, color, glow=False, *, monochrome=False):
+def render_svg(glyph_name, color, glow=False, *, monochrome=False,
+               gradient=None):
     """
     Render the transparent Classic glyph in the common monoline treatment.
 
     Glow is opt-in for legacy experiments, never used by the pack generators.
+    `gradient` is a pair of hexes: the rendered stroke then runs through a
+    vertical userSpace linear gradient instead of the flat accent. It is a
+    Classic-render treatment (catalog `gradient` field), so Pop and Pixel
+    Neon — which repaint every path in their own inks — stay flat.
     """
     color = display_accent(color, monochrome=monochrome)
     body = monoline(GLYPHS[glyph_name](color))
     if glow:
         body = lit(body, color)
+    if gradient and not monochrome:
+        body = apply_gradient(body, color, gradient)
     return (f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {GRID} {GRID}" '
             f'width="{GRID}" height="{GRID}">\n  {body}\n</svg>\n')
+
+
+def gradient_defs(stops, y0=80, y1=432, gid="cbGrad"):
+    """Vertical userSpace gradient spanning the glyph ink box."""
+    return (f'<defs><linearGradient id="{gid}" gradientUnits="userSpaceOnUse" '
+            f'x1="256" y1="{y0}" x2="256" y2="{y1}">'
+            f'<stop offset="0" stop-color="{stops[0]}"/>'
+            f'<stop offset="1" stop-color="{stops[-1]}"/>'
+            f'</linearGradient></defs>')
+
+
+def apply_gradient(body, color, stops):
+    """Repaint every flat stroke of `color` with the gradient reference."""
+    return gradient_defs(stops) + body.replace(f'stroke="{color}"',
+                                               'stroke="url(#cbGrad)"')
 
 
 # ==========================================================================
@@ -821,6 +863,8 @@ GLYPHS.update({
     "fandango_ticket": fandango_ticket, "hi_browser_ring": hi_browser_ring,
     "screen_record_mark": screen_record_mark,
     "bit_tv_mark": bit_tv_mark, "vidio_wordmark": vidio_wordmark,
+    "tubi_mono": tubi_mono, "vidio_mono": vidio_mono,
+    "bit_tv_mono": bit_tv_mono,
 })
 
 

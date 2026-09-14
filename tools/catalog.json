@@ -5654,7 +5654,7 @@
       "name": "BitTV",
       "drawable": "bit_tv",
       "color": "#008FD7",
-      "glyph": "bit_tv_mark",
+      "glyph": "bit_tv_mono",
       "components": [
         "com.live_streaming_tv.online_tv/com.live_streaming_tv.online_tv.BitTVActivity",
         "com.bittv.androiddigitaltvapp/com.bittv.androiddigitaltvapp.MainActivity",
@@ -5667,9 +5667,7 @@
         "com.bittv.androiddigitaltvapp/com.bittv.androiddigitaltvapp.MainActivity",
         "com.bittv.androiddigitaltvapp/com.bittv.androiddigitaltvapp.ui.MainActivity"
       ],
-      "mapping_source": "Play listing 'BitTV: Android Digital TV' (com.live_streaming_tv.online_tv); com.bittv.androiddigitaltvapp via appbrain, activity guessed",
-      "banner_style": "glyph",
-      "banner_note": "wordmark glyph: a printed name beside it would say the name twice"
+      "mapping_source": "Play listing 'BitTV: Android Digital TV' (com.live_streaming_tv.online_tv); com.bittv.androiddigitaltvapp via appbrain, activity guessed"
     },
     {
       "name": "Live TV",
@@ -7322,7 +7320,11 @@
       ],
       "category": "STREAM",
       "color_source": "brand reference — nuvio lockup gradient, violet end (sampled 2026-09-14)",
-      "color_reviewed": "2026-09-14"
+      "color_reviewed": "2026-09-14",
+      "gradient": [
+        "#2FCCE6",
+        "#A238F0"
+      ]
     },
     {
       "name": "NV Player",
@@ -11423,7 +11425,7 @@
       "name": "Tubi",
       "drawable": "tubi",
       "color": "#F5E600",
-      "glyph": "tubi_wordmark",
+      "glyph": "tubi_mono",
       "components": [
         "com.tubitv/com.tubitv.activities.MainActivity"
       ],
@@ -11433,9 +11435,7 @@
       ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "brand reference — Tubi wordmark yellow (sampled 2026-09-14)",
-      "color_reviewed": "2026-09-14",
-      "banner_style": "glyph",
-      "banner_note": "wordmark glyph: a printed name beside it would say the name twice"
+      "color_reviewed": "2026-09-14"
     },
     {
       "name": "Tunein Radio",
@@ -12241,7 +12241,7 @@
       "name": "Vidio",
       "drawable": "vidio",
       "color": "#FB0E4D",
-      "glyph": "vidio_wordmark",
+      "glyph": "vidio_mono",
       "components": [
         "com.vidio.android.tv/com.vidio.android.tv.splashscreen.SplashScreenActivity",
         "com.vidio.android/com.vidio.android.splashscreen.SplashScreenActivity",
@@ -12254,9 +12254,7 @@
       ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "brand reference — Vidio lockup pink-red (sampled 2026-09-14)",
-      "color_reviewed": "2026-09-14",
-      "banner_style": "glyph",
-      "banner_note": "wordmark glyph: a printed name beside it would say the name twice"
+      "color_reviewed": "2026-09-14"
     },
     {
       "name": "Vieon",
