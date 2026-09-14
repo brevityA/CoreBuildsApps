@@ -23,6 +23,20 @@ All notable changes to the Core Builds Icon Pack. Format follows
   the four numbered input marks are deferred until on-device confirmation of
   whether the launcher labels the cards (see
   `docs/research/community-input-icons-2026-09.md`).
+- **Projectivy input marks** — the launcher's remaining pinnable input
+  surfaces get their own marks in the input family's cyan: `tv_source`
+  (antenna — the tuner; the original request thread calls out "TV … very
+  ugly"), `source_input` (a screen with the signal entering — the
+  on-screen choose-source menu) and `media_explorer` (USB stick + play —
+  the launcher's shortcut to the stock media explorer). Activity names
+  follow the launcher's documented `Source{X}Activity` /
+  `{X}ShortcutActivity` patterns in both name forms; none is corroborated
+  by any public source, so all six components are `unverified` and the
+  `MappingHygieneTests` ratchet moves 77 → 83 for the batch — expected to
+  clear or be re-pointed at the next ADB device scan
+  (`docs/ADB_SCANNING.md`). Component/S-Video/optical stay folded into the
+  AV card: Tizen does not expose them as separate inputs. Receipt
+  `docs/projectivy-input-cards-2026-09.png`.
 - **Nuvio TV launcher activities** — the entry mapped only `.MainActivity`,
   which in the official manifest carries deep links only; on a real device
   the icon resolved from the LAUNCHER activity and so never applied. All six
@@ -33,6 +47,12 @@ All notable changes to the Core Builds Icon Pack. Format follows
 
 ### Fixed
 
+- **Suite-truth gate false positive** — the stale-claim guard's
+  `"40 icons"` needle matched the correct current claim `"940 icons"` as a
+  bare substring, so the 940-icon catalog tripped its own gate. Count-shaped
+  needles now carry a leading-digit lookbehind (the version-shaped needles
+  already had the lookahead treatment), so a stale "40 icons" is still
+  caught while "940 icons" is blessed.
 - **GeForce Now** (`tegrazone3`) — shipped in v1.8.18 but never documented
   in that release's notes, which is how it surfaced as a user report: the
   card showed a "T" letter tile (the launcher's fallback for the Tegra Zone

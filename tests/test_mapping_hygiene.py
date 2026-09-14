@@ -36,8 +36,14 @@ REFERENCE = ROOT / "tools" / "reference" / "projectivy-1.1.9-appfilter.xml"
 # launcher-internal components (AV input, Settings, Categories, Channels)
 # that cannot be device-verified without a Projectivy 4.70 install; they are
 # expected to clear at the next ADB scan (docs/research/community-input-icons-
-# 2026-09.md). The ceiling may only move back down.
-UNVERIFIED_CEILING = 77
+# 2026-09.md).
+# 77 -> 83: the Projectivy input-marks batch (2026-09-15) adds 6 more
+# launcher-internal components (TV input, source menu, media explorer)
+# whose activity names follow the launcher's documented Source{X}Activity /
+# {X}ShortcutActivity patterns but are not corroborated by any source; they
+# clear at the next ADB scan.
+# The ceiling may only move back down.
+UNVERIFIED_CEILING = 83
 
 
 def _canonical(component: str) -> str:

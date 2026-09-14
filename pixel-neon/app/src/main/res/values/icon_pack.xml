@@ -436,6 +436,7 @@
         <item>powerpoint45</item>
         <item>mecool_file_manager</item>
         <item>mediabrowser</item>
+        <item>media_explorer</item>
         <item>utility</item>
         <item>mediaset_infinity_tv</item>
         <item>application</item>
@@ -705,6 +706,7 @@
         <item>sonyliv</item>
         <item>sooner</item>
         <item>soundcloud</item>
+        <item>source_input</item>
         <item>sparkletv</item>
         <item>booster</item>
         <item>speedtesttv</item>
@@ -820,6 +822,7 @@
         <item>deadlyduck</item>
         <item>tvquickactions</item>
         <item>tv_quick_actions</item>
+        <item>tv_source</item>
         <item>tvunplugged</item>
         <item>tv_vlaanderen</item>
         <item>tv_web_browser</item>
@@ -1375,6 +1378,7 @@
         <item>Maze</item>
         <item>Mecool File Manager</item>
         <item>Media Browser</item>
+        <item>Media Explorer</item>
         <item>Media Hub</item>
         <item>Mediaset Infinity TV</item>
         <item>MEGOGO</item>
@@ -1644,6 +1648,7 @@
         <item>Sonyliv</item>
         <item>Sooner</item>
         <item>Soundcloud</item>
+        <item>Source</item>
         <item>Sparkle TV</item>
         <item>Speaker Boost</item>
         <item>Speedtest TV</item>
@@ -1759,6 +1764,7 @@
         <item>TV on OS</item>
         <item>TV Quick Actions</item>
         <item>TV Quick Actions</item>
+        <item>TV Source</item>
         <item>TV Unplugged</item>
         <item>TV Vlaanderen</item>
         <item>TV Web Browser</item>
@@ -2314,6 +2320,7 @@
         <item>APP</item>
         <item>FILES</item>
         <item>BROWSER</item>
+        <item>SYSTEM</item>
         <item>APP</item>
         <item>APP</item>
         <item>APP</item>
@@ -2583,6 +2590,7 @@
         <item>APP</item>
         <item>APP</item>
         <item>MUSIC</item>
+        <item>SYSTEM</item>
         <item>LIVE</item>
         <item>APP</item>
         <item>TOOL</item>
@@ -2698,6 +2706,7 @@
         <item>APP</item>
         <item>TOOL</item>
         <item>TOOL</item>
+        <item>SYSTEM</item>
         <item>VIDEO</item>
         <item>APP</item>
         <item>BROWSER</item>
@@ -2818,5 +2827,5 @@
         <item>APP</item>
         <item>APP</item>
     </string-array>
-    <integer name="icon_count">937</integer>
+    <integer name="icon_count">940</integer>
 </resources>

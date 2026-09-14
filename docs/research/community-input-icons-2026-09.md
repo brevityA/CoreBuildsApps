@@ -257,3 +257,22 @@ response to the quoted complaint.
    (clears the +8)
 3. Confirm Nuvio icon applies after the P0 fix on-device (single screenshot).
 4. ~~Owner preference on option A/B~~ resolved: option A shipped 2026-09-14.
+
+## 10. Update (2026-09-15) — the input marks shipped
+
+The three remaining launcher input surfaces from §4 are now in the pack, all
+in the input family's cyan (`#00D4FF`), category SYSTEM:
+
+| Mark | Glyph | Best-guess activity (both name forms, `unverified`) |
+|---|---|---|
+| `tv_source` | `tv_antenna` (screen + rabbit ears) | `.activities.input.SourceTVActivity` |
+| `source_input` | `input_screen` (screen + entering signal) | `.activities.input.SourceActivity` |
+| `media_explorer` | `usb_media` (USB stick + play) | `.ui.guidedActions.activities.shortcut.MediaExplorerShortcutActivity` (+ `.ui.launcherActivities.` form) |
+
+All six components are `unverified`; the ratchet moved 77 → 83. The activity
+names follow the launcher's documented `Source{X}Activity` /
+`{X}ShortcutActivity` patterns (§4.5 naming risk) but no public source names
+them — the next ADB device scan (`docs/ADB_SCANNING.md`) clears or re-points
+them. Component/S-Video/optical got no cards: Tizen does not expose them as
+separate Android TV inputs (a stock device shows HDMI / AV / "SRC"), so they
+stay folded into the AV card. Receipt `docs/projectivy-input-cards-2026-09.png`.

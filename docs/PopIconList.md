@@ -1,6 +1,6 @@
 # Core Builds Pop — supported applications
 
-`937` icons · `1144` mapped components · pack v1.0.0
+`940` icons · `1150` mapped components · pack v1.0.0
 
 Pop is drawn from the same `tools/catalog.json` as the classic Core Builds Icon Pack, so coverage is identical and always will be. What differs is the render: one container, one keyline weight, one halftone screen, and 16 locked swatches instead of 169 accents.
 
@@ -440,6 +440,7 @@ Pop is drawn from the same `tools/catalog.json` as the classic Core Builds Icon 
 | Maze | `powerpoint45` | `#000000` | `pop_graphite` `#333A4B` | `com.powerpoint45.maze/com.powerpoint45.maze.MainMenuActivity` |
 | Mecool File Manager | `mecool_file_manager` | `#0061FF` | `pop_blue` `#1C79D2` | `com.tvonline.filewizard/com.tvonline.filewizard.ui.MainActivity` |
 | Media Browser | `mediabrowser` | `#53FC18` | `pop_green` `#3F9C35` | `com.cmpsoft.MediaBrowser/com.cmpsoft.MediaBrowser.SplashScreenActivity` |
+| Media Explorer | `media_explorer` | `#00D4FF` | `pop_aqua` `#0C8AAE` | `com.spocky.projengmenu/.ui.guidedActions.activities.shortcut.MediaExplorerShortcutActivity`<br>`com.spocky.projengmenu/.ui.launcherActivities.MediaExplorerShortcutActivity` |
 | Media Hub | `utility` | `#AAFF89` | `pop_green` `#3F9C35` | `com.oumi.utility.media.hub/com.mac.utility.media.hub.ui_tv.main.TVMainActivity` |
 | Mediaset Infinity TV | `mediaset_infinity_tv` | `#C41A3B` | `pop_rose` `#E0405E` | `it.mediaset.infinitytv/it.mediaset.mediasetplay.ctv.MainActivity` |
 | MEGOGO | `application` | `#0061FF` | `pop_blue` `#1C79D2` | `com.megogo.application/net.megogo.tv.main.MainActivity` |
@@ -709,6 +710,7 @@ Pop is drawn from the same `tools/catalog.json` as the classic Core Builds Icon 
 | Sonyliv | `sonyliv` | `#0061FF` | `pop_blue` `#1C79D2` | `com.sonyliv/com.sonyliv.ui.splash.SplashActivity` |
 | Sooner | `sooner` | `#C41A3B` | `pop_rose` `#E0405E` | `sooner.app.de/de.eyzmedia.sooner.MainActivity` |
 | Soundcloud | `soundcloud` | `#FF5500` | `pop_blaze` `#F05A22` | `com.soundcloud.android/com.soundcloud.android.tv.app.TvMainActivity` |
+| Source | `source_input` | `#00D4FF` | `pop_aqua` `#0C8AAE` | `com.spocky.projengmenu/.activities.input.SourceActivity`<br>`com.spocky.projengmenu/.ui.guidedActions.activities.input.SourceActivity` |
 | Sparkle TV | `sparkletv` | `#A78BFA` | `pop_grape` `#7440C6` | `se.hedekonsult.sparkle/se.hedekonsult.sparkle.MainActivity` |
 | Speaker Boost | `booster` | `#53FC18` | `pop_green` `#3F9C35` | `com.goodev.volume.booster/com.goodev.volume.booster.SpeakerBoost` |
 | Speedtest TV | `speedtesttv` | `#141526` | `pop_graphite` `#333A4B` | `com.rma.speedtesttv/com.rma.speedtesttv.ui.SplashActivity` |
@@ -824,6 +826,7 @@ Pop is drawn from the same `tools/catalog.json` as the classic Core Builds Icon 
 | TV on OS | `deadlyduck` | `#1982C4` | `pop_blue` `#1C79D2` | `com.deadlyduck.tvonos/com.deadlyduck.tvonos.TvActivity` |
 | TV Quick Actions | `tvquickactions` | `#00E676` | `pop_jade` `#0E9077` | `dev.vodik7.tvquickactions/.MainActivity` |
 | TV Quick Actions | `tv_quick_actions` | `#00E676` | `pop_jade` `#0E9077` | `dev.vodik7.tvquickactions.free/dev.vodik7.tvquickactions.MainActivity` |
+| TV Source | `tv_source` | `#00D4FF` | `pop_aqua` `#0C8AAE` | `com.spocky.projengmenu/.activities.input.SourceTVActivity`<br>`com.spocky.projengmenu/.ui.guidedActions.activities.input.SourceTVActivity` |
 | TV Unplugged | `tvunplugged` | `#1982C4` | `pop_blue` `#1C79D2` | `com.google.android.youtube.tvunplugged/com.google.android.apps.youtube.tvunplugged.activity.MainActivity` |
 | TV Vlaanderen | `tv_vlaanderen` | `#C41A3B` | `pop_rose` `#E0405E` | `nl.streamgroup.vlaanderen/tv.solocoo.htmlapp.FullscreenActivity` |
 | TV Web Browser | `tv_web_browser` | `#0061FF` | `pop_blue` `#1C79D2` | `jp.co.rarity.tvweb/jp.co.rarity.tvweb.MainActivity` |

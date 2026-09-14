@@ -1259,6 +1259,11 @@
     <!-- Media Browser -->
     <item component="ComponentInfo{com.cmpsoft.MediaBrowser/com.cmpsoft.MediaBrowser.SplashScreenActivity}" drawable="mediabrowser_banner"/>
     <item component="ComponentInfo{com.cmpsoft.MediaBrowser/.SplashScreenActivity}" drawable="mediabrowser_banner"/>
+    <!-- Media Explorer -->
+    <item component="ComponentInfo{com.spocky.projengmenu/com.spocky.projengmenu.ui.guidedActions.activities.shortcut.MediaExplorerShortcutActivity}" drawable="media_explorer_banner"/>
+    <item component="ComponentInfo{com.spocky.projengmenu/.ui.guidedActions.activities.shortcut.MediaExplorerShortcutActivity}" drawable="media_explorer_banner"/>
+    <item component="ComponentInfo{com.spocky.projengmenu/com.spocky.projengmenu.ui.launcherActivities.MediaExplorerShortcutActivity}" drawable="media_explorer_banner"/>
+    <item component="ComponentInfo{com.spocky.projengmenu/.ui.launcherActivities.MediaExplorerShortcutActivity}" drawable="media_explorer_banner"/>
     <!-- Media Hub -->
     <item component="ComponentInfo{com.oumi.utility.media.hub/com.mac.utility.media.hub.ui_tv.main.TVMainActivity}" drawable="utility_banner"/>
     <!-- Mediaset Infinity TV -->
@@ -2029,6 +2034,11 @@
     <!-- Soundcloud -->
     <item component="ComponentInfo{com.soundcloud.android/com.soundcloud.android.tv.app.TvMainActivity}" drawable="soundcloud_banner"/>
     <item component="ComponentInfo{com.soundcloud.android/.tv.app.TvMainActivity}" drawable="soundcloud_banner"/>
+    <!-- Source -->
+    <item component="ComponentInfo{com.spocky.projengmenu/com.spocky.projengmenu.activities.input.SourceActivity}" drawable="source_input_banner"/>
+    <item component="ComponentInfo{com.spocky.projengmenu/.activities.input.SourceActivity}" drawable="source_input_banner"/>
+    <item component="ComponentInfo{com.spocky.projengmenu/com.spocky.projengmenu.ui.guidedActions.activities.input.SourceActivity}" drawable="source_input_banner"/>
+    <item component="ComponentInfo{com.spocky.projengmenu/.ui.guidedActions.activities.input.SourceActivity}" drawable="source_input_banner"/>
     <!-- Sparkle TV -->
     <item component="ComponentInfo{se.hedekonsult.sparkle/se.hedekonsult.sparkle.MainActivity}" drawable="sparkletv_banner"/>
     <item component="ComponentInfo{se.hedekonsult.sparkle/.MainActivity}" drawable="sparkletv_banner"/>
@@ -2356,6 +2366,11 @@
     <item component="ComponentInfo{dev.vodik7.tvquickactions/.MainActivity}" drawable="tvquickactions_banner"/>
     <!-- TV Quick Actions -->
     <item component="ComponentInfo{dev.vodik7.tvquickactions.free/dev.vodik7.tvquickactions.MainActivity}" drawable="tv_quick_actions_banner"/>
+    <!-- TV Source -->
+    <item component="ComponentInfo{com.spocky.projengmenu/com.spocky.projengmenu.activities.input.SourceTVActivity}" drawable="tv_source_banner"/>
+    <item component="ComponentInfo{com.spocky.projengmenu/.activities.input.SourceTVActivity}" drawable="tv_source_banner"/>
+    <item component="ComponentInfo{com.spocky.projengmenu/com.spocky.projengmenu.ui.guidedActions.activities.input.SourceTVActivity}" drawable="tv_source_banner"/>
+    <item component="ComponentInfo{com.spocky.projengmenu/.ui.guidedActions.activities.input.SourceTVActivity}" drawable="tv_source_banner"/>
     <!-- TV Unplugged -->
     <item component="ComponentInfo{com.google.android.youtube.tvunplugged/com.google.android.apps.youtube.tvunplugged.activity.MainActivity}" drawable="tvunplugged_banner"/>
     <!-- TV Vlaanderen -->

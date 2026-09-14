@@ -1,6 +1,6 @@
 # Core Builds Pixel Neon · supported applications
 
-`937` individually generated pixel sprites · `1144` catalog components · pack v0.1.0
+`940` individually generated pixel sprites · `1150` catalog components · pack v0.1.0
 
 This is the alternate 8-bit neon treatment of the Core Builds catalog. Each row uses its semantic brand glyph cue, then gets a hash-seeded pixel recipe; this pack does not reuse the monoline SVG geometry or banner lockups.
 
@@ -440,6 +440,7 @@ This is the alternate 8-bit neon treatment of the Core Builds catalog. Each row 
 | Maze | `powerpoint45` | `#000000` | `com.powerpoint45.maze/com.powerpoint45.maze.MainMenuActivity` |
 | Mecool File Manager | `mecool_file_manager` | `#0061FF` | `com.tvonline.filewizard/com.tvonline.filewizard.ui.MainActivity` |
 | Media Browser | `mediabrowser` | `#53FC18` | `com.cmpsoft.MediaBrowser/com.cmpsoft.MediaBrowser.SplashScreenActivity` |
+| Media Explorer | `media_explorer` | `#00D4FF` | `com.spocky.projengmenu/.ui.guidedActions.activities.shortcut.MediaExplorerShortcutActivity`<br>`com.spocky.projengmenu/.ui.launcherActivities.MediaExplorerShortcutActivity` |
 | Media Hub | `utility` | `#AAFF89` | `com.oumi.utility.media.hub/com.mac.utility.media.hub.ui_tv.main.TVMainActivity` |
 | Mediaset Infinity TV | `mediaset_infinity_tv` | `#C41A3B` | `it.mediaset.infinitytv/it.mediaset.mediasetplay.ctv.MainActivity` |
 | MEGOGO | `application` | `#0061FF` | `com.megogo.application/net.megogo.tv.main.MainActivity` |
@@ -709,6 +710,7 @@ This is the alternate 8-bit neon treatment of the Core Builds catalog. Each row 
 | Sonyliv | `sonyliv` | `#0061FF` | `com.sonyliv/com.sonyliv.ui.splash.SplashActivity` |
 | Sooner | `sooner` | `#C41A3B` | `sooner.app.de/de.eyzmedia.sooner.MainActivity` |
 | Soundcloud | `soundcloud` | `#FF5500` | `com.soundcloud.android/com.soundcloud.android.tv.app.TvMainActivity` |
+| Source | `source_input` | `#00D4FF` | `com.spocky.projengmenu/.activities.input.SourceActivity`<br>`com.spocky.projengmenu/.ui.guidedActions.activities.input.SourceActivity` |
 | Sparkle TV | `sparkletv` | `#A78BFA` | `se.hedekonsult.sparkle/se.hedekonsult.sparkle.MainActivity` |
 | Speaker Boost | `booster` | `#53FC18` | `com.goodev.volume.booster/com.goodev.volume.booster.SpeakerBoost` |
 | Speedtest TV | `speedtesttv` | `#141526` | `com.rma.speedtesttv/com.rma.speedtesttv.ui.SplashActivity` |
@@ -824,6 +826,7 @@ This is the alternate 8-bit neon treatment of the Core Builds catalog. Each row 
 | TV on OS | `deadlyduck` | `#1982C4` | `com.deadlyduck.tvonos/com.deadlyduck.tvonos.TvActivity` |
 | TV Quick Actions | `tvquickactions` | `#00E676` | `dev.vodik7.tvquickactions/.MainActivity` |
 | TV Quick Actions | `tv_quick_actions` | `#00E676` | `dev.vodik7.tvquickactions.free/dev.vodik7.tvquickactions.MainActivity` |
+| TV Source | `tv_source` | `#00D4FF` | `com.spocky.projengmenu/.activities.input.SourceTVActivity`<br>`com.spocky.projengmenu/.ui.guidedActions.activities.input.SourceTVActivity` |
 | TV Unplugged | `tvunplugged` | `#1982C4` | `com.google.android.youtube.tvunplugged/com.google.android.apps.youtube.tvunplugged.activity.MainActivity` |
 | TV Vlaanderen | `tv_vlaanderen` | `#C41A3B` | `nl.streamgroup.vlaanderen/tv.solocoo.htmlapp.FullscreenActivity` |
 | TV Web Browser | `tv_web_browser` | `#0061FF` | `jp.co.rarity.tvweb/jp.co.rarity.tvweb.MainActivity` |

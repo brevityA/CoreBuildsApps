@@ -402,10 +402,13 @@
     <item drawable="av_source_banner" />
     <item drawable="files_banner" />
     <item drawable="hdmi_source_banner" />
+    <item drawable="media_explorer_banner" />
     <item drawable="projectivy_categories_banner" />
     <item drawable="projectivy_channels_banner" />
     <item drawable="projectivy_settings_banner" />
     <item drawable="settings_banner" />
+    <item drawable="source_input_banner" />
+    <item drawable="tv_source_banner" />
     <category title="Banner · Tracking" />
     <item drawable="trakt_banner" />
     <category title="Banner · Apps" />
@@ -1360,10 +1363,13 @@
     <item drawable="av_source" />
     <item drawable="files" />
     <item drawable="hdmi_source" />
+    <item drawable="media_explorer" />
     <item drawable="projectivy_categories" />
     <item drawable="projectivy_channels" />
     <item drawable="projectivy_settings" />
     <item drawable="settings" />
+    <item drawable="source_input" />
+    <item drawable="tv_source" />
     <category title="Square · Tracking" />
     <item drawable="trakt" />
     <category title="Square · Apps" />

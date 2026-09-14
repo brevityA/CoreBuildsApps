@@ -6,7 +6,7 @@
     "grid": 512,
     "safe_area": 432,
     "note": "Core Builds-authored geometric icons on a shared 512 grid. Reviewed brand glyphs use rounded monoline strokes and one accent, not imported vendor silhouettes. Common Outfit/category/rail banners; artwork is reference-only. Canonical brand colours and the dark-card contrast policy remain shared.",
-    "count": 937
+    "count": 940
   },
   "icons": [
     {
@@ -12216,6 +12216,63 @@
       ],
       "category": "SYSTEM",
       "brand": "projectivy_channels",
+      "style": "core_monoline",
+      "color_source": "core-builds palette (no published brand colour found)",
+      "color_reviewed": null
+    },
+    {
+      "name": "TV Source",
+      "drawable": "tv_source",
+      "color": "#00D4FF",
+      "glyph": "tv_antenna",
+      "components": [
+        "com.spocky.projengmenu/.activities.input.SourceTVActivity",
+        "com.spocky.projengmenu/.ui.guidedActions.activities.input.SourceTVActivity"
+      ],
+      "unverified": [
+        "com.spocky.projengmenu/.activities.input.SourceTVActivity",
+        "com.spocky.projengmenu/.ui.guidedActions.activities.input.SourceTVActivity"
+      ],
+      "category": "SYSTEM",
+      "brand": "projectivy_tv",
+      "style": "core_monoline",
+      "color_source": "core-builds palette (no published brand colour found)",
+      "color_reviewed": null
+    },
+    {
+      "name": "Source",
+      "drawable": "source_input",
+      "color": "#00D4FF",
+      "glyph": "input_screen",
+      "components": [
+        "com.spocky.projengmenu/.activities.input.SourceActivity",
+        "com.spocky.projengmenu/.ui.guidedActions.activities.input.SourceActivity"
+      ],
+      "unverified": [
+        "com.spocky.projengmenu/.activities.input.SourceActivity",
+        "com.spocky.projengmenu/.ui.guidedActions.activities.input.SourceActivity"
+      ],
+      "category": "SYSTEM",
+      "brand": "projectivy_source",
+      "style": "core_monoline",
+      "color_source": "core-builds palette (no published brand colour found)",
+      "color_reviewed": null
+    },
+    {
+      "name": "Media Explorer",
+      "drawable": "media_explorer",
+      "color": "#00D4FF",
+      "glyph": "usb_media",
+      "components": [
+        "com.spocky.projengmenu/.ui.guidedActions.activities.shortcut.MediaExplorerShortcutActivity",
+        "com.spocky.projengmenu/.ui.launcherActivities.MediaExplorerShortcutActivity"
+      ],
+      "unverified": [
+        "com.spocky.projengmenu/.ui.guidedActions.activities.shortcut.MediaExplorerShortcutActivity",
+        "com.spocky.projengmenu/.ui.launcherActivities.MediaExplorerShortcutActivity"
+      ],
+      "category": "SYSTEM",
+      "brand": "projectivy_media",
       "style": "core_monoline",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null

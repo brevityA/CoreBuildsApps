@@ -1,6 +1,6 @@
 # Supported applications
 
-`937` icons · `1144` mapped components · pack v1.8.18
+`940` icons · `1150` mapped components · pack v1.8.18
 
 Every app below auto-assigns in Projectivy. If one doesn't, the app ships a different launcher activity on your device — open an issue with the component name and it gets added.
 
@@ -442,6 +442,7 @@ Source accents are retained in the catalog. **On dark** is the shared square/ban
 | Maze | `powerpoint45` | `#000000` | `#E6EDF3` | `com.powerpoint45.maze/com.powerpoint45.maze.MainMenuActivity` |
 | Mecool File Manager | `mecool_file_manager` | `#0061FF` | `#0061FF` | `com.tvonline.filewizard/com.tvonline.filewizard.ui.MainActivity` |
 | Media Browser | `mediabrowser` | `#53FC18` | `#53FC18` | `com.cmpsoft.MediaBrowser/com.cmpsoft.MediaBrowser.SplashScreenActivity` |
+| Media Explorer | `media_explorer` | `#00D4FF` | `#00D4FF` | `com.spocky.projengmenu/.ui.guidedActions.activities.shortcut.MediaExplorerShortcutActivity`<br>`com.spocky.projengmenu/.ui.launcherActivities.MediaExplorerShortcutActivity` |
 | Media Hub | `utility` | `#AAFF89` | `#AAFF89` | `com.oumi.utility.media.hub/com.mac.utility.media.hub.ui_tv.main.TVMainActivity` |
 | Mediaset Infinity TV | `mediaset_infinity_tv` | `#C41A3B` | `#C41A3B` | `it.mediaset.infinitytv/it.mediaset.mediasetplay.ctv.MainActivity` |
 | MEGOGO | `application` | `#0061FF` | `#0061FF` | `com.megogo.application/net.megogo.tv.main.MainActivity` |
@@ -711,6 +712,7 @@ Source accents are retained in the catalog. **On dark** is the shared square/ban
 | Sonyliv | `sonyliv` | `#0061FF` | `#0061FF` | `com.sonyliv/com.sonyliv.ui.splash.SplashActivity` |
 | Sooner | `sooner` | `#C41A3B` | `#C41A3B` | `sooner.app.de/de.eyzmedia.sooner.MainActivity` |
 | Soundcloud | `soundcloud` | `#FF5500` | `#FF5500` | `com.soundcloud.android/com.soundcloud.android.tv.app.TvMainActivity` |
+| Source | `source_input` | `#00D4FF` | `#00D4FF` | `com.spocky.projengmenu/.activities.input.SourceActivity`<br>`com.spocky.projengmenu/.ui.guidedActions.activities.input.SourceActivity` |
 | Sparkle TV | `sparkletv` | `#A78BFA` | `#A78BFA` | `se.hedekonsult.sparkle/se.hedekonsult.sparkle.MainActivity` |
 | Speaker Boost | `booster` | `#53FC18` | `#53FC18` | `com.goodev.volume.booster/com.goodev.volume.booster.SpeakerBoost` |
 | Speedtest TV | `speedtesttv` | `#141526` | `#5559A1` | `com.rma.speedtesttv/com.rma.speedtesttv.ui.SplashActivity` |
@@ -826,6 +828,7 @@ Source accents are retained in the catalog. **On dark** is the shared square/ban
 | TV on OS | `deadlyduck` | `#1982C4` | `#1982C4` | `com.deadlyduck.tvonos/com.deadlyduck.tvonos.TvActivity` |
 | TV Quick Actions | `tvquickactions` | `#00E676` | `#00E676` | `dev.vodik7.tvquickactions/.MainActivity` |
 | TV Quick Actions | `tv_quick_actions` | `#00E676` | `#00E676` | `dev.vodik7.tvquickactions.free/dev.vodik7.tvquickactions.MainActivity` |
+| TV Source | `tv_source` | `#00D4FF` | `#00D4FF` | `com.spocky.projengmenu/.activities.input.SourceTVActivity`<br>`com.spocky.projengmenu/.ui.guidedActions.activities.input.SourceTVActivity` |
 | TV Unplugged | `tvunplugged` | `#1982C4` | `#1982C4` | `com.google.android.youtube.tvunplugged/com.google.android.apps.youtube.tvunplugged.activity.MainActivity` |
 | TV Vlaanderen | `tv_vlaanderen` | `#C41A3B` | `#C41A3B` | `nl.streamgroup.vlaanderen/tv.solocoo.htmlapp.FullscreenActivity` |
 | TV Web Browser | `tv_web_browser` | `#0061FF` | `#0061FF` | `jp.co.rarity.tvweb/jp.co.rarity.tvweb.MainActivity` |

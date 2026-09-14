@@ -3794,6 +3794,33 @@ def hdmi_connector(c):
             f'<path d="M 312 208 L 312 264" {_s(c, 22)}/>')
 
 
+def tv_antenna(c):
+    """TV input — a screen with rabbit-ear antennae: the tuner source
+    (Projectivy pins the TV input as a home-row card; the community's
+    "TV is very ugly" complaint, docs/research/community-input-icons)."""
+    return (f'<rect x="96" y="196" width="320" height="220" rx="36" {_s(c, 32)}/>'
+            f'<path d="M 226 196 L 150 92" {_s(c, 32)}/>'
+            f'<path d="M 286 196 L 362 92" {_s(c, 32)}/>')
+
+
+def input_screen(c):
+    """Source — the launcher's choose-source menu: a screen with the
+    signal entering it (one generic mark for the input selector)."""
+    return (f'<rect x="150" y="146" width="270" height="220" rx="36" {_s(c, 32)}/>'
+            f'<path d="M 64 256 L 206 256" {_s(c, 30)}/>'
+            f'<path d="M 174 212 L 222 256 L 174 300" {_s(c, 30)}/>')
+
+
+def usb_media(c):
+    """Media explorer — a USB stick with a play mark: play from the drive
+    (Projectivy's shortcut to the stock media explorer)."""
+    return (f'<rect x="204" y="76" width="104" height="88" rx="16" {_s(c, 30)}/>'
+            f'<path d="M 234 108 L 234 132" {_s(c, 18)}/>'
+            f'<path d="M 278 108 L 278 132" {_s(c, 18)}/>'
+            f'<rect x="172" y="164" width="168" height="252" rx="30" {_s(c, 32)}/>'
+            f'<path d="M 222 252 L 306 290 L 222 328 Z" {_s(c, 30)}/>')
+
+
 def stremize_z(c):
     """Stremize - the Z of the all-in-one debrid/playlist player."""
     return (f'<path d="M 104 140 L 408 140 L 104 372 L 408 372" {_s(c, 32)}/>')
@@ -3860,6 +3887,8 @@ GLYPHS.update({
     "switch_joycons": switch_joycons,
     "playstation_shapes": playstation_shapes,
     "hdmi_connector": hdmi_connector,
+    "tv_antenna": tv_antenna, "input_screen": input_screen,
+    "usb_media": usb_media,
     "stremize_z": stremize_z,
 })
 
