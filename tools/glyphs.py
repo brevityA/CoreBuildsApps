@@ -549,35 +549,35 @@ def smarttube_play(c):
 
 
 def tizen_play(c):
-    """TizenTube — the real logo's play, inside the YouTube frame.
+    """TizenTube — the real logo's play button, in the YouTube frame.
 
-    Hybrid direction (2026-09-14): the pack's own YouTube outline
-    (yt_play construction, never the vendor logo) carrying the official
-    emblem's wedge — the ad-block chord is the wedge's TOP edge running
-    rim to rim, meeting the frame at 3 o'clock, the left stroke runs rim
-    to rim, and the bottom edge leaves the rim and ends in a free
-    rounded cap, exactly as measured on the reisxd/TizenTube mark (art
-    by @Zyborg777). The "no ads" story is the emblem's own construction,
-    not a generic slash.
+    2026-09-15 direction (owner): take the normal YouTube logo (the pack's
+    own yt_play frame, never the vendor mark) and swap in the play button
+    the way it is in the official TizenTube emblem (reisxd/TizenTube, art
+    by @Zyborg777), keeping the size of the normal YouTube play button.
 
-    The banner runs tizen_play_dot: the same lockup plus the tip dot,
-    placed on the bottom edge's extension (the edge "points" at it, as
-    in the real logo) with the measured clearances to chord and cap.
+    The emblem's play is an open "struck-through" wedge, rebuilt here from
+    the measured A2 construction and mapped onto the yt_play triangle's
+    size and optical centre (left edge matched to the normal 128-tall
+    play edge, the logo's ~2° tilt kept): the left stroke, the rim-to-rim
+    top chord (the ad-block line), and the bottom edge ending in a free
+    rounded cap — the "no ads" story is the emblem's own construction.
     """
-    return (f'<rect x="64" y="128" width="384" height="256" rx="64" {_s(c, 34)}/>'
-            f'<path d="M 150 128 L 448 256" {_s(c, 34)}/>'
-            f'<path d="M 150 128 L 135 384" {_s(c, 34)}/>'
-            f'<path d="M 135 384 L 285 271" {_s(c, 34)}/>')
+    return (f'<rect x="64" y="128" width="384" height="256" rx="64" {_s(c, 32)}/>'
+            f'<path d="M 216 192 L 205 320" {_s(c, 32)}/>'
+            f'<path d="M 216 192 L 308 269" {_s(c, 32)}/>'
+            f'<path d="M 205 320 L 268 277" {_s(c, 32)}/>')
 
 
 def tizen_play_dot(c):
     """TizenTube banner mark — tizen_play plus the emblem's tip dot.
 
-    Dot at (317,247): centred on the bottom edge's extension line (the
-    edge points at it, as in the real logo), 5px from the cap and
-    8.4px from the chord.
+    Dot at (320,241): centred on the bottom edge's extension line, past
+    the free cap where a dot of the logo's prominence actually fits
+    (the tip gap is too narrow to clear both strokes), with 3.5px to the
+    chord cap. The edge points at it, as in the real logo.
     """
-    return tizen_play(c) + f'<circle cx="317" cy="247" r="19" fill="{c}" stroke="none"/>'
+    return tizen_play(c) + f'<circle cx="320" cy="241" r="12" fill="{c}" stroke="none"/>'
 
 
 def film_reel(c):

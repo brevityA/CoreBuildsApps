@@ -126,19 +126,20 @@ All notable changes to the Core Builds Icon Pack. Format follows
   (its chord floated under the wedge, a stroke the real mark does not
   have), and this day's iterations — the measured globe emblem, then the
   frame with a generic strike — traded one true association for the
-  other. The final direction mixes both: the square icon is the pack's
-  own YouTube outline (the `yt_play` construction, never the vendor
-  logo) carrying the official emblem's wedge — the ad-block chord is
-  the wedge's top edge running rim to rim, meeting the frame at
-  3 o'clock, the left stroke runs rim to rim, and the bottom edge
-  leaves the rim and ends in a free rounded cap, exactly as measured on
-  the reisxd/TizenTube mark (art by @Zyborg777). The "no ads" story is
-  the emblem's own construction, not a generic slash. The 16:9 card
-  (the appfilter's auto-assign target) rides the `banner_glyph` field
-  added earlier today — `tizen_play_dot`, the same lockup plus the tip
-  dot centred exactly on the bottom edge's extension line — the edge
-  points at it, centred on the line rather than the real logo's
-  ~10 px offset, with clearances to chord and cap. The accent is the
+  other. The final direction (owner-directed): take the normal YouTube
+  logo — the pack's own `yt_play` frame, never the vendor mark — and
+  swap in the play button the way it is in the official TizenTube emblem
+  (reisxd/TizenTube, art by @Zyborg777), keeping the size of the normal
+  YouTube play button. The emblem's play is an open "struck-through"
+  wedge, rebuilt from the measured construction and mapped onto the
+  `yt_play` triangle's size and optical centre: the left stroke, the
+  rim-to-rim top chord (the ad-block line), and the bottom edge ending
+  in a free rounded cap — the "no ads" story is the emblem's own
+  construction, not a generic slash. The 16:9 card (the appfilter's
+  auto-assign target) rides the `banner_glyph` field — `tizen_play_dot`,
+  the same lockup plus the tip dot centred exactly on the bottom edge's
+  extension line, past the free cap where a dot of the logo's
+  prominence fits, clear of chord and cap. The accent is the
   brand's true paint: the official icon's field gradient `#47DDFF` →
   `#C5E9FF` (measured top (71,221,255) and bottom (197,233,255) of the
   icon's field; the banner lens 82,222,255 sits between), applied at
@@ -153,6 +154,19 @@ All notable changes to the Core Builds Icon Pack. Format follows
 ### Removed
 
 - The last `tile_*` glyph (`tile_10` on 10 Play).
+
+### Receipts
+- Classic: `Validated 940 icons · 1150 components · 25750 checks run`,
+  `Ran 199 tests ... OK`.
+- Pop: `Validated 940 icons · 1150 components · 16 swatches ·
+  14679 checks run` (glyph metrics re-measured first — new input marks
+  and the re-centred TizenTube dot changed geometry).
+- Pixel Neon: `Validated Pixel Neon · 940 icons · 1150 catalog
+  components · 13057 checks run`.
+- Truth gates: suite truth, contract audit, appfilter integrity,
+  issue-prefill stamp and wallpaper manifest all pass.
+- Full sweep: `Ran 199 tests ... OK` across every test module,
+  wallpaper manifest and thumbnail gates included.
 
 ## [1.8.18] — 2026-09-14
 
