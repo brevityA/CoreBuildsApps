@@ -6,6 +6,8 @@ All notable changes to the Core Builds Icon Pack. Format follows
 
 ## [Unreleased]
 
+## [1.8.19] — 2026-09-15
+
 ### Added
 
 - **Projectivy internal cards** — the long-posted r/Projectivy_Launcher
