@@ -1,6 +1,6 @@
 # Next icon tranche: demand, mapping, and identity research
 
-**Research date:** 2026-09-15 (Australia/Sydney)  
+**Research date:** 2026-09-15; visual-source update 2026-09-16 (Australia/Sydney)
 **Catalog measured:** `tools/catalog.json` on branch `arena/01a0a36a-corebuildsapps`  
 **Decision boundary:** research only. This document does not authorize v1.8.20, artwork changes, mappings, or a round-number admission target.
 
@@ -138,30 +138,45 @@ The table deliberately contains more than the 22 needed for the sub-55% mileston
 
 The implementation-facing top-22 source ledger is committed as [`icon-visual-source-matrix-2026-09-15.csv`](icon-visual-source-matrix-2026-09-15.csv). It pins package-specific official references where available, separates source readiness from demand, and records rights/design blockers. In particular, it prevents “high priority” from being misread as “safe to trace immediately.”
 
+### Visual verification pass 1 (2026-09-16)
+
+Six package-specific corrections sharpen the first implementation tranche:
+
+- **AirScreen (`com.ionitech.airscreen`)** uses a custom `AS` monogram across the current exact-package listing and product screens, not a nested-screen/cast symbol.
+- **Angel (`com.angel.tv`)** is currently wordmark-led: spaced uppercase `ANGEL` with a distinctive peaked/wing-like initial `A`. No independent wing emblem is established, so this requires a 10-foot compact-wordmark test rather than an invented monogram.
+- **Euronews (`com.alteox.euronews`)** currently uses stacked lowercase `euro` / heavier `news.` with a terminal dot. The historic circle/sun should not be revived for this package.
+- **Blokada (`org.blokada.fyra`)** is specifically legacy Blokada 4, whose last indexed release is 4.15.0 (`415000000`, 5 April 2022). Its reproducible cue is the orange/red shield outline split into three descending diagonal bands. Blokada 5 source corroborates the stable shield family but does not prove the `fyra` manifest; package and visual evidence remain explicitly separate.
+- **ATRESplayer (`com.antena3.atresplayer.tv`)** now uses two nested angular right-facing chevron/play outlines, replacing the older circular/radiating treatment in the draft.
+- **Kinopoisk (`ru.kinopoisk.tv`)** now uses an upright `K` whose right arms expand into multiple tapered radial rays, not the older faceted/ribbon shorthand.
+
+These observations authorize only Core-style redraw prototypes and small-size testing. They do not authorize copying Play artwork, changing production assets, or releasing v1.8.20.
+
+A same-day exact-package source sweep cleared several provenance blockers without pretending that a store page proves an exported activity. France.tv, CANAL+, Bloomberg, HGTV GO, and TIMVISION all retain live official Play pages for their catalog package; CANAL+, Bloomberg, and HGTV explicitly expose the TV form factor in current Play output. RUTUBE's catalog package is the reverse case: its Google Play URL is gone, but the official RuStore Android TV catalog currently publishes `ru.rutube.app.tv` as version `31.14.2.TV-rustore` (11 August 2026). The visual matrix now points to that current TV-specific source and warns against transferring assets from either current mobile package.
+
 | Rank | Existing entry | Current generic | Why visible/relevant | Reproducible visual cue to validate | Evidence/confidence |
 |---:|---|---|---|---|---|
-| 1 | AirScreen | `broadcast_A` | Casting receiver with very large Android install base and direct TV use | Current official app's nested screen/cast form | Official/current Play icon needed; high demand confidence |
+| 1 | AirScreen | `broadcast_A` | Casting receiver with very large Android install base and direct TV use | Custom open `AS` monogram, corroborated by the exact-package listing and product screens | Official/current exact package; high |
 | 2 | Aerial Views | `tool_A` | Popular open-source Android TV screensaver; current 2026 releases | Pinned developer asset shows a low sun emerging behind two asymmetric overlapping mountain/dune silhouettes | Source-reproducible; high |
 | 3 | ARTE | `broadcast_A` | Direct request; major Franco-German broadcaster | Slanted compact `ARTE` mark from official corporate ZIP | Official asset; high |
 | 4 | Francetv | `app_F` | Direct request; major French service | France.tv dot/wordmark geometry | Official service asset; high |
 | 5 | ITV Hub → ITVX | bespoke but stale | Direct request; top UK service | Current `ITVX` identity, replacing obsolete Hub treatment | Official Play/service; high |
-| 6 | Angel Studios | `broadcast_A` | Recognisable streaming service | Current angel-wing/`A` app emblem, if still used | Official listing; medium-high |
+| 6 | Angel Studios | `broadcast_A` | Recognisable streaming service | Current spaced `ANGEL` wordmark with a peaked/wing-like initial `A`; no standalone wing assumed | Exact-package official listing; high identity confidence, wordmark-size risk |
 | 7 | AnyDesk | `tool_A` | Common remote-support tool on TV boxes | Two opposed red diamond/chevrons | Stable public brand mark; high |
 | 8 | CANAL+ | `broadcast_C` | Major European broadcaster | Black/white CANAL+ compact wordmark; no invented C | Official service; high |
 | 9 | Bloomberg TV+ | `broadcast_B` | Global business-news TV app | Bloomberg wordmark is primary; assess compact `B` legitimacy | Official listing; medium |
 | 10 | DW | `broadcast_D` | Global public broadcaster | Interlocked `D/W` circles | Official broadcaster identity; high |
-| 11 | Euronews | wrongly `sport_E` | Global news app and category error | Current ring/circle-plus-wordmark treatment | Official broadcaster; high |
+| 11 | Euronews | wrongly `sport_E` | Global news app and category error | Current exact-package icon is stacked lowercase `euro` / bold `news.` with a terminal dot, not the historic circle/sun | Exact-package official listing; high |
 | 12 | Crossy Road | `gaming_C` | Highly recognisable Android/TV game | Pixel chicken head/silhouette, redrawn minimally | Official app art; high recognisability |
-| 13 | Blokada | `vpn_B` | Direct community icon mention; TV-network utility use | Current shield/hexagon flame treatment, version-specific | Official open-source project; medium-high |
+| 13 | Blokada | `vpn_B` | Direct community icon mention; TV-network utility use | `org.blokada.fyra` is legacy Blokada 4: orange/red shield outline split into three descending diagonal bands | Exact-package 4.15.0 release plus official-project corroboration; high identity confidence |
 | 14 | Private Internet Access | `vpn_P` | Prominent Android TV VPN | Robot/lock-head silhouette | Official VPN brand; high |
 | 15 | MPV | `app_M` | Widely used open-source media player | Stepped circular play mechanism | Official open-source icon; high |
 | 16 | F-Droid | wrongly `broadcast_F` | Common sideload/open-source store | Robot head with antenna inside bag/device | Official open-source brand; high |
 | 17 | Audiomack | `music_A` | Recognisable music service | Interlocked waveform/`A` treatment | Official current listing; medium-high |
-| 18 | ATRESplayer | `broadcast_A` | Major Spanish-language service | Current ATRESplayer circular play/radiating mark | Official service; high region relevance |
+| 18 | ATRESplayer | `broadcast_A` | Major Spanish-language service | Current exact-package icon uses two nested angular right-facing chevrons/play outlines, not the older circular/radiating treatment | Exact-package official listing; high region relevance |
 | 19 | HGTV | `broadcast_H` | Major US factual/home channel | Roofline over HGTV wordmark; compact roof cue | Official network; high |
-| 20 | Kinopoisk | `broadcast_K` | Current Projectivy addition; large regional service | Current geometric K/gradient mark reduced to silhouette | Official service/current listing; medium-high |
-| 21 | Rutube | `broadcast_R` | Current Projectivy addition; regional video service | Rounded play/R mark, version-check required | Official listing; medium-high |
-| 22 | TIMVISION | `broadcast_T` | Current Projectivy addition; Italian TV service | TIM bar motif plus compact play/TV cue | Official service; medium-high |
+| 20 | Kinopoisk | `broadcast_K` | Current Projectivy addition; large regional service | Upright `K` whose right arms expand into tapered radial rays; preserve the asymmetric ray silhouette | Exact TV-package official listing; high |
+| 21 | Rutube | `broadcast_R` | Current Projectivy addition; regional video service | Capture current TV-store foreground; do not transpose either mobile-package icon | Exact-package official RuStore Android TV listing; geometry pending |
+| 22 | TIMVISION | `broadcast_T` | Current Projectivy addition; Italian TV service | Verify the 2026 split-bar plus `VISION` rebrand against the exact launcher foreground | Exact-package official listing; rebrand capture pending |
 | 23 | FIFA+ | `sport_F` | Global football streaming relevance | Do **not** reproduce protected FIFA official IP without rights review; use only an allowed app-identifying treatment | Visual clarity high; legal clearance required |
 | 24 | AIDA64 | `tool_A` | Common diagnostics utility on TV boxes | Red circuit/chip `64` app cue | Official FinalWire listing; medium |
 | 25 | APK Updater | `store_A` | Sideload ecosystem utility | Verify which APK Updater project/package; use its repository asset only | Identity collision risk; medium-low until resolved |
@@ -345,8 +360,22 @@ Land verification/pruning independently from artwork so review can distinguish m
 - Aerial Views official source: <https://github.com/theothernt/AerialViews>
 - Aerial Views Play listing: <https://play.google.com/store/apps/details?id=com.neilturner.aerialviews>
 
+- AirScreen exact package: <https://play.google.com/store/apps/details?id=com.ionitech.airscreen>
+- Angel exact package: <https://play.google.com/store/apps/details?id=com.angel.tv>
+- Euronews TV exact package: <https://play.google.com/store/apps/details?id=com.alteox.euronews>
+- Bloomberg TV exact package: <https://play.google.com/store/apps/details?id=com.bloomberg.btva>
+- ATRESplayer exact TV package: <https://play.google.com/store/apps/details?id=com.antena3.atresplayer.tv>
+- Kinopoisk exact TV package: <https://play.google.com/store/apps/details?id=ru.kinopoisk.tv>
+- France.tv exact package: <https://play.google.com/store/apps/details?id=fr.francetv.pluzz>
+- CANAL+ exact package: <https://play.google.com/store/apps/details?id=com.canal.android.canal>
+- HGTV GO exact package: <https://play.google.com/store/apps/details?id=com.hgtv.watcher>
+- RUTUBE exact Android TV package in official RuStore: <https://apps.rustore.ru/app/ru.rutube.app.tv>
+- TIMVISION exact package: <https://play.google.com/store/apps/details?id=it.telecomitalia.cubovision>
+- Blokada official Android source inspected at commit: <https://github.com/blokadaorg/five-android/tree/518306f5c74516b48b646fa9362c98156ce4be2a>
+
 ### Cautionary/secondary package evidence
 
+- Blokada 4.15.0 exact-package release index: <https://www.apkmirror.com/apk/blokada/blokada-3/blokada-3-4-15-0-release/blokada-4-15-0-android-apk-download/>
 - Tata Play Binge TV signed-build history: <https://www.apkmirror.com/apk/tata-sky-ltd/tata-play-binge-22-otts-in-1-android-tv/>
 - ITVX Android TV signed-build example: <https://www.apkmirror.com/apk/itv-plc/itv-hub-your-tv-player-watch-live-on-demand-android-tv/>
 - Cloudflare community thread confirming no native TV experience: <https://community.cloudflare.com/t/when-is-1-1-1-1-app-coming-to-android-tv/236033>
