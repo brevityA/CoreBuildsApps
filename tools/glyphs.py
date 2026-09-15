@@ -564,26 +564,31 @@ def tizen_play(c):
     rounded cap, with the tip dot below the chord, right of the free
     cap, as in the art.
 
-    Construction measured off the official banner (emblem 472.5x430,
-    strokes 34): main circle c(378.6,430.8) r215.0, left circle
-    c(323.9,445.4) r202.8, rim intersections (255.7,254.1) and
-    (360.1,645.3); vertical x=242.5 from the chord (y=261.4) to y=600;
-    chord (242.5,261.4) to (592.2,457.7) at the right rim; bottom edge
-    (272,604.8) to (462,495.2); dot an ellipse c(518.9,459.3)
-    a=22.9 b=16.6 rotated -28.9 deg, 4px clear of the chord. Scaled
-    0.4563x about the frame centre to sit ~4px inside the frame's ink;
-    emblem strokes carry the lightest monoline weight (author 20, 21.8
-    after normalisation), and the dot is held ~6px off the chord so the
-    heavier stroke does not close the gap the art has open.
+    Round-9 refinement (2026-09-15): the round-7 circles were refitted
+    against clean per-arc sample sets (outer-edge rays, junctions and
+    the wordmark excluded). The old main circle was ~12px too large and
+    the left one ~25px too large, which stretched the globe and pushed
+    the chord rim too far right. Verified geometry off the banner
+    (strokes 34, overlay mismatch 3.5%): main circle c(372.2,434.2)
+    r202.8, left circle c(314.7,442.9) r177.5, rim intersections
+    (236.4,283.6) and (286.8,618.1); vertical x=242.5 from the chord
+    (y=261.5) to the left arc (y=605.1); chord (242.5,261.5) to
+    (574.5,447.1) at the right rim; bottom edge caps (289,595.5) to
+    (462,495.5); dot an ellipse c(518.9,459.3) a=22.9 b=16.6 rotated
+    -28.9 deg. Scaled 0.4570x about the frame centre (same optical size
+    as round 7); emblem strokes carry the lightest monoline weight
+    (author 20, 21.8 after normalisation), and the dot is held ~5px off
+    the chord so the heavier stroke does not close the near-touching
+    gap the art has open.
     """
     return (f'<rect x="64" y="128" width="384" height="256" rx="64" {_s(c, 32)}/>'
-            f'<path d="M 209.6 175.4 A 98.1 98.1 0 1 1 257.3 353.9" {_s(c, 20)}/>'
-            f'<path d="M 209.6 175.4 A 92.6 92.6 0 0 0 257.3 353.9" {_s(c, 20)}/>'
-            f'<path d="M 203.6 178.7 L 203.6 333.2" {_s(c, 20)}/>'
-            f'<path d="M 203.6 178.7 L 363.2 268.3" {_s(c, 20)}/>'
-            f'<path d="M 217.1 335.4 L 303.7 285.4" {_s(c, 20)}/>'
-            f'<ellipse cx="326.8" cy="274.2" rx="10.4" ry="7.6" '
-            f'transform="rotate(-28.9 326.8 274.2)" {_f(c)}/>')
+            f'<path d="M 201.2 187.2 A 92.7 92.7 0 1 1 224.5 340.2" {_s(c, 20)}/>'
+            f'<path d="M 201.2 187.2 A 81.1 81.1 0 0 0 224.5 340.2" {_s(c, 20)}/>'
+            f'<path d="M 204.1 177.1 L 204.1 334.1" {_s(c, 20)}/>'
+            f'<path d="M 204.1 177.1 L 355.8 261.9" {_s(c, 20)}/>'
+            f'<path d="M 225.3 329.7 L 304.4 284.0" {_s(c, 20)}/>'
+            f'<ellipse cx="328.0" cy="271.9" rx="10.5" ry="7.6" '
+            f'transform="rotate(-28.9 328.0 271.9)" {_f(c)}/>')
 
 
 def tizen_play_dot(c):

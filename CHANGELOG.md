@@ -152,6 +152,22 @@ All notable changes to the Core Builds Icon Pack. Format follows
   `docs/tizentube-emblem-2026-09.png` and
   `docs/tizentube-frame-2026-09.png` (the interim passes); receipt
   `docs/tizentube-inframe-2026-09.png`.
+  Round 9 (owner: "in the correct direction, just needs polish"): the
+  mark kept as-is, its geometry refitted. The round-7 circles came out
+  of junction-contaminated sampling and were systematically too large —
+  the main circle 12px, the left 25px — which stretched the globe and
+  ran the chord past the true rim. Clean per-arc ray samples (junctions
+  and wordmark excluded, least-squares fit) give main
+  c(372.2,434.2) r202.8 and left c(314.7,442.9) r177.5, rim
+  intersections (236.4,283.6) / (286.8,618.1), vertical x=242.5 from
+  the chord to the left arc (y=605.1), chord (242.5,261.5) to the true
+  right rim (574.5,447.1), bottom-edge caps (289,595.5)-(462,495.5);
+  the dot is unchanged (22.9×16.6, -28.9 deg), still held ~5px off the
+  chord so the heavier stroke keeps the art's near-touching gap open.
+  The reconstruction overlays the banner at 3.5% pixel mismatch; scale
+  re-set to 0.4570x about the frame centre to hold the round-7 optical
+  size; gradient and lightest monoline weight unchanged. Receipt
+  `docs/tizentube-polish-2026-09.png`.
 
 ### Removed
 
