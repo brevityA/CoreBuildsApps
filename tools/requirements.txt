@@ -2,5 +2,7 @@
 cairosvg==2.9.0
 fonttools==4.59.0
 Pillow==10.4.0
+# Wallpaper renderers use arrays for deterministic coverage metrics/composites.
+numpy==2.4.6
 # Self-contained renderer keeps output stable across hosts.
 resvg-py==0.4.0

@@ -24,7 +24,8 @@ Do not merge Gradle roots. Do not split the GitHub repo. Do not rename package I
 
 ## One rule
 
-`tools/catalog.json` is the only source of truth for **both** icon packs. Never hand-edit generated icon XML, icon PNGs, banner PNGs, `docs/IconPackList.md`, `docs/PopIconList.md`, `docs/preview.*`, `docs/pop-*`, `pop/src/main/**`, `assets/pop/**`, or `Wallpapers/series-5-pop/**`.
+`tools/catalog.json` is the only source of truth for **both** icon packs. Never hand-edit generated icon XML, icon PNGs, banner PNGs, `docs/IconPackList.md`, `docs/PopIconList.md`, `docs/preview.*`, `docs/pop-*`, `pop/src/main/**`, `assets/pop/**`, or generated wallpaper output under `Wallpapers/series-5-pop/**` and
+`Wallpapers/series-8-amoled/**`.
 
 Classic pack changes run the four generators and the validator:
 
@@ -73,7 +74,7 @@ Pop wallpapers are separate and rarely need rebuilding:
 python tools/build_pop_wallpapers.py  # ~70 s
 ```
 
-`Wallpapers/manifest.json` belongs to the classic pack and currently has 68 entries. Pop uses `Wallpapers/pop-manifest.json`. The two collections are asserted disjoint.
+`Wallpapers/manifest.json` belongs to the classic pack and currently has 78 entries. Pop uses `Wallpapers/pop-manifest.json`. The two collections are asserted disjoint.
 
 ## Truth gates
 

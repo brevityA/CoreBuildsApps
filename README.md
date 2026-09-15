@@ -13,7 +13,7 @@
 <!-- suite-stamp:start -->
 > | App | Current | What it does | Downloader | Release tag |
 > |---|---:|---|---|---|
-> | **[Core Builds Icon Pack](#-icon-pack)** | `v1.8.19` | 940 transparent icons + 68 wallpapers for Projectivy Launcher | `5270601` | [`v*` / `iconpack`](../../releases) |
+> | **[Core Builds Icon Pack](#-icon-pack)** | `v1.8.19` | 940 transparent icons + 78 wallpapers for Projectivy Launcher | `5270601` | [`v*` / `iconpack`](../../releases) |
 > | **[Core Builds Pixel Neon](#-pixel-neon-icon-pack)** | `v0.1.0` | 940 transparent 8-bit neon icons + 70 wallpapers for Projectivy Launcher | `[USER TO SUPPLY]` | [`pixel-neon-v*` / `pixel-neon`](../../releases) |
 > | **[Core Builds Pop](#-core-builds-pop)** | `v1.0.0` | The same 940 icons, pop-art cartoon: 16 swatches, one container | `[USER TO SUPPLY]` | [`pop-v*` / `pop`](../../releases) |
 > | **[Core Line](#-core-line)** | `v1.3.0` | Sports scores & channel RSS ticker (chyron) | `7375676` | [`coreline-v*` / `coreline`](../../releases) |
@@ -28,7 +28,7 @@
 ## 🔷 Icon Pack
 
 **Transparent app icons for Projectivy Launcher on Android TV.**
-`933 icons` · `68 wallpapers` · `v1.8.18`
+`940 icons` · `78 wallpapers` · `v1.8.19`
 
 The **Core Builds Icon Pack** is designed for the [Projectivy Launcher](https://play.google.com/store/apps/details?id=com.spocky.projengmenu) on Android TV and Google TV, built to the [Core Builds Brand & Style Guide v1.0](https://github.com/brevityA/Core-Builds).
 
@@ -112,7 +112,7 @@ Full table with every mapped component: [**docs/IconPackList.md**](docs/IconPack
 
 ### Wallpapers
 
-68 curated wallpapers in five active series — browse in the Wallpapers tab, preview full-screen, Set as device wallpaper or Save to `Pictures/CoreBuilds`. Multi-select export lets you bulk-save to a folder any launcher (or the system wallpaper picker) can rotate from. Thumbnails are bundled; the full images download on demand from GitHub, at the resolution each series was authored at (`1376×768` for series 6, 4K for series 1–3 and 7). Series 4 "Core Mark" was retired in v1.8.6 — see [`Wallpapers/README.md`](Wallpapers/README.md).
+78 curated wallpapers in six active series — browse in the Wallpapers tab, preview full-screen, Set as device wallpaper or Save to `Pictures/CoreBuilds`. Multi-select export lets you bulk-save to a folder any launcher (or the system wallpaper picker) can rotate from. Thumbnails are bundled; the full images download on demand from GitHub, at the resolution each series was authored at (`1376×768` for series 6, 4K for series 1–3 and 7–8). Series 8 adds ten exact-black AMOLED designs; series 4 "Core Mark" was retired in v1.8.6 — see [`Wallpapers/README.md`](Wallpapers/README.md).
 
 ---
 

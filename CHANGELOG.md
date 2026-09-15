@@ -6,6 +6,20 @@ All notable changes to the Core Builds Icon Pack. Format follows
 
 ## [Unreleased]
 
+### Added
+
+- **Series 8 AMOLED wallpapers** — ten deterministic 4K designs on exact
+  `#000000`, with sparse Core cyan, violet, blue, and ember accents. Every wall
+  retains 92.4–99.8% true-black pixels; the generator and wallpaper tests both
+  enforce a minimum of 50%. Includes bundled thumbnails, manifest entries
+  69–78, and `docs/amoled-wallpapers.png` as the visual receipt.
+
+### Fixed
+
+- **Android CI setup outage** — PR workflows use the SDK already installed on
+  GitHub's Ubuntu runner and call its pinned `sdkmanager` path directly instead
+  of failing inside `android-actions/setup-android` before compilation starts.
+
 ## [1.8.19] — 2026-09-15
 
 ### Added

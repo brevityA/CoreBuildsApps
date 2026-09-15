@@ -11,14 +11,18 @@ The answer to (1) turned out to constrain (2) far more than the art style did.
 
 ## 1. What already ships
 
-At the time of writing: `Wallpapers/manifest.json` v4.0 — 50 wallpapers, 125 MB,
-four indexed series plus an unindexed originals folder:
+Current state: `Wallpapers/manifest.json` v5.0 — 78 wallpapers, about 128 MB,
+six indexed classic series plus the separately indexed Pop set and an
+unindexed originals folder:
 
 | Series | Content |
 |---|---|
 | `series-0-originals` | 4K JPEG photographic/abstract originals |
 | `series-1` … `series-3` | Generated gradient and mesh sets, 4K PNG |
+| `series-5-pop` | Separate Pop manifest: twelve 4K halftone walls |
 | `series-6-circuit-core` | Lit-circuit fields, 1376×768 JPEG |
+| `series-7-retrowave` | Ten 4K synthwave landscapes |
+| `series-8-amoled` | Ten exact-black minimalist 4K walls |
 
 `series-4-core-mark` (30 × 4K PNGs) shipped in v1.7.0 and was retired in v1.8.6 in
 favour of series 6. Two lessons from that swap, both now enforced by
@@ -129,35 +133,68 @@ ever becomes desirable.
 
 **A separate manifest, not an extension of the classic one.** Pop ships
 `Wallpapers/pop-manifest.json` and bundles it at
-`pop/src/main/assets/manifest/wallpapers.json`. The classic pack's
-`manifest.json` stays at exactly 70 entries — `tests/test_wallpapers.py`
-asserts that count, the README states it, and a shipped pack should not have
-its advertised contents change because a *different* pack was built. The two
-collections are asserted disjoint in `tests/test_pop.py`.
+`pop/src/main/assets/manifest/wallpapers.json`. The classic and Pop collections
+are independently counted and asserted disjoint in `tests/test_pop.py`, so a
+shipped pack never changes its advertised contents because the other pack was
+rebuilt.
 
 ---
 
-## 4. Directions not taken (but costed)
+## 4. What we built next: `series-8-amoled`
 
-Recorded because they are all live options for the classic pack, which has no
-new wallpaper series in this change.
+The deferred pure-black direction is now ten classic-pack wallpapers, numbered
+69–78. Every image is 3840×2160 RGB PNG on exact `#000000`; cyan, blue, violet,
+and ember accents occupy only narrow lines, points, or compact geometry. The
+set ranges from 92.4% to 99.8% true black and compresses to less than 0.5 MB of
+PNG payload because most pixels are identical.
+
+This uses a stronger metric than the older “dark coverage” measure. Near-black
+still emits light on OLED and broad low-level gradients make black smearing
+more apparent, so `tools/build_amoled_wallpapers.py` measures pixels whose
+three channels are all exactly zero and refuses to save a wall below 50%.
+`tests/test_wallpapers.py` repeats that contract against the committed files.
+The lower third remains sparse for Android TV card rows and every meaningful
+accent stays inside the 10% overscan-safe frame.
+
+| # | Wall | True black |
+|---:|---|---:|
+| 69 | Void Horizon | 96.7% |
+| 70 | One Pixel | 99.7% |
+| 71 | Off Grid | 92.4% |
+| 72 | Orbit | 94.7% |
+| 73 | Starfield | 99.8% |
+| 74 | Ember Sliver | 94.5% |
+| 75 | Signal Sweep | 93.5% |
+| 76 | Underglow | 95.9% |
+| 77 | Monoline | 93.4% |
+| 78 | Twin Horizons | 94.3% |
+
+Contact sheet: [`docs/amoled-wallpapers.png`](../amoled-wallpapers.png)
+
+---
+
+## 5. Directions not taken (but costed)
+
+Recorded because they remain live options for future suite releases.
 
 | Direction | Why it is attractive | Why not now |
 |---|---|---|
 | **Poster-frame walls** (art from movie/TV metadata) | The single most-requested Projectivy wallpaper genre; [adelatour11/androidtvbackground](https://github.com/adelatour11/androidtvbackground) is the community's answer and pulls from TMDB/Plex | Third-party artwork licensing. Not something to bundle in a repo. |
 | **Animated / video walls** | Projectivy premium supports GIF, video and RTSP sources directly | Belongs to Core Shift and Core Motion, which already exist for this |
-| **Pure-black AMOLED set** | Highest-demand category by a wide margin | Trivially generated; worth doing, but it is a *classic*-pack series, not a Pop one |
 | **Per-swatch solid walls** | 16 walls, one per Pop swatch, so any home screen can be tuned to its dominant icon colour | Real idea. Deferred to v1.1 — wanted the twelve designed walls landed first |
 
 ---
 
-## 5. Reproducing
+## 6. Reproducing
 
 ```bash
-python tools/build_pop_wallpapers.py   # ~70s, writes all 12 + thumbs + manifest
-python tests/test_pop.py               # asserts manifest/thumb/bundle parity
+python tools/build_pop_wallpapers.py     # ~70s, writes all 12 + thumbs + manifest
+python tools/build_amoled_wallpapers.py  # ten 4K walls + thumbs + contact sheet
+python tools/sync_wallpaper_manifest.py  # bundle reviewed manifests and thumbs
+python tests/test_pop.py
+python tests/test_wallpapers.py
 ```
 
-The generator is deterministic and takes no arguments. Nothing in
-`Wallpapers/series-5-pop/` or `Wallpapers/thumbs/corepop-*` should ever be
-hand-edited, per the repo rule in `AGENTS.md`.
+Both generators are deterministic and take no arguments. Nothing in
+`Wallpapers/series-5-pop/`, `Wallpapers/series-8-amoled/`, or their thumbnail
+sets should ever be hand-edited, per the repo rule in `AGENTS.md`.
