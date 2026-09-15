@@ -170,6 +170,22 @@ The final source checks behind this disposition found that DW and Audiomack both
 
 **AIDA64 is the first promoted fallback.** The exact `com.finalwire.aida64` Play listing was updated 19 August 2026, explicitly exposes TV compatibility, and matches the catalog package. It does not by itself prove either catalog activity; that remains manifest/ADB evidence. Current package imagery and FinalWire's own support description agree on the identifying cue: a bold interlocked white `64` on red. The Core redraw should retain the diagonal upper stroke and sharply cut digit counters, not the vendor tile or shadow. This adds the twenty-second generic candidate needed to make the numerical milestone possible without pretending stale bespoke ITVX is a generic conversion.
 
+### Research-only 10-foot stress test (2026-09-16)
+
+The five wordmark-led candidates were rendered in the pack's bundled Outfit weights at 160 px review size, 80 px launcher size, and 48 px stress size. This is a structural test, not copied vendor artwork: it asks whether the reproducible identity cues survive Core Builds typography and reduction. The generator is `tools/build_visual_gate_preview.py`; the review sheet is [`icon-visual-gate-preview-2026-09-16.png`](icon-visual-gate-preview-2026-09-16.png). It does not read or write the production catalog, glyph registry, Android resources, or release metadata.
+
+The screening rule is deliberately mechanical: a 48 px mark whose total ink height falls below 8 px is too dependent on tiny letter detail to advance as-is. For stacked or pictorial marks, the defining dot, weight break, or roof must also remain visibly separate at 48 px. Passing this screen only permits real-device testing; it does not approve production artwork.
+
+| candidate | ink bounds at 160 px | at 80 px | at 48 px | 48 px cue result | disposition |
+|---|---:|---:|---:|---|---|
+| Francetv | 133 x 22 | 67 x 10 | 40 x 6 | `france.tv` compresses below the 8 px floor | hold current single-line treatment; test no production selection |
+| Angel Studios | 133 x 25 | 64 x 12 | 39 x 7 | spacing survives, but Outfit cannot reproduce the source's cut initial A and the total mark misses the floor | hold pending a source-faithful Core redraw; do not substitute a conventional A |
+| CANAL+ | 134 x 25 | 64 x 12 | 33 x 6 | plus remains present, but the compact wordmark misses the floor | hold current treatment; test only with a larger mark allocation on device |
+| Euronews | 110 x 62 | 56 x 30 | 37 x 19 | two-line hierarchy and terminal dot remain separate | advance to device-distance testing; no production selection yet |
+| HGTV | 122 x 86 | 64 x 42 | 40 x 26 | roof peak and HGTV letters remain separate | advance to device-distance testing; no production selection yet |
+
+This narrows, rather than clears, the testing gate: **Euronews and HGTV are the only two current constructions worth putting on a television first**. Francetv, Angel Studios, and CANAL+ remain in the ledger, but the present compact treatments are not recommended for production. The launcher-card simulation also shows why an external app label cannot rescue an indistinct glyph: the label identifies the app, while the icon still needs a recognisable independent cue.
+
 ### Source/activity gate findings
 
 The four source/activity-gated rows now have bounded next checks:
