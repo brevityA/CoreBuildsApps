@@ -170,6 +170,15 @@ The final source checks behind this disposition found that DW and Audiomack both
 
 **AIDA64 is the first promoted fallback.** The exact `com.finalwire.aida64` Play listing was updated 19 August 2026, explicitly exposes TV compatibility, and matches the catalog package. It does not by itself prove either catalog activity; that remains manifest/ADB evidence. Current package imagery and FinalWire's own support description agree on the identifying cue: a bold interlocked white `64` on red. The Core redraw should retain the diagonal upper stroke and sharply cut digit counters, not the vendor tile or shadow. This adds the twenty-second generic candidate needed to make the numerical milestone possible without pretending stale bespoke ITVX is a generic conversion.
 
+### Source/activity gate findings
+
+The four source/activity-gated rows now have bounded next checks:
+
+- **ITVX:** APKMirror indexes the ITV PLC-signed Android TV 1.25.0 bundle (version code 83, 8 June 2026) under the exact `air.ITVMobilePlayer` package and marks it as requiring Android TV. This proves that the TV package remains current, but not that 2026 still exports the catalog's legacy-named `com.itv.tenft.itvhub.MainActivity`; inspect that exact bundle or capture ADB before renaming the production identity.
+- **Bloomberg:** current Play output proves `com.bloomberg.btva`, Bloomberg publication, and TV form factor. The remaining visual question is whether its launcher uses only the Bloomberg wordmark or a compact app-specific foreground. The existing `tv.accedo.one.app.bootstrap.BootstrapActivity` must not be inferred from the icon page.
+- **RUTUBE:** official RuStore proves current Android TV package `ru.rutube.app.tv`, while the official brandbook proves three logo forms. One current RuStore manifest or device capture must match both the launcher activity and the actual compact/icon form; neither the current mobile package nor the historical Google Play package may be substituted.
+- **TIMVISION:** the current `it.telecomitalia.cubovision` Play copy is phone/tablet-led and did not expose a current TV form-factor marker in the captured output. A historical signed sample exposes `HomeActivity` strings, not proof of the catalog's inherited `com.canal.ui.tv.TvMainActivity`. Obtain the current TV/OEM delivery before retaining that activity or treating the 2026 `VISION` lockup as its launcher foreground.
+
 | Rank | Existing entry | Current generic | Why visible/relevant | Reproducible visual cue to validate | Evidence/confidence |
 |---:|---|---|---|---|---|
 | 1 | AirScreen | `broadcast_A` | Casting receiver with very large Android install base and direct TV use | Custom open `AS` monogram, corroborated by the exact-package listing and product screens | Official/current exact package; high |
@@ -402,6 +411,8 @@ Land verification/pruning independently from artwork so review can distinguish m
 ### Cautionary/secondary package evidence
 
 - Blokada 4.15.0 exact-package release index: <https://www.apkmirror.com/apk/blokada/blokada-3/blokada-3-4-15-0-release/blokada-4-15-0-android-apk-download/>
+- ITVX Android TV 1.25.0 exact-package signed-bundle index: <https://www.apkmirror.com/apk/itv-plc/itv-hub-your-tv-player-watch-live-on-demand-android-tv/itvx-android-tv-1-25-0-release/itvx-android-tv-1-25-0-android-apk-download/>
+- Historical TIMVISION signed-sample analysis (conflict lead only): <https://hybrid-analysis.com/sample/b2db2a06a54db03c5106958d904f952bdd6960ff1969746cbea395f492503dfa/62a9f645a51af52e800f797c>
 - Tata Play Binge TV signed-build history: <https://www.apkmirror.com/apk/tata-sky-ltd/tata-play-binge-22-otts-in-1-android-tv/>
 - ITVX Android TV signed-build example: <https://www.apkmirror.com/apk/itv-plc/itv-hub-your-tv-player-watch-live-on-demand-android-tv/>
 - Cloudflare community thread confirming no native TV experience: <https://community.cloudflare.com/t/when-is-1-1-1-1-app-coming-to-android-tv/236033>
