@@ -136,7 +136,7 @@ A package name alone is not an exported launcher component.
 
 The table deliberately contains more than the 22 needed for the sub-55% milestone. Final selection should favor a clear independent emblem and current TV visibility, not alphabetic convenience.
 
-The implementation-facing top-22 source ledger is committed as [`icon-visual-source-matrix-2026-09-15.csv`](icon-visual-source-matrix-2026-09-15.csv). It pins package-specific official references where available, separates source readiness from demand, and records rights/design blockers. In particular, it prevents “high priority” from being misread as “safe to trace immediately.”
+The implementation-facing source ledger is committed as [`icon-visual-source-matrix-2026-09-15.csv`](icon-visual-source-matrix-2026-09-15.csv). It covers the initial top 22 plus promoted fallback AIDA64 (overall rank 24); rank 23 FIFA+ remains excluded by its rights gate. It pins package-specific official references where available, separates source readiness from demand, and records rights/design blockers. In particular, it prevents “high priority” from being misread as “safe to trace immediately.”
 
 ### Visual verification pass 1 (2026-09-16)
 
@@ -153,32 +153,49 @@ These observations authorize only Core-style redraw prototypes and small-size te
 
 A same-day exact-package source sweep cleared several provenance blockers without pretending that a store page proves an exported activity. France.tv, CANAL+, Bloomberg, HGTV GO, and TIMVISION all retain live official Play pages for their catalog package; CANAL+, Bloomberg, and HGTV explicitly expose the TV form factor in current Play output. RUTUBE's catalog package is the reverse case: its Google Play URL is gone, but the official RuStore Android TV catalog currently publishes `ru.rutube.app.tv` as version `31.14.2.TV-rustore` (11 August 2026). The visual matrix now points to that current TV-specific source and warns against transferring assets from either current mobile package.
 
+### Top-22 visual gate disposition
+
+The source pass now gives every initial top-22 row one explicit implementation gate rather than an open-ended research label. AIDA64 is included as the first promoted fallback:
+
+| Final gate | Count | Entries | Meaning |
+|---|---:|---|---|
+| **Redraw-ready** | 12 | AirScreen, Aerial Views, AnyDesk, DW, Crossy Road, Blokada, Private Internet Access, MPV, Audiomack, ATRESplayer, Kinopoisk, AIDA64 | Independent identifying geometry and reproducible sources are sufficient for a Core-style prototype. Small-size tests still apply. |
+| **Testing-gated** | 5 | France.tv, Angel Studios, CANAL+, Euronews, HGTV | Source identity is clear, but the compact wordmark or fine geometry must pass a 10-foot launcher-card test before selection. |
+| **Rights-gated** | 2 | ARTE, F-Droid | Do not prototype until the stated authorization or derivative-license treatment is resolved. F-Droid officially dual-licenses its logo under CC-BY-SA-3.0 or GPLv3+; the repository needs an explicit attribution/share-alike decision. |
+| **Source/activity-gated** | 4 | ITVX, Bloomberg, RUTUBE, TIMVISION | Exact product/package evidence exists, but current launcher foreground and/or exported TV activity is not yet strong enough for production planning. |
+
+This is a selection boundary, not permission to ship all twelve redraw-ready entries. It also exposes two key consequences. First, the ledger contains **21 generic entries plus one stale bespoke entry (ITV Hub → ITVX)**, so even approving every row could not itself produce 22 generic conversions. Second, twelve are redraw-ready today after promoting AIDA64. Reaching the sub-55% milestone therefore requires both passing appropriate gated rows and promoting at least one additional high-confidence generic candidate from ranks 23–30; no count should be padded to compensate.
+
+The final source checks behind this disposition found that DW and Audiomack both have inspectable vectors in pinned Simple Icons commit `4ba19240849175ab4b855a732ab98c0f87cfb714`, linked there to the official DW site and Audiomack style guide. Crossy Road has an official developer press kit and its exact package currently exposes TV compatibility. Private Internet Access likewise retains TV compatibility for its exact package. France.tv publishes the current black wordmark SVG directly from its own domain. RUTUBE publishes an official brandbook with primary, compact, and icon forms, but the TV launcher must still be matched to one of those forms.
+
+**AIDA64 is the first promoted fallback.** The exact `com.finalwire.aida64` Play listing was updated 19 August 2026, explicitly exposes TV compatibility, and matches the catalog package. It does not by itself prove either catalog activity; that remains manifest/ADB evidence. Current package imagery and FinalWire's own support description agree on the identifying cue: a bold interlocked white `64` on red. The Core redraw should retain the diagonal upper stroke and sharply cut digit counters, not the vendor tile or shadow. This adds the twenty-second generic candidate needed to make the numerical milestone possible without pretending stale bespoke ITVX is a generic conversion.
+
 | Rank | Existing entry | Current generic | Why visible/relevant | Reproducible visual cue to validate | Evidence/confidence |
 |---:|---|---|---|---|---|
 | 1 | AirScreen | `broadcast_A` | Casting receiver with very large Android install base and direct TV use | Custom open `AS` monogram, corroborated by the exact-package listing and product screens | Official/current exact package; high |
 | 2 | Aerial Views | `tool_A` | Popular open-source Android TV screensaver; current 2026 releases | Pinned developer asset shows a low sun emerging behind two asymmetric overlapping mountain/dune silhouettes | Source-reproducible; high |
 | 3 | ARTE | `broadcast_A` | Direct request; major Franco-German broadcaster | Slanted compact `ARTE` mark from official corporate ZIP | Official asset; high |
-| 4 | Francetv | `app_F` | Direct request; major French service | France.tv dot/wordmark geometry | Official service asset; high |
+| 4 | Francetv | `app_F` | Direct request; major French service | Current lowercase `france.tv` wordmark with centered dot | Official source SVG plus exact-package listing; testing-gated |
 | 5 | ITV Hub → ITVX | bespoke but stale | Direct request; top UK service | Current `ITVX` identity, replacing obsolete Hub treatment | Official Play/service; high |
 | 6 | Angel Studios | `broadcast_A` | Recognisable streaming service | Current spaced `ANGEL` wordmark with a peaked/wing-like initial `A`; no standalone wing assumed | Exact-package official listing; high identity confidence, wordmark-size risk |
 | 7 | AnyDesk | `tool_A` | Common remote-support tool on TV boxes | Two opposed red diamond/chevrons | Stable public brand mark; high |
 | 8 | CANAL+ | `broadcast_C` | Major European broadcaster | Black/white CANAL+ compact wordmark; no invented C | Official service; high |
 | 9 | Bloomberg TV+ | `broadcast_B` | Global business-news TV app | Bloomberg wordmark is primary; assess compact `B` legitimacy | Official listing; medium |
-| 10 | DW | `broadcast_D` | Global public broadcaster | Interlocked `D/W` circles | Official broadcaster identity; high |
+| 10 | DW | `broadcast_D` | Global public broadcaster | Overlapping circular bodies containing `D` and cut-out `W` | Pinned vector tied to official broadcaster; redraw-ready |
 | 11 | Euronews | wrongly `sport_E` | Global news app and category error | Current exact-package icon is stacked lowercase `euro` / bold `news.` with a terminal dot, not the historic circle/sun | Exact-package official listing; high |
-| 12 | Crossy Road | `gaming_C` | Highly recognisable Android/TV game | Pixel chicken head/silhouette, redrawn minimally | Official app art; high recognisability |
+| 12 | Crossy Road | `gaming_C` | Highly recognisable Android/TV game | Pixel chicken head/silhouette, redrawn minimally | Official press kit and exact TV-compatible package; trademark caution |
 | 13 | Blokada | `vpn_B` | Direct community icon mention; TV-network utility use | `org.blokada.fyra` is legacy Blokada 4: orange/red shield outline split into three descending diagonal bands | Exact-package 4.15.0 release plus official-project corroboration; high identity confidence |
 | 14 | Private Internet Access | `vpn_P` | Prominent Android TV VPN | Robot/lock-head silhouette | Official VPN brand; high |
 | 15 | MPV | `app_M` | Widely used open-source media player | Stepped circular play mechanism | Official open-source icon; high |
 | 16 | F-Droid | wrongly `broadcast_F` | Common sideload/open-source store | Robot head with antenna inside bag/device | Official open-source brand; high |
-| 17 | Audiomack | `music_A` | Recognisable music service | Interlocked waveform/`A` treatment | Official current listing; medium-high |
+| 17 | Audiomack | `music_A` | Recognisable music service | Rising asymmetric waveform with leading dots, dominant downstroke, and terminal pulse | Official style guide plus pinned vector; redraw-ready |
 | 18 | ATRESplayer | `broadcast_A` | Major Spanish-language service | Current exact-package icon uses two nested angular right-facing chevrons/play outlines, not the older circular/radiating treatment | Exact-package official listing; high region relevance |
 | 19 | HGTV | `broadcast_H` | Major US factual/home channel | Roofline over HGTV wordmark; compact roof cue | Official network; high |
 | 20 | Kinopoisk | `broadcast_K` | Current Projectivy addition; large regional service | Upright `K` whose right arms expand into tapered radial rays; preserve the asymmetric ray silhouette | Exact TV-package official listing; high |
 | 21 | Rutube | `broadcast_R` | Current Projectivy addition; regional video service | Capture current TV-store foreground; do not transpose either mobile-package icon | Exact-package official RuStore Android TV listing; geometry pending |
 | 22 | TIMVISION | `broadcast_T` | Current Projectivy addition; Italian TV service | Verify the 2026 split-bar plus `VISION` rebrand against the exact launcher foreground | Exact-package official listing; rebrand capture pending |
 | 23 | FIFA+ | `sport_F` | Global football streaming relevance | Do **not** reproduce protected FIFA official IP without rights review; use only an allowed app-identifying treatment | Visual clarity high; legal clearance required |
-| 24 | AIDA64 | `tool_A` | Common diagnostics utility on TV boxes | Red circuit/chip `64` app cue | Official FinalWire listing; medium |
+| 24 | AIDA64 | `tool_A` | Common diagnostics utility on TV boxes | Bold interlocked `64` with diagonal upper stroke and sharply cut counters | Exact package is current and TV-compatible; official-product corroboration; high |
 | 25 | APK Updater | `store_A` | Sideload ecosystem utility | Verify which APK Updater project/package; use its repository asset only | Identity collision risk; medium-low until resolved |
 | 26 | BrowseHere | `browser_B` | Browser commonly bundled/on TV | Current compass/browser emblem | Vendor/Play evidence needed; medium |
 | 27 | One Play | `broadcast_O` | Current competitor addition, already mapped | Validate which regional One Play service before drawing | Name collision risk; low until resolved |
@@ -371,6 +388,15 @@ Land verification/pruning independently from artwork so review can distinguish m
 - HGTV GO exact package: <https://play.google.com/store/apps/details?id=com.hgtv.watcher>
 - RUTUBE exact Android TV package in official RuStore: <https://apps.rustore.ru/app/ru.rutube.app.tv>
 - TIMVISION exact package: <https://play.google.com/store/apps/details?id=it.telecomitalia.cubovision>
+- France.tv official current black SVG: <https://www.france.tv/images/france-tv-black.svg>
+- Audiomack official style guide: <https://styleguide.audiomack.com/>
+- DW official site: <https://www.dw.com/>
+- Crossy Road official classic press kit: <https://www.crossyroad.com/crossy-road-classic-press-kit>
+- RUTUBE official brandbook: <https://rutube.ru/brand/>
+- F-Droid official logo licensing: <https://f-droid.org/en/docs/Licenses/>
+- Private Internet Access exact package: <https://play.google.com/store/apps/details?id=com.privateinternetaccess.android>
+- AIDA64 exact package: <https://play.google.com/store/apps/details?id=com.finalwire.aida64>
+- AIDA64 official Android downloads: <https://aida64.com/downloads/OWRhOTcwNjg=>
 - Blokada official Android source inspected at commit: <https://github.com/blokadaorg/five-android/tree/518306f5c74516b48b646fa9362c98156ce4be2a>
 
 ### Cautionary/secondary package evidence
