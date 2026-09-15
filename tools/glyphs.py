@@ -509,9 +509,12 @@ def gradient_defs(stops, y0=80, y1=432, gid="cbGrad"):
 
 
 def apply_gradient(body, color, stops):
-    """Repaint every flat stroke of `color` with the gradient reference."""
-    return gradient_defs(stops) + body.replace(f'stroke="{color}"',
-                                               'stroke="url(#cbGrad)"')
+    """Repaint every flat stroke (and fill) of `color` with the gradient
+    reference. Fills join the ramp so accent dots ride the same paint as
+    the strokes (TizenTube's tip dot); stroke-only glyphs are untouched."""
+    return (gradient_defs(stops)
+            + body.replace(f'stroke="{color}"', 'stroke="url(#cbGrad)"')
+            .replace(f'fill="{color}"', 'fill="url(#cbGrad)"'))
 
 
 # ==========================================================================
@@ -546,18 +549,55 @@ def smarttube_play(c):
 
 
 def tizen_play(c):
-    """TizenTube: the official globe — play wedge, chord and detached dot.
+    """TizenTube — the exact emblem, inside the YouTube frame.
 
-    An earlier legibility pass moved the ad-block slash clear of the wedge
-    and left it as a stub off the bottom-left corner, which read as a stray
-    line. The official mark runs its diagonal as a chord from the rim, under
-    the wedge, ending in a detached dot before the rim again — so the chord
-    returns to the circle and the dot keeps its brand gap instead of floating.
+    2026-09-15 direction (owner, round 7): "use the exact TizenTube logo
+    within the box with the pack's style" — the whole official emblem
+    (reisxd/TizenTube standalone banner, art by @Zyborg777), measured off
+    the banner and rebuilt in the pack's monoline language inside the
+    normal YouTube frame.
+
+    The emblem is the two-arc globe — the main circle's arc running top,
+    right and bottom, meeting the left circle's arc at the rim
+    intersections — holding the open play: the left edge, the struck
+    top chord running rim to rim, and the bottom edge ending in its free
+    rounded cap, with the tip dot below the chord, right of the free
+    cap, as in the art.
+
+    Round-9 refinement (2026-09-15): the round-7 circles were refitted
+    against clean per-arc sample sets (outer-edge rays, junctions and
+    the wordmark excluded). The old main circle was ~12px too large and
+    the left one ~25px too large, which stretched the globe and pushed
+    the chord rim too far right. Verified geometry off the banner
+    (strokes 34, overlay mismatch 3.5%): main circle c(372.2,434.2)
+    r202.8, left circle c(314.7,442.9) r177.5, rim intersections
+    (236.4,283.6) and (286.8,618.1); vertical x=242.5 from the chord
+    (y=261.5) to the left arc (y=605.1); chord (242.5,261.5) to
+    (574.5,447.1) at the right rim; bottom edge caps (289,595.5) to
+    (462,495.5); dot an ellipse c(518.9,459.3) a=22.9 b=16.6 rotated
+    -28.9 deg. Scaled 0.4570x about the frame centre (same optical size
+    as round 7); emblem strokes carry the lightest monoline weight
+    (author 20, 21.8 after normalisation), and the dot is held ~5px off
+    the chord so the heavier stroke does not close the near-touching
+    gap the art has open.
     """
-    return (f'<circle cx="256" cy="256" r="196" {_s(c, 34)}/>'
-            f'<path d="M 176 152 L 176 320 L 372 236 Z" {_s(c, 30)}/>'
-            f'<path d="M 98 372 L 352 318" {_s(c, 24)}/>'
-            f'<path d="M 400 283 L 404 281" {_s(c, 24)}/>')
+    return (f'<rect x="64" y="128" width="384" height="256" rx="64" {_s(c, 32)}/>'
+            f'<path d="M 201.2 187.2 A 92.7 92.7 0 1 1 224.5 340.2" {_s(c, 20)}/>'
+            f'<path d="M 201.2 187.2 A 81.1 81.1 0 0 0 224.5 340.2" {_s(c, 20)}/>'
+            f'<path d="M 204.1 177.1 L 204.1 334.1" {_s(c, 20)}/>'
+            f'<path d="M 204.1 177.1 L 355.8 261.9" {_s(c, 20)}/>'
+            f'<path d="M 225.3 329.7 L 304.4 284.0" {_s(c, 20)}/>'
+            f'<ellipse cx="328.0" cy="271.9" rx="10.5" ry="7.6" '
+            f'transform="rotate(-28.9 328.0 271.9)" {_f(c)}/>')
+
+
+def tizen_play_dot(c):
+    """TizenTube banner mark — identical to the square from round 7 on.
+
+    The mark IS the exact emblem, and the emblem already carries its
+    tip dot, so banner and icon share one construction.
+    """
+    return tizen_play(c)
 
 
 def film_reel(c):
@@ -849,7 +889,8 @@ def vidio_wordmark(c):
 
 GLYPHS.update({
     "yt_play": yt_play, "smarttube_play": smarttube_play,
-    "tizen_play": tizen_play, "film_reel": film_reel, "flix_f": flix_f,
+    "tizen_play": tizen_play, "tizen_play_dot": tizen_play_dot,
+    "film_reel": film_reel, "flix_f": flix_f,
     "yinyang_play": yinyang_play, "stremio_square": stremio_square,
     "arvio_a": arvio_a, "lumera_beam": lumera_beam,
     "debrid_bolt": debrid_bolt, "alldebrid_infinity": alldebrid_infinity,
@@ -3773,6 +3814,33 @@ def hdmi_connector(c):
             f'<path d="M 312 208 L 312 264" {_s(c, 22)}/>')
 
 
+def tv_antenna(c):
+    """TV input — a screen with rabbit-ear antennae: the tuner source
+    (Projectivy pins the TV input as a home-row card; the community's
+    "TV is very ugly" complaint, docs/research/community-input-icons)."""
+    return (f'<rect x="96" y="196" width="320" height="220" rx="36" {_s(c, 32)}/>'
+            f'<path d="M 226 196 L 150 92" {_s(c, 32)}/>'
+            f'<path d="M 286 196 L 362 92" {_s(c, 32)}/>')
+
+
+def input_screen(c):
+    """Source — the launcher's choose-source menu: a screen with the
+    signal entering it (one generic mark for the input selector)."""
+    return (f'<rect x="150" y="146" width="270" height="220" rx="36" {_s(c, 32)}/>'
+            f'<path d="M 64 256 L 206 256" {_s(c, 30)}/>'
+            f'<path d="M 174 212 L 222 256 L 174 300" {_s(c, 30)}/>')
+
+
+def usb_media(c):
+    """Media explorer — a USB stick with a play mark: play from the drive
+    (Projectivy's shortcut to the stock media explorer)."""
+    return (f'<rect x="204" y="76" width="104" height="88" rx="16" {_s(c, 30)}/>'
+            f'<path d="M 234 108 L 234 132" {_s(c, 18)}/>'
+            f'<path d="M 278 108 L 278 132" {_s(c, 18)}/>'
+            f'<rect x="172" y="164" width="168" height="252" rx="30" {_s(c, 32)}/>'
+            f'<path d="M 222 252 L 306 290 L 222 328 Z" {_s(c, 30)}/>')
+
+
 def stremize_z(c):
     """Stremize - the Z of the all-in-one debrid/playlist player."""
     return (f'<path d="M 104 140 L 408 140 L 104 372 L 408 372" {_s(c, 32)}/>')
@@ -3839,6 +3907,8 @@ GLYPHS.update({
     "switch_joycons": switch_joycons,
     "playstation_shapes": playstation_shapes,
     "hdmi_connector": hdmi_connector,
+    "tv_antenna": tv_antenna, "input_screen": input_screen,
+    "usb_media": usb_media,
     "stremize_z": stremize_z,
 })
 
@@ -4057,3 +4127,179 @@ def drive_sync(c):
 
 
 GLYPHS.update({"trakt_mark": trakt_mark, "drive_sync": drive_sync})
+
+
+# ==========================================================================
+# Recognisability tranche 2 (2026-09).
+#
+# Twelve entries leave category shells and letter tiles for constructions:
+# seven network numerals and the two Australian free-to-air pairs get marks
+# built from the brand's actual device (the 7, the 9, the 10, the ABC
+# lollipops, the koru), Hotstar gets its literal name, Magenta Sport gets
+# the Telekom t with its dot.
+#
+# Owner direction (2026-09-14): a single letter is only carried when the
+# letter itself is part of the original logo (network numerals; the
+# Telekom t; a wordmark's signature letterform). Wordmark-only brands whose
+# initial has no device get a construction instead: Crave sets the
+# wordmark's leading c in its case, Hayu carries the y with its sweeping
+# descender, and Neon draws the N as the app mark's own neon-tube segments.
+#
+# All of these constructions are monoline: flat primitives, one accent,
+# rounded caps, weights 30/26/24 so normalisation lands on 32/26.2/21.8.
+# ==========================================================================
+
+def seven_plusmark(c):
+    """7plus / Seven Plus — the Seven Network's 7, carrying the plus.
+
+    A bold 7 (crossbar + diagonal leg) with the small plus sitting in the
+    open space the leg clears: the network's numeral plus the service's
+    name, no container.
+    """
+    return (f'<path d="M 108 146 L 352 146 L 184 390" {_s(c, 30)}/>'
+            f'<path d="M 372 266 L 372 370" {_s(c, 26)}/>'
+            f'<path d="M 320 318 L 424 318" {_s(c, 26)}/>')
+
+
+def ninenow_mark(c):
+    """9Now / 9Now CTV — the nine, and the play that says "now".
+
+    The bowl and stem of the 9 hold the upper field; the play triangle
+    lands lower right, where the brand's Now wordmark sits in the
+    real lockup.
+    """
+    return (f'<circle cx="204" cy="196" r="108" {_s(c, 30)}/>'
+            f'<path d="M 300 248 C 316 316 312 366 286 404" {_s(c, 30)}/>'
+            f'<path d="M 348 306 L 348 374 L 408 340 Z" {_s(c, 24)}/>')
+
+
+def ten_mark(c):
+    """10 Play — the numeral is the brand: 1 and 0 as one lockup.
+
+    France24's precedent: when the digits are the identity, they take the
+    whole safe area. The 1 keeps its flag, the 0 is a tall ring, and no
+    container carries the pair — this retires the last tile_*.
+    """
+    return (f'<path d="M 104 168 L 168 120 L 168 408" {_s(c, 30)}/>'
+            f'<ellipse cx="316" cy="264" rx="100" ry="144" {_s(c, 30)}/>')
+
+
+def abc_lollipops(c):
+    """ABC iview — the lollipops: centre seed with its petal ring.
+
+    The ABC identity is a cluster of circles, recognisable in silhouette.
+    Seven stroked circles in one accent; the iview wordmark stays off the
+    tile per the monogram rule.
+    """
+    import math
+    out = f'<circle cx="256" cy="256" r="52" {_s(c, 30)}/>'
+    for i in range(6):
+        a = math.radians(90 + i * 60)
+        x = 256 + 148 * math.cos(a)
+        y = 256 + 148 * math.sin(a)
+        out += f'<circle cx="{x:.1f}" cy="{y:.1f}" r="44" {_s(c, 30)}/>'
+    return out
+
+
+def maori_koru(c):
+    """Māori+ — the koru, the unfurling fern frond.
+
+    One stroke from the frond head tightening into a two-turn spiral; the
+    rounded cap at the head is the frond's bud. Turn count is set so the
+    counters stay open at 48px.
+    """
+    import math
+    pts = []
+    turns, steps = 2.0, 120
+    for i in range(steps + 1):
+        t = i / steps
+        theta = math.radians(115) - t * turns * 2 * math.pi
+        r = 190 - 126 * t
+        x = 256 + r * math.cos(theta)
+        y = 256 + r * math.sin(theta)
+        pts.append(f"{'M' if i == 0 else 'L'} {x:.1f} {y:.1f}")
+    return f'<path d="{" ".join(pts)}" {_s(c, 30)}/>'
+
+
+def hotstar_spark(c):
+    """JioHotstar — the hot star: five points with the glint.
+
+    The star is the brand's literal name; the four-ray spark upper right
+    is the "hot" tell, two crossed strokes so it stays monoline.
+    """
+    import math
+    cx, cy, R, r = 236, 284, 148, 72
+    pts = []
+    for i in range(10):
+        a = math.radians(-90 + i * 36)
+        rad = R if i % 2 == 0 else r
+        x = cx + rad * math.cos(a)
+        y = cy + rad * math.sin(a)
+        pts.append(f"{'M' if i == 0 else 'L'} {x:.1f} {y:.1f}")
+    return (f'<path d="{" ".join(pts)} Z" {_s(c, 30)}/>'
+            f'<path d="M 396 84 L 396 168" {_s(c, 24)}/>'
+            f'<path d="M 354 126 L 438 126" {_s(c, 24)}/>')
+
+
+def magenta_t(c):
+    """Magenta Sport — Telekom's t with its dot, the parent brand's mark.
+
+    The crossbar bows upward like a broadcast signal and the stem drops
+    from its crest; the round-capped dot at the right shoulder is the
+    Telekom t-dot that also closes the Magenta Sport wordmark, so the
+    mark quotes the parent brand's actual device rather than a bare T.
+    """
+    return (f'<path d="M 108 172 C 176 140 336 140 404 172" {_s(c, 30)}/>'
+            f'<path d="M 256 152 L 256 404" {_s(c, 30)}/>'
+            f'<path d="M 382 106 L 382.5 106" {_s(c, 30)}/>')
+
+
+def crave_c(c):
+    """Crave — the wordmark's leading c, lowercase, in the pack's own face.
+
+    Crave's 2018 identity (Ronald Ruiz) is a purely geometric lowercase
+    wordmark in CraveBlue — there is no emblem or device to carry, so the
+    icon sets the mark's opening letter in the wordmark's case and in the
+    pack's own face, in the canonical wordmark blue. The uppercase C tile
+    was an invention and is retired.
+    """
+    return monogram_body("c", c)
+
+
+def hayu_y(c):
+    """Hayu — the wordmark's y and its long sweeping descender.
+
+    The 2022 rebrand wordmark is a bold lowercase hayu in pink-red; the
+    y's curved tail is the one letterform that identifies it, so the icon
+    carries that letterform alone. The word has no capital H, so the old
+    H tile was an invention and is retired.
+    """
+    return (f'<path d="M 198 146 L 267 322" {_s(c, 30)}/>'
+            f'<path d="M 342 138 L 264 330 C 246 388 192 424 116 408" {_s(c, 30)}/>')
+
+
+def neon_tube_n(c):
+    """Neon — an N built from bent-tube segments, the app mark's own construction.
+
+    The NEON app icon sets its letters in acid green as separate
+    neon-tube strokes with rounded ends and open gaps at the joints; the
+    icon excerpt is the brand's construction language, not an initial
+    tile, so the N reads as a lit tube rather than a letter.
+    """
+    return (f'<path d="M 140 140 L 140 408" {_s(c, 30)}/>'
+            f'<path d="M 202 172 L 310 376" {_s(c, 30)}/>'
+            f'<path d="M 372 140 L 372 408" {_s(c, 30)}/>')
+
+
+GLYPHS.update({
+    "seven_plusmark": seven_plusmark,
+    "ninenow_mark": ninenow_mark,
+    "ten_mark": ten_mark,
+    "abc_lollipops": abc_lollipops,
+    "maori_koru": maori_koru,
+    "hotstar_spark": hotstar_spark,
+    "magenta_t": magenta_t,
+    "crave_c": crave_c,
+    "hayu_y": hayu_y,
+    "neon_tube_n": neon_tube_n,
+})

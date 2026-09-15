@@ -199,6 +199,11 @@
     <!-- Aurora Store -->
     <item component="ComponentInfo{com.aurora.store/com.aurora.store.MainActivity}" drawable="aurora_store_banner"/>
     <item component="ComponentInfo{com.aurora.store/.MainActivity}" drawable="aurora_store_banner"/>
+    <!-- AV Source -->
+    <item component="ComponentInfo{com.spocky.projengmenu/com.spocky.projengmenu.activities.input.SourceAVActivity}" drawable="av_source_banner"/>
+    <item component="ComponentInfo{com.spocky.projengmenu/.activities.input.SourceAVActivity}" drawable="av_source_banner"/>
+    <item component="ComponentInfo{com.spocky.projengmenu/com.spocky.projengmenu.ui.guidedActions.activities.input.SourceAVActivity}" drawable="av_source_banner"/>
+    <item component="ComponentInfo{com.spocky.projengmenu/.ui.guidedActions.activities.input.SourceAVActivity}" drawable="av_source_banner"/>
     <!-- Avoid -->
     <item component="ComponentInfo{com.hritwik.avoid/com.hritwik.avoid.MainActivity}" drawable="hritwik_banner"/>
     <item component="ComponentInfo{com.hritwik.avoid/.MainActivity}" drawable="hritwik_banner"/>
@@ -1254,6 +1259,11 @@
     <!-- Media Browser -->
     <item component="ComponentInfo{com.cmpsoft.MediaBrowser/com.cmpsoft.MediaBrowser.SplashScreenActivity}" drawable="mediabrowser_banner"/>
     <item component="ComponentInfo{com.cmpsoft.MediaBrowser/.SplashScreenActivity}" drawable="mediabrowser_banner"/>
+    <!-- Media Explorer -->
+    <item component="ComponentInfo{com.spocky.projengmenu/com.spocky.projengmenu.ui.guidedActions.activities.shortcut.MediaExplorerShortcutActivity}" drawable="media_explorer_banner"/>
+    <item component="ComponentInfo{com.spocky.projengmenu/.ui.guidedActions.activities.shortcut.MediaExplorerShortcutActivity}" drawable="media_explorer_banner"/>
+    <item component="ComponentInfo{com.spocky.projengmenu/com.spocky.projengmenu.ui.launcherActivities.MediaExplorerShortcutActivity}" drawable="media_explorer_banner"/>
+    <item component="ComponentInfo{com.spocky.projengmenu/.ui.launcherActivities.MediaExplorerShortcutActivity}" drawable="media_explorer_banner"/>
     <!-- Media Hub -->
     <item component="ComponentInfo{com.oumi.utility.media.hub/com.mac.utility.media.hub.ui_tv.main.TVMainActivity}" drawable="utility_banner"/>
     <!-- Mediaset Infinity TV -->
@@ -1489,6 +1499,18 @@
     <item component="ComponentInfo{com.nuvio.tv/com.nuvio.tv.MainActivity}" drawable="nuvio_banner"/>
     <item component="ComponentInfo{com.nuvio.tv/.MainActivity}" drawable="nuvio_banner"/>
     <item component="ComponentInfo{com.nuviodebug.com/com.nuvio.tv.MainActivity}" drawable="nuvio_banner"/>
+    <item component="ComponentInfo{com.nuvio.tv/com.nuvio.tv.launcher.AppIconDefault}" drawable="nuvio_banner"/>
+    <item component="ComponentInfo{com.nuvio.tv/.launcher.AppIconDefault}" drawable="nuvio_banner"/>
+    <item component="ComponentInfo{com.nuvio.tv/com.nuvio.tv.launcher.AppIconArcticBlue}" drawable="nuvio_banner"/>
+    <item component="ComponentInfo{com.nuvio.tv/.launcher.AppIconArcticBlue}" drawable="nuvio_banner"/>
+    <item component="ComponentInfo{com.nuvio.tv/com.nuvio.tv.launcher.AppIconEmerald}" drawable="nuvio_banner"/>
+    <item component="ComponentInfo{com.nuvio.tv/.launcher.AppIconEmerald}" drawable="nuvio_banner"/>
+    <item component="ComponentInfo{com.nuvio.tv/com.nuvio.tv.launcher.AppIconRoseGold}" drawable="nuvio_banner"/>
+    <item component="ComponentInfo{com.nuvio.tv/.launcher.AppIconRoseGold}" drawable="nuvio_banner"/>
+    <item component="ComponentInfo{com.nuvio.tv/com.nuvio.tv.launcher.AppIconCopper}" drawable="nuvio_banner"/>
+    <item component="ComponentInfo{com.nuvio.tv/.launcher.AppIconCopper}" drawable="nuvio_banner"/>
+    <item component="ComponentInfo{com.nuvio.tv/com.nuvio.tv.launcher.AppIconGraphite}" drawable="nuvio_banner"/>
+    <item component="ComponentInfo{com.nuvio.tv/.launcher.AppIconGraphite}" drawable="nuvio_banner"/>
     <!-- NV Player -->
     <item component="ComponentInfo{com.acb.nvplayer/com.ae.video.bplayer.ui.SplashActivity}" drawable="nvplayer_banner"/>
     <!-- Nxsha -->
@@ -1701,6 +1723,16 @@
     <!-- Projectivy Blueprint -->
     <item component="ComponentInfo{dev.projectivy.blueprint.app/dev.projectivy.blueprint.app.MainActivity}" drawable="projectivy_blueprint_banner"/>
     <item component="ComponentInfo{dev.projectivy.blueprint.app/.MainActivity}" drawable="projectivy_blueprint_banner"/>
+    <!-- Projectivy Categories -->
+    <item component="ComponentInfo{com.spocky.projengmenu/com.spocky.projengmenu.ui.guidedActions.activities.shortcut.CategoryShortcutActivity}" drawable="projectivy_categories_banner"/>
+    <item component="ComponentInfo{com.spocky.projengmenu/.ui.guidedActions.activities.shortcut.CategoryShortcutActivity}" drawable="projectivy_categories_banner"/>
+    <item component="ComponentInfo{com.spocky.projengmenu/com.spocky.projengmenu.ui.launcherActivities.CategoryShortcutActivity}" drawable="projectivy_categories_banner"/>
+    <item component="ComponentInfo{com.spocky.projengmenu/.ui.launcherActivities.CategoryShortcutActivity}" drawable="projectivy_categories_banner"/>
+    <!-- Projectivy Channels -->
+    <item component="ComponentInfo{com.spocky.projengmenu/com.spocky.projengmenu.ui.guidedActions.activities.shortcut.ChannelShortcutActivity}" drawable="projectivy_channels_banner"/>
+    <item component="ComponentInfo{com.spocky.projengmenu/.ui.guidedActions.activities.shortcut.ChannelShortcutActivity}" drawable="projectivy_channels_banner"/>
+    <item component="ComponentInfo{com.spocky.projengmenu/com.spocky.projengmenu.ui.launcherActivities.ChannelShortcutActivity}" drawable="projectivy_channels_banner"/>
+    <item component="ComponentInfo{com.spocky.projengmenu/.ui.launcherActivities.ChannelShortcutActivity}" drawable="projectivy_channels_banner"/>
     <!-- Projectivy Launcher -->
     <item component="ComponentInfo{com.spocky.projengmenu/com.spocky.projengmenu.ui.home.MainActivity}" drawable="projectivy_banner"/>
     <item component="ComponentInfo{com.spocky.projengmenu/.ui.home.MainActivity}" drawable="projectivy_banner"/>
@@ -1711,6 +1743,11 @@
     <!-- Projectivy Overflight -->
     <item component="ComponentInfo{tv.projectivy.plugin.wallpaperprovider.overflight/tv.projectivy.plugin.wallpaperprovider.overflight.SettingsActivity}" drawable="projectivy_overflight_banner"/>
     <item component="ComponentInfo{tv.projectivy.plugin.wallpaperprovider.overflight/.SettingsActivity}" drawable="projectivy_overflight_banner"/>
+    <!-- Projectivy Settings -->
+    <item component="ComponentInfo{com.spocky.projengmenu/com.spocky.projengmenu.ui.settings.SettingsActivity}" drawable="projectivy_settings_banner"/>
+    <item component="ComponentInfo{com.spocky.projengmenu/.ui.settings.SettingsActivity}" drawable="projectivy_settings_banner"/>
+    <item component="ComponentInfo{com.spocky.projengmenu/com.spocky.projengmenu.ui.guidedActions.activities.settings.AppSettingsActivity}" drawable="projectivy_settings_banner"/>
+    <item component="ComponentInfo{com.spocky.projengmenu/.ui.guidedActions.activities.settings.AppSettingsActivity}" drawable="projectivy_settings_banner"/>
     <!-- Proton VPN -->
     <item component="ComponentInfo{ch.protonvpn.android/com.protonvpn.android.tv.main.TvMainActivity}" drawable="protonvpn_banner"/>
     <!-- Psiphon -->
@@ -1997,6 +2034,11 @@
     <!-- Soundcloud -->
     <item component="ComponentInfo{com.soundcloud.android/com.soundcloud.android.tv.app.TvMainActivity}" drawable="soundcloud_banner"/>
     <item component="ComponentInfo{com.soundcloud.android/.tv.app.TvMainActivity}" drawable="soundcloud_banner"/>
+    <!-- Source -->
+    <item component="ComponentInfo{com.spocky.projengmenu/com.spocky.projengmenu.activities.input.SourceActivity}" drawable="source_input_banner"/>
+    <item component="ComponentInfo{com.spocky.projengmenu/.activities.input.SourceActivity}" drawable="source_input_banner"/>
+    <item component="ComponentInfo{com.spocky.projengmenu/com.spocky.projengmenu.ui.guidedActions.activities.input.SourceActivity}" drawable="source_input_banner"/>
+    <item component="ComponentInfo{com.spocky.projengmenu/.ui.guidedActions.activities.input.SourceActivity}" drawable="source_input_banner"/>
     <!-- Sparkle TV -->
     <item component="ComponentInfo{se.hedekonsult.sparkle/se.hedekonsult.sparkle.MainActivity}" drawable="sparkletv_banner"/>
     <item component="ComponentInfo{se.hedekonsult.sparkle/.MainActivity}" drawable="sparkletv_banner"/>
@@ -2324,6 +2366,11 @@
     <item component="ComponentInfo{dev.vodik7.tvquickactions/.MainActivity}" drawable="tvquickactions_banner"/>
     <!-- TV Quick Actions -->
     <item component="ComponentInfo{dev.vodik7.tvquickactions.free/dev.vodik7.tvquickactions.MainActivity}" drawable="tv_quick_actions_banner"/>
+    <!-- TV Source -->
+    <item component="ComponentInfo{com.spocky.projengmenu/com.spocky.projengmenu.activities.input.SourceTVActivity}" drawable="tv_source_banner"/>
+    <item component="ComponentInfo{com.spocky.projengmenu/.activities.input.SourceTVActivity}" drawable="tv_source_banner"/>
+    <item component="ComponentInfo{com.spocky.projengmenu/com.spocky.projengmenu.ui.guidedActions.activities.input.SourceTVActivity}" drawable="tv_source_banner"/>
+    <item component="ComponentInfo{com.spocky.projengmenu/.ui.guidedActions.activities.input.SourceTVActivity}" drawable="tv_source_banner"/>
     <!-- TV Unplugged -->
     <item component="ComponentInfo{com.google.android.youtube.tvunplugged/com.google.android.apps.youtube.tvunplugged.activity.MainActivity}" drawable="tvunplugged_banner"/>
     <!-- TV Vlaanderen -->

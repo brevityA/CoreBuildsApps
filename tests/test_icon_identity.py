@@ -136,6 +136,40 @@ class IdentityTests(unittest.TestCase):
                         render_glyph_only(icon["glyph"], icon["color"], monochrome=mono)):
                 self.assertIn(f'stroke="{colour}"', svg)
 
+    def test_banner_glyph_override_carries_a_real_banner_mark(self):
+        """banner_glyph (TizenTube) splits the square from the 16:9 card:
+        the committed banner must be that mark, and the square keeps the
+        icon glyph."""
+        from build_banners import recentre
+        for icon in ICONS:
+            bg = icon.get("banner_glyph")
+            if not bg:
+                continue
+            with self.subTest(icon=icon["name"]):
+                self.assertIn(bg, GLYPHS, icon["name"])
+                self.assertNotEqual(bg, icon["glyph"], icon["name"])
+                expected = recentre(render(icon["name"], bg, icon["color"],
+                                            icon.get("category", ""),
+                                            gradient=icon.get("gradient")))
+                self.assertEqual(
+                    (ROOT / "assets/banners" / f"{icon['drawable']}.svg").read_text(),
+                    expected, icon["name"])
+                self.assertEqual(
+                    (ROOT / "assets/svg" / f"{icon['drawable']}.svg").read_text(),
+                    render_svg(icon["glyph"], icon["color"],
+                               gradient=icon.get("gradient")), icon["name"])
+
+    def test_tizentube_runs_the_measured_field_gradient(self):
+        """The owner wants the real logo's ramp: field cyan to pale blue,
+        painted at render time (the Nuvio pattern), flat in Pop/Pixel."""
+        square = (ROOT / "assets/svg" / "tizentube.svg").read_text()
+        for stop in ("#47DDFF", "#C5E9FF"):
+            self.assertIn(stop, square)
+        self.assertIn("linearGradient", square)
+        self.assertIn('stroke="url(#cbGrad)"', square)
+        banner = (ROOT / "assets/banners" / "tizentube.svg").read_text()
+        self.assertIn('fill="url(#cbGrad)"', banner)  # the banner dot rides the ramp
+
     def test_committed_square_vectors_match_the_generator(self):
         for icon in ICONS:
             path = ROOT / "assets/svg" / f"{icon['drawable']}.svg"
@@ -425,38 +459,78 @@ class DiversityTests(unittest.TestCase):
     docs/research/iconpack-design-upgrade-2026-09.md measures the pack at 66%
     generic letter tiles — the one axis where Projectivy Icon Pack still wins.
     A catalog addition lands on a letter tile by default, so without a gate
-    the share ratchets up with every release. The ceiling and floor below pin
-    the number, and the researched-emblem set prevents a named brand from
-    silently regressing to a tile.
+    the share ratchets up with every release.
+
+    Tranche 2 (2026-09) widened the definition of "generic" from bare tile_*
+    to any glyph that carries no brand device — a tile_*, or a category
+    shell carrying a bare letter/digit (broadcast_M, sport_9, app_F, ...).
+    Outfit monograms are the exception: since v1.8.18 a wordmark brand's
+    letter is a reviewed, test-enforced construction (tools/typeface), not a
+    fallback, so monogram_* stays on the bespoke side of this line. The gate
+    re-based to 538/933 (57.7%) with ten_mark retiring the last tile_*; the
+    numbers below may only move in the pack's favour. The researched-emblem
+    set prevents a named brand from silently regressing to a generic glyph.
     """
 
-    # Brands with a verified public emblem. Grows as each logo audit lands;
-    # a regression here is a silent quality loss, not a count change.
+    # Brands with a verified public emblem or a reviewed bespoke mark.
+    # Grows as each logo audit lands; a regression here is a silent quality
+    # loss, not a count change.
     RESEARCHED_EMBLEMS = {
         "al_jazeera", "androidapp_2",   # Al Jazeera, France 24
         "cbctv", "cnbc",                # CBC Gem, CNBC (NBC peacock)
         "sbs", "sbsondemand",           # SBS five-splice Mercator globe
         "epix",                         # MGM+ film-reel device
+        # Tranche 2 (2026-09): the network numerals and brand devices
+        "sevenplus", "seven_plus",      # Seven Network 7 + the 7plus mark
+        "ninenow", "ninenow_2",         # the nine with the play
+        "tenplay",                      # the 10 lockup — last tile_* retired
+        "abciview",                     # the ABC lollipops
+        "maoritelevision",              # the koru
+        "jiohotstar",                   # the hot star
+        "magenta_sport",                # the Telekom t with its dot
+        # Letter-mark pass (2026-09): wordmark brands off invented initials
+        "bellmedia",                    # Crave — the wordmark's leading c
+        "hayu",                         # the wordmark's y and its tail
+        "neon",                         # the app mark's neon-tube segments
+        # TizenTube emblem pass (2026-09): rebuilt from the measured logo
+        "tizentube",                    # globe, struck-through wedge, dot
     }
 
-    def _tiles(self):
-        return [i for i in ICONS if i["glyph"].startswith("tile_")]
+    @staticmethod
+    def _is_generic(glyph: str) -> bool:
+        import re
+        # An Outfit monogram is a reviewed brand construction (the
+        # test-enforced wordmark direction), not a letter fallback.
+        if glyph.startswith("monogram_"):
+            return False
+        return bool(re.fullmatch(r"tile_.*|.*_[A-Z0-9]", glyph))
 
-    def test_letter_tile_share_has_a_ceiling(self):
-        share = len(self._tiles()) / len(ICONS)
-        self.assertLessEqual(share, 0.66,
-                             f"{share:.2%} of icons are letter tiles, above the 66% ceiling")
+    def _generic(self):
+        return [i for i in ICONS if self._is_generic(i["glyph"])]
+
+    def test_generic_glyph_share_has_a_ceiling(self):
+        share = len(self._generic()) / len(ICONS)
+        self.assertLessEqual(share, 0.577,
+                             f"{share:.2%} of icons are generic glyphs, above "
+                             "the 57.7% ceiling")
 
     def test_bespoke_mark_count_has_a_floor(self):
-        bespoke = len(ICONS) - len(self._tiles())
-        self.assertGreaterEqual(bespoke, 315,
-                                f"only {bespoke} icons on bespoke marks, below the 315 floor")
+        bespoke = len(ICONS) - len(self._generic())
+        self.assertGreaterEqual(bespoke, 395,
+                                f"only {bespoke} icons on non-generic marks, "
+                                "below the 395 floor")
 
-    def test_researched_emblems_are_never_letter_tiles(self):
+    def test_no_tile_glyphs_remain(self):
+        tiles = [i["name"] for i in ICONS if i["glyph"].startswith("tile_")]
+        self.assertEqual(tiles, [],
+                         f"tile_* glyphs survived: {tiles[:5]} — the tranche "
+                         "retired the last one")
+
+    def test_researched_emblems_are_never_generic(self):
         for icon in ICONS:
             if icon["drawable"] in self.RESEARCHED_EMBLEMS:
-                self.assertFalse(icon["glyph"].startswith("tile_"),
-                                 f"{icon['name']} regressed to a letter tile")
+                self.assertFalse(self._is_generic(icon["glyph"]),
+                                 f"{icon['name']} regressed to a generic glyph")
 
 
 class ApkInspectorTests(unittest.TestCase):

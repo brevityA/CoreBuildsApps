@@ -129,6 +129,10 @@ def check_stale_claims() -> None:
             pattern = re.escape(needle)
             if re.fullmatch(r"(?:pack )?v\d+\.\d+\.\d+", needle):
                 pattern += r"(?!\d)"
+            if re.match(r"^\d+ ", needle):
+                # Count-shaped needles ("40 icons") must not trip on a larger
+                # current count that merely ends in them ("940 icons").
+                pattern = r"(?<!\d)" + pattern
             if re.search(pattern, text):
                 fail(f"stale suite truth in {file}: {needle}")
     for old in ["CLAUDE.md", "START_HERE_CLAUDE.md", "patches/START_HERE_CLAUDE.md", "README-EXTRACT.txt"]:

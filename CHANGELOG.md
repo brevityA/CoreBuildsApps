@@ -4,6 +4,190 @@ All notable changes to the Core Builds Icon Pack. Format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); versions follow
 [SemVer](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+## [1.8.19] — 2026-09-15
+
+### Added
+
+- **Projectivy internal cards** — the long-posted r/Projectivy_Launcher
+  request ("a banner shaped icon for … my HDMI outputs so I don't have the
+  square HDMI icon that Projectivy use") gets four new entries, all rendered
+  from existing glyphs, zero new art: `av_source` (the AV input card,
+  `monitor_wave`, the input family's cyan alongside `hdmi_source`),
+  `projectivy_settings` (gear), `projectivy_categories` (folder) and
+  `projectivy_channels` (tv_stack), mapped to Projectivy 4.70's internal
+  activities (Settings + AppSettings, Category/Channel shortcuts, SourceAV)
+  in both name forms. All eight components are `unverified` — the launcher is
+  closed-source, so they clear at the next ADB device scan; the
+  `MappingHygieneTests` ratchet moves 69 → 77 for the batch and is expected
+  only to fall from there. HDMI 1–4 keeps the unified `hdmi_source` mark;
+  the four numbered input marks are deferred until on-device confirmation of
+  whether the launcher labels the cards (see
+  `docs/research/community-input-icons-2026-09.md`).
+- **Projectivy input marks** — the launcher's remaining pinnable input
+  surfaces get their own marks in the input family's cyan: `tv_source`
+  (antenna — the tuner; the original request thread calls out "TV … very
+  ugly"), `source_input` (a screen with the signal entering — the
+  on-screen choose-source menu) and `media_explorer` (USB stick + play —
+  the launcher's shortcut to the stock media explorer). Activity names
+  follow the launcher's documented `Source{X}Activity` /
+  `{X}ShortcutActivity` patterns in both name forms; none is corroborated
+  by any public source, so all six components are `unverified` and the
+  `MappingHygieneTests` ratchet moves 77 → 83 for the batch — expected to
+  clear or be re-pointed at the next ADB device scan
+  (`docs/ADB_SCANNING.md`). Component/S-Video/optical stay folded into the
+  AV card: Tizen does not expose them as separate inputs. Receipt
+  `docs/projectivy-input-cards-2026-09.png`.
+- **Nuvio TV launcher activities** — the entry mapped only `.MainActivity`,
+  which in the official manifest carries deep links only; on a real device
+  the icon resolved from the LAUNCHER activity and so never applied. All six
+  launcher activities from the official manifest (`launcher.AppIconDefault`
+  plus the five user-switchable icon variants) are now mapped — 12
+  components, manifest-verified against NuvioMedia/NuvioTV `dev`
+  (2026-09-12), so they cost no unverified budget.
+
+### Fixed
+
+- **Suite-truth gate false positive** — the stale-claim guard's
+  `"40 icons"` needle matched the correct current claim `"940 icons"` as a
+  bare substring, so the 940-icon catalog tripped its own gate. Count-shaped
+  needles now carry a leading-digit lookbehind (the version-shaped needles
+  already had the lookahead treatment), so a stale "40 icons" is still
+  caught while "940 icons" is blessed.
+- **GeForce Now** (`tegrazone3`) — shipped in v1.8.18 but never documented
+  in that release's notes, which is how it surfaced as a user report: the
+  card showed a "T" letter tile (the launcher's fallback for the Tegra Zone
+  label — the legacy brand of the same app, package `com.nvidia.tegrazone3`)
+  instead of the mark, and a per-app reset restored the native icon at its
+  native size. The shipped asset and the appfilter entry were verified to
+  match the reference pack's mapping exactly, so the failure is a launcher
+  that could not resolve the drawable from the installed pack's resources —
+  a stale pack install or a stale launcher resource cache after a pack
+  update. Remedy on-device: update to the latest pack and force a launcher
+  refresh (reboot, or re-apply the pack from Projectivy settings). The
+  failure class is now closed at the source: new CI gate
+  `tools/check_appfilter_integrity.py` verifies that every drawable named by
+  every appfilter (Icon Pack, Pop, Pixel Neon — res/xml and assets copies)
+  exists in that pack's res tree, and `tools/build_icons.py` refuses to
+  write an appfilter that references a missing drawable instead of warning
+  and shipping it.
+
+- **Recognisability tranche 2** — twelve entries leave category shells and
+  letter tiles for constructions, off the 57.7%-and-falling generic share:
+  7plus / Seven Plus get `seven_plusmark` (the Seven Network's 7 carrying the
+  plus), 9Now / 9Now CTV get `ninenow_mark` (the nine with the play that says
+  "now"), 10 Play gets `ten_mark` (the 10 lockup — the last `tile_*` retired),
+  ABC iview gets `abc_lollipops` (the centre seed with its petal ring), Māori+
+  gets `maori_koru` (the unfurling fern frond), JioHotstar gets
+  `hotstar_spark` (the star with its glint), and Magenta Sport gets
+  `magenta_t`. Neon, Crave and Hayu take Outfit monograms like every other
+  wordmark brand since v1.8.18. Receipt: `docs/icon-tranche2-2026-09.png`.
+- **Verification tranche** — 464 of the 533 `unverified` components are
+  cleared as corroborated verbatim by the published Projectivy Icon Pack
+  1.1.9 appfilter (the reference-pack inheritances the mapping was seeded
+  from). 69 remain, and `MappingHygieneTests` ratchets the count: the
+  ceiling may only move down, and a re-added corroborated component fails
+  the suite. Protocol: `docs/research/mapping-verification-2026-09.md`.
+- `tools/verify_mappings.py` — report/clear corroborated components against
+  the reference pack; the next tranche (the surviving 69) is one command.
+- `tools/prepare_release.py` — stamps all eight version surfaces (Gradle
+  name/code, catalog, `Latestrelease/version.json`, `suite.json`, README
+  suite-stamp, `docs/IconPackList.md`, CHANGELOG), rebuilds the five
+  text-asset builders, and runs the gate suite before the commit.
+- `tools/sync_wallpaper_manifest.py` — keeps the bundled wallpaper
+  manifests and thumb sets in the APKs byte-identical to the repo;
+  `Wallpapers/README.md` step 4 now runs it instead of copying by hand.
+
+### Changed
+
+- Magenta Sport's accent is now Telekom Magenta `#E20074` (it was carrying a
+  borrowed Jio blue); `magenta_t` reads in the brand's own colour.
+- The diversity gate in `tests/test_icon_identity.py` re-based to the wider
+  "generic" definition (a `tile_*` or any category shell carrying a bare
+  letter/digit; Outfit monograms stay bespoke): ceiling 57.7%, floor 395,
+  and a test that no `tile_*` glyph remains. The researched-emblem set gains
+  the nine tranche-2 drawables.
+- Seven new marks join the `core_monoline` style contract; the banner, Pop,
+  and Pixel Neon sets are regenerated to match.
+- **Letter-mark pass (owner direction)** — a single letter is only carried
+  when the letter itself is part of the original logo; the four wordmark
+  brands that shipped invented initials are redesigned against their marks:
+  Crave (`bellmedia`) becomes `crave_c`, the wordmark's leading c in its
+  own case, in the published CraveBlue `#00A9EE` (was a palette purple);
+  Hayu (`hayu`) becomes `hayu_y`, the 2022 wordmark's signature y with its
+  sweeping descender, in the rebrand's pink-red `#FF285A` (was palette
+  red); Neon (`neon`) becomes `neon_tube_n`, the app mark's own bent-tube
+  segments with open joints, in the app icon's acid green `#C8FB34` (was a
+  simple-icons green); and Magenta Sport (`magenta_sport`) gains the
+  Telekom t-dot at the crossbar shoulder — the parent brand's actual mark,
+  which also closes the Magenta Sport wordmark. Single letters that are
+  the logo (the 7+, 9 and 10 network numerals) are untouched. Receipt:
+  `docs/icon-lettermarks-2026-09.png`.
+- **TizenTube** (`tizentube`) — the v1.8.18 fix read as "kinda random"
+  (its chord floated under the wedge, a stroke the real mark does not
+  have), and this day's iterations — the measured globe emblem, then the
+  frame with the logo's open wedge — kept narrowing the direction until
+  the final one (owner-directed): use the exact TizenTube logo within
+  the box, in the pack's style. So the whole official emblem
+  (reisxd/TizenTube standalone banner, art by @Zyborg777) now sits
+  inside the normal YouTube frame — the pack's own `yt_play` frame,
+  never the vendor mark: the two-arc globe (the main circle's arc
+  meeting the left circle's arc at the rim intersections), the play's
+  left edge, the struck top chord running rim to rim, the bottom edge
+  ending in its free rounded cap, and the tip dot below the chord,
+  right of the free cap, as in the art. Every coordinate was measured
+  off the banner (main circle c(378.6,430.8) r215.0, left circle
+  c(323.9,445.4) r202.8, stroke 34; dot an ellipse 22.9×16.6 rotated
+  −28.9°) and rebuilt at 0.4563× in the pack's monoline language,
+  emblem strokes on the lightest weight (21.8 after normalisation) so
+  the construction stays open at tile size — the dot held 6px clear of
+  the chord the heavier stroke would otherwise close. `tizen_play`
+  carries the whole emblem and `tizen_play_dot` (the 16:9 card, the
+  appfilter's auto-assign target) shares the same construction, banner
+  and square included. The accent is the brand's true paint: the
+  official icon's field gradient `#47DDFF` → `#C5E9FF` (measured top
+  (71,221,255) and bottom (197,233,255) of the icon's field), applied
+  at render time through the catalog `gradient` field — the Nuvio
+  pattern — so Pop and Pixel Neon keep their flat strokes. Decision
+  records `docs/tizentube-options-2026-09.png`,
+  `docs/tizentube-emblem-2026-09.png` and
+  `docs/tizentube-frame-2026-09.png` (the interim passes); receipt
+  `docs/tizentube-inframe-2026-09.png`.
+  Round 9 (owner: "in the correct direction, just needs polish"): the
+  mark kept as-is, its geometry refitted. The round-7 circles came out
+  of junction-contaminated sampling and were systematically too large —
+  the main circle 12px, the left 25px — which stretched the globe and
+  ran the chord past the true rim. Clean per-arc ray samples (junctions
+  and wordmark excluded, least-squares fit) give main
+  c(372.2,434.2) r202.8 and left c(314.7,442.9) r177.5, rim
+  intersections (236.4,283.6) / (286.8,618.1), vertical x=242.5 from
+  the chord to the left arc (y=605.1), chord (242.5,261.5) to the true
+  right rim (574.5,447.1), bottom-edge caps (289,595.5)-(462,495.5);
+  the dot is unchanged (22.9×16.6, -28.9 deg), still held ~5px off the
+  chord so the heavier stroke keeps the art's near-touching gap open.
+  The reconstruction overlays the banner at 3.5% pixel mismatch; scale
+  re-set to 0.4570x about the frame centre to hold the round-7 optical
+  size; gradient and lightest monoline weight unchanged. Receipt
+  `docs/tizentube-polish-2026-09.png`.
+
+### Removed
+
+- The last `tile_*` glyph (`tile_10` on 10 Play).
+
+### Receipts
+- Classic: `Validated 940 icons · 1150 components · 25750 checks run`,
+  `Ran 199 tests ... OK`.
+- Pop: `Validated 940 icons · 1150 components · 16 swatches ·
+  14679 checks run` (glyph metrics re-measured first — new input marks
+  and the re-centred TizenTube dot changed geometry).
+- Pixel Neon: `Validated Pixel Neon · 940 icons · 1150 catalog
+  components · 13057 checks run`.
+- Truth gates: suite truth, contract audit, appfilter integrity,
+  issue-prefill stamp and wallpaper manifest all pass.
+- Full sweep: `Ran 199 tests ... OK` across every test module,
+  wallpaper manifest and thumbnail gates included.
+
 ## [1.8.18] — 2026-09-14
 
 **Feedback pass: the TizenTube stray line, the Nuvio lookalike, the

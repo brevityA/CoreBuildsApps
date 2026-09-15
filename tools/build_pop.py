@@ -400,8 +400,11 @@ def main() -> int:
     for i in icons:
         write(SVG_DIR / f"{i['drawable']}.svg",
               render_icon(i["glyph"], i["color"], uid=i["drawable"]))
+        # banner_glyph mirrors the Classic override (TizenTube banner carries
+        # the emblem's tip dot); the square keeps the icon glyph.
         write(BANNER_DIR / f"{i['drawable']}.svg",
-              render_banner(i["glyph"], i["color"], uid=i["drawable"]))
+              render_banner(i.get("banner_glyph", i["glyph"]), i["color"],
+                            uid=i["drawable"]))
     print(f"\u2713 SVG masters written ({len(icons)} square + {len(icons)} banner) "
           f"\u2192 assets/pop/")
 

@@ -59,6 +59,8 @@ def validate(icons, artwork=None):
         seen_d[d] = n
         if i.get("glyph") not in GLYPHS:
             errors.append(f"{n}: unknown glyph '{i.get('glyph')}'")
+        if i.get("banner_glyph") and i["banner_glyph"] not in GLYPHS:
+            errors.append(f"{n}: unknown banner glyph '{i.get('banner_glyph')}'")
         if not re.match(r"^#[0-9A-Fa-f]{6}$", i.get("color", "")):
             errors.append(f"{n}: color '{i.get('color')}' must be #RRGGBB")
         if not i.get("components"):
@@ -139,8 +141,25 @@ def main():
         print(f"\u2713 PNG {PNG_SIZE}px transparent written "
               f"({png_written}/{len(icons)}) \u2192 res/drawable-nodpi/")
     except (ImportError, OSError):
-        print("\u26a0 no SVG rasterizer is available \u2014 PNGs skipped. "
-              "Run: pip install -r tools/requirements.txt  (APK build needs them)")
+        # Never continue with a partial asset set: an appfilter that names a
+        # drawable the APK does not carry turns into letter tiles on the
+        # launcher (seen in the wild: a missing tegrazone3.png read as a
+        # "T" card on a Tegra Zone install). If the PNGs already exist on
+        # disk from a previous run this is a no-op and we may continue.
+        missing = [i["drawable"] for i in icons
+                   if not (PNG_DIR / f"{i['drawable']}.png").exists()]
+        if missing:
+            shown = ", ".join(missing[:5])
+            if len(missing) > 5:
+                shown += ", \u2026"
+            raise SystemExit(
+                f"\u274c no SVG rasterizer AND {len(missing)} catalog PNGs are "
+                f"missing ({shown}). Refusing to write an appfilter that "
+                "references absent drawables. "
+                "Run: pip install -r tools/requirements.txt")
+        print("\u26a0 no SVG rasterizer \u2014 reusing existing PNGs "
+              "(all present). Run: pip install -r tools/requirements.txt "
+              "to regenerate.")
 
     # 3. appfilter.xml — what makes icons auto-assign
     #

@@ -69,6 +69,7 @@
     <item drawable="audials" />
     <item drawable="audiomack" />
     <item drawable="aurora_store" />
+    <item drawable="av_source" />
     <item drawable="hritwik" />
     <item drawable="award" />
     <item drawable="babyeinstein" />
@@ -433,6 +434,7 @@
     <item drawable="powerpoint45" />
     <item drawable="mecool_file_manager" />
     <item drawable="mediabrowser" />
+    <item drawable="media_explorer" />
     <item drawable="utility" />
     <item drawable="mediaset_infinity_tv" />
     <item drawable="application" />
@@ -598,8 +600,11 @@
     <item drawable="privado_vpn" />
     <item drawable="privateinternetaccess" />
     <item drawable="projectivy_blueprint" />
+    <item drawable="projectivy_categories" />
+    <item drawable="projectivy_channels" />
     <item drawable="projectivy" />
     <item drawable="projectivy_overflight" />
+    <item drawable="projectivy_settings" />
     <item drawable="protonvpn" />
     <item drawable="subscription" />
     <item drawable="cloudmosa" />
@@ -699,6 +704,7 @@
     <item drawable="sonyliv" />
     <item drawable="sooner" />
     <item drawable="soundcloud" />
+    <item drawable="source_input" />
     <item drawable="sparkletv" />
     <item drawable="booster" />
     <item drawable="speedtesttv" />
@@ -814,6 +820,7 @@
     <item drawable="deadlyduck" />
     <item drawable="tvquickactions" />
     <item drawable="tv_quick_actions" />
+    <item drawable="tv_source" />
     <item drawable="tvunplugged" />
     <item drawable="tv_vlaanderen" />
     <item drawable="tv_web_browser" />

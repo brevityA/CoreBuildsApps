@@ -71,6 +71,7 @@
         <item>audials</item>
         <item>audiomack</item>
         <item>aurora_store</item>
+        <item>av_source</item>
         <item>hritwik</item>
         <item>award</item>
         <item>babyeinstein</item>
@@ -435,6 +436,7 @@
         <item>powerpoint45</item>
         <item>mecool_file_manager</item>
         <item>mediabrowser</item>
+        <item>media_explorer</item>
         <item>utility</item>
         <item>mediaset_infinity_tv</item>
         <item>application</item>
@@ -600,8 +602,11 @@
         <item>privado_vpn</item>
         <item>privateinternetaccess</item>
         <item>projectivy_blueprint</item>
+        <item>projectivy_categories</item>
+        <item>projectivy_channels</item>
         <item>projectivy</item>
         <item>projectivy_overflight</item>
+        <item>projectivy_settings</item>
         <item>protonvpn</item>
         <item>subscription</item>
         <item>cloudmosa</item>
@@ -701,6 +706,7 @@
         <item>sonyliv</item>
         <item>sooner</item>
         <item>soundcloud</item>
+        <item>source_input</item>
         <item>sparkletv</item>
         <item>booster</item>
         <item>speedtesttv</item>
@@ -816,6 +822,7 @@
         <item>deadlyduck</item>
         <item>tvquickactions</item>
         <item>tv_quick_actions</item>
+        <item>tv_source</item>
         <item>tvunplugged</item>
         <item>tv_vlaanderen</item>
         <item>tv_web_browser</item>
@@ -1006,6 +1013,7 @@
         <item>Audials</item>
         <item>Audiomack</item>
         <item>Aurora Store</item>
+        <item>AV Source</item>
         <item>Avoid</item>
         <item>Award VPN</item>
         <item>Baby Einstein</item>
@@ -1370,6 +1378,7 @@
         <item>Maze</item>
         <item>Mecool File Manager</item>
         <item>Media Browser</item>
+        <item>Media Explorer</item>
         <item>Media Hub</item>
         <item>Mediaset Infinity TV</item>
         <item>MEGOGO</item>
@@ -1535,8 +1544,11 @@
         <item>Privado VPN</item>
         <item>Private Internet Access</item>
         <item>Projectivy Blueprint</item>
+        <item>Projectivy Categories</item>
+        <item>Projectivy Channels</item>
         <item>Projectivy Launcher</item>
         <item>Projectivy Overflight</item>
+        <item>Projectivy Settings</item>
         <item>Proton VPN</item>
         <item>Psiphon</item>
         <item>Puffin TV</item>
@@ -1636,6 +1648,7 @@
         <item>Sonyliv</item>
         <item>Sooner</item>
         <item>Soundcloud</item>
+        <item>Source</item>
         <item>Sparkle TV</item>
         <item>Speaker Boost</item>
         <item>Speedtest TV</item>
@@ -1751,6 +1764,7 @@
         <item>TV on OS</item>
         <item>TV Quick Actions</item>
         <item>TV Quick Actions</item>
+        <item>TV Source</item>
         <item>TV Unplugged</item>
         <item>TV Vlaanderen</item>
         <item>TV Web Browser</item>
@@ -1941,6 +1955,7 @@
         <item>APP</item>
         <item>MUSIC</item>
         <item>STORE</item>
+        <item>SYSTEM</item>
         <item>APP</item>
         <item>VPN</item>
         <item>APP</item>
@@ -2305,6 +2320,7 @@
         <item>APP</item>
         <item>FILES</item>
         <item>BROWSER</item>
+        <item>SYSTEM</item>
         <item>APP</item>
         <item>APP</item>
         <item>APP</item>
@@ -2470,8 +2486,11 @@
         <item>VPN</item>
         <item>VPN</item>
         <item>LAUNCHER</item>
+        <item>SYSTEM</item>
+        <item>SYSTEM</item>
         <item>LAUNCHER</item>
         <item>LAUNCHER</item>
+        <item>SYSTEM</item>
         <item>VPN</item>
         <item>VPN</item>
         <item>BROWSER</item>
@@ -2571,6 +2590,7 @@
         <item>APP</item>
         <item>APP</item>
         <item>MUSIC</item>
+        <item>SYSTEM</item>
         <item>LIVE</item>
         <item>APP</item>
         <item>TOOL</item>
@@ -2686,6 +2706,7 @@
         <item>APP</item>
         <item>TOOL</item>
         <item>TOOL</item>
+        <item>SYSTEM</item>
         <item>VIDEO</item>
         <item>APP</item>
         <item>BROWSER</item>
@@ -2806,5 +2827,5 @@
         <item>APP</item>
         <item>APP</item>
     </string-array>
-    <integer name="icon_count">933</integer>
+    <integer name="icon_count">940</integer>
 </resources>
