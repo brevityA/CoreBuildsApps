@@ -205,10 +205,38 @@ Results after the first source/manifest pass:
 - **7 Projectivy rows present in a 4.66 activity inventory:** the guided-actions HDMI 1–4 activities, guided-actions AV activity, `ui.settings.SettingsActivity`, and guided-actions `AppSettingsActivity`.
 - **7 Projectivy rows use an obsolete pre-4.0 namespace:** the four `.activities.input.SourceHDMI*` rows, `.activities.input.SourceAVActivity`, `.activities.input.SourceTVActivity`, and `.activities.input.SourceActivity`. The Projectivy developer publicly documented the 4.0.1 namespace refactor.
 - **8 further Projectivy rows were absent or conflict with actual nearby class names** in the 4.66 inventory. For example, the observed classes are `InternalTvActivity`, `SourcePopupActivity`, and `MediaExplorerActivity`, not the catalog's `SourceTVActivity`, `SourceActivity`, or `MediaExplorerShortcutActivity`. Category/Channel shortcut names were also absent.
-- **4 console/phone companion rows remain TV-relevance failures**, not verification candidates.
-- **50 rows remain genuinely unresolved** pending a current legitimate APK, current source, OEM firmware, or ADB capture.
+- **4 console/phone companion rows initially failed package/form-factor review.** Pass 3 below separates outright identity errors from TV products published under different package IDs.
+- **50 rows were unresolved after pass 1** pending a current legitimate APK, current source, OEM firmware, or ADB capture; passes 2 and 3 narrow that backlog further.
 
 The Projectivy evidence is version 4.66, not permission to clear against 4.71. The official 4.71 release asset was identified, but binary CDN retrieval repeatedly terminated in this research environment. Reattempt from a normal network or capture `dumpsys package com.spocky.projengmenu` on a 4.71 device before changing metadata.
+
+### Verification pass 2: Synology's 22 rows
+
+The Synology block is no longer an undifferentiated APK backlog:
+
+- **DS audio (3 rows): remove.** Android package names are case-sensitive. The official package is `com.synology.DSaudio`, while all catalog rows use nonexistent/wrong-case `com.synology.dsaudio`. The official listing exposes phone, Chromebook, and tablet—not TV.
+- **DS file (4 rows): remove automatic mappings.** The official `com.synology.DSfile` listing is phone/Chromebook/tablet only. Three activities are speculative aliases and the fourth package, `com.hisona.dsfile`, is a different publisher identity folded into the Synology icon.
+- **DS finder (3 rows): remove.** Its current official listing was updated in May 2026 and exposes phone/tablet only; there is no native-TV launcher evidence.
+- **DS get (3 rows): remove.** The official historic package is `com.synology.DSdownload`, not `com.synology.DSget`; the catalog rows therefore do not identify the published app.
+- **Synology Drive (3 rows): remove legacy mappings.** The current official package is `com.synology.dsdrive`; catalog packages `com.synology.server.SynologyDrive` and `com.synology.dscloud` are superseded identities. The current product is phone/Chromebook/tablet, so do not replace them with another automatic TV mapping.
+- **DS photo (3 rows): inspect before deciding.** It is a DSM 6.2 legacy product superseded by Synology Photos, but the official Play listing still reports TV compatibility. Exact exported activity evidence is required.
+- **DS video (3 rows): correct rather than blindly clear.** A genuine Android TV build 1.1.8 exists from June 2024. A documented decompilation and successful ADB launch of 1.1.7 identify `com.synology.dsvideo.ui.WelcomeActivity`; none of the catalog's guessed `SplashActivity`/`MainActivity` rows match it. Confirm that 1.1.8 retained `WelcomeActivity`, then replace the three guesses with that one component. Video Station was removed from DSM 7.2.2 in 2024, so label support as legacy.
+
+This pass yields **16 removal-ready Synology rows**, three DS photo rows needing APK/ADB, and three DS video rows needing replacement with one version-confirmed TV activity.
+
+### Verification pass 3: branded mobile/TV package splits
+
+Official Play listings expose another class of false mapping: the brand is TV-relevant, but the catalog points at its mobile package or an obsolete identity and guesses `.MainActivity`. These must be replaced from a TV APK, not merely unflagged:
+
+- **Nintendo Music / “Nintendo Switch” (1 row): remove and correct the identity.** `com.nintendo.znba` is Nintendo Music, not Nintendo Switch. Nintendo's separate Switch companion is `com.nintendo.znca`; both are smartphone-oriented, and the catalog row has neither the right name nor TV evidence.
+- **PS Remote Play (1 row): remove the mobile component.** `com.playstation.remoteplay` is the mobile app. Sony publishes the Android TV OS 12+ client separately as `com.playstation.remoteplay.tv`. Inspect that TV delivery for its exported launcher before adding it.
+- **PlayStation App (1 row): inspect the delivered split.** Google Play form-factor output has varied by locale, but the catalog's `com.scee.psxandroid/.MainActivity` remains an unsupported guess. Do not conflate it with Remote Play's separate TV package.
+- **Xbox / Game Pass (1 row): remove.** No authoritative current product matches `com.microsoft.xboxone.gamepass`. Current official identities include Game Pass `com.gamepass` and Xbox `com.microsoft.xboxone.smartglass`; neither licenses a guessed activity under the catalog package.
+- **BINGE (2 rows): replace only after TV-manifest proof.** The official current TV package is `au.com.streamotion.ares.tv`, updated 3 September 2026. Catalog identities `au.com.streamotion.ares` and `au.com.binge.tv` are not that TV package; both reuse the same unsupported `au.com.foxsports.martian.tv.main.MainActivity` guess.
+- **Kayo (1 row): replace only after TV-manifest proof.** The official current product is `au.com.kayosports.tv`, explicitly titled “Kayo Sports - for Android TV.” Catalog `au.com.streamotion.hyperion` is not the current TV identity.
+- **Vidio (2 rows): replace only after TV-manifest proof.** The current TV-only listing is `com.vidio.android.tv`, updated 15 September 2026. Catalog rows instead target mobile `com.vidio.android` with two activity guesses.
+
+This pass makes **8 additional rows deletion-ready as written**; the PlayStation App row remains inspection-gated. Four high-value replacement-package audits remain: PS Remote Play TV, BINGE TV, Kayo TV, and Vidio TV. It does not claim launcher components for those packages; signed manifests or ADB remain mandatory.
 
 ### Recommended ratchet sequence
 
@@ -263,6 +291,17 @@ Land verification/pruning independently from artwork so review can distinguish m
 - Telia Play phone listing: <https://play.google.com/store/apps/details?id=no.get.play>
 - Telia Play Android TV listing: <https://play.google.com/store/apps/details?id=no.get.play.tv>
 - TV 2 Sport form-factor listing: <https://play.google.com/store/apps/details?id=com.mobilefootie.tv2>
+- Nintendo Music: <https://play.google.com/store/apps/details?id=com.nintendo.znba>
+- Nintendo Switch App: <https://play.google.com/store/apps/details?id=com.nintendo.znca>
+- PS Remote Play mobile: <https://play.google.com/store/apps/details?id=com.playstation.remoteplay>
+- PS Remote Play for TV: <https://play.google.com/store/apps/details?id=com.playstation.remoteplay.tv>
+- Sony's Android TV Remote Play support: <https://www.playstation.com/en-us/support/games/remote-play-android-tv/>
+- PlayStation App: <https://play.google.com/store/apps/details?id=com.scee.psxandroid>
+- Xbox mobile app: <https://play.google.com/store/apps/details?id=com.microsoft.xboxone.smartglass>
+- BINGE for Android TV: <https://play.google.com/store/apps/details?id=au.com.streamotion.ares.tv>
+- Kayo Sports for Android TV: <https://play.google.com/store/apps/details?id=au.com.kayosports.tv>
+- Vidio mobile: <https://play.google.com/store/apps/details?id=com.vidio.android>
+- Vidio TV: <https://play.google.com/store/apps/details?id=com.vidio.android.tv>
 - Aerial Views official source: <https://github.com/theothernt/AerialViews>
 - Aerial Views Play listing: <https://play.google.com/store/apps/details?id=com.neilturner.aerialviews>
 
