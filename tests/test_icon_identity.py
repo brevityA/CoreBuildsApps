@@ -160,15 +160,20 @@ class IdentityTests(unittest.TestCase):
                                gradient=icon.get("gradient")), icon["name"])
 
     def test_tizentube_runs_the_measured_field_gradient(self):
-        """The owner wants the real logo's ramp: field cyan to pale blue,
-        painted at render time (the Nuvio pattern), flat in Pop/Pixel."""
-        square = (ROOT / "assets/svg" / "tizentube.svg").read_text()
-        for stop in ("#47DDFF", "#C5E9FF"):
-            self.assertIn(stop, square)
-        self.assertIn("linearGradient", square)
-        self.assertIn('stroke="url(#cbGrad)"', square)
-        banner = (ROOT / "assets/banners" / "tizentube.svg").read_text()
-        self.assertIn('fill="url(#cbGrad)"', banner)  # the banner dot rides the ramp
+        """Round 8 two-tone: the outside (frame + globe arcs) runs the
+        measured field ramp #47DDFF -> #C5E9FF painted at render time
+        (the Nuvio pattern, flat in Pop/Pixel); the inside lines and dot
+        ride the measured eggplant #5C2D51, and the art's two white
+        bubbles are kept as flat #EFEAEE fills in both the square and
+        the banner."""
+        for svg in ("assets/svg/tizentube.svg", "assets/banners/tizentube.svg"):
+            body = (ROOT / svg).read_text()
+            for stop in ("#47DDFF", "#C5E9FF"):
+                self.assertIn(stop, body, svg)
+            self.assertIn("linearGradient", body, svg)
+            self.assertIn('stroke="url(#cbGrad)"', body, svg)
+            self.assertIn('stroke="#5C2D51"', body, svg)
+            self.assertIn('fill="#EFEAEE"', body, svg)
 
     def test_committed_square_vectors_match_the_generator(self):
         for icon in ICONS:

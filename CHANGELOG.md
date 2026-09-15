@@ -151,7 +151,18 @@ All notable changes to the Core Builds Icon Pack. Format follows
   records `docs/tizentube-options-2026-09.png`,
   `docs/tizentube-emblem-2026-09.png` and
   `docs/tizentube-frame-2026-09.png` (the interim passes); receipt
-  `docs/tizentube-inframe-2026-09.png`.
+  `docs/tizentube-inframe-2026-09.png`. Round 8 (owner): the mark now
+  runs the logo's own two tones — pixel sampling of the banner shows
+  the inside lines (vertical, chord, bottom edge) and the tip dot are
+  the measured eggplant (92,45,81) `#5C2D51`, and the art carries two
+  flat white bubbles — the left crescent and the lower-right lobe,
+  measured at (239,234,238) `#EFEAEE` — which ship as white fills
+  bounded by the same centrelines their strokes ride, with the strokes
+  painting over the edges as in the art. The frame plus the two globe
+  arcs keep the field gradient, so the outside stays in the ramp; Pop
+  and Pixel Neon repaint every element in their own inks, so the
+  two-tone lives in the Classic render. Receipt
+  `docs/tizentube-twotone-2026-09.png`.
 
 ### Removed
 

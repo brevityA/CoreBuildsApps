@@ -549,41 +549,42 @@ def smarttube_play(c):
 
 
 def tizen_play(c):
-    """TizenTube — the exact emblem, inside the YouTube frame.
+    """TizenTube — the exact emblem, inside the YouTube frame, in the
+    logo's own two tones.
 
-    2026-09-15 direction (owner, round 7): "use the exact TizenTube logo
-    within the box with the pack's style" — the whole official emblem
-    (reisxd/TizenTube standalone banner, art by @Zyborg777), measured off
-    the banner and rebuilt in the pack's monoline language inside the
-    normal YouTube frame.
+    2026-09-15 direction (owner, round 8): use the two-tone colours the
+    real logo uses — the measured eggplant (92,45,81) #5C2D51 for the
+    inside lines (vertical, chord, bottom edge, tip dot), the pack's
+    field gradient for the outside (frame + the two globe arcs), and the
+    art's two white bubbles (the left crescent and the lower-right lobe)
+    kept as flat fills of the measured white (239,234,238) #EFEAEE.
+    Pop and Pixel Neon repaint every element in their own inks, so the
+    two-tone lives in the Classic render, as with the gradient.
 
-    The emblem is the two-arc globe — the main circle's arc running top,
-    right and bottom, meeting the left circle's arc at the rim
-    intersections — holding the open play: the left edge, the struck
-    top chord running rim to rim, and the bottom edge ending in its free
-    rounded cap, with the tip dot below the chord, right of the free
-    cap, as in the art.
-
-    Construction measured off the official banner (emblem 472.5x430,
-    strokes 34): main circle c(378.6,430.8) r215.0, left circle
-    c(323.9,445.4) r202.8, rim intersections (255.7,254.1) and
-    (360.1,645.3); vertical x=242.5 from the chord (y=261.4) to y=600;
-    chord (242.5,261.4) to (592.2,457.7) at the right rim; bottom edge
-    (272,604.8) to (462,495.2); dot an ellipse c(518.9,459.3)
-    a=22.9 b=16.6 rotated -28.9 deg, 4px clear of the chord. Scaled
-    0.4563x about the frame centre to sit ~4px inside the frame's ink;
-    emblem strokes carry the lightest monoline weight (author 20, 21.8
-    after normalisation), and the dot is held ~6px off the chord so the
-    heavier stroke does not close the gap the art has open.
+    The construction is the round-7 measured emblem (reisxd/TizenTube
+    standalone banner, art by @Zyborg777; main circle c(378.6,430.8)
+    r215.0, left circle c(323.9,445.4) r202.8, stroke 34, dot an ellipse
+    22.9x16.6 at -28.9 deg), scaled 0.4563x inside the normal yt_play
+    frame. Pixel sampling of the banner shows the white crescent runs
+    the full length of the left arc and the lobe spans the bottom edge
+    line up to the chord, so the fills are bounded by the same
+    centrelines the strokes ride, and the strokes paint over their
+    edges as in the art.
     """
-    return (f'<rect x="64" y="128" width="384" height="256" rx="64" {_s(c, 32)}/>'
+    eggplant = "#5C2D51"   # measured stroke/dot colour (92,45,81)
+    bubble = "#EFEAEE"     # measured white (239,234,238)
+    return (f'<path d="M 203.6 178.7 A 92.5 92.5 0 0 0 203.6 347.4 Z" {_f(bubble)}/>'
+            f'<path d="M 203.6 343.3 L 348.1 260.3 L 363.2 268.3 '
+            f'A 98.1 98.1 0 0 1 257.3 353.9 A 92.5 92.5 0 0 1 203.6 347.4 Z" '
+            f'{_f(bubble)}/>'
+            f'<rect x="64" y="128" width="384" height="256" rx="64" {_s(c, 32)}/>'
             f'<path d="M 209.6 175.4 A 98.1 98.1 0 1 1 257.3 353.9" {_s(c, 20)}/>'
             f'<path d="M 209.6 175.4 A 92.6 92.6 0 0 0 257.3 353.9" {_s(c, 20)}/>'
-            f'<path d="M 203.6 178.7 L 203.6 333.2" {_s(c, 20)}/>'
-            f'<path d="M 203.6 178.7 L 363.2 268.3" {_s(c, 20)}/>'
-            f'<path d="M 217.1 335.4 L 303.7 285.4" {_s(c, 20)}/>'
+            f'<path d="M 203.6 178.7 L 203.6 333.2" {_s(eggplant, 20)}/>'
+            f'<path d="M 203.6 178.7 L 363.2 268.3" {_s(eggplant, 20)}/>'
+            f'<path d="M 217.1 335.4 L 303.7 285.4" {_s(eggplant, 20)}/>'
             f'<ellipse cx="326.8" cy="274.2" rx="10.4" ry="7.6" '
-            f'transform="rotate(-28.9 326.8 274.2)" {_f(c)}/>')
+            f'transform="rotate(-28.9 326.8 274.2)" {_f(eggplant)}/>')
 
 
 def tizen_play_dot(c):
