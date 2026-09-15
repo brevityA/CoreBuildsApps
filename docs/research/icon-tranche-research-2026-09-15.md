@@ -208,7 +208,7 @@ Results after the first source/manifest pass:
 - **4 console/phone companion rows initially failed package/form-factor review.** Pass 3 below separates outright identity errors from TV products published under different package IDs.
 - **50 rows were unresolved after pass 1** pending a current legitimate APK, current source, OEM firmware, or ADB capture; passes 2 and 3 narrow that backlog further.
 
-The Projectivy evidence is version 4.66, not permission to clear against 4.71. The official 4.71 release asset was identified, but binary CDN retrieval repeatedly terminated in this research environment. Reattempt from a normal network or capture `dumpsys package com.spocky.projengmenu` on a 4.71 device before changing metadata.
+The Projectivy evidence is version 4.66, not permission to clear against 4.71. GitHub's official release API identifies `ProjectivyLauncher-4.71-c95-xda-release.apk` (version code 95, 11,316,610 bytes; published 13 July 2026), and APKMirror independently indexes three version-95 TV bundles. Both GitHub release-assets and Aptoide's pool still terminate at TLS/EOF in this environment, including an authenticated `gh release download`; no binary was silently substituted with a modified mirror build. Reattempt the official asset from a normal network or capture `dumpsys package com.spocky.projengmenu` on a 4.71 device before changing metadata.
 
 ### Verification pass 2: Synology's 22 rows
 
@@ -237,6 +237,32 @@ Official Play listings expose another class of false mapping: the brand is TV-re
 - **Vidio (2 rows): replace only after TV-manifest proof.** The current TV-only listing is `com.vidio.android.tv`, updated 15 September 2026. Catalog rows instead target mobile `com.vidio.android` with two activity guesses.
 
 This pass makes **8 additional rows deletion-ready as written**; the PlayStation App row remains inspection-gated. Four high-value replacement-package audits remain: PS Remote Play TV, BINGE TV, Kayo TV, and Vidio TV. It does not claim launcher components for those packages; signed manifests or ADB remain mandatory.
+
+### Verification pass 4: file managers and TV utilities
+
+Fourteen more rows now have a narrower disposition than “unresolved”:
+
+- **AOSP/Google DocumentsUI (1 row): real exported class, package still device-dependent.** At AOSP DocumentsUI tree `8532101fc5f21be25618cd6afca9f125c3276a94`, `com.android.documentsui.files.FilesActivity` is exported and handles `MAIN`; the public launcher alias is separately named `LauncherActivity`. The catalog's package is the OEM-renamed `com.google.android.documentsui`, which an AML DocumentsUI sample corroborates, but AOSP source cannot prove that package on every TV firmware. Retain the flag until an Android TV firmware dump or ADB capture proves the exact package/component pair.
+- **Files by Google (1 row): remove from automatic TV mappings.** `.home.HomeActivity` is a real class, but the official listing updated 14 September 2026 exposes phone, Chromebook, and tablet only. Class existence does not overcome the no-phone-padding rule.
+- **HiBrowser (3 rows): TV relevance confirmed, activity unresolved.** The current `com.hisense.odinbrowser` listing explicitly describes a remote-optimized Android TV browser and exposes TV compatibility. None of the three catalog `MainActivity` variants has reliable manifest evidence, so retain the flag and inspect one current delivery.
+- **Screen Recording App (3 rows): TV relevance confirmed, activity unresolved.** Both the official listing and developer site describe a D-pad-native Android TV layout under `de.twokit.screen.recording.app`. They do not identify whether the launcher is root `MainActivity`, `ui.MainActivity`, or `tv.TvMainActivity`; one signed manifest can collapse the three guesses to one truth.
+- **RS File Manager (2 rows): TV relevance confirmed, activity unresolved.** The official listing, updated 9 September 2026, exposes TV compatibility. The two catalog spellings are equivalent guesses for the same root `MainActivity`; retain pending current manifest proof.
+- **Solid Explorer (2 rows): remove both catalog guesses, then inspect current 3.x.** Both catalog spellings resolve to `pl.solidexplorer2.SolidExplorer`. An inspected 2.6.0 manifest and Android 12 runtime component reporting instead identify `pl.solidexplorer.SolidExplorer` under package `pl.solidexplorer2`. That is strong conflict evidence, but a current 3.x APK is still required before adding the likely replacement.
+- **Ultimate File Manager Pro (2 rows): replace with a source-confirmed component.** Official source commit `7a13adca49832778b42df9164828a6f380e4044c` sets application ID `za.kilowatch.ultimatefilemanager`; exported `.onboarding.LanguageWelcomeActivity` has `MAIN`/`LAUNCHER`, and the TV flavor adds `LEANBACK_LAUNCHER` to that activity. Neither catalog `MainActivity` guess is the launcher.
+
+This pass reduces the ledger's generic `unresolved` bucket from **23 to 9**. Five rows are removable as written in this subset (Files by Google, two Solid Explorer guesses, and two UFM guesses); UFM also has a directly source-proven one-row replacement. The remaining nine rows in this pass have sharply specified APK/firmware checks rather than open-ended research.
+
+### Verification pass 5: close the generic unresolved bucket
+
+The final nine generic rows now have explicit dispositions:
+
+- **Launcher Manager (2 rows): remove.** No reliable release identity was found for catalog package `com.wolf.lms`. Documented Launcher Manager generations use `com.wolf.lm`, `com.wolf.google.lm`, or the current Mini package `com.wolf.minilm`. Activities cannot be transposed between those package families.
+- **BitTV (2 rows): remove and reassess the icon itself.** The official Play URL for `com.bittv.androiddigitaltvapp` now returns Not Found. Indexed 2026 metadata describes a newly published, roughly 35-download TMDB trailer/details companion rather than a native Android TV service. Neither catalog `MainActivity` guess has provenance, and unrelated “BitTV” products use other packages.
+- **7plus (2 rows): current TV service, launcher unresolved.** `com.swm.live` is the current official Australian package and its listing explicitly includes Smart TV use. Neither `au.com.seven.inferno.MainActivity` nor root `.MainActivity` has current manifest proof; inspect the current Australian Play delivery and retain one exact launcher only.
+- **Stremize (2 rows): current TV app, launcher unresolved.** The official site states that the single `com.stremize.player` Google Play package supports Android TV, and the listing was updated 13 September 2026. Both catalog strings resolve to the same root `MainActivity` guess; inspect current 3.2 and collapse them if confirmed.
+- **Twitch (1 row): legacy TV component, current boundary unclear.** `tv.twitch.android.app` remains Twitch's current Android package, but current Play form-factor output omits TV while prior native Android TV releases and the later wrapped-TV client are documented. Treat `tv.twitch.android.apps.TwitchActivity` as a legacy lead, not a current confirmation; inspect the last/current TV split before clearing or pruning.
+
+The 83-row ledger now has **zero rows left under the generic `unresolved` status**. That does not mean all 83 are verified: every row is now instead assigned to confirmed, removal/replacement-ready, version-gated, firmware-gated, or exact-APK/ADB-gated evidence classes. Four of these final nine rows are deletion-ready as written; five retain precise binary checks.
 
 ### Recommended ratchet sequence
 
@@ -302,6 +328,20 @@ Land verification/pruning independently from artwork so review can distinguish m
 - Kayo Sports for Android TV: <https://play.google.com/store/apps/details?id=au.com.kayosports.tv>
 - Vidio mobile: <https://play.google.com/store/apps/details?id=com.vidio.android>
 - Vidio TV: <https://play.google.com/store/apps/details?id=com.vidio.android.tv>
+- AOSP DocumentsUI pinned tree/manifest: <https://android.googlesource.com/platform/packages/apps/DocumentsUI/+/8532101fc5f21be25618cd6afca9f125c3276a94/AndroidManifest.xml>
+- Files by Google: <https://play.google.com/store/apps/details?id=com.google.android.apps.nbu.files>
+- HiBrowser: <https://play.google.com/store/apps/details?id=com.hisense.odinbrowser>
+- Screen Recording App: <https://play.google.com/store/apps/details?id=de.twokit.screen.recording.app>
+- Screen Recording App Android TV guide: <https://screenrecording.app/android-tv-screen-recording>
+- RS File Manager: <https://play.google.com/store/apps/details?id=com.rs.explorer.filemanager>
+- Solid Explorer: <https://play.google.com/store/apps/details?id=pl.solidexplorer2>
+- Ultimate File Manager Pro source at inspected commit: <https://github.com/Kilowatch/ultimate-file-manager-pro/tree/7a13adca49832778b42df9164828a6f380e4044c>
+- Ultimate File Manager Pro: <https://play.google.com/store/apps/details?id=za.kilowatch.ultimatefilemanager>
+- 7plus: <https://play.google.com/store/apps/details?id=com.swm.live>
+- Stremize: <https://play.google.com/store/apps/details?id=com.stremize.player>
+- Stremize platform/download statement: <https://stremize.com/download>
+- Twitch: <https://play.google.com/store/apps/details?id=tv.twitch.android.app>
+- Current Launcher Manager Mini package documentation: <https://www.aftvnews.com/fire-tv-home-screen-replacement-is-possible-again-with-new-launcher-manager-mini-release/>
 - Aerial Views official source: <https://github.com/theothernt/AerialViews>
 - Aerial Views Play listing: <https://play.google.com/store/apps/details?id=com.neilturner.aerialviews>
 
