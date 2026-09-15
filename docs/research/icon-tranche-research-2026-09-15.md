@@ -136,10 +136,12 @@ A package name alone is not an exported launcher component.
 
 The table deliberately contains more than the 22 needed for the sub-55% milestone. Final selection should favor a clear independent emblem and current TV visibility, not alphabetic convenience.
 
+The implementation-facing top-22 source ledger is committed as [`icon-visual-source-matrix-2026-09-15.csv`](icon-visual-source-matrix-2026-09-15.csv). It pins package-specific official references where available, separates source readiness from demand, and records rights/design blockers. In particular, it prevents “high priority” from being misread as “safe to trace immediately.”
+
 | Rank | Existing entry | Current generic | Why visible/relevant | Reproducible visual cue to validate | Evidence/confidence |
 |---:|---|---|---|---|---|
 | 1 | AirScreen | `broadcast_A` | Casting receiver with very large Android install base and direct TV use | Current official app's nested screen/cast form | Official/current Play icon needed; high demand confidence |
-| 2 | Aerial Views | `tool_A` | Popular open-source Android TV screensaver; current 2026 releases | Developer repository launcher asset; aerial/mountain aperture cue | Source-reproducible; high |
+| 2 | Aerial Views | `tool_A` | Popular open-source Android TV screensaver; current 2026 releases | Pinned developer asset shows a low sun emerging behind two asymmetric overlapping mountain/dune silhouettes | Source-reproducible; high |
 | 3 | ARTE | `broadcast_A` | Direct request; major Franco-German broadcaster | Slanted compact `ARTE` mark from official corporate ZIP | Official asset; high |
 | 4 | Francetv | `app_F` | Direct request; major French service | France.tv dot/wordmark geometry | Official service asset; high |
 | 5 | ITV Hub → ITVX | bespoke but stale | Direct request; top UK service | Current `ITVX` identity, replacing obsolete Hub treatment | Official Play/service; high |
@@ -192,9 +194,25 @@ No unverified row is corroborated verbatim by the committed Projectivy 1.1.9 ref
 | Obscure/device-specific | 12 | Hi Browser (3), Launcher Manager (2), BitTV (2), Screen Recording App (3), Stremize (2) | Require the exact APK and/or ADB. Three guessed activity variants are not evidence. If the app cannot be sourced legitimately, remove the speculative rows and leave a manual icon only if policy allows. |
 | **Total** | **83** |  |  |
 
+### Verification pass 1 results (2026-09-15)
+
+The complete 83-row working disposition is committed as [`unverified-mapping-disposition-2026-09-15.csv`](unverified-mapping-disposition-2026-09-15.csv). It records the component, evidence class, current status, proposed disposition, and evidence note rather than reducing the audit to app-level totals.
+
+Results after the first source/manifest pass:
+
+- **5 rows confirmed:** Core Doctor, Core Line, Core Shift, and both equivalent spellings of Material Files' `FileListActivity`. Material Files commit `fc1250038496ebf4d4c139f62d16f0071f2c995a` declares the activity exported with `MAIN`, `LAUNCHER`, and `LEANBACK_LAUNCHER`.
+- **2 rows historically confirmed:** both equivalent Ghost Commander `FileCommander` spellings exist in source, but the accessible Git mirror stops in 2019. F-Droid's current suggested build is 1.64.2b4/479 from December 2025, so its corresponding current source/APK must still be checked before clearing.
+- **7 Projectivy rows present in a 4.66 activity inventory:** the guided-actions HDMI 1–4 activities, guided-actions AV activity, `ui.settings.SettingsActivity`, and guided-actions `AppSettingsActivity`.
+- **7 Projectivy rows use an obsolete pre-4.0 namespace:** the four `.activities.input.SourceHDMI*` rows, `.activities.input.SourceAVActivity`, `.activities.input.SourceTVActivity`, and `.activities.input.SourceActivity`. The Projectivy developer publicly documented the 4.0.1 namespace refactor.
+- **8 further Projectivy rows were absent or conflict with actual nearby class names** in the 4.66 inventory. For example, the observed classes are `InternalTvActivity`, `SourcePopupActivity`, and `MediaExplorerActivity`, not the catalog's `SourceTVActivity`, `SourceActivity`, or `MediaExplorerShortcutActivity`. Category/Channel shortcut names were also absent.
+- **4 console/phone companion rows remain TV-relevance failures**, not verification candidates.
+- **50 rows remain genuinely unresolved** pending a current legitimate APK, current source, OEM firmware, or ADB capture.
+
+The Projectivy evidence is version 4.66, not permission to clear against 4.71. The official 4.71 release asset was identified, but binary CDN retrieval repeatedly terminated in this research environment. Reattempt from a normal network or capture `dumpsys package com.spocky.projengmenu` on a 4.71 device before changing metadata.
+
 ### Recommended ratchet sequence
 
-1. Clear the three locally proven Core mappings: 83 → 80.
+1. Clear the three locally proven Core mappings and two Material Files spellings: 83 → 78.
 2. Verify public-source manifests: target 76 or fewer, with a URL and commit/tag in provenance.
 3. Inspect five mainstream TV apps: target 68 or fewer after retaining only real exports.
 4. Treat Synology and console rows as a deletion audit, not a verification exercise.
