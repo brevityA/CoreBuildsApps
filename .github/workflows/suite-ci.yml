@@ -87,7 +87,7 @@ jobs:
           distribution: temurin
           java-version: '17'
       - name: Install Android platform 34
-        run: sdkmanager "platforms;android-34" "build-tools;34.0.0"
+        run: "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" "platforms;android-34" "build-tools;34.0.0"
       - uses: gradle/actions/setup-gradle@v6
       - name: Verify tracked workflow/build files exist
         run: |
