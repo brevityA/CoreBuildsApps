@@ -1,6 +1,6 @@
-# Core Builds — Wallpaper Collection v4.0
+# Core Builds — Wallpaper Collection v5.0
 
-68 wallpapers · 3840×2160 (series 1–3, 7) and 1376×768 (series 6) · 125 MB ·
+84 wallpapers · 3840×2160 (series 1–3, 7–8) and 1376×768 (series 6) · 128 MB ·
 Core Builds palette:
 Core Cyan #00e5ff · Signal #00d4ff · Glow #7eeeff · Build Blue #4facfe ·
 Dusk Violet #8a4890 · Ember #c03a20 · Night #0d1117 · Void #04070f.
@@ -10,7 +10,7 @@ Dusk Violet #8a4890 · Ember #c03a20 · Night #0d1117 · Void #04070f.
 in-app browser read this same file — there is one source of truth.
 
 **Two collections, two manifests.** `manifest.json` is the classic Core Builds
-Icon Pack's 50. `pop-manifest.json` is Core Builds Pop's 12, bundled into that
+Icon Pack's 84. `pop-manifest.json` is Core Builds Pop's 12, bundled into that
 APK at `pop/src/main/assets/manifest/wallpapers.json`. They are kept disjoint
 and asserted so in `tests/test_pop.py`: a shipped pack should not have its
 advertised contents change because a *different* pack was rebuilt. Rationale
@@ -26,23 +26,24 @@ and the wallpaper research behind series 5 is in
 | `series-2-motion` | 25–32 | Long-exposure kinetics: orbitals, warp, fogbanks, spiral, slipstream |
 | `series-3-horizons` | 33–40 | One horizon, eight meanings — the §03 semantic accent slots as landscapes |
 | `series-5-pop` | (separate manifest) | **Core Builds Pop.** 12 walls built from `tools/popart.py`'s own primitives — the 16 Pop swatches, ink `#151019`, cream `#FFF4E0`, one halftone screen. Flat art, so no grain dither is needed and 128-colour PNG is lossless: 12 × 4K in **2.5 MB**. Indexed in `pop-manifest.json`, not `manifest.json`. |
-| `series-6-circuit-core` | 41–50 | **Circuit Core.** Ten lit-circuit fields on near-black — the same §06 lighting language the retired Core Mark series used (cyan first, violet/ember ambient), authored at 1376×768 rather than 4K. Replaced `series-4-core-mark` in v1.8.6. |
-| `series-7-retrowave` | 59–68 | **Retrowave.** Ten 4K walls in 2026's nostalgic retro-gradient genre: sliced gradient suns, perspective grids, chrome ridges and starfields on the night ground, per `tools/build_synthwave_wallpapers.py`. |
+| `series-6-circuit-core` | 41–50, 79–80 | **Circuit Core.** Twelve lit-circuit fields on near-black — the same §06 lighting language the retired Core Mark series used (cyan first, violet/ember ambient), authored at 1376×768 rather than 4K. Replaced `series-4-core-mark` in v1.8.6; `tools/build_circuit_wallpaper_extensions.py` reproduces the final pair. |
+| `series-7-retrowave` | 59–68, 81–82 | **Retrowave.** Twelve 4K walls in 2026's nostalgic retro-gradient genre: sliced gradient suns, perspective grids, chrome ridges and starfields on the night ground, per `tools/build_synthwave_wallpapers.py`. |
+| `series-8-amoled` | 69–78, 83–84 | **AMOLED.** Twelve minimalist 4K walls on exact `#000000`: sparse cyan, violet, and ember geometry with 92.4–99.8% true-black coverage. `tools/build_amoled_wallpapers.py` asserts the ≥50% contract and writes the [contact sheet](../docs/amoled-wallpapers.png). |
 
 Retired: `series-4-core-mark` (41–70, 30 × 4K PNGs of the lit hex + faceted core
 diamond) shipped in v1.7.0 and was removed in v1.8.6. Series index 4 stays empty
-and 5 is left to Pop, so the two collections never share a number — the classic
-pack's new series is 7.
+and 5 is left to Pop, so the two collections never share a number; subsequent
+classic additions continue at series 7 and 8.
 
 ## In-app browser
 
 The icon-pack app ships a built-in Wallpapers screen:
 
-- **Thumbs are bundled** (`app/src/main/assets/wallpapers_thumbs/`, 494 KB for
-  all 50) so the grid is instant and works offline.
+- **Thumbs are bundled** (`app/src/main/assets/wallpapers_thumbs/`, about 1 MB for
+  all 84) so the grid is instant and works offline.
 - **Full images download on demand** from the raw URLs below and are cached in
   internal storage (12-file LRU, ~30 MB ceiling) — the APK stays small. Series 1–3
-  are 4K PNG, series 6 is 1376×768 JPEG; `resolution` per entry is the truth.
+  and 7–8 are 4K PNG, series 6 is 1376×768 JPEG; `resolution` per entry is the truth.
 - **Set** writes the system wallpaper via `WallpaperManager` for launchers
   that theme from it. On Fire TV — which blocks third-party wallpaper writes —
   the image is saved to `Pictures/CoreBuilds` and handed to the system
@@ -86,6 +87,8 @@ The icon-pack app ships a built-in Wallpapers screen:
 Design notes (series 1–3): OLED-friendly (70–95% dark coverage, asymmetric),
 calm bottom third for launcher cards, film-grain dither baked in to prevent
 gradient banding on TV panels. Do not run lossy/palette PNG optimizers over them.
+Series 8 is stricter: its untouched ground must remain exact `#000000`, and every
+wall must retain at least 50% true-black pixels.
 
 ```
 https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/manifest.json

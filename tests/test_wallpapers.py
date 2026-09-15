@@ -27,6 +27,7 @@ WALLPAPERS = ROOT / "Wallpapers"
 MANIFEST = WALLPAPERS / "manifest.json"
 BUNDLED_MANIFEST = ROOT / "app/src/main/assets/manifest/wallpapers.json"
 SERIES6 = "series-6-circuit-core"
+SERIES8 = "series-8-amoled"
 # Series that intentionally live outside the classic manifest: series 0 is the
 # photographic originals kept for history, series 5-pop is Core Builds Pop's
 # own collection, indexed by Wallpapers/pop-manifest.json.
@@ -50,6 +51,18 @@ class ManifestTests(unittest.TestCase):
 
     def test_count_matches_entries(self):
         self.assertEqual(self.manifest["count"], len(self.walls))
+
+    def test_active_series_use_twelve_wall_units(self):
+        from collections import Counter
+        counts = Counter(w["series"] for w in self.walls)
+        self.assertEqual(counts, {
+            "series-1-fieldwork": 24,
+            "series-2-motion": 12,
+            "series-3-horizons": 12,
+            "series-6-circuit-core": 12,
+            "series-7-retrowave": 12,
+            "series-8-amoled": 12,
+        })
 
     def test_entries_are_https_github(self):
         for w in self.walls:
@@ -76,11 +89,11 @@ class ManifestTests(unittest.TestCase):
                 self.assertEqual(w["resolution"], f"{im.width}x{im.height}",
                                  f"{f.name} is {im.width}x{im.height}, manifest says {w['resolution']}")
 
-    def test_series6_present_and_10_branded_walls(self):
-        s5 = [w for w in self.walls if w["series"] == SERIES6]
-        self.assertEqual(len(s5), 10, "expected 10 Circuit Core walls")
-        nums = sorted(int(re.match(r"(\d+)", w["name"]).group(1)) for w in s5)
-        self.assertEqual(nums, list(range(41, 51)))
+    def test_series6_present_and_12_branded_walls(self):
+        s6 = [w for w in self.walls if w["series"] == SERIES6]
+        self.assertEqual(len(s6), 12, "expected 12 Circuit Core walls")
+        nums = sorted(int(re.match(r"(\d+)", w["name"]).group(1)) for w in s6)
+        self.assertEqual(nums, list(range(41, 51)) + [79, 80])
 
     def test_retired_series4_is_not_in_the_manifest(self):
         # v1.8.6 replaced the 4K Core Mark series with series 5. The files and
@@ -161,6 +174,36 @@ class Series6FileTests(unittest.TestCase):
     def test_no_series4_files_left_behind(self):
         self.assertFalse((WALLPAPERS / "series-4-core-mark").exists(),
                          "retired series-4 files are still committed")
+
+
+class Series8AmoledTests(unittest.TestCase):
+    def setUp(self):
+        self.walls = json.loads(_read(MANIFEST))["wallpapers"]
+        self.amoled = [w for w in self.walls if w["series"] == SERIES8]
+
+    def test_series8_has_twelve_numbered_4k_walls(self):
+        self.assertEqual(len(self.amoled), 12)
+        nums = sorted(int(re.match(r"(\d+)", w["name"]).group(1))
+                      for w in self.amoled)
+        self.assertEqual(nums, list(range(69, 79)) + [83, 84])
+        self.assertEqual({w["resolution"] for w in self.amoled}, {"3840x2160"})
+
+    def test_series8_is_at_least_half_exact_black(self):
+        """Near-black is not off on OLED; only literal RGB zero counts."""
+        from PIL import Image
+        for wall in self.amoled:
+            path = WALLPAPERS / SERIES8 / Path(wall["url"]).name
+            with Image.open(path) as im:
+                rgb = im.convert("RGB")
+                colours = rgb.getcolors(maxcolors=rgb.width * rgb.height)
+                self.assertIsNotNone(colours, f"too many colours to audit: {path.name}")
+                black = next((count for count, colour in colours
+                              if colour == (0, 0, 0)), 0)
+                fraction = black / (rgb.width * rgb.height)
+                self.assertGreaterEqual(
+                    fraction, 0.50,
+                    f"{path.name} is only {fraction:.1%} exact #000000",
+                )
 
 
 class AndroidWiringTests(unittest.TestCase):

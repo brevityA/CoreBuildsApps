@@ -252,9 +252,9 @@ class WallpaperTests(unittest.TestCase):
         classic = json.loads(read(ROOT / "Wallpapers" / "manifest.json"))
         classic_names = {w["name"] for w in classic["wallpapers"]}
         self.assertTrue(classic_names.isdisjoint({w["name"] for w in self.walls}))
-        # The classic pack ships 68 and says so in the README; changing it from
+        # The classic pack ships 84 and says so in the README; changing it from
         # a Pop script would make that claim false. Pop owns none of it.
-        self.assertEqual(classic["count"], 68)
+        self.assertEqual(classic["count"], 84)
 
     def test_entries_are_https_github_and_4k(self):
         for w in self.walls:
