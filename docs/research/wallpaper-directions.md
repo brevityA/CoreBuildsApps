@@ -11,7 +11,7 @@ The answer to (1) turned out to constrain (2) far more than the art style did.
 
 ## 1. What already ships
 
-Current state: `Wallpapers/manifest.json` v5.0 — 78 wallpapers, about 128 MB,
+Current state: `Wallpapers/manifest.json` v5.0 — 84 wallpapers, about 129 MB,
 six indexed classic series plus the separately indexed Pop set and an
 unindexed originals folder:
 
@@ -20,9 +20,9 @@ unindexed originals folder:
 | `series-0-originals` | 4K JPEG photographic/abstract originals |
 | `series-1` … `series-3` | Generated gradient and mesh sets, 4K PNG |
 | `series-5-pop` | Separate Pop manifest: twelve 4K halftone walls |
-| `series-6-circuit-core` | Lit-circuit fields, 1376×768 JPEG |
-| `series-7-retrowave` | Ten 4K synthwave landscapes |
-| `series-8-amoled` | Ten exact-black minimalist 4K walls |
+| `series-6-circuit-core` | Twelve lit-circuit fields, 1376×768 JPEG |
+| `series-7-retrowave` | Twelve 4K synthwave landscapes |
+| `series-8-amoled` | Twelve exact-black minimalist 4K walls |
 
 `series-4-core-mark` (30 × 4K PNGs) shipped in v1.7.0 and was retired in v1.8.6 in
 favour of series 6. Two lessons from that swap, both now enforced by
@@ -142,11 +142,11 @@ rebuilt.
 
 ## 4. What we built next: `series-8-amoled`
 
-The deferred pure-black direction is now ten classic-pack wallpapers, numbered
-69–78. Every image is 3840×2160 RGB PNG on exact `#000000`; cyan, blue, violet,
-and ember accents occupy only narrow lines, points, or compact geometry. The
-set ranges from 92.4% to 99.8% true black and compresses to less than 0.5 MB of
-PNG payload because most pixels are identical.
+The deferred pure-black direction is now twelve classic-pack wallpapers,
+numbered 69–78 and 83–84. Every image is 3840×2160 RGB PNG on exact `#000000`;
+cyan, blue, violet, and ember accents occupy only narrow lines, points, or
+compact geometry. The set ranges from 92.4% to 99.8% true black and compresses
+to less than 0.6 MB of PNG payload because most pixels are identical.
 
 This uses a stronger metric than the older “dark coverage” measure. Near-black
 still emits light on OLED and broad low-level gradients make black smearing
@@ -168,6 +168,8 @@ accent stays inside the 10% overscan-safe frame.
 | 76 | Underglow | 95.9% |
 | 77 | Monoline | 93.4% |
 | 78 | Twin Horizons | 94.3% |
+| 83 | Eclipse | 97.1% |
+| 84 | Corner Signal | 96.8% |
 
 Contact sheet: [`docs/amoled-wallpapers.png`](../amoled-wallpapers.png)
 
@@ -189,7 +191,9 @@ Recorded because they remain live options for future suite releases.
 
 ```bash
 python tools/build_pop_wallpapers.py     # ~70s, writes all 12 + thumbs + manifest
-python tools/build_amoled_wallpapers.py  # ten 4K walls + thumbs + contact sheet
+python tools/build_circuit_wallpaper_extensions.py  # final two Circuit Core walls
+python tools/build_synthwave_wallpapers.py           # twelve Retrowave walls
+python tools/build_amoled_wallpapers.py              # twelve AMOLED walls + contact sheet
 python tools/sync_wallpaper_manifest.py  # bundle reviewed manifests and thumbs
 python tests/test_pop.py
 python tests/test_wallpapers.py

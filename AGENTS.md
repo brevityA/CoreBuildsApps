@@ -74,7 +74,7 @@ Pop wallpapers are separate and rarely need rebuilding:
 python tools/build_pop_wallpapers.py  # ~70 s
 ```
 
-`Wallpapers/manifest.json` belongs to the classic pack and currently has 78 entries. Pop uses `Wallpapers/pop-manifest.json`. The two collections are asserted disjoint.
+`Wallpapers/manifest.json` belongs to the classic pack and currently has 84 entries. Pop uses `Wallpapers/pop-manifest.json`. The two collections are asserted disjoint.
 
 ## Truth gates
 

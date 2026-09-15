@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Build Core Builds Classic ``series-8-amoled``.
 
-Ten deterministic 3840x2160 wallpapers use exact RGB ``#000000`` as their
+Twelve deterministic 3840x2160 wallpapers use exact RGB ``#000000`` as their
 canvas. Accents are deliberately narrow and sparse: an OLED pixel only turns
 off at true black, while broad near-black gradients defeat the point of an
 AMOLED set and can make low-level smearing more visible.
@@ -174,6 +174,26 @@ def twin_horizons() -> Image.Image:
     return im
 
 
+def eclipse() -> Image.Image:
+    im = Image.new("RGB", (W, H), BLACK)
+    mask = Image.new("L", im.size, 0)
+    d = ImageDraw.Draw(mask)
+    box = (1320, 300, 2640, 1620)
+    d.arc(box, 108, 252, fill=255, width=9)
+    d.arc((1360, 340, 2600, 1580), 112, 248, fill=145, width=3)
+    _glow_mask(im, mask, CYAN, 28, 0.38)
+    return im
+
+
+def corner_signal() -> Image.Image:
+    im = Image.new("RGB", (W, H), BLACK)
+    cyan = [(360, 340), (1040, 340), (1290, 590), (1290, 1060)]
+    violet = [(3480, 1480), (2810, 1480), (2560, 1230), (2560, 820)]
+    _line(im, cyan, CYAN, 4, 20, 0.34)
+    _line(im, violet, VIOLET, 4, 24, 0.38)
+    return im
+
+
 WALLS = [
     (69, "void-horizon", "Void Horizon", void_horizon),
     (70, "one-pixel", "One Pixel", one_pixel),
@@ -185,12 +205,15 @@ WALLS = [
     (76, "underglow", "Underglow", underglow),
     (77, "monoline", "Monoline", monoline),
     (78, "twin-horizons", "Twin Horizons", twin_horizons),
+    (83, "eclipse", "Eclipse", eclipse),
+    (84, "corner-signal", "Corner Signal", corner_signal),
 ]
 
 
 def _contact_sheet(images: list[tuple[int, str, Image.Image]]) -> None:
     cell_w, art_h, label_h = 768, 432, 58
-    sheet = Image.new("RGB", (cell_w * 2, (art_h + label_h) * 5), (8, 11, 16))
+    rows = math.ceil(len(images) / 2)
+    sheet = Image.new("RGB", (cell_w * 2, (art_h + label_h) * rows), (8, 11, 16))
     draw = ImageDraw.Draw(sheet)
     font = ImageFont.load_default(size=22)
     for idx, (num, title, im) in enumerate(images):

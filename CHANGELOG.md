@@ -8,11 +8,16 @@ All notable changes to the Core Builds Icon Pack. Format follows
 
 ### Added
 
-- **Series 8 AMOLED wallpapers** — ten deterministic 4K designs on exact
+- **Twelve-wall series convention** — Circuit Core gains `Circuit Nexus` and
+  `Circuit Vault`, Retrowave gains `Laser Dusk` and `Ember Horizon`, and the
+  AMOLED set gains `Eclipse` and `Corner Signal`. Every active series now has
+  12 walls, except the original Fieldwork double set at 24; the classic total
+  is 84.
+- **Series 8 AMOLED wallpapers** — twelve deterministic 4K designs on exact
   `#000000`, with sparse Core cyan, violet, blue, and ember accents. Every wall
   retains 92.4–99.8% true-black pixels; the generator and wallpaper tests both
   enforce a minimum of 50%. Includes bundled thumbnails, manifest entries
-  69–78, and `docs/amoled-wallpapers.png` as the visual receipt.
+  69–78 and 83–84, and `docs/amoled-wallpapers.png` as the visual receipt.
 
 ### Fixed
 

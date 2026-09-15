@@ -6,7 +6,7 @@ Core Builds Classic — series-7-retrowave.
 Elle Decor, picwand style census) put nostalgic retro-gradient / Y2K
 synthwave among the most-searched device-wallpaper genres, and the pack
 had none: its dark abstracts stop at mesh, aurora and circuit work. This
-series adds ten 4K walls in the genre's grammar — sliced gradient sun,
+series adds twelve 4K walls in the genre's grammar — sliced gradient sun,
 perspective grid, starfield, chrome ridge — kept on the pack's night
 ground with a calm, dim lower third so launcher cards still hold.
 
@@ -184,6 +184,12 @@ WALLS = [
                              sun_x=0.62, alpha=0.42)),
     (68, "synth-starfield", dict(seed=20, pal=COOL, grid=False, sun_r=0.18,
                                  stars=2600, sun_x=0.68)),
+    (81, "synth-laser-dusk", dict(seed=21, pal=OUTRUN, horizon=0.64,
+                                  sun_r=0.24, sun_x=0.28, ridge=0.18,
+                                  scan=True, alpha=0.45)),
+    (82, "synth-ember-horizon", dict(seed=22, pal=EMBER, horizon=0.58,
+                                     sun_r=0.27, sun_x=0.70, stars=1400,
+                                     grid_density=24, alpha=0.40)),
 ]
 
 

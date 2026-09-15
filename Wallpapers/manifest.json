@@ -3,7 +3,7 @@
   "version": "5.0",
   "author": "brevityA",
   "brand_guide": "Core-Builds Brand Guide v1.0 (2026-08-11)",
-  "count": 78,
+  "count": 84,
   "wallpapers": [
     {
       "name": "01 Mesh Drift",
@@ -549,6 +549,48 @@
       "series": "series-8-amoled",
       "url": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/series-8-amoled/corebuilds-78-twin-horizons.png",
       "thumb": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/thumbs/corebuilds-78-twin-horizons.jpg",
+      "resolution": "3840x2160"
+    },
+    {
+      "name": "79 Circuit Nexus",
+      "series": "series-6-circuit-core",
+      "url": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/series-6-circuit-core/corebuilds-79-circuit-nexus.jpg",
+      "thumb": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/thumbs/corebuilds-79-circuit-nexus.jpg",
+      "resolution": "1376x768"
+    },
+    {
+      "name": "80 Circuit Vault",
+      "series": "series-6-circuit-core",
+      "url": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/series-6-circuit-core/corebuilds-80-circuit-vault.jpg",
+      "thumb": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/thumbs/corebuilds-80-circuit-vault.jpg",
+      "resolution": "1376x768"
+    },
+    {
+      "name": "81 Laser Dusk",
+      "series": "series-7-retrowave",
+      "url": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/series-7-retrowave/corebuilds-81-synth-laser-dusk.png",
+      "thumb": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/thumbs/corebuilds-81-synth-laser-dusk.jpg",
+      "resolution": "3840x2160"
+    },
+    {
+      "name": "82 Ember Horizon",
+      "series": "series-7-retrowave",
+      "url": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/series-7-retrowave/corebuilds-82-synth-ember-horizon.png",
+      "thumb": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/thumbs/corebuilds-82-synth-ember-horizon.jpg",
+      "resolution": "3840x2160"
+    },
+    {
+      "name": "83 Eclipse",
+      "series": "series-8-amoled",
+      "url": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/series-8-amoled/corebuilds-83-eclipse.png",
+      "thumb": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/thumbs/corebuilds-83-eclipse.jpg",
+      "resolution": "3840x2160"
+    },
+    {
+      "name": "84 Corner Signal",
+      "series": "series-8-amoled",
+      "url": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/series-8-amoled/corebuilds-84-corner-signal.png",
+      "thumb": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/thumbs/corebuilds-84-corner-signal.jpg",
       "resolution": "3840x2160"
     }
   ]
