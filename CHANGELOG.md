@@ -125,31 +125,33 @@ All notable changes to the Core Builds Icon Pack. Format follows
 - **TizenTube** (`tizentube`) — the v1.8.18 fix read as "kinda random"
   (its chord floated under the wedge, a stroke the real mark does not
   have), and this day's iterations — the measured globe emblem, then the
-  frame with a generic strike — traded one true association for the
-  other. The final direction (owner-directed): take the normal YouTube
-  logo — the pack's own `yt_play` frame, never the vendor mark — and
-  swap in the play button the way it is in the official TizenTube emblem
-  (reisxd/TizenTube, art by @Zyborg777), keeping the size of the normal
-  YouTube play button. The emblem's play is an open "struck-through"
-  wedge, rebuilt from the measured construction and mapped onto the
-  `yt_play` triangle's size and optical centre: the left stroke, the
-  rim-to-rim top chord (the ad-block line), and the bottom edge ending
-  in a free rounded cap — the "no ads" story is the emblem's own
-  construction, not a generic slash. The 16:9 card (the appfilter's
-  auto-assign target) rides the `banner_glyph` field — `tizen_play_dot`,
-  the same lockup plus the tip dot centred exactly on the bottom edge's
-  extension line, past the free cap where a dot of the logo's
-  prominence fits, clear of chord and cap. The accent is the
-  brand's true paint: the official icon's field gradient `#47DDFF` →
-  `#C5E9FF` (measured top (71,221,255) and bottom (197,233,255) of the
-  icon's field; the banner lens 82,222,255 sits between), applied at
-  render time through the catalog `gradient` field — the Nuvio pattern
-  — so Pop and Pixel Neon keep their flat strokes. That blue is the
-  same one the app ships as, and what the square now owes the red
-  YouTube icon next to it its distinction. Decision records
-  `docs/tizentube-options-2026-09.png`, `docs/tizentube-emblem-2026-09.png`
-  and `docs/tizentube-frame-2026-09.png` (the interim passes); receipt
-  `docs/tizentube-hybrid-2026-09.png`.
+  frame with the logo's open wedge — kept narrowing the direction until
+  the final one (owner-directed): use the exact TizenTube logo within
+  the box, in the pack's style. So the whole official emblem
+  (reisxd/TizenTube standalone banner, art by @Zyborg777) now sits
+  inside the normal YouTube frame — the pack's own `yt_play` frame,
+  never the vendor mark: the two-arc globe (the main circle's arc
+  meeting the left circle's arc at the rim intersections), the play's
+  left edge, the struck top chord running rim to rim, the bottom edge
+  ending in its free rounded cap, and the tip dot below the chord,
+  right of the free cap, as in the art. Every coordinate was measured
+  off the banner (main circle c(378.6,430.8) r215.0, left circle
+  c(323.9,445.4) r202.8, stroke 34; dot an ellipse 22.9×16.6 rotated
+  −28.9°) and rebuilt at 0.4563× in the pack's monoline language,
+  emblem strokes on the lightest weight (21.8 after normalisation) so
+  the construction stays open at tile size — the dot held 6px clear of
+  the chord the heavier stroke would otherwise close. `tizen_play`
+  carries the whole emblem and `tizen_play_dot` (the 16:9 card, the
+  appfilter's auto-assign target) shares the same construction, banner
+  and square included. The accent is the brand's true paint: the
+  official icon's field gradient `#47DDFF` → `#C5E9FF` (measured top
+  (71,221,255) and bottom (197,233,255) of the icon's field), applied
+  at render time through the catalog `gradient` field — the Nuvio
+  pattern — so Pop and Pixel Neon keep their flat strokes. Decision
+  records `docs/tizentube-options-2026-09.png`,
+  `docs/tizentube-emblem-2026-09.png` and
+  `docs/tizentube-frame-2026-09.png` (the interim passes); receipt
+  `docs/tizentube-inframe-2026-09.png`.
 
 ### Removed
 

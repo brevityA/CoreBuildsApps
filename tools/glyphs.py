@@ -549,35 +549,50 @@ def smarttube_play(c):
 
 
 def tizen_play(c):
-    """TizenTube — the real logo's play button, in the YouTube frame.
+    """TizenTube — the exact emblem, inside the YouTube frame.
 
-    2026-09-15 direction (owner): take the normal YouTube logo (the pack's
-    own yt_play frame, never the vendor mark) and swap in the play button
-    the way it is in the official TizenTube emblem (reisxd/TizenTube, art
-    by @Zyborg777), keeping the size of the normal YouTube play button.
+    2026-09-15 direction (owner, round 7): "use the exact TizenTube logo
+    within the box with the pack's style" — the whole official emblem
+    (reisxd/TizenTube standalone banner, art by @Zyborg777), measured off
+    the banner and rebuilt in the pack's monoline language inside the
+    normal YouTube frame.
 
-    The emblem's play is an open "struck-through" wedge, rebuilt here from
-    the measured A2 construction and mapped onto the yt_play triangle's
-    size and optical centre (left edge matched to the normal 128-tall
-    play edge, the logo's ~2° tilt kept): the left stroke, the rim-to-rim
-    top chord (the ad-block line), and the bottom edge ending in a free
-    rounded cap — the "no ads" story is the emblem's own construction.
+    The emblem is the two-arc globe — the main circle's arc running top,
+    right and bottom, meeting the left circle's arc at the rim
+    intersections — holding the open play: the left edge, the struck
+    top chord running rim to rim, and the bottom edge ending in its free
+    rounded cap, with the tip dot below the chord, right of the free
+    cap, as in the art.
+
+    Construction measured off the official banner (emblem 472.5x430,
+    strokes 34): main circle c(378.6,430.8) r215.0, left circle
+    c(323.9,445.4) r202.8, rim intersections (255.7,254.1) and
+    (360.1,645.3); vertical x=242.5 from the chord (y=261.4) to y=600;
+    chord (242.5,261.4) to (592.2,457.7) at the right rim; bottom edge
+    (272,604.8) to (462,495.2); dot an ellipse c(518.9,459.3)
+    a=22.9 b=16.6 rotated -28.9 deg, 4px clear of the chord. Scaled
+    0.4563x about the frame centre to sit ~4px inside the frame's ink;
+    emblem strokes carry the lightest monoline weight (author 20, 21.8
+    after normalisation), and the dot is held ~6px off the chord so the
+    heavier stroke does not close the gap the art has open.
     """
     return (f'<rect x="64" y="128" width="384" height="256" rx="64" {_s(c, 32)}/>'
-            f'<path d="M 216 192 L 205 320" {_s(c, 32)}/>'
-            f'<path d="M 216 192 L 308 269" {_s(c, 32)}/>'
-            f'<path d="M 205 320 L 268 277" {_s(c, 32)}/>')
+            f'<path d="M 209.6 175.4 A 98.1 98.1 0 1 1 257.3 353.9" {_s(c, 20)}/>'
+            f'<path d="M 209.6 175.4 A 92.6 92.6 0 0 0 257.3 353.9" {_s(c, 20)}/>'
+            f'<path d="M 203.6 178.7 L 203.6 333.2" {_s(c, 20)}/>'
+            f'<path d="M 203.6 178.7 L 363.2 268.3" {_s(c, 20)}/>'
+            f'<path d="M 217.1 335.4 L 303.7 285.4" {_s(c, 20)}/>'
+            f'<ellipse cx="326.8" cy="274.2" rx="10.4" ry="7.6" '
+            f'transform="rotate(-28.9 326.8 274.2)" {_f(c)}/>')
 
 
 def tizen_play_dot(c):
-    """TizenTube banner mark — tizen_play plus the emblem's tip dot.
+    """TizenTube banner mark — identical to the square from round 7 on.
 
-    Dot at (320,241): centred on the bottom edge's extension line, past
-    the free cap where a dot of the logo's prominence actually fits
-    (the tip gap is too narrow to clear both strokes), with 3.5px to the
-    chord cap. The edge points at it, as in the real logo.
+    The mark IS the exact emblem, and the emblem already carries its
+    tip dot, so banner and icon share one construction.
     """
-    return tizen_play(c) + f'<circle cx="320" cy="241" r="12" fill="{c}" stroke="none"/>'
+    return tizen_play(c)
 
 
 def film_reel(c):
