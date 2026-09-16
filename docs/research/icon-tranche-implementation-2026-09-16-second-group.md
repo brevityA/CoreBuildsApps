@@ -1,4 +1,12 @@
-# Icon tranche implementation — 2026-09-16
+# Icon tranche implementation — 2026-09-16 (second group: the eight)
+
+**Relationship to PR #134.** PR #134 is the *first* implementation group —
+AirScreen, Aerial Views, AnyDesk and DW — plus the isolated candidate APK
+infrastructure. This document covers the *remaining eight*. The two are
+complementary and together make up the twelve redraw-ready rows. This file
+was renamed away from `icon-tranche-implementation-2026-09-16.md` because
+#134 writes a different document at that exact path; #134 was opened first,
+so this one yields.
 
 **Scope:** the eight redraw-ready candidates from
 [`icon-tranche-research-2026-09-15.md`](icon-tranche-research-2026-09-15.md)
@@ -198,12 +206,22 @@ test_glyph_identity      8 glyphs, 0 problems
 `pytest` is not installed in this environment; each suite was run directly as
 a module, which is how they are written to run.
 
-## 7. Candidate APK lane: it does not exist yet
+## 7. Candidate APK lane: absent from `main`, supplied by PR #134
 
 The instruction was to *verify* the candidate build variant. Verification
-result: **there is no candidate variant to verify.** Reporting rather than
-inventing it, because the missing pieces touch signing and release
-publication.
+result against `main`: **there is no candidate variant there to verify**, so
+this PR reported rather than invented it, because the missing pieces touch
+signing and release publication.
+
+**That was the right call, and PR #134 is now building exactly this.** Its
+`app/build.gradle.kts` adds `create("candidate")` with
+`initWith(getByName("debug"))`, `applicationIdSuffix = ".test"` (package
+`tv.corebuilds.iconpack.test`, so it installs *alongside* production rather
+than over it), a `TEST_SOURCE_COMMIT` build-config field, and
+`.github/workflows/iconpack-test-apk.yml` attaching APK + SHA-256 to an
+unpublished draft release. Every gap listed in the table below is closed
+there. The table records the state of `main`, which is what this branch is
+cut from; it is not a claim that the work is undone.
 
 | Asked | Found in `app/build.gradle.kts` / `.github/workflows/build.yml` |
 |---|---|
