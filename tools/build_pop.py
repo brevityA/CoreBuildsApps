@@ -337,8 +337,13 @@ def mirror_manifest() -> None:
     """
     src = (ROOT / "app" / "src" / "main" / "AndroidManifest.xml").read_text(
         encoding="utf-8")
-    out = src.replace('android:authorities="tv.corebuilds.iconpack.update"',
-                      'android:authorities="tv.corebuilds.iconpack.pop.update"')
+    out = src.replace(
+        'android:authorities="${fileProviderAuthority}"',
+        'android:authorities="tv.corebuilds.iconpack.pop.update"',
+    ).replace(
+        'android:authorities="tv.corebuilds.iconpack.update"',
+        'android:authorities="tv.corebuilds.iconpack.pop.update"',
+    )
     if out == src:
         raise SystemExit("mirror_manifest: FileProvider authority not found — "
                          "app/src/main/AndroidManifest.xml changed shape")
