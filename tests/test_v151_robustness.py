@@ -57,7 +57,7 @@ class ManifestUpdaterTests(unittest.TestCase):
 
     def test_file_provider_authority(self):
         self.assertIn(
-            'android:authorities="tv.corebuilds.iconpack.update"',
+            'android:authorities="${fileProviderAuthority}"',
             self.mf,
         )
 
@@ -104,11 +104,18 @@ class UpdateInstallerTests(unittest.TestCase):
         authority = re.search(r'android:authorities="([^"]+)"', manifest)
         self.assertIsNotNone(authority, "FileProvider authority missing")
         gradle = read("app/build.gradle.kts")
-        self.assertIn(
-            f'\\"{authority.group(1)}\\"',
-            gradle,
-            "UPDATE_AUTHORITY buildConfigField must equal the manifest authority",
-        )
+        if authority.group(1) == "${fileProviderAuthority}":
+            self.assertIn(
+                'manifestPlaceholders["fileProviderAuthority"] = "tv.corebuilds.iconpack.update"',
+                gradle,
+                "production FileProvider placeholder must have the production authority",
+            )
+        else:
+            self.assertIn(
+                f'\\"{authority.group(1)}\\"',
+                gradle,
+                "UPDATE_AUTHORITY buildConfigField must equal the manifest authority",
+            )
 
     def test_github_hosts_allowlisted(self):
         for host in (

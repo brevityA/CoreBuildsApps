@@ -267,8 +267,11 @@ def main():
     # contract; without them UpdateInstaller.install() throws at runtime.
     check("android.permission.REQUEST_INSTALL_PACKAGES" in mf,
           "manifest: missing REQUEST_INSTALL_PACKAGES — in-app install cannot start")
-    check('android:authorities="tv.corebuilds.iconpack.update"' in mf,
-          "manifest: FileProvider authority must be tv.corebuilds.iconpack.update")
+    check(
+        'android:authorities="tv.corebuilds.iconpack.update"' in mf
+        or 'android:authorities="${fileProviderAuthority}"' in mf,
+        "manifest: FileProvider authority must resolve to tv.corebuilds.iconpack.update",
+    )
     check("androidx.core.content.FileProvider" in mf,
           "manifest: FileProvider provider is missing — APK install will crash")
     fp = RES / "xml" / "file_paths.xml"

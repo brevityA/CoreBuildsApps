@@ -170,7 +170,7 @@ def nuvio_plays(c):
     reads as the card itself, exactly as the logo does.
     """
     return (f'<path d="M 148 96 L 428 256 L 148 416 Z" {_s(c, 34)}/>'
-            f'<path d="M 232 208 L 324 256 L 232 304 Z" {_s(c, 26)}/>')
+            f'<path d="M 212 208 L 304 256 L 212 304 Z" {_s(c, 26)}/>')
 
 
 def tubi_mono(c):
@@ -4302,4 +4302,62 @@ GLYPHS.update({
     "crave_c": crave_c,
     "hayu_y": hayu_y,
     "neon_tube_n": neon_tube_n,
+})
+
+# --------------------------------------------------------------------------
+# 2026-09 redraw tranche: original Core Builds constructions for reviewed
+# brand cues. These deliberately avoid importing or tracing vendor artwork.
+# --------------------------------------------------------------------------
+def airscreen_as(c):
+    """AirScreen: a compact open A flowing into a rounded S."""
+    return (
+        f'<path d="M 108 366 L 204 134 L 292 366" {_s(c, 34)}/>'
+        f'<path d="M 158 268 H 253" {_s(c, 26)}/>'
+        f'<path d="M 286 178 C 338 142 402 168 402 216 '
+        f'C 402 258 372 270 330 282 C 288 294 270 316 284 346 '
+        f'C 302 384 370 386 410 344" {_s(c, 34)}/>'
+    )
+
+
+def aerial_views_sun_dunes(c):
+    """Aerial Views: low sun behind two asymmetric landscape layers."""
+    return (
+        f'<circle cx="256" cy="160" r="58" {_s(c, 30)}/>'
+        f'<path d="M 86 360 C 142 292 188 248 238 270 '
+        f'C 286 292 318 250 426 356" {_s(c, 34)}/>'
+        f'<path d="M 78 398 C 144 342 198 326 246 344 '
+        f'C 302 366 344 316 434 386" {_s(c, 34)}/>'
+    )
+
+
+def anydesk_chevrons(c):
+    """AnyDesk: opposed linked diamond-chevron forms with an open gap."""
+    return (
+        f'<path d="M 64 256 L 150 170 L 236 256 L 150 342 '
+        f'L 116 308 L 168 256 L 116 204 Z" {_s(c, 34)}/>'
+        f'<path d="M 276 256 L 362 170 L 448 256 L 362 342 '
+        f'L 328 308 L 380 256 L 328 204 Z" {_s(c, 34)}/>'
+    )
+
+
+def dw_circles(c):
+    """DW: overlapping circular bodies with readable D and cut-out W."""
+    return (
+        f'<defs><mask id="dwMask"><rect width="512" height="512" fill="black"/>'
+        f'<circle cx="314" cy="256" r="126" fill="white"/>'
+        f'<path d="M 258 190 L 282 322 L 314 250 L 346 322 L 370 190" '
+        f'{_s("black", 24)}/></mask></defs>'
+        f'<circle cx="314" cy="256" r="126" fill="{c}" mask="url(#dwMask)"/>'
+        f'<circle cx="314" cy="256" r="126" {_s(c, 34)}/>'
+        f'<circle cx="208" cy="256" r="126" {_s(c, 34)}/>'
+        f'<path d="M 164 174 V 338 H 204 C 254 338 274 308 274 256 '
+        f'C 274 204 254 174 204 174 Z" {_s(c, 26)}/>'
+    )
+
+
+GLYPHS.update({
+    "airscreen_as": airscreen_as,
+    "aerial_views_sun_dunes": aerial_views_sun_dunes,
+    "anydesk_chevrons": anydesk_chevrons,
+    "dw_circles": dw_circles,
 })

@@ -192,7 +192,7 @@
         <!-- In-app updater. Authority must match UpdateInstaller.AUTHORITY. -->
         <provider
             android:name="androidx.core.content.FileProvider"
-            android:authorities="tv.corebuilds.iconpack.update"
+            android:authorities="${fileProviderAuthority}"
             android:exported="false"
             android:grantUriPermissions="true">
             <meta-data

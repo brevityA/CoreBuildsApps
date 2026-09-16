@@ -103,6 +103,19 @@ class IdentityTests(unittest.TestCase):
         self.assertEqual(BY_ID["streamflix_2"]["glyph"], "stream_window")
         self.assertNotEqual(BY_ID["streamflix"]["color"], BY_ID["streamflix_2"]["color"])
 
+    def test_redraw_tranche_uses_source_cues_without_mapping_changes(self):
+        expected = {
+            "airscreen": ("airscreen_as", "com.ionitech.airscreen/com.ionitech.airscreen.ui.activity.welcome.StreamAssistantIndexActivity"),
+            "aerialviews": ("aerial_views_sun_dunes", "com.neilturner.aerialviews/com.neilturner.aerialviews.ui.MainActivity"),
+            "anydeskandroid": ("anydesk_chevrons", "com.anydesk.anydeskandroid/com.anydesk.anydeskandroid.gui.activity.HubActivity"),
+            "dw": ("dw_circles", "dw.com.androidtv.live/com.dw.app.dwforsmarttv.MainActivity"),
+        }
+        for drawable, (glyph, component) in expected.items():
+            with self.subTest(drawable=drawable):
+                self.assertEqual(BY_ID[drawable]["glyph"], glyph)
+                self.assertIn(component, BY_ID[drawable]["components"])
+                self.assertIn(glyph, GLYPHS)
+
     def test_reference_accents_are_not_random_palette_colours(self):
         expected = {"spotify": "#1ED760", "crunchyroid": "#FF5E00",
                     "netflix": "#E50914", "kodi": "#17B2E7",
@@ -187,6 +200,11 @@ class IdentityTests(unittest.TestCase):
         self.assertIn("#2FCCE6", body)
         self.assertIn("#A238F0", body)
         self.assertIn('stroke="url(#cbGrad)"', body)
+
+    def test_nuvio_inner_play_is_centered_on_the_mark(self):
+        body = (ROOT / "assets/svg" / "nuvio.svg").read_text()
+        self.assertIn('M 212 208 L 304 256 L 212 304 Z', body)
+        self.assertNotIn('M 232 208 L 324 256 L 232 304 Z', body)
 
     def test_no_icon_uses_a_wordmark_glyph(self):
         """Icons carry glyphs; wordmarks are banner business only."""
