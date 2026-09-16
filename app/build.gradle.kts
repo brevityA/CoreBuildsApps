@@ -27,7 +27,29 @@ android {
             "\"https://raw.githubusercontent.com/brevityA/CoreBuildsApps/" +
                 "main/Latestrelease/version.json\"",
         )
+        manifestPlaceholders["fileProviderAuthority"] = "tv.corebuilds.iconpack.update"
     }
+
+    // This variant is intentionally separate from both production release and
+    // the ordinary debug build. It is for maintainer-controlled Android TV
+    // testing only: the suffix makes it install beside the production pack,
+    // while initWith(debug) guarantees the production signing configuration is
+    // never consulted.
+    buildTypes {
+        create("test") {
+            initWith(getByName("debug"))
+            applicationIdSuffix = ".test"
+            val sourceCommit = providers.gradleProperty("testSourceCommit").orElse("local").get()
+            versionNameSuffix = "-test.$sourceCommit"
+            resValue("string", "app_name", "Core Builds Icon Pack – Test")
+            buildConfigField("String", "TEST_SOURCE_COMMIT", "\"$sourceCommit\"")
+            buildConfigField("String", "UPDATE_AUTHORITY", "\"tv.corebuilds.iconpack.test.update\"")
+            manifestPlaceholders["fileProviderAuthority"] = "tv.corebuilds.iconpack.test.update"
+        }
+    }
+
+    // Keep the production release signing block below separate from the test
+    // build type. In particular, no KEYSTORE_* value is read by :test.
 
     signingConfigs {
         create("release") {
