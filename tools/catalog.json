@@ -229,7 +229,7 @@
       "name": "Aerial Views",
       "drawable": "aerialviews",
       "color": "#53FC18",
-      "glyph": "tool_A",
+      "glyph": "aerial_views_sun_dunes",
       "components": [
         "com.neilturner.aerialviews/com.neilturner.aerialviews.ui.MainActivity"
       ],
@@ -341,7 +341,7 @@
       "name": "Airscreen",
       "drawable": "airscreen",
       "color": "#FEC500",
-      "glyph": "broadcast_A",
+      "glyph": "airscreen_as",
       "components": [
         "com.ionitech.airscreen/com.ionitech.airscreen.ui.activity.welcome.StreamAssistantIndexActivity"
       ],
@@ -579,7 +579,7 @@
       "name": "AnyDesk",
       "drawable": "anydeskandroid",
       "color": "#EF443B",
-      "glyph": "tool_A",
+      "glyph": "anydesk_chevrons",
       "components": [
         "com.anydesk.anydeskandroid/com.anydesk.anydeskandroid.gui.activity.HubActivity"
       ],
@@ -2586,7 +2586,7 @@
       "name": "Dw",
       "drawable": "dw",
       "color": "#F4842D",
-      "glyph": "broadcast_D",
+      "glyph": "dw_circles",
       "components": [
         "dw.com.androidtv.live/com.dw.app.dwforsmarttv.MainActivity"
       ],
