@@ -170,7 +170,7 @@ def nuvio_plays(c):
     reads as the card itself, exactly as the logo does.
     """
     return (f'<path d="M 148 96 L 428 256 L 148 416 Z" {_s(c, 34)}/>'
-            f'<path d="M 232 208 L 324 256 L 232 304 Z" {_s(c, 26)}/>')
+            f'<path d="M 212 208 L 304 256 L 212 304 Z" {_s(c, 26)}/>')
 
 
 def tubi_mono(c):

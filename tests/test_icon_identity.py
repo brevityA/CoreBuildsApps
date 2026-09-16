@@ -201,6 +201,11 @@ class IdentityTests(unittest.TestCase):
         self.assertIn("#A238F0", body)
         self.assertIn('stroke="url(#cbGrad)"', body)
 
+    def test_nuvio_inner_play_is_centered_on_the_mark(self):
+        body = (ROOT / "assets/svg" / "nuvio.svg").read_text()
+        self.assertIn('M 212 208 L 304 256 L 212 304 Z', body)
+        self.assertNotIn('M 232 208 L 324 256 L 232 304 Z', body)
+
     def test_no_icon_uses_a_wordmark_glyph(self):
         """Icons carry glyphs; wordmarks are banner business only."""
         for icon in ICONS:
