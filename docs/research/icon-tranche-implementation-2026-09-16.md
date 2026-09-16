@@ -52,7 +52,7 @@ counts as generic. Publishing a new percentage from the broader method would
 invite a false comparison against the research's figure. Re-run the original
 baseline method to restate it.
 
-## 2. Two marks were reworked after review, not before
+## 2. Two marks were reworked before review
 
 Both failures were found by looking at the rendered sheet, not by reading the
 source.
@@ -70,7 +70,30 @@ arms. They read as noise at 48px. The arms now simply run long, so the fan is
 continuous with the letter — a K *with* rays instead of a K *beside* some
 marks.
 
-## 3. Objective identity testing
+## 3. Two more were corrected after external review
+
+A reviewer checked the shipped geometry against the research cues and found
+two that did not match. Both findings were correct.
+
+**Blokada** was drawn with three *horizontal* bands. The research records
+"three descending **diagonal** bands" (sections 4 and 5), and the glyph's own
+docstring already claimed "diagonal bands stepping down to the right" — so the
+code contradicted its own documentation, and a horizontal split reads as a
+generic striped shield rather than as Blokada. The bands now descend
+left-to-right on a common slope. Measured side effect: its nearest registry
+neighbour moved from `shield_key` at 0.908 to `nfl_ball` at 0.889, so the
+correction made the mark *more* distinct, not less.
+
+**Audiomack** was drawn as bars on a baseline, evenly spaced 48px apart.
+That is an equaliser — the generic construction already in the music family,
+and precisely what this redraw exists to replace. The original docstring
+claimed an off-centre tall bar prevented that; it did not. It is now an
+actual traced waveform: one polyline whose oscillations start small and grow,
+spike to a sharp peak, and fall through the dominant downstroke before
+settling, with leading dots and a terminal pulse. Spacing is deliberately
+unequal so no reading recovers a bar chart.
+
+## 4. Objective identity testing
 
 New: `tools/test_glyph_identity.py`. It answers three questions a 512px
 master cannot.
@@ -90,10 +113,10 @@ second, competing standard.
 | glyph | counters 256→96→48 | ink @48 | bounds 160/80/48 | nearest neighbour |
 |---|---|---:|---|---|
 | `crossy_chicken` | 3 → 3 → 2 | 13.5% | 85x93 / 42x47 / 26x28 | `monogram_0` 0.848 |
-| `blokada_shield` | 1 → 1 → 1 | 18.6% | 102x115 / 52x57 / 30x34 | `shield_key` 0.908 |
+| `blokada_shield` | 1 → 1 → 3 | 18.8% | 102x115 / 52x57 / 30x34 | `nfl_ball` 0.889 |
 | `pia_robot` | 3 → 3 → 3 | 18.2% | 102x112 / 52x56 / 30x33 | `screen_record_mark` 0.850 |
 | `mpv_play` | 2 → 2 → 2 | 21.1% | 122x122 / 60x60 / 36x36 | `play_round` 0.945 |
-| `audiomack_wave` | 0 → 0 → 0 | 11.0% | 109x94 / 55x47 / 33x28 | `rustore_mark` 0.708 |
+| `audiomack_wave` | 0 → 0 → 0 | 11.2% | 106x92 / 53x46 / 32x28 | `alldebrid_infinity` 0.711 |
 | `atres_chevrons` | 0 → 0 → 0 | 8.8% | 73x96 / 37x48 / 22x28 | `monogram_X` 0.718 |
 | `kinopoisk_k` | 0 → 0 → 0 | 13.3% | 86x109 / 43x55 / 26x33 | `monogram_K` 0.770 |
 | `aida_sixty_four` | 1 → 1 → 1 | 15.2% | 109x97 / 55x48 / 33x29 | `browser_globe2` 0.729 |
@@ -111,7 +134,7 @@ rather than hidden behind a loosened global threshold. This follows the
 existing precedent for `gaming_A`, `photos_R` and `photos_X`. A glyph that
 fails at 96px is never eligible for that list.
 
-## 4. Artemis: the requested change was already in place
+## 5. Artemis: the requested change was already in place
 
 The instruction was to add `com.limelight.noir/com.limelight.PcView` to the
 existing Moonlight entry. **That component is already mapped**, to a separate
@@ -135,7 +158,7 @@ Artemis should display Moonlight's `gamepad` artwork instead of the generic
 not made**, because it changes the appearance of an already-shipping icon and
 was not what the instruction asked for. No mapping was altered.
 
-## 5. Regeneration and validation
+## 6. Regeneration and validation
 
 All three lanes were rebuilt from the changed generator, and source plus
 artwork are committed together — the icon and pixel-neon drift checks compare
@@ -175,7 +198,7 @@ test_glyph_identity      8 glyphs, 0 problems
 `pytest` is not installed in this environment; each suite was run directly as
 a module, which is how they are written to run.
 
-## 6. Candidate APK lane: it does not exist yet
+## 7. Candidate APK lane: it does not exist yet
 
 The instruction was to *verify* the candidate build variant. Verification
 result: **there is no candidate variant to verify.** Reporting rather than
@@ -213,7 +236,7 @@ it is left for explicit approval rather than added here.
 - [ ] Artefact attached only to an **unpublished draft** release
 - [ ] `Latestrelease/version.json` is untouched, so the in-app updater never sees it
 
-## 7. Device-testing checklist (owner)
+## 8. Device-testing checklist (owner)
 
 None of this can be settled from a build machine.
 
@@ -226,7 +249,7 @@ None of this can be settled from a build machine.
 - [ ] Confirm Blokada resolves against `org.blokada.fyra` (legacy v4), not a newer Blokada package
 - [ ] Confirm Artemis (`com.limelight.noir`) resolves and decide the `gamepad`-vs-`M` question above
 
-## 8. Release blockers — unchanged and owner-controlled
+## 9. Release blockers — unchanged and owner-controlled
 
 - Euronews and HGTV remain **testing-gated**; no real-TV results exist
 - ARTE and F-Droid remain **rights-gated**

@@ -4410,12 +4410,18 @@ def blokada_shield(c):
     drawn as strokes inside the shield outline; that keeps the split-face
     read, which is the part that distinguishes Blokada from every other
     generic shield in the vpn family.
+
+    The first version of this drew the bands HORIZONTAL while this docstring
+    already said diagonal - the code contradicted its own documentation, and
+    a horizontal split reads as a generic striped shield rather than as
+    Blokada. Review caught it. The bands now descend left-to-right on a
+    common slope, which is the cue the research actually records.
     """
     return (f'<path d="M 256 88 L 404 148 L 404 262 C 404 344 336 396 256 422 '
             f'C 176 396 108 344 108 262 L 108 148 Z" {_s(c, 32)}/>'
-            f'<path d="M 152 210 L 300 210" {_s(c, 24)}/>'
-            f'<path d="M 168 272 L 336 272" {_s(c, 24)}/>'
-            f'<path d="M 206 334 L 330 334" {_s(c, 24)}/>')
+            f'<path d="M 150 186 L 326 246" {_s(c, 24)}/>'
+            f'<path d="M 142 258 L 340 326" {_s(c, 24)}/>'
+            f'<path d="M 172 330 L 310 378" {_s(c, 24)}/>')
 
 
 def pia_robot(c):
@@ -4454,20 +4460,25 @@ def mpv_play(c):
 def audiomack_wave(c):
     """Audiomack - the rising asymmetric waveform.
 
-    The recorded cue is leading dots, a rising asymmetric bar cluster with one
-    dominant downstroke, and a terminal pulse. Bars are drawn on a common
-    baseline so the asymmetry reads as deliberate rhythm rather than noise;
-    the tall bar is placed off-centre, which is what stops this collapsing
-    into the generic equaliser already in the music family.
+    The recorded cue is leading dots, a rising asymmetric waveform with one
+    dominant downstroke, and a terminal pulse.
+
+    The first version drew this as bars on a baseline, evenly spaced 48px
+    apart. That is an equaliser, which is exactly the generic construction
+    already in the music family and exactly what this redraw exists to
+    replace - and the original docstring claimed an off-centre tall bar
+    prevented it, which it did not. Review caught it.
+
+    It is now an actual traced waveform: a single polyline whose oscillations
+    start small and grow, spike to a sharp peak, and fall through the
+    dominant downstroke before settling. Spacing is deliberately unequal, so
+    no reading of it recovers a bar chart.
     """
-    return (f'<circle cx="104" cy="332" r="12" {_s(c, 20)}/>'
-            f'<circle cx="156" cy="332" r="12" {_s(c, 20)}/>'
-            f'<path d="M 208 332 L 208 268" {_s(c, 26)}/>'
-            f'<path d="M 256 332 L 256 196" {_s(c, 26)}/>'
-            f'<path d="M 304 332 L 304 120" {_s(c, 32)}/>'
-            f'<path d="M 352 332 L 352 232" {_s(c, 26)}/>'
-            f'<path d="M 400 332 L 400 292" {_s(c, 26)}/>'
-            f'<path d="M 88 392 L 416 392" {_s(c, 22)}/>')
+    return (f'<circle cx="98" cy="256" r="11" {_s(c, 20)}/>'
+            f'<circle cx="134" cy="256" r="11" {_s(c, 20)}/>'
+            f'<path d="M 168 256 L 192 226 L 212 286 L 240 190 L 266 318 '
+            f'L 296 122 L 320 390 L 348 232 L 372 278" {_s(c, 26)}/>'
+            f'<path d="M 406 214 L 406 298" {_s(c, 22)}/>')
 
 
 def atres_chevrons(c):
