@@ -123,23 +123,27 @@ def _holes(mask: bytearray, w: int, h: int) -> int:
 
 
 def render(name: str, colour: str = "#4CC9F0") -> Image.Image:
+    """Rasterise one glyph at the full 512 grid."""
     png = svg2png(bytestring=glyphs.render_svg(name, colour),
                   output_width=GRID, output_height=GRID)
     return Image.open(io.BytesIO(bytes(png))).convert("RGBA")
 
 
 def _measure(alpha: Image.Image, size: int) -> tuple[float, int]:
+    """Ink fraction and enclosed-counter count at one downsampled size."""
     a = alpha.resize((size, size), Image.LANCZOS)
     mask = bytearray(1 if p >= 110 else 0 for p in a.getdata())
     return sum(mask) / (size * size), _holes(mask, size, size)
 
 
 def signature(alpha: Image.Image) -> list[float]:
+    """A 16x16 alpha fingerprint, small enough to compare every glyph pair."""
     a = alpha.resize((SIG, SIG), Image.LANCZOS)
     return [p / 255.0 for p in a.getdata()]
 
 
 def cosine(a: list[float], b: list[float]) -> float:
+    """Cosine similarity of two signatures; 1.0 means identical coverage."""
     dot = sum(x * y for x, y in zip(a, b))
     na = sum(x * x for x in a) ** 0.5
     nb = sum(y * y for y in b) ** 0.5
@@ -147,6 +151,7 @@ def cosine(a: list[float], b: list[float]) -> float:
 
 
 def check(name: str) -> dict:
+    """Measure one glyph and collect its problems, waivers and signature."""
     img = render(name)
     alpha = img.getchannel("A")
     box = alpha.getbbox()
@@ -199,6 +204,7 @@ def check(name: str) -> dict:
 
 
 def main() -> int:
+    """Run the checks and return a non-zero exit code on any problem."""
     ap = argparse.ArgumentParser(
         description=__doc__,
         formatter_class=argparse.RawDescriptionHelpFormatter)
@@ -239,11 +245,20 @@ def main() -> int:
         print("\ncollision check (vs every glyph in the registry)")
         universe = sorted(glyphs.GLYPHS)
         sigs = {}
+        # A glyph that fails to render must FAIL the pass, not vanish from it.
+        # Swallowing the exception and continuing meant a broken registry glyph
+        # silently dropped out of the comparison set, so this check could miss
+        # a real collision against it and still report a clean result — a test
+        # that quietly stops testing is worse than no test.
+        render_failures = 0
         for n in universe:
             try:
                 sigs[n] = signature(render(n).getchannel("A"))
-            except Exception:
-                continue
+            except Exception as exc:  # noqa: BLE001 - any failure invalidates
+                print(f"       ! {n} failed to render for the collision "
+                      f"check, so nothing was compared against it: {exc}",
+                      file=sys.stderr)
+                render_failures += 1
         collisions = 0
         for r in results:
             worst, score = None, 0.0
@@ -258,7 +273,10 @@ def main() -> int:
                 collisions += 1
             print(f"{flag} {r['name']:<20} nearest: {worst:<22} "
                   f"similarity {score:.3f}")
-        failed += collisions
+        failed += collisions + render_failures
+        if render_failures:
+            print(f"     {render_failures} registry glyph(s) could not be "
+                  f"rendered — the collision result is INCOMPLETE")
 
     print(f"\n{len(results)} glyph(s) checked · {failed} problem(s)")
     return 1 if failed else 0
