@@ -1,6 +1,16 @@
 #!/usr/bin/env python3
 """Objective identity checks for glyphs: reduction, safe area, collision.
 
+Overlaps `tools/check_glyph.py` on purpose, and the split is worth knowing
+before you reach for either. check_glyph.py is the design-time checker for
+one glyph you are actively drawing: it also reports core_monoline compliance
+and authored-vs-normalised stroke weights, which is what you want mid-edit.
+This script answers the question check_glyph.py cannot — *is this mark
+distinguishable from the 962 already in the registry* — and applies the
+160/80/48 reduction standard the research fixed in section 5. If the two ever
+need to become one tool, fold the collision pass into check_glyph.py; do not
+let the counter maths drift apart in two places.
+
 Three questions a glyph has to answer, none of which eyeballing a 512px
 master can settle:
 
