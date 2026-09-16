@@ -56,12 +56,12 @@ jobs:
         env:
           SOURCE_COMMIT: ${{ github.sha }}
         run: |
-          ./gradlew :app:lintTest :app:testTestUnitTest :app:assembleTest \
+          ./gradlew :app:lintCandidate :app:testCandidateUnitTest :app:assembleCandidate \
             -PtestSourceCommit="${SOURCE_COMMIT:0:7}" --no-daemon --stacktrace
 
       - name: Name APK and create checksum
         run: |
-          APK=$(find app/build/outputs/apk/test -maxdepth 1 -type f -name '*.apk' | head -1)
+          APK=$(find app/build/outputs/apk/candidate -maxdepth 1 -type f -name '*.apk' | head -1)
           test -n "$APK"
           SOURCE_COMMIT=$(git rev-parse HEAD)
           VERSION=$(sed -n 's/.*versionName = "\([^"]*\)".*/\1/p' app/build.gradle.kts | head -1)

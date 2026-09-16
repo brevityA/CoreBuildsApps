@@ -36,7 +36,7 @@ android {
     // while initWith(debug) guarantees the production signing configuration is
     // never consulted.
     buildTypes {
-        create("test") {
+        create("candidate") {
             initWith(getByName("debug"))
             applicationIdSuffix = ".test"
             val sourceCommit = providers.gradleProperty("testSourceCommit").orElse("local").get()

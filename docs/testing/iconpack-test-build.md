@@ -5,7 +5,7 @@ Android TV testing. It is not a release channel.
 
 | Field | Test value |
 |---|---|
-| Variant | `:app:assembleTest` |
+| Variant | `:app:assembleCandidate` (the build type is named `candidate` because Android rejects build type names beginning with `test`) |
 | Application ID | `tv.corebuilds.iconpack.test` |
 | App label | `Core Builds Icon Pack – Test` |
 | Version name | production version plus `-test.<short commit>` |
@@ -32,7 +32,7 @@ publishes a release or modifies the production update manifest.
 For a local test build, pass the source hash explicitly:
 
 ```bash
-./gradlew :app:lintTest :app:testTestUnitTest :app:assembleTest \
+./gradlew :app:lintCandidate :app:testCandidateUnitTest :app:assembleCandidate \
   -PtestSourceCommit="$(git rev-parse --short=7 HEAD)" --no-daemon
 ```
 
