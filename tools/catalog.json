@@ -253,7 +253,7 @@
       "name": "AIDA64",
       "drawable": "finalwire",
       "color": "#7B2BFC",
-      "glyph": "tool_A",
+      "glyph": "aida_sixty_four",
       "components": [
         "com.finalwire.aida64/com.finalwire.aida64.HHMainActivity",
         "com.finalwire.aida64/com.finalwire.aida64.TVMainActivity"
@@ -828,7 +828,7 @@
       "name": "ATRESplayer",
       "drawable": "atresplayer",
       "color": "#A238FF",
-      "glyph": "broadcast_A",
+      "glyph": "atres_chevrons",
       "components": [
         "com.antena3.atresplayer.tv/com.antena3.atresplayer.tv.ui.splash.SplashActivity"
       ],
@@ -864,7 +864,7 @@
       "name": "Audiomack",
       "drawable": "audiomack",
       "color": "#FFA200",
-      "glyph": "music_A",
+      "glyph": "audiomack_wave",
       "components": [
         "com.audiomack/com.audiomack.ui.splash.SplashActivity"
       ],
@@ -1100,7 +1100,7 @@
       "name": "Blokada",
       "drawable": "blokada",
       "color": "#F5A200",
-      "glyph": "vpn_B",
+      "glyph": "blokada_shield",
       "components": [
         "org.blokada.fyra/core.PanelActivity"
       ],
@@ -1801,7 +1801,7 @@
       "name": "Crossy Road",
       "drawable": "crossy_road",
       "color": "#FF0000",
-      "glyph": "gaming_C",
+      "glyph": "crossy_chicken",
       "components": [
         "com.yodo1.crossyroad/com.google.firebase.MessagingUnityPlayerActivity"
       ],
@@ -4897,7 +4897,7 @@
       "name": "Kinopoisk",
       "drawable": "kinopoisk",
       "color": "#FF5500",
-      "glyph": "broadcast_K",
+      "glyph": "kinopoisk_k",
       "components": [
         "ru.kinopoisk.tv/ru.kinopoisk.tv.presentation.splash.SplashActivity"
       ],
@@ -6011,7 +6011,7 @@
       "name": "Mpv",
       "drawable": "mpv",
       "color": "#691F69",
-      "glyph": "app_M",
+      "glyph": "mpv_play",
       "components": [
         "is.xyz.mpv/is.xyz.mpv.MainActivity"
       ],
@@ -7725,7 +7725,7 @@
       "name": "Private Internet Access",
       "drawable": "privateinternetaccess",
       "color": "#1E811F",
-      "glyph": "vpn_P",
+      "glyph": "pia_robot",
       "components": [
         "com.privateinternetaccess.android/com.kape.vpn.MainActivity"
       ],

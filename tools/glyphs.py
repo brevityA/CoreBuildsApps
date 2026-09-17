@@ -4361,3 +4361,181 @@ GLYPHS.update({
     "anydesk_chevrons": anydesk_chevrons,
     "dw_circles": dw_circles,
 })
+
+
+# ---------------------------------------------------------------------------
+# Tranche 2026-09-16 — eight redraw-ready candidates.
+#
+# Geometry cues come from docs/research/icon-tranche-research-2026-09-15.md
+# (ranks 12, 13, 14, 15, 17, 18, 20, 24). Each mark is redrawn from the
+# recorded *identifying geometry* in Core Builds linework. No source art is
+# traced, and no solid fills or containers are used: the pack's identity takes
+# precedence over literal vendor reproduction (AGENTS.md).
+# ---------------------------------------------------------------------------
+
+
+def crossy_chicken(c):
+    """Crossy Road - the blocky fowl in profile, above a lane stripe.
+
+    The cue is a pixel chicken silhouette. A first pass drew the whole bird as
+    stepped orthogonal segments and it failed its own review: at 96px it read
+    as an abstract blocky figure, not a chicken, and the free-floating lane
+    stripes read as three unrelated marks.
+
+    A head in profile carries the identity at tile size where a body cannot -
+    comb, beak and eye are the features a viewer actually resolves. The
+    staircase edge is kept on the comb and nape so the pixel origin still
+    shows. Deliberately minimal, which is also the right answer to the
+    trademark caution the research attaches to this row.
+
+    A second pass was needed after measurement: the eye at r=15 and the boxed
+    beak both closed into blobs by 48px. The eye is now large enough to hold a
+    counter all the way down, and the beak is an open chevron rather than a
+    rectangle, so it has no counter to lose in the first place.
+    """
+    return (f'<path d="M 200 148 L 200 112 L 236 112 L 236 148 L 272 148 '
+            f'L 272 112 L 308 112 L 308 180" {_s(c, 26)}/>'
+            f'<path d="M 200 148 L 168 148 L 168 304 C 168 348 204 380 '
+            f'248 380 L 292 380 C 322 380 344 358 344 328 L 344 188 '
+            f'L 308 180" {_s(c, 30)}/>'
+            f'<path d="M 344 202 L 408 232 L 344 262" {_s(c, 24)}/>'
+            f'<circle cx="264" cy="236" r="36" {_s(c, 20)}/>')
+
+
+def blokada_shield(c):
+    """Blokada 4 (org.blokada.fyra) - shield split by descending bands.
+
+    The legacy v4 mark is a shield whose face carries three diagonal bands
+    stepping down to the right. The pack forbids solid fills, so the bands are
+    drawn as strokes inside the shield outline; that keeps the split-face
+    read, which is the part that distinguishes Blokada from every other
+    generic shield in the vpn family.
+
+    The first version of this drew the bands HORIZONTAL while this docstring
+    already said diagonal - the code contradicted its own documentation, and
+    a horizontal split reads as a generic striped shield rather than as
+    Blokada. Review caught it. The bands now descend left-to-right on a
+    common slope, which is the cue the research actually records.
+    """
+    return (f'<path d="M 256 88 L 404 148 L 404 262 C 404 344 336 396 256 422 '
+            f'C 176 396 108 344 108 262 L 108 148 Z" {_s(c, 32)}/>'
+            f'<path d="M 150 186 L 326 246" {_s(c, 24)}/>'
+            f'<path d="M 142 258 L 340 326" {_s(c, 24)}/>'
+            f'<path d="M 172 330 L 310 378" {_s(c, 24)}/>')
+
+
+def pia_robot(c):
+    """Private Internet Access - the robot head, squared with a lock jaw.
+
+    PIA's mark is a robot/lock head silhouette. The identifying features are
+    the flat-topped head with a stub antenna, two wide-set eyes, and the
+    keyhole-ish mouth slot; those survive reduction, the fine bezel detail of
+    the real mark does not, so it is dropped rather than rendered as mush.
+    """
+    return (f'<path d="M 256 84 L 256 122" {_s(c, 24)}/>'
+            f'<path d="M 140 122 L 372 122 C 392 122 404 136 404 156 '
+            f'L 404 334 C 404 354 392 368 372 368 L 140 368 '
+            f'C 120 368 108 354 108 334 L 108 156 '
+            f'C 108 136 120 122 140 122 Z" {_s(c, 32)}/>'
+            f'<circle cx="196" cy="212" r="26" {_s(c, 24)}/>'
+            f'<circle cx="316" cy="212" r="26" {_s(c, 24)}/>'
+            f'<path d="M 196 300 L 316 300" {_s(c, 26)}/>'
+            f'<path d="M 168 368 L 168 416 M 344 368 L 344 416" {_s(c, 24)}/>')
+
+
+def mpv_play(c):
+    """mpv - the stepped circular play mechanism.
+
+    mpv's icon reads as a play triangle sitting inside a ring whose rim is
+    stepped rather than smooth. The steps are the distinguishing cue against
+    the several other ring-plus-triangle marks in the pack, so they are drawn
+    as four short chords cut across the ring at the diagonals.
+    """
+    return (f'<circle cx="256" cy="256" r="178" {_s(c, 32)}/>'
+            f'<path d="M 214 174 L 342 256 L 214 338 Z" {_s(c, 28)}/>'
+            f'<path d="M 122 186 L 168 210 M 390 186 L 344 210 '
+            f'M 122 326 L 168 302 M 390 326 L 344 302" {_s(c, 22)}/>')
+
+
+def audiomack_wave(c):
+    """Audiomack - the rising asymmetric waveform.
+
+    The recorded cue is leading dots, a rising asymmetric waveform with one
+    dominant downstroke, and a terminal pulse.
+
+    The first version drew this as bars on a baseline, evenly spaced 48px
+    apart. That is an equaliser, which is exactly the generic construction
+    already in the music family and exactly what this redraw exists to
+    replace - and the original docstring claimed an off-centre tall bar
+    prevented it, which it did not. Review caught it.
+
+    It is now an actual traced waveform: a single polyline whose oscillations
+    start small and grow, spike to a sharp peak, and fall through the
+    dominant downstroke before settling. Spacing is deliberately unequal, so
+    no reading of it recovers a bar chart.
+    """
+    return (f'<circle cx="98" cy="256" r="11" {_s(c, 20)}/>'
+            f'<circle cx="134" cy="256" r="11" {_s(c, 20)}/>'
+            f'<path d="M 168 256 L 192 226 L 212 286 L 240 190 L 266 318 '
+            f'L 296 122 L 320 390 L 348 232 L 372 278" {_s(c, 26)}/>'
+            f'<path d="M 406 214 L 406 298" {_s(c, 22)}/>')
+
+
+def atres_chevrons(c):
+    """ATRESplayer - two nested right-facing chevrons.
+
+    The research explicitly supersedes the older circular/radiating treatment:
+    the current exact-package icon is two nested angular play outlines. Drawn
+    as open chevrons, not filled triangles, so it stays inside the monoline
+    contract and stays distinct from the pack's ordinary play glyphs.
+    """
+    return (f'<path d="M 150 120 L 286 256 L 150 392" {_s(c, 32)}/>'
+            f'<path d="M 268 168 L 356 256 L 268 344" {_s(c, 26)}/>')
+
+
+def kinopoisk_k(c):
+    """Kinopoisk - the K whose right arms open into tapered rays.
+
+    The asymmetric ray silhouette is the whole identity here, so the upright
+    stem stays plain and the three right-hand strokes fan at unequal angles
+    and unequal lengths. A symmetric fan would read as a generic burst and
+    lose the brand.
+
+    The first pass set the rays as separate ticks floating off the arms. They
+    read as noise at 48px rather than as rays, so the arms now simply run
+    long: the fan is continuous with the letter, which is what makes it a K
+    with rays instead of a K beside some marks.
+    """
+    return (f'<path d="M 156 100 L 156 412" {_s(c, 32)}/>'
+            f'<path d="M 156 264 L 372 96" {_s(c, 28)}/>'
+            f'<path d="M 156 264 L 404 232" {_s(c, 24)}/>'
+            f'<path d="M 156 264 L 356 336" {_s(c, 26)}/>'
+            f'<path d="M 156 264 L 300 420" {_s(c, 28)}/>')
+
+
+def aida_sixty_four(c):
+    """AIDA64 - interlocked 6 and 4 with sharply cut counters.
+
+    The cue is a bold, tightly interlocked '64' with a diagonal upper stroke.
+    The two numerals are drawn as open forms sharing a tight gutter; their
+    counters are large enough to survive the 96px tile, which is the binding
+    constraint on a two-numeral mark at this size.
+    """
+    return (f'<path d="M 212 118 C 158 118 128 176 128 256 '
+            f'C 128 344 168 396 212 396 C 256 396 284 356 284 312 '
+            f'C 284 266 254 232 212 232 C 172 232 140 262 134 300" '
+            f'{_s(c, 32)}/>'
+            f'<path d="M 386 118 L 306 306 L 446 306" {_s(c, 32)}/>'
+            f'<path d="M 400 216 L 400 396" {_s(c, 32)}/>')
+
+
+GLYPHS.update({
+    "crossy_chicken": crossy_chicken,
+    "blokada_shield": blokada_shield,
+    "pia_robot": pia_robot,
+    "mpv_play": mpv_play,
+    "audiomack_wave": audiomack_wave,
+    "atres_chevrons": atres_chevrons,
+    "kinopoisk_k": kinopoisk_k,
+    "aida_sixty_four": aida_sixty_four,
+})
