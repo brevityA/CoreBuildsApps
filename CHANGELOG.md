@@ -21,6 +21,11 @@ All notable changes to the Core Builds Icon Pack. Format follows
   a focused tile reads as part of the ring. `tests/test_brandmark_badge.py`
   checks the array is one flag per icon in every pack, that each pack agrees
   with `tools/catalog.json`, and that the three packs agree with each other.
+  `tools/validate_pixel_neon.py` counted raw `<item>` elements against
+  `3 * len(icons)`, so a fourth generated array failed it with "does not
+  contain three complete generated arrays" — a message naming the wrong
+  problem and no array in particular. It now counts each array by name and
+  says which one is short.
 
 - **Settings and About screens** — the app's first persisted state. Until now
   nothing was stored at all. Four settings, each wired to a reader rather than

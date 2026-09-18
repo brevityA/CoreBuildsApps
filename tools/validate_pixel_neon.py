@@ -211,9 +211,22 @@ def main() -> int:
     check(len(source_hashes) == len(wallpaper_entries),
           f"only {len(source_hashes)} unique Pixel Neon wallpaper rasters for {len(wallpaper_entries)} entries")
 
-    arrays = (RES / "values" / "icon_pack.xml").read_text(encoding="utf-8")
-    check(arrays.count("<item>") == 3 * len(icons),
-          "icon_pack.xml does not contain three complete generated arrays")
+    # Per-array, by name. This used to count raw "<item>" strings against
+    # 3 * len(icons), which meant adding a fourth generated array failed the
+    # check with "does not contain three complete generated arrays" — a message
+    # naming the wrong problem and pointing at no array in particular. Counting
+    # each one by name says which is short, and adding another only means
+    # listing it here.
+    arrays_root = ET.parse(RES / "values" / "icon_pack.xml").getroot()
+    sizes = {node.get("name"): len(node)
+             for tag in ("string-array", "integer-array")
+             for node in arrays_root.iter(tag)}
+    expected = ("icon_pack", "icon_names", "icon_categories", "icon_bespoke")
+    missing = [name for name in expected if name not in sizes]
+    check(not missing, f"icon_pack.xml is missing generated arrays: {missing}")
+    short = [f"{name} has {sizes[name]} of {len(icons)}"
+             for name in expected if name in sizes and sizes[name] != len(icons)]
+    check(not short, f"icon_pack.xml arrays are incomplete: {short}")
     check((RES / "drawable-nodpi" / "cb_banner.png").exists(),
           "Pixel Neon Leanback banner is missing")
     check((RES / "mipmap-xhdpi" / "ic_launcher_foreground.png").exists(),
