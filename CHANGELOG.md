@@ -43,12 +43,13 @@ All notable changes to the Core Builds Icon Pack. Format follows
   unchanged for every one of them; only their glyph references moved. The
   registry is now 966 glyphs.
 - **DW redrawn as strokes** — its first form filled the right body solid and
-  cut the W out with an SVG mask. That broke the monoline contract three ways:
-  `<defs>`, `<mask>` and solid fills are all forbidden, the filled body drove
-  the mark to 30.8 per cent ink against a 34 per cent ceiling, and two counters
-  closed by 48px, leaving an unreadable blob at launcher size. Now two
-  overlapping outlined bodies with a drawn D and W, 23.4 per cent ink, legible
-  at 48px, and opted into `core_monoline` so the mask cannot return.
+  cut the W out with an SVG mask. That broke the monoline contract two ways:
+  `<defs>`, `<mask>` and solid fills are all forbidden, and two of its four
+  counters closed by 48px, leaving an unreadable blob at launcher size. Ink sat
+  at 30.8 per cent against a 34 per cent slab ceiling — inside it, but with no
+  headroom. Now two overlapping outlined bodies with a drawn D and W, 23.4 per
+  cent ink, legible at 48px, and opted into `core_monoline` so the mask cannot
+  return.
 
 ### Fixed
 

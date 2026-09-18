@@ -4344,11 +4344,12 @@ def dw_circles(c):
     """DW: two overlapping circular bodies carrying a D and a W.
 
     The first version filled the right body solid and cut the W out of it with
-    an SVG mask. That reproduced the brand faithfully but broke the pack in
-    three ways at once: <defs>, <mask> and three fill attributes are all
-    forbidden under core_monoline, the solid body drove the mark to 30.8 per
-    cent ink against a 34 per cent slab ceiling, and two counters closed by
-    48px. It could not be opted into the monoline contract as drawn.
+    an SVG mask. That reproduced the brand faithfully but broke the pack two
+    ways: <defs>, <mask> and three fill attributes are all forbidden under
+    core_monoline, and two of its four counters closed by 48px. Ink measured
+    30.8 per cent at 48px, inside the 34 per cent slab ceiling but with no
+    headroom left to thicken anything. It could not be opted into the monoline
+    contract as drawn.
 
     Redrawn as strokes only. The identity that survives reduction is the pair
     of overlapping circles with a letter in each, not the figure-ground
