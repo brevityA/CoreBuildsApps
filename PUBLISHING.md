@@ -11,7 +11,7 @@ This repo ships five products from independent Gradle roots. Keep versioned tags
 | Core Shift | `shift-v<version>` | `shift` | `coreshift-release.apk` | `8829421` |
 | Core Motion | `motion-v<version>` | `motion` | `coremotion-release.apk` | `[USER TO SUPPLY]` |
 | Core Doctor | `doctor-v<version>` | `doctor` | `coredoctor-release.apk` | `8664938` |
-| Icon Pack (test channel) | none — `workflow_dispatch` only | `iconpack-test` | `iconpack-test.apk` | `[USER TO SUPPLY]` |
+| Icon Pack (test channel) | none — `workflow_dispatch` only | `iconpack-test` | `iconpack-test.apk` | `9255317` |
 
 Do not create `line-v*` tags. Core Line is `coreline-v*`.
 

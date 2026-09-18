@@ -33,6 +33,28 @@ All notable changes to the Core Builds Icon Pack. Format follows
   than a checkout to keep it that way. Debug signing only — no `KEYSTORE_*`
   value is read, and the production `iconpack` release is untouched.
 
+### Fixed
+
+- **Settings clipped its last row off a TV screen** — found by a tester on the
+  first `iconpack-test` install, before any of this reached a tagged release.
+  The screen shipped with no scroll container on the reasoning that its four
+  rows fit the 1080p safe area; that height was taken off a 1920×1080 mockup in
+  pixels, and Android lays out in dp, where a 1080p TV is 960×540dp. The
+  content needed about 615dp, and a plain `LinearLayout` holding a `weight=1`
+  spacer clipped the rest in silence — no scrollbar, no focus escape, the Clear
+  button and the footer simply unreachable. The rows now sit in a `ScrollView`
+  with the header and footer pinned outside it, so nothing non-focusable is
+  stranded past the end of a D-pad chain, and trimming (the kicker inline with
+  the title, tighter section and row spacing, local gutters) brings the content
+  to about 520dp so a default-scale TV does not scroll at all. A new suite,
+  `tests/test_tv_layout_fit.py`, re-derives these heights from the XML and
+  fails any full-screen layout that overflows the viewport without a scroll
+  container — it reproduces the 615dp independently, and is named in
+  `build.yml` and `suite-ci.yml` because CI runs these suites file by file and
+  `unittest discover` does not see them. About was measured under the same
+  model at 173dp and needs no change; its body is already a weighted region
+  holding fixed-height cards.
+
 ## [1.8.20] — 2026-09-18
 
 ### Added
@@ -83,6 +105,10 @@ All notable changes to the Core Builds Icon Pack. Format follows
 - **Android CI setup outage** — PR workflows use the SDK already installed on
   GitHub's Ubuntu runner and call its pinned `sdkmanager` path directly instead
   of failing inside `android-actions/setup-android` before compilation starts.
+- **Nuvio TV inner play mark off-centre** — the wedge inside the ring sat left
+  of centre; the icon and banner are re-rendered in both Classic and Pop. This
+  is the thirteenth icon to change since 1.8.19 and was missing from the twelve
+  listed above, which describe glyph replacements rather than this correction.
 
 ## [1.8.19] — 2026-09-15
 
