@@ -7,6 +7,7 @@
     <string name="icon_filter_fmt">%1$d of %2$d icons</string>
     <string name="search_hint">Find an app by name</string>
     <string name="chip_all">All</string>
+    <string name="chip_brandmarks">Brandmarks</string>
     <string name="icon_selected_fmt">%1$s · %2$s. Assign it from the launcher icon picker if it did not auto-apply.</string>
     <string name="picker_hint">Tap an icon to assign it to the app.</string>
     <string name="picker_hint_banner">Assigning the 16:9 banner. Switch to Square for the 1:1 glyph.</string>

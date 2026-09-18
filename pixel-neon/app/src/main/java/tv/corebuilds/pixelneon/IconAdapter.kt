@@ -16,12 +16,15 @@ class IconAdapter(
     data class IconItem(
         val drawable: String,
         val name: String,
-        val category: String
+        val category: String,
+        /** True when the glyph is a drawn brandmark, not a letter tile. */
+        val bespoke: Boolean = false
     )
 
     class VH(view: View) : RecyclerView.ViewHolder(view) {
         val image: ImageView = view.findViewById(R.id.icon_image)
         val label: TextView = view.findViewById(R.id.icon_name)
+        val brandmark: View = view.findViewById(R.id.icon_brandmark)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): VH {
@@ -36,7 +39,10 @@ class IconAdapter(
         val id = ctx.resources.getIdentifier(item.drawable, "drawable", ctx.packageName)
         if (id != 0) holder.image.setImageResource(id)
         holder.label.text = item.name
-        holder.itemView.contentDescription = item.name
+        // Set on every bind: a recycled view carries the previous row's dot.
+        holder.brandmark.visibility = if (item.bespoke) View.VISIBLE else View.GONE
+        holder.itemView.contentDescription =
+            "${item.name}, ${if (item.bespoke) "brandmark" else "monogram"}"
         holder.itemView.setOnClickListener { onActivate(item) }
     }
 

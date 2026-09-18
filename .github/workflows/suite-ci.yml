@@ -154,3 +154,4 @@ jobs:
           python tests/test_pop.py
           python tests/test_devcontainer.py
           python tests/test_tv_layout_fit.py
+          python tests/test_brandmark_badge.py

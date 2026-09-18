@@ -27,8 +27,17 @@ import java.util.Locale
  *
  * Changing the chrome setting calls [recreate] — the window background is set
  * during onCreate and there is no sane way to repaint a live window's system
- * bars without it. The recreate is why this screen keeps no scroll state worth
- * preserving.
+ * bars without it.
+ *
+ * That used to carry the line "the recreate is why this screen keeps no scroll
+ * state worth preserving", which stopped being true when the rows moved into a
+ * ScrollView. Scroll position and focus survive the recreate anyway, without
+ * anything here: [recreate] runs the normal save path, `set_scroll` and every
+ * row have ids, ScrollView saves its own scroll offset, and the window restores
+ * the focused view by id. Nothing was added to re-implement what the platform
+ * already does; the claim was simply wrong and is removed. What the recreate
+ * does still cost is a visible rebuild of the window, which is not worth the
+ * fragility of repainting a live one.
  */
 class SettingsActivity : AppCompatActivity() {
 

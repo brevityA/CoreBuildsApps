@@ -2,6 +2,12 @@
 <!--
   One icon tile.
 
+  A pale dot in the icon's top corner marks a tile whose glyph is a drawn
+  brandmark rather than a letter in a container. 526 of the 940 icons are
+  monograms, and until this there was no way to tell the two apart in the grid
+  short of recognising the mark. The "Brandmarks" chip filters to the ones that
+  carry it.
+
   The card surface is drawn inset by cb_focus_inset inside bg_card, so the
   padding here is measured from the tile bounds and lands ~8dp inside the
   visible card. minHeight keeps the D-pad target at the 48dp floor without
@@ -20,13 +26,32 @@
     android:orientation="vertical"
     android:padding="@dimen/cb_card_padding">
 
-    <ImageView
-        android:id="@+id/icon_image"
+    <!--
+        The artwork and its brandmark dot share a FrameLayout so the dot can sit
+        in the corner of the icon rather than the corner of the tile, which on a
+        two-line label would put it beside the text.
+    -->
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="@dimen/cb_card_icon"
-        android:contentDescription="@null"
-        android:importantForAccessibility="no"
-        android:scaleType="fitCenter" />
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:id="@+id/icon_image"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/cb_card_icon"
+            android:contentDescription="@null"
+            android:importantForAccessibility="no"
+            android:scaleType="fitCenter" />
+
+        <View
+            android:id="@+id/icon_brandmark"
+            android:layout_width="@dimen/cb_brandmark_dot"
+            android:layout_height="@dimen/cb_brandmark_dot"
+            android:layout_gravity="top|end"
+            android:background="@drawable/bg_brandmark_dot"
+            android:importantForAccessibility="no"
+            android:visibility="gone" />
+    </FrameLayout>
 
     <TextView
         android:id="@+id/icon_name"

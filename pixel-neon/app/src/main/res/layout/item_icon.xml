@@ -1,4 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!--
+  One icon tile.
+
+  A pale dot in the icon's corner marks a glyph that is a drawn brandmark
+  rather than a letter in a container; the Brandmarks chip filters to them.
+
+  Pixel Neon keeps its own tile metrics — 8dp padding, 72dp artwork, 11sp
+  label — rather than the Classic pack's. An earlier pass copied Classic's
+  tile wholesale to satisfy resource parity and silently restyled this grid
+  with it. Parity wants the file and its references to exist here, not the
+  two packs to look the same.
+-->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -10,12 +22,32 @@
     android:orientation="vertical"
     android:padding="8dp">
 
-    <ImageView
-        android:id="@+id/icon_image"
+    <!--
+        The artwork and its brandmark dot share a FrameLayout so the dot sits in
+        the corner of the icon rather than the corner of the tile, which on a
+        two-line label would put it beside the text.
+    -->
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="72dp"
-        android:contentDescription="@null"
-        android:scaleType="fitCenter" />
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:id="@+id/icon_image"
+            android:layout_width="match_parent"
+            android:layout_height="72dp"
+            android:contentDescription="@null"
+            android:importantForAccessibility="no"
+            android:scaleType="fitCenter" />
+
+        <View
+            android:id="@+id/icon_brandmark"
+            android:layout_width="@dimen/cb_brandmark_dot"
+            android:layout_height="@dimen/cb_brandmark_dot"
+            android:layout_gravity="top|end"
+            android:background="@drawable/bg_brandmark_dot"
+            android:importantForAccessibility="no"
+            android:visibility="gone" />
+    </FrameLayout>
 
     <TextView
         android:id="@+id/icon_name"

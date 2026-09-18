@@ -46,11 +46,13 @@ class MainActivity : AppCompatActivity() {
         val drawables = resources.getStringArray(R.array.icon_pack)
         val names = resources.getStringArray(R.array.icon_names)
         val cats = resources.getStringArray(R.array.icon_categories)
+        val bespoke = resources.getIntArray(R.array.icon_bespoke)
         all = drawables.indices.map { i ->
             IconAdapter.IconItem(
                 drawable = drawables[i],
                 name = names.getOrElse(i) { drawables[i] },
-                category = cats.getOrElse(i) { "APP" }
+                category = cats.getOrElse(i) { "APP" },
+                bespoke = bespoke.getOrElse(i) { 0 } == 1
             )
         }
 
@@ -122,6 +124,13 @@ class MainActivity : AppCompatActivity() {
         val present = all.map { it.category }.toSet()
         val keys = mutableListOf(ALL)
         val labels = mutableListOf(getString(R.string.chip_all))
+        // Brandmarks cuts across every category, so it is added by hand rather
+        // than through CHIP_ORDER. Pixel Neon restyles the art but inherits the
+        // catalog's glyph cue, so the same icons are drawn marks here.
+        if (all.any { it.bespoke }) {
+            keys += BESPOKE
+            labels += getString(R.string.chip_brandmarks)
+        }
         for ((key, label) in CHIP_ORDER) {
             if (key in present) {
                 keys += key
@@ -153,7 +162,11 @@ class MainActivity : AppCompatActivity() {
     private fun applyFilter() {
         val q = query.trim().lowercase()
         val filtered = all.filter { item ->
-            val catOk = category == ALL || item.category == category
+            val catOk = when (category) {
+                ALL -> true
+                BESPOKE -> item.bespoke
+                else -> item.category == category
+            }
             val qOk = q.isEmpty()
                 || item.name.lowercase().contains(q)
                 || item.drawable.contains(q)
@@ -375,6 +388,7 @@ class MainActivity : AppCompatActivity() {
 
     companion object {
         private const val ALL = "ALL"
+        private const val BESPOKE = "BESPOKE"
         private const val PICK_BANNER = "PICK_BANNER"
         private const val PICK_SQUARE = "PICK_SQUARE"
         private val CHIP_ORDER = listOf(

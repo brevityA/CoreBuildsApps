@@ -70,6 +70,7 @@ HIGHLIGHT = "#E9FFFF"
 NEON_FALLBACKS = ("#00E5FF", "#FF39D7", "#9B6CFF", "#FFE45E", "#52FF9A")
 
 sys.path.insert(0, str(ROOT / "tools"))
+from glyphs import is_monogram  # noqa: E402
 
 
 def esc(value: str) -> str:
@@ -1661,7 +1662,12 @@ def values_xml(icons: list[dict]) -> str:
     lines += [f'        <item>{esc_values_item(i["name"])}</item>' for i in icons]
     lines += ['    </string-array>', '    <string-array name="icon_categories">']
     lines += [f'        <item>{esc_values_item(i.get("category") or "APP")}</item>' for i in icons]
-    lines += ['    </string-array>', f'    <integer name="icon_count">{len(icons)}</integer>', '</resources>']
+    lines += ['    </string-array>', '    <integer-array name="icon_bespoke">']
+    # 1 = drawn brandmark, 0 = letter in a container. Pixel Neon restyles the
+    # art but inherits the catalog's glyph cue, so the classification is the
+    # same one Classic and Pop emit.
+    lines += [f'        <item>{0 if is_monogram(i["glyph"]) else 1}</item>' for i in icons]
+    lines += ['    </integer-array>', f'    <integer name="icon_count">{len(icons)}</integer>', '</resources>']
     return "\n".join(lines) + "\n"
 
 

@@ -48,11 +48,16 @@ class MainActivity : AppCompatActivity() {
         val drawables = resources.getStringArray(R.array.icon_pack)
         val names = resources.getStringArray(R.array.icon_names)
         val cats = resources.getStringArray(R.array.icon_categories)
+        val bespoke = resources.getIntArray(R.array.icon_bespoke)
         all = drawables.indices.map { i ->
             IconAdapter.IconItem(
                 drawable = drawables[i],
                 name = names.getOrElse(i) { drawables[i] },
-                category = cats.getOrElse(i) { "APP" }
+                category = cats.getOrElse(i) { "APP" },
+                // getOrElse rather than indexing: the four arrays are written
+                // by the same generator pass and cannot drift, but a truncated
+                // resource should dim a badge, not crash the grid.
+                bespoke = bespoke.getOrElse(i) { 0 } == 1
             )
         }
 
@@ -177,6 +182,15 @@ class MainActivity : AppCompatActivity() {
         val present = all.map { it.category }.toSet()
         val keys = mutableListOf(ALL)
         val labels = mutableListOf(getString(R.string.chip_all))
+        // Brandmarks is not a category — it cuts across all of them — so it is
+        // added by hand next to All rather than through CHIP_ORDER, and
+        // applyFilter branches on it. Second position because it is the one
+        // filter that answers "show me the drawn art", which is what a browsing
+        // user is usually here for.
+        if (all.any { it.bespoke }) {
+            keys += BESPOKE
+            labels += getString(R.string.chip_brandmarks)
+        }
         for ((key, label) in CHIP_ORDER) {
             if (key in present) {
                 keys += key
@@ -209,7 +223,7 @@ class MainActivity : AppCompatActivity() {
     private fun applyFilter() {
         val q = query.trim().lowercase()
         val filtered = all.filter { item ->
-            val catOk = category == ALL || item.category == category
+            val catOk = inCategory(item)
             val qOk = q.isEmpty()
                 || item.name.lowercase().contains(q)
                 || item.drawable.contains(q)
@@ -277,7 +291,7 @@ class MainActivity : AppCompatActivity() {
                 getString(
                     R.string.empty_body_query_fmt,
                     categoryLabel(category),
-                    all.count { it.category == category }
+                    all.count(::inCategory)
                 )
             }
 
@@ -287,11 +301,30 @@ class MainActivity : AppCompatActivity() {
         clearSearch.visibility = if (q.isEmpty()) View.GONE else View.VISIBLE
         clearFilter.visibility = if (category == ALL) View.GONE else View.VISIBLE
         clearFilter.text =
-            getString(R.string.empty_clear_filter, all.count { it.category == category })
+            getString(R.string.empty_clear_filter, all.count(::inCategory))
     }
 
-    private fun categoryLabel(key: String): String =
-        CHIP_ORDER.firstOrNull { it.first == key }?.second ?: getString(R.string.chip_all)
+    /**
+     * Whether an item belongs to the selected chip.
+     *
+     * BESPOKE is not a category — it cuts across all of them — so every place
+     * that asks "is this item in the current filter" has to go through here.
+     * The empty state previously compared the synthetic key against
+     * `item.category` directly, which is never equal, so a fruitless search
+     * under Brandmarks offered to clear a filter holding 0 icons and labelled
+     * it "All".
+     */
+    private fun inCategory(item: IconAdapter.IconItem): Boolean = when (category) {
+        ALL -> true
+        BESPOKE -> item.bespoke
+        else -> item.category == category
+    }
+
+    private fun categoryLabel(key: String): String = when (key) {
+        BESPOKE -> getString(R.string.chip_brandmarks)
+        else -> CHIP_ORDER.firstOrNull { it.first == key }?.second
+            ?: getString(R.string.chip_all)
+    }
 
     private fun checkForUpdate() {
         UpdateChecker.check(this) { result ->
@@ -496,6 +529,7 @@ class MainActivity : AppCompatActivity() {
 
     companion object {
         private const val ALL = "ALL"
+        private const val BESPOKE = "BESPOKE"
         private const val PICK_BANNER = "PICK_BANNER"
         private const val PICK_SQUARE = "PICK_SQUARE"
         private val CHIP_ORDER = listOf(
