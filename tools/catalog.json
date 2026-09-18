@@ -8921,7 +8921,10 @@
       "category": "VIDEO",
       "brand": "smarttube",
       "color_source": "brand reference (pre-provenance, unverified)",
-      "color_reviewed": null
+      "color_reviewed": null,
+      "unverified": [
+        "com.teamsmart.videomanager.tv.beta/com.liskovsoft.smartyoutubetv2.tv.ui.main.SplashActivity"
+      ]
     },
     {
       "name": "SmartTube Next",
@@ -12292,7 +12295,11 @@
       ],
       "mapping_source": "research document 2026-09-18 (component unverified against APK)",
       "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_reviewed": null,
+      "unverified": [
+        "dev.anilbeesetti.nextplayer/dev.anilbeesetti.nextplayer.feature.videopicker.MainActivity",
+        "dev.anilbeesetti.nextplayer/.ui.MainActivity"
+      ]
     },
     {
       "name": "OTT Navigator",
@@ -12306,7 +12313,11 @@
       ],
       "mapping_source": "research document 2026-09-18 (component unverified against APK)",
       "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_reviewed": null,
+      "unverified": [
+        "live.h24.ottnavigator/live.h24.ottnavigator.ui.MainLeanbackActivity",
+        "live.h24.ottnavigator/.ui.MainLeanbackActivity"
+      ]
     },
     {
       "name": "Televizo",
@@ -12320,7 +12331,11 @@
       ],
       "mapping_source": "research document 2026-09-18 (component unverified against APK)",
       "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_reviewed": null,
+      "unverified": [
+        "ru.vovasoft.televizo/ru.vovasoft.televizo.ui.MainActivity",
+        "ru.vovasoft.televizo/.ui.MainActivity"
+      ]
     }
   ],
   "artwork": {
