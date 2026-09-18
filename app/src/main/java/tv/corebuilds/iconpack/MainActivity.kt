@@ -107,6 +107,9 @@ class MainActivity : AppCompatActivity() {
             }
             wpEntry.setOnClickListener { startActivity(Intent(this, WallpapersActivity::class.java)) }
 
+            findViewById<View>(R.id.request_entry).setOnClickListener {
+                startActivity(Intent(this, RequestIconActivity::class.java))
+            }
             findViewById<View>(R.id.settings_entry).setOnClickListener {
                 startActivity(Intent(this, SettingsActivity::class.java))
             }

@@ -114,11 +114,23 @@ jobs:
           python tests/test_tv_layout_fit.py
           python tests/test_brandmark_badge.py
 
+      # Resource linking is what actually breaks when app/ gains a view or a
+      # string and pop/ does not mirror it, and pop compiles app/'s Kotlin. The
+      # checker has existed for a while but only ever ran by hand, which is how
+      # an R.color reference reached main once already.
+      - name: Check in-app UI resources resolve in every module
+        run: python tools/check_ui_resources.py
+
       - name: Set up JDK 17
         uses: actions/setup-java@v6
         with:
           distribution: temurin
           java-version: '17'
+
+      # Needs the JDK above: it compiles the encoder with javac and decodes its
+      # output with ZXing, which is the oracle and never an APK dependency.
+      - name: Verify the QR encoder against ZXing
+        run: python tools/check_qr.py
 
       - name: Set up Gradle
         uses: gradle/actions/setup-gradle@v6

@@ -97,7 +97,12 @@ prefills `input`/`textarea` fields only, and the tool refuses to promise more.
 
 ## Product verification shortcuts
 
-- Icon Pack: four generators + `python tools/validate.py`.
+- Icon Pack: four generators + `python tools/validate.py`, plus
+  `python tools/check_ui_resources.py` for anything touching layouts, strings or
+  the shared Kotlin, and `python tools/check_qr.py` (needs a JDK and, on first
+  run, network) for anything touching `QrCode.java` or the request screen's URL
+  shape. The QR gate downloads a hash-pinned ZXing to *decode* with; ZXing is
+  never an APK dependency.
   Square PNGs get a raster presence pass (`tools/presence.py`) after svg2png —
   night keyline + accent bloom as rings. Vectors stay style-AA. Banners skip it.
 - Pixel Neon: `python tools/build_pixel_neon.py`, `python tools/validate_pixel_neon.py`, plus `cd pixel-neon && ./gradlew :app:lintDebug :app:assembleDebug`.
