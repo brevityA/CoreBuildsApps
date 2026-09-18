@@ -1,0 +1,120 @@
+package tv.corebuilds.iconpack
+
+import android.os.Bundle
+import android.view.View
+import android.widget.LinearLayout
+import android.widget.TextView
+import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.SwitchCompat
+import java.io.File
+import java.util.Locale
+
+/**
+ * The four settings that change what the app does.
+ *
+ * Every row here is wired to a reader: update checks gate [UpdateChecker],
+ * reduce motion gates the chip animation in [ChipAdapter], AMOLED chrome
+ * repaints the window, and the cache row deletes the directory
+ * [WallpaperDownloader.cacheDir] actually writes to. Rows that could only ever
+ * store a preference nobody consults were left out of the design rather than
+ * shipped inert.
+ *
+ * TV focus model: the whole row is the focusable target, not the switch inside
+ * it. A SwitchCompat that takes focus separately means two D-pad stops per
+ * setting and a thumb that moves without the row looking selected, so the
+ * switches here are display-only (`focusable=false`, `clickable=false`) and
+ * the row's click drives them.
+ *
+ * Changing the chrome setting calls [recreate] — the window background is set
+ * during onCreate and there is no sane way to repaint a live window's system
+ * bars without it. The recreate is why this screen keeps no scroll state worth
+ * preserving.
+ */
+class SettingsActivity : AppCompatActivity() {
+
+    private lateinit var updateSwitch: SwitchCompat
+    private lateinit var motionSwitch: SwitchCompat
+    private lateinit var amoledSwitch: SwitchCompat
+    private lateinit var cacheSize: TextView
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        Prefs.applyChrome(this)
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_settings)
+
+        updateSwitch = findViewById(R.id.set_updates_switch)
+        motionSwitch = findViewById(R.id.set_motion_switch)
+        amoledSwitch = findViewById(R.id.set_amoled_switch)
+        cacheSize = findViewById(R.id.set_cache_size)
+
+        updateSwitch.isChecked = Prefs.updateChecks(this)
+        motionSwitch.isChecked = Prefs.reduceMotion(this)
+        amoledSwitch.isChecked = Prefs.amoled(this)
+
+        row(R.id.set_updates_row) {
+            val next = !updateSwitch.isChecked
+            updateSwitch.isChecked = next
+            Prefs.set(this, Prefs.KEY_UPDATE_CHECKS, next)
+        }
+
+        row(R.id.set_motion_row) {
+            val next = !motionSwitch.isChecked
+            motionSwitch.isChecked = next
+            Prefs.set(this, Prefs.KEY_REDUCE_MOTION, next)
+        }
+
+        row(R.id.set_amoled_row) {
+            val next = !amoledSwitch.isChecked
+            amoledSwitch.isChecked = next
+            Prefs.set(this, Prefs.KEY_AMOLED, next)
+            recreate()
+        }
+
+        findViewById<View>(R.id.set_cache_clear).setOnClickListener {
+            clearCache()
+            showCacheSize()
+        }
+
+        findViewById<View>(R.id.set_back).setOnClickListener { finish() }
+
+        showCacheSize()
+    }
+
+    private fun row(id: Int, onSelect: () -> Unit) {
+        findViewById<LinearLayout>(id).setOnClickListener { onSelect() }
+    }
+
+    /**
+     * Total bytes under the wallpaper cache directory.
+     *
+     * Walked rather than cached: the directory is also written by
+     * [WallpaperDownloader] while this screen is not in the foreground, so a
+     * remembered figure would be stale exactly when someone came here to check
+     * it. The tree is tens of files, so walking it on the main thread is
+     * cheaper than the machinery to avoid doing so.
+     */
+    private fun cacheBytes(): Long {
+        val dir = WallpaperDownloader.cacheDir(this)
+        if (!dir.isDirectory) return 0L
+        return dir.walkTopDown().filter(File::isFile).map(File::length).sum()
+    }
+
+    private fun clearCache() {
+        val dir = WallpaperDownloader.cacheDir(this)
+        if (!dir.isDirectory) return
+        dir.listFiles()?.forEach { it.deleteRecursively() }
+    }
+
+    private fun showCacheSize() {
+        val bytes = cacheBytes()
+        cacheSize.text = when {
+            bytes <= 0L -> getString(R.string.settings_cache_empty)
+            bytes < 1_000_000L ->
+                String.format(Locale.US, "%.0f kB", bytes / 1_000.0)
+            bytes < 1_000_000_000L ->
+                String.format(Locale.US, "%.0f MB", bytes / 1_000_000.0)
+            else ->
+                String.format(Locale.US, "%.1f GB", bytes / 1_000_000_000.0)
+        }
+    }
+}

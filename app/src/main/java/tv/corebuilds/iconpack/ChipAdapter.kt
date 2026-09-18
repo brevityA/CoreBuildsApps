@@ -71,14 +71,28 @@ class ChipAdapter(
         holder.view.animate().cancel()
         holder.view.scaleX = 1f
         holder.view.scaleY = 1f
+
+        // Read per-bind rather than per-adapter: Settings can flip this while
+        // the grid is still in the back stack, and the chips rebind on return.
+        val reduceMotion = Prefs.reduceMotion(holder.view.context)
+
         holder.view.setOnFocusChangeListener { view, focused ->
+            val scale = if (focused) 1.04f else 1f
             view.animate().cancel()
-            view.animate()
-                .scaleX(if (focused) 1.04f else 1f)
-                .scaleY(if (focused) 1.04f else 1f)
-                .setDuration(140L)
-                .setInterpolator(DecelerateInterpolator())
-                .start()
+            if (reduceMotion) {
+                // Same end state, no tween. The focus ring still moves; only
+                // the 140ms scale is skipped, which is the part that stutters
+                // on a slow box.
+                view.scaleX = scale
+                view.scaleY = scale
+            } else {
+                view.animate()
+                    .scaleX(scale)
+                    .scaleY(scale)
+                    .setDuration(140L)
+                    .setInterpolator(DecelerateInterpolator())
+                    .start()
+            }
         }
     }
 

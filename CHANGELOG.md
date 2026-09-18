@@ -6,6 +6,20 @@ All notable changes to the Core Builds Icon Pack. Format follows
 
 ## [Unreleased]
 
+### Added
+
+- **Settings and About screens** — the app's first persisted state. Until now
+  nothing was stored at all. Four settings, each wired to a reader rather than
+  to a screenshot: update checks gate `UpdateChecker` (off means the app makes
+  no network request of its own), reduce motion gates the chip focus animation,
+  AMOLED chrome repaints the window `cb_void`, and the storage row clears the
+  directory `WallpaperDownloader` actually writes to. About states the complete
+  list of what the app sends — two requests, both user-initiated — as an
+  enumeration rather than a reassurance, so it cannot stay true while the
+  behaviour drifts. Reached from the Home header, inside the existing D-pad
+  chain rather than behind an overflow menu. Pop mirrors both screens through
+  its generator; Pixel Neon has its own Kotlin and is untouched.
+
 ### Changed
 
 - **Icon pack test builds are now a public channel** — `iconpack-test-apk.yml`

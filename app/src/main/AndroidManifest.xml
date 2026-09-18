@@ -213,6 +213,16 @@
             android:label="@string/wp_title"
             android:theme="@style/Theme.CoreBuilds" />
         <activity
+            android:name=".SettingsActivity"
+            android:exported="false"
+            android:label="@string/settings_label"
+            android:theme="@style/Theme.CoreBuilds" />
+        <activity
+            android:name=".AboutActivity"
+            android:exported="false"
+            android:label="@string/about_label"
+            android:theme="@style/Theme.CoreBuilds" />
+        <activity
             android:name=".ExportProgressActivity"
             android:exported="false"
             android:label="@string/wp_export_title"
