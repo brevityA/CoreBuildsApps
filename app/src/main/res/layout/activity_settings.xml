@@ -1,0 +1,317 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Settings. Four rows, each one wired to a reader in SettingsActivity.
+
+  TV focus: the row is the focusable target, not the switch inside it. The
+  switches are focusable="false" clickable="false" so a D-pad makes one stop
+  per setting instead of two, and the whole card takes the cyan ring from
+  bg_card rather than a thumb lighting up inside an unhighlighted row.
+
+  No ScrollView: four rows and a footer fit inside the safe area at 1080p, and
+  a scroll container here would swallow D-pad down at the last row.
+-->
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/cb_night"
+    android:paddingStart="@dimen/cb_gutter_side"
+    android:paddingEnd="@dimen/cb_gutter_side"
+    android:paddingTop="@dimen/cb_gutter_top"
+    android:paddingBottom="@dimen/cb_gutter_bottom">
+
+    <!-- HEADER -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="top">
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/bg_chip"
+                android:fontFamily="monospace"
+                android:paddingStart="@dimen/cb_space_sm"
+                android:paddingEnd="@dimen/cb_space_sm"
+                android:paddingTop="7dp"
+                android:paddingBottom="7dp"
+                android:letterSpacing="0.18"
+                android:text="@string/settings_kicker"
+                android:textColor="@color/cb_signal_cyan"
+                android:textSize="@dimen/cb_text_kicker"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/cb_space_md"
+                android:letterSpacing="-0.025"
+                android:text="@string/settings_title"
+                android:textColor="@color/cb_ink"
+                android:textSize="@dimen/cb_text_title"
+                android:textStyle="bold" />
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/set_back"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:minWidth="@dimen/cb_button_min_width"
+            android:minHeight="@dimen/cb_target_min"
+            android:background="@drawable/bg_ghost"
+            android:clickable="true"
+            android:focusable="true"
+            android:gravity="center"
+            android:paddingStart="@dimen/cb_space_lg"
+            android:paddingEnd="@dimen/cb_space_lg"
+            android:text="@string/action_back"
+            android:textColor="@color/cb_ink"
+            android:textSize="@dimen/cb_text_body" />
+    </LinearLayout>
+
+    <!-- UPDATES -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/cb_space_xl"
+        android:fontFamily="monospace"
+        android:letterSpacing="0.16"
+        android:text="@string/settings_group_updates"
+        android:textColor="@color/cb_signal_cyan"
+        android:textSize="@dimen/cb_text_kicker"
+        android:textStyle="bold" />
+
+    <LinearLayout
+        android:id="@+id/set_updates_row"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/cb_space_xs"
+        android:background="@drawable/bg_card"
+        android:clickable="true"
+        android:focusable="true"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:padding="@dimen/cb_card_padding">
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/settings_updates_title"
+                android:textColor="@color/cb_ink"
+                android:textSize="@dimen/cb_text_body"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/cb_space_xs"
+                android:text="@string/settings_updates_sub"
+                android:textColor="@color/cb_slate"
+                android:textSize="@dimen/cb_text_data" />
+        </LinearLayout>
+
+        <androidx.appcompat.widget.SwitchCompat
+            android:id="@+id/set_updates_switch"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:clickable="false"
+            android:focusable="false"
+            android:duplicateParentState="true" />
+    </LinearLayout>
+
+    <!-- DISPLAY -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/cb_space_lg"
+        android:fontFamily="monospace"
+        android:letterSpacing="0.16"
+        android:text="@string/settings_group_display"
+        android:textColor="@color/cb_signal_cyan"
+        android:textSize="@dimen/cb_text_kicker"
+        android:textStyle="bold" />
+
+    <LinearLayout
+        android:id="@+id/set_motion_row"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/cb_space_xs"
+        android:background="@drawable/bg_card"
+        android:clickable="true"
+        android:focusable="true"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:padding="@dimen/cb_card_padding">
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/settings_motion_title"
+                android:textColor="@color/cb_ink"
+                android:textSize="@dimen/cb_text_body"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/cb_space_xs"
+                android:text="@string/settings_motion_sub"
+                android:textColor="@color/cb_slate"
+                android:textSize="@dimen/cb_text_data" />
+        </LinearLayout>
+
+        <androidx.appcompat.widget.SwitchCompat
+            android:id="@+id/set_motion_switch"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:clickable="false"
+            android:focusable="false"
+            android:duplicateParentState="true" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/set_amoled_row"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/cb_space_xs"
+        android:background="@drawable/bg_card"
+        android:clickable="true"
+        android:focusable="true"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:padding="@dimen/cb_card_padding">
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/settings_amoled_title"
+                android:textColor="@color/cb_ink"
+                android:textSize="@dimen/cb_text_body"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/cb_space_xs"
+                android:text="@string/settings_amoled_sub"
+                android:textColor="@color/cb_slate"
+                android:textSize="@dimen/cb_text_data" />
+        </LinearLayout>
+
+        <androidx.appcompat.widget.SwitchCompat
+            android:id="@+id/set_amoled_switch"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:clickable="false"
+            android:focusable="false"
+            android:duplicateParentState="true" />
+    </LinearLayout>
+
+    <!-- STORAGE -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/cb_space_lg"
+        android:fontFamily="monospace"
+        android:letterSpacing="0.16"
+        android:text="@string/settings_group_storage"
+        android:textColor="@color/cb_signal_cyan"
+        android:textSize="@dimen/cb_text_kicker"
+        android:textStyle="bold" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/cb_space_xs"
+        android:background="@drawable/bg_card"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:padding="@dimen/cb_card_padding">
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/settings_cache_title"
+                android:textColor="@color/cb_ink"
+                android:textSize="@dimen/cb_text_body"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/cb_space_xs"
+                android:text="@string/settings_cache_sub"
+                android:textColor="@color/cb_slate"
+                android:textSize="@dimen/cb_text_data" />
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/set_cache_size"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/cb_space_md"
+            android:fontFamily="monospace"
+            android:textColor="@color/cb_ink"
+            android:textSize="@dimen/cb_text_label" />
+
+        <TextView
+            android:id="@+id/set_cache_clear"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:minHeight="@dimen/cb_target_min"
+            android:background="@drawable/bg_ghost"
+            android:clickable="true"
+            android:focusable="true"
+            android:gravity="center"
+            android:paddingStart="@dimen/cb_space_lg"
+            android:paddingEnd="@dimen/cb_space_lg"
+            android:text="@string/settings_cache_clear"
+            android:textColor="@color/cb_ink"
+            android:textSize="@dimen/cb_text_label" />
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/settings_footer"
+        android:textColor="@color/cb_slate"
+        android:textSize="@dimen/cb_text_data" />
+
+</LinearLayout>

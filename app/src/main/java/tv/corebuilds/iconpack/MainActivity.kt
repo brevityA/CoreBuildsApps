@@ -36,6 +36,7 @@ class MainActivity : AppCompatActivity() {
     private var installOffered = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        Prefs.applyChrome(this)
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
@@ -100,6 +101,13 @@ class MainActivity : AppCompatActivity() {
                 ""
             }
             wpEntry.setOnClickListener { startActivity(Intent(this, WallpapersActivity::class.java)) }
+
+            findViewById<View>(R.id.settings_entry).setOnClickListener {
+                startActivity(Intent(this, SettingsActivity::class.java))
+            }
+            findViewById<View>(R.id.about_entry).setOnClickListener {
+                startActivity(Intent(this, AboutActivity::class.java))
+            }
         }
 
         // Give a physical remote a deterministic starting point. Without an
@@ -148,7 +156,11 @@ class MainActivity : AppCompatActivity() {
         super.onResume()
         if (!pickMode) {
             bindApplyButton()
-            if (!updateChecked) {
+            // Gated by Settings. Off means UpdateChecker is never called, so
+            // the app issues no network request of its own at all — which is
+            // what the About screen's network list claims, and the claim has
+            // to stay checkable.
+            if (!updateChecked && Prefs.updateChecks(this)) {
                 updateChecked = true
                 checkForUpdate()
             }
