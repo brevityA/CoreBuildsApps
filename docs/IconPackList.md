@@ -1,6 +1,6 @@
 # Supported applications
 
-`940` icons · `1150` mapped components · pack v1.8.19
+`940` icons · `1150` mapped components · pack v1.8.20
 
 Every app below auto-assigns in Projectivy. If one doesn't, the app ships a different launcher activity on your device — open an issue with the component name and it gets added.
 

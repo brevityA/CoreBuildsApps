@@ -4341,17 +4341,31 @@ def anydesk_chevrons(c):
 
 
 def dw_circles(c):
-    """DW: overlapping circular bodies with readable D and cut-out W."""
+    """DW: two overlapping circular bodies carrying a D and a W.
+
+    The first version filled the right body solid and cut the W out of it with
+    an SVG mask. That reproduced the brand faithfully but broke the pack two
+    ways: <defs>, <mask> and three fill attributes are all forbidden under
+    core_monoline, and two of its four counters closed by 48px. Ink measured
+    30.8 per cent at 48px, inside the 34 per cent slab ceiling but with no
+    headroom left to thicken anything. It could not be opted into the monoline
+    contract as drawn.
+
+    Redrawn as strokes only. The identity that survives reduction is the pair
+    of overlapping circles with a letter in each, not the figure-ground
+    inversion, so the W is now drawn rather than subtracted. The bodies are
+    also pushed further apart - centres 152 apart instead of 106 - because two
+    outlines overlapping as heavily as two filled shapes did produces a busy
+    lens that reads as neither letter.
+    """
     return (
-        f'<defs><mask id="dwMask"><rect width="512" height="512" fill="black"/>'
-        f'<circle cx="314" cy="256" r="126" fill="white"/>'
-        f'<path d="M 258 190 L 282 322 L 314 250 L 346 322 L 370 190" '
-        f'{_s("black", 24)}/></mask></defs>'
-        f'<circle cx="314" cy="256" r="126" fill="{c}" mask="url(#dwMask)"/>'
-        f'<circle cx="314" cy="256" r="126" {_s(c, 34)}/>'
-        f'<circle cx="208" cy="256" r="126" {_s(c, 34)}/>'
-        f'<path d="M 164 174 V 338 H 204 C 254 338 274 308 274 256 '
-        f'C 274 204 254 174 204 174 Z" {_s(c, 26)}/>'
+        f'<circle cx="180" cy="256" r="112" {_s(c, 32)}/>'
+        f'<circle cx="332" cy="256" r="112" {_s(c, 32)}/>'
+        f'<path d="M 142 190 L 142 322" {_s(c, 26)}/>'
+        f'<path d="M 142 190 L 178 190 C 214 190 232 216 232 256 '
+        f'C 232 296 214 322 178 322 L 142 322" {_s(c, 26)}/>'
+        f'<path d="M 282 196 L 302 320 L 332 242 L 362 320 L 382 196" '
+        f'{_s(c, 26)}/>'
     )
 
 
