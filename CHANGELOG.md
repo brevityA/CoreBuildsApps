@@ -6,6 +6,8 @@ All notable changes to the Core Builds Icon Pack. Format follows
 
 ## [Unreleased]
 
+## [1.8.20] — 2026-09-18
+
 ### Added
 
 - **Twelve-wall series convention** — Circuit Core gains `Circuit Nexus` and
@@ -18,6 +20,35 @@ All notable changes to the Core Builds Icon Pack. Format follows
   retains 92.4–99.8% true-black pixels; the generator and wallpaper tests both
   enforce a minimum of 50%. Includes bundled thumbnails, manifest entries
   69–78 and 83–84, and `docs/amoled-wallpapers.png` as the visual receipt.
+
+- **Isolated test APK lane** — `:app:assembleCandidate` builds
+  `tv.corebuilds.iconpack.test` with debug signing and a `TEST_SOURCE_COMMIT`
+  stamp, so a candidate installs alongside production instead of over it and
+  never reaches the in-app updater. Driven by `iconpack-test-apk.yml`, which
+  attaches the APK and its SHA-256 to an unpublished draft release; production
+  signing material is never read.
+- **Objective glyph identity checks** — `tools/test_glyph_identity.py` measures
+  counter survival at 96px and 48px, safe-area margin against the raster
+  presence pass, and similarity against every glyph in the registry, so a new
+  mark cannot quietly duplicate one already shipping.
+
+### Changed
+
+- **Twelve generic constructions became bespoke marks** — AirScreen, Aerial
+  Views, AnyDesk and DW; Crossy Road, Blokada (legacy v4), Private Internet
+  Access, mpv, Audiomack, ATRESplayer, Kinopoisk and AIDA64. Each is original
+  Core Builds geometry drawn from the identifying cue recorded in the
+  2026-09-15 tranche research — no vendor artwork is traced, and no fill,
+  container or effect is introduced. Package and activity mappings are
+  unchanged for every one of them; only their glyph references moved. The
+  registry is now 966 glyphs.
+- **DW redrawn as strokes** — its first form filled the right body solid and
+  cut the W out with an SVG mask. That broke the monoline contract three ways:
+  `<defs>`, `<mask>` and solid fills are all forbidden, the filled body drove
+  the mark to 30.8 per cent ink against a 34 per cent ceiling, and two counters
+  closed by 48px, leaving an unreadable blob at launcher size. Now two
+  overlapping outlined bodies with a drawn D and W, 23.4 per cent ink, legible
+  at 48px, and opted into `core_monoline` so the mask cannot return.
 
 ### Fixed
 

@@ -13,7 +13,19 @@ production version.
 | AirScreen | `airscreen` | Peaked open AS monogram with a rounded, flat-ended S | No |
 | Aerial Views | `aerialviews` | Low sun behind two asymmetric overlapping landscape layers | No |
 | AnyDesk | `anydeskandroid` | Two opposed diamond-chevron forms with a preserved negative gap | No |
-| DW | `dw` | Overlapping circular bodies; outlined D on the left and masked W cut-out on the solid right body | No |
+| DW | `dw` | Overlapping circular bodies carrying a drawn D and a drawn W | No |
+
+**Correction, 2026-09-18.** DW originally shipped from this group with the W
+cut out of a solid right body by an SVG mask. That reproduced the brand more
+literally but broke the monoline contract three ways at once — `<defs>`,
+`<mask>` and fill attributes are all forbidden, the filled body measured 30.8
+per cent ink against a 34 per cent slab ceiling, and two counters closed by
+48px. It has been redrawn as strokes only: two overlapping outlined bodies with
+a drawn D and W, centres pushed from 106 to 152 apart so the overlap reads as
+two letters rather than a lens, 23.4 per cent ink, all counters holding at
+48px. The catalog entry now carries `"style": "core_monoline"`, so the
+validator rejects any future reintroduction of the mask. The table above
+describes the current geometry; mappings were not touched.
 
 All four are original geometry in `tools/glyphs.py`. No vendor artwork,
 fixed background, or launcher component was imported. The catalog components
