@@ -1,6 +1,6 @@
 # Core Builds Pixel Neon · supported applications
 
-`940` individually generated pixel sprites · `1150` catalog components · pack v0.1.0
+`943` individually generated pixel sprites · `1157` catalog components · pack v0.1.0
 
 This is the alternate 8-bit neon treatment of the Core Builds catalog. Each row uses its semantic brand glyph cue, then gets a hash-seeded pixel recipe; this pack does not reuse the monoline SVG geometry or banner lockups.
 
@@ -67,6 +67,7 @@ This is the alternate 8-bit neon treatment of the Core Builds catalog. Each row 
 | Ard Mediathek | `ard_mediathek` | `#F4842D` | `de.swr.avp.ard.tv/de.swr.avp.ard.tv.TvActivity` |
 | Arrow | `arrowfilms` | `#0061FF` | `com.arrowfilms/tv.vhx.LauncherActivity`<br>`com.arrowfilms/tv.vhx.tv.home.TvHomeActivity` |
 | Arte | `arte` | `#D2BCFD` | `tv.arte.plus7/tv.arte.plus7.leanback.MainActivity` |
+| Artemis | `limelight` | `#B388FF` | `com.limelight.noir/com.limelight.PcView` |
 | Artlume | `artlume` | `#008080` | `io.artlume.mobile/io.artlume.tv.presentation.MainActivity` |
 | Arvio | `arvio` | `#0061FF` | `com.arvio.tv/com.arflix.tv.MainActivity` |
 | AT4K Launcher | `at4k` | `#00E5A0` | `com.overdevs.at4k/com.overdevs.at4k.MainActivity` |
@@ -462,7 +463,6 @@ This is the alternate 8-bit neon treatment of the Core Builds catalog. Each row 
 | Monplayer | `monplayer` | `#00F5D4` | `org.monplayer.mpapp/org.monplayer.mpapp.MainActivity` |
 | Moonfin | `moonfin` | `#00E5FF` | `org.moonfin.androidtv/org.jellyfin.androidtv.ui.startup.StartupActivity` |
 | Moonlight | `moonlight` | `#76B900` | `com.limelight/.PcView` |
-| Moonlight Noir | `limelight` | `#B388FF` | `com.limelight.noir/com.limelight.PcView` |
 | MotoGP | `officialmotogp` | `#0061FF` | `com.dorna.officialmotogp/com.dorna.motogpapp.ui.view.tv.splash.SplashTVActivity` |
 | Movideo | `whitelabel` | `#9E9E9E` | `com.movideo.whitelabel/com.movideo.whitelabel.MainActivity` |
 | Movie HD | `moviehd` | `#0061FF` | `com.ggateam.moviehd.ui/com.ggateam.moviehd.ui.FrmSplash` |
@@ -502,6 +502,7 @@ This is the alternate 8-bit neon treatment of the Core Builds catalog. Each row 
 | Nettv | `nettv` | `#FF0000` | `np.com.androidtv.nettv/com.np.androidTV.main.TVMainActivity` |
 | Netzkino | `netzkino` | `#D2BCFD` | `de.netzkino.android.ics/de.netzkino.android.ics.SplashActivity` |
 | Newpipe | `newpipe` | `#CD201F` | `org.schabi.newpipe/org.schabi.newpipe.MainActivity` |
+| NextPlayer | `nextplayer` | `#FBBF24` | `dev.anilbeesetti.nextplayer/dev.anilbeesetti.nextplayer.feature.videopicker.MainActivity`<br>`dev.anilbeesetti.nextplayer/.ui.MainActivity` |
 | Nextup Watch Stand Up Comedy | `nextup_watch_stand_up_comedy` | `#FF0000` | `tv.vhx.nextup/com.example.videoapp.MainActivity` |
 | NFB | `nitobi` | `#F5F500` | `com.nitobi.nfb/com.nitobi.nfb.MainActivity` |
 | NFL | `nflgamecenter` | `#013369` | `com.gotv.nflgamecenter.us.lite/com.nfl.connected.SplashActivity` |
@@ -554,6 +555,7 @@ This is the alternate 8-bit neon treatment of the Core Builds catalog. Each row 
 | OSN+ | `osn` | `#F4842D` | `com.osn.go/com.osn.go.MainActivity` |
 | Otf TV | `otf_tv` | `#D2BCFD` | `com.t100v.otf/com.t100v.otf.intro` |
 | Ott Navigator | `ott_navigator` | `#0061FF` | `studio.scillarium.ottnavigator/studio.scillarium.ottnavigator.MainActivity` |
+| OTT Navigator | `ottnavigator` | `#34D399` | `live.h24.ottnavigator/live.h24.ottnavigator.ui.MainLeanbackActivity`<br>`live.h24.ottnavigator/.ui.MainLeanbackActivity` |
 | OTTplay | `ottplay` | `#FEC500` | `com.ottplay.ottplay/com.ottplay.ottplay.StartActivity` |
 | Ottplayer | `ottplayer` | `#1E811F` | `es.ottplayer.tv/es.ottplayer.tv.SplashActivity` |
 | Overseas App Store | `appstore` | `#0061FF` | `com.overseas.store.appstore/com.overseas.store.appstore.ui.SplashActivity` |
@@ -698,7 +700,7 @@ This is the alternate 8-bit neon treatment of the Core Builds catalog. Each row 
 | Skyshowtime | `skyshowtime` | `#0061FF` | `com.skyshowtime.skyshowtime.google/com.peacock.peacocktv.GoogleMainActivity` |
 | Sledovani | `sledovani` | `#FF0000` | `cz.sledovanitv.android/cz.sledovanitv.androidtv.entry.EntryActivity` |
 | Sling TV | `sling_tv` | `#FF6D01` | `com.sling/com.sling.MainActivity` |
-| Smart Tube | `smarttube` | `#FF0000` | `com.teamsmart.videomanager.tv/com.liskovsoft.smartyoutubetv2.tv.ui.main.SplashActivity` |
+| Smart Tube | `smarttube` | `#FF0000` | `com.teamsmart.videomanager.tv/com.liskovsoft.smartyoutubetv2.tv.ui.main.SplashActivity`<br>`com.teamsmart.videomanager.tv.beta/com.liskovsoft.smartyoutubetv2.tv.ui.main.SplashActivity` |
 | SmartTube Next | `smarttubenext` | `#FF0000` | `org.smarttube.stable/com.liskovsoft.smartyoutubetv2.tv.ui.main.SplashActivity`<br>`com.liskovsoft.smarttubetv.beta/com.liskovsoft.smartyoutubetv2.tv.ui.main.SplashActivity`<br>`org.smarttube.beta/com.liskovsoft.smartyoutubetv2.tv.ui.main.SplashActivity` |
 | SmartTwitchTV | `twitch_2` | `#1E811F` | `com.fgl27.twitch/com.fgl27.twitch.PlayerActivity` |
 | Smugmug | `smugmug` | `#6DB944` | `com.snapwood.smugfolio/com.smugmug.android.activities.SmugMainActivity` |
@@ -775,6 +777,7 @@ This is the alternate 8-bit neon treatment of the Core Builds catalog. Each row 
 | Tele Quebec | `tele_quebec` | `#00F5D4` | `tv.telequebec/uk.tva.template.LaunchScreenActivity` |
 | Tele2 Play | `tele2_play` | `#AAFF89` | `com.tivo.android.comhem/com.comhem.mandel.mobile.presentation.NavigationActivity`<br>`com.tivo.android.comhem/tv.threess.threeready.ui.generic.activity.MainActivity` |
 | Telenet | `telenet` | `#B388FF` | `be.telenet.tv/com.libertyglobal.horizonx.MainActivity` |
+| Televizo | `televizo` | `#4FACFE` | `ru.vovasoft.televizo/ru.vovasoft.televizo.ui.MainActivity`<br>`ru.vovasoft.televizo/.ui.MainActivity` |
 | Telewebion | `telewebion` | `#F4842D` | `tv.telewebion/tv.telewebion.ui.main.MainActivity` |
 | Teliaplaylt | `teliaplaylt` | `#008080` | `lt.telia.tv/lt.telia.tv.MainActivity` |
 | Telly | `telly` | `#00D4FF` | `tv.fournetwork.android.box.digi/tv.fournetwork.android.box.MainActivity` |

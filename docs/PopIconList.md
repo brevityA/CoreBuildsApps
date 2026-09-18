@@ -1,6 +1,6 @@
 # Core Builds Pop — supported applications
 
-`940` icons · `1150` mapped components · pack v1.0.0
+`943` icons · `1157` mapped components · pack v1.0.0
 
 Pop is drawn from the same `tools/catalog.json` as the classic Core Builds Icon Pack, so coverage is identical and always will be. What differs is the render: one container, one keyline weight, one halftone screen, and 16 locked swatches instead of 169 accents.
 
@@ -67,6 +67,7 @@ Pop is drawn from the same `tools/catalog.json` as the classic Core Builds Icon 
 | Ard Mediathek | `ard_mediathek` | `#F4842D` | `pop_amber` `#E8880F` | `de.swr.avp.ard.tv/de.swr.avp.ard.tv.TvActivity` |
 | Arrow | `arrowfilms` | `#0061FF` | `pop_blue` `#1C79D2` | `com.arrowfilms/tv.vhx.LauncherActivity`<br>`com.arrowfilms/tv.vhx.tv.home.TvHomeActivity` |
 | Arte | `arte` | `#D2BCFD` | `pop_grape` `#7440C6` | `tv.arte.plus7/tv.arte.plus7.leanback.MainActivity` |
+| Artemis | `limelight` | `#B388FF` | `pop_grape` `#7440C6` | `com.limelight.noir/com.limelight.PcView` |
 | Artlume | `artlume` | `#008080` | `pop_aqua` `#0C8AAE` | `io.artlume.mobile/io.artlume.tv.presentation.MainActivity` |
 | Arvio | `arvio` | `#0061FF` | `pop_blue` `#1C79D2` | `com.arvio.tv/com.arflix.tv.MainActivity` |
 | AT4K Launcher | `at4k` | `#00E5A0` | `pop_jade` `#0E9077` | `com.overdevs.at4k/com.overdevs.at4k.MainActivity` |
@@ -462,7 +463,6 @@ Pop is drawn from the same `tools/catalog.json` as the classic Core Builds Icon 
 | Monplayer | `monplayer` | `#00F5D4` | `pop_jade` `#0E9077` | `org.monplayer.mpapp/org.monplayer.mpapp.MainActivity` |
 | Moonfin | `moonfin` | `#00E5FF` | `pop_aqua` `#0C8AAE` | `org.moonfin.androidtv/org.jellyfin.androidtv.ui.startup.StartupActivity` |
 | Moonlight | `moonlight` | `#76B900` | `pop_acid` `#9DBB1F` | `com.limelight/.PcView` |
-| Moonlight Noir | `limelight` | `#B388FF` | `pop_grape` `#7440C6` | `com.limelight.noir/com.limelight.PcView` |
 | MotoGP | `officialmotogp` | `#0061FF` | `pop_blue` `#1C79D2` | `com.dorna.officialmotogp/com.dorna.motogpapp.ui.view.tv.splash.SplashTVActivity` |
 | Movideo | `whitelabel` | `#9E9E9E` | `pop_slate` `#59637A` | `com.movideo.whitelabel/com.movideo.whitelabel.MainActivity` |
 | Movie HD | `moviehd` | `#0061FF` | `pop_blue` `#1C79D2` | `com.ggateam.moviehd.ui/com.ggateam.moviehd.ui.FrmSplash` |
@@ -502,6 +502,7 @@ Pop is drawn from the same `tools/catalog.json` as the classic Core Builds Icon 
 | Nettv | `nettv` | `#FF0000` | `pop_red` `#E03127` | `np.com.androidtv.nettv/com.np.androidTV.main.TVMainActivity` |
 | Netzkino | `netzkino` | `#D2BCFD` | `pop_grape` `#7440C6` | `de.netzkino.android.ics/de.netzkino.android.ics.SplashActivity` |
 | Newpipe | `newpipe` | `#CD201F` | `pop_red` `#E03127` | `org.schabi.newpipe/org.schabi.newpipe.MainActivity` |
+| NextPlayer | `nextplayer` | `#FBBF24` | `pop_sun` `#E0AF0C` | `dev.anilbeesetti.nextplayer/dev.anilbeesetti.nextplayer.feature.videopicker.MainActivity`<br>`dev.anilbeesetti.nextplayer/.ui.MainActivity` |
 | Nextup Watch Stand Up Comedy | `nextup_watch_stand_up_comedy` | `#FF0000` | `pop_red` `#E03127` | `tv.vhx.nextup/com.example.videoapp.MainActivity` |
 | NFB | `nitobi` | `#F5F500` | `pop_acid` `#9DBB1F` | `com.nitobi.nfb/com.nitobi.nfb.MainActivity` |
 | NFL | `nflgamecenter` | `#013369` | `pop_blue` `#1C79D2` | `com.gotv.nflgamecenter.us.lite/com.nfl.connected.SplashActivity` |
@@ -554,6 +555,7 @@ Pop is drawn from the same `tools/catalog.json` as the classic Core Builds Icon 
 | OSN+ | `osn` | `#F4842D` | `pop_amber` `#E8880F` | `com.osn.go/com.osn.go.MainActivity` |
 | Otf TV | `otf_tv` | `#D2BCFD` | `pop_grape` `#7440C6` | `com.t100v.otf/com.t100v.otf.intro` |
 | Ott Navigator | `ott_navigator` | `#0061FF` | `pop_blue` `#1C79D2` | `studio.scillarium.ottnavigator/studio.scillarium.ottnavigator.MainActivity` |
+| OTT Navigator | `ottnavigator` | `#34D399` | `pop_jade` `#0E9077` | `live.h24.ottnavigator/live.h24.ottnavigator.ui.MainLeanbackActivity`<br>`live.h24.ottnavigator/.ui.MainLeanbackActivity` |
 | OTTplay | `ottplay` | `#FEC500` | `pop_sun` `#E0AF0C` | `com.ottplay.ottplay/com.ottplay.ottplay.StartActivity` |
 | Ottplayer | `ottplayer` | `#1E811F` | `pop_green` `#3F9C35` | `es.ottplayer.tv/es.ottplayer.tv.SplashActivity` |
 | Overseas App Store | `appstore` | `#0061FF` | `pop_blue` `#1C79D2` | `com.overseas.store.appstore/com.overseas.store.appstore.ui.SplashActivity` |
@@ -698,7 +700,7 @@ Pop is drawn from the same `tools/catalog.json` as the classic Core Builds Icon 
 | Skyshowtime | `skyshowtime` | `#0061FF` | `pop_blue` `#1C79D2` | `com.skyshowtime.skyshowtime.google/com.peacock.peacocktv.GoogleMainActivity` |
 | Sledovani | `sledovani` | `#FF0000` | `pop_red` `#E03127` | `cz.sledovanitv.android/cz.sledovanitv.androidtv.entry.EntryActivity` |
 | Sling TV | `sling_tv` | `#FF6D01` | `pop_amber` `#E8880F` | `com.sling/com.sling.MainActivity` |
-| Smart Tube | `smarttube` | `#FF0000` | `pop_red` `#E03127` | `com.teamsmart.videomanager.tv/com.liskovsoft.smartyoutubetv2.tv.ui.main.SplashActivity` |
+| Smart Tube | `smarttube` | `#FF0000` | `pop_red` `#E03127` | `com.teamsmart.videomanager.tv/com.liskovsoft.smartyoutubetv2.tv.ui.main.SplashActivity`<br>`com.teamsmart.videomanager.tv.beta/com.liskovsoft.smartyoutubetv2.tv.ui.main.SplashActivity` |
 | SmartTube Next | `smarttubenext` | `#FF0000` | `pop_red` `#E03127` | `org.smarttube.stable/com.liskovsoft.smartyoutubetv2.tv.ui.main.SplashActivity`<br>`com.liskovsoft.smarttubetv.beta/com.liskovsoft.smartyoutubetv2.tv.ui.main.SplashActivity`<br>`org.smarttube.beta/com.liskovsoft.smartyoutubetv2.tv.ui.main.SplashActivity` |
 | SmartTwitchTV | `twitch_2` | `#1E811F` | `pop_green` `#3F9C35` | `com.fgl27.twitch/com.fgl27.twitch.PlayerActivity` |
 | Smugmug | `smugmug` | `#6DB944` | `pop_green` `#3F9C35` | `com.snapwood.smugfolio/com.smugmug.android.activities.SmugMainActivity` |
@@ -775,6 +777,7 @@ Pop is drawn from the same `tools/catalog.json` as the classic Core Builds Icon 
 | Tele Quebec | `tele_quebec` | `#00F5D4` | `pop_jade` `#0E9077` | `tv.telequebec/uk.tva.template.LaunchScreenActivity` |
 | Tele2 Play | `tele2_play` | `#AAFF89` | `pop_green` `#3F9C35` | `com.tivo.android.comhem/com.comhem.mandel.mobile.presentation.NavigationActivity`<br>`com.tivo.android.comhem/tv.threess.threeready.ui.generic.activity.MainActivity` |
 | Telenet | `telenet` | `#B388FF` | `pop_grape` `#7440C6` | `be.telenet.tv/com.libertyglobal.horizonx.MainActivity` |
+| Televizo | `televizo` | `#4FACFE` | `pop_blue` `#1C79D2` | `ru.vovasoft.televizo/ru.vovasoft.televizo.ui.MainActivity`<br>`ru.vovasoft.televizo/.ui.MainActivity` |
 | Telewebion | `telewebion` | `#F4842D` | `pop_amber` `#E8880F` | `tv.telewebion/tv.telewebion.ui.main.MainActivity` |
 | Teliaplaylt | `teliaplaylt` | `#008080` | `pop_aqua` `#0C8AAE` | `lt.telia.tv/lt.telia.tv.MainActivity` |
 | Telly | `telly` | `#00D4FF` | `pop_aqua` `#0C8AAE` | `tv.fournetwork.android.box.digi/tv.fournetwork.android.box.MainActivity` |

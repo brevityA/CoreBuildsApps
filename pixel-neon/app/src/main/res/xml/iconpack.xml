@@ -61,6 +61,7 @@
     <item drawable="ard_mediathek" />
     <item drawable="arrowfilms" />
     <item drawable="arte" />
+    <item drawable="limelight" />
     <item drawable="artlume" />
     <item drawable="arvio" />
     <item drawable="at4k" />
@@ -456,7 +457,6 @@
     <item drawable="monplayer" />
     <item drawable="moonfin" />
     <item drawable="moonlight" />
-    <item drawable="limelight" />
     <item drawable="officialmotogp" />
     <item drawable="whitelabel" />
     <item drawable="moviehd" />
@@ -496,6 +496,7 @@
     <item drawable="nettv" />
     <item drawable="netzkino" />
     <item drawable="newpipe" />
+    <item drawable="nextplayer" />
     <item drawable="nextup_watch_stand_up_comedy" />
     <item drawable="nitobi" />
     <item drawable="nflgamecenter" />
@@ -548,6 +549,7 @@
     <item drawable="osn" />
     <item drawable="otf_tv" />
     <item drawable="ott_navigator" />
+    <item drawable="ottnavigator" />
     <item drawable="ottplay" />
     <item drawable="ottplayer" />
     <item drawable="appstore" />
@@ -769,6 +771,7 @@
     <item drawable="tele_quebec" />
     <item drawable="tele2_play" />
     <item drawable="telenet" />
+    <item drawable="televizo" />
     <item drawable="telewebion" />
     <item drawable="teliaplaylt" />
     <item drawable="telly" />

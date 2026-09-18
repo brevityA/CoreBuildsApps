@@ -355,6 +355,41 @@ def gamepad(c):
             f'<circle cx="384" cy="290" r="18" {_f(c)}/>')
 
 
+def retro_pad(c):
+    """Artemis: a straight-sided retro pad.
+
+    The tester who uses Artemis asked for a controller, having rejected both a
+    pad under signal arcs and an arcade cabinet. A controller it is — but not
+    Moonlight's. These are two different applications that sit in the same
+    launcher row, and the pack's own twin check would reject a near-copy
+    anyway.
+
+    So the silhouette is the other kind of controller. Moonlight's `gamepad` is
+    an organic wing that flares into grips and notches underneath; this is the
+    flat, straight-sided pad of a home console, which also answers the tester's
+    retro suggestion without needing a whole cabinet to say it. Same category
+    cue, unmistakably different shape at a glance.
+
+    The d-pad is a cross of two strokes, not an outlined plus: at 48px an
+    outlined cross closes its four counters and reads as a blob. The body is
+    also squarer than a real home-console pad — the first pass used true
+    hardware proportions, came out 40x18 at 48px, and lost a button counter to
+    the downscale.
+    """
+    return (
+        f'<rect x="88" y="158" width="336" height="196" rx="92" {_s(c, 32)}/>'
+        f'<path d="M 128 256 L 208 256" {_s(c, 26)}/>'
+        f'<path d="M 168 216 L 168 296" {_s(c, 26)}/>'
+        # Two constraints fight here and both showed up as a spurious counter.
+        # Each button carries r+stroke/2 = 39 of ink, so the pair needs >78
+        # between centres or they fuse into a figure of eight, and the outer
+        # one needs to stay clear of the shell's inner ink edge at x=408.
+        # 88 apart, rightmost ink at 399.
+        f'<circle cx="302" cy="224" r="26" {_s(c, 26)}/>'
+        f'<circle cx="360" cy="290" r="26" {_s(c, 26)}/>'
+    )
+
+
 def tools_wrench(c):
     """Utilities / tweaks - the ring spanner.
 
@@ -424,6 +459,7 @@ def tv_stack(c):
 GLYPHS = {
     "store_bag": store_bag, "install_box": install_box,
     "stream_tower": stream_tower, "gamepad": gamepad,
+    "retro_pad": retro_pad,
     "tools_wrench": tools_wrench, "send_arrow": send_arrow,
     "broom": broom, "shield_key": shield_key, "automation": automation,
     "home_button": home_button, "tv_stack": tv_stack,

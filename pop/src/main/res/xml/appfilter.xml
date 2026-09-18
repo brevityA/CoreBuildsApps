@@ -176,6 +176,8 @@
     <!-- Arte -->
     <item component="ComponentInfo{tv.arte.plus7/tv.arte.plus7.leanback.MainActivity}" drawable="arte_banner"/>
     <item component="ComponentInfo{tv.arte.plus7/.leanback.MainActivity}" drawable="arte_banner"/>
+    <!-- Artemis -->
+    <item component="ComponentInfo{com.limelight.noir/com.limelight.PcView}" drawable="limelight_banner"/>
     <!-- Artlume -->
     <item component="ComponentInfo{io.artlume.mobile/io.artlume.tv.presentation.MainActivity}" drawable="artlume_banner"/>
     <!-- Arvio -->
@@ -1318,8 +1320,6 @@
     <!-- Moonlight -->
     <item component="ComponentInfo{com.limelight/com.limelight.PcView}" drawable="moonlight_banner"/>
     <item component="ComponentInfo{com.limelight/.PcView}" drawable="moonlight_banner"/>
-    <!-- Moonlight Noir -->
-    <item component="ComponentInfo{com.limelight.noir/com.limelight.PcView}" drawable="limelight_banner"/>
     <!-- MotoGP -->
     <item component="ComponentInfo{com.dorna.officialmotogp/com.dorna.motogpapp.ui.view.tv.splash.SplashTVActivity}" drawable="officialmotogp_banner"/>
     <!-- Movideo -->
@@ -1428,6 +1428,11 @@
     <!-- Newpipe -->
     <item component="ComponentInfo{org.schabi.newpipe/org.schabi.newpipe.MainActivity}" drawable="newpipe_banner"/>
     <item component="ComponentInfo{org.schabi.newpipe/.MainActivity}" drawable="newpipe_banner"/>
+    <!-- NextPlayer -->
+    <item component="ComponentInfo{dev.anilbeesetti.nextplayer/dev.anilbeesetti.nextplayer.feature.videopicker.MainActivity}" drawable="nextplayer_banner"/>
+    <item component="ComponentInfo{dev.anilbeesetti.nextplayer/.feature.videopicker.MainActivity}" drawable="nextplayer_banner"/>
+    <item component="ComponentInfo{dev.anilbeesetti.nextplayer/dev.anilbeesetti.nextplayer.ui.MainActivity}" drawable="nextplayer_banner"/>
+    <item component="ComponentInfo{dev.anilbeesetti.nextplayer/.ui.MainActivity}" drawable="nextplayer_banner"/>
     <!-- Nextup Watch Stand Up Comedy -->
     <item component="ComponentInfo{tv.vhx.nextup/com.example.videoapp.MainActivity}" drawable="nextup_watch_stand_up_comedy_banner"/>
     <!-- NFB -->
@@ -1577,6 +1582,9 @@
     <!-- Ott Navigator -->
     <item component="ComponentInfo{studio.scillarium.ottnavigator/studio.scillarium.ottnavigator.MainActivity}" drawable="ott_navigator_banner"/>
     <item component="ComponentInfo{studio.scillarium.ottnavigator/.MainActivity}" drawable="ott_navigator_banner"/>
+    <!-- OTT Navigator -->
+    <item component="ComponentInfo{live.h24.ottnavigator/live.h24.ottnavigator.ui.MainLeanbackActivity}" drawable="ottnavigator_banner"/>
+    <item component="ComponentInfo{live.h24.ottnavigator/.ui.MainLeanbackActivity}" drawable="ottnavigator_banner"/>
     <!-- OTTplay -->
     <item component="ComponentInfo{com.ottplay.ottplay/com.ottplay.ottplay.StartActivity}" drawable="ottplay_banner"/>
     <item component="ComponentInfo{com.ottplay.ottplay/.StartActivity}" drawable="ottplay_banner"/>
@@ -2001,6 +2009,7 @@
     <item component="ComponentInfo{com.sling/.MainActivity}" drawable="sling_tv_banner"/>
     <!-- Smart Tube -->
     <item component="ComponentInfo{com.teamsmart.videomanager.tv/com.liskovsoft.smartyoutubetv2.tv.ui.main.SplashActivity}" drawable="smarttube_banner"/>
+    <item component="ComponentInfo{com.teamsmart.videomanager.tv.beta/com.liskovsoft.smartyoutubetv2.tv.ui.main.SplashActivity}" drawable="smarttube_banner"/>
     <!-- SmartTube Next -->
     <item component="ComponentInfo{org.smarttube.stable/com.liskovsoft.smartyoutubetv2.tv.ui.main.SplashActivity}" drawable="smarttubenext_banner"/>
     <item component="ComponentInfo{com.liskovsoft.smarttubetv.beta/com.liskovsoft.smartyoutubetv2.tv.ui.main.SplashActivity}" drawable="smarttubenext_banner"/>
@@ -2221,6 +2230,9 @@
     <item component="ComponentInfo{com.tivo.android.comhem/tv.threess.threeready.ui.generic.activity.MainActivity}" drawable="tele2_play_banner"/>
     <!-- Telenet -->
     <item component="ComponentInfo{be.telenet.tv/com.libertyglobal.horizonx.MainActivity}" drawable="telenet_banner"/>
+    <!-- Televizo -->
+    <item component="ComponentInfo{ru.vovasoft.televizo/ru.vovasoft.televizo.ui.MainActivity}" drawable="televizo_banner"/>
+    <item component="ComponentInfo{ru.vovasoft.televizo/.ui.MainActivity}" drawable="televizo_banner"/>
     <!-- Telewebion -->
     <item component="ComponentInfo{tv.telewebion/tv.telewebion.ui.main.MainActivity}" drawable="telewebion_banner"/>
     <item component="ComponentInfo{tv.telewebion/.ui.main.MainActivity}" drawable="telewebion_banner"/>
