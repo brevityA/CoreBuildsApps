@@ -85,7 +85,24 @@ python tools/build_readme_badge.py
 python tools/check_suite_truth.py
 python tools/audit_contract.py
 python tools/build_issue_prefills.py --check
+python tools/check_gradle_envelope.py
+python tools/build_dependabot.py --check
 ```
+
+`check_gradle_envelope.py` holds the Android build inside its own limits. It reads
+every Gradle root's `compileSdk` / `minSdk` / AGP / Kotlin and every coordinate it
+declares, and fails if a version sits above the ceiling recorded in
+`tools/gradle_envelope.json` — which carries the reason and the evidence for each
+cap. It also fails if a Gradle root has no `dependabot.yml` entry, if a workflow
+installs an Android platform other than the one its module compiles against, or if
+the Compose compiler is wired the wrong way for the Kotlin major in use. The
+ignore rules those caps imply are *generated*, not hand-written:
+`build_dependabot.py --check` fails on drift, because hand-written rules were
+silently deleted once already (9f5d266d) and the four Dependabot PRs that followed
+— #122 #125 #126 #132 — all failed CI for the same three libraries. To take a
+capped dependency forward, change the envelope first (migration steps are at the
+end of `gradle_envelope.json`), watch CI go green, then lift the ceiling and
+regenerate.
 
 `check_suite_truth.py` fails stale README/agent/doc claims, catalog/Gradle/version metadata drift, an AGENTS.md suite-table or wallpaper-count mismatch, missing stamped README block, and the `line-v*` trap. Core Line's prefix is `coreline-v*`.
 
