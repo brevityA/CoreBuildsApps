@@ -6,7 +6,7 @@
     "grid": 512,
     "safe_area": 432,
     "note": "Core Builds-authored geometric icons on a shared 512 grid. Reviewed brand glyphs use rounded monoline strokes and one accent, not imported vendor silhouettes. Common Outfit/category/rail banners; artwork is reference-only. Canonical brand colours and the dark-card contrast policy remain shared.",
-    "count": 940
+    "count": 943
   },
   "icons": [
     {
@@ -5884,16 +5884,17 @@
       "color_reviewed": null
     },
     {
-      "name": "Moonlight Noir",
+      "name": "Artemis",
       "drawable": "limelight",
       "color": "#B388FF",
-      "glyph": "broadcast_M",
+      "glyph": "retro_pad",
       "components": [
         "com.limelight.noir/com.limelight.PcView"
       ],
-      "category": "APP",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "category": "GAMING",
+      "color_source": "core-builds palette, chosen: Artemis publishes no brand colour and its own mark is achromatic, which routes to LIGHT_INK and collides with RetroArch in GAMING. #B388FF sits 180 degrees from Moonlight's #76B900 (the one separation that matters for two game-streaming clients side by side), clears 7.10:1 on card, and is 42 degrees from its nearest GAMING neighbour",
+      "color_reviewed": "2026-09-18",
+      "mapping_source": "device evidence 2026-09-18 (com.limelight.noir presents as Artemis 20.2.6)"
     },
     {
       "name": "MotoGP",
@@ -8914,12 +8915,16 @@
       "color": "#FF0000",
       "glyph": "smarttube_play",
       "components": [
-        "com.teamsmart.videomanager.tv/com.liskovsoft.smartyoutubetv2.tv.ui.main.SplashActivity"
+        "com.teamsmart.videomanager.tv/com.liskovsoft.smartyoutubetv2.tv.ui.main.SplashActivity",
+        "com.teamsmart.videomanager.tv.beta/com.liskovsoft.smartyoutubetv2.tv.ui.main.SplashActivity"
       ],
       "category": "VIDEO",
       "brand": "smarttube",
       "color_source": "brand reference (pre-provenance, unverified)",
-      "color_reviewed": null
+      "color_reviewed": null,
+      "unverified": [
+        "com.teamsmart.videomanager.tv.beta/com.liskovsoft.smartyoutubetv2.tv.ui.main.SplashActivity"
+      ]
     },
     {
       "name": "SmartTube Next",
@@ -12277,6 +12282,60 @@
       "style": "core_monoline",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
+    },
+    {
+      "name": "NextPlayer",
+      "drawable": "nextplayer",
+      "color": "#FBBF24",
+      "glyph": "film_N",
+      "category": "PLAYER",
+      "components": [
+        "dev.anilbeesetti.nextplayer/dev.anilbeesetti.nextplayer.feature.videopicker.MainActivity",
+        "dev.anilbeesetti.nextplayer/.ui.MainActivity"
+      ],
+      "mapping_source": "research document 2026-09-18 (component unverified against APK)",
+      "color_source": "core-builds palette (no published brand colour found)",
+      "color_reviewed": null,
+      "unverified": [
+        "dev.anilbeesetti.nextplayer/dev.anilbeesetti.nextplayer.feature.videopicker.MainActivity",
+        "dev.anilbeesetti.nextplayer/.ui.MainActivity"
+      ]
+    },
+    {
+      "name": "OTT Navigator",
+      "drawable": "ottnavigator",
+      "color": "#34D399",
+      "glyph": "broadcast_O",
+      "category": "LIVE",
+      "components": [
+        "live.h24.ottnavigator/live.h24.ottnavigator.ui.MainLeanbackActivity",
+        "live.h24.ottnavigator/.ui.MainLeanbackActivity"
+      ],
+      "mapping_source": "research document 2026-09-18 (component unverified against APK)",
+      "color_source": "core-builds palette (no published brand colour found)",
+      "color_reviewed": null,
+      "unverified": [
+        "live.h24.ottnavigator/live.h24.ottnavigator.ui.MainLeanbackActivity",
+        "live.h24.ottnavigator/.ui.MainLeanbackActivity"
+      ]
+    },
+    {
+      "name": "Televizo",
+      "drawable": "televizo",
+      "color": "#4FACFE",
+      "glyph": "broadcast_T",
+      "category": "LIVE",
+      "components": [
+        "ru.vovasoft.televizo/ru.vovasoft.televizo.ui.MainActivity",
+        "ru.vovasoft.televizo/.ui.MainActivity"
+      ],
+      "mapping_source": "research document 2026-09-18 (component unverified against APK)",
+      "color_source": "core-builds palette (no published brand colour found)",
+      "color_reviewed": null,
+      "unverified": [
+        "ru.vovasoft.televizo/ru.vovasoft.televizo.ui.MainActivity",
+        "ru.vovasoft.televizo/.ui.MainActivity"
+      ]
     }
   ],
   "artwork": {

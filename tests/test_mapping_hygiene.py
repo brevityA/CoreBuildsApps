@@ -42,8 +42,14 @@ REFERENCE = ROOT / "tools" / "reference" / "projectivy-1.1.9-appfilter.xml"
 # whose activity names follow the launcher's documented Source{X}Activity /
 # {X}ShortcutActivity patterns but are not corroborated by any source; they
 # clear at the next ADB scan.
+# 83 -> 90: Televizo, OTT Navigator and NextPlayer (2 spellings each) plus
+# SmartTube's beta channel. The packages come from a research document and
+# the activity paths are inferred from it, not read off an APK or a device.
+# They are declared here rather than shipped silently: an inferred activity
+# that does not match is inert, but counting it as evidence is what guardrail
+# 4 forbids. They clear at the next ADB scan, or the components come out.
 # The ceiling may only move back down.
-UNVERIFIED_CEILING = 83
+UNVERIFIED_CEILING = 90
 
 
 def _canonical(component: str) -> str:

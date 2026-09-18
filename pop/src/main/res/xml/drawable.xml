@@ -128,6 +128,7 @@
     <item drawable="m3u_iptv_banner" />
     <item drawable="myiptv_banner" />
     <item drawable="oktv22_banner" />
+    <item drawable="ottnavigator_banner" />
     <item drawable="owntv_banner" />
     <item drawable="siptv_banner" />
     <item drawable="snrt_live_banner" />
@@ -136,6 +137,7 @@
     <item drawable="strexo_banner" />
     <item drawable="stv_player_banner" />
     <item drawable="tapmad_banner" />
+    <item drawable="televizo_banner" />
     <item drawable="telly_banner" />
     <item drawable="thundertv_banner" />
     <item drawable="tvplayer_banner" />
@@ -152,6 +154,7 @@
     <item drawable="monplayer_banner" />
     <item drawable="mxplayer_banner" />
     <item drawable="my_family_cinema_player_banner" />
+    <item drawable="nextplayer_banner" />
     <item drawable="nobuffr_banner" />
     <item drawable="nova_video_player_banner" />
     <item drawable="ottplayer_banner" />
@@ -249,6 +252,7 @@
     <item drawable="yoga_download_banner" />
     <category title="Banners · Gaming" />
     <item drawable="airattack2tv_banner" />
+    <item drawable="limelight_banner" />
     <item drawable="clone_hero_banner" />
     <item drawable="crossy_road_banner" />
     <item drawable="dolphin_emulator_banner" />
@@ -690,7 +694,6 @@
     <item drawable="mobily_banner" />
     <item drawable="molotov_tv_banner" />
     <item drawable="moonfin_banner" />
-    <item drawable="limelight_banner" />
     <item drawable="officialmotogp_banner" />
     <item drawable="whitelabel_banner" />
     <item drawable="movieark_banner" />
@@ -1089,6 +1092,7 @@
     <item drawable="m3u_iptv" />
     <item drawable="myiptv" />
     <item drawable="oktv22" />
+    <item drawable="ottnavigator" />
     <item drawable="owntv" />
     <item drawable="siptv" />
     <item drawable="snrt_live" />
@@ -1097,6 +1101,7 @@
     <item drawable="strexo" />
     <item drawable="stv_player" />
     <item drawable="tapmad" />
+    <item drawable="televizo" />
     <item drawable="telly" />
     <item drawable="thundertv" />
     <item drawable="tvplayer" />
@@ -1113,6 +1118,7 @@
     <item drawable="monplayer" />
     <item drawable="mxplayer" />
     <item drawable="my_family_cinema_player" />
+    <item drawable="nextplayer" />
     <item drawable="nobuffr" />
     <item drawable="nova_video_player" />
     <item drawable="ottplayer" />
@@ -1210,6 +1216,7 @@
     <item drawable="yoga_download" />
     <category title="Square · Gaming" />
     <item drawable="airattack2tv" />
+    <item drawable="limelight" />
     <item drawable="clone_hero" />
     <item drawable="crossy_road" />
     <item drawable="dolphin_emulator" />
@@ -1651,7 +1658,6 @@
     <item drawable="mobily" />
     <item drawable="molotov_tv" />
     <item drawable="moonfin" />
-    <item drawable="limelight" />
     <item drawable="officialmotogp" />
     <item drawable="whitelabel" />
     <item drawable="movieark" />
