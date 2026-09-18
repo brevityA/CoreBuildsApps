@@ -11,8 +11,21 @@ on:
 
 # The build job runs candidate code with read-only permissions. Only the small
 # publisher job receives contents:write, and it does not check out or execute
-# candidate code. The resulting release stays a GitHub draft and is never made
-# public by this workflow.
+# candidate code — the floating tag is moved through the API for that reason,
+# not with a git checkout.
+#
+# This workflow PUBLISHES. The release is a public prerelease on the floating
+# `iconpack-test` tag, so one Downloader code generated once at
+# go.aftvnews.com keeps resolving after every rebuild. Two consequences to
+# keep in mind before changing anything here:
+#
+#   * every dispatch replaces what the public test channel serves, and
+#   * the asset filename is load-bearing. `iconpack-test.apk` is baked into a
+#     numeric code that cannot be edited afterwards, so it may never gain a
+#     version or a commit sha.
+#
+# Debug signing only: no KEYSTORE_* value is read, and the production
+# `iconpack` release is never touched.
 
 jobs:
   build:
@@ -59,18 +72,21 @@ jobs:
           ./gradlew :app:lintCandidate :app:testCandidateUnitTest :app:assembleCandidate \
             -PtestSourceCommit="${SOURCE_COMMIT:0:7}" --no-daemon --stacktrace
 
-      - name: Name APK and create checksum
+      - name: Name the APK for the stable Downloader URL
         run: |
           APK=$(find app/build/outputs/apk/candidate -maxdepth 1 -type f -name '*.apk' | head -1)
           test -n "$APK"
           SOURCE_COMMIT=$(git rev-parse HEAD)
           VERSION=$(sed -n 's/.*versionName = "\([^"]*\)".*/\1/p' app/build.gradle.kts | head -1)
-          SHORT_SHA="${SOURCE_COMMIT:0:7}"
           mkdir -p test-apk
-          OUT="test-apk/core-builds-icon-pack-${VERSION}-test-${SHORT_SHA}.apk"
-          cp "$APK" "$OUT"
-          (cd test-apk && sha256sum "$(basename "$OUT")" > "$(basename "$OUT").sha256")
-          printf 'Core Builds Icon Pack TEST APK\nNot a production release.\nSource commit: %s\nPackage: tv.corebuilds.iconpack.test\n' "$SOURCE_COMMIT" > test-apk/BUILD-INFO.txt
+          # One fixed name, forever. The Downloader code is generated once
+          # against this URL and cannot be repointed, so a version or sha in
+          # the filename would break every code the moment we rebuild.
+          cp "$APK" test-apk/iconpack-test.apk
+          (cd test-apk && sha256sum iconpack-test.apk > iconpack-test.apk.sha256)
+          printf 'Core Builds Icon Pack TEST APK\nNot a production release.\nVersion: %s\nSource commit: %s\nPackage: tv.corebuilds.iconpack.test\n' \
+            "$VERSION" "$SOURCE_COMMIT" > test-apk/BUILD-INFO.txt
+          ls -lh test-apk/
 
       - name: Upload short-lived workflow hand-off
         uses: actions/upload-artifact@v4
@@ -80,8 +96,8 @@ jobs:
           retention-days: 1
           if-no-files-found: error
 
-  publish-draft:
-    name: Attach test APK to unpublished draft
+  publish-test-channel:
+    name: Publish to the floating test channel
     needs: build
     runs-on: ubuntu-latest
     # This job does not check out or execute the candidate repository contents.
@@ -94,20 +110,46 @@ jobs:
           name: iconpack-test-${{ github.sha }}
           path: test-apk
 
-      - name: Create or update unpublished draft release
+      - name: Move the floating tag and publish the test channel
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
           SOURCE_COMMIT=$(sed -n 's/^Source commit: //p' test-apk/BUILD-INFO.txt)
+          VERSION=$(sed -n 's/^Version: //p' test-apk/BUILD-INFO.txt)
           test "${#SOURCE_COMMIT}" -eq 40
-          TAG="iconpack-test-${SOURCE_COMMIT:0:7}"
-          TITLE="Core Builds Icon Pack test build ${SOURCE_COMMIT:0:7} (DRAFT)"
-          if gh release view "$TAG" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
-            gh release edit "$TAG" --repo "$GITHUB_REPOSITORY" --draft --title "$TITLE" \
-              --notes "Maintainer-only test build. NOT a production release. Source: $SOURCE_COMMIT"
+          test -n "$VERSION"
+          test -f test-apk/iconpack-test.apk
+          TAG=iconpack-test
+
+          # Move (or create) the tag through the API. Doing it with `git tag -f`
+          # would mean checking the candidate revision out into this
+          # contents:write job, which is exactly what this split exists to avoid.
+          if gh api "repos/$GITHUB_REPOSITORY/git/ref/tags/$TAG" >/dev/null 2>&1; then
+            gh api -X PATCH "repos/$GITHUB_REPOSITORY/git/refs/tags/$TAG" \
+              -f sha="$SOURCE_COMMIT" -F force=true >/dev/null
           else
-            gh release create "$TAG" --repo "$GITHUB_REPOSITORY" --draft --target "$SOURCE_COMMIT" \
-              --title "$TITLE" --notes "Maintainer-only test build. NOT a production release. Source: $SOURCE_COMMIT"
+            gh api -X POST "repos/$GITHUB_REPOSITORY/git/refs" \
+              -f ref="refs/tags/$TAG" -f sha="$SOURCE_COMMIT" >/dev/null
+          fi
+
+          URL="https://github.com/$GITHUB_REPOSITORY/releases/download/$TAG/iconpack-test.apk"
+          {
+            printf '**This is a test build. It is not the icon pack you want unless you were asked to try it.**\n\n'
+            printf 'Package `tv.corebuilds.iconpack.test`. It installs *beside* the production pack instead of over it, and it **never auto-updates** — whatever you install here stays on this build until you sideload another or uninstall it. For the real pack use the [`iconpack`](https://github.com/%s/releases/tag/iconpack) release.\n\n' "$GITHUB_REPOSITORY"
+            printf 'Built from `%s` at version %s, debug-signed. No production signing key is read by this workflow.\n\n' "$SOURCE_COMMIT" "$VERSION"
+            printf 'Downloader URL — the numeric code is generated once at https://go.aftvnews.com/ and keeps resolving after every rebuild:\n\n    %s\n\n' "$URL"
+            printf 'SHA-256 of this build:\n\n    %s\n' "$(cut -d' ' -f1 test-apk/iconpack-test.apk.sha256)"
+          } > notes.md
+
+          TITLE="Core Builds Icon Pack — test channel"
+          if gh release view "$TAG" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
+            gh release edit "$TAG" --repo "$GITHUB_REPOSITORY" \
+              --draft=false --prerelease --latest=false \
+              --title "$TITLE" --notes-file notes.md
+          else
+            gh release create "$TAG" --repo "$GITHUB_REPOSITORY" \
+              --target "$SOURCE_COMMIT" --prerelease --latest=false \
+              --title "$TITLE" --notes-file notes.md
           fi
           gh release upload "$TAG" test-apk/* --repo "$GITHUB_REPOSITORY" --clobber
-          echo "Uploaded only to unpublished draft release $TAG"
+          echo "Test channel now serves $SOURCE_COMMIT at $URL"

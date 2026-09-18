@@ -11,8 +11,26 @@ This repo ships five products from independent Gradle roots. Keep versioned tags
 | Core Shift | `shift-v<version>` | `shift` | `coreshift-release.apk` | `8829421` |
 | Core Motion | `motion-v<version>` | `motion` | `coremotion-release.apk` | `[USER TO SUPPLY]` |
 | Core Doctor | `doctor-v<version>` | `doctor` | `coredoctor-release.apk` | `8664938` |
+| Icon Pack (test channel) | none — `workflow_dispatch` only | `iconpack-test` | `iconpack-test.apk` | `[USER TO SUPPLY]` |
 
 Do not create `line-v*` tags. Core Line is `coreline-v*`.
+
+### The Icon Pack test channel
+
+`iconpack-test` is a public prerelease lane driven by
+`.github/workflows/iconpack-test-apk.yml`, dispatched by hand. It exists so a
+build can be put on a real Android TV before it is tagged, and it is deliberately
+**not** the production pack:
+
+- package `tv.corebuilds.iconpack.test`, so it installs beside the real pack
+  rather than over it;
+- debug-signed — the workflow reads no `KEYSTORE_*` value;
+- its updater authority is `…test.update`, so **it never auto-updates**. Anyone
+  who installs it stays on that build until they sideload another.
+
+Each dispatch force-moves the `iconpack-test` tag and replaces the asset, so the
+filename is load-bearing: `iconpack-test.apk` is baked into a numeric code that
+cannot be repointed afterwards. Never add a version or commit sha to it.
 
 ## Before tagging
 

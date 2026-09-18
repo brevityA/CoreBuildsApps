@@ -6,6 +6,19 @@ All notable changes to the Core Builds Icon Pack. Format follows
 
 ## [Unreleased]
 
+### Changed
+
+- **Icon pack test builds are now a public channel** — `iconpack-test-apk.yml`
+  published to an unlisted draft, which no sideloader could reach because a
+  draft has no git tag and its assets 404 without credentials. It now
+  force-moves a floating `iconpack-test` tag and publishes a prerelease
+  carrying one fixed asset name, `iconpack-test.apk`, so a single Downloader
+  code generated at go.aftvnews.com keeps resolving after every rebuild. The
+  build still runs candidate code with `contents: read`; the publishing job
+  still never checks that code out, and moves the tag through the API rather
+  than a checkout to keep it that way. Debug signing only — no `KEYSTORE_*`
+  value is read, and the production `iconpack` release is untouched.
+
 ## [1.8.20] — 2026-09-18
 
 ### Added
