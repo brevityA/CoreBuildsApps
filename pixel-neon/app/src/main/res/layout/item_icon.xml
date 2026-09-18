@@ -2,16 +2,14 @@
 <!--
   One icon tile.
 
-  A pale dot in the icon's top corner marks a tile whose glyph is a drawn
-  brandmark rather than a letter in a container. 526 of the 940 icons are
-  monograms, and until this there was no way to tell the two apart in the grid
-  short of recognising the mark. The "Brandmarks" chip filters to the ones that
-  carry it.
+  A pale dot in the icon's corner marks a glyph that is a drawn brandmark
+  rather than a letter in a container; the Brandmarks chip filters to them.
 
-  The card surface is drawn inset by cb_focus_inset inside bg_card, so the
-  padding here is measured from the tile bounds and lands ~8dp inside the
-  visible card. minHeight keeps the D-pad target at the 48dp floor without
-  stretching the artwork.
+  Pixel Neon keeps its own tile metrics — 8dp padding, 72dp artwork, 11sp
+  label — rather than the Classic pack's. An earlier pass copied Classic's
+  tile wholesale to satisfy resource parity and silently restyled this grid
+  with it. Parity wants the file and its references to exist here, not the
+  two packs to look the same.
 -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
@@ -20,15 +18,13 @@
     android:clickable="true"
     android:focusable="true"
     android:focusableInTouchMode="true"
-    android:nextFocusUp="@id/search"
     android:gravity="center_horizontal"
-    android:minHeight="@dimen/cb_target_min"
     android:orientation="vertical"
-    android:padding="@dimen/cb_card_padding">
+    android:padding="8dp">
 
     <!--
-        The artwork and its brandmark dot share a FrameLayout so the dot can sit
-        in the corner of the icon rather than the corner of the tile, which on a
+        The artwork and its brandmark dot share a FrameLayout so the dot sits in
+        the corner of the icon rather than the corner of the tile, which on a
         two-line label would put it beside the text.
     -->
     <FrameLayout
@@ -38,7 +34,7 @@
         <ImageView
             android:id="@+id/icon_image"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/cb_card_icon"
+            android:layout_height="72dp"
             android:contentDescription="@null"
             android:importantForAccessibility="no"
             android:scaleType="fitCenter" />
@@ -57,11 +53,10 @@
         android:id="@+id/icon_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/cb_space_sm"
+        android:layout_marginTop="6dp"
         android:ellipsize="end"
         android:gravity="center"
-        android:lineSpacingExtra="1dp"
         android:maxLines="2"
         android:textColor="@color/cb_ink"
-        android:textSize="@dimen/cb_text_label" />
+        android:textSize="11sp" />
 </LinearLayout>

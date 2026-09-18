@@ -80,12 +80,28 @@ def test_every_pack_has_a_flag_per_icon():
 
 
 def test_flags_match_the_catalog():
+    """Every pack lists exactly the catalog's icons, each flagged correctly.
+
+    The name-set assertion is not decoration. Comparing only the names that
+    appear in both sets means a pack could carry a drawable the catalog has
+    never heard of and still pass: the length check and the cross-pack check
+    both survive it if every pack does the same thing. On device that tile
+    reaches getIdentifier(), gets resource id 0, and draws nothing.
+    """
     expected = catalog_flags()
+    expected_names = set(expected)
     for pack, path in PACKS.items():
         names, flags = arrays(path)
+        missing = sorted(expected_names - set(names))
+        extra = sorted(set(names) - expected_names)
+        assert not missing and not extra and len(names) == len(expected), (
+            f"{pack}: icon_pack does not match the catalog — "
+            f"missing {missing[:5]}, extra {extra[:5]}, "
+            f"{len(names)} entries for {len(expected)} catalog icons"
+        )
         wrong = [
-            name for name, flag in zip(names, flags)
-            if name in expected and bool(flag) != expected[name]
+            name for name, flag in zip(names, flags, strict=True)
+            if bool(flag) != expected[name]
         ]
         assert not wrong, (
             f"{pack}: {len(wrong)} icons flagged against the catalog, "

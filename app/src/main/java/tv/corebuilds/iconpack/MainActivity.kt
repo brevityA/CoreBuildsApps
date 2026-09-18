@@ -223,11 +223,7 @@ class MainActivity : AppCompatActivity() {
     private fun applyFilter() {
         val q = query.trim().lowercase()
         val filtered = all.filter { item ->
-            val catOk = when (category) {
-                ALL -> true
-                BESPOKE -> item.bespoke
-                else -> item.category == category
-            }
+            val catOk = inCategory(item)
             val qOk = q.isEmpty()
                 || item.name.lowercase().contains(q)
                 || item.drawable.contains(q)
@@ -295,7 +291,7 @@ class MainActivity : AppCompatActivity() {
                 getString(
                     R.string.empty_body_query_fmt,
                     categoryLabel(category),
-                    all.count { it.category == category }
+                    all.count(::inCategory)
                 )
             }
 
@@ -305,11 +301,30 @@ class MainActivity : AppCompatActivity() {
         clearSearch.visibility = if (q.isEmpty()) View.GONE else View.VISIBLE
         clearFilter.visibility = if (category == ALL) View.GONE else View.VISIBLE
         clearFilter.text =
-            getString(R.string.empty_clear_filter, all.count { it.category == category })
+            getString(R.string.empty_clear_filter, all.count(::inCategory))
     }
 
-    private fun categoryLabel(key: String): String =
-        CHIP_ORDER.firstOrNull { it.first == key }?.second ?: getString(R.string.chip_all)
+    /**
+     * Whether an item belongs to the selected chip.
+     *
+     * BESPOKE is not a category — it cuts across all of them — so every place
+     * that asks "is this item in the current filter" has to go through here.
+     * The empty state previously compared the synthetic key against
+     * `item.category` directly, which is never equal, so a fruitless search
+     * under Brandmarks offered to clear a filter holding 0 icons and labelled
+     * it "All".
+     */
+    private fun inCategory(item: IconAdapter.IconItem): Boolean = when (category) {
+        ALL -> true
+        BESPOKE -> item.bespoke
+        else -> item.category == category
+    }
+
+    private fun categoryLabel(key: String): String = when (key) {
+        BESPOKE -> getString(R.string.chip_brandmarks)
+        else -> CHIP_ORDER.firstOrNull { it.first == key }?.second
+            ?: getString(R.string.chip_all)
+    }
 
     private fun checkForUpdate() {
         UpdateChecker.check(this) { result ->
