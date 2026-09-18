@@ -51,9 +51,11 @@ All notable changes to the Core Builds Icon Pack. Format follows
   fails any full-screen layout that overflows the viewport without a scroll
   container — it reproduces the 615dp independently, and is named in
   `build.yml` and `suite-ci.yml` because CI runs these suites file by file and
-  `unittest discover` does not see them. About was measured under the same
-  model at 173dp and needs no change; its body is already a weighted region
-  holding fixed-height cards.
+  `unittest discover` does not see them. It measures all three modules against
+  their own `dimens.xml` rather than trusting Pop's generated copies and Pixel
+  Neon's hand-synced ones to match, and their figures do differ. About needs no
+  change at 399dp of fixed content; its body is a weighted region holding
+  fixed-height cards, so it flexes rather than stacks.
 
 ## [1.8.20] — 2026-09-18
 
