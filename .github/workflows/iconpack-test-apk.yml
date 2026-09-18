@@ -9,6 +9,12 @@ on:
         type: string
         default: ""
 
+# Deny by default at the top level; each job below opts into exactly what it
+# needs. Without this, a job that forgets its own `permissions:` block inherits
+# the repository default, which is how a candidate-code job quietly acquires
+# write scope.
+permissions: {}
+
 # The build job runs candidate code with read-only permissions. Only the small
 # publisher job receives contents:write, and it does not check out or execute
 # candidate code — the floating tag is moved through the API for that reason,
@@ -33,12 +39,33 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: read
+    outputs:
+      source_commit: ${{ steps.src.outputs.source_commit }}
+      version: ${{ steps.src.outputs.version }}
     steps:
       - name: Check out requested source
         uses: actions/checkout@v4
         with:
           ref: ${{ inputs.source_ref || github.sha }}
           fetch-depth: 1
+
+      - name: Record the checked-out revision
+        id: src
+        run: |
+          # Captured here, before anything from source_ref executes. Every step
+          # below runs candidate code — Gradle, its plugins, its dependencies —
+          # and any of it can move HEAD or rewrite build.gradle.kts inside the
+          # workspace. The publish job moves a tag with contents: write, so the
+          # value it moves the tag to must come from a point no candidate code
+          # has reached yet. Reading it after the build would hand the choice of
+          # tag target to the thing being tested.
+          COMMIT=$(git rev-parse HEAD)
+          VERSION=$(sed -n 's/.*versionName = "\([^"]*\)".*/\1/p' app/build.gradle.kts | head -1)
+          test "${#COMMIT}" -eq 40
+          test -n "$VERSION"
+          echo "source_commit=$COMMIT" >> "$GITHUB_OUTPUT"
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+          echo "Building $COMMIT at version $VERSION"
 
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -67,17 +94,21 @@ jobs:
 
       - name: Build test variant only
         env:
-          SOURCE_COMMIT: ${{ github.sha }}
+          # The resolved checkout, not github.sha — source_ref may point
+          # somewhere else entirely, and the stamp baked into the APK should
+          # name what was actually built.
+          SOURCE_COMMIT: ${{ steps.src.outputs.source_commit }}
         run: |
           ./gradlew :app:lintCandidate :app:testCandidateUnitTest :app:assembleCandidate \
             -PtestSourceCommit="${SOURCE_COMMIT:0:7}" --no-daemon --stacktrace
 
       - name: Name the APK for the stable Downloader URL
+        env:
+          SOURCE_COMMIT: ${{ steps.src.outputs.source_commit }}
+          VERSION: ${{ steps.src.outputs.version }}
         run: |
           APK=$(find app/build/outputs/apk/candidate -maxdepth 1 -type f -name '*.apk' | head -1)
           test -n "$APK"
-          SOURCE_COMMIT=$(git rev-parse HEAD)
-          VERSION=$(sed -n 's/.*versionName = "\([^"]*\)".*/\1/p' app/build.gradle.kts | head -1)
           mkdir -p test-apk
           # One fixed name, forever. The Downloader code is generated once
           # against this URL and cannot be repointed, so a version or sha in
@@ -100,6 +131,14 @@ jobs:
     name: Publish to the floating test channel
     needs: build
     runs-on: ubuntu-latest
+    # One channel, one publisher at a time. Two dispatches can otherwise
+    # interleave: the older run's `--clobber` upload lands after the newer run
+    # has already moved the tag and written the notes, leaving the fixed URL
+    # serving one APK while the published SHA-256 describes another. Queue
+    # rather than cancel, so a superseded run still finishes coherently.
+    concurrency:
+      group: iconpack-test-channel
+      cancel-in-progress: false
     # This job does not check out or execute the candidate repository contents.
     permissions:
       contents: write
@@ -113,9 +152,13 @@ jobs:
       - name: Move the floating tag and publish the test channel
         env:
           GH_TOKEN: ${{ github.token }}
+          # Job outputs recorded before the build ran, not values parsed back
+          # out of the artifact. BUILD-INFO.txt travels with the APK as a record
+          # for whoever installs it, but nothing privileged is decided from it:
+          # it is written by a step that runs after candidate code.
+          SOURCE_COMMIT: ${{ needs.build.outputs.source_commit }}
+          VERSION: ${{ needs.build.outputs.version }}
         run: |
-          SOURCE_COMMIT=$(sed -n 's/^Source commit: //p' test-apk/BUILD-INFO.txt)
-          VERSION=$(sed -n 's/^Version: //p' test-apk/BUILD-INFO.txt)
           test "${#SOURCE_COMMIT}" -eq 40
           test -n "$VERSION"
           test -f test-apk/iconpack-test.apk
