@@ -21,7 +21,7 @@ import sys
 from pathlib import Path
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-from glyphs import GLYPHS, monoline, render_svg  # noqa: E402
+from glyphs import GLYPHS, is_monogram, monoline, render_svg  # noqa: E402
 from icon_style import CORE_MONOLINE, core_monoline_errors, display_accent  # noqa: E402
 from brandmarks import load_source  # noqa: E402
 
@@ -287,6 +287,15 @@ def main():
     for i in icons:
         v.append(f'        <item>{esc_android(i.get("category") or "APP")}</item>')
     v.append('    </string-array>')
+    # Which icons carry a drawn brandmark rather than a letter in a container.
+    # 526 of 940 are monograms, so the grid badges the 414 that are not and
+    # offers a chip to filter to them; without this the two are indistinguishable
+    # until you recognise the mark. The classification comes from
+    # glyphs.MONOGRAM_GLYPHS rather than a name pattern.
+    v.append('    <integer-array name="icon_bespoke">')
+    for i in icons:
+        v.append(f'        <item>{0 if is_monogram(i["glyph"]) else 1}</item>')
+    v.append('    </integer-array>')
     v.append(f'    <integer name="icon_count">{len(icons)}</integer>')
     v.append('</resources>')
     write(VAL_DIR / "icon_pack.xml", "\n".join(v) + "\n")

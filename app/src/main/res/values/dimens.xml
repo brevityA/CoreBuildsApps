@@ -30,6 +30,9 @@
          touch even though RecyclerView adds no ItemDecoration. -->
     <dimen name="cb_card_padding">14dp</dimen>
     <dimen name="cb_card_icon">76dp</dimen>
+    <!-- Brandmark dot on an icon tile. 7dp reads at 3m without
+         crowding artwork that already runs to the tile edge. -->
+    <dimen name="cb_brandmark_dot">7dp</dimen>
     <dimen name="cb_wp_thumb">118dp</dimen>
     <dimen name="cb_seed_swatch">32dp</dimen>
 

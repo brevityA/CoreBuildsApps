@@ -8,6 +8,20 @@ All notable changes to the Core Builds Icon Pack. Format follows
 
 ### Added
 
+- **Brandmark badge and filter** — 526 of the 940 icons are monograms: a letter
+  in one of the 15 `FAMILY_SHELLS` containers. The other 414 are drawn marks,
+  and nothing in the grid said which was which, so the hand-drawn work was
+  invisible unless you already recognised the brand. Tiles carrying a drawn
+  mark now show a small ink dot in the icon's corner, and a **Brandmarks** chip
+  filters to them. The flag is generated into `R.array.icon_bespoke` by all
+  three pack generators from `glyphs.MONOGRAM_GLYPHS`, which is derived from
+  the shell and tile registries rather than pattern-matched off glyph names —
+  a regex would misclassify any mark whose name begins with a family word. The
+  dot is ink, not signal cyan, because the focus ring is cyan and a cyan dot on
+  a focused tile reads as part of the ring. `tests/test_brandmark_badge.py`
+  checks the array is one flag per icon in every pack, that each pack agrees
+  with `tools/catalog.json`, and that the three packs agree with each other.
+
 - **Settings and About screens** — the app's first persisted state. Until now
   nothing was stored at all. Four settings, each wired to a reader rather than
   to a screenshot: update checks gate `UpdateChecker` (off means the app makes

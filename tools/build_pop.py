@@ -44,6 +44,7 @@ import sys
 from pathlib import Path
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from glyphs import is_monogram  # noqa: E402
 
 import popart  # noqa: E402
 from popart import PALETTE, SWATCHES, render_banner, render_icon, snap  # noqa: E402
@@ -559,6 +560,13 @@ def main() -> int:
     v += [f'        <item>{esc_android(i.get("category") or "APP")}</item>'
           for i in icons]
     v.append('    </string-array>')
+    # Parallel to icon_pack: 1 where the icon is a drawn brandmark, 0 where it
+    # is a letter in a container. Shared with Classic through
+    # glyphs.MONOGRAM_GLYPHS so the two packs cannot disagree about what counts
+    # as bespoke.
+    v.append('    <integer-array name="icon_bespoke">')
+    v += [f'        <item>{0 if is_monogram(i["glyph"]) else 1}</item>' for i in icons]
+    v.append('    </integer-array>')
     v.append(f'    <integer name="icon_count">{len(icons)}</integer>')
     v.append('</resources>')
     write(POP_VAL / "icon_pack.xml", "\n".join(v) + "\n")

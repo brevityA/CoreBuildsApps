@@ -28,12 +28,20 @@ class IconAdapter(
     data class IconItem(
         val drawable: String,
         val name: String,
-        val category: String
+        val category: String,
+        /**
+         * True when this icon's glyph is a drawn brandmark rather than a
+         * letter in a container. Generated into R.array.icon_bespoke from
+         * glyphs.MONOGRAM_GLYPHS, so the grid and the generators cannot
+         * disagree about what counts.
+         */
+        val bespoke: Boolean = false
     )
 
     class VH(view: View) : RecyclerView.ViewHolder(view) {
         val image: ImageView = view.findViewById(R.id.icon_image)
         val label: TextView = view.findViewById(R.id.icon_name)
+        val brandmark: View = view.findViewById(R.id.icon_brandmark)
     }
 
     init {
@@ -58,7 +66,14 @@ class IconAdapter(
         }
         if (id != 0) holder.image.setImageResource(id)
         holder.label.text = item.name
-        holder.itemView.contentDescription = "${item.name}, ${item.category.lowercase()} icon"
+        // Recycled views carry the previous row's dot, so this is set on every
+        // bind rather than only when true.
+        holder.brandmark.visibility = if (item.bespoke) View.VISIBLE else View.GONE
+        // The dot is decorative in the tree (importantForAccessibility=no), so
+        // the distinction it draws is spoken here instead.
+        val kind = if (item.bespoke) "brandmark" else "monogram"
+        holder.itemView.contentDescription =
+            "${item.name}, ${item.category.lowercase()} $kind"
         holder.itemView.isFocusable = true
         holder.itemView.setOnClickListener { onActivate(item) }
 

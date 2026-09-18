@@ -4100,6 +4100,21 @@ for _fam_key in FAMILY_SHELLS:
 GLYPHS.update(_family_names)
 
 
+# Every glyph that is a letter in a container rather than a drawn brandmark:
+# the 15 FAMILY_SHELLS crossed with A-Z0-9, plus the retired tile_* set that
+# preceded them. Exported because three generators and the grid badge all need
+# the same answer to "is this icon bespoke", and the only alternative is a
+# regex over glyph names, which silently misclassifies anything that happens to
+# start with a family word. Derived from the registries above, so a new family
+# joins it by existing.
+MONOGRAM_GLYPHS = frozenset(_family_names) | frozenset(_tile_names)
+
+
+def is_monogram(glyph: str) -> bool:
+    """True when this glyph is a letter tile, not a drawn mark."""
+    return glyph in MONOGRAM_GLYPHS
+
+
 def trakt_mark(c):
     """Trakt: the ring with its 't'.
 
