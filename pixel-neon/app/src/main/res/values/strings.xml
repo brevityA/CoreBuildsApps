@@ -106,4 +106,43 @@
     <string name="wp_open_launcher">Open %1$s</string>
     <string name="wp_done">Done</string>
 
+    <!-- Shared -->
+    <string name="action_back">Back</string>
+
+    <!-- Settings -->
+    <string name="settings_label">Settings</string>
+    <string name="settings_kicker">SETTINGS</string>
+    <string name="settings_title">Four things worth storing</string>
+    <string name="settings_group_updates">UPDATES</string>
+    <string name="settings_updates_title">Check for updates automatically</string>
+    <string name="settings_updates_sub">Looks once per launch. Never downloads or installs without asking first.</string>
+    <string name="settings_group_display">DISPLAY</string>
+    <string name="settings_motion_title">Reduce motion</string>
+    <string name="settings_motion_sub">Turn on if the filter chips lag behind the remote on an older box.</string>
+    <string name="settings_amoled_title">AMOLED chrome</string>
+    <string name="settings_amoled_sub">Pure black app background, to match the AMOLED wallpaper series.</string>
+    <string name="settings_group_storage">STORAGE</string>
+    <string name="settings_cache_title">Wallpaper cache</string>
+    <string name="settings_cache_sub">Wallpapers you downloaded. Clearing re-fetches them on demand.</string>
+    <string name="settings_cache_clear">Clear</string>
+    <string name="settings_cache_empty">Empty</string>
+    <string name="settings_footer">Every one of these is stored on this device only. Nothing here is reported anywhere.</string>
+
+    <!-- About -->
+    <string name="about_label">About</string>
+    <string name="about_kicker">ABOUT</string>
+    <string name="about_label_version">VERSION</string>
+    <string name="about_label_build">BUILD</string>
+    <string name="about_label_icons">ICONS</string>
+    <string name="about_label_wallpapers">WALLPAPERS</string>
+    <string name="about_network_header">EVERYTHING THIS APP SENDS</string>
+    <string name="about_network_one">1.  A request for the update manifest, when update checks are on.</string>
+    <string name="about_network_two">2.  A request for each wallpaper you choose to download.</string>
+    <string name="about_network_none">That is the whole list. No analytics, no installed-app list, no device model, no identifier. Icons ship inside the app and are never fetched.</string>
+    <string name="about_links">LINKS</string>
+    <string name="about_source_label">Source &amp; issues</string>
+    <string name="about_settings_label">Settings</string>
+    <string name="about_source_url">https://github.com/brevityA/CoreBuildsApps</string>
+    <string name="about_no_browser">No app on this device can open %1$s</string>
+    <string name="about_footer">Built for Projectivy\nLauncher on Android TV</string>
 </resources>
