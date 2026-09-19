@@ -144,7 +144,7 @@ jobs:
       contents: write
     steps:
       - name: Download hand-off
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
         with:
           name: iconpack-test-${{ github.sha }}
           path: test-apk
