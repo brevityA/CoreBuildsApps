@@ -361,7 +361,7 @@ This is the alternate 8-bit neon treatment of the Core Builds catalog. Each row 
 | iQIYI | `iqiyi` | `#0061FF` | `com.iqiyi.i18n.tv/com.iqiyi.i18n.tv.launch.LaunchActivity` |
 | ITV Hub | `itvmobileplayer` | `#00B4E5` | `air.ITVMobilePlayer/com.itv.tenft.itvhub.MainActivity` |
 | Ivysiilani | `ivysiilani` | `#AAFF89` | `cz.ceskatelevize.ivysilani.tvapp/cz.ceskatelevize.ivysilani.tvapp.MainActivity` |
-| Janky Player | `janky` | `#FFC107` | `com.player.janky/.MainActivity` |
+| Janky Player | `janky` | `#1E88E5` | `com.player.janky/.MainActivity` |
 | Jawwy TV | `intigral` | `#0061FF` | `com.intigral.jawwytv/com.intigral.jawwytv.standalone.StandaloneSplashActivity` |
 | Jawwy TV | `jawwy_tv` | `#0061FF` | `net.intigral.jawwytv/com.intigral.jawwytv.standalone.StandaloneSplashActivity` |
 | Jellyfin | `jellyfin` | `#00A4DC` | `org.jellyfin.androidtv/.ui.startup.StartupActivity`<br>`org.jellyfin.androidtv/org.jellyfin.androidtv.ui.startup.StartupActivity`<br>`org.jellyfin.mobile/.MainActivity` |

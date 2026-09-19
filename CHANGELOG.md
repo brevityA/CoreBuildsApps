@@ -76,6 +76,40 @@ All notable changes to the Core Builds Icon Pack. Format follows
   change at 399dp of fixed content; its body is a weighted region holding
   fixed-height cards, so it flexes rather than stacks.
 
+### Changed
+
+- **Janky Player's mark is now the shipped app's own tile mark.** Research on
+  2026-09-19 found the app nowhere in public - no Play, APKPure, Uptodown or
+  F-Droid listing, and a GitHub code search for its package id
+  `com.player.janky` returns only this repository's own generated files - so
+  the only sources are the device and the user-supplied rebuild sheet. The
+  vendor wordmark (an anarchy A with a hamster in the ring, which the earlier
+  glyph copied) is banner art; the launcher tile is a heavy J-hook cradling a
+  play triangle in the app's accent, apex welded to the stem. core_monoline
+  translates that twice: the shipped solid triangle becomes a 26.2 outline
+  nested in the bowl (its counter still holds open at 32px), and the sheet's
+  two-tone white-hook-plus-accent-triangle becomes the single accent,
+  #1E88E5 - the default the user-themable slate aggregator ships. `check_glyph.py` at
+  96/48/32px: ink 10.9 percent, counters 1 -> 1 -> 1, bbox
+  (112,80,352,416) inside the 40px safe area, core_monoline clean. The
+  colour's pre-provenance amber claim is gone; `color_reviewed` is true with
+  the sheet as its source. Revised once more the same day on tester feedback
+  (RB3, via Discord): smaller J, circle around it, bigger play sign - so the
+  hook now hangs at the detail weight inside its own 32px ring, the circle
+  the vendor's anarchy A wore on the banner, beside a free-standing
+  primary-weight play sign 200px tall against the previous 136.
+  `check_glyph.py` again: ink 16.9 percent, counters 2 -> 2 -> 2, bbox
+  (56,134,468,382). Final pass the same day, on the pack's own weight
+  grammar: the ring is the sole 32px primary with the J and the play sign
+  both at 26.2 - core_monoline's rule keeps the detail weights subordinate
+  rather than flattening every level to 32, the way `browser_globe` and
+  `play_hex` hierarchise their containers - and the lockup sits centred on
+  the 256 axis. Ink 16.3 percent at 48px, counters 2 -> 2 -> 2, bbox
+  (56,136,465,376). The app's GitHub org (jankyapp/jankyapp - a readme stub
+  with fourteen beta releases, v0.95.47-beta shipped 2026-09-19) was found
+  the same day; its APK assets and org avatar are unreachable from this
+  sandbox, so the sheet remains the pixel source.
+
 ## [1.8.20] — 2026-09-18
 
 ### Added

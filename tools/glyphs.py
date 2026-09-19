@@ -1182,37 +1182,51 @@ GLYPHS.update({"stadium": stadium, "browser_globe": browser_globe})
 # ==========================================================================
 
 def janky_play(c):
-    """Janky Player - the anarchy A, which is what the logo actually is.
+    """Janky Player - the shipped app's own mark: a J-hook cradling a play.
 
-    Several passes here drew a hamster and wrapped a ring round it, and one
-    read the diagonal as a short arm off the A's flank. Both miss the point.
-    Janky's mark is an ANARCHY A: the defining feature of that symbol is the
-    crossbar breaking past the letter on both sides to touch the circle, and
-    drawing it as a stub keeps the stroke but loses the reference entirely.
+    Three sources, in order of authority. The app has no public footprint:
+    on 2026-09-19 there was no Play, APKPure, Uptodown or F-Droid listing and
+    a GitHub code search for com.player.janky returned only this repository's
+    generated files. Late that day the user supplied the app's home anyway:
+    github.com/jankyapp/jankyapp, a readme stub whose fourteen beta releases
+    (v0.95.47-beta shipped the same day) carry the APKs - unreachable from
+    this sandbox, as is the org avatar, so the release stream proves the app
+    is alive without feeding pixels. The vendor wordmark the user
+    photographed - a grey anarchy A with a hamster sitting inside the ring -
+    is BANNER art; it is what the leanback row shows, not what the launcher
+    tile shows. The tile is the mark on the user-supplied rebuild sheet: a
+    heavy white J whose bowl cradles a play triangle in the app's accent,
+    apex welded to the stem's inner edge. J for Janky, play for player, and
+    the sheet also records what the application is - a user-themable slate
+    aggregator - the only functional statement any source makes about it.
 
-    So the slash runs rim to rim - (81,298) to (422,187) - and the A stands
-    with its apex high and its feet splayed past the ring's lower arc, at the
-    proportions measured off the supplied artwork: apex y=111, feet +/-113 at
-    y=447. Three strokes, nothing else.
+    core_monoline translates the sheet twice: fills are forbidden, so the
+    shipped solid triangle becomes an outline, and one accent per glyph, so
+    the sheet's two-tone white-hook-plus-accent-triangle renders as the
+    single accent the user-themable app ships by default, #1E88E5.
 
-    The bite is the fourth cue and the hard one. A bite is a SUBTRACTIVE
-    shape, and core_monoline forbids fills, masks and clip-paths - the only
-    three ways to subtract - so the style can add strokes and nothing else.
-    Four approximations were built and measured against each other: scalloping
-    the centreline reads as a lumpy wiggle, a gap reads as a severed leg, a
-    circle set against the edge reads as a stray dot, and the right leg
-    detouring around one shallow arc reads as a curve rather than a bite.
-    Brevity picked the shallow arc, so that is what ships: the leg bows out
-    around r=54 between y=300 and y=364 before running on to the foot.
+    Measured with tools/check_glyph.py at 96px (a real Projectivy tile),
+    48px and 32px: see the receipt in the commit message.
 
-    Verified after monoline() normalisation at 96px (a real tile), 48px and
-    32px: counters 5 -> 6 -> 6 -> 6, 25 percent ink, safe-area margin 49px
-    against the 40px floor, core_monoline clean.
+    Revised once more on tester feedback (RB3, via the user's Discord,
+    2026-09-19): "smaller J, circle around it, bigger play sign". So the
+    hook now sits at the detail weight inside its own ring - the circle
+    the vendor's anarchy A always wore, moved from the banner art to the
+    tile - hanging from the ring's inner arc so it is never an island, and
+    the play sign stands 200px tall against the previous mark's 136, 24px
+    clear of the ring so badge and play read as one lockup rather than a
+    weld. RB3's "bigger" is size, not weight: core_monoline's own rule -
+    keep the two detail weights subordinate rather than flattening every
+    level to 32 - keeps the ring the sole primary, the way browser_globe
+    and play_hex hierarchise their containers, and the thinner play stroke
+    opens its counter earlier on the downscale. The lockup sits centred on
+    the 256 axis. At 32px the ring interior and the J merge into a single
+    hooked disc and the triangle keeps its counter: the same convergence
+    the shipped sheet's own 24px row shows.
     """
-    return (f'<circle cx="256" cy="256" r="180" {_s(c, 32)}/>'
-            f'<path d="M 256 111 L 143 447" {_s(c, 30)}/>'
-            f'<path d="M 256 111 L 320 300 A 54 54 0 0 0 341 364 L 369 447" {_s(c, 30)}/>'
-            f'<path d="M 81 298 L 422 187" {_s(c, 26)}/>')
+    return (f'<circle cx="176" cy="256" r="104" {_s(c, 32)}/>'
+            f'<path d="M 210 198 L 210 266 A 44 44 0 0 1 122 266" {_s(c, 26)}/>'
+            f'<path d="M 336 156 L 336 356 L 452 256 Z" {_s(c, 26)}/>')
 
 
 def tivimate_grid(c):

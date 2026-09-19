@@ -38,7 +38,7 @@ python tools/validate.py
 python tests/test_icon_identity.py    # 35 style/colour/reference/mapping regressions (after all packs build)
 ```
 
-Paste the validator receipt. Current receipt: `Validated 931 icons · 1696 components · 25232 checks run`.
+Paste the validator receipt. Current receipt: `Validated 943 icons · 1765 components · 25854 checks run`.
 
 Anything touching the catalog, `tools/glyphs.py`, or shared `app/` resources also rebuilds Pop, because Pop mirrors those resources and renders the same catalog:
 
@@ -48,7 +48,7 @@ python tools/validate_pop.py
 python tests/test_pop.py
 ```
 
-Pop receipts: `Validated 931 icons · 1120 components · 16 swatches · 14410 checks run` and `Ran 29 tests ... OK`.
+Pop receipts: `Validated 943 icons · 1157 components · 16 swatches · 14767 checks run` and `Ran 29 tests ... OK`.
 
 **The pack identity takes precedence over literal vendor-logo reproduction.**
 Reviewed brand entries use `style: core_monoline`: 32px rounded primary strokes,
