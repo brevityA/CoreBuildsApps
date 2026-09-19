@@ -86,12 +86,23 @@ CORE_MONOLINE = "core_monoline"
 CORE_STROKES = frozenset({32.0, 26.2, 21.8})
 
 
-def core_monoline_errors(body: str, accent: str) -> list[str]:
+OFFWHITE_INK = "#E6EDF3"  # the one sanctioned secondary paint (Brand Guide ink)
+
+
+def core_monoline_errors(body: str, accent: str, *, gradient: bool = False,
+                         ink: str | None = None) -> list[str]:
     """Check glyph ink before the common banner placement transform.
 
     A vendor silhouette or fixed-white wordmark must fail even if its brand
     proportions are correct. Original fallback letters are not opted into
     this contract; the catalog marks the reviewed brand constructions.
+
+    Two DECLARED extensions keep a reviewed mark inside the contract instead
+    of dropping it out: a catalog ``gradient`` repoints the accent strokes at
+    the shared ramp (the defs it carries are part of that declaration), and a
+    catalog ``ink`` sanctions exactly one secondary literal paint for a
+    reviewed two-tone mark — Janky Player's off-white J, the shipped tile's
+    white hook. Undeclared whites, gradients or effects still fail.
     """
     import xml.etree.ElementTree as ET
 
@@ -101,20 +112,29 @@ def core_monoline_errors(body: str, accent: str) -> list[str]:
     except ET.ParseError:
         return ["invalid glyph XML"]
     primitives = {"path", "circle", "ellipse", "rect", "line", "polyline", "polygon"}
+    declared = {"defs", "linearGradient", "stop"} if gradient else set()
+    paints = {accent.upper()}
+    if gradient:
+        paints.add("URL(#CBGRAD)")
+    if ink:
+        paints.add(ink.upper())
     if not len(root):
         return ["empty monoline glyph"]
     for node in root.iter():
         if node is root:
             continue
         tag = node.tag.split("}")[-1]
-        if tag not in primitives:
+        if tag not in primitives | declared:
             errors.append(f"{tag}: only original line primitives are allowed")
+        if tag in declared:
+            continue
         if any(key in node.attrib for key in ("style", "transform", "filter", "opacity", "mask", "clip-path")):
             errors.append(f"{tag}: no private transforms/effects or CSS overrides")
         if node.get("fill") != "none":
             errors.append(f"{tag}: monoline glyphs cannot use solid fills")
-        if node.get("stroke", "").upper() != accent.upper():
-            errors.append(f"{tag}: glyph must use its one shared accent")
+        if node.get("stroke", "").upper() not in paints:
+            errors.append(f"{tag}: glyph must use its one shared accent"
+                          + (" or its declared gradient/ink" if paints - {accent.upper()} else ""))
         try:
             weight = float(node.get("stroke-width", "nan"))
         except ValueError:
