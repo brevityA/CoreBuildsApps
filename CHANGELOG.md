@@ -103,27 +103,38 @@ All notable changes to the Core Builds Icon Pack. Format follows
   and dropped in `onDestroy`, which it outlived before. When the cursor is outside the grid the
   results scroll to the top, because the set just changed and the tail of the
   previous scroll position is not where anyone wants to look.
-- **Janky's mark joins the pack's container grammar.** The Projectivy
-  screenshots ("See the uniformability. Also the new Janky icon seems like it is
-  sized wrong") measured out exact: the ring-and-beside-play lockup shipped in
-  a 0.80 x 0.47 ink box, aspect 1.71, against a pack median of 0.78 x 0.74,
-  aspect 1.05. A full-width band at half height is the one box a launcher
-  cannot place: in a fixed slot it crops at the edges and reads oversized next
-  to square neighbours, and the 16:9 banner template scales every glyph at a
-  fixed `GLYPH_H/512` rather than normalising to each ink box, so the same flat
-  box drew Janky's mark at half the cap height of every mark beside it.
-  Scaling could not fix it — a side-by-side lockup's aspect is locked near 1.6
-  by its own arithmetic — so the composition moved: the ring is now a
-  full-size container on the pack's container grammar (mpv, downloader_arrow,
-  tivimate_grid, browser_globe all span 0.76-0.84 of the grid in both axes),
-  with the J-hook cradling the play sign inside it, apex welded to the stem's
-  inner edge exactly as the vendor sheet draws them. Paints are untouched —
-  off-white hook, cyan-to-violet ring and play — counters survive 96/48/32 as
-  before, and the nearest-neighbour check still separates it from mpv_play
-  (0.923 against a 0.965 twin bar; mpv's cue is its stepped rim, Janky's the
-  hook inside). Tile ink box is now 0.75 x 0.75, aspect 1.00. Regenerated
-  through the full pipeline for Classic, Pop and Pixel Neon, including
-  `measure_pop_glyphs.py`, because glyph geometry changed.
+- **Janky's mark got its weight fixed, not its composition replaced.** The
+  Projectivy screenshots ("See the uniformability. Also the new Janky icon seems
+  like it is sized wrong") measured out exact: the ring-and-beside-play lockup
+  shipped in a 0.80 x 0.47 ink box, aspect 1.71, against a pack median of
+  0.78 x 0.74, aspect 1.05. A first pass (RB4) read that as a composition fault
+  and promoted the ring to a full-size container with the hook and play inside
+  it. The user rejected that build — "the version before look better then this
+  current one. I just needed some weight fixing etc" — and the measurements
+  agree with them: ink coverage was never the problem (RB3 sat at 0.152 against
+  a pack median of 0.173, lighter than 290 of 477 tiles). The fault was
+  *relative stroke*: 32px on a 240px ring is a 0.133 stroke ratio where the
+  pack's container rings (mpv 32/388, stremio 32/389) sit at 0.082, so the small
+  ring read a step and a half chunkier than every ring beside it — which is
+  exactly what "sized wrong" looks like at a 100px tile, stroke being mass in
+  every iconography reference consulted. RB5 therefore restores the approved
+  lockup and re-weights it: ring 26 on a 264px outer (ratio 0.098, inside the
+  container family's band), hook 22, play 24 — one step down the house weight
+  vocabulary, hierarchy intact — and the taller ring lifts the ink box from
+  0.47 to 0.52 of the grid, towards the optical grid's horizontal-rectangle
+  proportion (wider *and* shorter than the square, never flatter) instead of a
+  flat band. Width stays 0.82 inside SAFE, coverage lands at 0.147, counters
+  hold 2→2→2 at 96/48/32, and the collision pass keeps it far from any twin
+  (nearest 0.761). Paints untouched — off-white hook, cyan-to-violet ring and
+  play. Regenerated through the full pipeline for Classic, Pop and Pixel Neon,
+  including `measure_pop_glyphs.py`, because glyph geometry changed.
+  `tests/test_icon_uniformity.py` (new gate, in `build.yml` and `suite-ci.yml`)
+  now locks both failure classes: container-grammar marks must span 0.55-0.90
+  of GRID in both axes at aspect 0.80-1.30 (Janky is deliberately *not* on that
+  list — it is a lockup, and the optical grid gives lockups a wider, shorter
+  box on purpose), and no shipped tile glyph may carry the flat full-width band
+  signature RB3 shipped with (aspect > 1.65 at 0.44-0.50 height and >= 0.78
+  width) — the rule that still fails the 1.8.20 geometry today.
 
 ### Added
 

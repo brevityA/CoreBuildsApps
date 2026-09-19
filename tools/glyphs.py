@@ -1244,34 +1244,37 @@ def janky_play(c):
     triangle keeps its counter: the same convergence the shipped sheet's
     own 24px row shows.
 
-    Revised once more on the user's Projectivy screenshots (RB4, 2026-09-19):
-    "See the uniformability. Also the new Janky icon seems like it is sized
-    wrong." Measured, the complaint is exact: the side-by-side lockup's ink
-    box was 80% wide by 47% tall (aspect 1.71) against a pack median of
-    78% x 74% (aspect 1.05) - a full-width band where every neighbour sits
-    in a near-square optical box. In a launcher's fixed slot a band that
-    wide crops at the edges and reads oversized; on the 16:9 banner, whose
-    template scales every glyph at a fixed GLYPH_H/512 rather than
-    normalising to each ink box, the same flat box drew Janky's mark at
-    half the cap height of every mark beside it. A side-by-side lockup
-    cannot be fixed by scaling - its aspect is locked near 1.6 by the
-    ring-plus-beside-play arithmetic - so the composition moves instead:
-    the ring becomes a full-size container on the pack's own container
-    grammar (browser_globe, downloader_arrow, tivimate_grid all span
-    0.79-0.84 of the grid in both axes), and the J-hook cradles the play
-    sign inside it, apex welded to the stem's inner edge exactly as the
-    vendor sheet draws them - the sheet's original read, which RB3 had
-    moved outside for downscale headroom. Inside a 0.75 container there is
-    room for both at the detail weight: the play keeps a 170px stance and
-    an open counter at 96px, and the hook's bowl sweeps under it. Ink box
-    is now the ring: 0.75 x 0.75, aspect 1.00, inside the mark band the
-    uniformity gate enforces. Paints are untouched - off-white hook,
-    cyan-to-violet ring and play - so tile, banner and rail still share
-    one paint story.
+    RB4 (same day) reacted to the user's Projectivy screenshots by
+    promoting the ring to a full-size container with the hook and play
+    inside it. The user rejected that build: "the version before look
+    better then this current one. I just needed some weight fixing etc."
+    RB5 therefore restores this composition - the ring-and-J badge with
+    the play sign beside it - and fixes what the screenshots actually
+    measured, which was weight, not composition. Research agrees on the
+    two levers: stroke is mass (Material's icon metrics call a thicker
+    stroke "a sense of heaviness and mass"), and uniformity is optical
+    area, not bounding box (the optical grid gives a horizontal rectangle
+    a wider but shorter box than the square, never a squarer one).
+    Measured against this pack, RB3's fault was relative stroke: 32px on
+    a 240px ring is a 0.133 stroke ratio where the pack's container rings
+    (mpv 32/388, stremio 32/389) sit at 0.082 - the small ring read one
+    and a half steps chunkier than every ring beside it, which is what
+    "sized wrong" looks like at a 100px tile. Ink coverage was never the
+    problem: RB3 measured 0.152 against a pack median of 0.173, lighter
+    than 290 of 477 tiles. So RB5 keeps the lockup and re-weights it:
+    ring 26 on a 264px outer (ratio 0.098, inside the container family's
+    band), hook 22, play 24 - one step down the house weight vocabulary,
+    hierarchy intact - and the ring grows 240 to 264 outer so the ink box
+    rises from 0.47 to 0.52 of the grid, towards the optical grid's
+    horizontal-rectangle proportion instead of a flat band. Width stays
+    at 0.82 inside SAFE; coverage lands near 0.14, lighter still, because
+    a wide lockup that sheds stroke reads the same mass as a square mark
+    that keeps it. Paints untouched: off-white hook, cyan-to-violet ring
+    and play.
     """
-    return (f'<circle cx="256" cy="256" r="176" {_s(c, 32)}/>'
-            f'<path d="M 330 168 L 330 300 A 66 66 0 0 1 198 300" {_s(OFFWHITE_INK, 26)}/>'
-            f'<path d="M 196 175 L 196 345 L 320 260 Z" {_s(c, 26)}/>')
+    return (f'<circle cx="178" cy="256" r="119" {_s(c, 26)}/>'
+            f'<path d="M 212 200 L 212 268 A 44 44 0 0 1 124 268" {_s(OFFWHITE_INK, 22)}/>'
+            f'<path d="M 345 161 L 345 351 L 455 256 Z" {_s(c, 24)}/>')
 
 
 def tivimate_grid(c):

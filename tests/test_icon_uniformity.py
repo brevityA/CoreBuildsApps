@@ -13,19 +13,27 @@ GLYPH_H/512 instead of normalising to each ink box - the same flat box
 drew the mark at half the cap height of every mark beside it.
 
 Two rules, both computed from the rendered vector (the same rasteriser
-the generators use, so CI and local agree):
+the generators use, so CI and local agree). RB5 (same day) restored the
+lockup the user preferred with its stroke weights corrected - see the
+janky_play docstring for the weight maths - and these two rules are what
+keep either failure class from shipping again: a container drawn at half
+height, or a lockup drawn as a full-width flat band.
 
   container grammar   Glyphs whose vocabulary is a container - a ring or
                       frame drawn as the primary element - must span the
                       container band in BOTH axes (0.55-0.90 of GRID) and
                       stay near-square (aspect 0.80-1.30). A container at
-                      half height is the Janky bug class: the eye reads
-                      the long axis as size, so a flat container looks
-                      oversized in every fixed slot. The list is explicit
-                      on purpose; membership is a design decision, and a
-                      new container mark has to be added here when it is
-                      drawn, which is the review moment this gate exists
-                      to create.
+                      half height is the bug class RB4 mistakenly applied
+                      to Janky: the eye reads the long axis as size, so a
+                      flat container looks oversized in every fixed slot.
+                      Janky is NOT on this list and must not be added: it
+                      is a lockup (badge plus a sign beside it), and the
+                      optical grid gives horizontal lockups a wider,
+                      shorter box than the square on purpose. The list is
+                      otherwise explicit on purpose; membership is a
+                      design decision, and a new container mark has to be
+                      added here when it is drawn, which is the review
+                      moment this gate exists to create.
 
   full-width band     No shipped tile glyph may carry the exact signature
                       RB4 flagged: aspect > 1.65 with height in 0.44-0.50
@@ -64,7 +72,6 @@ from glyphs import GRID  # noqa: E402
 # is the pack's measured container family (mpv 0.76, downloader 0.79,
 # tivimate 0.83 x 0.66, browser_globe 0.84 x 0.72).
 CONTAINER_GRAMMAR = {
-    "janky_play",
     "mpv_play",
     "browser_globe",
     "tivimate_grid",
