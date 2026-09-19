@@ -72,4 +72,10 @@
     <dimen name="cb_text_title">32sp</dimen>
     <dimen name="cb_text_display">34sp</dimen>
 
+    <!-- Request screen. The QR has to survive being photographed across a
+         living room, and a symbol drawn smaller than this stops being reliably
+         scannable well before it stops being visible. QrView draws whole-pixel
+         modules, so it uses whatever square fits inside this and centres it. -->
+    <dimen name="cb_qr_min">168dp</dimen>
+
 </resources>

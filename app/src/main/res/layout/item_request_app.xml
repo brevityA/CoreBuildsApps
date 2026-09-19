@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  One unmapped app. Focusable, because focus is what selects it: the detail pane
+  follows the D-pad rather than waiting for a select press.
+-->
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/bg_ghost"
+    android:clickable="true"
+    android:focusable="true"
+    android:minHeight="@dimen/cb_target_min"
+    android:orientation="vertical"
+    android:layout_marginBottom="@dimen/cb_space_xs"
+    android:paddingStart="@dimen/cb_space_sm"
+    android:paddingEnd="@dimen/cb_space_sm"
+    android:paddingTop="@dimen/cb_space_xs"
+    android:paddingBottom="@dimen/cb_space_xs">
+
+    <TextView
+        android:id="@+id/request_app_label"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:textColor="@color/cb_ink"
+        android:textSize="@dimen/cb_text_label" />
+
+    <TextView
+        android:id="@+id/request_app_kind"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="monospace"
+        android:letterSpacing="0.08"
+        android:textColor="@color/cb_slate"
+        android:textSize="@dimen/cb_text_kicker" />
+</LinearLayout>

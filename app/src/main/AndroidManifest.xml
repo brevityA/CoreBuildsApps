@@ -56,6 +56,27 @@
             <action android:name="android.intent.action.MAIN" />
             <category android:name="android.intent.category.HOME" />
         </intent>
+        <!--
+          Launchable apps, for the "request an icon" screen: it lists what this
+          television has installed that the pack has no icon for, and reads the
+          launcher activity so the report carries a component instead of a
+          guess.
+
+          These two <intent> entries are the narrow form of the same visibility
+          QUERY_ALL_PACKAGES would grant. They return only apps that publish a
+          launcher entry — which is exactly the set an icon pack can theme, and
+          a set the user can already see on their home screen. Nothing here
+          leaves the device: the screen draws a QR for the user to scan, and
+          About's "everything this app sends" list stays true.
+        -->
+        <intent>
+            <action android:name="android.intent.action.MAIN" />
+            <category android:name="android.intent.category.LAUNCHER" />
+        </intent>
+        <intent>
+            <action android:name="android.intent.action.MAIN" />
+            <category android:name="android.intent.category.LEANBACK_LAUNCHER" />
+        </intent>
         <intent>
             <action android:name="com.spocky.projengmenu.APPLY_ICONPACK" />
         </intent>
@@ -221,6 +242,11 @@
             android:name=".AboutActivity"
             android:exported="false"
             android:label="@string/about_label"
+            android:theme="@style/Theme.CoreBuilds" />
+        <activity
+            android:name=".RequestIconActivity"
+            android:exported="false"
+            android:label="@string/request_label"
             android:theme="@style/Theme.CoreBuilds" />
         <activity
             android:name=".ExportProgressActivity"

@@ -108,8 +108,32 @@
                 android:textColor="@color/cb_slate"
                 android:textSize="@dimen/cb_text_data" />
 
-            <!-- Wallpapers. Title on the button, count underneath: the old
-                 single label put a whole sentence on the affordance. -->
+            <!--
+                 Wallpapers, Request, Settings and About as a 2x2 of equal tiles.
+
+                 They used to be several different shapes: a wide bold button for
+                 Wallpapers with its count floating underneath, then a pair of
+                 small ghost pills on their own line with different padding and
+                 a smaller type size. Right-aligned and ragged, that gives a
+                 D-pad differently sized targets and no obvious reading order - a
+                 tester asked for "some kind of grid view cause it's easier"
+                 looking at exactly this. Equal weights make it one control
+                 group: the arrows move inside it, and down leaves it.
+
+                 Two rows rather than one: this column is only as wide as the
+                 apply button above it, so a fourth tile on a single row would
+                 leave each about 65dp and ellipsize "Wallpapers" to a stub. A
+                 2x2 gives every label room and keeps the group the same shape.
+
+                 Down from the bottom row goes to the search field, not
+                 apply_targets. That view is visibility="gone" until pick mode,
+                 and pick mode hides this whole group, so the old chain pointed
+                 every one of these at a view that was never on screen at the
+                 same time they were.
+
+                 The count keeps its own line beneath rather than moving inside
+                 the Wallpapers tile, so all four tiles stay the same height.
+            -->
             <LinearLayout
                 android:id="@+id/wallpapers_group"
                 android:layout_width="wrap_content"
@@ -118,62 +142,79 @@
                 android:gravity="end"
                 android:orientation="vertical">
 
-                <TextView
-                    android:id="@+id/wallpapers_entry"
-                    android:layout_width="wrap_content"
+                <LinearLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:minWidth="@dimen/cb_button_min_width"
-                    android:minHeight="@dimen/cb_target_min"
-                    android:gravity="center"
-                    android:background="@drawable/bg_ghost"
-                    android:clickable="true"
-                    android:focusable="true"
-                    android:focusableInTouchMode="true"
-                    android:nextFocusUp="@id/apply_button"
-                    android:nextFocusDown="@id/settings_entry"
-                    android:paddingStart="@dimen/cb_space_lg"
-                    android:paddingEnd="@dimen/cb_space_lg"
-                    android:paddingTop="@dimen/cb_space_sm"
-                    android:paddingBottom="@dimen/cb_space_sm"
-                    android:text="@string/wp_entry"
-                    android:textColor="@color/cb_ink"
-                    android:textSize="@dimen/cb_text_body"
-                    android:textStyle="bold" />
+                    android:orientation="horizontal">
 
-                <TextView
-                    android:id="@+id/wallpapers_entry_sub"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="6dp"
-                    android:textColor="@color/cb_slate"
-                    android:textSize="@dimen/cb_text_data" />
+                    <TextView
+                        android:id="@+id/wallpapers_entry"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:minHeight="@dimen/cb_target_min"
+                        android:background="@drawable/bg_ghost"
+                        android:clickable="true"
+                        android:ellipsize="end"
+                        android:focusable="true"
+                        android:focusableInTouchMode="true"
+                        android:gravity="center"
+                        android:maxLines="1"
+                        android:nextFocusUp="@id/apply_button"
+                        android:nextFocusRight="@id/request_entry"
+                        android:nextFocusDown="@id/settings_entry"
+                        android:paddingTop="@dimen/cb_space_xs"
+                        android:paddingBottom="@dimen/cb_space_xs"
+                        android:text="@string/wp_entry"
+                        android:textColor="@color/cb_ink"
+                        android:textSize="@dimen/cb_text_label" />
 
-                <!-- Settings and About sit inside the vertical chain rather
-                     than in a corner: an overflow menu is a phone pattern, and
-                     a corner affordance on a TV costs a diagonal the D-pad
-                     cannot make. Down from wallpapers lands here, down from
-                     here continues to apply_targets, so the existing chain is
-                     extended by one stop rather than rerouted. -->
+                    <TextView
+                        android:id="@+id/request_entry"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_marginStart="@dimen/cb_space_xs"
+                        android:minHeight="@dimen/cb_target_min"
+                        android:background="@drawable/bg_ghost"
+                        android:clickable="true"
+                        android:ellipsize="end"
+                        android:focusable="true"
+                        android:gravity="center"
+                        android:maxLines="1"
+                        android:nextFocusUp="@id/apply_button"
+                        android:nextFocusLeft="@id/wallpapers_entry"
+                        android:nextFocusDown="@id/about_entry"
+                        android:paddingTop="@dimen/cb_space_xs"
+                        android:paddingBottom="@dimen/cb_space_xs"
+                        android:text="@string/request_label"
+                        android:textColor="@color/cb_ink"
+                        android:textSize="@dimen/cb_text_label" />
+                </LinearLayout>
+
                 <LinearLayout
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/cb_space_sm"
+                    android:layout_marginTop="@dimen/cb_space_xs"
+                    android:minWidth="@dimen/cb_button_min_width"
                     android:orientation="horizontal">
 
                     <TextView
                         android:id="@+id/settings_entry"
-                        android:layout_width="wrap_content"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
+                        android:layout_weight="1"
                         android:minHeight="@dimen/cb_target_min"
                         android:background="@drawable/bg_ghost"
                         android:clickable="true"
+                        android:ellipsize="end"
                         android:focusable="true"
                         android:gravity="center"
+                        android:maxLines="1"
                         android:nextFocusUp="@id/wallpapers_entry"
-                        android:nextFocusDown="@id/apply_targets"
                         android:nextFocusRight="@id/about_entry"
-                        android:paddingStart="@dimen/cb_space_md"
-                        android:paddingEnd="@dimen/cb_space_md"
+                        android:nextFocusDown="@id/search"
                         android:paddingTop="@dimen/cb_space_xs"
                         android:paddingBottom="@dimen/cb_space_xs"
                         android:text="@string/settings_label"
@@ -182,25 +223,34 @@
 
                     <TextView
                         android:id="@+id/about_entry"
-                        android:layout_width="wrap_content"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
+                        android:layout_weight="1"
                         android:layout_marginStart="@dimen/cb_space_xs"
                         android:minHeight="@dimen/cb_target_min"
                         android:background="@drawable/bg_ghost"
                         android:clickable="true"
+                        android:ellipsize="end"
                         android:focusable="true"
                         android:gravity="center"
-                        android:nextFocusUp="@id/wallpapers_entry"
-                        android:nextFocusDown="@id/apply_targets"
+                        android:maxLines="1"
+                        android:nextFocusUp="@id/request_entry"
                         android:nextFocusLeft="@id/settings_entry"
-                        android:paddingStart="@dimen/cb_space_md"
-                        android:paddingEnd="@dimen/cb_space_md"
+                        android:nextFocusDown="@id/search"
                         android:paddingTop="@dimen/cb_space_xs"
                         android:paddingBottom="@dimen/cb_space_xs"
                         android:text="@string/about_label"
                         android:textColor="@color/cb_ink"
                         android:textSize="@dimen/cb_text_label" />
                 </LinearLayout>
+
+                <TextView
+                    android:id="@+id/wallpapers_entry_sub"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="6dp"
+                    android:textColor="@color/cb_slate"
+                    android:textSize="@dimen/cb_text_data" />
             </LinearLayout>
         </LinearLayout>
     </LinearLayout>

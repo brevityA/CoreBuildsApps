@@ -165,4 +165,23 @@
     <string name="about_source_url">https://github.com/brevityA/CoreBuildsApps</string>
     <string name="about_no_browser">No app on this device can open %1$s</string>
     <string name="about_footer">Built for Projectivy\nLauncher on Android TV</string>
+
+    <!-- Request an icon -->
+    <string name="request_label">Request</string>
+    <string name="request_kicker">REQUEST AN ICON</string>
+    <string name="request_title">Apps with no icon</string>
+    <string name="request_entry_sub">Report what this TV is missing</string>
+    <string name="request_scanning">Checking what is installed…</string>
+    <string name="request_count_one">1 app on this TV has no icon from this pack.</string>
+    <string name="request_count_fmt">%1$d apps on this TV have no icon from this pack.</string>
+    <string name="request_none">Nothing missing.</string>
+    <string name="request_none_body">Every app on this TV already has an icon in the pack. If one still looks wrong in your launcher, it is a launcher cache rather than a missing icon — reapply the pack from the home screen.</string>
+    <string name="request_failed">Could not read the installed apps.</string>
+    <string name="request_failed_body">Android would not list the launchable apps on this device. Nothing was sent anywhere. You can still open an icon request from the repository on a phone or computer.</string>
+    <string name="request_kind_missing">NO ICON YET</string>
+    <string name="request_kind_mapping">ICON EXISTS, NOT APPLYING</string>
+    <string name="request_explain_missing">There is no icon for this app in the pack. The report asks for a new one.</string>
+    <string name="request_explain_mapping">The pack has an icon for this app, but this TV launches it through an activity the pack does not list — so the launcher never swaps the icon in. The report carries the activity below, which is the part that fixes it.</string>
+    <string name="request_scan_hint">Scan with a phone to open the report, already filled in.</string>
+    <string name="request_qr_description">QR code linking to a prefilled icon request</string>
 </resources>

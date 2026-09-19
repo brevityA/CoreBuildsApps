@@ -38,7 +38,7 @@ python tools/validate.py
 python tests/test_icon_identity.py    # 35 style/colour/reference/mapping regressions (after all packs build)
 ```
 
-Paste the validator receipt. Current receipt: `Validated 943 icons · 1765 components · 25854 checks run`.
+Paste the validator receipt. Current receipt: `Validated 943 icons · 1765 components · 25856 checks run`.
 
 Anything touching the catalog, `tools/glyphs.py`, or shared `app/` resources also rebuilds Pop, because Pop mirrors those resources and renders the same catalog:
 
@@ -48,7 +48,7 @@ python tools/validate_pop.py
 python tests/test_pop.py
 ```
 
-Pop receipts: `Validated 943 icons · 1157 components · 16 swatches · 14767 checks run` and `Ran 29 tests ... OK`.
+Pop receipts: `Validated 943 icons · 1157 components · 16 swatches · 14770 checks run` and `Ran 29 tests ... OK`.
 
 **The pack identity takes precedence over literal vendor-logo reproduction.**
 Reviewed brand entries use `style: core_monoline`: 32px rounded primary strokes,
@@ -114,7 +114,12 @@ prefills `input`/`textarea` fields only, and the tool refuses to promise more.
 
 ## Product verification shortcuts
 
-- Icon Pack: four generators + `python tools/validate.py`.
+- Icon Pack: four generators + `python tools/validate.py`, plus
+  `python tools/check_ui_resources.py` for anything touching layouts, strings or
+  the shared Kotlin, and `python tools/check_qr.py` (needs a JDK and, on first
+  run, network) for anything touching `QrCode.java` or the request screen's URL
+  shape. The QR gate downloads a hash-pinned ZXing to *decode* with; ZXing is
+  never an APK dependency.
   Square PNGs get a raster presence pass (`tools/presence.py`) after svg2png —
   night keyline + accent bloom as rings. Vectors stay style-AA. Banners skip it.
 - Pixel Neon: `python tools/build_pixel_neon.py`, `python tools/validate_pixel_neon.py`, plus `cd pixel-neon && ./gradlew :app:lintDebug :app:assembleDebug`.

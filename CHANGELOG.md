@@ -10,6 +10,40 @@ All notable changes to the Core Builds Icon Pack. Format follows
 
 ### Added
 
+- **Request an icon** — a Request tile on the home screen lists the apps on this
+  television that the pack has no icon for, and hands each one to a phone as a
+  prefilled GitHub issue. The pack maps launcher *activities*, not packages, so
+  the screen separates the two ways an icon goes missing: the package is absent
+  from `appfilter.xml` entirely (a new icon request), or the package is mapped
+  but this television launches it through an activity the pack does not list, so
+  the launcher never swaps the icon in. The second case is the common one and
+  the one a reporter could not previously diagnose — the fix is the component,
+  and getting a component off a television otherwise needs adb. Two narrow
+  `<queries><intent>` entries (`MAIN`+`LAUNCHER`, `MAIN`+`LEANBACK_LAUNCHER`)
+  replace what `QUERY_ALL_PACKAGES` would grant; they return only apps that
+  publish a launcher entry, which is the set an icon pack can theme and the set
+  already visible on the home screen. Nothing is sent anywhere — the handoff is
+  a QR code on screen, so About's "everything this app sends" list stays true.
+- **A QR encoder, verified rather than reviewed** — `QrCode.java`, byte mode,
+  ECC M, versions 1-20. It is Java rather than Kotlin and imports nothing from
+  Android so that `tools/check_qr.py` can compile it with `javac` and put its
+  output through ZXing's *decoder*; ZXing is the test oracle and never an APK
+  dependency. That matters because the app builds with `isMinifyEnabled = false`
+  (resource shrinking would strip drawables resolved by name), so ZXing's 594 KB
+  would ship whole, in both packs, to use about a twentieth of it — and because
+  a QR that is subtly wrong fails silently, with a camera that simply never
+  locks on. Three gates: every payload length under all eight masks decoded
+  straight from the module matrix; the real prefill URLs compared module for
+  module against ZXing's own encoder output; and the same URLs scanned through
+  the full reader, stated as a comparison against ZXing's own symbols because
+  ZXing's *detector* misjudges about one in a hundred pixel-exact synthetic
+  symbols regardless of who encoded them. The screen sheds the title, then the
+  app name, to keep every URL inside a version 11 symbol — never the component.
+- `tools/build_issue_prefills.py` now also generates
+  `values/issue_forms.xml`, so the request screen's URLs are derived from
+  `.github/ISSUE_TEMPLATE/` rather than retyped into Kotlin; `--check` fails on
+  drift, and Pop mirrors the file.
+
 - **Twelve-wall series convention** — Circuit Core gains `Circuit Nexus` and
   `Circuit Vault`, Retrowave gains `Laser Dusk` and `Ember Horizon`, and the
   AMOLED set gains `Eclipse` and `Corner Signal`. Every active series now has
@@ -64,6 +98,23 @@ All notable changes to the Core Builds Icon Pack. Format follows
   its generator; Pixel Neon has its own Kotlin and is untouched.
 
 ### Changed
+
+- The home screen's entries are a 2x2 of equal tiles rather than one row of
+  three. A fourth tile on a single row would have left each about 65dp and
+  ellipsized "Wallpapers" to a stub, because the column is only as wide as the
+  apply button above it.
+- `tools/check_ui_resources.py` now runs in CI. It has existed for a while but
+  only ever ran by hand, which is how an `R.color` reference reached main once
+  already — and it is the check that catches app/ gaining a view or string that
+  pop/ has not mirrored, given pop compiles app/'s Kotlin.
+- `tests/test_resource_parity.py` asserts that Pixel Neon has the layouts it
+  *inflates*, rather than a copy of every layout under `app/`. Pixel Neon keeps
+  its own smaller fork of the Kotlin with no Settings, About or Request screen;
+  the old blanket rule is why dead `activity_about.xml` and
+  `activity_settings.xml` sit in its tree, and copying `activity_request.xml`
+  there would have added a file naming `tv.corebuilds.iconpack.QrView`, a class
+  outside its package. The three reference checks likewise now resolve Pixel
+  Neon's own layouts, which is what it links, instead of app/'s.
 
 - **Twelve generic constructions became bespoke marks** — AirScreen, Aerial
   Views, AnyDesk and DW; Crossy Road, Blokada (legacy v4), Private Internet

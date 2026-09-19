@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Two panes, because the list and the thing you do with a row are both wanted at
+  once: on a remote, a drill-down would cost a select and a back press per app on
+  a screen whose whole job is stepping through a short list of them. Focus drives
+  the detail pane, so a D-pad press down is the only gesture needed.
+
+  The list scrolls; the detail does not. A RecyclerView owns its own scrolling,
+  and the detail pane is sized to fit a 540dp viewport without one — the QR is
+  the tallest thing on it and is capped in dimens.
+-->
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/cb_night"
+    android:paddingStart="@dimen/cb_gutter_side"
+    android:paddingEnd="@dimen/cb_gutter_side"
+    android:paddingTop="@dimen/cb_gutter_top"
+    android:paddingBottom="@dimen/cb_gutter_bottom">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bg_chip"
+        android:fontFamily="monospace"
+        android:paddingStart="@dimen/cb_space_sm"
+        android:paddingEnd="@dimen/cb_space_sm"
+        android:paddingTop="7dp"
+        android:paddingBottom="7dp"
+        android:letterSpacing="0.18"
+        android:text="@string/request_kicker"
+        android:textColor="@color/cb_signal_cyan"
+        android:textSize="@dimen/cb_text_kicker"
+        android:textStyle="bold" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/cb_space_sm"
+        android:letterSpacing="-0.025"
+        android:text="@string/request_title"
+        android:textColor="@color/cb_ink"
+        android:textSize="@dimen/cb_text_title"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/request_count"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/cb_space_xs"
+        android:fontFamily="monospace"
+        android:letterSpacing="0.02"
+        android:textColor="@color/cb_slate"
+        android:textSize="@dimen/cb_text_data" />
+
+    <TextView
+        android:id="@+id/request_empty"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/cb_space_md"
+        android:lineSpacingMultiplier="1.25"
+        android:textColor="@color/cb_slate"
+        android:textSize="@dimen/cb_text_body"
+        android:visibility="gone" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:layout_marginTop="@dimen/cb_space_md"
+        android:orientation="horizontal">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/request_list"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="4"
+            android:clipToPadding="false"
+            android:focusable="false"
+            android:paddingBottom="@dimen/cb_space_sm" />
+
+        <LinearLayout
+            android:id="@+id/request_detail"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="5"
+            android:layout_marginStart="@dimen/cb_space_lg"
+            android:background="@drawable/bg_card"
+            android:orientation="vertical"
+            android:padding="@dimen/cb_card_padding">
+
+            <TextView
+                android:id="@+id/request_app_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:textColor="@color/cb_ink"
+                android:textSize="@dimen/cb_text_section"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/request_component"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/cb_space_xs"
+                android:fontFamily="monospace"
+                android:maxLines="3"
+                android:ellipsize="middle"
+                android:textColor="@color/cb_signal_cyan"
+                android:textSize="@dimen/cb_text_kicker" />
+
+            <TextView
+                android:id="@+id/request_explain"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/cb_space_xs"
+                android:lineSpacingMultiplier="1.2"
+                android:textColor="@color/cb_slate"
+                android:textSize="@dimen/cb_text_data" />
+
+            <!--
+                 A fixed slot, not 0dp + weight. A weighted child in a
+                 LinearLayout the parent measured EXACTLY is handed an EXACTLY
+                 spec of whatever space is left over, and minHeight has no say
+                 in that — so a long app name or a wrapped explanation could
+                 squeeze the symbol below the size QrView will draw at all
+                 (it refuses to render under one pixel per module rather than
+                 paint a smudge that cannot be scanned). The QR is the whole
+                 handoff on this screen, so it gets its space first.
+            -->
+            <tv.corebuilds.iconpack.QrView
+                android:id="@+id/request_qr"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/cb_qr_min"
+                android:layout_marginTop="@dimen/cb_space_sm" />
+
+            <TextView
+                android:id="@+id/request_caption"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/cb_space_xs"
+                android:textColor="@color/cb_slate"
+                android:textSize="@dimen/cb_text_kicker" />
+        </LinearLayout>
+    </LinearLayout>
+</LinearLayout>
