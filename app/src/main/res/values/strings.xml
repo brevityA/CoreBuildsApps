@@ -129,7 +129,7 @@
     <!-- Settings -->
     <string name="settings_label">Settings</string>
     <string name="settings_kicker">SETTINGS</string>
-    <string name="settings_title">Four things worth storing</string>
+    <string name="settings_title">Worth storing, worth knowing</string>
     <string name="settings_group_updates">UPDATES</string>
     <string name="settings_updates_title">Check for updates automatically</string>
     <string name="settings_updates_sub">Looks once per launch. Never downloads or installs without asking first.</string>
@@ -143,7 +143,69 @@
     <string name="settings_cache_sub">Wallpapers you downloaded. Clearing re-fetches them on demand.</string>
     <string name="settings_cache_clear">Clear</string>
     <string name="settings_cache_empty">Empty</string>
-    <string name="settings_footer">Every one of these is stored on this device only. Nothing here is reported anywhere.</string>
+    <string name="settings_group_launcher">LAUNCHER</string>
+    <string name="settings_refresh_title">Refresh launcher icons</string>
+    <string name="settings_refresh_sub">Re-sends the apply contract to the detected launcher, for cards still showing yesterday\'s bitmaps after a pack update.</string>
+    <string name="settings_appinfo_title">Launcher app info</string>
+    <string name="settings_appinfo_sub">The system page for the detected launcher. Force Stop there clears a bitmap cache re-applying cannot reach.</string>
+    <string name="settings_group_suite">SUITE</string>
+    <string name="settings_group_help">HELP</string>
+    <string name="settings_faq_title">Troubleshooting and FAQ</string>
+    <string name="settings_faq_sub">Stale icons, manual overrides, Monet handoffs, unmapped apps. The repo docs, readable from the sofa.</string>
+    <string name="refresh_applied_fmt">Apply re-sent to %1$s. If cards are still stale, force-stop the launcher from its app info page.</string>
+    <string name="refresh_manual_fmt">%1$s has no apply contract: %2$s</string>
+    <string name="refresh_no_launcher">No supported launcher detected on this TV.</string>
+    <string name="appinfo_missing">No supported launcher detected to open.</string>
+    <string name="settings_footer">The switches above are stored on this device only. Nothing here is reported anywhere.</string>
+
+    <!-- Troubleshooting / FAQ -->
+    <string name="faq_label">Troubleshooting and FAQ</string>
+    <string name="faq_kicker">HELP</string>
+    <string name="faq_title">Answers from the sofa</string>
+    <string name="faq_cache_title">Icons not updating after a pack update?</string>
+    <string name="faq_cache_body">Launchers cache rendered cards in memory and on disk, so a fresh pack can sit behind yesterday\'s bitmaps. Settings → Refresh launcher icons re-sends the apply contract; if that is not enough, Settings → Launcher app info opens the system page where Force Stop clears the cache without rebooting the TV.</string>
+    <string name="faq_override_title">Manual icon overrides win over the pack</string>
+    <string name="faq_override_body">Projectivy keeps an icon you picked by hand until you pick again, so a per-app override survives every pack update. Re-assign the tile from the launcher\'s icon picker, or choose the pack default there, to hand the tile back to Core Builds.</string>
+    <string name="faq_monet_title">Send to Monet: what it can and cannot take</string>
+    <string name="faq_monet_body">Wallpapers go to Monet straight from Preview or Export (Send to Monet, Monet 1.0.72 or newer, Premium). The icon pack does not: Monet has no apply intent. It discovers packs through the standard discovery actions, and you choose Core Builds under Monet Settings → Apps → Icon pack.</string>
+    <string name="faq_unmapped_title">An installed app has no icon</string>
+    <string name="faq_unmapped_body">Auto-assign needs the exact activity your box launches, and some apps ship different mobile and Leanback activities. Read the component off the device with the ADB scanning guide in the repo docs and send a mapping request; the next tranche picks it up.</string>
+    <string name="chip_count_fmt">%1$s (%2$d)</string>
+
+    <!-- On-device auditor -->
+    <string name="settings_audit_title">Scan for unmapped apps</string>
+    <string name="settings_audit_sub">Lists every launchable app on this TV that has no icon in the pack yet, and draws a QR code that opens a prefilled icon request on your phone.</string>
+    <string name="audit_kicker">AUDIT</string>
+    <string name="audit_label">Unmapped apps</string>
+    <string name="audit_title">Apps without a Core Builds icon</string>
+    <string name="audit_count_fmt">%1$d launchable apps on this TV have no icon yet</string>
+    <string name="audit_empty">Every launchable app on this TV is mapped. Nothing to request.</string>
+    <string name="audit_qr_hint">Scan with your phone. The issue opens on the icon-request form with the app name, component and this TV\'s details already filled in — check them and submit.</string>
+
+    <!-- Icon inspector -->
+    <string name="inspector_kicker">INSPECT</string>
+    <string name="inspector_label">Icon inspector</string>
+    <string name="inspector_meta_fmt">Category %1$s · drawable %2$s</string>
+    <string name="inspector_export">Export PNG to Pictures</string>
+    <string name="inspector_launch">Launch app</string>
+    <string name="inspector_exported_fmt">Saved to Pictures/CoreBuilds/Icons/%1$s</string>
+    <string name="inspector_export_failed_fmt">Export failed: %1$s</string>
+    <string name="inspector_storage_denied">Storage permission denied — the icon stays in the pack.</string>
+    <string name="inspector_not_mapped">No component maps to this drawable in appfilter.xml.</string>
+    <string name="inspector_not_installed_fmt">%1$s is not installed on this TV, or hides its launcher activity from the pack.</string>
+
+    <!-- Suite hub -->
+    <string name="settings_suite_title">Core Builds Suite</string>
+    <string name="settings_suite_sub">What else from the living-room suite is on this TV, which version, and each app\'s Downloader code.</string>
+    <string name="suite_kicker">SUITE</string>
+    <string name="suite_label">Core Builds Suite</string>
+    <string name="suite_title">The rest of the living room</string>
+    <string name="suite_installed_fmt">Installed · v%1$s</string>
+    <string name="suite_installed_plain">Installed</string>
+    <string name="suite_not_installed">Not installed on this TV</string>
+    <string name="suite_code_fmt">Downloader code %1$s</string>
+    <string name="suite_no_code">Not on Downloader yet — grab the APK from the GitHub release</string>
+    <string name="suite_open_failed_fmt">Could not open %1$s from here.</string>
 
     <!-- About -->
     <string name="about_label">About</string>

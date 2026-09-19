@@ -6,7 +6,7 @@
 
 | Product | Path | Package ID | Version | Downloader / stable tag |
 |---|---|---|---:|---|
-| Core Builds Icon Pack | `app/` with repo-root Gradle | `tv.corebuilds.iconpack` | `1.8.20` | `5270601` / `iconpack` |
+| Core Builds Icon Pack | `app/` with repo-root Gradle | `tv.corebuilds.iconpack` | `1.8.21` | `5270601` / `iconpack` |
 | Core Builds Pixel Neon | `pixel-neon/` | `tv.corebuilds.pixelneon` | `0.1.0` | `[USER TO SUPPLY]` / `pixel-neon` |
 | Core Builds Pop | `pop/` with repo-root Gradle | `tv.corebuilds.iconpack.pop` | `1.0.0` | `[USER TO SUPPLY]` / `pop` |
 | Core Line | `ticker/` + `ticker/android/` | `dev.corebuilds.line` | `1.3.0` | `7375676` / `coreline` |
@@ -38,7 +38,7 @@ python tools/validate.py
 python tests/test_icon_identity.py    # 35 style/colour/reference/mapping regressions (after all packs build)
 ```
 
-Paste the validator receipt. Current receipt: `Validated 943 icons · 1765 components · 25854 checks run`.
+Paste the validator receipt. Current receipt: `Validated 943 icons · 1765 components · 25856 checks run`.
 
 Anything touching the catalog, `tools/glyphs.py`, or shared `app/` resources also rebuilds Pop, because Pop mirrors those resources and renders the same catalog:
 

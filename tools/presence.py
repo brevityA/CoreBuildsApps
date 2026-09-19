@@ -85,6 +85,15 @@ def apply_presence(image: Image.Image) -> Image.Image:
     src = image.convert("RGBA")
     alpha = src.getchannel("A")
     radius = keyline_radius(alpha)
+    if radius < 1:
+        # A mark sitting flush against SAFE has no headroom for a ring, and
+        # a zero radius means exactly that: no keyline, no bloom. Do not
+        # reach for MaxFilter(1) - a 1x1 rank window is a no-op dilate (the
+        # ring would subtract to empty anyway) and Pillow's C rank filter
+        # divides by the window area, so size 1 is a SIGFPE, not a no-op.
+        # Shipped pixels are identical either way: ring empty, glow masked
+        # by the empty ring.
+        return src
     dilated = alpha.filter(ImageFilter.MaxFilter(radius * 2 + 1))
     ring = ImageChops.subtract(dilated, alpha)
 

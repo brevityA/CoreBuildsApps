@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  The icon inspector. One card: the bundled mark at full size beside what the
+  pack knows about it (category, drawable, every mapped component), and the
+  two actions - export, launch - as the only focus stops after the header
+  back. Nothing else on the screen is focusable; the data is output.
+-->
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/cb_night"
+    android:paddingStart="@dimen/cb_gutter_side"
+    android:paddingEnd="@dimen/cb_gutter_side"
+    android:paddingTop="24dp"
+    android:paddingBottom="16dp">
+
+    <!-- HEADER -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical">
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/bg_chip"
+                android:fontFamily="monospace"
+                android:paddingStart="@dimen/cb_space_sm"
+                android:paddingEnd="@dimen/cb_space_sm"
+                android:paddingTop="7dp"
+                android:paddingBottom="7dp"
+                android:letterSpacing="0.18"
+                android:text="@string/inspector_kicker"
+                android:textColor="@color/cb_signal_cyan"
+                android:textSize="@dimen/cb_text_kicker"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/inspector_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/cb_space_md"
+                android:ellipsize="end"
+                android:letterSpacing="-0.025"
+                android:maxLines="1"
+                android:textColor="@color/cb_ink"
+                android:textSize="@dimen/cb_text_title"
+                android:textStyle="bold" />
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/inspector_back"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:minWidth="@dimen/cb_button_min_width"
+            android:minHeight="@dimen/cb_target_min"
+            android:background="@drawable/bg_ghost"
+            android:clickable="true"
+            android:focusable="true"
+            android:gravity="center"
+            android:paddingStart="@dimen/cb_space_lg"
+            android:paddingEnd="@dimen/cb_space_lg"
+            android:text="@string/action_back"
+            android:textColor="@color/cb_ink"
+            android:textSize="@dimen/cb_text_body" />
+    </LinearLayout>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:clipToPadding="false"
+        android:fillViewport="true"
+        android:scrollbars="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingTop="@dimen/cb_space_md"
+            android:paddingBottom="@dimen/cb_space_xs">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/bg_card"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:padding="@dimen/cb_card_padding">
+
+                <ImageView
+                    android:id="@+id/inspector_icon"
+                    android:layout_width="160dp"
+                    android:layout_height="160dp"
+                    android:focusable="false" />
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_marginStart="@dimen/cb_space_md"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/inspector_meta"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/cb_slate"
+                        android:textSize="@dimen/cb_text_data" />
+
+                    <TextView
+                        android:id="@+id/inspector_components"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/cb_space_sm"
+                        android:fontFamily="monospace"
+                        android:lineSpacingExtra="3dp"
+                        android:textColor="@color/cb_ink"
+                        android:textSize="@dimen/cb_text_data" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/cb_space_md"
+                android:orientation="horizontal"
+                android:gravity="end">
+
+                <TextView
+                    android:id="@+id/inspector_export"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:minHeight="@dimen/cb_target_min"
+                    android:background="@drawable/bg_ghost"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:gravity="center"
+                    android:paddingStart="@dimen/cb_space_lg"
+                    android:paddingEnd="@dimen/cb_space_lg"
+                    android:text="@string/inspector_export"
+                    android:textColor="@color/cb_ink"
+                    android:textSize="@dimen/cb_text_body" />
+
+                <TextView
+                    android:id="@+id/inspector_launch"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:minHeight="@dimen/cb_target_min"
+                    android:layout_marginStart="@dimen/cb_space_md"
+                    android:background="@drawable/bg_cta"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:gravity="center"
+                    android:paddingStart="@dimen/cb_space_lg"
+                    android:paddingEnd="@dimen/cb_space_lg"
+                    android:text="@string/inspector_launch"
+                    android:textColor="@color/cb_cta_ink"
+                    android:textSize="@dimen/cb_text_body"
+                    android:textStyle="bold" />
+            </LinearLayout>
+        </LinearLayout>
+    </ScrollView>
+</LinearLayout>

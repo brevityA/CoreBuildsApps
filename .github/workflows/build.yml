@@ -112,6 +112,9 @@ jobs:
           python tests/test_wallpaper_export.py
           python tests/test_resource_parity.py
           python tests/test_tv_layout_fit.py
+          python tests/test_search_focus.py
+          python tests/test_icon_uniformity.py
+          python tests/test_ui_wiring.py
           python tests/test_brandmark_badge.py
 
       - name: Set up JDK 17

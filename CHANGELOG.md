@@ -6,6 +6,237 @@ All notable changes to the Core Builds Icon Pack. Format follows
 
 ## [Unreleased]
 
+## [1.8.21] — 2026-09-19
+
+### Fixed
+
+- **Searching moved the cursor out of the search field** — a tester's report of
+  "weird focus behavior for the keyboard", which turned out to be six separate
+  defects in the one path. None was reachable from a layout check: the focus
+  chain was intact and every control on the screen was reachable, which is what
+  `check_ui_resources.py` asks. What nothing asked is who owns the cursor while
+  the user types. Fixed in `app/src/main/java`, so one change covers Classic and
+  Pop. Pixel Neon keeps a deliberate fork of this screen and still carries four
+  of the six — the update-bar grab, the per-keystroke filter, the dead Search
+  key and the animated chip rows; it has no empty-state or focus-restore logic
+  at all, so the other two have nothing there to fix yet.
+  - `showUpdateAvailable()` ended in an unconditional `button.requestFocus()`,
+    and it runs on `UpdateChecker`'s network callback — which resolves whenever
+    it likes, commonly about a second after launch, which is exactly when
+    somebody has reached the search field and started typing. The Download
+    button took the cursor mid-word and the keyboard went down with it. 1.8.11
+    fixed the bar's *reachability* and kept the grab deliberately; the grab was
+    the bug. The bar now reveals, and takes the cursor only when nothing has
+    been chosen yet — no focus, the decor view, or the Apply button this screen
+    opens on. The startup grab is guarded the same way, matching
+    `WallpapersActivity`.
+  - **A filtered-out icon had no destination.** `applyFilter` handled only the
+    case where the icon under the cursor survived the filter. When it did not,
+    RecyclerView's own preserve-focus-after-layout pass found the remembered
+    item id gone and handed focus to its first focusable child: the ring
+    teleporting to the top-left tile. The cursor now stays on its icon or moves
+    to the nearest survivor, measured in catalogue order because that is the
+    only distance that survives a filter — both the old list and the new one are
+    order-preserving subsets of it.
+  - **Surviving a filter jumped the grid anyway.** The surviving case scrolled
+    to the icon's new position, and `scrollToPosition` pins a position to the
+    *top* of the viewport, so a filter that left the icon exactly where it was
+    still dragged the whole grid up to it. A tile that is already laid out now
+    takes focus directly and RecyclerView brings it on screen the way it does
+    for any focus move; only an off-screen target is scrolled to first.
+  - **Hiding a container left the cursor nowhere to live.** `bindEmptyState`
+    swaps the grid and the empty state on every filter, in both directions: the
+    grid goes `GONE` when the last result goes, and the empty state goes `GONE`
+    when results come back — which is exactly what pressing its own **Clear
+    filter** does, with the cursor on the button being hidden. Android either
+    drops focus outright and restores the window's own default on the next
+    traversal (the Apply button at the top of the screen, two stops away from the
+    results being read), or leaves it on a view that is no longer shown: no
+    highlight, key events still landing on it, and the next D-pad move computed
+    from a rectangle that no longer exists. Both are now caught after every
+    filter and the cursor is put on the first tile, or on whichever undo the
+    empty state is actually offering. The check only ever fires when focus was
+    lost, and only for the views that swap, so it cannot interrupt typing — nor
+    move a cursor the user left in the search field while the activity sits
+    behind another window.
+  - **The keyboard's Search key was dead.** The field declares
+    `imeOptions="actionSearch"` and nothing registered an
+    `OnEditorActionListener`, so the one key that means "I have finished typing"
+    fell through to TextView's default: hide the IME, move nothing, and leave
+    the user pressing Down to find out whether the search had worked. It now
+    closes the keyboard and puts the cursor on the first result, or on the empty
+    state's undo when there are none. Enter on a hardware keyboard arrives as
+    the same action and does the same thing.
+  - **A chip press dropped the chip's own highlight.** All three chip rows on
+    this screen — categories, the picker's banner/square pair, and "Also
+    &lt;launcher&gt;" — kept RecyclerView's default item animator.
+    `ChipAdapter.select()` answers a press with two `notifyItemChanged` calls,
+    and the default change animation swaps the pressed chip for a fresh
+    ViewHolder and cross-fades the pair, so the highlight vanished on the press
+    that was supposed to move it. `WallpapersActivity` already set
+    `itemAnimator = null` on its chip row, with a comment saying the main screen
+    did the same; it did not, and now does.
+- **The presence pass could die mid-build on a mark flush against SAFE.**
+  `keyline_radius()` caps the ring at the headroom actually available outside
+  the ink, and four marks sit at exactly the SAFE margin, so their cap is zero —
+  and a zero radius reached `MaxFilter(1)`, a 1x1 rank window. A 1x1 max filter
+  is mathematically a no-op (the ring would subtract to empty), but Pillow's C
+  rank filter divides by the window area, so on current Pillow the build died
+  with SIGFPE on the fifth icon instead of skipping the ring. `apply_presence`
+  now returns the source untouched when there is no headroom, which is what the
+  cap always meant; shipped pixels are identical either way.
+
+### Changed
+
+- **The keyboard follows the search field.** A focus gained by D-pad does not
+  reliably open the IME — the platform shows soft input for touch-mode focus —
+  so the field asks for it explicitly on focus, and puts it away when the cursor
+  leaves for the grid or a chip, where it would otherwise hang over the results
+  the cursor just moved into.
+- **Typing filters as a burst rather than per character.** One keystroke used to
+  mean one pass over 943 icons, one `DiffUtil.calculateDiff` and one full grid
+  layout, all on the main thread inside `afterTextChanged`. Keystrokes are now
+  debounced 120ms — longer than a remote's key repeat, shorter than the pause
+  between words — and the diff drops move detection, which cannot report a move
+  for an order-preserving subset and so cost a second pass over the matched
+  items per keystroke to compute nothing. A chip press, a Clear and the Search
+  key still filter at once and cancel anything queued; a queued pass is flushed
+  in `onPause` so it cannot decide focus against a window nobody is looking at,
+  and dropped in `onDestroy`, which it outlived before. When the cursor is outside the grid the
+  results scroll to the top, because the set just changed and the tail of the
+  previous scroll position is not where anyone wants to look.
+- **Janky's mark got its weight fixed, not its composition replaced.** The
+  Projectivy screenshots ("See the uniformability. Also the new Janky icon seems
+  like it is sized wrong") measured out exact: the ring-and-beside-play lockup
+  shipped in a 0.80 x 0.47 ink box, aspect 1.71, against a pack median of
+  0.78 x 0.74, aspect 1.05. A first pass (RB4) read that as a composition fault
+  and promoted the ring to a full-size container with the hook and play inside
+  it. The user rejected that build — "the version before look better then this
+  current one. I just needed some weight fixing etc" — and the measurements
+  agree with them: ink coverage was never the problem (RB3 sat at 0.152 against
+  a pack median of 0.173, lighter than 290 of 477 tiles). The fault was
+  *relative stroke*: 32px on a 240px ring is a 0.133 stroke ratio where the
+  pack's container rings (mpv 32/388, stremio 32/389) sit at 0.082, so the small
+  ring read a step and a half chunkier than every ring beside it — which is
+  exactly what "sized wrong" looks like at a 100px tile, stroke being mass in
+  every iconography reference consulted. RB5 therefore restores the approved
+  lockup and re-weights it: ring 26 on a 264px outer (ratio 0.098, inside the
+  container family's band), hook 22, play 24 — one step down the house weight
+  vocabulary, hierarchy intact — and the taller ring lifts the ink box from
+  0.47 to 0.52 of the grid, towards the optical grid's horizontal-rectangle
+  proportion (wider *and* shorter than the square, never flatter) instead of a
+  flat band. Width stays 0.82 inside SAFE, coverage lands at 0.147, counters
+  hold 2→2→2 at 96/48/32, and the collision pass keeps it far from any twin
+  (nearest 0.761). Paints untouched — off-white hook, cyan-to-violet ring and
+  play. Regenerated through the full pipeline for Classic, Pop and Pixel Neon,
+  including `measure_pop_glyphs.py`, because glyph geometry changed.
+  `tests/test_icon_uniformity.py` (new gate, in `build.yml` and `suite-ci.yml`)
+  now locks both failure classes: container-grammar marks must span 0.55-0.90
+  of GRID in both axes at aspect 0.80-1.30 (Janky is deliberately *not* on that
+  list — it is a lockup, and the optical grid gives lockups a wider, shorter
+  box on purpose), and no shipped tile glyph may carry the flat full-width band
+  signature RB3 shipped with (aspect > 1.65 at 0.44-0.50 height and >= 0.78
+  width) — the rule that still fails the 1.8.20 geometry today.
+
+### Added
+
+- **The on-device missing-app auditor, with a QR code that prefills the
+  request.** Settings → HELP → *Scan for unmapped apps* lists every launchable
+  app on the TV that `appfilter.xml` never names — the scan needs no new
+  permission, because two intent-filter entries in `<queries>`
+  (`ACTION_MAIN` + the leanback and plain launcher categories) make every
+  launchable package visible to `queryIntentActivities`, which is the same
+  Play-safe grammar launcher detection already lives under and the reason this
+  never reaches for `QUERY_ALL_PACKAGES`. Pressing a row draws a QR code that
+  opens the icon-request issue with the app name, the exact component and a
+  device note already filled in. The deep link is generated, not typed:
+  `tools/build_issue_prefills.py` now also writes
+  `res/values/issue_prefill.xml` from the issue form (template slug, labels and
+  title prefix baked in, three positional arguments the app URL-encodes), and
+  its `--check` gate fails on drift, so a renamed form field is a CI failure
+  rather than a silently empty box on GitHub. The encoder is vendored rather
+  than hand-rolled — Nayuki's QR Code generator (Java, MIT, upstream
+  `3c6d0b3`, checksums and licence in `THIRD_PARTY_NOTICES.md`) — with
+  `QrBitmap.kt` as the wrapper: error correction M for sofa-angle photography,
+  the four-module quiet zone drawn into the bitmap so dark chrome cannot
+  swallow it, black-on-white modules. Back leaves the QR panel before it
+  leaves the screen. Mirrored into Pop and Pixel Neon's parity surface; the
+  wiring gate grew an auditor block that reads the `<queries>` span itself,
+  because the app's own intent-filter declares `LEANBACK_LAUNCHER` and a
+  whole-manifest grep would pass on the wrong occurrence. Mockup with a real
+  scannable code: `docs/app-ui-auditor.png`.
+- **Sideload round one: launcher tools, a sofa FAQ, and a what's-new bar.**
+  The enhancement proposal is committed verbatim at
+  `docs/NON_PLAYSTORE_ENHANCEMENTS.md` and triaged feature by feature against
+  the source in `docs/NON_PLAYSTORE_TRIAGE.md`; this is the first tranche of
+  it. Settings gains a LAUNCHER group — **Refresh launcher icons** re-fires the
+  detected launcher's apply contract through `ApplyIconPack`, **Launcher app
+  info** opens the system details page where a force stop clears a bitmap cache
+  re-applying cannot reach — and a HELP row into the new `FaqActivity`: four
+  read-only cards paraphrasing the docs that actually hold the knowledge
+  (`WHY_PROJECTIVY_CANT_SEE_IT`, the Projectivy override behaviour,
+  `MONET_LAUNCHER`, `ADB_SCANNING`), in the Settings chrome grammar with the
+  cards deliberately unfocusable so the D-pad never lands on a paragraph. The
+  update bar grows release highlights when `version.json` carries a
+  `highlights` array (optional field, capped at six, view gone unless non-empty
+  so older manifests render the old bar exactly), and the category chips carry
+  counts tallied from the same generated arrays that feed the grid. The
+  proposal's `killBackgroundProcesses` and `QUERY_ALL_PACKAGES` routes were
+  declined with reasons in the triage; the QR auditor, icon masking, inspector,
+  suite hub and bumper skips are queued there with what unblocks each.
+  Mirrored into Pop (same Kotlin, own resources) and Pixel Neon's parity
+  surface; the wiring gate grew a sideload-rows block covering row wiring in
+  both modules, both manifest registrations, the FAQ's single focusable and the
+  highlights gating. Mockup: `docs/app-ui-sideload-round.png`.
+- **`artemis_pad` — the Artemis mark the tester actually chose.** Artemis
+  (Moonlight's noir fork, `com.limelight.noir`) shipped in 1.8.20 as
+  `retro_pad`, the straight-sided shell, and the tester's verdict on the
+  rendered candidates was not subtle: "I think the controller of Moonlight
+  looks better than this, so maybe you could do something similar. The
+  original looks a bit generic", then "Let's go with the controller", the
+  winged pad on the right of both contact sheets. Similar, not identical:
+  Moonlight and Daijishou already carry `gamepad` side by side in the same
+  launcher row, so the new glyph keeps the family silhouette and earns its
+  own grammar — a body about 6 percent narrower than `gamepad`'s with a
+  deeper waist notch, and a start/select dash across the middle that
+  `gamepad` does not carry (nearest-glyph similarity 0.877 against the
+  0.965 twin ceiling). The catalog entry keeps its drawable name
+  (`limelight`), its reviewed violet and its device-evidenced component;
+  only the glyph reference moves. Three passes of the counter gate are
+  recorded in the glyph's docstring: ring buttons closed at 96px
+  (4 → 1 → 1), and the second pass's closing counter turned out to be a
+  3px LANCZOS ringing sliver inside the left wall at the 256px measure —
+  a resampling phase artifact, not geometry, cleared by widening the body
+  two units per side (1 → 1 → 1). `retro_pad` retires with its design
+  notes intact for whoever asks for a straight-sided shell again.
+- **`tests/test_search_focus.py`** — 15 static checks over the search path, in
+  the same shape as `test_tv_layout_fit.py`: scoped to one function body at a
+  time, so a `currentFocus` read somewhere else in the file cannot satisfy the
+  check on the grab, and comment lines are dropped before a line is scanned, so
+  a comment quoting the call it replaced cannot satisfy the check either. 14 of
+  the 15 fail against the pre-fix source; the 15th locks the layout routes the
+  Kotlin half depends on (`imeOptions`, and the `nextFocus` edges between field,
+  grid and tile). Named in `build.yml` and `suite-ci.yml`, because CI runs these
+  suites file by file and `unittest discover` does not see them.
+- **`tests/test_ui_wiring.py`** — static gate over the manifest contract and
+  the screens around the main grid, named in `build.yml` and `suite-ci.yml`.
+  It locks the five declared permissions in both manifests (with
+  `WRITE_EXTERNAL_STORAGE` capped at `maxSdk 28`), the `<queries>` entries
+  every package-visibility-filtered probe depends on (Monet and Projectivy
+  packages, the HOME intent, the apply contracts), the wallpapers screen's
+  three focus guards (starting focus, both item animators off, focus handed
+  to the header export when the selection bar goes `GONE`), the export
+  screen's cancel and retry focus, and `FLAG_GRANT_READ_URI_PERMISSION` on
+  every FileProvider intent that leaves the app. Born from a permissions
+  audit whose verdict was that the set is complete and deliberately minimal
+  - nothing to add for any shipped feature - and that the interesting
+  surface was never the permissions but the visibility contract and the
+  wiring around it. Deliberately *not* declared, and why:
+  `QUERY_ALL_PACKAGES` (Play-sensitive; the targeted `<queries>` covers every
+  probe), `MANAGE_EXTERNAL_STORAGE` (scoped storage needs nothing past API
+  28), `POST_NOTIFICATIONS` (no notifications on a TV surface),
+  `READ_MEDIA_IMAGES` (export only ever inserts its own MediaStore rows).
+
 ## [1.8.20] — 2026-09-18
 
 ### Added

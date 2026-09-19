@@ -1,10 +1,16 @@
 package tv.corebuilds.iconpack
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
+import android.view.KeyEvent
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
+import android.view.inputmethod.EditorInfo
+import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.LinearLayout
 import android.widget.TextView
@@ -14,11 +20,22 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import java.io.File
+import kotlin.math.abs
 
 /**
  * Front door. Apply targets the Home launcher. An update bar appears
  * when Latestrelease/version.json is newer; Download pulls the APK and
  * hands it to the system installer.
+ *
+ * Focus contract while searching, because a D-pad has no touch position to
+ * recover from: the search field owns the cursor for as long as the user is
+ * typing and nothing else on this screen may take it — not the grid when a
+ * result set changes, not the update bar when its network check happens to
+ * resolve mid-word. The keyboard follows the cursor: it opens when the field is
+ * focused, closes when the cursor leaves, and the Search key closes it and
+ * moves the cursor into the results. Where focus goes after a filter is decided
+ * in [settleFilterFocus] and nowhere else; the one other move this screen makes
+ * is the deliberate one the Search key makes in [onSearchAction].
  */
 class MainActivity : AppCompatActivity() {
 
@@ -28,12 +45,33 @@ class MainActivity : AppCompatActivity() {
     private lateinit var all: List<IconAdapter.IconItem>
     private lateinit var adapter: IconAdapter
     private lateinit var chipAdapter: ChipAdapter
+
+    /**
+     * Catalogue position of every icon, by drawable name.
+     *
+     * Both the list before a filter and the list after it are order-preserving
+     * subsets of [all], so an icon's index here is the only distance between
+     * them that survives a filter. That is what makes "nearest surviving icon"
+     * in [nearestSurvivor] mean something.
+     */
+    private var catalogOrder: Map<String, Int> = emptyMap()
+
     private var category = ALL
     private var query = ""
     private var pickBanners = true
     private var pendingUpdate: UpdateChecker.Result.Available? = null
     private var downloadedApk: File? = null
     private var installOffered = false
+
+    /**
+     * Keystrokes are filtered as a burst, not one at a time. See [scheduleFilter].
+     */
+    private val filterHandler = Handler(Looper.getMainLooper())
+    private val filterRunnable = Runnable {
+        filterPending = false
+        applyFilter()
+    }
+    private var filterPending = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         Prefs.applyChrome(this)
@@ -60,6 +98,7 @@ class MainActivity : AppCompatActivity() {
                 bespoke = bespoke.getOrElse(i) { 0 } == 1
             )
         }
+        catalogOrder = all.withIndex().associate { (index, item) -> item.drawable to index }
 
         findViewById<TextView>(R.id.count).text =
             getString(R.string.icon_count_fmt, all.size, BuildConfig.VERSION_NAME)
@@ -120,12 +159,18 @@ class MainActivity : AppCompatActivity() {
         // an extra key press before the first D-pad move does anything.
         window.decorView.post {
             if (pickMode) {
+                // Unconditional: the picker is launched by another app, nobody
+                // is mid-typing, and the platform's own default here is the
+                // banner/square shape row rather than the category chips.
                 val chips = findViewById<RecyclerView>(R.id.chip_row)
                 chips.post {
                     val firstChip = chips.layoutManager?.findViewByPosition(0)
                     (firstChip ?: chips).requestFocus()
                 }
-            } else {
+            } else if (currentFocus == null || currentFocus === window.decorView) {
+                // Guarded the way WallpapersActivity guards its own: this runs
+                // on a post, so it lands after the first traversal, and it must
+                // not take the cursor away from a control already reached.
                 findViewById<View>(R.id.apply_button).requestFocus()
             }
         }
@@ -136,7 +181,10 @@ class MainActivity : AppCompatActivity() {
             val search = findViewById<EditText>(R.id.search)
             search.setText("")
             query = ""
-            applyFilter()
+            // setText("") already queued a debounced pass; this cancels it and
+            // filters now, so the grid the user is handed back to is the full
+            // one rather than last keystroke's.
+            applyFilterNow()
             search.requestFocus()
         }
         findViewById<TextView>(R.id.empty_clear_filter).setOnClickListener {
@@ -146,9 +194,80 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    /**
+     * Remote bumper skips: CHANNEL_DOWN / CHANNEL_UP jump a letter group
+     * through the filtered list, because paging 940 tiles six rows at a time
+     * is the single most common complaint about icon grids on a D-pad.
+     *
+     * Only while the grid itself holds focus. Anywhere else - search field,
+     * chips, header - the keys keep their default meaning, and a launcher
+     * that reserves them for its own paging still gets them on every other
+     * screen of this app. The anchor is the first visible row, so the jump
+     * reads like a scrollbar: where you are looking is where you jump from.
+     */
+    override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
+        val forward = when (keyCode) {
+            KeyEvent.KEYCODE_CHANNEL_DOWN -> true
+            KeyEvent.KEYCODE_CHANNEL_UP -> false
+            else -> return super.onKeyDown(keyCode, event)
+        }
+        val grid = findViewById<RecyclerView>(R.id.grid)
+        if (!grid.hasFocus()) return super.onKeyDown(keyCode, event)
+        return if (jumpByLetter(grid, forward)) true
+        else super.onKeyDown(keyCode, event)
+    }
+
+    /** Move the grid to the next / previous letter group. False = no group
+     *  left in that direction, and the key falls through unconsumed. */
+    private fun jumpByLetter(grid: RecyclerView, forward: Boolean): Boolean {
+        val items = adapter?.current() ?: return false
+        if (items.isEmpty()) return false
+        val manager = grid.layoutManager as? LinearLayoutManager ?: return false
+        val anchor = manager.findFirstVisibleItemPosition()
+        if (anchor == RecyclerView.NO_POSITION) return false
+        val anchorInitial = initialOf(items[anchor].name)
+        val target = if (forward) {
+            items.indices.firstOrNull {
+                it > anchor && initialOf(items[it].name) > anchorInitial
+            }
+        } else {
+            // Land on the first row of the previous letter group, not on the
+            // last row of the one before the jump - a skip should arrive
+            // where the group starts, the same place a forward skip leaves.
+            val last = items.indices.lastOrNull {
+                it < anchor && initialOf(items[it].name) < anchorInitial
+            }
+            if (last == null) null
+            else {
+                var start = last
+                val letter = initialOf(items[last].name)
+                while (start > 0 && initialOf(items[start - 1].name) == letter) start--
+                start
+            }
+        }
+        if (target == null || target == anchor) return false
+        manager.scrollToPositionWithOffset(target, 0)
+        grid.post {
+            grid.findViewHolderForAdapterPosition(target)?.itemView?.requestFocus()
+        }
+        return true
+    }
+
+    private fun initialOf(name: String): Char =
+        name.firstOrNull { it.isLetterOrDigit() }?.uppercaseChar() ?: '#'
+
     private fun onIconChosen(item: IconAdapter.IconItem) {
         if (!pickMode) {
-            toast(getString(R.string.icon_selected_fmt, item.name, item.drawable))
+            // The toast this replaces named the icon for two seconds, exactly
+            // when someone wanted to read it. The inspector is the same
+            // information with a place to put it: full-size mark, mapped
+            // components, export and launch.
+            startActivity(
+                Intent(this, InspectorActivity::class.java)
+                    .putExtra(InspectorActivity.EXTRA_DRAWABLE, item.drawable)
+                    .putExtra(InspectorActivity.EXTRA_NAME, item.name)
+                    .putExtra(InspectorActivity.EXTRA_CATEGORY, item.category)
+            )
             return
         }
         val deliver = if (pickBanners) "${item.drawable}_banner" else item.drawable
@@ -180,8 +299,15 @@ class MainActivity : AppCompatActivity() {
 
     private fun bindChips() {
         val present = all.map { it.category }.toSet()
+        // Counts are tallied from the same generated arrays that feed the
+        // grid, so a chip can never advertise a number the grid cannot back
+        // up. A hand-typed "(184)" goes stale on the next tranche; this does
+        // not.
+        val counts = all.groupingBy { it.category }.eachCount()
         val keys = mutableListOf(ALL)
-        val labels = mutableListOf(getString(R.string.chip_all))
+        val labels = mutableListOf(
+            getString(R.string.chip_count_fmt, getString(R.string.chip_all), all.size)
+        )
         // Brandmarks is not a category — it cuts across all of them — so it is
         // added by hand next to All rather than through CHIP_ORDER, and
         // applyFilter branches on it. Second position because it is the one
@@ -189,37 +315,198 @@ class MainActivity : AppCompatActivity() {
         // user is usually here for.
         if (all.any { it.bespoke }) {
             keys += BESPOKE
-            labels += getString(R.string.chip_brandmarks)
+            labels += getString(
+                R.string.chip_count_fmt,
+                getString(R.string.chip_brandmarks),
+                all.count { it.bespoke }
+            )
         }
         for ((key, label) in CHIP_ORDER) {
             if (key in present) {
                 keys += key
-                labels += label
+                labels += getString(R.string.chip_count_fmt, label, counts[key] ?: 0)
             }
         }
         chipAdapter = ChipAdapter(labels, keys, ALL) { picked ->
             category = picked
-            applyFilter()
+            // A chip press is a decision, not a keystroke: it filters at once
+            // rather than waiting out the typing debounce, and cancels anything
+            // the search field had queued.
+            applyFilterNow()
         }
         findViewById<RecyclerView>(R.id.chip_row).apply {
             layoutManager = LinearLayoutManager(
                 this@MainActivity, LinearLayoutManager.HORIZONTAL, false
             )
+            // Same guard the grid and the wallpaper chip row carry, and the one
+            // WallpapersActivity's comment already claimed this row had.
+            // ChipAdapter.select() answers a press with two notifyItemChanged
+            // calls; the default change animation swaps the pressed chip for a
+            // fresh ViewHolder and cross-fades it, which drops the D-pad
+            // highlight on the press that was supposed to move it.
+            itemAnimator = null
             adapter = chipAdapter
         }
     }
 
+    /**
+     * The search field, and the keyboard that comes with it.
+     *
+     * Three things a TV needs and none of which the platform does on its own
+     * here:
+     *
+     *  1. A field focused by remote does not reliably open the IME. The
+     *     platform shows soft input for touch-mode focus; a D-pad focus can
+     *     leave a caret blinking in an empty field with no keyboard on screen,
+     *     so focus in asks for it explicitly and focus out puts it away —
+     *     where it would otherwise hang over the results the user just moved
+     *     the cursor into.
+     *  2. The keyboard's Search key, and Enter on a hardware keyboard, both
+     *     arrive as [EditorInfo.IME_ACTION_SEARCH] because the field declares
+     *     `imeOptions="actionSearch"`. Nothing consumed them, so the one key
+     *     that means "I have finished typing" did nothing at all.
+     *  3. Filtering runs once per burst rather than once per character.
+     */
     private fun bindSearch() {
-        findViewById<EditText>(R.id.search).addTextChangedListener(object : TextWatcher {
+        val search = findViewById<EditText>(R.id.search)
+        search.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, a: Int, b: Int, c: Int) {}
             override fun onTextChanged(s: CharSequence?, a: Int, b: Int, c: Int) {}
             override fun afterTextChanged(s: Editable?) {
                 query = s?.toString().orEmpty()
-                applyFilter()
+                scheduleFilter()
             }
         })
+        search.setOnFocusChangeListener { view, focused ->
+            if (focused) {
+                val service = getSystemService(Context.INPUT_METHOD_SERVICE)
+                val imm = service as? InputMethodManager ?: return@setOnFocusChangeListener
+                // Posted, then re-checked. showSoftInput from inside the focus
+                // change is too early on some boxes: the field is focused but is
+                // not the window's input target yet, and the request is dropped
+                // without a word. IMPLICIT rather than EXPLICIT because with a
+                // hardware keyboard paired there is no soft input to show, and
+                // that is the system's call, not ours.
+                view.post {
+                    if (view.hasFocus()) {
+                        imm.showSoftInput(view, InputMethodManager.SHOW_IMPLICIT)
+                    }
+                }
+            } else {
+                // The cursor left for the grid or a chip. A keyboard hanging
+                // over the results it just moved into covers what the user went
+                // to look at.
+                hideIme(view)
+            }
+        }
+        search.setOnEditorActionListener { view, actionId, _ ->
+            when (actionId) {
+                EditorInfo.IME_ACTION_SEARCH,
+                EditorInfo.IME_ACTION_DONE,
+                EditorInfo.IME_ACTION_GO -> onSearchAction(view)
+                else -> false
+            }
+        }
     }
 
+    /**
+     * Search/Enter: close the keyboard and put the cursor on the first result.
+     *
+     * Returning true consumes the action, which is also what stops TextView's
+     * default handling from hiding the IME and leaving focus where it was —
+     * the state that read as "the keyboard went away and nothing happened".
+     */
+    private fun onSearchAction(view: View): Boolean {
+        hideIme(view)
+        // A keystroke's debounce must not land after this move: it would filter
+        // again with the cursor already inside the grid and re-decide focus
+        // from there.
+        applyFilterNow()
+        val grid = findViewById<RecyclerView>(R.id.grid)
+        if (adapter.itemCount == 0) {
+            // Nothing to open. The empty state's own undo is the next stop, and
+            // it is the one place on the screen that can fix the query.
+            focusEmptyAction()
+            return true
+        }
+        grid.scrollToPosition(0)
+        grid.post {
+            (grid.layoutManager?.findViewByPosition(0) ?: grid.getChildAt(0))?.requestFocus()
+        }
+        return true
+    }
+
+    private fun hideIme(view: View) {
+        val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager ?: return
+        imm.hideSoftInputFromWindow(view.windowToken, 0)
+    }
+
+    /**
+     * Queue a filter for the end of the current burst of typing.
+     *
+     * One character used to mean one filter pass over 943 icons, one DiffUtil
+     * calculation and one full grid layout, all on the main thread inside
+     * [TextWatcher.afterTextChanged]. On a TV stick that is enough work for the
+     * caret to lag behind a remote's key repeat, and it re-lays out the window
+     * underneath an open IME once per character. 120ms is longer than a repeat
+     * interval and shorter than the pause between words, so a burst produces
+     * one diff and one layout instead of five.
+     */
+    private fun scheduleFilter() {
+        filterHandler.removeCallbacks(filterRunnable)
+        filterPending = true
+        filterHandler.postDelayed(filterRunnable, FILTER_DEBOUNCE_MS)
+    }
+
+    /** Filter immediately, dropping anything the search field had queued. */
+    private fun applyFilterNow() {
+        filterHandler.removeCallbacks(filterRunnable)
+        filterPending = false
+        applyFilter()
+    }
+
+    override fun onPause() {
+        // Flush a queued pass rather than let it land behind another window. The
+        // filter has to run either way — the grid and the count label must agree
+        // with the text in the field when the user comes back — but its focus
+        // half reads what is on screen, and from here what is on screen is
+        // somebody else's window.
+        if (filterPending) applyFilterNow()
+        super.onPause()
+    }
+
+    override fun onDestroy() {
+        // The debounce outlives a fast exit otherwise, and a Runnable holding
+        // the activity is a leak plus a filter pass on a dead view tree.
+        filterHandler.removeCallbacksAndMessages(null)
+        super.onDestroy()
+    }
+
+    /**
+     * Filter the catalogue into the grid, then settle focus after the layout
+     * the filter scheduled.
+     *
+     * Focus is decided in [settleFilterFocus] and nowhere else. The rule set:
+     *
+     *  1. Typing never moves the cursor. While the search field owns focus,
+     *     filtering only changes what is on screen.
+     *  2. A grid that owns focus keeps it on the same icon, or on the nearest
+     *     icon that survived. Left to the platform, RecyclerView's
+     *     preserve-focus-after-layout pass finds the remembered item id gone
+     *     and hands focus to its first focusable child, which on screen is the
+     *     ring teleporting to the top-left tile.
+     *  3. Hiding a container the cursor is inside leaves the cursor nowhere to
+     *     live, and this screen hides one on every filter: the grid when the
+     *     last result goes, the empty state when results come back — which is
+     *     what pressing its own **Clear filter** does. Android either drops
+     *     focus outright, in which case the window restores its own default on
+     *     the next traversal (the Apply button at the top of this screen), or
+     *     leaves it on a view that is no longer shown. Both are caught in
+     *     [adoptDroppedFocus] and the cursor is put somewhere that can help.
+     *  4. When the cursor is elsewhere, the grid scrolls to the top: the result
+     *     set just changed, and the tail of the previous scroll position is not
+     *     where anyone wants to look.
+     */
     private fun applyFilter() {
         val q = query.trim().lowercase()
         val filtered = all.filter { item ->
@@ -230,29 +517,22 @@ class MainActivity : AppCompatActivity() {
             catOk && qOk
         }
         val grid = findViewById<RecyclerView>(R.id.grid)
-        // Keep the remote cursor attached to the same icon when a query or
-        // category changes. Losing focus after every keystroke is especially
-        // disorienting on TV because there is no touch position to recover.
-        val focusedDrawable = (0 until adapter.itemCount)
-            .firstOrNull { position ->
-                grid.findViewHolderForAdapterPosition(position)?.itemView?.hasFocus() == true
-            }
-            ?.let(adapter::itemAt)
-            ?.drawable
+
+        // Read from the grid rather than scanned for. getFocusedChild() is the
+        // tile itself; the old loop asked every one of 943 view holders whether
+        // it had focus, on every keystroke, to find the one that did.
+        val gridOwnsFocus = grid.hasFocus()
+        val focusedDrawable = if (gridOwnsFocus) {
+            grid.focusedChild
+                ?.let { grid.getChildAdapterPosition(it) }
+                ?.takeIf { it != RecyclerView.NO_POSITION }
+                ?.let(adapter::itemAt)
+                ?.drawable
+        } else {
+            null
+        }
 
         adapter.submit(filtered)
-        if (focusedDrawable != null) {
-            grid.post {
-                val nextPosition = filtered.indexOfFirst { it.drawable == focusedDrawable }
-                if (nextPosition >= 0) {
-                    grid.layoutManager?.scrollToPosition(nextPosition)
-                    grid.post {
-                        grid.findViewHolderForAdapterPosition(nextPosition)
-                            ?.itemView?.requestFocus()
-                    }
-                }
-            }
-        }
         findViewById<TextView>(R.id.count).text =
             if (filtered.size == all.size) {
                 getString(R.string.icon_count_fmt, all.size, BuildConfig.VERSION_NAME)
@@ -260,6 +540,152 @@ class MainActivity : AppCompatActivity() {
                 getString(R.string.icon_filter_fmt, filtered.size, all.size)
             }
         bindEmptyState(filtered.size, q)
+
+        // submit() only schedules the layout pass. A filtered-out tile is
+        // detached — and its focus dropped — during that pass, so every focus
+        // decision is taken after it rather than here.
+        grid.post { settleFilterFocus(grid, filtered, focusedDrawable) }
+    }
+
+    /**
+     * Post-layout half of [applyFilter]; see there for the rule set.
+     *
+     * The two [adoptDroppedFocus] calls look redundant and are not: hiding
+     * either container can strand the cursor, and the call is a no-op unless it
+     * was — which is what keeps rule 1 true.
+     */
+    private fun settleFilterFocus(
+        grid: RecyclerView,
+        filtered: List<IconAdapter.IconItem>,
+        focusedDrawable: String?
+    ) {
+        when {
+            focusedDrawable != null ->
+                keepGridCursor(grid, filtered, focusedDrawable)
+
+            filtered.isEmpty() ->
+                adoptDroppedFocus(grid)
+
+            else -> {
+                grid.scrollToPosition(0)
+                adoptDroppedFocus(grid)
+            }
+        }
+    }
+
+    /**
+     * Keep the ring on the icon the user was on, or on the closest survivor.
+     *
+     * A tile that is already laid out takes focus directly, and RecyclerView
+     * brings it fully on screen the way it does for any focus move. Scrolling to
+     * it first — which is what this did before — pins the tile to the top of the
+     * viewport, so every keystroke jumped the whole grid even when the icon
+     * under the cursor had not moved at all.
+     */
+    private fun keepGridCursor(
+        grid: RecyclerView,
+        filtered: List<IconAdapter.IconItem>,
+        drawable: String
+    ) {
+        val exact = filtered.indexOfFirst { it.drawable == drawable }
+        val target = if (exact >= 0) exact else nearestSurvivor(filtered, drawable)
+        if (target < 0) {
+            adoptDroppedFocus(grid)
+            return
+        }
+        val laid = grid.findViewHolderForAdapterPosition(target)
+        if (laid != null) {
+            laid.itemView.requestFocus()
+            return
+        }
+        // Off screen: the tile does not exist yet, so it has to be laid out
+        // before it can take focus. scrollToPosition only schedules that.
+        grid.layoutManager?.scrollToPosition(target)
+        grid.post {
+            grid.findViewHolderForAdapterPosition(target)?.itemView?.requestFocus()
+        }
+    }
+
+    /**
+     * The filtered item closest to [drawable] in catalogue order, or -1.
+     *
+     * Reached when a keystroke drops the icon the cursor was on. "Nearest"
+     * beats "first", which is what the platform's own recovery picks: an icon
+     * two tiles away from where the user was reading is where they expect the
+     * cursor to land, not the top-left of the grid.
+     */
+    private fun nearestSurvivor(
+        filtered: List<IconAdapter.IconItem>,
+        drawable: String
+    ): Int {
+        val anchor = catalogOrder[drawable] ?: return -1
+        var best = -1
+        var bestDistance = Int.MAX_VALUE
+        filtered.forEachIndexed { index, item ->
+            val at = catalogOrder[item.drawable] ?: return@forEachIndexed
+            val distance = abs(at - anchor)
+            if (distance < bestDistance) {
+                bestDistance = distance
+                best = index
+            }
+        }
+        return best
+    }
+
+    /**
+     * Give a cursor with nowhere to live somewhere to live.
+     *
+     * Runs after every filter and does nothing unless focus was actually lost,
+     * so it cannot interrupt typing or a D-pad move. Two ways it is lost here:
+     * the window drops it outright, and then restores its own default on the
+     * next traversal — the Apply button, two screens away from the results being
+     * read — or [bindEmptyState] hides the container the cursor was inside,
+     * which leaves focus on a view that is not shown: no highlight, key events
+     * still landing on it, and the next D-pad move computed from a rectangle
+     * that no longer exists.
+     */
+    private fun adoptDroppedFocus(grid: RecyclerView) {
+        val current = currentFocus
+        val lost = current == null || current === window.decorView || isStranded(current)
+        if (!lost) return
+        val target: View? = when {
+            grid.visibility == View.VISIBLE ->
+                grid.layoutManager?.findViewByPosition(0) ?: grid.getChildAt(0)
+            else -> emptyActionView()
+        }
+        target?.requestFocus()
+    }
+
+    /**
+     * Whether a focused view was hidden out from under the cursor.
+     *
+     * Asked only of the views [bindEmptyState] swaps — the grid, its tiles, and
+     * the empty state's two undo buttons. `isShown` is false for a perfectly
+     * healthy search field too while the activity sits behind another window,
+     * and adopting focus then would move a cursor the user left exactly where
+     * they left it.
+     */
+    private fun isStranded(focused: View): Boolean {
+        if (focused.isShown) return false
+        val grid = findViewById<RecyclerView>(R.id.grid)
+        return focused === grid ||
+            focused.id == R.id.empty_clear_search ||
+            focused.id == R.id.empty_clear_filter ||
+            grid.findContainingViewHolder(focused) != null
+    }
+
+    /** The empty state's undo, whichever of the two applies, or null. */
+    private fun emptyActionView(): View? {
+        val clearSearch = findViewById<View>(R.id.empty_clear_search)
+        if (clearSearch.visibility == View.VISIBLE) return clearSearch
+        val clearFilter = findViewById<View>(R.id.empty_clear_filter)
+        if (clearFilter.visibility == View.VISIBLE) return clearFilter
+        return null
+    }
+
+    /** Move the cursor to the empty state's undo, whether or not it was dropped. */
+    private fun focusEmptyAction() {
+        emptyActionView()?.requestFocus()
     }
 
     /**
@@ -353,10 +779,35 @@ class MainActivity : AppCompatActivity() {
             R.string.update_available_fmt, update.versionName, update.iconCount
         )
         sub.text = getString(R.string.update_sub_download)
+        // Release highlights, when the manifest carries them: the bar becomes
+        // a what's-new card instead of a bare version number. Gone unless the
+        // list is non-empty, so older manifests leave the bar exactly as it
+        // was - the view is inside the D-pad chain's vertical rhythm and an
+        // empty bullet list would show up as a blank gap.
+        val highlights = findViewById<TextView>(R.id.update_highlights)
+        if (update.highlights.isEmpty()) {
+            highlights.visibility = View.GONE
+        } else {
+            highlights.visibility = View.VISIBLE
+            highlights.text = update.highlights.joinToString("\n") { "•  $it" }
+        }
         button.isEnabled = true
         button.text = getString(R.string.update_download, update.versionName)
         button.setOnClickListener { startDownload(update) }
-        button.requestFocus()
+        // Reveal, do not grab. This runs on a network callback, which resolves
+        // whenever it likes — a second after launch is normal, and a second
+        // after launch is exactly when someone has reached the search field and
+        // started typing. The unconditional requestFocus() this replaces took
+        // the cursor out of the field mid-word and closed the keyboard with it,
+        // which from the sofa looks like the search box losing focus for no
+        // reason. The bar is a stop on the vertical D-pad chain (apply_targets
+        // → update_bar → chip_row), so it is reachable without the grab; the
+        // grab is kept only for the case it was for, a screen nobody has
+        // touched yet.
+        val current = currentFocus
+        if (current == null || current === window.decorView || current.id == R.id.apply_button) {
+            button.requestFocus()
+        }
     }
 
     private fun startDownload(update: UpdateChecker.Result.Available) {
@@ -437,6 +888,9 @@ class MainActivity : AppCompatActivity() {
         targets.layoutManager = LinearLayoutManager(
             this, LinearLayoutManager.HORIZONTAL, false
         )
+        // See bindChips: a chip press that costs the chip its highlight reads as
+        // the press not having landed.
+        targets.itemAnimator = null
         targets.adapter = ChipAdapter(labels, keys, PICK_BANNER) { key ->
             pickBanners = key == PICK_BANNER
             hint.text = if (pickBanners) {
@@ -488,6 +942,9 @@ class MainActivity : AppCompatActivity() {
             extras.layoutManager = LinearLayoutManager(
                 this, LinearLayoutManager.HORIZONTAL, false
             )
+            // See bindChips. This row's chips fire an apply rather than moving a
+            // filter, but select() still runs and still rebinds two chips.
+            extras.itemAnimator = null
             extras.adapter = ChipAdapter(
                 others.map { getString(R.string.cta_apply_also_fmt, it.displayName) },
                 others.map { it.key },
@@ -532,6 +989,15 @@ class MainActivity : AppCompatActivity() {
         private const val BESPOKE = "BESPOKE"
         private const val PICK_BANNER = "PICK_BANNER"
         private const val PICK_SQUARE = "PICK_SQUARE"
+
+        /**
+         * How long a keystroke waits for the next one before the grid filters.
+         *
+         * Longer than a remote's key-repeat interval (~50ms) so a held key or a
+         * fast burst produces one pass, shorter than the pause between words so
+         * the results never look like they are behind the caret.
+         */
+        private const val FILTER_DEBOUNCE_MS = 120L
         private val CHIP_ORDER = listOf(
             "FILES" to "Files",
             "LIVE" to "Live TV",

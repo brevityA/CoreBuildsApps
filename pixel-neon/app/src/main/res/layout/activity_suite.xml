@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  The suite hub. Header plus one scroll column; SuiteActivity inflates the
+  six companion rows into suite_rows at creation, so the column's focus chain
+  is exactly the rows you can see - no recycler, no hidden stops.
+-->
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/cb_night"
+    android:paddingStart="@dimen/cb_gutter_side"
+    android:paddingEnd="@dimen/cb_gutter_side"
+    android:paddingTop="24dp"
+    android:paddingBottom="16dp">
+
+    <!-- HEADER -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical">
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/bg_chip"
+                android:fontFamily="monospace"
+                android:paddingStart="@dimen/cb_space_sm"
+                android:paddingEnd="@dimen/cb_space_sm"
+                android:paddingTop="7dp"
+                android:paddingBottom="7dp"
+                android:letterSpacing="0.18"
+                android:text="@string/suite_kicker"
+                android:textColor="@color/cb_signal_cyan"
+                android:textSize="@dimen/cb_text_kicker"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/cb_space_md"
+                android:ellipsize="end"
+                android:letterSpacing="-0.025"
+                android:maxLines="1"
+                android:text="@string/suite_title"
+                android:textColor="@color/cb_ink"
+                android:textSize="@dimen/cb_text_title"
+                android:textStyle="bold" />
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/suite_back"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:minWidth="@dimen/cb_button_min_width"
+            android:minHeight="@dimen/cb_target_min"
+            android:background="@drawable/bg_ghost"
+            android:clickable="true"
+            android:focusable="true"
+            android:gravity="center"
+            android:paddingStart="@dimen/cb_space_lg"
+            android:paddingEnd="@dimen/cb_space_lg"
+            android:text="@string/action_back"
+            android:textColor="@color/cb_ink"
+            android:textSize="@dimen/cb_text_body" />
+    </LinearLayout>
+
+    <ScrollView
+        android:id="@+id/suite_scroll"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:clipToPadding="false"
+        android:fillViewport="true"
+        android:scrollbars="vertical">
+
+        <LinearLayout
+            android:id="@+id/suite_rows"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingTop="@dimen/cb_space_md"
+            android:paddingBottom="@dimen/cb_space_xs" />
+    </ScrollView>
+</LinearLayout>

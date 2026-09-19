@@ -270,6 +270,22 @@
                 android:text="@string/update_sub_download"
                 android:textColor="@color/cb_slate"
                 android:textSize="@dimen/cb_text_data" />
+
+            <!--
+                Release highlights from version.json, one bullet per line.
+                Gone unless the manifest actually carries them: an empty
+                bullet list would render as a blank gap inside the bar, and
+                the bar's height is on the D-pad chain's vertical rhythm.
+            -->
+            <TextView
+                android:id="@+id/update_highlights"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="6dp"
+                android:lineSpacingExtra="3dp"
+                android:textColor="@color/cb_ink"
+                android:textSize="@dimen/cb_text_data"
+                android:visibility="gone" />
         </LinearLayout>
 
         <TextView

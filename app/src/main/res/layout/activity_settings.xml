@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-  Settings. Four rows, each one wired to a reader in SettingsActivity.
+  Settings. Six rows, each one wired to a reader in SettingsActivity.
 
   TV focus: the row is the focusable target, not the switch inside it. The
   switches are focusable="false" clickable="false" so a D-pad makes one stop
@@ -294,6 +294,138 @@
             android:duplicateParentState="true" />
     </LinearLayout>
 
+    <!-- LAUNCHER -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/cb_space_md"
+        android:fontFamily="monospace"
+        android:letterSpacing="0.16"
+        android:text="@string/settings_group_launcher"
+        android:textColor="@color/cb_signal_cyan"
+        android:textSize="@dimen/cb_text_kicker"
+        android:textStyle="bold" />
+
+    <LinearLayout
+        android:id="@+id/set_refresh_row"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="6dp"
+        android:background="@drawable/bg_card"
+        android:clickable="true"
+        android:focusable="true"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:padding="@dimen/cb_card_padding">
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/settings_refresh_title"
+                android:textColor="@color/cb_ink"
+                android:textSize="@dimen/cb_text_body"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:text="@string/settings_refresh_sub"
+                android:textColor="@color/cb_slate"
+                android:textSize="@dimen/cb_text_data" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/set_appinfo_row"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="6dp"
+        android:background="@drawable/bg_card"
+        android:clickable="true"
+        android:focusable="true"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:padding="@dimen/cb_card_padding">
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/settings_appinfo_title"
+                android:textColor="@color/cb_ink"
+                android:textSize="@dimen/cb_text_body"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:text="@string/settings_appinfo_sub"
+                android:textColor="@color/cb_slate"
+                android:textSize="@dimen/cb_text_data" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <!-- SUITE -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/cb_space_md"
+        android:fontFamily="monospace"
+        android:letterSpacing="0.16"
+        android:text="@string/settings_group_suite"
+        android:textColor="@color/cb_signal_cyan"
+        android:textSize="@dimen/cb_text_kicker"
+        android:textStyle="bold" />
+
+    <LinearLayout
+        android:id="@+id/set_suite_row"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="6dp"
+        android:background="@drawable/bg_card"
+        android:clickable="true"
+        android:focusable="true"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:padding="@dimen/cb_card_padding">
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/settings_suite_title"
+                android:textColor="@color/cb_ink"
+                android:textSize="@dimen/cb_text_body"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:text="@string/settings_suite_sub"
+                android:textColor="@color/cb_slate"
+                android:textSize="@dimen/cb_text_data" />
+        </LinearLayout>
+    </LinearLayout>
+
     <!-- STORAGE -->
     <TextView
         android:layout_width="wrap_content"
@@ -361,6 +493,90 @@
             android:text="@string/settings_cache_clear"
             android:textColor="@color/cb_ink"
             android:textSize="@dimen/cb_text_label" />
+    </LinearLayout>
+
+    <!-- HELP -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/cb_space_md"
+        android:fontFamily="monospace"
+        android:letterSpacing="0.16"
+        android:text="@string/settings_group_help"
+        android:textColor="@color/cb_signal_cyan"
+        android:textSize="@dimen/cb_text_kicker"
+        android:textStyle="bold" />
+
+    <LinearLayout
+        android:id="@+id/set_audit_row"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="6dp"
+        android:background="@drawable/bg_card"
+        android:clickable="true"
+        android:focusable="true"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:padding="@dimen/cb_card_padding">
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/settings_audit_title"
+                android:textColor="@color/cb_ink"
+                android:textSize="@dimen/cb_text_body"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:text="@string/settings_audit_sub"
+                android:textColor="@color/cb_slate"
+                android:textSize="@dimen/cb_text_data" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/set_faq_row"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="6dp"
+        android:background="@drawable/bg_card"
+        android:clickable="true"
+        android:focusable="true"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:padding="@dimen/cb_card_padding">
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/settings_faq_title"
+                android:textColor="@color/cb_ink"
+                android:textSize="@dimen/cb_text_body"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:text="@string/settings_faq_sub"
+                android:textColor="@color/cb_slate"
+                android:textSize="@dimen/cb_text_data" />
+        </LinearLayout>
     </LinearLayout>
 
         </LinearLayout>

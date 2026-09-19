@@ -1,23 +1,33 @@
 package tv.corebuilds.iconpack
 
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.view.View
 import android.widget.LinearLayout
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SwitchCompat
 import java.io.File
 import java.util.Locale
 
 /**
- * The four settings that change what the app does.
+ * The stored settings that change what the app does, two launcher tools, and
+ * the door to the FAQ.
  *
  * Every row here is wired to a reader: update checks gate [UpdateChecker],
  * reduce motion gates the chip animation in [ChipAdapter], AMOLED chrome
  * repaints the window, and the cache row deletes the directory
  * [WallpaperDownloader.cacheDir] actually writes to. Rows that could only ever
  * store a preference nobody consults were left out of the design rather than
- * shipped inert.
+ * shipped inert. The LAUNCHER and HELP rows are actions rather than stored
+ * settings, and they earn their place the same way: refresh re-fires the
+ * detected launcher's apply contract through [ApplyIconPack], app info opens
+ * the system details page where a force stop clears a bitmap cache re-applying
+ * cannot reach, and the help row opens [FaqActivity]. All three read their
+ * target from detection rather than assumption, and each says plainly when it
+ * found nothing to act on.
  *
  * TV focus model: the whole row is the focusable target, not the switch inside
  * it. A SwitchCompat that takes focus separately means two D-pad stops per
@@ -79,6 +89,22 @@ class SettingsActivity : AppCompatActivity() {
             recreate()
         }
 
+        row(R.id.set_refresh_row) { refreshLauncher() }
+
+        row(R.id.set_appinfo_row) { openLauncherInfo() }
+
+        row(R.id.set_suite_row) {
+            startActivity(Intent(this, SuiteActivity::class.java))
+        }
+
+        row(R.id.set_audit_row) {
+            startActivity(Intent(this, AuditorActivity::class.java))
+        }
+
+        row(R.id.set_faq_row) {
+            startActivity(Intent(this, FaqActivity::class.java))
+        }
+
         findViewById<View>(R.id.set_cache_clear).setOnClickListener {
             clearCache()
             showCacheSize()
@@ -106,6 +132,61 @@ class SettingsActivity : AppCompatActivity() {
         val dir = WallpaperDownloader.cacheDir(this)
         if (!dir.isDirectory) return 0L
         return dir.walkTopDown().filter(File::isFile).map(File::length).sum()
+    }
+
+    /**
+     * Re-fire the detected launcher's apply contract.
+     *
+     * Launchers cache rendered cards, so a pack update can leave yesterday's
+     * bitmaps on the home screen; re-applying is the documented nudge and this
+     * row is that nudge, reachable from the sofa. Every outcome is named -
+     * applied, manual path, or nothing detected - because a silent no-op is
+     * exactly the confusion that ends in rebooting the TV.
+     */
+    private fun refreshLauncher() {
+        val launcher = ApplyIconPack.detectInstalled(this)
+        if (launcher == null) {
+            toast(getString(R.string.refresh_no_launcher))
+            return
+        }
+        when (val result = ApplyIconPack.apply(this, launcher)) {
+            is ApplyIconPack.Result.Applied ->
+                toast(getString(R.string.refresh_applied_fmt, result.launcherName))
+            is ApplyIconPack.Result.Manual ->
+                toast(getString(R.string.refresh_manual_fmt, result.launcherName, result.instructions))
+            is ApplyIconPack.Result.NotInstalled ->
+                toast(getString(R.string.refresh_no_launcher))
+        }
+    }
+
+    /**
+     * The system app-info page for the detected launcher, the one place a
+     * force stop lives. A force stop clears the launcher's in-memory card
+     * cache, which re-applying cannot reach; opening the page from here saves
+     * a D-pad hunt through the TV's own settings tree.
+     */
+    private fun openLauncherInfo() {
+        val launcher = ApplyIconPack.detectInstalled(this)
+        val pkg = launcher?.let { l ->
+            with(ApplyIconPack) { l.packages.firstOrNull { isInstalled(it) } }
+        }
+        if (pkg == null) {
+            toast(getString(R.string.appinfo_missing))
+            return
+        }
+        val intent = Intent(
+            android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
+            Uri.parse("package:$pkg")
+        ).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+        try {
+            startActivity(intent)
+        } catch (_: Exception) {
+            toast(getString(R.string.appinfo_missing))
+        }
+    }
+
+    private fun toast(message: String) {
+        Toast.makeText(this, message, Toast.LENGTH_LONG).show()
     }
 
     private fun clearCache() {
