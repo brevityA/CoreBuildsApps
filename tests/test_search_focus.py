@@ -440,6 +440,108 @@ def test_search_field_keeps_its_focus_routes():
     assert checked == len(MODULES), f"only {checked} of {len(MODULES)} modules checked"
 
 
+# ---------------------------------------------------------------------------
+# 6. A hidden stop in the D-pad chain cannot hold the cursor.
+# ---------------------------------------------------------------------------
+#
+# `isFocusable()` ignores visibility, so a container that is GONE but focusable
+# is a hole in the chain, not a stop in it: UP from the search field followed
+# its nextFocusUp into the invisible update bar, the next UP into the invisible
+# apply-targets row, and from there UP/DOWN ping-ponged between two views
+# nobody can see while the chips and the grid went unreachable — reported from
+# the sofa as "the lists disappear". The containers are focusable="false" in
+# the layout and MainActivity.syncFocusChain() names the nearest VISIBLE stop
+# for every edge that used to route through them, at the moment their
+# visibility changes.
+
+ALL_LAYOUTS = {
+    "app": ROOT / "app/src/main/res/layout",
+    "pop": ROOT / "pop/src/main/res/layout",
+    "pixel-neon": ROOT / "pixel-neon/app/src/main/res/layout",
+}
+
+CHAIN_CONTAINERS = ("update_bar", "apply_targets")
+
+
+def test_a_gone_view_is_never_focusable():
+    for module, layout_dir in ALL_LAYOUTS.items():
+        root = ET.parse(layout_dir / "activity_main.xml").getroot()
+        for element in root.iter():
+            if element.get(ANDROID + "visibility") == "gone":
+                assert element.get(ANDROID + "focusable") != "true", (
+                    f"{module}: a view declared gone is also focusable=\"true\". "
+                    f"Android hands the cursor to it anyway, so the ring parks "
+                    f"on an invisible view and the screen reads as dead"
+                )
+        for view_id in CHAIN_CONTAINERS:
+            view = by_id(root, view_id)
+            assert view is not None, f"{module}: no @+id/{view_id}"
+            assert view.get(ANDROID + "focusable") == "false", (
+                f"{module}: {view_id} comes and goes with the release manifest "
+                f"and the detected launchers, so it must say focusable=\"false\" "
+                f"explicitly; a hidden chain stop that can take focus strands "
+                f"the cursor"
+            )
+
+
+def test_the_focus_chain_is_resynced_where_visibility_changes():
+    text = source("MainActivity.kt")
+    assert "fun syncFocusChain()" in text, (
+        "MainActivity no longer rewires the vertical chain; the layout's "
+        "nextFocus edges route through containers that are GONE most of the "
+        "time"
+    )
+    for name in (
+        "onCreate",
+        "applyFilter",
+        "showUpdateAvailable",
+        "bindPickShape",
+        "bindApplyButton",
+    ):
+        code = code_of(function_body(text, name))
+        assert "syncFocusChain()" in code, (
+            f"MainActivity.{name} changes a chain container's visibility (or "
+            f"runs before the first layout) without calling syncFocusChain(); "
+            f"the edges around it then name whatever was visible last time"
+        )
+    pixelneon = (
+        ROOT / "pixel-neon/app/src/main/java/tv/corebuilds/pixelneon/MainActivity.kt"
+    ).read_text(encoding="utf-8")
+    assert "fun syncFocusChain()" in pixelneon, (
+        "the Pixel Neon fork keeps its own copy of this screen and its own "
+        "copy of the hole; it needs the same governor"
+    )
+
+
+def test_preview_reveals_without_grabbing_focus():
+    paths = [
+        KOTLIN / "WallpaperPreviewActivity.kt",
+        ROOT / "pixel-neon/app/src/main/java/tv/corebuilds/pixelneon/WallpaperPreviewActivity.kt",
+    ]
+    for path in paths:
+        text = path.read_text(encoding="utf-8")
+        body = function_body(text, "decodeAndShow")
+        code = code_of(body)
+        grabs = [line for line in code_lines(body) if "requestFocus()" in line]
+        assert grabs, (
+            f"{path.parent.name}: decodeAndShow no longer offers Set as the "
+            f"initial cursor at all"
+        )
+        assert "currentFocus" in code, (
+            f"{path.parent.name}: decodeAndShow grabs focus without reading "
+            f"currentFocus. It runs on a download callback, which resolves "
+            f"whenever the network likes — including after the user has D-pad "
+            f"right onto the next wallpaper and chosen Save there"
+        )
+        base = body_indent(body)
+        for line in grabs:
+            assert indent_of(line) > base, (
+                f"{path.parent.name}: decodeAndShow calls requestFocus() at the "
+                f"top level of its body; it has to sit inside the currentFocus "
+                f"guard"
+            )
+
+
 if __name__ == "__main__":
     for name, layout_dir in MODULES.items():
         main = ET.parse(layout_dir / "activity_main.xml").getroot()

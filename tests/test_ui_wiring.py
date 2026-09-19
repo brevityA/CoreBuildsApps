@@ -269,6 +269,22 @@ def main() -> int:
           "InspectorActivity: export must gate on the storage permission, then export")
     check("getLaunchIntentForPackage" in inspector and "isInstalled" in inspector,
           "InspectorActivity: launch must probe install state before starting")
+    check('(_banner)?' in inspector or '(?:_banner)?' in inspector,
+          "InspectorActivity: componentsFor must accept the banner drawable. "
+          "appfilter maps every component to <name>_banner - the square glyph "
+          "reaches launchers through drawable.xml - so matching the square name "
+          "alone left the component list empty for every tile and made Launch "
+          "toast \"not mapped\" on the whole pack")
+    appfilter = read(ROOT / "app" / "src" / "main" / "assets" / "appfilter.xml")
+    pack = re.findall(r"<item>([a-z0-9_]+)</item>",
+                      read(ROOT / "app" / "src" / "main" / "res" / "values" / "icon_pack.xml")
+                      .split('name="icon_pack"')[1].split("</string-array>")[0])
+    unmapped = [d for d in pack
+                if f'drawable="{d}"' not in appfilter
+                and f'drawable="{d}_banner"' not in appfilter]
+    check(not unmapped,
+          f"icon_pack drawables with no appfilter component at all: {unmapped[:8]} - "
+          f"the inspector would show them as unmapped on device")
     check("Pictures/CoreBuilds/Icons" in exporter and "IS_PENDING" in exporter,
           "IconExporter: icons land in their own Pictures subfolder, pending-safe")
     check("KEYCODE_CHANNEL_DOWN" in main and "grid.hasFocus()" in main,

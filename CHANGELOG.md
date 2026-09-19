@@ -6,6 +6,71 @@ All notable changes to the Core Builds Icon Pack. Format follows
 
 ## [Unreleased]
 
+### Fixed
+
+- **Two UP presses from the search box made the catalogue look dead.** The
+  vertical D-pad chain runs `apply_targets → update_bar → chip_row`, and both
+  header containers are GONE unless something shows them — the update bar only
+  when a newer manifest exists, the target row only when a second launcher is
+  installed. Both were still focusable while hidden, and `isFocusable()`
+  ignores visibility: UP from the search field parked the ring on the invisible
+  bar, the next UP on the invisible target row, and from there UP/DOWN
+  ping-ponged between two views nobody can see while the chips and the grid
+  went unreachable. From the sofa that read as "the lists disappeared", and the
+  earlier "press right and they disappear" report was the same hole entered
+  from another edge. The layout comment claimed FocusFinder collapses a chain
+  through a GONE target by following the target's own nextFocus; the device
+  report is the counterexample, so the chain is now explicit instead of
+  folklore: both containers carry `focusable="false"` so a hidden one can never
+  hold the cursor, and a new `MainActivity.syncFocusChain()` rewrites every
+  edge that used to route through them to the nearest VISIBLE stop — the bar's
+  button when the bar is shown, the target row when only that is, the
+  wallpapers entry otherwise, and the empty state's undo below the filter row
+  when the grid is the container that just went GONE. It runs at each of the
+  five places that toggle a container, in Classic and Pop (shared Kotlin) and
+  in Pixel Neon's fork, which carried the same hole.
+  `tests/test_search_focus.py` gained three checks: no `visibility="gone"` view
+  in any of the three modules' main layout may declare `focusable="true"`, the
+  chain is resynced at every visibility toggle, and the wallpaper preview's
+  decode callback reveals without grabbing (below).
+- **The inspector listed no components and Launch was a dead button.**
+  `componentsFor()` matched `drawable="<square name>"` in the bundled
+  `appfilter.xml`, but every one of the 1765 component items in that file maps
+  to the *banner* drawable — the square glyph reaches launchers through
+  `drawable.xml`, not through a component mapping — so the match came back
+  empty for every tile in the pack: the component list rendered blank and
+  **Launch app** toasted "No component maps to this drawable in appfilter.xml"
+  on icons that are mapped four ways. The pattern now accepts the `_banner`
+  suffix (non-capturing, so `groupValues[1]` stays the component), in Classic
+  and Pop. `tests/test_ui_wiring.py` locks both halves: the suffix in the
+  pattern, and a data check that no drawable in `icon_pack.xml` is absent from
+  `appfilter.xml` altogether. The mockup generator is what caught it — rendering
+  the inspector frame from the asset produced an empty component list.
+- **The wallpaper preview yanked the cursor back to Set mid-browse.**
+  `decodeAndShow` ended in an unconditional `requestFocus()` on the primary
+  action, and it runs on a download callback — which resolves whenever the
+  network likes, including after the user has D-pad right onto the next
+  wallpaper and moved the cursor to Save there. Same class of defect as the
+  update bar's grab fixed in 1.8.11/1.8.21, same rule: reveal, and take the
+  cursor only when nothing has been chosen yet (no focus, the decor view, or
+  the Back button the screen opens on). Fixed in `app` and mirrored into Pixel
+  Neon's fork.
+
+### Changed
+
+- **The UI mockups are generated from the source they depict.**
+  `tools/build_app_ui_mockups.py` renders 1920×1080 TV frames of the catalogue,
+  wallpapers browser, settings, FAQ, auditor, inspector and suite hub straight
+  from `strings.xml`, `dimens.xml`, `colors.xml`, the generated arrays,
+  `suite_hub.xml`, `Latestrelease/version.json` and the real bundled icon and
+  wallpaper art, through the same Outfit-to-SVG-path and resvg pipeline the
+  icon generators use. The four hand-drawn sheets it replaces had drifted off
+  the published app — a stacked-rows home screen the layout never had,
+  unlabeled tiles, "1765 components", a v1.8.20 header and chip counts from an
+  older tranche — which is what "the mockups look nothing like what was
+  published" meant. `--check` fails CI on drift; the frames carry a MOCKUP
+  caption naming which values are example data.
+
 ## [1.8.21] — 2026-09-19
 
 ### Fixed

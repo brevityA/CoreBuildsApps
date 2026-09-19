@@ -126,6 +126,7 @@ class MainActivity : AppCompatActivity() {
         bindChips()
         bindSearch()
         bindEmptyActions()
+        syncFocusChain()
         if (pickMode) {
             // Icon-picker mode has no use for the wallpapers entry or apply.
             findViewById<View>(R.id.wallpapers_group).visibility = View.GONE
@@ -174,6 +175,73 @@ class MainActivity : AppCompatActivity() {
                 findViewById<View>(R.id.apply_button).requestFocus()
             }
         }
+    }
+
+    /**
+     * Rewrite the vertical D-pad chain around the two header containers that
+     * come and go, at the moment their visibility changes.
+     *
+     * [R.id.apply_targets] and [R.id.update_bar] are GONE unless something
+     * shows them, and a GONE view that is focusable still takes the cursor:
+     * `isFocusable()` ignores visibility, so UP from the search field followed
+     * its `nextFocusUp` into the invisible bar and the next UP into the
+     * invisible target row, after which UP/DOWN ping-ponged between two views
+     * nobody can see and the chip row and the grid read as dead — "the lists
+     * disappeared". Both containers are `focusable="false"` in the layout so a
+     * hidden one can never hold the cursor; this does the other half, naming
+     * the nearest VISIBLE stop for every edge that used to route through them:
+     *
+     *  - up from chips/search and down from the header column land on the
+     *    update bar's button when the bar is shown, on the target row when
+     *    only that is shown, and on the wallpapers entry otherwise;
+     *  - the bar's button reaches the target row above it when that exists
+     *    and the chips below either way;
+     *  - down from chips/search lands on the grid, or on the empty state's
+     *    undo when the grid is the container that just went GONE.
+     *
+     * The chain is therefore explicit in code instead of delegated to whatever
+     * FocusFinder does with a hidden view, which is not behaviour any version
+     * of this app should depend on. `update_button` is named rather than its
+     * bar on purpose: a child of a GONE parent still reports itself VISIBLE,
+     * so the bar's own flag is what decides, and it is read here.
+     */
+    private fun syncFocusChain() {
+        val bar = findViewById<View>(R.id.update_bar)
+        val targets = findViewById<RecyclerView>(R.id.apply_targets)
+        val grid = findViewById<RecyclerView>(R.id.grid)
+        val barShown = bar.visibility == View.VISIBLE
+        val targetsShown = targets.visibility == View.VISIBLE
+        // A shown target row can be a named stop: it is focusable only while
+        // shown (set below) and afterDescendants hands the cursor to its first
+        // chip. A shown bar is named through its button, visible exactly when
+        // the bar is.
+        targets.isFocusable = targetsShown
+        val headerStop = when {
+            barShown -> R.id.update_button
+            targetsShown -> R.id.apply_targets
+            findViewById<View>(R.id.wallpapers_group).visibility == View.VISIBLE ->
+                R.id.wallpapers_entry
+            else -> R.id.chip_row
+        }
+        findViewById<View>(R.id.chip_row).nextFocusUpId = headerStop
+        findViewById<View>(R.id.search).nextFocusUpId = headerStop
+        findViewById<View>(R.id.wallpapers_entry).nextFocusDownId = headerStop
+        findViewById<View>(R.id.settings_entry).nextFocusDownId = headerStop
+        findViewById<View>(R.id.about_entry).nextFocusDownId = headerStop
+        findViewById<View>(R.id.update_button).nextFocusUpId =
+            if (targetsShown) R.id.apply_targets else R.id.wallpapers_entry
+        findViewById<View>(R.id.update_button).nextFocusDownId = R.id.chip_row
+        targets.nextFocusUpId = R.id.wallpapers_entry
+        targets.nextFocusDownId =
+            if (barShown) R.id.update_button else R.id.chip_row
+        val down = when {
+            grid.visibility == View.VISIBLE -> R.id.grid
+            findViewById<View>(R.id.empty_clear_search).visibility == View.VISIBLE ->
+                R.id.empty_clear_search
+            else -> R.id.empty_clear_filter
+        }
+        findViewById<View>(R.id.chip_row).nextFocusDownId = down
+        findViewById<View>(R.id.search).nextFocusDownId = down
     }
 
     private fun bindEmptyActions() {
@@ -540,6 +608,9 @@ class MainActivity : AppCompatActivity() {
                 getString(R.string.icon_filter_fmt, filtered.size, all.size)
             }
         bindEmptyState(filtered.size, q)
+        // The grid and the empty state just swapped places; down from the
+        // filter row has to name whichever of them is actually on screen.
+        syncFocusChain()
 
         // submit() only schedules the layout pass. A filtered-out tile is
         // detached — and its focus dropped — during that pass, so every focus
@@ -775,6 +846,9 @@ class MainActivity : AppCompatActivity() {
         val sub = findViewById<TextView>(R.id.update_sub)
         val button = findViewById<TextView>(R.id.update_button)
         bar.visibility = View.VISIBLE
+        // The bar just joined the vertical chain; the edges that route around
+        // it when it is hidden have to point at it now that it is not.
+        syncFocusChain()
         label.text = getString(
             R.string.update_available_fmt, update.versionName, update.iconCount
         )
@@ -899,6 +973,7 @@ class MainActivity : AppCompatActivity() {
                 getString(R.string.picker_hint_square)
             }
         }
+        syncFocusChain()
     }
 
     private fun bindApplyButton() {
@@ -922,6 +997,7 @@ class MainActivity : AppCompatActivity() {
             button.setOnClickListener {
                 toast(getString(R.string.projectivy_missing))
             }
+            syncFocusChain()
             return
         }
 
@@ -953,6 +1029,7 @@ class MainActivity : AppCompatActivity() {
                 others.firstOrNull { it.key == key }?.let { applyTo(it) }
             }
         }
+        syncFocusChain()
     }
 
     private fun applyTo(launcher: ApplyIconPack.Launcher) {

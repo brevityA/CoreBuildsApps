@@ -120,6 +120,42 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    /**
+     * Rewrite the vertical D-pad chain around the two header containers that
+     * come and go, at the moment their visibility changes. See the Classic
+     * pack's MainActivity for the full account: a GONE view that is focusable
+     * still takes the cursor, so UP from the search field parked the ring on
+     * the invisible update bar and the next UP on the invisible target row,
+     * after which the chips and grid read as dead. The containers are
+     * focusable="false" in the layout; this names the nearest VISIBLE stop for
+     * every edge that used to route through them.
+     */
+    private fun syncFocusChain() {
+        val bar = findViewById<View>(R.id.update_bar)
+        val targets = findViewById<RecyclerView>(R.id.apply_targets)
+        val barShown = bar.visibility == View.VISIBLE
+        val targetsShown = targets.visibility == View.VISIBLE
+        targets.isFocusable = targetsShown
+        val headerStop = when {
+            barShown -> R.id.update_button
+            targetsShown -> R.id.apply_targets
+            findViewById<View>(R.id.wallpapers_group).visibility == View.VISIBLE ->
+                R.id.wallpapers_entry
+            else -> R.id.chip_row
+        }
+        findViewById<View>(R.id.chip_row).nextFocusUpId = headerStop
+        findViewById<View>(R.id.search).nextFocusUpId = headerStop
+        findViewById<View>(R.id.wallpapers_entry).nextFocusDownId = headerStop
+        findViewById<View>(R.id.update_button).nextFocusUpId =
+            if (targetsShown) R.id.apply_targets else R.id.wallpapers_entry
+        findViewById<View>(R.id.update_button).nextFocusDownId = R.id.chip_row
+        targets.nextFocusUpId = R.id.wallpapers_entry
+        targets.nextFocusDownId =
+            if (barShown) R.id.update_button else R.id.chip_row
+        findViewById<View>(R.id.chip_row).nextFocusDownId = R.id.grid
+        findViewById<View>(R.id.search).nextFocusDownId = R.id.grid
+    }
+
     private fun bindChips() {
         val present = all.map { it.category }.toSet()
         val keys = mutableListOf(ALL)
@@ -204,6 +240,7 @@ class MainActivity : AppCompatActivity() {
         val sub = findViewById<TextView>(R.id.update_sub)
         val button = findViewById<TextView>(R.id.update_button)
         bar.visibility = View.VISIBLE
+        syncFocusChain()
         label.text = getString(
             R.string.update_available_fmt, update.versionName, update.iconCount
         )
@@ -304,6 +341,7 @@ class MainActivity : AppCompatActivity() {
                 getString(R.string.picker_hint_square)
             }
         }
+        syncFocusChain()
     }
 
     private fun bindApplyButton() {
@@ -327,6 +365,7 @@ class MainActivity : AppCompatActivity() {
             button.setOnClickListener {
                 toast(getString(R.string.projectivy_missing))
             }
+            syncFocusChain()
             return
         }
 
@@ -355,6 +394,7 @@ class MainActivity : AppCompatActivity() {
                 others.firstOrNull { it.key == key }?.let { applyTo(it) }
             }
         }
+        syncFocusChain()
     }
 
     private fun applyTo(launcher: ApplyIconPack.Launcher) {
