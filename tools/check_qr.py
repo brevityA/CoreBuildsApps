@@ -115,7 +115,15 @@ def mapped_components() -> list[str]:
     if not APPFILTER.exists():
         fail(f"missing {APPFILTER.relative_to(ROOT)}")
     found = COMPONENT.findall(APPFILTER.read_text(encoding="utf-8"))
-    return sorted(set(found), key=len, reverse=True)
+    # Total order, not just by length. Sorting a set on length alone leaves
+    # equal-length entries in set iteration order, which moves between
+    # processes because string hashing is seeded per run — so `[:150]` below
+    # would take a different 150 components each time and the corpus would not
+    # be reproducible. It passed every run regardless, which is exactly what
+    # makes it worth pinning: a failure that cannot be reproduced is not a
+    # finding, and the wobble showed up only as scan totals that disagreed
+    # between runs of an unchanged tree.
+    return sorted(set(found), key=lambda c: (-len(c), c))
 
 
 def app_names() -> list[str]:
@@ -180,7 +188,7 @@ def corpus() -> list[str]:
             for name in (names[index % len(names)], longest_name):
                 urls.append(build_url(endpoint, template, title, name, component,
                                       field_app, field_component))
-    return sorted(set(urls), key=len, reverse=True)
+    return sorted(set(urls), key=lambda u: (-len(u), u))
 
 
 def main(argv: list[str] | None = None) -> int:
