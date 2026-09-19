@@ -1,0 +1,195 @@
+{
+  "_comment": [
+    "The build envelope every Gradle root in the suite has to stay inside.",
+    "",
+    "Dependabot cannot see compileSdk, minSdk or the Compose compiler wiring - it",
+    "only sees version numbers. Left alone it proposes AndroidX releases whose AAR",
+    "metadata demands a newer platform than the suite compiles against, and the",
+    "PR fails in CI with a CheckAarMetadata error nobody has to read twice.",
+    "",
+    "Each ceiling below is the highest version that is PROVEN GREEN on the current",
+    "envelope, plus the evidence for why the next step is blocked. Raising a",
+    "ceiling is a deliberate act: change the envelope first (compileSdk / AGP /",
+    "Kotlin / Compose plugin), see CI go green, then lift the ceiling.",
+    "",
+    "tools/check_gradle_envelope.py enforces this file in both directions:",
+    "  - no root declares a version above its ceiling",
+    "  - .github/dependabot.yml ignores minor+major for every ceiling coordinate",
+    "    in every directory that declares it",
+    "so the ignore rules cannot be silently dropped again (they were, in",
+    "9f5d266d, which is what produced PRs #122 #125 #126 #132)."
+  ],
+  "asOf": "2026-09-18",
+  "envelope": {
+    "agpMaxExclusive": "9",
+    "minGradleForAgp8": "8.7",
+    "_comment": [
+      "AGP 8.5.2 is uniform across all six Gradle roots and is capped below 9,",
+      "matching the existing dependabot ignore: AGP 9 is a breaking major with",
+      "built-in Kotlin and new DSL defaults. Within 8.x AGP is free to move, so",
+      "the gate does not pin it - an AGP-only Dependabot PR that goes green",
+      "should be mergeable without touching this file.",
+      "",
+      "Gradle is not uniform: ticker/android still runs the 8.7 wrapper while the",
+      "other five run 9.7.0. 8.7 is exactly AGP 8.5's minimum, so that is the",
+      "floor the gate enforces. There is no enforceable ceiling - and 9.7.0 +",
+      "AGP 8.5.2 being green on main is direct evidence against the claim in",
+      ".github/dependabot.yml that AGP 8.x cannot run on Gradle >= 9.6."
+    ]
+  },
+  "compose": {
+    "kotlinMajorThatMovesTheCompiler": "2.0.0",
+    "pluginId": "org.jetbrains.kotlin.plugin.compose",
+    "obsoleteDsl": "kotlinCompilerExtensionVersion",
+    "_comment": [
+      "From Kotlin 2.0 the Compose compiler ships as its own Gradle plugin and",
+      "composeOptions.kotlinCompilerExtensionVersion must be deleted. doctor/",
+      "pins that DSL to 1.5.14, which the Compose compiler ties to Kotlin",
+      "1.9.24 exactly - so any Kotlin 2.x bump breaks doctor/ before it ever",
+      "reaches a compileSdk check. The gate asserts this so the requirement",
+      "outlives the memory of it."
+    ]
+  },
+  "ceilings": [
+    {
+      "coordinate": "androidx.core:core-ktx",
+      "max": "1.13.1",
+      "blockedUpdateTypes": ["version-update:semver-minor", "version-update:semver-major"],
+      "reason": "1.15.0 needs compileSdk 35; 1.17.0 needs compileSdk 36 and AGP 8.9.1; 1.19.0 needs compileSdk 37 and AGP 9.1.0. Five of seven modules compile at 34.",
+      "evidence": [
+        "https://developer.android.com/jetpack/androidx/releases/core",
+        "https://youtrack.jetbrains.com/projects/KMT/issues/KMT-2631"
+      ]
+    },
+    {
+      "coordinate": "androidx.appcompat:appcompat",
+      "max": "1.7.0",
+      "blockedUpdateTypes": ["version-update:semver-minor", "version-update:semver-major"],
+      "reason": "1.8.0 needs compileSdk 36 and raises its own minSdk to 23. The icon pack, Pop and Pixel Neon declare minSdk 21 for Android 5.x Fire TV hardware, so 1.8.0 fails the manifest merge before it fails AAR metadata.",
+      "evidence": [
+        "https://developer.android.com/jetpack/androidx/releases/appcompat"
+      ]
+    },
+    {
+      "coordinate": "androidx.recyclerview:recyclerview",
+      "max": "1.3.2",
+      "blockedUpdateTypes": ["version-update:semver-minor", "version-update:semver-major"],
+      "reason": "1.4.0 will only compile against API 35 or higher; the modules that declare it compile at 34.",
+      "evidence": [
+        "https://developer.android.com/jetpack/androidx/releases/recyclerview"
+      ]
+    },
+    {
+      "coordinate": "androidx.media3:media3-exoplayer",
+      "max": "1.4.1",
+      "blockedUpdateTypes": ["version-update:semver-minor", "version-update:semver-major"],
+      "reason": "1.5.0 needs compileSdk 35 and 1.10.0 needs compileSdk 36; shift/ compiles at 34. 1.9.0 also raises minSdk to 23, which shift/ at 26 survives but the rest of the suite would not.",
+      "evidence": [
+        "https://github.com/androidx/media/blob/release/RELEASENOTES.md"
+      ]
+    },
+    {
+      "coordinate": "androidx.media3:media3-ui",
+      "max": "1.4.1",
+      "blockedUpdateTypes": ["version-update:semver-minor", "version-update:semver-major"],
+      "reason": "Released in lockstep with media3-exoplayer; same compileSdk floors.",
+      "evidence": [
+        "https://github.com/androidx/media/blob/release/RELEASENOTES.md"
+      ]
+    },
+    {
+      "coordinate": "androidx.media3:media3-session",
+      "max": "1.4.1",
+      "blockedUpdateTypes": ["version-update:semver-minor", "version-update:semver-major"],
+      "reason": "Released in lockstep with media3-exoplayer; same compileSdk floors.",
+      "evidence": [
+        "https://github.com/androidx/media/blob/release/RELEASENOTES.md"
+      ]
+    },
+    {
+      "coordinate": "androidx.compose:compose-bom",
+      "max": "2024.06.00",
+      "blockedUpdateTypes": ["version-update:semver-minor", "version-update:semver-major"],
+      "reason": "Current BOMs pull Compose libraries that need compileSdk 36-37, and 2026.09.00 in particular needs 37. doctor/ compiles at 35. The BOM also cannot move before Kotlin 2.x lands, because it drags the Compose compiler plugin requirement with it.",
+      "evidence": [
+        "https://developer.android.com/jetpack/androidx/releases/compose"
+      ]
+    },
+    {
+      "coordinate": "androidx.activity:activity-compose",
+      "max": "1.9.0",
+      "blockedUpdateTypes": ["version-update:semver-minor", "version-update:semver-major"],
+      "reason": "It has to move with androidx.compose:compose-bom, not ahead of it. Taking activity-compose 1.10.x alone drags a newer Compose runtime onto the classpath than the 2024.06.00 BOM pins, which fails as a NoSuchMethodError at runtime or in unit tests rather than as a build error - the worst shape of failure to diagnose. doctor/ compiles at 35, so compileSdk is not the binding constraint here; the BOM is.",
+      "evidence": [
+        "https://developer.android.com/jetpack/androidx/releases/activity",
+        "https://developer.android.com/jetpack/androidx/releases/compose"
+      ]
+    },
+    {
+      "coordinate": "org.jetbrains.kotlinx:kotlinx-serialization-json",
+      "max": "1.6.3",
+      "blockedUpdateTypes": ["version-update:semver-minor", "version-update:semver-major"],
+      "reason": "1.7.0 needs the serialization compiler plugin at 2.0.0-RC1 or newer and is explicitly rejected by older plugins; doctor/ pins that plugin at 1.9.24. 1.6.x is the line built for Kotlin 1.9.x. 1.11.0 additionally requires kotlin-stdlib 2.3.20. This ceiling lifts the moment Kotlin 2.x lands.",
+      "evidence": [
+        "https://github.com/Kotlin/kotlinx.serialization/blob/master/CHANGELOG.md"
+      ]
+    },
+    {
+      "coordinate": "org.jetbrains.kotlinx:kotlinx-coroutines-android",
+      "max": "1.8.1",
+      "blockedUpdateTypes": ["version-update:semver-minor", "version-update:semver-major"],
+      "reason": "Releases from 1.9.0 on are compiled with Kotlin 2.x, whose binary metadata a Kotlin 1.9.24 compiler cannot read - it fails with 'Module was compiled with an incompatible version of Kotlin'. Which exact release crosses the line is not documented per version, so the cap sits at the last proven-green one and moves with the Kotlin migration rather than by guesswork.",
+      "evidence": [
+        "https://github.com/Kotlin/kotlinx.coroutines/blob/master/CHANGES.md"
+      ]
+    },
+    {
+      "coordinate": "org.jetbrains.kotlin.android",
+      "max": "1.9.24",
+      "blockedUpdateTypes": ["version-update:semver-minor", "version-update:semver-major"],
+      "reason": "Kotlin 2.0 moves the Compose compiler out of the Kotlin repository into org.jetbrains.kotlin.plugin.compose. doctor/ still sets composeOptions.kotlinCompilerExtensionVersion = \"1.5.14\", which is hard-tied to Kotlin 1.9.24. All seven modules also use the kotlinOptions DSL rather than compilerOptions. This is a source migration, not a version bump.",
+      "evidence": [
+        "https://kotlinlang.org/docs/compose-compiler-migration-guide.html",
+        "https://android-developers.googleblog.com/2024/04/jetpack-compose-compiler-moving-to-kotlin-repository.html"
+      ]
+    },
+    {
+      "coordinate": "org.jetbrains.kotlin.plugin.serialization",
+      "max": "1.9.24",
+      "blockedUpdateTypes": ["version-update:semver-minor", "version-update:semver-major"],
+      "reason": "Must match org.jetbrains.kotlin.android exactly, so it is blocked for the same reason and moves with it.",
+      "evidence": [
+        "https://kotlinlang.org/docs/compose-compiler-migration-guide.html"
+      ]
+    },
+    {
+      "coordinate": "org.jetbrains.kotlin.plugin.parcelize",
+      "max": "1.9.24",
+      "blockedUpdateTypes": ["version-update:semver-minor", "version-update:semver-major"],
+      "reason": "Must match org.jetbrains.kotlin.android exactly, so it is blocked for the same reason and moves with it.",
+      "evidence": [
+        "https://kotlinlang.org/docs/compose-compiler-migration-guide.html"
+      ]
+    }
+  ],
+  "migration": {
+    "_comment": [
+      "The ordered path off these ceilings. Each step is independently shippable",
+      "and each one lifts the ceilings that depend on it. Nothing here is blocked",
+      "on a decision only the maintainer can make, except step 1.",
+      "",
+      "Step 1 is the product question: app/, pop/ and pixel-neon/ carry minSdk 21",
+      "for Android 5.x Fire TV sticks. AndroidX moved its floor to minSdk 23 in",
+      "June 2025, so every AndroidX bump from here on requires dropping those",
+      "devices. That is a release-note decision, not a build decision."
+    ],
+    "steps": [
+      "Decide whether minSdk 21 (Android 5.x Fire TV) is still supported. AndroidX now floors at 23.",
+      "If not: raise app/, pop/ and pixel-neon/ to minSdk 23, then compileSdk 35 across the suite, and install platforms;android-35 in the workflows that build them.",
+      "Move AGP to the newest 8.x the wrapper already runs (9.7.0 is green), one root at a time, alone - not bundled with library bumps.",
+      "Migrate doctor/ to the Compose compiler Gradle plugin: apply org.jetbrains.kotlin.plugin.compose, delete composeOptions, then take Kotlin 2.x across all six roots together and convert kotlinOptions to compilerOptions.",
+      "Raise compileSdk to 36, then 37, lifting the AndroidX ceilings in gradle_envelope.json as each one goes green.",
+      "Only then unblock androidx.core, appcompat, recyclerview, media3 and compose-bom in .github/dependabot.yml."
+    ]
+  }
+}

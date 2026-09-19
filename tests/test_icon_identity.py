@@ -303,7 +303,9 @@ class CoreStyleTests(unittest.TestCase):
             with self.subTest(icon=icon["name"]):
                 accent = display_accent(icon["color"])
                 body = monoline(GLYPHS[icon["glyph"]](accent))
-                self.assertEqual(core_monoline_errors(body, accent), [])
+                self.assertEqual(core_monoline_errors(
+                    body, accent, gradient=bool(icon.get("gradient")),
+                    ink=icon.get("ink")), [])
 
     def test_subordinate_stroke_weights_survive_normalisation(self):
         body = '<path stroke-width="40"/><path stroke-width="26"/><path stroke-width="20"/>'
@@ -339,13 +341,17 @@ class CoreStyleTests(unittest.TestCase):
         for icon in self.revised():
             svg = ET.parse(ROOT / "assets/svg" / f"{icon['drawable']}.svg").getroot()
             body = "".join(ET.tostring(node, encoding="unicode") for node in svg)
-            self.assertEqual(core_monoline_errors(body, display_accent(icon["color"])), [], icon["name"])
+            self.assertEqual(core_monoline_errors(
+                body, display_accent(icon["color"]),
+                gradient=bool(icon.get("gradient")), ink=icon.get("ink")), [], icon["name"])
 
     def test_standard_banner_recipe_is_used_for_every_revised_app(self):
         from build_banners import recentre
         for icon in self.revised():
             actual = (ROOT / "assets/banners" / f"{icon['drawable']}.svg").read_text()
-            expected = recentre(render(icon["name"], icon["glyph"], icon["color"], icon.get("category", "")))
+            expected = recentre(render(icon["name"], icon["glyph"], icon["color"],
+                                       icon.get("category", ""),
+                                       gradient=icon.get("gradient")))
             self.assertEqual(actual, expected, icon["name"])
             self.assertIn('id="cbRail"', actual)
             self.assertIn('fill="#E6EDF3"', actual)  # common Outfit label, not vendor type

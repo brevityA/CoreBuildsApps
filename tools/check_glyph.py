@@ -117,7 +117,8 @@ def normalised_weights(name: str, colour: str = "#4CC9F0") -> tuple[list, list]:
     return before, after
 
 
-def check(name: str, colour: str = "#4CC9F0", strict: bool = False) -> dict:
+def check(name: str, colour: str = "#4CC9F0", strict: bool = False,
+          gradient=None, ink: str | None = None) -> dict:
     img = render(name, colour)
     alpha = img.getchannel("A")
     box = alpha.getbbox()
@@ -141,7 +142,8 @@ def check(name: str, colour: str = "#4CC9F0", strict: bool = False) -> dict:
         problems.append(f"reads as a slab ({tile_ink*100:.1f}% ink at {TILE}px)")
     if strict:
         accent = display_accent(colour)
-        errs = core_monoline_errors(glyphs.monoline(glyphs.GLYPHS[name](accent)), accent)
+        errs = core_monoline_errors(glyphs.monoline(glyphs.GLYPHS[name](accent)), accent,
+                                    gradient=bool(gradient), ink=ink)
         problems.extend(errs)
 
     return {"name": name, "bbox": box, "problems": problems,
@@ -199,8 +201,12 @@ def main() -> int:
         return 0
 
     failed = 0
+    rows = {i["glyph"]: i for i in
+            json.loads((ROOT / "tools/catalog.json").read_text())["icons"]}
     for n in names:
-        r = check(n, args.colour, args.strict)
+        row = rows.get(n, {})
+        r = check(n, args.colour, args.strict,
+                  gradient=row.get("gradient"), ink=row.get("ink"))
         if r["problems"]:
             failed += 1
         if r["problems"] or args.verbose or len(names) <= 12:

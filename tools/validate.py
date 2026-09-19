@@ -10,7 +10,8 @@ import re
 import sys
 import xml.etree.ElementTree as ET
 
-from icon_style import CORE_MONOLINE, MIN_CONTRAST, core_monoline_errors, contrast, display_accent
+from icon_style import (CORE_MONOLINE, MIN_CONTRAST, OFFWHITE_INK,
+                        core_monoline_errors, contrast, display_accent)
 from build_icons import validate as validate_catalog
 from pathlib import Path
 
@@ -44,11 +45,20 @@ def main():
             root = ET.parse(path).getroot()
             body = "".join(ET.tostring(node, encoding="unicode") for node in root)
             mono = icon.get("color_note") == "monochrome"
-            errors = core_monoline_errors(body, display_accent(icon["color"], monochrome=mono))
+            errors = core_monoline_errors(body, display_accent(icon["color"], monochrome=mono),
+                                          gradient=bool(icon.get("gradient")),
+                                          ink=icon.get("ink"))
             check(not errors, f"{icon['name']}: shipped SVG violates Core monoline: {errors}")
         banner = ROOT / "assets/banners" / f"{icon['drawable']}.svg"
         check(banner.exists() and 'id="cbRail"' in banner.read_text(),
               f"{icon['name']}: standard Core banner rail is missing")
+        if icon.get("ink"):
+            check(icon["ink"].upper() == OFFWHITE_INK,
+                  f"{icon['name']}: declared ink must be the sanctioned off-white {OFFWHITE_INK}")
+        if icon.get("gradient"):
+            svg = ROOT / "assets/svg" / f"{icon['drawable']}.svg"
+            check(svg.exists() and 'id="cbGrad"' in svg.read_text(),
+                  f"{icon['name']}: declared gradient is missing from the shipped SVG")
 
     # Brand variants share one identity; every Classic accent remains readable
     # on the documented dark card. Source accents stay untouched for Pop/Neon.

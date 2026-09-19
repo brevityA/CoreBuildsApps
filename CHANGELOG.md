@@ -6,7 +6,31 @@ All notable changes to the Core Builds Icon Pack. Format follows
 
 ## [Unreleased]
 
+## [1.8.20] — 2026-09-18
+
 ### Added
+
+- **Twelve-wall series convention** — Circuit Core gains `Circuit Nexus` and
+  `Circuit Vault`, Retrowave gains `Laser Dusk` and `Ember Horizon`, and the
+  AMOLED set gains `Eclipse` and `Corner Signal`. Every active series now has
+  12 walls, except the original Fieldwork double set at 24; the classic total
+  is 84.
+- **Series 8 AMOLED wallpapers** — twelve deterministic 4K designs on exact
+  `#000000`, with sparse Core cyan, violet, blue, and ember accents. Every wall
+  retains 92.4–99.8% true-black pixels; the generator and wallpaper tests both
+  enforce a minimum of 50%. Includes bundled thumbnails, manifest entries
+  69–78 and 83–84, and `docs/amoled-wallpapers.png` as the visual receipt.
+
+- **Isolated test APK lane** — `:app:assembleCandidate` builds
+  `tv.corebuilds.iconpack.test` with debug signing and a `TEST_SOURCE_COMMIT`
+  stamp, so a candidate installs alongside production instead of over it and
+  never reaches the in-app updater. Driven by `iconpack-test-apk.yml`, which
+  attaches the APK and its SHA-256 to an unpublished draft release; production
+  signing material is never read.
+- **Objective glyph identity checks** — `tools/test_glyph_identity.py` measures
+  counter survival at 96px and 48px, safe-area margin against the raster
+  presence pass, and similarity against every glyph in the registry, so a new
+  mark cannot quietly duplicate one already shipping.
 
 - **Brandmark badge and filter** — 526 of the 940 icons are monograms: a letter
   in one of the 15 `FAMILY_SHELLS` containers. The other 414 are drawn marks,
@@ -41,6 +65,23 @@ All notable changes to the Core Builds Icon Pack. Format follows
 
 ### Changed
 
+- **Twelve generic constructions became bespoke marks** — AirScreen, Aerial
+  Views, AnyDesk and DW; Crossy Road, Blokada (legacy v4), Private Internet
+  Access, mpv, Audiomack, ATRESplayer, Kinopoisk and AIDA64. Each is original
+  Core Builds geometry drawn from the identifying cue recorded in the
+  2026-09-15 tranche research — no vendor artwork is traced, and no fill,
+  container or effect is introduced. Package and activity mappings are
+  unchanged for every one of them; only their glyph references moved. The
+  registry is now 966 glyphs.
+- **DW redrawn as strokes** — its first form filled the right body solid and
+  cut the W out with an SVG mask. That broke the monoline contract two ways:
+  `<defs>`, `<mask>` and solid fills are all forbidden, and two of its four
+  counters closed by 48px, leaving an unreadable blob at launcher size. Ink sat
+  at 30.8 per cent against a 34 per cent slab ceiling — inside it, but with no
+  headroom. Now two overlapping outlined bodies with a drawn D and W, 23.4 per
+  cent ink, legible at 48px, and opted into `core_monoline` so the mask cannot
+  return.
+
 - **Icon pack test builds are now a public channel** — `iconpack-test-apk.yml`
   published to an unlisted draft, which no sideloader could reach because a
   draft has no git tag and its assets 404 without credentials. It now
@@ -52,7 +93,64 @@ All notable changes to the Core Builds Icon Pack. Format follows
   than a checkout to keep it that way. Debug signing only — no `KEYSTORE_*`
   value is read, and the production `iconpack` release is untouched.
 
+
+- **Janky Player's mark is now the shipped app's own tile mark.** Research on
+  2026-09-19 found the app nowhere in public - no Play, APKPure, Uptodown or
+  F-Droid listing, and a GitHub code search for its package id
+  `com.player.janky` returns only this repository's own generated files - so
+  the only sources are the device and the user-supplied rebuild sheet. The
+  vendor wordmark (an anarchy A with a hamster in the ring, which the earlier
+  glyph copied) is banner art; the launcher tile is a heavy J-hook cradling a
+  play triangle in the app's accent, apex welded to the stem. core_monoline
+  translates that twice: the shipped solid triangle becomes a 26.2 outline
+  nested in the bowl (its counter still holds open at 32px), and the sheet's
+  two-tone white-hook-plus-accent-triangle becomes the single accent,
+  #1E88E5 - the default the user-themable slate aggregator ships. `check_glyph.py` at
+  96/48/32px: ink 10.9 percent, counters 1 -> 1 -> 1, bbox
+  (112,80,352,416) inside the 40px safe area, core_monoline clean. The
+  colour's pre-provenance amber claim is gone; `color_reviewed` is true with
+  the sheet as its source. Revised once more the same day on tester feedback
+  (RB3, via Discord): smaller J, circle around it, bigger play sign - so the
+  hook now hangs at the detail weight inside its own 32px ring, the circle
+  the vendor's anarchy A wore on the banner, beside a free-standing
+  primary-weight play sign 200px tall against the previous 136.
+  `check_glyph.py` again: ink 16.9 percent, counters 2 -> 2 -> 2, bbox
+  (56,134,468,382). Final pass the same day, on the pack's own weight
+  grammar: the ring is the sole 32px primary with the J and the play sign
+  both at 26.2 - core_monoline's rule keeps the detail weights subordinate
+  rather than flattening every level to 32, the way `browser_globe` and
+  `play_hex` hierarchise their containers - and the lockup sits centred on
+  the 256 axis. Ink 16.3 percent at 48px, counters 2 -> 2 -> 2, bbox
+  (56,136,465,376). Closed last by the user, from the banner render they
+  approved: the floating lockup is the final composition - the receiver
+  stand and aerials drafted for the IPTV family are retired here - and it
+  wears the two paints they named. The J in off-white ink (#E6EDF3, the
+  Brand Guide ink): the shipped tile is a white hook cradling an accent
+  triangle, and flattening that two-tone into one accent had been a
+  core_monoline limitation rather than a design choice. And a gradient: the
+  banner rail's cyan-to-violet ramp (#00D4FF to #A78BFA, the left edge of
+  the approved render) extended into the ring and the play through the
+  catalog's declared `gradient`, the same mechanism nuvio and tizentube
+  ship, so tile, banner and rail share one paint story. core_monoline grew
+  two declared extensions for this - a catalog `gradient`, and a catalog
+  `ink` sanctioning exactly one reviewed secondary paint - cross-asserted
+  by validate.py and build_icons.py, so undeclared whites still fail.
+  Geometry is unchanged from the weight-grammar pass, so its receipts
+  stand: ink 16.3 percent at 48px, counters 2 -> 2 -> 2, bbox
+  (56,136,465,376). The app's GitHub org (jankyapp/jankyapp - a readme stub
+  with fourteen beta releases, v0.95.47-beta shipped 2026-09-19) was found
+  the same day; its APK assets and org avatar are unreachable from this
+  sandbox, so the sheet remains the pixel source.
+
 ### Fixed
+
+- **Android CI setup outage** — PR workflows use the SDK already installed on
+  GitHub's Ubuntu runner and call its pinned `sdkmanager` path directly instead
+  of failing inside `android-actions/setup-android` before compilation starts.
+- **Nuvio TV inner play mark off-centre** — the wedge inside the ring sat left
+  of centre; the icon and banner are re-rendered in both Classic and Pop. This
+  is the thirteenth icon to change since 1.8.19 and was missing from the twelve
+  listed above, which describe glyph replacements rather than this correction.
 
 - **Settings clipped its last row off a TV screen** — found by a tester on the
   first `iconpack-test` install, before any of this reached a tagged release.
@@ -75,61 +173,6 @@ All notable changes to the Core Builds Icon Pack. Format follows
   Neon's hand-synced ones to match, and their figures do differ. About needs no
   change at 399dp of fixed content; its body is a weighted region holding
   fixed-height cards, so it flexes rather than stacks.
-
-## [1.8.20] — 2026-09-18
-
-### Added
-
-- **Twelve-wall series convention** — Circuit Core gains `Circuit Nexus` and
-  `Circuit Vault`, Retrowave gains `Laser Dusk` and `Ember Horizon`, and the
-  AMOLED set gains `Eclipse` and `Corner Signal`. Every active series now has
-  12 walls, except the original Fieldwork double set at 24; the classic total
-  is 84.
-- **Series 8 AMOLED wallpapers** — twelve deterministic 4K designs on exact
-  `#000000`, with sparse Core cyan, violet, blue, and ember accents. Every wall
-  retains 92.4–99.8% true-black pixels; the generator and wallpaper tests both
-  enforce a minimum of 50%. Includes bundled thumbnails, manifest entries
-  69–78 and 83–84, and `docs/amoled-wallpapers.png` as the visual receipt.
-
-- **Isolated test APK lane** — `:app:assembleCandidate` builds
-  `tv.corebuilds.iconpack.test` with debug signing and a `TEST_SOURCE_COMMIT`
-  stamp, so a candidate installs alongside production instead of over it and
-  never reaches the in-app updater. Driven by `iconpack-test-apk.yml`, which
-  attaches the APK and its SHA-256 to an unpublished draft release; production
-  signing material is never read.
-- **Objective glyph identity checks** — `tools/test_glyph_identity.py` measures
-  counter survival at 96px and 48px, safe-area margin against the raster
-  presence pass, and similarity against every glyph in the registry, so a new
-  mark cannot quietly duplicate one already shipping.
-
-### Changed
-
-- **Twelve generic constructions became bespoke marks** — AirScreen, Aerial
-  Views, AnyDesk and DW; Crossy Road, Blokada (legacy v4), Private Internet
-  Access, mpv, Audiomack, ATRESplayer, Kinopoisk and AIDA64. Each is original
-  Core Builds geometry drawn from the identifying cue recorded in the
-  2026-09-15 tranche research — no vendor artwork is traced, and no fill,
-  container or effect is introduced. Package and activity mappings are
-  unchanged for every one of them; only their glyph references moved. The
-  registry is now 966 glyphs.
-- **DW redrawn as strokes** — its first form filled the right body solid and
-  cut the W out with an SVG mask. That broke the monoline contract two ways:
-  `<defs>`, `<mask>` and solid fills are all forbidden, and two of its four
-  counters closed by 48px, leaving an unreadable blob at launcher size. Ink sat
-  at 30.8 per cent against a 34 per cent slab ceiling — inside it, but with no
-  headroom. Now two overlapping outlined bodies with a drawn D and W, 23.4 per
-  cent ink, legible at 48px, and opted into `core_monoline` so the mask cannot
-  return.
-
-### Fixed
-
-- **Android CI setup outage** — PR workflows use the SDK already installed on
-  GitHub's Ubuntu runner and call its pinned `sdkmanager` path directly instead
-  of failing inside `android-actions/setup-android` before compilation starts.
-- **Nuvio TV inner play mark off-centre** — the wedge inside the ring sat left
-  of centre; the icon and banner are re-rendered in both Classic and Pop. This
-  is the thirteenth icon to change since 1.8.19 and was missing from the twelve
-  listed above, which describe glyph replacements rather than this correction.
 
 ## [1.8.19] — 2026-09-15
 

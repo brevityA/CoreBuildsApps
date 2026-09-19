@@ -361,7 +361,7 @@ Pop is drawn from the same `tools/catalog.json` as the classic Core Builds Icon 
 | iQIYI | `iqiyi` | `#0061FF` | `pop_blue` `#1C79D2` | `com.iqiyi.i18n.tv/com.iqiyi.i18n.tv.launch.LaunchActivity` |
 | ITV Hub | `itvmobileplayer` | `#00B4E5` | `pop_aqua` `#0C8AAE` | `air.ITVMobilePlayer/com.itv.tenft.itvhub.MainActivity` |
 | Ivysiilani | `ivysiilani` | `#AAFF89` | `pop_green` `#3F9C35` | `cz.ceskatelevize.ivysilani.tvapp/cz.ceskatelevize.ivysilani.tvapp.MainActivity` |
-| Janky Player | `janky` | `#FFC107` | `pop_sun` `#E0AF0C` | `com.player.janky/.MainActivity` |
+| Janky Player | `janky` | `#1E88E5` | `pop_blue` `#1C79D2` | `com.player.janky/.MainActivity` |
 | Jawwy TV | `intigral` | `#0061FF` | `pop_blue` `#1C79D2` | `com.intigral.jawwytv/com.intigral.jawwytv.standalone.StandaloneSplashActivity` |
 | Jawwy TV | `jawwy_tv` | `#0061FF` | `pop_blue` `#1C79D2` | `net.intigral.jawwytv/com.intigral.jawwytv.standalone.StandaloneSplashActivity` |
 | Jellyfin | `jellyfin` | `#00A4DC` | `pop_aqua` `#0C8AAE` | `org.jellyfin.androidtv/.ui.startup.StartupActivity`<br>`org.jellyfin.androidtv/org.jellyfin.androidtv.ui.startup.StartupActivity`<br>`org.jellyfin.mobile/.MainActivity` |
