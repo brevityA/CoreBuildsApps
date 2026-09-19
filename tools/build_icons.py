@@ -63,6 +63,13 @@ def validate(icons, artwork=None):
             errors.append(f"{n}: unknown banner glyph '{i.get('banner_glyph')}'")
         if not re.match(r"^#[0-9A-Fa-f]{6}$", i.get("color", "")):
             errors.append(f"{n}: color '{i.get('color')}' must be #RRGGBB")
+        grad = i.get("gradient")
+        if grad is not None and not (
+                isinstance(grad, list) and len(grad) == 2
+                and all(re.fullmatch(r"#[0-9A-Fa-f]{6}", g) for g in grad)):
+            errors.append(f"{n}: gradient must be exactly two #RRGGBB stops")
+        if i.get("ink") is not None and not re.fullmatch(r"#[0-9A-Fa-f]{6}", i["ink"]):
+            errors.append(f"{n}: ink must be #RRGGBB")
         if not i.get("components"):
             errors.append(f"{n}: no components — icon would never auto-assign")
         if brand := i.get("brand"):
@@ -80,7 +87,8 @@ def validate(icons, artwork=None):
                 accent = display_accent(i["color"],
                                        monochrome=i.get("color_note") == "monochrome")
                 body = monoline(GLYPHS[i["glyph"]](accent))
-                errors.extend(f"{n}: {e}" for e in core_monoline_errors(body, accent))
+                errors.extend(f"{n}: {e}" for e in core_monoline_errors(
+                    body, accent, gradient=bool(i.get("gradient")), ink=i.get("ink")))
         for comp in i.get("components", []):
             if "/" not in comp:
                 errors.append(f"{n}: component '{comp}' missing '/activity'")

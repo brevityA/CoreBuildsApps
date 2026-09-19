@@ -27,6 +27,14 @@ jobs:
         run: python tools/audit_contract.py
       - name: Check prefilled icon-request links against the issue forms
         run: python tools/build_issue_prefills.py --check
+      # Depends on no Android SDK and no Gradle, so it runs here rather than in
+      # the matrix: it is the check that explains *why* a matrix entry would
+      # fail, and it has to be able to fail on a dependency-only PR that never
+      # reaches a build.
+      - name: Check the Android build envelope
+        run: python tools/check_gradle_envelope.py
+      - name: Check dependabot.yml matches its generator
+        run: python tools/build_dependabot.py --check
 
   android:
     name: ${{ matrix.name }} build lint tests
@@ -39,42 +47,49 @@ jobs:
             dir: .
             tasks: :app:lintDebug :app:testDebugUnitTest :app:assembleDebug
             gradle: app/build.gradle.kts
+            compileSdk: 34
             workflow: .github/workflows/build.yml
             artifact: app/build/outputs/apk/debug/*.apk
           - name: Pixel Neon Icon Pack
             dir: pixel-neon
             tasks: :app:lintDebug :app:testDebugUnitTest :app:assembleDebug
             gradle: pixel-neon/app/build.gradle.kts
+            compileSdk: 34
             workflow: .github/workflows/pixel-neon-apk.yml
             artifact: pixel-neon/app/build/outputs/apk/debug/*.apk
           - name: Core Builds Pop
             dir: .
             tasks: :pop:lintDebug :pop:testDebugUnitTest :pop:assembleDebug
             gradle: pop/build.gradle.kts
+            compileSdk: 34
             workflow: .github/workflows/pop-apk.yml
             artifact: pop/build/outputs/apk/debug/*.apk
           - name: Core Line
             dir: ticker/android
             tasks: :app:lintDebug :app:testDebugUnitTest :app:assembleDebug
             gradle: ticker/android/app/build.gradle.kts
+            compileSdk: 34
             workflow: .github/workflows/core-line-apk.yml
             artifact: ticker/android/app/build/outputs/apk/debug/*.apk
           - name: Core Shift
             dir: shift
             tasks: :app:lintDebug :app:testDebugUnitTest :app:assembleDebug
             gradle: shift/app/build.gradle.kts
+            compileSdk: 34
             workflow: .github/workflows/core-shift-apk.yml
             artifact: shift/app/build/outputs/apk/debug/*.apk
           - name: Core Doctor
             dir: doctor
             tasks: :app:lintDebug :app:testDebugUnitTest :app:assembleDebug
             gradle: doctor/app/build.gradle.kts
+            compileSdk: 35
             workflow: .github/workflows/core-doctor-apk.yml
             artifact: doctor/app/build/outputs/apk/debug/*.apk
           - name: Core Motion plugin
             dir: motion-plugin
             tasks: :app:lintDebug :app:testDebugUnitTest :app:assembleDebug
             gradle: motion-plugin/app/build.gradle.kts
+            compileSdk: 34
             workflow: .github/workflows/core-motion-apk.yml
             artifact: motion-plugin/app/build/outputs/apk/debug/*.apk
     steps:
@@ -86,9 +101,22 @@ jobs:
         with:
           distribution: temurin
           java-version: '17'
-      - name: Install Android platform 34
+      # Parameterised off the matrix on purpose. This used to install android-34
+      # for every entry including Core Doctor, which compiles against 35. That
+      # was harmless only by luck — ubuntu-latest happens to preinstall both, so
+      # the step no-ops in ~6s either way and doctor compiled against the image's
+      # copy of 35. Had the image not carried it, AGP would have silently
+      # auto-downloaded it mid-build (it does, once the runner has accepted the
+      # SDK licences), and a runner-image change would have turned a passing job
+      # into a slow or failing one with nothing in this file to explain why.
+      # Stating the platform per entry makes the job declare its own requirement;
+      # tools/check_gradle_envelope.py asserts that declaration matches the
+      # compileSdk in the build file it points at.
+      - name: Install Android platform ${{ matrix.compileSdk }}
         run: |
-          "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" "platforms;android-34" "build-tools;34.0.0"
+          "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" \
+            "platforms;android-${{ matrix.compileSdk }}" \
+            "build-tools;${{ matrix.compileSdk }}.0.0"
       - uses: gradle/actions/setup-gradle@v6
       - name: Verify tracked workflow/build files exist
         run: |
@@ -155,3 +183,4 @@ jobs:
           python tests/test_devcontainer.py
           python tests/test_tv_layout_fit.py
           python tests/test_brandmark_badge.py
+          python tests/test_gradle_envelope.py

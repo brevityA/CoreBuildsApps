@@ -4555,15 +4555,20 @@
     {
       "name": "Janky Player",
       "drawable": "janky",
-      "color": "#FFC107",
+      "color": "#1E88E5",
       "glyph": "janky_play",
       "components": [
         "com.player.janky/.MainActivity"
       ],
       "category": "PLAYER",
-      "color_source": "brand reference (pre-provenance, unverified)",
-      "color_reviewed": null,
-      "style": "core_monoline"
+      "color_source": "shipped app default accent, user-supplied rebuild sheet 2026-09-19: Janky is user-themable and ships #1E88E5; the sheet's white hook is honoured as the declared ink, and the ring and play ride the banner rail's declared gradient, per the banner render the user approved 2026-09-19",
+      "color_reviewed": true,
+      "style": "core_monoline",
+      "gradient": [
+        "#00D4FF",
+        "#A78BFA"
+      ],
+      "ink": "#E6EDF3"
     },
     {
       "name": "Jawwy TV",
