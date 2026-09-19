@@ -105,17 +105,23 @@ object UnmappedApps {
         val pm = context.packageManager
         val self = context.packageName
         val byPackage = LinkedHashMap<String, App>()
+        val seen = HashSet<String>()
 
         for (info in launchable(context)) {
             val activity = info.activityInfo ?: continue
             val pkg = activity.packageName ?: continue
             if (pkg == self) continue
             val component = "$pkg/${activity.name}"
+            // Settle the package on its first activity, before asking whether
+            // that activity is mapped. The leanback category is queried first,
+            // so the first one seen is what a television actually launches —
+            // and if the pack already maps it, this app has its icon and the
+            // package is done. Testing `component in components` first instead
+            // let a *mapped* leanback activity fall through to the same app's
+            // unmapped phone-launcher activity, which then got reported as
+            // "icon exists, not applying" for an app whose icon applies fine.
+            if (!seen.add(pkg)) continue
             if (component in components) continue
-            // The leanback category is queried first, so the component already
-            // recorded for this package is the one a television actually
-            // launches. Keep it.
-            if (byPackage.containsKey(pkg)) continue
             val label = try {
                 info.loadLabel(pm)?.toString()?.trim().orEmpty()
             } catch (e: Exception) {

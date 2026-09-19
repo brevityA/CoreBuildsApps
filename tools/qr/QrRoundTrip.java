@@ -223,20 +223,32 @@ public class QrRoundTrip {
             }
             for (int scale : SCAN_SCALES) {
                 scanChecks++;
-                if (scans(ours, scale, url)) {
+                boolean oursOk = scans(ours, scale, url);
+                boolean referenceOk = scans(theirs, scale, url);
+                if (oursOk) {
                     oursScanned++;
                 }
-                if (scans(theirs, scale, url)) {
+                if (referenceOk) {
                     referenceScanned++;
+                }
+                // Per case, not just on the totals. The parity gate above pins
+                // the matrix at ZXing's chosen mask, but this gate scans
+                // encode(url, -1) — the mask *our* penalty rules pick — so a
+                // mask-selection regression can change the symbol here while
+                // parity still passes. Comparing only the two totals would let
+                // a new failure on one URL be paid for by a new success on
+                // another and report no change at all.
+                if (referenceOk && !oursOk) {
+                    fail("scan: " + describe(url) + " failed at scale " + scale
+                        + " where ZXing's own symbol for the same URL scanned");
                 }
             }
         }
+        // Printed, not asserted: every way these totals can diverge has already
+        // been reported per case above, and failing on them again would just
+        // count each one twice.
         System.out.println("  ours scanned " + oursScanned + "/" + scanChecks
             + ", ZXing's own output " + referenceScanned + "/" + scanChecks);
-        if (oursScanned < referenceScanned) {
-            fail("scan: ours scanned " + (referenceScanned - oursScanned)
-                + " fewer times than ZXing's own symbols for the same URLs");
-        }
     }
 
     public static void main(String[] args) throws Exception {

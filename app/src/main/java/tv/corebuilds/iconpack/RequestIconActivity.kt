@@ -33,6 +33,11 @@ class RequestIconActivity : AppCompatActivity() {
         setContentView(R.layout.activity_request)
 
         findViewById<TextView>(R.id.request_count).setText(R.string.request_scanning)
+        // Hidden here rather than with visibility="gone" in the layout, so that
+        // tests/test_tv_layout_fit.py still measures the card — it skips gone
+        // subtrees, and this one holds the tallest thing on the screen. Set
+        // before the first frame, so there is nothing to see flicker.
+        findViewById<View>(R.id.request_detail).visibility = View.GONE
         // queryIntentActivities plus a 1700-entry appfilter is not main-thread
         // work on a television CPU.
         io.execute {
@@ -61,6 +66,10 @@ class RequestIconActivity : AppCompatActivity() {
             empty.setText(R.string.request_failed_body)
             empty.visibility = View.VISIBLE
             list.visibility = View.GONE
+            // The detail card starts hidden and only show() reveals it, but
+            // say so here too: a failed scan otherwise leaves an empty card
+            // parked beside the failure text for as long as the screen is open.
+            findViewById<View>(R.id.request_detail).visibility = View.GONE
             return
         }
         apps = found
