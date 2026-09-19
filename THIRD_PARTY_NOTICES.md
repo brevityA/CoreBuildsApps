@@ -81,8 +81,10 @@ are distinguished from the Core Builds-authored output throughout the catalog
 and fidelity notes.
 ## Vendored code: Nayuki QR Code generator (Java)
 
-`app/src/main/java/io/nayuki/qrcodegen/QrCode.java` and
-`app/src/main/java/io/nayuki/qrcodegen/BitBuffer.java` are vendored verbatim
+`app/src/main/java/io/nayuki/qrcodegen/QrCode.java`,
+`app/src/main/java/io/nayuki/qrcodegen/QrSegment.java` and
+`app/src/main/java/io/nayuki/qrcodegen/BitBuffer.java` (the encoder's complete
+Java surface) are vendored verbatim
 from the **QR Code generator library** by Project Nayuki, under the
 **MIT License** (copyright Project Nayuki,
 <https://www.nayuki.io/page/qr-code-generator-library>), fetched from upstream
@@ -90,7 +92,9 @@ commit `3c6d0b3cefb4e049dc337e82237c9644399716a8` on 2026-09-19. SHA-256 at
 vendoring: `QrCode.java`
 `01715baeb383ec26f7c38138299a2b6e5bbfa36fa607441c79dc9cc76b107c6b`,
 `BitBuffer.java`
-`d5496452b435423beead30aa356e10a7c0ba4790b7da37ee4a1b80b4df136447`.
+`d5496452b435423beead30aa356e10a7c0ba4790b7da37ee4a1b80b4df136447`,
+`QrSegment.java`
+`70f10e518d3a8f1a1862e598a249abaac036a9c6fae4e5892c4b6d24995bb8d7`.
 
 The on-device auditor renders its prefilled-issue QR codes with this encoder
 (`QrBitmap.kt` is the Core Builds wrapper: error correction M, four-module
