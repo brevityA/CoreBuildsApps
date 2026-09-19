@@ -6,7 +6,31 @@ All notable changes to the Core Builds Icon Pack. Format follows
 
 ## [Unreleased]
 
+## [1.8.20] — 2026-09-18
+
 ### Added
+
+- **Twelve-wall series convention** — Circuit Core gains `Circuit Nexus` and
+  `Circuit Vault`, Retrowave gains `Laser Dusk` and `Ember Horizon`, and the
+  AMOLED set gains `Eclipse` and `Corner Signal`. Every active series now has
+  12 walls, except the original Fieldwork double set at 24; the classic total
+  is 84.
+- **Series 8 AMOLED wallpapers** — twelve deterministic 4K designs on exact
+  `#000000`, with sparse Core cyan, violet, blue, and ember accents. Every wall
+  retains 92.4–99.8% true-black pixels; the generator and wallpaper tests both
+  enforce a minimum of 50%. Includes bundled thumbnails, manifest entries
+  69–78 and 83–84, and `docs/amoled-wallpapers.png` as the visual receipt.
+
+- **Isolated test APK lane** — `:app:assembleCandidate` builds
+  `tv.corebuilds.iconpack.test` with debug signing and a `TEST_SOURCE_COMMIT`
+  stamp, so a candidate installs alongside production instead of over it and
+  never reaches the in-app updater. Driven by `iconpack-test-apk.yml`, which
+  attaches the APK and its SHA-256 to an unpublished draft release; production
+  signing material is never read.
+- **Objective glyph identity checks** — `tools/test_glyph_identity.py` measures
+  counter survival at 96px and 48px, safe-area margin against the raster
+  presence pass, and similarity against every glyph in the registry, so a new
+  mark cannot quietly duplicate one already shipping.
 
 - **Brandmark badge and filter** — 526 of the 940 icons are monograms: a letter
   in one of the 15 `FAMILY_SHELLS` containers. The other 414 are drawn marks,
@@ -41,6 +65,23 @@ All notable changes to the Core Builds Icon Pack. Format follows
 
 ### Changed
 
+- **Twelve generic constructions became bespoke marks** — AirScreen, Aerial
+  Views, AnyDesk and DW; Crossy Road, Blokada (legacy v4), Private Internet
+  Access, mpv, Audiomack, ATRESplayer, Kinopoisk and AIDA64. Each is original
+  Core Builds geometry drawn from the identifying cue recorded in the
+  2026-09-15 tranche research — no vendor artwork is traced, and no fill,
+  container or effect is introduced. Package and activity mappings are
+  unchanged for every one of them; only their glyph references moved. The
+  registry is now 966 glyphs.
+- **DW redrawn as strokes** — its first form filled the right body solid and
+  cut the W out with an SVG mask. That broke the monoline contract two ways:
+  `<defs>`, `<mask>` and solid fills are all forbidden, and two of its four
+  counters closed by 48px, leaving an unreadable blob at launcher size. Ink sat
+  at 30.8 per cent against a 34 per cent slab ceiling — inside it, but with no
+  headroom. Now two overlapping outlined bodies with a drawn D and W, 23.4 per
+  cent ink, legible at 48px, and opted into `core_monoline` so the mask cannot
+  return.
+
 - **Icon pack test builds are now a public channel** — `iconpack-test-apk.yml`
   published to an unlisted draft, which no sideloader could reach because a
   draft has no git tag and its assets 404 without credentials. It now
@@ -52,31 +93,6 @@ All notable changes to the Core Builds Icon Pack. Format follows
   than a checkout to keep it that way. Debug signing only — no `KEYSTORE_*`
   value is read, and the production `iconpack` release is untouched.
 
-### Fixed
-
-- **Settings clipped its last row off a TV screen** — found by a tester on the
-  first `iconpack-test` install, before any of this reached a tagged release.
-  The screen shipped with no scroll container on the reasoning that its four
-  rows fit the 1080p safe area; that height was taken off a 1920×1080 mockup in
-  pixels, and Android lays out in dp, where a 1080p TV is 960×540dp. The
-  content needed about 615dp, and a plain `LinearLayout` holding a `weight=1`
-  spacer clipped the rest in silence — no scrollbar, no focus escape, the Clear
-  button and the footer simply unreachable. The rows now sit in a `ScrollView`
-  with the header and footer pinned outside it, so nothing non-focusable is
-  stranded past the end of a D-pad chain, and trimming (the kicker inline with
-  the title, tighter section and row spacing, local gutters) brings the content
-  to about 520dp so a default-scale TV does not scroll at all. A new suite,
-  `tests/test_tv_layout_fit.py`, re-derives these heights from the XML and
-  fails any full-screen layout that overflows the viewport without a scroll
-  container — it reproduces the 615dp independently, and is named in
-  `build.yml` and `suite-ci.yml` because CI runs these suites file by file and
-  `unittest discover` does not see them. It measures all three modules against
-  their own `dimens.xml` rather than trusting Pop's generated copies and Pixel
-  Neon's hand-synced ones to match, and their figures do differ. About needs no
-  change at 399dp of fixed content; its body is a weighted region holding
-  fixed-height cards, so it flexes rather than stacks.
-
-### Changed
 
 - **Janky Player's mark is now the shipped app's own tile mark.** Research on
   2026-09-19 found the app nowhere in public - no Play, APKPure, Uptodown or
@@ -118,51 +134,6 @@ All notable changes to the Core Builds Icon Pack. Format follows
   the same day; its APK assets and org avatar are unreachable from this
   sandbox, so the sheet remains the pixel source.
 
-## [1.8.20] — 2026-09-18
-
-### Added
-
-- **Twelve-wall series convention** — Circuit Core gains `Circuit Nexus` and
-  `Circuit Vault`, Retrowave gains `Laser Dusk` and `Ember Horizon`, and the
-  AMOLED set gains `Eclipse` and `Corner Signal`. Every active series now has
-  12 walls, except the original Fieldwork double set at 24; the classic total
-  is 84.
-- **Series 8 AMOLED wallpapers** — twelve deterministic 4K designs on exact
-  `#000000`, with sparse Core cyan, violet, blue, and ember accents. Every wall
-  retains 92.4–99.8% true-black pixels; the generator and wallpaper tests both
-  enforce a minimum of 50%. Includes bundled thumbnails, manifest entries
-  69–78 and 83–84, and `docs/amoled-wallpapers.png` as the visual receipt.
-
-- **Isolated test APK lane** — `:app:assembleCandidate` builds
-  `tv.corebuilds.iconpack.test` with debug signing and a `TEST_SOURCE_COMMIT`
-  stamp, so a candidate installs alongside production instead of over it and
-  never reaches the in-app updater. Driven by `iconpack-test-apk.yml`, which
-  attaches the APK and its SHA-256 to an unpublished draft release; production
-  signing material is never read.
-- **Objective glyph identity checks** — `tools/test_glyph_identity.py` measures
-  counter survival at 96px and 48px, safe-area margin against the raster
-  presence pass, and similarity against every glyph in the registry, so a new
-  mark cannot quietly duplicate one already shipping.
-
-### Changed
-
-- **Twelve generic constructions became bespoke marks** — AirScreen, Aerial
-  Views, AnyDesk and DW; Crossy Road, Blokada (legacy v4), Private Internet
-  Access, mpv, Audiomack, ATRESplayer, Kinopoisk and AIDA64. Each is original
-  Core Builds geometry drawn from the identifying cue recorded in the
-  2026-09-15 tranche research — no vendor artwork is traced, and no fill,
-  container or effect is introduced. Package and activity mappings are
-  unchanged for every one of them; only their glyph references moved. The
-  registry is now 966 glyphs.
-- **DW redrawn as strokes** — its first form filled the right body solid and
-  cut the W out with an SVG mask. That broke the monoline contract two ways:
-  `<defs>`, `<mask>` and solid fills are all forbidden, and two of its four
-  counters closed by 48px, leaving an unreadable blob at launcher size. Ink sat
-  at 30.8 per cent against a 34 per cent slab ceiling — inside it, but with no
-  headroom. Now two overlapping outlined bodies with a drawn D and W, 23.4 per
-  cent ink, legible at 48px, and opted into `core_monoline` so the mask cannot
-  return.
-
 ### Fixed
 
 - **Android CI setup outage** — PR workflows use the SDK already installed on
@@ -172,6 +143,28 @@ All notable changes to the Core Builds Icon Pack. Format follows
   of centre; the icon and banner are re-rendered in both Classic and Pop. This
   is the thirteenth icon to change since 1.8.19 and was missing from the twelve
   listed above, which describe glyph replacements rather than this correction.
+
+- **Settings clipped its last row off a TV screen** — found by a tester on the
+  first `iconpack-test` install, before any of this reached a tagged release.
+  The screen shipped with no scroll container on the reasoning that its four
+  rows fit the 1080p safe area; that height was taken off a 1920×1080 mockup in
+  pixels, and Android lays out in dp, where a 1080p TV is 960×540dp. The
+  content needed about 615dp, and a plain `LinearLayout` holding a `weight=1`
+  spacer clipped the rest in silence — no scrollbar, no focus escape, the Clear
+  button and the footer simply unreachable. The rows now sit in a `ScrollView`
+  with the header and footer pinned outside it, so nothing non-focusable is
+  stranded past the end of a D-pad chain, and trimming (the kicker inline with
+  the title, tighter section and row spacing, local gutters) brings the content
+  to about 520dp so a default-scale TV does not scroll at all. A new suite,
+  `tests/test_tv_layout_fit.py`, re-derives these heights from the XML and
+  fails any full-screen layout that overflows the viewport without a scroll
+  container — it reproduces the 615dp independently, and is named in
+  `build.yml` and `suite-ci.yml` because CI runs these suites file by file and
+  `unittest discover` does not see them. It measures all three modules against
+  their own `dimens.xml` rather than trusting Pop's generated copies and Pixel
+  Neon's hand-synced ones to match, and their figures do differ. About needs no
+  change at 399dp of fixed content; its body is a weighted region holding
+  fixed-height cards, so it flexes rather than stacks.
 
 ## [1.8.19] — 2026-09-15
 
