@@ -105,7 +105,15 @@ All notable changes to the Core Builds Icon Pack. Format follows
   rather than flattening every level to 32, the way `browser_globe` and
   `play_hex` hierarchise their containers - and the lockup sits centred on
   the 256 axis. Ink 16.3 percent at 48px, counters 2 -> 2 -> 2, bbox
-  (56,136,465,376). The app's GitHub org (jankyapp/jankyapp - a readme stub
+  (56,136,465,376). Seated last on the IPTV family's receiver grammar -
+  every broadcast mark in the suite is a telly (shell_broadcast's screen on
+  a stand with rabbit-ear aerials, iptv_smarters' and tivimate_grid's stands)
+  - the ring becomes the pack's only round screen: family aerials at 21.8
+  welded at its 45-degree points, standing on iptv_smarters' exact bar at
+  y=428. The aerials pay for the stand optically (centre of mass
+  (258,261)), give the mark a television silhouette at 48px, and span the
+  full 32 / 26.2 / 21.8 trio. Ink 19.4 percent at 48px, counters 2 -> 2 -> 2,
+  bbox (51,81,465,441). The app's GitHub org (jankyapp/jankyapp - a readme stub
   with fourteen beta releases, v0.95.47-beta shipped 2026-09-19) was found
   the same day; its APK assets and org avatar are unreachable from this
   sandbox, so the sheet remains the pixel source.

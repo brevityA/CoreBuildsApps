@@ -1223,10 +1223,28 @@ def janky_play(c):
     the 256 axis. At 32px the ring interior and the J merge into a single
     hooked disc and the triangle keeps its counter: the same convergence
     the shipped sheet's own 24px row shows.
+
+    Seated, finally, on the pack's IPTV-family receiver grammar. Every
+    broadcast mark in the suite is a telly, not an abstract badge:
+    shell_broadcast - the shell the whole broadcast_* monogram tail sits in -
+    is a screen on a stand with rabbit-ear aerials, and the bespoke IPTV
+    marks repeat the cues (iptv_smarters and tivimate_grid both stand their
+    screens; iptv_player is a screen and a play). A slate aggregator belongs
+    in that row, so the ring becomes the pack's only ROUND screen: it grows
+    the family's aerials at the 21.8 sub-detail weight, welded to the ring at
+    its 45-degree points, and stands on iptv_smarters' exact stand bar at
+    y=428. The aerials also pay for the stand optically - centre of mass
+    returns to (258,261) from F1-style (260,288) bottom-heaviness, the same
+    trade shell_broadcast makes - and give the mark a television silhouette
+    at 48px that the floating lockup never had. Weights now span the full
+    core_monoline trio, 32 / 26.2 / 21.8.
     """
     return (f'<circle cx="176" cy="256" r="104" {_s(c, 32)}/>'
             f'<path d="M 210 198 L 210 266 A 44 44 0 0 1 122 266" {_s(c, 26)}/>'
-            f'<path d="M 336 156 L 336 356 L 452 256 Z" {_s(c, 26)}/>')
+            f'<path d="M 336 156 L 336 356 L 452 256 Z" {_s(c, 26)}/>'
+            f'<path d="M 170 428 L 342 428" {_s(c, 26)}/>'
+            f'<path d="M 102.5 182.5 L 62 92" {_s(c, 22)}/>'
+            f'<path d="M 249.5 182.5 L 290 92" {_s(c, 22)}/>')
 
 
 def tivimate_grid(c):
