@@ -54,7 +54,11 @@ class SuiteActivity : AppCompatActivity() {
                 runCatching { packageManager.getPackageInfo(pkg, 0).versionName }
                     .getOrNull()
             } else null
-            row.findViewById<TextView>(R.id.suite_item_status).text = when {
+            // One lookup per id: lint reads a second findViewById of the same
+            // id in one method as a copy-paste bug, and here it would also be
+            // a second walk of the row's children for nothing.
+            val status = row.findViewById<TextView>(R.id.suite_item_status)
+            status.text = when {
                 installed && version != null ->
                     getString(R.string.suite_installed_fmt, version)
                 installed -> getString(R.string.suite_installed_plain)
@@ -63,8 +67,7 @@ class SuiteActivity : AppCompatActivity() {
             row.findViewById<TextView>(R.id.suite_item_code).text =
                 if (code.isNotEmpty()) getString(R.string.suite_code_fmt, code)
                 else getString(R.string.suite_no_code)
-            row.contentDescription = "${names[i]}, " +
-                row.findViewById<TextView>(R.id.suite_item_status).text
+            row.contentDescription = "${names[i]}, " + status.text
             row.setOnClickListener {
                 if (!openApp(pkg)) {
                     toast(getString(R.string.suite_open_failed_fmt, names[i]))
