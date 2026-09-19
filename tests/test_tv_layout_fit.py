@@ -221,6 +221,103 @@ def test_full_screen_layouts_fit_or_scroll():
     assert not over, "TV layouts overflow without scrolling:\n  " + "\n  ".join(over)
 
 
+def load_dimens_in(res: Path, subdir: str) -> dict[str, float]:
+    out: dict[str, float] = {}
+    path = res / subdir / "dimens.xml"
+    if not path.is_file():
+        return out
+    for node in ET.parse(path).getroot().iter("dimen"):
+        name, text = node.get("name"), (node.text or "").strip()
+        m = re.fullmatch(r"(-?[\d.]+)(dp|sp|dip|px)", text)
+        if name and m:
+            out[name] = float(m.group(1))
+    return out
+
+
+# The 4K scale variant and the two-pane screens' grid budget.
+QUALIFIED = "values-sw720dp"
+VIEWPORT_DP_4K = 1080.0
+TWO_PANE = {
+    "activity_main.xml": ["cb_tile_icon", "cb_card_padding", "cb_card_padding"],
+    "activity_wallpapers.xml": ["cb_wp_thumb", "cb_card_padding", "cb_card_padding",
+                                "cb_space_sm", "cb_text_label"],
+}
+
+
+def test_the_4k_scale_variant_is_exactly_double():
+    """values-sw720dp is the doubled copy tools/build_scale_variants.py owns.
+
+    A 4K panel that reports the doubled dp box renders dp at half the physical
+    size, so the qualified file doubles every metric to put the picture back.
+    A hand-edited or stale copy silently unhinges that: column counts come from
+    pane-over-pitch and both halves must scale together.
+    """
+    for module, res in MODULES.items():
+        base = load_dimens_in(res, "values")
+        qual = load_dimens_in(res, QUALIFIED)
+        assert qual, f"{module}: no {QUALIFIED}/dimens.xml - run " \
+                     f"tools/build_scale_variants.py"
+        assert set(base) == set(qual), (
+            f"{module}: {QUALIFIED} names differ from values/ - regenerate with "
+            f"tools/build_scale_variants.py")
+        for name, value in base.items():
+            assert abs(qual[name] - 2 * value) < 1e-6, (
+                f"{module}: {QUALIFIED}/{name} is {qual[name]}, not twice "
+                f"{value}; regenerate with tools/build_scale_variants.py")
+
+
+def pane_of(root: ET.Element) -> ET.Element | None:
+    """The weighted child of the root's weighted horizontal body, if the screen
+    is two-pane: home and wallpapers put their grid in it."""
+    for child in root:
+        if is_gone(child) or not fills_leftover(child):
+            continue
+        if tag_of(child).endswith("LinearLayout") \
+                and child.get(ANDROID + "orientation") == "horizontal":
+            for pane in child:
+                # The pane is the 0dp+weight child; the rail is match_parent
+                # wide, which fills_leftover() also matches.
+                if (not is_gone(pane) and pane.get(ANDROID + "layout_weight")
+                        and pane.get(ANDROID + "layout_width") == "0dp"):
+                    return pane
+    return None
+
+
+def test_two_pane_screens_leave_the_grid_a_full_row():
+    """The right pane's chrome plus one tile pitch fits the panel, on both dp
+    boxes. The grid is the pane's weighted remainder; if the pane's fixed
+    children (search, chips, header) plus a single tile exceeded the viewport,
+    the catalogue would show chrome and a cropped sliver - the defect the
+    single-pane home screen had before the two-pane rebuild."""
+    for module in ("app", "pop"):
+        res = MODULES[module]
+        for variant, viewport in (("values", VIEWPORT_DP),
+                                  (QUALIFIED, VIEWPORT_DP_4K)):
+            dimens = load_dimens_in(res, variant)
+            for name, pitch_parts in TWO_PANE.items():
+                path = res / "layout" / name
+                root = ET.parse(path).getroot()
+                pane = pane_of(root)
+                assert pane is not None, f"{module}/{name}: not two-pane anymore"
+                fixed = (dp(root.get(ANDROID + "padding"), dimens) * 0
+                         + dp(root.get(ANDROID + "paddingTop"), dimens,
+                              dp(root.get(ANDROID + "padding"), dimens))
+                         + dp(root.get(ANDROID + "paddingBottom"), dimens,
+                              dp(root.get(ANDROID + "padding"), dimens)))
+                for child in pane:
+                    if is_gone(child) or fills_leftover(child):
+                        continue
+                    fixed += (min_height(child, dimens)
+                              + dp(child.get(ANDROID + "layout_marginTop"), dimens)
+                              + dp(child.get(ANDROID + "layout_marginBottom"), dimens))
+                pitch = sum(dimens.get(part, 0.0) for part in pitch_parts)
+                left = viewport - fixed - pitch
+                assert left >= -TOLERANCE_DP, (
+                    f"{module}/{name} ({variant}): pane chrome {fixed:.0f}dp + one "
+                    f"{pitch:.0f}dp tile leaves {left:.0f}dp of {viewport:.0f}dp - "
+                    f"the grid loses its first row")
+
+
 def test_settings_keeps_its_scroll_container():
     """Regression pin for the 1.8.20 clipping bug, independent of the estimate.
 

@@ -26,10 +26,7 @@
     android:gravity="center"
     android:minHeight="@dimen/cb_target_min"
     android:orientation="vertical"
-    android:paddingStart="@dimen/cb_card_padding"
-    android:paddingEnd="@dimen/cb_card_padding"
-    android:paddingTop="@dimen/cb_space_xs"
-    android:paddingBottom="@dimen/cb_space_xs">
+    android:padding="@dimen/cb_card_padding">
 
     <!--
         The artwork and its brandmark dot share a FrameLayout so the dot can sit

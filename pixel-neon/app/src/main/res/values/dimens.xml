@@ -63,6 +63,8 @@
          house gutters here; the names only need to resolve. -->
     <dimen name="cb_gutter_top_tight">24dp</dimen>
     <dimen name="cb_gutter_bottom_tight">12dp</dimen>
+    <!-- Shared two-pane layout metric (app home/wallpapers rail). -->
+    <dimen name="cb_rail_width">300dp</dimen>
 
     <!-- Stacked action buttons share a minimum width so they align as a column
          instead of jagging to their text length. -->

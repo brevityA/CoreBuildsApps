@@ -21,6 +21,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import java.io.File
 import kotlin.math.abs
+import kotlin.math.floor
+import kotlin.math.max
 
 /**
  * Front door. Apply targets the Home launcher. An update bar appears
@@ -1134,10 +1136,25 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    /** Five glyph columns on a 1080p panel, the sheet's grid. */
+    /**
+     * Columns for the glyph grid: the right pane's width over one tile's pitch.
+     *
+     * The pane is what the panel leaves after the gutters, the rail and the gap
+     * between them; the pitch is cb_tile_icon plus the tile's vertical padding
+     * twice - the tile's real height, and the width its near-square card wants.
+     * Both come from dimens, so a 4K panel that reports a larger dp box
+     * (values-sw720dp doubles every metric) divides out to the same column
+     * count: the proportions travel, the arithmetic does not care which panel
+     * it runs on.
+     */
     private fun spanForScreen(): Int {
-        val dp = resources.configuration.screenWidthDp
-        return (dp / 192).coerceIn(3, 6)
+        val density = resources.displayMetrics.density
+        fun dpOf(id: Int) = resources.getDimensionPixelSize(id) / density
+        val pane = resources.configuration.screenWidthDp -
+            2 * dpOf(R.dimen.cb_gutter_side) -
+            dpOf(R.dimen.cb_rail_width) - dpOf(R.dimen.cb_space_md)
+        val pitch = dpOf(R.dimen.cb_tile_icon) + 2 * dpOf(R.dimen.cb_card_padding)
+        return max(2, floor(pane / pitch).toInt())
     }
 
     private fun toast(msg: String) =

@@ -400,21 +400,43 @@ def search_field(img: Image.Image, x: int, y: int, w_dp: float,
               hint or STRINGS["search_hint"], f, colour("cb_slate"), anchor="lm")
 
 
+def entry_row_lines(sub: str) -> list[str]:
+    """The rail card's subtitle, wrapped to the rail's text width - the same
+    wrap the match_parent TextView does on the device."""
+    inset = dp(DIMENS["cb_card_padding"])
+    probe = ImageDraw.Draw(Image.new("RGBA", (8, 8)))
+    return wrap(probe, sub, font("mono", DIMENS["cb_text_data"]),
+                dp(DIMENS["cb_rail_width"]) - 2 * inset)
+
+
+def entry_row_height(sub: str) -> int:
+    lines = entry_row_lines(sub)
+    inset = dp(DIMENS["cb_card_padding"])
+    return 2 * inset + dp(20) + dp(3) + len(lines) * dp(17)
+
+
 def entry_row(img: Image.Image, box, title: str, sub: str, focused: bool = False) -> None:
-    """One of the home screen's three entry cards: title left, what it holds in
-    slate at the right end of the same 48dp line."""
+    """One of the rail's three entry cards: title over subtitle, as the sheet
+    draws them - the rail is the one place with the height for both lines."""
     draw = ImageDraw.Draw(img, "RGBA")
     if focused:
         focus_ring(img, box)
     else:
         card(img, box)
     inset = dp(DIMENS["cb_card_padding"])
-    mid = (box[1] + box[3]) / 2
-    draw_text(draw, (box[0] + inset, mid), title,
-              font("sans", DIMENS["cb_text_body"], bold=True), colour("cb_ink"),
-              anchor="lm")
-    draw_text(draw, (box[2] - inset, mid), sub,
-              font("mono", DIMENS["cb_text_data"]), colour("cb_slate"), anchor="rm")
+    draw_text(draw, (box[0] + inset, box[1] + inset), title,
+              font("sans", DIMENS["cb_text_body"], bold=True), colour("cb_ink"))
+    for i, line in enumerate(entry_row_lines(sub)):
+        draw_text(draw, (box[0] + inset, box[1] + inset + dp(23) + i * dp(17)),
+                  line, font("mono", DIMENS["cb_text_data"]), colour("cb_slate"))
+
+
+def rail_box() -> tuple[int, int, int]:
+    """(rail left, rail right, pane left) for the two-pane screens."""
+    g = dp(DIMENS["cb_gutter_side"])
+    rail = dp(DIMENS["cb_rail_width"])
+    gap = dp(DIMENS["cb_space_md"])
+    return g, g + rail, g + rail + gap
 
 
 def paste_art(img: Image.Image, path: Path, box, radius: int = 0) -> None:
@@ -463,41 +485,23 @@ def category_counts() -> list[tuple[str, str, int]]:
 
 
 def catalogue_frame(with_update_bar: bool) -> tuple[Image.Image, str]:
-    """The home screen as built: docs/design/app-ui-apply-wallpapers.png, left
-    panel, drawn at 960x540dp with the real strings, dimens and art.
-
-    The sheet's panel is a portrait schematic, so what is reproduced is its
-    grammar and its copy in the order it draws them - wordmark and counts, Apply
-    over the detected launchers, the three entry rows, ALSO APPLIES TO, search,
-    category chips, glyph-only tiles - inside the 16:9 a TV actually reports.
-    The vertical cost of that stack is why the rows put title and subtitle on one
-    line and why the tiles are 76dp: it leaves the grid one full row plus the
-    sliver of the next that says "scroll", instead of a cropped tile.
+    """The home screen as built: docs/design/app-ui-apply-wallpapers.png as a
+    landscape two-pane TV screen - the sheet's vertical stack in a fixed left
+    rail, the glyph grid owning the right pane - drawn at 960x540dp with the
+    real strings, dimens and bundled art.
     """
     img = new_frame()
     draw = ImageDraw.Draw(img, "RGBA")
-    g = dp(DIMENS["cb_gutter_side"])
+    g, rail_r, pane_l = rail_box()
     right = W - g
     gap = dp(DIMENS["cb_space_xs"])
     row_h = dp(DIMENS["cb_target_min"])
-    y = dp(DIMENS["cb_gutter_top_tight"])
-
-    # HEADER: cyan caps wordmark + the two counts left; Apply + launchers right.
-    draw_text(draw, (g, y + dp(2)), STRINGS["kicker"],
-              font("mono", DIMENS["cb_text_label"], bold=True),
-              colour("cb_signal_cyan"))
+    y = dp(DIMENS["cb_gutter_top"])
     f_data = font("mono", DIMENS["cb_text_data"])
-    draw_text(draw, (g, y + dp(26)),
-              fmt(STRINGS["pack_stats_fmt"], len(PACK), COMPONENT_COUNT),
-              f_data, colour("cb_slate"))
-    bw, bh = button(img, right - dp(160), y, STRINGS["cta_apply"], "cta", min_w_dp=160)
-    if not with_update_bar:
-        # The launcher list is the first row the update bar reclaims.
-        draw_text(draw, (right, y + bh + dp(4)), " - ".join(EXAMPLE_LAUNCHERS),
-                  font("sans", DIMENS["cb_text_data"]), colour("cb_slate"), anchor="ra")
-    top = y + bh + (dp(24) if not with_update_bar else gap)
 
-    # UPDATE BAR: label + the release's first highlight, Download and Later.
+    # The update bar spans both panes: wider than the rail, more urgent than
+    # the grid.
+    top = y
     if with_update_bar:
         bar_h = dp(58)
         pad = dp(DIMENS["cb_space_md"])
@@ -514,8 +518,6 @@ def catalogue_frame(with_update_bar: bool) -> tuple[Image.Image, str]:
         later_w = text_width(draw, STRINGS["update_later"], f_btn) + 2 * pad_x
         bx = right - pad - later_w - dp(DIMENS["cb_space_sm"]) - dl_w
         by = top + (bar_h - row_h) // 2
-        # The highlight line is a match_parent TextView in a weighted column: it
-        # ellipsises where the buttons begin, so truncate at the same x.
         line = "\u2022  " + VERSION["highlights"][0]
         limit = bx - dp(DIMENS["cb_space_md"])
         while text_width(draw, line + "\u2026", f_data) > limit - (g + pad):
@@ -523,72 +525,93 @@ def catalogue_frame(with_update_bar: bool) -> tuple[Image.Image, str]:
         draw_text(draw, (g + pad, top + dp(31)), line + "\u2026", f_data,
                   colour("cb_ink"))
         top += bar_h + gap
-
-    if with_update_bar:
         button(img, bx, by, dl, "cta", focused=True)
         button(img, bx + dl_w + dp(DIMENS["cb_space_sm"]), by,
                STRINGS["update_later"], "ghost")
 
-    # THREE ENTRY ROWS, the sheet's order and copy.
-    entry_row(img, [g, top, right, top + row_h], STRINGS["wp_entry"],
-              fmt(STRINGS["wp_entry_sub_fmt"], len(WALLPAPERS)),
-              focused=not with_update_bar)
-    top += row_h + gap
-    entry_row(img, [g, top, right, top + row_h], STRINGS["settings_label"],
-              STRINGS["settings_entry_sub"])
-    top += row_h + gap
-    entry_row(img, [g, top, right, top + row_h], STRINGS["about_label"],
-              fmt(STRINGS["about_entry_sub_fmt"], VERSION["versionName"]))
-    top += row_h + gap
+    body_top = top
 
-    # ALSO APPLIES TO: kicker and the other detected launchers on one line.
+    # ---- LEFT RAIL -------------------------------------------------------
+    ry = body_top
+    draw_text(draw, (g, ry + dp(2)), STRINGS["kicker"],
+              font("mono", DIMENS["cb_text_label"], bold=True),
+              colour("cb_signal_cyan"))
+    draw_text(draw, (g, ry + dp(26)),
+              fmt(STRINGS["pack_stats_fmt"], len(PACK), COMPONENT_COUNT),
+              f_data, colour("cb_slate"))
+    ry += dp(48)
+    button(img, g, ry, STRINGS["cta_apply"], "cta", min_w_dp=DIMENS["cb_rail_width"])
+    ry += row_h + gap
     if not with_update_bar:
-        f_lab = font("mono", DIMENS["cb_text_kicker"], bold=True)
-        label = STRINGS["cta_also_applies"]
-        draw_text(draw, (g, top + row_h / 2), label, f_lab,
-                  colour("cb_signal_cyan"), anchor="lm")
-        x = g + text_width(draw, label, f_lab) + dp(DIMENS["cb_space_md"])
+        for i, line in enumerate(wrap(draw, " - ".join(EXAMPLE_LAUNCHERS), f_data,
+                                      dp(DIMENS["cb_rail_width"]))[:2]):
+            draw_text(draw, (g, ry + i * dp(18)), line, f_data, colour("cb_slate"))
+        ry += dp(20)
+    ry += gap
+    tile_h = dp(DIMENS["cb_tile_icon"]) + 2 * dp(DIMENS["cb_card_padding"])
+    rows = [
+        (STRINGS["wp_entry"], fmt(STRINGS["wp_entry_sub_fmt"], len(WALLPAPERS))),
+        (STRINGS["settings_label"], STRINGS["settings_entry_sub"]),
+        (STRINGS["about_label"],
+         fmt(STRINGS["about_entry_sub_fmt"], VERSION["versionName"])),
+    ]
+    for index, (title, sub_text) in enumerate(rows):
+        h = entry_row_height(sub_text)
+        entry_row(img, [g, ry, rail_r, ry + h], title, sub_text,
+                  focused=(index == 0 and not with_update_bar))
+        ry += h + gap
+    if not with_update_bar:
+        draw_text(draw, (g, ry + dp(4)), STRINGS["cta_also_applies"],
+                  font("mono", DIMENS["cb_text_kicker"], bold=True),
+                  colour("cb_signal_cyan"))
+        ry += dp(24)
+        cx = g
         for name in EXAMPLE_LAUNCHERS[1:]:
-            x += chip_pill(img, x, top, name, active=False) + gap
-        top += row_h + gap
+            w = chip_pill(img, cx, ry, name, active=False)
+            cx += w + gap
+            if cx > rail_r:
+                break
+        ry += row_h
 
-    # SEARCH, full width, with the hint MainActivity sets from the catalogue size.
-    search_field(img, g, top, (right - g) / SCALE,
+    # ---- RIGHT PANE ------------------------------------------------------
+    search_field(img, pane_l, body_top, (right - pane_l) / SCALE,
                  hint=fmt(STRINGS["search_hint_fmt"], len(PACK)))
-    top += row_h + gap
-
-    # CATEGORY CHIPS: the catalogue's own order, as many as fit (the row scrolls).
-    x = g
+    py = body_top + row_h + gap
+    x = pane_l
     f_chip = font("sans", DIMENS["cb_text_label"], bold=True)
     for index, (_key, label, count) in enumerate(category_counts()):
         label_text = fmt(STRINGS["chip_count_fmt"], label, count)
         chip_w = text_width(draw, label_text, f_chip) + 2 * dp(DIMENS["cb_space_md"])
         if x + chip_w > right:
             break
-        x += chip_pill(img, x, top, label_text, active=index == 0,
-                       focused=False) + dp(DIMENS["cb_space_sm"])
-    top += row_h + gap
+        x += chip_pill(img, x, py, label_text, active=index == 0) + dp(DIMENS["cb_space_sm"])
+    py += row_h + gap
 
-    # GRID: five columns, glyph only, no label under the art. The second row is
-    # drawn and clipped by the panel edge, which is what the device shows.
-    spans = 5
-    tile_w = (right - g) // spans
-    icon = dp(DIMENS["cb_tile_icon"])
-    tile_h = icon + 2 * gap
+    # Grid: columns are pane width over tile pitch, exactly as MainActivity
+    # derives them; rows run past the panel edge and clip, as the RecyclerView
+    # does.
+    pane_w = right - pane_l
+    spans = max(2, int(pane_w // tile_h))
+    tile_w = pane_w // spans
     focused_index = -1 if with_update_bar else 2
-    for index in range(spans * 2):
-        if index >= len(PACK):
-            break
-        col, row = index % spans, index // spans
-        box = [g + col * tile_w, top + row * tile_h,
-               g + (col + 1) * tile_w, top + (row + 1) * tile_h]
-        if index == focused_index:
-            focus_ring(img, box)
-        else:
-            card(img, box)
-        cx, cy = (box[0] + box[2]) // 2, (box[1] + box[3]) // 2
-        paste_art(img, ICONS_DIR / f"{PACK[index]}.png",
-                  [cx - icon // 2, cy - icon // 2, cx + icon // 2, cy + icon // 2])
+    row = 0
+    while py < H:
+        for col in range(spans):
+            index = row * spans + col
+            if index >= len(PACK):
+                break
+            box = [pane_l + col * tile_w, py, pane_l + (col + 1) * tile_w,
+                   py + tile_h]
+            if index == focused_index:
+                focus_ring(img, box)
+            else:
+                card(img, box)
+            icon = dp(DIMENS["cb_tile_icon"])
+            cx, cy = (box[0] + box[2]) // 2, (box[1] + box[3]) // 2
+            paste_art(img, ICONS_DIR / f"{PACK[index]}.png",
+                      [cx - icon // 2, cy - icon // 2, cx + icon // 2, cy + icon // 2])
+        py += tile_h
+        row += 1
 
     extra = ("update bar: first highlight from version.json, launcher list and "
              "ALSO APPLIES TO reclaimed while it is up; " if with_update_bar
@@ -600,48 +623,27 @@ def catalogue_frame(with_update_bar: bool) -> tuple[Image.Image, str]:
 
 
 def wallpapers_frame() -> tuple[Image.Image, str]:
-    """The wallpapers browser as built: the sheet's right panel - title and the
-    "series chips filter the grid" line, series chips, three columns of thumbs
-    with their names, and the export affordance at the foot of the screen with
-    the paragraph that says what it is for."""
+    """The wallpapers browser as built: landscape two-pane. Header across the
+    top, series chips and the export foot in the left rail, the named-thumb
+    grid owning the right pane."""
     walls = WALLPAPERS
     img = new_frame()
     draw = ImageDraw.Draw(img, "RGBA")
-    g = dp(DIMENS["cb_gutter_side"])
+    g, rail_r, pane_l = rail_box()
     right = W - g
     gap = dp(DIMENS["cb_space_xs"])
     y = dp(DIMENS["cb_gutter_top"])
+    f_data = font("mono", DIMENS["cb_text_data"])
 
-    # HEADER: cyan caps title + count line, Back on the right.
     draw_text(draw, (g, y + dp(2)), STRINGS["wp_kicker"],
               font("mono", DIMENS["cb_text_label"], bold=True),
               colour("cb_signal_cyan"))
-    f_data = font("mono", DIMENS["cb_text_data"])
     draw_text(draw, (g, y + dp(26)), fmt(STRINGS["wp_sub_fmt"], len(walls)),
               f_data, colour("cb_slate"))
     button(img, right - dp(150), y, STRINGS["wp_back"], "ghost", min_w_dp=150)
-    top = y + dp(DIMENS["cb_target_min"]) + dp(DIMENS["cb_space_md"])
+    body_top = y + dp(DIMENS["cb_target_min"]) + dp(DIMENS["cb_space_md"])
 
-    # FOOT, laid out first because it is fixed and the grid takes what is left.
-    f_para = font("sans", DIMENS["cb_text_data"])
-    para_w = dp(620)
-    para = wrap(draw, STRINGS["wp_export_sub"], f_para, para_w)
-    pill_h = dp(DIMENS["cb_target_min"])
-    foot_h = pill_h + gap + len(para) * dp(19)
-    foot_y = H - dp(DIMENS["cb_gutter_bottom"]) - foot_h
-    f_pill = font("sans", DIMENS["cb_text_label"], bold=True)
-    # The layout sets textAllCaps, so measure the caps string, not the resource.
-    pill_label = STRINGS["wp_export"].upper()
-    pill_w = text_width(draw, pill_label, f_pill) + 2 * dp(DIMENS["cb_space_lg"])
-    rrect(draw, [g, foot_y, g + pill_w, foot_y + pill_h],
-          dp(DIMENS["cb_radius_button"]), outline=(0, 212, 255, 0x59), width=dp(1))
-    draw_text(draw, (g + pill_w / 2, foot_y + pill_h / 2), pill_label,
-              f_pill, colour("cb_signal_cyan"), anchor="mm")
-    for i, line in enumerate(para):
-        draw_text(draw, (g, foot_y + pill_h + gap + i * dp(19)), line, f_para,
-                  colour("cb_slate"))
-
-    # SERIES CHIPS.
+    # ---- LEFT RAIL: series chips, then the export foot.
     series: list[str] = []
     for wall in walls:
         if wall["series"] not in series:
@@ -651,47 +653,66 @@ def wallpapers_frame() -> tuple[Image.Image, str]:
                  for part in s.removeprefix("series-").split("-", 1)[1].split("-"))
         for s in series
     ]
-    x = g
-    for index, label in enumerate(labels[:7]):
-        x += chip_pill(img, x, top, label, active=index == 0) + dp(DIMENS["cb_space_sm"])
-    top += dp(DIMENS["cb_target_min"]) + dp(DIMENS["cb_space_sm"])
+    foot_h = dp(DIMENS["cb_target_min"]) + gap
+    f_para = font("sans", DIMENS["cb_text_data"])
+    para = wrap(draw, STRINGS["wp_export_sub"], f_para, dp(DIMENS["cb_rail_width"]))
+    foot_h += len(para) * dp(19)
+    fy = H - dp(DIMENS["cb_gutter_bottom"]) - foot_h
+    # The weighted chip list scrolls in the rail, so chips run to the foot's top
+    # edge and clip there, exactly as the RecyclerView does.
+    chips_bottom = fy - dp(DIMENS["cb_space_md"])
+    layer = Image.new("RGBA", (W, H), (0, 0, 0, 0))
+    ry = body_top
+    for index, label in enumerate(labels):
+        chip_pill(layer, g, ry, label, active=index == 0, focused=index == 0)
+        ry += dp(DIMENS["cb_target_min"]) + gap
+        if ry > chips_bottom + dp(DIMENS["cb_target_min"]):
+            break
+    mask = Image.new("L", (W, H), 0)
+    ImageDraw.Draw(mask).rectangle([0, body_top, rail_r, chips_bottom], fill=255)
+    img.paste(layer, (0, 0), Image.composite(
+        layer.split()[3], Image.new("L", (W, H), 0), mask))
+    f_pill = font("sans", DIMENS["cb_text_label"], bold=True)
+    pill_label = STRINGS["wp_export"].upper()
+    rrect(draw, [g, fy, rail_r, fy + dp(DIMENS["cb_target_min"])],
+          dp(DIMENS["cb_radius_button"]), outline=(0, 212, 255, 0x59), width=dp(1))
+    draw_text(draw, ((g + rail_r) / 2, fy + dp(DIMENS["cb_target_min"]) / 2),
+              pill_label, f_pill, colour("cb_signal_cyan"), anchor="mm")
+    for i, line in enumerate(para):
+        draw_text(draw, (g, fy + dp(DIMENS["cb_target_min"]) + gap + i * dp(19)),
+                  line, f_para, colour("cb_slate"))
 
-    # GRID: three columns, thumb + name, as many rows as the space above the foot
-    # holds - the rest scrolls, exactly as the RecyclerView does.
-    spans = 3
-    tile_w = (right - g) // spans
+    # ---- RIGHT PANE: the thumb grid, full height.
+    pane_w = right - pane_l
     thumb = dp(DIMENS["cb_wp_thumb"])
     tile_h = thumb + dp(52)
-    grid_bottom = foot_y - dp(DIMENS["cb_space_sm"])
-    # Full rows plus the clipped one: the RecyclerView shows the top of the next
-    # row until its own edge, which is exactly this crop.
-    rows = max(1, (grid_bottom - top) // tile_h + 1)
-    layer = Image.new("RGBA", (W, H), (0, 0, 0, 0))
+    spans = max(2, int(pane_w // tile_h))
+    tile_w = pane_w // spans
     f_tile = font("sans", DIMENS["cb_text_label"])
-    for index in range(spans * rows):
-        if index >= len(walls):
-            break
-        col, row = index % spans, index // spans
-        box = [g + col * tile_w, top + row * tile_h, g + (col + 1) * tile_w,
-               top + (row + 1) * tile_h - dp(2)]
-        if index == 0:
-            focus_ring(layer, box)
-        else:
-            card(layer, box)
-        inset = dp(DIMENS["cb_focus_inset"]) + dp(6)
-        thumb_path = THUMBS_DIR / (
-            walls[index]["url"].split("/")[-1].rsplit(".", 1)[0] + ".jpg")
-        paste_art(layer, thumb_path,
-                  [box[0] + inset, box[1] + inset, box[2] - inset,
-                   box[1] + inset + thumb], radius=dp(6))
-        title = walls[index]["name"].split("\u00b7 ", 1)[-1]
-        draw_text(ImageDraw.Draw(layer, "RGBA"),
-                  ((box[0] + box[2]) / 2, box[1] + inset + thumb + dp(10)),
-                  title, f_tile, colour("cb_ink"), anchor="ma")
-    mask = Image.new("L", (W, H), 0)
-    ImageDraw.Draw(mask).rectangle([0, 0, W, grid_bottom], fill=255)
-    img.paste(layer, (0, 0), Image.composite(layer.split()[3], Image.new("L", (W, H), 0),
-                                             mask))
+    row = 0
+    py = body_top
+    while py < H:
+        for col in range(spans):
+            index = row * spans + col
+            if index >= len(walls):
+                break
+            box = [pane_l + col * tile_w, py, pane_l + (col + 1) * tile_w,
+                   py + tile_h - dp(2)]
+            if index == 0:
+                focus_ring(img, box)
+            else:
+                card(img, box)
+            inset = dp(DIMENS["cb_focus_inset"]) + dp(6)
+            thumb_path = THUMBS_DIR / (
+                walls[index]["url"].split("/")[-1].rsplit(".", 1)[0] + ".jpg")
+            paste_art(img, thumb_path,
+                      [box[0] + inset, box[1] + inset, box[2] - inset,
+                       box[1] + inset + thumb], radius=dp(6))
+            title = walls[index]["name"].split("\u00b7 ", 1)[-1]
+            draw_text(draw, ((box[0] + box[2]) / 2, box[1] + inset + thumb + dp(10)),
+                      title, f_tile, colour("cb_ink"), anchor="ma")
+        py += tile_h
+        row += 1
 
     note = ("MOCKUP - wallpapers from activity_wallpapers.xml + strings.xml + "
             f"manifest/wallpapers.json ({len(walls)} walls), bundled thumbs; "

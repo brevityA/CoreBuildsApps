@@ -21,18 +21,34 @@ All notable changes to the Core Builds Icon Pack. Format follows
   size, the category chips, and a five-column grid of glyph-only tiles — the
   label under each tile is gone, the name lives in the inspector and in the
   tile's content description. Wallpapers: the count line reads "84 walls -
-  series chips filter the grid", the series chips sit over three columns of
-  named thumbs, and the export affordance left the header for the foot of the
-  screen, a ghost pill over the paragraph that says what it does (Monet rotates
-  `Pictures/CoreBuilds`). Two things the sheet's portrait panel cannot say about
-  a 16:9 TV, decided here and drawn in the frames: the rows put title and
-  subtitle on one 48dp line, and the tiles are 76dp, because stacked rows cost
-  ~68dp each and the sheet's chrome left the grid 34dp of a 540dp panel — less
-  than a quarter of one tile. As rebuilt the chrome costs ~445dp and the grid
-  keeps one full row plus the sliver of the next that says "scroll", in every
-  state the screen has. `MainActivity.syncFocusChain()` was rewritten for the
-  new order (rows → band → field → chips → grid); Classic and Pop share the
-  Kotlin, Pixel Neon keeps its fork and gained the new resource names.
+  series chips filter the grid", three columns of named thumbs, and the export
+  affordance left the header for a ghost pill over the paragraph that says what
+  it does (Monet rotates `Pictures/CoreBuilds`).
+
+  Both screens are landscape two-pane, because a TV is 16:9 and the sheet's
+  panel is portrait: a fixed left rail (`cb_rail_width`) carries the sheet's
+  vertical stack — and has the panel's full height for it, so the entry rows
+  keep title over subtitle exactly as drawn, and the wallpapers series chips
+  stand on their side as a scrolling list — while the grid owns the right pane
+  and gets two rows of near-square tiles on a 1080p panel instead of the
+  cropped sliver a single column of chrome left it. Column counts are derived,
+  not declared: pane width over tile pitch, both from dimens.
+  `MainActivity.syncFocusChain()` was rewritten for the new order (rail rows →
+  band → field → chips → grid, LEFT/RIGHT crossing panes geometrically);
+  Classic and Pop share the Kotlin, Pixel Neon keeps its fork and gained the
+  new resource names.
+- **The UI scales to a 4K panel.** Android TV sets do not agree on the dp box
+  they report: 1080p says 960×540dp, and a 4K panel commonly says twice that,
+  which renders every dp at half the physical size — a 16sp label becomes an
+  8sp label at the same three metres. `values-sw720dp/dimens.xml` now doubles
+  every metric for exactly those panels (the qualifier matches the doubled box
+  and never the 960×540dp one), so both render the same picture: same physical
+  type, same focus floors, and the same column counts because the span
+  arithmetic divides pane width by tile pitch and both halves double.
+  `tools/build_scale_variants.py` generates the qualified file in all three
+  modules from `values/dimens.xml` (it is in `prepare_release`'s builder list)
+  and `tests/test_tv_layout_fit.py` pins it to exactly ×2 and re-runs the
+  two-pane grid budget against a 1080dp viewport.
 - **Later, on the update bar.** The what's-new bar gains a dismiss. While it is
   up it also reclaims the header's launcher list and the ALSO APPLIES TO row,
   because on a 540dp panel the bar, the band and a full row of tiles do not all

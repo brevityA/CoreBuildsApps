@@ -9,6 +9,8 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
+import kotlin.math.floor
+import kotlin.math.max
 import androidx.recyclerview.widget.RecyclerView
 
 /**
@@ -178,8 +180,10 @@ class WallpapersActivity : AppCompatActivity() {
             keys += s
         }
         findViewById<RecyclerView>(R.id.wp_chips).apply {
+            // The sheet's filter row stood on its side: a vertical list in the
+            // rail, so the chip row stops costing the grid a row of thumbs.
             layoutManager = LinearLayoutManager(
-                this@WallpapersActivity, LinearLayoutManager.HORIZONTAL, false
+                this@WallpapersActivity, LinearLayoutManager.VERTICAL, false
             )
             // The main screen sets this on its chip row. Without it, the
             // default RecyclerView change animation replaces the chip the
@@ -219,10 +223,22 @@ class WallpapersActivity : AppCompatActivity() {
         )
     }
 
-    /** Three thumb columns on a 1080p panel, the sheet's grid. */
+    /**
+     * Columns for the thumb grid: the right pane's width over one tile's pitch,
+     * the same arithmetic as MainActivity.spanForScreen - pane from the panel
+     * minus gutters, rail and gap; pitch from cb_wp_thumb plus the tile's
+     * padding, label gap and label line. Dimens all the way down, so a 4K panel
+     * reporting a larger dp box keeps the sheet's three columns.
+     */
     private fun spanForScreen(): Int {
-        val dp = resources.configuration.screenWidthDp
-        return (dp / 320).coerceIn(2, 4)
+        val density = resources.displayMetrics.density
+        fun dpOf(id: Int) = resources.getDimensionPixelSize(id) / density
+        val pane = resources.configuration.screenWidthDp -
+            2 * dpOf(R.dimen.cb_gutter_side) -
+            dpOf(R.dimen.cb_rail_width) - dpOf(R.dimen.cb_space_md)
+        val pitch = dpOf(R.dimen.cb_wp_thumb) + 2 * dpOf(R.dimen.cb_card_padding) +
+            dpOf(R.dimen.cb_space_sm) + dpOf(R.dimen.cb_text_label) * 1.2f
+        return max(2, floor(pane / pitch).toInt())
     }
 
     private fun toast(msg: String) =
