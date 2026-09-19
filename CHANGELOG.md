@@ -6,6 +6,137 @@ All notable changes to the Core Builds Icon Pack. Format follows
 
 ## [Unreleased]
 
+### Fixed
+
+- **Searching moved the cursor out of the search field** — a tester's report of
+  "weird focus behavior for the keyboard", which turned out to be six separate
+  defects in the one path. None was reachable from a layout check: the focus
+  chain was intact and every control on the screen was reachable, which is what
+  `check_ui_resources.py` asks. What nothing asked is who owns the cursor while
+  the user types. Fixed in `app/src/main/java`, so one change covers Classic and
+  Pop. Pixel Neon keeps a deliberate fork of this screen and still carries four
+  of the six — the update-bar grab, the per-keystroke filter, the dead Search
+  key and the animated chip rows; it has no empty-state or focus-restore logic
+  at all, so the other two have nothing there to fix yet.
+  - `showUpdateAvailable()` ended in an unconditional `button.requestFocus()`,
+    and it runs on `UpdateChecker`'s network callback — which resolves whenever
+    it likes, commonly about a second after launch, which is exactly when
+    somebody has reached the search field and started typing. The Download
+    button took the cursor mid-word and the keyboard went down with it. 1.8.11
+    fixed the bar's *reachability* and kept the grab deliberately; the grab was
+    the bug. The bar now reveals, and takes the cursor only when nothing has
+    been chosen yet — no focus, the decor view, or the Apply button this screen
+    opens on. The startup grab is guarded the same way, matching
+    `WallpapersActivity`.
+  - **A filtered-out icon had no destination.** `applyFilter` handled only the
+    case where the icon under the cursor survived the filter. When it did not,
+    RecyclerView's own preserve-focus-after-layout pass found the remembered
+    item id gone and handed focus to its first focusable child: the ring
+    teleporting to the top-left tile. The cursor now stays on its icon or moves
+    to the nearest survivor, measured in catalogue order because that is the
+    only distance that survives a filter — both the old list and the new one are
+    order-preserving subsets of it.
+  - **Surviving a filter jumped the grid anyway.** The surviving case scrolled
+    to the icon's new position, and `scrollToPosition` pins a position to the
+    *top* of the viewport, so a filter that left the icon exactly where it was
+    still dragged the whole grid up to it. A tile that is already laid out now
+    takes focus directly and RecyclerView brings it on screen the way it does
+    for any focus move; only an off-screen target is scrolled to first.
+  - **Hiding a container left the cursor nowhere to live.** `bindEmptyState`
+    swaps the grid and the empty state on every filter, in both directions: the
+    grid goes `GONE` when the last result goes, and the empty state goes `GONE`
+    when results come back — which is exactly what pressing its own **Clear
+    filter** does, with the cursor on the button being hidden. Android either
+    drops focus outright and restores the window's own default on the next
+    traversal (the Apply button at the top of the screen, two stops away from the
+    results being read), or leaves it on a view that is no longer shown: no
+    highlight, key events still landing on it, and the next D-pad move computed
+    from a rectangle that no longer exists. Both are now caught after every
+    filter and the cursor is put on the first tile, or on whichever undo the
+    empty state is actually offering. The check only ever fires when focus was
+    lost, and only for the views that swap, so it cannot interrupt typing — nor
+    move a cursor the user left in the search field while the activity sits
+    behind another window.
+  - **The keyboard's Search key was dead.** The field declares
+    `imeOptions="actionSearch"` and nothing registered an
+    `OnEditorActionListener`, so the one key that means "I have finished typing"
+    fell through to TextView's default: hide the IME, move nothing, and leave
+    the user pressing Down to find out whether the search had worked. It now
+    closes the keyboard and puts the cursor on the first result, or on the empty
+    state's undo when there are none. Enter on a hardware keyboard arrives as
+    the same action and does the same thing.
+  - **A chip press dropped the chip's own highlight.** All three chip rows on
+    this screen — categories, the picker's banner/square pair, and "Also
+    &lt;launcher&gt;" — kept RecyclerView's default item animator.
+    `ChipAdapter.select()` answers a press with two `notifyItemChanged` calls,
+    and the default change animation swaps the pressed chip for a fresh
+    ViewHolder and cross-fades the pair, so the highlight vanished on the press
+    that was supposed to move it. `WallpapersActivity` already set
+    `itemAnimator = null` on its chip row, with a comment saying the main screen
+    did the same; it did not, and now does.
+- **The presence pass could die mid-build on a mark flush against SAFE.**
+  `keyline_radius()` caps the ring at the headroom actually available outside
+  the ink, and four marks sit at exactly the SAFE margin, so their cap is zero —
+  and a zero radius reached `MaxFilter(1)`, a 1x1 rank window. A 1x1 max filter
+  is mathematically a no-op (the ring would subtract to empty), but Pillow's C
+  rank filter divides by the window area, so on current Pillow the build died
+  with SIGFPE on the fifth icon instead of skipping the ring. `apply_presence`
+  now returns the source untouched when there is no headroom, which is what the
+  cap always meant; shipped pixels are identical either way.
+
+### Changed
+
+- **The keyboard follows the search field.** A focus gained by D-pad does not
+  reliably open the IME — the platform shows soft input for touch-mode focus —
+  so the field asks for it explicitly on focus, and puts it away when the cursor
+  leaves for the grid or a chip, where it would otherwise hang over the results
+  the cursor just moved into.
+- **Typing filters as a burst rather than per character.** One keystroke used to
+  mean one pass over 943 icons, one `DiffUtil.calculateDiff` and one full grid
+  layout, all on the main thread inside `afterTextChanged`. Keystrokes are now
+  debounced 120ms — longer than a remote's key repeat, shorter than the pause
+  between words — and the diff drops move detection, which cannot report a move
+  for an order-preserving subset and so cost a second pass over the matched
+  items per keystroke to compute nothing. A chip press, a Clear and the Search
+  key still filter at once and cancel anything queued; a queued pass is flushed
+  in `onPause` so it cannot decide focus against a window nobody is looking at,
+  and dropped in `onDestroy`, which it outlived before. When the cursor is outside the grid the
+  results scroll to the top, because the set just changed and the tail of the
+  previous scroll position is not where anyone wants to look.
+- **Janky's mark joins the pack's container grammar.** The Projectivy
+  screenshots ("See the uniformability. Also the new Janky icon seems like it is
+  sized wrong") measured out exact: the ring-and-beside-play lockup shipped in
+  a 0.80 x 0.47 ink box, aspect 1.71, against a pack median of 0.78 x 0.74,
+  aspect 1.05. A full-width band at half height is the one box a launcher
+  cannot place: in a fixed slot it crops at the edges and reads oversized next
+  to square neighbours, and the 16:9 banner template scales every glyph at a
+  fixed `GLYPH_H/512` rather than normalising to each ink box, so the same flat
+  box drew Janky's mark at half the cap height of every mark beside it.
+  Scaling could not fix it — a side-by-side lockup's aspect is locked near 1.6
+  by its own arithmetic — so the composition moved: the ring is now a
+  full-size container on the pack's container grammar (mpv, downloader_arrow,
+  tivimate_grid, browser_globe all span 0.76-0.84 of the grid in both axes),
+  with the J-hook cradling the play sign inside it, apex welded to the stem's
+  inner edge exactly as the vendor sheet draws them. Paints are untouched —
+  off-white hook, cyan-to-violet ring and play — counters survive 96/48/32 as
+  before, and the nearest-neighbour check still separates it from mpv_play
+  (0.923 against a 0.965 twin bar; mpv's cue is its stepped rim, Janky's the
+  hook inside). Tile ink box is now 0.75 x 0.75, aspect 1.00. Regenerated
+  through the full pipeline for Classic, Pop and Pixel Neon, including
+  `measure_pop_glyphs.py`, because glyph geometry changed.
+
+### Added
+
+- **`tests/test_search_focus.py`** — 15 static checks over the search path, in
+  the same shape as `test_tv_layout_fit.py`: scoped to one function body at a
+  time, so a `currentFocus` read somewhere else in the file cannot satisfy the
+  check on the grab, and comment lines are dropped before a line is scanned, so
+  a comment quoting the call it replaced cannot satisfy the check either. 14 of
+  the 15 fail against the pre-fix source; the 15th locks the layout routes the
+  Kotlin half depends on (`imeOptions`, and the `nextFocus` edges between field,
+  grid and tile). Named in `build.yml` and `suite-ci.yml`, because CI runs these
+  suites file by file and `unittest discover` does not see them.
+
 ## [1.8.20] — 2026-09-18
 
 ### Added

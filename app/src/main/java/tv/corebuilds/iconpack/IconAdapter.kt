@@ -12,9 +12,10 @@ import androidx.recyclerview.widget.RecyclerView
 /**
  * One labeled tile in the in-app browser.
  *
- * Updates go through DiffUtil. The grid holds 925 items and every search
- * keystroke used to rebind all of them, which also dropped focus from any tile
- * inside the grid and cancelled in-flight item animations.
+ * Updates go through DiffUtil. The grid holds the whole catalogue — 943 icons
+ * at 1.8.20 — and every search keystroke used to rebind all of them, which also
+ * dropped focus from any tile inside the grid and cancelled in-flight item
+ * animations.
  */
 class IconAdapter(
     private var items: List<IconItem>,
@@ -107,6 +108,12 @@ class IconAdapter(
 
     fun submit(next: List<IconItem>) {
         val previous = items
+        // detectMoves = false, and it is not a shortcut: a filter is an
+        // order-preserving subset of the catalogue, so no item ever changes
+        // position relative to another and a move can never be reported. The
+        // single-argument overload turns move detection on, which costs a
+        // second pass over the matched items on every keystroke of a 943 icon
+        // search to compute something that is always empty.
         val result = DiffUtil.calculateDiff(object : DiffUtil.Callback() {
             override fun getOldListSize() = previous.size
             override fun getNewListSize() = next.size
@@ -114,7 +121,7 @@ class IconAdapter(
                 previous[old].drawable == next[new].drawable
             override fun areContentsTheSame(old: Int, new: Int) =
                 previous[old] == next[new]
-        })
+        }, false)
         items = next
         result.dispatchUpdatesTo(this)
     }

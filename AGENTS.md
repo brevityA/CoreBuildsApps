@@ -38,7 +38,7 @@ python tools/validate.py
 python tests/test_icon_identity.py    # 35 style/colour/reference/mapping regressions (after all packs build)
 ```
 
-Paste the validator receipt. Current receipt: `Validated 943 icons · 1765 components · 25854 checks run`.
+Paste the validator receipt. Current receipt: `Validated 943 icons · 1765 components · 25856 checks run`.
 
 Anything touching the catalog, `tools/glyphs.py`, or shared `app/` resources also rebuilds Pop, because Pop mirrors those resources and renders the same catalog:
 

@@ -1243,10 +1243,35 @@ def janky_play(c):
     ring interior and the J merge into a single hooked disc and the
     triangle keeps its counter: the same convergence the shipped sheet's
     own 24px row shows.
+
+    Revised once more on the user's Projectivy screenshots (RB4, 2026-09-19):
+    "See the uniformability. Also the new Janky icon seems like it is sized
+    wrong." Measured, the complaint is exact: the side-by-side lockup's ink
+    box was 80% wide by 47% tall (aspect 1.71) against a pack median of
+    78% x 74% (aspect 1.05) - a full-width band where every neighbour sits
+    in a near-square optical box. In a launcher's fixed slot a band that
+    wide crops at the edges and reads oversized; on the 16:9 banner, whose
+    template scales every glyph at a fixed GLYPH_H/512 rather than
+    normalising to each ink box, the same flat box drew Janky's mark at
+    half the cap height of every mark beside it. A side-by-side lockup
+    cannot be fixed by scaling - its aspect is locked near 1.6 by the
+    ring-plus-beside-play arithmetic - so the composition moves instead:
+    the ring becomes a full-size container on the pack's own container
+    grammar (browser_globe, downloader_arrow, tivimate_grid all span
+    0.79-0.84 of the grid in both axes), and the J-hook cradles the play
+    sign inside it, apex welded to the stem's inner edge exactly as the
+    vendor sheet draws them - the sheet's original read, which RB3 had
+    moved outside for downscale headroom. Inside a 0.75 container there is
+    room for both at the detail weight: the play keeps a 170px stance and
+    an open counter at 96px, and the hook's bowl sweeps under it. Ink box
+    is now the ring: 0.75 x 0.75, aspect 1.00, inside the mark band the
+    uniformity gate enforces. Paints are untouched - off-white hook,
+    cyan-to-violet ring and play - so tile, banner and rail still share
+    one paint story.
     """
-    return (f'<circle cx="176" cy="256" r="104" {_s(c, 32)}/>'
-            f'<path d="M 210 198 L 210 266 A 44 44 0 0 1 122 266" {_s(OFFWHITE_INK, 26)}/>'
-            f'<path d="M 336 156 L 336 356 L 452 256 Z" {_s(c, 26)}/>')
+    return (f'<circle cx="256" cy="256" r="176" {_s(c, 32)}/>'
+            f'<path d="M 330 168 L 330 300 A 66 66 0 0 1 198 300" {_s(OFFWHITE_INK, 26)}/>'
+            f'<path d="M 196 175 L 196 345 L 320 260 Z" {_s(c, 26)}/>')
 
 
 def tivimate_grid(c):
