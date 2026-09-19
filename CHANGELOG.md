@@ -147,6 +147,24 @@ All notable changes to the Core Builds Icon Pack. Format follows
   Kotlin half depends on (`imeOptions`, and the `nextFocus` edges between field,
   grid and tile). Named in `build.yml` and `suite-ci.yml`, because CI runs these
   suites file by file and `unittest discover` does not see them.
+- **`tests/test_ui_wiring.py`** — static gate over the manifest contract and
+  the screens around the main grid, named in `build.yml` and `suite-ci.yml`.
+  It locks the five declared permissions in both manifests (with
+  `WRITE_EXTERNAL_STORAGE` capped at `maxSdk 28`), the `<queries>` entries
+  every package-visibility-filtered probe depends on (Monet and Projectivy
+  packages, the HOME intent, the apply contracts), the wallpapers screen's
+  three focus guards (starting focus, both item animators off, focus handed
+  to the header export when the selection bar goes `GONE`), the export
+  screen's cancel and retry focus, and `FLAG_GRANT_READ_URI_PERMISSION` on
+  every FileProvider intent that leaves the app. Born from a permissions
+  audit whose verdict was that the set is complete and deliberately minimal
+  - nothing to add for any shipped feature - and that the interesting
+  surface was never the permissions but the visibility contract and the
+  wiring around it. Deliberately *not* declared, and why:
+  `QUERY_ALL_PACKAGES` (Play-sensitive; the targeted `<queries>` covers every
+  probe), `MANAGE_EXTERNAL_STORAGE` (scoped storage needs nothing past API
+  28), `POST_NOTIFICATIONS` (no notifications on a TV surface),
+  `READ_MEDIA_IMAGES` (export only ever inserts its own MediaStore rows).
 
 ## [1.8.20] — 2026-09-18
 
