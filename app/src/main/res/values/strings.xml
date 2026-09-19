@@ -129,7 +129,7 @@
     <!-- Settings -->
     <string name="settings_label">Settings</string>
     <string name="settings_kicker">SETTINGS</string>
-    <string name="settings_title">Four things worth storing</string>
+    <string name="settings_title">Worth storing, worth knowing</string>
     <string name="settings_group_updates">UPDATES</string>
     <string name="settings_updates_title">Check for updates automatically</string>
     <string name="settings_updates_sub">Looks once per launch. Never downloads or installs without asking first.</string>
@@ -143,7 +143,33 @@
     <string name="settings_cache_sub">Wallpapers you downloaded. Clearing re-fetches them on demand.</string>
     <string name="settings_cache_clear">Clear</string>
     <string name="settings_cache_empty">Empty</string>
-    <string name="settings_footer">Every one of these is stored on this device only. Nothing here is reported anywhere.</string>
+    <string name="settings_group_launcher">LAUNCHER</string>
+    <string name="settings_refresh_title">Refresh launcher icons</string>
+    <string name="settings_refresh_sub">Re-sends the apply contract to the detected launcher, for cards still showing yesterday\'s bitmaps after a pack update.</string>
+    <string name="settings_appinfo_title">Launcher app info</string>
+    <string name="settings_appinfo_sub">The system page for the detected launcher. Force Stop there clears a bitmap cache re-applying cannot reach.</string>
+    <string name="settings_group_help">HELP</string>
+    <string name="settings_faq_title">Troubleshooting and FAQ</string>
+    <string name="settings_faq_sub">Stale icons, manual overrides, Monet handoffs, unmapped apps. The repo docs, readable from the sofa.</string>
+    <string name="refresh_applied_fmt">Apply re-sent to %1$s. If cards are still stale, force-stop the launcher from its app info page.</string>
+    <string name="refresh_manual_fmt">%1$s has no apply contract: %2$s</string>
+    <string name="refresh_no_launcher">No supported launcher detected on this TV.</string>
+    <string name="appinfo_missing">No supported launcher detected to open.</string>
+    <string name="settings_footer">The switches above are stored on this device only. Nothing here is reported anywhere.</string>
+
+    <!-- Troubleshooting / FAQ -->
+    <string name="faq_label">Troubleshooting and FAQ</string>
+    <string name="faq_kicker">HELP</string>
+    <string name="faq_title">Answers from the sofa</string>
+    <string name="faq_cache_title">Icons not updating after a pack update?</string>
+    <string name="faq_cache_body">Launchers cache rendered cards in memory and on disk, so a fresh pack can sit behind yesterday\'s bitmaps. Settings → Refresh launcher icons re-sends the apply contract; if that is not enough, Settings → Launcher app info opens the system page where Force Stop clears the cache without rebooting the TV.</string>
+    <string name="faq_override_title">Manual icon overrides win over the pack</string>
+    <string name="faq_override_body">Projectivy keeps an icon you picked by hand until you pick again, so a per-app override survives every pack update. Re-assign the tile from the launcher\'s icon picker, or choose the pack default there, to hand the tile back to Core Builds.</string>
+    <string name="faq_monet_title">Send to Monet: what it can and cannot take</string>
+    <string name="faq_monet_body">Wallpapers go to Monet straight from Preview or Export (Send to Monet, Monet 1.0.72 or newer, Premium). The icon pack does not: Monet has no apply intent. It discovers packs through the standard discovery actions, and you choose Core Builds under Monet Settings → Apps → Icon pack.</string>
+    <string name="faq_unmapped_title">An installed app has no icon</string>
+    <string name="faq_unmapped_body">Auto-assign needs the exact activity your box launches, and some apps ship different mobile and Leanback activities. Read the component off the device with the ADB scanning guide in the repo docs and send a mapping request; the next tranche picks it up.</string>
+    <string name="chip_count_fmt">%1$s (%2$d)</string>
 
     <!-- About -->
     <string name="about_label">About</string>

@@ -39,6 +39,16 @@ Why these checks exist, one class at a time:
                      carries FLAG_GRANT_READ_URI_PERMISSION. Every share /
                      apply intent that leaves the app with one is checked.
 
+  sideload rows      The settings LAUNCHER and HELP rows, the FAQ screen
+                     and the update bar's what's-new card each have one
+                     silent failure mode: a row with no reader behind it,
+                     a screen never registered in a manifest, a view the
+                     parser never fills. These checks pin all three, plus
+                     the Pop copy of every id and string the shared Kotlin
+                     reaches for - Pop compiles the same sources against
+                     its own resources, so an id missing there breaks only
+                     the Pop build, quietly, after the app module passed.
+
 Usage:
     python tests/test_ui_wiring.py
 """
@@ -139,13 +149,59 @@ def main() -> int:
     check("retry.requestFocus()" in export,
           "ExportProgressActivity: retry must take focus when offered")
 
+    # Sideload round: the launcher tools, the FAQ door and the what's-new
+    # card. Same bug classes as everything above - a row with no reader, a
+    # screen with no registration, a view toggled by a field the parser
+    # never reads - each of which is silent until someone presses it on a
+    # TV that cannot show a stack trace.
+    settings_kt = read(ROOT / "app" / "src" / "main" / "java" / "tv" / "corebuilds"
+                       / "iconpack" / "SettingsActivity.kt")
+    settings_layout = read(ROOT / "app" / "src" / "main" / "res" / "layout"
+                           / "activity_settings.xml")
+    pop_settings_layout = read(ROOT / "pop" / "src" / "main" / "res" / "layout"
+                               / "activity_settings.xml")
+    faq_kt = read(ROOT / "app" / "src" / "main" / "java" / "tv" / "corebuilds"
+                  / "iconpack" / "FaqActivity.kt")
+    faq_layout = read(ROOT / "app" / "src" / "main" / "res" / "layout"
+                      / "activity_faq.xml")
+    checker = read(ROOT / "app" / "src" / "main" / "java" / "tv" / "corebuilds"
+                   / "iconpack" / "UpdateChecker.kt")
+    for rid in ("set_refresh_row", "set_appinfo_row", "set_faq_row"):
+        check(f'android:id="@+id/{rid}"' in settings_layout,
+              f"activity_settings.xml: missing {rid}")
+        check(f'android:id="@+id/{rid}"' in pop_settings_layout,
+              f"pop activity_settings.xml: missing {rid} (shared Kotlin compiles both)")
+        check(f"R.id.{rid})" in settings_kt, f"SettingsActivity: {rid} not wired")
+    check("ApplyIconPack.detectInstalled(this)" in settings_kt,
+          "SettingsActivity: launcher rows must act on the detected launcher, not an assumed one")
+    check("ApplyIconPack.apply(this, launcher)" in settings_kt,
+          "SettingsActivity: refresh row must re-fire the apply contract through ApplyIconPack")
+    check("ACTION_APPLICATION_DETAILS_SETTINGS" in settings_kt,
+          "SettingsActivity: app-info row must open the system details page")
+    check("FaqActivity::class.java" in settings_kt,
+          "SettingsActivity: help row must open FaqActivity")
+    check("faq_back).setOnClickListener { finish() }" in faq_kt,
+          "FaqActivity: back must finish")
+    check(faq_layout.count('android:focusable="true"') == 1,
+          "activity_faq.xml: only the back button may be focusable - read-only "
+          "cards that take focus are a D-pad trap")
+    for name, manifest in (("app", app_manifest), ("pop", pop_manifest)):
+        check('android:name=".FaqActivity"' in manifest,
+              f"{name} manifest: FaqActivity not registered")
+    check('optJSONArray("highlights")' in checker and "val highlights: List<String>" in checker,
+          "UpdateChecker: release highlights must parse as an optional manifest field")
+    check("R.id.update_highlights" in main and "update.highlights.isEmpty()" in main,
+          "MainActivity: highlights view must stay gone unless the manifest carries them")
+    check("chip_count_fmt" in main,
+          "MainActivity: category chips must carry counts tallied from the catalog arrays")
+
     if problems:
         print(f"ui wiring gate: {len(problems)} problem(s)")
         for p in problems:
             print("  \u2717 " + p)
         return 1
     print("ui wiring gate ok - 2 manifests, 5 permissions, 6 visibility entries, "
-          "wallpapers/export/preview wiring locked")
+          "wallpapers/export/preview wiring, launcher tools + FAQ + what's-new locked")
     return 0
 
 

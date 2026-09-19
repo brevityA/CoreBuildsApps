@@ -218,6 +218,11 @@
             android:label="@string/settings_label"
             android:theme="@style/Theme.CoreBuilds" />
         <activity
+            android:name=".FaqActivity"
+            android:exported="false"
+            android:label="@string/faq_label"
+            android:theme="@style/Theme.CoreBuilds" />
+        <activity
             android:name=".AboutActivity"
             android:exported="false"
             android:label="@string/about_label"

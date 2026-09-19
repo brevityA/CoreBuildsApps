@@ -30,6 +30,9 @@ object UpdateChecker {
     private val MANIFEST_URLS = listOf(BuildConfig.UPDATE_MANIFEST_URL)
     private const val TIMEOUT_MS = 8000
     private const val MAX_MANIFEST_BYTES = 64 * 1024
+    // Long enough to say what actually changed, short enough that the update
+    // bar stays a bar and not a changelog screen.
+    private const val MAX_HIGHLIGHTS = 6
 
     /** Outcome of a check. Never an unnamed error (§08). */
     sealed class Result {
@@ -39,7 +42,8 @@ object UpdateChecker {
             val versionCode: Int,
             val iconCount: Int,
             val apkUrl: String,
-            val apkSha256: String?
+            val apkSha256: String?,
+            val highlights: List<String> = emptyList()
         ) : Result()
 
         /** Installed build is current. */
@@ -95,6 +99,14 @@ object UpdateChecker {
                 val icons = json.optInt("iconCount", 0)
                 val apk = json.optString("apkUrl", "")
                 val sha256 = json.optString("apkSha256", "").takeIf { it.isNotBlank() }
+                // Release highlights are optional: manifests published before
+                // the field existed still parse, and a manifest without them
+                // simply leaves the update bar's bullet list hidden.
+                val highlights = json.optJSONArray("highlights")?.let { arr ->
+                    (0 until arr.length()).mapNotNull { i ->
+                        arr.optString(i, "").trim().takeIf { it.isNotEmpty() }
+                    }.take(MAX_HIGHLIGHTS)
+                } ?: emptyList()
                 require(remoteCode > 0) { "update manifest has invalid versionCode" }
                 require(icons >= 0) { "update manifest has invalid iconCount" }
                 require(apk.startsWith("https://github.com/brevityA/CoreBuildsApps/releases/download/")) {
@@ -109,7 +121,7 @@ object UpdateChecker {
                 Log.i(TAG, "installed=$installedCode remote=$remoteCode from $url")
 
                 return if (remoteCode > installedCode) {
-                    Result.Available(remoteName, remoteCode, icons, apk, sha256)
+                    Result.Available(remoteName, remoteCode, icons, apk, sha256, highlights)
                 } else {
                     Result.UpToDate(remoteName)
                 }

@@ -138,6 +138,29 @@ All notable changes to the Core Builds Icon Pack. Format follows
 
 ### Added
 
+- **Sideload round one: launcher tools, a sofa FAQ, and a what's-new bar.**
+  The enhancement proposal is committed verbatim at
+  `docs/NON_PLAYSTORE_ENHANCEMENTS.md` and triaged feature by feature against
+  the source in `docs/NON_PLAYSTORE_TRIAGE.md`; this is the first tranche of
+  it. Settings gains a LAUNCHER group — **Refresh launcher icons** re-fires the
+  detected launcher's apply contract through `ApplyIconPack`, **Launcher app
+  info** opens the system details page where a force stop clears a bitmap cache
+  re-applying cannot reach — and a HELP row into the new `FaqActivity`: four
+  read-only cards paraphrasing the docs that actually hold the knowledge
+  (`WHY_PROJECTIVY_CANT_SEE_IT`, the Projectivy override behaviour,
+  `MONET_LAUNCHER`, `ADB_SCANNING`), in the Settings chrome grammar with the
+  cards deliberately unfocusable so the D-pad never lands on a paragraph. The
+  update bar grows release highlights when `version.json` carries a
+  `highlights` array (optional field, capped at six, view gone unless non-empty
+  so older manifests render the old bar exactly), and the category chips carry
+  counts tallied from the same generated arrays that feed the grid. The
+  proposal's `killBackgroundProcesses` and `QUERY_ALL_PACKAGES` routes were
+  declined with reasons in the triage; the QR auditor, icon masking, inspector,
+  suite hub and bumper skips are queued there with what unblocks each.
+  Mirrored into Pop (same Kotlin, own resources) and Pixel Neon's parity
+  surface; the wiring gate grew a sideload-rows block covering row wiring in
+  both modules, both manifest registrations, the FAQ's single focusable and the
+  highlights gating. Mockup: `docs/app-ui-sideload-round.png`.
 - **`artemis_pad` — the Artemis mark the tester actually chose.** Artemis
   (Moonlight's noir fork, `com.limelight.noir`) shipped in 1.8.20 as
   `retro_pad`, the straight-sided shell, and the tester's verdict on the

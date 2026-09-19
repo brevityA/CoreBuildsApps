@@ -227,8 +227,15 @@ class MainActivity : AppCompatActivity() {
 
     private fun bindChips() {
         val present = all.map { it.category }.toSet()
+        // Counts are tallied from the same generated arrays that feed the
+        // grid, so a chip can never advertise a number the grid cannot back
+        // up. A hand-typed "(184)" goes stale on the next tranche; this does
+        // not.
+        val counts = all.groupingBy { it.category }.eachCount()
         val keys = mutableListOf(ALL)
-        val labels = mutableListOf(getString(R.string.chip_all))
+        val labels = mutableListOf(
+            getString(R.string.chip_count_fmt, getString(R.string.chip_all), all.size)
+        )
         // Brandmarks is not a category — it cuts across all of them — so it is
         // added by hand next to All rather than through CHIP_ORDER, and
         // applyFilter branches on it. Second position because it is the one
@@ -236,12 +243,16 @@ class MainActivity : AppCompatActivity() {
         // user is usually here for.
         if (all.any { it.bespoke }) {
             keys += BESPOKE
-            labels += getString(R.string.chip_brandmarks)
+            labels += getString(
+                R.string.chip_count_fmt,
+                getString(R.string.chip_brandmarks),
+                all.count { it.bespoke }
+            )
         }
         for ((key, label) in CHIP_ORDER) {
             if (key in present) {
                 keys += key
-                labels += label
+                labels += getString(R.string.chip_count_fmt, label, counts[key] ?: 0)
             }
         }
         chipAdapter = ChipAdapter(labels, keys, ALL) { picked ->
@@ -696,6 +707,18 @@ class MainActivity : AppCompatActivity() {
             R.string.update_available_fmt, update.versionName, update.iconCount
         )
         sub.text = getString(R.string.update_sub_download)
+        // Release highlights, when the manifest carries them: the bar becomes
+        // a what's-new card instead of a bare version number. Gone unless the
+        // list is non-empty, so older manifests leave the bar exactly as it
+        // was - the view is inside the D-pad chain's vertical rhythm and an
+        // empty bullet list would show up as a blank gap.
+        val highlights = findViewById<TextView>(R.id.update_highlights)
+        if (update.highlights.isEmpty()) {
+            highlights.visibility = View.GONE
+        } else {
+            highlights.visibility = View.VISIBLE
+            highlights.text = update.highlights.joinToString("\n") { "•  $it" }
+        }
         button.isEnabled = true
         button.text = getString(R.string.update_download, update.versionName)
         button.setOnClickListener { startDownload(update) }
