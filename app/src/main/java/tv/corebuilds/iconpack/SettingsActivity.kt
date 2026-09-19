@@ -93,6 +93,10 @@ class SettingsActivity : AppCompatActivity() {
 
         row(R.id.set_appinfo_row) { openLauncherInfo() }
 
+        row(R.id.set_audit_row) {
+            startActivity(Intent(this, AuditorActivity::class.java))
+        }
+
         row(R.id.set_faq_row) {
             startActivity(Intent(this, FaqActivity::class.java))
         }

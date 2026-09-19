@@ -95,6 +95,19 @@
         <intent>
             <action android:name="com.fede.launcher.THEME_ICONPACK" />
         </intent>
+        <!-- The on-device auditor's enumeration: intent-based visibility for
+             the two launcher categories makes every launchable package on the
+             box visible to queryIntentActivities, which is exactly the scan's
+             input - without QUERY_ALL_PACKAGES, the one permission the audit
+             refused. Same grammar as the rest of this block. -->
+        <intent>
+            <action android:name="android.intent.action.MAIN" />
+            <category android:name="android.intent.category.LEANBACK_LAUNCHER" />
+        </intent>
+        <intent>
+            <action android:name="android.intent.action.MAIN" />
+            <category android:name="android.intent.category.LAUNCHER" />
+        </intent>
     </queries>
 
     <application
@@ -221,6 +234,11 @@
             android:name=".FaqActivity"
             android:exported="false"
             android:label="@string/faq_label"
+            android:theme="@style/Theme.CoreBuilds" />
+        <activity
+            android:name=".AuditorActivity"
+            android:exported="false"
+            android:label="@string/audit_label"
             android:theme="@style/Theme.CoreBuilds" />
         <activity
             android:name=".AboutActivity"

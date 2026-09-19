@@ -48,6 +48,12 @@ Why these checks exist, one class at a time:
                      reaches for - Pop compiles the same sources against
                      its own resources, so an id missing there breaks only
                      the Pop build, quietly, after the app module passed.
+                     The auditor's block reads the <queries> span itself -
+                     the app's own intent-filter declares LEANBACK_LAUNCHER,
+                     so a whole-manifest grep would pass on the wrong
+                     occurrence while the scan came up empty on the box -
+                     and pins the generated deep-link resource in both
+                     packs plus the vendored encoder's notice entry.
 
 Usage:
     python tests/test_ui_wiring.py
@@ -195,13 +201,64 @@ def main() -> int:
     check("chip_count_fmt" in main,
           "MainActivity: category chips must carry counts tallied from the catalog arrays")
 
+    # On-device auditor: the visibility contract it scans under, the screen
+    # it scans on, and the generated deep link it encodes. The queries check
+    # reads the <queries> block itself rather than grepping the whole
+    # manifest, because the app's own intent-filter declares
+    # LEANBACK_LAUNCHER too - a grep would pass on the wrong occurrence and
+    # the scan would come up empty on API 30+ with nothing logged anywhere.
+    auditor = read(ROOT / "app" / "src" / "main" / "java" / "tv" / "corebuilds"
+                   / "iconpack" / "AuditorActivity.kt")
+    for name, manifest in (("app", app_manifest), ("pop", pop_manifest)):
+        queries = manifest.split("<queries>", 1)[1].split("</queries>", 1)[0]
+        for category in ("android.intent.category.LEANBACK_LAUNCHER",
+                         "android.intent.category.LAUNCHER"):
+            check(category in queries,
+                  f"{name} manifest: auditor visibility lost {category} in <queries>")
+        check('android:name=".AuditorActivity"' in manifest,
+              f"{name} manifest: AuditorActivity not registered")
+    for res in (ROOT / "app" / "src" / "main" / "res" / "values" / "issue_prefill.xml",
+                ROOT / "pop" / "src" / "main" / "res" / "values" / "issue_prefill.xml"):
+        check(res.is_file(), f"{res.parent.parent.name}: generated issue_prefill.xml missing")
+        if res.is_file():
+            text = read(res)
+            check('name="audit_issue_url_fmt"' in text
+                  and "%1$s" in text and "%2$s" in text and "%3$s" in text,
+                  f"{res}: audit_issue_url_fmt must carry the three positional args")
+    check("if (qrPanel.visibility == View.VISIBLE) showList() else finish()" in auditor,
+          "AuditorActivity: back must leave the QR panel before the screen")
+    check("R.string.audit_issue_url_fmt" in auditor and "URLEncoder.encode" in auditor,
+          "AuditorActivity: deep link must come from the generated fmt, URL-encoded")
+    check('assets.open("appfilter.xml")' in auditor,
+          "AuditorActivity: the diff target must be the bundled appfilter asset")
+    check("queryIntentActivities" in auditor and "itemAnimator = null" in auditor,
+          "AuditorActivity: scan via queryIntentActivities, list without item animator")
+    check("R.id.set_audit_row)" in settings_kt,
+          "SettingsActivity: audit row not wired")
+    for layout in (settings_layout, pop_settings_layout):
+        check('android:id="@+id/set_audit_row"' in layout,
+              "activity_settings.xml: missing set_audit_row")
+    for module in ("app", "pop", "pixel-neon"):
+        base = ROOT / module if module != "pixel-neon" else ROOT / "pixel-neon" / "app"
+        for lay in ("activity_auditor.xml", "item_audit.xml"):
+            check((base / "src" / "main" / "res" / "layout" / lay).is_file(),
+                  f"{module}: auditor layout {lay} missing")
+    for java in ("QrCode.java", "BitBuffer.java"):
+        check((ROOT / "app" / "src" / "main" / "java" / "io" / "nayuki"
+               / "qrcodegen" / java).is_file(),
+              f"vendored QR encoder missing {java}")
+    notices = read(ROOT / "THIRD_PARTY_NOTICES.md")
+    check("nayuki" in notices.lower(),
+          "THIRD_PARTY_NOTICES.md must name the vendored QR encoder")
+
     if problems:
         print(f"ui wiring gate: {len(problems)} problem(s)")
         for p in problems:
             print("  \u2717 " + p)
         return 1
-    print("ui wiring gate ok - 2 manifests, 5 permissions, 6 visibility entries, "
-          "wallpapers/export/preview wiring, launcher tools + FAQ + what's-new locked")
+    print("ui wiring gate ok - 2 manifests, 5 permissions, auditor visibility, "
+          "wallpapers/export/preview wiring, launcher tools + FAQ + what's-new "
+          "+ QR auditor locked")
     return 0
 
 

@@ -84,6 +84,10 @@ MIRROR_FILES = [
     "xml/file_paths.xml",
     "values/colors.xml",
     "values/themes.xml",
+    # Generated auditor deep-link fmt (tools/build_issue_prefills.py). The
+    # shared Kotlin reads R.string.audit_issue_url_fmt, so Pop needs the file
+    # even though nothing in Pop's own art references it.
+    "values/issue_prefill.xml",
     # Shared UI metrics. Layouts in MIRROR_DIRS reference @dimen/*, so Pop
     # cannot build without this file present — omitting it fails resource
     # linking on both packs' shared layouts, not just one.

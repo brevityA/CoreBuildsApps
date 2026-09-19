@@ -155,6 +155,16 @@
     <string name="faq_unmapped_body">Auto-assign needs the exact activity your box launches, and some apps ship different mobile and Leanback activities. Read the component off the device with the ADB scanning guide in the repo docs and send a mapping request; the next tranche picks it up.</string>
     <string name="chip_count_fmt">%1$s (%2$d)</string>
 
+    <!-- On-device auditor -->
+    <string name="settings_audit_title">Scan for unmapped apps</string>
+    <string name="settings_audit_sub">Lists every launchable app on this TV that has no icon in the pack yet, and draws a QR code that opens a prefilled icon request on your phone.</string>
+    <string name="audit_kicker">AUDIT</string>
+    <string name="audit_label">Unmapped apps</string>
+    <string name="audit_title">Apps without a Core Builds icon</string>
+    <string name="audit_count_fmt">%1$d launchable apps on this TV have no icon yet</string>
+    <string name="audit_empty">Every launchable app on this TV is mapped. Nothing to request.</string>
+    <string name="audit_qr_hint">Scan with your phone. The issue opens on the icon-request form with the app name, component and this TV\'s details already filled in — check them and submit.</string>
+
     <!-- About -->
     <string name="about_label">About</string>
     <string name="about_kicker">ABOUT</string>

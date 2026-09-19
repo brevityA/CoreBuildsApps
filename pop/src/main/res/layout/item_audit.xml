@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  One unmapped app in the auditor list. The row is the focus target (house
+  grammar); label over component, because the label is what the person
+  recognises on their home screen and the component is what the issue form
+  needs - both on the row so a request can be checked before it is scanned.
+-->
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="6dp"
+    android:background="@drawable/bg_card"
+    android:clickable="true"
+    android:focusable="true"
+    android:orientation="vertical"
+    android:padding="@dimen/cb_card_padding">
+
+    <TextView
+        android:id="@+id/audit_item_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/cb_ink"
+        android:textSize="@dimen/cb_text_body"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/audit_item_pkg"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:ellipsize="end"
+        android:fontFamily="monospace"
+        android:maxLines="1"
+        android:textColor="@color/cb_slate"
+        android:textSize="@dimen/cb_text_data" />
+</LinearLayout>

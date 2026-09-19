@@ -138,6 +138,31 @@ All notable changes to the Core Builds Icon Pack. Format follows
 
 ### Added
 
+- **The on-device missing-app auditor, with a QR code that prefills the
+  request.** Settings → HELP → *Scan for unmapped apps* lists every launchable
+  app on the TV that `appfilter.xml` never names — the scan needs no new
+  permission, because two intent-filter entries in `<queries>`
+  (`ACTION_MAIN` + the leanback and plain launcher categories) make every
+  launchable package visible to `queryIntentActivities`, which is the same
+  Play-safe grammar launcher detection already lives under and the reason this
+  never reaches for `QUERY_ALL_PACKAGES`. Pressing a row draws a QR code that
+  opens the icon-request issue with the app name, the exact component and a
+  device note already filled in. The deep link is generated, not typed:
+  `tools/build_issue_prefills.py` now also writes
+  `res/values/issue_prefill.xml` from the issue form (template slug, labels and
+  title prefix baked in, three positional arguments the app URL-encodes), and
+  its `--check` gate fails on drift, so a renamed form field is a CI failure
+  rather than a silently empty box on GitHub. The encoder is vendored rather
+  than hand-rolled — Nayuki's QR Code generator (Java, MIT, upstream
+  `3c6d0b3`, checksums and licence in `THIRD_PARTY_NOTICES.md`) — with
+  `QrBitmap.kt` as the wrapper: error correction M for sofa-angle photography,
+  the four-module quiet zone drawn into the bitmap so dark chrome cannot
+  swallow it, black-on-white modules. Back leaves the QR panel before it
+  leaves the screen. Mirrored into Pop and Pixel Neon's parity surface; the
+  wiring gate grew an auditor block that reads the `<queries>` span itself,
+  because the app's own intent-filter declares `LEANBACK_LAUNCHER` and a
+  whole-manifest grep would pass on the wrong occurrence. Mockup with a real
+  scannable code: `docs/app-ui-auditor.png`.
 - **Sideload round one: launcher tools, a sofa FAQ, and a what's-new bar.**
   The enhancement proposal is committed verbatim at
   `docs/NON_PLAYSTORE_ENHANCEMENTS.md` and triaged feature by feature against
