@@ -27,7 +27,8 @@
          the sheet's vertical stack (wordmark, CTA, entry rows, ALSO APPLIES TO,
          and on wallpapers the series chips and the export foot) while the grid
          takes the rest of the panel. Fixed width, so the pane - and therefore
-         the tile columns - is derived, not guessed. -->
+         the tile columns - is derived, not guessed. Measured in the normalised
+         dp box, so it is the same rail on every panel. -->
     <dimen name="cb_rail_width">300dp</dimen>
 
     <!-- Spacing rhythm. -->

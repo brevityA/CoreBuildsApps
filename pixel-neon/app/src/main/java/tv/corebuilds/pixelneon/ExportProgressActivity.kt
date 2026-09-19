@@ -5,7 +5,6 @@ import android.view.View
 import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
-import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 
@@ -27,7 +26,7 @@ import androidx.recyclerview.widget.RecyclerView
  * settings screen that's been backgrounded for minutes may be reclaimed, and
  * that's acceptable for a user-initiated, ~20–60s action.
  */
-class ExportProgressActivity : AppCompatActivity() {
+class ExportProgressActivity : TvActivity() {
 
     private lateinit var state: TextView
     private lateinit var title: TextView

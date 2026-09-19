@@ -9,7 +9,6 @@ import android.widget.EditText
 import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
-import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -20,7 +19,7 @@ import java.io.File
  * when Latestrelease/pixel-neon-version.json is newer; Download pulls the APK and
  * hands it to the system installer.
  */
-class MainActivity : AppCompatActivity() {
+class MainActivity : TvActivity() {
 
     private var target: ApplyIconPack.Launcher? = null
     private var updateChecked = false

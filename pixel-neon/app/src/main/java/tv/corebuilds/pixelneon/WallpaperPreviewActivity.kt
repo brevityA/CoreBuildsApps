@@ -12,7 +12,6 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import java.io.File
 
@@ -36,7 +35,7 @@ import java.io.File
  * A generation counter guards against stale download callbacks firing after
  * the user has already moved on.
  */
-class WallpaperPreviewActivity : AppCompatActivity() {
+class WallpaperPreviewActivity : TvActivity() {
 
     private lateinit var setButton: TextView
     private lateinit var saveButton: TextView

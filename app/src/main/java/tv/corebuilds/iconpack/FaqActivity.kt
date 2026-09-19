@@ -2,7 +2,6 @@ package tv.corebuilds.iconpack
 
 import android.os.Bundle
 import android.view.View
-import androidx.appcompat.app.AppCompatActivity
 
 /**
  * Troubleshooting and FAQ, readable from the sofa.
@@ -18,7 +17,7 @@ import androidx.appcompat.app.AppCompatActivity
  * focus strand to guard beyond the back button. The cards are not focusable
  * (nothing to press), which keeps the D-pad on header and scroll only.
  */
-class FaqActivity : AppCompatActivity() {
+class FaqActivity : TvActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         Prefs.applyChrome(this)

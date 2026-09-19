@@ -7,7 +7,6 @@ import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.appcompat.app.AppCompatActivity
 
 /**
  * The icon inspector: what the pack actually ships for one tile, and two
@@ -28,7 +27,7 @@ import androidx.appcompat.app.AppCompatActivity
  * package visible, and when the answer is no the toast says so instead of
  * bouncing off an ActivityNotFoundException.
  */
-class InspectorActivity : AppCompatActivity() {
+class InspectorActivity : TvActivity() {
 
     private lateinit var drawableName: String
 

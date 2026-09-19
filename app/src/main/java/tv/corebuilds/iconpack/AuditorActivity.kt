@@ -6,7 +6,6 @@ import android.os.Bundle
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import java.net.URLEncoder
@@ -39,7 +38,7 @@ import java.net.URLEncoder
  * wallpapers screen's selection mode uses, because a back press that abandons
  * the list along with the code wastes the scan that just failed.
  */
-class AuditorActivity : AppCompatActivity() {
+class AuditorActivity : TvActivity() {
 
     data class AuditItem(val label: String, val pkg: String, val activity: String) {
         val component: String get() = "$pkg/$activity"

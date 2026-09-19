@@ -15,7 +15,6 @@ import android.widget.EditText
 import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
-import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -39,7 +38,7 @@ import kotlin.math.max
  * in [settleFilterFocus] and nowhere else; the one other move this screen makes
  * is the deliberate one the Search key makes in [onSearchAction].
  */
-class MainActivity : AppCompatActivity() {
+class MainActivity : TvActivity() {
 
     private var target: ApplyIconPack.Launcher? = null
     private var updateChecked = false
@@ -1142,10 +1141,10 @@ class MainActivity : AppCompatActivity() {
      * The pane is what the panel leaves after the gutters, the rail and the gap
      * between them; the pitch is cb_tile_icon plus the tile's vertical padding
      * twice - the tile's real height, and the width its near-square card wants.
-     * Both come from dimens, so a 4K panel that reports a larger dp box
-     * (values-sw720dp doubles every metric) divides out to the same column
-     * count: the proportions travel, the arithmetic does not care which panel
-     * it runs on.
+     * Both come from dimens, and TvActivity normalises every panel to the
+     * 960x540dp box before this runs, so the column count is the same on a
+     * 1080p set and a 4K one: the proportions travel, the arithmetic does not
+     * care which panel it runs on.
      */
     private fun spanForScreen(): Int {
         val density = resources.displayMetrics.density

@@ -59,7 +59,6 @@ BUILDERS = [
     "tools/build_icons.py",
     "tools/build_banners.py",
     "tools/build_branding.py",
-    "tools/build_scale_variants.py",
     "tools/build_brand_preview.py",
     "tools/build_icon_review.py",
 ]

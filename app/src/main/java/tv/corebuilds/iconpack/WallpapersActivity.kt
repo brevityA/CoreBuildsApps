@@ -6,7 +6,6 @@ import android.view.View
 import android.widget.TextView
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import kotlin.math.floor
@@ -27,7 +26,7 @@ import androidx.recyclerview.widget.RecyclerView
  *
  * TV-first D-pad flow: export/back → series chips → grid.
  */
-class WallpapersActivity : AppCompatActivity() {
+class WallpapersActivity : TvActivity() {
 
     private lateinit var all: List<Wallpaper>
     private lateinit var adapter: WallpaperAdapter

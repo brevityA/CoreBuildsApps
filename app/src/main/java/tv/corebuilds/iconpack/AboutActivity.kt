@@ -6,7 +6,6 @@ import android.os.Bundle
 import android.view.View
 import android.widget.TextView
 import android.widget.Toast
-import androidx.appcompat.app.AppCompatActivity
 
 /**
  * Build facts, and the complete list of what this app sends anywhere.
@@ -24,7 +23,7 @@ import androidx.appcompat.app.AppCompatActivity
  * typed in: a hand-maintained "940 icons" goes stale on the next tranche and
  * nothing in the build would catch it.
  */
-class AboutActivity : AppCompatActivity() {
+class AboutActivity : TvActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         Prefs.applyChrome(this)

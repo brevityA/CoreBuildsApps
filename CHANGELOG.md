@@ -37,18 +37,25 @@ All notable changes to the Core Builds Icon Pack. Format follows
   band → field → chips → grid, LEFT/RIGHT crossing panes geometrically);
   Classic and Pop share the Kotlin, Pixel Neon keeps its fork and gained the
   new resource names.
-- **The UI scales to a 4K panel.** Android TV sets do not agree on the dp box
-  they report: 1080p says 960×540dp, and a 4K panel commonly says twice that,
-  which renders every dp at half the physical size — a 16sp label becomes an
-  8sp label at the same three metres. `values-sw720dp/dimens.xml` now doubles
-  every metric for exactly those panels (the qualifier matches the doubled box
-  and never the 960×540dp one), so both render the same picture: same physical
-  type, same focus floors, and the same column counts because the span
-  arithmetic divides pane width by tile pitch and both halves double.
-  `tools/build_scale_variants.py` generates the qualified file in all three
-  modules from `values/dimens.xml` (it is in `prepare_release`'s builder list)
-  and `tests/test_tv_layout_fit.py` pins it to exactly ×2 and re-runs the
-  two-pane grid budget against a 1080dp viewport.
+- **The UI renders at the same physical size on every TV panel.** Android TV
+  sets disagree about the dp box they report - 1080p says 960x540dp, 4K says
+  1280x720dp or 1920x1080dp depending on the OEM's density bucket - so a
+  dp-written layout was rendering at a different physical size on each: on the
+  doubled box every dp is half the millimetres, a 16sp label an 8sp label at
+  the same three metres. Resource qualifiers cannot fix that (they are steps,
+  wrong between steps: a 1280x720dp panel matches `sw720dp` and would wear the
+  1920dp panel's metrics, 1.5x too big), so the app normalises the box instead:
+  `TvActivity`, which every screen inherits, overrides
+  `configuration.densityDpi` in `attachBaseContext` to the density that makes
+  the panel's pixel width come out as exactly the 960x540dp canvas every layout
+  and mockup frame is drawn against - continuously exact at any panel, `sp`
+  and the accessibility font scale included, `drawable-nodpi` art laid out into
+  dp-sized boxes as before, and per-app only. Column counts fall out of it
+  invariant, since pane-over-pitch is measured in the normalised box.
+  `tests/test_tv_scale.py` pins the arithmetic against every panel report the
+  suite knows, pins every Activity to the base class, and pins the retired
+  `values-sw720dp` buckets to staying retired.
+
 - **Later, on the update bar.** The what's-new bar gains a dismiss. While it is
   up it also reclaims the header's launcher list and the ALSO APPLIES TO row,
   because on a 540dp panel the bar, the band and a full row of tiles do not all
