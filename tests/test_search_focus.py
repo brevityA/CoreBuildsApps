@@ -407,6 +407,34 @@ def test_filter_runs_before_focus_is_settled():
 # The layout half: the escape routes between field, chips and grid.
 # ---------------------------------------------------------------------------
 
+# The route below the search field, per module geometry.
+#
+# app/pop were rebuilt to the approved sheet
+# (docs/design/app-ui-apply-wallpapers.png), which gives the category chips
+# their own full-width row *between* the field and the grid — the old layout put
+# them beside the field, so DOWN from the field went straight into the results
+# and UP from the results went straight back to the field. With the chips under
+# the field, both of those edges would leap over a row the remote could then
+# never land on, so the chain now routes through it: field -> chips -> grid, and
+# back up the same way. Returning to the keyboard from the results costs one
+# more press, which is the price of the filter row being reachable at all; the
+# "lists disappeared" regression this file exists for is guarded by the
+# hidden-stop and syncFocusChain tests below, not by these particular edges.
+#
+# pixel-neon is a deliberate fork with its own copy of this screen and its own
+# side-by-side geometry, so it keeps the old routes.
+DOWN_FROM_SEARCH = {
+    "app": "@id/chip_row",
+    "pop": "@id/chip_row",
+    "pixel-neon": "@id/grid",
+}
+UP_FROM_GRID = {
+    "app": "@id/chip_row",
+    "pop": "@id/chip_row",
+    "pixel-neon": "@id/search",
+}
+
+
 def test_search_field_keeps_its_focus_routes():
     checked = 0
     for module, layout_dir in MODULES.items():
@@ -417,24 +445,27 @@ def test_search_field_keeps_its_focus_routes():
             f"{module}: the search field's imeOptions is not actionSearch, so the "
             f"keyboard offers no Search key for onSearchAction to consume"
         )
-        assert search.get(ANDROID + "nextFocusDown") == "@id/grid", (
-            f"{module}: Down from the search field no longer names the grid"
+        assert search.get(ANDROID + "nextFocusDown") == DOWN_FROM_SEARCH[module], (
+            f"{module}: Down from the search field no longer names "
+            f"{DOWN_FROM_SEARCH[module]}"
         )
         assert search.get(ANDROID + "focusable") == "true", (
             f"{module}: the search field must stay focusable for a D-pad"
         )
         grid = by_id(root, "grid")
         assert grid is not None, f"{module}: no @+id/grid"
-        assert grid.get(ANDROID + "nextFocusUp") == "@id/search", (
-            f"{module}: Up from the grid no longer names the search field, so the "
-            f"keyboard cannot be returned to once focus is in the results"
+        assert grid.get(ANDROID + "nextFocusUp") == UP_FROM_GRID[module], (
+            f"{module}: Up from the grid no longer names {UP_FROM_GRID[module]}, "
+            f"so the cursor leaves the results somewhere the layout does not "
+            f"describe"
         )
         tile_root = ET.parse(layout_dir / "item_icon.xml").getroot()
-        assert tile_root.get(ANDROID + "nextFocusUp") == "@id/search", (
-            f"{module}: item_icon.xml lost nextFocusUp=@id/search. The tile is "
-            f"inside the RecyclerView, so the reference only resolves once "
-            f"RecyclerView.focusSearch delegates to its parent — which is exactly "
-            f"the top-row case it exists for."
+        assert tile_root.get(ANDROID + "nextFocusUp") == UP_FROM_GRID[module], (
+            f"{module}: item_icon.xml's tile lost nextFocusUp="
+            f"{UP_FROM_GRID[module]}. The tile is inside the RecyclerView, so "
+            f"the reference only resolves once RecyclerView.focusSearch "
+            f"delegates to its parent — which is exactly the top-row case it "
+            f"exists for."
         )
         checked += 1
     assert checked == len(MODULES), f"only {checked} of {len(MODULES)} modules checked"
@@ -463,16 +494,49 @@ ALL_LAYOUTS = {
 CHAIN_CONTAINERS = ("update_bar", "apply_targets")
 
 
-def test_a_gone_view_is_never_focusable():
+def test_a_named_focus_stop_is_never_hidden_and_focusable():
+    """No view that something names as a nextFocus target may be GONE *and*
+    focusable in the layout.
+
+    `isFocusable()` ignores visibility, so a hidden-but-focusable stop still
+    takes the cursor when an edge names it: UP from the home screen's search
+    field followed nextFocusUp into the invisible update bar, the next UP into
+    the invisible launcher row, and from there UP/DOWN ping-ponged between two
+    views nobody can see while the chips and the grid went unreachable -
+    reported from the sofa as "the lists disappear". The same shape existed on
+    the wallpapers screen around its hidden selection bar.
+
+    Hidden views that nothing names (the export dialog's Done/Retry buttons)
+    are fine: FocusFinder's own search skips them until they are shown. It is
+    the *named* edges that have to route somewhere visible, so that is what is
+    checked here, and why MainActivity.syncFocusChain() rewrites them at the
+    moment visibility changes.
+    """
     for module, layout_dir in ALL_LAYOUTS.items():
+        for layout in sorted(layout_dir.glob("*.xml")):
+            root = ET.parse(layout).getroot()
+            by_view_id = {}
+            for element in root.iter():
+                view_id = element.get(ANDROID + "id")
+                if view_id:
+                    by_view_id[view_id.rsplit("/", 1)[-1]] = element
+            for element in root.iter():
+                for attr, target in element.attrib.items():
+                    if "nextFocus" not in attr:
+                        continue
+                    name = target.rsplit("/", 1)[-1]
+                    stop = by_view_id.get(name)
+                    if stop is None:
+                        continue
+                    if stop.get(ANDROID + "visibility") == "gone":
+                        assert stop.get(ANDROID + "focusable") != "true", (
+                            f"{module}/{layout.name}: @{name} starts hidden and "
+                            f"is focusable=\"true\" while something names it as "
+                            f"a focus stop. Android hands the cursor to it "
+                            f"anyway, so the ring parks on an invisible view "
+                            f"and the screen reads as dead"
+                        )
         root = ET.parse(layout_dir / "activity_main.xml").getroot()
-        for element in root.iter():
-            if element.get(ANDROID + "visibility") == "gone":
-                assert element.get(ANDROID + "focusable") != "true", (
-                    f"{module}: a view declared gone is also focusable=\"true\". "
-                    f"Android hands the cursor to it anyway, so the ring parks "
-                    f"on an invisible view and the screen reads as dead"
-                )
         for view_id in CHAIN_CONTAINERS:
             view = by_id(root, view_id)
             assert view is not None, f"{module}: no @+id/{view_id}"

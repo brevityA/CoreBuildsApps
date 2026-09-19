@@ -51,7 +51,7 @@ class WallpapersActivity : AppCompatActivity() {
         selectionBar = findViewById(R.id.wp_selection_bar)
         selectionCount = findViewById(R.id.wp_selection_count)
         exportSelected = findViewById(R.id.wp_export_selected)
-        count.text = getString(R.string.wp_count_fmt, all.size)
+        count.text = getString(R.string.wp_sub_fmt, all.size)
 
         adapter = WallpaperAdapter(all) { item ->
             val visible = adapter.currentItems()
@@ -159,8 +159,14 @@ class WallpapersActivity : AppCompatActivity() {
         count.text = if (inMode) {
             getString(R.string.wp_selected_fmt, n)
         } else {
-            getString(R.string.wp_count_fmt, all.size)
+            getString(R.string.wp_sub_fmt, all.size)
         }
+        // The selection bar is a stop in the chain only while it is on screen;
+        // naming it while hidden would park the cursor on an invisible row, the
+        // same hole MainActivity.syncFocusChain closes on the home screen.
+        val barStop = if (inMode) R.id.wp_select_all else R.id.wp_chips
+        findViewById<View>(R.id.wp_back).nextFocusDownId = barStop
+        findViewById<View>(R.id.wp_chips).nextFocusUpId = barStop
     }
 
     private fun bindChips() {
@@ -213,9 +219,10 @@ class WallpapersActivity : AppCompatActivity() {
         )
     }
 
+    /** Three thumb columns on a 1080p panel, the sheet's grid. */
     private fun spanForScreen(): Int {
         val dp = resources.configuration.screenWidthDp
-        return (dp / 220).coerceIn(3, 6)
+        return (dp / 320).coerceIn(2, 4)
     }
 
     private fun toast(msg: String) =

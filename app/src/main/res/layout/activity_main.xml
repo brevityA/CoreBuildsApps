@@ -1,13 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-  TV-first: no NestedScrollView wrapping the grid. D-pad moves
-  apply → chips → search → tiles. Brand Guide §05 night chrome.
+  TV-first catalogue, laid out to the approved design sheet
+  (docs/design/app-ui-apply-wallpapers.png): cyan caps wordmark and the
+  icon/component count on the left, the apply CTA with its launcher list on the
+  right, then the three entry rows (Wallpapers, Settings, About) as full-width
+  cards, the ALSO APPLIES TO launcher chips, a full-width search field, the
+  category chips and the glyph grid. One vertical D-pad chain top to bottom;
+  the grid is the only scroller and the only weighted child, so the chrome's
+  fixed height is what a 540dp TV viewport gets to spend.
 
   Metrics come from values/dimens.xml so density and small-panel overrides have
-  one home. Titles are sans, not serif: the pack's own identity is monoline and
-  technical, and a Times-class serif was the one place the app read as a
-  different product. Nothing renders below cb_text_kicker (12sp) — a TV is read
-  at ~3m.
+  one home. Nothing renders below cb_text_kicker (12sp) - a TV is read at ~3m.
 -->
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
@@ -17,9 +20,10 @@
     android:background="@color/cb_night"
     android:paddingStart="@dimen/cb_gutter_side"
     android:paddingEnd="@dimen/cb_gutter_side"
-    android:paddingTop="@dimen/cb_gutter_top"
-    android:paddingBottom="@dimen/cb_gutter_bottom">
+    android:paddingTop="@dimen/cb_gutter_top_tight"
+    android:paddingBottom="@dimen/cb_gutter_bottom_tight">
 
+    <!-- HEADER: wordmark + count left, apply CTA + launcher list right. -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -36,26 +40,11 @@
                 android:id="@+id/kicker"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="@drawable/bg_chip"
                 android:fontFamily="monospace"
-                android:paddingStart="@dimen/cb_space_sm"
-                android:paddingEnd="@dimen/cb_space_sm"
-                android:paddingTop="7dp"
-                android:paddingBottom="7dp"
                 android:letterSpacing="0.18"
                 android:text="@string/kicker"
                 android:textColor="@color/cb_signal_cyan"
-                android:textSize="@dimen/cb_text_kicker"
-                android:textStyle="bold" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/cb_space_md"
-                android:letterSpacing="-0.025"
-                android:text="@string/app_name"
-                android:textColor="@color/cb_ink"
-                android:textSize="@dimen/cb_text_display"
+                android:textSize="@dimen/cb_text_label"
                 android:textStyle="bold" />
 
             <TextView
@@ -85,7 +74,7 @@
                 android:background="@drawable/bg_cta"
                 android:focusable="true"
                 android:focusableInTouchMode="true"
-                android:nextFocusDown="@id/wallpapers_entry"
+                android:nextFocusDown="@id/update_bar"
                 android:clickable="true"
                 android:paddingStart="@dimen/cb_space_lg"
                 android:paddingEnd="@dimen/cb_space_lg"
@@ -96,6 +85,8 @@
                 android:textSize="@dimen/cb_text_body"
                 android:textStyle="bold" />
 
+            <!-- The sheet puts the detected launchers under the CTA as a plain
+                 list, not a sentence: "Projectivy - Launchchair - Nova". -->
             <TextView
                 android:id="@+id/apply_sub"
                 android:layout_width="wrap_content"
@@ -107,149 +98,40 @@
                 android:text="@string/cta_sub"
                 android:textColor="@color/cb_slate"
                 android:textSize="@dimen/cb_text_data" />
-
-            <!-- Wallpapers. Title on the button, count underneath: the old
-                 single label put a whole sentence on the affordance. -->
-            <LinearLayout
-                android:id="@+id/wallpapers_group"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/cb_space_sm"
-                android:gravity="end"
-                android:orientation="vertical">
-
-                <TextView
-                    android:id="@+id/wallpapers_entry"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:minWidth="@dimen/cb_button_min_width"
-                    android:minHeight="@dimen/cb_target_min"
-                    android:gravity="center"
-                    android:background="@drawable/bg_ghost"
-                    android:clickable="true"
-                    android:focusable="true"
-                    android:focusableInTouchMode="true"
-                    android:nextFocusUp="@id/apply_button"
-                    android:nextFocusDown="@id/settings_entry"
-                    android:paddingStart="@dimen/cb_space_lg"
-                    android:paddingEnd="@dimen/cb_space_lg"
-                    android:paddingTop="@dimen/cb_space_sm"
-                    android:paddingBottom="@dimen/cb_space_sm"
-                    android:text="@string/wp_entry"
-                    android:textColor="@color/cb_ink"
-                    android:textSize="@dimen/cb_text_body"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:id="@+id/wallpapers_entry_sub"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="6dp"
-                    android:textColor="@color/cb_slate"
-                    android:textSize="@dimen/cb_text_data" />
-
-                <!-- Settings and About sit inside the vertical chain rather
-                     than in a corner: an overflow menu is a phone pattern, and
-                     a corner affordance on a TV costs a diagonal the D-pad
-                     cannot make. Down from wallpapers lands here, down from
-                     here continues to apply_targets, so the existing chain is
-                     extended by one stop rather than rerouted. -->
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/cb_space_sm"
-                    android:orientation="horizontal">
-
-                    <TextView
-                        android:id="@+id/settings_entry"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:minHeight="@dimen/cb_target_min"
-                        android:background="@drawable/bg_ghost"
-                        android:clickable="true"
-                        android:focusable="true"
-                        android:gravity="center"
-                        android:nextFocusUp="@id/wallpapers_entry"
-                        android:nextFocusDown="@id/apply_targets"
-                        android:nextFocusRight="@id/about_entry"
-                        android:paddingStart="@dimen/cb_space_md"
-                        android:paddingEnd="@dimen/cb_space_md"
-                        android:paddingTop="@dimen/cb_space_xs"
-                        android:paddingBottom="@dimen/cb_space_xs"
-                        android:text="@string/settings_label"
-                        android:textColor="@color/cb_ink"
-                        android:textSize="@dimen/cb_text_label" />
-
-                    <TextView
-                        android:id="@+id/about_entry"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="@dimen/cb_space_xs"
-                        android:minHeight="@dimen/cb_target_min"
-                        android:background="@drawable/bg_ghost"
-                        android:clickable="true"
-                        android:focusable="true"
-                        android:gravity="center"
-                        android:nextFocusUp="@id/wallpapers_entry"
-                        android:nextFocusDown="@id/apply_targets"
-                        android:nextFocusLeft="@id/settings_entry"
-                        android:paddingStart="@dimen/cb_space_md"
-                        android:paddingEnd="@dimen/cb_space_md"
-                        android:paddingTop="@dimen/cb_space_xs"
-                        android:paddingBottom="@dimen/cb_space_xs"
-                        android:text="@string/about_label"
-                        android:textColor="@color/cb_ink"
-                        android:textSize="@dimen/cb_text_label" />
-                </LinearLayout>
-            </LinearLayout>
         </LinearLayout>
     </LinearLayout>
 
-    <!-- The vertical chain runs THROUGH apply_targets and update_bar, not
-         around them: pointing wallpapers_entry straight at chip_row is what
-         made both unreachable by remote. Both containers are GONE unless the
-         Kotlin shows them, and a GONE view that is still focusable is a hole
-         in the D-pad chain rather than a stop in it: Android hands the cursor
-         to it anyway (isFocusable() ignores visibility), so UP from the search
-         field parked the ring on an invisible bar and the next UP on the
-         invisible target row, after which UP/DOWN ping-ponged between two
-         views nobody can see and the chips and grid looked dead. Both are
-         therefore focusable="false" here, and MainActivity.syncFocusChain()
-         rewrites the chain's nextFocus ids to the nearest VISIBLE stop every
-         time it toggles either container - the chain is explicit in code
-         instead of delegated to whatever FocusFinder does with a hidden view,
-         which is not behaviour any version of this app should depend on.
+    <!-- The vertical chain runs top to bottom in screen order: apply_button ->
+         update_bar -> wallpapers_entry -> settings_entry -> about_entry ->
+         apply_targets -> search -> chip_row -> grid. update_bar and
+         apply_targets are GONE unless something shows them, and a GONE view
+         that is focusable still takes the cursor (isFocusable() ignores
+         visibility): UP from the search field used to park the ring on the
+         invisible bar and the next UP on the invisible target row, after which
+         UP/DOWN ping-ponged between two views nobody can see and the chips and
+         grid read as dead. Both are focusable="false" here so a hidden one can
+         never hold the cursor, and MainActivity.syncFocusChain() rewrites every
+         edge that routes through them to the nearest VISIBLE stop at the moment
+         their visibility changes - the chain is explicit in code instead of
+         delegated to whatever FocusFinder does with a hidden view.
          afterDescendants stays: when a container IS shown, focus entering it
          lands on its chip / button rather than on the container itself. -->
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/apply_targets"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/cb_space_sm"
-        android:clipToPadding="false"
-        android:descendantFocusability="afterDescendants"
-        android:focusable="false"
-        android:nextFocusUp="@id/wallpapers_entry"
-        android:nextFocusDown="@id/update_bar"
-        android:orientation="horizontal"
-        android:visibility="gone" />
-
     <LinearLayout
         android:id="@+id/update_bar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/cb_space_md"
+        android:layout_marginTop="@dimen/cb_space_xs"
         android:background="@drawable/bg_update"
         android:descendantFocusability="afterDescendants"
         android:focusable="false"
         android:gravity="center_vertical"
-        android:nextFocusUp="@id/apply_targets"
-        android:nextFocusDown="@id/chip_row"
+        android:nextFocusUp="@id/apply_button"
+        android:nextFocusDown="@id/wallpapers_entry"
         android:orientation="horizontal"
         android:paddingStart="@dimen/cb_space_md"
         android:paddingEnd="@dimen/cb_space_md"
-        android:paddingTop="@dimen/cb_space_md"
-        android:paddingBottom="@dimen/cb_space_md"
+        android:paddingTop="@dimen/cb_space_xs"
+        android:paddingBottom="@dimen/cb_space_xs"
         android:visibility="gone">
 
         <LinearLayout
@@ -268,26 +150,37 @@
 
             <TextView
                 android:id="@+id/update_sub"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="3dp"
-                android:lineSpacingExtra="2dp"
+                android:ellipsize="end"
+                android:maxLines="1"
                 android:text="@string/update_sub_download"
                 android:textColor="@color/cb_slate"
                 android:textSize="@dimen/cb_text_data" />
 
             <!--
-                Release highlights from version.json, one bullet per line.
-                Gone unless the manifest actually carries them: an empty
-                bullet list would render as a blank gap inside the bar, and
-                the bar's height is on the D-pad chain's vertical rhythm.
+                The first release highlight from version.json, one line,
+                ellipsised. Gone unless the manifest carries highlights, and
+                mutually exclusive with update_sub: MainActivity shows one or
+                the other, never both.
+
+                That is a height rule, not a styling one. This bar is fixed
+                chrome on a screen whose grid is the weighted remainder of
+                540dp, and the full bullet list (version.json currently carries
+                eight) is ~160dp on its own - shown in full it pushed the grid
+                to zero height, which is the "lists disappeared" symptom with a
+                network callback as the trigger. One line keeps the bar at
+                ~61dp, and the whole list is on the release page the Download
+                button is fetching from.
             -->
             <TextView
                 android:id="@+id/update_highlights"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="6dp"
-                android:lineSpacingExtra="3dp"
+                android:ellipsize="end"
+                android:maxLines="1"
                 android:textColor="@color/cb_ink"
                 android:textSize="@dimen/cb_text_data"
                 android:visibility="gone" />
@@ -303,14 +196,40 @@
             android:background="@drawable/bg_cta"
             android:clickable="true"
             android:focusable="true"
-            android:nextFocusUp="@id/apply_targets"
-            android:nextFocusDown="@id/chip_row"
+            android:nextFocusUp="@id/apply_button"
+            android:nextFocusDown="@id/wallpapers_entry"
             android:paddingStart="@dimen/cb_space_lg"
             android:paddingEnd="@dimen/cb_space_lg"
             android:paddingTop="@dimen/cb_space_sm"
             android:paddingBottom="@dimen/cb_space_sm"
             android:text="@string/update_download"
             android:textColor="@color/cb_cta_ink"
+            android:textSize="@dimen/cb_text_body"
+            android:textStyle="bold" />
+
+        <!-- Dismiss for this session. Not decoration: while the bar is up it
+             also hides the header's launcher list and the ALSO APPLIES TO band
+             (see showUpdateAvailable), because on a 540dp panel the bar, the
+             band and a full row of tiles do not all fit, and the tiles are the
+             screen. This is the press that gives them back. -->
+        <TextView
+            android:id="@+id/update_later"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:minHeight="@dimen/cb_target_min"
+            android:gravity="center"
+            android:layout_marginStart="@dimen/cb_space_sm"
+            android:background="@drawable/bg_ghost"
+            android:clickable="true"
+            android:focusable="true"
+            android:nextFocusUp="@id/apply_button"
+            android:nextFocusDown="@id/wallpapers_entry"
+            android:paddingStart="@dimen/cb_space_lg"
+            android:paddingEnd="@dimen/cb_space_lg"
+            android:paddingTop="@dimen/cb_space_sm"
+            android:paddingBottom="@dimen/cb_space_sm"
+            android:text="@string/update_later"
+            android:textColor="@color/cb_ink"
             android:textSize="@dimen/cb_text_body"
             android:textStyle="bold" />
     </LinearLayout>
@@ -325,48 +244,225 @@
         android:textSize="@dimen/cb_text_label"
         android:visibility="gone" />
 
-    <!-- Chips and search share a row: both are filter controls, and stacking
-         them cost a full grid row of vertical space on a 1080p panel. -->
+    <!-- THREE ENTRY ROWS: Wallpapers, Settings, About - the sheet's stack of
+         full-width cards, in the sheet's order, with the sheet's copy. What
+         differs is the row's inside: the sheet draws title over subtitle, which
+         costs ~68dp a row, and three of them left the grid 34dp of a 540dp
+         panel - less than a quarter of one tile, so the screen showed chrome and
+         a cropped sliver of artwork. Title and subtitle therefore share the
+         row's single 48dp line, the subtitle right-aligned in slate at the far
+         end, the standard TV list-row shape. Same three rows, same order, same
+         words; the grid gets a full row of tiles back.
+
+         The group wrapper is what icon-picker mode hides in one go. -->
     <LinearLayout
+        android:id="@+id/wallpapers_group"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/cb_space_lg"
+        android:layout_marginTop="@dimen/cb_space_xs"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:id="@+id/wallpapers_entry"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/bg_card"
+            android:clickable="true"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            android:gravity="center_vertical"
+            android:minHeight="@dimen/cb_target_min"
+            android:nextFocusUp="@id/update_bar"
+            android:nextFocusDown="@id/settings_entry"
+            android:orientation="horizontal"
+            android:paddingStart="@dimen/cb_card_padding"
+            android:paddingEnd="@dimen/cb_card_padding"
+            android:paddingTop="@dimen/cb_space_sm"
+            android:paddingBottom="@dimen/cb_space_sm">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/wp_entry"
+                android:textColor="@color/cb_ink"
+                android:textSize="@dimen/cb_text_body"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/wallpapers_entry_sub"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginStart="@dimen/cb_space_md"
+                android:ellipsize="end"
+                android:gravity="end|center_vertical"
+                android:maxLines="1"
+                
+                android:textColor="@color/cb_slate"
+                android:textSize="@dimen/cb_text_data" />
+        </LinearLayout>
+        <LinearLayout
+            android:id="@+id/settings_entry"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/cb_space_xs"
+            android:background="@drawable/bg_card"
+            android:clickable="true"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            android:gravity="center_vertical"
+            android:minHeight="@dimen/cb_target_min"
+            android:nextFocusUp="@id/wallpapers_entry"
+            android:nextFocusDown="@id/about_entry"
+            android:orientation="horizontal"
+            android:paddingStart="@dimen/cb_card_padding"
+            android:paddingEnd="@dimen/cb_card_padding"
+            android:paddingTop="@dimen/cb_space_sm"
+            android:paddingBottom="@dimen/cb_space_sm">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/settings_label"
+                android:textColor="@color/cb_ink"
+                android:textSize="@dimen/cb_text_body"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginStart="@dimen/cb_space_md"
+                android:ellipsize="end"
+                android:gravity="end|center_vertical"
+                android:maxLines="1"
+                android:text="@string/settings_entry_sub"
+                android:textColor="@color/cb_slate"
+                android:textSize="@dimen/cb_text_data" />
+        </LinearLayout>
+        <LinearLayout
+            android:id="@+id/about_entry"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/cb_space_xs"
+            android:background="@drawable/bg_card"
+            android:clickable="true"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            android:gravity="center_vertical"
+            android:minHeight="@dimen/cb_target_min"
+            android:nextFocusUp="@id/settings_entry"
+            android:nextFocusDown="@id/apply_targets"
+            android:orientation="horizontal"
+            android:paddingStart="@dimen/cb_card_padding"
+            android:paddingEnd="@dimen/cb_card_padding"
+            android:paddingTop="@dimen/cb_space_sm"
+            android:paddingBottom="@dimen/cb_space_sm">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/about_label"
+                android:textColor="@color/cb_ink"
+                android:textSize="@dimen/cb_text_body"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/about_entry_sub"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginStart="@dimen/cb_space_md"
+                android:ellipsize="end"
+                android:gravity="end|center_vertical"
+                android:maxLines="1"
+                
+                android:textColor="@color/cb_slate"
+                android:textSize="@dimen/cb_text_data" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <!-- ALSO APPLIES TO: the sheet's kicker with the extra detected launchers as
+         plain chips. Kicker and chips share one line here for the same reason
+         the rows do - stacked, the band costs 83dp and the grid loses its last
+         visible row on any TV with a second launcher installed. The label still
+         reads as the row's kicker.
+
+         Gone as a unit with nothing to show: one launcher installed means no
+         "also", and icon-picker mode puts the banner/square shape chips in this
+         same row with picker_hint as their label instead. focusable="false" so
+         the hidden band can never hold the cursor - see the chain comment above
+         update_bar - and afterDescendants on the list so focus entering a shown
+         band lands on its first chip. -->
+    <LinearLayout
+        android:id="@+id/apply_targets_band"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/cb_space_xs"
+        android:focusable="false"
         android:gravity="center_vertical"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:visibility="gone">
+
+        <TextView
+            android:id="@+id/apply_targets_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/cb_space_md"
+            android:fontFamily="monospace"
+            android:letterSpacing="0.18"
+            android:text="@string/cta_also_applies"
+            android:textColor="@color/cb_signal_cyan"
+            android:textSize="@dimen/cb_text_kicker"
+            android:textStyle="bold" />
 
         <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/chip_row"
+            android:id="@+id/apply_targets"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:clipToPadding="false"
-            android:nextFocusUp="@id/update_bar"
-            android:nextFocusDown="@id/grid"
+            android:descendantFocusability="afterDescendants"
+            android:focusable="false"
+            android:nextFocusUp="@id/about_entry"
+            android:nextFocusDown="@id/search"
             android:orientation="horizontal" />
-
-        <EditText
-            android:id="@+id/search"
-            android:layout_width="400dp"
-            android:layout_height="wrap_content"
-            android:minHeight="@dimen/cb_target_min"
-            android:layout_marginStart="@dimen/cb_space_md"
-            android:background="@drawable/bg_search"
-            android:focusable="true"
-            android:focusableInTouchMode="true"
-            android:hint="@string/search_hint"
-            android:imeOptions="actionSearch"
-            android:importantForAutofill="no"
-            android:inputType="text"
-            android:nextFocusUp="@id/update_bar"
-            android:nextFocusDown="@id/grid"
-            android:paddingStart="@dimen/cb_space_md"
-            android:paddingEnd="@dimen/cb_space_md"
-            android:paddingTop="@dimen/cb_space_sm"
-            android:paddingBottom="@dimen/cb_space_sm"
-            android:textColor="@color/cb_ink"
-            android:textColorHint="@color/cb_slate"
-            android:textSize="@dimen/cb_text_label" />
     </LinearLayout>
+
+    <!-- Search, full width, then the category chips: both are filter controls
+         and the sheet stacks them in that order. -->
+    <EditText
+        android:id="@+id/search"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:minHeight="@dimen/cb_target_min"
+        android:layout_marginTop="@dimen/cb_space_xs"
+        android:background="@drawable/bg_search"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        android:hint="@string/search_hint"
+        android:imeOptions="actionSearch"
+        android:importantForAutofill="no"
+        android:inputType="text"
+        android:nextFocusUp="@id/apply_targets"
+        android:nextFocusDown="@id/chip_row"
+        android:paddingStart="@dimen/cb_space_md"
+        android:paddingEnd="@dimen/cb_space_md"
+        android:paddingTop="@dimen/cb_space_sm"
+        android:paddingBottom="@dimen/cb_space_sm"
+        android:textColor="@color/cb_ink"
+        android:textColorHint="@color/cb_slate"
+        android:textSize="@dimen/cb_text_label" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/chip_row"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/cb_space_xs"
+        android:clipToPadding="false"
+        android:nextFocusUp="@id/search"
+        android:nextFocusDown="@id/grid"
+        android:orientation="horizontal" />
 
     <!-- No-results state. Without this a filter with no match renders an empty
          grid and gives the user nothing to undo. -->
@@ -453,5 +549,5 @@
         android:layout_marginTop="@dimen/cb_space_md"
         android:layout_weight="1"
         android:clipToPadding="false"
-        android:nextFocusUp="@id/search" />
+        android:nextFocusUp="@id/chip_row" />
 </LinearLayout>

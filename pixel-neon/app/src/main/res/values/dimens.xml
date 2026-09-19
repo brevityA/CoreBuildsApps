@@ -56,6 +56,13 @@
 
     <!-- Minimum touch / D-pad target. Material floor. -->
     <dimen name="cb_target_min">48dp</dimen>
+    <!-- Glyph edge of one catalogue tile (shared item_icon.xml). -->
+    <dimen name="cb_tile_icon">128dp</dimen>
+    <!-- Shared-layout metrics (app activity_main.xml uses the tight pair so its
+         grid keeps a full row of tiles on a 540dp panel). Pixel Neon keeps the
+         house gutters here; the names only need to resolve. -->
+    <dimen name="cb_gutter_top_tight">24dp</dimen>
+    <dimen name="cb_gutter_bottom_tight">12dp</dimen>
 
     <!-- Stacked action buttons share a minimum width so they align as a column
          instead of jagging to their text length. -->

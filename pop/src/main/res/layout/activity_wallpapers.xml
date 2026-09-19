@@ -1,7 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Wallpapers browser. Same night chrome, kicker and title treatment as the
-     main screen so the two surfaces read as one app (Brand Guide §05).
-     Metrics come from values/dimens.xml. -->
+<!--
+  Wallpapers browser, laid out to the approved design sheet
+  (docs/design/app-ui-apply-wallpapers.png, right panel): cyan caps title with
+  the wall count and the "series chips filter the grid" line under it, series
+  chips, a three-column thumb grid with the name under each thumb, and the
+  export affordance at the foot of the screen as a ghost pill with its
+  explanatory paragraph - not in the header, where it competed with Back.
+
+  Selection mode (long-press) still raises its own bar under the header; that is
+  a mode, not chrome, and the sheet does not depict it.
+-->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -27,26 +35,11 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="@drawable/bg_chip"
                 android:fontFamily="monospace"
                 android:letterSpacing="0.18"
-                android:paddingStart="@dimen/cb_space_sm"
-                android:paddingTop="7dp"
-                android:paddingEnd="@dimen/cb_space_sm"
-                android:paddingBottom="7dp"
                 android:text="@string/wp_kicker"
                 android:textColor="@color/cb_signal_cyan"
-                android:textSize="@dimen/cb_text_kicker"
-                android:textStyle="bold" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/cb_space_md"
-                android:letterSpacing="-0.025"
-                android:text="@string/wp_title"
-                android:textColor="@color/cb_ink"
-                android:textSize="@dimen/cb_text_display"
+                android:textSize="@dimen/cb_text_label"
                 android:textStyle="bold" />
 
             <TextView
@@ -60,56 +53,26 @@
                 android:textSize="@dimen/cb_text_data" />
         </LinearLayout>
 
-        <LinearLayout
+        <TextView
+            android:id="@+id/wp_back"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:gravity="end"
-            android:orientation="vertical">
-
-            <TextView
-                android:id="@+id/wp_export"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:minWidth="@dimen/cb_button_min_width"
-                android:minHeight="@dimen/cb_target_min"
-                android:gravity="center"
-                android:background="@drawable/bg_cta"
-                android:clickable="true"
-                android:focusable="true"
-                android:focusableInTouchMode="true"
-                android:nextFocusDown="@id/wp_back"
-                android:paddingStart="@dimen/cb_space_lg"
-                android:paddingTop="@dimen/cb_space_sm"
-                android:paddingEnd="@dimen/cb_space_lg"
-                android:paddingBottom="@dimen/cb_space_sm"
-                android:text="@string/wp_export"
-                android:textColor="@color/cb_cta_ink"
-                android:textSize="@dimen/cb_text_body"
-                android:textStyle="bold" />
-
-            <TextView
-                android:id="@+id/wp_back"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/cb_space_xs"
-                android:minWidth="@dimen/cb_button_min_width"
-                android:minHeight="@dimen/cb_target_min"
-                android:gravity="center"
-                android:background="@drawable/bg_ghost"
-                android:clickable="true"
-                android:focusable="true"
-                android:focusableInTouchMode="true"
-                android:nextFocusUp="@id/wp_export"
-                android:nextFocusDown="@id/wp_selection_bar"
-                android:paddingStart="@dimen/cb_space_lg"
-                android:paddingTop="@dimen/cb_space_sm"
-                android:paddingEnd="@dimen/cb_space_lg"
-                android:paddingBottom="@dimen/cb_space_sm"
-                android:text="@string/wp_back"
-                android:textColor="@color/cb_slate"
-                android:textSize="@dimen/cb_text_body"
-                android:textStyle="bold" />
-        </LinearLayout>
+            android:minWidth="@dimen/cb_button_min_width"
+            android:minHeight="@dimen/cb_target_min"
+            android:gravity="center"
+            android:background="@drawable/bg_ghost"
+            android:clickable="true"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            android:nextFocusDown="@id/wp_selection_bar"
+            android:paddingStart="@dimen/cb_space_lg"
+            android:paddingTop="@dimen/cb_space_sm"
+            android:paddingEnd="@dimen/cb_space_lg"
+            android:paddingBottom="@dimen/cb_space_sm"
+            android:text="@string/wp_back"
+            android:textColor="@color/cb_ink"
+            android:textSize="@dimen/cb_text_body"
+            android:textStyle="bold" />
     </LinearLayout>
 
     <!-- Contextual selection bar: hidden until the user long-presses a tile.
@@ -120,7 +83,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/cb_space_sm"
         android:descendantFocusability="afterDescendants"
-        android:focusable="true"
+        android:focusable="false"
         android:gravity="center_vertical"
         android:nextFocusUp="@id/wp_back"
         android:nextFocusDown="@id/wp_chips"
@@ -212,15 +175,6 @@
         android:nextFocusDown="@id/wp_grid"
         android:orientation="horizontal" />
 
-    <TextView
-        android:id="@+id/wp_hint"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/cb_space_xs"
-        android:text="@string/wp_hint"
-        android:textColor="@color/cb_signal_cyan"
-        android:textSize="@dimen/cb_text_label" />
-
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/wp_grid"
         android:layout_width="match_parent"
@@ -228,5 +182,42 @@
         android:layout_marginTop="@dimen/cb_space_sm"
         android:layout_weight="1"
         android:clipToPadding="false"
-        android:nextFocusUp="@id/wp_chips" />
+        android:nextFocusUp="@id/wp_chips"
+        android:nextFocusDown="@id/wp_export" />
+
+    <!-- The sheet's foot: the export affordance and the paragraph that says
+         what it is for, under the grid rather than in the header. -->
+    <TextView
+        android:id="@+id/wp_export"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:minHeight="@dimen/cb_target_min"
+        android:layout_marginTop="@dimen/cb_space_sm"
+        android:background="@drawable/bg_ghost"
+        android:clickable="true"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        android:gravity="center"
+        android:nextFocusUp="@id/wp_grid"
+        android:paddingStart="@dimen/cb_space_lg"
+        android:paddingTop="@dimen/cb_space_sm"
+        android:paddingEnd="@dimen/cb_space_lg"
+        android:paddingBottom="@dimen/cb_space_sm"
+        android:text="@string/wp_export"
+        android:textAllCaps="true"
+        android:letterSpacing="0.06"
+        android:textColor="@color/cb_signal_cyan"
+        android:textSize="@dimen/cb_text_label"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/wp_export_sub"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/cb_space_xs"
+        android:lineSpacingExtra="3dp"
+        android:maxWidth="620dp"
+        android:text="@string/wp_export_sub"
+        android:textColor="@color/cb_slate"
+        android:textSize="@dimen/cb_text_data" />
 </LinearLayout>

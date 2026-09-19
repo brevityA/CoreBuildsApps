@@ -132,9 +132,19 @@ def focus_chain_gaps(path: Path) -> list[str]:
     conditionally-visible view sits between two views whose chain names each
     other directly, the remote can never land on it — this is what made the
     wallpapers button, the update button, the 'Also <launcher>' row and the
-    wallpaper selection bar unreachable. FocusFinder follows a GONE target's
-    own nextFocus in the same direction, so the fix is always to route the
-    chain *through* such a view rather than around it.
+    wallpaper selection bar unreachable.
+
+    The chain therefore names every stop between two neighbours, including the
+    conditional ones. What FocusFinder does with a conditional stop that is
+    currently hidden is settled, and it is not the folklore this file used to
+    repeat ("it follows the GONE target's own nextFocus"): user-specified
+    targets are checked for `isFocusable() && getVisibility() == VISIBLE`, so a
+    hidden stop is rejected and the search falls back to geometry, which finds
+    the nearest visible view. Naming a hidden stop is therefore safe, while
+    naming a hidden *focusable* stop is not — see
+    tests/test_search_focus.py::test_a_named_focus_stop_is_never_hidden_and_focusable.
+    Where the fallback is not good enough, code rewrites the edges at the moment
+    visibility changes (MainActivity.syncFocusChain).
     """
     if path.name.startswith("item_"):
         return []  # RecyclerView row templates; the list owns their focus

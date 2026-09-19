@@ -6,7 +6,52 @@ All notable changes to the Core Builds Icon Pack. Format follows
 
 ## [Unreleased]
 
+### Added
+
+- **The app now wears its design sheets.** The catalogue and the wallpapers
+  browser are rebuilt to the approved sheets, which live again at
+  `docs/design/app-ui-*.png` as the spec — the generated frames in `docs/` are
+  the as-built truth, not the design. Home screen, in the sheet's order: cyan
+  caps wordmark with the pack's two counts on the left ("943 icons - 1765
+  components", the second read off `appfilter.xml` at launch), the Apply CTA
+  with the detected launchers listed under it on the right, three full-width
+  entry rows (Wallpapers, Settings, About) with what each holds in slate at the
+  row's right end, an ALSO APPLIES TO kicker with the other installed launchers
+  as plain chips, a full-width search field whose hint carries the catalogue
+  size, the category chips, and a five-column grid of glyph-only tiles — the
+  label under each tile is gone, the name lives in the inspector and in the
+  tile's content description. Wallpapers: the count line reads "84 walls -
+  series chips filter the grid", the series chips sit over three columns of
+  named thumbs, and the export affordance left the header for the foot of the
+  screen, a ghost pill over the paragraph that says what it does (Monet rotates
+  `Pictures/CoreBuilds`). Two things the sheet's portrait panel cannot say about
+  a 16:9 TV, decided here and drawn in the frames: the rows put title and
+  subtitle on one 48dp line, and the tiles are 76dp, because stacked rows cost
+  ~68dp each and the sheet's chrome left the grid 34dp of a 540dp panel — less
+  than a quarter of one tile. As rebuilt the chrome costs ~445dp and the grid
+  keeps one full row plus the sliver of the next that says "scroll", in every
+  state the screen has. `MainActivity.syncFocusChain()` was rewritten for the
+  new order (rows → band → field → chips → grid); Classic and Pop share the
+  Kotlin, Pixel Neon keeps its fork and gained the new resource names.
+- **Later, on the update bar.** The what's-new bar gains a dismiss. While it is
+  up it also reclaims the header's launcher list and the ALSO APPLIES TO row,
+  because on a 540dp panel the bar, the band and a full row of tiles do not all
+  fit and the tiles are the screen; Later gives the two rows back for the
+  session. The check still runs and `pendingUpdate` still stands, so About and
+  Settings keep reporting the update and Download is one screen away.
+
 ### Fixed
+
+- **A pending update could collapse the catalogue to chrome.** The bar stacked
+  every highlight in `version.json` — eight at present, ~160dp of bullets —
+  under the label and the download explanation inside fixed chrome whose
+  remainder is the grid. On a 1080p panel, which reports 540dp, that left the
+  weighted grid zero height: no tiles, and a focus target that renders nothing,
+  i.e. the "lists disappeared" report with a network callback as the trigger
+  instead of the D-pad. The bar now shows the release's first highlight, one
+  ellipsised line, in place of the download explanation (never both), which is
+  also what the generated update frame draws.
+
 
 - **Two UP presses from the search box made the catalogue look dead.** The
   vertical D-pad chain runs `apply_targets → update_bar → chip_row`, and both
@@ -68,8 +113,11 @@ All notable changes to the Core Builds Icon Pack. Format follows
   the published app — a stacked-rows home screen the layout never had,
   unlabeled tiles, "1765 components", a v1.8.20 header and chip counts from an
   older tranche — which is what "the mockups look nothing like what was
-  published" meant. `--check` fails CI on drift; the frames carry a MOCKUP
-  caption naming which values are example data.
+  published" meant. The sheets were not wrong, they were *ahead*: this release
+  rebuilds the app to them, and they are restored under `docs/design/` as the
+  spec the frames are checked against by eye. `--check` fails CI on drift; the
+  frames carry a MOCKUP caption naming which values are example data (the
+  detected launchers, the focused tile).
 
 ## [1.8.21] — 2026-09-19
 

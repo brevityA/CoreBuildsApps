@@ -1,12 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-  One icon tile.
+  One icon tile, design-sheet grammar: a square card carrying the glyph and
+  nothing else. The name is not repeated under the art - it lives in the
+  inspector a press opens, and in the tile's content description for TalkBack -
+  because at five columns on a 1080p panel a two-line label cost the grid half a
+  row of tiles for text nobody reads at 3m.
 
-  A pale dot in the icon's top corner marks a tile whose glyph is a drawn
-  brandmark rather than a letter in a container. 526 of the 940 icons are
-  monograms, and until this there was no way to tell the two apart in the grid
-  short of recognising the mark. The "Brandmarks" chip filters to the ones that
-  carry it.
+  The pale dot in the icon's top corner still marks a tile whose glyph is a
+  drawn brandmark rather than a letter in a container; the "Brandmarks" chip
+  filters to the ones that carry it.
 
   The card surface is drawn inset by cb_focus_inset inside bg_card, so the
   padding here is measured from the tile bounds and lands ~8dp inside the
@@ -20,16 +22,18 @@
     android:clickable="true"
     android:focusable="true"
     android:focusableInTouchMode="true"
-    android:nextFocusUp="@id/search"
-    android:gravity="center_horizontal"
+    android:nextFocusUp="@id/chip_row"
+    android:gravity="center"
     android:minHeight="@dimen/cb_target_min"
     android:orientation="vertical"
-    android:padding="@dimen/cb_card_padding">
+    android:paddingStart="@dimen/cb_card_padding"
+    android:paddingEnd="@dimen/cb_card_padding"
+    android:paddingTop="@dimen/cb_space_xs"
+    android:paddingBottom="@dimen/cb_space_xs">
 
     <!--
         The artwork and its brandmark dot share a FrameLayout so the dot can sit
-        in the corner of the icon rather than the corner of the tile, which on a
-        two-line label would put it beside the text.
+        in the corner of the icon rather than the corner of the tile.
     -->
     <FrameLayout
         android:layout_width="match_parent"
@@ -38,7 +42,7 @@
         <ImageView
             android:id="@+id/icon_image"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/cb_card_icon"
+            android:layout_height="@dimen/cb_tile_icon"
             android:contentDescription="@null"
             android:importantForAccessibility="no"
             android:scaleType="fitCenter" />
@@ -52,16 +56,4 @@
             android:importantForAccessibility="no"
             android:visibility="gone" />
     </FrameLayout>
-
-    <TextView
-        android:id="@+id/icon_name"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/cb_space_sm"
-        android:ellipsize="end"
-        android:gravity="center"
-        android:lineSpacingExtra="1dp"
-        android:maxLines="2"
-        android:textColor="@color/cb_ink"
-        android:textSize="@dimen/cb_text_label" />
 </LinearLayout>
