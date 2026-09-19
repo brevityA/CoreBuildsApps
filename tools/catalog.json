@@ -5892,7 +5892,7 @@
       "name": "Artemis",
       "drawable": "limelight",
       "color": "#B388FF",
-      "glyph": "retro_pad",
+      "glyph": "artemis_pad",
       "components": [
         "com.limelight.noir/com.limelight.PcView"
       ],

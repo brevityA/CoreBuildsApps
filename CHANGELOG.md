@@ -138,6 +138,27 @@ All notable changes to the Core Builds Icon Pack. Format follows
 
 ### Added
 
+- **`artemis_pad` — the Artemis mark the tester actually chose.** Artemis
+  (Moonlight's noir fork, `com.limelight.noir`) shipped in 1.8.20 as
+  `retro_pad`, the straight-sided shell, and the tester's verdict on the
+  rendered candidates was not subtle: "I think the controller of Moonlight
+  looks better than this, so maybe you could do something similar. The
+  original looks a bit generic", then "Let's go with the controller", the
+  winged pad on the right of both contact sheets. Similar, not identical:
+  Moonlight and Daijishou already carry `gamepad` side by side in the same
+  launcher row, so the new glyph keeps the family silhouette and earns its
+  own grammar — a body about 6 percent narrower than `gamepad`'s with a
+  deeper waist notch, and a start/select dash across the middle that
+  `gamepad` does not carry (nearest-glyph similarity 0.877 against the
+  0.965 twin ceiling). The catalog entry keeps its drawable name
+  (`limelight`), its reviewed violet and its device-evidenced component;
+  only the glyph reference moves. Three passes of the counter gate are
+  recorded in the glyph's docstring: ring buttons closed at 96px
+  (4 → 1 → 1), and the second pass's closing counter turned out to be a
+  3px LANCZOS ringing sliver inside the left wall at the 256px measure —
+  a resampling phase artifact, not geometry, cleared by widening the body
+  two units per side (1 → 1 → 1). `retro_pad` retires with its design
+  notes intact for whoever asks for a straight-sided shell again.
 - **`tests/test_search_focus.py`** — 15 static checks over the search path, in
   the same shape as `test_tv_layout_fit.py`: scoped to one function body at a
   time, so a `currentFocus` read somewhere else in the file cannot satisfy the

@@ -356,37 +356,63 @@ def gamepad(c):
 
 
 def retro_pad(c):
-    """Artemis: a straight-sided retro pad.
+    """Straight-sided home-console pad, retired as Artemis's mark.
 
-    The tester who uses Artemis asked for a controller, having rejected both a
-    pad under signal arcs and an arcade cabinet. A controller it is — but not
-    Moonlight's. These are two different applications that sit in the same
-    launcher row, and the pack's own twin check would reject a near-copy
-    anyway.
-
-    So the silhouette is the other kind of controller. Moonlight's `gamepad` is
-    an organic wing that flares into grips and notches underneath; this is the
-    flat, straight-sided pad of a home console, which also answers the tester's
-    retro suggestion without needing a whole cabinet to say it. Same category
-    cue, unmistakably different shape at a glance.
-
-    The d-pad is a cross of two strokes, not an outlined plus: at 48px an
-    outlined cross closes its four counters and reads as a blob. The body is
-    also squarer than a real home-console pad — the first pass used true
-    hardware proportions, came out 40x18 at 48px, and lost a button counter to
-    the downscale.
+    Drawn for Artemis in 1.8.20 as "a controller, but not Moonlight's".
+    The tester on the user's Discord (BinoSchmino, 2026-09-18) then chose
+    between the rendered candidates twice - "I like the one on the right
+    a bit better", then "Let's go with the controller" - and both times
+    the right-hand candidate was the organic winged pad, so Artemis moved
+    to artemis_pad and this shell retired. Two design notes survive here
+    because artemis_pad inherits them: a d-pad drawn as a cross of two
+    strokes, never an outlined plus (at 48px an outlined cross closes its
+    four counters and reads as a blob), and button centres kept further
+    apart than their combined ink radius or the pair fuses into a figure
+    of eight on the downscale.
     """
     return (
         f'<rect x="88" y="158" width="336" height="196" rx="92" {_s(c, 32)}/>'
         f'<path d="M 128 256 L 208 256" {_s(c, 26)}/>'
         f'<path d="M 168 216 L 168 296" {_s(c, 26)}/>'
-        # Two constraints fight here and both showed up as a spurious counter.
-        # Each button carries r+stroke/2 = 39 of ink, so the pair needs >78
-        # between centres or they fuse into a figure of eight, and the outer
-        # one needs to stay clear of the shell's inner ink edge at x=408.
-        # 88 apart, rightmost ink at 399.
         f'<circle cx="302" cy="224" r="26" {_s(c, 26)}/>'
         f'<circle cx="360" cy="290" r="26" {_s(c, 26)}/>'
+    )
+
+
+def artemis_pad(c):
+    """Artemis - the winged controller the tester actually picked.
+
+    BinoSchmino's verdict on the 1.8.20 retro shell, over two rounds of
+    rendered candidates: the controller on the right, both times, which
+    was the organic winged pad of the gamepad family - "I think the
+    controller of Moonlight looks better than this, so maybe you could
+    do something similar. The original looks a bit generic." Similar, not
+    identical: Moonlight and Daijishou already carry `gamepad` in this
+    pack, two apps that sit in the same launcher row, and the twin check
+    rejects a near-copy anyway. So artemis_pad is the same family with
+    its own grammar - a compact winged body (about 6 percent narrower
+    than gamepad's, deeper waist notch) and a start/select dash across
+    the middle that gamepad does not carry. Buttons stay solid dots, the
+    house button grammar: a ring button's counter closes at 96px (measured
+    4 -> 1 -> 1 on the first pass), and a closed counter is a blob, not a
+    button. The second pass still read 2 -> 1 -> 1, but that closing
+    counter was not geometry at all - a 3px LANCZOS ringing sliver inside
+    the left wall's inner edge at the 256px measure, one resampling phase
+    artifact; widening the body two units per side moved the phase off it
+    and the counters settled at 1 -> 1 -> 1. Cross d-pad and the
+    button-spacing rule inherited from retro_pad's notes above. Paints:
+    the catalog's declared violet, flat, like every GAMING mark.
+    """
+    return (
+        f'<path d="M 176 164 L 336 164 C 388 164 416 214 424 276 '
+        f'C 432 332 404 362 374 362 C 344 362 330 322 300 322 '
+        f'L 212 322 C 182 322 168 362 138 362 C 108 362 80 332 88 276 '
+        f'C 96 214 124 164 176 164 Z" {_s(c, 30)}/>'
+        f'<path d="M 152 232 L 152 288" {_s(c, 24)}/>'
+        f'<path d="M 124 260 L 180 260" {_s(c, 24)}/>'
+        f'<path d="M 240 246 L 264 246" {_s(c, 20)}/>'
+        f'<circle cx="336" cy="240" r="18" {_f(c)}/>'
+        f'<circle cx="372" cy="284" r="18" {_f(c)}/>'
     )
 
 
@@ -1170,7 +1196,8 @@ def browser_globe(c):
             f'<path d="M 256 380 L 256 434" {_s(c, 24)}/>')
 
 
-GLYPHS.update({"stadium": stadium, "browser_globe": browser_globe})
+GLYPHS.update({"stadium": stadium, "browser_globe": browser_globe,
+                  "artemis_pad": artemis_pad})
 
 
 # ==========================================================================
