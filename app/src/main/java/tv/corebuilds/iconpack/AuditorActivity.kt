@@ -93,15 +93,15 @@ class AuditorActivity : AppCompatActivity() {
             for (info in packageManager.queryIntentActivities(intent, 0)) {
                 val pkg = info.activityInfo.packageName
                 if (pkg == packageName || pkg in mapped) continue
-                // putIfAbsent, not put: the leanback pass runs first, so a
-                // package with both a TV and a mobile launcher keeps the TV
-                // activity in the request - that is the component the pack
-                // needs, and the mobile one is the one ADB would have hidden.
-                found.putIfAbsent(
-                    pkg,
-                    AuditItem(info.loadLabel(packageManager).toString(), pkg,
-                              info.activityInfo.name)
-                )
+                // containsKey, not putIfAbsent: the leanback pass runs first
+                // and a package with both a TV and a mobile launcher must keep
+                // the TV activity in the request - that is the component the
+                // pack needs. (putIfAbsent would say the same thing but is
+                // API 24; this pack still starts at 21.)
+                if (!found.containsKey(pkg)) {
+                    found[pkg] = AuditItem(info.loadLabel(packageManager).toString(),
+                                           pkg, info.activityInfo.name)
+                }
             }
         }
         return found.values.sortedBy { it.label.lowercase() }
