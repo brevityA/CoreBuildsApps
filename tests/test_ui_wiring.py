@@ -243,7 +243,8 @@ def main() -> int:
         for lay in ("activity_auditor.xml", "item_audit.xml"):
             check((base / "src" / "main" / "res" / "layout" / lay).is_file(),
                   f"{module}: auditor layout {lay} missing")
-    for java in ("QrCode.java", "QrSegment.java", "BitBuffer.java"):
+    for java in ("QrCode.java", "QrSegment.java", "BitBuffer.java",
+               "DataTooLongException.java"):
         check((ROOT / "app" / "src" / "main" / "java" / "io" / "nayuki"
                / "qrcodegen" / java).is_file(),
               f"vendored QR encoder missing {java}")

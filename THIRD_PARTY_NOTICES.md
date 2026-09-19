@@ -83,8 +83,11 @@ and fidelity notes.
 
 `app/src/main/java/io/nayuki/qrcodegen/QrCode.java`,
 `app/src/main/java/io/nayuki/qrcodegen/QrSegment.java` and
-`app/src/main/java/io/nayuki/qrcodegen/BitBuffer.java` (the encoder's complete
-Java surface) are vendored verbatim
+`app/src/main/java/io/nayuki/qrcodegen/BitBuffer.java` and
+`app/src/main/java/io/nayuki/qrcodegen/DataTooLongException.java` (the
+encoder's compile surface; the optional `QrSegmentAdvanced` kanji optimiser
+and `package-info` are not on the encode path and stay upstream) are
+vendored verbatim
 from the **QR Code generator library** by Project Nayuki, under the
 **MIT License** (copyright Project Nayuki,
 <https://www.nayuki.io/page/qr-code-generator-library>), fetched from upstream
@@ -94,7 +97,9 @@ vendoring: `QrCode.java`
 `BitBuffer.java`
 `d5496452b435423beead30aa356e10a7c0ba4790b7da37ee4a1b80b4df136447`,
 `QrSegment.java`
-`70f10e518d3a8f1a1862e598a249abaac036a9c6fae4e5892c4b6d24995bb8d7`.
+`70f10e518d3a8f1a1862e598a249abaac036a9c6fae4e5892c4b6d24995bb8d7`,
+`DataTooLongException.java`
+`7661186dde4b27334fd94f4950f58522eaab256274388152e5cb8e35ef463e1a`.
 
 The on-device auditor renders its prefilled-issue QR codes with this encoder
 (`QrBitmap.kt` is the Core Builds wrapper: error correction M, four-module
