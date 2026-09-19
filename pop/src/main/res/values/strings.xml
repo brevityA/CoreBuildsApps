@@ -151,6 +151,7 @@
     <string name="settings_refresh_sub">Re-sends the apply contract to the detected launcher, for cards still showing yesterday\'s bitmaps after a pack update.</string>
     <string name="settings_appinfo_title">Launcher app info</string>
     <string name="settings_appinfo_sub">The system page for the detected launcher. Force Stop there clears a bitmap cache re-applying cannot reach.</string>
+    <string name="settings_group_suite">SUITE</string>
     <string name="settings_group_help">HELP</string>
     <string name="settings_faq_title">Troubleshooting and FAQ</string>
     <string name="settings_faq_sub">Stale icons, manual overrides, Monet handoffs, unmapped apps. The repo docs, readable from the sofa.</string>
@@ -183,6 +184,31 @@
     <string name="audit_count_fmt">%1$d launchable apps on this TV have no icon yet</string>
     <string name="audit_empty">Every launchable app on this TV is mapped. Nothing to request.</string>
     <string name="audit_qr_hint">Scan with your phone. The issue opens on the icon-request form with the app name, component and this TV\'s details already filled in — check them and submit.</string>
+
+    <!-- Icon inspector -->
+    <string name="inspector_kicker">INSPECT</string>
+    <string name="inspector_label">Icon inspector</string>
+    <string name="inspector_meta_fmt">Category %1$s · drawable %2$s</string>
+    <string name="inspector_export">Export PNG to Pictures</string>
+    <string name="inspector_launch">Launch app</string>
+    <string name="inspector_exported_fmt">Saved to Pictures/CoreBuilds/Icons/%1$s</string>
+    <string name="inspector_export_failed_fmt">Export failed: %1$s</string>
+    <string name="inspector_storage_denied">Storage permission denied — the icon stays in the pack.</string>
+    <string name="inspector_not_mapped">No component maps to this drawable in appfilter.xml.</string>
+    <string name="inspector_not_installed_fmt">%1$s is not installed on this TV, or hides its launcher activity from the pack.</string>
+
+    <!-- Suite hub -->
+    <string name="settings_suite_title">Core Builds Suite</string>
+    <string name="settings_suite_sub">What else from the living-room suite is on this TV, which version, and each app\'s Downloader code.</string>
+    <string name="suite_kicker">SUITE</string>
+    <string name="suite_label">Core Builds Suite</string>
+    <string name="suite_title">The rest of the living room</string>
+    <string name="suite_installed_fmt">Installed · v%1$s</string>
+    <string name="suite_installed_plain">Installed</string>
+    <string name="suite_not_installed">Not installed on this TV</string>
+    <string name="suite_code_fmt">Downloader code %1$s</string>
+    <string name="suite_no_code">Not on Downloader yet — grab the APK from the GitHub release</string>
+    <string name="suite_open_failed_fmt">Could not open %1$s from here.</string>
 
     <!-- About -->
     <string name="about_label">About</string>

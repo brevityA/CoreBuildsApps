@@ -1,10 +1,20 @@
 {
-  "versionCode": 30,
-  "versionName": "1.8.20",
+  "versionCode": 31,
+  "versionName": "1.8.21",
   "iconCount": 943,
   "componentCount": 1157,
-  "releaseDate": "2026-09-18",
+  "releaseDate": "2026-09-19",
   "apkUrl": "https://github.com/brevityA/CoreBuildsApps/releases/download/iconpack/iconpack-release.apk",
   "releaseNotesUrl": "https://github.com/brevityA/CoreBuildsApps/releases",
-  "minSdk": 21
+  "minSdk": 21,
+  "highlights": [
+    "The on-device missing-app auditor, with a QR code that prefills the request",
+    "Sideload round one: launcher tools, a sofa FAQ, and a what's-new bar",
+    "`artemis_pad` \u2014 the Artemis mark the tester actually chose",
+    "The keyboard follows the search field",
+    "Typing filters as a burst rather than per character",
+    "Janky's mark got its weight fixed, not its composition replaced",
+    "Searching moved the cursor out of the search field",
+    "The presence pass could die mid-build on a mark flush against SAFE"
+  ]
 }

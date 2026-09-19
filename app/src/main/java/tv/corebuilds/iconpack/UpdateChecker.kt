@@ -32,7 +32,7 @@ object UpdateChecker {
     private const val MAX_MANIFEST_BYTES = 64 * 1024
     // Long enough to say what actually changed, short enough that the update
     // bar stays a bar and not a changelog screen.
-    private const val MAX_HIGHLIGHTS = 6
+    private const val MAX_HIGHLIGHTS = 8
 
     /** Outcome of a check. Never an unnamed error (§08). */
     sealed class Result {

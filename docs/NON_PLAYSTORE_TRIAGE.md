@@ -80,17 +80,21 @@ born. Queued: `tools/prepare_release.py` should emit `highlights` into
 `Latestrelease/version.json` from the CHANGELOG tranche, so the field cannot go
 stale by hand.
 
-## 4. Universal icon masking in Classic — queued on evidence, not adopted
+## 4. Universal icon masking in Classic — queued; probe recorded, evidence thin
 
 Pop already ships `<iconback>` / `<iconmask>` / `<iconupon>`; `tests/test_pop.py`
 locks them as that variant's art direction. Classic's identity is the opposite:
 transparent monoline marks, which Projectivy and Monet composite natively. The
 legacy ADW compositing tags only affect *unmapped* icons, and only in launchers
 that still honour them — adopting them in Classic would double-frame unmapped
-icons in some launchers while doing nothing in others. Queued behind a
-per-launcher support probe (Projectivy first); if the evidence says the living
-room actually composites, the generator change is small and the design question
-returns with facts attached.
+icons in some launchers while doing nothing in others. The probe ran on 2026-09-19: community packs (e.g. Blackshield) ship
+`iconback`/`iconmask`/`iconupon`/`scale` and list Projectivy among the launchers
+that wrap unmapped apps, but nothing Projectivy-specific confirms legacy
+compositing, and the reference Projectivy pack's own behaviour on unmapped
+tiles is documented only as "stays generic". Adopting the tags on that would
+be shipping a guess into every launcher at once, so the question stays queued
+behind a device probe on the owner's TV: one unmapped app, one pack build with
+the tags, one screenshot either way.
 
 ## 5. Couch FAQ — SHIPPED this round
 
@@ -103,37 +107,53 @@ the knowledge — `WHY_PROJECTIVY_CANT_SEE_IT.md` (stale cards, force stop),
 Projectivy manual-override behaviour, `MONET_LAUNCHER.md` (what Send to Monet
 can and cannot take), and `ADB_SCANNING.md` (unmapped components).
 
-## 6. Icon Inspector + PNG export — queued
+## 6. Icon Inspector + PNG export — SHIPPED as a screen, not a dialog
 
 The pieces exist: `WallpaperExporter` already inserts into MediaStore under
 scoped storage with `WRITE_EXTERNAL_STORAGE` capped at maxSdk 28, so icon export
 needs no new permission; the icon's name, category, drawable and components are
-one catalog lookup away. The wrinkle is the Launch button: on API 30+ an
-explicit intent into a package outside `<queries>` throws, so "is it installed"
-needs either a launcher-intent `<queries>` entry (broad, though intent-based
-and Play-legal) or a named failure toast. That decision is the feature's only
-real design fork, and it is the same visibility contract the audit wrote, so it
-gets decided with the audit open, not in passing.
+one catalog lookup away. A tile press outside pick mode now opens `InspectorActivity` instead of the
+two-second toast: the bundled mark at full size, category and drawable, and
+every component `appfilter.xml` maps to it, read from the asset so the list is
+what the launcher will match. **Export PNG** copies the bundled 512px bytes to
+`Pictures/CoreBuilds/Icons/` through `IconExporter` (no re-encode, same
+permission contract as wallpaper export, own subfolder so icons and wallpapers
+do not share a rotation source). **Launch** needed no new visibility decision
+after all: the auditor's intent-filter `<queries>` already made every
+launchable package visible, so `isInstalled` + `getLaunchIntentForPackage`
+answer honestly, and a no is a named toast rather than an
+ActivityNotFoundException. It shipped as an activity rather than the proposed
+dialog because every other information screen in the app is one, and the
+chrome grammar (header back, two action stops) is what the gates already
+know how to hold.
 
-## 7. Suite hub — approved, queued on owner input
+## 7. Suite hub — SHIPPED within what the registry knows
 
 `suite.json` already carries every fact the hub would show: applicationIds,
 versions, and Downloader codes (Shift `8829421`, Line `7375676`, Doctor
-`8664938`, Icon Pack `5270601` — the proposal's two codes check out). Three
-companions (Pop, Pixel Neon, Motion) still carry `[USER TO SUPPLY]` codes, and a
-hub that shows a blank where a Downloader code belongs is worse than no hub.
-Installed-status probes need five targeted `<queries>` package entries —
-play-safe, same grammar as the launcher block. Unblocked the moment the missing
-codes land.
+`8664938`, Icon Pack `5270601` — the proposal's two codes check out). The hub shipped around the gap rather than waiting on it:
+`check_suite_truth.py --write` stamps `res/values/suite_hub.xml` from
+suite.json (names, package ids, codes; CI fails on drift), and a code the
+registry still holds as `[USER TO SUPPLY]` arrives as an empty item and renders
+as "Not on Downloader yet — grab the APK from the GitHub release" instead of a
+blank or a placeholder. Installed state and version come from `getPackageInfo`
+through six targeted `<queries>` package entries (the same Play-safe grammar),
+and a row press launches the companion when it is there. The one-click
+"open Downloader to this code" intent stays queued: it needs the Downloader
+app's package and extra grammar verified against the real app, and guessing
+either would produce a button that opens the wrong thing on a TV.
 
-## 8. D-pad fast navigation — badges SHIPPED, bumper skip queued
+## 8. D-pad fast navigation — badges SHIPPED, bumper skip SHIPPED
 
 Category chips now carry counts tallied from the same generated arrays that
 feed the grid (`All (943) · Brandmarks (415) · Streaming (46) · …`), so a chip
-can never advertise a number the grid cannot back up. Bumper alphabet skipping
-is queued: intercepting `KEYCODE_CHANNEL_UP/DOWN` on the grid collides with
-launchers that reserve those keys, and the fix for that is a per-launcher
-behaviour table this repo does not have yet.
+can never advertise a number the grid cannot back up. The collision risk with launchers that reserve the channel keys is handled
+by scope instead of a behaviour table: the skips fire only while the grid
+itself holds focus, so every other surface of the app — and every other app on
+the box — keeps the keys' default meaning. The anchor is the first visible row
+(scrollbar semantics), a backward skip lands on the first row of the previous
+letter group so both directions arrive where a group starts, and the jump is a
+`scrollToPositionWithOffset` plus a focus handoff, never a 900-tile animation.
 
 ## Receipts
 
@@ -148,7 +168,11 @@ behaviour table this repo does not have yet.
   `tools/check_ui_resources.py`, `tests/test_resource_parity.py`,
   `tests/test_tv_layout_fit.py`, `tests/test_search_focus.py`, `tests/test_pop.py`
   all green after `tools/build_pop.py` regeneration.
-- Visual: `docs/app-ui-sideload-round.png` — three panels (settings with the
-  new rows and focus ring, the FAQ screen, the update bar with EXAMPLE manifest
-  highlights and real chip tallies), labelled as a mockup, every label read
-  from `strings.xml`.
+- Release-side highlights shipped too: `tools/prepare_release.py` stamps a
+  `highlights` array into `Latestrelease/version.json` from the `[Unreleased]`
+  bold leads (Added, then Changed, then Fixed; capped at the eight
+  `UpdateChecker` renders), so the what's-new card cannot go stale by hand.
+- Visual: `docs/app-ui-sideload-round.png` (settings rows, FAQ, update bar),
+  `docs/app-ui-auditor.png` (audit list + real scannable QR), and
+  `docs/app-ui-inspector-suite.png` (inspector and suite hub) — all labelled
+  mockups, every label read from `strings.xml` or the generated resources.

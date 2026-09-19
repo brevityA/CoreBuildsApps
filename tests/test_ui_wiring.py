@@ -251,6 +251,51 @@ def main() -> int:
     check("nayuki" in notices.lower(),
           "THIRD_PARTY_NOTICES.md must name the vendored QR encoder")
 
+    # Inspector, suite hub and the bumper skips. Same failure classes as
+    # everything else in this file: a button with no reader, a screen with no
+    # manifest entry, a visibility probe that silently returns nothing.
+    inspector = read(ROOT / "app" / "src" / "main" / "java" / "tv" / "corebuilds"
+                     / "iconpack" / "InspectorActivity.kt")
+    exporter = read(ROOT / "app" / "src" / "main" / "java" / "tv" / "corebuilds"
+                    / "iconpack" / "IconExporter.kt")
+    suite = read(ROOT / "app" / "src" / "main" / "java" / "tv" / "corebuilds"
+                 / "iconpack" / "SuiteActivity.kt")
+    check("InspectorActivity::class.java" in main,
+          "MainActivity: a tile press outside pick mode must open the inspector")
+    check('assets.open("appfilter.xml")' in inspector,
+          "InspectorActivity: mapped components must come from the bundled appfilter")
+    check("IconExporter.export" in inspector and "requestStoragePermission" in inspector,
+          "InspectorActivity: export must gate on the storage permission, then export")
+    check("getLaunchIntentForPackage" in inspector and "isInstalled" in inspector,
+          "InspectorActivity: launch must probe install state before starting")
+    check("Pictures/CoreBuilds/Icons" in exporter and "IS_PENDING" in exporter,
+          "IconExporter: icons land in their own Pictures subfolder, pending-safe")
+    check("KEYCODE_CHANNEL_DOWN" in main and "grid.hasFocus()" in main,
+          "MainActivity: bumper skips must exist and only fire from the grid")
+    check("scrollToPositionWithOffset" in main,
+          "MainActivity: letter jumps must land without animating 900 tiles")
+    check("suite_hub_names" in suite and "getLaunchIntentForPackage" in suite,
+          "SuiteActivity: rows come from the generated hub resource and launch")
+    check("R.id.set_suite_row)" in settings_kt,
+          "SettingsActivity: suite row not wired")
+    for layout in (settings_layout, pop_settings_layout):
+        check('android:id="@+id/set_suite_row"' in layout,
+              "activity_settings.xml: missing set_suite_row")
+    for name, manifest in (("app", app_manifest), ("pop", pop_manifest)):
+        queries = manifest.split("<queries>", 1)[1].split("</queries>", 1)[0]
+        for pkg in ("dev.corebuilds.shift", "dev.corebuilds.line",
+                    "dev.corebuilds.doctor", "tv.corebuilds.motion",
+                    "tv.corebuilds.iconpack.pop", "tv.corebuilds.pixelneon"):
+            check(f'package android:name="{pkg}"' in queries,
+                  f"{name} manifest: suite hub visibility lost {pkg}")
+        for activity in (".InspectorActivity", ".SuiteActivity"):
+            check(f'android:name="{activity}"' in manifest,
+                  f"{name} manifest: {activity} not registered")
+    for res in (ROOT / "app" / "src" / "main" / "res" / "values" / "suite_hub.xml",
+                ROOT / "pop" / "src" / "main" / "res" / "values" / "suite_hub.xml"):
+        check(res.is_file() and "suite_hub_pkgs" in read(res),
+              f"{res}: generated suite hub resource missing")
+
     if problems:
         print(f"ui wiring gate: {len(problems)} problem(s)")
         for p in problems:

@@ -45,6 +45,9 @@ class IconAdapter(
         val brandmark: View = view.findViewById(R.id.icon_brandmark)
     }
 
+    /** The list currently on screen, filtered. The bumper skips walk this. */
+    fun current(): List<IconItem> = items
+
     init {
         // Stable ids let RecyclerView keep the focused view across a diff,
         // which is what stops the D-pad highlight jumping on filter.

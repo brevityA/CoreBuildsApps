@@ -5,6 +5,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.view.KeyEvent
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
@@ -193,9 +194,80 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    /**
+     * Remote bumper skips: CHANNEL_DOWN / CHANNEL_UP jump a letter group
+     * through the filtered list, because paging 940 tiles six rows at a time
+     * is the single most common complaint about icon grids on a D-pad.
+     *
+     * Only while the grid itself holds focus. Anywhere else - search field,
+     * chips, header - the keys keep their default meaning, and a launcher
+     * that reserves them for its own paging still gets them on every other
+     * screen of this app. The anchor is the first visible row, so the jump
+     * reads like a scrollbar: where you are looking is where you jump from.
+     */
+    override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
+        val forward = when (keyCode) {
+            KeyEvent.KEYCODE_CHANNEL_DOWN -> true
+            KeyEvent.KEYCODE_CHANNEL_UP -> false
+            else -> return super.onKeyDown(keyCode, event)
+        }
+        val grid = findViewById<RecyclerView>(R.id.grid)
+        if (!grid.hasFocus()) return super.onKeyDown(keyCode, event)
+        return if (jumpByLetter(grid, forward)) true
+        else super.onKeyDown(keyCode, event)
+    }
+
+    /** Move the grid to the next / previous letter group. False = no group
+     *  left in that direction, and the key falls through unconsumed. */
+    private fun jumpByLetter(grid: RecyclerView, forward: Boolean): Boolean {
+        val items = adapter?.current() ?: return false
+        if (items.isEmpty()) return false
+        val manager = grid.layoutManager as? LinearLayoutManager ?: return false
+        val anchor = manager.findFirstVisibleItemPosition()
+        if (anchor == RecyclerView.NO_POSITION) return false
+        val anchorInitial = initialOf(items[anchor].name)
+        val target = if (forward) {
+            items.indices.firstOrNull {
+                it > anchor && initialOf(items[it].name) > anchorInitial
+            }
+        } else {
+            // Land on the first row of the previous letter group, not on the
+            // last row of the one before the jump - a skip should arrive
+            // where the group starts, the same place a forward skip leaves.
+            val last = items.indices.lastOrNull {
+                it < anchor && initialOf(items[it].name) < anchorInitial
+            }
+            if (last == null) null
+            else {
+                var start = last
+                val letter = initialOf(items[last].name)
+                while (start > 0 && initialOf(items[start - 1].name) == letter) start--
+                start
+            }
+        }
+        if (target == null || target == anchor) return false
+        manager.scrollToPositionWithOffset(target, 0)
+        grid.post {
+            grid.findViewHolderForAdapterPosition(target)?.itemView?.requestFocus()
+        }
+        return true
+    }
+
+    private fun initialOf(name: String): Char =
+        name.firstOrNull { it.isLetterOrDigit() }?.uppercaseChar() ?: '#'
+
     private fun onIconChosen(item: IconAdapter.IconItem) {
         if (!pickMode) {
-            toast(getString(R.string.icon_selected_fmt, item.name, item.drawable))
+            // The toast this replaces named the icon for two seconds, exactly
+            // when someone wanted to read it. The inspector is the same
+            // information with a place to put it: full-size mark, mapped
+            // components, export and launch.
+            startActivity(
+                Intent(this, InspectorActivity::class.java)
+                    .putExtra(InspectorActivity.EXTRA_DRAWABLE, item.drawable)
+                    .putExtra(InspectorActivity.EXTRA_NAME, item.name)
+                    .putExtra(InspectorActivity.EXTRA_CATEGORY, item.category)
+            )
             return
         }
         val deliver = if (pickBanners) "${item.drawable}_banner" else item.drawable

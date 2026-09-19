@@ -6,6 +6,8 @@ All notable changes to the Core Builds Icon Pack. Format follows
 
 ## [Unreleased]
 
+## [1.8.21] — 2026-09-19
+
 ### Fixed
 
 - **Searching moved the cursor out of the search field** — a tester's report of

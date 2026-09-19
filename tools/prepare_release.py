@@ -83,6 +83,41 @@ def run(command: str) -> None:
     subprocess.run([sys.executable] + command.split(), cwd=ROOT, check=True)
 
 
+def changelog_highlights(text: str) -> list[str]:
+    """Top-level [Unreleased] bullets as one-line highlights.
+
+    House style puts the name of a change in a bold lead, so the lead is the
+    highlight and the bullet body is CHANGELOG business. Order follows what a
+    release is meant to lead with - Added, then Changed, then Fixed - and the
+    cap is the eight UpdateChecker renders before the update bar stops being
+    a bar.
+    """
+    match = re.search(r"## \[Unreleased\]\n(.*?)(?=\n## \[)", text, re.S)
+    if not match:
+        return []
+    body = match.group(1)
+    sections: list[tuple[str, int]] = []
+    for name in ("Added", "Changed", "Fixed"):
+        m = re.search(rf"### {name}\n(.*?)(?=\n### |\Z)", body, re.S)
+        sections.append((name, m.start(1) if m else -1))
+    out: list[str] = []
+    for name, _ in sections:
+        m = re.search(rf"### {name}\n(.*?)(?=\n### |\Z)", body, re.S)
+        if not m:
+            continue
+        for lead in re.findall(r"(?m)^- +\*\*(.+?)\*\*", m.group(1), re.S):
+            lead = " ".join(lead.split()).rstrip(".")
+            # A gate or test file is a receipt, not a headline: the what's-new
+            # bar is read by people deciding whether to update.
+            if lead.startswith("`tests/") or lead.startswith("`test_"):
+                continue
+            if lead:
+                out.append(lead)
+            if len(out) >= 8:
+                return out
+    return out
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("version", help="the release version, e.g. 1.8.19")
@@ -132,9 +167,19 @@ def main() -> int:
         "componentCount": component_count,
         "releaseDate": datetime.now(timezone.utc).date().isoformat(),
     })
+    # 4b. Release highlights for the in-app what's-new card: the top-level
+    # bullets of [Unreleased], lead phrase each, capped at the six the
+    # update bar renders. Captured here, before step 8 moves the section
+    # down, so the manifest carries exactly the notes this release ships.
+    highlights = changelog_highlights(CHANGELOG.read_text(encoding="utf-8"))
+    # An empty [Unreleased] (a re-run for the same version) keeps the
+    # highlights already stamped rather than blanking the card.
+    if highlights:
+        latest["highlights"] = highlights
     VERSION_JSON.write_text(json.dumps(latest, indent=2) + "\n",
                             encoding="utf-8")
-    print(f"4. version.json stamped (apkSha256 stays to the built APK)")
+    print(f"4. version.json stamped (apkSha256 stays to the built APK), "
+          f"{len(latest['highlights'])} highlights")
 
     # 5. suite.json iconpack
     suite = json.loads(SUITE.read_text(encoding="utf-8"))

@@ -108,6 +108,15 @@
             <action android:name="android.intent.action.MAIN" />
             <category android:name="android.intent.category.LAUNCHER" />
         </intent>
+        <!-- Suite companions, for the hub's installed/version probes and its
+             launch buttons. Six targeted entries, same grammar as the
+             launcher block above. -->
+        <package android:name="tv.corebuilds.pixelneon" />
+        <package android:name="tv.corebuilds.iconpack.pop" />
+        <package android:name="dev.corebuilds.doctor" />
+        <package android:name="dev.corebuilds.line" />
+        <package android:name="tv.corebuilds.motion" />
+        <package android:name="dev.corebuilds.shift" />
     </queries>
 
     <application
@@ -239,6 +248,16 @@
             android:name=".AuditorActivity"
             android:exported="false"
             android:label="@string/audit_label"
+            android:theme="@style/Theme.CoreBuilds" />
+        <activity
+            android:name=".InspectorActivity"
+            android:exported="false"
+            android:label="@string/inspector_label"
+            android:theme="@style/Theme.CoreBuilds" />
+        <activity
+            android:name=".SuiteActivity"
+            android:exported="false"
+            android:label="@string/suite_label"
             android:theme="@style/Theme.CoreBuilds" />
         <activity
             android:name=".AboutActivity"
