@@ -359,6 +359,22 @@ AUDIT_RES = (ROOT / "app" / "src" / "main" / "res" / "values" / "issue_prefill.x
 AUDIT_ARGS = (("app_name", "%1$s"), ("component", "%2$s"), ("notes", "%3$s"))
 
 
+def literal(text: str) -> str:
+    """Double every percent, so the resource prints it instead of parsing it.
+
+    `audit_issue_url_fmt` is read with `getString(id, args)`, which runs the
+    string through `String.format` — `java.util.Formatter`'s grammar, the same
+    grammar the `%1$s` placeholders belong to. In that grammar a lone `%` is
+    never text: `%5B` from a URL-encoded title prefix parses as width 5 plus
+    conversion `B` (boolean), and the first String argument throws
+    `IllegalFormatConversionException` before any URL exists — which is how
+    every auditor row press died in 1.9.0. `%%` is the grammar's escape for
+    one literal percent, so every static part of the link goes through here.
+    The placeholders must not: `%1$s` doubled would be printed, not filled.
+    """
+    return text.replace("%", "%%")
+
+
 def audit_resource(templates: list[dict]) -> str:
     """The generated string resource the on-device auditor deep-links with.
 
@@ -371,6 +387,15 @@ def audit_resource(templates: list[dict]) -> str:
     label (title and `app_name`), %2$s the component, %3$s a device note.
     Fields the form does not offer as input/textarea are simply absent, the
     same rule the README links live under.
+
+    The resource is a format string, not a URL: `getString(id, args)` runs it
+    through String.format, so every literal percent in it — the URL-encoded
+    title prefix `%5BIcon%5D` foremost — is written `%%` (the Formatter's
+    escape, applied by `literal()`) and only the three positional
+    placeholders stay single-percented. tools/build_app_ui_mockups.py mirrors
+    that collapse when it draws the link, and tests/test_ui_wiring.py scans
+    every string resource in all three packs for percents the grammar cannot
+    honour, so this cannot rot back in silently.
     """
     form = next((t for t in templates if "new_icon_request" in t["slug"]),
                 templates[0])
@@ -384,17 +409,20 @@ def audit_resource(templates: list[dict]) -> str:
     for field_id, ph in AUDIT_ARGS:
         if field_id in form["prefillable"]:
             params.append((field_id, ph))
-    parts = []
+    parts: list[str] = []
     for key, value in params:
         if key == "title":
-            parts.append(f"title={quote_plus(form['title'])}%1$s")
+            # The prefix is URL-encoded text the browser must see as-is, so
+            # it is a literal; the placeholder after it is not.
+            parts.append(f"title={literal(quote_plus(form['title']))}%1$s")
         elif value.startswith("%"):
             # Placeholders stay raw; urlencode would eat the percent sign and
-            # the resource would fill a literal %251s into the URL.
+            # the resource would fill a literal %251s into the URL, and
+            # literal() would print the placeholder instead of filling it.
             parts.append(f"{key}={value}")
         else:
-            parts.append(f"{key}={quote_plus(value)}")
-    url = f"{ISSUES_NEW}?" + "&".join(parts)
+            parts.append(f"{key}={literal(quote_plus(value))}")
+    url = f"{literal(ISSUES_NEW)}?" + "&".join(parts)
     xml = url.replace("&", "&amp;")
     return (
         '<?xml version="1.0" encoding="utf-8"?>\n'
@@ -402,7 +430,11 @@ def audit_resource(templates: list[dict]) -> str:
         "<resources>\n"
         "    <!-- On-device auditor deep link. %1$s = app label (URL-encoded,\n"
         "         also completes the title), %2$s = component, %3$s = device\n"
-        "         note. The app encodes each argument before substituting. -->\n"
+        "         note. The app encodes each argument before substituting.\n"
+        "         Read with getString(id, args), i.e. through String.format:\n"
+        "         literal percents are written %% (the Formatter escape - a\n"
+        "         bare %5B parses as width 5 + boolean conversion and throws),\n"
+        "         only the %n$s placeholders stay single. -->\n"
         f'    <string name="audit_issue_url_fmt">{xml}</string>\n'
         "</resources>\n"
     )

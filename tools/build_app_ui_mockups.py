@@ -160,11 +160,19 @@ def load_arrays(path: Path, names: list[str]) -> dict[str, list[str]]:
 
 
 def fmt(template: str, *args) -> str:
-    """Android's String.format, for the %1$s / %2$d this repo's strings use."""
+    """Android's String.format, for the %1$s / %2$d this repo's strings use.
+
+    A literal percent is written %% in the resource — the Formatter's only
+    escape — and comes out single here after the positional substitution,
+    which is the order the runtime itself formats in (the auditor's deep
+    link rides on this: its URL-encoded title prefix is %%5B in the resource
+    and %5B in the URL). With no args, Android serves getString(id) raw and
+    never runs the format pass at all, so the %% is left alone.
+    """
     out = template
     for index, value in enumerate(args, start=1):
         out = out.replace(f"%{index}$s", str(value)).replace(f"%{index}$d", str(value))
-    return out
+    return out.replace("%%", "%") if args else out
 
 
 STRINGS = load_strings()
