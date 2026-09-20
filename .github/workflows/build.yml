@@ -82,15 +82,16 @@ jobs:
           sudo apt-get install -y -qq libcairo2
           pip install --quiet -r tools/requirements.txt
 
-      # Before the regeneration below, on purpose. The frames paste real
-      # rasters out of res/drawable-nodpi and assets/wallpapers_thumbs, and PNG
-      # bytes move with the runner's rasteriser stack - the same reason the
+      # Before the regeneration below, on purpose. The check compares the
+      # committed frames against the sources they were generated from, and
+      # those sources include the rasters the frames paste - real icons out of
+      # res/drawable-nodpi and real thumbs out of assets/wallpapers_thumbs.
+      # PNG bytes move with the runner's rasteriser stack, which is why the
       # drift gate below is scoped to text assets and only *notices* PNG
-      # changes. Compared after a regeneration, the check would be measuring
-      # this runner's libcairo against whoever committed the frames, and would
-      # fail on a library bump rather than on a UI that drifted. Run against
-      # the committed tree, it answers the question it is asked: do the frames
-      # in docs/ depict the layouts, strings and dimens in the repo?
+      # changes; run after a regeneration, this check would be comparing
+      # against rasters this runner just re-encoded. Run against the committed
+      # tree, it answers the question it is asked: do the frames in docs/
+      # depict the layouts, strings and dimens in the repo?
       - name: Check the committed UI frames depict the source
         run: python tools/build_app_ui_mockups.py --check
 

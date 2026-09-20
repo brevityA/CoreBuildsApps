@@ -181,9 +181,11 @@ jobs:
       - name: Pixel Neon generated-asset validation
         run: python tools/validate_pixel_neon.py
       # This job installs the render deps and runs no asset builder, so the
-      # frames it compares are built from the committed rasters: the check
-      # measures the repository, not the runner's rasteriser. build.yml runs it
-      # too, before its regeneration step, for the same reason.
+      # rasters the frames paste are the committed ones. build.yml runs the
+      # same check, ahead of its regeneration step, for that reason. The check
+      # compares sources and drawn structure rather than PNG bytes - text
+      # rendering is not reproducible across machines - so it fails on a layout
+      # nobody regenerated, not on a runner's rasteriser.
       - name: Check the committed UI frames depict the source
         run: python tools/build_app_ui_mockups.py --check
       - name: Python content tests

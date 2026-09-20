@@ -41,15 +41,44 @@ frames are illustrative, not a font-fidelity claim.
 Usage
 -----
     python tools/build_app_ui_mockups.py            # write docs/app-ui-*.png
-    python tools/build_app_ui_mockups.py --check    # fail on drift from docs/
+                                                    #   and docs/app-ui-mockups.json
+    python tools/build_app_ui_mockups.py --check    # fail if the committed frames
+                                                    #   were not generated from the
+                                                    #   sources now in the tree
+    python tools/build_app_ui_mockups.py --report   # renderer/pixel diagnostics
 
-Determinism: Pillow is pinned in tools/requirements.txt and the only fonts
-loaded are the committed ones, so --check compares bytes across machines.
+What --check proves, and what it deliberately does not
+------------------------------------------------------
+It proves the frames in docs/ were generated from the sources now in the tree:
+every layout, values file, the catalog, the update manifest, the bundled
+appfilter and wallpaper manifest, the fonts, the generator's own source, and
+each raster a frame pastes are hashed into `docs/app-ui-mockups.json`, along
+with a per-frame digest of what the generator drew - every string, its
+position, its size, its font and its colour, every pasted artwork and its box.
+Edit any of that without regenerating and the check names the files that moved.
+
+It does not compare the PNG bytes, and that is not laziness. Rendering text is
+not reproducible across machines: the nine frames committed from CPython 3.11
+differed from the same generator's output on a runner's 3.12 in every frame,
+2-6% of pixels, mean channel delta under 5 - antialiasing, with identical pins
+(Pillow 10.4.0, fontTools 4.59.0, resvg-py 0.4.0) and byte-identical input
+rasters on both sides. build.yml already scopes its asset drift gate to text
+for the same reason ("a stale PNG is cosmetic, a stale appfilter is a broken
+pack"), and the same ranking holds here: a frame whose pixels moved with the
+runner's rasteriser is cosmetic, a frame depicting a layout nobody ships is
+the defect. The structural digest is also the stricter half - it fails on a
+one-dp move that changes a handful of pixels, which a byte comparison would
+only catch by accident of encoding.
+
+The committed PNGs are still the artefact people look at, and `--report`
+still prints both sides' hashes and a pixel-level difference, because when two
+machines disagree that is the only way to see how far apart they are.
 """
 from __future__ import annotations
 
 import hashlib
 import io
+import json
 import os
 import re
 import sys
@@ -238,7 +267,16 @@ def text_width(draw: ImageDraw.ImageDraw, s: str, f) -> int:
     return int(draw.textlength(s, font=f))
 
 
+# What the generator drew, per frame: the machine-independent half of the
+# drift check. Text and pasted art are the content; geometry and colour come
+# from dimens/colors, which the input hashes already cover.
+RECORD: list[str] = []
+
+
 def draw_text(draw, xy, s, f, fill, anchor="la"):
+    RECORD.append("T|{}|{}|{}|{}|{}|{}".format(
+        tuple(xy), s, getattr(f, "size", "?"),
+        Path(getattr(f, "path", "") or "").name, tuple(fill), anchor))
     draw.text(xy, s, font=f, fill=fill, anchor=anchor)
 
 
@@ -458,6 +496,9 @@ def pasted_digest() -> str:
 
 def paste_art(img: Image.Image, path: Path, box, radius: int = 0) -> None:
     PASTED.add(path)
+    RECORD.append("A|{}|{}|{}".format(
+        path.relative_to(ROOT) if path.is_relative_to(ROOT) else path,
+        tuple(box), radius))
     art = Image.open(path).convert("RGBA")
     x0, y0, x1, y1 = box
     bw, bh = x1 - x0, y1 - y0
@@ -1008,14 +1049,45 @@ FRAMES = [
 ]
 
 
-def render(name: str) -> bytes:
+def render(name: str) -> tuple[bytes, str]:
+    """(png bytes, digest of what was drawn) for one frame."""
     for target, build in FRAMES:
         if target == name:
+            RECORD.clear()
             img, note = build()
             buf = io.BytesIO()
             caption(img, note).convert("RGB").save(buf, format="PNG", optimize=True)
-            return buf.getvalue()
+            drawn = hashlib.sha256(
+                ("\n".join(RECORD) + "\n" + note).encode("utf-8")).hexdigest()
+            return buf.getvalue(), drawn
     raise KeyError(name)
+
+
+# Everything a frame depends on, as globs relative to the repo root. The
+# generator's own source is in the list: changing how a frame is drawn without
+# regenerating it is the same drift as changing what it depicts.
+INPUT_GLOBS = (
+    "tools/build_app_ui_mockups.py",
+    "tools/catalog.json",
+    "Latestrelease/version.json",
+    "app/src/main/assets/appfilter.xml",
+    "app/src/main/assets/manifest/wallpapers.json",
+    "app/src/main/res/layout/*.xml",
+    "app/src/main/res/values/*.xml",
+    "tools/fonts/*.ttf",
+)
+MANIFEST = DOCS / "app-ui-mockups.json"
+
+
+def input_hashes() -> dict[str, str]:
+    """{relative path: sha256} for every source the frames are built from."""
+    out: dict[str, str] = {}
+    for pattern in INPUT_GLOBS:
+        for path in sorted(ROOT.glob(pattern)):
+            if path.is_file():
+                out[str(path.relative_to(ROOT))] = hashlib.sha256(
+                    path.read_bytes()).hexdigest()
+    return out
 
 
 def environment() -> str:
@@ -1059,79 +1131,125 @@ def pixel_difference(committed: bytes, fresh: bytes) -> str:
 def main(argv: list[str]) -> int:
     check = "--check" in argv
     report = "--report" in argv
-    drift = []
-    rendered: dict[str, bytes] = {}
+
+    blobs: dict[str, bytes] = {}
+    frames: dict[str, dict] = {}
     for name, _ in FRAMES:
-        blob = render(name)
-        rendered[name] = blob
-        path = DOCS / name
-        if check:
-            if not path.exists():
-                drift.append((name, "missing from docs/"))
-            elif hashlib.sha256(path.read_bytes()).digest() != hashlib.sha256(blob).digest():
-                drift.append((name, "bytes differ"))
-        elif not report:
-            path.write_bytes(blob)
-            print(f"wrote {path.relative_to(ROOT)} ({len(blob) // 1024} KB)")
+        blob, drawn = render(name)
+        blobs[name] = blob
+        frames[name] = {"bytes": len(blob), "structure": drawn}
+
+    inputs = input_hashes()
+    pasted = pasted_digest()
+    inputs_digest = hashlib.sha256(
+        "".join(f"{k}:{v}\n" for k, v in sorted(inputs.items())).encode()
+    ).hexdigest()
+
     if report:
-        # Everything a byte comparison depends on, printed so two machines can
-        # be compared directly. --check says whether they agree; this says why.
         print(f"renderer: {environment()}")
-        print(f"pasted inputs: {len(PASTED)} rasters, aggregate sha256 {pasted_digest()}")
+        print(f"sources: {len(inputs)} files, inputs digest {inputs_digest}")
+        print(f"pasted inputs: {len(PASTED)} rasters, aggregate sha256 {pasted}")
         for name, _ in FRAMES:
             path = DOCS / name
-            committed = (hashlib.sha256(path.read_bytes()).hexdigest()[:16]
-                         if path.exists() else "absent")
-            print(f"  {name:34s} fresh {hashlib.sha256(rendered[name]).hexdigest()[:16]}"
-                  f"  committed {committed}")
+            if not path.exists():
+                print(f"  {name:34s} absent from docs/")
+                continue
+            committed = path.read_bytes()
+            same = hashlib.sha256(committed).digest() == hashlib.sha256(blobs[name]).digest()
+            print(f"  {name:34s} structure {frames[name]['structure'][:16]}"
+                  f"  bytes {'match' if same else pixel_difference(committed, blobs[name])}")
         return 0
-    if check and drift:
-        print(f"mockup drift: {len(drift)} of {len(FRAMES)} frames")
-        print(f"renderer: {environment()}")
-        print(f"pasted inputs: {len(PASTED)} rasters, aggregate sha256 {pasted_digest()}")
-        for name, why in drift:
-            path = DOCS / name
-            line = f"  {name}: {why}"
-            if path.exists():
-                committed = path.read_bytes()
-                line += (f" (committed {hashlib.sha256(committed).hexdigest()[:16]}"
-                         f" {len(committed)} B, fresh"
-                         f" {hashlib.sha256(rendered[name]).hexdigest()[:16]}"
-                         f" {len(rendered[name])} B; {pixel_difference(committed, rendered[name])})")
-            print(line)
+
+    if not check:
+        for name, _ in FRAMES:
+            (DOCS / name).write_bytes(blobs[name])
+            print(f"wrote {(DOCS / name).relative_to(ROOT)} ({len(blobs[name]) // 1024} KB)")
+        MANIFEST.write_text(json.dumps({
+            "note": "Which sources the frames in docs/ were generated from, and "
+                    "what each one depicts. Written by build_app_ui_mockups.py; "
+                    "never hand-edit. The PNG bytes are not recorded on purpose: "
+                    "text rendering is not reproducible across machines, so "
+                    "--check compares the sources and the drawn structure "
+                    "instead. See the module docstring.",
+            "generator": "tools/build_app_ui_mockups.py",
+            "inputs_digest": inputs_digest,
+            "inputs": inputs,
+            "pasted": {"count": len(PASTED), "digest": pasted},
+            "frames": frames,
+        }, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+        print(f"wrote {MANIFEST.relative_to(ROOT)} - {len(inputs)} sources, "
+              f"{len(PASTED)} pasted rasters, {len(FRAMES)} frames")
+        return 0
+
+    problems: list[str] = []
+    if not MANIFEST.exists():
+        problems.append(
+            f"{MANIFEST.relative_to(ROOT)} is missing - the committed frames "
+            "carry no record of the sources they were generated from")
+        manifest: dict = {}
+    else:
+        manifest = json.loads(MANIFEST.read_text(encoding="utf-8"))
+
+    was = manifest.get("inputs", {})
+    changed = sorted(k for k in set(was) & set(inputs) if was[k] != inputs[k])
+    added = sorted(set(inputs) - set(was))
+    removed = sorted(set(was) - set(inputs))
+    if changed:
+        problems.append(f"sources changed since the frames were generated: {changed}")
+    if added:
+        problems.append(f"sources the committed frames never read: {added}")
+    if removed:
+        problems.append(f"sources that no longer exist: {removed}")
+
+    was_pasted = manifest.get("pasted", {})
+    if was_pasted.get("digest") != pasted:
+        problems.append(
+            f"the rasters the frames paste changed (recorded "
+            f"{str(was_pasted.get('digest', '-'))[:16]}, now {pasted[:16]})")
+
+    was_frames = manifest.get("frames", {})
+    for name, _ in FRAMES:
+        path = DOCS / name
+        if not path.exists():
+            problems.append(f"{name} is missing from docs/")
+            continue
+        if was_frames.get(name, {}).get("structure") != frames[name]["structure"]:
+            problems.append(
+                f"{name} does not depict what the sources now say (structure "
+                f"{str(was_frames.get(name, {}).get('structure', '-'))[:16]} "
+                f"recorded, {frames[name]['structure'][:16]} now)")
+        # Corruption and panel width are machine-independent, so they are worth
+        # checking even though pixel bytes are not.
+        try:
+            with Image.open(path) as img:
+                img.load()
+                if img.size[0] != W:
+                    problems.append(
+                        f"{name} is {img.size[0]}px wide, not the {W}px panel")
+        except Exception as e:
+            problems.append(f"{name} does not decode as an image ({e})")
+    stale = sorted(set(was_frames) - {n for n, _ in FRAMES})
+    if stale:
+        problems.append(f"the manifest lists frames the generator no longer builds: {stale}")
+
+    if problems:
+        print(f"mockup drift: {len(problems)} problem(s)")
+        for problem in problems:
+            print("  \u2717 " + problem)
         print("Run: python tools/build_app_ui_mockups.py")
-        print("If the pixels differ only slightly, the renderer moved, not the "
-              "UI: compare `python tools/build_app_ui_mockups.py --report` here "
-              "with the same command on the machine that committed the frames.")
         if os.environ.get("GITHUB_ACTIONS"):
             # A runner's log storage is not always reachable from the workspace
-            # that has to fix the failure, and a byte comparison with no
-            # diagnosis is unfixable at a distance: "drift: a.png, b.png" does
-            # not say whether the UI moved or the renderer did. Annotations are
-            # readable through the API, so the two facts that decide it - the
-            # renderer's identity and the aggregate hash of the rasters pasted -
-            # travel with the failure. Capped, because GitHub keeps ten per
-            # level per run.
-            print(f"::error::mockup drift {len(drift)}/{len(FRAMES)} frames | "
-                  f"renderer: {environment()} | pasted inputs: {len(PASTED)} "
-                  f"rasters, aggregate sha256 {pasted_digest()[:16]}")
-            for name, why in drift[:5]:
-                path = DOCS / name
-                detail = why
-                if path.exists():
-                    committed = path.read_bytes()
-                    detail = (f"committed {hashlib.sha256(committed).hexdigest()[:16]}"
-                              f"/{len(committed)}B fresh"
-                              f" {hashlib.sha256(rendered[name]).hexdigest()[:16]}"
-                              f"/{len(rendered[name])}B | "
-                              f"{pixel_difference(committed, rendered[name])}")
-                print(f"::error::{name}: {detail}")
-            if len(drift) > 5:
-                print(f"::error::and {len(drift) - 5} more drifted frames")
+            # that has to fix the failure, so the diagnosis travels as
+            # annotations. Capped: GitHub keeps ten per level per run.
+            print(f"::error::mockup drift, {len(problems)} problem(s) | "
+                  f"{environment()} | inputs digest {inputs_digest[:16]}")
+            for problem in problems[:6]:
+                print(f"::error::{problem[:400]}")
         return 1
-    if check:
-        print(f"mockups ok - {len(FRAMES)} frames match docs/ ({environment()}; "
-              f"{len(PASTED)} pasted rasters, aggregate sha256 {pasted_digest()[:16]})")
+
+    print(f"mockups ok - {len(FRAMES)} frames depict the {len(inputs)} sources "
+          f"in the tree ({len(PASTED)} pasted rasters, inputs digest "
+          f"{inputs_digest[:16]})")
     return 0
 
 

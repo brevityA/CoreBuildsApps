@@ -124,7 +124,14 @@ prefills `input`/`textarea` fields only, and the tool refuses to promise more.
   `python tests/test_tv_scale.py` (the dp box normalises per panel), and
   `python tools/build_app_ui_mockups.py --check` against the frames committed in
   `docs/` — regenerate them with the same tool and no flag after any layout
-  change, then commit the PNGs.
+  change, then commit the PNGs *and* `docs/app-ui-mockups.json`. The check
+  compares sources and drawn structure, not PNG bytes: the manifest records a
+  hash of every layout, values file, catalog, manifest, font and pasted raster
+  the frames were built from, plus the generator's own source and what each
+  frame drew. Text rendering is not reproducible across machines — the same
+  pins on CPython 3.11 and 3.12 differ in every frame — so bytes are the wrong
+  thing to compare, and structure is the stricter half anyway: it fails on a
+  one-dp move.
 - Changelog: `python tests/test_changelog_contract.py`. `## [Unreleased]` runs
   Added, Changed, Fixed once each, in that order, every top-level bullet leading
   `- **Name.**` — `prepare_release.py` takes those leads as the in-app what's-new
