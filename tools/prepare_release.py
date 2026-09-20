@@ -122,7 +122,7 @@ def changelog_highlights(text: str) -> list[str]:
             # to update, and `tools/build_app_ui_mockups.py` is not a reason.
             # The convention is the backticked path in the lead, so a bullet
             # opts out of the card by naming its own machinery.
-            if lead.startswith(("`tests/", "`test_", "`tools/")):
+            if lead.startswith(("`tests/", "`test_", "`tools/", "`.github/")):
                 continue
             if lead:
                 out.append(lead)

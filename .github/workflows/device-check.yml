@@ -115,6 +115,18 @@ jobs:
 
           EXPECTED=$(python3 -c "import json;print(len(json.load(open('tools/catalog.json'))['icons']))")
 
+          # The home screen's count line, derived instead of quoted. It renders
+          # R.string.pack_stats_fmt with the catalog's icon count and the
+          # component count MainActivity.mappedComponents() makes exactly the
+          # way this does: occurrences of `component=` in the bundled appfilter.
+          # Quoting the rendered sentence is what let this check rot - the
+          # two-pane redesign changed the copy from "943 icons installed" to
+          # "943 icons - 1765 components" and the assertion quietly became a
+          # claim about a UI nobody ships. Reading the format string means the
+          # check follows the copy rather than pinning it, and a stripped or
+          # stale icon_pack.xml or appfilter still changes the number.
+          EXPECTED_LINE=$(python3 -c 'import json,re,pathlib; fmt=re.search(r"""name="pack_stats_fmt">([^<]+)<""",pathlib.Path("app/src/main/res/values/strings.xml").read_text()).group(1); icons=len(json.load(open("tools/catalog.json"))["icons"]); comps=pathlib.Path("app/src/main/assets/appfilter.xml").read_text().count("component="); print(fmt.replace("%1$d",str(icons)).replace("%2$d",str(comps)))')
+
           echo "::group::Install both packs side by side"
           # Order matters. The second install is the one that would fail if the
           # two packs ever shared a FileProvider authority.
@@ -207,20 +219,20 @@ jobs:
             # same catalog, so both must report the same count.
             adb shell uiautomator dump /sdcard/ui.xml >/dev/null
             adb pull /sdcard/ui.xml "ui-$PKG.xml" >/dev/null
-            if ! grep -q "$EXPECTED icons installed" "ui-$PKG.xml"; then
-              echo "::error::[$LABEL] Expected the UI to report '$EXPECTED icons installed'; it did not."
+            if ! grep -qF "$EXPECTED_LINE" "ui-$PKG.xml"; then
+              echo "::error::[$LABEL] Expected the UI to report '$EXPECTED_LINE'; it did not."
               echo "Rendered text nodes:"
               grep -o 'text="[^"]*"' "ui-$PKG.xml" | sort -u
               exit 1
             fi
-            echo "$LABEL UI reports $EXPECTED icons installed"
+            echo "$LABEL UI reports $EXPECTED_LINE"
             echo "::endgroup::"
           }
 
           check_pack "Icon Pack" "$CLASSIC_PKG" "$CLASSIC_ACT"
           check_pack "Pop" "$POP_PKG" "$POP_ACT"
 
-          echo "Device check passed: both packs installed side by side, discoverable, launched, $EXPECTED icons loaded each."
+          echo "Device check passed: both packs installed side by side, discoverable, launched, each reporting '$EXPECTED_LINE'."
           DEVICE_CHECK
           chmod +x "$RUNNER_TEMP/device-check.sh"
 
