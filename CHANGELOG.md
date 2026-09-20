@@ -6,6 +6,8 @@ All notable changes to the Core Builds Icon Pack. Format follows
 
 ## [Unreleased]
 
+## [1.9.1] — 2026-09-20
+
 ### Fixed
 
 - **Pressing an unmapped app in the auditor crashed the screen.** The

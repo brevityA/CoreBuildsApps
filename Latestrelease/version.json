@@ -1,6 +1,6 @@
 {
-  "versionCode": 32,
-  "versionName": "1.9.0",
+  "versionCode": 33,
+  "versionName": "1.9.1",
   "iconCount": 943,
   "componentCount": 1157,
   "releaseDate": "2026-09-20",
@@ -8,13 +8,6 @@
   "releaseNotesUrl": "https://github.com/brevityA/CoreBuildsApps/releases",
   "minSdk": 21,
   "highlights": [
-    "The app now wears its design sheets",
-    "The UI renders at the same physical size on every TV panel",
-    "Later, on the update bar",
-    "Pixel Neon's no-results state was a blank grid with two dead buttons",
-    "A pending update could collapse the catalogue to chrome",
-    "Two UP presses from the search box made the catalogue look dead",
-    "The inspector listed no components and Launch was a dead button",
-    "The wallpaper preview yanked the cursor back to Set mid-browse"
+    "Pressing an unmapped app in the auditor crashed the screen"
   ]
 }
