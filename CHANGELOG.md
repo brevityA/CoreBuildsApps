@@ -63,8 +63,30 @@ All notable changes to the Core Builds Icon Pack. Format follows
   session. The check still runs and `pendingUpdate` still stands, so About and
   Settings keep reporting the update and Download is one screen away.
 
+### Added
+
+- **A gate that audits menus.** `tests/test_navigation_graph.py`, in all three
+  modules: every `clickable="true"` view in every activity and item layout is
+  named by a handler in the Kotlin that inflates it (row roots bound through
+  `itemView` excepted, and documented); every activity in the manifest is
+  reachable from MainActivity by following `Intent(..., X::class.java)`; every
+  `nextFocus*` edge ends on a view that can hold the cursor, bar one documented
+  "stay put" edge per screen; and every `requestFocus()` names an id some
+  layout declares. It exists because a redesign that restacks whole screens
+  can leave a button with no listener or a screen with no door, and neither
+  shows up in a layout diff.
+
 ### Fixed
 
+- **Pixel Neon's no-results state was a blank grid with two dead buttons.**
+  `activity_main.xml` carried the empty state - title, explanation, "Clear
+  search", "Show all N icons" - with both buttons `clickable="true"` and no
+  code behind any of it: `applyFilter()` never toggled the container, so a
+  filter with no match rendered an empty grid and no way back but backspacing,
+  and had the container ever been shown the buttons would have swallowed
+  presses. Ported Core Builds' `bindEmptyState`/`bindEmptyActions` and the
+  chain's "down from the chips names whatever is on screen" edge into the
+  fork. Found by the menu audit above, which is why the audit is now a gate.
 - **A pending update could collapse the catalogue to chrome.** The bar stacked
   every highlight in `version.json` — eight at present, ~160dp of bullets —
   under the label and the download explanation inside fixed chrome whose
