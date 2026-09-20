@@ -244,7 +244,18 @@ def font(role: str, size_sp: float, bold: bool = False) -> ImageFont.FreeTypeFon
             ("mono", False): FONTS / "DejaVuSansMono.ttf",
             ("mono", True): FONTS / "DejaVuSansMono-Bold.ttf",
         }[(role, bold)]
-        _FONT_CACHE[key] = ImageFont.truetype(str(path), px)
+        # Layout engine pinned to BASIC on purpose, and this is the pin that
+        # matters. Pillow uses raqm/harfbuzz for shaping and measurement when
+        # the wheel can find it, and falls back to FreeType's own advances when
+        # it cannot - so whether a runner has libraqm installed changes how wide
+        # a string measures, which changes where wrap() breaks a line and where
+        # a centred label sits. Same Pillow version, same fonts, same sources,
+        # different frames: nine of nine differed between a workspace on CPython
+        # 3.11 without raqm and a runner on 3.12, by 2-6% of pixels. BASIC is
+        # available everywhere, so the frames are laid out by the same rules on
+        # every machine that renders them.
+        _FONT_CACHE[key] = ImageFont.truetype(
+            str(path), px, layout_engine=ImageFont.Layout.BASIC)
     return _FONT_CACHE[key]
 
 
@@ -1090,10 +1101,33 @@ def input_hashes() -> dict[str, str]:
     return out
 
 
+# A fixed string, measured in every font the frames used. Neither a source nor
+# a drawn label: the rasteriser's opinion of its own metrics. When two machines
+# disagree about a frame this is what separates "a source moved" from "the
+# layout engine moved", which are different failures with different fixes.
+METRIC_PROBE = "Handgloves 943 \u00b7 components \u2014 Wi"
+
+
+def metrics_probe() -> dict[str, float]:
+    """{font@px: width of METRIC_PROBE}. Call after rendering, so every font
+    the frames actually used is in the cache."""
+    scratch = ImageDraw.Draw(Image.new("RGB", (8, 8)))
+    return {
+        f"{role}@{px}": round(scratch.textlength(METRIC_PROBE, font=f), 3)
+        for (role, px), f in sorted(_FONT_CACHE.items())
+    }
+
+
 def environment() -> str:
     """The renderer's identity: what a byte comparison is actually between."""
     import platform
     parts = [f"python {platform.python_version()}"]
+    try:
+        from PIL import features
+        parts.append(f"freetype {features.version('freetype2')}")
+        parts.append(f"layout {'raqm' if features.check('raqm') else 'basic'}")
+    except Exception:
+        pass
     for mod, attr in (("PIL", "__version__"), ("qrcode", "__version__"),
                       ("fontTools", "version"), ("resvg_py", "__version__")):
         try:
@@ -1141,6 +1175,7 @@ def main(argv: list[str]) -> int:
 
     inputs = input_hashes()
     pasted = pasted_digest()
+    metrics = metrics_probe()
     inputs_digest = hashlib.sha256(
         "".join(f"{k}:{v}\n" for k, v in sorted(inputs.items())).encode()
     ).hexdigest()
@@ -1149,6 +1184,8 @@ def main(argv: list[str]) -> int:
         print(f"renderer: {environment()}")
         print(f"sources: {len(inputs)} files, inputs digest {inputs_digest}")
         print(f"pasted inputs: {len(PASTED)} rasters, aggregate sha256 {pasted}")
+        print(f"metrics probe {METRIC_PROBE!r}: "
+              + ", ".join(f"{k}={v}" for k, v in sorted(metrics.items())))
         for name, _ in FRAMES:
             path = DOCS / name
             if not path.exists():
@@ -1175,6 +1212,8 @@ def main(argv: list[str]) -> int:
             "inputs_digest": inputs_digest,
             "inputs": inputs,
             "pasted": {"count": len(PASTED), "digest": pasted},
+            "metrics": metrics,
+            "renderer": environment(),
             "frames": frames,
         }, indent=2, sort_keys=True) + "\n", encoding="utf-8")
         print(f"wrote {MANIFEST.relative_to(ROOT)} - {len(inputs)} sources, "
@@ -1201,6 +1240,19 @@ def main(argv: list[str]) -> int:
     if removed:
         problems.append(f"sources that no longer exist: {removed}")
 
+    was_metrics = manifest.get("metrics", {})
+    if was_metrics != metrics:
+        differing = [
+            f"{k}: recorded {was_metrics.get(k, 'absent')}, here {metrics[k]}"
+            for k in sorted(set(was_metrics) | set(metrics))
+            if was_metrics.get(k) != metrics.get(k)
+        ]
+        problems.append(
+            "text metrics differ, so the frames would be laid out differently "
+            f"here than where they were committed ({'; '.join(differing[:6])}). "
+            "Pillow measures through raqm/harfbuzz when it can find it and "
+            "through FreeType when it cannot; font() pins BASIC, so if this "
+            "fires the pin has been lost or the fonts have moved")
     was_pasted = manifest.get("pasted", {})
     if was_pasted.get("digest") != pasted:
         problems.append(

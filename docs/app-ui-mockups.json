@@ -64,17 +64,29 @@
     "app/src/main/res/values/strings.xml": "a5552082b8acd315b9361c96a3666fa57f6c54883c872db9fc993774a2f25bb9",
     "app/src/main/res/values/suite_hub.xml": "69ac213b6d898884f21bc8b56043053c3e08444415e50450f29fec6a48317213",
     "app/src/main/res/values/themes.xml": "ecac526951fe40b6c5c01df0ec36730d0e197fd9511862cf587a2143773b46be",
-    "tools/build_app_ui_mockups.py": "e159eca1fcfedae354339cb1bb7ce76cb267c6baa8e112d9d48ff2af9a201896",
+    "tools/build_app_ui_mockups.py": "62d1aeb3c6bb8f414ec0d1d8e59a93ba28ad2ef58f43926b88d2919a2137a532",
     "tools/catalog.json": "405316548da8da86c3ec68bb9376a804971f25feab7daeee17812441cc2e3adf",
     "tools/fonts/DejaVuSansMono-Bold.ttf": "2964f6dac8e6e9d71613928340f17bf868e9ea51692cca333c79e74962f02233",
     "tools/fonts/DejaVuSansMono.ttf": "0f5db4f1749979d961019838b160bec74abdf7f9eca69553fe1aa856bbff49a4",
     "tools/fonts/Outfit-Bold.ttf": "04f7c9705153927058475d6c5e9f75b0a1036ec5f6f63ffb69df046191ea8933",
     "tools/fonts/Outfit-ExtraBold.ttf": "056e8cd5840cea4cfc355f672292f7de00d95f5a42bf9b7cd96d511ca8e2883e"
   },
-  "inputs_digest": "0d9766c2e85855277290084a0022d2d796c14b4fd6a0fc8e83054d0e678e442b",
+  "inputs_digest": "ed1ccf85342e9ca47576f2854a51e7b70e05175548425ec1e1ccfde265e9a77e",
+  "metrics": {
+    "mono-bold@24": 448.0,
+    "mono-bold@32": 608.0,
+    "mono@20": 384.0,
+    "mono@28": 544.0,
+    "sans-bold@32": 526.0,
+    "sans-bold@34": 557.0,
+    "sans-bold@64": 1045.0,
+    "sans@28": 448.0,
+    "sans@32": 514.0
+  },
   "note": "Which sources the frames in docs/ were generated from, and what each one depicts. Written by build_app_ui_mockups.py; never hand-edit. The PNG bytes are not recorded on purpose: text rendering is not reproducible across machines, so --check compares the sources and the drawn structure instead. See the module docstring.",
   "pasted": {
     "count": 19,
     "digest": "4915e6d1e38b484b850ee89ccef34baa55642d77a490df3072f95e34ee03a339"
-  }
+  },
+  "renderer": "python 3.11.2, freetype 2.13.2, layout basic, PIL 10.4.0, qrcode installed, fontTools 4.59.0, resvg_py 0.4.0"
 }
