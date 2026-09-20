@@ -50,6 +50,7 @@ from __future__ import annotations
 
 import hashlib
 import io
+import os
 import re
 import sys
 import urllib.parse
@@ -439,7 +440,24 @@ def rail_box() -> tuple[int, int, int]:
     return g, g + rail, g + rail + gap
 
 
+# Every raster a frame pastes, recorded so --check can prove whether the inputs
+# it rendered from are the inputs that were committed. Byte-compared output is
+# only meaningful if both sides started from the same art.
+PASTED: set[Path] = set()
+
+
+def pasted_digest() -> str:
+    """sha256 over the sorted (path, sha256) pairs of every raster pasted."""
+    h = hashlib.sha256()
+    for path in sorted(PASTED):
+        rel = path.relative_to(ROOT) if path.is_relative_to(ROOT) else path
+        h.update(str(rel).encode())
+        h.update(hashlib.sha256(path.read_bytes()).digest() if path.exists() else b"MISSING")
+    return h.hexdigest()
+
+
 def paste_art(img: Image.Image, path: Path, box, radius: int = 0) -> None:
+    PASTED.add(path)
     art = Image.open(path).convert("RGBA")
     x0, y0, x1, y1 = box
     bw, bh = x1 - x0, y1 - y0
@@ -1000,26 +1018,120 @@ def render(name: str) -> bytes:
     raise KeyError(name)
 
 
+def environment() -> str:
+    """The renderer's identity: what a byte comparison is actually between."""
+    import platform
+    parts = [f"python {platform.python_version()}"]
+    for mod, attr in (("PIL", "__version__"), ("qrcode", "__version__"),
+                      ("fontTools", "version"), ("resvg_py", "__version__")):
+        try:
+            parts.append(f"{mod} {getattr(__import__(mod), attr, 'installed')}")
+        except Exception:
+            parts.append(f"{mod} absent")
+    return ", ".join(parts)
+
+
+def pixel_difference(committed: bytes, fresh: bytes) -> str:
+    """How far apart two renders are, which separates a rasteriser's
+    antialiasing (many pixels off by one) from different content (few pixels,
+    far apart) - the two call for completely different fixes."""
+    # A diagnostic that can crash is worse than no diagnostic: the committed
+    # side is exactly the thing under suspicion, so it may not decode.
+    try:
+        a = Image.open(io.BytesIO(committed)).convert("RGB")
+    except Exception as e:
+        return f"committed bytes do not decode as an image ({e})"
+    try:
+        b = Image.open(io.BytesIO(fresh)).convert("RGB")
+    except Exception as e:
+        return f"fresh render does not decode as an image ({e})"
+    if a.size != b.size:
+        return f"dimensions {a.size} vs {b.size}"
+    deltas = [
+        max(abs(x[0] - y[0]), abs(x[1] - y[1]), abs(x[2] - y[2]))
+        for x, y in zip(a.getdata(), b.getdata())
+    ]
+    changed = sum(1 for d in deltas if d)
+    return (f"{changed}/{len(deltas)} pixels differ ({100 * changed / len(deltas):.2f}%), "
+            f"mean channel delta {sum(deltas) / len(deltas):.3f}, max {max(deltas)}")
+
+
 def main(argv: list[str]) -> int:
     check = "--check" in argv
+    report = "--report" in argv
     drift = []
+    rendered: dict[str, bytes] = {}
     for name, _ in FRAMES:
         blob = render(name)
+        rendered[name] = blob
         path = DOCS / name
         if check:
             if not path.exists():
-                drift.append(f"{name} missing")
+                drift.append((name, "missing from docs/"))
             elif hashlib.sha256(path.read_bytes()).digest() != hashlib.sha256(blob).digest():
-                drift.append(name)
-        else:
+                drift.append((name, "bytes differ"))
+        elif not report:
             path.write_bytes(blob)
             print(f"wrote {path.relative_to(ROOT)} ({len(blob) // 1024} KB)")
+    if report:
+        # Everything a byte comparison depends on, printed so two machines can
+        # be compared directly. --check says whether they agree; this says why.
+        print(f"renderer: {environment()}")
+        print(f"pasted inputs: {len(PASTED)} rasters, aggregate sha256 {pasted_digest()}")
+        for name, _ in FRAMES:
+            path = DOCS / name
+            committed = (hashlib.sha256(path.read_bytes()).hexdigest()[:16]
+                         if path.exists() else "absent")
+            print(f"  {name:34s} fresh {hashlib.sha256(rendered[name]).hexdigest()[:16]}"
+                  f"  committed {committed}")
+        return 0
     if check and drift:
-        print("mockup drift:", ", ".join(drift))
+        print(f"mockup drift: {len(drift)} of {len(FRAMES)} frames")
+        print(f"renderer: {environment()}")
+        print(f"pasted inputs: {len(PASTED)} rasters, aggregate sha256 {pasted_digest()}")
+        for name, why in drift:
+            path = DOCS / name
+            line = f"  {name}: {why}"
+            if path.exists():
+                committed = path.read_bytes()
+                line += (f" (committed {hashlib.sha256(committed).hexdigest()[:16]}"
+                         f" {len(committed)} B, fresh"
+                         f" {hashlib.sha256(rendered[name]).hexdigest()[:16]}"
+                         f" {len(rendered[name])} B; {pixel_difference(committed, rendered[name])})")
+            print(line)
         print("Run: python tools/build_app_ui_mockups.py")
+        print("If the pixels differ only slightly, the renderer moved, not the "
+              "UI: compare `python tools/build_app_ui_mockups.py --report` here "
+              "with the same command on the machine that committed the frames.")
+        if os.environ.get("GITHUB_ACTIONS"):
+            # A runner's log storage is not always reachable from the workspace
+            # that has to fix the failure, and a byte comparison with no
+            # diagnosis is unfixable at a distance: "drift: a.png, b.png" does
+            # not say whether the UI moved or the renderer did. Annotations are
+            # readable through the API, so the two facts that decide it - the
+            # renderer's identity and the aggregate hash of the rasters pasted -
+            # travel with the failure. Capped, because GitHub keeps ten per
+            # level per run.
+            print(f"::error::mockup drift {len(drift)}/{len(FRAMES)} frames | "
+                  f"renderer: {environment()} | pasted inputs: {len(PASTED)} "
+                  f"rasters, aggregate sha256 {pasted_digest()[:16]}")
+            for name, why in drift[:5]:
+                path = DOCS / name
+                detail = why
+                if path.exists():
+                    committed = path.read_bytes()
+                    detail = (f"committed {hashlib.sha256(committed).hexdigest()[:16]}"
+                              f"/{len(committed)}B fresh"
+                              f" {hashlib.sha256(rendered[name]).hexdigest()[:16]}"
+                              f"/{len(rendered[name])}B | "
+                              f"{pixel_difference(committed, rendered[name])}")
+                print(f"::error::{name}: {detail}")
+            if len(drift) > 5:
+                print(f"::error::and {len(drift) - 5} more drifted frames")
         return 1
     if check:
-        print(f"mockups ok - {len(FRAMES)} frames match docs/")
+        print(f"mockups ok - {len(FRAMES)} frames match docs/ ({environment()}; "
+              f"{len(PASTED)} pasted rasters, aggregate sha256 {pasted_digest()[:16]})")
     return 0
 
 
