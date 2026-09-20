@@ -55,6 +55,19 @@ Why these checks exist, one class at a time:
                      and pins the generated deep-link resource in both
                      packs plus the vendored encoder's notice entry.
 
+  format specifiers  getString(id, args) runs the string through
+                     java.util.Formatter, whose only literal percent is
+                     %%; a bare %5B parses as width 5 plus a boolean
+                     conversion and throws before any URL exists, which
+                     is how every auditor row press killed the screen in
+                     1.9.0. Every <string> in every values*/*.xml of all
+                     three packs must be grammar the Formatter can honour
+                     (formatted="false" is the documented exemption), and
+                     the auditor's deep link must additionally decode
+                     back, after the %% collapse the runtime performs, to
+                     the prefilled issue shape with all three positional
+                     fields and no %% left in what the screen builds.
+
 Usage:
     python tests/test_ui_wiring.py
 """
@@ -380,8 +393,121 @@ def collect() -> list[str]:
     return problems
 
 
+# java.util.Formatter's grammar, which String.format applies to every
+# resource read with getString(id, args): a positional conversion
+# (%1$s, %2$d, %3$f) or the %% escape for one literal percent. Anything
+# else after a % is a parse, never text.
+FORMAT_GRAMMAR = re.compile(r"%(?:%|\d+\$[sdf])")
+
+# The auditor's built deep link, structurally: the issue form's title prefix
+# URL-encoded exactly once (%5B...%5D for its brackets), a space, the label
+# placeholder, then the three prefillable fields in the order
+# AuditorActivity passes them, ending the string.
+AUDIT_LINK_SHAPE = re.compile(
+    r"title=%5B(?P<prefix>[^&%]*)%5D\+%1\$s"
+    r"&app_name=%1\$s&component=%2\$s&notes=%3\$s\Z")
+
+
+def first_unhonourable_percent(body: str) -> int | None:
+    """Offset of the first % the Formatter would parse as anything but a
+    placeholder or an escape, or None. Walks left to right the way the
+    Formatter itself does, so the second % of a %% pair is consumed by the
+    first rather than flagged."""
+    i = 0
+    while i < len(body):
+        if body[i] == "%":
+            matched = FORMAT_GRAMMAR.match(body, i)
+            if not matched:
+                return i
+            i = matched.end()
+        else:
+            i += 1
+    return None
+
+
+def format_string_problems() -> list[str]:
+    """Percent signs the runtime's format grammar cannot honour, pack-wide.
+
+    getString(id, args) runs the resource through String.format, whose only
+    literal percent is %%. A URL-encoded value written into a fmt string
+    bare - %5B for a '[' - parses as width 5 plus conversion 'B' (boolean)
+    and throws IllegalFormatConversionException on the first String
+    argument, which is exactly how every auditor row press killed the
+    screen in 1.9.0: the resource matched the issue forms byte-for-byte,
+    every gate was green, and the Formatter still refused it. So every
+    <string> in every values*/*.xml of all three packs must be grammar the
+    Formatter can honour; formatted="false" is the documented exemption,
+    because Android serves a string marked that way raw and nothing may
+    ever pass args to it.
+
+    The auditor's deep link gets a structural check on top of the scan:
+    after the same %% -> % collapse the runtime performs, it must decode
+    back to the prefilled issue shape - the form's title prefix encoded
+    once, the three positional fields in order - with no %% left in what
+    the screen would build. That is what QrBitmap is handed, so it is what
+    a scan from the couch opens.
+    """
+    problems: list[str] = []
+    for module, base in (
+        ("app", ROOT / "app" / "src" / "main" / "res"),
+        ("pop", ROOT / "pop" / "src" / "main" / "res"),
+        ("pixel-neon", ROOT / "pixel-neon" / "app" / "src" / "main" / "res"),
+    ):
+        values = sorted(base.glob("values*/*.xml"))
+        if not values:
+            problems.append(f"{module}: no values*/*.xml under {base}")
+        for path in values:
+            for element in re.finditer(r"<string\b([^>]*)>(.*?)</string>",
+                                       read(path), re.S):
+                attrs, body = element.groups()
+                if 'formatted="false"' in attrs:
+                    # The documented exemption: Android serves the string
+                    # raw, so no formatting grammar ever applies to it.
+                    continue
+                offset = first_unhonourable_percent(body)
+                if offset is not None:
+                    name = re.search(r'name="([^"]+)"', attrs)
+                    name = name.group(1) if name else "?"
+                    problems.append(
+                        f"{module} {path.relative_to(ROOT)}:{name}: percent at "
+                        f"offset {offset} is not a placeholder or a %% escape - "
+                        "String.format would parse it as a conversion "
+                        f"({body[offset:offset + 7]!r}); double it, or mark the "
+                        'string formatted="false" if nothing ever formats it')
+    for res in (ROOT / "app" / "src" / "main" / "res" / "values" / "issue_prefill.xml",
+                ROOT / "pop" / "src" / "main" / "res" / "values" / "issue_prefill.xml"):
+        if not res.is_file():
+            continue  # the wiring block above already fails a missing file
+        match = re.search(r'<string name="audit_issue_url_fmt">(.*?)</string>',
+                          read(res), re.S)
+        if not match:
+            problems.append(f"{res.relative_to(ROOT)}: no audit_issue_url_fmt string")
+            continue
+        # What the Formatter leaves after handling literals: each %% becomes
+        # one %, placeholders stay as tokens, and a percent the grammar
+        # rejects stays too - the scan above is what catches that one.
+        built = FORMAT_GRAMMAR.sub(
+            lambda m: "%" if m.group(0) == "%%" else m.group(0),
+            match.group(1)).replace("&amp;", "&")
+        rel = res.relative_to(ROOT)
+        if not built.startswith(
+                "https://github.com/brevityA/CoreBuildsApps/issues/new?"):
+            problems.append(f"{rel}: the built link must open the repo's "
+                            f"new-issue route, got {built[:60]!r}")
+        if "%%" in built:
+            problems.append(f"{rel}: a %% escape survived into the built link "
+                            "- an escape applied to a placeholder, or twice "
+                            "to a literal, prints instead of resolving")
+        if not AUDIT_LINK_SHAPE.search(built):
+            problems.append(
+                f"{rel}: the built link does not decode back to the prefilled "
+                "shape (title=%5B...%5D+%1$s&app_name=%1$s&component=%2$s"
+                "&notes=%3$s)")
+    return problems
+
+
 def main() -> int:
-    problems = collect()
+    problems = collect() + format_string_problems()
     if problems:
         print(f"ui wiring gate: {len(problems)} problem(s)")
         for p in problems:
@@ -389,7 +515,7 @@ def main() -> int:
         return 1
     print("ui wiring gate ok - 2 manifests, 5 permissions, auditor visibility, "
           "wallpapers/export/preview wiring, launcher tools + FAQ + what's-new "
-          "+ QR auditor locked")
+          "+ QR auditor + format specifiers locked")
     return 0
 
 
@@ -404,6 +530,10 @@ class UiWiring(unittest.TestCase):
 
     def test_wiring(self) -> None:
         self.assertEqual(collect(), [])
+
+    def test_format_strings(self) -> None:
+        """The gate 1.9.0's auditor crash paid for, under pytest too."""
+        self.assertEqual(format_string_problems(), [])
 
 
 if __name__ == "__main__":

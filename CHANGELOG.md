@@ -6,6 +6,23 @@ All notable changes to the Core Builds Icon Pack. Format follows
 
 ## [Unreleased]
 
+## [1.9.1] — 2026-09-20
+
+### Fixed
+
+- **Pressing an unmapped app in the auditor crashed the screen.** The
+  generated deep-link template carried its URL-encoded title prefix as a
+  bare `%5B`, and the screen reads that template through
+  `getString(id, args)` — `String.format`, whose grammar parses `%5B` as
+  width 5 plus a boolean conversion and throws before any URL exists; every
+  row press, on every TV, since the string was introduced in 1.8.21. The
+  generator now writes every literal percent as `%%` (the grammar's
+  escape), and a new gate in the wiring suite scans every string resource
+  in all three packs with the Formatter's grammar, so a percent the runtime
+  cannot honour cannot ship again. AGENTS.md's Pop receipt, which had
+  drifted from the validator's current output, is refreshed in passing
+  (14767 → 14775 checks).
+
 ## [1.9.0] — 2026-09-20
 
 ### Added
