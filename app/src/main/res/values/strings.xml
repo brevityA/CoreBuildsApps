@@ -1,13 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Core Builds Icon Pack</string>
-    <string name="kicker">CORE BUILDS · ICON PACK</string>
+    <string name="kicker">CORE BUILDS ICON PACK</string>
     <string name="tagline">Transparent app icons for Projectivy on Android TV.</string>
     <!-- Version comes from BuildConfig.VERSION_NAME at runtime, never from
          here. This string shipped "pack v1.5.1" hardcoded for every release
          from 1.5.1 to 1.8.8. -->
     <string name="icon_count_fmt">%1$d icons installed · pack v%2$s</string>
     <string name="icon_filter_fmt">%1$d of %2$d icons</string>
+
+    <!-- Home screen, design-sheet grammar (docs/design/app-ui-apply-wallpapers.png):
+         the header count names icons and mapped components, the search field
+         carries the catalogue size as its hint, and the launcher row sits under
+         an ALSO APPLIES TO kicker. -->
+    <string name="pack_stats_fmt">%1$d icons - %2$d components</string>
+    <string name="search_hint_fmt">Search %1$d icons</string>
+    <string name="cta_also_applies">ALSO APPLIES TO</string>
+    <string name="settings_entry_sub">Updates, display, storage, launcher and help</string>
+    <string name="about_entry_sub_fmt">Version %1$s - update check</string>
+    <string name="wp_sub_fmt">%1$d walls - series chips filter the grid</string>
 
     <!-- Empty state. Without it a filter with no match renders a blank grid
          and gives the user nothing to undo. -->
@@ -30,6 +41,7 @@
     <string name="picker_chip_square">Square</string>
     <string name="picker_failed_fmt">Could not deliver %1$s to the launcher.</string>
     <string name="cta_open_projectivy">Open Projectivy settings</string>
+    <string name="cta_apply">Apply</string>
     <string name="cta_sub">Opens Projectivy. Set it under Appearance → Cards → Icon Pack. Nothing is changed for you.</string>
     <string name="projectivy_opened">Projectivy opened. Go to Appearance → Cards → Icon Pack → Core Builds.</string>
     <string name="projectivy_missing">Projectivy Launcher is not installed (com.spocky.projengmenu). Install it, then apply the pack from its settings.</string>
@@ -47,6 +59,7 @@
     <string name="update_failed_fmt">Update failed: %1$s</string>
     <string name="update_checking">Checking for updates…</string>
     <string name="update_download">Download v%1$s</string>
+    <string name="update_later">Later</string>
     <string name="update_sub_download">Pulls the APK from GitHub, then the system installer takes over. Nothing installs itself.</string>
     <string name="update_progress_fmt">Downloading… %1$s</string>
     <string name="update_progress_of_fmt">Downloading… %1$s of %2$s</string>
@@ -68,7 +81,7 @@
     <!-- No resolution claim here on purpose. 40 walls are 3840x2160 and the 10
          series-6 walls are 1376x768; a blanket "4K" was false for a fifth of
          the collection. Each preview states its own real resolution. -->
-    <string name="wp_entry_sub_fmt">%1$d Core Builds wallpapers</string>
+    <string name="wp_entry_sub_fmt">%1$d walls - export to Pictures/CoreBuilds</string>
     <string name="wp_downloading_fmt">Downloading… %1$d KB</string>
     <string name="wp_downloading_of_fmt">Downloading… %1$d of %2$d KB</string>
     <string name="wp_download_failed_fmt">Download failed: %1$s</string>
@@ -98,8 +111,8 @@
     <string name="wp_after_export_hint_monet">Send them to Monet, or pick the CoreBuilds folder under Monet Settings → Background → Sources.</string>
 
     <!-- Wallpaper export to Pictures (for launcher auto-rotation) -->
-    <string name="wp_export">Export</string>
-    <string name="wp_export_sub">Copy selected wallpapers to Pictures/CoreBuilds for your launcher to rotate.</string>
+    <string name="wp_export">Export to Pictures/CoreBuilds</string>
+    <string name="wp_export_sub">Export copies the masters into Pictures/CoreBuilds - launchers like Monet rotate that folder as a background source (Monet Settings - Background - Sources).</string>
     <string name="wp_select">Select</string>
     <string name="wp_cancel">Cancel</string>
     <string name="wp_select_all">Select all</string>

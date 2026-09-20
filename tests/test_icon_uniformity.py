@@ -54,6 +54,7 @@ Usage:
 """
 from __future__ import annotations
 
+import unittest
 import io
 import json
 import sys
@@ -100,7 +101,8 @@ def ink_box(glyph_name: str) -> tuple[float, float]:
     return (box[2] - box[0]) / GRID, (box[3] - box[1]) / GRID
 
 
-def main() -> int:
+def collect() -> tuple[list[str], int]:
+    """Every uniformity problem, plus how many tile glyphs were measured."""
     problems: list[str] = []
     for name in sorted(CONTAINER_GRAMMAR):
         if name not in glyphs.GLYPHS:
@@ -137,6 +139,11 @@ def main() -> int:
                 "the RB4 signature; containers span both axes, wordmarks stay narrow"
             )
 
+    return problems, scanned
+
+
+def main() -> int:
+    problems, scanned = collect()
     if problems:
         print(f"uniformity gate: {len(problems)} problem(s)")
         for p in problems:
@@ -145,6 +152,25 @@ def main() -> int:
     print(f"uniformity gate ok \u2014 {len(CONTAINER_GRAMMAR)} container marks in band, "
           f"{scanned} shipped tile glyphs clear of the full-width band signature")
     return 0
+
+
+class IconUniformity(unittest.TestCase):
+    """The same gate under pytest.
+
+    This file was a script with a `main()` and no test functions, so
+    `pytest tests/` collected nothing from it: every local sweep reported the
+    suite green without measuring a single glyph, while CI - which runs
+    `python tests/test_icon_uniformity.py` - did the work. Two runners, two
+    answers, and the local one is the one everybody reads.
+    """
+
+    def test_uniformity(self) -> None:
+        problems, scanned = collect()
+        # 477 distinct tile glyphs behind the catalog's 943 icons. The bound
+        # is a sanity check that the loop ran at all, not a claim about the
+        # count; a glyph missing from the registry is reported as a problem.
+        self.assertGreater(scanned, 400, "the registry looks truncated")
+        self.assertEqual(problems, [])
 
 
 if __name__ == "__main__":

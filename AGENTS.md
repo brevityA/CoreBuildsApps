@@ -6,7 +6,7 @@
 
 | Product | Path | Package ID | Version | Downloader / stable tag |
 |---|---|---|---:|---|
-| Core Builds Icon Pack | `app/` with repo-root Gradle | `tv.corebuilds.iconpack` | `1.8.21` | `5270601` / `iconpack` |
+| Core Builds Icon Pack | `app/` with repo-root Gradle | `tv.corebuilds.iconpack` | `1.9.0` | `5270601` / `iconpack` |
 | Core Builds Pixel Neon | `pixel-neon/` | `tv.corebuilds.pixelneon` | `0.1.0` | `[USER TO SUPPLY]` / `pixel-neon` |
 | Core Builds Pop | `pop/` with repo-root Gradle | `tv.corebuilds.iconpack.pop` | `1.0.0` | `[USER TO SUPPLY]` / `pop` |
 | Core Line | `ticker/` + `ticker/android/` | `dev.corebuilds.line` | `1.3.0` | `7375676` / `coreline` |
@@ -117,6 +117,33 @@ prefills `input`/`textarea` fields only, and the tool refuses to promise more.
 - Icon Pack: four generators + `python tools/validate.py`.
   Square PNGs get a raster presence pass (`tools/presence.py`) after svg2png —
   night keyline + accent bloom as rings. Vectors stay style-AA. Banners skip it.
+- Icon Pack UI (all three modules): `python tools/check_ui_resources.py`
+  (every resource reference resolves, no focusable view stranded),
+  `python tests/test_navigation_graph.py` (every clickable has a handler, every
+  screen is reachable, every focus edge lands somewhere),
+  `python tests/test_tv_scale.py` (the dp box normalises per panel), and
+  `python tools/build_app_ui_mockups.py --check` against the frames committed in
+  `docs/` — regenerate them with the same tool and no flag after any layout
+  change, then commit the PNGs *and* `docs/app-ui-mockups.json`. The check
+  compares sources and drawn structure, not PNG bytes: the manifest records a
+  hash of every layout, values file, catalog, manifest, font and pasted raster
+  the frames were built from, plus the generator's own source and what each
+  frame drew. Text rendering is not reproducible across machines — the same
+  pins on CPython 3.11 and 3.12 differ in every frame — so bytes are the wrong
+  thing to compare, and structure is the stricter half anyway: it fails on a
+  one-dp move.
+- Changelog: `python tests/test_changelog_contract.py`. `## [Unreleased]` runs
+  Added, Changed, Fixed once each, in that order, every top-level bullet leading
+  `- **Name.**` — `prepare_release.py` takes those leads as the in-app what's-new
+  card, one `re.search` per kind, so a second heading of the same kind hides
+  every bullet in it. Lead a gate bullet with its backticked `tests/` or `tools/`
+  path to keep the receipt out of the card.
+- CI coverage: `python tests/test_ci_coverage.py`. Every file in `tests/` and
+  every `tools/check_*.py` / `tools/validate*.py` must be invoked by a workflow,
+  or excused in that file's `LOCAL_ONLY` with a written reason. A new gate that
+  is not wired into `.github/workflows/suite-ci.yml` — the one with no path
+  filter — does not exist: five tests and two validators had been local-only
+  before that check was written.
 - Pixel Neon: `python tools/build_pixel_neon.py`, `python tools/validate_pixel_neon.py`, plus `cd pixel-neon && ./gradlew :app:lintDebug :app:assembleDebug`.
 - Core Builds Pop: `python tools/build_pop.py` + `python tools/validate_pop.py` + `python tests/test_pop.py`.
 - Core Line: `cd ticker && npm test`.

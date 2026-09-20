@@ -66,6 +66,16 @@ GATES = [
     "tools/validate.py",
     "tools/validate_pop.py",
     "tools/validate_pixel_neon.py",
+    # Added for 1.9.0: the release command should run every gate the repo has,
+    # not the subset that existed when it was written. check_ui_resources reads
+    # all three app modules, check_appfilter_integrity proves every drawable the
+    # filters name exists, and the mockup check compares the frames committed in
+    # docs/ against the layouts they depict - a release that restacks screens
+    # without regenerating them ships documentation of a UI nobody has.
+    "tools/check_ui_resources.py",
+    "tools/check_appfilter_integrity.py",
+    "tools/build_app_ui_mockups.py --check",
+    "tools/check_gradle_envelope.py",
     "-m unittest discover -s tests",
     "tools/check_suite_truth.py",
     "tools/audit_contract.py",
@@ -107,9 +117,12 @@ def changelog_highlights(text: str) -> list[str]:
             continue
         for lead in re.findall(r"(?m)^- +\*\*(.+?)\*\*", m.group(1), re.S):
             lead = " ".join(lead.split()).rstrip(".")
-            # A gate or test file is a receipt, not a headline: the what's-new
-            # bar is read by people deciding whether to update.
-            if lead.startswith("`tests/") or lead.startswith("`test_"):
+            # A gate, test or generator named by its path is a receipt, not a
+            # headline: the what's-new bar is read by people deciding whether
+            # to update, and `tools/build_app_ui_mockups.py` is not a reason.
+            # The convention is the backticked path in the lead, so a bullet
+            # opts out of the card by naming its own machinery.
+            if lead.startswith(("`tests/", "`test_", "`tools/", "`.github/")):
                 continue
             if lead:
                 out.append(lead)

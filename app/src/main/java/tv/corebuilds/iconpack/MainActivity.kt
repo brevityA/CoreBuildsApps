@@ -15,12 +15,13 @@ import android.widget.EditText
 import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
-import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import java.io.File
 import kotlin.math.abs
+import kotlin.math.floor
+import kotlin.math.max
 
 /**
  * Front door. Apply targets the Home launcher. An update bar appears
@@ -37,10 +38,12 @@ import kotlin.math.abs
  * in [settleFilterFocus] and nowhere else; the one other move this screen makes
  * is the deliberate one the Search key makes in [onSearchAction].
  */
-class MainActivity : AppCompatActivity() {
+class MainActivity : TvActivity() {
 
     private var target: ApplyIconPack.Launcher? = null
     private var updateChecked = false
+    /** Set by the bar's Later button: the bar stays hidden for this session. */
+    private var updateDismissed = false
     private var pickMode = false
     private lateinit var all: List<IconAdapter.IconItem>
     private lateinit var adapter: IconAdapter
@@ -101,7 +104,7 @@ class MainActivity : AppCompatActivity() {
         catalogOrder = all.withIndex().associate { (index, item) -> item.drawable to index }
 
         findViewById<TextView>(R.id.count).text =
-            getString(R.string.icon_count_fmt, all.size, BuildConfig.VERSION_NAME)
+            getString(R.string.pack_stats_fmt, all.size, mappedComponents())
 
         adapter = IconAdapter(all) { item -> onIconChosen(item) }
         findViewById<RecyclerView>(R.id.grid).apply {
@@ -126,25 +129,29 @@ class MainActivity : AppCompatActivity() {
         bindChips()
         bindSearch()
         bindEmptyActions()
+        syncFocusChain()
         if (pickMode) {
             // Icon-picker mode has no use for the wallpapers entry or apply.
             findViewById<View>(R.id.wallpapers_group).visibility = View.GONE
             bindPickShape()
         } else {
             bindApplyButton()
-            // The button keeps the short title; the count moves to a subtitle.
-            // Overwriting the label with the long sentence made the affordance
-            // read as prose rather than as something you press.
-            val wpEntry = findViewById<TextView>(R.id.wallpapers_entry)
+            // The row keeps the one-word title; what it contains moves to the
+            // subtitle under it. Overwriting the label with the long sentence
+            // made the affordance read as prose rather than as something you
+            // press, which is why the sheet draws three rows of title + sub.
+            val wpEntry = findViewById<View>(R.id.wallpapers_entry)
             val wpSub = findViewById<TextView>(R.id.wallpapers_entry_sub)
             val wpCount = WallpaperCatalog.load(this).size
-            // No subtitle rather than repeating the button's own label.
+            // No subtitle rather than repeating the row's own label.
             wpSub.text = if (wpCount > 0) {
                 getString(R.string.wp_entry_sub_fmt, wpCount)
             } else {
                 ""
             }
             wpEntry.setOnClickListener { startActivity(Intent(this, WallpapersActivity::class.java)) }
+            findViewById<TextView>(R.id.about_entry_sub).text =
+                getString(R.string.about_entry_sub_fmt, BuildConfig.VERSION_NAME)
 
             findViewById<View>(R.id.settings_entry).setOnClickListener {
                 startActivity(Intent(this, SettingsActivity::class.java))
@@ -173,6 +180,77 @@ class MainActivity : AppCompatActivity() {
                 // not take the cursor away from a control already reached.
                 findViewById<View>(R.id.apply_button).requestFocus()
             }
+        }
+    }
+
+    /**
+     * Rewrite the vertical D-pad chain around the containers that come and go,
+     * at the moment their visibility changes.
+     *
+     * The sheet's screen order is apply_button -> update_bar -> wallpapers_entry
+     * -> settings_entry -> about_entry -> apply_targets -> search -> chip_row ->
+     * grid, and three of those stops are conditional: the update bar only when a
+     * newer manifest exists, the ALSO APPLIES TO row only with a second launcher
+     * installed, the grid only while a filter matches anything. A GONE view that
+     * is focusable still takes the cursor - `isFocusable()` ignores visibility -
+     * so UP from the search field used to park the ring on the invisible bar and
+     * the next UP on the invisible target row, after which UP/DOWN ping-ponged
+     * between two views nobody can see and the chips and the grid read as dead:
+     * "the lists disappeared". The conditional containers are focusable="false"
+     * in the layout so a hidden one can never hold the cursor; this does the
+     * other half, naming the nearest VISIBLE stop for every edge that routes
+     * through them. `update_button` is named rather than its bar on purpose: a
+     * child of a GONE parent still reports itself VISIBLE, so the bar's own flag
+     * is what decides, and it is read here.
+     */
+    private fun syncFocusChain() {
+        val bar = findViewById<View>(R.id.update_bar)
+        val band = findViewById<View>(R.id.apply_targets_band)
+        val targets = findViewById<RecyclerView>(R.id.apply_targets)
+        val group = findViewById<View>(R.id.wallpapers_group)
+        val grid = findViewById<RecyclerView>(R.id.grid)
+        val barShown = bar.visibility == View.VISIBLE
+        // The band is what comes and goes; the list inside it is the stop.
+        val targetsShown = band.visibility == View.VISIBLE
+        val groupShown = group.visibility == View.VISIBLE
+        // A shown target row can be a named stop: focusable only while shown
+        // (set below), and afterDescendants hands the cursor to its first chip.
+        targets.isFocusable = targetsShown
+        // In icon-picker mode the CTA and the entry rows are hidden, so there is
+        // nothing focusable above the band at all: name the picker's hint, which
+        // is not focusable, and let the cursor stay where it is rather than
+        // naming a GONE button.
+        val applyShown = findViewById<View>(R.id.apply_button).visibility == View.VISIBLE
+        val aboveRows = when {
+            barShown -> R.id.update_button
+            applyShown -> R.id.apply_button
+            else -> R.id.picker_hint
+        }
+        val belowRows = if (targetsShown) R.id.apply_targets else R.id.search
+        findViewById<View>(R.id.wallpapers_entry).nextFocusUpId = aboveRows
+        val aboveBar = if (applyShown) R.id.apply_button else R.id.picker_hint
+        for (id in intArrayOf(R.id.update_button, R.id.update_later)) {
+            findViewById<View>(id).nextFocusUpId = aboveBar
+            findViewById<View>(id).nextFocusDownId =
+                if (groupShown) R.id.wallpapers_entry else R.id.search
+        }
+        findViewById<View>(R.id.about_entry).nextFocusDownId = belowRows
+        findViewById<View>(R.id.apply_targets).nextFocusUpId =
+            if (groupShown) R.id.about_entry else aboveRows
+        findViewById<View>(R.id.apply_targets).nextFocusDownId = R.id.search
+        findViewById<View>(R.id.search).nextFocusUpId = belowRows.takeIf { targetsShown }
+            ?: if (groupShown) R.id.about_entry else aboveRows
+        findViewById<View>(R.id.chip_row).nextFocusUpId = R.id.search
+        // Down from the category row: the grid, or the empty state's undo when
+        // the grid is the container that just went GONE. The search field always
+        // names the chips now - on the sheet they have their own row between the
+        // field and the grid, so DOWN from the field lands on the filter row
+        // instead of leaping into the results.
+        findViewById<View>(R.id.chip_row).nextFocusDownId = when {
+            grid.visibility == View.VISIBLE -> R.id.grid
+            findViewById<View>(R.id.empty_clear_search).visibility == View.VISIBLE ->
+                R.id.empty_clear_search
+            else -> R.id.empty_clear_filter
         }
     }
 
@@ -251,6 +329,27 @@ class MainActivity : AppCompatActivity() {
             grid.findViewHolderForAdapterPosition(target)?.itemView?.requestFocus()
         }
         return true
+    }
+
+    /**
+     * Component items in the bundled appfilter: the right-hand number of the
+     * sheet's header ("943 icons - 1765 components"). The asset ships with the
+     * APK and never changes at runtime, so it is read once and remembered -
+     * this runs again on every filter update, where the header line switches to
+     * the matched/total form and back.
+     */
+    private var componentCount = -1
+
+    private fun mappedComponents(): Int {
+        if (componentCount < 0) {
+            componentCount = try {
+                assets.open("appfilter.xml").bufferedReader().use { it.readText() }
+                    .split("component=").size - 1
+            } catch (e: Exception) {
+                0
+            }
+        }
+        return componentCount
     }
 
     private fun initialOf(name: String): Char =
@@ -369,6 +468,7 @@ class MainActivity : AppCompatActivity() {
      */
     private fun bindSearch() {
         val search = findViewById<EditText>(R.id.search)
+        search.hint = getString(R.string.search_hint_fmt, all.size)
         search.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, a: Int, b: Int, c: Int) {}
             override fun onTextChanged(s: CharSequence?, a: Int, b: Int, c: Int) {}
@@ -535,11 +635,14 @@ class MainActivity : AppCompatActivity() {
         adapter.submit(filtered)
         findViewById<TextView>(R.id.count).text =
             if (filtered.size == all.size) {
-                getString(R.string.icon_count_fmt, all.size, BuildConfig.VERSION_NAME)
+                getString(R.string.pack_stats_fmt, all.size, mappedComponents())
             } else {
                 getString(R.string.icon_filter_fmt, filtered.size, all.size)
             }
         bindEmptyState(filtered.size, q)
+        // The grid and the empty state just swapped places; down from the
+        // filter row has to name whichever of them is actually on screen.
+        syncFocusChain()
 
         // submit() only schedules the layout pass. A filtered-out tile is
         // detached — and its focus dropped — during that pass, so every focus
@@ -768,6 +871,9 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun showUpdateAvailable(update: UpdateChecker.Result.Available) {
+        // Later means later: the check can fire again on a resume, and a bar the
+        // user dismissed must not come back and take the grid's row with it.
+        if (updateDismissed) return
         pendingUpdate = update
         downloadedApk = null
         val bar = findViewById<LinearLayout>(R.id.update_bar)
@@ -775,22 +881,33 @@ class MainActivity : AppCompatActivity() {
         val sub = findViewById<TextView>(R.id.update_sub)
         val button = findViewById<TextView>(R.id.update_button)
         bar.visibility = View.VISIBLE
+        // The bar just joined the vertical chain; the edges that route around
+        // it when it is hidden have to point at it now that it is not.
+        syncFocusChain()
         label.text = getString(
             R.string.update_available_fmt, update.versionName, update.iconCount
         )
-        sub.text = getString(R.string.update_sub_download)
-        // Release highlights, when the manifest carries them: the bar becomes
-        // a what's-new card instead of a bare version number. Gone unless the
-        // list is non-empty, so older manifests leave the bar exactly as it
-        // was - the view is inside the D-pad chain's vertical rhythm and an
-        // empty bullet list would show up as a blank gap.
+        // One line under the label, not two: the release's first highlight when
+        // the manifest carries any, otherwise what Download does. Both is ~40dp
+        // this screen does not have - the grid is the weighted remainder of a
+        // 540dp panel and the tiles are the point of the screen.
         val highlights = findViewById<TextView>(R.id.update_highlights)
         if (update.highlights.isEmpty()) {
             highlights.visibility = View.GONE
+            sub.visibility = View.VISIBLE
+            sub.text = getString(R.string.update_sub_download)
         } else {
+            sub.visibility = View.GONE
             highlights.visibility = View.VISIBLE
-            highlights.text = update.highlights.joinToString("\n") { "•  $it" }
+            highlights.text = "•  " + update.highlights.first()
         }
+        // Give the bar the two rows it outranks, so the grid keeps a full row of
+        // tiles: the header's launcher list and the ALSO APPLIES TO band are
+        // both secondary chrome, and Later puts them back.
+        findViewById<View>(R.id.apply_sub).visibility = View.GONE
+        setTargetsBand(shown = false)
+        syncFocusChain()
+        findViewById<TextView>(R.id.update_later).setOnClickListener { dismissUpdate() }
         button.isEnabled = true
         button.text = getString(R.string.update_download, update.versionName)
         button.setOnClickListener { startDownload(update) }
@@ -808,6 +925,23 @@ class MainActivity : AppCompatActivity() {
         if (current == null || current === window.decorView || current.id == R.id.apply_button) {
             button.requestFocus()
         }
+    }
+
+    /**
+     * Later: hide the bar for this session and give back the two rows it took,
+     * so the grid returns to a full row of tiles. The manifest is still fetched
+     * and [pendingUpdate] still set - About and Settings keep reporting the
+     * update, and Download is one screen away.
+     */
+    private fun dismissUpdate() {
+        updateDismissed = true
+        findViewById<LinearLayout>(R.id.update_bar).visibility = View.GONE
+        if (!pickMode) {
+            // Recomputes the launcher list under the CTA and the ALSO APPLIES TO
+            // band from what is installed, then resyncs the chain.
+            bindApplyButton()
+        }
+        findViewById<View>(R.id.apply_button).requestFocus()
     }
 
     private fun startDownload(update: UpdateChecker.Result.Available) {
@@ -876,6 +1010,23 @@ class MainActivity : AppCompatActivity() {
         else -> "${n}B"
     }
 
+    /**
+     * Show or hide the ALSO APPLIES TO band as a unit.
+     *
+     * The band is the row's wrapper; the list inside it is the focus stop. The
+     * wrapper carries the visibility so a hidden band takes its kicker with it,
+     * and the list keeps `isFocusable` in sync in [syncFocusChain] so a hidden
+     * one can never hold the cursor. [withLabel] is false in icon-picker mode,
+     * where the same row carries the banner/square shape chips and picker_hint
+     * is their label.
+     */
+    private fun setTargetsBand(shown: Boolean, withLabel: Boolean = true) {
+        findViewById<View>(R.id.apply_targets_band).visibility =
+            if (shown) View.VISIBLE else View.GONE
+        findViewById<View>(R.id.apply_targets_label).visibility =
+            if (shown && withLabel) View.VISIBLE else View.GONE
+    }
+
     private fun bindPickShape() {
         val hint = findViewById<TextView>(R.id.picker_hint)
         val targets = findViewById<RecyclerView>(R.id.apply_targets)
@@ -884,7 +1035,7 @@ class MainActivity : AppCompatActivity() {
             getString(R.string.picker_chip_square)
         )
         val keys = listOf(PICK_BANNER, PICK_SQUARE)
-        targets.visibility = View.VISIBLE
+        setTargetsBand(shown = true, withLabel = false)
         targets.layoutManager = LinearLayoutManager(
             this, LinearLayoutManager.HORIZONTAL, false
         )
@@ -899,6 +1050,7 @@ class MainActivity : AppCompatActivity() {
                 getString(R.string.picker_hint_square)
             }
         }
+        syncFocusChain()
     }
 
     private fun bindApplyButton() {
@@ -910,6 +1062,11 @@ class MainActivity : AppCompatActivity() {
             bindPickShape()
             return
         }
+        // The update bar hides this line while it is up (see
+        // showUpdateAvailable); binding re-establishes it, which is what makes
+        // the bar's Later button able to give the row back.
+        button.visibility = View.VISIBLE
+        sub.visibility = View.VISIBLE
 
         val installed = ApplyIconPack.installed(this)
         val detected = installed.firstOrNull()
@@ -922,23 +1079,24 @@ class MainActivity : AppCompatActivity() {
             button.setOnClickListener {
                 toast(getString(R.string.projectivy_missing))
             }
+            setTargetsBand(shown = false)
+            syncFocusChain()
             return
         }
 
-        val home = ApplyIconPack.detectDefault(this)
-        button.text = getString(R.string.cta_apply_to_fmt, detected.displayName)
-        sub.text = if (home != null && installed.size > 1) {
-            getString(R.string.cta_sub_home_fmt, detected.displayName)
-        } else {
-            getString(R.string.cta_sub_apply_fmt, detected.displayName)
-        }
+        // The sheet puts the word on the button and the launchers under it:
+        // "Apply" over "Projectivy - Launchchair - Nova". The detected launcher
+        // is still the one a press applies to; the list is the row of chips
+        // below for the others.
+        button.text = getString(R.string.cta_apply)
+        sub.text = installed.joinToString(" - ") { it.displayName }
         button.setOnClickListener { applyTo(detected) }
 
         val others = installed.drop(1)
         if (others.isEmpty()) {
-            extras.visibility = View.GONE
+            setTargetsBand(shown = false)
         } else {
-            extras.visibility = View.VISIBLE
+            setTargetsBand(shown = true)
             extras.layoutManager = LinearLayoutManager(
                 this, LinearLayoutManager.HORIZONTAL, false
             )
@@ -946,13 +1104,14 @@ class MainActivity : AppCompatActivity() {
             // filter, but select() still runs and still rebinds two chips.
             extras.itemAnimator = null
             extras.adapter = ChipAdapter(
-                others.map { getString(R.string.cta_apply_also_fmt, it.displayName) },
+                others.map { it.displayName },
                 others.map { it.key },
                 selected = ""
             ) { key ->
                 others.firstOrNull { it.key == key }?.let { applyTo(it) }
             }
         }
+        syncFocusChain()
     }
 
     private fun applyTo(launcher: ApplyIconPack.Launcher) {
@@ -976,9 +1135,25 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    /**
+     * Columns for the glyph grid: the right pane's width over one tile's pitch.
+     *
+     * The pane is what the panel leaves after the gutters, the rail and the gap
+     * between them; the pitch is cb_tile_icon plus the tile's vertical padding
+     * twice - the tile's real height, and the width its near-square card wants.
+     * Both come from dimens, and TvActivity normalises every panel to the
+     * 960x540dp box before this runs, so the column count is the same on a
+     * 1080p set and a 4K one: the proportions travel, the arithmetic does not
+     * care which panel it runs on.
+     */
     private fun spanForScreen(): Int {
-        val dp = resources.configuration.screenWidthDp
-        return (dp / 148).coerceIn(3, 8)
+        val density = resources.displayMetrics.density
+        fun dpOf(id: Int) = resources.getDimensionPixelSize(id) / density
+        val pane = resources.configuration.screenWidthDp -
+            2 * dpOf(R.dimen.cb_gutter_side) -
+            dpOf(R.dimen.cb_rail_width) - dpOf(R.dimen.cb_space_md)
+        val pitch = dpOf(R.dimen.cb_tile_icon) + 2 * dpOf(R.dimen.cb_card_padding)
+        return max(2, floor(pane / pitch).toInt())
     }
 
     private fun toast(msg: String) =

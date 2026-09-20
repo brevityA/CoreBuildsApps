@@ -151,6 +151,22 @@
         </LinearLayout>
     </LinearLayout>
 
+    <!-- The vertical chain runs THROUGH apply_targets and update_bar, not
+         around them: pointing wallpapers_entry straight at chip_row is what
+         made both unreachable by remote. Both containers are GONE unless the
+         Kotlin shows them, and a GONE view that is still focusable is a hole
+         in the D-pad chain rather than a stop in it: Android hands the cursor
+         to it anyway (isFocusable() ignores visibility), so UP from the search
+         field parked the ring on an invisible bar and the next UP on the
+         invisible target row, after which UP/DOWN ping-ponged between two
+         views nobody can see and the chips and grid looked dead. Both are
+         therefore focusable="false" here, and MainActivity.syncFocusChain()
+         rewrites the chain's nextFocus ids to the nearest VISIBLE stop every
+         time it toggles either container - the chain is explicit in code
+         instead of delegated to whatever FocusFinder does with a hidden view,
+         which is not behaviour any version of this app should depend on.
+         afterDescendants stays: when a container IS shown, focus entering it
+         lands on its chip / button rather than on the container itself. -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/apply_targets"
         android:layout_width="match_parent"
@@ -158,6 +174,7 @@
         android:layout_marginTop="@dimen/cb_space_sm"
         android:clipToPadding="false"
         android:descendantFocusability="afterDescendants"
+        android:focusable="false"
         android:nextFocusUp="@id/wallpapers_entry"
         android:nextFocusDown="@id/update_bar"
         android:orientation="horizontal"
@@ -170,7 +187,7 @@
         android:layout_marginTop="@dimen/cb_space_md"
         android:background="@drawable/bg_update"
         android:descendantFocusability="afterDescendants"
-        android:focusable="true"
+        android:focusable="false"
         android:gravity="center_vertical"
         android:nextFocusUp="@id/apply_targets"
         android:nextFocusDown="@id/chip_row"

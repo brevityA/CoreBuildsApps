@@ -51,8 +51,9 @@ device note already filled in. Three details carry the weight:
   selection-mode grammar, because a back press that abandons the list along
   with a code that failed to scan wastes the scan.
 
-Mockup with a real scannable code over an example URL:
-`docs/app-ui-auditor.png`.
+Mockups with a real scannable code over an example URL:
+`docs/app-ui-auditor.png` and `docs/app-ui-auditor-qr.png`, rendered by
+`tools/build_app_ui_mockups.py`.
 
 ## 2. Launcher cache buster — SHIPPED this round
 
@@ -172,7 +173,14 @@ letter group so both directions arrive where a group starts, and the jump is a
   `highlights` array into `Latestrelease/version.json` from the `[Unreleased]`
   bold leads (Added, then Changed, then Fixed; capped at the eight
   `UpdateChecker` renders), so the what's-new card cannot go stale by hand.
-- Visual: `docs/app-ui-sideload-round.png` (settings rows, FAQ, update bar),
-  `docs/app-ui-auditor.png` (audit list + real scannable QR), and
-  `docs/app-ui-inspector-suite.png` (inspector and suite hub) — all labelled
-  mockups, every label read from `strings.xml` or the generated resources.
+- Visual: `tools/build_app_ui_mockups.py` renders the whole set as 1920×1080 TV
+  frames from the source they depict — `docs/app-ui-catalogue.png` and
+  `app-ui-catalogue-update.png` (home grid, chips + search, update bar with the
+  manifest's real highlights), `app-ui-wallpapers.png`, `app-ui-settings.png`,
+  `app-ui-faq.png`, `app-ui-auditor.png` + `app-ui-auditor-qr.png` (audit list
+  and a real scannable QR of the generated deep link), `app-ui-inspector.png`
+  and `app-ui-suite.png`. Every label comes from `strings.xml`, every metric
+  from `dimens.xml`, the artwork is the bundled PNGs; each frame's caption band
+  names which values are example data. `--check` is wired into build.yml, so
+  the hand-drawn sheets' failure mode — drifting off the published app until
+  nobody trusts them — is now a CI failure instead.

@@ -7,7 +7,6 @@ import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.appcompat.app.AppCompatActivity
 
 /**
  * The icon inspector: what the pack actually ships for one tile, and two
@@ -28,7 +27,7 @@ import androidx.appcompat.app.AppCompatActivity
  * package visible, and when the answer is no the toast says so instead of
  * bouncing off an ActivityNotFoundException.
  */
-class InspectorActivity : AppCompatActivity() {
+class InspectorActivity : TvActivity() {
 
     private lateinit var drawableName: String
 
@@ -70,8 +69,13 @@ class InspectorActivity : AppCompatActivity() {
     /** Every `pkg/activity` appfilter maps to this drawable, in file order. */
     private fun componentsFor(drawable: String): List<String> {
         val xml = assets.open("appfilter.xml").bufferedReader().use { it.readText() }
+        // appfilter maps every component to the 16:9 banner drawable - the
+        // square glyph reaches launchers through drawable.xml, not through a
+        // component mapping - so matching the square name alone answered
+        // "no component maps to this drawable" for every tile in the pack and
+        // made Launch a dead button. The banner is the mapping; accept both.
         val pattern = Regex(
-            "component=\"ComponentInfo\\{([^}]+)\\}\"\\s+drawable=\"$drawable\""
+            "component=\"ComponentInfo\\{([^}]+)\\}\"\\s+drawable=\"$drawable(?:_banner)?\""
         )
         return pattern.findAll(xml).map { it.groupValues[1] }.toList()
     }

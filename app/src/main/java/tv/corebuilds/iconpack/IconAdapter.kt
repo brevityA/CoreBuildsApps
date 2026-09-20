@@ -5,12 +5,12 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.animation.DecelerateInterpolator
 import android.widget.ImageView
-import android.widget.TextView
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 
 /**
- * One labeled tile in the in-app browser.
+ * One glyph tile in the in-app browser: the card carries the mark, and the
+ * name lives in the inspector and the content description.
  *
  * Updates go through DiffUtil. The grid holds the whole catalogue — 943 icons
  * at 1.8.20 — and every search keystroke used to rebind all of them, which also
@@ -41,7 +41,6 @@ class IconAdapter(
 
     class VH(view: View) : RecyclerView.ViewHolder(view) {
         val image: ImageView = view.findViewById(R.id.icon_image)
-        val label: TextView = view.findViewById(R.id.icon_name)
         val brandmark: View = view.findViewById(R.id.icon_brandmark)
     }
 
@@ -69,7 +68,7 @@ class IconAdapter(
             ctx.resources.getIdentifier(item.drawable, "drawable", ctx.packageName)
         }
         if (id != 0) holder.image.setImageResource(id)
-        holder.label.text = item.name
+        // The tile is glyph-only by design; the name is spoken, not printed.
         // Recycled views carry the previous row's dot, so this is set on every
         // bind rather than only when true.
         holder.brandmark.visibility = if (item.bespoke) View.VISIBLE else View.GONE

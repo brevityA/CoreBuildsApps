@@ -18,6 +18,18 @@
     <dimen name="cb_gutter_bottom">24dp</dimen>
     <!-- Narrow fallback for 720p / legacy panels that overscan. -->
     <dimen name="cb_gutter_side_narrow">32dp</dimen>
+    <!-- Tighter top/bottom gutters for the one screen whose chrome competes
+         with its grid for the 540dp a 1080p panel reports: the catalogue. Every
+         other screen scrolls, so it keeps the house gutters above. -->
+    <dimen name="cb_gutter_top_tight">24dp</dimen>
+    <dimen name="cb_gutter_bottom_tight">12dp</dimen>
+    <!-- The home and wallpapers screens are two-pane on a TV: this rail holds
+         the sheet's vertical stack (wordmark, CTA, entry rows, ALSO APPLIES TO,
+         and on wallpapers the series chips and the export foot) while the grid
+         takes the rest of the panel. Fixed width, so the pane - and therefore
+         the tile columns - is derived, not guessed. Measured in the normalised
+         dp box, so it is the same rail on every panel. -->
+    <dimen name="cb_rail_width">300dp</dimen>
 
     <!-- Spacing rhythm. -->
     <dimen name="cb_space_xs">8dp</dimen>
@@ -34,6 +46,14 @@
          crowding artwork that already runs to the tile edge. -->
     <dimen name="cb_brandmark_dot">7dp</dimen>
     <dimen name="cb_wp_thumb">118dp</dimen>
+    <!-- Catalogue tile glyph. The design sheet's tiles are glyph-only squares:
+         the name lives in the inspector and in the tile's content description,
+         not under the art. The two-pane home screen gives the grid the whole
+         right-hand pane, so the glyph can be the sheet's size again; the grid's
+         column count is derived from this dimen and the pane width, which is
+         what keeps the tiles square-proportioned on a 4K panel that reports a
+         larger dp box (see values-sw720dp). -->
+    <dimen name="cb_tile_icon">128dp</dimen>
     <dimen name="cb_seed_swatch">32dp</dimen>
 
     <!-- Radii. Chip is a pill. -->

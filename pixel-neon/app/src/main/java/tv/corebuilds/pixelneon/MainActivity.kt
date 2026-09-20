@@ -9,7 +9,6 @@ import android.widget.EditText
 import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
-import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -20,7 +19,7 @@ import java.io.File
  * when Latestrelease/pixel-neon-version.json is newer; Download pulls the APK and
  * hands it to the system installer.
  */
-class MainActivity : AppCompatActivity() {
+class MainActivity : TvActivity() {
 
     private var target: ApplyIconPack.Launcher? = null
     private var updateChecked = false
@@ -29,6 +28,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var adapter: IconAdapter
     private var category = ALL
     private var query = ""
+    private lateinit var chipAdapter: ChipAdapter
     private var pickBanners = true
     private var pendingUpdate: UpdateChecker.Result.Available? = null
     private var downloadedApk: File? = null
@@ -77,6 +77,7 @@ class MainActivity : AppCompatActivity() {
 
         bindChips()
         bindSearch()
+        bindEmptyActions()
         if (pickMode) {
             // Icon-picker mode has no use for the wallpapers entry or apply.
             findViewById<View>(R.id.wallpapers_entry).visibility = View.GONE
@@ -120,6 +121,48 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    /**
+     * Rewrite the vertical D-pad chain around the two header containers that
+     * come and go, at the moment their visibility changes. See the Classic
+     * pack's MainActivity for the full account: a GONE view that is focusable
+     * still takes the cursor, so UP from the search field parked the ring on
+     * the invisible update bar and the next UP on the invisible target row,
+     * after which the chips and grid read as dead. The containers are
+     * focusable="false" in the layout; this names the nearest VISIBLE stop for
+     * every edge that used to route through them.
+     */
+    private fun syncFocusChain() {
+        val bar = findViewById<View>(R.id.update_bar)
+        val targets = findViewById<RecyclerView>(R.id.apply_targets)
+        val barShown = bar.visibility == View.VISIBLE
+        val targetsShown = targets.visibility == View.VISIBLE
+        targets.isFocusable = targetsShown
+        val headerStop = when {
+            barShown -> R.id.update_button
+            targetsShown -> R.id.apply_targets
+            findViewById<View>(R.id.wallpapers_group).visibility == View.VISIBLE ->
+                R.id.wallpapers_entry
+            else -> R.id.chip_row
+        }
+        findViewById<View>(R.id.chip_row).nextFocusUpId = headerStop
+        findViewById<View>(R.id.search).nextFocusUpId = headerStop
+        findViewById<View>(R.id.wallpapers_entry).nextFocusDownId = headerStop
+        findViewById<View>(R.id.update_button).nextFocusUpId =
+            if (targetsShown) R.id.apply_targets else R.id.wallpapers_entry
+        findViewById<View>(R.id.update_button).nextFocusDownId = R.id.chip_row
+        targets.nextFocusUpId = R.id.wallpapers_entry
+        targets.nextFocusDownId =
+            if (barShown) R.id.update_button else R.id.chip_row
+        val down = when {
+            findViewById<View>(R.id.grid).visibility == View.VISIBLE -> R.id.grid
+            findViewById<View>(R.id.empty_clear_search).visibility == View.VISIBLE ->
+                R.id.empty_clear_search
+            else -> R.id.empty_clear_filter
+        }
+        findViewById<View>(R.id.chip_row).nextFocusDownId = down
+        findViewById<View>(R.id.search).nextFocusDownId = down
+    }
+
     private fun bindChips() {
         val present = all.map { it.category }.toSet()
         val keys = mutableListOf(ALL)
@@ -141,10 +184,11 @@ class MainActivity : AppCompatActivity() {
             layoutManager = LinearLayoutManager(
                 this@MainActivity, LinearLayoutManager.HORIZONTAL, false
             )
-            adapter = ChipAdapter(labels, keys, ALL) { picked ->
+            chipAdapter = ChipAdapter(labels, keys, ALL) { picked ->
                 category = picked
                 applyFilter()
             }
+            adapter = chipAdapter
         }
     }
 
@@ -179,7 +223,72 @@ class MainActivity : AppCompatActivity() {
             } else {
                 getString(R.string.icon_filter_fmt, filtered.size, all.size)
             }
+        bindEmptyState(filtered.size, q)
+        // The grid and the empty state just swapped places; down from the
+        // filter row has to name whichever of them is actually on screen.
+        syncFocusChain()
     }
+
+    /**
+     * The no-results state: say what happened and offer the undo that applies.
+     *
+     * The layout shipped this container with its two buttons clickable and no
+     * code behind any of it - a filter with no match rendered a blank grid and
+     * the buttons, had they ever been shown, would have been dead. Mirrors
+     * Core Builds' bindEmptyState/bindEmptyActions.
+     */
+    private fun bindEmptyState(shown: Int, q: String) {
+        val empty = findViewById<View>(R.id.empty_state)
+        val grid = findViewById<View>(R.id.grid)
+        if (shown > 0) {
+            empty.visibility = View.GONE
+            grid.visibility = View.VISIBLE
+            return
+        }
+        grid.visibility = View.GONE
+        empty.visibility = View.VISIBLE
+        findViewById<TextView>(R.id.empty_title).text =
+            if (q.isEmpty()) {
+                getString(R.string.empty_title_category_fmt, categoryLabel(category))
+            } else {
+                getString(R.string.empty_title_fmt, query.trim())
+            }
+        findViewById<TextView>(R.id.empty_body).text =
+            if (q.isEmpty()) {
+                getString(R.string.empty_body_plain)
+            } else {
+                getString(R.string.empty_body_query_fmt, categoryLabel(category),
+                          all.count { inCategory(it, category) })
+            }
+        val clearSearch = findViewById<TextView>(R.id.empty_clear_search)
+        val clearFilter = findViewById<TextView>(R.id.empty_clear_filter)
+        clearSearch.visibility = if (q.isEmpty()) View.GONE else View.VISIBLE
+        clearFilter.visibility = if (q.isEmpty()) View.VISIBLE else View.GONE
+        clearFilter.text = getString(R.string.empty_clear_filter, all.size)
+    }
+
+    private fun bindEmptyActions() {
+        findViewById<TextView>(R.id.empty_clear_search).setOnClickListener {
+            val search = findViewById<EditText>(R.id.search)
+            search.setText("")
+            query = ""
+            applyFilter()
+            search.requestFocus()
+        }
+        findViewById<TextView>(R.id.empty_clear_filter).setOnClickListener {
+            chipAdapter.select(ALL)
+        }
+    }
+
+    private fun categoryLabel(key: String): String =
+        CHIP_ORDER.firstOrNull { it.first == key }?.second ?: key
+
+    private fun inCategory(item: IconAdapter.IconItem, key: String): Boolean =
+        when (key) {
+            ALL -> true
+            BESPOKE -> item.bespoke
+            else -> item.category == key
+        }
 
     private fun checkForUpdate() {
         UpdateChecker.check(this) { result ->
@@ -204,6 +313,7 @@ class MainActivity : AppCompatActivity() {
         val sub = findViewById<TextView>(R.id.update_sub)
         val button = findViewById<TextView>(R.id.update_button)
         bar.visibility = View.VISIBLE
+        syncFocusChain()
         label.text = getString(
             R.string.update_available_fmt, update.versionName, update.iconCount
         )
@@ -304,6 +414,7 @@ class MainActivity : AppCompatActivity() {
                 getString(R.string.picker_hint_square)
             }
         }
+        syncFocusChain()
     }
 
     private fun bindApplyButton() {
@@ -327,6 +438,7 @@ class MainActivity : AppCompatActivity() {
             button.setOnClickListener {
                 toast(getString(R.string.projectivy_missing))
             }
+            syncFocusChain()
             return
         }
 
@@ -355,6 +467,7 @@ class MainActivity : AppCompatActivity() {
                 others.firstOrNull { it.key == key }?.let { applyTo(it) }
             }
         }
+        syncFocusChain()
     }
 
     private fun applyTo(launcher: ApplyIconPack.Launcher) {

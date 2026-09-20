@@ -7,7 +7,6 @@ import android.view.View
 import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
-import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SwitchCompat
 import java.io.File
 import java.util.Locale
@@ -49,7 +48,7 @@ import java.util.Locale
  * does still cost is a visible rebuild of the window, which is not worth the
  * fragility of repainting a live one.
  */
-class SettingsActivity : AppCompatActivity() {
+class SettingsActivity : TvActivity() {
 
     private lateinit var updateSwitch: SwitchCompat
     private lateinit var motionSwitch: SwitchCompat

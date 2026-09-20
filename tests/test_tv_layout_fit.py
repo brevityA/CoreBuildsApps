@@ -221,6 +221,77 @@ def test_full_screen_layouts_fit_or_scroll():
     assert not over, "TV layouts overflow without scrolling:\n  " + "\n  ".join(over)
 
 
+def load_dimens_in(res: Path, subdir: str) -> dict[str, float]:
+    out: dict[str, float] = {}
+    path = res / subdir / "dimens.xml"
+    if not path.is_file():
+        return out
+    for node in ET.parse(path).getroot().iter("dimen"):
+        name, text = node.get("name"), (node.text or "").strip()
+        m = re.fullmatch(r"(-?[\d.]+)(dp|sp|dip|px)", text)
+        if name and m:
+            out[name] = float(m.group(1))
+    return out
+
+
+# The two-pane screens' grid budget, on the design box every panel is
+# normalised to (tv.corebuilds.iconpack.TvActivity).
+TWO_PANE = {
+    "activity_main.xml": ["cb_tile_icon", "cb_card_padding", "cb_card_padding"],
+    "activity_wallpapers.xml": ["cb_wp_thumb", "cb_card_padding", "cb_card_padding",
+                                "cb_space_sm", "cb_text_label"],
+}
+
+
+def pane_of(root: ET.Element) -> ET.Element | None:
+    """The weighted child of the root's weighted horizontal body, if the screen
+    is two-pane: home and wallpapers put their grid in it."""
+    for child in root:
+        if is_gone(child) or not fills_leftover(child):
+            continue
+        if tag_of(child).endswith("LinearLayout") \
+                and child.get(ANDROID + "orientation") == "horizontal":
+            for pane in child:
+                # The pane is the 0dp+weight child; the rail is match_parent
+                # wide, which fills_leftover() also matches.
+                if (not is_gone(pane) and pane.get(ANDROID + "layout_weight")
+                        and pane.get(ANDROID + "layout_width") == "0dp"):
+                    return pane
+    return None
+
+
+def test_two_pane_screens_leave_the_grid_a_full_row():
+    """The right pane's chrome plus one tile pitch fits the panel. The grid is
+    the pane's weighted remainder; if the pane's fixed children (search, chips)
+    plus a single tile exceeded the viewport, the catalogue would show chrome
+    and a cropped sliver - the defect the single-pane home screen had before
+    the two-pane rebuild. One box is enough now: TvActivity normalises every
+    panel to this one before a layout inflates."""
+    for module in ("app", "pop"):
+        res = MODULES[module]
+        dimens = load_dimens(res)
+        for name, pitch_parts in TWO_PANE.items():
+            root = ET.parse(res / "layout" / name).getroot()
+            pane = pane_of(root)
+            assert pane is not None, f"{module}/{name}: not two-pane anymore"
+            fixed = (dp(root.get(ANDROID + "paddingTop"), dimens,
+                         dp(root.get(ANDROID + "padding"), dimens))
+                     + dp(root.get(ANDROID + "paddingBottom"), dimens,
+                          dp(root.get(ANDROID + "padding"), dimens)))
+            for child in pane:
+                if is_gone(child) or fills_leftover(child):
+                    continue
+                fixed += (min_height(child, dimens)
+                          + dp(child.get(ANDROID + "layout_marginTop"), dimens)
+                          + dp(child.get(ANDROID + "layout_marginBottom"), dimens))
+            pitch = sum(dimens.get(part, 0.0) for part in pitch_parts)
+            left = VIEWPORT_DP - fixed - pitch
+            assert left >= -TOLERANCE_DP, (
+                f"{module}/{name}: pane chrome {fixed:.0f}dp + one {pitch:.0f}dp "
+                f"tile leaves {left:.0f}dp of {VIEWPORT_DP:.0f}dp - the grid "
+                f"loses its first row")
+
+
 def test_settings_keeps_its_scroll_container():
     """Regression pin for the 1.8.20 clipping bug, independent of the estimate.
 

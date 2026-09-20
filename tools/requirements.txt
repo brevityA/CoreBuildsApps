@@ -6,3 +6,6 @@ Pillow==10.4.0
 numpy==2.4.6
 # Self-contained renderer keeps output stable across hosts.
 resvg-py==0.4.0
+# docs/app-ui mockups: the auditor frame carries a real scannable QR of the
+# generated deep link, encoded the same way AuditorActivity builds it.
+qrcode==8.2

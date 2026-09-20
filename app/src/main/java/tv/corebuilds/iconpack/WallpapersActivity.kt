@@ -6,9 +6,10 @@ import android.view.View
 import android.widget.TextView
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
+import kotlin.math.floor
+import kotlin.math.max
 import androidx.recyclerview.widget.RecyclerView
 
 /**
@@ -25,7 +26,7 @@ import androidx.recyclerview.widget.RecyclerView
  *
  * TV-first D-pad flow: export/back → series chips → grid.
  */
-class WallpapersActivity : AppCompatActivity() {
+class WallpapersActivity : TvActivity() {
 
     private lateinit var all: List<Wallpaper>
     private lateinit var adapter: WallpaperAdapter
@@ -51,7 +52,7 @@ class WallpapersActivity : AppCompatActivity() {
         selectionBar = findViewById(R.id.wp_selection_bar)
         selectionCount = findViewById(R.id.wp_selection_count)
         exportSelected = findViewById(R.id.wp_export_selected)
-        count.text = getString(R.string.wp_count_fmt, all.size)
+        count.text = getString(R.string.wp_sub_fmt, all.size)
 
         adapter = WallpaperAdapter(all) { item ->
             val visible = adapter.currentItems()
@@ -159,8 +160,14 @@ class WallpapersActivity : AppCompatActivity() {
         count.text = if (inMode) {
             getString(R.string.wp_selected_fmt, n)
         } else {
-            getString(R.string.wp_count_fmt, all.size)
+            getString(R.string.wp_sub_fmt, all.size)
         }
+        // The selection bar is a stop in the chain only while it is on screen;
+        // naming it while hidden would park the cursor on an invisible row, the
+        // same hole MainActivity.syncFocusChain closes on the home screen.
+        val barStop = if (inMode) R.id.wp_select_all else R.id.wp_chips
+        findViewById<View>(R.id.wp_back).nextFocusDownId = barStop
+        findViewById<View>(R.id.wp_chips).nextFocusUpId = barStop
     }
 
     private fun bindChips() {
@@ -172,8 +179,10 @@ class WallpapersActivity : AppCompatActivity() {
             keys += s
         }
         findViewById<RecyclerView>(R.id.wp_chips).apply {
+            // The sheet's filter row stood on its side: a vertical list in the
+            // rail, so the chip row stops costing the grid a row of thumbs.
             layoutManager = LinearLayoutManager(
-                this@WallpapersActivity, LinearLayoutManager.HORIZONTAL, false
+                this@WallpapersActivity, LinearLayoutManager.VERTICAL, false
             )
             // The main screen sets this on its chip row. Without it, the
             // default RecyclerView change animation replaces the chip the
@@ -213,9 +222,22 @@ class WallpapersActivity : AppCompatActivity() {
         )
     }
 
+    /**
+     * Columns for the thumb grid: the right pane's width over one tile's pitch,
+     * the same arithmetic as MainActivity.spanForScreen - pane from the panel
+     * minus gutters, rail and gap; pitch from cb_wp_thumb plus the tile's
+     * padding, label gap and label line. Dimens all the way down, so a 4K panel
+     * reporting a larger dp box keeps the sheet's three columns.
+     */
     private fun spanForScreen(): Int {
-        val dp = resources.configuration.screenWidthDp
-        return (dp / 220).coerceIn(3, 6)
+        val density = resources.displayMetrics.density
+        fun dpOf(id: Int) = resources.getDimensionPixelSize(id) / density
+        val pane = resources.configuration.screenWidthDp -
+            2 * dpOf(R.dimen.cb_gutter_side) -
+            dpOf(R.dimen.cb_rail_width) - dpOf(R.dimen.cb_space_md)
+        val pitch = dpOf(R.dimen.cb_wp_thumb) + 2 * dpOf(R.dimen.cb_card_padding) +
+            dpOf(R.dimen.cb_space_sm) + dpOf(R.dimen.cb_text_label) * 1.2f
+        return max(2, floor(pane / pitch).toInt())
     }
 
     private fun toast(msg: String) =

@@ -12,7 +12,6 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import java.io.File
 
@@ -36,7 +35,7 @@ import java.io.File
  * A generation counter guards against stale download callbacks firing after
  * the user has already moved on.
  */
-class WallpaperPreviewActivity : AppCompatActivity() {
+class WallpaperPreviewActivity : TvActivity() {
 
     private lateinit var setButton: TextView
     private lateinit var saveButton: TextView
@@ -275,7 +274,17 @@ class WallpaperPreviewActivity : AppCompatActivity() {
                     }
                 }
                 if (palette != null) paintSeed(palette)
-                setButton.requestFocus()
+                // Reveal, do not grab. The decode lands on a download callback,
+                // which resolves whenever the network likes - by then the cursor
+                // may be on Save, or already on the next wallpaper's Back after a
+                // D-pad right. The unconditional grab this replaces yanked it
+                // back to Set mid-browse; same rule the update bar follows on the
+                // home screen.
+                val current = currentFocus
+                if (current == null || current === window.decorView ||
+                    current.id == R.id.preview_back) {
+                    setButton.requestFocus()
+                }
             }
         }.start()
     }

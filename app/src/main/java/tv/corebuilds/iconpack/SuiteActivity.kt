@@ -7,7 +7,6 @@ import android.view.View
 import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
-import androidx.appcompat.app.AppCompatActivity
 
 /**
  * The living-room suite, one screen: what else from Core Builds is on this
@@ -29,7 +28,7 @@ import androidx.appcompat.app.AppCompatActivity
  * and a column of plain rows keeps the focus chain exactly as long as it
  * looks.
  */
-class SuiteActivity : AppCompatActivity() {
+class SuiteActivity : TvActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         Prefs.applyChrome(this)

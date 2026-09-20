@@ -6,6 +6,199 @@ All notable changes to the Core Builds Icon Pack. Format follows
 
 ## [Unreleased]
 
+## [1.9.0] — 2026-09-20
+
+### Added
+
+- **The app now wears its design sheets.** The catalogue and the wallpapers
+  browser are rebuilt to the approved sheets, which live again at
+  `docs/design/app-ui-*.png` as the spec — the generated frames in `docs/` are
+  the as-built truth, not the design. Home screen, in the sheet's order: cyan
+  caps wordmark with the pack's two counts on the left ("943 icons - 1765
+  components", the second read off `appfilter.xml` at launch), the Apply CTA
+  with the detected launchers listed under it on the right, three full-width
+  entry rows (Wallpapers, Settings, About) with what each holds in slate at the
+  row's right end, an ALSO APPLIES TO kicker with the other installed launchers
+  as plain chips, a full-width search field whose hint carries the catalogue
+  size, the category chips, and a five-column grid of glyph-only tiles — the
+  label under each tile is gone, the name lives in the inspector and in the
+  tile's content description. Wallpapers: the count line reads "84 walls -
+  series chips filter the grid", three columns of named thumbs, and the export
+  affordance left the header for a ghost pill over the paragraph that says what
+  it does (Monet rotates `Pictures/CoreBuilds`).
+
+  Both screens are landscape two-pane, because a TV is 16:9 and the sheet's
+  panel is portrait: a fixed left rail (`cb_rail_width`) carries the sheet's
+  vertical stack — and has the panel's full height for it, so the entry rows
+  keep title over subtitle exactly as drawn, and the wallpapers series chips
+  stand on their side as a scrolling list — while the grid owns the right pane
+  and gets two rows of near-square tiles on a 1080p panel instead of the
+  cropped sliver a single column of chrome left it. Column counts are derived,
+  not declared: pane width over tile pitch, both from dimens.
+  `MainActivity.syncFocusChain()` was rewritten for the new order (rail rows →
+  band → field → chips → grid, LEFT/RIGHT crossing panes geometrically);
+  Classic and Pop share the Kotlin, Pixel Neon keeps its fork and gained the
+  new resource names.
+- **The UI renders at the same physical size on every TV panel.** Android TV
+  sets disagree about the dp box they report - 1080p says 960x540dp, 4K says
+  1280x720dp or 1920x1080dp depending on the OEM's density bucket - so a
+  dp-written layout was rendering at a different physical size on each: on the
+  doubled box every dp is half the millimetres, a 16sp label an 8sp label at
+  the same three metres. Resource qualifiers cannot fix that (they are steps,
+  wrong between steps: a 1280x720dp panel matches `sw720dp` and would wear the
+  1920dp panel's metrics, 1.5x too big), so the app normalises the box instead:
+  `TvActivity`, which every screen inherits, overrides
+  `configuration.densityDpi` in `attachBaseContext` to the density that makes
+  the panel's pixel width come out as exactly the 960x540dp canvas every layout
+  and mockup frame is drawn against - continuously exact at any panel, `sp`
+  and the accessibility font scale included, `drawable-nodpi` art laid out into
+  dp-sized boxes as before, and per-app only. Column counts fall out of it
+  invariant, since pane-over-pitch is measured in the normalised box.
+  `tests/test_tv_scale.py` pins the arithmetic against every panel report the
+  suite knows, pins every Activity to the base class, and pins the retired
+  `values-sw720dp` buckets to staying retired.
+
+- **Later, on the update bar.** The what's-new bar gains a dismiss. While it is
+  up it also reclaims the header's launcher list and the ALSO APPLIES TO row,
+  because on a 540dp panel the bar, the band and a full row of tiles do not all
+  fit and the tiles are the screen; Later gives the two rows back for the
+  session. The check still runs and `pendingUpdate` still stands, so About and
+  Settings keep reporting the update and Download is one screen away.
+
+- **`tests/test_navigation_graph.py`: a gate that audits menus.** `tests/test_navigation_graph.py`, in all three
+  modules: every `clickable="true"` view in every activity and item layout is
+  named by a handler in the Kotlin that inflates it (row roots bound through
+  `itemView` excepted, and documented); every activity in the manifest is
+  reachable from MainActivity by following `Intent(..., X::class.java)`; every
+  `nextFocus*` edge ends on a view that can hold the cursor, bar one documented
+  "stay put" edge per screen; and every `requestFocus()` names an id some
+  layout declares. It exists because a redesign that restacks whole screens
+  can leave a button with no listener or a screen with no door, and neither
+  shows up in a layout diff.
+### Changed
+
+- **`tools/build_app_ui_mockups.py`: the UI mockups are generated from the source they depict.**
+  `tools/build_app_ui_mockups.py` renders 1920×1080 TV frames of the catalogue,
+  wallpapers browser, settings, FAQ, auditor, inspector and suite hub straight
+  from `strings.xml`, `dimens.xml`, `colors.xml`, the generated arrays,
+  `suite_hub.xml`, `Latestrelease/version.json` and the real bundled icon and
+  wallpaper art, through the same Outfit-to-SVG-path and resvg pipeline the
+  icon generators use. The four hand-drawn sheets it replaces had drifted off
+  the published app — a stacked-rows home screen the layout never had,
+  unlabeled tiles, "1765 components", a v1.8.20 header and chip counts from an
+  older tranche — which is what "the mockups look nothing like what was
+  published" meant. The sheets were not wrong, they were *ahead*: this release
+  rebuilds the app to them, and they are restored under `docs/design/` as the
+  spec the frames are checked against by eye. `--check` fails CI on drift; the
+  frames carry a MOCKUP caption naming which values are example data (the
+  detected launchers, the focused tile).
+### Fixed
+
+- **`tools/build_app_ui_mockups.py`: --check stopped comparing PNG bytes, because no two machines render the same bytes.** Pinning the renderer was not enough. With identical pins on both sides - Pillow 10.4.0, fontTools 4.59.0, resvg-py 0.4.0 - and byte-identical input rasters, the nine frames generated on CPython 3.11 differed from the same generator's output on a runner's 3.12 in *every* frame: 2-6% of pixels, mean channel delta under 5, max 232. Two more runs with the check made to name its inputs narrowed it down: the sources hashed identically on both sides - all 31 of them, and the 19 rasters the frames paste - while every frame's drawn structure differed, which is not antialiasing but *measurement*. Pillow shapes and measures text through raqm/harfbuzz when the wheel can find it and through FreeType's own advances when it cannot, so whether a runner happens to have libraqm changes how wide a string is, where `wrap()` breaks a line, and where a centred label sits. `font()` now pins `layout_engine=BASIC`, available everywhere, so the frames are laid out by the same rules on every machine - a no-op here, which is why the local PNGs did not move, and the whole fix on a runner that had raqm. The manifest records a metrics probe (one fixed string measured in all nine fonts the frames use) so that if this ever fires again the failure says "text metrics differ, the layout engine moved" instead of "the frames do not match". The check now compares what the frames are a function of: `docs/app-ui-mockups.json` records a sha256 for every source - all 15 layouts, the values files, the catalog, the update manifest, the bundled appfilter and wallpaper manifest, the fonts, the generator's own source - plus the aggregate hash of the 19 rasters the frames paste and, per frame, a digest of what was drawn: every string, its position, size, font and colour, every artwork and its box. Change any of it without regenerating and the check names the files that moved; a frame that no longer decodes, or is not 1920px wide, fails too. The structural digest is the stricter half of the old comparison - it fails on a one-dp move, which bytes only caught by accident of encoding. `--report` still prints both sides' hashes and a pixel-level difference, because when two machines disagree that is the only way to see how far apart they are, and it is how this was diagnosed: a runner's log storage is not reachable from the workspace that has to fix the failure, so the check now repeats its diagnosis as annotations. Mutated three ways - a dimen moved, the generator drawing 3px lower, a committed frame corrupted mid-stream - and each was caught and named.
+- **`tests/test_render_stack.py`: the frames were rendered on a Pillow nobody else has.** `build_app_ui_mockups.py --check` compares the committed frames byte for byte, which only means anything if both sides used the same rasteriser - Pillow's text layout and PNG encoding move between major versions. The nine frames and `docs/icon-fidelity-preview.png` had been generated in a workspace carrying Pillow 12.3.0 against a pin of 10.4.0, so every local check passed (the frames matched the frames) while CI failed the same comparison in two workflows, twice, for a difference no reviewer could see. `tools/requirements.txt` had said "pinned so PNG output stays reproducible across machines and CI" all along; nothing checked that the machine doing the committing had installed them. The frames are regenerated on the pinned stack, and the new gate compares what is installed against the pins and says so in the failure message with the command that fixes it.
+- **`.github/workflows/device-check.yml`: the emulator asserted a sentence the redesign retired.** The on-device check greps the launched home screen for "943 icons installed". The two-pane rebuild changed that line to `pack_stats_fmt` - "943 icons - 1765 components" - so the branch's first CI run failed on a TV emulator that had in fact installed both packs side by side, found them discoverable, launched them and rendered the counts correctly. The check now derives the sentence from `strings.xml`, the catalog and the bundled appfilter, counting `component=` occurrences the way `MainActivity.mappedComponents()` does, so it follows the copy instead of pinning it and a stripped or stale appfilter still changes the number. `build_app_ui_mockups.py --check` moved ahead of build.yml's asset regeneration for the same class of reason: the frames paste real rasters out of `res/drawable-nodpi`, PNG bytes move with the runner's rasteriser, and comparing after a regeneration measures this runner's libcairo rather than the repository. suite-ci.yml, which runs no builder at all, checks the frames too.
+- **`tests/test_ui_wiring.py`: the wallpapers focus chain it pinned was still the portrait one.** The gate demanded six substrings from the pre-redesign layout, and two of them - something pointing *down* at Back, something pointing *up* at the export pill - cannot exist on a two-pane screen, where Back is the rail's top stop and the pill hangs under the paragraph that says what it does. It failed on the release PR's first CI run and had never failed locally, because the file was a script with a `main()` and no test functions: `pytest tests/` collected nothing from it, so every local sweep reported the suite green while CI ran the checks and the layout had moved underneath them. `test_icon_uniformity.py` was built the same way and had consequently never measured a glyph on a laptop either. Both now wrap the collector the script already used in a `unittest.TestCase`, so there is one runner and one answer, and `tests/test_ci_coverage.py` fails on any test file pytest cannot see. The wallpapers chain is pinned properly while it was open: seventeen parsed `(owner, direction) -> target` edges instead of substrings - a substring test could not tell "Back leads down to the selection bar" from "the export pill does" - plus a refusal of any edge the table does not list, because an unplanned edge is how a cursor escapes the panel. Both rules were broken on purpose in the layout and the gate had to notice.
+- **`tests/test_ci_coverage.py`: five tests and two validators ran on a laptop and nowhere else.** `tests/`
+  held 21 test files and the twelve workflows named 16 of them, one
+  `python tests/x.py` line each — so `test_mapping_hygiene`,
+  `test_monet_handoff`, `test_navigation_graph`, `test_presence` and
+  `test_tv_scale` were invoked by no workflow at all, including both gates
+  written this release. `tools/check_ui_resources.py`, which the 1.8.13 notes
+  describe as one of five static gates, was referenced by none of them, and
+  neither was Core Shift's `validate_motion_feed.py`. `build.yml` also watched
+  only `app/**` while its gates read all three app modules, so this cycle's
+  Pixel Neon-only fix — the dead no-results buttons below — would have merged
+  without a single check run against it. All seven are wired in now: the
+  stdlib ones into `suite-ci.yml`, which has no path filter and so runs on every
+  push and PR, the app-relevant ones into `build.yml`, whose filter gained
+  `pop/**`, `pixel-neon/**` and `docs/**`. `tests/test_ci_coverage.py` is the
+  meta-gate that fails if a test file or a `check_*`/`validate*` tool ever stops
+  being invoked; local-only is now an opt-in carrying a written excuse, and
+  `check_glyph.py` is the one tool that takes it.
+- **`tests/test_changelog_contract.py`: a duplicate `### Added` hid a bullet.**
+  The menu-audit gate below was
+  appended to `[Unreleased]` under its own `### Added` heading rather than
+  merged into the one at the top, and `prepare_release.py` finds each kind with
+  a single `re.search` - first match wins. The bullet was correctly formatted,
+  correctly placed in the file, and invisible to the stamper, so
+  `Latestrelease/version.json` would have shipped eight highlights that left
+  out a feature this release adds. No gate read the CHANGELOG at all. The
+  section is merged and ordered Added, Changed, Fixed; the new test asserts
+  that order, that no section repeats a kind heading, that every
+  `[Unreleased]` bullet carries the bold lead the card renders, that the two
+  gate receipts stay off the card, and that `1.8.7` remains the only version
+  ever stamped without a tag. The kind vocabulary is a ratchet from 1.8.20, so
+  history (1.8.6's two `### Fixed` blocks, 1.8.7's Colour/Style/Verified) is
+  left exactly as published. Each rule was broken on purpose in a scratch copy
+  and the test had to notice.
+- **Pixel Neon's no-results state was a blank grid with two dead buttons.**
+  `activity_main.xml` carried the empty state - title, explanation, "Clear
+  search", "Show all N icons" - with both buttons `clickable="true"` and no
+  code behind any of it: `applyFilter()` never toggled the container, so a
+  filter with no match rendered an empty grid and no way back but backspacing,
+  and had the container ever been shown the buttons would have swallowed
+  presses. Ported Core Builds' `bindEmptyState`/`bindEmptyActions` and the
+  chain's "down from the chips names whatever is on screen" edge into the
+  fork. Found by the menu audit above, which is why the audit is now a gate.
+- **A pending update could collapse the catalogue to chrome.** The bar stacked
+  every highlight in `version.json` — eight at present, ~160dp of bullets —
+  under the label and the download explanation inside fixed chrome whose
+  remainder is the grid. On a 1080p panel, which reports 540dp, that left the
+  weighted grid zero height: no tiles, and a focus target that renders nothing,
+  i.e. the "lists disappeared" report with a network callback as the trigger
+  instead of the D-pad. The bar now shows the release's first highlight, one
+  ellipsised line, in place of the download explanation (never both), which is
+  also what the generated update frame draws.
+
+
+- **Two UP presses from the search box made the catalogue look dead.** The
+  vertical D-pad chain runs `apply_targets → update_bar → chip_row`, and both
+  header containers are GONE unless something shows them — the update bar only
+  when a newer manifest exists, the target row only when a second launcher is
+  installed. Both were still focusable while hidden, and `isFocusable()`
+  ignores visibility: UP from the search field parked the ring on the invisible
+  bar, the next UP on the invisible target row, and from there UP/DOWN
+  ping-ponged between two views nobody can see while the chips and the grid
+  went unreachable. From the sofa that read as "the lists disappeared", and the
+  earlier "press right and they disappear" report was the same hole entered
+  from another edge. The layout comment claimed FocusFinder collapses a chain
+  through a GONE target by following the target's own nextFocus; the device
+  report is the counterexample, so the chain is now explicit instead of
+  folklore: both containers carry `focusable="false"` so a hidden one can never
+  hold the cursor, and a new `MainActivity.syncFocusChain()` rewrites every
+  edge that used to route through them to the nearest VISIBLE stop — the bar's
+  button when the bar is shown, the target row when only that is, the
+  wallpapers entry otherwise, and the empty state's undo below the filter row
+  when the grid is the container that just went GONE. It runs at each of the
+  five places that toggle a container, in Classic and Pop (shared Kotlin) and
+  in Pixel Neon's fork, which carried the same hole.
+  `tests/test_search_focus.py` gained three checks: no `visibility="gone"` view
+  in any of the three modules' main layout may declare `focusable="true"`, the
+  chain is resynced at every visibility toggle, and the wallpaper preview's
+  decode callback reveals without grabbing (below).
+- **The inspector listed no components and Launch was a dead button.**
+  `componentsFor()` matched `drawable="<square name>"` in the bundled
+  `appfilter.xml`, but every one of the 1765 component items in that file maps
+  to the *banner* drawable — the square glyph reaches launchers through
+  `drawable.xml`, not through a component mapping — so the match came back
+  empty for every tile in the pack: the component list rendered blank and
+  **Launch app** toasted "No component maps to this drawable in appfilter.xml"
+  on icons that are mapped four ways. The pattern now accepts the `_banner`
+  suffix (non-capturing, so `groupValues[1]` stays the component), in Classic
+  and Pop. `tests/test_ui_wiring.py` locks both halves: the suffix in the
+  pattern, and a data check that no drawable in `icon_pack.xml` is absent from
+  `appfilter.xml` altogether. The mockup generator is what caught it — rendering
+  the inspector frame from the asset produced an empty component list.
+- **The wallpaper preview yanked the cursor back to Set mid-browse.**
+  `decodeAndShow` ended in an unconditional `requestFocus()` on the primary
+  action, and it runs on a download callback — which resolves whenever the
+  network likes, including after the user has D-pad right onto the next
+  wallpaper and moved the cursor to Save there. Same class of defect as the
+  update bar's grab fixed in 1.8.11/1.8.21, same rule: reveal, and take the
+  cursor only when nothing has been chosen yet (no focus, the decor view, or
+  the Back button the screen opens on). Fixed in `app` and mirrored into Pixel
+  Neon's fork.
+
 ## [1.8.21] — 2026-09-19
 
 ### Fixed
