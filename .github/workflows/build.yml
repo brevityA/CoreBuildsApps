@@ -14,6 +14,14 @@ on:
       - 'Latestrelease/**'
       - 'Wallpapers/**'
       - 'tests/**'
+      # This job's gates read all three app modules: check_ui_resources and
+      # test_navigation_graph walk app/, pop/ and pixel-neon/ resources, and
+      # build_app_ui_mockups --check compares the frames committed under docs/.
+      # Without these three a fork-only change - a dead button in Pixel Neon, a
+      # stale mockup - reached main without running any of them.
+      - 'pop/**'
+      - 'pixel-neon/**'
+      - 'docs/**'
       - '.github/workflows/build.yml'
   pull_request:
     paths:
@@ -26,6 +34,9 @@ on:
       - 'Latestrelease/**'
       - 'Wallpapers/**'
       - 'tests/**'
+      - 'pop/**'
+      - 'pixel-neon/**'
+      - 'docs/**'
       - '.github/workflows/build.yml'
   workflow_dispatch:
 
@@ -104,6 +115,9 @@ jobs:
       - name: Validate catalog + appfilter
         run: python tools/validate.py
 
+      - name: Check every UI resource the three modules reference
+        run: python tools/check_ui_resources.py
+
       - name: Run robustness + wallpapers tests
         run: |
           python tests/test_icon_identity.py
@@ -116,6 +130,11 @@ jobs:
           python tests/test_icon_uniformity.py
           python tests/test_ui_wiring.py
           python tests/test_brandmark_badge.py
+          python tests/test_navigation_graph.py
+          python tests/test_tv_scale.py
+          python tests/test_mapping_hygiene.py
+          python tests/test_monet_handoff.py
+          python tests/test_ci_coverage.py
           python tools/build_app_ui_mockups.py --check
 
       - name: Set up JDK 17

@@ -23,6 +23,16 @@ jobs:
           python-version: '3.12'
       - name: Check every appfilter drawable exists in the res tree
         run: python tools/check_appfilter_integrity.py
+      # Reads res/ and the Kotlin of all three app modules, stdlib only. It was
+      # a local-only gate for eleven releases: nothing in CI ever asked whether
+      # a layout referenced a string, dimen or drawable that does not exist, or
+      # whether a nextFocus chain stranded a focusable view.
+      - name: Check every UI resource the three modules reference
+        run: python tools/check_ui_resources.py
+      # Core Shift's live-wallpaper feed. AGENTS.md has documented it as a
+      # verification step since the feed landed, and no workflow ran it.
+      - name: Check the Core Shift live-feed against its media
+        run: python tools/validate_motion_feed.py
       - name: Assert every shippable app has CI, metadata, and hardened updater contracts
         run: python tools/audit_contract.py
       - name: Check prefilled icon-request links against the issue forms
@@ -187,3 +197,14 @@ jobs:
           python tests/test_ui_wiring.py
           python tests/test_brandmark_badge.py
           python tests/test_gradle_envelope.py
+          python tests/test_resource_parity.py
+          python tests/test_navigation_graph.py
+          python tests/test_tv_scale.py
+          python tests/test_mapping_hygiene.py
+          python tests/test_monet_handoff.py
+          python tests/test_presence.py
+          # Meta-gate, last: it reads the workflows above and fails if any
+          # tests/test_*.py or tools/check_*.py has stopped being invoked. This
+          # job has no path filter, so it is the one place a new test can be
+          # wired and be certain to run on every push and PR.
+          python tests/test_ci_coverage.py

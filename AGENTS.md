@@ -117,6 +117,20 @@ prefills `input`/`textarea` fields only, and the tool refuses to promise more.
 - Icon Pack: four generators + `python tools/validate.py`.
   Square PNGs get a raster presence pass (`tools/presence.py`) after svg2png —
   night keyline + accent bloom as rings. Vectors stay style-AA. Banners skip it.
+- Icon Pack UI (all three modules): `python tools/check_ui_resources.py`
+  (every resource reference resolves, no focusable view stranded),
+  `python tests/test_navigation_graph.py` (every clickable has a handler, every
+  screen is reachable, every focus edge lands somewhere),
+  `python tests/test_tv_scale.py` (the dp box normalises per panel), and
+  `python tools/build_app_ui_mockups.py --check` against the frames committed in
+  `docs/` — regenerate them with the same tool and no flag after any layout
+  change, then commit the PNGs.
+- CI coverage: `python tests/test_ci_coverage.py`. Every file in `tests/` and
+  every `tools/check_*.py` / `tools/validate*.py` must be invoked by a workflow,
+  or excused in that file's `LOCAL_ONLY` with a written reason. A new gate that
+  is not wired into `.github/workflows/suite-ci.yml` — the one with no path
+  filter — does not exist: five tests and two validators had been local-only
+  before that check was written.
 - Pixel Neon: `python tools/build_pixel_neon.py`, `python tools/validate_pixel_neon.py`, plus `cd pixel-neon && ./gradlew :app:lintDebug :app:assembleDebug`.
 - Core Builds Pop: `python tools/build_pop.py` + `python tools/validate_pop.py` + `python tests/test_pop.py`.
 - Core Line: `cd ticker && npm test`.

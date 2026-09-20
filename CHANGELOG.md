@@ -78,6 +78,23 @@ All notable changes to the Core Builds Icon Pack. Format follows
 
 ### Fixed
 
+- **Five tests and two validators ran on a laptop and nowhere else.** `tests/`
+  held 21 test files and the twelve workflows named 16 of them, one
+  `python tests/x.py` line each — so `test_mapping_hygiene`,
+  `test_monet_handoff`, `test_navigation_graph`, `test_presence` and
+  `test_tv_scale` were invoked by no workflow at all, including both gates
+  written this release. `tools/check_ui_resources.py`, which the 1.8.13 notes
+  describe as one of five static gates, was referenced by none of them, and
+  neither was Core Shift's `validate_motion_feed.py`. `build.yml` also watched
+  only `app/**` while its gates read all three app modules, so this cycle's
+  Pixel Neon-only fix — the dead no-results buttons below — would have merged
+  without a single check run against it. All seven are wired in now: the
+  stdlib ones into `suite-ci.yml`, which has no path filter and so runs on every
+  push and PR, the app-relevant ones into `build.yml`, whose filter gained
+  `pop/**`, `pixel-neon/**` and `docs/**`. `tests/test_ci_coverage.py` is the
+  meta-gate that fails if a test file or a `check_*`/`validate*` tool ever stops
+  being invoked; local-only is now an opt-in carrying a written excuse, and
+  `check_glyph.py` is the one tool that takes it.
 - **Pixel Neon's no-results state was a blank grid with two dead buttons.**
   `activity_main.xml` carried the empty state - title, explanation, "Clear
   search", "Show all N icons" - with both buttons `clickable="true"` and no
