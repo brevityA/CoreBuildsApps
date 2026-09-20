@@ -239,6 +239,128 @@ def focus_chain_gaps(path: Path) -> list[str]:
     return sorted(set(gaps))
 
 
+# A bare `grid.visibility` compiles only if something in scope declares `grid`.
+# These are the properties that make a bare name a *view* reference rather than
+# a field on a data class, so the check does not fire on `item.name`.
+VIEW_PROPS = (
+    "visibility", "isVisible", "setOnClickListener", "setOnFocusChangeListener",
+    "requestFocus", "clearFocus", "setText", "setHint", "text", "hint",
+    "adapter", "layoutManager", "isFocusable", "isEnabled", "isClickable",
+    "nextFocusUpId", "nextFocusDownId", "nextFocusLeftId", "nextFocusRightId",
+    "nextFocusForwardId", "nextFocusBackwardId",
+)
+BARE_USE = re.compile(
+    r"(?<![\w.?])([a-z][A-Za-z0-9_]*)\s*\.\s*(?:" + "|".join(VIEW_PROPS) + r")\b"
+)
+DECL = re.compile(r"\b(?:val|var)\s+([A-Za-z_][A-Za-z0-9_]*)")
+FUN = re.compile(r"\bfun\s+(?:[\w.<>]+\.)?([A-Za-z_][A-Za-z0-9_]*)\s*\(([^)]*)\)")
+
+
+def _strip_literals(text: str) -> str:
+    """Blank out string literals and comments so brace matching is not fooled."""
+    out, i, n = [], 0, len(text)
+    while i < n:
+        c = text[i]
+        if text.startswith('"""', i):
+            j = text.find('"""', i + 3)
+            j = n if j < 0 else j + 3
+            out.append(" " * (j - i)); i = j
+        elif c == '"':
+            j = i + 1
+            while j < n and text[j] != '"':
+                j += 2 if text[j] == "\\" else 1
+            j = min(j + 1, n)
+            out.append(" " * (j - i)); i = j
+        elif text.startswith("//", i):
+            j = text.find("\n", i)
+            j = n if j < 0 else j
+            out.append(" " * (j - i)); i = j
+        elif text.startswith("/*", i):
+            j = text.find("*/", i + 2)
+            j = n if j < 0 else j + 2
+            out.append(" " * (j - i)); i = j
+        else:
+            out.append(c); i += 1
+    return "".join(out)
+
+
+def function_spans(text: str) -> list[tuple[str, str, int, int]]:
+    """(name, parameter_list, body_start, body_end) per block-bodied function."""
+    plain = _strip_literals(text)
+    spans = []
+    for m in FUN.finditer(plain):
+        brace = plain.find("{", m.end())
+        if brace < 0:
+            continue
+        # An expression body (`fun x() = ...`) has no block of its own; the
+        # next `{` would belong to something else entirely.
+        between = plain[m.end():brace]
+        if "=" in between:
+            continue
+        depth, i, n = 0, brace, len(plain)
+        while i < n:
+            if plain[i] == "{":
+                depth += 1
+            elif plain[i] == "}":
+                depth -= 1
+                if depth == 0:
+                    break
+            i += 1
+        spans.append((m.group(1), m.group(2), brace, min(i, n)))
+    return spans
+
+
+def bare_view_refs(kt: Path, ids: set[str]) -> list[str]:
+    """Bare references to this screen's views that nothing in scope declares.
+
+    Why this check exists: porting a function between the classic pack and the
+    Pixel Neon fork carries its expressions across but not its fields. `grid`
+    is a member of one MainActivity and a local `findViewById` in the other, so
+    `grid.visibility` compiles in one module and is an unresolved reference in
+    the other - a build failure that no layout check can see, because the
+    layout is fine and the id resolves. It reached CI before it was caught.
+
+    Scoped per function, not per file: the same name can be declared in one
+    function and missing in the next, which is exactly how this presents.
+    """
+    text = kt.read_text(encoding="utf-8")
+    # Only names this file also reaches through R.id are views of this screen;
+    # anything else is a data-class field or a local with an unlucky name.
+    candidates = {
+        n for n in re.findall(r"R\.id\.([A-Za-z0-9_]+)", text) if n in ids
+    }
+    if not candidates:
+        return []
+    spans = function_spans(text)
+    members = set()
+    for m in DECL.finditer(_strip_literals(text)):
+        if not any(s <= m.start() < e for _, _, s, e in spans):
+            members.add(m.group(1))
+    problems = []
+    for name, params, start, end in spans:
+        body = text[start:end]
+        # Parameters are in scope for the whole body: `jumpByLetter(grid:
+        # RecyclerView, ...)` is why a bare `grid.layoutManager` compiles there
+        # and not in a function that never took one.
+        declared = (
+            members
+            | {d.group(1) for d in DECL.finditer(_strip_literals(body))}
+            | set(re.findall(r"([A-Za-z_][A-Za-z0-9_]*)\s*:", params))
+        )
+        for use in BARE_USE.finditer(body):
+            ref = use.group(1)
+            if ref in candidates and ref not in declared:
+                line = text.count("\n", 0, start + use.start()) + 1
+                problems.append(
+                    f"{kt.name}:{line}: `{ref}.{use.group(0).split(chr(46))[-1].strip()}` "
+                    f"in {name}() is a bare reference to R.id.{ref}, which "
+                    f"nothing in that function declares - unresolved reference "
+                    f"at compile time (declare it with findViewById, as the "
+                    f"rest of the function does)"
+                )
+    return problems
+
+
 def layout_ids(path: Path) -> set[str]:
     root = ET.parse(path).getroot()
     ids: list[str] = []
@@ -299,6 +421,18 @@ def main() -> int:
                             "color" if kind == "color" else "array", set()):
                         fail(f"{kt.name} ({mod}): R.{kind}.{name} does not resolve")
 
+    # Bare view references in Kotlin: the compile error a layout check cannot
+    # see, because the id resolves and only the scope is wrong.
+    for mod, (module_root, kotlin) in MODULES.items():
+        ids: set[str] = set()
+        # module_root already ends at src/main, so res/ hangs straight off it.
+        for layout_dir in sorted(module_root.glob("res/layout*")):
+            for xml in sorted(layout_dir.glob("*.xml")):
+                ids |= layout_ids(xml)
+        for kt in sorted(kotlin.glob("*.kt")):
+            for problem in bare_view_refs(kt, ids):
+                fail(f"{problem} ({mod})")
+
     # Focus reachability. Layout-only, so it covers pixel-neon too even though
     # that module keeps its own Kotlin and resources.
     layout_dirs = [
@@ -325,8 +459,9 @@ def main() -> int:
         return 1
     print(f"OK — XML well-formed, every resource reference resolves in all "
           f"{len(MODULES)} modules ({', '.join(MODULES)}), every R.* in the "
-          f"Kotlin each one compiles exists, no duplicate ids, no focusable "
-          f"view stranded by a nextFocus chain.")
+          f"Kotlin each one compiles exists, no duplicate ids, no bare view "
+          f"reference the enclosing function does not declare, and no "
+          f"focusable view stranded by a nextFocus chain.")
     return 0
 
 

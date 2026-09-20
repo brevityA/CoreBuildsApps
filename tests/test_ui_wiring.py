@@ -62,6 +62,9 @@ from __future__ import annotations
 
 import re
 import sys
+import os
+import sys
+import unittest
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -91,11 +94,56 @@ QUERIES_NEEDLES = [
 ]
 
 
+# The wallpapers screen's focus chain, as built: (owner id, direction) -> the
+# id the cursor must land on. Rail first, then the pane, then the crossings.
+WP_FOCUS_CHAIN = {
+    # Rail, top to bottom.
+    ("wp_back", "Down"): "wp_selection_bar",
+    ("wp_selection_bar", "Up"): "wp_back",
+    ("wp_selection_bar", "Down"): "wp_chips",
+    # The selection bar's own buttons share its edges, so the bar's row never
+    # traps the cursor when it is the visible stop.
+    ("wp_select_all", "Up"): "wp_back",
+    ("wp_select_all", "Down"): "wp_chips",
+    ("wp_clear", "Up"): "wp_back",
+    ("wp_clear", "Down"): "wp_chips",
+    ("wp_export_selected", "Up"): "wp_back",
+    ("wp_export_selected", "Down"): "wp_chips",
+    # Series chips: a vertical list on the rail's side, so UP/DOWN walk the
+    # rail and RIGHT hands the cursor to the grid.
+    ("wp_chips", "Up"): "wp_selection_bar",
+    ("wp_chips", "Down"): "wp_export",
+    ("wp_chips", "Right"): "wp_grid",
+    # The export pill sits under the paragraph that says what it does.
+    ("wp_export", "Up"): "wp_chips",
+    # Grid: UP leaves the pane for the rail's top stop, DOWN reaches the pill,
+    # LEFT returns to the chips.
+    ("wp_grid", "Up"): "wp_back",
+    ("wp_grid", "Down"): "wp_export",
+    ("wp_grid", "Left"): "wp_chips",
+}
+
+
+def wallpaper_focus_edges(layout: str) -> dict[tuple[str, str], str]:
+    """{(owner id, direction): target id} for every nextFocus edge declared."""
+    edges: dict[tuple[str, str], str] = {}
+    for element in re.finditer(r"<\w+(?:[^>]*?)>", layout, re.S):
+        attrs = element.group(0)
+        owner = re.search(r'android:id="@\+id/(\w+)"', attrs)
+        if not owner:
+            continue
+        for direction, target in re.findall(
+                r'android:nextFocus(\w+)="@\+?id/(\w+)"', attrs):
+            edges[(owner.group(1), direction)] = target
+    return edges
+
+
 def read(p: Path) -> str:
     return p.read_text(encoding="utf-8")
 
 
-def main() -> int:
+def collect() -> list[str]:
+    """Every wiring problem in the tree, as a list of sentences."""
     problems: list[str] = []
 
     def check(ok: bool, label: str):
@@ -131,14 +179,30 @@ def main() -> int:
     check("if (adapter.selectionMode) exitSelectionMode() else finish()" in wp,
           "WallpapersActivity: back must leave selection mode before finishing")
 
-    layout = read(WP_LAYOUT)
-    for edge in ('android:nextFocusDown="@id/wp_back"',
-                 'android:nextFocusUp="@id/wp_export"',
-                 'android:nextFocusDown="@id/wp_selection_bar"',
-                 'android:nextFocusUp="@id/wp_back"',
-                 'android:nextFocusDown="@id/wp_chips"',
-                 'android:nextFocusUp="@id/wp_chips"'):
-        check(edge in layout, f"activity_wallpapers.xml: focus edge missing: {edge}")
+    # The wallpapers screen's focus chain, as built. Pinned as parsed
+    # (owner, direction) -> target edges rather than substrings, because a
+    # substring test passes as soon as *any* view carries the edge: it could
+    # not tell "Back leads down to the selection bar" from "the export pill
+    # does". The two-pane rebuild moved this chain - the rail is now
+    # Back -> selection bar -> series chips (a vertical list) -> export pill,
+    # and the grid sits to the right of the chips, so LEFT/RIGHT cross the
+    # panes and nothing lives below Back or above the pill any more. The two
+    # edges this list used to demand (`down -> wp_back`, `up -> wp_export`)
+    # described the portrait layout and were dropped by that rebuild; the gate
+    # was script-only, so pytest never ran it and the disagreement surfaced in
+    # CI on the release PR instead of locally. If the screen changes again,
+    # change this table deliberately.
+    for (owner, direction), target in WP_FOCUS_CHAIN.items():
+        got = wallpaper_focus_edges(read(WP_LAYOUT)).get((owner, direction))
+        check(got == target,
+              f"activity_wallpapers.xml: {owner} nextFocus{direction} should "
+              f"reach {target}, found {got or 'nothing'}")
+    # And no edge the table does not know about: an unplanned edge is how a
+    # cursor escapes the panel.
+    unknown = sorted(set(wallpaper_focus_edges(read(WP_LAYOUT))) - set(WP_FOCUS_CHAIN))
+    check(not unknown,
+          f"activity_wallpapers.xml: focus edges outside the pinned chain: "
+          f"{[f'{o} nextFocus{d}' for o, d in unknown]}")
 
     main = read(MAIN_KT)
     check("WallpapersActivity::class.java" in main and "wpEntry.setOnClickListener" in main,
@@ -313,6 +377,11 @@ def main() -> int:
         check(res.is_file() and "suite_hub_pkgs" in read(res),
               f"{res}: generated suite hub resource missing")
 
+    return problems
+
+
+def main() -> int:
+    problems = collect()
     if problems:
         print(f"ui wiring gate: {len(problems)} problem(s)")
         for p in problems:
@@ -324,5 +393,20 @@ def main() -> int:
     return 0
 
 
+class UiWiring(unittest.TestCase):
+    """The same gate under pytest.
+
+    This file was a script with a `main()` and no test functions, so
+    `pytest tests/` collected nothing from it and reported the suite green
+    while CI - which runs `python tests/test_ui_wiring.py` - was failing. Two
+    runners, two answers, and the local one is the one everybody reads.
+    """
+
+    def test_wiring(self) -> None:
+        self.assertEqual(collect(), [])
+
+
 if __name__ == "__main__":
+    if len(sys.argv) > 1 or os.environ.get("PYTEST_CURRENT_TEST"):
+        unittest.main()
     raise SystemExit(main())

@@ -162,6 +162,30 @@ class CiCoverage(unittest.TestCase):
             "drop the excuse",
         )
 
+    def test_every_gate_is_visible_to_both_runners(self) -> None:
+        """CI runs `python tests/x.py`; a local sweep runs `pytest tests/`.
+
+        A file that is only a script with a `main()` - no `unittest.TestCase`,
+        no `def test_*` - is collected by nothing under pytest, so the suite
+        reports green without running it. `test_ui_wiring.py` and
+        `test_icon_uniformity.py` were both like that, which is how the
+        wallpapers focus chain drifted out of date under a passing local suite
+        and only failed on the release PR's first CI run.
+        """
+        invisible = []
+        for path in sorted((ROOT / "tests").glob("test_*.py")):
+            src = path.read_text(encoding="utf-8")
+            if not re.search(r"class \w+\(unittest\.TestCase\)", src) and not re.search(
+                    r"(?m)^def test_", src):
+                invisible.append(path.name)
+        self.assertEqual(
+            invisible,
+            [],
+            f"pytest collects nothing from {invisible}, so a local sweep "
+            "passes without running them: wrap the gate in a "
+            "unittest.TestCase that calls the same collector main() uses",
+        )
+
     def test_module_wide_gates_trigger_on_every_module(self) -> None:
         """A gate that reads pop/ and pixel-neon/ is worthless in a workflow
         that only triggers on app/**."""

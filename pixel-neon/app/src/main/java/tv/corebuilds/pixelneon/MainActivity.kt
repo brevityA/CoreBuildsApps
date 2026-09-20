@@ -154,7 +154,7 @@ class MainActivity : TvActivity() {
         targets.nextFocusDownId =
             if (barShown) R.id.update_button else R.id.chip_row
         val down = when {
-            grid.visibility == View.VISIBLE -> R.id.grid
+            findViewById<View>(R.id.grid).visibility == View.VISIBLE -> R.id.grid
             findViewById<View>(R.id.empty_clear_search).visibility == View.VISIBLE ->
                 R.id.empty_clear_search
             else -> R.id.empty_clear_filter
