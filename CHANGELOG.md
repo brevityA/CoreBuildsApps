@@ -6,6 +6,8 @@ All notable changes to the Core Builds Icon Pack. Format follows
 
 ## [Unreleased]
 
+## [1.9.0] — 2026-09-20
+
 ### Added
 
 - **The app now wears its design sheets.** The catalogue and the wallpapers
@@ -75,7 +77,7 @@ All notable changes to the Core Builds Icon Pack. Format follows
   shows up in a layout diff.
 ### Changed
 
-- **The UI mockups are generated from the source they depict.**
+- **`tools/build_app_ui_mockups.py`: the UI mockups are generated from the source they depict.**
   `tools/build_app_ui_mockups.py` renders 1920×1080 TV frames of the catalogue,
   wallpapers browser, settings, FAQ, auditor, inspector and suite hub straight
   from `strings.xml`, `dimens.xml`, `colors.xml`, the generated arrays,

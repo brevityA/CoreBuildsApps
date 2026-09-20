@@ -230,9 +230,30 @@ class ChangelogContract(unittest.TestCase):
         )
 
     def test_highlights_the_card_will_render(self) -> None:
+        """An [Unreleased] with bullets in it must yield highlights; an empty
+        one - the state prepare_release.py leaves behind on a cut, with a fresh
+        heading on top - must yield none, and version.json keeps the leads it
+        was stamped with rather than blanking the card."""
         stamper = load_stamper()
         leads = stamper.changelog_highlights(self.text)
-        self.assertTrue(leads, "no highlights parsed from [Unreleased]")
+        bullets = [
+            line
+            for line in self.sections[0][1].splitlines()
+            if line.startswith("- ")
+        ]
+        if not bullets:
+            self.assertEqual(
+                leads,
+                [],
+                "an empty [Unreleased] parsed highlights out of thin air: "
+                f"{leads}",
+            )
+            return
+        self.assertTrue(
+            leads,
+            f"{len(bullets)} top-level bullets in [Unreleased] and not one "
+            "parsed as a highlight - the stamper needs `- **Lead.**`",
+        )
         self.assertLessEqual(
             len(leads),
             8,
