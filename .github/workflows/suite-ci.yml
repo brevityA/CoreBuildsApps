@@ -203,6 +203,7 @@ jobs:
           python tests/test_mapping_hygiene.py
           python tests/test_monet_handoff.py
           python tests/test_presence.py
+          python tests/test_changelog_contract.py
           # Meta-gate, last: it reads the workflows above and fails if any
           # tests/test_*.py or tools/check_*.py has stopped being invoked. This
           # job has no path filter, so it is the one place a new test can be

@@ -125,6 +125,12 @@ prefills `input`/`textarea` fields only, and the tool refuses to promise more.
   `python tools/build_app_ui_mockups.py --check` against the frames committed in
   `docs/` — regenerate them with the same tool and no flag after any layout
   change, then commit the PNGs.
+- Changelog: `python tests/test_changelog_contract.py`. `## [Unreleased]` runs
+  Added, Changed, Fixed once each, in that order, every top-level bullet leading
+  `- **Name.**` — `prepare_release.py` takes those leads as the in-app what's-new
+  card, one `re.search` per kind, so a second heading of the same kind hides
+  every bullet in it. Lead a gate bullet with its backticked `tests/` or `tools/`
+  path to keep the receipt out of the card.
 - CI coverage: `python tests/test_ci_coverage.py`. Every file in `tests/` and
   every `tools/check_*.py` / `tools/validate*.py` must be invoked by a workflow,
   or excused in that file's `LOCAL_ONLY` with a written reason. A new gate that

@@ -63,9 +63,7 @@ All notable changes to the Core Builds Icon Pack. Format follows
   session. The check still runs and `pendingUpdate` still stands, so About and
   Settings keep reporting the update and Download is one screen away.
 
-### Added
-
-- **A gate that audits menus.** `tests/test_navigation_graph.py`, in all three
+- **`tests/test_navigation_graph.py`: a gate that audits menus.** `tests/test_navigation_graph.py`, in all three
   modules: every `clickable="true"` view in every activity and item layout is
   named by a handler in the Kotlin that inflates it (row roots bound through
   `itemView` excepted, and documented); every activity in the manifest is
@@ -75,10 +73,26 @@ All notable changes to the Core Builds Icon Pack. Format follows
   layout declares. It exists because a redesign that restacks whole screens
   can leave a button with no listener or a screen with no door, and neither
   shows up in a layout diff.
+### Changed
 
+- **The UI mockups are generated from the source they depict.**
+  `tools/build_app_ui_mockups.py` renders 1920×1080 TV frames of the catalogue,
+  wallpapers browser, settings, FAQ, auditor, inspector and suite hub straight
+  from `strings.xml`, `dimens.xml`, `colors.xml`, the generated arrays,
+  `suite_hub.xml`, `Latestrelease/version.json` and the real bundled icon and
+  wallpaper art, through the same Outfit-to-SVG-path and resvg pipeline the
+  icon generators use. The four hand-drawn sheets it replaces had drifted off
+  the published app — a stacked-rows home screen the layout never had,
+  unlabeled tiles, "1765 components", a v1.8.20 header and chip counts from an
+  older tranche — which is what "the mockups look nothing like what was
+  published" meant. The sheets were not wrong, they were *ahead*: this release
+  rebuilds the app to them, and they are restored under `docs/design/` as the
+  spec the frames are checked against by eye. `--check` fails CI on drift; the
+  frames carry a MOCKUP caption naming which values are example data (the
+  detected launchers, the focused tile).
 ### Fixed
 
-- **Five tests and two validators ran on a laptop and nowhere else.** `tests/`
+- **`tests/test_ci_coverage.py`: five tests and two validators ran on a laptop and nowhere else.** `tests/`
   held 21 test files and the twelve workflows named 16 of them, one
   `python tests/x.py` line each — so `test_mapping_hygiene`,
   `test_monet_handoff`, `test_navigation_graph`, `test_presence` and
@@ -95,6 +109,22 @@ All notable changes to the Core Builds Icon Pack. Format follows
   meta-gate that fails if a test file or a `check_*`/`validate*` tool ever stops
   being invoked; local-only is now an opt-in carrying a written excuse, and
   `check_glyph.py` is the one tool that takes it.
+- **`tests/test_changelog_contract.py`: a duplicate `### Added` hid a bullet.**
+  The menu-audit gate below was
+  appended to `[Unreleased]` under its own `### Added` heading rather than
+  merged into the one at the top, and `prepare_release.py` finds each kind with
+  a single `re.search` - first match wins. The bullet was correctly formatted,
+  correctly placed in the file, and invisible to the stamper, so
+  `Latestrelease/version.json` would have shipped eight highlights that left
+  out a feature this release adds. No gate read the CHANGELOG at all. The
+  section is merged and ordered Added, Changed, Fixed; the new test asserts
+  that order, that no section repeats a kind heading, that every
+  `[Unreleased]` bullet carries the bold lead the card renders, that the two
+  gate receipts stay off the card, and that `1.8.7` remains the only version
+  ever stamped without a tag. The kind vocabulary is a ratchet from 1.8.20, so
+  history (1.8.6's two `### Fixed` blocks, 1.8.7's Colour/Style/Verified) is
+  left exactly as published. Each rule was broken on purpose in a scratch copy
+  and the test had to notice.
 - **Pixel Neon's no-results state was a blank grid with two dead buttons.**
   `activity_main.xml` carried the empty state - title, explanation, "Clear
   search", "Show all N icons" - with both buttons `clickable="true"` and no
@@ -162,24 +192,6 @@ All notable changes to the Core Builds Icon Pack. Format follows
   cursor only when nothing has been chosen yet (no focus, the decor view, or
   the Back button the screen opens on). Fixed in `app` and mirrored into Pixel
   Neon's fork.
-
-### Changed
-
-- **The UI mockups are generated from the source they depict.**
-  `tools/build_app_ui_mockups.py` renders 1920×1080 TV frames of the catalogue,
-  wallpapers browser, settings, FAQ, auditor, inspector and suite hub straight
-  from `strings.xml`, `dimens.xml`, `colors.xml`, the generated arrays,
-  `suite_hub.xml`, `Latestrelease/version.json` and the real bundled icon and
-  wallpaper art, through the same Outfit-to-SVG-path and resvg pipeline the
-  icon generators use. The four hand-drawn sheets it replaces had drifted off
-  the published app — a stacked-rows home screen the layout never had,
-  unlabeled tiles, "1765 components", a v1.8.20 header and chip counts from an
-  older tranche — which is what "the mockups look nothing like what was
-  published" meant. The sheets were not wrong, they were *ahead*: this release
-  rebuilds the app to them, and they are restored under `docs/design/` as the
-  spec the frames are checked against by eye. `--check` fails CI on drift; the
-  frames carry a MOCKUP caption naming which values are example data (the
-  detected launchers, the focused tile).
 
 ## [1.8.21] — 2026-09-19
 
