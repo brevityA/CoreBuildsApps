@@ -69,22 +69,19 @@
  "ceilings": [
   {
    "coordinate": "com.android.application",
-   "max": "8.5.2",
-   "blockedUpdateTypes": [
-    "version-update:semver-minor",
-    "version-update:semver-major"
-   ],
-   "reason": "AGP 8.13.2 cannot start on the Gradle 9.7.0 wrapper that five of the six roots run: it binds org.gradle.api.problems.internal.InternalProblems, which Gradle 9.6.0 removed, and every module fails at plugin apply. 8.5.2 is the highest AGP proven green on 9.7.0 today. The constraint is the pair, not AGP alone - PR #146 moved its wrapper to 9.5.1 with the same AGP 8.13.2 and built green.",
-   "evidence": [
-    "https://docs.gradle.org/9.7.0/userguide/upgrading_version_9.html#agp_8x_incompatible",
-    "https://github.com/gradle/gradle/issues/38073",
-    "https://github.com/brevityA/CoreBuildsApps/pull/146"
-   ]
+      "max": "8.5.2",
+      "blockedUpdateTypes": ["version-update:semver-patch", "version-update:semver-minor", "version-update:semver-major"],
+      "reason": "AGP 8.13.2 cannot start on the Gradle 9.7.0 wrapper that five of the six roots run: it binds org.gradle.api.problems.internal.InternalProblems, which Gradle 9.6.0 removed, and every module fails at plugin apply. 8.5.2 is the highest AGP proven green on 9.7.0 today. The constraint is the pair, not AGP alone - PR #146 moved its wrapper to 9.5.1 with the same AGP 8.13.2 and built green.",
+      "evidence": [
+        "https://docs.gradle.org/9.7.0/userguide/upgrading_version_9.html#agp_8x_incompatible",
+        "https://github.com/gradle/gradle/issues/38073",
+        "https://github.com/brevityA/CoreBuildsApps/pull/146"
+      ]
   },
   {
    "coordinate": "androidx.core:core-ktx",
       "max": "1.13.1",
-      "blockedUpdateTypes": ["version-update:semver-minor", "version-update:semver-major"],
+      "blockedUpdateTypes": ["version-update:semver-patch", "version-update:semver-minor", "version-update:semver-major"],
       "reason": "1.15.0 needs compileSdk 35; 1.17.0 needs compileSdk 36 and AGP 8.9.1; 1.19.0 needs compileSdk 37 and AGP 9.1.0. Five of seven modules compile at 34.",
       "evidence": [
         "https://developer.android.com/jetpack/androidx/releases/core",
@@ -94,7 +91,7 @@
     {
       "coordinate": "androidx.appcompat:appcompat",
       "max": "1.7.0",
-      "blockedUpdateTypes": ["version-update:semver-minor", "version-update:semver-major"],
+      "blockedUpdateTypes": ["version-update:semver-patch", "version-update:semver-minor", "version-update:semver-major"],
       "reason": "1.8.0 needs compileSdk 36 and raises its own minSdk to 23. The icon pack, Pop and Pixel Neon declare minSdk 21 for Android 5.x Fire TV hardware, so 1.8.0 fails the manifest merge before it fails AAR metadata.",
       "evidence": [
         "https://developer.android.com/jetpack/androidx/releases/appcompat"
@@ -103,7 +100,7 @@
     {
       "coordinate": "androidx.recyclerview:recyclerview",
       "max": "1.3.2",
-      "blockedUpdateTypes": ["version-update:semver-minor", "version-update:semver-major"],
+      "blockedUpdateTypes": ["version-update:semver-patch", "version-update:semver-minor", "version-update:semver-major"],
       "reason": "1.4.0 will only compile against API 35 or higher; the modules that declare it compile at 34.",
       "evidence": [
         "https://developer.android.com/jetpack/androidx/releases/recyclerview"
@@ -112,7 +109,7 @@
     {
       "coordinate": "androidx.media3:media3-exoplayer",
       "max": "1.4.1",
-      "blockedUpdateTypes": ["version-update:semver-minor", "version-update:semver-major"],
+      "blockedUpdateTypes": ["version-update:semver-patch", "version-update:semver-minor", "version-update:semver-major"],
       "reason": "1.5.0 needs compileSdk 35 and 1.10.0 needs compileSdk 36; shift/ compiles at 34. 1.9.0 also raises minSdk to 23, which shift/ at 26 survives but the rest of the suite would not.",
       "evidence": [
         "https://github.com/androidx/media/blob/release/RELEASENOTES.md"
@@ -121,7 +118,7 @@
     {
       "coordinate": "androidx.media3:media3-ui",
       "max": "1.4.1",
-      "blockedUpdateTypes": ["version-update:semver-minor", "version-update:semver-major"],
+      "blockedUpdateTypes": ["version-update:semver-patch", "version-update:semver-minor", "version-update:semver-major"],
       "reason": "Released in lockstep with media3-exoplayer; same compileSdk floors.",
       "evidence": [
         "https://github.com/androidx/media/blob/release/RELEASENOTES.md"
@@ -130,7 +127,7 @@
     {
       "coordinate": "androidx.media3:media3-session",
       "max": "1.4.1",
-      "blockedUpdateTypes": ["version-update:semver-minor", "version-update:semver-major"],
+      "blockedUpdateTypes": ["version-update:semver-patch", "version-update:semver-minor", "version-update:semver-major"],
       "reason": "Released in lockstep with media3-exoplayer; same compileSdk floors.",
       "evidence": [
         "https://github.com/androidx/media/blob/release/RELEASENOTES.md"
@@ -139,7 +136,7 @@
     {
       "coordinate": "androidx.compose:compose-bom",
       "max": "2024.06.00",
-      "blockedUpdateTypes": ["version-update:semver-minor", "version-update:semver-major"],
+      "blockedUpdateTypes": ["version-update:semver-patch", "version-update:semver-minor", "version-update:semver-major"],
       "reason": "Current BOMs pull Compose libraries that need compileSdk 36-37, and 2026.09.00 in particular needs 37. doctor/ compiles at 35. The BOM also cannot move before Kotlin 2.x lands, because it drags the Compose compiler plugin requirement with it.",
       "evidence": [
         "https://developer.android.com/jetpack/androidx/releases/compose"
@@ -148,7 +145,7 @@
     {
       "coordinate": "androidx.activity:activity-compose",
       "max": "1.9.0",
-      "blockedUpdateTypes": ["version-update:semver-minor", "version-update:semver-major"],
+      "blockedUpdateTypes": ["version-update:semver-patch", "version-update:semver-minor", "version-update:semver-major"],
       "reason": "It has to move with androidx.compose:compose-bom, not ahead of it. Taking activity-compose 1.10.x alone drags a newer Compose runtime onto the classpath than the 2024.06.00 BOM pins, which fails as a NoSuchMethodError at runtime or in unit tests rather than as a build error - the worst shape of failure to diagnose. doctor/ compiles at 35, so compileSdk is not the binding constraint here; the BOM is.",
       "evidence": [
         "https://developer.android.com/jetpack/androidx/releases/activity",
@@ -158,7 +155,7 @@
     {
       "coordinate": "org.jetbrains.kotlinx:kotlinx-serialization-json",
       "max": "1.6.3",
-      "blockedUpdateTypes": ["version-update:semver-minor", "version-update:semver-major"],
+      "blockedUpdateTypes": ["version-update:semver-patch", "version-update:semver-minor", "version-update:semver-major"],
       "reason": "1.7.0 needs the serialization compiler plugin at 2.0.0-RC1 or newer and is explicitly rejected by older plugins; doctor/ pins that plugin at 1.9.24. 1.6.x is the line built for Kotlin 1.9.x. 1.11.0 additionally requires kotlin-stdlib 2.3.20. This ceiling lifts the moment Kotlin 2.x lands.",
       "evidence": [
         "https://github.com/Kotlin/kotlinx.serialization/blob/master/CHANGELOG.md"
@@ -167,7 +164,7 @@
     {
       "coordinate": "org.jetbrains.kotlinx:kotlinx-coroutines-android",
       "max": "1.8.1",
-      "blockedUpdateTypes": ["version-update:semver-minor", "version-update:semver-major"],
+      "blockedUpdateTypes": ["version-update:semver-patch", "version-update:semver-minor", "version-update:semver-major"],
       "reason": "Releases from 1.9.0 on are compiled with Kotlin 2.x, whose binary metadata a Kotlin 1.9.24 compiler cannot read - it fails with 'Module was compiled with an incompatible version of Kotlin'. Which exact release crosses the line is not documented per version, so the cap sits at the last proven-green one and moves with the Kotlin migration rather than by guesswork.",
       "evidence": [
         "https://github.com/Kotlin/kotlinx.coroutines/blob/master/CHANGES.md"
@@ -176,7 +173,7 @@
     {
       "coordinate": "org.jetbrains.kotlin.android",
       "max": "1.9.24",
-      "blockedUpdateTypes": ["version-update:semver-minor", "version-update:semver-major"],
+      "blockedUpdateTypes": ["version-update:semver-patch", "version-update:semver-minor", "version-update:semver-major"],
       "reason": "Kotlin 2.0 moves the Compose compiler out of the Kotlin repository into org.jetbrains.kotlin.plugin.compose. doctor/ still sets composeOptions.kotlinCompilerExtensionVersion = \"1.5.14\", which is hard-tied to Kotlin 1.9.24. All seven modules also use the kotlinOptions DSL rather than compilerOptions. This is a source migration, not a version bump.",
       "evidence": [
         "https://kotlinlang.org/docs/compose-compiler-migration-guide.html",
@@ -186,7 +183,7 @@
     {
       "coordinate": "org.jetbrains.kotlin.plugin.serialization",
       "max": "1.9.24",
-      "blockedUpdateTypes": ["version-update:semver-minor", "version-update:semver-major"],
+      "blockedUpdateTypes": ["version-update:semver-patch", "version-update:semver-minor", "version-update:semver-major"],
       "reason": "Must match org.jetbrains.kotlin.android exactly, so it is blocked for the same reason and moves with it.",
       "evidence": [
         "https://kotlinlang.org/docs/compose-compiler-migration-guide.html"
@@ -195,7 +192,7 @@
     {
       "coordinate": "org.jetbrains.kotlin.plugin.parcelize",
       "max": "1.9.24",
-      "blockedUpdateTypes": ["version-update:semver-minor", "version-update:semver-major"],
+      "blockedUpdateTypes": ["version-update:semver-patch", "version-update:semver-minor", "version-update:semver-major"],
       "reason": "Must match org.jetbrains.kotlin.android exactly, so it is blocked for the same reason and moves with it.",
       "evidence": [
         "https://kotlinlang.org/docs/compose-compiler-migration-guide.html"

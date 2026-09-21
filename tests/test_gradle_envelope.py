@@ -264,11 +264,19 @@ class DependabotParsing(unittest.TestCase):
         self.assertEqual(ignores["gradle-wrapper"], [">=9.6"])
         self.assertEqual(
             set(ignores["com.android.application"]),
-            {"version-update:semver-minor", "version-update:semver-major"},
+            {
+                "version-update:semver-patch",
+                "version-update:semver-minor",
+                "version-update:semver-major",
+            },
         )
         self.assertEqual(
             set(ignores["androidx.core:core-ktx"]),
-            {"version-update:semver-minor", "version-update:semver-major"},
+            {
+                "version-update:semver-patch",
+                "version-update:semver-minor",
+                "version-update:semver-major",
+            },
         )
 
 
@@ -298,10 +306,18 @@ class EnvelopeTable(unittest.TestCase):
             coord = ceiling["coordinate"]
             self.assertGreater(len(ceiling["reason"]), 40, f"{coord} reason is too thin to act on")
             self.assertTrue(ceiling["evidence"], f"{coord} has no evidence link")
+            # Patch included: every ceiling equals the version declared today,
+            # and the gate rejects anything above a ceiling whichever digit
+            # moved — so ignoring only minor+major leaves a live red-PR lane
+            # (Kotlin 1.9.24 -> 1.9.25 is a patch).
             self.assertEqual(
                 set(ceiling["blockedUpdateTypes"]),
-                {"version-update:semver-minor", "version-update:semver-major"},
-                f"{coord} blocks something other than minor+major — patch releases must keep flowing",
+                {
+                    "version-update:semver-patch",
+                    "version-update:semver-minor",
+                    "version-update:semver-major",
+                },
+                f"{coord} must block patch+major+minor — the gate rejects a patch above the cap too",
             )
 
     def test_no_ceiling_is_below_what_the_suite_declares_today(self):
@@ -391,7 +407,8 @@ class Mutants(unittest.TestCase):
             repo.edit(
                 ".github/dependabot.yml",
                 '      - dependency-name: "androidx.core:core-ktx"\n'
-                '        update-types: ["version-update:semver-minor", "version-update:semver-major"]\n',
+                '        update-types: ["version-update:semver-patch", '
+                '"version-update:semver-minor", "version-update:semver-major"]\n',
                 "",
             )
             repo.assert_blocked("does not ignore androidx.core:core-ktx", "dropped ignore rule")

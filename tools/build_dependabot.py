@@ -80,8 +80,17 @@ HEADER = """\
 # deleted, which is exactly what happened in 9f5d266d and what produced the four
 # red PRs #122 #125 #126 #132.
 #
-# Capped coordinates block minor and major updates only; patch releases still
-# flow. Each cap records its reason and its evidence in gradle_envelope.json.
+# Every capped coordinate blocks patch, minor AND major. That looks stricter
+# than it needs to be, and it is deliberate: every ceiling in
+# gradle_envelope.json is exactly the version the suite declares today, and
+# check_gradle_envelope.py rejects any declared version above its ceiling no
+# matter which digit moved. So a patch above a cap is a PR the gate is
+# guaranteed to reject - Kotlin 1.9.24 -> 1.9.25 is precisely that case, and it
+# is why the six red PRs kept coming back. Ignoring only minor+major left the
+# patch lane wide open. Nothing is lost by closing it: there is no patch the
+# suite could accept today without lifting the ceiling on purpose, which is the
+# documented workflow. Each cap records its reason and its evidence in
+# gradle_envelope.json.
 #
 # To take a capped dependency forward: change the envelope first (migration
 # steps are at the end of gradle_envelope.json), watch CI go green, then lift
