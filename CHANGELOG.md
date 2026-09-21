@@ -6,6 +6,30 @@ All notable changes to the Core Builds Icon Pack. Format follows
 
 ## [Unreleased]
 
+### Added
+
+- **Adaptive wordmark monograms.** The 525 letter-tile fallbacks no longer
+  set one borrowed letter for every app that starts with it: each category
+  shell now sets the app's own short token — Kemo Stream reads KS, AI Cam
+  View reads AC, Mediaset Infinity reads MIT — in the same Outfit ExtraBold
+  the banner wordmarks use, closing the one axis the design research still
+  conceded to the Projectivy Icon Pack, whose fallbacks carry per-app
+  wordmarks. The font adapts rather than the typeface changing: an
+  optical-size tier per character count, a per-shell interior width so a
+  music tile's type sits tighter than a film frame's, and a 96px counter
+  floor below which a three-char mark trades back to two — letters that
+  would close at a 48dp Projectivy tile never ship. Tokens derive by the
+  same rule Pixel Neon's pixel monograms already use (multi-word: up to
+  three initials; one word: first two letters), so the suite speaks one
+  fallback language, and the three names whose single letter genuinely is
+  the icon keep it (K+, U, World Radios' W). Two gates hold it honest: the
+  catalog validator computes every mark's final cap inside its own shell
+  budget and names any that slips under the floor, and two entries sharing
+  shell, mark and colour across brands is now a build error, not a phase.
+  Pop and Pixel Neon are deliberately untouched — Pop reads the same glyph
+  registry, so its committed glyph metrics stay a pure function of it — and
+  the square, the 16:9 banner and the contact sheet all set the same token.
+
 ## [1.9.1] — 2026-09-20
 
 ### Fixed

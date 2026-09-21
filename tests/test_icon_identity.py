@@ -163,14 +163,40 @@ class IdentityTests(unittest.TestCase):
                 self.assertNotEqual(bg, icon["glyph"], icon["name"])
                 expected = recentre(render(icon["name"], bg, icon["color"],
                                             icon.get("category", ""),
-                                            gradient=icon.get("gradient")))
+                                            gradient=icon.get("gradient"),
+                                            mark=icon.get("mark")))
                 self.assertEqual(
                     (ROOT / "assets/banners" / f"{icon['drawable']}.svg").read_text(),
                     expected, icon["name"])
                 self.assertEqual(
                     (ROOT / "assets/svg" / f"{icon['drawable']}.svg").read_text(),
                     render_svg(icon["glyph"], icon["color"],
-                               gradient=icon.get("gradient")), icon["name"])
+                               gradient=icon.get("gradient"),
+                               mark=icon.get("mark")), icon["name"])
+
+    def test_adaptive_marks_fit_their_shell_and_counter_floor(self):
+        """The adaptive font keeps its promise: marks only ever set on
+        category monograms, inside that shell's own type budget, at or above
+        the cap floor where a filled counter survives a 48dp tile."""
+        from glyphs import family_glyph_for
+        from typeface import MIN_LOCKUP_CAP, lockup_cap
+        marked = 0
+        for icon in ICONS:
+            mark = icon.get("mark")
+            if not mark:
+                continue
+            marked += 1
+            with self.subTest(icon=icon["name"]):
+                budget = family_glyph_for(icon["glyph"])
+                self.assertIsNotNone(budget,
+                                     f"mark '{mark}' sits on {icon['glyph']}")
+                _, cap_h, _, max_w = budget
+                self.assertGreaterEqual(lockup_cap(mark, cap_h, max_w),
+                                        MIN_LOCKUP_CAP)
+        self.assertGreater(
+            marked, 0,
+            "no adaptive wordmark monograms — the fallback voice reverted "
+            "to one letter for every app")
 
     def test_tizentube_runs_the_measured_field_gradient(self):
         """The owner wants the real logo's ramp: field cyan to pale blue,
@@ -190,7 +216,8 @@ class IdentityTests(unittest.TestCase):
             self.assertEqual(path.read_text(),
                              render_svg(icon["glyph"], icon["color"],
                                         monochrome=mono,
-                                        gradient=icon.get("gradient")),
+                                        gradient=icon.get("gradient"),
+                                        mark=icon.get("mark")),
                              icon["name"])
 
     def test_nuvio_square_runs_the_brand_gradient(self):

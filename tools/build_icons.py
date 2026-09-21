@@ -21,8 +21,9 @@ import sys
 from pathlib import Path
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-from glyphs import GLYPHS, is_monogram, monoline, render_svg  # noqa: E402
+from glyphs import GLYPHS, family_body, family_glyph_for, is_monogram, monoline, render_svg  # noqa: E402
 from icon_style import CORE_MONOLINE, core_monoline_errors, display_accent  # noqa: E402
+from typeface import MIN_LOCKUP_CAP, lockup_cap  # noqa: E402
 from brandmarks import load_source  # noqa: E402
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -70,6 +71,20 @@ def validate(icons, artwork=None):
             errors.append(f"{n}: gradient must be exactly two #RRGGBB stops")
         if i.get("ink") is not None and not re.fullmatch(r"#[0-9A-Fa-f]{6}", i["ink"]):
             errors.append(f"{n}: ink must be #RRGGBB")
+        mark = i.get("mark")
+        if mark is not None:
+            if not isinstance(mark, str) or not re.fullmatch(r"[A-Z0-9]{2,4}", mark):
+                errors.append(f"{n}: mark '{mark}' must be 2-4 uppercase A-Z0-9 chars")
+            elif family_glyph_for(i.get("glyph", "")) is None:
+                errors.append(f"{n}: mark '{mark}' belongs on a category monogram "
+                              f"(<family>_<L>), not glyph '{i.get('glyph')}'")
+            else:
+                _, cap_h, _, max_w = family_glyph_for(i["glyph"])
+                cap = lockup_cap(mark, cap_h, max_w)
+                if cap < MIN_LOCKUP_CAP:
+                    errors.append(f"{n}: mark '{mark}' sets at {cap:.0f}px in the "
+                                  f"'{i['glyph'].rpartition('_')[0]}' shell — under the "
+                                  f"{MIN_LOCKUP_CAP}px counter floor, it closes at a 48px tile")
         if not i.get("components"):
             errors.append(f"{n}: no components — icon would never auto-assign")
         if brand := i.get("brand"):
@@ -95,6 +110,25 @@ def validate(icons, artwork=None):
             if comp in seen_c:
                 errors.append(f"{n}: component '{comp}' duplicates {seen_c[comp]}")
             seen_c[comp] = n
+    # Two icons sharing shell, mark and display colour render the same PNG —
+    # v1.8.14 counted what that costs, so it is a gate now, not a phase.
+    # Declared brand variants (same `brand`) are one identity by rule and
+    # are supposed to be identical; the gate fires across brands only.
+    seen_render = {}
+    for i in icons:
+        mark = i.get("mark")
+        if not mark or family_glyph_for(i.get("glyph", "")) is None:
+            continue
+        render_key = (i["glyph"], mark,
+                      display_accent(i.get("color", "#000000"),
+                                     monochrome=i.get("color_note") == "monochrome"))
+        prev = seen_render.get(render_key)
+        # Identical twins across brands are the trap; declared variants of one
+        # brand must stay identical by the glyph/accent rule above.
+        if prev and prev[1] != i.get("brand"):
+            errors.append(f"{i['name']}: shares shell, mark and colour with "
+                          f"{prev[0]} — one of them needs a different accent")
+        seen_render[render_key] = (i["name"], i.get("brand"))
     for glyph, spec in (artwork or {}).items():
         if spec.get("usage") != "reference-only":
             errors.append(f"{glyph}: brand artwork is reference-only, not a rendering override")
@@ -125,12 +159,15 @@ def main():
         return 1
 
     # 1. master SVGs
+    wordmarked = sum(1 for i in icons
+                     if i.get("mark") and family_glyph_for(i["glyph"]))
     for i in icons:
         mono = i.get("color_note") == "monochrome"
         write(SVG_DIR / f"{i['drawable']}.svg",
               render_svg(i["glyph"], i["color"], monochrome=mono,
-                         gradient=i.get("gradient")))
-    print(f"\u2713 SVG masters written ({len(icons)}/{len(icons)}) \u2192 assets/svg/")
+                         gradient=i.get("gradient"), mark=i.get("mark")))
+    print(f"\u2713 SVG masters written ({len(icons)}/{len(icons)}) \u2192 assets/svg/ "
+          f"({wordmarked} adaptive wordmark monograms)")
 
     # 2. PNGs
     png_written = 0
@@ -346,7 +383,9 @@ def main():
     for n, i in enumerate(icons):
         cx, cy = (n % cols) * cell, 78 + (n // cols) * cell
         mono = i.get("color_note") == "monochrome"
-        inner = monoline(GLYPHS[i["glyph"]](display_accent(i["color"], monochrome=mono)))
+        inner = monoline(family_body(i["glyph"],
+                                     display_accent(i["color"], monochrome=mono),
+                                     i.get("mark")))
         s.append(f'<rect x="{cx + 9}" y="{cy + 5}" width="{cell - 18}" '
                  f'height="{cell - 34}" rx="16" fill="#151923" '
                  f'stroke="rgba(255,255,255,.06)"/>')

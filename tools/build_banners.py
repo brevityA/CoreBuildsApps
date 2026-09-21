@@ -33,7 +33,7 @@ import sys
 from pathlib import Path
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-from glyphs import GLYPHS, apply_gradient, monoline  # noqa: E402
+from glyphs import GLYPHS, apply_gradient, family_body, monoline  # noqa: E402
 from icon_style import display_accent  # noqa: E402
 from typeface import FONT_WORDMARK, measure as type_measure, wordmark_spans  # noqa: E402
 
@@ -152,13 +152,16 @@ def hex_host(cx, cy, r, color):  # retired in style AA
 
 
 def render(name, glyph, accent, category=None, *, monochrome=False,
-         gradient=None):
+         gradient=None, mark=None):
     """
     Centred glyph + wordmark, with the Core Builds signature:
 
       * a cyan->violet rail on the left edge (concept H)
       * an uppercase mono category kicker above the name (concept H)
       * the same single-accent rounded-line glyph as the square icon
+
+    `mark` carries the catalog's adaptive wordmark token so the glyph bubble
+    sets the same short type as the square icon beside the full name.
 
     Concepts E/G/I were rejected: their signal lives in the card BACKGROUND,
     which we do not own — these PNGs are transparent and Projectivy draws
@@ -195,8 +198,8 @@ def render(name, glyph, accent, category=None, *, monochrome=False,
         kick_paths, _ = wordmark_spans([category], KICKER, tx, [ky], ACCENT)
         spans += kick_paths + "\n  "
 
-    mark, _ = wordmark_spans(lines, size, tx, baselines, INK)
-    spans += mark
+    name_paths, _ = wordmark_spans(lines, size, tx, baselines, INK)
+    spans += name_paths
 
     rail = (f'<defs><linearGradient id="cbRail" x1="0" y1="0" x2="0" y2="1">'
             f'<stop offset="0%" stop-color="{ACCENT}"/>'
@@ -210,12 +213,13 @@ def render(name, glyph, accent, category=None, *, monochrome=False,
         f'viewBox="0 0 {W} {H}">\n'
         f'  {rail}\n'
         f'  <g transform="translate({start_x:.0f},{gy:.0f}) '
-        f'scale({scale:.5f})">{apply_gradient(monoline(GLYPHS[glyph](accent)), accent, gradient) if gradient and not monochrome else monoline(GLYPHS[glyph](accent))}</g>\n'
+        f'scale({scale:.5f})">{apply_gradient(monoline(family_body(glyph, accent, mark)), accent, gradient) if gradient and not monochrome else monoline(family_body(glyph, accent, mark))}</g>\n'
         f'  {spans}</svg>\n'
     )
 
 
-def render_glyph_only(glyph, accent, *, monochrome=False, gradient=None):
+def render_glyph_only(glyph, accent, *, monochrome=False, gradient=None,
+                      mark=None):
     """Mark-only variant — used when a name adds nothing (e.g. Core Builds)."""
     accent = display_accent(accent, monochrome=monochrome)
     box = 380
@@ -224,7 +228,7 @@ def render_glyph_only(glyph, accent, *, monochrome=False, gradient=None):
         f'<svg xmlns="http://www.w3.org/2000/svg" width="{W}" height="{H}" '
         f'viewBox="0 0 {W} {H}">\n'
         f'  <g transform="translate({(W - box) / 2:.0f},{(H - box) / 2:.0f}) '
-        f'scale({scale:.5f})">{apply_gradient(monoline(GLYPHS[glyph](accent)), accent, gradient) if gradient and not monochrome else monoline(GLYPHS[glyph](accent))}</g>\n'
+        f'scale({scale:.5f})">{apply_gradient(monoline(family_body(glyph, accent, mark)), accent, gradient) if gradient and not monochrome else monoline(family_body(glyph, accent, mark))}</g>\n'
         f'</svg>\n'
     )
 
@@ -282,7 +286,8 @@ def main():
         mono = i.get("color_note") == "monochrome"
         if i.get("banner_style") == "glyph":
             svg = render_glyph_only(i["glyph"], i["color"], monochrome=mono,
-                                    gradient=i.get("gradient"))
+                                    gradient=i.get("gradient"),
+                                    mark=i.get("mark"))
             # Wordmark marks are not ink-centred on the 512 grid either; the
             # banner centring audit holds them to the same 3px tolerance.
             svg = recentre(svg)
@@ -291,7 +296,7 @@ def main():
             # (e.g. TizenTube: banner carries the emblem's tip dot).
             svg = render(i["name"], i.get("banner_glyph", i["glyph"]), i["color"],
                          i.get("category"), monochrome=mono,
-                         gradient=i.get("gradient"))
+                         gradient=i.get("gradient"), mark=i.get("mark"))
             svg = recentre(svg)
         (SVG_DIR / f"{i['drawable']}.svg").write_text(svg, encoding="utf-8")
     print(f"\u2713 banner SVGs written ({len(targets)}/{len(targets)}) "
