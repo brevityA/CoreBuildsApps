@@ -23,19 +23,35 @@
   "envelope": {
     "agpMaxExclusive": "9",
     "minGradleForAgp8": "8.7",
-    "_comment": [
-      "AGP 8.5.2 is uniform across all six Gradle roots and is capped below 9,",
-      "matching the existing dependabot ignore: AGP 9 is a breaking major with",
-      "built-in Kotlin and new DSL defaults. Within 8.x AGP is free to move, so",
-      "the gate does not pin it - an AGP-only Dependabot PR that goes green",
-      "should be mergeable without touching this file.",
-      "",
-      "Gradle is not uniform: ticker/android still runs the 8.7 wrapper while the",
-      "other five run 9.7.0. 8.7 is exactly AGP 8.5's minimum, so that is the",
-      "floor the gate enforces. There is no enforceable ceiling - and 9.7.0 +",
-      "AGP 8.5.2 being green on main is direct evidence against the claim in",
-      ".github/dependabot.yml that AGP 8.x cannot run on Gradle >= 9.6."
-    ]
+  "_comment": [
+   "AGP 8.5.2 is uniform across all six Gradle roots and is now capped twice",
+   "over: below 9 by agpMaxExclusive, because AGP 9 is a breaking major with",
+   "built-in Kotlin and new DSL defaults, and AT 8.5.2 by the ceiling entry",
+   "below, because 8.5.2 is the highest AGP release proven green on the",
+   "wrappers this suite actually runs. Within-family AGP bumps are no longer",
+   "free: six Dependabot PRs proposed 8.13.2 and every root that stayed on the",
+   "9.7.0 wrapper failed to apply the plugin.",
+   "",
+   "Gradle is not uniform: ticker/android still runs the 8.7 wrapper while the",
+   "other five run 9.7.0. 8.7 is exactly AGP 8.5's minimum, so that is the",
+   "floor the gate enforces. There is still no ceiling on the wrapper itself.",
+   "",
+   "The AGP/wrapper PAIR is the real constraint, and it was settled by CI on",
+   "the 2026-09-19 Dependabot batch. Gradle 9.6.0 removed",
+   "org.gradle.api.problems.internal.InternalProblems (gradle/gradle#38073);",
+   "AGP 8.13.2 still binds it, so on the 9.7.0 wrapper every module dies at",
+   "plugin apply with 'Failed to apply plugin com.android.internal.application'",
+   "and 'Could not create service of type InternalProblems'. That is PRs #145",
+   "and #147, plus the same AGP bump inside #144 #146 #148 #149. #146 is the",
+   "control: it moved its wrapper to 9.5.1 in the same PR and its builds and",
+   "its unit tests both passed, so 8.13.2 is not broken by itself - only in",
+   "that combination.",
+   "",
+   "The claim that used to sit here - that 9.7.0 + AGP 8.5.2 going green on",
+   "main was 'direct evidence against' the Gradle >= 9.6 hazard - was",
+   "generalised from the one AGP version that happens to tolerate it. 8.5.2",
+   "does run on 9.7.0. 8.13.2 does not. Both are AGP 8.x."
+  ]
   },
   "compose": {
     "kotlinMajorThatMovesTheCompiler": "2.0.0",
@@ -50,9 +66,23 @@
       "outlives the memory of it."
     ]
   },
-  "ceilings": [
-    {
-      "coordinate": "androidx.core:core-ktx",
+ "ceilings": [
+  {
+   "coordinate": "com.android.application",
+   "max": "8.5.2",
+   "blockedUpdateTypes": [
+    "version-update:semver-minor",
+    "version-update:semver-major"
+   ],
+   "reason": "AGP 8.13.2 cannot start on the Gradle 9.7.0 wrapper that five of the six roots run: it binds org.gradle.api.problems.internal.InternalProblems, which Gradle 9.6.0 removed, and every module fails at plugin apply. 8.5.2 is the highest AGP proven green on 9.7.0 today. The constraint is the pair, not AGP alone - PR #146 moved its wrapper to 9.5.1 with the same AGP 8.13.2 and built green.",
+   "evidence": [
+    "https://docs.gradle.org/9.7.0/userguide/upgrading_version_9.html#agp_8x_incompatible",
+    "https://github.com/gradle/gradle/issues/38073",
+    "https://github.com/brevityA/CoreBuildsApps/pull/146"
+   ]
+  },
+  {
+   "coordinate": "androidx.core:core-ktx",
       "max": "1.13.1",
       "blockedUpdateTypes": ["version-update:semver-minor", "version-update:semver-major"],
       "reason": "1.15.0 needs compileSdk 35; 1.17.0 needs compileSdk 36 and AGP 8.9.1; 1.19.0 needs compileSdk 37 and AGP 9.1.0. Five of seven modules compile at 34.",
@@ -186,7 +216,7 @@
     "steps": [
       "Decide whether minSdk 21 (Android 5.x Fire TV) is still supported. AndroidX now floors at 23.",
       "If not: raise app/, pop/ and pixel-neon/ to minSdk 23, then compileSdk 35 across the suite, and install platforms;android-35 in the workflows that build them.",
-      "Move AGP to the newest 8.x the wrapper already runs (9.7.0 is green), one root at a time, alone - not bundled with library bumps.",
+      "Resolve the AGP/wrapper pair before moving AGP: either take the five 9.7.0 wrappers down to <= 9.5.1 (the combination PR #146 proved green), or wait for AGP 9, whose problem reporter no longer binds the API Gradle 9.6.0 removed. Then lift the com.android.application ceiling, one root at a time, alone - not bundled with library bumps.",
       "Migrate doctor/ to the Compose compiler Gradle plugin: apply org.jetbrains.kotlin.plugin.compose, delete composeOptions, then take Kotlin 2.x across all six roots together and convert kotlinOptions to compilerOptions.",
       "Raise compileSdk to 36, then 37, lifting the AndroidX ceilings in gradle_envelope.json as each one goes green.",
       "Only then unblock androidx.core, appcompat, recyclerview, media3 and compose-bom in .github/dependabot.yml."

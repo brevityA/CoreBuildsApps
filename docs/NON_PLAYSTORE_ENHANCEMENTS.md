@@ -66,7 +66,7 @@ right now to make it the ultimate enthusiast TV icon pack.
 
 ## 4. Universal Dynamic Icon Masking for the Unmapped Long Tail
 
-* **The Problem:** Even with 940+ icons, users will install niche regional IPTV apps, sports APKs, and emulators. When an unmapped app sits next to Core Builds icons, the jarring stock icon breaks the aesthetic.
+* **The Problem:** Even with 943 icons, users will install niche regional IPTV apps, sports APKs, and emulators. When an unmapped app sits next to Core Builds icons, the jarring stock icon breaks the aesthetic.
 * **The Solution:** Add `<iconback>`, `<iconmask>`, and `<iconupon>` tags to `appfilter.xml`:
   ```xml
   <resources>
@@ -119,7 +119,7 @@ right now to make it the ultimate enthusiast TV icon pack.
 
 ## 8. D-Pad Fast Navigation (Bumper Alphabet Skips & Category Badges)
 
-* **Alphabet Remote Bumper Skipping:** In `MainActivity`, intercept `KEYCODE_CHANNEL_UP` / `KEYCODE_CHANNEL_DOWN` (or `KEYCODE_MEDIA_FAST_FORWARD` / `KEYCODE_MEDIA_REWIND`) on the TV remote to jump forward and backward by letter (A–Z) across the 940 icons.
+* **Alphabet Remote Bumper Skipping:** In `MainActivity`, intercept `KEYCODE_CHANNEL_UP` / `KEYCODE_CHANNEL_DOWN` (or `KEYCODE_MEDIA_FAST_FORWARD` / `KEYCODE_MEDIA_REWIND`) on the TV remote to jump forward and backward by letter (A–Z) across the 943 icons.
 * **Category Badges:** Display item counts on the category chips in `ChipAdapter`:
   * `Streaming (184)` · `Media (92)` · `Tools (76)` · `Debrid (24)` · `Games (48)`
 

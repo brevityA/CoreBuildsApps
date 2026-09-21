@@ -19,10 +19,16 @@
 - [ ] `python tools/check_suite_truth.py`
 - [ ] `python tools/audit_contract.py`
 
-Icon pack bump:
+Icon pack bump — every file that carries the version, because `AGENTS.md` is the
+seventh registry and the one nobody remembers (see issue #71):
 - [ ] `app/build.gradle.kts` versionName + versionCode
 - [ ] `tools/catalog.json` meta.version
 - [ ] `Latestrelease/version.json`
+- [ ] `suite.json` — versionName, versionCode
+- [ ] `AGENTS.md` — suite table version
+- [ ] `README.md` — headline + release note (NOT covered by
+      `tools/build_readme_badge.py`, which only rewrites the stamped block
+      between the `suite-stamp` markers)
 - [ ] `python tools/build_icons.py`
 - [ ] `python tools/build_banners.py`
 - [ ] `python tools/build_branding.py`
@@ -44,7 +50,7 @@ Core Doctor:
 - [ ] `cd doctor && ./gradlew test`
 
 Core Motion:
-- [ ] `python tools/validate_projectivy_plugin.py`
+- [ ] `python tools/verify_motion_plugin.py`
 
 ## Notes / unverified
 

@@ -258,8 +258,14 @@ class DependabotParsing(unittest.TestCase):
         self.assertNotIn("patterns", ignores)
 
     def test_reads_both_ignore_shapes(self):
+        # `versions:` is the toolchain shape (the wrapper rules); `update-types:`
+        # is the ceiling shape. Both still have to parse.
         ignores = self.gradle["/"].ignores
-        self.assertEqual(ignores["com.android.application"], [">=9"])
+        self.assertEqual(ignores["gradle-wrapper"], [">=9.6"])
+        self.assertEqual(
+            set(ignores["com.android.application"]),
+            {"version-update:semver-minor", "version-update:semver-major"},
+        )
         self.assertEqual(
             set(ignores["androidx.core:core-ktx"]),
             {"version-update:semver-minor", "version-update:semver-major"},
@@ -498,6 +504,15 @@ class Mutants(unittest.TestCase):
         with ScratchRepo() as repo:
             repo.edit("build.gradle.kts", 'version "8.5.2"', 'version "9.0.0"')
             repo.assert_blocked("breaking major", "AGP 9")
+
+    def test_an_agp_8x_bump_on_the_9_7_0_wrapper_is_caught(self):
+        # The 2026-09-19 batch (#144 #145 #146 #147 #148 #149) proposed exactly
+        # this and every root that kept the 9.7.0 wrapper failed at plugin
+        # apply. It is a ceiling, not a warning: Dependabot must stop being
+        # offered the combination at all.
+        with ScratchRepo() as repo:
+            repo.edit("build.gradle.kts", 'version "8.5.2"', 'version "8.13.2"')
+            repo.assert_blocked("above its ceiling 8.5.2", "AGP 8.13.2 on the 9.7.0 wrapper")
 
     def test_a_wrapper_below_the_agp_floor_is_caught(self):
         with ScratchRepo() as repo:

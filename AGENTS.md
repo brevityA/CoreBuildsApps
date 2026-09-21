@@ -148,7 +148,7 @@ prefills `input`/`textarea` fields only, and the tool refuses to promise more.
 - Core Builds Pop: `python tools/build_pop.py` + `python tools/validate_pop.py` + `python tests/test_pop.py`.
 - Core Line: `cd ticker && npm test`.
 - Core Shift: `python tools/validate_motion_feed.py` plus Android lint/build in CI.
-- Core Motion: `python tools/validate_projectivy_plugin.py` plus Android lint/build in CI.
+- Core Motion: `python tools/verify_motion_plugin.py` plus Android lint/build in CI.
 - Core Doctor: `cd doctor && ./gradlew :app:testDebugUnitTest` where Android SDK exists.
 
 If local SDK/device access is missing, say so. A named unverified step is better than a confident guess.
