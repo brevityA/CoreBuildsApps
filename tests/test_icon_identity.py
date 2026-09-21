@@ -164,7 +164,8 @@ class IdentityTests(unittest.TestCase):
                 expected = recentre(render(icon["name"], bg, icon["color"],
                                             icon.get("category", ""),
                                             gradient=icon.get("gradient"),
-                                            mark=icon.get("mark")))
+                                            mark=icon.get("mark"),
+                                            style=icon.get("mark_style")))
                 self.assertEqual(
                     (ROOT / "assets/banners" / f"{icon['drawable']}.svg").read_text(),
                     expected, icon["name"])
@@ -172,12 +173,14 @@ class IdentityTests(unittest.TestCase):
                     (ROOT / "assets/svg" / f"{icon['drawable']}.svg").read_text(),
                     render_svg(icon["glyph"], icon["color"],
                                gradient=icon.get("gradient"),
-                               mark=icon.get("mark")), icon["name"])
+                               mark=icon.get("mark"),
+                               style=icon.get("mark_style")), icon["name"])
 
     def test_adaptive_marks_fit_their_shell_and_counter_floor(self):
         """The adaptive font keeps its promise: marks only ever set on
         category monograms, inside that shell's own type budget, at or above
-        the cap floor where a filled counter survives a 48dp tile."""
+        the cap floor where a filled counter survives a 48dp tile. A styled
+        mark is measured as it actually renders (lower, not its cap-token)."""
         from glyphs import family_glyph_for
         from typeface import MIN_LOCKUP_CAP, lockup_cap
         marked = 0
@@ -191,12 +194,33 @@ class IdentityTests(unittest.TestCase):
                 self.assertIsNotNone(budget,
                                      f"mark '{mark}' sits on {icon['glyph']}")
                 _, cap_h, _, max_w = budget
-                self.assertGreaterEqual(lockup_cap(mark, cap_h, max_w),
+                shown = mark.lower() if icon.get("mark_style") == "lower" else mark
+                self.assertGreaterEqual(lockup_cap(shown, cap_h, max_w),
                                         MIN_LOCKUP_CAP)
         self.assertGreater(
             marked, 0,
             "no adaptive wordmark monograms — the fallback voice reverted "
             "to one letter for every app")
+
+    def test_mark_styles_are_shipped_researched_and_styled_as_rendered(self):
+        """A mark_style is tranche work: it must name a shipped treatment,
+        carry its research note, and only ever sit on a styled mark."""
+        from build_icons import MARK_STYLES
+        styled = 0
+        for icon in ICONS:
+            style = icon.get("mark_style")
+            if style is None:
+                continue
+            styled += 1
+            with self.subTest(icon=icon["name"]):
+                self.assertIn(style, MARK_STYLES, icon["name"])
+                self.assertTrue(icon.get("mark"), f"{icon['name']}: style without mark")
+                self.assertTrue(icon.get("mark_style_source"),
+                                f"{icon['name']}: '{style}' cue has no source note")
+        self.assertGreater(
+            styled, 0,
+            "mark_style vocabulary is loaded but no icon ships a researched "
+            "treatment — the tranche regressed")
 
     def test_tizentube_runs_the_measured_field_gradient(self):
         """The owner wants the real logo's ramp: field cyan to pale blue,
@@ -217,7 +241,8 @@ class IdentityTests(unittest.TestCase):
                              render_svg(icon["glyph"], icon["color"],
                                         monochrome=mono,
                                         gradient=icon.get("gradient"),
-                                        mark=icon.get("mark")),
+                                        mark=icon.get("mark"),
+                                        style=icon.get("mark_style")),
                              icon["name"])
 
     def test_nuvio_square_runs_the_brand_gradient(self):

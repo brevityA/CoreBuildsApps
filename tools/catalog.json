@@ -4866,7 +4866,9 @@
       "drawable": "joyn",
       "color": "#53FC18",
       "glyph": "app_J",
-      "mark": "JO",
+      "mark": "JOYN",
+      "mark_style": "lower",
+      "mark_style_source": "joyn's logotype is set lowercase (joyn.de brand surface and app splash) — the treatment, not the letterforms, carried in our face",
       "components": [
         "de.prosiebensat1digital.seventv/de.joyn.mobile.app.splash.SplashActivity"
       ],
@@ -6261,6 +6263,8 @@
       "color": "#76B900",
       "glyph": "broadcast_M",
       "mark": "MP",
+      "mark_style": "lower",
+      "mark_style_source": "movistar's logotype is lowercase ('movistarplus.es')",
       "components": [
         "es.plus.yomvi/com.movistar.android.views.HomeActivity"
       ],
@@ -10335,6 +10339,8 @@
       "color": "#B388FF",
       "glyph": "broadcast_T",
       "mark": "TE",
+      "mark_style": "lower",
+      "mark_style_source": "telenet's logotype is lowercase ('telenet.be')",
       "components": [
         "be.telenet.tv/com.libertyglobal.horizonx.MainActivity"
       ],
@@ -11778,6 +11784,8 @@
       "color": "#FFC107",
       "glyph": "app_V",
       "mark": "VS",
+      "mark_style": "lower",
+      "mark_style_source": "voyo's logotype is lowercase ('voyo.sk' brand surface)",
       "components": [
         "net.cme.voyo.sk.tvapp/net.cme.voyo.sk.tvapp.MainActivity"
       ],
@@ -11899,6 +11907,8 @@
       "color": "#0061FF",
       "glyph": "broadcast_W",
       "mark": "WT",
+      "mark_style": "lower",
+      "mark_style_source": "waipu's logotype is lowercase ('waipu.tv')",
       "components": [
         "de.exaring.waipu/de.exaring.waipu.ui.login.LoginActivity"
       ],

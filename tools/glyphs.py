@@ -541,7 +541,7 @@ def monoline(body, weight=MONOLINE):
 
 
 def render_svg(glyph_name, color, glow=False, *, monochrome=False,
-               gradient=None, mark=None):
+               gradient=None, mark=None, style=None):
     """
     Render the transparent Classic glyph in the common monoline treatment.
 
@@ -553,10 +553,11 @@ def render_svg(glyph_name, color, glow=False, *, monochrome=False,
 
     `mark` is the catalog's adaptive wordmark token: on a category monogram
     it replaces the lone letter (family_body adapts the type to the shell);
-    on any other glyph it is ignored.
+    `style` is its brand-informed treatment. On any other glyph both are
+    ignored.
     """
     color = display_accent(color, monochrome=monochrome)
-    body = monoline(family_body(glyph_name, color, mark))
+    body = monoline(family_body(glyph_name, color, mark, style))
     if glow:
         body = lit(body, color)
     if gradient and not monochrome:
@@ -4225,26 +4226,29 @@ def _mk_family(family, letter):
     return lambda c: _fam(letter, c, shell(c), cap_h=cap_h, cy=cy)
 
 
-def _fam_mark(mark, color, shell, cap_h, cy, max_w):
-    """A category shell with the app's short mark inside it.""" 
-    return shell + adaptive_lockup(mark, color, cap_h, max_w, cy)
+def _fam_mark(mark, color, shell, cap_h, cy, max_w, style=None):
+    """A category shell with the app's short mark inside it."""
+    return shell + adaptive_lockup(mark, color, cap_h, max_w, cy, style)
 
 
-def family_body(glyph_name, color, mark=None):
+def family_body(glyph_name, color, mark=None, style=None):
     """Resolve a category monogram, swapping its lone letter for the app mark.
 
     The catalog's `mark` field is 2-4 uppercase chars derived from the app
     name (multi-word: up to three initials; one word: first two letters — the
-    same rule Pixel Neon's brand_initials uses). Only <family>_<L> shells
-    adapt; every other glyph resolves to its registered body untouched, so
-    Pop's committed glyph metrics stay a pure function of GLYPHS.
+    same rule Pixel Neon's brand_initials uses). `style` is the catalog's
+    brand-informed treatment of that mark (tranche 1: `lower`) — a cue from
+    the app's logotype, set in the pack's own face; literal vendor logotype
+    reproduction stays off-limits. Only <family>_<L> shells adapt; every
+    other glyph resolves to its registered body untouched, so Pop's
+    committed glyph metrics stay a pure function of GLYPHS.
     """
     if mark:
         fam, _, letter = glyph_name.rpartition("_")
         if fam in FAMILY_SHELLS and len(letter) == 1 and letter.isalnum():
             shell, cap_h, cy, max_w = FAMILY_SHELLS[fam]
             return _fam_mark(mark, color, shell(color),
-                             cap_h=cap_h, cy=cy, max_w=max_w)
+                             cap_h=cap_h, cy=cy, max_w=max_w, style=style)
     return GLYPHS[glyph_name](color)
 
 

@@ -168,13 +168,22 @@ def lockup_cap(text, cap_h, max_w):
     return gh * scale
 
 
-def adaptive_lockup(text, color, cap_h, max_w, cy=GRID / 2):
+def adaptive_lockup(text, color, cap_h, max_w, cy=GRID / 2, style=None):
     """One filled Outfit ExtraBold lockup, sized to a shell's type budget.
 
     Same optical box as the single-letter monograms: ink centred on the
     grid's vertical axis at `cy`, never stretched — the size gives, the face
     doesn't.
+
+    `style` is the catalog's brand-informed treatment. Literal logotype
+    reproduction is off-limits here (AGENTS: pack identity over vendor-logo
+    reproduction), so a style borrows the logo's TREATMENT in the pack's own
+    face — tranche 1 ships `lower`, the lowercase lock lowercase-wordmark
+    brands wear (joyn, movistar, waipu). The axis grows one researched cue
+    at a time, like the glyph tranches.
     """
+    if style == "lower":
+        text = text.lower()
     pieces, (xmin, ymin, xmax, ymax), glyphset = _lockup_ink(text)
     gw, gh = xmax - xmin, ymax - ymin
     if gw <= 0 or gh <= 0:

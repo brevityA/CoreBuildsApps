@@ -27,8 +27,24 @@ All notable changes to the Core Builds Icon Pack. Format follows
   budget and names any that slips under the floor, and two entries sharing
   shell, mark and colour across brands is now a build error, not a phase.
   Pop and Pixel Neon are deliberately untouched — Pop reads the same glyph
-  registry, so its committed glyph metrics stay a pure function of it — and
+  registry, so its committed glyph metrics stay a pure function of it, and
   the square, the 16:9 banner and the contact sheet all set the same token.
+- **Brand-informed mark styles, tranche 1.** Owner direction clarified the
+  ask behind the wordmarks: the marks should wear something of the original
+  app logo — which is exactly how far the pack can go, never the logotype
+  itself (the pack's identity-over-reproduction rule and the wordmark test
+  gate both stand). What ships instead is a researched treatment axis on the
+  adaptive font, `mark_style`, grown one cue at a time like the glyph
+  tranches. Tranche 1 is `lower`, the lowercase lock lowercase-wordmark
+  brands wear, measured against the same shell budget and counter floor as
+  the caps tokens, and it opens with the five monograms whose lowercase
+  treatment is public and unambiguous: **Joyn** sets its whole word joyn,
+  **Movistar Plus**, **Telenet**, **Voyo Sk** and **Waipu TV** set their
+  initials in the lock. Every styled mark carries a `mark_style_source`
+  note in the catalog saying where the cue was seen; a style without its
+  note, an unknown style name, or a style with no mark all fail validation.
+  A style that ships also joins the duplicate-render key, so two brands
+  cannot collide into the same picture.
 
 ## [1.9.1] — 2026-09-20
 

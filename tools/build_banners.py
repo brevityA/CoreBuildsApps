@@ -152,7 +152,7 @@ def hex_host(cx, cy, r, color):  # retired in style AA
 
 
 def render(name, glyph, accent, category=None, *, monochrome=False,
-         gradient=None, mark=None):
+         gradient=None, mark=None, style=None):
     """
     Centred glyph + wordmark, with the Core Builds signature:
 
@@ -213,13 +213,13 @@ def render(name, glyph, accent, category=None, *, monochrome=False,
         f'viewBox="0 0 {W} {H}">\n'
         f'  {rail}\n'
         f'  <g transform="translate({start_x:.0f},{gy:.0f}) '
-        f'scale({scale:.5f})">{apply_gradient(monoline(family_body(glyph, accent, mark)), accent, gradient) if gradient and not monochrome else monoline(family_body(glyph, accent, mark))}</g>\n'
+        f'scale({scale:.5f})">{apply_gradient(monoline(family_body(glyph, accent, mark, style)), accent, gradient) if gradient and not monochrome else monoline(family_body(glyph, accent, mark, style))}</g>\n'
         f'  {spans}</svg>\n'
     )
 
 
 def render_glyph_only(glyph, accent, *, monochrome=False, gradient=None,
-                      mark=None):
+                      mark=None, style=None):
     """Mark-only variant — used when a name adds nothing (e.g. Core Builds)."""
     accent = display_accent(accent, monochrome=monochrome)
     box = 380
@@ -228,7 +228,7 @@ def render_glyph_only(glyph, accent, *, monochrome=False, gradient=None,
         f'<svg xmlns="http://www.w3.org/2000/svg" width="{W}" height="{H}" '
         f'viewBox="0 0 {W} {H}">\n'
         f'  <g transform="translate({(W - box) / 2:.0f},{(H - box) / 2:.0f}) '
-        f'scale({scale:.5f})">{apply_gradient(monoline(family_body(glyph, accent, mark)), accent, gradient) if gradient and not monochrome else monoline(family_body(glyph, accent, mark))}</g>\n'
+        f'scale({scale:.5f})">{apply_gradient(monoline(family_body(glyph, accent, mark, style)), accent, gradient) if gradient and not monochrome else monoline(family_body(glyph, accent, mark, style))}</g>\n'
         f'</svg>\n'
     )
 
@@ -287,7 +287,8 @@ def main():
         if i.get("banner_style") == "glyph":
             svg = render_glyph_only(i["glyph"], i["color"], monochrome=mono,
                                     gradient=i.get("gradient"),
-                                    mark=i.get("mark"))
+                                    mark=i.get("mark"),
+                                    style=i.get("mark_style"))
             # Wordmark marks are not ink-centred on the 512 grid either; the
             # banner centring audit holds them to the same 3px tolerance.
             svg = recentre(svg)
@@ -296,7 +297,8 @@ def main():
             # (e.g. TizenTube: banner carries the emblem's tip dot).
             svg = render(i["name"], i.get("banner_glyph", i["glyph"]), i["color"],
                          i.get("category"), monochrome=mono,
-                         gradient=i.get("gradient"), mark=i.get("mark"))
+                         gradient=i.get("gradient"), mark=i.get("mark"),
+                         style=i.get("mark_style"))
             svg = recentre(svg)
         (SVG_DIR / f"{i['drawable']}.svg").write_text(svg, encoding="utf-8")
     print(f"\u2713 banner SVGs written ({len(targets)}/{len(targets)}) "

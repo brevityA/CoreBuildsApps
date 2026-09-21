@@ -37,6 +37,10 @@ DOC_DIR = ROOT / "docs"
 PNG_SIZE = 512
 DRAWABLE_RE = re.compile(r"^[a-z][a-z0-9_]*$")
 
+# Brand-informed mark treatments that have shipped. A style joins this set
+# the way a glyph joins the registry: one researched cue at a time.
+MARK_STYLES = frozenset({"lower"})
+
 
 def esc(s):
     return (s.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;")
@@ -80,11 +84,23 @@ def validate(icons, artwork=None):
                               f"(<family>_<L>), not glyph '{i.get('glyph')}'")
             else:
                 _, cap_h, _, max_w = family_glyph_for(i["glyph"])
-                cap = lockup_cap(mark, cap_h, max_w)
+                shown = mark.lower() if i.get("mark_style") == "lower" else mark
+                cap = lockup_cap(shown, cap_h, max_w)
                 if cap < MIN_LOCKUP_CAP:
-                    errors.append(f"{n}: mark '{mark}' sets at {cap:.0f}px in the "
+                    errors.append(f"{n}: mark '{shown}' sets at {cap:.0f}px in the "
                                   f"'{i['glyph'].rpartition('_')[0]}' shell — under the "
                                   f"{MIN_LOCKUP_CAP}px counter floor, it closes at a 48px tile")
+        mstyle = i.get("mark_style")
+        if mstyle is not None:
+            if mark is None:
+                errors.append(f"{n}: mark_style '{mstyle}' needs a mark to style")
+            elif mstyle not in MARK_STYLES:
+                errors.append(f"{n}: unknown mark_style '{mstyle}' "
+                              f"(vocabulary: {', '.join(sorted(MARK_STYLES))}) — a style "
+                              "ships only when a researched logotype cue needs it")
+            elif not i.get("mark_style_source"):
+                errors.append(f"{n}: mark_style '{mstyle}' carries no "
+                              "mark_style_source — where was the cue seen?")
         if not i.get("components"):
             errors.append(f"{n}: no components — icon would never auto-assign")
         if brand := i.get("brand"):
@@ -119,7 +135,7 @@ def validate(icons, artwork=None):
         mark = i.get("mark")
         if not mark or family_glyph_for(i.get("glyph", "")) is None:
             continue
-        render_key = (i["glyph"], mark,
+        render_key = (i["glyph"], mark, i.get("mark_style") or "",
                       display_accent(i.get("color", "#000000"),
                                      monochrome=i.get("color_note") == "monochrome"))
         prev = seen_render.get(render_key)
@@ -165,7 +181,8 @@ def main():
         mono = i.get("color_note") == "monochrome"
         write(SVG_DIR / f"{i['drawable']}.svg",
               render_svg(i["glyph"], i["color"], monochrome=mono,
-                         gradient=i.get("gradient"), mark=i.get("mark")))
+                         gradient=i.get("gradient"), mark=i.get("mark"),
+                         style=i.get("mark_style")))
     print(f"\u2713 SVG masters written ({len(icons)}/{len(icons)}) \u2192 assets/svg/ "
           f"({wordmarked} adaptive wordmark monograms)")
 
@@ -385,7 +402,7 @@ def main():
         mono = i.get("color_note") == "monochrome"
         inner = monoline(family_body(i["glyph"],
                                      display_accent(i["color"], monochrome=mono),
-                                     i.get("mark")))
+                                     i.get("mark"), i.get("mark_style")))
         s.append(f'<rect x="{cx + 9}" y="{cy + 5}" width="{cell - 18}" '
                  f'height="{cell - 34}" rx="16" fill="#151923" '
                  f'stroke="rgba(255,255,255,.06)"/>')
