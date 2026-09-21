@@ -79,6 +79,9 @@
     <!-- Airscreen -->
     <item component="ComponentInfo{com.ionitech.airscreen/com.ionitech.airscreen.ui.activity.welcome.StreamAssistantIndexActivity}" drawable="airscreen_banner"/>
     <item component="ComponentInfo{com.ionitech.airscreen/.ui.activity.welcome.StreamAssistantIndexActivity}" drawable="airscreen_banner"/>
+    <!-- AK47Sports -->
+    <item component="ComponentInfo{app.aksports.live/app.aksports.live.activities.SplashActivity}" drawable="ak47sports_banner"/>
+    <item component="ComponentInfo{app.aksports.live/.activities.SplashActivity}" drawable="ak47sports_banner"/>
     <!-- Al Jazeera -->
     <item component="ComponentInfo{net.aljazeera.english/net.aljazeera.english.MainActivity}" drawable="al_jazeera_banner"/>
     <item component="ComponentInfo{net.aljazeera.english/.MainActivity}" drawable="al_jazeera_banner"/>
@@ -111,6 +114,9 @@
     <!-- Angel Studios -->
     <item component="ComponentInfo{com.angel.tv/com.angel.tv.MainActivity}" drawable="angel_banner"/>
     <item component="ComponentInfo{com.angel.tv/.MainActivity}" drawable="angel_banner"/>
+    <!-- AnikenTV -->
+    <item component="ComponentInfo{com.shubh.anililitv/com.shubh.anililitv.MainActivity}" drawable="anikentv_banner"/>
+    <item component="ComponentInfo{com.shubh.anililitv/.MainActivity}" drawable="anikentv_banner"/>
     <!-- AniLab -->
     <item component="ComponentInfo{com.anilab.android.tv/com.anilab.android.tv.ui.TvActivity}" drawable="anilab_banner"/>
     <item component="ComponentInfo{com.anilab.android.tv/.ui.TvActivity}" drawable="anilab_banner"/>
@@ -125,6 +131,9 @@
     <!-- Anten TV -->
     <item component="ComponentInfo{com.farakav.antentv/com.farakav.antentv.app.SplashActivity}" drawable="antentv_banner"/>
     <item component="ComponentInfo{com.farakav.antentv/.app.SplashActivity}" drawable="antentv_banner"/>
+    <!-- Användarmanual -->
+    <item component="ComponentInfo{com.tcl.ocean.instructions/com.tcl.ocean.instructions.portal.home.HomeActivity}" drawable="anvandarmanual_banner"/>
+    <item component="ComponentInfo{com.tcl.ocean.instructions/.portal.home.HomeActivity}" drawable="anvandarmanual_banner"/>
     <!-- AnyDesk -->
     <item component="ComponentInfo{com.anydesk.anydeskandroid/com.anydesk.anydeskandroid.gui.activity.HubActivity}" drawable="anydeskandroid_banner"/>
     <item component="ComponentInfo{com.anydesk.anydeskandroid/.gui.activity.HubActivity}" drawable="anydeskandroid_banner"/>
@@ -283,6 +292,9 @@
     <item component="ComponentInfo{com.tcl.browser/.portal.home.activity.HomePageActivity}" drawable="browsehere_banner"/>
     <!-- Bstation -->
     <item component="ComponentInfo{com.bstar.intl.tv/com.biliintl.ibstartv.MainActivity}" drawable="bstar_banner"/>
+    <!-- Button Mapper TV -->
+    <item component="ComponentInfo{com.tv.remote.button.mapper.remap/com.tv.remote.button.mapper.remap.LauncherActivity}" drawable="buttonmappertv_banner"/>
+    <item component="ComponentInfo{com.tv.remote.button.mapper.remap/.LauncherActivity}" drawable="buttonmappertv_banner"/>
     <!-- Buttons Remapper -->
     <item component="ComponentInfo{com.irishin.buttonsremapper/com.irishin.buttonsremapper.ui.MainActivity}" drawable="buttonsremapper_banner"/>
     <item component="ComponentInfo{com.irishin.buttonsremapper/.ui.MainActivity}" drawable="buttonsremapper_banner"/>
@@ -658,6 +670,11 @@
     <!-- FANE TV -->
     <item component="ComponentInfo{com.fanetv/tv.vhx.LauncherActivity}" drawable="fanetv_banner"/>
     <item component="ComponentInfo{com.fanetv/tv.vhx.tv.home.TvHomeActivity}" drawable="fanetv_banner"/>
+    <!-- Fast Task Killer -->
+    <item component="ComponentInfo{jp.snowlife01.android.appkiller2/jp.snowlife01.android.appkiller2.Optimization}" drawable="fasttaskkiller_banner"/>
+    <item component="ComponentInfo{jp.snowlife01.android.appkiller2/.Optimization}" drawable="fasttaskkiller_banner"/>
+    <item component="ComponentInfo{jp.snowlife01.android.appkiller2/jp.snowlife01.android.appkiller2.OptimizationActivity}" drawable="fasttaskkiller_banner"/>
+    <item component="ComponentInfo{jp.snowlife01.android.appkiller2/.OptimizationActivity}" drawable="fasttaskkiller_banner"/>
     <!-- FC Porto TV -->
     <item component="ComponentInfo{com.fcp.fcportotv/com.fcp.fcportotv.SplashActivity}" drawable="fcportotv_banner"/>
     <item component="ComponentInfo{com.fcp.fcportotv/.SplashActivity}" drawable="fcportotv_banner"/>
@@ -806,6 +823,9 @@
     <!-- Galaxy Play -->
     <item component="ComponentInfo{movies.fimplus.vn.andtv/movies.fimplus.vn.andtv.v2.activity.HomeActivityV2}" drawable="galaxy_play_banner"/>
     <item component="ComponentInfo{movies.fimplus.vn.andtv/.v2.activity.HomeActivityV2}" drawable="galaxy_play_banner"/>
+    <!-- Galleri -->
+    <item component="ComponentInfo{com.tcl.gallery/com.tcl.gallery.module_gallery.activity.MainActivity}" drawable="galleri_tcl_banner"/>
+    <item component="ComponentInfo{com.tcl.gallery/.module_gallery.activity.MainActivity}" drawable="galleri_tcl_banner"/>
     <!-- Gallery 3D -->
     <item component="ComponentInfo{com.android.gallery3d/com.android.gallery3d.app.GalleryActivity}" drawable="gallery3d_banner"/>
     <item component="ComponentInfo{com.android.gallery3d/.app.GalleryActivity}" drawable="gallery3d_banner"/>
@@ -1220,6 +1240,8 @@
     <item component="ComponentInfo{cz.tmobile.tvgo/com.telekom.tv.player.StbPlayerActivity}" drawable="magenta_tv_banner"/>
     <item component="ComponentInfo{de.telekom.magentatv.androidtv/de.telekom.magentatv.androidtv.ApplicationMainActivity}" drawable="magenta_tv_banner"/>
     <item component="ComponentInfo{de.telekom.magentatv.androidtv/.ApplicationMainActivity}" drawable="magenta_tv_banner"/>
+    <!-- MagiConnect -->
+    <item component="ComponentInfo{com.tcl.magiconnectfree/com.tcl.multiscreeninteractiontv.UI.activity.SplashActivity}" drawable="magiconnect_banner"/>
     <!-- Magio TV -->
     <item component="ComponentInfo{com.telekom.magiogo/com.telekom.tv.player.StbPlayerActivity}" drawable="magio_tv_banner"/>
     <!-- Mame4droid -->
@@ -1256,6 +1278,9 @@
     <!-- Mecool File Manager -->
     <item component="ComponentInfo{com.tvonline.filewizard/com.tvonline.filewizard.ui.MainActivity}" drawable="mecool_file_manager_banner"/>
     <item component="ComponentInfo{com.tvonline.filewizard/.ui.MainActivity}" drawable="mecool_file_manager_banner"/>
+    <!-- Meddelandelåda -->
+    <item component="ComponentInfo{com.tcl.messagebox/com.tcl.messagebox.activity.MainActivity}" drawable="meddelandelada_banner"/>
+    <item component="ComponentInfo{com.tcl.messagebox/.activity.MainActivity}" drawable="meddelandelada_banner"/>
     <!-- Media Browser -->
     <item component="ComponentInfo{com.cmpsoft.MediaBrowser/com.cmpsoft.MediaBrowser.SplashScreenActivity}" drawable="mediabrowser_banner"/>
     <item component="ComponentInfo{com.cmpsoft.MediaBrowser/.SplashScreenActivity}" drawable="mediabrowser_banner"/>
@@ -1268,6 +1293,9 @@
     <item component="ComponentInfo{com.oumi.utility.media.hub/com.mac.utility.media.hub.ui_tv.main.TVMainActivity}" drawable="utility_banner"/>
     <!-- Mediaset Infinity TV -->
     <item component="ComponentInfo{it.mediaset.infinitytv/it.mediaset.mediasetplay.ctv.MainActivity}" drawable="mediaset_infinity_tv_banner"/>
+    <!-- Mediaspelare -->
+    <item component="ComponentInfo{com.tcl.ui_mediaCenter/com.tcl.ui_mediaCenter.main.MainActivity}" drawable="mediaspelare_banner"/>
+    <item component="ComponentInfo{com.tcl.ui_mediaCenter/.main.MainActivity}" drawable="mediaspelare_banner"/>
     <!-- MEGOGO -->
     <item component="ComponentInfo{com.megogo.application/net.megogo.tv.main.MainActivity}" drawable="application_banner"/>
     <!-- MEO -->
@@ -1690,6 +1718,11 @@
     <!-- Pluto TV -->
     <item component="ComponentInfo{tv.pluto.android/tv.pluto.android.EntryPoint}" drawable="pluto_tv_banner"/>
     <item component="ComponentInfo{tv.pluto.android/.EntryPoint}" drawable="pluto_tv_banner"/>
+    <!-- PMX -->
+    <item component="ComponentInfo{com.mirfatif.permissionmanagerx/com.mirfatif.permissionmanagerx.fwk.MainActivityM}" drawable="pmx_banner"/>
+    <item component="ComponentInfo{com.mirfatif.permissionmanagerx/.fwk.MainActivityM}" drawable="pmx_banner"/>
+    <item component="ComponentInfo{com.mirfatif.permissionmanagerx/com.mirfatif.permissionmanagerx.fwk.MainActivity}" drawable="pmx_banner"/>
+    <item component="ComponentInfo{com.mirfatif.permissionmanagerx/.fwk.MainActivity}" drawable="pmx_banner"/>
     <!-- Podcast Addict -->
     <item component="ComponentInfo{com.bambuna.podcastaddict/com.bambuna.podcastaddict.activity.PodcastListActivity}" drawable="podcastaddict_banner"/>
     <item component="ComponentInfo{com.bambuna.podcastaddict/.activity.PodcastListActivity}" drawable="podcastaddict_banner"/>
@@ -2213,6 +2246,9 @@
     <item component="ComponentInfo{com.tcl.waterfall.overseas/.main.MainActivity}" drawable="tcl_channel_banner"/>
     <!-- TCL Home -->
     <item component="ComponentInfo{com.tcl.tclhome/com.tcl.bmmain.SplashActivity}" drawable="tcl_home_banner"/>
+    <!-- TCL Home Passive -->
+    <item component="ComponentInfo{com.tcl.tv.tclhome_passive/com.tcl.tv.tclhome_passive.HomePassiveActivity}" drawable="tcl_home_passive_banner"/>
+    <item component="ComponentInfo{com.tcl.tv.tclhome_passive/.HomePassiveActivity}" drawable="tcl_home_passive_banner"/>
     <!-- Tcn -->
     <item component="ComponentInfo{com.tuckercarlson.tv/tv.accedo.one.app.bootstrap.BootstrapActivity}" drawable="tcn_banner"/>
     <!-- Tdtchannels Player -->
@@ -2349,6 +2385,8 @@
     <item component="ComponentInfo{com.tubitv/.activities.MainActivity}" drawable="tubi_banner"/>
     <!-- Tunein Radio -->
     <item component="ComponentInfo{tunein.player/tunein.ui.leanback.ui.activities.TvHomeActivity}" drawable="tunein_radio_banner"/>
+    <!-- TV -->
+    <item component="ComponentInfo{com.tcl.tv/com.tcl.player.TVActivity}" drawable="tcl_tv_banner"/>
     <!-- TV 2 Play -->
     <item component="ComponentInfo{no.tv2.sumo/no.tv2.android.ui.LauncherBridgeActivity}" drawable="tv_2_play_banner"/>
     <!-- TV App Repo -->
@@ -2471,6 +2509,9 @@
     <item component="ComponentInfo{com.yablio.realdebridtv/.StartActivity}" drawable="unreal_debrid_banner"/>
     <!-- USA Network -->
     <item component="ComponentInfo{com.nbcu.tve.usatv.androidtv/com.nbc.nbctvapp.ui.main.view.MainActivity}" drawable="androidtv_9_banner"/>
+    <!-- User Center -->
+    <item component="ComponentInfo{com.tcl.usercenter/com.tcl.usercenter.activity.WelActivity}" drawable="user_center_banner"/>
+    <item component="ComponentInfo{com.tcl.usercenter/.activity.WelActivity}" drawable="user_center_banner"/>
     <!-- Vbtv -->
     <item component="ComponentInfo{dce.fivb.volleyballtv/com.applicaster.ui.activities.MainActivity}" drawable="vbtv_banner"/>
     <!-- Ve Plus -->
@@ -2532,6 +2573,9 @@
     <item component="ComponentInfo{com.viva.vivamax/.activity.SplashActivity}" drawable="vmx_banner"/>
     <!-- Vodafone TV -->
     <item component="ComponentInfo{com.vodafone.vtv.atv.pt/com.witsoftware.vodafonetv.view.splash.SplashActivity}" drawable="vodafone_tv_banner"/>
+    <!-- Voltra TV -->
+    <item component="ComponentInfo{com.amhkor.voltratv/com.amhkor.voltratv.tv.SplashActivity}" drawable="voltra_tv_banner"/>
+    <item component="ComponentInfo{com.amhkor.voltratv/.tv.SplashActivity}" drawable="voltra_tv_banner"/>
     <!-- Voyo Sk -->
     <item component="ComponentInfo{net.cme.voyo.sk.tvapp/net.cme.voyo.sk.tvapp.MainActivity}" drawable="voyo_sk_banner"/>
     <item component="ComponentInfo{net.cme.voyo.sk.tvapp/.MainActivity}" drawable="voyo_sk_banner"/>
@@ -2606,6 +2650,9 @@
     <item component="ComponentInfo{com.wireguard.android/.activity.TvMainActivity}" drawable="wireguard_banner"/>
     <!-- Wondery -->
     <item component="ComponentInfo{com.wondery/com.ensemble.streams.android.app.wonderytv.app.MainActivity}" drawable="wondery_banner"/>
+    <!-- Works with Alexa -->
+    <item component="ComponentInfo{com.tcl.smartalexa/com.tcl.smartalexa.view.activity.MainActivity}" drawable="works_with_alexa_banner"/>
+    <item component="ComponentInfo{com.tcl.smartalexa/.view.activity.MainActivity}" drawable="works_with_alexa_banner"/>
     <!-- World Radios -->
     <item component="ComponentInfo{com.digitalapps.worldradios/com.digitalapps.worldradios.activities.ActivitySplash}" drawable="worldradios_banner"/>
     <item component="ComponentInfo{com.digitalapps.worldradios/.activities.ActivitySplash}" drawable="worldradios_banner"/>

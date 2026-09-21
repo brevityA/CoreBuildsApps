@@ -28,6 +28,7 @@
         <item>receiver</item>
         <item>airreceiverlite</item>
         <item>airscreen</item>
+        <item>ak47sports</item>
         <item>al_jazeera</item>
         <item>alldebrid</item>
         <item>allsaversocial</item>
@@ -41,11 +42,13 @@
         <item>fastest</item>
         <item>anexplorer_pro</item>
         <item>angel</item>
+        <item>anikentv</item>
         <item>anilab</item>
         <item>anime_cast</item>
         <item>anime</item>
         <item>ant1</item>
         <item>antentv</item>
+        <item>anvandarmanual</item>
         <item>anydeskandroid</item>
         <item>aparatsport</item>
         <item>apk_installer</item>
@@ -101,6 +104,7 @@
         <item>brollie</item>
         <item>browsehere</item>
         <item>bstar</item>
+        <item>buttonmappertv</item>
         <item>buttonsremapper</item>
         <item>byebyedpi</item>
         <item>byutv</item>
@@ -229,6 +233,7 @@
         <item>falconcast</item>
         <item>fandango_at_home</item>
         <item>fanetv</item>
+        <item>fasttaskkiller</item>
         <item>fcportotv</item>
         <item>fctv77</item>
         <item>playstore_2</item>
@@ -286,6 +291,7 @@
         <item>fxfile</item>
         <item>gain</item>
         <item>galaxy_play</item>
+        <item>galleri_tcl</item>
         <item>gallery3d</item>
         <item>gamelauncher</item>
         <item>gb_news</item>
@@ -424,6 +430,7 @@
         <item>magellantv</item>
         <item>magenta_sport</item>
         <item>magenta_tv</item>
+        <item>magiconnect</item>
         <item>magio_tv</item>
         <item>mame4droid</item>
         <item>intl</item>
@@ -436,10 +443,12 @@
         <item>tvod169</item>
         <item>powerpoint45</item>
         <item>mecool_file_manager</item>
+        <item>meddelandelada</item>
         <item>mediabrowser</item>
         <item>media_explorer</item>
         <item>utility</item>
         <item>mediaset_infinity_tv</item>
+        <item>mediaspelare</item>
         <item>application</item>
         <item>alticelabs</item>
         <item>mercado_play</item>
@@ -591,6 +600,7 @@
         <item>plexamp</item>
         <item>telegram</item>
         <item>pluto_tv</item>
+        <item>pmx</item>
         <item>podcastaddict</item>
         <item>polsat_box_go</item>
         <item>videoplayer_2</item>
@@ -766,6 +776,7 @@
         <item>tbs</item>
         <item>tcl_channel</item>
         <item>tcl_home</item>
+        <item>tcl_home_passive</item>
         <item>tcn</item>
         <item>tdtchannels_player</item>
         <item>tduk_screensaver_manager</item>
@@ -815,6 +826,7 @@
         <item>tt</item>
         <item>tubi</item>
         <item>tunein_radio</item>
+        <item>tcl_tv</item>
         <item>tv_2_play</item>
         <item>tv_app_repo</item>
         <item>tvwebbrowser</item>
@@ -858,6 +870,7 @@
         <item>unlinked</item>
         <item>unreal_debrid</item>
         <item>androidtv_9</item>
+        <item>user_center</item>
         <item>vbtv</item>
         <item>venevision</item>
         <item>veezie</item>
@@ -879,6 +892,7 @@
         <item>vlc</item>
         <item>vmx</item>
         <item>vodafone_tv</item>
+        <item>voltra_tv</item>
         <item>voyo_sk</item>
         <item>omnisoft</item>
         <item>vpn_unlimited</item>
@@ -907,6 +921,7 @@
         <item>wink</item>
         <item>wireguard</item>
         <item>wondery</item>
+        <item>works_with_alexa</item>
         <item>worldradios</item>
         <item>wow</item>
         <item>wow2</item>
@@ -973,6 +988,7 @@
         <item>AirPlay Receiver</item>
         <item>Airreceiverlite</item>
         <item>Airscreen</item>
+        <item>AK47Sports</item>
         <item>Al Jazeera</item>
         <item>AllDebrid</item>
         <item>AllSaves Social</item>
@@ -986,11 +1002,13 @@
         <item>Analiti</item>
         <item>Anexplorer Pro</item>
         <item>Angel Studios</item>
+        <item>AnikenTV</item>
         <item>AniLab</item>
         <item>Anime Cast</item>
         <item>Anime One</item>
         <item>Ant1</item>
         <item>Anten TV</item>
+        <item>Användarmanual</item>
         <item>AnyDesk</item>
         <item>Aparat Sport</item>
         <item>Apk Installer</item>
@@ -1046,6 +1064,7 @@
         <item>Brollie</item>
         <item>Browsehere</item>
         <item>Bstation</item>
+        <item>Button Mapper TV</item>
         <item>Buttons Remapper</item>
         <item>Byebyedpi</item>
         <item>Byutv</item>
@@ -1174,6 +1193,7 @@
         <item>Falcon Cast</item>
         <item>Fandango at Home</item>
         <item>FANE TV</item>
+        <item>Fast Task Killer</item>
         <item>FC Porto TV</item>
         <item>FC TV</item>
         <item>FCast Receiver</item>
@@ -1231,6 +1251,7 @@
         <item>FX File Explorer</item>
         <item>Gain</item>
         <item>Galaxy Play</item>
+        <item>Galleri</item>
         <item>Gallery 3D</item>
         <item>Game Launcher</item>
         <item>Gb News</item>
@@ -1369,6 +1390,7 @@
         <item>MagellanTV</item>
         <item>Magenta Sport</item>
         <item>Magenta TV</item>
+        <item>MagiConnect</item>
         <item>Magio TV</item>
         <item>Mame4droid</item>
         <item>Mango TV</item>
@@ -1381,10 +1403,12 @@
         <item>Maz TVOD</item>
         <item>Maze</item>
         <item>Mecool File Manager</item>
+        <item>Meddelandelåda</item>
         <item>Media Browser</item>
         <item>Media Explorer</item>
         <item>Media Hub</item>
         <item>Mediaset Infinity TV</item>
+        <item>Mediaspelare</item>
         <item>MEGOGO</item>
         <item>MEO</item>
         <item>Mercado Play</item>
@@ -1536,6 +1560,7 @@
         <item>Plexamp</item>
         <item>Plus Messenger</item>
         <item>Pluto TV</item>
+        <item>PMX</item>
         <item>Podcast Addict</item>
         <item>Polsat Box Go</item>
         <item>Polygon Player</item>
@@ -1711,6 +1736,7 @@
         <item>TBS</item>
         <item>TCL Channel</item>
         <item>TCL Home</item>
+        <item>TCL Home Passive</item>
         <item>Tcn</item>
         <item>Tdtchannels Player</item>
         <item>Tduk Screensaver Manager</item>
@@ -1760,6 +1786,7 @@
         <item>Tt</item>
         <item>Tubi</item>
         <item>Tunein Radio</item>
+        <item>TV</item>
         <item>TV 2 Play</item>
         <item>TV App Repo</item>
         <item>TV Bro</item>
@@ -1803,6 +1830,7 @@
         <item>Unlinked</item>
         <item>Unreal Debrid</item>
         <item>USA Network</item>
+        <item>User Center</item>
         <item>Vbtv</item>
         <item>Ve Plus</item>
         <item>Veezie</item>
@@ -1824,6 +1852,7 @@
         <item>VLC</item>
         <item>Vmx</item>
         <item>Vodafone TV</item>
+        <item>Voltra TV</item>
         <item>Voyo Sk</item>
         <item>VPN Dot</item>
         <item>VPN Unlimited</item>
@@ -1852,6 +1881,7 @@
         <item>Wink</item>
         <item>Wireguard</item>
         <item>Wondery</item>
+        <item>Works with Alexa</item>
         <item>World Radios</item>
         <item>Wow</item>
         <item>Wow2</item>
@@ -1918,6 +1948,7 @@
         <item>APP</item>
         <item>APP</item>
         <item>APP</item>
+        <item>SPORT</item>
         <item>APP</item>
         <item>DEBRID</item>
         <item>APP</item>
@@ -1936,6 +1967,8 @@
         <item>APP</item>
         <item>APP</item>
         <item>APP</item>
+        <item>APP</item>
+        <item>SYSTEM</item>
         <item>APP</item>
         <item>SPORT</item>
         <item>APP</item>
@@ -1991,6 +2024,7 @@
         <item>APP</item>
         <item>APP</item>
         <item>APP</item>
+        <item>TOOL</item>
         <item>APP</item>
         <item>APP</item>
         <item>APP</item>
@@ -2119,6 +2153,7 @@
         <item>APP</item>
         <item>STORE</item>
         <item>APP</item>
+        <item>TOOL</item>
         <item>APP</item>
         <item>APP</item>
         <item>TOOL</item>
@@ -2176,6 +2211,7 @@
         <item>FILES</item>
         <item>APP</item>
         <item>APP</item>
+        <item>SYSTEM</item>
         <item>APP</item>
         <item>LAUNCHER</item>
         <item>APP</item>
@@ -2314,6 +2350,7 @@
         <item>APP</item>
         <item>SPORT</item>
         <item>APP</item>
+        <item>TOOL</item>
         <item>APP</item>
         <item>GAMING</item>
         <item>APP</item>
@@ -2326,10 +2363,12 @@
         <item>APP</item>
         <item>APP</item>
         <item>FILES</item>
+        <item>SYSTEM</item>
         <item>BROWSER</item>
         <item>SYSTEM</item>
         <item>APP</item>
         <item>APP</item>
+        <item>PLAYER</item>
         <item>APP</item>
         <item>APP</item>
         <item>APP</item>
@@ -2481,6 +2520,7 @@
         <item>APP</item>
         <item>APP</item>
         <item>APP</item>
+        <item>TOOL</item>
         <item>MUSIC</item>
         <item>APP</item>
         <item>APP</item>
@@ -2656,6 +2696,7 @@
         <item>APP</item>
         <item>APP</item>
         <item>APP</item>
+        <item>SYSTEM</item>
         <item>APP</item>
         <item>PLAYER</item>
         <item>TOOL</item>
@@ -2705,6 +2746,7 @@
         <item>APP</item>
         <item>APP</item>
         <item>MUSIC</item>
+        <item>LIVE</item>
         <item>APP</item>
         <item>APP</item>
         <item>BROWSER</item>
@@ -2748,6 +2790,7 @@
         <item>STORE</item>
         <item>APP</item>
         <item>APP</item>
+        <item>SYSTEM</item>
         <item>APP</item>
         <item>STREAM</item>
         <item>APP</item>
@@ -2769,6 +2812,7 @@
         <item>PLAYER</item>
         <item>APP</item>
         <item>APP</item>
+        <item>STREAM</item>
         <item>APP</item>
         <item>VPN</item>
         <item>VPN</item>
@@ -2797,6 +2841,7 @@
         <item>APP</item>
         <item>VPN</item>
         <item>APP</item>
+        <item>SYSTEM</item>
         <item>MUSIC</item>
         <item>APP</item>
         <item>APP</item>
@@ -2863,6 +2908,7 @@
         <item>0</item>
         <item>0</item>
         <item>1</item>
+        <item>0</item>
         <item>1</item>
         <item>1</item>
         <item>0</item>
@@ -2875,6 +2921,8 @@
         <item>0</item>
         <item>1</item>
         <item>1</item>
+        <item>0</item>
+        <item>0</item>
         <item>0</item>
         <item>0</item>
         <item>0</item>
@@ -2945,6 +2993,7 @@
         <item>0</item>
         <item>0</item>
         <item>0</item>
+        <item>0</item>
         <item>1</item>
         <item>1</item>
         <item>1</item>
@@ -3063,6 +3112,7 @@
         <item>1</item>
         <item>0</item>
         <item>1</item>
+        <item>0</item>
         <item>0</item>
         <item>0</item>
         <item>0</item>
@@ -3122,6 +3172,7 @@
         <item>0</item>
         <item>0</item>
         <item>0</item>
+        <item>0</item>
         <item>1</item>
         <item>0</item>
         <item>1</item>
@@ -3258,6 +3309,7 @@
         <item>0</item>
         <item>0</item>
         <item>1</item>
+        <item>0</item>
         <item>0</item>
         <item>0</item>
         <item>0</item>
@@ -3271,8 +3323,10 @@
         <item>0</item>
         <item>0</item>
         <item>1</item>
+        <item>0</item>
         <item>1</item>
         <item>1</item>
+        <item>0</item>
         <item>0</item>
         <item>0</item>
         <item>1</item>
@@ -3426,6 +3480,7 @@
         <item>1</item>
         <item>0</item>
         <item>1</item>
+        <item>0</item>
         <item>1</item>
         <item>0</item>
         <item>0</item>
@@ -3599,6 +3654,7 @@
         <item>1</item>
         <item>0</item>
         <item>1</item>
+        <item>0</item>
         <item>0</item>
         <item>0</item>
         <item>0</item>
@@ -3652,6 +3708,7 @@
         <item>1</item>
         <item>0</item>
         <item>0</item>
+        <item>0</item>
         <item>1</item>
         <item>1</item>
         <item>0</item>
@@ -3693,6 +3750,7 @@
         <item>1</item>
         <item>0</item>
         <item>1</item>
+        <item>0</item>
         <item>0</item>
         <item>1</item>
         <item>0</item>
@@ -3719,6 +3777,7 @@
         <item>0</item>
         <item>0</item>
         <item>0</item>
+        <item>0</item>
         <item>1</item>
         <item>0</item>
         <item>0</item>
@@ -3742,6 +3801,7 @@
         <item>0</item>
         <item>1</item>
         <item>1</item>
+        <item>0</item>
         <item>0</item>
         <item>0</item>
         <item>0</item>
@@ -3781,5 +3841,5 @@
         <item>0</item>
         <item>0</item>
     </integer-array>
-    <integer name="icon_count">943</integer>
+    <integer name="icon_count">958</integer>
 </resources>

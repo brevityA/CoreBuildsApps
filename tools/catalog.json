@@ -6,7 +6,7 @@
     "grid": 512,
     "safe_area": 432,
     "note": "Core Builds-authored geometric icons on a shared 512 grid. Reviewed brand glyphs use rounded monoline strokes and one accent, not imported vendor silhouettes. Common Outfit/category/rail banners; artwork is reference-only. Canonical brand colours and the dark-card contrast policy remain shared.",
-    "count": 943
+    "count": 958
   },
   "icons": [
     {
@@ -12876,6 +12876,218 @@
         "ru.vovasoft.televizo/ru.vovasoft.televizo.ui.MainActivity",
         "ru.vovasoft.televizo/.ui.MainActivity"
       ]
+    },
+    {
+      "name": "AK47Sports",
+      "drawable": "ak47sports",
+      "color": "#FEC500",
+      "glyph": "sport_A",
+      "mark": "AK",
+      "components": [
+        "app.aksports.live/app.aksports.live.activities.SplashActivity"
+      ],
+      "category": "SPORT",
+      "mapping_source": "owner TV audit 2026-09-21 (Auditor screenshots, TCL Google TV)",
+      "color_source": "owner TV audit 2026-09-21: stock icon gold-on-blue crest",
+      "color_reviewed": "2026-09-21"
+    },
+    {
+      "name": "AnikenTV",
+      "drawable": "anikentv",
+      "color": "#FF4C98",
+      "glyph": "anime_A",
+      "mark": "AN",
+      "components": [
+        "com.shubh.anililitv/com.shubh.anililitv.MainActivity"
+      ],
+      "category": "APP",
+      "mapping_source": "owner TV audit 2026-09-21 (Auditor screenshots, TCL Google TV)",
+      "color_source": "core-builds palette (anime pink slot; no published brand colour found)",
+      "color_reviewed": null
+    },
+    {
+      "name": "Användarmanual",
+      "drawable": "anvandarmanual",
+      "color": "#8B949E",
+      "glyph": "app_A",
+      "mark": "AN",
+      "components": [
+        "com.tcl.ocean.instructions/com.tcl.ocean.instructions.portal.home.HomeActivity"
+      ],
+      "category": "SYSTEM",
+      "mapping_source": "owner TV audit 2026-09-21 (Auditor screenshots, TCL Google TV)",
+      "color_source": "core-builds palette (no published brand colour found)",
+      "color_reviewed": null
+    },
+    {
+      "name": "Button Mapper TV",
+      "drawable": "buttonmappertv",
+      "color": "#00BFA5",
+      "glyph": "tool_B",
+      "components": [
+        "com.tv.remote.button.mapper.remap/com.tv.remote.button.mapper.remap.LauncherActivity"
+      ],
+      "category": "TOOL",
+      "mapping_source": "owner TV audit 2026-09-21 (Auditor screenshots, TCL Google TV)",
+      "color_source": "core-builds palette (no published brand colour found)",
+      "color_reviewed": null,
+      "mark": "BM"
+    },
+    {
+      "name": "Fast Task Killer",
+      "drawable": "fasttaskkiller",
+      "color": "#FF7A00",
+      "glyph": "tool_F",
+      "components": [
+        "jp.snowlife01.android.appkiller2/jp.snowlife01.android.appkiller2.Optimization",
+        "jp.snowlife01.android.appkiller2/jp.snowlife01.android.appkiller2.OptimizationActivity"
+      ],
+      "category": "TOOL",
+      "mapping_source": "owner TV audit 2026-09-21 (Auditor screenshots, TCL Google TV)",
+      "color_source": "core-builds palette (no published brand colour found)",
+      "color_reviewed": null,
+      "mark": "FT"
+    },
+    {
+      "name": "Galleri",
+      "drawable": "galleri_tcl",
+      "color": "#0061FF",
+      "glyph": "photos_G",
+      "mark": "GA",
+      "components": [
+        "com.tcl.gallery/com.tcl.gallery.module_gallery.activity.MainActivity"
+      ],
+      "category": "SYSTEM",
+      "mapping_source": "owner TV audit 2026-09-21 (Auditor screenshots, TCL Google TV)",
+      "color_source": "owner TV audit 2026-09-21: TCL stock icon blue tile",
+      "color_reviewed": "2026-09-21"
+    },
+    {
+      "name": "MagiConnect",
+      "drawable": "magiconnect",
+      "color": "#FF0000",
+      "glyph": "tool_M",
+      "mark": "MA",
+      "components": [
+        "com.tcl.magiconnectfree/com.tcl.multiscreeninteractiontv.UI.activity.SplashActivity"
+      ],
+      "category": "TOOL",
+      "mapping_source": "owner TV audit 2026-09-21 (Auditor screenshots, TCL Google TV)",
+      "color_source": "owner TV audit 2026-09-21: TCL stock icon red tile",
+      "color_reviewed": "2026-09-21"
+    },
+    {
+      "name": "Meddelandelåda",
+      "drawable": "meddelandelada",
+      "color": "#2196F3",
+      "glyph": "app_M",
+      "mark": "ME",
+      "components": [
+        "com.tcl.messagebox/com.tcl.messagebox.activity.MainActivity"
+      ],
+      "category": "SYSTEM",
+      "mapping_source": "owner TV audit 2026-09-21 (Auditor screenshots, TCL Google TV)",
+      "color_source": "core-builds palette (no published brand colour found)",
+      "color_reviewed": null
+    },
+    {
+      "name": "Mediaspelare",
+      "drawable": "mediaspelare",
+      "color": "#7B2BFC",
+      "glyph": "broadcast_M",
+      "mark": "ME",
+      "components": [
+        "com.tcl.ui_mediaCenter/com.tcl.ui_mediaCenter.main.MainActivity"
+      ],
+      "category": "PLAYER",
+      "mapping_source": "owner TV audit 2026-09-21 (Auditor screenshots, TCL Google TV)",
+      "color_source": "owner TV audit 2026-09-21: TCL stock icon purple tile",
+      "color_reviewed": "2026-09-21"
+    },
+    {
+      "name": "PMX",
+      "drawable": "pmx",
+      "color": "#8B949E",
+      "glyph": "tool_P",
+      "mark": "PM",
+      "components": [
+        "com.mirfatif.permissionmanagerx/com.mirfatif.permissionmanagerx.fwk.MainActivityM",
+        "com.mirfatif.permissionmanagerx/com.mirfatif.permissionmanagerx.fwk.MainActivity"
+      ],
+      "category": "TOOL",
+      "mapping_source": "owner TV audit 2026-09-21 (Auditor screenshots, TCL Google TV)",
+      "color_source": "core-builds palette (no published brand colour found)",
+      "color_reviewed": null
+    },
+    {
+      "name": "TCL Home Passive",
+      "drawable": "tcl_home_passive",
+      "color": "#9E9E9E",
+      "glyph": "app_T",
+      "components": [
+        "com.tcl.tv.tclhome_passive/com.tcl.tv.tclhome_passive.HomePassiveActivity"
+      ],
+      "category": "SYSTEM",
+      "mapping_source": "owner TV audit 2026-09-21 (Auditor screenshots, TCL Google TV)",
+      "color_source": "core-builds palette (no published brand colour found)",
+      "color_reviewed": null,
+      "mark": "TH"
+    },
+    {
+      "name": "TV",
+      "drawable": "tcl_tv",
+      "color": "#1982C4",
+      "glyph": "broadcast_T",
+      "mark": "TV",
+      "components": [
+        "com.tcl.tv/com.tcl.player.TVActivity"
+      ],
+      "category": "LIVE",
+      "mapping_source": "owner TV audit 2026-09-21 (Auditor screenshots, TCL Google TV)",
+      "color_source": "core-builds palette (no published brand colour found)",
+      "color_reviewed": null
+    },
+    {
+      "name": "User Center",
+      "drawable": "user_center",
+      "color": "#0061FF",
+      "glyph": "app_U",
+      "mark": "UC",
+      "components": [
+        "com.tcl.usercenter/com.tcl.usercenter.activity.WelActivity"
+      ],
+      "category": "SYSTEM",
+      "mapping_source": "owner TV audit 2026-09-21 (Auditor screenshots, TCL Google TV)",
+      "color_source": "core-builds palette (no published brand colour found)",
+      "color_reviewed": null
+    },
+    {
+      "name": "Voltra TV",
+      "drawable": "voltra_tv",
+      "color": "#00E676",
+      "glyph": "broadcast_V",
+      "mark": "VT",
+      "components": [
+        "com.amhkor.voltratv/com.amhkor.voltratv.tv.SplashActivity"
+      ],
+      "category": "STREAM",
+      "mapping_source": "owner TV audit 2026-09-21 (Auditor screenshots, TCL Google TV)",
+      "color_source": "owner TV audit 2026-09-21: Voltra green V cue from stock icon",
+      "color_reviewed": "2026-09-21"
+    },
+    {
+      "name": "Works with Alexa",
+      "drawable": "works_with_alexa",
+      "color": "#4FACFE",
+      "glyph": "app_W",
+      "components": [
+        "com.tcl.smartalexa/com.tcl.smartalexa.view.activity.MainActivity"
+      ],
+      "category": "SYSTEM",
+      "mapping_source": "owner TV audit 2026-09-21 (Auditor screenshots, TCL Google TV)",
+      "color_source": "core-builds palette (no published brand colour found)",
+      "color_reviewed": null,
+      "mark": "WA"
     }
   ],
   "artwork": {

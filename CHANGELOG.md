@@ -45,6 +45,25 @@ All notable changes to the Core Builds Icon Pack. Format follows
   note, an unknown style name, or a style with no mark all fail validation.
   A style that ships also joins the duplicate-render key, so two brands
   cannot collide into the same picture.
+- **First auditor round: fifteen of the twenty unmapped apps are mapped.**
+  Sideload-side-audit from an owner TV (catalog 943 → 958): AK47Sports
+  (sport ball, gold crest cue), AnikenTV (anime tile), Voltra TV (green V
+  cue), Button Mapper TV, Fast Task Killer, PMX and MagiConnect (tool nut),
+  Mediaspelare (player screen), Galleri (photos print), and the TCL system
+  shelf — Användarmanual, User Center, TCL Home Passive, Meddelandelåda,
+  Works with Alexa and the com.tcl.tv tuner — each with its component read
+  off the device auditor, its family from the house rules, and its accent
+  from the photos where a stock-icon cue was visible. Two components were
+  truncated by the audit row itself, so those entries carry the exact
+  reported string plus the conventional completion as an alias
+  (Fast Task Killer `…Optimization[Activity]`, PMX `…fwk.MainActivityM[/]`).
+  All fifteen land on monograms by default and their marks auto-derive
+  under the counter floor: PMX's three-char override doesn't hold the tool
+  shell (79px), so it sets PM; Works with Alexa's WWA and WW both miss the
+  app shell, so it carries WA explicitly. suite.json, both updaters'
+  version.json files and the README stamp move in lockstep to 958 icons and
+  1174 components. The remaining five auditor rows weren't visible in the
+  photo set — round two waits on them.
 
 ## [1.9.1] — 2026-09-20
 
