@@ -5,7 +5,6 @@ import android.util.TypedValue
 import android.view.View
 import android.widget.LinearLayout
 import android.widget.TextView
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import org.json.JSONObject
 
@@ -24,7 +23,7 @@ import org.json.JSONObject
  * source is the APK's own asset, the sheet answers "what changed?" in full
  * for the exact build being run, online or not, UpdateChecker on or off.
  */
-class WhatsNewActivity : AppCompatActivity() {
+class WhatsNewActivity : TvActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         Prefs.applyChrome(this)

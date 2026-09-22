@@ -134,10 +134,10 @@ def main():
              (ROOT / "Latestrelease" / "version.json", assets / "version.json")]
     for resource_file, asset_file in pairs:
         check(asset_file.exists(),
-              f"assets/{filename} missing — legacy launchers may not find the pack")
+              f"{asset_file} missing ({resource_file.name}'s twin copy)")
         if asset_file.exists():
             check(asset_file.read_bytes() == resource_file.read_bytes(),
-                  f"assets/{filename} differs from res/xml/{filename}")
+                  f"{asset_file} differs from {resource_file}")
 
     # Every catalog component must resolve canonically. ComponentName treats
     # pkg/.Activity and pkg/pkg.Activity as the same component; compare that
