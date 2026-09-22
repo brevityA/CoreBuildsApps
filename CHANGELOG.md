@@ -80,7 +80,9 @@ All notable changes to the Core Builds Icon Pack. Format follows
   worker implements the webtools worker's documented hardening
   conventions: build tag compared by a prod-safe smoke check, byte-capped
   body reader, and three-layer rate limiting (binding → KV → isolate
-  floor).
+  floor) — plus a full `[env.staging]` rehearsal lane and dispatch-only
+  deploy workflow mirroring the webtools repo's, so nothing in production
+  has to happen before a staging rehearsal passes.
   Pop compiles the same auditor and inherits this. Until the broker URL is
   baked into the generated resources (one `--endpoint` flag on the prefill
   generator after deploy), nothing changes on-device: presses go straight

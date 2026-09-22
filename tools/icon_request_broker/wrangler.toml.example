@@ -2,6 +2,7 @@ name = "corebuilds-icon-request"
 main = "worker.mjs"
 compatibility_date = "2026-09-22"
 
+# ── top level = PRODUCTION ────────────────────────────────────────────────────
 # Workers Logs: free-plan structured logs from logEvent(); keep the rate at 1
 # while volume stays small (same stance as core-builds-cors-proxy).
 [observability]
@@ -33,3 +34,27 @@ id = "REPLACE_WITH_NAMESPACE_ID"
 #   npx wrangler secret put ICON_REQUEST_DISCORD_WEBHOOK_URL
 [vars]
 RATE_LIMIT_PER_HOUR = "5"
+
+# ── [env.staging] = rehearsal lane ────────────────────────────────────────────
+# Deliberately separate everything that could leak into production:
+#   - its own worker name (and therefore its own workers.dev URL),
+#   - its own KV namespace (a staging token or bucket never touches prod),
+#   - its own rate-limit namespace id (account-unique), and by default a
+#     wider hourly cap so rehearsal traffic isn't shaping the rehearsal.
+# Rehearsal with the Discord sink is encouraged: set the staging-only secret
+#   npx wrangler secret put ICON_REQUEST_DISCORD_WEBHOOK_URL --env staging
+# (a test/staging channel, not the community one).
+[env.staging]
+name = "corebuilds-icon-request-staging"
+
+[[env.staging.ratelimits]]
+name = "RL_ICON_REQUEST"
+namespace_id = "3102"
+simple = { limit = 30, period = 60 }
+
+[[env.staging.kv_namespaces]]
+binding = "RATE_KV"
+id = "REPLACE_WITH_STAGING_NAMESPACE_ID"
+
+[env.staging.vars]
+RATE_LIMIT_PER_HOUR = "50"

@@ -78,6 +78,46 @@ reporters get the one-press flow today either way.
   — the issue forms reference the label but repo labels were minted by hand
   until now.
 
+## Deploy (owner, one time, ~10 minutes — rehearse on staging first)
+
+**Same repo convention as the webtools worker: staging first.**
+`wrangler.toml.example` carries an `[env.staging]` block with its own
+worker name, KV namespace and rate budget, so nothing a rehearsal does
+can touch the production lane — and the deploy CI runs dispatch-only
+(`.github/workflows/deploy-icon-request-broker.yml`) with a
+staging/production choice exactly like the other repo's.
+
+```bash
+cd tools/icon_request_broker
+npm i -g wrangler && wrangler login
+
+# ▸ Rehearsal namespace + worker
+npx wrangler kv namespace create RATE_KV --env staging
+cp wrangler.toml.example wrangler.toml      # paste the staging id where marked
+npx wrangler secret put ICON_REQUEST_DISCORD_WEBHOOK_URL --env staging   # test channel
+npx wrangler deploy --env staging
+node smoke.mjs --strict https://corebuilds-icon-request-staging.<subdomain>.workers.dev
+# and if you want the create-path proven end-to-end on staging:
+curl -X POST .../icon-request-staging.../ -H 'Content-Type: application/json'   -d '{"app_name":"Rehearsal App","component":"com.rehearse/.Main","device":"Scanned on curl"}'
+# expect the card in the test Discord channel
+
+# ▸ Production (same steps, no --env; GitHub trio or the community webhook)
+npx wrangler kv namespace create RATE_KV
+#   (fill the production id in wrangler.toml, then:)
+npx wrangler secret put GITHUB_APP_ID            # A-path trio…
+npx wrangler secret put GITHUB_APP_INSTALLATION_ID
+npx wrangler secret put GITHUB_APP_PRIVATE_KEY   # …or C-path:
+npx wrangler secret put ICON_REQUEST_DISCORD_WEBHOOK_URL
+npx wrangler deploy
+node smoke.mjs --strict https://corebuilds-icon-request.<subdomain>.workers.dev
+```
+
+The GitHub workflow does the same (`Actions → Deploy icon-request broker`,
+default staging; never on its own): it needs `secrets.CF_API_TOKEN`,
+`vars.CLOUDFLARE_ACCOUNT_ID`, `vars.WRK_ICONREQ_KV_ID_{STAGING,PRODUCTION}`
+and either `vars.WORKERS_DEV_SUBDOMAIN` or the `url` input each run —
+CI deploys code only; worker secrets stay with wrangler.
+
 ## Deploy (owner, one time, ~10 minutes)
 
 1. **Create the GitHub App** under the repo owner's account:
