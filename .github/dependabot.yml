@@ -11,19 +11,33 @@
 # deleted, which is exactly what happened in 9f5d266d and what produced the four
 # red PRs #122 #125 #126 #132.
 #
-# Capped coordinates block minor and major updates only; patch releases still
-# flow. Each cap records its reason and its evidence in gradle_envelope.json.
+# Every capped coordinate blocks patch, minor AND major. That looks stricter
+# than it needs to be, and it is deliberate: every ceiling in
+# gradle_envelope.json is exactly the version the suite declares today, and
+# check_gradle_envelope.py rejects any declared version above its ceiling no
+# matter which digit moved. So a patch above a cap is a PR the gate is
+# guaranteed to reject - Kotlin 1.9.24 -> 1.9.25 is precisely that case, and it
+# is why the six red PRs kept coming back. Ignoring only minor+major left the
+# patch lane wide open. Nothing is lost by closing it: there is no patch the
+# suite could accept today without lifting the ceiling on purpose, which is the
+# documented workflow. Each cap records its reason and its evidence in
+# gradle_envelope.json.
 #
 # To take a capped dependency forward: change the envelope first (migration
 # steps are at the end of gradle_envelope.json), watch CI go green, then lift
 # the ceiling and regenerate this file.
 #
-# Note on the `gradle-wrapper >= 9.6` rule: #121 added it on the grounds that
-# Gradle 9.6 removed an internal Problems API every AGP 8.x release binds to
-# (gradle/gradle#38073). Five of the six roots already run the 9.7.0 wrapper
-# against AGP 8.5.2 and are green in CI, so whatever that rule is protecting, it
-# is not these builds. It is kept because removing it only re-opens wrapper
-# churn, but it should not be quoted as the reason the suite is on 8.x.
+# Note on the `gradle-wrapper >= 9.6` rule and the `com.android.application`
+# ceiling below. They are two halves of ONE constraint, and the 2026-09-19
+# Dependabot batch (#144 #145 #146 #147 #148 #149) is what settled it. Gradle
+# 9.6.0 removed org.gradle.api.problems.internal.InternalProblems
+# (gradle/gradle#38073) and AGP 8.13.2 still binds it, so AGP 8.13.2 on the
+# 9.7.0 wrapper that five of six roots run dies at plugin apply - before a
+# single line compiles. #146 moved its wrapper to 9.5.1 with the same AGP
+# 8.13.2 and built green, so AGP 8.13.2 is not broken by itself, only in that
+# combination. AGP 8.5.2 runs on 9.7.0, which is why main is green today: that
+# is one AGP version tolerating the removal, not AGP 8.x as a whole. The AGP
+# ceiling is therefore 8.5.2, not 9, until the wrappers move or AGP 9 lands.
 version: 2
 updates:
 
@@ -33,27 +47,27 @@ updates:
     schedule:
       interval: "weekly"
     ignore:
-      # AGP 9 is a breaking major: built-in Kotlin, new DSL defaults.
-      - dependency-name: "com.android.application"
-        versions: [">=9"]
       # Carried over from #121 — read the note in the header before trusting it.
       - dependency-name: "gradle-wrapper"
         versions: [">=9.6"]
       # The same wrapper under the other name Dependabot sometimes reports.
       - dependency-name: "org.gradle"
         versions: [">=9.6"]
+      # com.android.application <= 8.5.2
+      - dependency-name: "com.android.application"
+        update-types: ["version-update:semver-patch", "version-update:semver-minor", "version-update:semver-major"]
       # androidx.core:core-ktx <= 1.13.1 — declared by app, pop
       - dependency-name: "androidx.core:core-ktx"
-        update-types: ["version-update:semver-minor", "version-update:semver-major"]
+        update-types: ["version-update:semver-patch", "version-update:semver-minor", "version-update:semver-major"]
       # androidx.appcompat:appcompat <= 1.7.0 — declared by app, pop
       - dependency-name: "androidx.appcompat:appcompat"
-        update-types: ["version-update:semver-minor", "version-update:semver-major"]
+        update-types: ["version-update:semver-patch", "version-update:semver-minor", "version-update:semver-major"]
       # androidx.recyclerview:recyclerview <= 1.3.2 — declared by app, pop
       - dependency-name: "androidx.recyclerview:recyclerview"
-        update-types: ["version-update:semver-minor", "version-update:semver-major"]
+        update-types: ["version-update:semver-patch", "version-update:semver-minor", "version-update:semver-major"]
       # org.jetbrains.kotlin.android <= 1.9.24
       - dependency-name: "org.jetbrains.kotlin.android"
-        update-types: ["version-update:semver-minor", "version-update:semver-major"]
+        update-types: ["version-update:semver-patch", "version-update:semver-minor", "version-update:semver-major"]
     groups:
       android-root:
         patterns: ["*"]
@@ -64,27 +78,27 @@ updates:
     schedule:
       interval: "weekly"
     ignore:
-      # AGP 9 is a breaking major: built-in Kotlin, new DSL defaults.
-      - dependency-name: "com.android.application"
-        versions: [">=9"]
       # Carried over from #121 — read the note in the header before trusting it.
       - dependency-name: "gradle-wrapper"
         versions: [">=9.6"]
       # The same wrapper under the other name Dependabot sometimes reports.
       - dependency-name: "org.gradle"
         versions: [">=9.6"]
+      # com.android.application <= 8.5.2
+      - dependency-name: "com.android.application"
+        update-types: ["version-update:semver-patch", "version-update:semver-minor", "version-update:semver-major"]
       # androidx.core:core-ktx <= 1.13.1 — declared by app
       - dependency-name: "androidx.core:core-ktx"
-        update-types: ["version-update:semver-minor", "version-update:semver-major"]
+        update-types: ["version-update:semver-patch", "version-update:semver-minor", "version-update:semver-major"]
       # androidx.appcompat:appcompat <= 1.7.0 — declared by app
       - dependency-name: "androidx.appcompat:appcompat"
-        update-types: ["version-update:semver-minor", "version-update:semver-major"]
+        update-types: ["version-update:semver-patch", "version-update:semver-minor", "version-update:semver-major"]
       # androidx.recyclerview:recyclerview <= 1.3.2 — declared by app
       - dependency-name: "androidx.recyclerview:recyclerview"
-        update-types: ["version-update:semver-minor", "version-update:semver-major"]
+        update-types: ["version-update:semver-patch", "version-update:semver-minor", "version-update:semver-major"]
       # org.jetbrains.kotlin.android <= 1.9.24
       - dependency-name: "org.jetbrains.kotlin.android"
-        update-types: ["version-update:semver-minor", "version-update:semver-major"]
+        update-types: ["version-update:semver-patch", "version-update:semver-minor", "version-update:semver-major"]
     groups:
       pixel-neon:
         patterns: ["*"]
@@ -95,21 +109,21 @@ updates:
     schedule:
       interval: "weekly"
     ignore:
-      # AGP 9 is a breaking major: built-in Kotlin, new DSL defaults.
-      - dependency-name: "com.android.application"
-        versions: [">=9"]
       # Carried over from #121 — read the note in the header before trusting it.
       - dependency-name: "gradle-wrapper"
         versions: [">=9.6"]
       # The same wrapper under the other name Dependabot sometimes reports.
       - dependency-name: "org.gradle"
         versions: [">=9.6"]
+      # com.android.application <= 8.5.2
+      - dependency-name: "com.android.application"
+        update-types: ["version-update:semver-patch", "version-update:semver-minor", "version-update:semver-major"]
       # androidx.core:core-ktx <= 1.13.1 — declared by app
       - dependency-name: "androidx.core:core-ktx"
-        update-types: ["version-update:semver-minor", "version-update:semver-major"]
+        update-types: ["version-update:semver-patch", "version-update:semver-minor", "version-update:semver-major"]
       # org.jetbrains.kotlin.android <= 1.9.24
       - dependency-name: "org.jetbrains.kotlin.android"
-        update-types: ["version-update:semver-minor", "version-update:semver-major"]
+        update-types: ["version-update:semver-patch", "version-update:semver-minor", "version-update:semver-major"]
     groups:
       core-line-android:
         patterns: ["*"]
@@ -120,36 +134,36 @@ updates:
     schedule:
       interval: "weekly"
     ignore:
-      # AGP 9 is a breaking major: built-in Kotlin, new DSL defaults.
-      - dependency-name: "com.android.application"
-        versions: [">=9"]
       # Carried over from #121 — read the note in the header before trusting it.
       - dependency-name: "gradle-wrapper"
         versions: [">=9.6"]
       # The same wrapper under the other name Dependabot sometimes reports.
       - dependency-name: "org.gradle"
         versions: [">=9.6"]
+      # com.android.application <= 8.5.2
+      - dependency-name: "com.android.application"
+        update-types: ["version-update:semver-patch", "version-update:semver-minor", "version-update:semver-major"]
       # androidx.core:core-ktx <= 1.13.1 — declared by app
       - dependency-name: "androidx.core:core-ktx"
-        update-types: ["version-update:semver-minor", "version-update:semver-major"]
+        update-types: ["version-update:semver-patch", "version-update:semver-minor", "version-update:semver-major"]
       # androidx.appcompat:appcompat <= 1.7.0 — declared by app
       - dependency-name: "androidx.appcompat:appcompat"
-        update-types: ["version-update:semver-minor", "version-update:semver-major"]
+        update-types: ["version-update:semver-patch", "version-update:semver-minor", "version-update:semver-major"]
       # androidx.recyclerview:recyclerview <= 1.3.2 — declared by app
       - dependency-name: "androidx.recyclerview:recyclerview"
-        update-types: ["version-update:semver-minor", "version-update:semver-major"]
+        update-types: ["version-update:semver-patch", "version-update:semver-minor", "version-update:semver-major"]
       # androidx.media3:media3-exoplayer <= 1.4.1 — declared by app
       - dependency-name: "androidx.media3:media3-exoplayer"
-        update-types: ["version-update:semver-minor", "version-update:semver-major"]
+        update-types: ["version-update:semver-patch", "version-update:semver-minor", "version-update:semver-major"]
       # androidx.media3:media3-ui <= 1.4.1 — declared by app
       - dependency-name: "androidx.media3:media3-ui"
-        update-types: ["version-update:semver-minor", "version-update:semver-major"]
+        update-types: ["version-update:semver-patch", "version-update:semver-minor", "version-update:semver-major"]
       # androidx.media3:media3-session <= 1.4.1 — declared by app
       - dependency-name: "androidx.media3:media3-session"
-        update-types: ["version-update:semver-minor", "version-update:semver-major"]
+        update-types: ["version-update:semver-patch", "version-update:semver-minor", "version-update:semver-major"]
       # org.jetbrains.kotlin.android <= 1.9.24
       - dependency-name: "org.jetbrains.kotlin.android"
-        update-types: ["version-update:semver-minor", "version-update:semver-major"]
+        update-types: ["version-update:semver-patch", "version-update:semver-minor", "version-update:semver-major"]
     groups:
       core-shift:
         patterns: ["*"]
@@ -160,27 +174,27 @@ updates:
     schedule:
       interval: "weekly"
     ignore:
-      # AGP 9 is a breaking major: built-in Kotlin, new DSL defaults.
-      - dependency-name: "com.android.application"
-        versions: [">=9"]
       # Carried over from #121 — read the note in the header before trusting it.
       - dependency-name: "gradle-wrapper"
         versions: [">=9.6"]
       # The same wrapper under the other name Dependabot sometimes reports.
       - dependency-name: "org.gradle"
         versions: [">=9.6"]
+      # com.android.application <= 8.5.2
+      - dependency-name: "com.android.application"
+        update-types: ["version-update:semver-patch", "version-update:semver-minor", "version-update:semver-major"]
       # androidx.core:core-ktx <= 1.13.1 — declared by app
       - dependency-name: "androidx.core:core-ktx"
-        update-types: ["version-update:semver-minor", "version-update:semver-major"]
+        update-types: ["version-update:semver-patch", "version-update:semver-minor", "version-update:semver-major"]
       # androidx.appcompat:appcompat <= 1.7.0 — declared by app
       - dependency-name: "androidx.appcompat:appcompat"
-        update-types: ["version-update:semver-minor", "version-update:semver-major"]
+        update-types: ["version-update:semver-patch", "version-update:semver-minor", "version-update:semver-major"]
       # org.jetbrains.kotlin.android <= 1.9.24
       - dependency-name: "org.jetbrains.kotlin.android"
-        update-types: ["version-update:semver-minor", "version-update:semver-major"]
+        update-types: ["version-update:semver-patch", "version-update:semver-minor", "version-update:semver-major"]
       # org.jetbrains.kotlin.plugin.parcelize <= 1.9.24
       - dependency-name: "org.jetbrains.kotlin.plugin.parcelize"
-        update-types: ["version-update:semver-minor", "version-update:semver-major"]
+        update-types: ["version-update:semver-patch", "version-update:semver-minor", "version-update:semver-major"]
     groups:
       core-motion:
         patterns: ["*"]
@@ -191,36 +205,36 @@ updates:
     schedule:
       interval: "weekly"
     ignore:
-      # AGP 9 is a breaking major: built-in Kotlin, new DSL defaults.
-      - dependency-name: "com.android.application"
-        versions: [">=9"]
       # Carried over from #121 — read the note in the header before trusting it.
       - dependency-name: "gradle-wrapper"
         versions: [">=9.6"]
       # The same wrapper under the other name Dependabot sometimes reports.
       - dependency-name: "org.gradle"
         versions: [">=9.6"]
+      # com.android.application <= 8.5.2
+      - dependency-name: "com.android.application"
+        update-types: ["version-update:semver-patch", "version-update:semver-minor", "version-update:semver-major"]
       # androidx.appcompat:appcompat <= 1.7.0 — declared by app
       - dependency-name: "androidx.appcompat:appcompat"
-        update-types: ["version-update:semver-minor", "version-update:semver-major"]
+        update-types: ["version-update:semver-patch", "version-update:semver-minor", "version-update:semver-major"]
       # androidx.compose:compose-bom <= 2024.06.00 — declared by app
       - dependency-name: "androidx.compose:compose-bom"
-        update-types: ["version-update:semver-minor", "version-update:semver-major"]
+        update-types: ["version-update:semver-patch", "version-update:semver-minor", "version-update:semver-major"]
       # androidx.activity:activity-compose <= 1.9.0 — declared by app
       - dependency-name: "androidx.activity:activity-compose"
-        update-types: ["version-update:semver-minor", "version-update:semver-major"]
+        update-types: ["version-update:semver-patch", "version-update:semver-minor", "version-update:semver-major"]
       # org.jetbrains.kotlinx:kotlinx-serialization-json <= 1.6.3 — declared by app
       - dependency-name: "org.jetbrains.kotlinx:kotlinx-serialization-json"
-        update-types: ["version-update:semver-minor", "version-update:semver-major"]
+        update-types: ["version-update:semver-patch", "version-update:semver-minor", "version-update:semver-major"]
       # org.jetbrains.kotlinx:kotlinx-coroutines-android <= 1.8.1 — declared by app
       - dependency-name: "org.jetbrains.kotlinx:kotlinx-coroutines-android"
-        update-types: ["version-update:semver-minor", "version-update:semver-major"]
+        update-types: ["version-update:semver-patch", "version-update:semver-minor", "version-update:semver-major"]
       # org.jetbrains.kotlin.android <= 1.9.24
       - dependency-name: "org.jetbrains.kotlin.android"
-        update-types: ["version-update:semver-minor", "version-update:semver-major"]
+        update-types: ["version-update:semver-patch", "version-update:semver-minor", "version-update:semver-major"]
       # org.jetbrains.kotlin.plugin.serialization <= 1.9.24
       - dependency-name: "org.jetbrains.kotlin.plugin.serialization"
-        update-types: ["version-update:semver-minor", "version-update:semver-major"]
+        update-types: ["version-update:semver-patch", "version-update:semver-minor", "version-update:semver-major"]
     groups:
       core-doctor:
         patterns: ["*"]

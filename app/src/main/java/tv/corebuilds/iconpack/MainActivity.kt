@@ -274,7 +274,7 @@ class MainActivity : TvActivity() {
 
     /**
      * Remote bumper skips: CHANNEL_DOWN / CHANNEL_UP jump a letter group
-     * through the filtered list, because paging 940 tiles six rows at a time
+     * through the filtered list, because paging 943 tiles six rows at a time
      * is the single most common complaint about icon grids on a D-pad.
      *
      * Only while the grid itself holds focus. Anywhere else - search field,
