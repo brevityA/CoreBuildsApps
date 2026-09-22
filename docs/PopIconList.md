@@ -1,6 +1,6 @@
 # Core Builds Pop — supported applications
 
-`958` icons · `1174` mapped components · pack v1.0.0
+`961` icons · `1179` mapped components · pack v1.0.0
 
 Pop is drawn from the same `tools/catalog.json` as the classic Core Builds Icon Pack, so coverage is identical and always will be. What differs is the render: one container, one keyline weight, one halftone screen, and 16 locked swatches instead of 169 accents.
 
@@ -314,6 +314,7 @@ Pop is drawn from the same `tools/catalog.json` as the classic Core Builds Icon 
 | GoPlay | `goplay` | `#FFFFFF` | `pop_slate` `#59637A` | `com.eitv.goplay/com.eitv.eitvplay.activities.SplashActivity` |
 | Gotham Sports | `gothamsports` | `#0061FF` | `pop_blue` `#1C79D2` | `com.gothamsports.gotham.tv/com.game.tv.TVMainActivity` |
 | Great American Pure Flix | `great` | `#FFFFFF` | `pop_slate` `#59637A` | `com.great.tv.android/tv.accedo.one.app.bootstrap.BootstrapActivity` |
+| GridStreamr | `gridstreamr` | `#58C6FF` | `pop_aqua` `#0C8AAE` | `com.gridstreamr.gridstreamr/com.gridstreamr.gridstreamr.MainActivity`<br>`com.gridstreamr.androidtv/com.gridstreamr.androidtv.MainActivity` |
 | GT Share | `gtshare` | `#FEC500` | `pop_sun` `#E0AF0C` | `com.gtmedia.gtshare/com.winsat.gtshare.MainActivity` |
 | GuidePlus | `guideplus` | `#FEC500` | `pop_sun` `#E0AF0C` | `com.guideplus.co/com.guideplus.co.SplashActivity` |
 | Gymondo | `gymondo` | `#107534` | `pop_jade` `#0E9077` | `de.gymondo.app.gymondo/com.gymondo.presentation.features.startup.StartupTvActivity` |
@@ -406,6 +407,7 @@ Pop is drawn from the same `tools/catalog.json` as the classic Core Builds Icon 
 | Laliga | `laliga` | `#0061FF` | `pop_blue` `#1C79D2` | `la.liga.sports.tv.deporte/la.liga.sports.tv.deporte.features.splash.TvSplashActivity` |
 | Lampa | `lampa` | `#0061FF` | `pop_blue` `#1C79D2` | `top.rootu.lampa/top.rootu.lampa.MainActivity` |
 | Laugh After Dark | `laughafterdark` | `#53FC18` | `pop_green` `#3F9C35` | `com.laughafterdark.androidtv/com.laughafterdark.androidtv.ui.splashscreen.activity.SplashScreenActivity` |
+| Launch on Boot | `launch_on_boot` | `#7AC7E8` | `pop_aqua` `#0C8AAE` | `news.androidtv.launchonboot/news.androidtv.launchonboot.MainActivity` |
 | Launch Sounds | `launchsounds` | `#0061FF` | `pop_blue` `#1C79D2` | `com.nvidia.bbciplayer.launchsounds/com.nvidia.bbciplayer.LaunchSoundsActivity` |
 | Launchbox | `launchbox` | `#FF0000` | `pop_red` `#E03127` | `com.unbrokensoftware.launchbox/crc640d6c5ebcc48c6177.MainActivity` |
 | Launcher Manager | `luckymanager` | `#FBBF24` | `pop_sun` `#E0AF0C` | `com.wolf.google.lm/.main.MainActivity` |
@@ -851,6 +853,7 @@ Pop is drawn from the same `tools/catalog.json` as the classic Core Builds Icon 
 | TVA+ | `tvaplus` | `#1EBFBF` | `pop_aqua` `#0C8AAE` | `com.numeriq.tvaplus/ade.tv.main.ui.splash.SplashActivity` |
 | Tvi Player | `tvi_player` | `#F5F500` | `pop_acid` `#9DBB1F` | `pt.iol.tviplayer.androidtv/pt.iol.tviplayer.androidtv.MainActivity` |
 | Tving | `tving` | `#DE5833` | `pop_blaze` `#F05A22` | `net.cj.cjhv.gs.tving/net.cj.cjhv.gs.tving.view.scaleup.ScaleupIntroActivity` |
+| TVLok | `tvlok` | `#00F5D4` | `pop_jade` `#0E9077` | `com.tvlok.app/com.tvlok.app.MainActivity`<br>`com.tvlok.tv/com.tvlok.tv.MainActivity` |
 | Tvnzplus | `tvnzplus` | `#52B54B` | `pop_green` `#3F9C35` | `nz.co.tvnz.ondemand.tv/nz.co.tvnz.ondemand.SplashScreenTVActivity` |
 | Tvo Kids | `tvo_kids` | `#0061FF` | `pop_blue` `#1C79D2` | `com.tvokids.tvokids/tv.accedo.one.app.bootstrap.BootstrapActivity` |
 | Tvo Today | `tvo_today` | `#9B59B6` | `pop_orchid` `#A934B6` | `org.tvo.tvoott/tv.accedo.one.app.bootstrap.BootstrapActivity` |

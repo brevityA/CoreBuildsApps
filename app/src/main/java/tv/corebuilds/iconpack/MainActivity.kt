@@ -42,6 +42,7 @@ class MainActivity : TvActivity() {
 
     private var target: ApplyIconPack.Launcher? = null
     private var updateChecked = false
+    private var whatsNewShown = false
     /** Set by the bar's Later button: the bar stays hidden for this session. */
     private var updateDismissed = false
     private var pickMode = false
@@ -387,6 +388,29 @@ class MainActivity : TvActivity() {
         super.onResume()
         if (!pickMode) {
             bindApplyButton()
+            // What's New fires once per upgrade, independently of the update
+            // checker's switch: it reads the APK's own asset, so it works
+            // with the network check off. Fresh installs seed the gate
+            // instead of narrating — nothing changed *for them*, and the
+            // first-run flow has the focus. lastUpdateTime >
+            // firstInstallTime is what separates "just installed 1.9.2" from
+            // "updated into it", a difference SharedPreferences alone
+            // cannot see.
+            if (!whatsNewShown) {
+                val seen = Prefs.whatsNewSeen(this)
+                if (seen == 0) {
+                    val info = packageManager.getPackageInfo(packageName, 0)
+                    if (info.lastUpdateTime > info.firstInstallTime) {
+                        whatsNewShown = true
+                        startActivity(Intent(this, WhatsNewActivity::class.java))
+                    } else {
+                        Prefs.setWhatsNewSeen(this, BuildConfig.VERSION_CODE)
+                    }
+                } else if (BuildConfig.VERSION_CODE > seen) {
+                    whatsNewShown = true
+                    startActivity(Intent(this, WhatsNewActivity::class.java))
+                }
+            }
             // Gated by Settings. Off means UpdateChecker is never called, so
             // the app issues no network request of its own at all — which is
             // what the About screen's network list claims, and the claim has

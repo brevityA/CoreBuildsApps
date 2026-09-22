@@ -870,6 +870,11 @@
     <item component="ComponentInfo{com.gothamsports.gotham.tv/com.game.tv.TVMainActivity}" drawable="gothamsports"/>
     <!-- Great American Pure Flix -->
     <item component="ComponentInfo{com.great.tv.android/tv.accedo.one.app.bootstrap.BootstrapActivity}" drawable="great"/>
+    <!-- GridStreamr -->
+    <item component="ComponentInfo{com.gridstreamr.gridstreamr/com.gridstreamr.gridstreamr.MainActivity}" drawable="gridstreamr"/>
+    <item component="ComponentInfo{com.gridstreamr.gridstreamr/.MainActivity}" drawable="gridstreamr"/>
+    <item component="ComponentInfo{com.gridstreamr.androidtv/com.gridstreamr.androidtv.MainActivity}" drawable="gridstreamr"/>
+    <item component="ComponentInfo{com.gridstreamr.androidtv/.MainActivity}" drawable="gridstreamr"/>
     <!-- GT Share -->
     <item component="ComponentInfo{com.gtmedia.gtshare/com.winsat.gtshare.MainActivity}" drawable="gtshare"/>
     <!-- GuidePlus -->
@@ -1161,6 +1166,9 @@
     <!-- Laugh After Dark -->
     <item component="ComponentInfo{com.laughafterdark.androidtv/com.laughafterdark.androidtv.ui.splashscreen.activity.SplashScreenActivity}" drawable="laughafterdark"/>
     <item component="ComponentInfo{com.laughafterdark.androidtv/.ui.splashscreen.activity.SplashScreenActivity}" drawable="laughafterdark"/>
+    <!-- Launch on Boot -->
+    <item component="ComponentInfo{news.androidtv.launchonboot/news.androidtv.launchonboot.MainActivity}" drawable="launch_on_boot"/>
+    <item component="ComponentInfo{news.androidtv.launchonboot/.MainActivity}" drawable="launch_on_boot"/>
     <!-- Launch Sounds -->
     <item component="ComponentInfo{com.nvidia.bbciplayer.launchsounds/com.nvidia.bbciplayer.LaunchSoundsActivity}" drawable="launchsounds"/>
     <!-- Launchbox -->
@@ -2443,6 +2451,11 @@
     <!-- Tving -->
     <item component="ComponentInfo{net.cj.cjhv.gs.tving/net.cj.cjhv.gs.tving.view.scaleup.ScaleupIntroActivity}" drawable="tving"/>
     <item component="ComponentInfo{net.cj.cjhv.gs.tving/.view.scaleup.ScaleupIntroActivity}" drawable="tving"/>
+    <!-- TVLok -->
+    <item component="ComponentInfo{com.tvlok.app/com.tvlok.app.MainActivity}" drawable="tvlok"/>
+    <item component="ComponentInfo{com.tvlok.app/.MainActivity}" drawable="tvlok"/>
+    <item component="ComponentInfo{com.tvlok.tv/com.tvlok.tv.MainActivity}" drawable="tvlok"/>
+    <item component="ComponentInfo{com.tvlok.tv/.MainActivity}" drawable="tvlok"/>
     <!-- Tvnzplus -->
     <item component="ComponentInfo{nz.co.tvnz.ondemand.tv/nz.co.tvnz.ondemand.SplashScreenTVActivity}" drawable="tvnzplus"/>
     <!-- Tvo Kids -->

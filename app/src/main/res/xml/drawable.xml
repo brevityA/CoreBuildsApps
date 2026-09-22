@@ -49,6 +49,7 @@
     <item drawable="syncler_2" />
     <item drawable="syncler_beta" />
     <item drawable="thecomedychannel" />
+    <item drawable="tvlok" />
     <item drawable="venevision" />
     <item drawable="voltra_tv" />
     <item drawable="weyd" />
@@ -142,6 +143,7 @@
     <category title="Square · Players" />
     <item drawable="a_8k_player_vip" />
     <item drawable="dream_player_tv" />
+    <item drawable="gridstreamr" />
     <item drawable="janky" />
     <item drawable="justplayer" />
     <item drawable="mediaspelare" />
@@ -323,6 +325,7 @@
     <item drawable="ip_address" />
     <item drawable="iptools" />
     <item drawable="jtv_go_server" />
+    <item drawable="launch_on_boot" />
     <item drawable="luckymanager" />
     <item drawable="magiconnect" />
     <item drawable="matvt_mouse_for_android_tv_toggle" />
@@ -1028,6 +1031,7 @@
     <item drawable="syncler_2_banner" />
     <item drawable="syncler_beta_banner" />
     <item drawable="thecomedychannel_banner" />
+    <item drawable="tvlok_banner" />
     <item drawable="venevision_banner" />
     <item drawable="voltra_tv_banner" />
     <item drawable="weyd_banner" />
@@ -1121,6 +1125,7 @@
     <category title="Banners · Players" />
     <item drawable="a_8k_player_vip_banner" />
     <item drawable="dream_player_tv_banner" />
+    <item drawable="gridstreamr_banner" />
     <item drawable="janky_banner" />
     <item drawable="justplayer_banner" />
     <item drawable="mediaspelare_banner" />
@@ -1302,6 +1307,7 @@
     <item drawable="ip_address_banner" />
     <item drawable="iptools_banner" />
     <item drawable="jtv_go_server_banner" />
+    <item drawable="launch_on_boot_banner" />
     <item drawable="luckymanager_banner" />
     <item drawable="magiconnect_banner" />
     <item drawable="matvt_mouse_for_android_tv_toggle_banner" />

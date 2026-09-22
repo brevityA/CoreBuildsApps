@@ -1,6 +1,6 @@
 # Core Builds Pixel Neon · supported applications
 
-`958` individually generated pixel sprites · `1174` catalog components · pack v0.1.0
+`961` individually generated pixel sprites · `1179` catalog components · pack v0.1.0
 
 This is the alternate 8-bit neon treatment of the Core Builds catalog. Each row uses its semantic brand glyph cue, then gets a hash-seeded pixel recipe; this pack does not reuse the monoline SVG geometry or banner lockups.
 
@@ -314,6 +314,7 @@ This is the alternate 8-bit neon treatment of the Core Builds catalog. Each row 
 | GoPlay | `goplay` | `#FFFFFF` | `com.eitv.goplay/com.eitv.eitvplay.activities.SplashActivity` |
 | Gotham Sports | `gothamsports` | `#0061FF` | `com.gothamsports.gotham.tv/com.game.tv.TVMainActivity` |
 | Great American Pure Flix | `great` | `#FFFFFF` | `com.great.tv.android/tv.accedo.one.app.bootstrap.BootstrapActivity` |
+| GridStreamr | `gridstreamr` | `#58C6FF` | `com.gridstreamr.gridstreamr/com.gridstreamr.gridstreamr.MainActivity`<br>`com.gridstreamr.androidtv/com.gridstreamr.androidtv.MainActivity` |
 | GT Share | `gtshare` | `#FEC500` | `com.gtmedia.gtshare/com.winsat.gtshare.MainActivity` |
 | GuidePlus | `guideplus` | `#FEC500` | `com.guideplus.co/com.guideplus.co.SplashActivity` |
 | Gymondo | `gymondo` | `#107534` | `de.gymondo.app.gymondo/com.gymondo.presentation.features.startup.StartupTvActivity` |
@@ -406,6 +407,7 @@ This is the alternate 8-bit neon treatment of the Core Builds catalog. Each row 
 | Laliga | `laliga` | `#0061FF` | `la.liga.sports.tv.deporte/la.liga.sports.tv.deporte.features.splash.TvSplashActivity` |
 | Lampa | `lampa` | `#0061FF` | `top.rootu.lampa/top.rootu.lampa.MainActivity` |
 | Laugh After Dark | `laughafterdark` | `#53FC18` | `com.laughafterdark.androidtv/com.laughafterdark.androidtv.ui.splashscreen.activity.SplashScreenActivity` |
+| Launch on Boot | `launch_on_boot` | `#7AC7E8` | `news.androidtv.launchonboot/news.androidtv.launchonboot.MainActivity` |
 | Launch Sounds | `launchsounds` | `#0061FF` | `com.nvidia.bbciplayer.launchsounds/com.nvidia.bbciplayer.LaunchSoundsActivity` |
 | Launchbox | `launchbox` | `#FF0000` | `com.unbrokensoftware.launchbox/crc640d6c5ebcc48c6177.MainActivity` |
 | Launcher Manager | `luckymanager` | `#FBBF24` | `com.wolf.google.lm/.main.MainActivity` |
@@ -851,6 +853,7 @@ This is the alternate 8-bit neon treatment of the Core Builds catalog. Each row 
 | TVA+ | `tvaplus` | `#1EBFBF` | `com.numeriq.tvaplus/ade.tv.main.ui.splash.SplashActivity` |
 | Tvi Player | `tvi_player` | `#F5F500` | `pt.iol.tviplayer.androidtv/pt.iol.tviplayer.androidtv.MainActivity` |
 | Tving | `tving` | `#DE5833` | `net.cj.cjhv.gs.tving/net.cj.cjhv.gs.tving.view.scaleup.ScaleupIntroActivity` |
+| TVLok | `tvlok` | `#00F5D4` | `com.tvlok.app/com.tvlok.app.MainActivity`<br>`com.tvlok.tv/com.tvlok.tv.MainActivity` |
 | Tvnzplus | `tvnzplus` | `#52B54B` | `nz.co.tvnz.ondemand.tv/nz.co.tvnz.ondemand.SplashScreenTVActivity` |
 | Tvo Kids | `tvo_kids` | `#0061FF` | `com.tvokids.tvokids/tv.accedo.one.app.bootstrap.BootstrapActivity` |
 | Tvo Today | `tvo_today` | `#9B59B6` | `org.tvo.tvoott/tv.accedo.one.app.bootstrap.BootstrapActivity` |

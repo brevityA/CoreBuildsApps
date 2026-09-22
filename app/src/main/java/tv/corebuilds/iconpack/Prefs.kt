@@ -29,6 +29,7 @@ object Prefs {
     const val KEY_REDUCE_MOTION = "reduce_motion"
     const val KEY_AMOLED = "amoled_chrome"
     const val KEY_PICK_BANNERS = "pick_banners"
+    const val KEY_WHATS_NEW_SEEN = "whats_new_seen_version"
 
     private fun prefs(context: Context): SharedPreferences =
         context.applicationContext.getSharedPreferences(FILE, Context.MODE_PRIVATE)
@@ -73,6 +74,21 @@ object Prefs {
      */
     fun pickerPrefersBanners(context: Context): Boolean =
         prefs(context).getBoolean(KEY_PICK_BANNERS, false)
+
+    /**
+     * The highest versionCode the What's New sheet has narrated for. Read by
+     * MainActivity's upgrade gate; written by the sheet itself when it closes
+     * and by first-launch init (a brand-new install has nothing to narrate,
+     * so the gateload seeds it to the current code rather than firing). The
+     * sheet is the in-app what's-changed surface: what the update bar says
+     * in one line before an update, it says in full after one.
+     */
+    fun whatsNewSeen(context: Context): Int =
+        prefs(context).getInt(KEY_WHATS_NEW_SEEN, 0)
+
+    fun setWhatsNewSeen(context: Context, versionCode: Int) {
+        prefs(context).edit().putInt(KEY_WHATS_NEW_SEEN, versionCode).apply()
+    }
 
     fun set(context: Context, key: String, value: Boolean) {
         prefs(context).edit().putBoolean(key, value).apply()

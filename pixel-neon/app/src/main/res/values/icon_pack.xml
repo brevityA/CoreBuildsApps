@@ -310,6 +310,7 @@
         <item>goplay</item>
         <item>gothamsports</item>
         <item>great</item>
+        <item>gridstreamr</item>
         <item>gtshare</item>
         <item>guideplus</item>
         <item>gymondo</item>
@@ -402,6 +403,7 @@
         <item>laliga</item>
         <item>lampa</item>
         <item>laughafterdark</item>
+        <item>launch_on_boot</item>
         <item>launchsounds</item>
         <item>launchbox</item>
         <item>luckymanager</item>
@@ -847,6 +849,7 @@
         <item>tvaplus</item>
         <item>tvi_player</item>
         <item>tving</item>
+        <item>tvlok</item>
         <item>tvnzplus</item>
         <item>tvo_kids</item>
         <item>tvo_today</item>
@@ -1270,6 +1273,7 @@
         <item>GoPlay</item>
         <item>Gotham Sports</item>
         <item>Great American Pure Flix</item>
+        <item>GridStreamr</item>
         <item>GT Share</item>
         <item>GuidePlus</item>
         <item>Gymondo</item>
@@ -1362,6 +1366,7 @@
         <item>Laliga</item>
         <item>Lampa</item>
         <item>Laugh After Dark</item>
+        <item>Launch on Boot</item>
         <item>Launch Sounds</item>
         <item>Launchbox</item>
         <item>Launcher Manager</item>
@@ -1807,6 +1812,7 @@
         <item>TVA+</item>
         <item>Tvi Player</item>
         <item>Tving</item>
+        <item>TVLok</item>
         <item>Tvnzplus</item>
         <item>Tvo Kids</item>
         <item>Tvo Today</item>
@@ -2230,6 +2236,7 @@
         <item>APP</item>
         <item>SPORT</item>
         <item>APP</item>
+        <item>PLAYER</item>
         <item>APP</item>
         <item>APP</item>
         <item>APP</item>
@@ -2322,6 +2329,7 @@
         <item>SPORT</item>
         <item>APP</item>
         <item>APP</item>
+        <item>TOOL</item>
         <item>APP</item>
         <item>APP</item>
         <item>TOOL</item>
@@ -2767,6 +2775,7 @@
         <item>APP</item>
         <item>PLAYER</item>
         <item>APP</item>
+        <item>STREAM</item>
         <item>APP</item>
         <item>APP</item>
         <item>APP</item>
@@ -3193,6 +3202,7 @@
         <item>0</item>
         <item>0</item>
         <item>0</item>
+        <item>0</item>
         <item>1</item>
         <item>0</item>
         <item>1</item>
@@ -3284,6 +3294,7 @@
         <item>0</item>
         <item>0</item>
         <item>0</item>
+        <item>0</item>
         <item>1</item>
         <item>1</item>
         <item>0</item>
@@ -3726,6 +3737,7 @@
         <item>0</item>
         <item>0</item>
         <item>1</item>
+        <item>0</item>
         <item>0</item>
         <item>0</item>
         <item>0</item>
@@ -3841,5 +3853,5 @@
         <item>0</item>
         <item>0</item>
     </integer-array>
-    <integer name="icon_count">958</integer>
+    <integer name="icon_count">961</integer>
 </resources>

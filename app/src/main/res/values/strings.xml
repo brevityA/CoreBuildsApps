@@ -216,6 +216,16 @@
     <!-- Suite hub -->
     <string name="settings_suite_title">Core Builds Suite</string>
     <string name="settings_suite_sub">What else from the living-room suite is on this TV, which version, and each app\'s Downloader code.</string>
+    <string name="settings_whatsnew_title">What's new</string>
+    <string name="settings_whatsnew_sub">See what shipped in this build</string>
+    <string name="whats_new_kicker">WHAT'S NEW</string>
+    <string name="whats_new_title_fmt">What's new in %1$s</string>
+    <string name="whats_new_title_plain">What's new</string>
+    <string name="whats_new_count_fmt">%1$d icons, %2$d components</string>
+    <string name="whats_new_item_fmt">•  %1$s</string>
+    <string name="whats_new_done">Done</string>
+    <string name="whats_new_missing">No release notes are bundled with this build.</string>
+    <string name="whats_new_no_highlights">This build shipped no headline changes.</string>
     <string name="suite_kicker">SUITE</string>
     <string name="suite_label">Core Builds Suite</string>
     <string name="suite_title">The rest of the living room</string>

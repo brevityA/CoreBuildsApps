@@ -125,10 +125,14 @@ def main():
     # 3b. Compatibility copies must be byte-identical. Some launchers read
     # res/xml and older ADW/GO integrations read assets; divergent mappings
     # produce device-specific failures that are extremely hard to diagnose.
+    # The What's New manifest has the same property: the sheet narrates the
+    # build's own notes, which is only true when the asset copy and the
+    # Latestrelease manifest are the same file.
     assets = ROOT / "app" / "src" / "main" / "assets"
-    for filename in ("appfilter.xml", "drawable.xml"):
-        resource_file = RES / "xml" / filename
-        asset_file = assets / filename
+    pairs = [(RES / "xml" / "appfilter.xml", assets / "appfilter.xml"),
+             (RES / "xml" / "drawable.xml", assets / "drawable.xml"),
+             (ROOT / "Latestrelease" / "version.json", assets / "version.json")]
+    for resource_file, asset_file in pairs:
         check(asset_file.exists(),
               f"assets/{filename} missing — legacy launchers may not find the pack")
         if asset_file.exists():

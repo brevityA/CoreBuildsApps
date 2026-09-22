@@ -194,6 +194,15 @@ def main() -> int:
     print(f"4. version.json stamped (apkSha256 stays to the built APK), "
           f"{len(latest['highlights'])} highlights")
 
+    # 4b. The What's New sheet reads the manifest off the APK's own assets,
+    # so it can narrate the build that is running with the network switch
+    # off. The asset copy must be byte-identical to the Latestrelease
+    # manifest — validate.py enforces the pair the way it does the dual
+    # appfilter copies.
+    asset_manifest = ROOT / "app/src/main/assets/version.json"
+    asset_manifest.write_bytes(VERSION_JSON.read_bytes())
+    print("4b. assets/version.json mirrors the stamped manifest (What's New)")
+
     # 5. suite.json iconpack
     suite = json.loads(SUITE.read_text(encoding="utf-8"))
     icon = suite["apps"]["iconpack"]

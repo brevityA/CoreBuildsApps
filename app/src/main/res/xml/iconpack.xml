@@ -308,6 +308,7 @@
     <item drawable="goplay" />
     <item drawable="gothamsports" />
     <item drawable="great" />
+    <item drawable="gridstreamr" />
     <item drawable="gtshare" />
     <item drawable="guideplus" />
     <item drawable="gymondo" />
@@ -400,6 +401,7 @@
     <item drawable="laliga" />
     <item drawable="lampa" />
     <item drawable="laughafterdark" />
+    <item drawable="launch_on_boot" />
     <item drawable="launchsounds" />
     <item drawable="launchbox" />
     <item drawable="luckymanager" />
@@ -845,6 +847,7 @@
     <item drawable="tvaplus" />
     <item drawable="tvi_player" />
     <item drawable="tving" />
+    <item drawable="tvlok" />
     <item drawable="tvnzplus" />
     <item drawable="tvo_kids" />
     <item drawable="tvo_today" />

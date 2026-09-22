@@ -105,6 +105,10 @@ class SettingsActivity : TvActivity() {
             startActivity(Intent(this, SuiteActivity::class.java))
         }
 
+        row(R.id.set_whatsnew_row) {
+            startActivity(Intent(this, WhatsNewActivity::class.java))
+        }
+
         row(R.id.set_audit_row) {
             startActivity(Intent(this, AuditorActivity::class.java))
         }

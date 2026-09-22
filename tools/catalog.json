@@ -6,7 +6,7 @@
     "grid": 512,
     "safe_area": 432,
     "note": "Core Builds-authored geometric icons on a shared 512 grid. Reviewed brand glyphs use rounded monoline strokes and one accent, not imported vendor silhouettes. Common Outfit/category/rail banners; artwork is reference-only. Canonical brand colours and the dark-card contrast policy remain shared.",
-    "count": 958
+    "count": 961
   },
   "icons": [
     {
@@ -13088,6 +13088,47 @@
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null,
       "mark": "WA"
+    },
+    {
+      "name": "GridStreamr",
+      "drawable": "gridstreamr",
+      "color": "#58C6FF",
+      "components": [
+        "com.gridstreamr.gridstreamr/com.gridstreamr.gridstreamr.MainActivity",
+        "com.gridstreamr.androidtv/com.gridstreamr.androidtv.MainActivity"
+      ],
+      "category": "PLAYER",
+      "color_source": "Google Play listings (com.gridstreamr.gridstreamr + com.gridstreamr.androidtv), 2026-09",
+      "color_reviewed": null,
+      "glyph": "broadcast_G",
+      "mark": "GS"
+    },
+    {
+      "name": "Launch on Boot",
+      "drawable": "launch_on_boot",
+      "color": "#7AC7E8",
+      "components": [
+        "news.androidtv.launchonboot/news.androidtv.launchonboot.MainActivity"
+      ],
+      "category": "TOOL",
+      "color_source": "F-Droid package news.androidtv.launchonboot, 2026-09",
+      "color_reviewed": null,
+      "glyph": "tool_L",
+      "mark": "LB"
+    },
+    {
+      "name": "TVLok",
+      "drawable": "tvlok",
+      "color": "#00F5D4",
+      "components": [
+        "com.tvlok.app/com.tvlok.app.MainActivity",
+        "com.tvlok.tv/com.tvlok.tv.MainActivity"
+      ],
+      "category": "STREAM",
+      "color_source": "tvlok.com brand (cyan/magenta play mark); snapped to shared teal slot #00F5D4; package candidates unconfirmed — issue #155 asked requester, 2026-09",
+      "color_reviewed": null,
+      "glyph": "broadcast_T",
+      "mark": "TL"
     }
   ],
   "artwork": {

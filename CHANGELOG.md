@@ -122,8 +122,40 @@ All notable changes to the Core Builds Icon Pack. Format follows
   glyphs by default. (Why not a per-user runtime switch reaching the
   launcher: launcher-facing art lives in static APK assets and launchers
   self-apply; the rewired default is the honest version of that toggle.)
+- **A What's New sheet narrates each update.** The update bar has room for
+  one line before a build installs; after the install the answer to "so
+  what changed?" used to be nowhere in-app. Now the build's own manifest
+  moves into the APK (`assets/version.json`, byte-identical to
+  `Latestrelease/version.json` — validate.py checks the pair the way it
+  does the dual appfilter copies), and a full-screen sheet reads the
+  highlights off it: once per upgrade from the home screen (fresh installs
+  are detected via firstInstallTime vs lastUpdateTime and skip the
+  narration), any time from Settings > What's new. Fully offline: the
+  UpdateChecker switch stays the only network the app ever speaks. Pop
+  inherits the screen through its mirrored sources; Pixel Neon's slimmer
+  build keeps the update bar only.
+- **Three requested icons: TVLok, GridStreamr, Launch on Boot.** All four
+  currently open `[Icon]` issues were triaged. TVLok (#155, a
+  tvlok.com playlist player) and Launch on Boot (#157,
+  `news.androidtv.launchonboot`, confirmed via its F-Droid page) each map
+  to a researched component pair; GridStreamr (#156) maps both Play
+  packages (`com.gridstreamr.gridstreamr` mobile and the native
+  `com.gridstreamr.androidtv`). The fourth, "My File" (#158), arrived with
+  an empty form — no package, no link — so it's answered on the issue with
+  a request for its component and will ship when identified. All three
+  shipped marks are category-monogram treatments (adaptive wordmark
+  monograms in the shared palette), the pack's standing answer for brands
+  without a reviewed glyph.
 
 ### Fixed
+
+- **Pixel Neon sprites are a pure function of their app's catalog row
+  again.** Issue #111, root cause: four generators inside
+  `tools/build_pixel_neon.py` mixed the row's positional index into the
+  seed, so adding one icon repainted every icon after it. The row's
+  drawable hash now supplies everything positional used to. Cost of truth:
+  every sprite re-rolls exactly once with this build (they all change);
+  after that, a repaint only moves when its own row does.
 
 - **The auditor stops hiding apps whose package is partially mapped.**
   Suppression was package-level: one appfilter row anywhere for a package
