@@ -1,13 +1,18 @@
 {
-  "versionCode": 33,
-  "versionName": "1.9.1",
+  "versionCode": 34,
+  "versionName": "1.9.2",
   "iconCount": 958,
   "componentCount": 1174,
-  "releaseDate": "2026-09-20",
+  "releaseDate": "2026-09-22",
   "apkUrl": "https://github.com/brevityA/CoreBuildsApps/releases/download/iconpack/iconpack-release.apk",
   "releaseNotesUrl": "https://github.com/brevityA/CoreBuildsApps/releases",
   "minSdk": 21,
   "highlights": [
-    "Pressing an unmapped app in the auditor crashed the screen"
+    "Adaptive wordmark monograms",
+    "Brand-informed mark styles, tranche 1",
+    "First auditor round: fifteen of the twenty unmapped apps are mapped",
+    "One-press anonymous icon requests, groundwork shipped",
+    "The QR fallback now carries its payload visibly",
+    "The auditor stops hiding apps whose package is partially mapped"
   ]
 }

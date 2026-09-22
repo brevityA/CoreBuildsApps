@@ -6,6 +6,8 @@ All notable changes to the Core Builds Icon Pack. Format follows
 
 ## [Unreleased]
 
+## [1.9.2] — 2026-09-22
+
 ### Added
 
 - **Adaptive wordmark monograms.** The 525 letter-tile fallbacks no longer

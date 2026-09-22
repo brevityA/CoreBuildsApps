@@ -1,20 +1,20 @@
 {
   "frames": {
     "app-ui-auditor-qr.png": {
-      "bytes": 65531,
-      "structure": "f7e945e7e5b2b63e9f9529f61166c922f8f59a8f46ef9625cec2e17afc12eab4"
+      "bytes": 73557,
+      "structure": "f2a542b6e0086e7cdf87f98430dd652ea0389c4c1c8d8455dd7083bb03256da6"
     },
     "app-ui-auditor.png": {
       "bytes": 72560,
-      "structure": "a23bccd49d698c40b2e10122ae9618c91b27d139b1c95e815cebb5bbf261e4f9"
+      "structure": "24adbf4386dc5eff44c003e32b237bd3daeb595de8d788b7938d4d42999d1f12"
     },
     "app-ui-catalogue-update.png": {
-      "bytes": 168185,
-      "structure": "65bb2b9d3c01826277260695a57d23732446d7cc7e0064b3fb4c3df0d48230f5"
+      "bytes": 169547,
+      "structure": "a46c56279005270986cba52698a1467172b9e048cf006de57c0fd0e7ebd27214"
     },
     "app-ui-catalogue.png": {
-      "bytes": 184551,
-      "structure": "091f4ef2d8eb59b11dc1a311f845f2d8da1c651faaf483a0a3ed659cfd48ba33"
+      "bytes": 185000,
+      "structure": "51f2fd21e077138884539553fb28fb6fb8e94883bf62f99dbbe8ebf1295cdd5a"
     },
     "app-ui-faq.png": {
       "bytes": 139797,
@@ -39,11 +39,11 @@
   },
   "generator": "tools/build_app_ui_mockups.py",
   "inputs": {
-    "Latestrelease/version.json": "190c851f8d4a44255610884eaecbf74e4f9fe5b24a49826051a37698f8e589f9",
+    "Latestrelease/version.json": "6ce135f3382e279b7361155c234845da734c44e1692273e175fa8a7e9aee1ed6",
     "app/src/main/assets/appfilter.xml": "8af96dc0e6f0d53a03f98e1d0f399a40d0c8918dbafe5697909971785ee9548e",
     "app/src/main/assets/manifest/wallpapers.json": "3265f4fdbeaaf99fc74c941e348bcabd4a95af8054b104f16553888dff7b8b6d",
     "app/src/main/res/layout/activity_about.xml": "24bf8847817c6c79e0733b25282913f12756331e851a461fdb5f96e43b08d04a",
-    "app/src/main/res/layout/activity_auditor.xml": "7a368a41ffb43619e3abf10a2b42b932f6eaad47b62327367bbe2181c0a1e266",
+    "app/src/main/res/layout/activity_auditor.xml": "3353f96d0932249a0ce841ca31ef98c65103132ec9b9efd1c8144e1fe2c34dca",
     "app/src/main/res/layout/activity_export_progress.xml": "3c388eb2b74cc0b5e362069cff6adfe219a4948eed7220f36a9a2d2d06d48210",
     "app/src/main/res/layout/activity_faq.xml": "84a5cf1a80764f4621b72264929d74ae40b12e5ff4417d5ac470673b5289ee09",
     "app/src/main/res/layout/activity_inspector.xml": "968c82ce900f0cdfd1b43eef95defae7e38ed2f18b5b17bd32df7c541975babf",
@@ -60,18 +60,18 @@
     "app/src/main/res/values/colors.xml": "626417ba2a3fa3bbf1aa913cdc97de4181d1b0037a027e17db753c12290cd4b2",
     "app/src/main/res/values/dimens.xml": "7bc57666dc36c2a3adad0b1559b7da8c33c01616cb024f741f0a948d5df65126",
     "app/src/main/res/values/icon_pack.xml": "d3fa90152f6044b6342f20e2723b5531469945d53feb147282722090d1be55ba",
-    "app/src/main/res/values/issue_prefill.xml": "5f5fbaa793522dd12520ee1edb9e93a31ff3fd55c5cf0b4184059506ae6fb2d7",
-    "app/src/main/res/values/strings.xml": "ae49b4a13cffae17bdadd764e869143dcf2adc4e50ad5f03d3c28094fee04374",
+    "app/src/main/res/values/issue_prefill.xml": "d0936511248c7779a8c38788738f2763a1e15bad8ddf8198719f13b5464b00fa",
+    "app/src/main/res/values/strings.xml": "6ac9acdc3d339f9d80e79171be1101cb9eff474edf8fc3601adbcc8e4abab3e5",
     "app/src/main/res/values/suite_hub.xml": "69ac213b6d898884f21bc8b56043053c3e08444415e50450f29fec6a48317213",
     "app/src/main/res/values/themes.xml": "ecac526951fe40b6c5c01df0ec36730d0e197fd9511862cf587a2143773b46be",
     "tools/build_app_ui_mockups.py": "14126891270c452a2eb16f50262b41d26c8a05c48f7e8896889ebe3db2ca4540",
-    "tools/catalog.json": "28b04c90839becee0724db8435dd919768ebf226710a3eec0246eb775a9bc2ea",
+    "tools/catalog.json": "a86a39f7330430c97fb035ec177715483aad43338d65333ec1dcd7a867da7812",
     "tools/fonts/DejaVuSansMono-Bold.ttf": "2964f6dac8e6e9d71613928340f17bf868e9ea51692cca333c79e74962f02233",
     "tools/fonts/DejaVuSansMono.ttf": "0f5db4f1749979d961019838b160bec74abdf7f9eca69553fe1aa856bbff49a4",
     "tools/fonts/Outfit-Bold.ttf": "04f7c9705153927058475d6c5e9f75b0a1036ec5f6f63ffb69df046191ea8933",
     "tools/fonts/Outfit-ExtraBold.ttf": "056e8cd5840cea4cfc355f672292f7de00d95f5a42bf9b7cd96d511ca8e2883e"
   },
-  "inputs_digest": "49dfb6601c97fd3a2aaa7dca87e5a160895c01bcc184fff9f677a9d4cd818383",
+  "inputs_digest": "4d13396d11eacc74c16745476959d3e80b18c27165e1899a29222112fc186c4b",
   "metrics": {
     "mono-bold@24": 448.0,
     "mono-bold@32": 608.0,
