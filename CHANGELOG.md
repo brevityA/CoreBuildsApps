@@ -64,6 +64,37 @@ All notable changes to the Core Builds Icon Pack. Format follows
   version.json files and the README stamp move in lockstep to 958 icons and
   1174 components. The remaining five auditor rows weren't visible in the
   photo set — round two waits on them.
+- **One-press anonymous icon requests, groundwork shipped.** Pressing an
+  auditor row now tries the direct path first: the app POSTs the three
+  fields the GitHub form would have been prefilled with — app name,
+  component, device note — to the Core Builds request broker, which files
+  the issue as `CoreBuilds-requests[bot]` (and folds a repeat press into a
+  +1 comment instead of a second issue). No GitHub account, no phone, no
+  email on the reporter side; the GitHub App credential lives only as a
+  Workers secret, never in the APK, never in git — the whole broker, its
+  deploy notes and its test suite live in `tools/icon_request_broker/`.
+  Pop compiles the same auditor and inherits this. Until the broker URL is
+  baked into the generated resources (one `--endpoint` flag on the prefill
+  generator after deploy), nothing changes on-device: presses go straight
+  to the QR panel as before.
+
+### Fixed
+
+- **The auditor stops hiding apps whose package is partially mapped.**
+  Suppression was package-level: one appfilter row anywhere for a package
+  removed that package from the missing-apps scan — even when the mapped
+  activity had gone stale in an app update, which is exactly when the icon
+  silently stops applying and the audit is the one couch-side way to say
+  so. An Internet Speed Test report proved the chain: the pack maps
+  `com.rma.speedtesttv/…ui.SplashActivity` (inherited from the reference
+  pack's own appfilter), current builds moved on, so nothing assigned *and*
+  nothing appeared to report. The screen now compares full components —
+  folding the appfilter's relative-activity spelling to the absolute form
+  PackageManager reports — which is what its own docstring always claimed:
+  a package with a stale mapping shows as unmapped again and can be filed.
+  Pop had also inherited a stale icon_pack mirror from the first auditor
+  round; that's corrected and the mirror is now test-held (`test_pop`
+  gains the SharedResourceMirror class).
 
 ## [1.9.1] — 2026-09-20
 

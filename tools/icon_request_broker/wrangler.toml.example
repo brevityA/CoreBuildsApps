@@ -1,0 +1,18 @@
+name = "corebuilds-icon-request"
+main = "worker.mjs"
+compatibility_date = "2026-09-01"
+
+# KV namespaces:
+#   RATE_KV — rate-limit windows + the cached GitHub installation token.
+# Create once, then paste the real id here:
+#   npx wrangler kv namespace create RATE_KV
+[[kv_namespaces]]
+binding = "RATE_KV"
+id = "REPLACE_WITH_NAMESPACE_ID"
+
+# Secrets (never in this file, never in git):
+#   npx wrangler secret put GITHUB_APP_ID
+#   npx wrangler secret put GITHUB_APP_INSTALLATION_ID
+#   npx wrangler secret put GITHUB_APP_PRIVATE_KEY   # the whole -----BEGIN... block
+[vars]
+RATE_LIMIT_PER_HOUR = "5"

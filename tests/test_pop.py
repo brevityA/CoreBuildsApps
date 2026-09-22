@@ -278,5 +278,45 @@ class WallpaperTests(unittest.TestCase):
         self.assertEqual(len(names), len(set(names)))
 
 
+class SharedResourceMirrorTests(unittest.TestCase):
+    """Pop compiles the app's Kotlin against mirrored resources; the mirror is
+    meant to be byte-equal text for anything both modules carry. A stale copy
+    shipped once already (the first auditor round's 15 icons never reached
+    pop's icon_pack.xml), so equality is asserted, not trusted."""
+
+    @staticmethod
+    def arrays(path):
+        import re
+        text = path.read_text(encoding="utf-8")
+        return {m.group(1): m.group(2).strip() for m in re.finditer(
+            r'<(?:string|integer)-?array name="([^"]+)"[^>]*>'
+            r'(.*?)</(?:string|integer)-array>', text, re.S)}
+
+    def test_icon_pack_arrays_mirror_the_app(self):
+        import build_pop as _bp  # noqa: F401 - keeps the import path exercised
+        ROOT = Path(__file__).resolve().parents[1]
+        app = self.arrays(ROOT / "app/src/main/res/values/icon_pack.xml")
+        pop = self.arrays(ROOT / "pop/src/main/res/values/icon_pack.xml")
+        self.assertTrue(app, "app icon_pack.xml has no arrays")
+        self.assertEqual(app, pop,
+                         "pop icon_pack.xml drifted from the app copy; run "
+                         "python tools/build_pop.py (mirror step)")
+
+    def test_issue_prefill_resource_is_current(self):
+        ROOT = Path(__file__).resolve().parents[1]
+        app = (ROOT / "app/src/main/res/values/issue_prefill.xml"
+               ).read_text(encoding="utf-8")
+        pop = (ROOT / "pop/src/main/res/values/issue_prefill.xml"
+               ).read_text(encoding="utf-8")
+        for marker in ("audit_issue_url_fmt", "audit_request_endpoint"):
+            self.assertIn(marker, app)
+            self.assertIn(marker, pop, f"{marker} missing from pop mirror")
+        name = 'name="audit_request_endpoint"'
+        self.assertEqual(
+            app.split(name)[1].split("</string>")[0],
+            pop.split(name)[1].split("</string>")[0],
+            "endpoint value differs between the modules")
+
+
 if __name__ == "__main__":
     unittest.main(verbosity=2)

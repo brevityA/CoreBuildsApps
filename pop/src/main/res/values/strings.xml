@@ -197,6 +197,9 @@
     <string name="audit_count_fmt">%1$d launchable apps on this TV have no icon yet</string>
     <string name="audit_empty">Every launchable app on this TV is mapped. Nothing to request.</string>
     <string name="audit_qr_hint">Scan with your phone. The issue opens on the icon-request form with the app name, component and this TV\'s details already filled in — check them and submit.</string>
+    <string name="audit_request_sending">Sending the request…</string>
+    <string name="audit_request_sent_fmt">Request filed — issue #%1$d. Thank you.</string>
+    <string name="audit_request_offline">Direct request unavailable — scan the code with your phone instead.</string>
 
     <!-- Icon inspector -->
     <string name="inspector_kicker">INSPECT</string>

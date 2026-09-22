@@ -358,6 +358,25 @@ AUDIT_RES = (ROOT / "app" / "src" / "main" / "res" / "values" / "issue_prefill.x
 # The in-app auditor's three dynamic values, in fmt-argument order.
 AUDIT_ARGS = (("app_name", "%1$s"), ("component", "%2$s"), ("notes", "%3$s"))
 
+# The anonymous-request broker the auditor POSTs to before falling back to
+# the QR deep link. Empty string (the default) means "no broker deployed
+# yet" and the app goes straight to the QR panel. The value is read back
+# out of the generated resource on re-runs, so a deployed endpoint survives
+# subsequent regenerations of the surrounding URL, and `--endpoint=URL`
+# is the one command that bakes the workers.dev URL in after deploy; see
+# tools/icon_request_broker/README.md. Not passed through literal(): the
+# endpoint is read with getString(id) — never String.format — so its
+# percents (a https URL has none) would be printable anyway.
+ENDPOINT_PATTERN = re.compile(
+    r'<string name="audit_request_endpoint">([^<]*)</string>')
+
+
+def existing_endpoint() -> str:
+    if not AUDIT_RES.is_file():
+        return ""
+    match = ENDPOINT_PATTERN.search(AUDIT_RES.read_text(encoding="utf-8"))
+    return match.group(1) if match else ""
+
 
 def literal(text: str) -> str:
     """Double every percent, so the resource prints it instead of parsing it.
@@ -375,7 +394,8 @@ def literal(text: str) -> str:
     return text.replace("%", "%%")
 
 
-def audit_resource(templates: list[dict]) -> str:
+def audit_resource(templates: list[dict],
+                   endpoint: str = "") -> str:
     """The generated string resource the on-device auditor deep-links with.
 
     The auditor runs on a TV with no issue forms to parse, and a hand-copied
@@ -436,19 +456,33 @@ def audit_resource(templates: list[dict]) -> str:
         "         bare %5B parses as width 5 + boolean conversion and throws),\n"
         "         only the %n$s placeholders stay single. -->\n"
         f'    <string name="audit_issue_url_fmt">{xml}</string>\n'
+        "    <!-- Anonymous-request broker. A row press POSTs to it before\n"
+        "         the QR panel is even offered; empty means not deployed and\n"
+        "         the press goes straight to the QR panel. Bake the deployed\n"
+        "         URL in with the endpoint flag on this generator once\n"
+        "         tools/icon_request_broker is live. (XML comments ban\n"
+        "         doubled hyphens, so the flag is unnamed here; the broker\n"
+        "         README names it.) -->\n"
+        f'    <string name="audit_request_endpoint">{endpoint}</string>\n'
         "</resources>\n"
     )
 
 
-def write_audit_resource(templates: list[dict]) -> None:
-    AUDIT_RES.write_text(audit_resource(templates), encoding="utf-8")
+def write_audit_resource(templates: list[dict],
+                       endpoint: str = "") -> None:
+    AUDIT_RES.write_text(audit_resource(templates, endpoint),
+                         encoding="utf-8")
 
 
-def check_audit_resource(templates: list[dict]) -> None:
+def check_audit_resource(templates: list[dict],
+                       endpoint: str | None = None) -> None:
     if not AUDIT_RES.is_file():
         fail("app res issue_prefill.xml is missing; run "
              "python tools/build_issue_prefills.py")
-    if AUDIT_RES.read_text(encoding="utf-8") != audit_resource(templates):
+    want = audit_resource(templates,
+                          existing_endpoint() if endpoint is None
+                          else endpoint)
+    if AUDIT_RES.read_text(encoding="utf-8") != want:
         fail("app res issue_prefill.xml is stale against the issue forms; run "
              "python tools/build_issue_prefills.py and commit it")
 
@@ -506,6 +540,10 @@ def main(argv: list[str] | None = None) -> int:
                              "--set is accepted as the same flag")
     parser.add_argument("--set", dest="set_", action="append", default=[],
                         metavar="ID=VALUE", help=argparse.SUPPRESS)
+    parser.add_argument("--endpoint", default=None, metavar="URL",
+                        help="bake the anonymous-request broker URL into the "
+                             "auditor resources (default: keep the current "
+                             "value; initial generate: empty)")
     args = parser.parse_args(argv)
     args.field = args.field + args.set_
 
@@ -536,7 +574,7 @@ def main(argv: list[str] | None = None) -> int:
 
     if args.check:
         check_readme(templates)
-        check_audit_resource(templates)
+        check_audit_resource(templates, endpoint=args.endpoint)
         print("auditor deep-link resource matches the issue forms")
         return 0
     if args.print_only:
@@ -547,7 +585,8 @@ def main(argv: list[str] | None = None) -> int:
         return 0
 
     README.write_text(readme_with_block(templates), encoding="utf-8")
-    write_audit_resource(templates)
+    endpoint = args.endpoint if args.endpoint is not None else existing_endpoint()
+    write_audit_resource(templates, endpoint)
     print(f"README icon-request block written from {len(templates)} issue forms "
           f"· {sum(len(t['prefillable']) for t in templates)} prefillable fields")
     print(f"auditor deep-link resource written to "
