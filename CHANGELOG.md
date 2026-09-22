@@ -146,6 +146,19 @@ All notable changes to the Core Builds Icon Pack. Format follows
   shipped marks are category-monogram treatments (adaptive wordmark
   monograms in the shared palette), the pack's standing answer for brands
   without a reviewed glyph.
+- **Unthemed apps now land on the pack's own cards.** The main appfilter
+  carried no fallback furniture at all: anything outside the catalog
+  arrived in a launcher that supports the composite schema (iconback /
+  iconmask / iconupon / scale) as a naked stock icon next to 960-odd
+  carefully regulated glyphs. The pack now ships the kit it was missing —
+  ten card backs in the grid's #151923 fill nudged ten ways along the
+  palette (blue, violet, cyan, green, ember, orchid, marine, slate,
+  night, graphite), one shared card mask, a hairline-white upon, and a
+  0.70 scale that matches the 352/512 ink box the glyphs themselves sit
+  in. An app the pack has never heard of now reads as a Core Builds card
+  first and an outage second. Pop shipped its own version of this kit
+  from day one (pop_back_*, pop_mask, pop_upon); this closes the same
+  door in the flagship.
 
 ### Fixed
 
