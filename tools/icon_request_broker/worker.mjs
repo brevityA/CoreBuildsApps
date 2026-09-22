@@ -338,7 +338,23 @@ function json(body, status) {
   });
 }
 
-export async function handle(request, env) {
+// The QR interstitial runs on github.io and POSTs cross-origin, so browsers
+// preflight it (OkHttp from the TV never does). There are no cookies and no
+// user auth anywhere in this service, so reflecting the caller's Origin
+// grants nothing a curl could not already do; it exists purely to let the
+// phone's browser read its own response.
+function corsHeaders(request) {
+  const origin = request.headers.get("origin");
+  return origin ? {
+    "Access-Control-Allow-Origin": origin,
+    "Access-Control-Allow-Methods": "POST",
+    "Access-Control-Allow-Headers": "Content-Type",
+    "Access-Control-Max-Age": "86400",
+    Vary: "Origin",
+  } : {};
+}
+
+async function handleInner(request, env) {
   const url = new URL(request.url);
   if (url.pathname === "/healthz") {
     return json({ ok: true, version: WORKER_VERSION }, 200);
@@ -346,10 +362,21 @@ export async function handle(request, env) {
   if (url.pathname !== "/" && url.pathname !== "/v1/request") {
     return json({ ok: false, error: "no such route" }, 404);
   }
+  if (request.method === "OPTIONS") {
+    return new Response(null, { status: 204, headers: corsHeaders(request) });
+  }
   if (request.method !== "POST") {
     return json({ ok: false, error: "POST JSON only" }, 405);
   }
   return handleRequest(request, env);
+}
+
+export async function handle(request, env) {
+  const res = await handleInner(request, env);
+  for (const [key, value] of Object.entries(corsHeaders(request))) {
+    res.headers.set(key, value);
+  }
+  return res;
 }
 
 export default { fetch: handle };

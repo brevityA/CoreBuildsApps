@@ -90,6 +90,22 @@ All notable changes to the Core Builds Icon Pack. Format follows
   baked into the generated resources (one `--endpoint` flag on the prefill
   generator after deploy), nothing changes on-device: presses go straight
   to the QR panel as before.
+- **The QR fallback now carries its payload visibly.** Field-level prefill
+  on GitHub's issue forms is unreliable
+  in places a TV can never see (the GitHub mobile app rewrites the URL
+  and drops the fields; logged-out logins can lose them), and no URL can
+  ever carry a picture of the app's current icon. So the QR panel itself
+  now shows the request's identity in plain pixels — the app's launcher
+  icon next to its name and component — with a hint that a photograph of
+  the screen attaches to the issue, and the QR payload can point at
+  `docs/icon-request/index.html` (this repo's GitHub Pages) once Pages
+  serves /docs: a .github.io link the GitHub app cannot claim, which
+  always renders the three values, offers the account form, and — when
+  the broker endpoint is baked — a no-login send that POSTs from the
+  phone's browser (the worker learned Origin-reflect CORS and an OPTIONS
+  preflight for exactly that; version tag `2026-09-22-iconreq03`, unit
+  tests 28 → 30). One generator flag, `--landing`, bakes it the same way
+  `--endpoint` does, and both persist across regenerations.
 
 ### Fixed
 

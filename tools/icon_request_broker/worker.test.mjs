@@ -271,6 +271,39 @@ test("with neither sink configured the broker says 503", async () => {
 // mirror of that constraint so a future `export const` can never regress into
 // the shipped worker unnoticed. Shared strings belong in constants.mjs.
 
+// -------------------------------------------------------------------- cors
+// The QR interstitial (docs/icon-request/) POSTs from *.github.io, which a
+// browser insists on preflighting; OkHttp from the TV never sends Origin and
+// must see a completely unchanged response.
+
+test("browser preflight is answered with the caller's origin reflected", async () => {
+  const req = new Request("https://broker.example/v1/request", {
+    method: "OPTIONS",
+    headers: { Origin: "https://brevitya.github.io" },
+  });
+  const res = await handle(req, {});
+  assert.equal(res.status, 204);
+  assert.equal(res.headers.get("Access-Control-Allow-Origin"),
+    "https://brevitya.github.io");
+  assert.equal(res.headers.get("Access-Control-Allow-Methods"), "POST");
+});
+
+test("a browser POST reads ok with CORS; an OkHttp hit is header-identical", async () => {
+  const withOrigin = new Request("https://broker.example/", {
+    method: "POST",
+    headers: { "Content-Type": "application/json",
+               Origin: "https://brevitya.github.io" },
+    body: JSON.stringify({ app_name: "x", component: "bad" }),
+  });
+  const corsRes = await handle(withOrigin, {});
+  assert.equal(corsRes.headers.get("Access-Control-Allow-Origin"),
+    "https://brevitya.github.io");
+
+  const plain = await handle(req({ app_name: "x", component: "bad" }, "7.7.7.6"), {});
+  assert.equal(plain.headers.get("Access-Control-Allow-Origin"), null);
+  assert.equal(plain.headers.get("Vary"), null);
+});
+
 test("entry-module exports are all functions or ExportedHandlers (workerd rule)", async () => {
   const m = await import("./worker.mjs");
   for (const [name, value] of Object.entries(m)) {

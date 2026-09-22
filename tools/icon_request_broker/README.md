@@ -77,6 +77,13 @@ reporters get the one-press flow today either way.
   exist as a label the worker creates it (the app's Issues: write covers it)
   — the issue forms reference the label but repo labels were minted by hand
   until now.
+- **Origin-reflect CORS + OPTIONS preflight.** Android's OkHttp ignores
+  CORS, but the QR interstitial (docs/icon-request/index.html on
+  GitHub Pages) POSTs from a browser, which preflights cross-origin
+  JSON. Responses reflect the request's `Origin` header when present and
+  preflights get a 204 — safe here because the endpoint is anonymous,
+  cookie-free and rate-limited by design; CORS changes nothing else about
+  what a curl could already do.
 
 ## Rehearse locally first (zero cloud, no credentials)
 

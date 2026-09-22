@@ -181,13 +181,36 @@ class AuditorActivity : TvActivity() {
 
     private fun showQr(item: AuditItem) {
         val note = deviceNote()
-        val url = getString(
-            R.string.audit_issue_url_fmt,
-            enc(item.label), enc(item.component), enc(note)
-        )
+        // Two QR payloads, one grammar: with an interstitial baked in, the
+        // phone lands on OUR page first - a .github.io URL the GitHub app
+        // cannot claim with intent filters - which always shows the values
+        // plainly and offers both doors (GitHub form, or straight-to-broker
+        // on phones with no account). Without one, the classic prefilled
+        // issue form as before. See docs/icon-request/index.html.
+        val landing = getString(R.string.audit_qr_landing)
+        val url = if (landing.isBlank()) {
+            getString(R.string.audit_issue_url_fmt,
+                      enc(item.label), enc(item.component), enc(note))
+        } else {
+            val endpoint = getString(R.string.audit_request_endpoint)
+            "$landing?app_name=${enc(item.label)}" +
+                "&component=${enc(item.component)}" +
+                "&device=${enc(note)}" +
+                if (endpoint.isBlank()) "" else "&endpoint=${enc(endpoint)}"
+        }
         findViewById<ImageView>(R.id.audit_qr_view)
             .setImageBitmap(QrBitmap.render(url, 720))
         findViewById<TextView>(R.id.audit_qr_url).text = url
+        findViewById<TextView>(R.id.audit_qr_app_label).text = item.label
+        findViewById<TextView>(R.id.audit_qr_component).text = item.component
+        // PackageManager still holds this app's launcher icon (it was just
+        // scanned), so a photograph of the panel gives the triage the one
+        // thing no text channel can prefill: what the icon looks like now.
+        val iconView = findViewById<ImageView>(R.id.audit_qr_icon)
+        val icon = runCatching { packageManager.getApplicationIcon(item.pkg) }
+            .getOrNull()
+        if (icon != null) iconView.setImageDrawable(icon)
+        iconView.visibility = if (icon != null) View.VISIBLE else View.GONE
         list.visibility = View.GONE
         empty.visibility = View.GONE
         qrPanel.visibility = View.VISIBLE

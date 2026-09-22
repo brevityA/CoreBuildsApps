@@ -378,6 +378,26 @@ def existing_endpoint() -> str:
     return match.group(1) if match else ""
 
 
+# The QR interstitial (docs/icon-request/index.html on this repo's GitHub
+# Pages). Empty string (the default) keeps today's behaviour: the QR is the
+# direct GitHub deep link above. Baked with the landing flag, the QR points
+# at the interstitial instead - a .github.io URL the GitHub app cannot
+# claim with an intent filter, which always RENDERS the payload and offers
+# both doors (form or straight-to-broker), because field-level prefill on
+# GitHub's own pages has proven unreliable in places the TV cannot see
+# (mobile app handshake, template mismatch). Persists across regenerations
+# exactly like the endpoint.
+LANDING_PATTERN = re.compile(
+    r'<string name="audit_qr_landing">([^<]*)</string>')
+
+
+def existing_landing() -> str:
+    if not AUDIT_RES.is_file():
+        return ""
+    match = LANDING_PATTERN.search(AUDIT_RES.read_text(encoding="utf-8"))
+    return match.group(1) if match else ""
+
+
 def literal(text: str) -> str:
     """Double every percent, so the resource prints it instead of parsing it.
 
@@ -395,7 +415,7 @@ def literal(text: str) -> str:
 
 
 def audit_resource(templates: list[dict],
-                   endpoint: str = "") -> str:
+                   endpoint: str = "", landing: str = "") -> str:
     """The generated string resource the on-device auditor deep-links with.
 
     The auditor runs on a TV with no issue forms to parse, and a hand-copied
@@ -464,24 +484,35 @@ def audit_resource(templates: list[dict],
         "         doubled hyphens, so the flag is unnamed here; the broker\n"
         "         README names it.) -->\n"
         f'    <string name="audit_request_endpoint">{endpoint}</string>\n'
+        "    <!-- QR interstitial on this repo\'s GitHub Pages\n"
+        "         (docs/icon-request/index.html). Empty means the QR is the\n"
+        "         direct GitHub deep link; baked, the QR lands on the page\n"
+        "         first - always rendered, browser-borne, and able to send\n"
+        "         straight to the broker on phones with no GitHub login.\n"
+        "         Bake with the landing flag on this generator once Pages\n"
+        "         serves /docs from main. (Flag unnamed here; same XML rule.) -->\n"
+        f'    <string name="audit_qr_landing">{landing}</string>\n'
         "</resources>\n"
     )
 
 
 def write_audit_resource(templates: list[dict],
-                       endpoint: str = "") -> None:
-    AUDIT_RES.write_text(audit_resource(templates, endpoint),
+                       endpoint: str = "", landing: str = "") -> None:
+    AUDIT_RES.write_text(audit_resource(templates, endpoint, landing),
                          encoding="utf-8")
 
 
 def check_audit_resource(templates: list[dict],
-                       endpoint: str | None = None) -> None:
+                       endpoint: str | None = None,
+                       landing: str | None = None) -> None:
     if not AUDIT_RES.is_file():
         fail("app res issue_prefill.xml is missing; run "
              "python tools/build_issue_prefills.py")
     want = audit_resource(templates,
                           existing_endpoint() if endpoint is None
-                          else endpoint)
+                          else endpoint,
+                          existing_landing() if landing is None
+                          else landing)
     if AUDIT_RES.read_text(encoding="utf-8") != want:
         fail("app res issue_prefill.xml is stale against the issue forms; run "
              "python tools/build_issue_prefills.py and commit it")
@@ -544,6 +575,12 @@ def main(argv: list[str] | None = None) -> int:
                         help="bake the anonymous-request broker URL into the "
                              "auditor resources (default: keep the current "
                              "value; initial generate: empty)")
+    parser.add_argument("--landing", default=None, metavar="URL",
+                        help="point the auditor's QR at the "
+                             "docs/icon-request interstitial (this repo's "
+                             "GitHub Pages URL) instead of the raw GitHub "
+                             "deep link (default: keep the current value; "
+                             "initial generate: empty)")
     args = parser.parse_args(argv)
     args.field = args.field + args.set_
 
@@ -574,7 +611,8 @@ def main(argv: list[str] | None = None) -> int:
 
     if args.check:
         check_readme(templates)
-        check_audit_resource(templates, endpoint=args.endpoint)
+        check_audit_resource(templates, endpoint=args.endpoint,
+                             landing=args.landing)
         print("auditor deep-link resource matches the issue forms")
         return 0
     if args.print_only:
@@ -586,7 +624,8 @@ def main(argv: list[str] | None = None) -> int:
 
     README.write_text(readme_with_block(templates), encoding="utf-8")
     endpoint = args.endpoint if args.endpoint is not None else existing_endpoint()
-    write_audit_resource(templates, endpoint)
+    landing = args.landing if args.landing is not None else existing_landing()
+    write_audit_resource(templates, endpoint, landing)
     print(f"README icon-request block written from {len(templates)} issue forms "
           f"· {sum(len(t['prefillable']) for t in templates)} prefillable fields")
     print(f"auditor deep-link resource written to "

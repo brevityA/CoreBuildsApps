@@ -12,4 +12,4 @@
 export const REPO = "brevityA/CoreBuildsApps";
 export const ISSUE_LABEL = "icon request";
 export const TITLE_PREFIX = "[Icon] ";
-export const WORKER_VERSION = "2026-09-22-iconreq02";
+export const WORKER_VERSION = "2026-09-22-iconreq03";
