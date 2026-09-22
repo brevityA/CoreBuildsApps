@@ -4,8 +4,9 @@ import { readFileSync } from "node:fs";
 import { webcrypto } from "node:crypto";
 import {
   validate, issueBody, discordPayload, rateLimitKey, rateLimited, appJwt,
-  readCapped, handle, TITLE_PREFIX, ISSUE_LABEL, WORKER_VERSION,
+  readCapped, handle,
 } from "./worker.mjs";
+import { TITLE_PREFIX, ISSUE_LABEL, WORKER_VERSION } from "./constants.mjs";
 
 // ------------------------------------------------------------------ grammar
 
@@ -261,4 +262,21 @@ test("without GitHub vars a Discord webhook receives the same request", async ()
 test("with neither sink configured the broker says 503", async () => {
   const res = await handle(req(OK, "7.7.7.5"), { RATE_KV: mapKv() });
   assert.equal(res.status, 503);
+});
+
+// --------------------------------------------------------------- entry exports
+// workerd refuses to boot a deployment whose entry module exports non-function,
+// non-ExportedHandler values at the top level ("Incorrect type for map entry
+// '<name>'": caught first by rehearse-local.mjs, then hard-coded into this
+// mirror of that constraint so a future `export const` can never regress into
+// the shipped worker unnoticed. Shared strings belong in constants.mjs.
+
+test("entry-module exports are all functions or ExportedHandlers (workerd rule)", async () => {
+  const m = await import("./worker.mjs");
+  for (const [name, value] of Object.entries(m)) {
+    const legal = typeof value === "function" ||
+      (value !== null && typeof value === "object" && "fetch" in value);
+    assert.ok(legal, `export ${name} is not legal on a Workers entry module`);
+  }
+  assert.equal(typeof m.default?.fetch, "function");
 });

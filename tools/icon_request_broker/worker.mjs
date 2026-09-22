@@ -25,10 +25,9 @@
  * +1 comment; Discord: the same formatted card).
  */
 
-export const REPO = "brevityA/CoreBuildsApps";
-export const ISSUE_LABEL = "icon request";
-export const TITLE_PREFIX = "[Icon] ";
-export const WORKER_VERSION = "2026-09-22-iconreq01";
+// Shared literals live in constants.mjs — see that file for why a Workers
+// entry module must not export plain strings (workerd refuses to boot).
+import { REPO, ISSUE_LABEL, TITLE_PREFIX, WORKER_VERSION } from "./constants.mjs";
 
 const COMPONENT_RE = /^[A-Za-z0-9_.]+\/[A-Za-z0-9_.$]+$/;
 const MAX_APP_NAME = 80;

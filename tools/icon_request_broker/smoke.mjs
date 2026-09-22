@@ -18,7 +18,7 @@ if (!base) {
   process.exit(2);
 }
 
-const ownVersion = readFileSync(new URL("./worker.mjs", import.meta.url), "utf8")
+const ownVersion = readFileSync(new URL("./constants.mjs", import.meta.url), "utf8")
   .match(/export const WORKER_VERSION = "([^"]+)"/)[1];
 
 let failures = 0;

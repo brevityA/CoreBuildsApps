@@ -82,7 +82,10 @@ All notable changes to the Core Builds Icon Pack. Format follows
   body reader, and three-layer rate limiting (binding → KV → isolate
   floor) — plus a full `[env.staging]` rehearsal lane and dispatch-only
   deploy workflow mirroring the webtools repo's, so nothing in production
-  has to happen before a staging rehearsal passes.
+  has to happen before a staging rehearsal passes; a zero-cloud rehearsal
+  (`node rehearse-local.mjs`) already ran green end to end in the real
+  Workers runtime and caught a boot-blocking entry-export bug before any
+  deploy could.
   Pop compiles the same auditor and inherits this. Until the broker URL is
   baked into the generated resources (one `--endpoint` flag on the prefill
   generator after deploy), nothing changes on-device: presses go straight

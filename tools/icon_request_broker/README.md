@@ -78,6 +78,27 @@ reporters get the one-press flow today either way.
   — the issue forms reference the label but repo labels were minted by hand
   until now.
 
+## Rehearse locally first (zero cloud, no credentials)
+
+`node rehearse-local.mjs` boots the worker in the **real Workers runtime**
+(`wrangler dev` — no Cloudflare account), swaps in a throwaway receiver for
+the Discord webhook, and drives the exact sequence the staging rehearsal
+would: health/version → routing → validation → card landing in the receiver
+→ the KV hourly bucket clamping the next press. It proves things unit tests
+cannot — the worker parses *as deployed* and a subrequest actually leaves
+the isolate — and it already earned its keep: the first run caught a
+boot-blocking bug (a top-level `export const` string, legal in Node, is
+rejected by workerd — hence `constants.mjs` and the entry-exports test).
+
+Two semantics the rehearsal locks in:
+
+- **Every request consumes the rate budget, including refused ones** (the
+  clamp runs before validation — cheapest alternative first, and a flood of
+  malformed payloads trips the limiter rather than the parser).
+- Each source IP carries its own hourly bucket.
+
+It never creates requests, files issues, or touches production.
+
 ## Deploy (owner, one time, ~10 minutes — rehearse on staging first)
 
 **Same repo convention as the webtools worker: staging first.**
@@ -177,7 +198,9 @@ QR panel.
 
 ## Tests
 
-`node --test` — 19 tests: payload grammar, issue-body parity with
+`node --test` — 28 contracts: payload grammar, issue-body parity with
 `.github/ISSUE_TEMPLATE/1.new_icon_request.yml` (parsed, so a form edit
 fails the parity test), hourly rate-limit buckets, a real RS256 JWT
-sign-and-verify, and the full file-or-+1 flows against a stubbed GitHub API.
+sign-and-verify, the full file-or-+1 flows against a stubbed GitHub API,
+the Discord fallback, and the workerd entry-export constraint. For the
+deployed-runtime proof run `npm run rehearse` (see above).
