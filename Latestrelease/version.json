@@ -13,6 +13,7 @@
     "First auditor round: fifteen of the twenty unmapped apps are mapped",
     "One-press anonymous icon requests, groundwork shipped",
     "The QR fallback now carries its payload visibly",
-    "The auditor stops hiding apps whose package is partially mapped"
+    "The auditor stops hiding apps whose package is partially mapped",
+    "Square glyphs are the shipped default; banners are now opt-in"
   ]
 }

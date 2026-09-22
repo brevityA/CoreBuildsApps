@@ -28,6 +28,7 @@ object Prefs {
     const val KEY_UPDATE_CHECKS = "update_checks"
     const val KEY_REDUCE_MOTION = "reduce_motion"
     const val KEY_AMOLED = "amoled_chrome"
+    const val KEY_PICK_BANNERS = "pick_banners"
 
     private fun prefs(context: Context): SharedPreferences =
         context.applicationContext.getSharedPreferences(FILE, Context.MODE_PRIVATE)
@@ -61,6 +62,17 @@ object Prefs {
      */
     fun amoled(context: Context): Boolean =
         prefs(context).getBoolean(KEY_AMOLED, false)
+
+    /**
+     * Whether the icon picker opens on the banner-art chip rather than the
+     * square glyph. Square is the shipped default (false) because the pack's
+     * appfilter maps components to glyphs: launchers that self-apply get
+     * glyphs by default, and banner art stays one pick away on the second
+     * chip. Written by the picker's own shape chips too, so a user's shape
+     * choice simply *stays*.
+     */
+    fun pickerPrefersBanners(context: Context): Boolean =
+        prefs(context).getBoolean(KEY_PICK_BANNERS, false)
 
     fun set(context: Context, key: String, value: Boolean) {
         prefs(context).edit().putBoolean(key, value).apply()

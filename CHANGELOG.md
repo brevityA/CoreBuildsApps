@@ -108,6 +108,20 @@ All notable changes to the Core Builds Icon Pack. Format follows
   preflight for exactly that; version tag `2026-09-22-iconreq03`, unit
   tests 28 → 30). One generator flag, `--landing`, bakes it the same way
   `--endpoint` does, and both persist across regenerations.
+- **Square glyphs are the shipped default; banners are now opt-in.** Every
+  appfilter entry in all three packs — 2,875 drawable references across the
+  icon pack, Pop and Pixel Neon — used to map launchers to the banner art;
+  they now map to the square glyph, and the launcher picker browses Square
+  sections first with banners following. No banner is deleted: the art
+  ships exactly as before, so a launcher that offers its own banner mode
+  keeps working, and the icon picker's shape chips remember whichever
+  shape a user last delivered. A new Settings row (Banner previews, off)
+  mirrors that preference for the pack's own pick-mode chips — the one
+  per-user channel a launcher genuinely exposes — while the shipped
+  default means nobody needs it: apply once and the home screen is square
+  glyphs by default. (Why not a per-user runtime switch reaching the
+  launcher: launcher-facing art lives in static APK assets and launchers
+  self-apply; the rewired default is the honest version of that toggle.)
 
 ### Fixed
 

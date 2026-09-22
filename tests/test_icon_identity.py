@@ -512,14 +512,16 @@ class SourceTests(unittest.TestCase):
         self.assertNotEqual(body, monoline(GLYPHS["tile_N"](accent)))
         self.assertFalse(hasattr(brandmarks, "catalog_glyphs"))  # no vendor override route
 
-    def test_nobuffr_maps_to_banner_in_all_three_packs(self):
+    def test_nobuffr_maps_in_all_three_packs(self):
         expected = "ComponentInfo{com.nobuffr.app/tv.tivitime.compose.app.AppActivity}"
         for module in (ROOT / "app", ROOT / "pop", ROOT / "pixel-neon/app"):
             xml = module / "src/main/res/xml/appfilter.xml"
             resources = ET.parse(xml).getroot()
             matches = [r for r in resources.findall("item") if r.get("component") == expected]
             self.assertEqual(len(matches), 1, str(xml))
-            self.assertEqual(matches[0].get("drawable"), "nobuffr_banner")
+            # Square glyph is the shipped default since 1.9.2; the banner
+            # pair still ships so launcher-side banner choice stays live.
+            self.assertEqual(matches[0].get("drawable"), "nobuffr")
             self.assertNotIn("com.nobuffr.app/.MainActivity", xml.read_text())
             for suffix in ("", "_banner"):
                 self.assertTrue((module / "src/main/res/drawable-nodpi" / f"nobuffr{suffix}.png").is_file())

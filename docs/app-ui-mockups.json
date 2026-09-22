@@ -39,8 +39,8 @@
   },
   "generator": "tools/build_app_ui_mockups.py",
   "inputs": {
-    "Latestrelease/version.json": "6ce135f3382e279b7361155c234845da734c44e1692273e175fa8a7e9aee1ed6",
-    "app/src/main/assets/appfilter.xml": "8af96dc0e6f0d53a03f98e1d0f399a40d0c8918dbafe5697909971785ee9548e",
+    "Latestrelease/version.json": "982e355bbce379b30a89f63ce2ddf7a319a76ec231dde6888513ff446f1cad8f",
+    "app/src/main/assets/appfilter.xml": "12a57b26c8dbb4e2c09aaf236a04b5256d91c88597fe91cf6f42129fcb94ff91",
     "app/src/main/assets/manifest/wallpapers.json": "3265f4fdbeaaf99fc74c941e348bcabd4a95af8054b104f16553888dff7b8b6d",
     "app/src/main/res/layout/activity_about.xml": "24bf8847817c6c79e0733b25282913f12756331e851a461fdb5f96e43b08d04a",
     "app/src/main/res/layout/activity_auditor.xml": "3353f96d0932249a0ce841ca31ef98c65103132ec9b9efd1c8144e1fe2c34dca",
@@ -48,7 +48,7 @@
     "app/src/main/res/layout/activity_faq.xml": "84a5cf1a80764f4621b72264929d74ae40b12e5ff4417d5ac470673b5289ee09",
     "app/src/main/res/layout/activity_inspector.xml": "968c82ce900f0cdfd1b43eef95defae7e38ed2f18b5b17bd32df7c541975babf",
     "app/src/main/res/layout/activity_main.xml": "063a4d7d720afb724681cb1a5305241e4b193e2eeb78cf8453e751ea710f032c",
-    "app/src/main/res/layout/activity_settings.xml": "3d3d997e9490d6041eaa5c3c9e53698291d0115de08990b26bf57f81afe5271b",
+    "app/src/main/res/layout/activity_settings.xml": "c7573cf325f796a4e1f1e70a759421eb4740c55f89b0b57483e22fe3c251164a",
     "app/src/main/res/layout/activity_suite.xml": "48d703fbff75550a6e2742a79f9119216c22829908dd68cc04421d134b4988a7",
     "app/src/main/res/layout/activity_wallpaper_preview.xml": "33946e58f790ff221ef04a915998a377c50f54f0b4218af140ccfdf057a7c948",
     "app/src/main/res/layout/activity_wallpapers.xml": "0fc98170040d477e03bc4388aa4d55f6200b44931bb34133e081e300bf0f53f9",
@@ -61,7 +61,7 @@
     "app/src/main/res/values/dimens.xml": "7bc57666dc36c2a3adad0b1559b7da8c33c01616cb024f741f0a948d5df65126",
     "app/src/main/res/values/icon_pack.xml": "d3fa90152f6044b6342f20e2723b5531469945d53feb147282722090d1be55ba",
     "app/src/main/res/values/issue_prefill.xml": "d0936511248c7779a8c38788738f2763a1e15bad8ddf8198719f13b5464b00fa",
-    "app/src/main/res/values/strings.xml": "6ac9acdc3d339f9d80e79171be1101cb9eff474edf8fc3601adbcc8e4abab3e5",
+    "app/src/main/res/values/strings.xml": "4f42070846c3437cbb0581e5e87f16bbb1cf9d1c449a5572a6c7a098cd8b8827",
     "app/src/main/res/values/suite_hub.xml": "69ac213b6d898884f21bc8b56043053c3e08444415e50450f29fec6a48317213",
     "app/src/main/res/values/themes.xml": "ecac526951fe40b6c5c01df0ec36730d0e197fd9511862cf587a2143773b46be",
     "tools/build_app_ui_mockups.py": "14126891270c452a2eb16f50262b41d26c8a05c48f7e8896889ebe3db2ca4540",
@@ -71,7 +71,7 @@
     "tools/fonts/Outfit-Bold.ttf": "04f7c9705153927058475d6c5e9f75b0a1036ec5f6f63ffb69df046191ea8933",
     "tools/fonts/Outfit-ExtraBold.ttf": "056e8cd5840cea4cfc355f672292f7de00d95f5a42bf9b7cd96d511ca8e2883e"
   },
-  "inputs_digest": "4d13396d11eacc74c16745476959d3e80b18c27165e1899a29222112fc186c4b",
+  "inputs_digest": "7a24418e80a2d90d9ac3a1a08062146fb5afd67ed5517ee56bf99c3560961b5b",
   "metrics": {
     "mono-bold@24": 448.0,
     "mono-bold@32": 608.0,

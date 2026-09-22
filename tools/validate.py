@@ -106,13 +106,15 @@ def main():
         comp = item.get("component", "")
         d = item.get("drawable", "")
         comp_total += 1
-        # appfilter maps to the banner drawable — banners are the pack default.
+        # appfilter maps to the square glyph — glyphs are the pack default
+        # since 1.9.2, banner art staying opt-in via drawable.xml and
+        # whatever banner mode the launcher itself offers.
         base = d[:-7] if d.endswith("_banner") else d
         check(base in names,
               f"appfilter: drawable '{d}' has no catalog entry")
-        check(d.endswith("_banner"),
-              f"appfilter: '{d}' is not a banner drawable — banners are the "
-              f"default, square icons stay opt-in via drawable.xml")
+        check(not d.endswith("_banner"),
+              f"appfilter: '{d}' is a banner drawable — glyphs are the "
+              f"default since 1.9.2, banners stay opt-in via drawable.xml")
         check(re.match(r"^ComponentInfo\{[^/]+/[^}]+\}$", comp),
               f"appfilter: malformed component '{comp}'")
         check(comp not in seen,

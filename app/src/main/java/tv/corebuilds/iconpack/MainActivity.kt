@@ -61,7 +61,7 @@ class MainActivity : TvActivity() {
 
     private var category = ALL
     private var query = ""
-    private var pickBanners = true
+    private var pickBanners = false
     private var pendingUpdate: UpdateChecker.Result.Available? = null
     private var downloadedApk: File? = null
     private var installOffered = false
@@ -118,9 +118,17 @@ class MainActivity : TvActivity() {
         }
 
         if (pickMode) {
+            // The shape a user last delivered simply stays: the picker opens
+            // on the stored chip, and the chip row keeps it (bindPickShape
+            // writes the pref). The shipped default is square — the same
+            // default the appfilter now maps for launcher-side apply.
+            pickBanners = Prefs.pickerPrefersBanners(this)
             val pickerHint = findViewById<TextView>(R.id.picker_hint)
             pickerHint.visibility = View.VISIBLE
-            pickerHint.text = getString(R.string.picker_hint_banner)
+            pickerHint.text = getString(
+                if (pickBanners) R.string.picker_hint_banner
+                else R.string.picker_hint_square
+            )
             findViewById<TextView>(R.id.apply_button).visibility = View.GONE
             findViewById<TextView>(R.id.apply_sub).visibility = View.GONE
             findViewById<LinearLayout>(R.id.update_bar).visibility = View.GONE
@@ -1042,8 +1050,11 @@ class MainActivity : TvActivity() {
         // See bindChips: a chip press that costs the chip its highlight reads as
         // the press not having landed.
         targets.itemAnimator = null
-        targets.adapter = ChipAdapter(labels, keys, PICK_BANNER) { key ->
+        targets.adapter = ChipAdapter(
+            labels, keys, if (pickBanners) PICK_BANNER else PICK_SQUARE
+        ) { key ->
             pickBanners = key == PICK_BANNER
+            Prefs.set(this, Prefs.KEY_PICK_BANNERS, pickBanners)
             hint.text = if (pickBanners) {
                 getString(R.string.picker_hint_banner)
             } else {
