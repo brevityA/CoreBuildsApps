@@ -73,6 +73,14 @@ All notable changes to the Core Builds Icon Pack. Format follows
   email on the reporter side; the GitHub App credential lives only as a
   Workers secret, never in the APK, never in git — the whole broker, its
   deploy notes and its test suite live in `tools/icon_request_broker/`.
+  Where the GitHub App isn't configured yet, the same worker forwards the
+  request as a card to a Discord webhook instead — the pattern the Core
+  Builds webtools worker runs in production today — so the press works
+  from day one and self-upgrades the moment the App secrets exist. The
+  worker implements the webtools worker's documented hardening
+  conventions: build tag compared by a prod-safe smoke check, byte-capped
+  body reader, and three-layer rate limiting (binding → KV → isolate
+  floor).
   Pop compiles the same auditor and inherits this. Until the broker URL is
   baked into the generated resources (one `--endpoint` flag on the prefill
   generator after deploy), nothing changes on-device: presses go straight

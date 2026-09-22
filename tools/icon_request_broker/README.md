@@ -25,6 +25,40 @@ the private key exists solely as a Workers secret, scoped to
 **Issues: read/write on this one repo**. Losing the worker leaks exactly
 one repo's issue tracker, revocable in one click.
 
+## Ops lineage — standing on the webtools worker's shoulders
+
+This broker deliberately adopts the ops conventions of the Core-Builds
+`cloudflare-worker` (**core-builds-cors-proxy**, the AIOStreams webtools
+service you already run in production): a build-tag (`WORKER_VERSION`) the
+smoke check compares to the checkout, a byte-capped body reader
+(`readCapped` — a request this small never streams), three-layer rate
+limiting (**Workers Rate Limiting binding → KV hourly bucket →
+in-isolate floor** — the second layer counts a write collision against the
+caller, as that worker's audit decided), an `observability` block with
+structured secret-free `logEvent()` lines, and a production-safe
+`smoke.mjs` whose checks never create a single issue.
+
+Deliberate differences from a copy: no Durable Object store (there is no
+cross-instance document to hold), no Discord *requirement* (it's the
+fallback sink, GitHub is the prime sink), no STATS counters beyond the
+logs (a missing-icon flow doesn't need a dashboard; the issue list *is*
+the dashboard).
+
+### Three deployment shapes, pick one
+
+| | A · dedicated worker *(recommended)* | B · lane in the webtools worker | C · Discord-only start |
+|---|---|---|---|
+| Code home | **this kit** (`tools/icon_request_broker/`) — the parity test against the issue form lives beside it | the `cloudflare-worker` repo — needs a port + its release discipline + widening its exposure audit | A's worker, but with only the webhook secret set |
+| New credentials | GitHub App (Issues: write) + 3 secrets | same, plus touching an audited production file | exactly one: `ICON_REQUEST_DISCORD_WEBHOOK_URL` |
+| Time to first filed request | ~10 min | longer | ~5 min, requests appear in Discord first |
+| Blast radius | its own worker | shared with the webtools | its own worker |
+
+C upgrades to A whenever the GitHub App gets created: set the three App
+secrets and the webhook path silently stops being used (the worker prefers
+GitHub when configured). The author's suggestion: **start at C this week,
+flip to A when there's appetite for the GitHub App registration** —
+reporters get the one-press flow today either way.
+
 ## Why these exact design choices
 
 - **Validated grammar, not free text.** `app_name` / `component` / `device`
@@ -65,12 +99,22 @@ one repo's issue tracker, revocable in one click.
    wrangler login
    npx wrangler kv namespace create RATE_KV     # paste the id into wrangler.toml
    cp wrangler.toml.example wrangler.toml       # then fill the namespace id
+
+   # GitHub path (A) — all three:
    npx wrangler secret put GITHUB_APP_ID
    npx wrangler secret put GITHUB_APP_INSTALLATION_ID
    npx wrangler secret put GITHUB_APP_PRIVATE_KEY  # paste the whole PEM block
+
+   # OR Discord-to-start (C) — one secret; upgrade later by adding the trio:
+   npx wrangler secret put ICON_REQUEST_DISCORD_WEBHOOK_URL
+
    npx wrangler deploy
    ```
-5. **Smoke-test:**
+5. **Smoke-test (never creates an issue):**
+   ```bash
+   node smoke.mjs --strict https://<name>.<subdomain>.workers.dev
+   ```
+   Then, if you want the create-path proven once against GitHub:
    ```bash
    curl -X POST https://<name>.<subdomain>.workers.dev/ \
      -H 'Content-Type: application/json' \
