@@ -9,8 +9,8 @@
       "structure": "24adbf4386dc5eff44c003e32b237bd3daeb595de8d788b7938d4d42999d1f12"
     },
     "app-ui-catalogue-update.png": {
-      "bytes": 169102,
-      "structure": "2fc2c686202c815f9d1ae4d9e6103ab8c253fd2483d743738bb30f2ffe662e98"
+      "bytes": 169521,
+      "structure": "55bae9c9ba7517a6bc5d1be641abd40fc14b2d649a0611a283e12b08e815c7ae"
     },
     "app-ui-catalogue.png": {
       "bytes": 185039,
@@ -43,7 +43,7 @@
   },
   "generator": "tools/build_app_ui_mockups.py",
   "inputs": {
-    "Latestrelease/version.json": "e3109c689251d994da38bad3b3224f7289fb3536e4f366a0ea932224045966af",
+    "Latestrelease/version.json": "49c1b5688a3a12a6f03e5f60e34c7e113b8ac09c9ba0d590c49ca4e01deb80b6",
     "app/src/main/assets/appfilter.xml": "522ccfaee43eb61de41cd3aa3b2de259029deefaa20a692dbe38634a81c5e411",
     "app/src/main/assets/manifest/wallpapers.json": "3265f4fdbeaaf99fc74c941e348bcabd4a95af8054b104f16553888dff7b8b6d",
     "app/src/main/res/layout/activity_about.xml": "24bf8847817c6c79e0733b25282913f12756331e851a461fdb5f96e43b08d04a",
@@ -70,13 +70,13 @@
     "app/src/main/res/values/suite_hub.xml": "69ac213b6d898884f21bc8b56043053c3e08444415e50450f29fec6a48317213",
     "app/src/main/res/values/themes.xml": "ecac526951fe40b6c5c01df0ec36730d0e197fd9511862cf587a2143773b46be",
     "tools/build_app_ui_mockups.py": "14f084313b441a14321ff829fd4f4321c760f0cf9379636477eac8425ff77fa4",
-    "tools/catalog.json": "d77b13795b938a616936a07267e294cb53935133971d4157e20245c90a0baf6e",
+    "tools/catalog.json": "1a3087a9577e8d148a64bb6d55acb45cd883f1bcd1a6214c3960c3e756f6688f",
     "tools/fonts/DejaVuSansMono-Bold.ttf": "2964f6dac8e6e9d71613928340f17bf868e9ea51692cca333c79e74962f02233",
     "tools/fonts/DejaVuSansMono.ttf": "0f5db4f1749979d961019838b160bec74abdf7f9eca69553fe1aa856bbff49a4",
     "tools/fonts/Outfit-Bold.ttf": "04f7c9705153927058475d6c5e9f75b0a1036ec5f6f63ffb69df046191ea8933",
     "tools/fonts/Outfit-ExtraBold.ttf": "056e8cd5840cea4cfc355f672292f7de00d95f5a42bf9b7cd96d511ca8e2883e"
   },
-  "inputs_digest": "94a32910706e39a6e1a50ac62b6b0121eb1dd536068e8bf006f291ba45cfc40d",
+  "inputs_digest": "acf98245f6b5c0d14cf40dad38d1d084744e49b05ef0f5e6a55b88421558d34b",
   "metrics": {
     "mono-bold@24": 448.0,
     "mono-bold@32": 608.0,

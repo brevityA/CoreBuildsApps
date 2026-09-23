@@ -175,6 +175,18 @@ All notable changes to the Core Builds Icon Pack. Format follows
   stripe-set, not a costume party — and a sampling launcher now sees the
   brand it was asking about. Pop's swatch backs never did this wrong; the
   fixed stripe in the flagship is the only rail that did.
+- **Generic glyphs now wear their category as their shape.** Of the 961
+  icons, 546 are adaptive wordmark monograms (family shell + letter +
+  mark), and the shell assignment had flattened over time: 248 of the 550
+  APP-category monograms sat in the broadcast shell, VOD/PLAYER rows in
+  broadcast too, tool-shaped rows hiding behind an APP categorization —
+  a TOOL row, a STREAM row and a STORE row were becoming the same glyph
+  in three colours. Every family monogram now sits in the shell its
+  catalog category declares (app/broadcast/film/sport/tool/music/files/
+  vpn/gaming/browser/store/debrid/anime/kids/photos): 366 icons
+  re-shelled, letters and marks untouched, so a wrench-shaped row is
+  actually a TOOL and the stream family stays broadcast-shaped. The
+  art changes only; components, drawables and appfilters are untouched.
 
 ### Fixed
 

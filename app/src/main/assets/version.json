@@ -8,7 +8,7 @@
   "releaseNotesUrl": "https://github.com/brevityA/CoreBuildsApps/releases",
   "minSdk": 21,
   "highlights": [
-    "Adaptive wordmark monograms",
+    "Generic glyphs now wear their category as their shape",
     "Brand-informed mark styles, tranche 1",
     "First auditor round: fifteen of the twenty unmapped apps are mapped",
     "One-press anonymous icon requests, groundwork shipped",
