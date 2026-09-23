@@ -248,20 +248,24 @@ class VersionAndCiTests(unittest.TestCase):
         self.assertIn("dist/iconpack-release.apk", wf)
         self.assertIn("dist/app-release.apk", wf)
         self.assertIn("git tag -f iconpack", wf)
-        self.assertIn("tag_name: iconpack", wf)
+        # The floating release must be created on the iconpack tag so the
+        # stable URL (apkUrl in version.json) and Downloader 5270601 keep
+        # resolving. Publish flow is draft-first (immutable release assets
+        # cannot be patched after publish), asserted as its contract:
+        self.assertIn("gh release create iconpack", wf)
         versioned = wf.split("- name: Publish versioned release", 1)[1]
-        self.assertIn("make_latest: true", versioned.split("- name:", 1)[0])
+        self.assertIn("--latest", versioned.split("- name:", 1)[0])
         stable = wf.split("- name: Publish stable Downloader release", 1)[1]
-        self.assertIn("make_latest: false", stable)
+        self.assertIn("--latest=false", stable)
 
     def test_core_line_never_becomes_repository_latest(self):
         wf = read(".github/workflows/core-line-apk.yml")
         self.assertEqual(
-            wf.count("make_latest: false"),
+            wf.count("--latest=false"),
             2,
             "both Core Line versioned and floating releases must opt out of Latest",
         )
-        self.assertNotIn("make_latest: true", wf)
+        self.assertNotIn("--latest ", wf)  # bare --latest would claim Latest
 
 
 class MappingAndFocusTests(unittest.TestCase):
