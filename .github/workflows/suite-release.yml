@@ -139,11 +139,15 @@ jobs:
           if-no-files-found: error
       - name: Publish GitHub Release assets
         if: needs.select.outputs.publish == 'true'
-        uses: softprops/action-gh-release@v3
-        with:
-          files: dist/**
-          generate_release_notes: true
-          make_latest: false
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          TAG="${GITHUB_REF_NAME}"
+          # Immutable releases: attach while draft, then publish. Recreate a
+          # same-tag shell so a rerun after a partial publish self-heals.
+          gh release delete "$TAG" --yes 2>/dev/null || true
+          gh release create "$TAG" --draft --generate-notes --verify-tag dist/*
+          gh release edit "$TAG" --draft=false --latest=false
       - name: Write release checklist summary
         run: |
           {
