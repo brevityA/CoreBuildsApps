@@ -140,11 +140,22 @@ npx wrangler deploy
 node smoke.mjs --strict https://corebuilds-icon-request.<subdomain>.workers.dev
 ```
 
-The GitHub workflow does the same (`Actions → Deploy icon-request broker`,
-default staging; never on its own): it needs `secrets.CF_API_TOKEN`,
+**CI deploy runs from Core-Builds**, where the Cloudflare credentials
+already live (`brevityA/Core-Builds` → Actions → *Deploy icon-request
+broker (CoreBuildsApps)*, default staging, never on its own). It checks
+this repo out at a chosen ref, runs `node --test`, finds or creates the
+environment's `RATE_KV` namespace, deploys and smokes, using the same
+secrets and environments as core-builds-cors-proxy. GitHub secrets cannot
+cross repositories, so this repo's own workflow below would need its own
+copy of the token; it stays as the fallback: `secrets.CF_API_TOKEN`,
 `vars.CLOUDFLARE_ACCOUNT_ID`, `vars.WRK_ICONREQ_KV_ID_{STAGING,PRODUCTION}`
-and either `vars.WORKERS_DEV_SUBDOMAIN` or the `url` input each run —
-CI deploys code only; worker secrets stay with wrangler.
+and either `vars.WORKERS_DEV_SUBDOMAIN` or the `url` input each run.
+Either way CI deploys code only; worker secrets stay with wrangler.
+
+The rate-limit `namespace_id`s (3201 production, 3202 staging) are
+account-wide, and this worker shares its account with the cors-proxy,
+which holds 3001-3007 and 3101-3107. The Core-Builds workflow refuses to
+deploy on any overlap.
 
 ## Deploy (owner, one time, ~10 minutes)
 
