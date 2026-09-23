@@ -214,6 +214,9 @@ updates:
       # com.android.application <= 8.5.2
       - dependency-name: "com.android.application"
         update-types: ["version-update:semver-patch", "version-update:semver-minor", "version-update:semver-major"]
+      # com.squareup.okhttp3:okhttp <= 4.12.0 — declared by app
+      - dependency-name: "com.squareup.okhttp3:okhttp"
+        update-types: ["version-update:semver-patch", "version-update:semver-minor", "version-update:semver-major"]
       # androidx.appcompat:appcompat <= 1.7.0 — declared by app
       - dependency-name: "androidx.appcompat:appcompat"
         update-types: ["version-update:semver-patch", "version-update:semver-minor", "version-update:semver-major"]

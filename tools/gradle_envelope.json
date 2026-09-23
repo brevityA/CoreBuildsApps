@@ -79,6 +79,16 @@
       ]
   },
   {
+   "coordinate": "com.squareup.okhttp3:okhttp",
+      "max": "4.12.0",
+      "blockedUpdateTypes": ["version-update:semver-patch", "version-update:semver-minor", "version-update:semver-major"],
+      "reason": "5.5.0 pulls com.squareup.okhttp3:okhttp-android:5.5.0, whose AAR metadata needs compileSdk 37; doctor/ compiles at 35 on AGP 8.5.2, so :app:checkDebugAarMetadata fails (PR #159). Which 5.x release first crosses a compileSdk the suite can reach is not proven, so the cap sits at 4.12.0, the last green release, and lifts with the compileSdk steps in the migration list.",
+      "evidence": [
+        "https://github.com/brevityA/CoreBuildsApps/pull/159",
+        "https://square.github.io/okhttp/changelogs/changelog/"
+      ]
+  },
+  {
    "coordinate": "androidx.core:core-ktx",
       "max": "1.13.1",
       "blockedUpdateTypes": ["version-update:semver-patch", "version-update:semver-minor", "version-update:semver-major"],
@@ -216,7 +226,7 @@
       "Resolve the AGP/wrapper pair before moving AGP: either take the five 9.7.0 wrappers down to <= 9.5.1 (the combination PR #146 proved green), or wait for AGP 9, whose problem reporter no longer binds the API Gradle 9.6.0 removed. Then lift the com.android.application ceiling, one root at a time, alone - not bundled with library bumps.",
       "Migrate doctor/ to the Compose compiler Gradle plugin: apply org.jetbrains.kotlin.plugin.compose, delete composeOptions, then take Kotlin 2.x across all six roots together and convert kotlinOptions to compilerOptions.",
       "Raise compileSdk to 36, then 37, lifting the AndroidX ceilings in gradle_envelope.json as each one goes green.",
-      "Only then unblock androidx.core, appcompat, recyclerview, media3 and compose-bom in .github/dependabot.yml."
+      "Only then unblock androidx.core, appcompat, recyclerview, media3, compose-bom and okhttp in .github/dependabot.yml."
     ]
   }
 }

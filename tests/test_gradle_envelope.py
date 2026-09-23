@@ -40,6 +40,19 @@ COPY_GLOBS = [
 SKIP_PARTS = {"node_modules", "build", ".git", "dist", "out"}
 
 
+def wrapper_on_disk(root_dir: Path) -> str:
+    """The Gradle version a root's wrapper properties name, read independently.
+
+    Deliberately not gate._wrapper_version: a test that compared the gate's
+    parser with itself would pass whatever the parser did.
+    """
+    text = (root_dir / "gradle" / "wrapper" / "gradle-wrapper.properties").read_text()
+    for line in text.splitlines():
+        if line.startswith("distributionUrl="):
+            return line.rsplit("/gradle-", 1)[1].rsplit("-", 1)[0]
+    raise AssertionError(f"no distributionUrl in {root_dir}")
+
+
 def snapshot(dest: Path) -> None:
     """Copy the build-relevant slice of the repo into `dest`."""
     for pattern in COPY_GLOBS:
@@ -189,8 +202,12 @@ class GradleParsing(unittest.TestCase):
         for rel, root in self.roots.items():
             self.assertEqual(root.agp, "8.5.2", f"{rel} AGP")
             self.assertEqual(root.kotlin, "1.9.24", f"{rel} Kotlin")
-        self.assertEqual(self.roots["ticker/android"].wrapper, "8.7")
-        self.assertEqual(self.roots["shift"].wrapper, "9.7.0")
+        # Compared with the properties files themselves rather than literals:
+        # the wrapper is a Dependabot-managed version, and a test that pins it
+        # fails every wrapper bump for reasons that have nothing to do with the
+        # gate (PR #160 went red on exactly this).
+        for rel in ("ticker/android", "shift"):
+            self.assertEqual(self.roots[rel].wrapper, wrapper_on_disk(ROOT / rel), rel)
 
     def test_dependencies_include_the_bom_and_test_configs(self):
         deps = self.roots["doctor"].modules[0].deps
@@ -533,9 +550,10 @@ class Mutants(unittest.TestCase):
 
     def test_a_wrapper_below_the_agp_floor_is_caught(self):
         with ScratchRepo() as repo:
+            props = "ticker/android/gradle/wrapper/gradle-wrapper.properties"
             repo.edit(
-                "ticker/android/gradle/wrapper/gradle-wrapper.properties",
-                "gradle-8.7-bin.zip",
+                props,
+                f"gradle-{wrapper_on_disk(repo.root / 'ticker/android')}-bin.zip",
                 "gradle-8.2-bin.zip",
             )
             repo.assert_blocked("below 8.7", "Gradle under the AGP 8.x floor")
