@@ -798,15 +798,20 @@ def wallpapers_frame() -> tuple[Image.Image, str]:
     return img, note
 
 
-def settings_frame() -> tuple[Image.Image, str]:
-    img = new_frame()
-    draw = ImageDraw.Draw(img, "RGBA")
-    order = [
+def settings_order() -> list:
+    # One source of truth for the rows, shared by both settings frames: the
+    # existing frame scrolls to LAUNCHER, settings_display_frame scrolls to
+    # DISPLAY, and a hand-copied row list would drift between the two exactly
+    # the way production copy would. Order and grouping mirror
+    # activity_settings.xml — if a row lands in the layout and not here the
+    # frames stop being examples of the build.
+    return [
         ("group", "settings_group_updates"),
         ("switch", "settings_updates_title", "settings_updates_sub", True),
         ("group", "settings_group_display"),
         ("switch", "settings_motion_title", "settings_motion_sub", False),
         ("switch", "settings_amoled_title", "settings_amoled_sub", False),
+        ("switch", "settings_banner_title", "settings_banner_sub", False),
         ("group", "settings_group_storage"),
         ("row", "settings_cache_title", "settings_cache_sub", "settings_cache_clear"),
         ("group", "settings_group_launcher"),
@@ -814,21 +819,24 @@ def settings_frame() -> tuple[Image.Image, str]:
         ("row", "settings_appinfo_title", "settings_appinfo_sub", None),
         ("group", "settings_group_suite"),
         ("row", "settings_suite_title", "settings_suite_sub", None),
+        ("row", "settings_whatsnew_title", "settings_whatsnew_sub", None),
         ("group", "settings_group_help"),
         ("row", "settings_audit_title", "settings_audit_sub", None),
         ("row", "settings_faq_title", "settings_faq_sub", None),
     ]
+
+
+def paint_settings_viewport(img, order, focused_row):
+    """One viewportful of the settings list, already scrolled: rows above the
+    scroll point were popped by the caller, the first visible entry leads,
+    and the footer lands only if the list ends inside the viewport."""
+    draw = ImageDraw.Draw(img, "RGBA")
     top = header(img, STRINGS["settings_kicker"], STRINGS["settings_title"])
     g = dp(DIMENS["cb_gutter_side"])
     y = top + dp(6)
-    # One viewport of a scrolling list, scrolled to the LAUNCHER group: the row
-    # this frame exists to show is the refresh row and its focus ring.
-    while order and order[0][1] != "settings_group_launcher":
-        order.pop(0)
     f_group = font("mono", DIMENS["cb_text_kicker"], bold=True)
     f_title = font("sans", DIMENS["cb_text_body"], bold=True)
     f_sub = font("sans", DIMENS["cb_text_data"])
-    focused_row = "settings_refresh_title"
     def row_height(entry) -> int:
         sub_lines = wrap(draw, STRINGS[entry[2]], f_sub, W - 2 * g - dp(160))[:2]
         return dp(16) + dp(24) + len(sub_lines) * dp(19) + dp(10)
@@ -882,8 +890,33 @@ def settings_frame() -> tuple[Image.Image, str]:
     if y < H - dp(40):
         draw_text(draw, (g, H - dp(28)), STRINGS["settings_footer"], f_sub,
                   colour("cb_slate"))
+
+
+def settings_frame() -> tuple[Image.Image, str]:
+    img = new_frame()
+    order = settings_order()
+    # One viewport of a scrolling list, scrolled to the LAUNCHER group: the row
+    # this frame exists to show is the refresh row and its focus ring.
+    while order and order[0][1] != "settings_group_launcher":
+        order.pop(0)
+    paint_settings_viewport(img, order, "settings_refresh_title")
     note = ("MOCKUP - settings frame from activity_settings.xml + strings.xml, scrolled "
             "to LAUNCHER; example: focus on the refresh row, switch positions")
+    return img, note
+
+
+def settings_display_frame() -> tuple[Image.Image, str]:
+    img = new_frame()
+    order = settings_order()
+    # The same list parked at the DISPLAY group: this frame exists since the
+    # banner-previews switch landed (1.9.2), because a new toggle nobody can
+    # see is not a toggle. Focus ring on the new row, in its shipped state:
+    # off, square glyphs.
+    while order and order[0][1] != "settings_group_display":
+        order.pop(0)
+    paint_settings_viewport(img, order, "settings_banner_title")
+    note = ("MOCKUP - settings frame scrolled to DISPLAY; example: focus on the "
+            "banner previews switch (off - square glyphs, the 1.9.2 default)")
     return img, note
 
 
