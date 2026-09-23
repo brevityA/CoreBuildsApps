@@ -155,7 +155,7 @@
     <string name="settings_amoled_title">AMOLED chrome</string>
     <string name="settings_amoled_sub">Pure black app background, to match the AMOLED wallpaper series.</string>
     <string name="settings_banner_title">Art style: Glyphs or Banners</string>
-    <string name="settings_banner_sub">Square glyphs when off, 16:9 banner cards when on. Updates the catalogue browser and launcher icon picker.</string>
+    <string name="settings_banner_sub">Square glyphs when off, 16:9 banner cards when on. Updates the catalogue browser and launcher icon picker; launcher auto-apply stays square.</string>
     <string name="settings_group_storage">STORAGE</string>
     <string name="settings_cache_title">Wallpaper cache</string>
     <string name="settings_cache_sub">Wallpapers you downloaded. Clearing re-fetches them on demand.</string>
