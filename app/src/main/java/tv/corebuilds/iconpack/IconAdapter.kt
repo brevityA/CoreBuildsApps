@@ -19,7 +19,7 @@ import androidx.recyclerview.widget.RecyclerView
  */
 class IconAdapter(
     private var items: List<IconItem>,
-    var showBanners: Boolean = false,
+    private var showBanners: Boolean = false,
     private val onActivate: (IconItem) -> Unit
 ) : RecyclerView.Adapter<IconAdapter.VH>() {
 
