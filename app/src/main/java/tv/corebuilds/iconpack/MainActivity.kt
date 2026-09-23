@@ -1150,6 +1150,13 @@ class MainActivity : TvActivity() {
     }
 
     private fun applyTo(launcher: ApplyIconPack.Launcher) {
+        if (Prefs.applyBanners(this)) {
+            val bannersPkg = "tv.corebuilds.iconpack.banners"
+            if (bannersPkg != packageName && !with(ApplyIconPack) { isInstalled(bannersPkg) }) {
+                toast(getString(R.string.settings_apply_art_missing))
+                return
+            }
+        }
         when (val result = ApplyIconPack.apply(this, launcher)) {
             is ApplyIconPack.Result.Applied ->
                 toast(getString(R.string.apply_handed_off_fmt, result.launcherName))

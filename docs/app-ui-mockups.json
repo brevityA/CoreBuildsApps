@@ -25,16 +25,16 @@
       "structure": "f598da9a0a7715ea3dc412f511ac164a33b71903ff84c1b41c915fb36244dbec"
     },
     "app-ui-settings-display.png": {
-      "bytes": 100819,
-      "structure": "8aa039e21c60f52c300869e2b1382697de6362a31879ad260e8f4450b4c61952"
+      "bytes": 101508,
+      "structure": "446c4eace96e9393369f2c7d1e821a09b9eac459e4b6623fd423c1a35c4fb3ec"
     },
     "app-ui-settings.png": {
       "bytes": 92338,
       "structure": "f107ba64690449692b0cccf0987e1f7f44bbf6c4ede04d59b0a267a6848ea130"
     },
     "app-ui-suite.png": {
-      "bytes": 114857,
-      "structure": "4b2feb14ee7f0c9c5d155e6509806a58251cadefe13a524d4d39fea8d416b343"
+      "bytes": 118551,
+      "structure": "de99a950650f8d9e2e3a19257e4383cea0509a489087db32b9ee733d251e26f3"
     },
     "app-ui-wallpapers.png": {
       "bytes": 305249,
@@ -52,7 +52,7 @@
     "app/src/main/res/layout/activity_faq.xml": "84a5cf1a80764f4621b72264929d74ae40b12e5ff4417d5ac470673b5289ee09",
     "app/src/main/res/layout/activity_inspector.xml": "968c82ce900f0cdfd1b43eef95defae7e38ed2f18b5b17bd32df7c541975babf",
     "app/src/main/res/layout/activity_main.xml": "063a4d7d720afb724681cb1a5305241e4b193e2eeb78cf8453e751ea710f032c",
-    "app/src/main/res/layout/activity_settings.xml": "131345d4ce0e532d69b5e98ee8aa4f8597aa1ee3d0713b82377b28e01354aac4",
+    "app/src/main/res/layout/activity_settings.xml": "c3e3bf890269af2ead5dd5db1e709284544b77341618541626edb714d7b61f3c",
     "app/src/main/res/layout/activity_suite.xml": "48d703fbff75550a6e2742a79f9119216c22829908dd68cc04421d134b4988a7",
     "app/src/main/res/layout/activity_wallpaper_preview.xml": "33946e58f790ff221ef04a915998a377c50f54f0b4218af140ccfdf057a7c948",
     "app/src/main/res/layout/activity_wallpapers.xml": "0fc98170040d477e03bc4388aa4d55f6200b44931bb34133e081e300bf0f53f9",
@@ -66,17 +66,17 @@
     "app/src/main/res/values/dimens.xml": "7bc57666dc36c2a3adad0b1559b7da8c33c01616cb024f741f0a948d5df65126",
     "app/src/main/res/values/icon_pack.xml": "46077d230f80ec680a9d0b50ad518169f9914d7e647e4da674d4cc1d1edfa810",
     "app/src/main/res/values/issue_prefill.xml": "d0936511248c7779a8c38788738f2763a1e15bad8ddf8198719f13b5464b00fa",
-    "app/src/main/res/values/strings.xml": "197994331f80e8210d097821c4ddef16d1745de18ad6254bc449793ab3a89b2c",
-    "app/src/main/res/values/suite_hub.xml": "69ac213b6d898884f21bc8b56043053c3e08444415e50450f29fec6a48317213",
+    "app/src/main/res/values/strings.xml": "24b7865fca910454a60826f712e6fdb442f05f41592d5481cf2c7142d638abb5",
+    "app/src/main/res/values/suite_hub.xml": "1949fe555a97da6a57350cfd5aa5f4f2b67bd9ec7d0fd5dec82923f467102719",
     "app/src/main/res/values/themes.xml": "ecac526951fe40b6c5c01df0ec36730d0e197fd9511862cf587a2143773b46be",
-    "tools/build_app_ui_mockups.py": "14f084313b441a14321ff829fd4f4321c760f0cf9379636477eac8425ff77fa4",
+    "tools/build_app_ui_mockups.py": "fec45d4387d8e85d0e82c77b1d976d3e855fd1bd410f7e3f0c5634e12241237e",
     "tools/catalog.json": "1a3087a9577e8d148a64bb6d55acb45cd883f1bcd1a6214c3960c3e756f6688f",
     "tools/fonts/DejaVuSansMono-Bold.ttf": "2964f6dac8e6e9d71613928340f17bf868e9ea51692cca333c79e74962f02233",
     "tools/fonts/DejaVuSansMono.ttf": "0f5db4f1749979d961019838b160bec74abdf7f9eca69553fe1aa856bbff49a4",
     "tools/fonts/Outfit-Bold.ttf": "04f7c9705153927058475d6c5e9f75b0a1036ec5f6f63ffb69df046191ea8933",
     "tools/fonts/Outfit-ExtraBold.ttf": "056e8cd5840cea4cfc355f672292f7de00d95f5a42bf9b7cd96d511ca8e2883e"
   },
-  "inputs_digest": "9680b9f00acaf7687f1b9d08da63b7c6d02344dc79f412d88d1e01ca178a1047",
+  "inputs_digest": "d98e2f7ae44b582330a9e8afb7d64d50a8013f826f08569a729c492fcd2b647f",
   "metrics": {
     "mono-bold@24": 448.0,
     "mono-bold@32": 608.0,

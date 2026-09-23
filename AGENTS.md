@@ -9,15 +9,16 @@
 | Core Builds Icon Pack | `app/` with repo-root Gradle | `tv.corebuilds.iconpack` | `1.9.2` | `5270601` / `iconpack` |
 | Core Builds Pixel Neon | `pixel-neon/` | `tv.corebuilds.pixelneon` | `0.1.0` | `[USER TO SUPPLY]` / `pixel-neon` |
 | Core Builds Pop | `pop/` with repo-root Gradle | `tv.corebuilds.iconpack.pop` | `1.0.0` | `[USER TO SUPPLY]` / `pop` |
+| Core Builds Banners | `banners/` with repo-root Gradle | `tv.corebuilds.iconpack.banners` | `1.0.0` | `[USER TO SUPPLY]` / `banners` |
 | Core Line | `ticker/` + `ticker/android/` | `dev.corebuilds.line` | `1.3.0` | `7375676` / `coreline` |
 | Core Shift | `shift/` | `dev.corebuilds.shift` | `2.3.5` | `8829421` / `shift` |
 | Core Motion | `motion-plugin/` | `tv.corebuilds.motion` | `1.0.0` | `[USER TO SUPPLY]` / `motion` |
 | Core Doctor | `doctor/` | `dev.corebuilds.doctor` | `0.1.0` | `[USER TO SUPPLY]` / `doctor` |
 
-`pop/` is the one intentional exception to "one app, one Gradle root": it is a
-second module on the repo-root build that compiles `app/src/main/java` rather
-than a copy of it. Two packs, one codebase, two package IDs. Do not fork the
-Kotlin, and do not turn either pack into a product flavour of the other — that
+`pop/` and `banners/` are the intentional exceptions to "one app, one Gradle root": they are
+modules on the repo-root build that compile `app/src/main/java` rather
+than a copy of it. Multiple packs, one codebase, separate package IDs. Do not fork the
+Kotlin, and do not turn packs into product flavours of the other — that
 relocates the release APK path and breaks `build.yml`.
 
 Do not merge Gradle roots. Do not split the GitHub repo. Do not rename package IDs. Do not repoint floating Downloader tags. New apps use `tv.corebuilds.<name>`; the current `dev.` IDs are history, not a style to copy.

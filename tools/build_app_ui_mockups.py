@@ -812,6 +812,7 @@ def settings_order() -> list:
         ("switch", "settings_motion_title", "settings_motion_sub", False),
         ("switch", "settings_amoled_title", "settings_amoled_sub", False),
         ("switch", "settings_banner_title", "settings_banner_sub", False),
+        ("switch", "settings_apply_art_title", "settings_apply_art_sub", False),
         ("group", "settings_group_storage"),
         ("row", "settings_cache_title", "settings_cache_sub", "settings_cache_clear"),
         ("group", "settings_group_launcher"),
@@ -1074,7 +1075,8 @@ def suite_frame() -> tuple[Image.Image, str]:
             card(img, [g, y, W - g, y + row_h])
             inner = dp(DIMENS["cb_focus_inset"])
         draw_text(draw, (g + inner + dp(8), y + inner), name, f_name, colour("cb_ink"))
-        state = (fmt(STRINGS["suite_installed_fmt"], "2.0.0") if states[index]
+        state = (fmt(STRINGS["suite_installed_fmt"], "2.0.0")
+                 if states[index % len(states)]
                  else STRINGS["suite_not_installed"])
         draw_text(draw, (g + inner + dp(8), y + inner + dp(22)), state, f_state,
                   colour("cb_slate"))

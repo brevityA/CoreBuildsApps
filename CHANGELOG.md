@@ -6,6 +6,15 @@ All notable changes to the Core Builds Icon Pack. Format follows
 
 ## [Unreleased]
 
+### Added
+
+- **Banners variant pack module.** Dedicated `tv.corebuilds.iconpack.banners` variant module providing 16:9 banner art (`<name>_banner.png`) without adaptive cropping for TV launcher environments, sharing flagship Kotlin, custom BuildConfig fields, update manifest, and suite integration across CI and suite gates.
+- **Apply art switcher in Settings.** In-app toggle row ("Apply art: Glyphs / Banners") under Settings, enabling users to choose between glyphs (`tv.corebuilds.iconpack`) and banners (`tv.corebuilds.iconpack.banners`), directing to Downloader flow if uninstalled.
+
+### Changed
+
+- **Launcher and device check integration.** Added `:banners` to emulator device check side-by-side install testing, GitHub Actions workflows, Dependabot version tracking, and release tooling.
+
 ## [1.9.2] — 2026-09-23
 
 ### Added

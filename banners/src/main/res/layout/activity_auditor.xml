@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  The unmapped-apps auditor. Two states in one screen: the scrollable list of
+  launchable apps appfilter never names, and the QR panel for the picked one.
+  Back leaves the panel before it leaves the screen (AuditorActivity owns that
+  grammar), so the panel holds nothing focusable - the code is output, not a
+  control - and the header back button is the one D-pad stop in that state.
+
+  Chrome grammar copied from Settings: pinned header, one ScrollView-or-list
+  between header and bottom edge, scrollbar visible so overflow is legible.
+-->
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/cb_night"
+    android:paddingStart="@dimen/cb_gutter_side"
+    android:paddingEnd="@dimen/cb_gutter_side"
+    android:paddingTop="24dp"
+    android:paddingBottom="16dp">
+
+    <!-- HEADER -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical">
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/bg_chip"
+                android:fontFamily="monospace"
+                android:paddingStart="@dimen/cb_space_sm"
+                android:paddingEnd="@dimen/cb_space_sm"
+                android:paddingTop="7dp"
+                android:paddingBottom="7dp"
+                android:letterSpacing="0.18"
+                android:text="@string/audit_kicker"
+                android:textColor="@color/cb_signal_cyan"
+                android:textSize="@dimen/cb_text_kicker"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/cb_space_md"
+                android:ellipsize="end"
+                android:letterSpacing="-0.025"
+                android:maxLines="1"
+                android:text="@string/audit_title"
+                android:textColor="@color/cb_ink"
+                android:textSize="@dimen/cb_text_title"
+                android:textStyle="bold" />
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/audit_back"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:minWidth="@dimen/cb_button_min_width"
+            android:minHeight="@dimen/cb_target_min"
+            android:background="@drawable/bg_ghost"
+            android:clickable="true"
+            android:focusable="true"
+            android:gravity="center"
+            android:paddingStart="@dimen/cb_space_lg"
+            android:paddingEnd="@dimen/cb_space_lg"
+            android:text="@string/action_back"
+            android:textColor="@color/cb_ink"
+            android:textSize="@dimen/cb_text_body" />
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/audit_count"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/cb_space_xs"
+        android:textColor="@color/cb_slate"
+        android:textSize="@dimen/cb_text_data" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/audit_list"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:clipToPadding="false"
+        android:paddingTop="@dimen/cb_space_sm"
+        android:paddingBottom="@dimen/cb_space_xs"
+        android:scrollbars="vertical" />
+
+    <TextView
+        android:id="@+id/audit_empty"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:text="@string/audit_empty"
+        android:textColor="@color/cb_slate"
+        android:textSize="@dimen/cb_text_body"
+        android:visibility="gone" />
+
+    <!-- QR panel: output, not controls. Nothing inside is focusable. -->
+    <LinearLayout
+        android:id="@+id/audit_qr_panel"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:gravity="center_horizontal"
+        android:orientation="vertical"
+        android:visibility="gone">
+
+        <!-- The request's identity, in plain sight and photographable:
+             current launcher icon next to the app name and component. Even
+             if every prefill parameter were lost downstream, a photo of
+             this panel still carries everything a triage needs. -->
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/cb_space_md"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:id="@+id/audit_qr_icon"
+                android:layout_width="96dp"
+                android:layout_height="96dp"
+                android:contentDescription="@string/audit_qr_icon_hint" />
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/cb_space_sm"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/audit_qr_app_label"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/cb_ink"
+                    android:textSize="@dimen/cb_text_body" />
+
+                <TextView
+                    android:id="@+id/audit_qr_component"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="monospace"
+                    android:textColor="@color/cb_slate"
+                    android:textSize="@dimen/cb_text_data" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <ImageView
+            android:id="@+id/audit_qr_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/cb_space_sm"
+            android:contentDescription="@string/audit_qr_hint"
+            android:focusable="false" />
+
+        <TextView
+            android:id="@+id/audit_qr_url"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/cb_space_sm"
+            android:fontFamily="monospace"
+            android:gravity="center_horizontal"
+            android:maxLines="2"
+            android:ellipsize="end"
+            android:textColor="@color/cb_slate"
+            android:textSize="@dimen/cb_text_data" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/cb_space_xs"
+            android:gravity="center_horizontal"
+            android:text="@string/audit_qr_hint"
+            android:textColor="@color/cb_slate"
+            android:textSize="@dimen/cb_text_data" />
+    </LinearLayout>
+</LinearLayout>

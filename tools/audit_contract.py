@@ -42,6 +42,14 @@ APPS = {
         "checker": "app/src/main/java/tv/corebuilds/iconpack/UpdateChecker.kt",
         "installer": "app/src/main/java/tv/corebuilds/iconpack/UpdateInstaller.kt",
     },
+    "banners": {
+        "gradle": "banners/build.gradle.kts",
+        "metadata": "Latestrelease/banners-version.json",
+        "workflow": ".github/workflows/banners-apk.yml",
+        "apk": "corebanners-release.apk",
+        "checker": "app/src/main/java/tv/corebuilds/iconpack/UpdateChecker.kt",
+        "installer": "app/src/main/java/tv/corebuilds/iconpack/UpdateInstaller.kt",
+    },
     "coreline": {
         "gradle": "ticker/android/app/build.gradle.kts",
         "metadata": "Latestrelease/coreline-version.json",

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Chip label colour. An activated chip is filled with the CTA gradient, so
+  cb_ink on it would be light-on-light; it takes the same ink the buttons use.
+  Everything else stays cb_ink on the night card.
+-->
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:state_activated="true" android:color="@color/cb_cta_ink" />
+    <item android:color="@color/cb_ink" />
+</selector>

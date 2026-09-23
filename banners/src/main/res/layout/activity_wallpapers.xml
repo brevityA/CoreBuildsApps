@@ -1,0 +1,258 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Wallpapers browser, landscape two-pane, to the approved design sheet
+  (docs/design/app-ui-apply-wallpapers.png, right panel).
+
+  HEADER, full width: cyan caps title with the wall count and the "series chips
+  filter the grid" line under it, Back at the right. The long-press selection
+  bar raises under the header; it is a mode, not chrome, and the sheet does not
+  depict it.
+
+  LEFT RAIL (cb_rail_width): the series chips as a vertical list - the sheet's
+  filter row stood on its side, because on a 16:9 panel a horizontal chip row
+  costs the grid a row of thumbs - and at the foot of the rail the export
+  affordance: ghost pill over the paragraph that says what it is for (Monet
+  rotates Pictures/CoreBuilds). The sheet draws both at the foot of the screen;
+  the rail's foot is the same place on a landscape panel, and it keeps them out
+  of the grid's height.
+
+  RIGHT PANE: the thumb grid, three columns of named thumbs, taking the panel's
+  full height. Column count is derived in WallpapersActivity from the pane width
+  and cb_wp_thumb, so a 4K panel that reports a larger dp box (values-sw720dp
+  doubles the metrics) keeps the same proportions.
+
+  Focus: Back -> selection bar (hidden: skipped, focusable="false") -> series
+  chips -> export pill down the rail, and Back -> grid across into the pane;
+  the grid's own UP names Back and LEFT crosses to the chips geometrically.
+-->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/cb_night"
+    android:orientation="vertical"
+    android:paddingStart="@dimen/cb_gutter_side"
+    android:paddingEnd="@dimen/cb_gutter_side"
+    android:paddingTop="@dimen/cb_gutter_top"
+    android:paddingBottom="@dimen/cb_gutter_bottom">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="top"
+        android:orientation="horizontal">
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="monospace"
+                android:letterSpacing="0.18"
+                android:text="@string/wp_kicker"
+                android:textColor="@color/cb_signal_cyan"
+                android:textSize="@dimen/cb_text_label"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/wp_count"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/cb_space_xs"
+                android:fontFamily="monospace"
+                android:letterSpacing="0.02"
+                android:textColor="@color/cb_slate"
+                android:textSize="@dimen/cb_text_data" />
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/wp_back"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:minWidth="@dimen/cb_button_min_width"
+            android:minHeight="@dimen/cb_target_min"
+            android:gravity="center"
+            android:background="@drawable/bg_ghost"
+            android:clickable="true"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            android:nextFocusDown="@id/wp_selection_bar"
+            android:paddingStart="@dimen/cb_space_lg"
+            android:paddingTop="@dimen/cb_space_sm"
+            android:paddingEnd="@dimen/cb_space_lg"
+            android:paddingBottom="@dimen/cb_space_sm"
+            android:text="@string/wp_back"
+            android:textColor="@color/cb_ink"
+            android:textSize="@dimen/cb_text_body"
+            android:textStyle="bold" />
+    </LinearLayout>
+
+    <!-- Contextual selection bar: hidden until the user long-presses a tile.
+         focusable="false" while gone so it can never hold the cursor; the
+         edges that name it are skipped by FocusFinder until it is shown. -->
+    <LinearLayout
+        android:id="@+id/wp_selection_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/cb_space_sm"
+        android:descendantFocusability="afterDescendants"
+        android:focusable="false"
+        android:gravity="center_vertical"
+        android:nextFocusUp="@id/wp_back"
+        android:nextFocusDown="@id/wp_chips"
+        android:orientation="horizontal"
+        android:visibility="gone">
+
+        <TextView
+            android:id="@+id/wp_selection_count"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:fontFamily="monospace"
+            android:textColor="@color/cb_signal_cyan"
+            android:textSize="@dimen/cb_text_label" />
+
+        <TextView
+            android:id="@+id/wp_select_all"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/cb_space_sm"
+            android:background="@drawable/bg_chip_toggle"
+            android:minHeight="@dimen/cb_target_min"
+            android:gravity="center"
+            android:clickable="true"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            android:nextFocusUp="@id/wp_back"
+            android:nextFocusDown="@id/wp_chips"
+            android:paddingStart="@dimen/cb_space_lg"
+            android:paddingTop="@dimen/cb_space_sm"
+            android:paddingEnd="@dimen/cb_space_lg"
+            android:paddingBottom="@dimen/cb_space_sm"
+            android:text="@string/wp_select_all"
+            android:textColor="@color/cb_ink"
+            android:textSize="@dimen/cb_text_label"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/wp_clear"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/cb_space_sm"
+            android:background="@drawable/bg_chip_toggle"
+            android:minHeight="@dimen/cb_target_min"
+            android:gravity="center"
+            android:clickable="true"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            android:nextFocusUp="@id/wp_back"
+            android:nextFocusDown="@id/wp_chips"
+            android:paddingStart="@dimen/cb_space_lg"
+            android:paddingTop="@dimen/cb_space_sm"
+            android:paddingEnd="@dimen/cb_space_lg"
+            android:paddingBottom="@dimen/cb_space_sm"
+            android:text="@string/wp_clear"
+            android:textColor="@color/cb_ink"
+            android:textSize="@dimen/cb_text_label"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/wp_export_selected"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/bg_cta"
+            android:minHeight="@dimen/cb_target_min"
+            android:gravity="center"
+            android:clickable="true"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            android:nextFocusUp="@id/wp_back"
+            android:nextFocusDown="@id/wp_chips"
+            android:paddingStart="@dimen/cb_space_lg"
+            android:paddingTop="@dimen/cb_space_sm"
+            android:paddingEnd="@dimen/cb_space_lg"
+            android:paddingBottom="@dimen/cb_space_sm"
+            android:text="@string/wp_export"
+            android:textColor="@color/cb_cta_ink"
+            android:textSize="@dimen/cb_text_label"
+            android:textStyle="bold" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:layout_marginTop="@dimen/cb_space_md"
+        android:baselineAligned="false"
+        android:orientation="horizontal">
+
+        <!-- LEFT RAIL: series chips, then the export foot. -->
+        <LinearLayout
+            android:layout_width="@dimen/cb_rail_width"
+            android:layout_height="match_parent"
+            android:layout_marginEnd="@dimen/cb_space_md"
+            android:orientation="vertical">
+
+            <!-- 0dp+weight: with seven series the list is taller than the rail,
+                 and a wrap_content list would push the export foot off the
+                 panel. Weighted, it scrolls inside the rail and the foot stays
+                 put. -->
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/wp_chips"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:clipToPadding="false"
+                android:nextFocusUp="@id/wp_selection_bar"
+                android:nextFocusDown="@id/wp_export"
+                android:nextFocusRight="@id/wp_grid"
+                android:orientation="vertical" />
+
+            <TextView
+                android:id="@+id/wp_export"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:minHeight="@dimen/cb_target_min"
+                android:background="@drawable/bg_ghost"
+                android:clickable="true"
+                android:focusable="true"
+                android:focusableInTouchMode="true"
+                android:gravity="center"
+                android:nextFocusUp="@id/wp_chips"
+                android:paddingStart="@dimen/cb_space_lg"
+                android:paddingTop="@dimen/cb_space_sm"
+                android:paddingEnd="@dimen/cb_space_lg"
+                android:paddingBottom="@dimen/cb_space_sm"
+                android:text="@string/wp_export"
+                android:textAllCaps="true"
+                android:letterSpacing="0.06"
+                android:textColor="@color/cb_signal_cyan"
+                android:textSize="@dimen/cb_text_label"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/wp_export_sub"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/cb_space_xs"
+                android:lineSpacingExtra="3dp"
+                android:text="@string/wp_export_sub"
+                android:textColor="@color/cb_slate"
+                android:textSize="@dimen/cb_text_data" />
+        </LinearLayout>
+
+        <!-- RIGHT PANE: the thumbs. -->
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/wp_grid"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:clipToPadding="false"
+            android:nextFocusUp="@id/wp_back"
+            android:nextFocusDown="@id/wp_export"
+            android:nextFocusLeft="@id/wp_chips" />
+    </LinearLayout>
+</LinearLayout>

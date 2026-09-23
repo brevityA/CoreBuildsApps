@@ -153,6 +153,10 @@
     <string name="settings_amoled_sub">Pure black app background, to match the AMOLED wallpaper series.</string>
     <string name="settings_banner_title">Banner previews</string>
     <string name="settings_banner_sub">Off shows square glyphs in the picker — the shape the pack applies by default for every launcher. On shows the banner art and remembers it next time.</string>
+    <string name="settings_apply_art_title">Apply art: Glyphs / Banners</string>
+    <string name="settings_apply_art_sub">Square glyphs when off, 16:9 banner cards when on. Applies to your launcher and remembers your choice.</string>
+    <string name="settings_apply_art_missing">Core Builds Banners is not installed on this TV. Sideload the APK from GitHub releases or Downloader.</string>
+    <string name="settings_apply_glyphs_missing">Core Builds Icon Pack is not installed on this TV.</string>
     <string name="settings_group_storage">STORAGE</string>
     <string name="settings_cache_title">Wallpaper cache</string>
     <string name="settings_cache_sub">Wallpapers you downloaded. Clearing re-fetches them on demand.</string>

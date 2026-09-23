@@ -74,6 +74,13 @@ jobs:
             compileSdk: 34
             workflow: .github/workflows/pop-apk.yml
             artifact: pop/build/outputs/apk/debug/*.apk
+          - name: Core Builds Banners
+            dir: .
+            tasks: :banners:lintDebug :banners:testDebugUnitTest :banners:assembleDebug
+            gradle: banners/build.gradle.kts
+            compileSdk: 34
+            workflow: .github/workflows/banners-apk.yml
+            artifact: banners/build/outputs/apk/debug/*.apk
           - name: Core Line
             dir: ticker/android
             tasks: :app:lintDebug :app:testDebugUnitTest :app:assembleDebug
@@ -198,6 +205,7 @@ jobs:
           python tests/test_core_shift_screensaver.py
           python tests/test_prequel_engine.py
           python tests/test_pop.py
+          python tests/test_banners.py
           python tests/test_devcontainer.py
           python tests/test_tv_layout_fit.py
           python tests/test_search_focus.py

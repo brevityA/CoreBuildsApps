@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  One icon tile, design-sheet grammar: a square card carrying the glyph and
+  nothing else. The name is not repeated under the art - it lives in the
+  inspector a press opens, and in the tile's content description for TalkBack -
+  because at five columns on a 1080p panel a two-line label cost the grid half a
+  row of tiles for text nobody reads at 3m.
+
+  The pale dot in the icon's top corner still marks a tile whose glyph is a
+  drawn brandmark rather than a letter in a container; the "Brandmarks" chip
+  filters to the ones that carry it.
+
+  The card surface is drawn inset by cb_focus_inset inside bg_card, so the
+  padding here is measured from the tile bounds and lands ~8dp inside the
+  visible card. minHeight keeps the D-pad target at the 48dp floor without
+  stretching the artwork.
+-->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/bg_card"
+    android:clickable="true"
+    android:focusable="true"
+    android:focusableInTouchMode="true"
+    android:nextFocusUp="@id/chip_row"
+    android:gravity="center"
+    android:minHeight="@dimen/cb_target_min"
+    android:orientation="vertical"
+    android:padding="@dimen/cb_card_padding">
+
+    <!--
+        The artwork and its brandmark dot share a FrameLayout so the dot can sit
+        in the corner of the icon rather than the corner of the tile.
+    -->
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:id="@+id/icon_image"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/cb_tile_icon"
+            android:contentDescription="@null"
+            android:importantForAccessibility="no"
+            android:scaleType="fitCenter" />
+
+        <View
+            android:id="@+id/icon_brandmark"
+            android:layout_width="@dimen/cb_brandmark_dot"
+            android:layout_height="@dimen/cb_brandmark_dot"
+            android:layout_gravity="top|end"
+            android:background="@drawable/bg_brandmark_dot"
+            android:importantForAccessibility="no"
+            android:visibility="gone" />
+    </FrameLayout>
+</LinearLayout>

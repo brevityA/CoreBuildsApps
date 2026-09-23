@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Full-screen wallpaper preview. The image fills the canvas; the title,
+     seed chips and CTA float over a bottom scrim so the cyan-on-night glass
+     stays legible against any wallpaper (Brand Guide §05). Seed chips are
+     display-only: not focusable, not in the D-pad chain. -->
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/cb_void">
+
+    <ImageView
+        android:id="@+id/preview_image"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:contentDescription="@null"
+        android:scaleType="centerCrop" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="248dp"
+        android:layout_gravity="bottom"
+        android:background="@drawable/bg_scrim" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:paddingStart="@dimen/cb_gutter_side"
+        android:paddingEnd="@dimen/cb_gutter_side"
+        android:paddingTop="24dp"
+        android:paddingBottom="36dp">
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/preview_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:letterSpacing="-0.02"
+                android:textColor="@color/cb_ink"
+                android:textSize="@dimen/cb_text_title"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/preview_sub"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:fontFamily="monospace"
+                android:textColor="@color/cb_glow_cyan"
+                android:textSize="@dimen/cb_text_label" />
+
+            <LinearLayout
+                android:id="@+id/seed_row"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/cb_space_sm"
+                android:contentDescription="@string/wp_seed_desc"
+                android:descendantFocusability="blocksDescendants"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:visibility="gone">
+
+                <TextView
+                    android:id="@+id/seed_label"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="@dimen/cb_space_sm"
+                    android:fontFamily="monospace"
+                    android:text="@string/wp_seed_label"
+                    android:textAllCaps="true"
+                    android:textColor="@color/cb_slate"
+                    android:textSize="@dimen/cb_text_kicker" />
+
+                <View
+                    android:id="@+id/seed_0"
+                    android:layout_width="@dimen/cb_seed_swatch"
+                    android:layout_height="@dimen/cb_seed_swatch"
+                    android:layout_marginEnd="@dimen/cb_space_xs"
+                    android:background="@color/cb_panel"
+                    android:clickable="false"
+                    android:focusable="false"
+                    android:importantForAccessibility="no" />
+
+                <View
+                    android:id="@+id/seed_1"
+                    android:layout_width="@dimen/cb_seed_swatch"
+                    android:layout_height="@dimen/cb_seed_swatch"
+                    android:layout_marginEnd="@dimen/cb_space_xs"
+                    android:background="@color/cb_panel"
+                    android:clickable="false"
+                    android:focusable="false"
+                    android:importantForAccessibility="no" />
+
+                <View
+                    android:id="@+id/seed_2"
+                    android:layout_width="@dimen/cb_seed_swatch"
+                    android:layout_height="@dimen/cb_seed_swatch"
+                    android:layout_marginEnd="@dimen/cb_space_xs"
+                    android:background="@color/cb_panel"
+                    android:clickable="false"
+                    android:focusable="false"
+                    android:importantForAccessibility="no" />
+
+                <View
+                    android:id="@+id/seed_3"
+                    android:layout_width="@dimen/cb_seed_swatch"
+                    android:layout_height="@dimen/cb_seed_swatch"
+                    android:layout_marginEnd="@dimen/cb_space_xs"
+                    android:background="@color/cb_panel"
+                    android:clickable="false"
+                    android:focusable="false"
+                    android:importantForAccessibility="no" />
+
+                <View
+                    android:id="@+id/seed_4"
+                    android:layout_width="@dimen/cb_seed_swatch"
+                    android:layout_height="@dimen/cb_seed_swatch"
+                    android:background="@color/cb_panel"
+                    android:clickable="false"
+                    android:focusable="false"
+                    android:importantForAccessibility="no" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/preview_back"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/cb_space_sm"
+            android:background="@drawable/bg_ghost"
+            android:minHeight="@dimen/cb_target_min"
+            android:gravity="center"
+            android:clickable="true"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            android:nextFocusRight="@id/preview_save"
+            android:paddingStart="@dimen/cb_space_lg"
+            android:paddingTop="@dimen/cb_space_sm"
+            android:paddingEnd="@dimen/cb_space_lg"
+            android:paddingBottom="@dimen/cb_space_sm"
+            android:text="@string/wp_back"
+            android:textColor="@color/cb_slate"
+            android:textSize="@dimen/cb_text_body"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/preview_save"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/cb_space_sm"
+            android:background="@drawable/bg_ghost"
+            android:minHeight="@dimen/cb_target_min"
+            android:gravity="center"
+            android:clickable="true"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            android:nextFocusRight="@id/preview_set"
+            android:paddingStart="@dimen/cb_space_lg"
+            android:paddingTop="@dimen/cb_space_sm"
+            android:paddingEnd="@dimen/cb_space_lg"
+            android:paddingBottom="@dimen/cb_space_sm"
+            android:text="@string/wp_save"
+            android:textColor="@color/cb_slate"
+            android:textSize="@dimen/cb_text_body"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/preview_set"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/bg_cta"
+            android:minHeight="@dimen/cb_target_min"
+            android:gravity="center"
+            android:clickable="true"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            android:nextFocusLeft="@id/preview_save"
+            android:paddingStart="@dimen/cb_space_lg"
+            android:paddingTop="@dimen/cb_space_sm"
+            android:paddingEnd="@dimen/cb_space_lg"
+            android:paddingBottom="@dimen/cb_space_sm"
+            android:text="@string/wp_set_wallpaper"
+            android:textColor="@color/cb_cta_ink"
+            android:textSize="@dimen/cb_text_body"
+            android:textStyle="bold" />
+    </LinearLayout>
+</FrameLayout>

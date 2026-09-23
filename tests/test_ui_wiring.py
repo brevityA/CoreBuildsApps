@@ -84,6 +84,7 @@ ROOT = Path(__file__).resolve().parent.parent
 
 APP_MANIFEST = ROOT / "app" / "src" / "main" / "AndroidManifest.xml"
 POP_MANIFEST = ROOT / "pop" / "src" / "main" / "AndroidManifest.xml"
+BANNERS_MANIFEST = ROOT / "banners" / "src" / "main" / "AndroidManifest.xml"
 WALLPAPERS_KT = ROOT / "app" / "src" / "main" / "java" / "tv" / "corebuilds" / "iconpack" / "WallpapersActivity.kt"
 MAIN_KT = ROOT / "app" / "src" / "main" / "java" / "tv" / "corebuilds" / "iconpack" / "MainActivity.kt"
 SETTER_KT = ROOT / "app" / "src" / "main" / "java" / "tv" / "corebuilds" / "iconpack" / "WallpaperSetter.kt"
@@ -165,7 +166,8 @@ def collect() -> list[str]:
 
     app_manifest = read(APP_MANIFEST)
     pop_manifest = read(POP_MANIFEST)
-    for name, manifest in (("app", app_manifest), ("pop", pop_manifest)):
+    banners_manifest = read(BANNERS_MANIFEST)
+    for name, manifest in (("app", app_manifest), ("pop", pop_manifest), ("banners", banners_manifest)):
         for perm in PERMISSIONS:
             check(f'android:name="{perm}"' in manifest,
                   f"{name} manifest: missing {perm}")
@@ -243,17 +245,21 @@ def collect() -> list[str]:
                            / "activity_settings.xml")
     pop_settings_layout = read(ROOT / "pop" / "src" / "main" / "res" / "layout"
                                / "activity_settings.xml")
+    banners_settings_layout = read(ROOT / "banners" / "src" / "main" / "res" / "layout"
+                                   / "activity_settings.xml")
     faq_kt = read(ROOT / "app" / "src" / "main" / "java" / "tv" / "corebuilds"
                   / "iconpack" / "FaqActivity.kt")
     faq_layout = read(ROOT / "app" / "src" / "main" / "res" / "layout"
                       / "activity_faq.xml")
     checker = read(ROOT / "app" / "src" / "main" / "java" / "tv" / "corebuilds"
                    / "iconpack" / "UpdateChecker.kt")
-    for rid in ("set_refresh_row", "set_appinfo_row", "set_faq_row"):
+    for rid in ("set_refresh_row", "set_appinfo_row", "set_faq_row", "set_apply_art_row"):
         check(f'android:id="@+id/{rid}"' in settings_layout,
               f"activity_settings.xml: missing {rid}")
         check(f'android:id="@+id/{rid}"' in pop_settings_layout,
               f"pop activity_settings.xml: missing {rid} (shared Kotlin compiles both)")
+        check(f'android:id="@+id/{rid}"' in banners_settings_layout,
+              f"banners activity_settings.xml: missing {rid} (shared Kotlin compiles both)")
         check(f"R.id.{rid})" in settings_kt, f"SettingsActivity: {rid} not wired")
     check("ApplyIconPack.detectInstalled(this)" in settings_kt,
           "SettingsActivity: launcher rows must act on the detected launcher, not an assumed one")
@@ -295,7 +301,8 @@ def collect() -> list[str]:
         check('android:name=".AuditorActivity"' in manifest,
               f"{name} manifest: AuditorActivity not registered")
     for res in (ROOT / "app" / "src" / "main" / "res" / "values" / "issue_prefill.xml",
-                ROOT / "pop" / "src" / "main" / "res" / "values" / "issue_prefill.xml"):
+                ROOT / "pop" / "src" / "main" / "res" / "values" / "issue_prefill.xml",
+                ROOT / "banners" / "src" / "main" / "res" / "values" / "issue_prefill.xml"):
         check(res.is_file(), f"{res.parent.parent.name}: generated issue_prefill.xml missing")
         if res.is_file():
             text = read(res)
@@ -312,10 +319,10 @@ def collect() -> list[str]:
           "AuditorActivity: scan via queryIntentActivities, list without item animator")
     check("R.id.set_audit_row)" in settings_kt,
           "SettingsActivity: audit row not wired")
-    for layout in (settings_layout, pop_settings_layout):
+    for layout in (settings_layout, pop_settings_layout, banners_settings_layout):
         check('android:id="@+id/set_audit_row"' in layout,
               "activity_settings.xml: missing set_audit_row")
-    for module in ("app", "pop", "pixel-neon"):
+    for module in ("app", "pop", "banners", "pixel-neon"):
         base = ROOT / module if module != "pixel-neon" else ROOT / "pixel-neon" / "app"
         for lay in ("activity_auditor.xml", "item_audit.xml"):
             check((base / "src" / "main" / "res" / "layout" / lay).is_file(),
@@ -372,10 +379,10 @@ def collect() -> list[str]:
           "SuiteActivity: rows come from the generated hub resource and launch")
     check("R.id.set_suite_row)" in settings_kt,
           "SettingsActivity: suite row not wired")
-    for layout in (settings_layout, pop_settings_layout):
+    for layout in (settings_layout, pop_settings_layout, banners_settings_layout):
         check('android:id="@+id/set_suite_row"' in layout,
               "activity_settings.xml: missing set_suite_row")
-    for name, manifest in (("app", app_manifest), ("pop", pop_manifest)):
+    for name, manifest in (("app", app_manifest), ("pop", pop_manifest), ("banners", banners_manifest)):
         queries = manifest.split("<queries>", 1)[1].split("</queries>", 1)[0]
         for pkg in ("dev.corebuilds.shift", "dev.corebuilds.line",
                     "dev.corebuilds.doctor", "tv.corebuilds.motion",
@@ -386,7 +393,8 @@ def collect() -> list[str]:
             check(f'android:name="{activity}"' in manifest,
                   f"{name} manifest: {activity} not registered")
     for res in (ROOT / "app" / "src" / "main" / "res" / "values" / "suite_hub.xml",
-                ROOT / "pop" / "src" / "main" / "res" / "values" / "suite_hub.xml"):
+                ROOT / "pop" / "src" / "main" / "res" / "values" / "suite_hub.xml",
+                ROOT / "banners" / "src" / "main" / "res" / "values" / "suite_hub.xml"):
         check(res.is_file() and "suite_hub_pkgs" in read(res),
               f"{res}: generated suite hub resource missing")
 
@@ -451,6 +459,7 @@ def format_string_problems() -> list[str]:
     for module, base in (
         ("app", ROOT / "app" / "src" / "main" / "res"),
         ("pop", ROOT / "pop" / "src" / "main" / "res"),
+        ("banners", ROOT / "banners" / "src" / "main" / "res"),
         ("pixel-neon", ROOT / "pixel-neon" / "app" / "src" / "main" / "res"),
     ):
         values = sorted(base.glob("values*/*.xml"))
@@ -475,7 +484,8 @@ def format_string_problems() -> list[str]:
                         f"({body[offset:offset + 7]!r}); double it, or mark the "
                         'string formatted="false" if nothing ever formats it')
     for res in (ROOT / "app" / "src" / "main" / "res" / "values" / "issue_prefill.xml",
-                ROOT / "pop" / "src" / "main" / "res" / "values" / "issue_prefill.xml"):
+                ROOT / "pop" / "src" / "main" / "res" / "values" / "issue_prefill.xml",
+                ROOT / "banners" / "src" / "main" / "res" / "values" / "issue_prefill.xml"):
         if not res.is_file():
             continue  # the wiring block above already fails a missing file
         match = re.search(r'<string name="audit_issue_url_fmt">(.*?)</string>',

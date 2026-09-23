@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Bottom fade for the preview overlay: transparent -> near-void black. -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="rectangle">
+    <gradient
+        android:angle="90"
+        android:startColor="#00000000"
+        android:centerColor="#CC04070F"
+        android:endColor="#F204070F"
+        android:type="linear" />
+</shape>

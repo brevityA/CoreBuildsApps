@@ -36,6 +36,7 @@ from glyphs import MONOGRAM_GLYPHS, is_monogram  # noqa: E402
 PACKS = {
     "app": ROOT / "app/src/main/res/values/icon_pack.xml",
     "pop": ROOT / "pop/src/main/res/values/icon_pack.xml",
+    "banners": ROOT / "banners/src/main/res/values/icon_pack.xml",
     "pixel-neon": ROOT / "pixel-neon/app/src/main/res/values/icon_pack.xml",
 }
 
