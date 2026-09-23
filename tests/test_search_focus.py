@@ -77,7 +77,6 @@ KOTLIN = ROOT / "app/src/main/java/tv/corebuilds/iconpack"
 MODULES = {
     "app": ROOT / "app/src/main/res/layout",
     "pop": ROOT / "pop/src/main/res/layout",
-    "banners": ROOT / "banners/src/main/res/layout",
 }
 
 
@@ -427,13 +426,11 @@ def test_filter_runs_before_focus_is_settled():
 DOWN_FROM_SEARCH = {
     "app": "@id/chip_row",
     "pop": "@id/chip_row",
-    "banners": "@id/chip_row",
     "pixel-neon": "@id/grid",
 }
 UP_FROM_GRID = {
     "app": "@id/chip_row",
     "pop": "@id/chip_row",
-    "banners": "@id/chip_row",
     "pixel-neon": "@id/search",
 }
 
@@ -491,7 +488,6 @@ def test_search_field_keeps_its_focus_routes():
 ALL_LAYOUTS = {
     "app": ROOT / "app/src/main/res/layout",
     "pop": ROOT / "pop/src/main/res/layout",
-    "banners": ROOT / "banners/src/main/res/layout",
     "pixel-neon": ROOT / "pixel-neon/app/src/main/res/layout",
 }
 

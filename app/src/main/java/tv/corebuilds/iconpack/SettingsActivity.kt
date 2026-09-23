@@ -54,7 +54,6 @@ class SettingsActivity : TvActivity() {
     private lateinit var motionSwitch: SwitchCompat
     private lateinit var amoledSwitch: SwitchCompat
     private lateinit var bannerSwitch: SwitchCompat
-    private lateinit var applyArtSwitch: SwitchCompat
     private lateinit var cacheSize: TextView
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -66,14 +65,12 @@ class SettingsActivity : TvActivity() {
         motionSwitch = findViewById(R.id.set_motion_switch)
         amoledSwitch = findViewById(R.id.set_amoled_switch)
         bannerSwitch = findViewById(R.id.set_banner_switch)
-        applyArtSwitch = findViewById(R.id.set_apply_art_switch)
         cacheSize = findViewById(R.id.set_cache_size)
 
         updateSwitch.isChecked = Prefs.updateChecks(this)
         motionSwitch.isChecked = Prefs.reduceMotion(this)
         amoledSwitch.isChecked = Prefs.amoled(this)
         bannerSwitch.isChecked = Prefs.pickerPrefersBanners(this)
-        applyArtSwitch.isChecked = Prefs.applyBanners(this)
 
         row(R.id.set_updates_row) {
             val next = !updateSwitch.isChecked
@@ -98,24 +95,6 @@ class SettingsActivity : TvActivity() {
             val next = !bannerSwitch.isChecked
             bannerSwitch.isChecked = next
             Prefs.set(this, Prefs.KEY_PICK_BANNERS, next)
-        }
-
-        row(R.id.set_apply_art_row) {
-            val next = !applyArtSwitch.isChecked
-            val bannersPkg = "tv.corebuilds.iconpack.banners"
-            val targetPkg = if (next) bannersPkg else "tv.corebuilds.iconpack"
-            if (targetPkg != packageName && !with(ApplyIconPack) { isInstalled(targetPkg) }) {
-                val msg = if (next) {
-                    getString(R.string.settings_apply_art_missing)
-                } else {
-                    getString(R.string.settings_apply_glyphs_missing)
-                }
-                toast(msg)
-                return@row
-            }
-            applyArtSwitch.isChecked = next
-            Prefs.set(this, Prefs.KEY_APPLY_BANNERS, next)
-            refreshLauncher()
         }
 
         row(R.id.set_refresh_row) { refreshLauncher() }

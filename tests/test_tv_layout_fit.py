@@ -83,7 +83,6 @@ VERTICAL_SCROLLERS = ("ScrollView", "NestedScrollView")
 MODULES = {
     "app": ROOT / "app/src/main/res",
     "pop": ROOT / "pop/src/main/res",
-    "banners": ROOT / "banners/src/main/res",
     "pixel-neon": ROOT / "pixel-neon/app/src/main/res",
 }
 
@@ -268,7 +267,7 @@ def test_two_pane_screens_leave_the_grid_a_full_row():
     and a cropped sliver - the defect the single-pane home screen had before
     the two-pane rebuild. One box is enough now: TvActivity normalises every
     panel to this one before a layout inflates."""
-    for module in ("app", "pop", "banners"):
+    for module in ("app", "pop"):
         res = MODULES[module]
         dimens = load_dimens(res)
         for name, pitch_parts in TWO_PANE.items():

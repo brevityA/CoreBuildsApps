@@ -173,10 +173,10 @@ class GradleParsing(unittest.TestCase):
             {"", "pixel-neon", "ticker/android", "shift", "motion-plugin", "doctor"},
         )
 
-    def test_root_build_file_maps_to_three_modules(self):
-        # pop/ and banners/ are the deliberate exceptions to "one app, one Gradle root":
-        # they are additional modules on the repo-root build, not their own roots.
-        self.assertEqual([m.name for m in self.roots[""].modules], ["app", "pop", "banners"])
+    def test_root_build_file_maps_to_two_modules(self):
+        # The one deliberate exception to "one app, one Gradle root": pop/ is a
+        # second module on the repo-root build, not its own root.
+        self.assertEqual([m.name for m in self.roots[""].modules], ["app", "pop"])
 
     def test_reads_compile_and_min_sdk(self):
         app = self.roots[""].modules[0]
@@ -219,7 +219,7 @@ class MatrixParsing(unittest.TestCase):
         ]
 
     def test_reads_exactly_the_matrix_entries(self):
-        self.assertEqual(len(self.entries), 8)
+        self.assertEqual(len(self.entries), 7)
 
     def test_step_names_are_not_mistaken_for_matrix_entries(self):
         # A whole-file search for `- name:` also matches every workflow step, and
@@ -373,7 +373,7 @@ class RepoIsInsideItsEnvelope(unittest.TestCase):
             for m in r.modules
             if m.min_sdk == 21
         )
-        self.assertEqual(at_21, ["app", "banners", "pixel-neon/app", "pop"])
+        self.assertEqual(at_21, ["app", "pixel-neon/app", "pop"])
 
     def test_doctor_is_the_only_compose_module(self):
         composing = [

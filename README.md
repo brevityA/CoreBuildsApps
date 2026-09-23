@@ -16,7 +16,6 @@
 > | **[Core Builds Icon Pack](#-icon-pack)** | `v1.9.2` | 961 transparent icons + 84 wallpapers for Projectivy Launcher | `5270601` | [`v*` / `iconpack`](../../releases) |
 > | **[Core Builds Pixel Neon](#-pixel-neon-icon-pack)** | `v0.1.0` | 961 transparent 8-bit neon icons + 70 wallpapers for Projectivy Launcher | `[USER TO SUPPLY]` | [`pixel-neon-v*` / `pixel-neon`](../../releases) |
 > | **[Core Builds Pop](#-core-builds-pop)** | `v1.0.0` | The same 961 icons, pop-art cartoon: 16 swatches, one container | `[USER TO SUPPLY]` | [`pop-v*` / `pop`](../../releases) |
-> | **[Core Builds Banners](#-core-builds-banners)** | `v1.0.0` | The same 961 icons as 16:9 banner cards for Projectivy Launcher | `[USER TO SUPPLY]` | [`banners-v*` / `banners`](../../releases) |
 > | **[Core Line](#-core-line)** | `v1.3.0` | Sports scores & channel RSS ticker (chyron) | `7375676` | [`coreline-v*` / `coreline`](../../releases) |
 > | **[Core Shift](#-core-shift)** | `v2.3.5` | Android TV screensaver + motion wallpaper browser | `8829421` | [`shift-v*` / `shift`](../../releases) |
 > | **[Core Motion](#-core-motion)** | `v1.0.0` | Projectivy wallpaper-provider plugin for Core Motion loops | `[USER TO SUPPLY]` | [`motion-v*` / `motion`](../../releases) |
@@ -389,24 +388,19 @@ tools/pop_glyph_metrics.json committed metrics, so renders are reproducible
 tools/build_pop.py           catalog → the whole Pop module
 tools/build_pop_wallpapers.py catalog-free: 12 × 4K Pop walls + manifest
 tools/validate_pop.py        Pop coherence checks (13,700+)
-tools/build_banner_pack.py   builds the Core Builds Banners variant pack
-tools/validate_banners.py    Banners coherence and parity checks
 assets/svg/                  master vectors (943)
 assets/banners/              16:9 banners (943)
 app/src/main/res/            the original icon-pack Android module
 pixel-neon/                   8-bit neon companion pack + its Gradle root
 PixelNeonWallpapers/          original 8-bit Pixel Neon sources + manifest
 pop/                         Core Builds Pop — second pack, shares app/'s Kotlin
-banners/                     Core Builds Banners — 16:9 banner pack, shares app/'s Kotlin
 assets/pop/                  Pop master vectors (943 square + 943 banner, plus pack chrome)
 Wallpapers/series-5-pop/     12 × 4K Pop wallpapers (2.5 MB total)
 Latestrelease/version.json   Icon Pack update manifest
 Latestrelease/pixel-neon-version.json  Pixel Neon update manifest
 Latestrelease/pop-version.json  Pop's in-app update manifest
-Latestrelease/banners-version.json  Banners in-app update manifest
 docs/IconPackList.md         original supported apps + components
 docs/PopIconList.md          the same apps, with their Pop swatch
-docs/BannersIconList.md      the same apps, mapped to 16:9 banner drawables
 docs/research/               why this pack exists, with sources
 ticker/                      Core Line — sports & channel ticker (see ticker/README.md)
 shift/                       Core Shift — live wallpaper browser (see shift/HANDOVER.md)

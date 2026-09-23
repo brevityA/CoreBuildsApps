@@ -58,7 +58,6 @@ README_END = "<!-- suite-stamp:end -->"
 BUILDERS = [
     "tools/build_icons.py",
     "tools/build_banners.py",
-    "tools/build_banner_pack.py",
     "tools/build_branding.py",
     "tools/build_brand_preview.py",
     "tools/build_icon_review.py",
@@ -66,7 +65,6 @@ BUILDERS = [
 GATES = [
     "tools/validate.py",
     "tools/validate_pop.py",
-    "tools/validate_banners.py",
     "tools/validate_pixel_neon.py",
     # Added for 1.9.0: the release command should run every gate the repo has,
     # not the subset that existed when it was written. check_ui_resources reads

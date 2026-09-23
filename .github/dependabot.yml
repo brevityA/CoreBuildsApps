@@ -56,13 +56,13 @@ updates:
       # com.android.application <= 8.5.2
       - dependency-name: "com.android.application"
         update-types: ["version-update:semver-patch", "version-update:semver-minor", "version-update:semver-major"]
-      # androidx.core:core-ktx <= 1.13.1 — declared by app, banners, pop
+      # androidx.core:core-ktx <= 1.13.1 — declared by app, pop
       - dependency-name: "androidx.core:core-ktx"
         update-types: ["version-update:semver-patch", "version-update:semver-minor", "version-update:semver-major"]
-      # androidx.appcompat:appcompat <= 1.7.0 — declared by app, banners, pop
+      # androidx.appcompat:appcompat <= 1.7.0 — declared by app, pop
       - dependency-name: "androidx.appcompat:appcompat"
         update-types: ["version-update:semver-patch", "version-update:semver-minor", "version-update:semver-major"]
-      # androidx.recyclerview:recyclerview <= 1.3.2 — declared by app, banners, pop
+      # androidx.recyclerview:recyclerview <= 1.3.2 — declared by app, pop
       - dependency-name: "androidx.recyclerview:recyclerview"
         update-types: ["version-update:semver-patch", "version-update:semver-minor", "version-update:semver-major"]
       # org.jetbrains.kotlin.android <= 1.9.24

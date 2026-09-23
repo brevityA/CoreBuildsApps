@@ -69,13 +69,11 @@ class InspectorActivity : TvActivity() {
     /** Every `pkg/activity` appfilter maps to this drawable, in file order. */
     private fun componentsFor(drawable: String): List<String> {
         val xml = assets.open("appfilter.xml").bufferedReader().use { it.readText() }
-        // appfilter maps every component to the 16:9 banner drawable - the
-        // square glyph reaches launchers through drawable.xml, not through a
-        // component mapping - so matching the square name alone answered
-        // "no component maps to this drawable" for every tile in the pack and
-        // made Launch a dead button. The banner is the mapping; accept both.
+        // appfilter maps every component to the square glyph or banner drawable;
+        // strip any '_banner' suffix so we match whichever form the pack mapped.
+        val base = drawable.removeSuffix("_banner")
         val pattern = Regex(
-            "component=\"ComponentInfo\\{([^}]+)\\}\"\\s+drawable=\"$drawable(?:_banner)?\""
+            "component=\"ComponentInfo\\{([^}]+)\\}\"\\s+drawable=\"$base(?:_banner)?\""
         )
         return pattern.findAll(xml).map { it.groupValues[1] }.toList()
     }

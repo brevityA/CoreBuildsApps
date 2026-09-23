@@ -37,8 +37,6 @@ MODULES = {
             ROOT / "app/src/main/java/tv/corebuilds/iconpack"),
     "pop": (ROOT / "pop" / "src" / "main",
             ROOT / "app/src/main/java/tv/corebuilds/iconpack"),
-    "banners": (ROOT / "banners" / "src" / "main",
-                ROOT / "app/src/main/java/tv/corebuilds/iconpack"),
     "pixel-neon": (ROOT / "pixel-neon/app/src/main",
                    ROOT / "pixel-neon/app/src/main/java/tv/corebuilds/pixelneon"),
 }
@@ -440,7 +438,6 @@ def main() -> int:
     layout_dirs = [
         ROOT / "app" / "src" / "main" / "res" / "layout",
         ROOT / "pop" / "src" / "main" / "res" / "layout",
-        ROOT / "banners" / "src" / "main" / "res" / "layout",
         ROOT / "pixel-neon" / "app" / "src" / "main" / "res" / "layout",
     ]
     for layout_dir in layout_dirs:

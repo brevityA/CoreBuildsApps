@@ -257,30 +257,12 @@ object ApplyIconPack {
         return listOfNotNull(home) + rest
     }
 
-    fun targetPackage(context: Context): String {
-        if (context.packageName == "tv.corebuilds.iconpack.pop") {
-            return context.packageName
-        }
-        return if (Prefs.applyBanners(context)) {
-            "tv.corebuilds.iconpack.banners"
-        } else {
-            "tv.corebuilds.iconpack"
-        }
-    }
-
-    fun apply(
-        context: Context,
-        launcher: Launcher,
-        targetPackage: String = targetPackage(context)
-    ): Result {
+    fun apply(context: Context, launcher: Launcher): Result {
         if (!context.isInstalledAny(launcher)) {
             return Result.NotInstalled(launcher.displayName)
         }
-        if (targetPackage != context.packageName && !context.isInstalled(targetPackage)) {
-            return Result.NotInstalled("Core Builds Banners")
-        }
 
-        val intent = launcher.intent(context, targetPackage)
+        val intent = launcher.intent(context, context.packageName)
             ?: return Result.Manual(launcher.displayName, launcher.manualPath)
 
         val resolves = context.packageManager

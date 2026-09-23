@@ -53,12 +53,6 @@ MODULES = {
         "kotlin": ROOT / "app/src/main/java/tv/corebuilds/iconpack",
         "manifest": ROOT / "pop/src/main/AndroidManifest.xml",
     },
-    "banners": {
-        "layout": ROOT / "banners/src/main/res/layout",
-        # Banners compiles app's Kotlin (sourceSets in banners/build.gradle.kts).
-        "kotlin": ROOT / "app/src/main/java/tv/corebuilds/iconpack",
-        "manifest": ROOT / "banners/src/main/AndroidManifest.xml",
-    },
     "pixel-neon": {
         "layout": ROOT / "pixel-neon/app/src/main/res/layout",
         "kotlin": ROOT / "pixel-neon/app/src/main/java/tv/corebuilds/pixelneon",
@@ -87,7 +81,6 @@ ACTIVITY_OWNER = {
 DELIBERATE_UNFOCUSABLE_TARGETS = {
     "app": {"picker_hint"},
     "pop": {"picker_hint"},
-    "banners": {"picker_hint"},
     "pixel-neon": set(),
 }
 

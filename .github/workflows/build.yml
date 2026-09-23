@@ -20,7 +20,6 @@ on:
       # Without these three a fork-only change - a dead button in Pixel Neon, a
       # stale mockup - reached main without running any of them.
       - 'pop/**'
-      - 'banners/**'
       - 'pixel-neon/**'
       - 'docs/**'
       - '.github/workflows/build.yml'
@@ -36,7 +35,6 @@ on:
       - 'Wallpapers/**'
       - 'tests/**'
       - 'pop/**'
-      - 'banners/**'
       - 'pixel-neon/**'
       - 'docs/**'
       - '.github/workflows/build.yml'

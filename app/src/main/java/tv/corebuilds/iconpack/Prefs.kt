@@ -29,7 +29,6 @@ object Prefs {
     const val KEY_REDUCE_MOTION = "reduce_motion"
     const val KEY_AMOLED = "amoled_chrome"
     const val KEY_PICK_BANNERS = "pick_banners"
-    const val KEY_APPLY_BANNERS = "apply_banners"
     const val KEY_WHATS_NEW_SEEN = "whats_new_seen_version"
 
     private fun prefs(context: Context): SharedPreferences =
@@ -75,14 +74,6 @@ object Prefs {
      */
     fun pickerPrefersBanners(context: Context): Boolean =
         prefs(context).getBoolean(KEY_PICK_BANNERS, false)
-
-    /**
-     * Whether launcher apply operations hand off the 16:9 banner pack variant
-     * (tv.corebuilds.iconpack.banners) instead of the flagship square glyph pack
-     * (tv.corebuilds.iconpack). Square glyph is the shipped default (false).
-     */
-    fun applyBanners(context: Context): Boolean =
-        prefs(context).getBoolean(KEY_APPLY_BANNERS, false)
 
     /**
      * The highest versionCode the What's New sheet has narrated for. Read by

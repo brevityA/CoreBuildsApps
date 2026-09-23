@@ -29,7 +29,6 @@ on:
     paths:
       - 'app/**'
       - 'pop/**'
-      - 'banners/**'
       - 'tools/**'
       - 'gradle/**'
       - '*.gradle.kts'
@@ -73,7 +72,7 @@ jobs:
         # all, and signing here would mean putting the release key on a PR
         # runner. Debug exercises the same resources and the same by-name
         # lookup.
-        run: ./gradlew :app:assembleDebug :pop:assembleDebug :banners:assembleDebug --no-daemon
+        run: ./gradlew :app:assembleDebug :pop:assembleDebug --no-daemon
 
       - name: Prepare emulator test script
         # The emulator-runner action (v2) executes each line of its `script:`
@@ -87,17 +86,15 @@ jobs:
 
           CLASSIC_PKG=tv.corebuilds.iconpack
           POP_PKG=tv.corebuilds.iconpack.pop
-          BANNERS_PKG=tv.corebuilds.iconpack.banners
-          # All three manifests declare `.MainActivity`, which the manifest merger
-          # resolves against the *namespace* — and all three modules share the
-          # namespace tv.corebuilds.iconpack, because :pop and :banners compile :app's
+          # Both manifests declare `.MainActivity`, which the manifest merger
+          # resolves against the *namespace* — and both modules share the
+          # namespace tv.corebuilds.iconpack, because :pop compiles :app's
           # Kotlin. `am start -n pkg/.Class` expands the shorthand against the
-          # *applicationId* instead, so Pop and Banners must be launched fully qualified or
-          # the launch silently targets tv.corebuilds.iconpack.(pop|banners).MainActivity,
+          # *applicationId* instead, so Pop must be launched fully qualified or
+          # the launch silently targets tv.corebuilds.iconpack.pop.MainActivity,
           # which does not exist.
           CLASSIC_ACT="$CLASSIC_PKG/.MainActivity"
           POP_ACT="$POP_PKG/tv.corebuilds.iconpack.MainActivity"
-          BANNERS_ACT="$BANNERS_PKG/tv.corebuilds.iconpack.MainActivity"
 
           # Sets APK_PATH rather than echoing it. A function that returns its
           # value on stdout has to be called in $( ), and then its error text
@@ -115,8 +112,6 @@ jobs:
           CLASSIC_APK="$APK_PATH"
           resolve_apk pop/build/outputs/apk/debug pop
           POP_APK="$APK_PATH"
-          resolve_apk banners/build/outputs/apk/debug banners
-          BANNERS_APK="$APK_PATH"
 
           EXPECTED=$(python3 -c "import json;print(len(json.load(open('tools/catalog.json'))['icons']))")
 
@@ -132,17 +127,17 @@ jobs:
           # stale icon_pack.xml or appfilter still changes the number.
           EXPECTED_LINE=$(python3 -c 'import json,re,pathlib; fmt=re.search(r"""name="pack_stats_fmt">([^<]+)<""",pathlib.Path("app/src/main/res/values/strings.xml").read_text()).group(1); icons=len(json.load(open("tools/catalog.json"))["icons"]); comps=pathlib.Path("app/src/main/assets/appfilter.xml").read_text().count("component="); print(fmt.replace("%1$d",str(icons)).replace("%2$d",str(comps)))')
 
-          echo "::group::Install all packs side by side"
-          # Order matters. The subsequent installs are the ones that would fail if any
-          # packs ever shared a FileProvider authority.
-          for SPEC in "classic:$CLASSIC_PKG:$CLASSIC_APK" "Pop:$POP_PKG:$POP_APK" "Banners:$BANNERS_PKG:$BANNERS_APK"; do
+          echo "::group::Install both packs side by side"
+          # Order matters. The second install is the one that would fail if the
+          # two packs ever shared a FileProvider authority.
+          for SPEC in "classic:$CLASSIC_PKG:$CLASSIC_APK" "Pop:$POP_PKG:$POP_APK"; do
             LABEL=${SPEC%%:*}; REST=${SPEC#*:}; PKG=${REST%%:*}; APK=${REST#*:}
             echo "Installing $LABEL ($PKG) from $APK"
             if ! OUT=$(adb install -r "$APK" 2>&1); then
               echo "$OUT"
               case "$OUT" in
                 *CONFLICTING_PROVIDER*)
-                  echo "::error::$LABEL hit INSTALL_FAILED_CONFLICTING_PROVIDER — packs are declaring the same FileProvider authority. Check UPDATE_AUTHORITY in each module's build.gradle.kts against its AndroidManifest."
+                  echo "::error::$LABEL hit INSTALL_FAILED_CONFLICTING_PROVIDER — the two packs are declaring the same FileProvider authority. Check UPDATE_AUTHORITY in each module's build.gradle.kts against its AndroidManifest."
                   ;;
                 *)
                   echo "::error::$LABEL failed to install."
@@ -153,14 +148,14 @@ jobs:
           done
 
           INSTALLED=$(adb shell pm list packages)
-          for PKG in "$CLASSIC_PKG" "$POP_PKG" "$BANNERS_PKG"; do
+          for PKG in "$CLASSIC_PKG" "$POP_PKG"; do
             if ! echo "$INSTALLED" | grep -q "package:$PKG$"; then
               echo "::error::$PKG is not present after install."
               echo "$INSTALLED" | grep corebuilds || true
               exit 1
             fi
           done
-          echo "All packs installed and coexisting."
+          echo "Both packs installed and coexisting."
           adb shell dumpsys package providers | grep -i "corebuilds" || true
           echo "::endgroup::"
 
@@ -194,7 +189,7 @@ jobs:
             # `am start` reports Status: ok even when it resolved nothing on
             # some images, so treat an explicit error line as fatal too.
             if echo "$START" | grep -qiE "Error type|does not exist|Activity class .* does not exist"; then
-              echo "::error::$ACT could not be resolved. For Pop/Banners this usually means the activity was named relative to the applicationId instead of the namespace."
+              echo "::error::$ACT could not be resolved. For Pop this usually means the activity was named relative to the applicationId instead of the namespace."
               exit 1
             fi
             if echo "$START" | grep -q "Status: ok"; then
@@ -236,9 +231,8 @@ jobs:
 
           check_pack "Icon Pack" "$CLASSIC_PKG" "$CLASSIC_ACT"
           check_pack "Pop" "$POP_PKG" "$POP_ACT"
-          check_pack "Banners" "$BANNERS_PKG" "$BANNERS_ACT"
 
-          echo "Device check passed: all packs installed side by side, discoverable, launched, each reporting '$EXPECTED_LINE'."
+          echo "Device check passed: both packs installed side by side, discoverable, launched, each reporting '$EXPECTED_LINE'."
           DEVICE_CHECK
           chmod +x "$RUNNER_TEMP/device-check.sh"
 

@@ -57,7 +57,6 @@ REQUIRED_TOOLS = (
     "tools/check_ui_resources.py",
     "tools/validate.py",
     "tools/validate_pop.py",
-    "tools/validate_banners.py",
     "tools/validate_pixel_neon.py",
     "tools/validate_motion.py",
     "tools/validate_motion_feed.py",
@@ -66,7 +65,6 @@ REQUIRED_TOOLS = (
     "tools/build_dependabot.py",
     "tools/build_issue_prefills.py",
     "tools/build_pop.py",
-    "tools/build_banner_pack.py",
     "tools/build_pixel_neon.py",
 )
 
@@ -78,7 +76,6 @@ MODULE_WIDE = {
     "build.yml": {
         "app/**",
         "pop/**",
-        "banners/**",
         "pixel-neon/**",
         "docs/**",
         "tests/**",

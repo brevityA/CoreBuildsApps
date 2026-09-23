@@ -44,7 +44,7 @@ def readme_stamp(suite: dict) -> str:
 def check_suite_json() -> None:
     suite = json.loads(read("suite.json"))
     apps = suite.get("apps", {})
-    expected = ["iconpack", "pixelneon", "pop", "banners", "line", "shift", "motion", "doctor"]
+    expected = ["iconpack", "pixelneon", "pop", "line", "shift", "motion", "doctor"]
     if list(apps.keys()) != expected:
         fail(f"suite.json apps must be in order {expected}")
     for key, app in apps.items():
@@ -83,30 +83,6 @@ def check_pop_truth(suite: dict) -> None:
     pop_list = read("docs/PopIconList.md")
     if f"`{icon_count}` icons" not in pop_list or f"pack v{pop['versionName']}" not in pop_list:
         fail("docs/PopIconList.md header drifted from suite/catalog")
-
-
-def check_banners_truth(suite: dict) -> None:
-    catalog = json.loads(read("tools/catalog.json"))
-    icons = catalog.get("icons", [])
-    icon_count = len(icons)
-    component_count = sum(len(row.get("components", [])) for row in icons)
-    banners = suite["apps"]["banners"]
-    latest = json.loads(read(banners["metadata"]))
-    if banners.get("iconCount") != icon_count or banners.get("componentCount") != component_count:
-        fail("suite.json banners counts must match catalog")
-    if latest.get("versionName") != banners["versionName"] or latest.get("versionCode") != banners["versionCode"]:
-        fail(f"{banners['metadata']} must match Banners suite/Gradle version")
-    if latest.get("iconCount") != icon_count or latest.get("componentCount") != component_count:
-        fail(f"{banners['metadata']} counts must match catalog")
-    if banners["applicationId"] == suite["apps"]["iconpack"]["applicationId"]:
-        fail("Banners must not share the classic pack's applicationId")
-    if banners["applicationId"] == suite["apps"]["pop"]["applicationId"]:
-        fail("Banners must not share Pop's applicationId")
-    if banners["tagPrefix"] == suite["apps"]["iconpack"]["tagPrefix"]:
-        fail("Banners must not share the classic pack's release tag prefix")
-    banners_list = read("docs/BannersIconList.md")
-    if f"`{icon_count}` icons" not in banners_list or f"pack v{banners['versionName']}" not in banners_list:
-        fail("docs/BannersIconList.md header drifted from suite/catalog")
 
 
 def check_iconpack_truth(suite: dict) -> None:
@@ -276,7 +252,6 @@ def main() -> int:
     suite = check_suite_json()
     check_iconpack_truth(suite)
     check_pop_truth(suite)
-    check_banners_truth(suite)
     check_readme_stamp(suite)
     check_stale_claims()
     check_line_v_trap()
