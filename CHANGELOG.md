@@ -159,6 +159,22 @@ All notable changes to the Core Builds Icon Pack. Format follows
   first and an outage second. Pop shipped its own version of this kit
   from day one (pop_back_*, pop_mask, pop_upon); this closes the same
   door in the flagship.
+- **The banner rail wears the app's colour.** For a year every banner
+  carried the same cyan-to-violet stripe on its left edge: pack-level
+  uniformity. Two things outgrew it. Launchers that colour-sample the
+  icon to theme the surroundings — Monet's navigation glow, any
+  Palette-swatch engine — met exactly one large saturated mass in our art,
+  because a monoline glyph is a thin-line drawing; the rail answered for
+  the brand and bleached a cyan halo around a red SmartTube. And per-icon
+  identity, the exact thing the square glyphs already trade in, never
+  reached the banners. The rail keeps its shape (same 16px width, same
+  inset, same rounded cap) but its stops are each icon's accent now,
+  dimming 55% toward the card at the bottom; icons with a declared
+  two-stop gradient ride the same ramp as their glyph. Across the grid
+  the rails still read as one family — laid out side by side they are a
+  stripe-set, not a costume party — and a sampling launcher now sees the
+  brand it was asking about. Pop's swatch backs never did this wrong; the
+  fixed stripe in the flagship is the only rail that did.
 
 ### Fixed
 

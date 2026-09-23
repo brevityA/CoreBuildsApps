@@ -56,11 +56,28 @@ GLYPH_H = 360             # glyph cap height inside the ink box
 GAP = 46                  # space between glyph and wordmark
 INK = "#E6EDF3"           # Brand Guide §03
 ACCENT = "#00d4ff"        # --th-accent, from the live configurator
-VIOLET = "#a78bfa"        # --th-purple
-RAIL_W = 16               # cyan->violet rail, left edge
+CARD = "#151923"          # the grid card, also the fallback back fill
+RAIL_W = 16               # brand-true rail, left edge (was a fixed
+                          # cyan->violet stripe until 1.9.2: launchers that
+                          # colour-sample the icon - Monet's navigation glow
+                          # picks its tint this way - read the rail, not the
+                          # thin glyph strokes, and bleached a cyan halo
+                          # around a red SmartTube. The rail keeps its shape
+                          # across the pack; its colour is now each icon's
+                          # own accent, top stop, sinking 55% toward the card
+                          # at the bottom so no rail ever goes full-bleed.)
 RAIL_PAD = 168            # rail inset from top/bottom, keeps ink under 72%
 KICKER = 46               # uppercase mono category size
 KICK_TRACK = 7.0          # .08em at this size, matching the site
+
+
+def _mix(hex_from: str, hex_to: str, t: float) -> str:
+    """Linear RGB blend of two #RRGGBB stops. tiny, self-contained: the only
+    rider it has is the rail gradient, which wants accent-at-top sinking
+    into the card, and colour liberties the sample size doesn't justify."""
+    f = tuple(int(hex_from[i:i + 2], 16) for i in (1, 3, 5))
+    b = tuple(int(hex_to[i:i + 2], 16) for i in (1, 3, 5))
+    return "#" + "".join(f"{round(x + (y - x) * t):02X}" for x, y in zip(f, b))
 
 # Wordmarks are Outfit Bold, converted to paths.
 #
@@ -156,7 +173,8 @@ def render(name, glyph, accent, category=None, *, monochrome=False,
     """
     Centred glyph + wordmark, with the Core Builds signature:
 
-      * a cyan->violet rail on the left edge (concept H)
+      * a rail on the left edge, brand-true since 1.9.2: the icon's own
+        accent, dimming toward the card (concept H, hue from the brand)
       * an uppercase mono category kicker above the name (concept H)
       * the same single-accent rounded-line glyph as the square icon
 
@@ -201,9 +219,17 @@ def render(name, glyph, accent, category=None, *, monochrome=False,
     name_paths, _ = wordmark_spans(lines, size, tx, baselines, INK)
     spans += name_paths
 
+    # The rail used to be the same cyan->violet stripe on 960 cards: the
+    # launcher that reads "the app's colour" (Monet's navigation glow, any
+    # Palette-swatch theme engine) met exactly one big saturated mass in our
+    # art - the rail - and answered with our cyan instead of the brand.
+    # Its stops are the icon's own accent now; when the catalog declares a
+    # two-stop gradient the rail rides the same ramp as the glyph.
+    rail_from, rail_to = (gradient if gradient else
+                          (accent, _mix(accent, CARD, 0.55)))
     rail = (f'<defs><linearGradient id="cbRail" x1="0" y1="0" x2="0" y2="1">'
-            f'<stop offset="0%" stop-color="{ACCENT}"/>'
-            f'<stop offset="100%" stop-color="{VIOLET}"/>'
+            f'<stop offset="0%" stop-color="{rail_from}"/>'
+            f'<stop offset="100%" stop-color="{rail_to}"/>'
             f'</linearGradient></defs>'
             f'<rect x="70" y="{RAIL_PAD}" width="{RAIL_W}" '
             f'height="{H - RAIL_PAD * 2}" rx="{RAIL_W / 2}" fill="url(#cbRail)"/>')

@@ -43,7 +43,7 @@
   },
   "generator": "tools/build_app_ui_mockups.py",
   "inputs": {
-    "Latestrelease/version.json": "a11341d35fb2b970b6a820b3b6dcc7789a310b5a0acab18bdb79b487debf3b76",
+    "Latestrelease/version.json": "e3109c689251d994da38bad3b3224f7289fb3536e4f366a0ea932224045966af",
     "app/src/main/assets/appfilter.xml": "522ccfaee43eb61de41cd3aa3b2de259029deefaa20a692dbe38634a81c5e411",
     "app/src/main/assets/manifest/wallpapers.json": "3265f4fdbeaaf99fc74c941e348bcabd4a95af8054b104f16553888dff7b8b6d",
     "app/src/main/res/layout/activity_about.xml": "24bf8847817c6c79e0733b25282913f12756331e851a461fdb5f96e43b08d04a",
@@ -76,7 +76,7 @@
     "tools/fonts/Outfit-Bold.ttf": "04f7c9705153927058475d6c5e9f75b0a1036ec5f6f63ffb69df046191ea8933",
     "tools/fonts/Outfit-ExtraBold.ttf": "056e8cd5840cea4cfc355f672292f7de00d95f5a42bf9b7cd96d511ca8e2883e"
   },
-  "inputs_digest": "1617e091402fc06ffb21d0321b60244cbf47d5dd786abc7f545fc1c2a4f2d9bb",
+  "inputs_digest": "94a32910706e39a6e1a50ac62b6b0121eb1dd536068e8bf006f291ba45cfc40d",
   "metrics": {
     "mono-bold@24": 448.0,
     "mono-bold@32": 608.0,
