@@ -35,7 +35,7 @@ python tools/build_banners.py
 python tools/build_branding.py
 python tools/build_brand_preview.py
 python tools/validate.py
-python tests/test_icon_identity.py    # 35 style/colour/reference/mapping regressions (after all packs build)
+python tests/test_icon_identity.py    # 55 style/colour/reference/mapping regressions (after all packs build)
 ```
 
 Paste the validator receipt. Current receipt: `Validated 943 icons · 1765 components · 25856 checks run`.

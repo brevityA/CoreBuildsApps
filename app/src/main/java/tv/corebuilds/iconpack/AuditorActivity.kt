@@ -53,7 +53,13 @@ import java.net.URLEncoder
  */
 class AuditorActivity : TvActivity() {
 
-    data class AuditItem(val label: String, val pkg: String, val activity: String) {
+    /**
+     * [mapped] is true when appfilter names this package under some other
+     * activity: an icon exists and is not applying, which is the not-applying
+     * form's report, not a new-icon request.
+     */
+    data class AuditItem(val label: String, val pkg: String, val activity: String,
+                         val mapped: Boolean = false) {
         val component: String get() = "$pkg/$activity"
     }
 
@@ -74,29 +80,42 @@ class AuditorActivity : TvActivity() {
             if (qrPanel.visibility == View.VISIBLE) showList() else finish()
         }
 
-        // Package queries are served from the system's cached tables; on the
-        // boxes this targets the whole scan measures in single-digit
-        // milliseconds, which is cheaper than the worker-thread machinery
-        // that would make the number unmeasurable.
         list.layoutManager = LinearLayoutManager(this)
         // A list that animates its rows on first layout drops the focus the
         // first row just received; there is nothing here worth animating.
         list.itemAnimator = null
 
-        val items = scan()
+        // Off the main thread: the scan reads and regex-walks the whole
+        // appfilter asset (~1800 components) and loads a label per
+        // launchable app, and that is not frame-budget work on a TV CPU.
+        Thread {
+            val items = scan()
+            runOnUiThread { if (!isFinishing && !isDestroyed) showScan(items) }
+        }.start()
+    }
+
+    private fun showScan(items: List<AuditItem>) {
         if (items.isEmpty()) {
             empty.visibility = View.VISIBLE
-        } else {
-            findViewById<TextView>(R.id.audit_count).text =
-                getString(R.string.audit_count_fmt, items.size)
-            list.adapter = AuditorAdapter(items) { reportOrQr(it) }
+            return
+        }
+        findViewById<TextView>(R.id.audit_count).text =
+            getString(R.string.audit_count_fmt, items.size)
+        list.adapter = AuditorAdapter(items) { reportOrQr(it) }
+        // The adapter lands after the first frame, so focus has already
+        // settled elsewhere; put the remote back on the first row.
+        list.post {
+            list.layoutManager?.findViewByPosition(0)?.requestFocus()
+                ?: list.requestFocus()
         }
     }
 
     /** Launchable rows on this TV whose own MAIN component appfilter misses. */
     private fun scan(): List<AuditItem> {
         val mapped = mappedComponents()
+        val mappedPackages = mapped.mapTo(HashSet()) { it.substringBefore('/') }
         val found = LinkedHashMap<String, AuditItem>()
+        val seen = HashSet<String>()
         for (category in listOf(
             Intent.CATEGORY_LEANBACK_LAUNCHER,
             Intent.CATEGORY_LAUNCHER
@@ -104,28 +123,38 @@ class AuditorActivity : TvActivity() {
             val intent = Intent(Intent.ACTION_MAIN).addCategory(category)
             for (info in packageManager.queryIntentActivities(intent, 0)) {
                 val pkg = info.activityInfo.packageName
-                val component = normalize(pkg, info.activityInfo.name)
-                if (pkg == packageName || component in mapped) continue
-                // containsKey, not putIfAbsent: the leanback pass runs first
-                // and a package with both a TV and a mobile launcher must keep
-                // the TV activity in the request - that is the component the
-                // pack needs. (putIfAbsent would say the same thing but is
-                // API 24; this pack still starts at 21.)
-                if (!found.containsKey(pkg)) {
-                    found[pkg] = AuditItem(info.loadLabel(packageManager).toString(),
-                                           pkg, component)
-                }
+                val activity = normalize(pkg, info.activityInfo.name)
+                if (pkg == packageName) continue
+                // Settle each package on the first activity seen, before
+                // asking whether it is mapped. The leanback pass runs first,
+                // so that is the activity a TV launcher shows; if appfilter
+                // names it, the app has its icon and the package is done.
+                // Checking `in mapped` first let a mapped leanback activity
+                // fall through to the same app's unmapped phone-launcher
+                // activity, which listed an app whose icon applies fine.
+                if (!seen.add(pkg)) continue
+                if ("$pkg/$activity" in mapped) continue
+                found[pkg] = AuditItem(info.loadLabel(packageManager).toString(),
+                                       pkg, activity, pkg in mappedPackages)
             }
         }
         return found.values.sortedBy { it.label.lowercase() }
     }
 
-    /** Every component `appfilter.xml` names, normalized, read from the asset. */
+    /**
+     * Every component `appfilter.xml` names, as `pkg/absolute.Activity`, read
+     * from the asset. Keyed on the package too: an absolute activity name
+     * alone is not unique, since vendors ship one class under several
+     * application IDs.
+     */
     private fun mappedComponents(): Set<String> =
         assets.open("appfilter.xml").bufferedReader().use { it.readText() }
             .let { xml ->
                 Regex("ComponentInfo\\{([^/]+)/([^}]+)\\}").findAll(xml)
-                    .map { normalize(it.groupValues[1], it.groupValues[2]) }
+                    .map { m ->
+                        val pkg = m.groupValues[1]
+                        "$pkg/${normalize(pkg, m.groupValues[2])}"
+                    }
                     .toSet()
             }
 
@@ -189,7 +218,8 @@ class AuditorActivity : TvActivity() {
         // issue form as before. See docs/icon-request/index.html.
         val landing = getString(R.string.audit_qr_landing)
         val url = if (landing.isBlank()) {
-            getString(R.string.audit_issue_url_fmt,
+            getString(if (item.mapped) R.string.audit_mapping_url_fmt
+                      else R.string.audit_issue_url_fmt,
                       enc(item.label), enc(item.component), enc(note))
         } else {
             val endpoint = getString(R.string.audit_request_endpoint)
