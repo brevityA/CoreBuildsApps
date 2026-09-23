@@ -1,0 +1,60 @@
+name = "corebuilds-icon-request"
+main = "worker.mjs"
+compatibility_date = "2026-09-22"
+
+# ── top level = PRODUCTION ────────────────────────────────────────────────────
+# Workers Logs: free-plan structured logs from logEvent(); keep the rate at 1
+# while volume stays small (same stance as core-builds-cors-proxy).
+[observability]
+enabled = true
+head_sampling_rate = 1
+
+# Layer 1 rate limit (preferred): Workers Rate Limiting binding, per-colo,
+# shared across isolates, no KV writes. Hourly budget then lives in KV.
+[[ratelimits]]
+name = "RL_ICON_REQUEST"
+namespace_id = "3101"
+simple = { limit = 5, period = 60 }
+
+# Layer 2: hourly buckets + the cached GitHub installation token.
+# Create once, paste the id:
+#   npx wrangler kv namespace create RATE_KV
+[[kv_namespaces]]
+binding = "RATE_KV"
+id = "REPLACE_WITH_NAMESPACE_ID"
+
+# Layer 3 (always present): per-isolate floor — code, no config.
+
+# Secrets (never in this file, never in git) — GitHub path:
+#   npx wrangler secret put GITHUB_APP_ID
+#   npx wrangler secret put GITHUB_APP_INSTALLATION_ID
+#   npx wrangler secret put GITHUB_APP_PRIVATE_KEY   # the whole -----BEGIN... block
+# Discord fallback / interim path (used automatically when the GitHub App
+# trio is absent — the webtools worker runs this exact pattern today):
+#   npx wrangler secret put ICON_REQUEST_DISCORD_WEBHOOK_URL
+[vars]
+RATE_LIMIT_PER_HOUR = "5"
+
+# ── [env.staging] = rehearsal lane ────────────────────────────────────────────
+# Deliberately separate everything that could leak into production:
+#   - its own worker name (and therefore its own workers.dev URL),
+#   - its own KV namespace (a staging token or bucket never touches prod),
+#   - its own rate-limit namespace id (account-unique), and by default a
+#     wider hourly cap so rehearsal traffic isn't shaping the rehearsal.
+# Rehearsal with the Discord sink is encouraged: set the staging-only secret
+#   npx wrangler secret put ICON_REQUEST_DISCORD_WEBHOOK_URL --env staging
+# (a test/staging channel, not the community one).
+[env.staging]
+name = "corebuilds-icon-request-staging"
+
+[[env.staging.ratelimits]]
+name = "RL_ICON_REQUEST"
+namespace_id = "3102"
+simple = { limit = 30, period = 60 }
+
+[[env.staging.kv_namespaces]]
+binding = "RATE_KV"
+id = "REPLACE_WITH_STAGING_NAMESPACE_ID"
+
+[env.staging.vars]
+RATE_LIMIT_PER_HOUR = "50"

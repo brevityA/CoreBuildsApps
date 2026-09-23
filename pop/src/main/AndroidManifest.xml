@@ -258,6 +258,11 @@
             android:label="@string/inspector_label"
             android:theme="@style/Theme.CoreBuilds" />
         <activity
+            android:name=".WhatsNewActivity"
+            android:exported="false"
+            android:label="@string/whats_new_title_plain"
+            android:theme="@style/Theme.CoreBuilds" />
+        <activity
             android:name=".SuiteActivity"
             android:exported="false"
             android:label="@string/suite_label"

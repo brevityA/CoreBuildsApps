@@ -91,7 +91,7 @@ def main() -> int:
     appfilter = ET.parse(appfilter_path).getroot()
     emitted: set[str] = set()
     drawables: set[str] = set()
-    expected = {f"ComponentInfo{{{spelling}}}": f"{icon['drawable']}_banner"
+    expected = {f"ComponentInfo{{{spelling}}}": icon['drawable']
                 for icon in icons for component in icon["components"]
                 for spelling in expand(component)}
     own = f"ComponentInfo{{{pack['applicationId']}/{pack['applicationId']}.MainActivity}}"
@@ -104,9 +104,13 @@ def main() -> int:
               f"appfilter: {component} maps to {drawable}, expected {expected.get(component)}")
         emitted.add(component)
         drawables.add(drawable)
-        check(drawable.endswith("_banner"),
-              f"appfilter: {drawable} is not a banner drawable")
-        check(drawable.removesuffix("_banner") in names,
+        # Square glyphs are the pack default since 1.9.2; the only banner
+        # mapping left is the pack's OWN launcher tile, which is brand
+        # card art by nature.
+        check(component == own or not drawable.endswith("_banner"),
+              f"appfilter: {drawable} is a banner drawable — glyphs are the "
+              "default, banner art stays opt-in via drawable.xml")
+        check(component == own or drawable in names,
               f"appfilter: {drawable} has no catalog square")
     check('ComponentInfo{tv.corebuilds.pixelneon/tv.corebuilds.pixelneon.MainActivity}' in emitted,
           "appfilter: Pixel Neon launcher component is not mapped")

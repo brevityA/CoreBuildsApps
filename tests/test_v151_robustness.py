@@ -146,9 +146,13 @@ class PickerTests(unittest.TestCase):
         self.assertIn("ShortcutIconResource.fromContext", src)
         self.assertIn("EXTRA_SHORTCUT_ICON", src)
 
-    def test_pick_default_is_banner(self):
+    def test_pick_default_follows_the_stored_shape(self):
         src = read("app/src/main/java/tv/corebuilds/iconpack/MainActivity.kt")
-        self.assertIn("pickBanners = true", src)
+        # The shipped default is square (matching the appfilter); the picker
+        # opens on whatever shape the user last delivered and the chips can
+        # still carve the banner drawable out of the glyph name.
+        self.assertIn("pickBanners = Prefs.pickerPrefersBanners(this)", src)
+        self.assertIn("Prefs.set(this, Prefs.KEY_PICK_BANNERS, pickBanners)", src)
         self.assertIn("${item.drawable}_banner", src)
         self.assertIn("PICK_BANNER", src)
         self.assertIn("PICK_SQUARE", src)
@@ -196,23 +200,24 @@ class MatchingTests(unittest.TestCase):
             self.twitch["components"],
         )
 
-    def test_twitch_appfilter_points_at_banner(self):
+    def test_twitch_appfilter_points_at_glyph(self):
         for comp in (
             "tv.twitch.android.app/tv.twitch.starshot64.app.StarshotActivity",
             "tv.twitch.android.app/tv.twitch.android.apps.TVLandingActivity",
         ):
             self.assertIn(
-                f'ComponentInfo{{{comp}}}" drawable="twitch_banner"',
+                f'ComponentInfo{{{comp}}}" drawable="twitch"',
                 self.af,
             )
 
-    def test_appfilter_default_is_still_banners(self):
+    def test_appfilter_default_is_square_glyphs(self):
         root = ET.parse(RES / "xml" / "appfilter.xml").getroot()
         for item in root.findall("item"):
             d = item.get("drawable") or ""
-            self.assertTrue(
+            self.assertFalse(
                 d.endswith("_banner"),
-                f"{item.get('component')} maps to {d}, not a banner",
+                f"{item.get('component')} maps to {d} — glyphs are the "
+                "default since 1.9.2, banners are opt-in",
             )
 
 

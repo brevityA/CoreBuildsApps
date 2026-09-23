@@ -6,6 +6,214 @@ All notable changes to the Core Builds Icon Pack. Format follows
 
 ## [Unreleased]
 
+## [1.9.2] — 2026-09-23
+
+### Added
+
+- **Adaptive wordmark monograms.** The 525 letter-tile fallbacks no longer
+  set one borrowed letter for every app that starts with it: each category
+  shell now sets the app's own short token — Kemo Stream reads KS, AI Cam
+  View reads AC, Mediaset Infinity reads MIT — in the same Outfit ExtraBold
+  the banner wordmarks use, closing the one axis the design research still
+  conceded to the Projectivy Icon Pack, whose fallbacks carry per-app
+  wordmarks. The font adapts rather than the typeface changing: an
+  optical-size tier per character count, a per-shell interior width so a
+  music tile's type sits tighter than a film frame's, and a 96px counter
+  floor below which a three-char mark trades back to two — letters that
+  would close at a 48dp Projectivy tile never ship. Tokens derive by the
+  same rule Pixel Neon's pixel monograms already use (multi-word: up to
+  three initials; one word: first two letters), so the suite speaks one
+  fallback language, and the three names whose single letter genuinely is
+  the icon keep it (K+, U, World Radios' W). Two gates hold it honest: the
+  catalog validator computes every mark's final cap inside its own shell
+  budget and names any that slips under the floor, and two entries sharing
+  shell, mark and colour across brands is now a build error, not a phase.
+  Pop and Pixel Neon are deliberately untouched — Pop reads the same glyph
+  registry, so its committed glyph metrics stay a pure function of it, and
+  the square, the 16:9 banner and the contact sheet all set the same token.
+- **Brand-informed mark styles, tranche 1.** Owner direction clarified the
+  ask behind the wordmarks: the marks should wear something of the original
+  app logo — which is exactly how far the pack can go, never the logotype
+  itself (the pack's identity-over-reproduction rule and the wordmark test
+  gate both stand). What ships instead is a researched treatment axis on the
+  adaptive font, `mark_style`, grown one cue at a time like the glyph
+  tranches. Tranche 1 is `lower`, the lowercase lock lowercase-wordmark
+  brands wear, measured against the same shell budget and counter floor as
+  the caps tokens, and it opens with the five monograms whose lowercase
+  treatment is public and unambiguous: **Joyn** sets its whole word joyn,
+  **Movistar Plus**, **Telenet**, **Voyo Sk** and **Waipu TV** set their
+  initials in the lock. Every styled mark carries a `mark_style_source`
+  note in the catalog saying where the cue was seen; a style without its
+  note, an unknown style name, or a style with no mark all fail validation.
+  A style that ships also joins the duplicate-render key, so two brands
+  cannot collide into the same picture.
+- **First auditor round: fifteen of the twenty unmapped apps are mapped.**
+  Sideload-side-audit from an owner TV (catalog 943 → 958): AK47Sports
+  (sport ball, gold crest cue), AnikenTV (anime tile), Voltra TV (green V
+  cue), Button Mapper TV, Fast Task Killer, PMX and MagiConnect (tool nut),
+  Mediaspelare (player screen), Galleri (photos print), and the TCL system
+  shelf — Användarmanual, User Center, TCL Home Passive, Meddelandelåda,
+  Works with Alexa and the com.tcl.tv tuner — each with its component read
+  off the device auditor, its family from the house rules, and its accent
+  from the photos where a stock-icon cue was visible. Two components were
+  truncated by the audit row itself, so those entries carry the exact
+  reported string plus the conventional completion as an alias
+  (Fast Task Killer `…Optimization[Activity]`, PMX `…fwk.MainActivityM[/]`).
+  All fifteen land on monograms by default and their marks auto-derive
+  under the counter floor: PMX's three-char override doesn't hold the tool
+  shell (79px), so it sets PM; Works with Alexa's WWA and WW both miss the
+  app shell, so it carries WA explicitly. suite.json, both updaters'
+  version.json files and the README stamp move in lockstep to 958 icons and
+  1174 components. The remaining five auditor rows weren't visible in the
+  photo set — round two waits on them.
+- **One-press anonymous icon requests, groundwork shipped.** Pressing an
+  auditor row now tries the direct path first: the app POSTs the three
+  fields the GitHub form would have been prefilled with — app name,
+  component, device note — to the Core Builds request broker, which files
+  the issue as `CoreBuilds-requests[bot]` (and folds a repeat press into a
+  +1 comment instead of a second issue). No GitHub account, no phone, no
+  email on the reporter side; the GitHub App credential lives only as a
+  Workers secret, never in the APK, never in git — the whole broker, its
+  deploy notes and its test suite live in `tools/icon_request_broker/`.
+  Where the GitHub App isn't configured yet, the same worker forwards the
+  request as a card to a Discord webhook instead — the pattern the Core
+  Builds webtools worker runs in production today — so the press works
+  from day one and self-upgrades the moment the App secrets exist. The
+  worker implements the webtools worker's documented hardening
+  conventions: build tag compared by a prod-safe smoke check, byte-capped
+  body reader, and three-layer rate limiting (binding → KV → isolate
+  floor) — plus a full `[env.staging]` rehearsal lane and dispatch-only
+  deploy workflow mirroring the webtools repo's, so nothing in production
+  has to happen before a staging rehearsal passes; a zero-cloud rehearsal
+  (`node rehearse-local.mjs`) already ran green end to end in the real
+  Workers runtime and caught a boot-blocking entry-export bug before any
+  deploy could.
+  Pop compiles the same auditor and inherits this. Until the broker URL is
+  baked into the generated resources (one `--endpoint` flag on the prefill
+  generator after deploy), nothing changes on-device: presses go straight
+  to the QR panel as before.
+- **The QR fallback now carries its payload visibly.** Field-level prefill
+  on GitHub's issue forms is unreliable
+  in places a TV can never see (the GitHub mobile app rewrites the URL
+  and drops the fields; logged-out logins can lose them), and no URL can
+  ever carry a picture of the app's current icon. So the QR panel itself
+  now shows the request's identity in plain pixels — the app's launcher
+  icon next to its name and component — with a hint that a photograph of
+  the screen attaches to the issue, and the QR payload can point at
+  `docs/icon-request/index.html` (this repo's GitHub Pages) once Pages
+  serves /docs: a .github.io link the GitHub app cannot claim, which
+  always renders the three values, offers the account form, and — when
+  the broker endpoint is baked — a no-login send that POSTs from the
+  phone's browser (the worker learned Origin-reflect CORS and an OPTIONS
+  preflight for exactly that; version tag `2026-09-22-iconreq03`, unit
+  tests 28 → 30). One generator flag, `--landing`, bakes it the same way
+  `--endpoint` does, and both persist across regenerations.
+- **Square glyphs are the shipped default; banners are now opt-in.** Every
+  appfilter entry in all three packs — 2,875 drawable references across the
+  icon pack, Pop and Pixel Neon — used to map launchers to the banner art;
+  they now map to the square glyph, and the launcher picker browses Square
+  sections first with banners following. No banner is deleted: the art
+  ships exactly as before, so a launcher that offers its own banner mode
+  keeps working, and the icon picker's shape chips remember whichever
+  shape a user last delivered. A new Settings row (Banner previews, off)
+  mirrors that preference for the pack's own pick-mode chips — the one
+  per-user channel a launcher genuinely exposes — while the shipped
+  default means nobody needs it: apply once and the home screen is square
+  glyphs by default. (Why not a per-user runtime switch reaching the
+  launcher: launcher-facing art lives in static APK assets and launchers
+  self-apply; the rewired default is the honest version of that toggle.)
+- **A What's New sheet narrates each update.** The update bar has room for
+  one line before a build installs; after the install the answer to "so
+  what changed?" used to be nowhere in-app. Now the build's own manifest
+  moves into the APK (`assets/version.json`, byte-identical to
+  `Latestrelease/version.json` — validate.py checks the pair the way it
+  does the dual appfilter copies), and a full-screen sheet reads the
+  highlights off it: once per upgrade from the home screen (fresh installs
+  are detected via firstInstallTime vs lastUpdateTime and skip the
+  narration), any time from Settings > What's new. Fully offline: the
+  UpdateChecker switch stays the only network the app ever speaks. Pop
+  inherits the screen through its mirrored sources; Pixel Neon's slimmer
+  build keeps the update bar only.
+- **Three requested icons: TVLok, GridStreamr, Launch on Boot.** All four
+  currently open `[Icon]` issues were triaged. TVLok (#155, a
+  tvlok.com playlist player) and Launch on Boot (#157,
+  `news.androidtv.launchonboot`, confirmed via its F-Droid page) each map
+  to a researched component pair; GridStreamr (#156) maps both Play
+  packages (`com.gridstreamr.gridstreamr` mobile and the native
+  `com.gridstreamr.androidtv`). The fourth, "My File" (#158), arrived with
+  an empty form — no package, no link — so it's answered on the issue with
+  a request for its component and will ship when identified. All three
+  shipped marks are category-monogram treatments (adaptive wordmark
+  monograms in the shared palette), the pack's standing answer for brands
+  without a reviewed glyph.
+- **Unthemed apps now land on the pack's own cards.** The main appfilter
+  carried no fallback furniture at all: anything outside the catalog
+  arrived in a launcher that supports the composite schema (iconback /
+  iconmask / iconupon / scale) as a naked stock icon next to 960-odd
+  carefully regulated glyphs. The pack now ships the kit it was missing —
+  ten card backs in the grid's #151923 fill nudged ten ways along the
+  palette (blue, violet, cyan, green, ember, orchid, marine, slate,
+  night, graphite), one shared card mask, a hairline-white upon, and a
+  0.70 scale that matches the 352/512 ink box the glyphs themselves sit
+  in. An app the pack has never heard of now reads as a Core Builds card
+  first and an outage second. Pop shipped its own version of this kit
+  from day one (pop_back_*, pop_mask, pop_upon); this closes the same
+  door in the flagship.
+- **The banner rail wears the app's colour.** For a year every banner
+  carried the same cyan-to-violet stripe on its left edge: pack-level
+  uniformity. Two things outgrew it. Launchers that colour-sample the
+  icon to theme the surroundings — Monet's navigation glow, any
+  Palette-swatch engine — met exactly one large saturated mass in our art,
+  because a monoline glyph is a thin-line drawing; the rail answered for
+  the brand and bleached a cyan halo around a red SmartTube. And per-icon
+  identity, the exact thing the square glyphs already trade in, never
+  reached the banners. The rail keeps its shape (same 16px width, same
+  inset, same rounded cap) but its stops are each icon's accent now,
+  dimming 55% toward the card at the bottom; icons with a declared
+  two-stop gradient ride the same ramp as their glyph. Across the grid
+  the rails still read as one family — laid out side by side they are a
+  stripe-set, not a costume party — and a sampling launcher now sees the
+  brand it was asking about. Pop's swatch backs never did this wrong; the
+  fixed stripe in the flagship is the only rail that did.
+- **Generic glyphs now wear their category as their shape.** Of the 961
+  icons, 546 are adaptive wordmark monograms (family shell + letter +
+  mark), and the shell assignment had flattened over time: 248 of the 550
+  APP-category monograms sat in the broadcast shell, VOD/PLAYER rows in
+  broadcast too, tool-shaped rows hiding behind an APP categorization —
+  a TOOL row, a STREAM row and a STORE row were becoming the same glyph
+  in three colours. Every family monogram now sits in the shell its
+  catalog category declares (app/broadcast/film/sport/tool/music/files/
+  vpn/gaming/browser/store/debrid/anime/kids/photos): 366 icons
+  re-shelled, letters and marks untouched, so a wrench-shaped row is
+  actually a TOOL and the stream family stays broadcast-shaped. The
+  art changes only; components, drawables and appfilters are untouched.
+
+### Fixed
+
+- **Pixel Neon sprites are a pure function of their app's catalog row
+  again.** Issue #111, root cause: four generators inside
+  `tools/build_pixel_neon.py` mixed the row's positional index into the
+  seed, so adding one icon repainted every icon after it. The row's
+  drawable hash now supplies everything positional used to. Cost of truth:
+  every sprite re-rolls exactly once with this build (they all change);
+  after that, a repaint only moves when its own row does.
+
+- **The auditor stops hiding apps whose package is partially mapped.**
+  Suppression was package-level: one appfilter row anywhere for a package
+  removed that package from the missing-apps scan — even when the mapped
+  activity had gone stale in an app update, which is exactly when the icon
+  silently stops applying and the audit is the one couch-side way to say
+  so. An Internet Speed Test report proved the chain: the pack maps
+  `com.rma.speedtesttv/…ui.SplashActivity` (inherited from the reference
+  pack's own appfilter), current builds moved on, so nothing assigned *and*
+  nothing appeared to report. The screen now compares full components —
+  folding the appfilter's relative-activity spelling to the absolute form
+  PackageManager reports — which is what its own docstring always claimed:
+  a package with a stale mapping shows as unmapped again and can be filed.
+  Pop had also inherited a stale icon_pack mirror from the first auditor
+  round; that's corrected and the mirror is now test-held (`test_pop`
+  gains the SharedResourceMirror class).
+
 ## [1.9.1] — 2026-09-20
 
 ### Fixed

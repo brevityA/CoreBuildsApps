@@ -106,13 +106,15 @@ def main():
         comp = item.get("component", "")
         d = item.get("drawable", "")
         comp_total += 1
-        # appfilter maps to the banner drawable — banners are the pack default.
+        # appfilter maps to the square glyph — glyphs are the pack default
+        # since 1.9.2, banner art staying opt-in via drawable.xml and
+        # whatever banner mode the launcher itself offers.
         base = d[:-7] if d.endswith("_banner") else d
         check(base in names,
               f"appfilter: drawable '{d}' has no catalog entry")
-        check(d.endswith("_banner"),
-              f"appfilter: '{d}' is not a banner drawable — banners are the "
-              f"default, square icons stay opt-in via drawable.xml")
+        check(not d.endswith("_banner"),
+              f"appfilter: '{d}' is a banner drawable — glyphs are the "
+              f"default since 1.9.2, banners stay opt-in via drawable.xml")
         check(re.match(r"^ComponentInfo\{[^/]+/[^}]+\}$", comp),
               f"appfilter: malformed component '{comp}'")
         check(comp not in seen,
@@ -123,15 +125,19 @@ def main():
     # 3b. Compatibility copies must be byte-identical. Some launchers read
     # res/xml and older ADW/GO integrations read assets; divergent mappings
     # produce device-specific failures that are extremely hard to diagnose.
+    # The What's New manifest has the same property: the sheet narrates the
+    # build's own notes, which is only true when the asset copy and the
+    # Latestrelease manifest are the same file.
     assets = ROOT / "app" / "src" / "main" / "assets"
-    for filename in ("appfilter.xml", "drawable.xml"):
-        resource_file = RES / "xml" / filename
-        asset_file = assets / filename
+    pairs = [(RES / "xml" / "appfilter.xml", assets / "appfilter.xml"),
+             (RES / "xml" / "drawable.xml", assets / "drawable.xml"),
+             (ROOT / "Latestrelease" / "version.json", assets / "version.json")]
+    for resource_file, asset_file in pairs:
         check(asset_file.exists(),
-              f"assets/{filename} missing — legacy launchers may not find the pack")
+              f"{asset_file} missing ({resource_file.name}'s twin copy)")
         if asset_file.exists():
             check(asset_file.read_bytes() == resource_file.read_bytes(),
-                  f"assets/{filename} differs from res/xml/{filename}")
+                  f"{asset_file} differs from {resource_file}")
 
     # Every catalog component must resolve canonically. ComponentName treats
     # pkg/.Activity and pkg/pkg.Activity as the same component; compare that

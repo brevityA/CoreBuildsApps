@@ -4,8 +4,8 @@
   "apps": {
     "iconpack": {
       "name": "Core Builds Icon Pack",
-      "versionName": "1.9.1",
-      "versionCode": 33,
+      "versionName": "1.9.2",
+      "versionCode": 34,
       "tagPrefix": "v",
       "floatingTag": "iconpack",
       "downloader": "5270601",
@@ -16,8 +16,8 @@
       "legacyApk": "app-release.apk",
       "metadata": "Latestrelease/version.json",
       "section": "icon-pack",
-      "iconCount": 943,
-      "componentCount": 1157
+      "iconCount": 961,
+      "componentCount": 1179
     },
     "pixelneon": {
       "name": "Core Builds Pixel Neon",
@@ -33,8 +33,8 @@
       "legacyApk": "pixelneon-release.apk",
       "metadata": "Latestrelease/pixel-neon-version.json",
       "section": "pixel-neon",
-      "iconCount": 943,
-      "componentCount": 1157
+      "iconCount": 961,
+      "componentCount": 1179
     },
     "pop": {
       "name": "Core Builds Pop",
@@ -49,8 +49,8 @@
       "stableApk": "corepop-release.apk",
       "metadata": "Latestrelease/pop-version.json",
       "section": "core-builds-pop",
-      "iconCount": 943,
-      "componentCount": 1157
+      "iconCount": 961,
+      "componentCount": 1179
     },
     "line": {
       "name": "Core Line",

@@ -21,8 +21,9 @@ import sys
 from pathlib import Path
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-from glyphs import GLYPHS, is_monogram, monoline, render_svg  # noqa: E402
+from glyphs import GLYPHS, family_body, family_glyph_for, is_monogram, monoline, render_svg  # noqa: E402
 from icon_style import CORE_MONOLINE, core_monoline_errors, display_accent  # noqa: E402
+from typeface import MIN_LOCKUP_CAP, lockup_cap  # noqa: E402
 from brandmarks import load_source  # noqa: E402
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -35,6 +36,10 @@ DOC_DIR = ROOT / "docs"
 
 PNG_SIZE = 512
 DRAWABLE_RE = re.compile(r"^[a-z][a-z0-9_]*$")
+
+# Brand-informed mark treatments that have shipped. A style joins this set
+# the way a glyph joins the registry: one researched cue at a time.
+MARK_STYLES = frozenset({"lower"})
 
 
 def esc(s):
@@ -70,6 +75,32 @@ def validate(icons, artwork=None):
             errors.append(f"{n}: gradient must be exactly two #RRGGBB stops")
         if i.get("ink") is not None and not re.fullmatch(r"#[0-9A-Fa-f]{6}", i["ink"]):
             errors.append(f"{n}: ink must be #RRGGBB")
+        mark = i.get("mark")
+        if mark is not None:
+            if not isinstance(mark, str) or not re.fullmatch(r"[A-Z0-9]{2,4}", mark):
+                errors.append(f"{n}: mark '{mark}' must be 2-4 uppercase A-Z0-9 chars")
+            elif family_glyph_for(i.get("glyph", "")) is None:
+                errors.append(f"{n}: mark '{mark}' belongs on a category monogram "
+                              f"(<family>_<L>), not glyph '{i.get('glyph')}'")
+            else:
+                _, cap_h, _, max_w = family_glyph_for(i["glyph"])
+                shown = mark.lower() if i.get("mark_style") == "lower" else mark
+                cap = lockup_cap(shown, cap_h, max_w)
+                if cap < MIN_LOCKUP_CAP:
+                    errors.append(f"{n}: mark '{shown}' sets at {cap:.0f}px in the "
+                                  f"'{i['glyph'].rpartition('_')[0]}' shell — under the "
+                                  f"{MIN_LOCKUP_CAP}px counter floor, it closes at a 48px tile")
+        mstyle = i.get("mark_style")
+        if mstyle is not None:
+            if mark is None:
+                errors.append(f"{n}: mark_style '{mstyle}' needs a mark to style")
+            elif mstyle not in MARK_STYLES:
+                errors.append(f"{n}: unknown mark_style '{mstyle}' "
+                              f"(vocabulary: {', '.join(sorted(MARK_STYLES))}) — a style "
+                              "ships only when a researched logotype cue needs it")
+            elif not i.get("mark_style_source"):
+                errors.append(f"{n}: mark_style '{mstyle}' carries no "
+                              "mark_style_source — where was the cue seen?")
         if not i.get("components"):
             errors.append(f"{n}: no components — icon would never auto-assign")
         if brand := i.get("brand"):
@@ -95,6 +126,25 @@ def validate(icons, artwork=None):
             if comp in seen_c:
                 errors.append(f"{n}: component '{comp}' duplicates {seen_c[comp]}")
             seen_c[comp] = n
+    # Two icons sharing shell, mark and display colour render the same PNG —
+    # v1.8.14 counted what that costs, so it is a gate now, not a phase.
+    # Declared brand variants (same `brand`) are one identity by rule and
+    # are supposed to be identical; the gate fires across brands only.
+    seen_render = {}
+    for i in icons:
+        mark = i.get("mark")
+        if not mark or family_glyph_for(i.get("glyph", "")) is None:
+            continue
+        render_key = (i["glyph"], mark, i.get("mark_style") or "",
+                      display_accent(i.get("color", "#000000"),
+                                     monochrome=i.get("color_note") == "monochrome"))
+        prev = seen_render.get(render_key)
+        # Identical twins across brands are the trap; declared variants of one
+        # brand must stay identical by the glyph/accent rule above.
+        if prev and prev[1] != i.get("brand"):
+            errors.append(f"{i['name']}: shares shell, mark and colour with "
+                          f"{prev[0]} — one of them needs a different accent")
+        seen_render[render_key] = (i["name"], i.get("brand"))
     for glyph, spec in (artwork or {}).items():
         if spec.get("usage") != "reference-only":
             errors.append(f"{glyph}: brand artwork is reference-only, not a rendering override")
@@ -125,12 +175,16 @@ def main():
         return 1
 
     # 1. master SVGs
+    wordmarked = sum(1 for i in icons
+                     if i.get("mark") and family_glyph_for(i["glyph"]))
     for i in icons:
         mono = i.get("color_note") == "monochrome"
         write(SVG_DIR / f"{i['drawable']}.svg",
               render_svg(i["glyph"], i["color"], monochrome=mono,
-                         gradient=i.get("gradient")))
-    print(f"\u2713 SVG masters written ({len(icons)}/{len(icons)}) \u2192 assets/svg/")
+                         gradient=i.get("gradient"), mark=i.get("mark"),
+                         style=i.get("mark_style")))
+    print(f"\u2713 SVG masters written ({len(icons)}/{len(icons)}) \u2192 assets/svg/ "
+          f"({wordmarked} adaptive wordmark monograms)")
 
     # 2. PNGs
     png_written = 0
@@ -171,6 +225,71 @@ def main():
 
     # 3. appfilter.xml — what makes icons auto-assign
     #
+    # 3a. Fallback furniture — iconback/iconmask/iconupon/scale. Apps the
+    # catalog does not cover used to arrive as naked stock icons: launcher
+    # launchers composite an unthemed app's own icon over an arbitrary
+    # pack-supplied back, clipped by the pack's mask and topped by its upon,
+    # so supply exactly those. The backs are the grid's card (#151923,
+    # hairline-white stroke) nudged ten ways along the pack palette — near
+    # night, distinguishable from a neighbour unthemed app, never competing
+    # with the actual glyph rows; one shape card, no second zoom level at
+    # 0.70 scale, matching the 352/512 ink box our own glyphs sit in.
+    # Without furniture the "one container" claim dies the moment an app
+    # outside the 961 lands on the home row; Pop ships the same kit under
+    # its own swatch names (pop_back_*, pop_mask, pop_upon).
+    BACKS = {
+        # one accent at 10% into the card fill (#151923): the palette's
+        # blues, greens and violets, night-side; graphite-only variants bookend
+        "night": "#151923", "blue": "#132039", "violet": "#211B39",
+        "cyan": "#132C39", "green": "#1B3022", "ember": "#2C2322",
+        "orchid": "#2B2032", "marine": "#132F35", "slate": "#21252F",
+        "graphite": "#10141D",
+    }
+    try:
+        from svg_renderer import svg2png
+        for name, hexv in BACKS.items():
+            svg2png(
+                bytestring=(
+                    f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 '
+                    f'{PNG_SIZE} {PNG_SIZE}" width="{PNG_SIZE}" '
+                    f'height="{PNG_SIZE}"><rect width="{PNG_SIZE}" '
+                    f'height="{PNG_SIZE}" rx="48" fill="{hexv}"/></svg>'),
+                write_to=str(PNG_DIR / f"cb_back_{name}.png"),
+                output_width=PNG_SIZE, output_height=PNG_SIZE,
+                background_color=None)
+        svg2png(
+            bytestring=(
+                f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 '
+                f'{PNG_SIZE} {PNG_SIZE}" width="{PNG_SIZE}" '
+                f'height="{PNG_SIZE}"><rect width="{PNG_SIZE}" '
+                f'height="{PNG_SIZE}" rx="48" fill="#FFFFFF"/></svg>'),
+            write_to=str(PNG_DIR / "cb_mask.png"),
+            output_width=PNG_SIZE, output_height=PNG_SIZE,
+            background_color=None)
+        svg2png(
+            bytestring=(
+                f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 '
+                f'{PNG_SIZE} {PNG_SIZE}" width="{PNG_SIZE}" '
+                f'height="{PNG_SIZE}"><rect x="4" y="4" '
+                f'width="{PNG_SIZE - 8}" height="{PNG_SIZE - 8}" rx="46" '
+                f'fill="none" stroke="rgba(255,255,255,0.07)" '
+                f'stroke-width="8"/></svg>'),
+            write_to=str(PNG_DIR / "cb_upon.png"),
+            output_width=PNG_SIZE, output_height=PNG_SIZE,
+            background_color=None)
+        print(f"\u2713 fallback furniture written ({len(BACKS)} backs + mask + "
+              f"upon) \u2192 res/drawable-nodpi/")
+    except (ImportError, OSError, TypeError):
+        missing = [f"cb_back_{n}.png" for n in BACKS
+                   if not (PNG_DIR / f"cb_back_{n}.png").exists()]
+        missing += [f for f in ("cb_mask.png", "cb_upon.png")
+                    if not (PNG_DIR / f).exists()]
+        if missing:
+            raise SystemExit(f"fallback furniture PNGs missing and the "
+                             f"rasteriser is unavailable: {', '.join(missing[:4])}")
+        print("\u2713 fallback furniture already on disk (rasteriser absent)")
+
+    #
     # Auto-assignment maps to the 16:9 BANNER drawable, not the square icon.
     # Projectivy cards are 16:9 by default and the reference pack ships 1002
     # of its 1002 icons at 320x180, so a banner is what a card actually wants.
@@ -201,6 +320,16 @@ def main():
     lines = ['<?xml version="1.0" encoding="utf-8"?>',
              '<!-- Generated by tools/build_icons.py. Do not edit by hand. -->',
              '<resources>']
+    # Fallback furniture first — launchers that support the composite
+    # schema read these before any <item>, and an unthemed app lands on one
+    # of the card backs instead of arriving naked. Pop's appfilter ships the
+    # same pattern with its own swatch names.
+    backs = " ".join(f'img{n + 1}="cb_back_{name}"'
+                     for n, name in enumerate(BACKS))
+    lines += [f'    <iconback {backs}/>',
+              '    <iconmask img1="cb_mask"/>',
+              '    <iconupon img1="cb_upon"/>',
+              '    <scale factor="0.70"/>']
     comp_count = 0
     emitted_count = 0
     seen_emitted = set()
@@ -213,7 +342,7 @@ def main():
                     continue
                 seen_emitted.add(variant)
                 lines.append(f'    <item component="ComponentInfo{{{esc(variant)}}}" '
-                             f'drawable="{i["drawable"]}_banner"/>')
+                             f'drawable="{i["drawable"]}"/>')
                 emitted_count += 1
     lines.append('</resources>')
     appfilter_text = "\n".join(lines) + "\n"
@@ -229,7 +358,9 @@ def main():
 
     # 4. drawable.xml — launcher icon picker, grouped by catalog category
     # so Projectivy's browser can jump a section instead of scrolling 500
-    # untitled tiles. Banners head each group; squares follow as opt-in.
+    # untitled tiles. Square glyphs head each group - the shipped default
+    # since 1.9.2, matching what the appfilter now maps - banners follow as
+    # the opt-in art.
     CAT_LABEL = {
         "STREAM": "Streaming", "MEDIA": "Media centres", "VOD": "On demand",
         "LIVE": "Live TV", "PLAYER": "Players", "MUSIC": "Music",
@@ -254,14 +385,14 @@ def main():
          '<resources>']
     for cat in cat_order:
         label = CAT_LABEL.get(cat, cat.title())
-        d.append(f'    <category title="Banners \u00b7 {esc(label)}" />')
-        for i in by_cat[cat]:
-            d.append(f'    <item drawable="{i["drawable"]}_banner" />')
-    for cat in cat_order:
-        label = CAT_LABEL.get(cat, cat.title())
         d.append(f'    <category title="Square \u00b7 {esc(label)}" />')
         for i in by_cat[cat]:
             d.append(f'    <item drawable="{i["drawable"]}" />')
+    for cat in cat_order:
+        label = CAT_LABEL.get(cat, cat.title())
+        d.append(f'    <category title="Banners \u00b7 {esc(label)}" />')
+        for i in by_cat[cat]:
+            d.append(f'    <item drawable="{i["drawable"]}_banner" />')
     d.append('</resources>')
     drawable_text = "\n".join(d) + "\n"
     write(XML_DIR / "drawable.xml", drawable_text)
@@ -346,7 +477,9 @@ def main():
     for n, i in enumerate(icons):
         cx, cy = (n % cols) * cell, 78 + (n // cols) * cell
         mono = i.get("color_note") == "monochrome"
-        inner = monoline(GLYPHS[i["glyph"]](display_accent(i["color"], monochrome=mono)))
+        inner = monoline(family_body(i["glyph"],
+                                     display_accent(i["color"], monochrome=mono),
+                                     i.get("mark"), i.get("mark_style")))
         s.append(f'<rect x="{cx + 9}" y="{cy + 5}" width="{cell - 18}" '
                  f'height="{cell - 34}" rx="16" fill="#151923" '
                  f'stroke="rgba(255,255,255,.06)"/>')

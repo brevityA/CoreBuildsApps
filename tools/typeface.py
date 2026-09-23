@@ -92,6 +92,118 @@ def wordmark_spans(lines, size, tx, baselines, fill, font_path=None):
     return "\n  ".join(parts), max_w
 
 
+# --------------------------------------------------------------------------
+# Adaptive wordmark lockups.
+#
+# Letter-first fallbacks (the <family>_<L> category shells) used to carry one
+# Outfit letter; every app whose name began with the same letter rendered the
+# same type. The Projectivy Icon Pack's one measurable win over this pack
+# (docs/research/iconpack-design-upgrade-2026-09.md) is that its fallbacks set
+# per-app wordmarks, so no two fallbacks read the same.
+#
+# This is the Core Builds answer: the same Outfit ExtraBold voice, set as a
+# short per-app token ("AI Cam View" -> "ACV", "Weyd" -> "WE"), with the
+# TYPE adapting instead of the letter: a cap-height tier per character count,
+# a per-shell interior width, and the shell's optical centre. Same face as
+# every banner wordmark, so a row still reads as one pack — the silhouette
+# and the hue answer "which app", the token just stops the type lying.
+#
+# The derivation rule (multi-word -> up to three initials, one word -> first
+# two letters) is the same one Pixel Neon's brand_initials uses, so the suite
+# derives one token per app instead of three divergent systems.
+# --------------------------------------------------------------------------
+
+# Fewer characters are set larger — the classic optical-size ladder. Four is
+# the hard ceiling: longer marks would sit under the counter floor in every
+# shell and read as texture, not type. A mark that cannot hold
+# MIN_LOCKUP_CAP on the third tier trades back to two characters — the floor
+# is the boss of the ladder, never the other way round.
+LOCKUP_TIERS = {1: 1.00, 2: 0.82, 3: 0.68, 4: 0.58}
+
+# Below this cap a filled Outfit counter closes at a 48dp Projectivy tile.
+# v1.8.14 drew the same lesson for glyph counters (the 32px minimum); this is
+# its typographic twin.
+MIN_LOCKUP_CAP = 96
+
+
+def _lockup_ink(text):
+    """Em-scale ink box + per-glyph origins for a lockup candidate."""
+    font = _font(str(FONT_MONOGRAM))
+    glyphset = font.getGlyphSet()
+    cmap = _cmap(font)
+    cursor = 0.0
+    pieces = []
+    xmin = ymin = 1e9
+    xmax = ymax = -1e9
+    for ch in text:
+        name = cmap.get(ord(ch), ".notdef")
+        glyph = glyphset[name]
+        bounds = BoundsPen(glyphset)
+        glyph.draw(bounds)
+        if bounds.bounds:
+            bx0, by0, bx1, by1 = bounds.bounds
+            xmin = min(xmin, cursor + bx0)
+            ymin = min(ymin, by0)
+            xmax = max(xmax, cursor + bx1)
+            ymax = max(ymax, by1)
+        pieces.append((glyph, cursor))
+        cursor += glyph.width
+    return pieces, (xmin, ymin, xmax, ymax), glyphset
+
+
+def lockup_cap(text, cap_h, max_w):
+    """The cap height `text` actually reaches inside a shell's type budget.
+
+    `cap_h` is the shell's single-letter cap; `max_w` its interior width. The
+    renderer and the catalog validator share this number so a mark that would
+    shrink under MIN_LOCKUP_CAP fails validation by name, never silently.
+    """
+    if not text or len(text) > max(LOCKUP_TIERS):
+        return 0.0
+    _, (xmin, ymin, xmax, ymax), _gs = _lockup_ink(text)
+    gw, gh = xmax - xmin, ymax - ymin
+    if gw <= 0 or gh <= 0:
+        return 0.0
+    scale = min(cap_h * LOCKUP_TIERS[len(text)] / gh, max_w / gw)
+    return gh * scale
+
+
+def adaptive_lockup(text, color, cap_h, max_w, cy=GRID / 2, style=None):
+    """One filled Outfit ExtraBold lockup, sized to a shell's type budget.
+
+    Same optical box as the single-letter monograms: ink centred on the
+    grid's vertical axis at `cy`, never stretched — the size gives, the face
+    doesn't.
+
+    `style` is the catalog's brand-informed treatment. Literal logotype
+    reproduction is off-limits here (AGENTS: pack identity over vendor-logo
+    reproduction), so a style borrows the logo's TREATMENT in the pack's own
+    face — tranche 1 ships `lower`, the lowercase lock lowercase-wordmark
+    brands wear (joyn, movistar, waipu). The axis grows one researched cue
+    at a time, like the glyph tranches.
+    """
+    if style == "lower":
+        text = text.lower()
+    pieces, (xmin, ymin, xmax, ymax), glyphset = _lockup_ink(text)
+    gw, gh = xmax - xmin, ymax - ymin
+    if gw <= 0 or gh <= 0:
+        return ""
+    scale = min(cap_h * LOCKUP_TIERS[len(text)] / gh, max_w / gw)
+    cx = GRID / 2
+    ink_cx, ink_cy = (xmin + xmax) / 2, (ymin + ymax) / 2
+    out = []
+    for glyph, origin in pieces:
+        xf = Transform(scale, 0, 0, -scale,
+                       cx - (ink_cx - origin) * scale,
+                       cy + ink_cy * scale)
+        pen = SVGPathPen(glyphset)
+        glyph.draw(TransformPen(pen, xf))
+        d = pen.getCommands()
+        if d:
+            out.append(f'<path d="{d}" fill="{color}" stroke="none"/>')
+    return "".join(out)
+
+
 def monogram_body(letter, color):
     """
     One filled Outfit ExtraBold letter, optically centred on the 512 grid.

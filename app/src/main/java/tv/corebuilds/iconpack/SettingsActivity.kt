@@ -53,6 +53,7 @@ class SettingsActivity : TvActivity() {
     private lateinit var updateSwitch: SwitchCompat
     private lateinit var motionSwitch: SwitchCompat
     private lateinit var amoledSwitch: SwitchCompat
+    private lateinit var bannerSwitch: SwitchCompat
     private lateinit var cacheSize: TextView
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -63,11 +64,13 @@ class SettingsActivity : TvActivity() {
         updateSwitch = findViewById(R.id.set_updates_switch)
         motionSwitch = findViewById(R.id.set_motion_switch)
         amoledSwitch = findViewById(R.id.set_amoled_switch)
+        bannerSwitch = findViewById(R.id.set_banner_switch)
         cacheSize = findViewById(R.id.set_cache_size)
 
         updateSwitch.isChecked = Prefs.updateChecks(this)
         motionSwitch.isChecked = Prefs.reduceMotion(this)
         amoledSwitch.isChecked = Prefs.amoled(this)
+        bannerSwitch.isChecked = Prefs.pickerPrefersBanners(this)
 
         row(R.id.set_updates_row) {
             val next = !updateSwitch.isChecked
@@ -88,12 +91,22 @@ class SettingsActivity : TvActivity() {
             recreate()
         }
 
+        row(R.id.set_banner_row) {
+            val next = !bannerSwitch.isChecked
+            bannerSwitch.isChecked = next
+            Prefs.set(this, Prefs.KEY_PICK_BANNERS, next)
+        }
+
         row(R.id.set_refresh_row) { refreshLauncher() }
 
         row(R.id.set_appinfo_row) { openLauncherInfo() }
 
         row(R.id.set_suite_row) {
             startActivity(Intent(this, SuiteActivity::class.java))
+        }
+
+        row(R.id.set_whatsnew_row) {
+            startActivity(Intent(this, WhatsNewActivity::class.java))
         }
 
         row(R.id.set_audit_row) {

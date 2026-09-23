@@ -55,6 +55,23 @@ Mockups with a real scannable code over an example URL:
 `docs/app-ui-auditor.png` and `docs/app-ui-auditor-qr.png`, rendered by
 `tools/build_app_ui_mockups.py`.
 
+**QR fall-out found in the field (and its fix).** Reported after a scan:
+the phone opens "the issues page" and the package/activity — the one thing
+the triage needs to assign an icon — never arrives; and no URL can carry a
+picture of the current icon anyway. The investigation's evidence trail
+(decoded QR payloads, the exact `return_to` across GitHub's login bounce,
+v1.9.1 and HEAD resource diffs) placed the drop downstream of the pack:
+GitHub's field-level prefill is unreliable where the couch can't see —
+chiefly the GitHub mobile app claiming github.com links and discarding the
+query payload. The structural fix, shipped with the broker milestone: the
+QR panel now *displays* the identity in pixels (current launcher icon +
+app name + component, photographable and attachable), and an interstitial
+(`docs/icon-request/index.html`, GitHub Pages, browser-borne by domain)
+can instead become the QR payload via one `--landing` flag on the prefill
+generator — always rendered, offering the account form plus the same
+no-login broker POST the TV makes directly. The broker carries Origin
+reflection + preflight solely so that phone POST is readable.
+
 ## 2. Launcher cache buster — SHIPPED this round
 
 Two rows under a new LAUNCHER group in Settings: **Refresh launcher icons**

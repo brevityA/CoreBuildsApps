@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1280" height="720" viewBox="0 0 1280 720">
   <g transform="translate(29.0,0.0)">
-  <defs><linearGradient id="cbRail" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#00d4ff"/><stop offset="100%" stop-color="#a78bfa"/></linearGradient></defs><rect x="70" y="168" width="16" height="384" rx="8.0" fill="url(#cbRail)"/>
+  <defs><linearGradient id="cbRail" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#0061FF"/><stop offset="100%" stop-color="#0C3986"/></linearGradient></defs><rect x="70" y="168" width="16" height="384" rx="8.0" fill="url(#cbRail)"/>
   <g transform="translate(159,180) scale(0.70312)"><rect x="64" y="88" width="384" height="268" rx="52" fill="none" stroke="#0061FF" stroke-width="32.0" stroke-linecap="round" stroke-linejoin="round"/><path d="M 256 152 L 256 244 C 256 280 224 300 194 284" fill="none" stroke="#0061FF" stroke-width="26.2" stroke-linecap="round" stroke-linejoin="round"/><path d="M 176 412 L 336 412" fill="none" stroke="#0061FF" stroke-width="26.2" stroke-linecap="round" stroke-linejoin="round"/><path d="M 256 356 L 256 412" fill="none" stroke="#0061FF" stroke-width="26.2" stroke-linecap="round" stroke-linejoin="round"/></g>
   <path d="M567.744 315.31V282.834H574.966V315.31ZM573.31 315.31V308.962H589.364V315.31Z" fill="#00d4ff" stroke="none"/>
   <path d="M591.1120000000001 315.31 603.9920000000001 282.834H610.524L623.2660000000001 315.31H615.63L605.878 288.354H608.5L598.61 315.31ZM598.426 309.422V303.534H616.136V309.422Z" fill="#00d4ff" stroke="none"/>

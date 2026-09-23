@@ -42,6 +42,7 @@ class MainActivity : TvActivity() {
 
     private var target: ApplyIconPack.Launcher? = null
     private var updateChecked = false
+    private var whatsNewShown = false
     /** Set by the bar's Later button: the bar stays hidden for this session. */
     private var updateDismissed = false
     private var pickMode = false
@@ -61,7 +62,7 @@ class MainActivity : TvActivity() {
 
     private var category = ALL
     private var query = ""
-    private var pickBanners = true
+    private var pickBanners = false
     private var pendingUpdate: UpdateChecker.Result.Available? = null
     private var downloadedApk: File? = null
     private var installOffered = false
@@ -118,9 +119,17 @@ class MainActivity : TvActivity() {
         }
 
         if (pickMode) {
+            // The shape a user last delivered simply stays: the picker opens
+            // on the stored chip, and the chip row keeps it (bindPickShape
+            // writes the pref). The shipped default is square — the same
+            // default the appfilter now maps for launcher-side apply.
+            pickBanners = Prefs.pickerPrefersBanners(this)
             val pickerHint = findViewById<TextView>(R.id.picker_hint)
             pickerHint.visibility = View.VISIBLE
-            pickerHint.text = getString(R.string.picker_hint_banner)
+            pickerHint.text = getString(
+                if (pickBanners) R.string.picker_hint_banner
+                else R.string.picker_hint_square
+            )
             findViewById<TextView>(R.id.apply_button).visibility = View.GONE
             findViewById<TextView>(R.id.apply_sub).visibility = View.GONE
             findViewById<LinearLayout>(R.id.update_bar).visibility = View.GONE
@@ -379,6 +388,29 @@ class MainActivity : TvActivity() {
         super.onResume()
         if (!pickMode) {
             bindApplyButton()
+            // What's New fires once per upgrade, independently of the update
+            // checker's switch: it reads the APK's own asset, so it works
+            // with the network check off. Fresh installs seed the gate
+            // instead of narrating — nothing changed *for them*, and the
+            // first-run flow has the focus. lastUpdateTime >
+            // firstInstallTime is what separates "just installed 1.9.2" from
+            // "updated into it", a difference SharedPreferences alone
+            // cannot see.
+            if (!whatsNewShown) {
+                val seen = Prefs.whatsNewSeen(this)
+                if (seen == 0) {
+                    val info = packageManager.getPackageInfo(packageName, 0)
+                    if (info.lastUpdateTime > info.firstInstallTime) {
+                        whatsNewShown = true
+                        startActivity(Intent(this, WhatsNewActivity::class.java))
+                    } else {
+                        Prefs.setWhatsNewSeen(this, BuildConfig.VERSION_CODE)
+                    }
+                } else if (BuildConfig.VERSION_CODE > seen) {
+                    whatsNewShown = true
+                    startActivity(Intent(this, WhatsNewActivity::class.java))
+                }
+            }
             // Gated by Settings. Off means UpdateChecker is never called, so
             // the app issues no network request of its own at all — which is
             // what the About screen's network list claims, and the claim has
@@ -1042,8 +1074,11 @@ class MainActivity : TvActivity() {
         // See bindChips: a chip press that costs the chip its highlight reads as
         // the press not having landed.
         targets.itemAnimator = null
-        targets.adapter = ChipAdapter(labels, keys, PICK_BANNER) { key ->
+        targets.adapter = ChipAdapter(
+            labels, keys, if (pickBanners) PICK_BANNER else PICK_SQUARE
+        ) { key ->
             pickBanners = key == PICK_BANNER
+            Prefs.set(this, Prefs.KEY_PICK_BANNERS, pickBanners)
             hint.text = if (pickBanners) {
                 getString(R.string.picker_hint_banner)
             } else {

@@ -9,4 +9,20 @@
          bare %5B parses as width 5 + boolean conversion and throws),
          only the %n$s placeholders stay single. -->
     <string name="audit_issue_url_fmt">https://github.com/brevityA/CoreBuildsApps/issues/new?assignees=&amp;labels=icon+request&amp;projects=&amp;template=1.new_icon_request.yml&amp;title=%%5BIcon%%5D+%1$s&amp;app_name=%1$s&amp;component=%2$s&amp;notes=%3$s</string>
+    <!-- Anonymous-request broker. A row press POSTs to it before
+         the QR panel is even offered; empty means not deployed and
+         the press goes straight to the QR panel. Bake the deployed
+         URL in with the endpoint flag on this generator once
+         tools/icon_request_broker is live. (XML comments ban
+         doubled hyphens, so the flag is unnamed here; the broker
+         README names it.) -->
+    <string name="audit_request_endpoint"></string>
+    <!-- QR interstitial on this repo's GitHub Pages
+         (docs/icon-request/index.html). Empty means the QR is the
+         direct GitHub deep link; baked, the QR lands on the page
+         first - always rendered, browser-borne, and able to send
+         straight to the broker on phones with no GitHub login.
+         Bake with the landing flag on this generator once Pages
+         serves /docs from main. (Flag unnamed here; same XML rule.) -->
+    <string name="audit_qr_landing"></string>
 </resources>

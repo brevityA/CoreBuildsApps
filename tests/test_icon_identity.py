@@ -163,14 +163,64 @@ class IdentityTests(unittest.TestCase):
                 self.assertNotEqual(bg, icon["glyph"], icon["name"])
                 expected = recentre(render(icon["name"], bg, icon["color"],
                                             icon.get("category", ""),
-                                            gradient=icon.get("gradient")))
+                                            gradient=icon.get("gradient"),
+                                            mark=icon.get("mark"),
+                                            style=icon.get("mark_style")))
                 self.assertEqual(
                     (ROOT / "assets/banners" / f"{icon['drawable']}.svg").read_text(),
                     expected, icon["name"])
                 self.assertEqual(
                     (ROOT / "assets/svg" / f"{icon['drawable']}.svg").read_text(),
                     render_svg(icon["glyph"], icon["color"],
-                               gradient=icon.get("gradient")), icon["name"])
+                               gradient=icon.get("gradient"),
+                               mark=icon.get("mark"),
+                               style=icon.get("mark_style")), icon["name"])
+
+    def test_adaptive_marks_fit_their_shell_and_counter_floor(self):
+        """The adaptive font keeps its promise: marks only ever set on
+        category monograms, inside that shell's own type budget, at or above
+        the cap floor where a filled counter survives a 48dp tile. A styled
+        mark is measured as it actually renders (lower, not its cap-token)."""
+        from glyphs import family_glyph_for
+        from typeface import MIN_LOCKUP_CAP, lockup_cap
+        marked = 0
+        for icon in ICONS:
+            mark = icon.get("mark")
+            if not mark:
+                continue
+            marked += 1
+            with self.subTest(icon=icon["name"]):
+                budget = family_glyph_for(icon["glyph"])
+                self.assertIsNotNone(budget,
+                                     f"mark '{mark}' sits on {icon['glyph']}")
+                _, cap_h, _, max_w = budget
+                shown = mark.lower() if icon.get("mark_style") == "lower" else mark
+                self.assertGreaterEqual(lockup_cap(shown, cap_h, max_w),
+                                        MIN_LOCKUP_CAP)
+        self.assertGreater(
+            marked, 0,
+            "no adaptive wordmark monograms — the fallback voice reverted "
+            "to one letter for every app")
+
+    def test_mark_styles_are_shipped_researched_and_styled_as_rendered(self):
+        """A mark_style is tranche work: it must name a shipped treatment,
+        carry its research note, and only ever sit on a styled mark."""
+        from build_icons import MARK_STYLES
+        styled = 0
+        for icon in ICONS:
+            style = icon.get("mark_style")
+            if style is None:
+                continue
+            styled += 1
+            with self.subTest(icon=icon["name"]):
+                self.assertIn(style, MARK_STYLES, icon["name"])
+                self.assertTrue(icon.get("mark"), f"{icon['name']}: style without mark")
+                self.assertTrue(icon.get("mark_style_source"),
+                                f"{icon['name']}: '{style}' cue has no source note")
+        self.assertGreater(
+            styled, 0,
+            "mark_style vocabulary is loaded but no icon ships a researched "
+            "treatment — the tranche regressed")
 
     def test_tizentube_runs_the_measured_field_gradient(self):
         """The owner wants the real logo's ramp: field cyan to pale blue,
@@ -190,7 +240,9 @@ class IdentityTests(unittest.TestCase):
             self.assertEqual(path.read_text(),
                              render_svg(icon["glyph"], icon["color"],
                                         monochrome=mono,
-                                        gradient=icon.get("gradient")),
+                                        gradient=icon.get("gradient"),
+                                        mark=icon.get("mark"),
+                                        style=icon.get("mark_style")),
                              icon["name"])
 
     def test_nuvio_square_runs_the_brand_gradient(self):
@@ -460,14 +512,16 @@ class SourceTests(unittest.TestCase):
         self.assertNotEqual(body, monoline(GLYPHS["tile_N"](accent)))
         self.assertFalse(hasattr(brandmarks, "catalog_glyphs"))  # no vendor override route
 
-    def test_nobuffr_maps_to_banner_in_all_three_packs(self):
+    def test_nobuffr_maps_in_all_three_packs(self):
         expected = "ComponentInfo{com.nobuffr.app/tv.tivitime.compose.app.AppActivity}"
         for module in (ROOT / "app", ROOT / "pop", ROOT / "pixel-neon/app"):
             xml = module / "src/main/res/xml/appfilter.xml"
             resources = ET.parse(xml).getroot()
             matches = [r for r in resources.findall("item") if r.get("component") == expected]
             self.assertEqual(len(matches), 1, str(xml))
-            self.assertEqual(matches[0].get("drawable"), "nobuffr_banner")
+            # Square glyph is the shipped default since 1.9.2; the banner
+            # pair still ships so launcher-side banner choice stays live.
+            self.assertEqual(matches[0].get("drawable"), "nobuffr")
             self.assertNotIn("com.nobuffr.app/.MainActivity", xml.read_text())
             for suffix in ("", "_banner"):
                 self.assertTrue((module / "src/main/res/drawable-nodpi" / f"nobuffr{suffix}.png").is_file())

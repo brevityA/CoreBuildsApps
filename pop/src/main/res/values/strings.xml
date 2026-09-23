@@ -154,6 +154,8 @@
     <string name="settings_motion_sub">Turn on if the filter chips lag behind the remote on an older box.</string>
     <string name="settings_amoled_title">AMOLED chrome</string>
     <string name="settings_amoled_sub">Pure black app background, to match the AMOLED wallpaper series.</string>
+    <string name="settings_banner_title">Banner previews</string>
+    <string name="settings_banner_sub">Off shows square glyphs in the picker — the shape the pack applies by default for every launcher. On shows the banner art and remembers it next time.</string>
     <string name="settings_group_storage">STORAGE</string>
     <string name="settings_cache_title">Wallpaper cache</string>
     <string name="settings_cache_sub">Wallpapers you downloaded. Clearing re-fetches them on demand.</string>
@@ -196,7 +198,11 @@
     <string name="audit_title">Apps without a Core Builds icon</string>
     <string name="audit_count_fmt">%1$d launchable apps on this TV have no icon yet</string>
     <string name="audit_empty">Every launchable app on this TV is mapped. Nothing to request.</string>
-    <string name="audit_qr_hint">Scan with your phone. The issue opens on the icon-request form with the app name, component and this TV\'s details already filled in — check them and submit.</string>
+    <string name="audit_qr_hint">Scan with your phone — the app name, this component and the TV\'s details go with it. If the phone opens the GitHub app with empty fields instead, use its menu → Open in browser. Or photograph this screen and attach the photo to the issue.</string>
+    <string name="audit_qr_icon_hint">The app\'s current launcher icon — attach a photo of this screen to the issue</string>
+    <string name="audit_request_sending">Sending the request…</string>
+    <string name="audit_request_sent_fmt">Request filed — issue #%1$d. Thank you.</string>
+    <string name="audit_request_offline">Direct request unavailable — scan the code with your phone instead.</string>
 
     <!-- Icon inspector -->
     <string name="inspector_kicker">INSPECT</string>
@@ -213,6 +219,16 @@
     <!-- Suite hub -->
     <string name="settings_suite_title">Core Builds Suite</string>
     <string name="settings_suite_sub">What else from the living-room suite is on this TV, which version, and each app\'s Downloader code.</string>
+    <string name="settings_whatsnew_title">What\'s new</string>
+    <string name="settings_whatsnew_sub">See what shipped in this build</string>
+    <string name="whats_new_kicker">WHAT\'S NEW</string>
+    <string name="whats_new_title_fmt">What\'s new in %1$s</string>
+    <string name="whats_new_title_plain">What\'s new</string>
+    <string name="whats_new_count_fmt">%1$d icons, %2$d components</string>
+    <string name="whats_new_item_fmt">•  %1$s</string>
+    <string name="whats_new_done">Done</string>
+    <string name="whats_new_missing">No release notes are bundled with this build.</string>
+    <string name="whats_new_no_highlights">This build shipped no headline changes.</string>
     <string name="suite_kicker">SUITE</string>
     <string name="suite_label">Core Builds Suite</string>
     <string name="suite_title">The rest of the living room</string>

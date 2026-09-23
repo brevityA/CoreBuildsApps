@@ -1,0 +1,34 @@
+name: Icon-request broker tests
+
+# The broker is JavaScript, not part of the Python suite: its tests run here,
+# scoped to its own tree so every PR touching the worker, the issue form it
+# mirrors, or this file proves the 27 contracts before merging (the parity
+# test reads .github/ISSUE_TEMPLATE/1.new_icon_request.yml, so form edits are
+# broker edits too).
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'tools/icon_request_broker/**'
+      - '.github/ISSUE_TEMPLATE/1.new_icon_request.yml'
+      - '.github/workflows/icon-request-broker.yml'
+  pull_request:
+    paths:
+      - 'tools/icon_request_broker/**'
+      - '.github/ISSUE_TEMPLATE/1.new_icon_request.yml'
+      - '.github/workflows/icon-request-broker.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  node-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: node --test
+        working-directory: tools/icon_request_broker
