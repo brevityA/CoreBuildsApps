@@ -1060,6 +1060,7 @@ FRAMES = [
     ("app-ui-catalogue-update.png", lambda: catalogue_frame(True)),
     ("app-ui-wallpapers.png", wallpapers_frame),
     ("app-ui-settings.png", settings_frame),
+    ("app-ui-settings-display.png", settings_display_frame),
     ("app-ui-faq.png", faq_frame),
     ("app-ui-auditor.png", lambda: auditor_frames()[0]),
     ("app-ui-auditor-qr.png", lambda: auditor_frames()[1]),
