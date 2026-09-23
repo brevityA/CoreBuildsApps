@@ -107,7 +107,8 @@ class MainActivity : TvActivity() {
         findViewById<TextView>(R.id.count).text =
             getString(R.string.pack_stats_fmt, all.size, mappedComponents())
 
-        adapter = IconAdapter(all) { item -> onIconChosen(item) }
+        pickBanners = Prefs.pickerPrefersBanners(this)
+        adapter = IconAdapter(all, showBanners = pickBanners) { item -> onIconChosen(item) }
         findViewById<RecyclerView>(R.id.grid).apply {
             layoutManager = GridLayoutManager(this@MainActivity, spanForScreen())
             adapter = this@MainActivity.adapter
@@ -123,7 +124,6 @@ class MainActivity : TvActivity() {
             // on the stored chip, and the chip row keeps it (bindPickShape
             // writes the pref). The shipped default is square — the same
             // default the appfilter now maps for launcher-side apply.
-            pickBanners = Prefs.pickerPrefersBanners(this)
             val pickerHint = findViewById<TextView>(R.id.picker_hint)
             pickerHint.visibility = View.VISIBLE
             pickerHint.text = getString(
@@ -365,6 +365,7 @@ class MainActivity : TvActivity() {
         name.firstOrNull { it.isLetterOrDigit() }?.uppercaseChar() ?: '#'
 
     private fun onIconChosen(item: IconAdapter.IconItem) {
+        val deliver = if (pickBanners) "${item.drawable}_banner" else item.drawable
         if (!pickMode) {
             // The toast this replaces named the icon for two seconds, exactly
             // when someone wanted to read it. The inspector is the same
@@ -372,13 +373,12 @@ class MainActivity : TvActivity() {
             // components, export and launch.
             startActivity(
                 Intent(this, InspectorActivity::class.java)
-                    .putExtra(InspectorActivity.EXTRA_DRAWABLE, item.drawable)
+                    .putExtra(InspectorActivity.EXTRA_DRAWABLE, deliver)
                     .putExtra(InspectorActivity.EXTRA_NAME, item.name)
                     .putExtra(InspectorActivity.EXTRA_CATEGORY, item.category)
             )
             return
         }
-        val deliver = if (pickBanners) "${item.drawable}_banner" else item.drawable
         if (!IconPicker.deliver(this, deliver)) {
             toast(getString(R.string.picker_failed_fmt, item.name))
         }
@@ -386,6 +386,17 @@ class MainActivity : TvActivity() {
 
     override fun onResume() {
         super.onResume()
+        val preferBanners = Prefs.pickerPrefersBanners(this)
+        if (pickBanners != preferBanners) {
+            pickBanners = preferBanners
+            adapter.setShowBanners(pickBanners)
+            if (pickMode) {
+                findViewById<TextView>(R.id.picker_hint)?.text = getString(
+                    if (pickBanners) R.string.picker_hint_banner
+                    else R.string.picker_hint_square
+                )
+            }
+        }
         if (!pickMode) {
             bindApplyButton()
             // What's New fires once per upgrade, independently of the update
@@ -1079,6 +1090,7 @@ class MainActivity : TvActivity() {
         ) { key ->
             pickBanners = key == PICK_BANNER
             Prefs.set(this, Prefs.KEY_PICK_BANNERS, pickBanners)
+            adapter.setShowBanners(pickBanners)
             hint.text = if (pickBanners) {
                 getString(R.string.picker_hint_banner)
             } else {

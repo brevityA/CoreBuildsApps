@@ -1,6 +1,6 @@
 {
-  "versionCode": 34,
-  "versionName": "1.9.2",
+  "versionCode": 35,
+  "versionName": "1.9.3",
   "iconCount": 961,
   "componentCount": 1179,
   "releaseDate": "2026-09-23",
@@ -8,13 +8,6 @@
   "releaseNotesUrl": "https://github.com/brevityA/CoreBuildsApps/releases",
   "minSdk": 21,
   "highlights": [
-    "Generic glyphs now wear their category as their shape",
-    "Brand-informed mark styles, tranche 1",
-    "First auditor round: fifteen of the twenty unmapped apps are mapped",
-    "One-press anonymous icon requests, groundwork shipped",
-    "Unthemed apps now land on the pack's own cards",
-    "The banner rail now wears each app's colour",
-    "Square glyphs are the shipped default; banners are now opt-in",
-    "A What's New sheet narrates each update"
+    "Unified In-App Art Style Switcher (Square Glyphs / 16:9 Banners)"
   ]
 }

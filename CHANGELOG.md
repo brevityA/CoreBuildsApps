@@ -6,6 +6,12 @@ All notable changes to the Core Builds Icon Pack. Format follows
 
 ## [Unreleased]
 
+## [1.9.3] — 2026-09-23
+
+### Added
+
+- **Unified In-App Art Style Switcher (Square Glyphs / 16:9 Banners).** Integrated an in-app art style toggle directly under Settings > Display ("Art style: Glyphs or Banners") that seamlessly switches between Square Glyphs (512×512) and 16:9 Banner cards (320×180). Toggling this setting immediately updates the entire catalogue grid, the per-app launcher icon picker (`ACTION_PICK_ICON`), and the inspector export without requiring a separate application.
+
 ## [1.9.2] — 2026-09-23
 
 ### Added
