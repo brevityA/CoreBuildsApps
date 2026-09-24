@@ -39,10 +39,6 @@ jobs:
         run: python tools/build_issue_prefills.py --check
       - name: Check the Banners companion matches the glyph pack
         run: python tools/build_banners_pack.py --check
-      - name: Check the Classic glyph fit matches the catalog and metrics
-        run: python tools/fit_classic_glyphs.py --check
-      - name: Check fallback palette colours match their assignment
-        run: python tools/icon_palette.py --check
       # Depends on no Android SDK and no Gradle, so it runs here rather than in
       # the matrix: it is the check that explains *why* a matrix entry would
       # fail, and it has to be able to fail on a dependency-only PR that never
@@ -195,6 +191,11 @@ jobs:
         run: cd ticker && npm test
       - name: Install Python content deps
         run: pip install --quiet -r tools/requirements.txt
+      # Both import tools/glyphs.py, which needs fontTools from the deps above.
+      - name: Check the Classic glyph fit matches the catalog and metrics
+        run: python tools/fit_classic_glyphs.py --check
+      - name: Check fallback palette colours match their assignment
+        run: python tools/icon_palette.py --check
       - name: Pixel Neon generated-asset validation
         run: python tools/validate_pixel_neon.py
       # This job installs the render deps and runs no asset builder, so the
