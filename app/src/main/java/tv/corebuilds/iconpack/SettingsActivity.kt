@@ -97,8 +97,8 @@ class SettingsActivity : TvActivity() {
             Prefs.set(this, Prefs.KEY_PICK_BANNERS, next)
             // Where there is a companion pack, the art style is also the
             // launcher's: re-apply now so the home screen follows the switch
-            // (installing Core Builds Banners first if it is not there yet).
-            if (BannersCompanion.supported()) refreshLauncher()
+            // (installing Core Builds Glyphs first if it is not there yet).
+            if (GlyphsCompanion.supported()) refreshLauncher()
         }
 
         row(R.id.set_refresh_row) { refreshLauncher() }
@@ -136,7 +136,7 @@ class SettingsActivity : TvActivity() {
         // A companion install whose result never reached us: apply once the
         // package is really there (see MainActivity.onResume). Declines are
         // reported by the installer's result, in onActivityResult.
-        onCompanionOutcome(BannersCompanion.takePendingApply(this))
+        onCompanionOutcome(GlyphsCompanion.takePendingApply(this))
         bannerSwitch.isChecked = Prefs.pickerPrefersBanners(this)
     }
 
@@ -144,17 +144,17 @@ class SettingsActivity : TvActivity() {
     @Suppress("DEPRECATION")
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == BannersCompanion.INSTALL_REQUEST) {
-            onCompanionOutcome(BannersCompanion.onInstallResult(this))
+        if (requestCode == GlyphsCompanion.INSTALL_REQUEST) {
+            onCompanionOutcome(GlyphsCompanion.onInstallResult(this))
             bannerSwitch.isChecked = Prefs.pickerPrefersBanners(this)
         }
     }
 
     /** Finish the apply the switch asked for, or say it was declined. */
-    private fun onCompanionOutcome(pending: BannersCompanion.Pending?) {
+    private fun onCompanionOutcome(pending: GlyphsCompanion.Pending?) {
         when (pending) {
-            is BannersCompanion.Pending.Ready -> refreshLauncher(pending.launcherKey)
-            BannersCompanion.Pending.Declined -> toast(getString(R.string.banners_declined))
+            is GlyphsCompanion.Pending.Ready -> refreshLauncher(pending.launcherKey)
+            GlyphsCompanion.Pending.Declined -> toast(getString(R.string.glyphs_declined))
             null -> Unit
         }
     }
@@ -203,7 +203,7 @@ class SettingsActivity : TvActivity() {
             is ApplyIconPack.Result.NotInstalled ->
                 toast(getString(R.string.refresh_no_launcher))
             ApplyIconPack.Result.NeedsCompanion ->
-                BannersCompanion.ensure(this, launcher.key) {
+                GlyphsCompanion.ensure(this, launcher.key) {
                     bannerSwitch.isChecked = Prefs.pickerPrefersBanners(this)
                 }
         }

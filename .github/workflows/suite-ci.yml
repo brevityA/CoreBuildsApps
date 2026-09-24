@@ -62,13 +62,13 @@ jobs:
             compileSdk: 34
             workflow: .github/workflows/build.yml
             artifact: app/build/outputs/apk/debug/*.apk
-          - name: Core Builds Banners
+          - name: Core Builds Glyphs
             dir: .
-            tasks: :banners:lintDebug :banners:testDebugUnitTest :banners:assembleDebug
-            gradle: banners/build.gradle.kts
+            tasks: :glyphs:lintDebug :glyphs:testDebugUnitTest :glyphs:assembleDebug
+            gradle: glyphs/build.gradle.kts
             compileSdk: 34
             workflow: .github/workflows/build.yml
-            artifact: banners/build/outputs/apk/debug/*.apk
+            artifact: glyphs/build/outputs/apk/debug/*.apk
           - name: Core Line
             dir: ticker/android
             tasks: :app:lintDebug :app:testDebugUnitTest :app:assembleDebug
@@ -137,8 +137,8 @@ jobs:
           # Re-run compile + lint (config-cache warm, cheap) with all output
           # captured, then post the failure cause and first errors as
           # annotations - readable without downloading job logs.
-          # The module comes from this entry's own tasks (":banners:lintDebug ..."
-          # -> banners), so a Banners failure reports Banners, not
+          # The module comes from this entry's own tasks (":glyphs:lintDebug ..."
+          # -> glyphs), so a Glyphs failure reports Glyphs, not
           # :app. compileDebugSources covers Java-only modules too.
           MOD=$(printf '%s' "${{ matrix.tasks }}" | awk '{print $1}' | cut -d: -f2)
           ./gradlew ":$MOD:compileDebugSources" ":$MOD:lintDebug" --no-daemon > build_out.txt 2>&1 || true
@@ -213,7 +213,7 @@ jobs:
           python tests/test_presence.py
           python tests/test_render_stack.py
           python tests/test_changelog_contract.py
-          python tests/test_banners_pack.py
+          python tests/test_glyphs_pack.py
           python tests/test_icon_palette.py
           # Meta-gate, last: it reads the workflows above and fails if any
           # tests/test_*.py or tools/check_*.py has stopped being invoked. This

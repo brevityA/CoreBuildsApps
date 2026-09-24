@@ -135,7 +135,7 @@ class GradleRoot:
         return min(values) if values else None
 
 def _module_dirs(settings: str) -> list[str]:
-    """`include(":app")` / `include(":banners")` -> ["app", "banners"], in file order."""
+    """`include(":app")` / `include(":glyphs")` -> ["app", "glyphs"], in file order."""
     return re.findall(r'include\(\s*":([A-Za-z0-9_.\-]+)"\s*\)', settings)
 
 def _int_setting(source: str, name: str) -> int | None:

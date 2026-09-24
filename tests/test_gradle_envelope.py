@@ -174,11 +174,11 @@ class GradleParsing(unittest.TestCase):
         )
 
     def test_root_build_file_maps_to_two_modules(self):
-        # The deliberate exception to "one app, one Gradle root": banners/
-        # (the glyph pack's 16:9 companion) is a further module on the
+        # The deliberate exception to "one app, one Gradle root": glyphs/
+        # (the icon pack's square companion) is a further module on the
         # repo-root build, not a root of its own.
         self.assertEqual([m.name for m in self.roots[""].modules],
-                         ["app", "banners"])
+                         ["app", "glyphs"])
 
     def test_reads_compile_and_min_sdk(self):
         app = self.roots[""].modules[0]
@@ -369,7 +369,7 @@ class RepoIsInsideItsEnvelope(unittest.TestCase):
         table = json.loads((ROOT / "tools" / "gradle_envelope.json").read_text(encoding="utf-8"))
         appcompat = next(c for c in table["ceilings"] if c["coordinate"] == "androidx.appcompat:appcompat")
         self.assertIn("minSdk", appcompat["reason"])
-        # The modules that both floor at 21 and declare appcompat. banners/ is
+        # The modules that both floor at 21 and declare appcompat. glyphs/ is
         # also minSdk 21 but has no dependencies at all, so it is not part of
         # why the cap exists.
         at_21 = sorted(

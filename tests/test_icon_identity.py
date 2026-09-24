@@ -517,19 +517,21 @@ class SourceTests(unittest.TestCase):
 
     def test_nobuffr_maps_in_the_pack(self):
         expected = "ComponentInfo{com.nobuffr.app/tv.tivitime.compose.app.AppActivity}"
-        for module in (ROOT / "app",):
-            xml = module / "src/main/res/xml/appfilter.xml"
+        # The icon pack maps it to its banner (the default since 1.9.5) and
+        # Core Builds Glyphs to its square glyph; the art for both is the
+        # icon pack's, which the Glyphs build copies.
+        for pack, drawable in ((ROOT / "app", "nobuffr_banner"),
+                               (ROOT / "glyphs", "nobuffr")):
+            xml = pack / "src/main/res/xml/appfilter.xml"
             resources = ET.parse(xml).getroot()
             matches = [r for r in resources.findall("item") if r.get("component") == expected]
             self.assertEqual(len(matches), 1, str(xml))
-            # Square glyph is the shipped default since 1.9.2; the banner
-            # pair still ships so launcher-side banner choice stays live.
-            self.assertEqual(matches[0].get("drawable"), "nobuffr")
+            self.assertEqual(matches[0].get("drawable"), drawable)
             self.assertNotIn("com.nobuffr.app/.MainActivity", xml.read_text())
-            nodpi = module / "src/main/res/drawable-nodpi"
-            mod_aliases = read_aliases(module / "src/main/res/values")
-            for suffix in ("", "_banner"):
-                self.assertTrue(art_path(nodpi, f"nobuffr{suffix}", mod_aliases).is_file())
+        nodpi = ROOT / "app/src/main/res/drawable-nodpi"
+        mod_aliases = read_aliases(ROOT / "app/src/main/res/values")
+        for suffix in ("", "_banner"):
+            self.assertTrue(art_path(nodpi, f"nobuffr{suffix}", mod_aliases).is_file())
 
     def test_download_link_is_in_generated_catalog_documentation(self):
         self.assertIn("[NoBuffr](https://downloads.nobuffr.com/android/nobuffr.apk)",

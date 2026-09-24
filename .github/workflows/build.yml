@@ -17,7 +17,7 @@ on:
       # This job's gates read the app module: check_ui_resources and
       # test_navigation_graph walk app/ resources, and
       # build_app_ui_mockups --check compares the frames committed under docs/.
-      - 'banners/**'
+      - 'glyphs/**'
       - 'docs/**'
       - '.github/workflows/build.yml'
   pull_request:
@@ -31,7 +31,7 @@ on:
       - 'Latestrelease/**'
       - 'Wallpapers/**'
       - 'tests/**'
-      - 'banners/**'
+      - 'glyphs/**'
       - 'docs/**'
       - '.github/workflows/build.yml'
   workflow_dispatch:
@@ -192,20 +192,20 @@ jobs:
           esac
           "$ANDROID_HOME/build-tools/34.0.0/apksigner" verify --print-certs "$APK"
           echo "APK signature verified."
-          # Core Builds Banners ships in the same release and the icon pack
+          # Core Builds Glyphs ships in the same release and the icon pack
           # installs it only if its certificate matches its own, so an
           # unsigned or differently signed companion is a broken toggle.
-          BANNERS=$(ls banners/build/outputs/apk/release/*.apk)
-          case "$BANNERS" in
+          GLYPHS=$(ls glyphs/build/outputs/apk/release/*.apk)
+          case "$GLYPHS" in
             *-unsigned.apk)
-              echo "::error::$BANNERS is unsigned."
+              echo "::error::$GLYPHS is unsigned."
               exit 1
               ;;
           esac
           A=$("$ANDROID_HOME/build-tools/34.0.0/apksigner" verify --print-certs "$APK" | grep 'SHA-256 digest')
-          B=$("$ANDROID_HOME/build-tools/34.0.0/apksigner" verify --print-certs "$BANNERS" | grep 'SHA-256 digest')
+          B=$("$ANDROID_HOME/build-tools/34.0.0/apksigner" verify --print-certs "$GLYPHS" | grep 'SHA-256 digest')
           if [ "$A" != "$B" ]; then
-            echo "::error::Core Builds Banners is not signed with the icon pack's certificate."
+            echo "::error::Core Builds Glyphs is not signed with the icon pack's certificate."
             exit 1
           fi
           echo "Companion signed with the same certificate."
@@ -218,11 +218,11 @@ jobs:
           cp "$SRC" dist/iconpack-release.apk
           # Compatibility filename requested by existing Downloader code 5270601.
           cp "$SRC" dist/app-release.apk
-          # The 16:9 companion. The icon pack downloads exactly this name from
-          # the v<versionName> release (BannersCompanion.apkUrl), so the name is
-          # a contract: tests/test_banners_pack.py holds the two together.
-          cp "$(ls banners/build/outputs/apk/release/*.apk | grep -v unsigned | head -1)" \
-            dist/iconpack-banners-release.apk
+          # The square companion. The icon pack downloads exactly this name
+          # from the v<versionName> release (GlyphsCompanion.apkUrl), so the
+          # name is a contract: tests/test_glyphs_pack.py holds the two together.
+          cp "$(ls glyphs/build/outputs/apk/release/*.apk | grep -v unsigned | head -1)" \
+            dist/iconpack-glyphs-release.apk
           ls -lh dist/
 
       - name: Upload APK artifact
@@ -231,7 +231,7 @@ jobs:
           name: core-builds-icon-pack
           path: |
             app/build/outputs/apk/release/*.apk
-            banners/build/outputs/apk/release/*.apk
+            glyphs/build/outputs/apk/release/*.apk
           if-no-files-found: error
 
       - name: Sync the update manifest to the published tag
@@ -282,7 +282,7 @@ jobs:
           gh release delete "$TAG" --yes 2>/dev/null || true
           gh release create "$TAG" --draft --generate-notes --verify-tag \
             dist/iconpack-release.apk dist/app-release.apk \
-            dist/iconpack-banners-release.apk
+            dist/iconpack-glyphs-release.apk
           gh release edit "$TAG" --draft=false --latest
 
       - name: Point floating tag iconpack at this commit
@@ -311,5 +311,5 @@ jobs:
           EOF
           )" \
             dist/iconpack-release.apk dist/app-release.apk \
-            dist/iconpack-banners-release.apk
+            dist/iconpack-glyphs-release.apk
           gh release edit iconpack --draft=false --latest=false

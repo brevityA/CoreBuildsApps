@@ -1,20 +1,20 @@
 {
   "frames": {
     "app-ui-auditor-qr.png": {
-      "bytes": 73543,
-      "structure": "895142786973fa6a617b97236017fa723f783c75ffc7a04435dd932012ea4769"
+      "bytes": 73548,
+      "structure": "a04cfd59dde44993dd4ae322da06bca6c06240a4b08d96480351d2fdea2639bc"
     },
     "app-ui-auditor.png": {
       "bytes": 72560,
-      "structure": "45f842fee9c483ca7f23a549acaac86a8f64e6a171f3bd4c7eed6fecc07443a1"
+      "structure": "2bd3196c23fe8645264d85af62f82f46503edf37c6e2ed529bca24142edc168f"
     },
     "app-ui-catalogue-update.png": {
-      "bytes": 187342,
-      "structure": "2ccceab3f08334711c77fc124e2449e340c19989e5a2d37498ac43cb3e9e70a1"
+      "bytes": 171211,
+      "structure": "a307be5ba52f2671d7bd642203082c73c0b438693bfdd79c413297d269a81edf"
     },
     "app-ui-catalogue.png": {
-      "bytes": 205548,
-      "structure": "644d49dc4568568ef639c16c2649cc6ca45e0d01a2169c2b825765f7b7177a61"
+      "bytes": 172634,
+      "structure": "87ef83ce48dd25a9c1ec61cdcb3dfdbaa819e948e86b07e84ef4fcd2ff4af28f"
     },
     "app-ui-faq.png": {
       "bytes": 139797,
@@ -25,8 +25,8 @@
       "structure": "70a4bf2af668ccfc682ec0eeee14836d77162732cd97ccbd0cda97ca0d7b46bb"
     },
     "app-ui-settings-display.png": {
-      "bytes": 104391,
-      "structure": "179fed1823b8c1ba012dac3cd91df135f1e133ad39e89f101599db56b0ba2e9e"
+      "bytes": 104533,
+      "structure": "ccc15ac53231d7501bd35885bb3532a88809483465d0bbc91af52c46dcfffd5b"
     },
     "app-ui-settings.png": {
       "bytes": 92338,
@@ -43,8 +43,8 @@
   },
   "generator": "tools/build_app_ui_mockups.py",
   "inputs": {
-    "Latestrelease/version.json": "4b3dd6587dc43e49d2133e25d2a140b295308f20813eafc0e7129c850ca7aa6e",
-    "app/src/main/assets/appfilter.xml": "522ccfaee43eb61de41cd3aa3b2de259029deefaa20a692dbe38634a81c5e411",
+    "Latestrelease/version.json": "1da0cecae0ac45d71c80fa72e7212ade8cc6b7abc48bba2426784ae4f52adf74",
+    "app/src/main/assets/appfilter.xml": "c3e484407e1eefa56e33ad6fde14d49dff49bde874774bbdadc35570cca92fee",
     "app/src/main/assets/manifest/wallpapers.json": "67c5a010561e1f1a6eeac664dac87e01026d556a471216a58480b22d71058960",
     "app/src/main/res/layout/activity_about.xml": "24bf8847817c6c79e0733b25282913f12756331e851a461fdb5f96e43b08d04a",
     "app/src/main/res/layout/activity_auditor.xml": "3353f96d0932249a0ce841ca31ef98c65103132ec9b9efd1c8144e1fe2c34dca",
@@ -68,17 +68,17 @@
     "app/src/main/res/values/dimens.xml": "6eb9a59ef7176f3d7b38fa7a0aac9f789ee593415ccf279d5a5084c9ab4d7555",
     "app/src/main/res/values/icon_pack.xml": "932003bdb5a91fbf0437594d08e9cef4fea257583721a867ae8f56a28f579b43",
     "app/src/main/res/values/issue_prefill.xml": "fd85418cdd4ccdc59f0f0793b32fc7d96e01f23f80f7f38a3e3d4d7699393ced",
-    "app/src/main/res/values/strings.xml": "a8b6deaf559033b5cfb8dc9d6ed139d46dea1be9ad6267540be55f873e831d19",
+    "app/src/main/res/values/strings.xml": "8d1c74ff21d89740fdc536814c0c0c2349347fc91c88a4cf752f3589165decbe",
     "app/src/main/res/values/suite_hub.xml": "6db1311df6a29a1ced5fdbc175f8f97111c0f035786ea3d1f4ed396018580862",
     "app/src/main/res/values/themes.xml": "ecac526951fe40b6c5c01df0ec36730d0e197fd9511862cf587a2143773b46be",
-    "tools/build_app_ui_mockups.py": "1e95dc9bc12a8e2b7225a2bb57e758d11e3a65b010c220e1c722c98e2ce051fe",
-    "tools/catalog.json": "d0e17024e350814ada661d8e2ec01009eb5b8d589b77d8f068b6e0a3539767ac",
+    "tools/build_app_ui_mockups.py": "1209eff0c0e0f365f207cb7213731d181c91d2e050dc2cd4c5b49d42addfa6a5",
+    "tools/catalog.json": "aff734f12172040890a1d2ea6e75d9535474a61402beb1689a34f2f8d08285fe",
     "tools/fonts/DejaVuSansMono-Bold.ttf": "2964f6dac8e6e9d71613928340f17bf868e9ea51692cca333c79e74962f02233",
     "tools/fonts/DejaVuSansMono.ttf": "0f5db4f1749979d961019838b160bec74abdf7f9eca69553fe1aa856bbff49a4",
     "tools/fonts/Outfit-Bold.ttf": "04f7c9705153927058475d6c5e9f75b0a1036ec5f6f63ffb69df046191ea8933",
     "tools/fonts/Outfit-ExtraBold.ttf": "056e8cd5840cea4cfc355f672292f7de00d95f5a42bf9b7cd96d511ca8e2883e"
   },
-  "inputs_digest": "7441bc523b2c67d26507b48c63bf1147fec80daa2c9364054762c96711445b87",
+  "inputs_digest": "2a676ecfaeaae702ee2dd285fb775aa249bac77d48b7dc8e41feab3edac2673b",
   "metrics": {
     "mono-bold@24": 448.0,
     "mono-bold@32": 608.0,
@@ -92,8 +92,8 @@
   },
   "note": "Which sources the frames in docs/ were generated from, and what each one depicts. Written by build_app_ui_mockups.py; never hand-edit. The PNG bytes are not recorded on purpose: text rendering is not reproducible across machines, so --check compares the sources and the drawn structure instead. See the module docstring.",
   "pasted": {
-    "count": 18,
-    "digest": "02daa91aa0455cee1115867a16a7014f39a592b73d47e9d80e863d05b86a5e7f"
+    "count": 19,
+    "digest": "a929bfbba69b68ce2ded5186f73a2593ac8ff0fc2714b9f56004c7c9720b52db"
   },
   "renderer": "python 3.11.15, freetype 2.13.2, layout raqm, PIL 10.4.0, qrcode installed, fontTools 4.59.0, resvg_py 0.4.0"
 }

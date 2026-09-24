@@ -39,7 +39,7 @@ object UpdateInstaller {
     )
     private val io = Executors.newSingleThreadExecutor()
     private const val UPDATE_FILE = "core-builds-update.apk"
-    private const val COMPANION_FILE = "core-builds-banners.apk"
+    private const val COMPANION_FILE = "core-builds-glyphs.apk"
 
     sealed class Event {
         data class Progress(val received: Long, val total: Long) : Event()
@@ -74,7 +74,7 @@ object UpdateInstaller {
     }
 
     /**
-     * Download the Banners companion (see [BannersCompanion]).
+     * Download the Glyphs companion (see [GlyphsCompanion]).
      *
      * Held to the same bar as a self-update, with the package and version
      * rules swapped for the companion's: it must be [packageName], exactly

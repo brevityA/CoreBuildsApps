@@ -1,7 +1,7 @@
 # Space live wallpapers — where they live and how they connect
 
-The suite's space set ships in two halves that share one sky: twelve stills
-in the icon pack, three loops in the motion feed. This doc is the map between
+The suite's space set ships in two halves that are the same twelve scenes:
+twelve stills in the icon pack, and the same twelve moving in the live feed. This doc is the map between
 them — what plays where, and what a future in-pack live engine would take.
 
 ## The stills: `series-9-deep-space` (icon pack)
@@ -26,24 +26,34 @@ Send to Monet / multi-export. Smooth gradients ship grain-free (series 7/8
 precedent): full-frame dither cost ~9 MB per PNG for a texture invisible at
 TV distance; the set totals 7.3 MB.
 
-## The loops: clips 11–13 (motion feed)
+## The loops: clips 11–22 (motion feed)
 
-Three 1080p H.264 loops, `Motion/live/coremotion-live-11…13-*.mp4`, generated
-by `tools/build_motion_feed.py` from ffmpeg lavfi sources only — no footage,
-no stills, same rule as the rest of the set:
+Twelve 1080p H.264 loops, `Motion/live/coremotion-live-11…22-deep-space-*.mp4`,
+one per wall, in wall order (clip 11 = wall 85 Event Horizon … clip 22 =
+wall 96 Dark Side Moon). `tools/build_deep_space_loops.py` renders them from
+the committed 4K stills, so each loop *is* its wall, moving:
 
-| # | Loop | Technique |
-|---|---|---|
-| 11 | Nebula Drift | slow violet→cyan spiral veils, vignetted |
-| 12 | Event Horizon | radial pulse, dark core, cyan ring |
-| 13 | Ion Storm | rule-90 automaton rain, blue-tinted |
+- **Stars twinkle.** The still's point detail (still minus a 2.2 px blur) is
+  split off; every isolated point gets its own phase and a whole-number rate.
+  Hairlines - a photon ring, a planet's rings, an orbit - are dense with
+  detail and stay steady, so they never break into dots.
+- **Glow shimmers.** The soft layer is modulated by two slow travelling
+  waves (±14%), fading out over the calm bottom third the launcher's cards
+  sit on.
+- **The camera drifts.** A 3.5% breathing zoom and a Lissajous pan of a few
+  dozen pixels on a 1.1× working canvas.
 
-They ride the existing plumbing untouched: `Motion/live-feed.json` (13),
-`Motion/overflight-feed.json` (19), `Motion/aerial-entries.json` (13), the
-`Motion/live/preview/` sheet, and Core Shift's bundled fallback. Regenerating
-only the new clips (not all thirteen) keeps existing MP4 bytes stable; the
-`CLIPS` entries stay in `build_motion_feed.py` so a full regen reproduces
-the set.
+Every motion completes a whole number of cycles in the 20 s clip, so the last
+frame leads straight back into the first: no seam. 30 fps, silent,
+`+faststart`, about 1.5–3.5 MB each.
+
+1.9.4 shipped three abstract lavfi clips here (Nebula Drift, Event Horizon,
+Ion Storm) that only borrowed wall names. 1.9.5 replaced them with these.
+
+They ride the existing plumbing: `tools/build_motion_feed.py` lists them in
+`Motion/live-feed.json` after the ten procedural clips (location
+`Core Motion · Deep Space`), and `build_overflight_feed.py`,
+`build_aerial_feed.py` and Core Shift's bundled fallback follow that feed.
 
 ## What plays where
 
@@ -66,7 +76,7 @@ live wallpaper inside the pack would be a `WallpaperService` + engine in
 `app/` rendering one of:
 
 1. **The MP4 loops** — `MediaPlayer` onto the engine's surface. Cheapest,
-   reuses clips 11–13, but video decode on the home screen costs battery
+   reuses clips 11–22, but video decode on the home screen costs battery
    and Fire TV sticks will feel it.
 2. **The GLSL shaders** (`motion-shaders/`: hex plasma, starfield, flow) —
    a `GLSurfaceView`-style engine. Smoother and cheaper than video, but a
