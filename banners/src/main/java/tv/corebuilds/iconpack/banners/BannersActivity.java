@@ -18,7 +18,9 @@ import android.os.Bundle;
  *       the glyph pack's, so the request is forwarded there with
  *       FLAG_ACTIVITY_FORWARD_RESULT: the chosen icon goes straight back to
  *       the launcher that asked, as if the glyph pack had been asked
- *       directly.</li>
+ *       directly. The forward is marked {@link #EXTRA_PICK_BANNERS}, so the
+ *       picker answers with banners only - asked through this pack, the
+ *       launcher gets this pack's art.</li>
  *   <li>Opens the pack from its list. There is nothing to show here, so the
  *       glyph pack opens instead - it is where the toggle lives.</li>
  * </ul>
@@ -26,6 +28,9 @@ import android.os.Bundle;
 public class BannersActivity extends Activity {
 
     static final String GLYPH_PACK = "tv.corebuilds.iconpack";
+
+    /** BannersCompanion.EXTRA_PICK_BANNERS in the glyph pack; kept equal by tests. */
+    static final String EXTRA_PICK_BANNERS = "tv.corebuilds.iconpack.extra.PICK_BANNERS";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,6 +42,7 @@ public class BannersActivity extends Activity {
                 forward.setComponent(null);
                 forward.setPackage(GLYPH_PACK);
                 forward.addFlags(Intent.FLAG_ACTIVITY_FORWARD_RESULT);
+                forward.putExtra(EXTRA_PICK_BANNERS, true);
                 startActivity(forward);
             } else {
                 Intent open = getPackageManager().getLaunchIntentForPackage(GLYPH_PACK);

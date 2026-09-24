@@ -133,9 +133,30 @@ class SettingsActivity : TvActivity() {
 
     override fun onResume() {
         super.onResume()
-        // The companion install [BannersCompanion.ensure] started has landed:
-        // finish the apply the switch asked for.
-        BannersCompanion.takePendingApply(this)?.let { refreshLauncher(it) }
+        // A companion install whose result never reached us: apply once the
+        // package is really there (see MainActivity.onResume). Declines are
+        // reported by the installer's result, in onActivityResult.
+        onCompanionOutcome(BannersCompanion.takePendingApply(this))
+        bannerSwitch.isChecked = Prefs.pickerPrefersBanners(this)
+    }
+
+    @Deprecated("Deprecated in AndroidX; the installer result still arrives here")
+    @Suppress("DEPRECATION")
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == BannersCompanion.INSTALL_REQUEST) {
+            onCompanionOutcome(BannersCompanion.onInstallResult(this))
+            bannerSwitch.isChecked = Prefs.pickerPrefersBanners(this)
+        }
+    }
+
+    /** Finish the apply the switch asked for, or say it was declined. */
+    private fun onCompanionOutcome(pending: BannersCompanion.Pending?) {
+        when (pending) {
+            is BannersCompanion.Pending.Ready -> refreshLauncher(pending.launcherKey)
+            BannersCompanion.Pending.Declined -> toast(getString(R.string.banners_declined))
+            null -> Unit
+        }
     }
 
     private fun row(id: Int, onSelect: () -> Unit) {
@@ -182,7 +203,9 @@ class SettingsActivity : TvActivity() {
             is ApplyIconPack.Result.NotInstalled ->
                 toast(getString(R.string.refresh_no_launcher))
             ApplyIconPack.Result.NeedsCompanion ->
-                BannersCompanion.ensure(this, launcher.key)
+                BannersCompanion.ensure(this, launcher.key) {
+                    bannerSwitch.isChecked = Prefs.pickerPrefersBanners(this)
+                }
         }
     }
 

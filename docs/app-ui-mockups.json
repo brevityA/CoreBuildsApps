@@ -9,12 +9,12 @@
       "structure": "4b9db1f348433f9be89e80f416914d37b8390773d842365ef0298bdacd494135"
     },
     "app-ui-catalogue-update.png": {
-      "bytes": 173240,
-      "structure": "818345b26b8ea0488798814b5ae1420250c5f5bde399e8fe4894022fdbfbbb21"
+      "bytes": 191360,
+      "structure": "552b5f4e94975e98b6628d1071ddede8b7a5d673df30104f65f092852463a090"
     },
     "app-ui-catalogue.png": {
-      "bytes": 185419,
-      "structure": "4ce5ef6fe80afa22359323880bb5a4ec0f124ef7d6c88a56cc843f7ddf463bd4"
+      "bytes": 205736,
+      "structure": "2aabff2df029d1c74efba2a827b25847e7fcc449fb730484a189c7d4becb0e89"
     },
     "app-ui-faq.png": {
       "bytes": 139797,
@@ -51,7 +51,7 @@
     "app/src/main/res/layout/activity_export_progress.xml": "3c388eb2b74cc0b5e362069cff6adfe219a4948eed7220f36a9a2d2d06d48210",
     "app/src/main/res/layout/activity_faq.xml": "84a5cf1a80764f4621b72264929d74ae40b12e5ff4417d5ac470673b5289ee09",
     "app/src/main/res/layout/activity_inspector.xml": "968c82ce900f0cdfd1b43eef95defae7e38ed2f18b5b17bd32df7c541975babf",
-    "app/src/main/res/layout/activity_main.xml": "063a4d7d720afb724681cb1a5305241e4b193e2eeb78cf8453e751ea710f032c",
+    "app/src/main/res/layout/activity_main.xml": "9ace2d7e0aafcefa746f150c4b9189e214df9a0b3003213a1c5a9d3a9347cb49",
     "app/src/main/res/layout/activity_settings.xml": "131345d4ce0e532d69b5e98ee8aa4f8597aa1ee3d0713b82377b28e01354aac4",
     "app/src/main/res/layout/activity_suite.xml": "48d703fbff75550a6e2742a79f9119216c22829908dd68cc04421d134b4988a7",
     "app/src/main/res/layout/activity_wallpaper_preview.xml": "33946e58f790ff221ef04a915998a377c50f54f0b4218af140ccfdf057a7c948",
@@ -62,23 +62,23 @@
     "app/src/main/res/layout/item_icon.xml": "3ace2dca5a9856d0480851479817bdd4bfcb6976eba3e5da78bc047c1c7b46f2",
     "app/src/main/res/layout/item_suite.xml": "ed0045f01662c772ef511dd519468071abfc05fd875d3f743c136280d81e4fad",
     "app/src/main/res/layout/item_wallpaper.xml": "f821710cede8cf559b8455246dbb19c20f787a14ff41ed54366097b2bed6a4ea",
-    "app/src/main/res/values/aliases.xml": "760814a28b898259f84719198f8771e41bdba122b667e9984e845fe06f4bb6de",
+    "app/src/main/res/values/aliases.xml": "88b1740ada8113266fe83a5b9a895baec45068cae2b8f814d81ef0e7f81e45a1",
     "app/src/main/res/values/banner_aliases.xml": "9b269d260ac58ed60f3879cc4cd8b3c0ba3ecf39121c253465b450448448c1eb",
     "app/src/main/res/values/colors.xml": "626417ba2a3fa3bbf1aa913cdc97de4181d1b0037a027e17db753c12290cd4b2",
     "app/src/main/res/values/dimens.xml": "6eb9a59ef7176f3d7b38fa7a0aac9f789ee593415ccf279d5a5084c9ab4d7555",
-    "app/src/main/res/values/icon_pack.xml": "46077d230f80ec680a9d0b50ad518169f9914d7e647e4da674d4cc1d1edfa810",
+    "app/src/main/res/values/icon_pack.xml": "932003bdb5a91fbf0437594d08e9cef4fea257583721a867ae8f56a28f579b43",
     "app/src/main/res/values/issue_prefill.xml": "fd85418cdd4ccdc59f0f0793b32fc7d96e01f23f80f7f38a3e3d4d7699393ced",
-    "app/src/main/res/values/strings.xml": "b3e16954ae17ba8b5ba9b1abe3125249bab22def5242265600397ed1ba2ce74f",
+    "app/src/main/res/values/strings.xml": "a8b6deaf559033b5cfb8dc9d6ed139d46dea1be9ad6267540be55f873e831d19",
     "app/src/main/res/values/suite_hub.xml": "6db1311df6a29a1ced5fdbc175f8f97111c0f035786ea3d1f4ed396018580862",
     "app/src/main/res/values/themes.xml": "ecac526951fe40b6c5c01df0ec36730d0e197fd9511862cf587a2143773b46be",
-    "tools/build_app_ui_mockups.py": "7d53d132e22938d9918e778715f3a81600fff731747d2bdd8dfb37f9e2704054",
-    "tools/catalog.json": "50d7745b8636652320b2c5d99edeaedc4ff089ef55b49973fc2d4e1b5d5d6008",
+    "tools/build_app_ui_mockups.py": "1e95dc9bc12a8e2b7225a2bb57e758d11e3a65b010c220e1c722c98e2ce051fe",
+    "tools/catalog.json": "5b8a232d0680c0f27e73875b3af9718ea7cda5e74f0ee07115ea9c0784f70ac2",
     "tools/fonts/DejaVuSansMono-Bold.ttf": "2964f6dac8e6e9d71613928340f17bf868e9ea51692cca333c79e74962f02233",
     "tools/fonts/DejaVuSansMono.ttf": "0f5db4f1749979d961019838b160bec74abdf7f9eca69553fe1aa856bbff49a4",
     "tools/fonts/Outfit-Bold.ttf": "04f7c9705153927058475d6c5e9f75b0a1036ec5f6f63ffb69df046191ea8933",
     "tools/fonts/Outfit-ExtraBold.ttf": "056e8cd5840cea4cfc355f672292f7de00d95f5a42bf9b7cd96d511ca8e2883e"
   },
-  "inputs_digest": "9c80a75472a297eca8c35eeae588deca3135a5d483eb0fd46aaf2463dcfa8a27",
+  "inputs_digest": "40d7efbe1f46a40345105179949ab3ef4ba25762334196b912cfa12de9a4bd8e",
   "metrics": {
     "mono-bold@24": 448.0,
     "mono-bold@32": 608.0,
@@ -93,7 +93,7 @@
   "note": "Which sources the frames in docs/ were generated from, and what each one depicts. Written by build_app_ui_mockups.py; never hand-edit. The PNG bytes are not recorded on purpose: text rendering is not reproducible across machines, so --check compares the sources and the drawn structure instead. See the module docstring.",
   "pasted": {
     "count": 18,
-    "digest": "b888e3c7716119a04b5b615f42823c5e774fafdfd0c666f5c1c6c9bad4430b5c"
+    "digest": "02daa91aa0455cee1115867a16a7014f39a592b73d47e9d80e863d05b86a5e7f"
   },
-  "renderer": "python 3.11.2, freetype 2.13.2, layout basic, PIL 10.4.0, qrcode installed, fontTools 4.59.0, resvg_py 0.4.0"
+  "renderer": "python 3.11.15, freetype 2.13.2, layout raqm, PIL 10.4.0, qrcode installed, fontTools 4.59.0, resvg_py 0.4.0"
 }

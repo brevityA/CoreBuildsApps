@@ -83,25 +83,31 @@ def appfilter() -> str:
 
 
 def drawable_xml() -> str:
-    """The launcher icon browser: the glyph pack's Banners sections only.
+    """The launcher icon browser: every glyph pack section, as banners.
 
-    This package ships banners and nothing else, so listing the square
-    sections would offer drawables that resolve to nothing.
+    The glyph pack lists glyphs only and this package lists banners only, so
+    each pack's browser offers its own art style. Same sections, same order,
+    "Square · X" retitled "Banners · X", each item re-pointed at its banner.
     """
     out = ['<?xml version="1.0" encoding="utf-8"?>', HEADER, "<resources>"]
-    keep = False
     for line in SRC_DRAWABLE.read_text(encoding="utf-8").splitlines():
         cat = CATEGORY.match(line)
         if cat:
-            keep = cat.group(1).startswith("Banners")
-            if keep:
-                out.append(line)
+            title = cat.group(1)
+            if not title.startswith("Square \u00b7 "):
+                fail(f"unexpected drawable.xml section {title!r}; the glyph pack "
+                     "lists its square glyphs only")
+            out.append(line.replace(title, "Banners \u00b7 " + title[len("Square \u00b7 "):]))
             continue
-        if keep and DRAWABLE_ITEM.match(line):
-            out.append(line)
+        item = DRAWABLE_ITEM.match(line)
+        if item:
+            if item.group(1).endswith("_banner"):
+                fail(f"the glyph pack's drawable.xml lists a banner ({item.group(1)}); "
+                     "banners belong to the companion only")
+            out.append(line.replace(f'"{item.group(1)}"', f'"{item.group(1)}_banner"'))
     out.append("</resources>")
     if len(out) <= 4:
-        fail("no Banners sections found in the glyph pack's drawable.xml")
+        fail("no sections found in the glyph pack's drawable.xml")
     return "\n".join(out) + "\n"
 
 

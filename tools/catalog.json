@@ -29,14 +29,15 @@
     {
       "name": "3Player",
       "drawable": "threeplayer",
-      "color": "#53FC18",
-      "glyph": "termux_mark",
+      "color": "#FF4D4D",
+      "glyph": "app_3",
       "components": [
         "com.axonista.threeplayer/com.simplestream.presentation.startup.StartUpActivity"
       ],
       "category": "APP",
       "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_reviewed": null,
+      "mark": "3P"
     },
     {
       "name": "7plus",
@@ -87,7 +88,7 @@
     {
       "name": "A 8k Player Vip",
       "drawable": "a_8k_player_vip",
-      "color": "#53FC18",
+      "color": "#1FD19A",
       "glyph": "iptv_player",
       "components": [
         "com.shadeed.S4kvip/com.shadeed.ibopro.MainActivity"
@@ -100,7 +101,7 @@
     {
       "name": "A&E",
       "drawable": "androidtv_3",
-      "color": "#0061FF",
+      "color": "#C95CFF",
       "glyph": "a_e_mark",
       "components": [
         "com.aetn.aetv.watch.androidtv/com.aetn.android.tveapps.app.MainActivity"
@@ -140,7 +141,7 @@
     {
       "name": "Ace Stream",
       "drawable": "ace_stream",
-      "color": "#0061FF",
+      "color": "#FFE14D",
       "glyph": "app_A",
       "mark": "AS",
       "components": [
@@ -154,7 +155,7 @@
     {
       "name": "Acontra Plus",
       "drawable": "acontraplus",
-      "color": "#0061FF",
+      "color": "#4FACFE",
       "glyph": "app_A",
       "mark": "AP",
       "components": [
@@ -191,7 +192,7 @@
     {
       "name": "ADB WiFi",
       "drawable": "dinhlap",
-      "color": "#0061FF",
+      "color": "#E6EDF3",
       "glyph": "adb_wifi",
       "components": [
         "com.dinhlap.adb/com.dinhlap.adb.ConnectActivity"
@@ -230,7 +231,7 @@
     {
       "name": "Aerial Views",
       "drawable": "aerialviews",
-      "color": "#53FC18",
+      "color": "#34EB7A",
       "glyph": "aerial_views_sun_dunes",
       "components": [
         "com.neilturner.aerialviews/com.neilturner.aerialviews.ui.MainActivity"
@@ -242,7 +243,7 @@
     {
       "name": "AI Cam View",
       "drawable": "aicamview",
-      "color": "#53FC18",
+      "color": "#A366FF",
       "glyph": "app_A",
       "mark": "AC",
       "components": [
@@ -255,7 +256,7 @@
     {
       "name": "AIDA64",
       "drawable": "finalwire",
-      "color": "#7B2BFC",
+      "color": "#FFB020",
       "glyph": "aida_sixty_four",
       "components": [
         "com.finalwire.aida64/com.finalwire.aida64.HHMainActivity",
@@ -268,7 +269,7 @@
     {
       "name": "AIMI TV",
       "drawable": "aimitv",
-      "color": "#0061FF",
+      "color": "#00D4FF",
       "glyph": "sport_A",
       "mark": "AT",
       "components": [
@@ -281,7 +282,7 @@
     {
       "name": "Air Attack 2",
       "drawable": "airattack2tv",
-      "color": "#0061FF",
+      "color": "#FF5CA8",
       "glyph": "gaming_A",
       "mark": "AA",
       "components": [
@@ -294,7 +295,7 @@
     {
       "name": "Aircast",
       "drawable": "aircast",
-      "color": "#FF0000",
+      "color": "#53FC18",
       "glyph": "app_A",
       "mark": "AI",
       "components": [
@@ -308,7 +309,7 @@
     {
       "name": "Airpin Pro",
       "drawable": "airpin_pro",
-      "color": "#00D4FF",
+      "color": "#7C74FF",
       "glyph": "app_A",
       "mark": "AP",
       "components": [
@@ -322,7 +323,7 @@
     {
       "name": "AirPlay Receiver",
       "drawable": "receiver",
-      "color": "#0061FF",
+      "color": "#FF7A2E",
       "glyph": "app_R",
       "mark": "AR",
       "components": [
@@ -335,7 +336,7 @@
     {
       "name": "Airreceiverlite",
       "drawable": "airreceiverlite",
-      "color": "#FFFFFF",
+      "color": "#19D3C5",
       "glyph": "app_A",
       "mark": "AI",
       "components": [
@@ -349,7 +350,7 @@
     {
       "name": "Airscreen",
       "drawable": "airscreen",
-      "color": "#FEC500",
+      "color": "#F04DE0",
       "glyph": "airscreen_as",
       "components": [
         "com.ionitech.airscreen/com.ionitech.airscreen.ui.activity.welcome.StreamAssistantIndexActivity"
@@ -388,7 +389,7 @@
     {
       "name": "AllSaves Social",
       "drawable": "allsaversocial",
-      "color": "#0061FF",
+      "color": "#B6F23A",
       "glyph": "app_A",
       "mark": "AS",
       "components": [
@@ -401,7 +402,7 @@
     {
       "name": "Aloula TV",
       "drawable": "aloulatv",
-      "color": "#107534",
+      "color": "#3D8BFF",
       "glyph": "app_A",
       "mark": "AT",
       "components": [
@@ -414,7 +415,7 @@
     {
       "name": "Amazing Classics",
       "drawable": "amazing_classics",
-      "color": "#0061FF",
+      "color": "#FF4D4D",
       "glyph": "app_A",
       "mark": "AC",
       "components": [
@@ -428,7 +429,7 @@
     {
       "name": "Amazon Freevee",
       "drawable": "livingroom",
-      "color": "#F15BB5",
+      "color": "#1FD19A",
       "glyph": "film_A",
       "mark": "AF",
       "components": [
@@ -477,7 +478,7 @@
     {
       "name": "Amnis",
       "drawable": "amnis",
-      "color": "#53FC18",
+      "color": "#C95CFF",
       "glyph": "app_A",
       "mark": "AM",
       "components": [
@@ -503,7 +504,7 @@
     {
       "name": "Anexplorer Pro",
       "drawable": "anexplorer_pro",
-      "color": "#0061FF",
+      "color": "#FFE14D",
       "glyph": "folder_tree",
       "components": [
         "dev.dworks.apps.anexplorer.pro/dev.dworks.apps.anexplorer.DocumentsActivity"
@@ -517,7 +518,7 @@
     {
       "name": "Angel Studios",
       "drawable": "angel",
-      "color": "#1982C4",
+      "color": "#4FACFE",
       "glyph": "app_A",
       "mark": "AS",
       "components": [
@@ -530,7 +531,7 @@
     {
       "name": "AniLab",
       "drawable": "anilab",
-      "color": "#00F5D4",
+      "color": "#E6EDF3",
       "glyph": "app_A",
       "mark": "AN",
       "components": [
@@ -543,7 +544,7 @@
     {
       "name": "Anime Cast",
       "drawable": "anime_cast",
-      "color": "#0061FF",
+      "color": "#34EB7A",
       "glyph": "app_A",
       "mark": "AC",
       "components": [
@@ -558,7 +559,7 @@
     {
       "name": "Anime One",
       "drawable": "anime",
-      "color": "#53FC18",
+      "color": "#A366FF",
       "glyph": "app_A",
       "mark": "AO",
       "components": [
@@ -571,7 +572,7 @@
     {
       "name": "Ant1",
       "drawable": "ant1",
-      "color": "#FF0000",
+      "color": "#FFB020",
       "glyph": "app_A",
       "mark": "AN",
       "components": [
@@ -585,7 +586,7 @@
     {
       "name": "Anten TV",
       "drawable": "antentv",
-      "color": "#AAFF89",
+      "color": "#00D4FF",
       "glyph": "app_A",
       "mark": "AT",
       "components": [
@@ -623,7 +624,7 @@
     {
       "name": "Apk Installer",
       "drawable": "apk_installer",
-      "color": "#0061FF",
+      "color": "#7C74FF",
       "glyph": "app_A",
       "mark": "AI",
       "components": [
@@ -637,7 +638,7 @@
     {
       "name": "APK Updater",
       "drawable": "apkupdater",
-      "color": "#53FC18",
+      "color": "#FF7A2E",
       "glyph": "app_A",
       "mark": "AU",
       "components": [
@@ -650,7 +651,7 @@
     {
       "name": "APKMirror",
       "drawable": "apkmirror",
-      "color": "#0061FF",
+      "color": "#19D3C5",
       "glyph": "apkmirror_mark",
       "components": [
         "com.apkmirror.helper.prod/com.apkmirror.presentation.start.StartActivity"
@@ -662,7 +663,7 @@
     {
       "name": "APKPure",
       "drawable": "apkpure",
-      "color": "#0061FF",
+      "color": "#F04DE0",
       "glyph": "apkpure_d",
       "components": [
         "com.apkpure.aegon/com.apkpure.aegon.main.activity.SplashActivity"
@@ -687,7 +688,7 @@
     {
       "name": "Aplicativo X",
       "drawable": "aplicativox",
-      "color": "#C41A3B",
+      "color": "#B6F23A",
       "glyph": "app_A",
       "mark": "AX",
       "components": [
@@ -700,7 +701,7 @@
     {
       "name": "App Generation",
       "drawable": "appgeneration",
-      "color": "#7B2BFC",
+      "color": "#3D8BFF",
       "glyph": "app_A",
       "mark": "AG",
       "components": [
@@ -713,7 +714,7 @@
     {
       "name": "App Notifier",
       "drawable": "appnotifier",
-      "color": "#FEC500",
+      "color": "#FF4D4D",
       "glyph": "app_A",
       "mark": "AN",
       "components": [
@@ -739,7 +740,7 @@
     {
       "name": "AppLinked",
       "drawable": "applinkednew",
-      "color": "#FF0000",
+      "color": "#1FD19A",
       "glyph": "app_A",
       "mark": "AP",
       "components": [
@@ -764,7 +765,7 @@
     {
       "name": "Arc Browser",
       "drawable": "arc_browser",
-      "color": "#0061FF",
+      "color": "#C95CFF",
       "glyph": "browser_globe2",
       "components": [
         "net.floatingpoint.android.arcturus/net.floatingpoint.android.arcturus.MainActivity"
@@ -777,7 +778,7 @@
     {
       "name": "Ard Mediathek",
       "drawable": "ard_mediathek",
-      "color": "#F4842D",
+      "color": "#FFE14D",
       "glyph": "app_A",
       "mark": "AM",
       "components": [
@@ -791,7 +792,7 @@
     {
       "name": "Arrow",
       "drawable": "arrowfilms",
-      "color": "#0061FF",
+      "color": "#4FACFE",
       "glyph": "arrow_mark",
       "components": [
         "com.arrowfilms/tv.vhx.LauncherActivity",
@@ -805,7 +806,7 @@
     {
       "name": "Arte",
       "drawable": "arte",
-      "color": "#D2BCFD",
+      "color": "#E6EDF3",
       "glyph": "app_A",
       "mark": "AR",
       "components": [
@@ -819,7 +820,7 @@
     {
       "name": "Artlume",
       "drawable": "artlume",
-      "color": "#008080",
+      "color": "#34EB7A",
       "glyph": "app_A",
       "mark": "AR",
       "components": [
@@ -833,7 +834,7 @@
     {
       "name": "Arvio",
       "drawable": "arvio",
-      "color": "#0061FF",
+      "color": "#A366FF",
       "glyph": "arvio_a",
       "components": [
         "com.arvio.tv/com.arflix.tv.MainActivity"
@@ -857,7 +858,7 @@
     {
       "name": "ATRESplayer",
       "drawable": "atresplayer",
-      "color": "#A238FF",
+      "color": "#FFB020",
       "glyph": "atres_chevrons",
       "components": [
         "com.antena3.atresplayer.tv/com.antena3.atresplayer.tv.ui.splash.SplashActivity"
@@ -919,7 +920,7 @@
     {
       "name": "Avoid",
       "drawable": "hritwik",
-      "color": "#FFFFFF",
+      "color": "#53FC18",
       "glyph": "app_A",
       "mark": "AV",
       "components": [
@@ -932,7 +933,7 @@
     {
       "name": "Award VPN",
       "drawable": "award",
-      "color": "#0061FF",
+      "color": "#7C74FF",
       "glyph": "vpn_A",
       "mark": "AV",
       "components": [
@@ -945,7 +946,7 @@
     {
       "name": "Baby Einstein",
       "drawable": "babyeinstein",
-      "color": "#0061FF",
+      "color": "#FF7A2E",
       "glyph": "app_B",
       "mark": "BE",
       "components": [
@@ -958,7 +959,7 @@
     {
       "name": "Background Apps And Process List",
       "drawable": "background_apps_and_process_list",
-      "color": "#0061FF",
+      "color": "#19D3C5",
       "glyph": "app_B",
       "mark": "BA",
       "components": [
@@ -972,7 +973,7 @@
     {
       "name": "Bally Sports",
       "drawable": "ballyscorp",
-      "color": "#0061FF",
+      "color": "#F04DE0",
       "glyph": "bally_mark",
       "components": [
         "com.ballyscorp.ballylive/tv.vizbee.readyapp.firetvandroidtv.SplashActivity"
@@ -1040,7 +1041,7 @@
     {
       "name": "Bell Fibe",
       "drawable": "bellmediaplayer",
-      "color": "#53FC18",
+      "color": "#B6F23A",
       "glyph": "app_B",
       "mark": "BF",
       "components": [
@@ -1081,7 +1082,7 @@
     {
       "name": "Better XC",
       "drawable": "betterxc",
-      "color": "#0061FF",
+      "color": "#3D8BFF",
       "glyph": "app_B",
       "mark": "BX",
       "components": [
@@ -1126,7 +1127,7 @@
     {
       "name": "Blip",
       "drawable": "blip",
-      "color": "#0061FF",
+      "color": "#FF4D4D",
       "glyph": "app_B",
       "mark": "BL",
       "components": [
@@ -1153,7 +1154,7 @@
     {
       "name": "Bloomberg TV+",
       "drawable": "bloomberg",
-      "color": "#53FC18",
+      "color": "#1FD19A",
       "glyph": "app_B",
       "mark": "BT",
       "components": [
@@ -1166,7 +1167,7 @@
     {
       "name": "BODi",
       "drawable": "beachbody",
-      "color": "#7B2BFC",
+      "color": "#C95CFF",
       "glyph": "film_B",
       "mark": "BO",
       "components": [
@@ -1179,7 +1180,7 @@
     {
       "name": "Boosteroid",
       "drawable": "boosteroidtv",
-      "color": "#0061FF",
+      "color": "#FFE14D",
       "glyph": "boosteroid_mark",
       "components": [
         "com.boosteroidtv.streaming/com.boosteroidtv.streaming.UI.tv.StartActivity"
@@ -1191,7 +1192,7 @@
     {
       "name": "BP Box",
       "drawable": "box",
-      "color": "#53FC18",
+      "color": "#4FACFE",
       "glyph": "app_B",
       "mark": "BB",
       "components": [
@@ -1204,7 +1205,7 @@
     {
       "name": "Bravia Core",
       "drawable": "bravia_core",
-      "color": "#0061FF",
+      "color": "#E6EDF3",
       "glyph": "app_B",
       "mark": "BC",
       "components": [
@@ -1230,7 +1231,7 @@
     {
       "name": "Brkchen Music",
       "drawable": "brkchen",
-      "color": "#0061FF",
+      "color": "#34EB7A",
       "glyph": "music_B",
       "mark": "BM",
       "components": [
@@ -1243,7 +1244,7 @@
     {
       "name": "Brollie",
       "drawable": "brollie",
-      "color": "#FF0000",
+      "color": "#A366FF",
       "glyph": "app_B",
       "mark": "BR",
       "components": [
@@ -1258,7 +1259,7 @@
     {
       "name": "Browsehere",
       "drawable": "browsehere",
-      "color": "#0061FF",
+      "color": "#FFB020",
       "glyph": "app_B",
       "mark": "BR",
       "components": [
@@ -1272,7 +1273,7 @@
     {
       "name": "Bstation",
       "drawable": "bstar",
-      "color": "#0061FF",
+      "color": "#00D4FF",
       "glyph": "app_B",
       "mark": "BS",
       "components": [
@@ -1285,7 +1286,7 @@
     {
       "name": "Buttons Remapper",
       "drawable": "buttonsremapper",
-      "color": "#FF0000",
+      "color": "#53FC18",
       "glyph": "app_B",
       "mark": "BR",
       "components": [
@@ -1298,7 +1299,7 @@
     {
       "name": "Byebyedpi",
       "drawable": "byebyedpi",
-      "color": "#7B2BFC",
+      "color": "#7C74FF",
       "glyph": "app_B",
       "mark": "BY",
       "components": [
@@ -1312,7 +1313,7 @@
     {
       "name": "Byutv",
       "drawable": "byutv",
-      "color": "#FFFFFF",
+      "color": "#FF7A2E",
       "glyph": "app_B",
       "mark": "BY",
       "components": [
@@ -1326,7 +1327,7 @@
     {
       "name": "Cafe Bazaar",
       "drawable": "farsitel",
-      "color": "#0061FF",
+      "color": "#19D3C5",
       "glyph": "app_C",
       "mark": "CB",
       "components": [
@@ -1339,7 +1340,7 @@
     {
       "name": "Caixaforum Plus",
       "drawable": "caixaforum_plus",
-      "color": "#0061FF",
+      "color": "#F04DE0",
       "glyph": "app_C",
       "mark": "CP",
       "components": [
@@ -1353,7 +1354,7 @@
     {
       "name": "Canal Digital",
       "drawable": "canaldigital",
-      "color": "#53FC18",
+      "color": "#B6F23A",
       "glyph": "app_C",
       "mark": "CD",
       "components": [
@@ -1366,7 +1367,7 @@
     {
       "name": "CANAL+",
       "drawable": "canal",
-      "color": "#FF0000",
+      "color": "#3D8BFF",
       "glyph": "app_C",
       "mark": "CA",
       "components": [
@@ -1379,7 +1380,7 @@
     {
       "name": "Capsule",
       "drawable": "capsule",
-      "color": "#FFFFFF",
+      "color": "#FF4D4D",
       "glyph": "app_C",
       "mark": "CA",
       "components": [
@@ -1393,7 +1394,7 @@
     {
       "name": "Cast4K",
       "drawable": "cast4k",
-      "color": "#FEC500",
+      "color": "#1FD19A",
       "glyph": "app_C",
       "mark": "CA",
       "components": [
@@ -1406,7 +1407,7 @@
     {
       "name": "Catch-On TV",
       "drawable": "catchontv",
-      "color": "#0061FF",
+      "color": "#C95CFF",
       "glyph": "catch_hook",
       "components": [
         "app.sbox.leanback.catchontv/app.sbox.leanback.catchontv.MainActivity"
@@ -1445,7 +1446,7 @@
     {
       "name": "Cda Pl",
       "drawable": "cda_pl",
-      "color": "#107534",
+      "color": "#FFE14D",
       "glyph": "app_C",
       "mark": "CP",
       "components": [
@@ -1459,7 +1460,7 @@
     {
       "name": "CGTN America",
       "drawable": "cgtnamericanow",
-      "color": "#F15BB5",
+      "color": "#4FACFE",
       "glyph": "app_C",
       "mark": "CA",
       "components": [
@@ -1486,7 +1487,7 @@
     {
       "name": "Channels",
       "drawable": "getchannels",
-      "color": "#1982C4",
+      "color": "#E6EDF3",
       "glyph": "app_C",
       "mark": "CH",
       "components": [
@@ -1499,7 +1500,7 @@
     {
       "name": "Chaupal",
       "drawable": "chaupal",
-      "color": "#00F5D4",
+      "color": "#34EB7A",
       "glyph": "app_C",
       "mark": "CH",
       "components": [
@@ -1513,7 +1514,7 @@
     {
       "name": "Chebut TV",
       "drawable": "chebut",
-      "color": "#AAFF89",
+      "color": "#A366FF",
       "glyph": "app_C",
       "mark": "CT",
       "components": [
@@ -1550,7 +1551,7 @@
     {
       "name": "Cinemaghar TV",
       "drawable": "cinemaghar_tv",
-      "color": "#0061FF",
+      "color": "#FFB020",
       "glyph": "app_C",
       "mark": "CT",
       "components": [
@@ -1564,7 +1565,7 @@
     {
       "name": "CinemaGlow",
       "drawable": "danielkorgel",
-      "color": "#0061FF",
+      "color": "#00D4FF",
       "glyph": "cinema_glow",
       "components": [
         "com.danielkorgel.projectivy.plugin.cinemaglow/com.danielkorgel.projectivy.plugin.cinemaglow.SettingsActivity"
@@ -1577,7 +1578,7 @@
     {
       "name": "Cinemahd Stable",
       "drawable": "cinemahd_stable",
-      "color": "#53FC18",
+      "color": "#FF5CA8",
       "glyph": "app_C",
       "mark": "CS",
       "components": [
@@ -1591,7 +1592,7 @@
     {
       "name": "Citytv+",
       "drawable": "citytvplus",
-      "color": "#C41A3B",
+      "color": "#53FC18",
       "glyph": "app_C",
       "mark": "CI",
       "components": [
@@ -1604,7 +1605,7 @@
     {
       "name": "Clash Meta",
       "drawable": "metacubex",
-      "color": "#0061FF",
+      "color": "#7C74FF",
       "glyph": "app_M",
       "mark": "CM",
       "components": [
@@ -1617,7 +1618,7 @@
     {
       "name": "Clip TV",
       "drawable": "clip_tv",
-      "color": "#F4842D",
+      "color": "#FF7A2E",
       "glyph": "app_C",
       "mark": "CT",
       "components": [
@@ -1631,7 +1632,7 @@
     {
       "name": "Clone Hero",
       "drawable": "clone_hero",
-      "color": "#0061FF",
+      "color": "#19D3C5",
       "glyph": "gaming_C",
       "mark": "CH",
       "components": [
@@ -1683,7 +1684,7 @@
     {
       "name": "Coji TV Browser",
       "drawable": "coji_tv_browser",
-      "color": "#0061FF",
+      "color": "#F04DE0",
       "glyph": "coji_browser",
       "components": [
         "mvl.studio.tvlite/mvl.studio.tvlite.android_tv.presentation.ui.TabletLauncherActivity",
@@ -1698,7 +1699,7 @@
     {
       "name": "Comedy Box",
       "drawable": "comedybox",
-      "color": "#0061FF",
+      "color": "#B6F23A",
       "glyph": "comedy_mark",
       "components": [
         "com.comedybox.app/com.android.comedybox.ui.TvSplashActivity"
@@ -1767,7 +1768,7 @@
     {
       "name": "CoreELEC Helper",
       "drawable": "jamal2367",
-      "color": "#0061FF",
+      "color": "#3D8BFF",
       "glyph": "app_C",
       "mark": "CH",
       "components": [
@@ -1780,7 +1781,7 @@
     {
       "name": "Corridor",
       "drawable": "watchcorridortv",
-      "color": "#0061FF",
+      "color": "#FF4D4D",
       "glyph": "corridor_mark",
       "components": [
         "com.corridordigital.watchcorridortv/com.corridordigital.watchcorridortv.feature.main.MainActivity"
@@ -1793,7 +1794,7 @@
     {
       "name": "Cosmote TV",
       "drawable": "cosmote_tv",
-      "color": "#D2BCFD",
+      "color": "#1FD19A",
       "glyph": "app_C",
       "mark": "CT",
       "components": [
@@ -1807,7 +1808,7 @@
     {
       "name": "Couch Puzzles",
       "drawable": "couch_puzzles",
-      "color": "#53FC18",
+      "color": "#C95CFF",
       "glyph": "app_C",
       "mark": "CP",
       "components": [
@@ -1821,7 +1822,7 @@
     {
       "name": "CPU Info",
       "drawable": "cpuinfo",
-      "color": "#008080",
+      "color": "#FFE14D",
       "glyph": "app_C",
       "mark": "CI",
       "components": [
@@ -1848,7 +1849,7 @@
     {
       "name": "Cricfy",
       "drawable": "cricfy",
-      "color": "#00D4FF",
+      "color": "#4FACFE",
       "glyph": "app_C",
       "mark": "CR",
       "components": [
@@ -1861,7 +1862,7 @@
     {
       "name": "Criterion Channel",
       "drawable": "criterionchannel",
-      "color": "#0061FF",
+      "color": "#E6EDF3",
       "glyph": "criterion_mark",
       "components": [
         "com.criterionchannel/tv.vhx.LauncherActivity",
@@ -1874,7 +1875,7 @@
     {
       "name": "Crossy Road",
       "drawable": "crossy_road",
-      "color": "#FF0000",
+      "color": "#34EB7A",
       "glyph": "crossy_chicken",
       "components": [
         "com.yodo1.crossyroad/com.google.firebase.MessagingUnityPlayerActivity"
@@ -1901,7 +1902,7 @@
     {
       "name": "CTV",
       "drawable": "ctvgo",
-      "color": "#53FC18",
+      "color": "#00D4FF",
       "glyph": "app_C",
       "mark": "CT",
       "components": [
@@ -1939,7 +1940,7 @@
     {
       "name": "CX File Explorer",
       "drawable": "cxinventor",
-      "color": "#53FC18",
+      "color": "#FF5CA8",
       "glyph": "folder",
       "components": [
         "com.cxinventor.file.explorer/com.alphainventor.filemanager.activity.MainActivity",
@@ -1953,7 +1954,7 @@
     {
       "name": "Cyberflix",
       "drawable": "cybermedia",
-      "color": "#B388FF",
+      "color": "#53FC18",
       "glyph": "app_C",
       "mark": "CY",
       "components": [
@@ -1979,7 +1980,7 @@
     {
       "name": "D-Smart",
       "drawable": "dogusdigital",
-      "color": "#0061FF",
+      "color": "#7C74FF",
       "glyph": "app_D",
       "mark": "DS",
       "components": [
@@ -1992,7 +1993,7 @@
     {
       "name": "DIG",
       "drawable": "digdroid",
-      "color": "#53FC18",
+      "color": "#E6EDF3",
       "glyph": "app_D",
       "mark": "DI",
       "components": [
@@ -2006,7 +2007,7 @@
     {
       "name": "Daijishou",
       "drawable": "magneticchen",
-      "color": "#7B2BFC",
+      "color": "#FF7A2E",
       "glyph": "gamepad",
       "components": [
         "com.magneticchen.daijishou/com.magneticchen.daijishou.activities.BootstrapActivity"
@@ -2030,7 +2031,7 @@
     {
       "name": "Damonte",
       "drawable": "damontecres",
-      "color": "#0061FF",
+      "color": "#19D3C5",
       "glyph": "app_D",
       "mark": "DA",
       "components": [
@@ -2043,7 +2044,7 @@
     {
       "name": "Dangbei",
       "drawable": "zhushou",
-      "color": "#0061FF",
+      "color": "#F04DE0",
       "glyph": "app_D",
       "mark": "DA",
       "components": [
@@ -2056,7 +2057,7 @@
     {
       "name": "Dansk Filmskat",
       "drawable": "egmont",
-      "color": "#0061FF",
+      "color": "#B6F23A",
       "glyph": "app_D",
       "mark": "DF",
       "components": [
@@ -2081,7 +2082,7 @@
     {
       "name": "DCS IPTV",
       "drawable": "dcsapp",
-      "color": "#0061FF",
+      "color": "#3D8BFF",
       "glyph": "broadcast_D",
       "mark": "DI",
       "components": [
@@ -2094,7 +2095,7 @@
     {
       "name": "Debrid Em All",
       "drawable": "debrid_em_all",
-      "color": "#53FC18",
+      "color": "#FF4D4D",
       "glyph": "app_D",
       "mark": "DE",
       "components": [
@@ -2108,7 +2109,7 @@
     {
       "name": "Debrid Stream",
       "drawable": "debridstream",
-      "color": "#0061FF",
+      "color": "#1FD19A",
       "glyph": "debrid_cloud_play",
       "components": [
         "com.debridstream.tv/com.debridstream.tv.MainActivity"
@@ -2149,7 +2150,7 @@
     {
       "name": "Delta TV",
       "drawable": "deltatv",
-      "color": "#53FC18",
+      "color": "#C95CFF",
       "glyph": "app_D",
       "mark": "DT",
       "components": [
@@ -2162,7 +2163,7 @@
     {
       "name": "Developer Tools",
       "drawable": "developer_tools",
-      "color": "#0061FF",
+      "color": "#FFE14D",
       "glyph": "dev_gear",
       "components": [
         "com.roysolberg.android.developertools/com.roysolberg.android.developertools.ui.activity.MainActivity"
@@ -2176,7 +2177,7 @@
     {
       "name": "DevInterest",
       "drawable": "devinterestdev",
-      "color": "#0061FF",
+      "color": "#4FACFE",
       "glyph": "dev_play",
       "components": [
         "com.devinterestdev.streamshow/com.devinterestdev.streamshow.TvActivity"
@@ -2189,7 +2190,7 @@
     {
       "name": "Digi TV",
       "drawable": "digi_tv",
-      "color": "#FF0000",
+      "color": "#34EB7A",
       "glyph": "app_D",
       "mark": "DT",
       "components": [
@@ -2203,7 +2204,7 @@
     {
       "name": "Direct One",
       "drawable": "direct_one",
-      "color": "#FFFFFF",
+      "color": "#A366FF",
       "glyph": "app_D",
       "mark": "DO",
       "components": [
@@ -2217,7 +2218,7 @@
     {
       "name": "DIRECTV",
       "drawable": "att",
-      "color": "#0061FF",
+      "color": "#FFB020",
       "glyph": "directv_arrow",
       "components": [
         "com.att.tv/com.clientapp.MainActivity"
@@ -2256,7 +2257,7 @@
     {
       "name": "Dish Anywhere",
       "drawable": "dish_anywhere",
-      "color": "#0061FF",
+      "color": "#00D4FF",
       "glyph": "dish_mark",
       "components": [
         "com.sm.SlingGuide.Dish/com.sm.SlingGuide.Dish.MainActivity"
@@ -2269,7 +2270,7 @@
     {
       "name": "Dish Home",
       "drawable": "dishnepal",
-      "color": "#FEC500",
+      "color": "#FF5CA8",
       "glyph": "app_D",
       "mark": "DH",
       "components": [
@@ -2296,7 +2297,7 @@
     {
       "name": "DistroTV",
       "drawable": "distroscale",
-      "color": "#107534",
+      "color": "#53FC18",
       "glyph": "app_D",
       "mark": "DI",
       "components": [
@@ -2309,7 +2310,7 @@
     {
       "name": "Dixmax",
       "drawable": "dixmax",
-      "color": "#F15BB5",
+      "color": "#7C74FF",
       "glyph": "app_D",
       "mark": "DI",
       "components": [
@@ -2324,7 +2325,7 @@
     {
       "name": "DNS Changer",
       "drawable": "dnschanger",
-      "color": "#FF0000",
+      "color": "#FF7A2E",
       "glyph": "app_D",
       "mark": "DC",
       "components": [
@@ -2363,7 +2364,7 @@
     {
       "name": "Download Navi",
       "drawable": "download_navi",
-      "color": "#0061FF",
+      "color": "#19D3C5",
       "glyph": "download_navi",
       "components": [
         "com.tachibana.downloader/com.tachibana.downloader.ui.main.MainActivity"
@@ -2391,7 +2392,7 @@
     {
       "name": "Dr Nettools",
       "drawable": "dr_nettools",
-      "color": "#0061FF",
+      "color": "#F04DE0",
       "glyph": "net_pulse",
       "components": [
         "pl.dronline.nettools/pl.dronline.nettools.activity.CoreActivity"
@@ -2405,7 +2406,7 @@
     {
       "name": "Drama Live",
       "drawable": "drama_live",
-      "color": "#1982C4",
+      "color": "#B6F23A",
       "glyph": "broadcast_D",
       "mark": "DL",
       "components": [
@@ -2419,7 +2420,7 @@
     {
       "name": "Dramox",
       "drawable": "dramox",
-      "color": "#FFFFFF",
+      "color": "#3D8BFF",
       "glyph": "app_D",
       "mark": "DR",
       "components": [
@@ -2433,7 +2434,7 @@
     {
       "name": "Dream Player TV",
       "drawable": "dream_player_tv",
-      "color": "#FF0000",
+      "color": "#FF4D4D",
       "glyph": "iptv_player",
       "components": [
         "de.cyberdream.dreamepg.tv.player/de.cyberdream.dreamepg.MainActivityTV"
@@ -2446,7 +2447,7 @@
     {
       "name": "DRM Info",
       "drawable": "androidfung",
-      "color": "#FEC500",
+      "color": "#1FD19A",
       "glyph": "app_D",
       "mark": "DI",
       "components": [
@@ -2472,7 +2473,7 @@
     {
       "name": "Dropout",
       "drawable": "collegehumor",
-      "color": "#0061FF",
+      "color": "#C95CFF",
       "glyph": "dropout_mark",
       "components": [
         "com.collegehumor.chdropout/tv.vhx.LauncherActivity",
@@ -2485,7 +2486,7 @@
     {
       "name": "Dropsync",
       "drawable": "dropsync",
-      "color": "#0061FF",
+      "color": "#FFE14D",
       "glyph": "app_D",
       "mark": "DR",
       "components": [
@@ -2499,7 +2500,7 @@
     {
       "name": "Drtv",
       "drawable": "drtv",
-      "color": "#00F5D4",
+      "color": "#4FACFE",
       "glyph": "app_D",
       "mark": "DR",
       "components": [
@@ -2513,7 +2514,7 @@
     {
       "name": "Dry Bar Comedy Plus",
       "drawable": "dry_bar_comedy_plus",
-      "color": "#53FC18",
+      "color": "#E6EDF3",
       "glyph": "comedy_mark",
       "components": [
         "com.vidangel.drybarcomedy/tv.vhx.LauncherActivity",
@@ -2624,7 +2625,7 @@
     {
       "name": "Ds TV Mobile",
       "drawable": "dstvmobile",
-      "color": "#AAFF89",
+      "color": "#A366FF",
       "glyph": "app_D",
       "mark": "DT",
       "components": [
@@ -2669,7 +2670,7 @@
     {
       "name": "Dudeperfect",
       "drawable": "dudeperfect",
-      "color": "#C41A3B",
+      "color": "#FFB020",
       "glyph": "app_D",
       "mark": "DU",
       "components": [
@@ -2683,7 +2684,7 @@
     {
       "name": "Dw",
       "drawable": "dw",
-      "color": "#F4842D",
+      "color": "#00D4FF",
       "glyph": "dw_circles",
       "components": [
         "dw.com.androidtv.live/com.dw.app.dwforsmarttv.MainActivity"
@@ -2710,7 +2711,7 @@
     {
       "name": "Echogram",
       "drawable": "echogram",
-      "color": "#53FC18",
+      "color": "#FF5CA8",
       "glyph": "app_E",
       "mark": "EC",
       "components": [
@@ -2723,7 +2724,7 @@
     {
       "name": "Elefin",
       "drawable": "elefin",
-      "color": "#FF0000",
+      "color": "#53FC18",
       "glyph": "app_E",
       "mark": "EL",
       "components": [
@@ -2749,7 +2750,7 @@
     {
       "name": "Enjoy TV",
       "drawable": "enjoytvandroid",
-      "color": "#0061FF",
+      "color": "#7C74FF",
       "glyph": "app_E",
       "mark": "ET",
       "components": [
@@ -2762,7 +2763,7 @@
     {
       "name": "Eon TV",
       "drawable": "eon_tv",
-      "color": "#53FC18",
+      "color": "#FF7A2E",
       "glyph": "app_E",
       "mark": "ET",
       "components": [
@@ -2776,7 +2777,7 @@
     {
       "name": "Epic Channel",
       "drawable": "epicchannel",
-      "color": "#FF0000",
+      "color": "#19D3C5",
       "glyph": "app_E",
       "mark": "EC",
       "components": [
@@ -2789,7 +2790,7 @@
     {
       "name": "ePSXe",
       "drawable": "epsxe",
-      "color": "#0061FF",
+      "color": "#F04DE0",
       "glyph": "app_E",
       "mark": "EP",
       "components": [
@@ -2802,7 +2803,7 @@
     {
       "name": "Eros Now",
       "drawable": "eros",
-      "color": "#FFFFFF",
+      "color": "#B6F23A",
       "glyph": "app_E",
       "mark": "EN",
       "components": [
@@ -2815,7 +2816,7 @@
     {
       "name": "ERTFLIX",
       "drawable": "ertflix",
-      "color": "#0061FF",
+      "color": "#3D8BFF",
       "glyph": "ertflix_mark",
       "components": [
         "com.ertflix.app/com.ertflix.app.MainActivity"
@@ -2829,7 +2830,7 @@
     {
       "name": "ERTFLIX",
       "drawable": "ertflix_2",
-      "color": "#0061FF",
+      "color": "#3D8BFF",
       "glyph": "ertflix_mark",
       "components": [
         "t.yi.erthybrid/com.arxnet.soeasytv.MainActivity"
@@ -2844,7 +2845,7 @@
     {
       "name": "Es De Frontend",
       "drawable": "es_de_frontend",
-      "color": "#7B2BFC",
+      "color": "#FF4D4D",
       "glyph": "app_E",
       "mark": "EDF",
       "components": [
@@ -2882,7 +2883,7 @@
     {
       "name": "Eternal TV",
       "drawable": "eternaltviptvbox",
-      "color": "#FEC500",
+      "color": "#1FD19A",
       "glyph": "broadcast_E",
       "mark": "ET",
       "components": [
@@ -2895,7 +2896,7 @@
     {
       "name": "Eternal TV (Nath)",
       "drawable": "nathnetwork",
-      "color": "#0061FF",
+      "color": "#C95CFF",
       "glyph": "app_N",
       "mark": "ET",
       "components": [
@@ -2908,7 +2909,7 @@
     {
       "name": "Etube",
       "drawable": "etube",
-      "color": "#FDCB58",
+      "color": "#FFE14D",
       "glyph": "app_E",
       "mark": "ET",
       "components": [
@@ -2922,7 +2923,7 @@
     {
       "name": "eTVnet",
       "drawable": "androidtv_6",
-      "color": "#0061FF",
+      "color": "#4FACFE",
       "glyph": "net_screen",
       "components": [
         "com.etvnet.androidtv.tvstore/com.etvnet.androidtv.ui.init.InitActivity"
@@ -2935,7 +2936,7 @@
     {
       "name": "Euronews",
       "drawable": "euronews",
-      "color": "#0061FF",
+      "color": "#E6EDF3",
       "glyph": "sport_E",
       "mark": "EU",
       "components": [
@@ -3013,7 +3014,7 @@
     {
       "name": "FANE TV",
       "drawable": "fanetv",
-      "color": "#53FC18",
+      "color": "#34EB7A",
       "glyph": "app_F",
       "mark": "FT",
       "components": [
@@ -3027,7 +3028,7 @@
     {
       "name": "FC Porto TV",
       "drawable": "fcportotv",
-      "color": "#FF0000",
+      "color": "#FFB020",
       "glyph": "app_F",
       "mark": "FP",
       "components": [
@@ -3040,7 +3041,7 @@
     {
       "name": "FC TV",
       "drawable": "fctv77",
-      "color": "#FDCB58",
+      "color": "#00D4FF",
       "glyph": "app_F",
       "mark": "FT",
       "components": [
@@ -3053,7 +3054,7 @@
     {
       "name": "FCast Receiver",
       "drawable": "playstore_2",
-      "color": "#0061FF",
+      "color": "#FF5CA8",
       "glyph": "cast_receiver",
       "components": [
         "com.futo.fcast.receiver.playstore/com.futo.fcast.receiver.MainActivity"
@@ -3066,7 +3067,7 @@
     {
       "name": "Feb",
       "drawable": "feb",
-      "color": "#0061FF",
+      "color": "#53FC18",
       "glyph": "app_F",
       "mark": "FE",
       "components": [
@@ -3080,7 +3081,7 @@
     {
       "name": "Feeln",
       "drawable": "androidapp",
-      "color": "#00F5D4",
+      "color": "#7C74FF",
       "glyph": "app_F",
       "mark": "FE",
       "components": [
@@ -3136,7 +3137,7 @@
     {
       "name": "FileSynced",
       "drawable": "filesynced",
-      "color": "#0061FF",
+      "color": "#FF7A2E",
       "glyph": "folder_sync_one",
       "components": [
         "com.filesynced.app/com.filesynced.app.SplashActivity"
@@ -3149,7 +3150,7 @@
     {
       "name": "Filimo",
       "drawable": "filimo",
-      "color": "#7B2BFC",
+      "color": "#19D3C5",
       "glyph": "app_F",
       "mark": "FI",
       "components": [
@@ -3163,7 +3164,7 @@
     {
       "name": "Filmfriend",
       "drawable": "filmfriend",
-      "color": "#0061FF",
+      "color": "#F04DE0",
       "glyph": "app_F",
       "mark": "FI",
       "components": [
@@ -3177,7 +3178,7 @@
     {
       "name": "Filmnet TV",
       "drawable": "filmnet_tv",
-      "color": "#53FC18",
+      "color": "#B6F23A",
       "glyph": "app_F",
       "mark": "FT",
       "components": [
@@ -3191,7 +3192,7 @@
     {
       "name": "FilmRise",
       "drawable": "filmrise",
-      "color": "#0061FF",
+      "color": "#3D8BFF",
       "glyph": "filmrise_mark",
       "components": [
         "com.recipe.filmrise/com.recipe.filmrise.SplashActivity"
@@ -3203,7 +3204,7 @@
     {
       "name": "Filmzie",
       "drawable": "platform",
-      "color": "#0061FF",
+      "color": "#FF4D4D",
       "glyph": "film_play",
       "components": [
         "com.filmzie.platform/com.filmzie.tv.MainActivity"
@@ -3216,7 +3217,7 @@
     {
       "name": "FindLink",
       "drawable": "findlink",
-      "color": "#0061FF",
+      "color": "#1FD19A",
       "glyph": "app_F",
       "mark": "FI",
       "components": [
@@ -3229,7 +3230,7 @@
     {
       "name": "Firedown",
       "drawable": "firedown",
-      "color": "#0061FF",
+      "color": "#C95CFF",
       "glyph": "app_F",
       "mark": "FI",
       "components": [
@@ -3243,7 +3244,7 @@
     {
       "name": "FireSend",
       "drawable": "firesend",
-      "color": "#53FC18",
+      "color": "#FFE14D",
       "glyph": "app_F",
       "mark": "FI",
       "components": [
@@ -3256,7 +3257,7 @@
     {
       "name": "FITE",
       "drawable": "fitetv",
-      "color": "#0061FF",
+      "color": "#4FACFE",
       "glyph": "fite_mark",
       "components": [
         "com.flipps.fitetv/com.bianor.ams.androidtv.activity.TvMainActivity"
@@ -3268,7 +3269,7 @@
     {
       "name": "Five TV",
       "drawable": "fivetviptvbox",
-      "color": "#FF4C98",
+      "color": "#E6EDF3",
       "glyph": "broadcast_F",
       "mark": "FT",
       "components": [
@@ -3281,7 +3282,7 @@
     {
       "name": "Fizz TV",
       "drawable": "fizz_app",
-      "color": "#1E811F",
+      "color": "#A366FF",
       "glyph": "app_F",
       "mark": "FT",
       "components": [
@@ -3294,7 +3295,7 @@
     {
       "name": "Fladder",
       "drawable": "fladder",
-      "color": "#FF0000",
+      "color": "#FFB020",
       "glyph": "app_F",
       "mark": "FL",
       "components": [
@@ -3308,7 +3309,7 @@
     {
       "name": "FLauncher",
       "drawable": "launcher",
-      "color": "#0061FF",
+      "color": "#00D4FF",
       "glyph": "flauncher_mark",
       "components": [
         "com.kfaraj.launcher/com.kfaraj.launcher.LauncherActivity"
@@ -3320,7 +3321,7 @@
     {
       "name": "Flex TV",
       "drawable": "flextv",
-      "color": "#FFFFFF",
+      "color": "#FF5CA8",
       "glyph": "app_F",
       "mark": "FT",
       "components": [
@@ -3334,7 +3335,7 @@
     {
       "name": "Flickfolio",
       "drawable": "flickfolio",
-      "color": "#0061FF",
+      "color": "#53FC18",
       "glyph": "app_F",
       "mark": "FL",
       "components": [
@@ -3348,7 +3349,7 @@
     {
       "name": "Flicky",
       "drawable": "flicky",
-      "color": "#FFFFFF",
+      "color": "#7C74FF",
       "glyph": "app_F",
       "mark": "FL",
       "components": [
@@ -3361,7 +3362,7 @@
     {
       "name": "Flix TV",
       "drawable": "flix_tv",
-      "color": "#AAFF89",
+      "color": "#FF7A2E",
       "glyph": "app_F",
       "mark": "FT",
       "components": [
@@ -3387,7 +3388,7 @@
     {
       "name": "Flixnest",
       "drawable": "flixnest",
-      "color": "#008080",
+      "color": "#19D3C5",
       "glyph": "app_F",
       "mark": "FL",
       "components": [
@@ -3401,7 +3402,7 @@
     {
       "name": "Flosports",
       "drawable": "flosports",
-      "color": "#53FC18",
+      "color": "#F04DE0",
       "glyph": "flosports_mark",
       "components": [
         "tv.flosports/tv.flosports.TvActivity"
@@ -3414,7 +3415,7 @@
     {
       "name": "Fluffy",
       "drawable": "fluffy",
-      "color": "#FEC500",
+      "color": "#B6F23A",
       "glyph": "app_F",
       "mark": "FL",
       "components": [
@@ -3427,7 +3428,7 @@
     {
       "name": "FM Radio",
       "drawable": "fmradio",
-      "color": "#0061FF",
+      "color": "#3D8BFF",
       "glyph": "music_F",
       "mark": "FR",
       "components": [
@@ -3440,7 +3441,7 @@
     {
       "name": "Folder Sync",
       "drawable": "folder_sync",
-      "color": "#0061FF",
+      "color": "#FF4D4D",
       "glyph": "folder_sync_two",
       "components": [
         "dk.tacit.android.foldersync.lite/dk.tacit.android.foldersync.activity.MainActivity"
@@ -3454,7 +3455,7 @@
     {
       "name": "Football 360",
       "drawable": "football_360",
-      "color": "#53FC18",
+      "color": "#1FD19A",
       "glyph": "sport_F",
       "mark": "F3",
       "components": [
@@ -3468,7 +3469,7 @@
     {
       "name": "Forecast",
       "drawable": "forecast",
-      "color": "#FF0000",
+      "color": "#C95CFF",
       "glyph": "sport_F",
       "mark": "FO",
       "components": [
@@ -3481,7 +3482,7 @@
     {
       "name": "Forja TV",
       "drawable": "forja_tv",
-      "color": "#F5F500",
+      "color": "#FFE14D",
       "glyph": "app_F",
       "mark": "FT",
       "components": [
@@ -3495,7 +3496,7 @@
     {
       "name": "FORMED",
       "drawable": "formed",
-      "color": "#FA7D19",
+      "color": "#4FACFE",
       "glyph": "app_F",
       "mark": "FO",
       "components": [
@@ -3508,7 +3509,7 @@
     {
       "name": "Fotoo",
       "drawable": "fotoo",
-      "color": "#107534",
+      "color": "#E6EDF3",
       "glyph": "app_F",
       "mark": "FO",
       "components": [
@@ -3522,13 +3523,14 @@
       "name": "Fox Nation",
       "drawable": "foxnation",
       "color": "#003580",
-      "glyph": "flosports_mark",
+      "glyph": "app_F",
       "components": [
         "com.fng.foxnation/com.fox.app.MainActivity"
       ],
       "category": "APP",
       "color_source": "brand reference (pre-provenance, unverified)",
-      "color_reviewed": null
+      "color_reviewed": null,
+      "mark": "FN"
     },
     {
       "name": "Fox News",
@@ -3545,7 +3547,7 @@
     {
       "name": "FOX One",
       "drawable": "foxone",
-      "color": "#F15BB5",
+      "color": "#34EB7A",
       "glyph": "app_F",
       "mark": "FO",
       "components": [
@@ -3565,19 +3567,21 @@
       ],
       "category": "SPORT",
       "color_source": "brand reference (pre-provenance, unverified)",
-      "color_reviewed": null
+      "color_reviewed": null,
+      "brand": "fox_sports"
     },
     {
       "name": "Fox Sports Go",
       "drawable": "foxsports_2",
-      "color": "#FF0000",
-      "glyph": "flosports_mark",
+      "color": "#003580",
+      "glyph": "foxsports_mark",
       "components": [
         "com.foxsports.videogo/com.ballysports.tv.ui.screens.main.TvMainActivity"
       ],
       "category": "SPORT",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "brand reference (pre-provenance, unverified)",
+      "color_reviewed": null,
+      "brand": "fox_sports"
     },
     {
       "name": "Foxtel",
@@ -3594,7 +3598,7 @@
     {
       "name": "FP Basquetebol",
       "drawable": "fpbasquetebol",
-      "color": "#1982C4",
+      "color": "#A366FF",
       "glyph": "app_F",
       "mark": "FB",
       "components": [
@@ -3607,7 +3611,7 @@
     {
       "name": "Fpt Play",
       "drawable": "fpt_play",
-      "color": "#D2BCFD",
+      "color": "#00D4FF",
       "glyph": "app_F",
       "mark": "FP",
       "components": [
@@ -3635,7 +3639,7 @@
     {
       "name": "Francetv",
       "drawable": "francetv",
-      "color": "#00F5D4",
+      "color": "#FF5CA8",
       "glyph": "app_F",
       "mark": "FR",
       "components": [
@@ -3649,7 +3653,7 @@
     {
       "name": "Free TV",
       "drawable": "free_tv",
-      "color": "#0061FF",
+      "color": "#53FC18",
       "glyph": "app_F",
       "mark": "FT",
       "components": [
@@ -3663,7 +3667,7 @@
     {
       "name": "Freeflix Hq",
       "drawable": "freeflix_hq",
-      "color": "#0064FF",
+      "color": "#7C74FF",
       "glyph": "app_F",
       "mark": "FH",
       "components": [
@@ -3677,7 +3681,7 @@
     {
       "name": "Freevee",
       "drawable": "spiderpork",
-      "color": "#9B59B6",
+      "color": "#FF7A2E",
       "glyph": "film_F",
       "mark": "FR",
       "components": [
@@ -3690,7 +3694,7 @@
     {
       "name": "Fresh Drama",
       "drawable": "fresh_drama",
-      "color": "#DA3940",
+      "color": "#19D3C5",
       "glyph": "app_F",
       "mark": "FD",
       "components": [
@@ -3705,7 +3709,7 @@
     {
       "name": "Ftp Server",
       "drawable": "ftp_server",
-      "color": "#0061FF",
+      "color": "#F04DE0",
       "glyph": "ftp_server",
       "components": [
         "net.xnano.android.ftpserver.tv/net.xnano.android.ftpserver.MainActivity"
@@ -3732,7 +3736,7 @@
     {
       "name": "Full Episodes",
       "drawable": "fullepisodes",
-      "color": "#AAFF89",
+      "color": "#B6F23A",
       "glyph": "app_F",
       "mark": "FE",
       "components": [
@@ -3758,7 +3762,7 @@
     {
       "name": "Gain",
       "drawable": "gain",
-      "color": "#0061FF",
+      "color": "#3D8BFF",
       "glyph": "app_G",
       "mark": "GA",
       "components": [
@@ -3772,7 +3776,7 @@
     {
       "name": "Galaxy Play",
       "drawable": "galaxy_play",
-      "color": "#0061FF",
+      "color": "#FF4D4D",
       "glyph": "app_G",
       "mark": "GP",
       "components": [
@@ -3786,7 +3790,7 @@
     {
       "name": "Gallery 3D",
       "drawable": "gallery3d",
-      "color": "#53FC18",
+      "color": "#1FD19A",
       "glyph": "app_G",
       "mark": "G3",
       "components": [
@@ -3799,7 +3803,7 @@
     {
       "name": "Game Launcher",
       "drawable": "gamelauncher",
-      "color": "#0061FF",
+      "color": "#C95CFF",
       "glyph": "gamelauncher_mark",
       "components": [
         "com.radikal.gamelauncher/com.radikal.gamelauncher.MainActivity"
@@ -3811,7 +3815,7 @@
     {
       "name": "Gb News",
       "drawable": "gb_news",
-      "color": "#0061FF",
+      "color": "#FFE14D",
       "glyph": "app_G",
       "mark": "GN",
       "components": [
@@ -3837,7 +3841,7 @@
     {
       "name": "GenPlay",
       "drawable": "genplay",
-      "color": "#53FC18",
+      "color": "#4FACFE",
       "glyph": "app_G",
       "mark": "GE",
       "components": [
@@ -3850,7 +3854,7 @@
     {
       "name": "Get Icon",
       "drawable": "get_icon",
-      "color": "#FF0000",
+      "color": "#E6EDF3",
       "glyph": "app_G",
       "mark": "GI",
       "components": [
@@ -3864,7 +3868,7 @@
     {
       "name": "Getflix VPN",
       "drawable": "digiport",
-      "color": "#0061FF",
+      "color": "#34EB7A",
       "glyph": "vpn_G",
       "mark": "GV",
       "components": [
@@ -3894,7 +3898,7 @@
     {
       "name": "Global TV",
       "drawable": "global_tv",
-      "color": "#53FC18",
+      "color": "#A366FF",
       "glyph": "app_G",
       "mark": "GT",
       "components": [
@@ -3908,7 +3912,7 @@
     {
       "name": "Globoplay",
       "drawable": "globotv",
-      "color": "#0061FF",
+      "color": "#FFB020",
       "glyph": "globoplay_mark",
       "components": [
         "com.globo.globotv/com.globo.globotv.splashtv.SplashActivity"
@@ -3920,7 +3924,7 @@
     {
       "name": "Go3",
       "drawable": "go3",
-      "color": "#FF0000",
+      "color": "#00D4FF",
       "glyph": "app_G",
       "mark": "GO",
       "components": [
@@ -3934,7 +3938,7 @@
     {
       "name": "Good Tools",
       "drawable": "goodtoolapps",
-      "color": "#0061FF",
+      "color": "#FF5CA8",
       "glyph": "toolbox",
       "components": [
         "com.goodtoolapps.zeus/com.goodtoolapps.zeus.MainActivity"
@@ -3983,7 +3987,7 @@
     {
       "name": "GoPlay",
       "drawable": "goplay",
-      "color": "#FFFFFF",
+      "color": "#53FC18",
       "glyph": "app_G",
       "mark": "GO",
       "components": [
@@ -3996,7 +4000,7 @@
     {
       "name": "Gotham Sports",
       "drawable": "gothamsports",
-      "color": "#0061FF",
+      "color": "#7C74FF",
       "glyph": "gotham_mark",
       "components": [
         "com.gothamsports.gotham.tv/com.game.tv.TVMainActivity"
@@ -4008,7 +4012,7 @@
     {
       "name": "Great American Pure Flix",
       "drawable": "great",
-      "color": "#FFFFFF",
+      "color": "#FF7A2E",
       "glyph": "app_G",
       "mark": "GA",
       "components": [
@@ -4021,7 +4025,7 @@
     {
       "name": "GT Share",
       "drawable": "gtshare",
-      "color": "#FEC500",
+      "color": "#19D3C5",
       "glyph": "app_G",
       "mark": "GS",
       "components": [
@@ -4034,7 +4038,7 @@
     {
       "name": "GuidePlus",
       "drawable": "guideplus",
-      "color": "#FEC500",
+      "color": "#F04DE0",
       "glyph": "app_G",
       "mark": "GU",
       "components": [
@@ -4047,7 +4051,7 @@
     {
       "name": "Gymondo",
       "drawable": "gymondo",
-      "color": "#107534",
+      "color": "#B6F23A",
       "glyph": "app_G",
       "mark": "GY",
       "components": [
@@ -4073,7 +4077,7 @@
     {
       "name": "Haystack News",
       "drawable": "haystack",
-      "color": "#53FC18",
+      "color": "#3D8BFF",
       "glyph": "app_H",
       "mark": "HN",
       "components": [
@@ -4099,7 +4103,7 @@
     {
       "name": "Hd Streamz",
       "drawable": "hd_streamz",
-      "color": "#0061FF",
+      "color": "#FF4D4D",
       "glyph": "hdstreamz_mark",
       "components": [
         "insure.cable.estate/com.android.vending.a.UI",
@@ -4113,7 +4117,7 @@
     {
       "name": "Hdhomerun",
       "drawable": "hdhomerun",
-      "color": "#7B2BFC",
+      "color": "#1FD19A",
       "glyph": "app_H",
       "mark": "HD",
       "components": [
@@ -4127,7 +4131,7 @@
     {
       "name": "HDMI Source",
       "drawable": "hdmi_source",
-      "color": "#00D4FF",
+      "color": "#C95CFF",
       "glyph": "hdmi_connector",
       "components": [
         "com.spocky.projengmenu/.activities.input.SourceHDMI1Activity",
@@ -4158,7 +4162,7 @@
     {
       "name": "Hdo Box",
       "drawable": "hdo_box",
-      "color": "#FDCB58",
+      "color": "#FFE14D",
       "glyph": "app_H",
       "mark": "HB",
       "components": [
@@ -4172,7 +4176,7 @@
     {
       "name": "HDRezka",
       "drawable": "falcofemoralis",
-      "color": "#00F5D4",
+      "color": "#4FACFE",
       "glyph": "app_H",
       "mark": "HD",
       "components": [
@@ -4185,7 +4189,7 @@
     {
       "name": "Hdtv Player",
       "drawable": "hdtv_player",
-      "color": "#F15BB5",
+      "color": "#E6EDF3",
       "glyph": "broadcast_H",
       "mark": "HP",
       "components": [
@@ -4200,7 +4204,7 @@
     {
       "name": "HEI Network",
       "drawable": "heinetworktv",
-      "color": "#0061FF",
+      "color": "#34EB7A",
       "glyph": "app_H",
       "mark": "HN",
       "components": [
@@ -4213,7 +4217,7 @@
     {
       "name": "HGTV",
       "drawable": "watcher",
-      "color": "#1E811F",
+      "color": "#A366FF",
       "glyph": "film_H",
       "mark": "HG",
       "components": [
@@ -4246,7 +4250,7 @@
     {
       "name": "Hideme",
       "drawable": "hideme",
-      "color": "#53FC18",
+      "color": "#FFB020",
       "glyph": "app_H",
       "mark": "HI",
       "components": [
@@ -4260,7 +4264,7 @@
     {
       "name": "Hidive",
       "drawable": "hidive",
-      "color": "#0061FF",
+      "color": "#00D4FF",
       "glyph": "app_H",
       "mark": "HI",
       "components": [
@@ -4274,7 +4278,7 @@
     {
       "name": "Hippos",
       "drawable": "livingwithhippos",
-      "color": "#FFFFFF",
+      "color": "#FF5CA8",
       "glyph": "app_H",
       "mark": "HI",
       "components": [
@@ -4287,7 +4291,7 @@
     {
       "name": "HISTORY",
       "drawable": "androidtv_4",
-      "color": "#0061FF",
+      "color": "#53FC18",
       "glyph": "history_h",
       "components": [
         "com.aetn.history.watch.androidtv/com.aetn.android.tveapps.app.MainActivity"
@@ -4299,7 +4303,7 @@
     {
       "name": "History Hit",
       "drawable": "historyhit",
-      "color": "#53FC18",
+      "color": "#7C74FF",
       "glyph": "history_h",
       "components": [
         "com.historyhit/tv.vhx.tv.home.TvHomeActivity"
@@ -4311,20 +4315,21 @@
     {
       "name": "Hoichoi",
       "drawable": "hoichoi",
-      "color": "#0061FF",
-      "glyph": "youku_mark",
+      "color": "#FF7A2E",
+      "glyph": "app_H",
       "components": [
         "com.viewlift.hoichoi/com.viewlift.hoichoi.ui.splash.MainActivity"
       ],
       "category": "APP",
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_reviewed": null,
+      "mark": "HO"
     },
     {
       "name": "Home Automation TV Dashboard",
       "drawable": "home_automation_tv_dashboard",
-      "color": "#AAFF89",
+      "color": "#19D3C5",
       "glyph": "app_H",
       "mark": "HA",
       "components": [
@@ -4350,7 +4355,7 @@
     {
       "name": "Home Workout",
       "drawable": "home_workout",
-      "color": "#0061FF",
+      "color": "#F04DE0",
       "glyph": "sport_H",
       "mark": "HW",
       "components": [
@@ -4392,7 +4397,7 @@
     {
       "name": "Hrti",
       "drawable": "hrti",
-      "color": "#53FC18",
+      "color": "#B6F23A",
       "glyph": "app_H",
       "mark": "HR",
       "components": [
@@ -4406,7 +4411,7 @@
     {
       "name": "Hubitat",
       "drawable": "jpage4500",
-      "color": "#FF0000",
+      "color": "#3D8BFF",
       "glyph": "app_H",
       "mark": "HU",
       "components": [
@@ -4419,7 +4424,7 @@
     {
       "name": "Hue Shortcuts",
       "drawable": "hueshortcuts",
-      "color": "#FFFFFF",
+      "color": "#FF4D4D",
       "glyph": "app_H",
       "mark": "HS",
       "components": [
@@ -4432,7 +4437,7 @@
     {
       "name": "Hueessentials",
       "drawable": "hueessentials",
-      "color": "#FEC500",
+      "color": "#1FD19A",
       "glyph": "app_H",
       "mark": "HU",
       "components": [
@@ -4472,7 +4477,7 @@
     {
       "name": "Hyperspin",
       "drawable": "hyperspin",
-      "color": "#0061FF",
+      "color": "#C95CFF",
       "glyph": "gaming_H",
       "mark": "HY",
       "components": [
@@ -4486,7 +4491,7 @@
     {
       "name": "IB Player",
       "drawable": "ib",
-      "color": "#0061FF",
+      "color": "#FFE14D",
       "glyph": "app_I",
       "mark": "IP",
       "components": [
@@ -4499,7 +4504,7 @@
     {
       "name": "Ici Tou TV",
       "drawable": "ici_tou_tv",
-      "color": "#53FC18",
+      "color": "#4FACFE",
       "glyph": "app_I",
       "mark": "ITT",
       "components": [
@@ -4514,7 +4519,7 @@
     {
       "name": "Iflix",
       "drawable": "iflix",
-      "color": "#0061FF",
+      "color": "#E6EDF3",
       "glyph": "iflix_mark",
       "components": [
         "iflix.play/com.ktcp.video.activity.HomeActivity"
@@ -4527,7 +4532,7 @@
     {
       "name": "Ignite TV",
       "drawable": "ignitetv",
-      "color": "#FF0000",
+      "color": "#34EB7A",
       "glyph": "app_I",
       "mark": "IT",
       "components": [
@@ -4552,7 +4557,7 @@
     {
       "name": "Immich TV",
       "drawable": "immich_tv",
-      "color": "#FFFFFF",
+      "color": "#A366FF",
       "glyph": "app_I",
       "mark": "IT",
       "components": [
@@ -4566,7 +4571,7 @@
     {
       "name": "iMPlayer",
       "drawable": "myiptvonline",
-      "color": "#FEC500",
+      "color": "#FFB020",
       "glyph": "broadcast_I",
       "mark": "IM",
       "components": [
@@ -4592,7 +4597,7 @@
     {
       "name": "InstantBits",
       "drawable": "instantbits",
-      "color": "#107534",
+      "color": "#00D4FF",
       "glyph": "app_I",
       "mark": "IN",
       "components": [
@@ -4605,7 +4610,7 @@
     {
       "name": "Ip Address",
       "drawable": "ip_address",
-      "color": "#0061FF",
+      "color": "#FF5CA8",
       "glyph": "ip_tag",
       "components": [
         "net.info.az/net.info.az.SplashActivity"
@@ -4619,7 +4624,7 @@
     {
       "name": "IP Tools",
       "drawable": "iptools",
-      "color": "#0061FF",
+      "color": "#53FC18",
       "glyph": "ip_globe",
       "components": [
         "com.ddm.iptools/com.ddm.iptools.ui.MainActivity"
@@ -4632,7 +4637,7 @@
     {
       "name": "IPTV Extreme Pro",
       "drawable": "iptvextremepro",
-      "color": "#F15BB5",
+      "color": "#7C74FF",
       "glyph": "broadcast_I",
       "mark": "IEP",
       "components": [
@@ -4645,7 +4650,7 @@
     {
       "name": "IPTV Pro",
       "drawable": "iptv_pro",
-      "color": "#1982C4",
+      "color": "#FF7A2E",
       "glyph": "broadcast_I",
       "mark": "IP",
       "components": [
@@ -4671,7 +4676,7 @@
     {
       "name": "IPTV Smarters Plus",
       "drawable": "iptv_smarters_plus",
-      "color": "#53FC18",
+      "color": "#19D3C5",
       "glyph": "iptv_smarters",
       "components": [
         "iptv.smarters.plus/flix.pro.player.SplashActivity"
@@ -4684,7 +4689,7 @@
     {
       "name": "IPTV3u",
       "drawable": "iptv3u",
-      "color": "#00F5D4",
+      "color": "#F04DE0",
       "glyph": "broadcast_I",
       "mark": "IP",
       "components": [
@@ -4709,7 +4714,7 @@
     {
       "name": "iQIYI",
       "drawable": "iqiyi",
-      "color": "#0061FF",
+      "color": "#B6F23A",
       "glyph": "iqiyi_q",
       "components": [
         "com.iqiyi.i18n.tv/com.iqiyi.i18n.tv.launch.LaunchActivity"
@@ -4733,7 +4738,7 @@
     {
       "name": "Ivysiilani",
       "drawable": "ivysiilani",
-      "color": "#AAFF89",
+      "color": "#3D8BFF",
       "glyph": "app_I",
       "mark": "IV",
       "components": [
@@ -4765,7 +4770,7 @@
     {
       "name": "Jawwy TV",
       "drawable": "intigral",
-      "color": "#0061FF",
+      "color": "#FF4D4D",
       "glyph": "app_J",
       "mark": "JT",
       "components": [
@@ -4779,7 +4784,7 @@
     {
       "name": "Jawwy TV",
       "drawable": "jawwy_tv",
-      "color": "#0061FF",
+      "color": "#FF4D4D",
       "glyph": "app_J",
       "mark": "JT",
       "components": [
@@ -4810,7 +4815,7 @@
     {
       "name": "Jellyfin Enhanced",
       "drawable": "enhanced",
-      "color": "#107534",
+      "color": "#1FD19A",
       "glyph": "app_E",
       "mark": "JE",
       "components": [
@@ -4823,7 +4828,7 @@
     {
       "name": "Jio TV Plus",
       "drawable": "jiotvplus",
-      "color": "#FF0000",
+      "color": "#C95CFF",
       "glyph": "app_J",
       "mark": "JT",
       "components": [
@@ -4836,7 +4841,7 @@
     {
       "name": "Jiohotstar",
       "drawable": "jiohotstar",
-      "color": "#0061FF",
+      "color": "#FFE14D",
       "glyph": "hotstar_spark",
       "components": [
         "in.startv.hotstar/com.hotstar.MainActivity"
@@ -4850,7 +4855,7 @@
     {
       "name": "Jojoy",
       "drawable": "reddish",
-      "color": "#0061FF",
+      "color": "#4FACFE",
       "glyph": "app_J",
       "mark": "JO",
       "components": [
@@ -4864,7 +4869,7 @@
     {
       "name": "Joyn",
       "drawable": "joyn",
-      "color": "#53FC18",
+      "color": "#E6EDF3",
       "glyph": "app_J",
       "mark": "JOYN",
       "mark_style": "lower",
@@ -4880,7 +4885,7 @@
     {
       "name": "Jtv Go Server",
       "drawable": "jtv_go_server",
-      "color": "#0061FF",
+      "color": "#34EB7A",
       "glyph": "server_play",
       "components": [
         "com.skylake.skytv.jgorunner/com.skylake.skytv.jgorunner.Default"
@@ -4919,7 +4924,7 @@
     {
       "name": "Juuno",
       "drawable": "juuno",
-      "color": "#FFFFFF",
+      "color": "#A366FF",
       "glyph": "app_J",
       "mark": "JU",
       "components": [
@@ -4933,7 +4938,7 @@
     {
       "name": "K+",
       "drawable": "irdeto",
-      "color": "#7B2BFC",
+      "color": "#FFB020",
       "glyph": "app_K",
       "components": [
         "com.irdeto.kplus/tv.solocoo.htmlapp.FullscreenActivity"
@@ -4945,7 +4950,7 @@
     {
       "name": "Kamal TV",
       "drawable": "androidtv_7",
-      "color": "#53FC18",
+      "color": "#00D4FF",
       "glyph": "app_K",
       "mark": "KT",
       "components": [
@@ -4970,7 +4975,7 @@
     {
       "name": "Karaoke",
       "drawable": "kfandroid",
-      "color": "#0061FF",
+      "color": "#FF5CA8",
       "glyph": "app_K",
       "mark": "KA",
       "components": [
@@ -5002,7 +5007,7 @@
     {
       "name": "KDE Connect",
       "drawable": "kde_connect",
-      "color": "#0061FF",
+      "color": "#53FC18",
       "glyph": "kde_mark",
       "components": [
         "org.kde.kdeconnect_tp/org.kde.kdeconnect.UserInterface.MainActivity"
@@ -5015,7 +5020,7 @@
     {
       "name": "Kemo IPTV",
       "drawable": "kemo_iptv",
-      "color": "#00D4FF",
+      "color": "#7C74FF",
       "glyph": "broadcast_K",
       "mark": "KI",
       "components": [
@@ -5029,7 +5034,7 @@
     {
       "name": "Kemo Stream",
       "drawable": "streamingkemo",
-      "color": "#53FC18",
+      "color": "#FF7A2E",
       "glyph": "broadcast_S",
       "mark": "KS",
       "components": [
@@ -5042,7 +5047,7 @@
     {
       "name": "Kennytv",
       "drawable": "kennytv",
-      "color": "#53FC18",
+      "color": "#19D3C5",
       "glyph": "app_K",
       "mark": "KE",
       "components": [
@@ -5056,7 +5061,7 @@
     {
       "name": "Kernel Media",
       "drawable": "kernelmedia",
-      "color": "#F472B6",
+      "color": "#F04DE0",
       "glyph": "app_K",
       "mark": "KM",
       "components": [
@@ -5082,7 +5087,7 @@
     {
       "name": "Kijk",
       "drawable": "kijk",
-      "color": "#FF0000",
+      "color": "#B6F23A",
       "glyph": "app_K",
       "mark": "KI",
       "components": [
@@ -5096,7 +5101,7 @@
     {
       "name": "Kika",
       "drawable": "kika",
-      "color": "#107534",
+      "color": "#3D8BFF",
       "glyph": "app_K",
       "mark": "KI",
       "components": [
@@ -5125,7 +5130,7 @@
     {
       "name": "Knowledge Network",
       "drawable": "knowledge",
-      "color": "#0061FF",
+      "color": "#FF4D4D",
       "glyph": "app_K",
       "mark": "KN",
       "components": [
@@ -5139,7 +5144,7 @@
     {
       "name": "Kocowa",
       "drawable": "kocowa",
-      "color": "#0061FF",
+      "color": "#1FD19A",
       "glyph": "kocowa_mark",
       "components": [
         "com.kocowa.android.tv/com.kocowa.base.a_view.launcher.LauncherActivity"
@@ -5180,7 +5185,7 @@
     {
       "name": "KPN",
       "drawable": "kpnandroidtv",
-      "color": "#FFFFFF",
+      "color": "#C95CFF",
       "glyph": "app_K",
       "mark": "KP",
       "components": [
@@ -5193,7 +5198,7 @@
     {
       "name": "Kreate",
       "drawable": "kreate",
-      "color": "#0061FF",
+      "color": "#FFE14D",
       "glyph": "app_K",
       "mark": "KR",
       "components": [
@@ -5207,7 +5212,7 @@
     {
       "name": "Kuku TV",
       "drawable": "kuku_tv",
-      "color": "#FEE440",
+      "color": "#4FACFE",
       "glyph": "app_K",
       "mark": "KT",
       "components": [
@@ -5221,7 +5226,7 @@
     {
       "name": "L Equipe",
       "drawable": "l_equipe",
-      "color": "#0061FF",
+      "color": "#E6EDF3",
       "glyph": "app_L",
       "mark": "LE",
       "components": [
@@ -5247,7 +5252,7 @@
     {
       "name": "Laliga",
       "drawable": "laliga",
-      "color": "#0061FF",
+      "color": "#34EB7A",
       "glyph": "laliga_mark",
       "components": [
         "la.liga.sports.tv.deporte/la.liga.sports.tv.deporte.features.splash.TvSplashActivity"
@@ -5260,7 +5265,7 @@
     {
       "name": "Lampa",
       "drawable": "lampa",
-      "color": "#0061FF",
+      "color": "#A366FF",
       "glyph": "app_L",
       "mark": "LA",
       "components": [
@@ -5274,7 +5279,7 @@
     {
       "name": "Laugh After Dark",
       "drawable": "laughafterdark",
-      "color": "#53FC18",
+      "color": "#FFB020",
       "glyph": "app_L",
       "mark": "LA",
       "components": [
@@ -5287,7 +5292,7 @@
     {
       "name": "Launch Sounds",
       "drawable": "launchsounds",
-      "color": "#0061FF",
+      "color": "#00D4FF",
       "glyph": "app_L",
       "mark": "LS",
       "components": [
@@ -5300,7 +5305,7 @@
     {
       "name": "Launchbox",
       "drawable": "launchbox",
-      "color": "#FF0000",
+      "color": "#FF5CA8",
       "glyph": "app_L",
       "mark": "LA",
       "components": [
@@ -5327,7 +5332,7 @@
       "name": "Launcher Manager",
       "drawable": "launcher_manager",
       "color": "#53FC18",
-      "glyph": "flauncher_mark",
+      "glyph": "tool_L",
       "components": [
         "com.wolf.lm/com.wolf.lm.main.MainActivity",
         "com.wolf.lms/com.wolf.lm.main.MainActivity",
@@ -5340,12 +5345,13 @@
       ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_reviewed": null,
+      "mark": "LM"
     },
     {
       "name": "Lazy IPTV Deluxe",
       "drawable": "lazyiptvdeluxe",
-      "color": "#53FC18",
+      "color": "#7C74FF",
       "glyph": "broadcast_L",
       "mark": "LID",
       "components": [
@@ -5358,7 +5364,7 @@
     {
       "name": "LazyCat",
       "drawable": "lazycatsoftware",
-      "color": "#FF0000",
+      "color": "#FF7A2E",
       "glyph": "app_L",
       "mark": "LA",
       "components": [
@@ -5383,7 +5389,7 @@
     {
       "name": "Leankeyboard",
       "drawable": "leankeyboard",
-      "color": "#0061FF",
+      "color": "#19D3C5",
       "glyph": "app_L",
       "mark": "LE",
       "components": [
@@ -5397,7 +5403,7 @@
     {
       "name": "Lemino",
       "drawable": "lemino",
-      "color": "#FFFFFF",
+      "color": "#F04DE0",
       "glyph": "app_L",
       "mark": "LE",
       "components": [
@@ -5411,7 +5417,7 @@
     {
       "name": "Lemuroid",
       "drawable": "lemuroid",
-      "color": "#53FC18",
+      "color": "#B6F23A",
       "glyph": "gaming_L",
       "mark": "LE",
       "components": [
@@ -5426,7 +5432,7 @@
     {
       "name": "Lifetime",
       "drawable": "androidtv_5",
-      "color": "#0061FF",
+      "color": "#3D8BFF",
       "glyph": "heart_play",
       "components": [
         "com.aetn.lifetime.watch.androidtv/com.aetn.android.tveapps.app.MainActivity"
@@ -5439,7 +5445,7 @@
     {
       "name": "Liga Portugal",
       "drawable": "ligaportugal",
-      "color": "#FEC500",
+      "color": "#FF4D4D",
       "glyph": "app_L",
       "mark": "LP",
       "components": [
@@ -5452,7 +5458,7 @@
     {
       "name": "Ligue 1+",
       "drawable": "ligueunpass",
-      "color": "#FFFFFF",
+      "color": "#1FD19A",
       "glyph": "app_L",
       "mark": "L1",
       "components": [
@@ -5465,7 +5471,7 @@
     {
       "name": "Live Channels",
       "drawable": "tv",
-      "color": "#FEC500",
+      "color": "#C95CFF",
       "glyph": "app_L",
       "mark": "LC",
       "components": [
@@ -5509,7 +5515,7 @@
     {
       "name": "Liverpool FC",
       "drawable": "liverpoolfc",
-      "color": "#107534",
+      "color": "#FFE14D",
       "glyph": "app_L",
       "mark": "LF",
       "components": [
@@ -5522,7 +5528,7 @@
     {
       "name": "Localnow",
       "drawable": "localnow",
-      "color": "#53FC18",
+      "color": "#4FACFE",
       "glyph": "app_L",
       "mark": "LO",
       "components": [
@@ -5536,7 +5542,7 @@
     {
       "name": "Locals Google TV",
       "drawable": "googletv",
-      "color": "#0061FF",
+      "color": "#E6EDF3",
       "glyph": "gt_tv",
       "components": [
         "com.locals.googletv/com.aloteq.flutter_tv.MainActivity"
@@ -5561,7 +5567,7 @@
     {
       "name": "Loco",
       "drawable": "loco",
-      "color": "#107534",
+      "color": "#34EB7A",
       "glyph": "app_L",
       "mark": "LO",
       "components": [
@@ -5575,7 +5581,7 @@
     {
       "name": "Lrt",
       "drawable": "lrt",
-      "color": "#F15BB5",
+      "color": "#A366FF",
       "glyph": "app_L",
       "mark": "LR",
       "components": [
@@ -5601,7 +5607,7 @@
     {
       "name": "M3u IPTV",
       "drawable": "m3u_iptv",
-      "color": "#0061FF",
+      "color": "#FFB020",
       "glyph": "broadcast_M",
       "mark": "MI",
       "components": [
@@ -5616,7 +5622,7 @@
     {
       "name": "M6 Plus",
       "drawable": "m6_plus",
-      "color": "#53FC18",
+      "color": "#00D4FF",
       "glyph": "app_M",
       "mark": "MP",
       "components": [
@@ -5630,7 +5636,7 @@
     {
       "name": "M64plus Fz",
       "drawable": "m64plus_fz",
-      "color": "#53FC18",
+      "color": "#FF5CA8",
       "glyph": "app_M",
       "mark": "MF",
       "components": [
@@ -5644,7 +5650,7 @@
     {
       "name": "MagellanTV",
       "drawable": "magellantv",
-      "color": "#FF0000",
+      "color": "#53FC18",
       "glyph": "app_M",
       "mark": "MA",
       "components": [
@@ -5671,7 +5677,7 @@
     {
       "name": "Magenta TV",
       "drawable": "magenta_tv",
-      "color": "#FFFFFF",
+      "color": "#7C74FF",
       "glyph": "app_M",
       "mark": "MT",
       "components": [
@@ -5686,7 +5692,7 @@
     {
       "name": "Magio TV",
       "drawable": "magio_tv",
-      "color": "#FEC500",
+      "color": "#FF7A2E",
       "glyph": "app_M",
       "mark": "MT",
       "components": [
@@ -5700,7 +5706,7 @@
     {
       "name": "Mame4droid",
       "drawable": "mame4droid",
-      "color": "#0061FF",
+      "color": "#19D3C5",
       "glyph": "gaming_M",
       "mark": "MA",
       "components": [
@@ -5714,7 +5720,7 @@
     {
       "name": "Mango TV",
       "drawable": "intl",
-      "color": "#107534",
+      "color": "#F04DE0",
       "glyph": "app_M",
       "mark": "MT",
       "components": [
@@ -5744,7 +5750,7 @@
     {
       "name": "Matvt Mouse For Android TV Toggle",
       "drawable": "matvt_mouse_for_android_tv_toggle",
-      "color": "#0061FF",
+      "color": "#B6F23A",
       "glyph": "cursor_mark",
       "components": [
         "io.github.virresh.matvt/io.github.virresh.matvt.gui.GuiActivity"
@@ -5774,7 +5780,7 @@
     {
       "name": "Maz TV",
       "drawable": "combo2254",
-      "color": "#F15BB5",
+      "color": "#3D8BFF",
       "glyph": "app_M",
       "mark": "MT",
       "components": [
@@ -5787,7 +5793,7 @@
     {
       "name": "Maz TV 2",
       "drawable": "combo3403",
-      "color": "#1982C4",
+      "color": "#FF4D4D",
       "glyph": "app_M",
       "mark": "MT",
       "components": [
@@ -5800,7 +5806,7 @@
     {
       "name": "Maz TV 3",
       "drawable": "combo3578",
-      "color": "#00F5D4",
+      "color": "#1FD19A",
       "glyph": "app_M",
       "mark": "MT",
       "components": [
@@ -5813,7 +5819,7 @@
     {
       "name": "Maz TVOD",
       "drawable": "tvod169",
-      "color": "#53FC18",
+      "color": "#C95CFF",
       "glyph": "app_T",
       "mark": "MT",
       "components": [
@@ -5840,7 +5846,7 @@
     {
       "name": "Mecool File Manager",
       "drawable": "mecool_file_manager",
-      "color": "#0061FF",
+      "color": "#FFE14D",
       "glyph": "folder_grid",
       "components": [
         "com.tvonline.filewizard/com.tvonline.filewizard.ui.MainActivity"
@@ -5854,7 +5860,7 @@
     {
       "name": "Media Browser",
       "drawable": "mediabrowser",
-      "color": "#53FC18",
+      "color": "#E6EDF3",
       "glyph": "browser_globe2",
       "components": [
         "com.cmpsoft.MediaBrowser/com.cmpsoft.MediaBrowser.SplashScreenActivity"
@@ -5866,7 +5872,7 @@
     {
       "name": "Media Hub",
       "drawable": "utility",
-      "color": "#AAFF89",
+      "color": "#A366FF",
       "glyph": "app_M",
       "mark": "MH",
       "components": [
@@ -5879,7 +5885,7 @@
     {
       "name": "Mediaset Infinity TV",
       "drawable": "mediaset_infinity_tv",
-      "color": "#C41A3B",
+      "color": "#FFB020",
       "glyph": "app_M",
       "mark": "MIT",
       "components": [
@@ -5893,7 +5899,7 @@
     {
       "name": "MEGOGO",
       "drawable": "application",
-      "color": "#0061FF",
+      "color": "#00D4FF",
       "glyph": "megogo_mark",
       "components": [
         "com.megogo.application/net.megogo.tv.main.MainActivity"
@@ -5905,7 +5911,7 @@
     {
       "name": "MEO",
       "drawable": "alticelabs",
-      "color": "#FF9800",
+      "color": "#FF5CA8",
       "glyph": "app_M",
       "mark": "ME",
       "components": [
@@ -5918,7 +5924,7 @@
     {
       "name": "Mercado Play",
       "drawable": "mercado_play",
-      "color": "#F4842D",
+      "color": "#53FC18",
       "glyph": "app_M",
       "mark": "MP",
       "components": [
@@ -5945,7 +5951,7 @@
     {
       "name": "Mewatch",
       "drawable": "mewatch",
-      "color": "#D2BCFD",
+      "color": "#7C74FF",
       "glyph": "app_M",
       "mark": "ME",
       "components": [
@@ -5973,7 +5979,7 @@
     {
       "name": "MGS TV",
       "drawable": "mgstv",
-      "color": "#008080",
+      "color": "#19D3C5",
       "glyph": "app_M",
       "mark": "MT",
       "components": [
@@ -5999,7 +6005,7 @@
     {
       "name": "Mi TV Plus",
       "drawable": "mitvplus",
-      "color": "#0061FF",
+      "color": "#F04DE0",
       "glyph": "mitv_mark",
       "components": [
         "com.mitv.tvhome.mitvplus/com.mitv.tvhome.mitvplus.app.BannerLogoFree24"
@@ -6011,7 +6017,7 @@
     {
       "name": "Miracast",
       "drawable": "miracast",
-      "color": "#0061FF",
+      "color": "#B6F23A",
       "glyph": "app_M",
       "mark": "MI",
       "components": [
@@ -6025,7 +6031,7 @@
     {
       "name": "MiXplorer",
       "drawable": "mixplorer",
-      "color": "#FF0000",
+      "color": "#3D8BFF",
       "glyph": "folder",
       "components": [
         "com.mixplorer.silver/com.mixplorer.activities.BrowseActivity",
@@ -6052,7 +6058,7 @@
     {
       "name": "Mo 4media",
       "drawable": "mo_4media",
-      "color": "#A238FF",
+      "color": "#FF4D4D",
       "glyph": "app_M",
       "mark": "M4",
       "components": [
@@ -6067,7 +6073,7 @@
     {
       "name": "Mobily TV",
       "drawable": "mobily",
-      "color": "#00D4FF",
+      "color": "#FFE14D",
       "glyph": "app_M",
       "mark": "MT",
       "components": [
@@ -6080,7 +6086,7 @@
     {
       "name": "Molotov TV",
       "drawable": "molotov_tv",
-      "color": "#0061FF",
+      "color": "#4FACFE",
       "glyph": "molotov_mark",
       "components": [
         "tv.molotov.app/tv.molotov.android.splash.SplashActivity"
@@ -6106,7 +6112,7 @@
     {
       "name": "Monplayer",
       "drawable": "monplayer",
-      "color": "#00F5D4",
+      "color": "#E6EDF3",
       "glyph": "iptv_player",
       "components": [
         "org.monplayer.mpapp/org.monplayer.mpapp.MainActivity"
@@ -6119,7 +6125,7 @@
     {
       "name": "Moonfin",
       "drawable": "moonfin",
-      "color": "#00E5FF",
+      "color": "#34EB7A",
       "glyph": "app_M",
       "mark": "MO",
       "components": [
@@ -6158,7 +6164,7 @@
     {
       "name": "MotoGP",
       "drawable": "officialmotogp",
-      "color": "#0061FF",
+      "color": "#A366FF",
       "glyph": "motogp_swoosh",
       "components": [
         "com.dorna.officialmotogp/com.dorna.motogpapp.ui.view.tv.splash.SplashTVActivity"
@@ -6170,7 +6176,7 @@
     {
       "name": "Movideo",
       "drawable": "whitelabel",
-      "color": "#9E9E9E",
+      "color": "#FFB020",
       "glyph": "app_M",
       "mark": "MO",
       "components": [
@@ -6183,19 +6189,20 @@
     {
       "name": "Movie HD",
       "drawable": "moviehd",
-      "color": "#0061FF",
-      "glyph": "pureflix_mark",
+      "color": "#00D4FF",
+      "glyph": "broadcast_M",
       "components": [
         "com.ggateam.moviehd.ui/com.ggateam.moviehd.ui.FrmSplash"
       ],
       "category": "STREAM",
       "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_reviewed": null,
+      "mark": "MH"
     },
     {
       "name": "Movieark",
       "drawable": "movieark",
-      "color": "#0061FF",
+      "color": "#FF5CA8",
       "glyph": "app_M",
       "mark": "MO",
       "components": [
@@ -6209,7 +6216,7 @@
     {
       "name": "MovieBox Pro",
       "drawable": "movieboxpro",
-      "color": "#0061FF",
+      "color": "#53FC18",
       "glyph": "movie_box",
       "components": [
         "com.movieboxpro.androidtv/com.movieboxpro.android.view.activity.SplashActivity"
@@ -6222,7 +6229,7 @@
     {
       "name": "MovieLab",
       "drawable": "movielab",
-      "color": "#0061FF",
+      "color": "#7C74FF",
       "glyph": "movie_lab",
       "components": [
         "com.movielab.tv/com.movielab.MainActivity"
@@ -6247,7 +6254,7 @@
     {
       "name": "Movies By Fawesome",
       "drawable": "moviesbyfawesomeandroidtv",
-      "color": "#0061FF",
+      "color": "#FF7A2E",
       "glyph": "star_play",
       "components": [
         "com.future.moviesByFawesomeAndroidTV/com.future.moviesByFawesomeAndroidTV.SplashActivity"
@@ -6260,7 +6267,7 @@
     {
       "name": "Movistar Plus",
       "drawable": "movistar_plus",
-      "color": "#76B900",
+      "color": "#19D3C5",
       "glyph": "app_M",
       "mark": "MP",
       "mark_style": "lower",
@@ -6289,7 +6296,7 @@
     {
       "name": "MSM Video",
       "drawable": "msmvideo",
-      "color": "#F5F500",
+      "color": "#F04DE0",
       "glyph": "app_M",
       "mark": "MV",
       "components": [
@@ -6302,7 +6309,7 @@
     {
       "name": "Mst3k",
       "drawable": "mst3k",
-      "color": "#D4A843",
+      "color": "#B6F23A",
       "glyph": "app_M",
       "mark": "MS",
       "components": [
@@ -6317,7 +6324,7 @@
     {
       "name": "Mtv Katsomo",
       "drawable": "mtv_katsomo",
-      "color": "#90BE6D",
+      "color": "#3D8BFF",
       "glyph": "app_M",
       "mark": "MK",
       "components": [
@@ -6359,7 +6366,7 @@
     {
       "name": "MUTV",
       "drawable": "manutd",
-      "color": "#7B2BFC",
+      "color": "#FF4D4D",
       "glyph": "app_M",
       "mark": "MU",
       "components": [
@@ -6387,7 +6394,7 @@
     {
       "name": "MX Player TV",
       "drawable": "videoplayer",
-      "color": "#0061FF",
+      "color": "#1FD19A",
       "glyph": "mxplayer_mark",
       "components": [
         "com.mxtech.videoplayer.television/com.mxtech.videoplayer.tv.home.HomeActivity"
@@ -6399,7 +6406,7 @@
     {
       "name": "My Family Cinema Player",
       "drawable": "my_family_cinema_player",
-      "color": "#FF4C98",
+      "color": "#C95CFF",
       "glyph": "iptv_player",
       "components": [
         "com.rxrv.myfamilycpfst/com.atvapps.ibo.MainActivity",
@@ -6413,7 +6420,7 @@
     {
       "name": "My5",
       "drawable": "channel5",
-      "color": "#2F7DED",
+      "color": "#FFE14D",
       "glyph": "app_M",
       "mark": "MY",
       "components": [
@@ -6426,7 +6433,7 @@
     {
       "name": "Myiptv",
       "drawable": "myiptv",
-      "color": "#00E676",
+      "color": "#4FACFE",
       "glyph": "broadcast_M",
       "mark": "MY",
       "components": [
@@ -6439,7 +6446,7 @@
     {
       "name": "MyRadar",
       "drawable": "myradar",
-      "color": "#EA4C2C",
+      "color": "#E6EDF3",
       "glyph": "app_M",
       "mark": "MY",
       "components": [
@@ -6452,7 +6459,7 @@
     {
       "name": "Mytvonline",
       "drawable": "mytvonline",
-      "color": "#FF0069",
+      "color": "#34EB7A",
       "glyph": "app_M",
       "mark": "MY",
       "components": [
@@ -6466,7 +6473,7 @@
     {
       "name": "Māori+",
       "drawable": "maoritelevision",
-      "color": "#53FC18",
+      "color": "#A366FF",
       "glyph": "maori_koru",
       "components": [
         "com.maoritelevision.newsapp/tv.accedo.xdk.app.MainActivity"
@@ -6479,7 +6486,7 @@
     {
       "name": "Namava",
       "drawable": "namava",
-      "color": "#53FC18",
+      "color": "#FFB020",
       "glyph": "app_N",
       "mark": "NA",
       "components": [
@@ -6587,7 +6594,7 @@
     {
       "name": "Netfly",
       "drawable": "netfly",
-      "color": "#FF0000",
+      "color": "#00D4FF",
       "glyph": "app_N",
       "mark": "NE",
       "components": [
@@ -6600,7 +6607,7 @@
     {
       "name": "Netfly TV",
       "drawable": "netfly_tv",
-      "color": "#7B2BFC",
+      "color": "#FF5CA8",
       "glyph": "app_N",
       "mark": "NT",
       "components": [
@@ -6614,7 +6621,7 @@
     {
       "name": "NetMirror",
       "drawable": "netmirror",
-      "color": "#7B2BFC",
+      "color": "#53FC18",
       "glyph": "app_N",
       "mark": "NE",
       "components": [
@@ -6640,7 +6647,7 @@
     {
       "name": "Nettv",
       "drawable": "nettv",
-      "color": "#FF0000",
+      "color": "#7C74FF",
       "glyph": "app_N",
       "mark": "NE",
       "components": [
@@ -6654,7 +6661,7 @@
     {
       "name": "Netzkino",
       "drawable": "netzkino",
-      "color": "#D2BCFD",
+      "color": "#FF7A2E",
       "glyph": "app_N",
       "mark": "NE",
       "components": [
@@ -6682,7 +6689,7 @@
     {
       "name": "Nextup Watch Stand Up Comedy",
       "drawable": "nextup_watch_stand_up_comedy",
-      "color": "#FF0000",
+      "color": "#F04DE0",
       "glyph": "comedy_mark",
       "components": [
         "tv.vhx.nextup/com.example.videoapp.MainActivity"
@@ -6695,7 +6702,7 @@
     {
       "name": "NFB",
       "drawable": "nitobi",
-      "color": "#F5F500",
+      "color": "#B6F23A",
       "glyph": "app_N",
       "mark": "NF",
       "components": [
@@ -6720,7 +6727,7 @@
     {
       "name": "Nfolio",
       "drawable": "nfolio",
-      "color": "#0061FF",
+      "color": "#3D8BFF",
       "glyph": "app_N",
       "mark": "NF",
       "components": [
@@ -6734,7 +6741,7 @@
     {
       "name": "Nhk Plus",
       "drawable": "nhk_plus",
-      "color": "#FDCB58",
+      "color": "#FF4D4D",
       "glyph": "app_N",
       "mark": "NP",
       "components": [
@@ -6748,7 +6755,7 @@
     {
       "name": "Nhk World Japan",
       "drawable": "nhk_world_japan",
-      "color": "#00F5D4",
+      "color": "#1FD19A",
       "glyph": "app_N",
       "mark": "NW",
       "components": [
@@ -6791,7 +6798,7 @@
     {
       "name": "Njpw World",
       "drawable": "njpw_world",
-      "color": "#FF4C98",
+      "color": "#C95CFF",
       "glyph": "app_N",
       "mark": "NW",
       "components": [
@@ -6805,7 +6812,7 @@
     {
       "name": "Nlziet",
       "drawable": "nlziet",
-      "color": "#F15BB5",
+      "color": "#FFE14D",
       "glyph": "app_N",
       "mark": "NL",
       "components": [
@@ -6835,7 +6842,7 @@
     {
       "name": "Noovo",
       "drawable": "noovo",
-      "color": "#1E811F",
+      "color": "#4FACFE",
       "glyph": "app_N",
       "mark": "NO",
       "components": [
@@ -6849,7 +6856,7 @@
     {
       "name": "Nordisk Film+",
       "drawable": "nordiskfilmplus",
-      "color": "#FFFFFF",
+      "color": "#E6EDF3",
       "glyph": "film_N",
       "mark": "NF",
       "components": [
@@ -6876,7 +6883,7 @@
     {
       "name": "Norton Clean",
       "drawable": "norton_clean",
-      "color": "#0061FF",
+      "color": "#34EB7A",
       "glyph": "norton_mark",
       "components": [
         "com.symantec.cleansweep/com.avast.android.cleaner.activity.StartActivity"
@@ -6889,7 +6896,7 @@
     {
       "name": "Nos",
       "drawable": "nos",
-      "color": "#AAFF89",
+      "color": "#A366FF",
       "glyph": "app_N",
       "mark": "NO",
       "components": [
@@ -6903,7 +6910,7 @@
     {
       "name": "Nostalgia TV",
       "drawable": "nostalgiatv",
-      "color": "#C41A3B",
+      "color": "#FFB020",
       "glyph": "app_N",
       "mark": "NT",
       "components": [
@@ -6916,7 +6923,7 @@
     {
       "name": "Notifications For Android TV",
       "drawable": "notifications_for_android_tv",
-      "color": "#0061FF",
+      "color": "#00D4FF",
       "glyph": "bell",
       "components": [
         "de.cyberdream.androidtv.notifications.google/de.cyberdream.androidtv.notifications.StartActivity",
@@ -6931,7 +6938,7 @@
     {
       "name": "Notubetv",
       "drawable": "notubetv",
-      "color": "#53FC18",
+      "color": "#FF5CA8",
       "glyph": "app_N",
       "mark": "NO",
       "components": [
@@ -6945,7 +6952,7 @@
     {
       "name": "Nova Video Player",
       "drawable": "nova_video_player",
-      "color": "#0061FF",
+      "color": "#53FC18",
       "glyph": "nova_play",
       "components": [
         "org.courville.nova/com.archos.mediacenter.video.leanback.MainActivityLeanback"
@@ -6972,7 +6979,7 @@
     {
       "name": "Nowo TV",
       "drawable": "nowo_tv",
-      "color": "#B388FF",
+      "color": "#7C74FF",
       "glyph": "app_N",
       "mark": "NT",
       "components": [
@@ -6986,7 +6993,7 @@
     {
       "name": "Npo Start",
       "drawable": "npo_start",
-      "color": "#008080",
+      "color": "#FF7A2E",
       "glyph": "app_N",
       "mark": "NS",
       "components": [
@@ -7000,7 +7007,7 @@
     {
       "name": "Nrk TV",
       "drawable": "nrk_tv",
-      "color": "#F5F500",
+      "color": "#19D3C5",
       "glyph": "app_N",
       "mark": "NT",
       "components": [
@@ -7015,15 +7022,16 @@
     {
       "name": "NT at Home",
       "drawable": "ntathome",
-      "color": "#53FC18",
-      "glyph": "mitv_mark",
+      "color": "#F04DE0",
+      "glyph": "app_N",
       "components": [
         "com.ntathome/tv.vhx.LauncherActivity",
         "com.ntathome/tv.vhx.tv.home.TvHomeActivity"
       ],
       "category": "LAUNCHER",
       "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_reviewed": null,
+      "mark": "NT"
     },
     {
       "name": "Nuvio TV",
@@ -7053,7 +7061,7 @@
     {
       "name": "NV Player",
       "drawable": "nvplayer",
-      "color": "#FA7D19",
+      "color": "#B6F23A",
       "glyph": "app_N",
       "mark": "NP",
       "components": [
@@ -7066,7 +7074,7 @@
     {
       "name": "Nxsha",
       "drawable": "nxsha",
-      "color": "#FF9800",
+      "color": "#3D8BFF",
       "glyph": "app_N",
       "mark": "NX",
       "components": [
@@ -7079,7 +7087,7 @@
     {
       "name": "NZR+",
       "drawable": "nzrplus",
-      "color": "#00D4FF",
+      "color": "#FF4D4D",
       "glyph": "app_N",
       "mark": "NZ",
       "components": [
@@ -7092,7 +7100,7 @@
     {
       "name": "Oblivion",
       "drawable": "oblivion",
-      "color": "#0061FF",
+      "color": "#1FD19A",
       "glyph": "app_O",
       "mark": "OB",
       "components": [
@@ -7120,7 +7128,7 @@
     {
       "name": "Ocean Streamz",
       "drawable": "ocean_streamz",
-      "color": "#0061FF",
+      "color": "#C95CFF",
       "glyph": "app_O",
       "mark": "OS",
       "components": [
@@ -7134,7 +7142,7 @@
     {
       "name": "Odidotv",
       "drawable": "odidotv",
-      "color": "#53FC18",
+      "color": "#FFE14D",
       "glyph": "app_O",
       "mark": "OD",
       "components": [
@@ -7148,7 +7156,7 @@
     {
       "name": "Offshore",
       "drawable": "offshore",
-      "color": "#FF0000",
+      "color": "#4FACFE",
       "glyph": "app_O",
       "mark": "OF",
       "components": [
@@ -7161,7 +7169,7 @@
     {
       "name": "Oilers+",
       "drawable": "oilers",
-      "color": "#0061FF",
+      "color": "#E6EDF3",
       "glyph": "app_O",
       "mark": "OI",
       "components": [
@@ -7174,7 +7182,7 @@
     {
       "name": "OK TV",
       "drawable": "oktv22",
-      "color": "#FFFFFF",
+      "color": "#34EB7A",
       "glyph": "broadcast_O",
       "mark": "OT",
       "components": [
@@ -7187,7 +7195,7 @@
     {
       "name": "Ok Video",
       "drawable": "ok_video",
-      "color": "#7B2BFC",
+      "color": "#A366FF",
       "glyph": "iptv_player",
       "components": [
         "ru.ok.androidtv/ru.ok.androidtv.activities.MainActivity"
@@ -7200,7 +7208,7 @@
     {
       "name": "Old Movies",
       "drawable": "oldmovies",
-      "color": "#0061FF",
+      "color": "#FFB020",
       "glyph": "projector",
       "components": [
         "com.acowboys.oldmovies/com.iart.chromecastapps.atv.ATVOnBoarding",
@@ -7214,7 +7222,7 @@
     {
       "name": "Omroep Brabant",
       "drawable": "appomroepbrabant",
-      "color": "#FEC500",
+      "color": "#00D4FF",
       "glyph": "app_O",
       "mark": "OB",
       "components": [
@@ -7227,7 +7235,7 @@
     {
       "name": "Ondamedia",
       "drawable": "ondamedia",
-      "color": "#107534",
+      "color": "#FF5CA8",
       "glyph": "app_O",
       "mark": "ON",
       "components": [
@@ -7240,7 +7248,7 @@
     {
       "name": "One Play",
       "drawable": "one_play",
-      "color": "#F15BB5",
+      "color": "#53FC18",
       "glyph": "app_O",
       "mark": "OP",
       "components": [
@@ -7254,7 +7262,7 @@
     {
       "name": "OnePix",
       "drawable": "onepixmedia",
-      "color": "#1982C4",
+      "color": "#7C74FF",
       "glyph": "app_O",
       "mark": "ON",
       "components": [
@@ -7267,7 +7275,7 @@
     {
       "name": "Onstream",
       "drawable": "maertsno",
-      "color": "#00F5D4",
+      "color": "#FF7A2E",
       "glyph": "app_O",
       "mark": "ON",
       "components": [
@@ -7280,7 +7288,7 @@
     {
       "name": "OnTV",
       "drawable": "andevapps",
-      "color": "#53FC18",
+      "color": "#19D3C5",
       "glyph": "app_O",
       "mark": "ON",
       "components": [
@@ -7306,7 +7314,7 @@
     {
       "name": "Opta / SIC",
       "drawable": "impresa",
-      "color": "#AAFF89",
+      "color": "#F04DE0",
       "glyph": "app_O",
       "mark": "OS",
       "components": [
@@ -7319,7 +7327,7 @@
     {
       "name": "Oqee By Free",
       "drawable": "oqee_by_free",
-      "color": "#FF0000",
+      "color": "#B6F23A",
       "glyph": "app_O",
       "mark": "OB",
       "components": [
@@ -7333,7 +7341,7 @@
     {
       "name": "Orange TV Go",
       "drawable": "orange_tv_go",
-      "color": "#C41A3B",
+      "color": "#3D8BFF",
       "glyph": "app_O",
       "mark": "OT",
       "components": [
@@ -7347,7 +7355,7 @@
     {
       "name": "ORF ON",
       "drawable": "orftvthek",
-      "color": "#FFFFFF",
+      "color": "#FF4D4D",
       "glyph": "app_O",
       "mark": "OO",
       "components": [
@@ -7360,7 +7368,7 @@
     {
       "name": "OSN+",
       "drawable": "osn",
-      "color": "#F4842D",
+      "color": "#1FD19A",
       "glyph": "app_O",
       "mark": "OS",
       "components": [
@@ -7373,7 +7381,7 @@
     {
       "name": "Otf TV",
       "drawable": "otf_tv",
-      "color": "#D2BCFD",
+      "color": "#C95CFF",
       "glyph": "app_O",
       "mark": "OT",
       "components": [
@@ -7387,7 +7395,7 @@
     {
       "name": "Ott Navigator",
       "drawable": "ott_navigator",
-      "color": "#0061FF",
+      "color": "#FFE14D",
       "glyph": "ott_navigator",
       "components": [
         "studio.scillarium.ottnavigator/studio.scillarium.ottnavigator.MainActivity"
@@ -7400,7 +7408,7 @@
     {
       "name": "OTTplay",
       "drawable": "ottplay",
-      "color": "#FEC500",
+      "color": "#E6EDF3",
       "glyph": "app_O",
       "mark": "OT",
       "components": [
@@ -7413,7 +7421,7 @@
     {
       "name": "Ottplayer",
       "drawable": "ottplayer",
-      "color": "#1E811F",
+      "color": "#34EB7A",
       "glyph": "iptv_player",
       "components": [
         "es.ottplayer.tv/es.ottplayer.tv.SplashActivity"
@@ -7426,7 +7434,7 @@
     {
       "name": "Overseas App Store",
       "drawable": "appstore",
-      "color": "#0061FF",
+      "color": "#A366FF",
       "glyph": "store_globe",
       "components": [
         "com.overseas.store.appstore/com.overseas.store.appstore.ui.SplashActivity"
@@ -7451,7 +7459,7 @@
     {
       "name": "Pac Man 256",
       "drawable": "pac_man_256",
-      "color": "#0061FF",
+      "color": "#FFB020",
       "glyph": "pacman_mark",
       "components": [
         "eu.bandainamcoent.pacman256/com.unity3d.player.UnityPlayerActivity"
@@ -7464,7 +7472,7 @@
     {
       "name": "Package Explorer",
       "drawable": "package_explorer",
-      "color": "#0061FF",
+      "color": "#00D4FF",
       "glyph": "package_find",
       "components": [
         "com.yugandhar_kumar.packageexplorer/com.yugandhar_kumar.packageexplorer.applist.AppListActivity"
@@ -7478,7 +7486,7 @@
     {
       "name": "Panda Plus",
       "drawable": "panda_plus",
-      "color": "#0061FF",
+      "color": "#FF5CA8",
       "glyph": "app_P",
       "mark": "PP",
       "components": [
@@ -7504,7 +7512,7 @@
     {
       "name": "Pano Scrobbler",
       "drawable": "scrobble",
-      "color": "#0061FF",
+      "color": "#53FC18",
       "glyph": "app_S",
       "mark": "PS",
       "components": [
@@ -7572,7 +7580,7 @@
     {
       "name": "Pathethuis",
       "drawable": "pathethuis",
-      "color": "#0061FF",
+      "color": "#7C74FF",
       "glyph": "app_P",
       "mark": "PA",
       "components": [
@@ -7598,7 +7606,7 @@
     {
       "name": "PBS Kids",
       "drawable": "pbs_kids",
-      "color": "#53FC18",
+      "color": "#FF7A2E",
       "glyph": "pbs_mark",
       "components": [
         "org.pbskids.video/org.pbskids.video.ui.root.MainActivity"
@@ -7637,7 +7645,7 @@
     {
       "name": "Pepperbox TV",
       "drawable": "pepperbox_tv",
-      "color": "#53FC18",
+      "color": "#19D3C5",
       "glyph": "app_P",
       "mark": "PT",
       "components": [
@@ -7651,19 +7659,20 @@
     {
       "name": "Perfect Player",
       "drawable": "niklabs",
-      "color": "#53FC18",
-      "glyph": "ott_navigator",
+      "color": "#F04DE0",
+      "glyph": "app_P",
       "components": [
         "com.niklabs.pp/com.niklabs.perfectplayer.MainActivity"
       ],
       "category": "APP",
       "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_reviewed": null,
+      "mark": "PF"
     },
     {
       "name": "Perfect TV",
       "drawable": "perfecttv",
-      "color": "#0061FF",
+      "color": "#B6F23A",
       "glyph": "app_P",
       "mark": "PT",
       "components": [
@@ -7676,7 +7685,7 @@
     {
       "name": "Philo",
       "drawable": "philo",
-      "color": "#0061FF",
+      "color": "#3D8BFF",
       "glyph": "philo_mark",
       "components": [
         "com.philo.philo.google/com.philo.philo.app.activity.MainActivity"
@@ -7688,7 +7697,7 @@
     {
       "name": "Photo Collage",
       "drawable": "photocollage",
-      "color": "#0061FF",
+      "color": "#FF4D4D",
       "glyph": "app_P",
       "mark": "PC",
       "components": [
@@ -7701,7 +7710,7 @@
     {
       "name": "Photo Screensaver",
       "drawable": "photoscreensaver",
-      "color": "#0061FF",
+      "color": "#1FD19A",
       "glyph": "app_P",
       "mark": "PS",
       "components": [
@@ -7714,7 +7723,7 @@
     {
       "name": "PigeonCast",
       "drawable": "pigeoncast",
-      "color": "#FF0000",
+      "color": "#C95CFF",
       "glyph": "app_P",
       "mark": "PI",
       "components": [
@@ -7727,7 +7736,7 @@
     {
       "name": "PikPak",
       "drawable": "pikcloud",
-      "color": "#0061FF",
+      "color": "#FFE14D",
       "glyph": "app_P",
       "mark": "PI",
       "components": [
@@ -7741,7 +7750,7 @@
     {
       "name": "Play Now",
       "drawable": "playnow",
-      "color": "#FFFFFF",
+      "color": "#4FACFE",
       "glyph": "app_P",
       "mark": "PN",
       "components": [
@@ -7754,7 +7763,7 @@
     {
       "name": "Play Suisse",
       "drawable": "playsuisse",
-      "color": "#FEC500",
+      "color": "#E6EDF3",
       "glyph": "app_P",
       "mark": "PS",
       "components": [
@@ -7767,7 +7776,7 @@
     {
       "name": "Play Universal",
       "drawable": "universal",
-      "color": "#0061FF",
+      "color": "#34EB7A",
       "glyph": "app_U",
       "mark": "PU",
       "components": [
@@ -7780,7 +7789,7 @@
     {
       "name": "Player",
       "drawable": "player",
-      "color": "#FFFFFF",
+      "color": "#FFB020",
       "glyph": "iptv_player",
       "components": [
         "pl.tvn.player.tv/pl.redlabs.redcdn.portal.ui.main.MainActivity"
@@ -7793,7 +7802,7 @@
     {
       "name": "Playfy",
       "drawable": "playfy",
-      "color": "#107534",
+      "color": "#00D4FF",
       "glyph": "app_P",
       "mark": "PL",
       "components": [
@@ -7806,7 +7815,7 @@
     {
       "name": "PlayKids",
       "drawable": "playkids",
-      "color": "#53FC18",
+      "color": "#FF5CA8",
       "glyph": "app_P",
       "mark": "PL",
       "components": [
@@ -7832,7 +7841,7 @@
     {
       "name": "PlayNet",
       "drawable": "androidtv_10",
-      "color": "#FF0000",
+      "color": "#7C74FF",
       "glyph": "app_P",
       "mark": "PL",
       "components": [
@@ -7880,7 +7889,7 @@
     {
       "name": "Plexamp",
       "drawable": "plexamp",
-      "color": "#0061FF",
+      "color": "#FF7A2E",
       "glyph": "plexamp_mark",
       "components": [
         "tv.plex.labs.plexamp/com.plexamp.MainActivity"
@@ -7893,7 +7902,7 @@
     {
       "name": "Plus Messenger",
       "drawable": "telegram",
-      "color": "#F15BB5",
+      "color": "#19D3C5",
       "glyph": "app_P",
       "mark": "PM",
       "components": [
@@ -7932,7 +7941,7 @@
     {
       "name": "Polsat Box Go",
       "drawable": "polsat_box_go",
-      "color": "#1982C4",
+      "color": "#B6F23A",
       "glyph": "app_P",
       "mark": "PB",
       "components": [
@@ -7947,7 +7956,7 @@
     {
       "name": "Polygon Player",
       "drawable": "videoplayer_2",
-      "color": "#00F5D4",
+      "color": "#3D8BFF",
       "glyph": "app_P",
       "mark": "PP",
       "components": [
@@ -7972,7 +7981,7 @@
     {
       "name": "Ppsspp",
       "drawable": "ppsspp",
-      "color": "#0061FF",
+      "color": "#FF4D4D",
       "glyph": "app_P",
       "mark": "PP",
       "components": [
@@ -7986,7 +7995,7 @@
     {
       "name": "Premier Sports",
       "drawable": "premier_sports",
-      "color": "#0061FF",
+      "color": "#1FD19A",
       "glyph": "premier_mark",
       "components": [
         "premierplayer.premiersports.com.premierplayer/com.premiersports.premiersportstv.ui.login.DeviceLinkActivity"
@@ -7999,7 +8008,7 @@
     {
       "name": "Premiere FC",
       "drawable": "premierefc",
-      "color": "#AAFF89",
+      "color": "#C95CFF",
       "glyph": "app_P",
       "mark": "PF",
       "components": [
@@ -8024,7 +8033,7 @@
     {
       "name": "Premiumize TV",
       "drawable": "premiumize_tv",
-      "color": "#53FC18",
+      "color": "#FFE14D",
       "glyph": "app_P",
       "mark": "PT",
       "components": [
@@ -8052,7 +8061,7 @@
     {
       "name": "Privado VPN",
       "drawable": "privado_vpn",
-      "color": "#FF0000",
+      "color": "#4FACFE",
       "glyph": "vpn_P",
       "mark": "PV",
       "components": [
@@ -8105,7 +8114,7 @@
     {
       "name": "Projectivy Overflight",
       "drawable": "projectivy_overflight",
-      "color": "#0061FF",
+      "color": "#A366FF",
       "glyph": "overflight",
       "components": [
         "tv.projectivy.plugin.wallpaperprovider.overflight/tv.projectivy.plugin.wallpaperprovider.overflight.SettingsActivity"
@@ -8133,7 +8142,7 @@
     {
       "name": "Psiphon",
       "drawable": "subscription",
-      "color": "#03A9F4",
+      "color": "#00D4FF",
       "glyph": "vpn_P",
       "mark": "PS",
       "components": [
@@ -8146,7 +8155,7 @@
     {
       "name": "Puffin TV",
       "drawable": "cloudmosa",
-      "color": "#FF0000",
+      "color": "#FF5CA8",
       "glyph": "browser_globe2",
       "components": [
         "com.cloudmosa.puffinTV/com.cloudmosa.appTV.classic.ClassicTVActivity"
@@ -8183,7 +8192,7 @@
     {
       "name": "Put Io",
       "drawable": "put_io",
-      "color": "#FF0000",
+      "color": "#7C74FF",
       "glyph": "app_P",
       "mark": "PI",
       "components": [
@@ -8197,7 +8206,7 @@
     {
       "name": "Qobuz",
       "drawable": "music",
-      "color": "#0061FF",
+      "color": "#FF7A2E",
       "glyph": "qobuz_note",
       "components": [
         "com.qobuz.music/com.qobuz.android.tv.app.launcher.LauncherActivity"
@@ -8209,7 +8218,7 @@
     {
       "name": "Quasitv",
       "drawable": "quasitv",
-      "color": "#0061FF",
+      "color": "#19D3C5",
       "glyph": "app_Q",
       "mark": "QU",
       "components": [
@@ -8223,7 +8232,7 @@
     {
       "name": "Quickbars For Home Assistant",
       "drawable": "quickbars_for_home_assistant",
-      "color": "#0061FF",
+      "color": "#F04DE0",
       "glyph": "home_bar",
       "components": [
         "dev.trooped.tvquickbars/dev.trooped.tvquickbars.ui.SplashActivity"
@@ -8237,7 +8246,7 @@
     {
       "name": "Quicksupport",
       "drawable": "quicksupport",
-      "color": "#0061FF",
+      "color": "#B6F23A",
       "glyph": "app_Q",
       "mark": "QU",
       "components": [
@@ -8251,7 +8260,7 @@
     {
       "name": "Radio Net",
       "drawable": "radio_net",
-      "color": "#53FC18",
+      "color": "#3D8BFF",
       "glyph": "music_R",
       "mark": "RN",
       "components": [
@@ -8265,7 +8274,7 @@
     {
       "name": "Radio On TV",
       "drawable": "radio_on_tv",
-      "color": "#FF0000",
+      "color": "#FF4D4D",
       "glyph": "music_R",
       "mark": "RO",
       "components": [
@@ -8279,7 +8288,7 @@
     {
       "name": "Radio Paradise",
       "drawable": "radioparadisewidget",
-      "color": "#FFFFFF",
+      "color": "#1FD19A",
       "glyph": "music_R",
       "mark": "RP",
       "components": [
@@ -8293,7 +8302,7 @@
     {
       "name": "Radioline",
       "drawable": "radioline",
-      "color": "#FEC500",
+      "color": "#C95CFF",
       "glyph": "music_R",
       "mark": "RA",
       "components": [
@@ -8306,7 +8315,7 @@
     {
       "name": "Radioplayer",
       "drawable": "radioplayer",
-      "color": "#107534",
+      "color": "#FFE14D",
       "glyph": "music_R",
       "mark": "RA",
       "components": [
@@ -8319,15 +8328,16 @@
     {
       "name": "Raiplay",
       "drawable": "raiplay",
-      "color": "#FF0000",
-      "glyph": "ott_navigator",
+      "color": "#4FACFE",
+      "glyph": "app_R",
       "components": [
         "it.rainet.androidtv/it.rainet.androidtv.ui.MainLeanbackActivity"
       ],
       "category": "APP",
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_reviewed": null,
+      "mark": "RP"
     },
     {
       "name": "Rakuten TV",
@@ -8345,7 +8355,7 @@
     {
       "name": "Rally TV",
       "drawable": "rally_tv",
-      "color": "#0061FF",
+      "color": "#E6EDF3",
       "glyph": "sport_R",
       "mark": "RT",
       "components": [
@@ -8359,7 +8369,7 @@
     {
       "name": "RAM TV",
       "drawable": "ram",
-      "color": "#53FC18",
+      "color": "#34EB7A",
       "glyph": "app_R",
       "mark": "RT",
       "components": [
@@ -8372,7 +8382,7 @@
     {
       "name": "Rapid Streamz",
       "drawable": "rapid_streamz",
-      "color": "#0061FF",
+      "color": "#A366FF",
       "glyph": "app_R",
       "mark": "RS",
       "components": [
@@ -8386,7 +8396,7 @@
     {
       "name": "RB Live",
       "drawable": "rblive",
-      "color": "#25D1DA",
+      "color": "#FFB020",
       "glyph": "app_R",
       "mark": "RL",
       "components": [
@@ -8399,7 +8409,7 @@
     {
       "name": "RB Main",
       "drawable": "rbmain",
-      "color": "#0061FF",
+      "color": "#00D4FF",
       "glyph": "app_R",
       "mark": "RM",
       "components": [
@@ -8412,7 +8422,7 @@
     {
       "name": "Real America's Voice",
       "drawable": "americasvoicenews",
-      "color": "#FF0000",
+      "color": "#FF5CA8",
       "glyph": "sport_A",
       "mark": "RA",
       "components": [
@@ -8451,7 +8461,7 @@
     {
       "name": "Realstream TV",
       "drawable": "realstream_tv",
-      "color": "#0061FF",
+      "color": "#53FC18",
       "glyph": "signal_play",
       "components": [
         "com.doctor.realstream_tv/com.doctor.realstream.ComposeMainActivity"
@@ -8476,7 +8486,7 @@
     {
       "name": "Redream",
       "drawable": "redream",
-      "color": "#0061FF",
+      "color": "#7C74FF",
       "glyph": "gaming_R",
       "mark": "RE",
       "components": [
@@ -8490,7 +8500,7 @@
     {
       "name": "Refreshrate",
       "drawable": "refreshrate",
-      "color": "#0061FF",
+      "color": "#FF7A2E",
       "glyph": "app_R",
       "mark": "RE",
       "components": [
@@ -8504,7 +8514,7 @@
     {
       "name": "Remote Capture",
       "drawable": "remote_capture",
-      "color": "#0061FF",
+      "color": "#19D3C5",
       "glyph": "capture_dot",
       "components": [
         "com.emanuelef.remote_capture/com.emanuelef.remote_capture.activities.MainActivity"
@@ -8517,7 +8527,7 @@
     {
       "name": "Remote Starter For Yatse",
       "drawable": "remote_starter_for_yatse",
-      "color": "#0061FF",
+      "color": "#F04DE0",
       "glyph": "remote_play",
       "components": [
         "tv.yatse.android.remotestarter/tv.yatse.android.remotestarter.ui.MainActivity"
@@ -8531,7 +8541,7 @@
     {
       "name": "Replaio Radio",
       "drawable": "replaio",
-      "color": "#F15BB5",
+      "color": "#B6F23A",
       "glyph": "app_R",
       "mark": "RR",
       "components": [
@@ -8557,7 +8567,7 @@
     {
       "name": "RetroX",
       "drawable": "archain",
-      "color": "#53FC18",
+      "color": "#3D8BFF",
       "glyph": "gaming_R",
       "mark": "RE",
       "components": [
@@ -8570,7 +8580,7 @@
     {
       "name": "Rezka",
       "drawable": "rezka",
-      "color": "#0061FF",
+      "color": "#FF4D4D",
       "glyph": "app_R",
       "mark": "RE",
       "components": [
@@ -8584,7 +8594,7 @@
     {
       "name": "Riks TV",
       "drawable": "riks_tv",
-      "color": "#FEC500",
+      "color": "#1FD19A",
       "glyph": "app_R",
       "mark": "RT",
       "components": [
@@ -8598,7 +8608,7 @@
     {
       "name": "RlaXX TV",
       "drawable": "rlaxxtv",
-      "color": "#F15BB5",
+      "color": "#C95CFF",
       "glyph": "app_R",
       "mark": "RT",
       "components": [
@@ -8611,7 +8621,7 @@
     {
       "name": "RLC+",
       "drawable": "rlcplus",
-      "color": "#1E811F",
+      "color": "#FFE14D",
       "glyph": "app_R",
       "mark": "RL",
       "components": [
@@ -8624,7 +8634,7 @@
     {
       "name": "RMC BFM",
       "drawable": "nextinteractive",
-      "color": "#D2BCFD",
+      "color": "#E6EDF3",
       "glyph": "app_R",
       "mark": "RB",
       "components": [
@@ -8655,7 +8665,7 @@
     {
       "name": "RSI Play",
       "drawable": "rsi",
-      "color": "#AAFF89",
+      "color": "#34EB7A",
       "glyph": "app_R",
       "mark": "RP",
       "components": [
@@ -8668,7 +8678,7 @@
     {
       "name": "RTBF Auvio",
       "drawable": "auvio",
-      "color": "#00D4FF",
+      "color": "#A366FF",
       "glyph": "app_A",
       "mark": "RA",
       "components": [
@@ -8681,7 +8691,7 @@
     {
       "name": "RTE Player",
       "drawable": "minimal",
-      "color": "#FF7A00",
+      "color": "#FFB020",
       "glyph": "app_R",
       "mark": "RP",
       "components": [
@@ -8710,7 +8720,7 @@
     {
       "name": "RTL Play",
       "drawable": "rtl_play",
-      "color": "#0072C6",
+      "color": "#00D4FF",
       "glyph": "app_R",
       "mark": "RP",
       "components": [
@@ -8724,7 +8734,7 @@
     {
       "name": "RTP Play",
       "drawable": "rtp_play",
-      "color": "#FFFFFF",
+      "color": "#FF5CA8",
       "glyph": "app_R",
       "mark": "RP",
       "components": [
@@ -8738,7 +8748,7 @@
     {
       "name": "RTVE Play",
       "drawable": "rtve_play",
-      "color": "#A238FF",
+      "color": "#53FC18",
       "glyph": "app_R",
       "mark": "RP",
       "components": [
@@ -8752,7 +8762,7 @@
     {
       "name": "Rugbypass TV",
       "drawable": "rugbypass_tv",
-      "color": "#53FC18",
+      "color": "#7C74FF",
       "glyph": "sport_R",
       "mark": "RT",
       "components": [
@@ -8779,7 +8789,7 @@
     {
       "name": "Rustore",
       "drawable": "rustore",
-      "color": "#0061FF",
+      "color": "#FF7A2E",
       "glyph": "rustore_mark",
       "components": [
         "ru.vk.store.tv/ru.vk.store.tv.app.presentation.MainActivity"
@@ -8792,7 +8802,7 @@
     {
       "name": "Rutube",
       "drawable": "rutube",
-      "color": "#8B949E",
+      "color": "#19D3C5",
       "glyph": "app_R",
       "mark": "RU",
       "components": [
@@ -8821,7 +8831,7 @@
     {
       "name": "Saff",
       "drawable": "saff",
-      "color": "#FF0000",
+      "color": "#F04DE0",
       "glyph": "app_S",
       "mark": "SA",
       "components": [
@@ -8874,7 +8884,7 @@
     {
       "name": "Scb Next",
       "drawable": "scb_next",
-      "color": "#0061FF",
+      "color": "#B6F23A",
       "glyph": "app_S",
       "mark": "SN",
       "components": [
@@ -8888,7 +8898,7 @@
     {
       "name": "Scholastic",
       "drawable": "scholastic",
-      "color": "#0061FF",
+      "color": "#3D8BFF",
       "glyph": "app_S",
       "mark": "SC",
       "components": [
@@ -8921,7 +8931,7 @@
     {
       "name": "Screenscape",
       "drawable": "screenscape",
-      "color": "#53FC18",
+      "color": "#FF4D4D",
       "glyph": "app_S",
       "mark": "SC",
       "components": [
@@ -8935,7 +8945,7 @@
     {
       "name": "Sd Maid",
       "drawable": "sd_maid",
-      "color": "#FF0000",
+      "color": "#1FD19A",
       "glyph": "app_S",
       "mark": "SM",
       "components": [
@@ -8961,7 +8971,7 @@
     {
       "name": "SeerrTV",
       "drawable": "seerrtv",
-      "color": "#53FC18",
+      "color": "#C95CFF",
       "glyph": "app_S",
       "mark": "SE",
       "components": [
@@ -8986,7 +8996,7 @@
     {
       "name": "SeriesGuide",
       "drawable": "battlelancer",
-      "color": "#0061FF",
+      "color": "#FFE14D",
       "glyph": "series_calendar",
       "components": [
         "com.battlelancer.seriesguide/com.battlelancer.seriesguide.ui.ShowsActivity"
@@ -8999,7 +9009,7 @@
     {
       "name": "SetEdit",
       "drawable": "setedit22",
-      "color": "#FFFFFF",
+      "color": "#4FACFE",
       "glyph": "app_S",
       "mark": "SE",
       "components": [
@@ -9050,7 +9060,7 @@
     {
       "name": "Sfjazz At Home",
       "drawable": "sfjazz_at_home",
-      "color": "#FDCB58",
+      "color": "#E6EDF3",
       "glyph": "app_S",
       "mark": "SA",
       "components": [
@@ -9065,7 +9075,7 @@
     {
       "name": "Sfr TV",
       "drawable": "sfr_tv",
-      "color": "#7B2BFC",
+      "color": "#34EB7A",
       "glyph": "app_S",
       "mark": "ST",
       "components": [
@@ -9093,7 +9103,7 @@
     {
       "name": "Shahid",
       "drawable": "shahid",
-      "color": "#0061FF",
+      "color": "#A366FF",
       "glyph": "shahid_mark",
       "components": [
         "net.mbc.shahidTV/net.mbc.shahidTV.MainActivity"
@@ -9106,7 +9116,7 @@
     {
       "name": "Shark TV",
       "drawable": "sharktvthree",
-      "color": "#FEC500",
+      "color": "#FFB020",
       "glyph": "app_S",
       "mark": "ST",
       "components": [
@@ -9132,7 +9142,7 @@
     {
       "name": "Shout TV",
       "drawable": "shout_tv",
-      "color": "#00F5D4",
+      "color": "#00D4FF",
       "glyph": "app_S",
       "mark": "ST",
       "components": [
@@ -9146,7 +9156,7 @@
     {
       "name": "Showmax",
       "drawable": "showmax",
-      "color": "#0061FF",
+      "color": "#FF5CA8",
       "glyph": "showmax_eye",
       "components": [
         "com.showmax.showmax.google/com.peacock.peacocktv.GoogleMainActivity"
@@ -9171,7 +9181,7 @@
     {
       "name": "Sideload Launcher",
       "drawable": "sideload_launcher",
-      "color": "#0061FF",
+      "color": "#53FC18",
       "glyph": "sideload_mark",
       "components": [
         "eu.chainfire.tv.sideloadlauncher/eu.chainfire.tv.sideloadlauncher.MainActivity",
@@ -9185,7 +9195,7 @@
     {
       "name": "Simple Player",
       "drawable": "simpleplayer",
-      "color": "#F15BB5",
+      "color": "#7C74FF",
       "glyph": "app_S",
       "mark": "SP",
       "components": [
@@ -9198,7 +9208,7 @@
     {
       "name": "SimpliTV",
       "drawable": "androidtv",
-      "color": "#0061FF",
+      "color": "#FF7A2E",
       "glyph": "aosp_robot",
       "components": [
         "at.simplitv.ott.androidtv/tv.threess.threeready.ui.generic.activity.MainActivity"
@@ -9223,7 +9233,7 @@
     {
       "name": "Sirius",
       "drawable": "sirius",
-      "color": "#0061FF",
+      "color": "#19D3C5",
       "glyph": "sirius_satellite",
       "components": [
         "com.sirius/sxmp.app.welcome.WelcomeActivity"
@@ -9262,7 +9272,7 @@
     {
       "name": "Skyshowtime",
       "drawable": "skyshowtime",
-      "color": "#0061FF",
+      "color": "#F04DE0",
       "glyph": "skyline_mark",
       "components": [
         "com.skyshowtime.skyshowtime.google/com.peacock.peacocktv.GoogleMainActivity"
@@ -9275,7 +9285,7 @@
     {
       "name": "Sledovani",
       "drawable": "sledovani",
-      "color": "#FF0000",
+      "color": "#B6F23A",
       "glyph": "app_S",
       "mark": "SL",
       "components": [
@@ -9334,7 +9344,7 @@
     {
       "name": "SmartTwitchTV",
       "drawable": "twitch_2",
-      "color": "#1E811F",
+      "color": "#3D8BFF",
       "glyph": "film_S",
       "mark": "SM",
       "components": [
@@ -9362,7 +9372,7 @@
     {
       "name": "Snapcast",
       "drawable": "snapcast",
-      "color": "#FFFFFF",
+      "color": "#FF4D4D",
       "glyph": "app_S",
       "mark": "SN",
       "components": [
@@ -9376,7 +9386,7 @@
     {
       "name": "Snrt Live",
       "drawable": "snrt_live",
-      "color": "#AAFF89",
+      "color": "#1FD19A",
       "glyph": "broadcast_S",
       "mark": "SL",
       "components": [
@@ -9390,7 +9400,7 @@
     {
       "name": "Sofascore",
       "drawable": "sofascore",
-      "color": "#0061FF",
+      "color": "#C95CFF",
       "glyph": "sofascore_mark",
       "components": [
         "com.sofascore.results/com.sofascore.results.main.MainActivity"
@@ -9421,7 +9431,7 @@
     {
       "name": "SomaFM",
       "drawable": "radiomg",
-      "color": "#53FC18",
+      "color": "#FFE14D",
       "glyph": "music_S",
       "mark": "SO",
       "components": [
@@ -9434,7 +9444,7 @@
     {
       "name": "Sonyliv",
       "drawable": "sonyliv",
-      "color": "#0061FF",
+      "color": "#4FACFE",
       "glyph": "sonyliv_mark",
       "components": [
         "com.sonyliv/com.sonyliv.ui.splash.SplashActivity"
@@ -9447,7 +9457,7 @@
     {
       "name": "Sooner",
       "drawable": "sooner",
-      "color": "#C41A3B",
+      "color": "#E6EDF3",
       "glyph": "app_S",
       "mark": "SO",
       "components": [
@@ -9486,7 +9496,7 @@
     {
       "name": "Speaker Boost",
       "drawable": "booster",
-      "color": "#53FC18",
+      "color": "#A366FF",
       "glyph": "app_B",
       "mark": "SB",
       "components": [
@@ -9511,7 +9521,7 @@
     {
       "name": "Sport TV",
       "drawable": "sport_tv",
-      "color": "#0061FF",
+      "color": "#FFB020",
       "glyph": "sport_S",
       "mark": "ST",
       "components": [
@@ -9525,7 +9535,7 @@
     {
       "name": "Sports Everywhere",
       "drawable": "sportseverywhere",
-      "color": "#53FC18",
+      "color": "#00D4FF",
       "glyph": "sport_S",
       "mark": "SE",
       "components": [
@@ -9538,7 +9548,7 @@
     {
       "name": "Sportscaster",
       "drawable": "sportscaster",
-      "color": "#FF0000",
+      "color": "#FF5CA8",
       "glyph": "sport_S",
       "mark": "SP",
       "components": [
@@ -9551,7 +9561,7 @@
     {
       "name": "Sportsfire",
       "drawable": "sportsfire",
-      "color": "#14D8CC",
+      "color": "#53FC18",
       "glyph": "flosports_mark",
       "components": [
         "com.leed.sportsfire/com.leed.sportsfire.ui.HomeActivity"
@@ -9563,7 +9573,7 @@
     {
       "name": "Sportsnet",
       "drawable": "sportsnet",
-      "color": "#0061FF",
+      "color": "#7C74FF",
       "glyph": "sportsnet_mark",
       "components": [
         "com.rogers.sportsnet.sportsnet/com.rogers.sportsnet.tv.ui.AppActivity"
@@ -9576,7 +9586,7 @@
     {
       "name": "Sportzx",
       "drawable": "sportzx",
-      "color": "#FFFFFF",
+      "color": "#FF7A2E",
       "glyph": "sport_S",
       "mark": "SP",
       "components": [
@@ -9606,7 +9616,7 @@
     {
       "name": "SRF Play",
       "drawable": "srfplayer",
-      "color": "#008080",
+      "color": "#19D3C5",
       "glyph": "app_S",
       "mark": "SP",
       "components": [
@@ -9619,7 +9629,7 @@
     {
       "name": "Sstream",
       "drawable": "sstream",
-      "color": "#0061FF",
+      "color": "#F04DE0",
       "glyph": "stream_wave",
       "components": [
         "cloud.app.sstream/cloud.app.sstream.MainActivity"
@@ -9647,7 +9657,7 @@
     {
       "name": "Stand-Up Comedy TV",
       "drawable": "standupcomedytv",
-      "color": "#FFFFFF",
+      "color": "#3D8BFF",
       "glyph": "comedy_mark",
       "components": [
         "com.pnm.standupcomedytv/com.tv.playnowmedia.ui.launcher.LauncherActivity"
@@ -9671,7 +9681,7 @@
     {
       "name": "STB Emu",
       "drawable": "mvas",
-      "color": "#53FC18",
+      "color": "#FF4D4D",
       "glyph": "gaming_S",
       "mark": "SE",
       "components": [
@@ -9697,7 +9707,7 @@
     {
       "name": "Stream Fire",
       "drawable": "stream_fire",
-      "color": "#F5F500",
+      "color": "#1FD19A",
       "glyph": "app_S",
       "mark": "SF",
       "components": [
@@ -9735,7 +9745,7 @@
     {
       "name": "Streamflix",
       "drawable": "streamflix_2",
-      "color": "#0061FF",
+      "color": "#C95CFF",
       "glyph": "stream_window",
       "components": [
         "com.tanasi.streamflix/com.tanasi.streamflix.activities.main.MainTvActivity"
@@ -9748,7 +9758,7 @@
     {
       "name": "Streamlocator VPN",
       "drawable": "streamlocator_vpn",
-      "color": "#0061FF",
+      "color": "#FFE14D",
       "glyph": "vpn_S",
       "mark": "SV",
       "components": [
@@ -9762,7 +9772,7 @@
     {
       "name": "Streamyfin",
       "drawable": "fredrikburmester",
-      "color": "#0061FF",
+      "color": "#4FACFE",
       "glyph": "fin_wave",
       "components": [
         "com.fredrikburmester.streamyfin/com.fredrikburmester.streamyfin.MainActivity"
@@ -9775,7 +9785,7 @@
     {
       "name": "Streamz",
       "drawable": "dpgmedia",
-      "color": "#0061FF",
+      "color": "#E6EDF3",
       "glyph": "bolt_screen",
       "components": [
         "be.dpgmedia.streamz/be.persgroep.streamz.StreamzMainActivity"
@@ -9804,7 +9814,7 @@
     {
       "name": "Stremize",
       "drawable": "stremize",
-      "color": "#6C5CE7",
+      "color": "#34EB7A",
       "glyph": "stremize_z",
       "components": [
         "com.stremize.player/.MainActivity",
@@ -9835,7 +9845,7 @@
     {
       "name": "Strim",
       "drawable": "strim",
-      "color": "#FFFFFF",
+      "color": "#A366FF",
       "glyph": "app_S",
       "mark": "ST",
       "components": [
@@ -9862,7 +9872,7 @@
     {
       "name": "Strongvpn",
       "drawable": "strongvpn",
-      "color": "#53FC18",
+      "color": "#FFB020",
       "glyph": "vpn_S",
       "mark": "ST",
       "components": [
@@ -9876,7 +9886,7 @@
     {
       "name": "Stv Player",
       "drawable": "stv_player",
-      "color": "#B388FF",
+      "color": "#00D4FF",
       "glyph": "broadcast_S",
       "mark": "SP",
       "components": [
@@ -9890,15 +9900,16 @@
     {
       "name": "Sunnxt",
       "drawable": "sunnxt",
-      "color": "#53FC18",
-      "glyph": "youku_mark",
+      "color": "#FF5CA8",
+      "glyph": "app_S",
       "components": [
         "com.suntv.sunnxt/com.androidtv.myplex.ui.activity.SPlashActivity"
       ],
       "category": "APP",
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_reviewed": null,
+      "mark": "SN"
     },
     {
       "name": "Surfshark",
@@ -9917,7 +9928,7 @@
     {
       "name": "SVT",
       "drawable": "svt",
-      "color": "#FA7D19",
+      "color": "#53FC18",
       "glyph": "app_S",
       "mark": "SV",
       "components": [
@@ -9932,7 +9943,7 @@
     {
       "name": "Swac TV",
       "drawable": "swac_tv",
-      "color": "#00D4FF",
+      "color": "#7C74FF",
       "glyph": "app_S",
       "mark": "ST",
       "components": [
@@ -9946,7 +9957,7 @@
     {
       "name": "Swampdog Media",
       "drawable": "swampdog_media",
-      "color": "#0061FF",
+      "color": "#FF7A2E",
       "glyph": "app_S",
       "mark": "SM",
       "components": [
@@ -9960,7 +9971,7 @@
     {
       "name": "Sweet TV",
       "drawable": "sweet_tv",
-      "color": "#D2BCFD",
+      "color": "#19D3C5",
       "glyph": "app_S",
       "mark": "ST",
       "components": [
@@ -9974,7 +9985,7 @@
     {
       "name": "SYFY",
       "drawable": "androidtv_8",
-      "color": "#0061FF",
+      "color": "#F04DE0",
       "glyph": "syfy_mark",
       "components": [
         "com.nbcu.tve.syfy.androidtv/com.nbc.nbctvapp.ui.main.view.MainActivity"
@@ -9986,7 +9997,7 @@
     {
       "name": "Symfonik",
       "drawable": "symfonik",
-      "color": "#FF0000",
+      "color": "#B6F23A",
       "glyph": "music_S",
       "mark": "SY",
       "components": [
@@ -10076,7 +10087,7 @@
     {
       "name": "Synologyphotos",
       "drawable": "synologyphotos",
-      "color": "#7B2BFC",
+      "color": "#3D8BFF",
       "glyph": "app_S",
       "mark": "SY",
       "components": [
@@ -10090,7 +10101,7 @@
     {
       "name": "Tabii",
       "drawable": "tabii",
-      "color": "#7B2BFC",
+      "color": "#FF4D4D",
       "glyph": "app_T",
       "mark": "TA",
       "components": [
@@ -10104,7 +10115,7 @@
     {
       "name": "Tablo",
       "drawable": "tablofast",
-      "color": "#0061FF",
+      "color": "#1FD19A",
       "glyph": "app_T",
       "mark": "TA",
       "components": [
@@ -10130,7 +10141,7 @@
     {
       "name": "Talk TV",
       "drawable": "talk_tv",
-      "color": "#0061FF",
+      "color": "#C95CFF",
       "glyph": "app_T",
       "mark": "TT",
       "components": [
@@ -10144,7 +10155,7 @@
     {
       "name": "Talksport",
       "drawable": "talksport",
-      "color": "#0061FF",
+      "color": "#FFE14D",
       "glyph": "sport_T",
       "mark": "TA",
       "components": [
@@ -10158,7 +10169,7 @@
     {
       "name": "Tamashakhoneh TV",
       "drawable": "tamashakhoneh_tv",
-      "color": "#FEC500",
+      "color": "#4FACFE",
       "glyph": "app_T",
       "mark": "TT",
       "components": [
@@ -10197,7 +10208,7 @@
     {
       "name": "Tbn Plus",
       "drawable": "tbn_plus",
-      "color": "#107534",
+      "color": "#E6EDF3",
       "glyph": "app_T",
       "mark": "TP",
       "components": [
@@ -10211,7 +10222,7 @@
     {
       "name": "TBS",
       "drawable": "tbs",
-      "color": "#0061FF",
+      "color": "#34EB7A",
       "glyph": "tbs_mark",
       "components": [
         "com.turner.tbs.android.networkapp/com.wme.app.MainActivityTv"
@@ -10224,7 +10235,7 @@
     {
       "name": "TCL Channel",
       "drawable": "tcl_channel",
-      "color": "#F15BB5",
+      "color": "#A366FF",
       "glyph": "app_T",
       "mark": "TC",
       "components": [
@@ -10238,7 +10249,7 @@
     {
       "name": "TCL Home",
       "drawable": "tcl_home",
-      "color": "#53FC18",
+      "color": "#FFB020",
       "glyph": "app_T",
       "mark": "TH",
       "components": [
@@ -10252,7 +10263,7 @@
     {
       "name": "Tcn",
       "drawable": "tcn",
-      "color": "#FFFFFF",
+      "color": "#FF5CA8",
       "glyph": "app_T",
       "mark": "TC",
       "components": [
@@ -10266,7 +10277,7 @@
     {
       "name": "Tdtchannels Player",
       "drawable": "tdtchannels_player",
-      "color": "#AAFF89",
+      "color": "#53FC18",
       "glyph": "iptv_player",
       "components": [
         "com.tdtchannels.player/com.tdtchannels.player.SplashScreenActivity"
@@ -10279,7 +10290,7 @@
     {
       "name": "Tduk Screensaver Manager",
       "drawable": "tduk_screensaver_manager",
-      "color": "#0061FF",
+      "color": "#7C74FF",
       "glyph": "screensaver_moon",
       "components": [
         "com.tduk.scrmgr/dev.vodik7.tdukscrmng.MainActivity"
@@ -10307,7 +10318,7 @@
     {
       "name": "Tele Quebec",
       "drawable": "tele_quebec",
-      "color": "#00F5D4",
+      "color": "#FF7A2E",
       "glyph": "app_T",
       "mark": "TQ",
       "components": [
@@ -10321,7 +10332,7 @@
     {
       "name": "Tele2 Play",
       "drawable": "tele2_play",
-      "color": "#AAFF89",
+      "color": "#19D3C5",
       "glyph": "app_T",
       "mark": "TP",
       "components": [
@@ -10336,7 +10347,7 @@
     {
       "name": "Telenet",
       "drawable": "telenet",
-      "color": "#B388FF",
+      "color": "#F04DE0",
       "glyph": "app_T",
       "mark": "TE",
       "mark_style": "lower",
@@ -10351,7 +10362,7 @@
     {
       "name": "Telewebion",
       "drawable": "telewebion",
-      "color": "#F4842D",
+      "color": "#3D8BFF",
       "glyph": "app_T",
       "mark": "TE",
       "components": [
@@ -10365,7 +10376,7 @@
     {
       "name": "Teliaplaylt",
       "drawable": "teliaplaylt",
-      "color": "#008080",
+      "color": "#FF4D4D",
       "glyph": "app_T",
       "mark": "TE",
       "components": [
@@ -10379,7 +10390,7 @@
     {
       "name": "Telly",
       "drawable": "telly",
-      "color": "#00D4FF",
+      "color": "#1FD19A",
       "glyph": "broadcast_T",
       "mark": "TE",
       "components": [
@@ -10393,20 +10404,21 @@
     {
       "name": "Tencent",
       "drawable": "tencent",
-      "color": "#FF0000",
-      "glyph": "youku_mark",
+      "color": "#C95CFF",
+      "glyph": "app_T",
       "components": [
         "com.tencent.qqlive/com.tencent.qqlive.ona.activity.SplashHomeActivity"
       ],
       "category": "APP",
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_reviewed": null,
+      "mark": "TX"
     },
     {
       "name": "Tennis Channel",
       "drawable": "tennis_channel",
-      "color": "#0061FF",
+      "color": "#FFE14D",
       "glyph": "tennis_mark",
       "components": [
         "com.tennischannel.foxxum.amazon/com.foxxum.tennis.MainActivity",
@@ -10420,7 +10432,7 @@
     {
       "name": "Tennistv",
       "drawable": "tennistv",
-      "color": "#53FC18",
+      "color": "#4FACFE",
       "glyph": "sport_T",
       "mark": "TE",
       "components": [
@@ -10447,7 +10459,7 @@
     {
       "name": "Texttv",
       "drawable": "texttv",
-      "color": "#0061FF",
+      "color": "#34EB7A",
       "glyph": "app_T",
       "mark": "TE",
       "components": [
@@ -10461,7 +10473,7 @@
     {
       "name": "Tf1",
       "drawable": "tf1",
-      "color": "#FF0000",
+      "color": "#A366FF",
       "glyph": "app_T",
       "mark": "TF",
       "components": [
@@ -10475,7 +10487,7 @@
     {
       "name": "TFC",
       "drawable": "tfctv",
-      "color": "#FFFFFF",
+      "color": "#FFB020",
       "glyph": "app_T",
       "mark": "TF",
       "components": [
@@ -10488,7 +10500,7 @@
     {
       "name": "Tflix",
       "drawable": "tflix",
-      "color": "#FF0069",
+      "color": "#00D4FF",
       "glyph": "app_T",
       "mark": "TF",
       "components": [
@@ -10502,7 +10514,7 @@
     {
       "name": "Tg4 Player",
       "drawable": "tg4_player",
-      "color": "#008080",
+      "color": "#FF5CA8",
       "glyph": "iptv_player",
       "components": [
         "ie.bytes.tg4.tg4videoapp/ie.bytes.tg4.tg4videoapp.tv.TVActivity"
@@ -10515,7 +10527,7 @@
     {
       "name": "The Comedy Channel",
       "drawable": "thecomedychannel",
-      "color": "#FEC500",
+      "color": "#53FC18",
       "glyph": "comedy_mark",
       "components": [
         "com.megastream.androidtv.thecomedychannel/com.megastream.androidtv.thecomedychannel.MainActivity"
@@ -10527,7 +10539,7 @@
     {
       "name": "The Roku Channel",
       "drawable": "the_roku_channel",
-      "color": "#0061FF",
+      "color": "#7C74FF",
       "glyph": "roku_house",
       "components": [
         "com.roku.web.trc/com.roku.web.trc.MainActivity"
@@ -10540,7 +10552,7 @@
     {
       "name": "The Weather Network",
       "drawable": "weathereyeandroid",
-      "color": "#53FC18",
+      "color": "#FF7A2E",
       "glyph": "app_W",
       "mark": "TW",
       "components": [
@@ -10553,7 +10565,7 @@
     {
       "name": "Thmanyah",
       "drawable": "thmanyah",
-      "color": "#0061FF",
+      "color": "#19D3C5",
       "glyph": "app_T",
       "mark": "TH",
       "components": [
@@ -10567,7 +10579,7 @@
     {
       "name": "ThreeNow",
       "drawable": "mediaworks",
-      "color": "#0061FF",
+      "color": "#F04DE0",
       "glyph": "app_T",
       "mark": "TH",
       "components": [
@@ -10580,7 +10592,7 @@
     {
       "name": "Thunder TV",
       "drawable": "thundertv",
-      "color": "#D2BCFD",
+      "color": "#B6F23A",
       "glyph": "broadcast_T",
       "mark": "TT",
       "components": [
@@ -10605,7 +10617,7 @@
     {
       "name": "Timvision",
       "drawable": "timvision",
-      "color": "#9E9E9E",
+      "color": "#3D8BFF",
       "glyph": "app_T",
       "mark": "TI",
       "components": [
@@ -10619,7 +10631,7 @@
     {
       "name": "Tivify",
       "drawable": "tivify",
-      "color": "#76B900",
+      "color": "#FF4D4D",
       "glyph": "app_T",
       "mark": "TI",
       "components": [
@@ -10676,7 +10688,7 @@
     {
       "name": "TNA Wrestling",
       "drawable": "fight",
-      "color": "#FF0000",
+      "color": "#1FD19A",
       "glyph": "app_T",
       "mark": "TW",
       "components": [
@@ -10689,7 +10701,7 @@
     {
       "name": "TNT",
       "drawable": "tnt",
-      "color": "#0061FF",
+      "color": "#C95CFF",
       "glyph": "tnt_mark",
       "components": [
         "com.turner.tnt.android.networkapp/com.wme.app.MainActivityTv"
@@ -10702,7 +10714,7 @@
     {
       "name": "Tod",
       "drawable": "tod",
-      "color": "#FEC500",
+      "color": "#FFE14D",
       "glyph": "app_T",
       "mark": "TO",
       "components": [
@@ -10716,7 +10728,7 @@
     {
       "name": "Toggo",
       "drawable": "toggo",
-      "color": "#53FC18",
+      "color": "#4FACFE",
       "glyph": "app_T",
       "mark": "TO",
       "components": [
@@ -10730,7 +10742,7 @@
     {
       "name": "Top Radio",
       "drawable": "top_radio",
-      "color": "#53FC18",
+      "color": "#E6EDF3",
       "glyph": "music_T",
       "mark": "TR",
       "components": [
@@ -10771,7 +10783,7 @@
     {
       "name": "Torrent Search",
       "drawable": "torrentsearchengine",
-      "color": "#0061FF",
+      "color": "#34EB7A",
       "glyph": "app_T",
       "mark": "TS",
       "components": [
@@ -10784,7 +10796,7 @@
     {
       "name": "Torrserve",
       "drawable": "torrserve",
-      "color": "#53FC18",
+      "color": "#A366FF",
       "glyph": "app_T",
       "mark": "TO",
       "components": [
@@ -10798,13 +10810,13 @@
     {
       "name": "Total Commander",
       "drawable": "totalcommander",
-      "color": "#1982C4",
+      "color": "#FFB020",
       "glyph": "folder",
       "components": [
         "com.ghisler.android.TotalCommander/com.ghisler.android.TotalCommander.TotalCommander"
       ],
       "category": "FILES",
-      "color_source": "brand reference (pre-provenance, unverified)",
+      "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
     },
     {
@@ -10825,7 +10837,7 @@
     {
       "name": "Trilogy Plus",
       "drawable": "trilogy_plus",
-      "color": "#F5F500",
+      "color": "#00D4FF",
       "glyph": "app_T",
       "mark": "TP",
       "components": [
@@ -10840,7 +10852,7 @@
     {
       "name": "Trublu",
       "drawable": "trublu",
-      "color": "#D4A843",
+      "color": "#FF5CA8",
       "glyph": "app_T",
       "mark": "TR",
       "components": [
@@ -10855,7 +10867,7 @@
     {
       "name": "TSN",
       "drawable": "tsn",
-      "color": "#0061FF",
+      "color": "#53FC18",
       "glyph": "tsn_mark",
       "components": [
         "ca.tsn.mobile.android/ca.tsn.mobile.android.main.activity.MainActivity"
@@ -10867,7 +10879,7 @@
     {
       "name": "Tt",
       "drawable": "tt",
-      "color": "#90BE6D",
+      "color": "#7C74FF",
       "glyph": "app_T",
       "mark": "TT",
       "components": [
@@ -10907,7 +10919,7 @@
     {
       "name": "TV 2 Play",
       "drawable": "tv_2_play",
-      "color": "#2F7DED",
+      "color": "#19D3C5",
       "glyph": "app_T",
       "mark": "T2",
       "components": [
@@ -10921,7 +10933,7 @@
     {
       "name": "TV App Repo",
       "drawable": "tv_app_repo",
-      "color": "#0061FF",
+      "color": "#F04DE0",
       "glyph": "app_T",
       "mark": "TA",
       "components": [
@@ -10947,7 +10959,7 @@
     {
       "name": "TV Browser",
       "drawable": "tvbrowser",
-      "color": "#0061FF",
+      "color": "#B6F23A",
       "glyph": "tv_browser_bar",
       "components": [
         "com.internet.tvbrowser/com.internet.tvbrowser.MainActivity"
@@ -10960,7 +10972,7 @@
     {
       "name": "TV Everywhere",
       "drawable": "tveverywhere",
-      "color": "#00E676",
+      "color": "#1FD19A",
       "glyph": "app_T",
       "mark": "TE",
       "components": [
@@ -10973,7 +10985,7 @@
     {
       "name": "TV Garden",
       "drawable": "tv_garden",
-      "color": "#FF5500",
+      "color": "#C95CFF",
       "glyph": "app_T",
       "mark": "TG",
       "components": [
@@ -10987,7 +10999,7 @@
     {
       "name": "TV Manager",
       "drawable": "tv_manager",
-      "color": "#0061FF",
+      "color": "#FFE14D",
       "glyph": "tv_sliders",
       "components": [
         "com.xiaomi.mitv.tvmanager/com.xiaomi.mitv.tvmanager.MainTvManagerActivity"
@@ -11014,20 +11026,20 @@
     {
       "name": "TV Quick Actions",
       "drawable": "tvquickactions",
-      "color": "#00E676",
+      "color": "#4FACFE",
       "glyph": "automation",
       "components": [
         "dev.vodik7.tvquickactions/.MainActivity"
       ],
       "category": "TOOL",
       "brand": "tvquickactions",
-      "color_source": "brand reference (pre-provenance, unverified)",
+      "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
     },
     {
       "name": "TV Quick Actions",
       "drawable": "tv_quick_actions",
-      "color": "#00E676",
+      "color": "#4FACFE",
       "glyph": "automation",
       "components": [
         "dev.vodik7.tvquickactions.free/dev.vodik7.tvquickactions.MainActivity"
@@ -11035,7 +11047,7 @@
       "category": "TOOL",
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "brand": "tvquickactions",
-      "color_source": "brand reference (pre-provenance, unverified)",
+      "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
     },
     {
@@ -11053,7 +11065,7 @@
     {
       "name": "TV Vlaanderen",
       "drawable": "tv_vlaanderen",
-      "color": "#C41A3B",
+      "color": "#34EB7A",
       "glyph": "app_T",
       "mark": "TV",
       "components": [
@@ -11067,7 +11079,7 @@
     {
       "name": "TV Web Browser",
       "drawable": "tv_web_browser",
-      "color": "#0061FF",
+      "color": "#A366FF",
       "glyph": "tv_web_browser",
       "components": [
         "jp.co.rarity.tvweb/jp.co.rarity.tvweb.MainActivity"
@@ -11081,7 +11093,7 @@
     {
       "name": "Tv2 Play",
       "drawable": "tv2_play",
-      "color": "#B5179E",
+      "color": "#FFB020",
       "glyph": "app_T",
       "mark": "TP",
       "components": [
@@ -11095,7 +11107,7 @@
     {
       "name": "Tv360",
       "drawable": "tv360",
-      "color": "#577590",
+      "color": "#00D4FF",
       "glyph": "app_T",
       "mark": "TV",
       "components": [
@@ -11125,7 +11137,7 @@
     {
       "name": "TVA+",
       "drawable": "tvaplus",
-      "color": "#1EBFBF",
+      "color": "#FF5CA8",
       "glyph": "app_T",
       "mark": "TV",
       "components": [
@@ -11138,7 +11150,7 @@
     {
       "name": "Tvi Player",
       "drawable": "tvi_player",
-      "color": "#F5F500",
+      "color": "#7C74FF",
       "glyph": "iptv_player",
       "components": [
         "pt.iol.tviplayer.androidtv/pt.iol.tviplayer.androidtv.MainActivity"
@@ -11151,7 +11163,7 @@
     {
       "name": "Tving",
       "drawable": "tving",
-      "color": "#DE5833",
+      "color": "#FF7A2E",
       "glyph": "app_T",
       "mark": "TV",
       "components": [
@@ -11165,7 +11177,7 @@
     {
       "name": "Tvnzplus",
       "drawable": "tvnzplus",
-      "color": "#52B54B",
+      "color": "#19D3C5",
       "glyph": "app_T",
       "mark": "TV",
       "components": [
@@ -11179,7 +11191,7 @@
     {
       "name": "Tvo Kids",
       "drawable": "tvo_kids",
-      "color": "#0061FF",
+      "color": "#F04DE0",
       "glyph": "app_T",
       "mark": "TK",
       "components": [
@@ -11193,7 +11205,7 @@
     {
       "name": "Tvo Today",
       "drawable": "tvo_today",
-      "color": "#9B59B6",
+      "color": "#B6F23A",
       "glyph": "app_T",
       "mark": "TT",
       "components": [
@@ -11207,7 +11219,7 @@
     {
       "name": "Tvoverlay",
       "drawable": "tvoverlay",
-      "color": "#53FC18",
+      "color": "#3D8BFF",
       "glyph": "app_T",
       "mark": "TV",
       "components": [
@@ -11221,7 +11233,7 @@
     {
       "name": "Tvp Vod",
       "drawable": "tvp_vod",
-      "color": "#FF0000",
+      "color": "#FF4D4D",
       "glyph": "app_T",
       "mark": "TV",
       "components": [
@@ -11235,7 +11247,7 @@
     {
       "name": "Tvpsport",
       "drawable": "tvpsport",
-      "color": "#FFFFFF",
+      "color": "#1FD19A",
       "glyph": "sport_T",
       "mark": "TV",
       "components": [
@@ -11249,7 +11261,7 @@
     {
       "name": "Twilight",
       "drawable": "twilight",
-      "color": "#FF0000",
+      "color": "#C95CFF",
       "glyph": "app_T",
       "mark": "TW",
       "components": [
@@ -11284,7 +11296,7 @@
     {
       "name": "Twodf Tivi",
       "drawable": "twodf_tivi",
-      "color": "#00C48C",
+      "color": "#FFE14D",
       "glyph": "app_T",
       "mark": "TT",
       "components": [
@@ -11298,7 +11310,7 @@
     {
       "name": "U",
       "drawable": "u",
-      "color": "#0061FF",
+      "color": "#4FACFE",
       "glyph": "app_U",
       "components": [
         "uk.co.uktv.dave/uk.co.uktv.dave.UKTVPlayActivity"
@@ -11311,7 +11323,7 @@
     {
       "name": "U Next",
       "drawable": "u_next",
-      "color": "#53FC18",
+      "color": "#E6EDF3",
       "glyph": "app_U",
       "mark": "UN",
       "components": [
@@ -11325,7 +11337,7 @@
     {
       "name": "UAE4ARM",
       "drawable": "uae4arm",
-      "color": "#0061FF",
+      "color": "#34EB7A",
       "glyph": "app_U",
       "mark": "UA",
       "components": [
@@ -11338,7 +11350,7 @@
     {
       "name": "Ucom TV",
       "drawable": "smarttvapp",
-      "color": "#FF0000",
+      "color": "#A366FF",
       "glyph": "app_U",
       "mark": "UT",
       "components": [
@@ -11351,7 +11363,7 @@
     {
       "name": "UEFA TV",
       "drawable": "uefa_tv",
-      "color": "#0061FF",
+      "color": "#FFB020",
       "glyph": "uefa_star",
       "components": [
         "com.uefa.uefatv.androidtv/com.uefa.uefatv.androidtv.MainActivity"
@@ -11376,7 +11388,7 @@
     {
       "name": "Ugreen NAS",
       "drawable": "ugreen_nas",
-      "color": "#0061FF",
+      "color": "#00D4FF",
       "glyph": "nas_tower",
       "components": [
         "com.ugreen.nasprotv/com.ugreen.nasprotv.LaunchActivity"
@@ -11390,7 +11402,7 @@
     {
       "name": "Ukiku",
       "drawable": "ukiku",
-      "color": "#FFFFFF",
+      "color": "#FF5CA8",
       "glyph": "app_U",
       "mark": "UK",
       "components": [
@@ -11404,7 +11416,7 @@
     {
       "name": "Ultimate File Manager Pro",
       "drawable": "ultimatefilemanager",
-      "color": "#1982C4",
+      "color": "#53FC18",
       "glyph": "folder",
       "components": [
         "za.kilowatch.ultimatefilemanager/.MainActivity",
@@ -11415,13 +11427,13 @@
         "za.kilowatch.ultimatefilemanager/.MainActivity",
         "za.kilowatch.ultimatefilemanager/za.kilowatch.ultimatefilemanager.MainActivity"
       ],
-      "color_source": "brand reference (pre-provenance, unverified)",
+      "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
     },
     {
       "name": "Unifi Protect",
       "drawable": "unifi_protect",
-      "color": "#0061FF",
+      "color": "#7C74FF",
       "glyph": "app_U",
       "mark": "UP",
       "components": [
@@ -11435,7 +11447,7 @@
     {
       "name": "Unifi TV",
       "drawable": "unifi_tv",
-      "color": "#53FC18",
+      "color": "#FF7A2E",
       "glyph": "app_U",
       "mark": "UT",
       "components": [
@@ -11461,7 +11473,7 @@
     {
       "name": "Unreal Debrid",
       "drawable": "unreal_debrid",
-      "color": "#0061FF",
+      "color": "#19D3C5",
       "glyph": "app_U",
       "mark": "UD",
       "components": [
@@ -11475,7 +11487,7 @@
     {
       "name": "USA Network",
       "drawable": "androidtv_9",
-      "color": "#0061FF",
+      "color": "#F04DE0",
       "glyph": "usanet_mark",
       "components": [
         "com.nbcu.tve.usatv.androidtv/com.nbc.nbctvapp.ui.main.view.MainActivity"
@@ -11487,7 +11499,7 @@
     {
       "name": "Vbtv",
       "drawable": "vbtv",
-      "color": "#0061FF",
+      "color": "#3D8BFF",
       "glyph": "app_V",
       "mark": "VB",
       "components": [
@@ -11501,7 +11513,7 @@
     {
       "name": "Ve Plus",
       "drawable": "venevision",
-      "color": "#0061FF",
+      "color": "#FF4D4D",
       "glyph": "chevron_plus",
       "components": [
         "com.cisneros.venevision.app/com.interfacectvapp.MainActivity"
@@ -11514,7 +11526,7 @@
     {
       "name": "Veezie",
       "drawable": "veezie",
-      "color": "#53FC18",
+      "color": "#1FD19A",
       "glyph": "app_V",
       "mark": "VE",
       "components": [
@@ -11528,7 +11540,7 @@
     {
       "name": "Vewd Internet Browser",
       "drawable": "vewd_internet_browser",
-      "color": "#0061FF",
+      "color": "#C95CFF",
       "glyph": "vewd_browser",
       "components": [
         "com.vewd.core.integration.dia/com.vewd.core.browser.BrowserActivity",
@@ -11558,7 +11570,7 @@
     {
       "name": "Vibra",
       "drawable": "vibra",
-      "color": "#0061FF",
+      "color": "#FFE14D",
       "glyph": "app_V",
       "mark": "VI",
       "components": [
@@ -11572,7 +11584,7 @@
     {
       "name": "Victory Plus",
       "drawable": "victory_plus",
-      "color": "#0061FF",
+      "color": "#4FACFE",
       "glyph": "app_V",
       "mark": "VP",
       "components": [
@@ -11586,7 +11598,7 @@
     {
       "name": "Vidangel",
       "drawable": "vidangel",
-      "color": "#00D4FF",
+      "color": "#E6EDF3",
       "glyph": "app_V",
       "mark": "VI",
       "components": [
@@ -11600,7 +11612,7 @@
     {
       "name": "Videoland",
       "drawable": "videoland",
-      "color": "#0061FF",
+      "color": "#34EB7A",
       "glyph": "videoland_mark",
       "components": [
         "nl.rtl.videoland.v2/com.bedrockstreaming.shared.tv.activity.SplashActivity"
@@ -11632,7 +11644,7 @@
     {
       "name": "Vieon",
       "drawable": "vieon",
-      "color": "#53FC18",
+      "color": "#A366FF",
       "glyph": "app_V",
       "mark": "VI",
       "components": [
@@ -11646,15 +11658,16 @@
     {
       "name": "Viki",
       "drawable": "viki",
-      "color": "#FFFFFF",
-      "glyph": "youku_mark",
+      "color": "#FFB020",
+      "glyph": "app_V",
       "components": [
         "com.viki.android/com.viki.android.ui.splash.SplashActivity"
       ],
       "category": "APP",
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_reviewed": null,
+      "mark": "VK"
     },
     {
       "name": "Vimeo",
@@ -11684,7 +11697,7 @@
     {
       "name": "Virtualhere USB Server",
       "drawable": "virtualhere_usb_server",
-      "color": "#0061FF",
+      "color": "#00D4FF",
       "glyph": "usb_plug",
       "components": [
         "com.virtualhere.androidserver/com.virtualhere.androidserver.GUI"
@@ -11698,7 +11711,7 @@
     {
       "name": "Viu",
       "drawable": "viu",
-      "color": "#0061FF",
+      "color": "#FF5CA8",
       "glyph": "viu_v",
       "components": [
         "com.viu.tv/com.viu.tv.mvp.ui.activity.WelcomeActivity"
@@ -11711,7 +11724,7 @@
     {
       "name": "Viva One TV",
       "drawable": "viva_one_tv",
-      "color": "#FF0000",
+      "color": "#53FC18",
       "glyph": "app_V",
       "mark": "VO",
       "components": [
@@ -11725,7 +11738,7 @@
     {
       "name": "ViX",
       "drawable": "vix",
-      "color": "#FFFFFF",
+      "color": "#7C74FF",
       "glyph": "app_V",
       "mark": "VI",
       "components": [
@@ -11753,7 +11766,7 @@
     {
       "name": "Vmx",
       "drawable": "vmx",
-      "color": "#7B2BFC",
+      "color": "#FF7A2E",
       "glyph": "app_V",
       "mark": "VM",
       "components": [
@@ -11767,7 +11780,7 @@
     {
       "name": "Vodafone TV",
       "drawable": "vodafone_tv",
-      "color": "#FEC500",
+      "color": "#19D3C5",
       "glyph": "app_V",
       "mark": "VT",
       "components": [
@@ -11781,7 +11794,7 @@
     {
       "name": "Voyo Sk",
       "drawable": "voyo_sk",
-      "color": "#FFC107",
+      "color": "#F04DE0",
       "glyph": "app_V",
       "mark": "VS",
       "mark_style": "lower",
@@ -11797,7 +11810,7 @@
     {
       "name": "VPN Dot",
       "drawable": "omnisoft",
-      "color": "#0061FF",
+      "color": "#B6F23A",
       "glyph": "vpn_V",
       "mark": "VD",
       "components": [
@@ -11810,7 +11823,7 @@
     {
       "name": "VPN Unlimited",
       "drawable": "vpn_unlimited",
-      "color": "#53FC18",
+      "color": "#3D8BFF",
       "glyph": "vpn_V",
       "mark": "VU",
       "components": [
@@ -11824,7 +11837,7 @@
     {
       "name": "vRadio",
       "drawable": "vradio",
-      "color": "#53FC18",
+      "color": "#FF4D4D",
       "glyph": "music_V",
       "mark": "VR",
       "components": [
@@ -11837,7 +11850,7 @@
     {
       "name": "VRT MAX",
       "drawable": "vrtnu",
-      "color": "#107534",
+      "color": "#1FD19A",
       "glyph": "app_V",
       "mark": "VM",
       "components": [
@@ -11850,7 +11863,7 @@
     {
       "name": "Vstro Player",
       "drawable": "vstro_player",
-      "color": "#FA7D19",
+      "color": "#FFE14D",
       "glyph": "iptv_player",
       "components": [
         "com.vs.vsplayer/com.vs.vsplayer.common.view.SplashActivity"
@@ -11863,7 +11876,7 @@
     {
       "name": "VTM GO",
       "drawable": "zenderapp",
-      "color": "#107534",
+      "color": "#4FACFE",
       "glyph": "app_V",
       "mark": "VG",
       "components": [
@@ -11876,7 +11889,7 @@
     {
       "name": "Vtvcab On TV",
       "drawable": "vtvcab_on_tv",
-      "color": "#F15BB5",
+      "color": "#E6EDF3",
       "glyph": "app_V",
       "mark": "VO",
       "components": [
@@ -11890,7 +11903,7 @@
     {
       "name": "Vtvgo TV",
       "drawable": "vtvgo_tv",
-      "color": "#1982C4",
+      "color": "#34EB7A",
       "glyph": "app_V",
       "mark": "VT",
       "components": [
@@ -11904,7 +11917,7 @@
     {
       "name": "Waipu TV",
       "drawable": "waipu_tv",
-      "color": "#0061FF",
+      "color": "#A366FF",
       "glyph": "app_W",
       "mark": "WT",
       "mark_style": "lower",
@@ -11920,7 +11933,7 @@
     {
       "name": "Wako",
       "drawable": "wako",
-      "color": "#0061FF",
+      "color": "#FFB020",
       "glyph": "app_W",
       "mark": "WA",
       "components": [
@@ -11933,7 +11946,7 @@
     {
       "name": "WATCHA",
       "drawable": "frograms",
-      "color": "#53FC18",
+      "color": "#00D4FF",
       "glyph": "app_W",
       "mark": "WA",
       "components": [
@@ -11946,7 +11959,7 @@
     {
       "name": "Watcher TV",
       "drawable": "watcher_tv",
-      "color": "#FF0000",
+      "color": "#FF5CA8",
       "glyph": "app_W",
       "mark": "WT",
       "components": [
@@ -11961,7 +11974,7 @@
     {
       "name": "Watcho",
       "drawable": "watcho",
-      "color": "#FFFFFF",
+      "color": "#53FC18",
       "glyph": "app_W",
       "mark": "WA",
       "components": [
@@ -11975,7 +11988,7 @@
     {
       "name": "Wave IPTV",
       "drawable": "wave_iptv",
-      "color": "#FEC500",
+      "color": "#7C74FF",
       "glyph": "broadcast_W",
       "mark": "WI",
       "components": [
@@ -12001,7 +12014,7 @@
     {
       "name": "WeatherYou",
       "drawable": "rodrigmatrix",
-      "color": "#0061FF",
+      "color": "#FF7A2E",
       "glyph": "sport_W",
       "mark": "WE",
       "components": [
@@ -12028,7 +12041,7 @@
     {
       "name": "Wetv",
       "drawable": "wetv",
-      "color": "#0061FF",
+      "color": "#19D3C5",
       "glyph": "wetv_w",
       "components": [
         "com.tencent.qqlivei18n/com.ktcp.video.activity.MainActivity",
@@ -12070,7 +12083,7 @@
     {
       "name": "Wholphin",
       "drawable": "damontecres_2",
-      "color": "#0061FF",
+      "color": "#F04DE0",
       "glyph": "wholphin_arc",
       "components": [
         "com.github.damontecres.wholphin/com.github.damontecres.wholphin.MainActivity"
@@ -12083,7 +12096,7 @@
     {
       "name": "WiFi File Explorer",
       "drawable": "wififileexplorer",
-      "color": "#0061FF",
+      "color": "#B6F23A",
       "glyph": "folder_wifi",
       "components": [
         "com.dooblou.WiFiFileExplorer/com.dooblou.WiFiFileExplorerLib.Start"
@@ -12121,7 +12134,7 @@
     {
       "name": "Wink",
       "drawable": "wink",
-      "color": "#107534",
+      "color": "#3D8BFF",
       "glyph": "app_W",
       "mark": "WI",
       "components": [
@@ -12148,7 +12161,7 @@
     {
       "name": "Wondery",
       "drawable": "wondery",
-      "color": "#0061FF",
+      "color": "#FF4D4D",
       "glyph": "wondery_mark",
       "components": [
         "com.wondery/com.ensemble.streams.android.app.wonderytv.app.MainActivity"
@@ -12161,7 +12174,7 @@
     {
       "name": "World Radios",
       "drawable": "worldradios",
-      "color": "#53FC18",
+      "color": "#C95CFF",
       "glyph": "music_W",
       "components": [
         "com.digitalapps.worldradios/com.digitalapps.worldradios.activities.ActivitySplash"
@@ -12173,7 +12186,7 @@
     {
       "name": "Wow",
       "drawable": "wow",
-      "color": "#F15BB5",
+      "color": "#FFE14D",
       "glyph": "app_W",
       "mark": "WO",
       "components": [
@@ -12188,7 +12201,7 @@
     {
       "name": "Wow2",
       "drawable": "wow2",
-      "color": "#53FC18",
+      "color": "#4FACFE",
       "glyph": "app_W",
       "mark": "WO",
       "components": [
@@ -12202,7 +12215,7 @@
     {
       "name": "Wrestle Universe",
       "drawable": "wrestle_universe",
-      "color": "#53FC18",
+      "color": "#E6EDF3",
       "glyph": "app_W",
       "mark": "WU",
       "components": [
@@ -12229,7 +12242,7 @@
     {
       "name": "X TV",
       "drawable": "x_tv",
-      "color": "#0061FF",
+      "color": "#34EB7A",
       "glyph": "app_X",
       "mark": "XT",
       "components": [
@@ -12243,7 +12256,7 @@
     {
       "name": "X-plore",
       "drawable": "lonelycatgames",
-      "color": "#FEC500",
+      "color": "#A366FF",
       "glyph": "folder",
       "components": [
         "com.lonelycatgames.Xplore/com.lonelycatgames.Xplore.Browser",
@@ -12273,7 +12286,7 @@
     {
       "name": "XC IPTV",
       "drawable": "nathnetwork_2",
-      "color": "#53FC18",
+      "color": "#FFB020",
       "glyph": "broadcast_X",
       "mark": "XI",
       "components": [
@@ -12286,7 +12299,7 @@
     {
       "name": "Xiaomi Media Player",
       "drawable": "xiaomi_media_player",
-      "color": "#0061FF",
+      "color": "#00D4FF",
       "glyph": "media_wave_play",
       "components": [
         "com.xiaomi.mitv.mediaexplorer/com.xiaomi.mitv.mediaexplorer.NewScraperMainEntryActivity"
@@ -12300,7 +12313,7 @@
     {
       "name": "Xstream Play",
       "drawable": "xstream_play",
-      "color": "#FF0000",
+      "color": "#FF5CA8",
       "glyph": "app_X",
       "mark": "XP",
       "components": [
@@ -12314,7 +12327,7 @@
     {
       "name": "Xtream Player",
       "drawable": "xtreamplayeranddownloader",
-      "color": "#FFFFFF",
+      "color": "#53FC18",
       "glyph": "broadcast_X",
       "mark": "XP",
       "components": [
@@ -12327,7 +12340,7 @@
     {
       "name": "Xumo Play",
       "drawable": "xumo_play",
-      "color": "#0061FF",
+      "color": "#7C74FF",
       "glyph": "xumo_mark",
       "components": [
         "com.xumo.xumo/com.xumo.xumo.activity.SplashActivity"
@@ -12340,7 +12353,7 @@
     {
       "name": "Yacine TV",
       "drawable": "yacine_tv",
-      "color": "#0061FF",
+      "color": "#FF7A2E",
       "glyph": "app_Y",
       "mark": "YT",
       "components": [
@@ -12355,7 +12368,7 @@
     {
       "name": "Yandex Browser",
       "drawable": "yandex_browser",
-      "color": "#FFFFFF",
+      "color": "#19D3C5",
       "glyph": "browser_globe2",
       "components": [
         "com.yandex.browser.tv/com.yandex.browser.tv.tvactivity.TvActivity"
@@ -12368,7 +12381,7 @@
     {
       "name": "Yettel Selfcare",
       "drawable": "selfcare",
-      "color": "#9E9E9E",
+      "color": "#F04DE0",
       "glyph": "app_S",
       "mark": "YS",
       "components": [
@@ -12381,7 +12394,7 @@
     {
       "name": "Yettel TV",
       "drawable": "yettel_tv",
-      "color": "#53FC18",
+      "color": "#B6F23A",
       "glyph": "app_Y",
       "mark": "YT",
       "components": [
@@ -12395,7 +12408,7 @@
     {
       "name": "Yippee",
       "drawable": "yippee",
-      "color": "#FF0000",
+      "color": "#3D8BFF",
       "glyph": "app_Y",
       "mark": "YI",
       "components": [
@@ -12409,7 +12422,7 @@
     {
       "name": "Yle Areena",
       "drawable": "yle_areena",
-      "color": "#0061FF",
+      "color": "#FF4D4D",
       "glyph": "app_Y",
       "mark": "YA",
       "components": [
@@ -12423,7 +12436,7 @@
     {
       "name": "Yoga Download",
       "drawable": "yoga_download",
-      "color": "#0061FF",
+      "color": "#1FD19A",
       "glyph": "sport_Y",
       "mark": "YD",
       "components": [
@@ -12437,7 +12450,7 @@
     {
       "name": "Youcine",
       "drawable": "youcine",
-      "color": "#FFFFFF",
+      "color": "#C95CFF",
       "glyph": "app_Y",
       "mark": "YO",
       "components": [
@@ -12451,7 +12464,7 @@
     {
       "name": "Youku",
       "drawable": "youku",
-      "color": "#FEC500",
+      "color": "#FFE14D",
       "glyph": "app_Y",
       "mark": "YO",
       "components": [
@@ -12465,7 +12478,7 @@
     {
       "name": "Yousee Play",
       "drawable": "yousee_play",
-      "color": "#107534",
+      "color": "#4FACFE",
       "glyph": "app_Y",
       "mark": "YP",
       "components": [
@@ -12522,7 +12535,7 @@
     {
       "name": "Yowindow",
       "drawable": "yowindow",
-      "color": "#F15BB5",
+      "color": "#E6EDF3",
       "glyph": "app_Y",
       "mark": "YO",
       "components": [
@@ -12537,7 +12550,7 @@
     {
       "name": "Zaap TV",
       "drawable": "zaap_tv",
-      "color": "#53FC18",
+      "color": "#34EB7A",
       "glyph": "app_Z",
       "mark": "ZT",
       "components": [
@@ -12551,7 +12564,7 @@
     {
       "name": "Zank Remote",
       "drawable": "zank_remote",
-      "color": "#0061FF",
+      "color": "#A366FF",
       "glyph": "remote_pad",
       "components": [
         "zank.remote/zank.remote.MainActivity",
@@ -12566,7 +12579,7 @@
     {
       "name": "Zapp",
       "drawable": "zapp",
-      "color": "#7B2BFC",
+      "color": "#FFB020",
       "glyph": "app_Z",
       "mark": "ZA",
       "components": [
@@ -12580,15 +12593,16 @@
     {
       "name": "Zattoo",
       "drawable": "zattoo",
-      "color": "#FEC500",
-      "glyph": "browser_globe2",
+      "color": "#00D4FF",
+      "glyph": "broadcast_Z",
       "components": [
         "com.zattoo.player/com.utv.MainActivity"
       ],
       "category": "APP",
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_reviewed": null,
+      "mark": "ZA"
     },
     {
       "name": "Zdf",
@@ -12608,7 +12622,7 @@
     {
       "name": "ZEE5",
       "drawable": "graymatrix",
-      "color": "#0061FF",
+      "color": "#FF5CA8",
       "glyph": "zee5_mark",
       "components": [
         "com.graymatrix.did/com.zee5.android.launch.presentation.AppStartActivity"
@@ -12633,7 +12647,7 @@
     {
       "name": "Zeus",
       "drawable": "zeus",
-      "color": "#0061FF",
+      "color": "#53FC18",
       "glyph": "app_Z",
       "mark": "ZE",
       "components": [
@@ -12648,7 +12662,7 @@
     {
       "name": "Ziggo Go TV",
       "drawable": "ziggo_go_tv",
-      "color": "#107534",
+      "color": "#7C74FF",
       "glyph": "app_Z",
       "mark": "ZG",
       "components": [
@@ -12662,7 +12676,7 @@
     {
       "name": "Zona",
       "drawable": "zona",
-      "color": "#0061FF",
+      "color": "#FF7A2E",
       "glyph": "app_Z",
       "mark": "ZO",
       "components": [
@@ -12676,7 +12690,7 @@
     {
       "name": "Zumba",
       "drawable": "zumba",
-      "color": "#FF4C98",
+      "color": "#19D3C5",
       "glyph": "app_Z",
       "mark": "ZU",
       "components": [
@@ -12690,7 +12704,7 @@
     {
       "name": "AV Source",
       "drawable": "av_source",
-      "color": "#00D4FF",
+      "color": "#FF5CA8",
       "glyph": "monitor_wave",
       "components": [
         "com.spocky.projengmenu/.activities.input.SourceAVActivity",
@@ -12709,7 +12723,7 @@
     {
       "name": "Projectivy Settings",
       "drawable": "projectivy_settings",
-      "color": "#59637A",
+      "color": "#FFB020",
       "glyph": "gear",
       "components": [
         "com.spocky.projengmenu/.ui.settings.SettingsActivity",
@@ -12728,7 +12742,7 @@
     {
       "name": "Projectivy Categories",
       "drawable": "projectivy_categories",
-      "color": "#59637A",
+      "color": "#E6EDF3",
       "glyph": "folder",
       "components": [
         "com.spocky.projengmenu/.ui.guidedActions.activities.shortcut.CategoryShortcutActivity",
@@ -12747,7 +12761,7 @@
     {
       "name": "Projectivy Channels",
       "drawable": "projectivy_channels",
-      "color": "#59637A",
+      "color": "#34EB7A",
       "glyph": "tv_stack",
       "components": [
         "com.spocky.projengmenu/.ui.guidedActions.activities.shortcut.ChannelShortcutActivity",
@@ -12766,7 +12780,7 @@
     {
       "name": "TV Source",
       "drawable": "tv_source",
-      "color": "#00D4FF",
+      "color": "#E6EDF3",
       "glyph": "tv_antenna",
       "components": [
         "com.spocky.projengmenu/.activities.input.SourceTVActivity",
@@ -12785,7 +12799,7 @@
     {
       "name": "Source",
       "drawable": "source_input",
-      "color": "#00D4FF",
+      "color": "#34EB7A",
       "glyph": "input_screen",
       "components": [
         "com.spocky.projengmenu/.activities.input.SourceActivity",
@@ -12804,7 +12818,7 @@
     {
       "name": "Media Explorer",
       "drawable": "media_explorer",
-      "color": "#00D4FF",
+      "color": "#34EB7A",
       "glyph": "usb_media",
       "components": [
         "com.spocky.projengmenu/.ui.guidedActions.activities.shortcut.MediaExplorerShortcutActivity",
@@ -12823,7 +12837,7 @@
     {
       "name": "NextPlayer",
       "drawable": "nextplayer",
-      "color": "#FBBF24",
+      "color": "#19D3C5",
       "glyph": "film_N",
       "mark": "NE",
       "category": "PLAYER",
@@ -12842,7 +12856,7 @@
     {
       "name": "OTT Navigator",
       "drawable": "ottnavigator",
-      "color": "#34D399",
+      "color": "#4FACFE",
       "glyph": "broadcast_O",
       "mark": "ON",
       "category": "LIVE",
@@ -12861,7 +12875,7 @@
     {
       "name": "Televizo",
       "drawable": "televizo",
-      "color": "#4FACFE",
+      "color": "#B6F23A",
       "glyph": "broadcast_T",
       "mark": "TE",
       "category": "LIVE",
@@ -12908,7 +12922,7 @@
     {
       "name": "Användarmanual",
       "drawable": "anvandarmanual",
-      "color": "#8B949E",
+      "color": "#FF5CA8",
       "glyph": "tool_A",
       "mark": "AN",
       "components": [
@@ -12922,7 +12936,7 @@
     {
       "name": "Button Mapper TV",
       "drawable": "buttonmappertv",
-      "color": "#00BFA5",
+      "color": "#FF5CA8",
       "glyph": "tool_B",
       "components": [
         "com.tv.remote.button.mapper.remap/com.tv.remote.button.mapper.remap.LauncherActivity"
@@ -12936,7 +12950,7 @@
     {
       "name": "Fast Task Killer",
       "drawable": "fasttaskkiller",
-      "color": "#FF7A00",
+      "color": "#A366FF",
       "glyph": "tool_F",
       "components": [
         "jp.snowlife01.android.appkiller2/jp.snowlife01.android.appkiller2.Optimization",
@@ -12979,7 +12993,7 @@
     {
       "name": "Meddelandelåda",
       "drawable": "meddelandelada",
-      "color": "#2196F3",
+      "color": "#4FACFE",
       "glyph": "tool_M",
       "mark": "ME",
       "components": [
@@ -13007,7 +13021,7 @@
     {
       "name": "PMX",
       "drawable": "pmx",
-      "color": "#8B949E",
+      "color": "#F04DE0",
       "glyph": "tool_P",
       "mark": "PM",
       "components": [
@@ -13022,7 +13036,7 @@
     {
       "name": "TCL Home Passive",
       "drawable": "tcl_home_passive",
-      "color": "#9E9E9E",
+      "color": "#00D4FF",
       "glyph": "tool_T",
       "components": [
         "com.tcl.tv.tclhome_passive/com.tcl.tv.tclhome_passive.HomePassiveActivity"
@@ -13036,7 +13050,7 @@
     {
       "name": "TV",
       "drawable": "tcl_tv",
-      "color": "#1982C4",
+      "color": "#FF7A2E",
       "glyph": "broadcast_T",
       "mark": "TV",
       "components": [
@@ -13050,7 +13064,7 @@
     {
       "name": "User Center",
       "drawable": "user_center",
-      "color": "#0061FF",
+      "color": "#B6F23A",
       "glyph": "tool_U",
       "mark": "UC",
       "components": [
@@ -13078,7 +13092,7 @@
     {
       "name": "Works with Alexa",
       "drawable": "works_with_alexa",
-      "color": "#4FACFE",
+      "color": "#1FD19A",
       "glyph": "tool_W",
       "components": [
         "com.tcl.smartalexa/com.tcl.smartalexa.view.activity.MainActivity"

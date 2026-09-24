@@ -37,6 +37,25 @@ object BannersCompanion {
     /** The companion's display name, as launchers list it. */
     const val LABEL = "Core Builds Banners"
 
+    /**
+     * Set by the companion's BannersActivity on the icon-pick requests it
+     * forwards here. A launcher that opened *Core Builds Banners* gets 16:9
+     * art back; one that opened this pack gets glyphs, whatever the toggle
+     * says. The literal is repeated in BannersActivity.java (it cannot see
+     * this class); tests/test_banners_pack.py holds the two equal.
+     */
+    const val EXTRA_PICK_BANNERS = "tv.corebuilds.iconpack.extra.PICK_BANNERS"
+
+    /** onActivityResult request code for the companion install. */
+    const val INSTALL_REQUEST = 0xB4
+
+    /**
+     * The newest [ensure] call. Downloads are serialised but not cancelled,
+     * so an older request can still report after a newer one started; its
+     * callback must not revert the style or open a second installer.
+     */
+    private var ensureGeneration = 0L
+
     fun supported(): Boolean = PACKAGE.isNotEmpty()
 
     /** The art-style setting asks for banners and this build can deliver them. */
@@ -84,11 +103,19 @@ object BannersCompanion {
      * follow in the next line and the target cannot live in a field.
      * [takePendingApply] hands the key back on resume, once the package is
      * really there, so the apply lands on the launcher that was chosen.
+     *
+     * When the companion cannot be had - no install permission yet, a failed
+     * download, a refused hand-off - the art style goes back to Glyphs and
+     * [onUnavailable] runs, so the switch never claims banners the launcher
+     * is not showing.
      */
-    fun ensure(activity: Activity, launcherKey: String) {
+    fun ensure(activity: Activity, launcherKey: String, onUnavailable: () -> Unit = {}) {
         if (!supported()) return
+        val generation = ++ensureGeneration
         if (!UpdateInstaller.canInstall(activity)) {
             toast(activity, activity.getString(R.string.banners_install_permission))
+            revertToGlyphs(activity)
+            onUnavailable()
             UpdateInstaller.requestInstallPermission(activity)
             return
         }
@@ -96,35 +123,74 @@ object BannersCompanion {
         UpdateInstaller.downloadCompanion(
             activity, apkUrl(), PACKAGE, BuildConfig.VERSION_CODE
         ) { event ->
+            if (generation != ensureGeneration) return@downloadCompanion
             when (event) {
                 is UpdateInstaller.Event.Progress -> Unit
                 is UpdateInstaller.Event.Ready -> {
                     Prefs.setBannersPendingApply(activity, launcherKey)
                     try {
-                        UpdateInstaller.install(activity, event.file)
+                        UpdateInstaller.installForResult(activity, event.file, INSTALL_REQUEST)
                     } catch (e: Exception) {
                         Prefs.setBannersPendingApply(activity, null)
                         toast(activity, activity.getString(
                             R.string.banners_failed_fmt, e.message ?: e.javaClass.simpleName))
+                        revertToGlyphs(activity)
+                        onUnavailable()
                     }
                 }
-                is UpdateInstaller.Event.Failed ->
+                is UpdateInstaller.Event.Failed -> {
                     toast(activity, activity.getString(R.string.banners_failed_fmt, event.reason))
+                    revertToGlyphs(activity)
+                    onUnavailable()
+                }
             }
         }
     }
 
+    /** The art style the launcher is actually showing when banners fall through. */
+    private fun revertToGlyphs(context: Context) {
+        Prefs.set(context, Prefs.KEY_PICK_BANNERS, false)
+    }
+
+    /** What an install [ensure] started came to, as seen on the next resume. */
+    sealed class Pending {
+        /** The companion is in place: apply to this launcher key now. */
+        data class Ready(val launcherKey: String) : Pending()
+
+        /** The installer closed without installing it; the style is Glyphs again. */
+        object Declined : Pending()
+    }
+
     /**
-     * The launcher key an install [ensure] started was for, returned once
-     * when that install has landed. A declined install leaves the apply owed;
-     * it fires on the first resume after the companion does arrive, and never
-     * while it is absent.
+     * The system installer's answer to the install [ensure] started, from
+     * onActivityResult ([INSTALL_REQUEST]). Returned once: [Pending.Ready]
+     * with the launcher to apply to when the companion is really there,
+     * otherwise [Pending.Declined] - the user backed out or the install
+     * failed - and the art style is Glyphs again. Null when no install was
+     * owed (a stale result).
      */
-    fun takePendingApply(context: Context): String? {
+    fun onInstallResult(context: Context): Pending? {
+        val key = Prefs.bannersPendingApply(context) ?: return null
+        Prefs.setBannersPendingApply(context, null)
+        // The package, not the result code, decides: some installers report
+        // RESULT_CANCELED after "Done" on a successful install.
+        if (ready(context)) return Pending.Ready(key)
+        revertToGlyphs(context)
+        return Pending.Declined
+    }
+
+    /**
+     * On resume: the launcher an install is owed to, once the companion is
+     * installed and verified - covering a result that never arrived, such as
+     * the activity dying while the installer was up. Until then it returns
+     * null and changes nothing. A resume is not an installer answer: the
+     * installer can still be open in its own task.
+     */
+    fun takePendingApply(context: Context): Pending? {
         val key = Prefs.bannersPendingApply(context) ?: return null
         if (!ready(context)) return null
         Prefs.setBannersPendingApply(context, null)
-        return key
+        return Pending.Ready(key)
     }
 
     private fun toast(context: Context, message: String) {

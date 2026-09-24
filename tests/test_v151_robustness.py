@@ -147,10 +147,12 @@ class PickerTests(unittest.TestCase):
 
     def test_pick_default_follows_the_stored_shape(self):
         src = read("app/src/main/java/tv/corebuilds/iconpack/MainActivity.kt")
-        # The shipped default is square (matching the appfilter); the picker
-        # opens on whatever shape the user last delivered and the chips can
-        # still carve the banner drawable out of the glyph name.
-        self.assertIn("pickBanners = Prefs.pickerPrefersBanners(this)", src)
+        # Without a Banners companion (Pop) the shipped default is square
+        # (matching the appfilter); the picker opens on whatever shape the
+        # user last delivered and the chips can still carve the banner
+        # drawable out of the glyph name. With a companion the pack decides;
+        # tests/test_banners_pack.py covers that side.
+        self.assertIn("Prefs.pickerPrefersBanners(this)", src)
         self.assertIn("Prefs.set(this, Prefs.KEY_PICK_BANNERS, pickBanners)", src)
         self.assertIn("${item.drawable}_banner", src)
         self.assertIn("PICK_BANNER", src)

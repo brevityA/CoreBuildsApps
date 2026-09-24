@@ -592,10 +592,16 @@ class DiversityTests(unittest.TestCase):
         return [i for i in ICONS if self._is_generic(i["glyph"])]
 
     def test_generic_glyph_share_has_a_ceiling(self):
+        # 57.7% -> 58.1% on purpose: twelve apps (Fox Nation, Hoichoi, Sun NXT,
+        # Tencent Video, Viki, RaiPlay, Perfect Player, 3Player, Launcher
+        # Manager, NT at Home, Movie HD, Zattoo) had been drawing *other*
+        # companies' marks - Youku's, FloSports', OTT Navigator's - which
+        # counted as bespoke and was false. They are on their own monograms
+        # now. The ceiling still only ever comes down.
         share = len(self._generic()) / len(ICONS)
-        self.assertLessEqual(share, 0.577,
+        self.assertLessEqual(share, 0.581,
                              f"{share:.2%} of icons are generic glyphs, above "
-                             "the 57.7% ceiling")
+                             "the 58.1% ceiling")
 
     def test_bespoke_mark_count_has_a_floor(self):
         bespoke = len(ICONS) - len(self._generic())
@@ -621,30 +627,11 @@ class DiversityTests(unittest.TestCase):
     # it is (Tablo and TV App Repo, Thmanyah and ThreeNow). Frozen here so the
     # count can only fall: a new collision fails, and a pair that has been
     # given distinct art must be deleted from this list.
-    KNOWN_IDENTICAL = [
-        {"ace_stream", "allsaversocial"},
-        {"amazing_classics", "anime_cast"},
-        {"brollie", "buttonsremapper"},
-        {"damontecres", "zhushou"},
-        {"enjoytvandroid", "nathnetwork"},
-        {"fanetv", "filmnet_tv"},
-        {"mobisystems", "totalcommander", "ultimatefilemanager"},
-        {"filmfriend", "findlink", "firedown"},
-        {"l_equipe", "leankeyboard"},
-        {"launchbox", "lazycatsoftware"},
-        {"netfly", "nettv"},
-        {"panda_plus", "ppsspp"},
-        {"scrobble", "photoscreensaver"},
-        {"pepperbox_tv", "premiumize_tv"},
-        {"pigeoncast", "put_io"},
-        {"playkids", "apksrebrand"},
-        {"quasitv", "quicksupport"},
-        {"refreshrate", "rezka"},
-        {"tablofast", "tv_app_repo"},
-        {"thmanyah", "mediaworks"},
-        {"fight", "twilight"},
-        {"toggo", "torrserve"},
-    ]
+    # Emptied in 1.9.4: the 22 groups frozen here in 1.9.3 were given distinct
+    # accents, and build_icons.py's render gate now catches the cause (two
+    # brandless icons used to excuse each other). The list stays so the
+    # shrink-only contract below still has something to hold.
+    KNOWN_IDENTICAL: list[set[str]] = []
 
     @staticmethod
     def _identical_across_apps() -> list[set[str]]:

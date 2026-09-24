@@ -1,3 +1,5 @@
+import json
+import os
 import re
 
 from typeface import adaptive_lockup, lockup_cap, monogram_body, monogram_text, monogram_scaled
@@ -561,8 +563,41 @@ def render_svg(glyph_name, color, glow=False, *, monochrome=False,
         body = lit(body, color)
     if gradient and not monochrome:
         body = apply_gradient(body, color, gradient)
+    body = classic_fit(glyph_name, body)
     return (f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {GRID} {GRID}" '
             f'width="{GRID}" height="{GRID}">\n  {body}\n</svg>\n')
+
+
+_CLASSIC_FIT = None
+
+
+def classic_fit(glyph_name, body):
+    """Centre and, if undersized, scale a square glyph by its committed fit.
+
+    tools/classic_glyph_fit.json (written by tools/fit_classic_glyphs.py from
+    committed metrics) holds [scale, ink cx, ink cy] for the glyphs that need
+    it; every other glyph is returned untouched. Stroke widths are divided by
+    the scale first, so the monoline weight is the same after the transform.
+    """
+    global _CLASSIC_FIT
+    if _CLASSIC_FIT is None:
+        path = os.path.join(os.path.dirname(os.path.abspath(__file__)),
+                            "classic_glyph_fit.json")
+        try:
+            with open(path, encoding="utf-8") as fh:
+                _CLASSIC_FIT = json.load(fh)["fits"]
+        except FileNotFoundError:
+            _CLASSIC_FIT = {}
+    fit = _CLASSIC_FIT.get(glyph_name)
+    if not fit:
+        return body
+    scale, cx, cy = fit
+    if scale != 1:
+        body = _SW_RE.sub(
+            lambda m: f'stroke-width="{float(m.group(1)) / scale:.2f}"', body)
+    half = GRID / 2
+    return (f'<g transform="translate({half:g} {half:g}) scale({scale:g}) '
+            f'translate({-cx:g} {-cy:g})">{body}</g>')
 
 
 def gradient_defs(stops, y0=80, y1=432, gid="cbGrad"):

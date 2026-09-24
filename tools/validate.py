@@ -352,11 +352,18 @@ def main():
             check(bmode == "RGBA",
                   f"{i['name']}: banner mode {bmode}, expected RGBA")
     if banner_icons:
-        listed = (RES / "xml" / "drawable.xml").read_text()
+        # Each pack's browser offers its own art: the glyph pack lists no
+        # banners, Core Builds Banners lists every one.
+        own = (RES / "xml" / "drawable.xml").read_text()
+        check("_banner\"" not in own,
+              "app drawable.xml lists banners — the glyph pack's icon browser "
+              "must offer glyphs only; banners are Core Builds Banners'")
+        listed = (ROOT / "banners" / "src" / "main" / "res" / "xml" /
+                  "drawable.xml").read_text()
         for i in banner_icons:
             check(f'{i["drawable"]}_banner' in listed,
-                  f"{i['name']}: banner not listed in drawable.xml — "
-                  f"not selectable in the launcher's icon browser")
+                  f"{i['name']}: banner not listed in the Banners pack's "
+                  f"drawable.xml — not selectable in the launcher's icon browser")
 
     # 5e. Banner composition, measured against the reference pack's grid
     # (Projectivy Icon Pack 1.1.9: 1002 icons, median ink 78% x 43%, centred
