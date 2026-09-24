@@ -13,7 +13,7 @@ head_sampling_rate = 1
 # shared across isolates, no KV writes. Hourly budget then lives in KV.
 [[ratelimits]]
 name = "RL_ICON_REQUEST"
-namespace_id = "3101"
+namespace_id = "3201"
 simple = { limit = 5, period = 60 }
 
 # Layer 2: hourly buckets + the cached GitHub installation token.
@@ -49,7 +49,7 @@ name = "corebuilds-icon-request-staging"
 
 [[env.staging.ratelimits]]
 name = "RL_ICON_REQUEST"
-namespace_id = "3102"
+namespace_id = "3202"
 simple = { limit = 30, period = 60 }
 
 [[env.staging.kv_namespaces]]

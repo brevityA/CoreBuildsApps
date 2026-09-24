@@ -1,5 +1,11 @@
 name: Deploy icon-request broker
 
+# PREFER the Core-Builds workflow: brevityA/Core-Builds →
+# "Deploy icon-request broker (CoreBuildsApps)" deploys this same code with
+# the Cloudflare credentials that repo already holds (secrets cannot cross
+# repositories). This one remains as a fallback for when this repo is given
+# its own copy of the token.
+#
 # Manual-by-design (the webtools repo's deploy CI runs a version of this on
 # push; here enabling push-to-production is deferred until the first manual
 # production deploy exists — a push-triggered deploy would just fail loudly
