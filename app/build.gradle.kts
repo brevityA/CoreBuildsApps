@@ -11,8 +11,8 @@ android {
         applicationId = "tv.corebuilds.iconpack"
         minSdk = 21
         targetSdk = 34
-        versionCode = 36
-        versionName = "1.9.4"
+        versionCode = 37
+        versionName = "1.9.5"
 
         // Read by the updater code: where to check for a newer release and
         // which FileProvider authority serves the downloaded APK.
@@ -31,12 +31,12 @@ android {
         // English-only: resConfigs strips the ~70 translated locales the
         // support libraries ship, which nothing in this app reads.
         resConfigs("en")
-        // The 16:9 twin (banners/) the Glyphs/Banners toggle points launchers
-        // at. Empty in the candidate build, which has no companion.
+        // The square twin (glyphs/) the Banners/Glyphs toggle points
+        // launchers at. Empty in the candidate build, which has no companion.
         buildConfigField(
             "String",
-            "BANNERS_PACKAGE",
-            "\"tv.corebuilds.iconpack.banners\"",
+            "GLYPHS_PACKAGE",
+            "\"tv.corebuilds.iconpack.glyphs\"",
         )
     }
 
@@ -55,8 +55,8 @@ android {
             buildConfigField("String", "TEST_SOURCE_COMMIT", "\"$sourceCommit\"")
             buildConfigField("String", "UPDATE_AUTHORITY", "\"tv.corebuilds.iconpack.test.update\"")
             // Debug-signed: it could never pass the companion's signature
-            // check against a release-signed Banners APK, so it offers none.
-            buildConfigField("String", "BANNERS_PACKAGE", "\"\"")
+            // check against a release-signed Glyphs APK, so it offers none.
+            buildConfigField("String", "GLYPHS_PACKAGE", "\"\"")
             manifestPlaceholders["fileProviderAuthority"] = "tv.corebuilds.iconpack.test.update"
         }
     }

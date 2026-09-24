@@ -3,22 +3,23 @@ package tv.corebuilds.iconpack
 /**
  * The motion loops that can play as the system live wallpaper.
  *
- * Three of the Core Motion procedural loops are the Deep Space companions to
- * the `series-9-deep-space` stills — the same sky, moving. They live in
+ * The twelve Deep Space loops are the `series-9-deep-space` walls themselves,
+ * moving (rendered from the stills by tools/build_deep_space_loops.py: each
+ * scene's own stars twinkle and its glow shimmers). They live in
  * `Motion/live/` in the repo and are fetched on demand from raw GitHub, exactly
  * like a full-size still: nothing is bundled except a still frame for the grid
  * and for the engine's fallback while the MP4 is not on the device yet.
  *
- * The list is deliberately short. A live wallpaper plays behind every app on
- * the home screen, forever, so each entry is a real choice rather than a
- * catalogue; and each one is ~2-7 MB of video the device has to keep.
+ * One loop per wall and nothing else: the list is exactly the Deep Space set
+ * in Motion/live-feed.json (tests/test_live_wallpaper.py holds the two
+ * equal). Only the chosen loop is downloaded, ~1.3-3.4 MB of video.
  */
 data class Loop(
-    /** Stable preference value, e.g. "nebula-drift". Never renamed once shipped. */
+    /** Stable preference value: the wall's slug, e.g. "event-horizon". Never renamed once shipped. */
     val id: String,
     /** Display name, e.g. "Nebula Drift". */
     val title: String,
-    /** MP4 file name in `Motion/live/`, e.g. "coremotion-live-11-nebula-drift.mp4". */
+    /** MP4 file name in `Motion/live/`, e.g. "coremotion-live-11-deep-space-event-horizon.mp4". */
     val fileName: String,
     /** Full-resolution MP4 URL (raw GitHub). */
     val url: String,
@@ -45,7 +46,7 @@ object LiveLoop {
         "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Motion/live/"
 
     /**
-     * The three Deep Space companions, in picker order.
+     * The twelve Deep Space loops, in wall order (85-96).
      *
      * The first entry is the default: [Prefs.liveLoopId] falls back to it, and
      * so does the engine when it reads a value it does not recognise, so a
@@ -54,28 +55,100 @@ object LiveLoop {
      */
     val LOOPS: List<Loop> = listOf(
         Loop(
-            id = "nebula-drift",
-            title = "Nebula Drift",
-            fileName = "coremotion-live-11-nebula-drift.mp4",
-            url = RAW_BASE + "coremotion-live-11-nebula-drift.mp4",
-            thumbUrl = RAW_BASE + "thumbs/coremotion-live-11-nebula-drift.jpg",
-            thumbAsset = "$THUMB_DIR/coremotion-live-11-nebula-drift.jpg"
-        ),
-        Loop(
             id = "event-horizon",
             title = "Event Horizon",
-            fileName = "coremotion-live-12-event-horizon.mp4",
-            url = RAW_BASE + "coremotion-live-12-event-horizon.mp4",
-            thumbUrl = RAW_BASE + "thumbs/coremotion-live-12-event-horizon.jpg",
-            thumbAsset = "$THUMB_DIR/coremotion-live-12-event-horizon.jpg"
+            fileName = "coremotion-live-11-deep-space-event-horizon.mp4",
+            url = RAW_BASE + "coremotion-live-11-deep-space-event-horizon.mp4",
+            thumbUrl = RAW_BASE + "thumbs/coremotion-live-11-deep-space-event-horizon.jpg",
+            thumbAsset = "$THUMB_DIR/coremotion-live-11-deep-space-event-horizon.jpg"
         ),
         Loop(
-            id = "ion-storm",
-            title = "Ion Storm",
-            fileName = "coremotion-live-13-ion-storm.mp4",
-            url = RAW_BASE + "coremotion-live-13-ion-storm.mp4",
-            thumbUrl = RAW_BASE + "thumbs/coremotion-live-13-ion-storm.jpg",
-            thumbAsset = "$THUMB_DIR/coremotion-live-13-ion-storm.jpg"
+            id = "nebula-drift",
+            title = "Nebula Drift",
+            fileName = "coremotion-live-12-deep-space-nebula-drift.mp4",
+            url = RAW_BASE + "coremotion-live-12-deep-space-nebula-drift.mp4",
+            thumbUrl = RAW_BASE + "thumbs/coremotion-live-12-deep-space-nebula-drift.jpg",
+            thumbAsset = "$THUMB_DIR/coremotion-live-12-deep-space-nebula-drift.jpg"
+        ),
+        Loop(
+            id = "starfield",
+            title = "Starfield",
+            fileName = "coremotion-live-13-deep-space-starfield.mp4",
+            url = RAW_BASE + "coremotion-live-13-deep-space-starfield.mp4",
+            thumbUrl = RAW_BASE + "thumbs/coremotion-live-13-deep-space-starfield.jpg",
+            thumbAsset = "$THUMB_DIR/coremotion-live-13-deep-space-starfield.jpg"
+        ),
+        Loop(
+            id = "ringed-planet",
+            title = "Ringed Planet",
+            fileName = "coremotion-live-14-deep-space-ringed-planet.mp4",
+            url = RAW_BASE + "coremotion-live-14-deep-space-ringed-planet.mp4",
+            thumbUrl = RAW_BASE + "thumbs/coremotion-live-14-deep-space-ringed-planet.jpg",
+            thumbAsset = "$THUMB_DIR/coremotion-live-14-deep-space-ringed-planet.jpg"
+        ),
+        Loop(
+            id = "galaxy-spiral",
+            title = "Galaxy Spiral",
+            fileName = "coremotion-live-15-deep-space-galaxy-spiral.mp4",
+            url = RAW_BASE + "coremotion-live-15-deep-space-galaxy-spiral.mp4",
+            thumbUrl = RAW_BASE + "thumbs/coremotion-live-15-deep-space-galaxy-spiral.jpg",
+            thumbAsset = "$THUMB_DIR/coremotion-live-15-deep-space-galaxy-spiral.jpg"
+        ),
+        Loop(
+            id = "aurora-orbit",
+            title = "Aurora Orbit",
+            fileName = "coremotion-live-16-deep-space-aurora-orbit.mp4",
+            url = RAW_BASE + "coremotion-live-16-deep-space-aurora-orbit.mp4",
+            thumbUrl = RAW_BASE + "thumbs/coremotion-live-16-deep-space-aurora-orbit.jpg",
+            thumbAsset = "$THUMB_DIR/coremotion-live-16-deep-space-aurora-orbit.jpg"
+        ),
+        Loop(
+            id = "comet-lane",
+            title = "Comet Lane",
+            fileName = "coremotion-live-17-deep-space-comet-lane.mp4",
+            url = RAW_BASE + "coremotion-live-17-deep-space-comet-lane.mp4",
+            thumbUrl = RAW_BASE + "thumbs/coremotion-live-17-deep-space-comet-lane.jpg",
+            thumbAsset = "$THUMB_DIR/coremotion-live-17-deep-space-comet-lane.jpg"
+        ),
+        Loop(
+            id = "deep-field",
+            title = "Deep Field",
+            fileName = "coremotion-live-18-deep-space-deep-field.mp4",
+            url = RAW_BASE + "coremotion-live-18-deep-space-deep-field.mp4",
+            thumbUrl = RAW_BASE + "thumbs/coremotion-live-18-deep-space-deep-field.jpg",
+            thumbAsset = "$THUMB_DIR/coremotion-live-18-deep-space-deep-field.jpg"
+        ),
+        Loop(
+            id = "ember-nova",
+            title = "Ember Nova",
+            fileName = "coremotion-live-19-deep-space-ember-nova.mp4",
+            url = RAW_BASE + "coremotion-live-19-deep-space-ember-nova.mp4",
+            thumbUrl = RAW_BASE + "thumbs/coremotion-live-19-deep-space-ember-nova.jpg",
+            thumbAsset = "$THUMB_DIR/coremotion-live-19-deep-space-ember-nova.jpg"
+        ),
+        Loop(
+            id = "hex-station",
+            title = "Hex Station",
+            fileName = "coremotion-live-20-deep-space-hex-station.mp4",
+            url = RAW_BASE + "coremotion-live-20-deep-space-hex-station.mp4",
+            thumbUrl = RAW_BASE + "thumbs/coremotion-live-20-deep-space-hex-station.jpg",
+            thumbAsset = "$THUMB_DIR/coremotion-live-20-deep-space-hex-station.jpg"
+        ),
+        Loop(
+            id = "cyan-supernova",
+            title = "Cyan Supernova",
+            fileName = "coremotion-live-21-deep-space-cyan-supernova.mp4",
+            url = RAW_BASE + "coremotion-live-21-deep-space-cyan-supernova.mp4",
+            thumbUrl = RAW_BASE + "thumbs/coremotion-live-21-deep-space-cyan-supernova.jpg",
+            thumbAsset = "$THUMB_DIR/coremotion-live-21-deep-space-cyan-supernova.jpg"
+        ),
+        Loop(
+            id = "dark-side-moon",
+            title = "Dark Side Moon",
+            fileName = "coremotion-live-22-deep-space-dark-side-moon.mp4",
+            url = RAW_BASE + "coremotion-live-22-deep-space-dark-side-moon.mp4",
+            thumbUrl = RAW_BASE + "thumbs/coremotion-live-22-deep-space-dark-side-moon.jpg",
+            thumbAsset = "$THUMB_DIR/coremotion-live-22-deep-space-dark-side-moon.jpg"
         ),
     )
 

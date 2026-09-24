@@ -17,7 +17,7 @@
 <!-- suite-stamp:start -->
 > | App | Current | What it does | Downloader | Release tag |
 > |---|---:|---|---|---|
-> | **[Core Builds Icon Pack](#-core-builds-icon-pack)** | `v1.9.4` | 961 transparent icons + 96 wallpapers for Projectivy Launcher | `5270601` | [`v*` / `iconpack`](../../releases) |
+> | **[Core Builds Icon Pack](#-core-builds-icon-pack)** | `v1.9.5` | 961 transparent icons + 96 wallpapers for Projectivy Launcher | `5270601` | [`v*` / `iconpack`](../../releases) |
 > | **[Core Line](#-core-line)** | `v1.3.0` | Sports scores & channel RSS ticker (chyron) | `7375676` | [`coreline-v*` / `coreline`](../../releases) |
 > | **[Core Shift](#-core-shift)** | `v2.3.5` | Android TV screensaver + motion wallpaper browser | `8829421` | [`shift-v*` / `shift`](../../releases) |
 > | **[Core Motion](#-core-motion)** | `v1.0.0` | Projectivy wallpaper-provider plugin for Core Motion loops | `[USER TO SUPPLY]` | [`motion-v*` / `motion`](../../releases) |
@@ -84,7 +84,7 @@ Series 9 has three moving companions — the same sky, animated, playable as the
 
 ### 16:9 banners
 
-Every icon ships a **320×180 transparent banner** for Projectivy's wide-card layout — monoline glyph, cyan→violet rail, category, path-outlined name. The in-app Glyphs/Banners toggle switches styles by pointing launchers at the pack or its Banners companion package. Generated from `tools/build_banners.py`.
+Every icon ships a **320×180 transparent banner** for Projectivy's wide-card layout — monoline glyph, cyan→violet rail, category, path-outlined name. Banners are what the pack applies by default; the in-app Art style toggle switches to square glyphs by pointing launchers at the small Core Builds Glyphs companion instead. Generated from `tools/build_banners.py`.
 
 <div align="center"><img src="docs/banner-preview.png" alt="Banner styles" width="760"></div>
 

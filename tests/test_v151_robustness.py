@@ -147,11 +147,11 @@ class PickerTests(unittest.TestCase):
 
     def test_pick_default_follows_the_stored_shape(self):
         src = read("app/src/main/java/tv/corebuilds/iconpack/MainActivity.kt")
-        # Without a Banners companion (Pop) the shipped default is square
-        # (matching the appfilter); the picker opens on whatever shape the
-        # user last delivered and the chips can still carve the banner
-        # drawable out of the glyph name. With a companion the pack decides;
-        # tests/test_banners_pack.py covers that side.
+        # Without a companion (the candidate build) the shipped default is
+        # the banner (matching the appfilter); the picker opens on whatever
+        # shape the user last delivered and the chips can still carve the
+        # banner drawable out of the glyph name. With a companion the pack decides;
+        # tests/test_glyphs_pack.py covers that side.
         self.assertIn("Prefs.pickerPrefersBanners(this)", src)
         self.assertIn("Prefs.set(this, Prefs.KEY_PICK_BANNERS, pickBanners)", src)
         self.assertIn("${item.drawable}_banner", src)
@@ -201,24 +201,24 @@ class MatchingTests(unittest.TestCase):
             self.twitch["components"],
         )
 
-    def test_twitch_appfilter_points_at_glyph(self):
+    def test_twitch_appfilter_points_at_banner(self):
         for comp in (
             "tv.twitch.android.app/tv.twitch.starshot64.app.StarshotActivity",
             "tv.twitch.android.app/tv.twitch.android.apps.TVLandingActivity",
         ):
             self.assertIn(
-                f'ComponentInfo{{{comp}}}" drawable="twitch"',
+                f'ComponentInfo{{{comp}}}" drawable="twitch_banner"',
                 self.af,
             )
 
-    def test_appfilter_default_is_square_glyphs(self):
+    def test_appfilter_default_is_banners(self):
         root = ET.parse(RES / "xml" / "appfilter.xml").getroot()
         for item in root.findall("item"):
             d = item.get("drawable") or ""
-            self.assertFalse(
+            self.assertTrue(
                 d.endswith("_banner"),
-                f"{item.get('component')} maps to {d} — glyphs are the "
-                "default since 1.9.2, banners are opt-in",
+                f"{item.get('component')} maps to {d} — banners are the "
+                "icon pack's default since 1.9.5; glyphs are Core Builds Glyphs'",
             )
 
 

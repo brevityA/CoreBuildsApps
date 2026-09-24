@@ -1,8 +1,14 @@
-# Core Builds Motion — live wallpapers (procedural)
+# Core Builds Motion — live wallpapers
 
-Thirteen **genuinely animated** live-wallpaper loops — actual moving content,
-not a still with a pan. Generated procedurally by ffmpeg in the Core Builds
-§03 palette, so they're original and licenseable (no third-party footage).
+Twenty-two **genuinely animated** live-wallpaper loops — actual moving
+content, not a still with a pan — all original and licenseable (no
+third-party footage):
+
+- **Clips 01–10** are generated procedurally by ffmpeg in the Core Builds §03
+  palette (`tools/build_motion_feed.py`).
+- **Clips 11–22** are the Deep Space walls moving: rendered from the committed
+  `series-9-deep-space` stills by `tools/build_deep_space_loops.py`, with each
+  scene's own stars twinkling and its glow shimmering.
 
 | # | File | Title | Technique | Bitrate |
 |---|---|---|---|---|
@@ -16,12 +22,24 @@ not a still with a pan. Generated procedurally by ffmpeg in the Core Builds
 | 08 | `coremotion-live-08-square-cyan.mp4` | Square Cyan | square gradient field, cyan on night | ~0.2 Mb/s |
 | 09 | `coremotion-live-09-carpet.mp4` | Carpet | Sierpinski carpet, violet-tinted | ~1.2 Mb/s |
 | 10 | `coremotion-live-10-spiral-blue.mp4` | Spiral Build Blue | flowing spiral gradient, build-blue→cyan | ~1.2 Mb/s |
-| 11 | `coremotion-live-11-nebula-drift.mp4` | Nebula Drift | slow spiral gas veils, violet→cyan, vignetted | ~1.5 Mb/s |
-| 12 | `coremotion-live-12-event-horizon.mp4` | Event Horizon | radial pulse, dark core, cyan ring | ~0.4 Mb/s |
-| 13 | `coremotion-live-13-ion-storm.mp4` | Ion Storm | cellular automaton (rule 90 rain), blue-tinted | ~2.5 Mb/s |
+| 11 | `coremotion-live-11-deep-space-event-horizon.mp4` | Event Horizon | wall 85, moving: its stars twinkle, its glow shimmers | ~0.9 Mb/s |
+| 12 | `coremotion-live-12-deep-space-nebula-drift.mp4` | Nebula Drift | wall 86, moving: its stars twinkle, its glow shimmers | ~0.9 Mb/s |
+| 13 | `coremotion-live-13-deep-space-starfield.mp4` | Starfield | wall 87, moving: its stars twinkle, its glow shimmers | ~1.3 Mb/s |
+| 14 | `coremotion-live-14-deep-space-ringed-planet.mp4` | Ringed Planet | wall 88, moving: its stars twinkle, its glow shimmers | ~1.1 Mb/s |
+| 15 | `coremotion-live-15-deep-space-galaxy-spiral.mp4` | Galaxy Spiral | wall 89, moving: its stars twinkle, its glow shimmers | ~0.7 Mb/s |
+| 16 | `coremotion-live-16-deep-space-aurora-orbit.mp4` | Aurora Orbit | wall 90, moving: its stars twinkle, its glow shimmers | ~0.5 Mb/s |
+| 17 | `coremotion-live-17-deep-space-comet-lane.mp4` | Comet Lane | wall 91, moving: its stars twinkle, its glow shimmers | ~0.8 Mb/s |
+| 18 | `coremotion-live-18-deep-space-deep-field.mp4` | Deep Field | wall 92, moving: its stars twinkle, its glow shimmers | ~0.6 Mb/s |
+| 19 | `coremotion-live-19-deep-space-ember-nova.mp4` | Ember Nova | wall 93, moving: its stars twinkle, its glow shimmers | ~1.0 Mb/s |
+| 20 | `coremotion-live-20-deep-space-hex-station.mp4` | Hex Station | wall 94, moving: its stars twinkle, its glow shimmers | ~0.6 Mb/s |
+| 21 | `coremotion-live-21-deep-space-cyan-supernova.mp4` | Cyan Supernova | wall 95, moving: its stars twinkle, its glow shimmers | ~0.9 Mb/s |
+| 22 | `coremotion-live-22-deep-space-dark-side-moon.mp4` | Dark Side Moon | wall 96, moving: its stars twinkle, its glow shimmers | ~1.0 Mb/s |
 
-Clips 11–13 are the Deep Space companions to the icon pack's
-`series-9-deep-space` stills: the same sky, moving.
+Clips 11–22 are the icon pack's `series-9-deep-space` walls themselves, in
+wall order, rendered from the committed 4K stills by
+`tools/build_deep_space_loops.py`: each scene's own stars twinkle and its
+nebulae shimmer, under a slow camera drift, and every motion completes whole
+cycles so the loop has no seam.
 
 All: 1920×1080, 30 fps, 20 s, H.264, **silent**, `+faststart`.
 
@@ -44,6 +62,10 @@ procedural generators so the brand stays fully owned.
 pip install imageio-ffmpeg
 python tools/build_motion_feed.py
 ```
+
+`build_motion_feed.py` renders the ten procedural clips and writes the feed
+(it lists the Deep Space loops but does not render them). Re-render those
+with `python tools/build_deep_space_loops.py` (`--only 85` for one wall).
 
 Edit the `CLIPS` list in `tools/build_motion_feed.py` to change palettes,
 speeds, seeds, or add generators. To serve **real 4K footage** instead, drop

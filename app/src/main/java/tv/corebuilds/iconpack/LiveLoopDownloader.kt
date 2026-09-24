@@ -35,7 +35,7 @@ object LiveLoopDownloader {
     private const val DIR = "live"
     private const val MIN_BYTES = 64L * 1024L          // a real loop is 1-8 MB
     private const val MAX_BYTES = 32L * 1024L * 1024L
-    private const val MAX_CACHE_FILES = 6              // three loops plus churn
+    private const val MAX_CACHE_FILES = 6              // a few recent previews
 
     private val ALLOWED_HOSTS = setOf(
         "raw.githubusercontent.com",
@@ -216,12 +216,18 @@ object LiveLoopDownloader {
         false
     }
 
-    /** Keep the most recently fetched files up to [MAX_CACHE_FILES]. */
+    /**
+     * Keep the most recently fetched files up to [MAX_CACHE_FILES], never
+     * evicting the loop that is set as the wallpaper: with twelve loops to
+     * preview, age alone would let browsing delete the video the home screen
+     * is playing, and the engine would drop to its still frame.
+     */
     private fun trimCache(context: Context) {
+        val active = LiveLoop.byId(Prefs.liveLoopId(context)).fileName
         val files = cacheDir(context).listFiles()
-            ?.filter { !it.name.endsWith(".part") }
+            ?.filter { !it.name.endsWith(".part") && it.name != active }
             ?.sortedByDescending { it.lastModified() }
             ?: return
-        files.drop(MAX_CACHE_FILES).forEach { runCatching { it.delete() } }
+        files.drop(MAX_CACHE_FILES - 1).forEach { runCatching { it.delete() } }
     }
 }

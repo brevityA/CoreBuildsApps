@@ -698,9 +698,9 @@ def catalogue_frame(with_update_bar: bool) -> tuple[Image.Image, str]:
     ry += gap
     tile_h = dp(DIMENS["cb_tile_icon"]) + 2 * dp(DIMENS["cb_card_padding"])
     # (title, subtitle, switch state or None), in activity_main.xml's order.
-    # The Art style row shows the shipped default, Glyphs (switch off).
+    # The Art style row shows the shipped default, Banners (switch on).
     rows = [
-        (STRINGS["art_style_label"], STRINGS["art_style_glyphs"], False),
+        (STRINGS["art_style_label"], STRINGS["art_style_banners"], True),
         (STRINGS["wp_entry"], fmt(STRINGS["wp_entry_sub_fmt"], len(WALLPAPERS)), None),
         (STRINGS["settings_label"], STRINGS["settings_entry_sub"], None),
         (STRINGS["about_label"],
@@ -759,10 +759,14 @@ def catalogue_frame(with_update_bar: bool) -> tuple[Image.Image, str]:
                 focus_ring(img, box)
             else:
                 card(img, box)
+            # The catalogue opens on the shipped art style, Banners: the
+            # tile's ImageView is the card's width by cb_tile_icon tall,
+            # fitCenter, so a 16:9 banner spans the card.
             icon = dp(DIMENS["cb_tile_icon"])
-            cx, cy = (box[0] + box[2]) // 2, (box[1] + box[3]) // 2
-            paste_art(img, art_path(ICONS_DIR, PACK[index], ALIASES),
-                      [cx - icon // 2, cy - icon // 2, cx + icon // 2, cy + icon // 2])
+            pad = dp(DIMENS["cb_card_padding"])
+            cy = (box[1] + box[3]) // 2
+            paste_art(img, art_path(ICONS_DIR, f"{PACK[index]}_banner", ALIASES),
+                      [box[0] + pad, cy - icon // 2, box[2] - pad, cy + icon // 2])
         py += tile_h
         row += 1
 
@@ -892,7 +896,7 @@ def settings_order() -> list:
         ("group", "settings_group_display"),
         ("switch", "settings_motion_title", "settings_motion_sub", False),
         ("switch", "settings_amoled_title", "settings_amoled_sub", False),
-        ("switch", "settings_banner_title", "settings_banner_sub", False),
+        ("switch", "settings_banner_title", "settings_banner_sub", True),
         ("group", "settings_group_storage"),
         ("row", "settings_cache_title", "settings_cache_sub", "settings_cache_clear"),
         ("group", "settings_group_launcher"),
@@ -984,13 +988,13 @@ def settings_display_frame() -> tuple[Image.Image, str]:
     order = settings_order()
     # The same list parked at the DISPLAY group: this frame exists since the
     # banner-previews switch landed (1.9.2), because a new toggle nobody can
-    # see is not a toggle. Focus ring on the new row, in its shipped state:
-    # off, square glyphs.
+    # see is not a toggle. Focus ring on the row, in its shipped state: on,
+    # banners (the default again since 1.9.5).
     while order and order[0][1] != "settings_group_display":
         order.pop(0)
     paint_settings_viewport(img, order, "settings_banner_title")
     note = ("MOCKUP - settings frame scrolled to DISPLAY; example: focus on the "
-            "banner previews switch (off - square glyphs, the 1.9.2 default)")
+            "art style switch (on - banners, the 1.9.5 default)")
     return img, note
 
 

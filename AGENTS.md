@@ -6,7 +6,7 @@
 
 | Product | Path | Package ID | Version | Downloader / stable tag |
 |---|---|---|---:|---|
-| Core Builds Icon Pack | `app/` with repo-root Gradle | `tv.corebuilds.iconpack` | `1.9.4` | `5270601` / `iconpack` |
+| Core Builds Icon Pack | `app/` with repo-root Gradle | `tv.corebuilds.iconpack` | `1.9.5` | `5270601` / `iconpack` |
 | Core Line | `ticker/` + `ticker/android/` | `dev.corebuilds.line` | `1.3.0` | `7375676` / `coreline` |
 | Core Shift | `shift/` | `dev.corebuilds.shift` | `2.3.5` | `8829421` / `shift` |
 | Core Motion | `motion-plugin/` | `tv.corebuilds.motion` | `1.0.0` | `[USER TO SUPPLY]` / `motion` |
@@ -16,20 +16,23 @@
 keeps one icon pack. Their shipped tags stay as history; do not resurrect
 their modules, manifests or workflows.)
 
-`banners/` is the one intentional exception to "one app, one Gradle root",
-and it is not a separate product: Core
-Builds Banners (`tv.corebuilds.iconpack.banners`) is the icon pack's 16:9
-companion, released in the same `v*` release as `iconpack-banners-release.apk`
-and versioned from `app/build.gradle.kts`. It exists because a launcher
-auto-applies whatever the selected package's appfilter maps, so the in-app
-Glyphs/Banners toggle works by pointing launchers at one package or the other
-(`BannersCompanion.kt`). It has no Kotlin, no dependencies, no launcher entry
-and no committed art: `python tools/build_banners_pack.py` derives its XML from
-the glyph pack's generated appfilter (run it after `build_icons.py` and
-`build_banners.py`), and its
-Gradle build copies the banner WebP from `app/`. `tests/test_banners_pack.py`
-holds the package name, manifest filters, asset filename and release workflow
-together.
+`glyphs/` is the one intentional exception to "one app, one Gradle root",
+and it is not a separate product: Core Builds Glyphs
+(`tv.corebuilds.iconpack.glyphs`) is the icon pack's square companion,
+released in the same `v*` release as `iconpack-glyphs-release.apk` and
+versioned from `app/build.gradle.kts`. Banners are the icon pack's default
+(again, since 1.9.5): its appfilter maps every app to the 16:9 banner. A
+launcher auto-applies whatever the selected package's appfilter maps, so the
+in-app Banners/Glyphs toggle works by pointing launchers at one package or the
+other (`GlyphsCompanion.kt`). The companion has no Kotlin, no dependencies, no
+launcher entry and no committed art: `python tools/build_icons.py` writes its
+square appfilter and browser, `python tools/build_banners_pack.py` derives the
+icon pack's banner XML from them (run it after `build_icons.py` and
+`build_banners.py`), and its Gradle build copies the glyph WebP from `app/`.
+`tests/test_glyphs_pack.py` holds the package name, manifest filters, asset
+filename and release workflow together. (1.9.4 shipped the opposite split, a
+Banners companion `tv.corebuilds.iconpack.banners`; it is retired - do not
+resurrect `banners/`.)
 
 Do not merge Gradle roots. Do not split the GitHub repo. Do not rename package IDs. Do not repoint floating Downloader tags. New apps use `tv.corebuilds.<name>`; the current `dev.` IDs are history, not a style to copy.
 
@@ -44,7 +47,7 @@ python tools/icon_palette.py         # 18-colour fallback palette for icons with
 python tools/fit_classic_glyphs.py   # optical fit of undersized/off-centre glyphs; reads the catalog
 python tools/build_icons.py
 python tools/build_banners.py
-python tools/build_banners_pack.py   # the 16:9 companion's XML; needs the banner art above
+python tools/build_banners_pack.py   # the icon pack's banner XML from the glyph companion's; needs the banner art above
 python tools/build_branding.py
 python tools/build_brand_preview.py
 python tools/validate.py

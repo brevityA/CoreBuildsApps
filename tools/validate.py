@@ -18,6 +18,8 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
 RES = ROOT / "app" / "src" / "main" / "res"
+# Core Builds Glyphs, the square companion. Its XML is generated with the pack.
+GLYPH_MAIN = ROOT / "glyphs" / "src" / "main"
 CATALOG = ROOT / "tools" / "catalog.json"
 
 failures = []
@@ -123,15 +125,15 @@ def main():
         comp = item.get("component", "")
         d = item.get("drawable", "")
         comp_total += 1
-        # appfilter maps to the square glyph — glyphs are the pack default
-        # since 1.9.2, banner art staying opt-in via drawable.xml and
-        # whatever banner mode the launcher itself offers.
+        # The icon pack maps every app to its 16:9 banner: banners are the
+        # default style (again) since 1.9.5. Square glyphs are Core Builds
+        # Glyphs', which the in-app toggle points launchers at instead.
         base = d[:-7] if d.endswith("_banner") else d
         check(base in names,
               f"appfilter: drawable '{d}' has no catalog entry")
-        check(not d.endswith("_banner"),
-              f"appfilter: '{d}' is a banner drawable — glyphs are the "
-              f"default since 1.9.2, banners stay opt-in via drawable.xml")
+        check(d.endswith("_banner"),
+              f"appfilter: '{d}' is a square glyph — banners are the icon "
+              f"pack's default since 1.9.5; glyphs belong to Core Builds Glyphs")
         check(re.match(r"^ComponentInfo\{[^/]+/[^}]+\}$", comp),
               f"appfilter: malformed component '{comp}'")
         check(comp not in seen,
@@ -146,8 +148,11 @@ def main():
     # build's own notes, which is only true when the asset copy and the
     # Latestrelease manifest are the same file.
     assets = ROOT / "app" / "src" / "main" / "assets"
+    glyph_res = GLYPH_MAIN / "res" / "xml"
     pairs = [(RES / "xml" / "appfilter.xml", assets / "appfilter.xml"),
              (RES / "xml" / "drawable.xml", assets / "drawable.xml"),
+             (glyph_res / "appfilter.xml", GLYPH_MAIN / "assets" / "appfilter.xml"),
+             (glyph_res / "drawable.xml", GLYPH_MAIN / "assets" / "drawable.xml"),
              (ROOT / "Latestrelease" / "version.json", assets / "version.json")]
     for resource_file, asset_file in pairs:
         check(asset_file.exists(),
@@ -175,6 +180,28 @@ def main():
             check(canonical(wrapped) in emitted_canonical,
                   f"{icon['name']}: component '{component}' was not emitted")
 
+    # Every mapping must be the catalog's, in both packs. The icon pack's
+    # banner appfilter is derived from Core Builds Glyphs' square one, so a
+    # wrong square mapping would otherwise pass straight through to both.
+    expected = {}
+    for icon in icons:
+        for component in icon["components"]:
+            expected[canonical(f"ComponentInfo{{{component}}}")] = icon["drawable"]
+    for path, label, suffix in ((RES / "xml" / "appfilter.xml", "icon pack", "_banner"),
+                                (glyph_res / "appfilter.xml", "Core Builds Glyphs", "")):
+        mapped = set()
+        for item in ET.parse(path).getroot().findall("item"):
+            comp = canonical(item.get("component", ""))
+            d = item.get("drawable", "")
+            base = d[:-len(suffix)] if suffix and d.endswith(suffix) else d
+            mapped.add(comp)
+            check(expected.get(comp) == base,
+                  f"{label} appfilter: {comp} maps to '{d}', catalog says "
+                  f"'{expected.get(comp)}{suffix}'")
+        check(mapped == set(expected),
+              f"{label} appfilter covers {len(mapped)} components, catalog "
+              f"{len(expected)}")
+
     # Coverage baseline: every component identity mapped by the reference pack
     # must remain covered. The snapshot contains two malformed legacy values
     # without the ComponentInfo prefix, so normalize both representations.
@@ -196,9 +223,9 @@ def main():
               f"reference baseline has {len(reference_components)} canonical "
               "components, expected 955")
 
-    # 4. drawable.xml grid covers the whole catalog
+    # 4. drawable.xml grid covers the whole catalog (as banners)
     dx = ET.parse(RES / "xml" / "drawable.xml").getroot()
-    listed = {i.get("drawable") for i in dx.findall("item")}
+    listed = {i.get("drawable").removesuffix("_banner") for i in dx.findall("item")}
     missing = names - listed
     check(not missing, f"drawable.xml missing: {sorted(missing)}")
 
@@ -352,18 +379,24 @@ def main():
             check(bmode == "RGBA",
                   f"{i['name']}: banner mode {bmode}, expected RGBA")
     if banner_icons:
-        # Each pack's browser offers its own art: the glyph pack lists no
-        # banners, Core Builds Banners lists every one.
-        own = (RES / "xml" / "drawable.xml").read_text()
-        check("_banner\"" not in own,
-              "app drawable.xml lists banners — the glyph pack's icon browser "
-              "must offer glyphs only; banners are Core Builds Banners'")
-        listed = (ROOT / "banners" / "src" / "main" / "res" / "xml" /
-                  "drawable.xml").read_text()
+        # Each pack's browser offers its own art: the icon pack lists every
+        # banner and no glyph, Core Builds Glyphs every glyph and no banner.
+        own = ET.parse(RES / "xml" / "drawable.xml").getroot()
+        own_items = [e.get("drawable") for e in own.findall("item")]
+        check(all(d.endswith("_banner") for d in own_items),
+              "app drawable.xml lists square glyphs — the icon pack's browser "
+              "offers banners only; glyphs are Core Builds Glyphs'")
         for i in banner_icons:
-            check(f'{i["drawable"]}_banner' in listed,
-                  f"{i['name']}: banner not listed in the Banners pack's "
+            check(f'{i["drawable"]}_banner' in own_items,
+                  f"{i['name']}: banner not listed in the icon pack's "
                   f"drawable.xml — not selectable in the launcher's icon browser")
+        glyph = ET.parse(GLYPH_MAIN / "res" / "xml" / "drawable.xml").getroot()
+        glyph_items = {e.get("drawable") for e in glyph.findall("item")}
+        check(not any(d.endswith("_banner") for d in glyph_items),
+              "Core Builds Glyphs' drawable.xml lists banners")
+        check(names <= glyph_items,
+              f"Core Builds Glyphs' drawable.xml misses "
+              f"{sorted(names - glyph_items)[:5]}")
 
     # 5e. Banner composition, measured against the reference pack's grid
     # (Projectivy Icon Pack 1.1.9: 1002 icons, median ink 78% x 43%, centred

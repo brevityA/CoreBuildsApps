@@ -7,7 +7,7 @@ Plain unittest over the repo tree, no Android SDK (mirrors
 tests/test_wallpaper_export.py). Guards the wiring that would otherwise rot
 silently:
 
-  * the loop catalogue is the three Deep Space companions, each with a real
+  * the loop catalogue is the twelve Deep Space loops, each with a real
     MP4 in Motion/live/ and a bundled still frame for the grid and the engine
     fallback - a loop with no file is a 404 in the app, a frame with no bundle
     is a blank home screen before the first download
@@ -68,15 +68,24 @@ class LoopCatalogueTests(unittest.TestCase):
         cls.titles = re.findall(r'title = "([^"]+)"', cls.loops_body)
         cls.files = re.findall(r'fileName = "([^"]+)"', cls.loops_body)
 
-    def test_three_loops_and_no_more(self):
-        # A live wallpaper plays behind every app, forever: each entry is a
-        # real choice, not a catalogue. Three Deep Space companions is the
-        # shipped set - a fourth is a product decision, not a code change.
-        self.assertEqual(len(re.findall(r"\bLoop\(", self.loops_body)), 3, "three Loop entries")
-        self.assertEqual(len(self.ids), 3)
-        self.assertEqual(len(self.titles), 3)
-        self.assertEqual(len(self.files), 3)
-        self.assertEqual(len(set(self.ids)), 3, "loop ids must be unique")
+    def test_the_loops_are_exactly_the_deep_space_set(self):
+        # One loop per series-9 wall, in wall order, and nothing else: the
+        # app's list is the feed's Deep Space entries, so a loop the feed
+        # drops (or adds) cannot linger (or go missing) in the picker.
+        feed = json.loads(read(MOTION_FEED))
+        deep = [e["url_1080p"].rsplit("/", 1)[-1] for e in feed
+                if "Deep Space" in e.get("location", "")]
+        self.assertEqual(len(deep), 12, "live-feed.json should list twelve Deep Space loops")
+        self.assertEqual(self.files, deep)
+        self.assertEqual(len(re.findall(r"\bLoop\(", self.loops_body)), 12, "twelve Loop entries")
+        self.assertEqual(len(self.ids), 12)
+        self.assertEqual(len(set(self.ids)), 12, "loop ids must be unique")
+
+    def test_no_stale_bundled_frames(self):
+        # Every bundled frame belongs to a listed loop (the 1.9.4 placeholder
+        # clips' frames went with them).
+        expected = {name.rsplit(".", 1)[0] + ".jpg" for name in self.files}
+        self.assertEqual({p.name for p in LIVE_THUMBS.glob("*.jpg")}, expected)
 
     def test_ids_are_stable_slugs(self):
         # The id is a persisted preference value. Renaming one silently
@@ -283,6 +292,12 @@ class DownloaderTests(unittest.TestCase):
     def test_validates_the_mp4_header(self):
         self.assertIn("ftyp", self.src)
         self.assertIn("Downloaded file is not an MP4", self.src)
+
+    def test_never_evicts_the_active_loop(self):
+        src = kt("LiveLoopDownloader.kt")
+        trim = src.split("private fun trimCache(", 1)[1].split("\n    }\n", 1)[0]
+        self.assertIn("LiveLoop.byId(Prefs.liveLoopId(context)).fileName", trim)
+        self.assertIn("it.name != active", trim)
 
     def test_coalesces_in_flight_requests(self):
         self.assertIn("ConcurrentHashMap", self.src)

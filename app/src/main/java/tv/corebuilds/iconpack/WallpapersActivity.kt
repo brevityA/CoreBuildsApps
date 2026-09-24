@@ -24,7 +24,7 @@ import androidx.recyclerview.widget.RecyclerView
  * auto-rotate the folder. The header Export button also starts with all visible
  * wallpapers selected if not already in selection mode.
  *
- * The three motion loops ([LiveLoop]) ride the same grid behind the Live chip
+ * The twelve Deep Space loops ([LiveLoop]) ride the same grid behind the Live chip
  * with a badge; they preview like stills but set through the system live
  * picker, and selection skips them (video has no place in Pictures).
  *

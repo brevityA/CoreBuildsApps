@@ -110,8 +110,8 @@ class MainActivity : TvActivity() {
 
         pickBanners = if (pickFixedByPack()) {
             // Which pack the launcher opened decides the shape, not the
-            // toggle: Core Builds Banners forwards its picks here marked.
-            intent.getBooleanExtra(BannersCompanion.EXTRA_PICK_BANNERS, false)
+            // toggle: Core Builds Glyphs forwards its picks here marked.
+            !intent.getBooleanExtra(GlyphsCompanion.EXTRA_PICK_GLYPHS, false)
         } else {
             Prefs.pickerPrefersBanners(this)
         }
@@ -128,10 +128,11 @@ class MainActivity : TvActivity() {
 
         if (pickMode) {
             // With a companion, each pack picks its own art (see
-            // pickFixedByPack). Without one (Pop), the shape a user last
-            // delivered simply stays: the picker opens on the stored chip,
-            // and the chip row keeps it. The shipped default is square — the
-            // same default the appfilter maps for launcher-side apply.
+            // pickFixedByPack). Without one (the candidate build), the shape
+            // a user last delivered simply stays: the picker opens on the
+            // stored chip, and the chip row keeps it. The shipped default is
+            // the banner - the same art the appfilter maps for launcher-side
+            // apply.
             val pickerHint = findViewById<TextView>(R.id.picker_hint)
             pickerHint.visibility = View.VISIBLE
             pickerHint.text = pickHint()
@@ -397,7 +398,7 @@ class MainActivity : TvActivity() {
         // (the activity was recreated): apply once the package is really
         // there. A declined install is only ever reported by the installer's
         // result, in onActivityResult - a resume is not an answer.
-        if (!pickMode) onCompanionOutcome(BannersCompanion.takePendingApply(this))
+        if (!pickMode) onCompanionOutcome(GlyphsCompanion.takePendingApply(this))
         syncArtStyle()
         if (!pickMode) {
             bindApplyButton()
@@ -1076,31 +1077,32 @@ class MainActivity : TvActivity() {
     @Suppress("DEPRECATION")
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == BannersCompanion.INSTALL_REQUEST) {
-            onCompanionOutcome(BannersCompanion.onInstallResult(this))
+        if (requestCode == GlyphsCompanion.INSTALL_REQUEST) {
+            onCompanionOutcome(GlyphsCompanion.onInstallResult(this))
             syncArtStyle()
         }
     }
 
     /** Finish the apply an Apply press asked for, or say it was declined. */
-    private fun onCompanionOutcome(pending: BannersCompanion.Pending?) {
+    private fun onCompanionOutcome(pending: GlyphsCompanion.Pending?) {
         when (pending) {
-            is BannersCompanion.Pending.Ready ->
+            is GlyphsCompanion.Pending.Ready ->
                 (ApplyIconPack.installed(this).firstOrNull { it.key == pending.launcherKey }
                     ?: target)?.let { applyTo(it) }
-            BannersCompanion.Pending.Declined -> toast(getString(R.string.banners_declined))
+            GlyphsCompanion.Pending.Declined -> toast(getString(R.string.glyphs_declined))
             null -> Unit
         }
     }
 
     /**
      * True when a pick's shape comes from the pack the launcher opened, not
-     * from the art-style toggle: builds with a Banners companion. There the
-     * glyph pack answers with glyphs only and Core Builds Banners with
-     * banners only, so choosing one app's icon can never flip the style the
-     * whole launcher applies. Pop has no companion and keeps its chips.
+     * from the art-style toggle: builds with a Glyphs companion. There the
+     * icon pack answers with banners only and Core Builds Glyphs with
+     * glyphs only, so choosing one app's icon can never flip the style the
+     * whole launcher applies. The candidate build has no companion and keeps
+     * its chips.
      */
-    private fun pickFixedByPack(): Boolean = pickMode && BannersCompanion.supported()
+    private fun pickFixedByPack(): Boolean = pickMode && GlyphsCompanion.supported()
 
     private fun pickHint(): String = getString(
         when {
@@ -1112,17 +1114,18 @@ class MainActivity : TvActivity() {
     )
 
     /**
-     * The Art style row: the Glyphs/Banners switch, on the home screen next
+     * The Art style row: the Banners/Glyphs switch, on the home screen next
      * to Apply because it decides what every app on the launcher looks like.
-     * A press flips the style and re-applies to the detected launcher, the
-     * same as Settings' row - fetching Core Builds Banners first when it is
-     * not installed. Builds without a companion (Pop) switch the catalogue.
+     * On (the default) is Banners. A press flips the style and re-applies to
+     * the detected launcher, the same as Settings' row - fetching Core Builds
+     * Glyphs first when it is not installed. Builds without a companion
+     * switch the catalogue only.
      */
     private fun bindStyleRow() {
         findViewById<View>(R.id.style_entry).setOnClickListener {
             Prefs.set(this, Prefs.KEY_PICK_BANNERS, !Prefs.pickerPrefersBanners(this))
             syncArtStyle()
-            if (BannersCompanion.supported()) {
+            if (GlyphsCompanion.supported()) {
                 val launcher = target
                 if (launcher != null) applyTo(launcher)
                 else toast(getString(R.string.projectivy_missing))
@@ -1141,7 +1144,7 @@ class MainActivity : TvActivity() {
 
     /**
      * The catalogue and the Art style row follow the toggle, which Settings
-     * can change and a failed Banners install can revert.
+     * can change and a failed Glyphs install can revert.
      */
     private fun syncArtStyle() {
         if (pickFixedByPack()) return
@@ -1266,10 +1269,10 @@ class MainActivity : TvActivity() {
             }
 
             ApplyIconPack.Result.NeedsCompanion -> {
-                // Banners is selected: fetch Core Builds Banners, and apply to
+                // Glyphs is selected: fetch Core Builds Glyphs, and apply to
                 // this launcher when the install lands (see onResume). If it
-                // cannot be had the style is Glyphs again; show that.
-                BannersCompanion.ensure(this, launcher.key) { syncArtStyle() }
+                // cannot be had the style is Banners again; show that.
+                GlyphsCompanion.ensure(this, launcher.key) { syncArtStyle() }
             }
         }
     }
