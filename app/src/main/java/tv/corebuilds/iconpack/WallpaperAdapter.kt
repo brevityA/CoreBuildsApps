@@ -37,6 +37,7 @@ class WallpaperAdapter(
         val image: ImageView = view.findViewById(R.id.wp_image)
         val label: TextView = view.findViewById(R.id.wp_name)
         val ring: View = view.findViewById(R.id.wp_selected_ring)
+        val badge: TextView = view.findViewById(R.id.wp_live_badge)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): VH {
@@ -53,7 +54,12 @@ class WallpaperAdapter(
             if (holder.image.tag == item.thumbAsset) holder.image.setImageBitmap(bmp)
         }
         holder.label.text = item.title
-        holder.itemView.contentDescription = item.title
+        holder.badge.visibility = if (item.isLive) View.VISIBLE else View.GONE
+        holder.itemView.contentDescription = if (item.isLive) {
+            item.title + holder.itemView.context.getString(R.string.wp_live_spoken)
+        } else {
+            item.title
+        }
         holder.itemView.isFocusable = true
         holder.itemView.isFocusableInTouchMode = true
 
@@ -63,6 +69,13 @@ class WallpaperAdapter(
             if (selectionMode) toggle(item) else onSelect(item)
         }
         holder.itemView.setOnLongClickListener {
+            // Live loops cannot be bulk-exported (video has no place in the
+            // Pictures rotation folder), so a long-press previews instead of
+            // selecting — a press that silently did nothing would read broken.
+            if (item.isLive) {
+                onSelect(item)
+                return@setOnLongClickListener true
+            }
             if (!selectionMode) enterSelectionMode()
             toggle(item)
             true
@@ -137,6 +150,7 @@ class WallpaperAdapter(
     }
 
     fun toggle(item: Wallpaper) {
+        if (item.isLive) return
         if (!selectionMode) enterSelectionMode()
         if (!selected.add(item.cacheName)) selected.remove(item.cacheName)
         notifyItemChanged(
@@ -146,7 +160,7 @@ class WallpaperAdapter(
     }
 
     fun selectAll() {
-        selected.addAll(items.map { it.cacheName })
+        selected.addAll(items.filter { !it.isLive }.map { it.cacheName })
         notifyItemRangeChanged(0, itemCount, SELECTION_PAYLOAD)
     }
 

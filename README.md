@@ -66,6 +66,8 @@ Full table with every mapped component: [**docs/IconPackList.md**](docs/IconPack
 
 96 curated wallpapers in seven series — browse in the Wallpapers tab, preview full-screen, **Set** as device wallpaper or **Save** to `Pictures/CoreBuilds`. Multi-select export bulk-saves to a folder any launcher can rotate from. Thumbnails ship in the APK; full images download on demand from GitHub.
 
+Series 9 also has three **live wallpaper** loops: they ride the same grid behind a LIVE badge, and **Set** hands you to the system live picker pre-pointed at Core Builds Live — a muted, looping `MediaPlayer` engine that pauses off-screen and shows the bundled frame until the clip has downloaded once. Motion loops stay out of bulk export (video has no place in the Pictures rotation folder); on Monet-as-HOME the action saves the MP4 to `Movies/CoreBuilds` instead, where Monet's own video picker finds it.
+
 | Series | Walls | Theme |
 |---|---|---|
 | 1 · Fieldwork | 01–24 | Mesh gradients, aurora, light trails, topo |
@@ -78,7 +80,7 @@ Full table with every mapped component: [**docs/IconPackList.md**](docs/IconPack
 
 <div align="center"><img src="docs/deep-space-wallpapers.png" alt="Deep Space series" width="760"></div>
 
-Series 9 has three moving companions in the motion feed — see [Space live wallpapers](docs/SPACE_LIVE_WALLPAPERS.md). Everything about the collection (including the Monet **Send to Monet** handoff): [`Wallpapers/README.md`](Wallpapers/README.md).
+Series 9 has three moving companions — the same sky, animated, playable as the pack's own live wallpaper. The full map of what plays where (Core Motion plugin, Aerial Views, the in-pack engine): [Space live wallpapers](docs/SPACE_LIVE_WALLPAPERS.md). Everything about the collection (including the Monet **Send to Monet** handoff): [`Wallpapers/README.md`](Wallpapers/README.md).
 
 ### 16:9 banners
 

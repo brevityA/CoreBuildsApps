@@ -6,6 +6,18 @@ All notable changes to the Core Builds Icon Pack. Format follows
 
 ## [Unreleased]
 
+### Added
+
+- **Series 9 / Deep Space loops play as the system live wallpaper.** The
+  three motion loops ride the wallpapers grid behind a Live chip with a
+  badge; previewing one downloads it once, then Set stores the choice and
+  opens the system live picker pre-pointed at Core Builds Live. No new
+  permission, no new dependency — playback is a muted looping MediaPlayer
+  that pauses off-screen, with the bundled thumb as a still fallback.
+  Motion loops stay out of bulk export (video has no place in the
+  Pictures rotation folder); on Monet-as-HOME the action saves the MP4
+  to Movies/CoreBuilds instead, where Monet's own video picker finds it.
+
 ## [1.9.4] — 2026-09-24
 
 ### Added

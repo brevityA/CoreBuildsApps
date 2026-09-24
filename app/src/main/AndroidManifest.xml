@@ -275,5 +275,21 @@
             android:exported="false"
             android:label="@string/wp_export_title"
             android:theme="@style/Theme.CoreBuilds" />
+
+        <!-- System live wallpaper: plays the chosen LiveLoop on the home
+             screen. Exported with the wallpaper bind permission so only the
+             system can bind it; the settings entry reopens the browser. -->
+        <service
+            android:name=".LiveWallpaperService"
+            android:exported="true"
+            android:label="@string/live_wallpaper_label"
+            android:permission="android.permission.BIND_WALLPAPER">
+            <intent-filter>
+                <action android:name="android.service.wallpaper.WallpaperService" />
+            </intent-filter>
+            <meta-data
+                android:name="android.service.wallpaper"
+                android:resource="@xml/live_wallpaper" />
+        </service>
     </application>
 </manifest>

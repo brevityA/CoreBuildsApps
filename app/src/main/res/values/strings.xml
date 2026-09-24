@@ -142,6 +142,17 @@
     <string name="wp_after_export_hint">Open your launcher, pick the CoreBuilds folder, and turn on auto-rotate.</string>
     <string name="wp_open_launcher">Open %1$s</string>
     <string name="wp_done">Done</string>
+    <string name="wp_live_badge">LIVE</string>
+    <string name="wp_live_spoken">, live wallpaper</string>
+    <string name="wp_set_live">Set live wallpaper</string>
+    <string name="wp_save_for_monet">Save for Monet</string>
+    <string name="wp_live_sub">Plays on the home screen. Downloads once, then runs offline.</string>
+    <string name="wp_live_set_done">Opening the live wallpaper picker — pick Core Builds.</string>
+    <string name="wp_live_no_picker">This device has no live wallpaper picker to open.</string>
+    <string name="wp_live_download_needed">Downloading the loop first…</string>
+    <string name="wp_live_monet_hint">Monet plays video from its own library — saved to Movies/CoreBuilds, pick it in Monet Settings → Background.</string>
+    <string name="live_wallpaper_label">Core Builds Live</string>
+    <string name="live_wallpaper_desc">The Deep Space motion loops, playing on the home screen.</string>
 
     <!-- Shared -->
     <string name="action_back">Back</string>
