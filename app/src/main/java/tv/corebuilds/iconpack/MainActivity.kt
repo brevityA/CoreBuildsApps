@@ -15,6 +15,7 @@ import android.widget.EditText
 import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
+import androidx.appcompat.widget.SwitchCompat
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -166,6 +167,7 @@ class MainActivity : TvActivity() {
             findViewById<TextView>(R.id.about_entry_sub).text =
                 getString(R.string.about_entry_sub_fmt, BuildConfig.VERSION_NAME)
 
+            bindStyleRow()
             findViewById<View>(R.id.settings_entry).setOnClickListener {
                 startActivity(Intent(this, SettingsActivity::class.java))
             }
@@ -200,8 +202,9 @@ class MainActivity : TvActivity() {
      * Rewrite the vertical D-pad chain around the containers that come and go,
      * at the moment their visibility changes.
      *
-     * The sheet's screen order is apply_button -> update_bar -> wallpapers_entry
-     * -> settings_entry -> about_entry -> apply_targets -> search -> chip_row ->
+     * The sheet's screen order is apply_button -> update_bar -> style_entry ->
+     * wallpapers_entry -> settings_entry -> about_entry -> apply_targets ->
+     * search -> chip_row ->
      * grid, and three of those stops are conditional: the update bar only when a
      * newer manifest exists, the ALSO APPLIES TO row only with a second launcher
      * installed, the grid only while a filter matches anything. A GONE view that
@@ -240,12 +243,12 @@ class MainActivity : TvActivity() {
             else -> R.id.picker_hint
         }
         val belowRows = if (targetsShown) R.id.apply_targets else R.id.search
-        findViewById<View>(R.id.wallpapers_entry).nextFocusUpId = aboveRows
+        findViewById<View>(R.id.style_entry).nextFocusUpId = aboveRows
         val aboveBar = if (applyShown) R.id.apply_button else R.id.picker_hint
         for (id in intArrayOf(R.id.update_button, R.id.update_later)) {
             findViewById<View>(id).nextFocusUpId = aboveBar
             findViewById<View>(id).nextFocusDownId =
-                if (groupShown) R.id.wallpapers_entry else R.id.search
+                if (groupShown) R.id.style_entry else R.id.search
         }
         findViewById<View>(R.id.about_entry).nextFocusDownId = belowRows
         findViewById<View>(R.id.apply_targets).nextFocusUpId =
@@ -1096,9 +1099,41 @@ class MainActivity : TvActivity() {
         }
     )
 
-    /** The catalogue follows the toggle, which a failed Banners install can revert. */
+    /**
+     * The Art style row: the Glyphs/Banners switch, on the home screen next
+     * to Apply because it decides what every app on the launcher looks like.
+     * A press flips the style and re-applies to the detected launcher, the
+     * same as Settings' row - fetching Core Builds Banners first when it is
+     * not installed. Builds without a companion (Pop) switch the catalogue.
+     */
+    private fun bindStyleRow() {
+        findViewById<View>(R.id.style_entry).setOnClickListener {
+            Prefs.set(this, Prefs.KEY_PICK_BANNERS, !Prefs.pickerPrefersBanners(this))
+            syncArtStyle()
+            if (BannersCompanion.supported()) {
+                val launcher = target
+                if (launcher != null) applyTo(launcher)
+                else toast(getString(R.string.projectivy_missing))
+            }
+        }
+        showStyle()
+    }
+
+    private fun showStyle() {
+        val banners = Prefs.pickerPrefersBanners(this)
+        findViewById<SwitchCompat>(R.id.style_switch).isChecked = banners
+        findViewById<TextView>(R.id.style_entry_sub).text = getString(
+            if (banners) R.string.art_style_banners else R.string.art_style_glyphs
+        )
+    }
+
+    /**
+     * The catalogue and the Art style row follow the toggle, which Settings
+     * can change and a failed Banners install can revert.
+     */
     private fun syncArtStyle() {
         if (pickFixedByPack()) return
+        if (!pickMode) showStyle()
         val preferBanners = Prefs.pickerPrefersBanners(this)
         if (pickBanners == preferBanners) return
         pickBanners = preferBanners

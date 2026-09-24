@@ -458,24 +458,42 @@ def search_field(img: Image.Image, x: int, y: int, w_dp: float,
               hint or STRINGS["search_hint"], f, colour("cb_slate"), anchor="lm")
 
 
-def entry_row_lines(sub: str) -> list[str]:
+# Width a SwitchCompat takes at the end of a row, text column to the switch.
+SWITCH_SLOT_DP = 56
+
+
+def draw_switch(draw, sx: int, sy: int, on: bool) -> None:
+    """A SwitchCompat at (sx, sy), track 46x22dp, as the build renders it."""
+    rrect(draw, [sx, sy, sx + dp(46), sy + dp(22)], dp(11),
+          fill=colour("cb_signal_cyan") if on else colour("cb_panel"),
+          outline=(0x00, 0xD4, 0xFF, 0x33), width=dp(1))
+    knob = sx + dp(24) if on else sx + dp(4)
+    draw.ellipse([knob, sy + dp(3), knob + dp(16), sy + dp(19)],
+                 fill=colour("cb_ink") if on else colour("cb_slate"))
+
+
+def entry_row_lines(sub: str, with_switch: bool = False) -> list[str]:
     """The rail card's subtitle, wrapped to the rail's text width - the same
-    wrap the match_parent TextView does on the device."""
+    wrap the match_parent TextView does on the device, less the switch's slot
+    on the Art style row, whose text column is weighted beside it."""
     inset = dp(DIMENS["cb_card_padding"])
     probe = ImageDraw.Draw(Image.new("RGBA", (8, 8)))
+    slot = dp(SWITCH_SLOT_DP) if with_switch else 0
     return wrap(probe, sub, font("mono", DIMENS["cb_text_data"]),
-                dp(DIMENS["cb_rail_width"]) - 2 * inset)
+                dp(DIMENS["cb_rail_width"]) - 2 * inset - slot)
 
 
-def entry_row_height(sub: str) -> int:
-    lines = entry_row_lines(sub)
+def entry_row_height(sub: str, with_switch: bool = False) -> int:
+    lines = entry_row_lines(sub, with_switch)
     inset = dp(DIMENS["cb_card_padding"])
     return 2 * inset + dp(20) + dp(3) + len(lines) * dp(17)
 
 
-def entry_row(img: Image.Image, box, title: str, sub: str, focused: bool = False) -> None:
-    """One of the rail's three entry cards: title over subtitle, as the sheet
-    draws them - the rail is the one place with the height for both lines."""
+def entry_row(img: Image.Image, box, title: str, sub: str, focused: bool = False,
+              switch: bool | None = None) -> None:
+    """One of the rail's entry cards: title over subtitle, as the sheet draws
+    them - the rail is the one place with the height for both lines. `switch`
+    is the Art style row's state; None for the plain rows."""
     draw = ImageDraw.Draw(img, "RGBA")
     if focused:
         focus_ring(img, box)
@@ -484,9 +502,11 @@ def entry_row(img: Image.Image, box, title: str, sub: str, focused: bool = False
     inset = dp(DIMENS["cb_card_padding"])
     draw_text(draw, (box[0] + inset, box[1] + inset), title,
               font("sans", DIMENS["cb_text_body"], bold=True), colour("cb_ink"))
-    for i, line in enumerate(entry_row_lines(sub)):
+    for i, line in enumerate(entry_row_lines(sub, switch is not None)):
         draw_text(draw, (box[0] + inset, box[1] + inset + dp(23) + i * dp(17)),
                   line, font("mono", DIMENS["cb_text_data"]), colour("cb_slate"))
+    if switch is not None:
+        draw_switch(draw, box[2] - inset - dp(46), (box[1] + box[3]) // 2 - dp(11), switch)
 
 
 def rail_box() -> tuple[int, int, int]:
@@ -627,17 +647,22 @@ def catalogue_frame(with_update_bar: bool) -> tuple[Image.Image, str]:
         ry += dp(20)
     ry += gap
     tile_h = dp(DIMENS["cb_tile_icon"]) + 2 * dp(DIMENS["cb_card_padding"])
+    # (title, subtitle, switch state or None), in activity_main.xml's order.
+    # The Art style row shows the shipped default, Glyphs (switch off).
     rows = [
-        (STRINGS["wp_entry"], fmt(STRINGS["wp_entry_sub_fmt"], len(WALLPAPERS))),
-        (STRINGS["settings_label"], STRINGS["settings_entry_sub"]),
+        (STRINGS["art_style_label"], STRINGS["art_style_glyphs"], False),
+        (STRINGS["wp_entry"], fmt(STRINGS["wp_entry_sub_fmt"], len(WALLPAPERS)), None),
+        (STRINGS["settings_label"], STRINGS["settings_entry_sub"], None),
         (STRINGS["about_label"],
-         fmt(STRINGS["about_entry_sub_fmt"], VERSION["versionName"])),
+         fmt(STRINGS["about_entry_sub_fmt"], VERSION["versionName"]), None),
     ]
-    for index, (title, sub_text) in enumerate(rows):
-        h = entry_row_height(sub_text)
+    for index, (title, sub_text, state) in enumerate(rows):
+        h = entry_row_height(sub_text, state is not None)
         entry_row(img, [g, ry, rail_r, ry + h], title, sub_text,
-                  focused=(index == 0 and not with_update_bar))
-        ry += h + gap
+                  focused=(index == 0 and not with_update_bar), switch=state)
+        # The rows sit cb_space_xs apart, as the layout's margins space them.
+        ry += h + dp(DIMENS["cb_space_xs"])
+    ry += gap - dp(DIMENS["cb_space_xs"])
     if not with_update_bar:
         draw_text(draw, (g, ry + dp(4)), STRINGS["cta_also_applies"],
                   font("mono", DIMENS["cb_text_kicker"], bold=True),
@@ -871,14 +896,7 @@ def paint_settings_viewport(img, order, focused_row):
             draw_text(draw, (g + inner + dp(8), y + inner + dp(26) + i * dp(19)), line,
                       f_sub, colour("cb_slate"))
         if entry[0] == "switch":
-            on = entry[3]
-            sx, sy = W - g - dp(56), y + row_h // 2 - dp(11)
-            rrect(draw, [sx, sy, sx + dp(46), sy + dp(22)], dp(11),
-                  fill=colour("cb_signal_cyan") if on else colour("cb_panel"),
-                  outline=(0x00, 0xD4, 0xFF, 0x33), width=dp(1))
-            knob = sx + dp(24) if on else sx + dp(4)
-            draw.ellipse([knob, sy + dp(3), knob + dp(16), sy + dp(19)],
-                         fill=colour("cb_ink") if on else colour("cb_slate"))
+            draw_switch(draw, W - g - dp(56), y + row_h // 2 - dp(11), entry[3])
         elif entry[3]:
             label = STRINGS[entry[3]]
             f_btn = font("sans", DIMENS["cb_text_label"], bold=True)

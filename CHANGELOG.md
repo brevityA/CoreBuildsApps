@@ -8,6 +8,11 @@ All notable changes to the Core Builds Icon Pack. Format follows
 
 ### Added
 
+- **Art style switch on the home screen.** Glyphs or Banners now sits
+  directly under Apply, as its own row with a switch, instead of only in
+  Settings. Pressing it switches every app on the launcher and re-applies to
+  the launcher it detected, downloading Core Builds Banners the first time.
+  The Settings row stays and shows the same setting.
 - **Banners for every app, from one switch.** Settings → Art style now
   changes the icons your launcher applies automatically, not just the
   catalogue and the icon picker. Switch to Banners and every app on the home

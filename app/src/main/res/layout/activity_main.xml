@@ -20,7 +20,8 @@
   The update bar spans both panes at the top: it is the one thing on the screen
   that is wider than the rail and more urgent than the grid.
 
-  Focus: one vertical chain, apply_button -> update_bar -> the rail's rows ->
+  Focus: one vertical chain, apply_button -> update_bar -> the rail's rows
+  (art style, wallpapers, settings, about) ->
   the band -> search -> chip_row -> grid, with LEFT/RIGHT crossing between rail
   and pane geometrically. update_bar and apply_targets_band are GONE unless
   something shows them and focusable="false" while hidden, because
@@ -49,7 +50,7 @@
         android:focusable="false"
         android:gravity="center_vertical"
         android:nextFocusUp="@id/apply_button"
-        android:nextFocusDown="@id/wallpapers_entry"
+        android:nextFocusDown="@id/style_entry"
         android:orientation="horizontal"
         android:paddingStart="@dimen/cb_space_md"
         android:paddingEnd="@dimen/cb_space_md"
@@ -120,7 +121,7 @@
             android:clickable="true"
             android:focusable="true"
             android:nextFocusUp="@id/apply_button"
-            android:nextFocusDown="@id/wallpapers_entry"
+            android:nextFocusDown="@id/style_entry"
             android:paddingStart="@dimen/cb_space_lg"
             android:paddingEnd="@dimen/cb_space_lg"
             android:paddingTop="@dimen/cb_space_sm"
@@ -146,7 +147,7 @@
             android:clickable="true"
             android:focusable="true"
             android:nextFocusUp="@id/apply_button"
-            android:nextFocusDown="@id/wallpapers_entry"
+            android:nextFocusDown="@id/style_entry"
             android:paddingStart="@dimen/cb_space_lg"
             android:paddingEnd="@dimen/cb_space_lg"
             android:paddingTop="@dimen/cb_space_sm"
@@ -231,6 +232,57 @@
                 android:layout_marginTop="@dimen/cb_space_md"
                 android:orientation="vertical">
 
+                <!-- Art style, on the home screen rather than in Settings:
+                     the switch decides what every app on the launcher looks
+                     like, so it sits next to Apply. Same switch row as
+                     Settings' set_banner_row, and the two read one pref. -->
+                <LinearLayout
+                    android:id="@+id/style_entry"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/bg_card"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:focusableInTouchMode="true"
+                    android:gravity="center_vertical"
+                    android:minHeight="@dimen/cb_target_min"
+                    android:nextFocusUp="@id/update_bar"
+                    android:nextFocusDown="@id/wallpapers_entry"
+                    android:orientation="horizontal"
+                    android:padding="@dimen/cb_card_padding">
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="@string/art_style_label"
+                            android:textColor="@color/cb_ink"
+                            android:textSize="@dimen/cb_text_body"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:id="@+id/style_entry_sub"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="3dp"
+                            android:textColor="@color/cb_slate"
+                            android:textSize="@dimen/cb_text_data" />
+                    </LinearLayout>
+
+                    <androidx.appcompat.widget.SwitchCompat
+                        android:id="@+id/style_switch"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:clickable="false"
+                        android:duplicateParentState="true"
+                        android:focusable="false" />
+                </LinearLayout>
+
                 <LinearLayout
                     android:id="@+id/wallpapers_entry"
                     android:layout_width="match_parent"
@@ -239,8 +291,9 @@
                     android:clickable="true"
                     android:focusable="true"
                     android:focusableInTouchMode="true"
+                    android:layout_marginTop="@dimen/cb_space_xs"
                     android:minHeight="@dimen/cb_target_min"
-                    android:nextFocusUp="@id/update_bar"
+                    android:nextFocusUp="@id/style_entry"
                     android:nextFocusDown="@id/settings_entry"
                     android:orientation="vertical"
                     android:padding="@dimen/cb_card_padding">
