@@ -4,9 +4,10 @@ import { readFileSync } from "node:fs";
 import { webcrypto } from "node:crypto";
 import {
   validate, issueBody, discordPayload, rateLimitKey, rateLimited, appJwt,
-  readCapped, handle,
+  readCapped, handle, reportKind,
 } from "./worker.mjs";
-import { TITLE_PREFIX, ISSUE_LABEL, WORKER_VERSION } from "./constants.mjs";
+import { TITLE_PREFIX, ISSUE_LABEL, MAPPING_LABEL, MAPPING_TITLE_PREFIX,
+         WORKER_VERSION } from "./constants.mjs";
 
 // ------------------------------------------------------------------ grammar
 
@@ -34,11 +35,18 @@ for (const [name, bad] of [
   ["component without slash", { ...OK, component: "com.example.tv" }],
   ["component with URL", { ...OK, component: "com.evil.tv/http://example.com" }],
   ["empty name", { ...OK, app_name: "  " }],
+  ["non-boolean mapped", { ...OK, mapped: "yes" }],
 ]) {
   test(`validate rejects ${name}`, () => {
     assert.equal(validate(bad).ok, false, JSON.stringify(bad));
   });
 }
+
+test("mapped is optional, boolean, and defaults to a new-icon request", () => {
+  assert.equal(validate(OK).value.mapped, false);
+  assert.equal(validate({ ...OK, mapped: true }).value.mapped, true);
+  assert.equal(validate({ ...OK, mapped: false }).value.mapped, false);
+});
 
 test("device note is optional and capped", () => {
   const { device, ...rest } = OK;
@@ -63,6 +71,37 @@ test("issue body mirrors the issue form's text fields, in form order", () => {
     cursor = at;
   }
   assert.ok(body.includes("CoreBuilds-requests[bot]"), "anonymous provenance line");
+});
+
+test("a mapped report mirrors the not-applying form's text fields, in form order", () => {
+  const yml = readFileSync(
+    new URL("../../.github/ISSUE_TEMPLATE/2.icon_not_applying.yml", import.meta.url),
+    "utf8");
+  const labels = [...yml.matchAll(/- type: (?:input|textarea|dropdown)[\s\S]*?label: ([^\n]+)/g)]
+    .map((m) => m[1].trim());
+  assert.ok(labels.length >= 4, `expected the form's fields, got ${labels}`);
+  const body = issueBody({ appName: OK.app_name, component: OK.component,
+                           device: OK.device, mapped: true });
+  let cursor = -1;
+  for (const label of labels) {
+    const at = body.indexOf(`### ${label}`);
+    assert.ok(at > cursor, `form label missing or out of order: ${label}`);
+    cursor = at;
+  }
+  assert.ok(!body.includes("### Store or download link"), "no new-icon fields");
+});
+
+test("report kind matches each issue form's title and label", () => {
+  for (const [file, mapped] of [["1.new_icon_request.yml", false],
+                                ["2.icon_not_applying.yml", true]]) {
+    const yml = readFileSync(
+      new URL(`../../.github/ISSUE_TEMPLATE/${file}`, import.meta.url), "utf8");
+    const kind = reportKind({ mapped });
+    assert.equal(yml.match(/^title: "([^"]*)"/m)[1], kind.prefix, file);
+    assert.equal(yml.match(/^labels: \["([^"]+)"\]/m)[1], kind.label, file);
+  }
+  assert.equal(reportKind({ mapped: true }).prefix, MAPPING_TITLE_PREFIX);
+  assert.equal(reportKind({ mapped: true }).label, MAPPING_LABEL);
 });
 
 test("the Discord card carries the same three fields", () => {
@@ -232,6 +271,29 @@ test("a duplicate press comments instead of opening a second issue", async () =>
   });
 });
 
+test("a mapped report files a not-applying issue, not a new-icon request", async () => {
+  const bodies = [];
+  // The stub's open duplicate is a new-icon issue for the same app.
+  const stub = githubStub({ duplicate: 55 });
+  const f = async (url, init = {}) => {
+    if (init.body) bodies.push([String(url), JSON.parse(init.body)]);
+    return stub.f(url, init);
+  };
+  await withFetch(f, async () => {
+    const res = await handle(req({ ...OK, mapped: true }, "7.7.7.9"),
+                             { ...ENV, RATE_KV: primed() });
+    assert.equal(res.status, 201);
+    const search = stub.calls.find(([u]) => u.includes("/search/issues"))[0];
+    assert.ok(decodeURIComponent(search).includes(MAPPING_TITLE_PREFIX.trim()));
+    assert.ok(!stub.calls.some(([u]) => u.includes("/comments")),
+              "a new-icon issue for the same app is not this report's duplicate");
+    const [, issue] = bodies.find(([u]) => u.endsWith("/issues"));
+    assert.equal(issue.title, `${MAPPING_TITLE_PREFIX}${OK.app_name}`);
+    assert.deepEqual(issue.labels, [MAPPING_LABEL]);
+    assert.ok(issue.body.includes("### The component name on YOUR device"));
+  });
+});
+
 test("rate-limited triple-press answers 429 without touching GitHub", async () => {
   const kv = primed();
   const env = { ...ENV, RATE_KV: kv, RATE_LIMIT_PER_HOUR: 1 };
@@ -257,6 +319,12 @@ test("without GitHub vars a Discord webhook receives the same request", async ()
     assert.equal(calls.length, 1);
     assert.ok(calls[0][0].includes("discord.com/api/webhooks"));
   });
+});
+
+test("a mapped Discord card is titled as a mapping report", () => {
+  const p = discordPayload({ appName: OK.app_name, component: OK.component,
+                             device: OK.device, mapped: true });
+  assert.equal(p.embeds[0].title, `${MAPPING_TITLE_PREFIX}${OK.app_name}`);
 });
 
 test("with neither sink configured the broker says 503", async () => {

@@ -33,6 +33,9 @@ All notable changes to the Core Builds Icon Pack. Format follows
   pack already maps under a different activity now opens "Icon not
   auto-assigning" with its real component prefilled, instead of a new-icon
   request for an icon that already exists.
+  The report keeps that type through every route: the one-press request
+  broker files it as `[Not applying] <app>` with the `mapping` label, and the
+  phone-side QR page offers that form.
 
 ### Fixed
 

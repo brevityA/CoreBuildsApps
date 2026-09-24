@@ -194,7 +194,7 @@ class AuditorActivity : TvActivity() {
         Toast.makeText(this, R.string.audit_request_sending,
                        Toast.LENGTH_SHORT).show()
         IconRequestSender.send(endpoint, item.label, item.component,
-                               deviceNote()) { issue ->
+                               deviceNote(), item.mapped) { issue ->
             requestInFlight = false
             if (issue > 0) {
                 Toast.makeText(this,
@@ -226,6 +226,7 @@ class AuditorActivity : TvActivity() {
             "$landing?app_name=${enc(item.label)}" +
                 "&component=${enc(item.component)}" +
                 "&device=${enc(note)}" +
+                (if (item.mapped) "&mapped=1" else "") +
                 if (endpoint.isBlank()) "" else "&endpoint=${enc(endpoint)}"
         }
         findViewById<ImageView>(R.id.audit_qr_view)
