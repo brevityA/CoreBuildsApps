@@ -177,7 +177,6 @@ jobs:
         run: cd ticker && npm test
       - name: Install Python content deps
         run: pip install --quiet -r tools/requirements.txt
-      - name: Pixel Neon generated-asset validation
       # This job installs the render deps and runs no asset builder, so the
       # rasters the frames paste are the committed ones. build.yml runs the
       # same check, ahead of its regeneration step, for that reason. The check
