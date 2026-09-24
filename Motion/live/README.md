@@ -1,8 +1,14 @@
-# Core Builds Motion — live wallpapers (procedural)
+# Core Builds Motion — live wallpapers
 
-Thirteen **genuinely animated** live-wallpaper loops — actual moving content,
-not a still with a pan. Generated procedurally by ffmpeg in the Core Builds
-§03 palette, so they're original and licenseable (no third-party footage).
+Twenty-two **genuinely animated** live-wallpaper loops — actual moving
+content, not a still with a pan — all original and licenseable (no
+third-party footage):
+
+- **Clips 01–10** are generated procedurally by ffmpeg in the Core Builds §03
+  palette (`tools/build_motion_feed.py`).
+- **Clips 11–22** are the Deep Space walls moving: rendered from the committed
+  `series-9-deep-space` stills by `tools/build_deep_space_loops.py`, with each
+  scene's own stars twinkling and its glow shimmering.
 
 | # | File | Title | Technique | Bitrate |
 |---|---|---|---|---|
@@ -19,13 +25,13 @@ not a still with a pan. Generated procedurally by ffmpeg in the Core Builds
 | 11 | `coremotion-live-11-deep-space-event-horizon.mp4` | Event Horizon | wall 85, moving: its stars twinkle, its glow shimmers | ~0.9 Mb/s |
 | 12 | `coremotion-live-12-deep-space-nebula-drift.mp4` | Nebula Drift | wall 86, moving: its stars twinkle, its glow shimmers | ~0.9 Mb/s |
 | 13 | `coremotion-live-13-deep-space-starfield.mp4` | Starfield | wall 87, moving: its stars twinkle, its glow shimmers | ~1.3 Mb/s |
-| 14 | `coremotion-live-14-deep-space-ringed-planet.mp4` | Ringed Planet | wall 88, moving: its stars twinkle, its glow shimmers | ~1.0 Mb/s |
+| 14 | `coremotion-live-14-deep-space-ringed-planet.mp4` | Ringed Planet | wall 88, moving: its stars twinkle, its glow shimmers | ~1.1 Mb/s |
 | 15 | `coremotion-live-15-deep-space-galaxy-spiral.mp4` | Galaxy Spiral | wall 89, moving: its stars twinkle, its glow shimmers | ~0.7 Mb/s |
 | 16 | `coremotion-live-16-deep-space-aurora-orbit.mp4` | Aurora Orbit | wall 90, moving: its stars twinkle, its glow shimmers | ~0.5 Mb/s |
 | 17 | `coremotion-live-17-deep-space-comet-lane.mp4` | Comet Lane | wall 91, moving: its stars twinkle, its glow shimmers | ~0.8 Mb/s |
 | 18 | `coremotion-live-18-deep-space-deep-field.mp4` | Deep Field | wall 92, moving: its stars twinkle, its glow shimmers | ~0.6 Mb/s |
 | 19 | `coremotion-live-19-deep-space-ember-nova.mp4` | Ember Nova | wall 93, moving: its stars twinkle, its glow shimmers | ~1.0 Mb/s |
-| 20 | `coremotion-live-20-deep-space-hex-station.mp4` | Hex Station | wall 94, moving: its stars twinkle, its glow shimmers | ~0.7 Mb/s |
+| 20 | `coremotion-live-20-deep-space-hex-station.mp4` | Hex Station | wall 94, moving: its stars twinkle, its glow shimmers | ~0.6 Mb/s |
 | 21 | `coremotion-live-21-deep-space-cyan-supernova.mp4` | Cyan Supernova | wall 95, moving: its stars twinkle, its glow shimmers | ~0.9 Mb/s |
 | 22 | `coremotion-live-22-deep-space-dark-side-moon.mp4` | Dark Side Moon | wall 96, moving: its stars twinkle, its glow shimmers | ~1.0 Mb/s |
 
