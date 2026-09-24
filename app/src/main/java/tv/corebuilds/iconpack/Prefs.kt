@@ -77,13 +77,22 @@ object Prefs {
         prefs(context).getBoolean(KEY_PICK_BANNERS, false)
 
     /**
-     * Whether a launcher apply is owed once the Banners companion installs.
-     * Written by [BannersCompanion.ensure] just before the system installer
-     * opens; read and cleared by [BannersCompanion.takePendingApply] when
-     * Settings or the home screen resumes with the companion in place.
+     * The launcher (its [ApplyIconPack.Launcher.key]) owed an apply once the
+     * Banners companion installs, or null. Written by [BannersCompanion.ensure]
+     * just before the system installer opens; read and cleared by
+     * [BannersCompanion.takePendingApply] when Settings or the home screen
+     * resumes with the companion in place. Persisted rather than held in a
+     * field because the screen may be recreated while the installer is up.
      */
-    fun bannersPendingApply(context: Context): Boolean =
-        prefs(context).getBoolean(KEY_BANNERS_PENDING_APPLY, false)
+    fun bannersPendingApply(context: Context): String? =
+        prefs(context).getString(KEY_BANNERS_PENDING_APPLY, null)
+
+    fun setBannersPendingApply(context: Context, launcherKey: String?) {
+        prefs(context).edit().apply {
+            if (launcherKey == null) remove(KEY_BANNERS_PENDING_APPLY)
+            else putString(KEY_BANNERS_PENDING_APPLY, launcherKey)
+        }.apply()
+    }
 
     /**
      * The highest versionCode the What's New sheet has narrated for. Read by

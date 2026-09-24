@@ -16,11 +16,12 @@
         <package android:name="tv.corebuilds.iconpack" />
     </queries>
 
+    <!-- No android.software.leanback declaration: that marks a TV *app*,
+         and lint then requires a LEANBACK_LAUNCHER entry this resource
+         pack deliberately does not have. Sideloaded installs do not filter
+         on features, and launchers find the pack by the filters below. -->
     <uses-feature
         android:name="android.hardware.touchscreen"
-        android:required="false" />
-    <uses-feature
-        android:name="android.software.leanback"
         android:required="false" />
 
     <application

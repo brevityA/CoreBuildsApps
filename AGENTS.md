@@ -28,7 +28,8 @@ auto-applies whatever the selected package's appfilter maps, so the in-app
 Glyphs/Banners toggle works by pointing launchers at one package or the other
 (`BannersCompanion.kt`). It has no Kotlin, no dependencies, no launcher entry
 and no committed art: `python tools/build_banners_pack.py` derives its XML from
-the glyph pack's generated appfilter (run it after `build_icons.py`), and its
+the glyph pack's generated appfilter (run it after `build_icons.py` and
+`build_banners.py`), and its
 Gradle build copies the banner PNGs from `app/`. `tests/test_banners_pack.py`
 holds the package name, manifest filters, asset filename and release workflow
 together.
@@ -44,8 +45,8 @@ Classic pack changes run the four generators and the validator:
 
 ```bash
 python tools/build_icons.py
-python tools/build_banners_pack.py   # the 16:9 companion's XML, from the appfilter just written
 python tools/build_banners.py
+python tools/build_banners_pack.py   # the 16:9 companion's XML; needs the banner PNGs above
 python tools/build_branding.py
 python tools/build_brand_preview.py
 python tools/validate.py

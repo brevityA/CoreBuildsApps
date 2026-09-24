@@ -110,6 +110,9 @@ STRING_OVERRIDES = {
         "Square glyphs when off, 16:9 banner cards when on. Updates the "
         "catalogue browser and launcher icon picker; launcher auto-apply "
         "stays square.",
+    # ...and so never downloads it: Pop's network disclosure stays two items.
+    "about_network_two":
+        "2.  A request for each wallpaper you choose to download.",
 }
 
 CAT_LABEL = {

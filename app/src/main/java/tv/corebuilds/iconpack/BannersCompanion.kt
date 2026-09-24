@@ -43,10 +43,17 @@ object BannersCompanion {
     fun wanted(context: Context): Boolean =
         supported() && Prefs.pickerPrefersBanners(context)
 
-    /** Installed at this app's version or newer. */
+    /**
+     * Installed at this app's version or newer, and signed by this app's own
+     * certificate. The download path already refuses anything else; this
+     * also refuses a same-named package that arrived some other way, so the
+     * launcher is never pointed at art this project did not sign.
+     */
     fun ready(context: Context): Boolean {
         val code = installedVersionCode(context) ?: return false
-        return code >= BuildConfig.VERSION_CODE
+        if (code < BuildConfig.VERSION_CODE) return false
+        return context.packageManager.checkSignatures(context.packageName, PACKAGE) ==
+            PackageManager.SIGNATURE_MATCH
     }
 
     /** The package a launcher should be told to apply right now. */
@@ -69,14 +76,16 @@ object BannersCompanion {
     }
 
     /**
-     * Fetch and offer the companion, then remember that an apply is owed.
+     * Fetch and offer the companion, then remember that an apply is owed to
+     * [launcherKey] (an [ApplyIconPack.Launcher.key]).
      *
-     * The system installer is a separate screen the user may back out of, so
-     * the apply cannot simply follow in the next line. [takePendingApply]
-     * lets the screen that started this finish the job on resume, once the
-     * package is really there.
+     * The system installer is a separate screen the user may back out of, and
+     * Android may recreate the screen behind it, so the apply cannot simply
+     * follow in the next line and the target cannot live in a field.
+     * [takePendingApply] hands the key back on resume, once the package is
+     * really there, so the apply lands on the launcher that was chosen.
      */
-    fun ensure(activity: Activity) {
+    fun ensure(activity: Activity, launcherKey: String) {
         if (!supported()) return
         if (!UpdateInstaller.canInstall(activity)) {
             toast(activity, activity.getString(R.string.banners_install_permission))
@@ -90,11 +99,11 @@ object BannersCompanion {
             when (event) {
                 is UpdateInstaller.Event.Progress -> Unit
                 is UpdateInstaller.Event.Ready -> {
-                    Prefs.set(activity, Prefs.KEY_BANNERS_PENDING_APPLY, true)
+                    Prefs.setBannersPendingApply(activity, launcherKey)
                     try {
                         UpdateInstaller.install(activity, event.file)
                     } catch (e: Exception) {
-                        Prefs.set(activity, Prefs.KEY_BANNERS_PENDING_APPLY, false)
+                        Prefs.setBannersPendingApply(activity, null)
                         toast(activity, activity.getString(
                             R.string.banners_failed_fmt, e.message ?: e.javaClass.simpleName))
                     }
@@ -106,15 +115,16 @@ object BannersCompanion {
     }
 
     /**
-     * True once, when an install [ensure] started has landed. A declined
-     * install leaves the apply owed; it fires on the first resume after the
-     * companion does arrive, and never while it is absent.
+     * The launcher key an install [ensure] started was for, returned once
+     * when that install has landed. A declined install leaves the apply owed;
+     * it fires on the first resume after the companion does arrive, and never
+     * while it is absent.
      */
-    fun takePendingApply(context: Context): Boolean {
-        if (!Prefs.bannersPendingApply(context)) return false
-        if (!ready(context)) return false
-        Prefs.set(context, Prefs.KEY_BANNERS_PENDING_APPLY, false)
-        return true
+    fun takePendingApply(context: Context): String? {
+        val key = Prefs.bannersPendingApply(context) ?: return null
+        if (!ready(context)) return null
+        Prefs.setBannersPendingApply(context, null)
+        return key
     }
 
     private fun toast(context: Context, message: String) {

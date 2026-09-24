@@ -151,11 +151,15 @@ jobs:
           # Re-run compile + lint (config-cache warm, cheap) with all output
           # captured, then post the failure cause and first errors as
           # annotations - readable without downloading job logs.
-          ./gradlew :app:compileDebugKotlin :app:lintDebug --no-daemon > build_out.txt 2>&1 || true
+          # The module comes from this entry's own tasks (":pop:lintDebug ..."
+          # -> pop), so a Pop or Banners failure reports Pop or Banners, not
+          # :app. compileDebugSources covers Java-only modules too.
+          MOD=$(printf '%s' "${{ matrix.tasks }}" | awk '{print $1}' | cut -d: -f2)
+          ./gradlew ":$MOD:compileDebugSources" ":$MOD:lintDebug" --no-daemon > build_out.txt 2>&1 || true
           {
             grep -A 8 "What went wrong" build_out.txt | head -10 || true
             grep -E "^e: |error: " build_out.txt | head -5 || true
-            LINT_TXT=$(find app/build/reports -name "lint-results-*.txt" 2>/dev/null | head -1)
+            LINT_TXT=$(find "$MOD/build" -name "lint-results-*.txt" 2>/dev/null | head -1)
             if [ -n "$LINT_TXT" ]; then
               grep -iE "Error" "$LINT_TXT" | head -4 || true
             fi

@@ -11,7 +11,8 @@ launcher auto-applies.
 Derived from the glyph pack's *generated* files, not from the catalog, on
 purpose: the two packages then cannot disagree about which components are
 covered, and there is no second copy of build_icons.py's component-expansion
-rules to drift. Run it after ``tools/build_icons.py``.
+rules to drift. Run it after ``tools/build_icons.py`` and
+``tools/build_banners.py`` (the banner PNGs it checks for).
 
 The PNGs are not written here. banners/build.gradle.kts copies them from
 app/src/main/res/drawable-nodpi at build time, so each banner exists once in

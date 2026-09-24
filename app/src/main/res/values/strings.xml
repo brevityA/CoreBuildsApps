@@ -249,7 +249,7 @@
     <string name="about_label_wallpapers">WALLPAPERS</string>
     <string name="about_network_header">EVERYTHING THIS APP SENDS</string>
     <string name="about_network_one">1.  A request for the update manifest, when update checks are on.</string>
-    <string name="about_network_two">2.  A request for each wallpaper you choose to download.</string>
+    <string name="about_network_two">2.  A request for each wallpaper you choose to download, and for Core Builds Banners the first time you switch the art style to Banners.</string>
     <string name="about_network_none">That is the whole list. No analytics, no installed-app list, no device model, no identifier. Icons ship inside the app and are never fetched.</string>
     <string name="about_links">LINKS</string>
     <string name="about_source_label">Source &amp; issues</string>

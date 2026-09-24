@@ -41,8 +41,6 @@ import kotlin.math.max
 class MainActivity : TvActivity() {
 
     private var target: ApplyIconPack.Launcher? = null
-    /** The launcher an Apply press was aimed at while the companion installed. */
-    private var pendingApply: ApplyIconPack.Launcher? = null
     private var updateChecked = false
     private var whatsNewShown = false
     /** Set by the bar's Later button: the bar stays hidden for this session. */
@@ -403,9 +401,9 @@ class MainActivity : TvActivity() {
             bindApplyButton()
             // Back from installing Core Builds Banners: finish the apply the
             // Apply press asked for, now that the package is really there.
-            if (BannersCompanion.takePendingApply(this)) {
-                (pendingApply ?: target)?.let { applyTo(it) }
-                pendingApply = null
+            BannersCompanion.takePendingApply(this)?.let { key ->
+                (ApplyIconPack.installed(this).firstOrNull { it.key == key } ?: target)
+                    ?.let { applyTo(it) }
             }
             // What's New fires once per upgrade, independently of the update
             // checker's switch: it reads the APK's own asset, so it works
@@ -1191,8 +1189,7 @@ class MainActivity : TvActivity() {
             ApplyIconPack.Result.NeedsCompanion -> {
                 // Banners is selected: fetch Core Builds Banners, and apply to
                 // this launcher when the install lands (see onResume).
-                pendingApply = launcher
-                BannersCompanion.ensure(this)
+                BannersCompanion.ensure(this, launcher.key)
             }
         }
     }
