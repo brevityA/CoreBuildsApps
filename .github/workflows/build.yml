@@ -14,14 +14,10 @@ on:
       - 'Latestrelease/**'
       - 'Wallpapers/**'
       - 'tests/**'
-      # This job's gates read all three app modules: check_ui_resources and
-      # test_navigation_graph walk app/, pop/ and pixel-neon/ resources, and
+      # This job's gates read the app module: check_ui_resources and
+      # test_navigation_graph walk app/ resources, and
       # build_app_ui_mockups --check compares the frames committed under docs/.
-      # Without these three a fork-only change - a dead button in Pixel Neon, a
-      # stale mockup - reached main without running any of them.
-      - 'pop/**'
       - 'banners/**'
-      - 'pixel-neon/**'
       - 'docs/**'
       - '.github/workflows/build.yml'
   pull_request:
@@ -35,9 +31,7 @@ on:
       - 'Latestrelease/**'
       - 'Wallpapers/**'
       - 'tests/**'
-      - 'pop/**'
       - 'banners/**'
-      - 'pixel-neon/**'
       - 'docs/**'
       - '.github/workflows/build.yml'
   workflow_dispatch:
@@ -140,7 +134,6 @@ jobs:
           python tests/test_v151_robustness.py
           python tests/test_wallpapers.py
           python tests/test_wallpaper_export.py
-          python tests/test_resource_parity.py
           python tests/test_tv_layout_fit.py
           python tests/test_search_focus.py
           python tests/test_icon_uniformity.py

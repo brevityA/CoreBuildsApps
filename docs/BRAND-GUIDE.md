@@ -36,15 +36,12 @@ signal, not fog over the canvas. Protect negative space.
 | Muted UI | `#8B949E` | Captions / diagnostics |
 | Panel Ink | `#151923` | Raised cards |
 
-Pop snaps brand accents to the 16 locked swatches in `tools/popart.py`.
-Do not invent a 17th.
-
 ## Type
 
 Serif for editorial display. Bold sans for product names and TV UI. Mono for
 versions, rails, receipts. Do not put serif on dense controls.
 
-## Classic Icon Pack
+## Icon Pack
 
 | Spec | Contract |
 |---|---|
@@ -60,9 +57,9 @@ and `tests/test_icon_identity.py` own the weights.
 
 ### Presence (raster only)
 
-Square Classic PNGs get a night keyline and a short accent bloom *after*
+Square PNGs get a night keyline and a short accent bloom *after*
 `svg2png` (`tools/presence.py`). Both layers are rings around existing ink.
-Interiors stay alpha. SVG masters stay style-AA. Banners, Pop and Pixel Neon
+Interiors stay alpha. SVG masters stay style-AA. Banners
 do not take this pass.
 
 Identity ceilings after presence: PNG coverage `< 0.40`, PNG margin 24px.
@@ -70,12 +67,11 @@ Vectors still have to clear the 40px SAFE area.
 
 ## Sibling expressions
 
-- **Pixel Neon** — 32×32 logical sprites, nearest-neighbour to 512, compact
-  halo, transparent outside the art. Not a filter on Classic.
-- **Pop** — one superellipse, cream mark on near-black ink, 45° halftone,
-  locked swatches, pack-owned field.
 - **Motion / Shift** — slow, dark, OLED-safe, same geometry and palette.
   Say when a loop needs Monet Premium, Projectivy Premium or a local file.
+
+(Retired 2026-09-24: the Pixel Neon and Pop icon-pack variants. The suite
+keeps one icon pack; their style rules stay in git history.)
 
 ## Voice
 
@@ -85,9 +81,8 @@ constraint and the proof. No “best ever”, no hidden gates.
 ## Governance
 
 1. Change `tools/catalog.json` or the generator, never a generated file.
-2. Run the four Classic generators plus validators before merge.
-3. Rebuild Pop when the catalog or shared `app/` resources move.
-4. Ship receipts: counts, versions, check totals.
+2. Run the four generators plus validators before merge.
+3. Ship receipts: counts, versions, check totals.
 5. TV focus must not depend on colour alone.
 
 Full original: the attached Brand Guide v1.0 PDF and the Core-Builds guide

@@ -288,31 +288,7 @@ class KotlinWiringTests(unittest.TestCase):
                 read("app/src/main/res/values/strings.xml"),
                 rf'<string name="{key}"',
             )
-            self.assertRegex(
-                read("pop/src/main/res/values/strings.xml"),
-                rf'<string name="{key}"',
-            )
-            self.assertRegex(
-                read("pixel-neon/app/src/main/res/values/strings.xml"),
-                rf'<string name="{key}"',
-            )
 
-    def test_pixel_neon_preview_mirrors_seed_wiring(self):
-        neon = ROOT / "pixel-neon/app/src/main"
-        preview = (neon / "java/tv/corebuilds/pixelneon/WallpaperPreviewActivity.kt"
-                   ).read_text(encoding="utf-8")
-        self.assertIn("package tv.corebuilds.pixelneon", preview)
-        self.assertIn("WallpaperSeed.from", preview)
-        self.assertIn("seed_row", preview)
-        seed = (neon / "java/tv/corebuilds/pixelneon/WallpaperSeed.kt"
-                ).read_text(encoding="utf-8")
-        self.assertIn("package tv.corebuilds.pixelneon", seed)
-        self.assertIn("WallpaperColors.fromBitmap", seed)
-        layout = (neon / "res/layout/activity_wallpaper_preview.xml").read_text()
-        self.assertIn("seed_row", layout)
-        self.assertIn("cb_seed_swatch", layout)
-        dimens = (neon / "res/values/dimens.xml").read_text()
-        self.assertIn("cb_seed_swatch", dimens)
 
     def test_wallpaper_tile_selection_keeps_focus(self):
         """Long-press selection toggles the focused tile. A payload-less

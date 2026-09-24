@@ -1,7 +1,6 @@
 ## App
 
 - [ ] Icon pack
-- [ ] Pixel Neon icon pack
 - [ ] Core Line
 - [ ] Core Shift
 - [ ] Core Doctor
@@ -34,11 +33,6 @@ seventh registry and the one nobody remembers (see issue #71):
 - [ ] `python tools/build_branding.py`
 - [ ] `python tools/build_brand_preview.py`
 - [ ] `python tools/validate.py` — paste last line:
-
-Pixel Neon:
-- [ ] `python tools/build_pixel_neon.py`
-- [ ] `python tools/validate_pixel_neon.py`
-- [ ] `cd pixel-neon && ./gradlew :app:assembleDebug`
 
 Core Line:
 - [ ] `cd ticker && npm test`

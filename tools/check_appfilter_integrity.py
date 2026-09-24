@@ -27,12 +27,6 @@ PACKS = [
     ("Icon Pack", ROOT / "app/src/main/res",
      [ROOT / "app/src/main/res/xml/appfilter.xml",
       ROOT / "app/src/main/assets/appfilter.xml"]),
-    ("Pop", ROOT / "pop/src/main/res",
-     [ROOT / "pop/src/main/res/xml/appfilter.xml",
-      ROOT / "pop/src/main/assets/appfilter.xml"]),
-    ("Pixel Neon", ROOT / "pixel-neon/app/src/main/res",
-     [ROOT / "pixel-neon/app/src/main/res/xml/appfilter.xml",
-      ROOT / "pixel-neon/app/src/main/assets/appfilter.xml"]),
 ]
 
 DRAWABLE_RE = re.compile(r'drawable="([^"]+)"')

@@ -61,7 +61,7 @@ def main():
                   f"{icon['name']}: declared gradient is missing from the shipped SVG")
 
     # Brand variants share one identity; every Classic accent remains readable
-    # on the documented dark card. Source accents stay untouched for Pop/Neon.
+    # on the documented dark card.
     brands = {}
     for icon in icons:
         mono = icon.get("color_note") == "monochrome"
@@ -301,11 +301,11 @@ def main():
     check(inst.exists(), "UpdateInstaller.kt is missing")
     if inst.exists():
         it = inst.read_text()
-        # The authority moved to BuildConfig when :pop started compiling this
-        # same file — two installed packages may not share a FileProvider
-        # authority. The check still has to prove the value reaching
-        # getUriForFile matches the manifest, so it now follows the
-        # indirection to the Gradle field instead of grepping the constant.
+        # The authority comes from BuildConfig — the FileProvider authority
+        # must match the installed package. The check still has to prove
+        # the value reaching getUriForFile matches the manifest, so it
+        # follows the indirection to the Gradle field instead of grepping
+        # the constant.
         check("BuildConfig.UPDATE_AUTHORITY" in it,
               "UpdateInstaller must take its authority from BuildConfig so "
               "each pack gets a distinct one")

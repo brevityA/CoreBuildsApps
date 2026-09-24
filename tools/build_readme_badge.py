@@ -8,18 +8,14 @@ START = "<!-- suite-stamp:start -->"
 END = "<!-- suite-stamp:end -->"
 
 WHAT = {
-    "iconpack": "{iconCount} transparent icons + 84 wallpapers for Projectivy Launcher",
-    "pixelneon": "{iconCount} transparent 8-bit neon icons + 70 wallpapers for Projectivy Launcher",
-    "pop": "The same {iconCount} icons, pop-art cartoon: 16 swatches, one container",
+    "iconpack": "{iconCount} transparent icons + {wallpapers} wallpapers for Projectivy Launcher",
     "line": "Sports scores & channel RSS ticker (chyron)",
     "shift": "Android TV screensaver + motion wallpaper browser",
     "motion": "Projectivy wallpaper-provider plugin for Core Motion loops",
     "doctor": "Local-only streaming and suite diagnostics (phone)",
 }
 ANCHOR = {
-    "iconpack": "icon-pack",
-    "pixelneon": "pixel-neon-icon-pack",
-    "pop": "core-builds-pop",
+    "iconpack": "core-builds-icon-pack",
     "line": "core-line",
     "shift": "core-shift",
     "motion": "core-motion",
@@ -32,14 +28,15 @@ def block(suite: dict) -> str:
         "> | App | Current | What it does | Downloader | Release tag |",
         "> |---|---:|---|---|---|",
     ]
-    for key in ["iconpack", "pixelneon", "pop", "line", "shift", "motion", "doctor"]:
+    wallpapers = json.loads((ROOT / "Wallpapers/manifest.json").read_text())["count"]
+    for key in ["iconpack", "line", "shift", "motion", "doctor"]:
         app = suite["apps"][key]
         releases = "../../releases"
         downloader = app["downloader"]
         tag = f"[`{app['tagPrefix']}*` / `{app['floatingTag']}`]({releases})"
         lines.append(
             f"> | **[{app['name']}](#-{ANCHOR[key]})** | `v{app['versionName']}` | "
-            f"{WHAT[key].format(**app)} | `{downloader}` | {tag} |"
+            f"{WHAT[key].format(wallpapers=wallpapers, **app)} | `{downloader}` | {tag} |"
         )
     lines += [
         ">",

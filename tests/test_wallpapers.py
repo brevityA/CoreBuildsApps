@@ -29,9 +29,8 @@ BUNDLED_MANIFEST = ROOT / "app/src/main/assets/manifest/wallpapers.json"
 SERIES6 = "series-6-circuit-core"
 SERIES8 = "series-8-amoled"
 # Series that intentionally live outside the classic manifest: series 0 is the
-# photographic originals kept for history, series 5-pop is Core Builds Pop's
-# own collection, indexed by Wallpapers/pop-manifest.json.
-UNMANIFESTED = {"series-0-originals", "series-5-pop"}
+# photographic originals kept for history.
+UNMANIFESTED = {"series-0-originals"}
 THUMBS = WALLPAPERS / "thumbs"
 BUNDLED_THUMBS = ROOT / "app/src/main/assets/wallpapers_thumbs"
 MAIN = ROOT / "app" / "src" / "main"

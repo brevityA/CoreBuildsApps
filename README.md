@@ -13,9 +13,7 @@
 <!-- suite-stamp:start -->
 > | App | Current | What it does | Downloader | Release tag |
 > |---|---:|---|---|---|
-> | **[Core Builds Icon Pack](#-icon-pack)** | `v1.9.3` | 961 transparent icons + 84 wallpapers for Projectivy Launcher | `5270601` | [`v*` / `iconpack`](../../releases) |
-> | **[Core Builds Pixel Neon](#-pixel-neon-icon-pack)** | `v0.1.0` | 961 transparent 8-bit neon icons + 70 wallpapers for Projectivy Launcher | `[USER TO SUPPLY]` | [`pixel-neon-v*` / `pixel-neon`](../../releases) |
-> | **[Core Builds Pop](#-core-builds-pop)** | `v1.0.0` | The same 961 icons, pop-art cartoon: 16 swatches, one container | `[USER TO SUPPLY]` | [`pop-v*` / `pop`](../../releases) |
+> | **[Core Builds Icon Pack](#-core-builds-icon-pack)** | `v1.9.3` | 961 transparent icons + 84 wallpapers for Projectivy Launcher | `5270601` | [`v*` / `iconpack`](../../releases) |
 > | **[Core Line](#-core-line)** | `v1.3.0` | Sports scores & channel RSS ticker (chyron) | `7375676` | [`coreline-v*` / `coreline`](../../releases) |
 > | **[Core Shift](#-core-shift)** | `v2.3.5` | Android TV screensaver + motion wallpaper browser | `8829421` | [`shift-v*` / `shift`](../../releases) |
 > | **[Core Motion](#-core-motion)** | `v1.0.0` | Projectivy wallpaper-provider plugin for Core Motion loops | `[USER TO SUPPLY]` | [`motion-v*` / `motion`](../../releases) |

@@ -9,12 +9,8 @@ Dusk Violet #8a4890 · Ember #c03a20 · Night #0d1117 · Void #04070f.
 `thumb` URL, its `series`, and `resolution`. Both the repo's README and the
 in-app browser read this same file — there is one source of truth.
 
-**Two collections, two manifests.** `manifest.json` is the classic Core Builds
-Icon Pack's 84. `pop-manifest.json` is Core Builds Pop's 12, bundled into that
-APK at `pop/src/main/assets/manifest/wallpapers.json`. They are kept disjoint
-and asserted so in `tests/test_pop.py`: a shipped pack should not have its
-advertised contents change because a *different* pack was rebuilt. Rationale
-and the wallpaper research behind series 5 is in
+`manifest.json` is the Core Builds Icon Pack's collection. Rationale
+and the wallpaper research behind earlier series is in
 [`docs/research/wallpaper-directions.md`](../docs/research/wallpaper-directions.md).
 
 ## Series
@@ -25,15 +21,15 @@ and the wallpaper research behind series 5 is in
 | `series-1-fieldwork` | 01–24 | Mesh gradients, aurora, light trails, topo, deepfield |
 | `series-2-motion` | 25–32 | Long-exposure kinetics: orbitals, warp, fogbanks, spiral, slipstream |
 | `series-3-horizons` | 33–40 | One horizon, eight meanings — the §03 semantic accent slots as landscapes |
-| `series-5-pop` | (separate manifest) | **Core Builds Pop.** 12 walls built from `tools/popart.py`'s own primitives — the 16 Pop swatches, ink `#151019`, cream `#FFF4E0`, one halftone screen. Flat art, so no grain dither is needed and 128-colour PNG is lossless: 12 × 4K in **2.5 MB**. Indexed in `pop-manifest.json`, not `manifest.json`. |
+| `series-5-pop` | (retired with Pop) | Was Core Builds Pop's 12-wall set, indexed by `pop-manifest.json`. Removed with the pack in 2026-09; the number stays empty so history keeps its meaning. |
 | `series-6-circuit-core` | 41–50, 79–80 | **Circuit Core.** Twelve lit-circuit fields on near-black — the same §06 lighting language the retired Core Mark series used (cyan first, violet/ember ambient), authored at 1376×768 rather than 4K. Replaced `series-4-core-mark` in v1.8.6; `tools/build_circuit_wallpaper_extensions.py` reproduces the final pair. |
 | `series-7-retrowave` | 59–68, 81–82 | **Retrowave.** Twelve 4K walls in 2026's nostalgic retro-gradient genre: sliced gradient suns, perspective grids, chrome ridges and starfields on the night ground, per `tools/build_synthwave_wallpapers.py`. |
 | `series-8-amoled` | 69–78, 83–84 | **AMOLED.** Twelve minimalist 4K walls on exact `#000000`: sparse cyan, violet, and ember geometry with 92.4–99.8% true-black coverage. `tools/build_amoled_wallpapers.py` asserts the ≥50% contract and writes the [contact sheet](../docs/amoled-wallpapers.png). |
 
 Retired: `series-4-core-mark` (41–70, 30 × 4K PNGs of the lit hex + faceted core
 diamond) shipped in v1.7.0 and was removed in v1.8.6. Series index 4 stays empty
-and 5 is left to Pop, so the two collections never share a number; subsequent
-classic additions continue at series 7 and 8.
+and 5 belonged to Pop (retired 2026-09); subsequent additions continue at
+series 7 and beyond.
 
 ## In-app browser
 
@@ -73,10 +69,9 @@ The icon-pack app ships a built-in Wallpapers screen:
    }
    ```
 4. Run `python tools/sync_wallpaper_manifest.py`. It verifies every manifest
-   entry against the files on disk, copies the classic manifest into
-   `app/src/main/assets/manifest/wallpapers.json` (and the Pop manifest into
-   `pop/src/main/assets/manifest/wallpapers.json`), and keeps the bundled
-   thumb sets exactly the manifest's set — it removes stale thumbs and adds
+   entry against the files on disk, copies the manifest into
+   `app/src/main/assets/manifest/wallpapers.json`, and keeps the bundled
+   thumb set exactly the manifest's set — it removes stale thumbs and adds
    missing ones (CI's wallpaper tests enforce that the bundled copies stay
    in sync; `--check` reports drift without writing).
 5. Bump `manifest.json` `version` and `count`.
