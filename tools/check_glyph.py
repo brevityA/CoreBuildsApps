@@ -4,9 +4,9 @@
 Every check here already existed somewhere — validate.py enforces the safe
 area, test_icon_identity.py measures rendered alpha, icon_style.py owns the
 monoline contract — but all of them run against *shipped* assets. Seeing
-whether a glyph works therefore cost a full regeneration: measure_pop_glyphs,
-build_icons, banners, branding, previews, build_pop, build_pixel_neon. That
-is eighteen to twenty-two minutes to answer "is this counter going to close".
+whether a glyph works therefore cost a full regeneration: build_icons,
+banners, branding, previews. That is the better part of twenty minutes to
+answer "is this counter going to close".
 
 Three things this catches that eyeballing the 512px master cannot:
 

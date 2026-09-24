@@ -64,11 +64,9 @@ BUILDERS = [
 ]
 GATES = [
     "tools/validate.py",
-    "tools/validate_pop.py",
-    "tools/validate_pixel_neon.py",
     # Added for 1.9.0: the release command should run every gate the repo has,
     # not the subset that existed when it was written. check_ui_resources reads
-    # all three app modules, check_appfilter_integrity proves every drawable the
+    # the app module, check_appfilter_integrity proves every drawable the
     # filters name exists, and the mockup check compares the frames committed in
     # docs/ against the layouts they depict - a release that restacks screens
     # without regenerating them ships documentation of a UI nobody has.

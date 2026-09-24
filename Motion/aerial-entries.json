@@ -69,6 +69,27 @@
       "type": "aerial",
       "timeOfDay": "night",
       "url-1080-SDR": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Motion/live/coremotion-live-10-spiral-blue.mp4"
+    },
+    {
+      "id": "coremotion_live_11_nebula_drift",
+      "accessibilityLabel": "Nebula Drift \u2014 Core Motion by Core Builds",
+      "type": "aerial",
+      "timeOfDay": "night",
+      "url-1080-SDR": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Motion/live/coremotion-live-11-nebula-drift.mp4"
+    },
+    {
+      "id": "coremotion_live_12_event_horizon",
+      "accessibilityLabel": "Event Horizon \u2014 Core Motion by Core Builds",
+      "type": "aerial",
+      "timeOfDay": "night",
+      "url-1080-SDR": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Motion/live/coremotion-live-12-event-horizon.mp4"
+    },
+    {
+      "id": "coremotion_live_13_ion_storm",
+      "accessibilityLabel": "Ion Storm \u2014 Core Motion by Core Builds",
+      "type": "aerial",
+      "timeOfDay": "night",
+      "url-1080-SDR": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Motion/live/coremotion-live-13-ion-storm.mp4"
     }
   ]
 }

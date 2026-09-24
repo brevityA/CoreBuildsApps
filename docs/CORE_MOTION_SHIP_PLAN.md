@@ -33,7 +33,7 @@ Everything is code-complete; what's left is **verify → release**. In order:
 - `motion-plugin/` — Projectivy wallpaper provider (video feed + Lottie).
 - `shift/` — rebuilt live-wallpaper browser (preview + download).
 - `motion-shaders/` + `tools/build_shaders.py` — GLSL pipeline.
-- `Motion/live/` (10 loops) + `Motion/live-feed.json`.
+- `Motion/live/` (13 loops) + `Motion/live-feed.json`.
 - `tools/build_motion_feed.py`, `tools/validate_motion_feed.py`.
 
 ---

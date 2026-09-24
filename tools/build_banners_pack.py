@@ -12,7 +12,7 @@ Derived from the glyph pack's *generated* files, not from the catalog, on
 purpose: the two packages then cannot disagree about which components are
 covered, and there is no second copy of build_icons.py's component-expansion
 rules to drift. Run it after ``tools/build_icons.py`` and
-``tools/build_banners.py`` (the banner PNGs it checks for).
+``tools/build_banners.py`` (the banner art it checks for).
 
 The PNGs are not written here. banners/build.gradle.kts copies them from
 app/src/main/res/drawable-nodpi at build time, so each banner exists once in
@@ -27,6 +27,10 @@ import argparse
 import re
 import sys
 from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+
+from drawable_art import art_path, read_aliases  # noqa: E402
 
 ROOT = Path(__file__).resolve().parents[1]
 APP_MAIN = ROOT / "app" / "src" / "main"
@@ -121,12 +125,14 @@ def outputs() -> dict[Path, str]:
 
 def check_art(files: dict[Path, str]) -> None:
     """Every drawable the companion names must exist in the art it copies."""
+    aliases = read_aliases(APP_MAIN / "res" / "values")
     names = set()
     for text in (files[PACK_MAIN / "res" / "xml" / "appfilter.xml"],
                  files[PACK_MAIN / "res" / "xml" / "drawable.xml"]):
         names |= set(re.findall(r'drawable="([^"]+)"', text))
         names |= set(re.findall(r'img\d+="([^"]+)"', text))
-    missing = sorted(n for n in names if not (SRC_PNG / f"{n}.png").is_file())
+    missing = sorted(n for n in names
+                     if not art_path(SRC_PNG, n, aliases).is_file())
     if missing:
         fail(f"{len(missing)} drawable(s) the companion names are not in "
              f"app/src/main/res/drawable-nodpi: {', '.join(missing[:5])}")

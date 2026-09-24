@@ -24,7 +24,6 @@ ANDROID = "{http://schemas.android.com/apk/res/android}"
 APP_MANIFEST = ROOT / "app/src/main/AndroidManifest.xml"
 PACK_MANIFEST = ROOT / "banners/src/main/AndroidManifest.xml"
 APP_GRADLE = ROOT / "app/build.gradle.kts"
-POP_GRADLE = ROOT / "pop/build.gradle.kts"
 PACK_GRADLE = ROOT / "banners/build.gradle.kts"
 COMPANION_KT = ROOT / "app/src/main/java/tv/corebuilds/iconpack/BannersCompanion.kt"
 ACTIVITY_JAVA = (ROOT / "banners/src/main/java/tv/corebuilds/iconpack/banners/"
@@ -80,12 +79,13 @@ class GeneratedResources(unittest.TestCase):
                          read(ROOT / "banners/src/main/assets/appfilter.xml"))
 
     def test_build_copies_every_drawable_it_names(self):
-        # The PNGs are copied at build time, not committed; an include glob
+        # The art is copied at build time, not committed; an include glob
         # that misses a family would link but leave launchers resolving
         # nothing.
         gradle = read(PACK_GRADLE)
-        for needed in ('"*_banner.png"', '"cb_back_*.png"', '"cb_mask.png"',
-                       '"cb_upon.png"', '"cb_banner.png"', '"mipmap-*/**"'):
+        for needed in ('"*_banner.webp"', '"cb_back_*.webp"', '"cb_mask.webp"',
+                       '"cb_upon.webp"', '"cb_banner.png"', '"mipmap-*/**"',
+                       '"banner_aliases.xml"'):
             self.assertIn(needed, gradle)
 
 
@@ -200,10 +200,8 @@ class Contracts(unittest.TestCase):
         self.assertIn(f'GLYPH_PACK = "{app_id}"', read(ACTIVITY_JAVA))
 
     def test_builds_without_a_companion_offer_none(self):
-        # Pop and the debug-signed candidate build compile the same Kotlin;
-        # an empty package is what keeps their toggles in-app.
-        self.assertIn('buildConfigField("String", "BANNERS_PACKAGE", "\\"\\"")',
-                      read(POP_GRADLE))
+        # The debug-signed candidate build ships no companion APK, so an
+        # empty package is what keeps its toggle in-app.
         candidate = read(APP_GRADLE).split('create("candidate")', 1)[1].split("}", 1)[0]
         self.assertIn('"BANNERS_PACKAGE", "\\"\\""', candidate)
 

@@ -16,8 +16,7 @@ Why these checks exist, one class at a time:
                      that reaches for a gated API without declaring - or
                      without capping - repeats the worst kind of bug here:
                      silent on the devices that need it, noise on the ones
-                     that don't. Both manifests (app and Pop, which compiles
-                     the same Kotlin) are checked.
+                     that don't. The app manifest is checked.
 
   package visibility Android 11 filters resolveActivity/queryIntentActivities
                      by <queries>. Every probe in the code is component-
@@ -43,25 +42,21 @@ Why these checks exist, one class at a time:
                      and the update bar's what's-new card each have one
                      silent failure mode: a row with no reader behind it,
                      a screen never registered in a manifest, a view the
-                     parser never fills. These checks pin all three, plus
-                     the Pop copy of every id and string the shared Kotlin
-                     reaches for - Pop compiles the same sources against
-                     its own resources, so an id missing there breaks only
-                     the Pop build, quietly, after the app module passed.
+                     parser never fills. These checks pin all three.
                      The auditor's block reads the <queries> span itself -
                      the app's own intent-filter declares LEANBACK_LAUNCHER,
                      so a whole-manifest grep would pass on the wrong
                      occurrence while the scan came up empty on the box -
-                     and pins the generated deep-link resource in both
-                     packs plus the vendored encoder's notice entry.
+                     and pins the generated deep-link resource plus the
+                     vendored encoder's notice entry.
 
   format specifiers  getString(id, args) runs the string through
                      java.util.Formatter, whose only literal percent is
                      %%; a bare %5B parses as width 5 plus a boolean
                      conversion and throws before any URL exists, which
                      is how every auditor row press killed the screen in
-                     1.9.0. Every <string> in every values*/*.xml of all
-                     three packs must be grammar the Formatter can honour
+                     1.9.0. Every <string> in every values*/*.xml of the
+                     pack must be grammar the Formatter can honour
                      (formatted="false" is the documented exemption), and
                      the auditor's deep link must additionally decode
                      back, after the %% collapse the runtime performs, to
@@ -83,7 +78,6 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent
 
 APP_MANIFEST = ROOT / "app" / "src" / "main" / "AndroidManifest.xml"
-POP_MANIFEST = ROOT / "pop" / "src" / "main" / "AndroidManifest.xml"
 WALLPAPERS_KT = ROOT / "app" / "src" / "main" / "java" / "tv" / "corebuilds" / "iconpack" / "WallpapersActivity.kt"
 MAIN_KT = ROOT / "app" / "src" / "main" / "java" / "tv" / "corebuilds" / "iconpack" / "MainActivity.kt"
 SETTER_KT = ROOT / "app" / "src" / "main" / "java" / "tv" / "corebuilds" / "iconpack" / "WallpaperSetter.kt"
@@ -164,8 +158,7 @@ def collect() -> list[str]:
             problems.append(label)
 
     app_manifest = read(APP_MANIFEST)
-    pop_manifest = read(POP_MANIFEST)
-    for name, manifest in (("app", app_manifest), ("pop", pop_manifest)):
+    for name, manifest in (("app", app_manifest),):
         for perm in PERMISSIONS:
             check(f'android:name="{perm}"' in manifest,
                   f"{name} manifest: missing {perm}")
@@ -241,8 +234,6 @@ def collect() -> list[str]:
                        / "iconpack" / "SettingsActivity.kt")
     settings_layout = read(ROOT / "app" / "src" / "main" / "res" / "layout"
                            / "activity_settings.xml")
-    pop_settings_layout = read(ROOT / "pop" / "src" / "main" / "res" / "layout"
-                               / "activity_settings.xml")
     faq_kt = read(ROOT / "app" / "src" / "main" / "java" / "tv" / "corebuilds"
                   / "iconpack" / "FaqActivity.kt")
     faq_layout = read(ROOT / "app" / "src" / "main" / "res" / "layout"
@@ -252,8 +243,6 @@ def collect() -> list[str]:
     for rid in ("set_refresh_row", "set_appinfo_row", "set_faq_row"):
         check(f'android:id="@+id/{rid}"' in settings_layout,
               f"activity_settings.xml: missing {rid}")
-        check(f'android:id="@+id/{rid}"' in pop_settings_layout,
-              f"pop activity_settings.xml: missing {rid} (shared Kotlin compiles both)")
         check(f"R.id.{rid})" in settings_kt, f"SettingsActivity: {rid} not wired")
     check("ApplyIconPack.detectInstalled(this)" in settings_kt,
           "SettingsActivity: launcher rows must act on the detected launcher, not an assumed one")
@@ -268,7 +257,7 @@ def collect() -> list[str]:
     check(faq_layout.count('android:focusable="true"') == 1,
           "activity_faq.xml: only the back button may be focusable - read-only "
           "cards that take focus are a D-pad trap")
-    for name, manifest in (("app", app_manifest), ("pop", pop_manifest)):
+    for name, manifest in (("app", app_manifest),):
         check('android:name=".FaqActivity"' in manifest,
               f"{name} manifest: FaqActivity not registered")
     check('optJSONArray("highlights")' in checker and "val highlights: List<String>" in checker,
@@ -286,7 +275,7 @@ def collect() -> list[str]:
     # the scan would come up empty on API 30+ with nothing logged anywhere.
     auditor = read(ROOT / "app" / "src" / "main" / "java" / "tv" / "corebuilds"
                    / "iconpack" / "AuditorActivity.kt")
-    for name, manifest in (("app", app_manifest), ("pop", pop_manifest)):
+    for name, manifest in (("app", app_manifest),):
         queries = manifest.split("<queries>", 1)[1].split("</queries>", 1)[0]
         for category in ("android.intent.category.LEANBACK_LAUNCHER",
                          "android.intent.category.LAUNCHER"):
@@ -294,8 +283,7 @@ def collect() -> list[str]:
                   f"{name} manifest: auditor visibility lost {category} in <queries>")
         check('android:name=".AuditorActivity"' in manifest,
               f"{name} manifest: AuditorActivity not registered")
-    for res in (ROOT / "app" / "src" / "main" / "res" / "values" / "issue_prefill.xml",
-                ROOT / "pop" / "src" / "main" / "res" / "values" / "issue_prefill.xml"):
+    for res in (ROOT / "app" / "src" / "main" / "res" / "values" / "issue_prefill.xml",):
         check(res.is_file(), f"{res.parent.parent.name}: generated issue_prefill.xml missing")
         if res.is_file():
             text = read(res)
@@ -312,11 +300,11 @@ def collect() -> list[str]:
           "AuditorActivity: scan via queryIntentActivities, list without item animator")
     check("R.id.set_audit_row)" in settings_kt,
           "SettingsActivity: audit row not wired")
-    for layout in (settings_layout, pop_settings_layout):
+    for layout in (settings_layout,):
         check('android:id="@+id/set_audit_row"' in layout,
               "activity_settings.xml: missing set_audit_row")
-    for module in ("app", "pop", "pixel-neon"):
-        base = ROOT / module if module != "pixel-neon" else ROOT / "pixel-neon" / "app"
+    for module in ("app",):
+        base = ROOT / module
         for lay in ("activity_auditor.xml", "item_audit.xml"):
             check((base / "src" / "main" / "res" / "layout" / lay).is_file(),
                   f"{module}: auditor layout {lay} missing")
@@ -372,21 +360,19 @@ def collect() -> list[str]:
           "SuiteActivity: rows come from the generated hub resource and launch")
     check("R.id.set_suite_row)" in settings_kt,
           "SettingsActivity: suite row not wired")
-    for layout in (settings_layout, pop_settings_layout):
+    for layout in (settings_layout,):
         check('android:id="@+id/set_suite_row"' in layout,
               "activity_settings.xml: missing set_suite_row")
-    for name, manifest in (("app", app_manifest), ("pop", pop_manifest)):
+    for name, manifest in (("app", app_manifest),):
         queries = manifest.split("<queries>", 1)[1].split("</queries>", 1)[0]
         for pkg in ("dev.corebuilds.shift", "dev.corebuilds.line",
-                    "dev.corebuilds.doctor", "tv.corebuilds.motion",
-                    "tv.corebuilds.iconpack.pop", "tv.corebuilds.pixelneon"):
+                    "dev.corebuilds.doctor", "tv.corebuilds.motion"):
             check(f'package android:name="{pkg}"' in queries,
                   f"{name} manifest: suite hub visibility lost {pkg}")
         for activity in (".InspectorActivity", ".SuiteActivity"):
             check(f'android:name="{activity}"' in manifest,
                   f"{name} manifest: {activity} not registered")
-    for res in (ROOT / "app" / "src" / "main" / "res" / "values" / "suite_hub.xml",
-                ROOT / "pop" / "src" / "main" / "res" / "values" / "suite_hub.xml"):
+    for res in (ROOT / "app" / "src" / "main" / "res" / "values" / "suite_hub.xml",):
         check(res.is_file() and "suite_hub_pkgs" in read(res),
               f"{res}: generated suite hub resource missing")
 
@@ -435,7 +421,7 @@ def format_string_problems() -> list[str]:
     argument, which is exactly how every auditor row press killed the
     screen in 1.9.0: the resource matched the issue forms byte-for-byte,
     every gate was green, and the Formatter still refused it. So every
-    <string> in every values*/*.xml of all three packs must be grammar the
+    <string> in every values*/*.xml of the pack must be grammar the
     Formatter can honour; formatted="false" is the documented exemption,
     because Android serves a string marked that way raw and nothing may
     ever pass args to it.
@@ -450,8 +436,6 @@ def format_string_problems() -> list[str]:
     problems: list[str] = []
     for module, base in (
         ("app", ROOT / "app" / "src" / "main" / "res"),
-        ("pop", ROOT / "pop" / "src" / "main" / "res"),
-        ("pixel-neon", ROOT / "pixel-neon" / "app" / "src" / "main" / "res"),
     ):
         values = sorted(base.glob("values*/*.xml"))
         if not values:
@@ -474,8 +458,7 @@ def format_string_problems() -> list[str]:
                         "String.format would parse it as a conversion "
                         f"({body[offset:offset + 7]!r}); double it, or mark the "
                         'string formatted="false" if nothing ever formats it')
-    for res in (ROOT / "app" / "src" / "main" / "res" / "values" / "issue_prefill.xml",
-                ROOT / "pop" / "src" / "main" / "res" / "values" / "issue_prefill.xml"):
+    for res in (ROOT / "app" / "src" / "main" / "res" / "values" / "issue_prefill.xml",):
         if not res.is_file():
             continue  # the wiring block above already fails a missing file
         match = re.search(r'<string name="audit_issue_url_fmt">(.*?)</string>',

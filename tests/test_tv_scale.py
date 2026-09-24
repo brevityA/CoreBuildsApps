@@ -14,14 +14,14 @@ The app's answer is not resource qualifiers (steps, wrong between steps: a
 1.5x too big) but tv.corebuilds.iconpack.TvActivity, which overrides
 configuration.densityDpi in attachBaseContext to the density that makes the
 panel's pixel width come out as exactly DESIGN_WIDTH_DP dp. Every screen
-inherits it; Pop shares the Kotlin; Pixel Neon carries its own copy.
+inherits it.
 
 What is pinned here
 -------------------
 * the arithmetic: densityDpi = widthPixels * 160 / 960, clamped, and the box it
   produces is the design box for every panel report this suite knows about;
 * the near-match guard, so a reference set is never overridden;
-* inheritance: every Activity in app and pixel-neon extends TvActivity, and
+* inheritance: every Activity in app extends TvActivity, and
   TvActivity overrides attachBaseContext - a screen that forgot the base class
   would silently render unnormalised on 4K;
 * the retired mechanism stays retired: no values-sw720dp directory and no
@@ -36,7 +36,6 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 APP_KT = ROOT / "app/src/main/java/tv/corebuilds/iconpack"
-PIXEL_KT = ROOT / "pixel-neon/app/src/main/java/tv/corebuilds/pixelneon"
 DESIGN_WIDTH_DP = 960
 
 
@@ -85,7 +84,7 @@ class NormaliserMath(unittest.TestCase):
                 self.assertTrue(near, f"{name}: reference must trip the guard")
 
     def test_the_kotlin_implements_the_same_arithmetic(self):
-        for kotlin in (APP_KT / "TvActivity.kt", PIXEL_KT / "TvActivity.kt"):
+        for kotlin in (APP_KT / "TvActivity.kt",):
             text = kotlin.read_text(encoding="utf-8")
             self.assertIn("widthPixels * 160 / DESIGN_WIDTH_DP", text,
                           f"{kotlin.name}: the density formula drifted")
@@ -99,8 +98,7 @@ class NormaliserMath(unittest.TestCase):
 
     def test_buckets_are_not_come_back(self):
         """Two scaling mechanisms drifting apart is worse than either alone."""
-        for res in ("app/src/main/res", "pop/src/main/res",
-                    "pixel-neon/app/src/main/res"):
+        for res in ("app/src/main/res",):
             self.assertFalse((ROOT / res / "values-sw720dp").exists(),
                              f"{res}: values-sw720dp is retired; TvActivity "
                              f"normalises continuously instead")
@@ -114,7 +112,7 @@ class EveryScreenInherits(unittest.TestCase):
 
     def test_every_activity_extends_tvactivity(self):
         checked = 0
-        for directory in (APP_KT, PIXEL_KT):
+        for directory in (APP_KT,):
             for path in self.activity_files(directory):
                 text = path.read_text(encoding="utf-8")
                 self.assertRegex(
@@ -124,14 +122,9 @@ class EveryScreenInherits(unittest.TestCase):
                 self.assertNotIn("AppCompatActivity()", text,
                                  f"{path.name}: still extends AppCompatActivity")
                 checked += 1
-        self.assertGreaterEqual(checked, 14,
+        self.assertGreaterEqual(checked, 7,
                                 f"only {checked} activities checked; the scan "
-                                f"must cover every screen in app and pixel-neon")
-
-    def test_pop_shares_the_normalised_kotlin(self):
-        gradle = (ROOT / "pop/build.gradle.kts").read_text(encoding="utf-8")
-        self.assertIn('java.srcDirs("../app/src/main/java")', gradle,
-                      "Pop must compile the shared Kotlin, TvActivity included")
+                                f"must cover every screen in app")
 
 
 if __name__ == "__main__":

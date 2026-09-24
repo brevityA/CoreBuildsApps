@@ -1,13 +1,18 @@
 {
-  "versionCode": 35,
-  "versionName": "1.9.3",
+  "versionCode": 36,
+  "versionName": "1.9.4",
   "iconCount": 961,
   "componentCount": 1179,
-  "releaseDate": "2026-09-23",
+  "releaseDate": "2026-09-24",
   "apkUrl": "https://github.com/brevityA/CoreBuildsApps/releases/download/iconpack/iconpack-release.apk",
   "releaseNotesUrl": "https://github.com/brevityA/CoreBuildsApps/releases",
   "minSdk": 21,
   "highlights": [
-    "Unified In-App Art Style Switcher (Square Glyphs / 16:9 Banners)"
+    "Banners for every app, from one switch",
+    "Twelve Deep Space wallpapers",
+    "Two-thirds smaller download, same pixels",
+    "Missing-app auditor sends mapping reports to the right form",
+    "Missing-app auditor no longer lists apps whose icon works",
+    "Missing-app auditor opens without a pause"
   ]
 }

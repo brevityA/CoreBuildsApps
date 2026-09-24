@@ -86,6 +86,10 @@ import urllib.parse
 import xml.etree.ElementTree as ET
 from pathlib import Path
 
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+
+from drawable_art import art_path, read_aliases  # noqa: E402
+
 from PIL import Image, ImageDraw, ImageFont
 
 import qrcode
@@ -207,6 +211,7 @@ CATS = ICON_PACK["icon_categories"]
 BESPOKE = [b == "1" for b in ICON_PACK["icon_bespoke"]]
 
 ICONS_DIR = RES / "drawable-nodpi"
+ALIASES = read_aliases(RES / "values")
 THUMBS_DIR = ROOT / "app/src/main/assets/wallpapers_thumbs"
 
 
@@ -711,7 +716,7 @@ def catalogue_frame(with_update_bar: bool) -> tuple[Image.Image, str]:
                 card(img, box)
             icon = dp(DIMENS["cb_tile_icon"])
             cx, cy = (box[0] + box[2]) // 2, (box[1] + box[3]) // 2
-            paste_art(img, ICONS_DIR / f"{PACK[index]}.png",
+            paste_art(img, art_path(ICONS_DIR, PACK[index], ALIASES),
                       [cx - icon // 2, cy - icon // 2, cx + icon // 2, cy + icon // 2])
         py += tile_h
         row += 1
@@ -1044,7 +1049,7 @@ def inspector_frame() -> tuple[Image.Image, str]:
     row_h = dp(40) + dp(160) + dp(20)
     card(img, [g, y, W - g, y + row_h])
     inner = dp(DIMENS["cb_focus_inset"]) + dp(DIMENS["cb_card_padding"])
-    paste_art(img, ICONS_DIR / f"{drawable}.png",
+    paste_art(img, art_path(ICONS_DIR, drawable, ALIASES),
               [g + inner, y + inner, g + inner + dp(160), y + inner + dp(160)])
     f_meta = font("sans", DIMENS["cb_text_data"])
     f_mono = font("mono", DIMENS["cb_text_data"])

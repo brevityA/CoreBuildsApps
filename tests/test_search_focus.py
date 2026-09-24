@@ -41,11 +41,8 @@ while the user types:
 
 What it checks
 --------------
-Scoped to `app/src/main/java`, which Pop compiles as its own source set, so one
-fix covers both packs. Pixel Neon keeps a deliberate fork of this Kotlin under
-its own package and is *not* covered here; its `MainActivity` still carries
-(1), (2), (3) and (5), and has no empty-state or focus-restore logic at all, so
-(4) has nothing there to catch yet.
+Scoped to `app/src/main/java` — the suite's one icon pack, so these checks
+cover the shipped screen directly.
 
 Run against the pre-fix source, 14 of the 15 checks fail, so the gate reproduces
 the report rather than describing it. The 15th,
@@ -55,8 +52,8 @@ tile) — the Kotlin half depends on them, and nothing else in the repo would
 notice one being edited away.
 
 Wiring: this file has test_* functions but no TestCase, so `unittest discover`
-skips it the same way it skips test_tv_layout_fit.py and
-test_resource_parity.py. CI runs the Python suites by naming each file, so this
+skips it the same way it skips test_tv_layout_fit.py.
+CI runs the Python suites by naming each file, so this
 one is listed explicitly in build.yml and suite-ci.yml. Add it there, or it is
 not a gate.
 """
@@ -71,12 +68,8 @@ ANDROID = "{http://schemas.android.com/apk/res/android}"
 
 KOTLIN = ROOT / "app/src/main/java/tv/corebuilds/iconpack"
 
-# Pop compiles ../app/src/main/java, so this Kotlin runs against Pop's mirrored
-# resources too. Both layouts are checked; they are byte-identical in the
-# search row and CI diffs the mirror.
 MODULES = {
     "app": ROOT / "app/src/main/res/layout",
-    "pop": ROOT / "pop/src/main/res/layout",
 }
 
 
@@ -409,7 +402,7 @@ def test_filter_runs_before_focus_is_settled():
 
 # The route below the search field, per module geometry.
 #
-# app/pop were rebuilt to the approved sheet
+# app was rebuilt to the approved sheet
 # (docs/design/app-ui-apply-wallpapers.png), which gives the category chips
 # their own full-width row *between* the field and the grid — the old layout put
 # them beside the field, so DOWN from the field went straight into the results
@@ -420,18 +413,11 @@ def test_filter_runs_before_focus_is_settled():
 # more press, which is the price of the filter row being reachable at all; the
 # "lists disappeared" regression this file exists for is guarded by the
 # hidden-stop and syncFocusChain tests below, not by these particular edges.
-#
-# pixel-neon is a deliberate fork with its own copy of this screen and its own
-# side-by-side geometry, so it keeps the old routes.
 DOWN_FROM_SEARCH = {
     "app": "@id/chip_row",
-    "pop": "@id/chip_row",
-    "pixel-neon": "@id/grid",
 }
 UP_FROM_GRID = {
     "app": "@id/chip_row",
-    "pop": "@id/chip_row",
-    "pixel-neon": "@id/search",
 }
 
 
@@ -487,8 +473,6 @@ def test_search_field_keeps_its_focus_routes():
 
 ALL_LAYOUTS = {
     "app": ROOT / "app/src/main/res/layout",
-    "pop": ROOT / "pop/src/main/res/layout",
-    "pixel-neon": ROOT / "pixel-neon/app/src/main/res/layout",
 }
 
 CHAIN_CONTAINERS = ("update_bar", "apply_targets")
@@ -568,19 +552,9 @@ def test_the_focus_chain_is_resynced_where_visibility_changes():
             f"runs before the first layout) without calling syncFocusChain(); "
             f"the edges around it then name whatever was visible last time"
         )
-    pixelneon = (
-        ROOT / "pixel-neon/app/src/main/java/tv/corebuilds/pixelneon/MainActivity.kt"
-    ).read_text(encoding="utf-8")
-    assert "fun syncFocusChain()" in pixelneon, (
-        "the Pixel Neon fork keeps its own copy of this screen and its own "
-        "copy of the hole; it needs the same governor"
-    )
-
-
 def test_preview_reveals_without_grabbing_focus():
     paths = [
         KOTLIN / "WallpaperPreviewActivity.kt",
-        ROOT / "pixel-neon/app/src/main/java/tv/corebuilds/pixelneon/WallpaperPreviewActivity.kt",
     ]
     for path in paths:
         text = path.read_text(encoding="utf-8")

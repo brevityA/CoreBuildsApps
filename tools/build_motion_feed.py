@@ -89,6 +89,22 @@ CLIPS = [
               f"c0={NIGHT}:c1={BUILD_BLUE}:c2={CYAN}:"
               f"duration={DURATION}:speed=0.02:seed=777"),
          vf=None, crf=20),
+    # Series 9 companions: the Deep Space set, moving. Same lavfi-only rule
+    # as the rest — no footage, no stills, everything generated.
+    dict(slug="nebula-drift", title="Nebula Drift",
+         src=(f"gradients=size={W}x{H}:rate={FPS}:type=spiral:nb_colors=3:"
+              f"c0={NIGHT}:c1={VIOLET}:c2={CYAN}:"
+              f"duration={DURATION}:speed=0.01:seed=888"),
+         vf="eq=saturation=0.7:brightness=-0.04,vignette=angle=PI/4", crf=20),
+    dict(slug="event-horizon", title="Event Horizon",
+         src=(f"gradients=size={W}x{H}:rate={FPS}:type=radial:nb_colors=4:"
+              f"c0={NIGHT}:c1={CYAN}:c2={VIOLET}:c3={NIGHT}:"
+              f"duration={DURATION}:speed=0.012:seed=999"),
+         vf=None, crf=20),
+    dict(slug="ion-storm", title="Ion Storm",
+         src=(f"cellauto=size={W}x{H}:rate={FPS}:rule=90:random_fill_ratio=0.04:scroll=1"),
+         vf="colorize=hue=210:saturation=0.7:lightness=0",
+         crf=23),
 ]
 
 

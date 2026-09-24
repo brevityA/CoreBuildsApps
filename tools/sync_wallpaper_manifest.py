@@ -7,14 +7,12 @@ tests/test_wallpapers.py hold byte-identical, and the bundled thumb set must
 be exactly the manifest's set (an extra thumb is dead weight, a missing one
 is a blank cell in the in-app grid).
 
-Two collections, two APKs:
+One collection, one APK:
 
   classic   Wallpapers/manifest.json        -> app/src/main/assets/manifest/wallpapers.json
-  pop       Wallpapers/pop-manifest.json    -> pop/src/main/assets/manifest/wallpapers.json
 
 Thumbs live in Wallpapers/thumbs/ and are copied to
-app/src/main/assets/wallpapers_thumbs/ (classic) and
-pop/src/main/assets/wallpapers_thumbs/ (pop).
+app/src/main/assets/wallpapers_thumbs/.
 
 Usage:
   sync_wallpaper_manifest.py           # verify + copy, fail on drift
@@ -36,11 +34,6 @@ COLLECTIONS = {
         "manifest": WALLPAPERS / "manifest.json",
         "bundled": ROOT / "app/src/main/assets/manifest/wallpapers.json",
         "thumbs": ROOT / "app/src/main/assets/wallpapers_thumbs",
-    },
-    "pop": {
-        "manifest": WALLPAPERS / "pop-manifest.json",
-        "bundled": ROOT / "pop/src/main/assets/manifest/wallpapers.json",
-        "thumbs": ROOT / "pop/src/main/assets/wallpapers_thumbs",
     },
 }
 

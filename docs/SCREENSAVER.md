@@ -26,7 +26,7 @@ This is **not** a live wallpaper. TV has no `WallpaperService`. Projectivy still
 https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Motion/overflight-feed.json
 ```
 
-16 entries: the 10 live loops plus the 6 series-5 loops (hex glow … zenith), de-duped, https + GitHub hosts only.
+19 entries: the 13 live loops plus the 6 series-5 loops (hex glow … zenith), de-duped, https + GitHub hosts only.
 
 Regenerate:
 

@@ -16,8 +16,8 @@ plugins {
 //     because launchers discover packs through activity intent filters.
 //   * No art in git. The banners and fallback furniture are copied from
 //     :app's generated drawable-nodpi at build time (see copyBannerArt), so
-//     there is exactly one committed copy of each PNG and the two packages
-//     cannot drift apart.
+//     there is exactly one committed copy of each art file and the two
+//     packages cannot drift apart.
 //   * No version of its own. versionCode/versionName are read from
 //     app/build.gradle.kts: the companion is released with the icon pack,
 //     attached to the same v* release, and :app asks for exactly its own
@@ -39,9 +39,15 @@ val generatedRes = layout.buildDirectory.dir("generated/banner-art/res")
 // launcher/TV branding is the icon pack's own.
 val copyBannerArt = tasks.register<Sync>("copyBannerArt") {
     from(rootProject.file("app/src/main/res/drawable-nodpi")) {
-        include("*_banner.png", "cb_back_*.png", "cb_mask.png", "cb_upon.png",
-                "cb_banner.png")
+        include("*_banner.webp", "cb_back_*.webp", "cb_mask.webp",
+                "cb_upon.webp", "cb_banner.png")
         into("drawable-nodpi")
+    }
+    // Renamed-app twins share one bitmap via aliases; without this file the
+    // companion names drawables that resolve nowhere.
+    from(rootProject.file("app/src/main/res/values")) {
+        include("banner_aliases.xml")
+        into("values")
     }
     from(rootProject.file("app/src/main/res")) {
         include("mipmap-*/**")

@@ -73,7 +73,8 @@ UNTAGGED_ALLOWED = {"1.8.7"}
 CANONICAL = ("Added", "Changed", "Fixed")
 
 # `## [1.8.21] — 2026-09-19`, and `## [Pop 1.0.0] — 2026-09-07` for the
-# sections that belong to another app in the suite.
+# sections that belonged to another app in the suite (Pop is retired;
+# its shipped notes stay as history).
 RELEASE_HEADING = re.compile(
     r"^## \[(?P<label>[^\]]+)\] — (?P<date>\d{4}-\d{2}-\d{2}|Unreleased)$"
 )
@@ -160,7 +161,7 @@ class ChangelogContract(unittest.TestCase):
             return None, ""
         label = m.group("label")
         if not SEMVER.match(label):
-            return None, ""  # another app's section (Pop 1.0.0): its own notes
+            return None, ""  # another app's section (Pop 1.0.0, retired): its own notes
         if version_tuple(label) < VOCABULARY_FROM:
             return None, ""  # free-form history, left as shipped
         return HOUSE_KINDS, f"released sections from {'.'.join(map(str, VOCABULARY_FROM))} on"

@@ -43,7 +43,6 @@ from check_gradle_envelope import (  # noqa: E402
 # history. These five predate the generator and keep their names.
 GROUP_NAMES = {
     "": "android-root",
-    "pixel-neon": "pixel-neon",
     "ticker/android": "core-line-android",
     "shift": "core-shift",
     "doctor": "core-doctor",
@@ -177,7 +176,7 @@ def render() -> str:
     roots = discover_roots()
     # Suite order, the way suite.json lists the apps, so the file reads the same
     # way the docs do rather than in whatever order rglob happened to walk.
-    order = ["", "pixel-neon", "ticker/android", "shift", "motion-plugin", "doctor"]
+    order = ["", "ticker/android", "shift", "motion-plugin", "doctor"]
     by_rel = {r.rel: r for r in roots}
     unknown = [rel for rel in by_rel if rel not in order]
     if unknown:

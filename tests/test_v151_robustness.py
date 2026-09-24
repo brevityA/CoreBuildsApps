@@ -90,11 +90,10 @@ class UpdateInstallerTests(unittest.TestCase):
         )
 
     def test_authority_matches_manifest(self):
-        # AUTHORITY is BuildConfig-supplied so :app and :pop compile this same
-        # file with per-pack authorities (two installed packages may not share
-        # a FileProvider authority). The contract is a chain: the Gradle
-        # buildConfigField must equal the manifest authority, and the code must
-        # defer to BuildConfig rather than hardcode either pack's value.
+        # AUTHORITY is BuildConfig-supplied so the FileProvider authority
+        # always matches the installed package. The contract is a chain:
+        # the Gradle buildConfigField must equal the manifest authority,
+        # and the code must defer to BuildConfig rather than hardcode it.
         self.assertIn(
             "val AUTHORITY: String = BuildConfig.UPDATE_AUTHORITY",
             self.src,
@@ -289,15 +288,6 @@ class MappingAndFocusTests(unittest.TestCase):
         self.assertIn("com.swm.live/au.com.seven.inferno.MainActivity", comps)
         self.assertIn("com.swm.live/.MainActivity", comps)
 
-    def test_pixel_neon_chips_keep_focus_on_pick(self):
-        src = read(
-            "pixel-neon/app/src/main/java/tv/corebuilds/pixelneon/ChipAdapter.kt"
-        )
-        no_block = re.sub(r"/\*.*?\*/", "", src, flags=re.DOTALL)
-        code = "\n".join(line.split("//", 1)[0] for line in no_block.splitlines())
-        self.assertNotIn("notifyDataSetChanged()", code)
-        self.assertIn("notifyItemChanged", code)
-        self.assertIn("KEYCODE_DPAD_LEFT", code)
 
 
 if __name__ == "__main__":

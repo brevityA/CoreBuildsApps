@@ -7,17 +7,23 @@ the launcher icon at true pixel sizes, and the adaptive-icon mask shapes.
 Pure composition of assets that already exist; generates no new geometry.
 """
 import base64
+import sys
 from pathlib import Path
 
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+
+from drawable_art import art_path, read_aliases  # noqa: E402
 from svg_renderer import svg2png
 
 ROOT = Path(__file__).resolve().parent.parent
 RES = ROOT / "app" / "src" / "main" / "res"
 OUT = ROOT / "docs" / "brand-preview.png"
+ALIASES = read_aliases(RES / "values")
 
 
 def data_uri(p: Path) -> str:
-    return "data:image/png;base64," + base64.b64encode(p.read_bytes()).decode()
+    mime = "image/webp" if p.suffix == ".webp" else "image/png"
+    return f"data:{mime};base64," + base64.b64encode(p.read_bytes()).decode()
 
 
 def main():
@@ -26,7 +32,8 @@ def main():
     fg = data_uri(RES / "mipmap-xxhdpi" / "ic_launcher_foreground.png")
 
     # a few pack icons to dress the mock home row
-    row = [data_uri(RES / "drawable-nodpi" / f"{n}.png")
+    nodpi = RES / "drawable-nodpi"
+    row = [data_uri(art_path(nodpi, n, ALIASES))
            for n in ["stremio", "kodi", "jellyfin", "plex", "youtube"]]
 
     W, H = 1200, 940

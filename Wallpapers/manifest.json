@@ -1,9 +1,9 @@
 {
   "collection": "Core Builds Wallpapers",
-  "version": "5.0",
+  "version": "5.1",
   "author": "brevityA",
   "brand_guide": "Core-Builds Brand Guide v1.0 (2026-08-11)",
-  "count": 84,
+  "count": 96,
   "wallpapers": [
     {
       "name": "01 Mesh Drift",
@@ -591,6 +591,90 @@
       "series": "series-8-amoled",
       "url": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/series-8-amoled/corebuilds-84-corner-signal.png",
       "thumb": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/thumbs/corebuilds-84-corner-signal.jpg",
+      "resolution": "3840x2160"
+    },
+    {
+      "name": "85 Event Horizon",
+      "series": "series-9-deep-space",
+      "url": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/series-9-deep-space/corebuilds-85-event-horizon.png",
+      "thumb": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/thumbs/corebuilds-85-event-horizon.jpg",
+      "resolution": "3840x2160"
+    },
+    {
+      "name": "86 Nebula Drift",
+      "series": "series-9-deep-space",
+      "url": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/series-9-deep-space/corebuilds-86-nebula-drift.png",
+      "thumb": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/thumbs/corebuilds-86-nebula-drift.jpg",
+      "resolution": "3840x2160"
+    },
+    {
+      "name": "87 Starfield",
+      "series": "series-9-deep-space",
+      "url": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/series-9-deep-space/corebuilds-87-starfield.png",
+      "thumb": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/thumbs/corebuilds-87-starfield.jpg",
+      "resolution": "3840x2160"
+    },
+    {
+      "name": "88 Ringed Planet",
+      "series": "series-9-deep-space",
+      "url": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/series-9-deep-space/corebuilds-88-ringed-planet.png",
+      "thumb": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/thumbs/corebuilds-88-ringed-planet.jpg",
+      "resolution": "3840x2160"
+    },
+    {
+      "name": "89 Galaxy Spiral",
+      "series": "series-9-deep-space",
+      "url": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/series-9-deep-space/corebuilds-89-galaxy-spiral.png",
+      "thumb": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/thumbs/corebuilds-89-galaxy-spiral.jpg",
+      "resolution": "3840x2160"
+    },
+    {
+      "name": "90 Aurora Orbit",
+      "series": "series-9-deep-space",
+      "url": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/series-9-deep-space/corebuilds-90-aurora-orbit.png",
+      "thumb": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/thumbs/corebuilds-90-aurora-orbit.jpg",
+      "resolution": "3840x2160"
+    },
+    {
+      "name": "91 Comet Lane",
+      "series": "series-9-deep-space",
+      "url": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/series-9-deep-space/corebuilds-91-comet-lane.png",
+      "thumb": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/thumbs/corebuilds-91-comet-lane.jpg",
+      "resolution": "3840x2160"
+    },
+    {
+      "name": "92 Deep Field",
+      "series": "series-9-deep-space",
+      "url": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/series-9-deep-space/corebuilds-92-deep-field.png",
+      "thumb": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/thumbs/corebuilds-92-deep-field.jpg",
+      "resolution": "3840x2160"
+    },
+    {
+      "name": "93 Ember Nova",
+      "series": "series-9-deep-space",
+      "url": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/series-9-deep-space/corebuilds-93-ember-nova.png",
+      "thumb": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/thumbs/corebuilds-93-ember-nova.jpg",
+      "resolution": "3840x2160"
+    },
+    {
+      "name": "94 Hex Station",
+      "series": "series-9-deep-space",
+      "url": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/series-9-deep-space/corebuilds-94-hex-station.png",
+      "thumb": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/thumbs/corebuilds-94-hex-station.jpg",
+      "resolution": "3840x2160"
+    },
+    {
+      "name": "95 Cyan Supernova",
+      "series": "series-9-deep-space",
+      "url": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/series-9-deep-space/corebuilds-95-cyan-supernova.png",
+      "thumb": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/thumbs/corebuilds-95-cyan-supernova.jpg",
+      "resolution": "3840x2160"
+    },
+    {
+      "name": "96 Dark Side Moon",
+      "series": "series-9-deep-space",
+      "url": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/series-9-deep-space/corebuilds-96-dark-side-moon.png",
+      "thumb": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/thumbs/corebuilds-96-dark-side-moon.jpg",
       "resolution": "3840x2160"
     }
   ]
