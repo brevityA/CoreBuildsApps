@@ -4,8 +4,9 @@
  * What it is: the one trusted hop that lets the icon pack's on-device
  * auditor file icon requests (and mapping reports) for people who do not have (and should never
  * need) a GitHub account. The auditor POSTs three validated fields; this
- * worker files (or +1s) a GitHub issue as a bot — or, when the GitHub App
- * is not configured yet, forwards the same payload to a Discord webhook,
+ * worker files (or +1s) a GitHub issue — as the GitHub App's bot, or as the
+ * owner through a fine-grained GITHUB_TOKEN limited to this repo's issues —
+ * or, when neither is configured, forwards the same payload to a Discord webhook,
  * because the Core Builds webtools worker (core-builds-cors-proxy) already
  * runs exactly that pattern in production. The GitHub App credential —
  * private key — lives only here as a Workers secret, scoped to `issues:
@@ -229,8 +230,8 @@ export function issueBody({ appName, component, device, mapped = false }) {
       "", "### Device and OS", "", device || "_not supplied_",
       "", "### Launcher", "", "_not supplied — device-side auditor report_",
       "",
-      "_Filed by CoreBuilds-requests[bot] from the in-app auditor's one-press",
-      "request — the pack maps this app under a different activity, so this",
+      "_Filed by the Core Builds request broker from the in-app auditor's",
+      "one-press request — the pack maps this app under a different activity, so this",
       "device's component is the fix. Anonymous device report; no GitHub",
       "account on the reporter side._",
     ].join("\n");
@@ -243,8 +244,8 @@ export function issueBody({ appName, component, device, mapped = false }) {
     "_only when the component cannot be reproduced._",
     "", "### Device type", "", device || "_not supplied_",
     "", "### Anything else", "",
-    "_Filed by CoreBuilds-requests[bot] from the in-app auditor's one-press",
-    "request — anonymous device report; no GitHub account on the reporter side._",
+    "_Filed by the Core Builds request broker from the in-app auditor's",
+    "one-press request — anonymous device report; no GitHub account on the reporter side._",
   ].join("\n");
 }
 
@@ -299,9 +300,22 @@ async function fileOrComment(token, value) {
   return { number, duplicate: false };
 }
 
-function githubConfigured(env) {
+function githubAppConfigured(env) {
   return Boolean(env.GITHUB_APP_ID && env.GITHUB_APP_INSTALLATION_ID &&
                  env.GITHUB_APP_PRIVATE_KEY);
+}
+
+/**
+ * Which sink files a request, strongest first: the GitHub App (issues filed
+ * as its bot), then GITHUB_TOKEN (a fine-grained personal token limited to
+ * Issues: write on this repo, so issues are filed as its owner), then the
+ * Discord webhook. Names only; /healthz reports this, never a value.
+ */
+export function sinkFor(env) {
+  if (githubAppConfigured(env)) return "github-app";
+  if (env.GITHUB_TOKEN) return "github-token";
+  if (env.ICON_REQUEST_DISCORD_WEBHOOK_URL) return "discord";
+  return "none";
 }
 
 /** The Discord card, same three fields, titled like the issue it stands for. */
@@ -348,14 +362,15 @@ async function handleRequest(request, env) {
   const verdict = validate(payload);
   if (!verdict.ok) return json({ ok: false, error: verdict.error }, verdict.status);
 
+  const sink = sinkFor(env);
   try {
-    if (githubConfigured(env)) {
-      const token = await installationToken(env);
+    if (sink === "github-app" || sink === "github-token") {
+      const token = sink === "github-app" ? await installationToken(env) : env.GITHUB_TOKEN;
       const { number, duplicate } = await fileOrComment(token, verdict.value);
       logEvent({ evt: duplicate ? "issue_plus_one" : "issue_created", issue: number });
       return json({ ok: true, issue: number, duplicate }, duplicate ? 200 : 201);
     }
-    if (env.ICON_REQUEST_DISCORD_WEBHOOK_URL) {
+    if (sink === "discord") {
       await postDiscord(env, verdict.value);
       logEvent({ evt: "discord_forwarded" });
       return json({ ok: true, via: "discord" }, 201);
@@ -393,7 +408,7 @@ function corsHeaders(request) {
 async function handleInner(request, env) {
   const url = new URL(request.url);
   if (url.pathname === "/healthz") {
-    return json({ ok: true, version: WORKER_VERSION }, 200);
+    return json({ ok: true, version: WORKER_VERSION, sink: sinkFor(env) }, 200);
   }
   if (url.pathname !== "/" && url.pathname !== "/v1/request") {
     return json({ ok: false, error: "no such route" }, 404);

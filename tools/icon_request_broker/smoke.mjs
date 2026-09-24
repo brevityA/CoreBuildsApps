@@ -3,18 +3,23 @@
  * Post-deploy smoke for the icon-request broker — safe against production:
  * everything it checks is non-mutating. Never creates a request/issue.
  *
- *   node smoke.mjs [--strict] https://<name>.<subdomain>.workers.dev
+ *   node smoke.mjs [--strict] [--require-sink] https://<name>.<subdomain>.workers.dev
  *
  * --strict requires the /healthz version to equal this checkout's
  * WORKER_VERSION (the deploy pipeline's wait-loop pass exactly like the
  * CORS proxy's does).
+ *
+ * --require-sink fails when the worker has no way to file a request
+ * (/healthz reports sink "none"): a deploy that set its secrets must not
+ * pass smoke while the worker still answers every press with a 503.
  */
 import { readFileSync } from "node:fs";
 
 const strict = process.argv.includes("--strict");
+const requireSink = process.argv.includes("--require-sink");
 const base = process.argv.find((a) => a.startsWith("http"));
 if (!base) {
-  console.error("usage: node smoke.mjs [--strict] https://…workers.dev");
+  console.error("usage: node smoke.mjs [--strict] [--require-sink] https://…workers.dev");
   process.exit(2);
 }
 
@@ -32,6 +37,7 @@ const health = await (await fetch(`${base}/healthz`)).json();
 check("healthz ok", health.ok, true);
 check("healthz version present", typeof health.version, (v) => v === "string" && v.length > 4);
 if (strict) check("version matches checkout", health.version, ownVersion);
+if (requireSink) check("a filing sink is configured", health.sink, (s) => typeof s === "string" && s !== "none");
 
 const getRoot = await fetch(`${base}/`);
 check("GET / is 405", getRoot.status, 405);
