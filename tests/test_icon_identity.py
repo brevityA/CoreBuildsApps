@@ -610,6 +610,73 @@ class DiversityTests(unittest.TestCase):
                 self.assertFalse(self._is_generic(icon["glyph"]),
                                  f"{icon['name']} regressed to a generic glyph")
 
+    # Different apps whose Classic square PNGs are byte-identical, as of
+    # 1.9.3: a two-letter monogram on the same category shell and one of the
+    # three shared accents, so the launcher tile says nothing about which app
+    # it is (Tablo and TV App Repo, Thmanyah and ThreeNow). Frozen here so the
+    # count can only fall: a new collision fails, and a pair that has been
+    # given distinct art must be deleted from this list.
+    KNOWN_IDENTICAL = [
+        {"ace_stream", "allsaversocial"},
+        {"amazing_classics", "anime_cast"},
+        {"brollie", "buttonsremapper"},
+        {"damontecres", "zhushou"},
+        {"enjoytvandroid", "nathnetwork"},
+        {"fanetv", "filmnet_tv"},
+        {"mobisystems", "totalcommander", "ultimatefilemanager"},
+        {"filmfriend", "findlink", "firedown"},
+        {"l_equipe", "leankeyboard"},
+        {"launchbox", "lazycatsoftware"},
+        {"netfly", "nettv"},
+        {"panda_plus", "ppsspp"},
+        {"scrobble", "photoscreensaver"},
+        {"pepperbox_tv", "premiumize_tv"},
+        {"pigeoncast", "put_io"},
+        {"playkids", "apksrebrand"},
+        {"quasitv", "quicksupport"},
+        {"refreshrate", "rezka"},
+        {"tablofast", "tv_app_repo"},
+        {"thmanyah", "mediaworks"},
+        {"fight", "twilight"},
+        {"toggo", "torrserve"},
+    ]
+
+    @staticmethod
+    def _identical_across_apps() -> list[set[str]]:
+        """Groups of different apps whose square PNGs share every byte.
+
+        Entries of one `brand` are meant to look the same (AGENTS.md: brand
+        groups share glyph and accent), so a group counts only when it spans
+        more than one brand, an unbranded icon being its own brand.
+        """
+        nodpi = ROOT / "app/src/main/res/drawable-nodpi"
+        by_hash: dict[str, list[dict]] = {}
+        for icon in ICONS:
+            png = nodpi / f"{icon['drawable']}.png"
+            if png.is_file():
+                digest = hashlib.sha256(png.read_bytes()).hexdigest()
+                by_hash.setdefault(digest, []).append(icon)
+        return [{i["drawable"] for i in group} for group in by_hash.values()
+                if len({i.get("brand") or i["drawable"] for i in group}) > 1]
+
+    def test_no_new_identical_icons_across_apps(self):
+        known = [frozenset(g) for g in self.KNOWN_IDENTICAL]
+        new = [sorted(g) for g in self._identical_across_apps()
+               if frozenset(g) not in known]
+        self.assertEqual(new, [],
+                         "different apps now share byte-identical icons; give "
+                         "each its own mark or accent (a two-letter monogram "
+                         "on a shared shell and accent is the usual cause)")
+
+    def test_known_identical_list_only_shrinks(self):
+        current = {frozenset(g) for g in self._identical_across_apps()}
+        fixed = [sorted(g) for g in self.KNOWN_IDENTICAL
+                 if frozenset(g) not in current]
+        self.assertEqual(fixed, [],
+                         "these groups no longer collide as listed; delete "
+                         "them from KNOWN_IDENTICAL so the list keeps "
+                         "shrinking")
+
 
 class ApkInspectorTests(unittest.TestCase):
     def manifest(self, activities: str):

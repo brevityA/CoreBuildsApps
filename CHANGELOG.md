@@ -21,6 +21,31 @@ All notable changes to the Core Builds Icon Pack. Format follows
   exactly the glyph pack's components, is discovered by the same launchers,
   has no launcher entry, and is published under the filename the app
   downloads.
+- **`tests/test_icon_identity.py` duplicate-icon ratchet.** Different apps
+  whose square icons are byte-for-byte identical — 22 groups, 46 icons, all
+  two-letter monograms on a shared shell and accent or the stock folder — are
+  frozen in a list that can only shrink. A new collision fails the suite, and
+  a group given distinct art has to be removed from the list.
+
+### Changed
+
+- **Missing-app auditor sends mapping reports to the right form.** An app the
+  pack already maps under a different activity now opens "Icon not
+  auto-assigning" with its real component prefilled, instead of a new-icon
+  request for an icon that already exists.
+  The report keeps that type through every route: the one-press request
+  broker files it as `[Not applying] <app>` with the `mapping` label, and the
+  phone-side QR page offers that form.
+
+### Fixed
+
+- **Missing-app auditor no longer lists apps whose icon works.** An app with
+  a mapped TV activity and an unmapped phone-launcher activity was listed as
+  missing; the auditor now judges each app by the activity a TV launcher
+  shows. Matching also keys on the package, so a shared activity class under
+  another app's ID no longer hides a row.
+- **Missing-app auditor opens without a pause.** The scan runs off the main
+  thread, and focus lands on the first row when the list arrives.
 
 ## [1.9.3] — 2026-09-23
 

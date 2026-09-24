@@ -129,6 +129,10 @@
   var comp = (q.get("component") || "").trim();
   var dev = (q.get("device") || "").trim();
   var endpoint = (q.get("endpoint") || "").trim();
+  // The pack already maps this app under another activity: a mapping report,
+  // filed with the "not auto-assigning" form, not a request for new art.
+  var mapped = q.get("mapped") === "1";
+  var prefix = mapped ? "[Not applying] " : "[Icon] ";
 
   var $ = function (id) { return document.getElementById(id); };
 
@@ -142,13 +146,13 @@
     return;
   }
 
-  document.title = "[Icon] " + app + " — Core Builds";
-  $("headline").textContent = "[Icon] " + app;
+  document.title = prefix + app + " — Core Builds";
+  $("headline").textContent = prefix + app;
   $("appName").textContent = app;
   $("component").textContent = comp;
   $("device").textContent = dev || "(not supplied)";
 
-  var allText = "[Icon] " + app + "\nApp name: " + app +
+  var allText = prefix + app + "\nApp name: " + app +
     "\nComponent: " + comp + "\nDevice: " + dev;
   $("copyAll").addEventListener("click", function (e) {
     navigator.clipboard.writeText(allText).then(function () {
@@ -157,16 +161,24 @@
     });
   });
 
-  // Door 1: the classic form, params rebuilt on YOUR device this time.
+  // Door 1: the form this report belongs to, params rebuilt on YOUR device.
   var enc = encodeURIComponent;
-  $("ghBtn").href =
-    "https://github.com/brevityA/CoreBuildsApps/issues/new" +
-    "?assignees=&labels=icon+request&projects=" +
-    "&template=1.new_icon_request.yml" +
-    "&title=" + enc("[Icon] " + app) +
-    "&app_name=" + enc(app) +
-    "&component=" + enc(comp) +
-    "&notes=" + enc(dev + " · via the phone-side QR page");
+  var viaQr = dev + " · via the phone-side QR page";
+  $("ghBtn").href = mapped
+    ? "https://github.com/brevityA/CoreBuildsApps/issues/new" +
+      "?assignees=&labels=mapping&projects=" +
+      "&template=2.icon_not_applying.yml" +
+      "&title=" + enc(prefix + app) +
+      "&app_name=" + enc(app) +
+      "&component=" + enc(comp) +
+      "&device=" + enc(viaQr)
+    : "https://github.com/brevityA/CoreBuildsApps/issues/new" +
+      "?assignees=&labels=icon+request&projects=" +
+      "&template=1.new_icon_request.yml" +
+      "&title=" + enc(prefix + app) +
+      "&app_name=" + enc(app) +
+      "&component=" + enc(comp) +
+      "&notes=" + enc(viaQr);
 
   // Door 2: the broker, only when the TV knows a deployed endpoint.
   if (!endpoint) return;
@@ -178,7 +190,9 @@
     fetch(endpoint, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ app_name: app, component: comp, device: dev })
+      body: JSON.stringify(mapped
+        ? { app_name: app, component: comp, device: dev, mapped: true }
+        : { app_name: app, component: comp, device: dev })
     }).then(function (res) {
       if (res.status === 201 || res.status === 200) {
         status.className = "status show ok";

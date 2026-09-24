@@ -12,4 +12,8 @@
 export const REPO = "brevityA/CoreBuildsApps";
 export const ISSUE_LABEL = "icon request";
 export const TITLE_PREFIX = "[Icon] ";
-export const WORKER_VERSION = "2026-09-22-iconreq03";
+// An app the pack already maps under another activity is a mapping report,
+// filed the way .github/ISSUE_TEMPLATE/2.icon_not_applying.yml files one.
+export const MAPPING_LABEL = "mapping";
+export const MAPPING_TITLE_PREFIX = "[Not applying] ";
+export const WORKER_VERSION = "2026-09-24-iconreq04";

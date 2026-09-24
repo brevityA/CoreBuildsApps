@@ -2,7 +2,7 @@
  * Core Builds icon-request broker — a Cloudflare Worker.
  *
  * What it is: the one trusted hop that lets the icon pack's on-device
- * auditor file icon requests for people who do not have (and should never
+ * auditor file icon requests (and mapping reports) for people who do not have (and should never
  * need) a GitHub account. The auditor POSTs three validated fields; this
  * worker files (or +1s) a GitHub issue as a bot — or, when the GitHub App
  * is not configured yet, forwards the same payload to a Discord webhook,
@@ -27,7 +27,8 @@
 
 // Shared literals live in constants.mjs — see that file for why a Workers
 // entry module must not export plain strings (workerd refuses to boot).
-import { REPO, ISSUE_LABEL, TITLE_PREFIX, WORKER_VERSION } from "./constants.mjs";
+import { REPO, ISSUE_LABEL, TITLE_PREFIX, MAPPING_LABEL, MAPPING_TITLE_PREFIX,
+         WORKER_VERSION } from "./constants.mjs";
 
 const COMPONENT_RE = /^[A-Za-z0-9_.]+\/[A-Za-z0-9_.$]+$/;
 const MAX_APP_NAME = 80;
@@ -69,14 +70,16 @@ export function getClientIp(request) {
 }
 
 // ---------------------------------------------------------------------------
-// payload grammar — the same three fields the issue-form prefill carries
+// payload grammar — the same three fields the issue-form prefill carries, plus
+// `mapped`: true when the pack already maps the app under another activity,
+// which makes it a mapping report rather than a request for new art
 
 export function validate(payload) {
   if (payload === null || typeof payload !== "object" || Array.isArray(payload)) {
     return { ok: false, status: 400, error: "expected a JSON object" };
   }
   const keys = Object.keys(payload);
-  const unknown = keys.filter((k) => !["app_name", "component", "device"].includes(k));
+  const unknown = keys.filter((k) => !["app_name", "component", "device", "mapped"].includes(k));
   if (unknown.length) return { ok: false, status: 400, error: `unknown fields: ${unknown.join(", ")}` };
 
   const appName = payload.app_name;
@@ -94,7 +97,11 @@ export function validate(payload) {
       /[\r\n]/.test(device)) {
     return { ok: false, status: 400, error: "device must be a single printable line" };
   }
-  return { ok: true, value: { appName: appName.trim(), component, device } };
+  const mapped = payload.mapped ?? false;
+  if (typeof mapped !== "boolean") {
+    return { ok: false, status: 400, error: "mapped must be true or false" };
+  }
+  return { ok: true, value: { appName: appName.trim(), component, device, mapped } };
 }
 
 // ---------------------------------------------------------------------------
@@ -201,8 +208,33 @@ function ghHeaders(auth) {
 // ---------------------------------------------------------------------------
 // sinks: GitHub (bot files or +1s the issue) or Discord (a formatted card)
 
-/** Issue body: mirrors the new-icon-request form's field order. */
-export function issueBody({ appName, component, device }) {
+/** Title prefix and label: the form this report would have been filed with. */
+export function reportKind({ mapped }) {
+  return mapped
+    ? { prefix: MAPPING_TITLE_PREFIX, label: MAPPING_LABEL,
+        description: "App is in the pack but its icon does not auto-assign" }
+    : { prefix: TITLE_PREFIX, label: ISSUE_LABEL,
+        description: "App icon requests (incl. anonymous auditor reports)" };
+}
+
+/**
+ * Issue body: mirrors the field order of the form the report belongs to —
+ * 2.icon_not_applying.yml for a mapped app, 1.new_icon_request.yml otherwise.
+ */
+export function issueBody({ appName, component, device, mapped = false }) {
+  if (mapped) {
+    return [
+      "### App name", "", appName,
+      "", "### The component name on YOUR device", "", component,
+      "", "### Device and OS", "", device || "_not supplied_",
+      "", "### Launcher", "", "_not supplied — device-side auditor report_",
+      "",
+      "_Filed by CoreBuilds-requests[bot] from the in-app auditor's one-press",
+      "request — the pack maps this app under a different activity, so this",
+      "device's component is the fix. Anonymous device report; no GitHub",
+      "account on the reporter side._",
+    ].join("\n");
+  }
   return [
     "### App name", "", appName,
     "", "### Component name", "", component,
@@ -216,32 +248,36 @@ export function issueBody({ appName, component, device }) {
   ].join("\n");
 }
 
-async function findOpenDuplicate(token, appName) {
-  const q = encodeURIComponent(`${TITLE_PREFIX.trim()} "${appName}" in:title repo:${REPO}`);
+async function findOpenDuplicate(token, { appName, mapped }) {
+  const { prefix } = reportKind({ mapped });
+  const q = encodeURIComponent(`${prefix.trim()} "${appName}" in:title repo:${REPO}`);
   const res = await fetch(`https://api.github.com/search/issues?q=${q}&state=open&per_page=5`,
     { headers: ghHeaders(`Bearer ${token}`) });
   if (!res.ok) return null;
   const { items } = await res.json();
+  // The search is fuzzy; the prefix check keeps a mapping report from
+  // voting on a new-icon issue for the same app, and the other way round.
   const hit = (items || []).find((i) => i.state === "open" &&
+    i.title.startsWith(prefix) &&
     i.title.toLowerCase().includes(appName.toLowerCase()));
   return hit ? hit.number : null;
 }
 
-async function ensureLabel(token) {
-  const name = encodeURIComponent(ISSUE_LABEL);
+async function ensureLabel(token, { label, description }) {
+  const name = encodeURIComponent(label);
   const res = await fetch(`https://api.github.com/repos/${REPO}/labels/${name}`,
     { headers: ghHeaders(`Bearer ${token}`) });
   if (res.status === 404) {
     await fetch(`https://api.github.com/repos/${REPO}/labels`, {
       method: "POST", headers: ghHeaders(`Bearer ${token}`),
-      body: JSON.stringify({ name: ISSUE_LABEL, color: "0d8048",
-        description: "App icon requests (incl. anonymous auditor reports)" }),
+      body: JSON.stringify({ name: label, color: "0d8048", description }),
     });
   }
 }
 
 async function fileOrComment(token, value) {
-  const dup = await findOpenDuplicate(token, value.appName);
+  const kind = reportKind(value);
+  const dup = await findOpenDuplicate(token, value);
   if (dup) {
     await fetch(`https://api.github.com/repos/${REPO}/issues/${dup}/comments`, {
       method: "POST", headers: ghHeaders(`Bearer ${token}`),
@@ -252,11 +288,11 @@ async function fileOrComment(token, value) {
     });
     return { number: dup, duplicate: true };
   }
-  await ensureLabel(token);
+  await ensureLabel(token, kind);
   const res = await fetch(`https://api.github.com/repos/${REPO}/issues`, {
     method: "POST", headers: ghHeaders(`Bearer ${token}`),
-    body: JSON.stringify({ title: `${TITLE_PREFIX}${value.appName}`,
-      body: issueBody(value), labels: [ISSUE_LABEL] }),
+    body: JSON.stringify({ title: `${kind.prefix}${value.appName}`,
+      body: issueBody(value), labels: [kind.label] }),
   });
   if (!res.ok) throw new Error(`issue create failed: ${res.status}`);
   const { number } = await res.json();
@@ -268,12 +304,12 @@ function githubConfigured(env) {
                  env.GITHUB_APP_PRIVATE_KEY);
 }
 
-/** The Discord card, same three fields, same labels as the issue body. */
+/** The Discord card, same three fields, titled like the issue it stands for. */
 export function discordPayload(value) {
   return {
     username: "Core Builds Icon Auditor",
     embeds: [{
-      title: `${TITLE_PREFIX}${value.appName}`,
+      title: `${reportKind(value).prefix}${value.appName}`,
       color: 0x32c8f0,
       fields: [
         { name: "Component name", value: "`" + value.component + "`" },

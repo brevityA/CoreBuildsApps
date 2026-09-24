@@ -14,7 +14,9 @@ import org.json.JSONObject
  * One-press anonymous icon requests: the auditor row POSTs the three fields
  * the GitHub issue form would have been prefilled with (app name, component,
  * device note) to the Core Builds request broker, which files the issue as a
- * bot — no GitHub account on the reporter's side, ever. The broker and the
+ * bot — no GitHub account on the reporter's side, ever. `mapped` rows (the
+ * pack already maps the app under another activity) are sent as mapping
+ * reports, which the broker files with the "not auto-assigning" form's shape. The broker and the
  * trust split (the GitHub credential lives on the broker, never in the APK)
  * are documented in tools/icon_request_broker/.
  *
@@ -41,10 +43,11 @@ object IconRequestSender {
         appName: String,
         component: String,
         deviceNote: String,
+        mapped: Boolean,
         onResult: (Int) -> Unit,
     ) {
         IO.execute {
-            val issue = post(endpoint, appName, component, deviceNote)
+            val issue = post(endpoint, appName, component, deviceNote, mapped)
             MAIN.post { onResult(issue) }
         }
     }
@@ -55,6 +58,7 @@ object IconRequestSender {
         appName: String,
         component: String,
         deviceNote: String,
+        mapped: Boolean,
     ): Int {
         var conn: HttpURLConnection? = null
         return try {
@@ -70,6 +74,7 @@ object IconRequestSender {
                 .put("app_name", appName)
                 .put("component", component)
                 .put("device", deviceNote)
+                .apply { if (mapped) put("mapped", true) }
                 .toString()
             OutputStreamWriter(conn.outputStream, Charsets.UTF_8).use {
                 it.write(body)

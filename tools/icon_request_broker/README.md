@@ -6,7 +6,7 @@ Android app POSTs three validated fields here; this Cloudflare Worker
 authenticates as a GitHub App and files the issue.
 
 ```
-TV auditor row ──POST {app_name, component, device}──> this worker
+TV auditor row ──POST {app_name, component, device, mapped?}──> this worker
                                                         │
               validate + rate-limit + dedupe            │ GitHub App: issues: write
               (KV)                                      │ on brevityA/CoreBuildsApps
@@ -16,6 +16,12 @@ TV auditor row ──POST {app_name, component, device}──> this worker
                                             label "icon request"
                                             (a repeat press = a +1 comment)
 ```
+
+`mapped: true` marks an app the pack already maps under a different
+activity. That is a mapping report, not a request for art, so it is filed
+the way `.github/ISSUE_TEMPLATE/2.icon_not_applying.yml` files one:
+`[Not applying] <app>`, label `mapping`, that form's fields. Absent or
+`false`, the request is a new-icon issue as above.
 
 **Trust split, in one sentence:** GitHub never accepts anonymous issues,
 so *something* has to hold the credential — and that something is only this
@@ -62,10 +68,11 @@ reporters get the one-press flow today either way.
 ## Why these exact design choices
 
 - **Validated grammar, not free text.** `app_name` / `component` / `device`
-  must match (`validate()` in worker.mjs); anything else is a 400. Spam
+  (and the boolean `mapped`) must match (`validate()` in worker.mjs); anything else is a 400. Spam
   cannot write paragraphs into your tracker.
 - **Dedupe before create.** The worker searches open issues for the same
-  `[Icon] <name>` title and *comments* a +1 instead of opening a duplicate —
+  `[Icon] <name>` title (`[Not applying] <name>` for a mapping report) and
+  *comments* a +1 instead of opening a duplicate —
   double-taps and double-users collapse automatically.
 - **Rate limit:** per client IP, 5/hour by default (`RATE_LIMIT_PER_HOUR`),
   hourly buckets in KV. On the Workers free tier the daily caps
@@ -205,9 +212,10 @@ QR panel.
 
 ## Tests
 
-`node --test` — 28 contracts: payload grammar, issue-body parity with
-`.github/ISSUE_TEMPLATE/1.new_icon_request.yml` (parsed, so a form edit
-fails the parity test), hourly rate-limit buckets, a real RS256 JWT
+`node --test` — 36 contracts: payload grammar, issue-body parity with
+`.github/ISSUE_TEMPLATE/1.new_icon_request.yml` and, for mapping reports,
+`2.icon_not_applying.yml` (parsed, so a form edit fails the parity test),
+each form's title prefix and label, hourly rate-limit buckets, a real RS256 JWT
 sign-and-verify, the full file-or-+1 flows against a stubbed GitHub API,
 the Discord fallback, and the workerd entry-export constraint. For the
 deployed-runtime proof run `npm run rehearse` (see above).
