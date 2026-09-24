@@ -14,8 +14,8 @@ android {
         versionCode = 35
         versionName = "1.9.3"
 
-        // Read by the shared updater code, which :pop also compiles. Values
-        // are the classic pack's existing ones, so behaviour is unchanged.
+        // Read by the updater code: where to check for a newer release and
+        // which FileProvider authority serves the downloaded APK.
         buildConfigField(
             "String",
             "UPDATE_AUTHORITY",
@@ -28,8 +28,11 @@ android {
                 "main/Latestrelease/version.json\"",
         )
         manifestPlaceholders["fileProviderAuthority"] = "tv.corebuilds.iconpack.update"
+        // English-only: resConfigs strips the ~70 translated locales the
+        // support libraries ship, which nothing in this app reads.
+        resConfigs("en")
         // The 16:9 twin (banners/) the Glyphs/Banners toggle points launchers
-        // at. Empty in :pop and the candidate build, which have no companion.
+        // at. Empty in the candidate build, which has no companion.
         buildConfigField(
             "String",
             "BANNERS_PACKAGE",
@@ -78,10 +81,12 @@ android {
 
     buildTypes {
         release {
-            // Resource shrinking would strip drawables that are only ever
-            // resolved by name at runtime. Keep every icon.
-            isMinifyEnabled = false
-            isShrinkResources = false
+            // The drawables are only ever resolved by name at runtime
+            // (appfilter strings, getIdentifier), which is exactly what the
+            // generated res/values/keep.xml pins — shrinking is safe because
+            // the keep set comes from the same catalog as the art.
+            isMinifyEnabled = true
+            isShrinkResources = true
             val ks = System.getenv("KEYSTORE_PATH")
             if (ks != null && file(ks).exists()) {
                 signingConfig = signingConfigs.getByName("release")
@@ -102,8 +107,8 @@ android {
     }
 
     androidResources {
-        // PNGs are already optimized by the pipeline; don't re-crunch.
-        noCompress += listOf("png")
+        // Already-compressed formats; don't re-crunch.
+        noCompress += listOf("png", "webp")
     }
 }
 

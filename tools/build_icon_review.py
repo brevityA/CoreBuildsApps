@@ -8,7 +8,12 @@ a logo can be recognisable and still be wrong for this pack's visual identity.
 from __future__ import annotations
 
 import json
+import sys
 from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+
+from drawable_art import art_path, read_aliases  # noqa: E402
 
 from PIL import Image, ImageDraw, ImageFont
 from icon_style import CARD, LIGHT_INK
@@ -17,6 +22,7 @@ ROOT = Path(__file__).resolve().parents[1]
 OUT = ROOT / "docs/icon-fidelity-preview.png"
 FONTS = ROOT / "tools/fonts"
 RES = ROOT / "app/src/main/res/drawable-nodpi"
+ALIASES = read_aliases(ROOT / "app/src/main/res/values")
 
 
 def main() -> int:
@@ -50,7 +56,7 @@ def main() -> int:
             x = 48 + n * 200
             icon = by_id[key]
             tile(x, y, 184, 188, key == "nobuffr")
-            image(RES / f"{key}.png", x+30, y+16, (124, 124))
+            image(art_path(RES, key, ALIASES), x+30, y+16, (124, 124))
             text(x+14, y+146, icon["name"], 18)
 
     text(48, 30, "CORE BUILDS / CLASSIC IDENTITY", 14, "#56C8F0", True)
@@ -68,7 +74,7 @@ def main() -> int:
     for n, key in enumerate(("emby", "nobuffr", tivimate)):
         x, y = 48 + n * 400, 634
         tile(x, y, 384, 266, key == "nobuffr")
-        image(RES / f"{key}_banner.png", x+32, y+14, (320, 180))  # actual shipping size
+        image(art_path(RES, f"{key}_banner", ALIASES), x+32, y+14, (320, 180))  # actual shipping size
         text(x+22, y+209, by_id[key]["name"], 19)
         text(x+22, y+237, "320 x 180 / same renderer", 12, "#9AAABD", True)
 

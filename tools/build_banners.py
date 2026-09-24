@@ -24,7 +24,8 @@ geometry and accent colour.
 
 Writes:
   assets/banners/<drawable>.svg                    1280x720 master (4x)
-  app/src/main/res/drawable-nodpi/<d>_banner.png   320x180 RGBA
+  app/src/main/res/drawable-nodpi/<d>_banner.webp  320x180 RGBA lossless WebP
+  app/src/main/res/values/banner_aliases.xml       dup-name -> canonical art
 """
 import argparse
 import json
@@ -36,11 +37,14 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from glyphs import GLYPHS, apply_gradient, family_body, monoline  # noqa: E402
 from icon_style import display_accent  # noqa: E402
 from typeface import FONT_WORDMARK, measure as type_measure, wordmark_spans  # noqa: E402
+from drawable_art import (ART_EXT, BRANDING_PNGS, alias_identical,
+                          write_aliases_file)  # noqa: E402
 
 ROOT = Path(__file__).resolve().parent.parent
 CATALOG = ROOT / "tools" / "catalog.json"
 SVG_DIR = ROOT / "assets" / "banners"
 PNG_DIR = ROOT / "app" / "src" / "main" / "res" / "drawable-nodpi"
+VAL_DIR = ROOT / "app" / "src" / "main" / "res" / "values"
 
 # Master grid is 4x the 320x180 target so the downscale stays crisp.
 W, H = 1280, 720
@@ -331,21 +335,36 @@ def main():
           f"\u2192 assets/banners/")
 
     try:
+        import io
+        from PIL import Image
         from svg_renderer import svg2png
     except (ImportError, OSError):
-        print("\u26a0 no SVG rasterizer is available \u2014 PNGs skipped. "
+        print("\u26a0 no SVG rasterizer is available \u2014 art skipped. "
               "Run: pip install -r tools/requirements.txt")
         return 0
 
     PNG_DIR.mkdir(parents=True, exist_ok=True)
     for i in targets:
-        svg2png(
+        raw = svg2png(
             url=str(SVG_DIR / f"{i['drawable']}.svg"),
-            write_to=str(PNG_DIR / f"{i['drawable']}_banner.png"),
             output_width=PNG_W, output_height=PNG_H,
             background_color=None)
-    print(f"\u2713 banner PNGs {PNG_W}x{PNG_H} transparent written "
+        Image.open(io.BytesIO(raw)).save(
+            PNG_DIR / f"{i['drawable']}_banner{ART_EXT}", "WEBP", lossless=True)
+    print(f"\u2713 banner WebP {PNG_W}x{PNG_H} transparent written "
           f"({len(targets)}/{len(targets)}) \u2192 res/drawable-nodpi/")
+
+    # Identical banners ship once (renamed-app twins); stale banner PNGs go.
+    banner_files = [PNG_DIR / f"{i['drawable']}_banner{ART_EXT}" for i in targets]
+    banner_files = [f for f in banner_files if f.exists()]
+    aliases = alias_identical(banner_files)
+    write_aliases_file(VAL_DIR / "banner_aliases.xml", aliases,
+                       "tools/build_banners.py")
+    for stale in PNG_DIR.glob("*_banner.png"):
+        if stale.name not in BRANDING_PNGS:
+            stale.unlink()
+    print(f"\u2713 banner_aliases.xml written ({len(aliases)} dup names \u2192 "
+          f"canonical art); stale banner PNGs removed")
     print(f"\nBanners complete \u2014 {len(targets)} at 16:9, centred lockups "
           f"on the reference pack's measured grid.")
     return 0

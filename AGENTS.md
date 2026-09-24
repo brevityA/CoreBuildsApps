@@ -27,7 +27,7 @@ Glyphs/Banners toggle works by pointing launchers at one package or the other
 and no committed art: `python tools/build_banners_pack.py` derives its XML from
 the glyph pack's generated appfilter (run it after `build_icons.py` and
 `build_banners.py`), and its
-Gradle build copies the banner PNGs from `app/`. `tests/test_banners_pack.py`
+Gradle build copies the banner WebP from `app/`. `tests/test_banners_pack.py`
 holds the package name, manifest filters, asset filename and release workflow
 together.
 
@@ -35,14 +35,14 @@ Do not merge Gradle roots. Do not split the GitHub repo. Do not rename package I
 
 ## One rule
 
-`tools/catalog.json` is the only source of truth for the icon pack. Never hand-edit generated icon XML, icon PNGs, banner PNGs, `docs/IconPackList.md`, `docs/preview.*`, or generated wallpaper output under `Wallpapers/series-8-amoled/**` and `Wallpapers/series-9-deep-space/**`.
+`tools/catalog.json` is the only source of truth for the icon pack. Never hand-edit generated icon XML, icon/banner art, `aliases.xml`, `keep.xml`, `docs/IconPackList.md`, `docs/preview.*`, or generated wallpaper output under `Wallpapers/series-8-amoled/**` and `Wallpapers/series-9-deep-space/**`.
 
 Classic pack changes run the four generators and the validator:
 
 ```bash
 python tools/build_icons.py
 python tools/build_banners.py
-python tools/build_banners_pack.py   # the 16:9 companion's XML; needs the banner PNGs above
+python tools/build_banners_pack.py   # the 16:9 companion's XML; needs the banner art above
 python tools/build_branding.py
 python tools/build_brand_preview.py
 python tools/validate.py
@@ -108,7 +108,7 @@ prefills `input`/`textarea` fields only, and the tool refuses to promise more.
 ## Product verification shortcuts
 
 - Icon Pack: four generators + `python tools/validate.py`.
-  Square PNGs get a raster presence pass (`tools/presence.py`) after svg2png —
+  Square art gets a raster presence pass (`tools/presence.py`) after svg2png —
   night keyline + accent bloom as rings. Vectors stay style-AA. Banners skip it.
 - Icon Pack UI: `python tools/check_ui_resources.py`
   (every resource reference resolves, no focusable view stranded),
@@ -117,8 +117,8 @@ prefills `input`/`textarea` fields only, and the tool refuses to promise more.
   `python tests/test_tv_scale.py` (the dp box normalises per panel), and
   `python tools/build_app_ui_mockups.py --check` against the frames committed in
   `docs/` — regenerate them with the same tool and no flag after any layout
-  change, then commit the PNGs *and* `docs/app-ui-mockups.json`. The check
-  compares sources and drawn structure, not PNG bytes: the manifest records a
+  change, then commit the art *and* `docs/app-ui-mockups.json`. The check
+  compares sources and drawn structure, not art bytes: the manifest records a
   hash of every layout, values file, catalog, manifest, font and pasted raster
   the frames were built from, plus the generator's own source and what each
   frame drew. Text rendering is not reproducible across machines — the same

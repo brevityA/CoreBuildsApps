@@ -23,6 +23,7 @@ sys.path.insert(0, str(ROOT / "tools"))
 import brandmarks
 from build_banners import render, render_glyph_only
 from build_icons import validate
+from drawable_art import art_path, read_aliases
 from glyphs import GLYPHS, monoline, render_svg
 from icon_style import (CARD, CORE_MONOLINE, CORE_STROKES, LIGHT_INK, MIN_CONTRAST,
                         core_monoline_errors, contrast, display_accent)
@@ -34,6 +35,8 @@ from fontTools.svgLib.path import parse_path
 
 CATALOG = json.loads((ROOT / "tools/catalog.json").read_text())
 ICONS = CATALOG["icons"]
+NODPI = ROOT / "app/src/main/res/drawable-nodpi"
+ALIASES = read_aliases(ROOT / "app/src/main/res/values")
 BY_ID = {i["drawable"]: i for i in ICONS}
 NS = "http://schemas.android.com/apk/res/android"
 
@@ -271,7 +274,7 @@ class IdentityTests(unittest.TestCase):
             self.assertNotIn('fill="#0d1117"', body, icon["name"])
 
     def test_youtube_play_counter_is_really_transparent(self):
-        image = Image.open(ROOT / "app/src/main/res/drawable-nodpi/youtube.png").convert("RGBA")
+        image = Image.open(art_path(NODPI, "youtube", ALIASES)).convert("RGBA")
         self.assertEqual(image.getpixel((256, 256))[3], 0)
         self.assertEqual(image.getpixel((64, 256))[:3], (255, 0, 0))
         self.assertEqual(image.getpixel((0, 0))[3], 0)
@@ -314,7 +317,7 @@ class IdentityTests(unittest.TestCase):
             self.assertEqual(alpha.getpixel((x, y)), 0)
 
     def test_mubi_has_seven_separate_dots_in_two_three_two_rows(self):
-        im = Image.open(ROOT / "app/src/main/res/drawable-nodpi/mubi.png").convert("RGBA")
+        im = Image.open(art_path(NODPI, "mubi", ALIASES)).convert("RGBA")
         ink = {(x, y) for y in range(im.height) for x in range(im.width)
                if im.getpixel((x, y))[3] > 128}
         components = []
@@ -411,11 +414,11 @@ class CoreStyleTests(unittest.TestCase):
     def test_revised_rasters_are_open_ink_and_clear_the_shared_safe_area(self):
         for icon in self.revised():
             with self.subTest(icon=icon["name"]):
-                alpha = Image.open(ROOT / "app/src/main/res/drawable-nodpi" / f"{icon['drawable']}.png").convert("RGBA").getchannel("A")
+                alpha = Image.open(art_path(NODPI, icon["drawable"], ALIASES)).convert("RGBA").getchannel("A")
                 binary = alpha.point(lambda p: 255 if p >= 128 else 0)
                 left, top, right, bottom = binary.getbbox()
                 # Presence adds a ring outside the vector SAFE pad. Vectors
-                # still have to clear 40px; committed PNGs may bleed to 24.
+                # still have to clear 40px; committed rasters may bleed to 24.
                 self.assertGreaterEqual(min(left, top), 24)
                 self.assertLessEqual(max(right, bottom), 488)
                 self.assertGreaterEqual(max(right-left, bottom-top), 320)
@@ -523,8 +526,10 @@ class SourceTests(unittest.TestCase):
             # pair still ships so launcher-side banner choice stays live.
             self.assertEqual(matches[0].get("drawable"), "nobuffr")
             self.assertNotIn("com.nobuffr.app/.MainActivity", xml.read_text())
+            nodpi = module / "src/main/res/drawable-nodpi"
+            mod_aliases = read_aliases(module / "src/main/res/values")
             for suffix in ("", "_banner"):
-                self.assertTrue((module / "src/main/res/drawable-nodpi" / f"nobuffr{suffix}.png").is_file())
+                self.assertTrue(art_path(nodpi, f"nobuffr{suffix}", mod_aliases).is_file())
 
     def test_download_link_is_in_generated_catalog_documentation(self):
         self.assertIn("[NoBuffr](https://downloads.nobuffr.com/android/nobuffr.apk)",
@@ -643,18 +648,17 @@ class DiversityTests(unittest.TestCase):
 
     @staticmethod
     def _identical_across_apps() -> list[set[str]]:
-        """Groups of different apps whose square PNGs share every byte.
+        """Groups of different apps whose square art shares every byte.
 
         Entries of one `brand` are meant to look the same (AGENTS.md: brand
         groups share glyph and accent), so a group counts only when it spans
         more than one brand, an unbranded icon being its own brand.
         """
-        nodpi = ROOT / "app/src/main/res/drawable-nodpi"
         by_hash: dict[str, list[dict]] = {}
         for icon in ICONS:
-            png = nodpi / f"{icon['drawable']}.png"
-            if png.is_file():
-                digest = hashlib.sha256(png.read_bytes()).hexdigest()
+            art = art_path(NODPI, icon["drawable"], ALIASES)
+            if art.is_file():
+                digest = hashlib.sha256(art.read_bytes()).hexdigest()
                 by_hash.setdefault(digest, []).append(icon)
         return [{i["drawable"] for i in group} for group in by_hash.values()
                 if len({i.get("brand") or i["drawable"] for i in group}) > 1]

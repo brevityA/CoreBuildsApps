@@ -79,12 +79,13 @@ class GeneratedResources(unittest.TestCase):
                          read(ROOT / "banners/src/main/assets/appfilter.xml"))
 
     def test_build_copies_every_drawable_it_names(self):
-        # The PNGs are copied at build time, not committed; an include glob
+        # The art is copied at build time, not committed; an include glob
         # that misses a family would link but leave launchers resolving
         # nothing.
         gradle = read(PACK_GRADLE)
-        for needed in ('"*_banner.png"', '"cb_back_*.png"', '"cb_mask.png"',
-                       '"cb_upon.png"', '"cb_banner.png"', '"mipmap-*/**"'):
+        for needed in ('"*_banner.webp"', '"cb_back_*.webp"', '"cb_mask.webp"',
+                       '"cb_upon.webp"', '"cb_banner.png"', '"mipmap-*/**"',
+                       '"banner_aliases.xml"'):
             self.assertIn(needed, gradle)
 
 

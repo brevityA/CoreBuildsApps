@@ -13,6 +13,7 @@ import xml.etree.ElementTree as ET
 from icon_style import (CORE_MONOLINE, MIN_CONTRAST, OFFWHITE_INK,
                         core_monoline_errors, contrast, display_accent)
 from build_icons import validate as validate_catalog
+from drawable_art import art_path, read_aliases
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -73,30 +74,46 @@ def main():
                   f"{icon['name']}: {brand} variants disagree on glyph/colour")
             brands[brand] = identity
 
-    # 1. every drawable has a rendered PNG
+    # Art files resolve through the generated aliases: a name is present if
+    # its own bitmap or its canonical twin's bitmap is on disk.
+    aliases = read_aliases(RES / "values")
+    nodpi = RES / "drawable-nodpi"
+
+    def art(name):
+        return art_path(nodpi, name, aliases)
+
+    # 1. every drawable resolves to rendered art
     for i in icons:
-        p = RES / "drawable-nodpi" / f"{i['drawable']}.png"
-        check(p.exists(), f"{i['name']}: missing PNG {p.relative_to(ROOT)}")
+        p = art(i["drawable"])
+        check(p.exists(), f"{i['name']}: missing art {p.relative_to(ROOT)}")
         if p.exists():
             check(p.stat().st_size > 400,
-                  f"{i['name']}: PNG suspiciously small ({p.stat().st_size}B)")
+                  f"{i['name']}: art suspiciously small ({p.stat().st_size}B)")
 
-    # 2. PNGs are transparent-background RGBA (pack promise)
+    # 1b. aliases point at real canonical art and nothing else.
+    for alias, canon in aliases.items():
+        check(alias != canon, f"aliases: {alias} points at itself")
+        check(canon not in aliases, f"aliases: {alias} chains through {canon}")
+        check((nodpi / f"{canon}.webp").exists(),
+              f"aliases: {alias} canonical {canon}.webp is missing")
+        check(not (nodpi / f"{alias}.webp").exists(),
+              f"aliases: {alias} has its own bitmap — the alias is dead")
+
+    # 2. art is transparent-background RGBA (pack promise)
     try:
-        import struct
+        from PIL import Image
         for i in icons:
-            p = RES / "drawable-nodpi" / f"{i['drawable']}.png"
+            p = art(i["drawable"])
             if not p.exists():
                 continue
-            raw = p.read_bytes()
-            w, h = struct.unpack(">II", raw[16:24])
-            colortype = raw[25]
+            with Image.open(p) as im:
+                w, h, mode = im.width, im.height, im.mode
             check((w, h) == (512, 512),
-                  f"{i['name']}: PNG is {w}x{h}, expected 512x512")
-            check(colortype == 6,
-                  f"{i['name']}: PNG colour type {colortype}, expected 6 (RGBA)")
+                  f"{i['name']}: art is {w}x{h}, expected 512x512")
+            check(mode == "RGBA",
+                  f"{i['name']}: art mode {mode}, expected RGBA")
     except Exception as e:
-        failures.append(f"PNG header read failed: {e}")
+        failures.append(f"art header read failed: {e}")
 
     # 3. appfilter references only real drawables, no duplicate components
     af = ET.parse(RES / "xml" / "appfilter.xml").getroot()
@@ -322,18 +339,18 @@ def main():
     # Banners are the default now, so every icon must have one.
     banner_icons = icons
     for i in banner_icons:
-        bp = RES / "drawable-nodpi" / f"{i['drawable']}_banner.png"
+        bp = art(f"{i['drawable']}_banner")
         check(bp.exists(),
               f"{i['name']}: marked banner but {bp.name} is missing")
         if bp.exists():
-            raw = bp.read_bytes()
-            import struct as _s
-            bw, bh = _s.unpack(">II", raw[16:24])
+            from PIL import Image as _I
+            with _I.open(bp) as _im:
+                bw, bh, bmode = _im.width, _im.height, _im.mode
             check(abs(bw / bh - 16 / 9) < 0.01,
                   f"{i['name']}: banner is {bw}x{bh} "
                   f"(ratio {bw/bh:.3f}), expected 16:9")
-            check(raw[25] == 6,
-                  f"{i['name']}: banner colour type {raw[25]}, expected 6 (RGBA)")
+            check(bmode == "RGBA",
+                  f"{i['name']}: banner mode {bmode}, expected RGBA")
     if banner_icons:
         listed = (RES / "xml" / "drawable.xml").read_text()
         for i in banner_icons:
@@ -348,7 +365,7 @@ def main():
         try:
             from PIL import Image
             for i in banner_icons:
-                bp = RES / "drawable-nodpi" / f"{i['drawable']}_banner.png"
+                bp = art(f"{i['drawable']}_banner")
                 if not bp.exists():
                     continue
                 bb = Image.open(bp).convert("RGBA").getchannel("A").getbbox()

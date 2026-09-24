@@ -12,6 +12,7 @@ from PIL import Image
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "tools"))
 
+from drawable_art import art_path, read_aliases
 from glyphs import render_svg
 from presence import apply_presence
 from svg_renderer import svg2png
@@ -76,16 +77,17 @@ class PresenceTests(unittest.TestCase):
         so it cannot see a keyline added after rasterisation. #110 left four
         marks flush at exactly SAFE; an unbounded 11px ring would have spent
         that margin and shipped outside it with the vector test still green.
-        Every shipped PNG is checked here instead.
+        Every shipped raster is checked here instead.
         """
         from glyphs import GRID, SAFE
 
         import json
         pad = (GRID - SAFE) / 2
         png_dir = ROOT / "app/src/main/res/drawable-nodpi"
+        aliases = read_aliases(ROOT / "app/src/main/res/values")
         icons = json.loads((ROOT / "tools/catalog.json").read_text())["icons"]
         for icon in icons:
-            path = png_dir / f"{icon['drawable']}.png"
+            path = art_path(png_dir, icon["drawable"], aliases)
             if not path.exists():
                 continue
             box = Image.open(path).convert("RGBA").getchannel("A").getbbox()

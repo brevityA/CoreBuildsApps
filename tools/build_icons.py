@@ -4,7 +4,9 @@ Core Builds Icon Pack — asset pipeline.
 
 Reads tools/catalog.json and writes, deterministically:
   assets/svg/<drawable>.svg                    master vector
-  app/src/main/res/drawable-nodpi/<d>.png      512px transparent PNG
+  app/src/main/res/drawable-nodpi/<d>.webp     512px transparent lossless WebP
+  app/src/main/res/values/aliases.xml          dup-name -> canonical art
+  app/src/main/res/values/keep.xml             shrinker keep rules (generated)
   app/src/main/res/xml/appfilter.xml           component -> drawable mapping
   app/src/main/res/xml/drawable.xml            icon-pack browser grid
   app/src/main/res/xml/iconpack.xml            Projectivy/legacy pack list
@@ -25,6 +27,8 @@ from glyphs import GLYPHS, family_body, family_glyph_for, is_monogram, monoline,
 from icon_style import CORE_MONOLINE, core_monoline_errors, display_accent  # noqa: E402
 from typeface import MIN_LOCKUP_CAP, lockup_cap  # noqa: E402
 from brandmarks import load_source  # noqa: E402
+from drawable_art import (ART_EXT, BRANDING_PNGS, alias_identical,
+                          write_aliases_file)  # noqa: E402
 
 ROOT = Path(__file__).resolve().parent.parent
 CATALOG = ROOT / "tools" / "catalog.json"
@@ -186,42 +190,62 @@ def main():
     print(f"\u2713 SVG masters written ({len(icons)}/{len(icons)}) \u2192 assets/svg/ "
           f"({wordmarked} adaptive wordmark monograms)")
 
-    # 2. PNGs
-    png_written = 0
+    # 2. Glyph art: lossless WebP, presence applied in memory before the
+    # encode. resvg cannot emit WebP, so the PNG exists only as bytes.
+    art_written = 0
+    rendered = False
     try:
+        import io
+        from PIL import Image
         from svg_renderer import svg2png
-        from presence import apply_presence_file
+        from presence import apply_presence
         for i in icons:
-            dest = PNG_DIR / f"{i['drawable']}.png"
-            svg2png(
+            dest = PNG_DIR / f"{i['drawable']}{ART_EXT}"
+            png = svg2png(
                 url=str(SVG_DIR / f"{i['drawable']}.svg"),
-                write_to=str(dest),
                 output_width=PNG_SIZE, output_height=PNG_SIZE,
                 background_color=None)
-            apply_presence_file(dest)
-            png_written += 1
-        print(f"\u2713 PNG {PNG_SIZE}px transparent written "
-              f"({png_written}/{len(icons)}) \u2192 res/drawable-nodpi/")
+            art = apply_presence(Image.open(io.BytesIO(png)))
+            art.save(dest, "WEBP", lossless=True)
+            art_written += 1
+        rendered = True
+        print(f"\u2713 WebP {PNG_SIZE}px transparent written "
+              f"({art_written}/{len(icons)}) \u2192 res/drawable-nodpi/")
     except (ImportError, OSError):
         # Never continue with a partial asset set: an appfilter that names a
         # drawable the APK does not carry turns into letter tiles on the
-        # launcher (seen in the wild: a missing tegrazone3.png read as a
-        # "T" card on a Tegra Zone install). If the PNGs already exist on
+        # launcher (seen in the wild: a missing tegrazone3 read as a
+        # "T" card on a Tegra Zone install). If the art already exists on
         # disk from a previous run this is a no-op and we may continue.
         missing = [i["drawable"] for i in icons
-                   if not (PNG_DIR / f"{i['drawable']}.png").exists()]
+                   if not (PNG_DIR / f"{i['drawable']}{ART_EXT}").exists()]
         if missing:
             shown = ", ".join(missing[:5])
             if len(missing) > 5:
                 shown += ", \u2026"
             raise SystemExit(
-                f"\u274c no SVG rasterizer AND {len(missing)} catalog PNGs are "
+                f"\u274c no SVG rasterizer AND {len(missing)} catalog art files are "
                 f"missing ({shown}). Refusing to write an appfilter that "
                 "references absent drawables. "
                 "Run: pip install -r tools/requirements.txt")
-        print("\u26a0 no SVG rasterizer \u2014 reusing existing PNGs "
+        print("\u26a0 no SVG rasterizer \u2014 reusing existing art "
               "(all present). Run: pip install -r tools/requirements.txt "
               "to regenerate.")
+
+    # 2b. Identical renders ship once; later names become aliases. Stale PNGs
+    # from the pre-WebP tree are removed unless they are branding. Skipped
+    # when the rasterizer is absent — the fallback reuses disk as-is.
+    if rendered:
+        glyph_files = [PNG_DIR / f"{i['drawable']}{ART_EXT}" for i in icons]
+        glyph_files = [f for f in glyph_files if f.exists()]
+        aliases = alias_identical(glyph_files)
+        write_aliases_file(VAL_DIR / "aliases.xml", aliases,
+                           "tools/build_icons.py")
+        for stale in PNG_DIR.glob("*.png"):
+            if stale.name not in BRANDING_PNGS:
+                stale.unlink()
+        print(f"\u2713 aliases.xml written ({len(aliases)} dup names \u2192 "
+              f"canonical art); stale PNGs removed")
 
     # 3. appfilter.xml — what makes icons auto-assign
     #
@@ -244,47 +268,44 @@ def main():
         "orchid": "#2B2032", "marine": "#132F35", "slate": "#21252F",
         "graphite": "#10141D",
     }
+    def furniture_svg(inner):
+        return (f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 '
+                f'{PNG_SIZE} {PNG_SIZE}" width="{PNG_SIZE}" '
+                f'height="{PNG_SIZE}">{inner}</svg>')
+
     try:
+        import io
+        from PIL import Image
         from svg_renderer import svg2png
-        for name, hexv in BACKS.items():
-            svg2png(
-                bytestring=(
-                    f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 '
-                    f'{PNG_SIZE} {PNG_SIZE}" width="{PNG_SIZE}" '
-                    f'height="{PNG_SIZE}"><rect width="{PNG_SIZE}" '
-                    f'height="{PNG_SIZE}" rx="48" fill="{hexv}"/></svg>'),
-                write_to=str(PNG_DIR / f"cb_back_{name}.png"),
+
+        def emit(stem, inner):
+            raw = svg2png(
+                bytestring=furniture_svg(inner).encode(),
                 output_width=PNG_SIZE, output_height=PNG_SIZE,
                 background_color=None)
-        svg2png(
-            bytestring=(
-                f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 '
-                f'{PNG_SIZE} {PNG_SIZE}" width="{PNG_SIZE}" '
-                f'height="{PNG_SIZE}"><rect width="{PNG_SIZE}" '
-                f'height="{PNG_SIZE}" rx="48" fill="#FFFFFF"/></svg>'),
-            write_to=str(PNG_DIR / "cb_mask.png"),
-            output_width=PNG_SIZE, output_height=PNG_SIZE,
-            background_color=None)
-        svg2png(
-            bytestring=(
-                f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 '
-                f'{PNG_SIZE} {PNG_SIZE}" width="{PNG_SIZE}" '
-                f'height="{PNG_SIZE}"><rect x="4" y="4" '
-                f'width="{PNG_SIZE - 8}" height="{PNG_SIZE - 8}" rx="46" '
-                f'fill="none" stroke="rgba(255,255,255,0.07)" '
-                f'stroke-width="8"/></svg>'),
-            write_to=str(PNG_DIR / "cb_upon.png"),
-            output_width=PNG_SIZE, output_height=PNG_SIZE,
-            background_color=None)
+            Image.open(io.BytesIO(raw)).save(
+                PNG_DIR / f"{stem}{ART_EXT}", "WEBP", lossless=True)
+
+        for name, hexv in BACKS.items():
+            emit(f"cb_back_{name}",
+                 f'<rect width="{PNG_SIZE}" height="{PNG_SIZE}" rx="48" '
+                 f'fill="{hexv}"/>')
+        emit("cb_mask",
+             f'<rect width="{PNG_SIZE}" height="{PNG_SIZE}" rx="48" '
+             f'fill="#FFFFFF"/>')
+        emit("cb_upon",
+             f'<rect x="4" y="4" width="{PNG_SIZE - 8}" '
+             f'height="{PNG_SIZE - 8}" rx="46" fill="none" '
+             f'stroke="rgba(255,255,255,0.07)" stroke-width="8"/>')
         print(f"\u2713 fallback furniture written ({len(BACKS)} backs + mask + "
               f"upon) \u2192 res/drawable-nodpi/")
     except (ImportError, OSError, TypeError):
-        missing = [f"cb_back_{n}.png" for n in BACKS
-                   if not (PNG_DIR / f"cb_back_{n}.png").exists()]
-        missing += [f for f in ("cb_mask.png", "cb_upon.png")
+        missing = [f"cb_back_{n}{ART_EXT}" for n in BACKS
+                   if not (PNG_DIR / f"cb_back_{n}{ART_EXT}").exists()]
+        missing += [f for f in (f"cb_mask{ART_EXT}", f"cb_upon{ART_EXT}")
                     if not (PNG_DIR / f).exists()]
         if missing:
-            raise SystemExit(f"fallback furniture PNGs missing and the "
+            raise SystemExit(f"fallback furniture art missing and the "
                              f"rasteriser is unavailable: {', '.join(missing[:4])}")
         print("\u2713 fallback furniture already on disk (rasteriser absent)")
 
@@ -437,6 +458,22 @@ def main():
     v.append('</resources>')
     write(VAL_DIR / "icon_pack.xml", "\n".join(v) + "\n")
 
+    # 6b. keep.xml — resource shrinking would strip every drawable that is
+    # only ever resolved by name (appfilter strings, getIdentifier), which
+    # is all of them. The keep set is generated from the same catalog as
+    # the art, so the two cannot drift apart.
+    k = ['<?xml version="1.0" encoding="utf-8"?>',
+         '<!-- Generated by tools/build_icons.py. Do not edit by hand. -->',
+         '<resources xmlns:tools="http://schemas.android.com/tools">']
+    keep_names = ([i["drawable"] for i in icons]
+                  + [f"{i['drawable']}_banner" for i in icons]
+                  + [f"cb_back_{n}" for n in BACKS]
+                  + ["cb_mask", "cb_upon", "cb_banner"])
+    k.append('    <keep tools:keep="' + ",".join(f"@drawable/{n}" for n in keep_names) + '" />')
+    k.append('</resources>')
+    write(VAL_DIR / "keep.xml", "\n".join(k) + "\n")
+    print(f"\u2713 keep.xml written ({len(keep_names)} drawables pinned)")
+
     # 7. supported list
     md = ["# Supported applications",
           "",
@@ -502,7 +539,7 @@ def main():
         pass
 
     print(f"\nBuild complete \u2014 {len(icons)} icons, {comp_count} components, "
-          f"{png_written} PNGs. Verified by re-read of the catalog.")
+          f"{art_written} WebP. Verified by re-read of the catalog.")
     return 0
 
 
