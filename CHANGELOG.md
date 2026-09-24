@@ -36,8 +36,10 @@ All notable changes to the Core Builds Icon Pack. Format follows
 
 - **The Banners companion is retired.** 1.9.4's Core Builds Banners
   (`tv.corebuilds.iconpack.banners`) is no longer needed, because the icon
-  pack itself is the banner pack. It can be uninstalled; leaving it installed
-  does nothing.
+  pack itself is the banner pack. A launcher still set to Core Builds Banners
+  keeps 1.9.4's mappings, so apply Core Builds Icon Pack (Apply, or flip the
+  Art style switch once) to get the updated banners, then uninstall the old
+  companion.
 
 ## [1.9.4] — 2026-09-24
 

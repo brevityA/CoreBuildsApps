@@ -180,6 +180,28 @@ def main():
             check(canonical(wrapped) in emitted_canonical,
                   f"{icon['name']}: component '{component}' was not emitted")
 
+    # Every mapping must be the catalog's, in both packs. The icon pack's
+    # banner appfilter is derived from Core Builds Glyphs' square one, so a
+    # wrong square mapping would otherwise pass straight through to both.
+    expected = {}
+    for icon in icons:
+        for component in icon["components"]:
+            expected[canonical(f"ComponentInfo{{{component}}}")] = icon["drawable"]
+    for path, label, suffix in ((RES / "xml" / "appfilter.xml", "icon pack", "_banner"),
+                                (glyph_res / "appfilter.xml", "Core Builds Glyphs", "")):
+        mapped = set()
+        for item in ET.parse(path).getroot().findall("item"):
+            comp = canonical(item.get("component", ""))
+            d = item.get("drawable", "")
+            base = d[:-len(suffix)] if suffix and d.endswith(suffix) else d
+            mapped.add(comp)
+            check(expected.get(comp) == base,
+                  f"{label} appfilter: {comp} maps to '{d}', catalog says "
+                  f"'{expected.get(comp)}{suffix}'")
+        check(mapped == set(expected),
+              f"{label} appfilter covers {len(mapped)} components, catalog "
+              f"{len(expected)}")
+
     # Coverage baseline: every component identity mapped by the reference pack
     # must remain covered. The snapshot contains two malformed legacy values
     # without the ComponentInfo prefix, so normalize both representations.

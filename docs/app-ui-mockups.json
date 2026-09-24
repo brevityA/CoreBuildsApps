@@ -25,8 +25,8 @@
       "structure": "70a4bf2af668ccfc682ec0eeee14836d77162732cd97ccbd0cda97ca0d7b46bb"
     },
     "app-ui-settings-display.png": {
-      "bytes": 105404,
-      "structure": "9f064bddfbc453b7ad650a44c651323af29412958061c2de2bcca4467706297b"
+      "bytes": 104533,
+      "structure": "ccc15ac53231d7501bd35885bb3532a88809483465d0bbc91af52c46dcfffd5b"
     },
     "app-ui-settings.png": {
       "bytes": 92338,
@@ -68,17 +68,17 @@
     "app/src/main/res/values/dimens.xml": "6eb9a59ef7176f3d7b38fa7a0aac9f789ee593415ccf279d5a5084c9ab4d7555",
     "app/src/main/res/values/icon_pack.xml": "932003bdb5a91fbf0437594d08e9cef4fea257583721a867ae8f56a28f579b43",
     "app/src/main/res/values/issue_prefill.xml": "fd85418cdd4ccdc59f0f0793b32fc7d96e01f23f80f7f38a3e3d4d7699393ced",
-    "app/src/main/res/values/strings.xml": "ea19803a60a252f88e6cced94f95e77b178da1b6313349a816a164f984e23e79",
+    "app/src/main/res/values/strings.xml": "8d1c74ff21d89740fdc536814c0c0c2349347fc91c88a4cf752f3589165decbe",
     "app/src/main/res/values/suite_hub.xml": "6db1311df6a29a1ced5fdbc175f8f97111c0f035786ea3d1f4ed396018580862",
     "app/src/main/res/values/themes.xml": "ecac526951fe40b6c5c01df0ec36730d0e197fd9511862cf587a2143773b46be",
-    "tools/build_app_ui_mockups.py": "7bae06fa58670acf09be6e10c380311ace9dddbb4f0429ff73a2dfa229f65d1f",
+    "tools/build_app_ui_mockups.py": "1209eff0c0e0f365f207cb7213731d181c91d2e050dc2cd4c5b49d42addfa6a5",
     "tools/catalog.json": "aff734f12172040890a1d2ea6e75d9535474a61402beb1689a34f2f8d08285fe",
     "tools/fonts/DejaVuSansMono-Bold.ttf": "2964f6dac8e6e9d71613928340f17bf868e9ea51692cca333c79e74962f02233",
     "tools/fonts/DejaVuSansMono.ttf": "0f5db4f1749979d961019838b160bec74abdf7f9eca69553fe1aa856bbff49a4",
     "tools/fonts/Outfit-Bold.ttf": "04f7c9705153927058475d6c5e9f75b0a1036ec5f6f63ffb69df046191ea8933",
     "tools/fonts/Outfit-ExtraBold.ttf": "056e8cd5840cea4cfc355f672292f7de00d95f5a42bf9b7cd96d511ca8e2883e"
   },
-  "inputs_digest": "8305b26592f59e7beedd1e153fde5c728a17d118e8d1dc42f02048ee84444a93",
+  "inputs_digest": "2a676ecfaeaae702ee2dd285fb775aa249bac77d48b7dc8e41feab3edac2673b",
   "metrics": {
     "mono-bold@24": 448.0,
     "mono-bold@32": 608.0,

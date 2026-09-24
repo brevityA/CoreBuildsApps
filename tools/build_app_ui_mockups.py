@@ -937,13 +937,13 @@ def settings_display_frame() -> tuple[Image.Image, str]:
     order = settings_order()
     # The same list parked at the DISPLAY group: this frame exists since the
     # banner-previews switch landed (1.9.2), because a new toggle nobody can
-    # see is not a toggle. Focus ring on the new row, in its shipped state:
-    # off, square glyphs.
+    # see is not a toggle. Focus ring on the row, in its shipped state: on,
+    # banners (the default again since 1.9.5).
     while order and order[0][1] != "settings_group_display":
         order.pop(0)
     paint_settings_viewport(img, order, "settings_banner_title")
     note = ("MOCKUP - settings frame scrolled to DISPLAY; example: focus on the "
-            "banner previews switch (off - square glyphs, the 1.9.2 default)")
+            "art style switch (on - banners, the 1.9.5 default)")
     return img, note
 
 

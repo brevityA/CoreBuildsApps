@@ -18,7 +18,7 @@ this only adds time.
 How the still is split, at a 1.1x working canvas:
   detail = still - blur(still)   (clipped >= 0): points and hairline edges
   glow   = still - detail        everything soft
-  frame  = glow * shimmer(x, y, t) + detail * twinkle(star, t)
+  frame  = glow * shimmer(x, y, t) + detail + star * twinkle(t)
 then a moving crop is resampled to 1920x1080 and piped to ffmpeg.
 
 Writes, for each wall (clip numbers 11-22 in the live feed, wall order):
@@ -157,8 +157,10 @@ class Scene:
         shimmer = 1.0 + SHIMMER * self.calm * (
             0.6 * np.sin(two_pi * (t - self.wave1))
             + 0.4 * np.sin(two_pi * (2 * t + self.wave2)))
-        canvas = self.glow * shimmer[..., None]
-        tw = 1.0 + self.star_amp * np.sin(two_pi * (self.star_rate * t + self.star_phase))
+        # All the still's detail, every frame (dim edges included); the
+        # twinkle only adds its swing on top of the stars' own light.
+        canvas = self.glow * shimmer[..., None] + self.detail
+        tw = self.star_amp * np.sin(two_pi * (self.star_rate * t + self.star_phase))
         canvas[self.star_y, self.star_x] += self.star_rgb * tw[:, None]
         img = Image.fromarray(np.clip(canvas, 0, 255).astype("uint8"))
 
