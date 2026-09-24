@@ -9,11 +9,11 @@
       "structure": "4b9db1f348433f9be89e80f416914d37b8390773d842365ef0298bdacd494135"
     },
     "app-ui-catalogue-update.png": {
-      "bytes": 189599,
+      "bytes": 191178,
       "structure": "f9fc527f037da4b17b6db8e3f658a303ef7d3975fa9c87278139b780556f96c9"
     },
     "app-ui-catalogue.png": {
-      "bytes": 203139,
+      "bytes": 205495,
       "structure": "ded593930802d74566f31931282bd3a9f8bb6ec20069a263eb92d6d71eaff435"
     },
     "app-ui-faq.png": {
@@ -70,13 +70,13 @@
     "app/src/main/res/values/suite_hub.xml": "69ac213b6d898884f21bc8b56043053c3e08444415e50450f29fec6a48317213",
     "app/src/main/res/values/themes.xml": "ecac526951fe40b6c5c01df0ec36730d0e197fd9511862cf587a2143773b46be",
     "tools/build_app_ui_mockups.py": "6e9dbc679b903315a215abda69a9bda6a1c88e91601c019ea831110dc636f24a",
-    "tools/catalog.json": "59963aa249a968c5c6d8425ad7aceb40467744267cac86bf23fed341f12d2843",
+    "tools/catalog.json": "5b8a232d0680c0f27e73875b3af9718ea7cda5e74f0ee07115ea9c0784f70ac2",
     "tools/fonts/DejaVuSansMono-Bold.ttf": "2964f6dac8e6e9d71613928340f17bf868e9ea51692cca333c79e74962f02233",
     "tools/fonts/DejaVuSansMono.ttf": "0f5db4f1749979d961019838b160bec74abdf7f9eca69553fe1aa856bbff49a4",
     "tools/fonts/Outfit-Bold.ttf": "04f7c9705153927058475d6c5e9f75b0a1036ec5f6f63ffb69df046191ea8933",
     "tools/fonts/Outfit-ExtraBold.ttf": "056e8cd5840cea4cfc355f672292f7de00d95f5a42bf9b7cd96d511ca8e2883e"
   },
-  "inputs_digest": "802432bdf141827b99ef03a98092e6bb23dc78cdad451f1f92890f1c7fdc5a41",
+  "inputs_digest": "04a72cd9a5afc8857374edb073ef259997b59d570b92cb12624bf90f4002ef0e",
   "metrics": {
     "mono-bold@24": 448.0,
     "mono-bold@32": 608.0,
@@ -91,7 +91,7 @@
   "note": "Which sources the frames in docs/ were generated from, and what each one depicts. Written by build_app_ui_mockups.py; never hand-edit. The PNG bytes are not recorded on purpose: text rendering is not reproducible across machines, so --check compares the sources and the drawn structure instead. See the module docstring.",
   "pasted": {
     "count": 19,
-    "digest": "f082915bc6e11a6f64e53bb3594308e0c2a5c8cf8217e90561f30e851f512c1e"
+    "digest": "35462dc6d4ef3161da3fc13be0750ca761243a5288cc7ac75e097f0dab967306"
   },
   "renderer": "python 3.11.15, freetype 2.13.2, layout raqm, PIL 10.4.0, qrcode installed, fontTools 4.59.0, resvg_py 0.4.0"
 }

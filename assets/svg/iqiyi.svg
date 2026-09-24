@@ -1,3 +1,3 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
-  <g transform="translate(256 256) scale(1.1236) translate(-269 -267.25)"><circle cx="256" cy="256" r="120" fill="none" stroke="#0061FF" stroke-width="28.48" stroke-linecap="round" stroke-linejoin="round"/><path d="M 334 334 L 402 400" fill="none" stroke="#0061FF" stroke-width="23.32" stroke-linecap="round" stroke-linejoin="round"/><circle cx="206" cy="150" r="16" fill="#0061FF" stroke="none"/></g>
+  <g transform="translate(256 256) scale(1.1236) translate(-269 -267.25)"><circle cx="256" cy="256" r="120" fill="none" stroke="#B6F23A" stroke-width="28.48" stroke-linecap="round" stroke-linejoin="round"/><path d="M 334 334 L 402 400" fill="none" stroke="#B6F23A" stroke-width="23.32" stroke-linecap="round" stroke-linejoin="round"/><circle cx="206" cy="150" r="16" fill="#B6F23A" stroke="none"/></g>
 </svg>

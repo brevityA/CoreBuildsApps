@@ -44,6 +44,7 @@ Do not merge Gradle roots. Do not split the GitHub repo. Do not rename package I
 Classic pack changes run the four generators and the validator:
 
 ```bash
+python tools/icon_palette.py         # 18-colour fallback palette for icons with no brand colour
 python tools/fit_classic_glyphs.py   # optical fit of undersized/off-centre glyphs; reads the catalog
 python tools/build_icons.py
 python tools/build_banners.py

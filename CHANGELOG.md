@@ -34,6 +34,18 @@ All notable changes to the Core Builds Icon Pack. Format follows
 
 ### Changed
 
+- **A wider colour palette for icons without a brand colour.** The 686
+  icons with no published brand colour used to share a hand-grown palette
+  where five colours covered 456 of them, one blue alone 229, so long runs
+  of the grid read as a single blue. They now take one of 18 accents spread
+  round the colour wheel, each at least 4.5:1 on the dark card. No colour
+  covers more than 6% of them, and neighbouring tiles never share one. Icons
+  with a sourced brand colour are unchanged.
+- **`tools/icon_palette.py` owns the fallback palette.** It assigns
+  colours in grid order, keeps brand groups together, and refuses any
+  colour that would make two apps' icons identical. `--check` runs in CI,
+  with `tests/test_icon_palette.py` holding the spread and the neighbour
+  rule.
 - **Missing-app auditor sends mapping reports to the right form.** An app the
   pack already maps under a different activity now opens "Icon not
   auto-assigning" with its real component prefilled, instead of a new-icon
