@@ -21,6 +21,8 @@ object ApplyIconPack {
         data class Applied(val launcherName: String) : Result()
         data class NotInstalled(val launcherName: String) : Result()
         data class Manual(val launcherName: String, val instructions: String) : Result()
+        /** Banners is selected but Core Builds Banners is missing or stale. */
+        object NeedsCompanion : Result()
     }
 
     data class Launcher(
@@ -257,25 +259,43 @@ object ApplyIconPack {
         return listOfNotNull(home) + rest
     }
 
+    /**
+     * Point [launcher] at the pack the Glyphs/Banners setting selects.
+     *
+     * The apply contracts all take a package name, and that is the whole
+     * mechanism behind the toggle: glyphs name this package, banners name
+     * [BannersCompanion.PACKAGE]. A launcher with no apply contract gets the
+     * same choice as a manual path that names the pack to pick.
+     */
     fun apply(context: Context, launcher: Launcher): Result {
         if (!context.isInstalledAny(launcher)) {
             return Result.NotInstalled(launcher.displayName)
         }
+        if (BannersCompanion.wanted(context) && !BannersCompanion.ready(context)) {
+            return Result.NeedsCompanion
+        }
+        val pack = BannersCompanion.applyTarget(context)
+        val manual = if (pack == context.packageName) {
+            launcher.manualPath
+        } else {
+            context.getString(R.string.apply_manual_banners_fmt,
+                              launcher.manualPath, BannersCompanion.LABEL)
+        }
 
-        val intent = launcher.intent(context, context.packageName)
-            ?: return Result.Manual(launcher.displayName, launcher.manualPath)
+        val intent = launcher.intent(context, pack)
+            ?: return Result.Manual(launcher.displayName, manual)
 
         val resolves = context.packageManager
             .queryIntentActivities(intent, 0).isNotEmpty()
         if (!resolves) {
-            return Result.Manual(launcher.displayName, launcher.manualPath)
+            return Result.Manual(launcher.displayName, manual)
         }
 
         return try {
             context.startActivity(intent)
             Result.Applied(launcher.displayName)
         } catch (_: Exception) {
-            Result.Manual(launcher.displayName, launcher.manualPath)
+            Result.Manual(launcher.displayName, manual)
         }
     }
 

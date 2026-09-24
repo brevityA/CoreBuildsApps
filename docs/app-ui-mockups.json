@@ -25,8 +25,8 @@
       "structure": "f598da9a0a7715ea3dc412f511ac164a33b71903ff84c1b41c915fb36244dbec"
     },
     "app-ui-settings-display.png": {
-      "bytes": 104804,
-      "structure": "7a74478fcedb84bb98c7131586e18292f1c8a0af6d449cc69b54bf776ed637d7"
+      "bytes": 104391,
+      "structure": "179fed1823b8c1ba012dac3cd91df135f1e133ad39e89f101599db56b0ba2e9e"
     },
     "app-ui-settings.png": {
       "bytes": 92338,
@@ -66,7 +66,7 @@
     "app/src/main/res/values/dimens.xml": "7bc57666dc36c2a3adad0b1559b7da8c33c01616cb024f741f0a948d5df65126",
     "app/src/main/res/values/icon_pack.xml": "46077d230f80ec680a9d0b50ad518169f9914d7e647e4da674d4cc1d1edfa810",
     "app/src/main/res/values/issue_prefill.xml": "d0936511248c7779a8c38788738f2763a1e15bad8ddf8198719f13b5464b00fa",
-    "app/src/main/res/values/strings.xml": "3d65ae6d53769da9a1422b30555a284ef793612432ad174263826ad10ae2a22d",
+    "app/src/main/res/values/strings.xml": "b3e16954ae17ba8b5ba9b1abe3125249bab22def5242265600397ed1ba2ce74f",
     "app/src/main/res/values/suite_hub.xml": "69ac213b6d898884f21bc8b56043053c3e08444415e50450f29fec6a48317213",
     "app/src/main/res/values/themes.xml": "ecac526951fe40b6c5c01df0ec36730d0e197fd9511862cf587a2143773b46be",
     "tools/build_app_ui_mockups.py": "14f084313b441a14321ff829fd4f4321c760f0cf9379636477eac8425ff77fa4",
@@ -76,7 +76,7 @@
     "tools/fonts/Outfit-Bold.ttf": "04f7c9705153927058475d6c5e9f75b0a1036ec5f6f63ffb69df046191ea8933",
     "tools/fonts/Outfit-ExtraBold.ttf": "056e8cd5840cea4cfc355f672292f7de00d95f5a42bf9b7cd96d511ca8e2883e"
   },
-  "inputs_digest": "fae031909fd2f5f7d2193618e5c93fb67cddf5bfe76b9714c3fc74fda3e2c64c",
+  "inputs_digest": "c592a6fdf90e1c10f9f95847edb9bdcf3960ad97b1d6834c21a9f5221b6d5556",
   "metrics": {
     "mono-bold@24": 448.0,
     "mono-bold@32": 608.0,
@@ -93,5 +93,5 @@
     "count": 19,
     "digest": "4915e6d1e38b484b850ee89ccef34baa55642d77a490df3072f95e34ee03a339"
   },
-  "renderer": "python 3.11.2, freetype 2.13.2, layout basic, PIL 10.4.0, qrcode installed, fontTools 4.59.0, resvg_py 0.4.0"
+  "renderer": "python 3.11.15, freetype 2.13.2, layout raqm, PIL 10.4.0, qrcode installed, fontTools 4.59.0, resvg_py 0.4.0"
 }

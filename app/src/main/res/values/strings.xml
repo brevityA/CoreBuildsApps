@@ -54,6 +54,10 @@
     <string name="apply_handed_off_fmt">Sent to %1$s. If the icons don\'t change, restart the launcher.</string>
     <string name="apply_not_installed_fmt">%1$s is not installed.</string>
     <string name="apply_manual_fmt">%1$s didn\'t accept direct apply. Set it here: %2$s</string>
+    <string name="apply_manual_banners_fmt">%1$s, then pick %2$s</string>
+    <string name="banners_downloading">Downloading Core Builds Banners, the 16:9 pack your launcher applies</string>
+    <string name="banners_install_permission">Allow installs from Core Builds, then switch to Banners again to fetch Core Builds Banners</string>
+    <string name="banners_failed_fmt">Couldn\'t fetch Core Builds Banners: %1$s</string>
     <string name="update_available_fmt">Update available — v%1$s · %2$d icons</string>
     <string name="update_current_fmt">Up to date — v%1$s.</string>
     <string name="update_failed_fmt">Update failed: %1$s</string>
@@ -152,7 +156,7 @@
     <string name="settings_amoled_title">AMOLED chrome</string>
     <string name="settings_amoled_sub">Pure black app background, to match the AMOLED wallpaper series.</string>
     <string name="settings_banner_title">Art style: Glyphs or Banners</string>
-    <string name="settings_banner_sub">Square glyphs when off, 16:9 banner cards when on. Updates the catalogue browser and launcher icon picker; launcher auto-apply stays square.</string>
+    <string name="settings_banner_sub">Square glyphs when off, 16:9 banner cards when on. Switches the catalogue, the icon picker and the icons your launcher applies to every app.</string>
     <string name="settings_group_storage">STORAGE</string>
     <string name="settings_cache_title">Wallpaper cache</string>
     <string name="settings_cache_sub">Wallpapers you downloaded. Clearing re-fetches them on demand.</string>
@@ -245,7 +249,7 @@
     <string name="about_label_wallpapers">WALLPAPERS</string>
     <string name="about_network_header">EVERYTHING THIS APP SENDS</string>
     <string name="about_network_one">1.  A request for the update manifest, when update checks are on.</string>
-    <string name="about_network_two">2.  A request for each wallpaper you choose to download.</string>
+    <string name="about_network_two">2.  A request for each wallpaper you choose to download, and for Core Builds Banners the first time you switch the art style to Banners.</string>
     <string name="about_network_none">That is the whole list. No analytics, no installed-app list, no device model, no identifier. Icons ship inside the app and are never fetched.</string>
     <string name="about_links">LINKS</string>
     <string name="about_source_label">Source &amp; issues</string>

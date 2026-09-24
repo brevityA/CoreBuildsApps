@@ -37,6 +37,8 @@ jobs:
         run: python tools/audit_contract.py
       - name: Check prefilled icon-request links against the issue forms
         run: python tools/build_issue_prefills.py --check
+      - name: Check the Banners companion matches the glyph pack
+        run: python tools/build_banners_pack.py --check
       # Depends on no Android SDK and no Gradle, so it runs here rather than in
       # the matrix: it is the check that explains *why* a matrix entry would
       # fail, and it has to be able to fail on a dependency-only PR that never
@@ -74,6 +76,13 @@ jobs:
             compileSdk: 34
             workflow: .github/workflows/pop-apk.yml
             artifact: pop/build/outputs/apk/debug/*.apk
+          - name: Core Builds Banners
+            dir: .
+            tasks: :banners:lintDebug :banners:testDebugUnitTest :banners:assembleDebug
+            gradle: banners/build.gradle.kts
+            compileSdk: 34
+            workflow: .github/workflows/build.yml
+            artifact: banners/build/outputs/apk/debug/*.apk
           - name: Core Line
             dir: ticker/android
             tasks: :app:lintDebug :app:testDebugUnitTest :app:assembleDebug
@@ -142,11 +151,15 @@ jobs:
           # Re-run compile + lint (config-cache warm, cheap) with all output
           # captured, then post the failure cause and first errors as
           # annotations - readable without downloading job logs.
-          ./gradlew :app:compileDebugKotlin :app:lintDebug --no-daemon > build_out.txt 2>&1 || true
+          # The module comes from this entry's own tasks (":pop:lintDebug ..."
+          # -> pop), so a Pop or Banners failure reports Pop or Banners, not
+          # :app. compileDebugSources covers Java-only modules too.
+          MOD=$(printf '%s' "${{ matrix.tasks }}" | awk '{print $1}' | cut -d: -f2)
+          ./gradlew ":$MOD:compileDebugSources" ":$MOD:lintDebug" --no-daemon > build_out.txt 2>&1 || true
           {
             grep -A 8 "What went wrong" build_out.txt | head -10 || true
             grep -E "^e: |error: " build_out.txt | head -5 || true
-            LINT_TXT=$(find app/build/reports -name "lint-results-*.txt" 2>/dev/null | head -1)
+            LINT_TXT=$(find "$MOD/build" -name "lint-results-*.txt" 2>/dev/null | head -1)
             if [ -n "$LINT_TXT" ]; then
               grep -iE "Error" "$LINT_TXT" | head -4 || true
             fi
@@ -213,6 +226,7 @@ jobs:
           python tests/test_presence.py
           python tests/test_render_stack.py
           python tests/test_changelog_contract.py
+          python tests/test_banners_pack.py
           # Meta-gate, last: it reads the workflows above and fails if any
           # tests/test_*.py or tools/check_*.py has stopped being invoked. This
           # job has no path filter, so it is the one place a new test can be

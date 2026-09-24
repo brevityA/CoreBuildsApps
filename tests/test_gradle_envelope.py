@@ -173,10 +173,12 @@ class GradleParsing(unittest.TestCase):
             {"", "pixel-neon", "ticker/android", "shift", "motion-plugin", "doctor"},
         )
 
-    def test_root_build_file_maps_to_two_modules(self):
-        # The one deliberate exception to "one app, one Gradle root": pop/ is a
-        # second module on the repo-root build, not its own root.
-        self.assertEqual([m.name for m in self.roots[""].modules], ["app", "pop"])
+    def test_root_build_file_maps_to_three_modules(self):
+        # The deliberate exception to "one app, one Gradle root": pop/ and
+        # banners/ (the glyph pack's 16:9 companion) are further modules on
+        # the repo-root build, not roots of their own.
+        self.assertEqual([m.name for m in self.roots[""].modules],
+                         ["app", "pop", "banners"])
 
     def test_reads_compile_and_min_sdk(self):
         app = self.roots[""].modules[0]
@@ -219,7 +221,7 @@ class MatrixParsing(unittest.TestCase):
         ]
 
     def test_reads_exactly_the_matrix_entries(self):
-        self.assertEqual(len(self.entries), 7)
+        self.assertEqual(len(self.entries), 8)
 
     def test_step_names_are_not_mistaken_for_matrix_entries(self):
         # A whole-file search for `- name:` also matches every workflow step, and
@@ -367,11 +369,14 @@ class RepoIsInsideItsEnvelope(unittest.TestCase):
         table = json.loads((ROOT / "tools" / "gradle_envelope.json").read_text(encoding="utf-8"))
         appcompat = next(c for c in table["ceilings"] if c["coordinate"] == "androidx.appcompat:appcompat")
         self.assertIn("minSdk", appcompat["reason"])
+        # The modules that both floor at 21 and declare appcompat. banners/ is
+        # also minSdk 21 but has no dependencies at all, so it is not part of
+        # why the cap exists.
         at_21 = sorted(
             m.path.relative_to(ROOT).as_posix()
             for r in gate.discover_roots()
             for m in r.modules
-            if m.min_sdk == 21
+            if m.min_sdk == 21 and "androidx.appcompat:appcompat" in m.deps
         )
         self.assertEqual(at_21, ["app", "pixel-neon/app", "pop"])
 

@@ -37,6 +37,8 @@ object UpdateInstaller {
         "github-releases.githubusercontent.com",
     )
     private val io = Executors.newSingleThreadExecutor()
+    private const val UPDATE_FILE = "core-builds-update.apk"
+    private const val COMPANION_FILE = "core-builds-banners.apk"
 
     sealed class Event {
         data class Progress(val received: Long, val total: Long) : Event()
@@ -55,10 +57,45 @@ object UpdateInstaller {
         val main = android.os.Handler(app.mainLooper)
         io.execute {
             try {
-                val file = fetchToCache(app, apkUrl) { rec, tot ->
+                val file = fetchToCache(app, apkUrl, UPDATE_FILE) { rec, tot ->
                     main.post { onEvent(Event.Progress(rec, tot)) }
                 }
-                verifyDownloadedApk(app, file, expectedVersionCode, expectedSha256)
+                verifyDownloadedApk(app, file, app.packageName, expectedSha256) { code ->
+                    code == expectedVersionCode && code > BuildConfig.VERSION_CODE
+                }
+                main.post { onEvent(Event.Ready(file)) }
+            } catch (e: Exception) {
+                main.post {
+                    onEvent(Event.Failed(e.message ?: e.javaClass.simpleName))
+                }
+            }
+        }
+    }
+
+    /**
+     * Download the Banners companion (see [BannersCompanion]).
+     *
+     * Held to the same bar as a self-update, with the package and version
+     * rules swapped for the companion's: it must be [packageName], exactly
+     * [versionCode] (the pair ships from one release), and signed by the
+     * certificate that signed this installed app. A companion that fails
+     * any of those is deleted, never offered to the installer.
+     */
+    fun downloadCompanion(
+        context: Context,
+        apkUrl: String,
+        packageName: String,
+        versionCode: Int,
+        onEvent: (Event) -> Unit,
+    ) {
+        val app = context.applicationContext
+        val main = android.os.Handler(app.mainLooper)
+        io.execute {
+            try {
+                val file = fetchToCache(app, apkUrl, COMPANION_FILE) { rec, tot ->
+                    main.post { onEvent(Event.Progress(rec, tot)) }
+                }
+                verifyDownloadedApk(app, file, packageName, null) { it == versionCode }
                 main.post { onEvent(Event.Ready(file)) }
             } catch (e: Exception) {
                 main.post {
@@ -108,10 +145,11 @@ object UpdateInstaller {
     private fun fetchToCache(
         context: Context,
         apkUrl: String,
+        fileName: String,
         onProgress: (Long, Long) -> Unit
     ): File {
         val dir = File(context.cacheDir, "updates").apply { mkdirs() }
-        val dest = File(dir, "core-builds-update.apk")
+        val dest = File(dir, fileName)
         if (dest.exists()) dest.delete()
 
         val start = URL(apkUrl)
@@ -202,8 +240,9 @@ object UpdateInstaller {
     private fun verifyDownloadedApk(
         context: Context,
         file: File,
-        expectedVersionCode: Int,
+        expectedPackage: String,
         expectedSha256: String?,
+        versionAccepted: (Int) -> Boolean,
     ) {
         val normalizedSha = expectedSha256?.trim()?.lowercase(Locale.US).orEmpty()
         if (normalizedSha.isNotEmpty()) {
@@ -218,16 +257,14 @@ object UpdateInstaller {
         val pm = context.packageManager
         val archive = archivePackageInfo(pm, file)
             ?: throw IllegalStateException("downloaded file is not an installable APK")
-        if (archive.packageName != context.packageName) {
+        if (archive.packageName != expectedPackage) {
             file.delete()
             throw IllegalStateException("APK package mismatch: ${archive.packageName}")
         }
         val archiveCode = versionCodeOf(archive)
-        if (archiveCode != expectedVersionCode || archiveCode <= BuildConfig.VERSION_CODE) {
+        if (!versionAccepted(archiveCode)) {
             file.delete()
-            throw IllegalStateException(
-                "APK version $archiveCode does not match expected newer version $expectedVersionCode"
-            )
+            throw IllegalStateException("APK version $archiveCode is not the version expected")
         }
         val installed = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
             pm.getPackageInfo(context.packageName, PackageManager.GET_SIGNING_CERTIFICATES)
