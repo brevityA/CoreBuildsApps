@@ -1,6 +1,6 @@
-# Core Builds — Wallpaper Collection v5.0
+# Core Builds — Wallpaper Collection v5.1
 
-84 wallpapers · 3840×2160 (series 1–3, 7–8) and 1376×768 (series 6) · 128 MB ·
+96 wallpapers · 3840×2160 (series 1–3, 7–8) and 1376×768 (series 6) · 128 MB ·
 Core Builds palette:
 Core Cyan #00e5ff · Signal #00d4ff · Glow #7eeeff · Build Blue #4facfe ·
 Dusk Violet #8a4890 · Ember #c03a20 · Night #0d1117 · Void #04070f.
@@ -25,18 +25,19 @@ and the wallpaper research behind earlier series is in
 | `series-6-circuit-core` | 41–50, 79–80 | **Circuit Core.** Twelve lit-circuit fields on near-black — the same §06 lighting language the retired Core Mark series used (cyan first, violet/ember ambient), authored at 1376×768 rather than 4K. Replaced `series-4-core-mark` in v1.8.6; `tools/build_circuit_wallpaper_extensions.py` reproduces the final pair. |
 | `series-7-retrowave` | 59–68, 81–82 | **Retrowave.** Twelve 4K walls in 2026's nostalgic retro-gradient genre: sliced gradient suns, perspective grids, chrome ridges and starfields on the night ground, per `tools/build_synthwave_wallpapers.py`. |
 | `series-8-amoled` | 69–78, 83–84 | **AMOLED.** Twelve minimalist 4K walls on exact `#000000`: sparse cyan, violet, and ember geometry with 92.4–99.8% true-black coverage. `tools/build_amoled_wallpapers.py` asserts the ≥50% contract and writes the [contact sheet](../docs/amoled-wallpapers.png). |
+| `series-9-deep-space` | 85–96 | **Deep Space.** Twelve 4K space walls in the house palette — event horizon, nebulae, ringed planet, spiral galaxy, comets, novae — all procedural and seeded (`tools/build_deep_space_wallpapers.py`, [contact sheet](../docs/deep-space-wallpapers.png)). Smooth gradients ship grain-free like series 7/8: the full-frame dither cost ~9 MB per PNG for a texture invisible at TV distance. |
 
 Retired: `series-4-core-mark` (41–70, 30 × 4K PNGs of the lit hex + faceted core
 diamond) shipped in v1.7.0 and was removed in v1.8.6. Series index 4 stays empty
 and 5 belonged to Pop (retired 2026-09); subsequent additions continue at
-series 7 and beyond.
+series 7 and beyond, currently through series 9.
 
 ## In-app browser
 
 The icon-pack app ships a built-in Wallpapers screen:
 
 - **Thumbs are bundled** (`app/src/main/assets/wallpapers_thumbs/`, about 1 MB for
-  all 84) so the grid is instant and works offline.
+  all 96) so the grid is instant and works offline.
 - **Full images download on demand** from the raw URLs below and are cached in
   internal storage (12-file LRU, ~30 MB ceiling) — the APK stays small. Series 1–3
   and 7–8 are 4K PNG, series 6 is 1376×768 JPEG; `resolution` per entry is the truth.

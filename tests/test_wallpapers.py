@@ -61,6 +61,7 @@ class ManifestTests(unittest.TestCase):
             "series-6-circuit-core": 12,
             "series-7-retrowave": 12,
             "series-8-amoled": 12,
+            "series-9-deep-space": 12,
         })
 
     def test_entries_are_https_github(self):

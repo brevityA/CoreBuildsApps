@@ -11,7 +11,7 @@ The answer to (1) turned out to constrain (2) far more than the art style did.
 
 ## 1. What already ships
 
-Current state: `Wallpapers/manifest.json` v5.0 — 84 wallpapers, about 129 MB,
+Current state: `Wallpapers/manifest.json` v5.1 — 96 wallpapers, about 138 MB,
 six indexed classic series plus the separately indexed Pop set and an
 unindexed originals folder:
 

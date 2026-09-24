@@ -67,7 +67,7 @@ For the visual receipt, run `python tools/build_icon_review.py` after the pack
 has built. It must show the new icons beside established, unchanged
 neighbours and actual-size banners, not only an isolated vendor-logo gallery.
 
-`Wallpapers/manifest.json` belongs to the icon pack and currently has 84 entries.
+`Wallpapers/manifest.json` belongs to the icon pack and currently has 96 entries.
 
 ## Truth gates
 

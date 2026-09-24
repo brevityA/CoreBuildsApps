@@ -68,5 +68,26 @@
     "author": "Core Builds",
     "url_img": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Motion/live/thumbs/coremotion-live-10-spiral-blue.jpg",
     "url_1080p": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Motion/live/coremotion-live-10-spiral-blue.mp4"
+  },
+  {
+    "location": "Core Motion",
+    "title": "Nebula Drift",
+    "author": "Core Builds",
+    "url_img": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Motion/live/thumbs/coremotion-live-11-nebula-drift.jpg",
+    "url_1080p": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Motion/live/coremotion-live-11-nebula-drift.mp4"
+  },
+  {
+    "location": "Core Motion",
+    "title": "Event Horizon",
+    "author": "Core Builds",
+    "url_img": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Motion/live/thumbs/coremotion-live-12-event-horizon.jpg",
+    "url_1080p": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Motion/live/coremotion-live-12-event-horizon.mp4"
+  },
+  {
+    "location": "Core Motion",
+    "title": "Ion Storm",
+    "author": "Core Builds",
+    "url_img": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Motion/live/thumbs/coremotion-live-13-ion-storm.jpg",
+    "url_1080p": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Motion/live/coremotion-live-13-ion-storm.mp4"
   }
 ]
