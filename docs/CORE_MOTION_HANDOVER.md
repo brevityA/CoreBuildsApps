@@ -112,7 +112,7 @@ cd shift && ./gradlew :app:assembleDebug
 ```bash
 pip install imageio-ffmpeg
 python tools/build_motion_feed.py
-python tools/validate_motion_feed.py     # expect "OK: 10 live wallpapers"
+python tools/validate_motion_feed.py     # expect "OK: 13 live wallpapers"
 ```
 
 Then re-copy the feed into the app bundle:

@@ -170,15 +170,15 @@ class GradleParsing(unittest.TestCase):
     def test_finds_every_gradle_root_in_the_suite(self):
         self.assertEqual(
             set(self.roots),
-            {"", "pixel-neon", "ticker/android", "shift", "motion-plugin", "doctor"},
+            {"", "ticker/android", "shift", "motion-plugin", "doctor"},
         )
 
-    def test_root_build_file_maps_to_three_modules(self):
-        # The deliberate exception to "one app, one Gradle root": pop/ and
-        # banners/ (the glyph pack's 16:9 companion) are further modules on
-        # the repo-root build, not roots of their own.
+    def test_root_build_file_maps_to_two_modules(self):
+        # The deliberate exception to "one app, one Gradle root": banners/
+        # (the glyph pack's 16:9 companion) is a further module on the
+        # repo-root build, not a root of its own.
         self.assertEqual([m.name for m in self.roots[""].modules],
-                         ["app", "pop", "banners"])
+                         ["app", "banners"])
 
     def test_reads_compile_and_min_sdk(self):
         app = self.roots[""].modules[0]
@@ -221,7 +221,7 @@ class MatrixParsing(unittest.TestCase):
         ]
 
     def test_reads_exactly_the_matrix_entries(self):
-        self.assertEqual(len(self.entries), 8)
+        self.assertEqual(len(self.entries), 6)
 
     def test_step_names_are_not_mistaken_for_matrix_entries(self):
         # A whole-file search for `- name:` also matches every workflow step, and
@@ -244,7 +244,7 @@ class DependabotParsing(unittest.TestCase):
     def test_reads_every_directory(self):
         self.assertEqual(
             set(self.gradle),
-            {"/", "/pixel-neon", "/ticker/android", "/shift", "/motion-plugin", "/doctor"},
+            {"/", "/ticker/android", "/shift", "/motion-plugin", "/doctor"},
         )
 
     def test_non_gradle_ecosystems_survive(self):
@@ -378,7 +378,7 @@ class RepoIsInsideItsEnvelope(unittest.TestCase):
             for m in r.modules
             if m.min_sdk == 21 and "androidx.appcompat:appcompat" in m.deps
         )
-        self.assertEqual(at_21, ["app", "pixel-neon/app", "pop"])
+        self.assertEqual(at_21, ["app"])
 
     def test_doctor_is_the_only_compose_module(self):
         composing = [
@@ -421,8 +421,8 @@ class Mutants(unittest.TestCase):
     def test_a_new_gradle_root_without_a_dependabot_entry_is_caught(self):
         with ScratchRepo() as repo:
             text = repo.path(".github/dependabot.yml").read_text(encoding="utf-8")
-            start = text.index('  # pixel-neon')
-            end = text.index("  # ticker/android")
+            start = text.index('  # shift')
+            end = text.index("  # motion-plugin")
             repo.path(".github/dependabot.yml").write_text(text[:start] + text[end:], encoding="utf-8")
             repo.assert_blocked("no dependabot.yml entry", "unwatched gradle root")
 

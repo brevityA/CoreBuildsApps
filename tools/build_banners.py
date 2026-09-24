@@ -60,7 +60,7 @@ GAP = 80                  # space between the glyph's INK and the wordmark.
                           # units across the pack (18-48px at 320). 80 is the
                           # old median visible gap, now the same on every card.
 HALF_STROKE = 16          # grid units the primary monoline stroke overhangs
-METRICS = ROOT / "tools" / "pop_glyph_metrics.json"
+METRICS = ROOT / "tools" / "glyph_metrics.json"
 _INK = None
 
 
@@ -68,7 +68,7 @@ def glyph_ink_x(glyph):
     """(left, right) of a glyph's drawn ink on its 512 grid, after the
     committed classic fit, so the lockup is spaced by what is drawn rather
     than by the grid box around it. Geometry comes from the committed
-    metrics (tools/pop_glyph_metrics.json), keeping this a pure function of
+    metrics (tools/glyph_metrics.json), keeping this a pure function of
     committed files; a glyph with no metrics falls back to the full grid."""
     global _INK
     if _INK is None:

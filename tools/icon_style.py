@@ -1,6 +1,6 @@
 """Classic pack colour policy shared by squares, banners and previews.
 
-The catalog retains the source brand accent (also used by Pop and Pixel Neon).
+The catalog retains the source brand accent.
 On Classic's recommended dark cards, very dark accents use a consistent light
 ink instead of vanishing or being randomly brightened to a different hue.
 This is a legibility adaptation, not a claim that a brand changed its colour.

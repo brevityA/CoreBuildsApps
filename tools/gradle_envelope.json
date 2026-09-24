@@ -24,7 +24,7 @@
     "agpMaxExclusive": "9",
     "minGradleForAgp8": "8.7",
   "_comment": [
-   "AGP 8.5.2 is uniform across all six Gradle roots and is now capped twice",
+   "AGP 8.5.2 is uniform across all five Gradle roots and is now capped twice",
    "over: below 9 by agpMaxExclusive, because AGP 9 is a breaking major with",
    "built-in Kotlin and new DSL defaults, and AT 8.5.2 by the ceiling entry",
    "below, because 8.5.2 is the highest AGP release proven green on the",
@@ -33,7 +33,7 @@
    "9.7.0 wrapper failed to apply the plugin.",
    "",
    "Gradle is not uniform: ticker/android still runs the 8.7 wrapper while the",
-   "other five run 9.7.0. 8.7 is exactly AGP 8.5's minimum, so that is the",
+   "other four run 9.7.0. 8.7 is exactly AGP 8.5's minimum, so that is the",
    "floor the gate enforces. There is still no ceiling on the wrapper itself.",
    "",
    "The AGP/wrapper PAIR is the real constraint, and it was settled by CI on",
@@ -71,7 +71,7 @@
    "coordinate": "com.android.application",
       "max": "8.5.2",
       "blockedUpdateTypes": ["version-update:semver-patch", "version-update:semver-minor", "version-update:semver-major"],
-      "reason": "AGP 8.13.2 cannot start on the Gradle 9.7.0 wrapper that five of the six roots run: it binds org.gradle.api.problems.internal.InternalProblems, which Gradle 9.6.0 removed, and every module fails at plugin apply. 8.5.2 is the highest AGP proven green on 9.7.0 today. The constraint is the pair, not AGP alone - PR #146 moved its wrapper to 9.5.1 with the same AGP 8.13.2 and built green.",
+      "reason": "AGP 8.13.2 cannot start on the Gradle 9.7.0 wrapper that four of the five roots run: it binds org.gradle.api.problems.internal.InternalProblems, which Gradle 9.6.0 removed, and every module fails at plugin apply. 8.5.2 is the highest AGP proven green on 9.7.0 today. The constraint is the pair, not AGP alone - PR #146 moved its wrapper to 9.5.1 with the same AGP 8.13.2 and built green.",
       "evidence": [
         "https://docs.gradle.org/9.7.0/userguide/upgrading_version_9.html#agp_8x_incompatible",
         "https://github.com/gradle/gradle/issues/38073",
@@ -82,7 +82,7 @@
    "coordinate": "androidx.core:core-ktx",
       "max": "1.13.1",
       "blockedUpdateTypes": ["version-update:semver-patch", "version-update:semver-minor", "version-update:semver-major"],
-      "reason": "1.15.0 needs compileSdk 35; 1.17.0 needs compileSdk 36 and AGP 8.9.1; 1.19.0 needs compileSdk 37 and AGP 9.1.0. Six of eight modules compile at 34.",
+      "reason": "1.15.0 needs compileSdk 35; 1.17.0 needs compileSdk 36 and AGP 8.9.1; 1.19.0 needs compileSdk 37 and AGP 9.1.0. Five of six modules compile at 34.",
       "evidence": [
         "https://developer.android.com/jetpack/androidx/releases/core",
         "https://youtrack.jetbrains.com/projects/KMT/issues/KMT-2631"
@@ -92,7 +92,7 @@
       "coordinate": "androidx.appcompat:appcompat",
       "max": "1.7.0",
       "blockedUpdateTypes": ["version-update:semver-patch", "version-update:semver-minor", "version-update:semver-major"],
-      "reason": "1.8.0 needs compileSdk 36 and raises its own minSdk to 23. The icon pack, Pop and Pixel Neon declare minSdk 21 for Android 5.x Fire TV hardware, so 1.8.0 fails the manifest merge before it fails AAR metadata.",
+      "reason": "1.8.0 needs compileSdk 36 and raises its own minSdk to 23. The icon pack declares minSdk 21 for Android 5.x Fire TV hardware, so 1.8.0 fails the manifest merge before it fails AAR metadata.",
       "evidence": [
         "https://developer.android.com/jetpack/androidx/releases/appcompat"
       ]
@@ -174,7 +174,7 @@
       "coordinate": "org.jetbrains.kotlin.android",
       "max": "1.9.24",
       "blockedUpdateTypes": ["version-update:semver-patch", "version-update:semver-minor", "version-update:semver-major"],
-      "reason": "Kotlin 2.0 moves the Compose compiler out of the Kotlin repository into org.jetbrains.kotlin.plugin.compose. doctor/ still sets composeOptions.kotlinCompilerExtensionVersion = \"1.5.14\", which is hard-tied to Kotlin 1.9.24. All seven Kotlin modules also use the kotlinOptions DSL rather than compilerOptions (banners/ is Java-only). This is a source migration, not a version bump.",
+      "reason": "Kotlin 2.0 moves the Compose compiler out of the Kotlin repository into org.jetbrains.kotlin.plugin.compose. doctor/ still sets composeOptions.kotlinCompilerExtensionVersion = \"1.5.14\", which is hard-tied to Kotlin 1.9.24. All five Kotlin modules also use the kotlinOptions DSL rather than compilerOptions (banners/ is Java-only). This is a source migration, not a version bump.",
       "evidence": [
         "https://kotlinlang.org/docs/compose-compiler-migration-guide.html",
         "https://android-developers.googleblog.com/2024/04/jetpack-compose-compiler-moving-to-kotlin-repository.html"
@@ -205,16 +205,16 @@
       "and each one lifts the ceilings that depend on it. Nothing here is blocked",
       "on a decision only the maintainer can make, except step 1.",
       "",
-      "Step 1 is the product question: app/, pop/ and pixel-neon/ carry minSdk 21",
+      "Step 1 is the product question: app/ carries minSdk 21",
       "for Android 5.x Fire TV sticks. AndroidX moved its floor to minSdk 23 in",
       "June 2025, so every AndroidX bump from here on requires dropping those",
       "devices. That is a release-note decision, not a build decision."
     ],
     "steps": [
       "Decide whether minSdk 21 (Android 5.x Fire TV) is still supported. AndroidX now floors at 23.",
-      "If not: raise app/, pop/ and pixel-neon/ to minSdk 23, then compileSdk 35 across the suite, and install platforms;android-35 in the workflows that build them.",
-      "Resolve the AGP/wrapper pair before moving AGP: either take the five 9.7.0 wrappers down to <= 9.5.1 (the combination PR #146 proved green), or wait for AGP 9, whose problem reporter no longer binds the API Gradle 9.6.0 removed. Then lift the com.android.application ceiling, one root at a time, alone - not bundled with library bumps.",
-      "Migrate doctor/ to the Compose compiler Gradle plugin: apply org.jetbrains.kotlin.plugin.compose, delete composeOptions, then take Kotlin 2.x across all six roots together and convert kotlinOptions to compilerOptions.",
+      "If not: raise app/ to minSdk 23, then compileSdk 35 across the suite, and install platforms;android-35 in the workflows that build them.",
+      "Resolve the AGP/wrapper pair before moving AGP: either take the four 9.7.0 wrappers down to <= 9.5.1 (the combination PR #146 proved green), or wait for AGP 9, whose problem reporter no longer binds the API Gradle 9.6.0 removed. Then lift the com.android.application ceiling, one root at a time, alone - not bundled with library bumps.",
+      "Migrate doctor/ to the Compose compiler Gradle plugin: apply org.jetbrains.kotlin.plugin.compose, delete composeOptions, then take Kotlin 2.x across all five roots together and convert kotlinOptions to compilerOptions.",
       "Raise compileSdk to 36, then 37, lifting the AndroidX ceilings in gradle_envelope.json as each one goes green.",
       "Only then unblock androidx.core, appcompat, recyclerview, media3 and compose-bom in .github/dependabot.yml."
     ]

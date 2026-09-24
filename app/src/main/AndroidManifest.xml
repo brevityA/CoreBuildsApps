@@ -109,10 +109,8 @@
             <category android:name="android.intent.category.LAUNCHER" />
         </intent>
         <!-- Suite companions, for the hub's installed/version probes and its
-             launch buttons. Six targeted entries, same grammar as the
+             launch buttons. Four targeted entries, same grammar as the
              launcher block above. -->
-        <package android:name="tv.corebuilds.pixelneon" />
-        <package android:name="tv.corebuilds.iconpack.pop" />
         <package android:name="dev.corebuilds.doctor" />
         <package android:name="dev.corebuilds.line" />
         <package android:name="tv.corebuilds.motion" />

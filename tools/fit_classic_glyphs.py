@@ -8,8 +8,8 @@ glyphs drew their ink under 280 across (the smallest, MX Player's, at 153),
 and 76 sat more than 16 units off the canvas centre. On a launcher row that
 reads as icons of different sizes rattling around their cards.
 
-Pop solved the same problem by normalising every mark (tools/popart.py). This
-does the Classic equivalent, conservatively:
+Core Builds Pop (retired 2026-09-24) normalised every mark. This does the
+Classic equivalent, conservatively:
 
   * a mark whose ink box is under FLOOR across is scaled up towards TARGET,
     never past MAX_SCALE and never past the SAFE zone a launcher's iconmask
@@ -26,7 +26,7 @@ Left alone, by rule:
   * category monograms (`<family>_<L>`), whose shell is fixed by
     FAMILY_SHELLS and whose mark is fitted by the adaptive type.
 
-Input is tools/pop_glyph_metrics.json (committed geometry ink boxes, so the
+Input is tools/glyph_metrics.json (committed geometry ink boxes, so the
 renderer stays a pure function of committed files). Output is
 tools/classic_glyph_fit.json, which glyphs.render_svg reads.
 
@@ -47,7 +47,7 @@ from glyphs import GRID, SAFE, family_glyph_for  # noqa: E402
 
 ROOT = Path(__file__).resolve().parent.parent
 CATALOG = ROOT / "tools" / "catalog.json"
-METRICS = ROOT / "tools" / "pop_glyph_metrics.json"
+METRICS = ROOT / "tools" / "glyph_metrics.json"
 OUT = ROOT / "tools" / "classic_glyph_fit.json"
 
 FLOOR = 280.0             # geometry ink box below this is undersized
@@ -69,7 +69,7 @@ def fits() -> dict[str, list[float]]:
             continue
         box = metrics.get(glyph)
         if box is None:
-            raise SystemExit(f"{glyph}: no metrics - run tools/measure_pop_glyphs.py")
+            raise SystemExit(f"{glyph}: no metrics - run tools/measure_glyphs.py")
         x0, y0, x1, y1 = box
         span = max(x1 - x0, y1 - y0)
         cx, cy = (x0 + x1) / 2, (y0 + y1) / 2
@@ -90,7 +90,7 @@ def render() -> str:
         "note": ("Optical fit of Classic square glyphs: [scale, ink centre x, "
                  "ink centre y] on the 512 grid. The renderer maps the ink "
                  "centre to the canvas centre and scales about it. Generated "
-                 "by tools/fit_classic_glyphs.py from tools/pop_glyph_metrics.json "
+                 "by tools/fit_classic_glyphs.py from tools/glyph_metrics.json "
                  "- do not hand-edit."),
         "floor": FLOOR, "target": TARGET, "max_scale": MAX_SCALE,
         "centre_tolerance": CENTRE_TOLERANCE,

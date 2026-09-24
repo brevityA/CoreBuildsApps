@@ -128,7 +128,8 @@ class MainActivity : TvActivity() {
 
         if (pickMode) {
             // With a companion, each pack picks its own art (see
-            // pickFixedByPack). Without one (Pop), the shape a user last
+            // pickFixedByPack). Without one (the debug-signed candidate
+            // build), the shape a user last
             // delivered simply stays: the picker opens on the stored chip,
             // and the chip row keeps it. The shipped default is square — the
             // same default the appfilter maps for launcher-side apply.
@@ -1086,7 +1087,8 @@ class MainActivity : TvActivity() {
      * from the art-style toggle: builds with a Banners companion. There the
      * glyph pack answers with glyphs only and Core Builds Banners with
      * banners only, so choosing one app's icon can never flip the style the
-     * whole launcher applies. Pop has no companion and keeps its chips.
+     * whole launcher applies. The candidate build has no companion and
+     * keeps its chips.
      */
     private fun pickFixedByPack(): Boolean = pickMode && BannersCompanion.supported()
 
@@ -1104,7 +1106,8 @@ class MainActivity : TvActivity() {
      * to Apply because it decides what every app on the launcher looks like.
      * A press flips the style and re-applies to the detected launcher, the
      * same as Settings' row - fetching Core Builds Banners first when it is
-     * not installed. Builds without a companion (Pop) switch the catalogue.
+     * not installed. The candidate build has no companion and switches the
+     * catalogue only.
      */
     private fun bindStyleRow() {
         findViewById<View>(R.id.style_entry).setOnClickListener {

@@ -62,20 +62,6 @@ jobs:
             compileSdk: 34
             workflow: .github/workflows/build.yml
             artifact: app/build/outputs/apk/debug/*.apk
-          - name: Pixel Neon Icon Pack
-            dir: pixel-neon
-            tasks: :app:lintDebug :app:testDebugUnitTest :app:assembleDebug
-            gradle: pixel-neon/app/build.gradle.kts
-            compileSdk: 34
-            workflow: .github/workflows/pixel-neon-apk.yml
-            artifact: pixel-neon/app/build/outputs/apk/debug/*.apk
-          - name: Core Builds Pop
-            dir: .
-            tasks: :pop:lintDebug :pop:testDebugUnitTest :pop:assembleDebug
-            gradle: pop/build.gradle.kts
-            compileSdk: 34
-            workflow: .github/workflows/pop-apk.yml
-            artifact: pop/build/outputs/apk/debug/*.apk
           - name: Core Builds Banners
             dir: .
             tasks: :banners:lintDebug :banners:testDebugUnitTest :banners:assembleDebug
@@ -151,8 +137,8 @@ jobs:
           # Re-run compile + lint (config-cache warm, cheap) with all output
           # captured, then post the failure cause and first errors as
           # annotations - readable without downloading job logs.
-          # The module comes from this entry's own tasks (":pop:lintDebug ..."
-          # -> pop), so a Pop or Banners failure reports Pop or Banners, not
+          # The module comes from this entry's own tasks (":banners:lintDebug ..."
+          # -> banners), so a Banners failure reports Banners, not
           # :app. compileDebugSources covers Java-only modules too.
           MOD=$(printf '%s' "${{ matrix.tasks }}" | awk '{print $1}' | cut -d: -f2)
           ./gradlew ":$MOD:compileDebugSources" ":$MOD:lintDebug" --no-daemon > build_out.txt 2>&1 || true
@@ -191,13 +177,13 @@ jobs:
         run: cd ticker && npm test
       - name: Install Python content deps
         run: pip install --quiet -r tools/requirements.txt
-      # Both import tools/glyphs.py, which needs fontTools from the deps above.
+      # These import tools/glyphs.py, which needs fontTools from the deps above.
+      - name: Check glyph metrics were measured from the current geometry
+        run: python tools/measure_glyphs.py --check
       - name: Check the Classic glyph fit matches the catalog and metrics
         run: python tools/fit_classic_glyphs.py --check
       - name: Check fallback palette colours match their assignment
         run: python tools/icon_palette.py --check
-      - name: Pixel Neon generated-asset validation
-        run: python tools/validate_pixel_neon.py
       # This job installs the render deps and runs no asset builder, so the
       # rasters the frames paste are the committed ones. build.yml runs the
       # same check, ahead of its regeneration step, for that reason. The check
@@ -215,7 +201,6 @@ jobs:
           python tests/test_core_shift_content.py
           python tests/test_core_shift_screensaver.py
           python tests/test_prequel_engine.py
-          python tests/test_pop.py
           python tests/test_devcontainer.py
           python tests/test_tv_layout_fit.py
           python tests/test_search_focus.py
@@ -223,7 +208,6 @@ jobs:
           python tests/test_ui_wiring.py
           python tests/test_brandmark_badge.py
           python tests/test_gradle_envelope.py
-          python tests/test_resource_parity.py
           python tests/test_navigation_graph.py
           python tests/test_tv_scale.py
           python tests/test_mapping_hygiene.py

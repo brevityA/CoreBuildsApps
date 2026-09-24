@@ -3,8 +3,7 @@
   Core Builds UI metrics, Brand Guide v1.0 §05.
 
   One place to tune density and screen size, instead of literals repeated
-  across every layout. This file is mirrored into pop/ by tools/build_pop.py
-  (see MIRROR_FILES) — edit it here, never in the Pop copy.
+  across every layout.
 
   Scale is 8dp-based. Every focusable control reaches the 48dp Material
   minimum through padding rather than minHeight, so the visual chip stays

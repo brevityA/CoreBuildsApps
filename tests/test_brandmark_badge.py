@@ -1,20 +1,15 @@
 #!/usr/bin/env python3
-"""Keep the brandmark flag honest in every pack that ships it.
+"""Keep the brandmark flag honest in the pack that ships it.
 
 The grid draws a dot on tiles whose glyph is a drawn brandmark rather than a
 letter in a container, and a "Brandmarks" chip filters to them. Both read
-R.array.icon_bespoke, which three separate generators write:
+R.array.icon_bespoke, which tools/build_icons.py writes to
+app/src/main/res/values/icon_pack.xml.
 
-    tools/build_icons.py       -> app/src/main/res/values/icon_pack.xml
-    tools/build_pop.py         -> pop/src/main/res/values/icon_pack.xml
-    tools/build_pixel_neon.py  -> pixel-neon/app/src/main/res/values/icon_pack.xml
-
-Three ways that goes wrong, all checked here:
+Two ways that goes wrong, both checked here:
 
 * the array falls out of step with icon_pack, so every tile past the short
   point is badged by its neighbour's glyph;
-* a generator is edited and the packs start disagreeing about which icons are
-  bespoke, which is invisible until someone compares two TVs;
 * the classification drifts from tools/catalog.json, which is the only real
   source — the flag is derived from the catalog's `glyph` field through
   glyphs.MONOGRAM_GLYPHS, and a regex over glyph names would quietly
@@ -35,8 +30,6 @@ from glyphs import MONOGRAM_GLYPHS, is_monogram  # noqa: E402
 
 PACKS = {
     "app": ROOT / "app/src/main/res/values/icon_pack.xml",
-    "pop": ROOT / "pop/src/main/res/values/icon_pack.xml",
-    "pixel-neon": ROOT / "pixel-neon/app/src/main/res/values/icon_pack.xml",
 }
 
 
@@ -83,9 +76,8 @@ def test_flags_match_the_catalog():
     """Every pack lists exactly the catalog's icons, each flagged correctly.
 
     The name-set assertion is not decoration. Comparing only the names that
-    appear in both sets means a pack could carry a drawable the catalog has
-    never heard of and still pass: the length check and the cross-pack check
-    both survive it if every pack does the same thing. On device that tile
+    appear in both sets means the pack could carry a drawable the catalog has
+    never heard of and still pass. On device that tile
     reaches getIdentifier(), gets resource id 0, and draws nothing.
     """
     expected = catalog_flags()
@@ -109,22 +101,6 @@ def test_flags_match_the_catalog():
         )
 
 
-def test_packs_agree_with_each_other():
-    baseline = None
-    for pack, path in PACKS.items():
-        names, flags = arrays(path)
-        current = dict(zip(names, flags))
-        if baseline is None:
-            baseline, baseline_pack = current, pack
-            continue
-        shared = set(baseline) & set(current)
-        disagree = sorted(n for n in shared if baseline[n] != current[n])
-        assert not disagree, (
-            f"{pack} and {baseline_pack} disagree on {len(disagree)} icons: "
-            f"{disagree[:5]}"
-        )
-
-
 if __name__ == "__main__":
     expected = catalog_flags()
     total = len(expected)
@@ -136,5 +112,4 @@ if __name__ == "__main__":
     test_monogram_registry_is_not_empty()
     test_every_pack_has_a_flag_per_icon()
     test_flags_match_the_catalog()
-    test_packs_agree_with_each_other()
     print("ok")

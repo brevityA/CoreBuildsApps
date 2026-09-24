@@ -224,7 +224,7 @@ class IdentityTests(unittest.TestCase):
 
     def test_tizentube_runs_the_measured_field_gradient(self):
         """The owner wants the real logo's ramp: field cyan to pale blue,
-        painted at render time (the Nuvio pattern), flat in Pop/Pixel."""
+        painted at render time (the Nuvio pattern)."""
         square = (ROOT / "assets/svg" / "tizentube.svg").read_text()
         for stop in ("#47DDFF", "#C5E9FF"):
             self.assertIn(stop, square)
@@ -512,9 +512,9 @@ class SourceTests(unittest.TestCase):
         self.assertNotEqual(body, monoline(GLYPHS["tile_N"](accent)))
         self.assertFalse(hasattr(brandmarks, "catalog_glyphs"))  # no vendor override route
 
-    def test_nobuffr_maps_in_all_three_packs(self):
+    def test_nobuffr_maps_in_the_pack(self):
         expected = "ComponentInfo{com.nobuffr.app/tv.tivitime.compose.app.AppActivity}"
-        for module in (ROOT / "app", ROOT / "pop", ROOT / "pixel-neon/app"):
+        for module in (ROOT / "app",):
             xml = module / "src/main/res/xml/appfilter.xml"
             resources = ET.parse(xml).getroot()
             matches = [r for r in resources.findall("item") if r.get("component") == expected]

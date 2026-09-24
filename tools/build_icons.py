@@ -241,8 +241,7 @@ def main():
     # with the actual glyph rows; one shape card, no second zoom level at
     # 0.70 scale, matching the 352/512 ink box our own glyphs sit in.
     # Without furniture the "one container" claim dies the moment an app
-    # outside the 961 lands on the home row; Pop ships the same kit under
-    # its own swatch names (pop_back_*, pop_mask, pop_upon).
+    # outside the 961 lands on the home row.
     BACKS = {
         # one accent at 10% into the card fill (#151923): the palette's
         # blues, greens and violets, night-side; graphite-only variants bookend
@@ -328,8 +327,7 @@ def main():
              '<resources>']
     # Fallback furniture first — launchers that support the composite
     # schema read these before any <item>, and an unthemed app lands on one
-    # of the card backs instead of arriving naked. Pop's appfilter ships the
-    # same pattern with its own swatch names.
+    # of the card backs instead of arriving naked.
     backs = " ".join(f'img{n + 1}="cb_back_{name}"'
                      for n, name in enumerate(BACKS))
     lines += [f'    <iconback {backs}/>',

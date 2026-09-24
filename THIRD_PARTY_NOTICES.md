@@ -74,9 +74,8 @@ covered by MIT or Simple Icons' CC0 dedication. Source:
 ## Interpretation is not endorsement
 
 The sources establish recognisable cues and colours; they are not permission
-to claim official approval. Classic's light-ink fallback is a readability
-treatment for dark cards, not a brand-colour change. Pop and Pixel Neon retain
-their separate, deliberately stylised treatments. Source/reference materials
+to claim official approval. The pack's light-ink fallback is a readability
+treatment for dark cards, not a brand-colour change. Source/reference materials
 are distinguished from the Core Builds-authored output throughout the catalog
 and fidelity notes.
 ## Vendored code: Nayuki QR Code generator (Java)

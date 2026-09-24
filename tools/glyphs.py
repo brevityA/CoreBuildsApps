@@ -550,8 +550,7 @@ def render_svg(glyph_name, color, glow=False, *, monochrome=False,
     Glow is opt-in for legacy experiments, never used by the pack generators.
     `gradient` is a pair of hexes: the rendered stroke then runs through a
     vertical userSpace linear gradient instead of the flat accent. It is a
-    Classic-render treatment (catalog `gradient` field), so Pop and Pixel
-    Neon — which repaint every path in their own inks — stay flat.
+    Classic-render treatment (catalog `gradient` field).
 
     `mark` is the catalog's adaptive wordmark token: on a category monogram
     it replaces the lone letter (family_body adapts the type to the shell);
@@ -4270,13 +4269,12 @@ def family_body(glyph_name, color, mark=None, style=None):
     """Resolve a category monogram, swapping its lone letter for the app mark.
 
     The catalog's `mark` field is 2-4 uppercase chars derived from the app
-    name (multi-word: up to three initials; one word: first two letters — the
-    same rule Pixel Neon's brand_initials uses). `style` is the catalog's
-    brand-informed treatment of that mark (tranche 1: `lower`) — a cue from
-    the app's logotype, set in the pack's own face; literal vendor logotype
-    reproduction stays off-limits. Only <family>_<L> shells adapt; every
-    other glyph resolves to its registered body untouched, so Pop's
-    committed glyph metrics stay a pure function of GLYPHS.
+    name (multi-word: up to three initials; one word: first two letters).
+    `style` is the catalog's brand-informed treatment of that mark
+    (tranche 1: `lower`) — a cue from the app's logotype, set in the pack's
+    own face; literal vendor logotype reproduction stays off-limits. Only
+    <family>_<L> shells adapt; every other glyph resolves to its registered
+    body untouched.
     """
     if mark:
         fam, _, letter = glyph_name.rpartition("_")

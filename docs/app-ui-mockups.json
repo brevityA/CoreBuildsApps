@@ -9,12 +9,12 @@
       "structure": "4b9db1f348433f9be89e80f416914d37b8390773d842365ef0298bdacd494135"
     },
     "app-ui-catalogue-update.png": {
-      "bytes": 191178,
-      "structure": "f9fc527f037da4b17b6db8e3f658a303ef7d3975fa9c87278139b780556f96c9"
+      "bytes": 191360,
+      "structure": "942ae258a194dbad27fc61bd304f64a915c7db389264be070191db28c29851f2"
     },
     "app-ui-catalogue.png": {
-      "bytes": 205495,
-      "structure": "ded593930802d74566f31931282bd3a9f8bb6ec20069a263eb92d6d71eaff435"
+      "bytes": 205736,
+      "structure": "07d813b382d2636a470d0a913540a4c77d05a9600d936b7960c40e70d6f8169b"
     },
     "app-ui-faq.png": {
       "bytes": 139797,
@@ -33,19 +33,19 @@
       "structure": "f107ba64690449692b0cccf0987e1f7f44bbf6c4ede04d59b0a267a6848ea130"
     },
     "app-ui-suite.png": {
-      "bytes": 114857,
-      "structure": "4b2feb14ee7f0c9c5d155e6509806a58251cadefe13a524d4d39fea8d416b343"
+      "bytes": 81349,
+      "structure": "04deea7bbb694e91dc79e652777c051a24afe57ede0c8091cd8e6a8014fd0e70"
     },
     "app-ui-wallpapers.png": {
-      "bytes": 305249,
-      "structure": "9cc7627e0560b758ec815b00b076718b7d923aec0afb577e4f9745bce409adad"
+      "bytes": 305640,
+      "structure": "98049b65f8b261f7b5752751b41d7d40131732fc7de3b4098a67faafc612c999"
     }
   },
   "generator": "tools/build_app_ui_mockups.py",
   "inputs": {
     "Latestrelease/version.json": "17539a73740b14b72efe7994b39ed69a2bd65eb762d6b5d2b5a2997eaf18bda9",
     "app/src/main/assets/appfilter.xml": "522ccfaee43eb61de41cd3aa3b2de259029deefaa20a692dbe38634a81c5e411",
-    "app/src/main/assets/manifest/wallpapers.json": "3265f4fdbeaaf99fc74c941e348bcabd4a95af8054b104f16553888dff7b8b6d",
+    "app/src/main/assets/manifest/wallpapers.json": "67c5a010561e1f1a6eeac664dac87e01026d556a471216a58480b22d71058960",
     "app/src/main/res/layout/activity_about.xml": "24bf8847817c6c79e0733b25282913f12756331e851a461fdb5f96e43b08d04a",
     "app/src/main/res/layout/activity_auditor.xml": "3353f96d0932249a0ce841ca31ef98c65103132ec9b9efd1c8144e1fe2c34dca",
     "app/src/main/res/layout/activity_export_progress.xml": "3c388eb2b74cc0b5e362069cff6adfe219a4948eed7220f36a9a2d2d06d48210",
@@ -63,11 +63,11 @@
     "app/src/main/res/layout/item_suite.xml": "ed0045f01662c772ef511dd519468071abfc05fd875d3f743c136280d81e4fad",
     "app/src/main/res/layout/item_wallpaper.xml": "f821710cede8cf559b8455246dbb19c20f787a14ff41ed54366097b2bed6a4ea",
     "app/src/main/res/values/colors.xml": "626417ba2a3fa3bbf1aa913cdc97de4181d1b0037a027e17db753c12290cd4b2",
-    "app/src/main/res/values/dimens.xml": "7bc57666dc36c2a3adad0b1559b7da8c33c01616cb024f741f0a948d5df65126",
+    "app/src/main/res/values/dimens.xml": "6eb9a59ef7176f3d7b38fa7a0aac9f789ee593415ccf279d5a5084c9ab4d7555",
     "app/src/main/res/values/icon_pack.xml": "932003bdb5a91fbf0437594d08e9cef4fea257583721a867ae8f56a28f579b43",
     "app/src/main/res/values/issue_prefill.xml": "fd85418cdd4ccdc59f0f0793b32fc7d96e01f23f80f7f38a3e3d4d7699393ced",
     "app/src/main/res/values/strings.xml": "a8b6deaf559033b5cfb8dc9d6ed139d46dea1be9ad6267540be55f873e831d19",
-    "app/src/main/res/values/suite_hub.xml": "69ac213b6d898884f21bc8b56043053c3e08444415e50450f29fec6a48317213",
+    "app/src/main/res/values/suite_hub.xml": "6db1311df6a29a1ced5fdbc175f8f97111c0f035786ea3d1f4ed396018580862",
     "app/src/main/res/values/themes.xml": "ecac526951fe40b6c5c01df0ec36730d0e197fd9511862cf587a2143773b46be",
     "tools/build_app_ui_mockups.py": "6e9dbc679b903315a215abda69a9bda6a1c88e91601c019ea831110dc636f24a",
     "tools/catalog.json": "5b8a232d0680c0f27e73875b3af9718ea7cda5e74f0ee07115ea9c0784f70ac2",
@@ -76,7 +76,7 @@
     "tools/fonts/Outfit-Bold.ttf": "04f7c9705153927058475d6c5e9f75b0a1036ec5f6f63ffb69df046191ea8933",
     "tools/fonts/Outfit-ExtraBold.ttf": "056e8cd5840cea4cfc355f672292f7de00d95f5a42bf9b7cd96d511ca8e2883e"
   },
-  "inputs_digest": "04a72cd9a5afc8857374edb073ef259997b59d570b92cb12624bf90f4002ef0e",
+  "inputs_digest": "2c0c4059ce1e5ac6cb54726c6ab494e60faf36dbcd5e5e5190ebf5bf57b7bca1",
   "metrics": {
     "mono-bold@24": 448.0,
     "mono-bold@32": 608.0,
