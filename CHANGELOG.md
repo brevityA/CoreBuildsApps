@@ -6,6 +6,39 @@ All notable changes to the Core Builds Icon Pack. Format follows
 
 ## [Unreleased]
 
+## [1.9.5] — 2026-09-24
+
+### Added
+
+- **The Deep Space wallpapers move.** The twelve series-9 walls are now live
+  wallpapers too: each one is a seamless 20-second 1080p loop of that exact
+  scene, with its own stars twinkling, its nebulae and halos shimmering, and
+  a slow camera drift. They join the live feed as clips 11–22 (Core Motion,
+  Overflight, Aerial Views and Core Shift pick them up from the same feeds).
+  `tools/build_deep_space_loops.py` renders them from the committed stills.
+- **Core Builds Glyphs.** The square glyphs now ship in a small companion
+  pack (`tv.corebuilds.iconpack.glyphs`, no icon of its own) that the Art
+  style switch installs the first time you pick Glyphs, from the same
+  release; Android asks you to confirm the install once.
+
+### Changed
+
+- **Banners are the default again.** Applying Core Builds now gives every
+  app its 16:9 banner card, as it did before 1.9.2, and the Art style switch
+  starts on Banners. Switch it off to apply the square glyphs instead; a
+  choice you already made in 1.9.4 is kept. Each pack's icon browser and
+  picker offer their own style only.
+- **Clips 11–13 are the Deep Space scenes themselves.** 1.9.4's Nebula
+  Drift, Event Horizon and Ion Storm were abstract patterns that only
+  borrowed the walls' names; they are replaced by loops of the real walls.
+
+### Fixed
+
+- **The Banners companion is retired.** 1.9.4's Core Builds Banners
+  (`tv.corebuilds.iconpack.banners`) is no longer needed, because the icon
+  pack itself is the banner pack. It can be uninstalled; leaving it installed
+  does nothing.
+
 ## [1.9.4] — 2026-09-24
 
 ### Added

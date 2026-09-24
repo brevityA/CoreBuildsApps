@@ -21,7 +21,7 @@ object ApplyIconPack {
         data class Applied(val launcherName: String) : Result()
         data class NotInstalled(val launcherName: String) : Result()
         data class Manual(val launcherName: String, val instructions: String) : Result()
-        /** Banners is selected but Core Builds Banners is missing or stale. */
+        /** Glyphs is selected but Core Builds Glyphs is missing or stale. */
         object NeedsCompanion : Result()
     }
 
@@ -260,26 +260,26 @@ object ApplyIconPack {
     }
 
     /**
-     * Point [launcher] at the pack the Glyphs/Banners setting selects.
+     * Point [launcher] at the pack the Banners/Glyphs setting selects.
      *
      * The apply contracts all take a package name, and that is the whole
-     * mechanism behind the toggle: glyphs name this package, banners name
-     * [BannersCompanion.PACKAGE]. A launcher with no apply contract gets the
+     * mechanism behind the toggle: banners name this package, glyphs name
+     * [GlyphsCompanion.PACKAGE]. A launcher with no apply contract gets the
      * same choice as a manual path that names the pack to pick.
      */
     fun apply(context: Context, launcher: Launcher): Result {
         if (!context.isInstalledAny(launcher)) {
             return Result.NotInstalled(launcher.displayName)
         }
-        if (BannersCompanion.wanted(context) && !BannersCompanion.ready(context)) {
+        if (GlyphsCompanion.wanted(context) && !GlyphsCompanion.ready(context)) {
             return Result.NeedsCompanion
         }
-        val pack = BannersCompanion.applyTarget(context)
+        val pack = GlyphsCompanion.applyTarget(context)
         val manual = if (pack == context.packageName) {
             launcher.manualPath
         } else {
-            context.getString(R.string.apply_manual_banners_fmt,
-                              launcher.manualPath, BannersCompanion.LABEL)
+            context.getString(R.string.apply_manual_companion_fmt,
+                              launcher.manualPath, GlyphsCompanion.LABEL)
         }
 
         val intent = launcher.intent(context, pack)

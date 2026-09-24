@@ -289,24 +289,31 @@ def w90_aurora_orbit() -> Image.Image:
                               np.array(CYAN, dtype="float32") * 0.8)
     # Aurora curtains above the limb: smooth swaying veils, bright lower
     # edge dissolving upward. Pure numpy — PIL thick polylines segment.
+    # Each curtain stands on the limb itself: its foot follows the planet's
+    # curve a little above the glow and fades out softly below, and nothing
+    # is drawn over the planet. (Until 1.9.5 the feet were flat cut-offs at
+    # random heights over the disc, which read as hard steps.)
+    limb_y = cy - np.sqrt(np.clip(r * r - (xx - cx) ** 2, 0, None))
+    above = np.clip((d - r) / 40.0 + 0.5, 0, 1)  # 0 inside the disc, soft edge
     rnd = random.Random(9003)
     for k in range(7):
         x0 = w * (0.12 + 0.76 * k / 6) + rnd.uniform(-50, 50)
         top = h * rnd.uniform(0.10, 0.20)
-        bot = h * rnd.uniform(0.44, 0.52)
+        lift = rnd.uniform(12, 40)
         sway = rnd.uniform(40, 110)
         phase = rnd.uniform(0, math.pi * 2)
+        bot = limb_y - lift
         # t runs 0 at the curtain foot (bright) to 1 at its head (dissolved).
-        ys = np.arange(h, dtype="float32")
-        t = np.clip((bot - ys) / max(1.0, (bot - top)), 0, 1)
-        vert = np.exp(-(t * 2.6) ** 2) * (t > 0) * (t < 1)
+        t = np.clip((bot - yy) / np.maximum(1.0, bot - top), 0, 1)
+        vert = np.where(yy <= bot, np.exp(-(t * 2.6) ** 2) * (t < 1),
+                        np.exp(-((yy - bot) / 22.0) ** 2)) * above
         for col, width, peak in [((0, 229, 255), 55, 0.9),
                                  ((0, 212, 255), 140, 0.42),
                                  ((138, 72, 144), 250, 0.30)]:
             xc = x0 + np.sin(t * 4.0 + phase + k) * sway * (0.25 + 0.75 * t)
             spread = width * (0.7 + 0.9 * t)  # diffuse with altitude
-            gx = np.exp(-((xx - xc[:, None]) / spread[:, None]) ** 2)
-            veil = gx * vert[:, None] * peak
+            gx = np.exp(-((xx - xc) / spread) ** 2)
+            veil = gx * vert * peak
             arr[:, :, :] = np.minimum(255, arr + veil[..., None] *
                                       np.array(col, dtype="float32"))
     return _finish(arr, 9004)
@@ -501,10 +508,19 @@ def _contact_sheet(rendered: list[tuple[int, str, Image.Image]]) -> None:
 
 
 def main() -> int:
+    import argparse
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--only", type=int, action="append",
+                        help="re-render just these wall numbers; the contact "
+                             "sheet is still built from all twelve")
+    args = parser.parse_args()
     rendered = []
     total = 0
     for num, slug, title, fn in WALLS:
         stem = f"corebuilds-{num}-{slug}"
+        if args.only and num not in args.only:
+            rendered.append((num, title, Image.open(SERIES / f"{stem}.png").convert("RGB")))
+            continue
         im = fn()
         dc = dark_coverage(im)
         assert dc >= 0.45, f"{stem}: dark coverage {dc:.0%} below the 45% floor"

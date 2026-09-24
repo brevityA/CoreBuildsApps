@@ -7,8 +7,9 @@ Reads tools/catalog.json and writes, deterministically:
   app/src/main/res/drawable-nodpi/<d>.webp     512px transparent lossless WebP
   app/src/main/res/values/aliases.xml          dup-name -> canonical art
   app/src/main/res/raw/keep.xml                shrinker keep rules (generated)
-  app/src/main/res/xml/appfilter.xml           component -> drawable mapping
-  app/src/main/res/xml/drawable.xml            icon-pack browser grid
+  glyphs/src/main/res/xml/appfilter.xml        component -> square glyph
+                                               (Core Builds Glyphs; + assets)
+  glyphs/src/main/res/xml/drawable.xml         square icon browser grid
   app/src/main/res/xml/iconpack.xml            Projectivy/legacy pack list
   app/src/main/res/values/icon_pack.xml        pack metadata array
   docs/IconPackList.md                         human-readable supported list
@@ -35,6 +36,10 @@ CATALOG = ROOT / "tools" / "catalog.json"
 SVG_DIR = ROOT / "assets" / "svg"
 PNG_DIR = ROOT / "app" / "src" / "main" / "res" / "drawable-nodpi"
 XML_DIR = ROOT / "app" / "src" / "main" / "res" / "xml"
+# Core Builds Glyphs, the square companion (glyphs/). Its appfilter and
+# browser are written here; the icon pack's own, which map to banners, are
+# derived from them by tools/build_banners_pack.py.
+GLYPH_MAIN = ROOT / "glyphs" / "src" / "main"
 VAL_DIR = ROOT / "app" / "src" / "main" / "res" / "values"
 DOC_DIR = ROOT / "docs"
 
@@ -371,22 +376,25 @@ def main():
                 emitted_count += 1
     lines.append('</resources>')
     appfilter_text = "\n".join(lines) + "\n"
-    write(XML_DIR / "appfilter.xml", appfilter_text)
+    # This is the square mapping, and it ships in Core Builds Glyphs. The
+    # icon pack itself maps the same components to their banners - the
+    # default style since 1.9.5 - and tools/build_banners_pack.py derives
+    # that appfilter from this one, so the two cannot disagree.
+    write(GLYPH_MAIN / "res" / "xml" / "appfilter.xml", appfilter_text)
     # The ADW convention permits res/xml, res/raw, or assets. Modern launchers
     # prefer res/xml, while several older picker/request implementations only
     # inspect assets. Generate identical files so mappings cannot drift.
-    write(ROOT / "app" / "src" / "main" / "assets" / "appfilter.xml",
-          appfilter_text)
+    write(GLYPH_MAIN / "assets" / "appfilter.xml", appfilter_text)
     print(f"\u2713 appfilter.xml written \u2014 {comp_count} catalog components "
           f"\u2192 {emitted_count} entries (both name forms) "
           f"\u2192 {len(icons)} drawables (res/xml + assets)")
 
     # 4. drawable.xml — launcher icon picker, grouped by catalog category
     # so Projectivy's browser can jump a section instead of scrolling 500
-    # untitled tiles. Glyphs only: this pack's art style is the square glyph,
-    # the same art its appfilter maps. The 16:9 banners are listed by Core
-    # Builds Banners (tools/build_banners_pack.py), so each pack's icon
-    # browser offers its own style and nothing else.
+    # untitled tiles. Glyphs only: this is Core Builds Glyphs' browser, the
+    # same art its appfilter maps. The icon pack lists the same sections as
+    # banners (tools/build_banners_pack.py), so each pack's icon browser
+    # offers its own style and nothing else.
     CAT_LABEL = {
         "STREAM": "Streaming", "MEDIA": "Media centres", "VOD": "On demand",
         "LIVE": "Live TV", "PLAYER": "Players", "MUSIC": "Music",
@@ -416,9 +424,8 @@ def main():
             d.append(f'    <item drawable="{i["drawable"]}" />')
     d.append('</resources>')
     drawable_text = "\n".join(d) + "\n"
-    write(XML_DIR / "drawable.xml", drawable_text)
-    write(ROOT / "app" / "src" / "main" / "assets" / "drawable.xml",
-          drawable_text)
+    write(GLYPH_MAIN / "res" / "xml" / "drawable.xml", drawable_text)
+    write(GLYPH_MAIN / "assets" / "drawable.xml", drawable_text)
 
     # 5. iconpack.xml — legacy/alt launcher discovery
     p = ['<?xml version="1.0" encoding="utf-8"?>', '<iconpack>']

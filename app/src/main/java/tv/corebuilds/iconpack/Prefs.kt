@@ -30,7 +30,7 @@ object Prefs {
     const val KEY_AMOLED = "amoled_chrome"
     const val KEY_PICK_BANNERS = "pick_banners"
     const val KEY_WHATS_NEW_SEEN = "whats_new_seen_version"
-    const val KEY_BANNERS_PENDING_APPLY = "banners_pending_apply"
+    const val KEY_COMPANION_PENDING_APPLY = "glyphs_pending_apply"
 
     private fun prefs(context: Context): SharedPreferences =
         context.applicationContext.getSharedPreferences(FILE, Context.MODE_PRIVATE)
@@ -66,31 +66,32 @@ object Prefs {
         prefs(context).getBoolean(KEY_AMOLED, false)
 
     /**
-     * The Glyphs/Banners art style. Square is the shipped default (false).
-     * Read by the catalogue, by the icon picker (which opens on the matching
-     * shape chip and writes this back, so a shape choice simply *stays*), and
-     * by [BannersCompanion.applyTarget]: on builds with a companion, banners
-     * means launchers are told to apply Core Builds Banners, whose appfilter
-     * maps every app to its 16:9 art, instead of this package's glyphs.
+     * The Banners/Glyphs art style. Banners is the shipped default (true),
+     * as it was before 1.9.2: TV launcher cards are 16:9. Read by the
+     * catalogue, by the icon picker, and by [GlyphsCompanion.applyTarget]:
+     * on builds with a companion, glyphs (false) means launchers are told to
+     * apply Core Builds Glyphs, whose appfilter maps every app to its square
+     * glyph, instead of this package's banners. The key keeps its 1.9.x name
+     * so a style someone already chose survives the update.
      */
     fun pickerPrefersBanners(context: Context): Boolean =
-        prefs(context).getBoolean(KEY_PICK_BANNERS, false)
+        prefs(context).getBoolean(KEY_PICK_BANNERS, true)
 
     /**
      * The launcher (its [ApplyIconPack.Launcher.key]) owed an apply once the
-     * Banners companion installs, or null. Written by [BannersCompanion.ensure]
+     * Glyphs companion installs, or null. Written by [GlyphsCompanion.ensure]
      * just before the system installer opens; read and cleared by
-     * [BannersCompanion.takePendingApply] when Settings or the home screen
+     * [GlyphsCompanion.takePendingApply] when Settings or the home screen
      * resumes with the companion in place. Persisted rather than held in a
      * field because the screen may be recreated while the installer is up.
      */
-    fun bannersPendingApply(context: Context): String? =
-        prefs(context).getString(KEY_BANNERS_PENDING_APPLY, null)
+    fun companionPendingApply(context: Context): String? =
+        prefs(context).getString(KEY_COMPANION_PENDING_APPLY, null)
 
-    fun setBannersPendingApply(context: Context, launcherKey: String?) {
+    fun setCompanionPendingApply(context: Context, launcherKey: String?) {
         prefs(context).edit().apply {
-            if (launcherKey == null) remove(KEY_BANNERS_PENDING_APPLY)
-            else putString(KEY_BANNERS_PENDING_APPLY, launcherKey)
+            if (launcherKey == null) remove(KEY_COMPANION_PENDING_APPLY)
+            else putString(KEY_COMPANION_PENDING_APPLY, launcherKey)
         }.apply()
     }
 

@@ -15,4 +15,4 @@ dependencyResolutionManagement {
 
 rootProject.name = "CoreBuildsIconPack"
 include(":app")
-include(":banners")
+include(":glyphs")
