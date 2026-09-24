@@ -28,6 +28,13 @@ android {
                 "main/Latestrelease/version.json\"",
         )
         manifestPlaceholders["fileProviderAuthority"] = "tv.corebuilds.iconpack.update"
+        // The 16:9 twin (banners/) the Glyphs/Banners toggle points launchers
+        // at. Empty in :pop and the candidate build, which have no companion.
+        buildConfigField(
+            "String",
+            "BANNERS_PACKAGE",
+            "\"tv.corebuilds.iconpack.banners\"",
+        )
     }
 
     // This variant is intentionally separate from both production release and
@@ -44,6 +51,9 @@ android {
             resValue("string", "app_name", "Core Builds Icon Pack – Test")
             buildConfigField("String", "TEST_SOURCE_COMMIT", "\"$sourceCommit\"")
             buildConfigField("String", "UPDATE_AUTHORITY", "\"tv.corebuilds.iconpack.test.update\"")
+            // Debug-signed: it could never pass the companion's signature
+            // check against a release-signed Banners APK, so it offers none.
+            buildConfigField("String", "BANNERS_PACKAGE", "\"\"")
             manifestPlaceholders["fileProviderAuthority"] = "tv.corebuilds.iconpack.test.update"
         }
     }

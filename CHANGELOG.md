@@ -6,6 +6,22 @@ All notable changes to the Core Builds Icon Pack. Format follows
 
 ## [Unreleased]
 
+### Added
+
+- **Banners for every app, from one switch.** Settings → Art style now
+  changes the icons your launcher applies automatically, not just the
+  catalogue and the icon picker. Switch to Banners and every app on the home
+  screen gets its 16:9 card; switch back to Glyphs and they return to square.
+  The first switch to Banners downloads Core Builds Banners, a small
+  companion pack with no icon of its own, from the same release (Android asks
+  you to confirm the install once). Projectivy, Nova and Lawnchair switch
+  straight away; launchers without an apply shortcut open their own icon-pack
+  setting with the pack to pick named.
+- **`tests/test_banners_pack.py` companion contract.** The companion covers
+  exactly the glyph pack's components, is discovered by the same launchers,
+  has no launcher entry, and is published under the filename the app
+  downloads.
+
 ## [1.9.3] — 2026-09-23
 
 ### Added

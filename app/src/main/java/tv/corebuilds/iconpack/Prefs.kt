@@ -30,6 +30,7 @@ object Prefs {
     const val KEY_AMOLED = "amoled_chrome"
     const val KEY_PICK_BANNERS = "pick_banners"
     const val KEY_WHATS_NEW_SEEN = "whats_new_seen_version"
+    const val KEY_BANNERS_PENDING_APPLY = "banners_pending_apply"
 
     private fun prefs(context: Context): SharedPreferences =
         context.applicationContext.getSharedPreferences(FILE, Context.MODE_PRIVATE)
@@ -65,15 +66,24 @@ object Prefs {
         prefs(context).getBoolean(KEY_AMOLED, false)
 
     /**
-     * Whether the icon picker opens on the banner-art chip rather than the
-     * square glyph. Square is the shipped default (false) because the pack's
-     * appfilter maps components to glyphs: launchers that self-apply get
-     * glyphs by default, and banner art stays one pick away on the second
-     * chip. Written by the picker's own shape chips too, so a user's shape
-     * choice simply *stays*.
+     * The Glyphs/Banners art style. Square is the shipped default (false).
+     * Read by the catalogue, by the icon picker (which opens on the matching
+     * shape chip and writes this back, so a shape choice simply *stays*), and
+     * by [BannersCompanion.applyTarget]: on builds with a companion, banners
+     * means launchers are told to apply Core Builds Banners, whose appfilter
+     * maps every app to its 16:9 art, instead of this package's glyphs.
      */
     fun pickerPrefersBanners(context: Context): Boolean =
         prefs(context).getBoolean(KEY_PICK_BANNERS, false)
+
+    /**
+     * Whether a launcher apply is owed once the Banners companion installs.
+     * Written by [BannersCompanion.ensure] just before the system installer
+     * opens; read and cleared by [BannersCompanion.takePendingApply] when
+     * Settings or the home screen resumes with the companion in place.
+     */
+    fun bannersPendingApply(context: Context): Boolean =
+        prefs(context).getBoolean(KEY_BANNERS_PENDING_APPLY, false)
 
     /**
      * The highest versionCode the What's New sheet has narrated for. Read by

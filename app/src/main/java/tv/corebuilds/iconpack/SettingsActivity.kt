@@ -95,6 +95,10 @@ class SettingsActivity : TvActivity() {
             val next = !bannerSwitch.isChecked
             bannerSwitch.isChecked = next
             Prefs.set(this, Prefs.KEY_PICK_BANNERS, next)
+            // Where there is a companion pack, the art style is also the
+            // launcher's: re-apply now so the home screen follows the switch
+            // (installing Core Builds Banners first if it is not there yet).
+            if (BannersCompanion.supported()) refreshLauncher()
         }
 
         row(R.id.set_refresh_row) { refreshLauncher() }
@@ -125,6 +129,13 @@ class SettingsActivity : TvActivity() {
         findViewById<View>(R.id.set_back).setOnClickListener { finish() }
 
         showCacheSize()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        // The companion install [BannersCompanion.ensure] started has landed:
+        // finish the apply the switch asked for.
+        if (BannersCompanion.takePendingApply(this)) refreshLauncher()
     }
 
     private fun row(id: Int, onSelect: () -> Unit) {
@@ -168,6 +179,8 @@ class SettingsActivity : TvActivity() {
                 toast(getString(R.string.refresh_manual_fmt, result.launcherName, result.instructions))
             is ApplyIconPack.Result.NotInstalled ->
                 toast(getString(R.string.refresh_no_launcher))
+            ApplyIconPack.Result.NeedsCompanion ->
+                BannersCompanion.ensure(this)
         }
     }
 

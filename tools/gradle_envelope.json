@@ -82,7 +82,7 @@
    "coordinate": "androidx.core:core-ktx",
       "max": "1.13.1",
       "blockedUpdateTypes": ["version-update:semver-patch", "version-update:semver-minor", "version-update:semver-major"],
-      "reason": "1.15.0 needs compileSdk 35; 1.17.0 needs compileSdk 36 and AGP 8.9.1; 1.19.0 needs compileSdk 37 and AGP 9.1.0. Five of seven modules compile at 34.",
+      "reason": "1.15.0 needs compileSdk 35; 1.17.0 needs compileSdk 36 and AGP 8.9.1; 1.19.0 needs compileSdk 37 and AGP 9.1.0. Six of eight modules compile at 34.",
       "evidence": [
         "https://developer.android.com/jetpack/androidx/releases/core",
         "https://youtrack.jetbrains.com/projects/KMT/issues/KMT-2631"
@@ -174,7 +174,7 @@
       "coordinate": "org.jetbrains.kotlin.android",
       "max": "1.9.24",
       "blockedUpdateTypes": ["version-update:semver-patch", "version-update:semver-minor", "version-update:semver-major"],
-      "reason": "Kotlin 2.0 moves the Compose compiler out of the Kotlin repository into org.jetbrains.kotlin.plugin.compose. doctor/ still sets composeOptions.kotlinCompilerExtensionVersion = \"1.5.14\", which is hard-tied to Kotlin 1.9.24. All seven modules also use the kotlinOptions DSL rather than compilerOptions. This is a source migration, not a version bump.",
+      "reason": "Kotlin 2.0 moves the Compose compiler out of the Kotlin repository into org.jetbrains.kotlin.plugin.compose. doctor/ still sets composeOptions.kotlinCompilerExtensionVersion = \"1.5.14\", which is hard-tied to Kotlin 1.9.24. All seven Kotlin modules also use the kotlinOptions DSL rather than compilerOptions (banners/ is Java-only). This is a source migration, not a version bump.",
       "evidence": [
         "https://kotlinlang.org/docs/compose-compiler-migration-guide.html",
         "https://android-developers.googleblog.com/2024/04/jetpack-compose-compiler-moving-to-kotlin-repository.html"

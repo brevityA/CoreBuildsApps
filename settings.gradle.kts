@@ -16,3 +16,4 @@ dependencyResolutionManagement {
 rootProject.name = "CoreBuildsIconPack"
 include(":app")
 include(":pop")
+include(":banners")

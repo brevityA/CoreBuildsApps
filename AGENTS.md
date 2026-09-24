@@ -20,6 +20,19 @@ than a copy of it. Two packs, one codebase, two package IDs. Do not fork the
 Kotlin, and do not turn either pack into a product flavour of the other — that
 relocates the release APK path and breaks `build.yml`.
 
+`banners/` is the second exception, and it is not a separate product: Core
+Builds Banners (`tv.corebuilds.iconpack.banners`) is the icon pack's 16:9
+companion, released in the same `v*` release as `iconpack-banners-release.apk`
+and versioned from `app/build.gradle.kts`. It exists because a launcher
+auto-applies whatever the selected package's appfilter maps, so the in-app
+Glyphs/Banners toggle works by pointing launchers at one package or the other
+(`BannersCompanion.kt`). It has no Kotlin, no dependencies, no launcher entry
+and no committed art: `python tools/build_banners_pack.py` derives its XML from
+the glyph pack's generated appfilter (run it after `build_icons.py`), and its
+Gradle build copies the banner PNGs from `app/`. `tests/test_banners_pack.py`
+holds the package name, manifest filters, asset filename and release workflow
+together.
+
 Do not merge Gradle roots. Do not split the GitHub repo. Do not rename package IDs. Do not repoint floating Downloader tags. New apps use `tv.corebuilds.<name>`; the current `dev.` IDs are history, not a style to copy.
 
 ## One rule
@@ -31,6 +44,7 @@ Classic pack changes run the four generators and the validator:
 
 ```bash
 python tools/build_icons.py
+python tools/build_banners_pack.py   # the 16:9 companion's XML, from the appfilter just written
 python tools/build_banners.py
 python tools/build_branding.py
 python tools/build_brand_preview.py
