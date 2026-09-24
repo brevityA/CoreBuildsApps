@@ -33,7 +33,7 @@ import sys
 from pathlib import Path
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-from glyphs import GLYPHS, apply_gradient, family_body, monoline  # noqa: E402
+from glyphs import GLYPHS, apply_gradient, classic_fit, family_body, monoline  # noqa: E402
 from icon_style import display_accent  # noqa: E402
 from typeface import FONT_WORDMARK, measure as type_measure, wordmark_spans  # noqa: E402
 
@@ -53,7 +53,38 @@ INK_W = W * 0.78
 INK_H = H * 0.43          # 310
 
 GLYPH_H = 360             # glyph cap height inside the ink box
-GAP = 46                  # space between glyph and wordmark
+GAP = 80                  # space between the glyph's INK and the wordmark.
+                          # Until 1.9.4 this was 46 from the glyph's 512 grid
+                          # box, so the visible gap was 46 plus whatever
+                          # empty grid the glyph left on its right: 71 to 193
+                          # units across the pack (18-48px at 320). 80 is the
+                          # old median visible gap, now the same on every card.
+HALF_STROKE = 16          # grid units the primary monoline stroke overhangs
+METRICS = ROOT / "tools" / "pop_glyph_metrics.json"
+_INK = None
+
+
+def glyph_ink_x(glyph):
+    """(left, right) of a glyph's drawn ink on its 512 grid, after the
+    committed classic fit, so the lockup is spaced by what is drawn rather
+    than by the grid box around it. Geometry comes from the committed
+    metrics (tools/pop_glyph_metrics.json), keeping this a pure function of
+    committed files; a glyph with no metrics falls back to the full grid."""
+    global _INK
+    if _INK is None:
+        _INK = json.loads(METRICS.read_text(encoding="utf-8"))["metrics"]
+    box = _INK.get(glyph)
+    if box is None:
+        return 0.0, 512.0
+    x0, _y0, x1, _y1 = box
+    fit_body = classic_fit(glyph, "")
+    if fit_body:
+        # classic_fit maps the ink centre to 256 and scales about it.
+        import re
+        scale = float(re.search(r"scale\(([\d.]+)\)", fit_body).group(1))
+        half = scale * (x1 - x0) / 2
+        return 256 - half - HALF_STROKE, 256 + half + HALF_STROKE
+    return x0 - HALF_STROKE, x1 + HALF_STROKE
 INK = "#E6EDF3"           # Brand Guide §03
 ACCENT = "#00d4ff"        # --th-accent, from the live configurator
 CARD = "#151923"          # the grid card, also the fallback back fill
@@ -190,14 +221,19 @@ def render(name, glyph, accent, category=None, *, monochrome=False,
     lines = split_name(name)
     size = fit_type(lines)
     text_w = max(_measure(l, size) for l in lines)
-    total = GLYPH_H + GAP + text_w
+    scale = GLYPH_H / 512
+    # Lay the lockup out by the glyph's drawn ink, not its grid box: the same
+    # GAP between mark and name on every card, whatever the mark's shape.
+    ink_l, ink_r = glyph_ink_x(glyph)
+    glyph_w = (ink_r - ink_l) * scale
+    total = glyph_w + GAP + text_w
 
     # Shift the lockup right so the rail never crowds the glyph.
-    start_x = (W - total) / 2 + RAIL_W
+    ink_x = (W - total) / 2 + RAIL_W
+    start_x = ink_x - ink_l * scale
 
     gy = (H - GLYPH_H) / 2
-    scale = GLYPH_H / 512
-    tx = start_x + GLYPH_H + GAP
+    tx = ink_x + glyph_w + GAP
 
     lead = size * 1.08
     has_kick = bool(category)
@@ -239,7 +275,7 @@ def render(name, glyph, accent, category=None, *, monochrome=False,
         f'viewBox="0 0 {W} {H}">\n'
         f'  {rail}\n'
         f'  <g transform="translate({start_x:.0f},{gy:.0f}) '
-        f'scale({scale:.5f})">{apply_gradient(monoline(family_body(glyph, accent, mark, style)), accent, gradient) if gradient and not monochrome else monoline(family_body(glyph, accent, mark, style))}</g>\n'
+        f'scale({scale:.5f})">{classic_fit(glyph, apply_gradient(monoline(family_body(glyph, accent, mark, style)), accent, gradient) if gradient and not monochrome else monoline(family_body(glyph, accent, mark, style)))}</g>\n'
         f'  {spans}</svg>\n'
     )
 

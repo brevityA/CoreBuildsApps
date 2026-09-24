@@ -39,6 +39,8 @@ jobs:
         run: python tools/build_issue_prefills.py --check
       - name: Check the Banners companion matches the glyph pack
         run: python tools/build_banners_pack.py --check
+      - name: Check the Classic glyph fit matches the catalog and metrics
+        run: python tools/fit_classic_glyphs.py --check
       # Depends on no Android SDK and no Gradle, so it runs here rather than in
       # the matrix: it is the check that explains *why* a matrix entry would
       # fail, and it has to be able to fail on a dependency-only PR that never

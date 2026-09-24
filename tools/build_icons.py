@@ -126,25 +126,31 @@ def validate(icons, artwork=None):
             if comp in seen_c:
                 errors.append(f"{n}: component '{comp}' duplicates {seen_c[comp]}")
             seen_c[comp] = n
-    # Two icons sharing shell, mark and display colour render the same PNG —
-    # v1.8.14 counted what that costs, so it is a gate now, not a phase.
-    # Declared brand variants (same `brand`) are one identity by rule and
-    # are supposed to be identical; the gate fires across brands only.
+    # Two icons that draw the same shape in the same display colour render the
+    # same PNG — v1.8.14 counted what that costs, so it is a gate now, not a
+    # phase. Every icon is checked, not only monograms: three file managers
+    # once shared one folder. A monogram's letter is replaced by its mark, so
+    # its shape is the shell family plus the mark (app_E "ET" and app_N "ET"
+    # are one picture). Declared brand variants (same `brand`) are one
+    # identity by rule and are supposed to be identical; an icon with no
+    # brand is its own identity, so two brandless icons never excuse each
+    # other (the old `None != None` check let 22 such groups through).
     seen_render = {}
     for i in icons:
-        mark = i.get("mark")
-        if not mark or family_glyph_for(i.get("glyph", "")) is None:
-            continue
-        render_key = (i["glyph"], mark, i.get("mark_style") or "",
+        mark = i.get("mark") or ""
+        glyph = i.get("glyph", "")
+        shape = (glyph.rpartition("_")[0] + "_*"
+                 if mark and family_glyph_for(glyph) is not None else glyph)
+        render_key = (shape, mark, i.get("mark_style") or "",
                       display_accent(i.get("color", "#000000"),
                                      monochrome=i.get("color_note") == "monochrome"))
+        identity = i.get("brand") or i["name"]
         prev = seen_render.get(render_key)
-        # Identical twins across brands are the trap; declared variants of one
-        # brand must stay identical by the glyph/accent rule above.
-        if prev and prev[1] != i.get("brand"):
-            errors.append(f"{i['name']}: shares shell, mark and colour with "
-                          f"{prev[0]} — one of them needs a different accent")
-        seen_render[render_key] = (i["name"], i.get("brand"))
+        if prev and prev[1] != identity:
+            errors.append(f"{i['name']}: renders the same picture as {prev[0]} "
+                          "(shape, mark and colour) — one of them needs a "
+                          "different accent or mark")
+        seen_render.setdefault(render_key, (i["name"], identity))
     for glyph, spec in (artwork or {}).items():
         if spec.get("usage") != "reference-only":
             errors.append(f"{glyph}: brand artwork is reference-only, not a rendering override")

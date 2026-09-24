@@ -99,6 +99,7 @@ jobs:
 
       - name: Regenerate assets from catalog
         run: |
+          python tools/fit_classic_glyphs.py
           python tools/build_icons.py
           python tools/build_banners.py
           python tools/build_banners_pack.py

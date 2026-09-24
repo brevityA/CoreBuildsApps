@@ -44,6 +44,33 @@ All notable changes to the Core Builds Icon Pack. Format follows
 
 ### Fixed
 
+- **Icons that showed another company's logo.** Twelve apps were drawing
+  a different brand's mark: Fox Nation and Fox Sports Go had FloSports';
+  Hoichoi, Sun NXT, Tencent Video and Viki had Youku's; RaiPlay and Perfect
+  Player had OTT Navigator's; 3Player had Termux's, Launcher Manager
+  FLauncher's, NT at Home Mi TV's, Movie HD Pure Flix's, and Zattoo a
+  browser globe. Fox Sports Go now shares the Fox Sports mark; the rest
+  show their own initials in their category's tile.
+- **No two apps share an identical icon.** 22 groups of different apps had
+  byte-for-byte identical icons, mostly two-letter tiles with the same
+  letters and colour (Tablo and TV App Repo, Thmanyah and ThreeNow), plus
+  three file managers on one folder. Each now has its own accent. Three
+  pairs that differed by a few pixels (TBS and TNT, Kocowa and MX Player
+  TV, Tasker and TV Quick Actions) were separated the same way.
+- **Icons are one size and centred.** 81 marks filled well under the pack's
+  ink box, the smallest at 43% of the canvas, and 76 sat off-centre. They
+  are now scaled up to a common floor and centred, with the line weight
+  unchanged. Reviewed Core monoline marks and category tiles are left as
+  drawn.
+- **Banner spacing is the same on every card.** The gap between a banner's
+  mark and its name ran from 18 to 48px because it was measured from the
+  mark's grid box, not its ink. It is now 20px on every banner, and banner
+  marks get the same optical fit as the squares.
+- **`tools/build_icons.py` duplicate gate catches every identical pair.**
+  It checked only letter tiles, and it let two icons with no brand excuse
+  each other. It now checks every icon, compares tiles by shell and
+  initials, and fails the build on any cross-app twin. The 22-group
+  allowance in `tests/test_icon_identity.py` is empty.
 - **The art-style switch applies one style, all the way through.** Glyphs
   now means glyphs only and Banners means banners only, on every surface a
   launcher reads:

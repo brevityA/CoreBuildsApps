@@ -30,13 +30,14 @@
       "name": "3Player",
       "drawable": "threeplayer",
       "color": "#53FC18",
-      "glyph": "termux_mark",
+      "glyph": "app_3",
       "components": [
         "com.axonista.threeplayer/com.simplestream.presentation.startup.StartUpActivity"
       ],
       "category": "APP",
       "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_reviewed": null,
+      "mark": "3P"
     },
     {
       "name": "7plus",
@@ -388,7 +389,7 @@
     {
       "name": "AllSaves Social",
       "drawable": "allsaversocial",
-      "color": "#0061FF",
+      "color": "#53FC18",
       "glyph": "app_A",
       "mark": "AS",
       "components": [
@@ -543,7 +544,7 @@
     {
       "name": "Anime Cast",
       "drawable": "anime_cast",
-      "color": "#0061FF",
+      "color": "#FF0000",
       "glyph": "app_A",
       "mark": "AC",
       "components": [
@@ -1285,7 +1286,7 @@
     {
       "name": "Buttons Remapper",
       "drawable": "buttonsremapper",
-      "color": "#FF0000",
+      "color": "#53FC18",
       "glyph": "app_B",
       "mark": "BR",
       "components": [
@@ -2043,7 +2044,7 @@
     {
       "name": "Dangbei",
       "drawable": "zhushou",
-      "color": "#0061FF",
+      "color": "#53FC18",
       "glyph": "app_D",
       "mark": "DA",
       "components": [
@@ -2895,7 +2896,7 @@
     {
       "name": "Eternal TV (Nath)",
       "drawable": "nathnetwork",
-      "color": "#0061FF",
+      "color": "#FF0000",
       "glyph": "app_N",
       "mark": "ET",
       "components": [
@@ -3177,7 +3178,7 @@
     {
       "name": "Filmnet TV",
       "drawable": "filmnet_tv",
-      "color": "#53FC18",
+      "color": "#FF0000",
       "glyph": "app_F",
       "mark": "FT",
       "components": [
@@ -3216,7 +3217,7 @@
     {
       "name": "FindLink",
       "drawable": "findlink",
-      "color": "#0061FF",
+      "color": "#FF0000",
       "glyph": "app_F",
       "mark": "FI",
       "components": [
@@ -3229,7 +3230,7 @@
     {
       "name": "Firedown",
       "drawable": "firedown",
-      "color": "#0061FF",
+      "color": "#FFFFFF",
       "glyph": "app_F",
       "mark": "FI",
       "components": [
@@ -3522,13 +3523,14 @@
       "name": "Fox Nation",
       "drawable": "foxnation",
       "color": "#003580",
-      "glyph": "flosports_mark",
+      "glyph": "app_F",
       "components": [
         "com.fng.foxnation/com.fox.app.MainActivity"
       ],
       "category": "APP",
       "color_source": "brand reference (pre-provenance, unverified)",
-      "color_reviewed": null
+      "color_reviewed": null,
+      "mark": "FN"
     },
     {
       "name": "Fox News",
@@ -3565,19 +3567,21 @@
       ],
       "category": "SPORT",
       "color_source": "brand reference (pre-provenance, unverified)",
-      "color_reviewed": null
+      "color_reviewed": null,
+      "brand": "fox_sports"
     },
     {
       "name": "Fox Sports Go",
       "drawable": "foxsports_2",
-      "color": "#FF0000",
-      "glyph": "flosports_mark",
+      "color": "#003580",
+      "glyph": "foxsports_mark",
       "components": [
         "com.foxsports.videogo/com.ballysports.tv.ui.screens.main.TvMainActivity"
       ],
       "category": "SPORT",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "brand reference (pre-provenance, unverified)",
+      "color_reviewed": null,
+      "brand": "fox_sports"
     },
     {
       "name": "Foxtel",
@@ -4312,14 +4316,15 @@
       "name": "Hoichoi",
       "drawable": "hoichoi",
       "color": "#0061FF",
-      "glyph": "youku_mark",
+      "glyph": "app_H",
       "components": [
         "com.viewlift.hoichoi/com.viewlift.hoichoi.ui.splash.MainActivity"
       ],
       "category": "APP",
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_reviewed": null,
+      "mark": "HO"
     },
     {
       "name": "Home Automation TV Dashboard",
@@ -5139,7 +5144,7 @@
     {
       "name": "Kocowa",
       "drawable": "kocowa",
-      "color": "#0061FF",
+      "color": "#7B2BFC",
       "glyph": "kocowa_mark",
       "components": [
         "com.kocowa.android.tv/com.kocowa.base.a_view.launcher.LauncherActivity"
@@ -5327,7 +5332,7 @@
       "name": "Launcher Manager",
       "drawable": "launcher_manager",
       "color": "#53FC18",
-      "glyph": "flauncher_mark",
+      "glyph": "tool_L",
       "components": [
         "com.wolf.lm/com.wolf.lm.main.MainActivity",
         "com.wolf.lms/com.wolf.lm.main.MainActivity",
@@ -5340,7 +5345,8 @@
       ],
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_reviewed": null,
+      "mark": "LM"
     },
     {
       "name": "Lazy IPTV Deluxe",
@@ -5358,7 +5364,7 @@
     {
       "name": "LazyCat",
       "drawable": "lazycatsoftware",
-      "color": "#FF0000",
+      "color": "#FFFFFF",
       "glyph": "app_L",
       "mark": "LA",
       "components": [
@@ -5383,7 +5389,7 @@
     {
       "name": "Leankeyboard",
       "drawable": "leankeyboard",
-      "color": "#0061FF",
+      "color": "#53FC18",
       "glyph": "app_L",
       "mark": "LE",
       "components": [
@@ -6184,13 +6190,14 @@
       "name": "Movie HD",
       "drawable": "moviehd",
       "color": "#0061FF",
-      "glyph": "pureflix_mark",
+      "glyph": "broadcast_M",
       "components": [
         "com.ggateam.moviehd.ui/com.ggateam.moviehd.ui.FrmSplash"
       ],
       "category": "STREAM",
       "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_reviewed": null,
+      "mark": "MH"
     },
     {
       "name": "Movieark",
@@ -6640,7 +6647,7 @@
     {
       "name": "Nettv",
       "drawable": "nettv",
-      "color": "#FF0000",
+      "color": "#0061FF",
       "glyph": "app_N",
       "mark": "NE",
       "components": [
@@ -7016,14 +7023,15 @@
       "name": "NT at Home",
       "drawable": "ntathome",
       "color": "#53FC18",
-      "glyph": "mitv_mark",
+      "glyph": "app_N",
       "components": [
         "com.ntathome/tv.vhx.LauncherActivity",
         "com.ntathome/tv.vhx.tv.home.TvHomeActivity"
       ],
       "category": "LAUNCHER",
       "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_reviewed": null,
+      "mark": "NT"
     },
     {
       "name": "Nuvio TV",
@@ -7652,13 +7660,14 @@
       "name": "Perfect Player",
       "drawable": "niklabs",
       "color": "#53FC18",
-      "glyph": "ott_navigator",
+      "glyph": "app_P",
       "components": [
         "com.niklabs.pp/com.niklabs.perfectplayer.MainActivity"
       ],
       "category": "APP",
       "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_reviewed": null,
+      "mark": "PF"
     },
     {
       "name": "Perfect TV",
@@ -7701,7 +7710,7 @@
     {
       "name": "Photo Screensaver",
       "drawable": "photoscreensaver",
-      "color": "#0061FF",
+      "color": "#53FC18",
       "glyph": "app_P",
       "mark": "PS",
       "components": [
@@ -7819,7 +7828,7 @@
     {
       "name": "PlayLatin",
       "drawable": "apksrebrand",
-      "color": "#53FC18",
+      "color": "#0061FF",
       "glyph": "app_P",
       "mark": "PL",
       "components": [
@@ -7972,7 +7981,7 @@
     {
       "name": "Ppsspp",
       "drawable": "ppsspp",
-      "color": "#0061FF",
+      "color": "#53FC18",
       "glyph": "app_P",
       "mark": "PP",
       "components": [
@@ -8024,7 +8033,7 @@
     {
       "name": "Premiumize TV",
       "drawable": "premiumize_tv",
-      "color": "#53FC18",
+      "color": "#FF0000",
       "glyph": "app_P",
       "mark": "PT",
       "components": [
@@ -8183,7 +8192,7 @@
     {
       "name": "Put Io",
       "drawable": "put_io",
-      "color": "#FF0000",
+      "color": "#53FC18",
       "glyph": "app_P",
       "mark": "PI",
       "components": [
@@ -8237,7 +8246,7 @@
     {
       "name": "Quicksupport",
       "drawable": "quicksupport",
-      "color": "#0061FF",
+      "color": "#53FC18",
       "glyph": "app_Q",
       "mark": "QU",
       "components": [
@@ -8320,14 +8329,15 @@
       "name": "Raiplay",
       "drawable": "raiplay",
       "color": "#FF0000",
-      "glyph": "ott_navigator",
+      "glyph": "app_R",
       "components": [
         "it.rainet.androidtv/it.rainet.androidtv.ui.MainLeanbackActivity"
       ],
       "category": "APP",
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_reviewed": null,
+      "mark": "RP"
     },
     {
       "name": "Rakuten TV",
@@ -8570,7 +8580,7 @@
     {
       "name": "Rezka",
       "drawable": "rezka",
-      "color": "#0061FF",
+      "color": "#53FC18",
       "glyph": "app_R",
       "mark": "RE",
       "components": [
@@ -9891,14 +9901,15 @@
       "name": "Sunnxt",
       "drawable": "sunnxt",
       "color": "#53FC18",
-      "glyph": "youku_mark",
+      "glyph": "app_S",
       "components": [
         "com.suntv.sunnxt/com.androidtv.myplex.ui.activity.SPlashActivity"
       ],
       "category": "APP",
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_reviewed": null,
+      "mark": "SN"
     },
     {
       "name": "Surfshark",
@@ -10394,14 +10405,15 @@
       "name": "Tencent",
       "drawable": "tencent",
       "color": "#FF0000",
-      "glyph": "youku_mark",
+      "glyph": "app_T",
       "components": [
         "com.tencent.qqlive/com.tencent.qqlive.ona.activity.SplashHomeActivity"
       ],
       "category": "APP",
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_reviewed": null,
+      "mark": "TX"
     },
     {
       "name": "Tennis Channel",
@@ -10567,7 +10579,7 @@
     {
       "name": "ThreeNow",
       "drawable": "mediaworks",
-      "color": "#0061FF",
+      "color": "#FF0000",
       "glyph": "app_T",
       "mark": "TH",
       "components": [
@@ -10689,7 +10701,7 @@
     {
       "name": "TNT",
       "drawable": "tnt",
-      "color": "#0061FF",
+      "color": "#FF0000",
       "glyph": "tnt_mark",
       "components": [
         "com.turner.tnt.android.networkapp/com.wme.app.MainActivityTv"
@@ -10784,7 +10796,7 @@
     {
       "name": "Torrserve",
       "drawable": "torrserve",
-      "color": "#53FC18",
+      "color": "#0061FF",
       "glyph": "app_T",
       "mark": "TO",
       "components": [
@@ -10798,13 +10810,13 @@
     {
       "name": "Total Commander",
       "drawable": "totalcommander",
-      "color": "#1982C4",
+      "color": "#0061FF",
       "glyph": "folder",
       "components": [
         "com.ghisler.android.TotalCommander/com.ghisler.android.TotalCommander.TotalCommander"
       ],
       "category": "FILES",
-      "color_source": "brand reference (pre-provenance, unverified)",
+      "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
     },
     {
@@ -10921,7 +10933,7 @@
     {
       "name": "TV App Repo",
       "drawable": "tv_app_repo",
-      "color": "#0061FF",
+      "color": "#53FC18",
       "glyph": "app_T",
       "mark": "TA",
       "components": [
@@ -11014,20 +11026,20 @@
     {
       "name": "TV Quick Actions",
       "drawable": "tvquickactions",
-      "color": "#00E676",
+      "color": "#00D4FF",
       "glyph": "automation",
       "components": [
         "dev.vodik7.tvquickactions/.MainActivity"
       ],
       "category": "TOOL",
       "brand": "tvquickactions",
-      "color_source": "brand reference (pre-provenance, unverified)",
+      "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
     },
     {
       "name": "TV Quick Actions",
       "drawable": "tv_quick_actions",
-      "color": "#00E676",
+      "color": "#00D4FF",
       "glyph": "automation",
       "components": [
         "dev.vodik7.tvquickactions.free/dev.vodik7.tvquickactions.MainActivity"
@@ -11035,7 +11047,7 @@
       "category": "TOOL",
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "brand": "tvquickactions",
-      "color_source": "brand reference (pre-provenance, unverified)",
+      "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
     },
     {
@@ -11249,7 +11261,7 @@
     {
       "name": "Twilight",
       "drawable": "twilight",
-      "color": "#FF0000",
+      "color": "#0061FF",
       "glyph": "app_T",
       "mark": "TW",
       "components": [
@@ -11404,7 +11416,7 @@
     {
       "name": "Ultimate File Manager Pro",
       "drawable": "ultimatefilemanager",
-      "color": "#1982C4",
+      "color": "#FFFFFF",
       "glyph": "folder",
       "components": [
         "za.kilowatch.ultimatefilemanager/.MainActivity",
@@ -11415,7 +11427,7 @@
         "za.kilowatch.ultimatefilemanager/.MainActivity",
         "za.kilowatch.ultimatefilemanager/za.kilowatch.ultimatefilemanager.MainActivity"
       ],
-      "color_source": "brand reference (pre-provenance, unverified)",
+      "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
     },
     {
@@ -11647,14 +11659,15 @@
       "name": "Viki",
       "drawable": "viki",
       "color": "#FFFFFF",
-      "glyph": "youku_mark",
+      "glyph": "app_V",
       "components": [
         "com.viki.android/com.viki.android.ui.splash.SplashActivity"
       ],
       "category": "APP",
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_reviewed": null,
+      "mark": "VK"
     },
     {
       "name": "Vimeo",
@@ -12581,14 +12594,15 @@
       "name": "Zattoo",
       "drawable": "zattoo",
       "color": "#FEC500",
-      "glyph": "browser_globe2",
+      "glyph": "broadcast_Z",
       "components": [
         "com.zattoo.player/com.utv.MainActivity"
       ],
       "category": "APP",
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_reviewed": null,
+      "mark": "ZA"
     },
     {
       "name": "Zdf",
