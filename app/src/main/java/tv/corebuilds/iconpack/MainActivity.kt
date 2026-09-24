@@ -15,6 +15,7 @@ import android.widget.EditText
 import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
+import androidx.appcompat.widget.SwitchCompat
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -107,7 +108,13 @@ class MainActivity : TvActivity() {
         findViewById<TextView>(R.id.count).text =
             getString(R.string.pack_stats_fmt, all.size, mappedComponents())
 
-        pickBanners = Prefs.pickerPrefersBanners(this)
+        pickBanners = if (pickFixedByPack()) {
+            // Which pack the launcher opened decides the shape, not the
+            // toggle: Core Builds Banners forwards its picks here marked.
+            intent.getBooleanExtra(BannersCompanion.EXTRA_PICK_BANNERS, false)
+        } else {
+            Prefs.pickerPrefersBanners(this)
+        }
         adapter = IconAdapter(all, showBanners = pickBanners) { item -> onIconChosen(item) }
         findViewById<RecyclerView>(R.id.grid).apply {
             layoutManager = GridLayoutManager(this@MainActivity, spanForScreen())
@@ -120,16 +127,14 @@ class MainActivity : TvActivity() {
         }
 
         if (pickMode) {
-            // The shape a user last delivered simply stays: the picker opens
-            // on the stored chip, and the chip row keeps it (bindPickShape
-            // writes the pref). The shipped default is square — the same
-            // default the appfilter now maps for launcher-side apply.
+            // With a companion, each pack picks its own art (see
+            // pickFixedByPack). Without one (Pop), the shape a user last
+            // delivered simply stays: the picker opens on the stored chip,
+            // and the chip row keeps it. The shipped default is square — the
+            // same default the appfilter maps for launcher-side apply.
             val pickerHint = findViewById<TextView>(R.id.picker_hint)
             pickerHint.visibility = View.VISIBLE
-            pickerHint.text = getString(
-                if (pickBanners) R.string.picker_hint_banner
-                else R.string.picker_hint_square
-            )
+            pickerHint.text = pickHint()
             findViewById<TextView>(R.id.apply_button).visibility = View.GONE
             findViewById<TextView>(R.id.apply_sub).visibility = View.GONE
             findViewById<LinearLayout>(R.id.update_bar).visibility = View.GONE
@@ -162,6 +167,7 @@ class MainActivity : TvActivity() {
             findViewById<TextView>(R.id.about_entry_sub).text =
                 getString(R.string.about_entry_sub_fmt, BuildConfig.VERSION_NAME)
 
+            bindStyleRow()
             findViewById<View>(R.id.settings_entry).setOnClickListener {
                 startActivity(Intent(this, SettingsActivity::class.java))
             }
@@ -196,8 +202,9 @@ class MainActivity : TvActivity() {
      * Rewrite the vertical D-pad chain around the containers that come and go,
      * at the moment their visibility changes.
      *
-     * The sheet's screen order is apply_button -> update_bar -> wallpapers_entry
-     * -> settings_entry -> about_entry -> apply_targets -> search -> chip_row ->
+     * The sheet's screen order is apply_button -> update_bar -> style_entry ->
+     * wallpapers_entry -> settings_entry -> about_entry -> apply_targets ->
+     * search -> chip_row ->
      * grid, and three of those stops are conditional: the update bar only when a
      * newer manifest exists, the ALSO APPLIES TO row only with a second launcher
      * installed, the grid only while a filter matches anything. A GONE view that
@@ -236,12 +243,12 @@ class MainActivity : TvActivity() {
             else -> R.id.picker_hint
         }
         val belowRows = if (targetsShown) R.id.apply_targets else R.id.search
-        findViewById<View>(R.id.wallpapers_entry).nextFocusUpId = aboveRows
+        findViewById<View>(R.id.style_entry).nextFocusUpId = aboveRows
         val aboveBar = if (applyShown) R.id.apply_button else R.id.picker_hint
         for (id in intArrayOf(R.id.update_button, R.id.update_later)) {
             findViewById<View>(id).nextFocusUpId = aboveBar
             findViewById<View>(id).nextFocusDownId =
-                if (groupShown) R.id.wallpapers_entry else R.id.search
+                if (groupShown) R.id.style_entry else R.id.search
         }
         findViewById<View>(R.id.about_entry).nextFocusDownId = belowRows
         findViewById<View>(R.id.apply_targets).nextFocusUpId =
@@ -386,25 +393,14 @@ class MainActivity : TvActivity() {
 
     override fun onResume() {
         super.onResume()
-        val preferBanners = Prefs.pickerPrefersBanners(this)
-        if (pickBanners != preferBanners) {
-            pickBanners = preferBanners
-            adapter.setShowBanners(pickBanners)
-            if (pickMode) {
-                findViewById<TextView>(R.id.picker_hint)?.text = getString(
-                    if (pickBanners) R.string.picker_hint_banner
-                    else R.string.picker_hint_square
-                )
-            }
-        }
+        // A companion install that finished without its result reaching us
+        // (the activity was recreated): apply once the package is really
+        // there. A declined install is only ever reported by the installer's
+        // result, in onActivityResult - a resume is not an answer.
+        if (!pickMode) onCompanionOutcome(BannersCompanion.takePendingApply(this))
+        syncArtStyle()
         if (!pickMode) {
             bindApplyButton()
-            // Back from installing Core Builds Banners: finish the apply the
-            // Apply press asked for, now that the package is really there.
-            BannersCompanion.takePendingApply(this)?.let { key ->
-                (ApplyIconPack.installed(this).firstOrNull { it.key == key } ?: target)
-                    ?.let { applyTo(it) }
-            }
             // What's New fires once per upgrade, independently of the update
             // checker's switch: it reads the APK's own asset, so it works
             // with the network check off. Fresh installs seed the gate
@@ -1076,9 +1072,96 @@ class MainActivity : TvActivity() {
             if (shown && withLabel) View.VISIBLE else View.GONE
     }
 
+    @Deprecated("Deprecated in AndroidX; the installer result still arrives here")
+    @Suppress("DEPRECATION")
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == BannersCompanion.INSTALL_REQUEST) {
+            onCompanionOutcome(BannersCompanion.onInstallResult(this))
+            syncArtStyle()
+        }
+    }
+
+    /** Finish the apply an Apply press asked for, or say it was declined. */
+    private fun onCompanionOutcome(pending: BannersCompanion.Pending?) {
+        when (pending) {
+            is BannersCompanion.Pending.Ready ->
+                (ApplyIconPack.installed(this).firstOrNull { it.key == pending.launcherKey }
+                    ?: target)?.let { applyTo(it) }
+            BannersCompanion.Pending.Declined -> toast(getString(R.string.banners_declined))
+            null -> Unit
+        }
+    }
+
+    /**
+     * True when a pick's shape comes from the pack the launcher opened, not
+     * from the art-style toggle: builds with a Banners companion. There the
+     * glyph pack answers with glyphs only and Core Builds Banners with
+     * banners only, so choosing one app's icon can never flip the style the
+     * whole launcher applies. Pop has no companion and keeps its chips.
+     */
+    private fun pickFixedByPack(): Boolean = pickMode && BannersCompanion.supported()
+
+    private fun pickHint(): String = getString(
+        when {
+            pickFixedByPack() && pickBanners -> R.string.picker_hint_banners_only
+            pickFixedByPack() -> R.string.picker_hint_glyphs_only
+            pickBanners -> R.string.picker_hint_banner
+            else -> R.string.picker_hint_square
+        }
+    )
+
+    /**
+     * The Art style row: the Glyphs/Banners switch, on the home screen next
+     * to Apply because it decides what every app on the launcher looks like.
+     * A press flips the style and re-applies to the detected launcher, the
+     * same as Settings' row - fetching Core Builds Banners first when it is
+     * not installed. Builds without a companion (Pop) switch the catalogue.
+     */
+    private fun bindStyleRow() {
+        findViewById<View>(R.id.style_entry).setOnClickListener {
+            Prefs.set(this, Prefs.KEY_PICK_BANNERS, !Prefs.pickerPrefersBanners(this))
+            syncArtStyle()
+            if (BannersCompanion.supported()) {
+                val launcher = target
+                if (launcher != null) applyTo(launcher)
+                else toast(getString(R.string.projectivy_missing))
+            }
+        }
+        showStyle()
+    }
+
+    private fun showStyle() {
+        val banners = Prefs.pickerPrefersBanners(this)
+        findViewById<SwitchCompat>(R.id.style_switch).isChecked = banners
+        findViewById<TextView>(R.id.style_entry_sub).text = getString(
+            if (banners) R.string.art_style_banners else R.string.art_style_glyphs
+        )
+    }
+
+    /**
+     * The catalogue and the Art style row follow the toggle, which Settings
+     * can change and a failed Banners install can revert.
+     */
+    private fun syncArtStyle() {
+        if (pickFixedByPack()) return
+        if (!pickMode) showStyle()
+        val preferBanners = Prefs.pickerPrefersBanners(this)
+        if (pickBanners == preferBanners) return
+        pickBanners = preferBanners
+        adapter.setShowBanners(pickBanners)
+        if (pickMode) findViewById<TextView>(R.id.picker_hint)?.text = pickHint()
+    }
+
     private fun bindPickShape() {
         val hint = findViewById<TextView>(R.id.picker_hint)
         val targets = findViewById<RecyclerView>(R.id.apply_targets)
+        if (pickFixedByPack()) {
+            // One shape per pack: no chips to switch it.
+            setTargetsBand(shown = false)
+            syncFocusChain()
+            return
+        }
         val labels = listOf(
             getString(R.string.picker_chip_banner),
             getString(R.string.picker_chip_square)
@@ -1097,11 +1180,7 @@ class MainActivity : TvActivity() {
             pickBanners = key == PICK_BANNER
             Prefs.set(this, Prefs.KEY_PICK_BANNERS, pickBanners)
             adapter.setShowBanners(pickBanners)
-            hint.text = if (pickBanners) {
-                getString(R.string.picker_hint_banner)
-            } else {
-                getString(R.string.picker_hint_square)
-            }
+            hint.text = pickHint()
         }
         syncFocusChain()
     }
@@ -1188,8 +1267,9 @@ class MainActivity : TvActivity() {
 
             ApplyIconPack.Result.NeedsCompanion -> {
                 // Banners is selected: fetch Core Builds Banners, and apply to
-                // this launcher when the install lands (see onResume).
-                BannersCompanion.ensure(this, launcher.key)
+                // this launcher when the install lands (see onResume). If it
+                // cannot be had the style is Glyphs again; show that.
+                BannersCompanion.ensure(this, launcher.key) { syncArtStyle() }
             }
         }
     }

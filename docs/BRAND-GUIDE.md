@@ -39,6 +39,26 @@ signal, not fog over the canvas. Protect negative space.
 Pop snaps brand accents to the 16 locked swatches in `tools/popart.py`.
 Do not invent a 17th.
 
+### Classic fallback accents
+
+Icons with no published brand colour (catalog `color_source` = the pack
+palette) take one of 18 accents from `tools/icon_palette.py`, spread round
+the hue wheel and each at least 4.5:1 on Night. The tool assigns them in grid
+order, seven steps apart, so neighbouring tiles never share one; brand groups
+share theirs. Never hand-pick a fallback colour. Run the tool.
+
+| Accent | Hex | | Accent | Hex |
+|---|---|---|---|---|
+| Signal Red | `#FF4D4D` | | Teal | `#19D3C5` |
+| Ember Orange | `#FF7A2E` | | Signal Cyan | `#00D4FF` |
+| Amber | `#FFB020` | | Build Blue | `#4FACFE` |
+| Volt Yellow | `#FFE14D` | | Azure | `#3D8BFF` |
+| Lime | `#B6F23A` | | Indigo | `#7C74FF` |
+| Signal Green | `#53FC18` | | Violet | `#A366FF` |
+| Jade | `#34EB7A` | | Orchid | `#C95CFF` |
+| Emerald | `#1FD19A` | | Magenta | `#F04DE0` |
+| Light Ink | `#E6EDF3` | | Hot Pink | `#FF5CA8` |
+
 ## Type
 
 Serif for editorial display. Bold sans for product names and TV UI. Mono for

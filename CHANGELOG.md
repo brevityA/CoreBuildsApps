@@ -8,6 +8,11 @@ All notable changes to the Core Builds Icon Pack. Format follows
 
 ### Added
 
+- **Art style switch on the home screen.** Glyphs or Banners now sits
+  directly under Apply, as its own row with a switch, instead of only in
+  Settings. Pressing it switches every app on the launcher and re-applies to
+  the launcher it detected, downloading Core Builds Banners the first time.
+  The Settings row stays and shows the same setting.
 - **Banners for every app, from one switch.** Settings → Art style now
   changes the icons your launcher applies automatically, not just the
   catalogue and the icon picker. Switch to Banners and every app on the home
@@ -29,6 +34,18 @@ All notable changes to the Core Builds Icon Pack. Format follows
 
 ### Changed
 
+- **A wider colour palette for icons without a brand colour.** The 686
+  icons with no published brand colour used to share a hand-grown palette
+  where five colours covered 456 of them, one blue alone 229, so long runs
+  of the grid read as a single blue. They now take one of 18 accents spread
+  round the colour wheel, each at least 4.5:1 on the dark card. No colour
+  covers more than 6% of them, and neighbouring tiles never share one. Icons
+  with a sourced brand colour are unchanged.
+- **`tools/icon_palette.py` owns the fallback palette.** It assigns
+  colours in grid order, keeps brand groups together, and refuses any
+  colour that would make two apps' icons identical. `--check` runs in CI,
+  with `tests/test_icon_palette.py` holding the spread and the neighbour
+  rule.
 - **Missing-app auditor sends mapping reports to the right form.** An app the
   pack already maps under a different activity now opens "Icon not
   auto-assigning" with its real component prefilled, instead of a new-icon
@@ -39,6 +56,47 @@ All notable changes to the Core Builds Icon Pack. Format follows
 
 ### Fixed
 
+- **Icons that showed another company's logo.** Thirteen apps were drawing
+  a different brand's mark: Fox Nation and Fox Sports Go had FloSports';
+  Hoichoi, Sun NXT, Tencent Video and Viki had Youku's; RaiPlay and Perfect
+  Player had OTT Navigator's; 3Player had Termux's, Launcher Manager
+  FLauncher's, NT at Home Mi TV's, Movie HD Pure Flix's, and Zattoo a
+  browser globe. Fox Sports Go now shares the Fox Sports mark; the other
+  twelve show their own initials in their category's tile.
+- **No two apps share an identical icon.** 22 groups of different apps had
+  byte-for-byte identical icons, mostly two-letter tiles with the same
+  letters and colour (Tablo and TV App Repo, Thmanyah and ThreeNow), plus
+  three file managers on one folder. Each now has its own accent. Three
+  pairs that differed by a few pixels (TBS and TNT, Kocowa and MX Player
+  TV, Tasker and TV Quick Actions) were separated the same way.
+- **Icons are one size and centred.** 81 marks filled well under the pack's
+  ink box, the smallest at 43% of the canvas, and 76 sat off-centre. They
+  are now scaled up to a common floor and centred, with the line weight
+  unchanged. Reviewed Core monoline marks and category tiles are left as
+  drawn.
+- **Banner spacing is the same on every card.** The gap between a banner's
+  mark and its name ran from 18 to 48px because it was measured from the
+  mark's grid box, not its ink. It is now 20px on every banner, and banner
+  marks get the same optical fit as the squares.
+- **`tools/build_icons.py` duplicate gate catches every identical pair.**
+  It checked only letter tiles, and it let two icons with no brand excuse
+  each other. It now checks every icon, compares tiles by shell and
+  initials, and fails the build on any cross-app twin. The 22-group
+  allowance in `tests/test_icon_identity.py` is empty.
+- **The art-style switch applies one style, all the way through.** Glyphs
+  now means glyphs only and Banners means banners only, on every surface a
+  launcher reads:
+  - A launcher's own icon browser lists only the chosen pack's art. The
+    Icon Pack lists its 961 glyphs, and Core Builds Banners lists the 961
+    banners.
+  - Picking one app's icon from inside a launcher returns the art of the
+    pack you picked from. It no longer depends on the switch, and it no
+    longer changes the switch: before, choosing a single banner quietly set
+    the whole launcher to Banners on the next apply.
+  - If Core Builds Banners can't be installed (no install permission, the
+    download fails, or you back out of Android's installer), the switch
+    goes back to Glyphs and says so, instead of showing Banners over a
+    launcher that still has glyphs.
 - **Missing-app auditor no longer lists apps whose icon works.** An app with
   a mapped TV activity and an unmapped phone-launcher activity was listed as
   missing; the auditor now judges each app by the activity a TV launcher
