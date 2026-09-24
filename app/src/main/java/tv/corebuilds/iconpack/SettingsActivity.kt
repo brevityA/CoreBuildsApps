@@ -133,9 +133,15 @@ class SettingsActivity : TvActivity() {
 
     override fun onResume() {
         super.onResume()
-        // The companion install [BannersCompanion.ensure] started has landed:
-        // finish the apply the switch asked for.
-        BannersCompanion.takePendingApply(this)?.let { refreshLauncher(it) }
+        // Back from the installer [BannersCompanion.ensure] opened: finish the
+        // apply the switch asked for, or say it was declined. Either way the
+        // switch then shows the style the launcher really has.
+        when (val pending = BannersCompanion.takePendingApply(this)) {
+            is BannersCompanion.Pending.Ready -> refreshLauncher(pending.launcherKey)
+            BannersCompanion.Pending.Declined -> toast(getString(R.string.banners_declined))
+            null -> Unit
+        }
+        bannerSwitch.isChecked = Prefs.pickerPrefersBanners(this)
     }
 
     private fun row(id: Int, onSelect: () -> Unit) {
@@ -182,7 +188,9 @@ class SettingsActivity : TvActivity() {
             is ApplyIconPack.Result.NotInstalled ->
                 toast(getString(R.string.refresh_no_launcher))
             ApplyIconPack.Result.NeedsCompanion ->
-                BannersCompanion.ensure(this, launcher.key)
+                BannersCompanion.ensure(this, launcher.key) {
+                    bannerSwitch.isChecked = Prefs.pickerPrefersBanners(this)
+                }
         }
     }
 

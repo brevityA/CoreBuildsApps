@@ -37,6 +37,15 @@ object BannersCompanion {
     /** The companion's display name, as launchers list it. */
     const val LABEL = "Core Builds Banners"
 
+    /**
+     * Set by the companion's BannersActivity on the icon-pick requests it
+     * forwards here. A launcher that opened *Core Builds Banners* gets 16:9
+     * art back; one that opened this pack gets glyphs, whatever the toggle
+     * says. The literal is repeated in BannersActivity.java (it cannot see
+     * this class); tests/test_banners_pack.py holds the two equal.
+     */
+    const val EXTRA_PICK_BANNERS = "tv.corebuilds.iconpack.extra.PICK_BANNERS"
+
     fun supported(): Boolean = PACKAGE.isNotEmpty()
 
     /** The art-style setting asks for banners and this build can deliver them. */
@@ -84,11 +93,18 @@ object BannersCompanion {
      * follow in the next line and the target cannot live in a field.
      * [takePendingApply] hands the key back on resume, once the package is
      * really there, so the apply lands on the launcher that was chosen.
+     *
+     * When the companion cannot be had - no install permission yet, a failed
+     * download, a refused hand-off - the art style goes back to Glyphs and
+     * [onUnavailable] runs, so the switch never claims banners the launcher
+     * is not showing.
      */
-    fun ensure(activity: Activity, launcherKey: String) {
+    fun ensure(activity: Activity, launcherKey: String, onUnavailable: () -> Unit = {}) {
         if (!supported()) return
         if (!UpdateInstaller.canInstall(activity)) {
             toast(activity, activity.getString(R.string.banners_install_permission))
+            revertToGlyphs(activity)
+            onUnavailable()
             UpdateInstaller.requestInstallPermission(activity)
             return
         }
@@ -106,25 +122,47 @@ object BannersCompanion {
                         Prefs.setBannersPendingApply(activity, null)
                         toast(activity, activity.getString(
                             R.string.banners_failed_fmt, e.message ?: e.javaClass.simpleName))
+                        revertToGlyphs(activity)
+                        onUnavailable()
                     }
                 }
-                is UpdateInstaller.Event.Failed ->
+                is UpdateInstaller.Event.Failed -> {
                     toast(activity, activity.getString(R.string.banners_failed_fmt, event.reason))
+                    revertToGlyphs(activity)
+                    onUnavailable()
+                }
             }
         }
     }
 
+    /** The art style the launcher is actually showing when banners fall through. */
+    private fun revertToGlyphs(context: Context) {
+        Prefs.set(context, Prefs.KEY_PICK_BANNERS, false)
+    }
+
+    /** What an install [ensure] started came to, as seen on the next resume. */
+    sealed class Pending {
+        /** The companion is in place: apply to this launcher key now. */
+        data class Ready(val launcherKey: String) : Pending()
+
+        /** The installer closed without installing it; the style is Glyphs again. */
+        object Declined : Pending()
+    }
+
     /**
-     * The launcher key an install [ensure] started was for, returned once
-     * when that install has landed. A declined install leaves the apply owed;
-     * it fires on the first resume after the companion does arrive, and never
-     * while it is absent.
+     * The outcome of the install [ensure] handed to the system installer,
+     * returned once, on the first resume after it: that resume is the
+     * installer closing. [Pending.Ready] carries the launcher to apply to.
+     * [Pending.Declined] means the package still is not there (the user
+     * backed out, or the install failed), so the art style has gone back to
+     * Glyphs rather than showing a Banners switch over a glyph home screen.
      */
-    fun takePendingApply(context: Context): String? {
+    fun takePendingApply(context: Context): Pending? {
         val key = Prefs.bannersPendingApply(context) ?: return null
-        if (!ready(context)) return null
         Prefs.setBannersPendingApply(context, null)
-        return key
+        if (ready(context)) return Pending.Ready(key)
+        revertToGlyphs(context)
+        return Pending.Declined
     }
 
     private fun toast(context: Context, message: String) {

@@ -39,6 +39,20 @@ All notable changes to the Core Builds Icon Pack. Format follows
 
 ### Fixed
 
+- **The art-style switch applies one style, all the way through.** Glyphs
+  now means glyphs only and Banners means banners only, on every surface a
+  launcher reads:
+  - A launcher's own icon browser lists only the chosen pack's art. The
+    Icon Pack lists its 961 glyphs, and Core Builds Banners lists the 961
+    banners.
+  - Picking one app's icon from inside a launcher returns the art of the
+    pack you picked from. It no longer depends on the switch, and it no
+    longer changes the switch: before, choosing a single banner quietly set
+    the whole launcher to Banners on the next apply.
+  - If Core Builds Banners can't be installed (no install permission, the
+    download fails, or you back out of Android's installer), the switch
+    goes back to Glyphs and says so, instead of showing Banners over a
+    launcher that still has glyphs.
 - **Missing-app auditor no longer lists apps whose icon works.** An app with
   a mapped TV activity and an unmapped phone-launcher activity was listed as
   missing; the auditor now judges each app by the activity a TV launcher

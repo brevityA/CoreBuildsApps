@@ -358,9 +358,10 @@ def main():
 
     # 4. drawable.xml — launcher icon picker, grouped by catalog category
     # so Projectivy's browser can jump a section instead of scrolling 500
-    # untitled tiles. Square glyphs head each group - the shipped default
-    # since 1.9.2, matching what the appfilter now maps - banners follow as
-    # the opt-in art.
+    # untitled tiles. Glyphs only: this pack's art style is the square glyph,
+    # the same art its appfilter maps. The 16:9 banners are listed by Core
+    # Builds Banners (tools/build_banners_pack.py), so each pack's icon
+    # browser offers its own style and nothing else.
     CAT_LABEL = {
         "STREAM": "Streaming", "MEDIA": "Media centres", "VOD": "On demand",
         "LIVE": "Live TV", "PLAYER": "Players", "MUSIC": "Music",
@@ -388,11 +389,6 @@ def main():
         d.append(f'    <category title="Square \u00b7 {esc(label)}" />')
         for i in by_cat[cat]:
             d.append(f'    <item drawable="{i["drawable"]}" />')
-    for cat in cat_order:
-        label = CAT_LABEL.get(cat, cat.title())
-        d.append(f'    <category title="Banners \u00b7 {esc(label)}" />')
-        for i in by_cat[cat]:
-            d.append(f'    <item drawable="{i["drawable"]}_banner" />')
     d.append('</resources>')
     drawable_text = "\n".join(d) + "\n"
     write(XML_DIR / "drawable.xml", drawable_text)

@@ -89,6 +89,74 @@ class GeneratedResources(unittest.TestCase):
             self.assertIn(needed, gradle)
 
 
+class OneStylePerPack(unittest.TestCase):
+    """Glyphs only from the glyph pack, banners only from the companion.
+
+    The toggle picks a package, so each package has to hold one art style on
+    every surface a launcher reads: the appfilter it auto-applies, the
+    drawable.xml its icon browser lists, and the picker it opens.
+    """
+    MAIN_KT = ROOT / "app/src/main/java/tv/corebuilds/iconpack/MainActivity.kt"
+
+    def browser(self, module: str) -> list[str]:
+        return re.findall(r'<item drawable="([^"]+)" />',
+                          read(ROOT / f"{module}/src/main/res/xml/drawable.xml"))
+
+    def test_glyph_pack_browser_lists_glyphs_only(self):
+        glyphs = self.browser("app")
+        self.assertGreater(len(glyphs), 900)
+        self.assertEqual([d for d in glyphs if d.endswith("_banner")], [])
+        self.assertEqual(read(ROOT / "app/src/main/res/xml/drawable.xml"),
+                         read(ROOT / "app/src/main/assets/drawable.xml"))
+
+    def test_banners_browser_lists_the_same_icons_as_banners(self):
+        glyphs = self.browser("app")
+        self.assertEqual(self.browser("banners"), [f"{d}_banner" for d in glyphs])
+        titles = re.findall(r'<category title="([^"]+)" />',
+                            read(ROOT / "banners/src/main/res/xml/drawable.xml"))
+        self.assertTrue(titles)
+        self.assertTrue(all(t.startswith("Banners \u00b7 ") for t in titles), titles)
+
+    def test_glyph_appfilter_maps_glyphs_only(self):
+        text = read(ROOT / "app/src/main/res/xml/appfilter.xml")
+        drawables = re.findall(r'<item component="[^"]+" drawable="([^"]+)"', text)
+        self.assertEqual([d for d in drawables if d.endswith("_banner")], [])
+
+    def test_forwarded_picks_are_marked_banners(self):
+        extra = re.search(r'const val EXTRA_PICK_BANNERS = "([^"]+)"',
+                          read(COMPANION_KT)).group(1)
+        java = read(ACTIVITY_JAVA)
+        self.assertIn(f'EXTRA_PICK_BANNERS = "{extra}"', java)
+        forward = java.split("if (isPickRequest(in))", 1)[1].split("} else {", 1)[0]
+        self.assertIn("putExtra(EXTRA_PICK_BANNERS, true)", forward)
+
+    def test_picker_shape_comes_from_the_pack_not_the_toggle(self):
+        src = read(self.MAIN_KT)
+        self.assertIn("fun pickFixedByPack(): Boolean = pickMode && BannersCompanion.supported()",
+                      src)
+        self.assertIn("intent.getBooleanExtra(BannersCompanion.EXTRA_PICK_BANNERS, false)", src)
+        # With a companion the picker shows no shape chips, so no pick can
+        # write the art style the whole launcher applies.
+        chips = src.split("private fun bindPickShape()", 1)[1]
+        self.assertLess(chips.index("if (pickFixedByPack())"),
+                        chips.index("Prefs.set(this, Prefs.KEY_PICK_BANNERS"))
+        sync = src.split("private fun syncArtStyle()", 1)[1].split("\n    }\n", 1)[0]
+        self.assertIn("if (pickFixedByPack()) return", sync)
+
+    def test_switch_never_claims_banners_the_launcher_lacks(self):
+        src = read(COMPANION_KT)
+        ensure = src.split("fun ensure(", 1)[1].split("\n    }\n", 1)[0]
+        # Every way ensure() can fail to deliver the pack reverts the style.
+        self.assertEqual(ensure.count("revertToGlyphs(activity)"), 3, ensure)
+        self.assertEqual(ensure.count("onUnavailable()"), 3, ensure)
+        take = src.split("fun takePendingApply(", 1)[1].split("\n    }\n", 1)[0]
+        self.assertIn("Pending.Declined", take)
+        self.assertIn("revertToGlyphs(context)", take)
+        settings = read(ROOT / "app/src/main/java/tv/corebuilds/iconpack/SettingsActivity.kt")
+        resume = settings.split("override fun onResume()", 1)[1].split("\n    }\n", 1)[0]
+        self.assertIn("bannerSwitch.isChecked = Prefs.pickerPrefersBanners(this)", resume)
+
+
 class Manifest(unittest.TestCase):
     def test_discovered_by_the_same_launchers(self):
         self.assertEqual(pack_filters(PACK_MANIFEST), pack_filters(APP_MANIFEST))
