@@ -83,7 +83,7 @@ android {
         release {
             // The drawables are only ever resolved by name at runtime
             // (appfilter strings, getIdentifier), which is exactly what the
-            // generated res/values/keep.xml pins — shrinking is safe because
+            // generated res/raw/keep.xml pins — shrinking is safe because
             // the keep set comes from the same catalog as the art.
             isMinifyEnabled = true
             isShrinkResources = true

@@ -721,5 +721,39 @@ class ApkInspectorTests(unittest.TestCase):
         self.assertEqual(resource_path("res/icon.png"), Path("res/icon.png"))
 
 
+
+class ShrinkKeepRules(unittest.TestCase):
+    """Release builds shrink resources, and every icon drawable is resolved
+    by name (appfilter strings, getIdentifier), so all of them are pinned by
+    a generated keep file. The shrinker reads it only from res/raw/, and only
+    the root <resources> element's tools:keep attribute: a child <keep>
+    element is ignored (the APK silently loses the icons), and anything under
+    res/values/ fails the resource merger."""
+
+    RES = ROOT / "app/src/main/res"
+    TOOLS = "{http://schemas.android.com/tools}"
+
+    def test_keep_file_is_raw_with_the_attribute_on_the_root(self):
+        self.assertFalse((self.RES / "values/keep.xml").exists(),
+                         "keep rules under res/values/ break :app:merge*Resources")
+        root = ET.parse(self.RES / "raw/keep.xml").getroot()
+        self.assertEqual(root.tag, "resources")
+        self.assertIn(f"{self.TOOLS}keep", root.attrib,
+                      "tools:keep must sit on the root; a child <keep> is ignored")
+        self.assertEqual(list(root), [], "keep rules are an attribute, not child elements")
+
+    def test_no_values_file_carries_keep_elements(self):
+        for path in (self.RES / "values").glob("*.xml"):
+            with self.subTest(file=path.name):
+                self.assertEqual(ET.parse(path).getroot().findall("keep"), [])
+
+    def test_every_catalog_drawable_and_banner_is_pinned(self):
+        root = ET.parse(self.RES / "raw/keep.xml").getroot()
+        pinned = {v.removeprefix("@drawable/")
+                  for v in root.get(f"{self.TOOLS}keep").split(",")}
+        icons = json.loads((ROOT / "tools/catalog.json").read_text(encoding="utf-8"))["icons"]
+        wanted = {i["drawable"] for i in icons} | {f"{i['drawable']}_banner" for i in icons}
+        self.assertEqual(sorted(wanted - pinned), [])
+
 if __name__ == "__main__":
     unittest.main()
