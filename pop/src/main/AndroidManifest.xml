@@ -120,6 +120,9 @@
         <package android:name="dev.corebuilds.line" />
         <package android:name="tv.corebuilds.motion" />
         <package android:name="dev.corebuilds.shift" />
+        <!-- Core Builds Banners, the 16:9 companion the Glyphs/Banners toggle
+             points launchers at: its installed version gates the apply. -->
+        <package android:name="tv.corebuilds.iconpack.banners" />
     </queries>
 
     <application

@@ -46,6 +46,8 @@ android {
             "\"https://raw.githubusercontent.com/brevityA/CoreBuildsApps/" +
                 "main/Latestrelease/pop-version.json\"",
         )
+        // Pop has no 16:9 companion; its Glyphs/Banners toggle stays in-app.
+        buildConfigField("String", "BANNERS_PACKAGE", "\"\"")
     }
 
     signingConfigs {

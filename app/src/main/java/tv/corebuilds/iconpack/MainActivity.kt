@@ -399,6 +399,12 @@ class MainActivity : TvActivity() {
         }
         if (!pickMode) {
             bindApplyButton()
+            // Back from installing Core Builds Banners: finish the apply the
+            // Apply press asked for, now that the package is really there.
+            BannersCompanion.takePendingApply(this)?.let { key ->
+                (ApplyIconPack.installed(this).firstOrNull { it.key == key } ?: target)
+                    ?.let { applyTo(it) }
+            }
             // What's New fires once per upgrade, independently of the update
             // checker's switch: it reads the APK's own asset, so it works
             // with the network check off. Fresh installs seed the gate
@@ -1178,6 +1184,12 @@ class MainActivity : TvActivity() {
                     )
                 )
                 ApplyIconPack.openLauncher(this, launcher)
+            }
+
+            ApplyIconPack.Result.NeedsCompanion -> {
+                // Banners is selected: fetch Core Builds Banners, and apply to
+                // this launcher when the install lands (see onResume).
+                BannersCompanion.ensure(this, launcher.key)
             }
         }
     }

@@ -104,6 +104,15 @@ STRING_OVERRIDES = {
         "Projectivy opened. Go to Appearance → Cards → Icon Pack → Core Builds Pop.",
     "cta_sub_apply_fmt":
         "Sets Core Builds Pop as the icon pack in %1$s. Reversible — pick another pack any time.",
+    # Pop has no 16:9 companion package (BuildConfig.BANNERS_PACKAGE is
+    # empty), so its toggle cannot reach the launcher's automatic icons.
+    "settings_banner_sub":
+        "Square glyphs when off, 16:9 banner cards when on. Updates the "
+        "catalogue browser and launcher icon picker; launcher auto-apply "
+        "stays square.",
+    # ...and so never downloads it: Pop's network disclosure stays two items.
+    "about_network_two":
+        "2.  A request for each wallpaper you choose to download.",
 }
 
 CAT_LABEL = {

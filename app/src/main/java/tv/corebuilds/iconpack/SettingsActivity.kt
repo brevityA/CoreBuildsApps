@@ -95,6 +95,10 @@ class SettingsActivity : TvActivity() {
             val next = !bannerSwitch.isChecked
             bannerSwitch.isChecked = next
             Prefs.set(this, Prefs.KEY_PICK_BANNERS, next)
+            // Where there is a companion pack, the art style is also the
+            // launcher's: re-apply now so the home screen follows the switch
+            // (installing Core Builds Banners first if it is not there yet).
+            if (BannersCompanion.supported()) refreshLauncher()
         }
 
         row(R.id.set_refresh_row) { refreshLauncher() }
@@ -127,6 +131,13 @@ class SettingsActivity : TvActivity() {
         showCacheSize()
     }
 
+    override fun onResume() {
+        super.onResume()
+        // The companion install [BannersCompanion.ensure] started has landed:
+        // finish the apply the switch asked for.
+        BannersCompanion.takePendingApply(this)?.let { refreshLauncher(it) }
+    }
+
     private fun row(id: Int, onSelect: () -> Unit) {
         findViewById<LinearLayout>(id).setOnClickListener { onSelect() }
     }
@@ -155,8 +166,10 @@ class SettingsActivity : TvActivity() {
      * applied, manual path, or nothing detected - because a silent no-op is
      * exactly the confusion that ends in rebooting the TV.
      */
-    private fun refreshLauncher() {
-        val launcher = ApplyIconPack.detectInstalled(this)
+    private fun refreshLauncher(launcherKey: String? = null) {
+        val launcher = launcherKey
+            ?.let { key -> ApplyIconPack.installed(this).firstOrNull { it.key == key } }
+            ?: ApplyIconPack.detectInstalled(this)
         if (launcher == null) {
             toast(getString(R.string.refresh_no_launcher))
             return
@@ -168,6 +181,8 @@ class SettingsActivity : TvActivity() {
                 toast(getString(R.string.refresh_manual_fmt, result.launcherName, result.instructions))
             is ApplyIconPack.Result.NotInstalled ->
                 toast(getString(R.string.refresh_no_launcher))
+            ApplyIconPack.Result.NeedsCompanion ->
+                BannersCompanion.ensure(this, launcher.key)
         }
     }
 
