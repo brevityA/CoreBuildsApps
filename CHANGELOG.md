@@ -6,6 +6,8 @@ All notable changes to the Core Builds Icon Pack. Format follows
 
 ## [Unreleased]
 
+## [1.9.4] — 2026-09-24
+
 ### Added
 
 - **Banners for every app, from one switch.** Settings → Art style now
@@ -17,6 +19,11 @@ All notable changes to the Core Builds Icon Pack. Format follows
   you to confirm the install once). Projectivy, Nova and Lawnchair switch
   straight away; launchers without an apply shortcut open their own icon-pack
   setting with the pack to pick named.
+- **Twelve Deep Space wallpapers.** The Wallpapers tab grows to 96 with
+  series 9: Event Horizon, Nebula Drift, Starfield, Ringed Planet, Galaxy
+  Spiral, Aurora Orbit, Comet Lane, Deep Field, Ember Nova, Hex Station,
+  Cyan Supernova, and Dark Side Moon — all 4K, all in the house palette,
+  settable, saveable, and multi-exportable like every other series.
 - **`tests/test_banners_pack.py` companion contract.** The companion covers
   exactly the glyph pack's components, is discovered by the same launchers,
   has no launcher entry, and is published under the filename the app
@@ -29,6 +36,11 @@ All notable changes to the Core Builds Icon Pack. Format follows
 
 ### Changed
 
+- **Two-thirds smaller download, same pixels.** Icon and banner art now
+  ships as lossless WebP instead of PNG, byte-identical renders ship once
+  with the twins aliased, and the release build shrinks dead code and
+  unused locales: the APK drops from ~25 MB to ~9 MB, so Downloader
+  installs finish three times faster on slow connections.
 - **Missing-app auditor sends mapping reports to the right form.** An app the
   pack already maps under a different activity now opens "Icon not
   auto-assigning" with its real component prefilled, instead of a new-icon
