@@ -149,9 +149,23 @@ class OneStylePerPack(unittest.TestCase):
         # Every way ensure() can fail to deliver the pack reverts the style.
         self.assertEqual(ensure.count("revertToGlyphs(activity)"), 3, ensure)
         self.assertEqual(ensure.count("onUnavailable()"), 3, ensure)
+        # A superseded download must not install or revert over a newer one.
+        self.assertIn("if (generation != ensureGeneration) return@downloadCompanion", ensure)
+        # Only the installer's own result can call an install declined; a
+        # resume that arrives before the package lands just waits.
+        result = src.split("fun onInstallResult(", 1)[1].split("\n    }\n", 1)[0]
+        self.assertIn("Pending.Declined", result)
+        self.assertIn("revertToGlyphs(context)", result)
         take = src.split("fun takePendingApply(", 1)[1].split("\n    }\n", 1)[0]
-        self.assertIn("Pending.Declined", take)
-        self.assertIn("revertToGlyphs(context)", take)
+        self.assertNotIn("revertToGlyphs", take)
+        self.assertNotIn("Pending.Declined", take)
+        installer = read(ROOT / "app/src/main/java/tv/corebuilds/iconpack/UpdateInstaller.kt")
+        for_result = installer.split("fun installForResult(", 1)[1].split("\n    }\n", 1)[0]
+        self.assertIn("putExtra(Intent.EXTRA_RETURN_RESULT, true)", for_result)
+        self.assertIn("startActivityForResult(intent, requestCode)", for_result)
+        for activity in ("MainActivity.kt", "SettingsActivity.kt"):
+            src_a = read(ROOT / f"app/src/main/java/tv/corebuilds/iconpack/{activity}")
+            self.assertIn("BannersCompanion.onInstallResult(this)", src_a, activity)
         settings = read(ROOT / "app/src/main/java/tv/corebuilds/iconpack/SettingsActivity.kt")
         resume = settings.split("override fun onResume()", 1)[1].split("\n    }\n", 1)[0]
         self.assertIn("bannerSwitch.isChecked = Prefs.pickerPrefersBanners(this)", resume)

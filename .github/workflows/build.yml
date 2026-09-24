@@ -119,7 +119,7 @@ jobs:
           DRIFT=$(git status --porcelain -- '*.xml' '*.svg' '*.md' | grep -v '^?? ' || true)
           if [ -n "$DRIFT" ]; then
             echo "::error::Generated files differ from committed ones."
-            echo "Run: python tools/build_icons.py && python tools/build_banners.py && python tools/build_branding.py && python tools/build_brand_preview.py"
+            echo "Run: python tools/fit_classic_glyphs.py && python tools/build_icons.py && python tools/build_banners.py && python tools/build_branding.py && python tools/build_brand_preview.py"
             echo "$DRIFT"
             git --no-pager diff -- '*.xml' '*.svg' '*.md'
             exit 1

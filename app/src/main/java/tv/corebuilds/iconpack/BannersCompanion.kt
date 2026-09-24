@@ -46,6 +46,16 @@ object BannersCompanion {
      */
     const val EXTRA_PICK_BANNERS = "tv.corebuilds.iconpack.extra.PICK_BANNERS"
 
+    /** onActivityResult request code for the companion install. */
+    const val INSTALL_REQUEST = 0xB4
+
+    /**
+     * The newest [ensure] call. Downloads are serialised but not cancelled,
+     * so an older request can still report after a newer one started; its
+     * callback must not revert the style or open a second installer.
+     */
+    private var ensureGeneration = 0L
+
     fun supported(): Boolean = PACKAGE.isNotEmpty()
 
     /** The art-style setting asks for banners and this build can deliver them. */
@@ -101,6 +111,7 @@ object BannersCompanion {
      */
     fun ensure(activity: Activity, launcherKey: String, onUnavailable: () -> Unit = {}) {
         if (!supported()) return
+        val generation = ++ensureGeneration
         if (!UpdateInstaller.canInstall(activity)) {
             toast(activity, activity.getString(R.string.banners_install_permission))
             revertToGlyphs(activity)
@@ -112,12 +123,13 @@ object BannersCompanion {
         UpdateInstaller.downloadCompanion(
             activity, apkUrl(), PACKAGE, BuildConfig.VERSION_CODE
         ) { event ->
+            if (generation != ensureGeneration) return@downloadCompanion
             when (event) {
                 is UpdateInstaller.Event.Progress -> Unit
                 is UpdateInstaller.Event.Ready -> {
                     Prefs.setBannersPendingApply(activity, launcherKey)
                     try {
-                        UpdateInstaller.install(activity, event.file)
+                        UpdateInstaller.installForResult(activity, event.file, INSTALL_REQUEST)
                     } catch (e: Exception) {
                         Prefs.setBannersPendingApply(activity, null)
                         toast(activity, activity.getString(
@@ -150,19 +162,35 @@ object BannersCompanion {
     }
 
     /**
-     * The outcome of the install [ensure] handed to the system installer,
-     * returned once, on the first resume after it: that resume is the
-     * installer closing. [Pending.Ready] carries the launcher to apply to.
-     * [Pending.Declined] means the package still is not there (the user
-     * backed out, or the install failed), so the art style has gone back to
-     * Glyphs rather than showing a Banners switch over a glyph home screen.
+     * The system installer's answer to the install [ensure] started, from
+     * onActivityResult ([INSTALL_REQUEST]). Returned once: [Pending.Ready]
+     * with the launcher to apply to when the companion is really there,
+     * otherwise [Pending.Declined] - the user backed out or the install
+     * failed - and the art style is Glyphs again. Null when no install was
+     * owed (a stale result).
      */
-    fun takePendingApply(context: Context): Pending? {
+    fun onInstallResult(context: Context): Pending? {
         val key = Prefs.bannersPendingApply(context) ?: return null
         Prefs.setBannersPendingApply(context, null)
+        // The package, not the result code, decides: some installers report
+        // RESULT_CANCELED after "Done" on a successful install.
         if (ready(context)) return Pending.Ready(key)
         revertToGlyphs(context)
         return Pending.Declined
+    }
+
+    /**
+     * On resume: the launcher an install is owed to, once the companion is
+     * installed and verified - covering a result that never arrived, such as
+     * the activity dying while the installer was up. Until then it returns
+     * null and changes nothing. A resume is not an installer answer: the
+     * installer can still be open in its own task.
+     */
+    fun takePendingApply(context: Context): Pending? {
+        val key = Prefs.bannersPendingApply(context) ?: return null
+        if (!ready(context)) return null
+        Prefs.setBannersPendingApply(context, null)
+        return Pending.Ready(key)
     }
 
     private fun toast(context: Context, message: String) {

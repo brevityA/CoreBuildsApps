@@ -393,20 +393,11 @@ class MainActivity : TvActivity() {
 
     override fun onResume() {
         super.onResume()
-        if (!pickMode) {
-            // Back from the system installer: finish the apply the Apply
-            // press asked for, or - it was declined - show the glyphs the
-            // launcher still has. Before the style sync below, which then
-            // picks up a revert.
-            when (val pending = BannersCompanion.takePendingApply(this)) {
-                is BannersCompanion.Pending.Ready ->
-                    (ApplyIconPack.installed(this).firstOrNull { it.key == pending.launcherKey }
-                        ?: target)?.let { applyTo(it) }
-                BannersCompanion.Pending.Declined ->
-                    toast(getString(R.string.banners_declined))
-                null -> Unit
-            }
-        }
+        // A companion install that finished without its result reaching us
+        // (the activity was recreated): apply once the package is really
+        // there. A declined install is only ever reported by the installer's
+        // result, in onActivityResult - a resume is not an answer.
+        if (!pickMode) onCompanionOutcome(BannersCompanion.takePendingApply(this))
         syncArtStyle()
         if (!pickMode) {
             bindApplyButton()
@@ -1079,6 +1070,27 @@ class MainActivity : TvActivity() {
             if (shown) View.VISIBLE else View.GONE
         findViewById<View>(R.id.apply_targets_label).visibility =
             if (shown && withLabel) View.VISIBLE else View.GONE
+    }
+
+    @Deprecated("Deprecated in AndroidX; the installer result still arrives here")
+    @Suppress("DEPRECATION")
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == BannersCompanion.INSTALL_REQUEST) {
+            onCompanionOutcome(BannersCompanion.onInstallResult(this))
+            syncArtStyle()
+        }
+    }
+
+    /** Finish the apply an Apply press asked for, or say it was declined. */
+    private fun onCompanionOutcome(pending: BannersCompanion.Pending?) {
+        when (pending) {
+            is BannersCompanion.Pending.Ready ->
+                (ApplyIconPack.installed(this).firstOrNull { it.key == pending.launcherKey }
+                    ?: target)?.let { applyTo(it) }
+            BannersCompanion.Pending.Declined -> toast(getString(R.string.banners_declined))
+            null -> Unit
+        }
     }
 
     /**

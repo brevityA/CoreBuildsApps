@@ -1,5 +1,6 @@
 package tv.corebuilds.iconpack
 
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageInfo
@@ -140,6 +141,30 @@ object UpdateInstaller {
             addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
         }
         context.startActivity(intent)
+    }
+
+    /**
+     * Hand [file] to the system installer and have it *answer*: the result
+     * comes back to [activity]'s onActivityResult under [requestCode] as
+     * RESULT_OK (installed), RESULT_CANCELED (backed out) or RESULT_FIRST_USER
+     * (failed). [install] cannot say which - it opens the installer in its
+     * own task, so the caller's next resume may come before the install
+     * finishes - and a companion install has to know, because a decline
+     * reverts the art style and a success applies it.
+     *
+     * ACTION_INSTALL_PACKAGE is deprecated from API 29 in favour of
+     * PackageInstaller sessions but still honoured, and it is the one entry
+     * point that reports a result on every Android the pack supports.
+     */
+    @Suppress("DEPRECATION")
+    fun installForResult(activity: Activity, file: File, requestCode: Int) {
+        val uri = FileProvider.getUriForFile(activity, AUTHORITY, file)
+        val intent = Intent(Intent.ACTION_INSTALL_PACKAGE).apply {
+            setDataAndType(uri, "application/vnd.android.package-archive")
+            addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+            putExtra(Intent.EXTRA_RETURN_RESULT, true)
+        }
+        activity.startActivityForResult(intent, requestCode)
     }
 
     private fun fetchToCache(

@@ -56,13 +56,13 @@ All notable changes to the Core Builds Icon Pack. Format follows
 
 ### Fixed
 
-- **Icons that showed another company's logo.** Twelve apps were drawing
+- **Icons that showed another company's logo.** Thirteen apps were drawing
   a different brand's mark: Fox Nation and Fox Sports Go had FloSports';
   Hoichoi, Sun NXT, Tencent Video and Viki had Youku's; RaiPlay and Perfect
   Player had OTT Navigator's; 3Player had Termux's, Launcher Manager
   FLauncher's, NT at Home Mi TV's, Movie HD Pure Flix's, and Zattoo a
-  browser globe. Fox Sports Go now shares the Fox Sports mark; the rest
-  show their own initials in their category's tile.
+  browser globe. Fox Sports Go now shares the Fox Sports mark; the other
+  twelve show their own initials in their category's tile.
 - **No two apps share an identical icon.** 22 groups of different apps had
   byte-for-byte identical icons, mostly two-letter tiles with the same
   letters and colour (Tablo and TV App Repo, Thmanyah and ThreeNow), plus

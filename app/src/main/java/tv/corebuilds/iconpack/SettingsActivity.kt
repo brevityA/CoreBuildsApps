@@ -133,15 +133,30 @@ class SettingsActivity : TvActivity() {
 
     override fun onResume() {
         super.onResume()
-        // Back from the installer [BannersCompanion.ensure] opened: finish the
-        // apply the switch asked for, or say it was declined. Either way the
-        // switch then shows the style the launcher really has.
-        when (val pending = BannersCompanion.takePendingApply(this)) {
+        // A companion install whose result never reached us: apply once the
+        // package is really there (see MainActivity.onResume). Declines are
+        // reported by the installer's result, in onActivityResult.
+        onCompanionOutcome(BannersCompanion.takePendingApply(this))
+        bannerSwitch.isChecked = Prefs.pickerPrefersBanners(this)
+    }
+
+    @Deprecated("Deprecated in AndroidX; the installer result still arrives here")
+    @Suppress("DEPRECATION")
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == BannersCompanion.INSTALL_REQUEST) {
+            onCompanionOutcome(BannersCompanion.onInstallResult(this))
+            bannerSwitch.isChecked = Prefs.pickerPrefersBanners(this)
+        }
+    }
+
+    /** Finish the apply the switch asked for, or say it was declined. */
+    private fun onCompanionOutcome(pending: BannersCompanion.Pending?) {
+        when (pending) {
             is BannersCompanion.Pending.Ready -> refreshLauncher(pending.launcherKey)
             BannersCompanion.Pending.Declined -> toast(getString(R.string.banners_declined))
             null -> Unit
         }
-        bannerSwitch.isChecked = Prefs.pickerPrefersBanners(this)
     }
 
     private fun row(id: Int, onSelect: () -> Unit) {
