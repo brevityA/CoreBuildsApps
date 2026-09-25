@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Launcher setup: the walk through a launcher that has no inbound apply.
+
+  This screen is what the old toast should have been. It says why the pack
+  cannot be applied for the user (honesty first - the button on the sheet looks
+  broken otherwise), states the walk as numbered steps ending on ONE pack, and
+  carries the one action that is actually available: open the launcher. A toast
+  could not do any of that, and died the moment HOME was pressed to go and
+  follow it.
+-->
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/cb_night"
+    android:paddingStart="@dimen/cb_gutter_side"
+    android:paddingEnd="@dimen/cb_gutter_side"
+    android:paddingTop="@dimen/cb_gutter_top"
+    android:paddingBottom="@dimen/cb_gutter_bottom">
+
+    <!-- HEADER -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="top">
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/bg_chip"
+                android:fontFamily="monospace"
+                android:paddingStart="@dimen/cb_space_sm"
+                android:paddingEnd="@dimen/cb_space_sm"
+                android:paddingTop="7dp"
+                android:paddingBottom="7dp"
+                android:letterSpacing="0.18"
+                android:text="@string/setup_kicker"
+                android:textColor="@color/cb_signal_cyan"
+                android:textSize="@dimen/cb_text_kicker"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/setup_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/cb_space_md"
+                android:letterSpacing="-0.025"
+                android:textColor="@color/cb_ink"
+                android:textSize="@dimen/cb_text_title"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/setup_why"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/cb_space_sm"
+                android:textColor="@color/cb_slate"
+                android:textSize="@dimen/cb_text_label" />
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/setup_back"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:minWidth="@dimen/cb_button_min_width"
+            android:minHeight="@dimen/cb_target_min"
+            android:background="@drawable/bg_ghost"
+            android:clickable="true"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            android:gravity="center"
+            android:paddingStart="@dimen/cb_space_lg"
+            android:paddingEnd="@dimen/cb_space_lg"
+            android:text="@string/action_back"
+            android:textColor="@color/cb_ink"
+            android:textSize="@dimen/cb_text_body" />
+    </LinearLayout>
+
+    <!-- THE WALK. One TextView, one line per step: the steps are read in order
+         and nothing is focusable inside them, so a list container would only
+         add a stop between the two controls that matter. -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:layout_marginTop="@dimen/cb_space_lg"
+        android:background="@drawable/bg_card"
+        android:orientation="vertical"
+        android:padding="@dimen/cb_card_padding">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="monospace"
+            android:letterSpacing="0.14"
+            android:text="@string/setup_steps_header"
+            android:textColor="@color/cb_signal_cyan"
+            android:textSize="@dimen/cb_text_kicker"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/setup_steps"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/cb_space_sm"
+            android:lineSpacingExtra="6dp"
+            android:textColor="@color/cb_ink"
+            android:textSize="@dimen/cb_text_section" />
+
+        <!-- Shown only when the pack did not answer the launcher's discovery
+             actions: the one case where the pack may not be in the list, said
+             before it happens rather than after. -->
+        <TextView
+            android:id="@+id/setup_hint"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/cb_space_md"
+            android:textColor="@color/cb_warning"
+            android:textSize="@dimen/cb_text_data"
+            android:visibility="gone" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/setup_footer"
+            android:textColor="@color/cb_slate"
+            android:textSize="@dimen/cb_text_data" />
+    </LinearLayout>
+
+    <!-- ACTION -->
+    <TextView
+        android:id="@+id/setup_open"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/cb_space_md"
+        android:minHeight="@dimen/cb_target_min"
+        android:background="@drawable/bg_cta"
+        android:clickable="true"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        android:gravity="center"
+        android:nextFocusUp="@id/setup_back"
+        android:paddingStart="@dimen/cb_space_lg"
+        android:paddingTop="@dimen/cb_space_sm"
+        android:paddingEnd="@dimen/cb_space_lg"
+        android:paddingBottom="@dimen/cb_space_sm"
+        android:textColor="@color/cb_cta_ink"
+        android:textSize="@dimen/cb_text_body"
+        android:textStyle="bold" />
+
+</LinearLayout>

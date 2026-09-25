@@ -1223,7 +1223,16 @@ class MainActivity : TvActivity() {
         // "Apply" over "Projectivy - Launchchair - Nova". The detected launcher
         // is still the one a press applies to; the list is the row of chips
         // below for the others.
-        button.text = getString(R.string.cta_apply)
+        //
+        // A launcher with no inbound apply says so on the button instead. Brand
+        // Guide §05/§08 - the button names what the press will do - and on
+        // Monet "Apply" has never done anything but show a toast, which reads
+        // as a broken button rather than as a launcher that cannot be called.
+        button.text = if (detected.inboundApply) {
+            getString(R.string.cta_apply)
+        } else {
+            getString(R.string.cta_set_up_fmt, detected.displayName)
+        }
         sub.text = installed.joinToString(" - ") { it.displayName }
         button.setOnClickListener { applyTo(detected) }
 
@@ -1266,6 +1275,18 @@ class MainActivity : TvActivity() {
                     )
                 )
                 ApplyIconPack.openLauncher(this, launcher)
+            }
+
+            is ApplyIconPack.Result.Handoff -> {
+                // No inbound apply: nothing can be pressed for the user, so the
+                // walk gets a screen of its own instead of a toast that expires
+                // on the way to following it. The key travels, not the steps:
+                // the screen rebuilds them from ApplyIconPack, so the two can
+                // never disagree.
+                startActivity(
+                    Intent(this, LauncherSetupActivity::class.java)
+                        .putExtra(LauncherSetupActivity.EXTRA_LAUNCHER, launcher.key)
+                )
             }
 
             ApplyIconPack.Result.NeedsCompanion -> {

@@ -57,6 +57,22 @@
     <string name="apply_not_installed_fmt">%1$s is not installed.</string>
     <string name="apply_manual_fmt">%1$s didn\'t accept direct apply. Set it here: %2$s</string>
     <string name="apply_manual_companion_fmt">%1$s, then pick %2$s</string>
+
+    <!-- The setup screen, for a launcher with no inbound apply (Monet). The
+         steps name one pack and one pack only: the old toast appended a
+         companion clause to a path that already ended in a pack name. -->
+    <string name="setup_label">Launcher setup</string>
+    <string name="setup_kicker">SET UP</string>
+    <string name="setup_title_fmt">Set up in %1$s</string>
+    <string name="setup_why_fmt">%1$s has no apply action an app can send, so the pack is picked in its own settings. These steps are that walk.</string>
+    <string name="setup_steps_header">STEPS</string>
+    <string name="setup_step_open_fmt">%1$d.  Open %2$s</string>
+    <string name="setup_step_pick_fmt">%1$d.  Pick %2$s</string>
+    <string name="setup_not_listed_fmt">%1$s is not answering the pack-discovery actions right now. If it is missing from the list, restart %2$s and open this screen again.</string>
+    <string name="setup_open_fmt">Open %1$s</string>
+    <string name="setup_open_failed_fmt">%1$s wouldn\'t open. Start it from your Home screen, then follow the steps above.</string>
+    <string name="setup_footer">Reversible — pick another pack any time. Nothing is changed until you do.</string>
+    <string name="cta_set_up_fmt">Set up in %1$s</string>
     <string name="glyphs_downloading">Downloading Core Builds Glyphs, the square pack your launcher applies</string>
     <string name="glyphs_install_permission">Allow installs from Core Builds, then switch to Glyphs again to fetch Core Builds Glyphs</string>
     <string name="glyphs_failed_fmt">Couldn\'t fetch Core Builds Glyphs: %1$s. Art style is back to Banners.</string>

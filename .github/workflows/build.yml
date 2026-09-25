@@ -295,6 +295,10 @@ jobs:
           python - "$TAG" <<'PY'
           import json, re, sys
           tag = sys.argv[1]
+          # The feed is only half the promise. The other half is that the URL it
+          # names really serves this build - the check just below fetches the
+          # APK back and compares the version inside it, which is the failure
+          # users hit as "1.9.5 is available but fails to install".
           gradle = open('app/build.gradle.kts').read()
           code = int(re.search(r'versionCode\s*=\s*(\d+)', gradle).group(1))
           d = json.load(open('app/src/main/assets/version.json'))
@@ -314,3 +318,15 @@ jobs:
             git commit -m "chore: publish update manifest for ${GITHUB_REF_NAME}"
             git push origin _version-sync:main
           fi
+
+      - name: Verify the feed serves this build
+        # The feed is now public, and every installed copy will believe it. This
+        # fetches the APK back from the URL the feed names and compares the
+        # version inside it, closing the loop the ordering test cannot reach:
+        # a floating release left behind by a failed upload, or overwritten by a
+        # rerun of an older tag, would otherwise be discovered by users as
+        # "1.9.5 is available but fails to install". Failing here leaves the
+        # release unpublished-and-wrong about itself, which is loud, instead of
+        # quietly wrong for every install.
+        if: startsWith(github.ref, 'refs/tags/v')
+        run: python tools/check_published_update.py

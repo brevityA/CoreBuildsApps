@@ -21,6 +21,22 @@ object ApplyIconPack {
         data class Applied(val launcherName: String) : Result()
         data class NotInstalled(val launcherName: String) : Result()
         data class Manual(val launcherName: String, val instructions: String) : Result()
+
+        /**
+         * A launcher that documents no incoming apply action, so nothing can be
+         * pressed on the user's behalf and [instructions] would not fit on a
+         * toast either: [steps] is the walk through the launcher's own settings,
+         * in order, ending on the one pack to pick. [listed] is false when that
+         * pack did not answer the launcher's own discovery actions - the one
+         * case where it may be missing from the picker entirely.
+         */
+        data class Handoff(
+            val launcherName: String,
+            val steps: List<String>,
+            val packLabel: String,
+            val listed: Boolean
+        ) : Result()
+
         /** Glyphs is selected but Core Builds Glyphs is missing or stale. */
         object NeedsCompanion : Result()
     }
@@ -30,7 +46,22 @@ object ApplyIconPack {
         val displayName: String,
         val packages: List<String>,
         val intent: (Context, String) -> Intent?,
-        val manualPath: String
+        val manualPath: String,
+        /**
+         * False when the launcher documents no incoming apply action, so
+         * [intent]'s best-effort probe can only ever miss (Monet). The CTA then
+         * leads to the setup screen instead of firing a probe with no chance of
+         * resolving: a press that reports "sent" and changes nothing is worse
+         * than one that shows the walk.
+         */
+        val inboundApply: Boolean = true,
+        /**
+         * The screens between the launcher's settings and its pack list,
+         * outermost first, and *not* including the pack - [handoff] appends the
+         * pick as the final step so exactly one pack is ever named. Empty for
+         * every launcher that never gets a handoff.
+         */
+        val setupStops: List<String> = emptyList()
     )
 
     private fun applyIntent(
@@ -95,20 +126,24 @@ object ApplyIconPack {
         key = "monet",
         displayName = "Monet Launcher",
         packages = listOf("com.klevico.monet"),
-        // Monet 1.0.84 (decompiled 2026-09-12; re-confirms 1.0.76) has
-        // no incoming apply extra. Its only exported activities are
-        // HomeActivity and WallpaperShareActivity; the settings activity is
-        // exported=false, so there is no deep link. It discovers packs via the
-        // Nova/ADW/Apex/GO/Fede/Lawnchair/OnePlus/Tesla discovery actions
-        // (all declared in our manifest) and reads `xml/appfilter`, then the
-        // user picks the pack in Monet's own settings. tryStandardApply is a
-        // best-effort; expect Manual on current builds. Icon packs are a Monet
-        // Premium feature.
+        // Monet 1.0.84 (decompiled 2026-09-12; re-confirms 1.0.76, still true
+        // of 1.0.90's release notes) has no incoming apply extra. Its only
+        // exported activities are HomeActivity and WallpaperShareActivity; the
+        // settings activity is exported=false, so there is no deep link, and
+        // tryStandardApply can only miss. Monet discovers packs through the
+        // Nova/ADW/Apex/GO/Fede/Lawnchair/OnePlus/Tesla discovery actions (all
+        // declared in our manifest) and reads `xml/appfilter`, then the user
+        // picks the pack in Monet's own settings - so the honest route is the
+        // handoff, not a probe dressed up as an apply. The lambda is kept, and
+        // inboundApply flips to true the day a Monet build accepts one.
+        // Icon packs are a Monet Premium feature.
         intent = { ctx, self ->
             tryStandardApply(ctx, "com.klevico.monet", self)
         },
         // 1.0.80 reorganised Settings: the "Icons" category became "Apps".
-        manualPath = "Monet Settings → Apps → Icon pack → Core Builds Icon Pack"
+        manualPath = "Monet Settings → Apps → Icon pack → Core Builds Icon Pack",
+        inboundApply = false,
+        setupStops = listOf("Monet Settings", "Apps", "Icon pack")
     )
 
     val AT4K = Launcher(
@@ -260,6 +295,68 @@ object ApplyIconPack {
     }
 
     /**
+     * The actions a launcher resolves to enumerate the icon packs installed on
+     * the device. Monet builds its list from exactly this set (see
+     * docs/MONET_LAUNCHER.md), so a pack that answers none of them will not
+     * appear in its picker however carefully it is named.
+     */
+    private val DISCOVERY_ACTIONS = listOf(
+        "org.adw.launcher.THEMES",
+        "com.novalauncher.THEME",
+        "com.anddoes.launcher.THEME",
+        "com.gau.go.launcherex.theme",
+        "com.fede.launcher.THEME_ICONPACK",
+        "ch.deletescape.lawnchair.ICONPACK",
+        "net.oneplus.launcher.icons.ACTION_PICK_ICON",
+        "com.teslacoilsw.launcher.THEME"
+    )
+
+    /**
+     * Is [pkg] one of the packs a launcher can find?
+     *
+     * Read-only and advisory by design: the answer is *reported* on the setup
+     * screen and never acted on. Naming a pack that is not in the picker is the
+     * dead end this route exists to remove, and a pack that is installed but not
+     * answering is a far rarer case than a pack that was never installed.
+     */
+    fun listedAmongDiscoverers(context: Context, pkg: String): Boolean =
+        DISCOVERY_ACTIONS.any { action ->
+            context.packageManager.queryIntentActivities(Intent(action), 0)
+                .any { it.activityInfo?.packageName == pkg }
+        }
+
+    /**
+     * The setup route for a launcher with no inbound apply: the walk through its
+     * own settings, ending once on the pack to pick.
+     *
+     * This replaces a sentence assembled by appending a companion clause to
+     * [Launcher.manualPath] - a path that already ended in a pack name - so the
+     * reader was told to pick two different packs, and to pick the companion
+     * that 1.9.5 retired whenever Glyphs was selected. The steps here end in the
+     * one pack [GlyphsCompanion.applyTarget] would have handed a launcher that
+     * could take it.
+     */
+    fun handoff(context: Context, launcher: Launcher): Result.Handoff {
+        val pack = GlyphsCompanion.applyTarget(context)
+        val packLabel = if (pack == GlyphsCompanion.PACKAGE) {
+            GlyphsCompanion.LABEL
+        } else {
+            context.getString(R.string.app_name)
+        }
+        val steps = launcher.setupStops.mapIndexed { index, stop ->
+            context.getString(R.string.setup_step_open_fmt, index + 1, stop)
+        } + context.getString(
+            R.string.setup_step_pick_fmt, launcher.setupStops.size + 1, packLabel
+        )
+        return Result.Handoff(
+            launcherName = launcher.displayName,
+            steps = steps,
+            packLabel = packLabel,
+            listed = listedAmongDiscoverers(context, pack)
+        )
+    }
+
+    /**
      * Point [launcher] at the pack the Banners/Glyphs setting selects.
      *
      * The apply contracts all take a package name, and that is the whole
@@ -273,6 +370,13 @@ object ApplyIconPack {
         }
         if (GlyphsCompanion.wanted(context) && !GlyphsCompanion.ready(context)) {
             return Result.NeedsCompanion
+        }
+        // No inbound apply: the walk is the answer, and it names the same pack
+        // the contract below would have handed over. Checked after the
+        // companion so that picking Glyphs installs the pack first - the setup
+        // screen then shows the user a pack that is actually on the device.
+        if (!launcher.inboundApply) {
+            return handoff(context, launcher)
         }
         val pack = GlyphsCompanion.applyTarget(context)
         val manual = if (pack == context.packageName) {

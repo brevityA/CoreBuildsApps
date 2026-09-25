@@ -270,6 +270,13 @@
             android:exported="false"
             android:label="@string/about_label"
             android:theme="@style/Theme.CoreBuilds" />
+        <!-- The walk through a launcher that has no inbound apply (Monet).
+             Opened from the sheet's CTA and from Settings; not exported. -->
+        <activity
+            android:name=".LauncherSetupActivity"
+            android:exported="false"
+            android:label="@string/setup_label"
+            android:theme="@style/Theme.CoreBuilds" />
         <activity
             android:name=".ExportProgressActivity"
             android:exported="false"

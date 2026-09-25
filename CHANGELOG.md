@@ -30,6 +30,19 @@ All notable changes to the Core Builds Icon Pack. Format follows
   `validate.py`, `check_suite_truth.py` and a new
   `tests/test_update_manifest_gate.py` fail if the published manifest ever
   runs ahead of the build. The published manifest is back on 1.9.4.
+- **Monet's Apply button tells the truth, and the walk has a screen.** Monet
+  accepts no apply action from any app — its settings activity is not exported
+  and it exposes no deep link (`docs/MONET_LAUNCHER.md`) — so the old press could
+  only end in a toast reading *"Set it here: Monet Settings → Apps → Icon pack →
+  Core Builds Icon Pack, then pick Core Builds Banners"*: two packs in one
+  sentence, the second retired in 1.9.5, and gone the moment HOME was pressed to
+  follow it. A launcher with no inbound apply now carries **Set up in Monet
+  Launcher** on the CTA, and a **Launcher setup** screen that says why it cannot
+  be applied for you, numbers the walk, ends it on exactly one pack — the same
+  pack the Banners/Glyphs setting selects — and checks that pack really answers
+  Monet's own pack-discovery actions before naming it. The one action that does
+  exist is on the screen: **Open Monet**. The app changes nothing itself, and
+  says so.
 
 ## [1.9.5] — 2026-09-24
 
