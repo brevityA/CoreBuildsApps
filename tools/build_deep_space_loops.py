@@ -195,13 +195,25 @@ def render(index: int, number: int, slug: str) -> Path:
     proc = subprocess.Popen(cmd, stdin=subprocess.PIPE)
     assert proc.stdin is not None
     poster = None
-    for f in range(FRAMES):
-        img = scene.frame(f / FRAMES)
-        if f == FPS:            # 1 s in, same as the procedural clips' thumbs
-            poster = img
-        proc.stdin.write(img.tobytes())
-    proc.stdin.close()
-    if proc.wait() != 0:
+    # Reap ffmpeg on every path, and never leave a half-written MP4 behind:
+    # a failed rerun must not sit in Motion/live/ beside its old thumbnail.
+    ok = False
+    try:
+        for f in range(FRAMES):
+            img = scene.frame(f / FRAMES)
+            if f == FPS:            # 1 s in, same as the procedural clips' thumbs
+                poster = img
+            proc.stdin.write(img.tobytes())
+        ok = True
+    finally:
+        try:
+            proc.stdin.close()
+        except OSError:
+            pass
+        rc = proc.wait()
+        if not ok or rc != 0:
+            out.unlink(missing_ok=True)
+    if rc != 0:
         raise SystemExit(f"ffmpeg failed on {name}")
     assert poster is not None
     poster.resize((THUMB_W, THUMB_H), Image.LANCZOS).save(thumb, quality=88)
