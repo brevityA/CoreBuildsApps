@@ -39,6 +39,7 @@ class ExportProgressActivity : TvActivity() {
     private var wallpapers: List<Wallpaper> = emptyList()
     private var failed: List<Pair<String, String>> = emptyList()
     private var savedCount = 0
+    private var savedLoops = 0
     private var skippedCount = 0
     private var exportJob: java.util.concurrent.atomic.AtomicBoolean? = null
 
@@ -87,7 +88,10 @@ class ExportProgressActivity : TvActivity() {
                 is WallpaperExporter.Event.Done -> {
                     // Retry always re-sends every currently-failed item, so the
                     // latest run's failures are authoritative for what's left.
-                    savedCount += event.saved.size
+                    // Loops are MP4s and land in Movies, stills in Pictures;
+                    // the receipt names both folders.
+                    savedLoops += event.saved.count { it.endsWith(".mp4") }
+                    savedCount += event.saved.count { !it.endsWith(".mp4") }
                     skippedCount += event.skipped.size
                     failed = event.failed
                     showResult()
@@ -134,6 +138,7 @@ class ExportProgressActivity : TvActivity() {
 
         val parts = mutableListOf<String>()
         if (savedCount > 0) parts += getString(R.string.wp_export_done_fmt, savedCount)
+        if (savedLoops > 0) parts += getString(R.string.wp_export_loops_done_fmt, savedLoops)
         if (skippedCount > 0) parts += getString(R.string.wp_export_skipped_fmt, skippedCount)
         state.text = parts.joinToString("  ·  ")
 
@@ -148,8 +153,11 @@ class ExportProgressActivity : TvActivity() {
 
         afterHint.visibility = View.VISIBLE
         afterHint.text = getString(
-            if (WallpaperSetter.canShareToMonet(this)) R.string.wp_after_export_hint_monet
-            else R.string.wp_after_export_hint
+            when {
+                savedLoops > 0 && savedCount == 0 -> R.string.wp_after_export_hint_live
+                WallpaperSetter.canShareToMonet(this) -> R.string.wp_after_export_hint_monet
+                else -> R.string.wp_after_export_hint
+            }
         )
 
         bindLaunchers()

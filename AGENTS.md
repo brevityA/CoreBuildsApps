@@ -38,7 +38,7 @@ Do not merge Gradle roots. Do not split the GitHub repo. Do not rename package I
 
 ## One rule
 
-`tools/catalog.json` is the only source of truth for the icon pack. Never hand-edit generated icon XML, icon/banner art, `aliases.xml`, `keep.xml`, `docs/IconPackList.md`, `docs/preview.*`, or generated wallpaper output under `Wallpapers/series-8-amoled/**` and `Wallpapers/series-9-deep-space/**`.
+`tools/catalog.json` is the only source of truth for the icon pack. Never hand-edit generated icon XML, icon/banner art, `aliases.xml`, `keep.xml`, `docs/IconPackList.md`, `docs/preview.*`, or generated wallpaper output under `Wallpapers/series-8-amoled/**`, `Wallpapers/series-9-deep-space/**` and `Wallpapers/series-10-cinema/**`.
 
 Classic pack changes run the four generators and the validator:
 
@@ -72,7 +72,7 @@ For the visual receipt, run `python tools/build_icon_review.py` after the pack
 has built. It must show the new icons beside established, unchanged
 neighbours and actual-size banners, not only an isolated vendor-logo gallery.
 
-`Wallpapers/manifest.json` belongs to the icon pack and currently has 96 entries.
+`Wallpapers/manifest.json` belongs to the icon pack and currently has 102 entries.
 
 ## Truth gates
 
