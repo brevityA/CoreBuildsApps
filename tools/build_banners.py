@@ -90,7 +90,6 @@ def glyph_ink_x(glyph):
         return 256 - half - HALF_STROKE, 256 + half + HALF_STROKE
     return x0 - HALF_STROKE, x1 + HALF_STROKE
 INK = "#E6EDF3"           # Brand Guide §03
-ACCENT = "#00d4ff"        # --th-accent, from the live configurator
 CARD = "#151923"          # the grid card, also the fallback back fill
 RAIL_W = 16               # brand-true rail, left edge (was a fixed
                           # cyan->violet stripe until 1.9.2: launchers that
@@ -253,7 +252,13 @@ def render(name, glyph, accent, category=None, *, monochrome=False,
     spans = ""
     if has_kick:
         ky = baselines[0] - size * 0.92 - 10
-        kick_paths, _ = wordmark_spans([category], KICKER, tx, [ky], ACCENT)
+        # The category kicker is part of the banner's colour signal. It used
+        # to be the same cyan on every card, which meant colour-sampling
+        # launchers (notably Monet's navigation glow) read cyan even when the
+        # icon and rail were violet, red or green. Use the already-normalised
+        # icon accent so the complete coloured signal agrees, while the app
+        # name remains light ink for readability.
+        kick_paths, _ = wordmark_spans([category], KICKER, tx, [ky], accent)
         spans += kick_paths + "\n  "
 
     name_paths, _ = wordmark_spans(lines, size, tx, baselines, INK)

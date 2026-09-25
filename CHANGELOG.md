@@ -6,6 +6,15 @@ All notable changes to the Core Builds Icon Pack. Format follows
 
 ## [Unreleased]
 
+### Changed
+
+- **Banner category labels now follow each icon’s accent.** The VOD, STREAM,
+  VIDEO and other catalogue kickers used to inject one fixed cyan into every
+  16:9 asset, so Monet’s colour sampler could report cyan instead of the
+  selected app colour. The category text now uses the same normalised accent
+  as the droplet, glyph and rail; the app name remains light ink for readable
+  TV text.
+
 ## [1.9.5] — 2026-09-25
 
 ### Added

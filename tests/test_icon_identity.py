@@ -411,6 +411,19 @@ class CoreStyleTests(unittest.TestCase):
             self.assertIn('id="cbRail"', actual)
             self.assertIn('fill="#E6EDF3"', actual)  # common Outfit label, not vendor type
 
+    def test_banner_category_kicker_uses_the_icon_accent(self):
+        """The category label must not inject one global hue into every card.
+
+        Monet and other colour-sampling launchers read the banner as a whole.
+        A fixed cyan kicker made a violet Monet droplet (and every other
+        non-cyan icon) report the wrong navigation glow. The app name stays
+        light ink; the small category signal follows the visible icon accent.
+        """
+        from build_banners import render as render_banner
+        banner = render_banner("Monet", "droplet", "#B388FF", "LAUNCHER")
+        self.assertIn('fill="#B388FF"', banner)
+        self.assertNotIn('fill="#00d4ff"', banner)
+
     def test_revised_rasters_are_open_ink_and_clear_the_shared_safe_area(self):
         for icon in self.revised():
             with self.subTest(icon=icon["name"]):
