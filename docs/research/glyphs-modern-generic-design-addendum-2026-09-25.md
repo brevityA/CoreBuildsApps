@@ -325,7 +325,70 @@ Approve a future **generic semantic-Glyph study**, not a production redraw tranc
 
 No catalogue, mapping, or generated-asset change is recommended from this research alone.
 
-## 11. Source register
+## 11. Current census and the next study boundary
+
+A fresh read of the current branch's `tools/catalog.json` on 25 September 2026 gives this snapshot:
+
+| Measure | Current result | Interpretation |
+|---|---:|---|
+| Catalogue icon rows | **961** | The unit counted here is a catalogue row, not a generated drawable or emitted appfilter entry. |
+| Listed catalogue components | **1,179** | This is the sum of component lists in the catalogue; generated alias expansion can emit more rows. |
+| Distinct glyph names used | **427** | Reuse is intentional, but repeated generic marks need cue review. |
+| Neutral `app_*` family rows | **452 (47.0%)** | The largest remaining letter-led fallback surface. |
+| Named non-`app` family-shell rows | **120 (12.5%)** | Broadcast, tool, sport, music, gaming, VPN, film, store, debrid, and browser shells. |
+| Family-path rows including `app_*` | **572 (59.5%)** | Current category-shell strategy, before counting standalone semantic and brand marks. |
+| Other standalone/brand/specialised rows | **389 (40.5%)** | Includes both useful symbols and reviewed brand constructions; it is not a pure bespoke count. |
+
+The 452 `app_*` rows are the clearest boundary for a future generic study, but they are not automatically candidates for conversion. The current catalogue does not contain reliable function evidence for every row, and a guessed symbol would be worse than an honest fallback. A future tranche should therefore select rows from the `app_*` population only after package/function evidence and a TV cue review.
+
+The current repeated standalone symbols also identify where collision and over-generalisation should be watched:
+
+- `iptv_player`: 13 catalogue rows;
+- `folder`: 10;
+- `play_round`: 5;
+- `comedy_mark`: 5;
+- `automation`, `launcher_grid`, `monitor_wave`, `sync_ring`, `tools_wrench`, and `tv_stack`: 3 each.
+
+Reuse is not itself a defect. The question is whether each reused primitive expresses a truly shared function, or whether it hides meaningful differences between apps that have only been grouped for convenience. `play_round` and `iptv_player` deserve particular scrutiny because they are broad media shapes and are likely collision neighbours for future streaming studies.
+
+Some registered family shells currently have no catalogue rows on this branch (`photos`, `anime`, `kids`, and `files`). That is a useful warning against adding empty visual taxonomy for its own sake. A family should be promoted when the catalogue has evidence and a symbol earns its place, not because the renderer can generate a complete A–Z matrix.
+
+### 11.1 Material 3 as a systems reference, not a source-art library
+
+Google's current [Material 3 icon guidance](https://m3.material.io/styles/icons/designing-icons) reinforces several principles that fit this measured problem:
+
+- icons identify actions and categories, so simplification and legibility matter more than literal detail;
+- a coherent set uses consistent visual style, keyline shapes, stroke weight, and optical corrections;
+- a live area and trim area should be explicit; and
+- a complex icon may receive optical correction, but the correction should preserve the underlying geometric forms.
+
+Material Symbols also formalises variation along weight, fill, grade, and optical-size axes. Core Builds should borrow the idea of explicit optical tokens, not the Material Symbols artwork or its mobile 20–48 dp assumptions. The Core contract remains original rounded geometry, transparent presentation, and the existing 512-grid/small-TV review. Material's recommendation for some squared interior corners also does not override Core's established rounded caps and joins.
+
+A useful Core-specific interpretation is:
+
+- define a small set of semantic keyline families (circle, square, horizontal/vertical rectangle, shield/cloud, and open path);
+- define optical-fit tokens for the 512 master, generated review sizes, and the 48–96 px TV decision range; and
+- allow a symbol's counter or stroke to receive a measured optical correction without changing its semantic cue.
+
+This is a design-system refinement, not a request to add a font dependency or paste Material glyphs into the pack.
+
+### 11.2 Proposed next study tranche
+
+Before any catalogue assignment is approved, build a review-only sheet with one candidate per function family:
+
+1. open broadcast wave;
+2. screen/source input;
+3. folder/sync;
+4. globe/nodes;
+5. tool/sliders;
+6. controller/D-pad;
+7. store/install;
+8. photo/print; and
+9. family/kids only if a real TV-use case is documented.
+
+Compare each candidate against its current `app_*` fallback **and** against the nearest existing semantic mark. The study should answer whether the symbol gives the viewer more information in under a second. It should not silently assign a symbol to all apps sharing a category label, and it should not modify `tools/catalog.json` until the owner approves the reviewed rows.
+
+## 12. Source register
 
 ### Current repository evidence
 
@@ -340,6 +403,7 @@ No catalogue, mapping, or generated-asset change is recommended from this resear
 - [Merged PR #134](https://github.com/brevityA/CoreBuildsApps/pull/134) — isolated candidate APK and review gate precedent.
 - [Merged PR #135](https://github.com/brevityA/CoreBuildsApps/pull/135) — eight original cue-driven redraws, sibling regeneration, and small-size/human review corrections.
 - [`Core-Builds` adjacent assets](https://github.com/brevityA/Core-Builds/tree/main/Assets/Discord-Emojis) — related Core Builds semantic motifs; not an Android icon-pack source.
+- [`tools/catalog.json`](../../tools/catalog.json) — current 25 September 2026 census source for the measured 961 rows, 1,179 listed components, and 427 glyph names.
 
 ### External design references
 
