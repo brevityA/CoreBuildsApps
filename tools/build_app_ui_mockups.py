@@ -20,7 +20,7 @@ every metric from res/values/dimens.xml at the 1080p scale (960dp wide, 2px per
 dp), every colour from res/values/colors.xml, chip labels and counts from the
 generated icon_pack.xml arrays and MainActivity's CHIP_ORDER, suite rows from
 the generated suite_hub.xml, the update bar's bullets from
-Latestrelease/version.json, the inspector's component list from the bundled
+app/src/main/assets/version.json, the inspector's component list from the bundled
 appfilter.xml asset, and the artwork is the real bundled PNG - icon tiles paste
 drawable-nodpi, wallpaper tiles paste wallpapers_thumbs. The auditor frame's QR
 is a real scannable code of the same generated deep link AuditorActivity builds
@@ -191,7 +191,7 @@ SUITE = load_arrays(
     RES / "values/suite_hub.xml",
     ["suite_hub_names", "suite_hub_pkgs", "suite_hub_codes"],
 )
-VERSION = __import__("json").load(open(ROOT / "Latestrelease/version.json"))
+VERSION = __import__("json").load(open(ROOT / "app/src/main/assets/version.json"))
 
 # The auditor's deep link is generated, not typed: build_issue_prefills.py writes
 # it from the issue forms, and AuditorActivity only URL-encodes its three args.
@@ -1200,7 +1200,7 @@ def render(name: str) -> tuple[bytes, str]:
 INPUT_GLOBS = (
     "tools/build_app_ui_mockups.py",
     "tools/catalog.json",
-    "Latestrelease/version.json",
+    "app/src/main/assets/version.json",
     "app/src/main/assets/appfilter.xml",
     "app/src/main/assets/manifest/wallpapers.json",
     "app/src/main/res/layout/*.xml",

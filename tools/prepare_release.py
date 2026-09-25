@@ -11,7 +11,9 @@ this):
   1. app/build.gradle.kts            versionName — source of truth
   2. app/build.gradle.kts            versionCode (incremented by one)
   3. tools/catalog.json              meta.version
-  4. Latestrelease/version.json      versionName, versionCode, counts, date
+  4. app/src/main/assets/version.json  versionName, versionCode, counts,
+                                     date, highlights (the build's own
+                                     manifest; What's New reads it)
   5. suite.json                      iconpack versionName, versionCode, counts
   6. README.md                       suite-stamp block (build_readme_badge)
   7. AGENTS.md                       suite-table iconpack row (held to
@@ -30,8 +32,10 @@ fails CI's drift gate on docs/preview.svg) and the gates. When this exits
   tag vX.Y.Z **on the merged main commit** -> push the tag.
 
   CI's build.yml refuses tags not ancestral to main, then builds and signs
-  the APK, publishes the GitHub release, and moves the floating `iconpack`
-  tag. Run tools/generate_release_metadata.py iconpack --apk <built apk>
+  the APK, publishes the GitHub release, moves the floating `iconpack` tag,
+  and only then copies the manifest to Latestrelease/version.json - the file
+  installed copies poll. Nothing here touches that file: merging the bump PR
+  must not tell anyone an unreleased build is out. Run tools/generate_release_metadata.py iconpack --apk <built apk>
   afterwards if the release needs the apkSha256 field.
 """
 from __future__ import annotations
@@ -47,7 +51,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 GRADLE = ROOT / "app/build.gradle.kts"
 CATALOG = ROOT / "tools/catalog.json"
-VERSION_JSON = ROOT / "Latestrelease/version.json"
+VERSION_JSON = ROOT / "app/src/main/assets/version.json"
 SUITE = ROOT / "suite.json"
 README = ROOT / "README.md"
 CHANGELOG = ROOT / "CHANGELOG.md"
@@ -169,7 +173,7 @@ def main() -> int:
     print(f"3. catalog meta.version {args.version} "
           f"({icon_count} icons, {component_count} components)")
 
-    # 4. Latestrelease/version.json
+    # 4. app/src/main/assets/version.json (the published copy follows at tag time)
     latest = json.loads(VERSION_JSON.read_text(encoding="utf-8"))
     latest.update({
         "versionCode": new_code,
@@ -191,15 +195,6 @@ def main() -> int:
                             encoding="utf-8")
     print(f"4. version.json stamped (apkSha256 stays to the built APK), "
           f"{len(latest['highlights'])} highlights")
-
-    # 4b. The What's New sheet reads the manifest off the APK's own assets,
-    # so it can narrate the build that is running with the network switch
-    # off. The asset copy must be byte-identical to the Latestrelease
-    # manifest — validate.py enforces the pair the way it does the dual
-    # appfilter copies.
-    asset_manifest = ROOT / "app/src/main/assets/version.json"
-    asset_manifest.write_bytes(VERSION_JSON.read_bytes())
-    print("4b. assets/version.json mirrors the stamped manifest (What's New)")
 
     # 5. suite.json iconpack
     suite = json.loads(SUITE.read_text(encoding="utf-8"))

@@ -225,7 +225,7 @@ class MatchingTests(unittest.TestCase):
 class VersionAndCiTests(unittest.TestCase):
     def test_gradle_and_version_json_agree(self):
         gradle = read("app/build.gradle.kts")
-        ver = json.loads(read("Latestrelease/version.json"))
+        ver = json.loads(read("app/src/main/assets/version.json"))
         catalog = json.loads(read("tools/catalog.json"))
         g_code = int(re.search(r"versionCode\s*=\s*(\d+)", gradle).group(1))
         g_name = re.search(r'versionName\s*=\s*"([^"]+)"', gradle).group(1)

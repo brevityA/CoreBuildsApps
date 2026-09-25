@@ -235,39 +235,6 @@ jobs:
             glyphs/build/outputs/apk/release/*.apk
           if-no-files-found: error
 
-      - name: Sync the update manifest to the published tag
-        # Latestrelease/version.json is what the in-app updater polls. If it
-        # is not bumped on release, every user is told they are current when
-        # they are not. Commit it back to main as part of publishing rather
-        # than relying on remembering.
-        if: startsWith(github.ref, 'refs/tags/v')
-        run: |
-          TAG="${GITHUB_REF_NAME#v}"
-          python - "$TAG" <<'PY'
-          import json, re, sys
-          tag = sys.argv[1]
-          gradle = open('app/build.gradle.kts').read()
-          code = int(re.search(r'versionCode\s*=\s*(\d+)', gradle).group(1))
-          p = 'Latestrelease/version.json'
-          d = json.load(open(p))
-          d['versionCode'] = code
-          d['versionName'] = tag
-          json.dump(d, open(p, 'w'), indent=2)
-          open(p, 'a').write('\n')
-          print(f'version.json -> {tag} / {code}')
-          PY
-          if ! git diff --quiet -- Latestrelease/version.json; then
-            cp Latestrelease/version.json /tmp/version.json
-            git config user.name "github-actions[bot]"
-            git config user.email "github-actions[bot]@users.noreply.github.com"
-            git fetch origin main --depth=50
-            git checkout -B _version-sync origin/main
-            cp /tmp/version.json Latestrelease/version.json
-            git add Latestrelease/version.json
-            git commit -m "chore: sync update manifest to ${GITHUB_REF_NAME}"
-            git push origin _version-sync:main
-          fi
-
       - name: Publish versioned release
         if: startsWith(github.ref, 'refs/tags/v')
         env:
@@ -314,3 +281,36 @@ jobs:
             dist/iconpack-release.apk dist/app-release.apk \
             dist/iconpack-glyphs-release.apk
           gh release edit iconpack --draft=false --latest=false
+
+      - name: Publish the update manifest
+        # Latestrelease/version.json is what every installed copy polls, so
+        # it changes here, after the versioned and floating releases carry
+        # this APK - never in the version-bump PR. The manifest is the build's
+        # own (app/src/main/assets/version.json, stamped by prepare_release.py)
+        # copied across whole, highlights included; validate.py then holds
+        # the two byte-identical until the next bump.
+        if: startsWith(github.ref, 'refs/tags/v')
+        run: |
+          TAG="${GITHUB_REF_NAME#v}"
+          python - "$TAG" <<'PY'
+          import json, re, sys
+          tag = sys.argv[1]
+          gradle = open('app/build.gradle.kts').read()
+          code = int(re.search(r'versionCode\s*=\s*(\d+)', gradle).group(1))
+          d = json.load(open('app/src/main/assets/version.json'))
+          if d.get('versionName') != tag or d.get('versionCode') != code:
+              sys.exit(f"assets/version.json names {d.get('versionName')}/"
+                       f"{d.get('versionCode')}, tag is {tag}/{code}")
+          print(f'version.json -> {tag} / {code}')
+          PY
+          cp app/src/main/assets/version.json /tmp/version.json
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git fetch origin main --depth=50
+          git checkout -B _version-sync origin/main
+          cp /tmp/version.json Latestrelease/version.json
+          if ! git diff --quiet -- Latestrelease/version.json; then
+            git add Latestrelease/version.json
+            git commit -m "chore: publish update manifest for ${GITHUB_REF_NAME}"
+            git push origin _version-sync:main
+          fi

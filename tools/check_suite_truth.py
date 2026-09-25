@@ -63,7 +63,10 @@ def check_suite_json() -> None:
 def check_iconpack_truth(suite: dict) -> None:
     icon = suite["apps"]["iconpack"]
     catalog = json.loads(read("tools/catalog.json"))
-    latest = json.loads(read("Latestrelease/version.json"))
+    # The build's own manifest tracks Gradle; the published one may lag it
+    # until the release is tagged (see validate.py 5j), never lead it.
+    latest = json.loads(read("app/src/main/assets/version.json"))
+    published = json.loads(read("Latestrelease/version.json"))
     icons = catalog.get("icons", [])
     icon_count = len(icons)
     component_count = sum(len(row.get("components", [])) for row in icons)
@@ -74,9 +77,11 @@ def check_iconpack_truth(suite: dict) -> None:
     if icon.get("iconCount") != icon_count or icon.get("componentCount") != component_count:
         fail("suite.json iconpack counts must match catalog")
     if latest.get("versionName") != icon["versionName"] or latest.get("versionCode") != icon["versionCode"]:
-        fail("Latestrelease/version.json must match Icon Pack suite/Gradle version")
+        fail("app/src/main/assets/version.json must match Icon Pack suite/Gradle version")
     if latest.get("iconCount") != icon_count or latest.get("componentCount") != component_count:
-        fail("Latestrelease/version.json counts must match catalog")
+        fail("app/src/main/assets/version.json counts must match catalog")
+    if published.get("versionCode", 0) > icon["versionCode"]:
+        fail("Latestrelease/version.json is ahead of the Icon Pack build")
     icon_list = read("docs/IconPackList.md")
     if f"`{icon_count}` icons" not in icon_list or f"pack v{icon['versionName']}" not in icon_list:
         fail("docs/IconPackList.md header drifted from suite/catalog")

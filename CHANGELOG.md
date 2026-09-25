@@ -18,6 +18,19 @@ All notable changes to the Core Builds Icon Pack. Format follows
   Monet-as-HOME the action saves the MP4 to Movies/CoreBuilds instead, where
   Monet's own video picker finds it.
 
+### Fixed
+
+- **No more "update available" for a version that isn't out.** Installed
+  copies poll `Latestrelease/version.json` on main, and the version-bump PR
+  used to stamp it, so merging 1.9.5 told 1.9.4 users an update was waiting
+  while the download link still served 1.9.4, which then failed to install.
+  The bump now stamps only the build's own manifest
+  (`app/src/main/assets/version.json`, which What's New reads); the tag build
+  copies it to `Latestrelease/` after both releases carry the new APK.
+  `validate.py`, `check_suite_truth.py` and a new
+  `tests/test_update_manifest_gate.py` fail if the published manifest ever
+  runs ahead of the build. The published manifest is back on 1.9.4.
+
 ## [1.9.5] — 2026-09-24
 
 ### Added

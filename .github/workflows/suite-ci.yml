@@ -216,6 +216,7 @@ jobs:
           python tests/test_changelog_contract.py
           python tests/test_glyphs_pack.py
           python tests/test_icon_palette.py
+          python tests/test_update_manifest_gate.py
           # Meta-gate, last: it reads the workflows above and fails if any
           # tests/test_*.py or tools/check_*.py has stopped being invoked. This
           # job has no path filter, so it is the one place a new test can be

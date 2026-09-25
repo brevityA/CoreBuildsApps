@@ -43,9 +43,9 @@
   },
   "generator": "tools/build_app_ui_mockups.py",
   "inputs": {
-    "Latestrelease/version.json": "1da0cecae0ac45d71c80fa72e7212ade8cc6b7abc48bba2426784ae4f52adf74",
     "app/src/main/assets/appfilter.xml": "c3e484407e1eefa56e33ad6fde14d49dff49bde874774bbdadc35570cca92fee",
     "app/src/main/assets/manifest/wallpapers.json": "67c5a010561e1f1a6eeac664dac87e01026d556a471216a58480b22d71058960",
+    "app/src/main/assets/version.json": "1da0cecae0ac45d71c80fa72e7212ade8cc6b7abc48bba2426784ae4f52adf74",
     "app/src/main/res/layout/activity_about.xml": "24bf8847817c6c79e0733b25282913f12756331e851a461fdb5f96e43b08d04a",
     "app/src/main/res/layout/activity_auditor.xml": "3353f96d0932249a0ce841ca31ef98c65103132ec9b9efd1c8144e1fe2c34dca",
     "app/src/main/res/layout/activity_export_progress.xml": "3c388eb2b74cc0b5e362069cff6adfe219a4948eed7220f36a9a2d2d06d48210",
@@ -71,14 +71,14 @@
     "app/src/main/res/values/strings.xml": "b2952caf1566543631c143ec3228244a75a57a6651e1996098ac081032469b98",
     "app/src/main/res/values/suite_hub.xml": "6db1311df6a29a1ced5fdbc175f8f97111c0f035786ea3d1f4ed396018580862",
     "app/src/main/res/values/themes.xml": "ecac526951fe40b6c5c01df0ec36730d0e197fd9511862cf587a2143773b46be",
-    "tools/build_app_ui_mockups.py": "a8d51d9c03f39b1d2b73831ff6a519dbff9259816d13cb43f9fe030906df08db",
+    "tools/build_app_ui_mockups.py": "35207f64a0177534112d4de41d5ae03be128a185f5d24138fc9ef845a56f70f3",
     "tools/catalog.json": "aff734f12172040890a1d2ea6e75d9535474a61402beb1689a34f2f8d08285fe",
     "tools/fonts/DejaVuSansMono-Bold.ttf": "2964f6dac8e6e9d71613928340f17bf868e9ea51692cca333c79e74962f02233",
     "tools/fonts/DejaVuSansMono.ttf": "0f5db4f1749979d961019838b160bec74abdf7f9eca69553fe1aa856bbff49a4",
     "tools/fonts/Outfit-Bold.ttf": "04f7c9705153927058475d6c5e9f75b0a1036ec5f6f63ffb69df046191ea8933",
     "tools/fonts/Outfit-ExtraBold.ttf": "056e8cd5840cea4cfc355f672292f7de00d95f5a42bf9b7cd96d511ca8e2883e"
   },
-  "inputs_digest": "9d3dfc95ca23b4b595da995d504d50e673c5bb5e6b376646da2584fd9dd28bff",
+  "inputs_digest": "e150c3aa7b5140987148d6c0affd716256df766601ee409f8fb33e9720960a81",
   "metrics": {
     "mono-bold@24": 448.0,
     "mono-bold@32": 608.0,
