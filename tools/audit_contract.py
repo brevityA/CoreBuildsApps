@@ -17,7 +17,9 @@ ROOT = Path(__file__).resolve().parents[1]
 APPS = {
     "iconpack": {
         "gradle": "app/build.gradle.kts",
-        "metadata": "Latestrelease/version.json",
+        # The build's own manifest. Latestrelease/version.json is published
+        # from it at tag time and may lag Gradle until then (validate.py 5j).
+        "metadata": "app/src/main/assets/version.json",
         "workflow": ".github/workflows/build.yml",
         "apk": "iconpack-release.apk",
         "checker": "app/src/main/java/tv/corebuilds/iconpack/UpdateChecker.kt",

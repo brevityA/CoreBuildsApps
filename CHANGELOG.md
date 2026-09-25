@@ -6,10 +6,19 @@ All notable changes to the Core Builds Icon Pack. Format follows
 
 ## [Unreleased]
 
-## [1.9.5] — 2026-09-24
+## [1.9.5] — 2026-09-25
 
 ### Added
 
+- **The Deep Space loops play as the system live wallpaper.** All twelve
+  series-9 loops ride the wallpapers grid behind a Live badge; previewing one
+  downloads it once, then Set stores the choice and opens the system live
+  picker pre-pointed at Core Builds Live. No new permission, no new
+  dependency — playback is a muted looping MediaPlayer that pauses
+  off-screen, with the bundled poster as a still fallback. Motion loops stay
+  out of bulk export (video has no place in the Pictures rotation folder); on
+  Monet-as-HOME the action saves the MP4 to Movies/CoreBuilds instead, where
+  Monet's own video picker finds it.
 - **The Deep Space wallpapers move.** The twelve series-9 walls are now live
   wallpapers too: each one is a seamless 20-second 1080p loop of that exact
   scene, with its own stars twinkling, its nebulae and halos shimmering, and
@@ -40,6 +49,29 @@ All notable changes to the Core Builds Icon Pack. Format follows
   keeps 1.9.4's mappings, so apply Core Builds Icon Pack (Apply, or flip the
   Art style switch once) to get the updated banners, then uninstall the old
   companion.
+- **No more "update available" for a version that isn't out.** Installed
+  copies poll `Latestrelease/version.json` on main, and the version-bump PR
+  used to stamp it, so merging 1.9.5 told 1.9.4 users an update was waiting
+  while the download link still served 1.9.4, which then failed to install.
+  The bump now stamps only the build's own manifest
+  (`app/src/main/assets/version.json`, which What's New reads); the tag build
+  copies it to `Latestrelease/` after both releases carry the new APK.
+  `validate.py`, `check_suite_truth.py` and a new
+  `tests/test_update_manifest_gate.py` fail if the published manifest ever
+  runs ahead of the build. The published manifest is back on 1.9.4.
+- **Monet's Apply button tells the truth, and the walk has a screen.** Monet
+  accepts no apply action from any app — its settings activity is not exported
+  and it exposes no deep link (`docs/MONET_LAUNCHER.md`) — so the old press could
+  only end in a toast reading *"Set it here: Monet Settings → Apps → Icon pack →
+  Core Builds Icon Pack, then pick Core Builds Banners"*: two packs in one
+  sentence, the second retired in 1.9.5, and gone the moment HOME was pressed to
+  follow it. A launcher with no inbound apply now carries **Set up in Monet
+  Launcher** on the CTA, and a **Launcher setup** screen that says why it cannot
+  be applied for you, numbers the walk, ends it on exactly one pack — the same
+  pack the Banners/Glyphs setting selects — and checks that pack really answers
+  Monet's own pack-discovery actions before naming it. The one action that does
+  exist is on the screen: **Open Monet**. The app changes nothing itself, and
+  says so.
 
 ## [1.9.4] — 2026-09-24
 

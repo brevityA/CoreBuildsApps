@@ -144,16 +144,12 @@ def main():
     # 3b. Compatibility copies must be byte-identical. Some launchers read
     # res/xml and older ADW/GO integrations read assets; divergent mappings
     # produce device-specific failures that are extremely hard to diagnose.
-    # The What's New manifest has the same property: the sheet narrates the
-    # build's own notes, which is only true when the asset copy and the
-    # Latestrelease manifest are the same file.
     assets = ROOT / "app" / "src" / "main" / "assets"
     glyph_res = GLYPH_MAIN / "res" / "xml"
     pairs = [(RES / "xml" / "appfilter.xml", assets / "appfilter.xml"),
              (RES / "xml" / "drawable.xml", assets / "drawable.xml"),
              (glyph_res / "appfilter.xml", GLYPH_MAIN / "assets" / "appfilter.xml"),
-             (glyph_res / "drawable.xml", GLYPH_MAIN / "assets" / "drawable.xml"),
-             (ROOT / "Latestrelease" / "version.json", assets / "version.json")]
+             (glyph_res / "drawable.xml", GLYPH_MAIN / "assets" / "drawable.xml")]
     for resource_file, asset_file in pairs:
         check(asset_file.exists(),
               f"{asset_file} missing ({resource_file.name}'s twin copy)")
@@ -474,34 +470,56 @@ def main():
                   f"{i['name']}: heaviest stroke is {max(widths)}px, "
                   f"over the 34px monoline ceiling")
 
-    # 5j. The update manifest must agree with the build it ships beside.
-    # Latestrelease/version.json is what the in-app updater polls; if its
-    # versionCode lags build.gradle.kts, every user is told they are current
-    # when they are not. It is hand-maintained, so assert it.
+    # 5j. Two manifests, two jobs. app/src/main/assets/version.json is the
+    # build's own manifest: the What's New sheet narrates it, and it must
+    # agree with build.gradle.kts. Latestrelease/version.json is what every
+    # installed copy polls, so it names the newest *published* release and
+    # nothing newer: prepare_release.py stamps only the asset copy, and the
+    # tag build (build.yml) copies it across once the APK is released.
+    # Stamping it in the version-bump PR told 1.9.4 users that 1.9.5 was out
+    # before it was, and Download fetched the floating release, still 1.9.4.
     import json as _json
-    _vj = ROOT / "Latestrelease" / "version.json"
+    _pending_p = ROOT / "app" / "src" / "main" / "assets" / "version.json"
+    _published_p = ROOT / "Latestrelease" / "version.json"
     _gradle = (ROOT / "app" / "build.gradle.kts").read_text(encoding="utf-8")
-    if _vj.exists():
-        _v = _json.loads(_vj.read_text(encoding="utf-8"))
-        _gc = re.search(r"versionCode\s*=\s*(\d+)", _gradle)
-        _gn = re.search(r'versionName\s*=\s*"([^"]+)"', _gradle)
+    _gc = re.search(r"versionCode\s*=\s*(\d+)", _gradle)
+    _gn = re.search(r'versionName\s*=\s*"([^"]+)"', _gradle)
+    stable_apk = ("https://github.com/brevityA/CoreBuildsApps/releases/"
+                  "download/iconpack/iconpack-release.apk")
+    check(_pending_p.exists(), "app/src/main/assets/version.json missing")
+    check(_published_p.exists(), "Latestrelease/version.json missing")
+    if _pending_p.exists() and _published_p.exists():
+        _v = _json.loads(_pending_p.read_text(encoding="utf-8"))
+        _pub = _json.loads(_published_p.read_text(encoding="utf-8"))
         if _gc:
             check(int(_gc.group(1)) == _v.get("versionCode"),
-                  f"version.json versionCode {_v.get('versionCode')} != "
-                  f"build.gradle.kts {_gc.group(1)} — the updater would "
-                  f"report the wrong build")
+                  f"assets/version.json versionCode {_v.get('versionCode')} != "
+                  f"build.gradle.kts {_gc.group(1)} - What's New would "
+                  f"narrate the wrong build")
+            check(_pub.get("versionCode", 0) <= int(_gc.group(1)),
+                  f"Latestrelease/version.json versionCode "
+                  f"{_pub.get('versionCode')} is ahead of build.gradle.kts "
+                  f"{_gc.group(1)}")
         if _gn:
             check(_gn.group(1) == _v.get("versionName"),
-                  f"version.json versionName {_v.get('versionName')} != "
+                  f"assets/version.json versionName {_v.get('versionName')} != "
                   f"build.gradle.kts {_gn.group(1)}")
         check(_v.get("iconCount") == len(icons),
-              f"version.json iconCount {_v.get('iconCount')} != "
+              f"assets/version.json iconCount {_v.get('iconCount')} != "
               f"{len(icons)} icons in the catalogue")
-        stable_apk = ("https://github.com/brevityA/CoreBuildsApps/releases/"
-                      "download/iconpack/iconpack-release.apk")
-        check(_v.get("apkUrl") == stable_apk,
-              "version.json apkUrl must use the floating iconpack release — "
-              "repository-wide latest can point at Core Line")
+        # Once the release is out the published copy is this build's
+        # manifest; only the release-time fields (the APK's SHA-256, the
+        # publish date) may differ.
+        if _pub.get("versionCode") == _v.get("versionCode"):
+            _skip = {"apkSha256", "releaseDate"}
+            check({k: x for k, x in _pub.items() if k not in _skip}
+                  == {k: x for k, x in _v.items() if k not in _skip},
+                  "Latestrelease/version.json names this build but differs "
+                  "from app/src/main/assets/version.json")
+        for _label, _m in (("assets", _v), ("Latestrelease", _pub)):
+            check(_m.get("apkUrl") == stable_apk,
+                  f"{_label}/version.json apkUrl must use the floating iconpack "
+                  "release - repository-wide latest can point at Core Line")
 
     # 6. banner + launcher icons exist
     for p in [RES / "drawable-nodpi" / "cb_banner.png",

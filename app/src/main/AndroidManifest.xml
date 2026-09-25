@@ -115,7 +115,7 @@
         <package android:name="dev.corebuilds.line" />
         <package android:name="tv.corebuilds.motion" />
         <package android:name="dev.corebuilds.shift" />
-        <!-- Core Builds Banners, the 16:9 companion the Glyphs/Banners toggle
+        <!-- Core Builds Glyphs, the square companion the Banners/Glyphs toggle
              points launchers at: its installed version gates the apply. -->
         <package android:name="tv.corebuilds.iconpack.glyphs" />
     </queries>
@@ -270,10 +270,33 @@
             android:exported="false"
             android:label="@string/about_label"
             android:theme="@style/Theme.CoreBuilds" />
+        <!-- The walk through a launcher that has no inbound apply (Monet).
+             Opened from the sheet's CTA and from Settings; not exported. -->
+        <activity
+            android:name=".LauncherSetupActivity"
+            android:exported="false"
+            android:label="@string/setup_label"
+            android:theme="@style/Theme.CoreBuilds" />
         <activity
             android:name=".ExportProgressActivity"
             android:exported="false"
             android:label="@string/wp_export_title"
             android:theme="@style/Theme.CoreBuilds" />
+
+        <!-- System live wallpaper: plays the chosen LiveLoop on the home
+             screen. Exported with the wallpaper bind permission so only the
+             system can bind it; the settings entry reopens the browser. -->
+        <service
+            android:name=".LiveWallpaperService"
+            android:exported="true"
+            android:label="@string/live_wallpaper_label"
+            android:permission="android.permission.BIND_WALLPAPER">
+            <intent-filter>
+                <action android:name="android.service.wallpaper.WallpaperService" />
+            </intent-filter>
+            <meta-data
+                android:name="android.service.wallpaper"
+                android:resource="@xml/live_wallpaper" />
+        </service>
     </application>
 </manifest>

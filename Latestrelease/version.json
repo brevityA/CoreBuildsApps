@@ -1,6 +1,6 @@
 {
-  "versionCode": 37,
-  "versionName": "1.9.5",
+  "versionCode": 36,
+  "versionName": "1.9.4",
   "iconCount": 961,
   "componentCount": 1179,
   "releaseDate": "2026-09-24",
@@ -8,10 +8,11 @@
   "releaseNotesUrl": "https://github.com/brevityA/CoreBuildsApps/releases",
   "minSdk": 21,
   "highlights": [
-    "The Deep Space wallpapers move",
-    "Core Builds Glyphs",
-    "Banners are the default again",
-    "Clips 11\u201313 are the Deep Space scenes themselves",
-    "The Banners companion is retired"
+    "Banners for every app, from one switch",
+    "Twelve Deep Space wallpapers",
+    "Two-thirds smaller download, same pixels",
+    "Missing-app auditor sends mapping reports to the right form",
+    "Missing-app auditor no longer lists apps whose icon works",
+    "Missing-app auditor opens without a pause"
   ]
 }

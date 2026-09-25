@@ -202,6 +202,13 @@ class SettingsActivity : TvActivity() {
                 toast(getString(R.string.refresh_manual_fmt, result.launcherName, result.instructions))
             is ApplyIconPack.Result.NotInstalled ->
                 toast(getString(R.string.refresh_no_launcher))
+            is ApplyIconPack.Result.Handoff ->
+                // Same walk as the sheet's CTA, reached from Settings instead:
+                // one screen, one set of steps, whichever door was used.
+                startActivity(
+                    Intent(this, LauncherSetupActivity::class.java)
+                        .putExtra(LauncherSetupActivity.EXTRA_LAUNCHER, launcher.key)
+                )
             ApplyIconPack.Result.NeedsCompanion ->
                 GlyphsCompanion.ensure(this, launcher.key) {
                     bannerSwitch.isChecked = Prefs.pickerPrefersBanners(this)

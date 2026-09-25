@@ -14,6 +14,11 @@ import java.util.Locale
  * is instant offline; the full 4K image is downloaded on demand from [url]
  * (raw GitHub) and cached by [WallpaperDownloader].
  *
+ * A handful of entries are motion loops ([LiveLoop]) rather than stills: they
+ * carry [isLive], which keeps them out of the stills exporter (video has no
+ * place in the Pictures rotation folder) and routes their preview to the live
+ * branch instead.
+ *
  * Parcelable so the browser can hand a selection to [ExportProgressActivity].
  */
 data class Wallpaper(
@@ -29,7 +34,9 @@ data class Wallpaper(
     /** Declared resolution, e.g. "3840x2160". */
     val resolution: String,
     /** Bundled thumb asset path under assets/ (with .jpg). */
-    val thumbAsset: String
+    val thumbAsset: String,
+    /** True for a [LiveLoop] motion loop: [url] is an MP4, not a still. */
+    val isLive: Boolean = false
 ) : Parcelable {
 
     private constructor(parcel: Parcel) : this(
@@ -38,7 +45,8 @@ data class Wallpaper(
         url = parcel.readString().orEmpty(),
         thumbUrl = parcel.readString().orEmpty(),
         resolution = parcel.readString().orEmpty(),
-        thumbAsset = parcel.readString().orEmpty()
+        thumbAsset = parcel.readString().orEmpty(),
+        isLive = parcel.readInt() == 1
     )
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
@@ -48,6 +56,7 @@ data class Wallpaper(
         parcel.writeString(thumbUrl)
         parcel.writeString(resolution)
         parcel.writeString(thumbAsset)
+        parcel.writeInt(if (isLive) 1 else 0)
     }
 
     override fun describeContents(): Int = 0

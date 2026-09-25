@@ -5,7 +5,9 @@ from datetime import date, timezone, datetime
 from pathlib import Path
 
 APPS = {
-  'iconpack': {'gradle':'app/build.gradle.kts','metadata':'Latestrelease/version.json','apk':'iconpack-release.apk','tag':'iconpack','minSdk':21},
+  # 'source' is the build's own manifest: the release publishes its notes, not
+  # the previous release's (Latestrelease/ lags until this runs).
+  'iconpack': {'gradle':'app/build.gradle.kts','metadata':'Latestrelease/version.json','source':'app/src/main/assets/version.json','apk':'iconpack-release.apk','tag':'iconpack','minSdk':21},
   'coreline': {'gradle':'ticker/android/app/build.gradle.kts','metadata':'Latestrelease/coreline-version.json','apk':'coreline-release.apk','tag':'coreline','minSdk':24},
   'coreshift': {'gradle':'shift/app/build.gradle.kts','metadata':'Latestrelease/shift-version.json','apk':'coreshift-release.apk','tag':'shift','minSdk':26},
 }
@@ -31,7 +33,7 @@ def main():
     cfg=APPS[args.app]
     gradle=Path(cfg['gradle']).read_text()
     current={}
-    meta_path=Path(cfg['metadata'])
+    meta_path=Path(cfg.get('source') or cfg['metadata'])
     if meta_path.exists(): current=json.loads(meta_path.read_text())
     data={
       **current,

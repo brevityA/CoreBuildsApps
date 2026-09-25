@@ -1,5 +1,8 @@
 package tv.corebuilds.iconpack
 
+import android.app.WallpaperManager
+import android.content.ComponentName
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
@@ -34,6 +37,14 @@ import java.io.File
  * D-pad left/right cycles through the wallpaper list passed from the browser.
  * A generation counter guards against stale download callbacks firing after
  * the user has already moved on.
+ *
+ * Motion loops ([LiveLoop]) preview in the same screen: the bundled thumb
+ * shows while the MP4 downloads, then Set becomes "Set live wallpaper",
+ * which stores the choice and opens the system live picker pre-pointed at
+ * [LiveWallpaperService]. Save is hidden for loops (video has no place in
+ * the Pictures rotation folder); on Monet-as-HOME the primary action saves
+ * the MP4 to Movies/CoreBuilds instead, where Monet's own video picker
+ * finds it, since Monet ignores the system wallpaper entirely.
  */
 class WallpaperPreviewActivity : TvActivity() {
 
@@ -51,8 +62,13 @@ class WallpaperPreviewActivity : TvActivity() {
 
     private var fullBitmap: Bitmap? = null
     private var downloaded: File? = null
+    private var liveFile: File? = null
+    private var pendingLiveMonet: File? = null
     private var loading = false
     private var destroyed = false
+
+    private val currentIsLive: Boolean
+        get() = wallpapers.getOrNull(currentIndex)?.isLive == true
 
     private val requestSetPermission =
         registerForActivityResult(ActivityResultContracts.RequestPermission()) { granted ->
@@ -61,7 +77,15 @@ class WallpaperPreviewActivity : TvActivity() {
 
     private val requestStoragePermission =
         registerForActivityResult(ActivityResultContracts.RequestPermission()) { granted ->
-            if (granted) saveNow() else toast(getString(R.string.wp_storage_permission_denied))
+            if (!granted) {
+                pendingLiveMonet = null
+                toast(getString(R.string.wp_storage_permission_denied))
+                return@registerForActivityResult
+            }
+            pendingLiveMonet?.let {
+                pendingLiveMonet = null
+                saveLiveForMonetNow(it)
+            } ?: saveNow()
         }
 
     private val openSetter =
@@ -74,7 +98,10 @@ class WallpaperPreviewActivity : TvActivity() {
 
     /** Label for the primary action — names the actual destination. */
     private fun setLabel(): String =
-        if (monetIsHome) getString(R.string.wp_send_to_monet)
+        if (currentIsLive) {
+            if (monetIsHome) getString(R.string.wp_save_for_monet)
+            else getString(R.string.wp_set_live)
+        } else if (monetIsHome) getString(R.string.wp_send_to_monet)
         else getString(R.string.wp_set_wallpaper)
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -154,11 +181,15 @@ class WallpaperPreviewActivity : TvActivity() {
         fullBitmap?.recycle()
         fullBitmap = null
         downloaded = null
+        liveFile = null
         loading = true
         setButton.isEnabled = false
         saveButton.isEnabled = false
         setButton.text = setLabel()
         saveButton.text = getString(R.string.wp_save)
+        // Save is a stills action (Pictures rotation folder); loops have no
+        // use for it, so the button leaves the chain rather than disabling.
+        saveButton.visibility = if (wp.isLive) View.GONE else View.VISIBLE
         seedRow.visibility = View.GONE
 
         titleView.text = wp.title
@@ -169,7 +200,62 @@ class WallpaperPreviewActivity : TvActivity() {
         }
 
         loadThumb(wp, gen)
-        beginDownload(wp, gen)
+        if (wp.isLive) beginLiveDownload(wp, gen) else beginDownload(wp, gen)
+    }
+
+    /**
+     * Loop fetch for the live branch: same progress readout as the stills
+     * path, but the prize is an MP4 in filesDir rather than a decodable
+     * bitmap. The thumb stays up throughout — there is no fuller frame to
+     * reveal until the engine plays it on the home screen.
+     */
+    private fun beginLiveDownload(wp: Wallpaper, gen: Int) {
+        val loop = LiveLoop.loopFor(wp)
+        if (loop == null) {
+            loading = false
+            sub.text = getString(R.string.wp_load_failed)
+            return
+        }
+        LiveLoopDownloader.fetch(this, loop) { event ->
+            if (destroyed || gen != generation) return@fetch
+            when (event) {
+                is LiveLoopDownloader.Event.Progress -> {
+                    val rec = event.received / 1024
+                    val tot = event.total
+                    val progress = if (tot > 0) {
+                        getString(R.string.wp_downloading_of_fmt, rec, tot / 1024)
+                    } else {
+                        getString(R.string.wp_downloading_fmt, rec)
+                    }
+                    sub.text = if (wallpapers.size > 1) {
+                        "${getString(R.string.wp_position_fmt, currentIndex + 1, wallpapers.size)} · $progress"
+                    } else {
+                        progress
+                    }
+                }
+                is LiveLoopDownloader.Event.Ready -> {
+                    loading = false
+                    liveFile = event.file
+                    setButton.isEnabled = true
+                    sub.text = if (wallpapers.size > 1) {
+                        "${getString(R.string.wp_position_fmt, currentIndex + 1, wallpapers.size)} · ${getString(R.string.wp_live_sub)}"
+                    } else {
+                        getString(R.string.wp_live_sub)
+                    }
+                    val current = currentFocus
+                    if (current == null || current === window.decorView ||
+                        current.id == R.id.preview_back
+                    ) {
+                        setButton.requestFocus()
+                    }
+                }
+                is LiveLoopDownloader.Event.Failed -> {
+                    loading = false
+                    sub.text = getString(R.string.wp_download_failed_fmt, event.reason)
+                    toast(getString(R.string.wp_download_failed_fmt, event.reason))
+                }
+            }
+        }
     }
 
     private fun loadThumb(wp: Wallpaper, gen: Int) {
@@ -314,6 +400,10 @@ class WallpaperPreviewActivity : TvActivity() {
     // ---- Set -----------------------------------------------------------------
 
     private fun onSetClicked() {
+        if (currentIsLive) {
+            onSetLiveClicked()
+            return
+        }
         if (monetIsHome) {
             sendToMonet()
             return
@@ -427,6 +517,74 @@ class WallpaperPreviewActivity : TvActivity() {
         } catch (e: Exception) {
             toast(getString(R.string.wp_monet_share_failed))
         }
+    }
+
+    /**
+     * Live branch of Set. Stores the loop choice, then hands off to the
+     * system live picker pre-pointed at [LiveWallpaperService] — Android
+     * offers no direct-apply for live wallpapers, so the picker *is* the
+     * apply. Monet-as-HOME instead saves the MP4 to Movies/CoreBuilds,
+     * where Monet's own video picker finds it.
+     */
+    private fun onSetLiveClicked() {
+        val wp = wallpapers.getOrNull(currentIndex) ?: return
+        val loop = LiveLoop.loopFor(wp) ?: return
+        val file = liveFile
+        if (file == null) {
+            toast(
+                if (loading) getString(R.string.wp_live_download_needed)
+                else getString(R.string.wp_load_failed)
+            )
+            return
+        }
+        if (monetIsHome) {
+            saveLiveForMonet(file)
+            return
+        }
+        Prefs.setLiveLoopId(this, loop.id)
+        try {
+            startActivity(
+                Intent(WallpaperManager.ACTION_CHANGE_LIVE_WALLPAPER).apply {
+                    putExtra(
+                        WallpaperManager.EXTRA_LIVE_WALLPAPER_COMPONENT,
+                        ComponentName(this@WallpaperPreviewActivity, LiveWallpaperService::class.java),
+                    )
+                }
+            )
+            toast(getString(R.string.wp_live_set_done))
+        } catch (e: Exception) {
+            toast(getString(R.string.wp_live_no_picker))
+        }
+    }
+
+    private fun saveLiveForMonet(file: File) {
+        val perm = WallpaperSetter.storagePermission()
+        if (perm != null && !WallpaperSetter.hasStoragePermission(this)) {
+            pendingLiveMonet = file
+            requestStoragePermission.launch(perm)
+            return
+        }
+        saveLiveForMonetNow(file)
+    }
+
+    private fun saveLiveForMonetNow(file: File) {
+        setButton.isEnabled = false
+        Thread {
+            val result = WallpaperSetter.copyFileToMovies(this, file, file.name)
+            runOnUiThread {
+                if (destroyed) return@runOnUiThread
+                setButton.isEnabled = true
+                when (result) {
+                    is WallpaperSetter.Result.SavedToGallery ->
+                        toast(getString(R.string.wp_live_monet_hint))
+                    is WallpaperSetter.Result.NeedsPermission ->
+                        requestStoragePermission.launch(result.permission)
+                    is WallpaperSetter.Result.Failed ->
+                        toast(getString(R.string.wp_set_failed_fmt, result.reason))
+                    else -> { /* Set can't happen from a file copy */ }
+                }
+            }
+        }.start()
     }
 
     // ---- Save ----------------------------------------------------------------

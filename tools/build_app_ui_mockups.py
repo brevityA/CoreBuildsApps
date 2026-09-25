@@ -20,7 +20,7 @@ every metric from res/values/dimens.xml at the 1080p scale (960dp wide, 2px per
 dp), every colour from res/values/colors.xml, chip labels and counts from the
 generated icon_pack.xml arrays and MainActivity's CHIP_ORDER, suite rows from
 the generated suite_hub.xml, the update bar's bullets from
-Latestrelease/version.json, the inspector's component list from the bundled
+app/src/main/assets/version.json, the inspector's component list from the bundled
 appfilter.xml asset, and the artwork is the real bundled PNG - icon tiles paste
 drawable-nodpi, wallpaper tiles paste wallpapers_thumbs. The auditor frame's QR
 is a real scannable code of the same generated deep link AuditorActivity builds
@@ -191,7 +191,7 @@ SUITE = load_arrays(
     RES / "values/suite_hub.xml",
     ["suite_hub_names", "suite_hub_pkgs", "suite_hub_codes"],
 )
-VERSION = __import__("json").load(open(ROOT / "Latestrelease/version.json"))
+VERSION = __import__("json").load(open(ROOT / "app/src/main/assets/version.json"))
 
 # The auditor's deep link is generated, not typed: build_issue_prefills.py writes
 # it from the issue forms, and AuditorActivity only URL-encodes its three args.
@@ -222,6 +222,32 @@ APPFILTER_TEXT = (ROOT / "app/src/main/assets/appfilter.xml").read_text(encoding
 COMPONENT_COUNT = len(re.findall(r'component="ComponentInfo', APPFILTER_TEXT))
 WALLPAPERS = __import__("json").load(
     open(ROOT / "app/src/main/assets/manifest/wallpapers.json"))["wallpapers"]
+
+# The motion loops the browser appends to the catalog (WallpapersActivity:
+# `WallpaperCatalog.load(this) + LiveLoop.asWallpapers()`), so the grid carries
+# them behind a LIVE badge. Parsed from the Kotlin rather than copied here: a
+# loop added there and missing from this frame is exactly the drift the mockup
+# check exists to catch. Their still frames live with the motion art, not in
+# the bundled wallpaper thumbs.
+LIVE_THUMBS = ROOT / "Motion/live/thumbs"
+
+
+def live_loops() -> list[dict]:
+    src = (ROOT / "app/src/main/java/tv/corebuilds/iconpack/LiveLoop.kt").read_text(
+        encoding="utf-8")
+    body = re.search(r"val LOOPS: List<Loop> = listOf\((.*?)\n    \)",
+                     src, re.DOTALL).group(1)
+    base = re.search(r'RAW_BASE\s*=\s*\n?\s*"([^"]+)"', src).group(1)
+    titles = re.findall(r'title = "([^"]+)"', body)
+    files = re.findall(r'fileName = "([^"]+)"', body)
+    series = re.search(r'const val SERIES = "([^"]+)"', src).group(1)
+    return [
+        {"name": title, "series": series, "url": base + file_name, "live": True}
+        for title, file_name in zip(titles, files)
+    ]
+
+
+LIVE_LOOPS = live_loops()
 
 # Example data, named as such in every caption: the launchers a TV with several
 # installed would be detected as. The list under Apply and the ALSO APPLIES TO
@@ -450,8 +476,27 @@ def chip_pill(img: Image.Image, x: int, y: int, label: str, active: bool,
     return w
 
 
+def live_badge(img: Image.Image, draw: ImageDraw.ImageDraw, box, inset: int) -> None:
+    """The LIVE chip from item_wallpaper.xml over a motion-loop tile: a
+    near-opaque night pill with a cyan hairline and the kicker label in signal
+    cyan, over the thumb's top-left corner. A label, never a control, so it
+    carries no focus state the way the chip row's pills do."""
+    f = font("sans", DIMENS["cb_text_kicker"], bold=True)
+    label = STRINGS["wp_live_badge"]
+    pad = dp(DIMENS["cb_space_sm"])
+    h = dp(DIMENS["cb_text_kicker"]) + 2 * dp(2)
+    w = text_width(draw, label, f) + 2 * pad
+    x = box[0] + inset + dp(DIMENS["cb_space_sm"])
+    y = box[1] + inset + dp(DIMENS["cb_space_sm"])
+    rrect(draw, [x, y, x + w, y + h], dp(DIMENS["cb_radius_field"]),
+          fill=colour("cb_night", alpha=0xE6),
+          outline=colour("cb_signal_cyan"), width=dp(1))
+    draw_text(draw, (x + pad, y + h / 2), label, f, colour("cb_signal_cyan"),
+              anchor="lm")
+
+
 def search_field(img: Image.Image, x: int, y: int, w_dp: float,
-                 hint: str | None = None) -> None:
+                hint: str | None = None) -> None:
     """The field. `hint` is what MainActivity sets at runtime (search_hint_fmt);
     the layout's static hint is only what a screenshot before binding shows."""
     draw = ImageDraw.Draw(img, "RGBA")
@@ -737,8 +782,8 @@ def catalogue_frame(with_update_bar: bool) -> tuple[Image.Image, str]:
 def wallpapers_frame() -> tuple[Image.Image, str]:
     """The wallpapers browser as built: landscape two-pane. Header across the
     top, series chips and the export foot in the left rail, the named-thumb
-    grid owning the right pane."""
-    walls = WALLPAPERS
+    grid owning the right pane. The motion loops ride the same grid, badged."""
+    walls = WALLPAPERS + LIVE_LOOPS
     img = new_frame()
     draw = ImageDraw.Draw(img, "RGBA")
     g, rail_r, pane_l = rail_box()
@@ -815,19 +860,25 @@ def wallpapers_frame() -> tuple[Image.Image, str]:
             else:
                 card(img, box)
             inset = dp(DIMENS["cb_focus_inset"]) + dp(6)
-            thumb_path = THUMBS_DIR / (
-                walls[index]["url"].split("/")[-1].rsplit(".", 1)[0] + ".jpg")
+            wall = walls[index]
+            stem = wall["url"].split("/")[-1].rsplit(".", 1)[0] + ".jpg"
+            # Motion loops keep their still frame with the motion art; the
+            # stills' thumbs are bundled under assets/.
+            thumb_path = (LIVE_THUMBS if wall.get("live") else THUMBS_DIR) / stem
             paste_art(img, thumb_path,
                       [box[0] + inset, box[1] + inset, box[2] - inset,
                        box[1] + inset + thumb], radius=dp(6))
-            title = walls[index]["name"].split("\u00b7 ", 1)[-1]
+            if wall.get("live"):
+                live_badge(img, draw, box, inset)
+            title = wall["name"].split("\u00b7 ", 1)[-1]
             draw_text(draw, ((box[0] + box[2]) / 2, box[1] + inset + thumb + dp(10)),
                       title, f_tile, colour("cb_ink"), anchor="ma")
         py += tile_h
         row += 1
 
     note = ("MOCKUP - wallpapers from activity_wallpapers.xml + strings.xml + "
-            f"manifest/wallpapers.json ({len(walls)} walls), bundled thumbs; "
+            f"manifest/wallpapers.json ({len(WALLPAPERS)} stills) + LiveLoop.kt "
+            f"({len(LIVE_LOOPS)} motion loops, LIVE badge), bundled thumbs; "
             "example: focus, chip")
     return img, note
 
@@ -1149,7 +1200,7 @@ def render(name: str) -> tuple[bytes, str]:
 INPUT_GLOBS = (
     "tools/build_app_ui_mockups.py",
     "tools/catalog.json",
-    "Latestrelease/version.json",
+    "app/src/main/assets/version.json",
     "app/src/main/assets/appfilter.xml",
     "app/src/main/assets/manifest/wallpapers.json",
     "app/src/main/res/layout/*.xml",

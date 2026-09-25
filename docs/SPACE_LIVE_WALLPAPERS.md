@@ -1,8 +1,10 @@
 # Space live wallpapers — where they live and how they connect
 
 The suite's space set ships in two halves that are the same twelve scenes:
-twelve stills in the icon pack, and the same twelve moving in the live feed. This doc is the map between
-them — what plays where, and what a future in-pack live engine would take.
+twelve stills in the icon pack, and the same twelve moving in the live feed —
+and the icon pack plays those twelve loops itself as the system live
+wallpaper. This doc is the map between the halves: what plays where, and how
+the in-pack engine got there.
 
 ## The stills: `series-9-deep-space` (icon pack)
 
@@ -59,6 +61,7 @@ They ride the existing plumbing: `tools/build_motion_feed.py` lists them in
 
 | Screen | Route | Format |
 |---|---|---|
+| Home screen, as a live wallpaper | icon pack → `LiveWallpaperService` (system picker) | MP4 loops |
 | Projectivy wallpaper | Core Motion plugin → `live-feed.json` | MP4 loops (Premium) |
 | Monet wallpaper | Aerial Views custom feed → `aerial-entries.json` | MP4 loops |
 | Monet screensaver | same Aerial bridge, or local `Movies/CoreBuilds` | MP4 loops |
@@ -69,22 +72,54 @@ The stills and the loops are companions, not duplicates: the stills are
 detailed 4K compositions for static wallpaper slots; the loops are slow
 ambient motion for video-wallpaper slots. Same palette, same night.
 
-## A future in-pack live engine
+## The in-pack live engine
 
-The icon pack sets *static* wallpapers today (`WallpaperManager`). A true
-live wallpaper inside the pack would be a `WallpaperService` + engine in
-`app/` rendering one of:
+`LiveWallpaperService` (`app/src/main/java/tv/corebuilds/iconpack/`) is the
+first option the list below used to weigh, shipped: `MediaPlayer` onto the
+engine's surface, playing clips 11–22. The pack declares the service with
+`android.permission.BIND_WALLPAPER`, so only the system binds it — there is
+no direct-apply for a live wallpaper, so the picker *is* the apply. Set on a
+loop in the preview screen stores the loop id in `Prefs` and opens
+`ACTION_CHANGE_LIVE_WALLPAPER` pre-pointed at the service.
 
-1. **The MP4 loops** — `MediaPlayer` onto the engine's surface. Cheapest,
-   reuses clips 11–22, but video decode on the home screen costs battery
-   and Fire TV sticks will feel it.
-2. **The GLSL shaders** (`motion-shaders/`: hex plasma, starfield, flow) —
-   a `GLSurfaceView`-style engine. Smoother and cheaper than video, but a
-   new renderer to own and TV GLES quirks to absorb.
-3. **Lottie vectors** — already bundled for the Motion plugin path; small
-   and cheap, but the existing loops are abstract rather than space scenes.
+What it took, and what it deliberately did not:
 
-None of these is started. The honest order is: ship the stills + loops
-(this set), watch which screens people actually put them on, then build
-the engine for the winner. Until then, "Set" in the icon pack stays
-static and motion stays one tap away in Core Shift.
+- **Muted, looping, paused off-screen.** `onVisibilityChanged` is the switch:
+  the home screen stops being the visible surface, playback stops with it. A
+  wallpaper that made noise, or decoded video behind a game, would be a
+  defect rather than a feature.
+- **A still frame until the video lands.** The bundled thumb is drawn
+  centre-cropped over the surface until the MP4 is on the device — the first
+  apply happens after the preview downloads it, and a home screen that went
+  blank while waiting would read as a crash.
+- **`filesDir`, not `cacheDir`.** `LiveLoopDownloader` is the stills
+  downloader's discipline (https-only, GitHub allowlist, `.part` atomic write,
+  in-flight coalescing) with the bitmap check swapped for an MP4 `ftyp`
+  check. The cache is persistent because the system may reclaim the cache
+  directory at any time, and a wallpaper that quietly stopped playing is
+  worse than one that never started.
+- **Loops stay out of the stills export path.** Video has no place in the
+  Pictures rotation folder, so the grid badges them LIVE, a long-press
+  previews instead of selecting, and both export paths filter `isLive` out.
+  On Monet-as-HOME the primary action saves the MP4 to `Movies/CoreBuilds`
+  instead, where Monet's own video picker finds it.
+- **No new permission, no new dependency.** The engine is framework
+  `WallpaperService` + `MediaPlayer`; the module still declares exactly
+  appcompat, core-ktx and recyclerview.
+
+The two options not taken, and why they stay not taken: GLSL shaders
+(`motion-shaders/`) would be smoother and cheaper per frame, but a second
+renderer to own plus TV GLES quirks is a bigger surface than these clips
+justify; Lottie vectors are small and cheap, but the existing loops are
+abstract rather than space scenes. If the battery cost of video decode on
+older sticks shows up, the shader engine is the swap, and `LiveLoop` is the
+only list that has to change.
+
+**Where it renders.** The engine is a stock `WallpaperService`, so it plays
+wherever the platform renders live wallpapers. Most Android TV launchers
+draw only the static system wallpaper behind the home screen — see
+[CORE_SHIFT_PLAN.md](CORE_SHIFT_PLAN.md) §1 — and on a device with no live
+picker at all the Set action says so rather than failing silently. On those
+TVs the loops still reach the screen through the Projectivy, Aerial Views
+and `Movies/CoreBuilds` routes above, which is why they stay first-class
+there too.

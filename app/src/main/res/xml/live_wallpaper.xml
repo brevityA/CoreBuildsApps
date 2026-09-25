@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  What the system live-wallpaper picker shows for Core Builds Live, and the
+  service it binds (declared in AndroidManifest.xml with
+  android.permission.BIND_WALLPAPER, so only the system can bind it).
+
+  android:thumbnail is the picker's preview tile: the Nebula Drift still frame
+  from Motion/live/thumbs, the same frame the grid badge sits on. It has to be
+  a drawable, not an asset, because the picker runs in the system process.
+-->
+<wallpaper xmlns:android="http://schemas.android.com/apk/res/android"
+    android:label="@string/live_wallpaper_label"
+    android:description="@string/live_wallpaper_desc"
+    android:thumbnail="@drawable/live_wallpaper_thumb" />

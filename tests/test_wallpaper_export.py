@@ -336,7 +336,7 @@ class VersionTests(unittest.TestCase):
 
     def test_version_json_matches_gradle(self):
         import json
-        v = json.loads(read("Latestrelease/version.json"))
+        v = json.loads(read("app/src/main/assets/version.json"))
         gradle = read("app/build.gradle.kts")
         g_code = int(re.search(r"versionCode\s*=\s*(\d+)", gradle).group(1))
         g_name = re.search(r'versionName\s*=\s*"([^"]+)"', gradle).group(1)

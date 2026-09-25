@@ -29,6 +29,7 @@ object Prefs {
     const val KEY_REDUCE_MOTION = "reduce_motion"
     const val KEY_AMOLED = "amoled_chrome"
     const val KEY_PICK_BANNERS = "pick_banners"
+    const val KEY_LIVE_LOOP = "live_loop"
     const val KEY_WHATS_NEW_SEEN = "whats_new_seen_version"
     const val KEY_COMPANION_PENDING_APPLY = "glyphs_pending_apply"
 
@@ -108,6 +109,21 @@ object Prefs {
 
     fun setWhatsNewSeen(context: Context, versionCode: Int) {
         prefs(context).edit().putInt(KEY_WHATS_NEW_SEEN, versionCode).apply()
+    }
+
+    /**
+     * The motion loop [LiveWallpaperService] plays ([LiveLoop.Loop.id]).
+     * Written by the preview's "Set live" button; read by the engine on
+     * every visibility change, so re-picking a loop re-points wallpaper
+     * that is already active. Unknown values fall back to the first loop
+     * in [LiveLoop.byId] rather than crashing the engine.
+     */
+    fun liveLoopId(context: Context): String =
+        prefs(context).getString(KEY_LIVE_LOOP, LiveLoop.LOOPS[0].id)
+            ?: LiveLoop.LOOPS[0].id
+
+    fun setLiveLoopId(context: Context, loopId: String) {
+        prefs(context).edit().putString(KEY_LIVE_LOOP, loopId).apply()
     }
 
     fun set(context: Context, key: String, value: Boolean) {

@@ -22,7 +22,7 @@ Icon pack bump — every file that carries the version, because `AGENTS.md` is t
 seventh registry and the one nobody remembers (see issue #71):
 - [ ] `app/build.gradle.kts` versionName + versionCode
 - [ ] `tools/catalog.json` meta.version
-- [ ] `Latestrelease/version.json`
+- [ ] `app/src/main/assets/version.json` (NOT `Latestrelease/version.json` — the tag build publishes that one, so users never see an unreleased version)
 - [ ] `suite.json` — versionName, versionCode
 - [ ] `AGENTS.md` — suite table version
 - [ ] `README.md` — headline + release note (NOT covered by
