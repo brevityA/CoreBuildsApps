@@ -413,5 +413,6 @@ Compare each candidate against its current `app_*` fallback **and** against the 
 - [`Lawnicons`](https://github.com/LawnchairLauncher/lawnicons) — outlined Material You-era marks and launcher-applied theme variants.
 - [`iOSIconPack`](https://github.com/SysAdminDoc/iOSIconPack) — monochrome-vector and transparent-glyph representations sharing mappings.
 - [`Projectivy Icon Pack`](https://github.com/SicMundus86/ProjectivyIconPack) — transparent dark-card per-app recognisability benchmark.
+- [`Material 3 icon design guidance`](https://m3.material.io/styles/icons/designing-icons) and [`Material Symbols overview`](https://m3.material.io/styles/icons/overview) — external keyline, simplification, optical-correction, and style-axis references; not source artwork for Core Builds.
 
 **Confidence:** high for the current repository contracts and the PR-derived workflow; medium for the external design conclusions because they are references rather than controlled TV usability studies; low for any individual proposed primitive until it is reviewed on real launcher hardware.
