@@ -70,14 +70,14 @@ Measured from the current checkout and generated resources on 25 September 2026:
 | Catalogue entries | 961 | Source-of-truth app coverage |
 | Component strings in catalogue | 1,179 | Mappings before generated dual-form expansion |
 | Generated appfilter rows | 1,807 | Both full and short activity spellings |
-| Physical square WebP files | 957 at 512 × 512 | Four duplicate/alias cases reduce shipped art bytes |
-| Physical banner WebP files | 957 at 320 × 180 | Same alias behaviour |
+| Physical catalogue-backed square WebP files | 945 at 512 × 512 | `aliases.xml` adds 16 drawable names pointing to canonical art; 12 non-catalogue branding WebPs are excluded |
+| Physical catalogue-backed banner WebP files | 957 at 320 × 180 | `banner_aliases.xml` adds 4 banner names pointing to canonical art |
 | Unique glyph tokens in catalogue | 427 | 26 letter tokens plus 401 non-letter tokens |
 | Entries using `app_A`…`app_Z` | 451 / 961 (46.9%) | A meaningful fallback layer, not the former majority-two-thirds claim in older notes |
 | Distinct catalogue accent values | 206 | Rich brand colour variation; needs sampling discipline |
 | Banner style | 961 standard generated lockups | No current full-bleed/opaque banner variant |
 
-The square scan must exclude `*_banner.webp`; mixing the two dimensions produces a false square result. The corrected scan is:
+The square scan must exclude `*_banner.webp` and non-catalogue branding resources; mixing the two dimensions or counting branding assets produces a false square result. The corrected scan is:
 
 | Resource family | Median non-transparent coverage | Median fully opaque coverage | Median file size |
 | --- | ---: | ---: | ---: |
@@ -190,7 +190,7 @@ A small but important quantitative finding: a local Pillow scan of the sampled c
 
 #### Change or test
 
-1. **Add a circle/mask safety audit before changing art.** Monet advertises seven icon shapes, including a circle according to the current local research. Recompute current 957-square results rather than carrying forward the older 933-file/122-spill number. Fail new out-of-safe-area glyphs in validation; only shrink existing offenders after a visual review, because shrinking can erase brand cues.
+1. **Add a circle/mask safety audit before changing art.** Monet advertises seven icon shapes, including a circle according to the current local research. Recompute the current 945 catalogue-backed square resources rather than carrying forward the older 933-file/122-spill number or the directory-level 957 count that included 12 branding resources. Fail new out-of-safe-area glyphs in validation; only shrink existing offenders after a visual review, because shrinking can erase brand cues.
 2. **Measure visible ink, not viewBox occupancy.** Proposed Core criterion: compare visible alpha bounding-box height/width, centroid offset, and primary-stroke width at 512, 256, 128, 96, 64, and 48 px. Use relative bands rather than one forced size: a very wide wordmark-like mark and a compact circle should not occupy identical raw boxes, but their perceived weight should sit within a reviewed band.
 3. **Set a small-size detail floor.** Proposed starting point: no secondary gap or stroke that collapses below roughly 2 device pixels at the 96 px test tile; simplify geometry when it does. This is a test heuristic, not a Material or Android TV requirement.
 4. **Prioritize recognition by use, not by logo count.** The 451 letter entries are the largest pool. First target the most-installed/most-visible letter fallbacks and category collisions (`T`, `F`, `M`, `A`, `S` are the most reused current letter tokens), then create a cue that remains Core monoline rather than tracing a full vendor logo. Keep letters for low-confidence brands.
@@ -290,7 +290,7 @@ No visual claim should be accepted because it looks good in an isolated preview.
 | --- | --- | --- |
 | Dimensions/alpha | Exact 512 × 512 square and 320 × 180 banner; no accidental opaque canvas | Already generator-controlled; retain |
 | Safe area | Alpha bbox fully inside the project safe area; separate banner overscan simulation | Add explicit receipt/gate |
-| Circle/mask | Ink radius under current tested circle mask, with offender list | Recompute current 957 squares; old result is stale |
+| Circle/mask | Ink radius under current tested circle mask, with offender list | Recompute current 945 catalogue-backed squares; directory-level 957 includes 12 branding resources |
 | Optical fit | Alpha bbox width/height, centroid, primary/detail stroke widths at six raster sizes | Add report first; gate after review |
 | Contrast | WCAG luminance contrast for name text; non-text contrast on representative surfaces | Add dark/light/photo matrix |
 | Colour difference | CIEDE2000 or OKLab distance between intended accent and sampled accent proxy | Proxy only; Monet algorithm unverified |
