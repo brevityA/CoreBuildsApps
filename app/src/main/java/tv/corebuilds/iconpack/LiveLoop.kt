@@ -10,9 +10,13 @@ package tv.corebuilds.iconpack
  * like a full-size still: nothing is bundled except a still frame for the grid
  * and for the engine's fallback while the MP4 is not on the device yet.
  *
- * One loop per wall and nothing else: the list is exactly the Deep Space set
- * in Motion/live-feed.json (tests/test_live_wallpaper.py holds the two
- * equal). Only the chosen loop is downloaded, ~1.3-3.4 MB of video.
+ * The six Cinema loops (series-10-cinema, tools/build_cinema_wallpapers.py)
+ * are drawn with their stills rather than from them: marquee bulbs chase,
+ * neon tubes stutter, dust drifts through a projector beam, all at 60 fps.
+ *
+ * One loop per wall and nothing else: the list is exactly the Deep Space and
+ * Cinema sets in Motion/live-feed.json (tests/test_live_wallpaper.py holds
+ * them equal). Nothing is fetched until it is previewed or saved.
  */
 data class Loop(
     /** Stable preference value: the wall's slug, e.g. "event-horizon". Never renamed once shipped. */
@@ -27,7 +31,9 @@ data class Loop(
     val thumbUrl: String,
     /** Bundled still frame under assets/, shown in the grid and by the engine
      *  before the MP4 has been downloaded. */
-    val thumbAsset: String
+    val thumbAsset: String,
+    /** The still series this loop is the moving form of; its grid chip. */
+    val series: String = LiveLoop.SERIES
 )
 
 object LiveLoop {
@@ -39,6 +45,9 @@ object LiveLoop {
      */
     const val SERIES = "series-9-deep-space"
 
+    /** The Cinema set's series (walls 97-102, loops 23-28). */
+    const val CINEMA_SERIES = "series-10-cinema"
+
     /** Asset directory holding the bundled still frames. */
     const val THUMB_DIR = "live_thumbs"
 
@@ -46,7 +55,8 @@ object LiveLoop {
         "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Motion/live/"
 
     /**
-     * The twelve Deep Space loops, in wall order (85-96).
+     * The twelve Deep Space loops (walls 85-96) then the six Cinema loops
+     * (97-102), in wall order.
      *
      * The first entry is the default: [Prefs.liveLoopId] falls back to it, and
      * so does the engine when it reads a value it does not recognise, so a
@@ -150,6 +160,60 @@ object LiveLoop {
             thumbUrl = RAW_BASE + "thumbs/coremotion-live-22-deep-space-dark-side-moon.jpg",
             thumbAsset = "$THUMB_DIR/coremotion-live-22-deep-space-dark-side-moon.jpg"
         ),
+        Loop(
+            id = "marquee-lights",
+            title = "Marquee Lights",
+            fileName = "coremotion-live-23-cinema-marquee-lights.mp4",
+            url = RAW_BASE + "coremotion-live-23-cinema-marquee-lights.mp4",
+            thumbUrl = RAW_BASE + "thumbs/coremotion-live-23-cinema-marquee-lights.jpg",
+            thumbAsset = "$THUMB_DIR/coremotion-live-23-cinema-marquee-lights.jpg",
+            series = CINEMA_SERIES
+        ),
+        Loop(
+            id = "velvet-curtain",
+            title = "Velvet Curtain",
+            fileName = "coremotion-live-24-cinema-velvet-curtain.mp4",
+            url = RAW_BASE + "coremotion-live-24-cinema-velvet-curtain.mp4",
+            thumbUrl = RAW_BASE + "thumbs/coremotion-live-24-cinema-velvet-curtain.jpg",
+            thumbAsset = "$THUMB_DIR/coremotion-live-24-cinema-velvet-curtain.jpg",
+            series = CINEMA_SERIES
+        ),
+        Loop(
+            id = "projector-beam",
+            title = "Projector Beam",
+            fileName = "coremotion-live-25-cinema-projector-beam.mp4",
+            url = RAW_BASE + "coremotion-live-25-cinema-projector-beam.mp4",
+            thumbUrl = RAW_BASE + "thumbs/coremotion-live-25-cinema-projector-beam.jpg",
+            thumbAsset = "$THUMB_DIR/coremotion-live-25-cinema-projector-beam.jpg",
+            series = CINEMA_SERIES
+        ),
+        Loop(
+            id = "neon-lounge",
+            title = "Neon Lounge",
+            fileName = "coremotion-live-26-cinema-neon-lounge.mp4",
+            url = RAW_BASE + "coremotion-live-26-cinema-neon-lounge.mp4",
+            thumbUrl = RAW_BASE + "thumbs/coremotion-live-26-cinema-neon-lounge.jpg",
+            thumbAsset = "$THUMB_DIR/coremotion-live-26-cinema-neon-lounge.jpg",
+            series = CINEMA_SERIES
+        ),
+        Loop(
+            id = "late-rentals",
+            title = "Late Rentals",
+            fileName = "coremotion-live-27-cinema-late-rentals.mp4",
+            url = RAW_BASE + "coremotion-live-27-cinema-late-rentals.mp4",
+            thumbUrl = RAW_BASE + "thumbs/coremotion-live-27-cinema-late-rentals.jpg",
+            thumbAsset = "$THUMB_DIR/coremotion-live-27-cinema-late-rentals.jpg",
+            series = CINEMA_SERIES
+        ),
+        Loop(
+            id = "box-office",
+            title = "Box Office",
+            fileName = "coremotion-live-28-cinema-box-office.mp4",
+            url = RAW_BASE + "coremotion-live-28-cinema-box-office.mp4",
+            thumbUrl = RAW_BASE + "thumbs/coremotion-live-28-cinema-box-office.jpg",
+            thumbAsset = "$THUMB_DIR/coremotion-live-28-cinema-box-office.jpg",
+            series = CINEMA_SERIES
+        ),
     )
 
     /**
@@ -170,7 +234,7 @@ object LiveLoop {
     fun asWallpapers(): List<Wallpaper> = LOOPS.map { loop ->
         Wallpaper(
             name = loop.title,
-            series = SERIES,
+            series = loop.series,
             url = loop.url,
             thumbUrl = loop.thumbUrl,
             resolution = "1920x1080",

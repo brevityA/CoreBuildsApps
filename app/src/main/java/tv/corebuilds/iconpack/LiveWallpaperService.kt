@@ -119,6 +119,12 @@ class LiveWallpaperService : WallpaperService() {
                     true
                 }
                 mp.prepare()
+                // Fill the screen and crop the overflow, as the still frame
+                // does: a 16:9 loop stretched onto a portrait phone read as
+                // warped rather than moving.
+                runCatching {
+                    mp.setVideoScalingMode(MediaPlayer.VIDEO_SCALING_MODE_SCALE_TO_FIT_WITH_CROPPING)
+                }
                 player = mp
                 if (visible) mp.start()
             } catch (e: Exception) {

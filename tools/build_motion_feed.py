@@ -32,6 +32,8 @@ import sys
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from build_deep_space_loops import WALLS as DEEP_SPACE, clip_name  # noqa: E402
+from build_cinema_wallpapers import WALLS as CINEMA  # noqa: E402
+from build_cinema_wallpapers import clip_name as cinema_clip_name  # noqa: E402
 
 BASE_URL = "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Motion/live"
 FPS = 30
@@ -152,12 +154,20 @@ def deep_space_entries():
             for i, (_number, slug, title) in enumerate(DEEP_SPACE)]
 
 
+def cinema_entries():
+    """(file stem, title) for the Cinema loops, in feed order."""
+    return [(cinema_clip_name(i, slug), title)
+            for i, (_number, slug, title) in enumerate(CINEMA)]
+
+
 def write_feed():
     feed = []
     rows = [(f"coremotion-live-{i + 1:02d}-{e['slug']}", e["title"], "Core Motion")
             for i, e in enumerate(CLIPS)]
     rows += [(stem, title, "Core Motion \u00b7 Deep Space")
              for stem, title in deep_space_entries()]
+    rows += [(stem, title, "Core Motion \u00b7 Cinema")
+             for stem, title in cinema_entries()]
     for stem, title, location in rows:
         feed.append({
             "location": location,
@@ -187,6 +197,7 @@ def main():
         thumbs.append(thumb)
 
     thumbs += [f"Motion/live/thumbs/{stem}.jpg" for stem, _ in deep_space_entries()]
+    thumbs += [f"Motion/live/thumbs/{stem}.jpg" for stem, _ in cinema_entries()]
     print("building contact sheet ...")
     build_sheet(thumbs, "Motion/live/preview/live-preview.png")
     write_feed()

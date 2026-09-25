@@ -6,6 +6,28 @@ All notable changes to the Core Builds Icon Pack. Format follows
 
 ## [Unreleased]
 
+### Added
+
+- **Cinema wallpapers, still and moving.** Series 10 (walls 97–102): six
+  night-time cinema scenes in neon and marquee light — Marquee Lights, Velvet
+  Curtain, Projector Beam, Neon Lounge, Late Rentals and Box Office — each a
+  4K still plus a seamless 60 fps live loop (clips 23–28) where the bulbs
+  chase, the tubes stutter, dust drifts through the projector beam and rain
+  falls past the rental shop. The loops join the live feed, so the Core
+  Motion plugin, Aerial Views and Overflight get them too.
+- **A Live chip, and loops save in bulk.** Every loop, Deep Space and Cinema,
+  is gathered under one **Live** chip. Loops now select like stills —
+  long-press, Select all, or Export on the Live chip — and save in one go to
+  `Movies/CoreBuilds`, where video-wallpaper pickers such as Monet's find
+  them, instead of one preview at a time. Stills still go to
+  `Pictures/CoreBuilds`; the receipt names both.
+
+### Changed
+
+- **Live loops run at 60 fps.** The twelve Deep Space loops are re-rendered
+  at 60 fps (from 30), so the camera drift and the twinkle no longer step on
+  a large TV; the Cinema loops ship at 60 fps.
+
 ## [1.9.5] — 2026-09-25
 
 ### Added

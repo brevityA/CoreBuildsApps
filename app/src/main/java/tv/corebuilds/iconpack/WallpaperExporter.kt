@@ -12,7 +12,8 @@ import java.util.concurrent.atomic.AtomicBoolean
 /**
  * Copies a set of wallpapers from the download cache into shared
  * `Pictures/CoreBuilds/` so launcher wallpaper rotation (Monet, etc.) can see
- * them. The engine is deliberately boring:
+ * them, and live loops into `Movies/CoreBuilds/`, where Projectivy's and
+ * Monet's video wallpaper pickers look. The engine is deliberately boring:
  *
  *  - Original bytes are copied — no bitmap decode, no re-encode (keeps heap
  *    tiny on 1–2 GB TV boxes and preserves the 4K PNGs losslessly).
@@ -87,6 +88,13 @@ object WallpaperExporter {
                     val name = wp.title
                     main.post { if (!cancelled.get()) listener.onEvent(Event.Progress(i, wallpapers.size, name)) }
                     try {
+                        if (wp.isLive) {
+                            exportLoop(app, wp, saved, skipped, failed)?.let { needs ->
+                                main.post { if (!cancelled.get()) listener.onEvent(needs) }
+                                return@execute
+                            }
+                            return@forEachIndexed
+                        }
                         val file = ensureDownloaded(app, wp)
                         val cacheName = wp.cacheName
                         if (WallpaperSetter.alreadyExported(app, cacheName, file.length())) {
@@ -118,6 +126,58 @@ object WallpaperExporter {
         return cancelled
     }
 
+    /**
+     * Save one live loop to Movies/CoreBuilds: fetch the MP4 through
+     * [LiveLoopDownloader] (same allowlist, size bounds and ftyp check as a
+     * preview), then copy it. Returns an event to stop the run on (missing
+     * storage permission), or null to carry on.
+     */
+    private fun exportLoop(
+        context: Context,
+        wp: Wallpaper,
+        saved: MutableList<String>,
+        skipped: MutableList<String>,
+        failed: MutableList<Pair<String, String>>
+    ): Event? {
+        val loop = LiveLoop.loopFor(wp)
+        if (loop == null) {
+            failed += (wp.cacheName to "not a known loop")
+            return null
+        }
+        val file = ensureLoopDownloaded(context, loop)
+        if (WallpaperSetter.alreadyExportedVideo(context, loop.fileName, file.length())) {
+            skipped += wp.cacheName
+            return null
+        }
+        when (val r = WallpaperSetter.copyFileToMovies(context, file, loop.fileName)) {
+            is WallpaperSetter.Result.SavedToGallery -> saved += wp.cacheName
+            is WallpaperSetter.Result.NeedsPermission -> return Event.NeedsStoragePermission
+            is WallpaperSetter.Result.Failed -> failed += (wp.cacheName to r.reason)
+            else -> failed += (wp.cacheName to "unexpected result")
+        }
+        return null
+    }
+
+    /** [ensureDownloaded] for a loop; blocks until the MP4 is cached or throws. */
+    private fun ensureLoopDownloaded(context: Context, loop: Loop): File {
+        LiveLoopDownloader.cached(context, loop)?.let { return it }
+        val latch = java.util.concurrent.CountDownLatch(1)
+        var result: File? = null
+        var error: String? = null
+        LiveLoopDownloader.fetch(context, loop) { event ->
+            when (event) {
+                is LiveLoopDownloader.Event.Ready -> { result = event.file; latch.countDown() }
+                is LiveLoopDownloader.Event.Failed -> { error = event.reason; latch.countDown() }
+                else -> { /* progress: nothing to do */ }
+            }
+        }
+        if (!latch.await(180, java.util.concurrent.TimeUnit.SECONDS)) {
+            throw java.io.IOException("Download timed out")
+        }
+        result?.let { return it }
+        throw java.io.IOException("Download failed: ${error ?: "unknown"}")
+    }
+
     /** Download [wp] if it isn't cached; blocks until ready or throws. */
     private fun ensureDownloaded(context: Context, wp: Wallpaper): File {
         WallpaperDownloader.cached(context, wp)?.let { return it }
@@ -144,7 +204,10 @@ object WallpaperExporter {
      * conservative per-file ceiling of 5 MB — real 4K PNGs are 2–3 MB.
      */
     private fun ensureSpace(context: Context, wallpapers: List<Wallpaper>) {
-        val bytesNeeded = wallpapers.size * 5L * 1024 * 1024 + HEADROOM_BYTES
+        // Loops run larger than stills: 60 fps 1080p is up to ~12 MB.
+        val loops = wallpapers.count { it.isLive }
+        val bytesNeeded = (wallpapers.size - loops) * 5L * 1024 * 1024 +
+            loops * 12L * 1024 * 1024 + HEADROOM_BYTES
         val stat = StatFs(context.cacheDir.absolutePath)
         val available = stat.availableBytes
         if (available < bytesNeeded) {

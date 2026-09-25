@@ -286,6 +286,23 @@ object WallpaperSetter {
         }
     }
 
+    /** [alreadyExported] for a loop saved to Movies/CoreBuilds. */
+    fun alreadyExportedVideo(context: Context, displayName: String, sizeBytes: Long): Boolean {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) return false
+        return try {
+            val proj = arrayOf(MediaStore.Video.Media._ID)
+            context.contentResolver.query(
+                MediaStore.Video.Media.EXTERNAL_CONTENT_URI,
+                proj,
+                "${MediaStore.Video.Media.DISPLAY_NAME}=? AND ${MediaStore.Video.Media.SIZE}=?",
+                arrayOf(displayName, sizeBytes.toString()),
+                null
+            )?.use { it.count > 0 } == true
+        } catch (e: Exception) {
+            false
+        }
+    }
+
     // ---- Monet Launcher ------------------------------------------------------
 
     /** Monet Launcher package (Klevico). */

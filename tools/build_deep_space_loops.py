@@ -22,7 +22,7 @@ How the still is split, at a 1.1x working canvas:
 then a moving crop is resampled to 1920x1080 and piped to ffmpeg.
 
 Writes, for each wall (clip numbers 11-22 in the live feed, wall order):
-  Motion/live/coremotion-live-NN-<slug>.mp4        silent H.264 1080p 30fps 20s
+  Motion/live/coremotion-live-NN-<slug>.mp4        silent H.264 1080p 60fps 20s
   Motion/live/thumbs/coremotion-live-NN-<slug>.jpg poster frame
 
 The feed itself is written by tools/build_motion_feed.py, which lists these
@@ -47,7 +47,7 @@ ROOT = Path(__file__).resolve().parent.parent
 STILLS = ROOT / "Wallpapers" / "series-9-deep-space"
 LIVE = ROOT / "Motion" / "live"
 
-FPS = 30
+FPS = 60                      # 60 fps: the drift and twinkle read smooth on a TV
 DURATION = 20
 FRAMES = FPS * DURATION
 OUT_W, OUT_H = 1920, 1080
