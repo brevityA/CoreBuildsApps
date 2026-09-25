@@ -22,6 +22,10 @@ Writes, for the apps in TEST_SET:
       first, so the icons are pickable per card
   docs/morph-test/<d>_morph.webp                         the same files, for
       trying them as manual per-card custom icons
+  docs/morph-test/apng/<d>_morph.png                     the same frames as
+      APNG, the animated format Projectivy users already trade
+  docs/morph-test/gif/<d>_morph.gif                      and as GIF (1-bit
+      alpha, so edges are harder) for launchers that only animate GIF
   docs/morph-test/preview.gif                            contact sheet, animated
 
 Only the candidate build type (tv.corebuilds.iconpack.test) sees the
@@ -121,6 +125,32 @@ def save_webp(frames: list[Image.Image], path: Path) -> None:
                    method=6)
 
 
+def save_apng(frames: list[Image.Image], path: Path) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    durations = [120] + [FRAME_MS] * (len(frames) - 2) + [1000]
+    # Each frame replaces the last outright (blend 0 = source), so the
+    # transparent card never accumulates earlier frames.
+    frames[0].save(path, "PNG", save_all=True, append_images=frames[1:],
+                   duration=durations, loop=1, disposal=1, blend=0,
+                   optimize=True)
+
+
+def save_gif(frames: list[Image.Image], path: Path) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    durations = [120] + [FRAME_MS] * (len(frames) - 2) + [1000]
+    pal = []
+    for f in frames:
+        # GIF alpha is on/off: anything under half-opaque becomes the
+        # transparent index.
+        alpha = f.getchannel("A").point(lambda a: 255 if a >= 128 else 0)
+        q = f.convert("RGB").quantize(255, method=Image.Quantize.MEDIANCUT)
+        q.paste(255, mask=alpha.point(lambda a: 255 - a))
+        q.info["transparency"] = 255
+        pal.append(q)
+    pal[0].save(path, "GIF", save_all=True, append_images=pal[1:],
+                duration=durations, loop=1, disposal=2, transparency=255)
+
+
 def overlay_appfilter(targets: dict[str, str]) -> str:
     """The pack's appfilter with the test apps' components re-pointed."""
     text = (MAIN / "res" / "xml" / "appfilter.xml").read_text(encoding="utf-8")
@@ -165,6 +195,8 @@ def main() -> int:
         for dest in (CAND / "res" / "drawable-nodpi" / f"{morph}.webp",
                      DOCS / f"{morph}.webp"):
             save_webp(frames, dest)
+        save_apng(frames, DOCS / "apng" / f"{morph}.png")
+        save_gif(frames, DOCS / "gif" / f"{morph}.gif")
         size = (DOCS / f"{morph}.webp").stat().st_size
         print(f"  {name:12} {morph}.webp  {len(frames)} frames  {size / 1024:.0f} KB")
         targets[f"{icon['drawable']}_banner"] = morph

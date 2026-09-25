@@ -20,8 +20,20 @@ frame is the shipped banner, pixel for pixel.
   `iconpack-test` prerelease). Its appfilter maps these ten apps to the
   `*_morph` drawables; every other app keeps its banner. The icons are also
   first in the picker, under "Morph test".
-- **Manual custom icon:** copy a `*_morph.webp` from this folder to the TV and
-  set it as that card's custom icon in Projectivy.
+- **Manual custom icon:** copy one file to the TV and set it as that card's
+  custom icon in Projectivy. Three formats of the same 16 frames, because
+  launchers differ in which animated format they decode:
+  - `apng/*_morph.png` — APNG, the format the Projectivy community already
+    uses for animated icons. **Try this first.**
+  - `*_morph.webp` — animated WebP (what the test APK ships).
+  - `gif/*_morph.gif` — GIF; 1-bit transparency, so edges are harder.
+
+## Result so far (2026-09-25)
+
+The icon-pack route shows no animation. Expected: Android hands an icon
+pack's drawable to the launcher as a static bitmap, so the card shows frame 1
+(the centred glyph). Animation, if Projectivy supports it at all here, can only
+come through the manual custom-icon route.
 
 Apps: Netflix, Prime Video, YouTube, Disney+, Plex, Crunchyroll, Apple TV, Max,
 Stremio, Spotify.
