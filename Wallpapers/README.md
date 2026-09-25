@@ -1,4 +1,4 @@
-# Core Builds — Wallpaper Collection v5.1
+# Core Builds — Wallpaper Collection v5.2
 
 102 wallpapers · 3840×2160 (series 1–3, 7–10) and 1376×768 (series 6) · 128 MB ·
 Core Builds palette:

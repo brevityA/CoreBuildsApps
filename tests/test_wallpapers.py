@@ -62,6 +62,9 @@ class ManifestTests(unittest.TestCase):
             "series-7-retrowave": 12,
             "series-8-amoled": 12,
             "series-9-deep-space": 12,
+            # A half unit on purpose: every Cinema wall is also drawn as a
+            # 60 fps live loop, so the set grows six at a time.
+            "series-10-cinema": 6,
         })
 
     def test_entries_are_https_github(self):
