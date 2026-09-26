@@ -1,8 +1,8 @@
 # Banner and glyph market deep-dive — addendum
 
-**Date:** 25 September 2026 (Sydney)  
-**Purpose:** second-pass research after the competitive analysis in [`banner-glyph-competitive-analysis-2026-09-25.md`](banner-glyph-competitive-analysis-2026-09-25.md).  
-**Scope:** search for additional competitors, launcher implementations, official requirements, current user signals, icon-pack infrastructure, TV legibility research, colour science, and distribution patterns.  
+**Date:** 25 September 2026 (Sydney)
+**Purpose:** second-pass research after the competitive analysis in [`banner-glyph-competitive-analysis-2026-09-25.md`](banner-glyph-competitive-analysis-2026-09-25.md).
+**Scope:** search for additional competitors, launcher implementations, official requirements, current user signals, icon-pack infrastructure, TV legibility research, colour science, and distribution patterns.
 **Implementation status:** research only. This addendum does not approve changes to `tools/catalog.json`, `tools/glyphs.py`, generators, or generated assets.
 
 ## 1. The market is three different products

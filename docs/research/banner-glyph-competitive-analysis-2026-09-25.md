@@ -1,6 +1,6 @@
 # Core Builds banners and glyphs — competitive research and upgrade plan
 
-**Research date:** 25 September 2026 (Sydney)  
+**Research date:** 25 September 2026 (Sydney)
 **Status:** research only. No catalogue, glyph, generator, or generated asset was changed for this report.
 
 This report consolidates the current Core Builds asset audit with Android TV guidance, launcher documentation, open-source packs, competitor repositories, and user feedback. It is deliberately about **both** asset families:
@@ -272,8 +272,8 @@ Core already has the foundations that the leading packs use:
 
 The next usability improvement is not another art style. It is a clear first-run explanation:
 
-> **Projectivy 16:9 cards:** apply Core Builds Icon Pack.  
-> **Monet/1:1 tiles:** apply Core Builds Glyphs.  
+> **Projectivy 16:9 cards:** apply Core Builds Icon Pack.
+> **Monet/1:1 tiles:** apply Core Builds Glyphs.
 > **If an icon is missing:** re-apply after an update, reset manual overrides, then report the app's actual component name.
 
 Competitor user reports repeatedly mention manual overrides, stale caches, changed launcher activities, and needing to re-apply after updates. These are anecdotal but operationally important: [Projectivy pack discussion](https://www.reddit.com/r/Projectivy_Launcher/comments/1mtmall/introducing_the_projectivy_icon_pack/) and [Projectivy transparent glow discussion](https://www.reddit.com/r/Projectivy_Launcher/comments/1n22koa/getting-the-transparent-icons-to-glow/) (both accessed 25 September 2026). Core should make the recovery path visible in-app and in the README.

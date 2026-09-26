@@ -1,6 +1,6 @@
 # Modern generic Glyphs design addendum — 25 September 2026
 
-**Scope:** design research for the square Glyphs pack, with the 16:9 Banners pack as the paired output surface.  
+**Scope:** design research for the square Glyphs pack, with the 16:9 Banners pack as the paired output surface.
 **Status:** research and design recommendation only. No catalogue entries, component mappings, generators, SVGs, rasters, previews, release assets, or launcher code were changed.
 
 This addendum follows the global-toggle feasibility report in [`glyphs-global-toggle-feasibility-2026-09-25.md`](glyphs-global-toggle-feasibility-2026-09-25.md). The toggle/package decision remains separate from this art decision: a launcher selects one complete pack, while both packs should continue to derive from the same identity and mapping contract.
@@ -132,42 +132,42 @@ The following sources are separated from repository facts. They are design refer
 
 The [`android-tv-minimalist-icon-pack`](https://github.com/hqn-scl/android-tv-minimalist-icon-pack) project is the clearest TV-focused reference for this direction. Its stated approach is to redraw a recognisable symbol in a unified neutral presentation, target dark backgrounds, use vector-first artwork, and use a wordmark only when no meaningful symbol exists.
 
-**Borrow:** prioritise the symbol, use a small number of strong primitives, and judge the result on a dark TV card rather than on a large design canvas.  
+**Borrow:** prioritise the symbol, use a small number of strong primitives, and judge the result on a dark TV card rather than on a large design canvas.
 **Do not copy:** its neutral/background treatment as a fixed Core Builds container, or its exact geometry and vendor marks.
 
 ### 5.2 Minimal TV Icons — curation is a quality feature
 
 [`minimal-tv-icons`](https://github.com/Mortisshadow/minimal-tv-icons) uses an Apple TV-inspired composition, a curated active-app scope, and a reluctance to force weak text-only or utility representations.
 
-**Borrow:** a smaller high-quality semantic set is better than claiming exhaustive but low-information coverage; a symbol can be rejected when it does not earn a place in the primary TV row.  
+**Borrow:** a smaller high-quality semantic set is better than claiming exhaustive but low-information coverage; a symbol can be rejected when it does not earn a place in the primary TV row.
 **Do not copy:** the curated scope as a reason to remove Core Builds coverage. Core Builds has a large catalogue and needs a graceful fallback for the long tail.
 
 ### 5.3 Arcticons — formalise the stroke system
 
 [`Arcticons`](https://github.com/Arcticons-Team/Arcticons) demonstrates the value of a large handcrafted monotone line system with explicit consistency across caps, joins, outline behaviour, and style variants.
 
-**Borrow:** write down construction rules and keep variants as renderer changes over one identity registry.  
+**Borrow:** write down construction rules and keep variants as renderer changes over one identity registry.
 **Do not copy:** mobile line density, tiny details, or phone-oriented optical assumptions into a TV card. A dense 24–48 px phone icon can become noise on a television viewed from several metres away.
 
 ### 5.4 Lawnicons — modern outlined and themed variants
 
 [`Lawnicons`](https://github.com/LawnchairLauncher/lawnicons) provides a useful reference for rounded outlined geometry, Material You-aware monochrome treatment, and multiple icon variants.
 
-**Borrow:** formal stroke/corner rules and a clear distinction between the source identity and the theme/renderer applied by the launcher.  
+**Borrow:** formal stroke/corner rules and a clear distinction between the source identity and the theme/renderer applied by the launcher.
 **Do not copy:** assumptions about Lawnchair's implementation to every ADW-compatible launcher, or Material You's mobile-sized detail density to TV Glyphs.
 
 ### 5.5 iOSIconPack — one mapping, multiple visual representations
 
 [`SysAdminDoc/iOSIconPack`](https://github.com/SysAdminDoc/iOSIconPack) explicitly separates monochrome vector and transparent-glyph variants while preserving the same component identity/mapping model.
 
-**Borrow:** style variants should share identity and mapping contracts. This supports Core Builds' Banners/Glyphs split and future Classic/Pop/Pixel Neon renderers.  
+**Borrow:** style variants should share identity and mapping contracts. This supports Core Builds' Banners/Glyphs split and future Classic/Pop/Pixel Neon renderers.
 **Do not copy:** the visual treatment or assume a launcher can select two variants inside one standard appfilter. The global-toggle report's two-package conclusion still applies.
 
 ### 5.6 Projectivy Icon Pack — bespoke identity is a benchmark, not a generic recipe
 
 The [`Projectivy Icon Pack`](https://github.com/SicMundus86/ProjectivyIconPack) remains a useful benchmark for per-app recognisability, transparent backgrounds, and dark-card presentation. It is not proof that Core Builds should abandon a generated system for a hand-painted, one-off mark for every long-tail app.
 
-**Borrow:** ask whether a user can identify a high-priority app by shape before reading the label.  
+**Borrow:** ask whether a user can identify a high-priority app by shape before reading the label.
 **Do not copy:** its per-app art process as a requirement for every Core Builds mapping, or its launcher-specific assumptions as platform rules.
 
 ## 6. Recommended generic direction
@@ -264,7 +264,7 @@ A deliberate generic symbol should have a recorded cue and a reason for any clos
 Review a mixed row, not an isolated gallery, at:
 
 - the 512 px master for construction errors;
-- the repository's generated review sizes (PR #135 records 160/80/48); 
+- the repository's generated review sizes (PR #135 records 160/80/48);
 - a 96 px view where it matches the device's launcher card; and
 - the actual 320 × 180 Banner beside unchanged neighbours.
 

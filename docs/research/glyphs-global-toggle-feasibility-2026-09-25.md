@@ -1,7 +1,7 @@
 # Global Glyphs toggle feasibility — deep research
 
-**Date:** 25 September 2026 (Sydney)  
-**Question:** Can Core Builds expose Glyphs as a setting that users turn on, causing the square Glyphs pack to replace Banners globally instead of making users assign square icons one at a time?  
+**Date:** 25 September 2026 (Sydney)
+**Question:** Can Core Builds expose Glyphs as a setting that users turn on, causing the square Glyphs pack to replace Banners globally instead of making users assign square icons one at a time?
 **Status:** research and current-code audit only. No production assets, catalogue mappings, generators, or release files were changed.
 
 ## 1. Short answer

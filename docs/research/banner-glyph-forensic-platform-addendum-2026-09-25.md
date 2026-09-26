@@ -1,8 +1,8 @@
 # Banner and glyph forensic/platform pass — third addendum
 
-**Date:** 25 September 2026 (Sydney)  
-**Purpose:** third research pass after [`banner-glyph-competitive-analysis-2026-09-25.md`](banner-glyph-competitive-analysis-2026-09-25.md) and [`banner-glyph-deep-dive-addendum-2026-09-25.md`](banner-glyph-deep-dive-addendum-2026-09-25.md).  
-**Scope:** distinguish store and runtime artwork, re-check the generated resource population, interpret the local alpha audit against real host masks, and turn current user complaints into acceptance tests.  
+**Date:** 25 September 2026 (Sydney)
+**Purpose:** third research pass after [`banner-glyph-competitive-analysis-2026-09-25.md`](banner-glyph-competitive-analysis-2026-09-25.md) and [`banner-glyph-deep-dive-addendum-2026-09-25.md`](banner-glyph-deep-dive-addendum-2026-09-25.md).
+**Scope:** distinguish store and runtime artwork, re-check the generated resource population, interpret the local alpha audit against real host masks, and turn current user complaints into acceptance tests.
 **Implementation status:** research only. No catalogue, generator, mapping, SVG, WebP, or production asset changes are approved by this document.
 
 ## 1. Executive finding

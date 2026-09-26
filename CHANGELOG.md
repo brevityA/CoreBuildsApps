@@ -6,6 +6,8 @@ All notable changes to the Core Builds Icon Pack. Format follows
 
 ## [Unreleased]
 
+## [1.9.6] — 2026-09-26
+
 ### Changed
 
 - **Banner category labels now follow each icon’s accent.** The VOD, STREAM,
