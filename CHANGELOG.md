@@ -26,10 +26,12 @@ All notable changes to the Core Builds Icon Pack. Format follows
   and every other icon renders byte-for-byte as before. The Glyphs
   companion picks the new squares up from the same art.
 
-- **20 apps get marks drawn from their real icons.** Zeus's bolt, ARD's
+- **41 apps get marks drawn from their real icons.** Zeus's bolt, ARD's
   ring-1, DR's ring and play, Hubitat's house, Dropsync's cube, Scholastic's
   book, Zapp's set, Mango TV's M, Youku's two-part play (blue and orange),
-  TVING's T-V and eleven more replace their letter tiles. Each is the icon's
+  TVING's T-V, CANAL+'s cross, Bstation's TV face, PikPak's robot, Tabii's
+  star, Hue Shortcuts' bulb, MyRadar's pin and 25 more replace their letter
+  tiles. Each is the icon's
   defining shape redrawn in the pack's line style - the way WuPlay and Nuvio
   are drawn - with the reference icon recorded in the catalogue; nothing is
   traced.
