@@ -1129,14 +1129,14 @@
       "name": "Bitdefender",
       "drawable": "bitdefender",
       "color": "#ED1C24",
-      "glyph": "vpn_B",
-      "mark": "BI",
+      "glyph": "bitdefender_shield",
       "components": [
         "com.bitdefender.vpn/com.bitdefender.vpn.MainActivity"
       ],
       "category": "VPN",
       "color_source": "brand reference (pre-provenance, unverified)",
-      "color_reviewed": null
+      "color_reviewed": null,
+      "glyph_source": "brand-informed redraw of the official launcher icon (play listing for com.bitdefender.vpn); Core monoline geometry, not a trace (2026-09-26)"
     },
     {
       "name": "Blip",
@@ -1648,14 +1648,14 @@
       "name": "Clash Meta",
       "drawable": "metacubex",
       "color": "#3372B6",
-      "glyph": "vpn_M",
-      "mark": "CM",
+      "glyph": "clashmeta_cat",
       "components": [
         "com.github.metacubex.clash.meta/com.github.kr328.clash.MainActivityAlias"
       ],
       "category": "APP",
       "color_source": "sampled from the official launcher icon (APKCombo mirror of the Google Play listing for com.github.metacubex.clash.meta): dominant brand accent #3372B6 (2026-09-26)",
-      "color_reviewed": "2026-09-26"
+      "color_reviewed": "2026-09-26",
+      "glyph_source": "brand-informed redraw of the official launcher icon (APKCombo mirror of the Google Play listing for com.github.metacubex.clash.meta); Core monoline geometry, not a trace (2026-09-26)"
     },
     {
       "name": "Clip TV",
@@ -3301,14 +3301,14 @@
       "name": "FireSend",
       "drawable": "firesend",
       "color": "#380A73",
-      "glyph": "tool_F",
-      "mark": "FI",
+      "glyph": "firesend_plane",
       "components": [
         "com.firesend.app/com.firesend.app.MainActivity"
       ],
       "category": "APP",
       "color_source": "sampled from the official launcher icon (APKCombo mirror of the Google Play listing for com.firesend.app): dominant brand accent #380A73 (2026-09-26)",
-      "color_reviewed": "2026-09-26"
+      "color_reviewed": "2026-09-26",
+      "glyph_source": "brand-informed redraw of the official launcher icon (APKCombo mirror of the Google Play listing for com.firesend.app); Core monoline geometry, not a trace (2026-09-26)"
     },
     {
       "name": "FITE",
@@ -3536,7 +3536,7 @@
       "components": [
         "com.bweather.forecast/com.bweather.forecast.SplashActivity"
       ],
-      "category": "SPORT",
+      "category": "APP",
       "color_source": "sampled from the official launcher icon (APKCombo mirror of the Google Play listing for com.bweather.forecast): dominant brand accent #135DD1 (2026-09-26)",
       "color_reviewed": "2026-09-26"
     },
@@ -3933,15 +3933,15 @@
     {
       "name": "Getflix VPN",
       "drawable": "digiport",
-      "color": "#E6EDF3",
-      "glyph": "vpn_G",
-      "mark": "GV",
+      "color": "#FF0000",
+      "glyph": "getflix_popcorn",
       "components": [
         "com.digiport.getflix.vpn/com.digiport.vpnapp.ui.modules.MainActivity"
       ],
       "category": "VPN",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled from the official launcher icon (Google Play listing for com.digiport.getflix.vpn): the popcorn box's red #FF0000 (2026-09-26)",
+      "color_reviewed": "2026-09-26",
+      "glyph_source": "brand-informed redraw of the official launcher icon (play listing for com.digiport.getflix.vpn); Core monoline geometry, not a trace (2026-09-26)"
     },
     {
       "name": "Ghost Commander",
@@ -4433,15 +4433,15 @@
       "name": "Home Workout",
       "drawable": "home_workout",
       "color": "#47B3FF",
-      "glyph": "sport_H",
-      "mark": "HW",
+      "glyph": "homeworkout_plank",
       "components": [
         "com.sugarapple.workout/com.sugarapple.workout.MainActivity"
       ],
       "category": "SPORT",
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "sampled from the official launcher icon (Google Play listing for com.sugarapple.workout): dominant brand accent #47B3FF (2026-09-26)",
-      "color_reviewed": "2026-09-26"
+      "color_reviewed": "2026-09-26",
+      "glyph_source": "brand-informed redraw of the official launcher icon (play listing for com.sugarapple.workout); Core monoline geometry, not a trace (2026-09-26)"
     },
     {
       "name": "Hoopla",
@@ -5371,15 +5371,15 @@
       "name": "Lampa",
       "drawable": "lampa",
       "color": "#34EB7A",
-      "glyph": "broadcast_L",
-      "mark": "LA",
+      "glyph": "lampa_rings",
       "components": [
         "top.rootu.lampa/top.rootu.lampa.MainActivity"
       ],
       "category": "APP",
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_reviewed": null,
+      "glyph_source": "brand-informed redraw of the official launcher icon (APKCombo mirror of the Google Play listing for top.rootu.lampa); Core monoline geometry, not a trace (2026-09-26)"
     },
     {
       "name": "Laugh After Dark",
@@ -5411,15 +5411,15 @@
       "name": "Launchbox",
       "drawable": "launchbox",
       "color": "#00D4FF",
-      "glyph": "gaming_L",
-      "mark": "LA",
+      "glyph": "launchbox_cube",
       "components": [
         "com.unbrokensoftware.launchbox/crc640d6c5ebcc48c6177.MainActivity"
       ],
       "category": "APP",
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_reviewed": null,
+      "glyph_source": "brand-informed redraw of the official launcher icon (APKCombo mirror of the Google Play listing for com.unbrokensoftware.launchbox); Core monoline geometry, not a trace (2026-09-26)"
     },
     {
       "name": "Launcher Manager",
@@ -5524,8 +5524,7 @@
       "name": "Lemuroid",
       "drawable": "lemuroid",
       "color": "#00C64E",
-      "glyph": "gaming_L",
-      "mark": "LE",
+      "glyph": "lemuroid_face",
       "components": [
         "com.swordfish.lemuroid/com.swordfish.lemuroid.app.mobile.feature.main.MainActivity",
         "com.swordfish.lemuroid/com.swordfish.lemuroid.app.tv.main.MainTVActivity"
@@ -5533,7 +5532,8 @@
       "category": "GAMING",
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "sampled from the official launcher icon (Google Play listing for com.swordfish.lemuroid): dominant brand accent #00C64E (2026-09-26)",
-      "color_reviewed": "2026-09-26"
+      "color_reviewed": "2026-09-26",
+      "glyph_source": "brand-informed redraw of the official launcher icon (play listing for com.swordfish.lemuroid); Core monoline geometry, not a trace (2026-09-26)"
     },
     {
       "name": "Lifetime",
@@ -7770,15 +7770,15 @@
       "name": "Peloton",
       "drawable": "onepeloton",
       "color": "#181A1D",
-      "glyph": "sport_P",
-      "mark": "PE",
+      "glyph": "peloton_p",
       "components": [
         "com.onepeloton.callisto/com.onepeloton.callisto.MainActivity"
       ],
       "category": "APP",
       "color_source": "simple-icons reference (monochrome ink mark)",
       "color_note": "monochrome",
-      "color_reviewed": "2026-09-08"
+      "color_reviewed": "2026-09-08",
+      "glyph_source": "brand-informed redraw of the official launcher icon (play listing for com.onepeloton.callisto); Core monoline geometry, not a trace (2026-09-26)"
     },
     {
       "name": "Pepperbox TV",
@@ -8205,15 +8205,15 @@
       "name": "Privado VPN",
       "drawable": "privado_vpn",
       "color": "#494EB6",
-      "glyph": "vpn_P",
-      "mark": "PV",
+      "glyph": "privado_keyhole",
       "components": [
         "io.privado.android/io.privado.android.ui.splash.SplashActivity"
       ],
       "category": "VPN",
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "sampled from the official launcher icon (Google Play listing for io.privado.android): dominant brand accent #494EB6 (2026-09-26)",
-      "color_reviewed": "2026-09-26"
+      "color_reviewed": "2026-09-26",
+      "glyph_source": "brand-informed redraw of the official launcher icon (play listing for io.privado.android); Core monoline geometry, not a trace (2026-09-26)"
     },
     {
       "name": "Private Internet Access",
@@ -8286,14 +8286,14 @@
       "name": "Psiphon",
       "drawable": "subscription",
       "color": "#FBAC5F",
-      "glyph": "vpn_P",
-      "mark": "PS",
+      "glyph": "psiphon_p",
       "components": [
         "com.psiphon3.subscription/com.psiphon3.MainActivity"
       ],
       "category": "VPN",
       "color_source": "sampled from the official launcher icon (Google Play listing for com.psiphon3.subscription): dominant brand accent #FBAC5F (2026-09-26)",
-      "color_reviewed": "2026-09-26"
+      "color_reviewed": "2026-09-26",
+      "glyph_source": "brand-informed redraw of the official launcher icon (play listing for com.psiphon3.subscription); Core monoline geometry, not a trace (2026-09-26)"
     },
     {
       "name": "Puffin TV",
@@ -8323,14 +8323,14 @@
       "name": "PureVPN",
       "drawable": "purevpnics",
       "color": "#7B2BFC",
-      "glyph": "vpn_P",
-      "mark": "PU",
+      "glyph": "purevpn_drop",
       "components": [
         "com.gaditek.purevpnics/com.purevpn.SplashActivity"
       ],
       "category": "VPN",
       "color_source": "brand reference (pre-provenance, unverified)",
-      "color_reviewed": null
+      "color_reviewed": null,
+      "glyph_source": "brand-informed redraw of the official launcher icon (play listing for com.gaditek.purevpnics); Core monoline geometry, not a trace (2026-09-26)"
     },
     {
       "name": "Put Io",
@@ -8432,15 +8432,15 @@
       "name": "Radio Paradise",
       "drawable": "radioparadisewidget",
       "color": "#F2B43E",
-      "glyph": "music_R",
-      "mark": "RP",
+      "glyph": "radioparadise_phones",
       "components": [
         "com.earthflare.android.radioparadisewidget.gpv2/com.cratorsoft.act.ActRPHD",
         "com.earthflare.android.radioparadisewidget.gpv2/com.cratorsoft.act.ActRPHD_"
       ],
       "category": "MUSIC",
       "color_source": "sampled from the official launcher icon (Google Play listing for com.earthflare.android.radioparadisewidget.gpv2): dominant brand accent #F2B43E (2026-09-26)",
-      "color_reviewed": "2026-09-26"
+      "color_reviewed": "2026-09-26",
+      "glyph_source": "brand-informed redraw of the official launcher icon (play listing for com.earthflare.android.radioparadisewidget.gpv2); Core monoline geometry, not a trace (2026-09-26)"
     },
     {
       "name": "Radioline",
@@ -8712,14 +8712,14 @@
       "name": "RetroX",
       "drawable": "archain",
       "color": "#01B39E",
-      "glyph": "gaming_R",
-      "mark": "RE",
+      "glyph": "retrox_stick",
       "components": [
         "com.archain.retrox/com.unity3d.player.UnityPlayerActivity"
       ],
       "category": "GAMING",
       "color_source": "sampled from the official launcher icon (Google Play listing for com.archain.retrox): dominant brand accent #01B39E (2026-09-26)",
-      "color_reviewed": "2026-09-26"
+      "color_reviewed": "2026-09-26",
+      "glyph_source": "brand-informed redraw of the official launcher icon (play listing for com.archain.retrox); Core monoline geometry, not a trace (2026-09-26)"
     },
     {
       "name": "Rezka",
@@ -9509,8 +9509,7 @@
       "name": "Smugmug",
       "drawable": "smugmug",
       "color": "#6DB944",
-      "glyph": "photos_S",
-      "mark": "SM",
+      "glyph": "smugmug_smile",
       "components": [
         "com.snapwood.smugfolio/com.smugmug.android.activities.SmugMainActivity"
       ],
@@ -9518,7 +9517,8 @@
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "https://simpleicons.org/?q=smugmug",
       "color_note": "simple-icons brand accent",
-      "color_reviewed": "2026-09-08"
+      "color_reviewed": "2026-09-08",
+      "glyph_source": "brand-informed redraw of the official launcher icon (play listing for com.snapwood.smugfolio); Core monoline geometry, not a trace (2026-09-26)"
     },
     {
       "name": "Snapcast",
@@ -10168,15 +10168,15 @@
       "name": "Symfonik",
       "drawable": "symfonik",
       "color": "#E22728",
-      "glyph": "music_S",
-      "mark": "SY",
+      "glyph": "symfonik_s",
       "components": [
         "app.symfonik.music.player/app.symfonik.ui.MainActivity",
         "app.symfonik.music.player/app.symfonik.ui.StartActivity"
       ],
       "category": "MUSIC",
       "color_source": "sampled from the official launcher icon (Google Play listing for app.symfonik.music.player): dominant brand accent #E22728 (2026-09-26)",
-      "color_reviewed": "2026-09-26"
+      "color_reviewed": "2026-09-26",
+      "glyph_source": "brand-informed redraw of the official launcher icon (play listing for app.symfonik.music.player); Core monoline geometry, not a trace (2026-09-26)"
     },
     {
       "name": "SYNC",
@@ -10952,15 +10952,15 @@
       "name": "Torguard",
       "drawable": "torguard",
       "color": "#CC0000",
-      "glyph": "vpn_T",
-      "mark": "TO",
+      "glyph": "torguard_lock",
       "components": [
         "net.torguard.openvpn.client/net.torguard.openvpn.client.LauncherActivity"
       ],
       "category": "VPN",
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "brand reference (pre-provenance, unverified)",
-      "color_reviewed": null
+      "color_reviewed": null,
+      "glyph_source": "brand-informed redraw of the official launcher icon (play listing for net.torguard.openvpn.client); Core monoline geometry, not a trace (2026-09-26)"
     },
     {
       "name": "Torrent Search",
@@ -11756,8 +11756,7 @@
       "name": "Viaplay",
       "drawable": "viaplay",
       "color": "#FE365F",
-      "glyph": "broadcast_V",
-      "mark": "VI",
+      "glyph": "viaplay_play",
       "components": [
         "com.viaplay.android/com.viaplay.android.features.home.HomeActivity"
       ],
@@ -11765,7 +11764,8 @@
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "https://simpleicons.org/?q=viaplay",
       "color_note": "simple-icons brand accent",
-      "color_reviewed": "2026-09-08"
+      "color_reviewed": "2026-09-08",
+      "glyph_source": "brand-informed redraw of the official launcher icon (play listing for com.viaplay.android); Core monoline geometry, not a trace (2026-09-26)"
     },
     {
       "name": "Vibra",
@@ -12231,14 +12231,14 @@
       "name": "WeatherYou",
       "drawable": "rodrigmatrix",
       "color": "#FF7A2E",
-      "glyph": "sport_W",
-      "mark": "WE",
+      "glyph": "weatheryou_sun",
       "components": [
         "com.rodrigmatrix.weatheryou/com.rodrigmatrix.weatheryou.tv.presentation.navigation.MainActivity"
       ],
-      "category": "SPORT",
+      "category": "APP",
       "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_reviewed": null,
+      "glyph_source": "brand-informed redraw of the official launcher icon (play listing for com.rodrigmatrix.weatheryou); Core monoline geometry, not a trace (2026-09-26)"
     },
     {
       "name": "WeatherBug",
@@ -12656,15 +12656,15 @@
       "name": "Yoga Download",
       "drawable": "yoga_download",
       "color": "#A03E97",
-      "glyph": "sport_Y",
-      "mark": "YD",
+      "glyph": "yoga_lotus",
       "components": [
         "com.yogadownload.andtv/com.yogadownload.andtv.SplashScreen"
       ],
       "category": "SPORT",
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "sampled from the official launcher icon (Google Play listing for com.yogadownload.andtv): dominant brand accent #A03E97 (2026-09-26)",
-      "color_reviewed": "2026-09-26"
+      "color_reviewed": "2026-09-26",
+      "glyph_source": "brand-informed redraw of the official launcher icon (play listing for com.yogadownload.andtv); Core monoline geometry, not a trace (2026-09-26)"
     },
     {
       "name": "Youcine",
@@ -12910,15 +12910,15 @@
       "name": "Zona",
       "drawable": "zona",
       "color": "#03A9F4",
-      "glyph": "broadcast_Z",
-      "mark": "ZO",
+      "glyph": "zona_z",
       "components": [
         "mobi.zona/mobi.zona.ui.MainActivity"
       ],
       "category": "APP",
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "sampled from the official launcher icon (APKCombo mirror of the Google Play listing for mobi.zona): dominant brand accent #03A9F4 (2026-09-26)",
-      "color_reviewed": "2026-09-26"
+      "color_reviewed": "2026-09-26",
+      "glyph_source": "brand-informed redraw of the official launcher icon (APKCombo mirror of the Google Play listing for mobi.zona); Core monoline geometry, not a trace (2026-09-26)"
     },
     {
       "name": "Zumba",
@@ -13170,7 +13170,7 @@
       "name": "Button Mapper TV",
       "drawable": "buttonmappertv",
       "color": "#063C9F",
-      "glyph": "tool_B",
+      "glyph": "buttonmapper_dpad",
       "components": [
         "com.tv.remote.button.mapper.remap/com.tv.remote.button.mapper.remap.LauncherActivity"
       ],
@@ -13178,7 +13178,7 @@
       "mapping_source": "owner TV audit 2026-09-21 (Auditor screenshots, TCL Google TV)",
       "color_source": "sampled from the official launcher icon (Google Play listing for com.tv.remote.button.mapper.remap): dominant brand accent #063C9F (2026-09-26)",
       "color_reviewed": "2026-09-26",
-      "mark": "BM"
+      "glyph_source": "brand-informed redraw of the official launcher icon (play listing for com.tv.remote.button.mapper.remap); Core monoline geometry, not a trace (2026-09-26)"
     },
     {
       "name": "Fast Task Killer",
@@ -13199,15 +13199,15 @@
       "name": "Galleri",
       "drawable": "galleri_tcl",
       "color": "#0061FF",
-      "glyph": "tool_G",
-      "mark": "GA",
+      "glyph": "galleri_cloud",
       "components": [
         "com.tcl.gallery/com.tcl.gallery.module_gallery.activity.MainActivity"
       ],
       "category": "SYSTEM",
       "mapping_source": "owner TV audit 2026-09-21 (Auditor screenshots, TCL Google TV)",
       "color_source": "owner TV audit 2026-09-21: TCL stock icon blue tile",
-      "color_reviewed": "2026-09-21"
+      "color_reviewed": "2026-09-21",
+      "glyph_source": "brand-informed redraw of the official launcher icon (play listing for com.tcl.gallery); Core monoline geometry, not a trace (2026-09-26)"
     },
     {
       "name": "MagiConnect",
@@ -13227,15 +13227,15 @@
       "name": "Meddelandelåda",
       "drawable": "meddelandelada",
       "color": "#119864",
-      "glyph": "tool_M",
-      "mark": "ME",
+      "glyph": "meddelande_chat",
       "components": [
         "com.tcl.messagebox/com.tcl.messagebox.activity.MainActivity"
       ],
       "category": "SYSTEM",
       "mapping_source": "owner TV audit 2026-09-21 (Auditor screenshots, TCL Google TV)",
       "color_source": "sampled from the official launcher icon (Google Play listing for com.tcl.messagebox): dominant brand accent #119864 (2026-09-26)",
-      "color_reviewed": "2026-09-26"
+      "color_reviewed": "2026-09-26",
+      "glyph_source": "brand-informed redraw of the official launcher icon (play listing for com.tcl.messagebox); Core monoline geometry, not a trace (2026-09-26)"
     },
     {
       "name": "Mediaspelare",
@@ -13255,8 +13255,7 @@
       "name": "PMX",
       "drawable": "pmx",
       "color": "#00C2C2",
-      "glyph": "tool_P",
-      "mark": "PM",
+      "glyph": "pmx_gear",
       "components": [
         "com.mirfatif.permissionmanagerx/com.mirfatif.permissionmanagerx.fwk.MainActivityM",
         "com.mirfatif.permissionmanagerx/com.mirfatif.permissionmanagerx.fwk.MainActivity"
@@ -13264,7 +13263,8 @@
       "category": "TOOL",
       "mapping_source": "owner TV audit 2026-09-21 (Auditor screenshots, TCL Google TV)",
       "color_source": "sampled from the official launcher icon (Google Play listing for com.mirfatif.permissionmanagerx): dominant brand accent #00C2C2 (2026-09-26)",
-      "color_reviewed": "2026-09-26"
+      "color_reviewed": "2026-09-26",
+      "glyph_source": "brand-informed redraw of the official launcher icon (play listing for com.mirfatif.permissionmanagerx); Core monoline geometry, not a trace (2026-09-26)"
     },
     {
       "name": "TCL Home Passive",

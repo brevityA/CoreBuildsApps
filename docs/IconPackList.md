@@ -305,7 +305,7 @@ Source accents are retained in the catalog. **On dark** is the shared square/ban
 | GeForce Now | `tegrazone3` | `#76B900` | `#76B900` | `com.nvidia.tegrazone3/com.nvidia.geforcenow.LaunchActivity` |
 | GenPlay | `genplay` | `#FFE14D` | `#FFE14D` | `com.genplay.apps/com.genplay.apps.MainActivity` |
 | Get Icon | `get_icon` | `#F48FB1` | `#F48FB1` | `de.lemke.geticon/de.lemke.geticon.ui.MainActivity` |
-| Getflix VPN | `digiport` | `#E6EDF3` | `#E6EDF3` | `com.digiport.getflix.vpn/com.digiport.vpnapp.ui.modules.MainActivity` |
+| Getflix VPN | `digiport` | `#FF0000` | `#FF0000` | `com.digiport.getflix.vpn/com.digiport.vpnapp.ui.modules.MainActivity` |
 | Ghost Commander | `ghostcommander` | `#8B949E` | `#8B949E` | `com.ghostsq.commander/com.ghostsq.commander.FileCommander`<br>`com.ghostsq.commander/.FileCommander` |
 | Global TV | `global_tv` | `#34EB7A` | `#34EB7A` | `com.shawmedia.smglobal/com.corusent.stream.activity.SplashScreenActivity` |
 | Globoplay | `globotv` | `#A366FF` | `#A366FF` | `com.globo.globotv/com.globo.globotv.splashtv.SplashActivity` |

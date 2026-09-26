@@ -218,7 +218,6 @@
     <item drawable="fifa" />
     <item drawable="flosports" />
     <item drawable="football_360" />
-    <item drawable="forecast" />
     <item drawable="foxnews" />
     <item drawable="foxsports" />
     <item drawable="foxsports_2" />
@@ -245,7 +244,6 @@
     <item drawable="tvpsport" />
     <item drawable="uefa_tv" />
     <item drawable="smartphone" />
-    <item drawable="rodrigmatrix" />
     <item drawable="yoga_download" />
     <category title="Square · Gaming" />
     <item drawable="airattack2tv" />
@@ -580,6 +578,7 @@
     <item drawable="flix_tv" />
     <item drawable="flixnest" />
     <item drawable="fluffy" />
+    <item drawable="forecast" />
     <item drawable="forja_tv" />
     <item drawable="formed" />
     <item drawable="fotoo" />
@@ -953,6 +952,7 @@
     <item drawable="watcher_tv" />
     <item drawable="watcho" />
     <item drawable="weatherbug" />
+    <item drawable="rodrigmatrix" />
     <item drawable="wetv" />
     <item drawable="damontecres_2" />
     <item drawable="linkplay" />

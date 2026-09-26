@@ -218,7 +218,6 @@
     <item drawable="fifa_banner" />
     <item drawable="flosports_banner" />
     <item drawable="football_360_banner" />
-    <item drawable="forecast_banner" />
     <item drawable="foxnews_banner" />
     <item drawable="foxsports_banner" />
     <item drawable="foxsports_2_banner" />
@@ -245,7 +244,6 @@
     <item drawable="tvpsport_banner" />
     <item drawable="uefa_tv_banner" />
     <item drawable="smartphone_banner" />
-    <item drawable="rodrigmatrix_banner" />
     <item drawable="yoga_download_banner" />
     <category title="Banners · Gaming" />
     <item drawable="airattack2tv_banner" />
@@ -580,6 +578,7 @@
     <item drawable="flix_tv_banner" />
     <item drawable="flixnest_banner" />
     <item drawable="fluffy_banner" />
+    <item drawable="forecast_banner" />
     <item drawable="forja_tv_banner" />
     <item drawable="formed_banner" />
     <item drawable="fotoo_banner" />
@@ -953,6 +952,7 @@
     <item drawable="watcher_tv_banner" />
     <item drawable="watcho_banner" />
     <item drawable="weatherbug_banner" />
+    <item drawable="rodrigmatrix_banner" />
     <item drawable="wetv_banner" />
     <item drawable="damontecres_2_banner" />
     <item drawable="linkplay_banner" />

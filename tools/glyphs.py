@@ -5639,3 +5639,260 @@ GLYPHS.update({
     "torrserve_bolt": torrserve_bolt, "avoid_play": avoid_play,
     "hueessentials_lamp": hueessentials_lamp,
 })
+
+
+# --------------------------------------------------------------------------
+# Brand-informed marks, batch 5 (2026-09-26). Same contract as batches 1-4.
+
+def _scaled(d, s, cx=256, cy=256):
+    """Scale a path made only of M/L/C/Z pairs about (cx, cy)."""
+    nums = iter(re.findall(r"-?\d+(?:\.\d+)?|[MLCZ]", d))
+    out = []
+    for tok in nums:
+        if tok in "MLCZ":
+            out.append(tok)
+            continue
+        x, y = float(tok), float(next(nums))
+        out.append(f"{cx + (x - cx) * s:.1f} {cy + (y - cy) * s:.1f}")
+    return " ".join(out)
+
+
+def bitdefender_shield(c):
+    """Bitdefender: the shield with the chain link across it."""
+    link = _scaled("M 238 290 L 208 320 C 188 340 158 340 140 322 C 122 304 122 274 142 254 "
+                   "L 172 224 M 274 222 L 304 192 C 324 172 354 172 372 190 "
+                   "C 390 208 390 238 370 258 L 340 288 M 226 286 L 286 226", 0.72, 256, 262)
+    return (f'<path d="M 256 72 L 420 128 L 420 246 C 420 346 350 410 256 444 '
+            f'C 162 410 92 346 92 246 L 92 128 Z" {_s(c, 30)}/>'
+            f'<path d="{link}" {_s(c, 26)}/>')
+
+
+def clashmeta_cat(c):
+    """Clash Meta: the M with a cat's whiskers and nose."""
+    return (f'<path d="M 136 390 L 136 112 L 256 262 L 376 112 L 376 390" {_s(c, 32)}/>'
+            f'<path d="M 72 330 L 110 324 M 76 378 L 110 364 '
+            f'M 440 330 L 402 324 M 436 378 L 402 364" {_s(c, 22)}/>'
+            + _solid("M 240 336 L 272 336 L 256 356 Z", c, 12))
+
+
+def firesend_plane(c):
+    """FireSend: the paper plane with its flame trail."""
+    return (f'<path d="M 108 250 L 430 92 L 336 420 L 254 302 Z" {_s(c, 30)}/>'
+            f'<path d="M 254 302 L 430 92" {_s(c, 24)}/>'
+            f'<path d="M 86 420 C 70 380 100 354 124 334 C 128 364 150 374 146 408" {_s(c, 22)}/>')
+
+
+def homeworkout_plank(c):
+    """Home Workout: the figure holding a plank, facing out."""
+    return (f'<circle cx="256" cy="140" r="44" {_s(c, 28)}/>'
+            f'<path d="M 256 214 C 206 214 164 228 146 262 L 118 420 '
+            f'M 256 214 C 306 214 348 228 366 262 L 394 420" {_s(c, 30)}/>'
+            f'<path d="M 256 214 L 256 330" {_s(c, 30)}/>')
+
+
+def lampa_rings(c):
+    """Lampa: the solid eye inside its sweeping rings."""
+    arcs = ""
+    for r, a0, a1, w in ((188, 200, 340, 26), (132, 205, 335, 24), (132, 25, 155, 24)):
+        x0, y0 = _polar(256, 262, r, a0)
+        x1, y1 = _polar(256, 262, r, a1)
+        sweep = 1
+        arcs += (f'<path d="M {x0:.1f} {y0:.1f} A {r} {r} 0 0 {sweep} {x1:.1f} {y1:.1f}" '
+                 f'{_s(c, w)}/>')
+    return arcs + f'<circle cx="256" cy="262" r="58" {_s(c, 30)}/>'
+
+
+def launchbox_cube(c):
+    """LaunchBox: the puzzle cube, each face split into four."""
+    top, rt, bot, lb, lt, ctr = (256, 72), (420, 166), (256, 440), (92, 346), (92, 166), (256, 260)
+    rb = (420, 346)
+    mid = lambda a, b: ((a[0] + b[0]) / 2, (a[1] + b[1]) / 2)
+    seg = lambda a, b: f"M {a[0]:.1f} {a[1]:.1f} L {b[0]:.1f} {b[1]:.1f} "
+    grid = (seg(mid(lt, top), mid(ctr, rt)) + seg(mid(top, rt), mid(lt, ctr))
+            + seg(mid(lt, ctr), mid(lb, bot)) + seg(mid(lt, lb), mid(ctr, bot))
+            + seg(mid(ctr, rt), mid(bot, rb)) + seg(mid(ctr, bot), mid(rt, rb)))
+    return (f'<path d="M 256 72 L 420 166 L 420 346 L 256 440 L 92 346 L 92 166 Z" {_s(c, 28)}/>'
+            f'<path d="M 92 166 L 256 260 L 420 166 M 256 260 L 256 440" {_s(c, 26)}/>'
+            f'<path d="{grid}" {_s(c, 20)}/>')
+
+
+def lemuroid_face(c):
+    """Lemuroid: the two button eyes and the small nose of its face."""
+    dots = "".join(f'<circle cx="{348 + dx}" cy="{232 + dy}" r="13" {_f(c)}/>'
+                   for dx, dy in ((0, -28), (28, 0), (0, 28), (-28, 0)))
+    return (f'<circle cx="164" cy="232" r="76" {_s(c, 26)}/>'
+            f'<circle cx="348" cy="232" r="76" {_s(c, 26)}/>'
+            f'<path d="M 164 200 L 164 264 M 132 232 L 196 232" {_s(c, 22)}/>' + dots
+            + _solid("M 226 344 L 286 344 L 256 384 Z", c, 16))
+
+
+def peloton_p(c):
+    """Peloton: the P whose open bowl is cut by its slanted stem."""
+    x0, y0 = _polar(284, 222, 106, 208)
+    x1, y1 = _polar(284, 222, 106, 128)
+    return (f'<path d="M {x0:.1f} {y0:.1f} A 106 106 0 1 1 {x1:.1f} {y1:.1f}" {_s(c, 32)}/>'
+            f'<path d="M 338 84 L 206 424" {_s(c, 32)}/>')
+
+
+def privado_keyhole(c):
+    """Privado VPN: the keyhole at the centre of its broken rings."""
+    arcs = ""
+    for r, gaps in ((184, (60, 150, 250)), (132, (20, 200))):
+        pts = sorted(gaps)
+        for k, g in enumerate(pts):
+            a0 = g + 12
+            a1 = pts[(k + 1) % len(pts)] - 12 + (360 if k == len(pts) - 1 else 0)
+            x0, y0 = _polar(256, 256, r, a0)
+            x1, y1 = _polar(256, 256, r, a1)
+            large = 1 if (a1 - a0) % 360 > 180 else 0
+            arcs += (f'<path d="M {x0:.1f} {y0:.1f} A {r} {r} 0 {large} 1 {x1:.1f} {y1:.1f}" '
+                     f'{_s(c, 22)}/>')
+    return (arcs + f'<circle cx="256" cy="236" r="34" {_f(c)}/>'
+            + _solid("M 240 250 L 272 250 L 282 318 L 230 318 Z", c, 12))
+
+
+def psiphon_p(c):
+    """Psiphon: the blocky P built from two offset slabs."""
+    return (f'<path d="M 150 96 L 334 96 C 378 96 404 122 404 166 L 404 208 '
+            f'C 404 252 378 278 334 278 L 254 278 L 254 396 C 254 408 246 416 234 416 '
+            f'L 170 416 C 158 416 150 408 150 396 Z" {_s(c, 30)}/>'
+            f'<path d="M 254 188 L 318 188" {_s(c, 26)}/>')
+
+
+def purevpn_drop(c):
+    """PureVPN: the rounded downward wedge inside its disc."""
+    return (f'<circle cx="256" cy="256" r="176" {_s(c, 28)}/>'
+            f'<path d="M 176 200 L 336 200 L 256 334 Z" {_s(c, 30)}/>')
+
+
+def retrox_stick(c):
+    """RetroX: the arcade panel with its stick and button."""
+    return (f'<rect x="84" y="262" width="344" height="150" rx="40" {_s(c, 30)}/>'
+            f'<path d="M 196 262 L 196 186" {_s(c, 26)}/>'
+            f'<circle cx="196" cy="146" r="46" {_s(c, 28)}/>'
+            f'<circle cx="332" cy="316" r="30" {_f(c)}/>')
+
+
+def smugmug_smile(c):
+    """SmugMug: the two eyes over the wide grin."""
+    return (f'<circle cx="186" cy="152" r="26" {_f(c)}/>'
+            f'<circle cx="326" cy="152" r="26" {_f(c)}/>'
+            f'<path d="M 124 252 L 388 252 C 388 350 330 408 256 408 C 182 408 124 350 124 252 Z" '
+            f'{_s(c, 30)}/>')
+
+
+def symfonik_s(c):
+    """Symfonik: the boxy S."""
+    return (f'<path d="M 380 116 L 176 116 C 150 116 136 130 136 156 L 136 220 '
+            f'C 136 246 150 256 176 256 L 336 256 C 362 256 376 266 376 292 L 376 356 '
+            f'C 376 382 362 396 336 396 L 132 396" {_s(c, 32)}/>')
+
+
+def torguard_lock(c):
+    """TorGuard: the padlock whose body is drawn in swept cloud lines."""
+    return (f'<path d="M 176 236 L 176 176 C 176 96 336 96 336 176 L 336 236" {_s(c, 30)}/>'
+            f'<path d="M 108 440 L 108 292 C 108 256 128 236 164 236 L 348 236 '
+            f'C 384 236 404 256 404 292 L 404 330" {_s(c, 30)}/>'
+            f'<path d="M 170 324 L 340 324 C 372 324 388 352 360 368 L 170 368 '
+            f'M 170 412 L 404 412" {_s(c, 24)}/>')
+
+
+def viaplay_play(c):
+    """Viaplay: the play arrow biting into its disc."""
+    return (f'<path d="M 202 96 C 290 72 396 120 422 212 C 450 312 378 412 278 424 '
+            f'C 220 432 174 410 146 380" {_s(c, 32)}/>'
+            + _solid("M 90 164 L 308 256 L 90 348 Z", c, 16))
+
+
+def weatheryou_sun(c):
+    """WeatherYou: the sun rising behind its cloud."""
+    return (f'<circle cx="200" cy="190" r="72" {_s(c, 28)}/>'
+            f'<path d="M 146 410 C 88 410 72 336 126 318 C 128 262 206 242 236 290 '
+            f'C 258 236 348 232 366 298 C 428 296 446 410 370 410 Z" {_s(c, 30)}/>')
+
+
+def yoga_lotus(c):
+    """Yoga Download: the lotus flower over its water line."""
+    return (f'<path d="M 256 110 C 314 176 314 280 256 352 C 198 280 198 176 256 110 Z" {_s(c, 26)}/>'
+            f'<path d="M 256 352 C 186 344 118 296 96 206 C 162 212 222 262 256 352" {_s(c, 24)}/>'
+            f'<path d="M 256 352 C 326 344 394 296 416 206 C 350 212 290 262 256 352" {_s(c, 24)}/>'
+            f'<path d="M 104 406 C 196 378 316 378 408 406" {_s(c, 26)}/>')
+
+
+def zona_z(c):
+    """Zona: the rounded Z of its bow-tie mark."""
+    return (f'<path d="M 132 120 L 380 120 L 132 392 L 380 392" {_s(c, 32)}/>')
+
+
+def buttonmapper_dpad(c):
+    """Button Mapper: the d-pad with its centre button and four corner keys."""
+    corners = "".join(f'<circle cx="{x}" cy="{y}" r="18" {_f(c)}/>'
+                      for x, y in ((104, 104), (408, 104), (104, 408), (408, 408)))
+    return (f'<path d="M 212 96 L 300 96 L 300 212 L 416 212 L 416 300 L 300 300 L 300 416 '
+            f'L 212 416 L 212 300 L 96 300 L 96 212 L 212 212 Z" {_s(c, 28)}/>'
+            f'<circle cx="256" cy="256" r="30" {_s(c, 22)}/>' + corners)
+
+
+def galleri_cloud(c):
+    """Galleri: the cloud with a mountain inside it."""
+    return (f'<path d="M 150 392 C 86 392 68 314 124 294 C 124 226 206 200 244 254 '
+            f'C 268 190 370 188 388 270 C 452 276 460 392 380 392 Z" {_s(c, 30)}/>'
+            f'<path d="M 184 350 L 240 290 L 272 322 L 306 282 L 348 350" {_s(c, 24)}/>')
+
+
+def meddelande_chat(c):
+    """Meddelandelåda: the message bubble with its dots, a second behind it."""
+    dots = "".join(f'<circle cx="{x}" cy="276" r="18" {_f(c)}/>' for x in (180, 238, 296))
+    return (f'<path d="M 170 118 L 400 118 C 424 118 436 130 436 154 L 436 276" {_s(c, 24)}/>'
+            f'<path d="M 112 180 L 356 180 C 380 180 392 192 392 216 L 392 336 '
+            f'C 392 360 380 372 356 372 L 196 372 L 132 424 L 132 372 L 112 372 '
+            f'C 88 372 76 360 76 336 L 76 216 C 76 192 88 180 112 180 Z" {_s(c, 30)}/>' + dots)
+
+
+def pmx_gear(c):
+    """PMX (Permission Manager X): the cog with a warning triangle on its shoulder."""
+    pts = []
+    for k in range(8):
+        m = -90 + 45 * k
+        pts += [_polar(210, 290, 118, m - 12), _polar(210, 290, 150, m - 7),
+                _polar(210, 290, 150, m + 7), _polar(210, 290, 118, m + 12)]
+    p = " L ".join(f"{x:.1f} {y:.1f}" for x, y in pts)
+    return (f'<path d="M {p} Z" {_s(c, 24)}/>'
+            f'<circle cx="210" cy="290" r="48" {_s(c, 24)}/>'
+            f'<path d="M 370 70 L 456 222 L 284 222 Z" {_s(c, 26)}/>'
+            f'<path d="M 370 124 L 370 168" {_s(c, 22)}/>'
+            f'<circle cx="370" cy="198" r="10" {_f(c)}/>')
+
+
+def getflix_popcorn(c):
+    """Getflix: the striped popcorn box with kernels spilling over the rim."""
+    kernels = "".join(f'<circle cx="{x}" cy="{y}" r="{r}" {_s(c, 22)}/>'
+                      for x, y, r in ((188, 166, 40), (256, 128, 46), (324, 166, 40)))
+    return (kernels
+            + f'<path d="M 132 214 L 380 214 L 340 440 L 172 440 Z" {_s(c, 28)}/>'
+            f'<path d="M 214 214 L 226 440 M 298 214 L 286 440" {_s(c, 24)}/>')
+
+
+def radioparadise_phones(c):
+    """Radio Paradise: the headphones with sound between the cups."""
+    return (f'<path d="M 104 300 C 104 112 408 112 408 300" {_s(c, 28)}/>'
+            f'<rect x="80" y="276" width="64" height="130" rx="26" {_s(c, 26)}/>'
+            f'<rect x="368" y="276" width="64" height="130" rx="26" {_s(c, 26)}/>'
+            f'<path d="M 226 292 C 206 314 206 360 226 382 M 286 292 C 306 314 306 360 286 382 '
+            f'M 190 312 C 180 328 180 346 190 362 M 322 312 C 332 328 332 346 322 362" {_s(c, 20)}/>')
+
+
+GLYPHS.update({
+    "bitdefender_shield": bitdefender_shield, "clashmeta_cat": clashmeta_cat,
+    "firesend_plane": firesend_plane, "homeworkout_plank": homeworkout_plank,
+    "lampa_rings": lampa_rings, "launchbox_cube": launchbox_cube,
+    "lemuroid_face": lemuroid_face, "peloton_p": peloton_p,
+    "privado_keyhole": privado_keyhole, "psiphon_p": psiphon_p,
+    "purevpn_drop": purevpn_drop, "retrox_stick": retrox_stick,
+    "smugmug_smile": smugmug_smile, "symfonik_s": symfonik_s,
+    "torguard_lock": torguard_lock, "viaplay_play": viaplay_play,
+    "weatheryou_sun": weatheryou_sun, "yoga_lotus": yoga_lotus, "zona_z": zona_z,
+    "buttonmapper_dpad": buttonmapper_dpad, "galleri_cloud": galleri_cloud,
+    "meddelande_chat": meddelande_chat, "pmx_gear": pmx_gear,
+    "getflix_popcorn": getflix_popcorn, "radioparadise_phones": radioparadise_phones,
+})
