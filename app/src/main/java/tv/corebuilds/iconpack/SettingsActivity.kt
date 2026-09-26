@@ -53,6 +53,7 @@ class SettingsActivity : TvActivity() {
     private lateinit var updateSwitch: SwitchCompat
     private lateinit var motionSwitch: SwitchCompat
     private lateinit var amoledSwitch: SwitchCompat
+    private lateinit var bannerSwitch: SwitchCompat
     private lateinit var cacheSize: TextView
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -63,11 +64,13 @@ class SettingsActivity : TvActivity() {
         updateSwitch = findViewById(R.id.set_updates_switch)
         motionSwitch = findViewById(R.id.set_motion_switch)
         amoledSwitch = findViewById(R.id.set_amoled_switch)
+        bannerSwitch = findViewById(R.id.set_banner_switch)
         cacheSize = findViewById(R.id.set_cache_size)
 
         updateSwitch.isChecked = Prefs.updateChecks(this)
         motionSwitch.isChecked = Prefs.reduceMotion(this)
         amoledSwitch.isChecked = Prefs.amoled(this)
+        bannerSwitch.isChecked = Prefs.pickerPrefersBanners(this)
 
         row(R.id.set_updates_row) {
             val next = !updateSwitch.isChecked
@@ -88,12 +91,26 @@ class SettingsActivity : TvActivity() {
             recreate()
         }
 
+        row(R.id.set_banner_row) {
+            val next = !bannerSwitch.isChecked
+            bannerSwitch.isChecked = next
+            Prefs.set(this, Prefs.KEY_PICK_BANNERS, next)
+            // Where there is a companion pack, the art style is also the
+            // launcher's: re-apply now so the home screen follows the switch
+            // (installing Core Builds Glyphs first if it is not there yet).
+            if (GlyphsCompanion.supported()) refreshLauncher()
+        }
+
         row(R.id.set_refresh_row) { refreshLauncher() }
 
         row(R.id.set_appinfo_row) { openLauncherInfo() }
 
         row(R.id.set_suite_row) {
             startActivity(Intent(this, SuiteActivity::class.java))
+        }
+
+        row(R.id.set_whatsnew_row) {
+            startActivity(Intent(this, WhatsNewActivity::class.java))
         }
 
         row(R.id.set_audit_row) {
@@ -112,6 +129,34 @@ class SettingsActivity : TvActivity() {
         findViewById<View>(R.id.set_back).setOnClickListener { finish() }
 
         showCacheSize()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        // A companion install whose result never reached us: apply once the
+        // package is really there (see MainActivity.onResume). Declines are
+        // reported by the installer's result, in onActivityResult.
+        onCompanionOutcome(GlyphsCompanion.takePendingApply(this))
+        bannerSwitch.isChecked = Prefs.pickerPrefersBanners(this)
+    }
+
+    @Deprecated("Deprecated in AndroidX; the installer result still arrives here")
+    @Suppress("DEPRECATION")
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == GlyphsCompanion.INSTALL_REQUEST) {
+            onCompanionOutcome(GlyphsCompanion.onInstallResult(this))
+            bannerSwitch.isChecked = Prefs.pickerPrefersBanners(this)
+        }
+    }
+
+    /** Finish the apply the switch asked for, or say it was declined. */
+    private fun onCompanionOutcome(pending: GlyphsCompanion.Pending?) {
+        when (pending) {
+            is GlyphsCompanion.Pending.Ready -> refreshLauncher(pending.launcherKey)
+            GlyphsCompanion.Pending.Declined -> toast(getString(R.string.glyphs_declined))
+            null -> Unit
+        }
     }
 
     private fun row(id: Int, onSelect: () -> Unit) {
@@ -142,8 +187,10 @@ class SettingsActivity : TvActivity() {
      * applied, manual path, or nothing detected - because a silent no-op is
      * exactly the confusion that ends in rebooting the TV.
      */
-    private fun refreshLauncher() {
-        val launcher = ApplyIconPack.detectInstalled(this)
+    private fun refreshLauncher(launcherKey: String? = null) {
+        val launcher = launcherKey
+            ?.let { key -> ApplyIconPack.installed(this).firstOrNull { it.key == key } }
+            ?: ApplyIconPack.detectInstalled(this)
         if (launcher == null) {
             toast(getString(R.string.refresh_no_launcher))
             return
@@ -155,6 +202,17 @@ class SettingsActivity : TvActivity() {
                 toast(getString(R.string.refresh_manual_fmt, result.launcherName, result.instructions))
             is ApplyIconPack.Result.NotInstalled ->
                 toast(getString(R.string.refresh_no_launcher))
+            is ApplyIconPack.Result.Handoff ->
+                // Same walk as the sheet's CTA, reached from Settings instead:
+                // one screen, one set of steps, whichever door was used.
+                startActivity(
+                    Intent(this, LauncherSetupActivity::class.java)
+                        .putExtra(LauncherSetupActivity.EXTRA_LAUNCHER, launcher.key)
+                )
+            ApplyIconPack.Result.NeedsCompanion ->
+                GlyphsCompanion.ensure(this, launcher.key) {
+                    bannerSwitch.isChecked = Prefs.pickerPrefersBanners(this)
+                }
         }
     }
 

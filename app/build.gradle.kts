@@ -11,11 +11,11 @@ android {
         applicationId = "tv.corebuilds.iconpack"
         minSdk = 21
         targetSdk = 34
-        versionCode = 33
-        versionName = "1.9.1"
+        versionCode = 37
+        versionName = "1.9.5"
 
-        // Read by the shared updater code, which :pop also compiles. Values
-        // are the classic pack's existing ones, so behaviour is unchanged.
+        // Read by the updater code: where to check for a newer release and
+        // which FileProvider authority serves the downloaded APK.
         buildConfigField(
             "String",
             "UPDATE_AUTHORITY",
@@ -28,6 +28,16 @@ android {
                 "main/Latestrelease/version.json\"",
         )
         manifestPlaceholders["fileProviderAuthority"] = "tv.corebuilds.iconpack.update"
+        // English-only: resConfigs strips the ~70 translated locales the
+        // support libraries ship, which nothing in this app reads.
+        resConfigs("en")
+        // The square twin (glyphs/) the Banners/Glyphs toggle points
+        // launchers at. Empty in the candidate build, which has no companion.
+        buildConfigField(
+            "String",
+            "GLYPHS_PACKAGE",
+            "\"tv.corebuilds.iconpack.glyphs\"",
+        )
     }
 
     // This variant is intentionally separate from both production release and
@@ -44,6 +54,9 @@ android {
             resValue("string", "app_name", "Core Builds Icon Pack – Test")
             buildConfigField("String", "TEST_SOURCE_COMMIT", "\"$sourceCommit\"")
             buildConfigField("String", "UPDATE_AUTHORITY", "\"tv.corebuilds.iconpack.test.update\"")
+            // Debug-signed: it could never pass the companion's signature
+            // check against a release-signed Glyphs APK, so it offers none.
+            buildConfigField("String", "GLYPHS_PACKAGE", "\"\"")
             manifestPlaceholders["fileProviderAuthority"] = "tv.corebuilds.iconpack.test.update"
         }
     }
@@ -68,10 +81,12 @@ android {
 
     buildTypes {
         release {
-            // Resource shrinking would strip drawables that are only ever
-            // resolved by name at runtime. Keep every icon.
-            isMinifyEnabled = false
-            isShrinkResources = false
+            // The drawables are only ever resolved by name at runtime
+            // (appfilter strings, getIdentifier), which is exactly what the
+            // generated res/raw/keep.xml pins — shrinking is safe because
+            // the keep set comes from the same catalog as the art.
+            isMinifyEnabled = true
+            isShrinkResources = true
             val ks = System.getenv("KEYSTORE_PATH")
             if (ks != null && file(ks).exists()) {
                 signingConfig = signingConfigs.getByName("release")
@@ -92,8 +107,8 @@ android {
     }
 
     androidResources {
-        // PNGs are already optimized by the pipeline; don't re-crunch.
-        noCompress += listOf("png")
+        // Already-compressed formats; don't re-crunch.
+        noCompress += listOf("png", "webp")
     }
 }
 

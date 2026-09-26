@@ -28,6 +28,10 @@ object Prefs {
     const val KEY_UPDATE_CHECKS = "update_checks"
     const val KEY_REDUCE_MOTION = "reduce_motion"
     const val KEY_AMOLED = "amoled_chrome"
+    const val KEY_PICK_BANNERS = "pick_banners"
+    const val KEY_LIVE_LOOP = "live_loop"
+    const val KEY_WHATS_NEW_SEEN = "whats_new_seen_version"
+    const val KEY_COMPANION_PENDING_APPLY = "glyphs_pending_apply"
 
     private fun prefs(context: Context): SharedPreferences =
         context.applicationContext.getSharedPreferences(FILE, Context.MODE_PRIVATE)
@@ -61,6 +65,66 @@ object Prefs {
      */
     fun amoled(context: Context): Boolean =
         prefs(context).getBoolean(KEY_AMOLED, false)
+
+    /**
+     * The Banners/Glyphs art style. Banners is the shipped default (true),
+     * as it was before 1.9.2: TV launcher cards are 16:9. Read by the
+     * catalogue, by the icon picker, and by [GlyphsCompanion.applyTarget]:
+     * on builds with a companion, glyphs (false) means launchers are told to
+     * apply Core Builds Glyphs, whose appfilter maps every app to its square
+     * glyph, instead of this package's banners. The key keeps its 1.9.x name
+     * so a style someone already chose survives the update.
+     */
+    fun pickerPrefersBanners(context: Context): Boolean =
+        prefs(context).getBoolean(KEY_PICK_BANNERS, true)
+
+    /**
+     * The launcher (its [ApplyIconPack.Launcher.key]) owed an apply once the
+     * Glyphs companion installs, or null. Written by [GlyphsCompanion.ensure]
+     * just before the system installer opens; read and cleared by
+     * [GlyphsCompanion.takePendingApply] when Settings or the home screen
+     * resumes with the companion in place. Persisted rather than held in a
+     * field because the screen may be recreated while the installer is up.
+     */
+    fun companionPendingApply(context: Context): String? =
+        prefs(context).getString(KEY_COMPANION_PENDING_APPLY, null)
+
+    fun setCompanionPendingApply(context: Context, launcherKey: String?) {
+        prefs(context).edit().apply {
+            if (launcherKey == null) remove(KEY_COMPANION_PENDING_APPLY)
+            else putString(KEY_COMPANION_PENDING_APPLY, launcherKey)
+        }.apply()
+    }
+
+    /**
+     * The highest versionCode the What's New sheet has narrated for. Read by
+     * MainActivity's upgrade gate; written by the sheet itself when it closes
+     * and by first-launch init (a brand-new install has nothing to narrate,
+     * so the gateload seeds it to the current code rather than firing). The
+     * sheet is the in-app what's-changed surface: what the update bar says
+     * in one line before an update, it says in full after one.
+     */
+    fun whatsNewSeen(context: Context): Int =
+        prefs(context).getInt(KEY_WHATS_NEW_SEEN, 0)
+
+    fun setWhatsNewSeen(context: Context, versionCode: Int) {
+        prefs(context).edit().putInt(KEY_WHATS_NEW_SEEN, versionCode).apply()
+    }
+
+    /**
+     * The motion loop [LiveWallpaperService] plays ([LiveLoop.Loop.id]).
+     * Written by the preview's "Set live" button; read by the engine on
+     * every visibility change, so re-picking a loop re-points wallpaper
+     * that is already active. Unknown values fall back to the first loop
+     * in [LiveLoop.byId] rather than crashing the engine.
+     */
+    fun liveLoopId(context: Context): String =
+        prefs(context).getString(KEY_LIVE_LOOP, LiveLoop.LOOPS[0].id)
+            ?: LiveLoop.LOOPS[0].id
+
+    fun setLiveLoopId(context: Context, loopId: String) {
+        prefs(context).edit().putString(KEY_LIVE_LOOP, loopId).apply()
+    }
 
     fun set(context: Context, key: String, value: Boolean) {
         prefs(context).edit().putBoolean(key, value).apply()

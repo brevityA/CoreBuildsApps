@@ -40,6 +40,19 @@ COPY_GLOBS = [
 SKIP_PARTS = {"node_modules", "build", ".git", "dist", "out"}
 
 
+def wrapper_on_disk(root_dir: Path) -> str:
+    """The Gradle version a root's wrapper properties name, read independently.
+
+    Deliberately not gate._wrapper_version: a test that compared the gate's
+    parser with itself would pass whatever the parser did.
+    """
+    text = (root_dir / "gradle" / "wrapper" / "gradle-wrapper.properties").read_text()
+    for line in text.splitlines():
+        if line.startswith("distributionUrl="):
+            return line.rsplit("/gradle-", 1)[1].rsplit("-", 1)[0]
+    raise AssertionError(f"no distributionUrl in {root_dir}")
+
+
 def snapshot(dest: Path) -> None:
     """Copy the build-relevant slice of the repo into `dest`."""
     for pattern in COPY_GLOBS:
@@ -170,13 +183,15 @@ class GradleParsing(unittest.TestCase):
     def test_finds_every_gradle_root_in_the_suite(self):
         self.assertEqual(
             set(self.roots),
-            {"", "pixel-neon", "ticker/android", "shift", "motion-plugin", "doctor"},
+            {"", "ticker/android", "shift", "motion-plugin", "doctor"},
         )
 
     def test_root_build_file_maps_to_two_modules(self):
-        # The one deliberate exception to "one app, one Gradle root": pop/ is a
-        # second module on the repo-root build, not its own root.
-        self.assertEqual([m.name for m in self.roots[""].modules], ["app", "pop"])
+        # The deliberate exception to "one app, one Gradle root": glyphs/
+        # (the icon pack's square companion) is a further module on the
+        # repo-root build, not a root of its own.
+        self.assertEqual([m.name for m in self.roots[""].modules],
+                         ["app", "glyphs"])
 
     def test_reads_compile_and_min_sdk(self):
         app = self.roots[""].modules[0]
@@ -189,8 +204,12 @@ class GradleParsing(unittest.TestCase):
         for rel, root in self.roots.items():
             self.assertEqual(root.agp, "8.5.2", f"{rel} AGP")
             self.assertEqual(root.kotlin, "1.9.24", f"{rel} Kotlin")
-        self.assertEqual(self.roots["ticker/android"].wrapper, "8.7")
-        self.assertEqual(self.roots["shift"].wrapper, "9.7.0")
+        # Compared with the properties files themselves rather than literals:
+        # the wrapper is a Dependabot-managed version, and a test that pins it
+        # fails every wrapper bump for reasons that have nothing to do with the
+        # gate (PR #160 went red on exactly this).
+        for rel in ("ticker/android", "shift"):
+            self.assertEqual(self.roots[rel].wrapper, wrapper_on_disk(ROOT / rel), rel)
 
     def test_dependencies_include_the_bom_and_test_configs(self):
         deps = self.roots["doctor"].modules[0].deps
@@ -219,7 +238,7 @@ class MatrixParsing(unittest.TestCase):
         ]
 
     def test_reads_exactly_the_matrix_entries(self):
-        self.assertEqual(len(self.entries), 7)
+        self.assertEqual(len(self.entries), 6)
 
     def test_step_names_are_not_mistaken_for_matrix_entries(self):
         # A whole-file search for `- name:` also matches every workflow step, and
@@ -242,7 +261,7 @@ class DependabotParsing(unittest.TestCase):
     def test_reads_every_directory(self):
         self.assertEqual(
             set(self.gradle),
-            {"/", "/pixel-neon", "/ticker/android", "/shift", "/motion-plugin", "/doctor"},
+            {"/", "/ticker/android", "/shift", "/motion-plugin", "/doctor"},
         )
 
     def test_non_gradle_ecosystems_survive(self):
@@ -367,13 +386,16 @@ class RepoIsInsideItsEnvelope(unittest.TestCase):
         table = json.loads((ROOT / "tools" / "gradle_envelope.json").read_text(encoding="utf-8"))
         appcompat = next(c for c in table["ceilings"] if c["coordinate"] == "androidx.appcompat:appcompat")
         self.assertIn("minSdk", appcompat["reason"])
+        # The modules that both floor at 21 and declare appcompat. glyphs/ is
+        # also minSdk 21 but has no dependencies at all, so it is not part of
+        # why the cap exists.
         at_21 = sorted(
             m.path.relative_to(ROOT).as_posix()
             for r in gate.discover_roots()
             for m in r.modules
-            if m.min_sdk == 21
+            if m.min_sdk == 21 and "androidx.appcompat:appcompat" in m.deps
         )
-        self.assertEqual(at_21, ["app", "pixel-neon/app", "pop"])
+        self.assertEqual(at_21, ["app"])
 
     def test_doctor_is_the_only_compose_module(self):
         composing = [
@@ -416,8 +438,8 @@ class Mutants(unittest.TestCase):
     def test_a_new_gradle_root_without_a_dependabot_entry_is_caught(self):
         with ScratchRepo() as repo:
             text = repo.path(".github/dependabot.yml").read_text(encoding="utf-8")
-            start = text.index('  # pixel-neon')
-            end = text.index("  # ticker/android")
+            start = text.index('  # shift')
+            end = text.index("  # motion-plugin")
             repo.path(".github/dependabot.yml").write_text(text[:start] + text[end:], encoding="utf-8")
             repo.assert_blocked("no dependabot.yml entry", "unwatched gradle root")
 
@@ -533,9 +555,10 @@ class Mutants(unittest.TestCase):
 
     def test_a_wrapper_below_the_agp_floor_is_caught(self):
         with ScratchRepo() as repo:
+            props = "ticker/android/gradle/wrapper/gradle-wrapper.properties"
             repo.edit(
-                "ticker/android/gradle/wrapper/gradle-wrapper.properties",
-                "gradle-8.7-bin.zip",
+                props,
+                f"gradle-{wrapper_on_disk(repo.root / 'ticker/android')}-bin.zip",
                 "gradle-8.2-bin.zip",
             )
             repo.assert_blocked("below 8.7", "Gradle under the AGP 8.x floor")

@@ -2,7 +2,7 @@
 """Build envelope gate.
 
 Dependabot sees version numbers and nothing else. It cannot see that five of the
-seven modules in this suite compile against API 34, that the icon pack still
+six modules in this suite compile against API 34, that the icon pack still
 ships `minSdk 21` for Android 5.x Fire TV hardware, or that `doctor/` wires the
 Compose compiler through a DSL that Kotlin 2.0 deleted. So it proposes AndroidX
 releases whose AAR metadata demands a newer platform, and every such PR dies in
@@ -135,7 +135,7 @@ class GradleRoot:
         return min(values) if values else None
 
 def _module_dirs(settings: str) -> list[str]:
-    """`include(":app")` / `include(":pop")` -> ["app", "pop"], in file order."""
+    """`include(":app")` / `include(":glyphs")` -> ["app", "glyphs"], in file order."""
     return re.findall(r'include\(\s*":([A-Za-z0-9_.\-]+)"\s*\)', settings)
 
 def _int_setting(source: str, name: str) -> int | None:
@@ -580,7 +580,7 @@ def check_per_root_workflows(roots: list[GradleRoot]) -> None:
     """Audit the per-product release workflows, one per standalone Gradle root.
 
     Only a workflow that *pins* a platform is held to pinning the right one.
-    `build.yml`, `pop-apk.yml`, `device-check.yml` and `iconpack-test-apk.yml`
+    `build.yml`, `device-check.yml` and `iconpack-test-apk.yml`
     install nothing and have always been green on ubuntu-latest's preinstalled
     SDK; demanding an explicit install there would rewrite working release
     paths for no gain. `suite-ci.yml` is handled by check_ci_platforms, which

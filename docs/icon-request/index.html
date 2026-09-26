@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="dark">
+<title>Icon request — Core Builds</title>
+<!--
+  The auditor's QR interstitial. The TV encodes the request into this
+  page's URL (?app_name=&component=&device=&endpoint=), the phone renders
+  it, and the person picks a door:
+
+    1. The GitHub issue form (needs a logged-in GitHub account on the
+       phone). The link is built client-side, so the fields are refilled
+       from the URL in front of you, not teleported from the TV.
+    2. Send without a GitHub account: a plain POST to the Core Builds
+       request broker (tools/icon_request_broker), shown only when the
+       TV carried a baked endpoint along.
+
+  Why this page exists instead of the QR pointing straight at GitHub:
+  GitHub's field-level prefill is unreliable in two real-world places the
+  couch cannot see — the GitHub mobile app claims github.com URLs and
+  drops the query payload, and some browsers hand the shortcut to a
+  logged-out splash that loses fields. A .github.io URL always opens in
+  a real browser, and everything needed is *displayed* here, so nothing
+  depends on a parameter surviving a hop.
+
+  No analytics, no cookies, no third-party resources. The only request
+  this page ever sends is the one you press button 2 for.
+-->
+<style>
+  :root {
+    --bg: #04070F; --panel: #151923; --card: #1A2030;
+    --ink: #E6EDF3; --slate: #8B949E;
+    --cyan: #00D4FF; --glow: #7EEEFF; --ember: #C03A20;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--ink);
+    font: 17px/1.55 system-ui, -apple-system, "Segoe UI", sans-serif;
+    display: flex; justify-content: center; padding: 24px 16px 48px;
+  }
+  main { width: 100%; max-width: 560px; }
+  .brand {
+    font-family: ui-monospace, monospace; letter-spacing: .18em;
+    color: var(--cyan); font-size: 12px; text-transform: uppercase;
+    margin: 16px 0 4px;
+  }
+  h1 { font-size: 24px; margin: 0 0 8px; }
+  p.sub { color: var(--slate); margin: 0 0 24px; }
+  .card {
+    background: var(--card); border-radius: 14px; padding: 18px;
+    margin: 0 0 14px; border: 1px solid #232c42;
+  }
+  .row { display: flex; flex-direction: column; gap: 2px; padding: 10px 0; }
+  .row + .row { border-top: 1px solid #232c42; }
+  .k { font-size: 12px; letter-spacing: .12em; text-transform: uppercase;
+       color: var(--slate); }
+  .v { font-size: 17px; word-break: break-word; }
+  .v.mono { font-family: ui-monospace, monospace; font-size: 15px; }
+  a.btn, button.btn {
+    display: block; width: 100%; text-align: center; cursor: pointer;
+    border-radius: 12px; padding: 15px 18px; margin: 0 0 12px;
+    font: inherit; font-weight: 600; border: 1px solid transparent;
+    text-decoration: none; color: var(--ink);
+  }
+  a.btn { background: #238636; }
+  .btn.blue { background: #0b3a46; border-color: var(--cyan); color: var(--glow); }
+  .btn.blue[disabled] { opacity: .55; cursor: default; }
+  .status { border-radius: 12px; padding: 14px 16px; margin: 0 0 14px;
+            background: var(--panel); border: 1px solid #232c42; display: none; }
+  .status.show { display: block; }
+  .status.ok { border-color: #2ea043; }
+  .status.err { border-color: var(--ember); }
+  details { color: var(--slate); font-size: 14.5px; margin-top: 18px; }
+  summary { cursor: pointer; }
+  code { background: var(--panel); padding: 1px 6px; border-radius: 6px;
+         font-size: 13.5px; }
+  .copyall { color: var(--slate); font-size: 14px; background: none;
+             border: 1px solid #232c42; padding: 8px 12px; border-radius: 10px;
+             cursor: pointer; margin-bottom: 22px; }
+  .copyall:active { border-color: var(--cyan); }
+</style>
+</head>
+<body>
+<main>
+  <p class="brand">Core Builds Icon Pack</p>
+  <h1 id="headline">Icon request</h1>
+  <p class="sub">Saw this through the TV's code? Everything the request
+    needs is right here — nothing got typed, nothing to retype.</p>
+
+  <div class="card" id="payloadCard">
+    <div class="row"><span class="k">App name</span>
+      <span class="v" id="appName"></span></div>
+    <div class="row"><span class="k">Component name (package / activity)</span>
+      <span class="v mono" id="component"></span></div>
+    <div class="row"><span class="k">Device note</span>
+      <span class="v" id="device"></span></div>
+  </div>
+
+  <button class="copyall" id="copyAll" type="button">Copy everything</button>
+
+  <div class="status" id="status" role="status" aria-live="polite"></div>
+
+  <a class="btn" id="ghBtn" href="#">Open the GitHub issue form (needs a GitHub account)</a>
+  <button class="btn blue" id="anonBtn" type="button" hidden>Send it — no GitHub account</button>
+
+  <details>
+    <summary>Why is this on a separate page instead of opening GitHub directly?</summary>
+    <p>The TV could point its code straight at GitHub — it used to. Two
+      real-world hops kept dropping the payload before it landed: the
+      GitHub <em>app</em> claims github.com links and opens a blank native
+      form, and logged-out logins can lose fields. This page always
+      renders the values in a normal browser, so what you submit is what
+      you see.</p>
+    <p>If “Open the GitHub issue form” ever hands you to the GitHub app
+      with empty fields, use the app's menu → <strong>Open in
+      browser</strong>, or hold the button and copy the link instead.
+      The phone photos: a picture of the TV panel showing the app's
+      current icon is genuinely useful — attach it to the issue if you
+      have one.</p>
+  </details>
+</main>
+<script>
+(function () {
+  "use strict";
+  var q = new URLSearchParams(location.search);
+  var app = (q.get("app_name") || "").trim();
+  var comp = (q.get("component") || "").trim();
+  var dev = (q.get("device") || "").trim();
+  var endpoint = (q.get("endpoint") || "").trim();
+  // The pack already maps this app under another activity: a mapping report,
+  // filed with the "not auto-assigning" form, not a request for new art.
+  var mapped = q.get("mapped") === "1";
+  var prefix = mapped ? "[Not applying] " : "[Icon] ";
+
+  var $ = function (id) { return document.getElementById(id); };
+
+  if (!app || !comp) {
+    $("headline").textContent = "Nothing to request here";
+    document.querySelector(".sub").textContent =
+      "This page opens from the television's icon-request code — rescan the code on the TV, then press it again.";
+    $("payloadCard").hidden = true;
+    $("copyAll").hidden = true;
+    $("ghBtn").hidden = true;
+    return;
+  }
+
+  document.title = prefix + app + " — Core Builds";
+  $("headline").textContent = prefix + app;
+  $("appName").textContent = app;
+  $("component").textContent = comp;
+  $("device").textContent = dev || "(not supplied)";
+
+  var allText = prefix + app + "\nApp name: " + app +
+    "\nComponent: " + comp + "\nDevice: " + dev;
+  $("copyAll").addEventListener("click", function (e) {
+    navigator.clipboard.writeText(allText).then(function () {
+      e.target.textContent = "Copied";
+      setTimeout(function () { e.target.textContent = "Copy everything"; }, 1500);
+    });
+  });
+
+  // Door 1: the form this report belongs to, params rebuilt on YOUR device.
+  var enc = encodeURIComponent;
+  var viaQr = dev + " · via the phone-side QR page";
+  $("ghBtn").href = mapped
+    ? "https://github.com/brevityA/CoreBuildsApps/issues/new" +
+      "?assignees=&labels=mapping&projects=" +
+      "&template=2.icon_not_applying.yml" +
+      "&title=" + enc(prefix + app) +
+      "&app_name=" + enc(app) +
+      "&component=" + enc(comp) +
+      "&device=" + enc(viaQr)
+    : "https://github.com/brevityA/CoreBuildsApps/issues/new" +
+      "?assignees=&labels=icon+request&projects=" +
+      "&template=1.new_icon_request.yml" +
+      "&title=" + enc(prefix + app) +
+      "&app_name=" + enc(app) +
+      "&component=" + enc(comp) +
+      "&notes=" + enc(viaQr);
+
+  // Door 2: the broker, only when the TV knows a deployed endpoint.
+  if (!endpoint) return;
+  var btn = $("anonBtn"), status = $("status");
+  btn.hidden = false;
+  btn.addEventListener("click", function () {
+    btn.disabled = true;
+    btn.textContent = "Sending…";
+    fetch(endpoint, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(mapped
+        ? { app_name: app, component: comp, device: dev, mapped: true }
+        : { app_name: app, component: comp, device: dev })
+    }).then(function (res) {
+      if (res.status === 201 || res.status === 200) {
+        status.className = "status show ok";
+        status.textContent = "Sent — thank you. The Core Builds queue has "
+          + "the request now; subscribe to the issue later if you file one.";
+        btn.textContent = "Sent";
+      } else if (res.status === 429) {
+        status.className = "status show err";
+        status.textContent = "The broker is rate-limiting right now. The "
+          + "GitHub button above always works with an account, or retry in "
+          + "an hour.";
+        btn.textContent = "Send it — no GitHub account";
+        btn.disabled = false;
+      } else {
+        throw new Error("HTTP " + res.status);
+      }
+    }).catch(function (err) {
+      status.className = "status show err";
+      status.textContent = "Could not reach the broker (" + err.message +
+        "). The GitHub button above works with an account, or retry later.";
+      btn.textContent = "Send it — no GitHub account";
+      btn.disabled = false;
+    });
+  });
+})();
+</script>
+</body>
+</html>

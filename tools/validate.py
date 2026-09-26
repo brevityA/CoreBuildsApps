@@ -13,10 +13,13 @@ import xml.etree.ElementTree as ET
 from icon_style import (CORE_MONOLINE, MIN_CONTRAST, OFFWHITE_INK,
                         core_monoline_errors, contrast, display_accent)
 from build_icons import validate as validate_catalog
+from drawable_art import art_path, read_aliases
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
 RES = ROOT / "app" / "src" / "main" / "res"
+# Core Builds Glyphs, the square companion. Its XML is generated with the pack.
+GLYPH_MAIN = ROOT / "glyphs" / "src" / "main"
 CATALOG = ROOT / "tools" / "catalog.json"
 
 failures = []
@@ -61,7 +64,7 @@ def main():
                   f"{icon['name']}: declared gradient is missing from the shipped SVG")
 
     # Brand variants share one identity; every Classic accent remains readable
-    # on the documented dark card. Source accents stay untouched for Pop/Neon.
+    # on the documented dark card.
     brands = {}
     for icon in icons:
         mono = icon.get("color_note") == "monochrome"
@@ -73,30 +76,46 @@ def main():
                   f"{icon['name']}: {brand} variants disagree on glyph/colour")
             brands[brand] = identity
 
-    # 1. every drawable has a rendered PNG
+    # Art files resolve through the generated aliases: a name is present if
+    # its own bitmap or its canonical twin's bitmap is on disk.
+    aliases = read_aliases(RES / "values")
+    nodpi = RES / "drawable-nodpi"
+
+    def art(name):
+        return art_path(nodpi, name, aliases)
+
+    # 1. every drawable resolves to rendered art
     for i in icons:
-        p = RES / "drawable-nodpi" / f"{i['drawable']}.png"
-        check(p.exists(), f"{i['name']}: missing PNG {p.relative_to(ROOT)}")
+        p = art(i["drawable"])
+        check(p.exists(), f"{i['name']}: missing art {p.relative_to(ROOT)}")
         if p.exists():
             check(p.stat().st_size > 400,
-                  f"{i['name']}: PNG suspiciously small ({p.stat().st_size}B)")
+                  f"{i['name']}: art suspiciously small ({p.stat().st_size}B)")
 
-    # 2. PNGs are transparent-background RGBA (pack promise)
+    # 1b. aliases point at real canonical art and nothing else.
+    for alias, canon in aliases.items():
+        check(alias != canon, f"aliases: {alias} points at itself")
+        check(canon not in aliases, f"aliases: {alias} chains through {canon}")
+        check((nodpi / f"{canon}.webp").exists(),
+              f"aliases: {alias} canonical {canon}.webp is missing")
+        check(not (nodpi / f"{alias}.webp").exists(),
+              f"aliases: {alias} has its own bitmap — the alias is dead")
+
+    # 2. art is transparent-background RGBA (pack promise)
     try:
-        import struct
+        from PIL import Image
         for i in icons:
-            p = RES / "drawable-nodpi" / f"{i['drawable']}.png"
+            p = art(i["drawable"])
             if not p.exists():
                 continue
-            raw = p.read_bytes()
-            w, h = struct.unpack(">II", raw[16:24])
-            colortype = raw[25]
+            with Image.open(p) as im:
+                w, h, mode = im.width, im.height, im.mode
             check((w, h) == (512, 512),
-                  f"{i['name']}: PNG is {w}x{h}, expected 512x512")
-            check(colortype == 6,
-                  f"{i['name']}: PNG colour type {colortype}, expected 6 (RGBA)")
+                  f"{i['name']}: art is {w}x{h}, expected 512x512")
+            check(mode == "RGBA",
+                  f"{i['name']}: art mode {mode}, expected RGBA")
     except Exception as e:
-        failures.append(f"PNG header read failed: {e}")
+        failures.append(f"art header read failed: {e}")
 
     # 3. appfilter references only real drawables, no duplicate components
     af = ET.parse(RES / "xml" / "appfilter.xml").getroot()
@@ -106,13 +125,15 @@ def main():
         comp = item.get("component", "")
         d = item.get("drawable", "")
         comp_total += 1
-        # appfilter maps to the banner drawable — banners are the pack default.
+        # The icon pack maps every app to its 16:9 banner: banners are the
+        # default style (again) since 1.9.5. Square glyphs are Core Builds
+        # Glyphs', which the in-app toggle points launchers at instead.
         base = d[:-7] if d.endswith("_banner") else d
         check(base in names,
               f"appfilter: drawable '{d}' has no catalog entry")
         check(d.endswith("_banner"),
-              f"appfilter: '{d}' is not a banner drawable — banners are the "
-              f"default, square icons stay opt-in via drawable.xml")
+              f"appfilter: '{d}' is a square glyph — banners are the icon "
+              f"pack's default since 1.9.5; glyphs belong to Core Builds Glyphs")
         check(re.match(r"^ComponentInfo\{[^/]+/[^}]+\}$", comp),
               f"appfilter: malformed component '{comp}'")
         check(comp not in seen,
@@ -124,14 +145,17 @@ def main():
     # res/xml and older ADW/GO integrations read assets; divergent mappings
     # produce device-specific failures that are extremely hard to diagnose.
     assets = ROOT / "app" / "src" / "main" / "assets"
-    for filename in ("appfilter.xml", "drawable.xml"):
-        resource_file = RES / "xml" / filename
-        asset_file = assets / filename
+    glyph_res = GLYPH_MAIN / "res" / "xml"
+    pairs = [(RES / "xml" / "appfilter.xml", assets / "appfilter.xml"),
+             (RES / "xml" / "drawable.xml", assets / "drawable.xml"),
+             (glyph_res / "appfilter.xml", GLYPH_MAIN / "assets" / "appfilter.xml"),
+             (glyph_res / "drawable.xml", GLYPH_MAIN / "assets" / "drawable.xml")]
+    for resource_file, asset_file in pairs:
         check(asset_file.exists(),
-              f"assets/{filename} missing — legacy launchers may not find the pack")
+              f"{asset_file} missing ({resource_file.name}'s twin copy)")
         if asset_file.exists():
             check(asset_file.read_bytes() == resource_file.read_bytes(),
-                  f"assets/{filename} differs from res/xml/{filename}")
+                  f"{asset_file} differs from {resource_file}")
 
     # Every catalog component must resolve canonically. ComponentName treats
     # pkg/.Activity and pkg/pkg.Activity as the same component; compare that
@@ -151,6 +175,28 @@ def main():
             wrapped = f"ComponentInfo{{{component}}}"
             check(canonical(wrapped) in emitted_canonical,
                   f"{icon['name']}: component '{component}' was not emitted")
+
+    # Every mapping must be the catalog's, in both packs. The icon pack's
+    # banner appfilter is derived from Core Builds Glyphs' square one, so a
+    # wrong square mapping would otherwise pass straight through to both.
+    expected = {}
+    for icon in icons:
+        for component in icon["components"]:
+            expected[canonical(f"ComponentInfo{{{component}}}")] = icon["drawable"]
+    for path, label, suffix in ((RES / "xml" / "appfilter.xml", "icon pack", "_banner"),
+                                (glyph_res / "appfilter.xml", "Core Builds Glyphs", "")):
+        mapped = set()
+        for item in ET.parse(path).getroot().findall("item"):
+            comp = canonical(item.get("component", ""))
+            d = item.get("drawable", "")
+            base = d[:-len(suffix)] if suffix and d.endswith(suffix) else d
+            mapped.add(comp)
+            check(expected.get(comp) == base,
+                  f"{label} appfilter: {comp} maps to '{d}', catalog says "
+                  f"'{expected.get(comp)}{suffix}'")
+        check(mapped == set(expected),
+              f"{label} appfilter covers {len(mapped)} components, catalog "
+              f"{len(expected)}")
 
     # Coverage baseline: every component identity mapped by the reference pack
     # must remain covered. The snapshot contains two malformed legacy values
@@ -173,9 +219,9 @@ def main():
               f"reference baseline has {len(reference_components)} canonical "
               "components, expected 955")
 
-    # 4. drawable.xml grid covers the whole catalog
+    # 4. drawable.xml grid covers the whole catalog (as banners)
     dx = ET.parse(RES / "xml" / "drawable.xml").getroot()
-    listed = {i.get("drawable") for i in dx.findall("item")}
+    listed = {i.get("drawable").removesuffix("_banner") for i in dx.findall("item")}
     missing = names - listed
     check(not missing, f"drawable.xml missing: {sorted(missing)}")
 
@@ -295,11 +341,11 @@ def main():
     check(inst.exists(), "UpdateInstaller.kt is missing")
     if inst.exists():
         it = inst.read_text()
-        # The authority moved to BuildConfig when :pop started compiling this
-        # same file — two installed packages may not share a FileProvider
-        # authority. The check still has to prove the value reaching
-        # getUriForFile matches the manifest, so it now follows the
-        # indirection to the Gradle field instead of grepping the constant.
+        # The authority comes from BuildConfig — the FileProvider authority
+        # must match the installed package. The check still has to prove
+        # the value reaching getUriForFile matches the manifest, so it
+        # follows the indirection to the Gradle field instead of grepping
+        # the constant.
         check("BuildConfig.UPDATE_AUTHORITY" in it,
               "UpdateInstaller must take its authority from BuildConfig so "
               "each pack gets a distinct one")
@@ -316,24 +362,37 @@ def main():
     # Banners are the default now, so every icon must have one.
     banner_icons = icons
     for i in banner_icons:
-        bp = RES / "drawable-nodpi" / f"{i['drawable']}_banner.png"
+        bp = art(f"{i['drawable']}_banner")
         check(bp.exists(),
               f"{i['name']}: marked banner but {bp.name} is missing")
         if bp.exists():
-            raw = bp.read_bytes()
-            import struct as _s
-            bw, bh = _s.unpack(">II", raw[16:24])
+            from PIL import Image as _I
+            with _I.open(bp) as _im:
+                bw, bh, bmode = _im.width, _im.height, _im.mode
             check(abs(bw / bh - 16 / 9) < 0.01,
                   f"{i['name']}: banner is {bw}x{bh} "
                   f"(ratio {bw/bh:.3f}), expected 16:9")
-            check(raw[25] == 6,
-                  f"{i['name']}: banner colour type {raw[25]}, expected 6 (RGBA)")
+            check(bmode == "RGBA",
+                  f"{i['name']}: banner mode {bmode}, expected RGBA")
     if banner_icons:
-        listed = (RES / "xml" / "drawable.xml").read_text()
+        # Each pack's browser offers its own art: the icon pack lists every
+        # banner and no glyph, Core Builds Glyphs every glyph and no banner.
+        own = ET.parse(RES / "xml" / "drawable.xml").getroot()
+        own_items = [e.get("drawable") for e in own.findall("item")]
+        check(all(d.endswith("_banner") for d in own_items),
+              "app drawable.xml lists square glyphs — the icon pack's browser "
+              "offers banners only; glyphs are Core Builds Glyphs'")
         for i in banner_icons:
-            check(f'{i["drawable"]}_banner' in listed,
-                  f"{i['name']}: banner not listed in drawable.xml — "
-                  f"not selectable in the launcher's icon browser")
+            check(f'{i["drawable"]}_banner' in own_items,
+                  f"{i['name']}: banner not listed in the icon pack's "
+                  f"drawable.xml — not selectable in the launcher's icon browser")
+        glyph = ET.parse(GLYPH_MAIN / "res" / "xml" / "drawable.xml").getroot()
+        glyph_items = {e.get("drawable") for e in glyph.findall("item")}
+        check(not any(d.endswith("_banner") for d in glyph_items),
+              "Core Builds Glyphs' drawable.xml lists banners")
+        check(names <= glyph_items,
+              f"Core Builds Glyphs' drawable.xml misses "
+              f"{sorted(names - glyph_items)[:5]}")
 
     # 5e. Banner composition, measured against the reference pack's grid
     # (Projectivy Icon Pack 1.1.9: 1002 icons, median ink 78% x 43%, centred
@@ -342,7 +401,7 @@ def main():
         try:
             from PIL import Image
             for i in banner_icons:
-                bp = RES / "drawable-nodpi" / f"{i['drawable']}_banner.png"
+                bp = art(f"{i['drawable']}_banner")
                 if not bp.exists():
                     continue
                 bb = Image.open(bp).convert("RGBA").getchannel("A").getbbox()
@@ -411,34 +470,56 @@ def main():
                   f"{i['name']}: heaviest stroke is {max(widths)}px, "
                   f"over the 34px monoline ceiling")
 
-    # 5j. The update manifest must agree with the build it ships beside.
-    # Latestrelease/version.json is what the in-app updater polls; if its
-    # versionCode lags build.gradle.kts, every user is told they are current
-    # when they are not. It is hand-maintained, so assert it.
+    # 5j. Two manifests, two jobs. app/src/main/assets/version.json is the
+    # build's own manifest: the What's New sheet narrates it, and it must
+    # agree with build.gradle.kts. Latestrelease/version.json is what every
+    # installed copy polls, so it names the newest *published* release and
+    # nothing newer: prepare_release.py stamps only the asset copy, and the
+    # tag build (build.yml) copies it across once the APK is released.
+    # Stamping it in the version-bump PR told 1.9.4 users that 1.9.5 was out
+    # before it was, and Download fetched the floating release, still 1.9.4.
     import json as _json
-    _vj = ROOT / "Latestrelease" / "version.json"
+    _pending_p = ROOT / "app" / "src" / "main" / "assets" / "version.json"
+    _published_p = ROOT / "Latestrelease" / "version.json"
     _gradle = (ROOT / "app" / "build.gradle.kts").read_text(encoding="utf-8")
-    if _vj.exists():
-        _v = _json.loads(_vj.read_text(encoding="utf-8"))
-        _gc = re.search(r"versionCode\s*=\s*(\d+)", _gradle)
-        _gn = re.search(r'versionName\s*=\s*"([^"]+)"', _gradle)
+    _gc = re.search(r"versionCode\s*=\s*(\d+)", _gradle)
+    _gn = re.search(r'versionName\s*=\s*"([^"]+)"', _gradle)
+    stable_apk = ("https://github.com/brevityA/CoreBuildsApps/releases/"
+                  "download/iconpack/iconpack-release.apk")
+    check(_pending_p.exists(), "app/src/main/assets/version.json missing")
+    check(_published_p.exists(), "Latestrelease/version.json missing")
+    if _pending_p.exists() and _published_p.exists():
+        _v = _json.loads(_pending_p.read_text(encoding="utf-8"))
+        _pub = _json.loads(_published_p.read_text(encoding="utf-8"))
         if _gc:
             check(int(_gc.group(1)) == _v.get("versionCode"),
-                  f"version.json versionCode {_v.get('versionCode')} != "
-                  f"build.gradle.kts {_gc.group(1)} — the updater would "
-                  f"report the wrong build")
+                  f"assets/version.json versionCode {_v.get('versionCode')} != "
+                  f"build.gradle.kts {_gc.group(1)} - What's New would "
+                  f"narrate the wrong build")
+            check(_pub.get("versionCode", 0) <= int(_gc.group(1)),
+                  f"Latestrelease/version.json versionCode "
+                  f"{_pub.get('versionCode')} is ahead of build.gradle.kts "
+                  f"{_gc.group(1)}")
         if _gn:
             check(_gn.group(1) == _v.get("versionName"),
-                  f"version.json versionName {_v.get('versionName')} != "
+                  f"assets/version.json versionName {_v.get('versionName')} != "
                   f"build.gradle.kts {_gn.group(1)}")
         check(_v.get("iconCount") == len(icons),
-              f"version.json iconCount {_v.get('iconCount')} != "
+              f"assets/version.json iconCount {_v.get('iconCount')} != "
               f"{len(icons)} icons in the catalogue")
-        stable_apk = ("https://github.com/brevityA/CoreBuildsApps/releases/"
-                      "download/iconpack/iconpack-release.apk")
-        check(_v.get("apkUrl") == stable_apk,
-              "version.json apkUrl must use the floating iconpack release — "
-              "repository-wide latest can point at Core Line")
+        # Once the release is out the published copy is this build's
+        # manifest; only the release-time fields (the APK's SHA-256, the
+        # publish date) may differ.
+        if _pub.get("versionCode") == _v.get("versionCode"):
+            _skip = {"apkSha256", "releaseDate"}
+            check({k: x for k, x in _pub.items() if k not in _skip}
+                  == {k: x for k, x in _v.items() if k not in _skip},
+                  "Latestrelease/version.json names this build but differs "
+                  "from app/src/main/assets/version.json")
+        for _label, _m in (("assets", _v), ("Latestrelease", _pub)):
+            check(_m.get("apkUrl") == stable_apk,
+                  f"{_label}/version.json apkUrl must use the floating iconpack "
+                  "release - repository-wide latest can point at Core Line")
 
     # 6. banner + launcher icons exist
     for p in [RES / "drawable-nodpi" / "cb_banner.png",

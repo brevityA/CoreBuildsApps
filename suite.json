@@ -1,11 +1,11 @@
 {
   "suite": "Core Builds Apps",
-  "asOf": "2026-09-14",
+  "asOf": "2026-09-24",
   "apps": {
     "iconpack": {
       "name": "Core Builds Icon Pack",
-      "versionName": "1.9.1",
-      "versionCode": 33,
+      "versionName": "1.9.5",
+      "versionCode": 37,
       "tagPrefix": "v",
       "floatingTag": "iconpack",
       "downloader": "5270601",
@@ -16,41 +16,8 @@
       "legacyApk": "app-release.apk",
       "metadata": "Latestrelease/version.json",
       "section": "icon-pack",
-      "iconCount": 943,
-      "componentCount": 1157
-    },
-    "pixelneon": {
-      "name": "Core Builds Pixel Neon",
-      "versionName": "0.1.0",
-      "versionCode": 1,
-      "tagPrefix": "pixel-neon-v",
-      "floatingTag": "pixel-neon",
-      "downloader": "[USER TO SUPPLY]",
-      "applicationId": "tv.corebuilds.pixelneon",
-      "gradle": "pixel-neon/app/build.gradle.kts",
-      "path": "pixel-neon/",
-      "stableApk": "pixel-neon-release.apk",
-      "legacyApk": "pixelneon-release.apk",
-      "metadata": "Latestrelease/pixel-neon-version.json",
-      "section": "pixel-neon",
-      "iconCount": 943,
-      "componentCount": 1157
-    },
-    "pop": {
-      "name": "Core Builds Pop",
-      "versionName": "1.0.0",
-      "versionCode": 1,
-      "tagPrefix": "pop-v",
-      "floatingTag": "pop",
-      "downloader": "[USER TO SUPPLY]",
-      "applicationId": "tv.corebuilds.iconpack.pop",
-      "gradle": "pop/build.gradle.kts",
-      "path": "pop/",
-      "stableApk": "corepop-release.apk",
-      "metadata": "Latestrelease/pop-version.json",
-      "section": "core-builds-pop",
-      "iconCount": 943,
-      "componentCount": 1157
+      "iconCount": 961,
+      "componentCount": 1179
     },
     "line": {
       "name": "Core Line",

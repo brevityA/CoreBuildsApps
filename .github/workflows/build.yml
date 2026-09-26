@@ -14,13 +14,10 @@ on:
       - 'Latestrelease/**'
       - 'Wallpapers/**'
       - 'tests/**'
-      # This job's gates read all three app modules: check_ui_resources and
-      # test_navigation_graph walk app/, pop/ and pixel-neon/ resources, and
+      # This job's gates read the app module: check_ui_resources and
+      # test_navigation_graph walk app/ resources, and
       # build_app_ui_mockups --check compares the frames committed under docs/.
-      # Without these three a fork-only change - a dead button in Pixel Neon, a
-      # stale mockup - reached main without running any of them.
-      - 'pop/**'
-      - 'pixel-neon/**'
+      - 'glyphs/**'
       - 'docs/**'
       - '.github/workflows/build.yml'
   pull_request:
@@ -34,8 +31,7 @@ on:
       - 'Latestrelease/**'
       - 'Wallpapers/**'
       - 'tests/**'
-      - 'pop/**'
-      - 'pixel-neon/**'
+      - 'glyphs/**'
       - 'docs/**'
       - '.github/workflows/build.yml'
   workflow_dispatch:
@@ -97,8 +93,10 @@ jobs:
 
       - name: Regenerate assets from catalog
         run: |
+          python tools/fit_classic_glyphs.py
           python tools/build_icons.py
           python tools/build_banners.py
+          python tools/build_banners_pack.py
           python tools/build_branding.py
           python tools/build_brand_preview.py
           python tools/build_icon_review.py
@@ -115,7 +113,7 @@ jobs:
           DRIFT=$(git status --porcelain -- '*.xml' '*.svg' '*.md' | grep -v '^?? ' || true)
           if [ -n "$DRIFT" ]; then
             echo "::error::Generated files differ from committed ones."
-            echo "Run: python tools/build_icons.py && python tools/build_banners.py && python tools/build_branding.py && python tools/build_brand_preview.py"
+            echo "Run: python tools/fit_classic_glyphs.py && python tools/build_icons.py && python tools/build_banners.py && python tools/build_branding.py && python tools/build_brand_preview.py"
             echo "$DRIFT"
             git --no-pager diff -- '*.xml' '*.svg' '*.md'
             exit 1
@@ -137,7 +135,7 @@ jobs:
           python tests/test_v151_robustness.py
           python tests/test_wallpapers.py
           python tests/test_wallpaper_export.py
-          python tests/test_resource_parity.py
+          python tests/test_live_wallpaper.py
           python tests/test_tv_layout_fit.py
           python tests/test_search_focus.py
           python tests/test_icon_uniformity.py
@@ -195,6 +193,23 @@ jobs:
           esac
           "$ANDROID_HOME/build-tools/34.0.0/apksigner" verify --print-certs "$APK"
           echo "APK signature verified."
+          # Core Builds Glyphs ships in the same release and the icon pack
+          # installs it only if its certificate matches its own, so an
+          # unsigned or differently signed companion is a broken toggle.
+          GLYPHS=$(ls glyphs/build/outputs/apk/release/*.apk)
+          case "$GLYPHS" in
+            *-unsigned.apk)
+              echo "::error::$GLYPHS is unsigned."
+              exit 1
+              ;;
+          esac
+          A=$("$ANDROID_HOME/build-tools/34.0.0/apksigner" verify --print-certs "$APK" | grep 'SHA-256 digest')
+          B=$("$ANDROID_HOME/build-tools/34.0.0/apksigner" verify --print-certs "$GLYPHS" | grep 'SHA-256 digest')
+          if [ "$A" != "$B" ]; then
+            echo "::error::Core Builds Glyphs is not signed with the icon pack's certificate."
+            exit 1
+          fi
+          echo "Companion signed with the same certificate."
 
       - name: Name the APK for the stable Downloader URL
         if: startsWith(github.ref, 'refs/tags/v')
@@ -204,57 +219,39 @@ jobs:
           cp "$SRC" dist/iconpack-release.apk
           # Compatibility filename requested by existing Downloader code 5270601.
           cp "$SRC" dist/app-release.apk
+          # The square companion. The icon pack downloads exactly this name
+          # from the v<versionName> release (GlyphsCompanion.apkUrl), so the
+          # name is a contract: tests/test_glyphs_pack.py holds the two together.
+          cp "$(ls glyphs/build/outputs/apk/release/*.apk | grep -v unsigned | head -1)" \
+            dist/iconpack-glyphs-release.apk
           ls -lh dist/
 
       - name: Upload APK artifact
         uses: actions/upload-artifact@v7
         with:
           name: core-builds-icon-pack
-          path: app/build/outputs/apk/release/*.apk
+          path: |
+            app/build/outputs/apk/release/*.apk
+            glyphs/build/outputs/apk/release/*.apk
           if-no-files-found: error
-
-      - name: Sync the update manifest to the published tag
-        # Latestrelease/version.json is what the in-app updater polls. If it
-        # is not bumped on release, every user is told they are current when
-        # they are not. Commit it back to main as part of publishing rather
-        # than relying on remembering.
-        if: startsWith(github.ref, 'refs/tags/v')
-        run: |
-          TAG="${GITHUB_REF_NAME#v}"
-          python - "$TAG" <<'PY'
-          import json, re, sys
-          tag = sys.argv[1]
-          gradle = open('app/build.gradle.kts').read()
-          code = int(re.search(r'versionCode\s*=\s*(\d+)', gradle).group(1))
-          p = 'Latestrelease/version.json'
-          d = json.load(open(p))
-          d['versionCode'] = code
-          d['versionName'] = tag
-          json.dump(d, open(p, 'w'), indent=2)
-          open(p, 'a').write('\n')
-          print(f'version.json -> {tag} / {code}')
-          PY
-          if ! git diff --quiet -- Latestrelease/version.json; then
-            cp Latestrelease/version.json /tmp/version.json
-            git config user.name "github-actions[bot]"
-            git config user.email "github-actions[bot]@users.noreply.github.com"
-            git fetch origin main --depth=50
-            git checkout -B _version-sync origin/main
-            cp /tmp/version.json Latestrelease/version.json
-            git add Latestrelease/version.json
-            git commit -m "chore: sync update manifest to ${GITHUB_REF_NAME}"
-            git push origin _version-sync:main
-          fi
 
       - name: Publish versioned release
         if: startsWith(github.ref, 'refs/tags/v')
-        uses: softprops/action-gh-release@v3
-        with:
-          files: |
-            dist/iconpack-release.apk
-            dist/app-release.apk
-          generate_release_notes: true
-          make_latest: true
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          TAG="${GITHUB_REF_NAME}"
+          # Immutable releases (repo setting): a published release's assets
+          # cannot be modified, so assets must be attached while the release
+          # is still a draft, then the release published. softprops'
+          # publish-then-partially-patch flow lost its assets silently on
+          # v1.9.2's first run. delete-if-exists also makes a rerun after a
+          # partial publish self-healing instead of 'already exists'.
+          gh release delete "$TAG" --yes 2>/dev/null || true
+          gh release create "$TAG" --draft --generate-notes --verify-tag \
+            dist/iconpack-release.apk dist/app-release.apk \
+            dist/iconpack-glyphs-release.apk
+          gh release edit "$TAG" --draft=false --latest
 
       - name: Point floating tag iconpack at this commit
         if: startsWith(github.ref, 'refs/tags/v')
@@ -264,18 +261,72 @@ jobs:
 
       - name: Publish stable Downloader release
         if: startsWith(github.ref, 'refs/tags/v')
-        uses: softprops/action-gh-release@v3
-        with:
-          tag_name: iconpack
-          name: Icon Pack (latest)
-          body: |
-            Always the current Core Builds Icon Pack APK. Versioned notes live on `v*` releases.
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          # The floating release cannot be edited once published (immutable
+          # releases), so it is deleted and recreated atomically on every
+          # tag. The public URL stays stable: it is tag-based, not id-based.
+          gh release delete iconpack --yes 2>/dev/null || true
+          gh release create iconpack --draft \
+            --title "Icon Pack (latest)" \
+            --notes "$(cat <<'EOF'
+          Always the current Core Builds Icon Pack APK. Versioned notes live on `v*` releases.
 
-            Downloader (existing code **5270601** still uses latest/app-release.apk).
-            New stable URL (generate a code once at https://go.aftvnews.com/ if you want a second code):
-            https://github.com/brevityA/CoreBuildsApps/releases/download/iconpack/iconpack-release.apk
-          files: |
-            dist/iconpack-release.apk
-            dist/app-release.apk
-          fail_on_unmatched_files: true
-          make_latest: false
+          Downloader (existing code **5270601** still uses latest/app-release.apk).
+          New stable URL (generate a code once at https://go.aftvnews.com/ if you want a second code):
+          https://github.com/brevityA/CoreBuildsApps/releases/download/iconpack/iconpack-release.apk
+          EOF
+          )" \
+            dist/iconpack-release.apk dist/app-release.apk \
+            dist/iconpack-glyphs-release.apk
+          gh release edit iconpack --draft=false --latest=false
+
+      - name: Publish the update manifest
+        # Latestrelease/version.json is what every installed copy polls, so
+        # it changes here, after the versioned and floating releases carry
+        # this APK - never in the version-bump PR. The manifest is the build's
+        # own (app/src/main/assets/version.json, stamped by prepare_release.py)
+        # copied across whole, highlights included; validate.py then holds
+        # the two byte-identical until the next bump.
+        if: startsWith(github.ref, 'refs/tags/v')
+        run: |
+          TAG="${GITHUB_REF_NAME#v}"
+          python - "$TAG" <<'PY'
+          import json, re, sys
+          tag = sys.argv[1]
+          # The feed is only half the promise. The other half is that the URL it
+          # names really serves this build - the check just below fetches the
+          # APK back and compares the version inside it, which is the failure
+          # users hit as "1.9.5 is available but fails to install".
+          gradle = open('app/build.gradle.kts').read()
+          code = int(re.search(r'versionCode\s*=\s*(\d+)', gradle).group(1))
+          d = json.load(open('app/src/main/assets/version.json'))
+          if d.get('versionName') != tag or d.get('versionCode') != code:
+              sys.exit(f"assets/version.json names {d.get('versionName')}/"
+                       f"{d.get('versionCode')}, tag is {tag}/{code}")
+          print(f'version.json -> {tag} / {code}')
+          PY
+          cp app/src/main/assets/version.json /tmp/version.json
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git fetch origin main --depth=50
+          git checkout -B _version-sync origin/main
+          cp /tmp/version.json Latestrelease/version.json
+          if ! git diff --quiet -- Latestrelease/version.json; then
+            git add Latestrelease/version.json
+            git commit -m "chore: publish update manifest for ${GITHUB_REF_NAME}"
+            git push origin _version-sync:main
+          fi
+
+      - name: Verify the feed serves this build
+        # The feed is now public, and every installed copy will believe it. This
+        # fetches the APK back from the URL the feed names and compares the
+        # version inside it, closing the loop the ordering test cannot reach:
+        # a floating release left behind by a failed upload, or overwritten by a
+        # rerun of an older tag, would otherwise be discovered by users as
+        # "1.9.5 is available but fails to install". Failing here leaves the
+        # release unpublished-and-wrong about itself, which is loud, instead of
+        # quietly wrong for every install.
+        if: startsWith(github.ref, 'refs/tags/v')
+        run: python tools/check_published_update.py

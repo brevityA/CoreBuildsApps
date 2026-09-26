@@ -1,7 +1,6 @@
 ## App
 
 - [ ] Icon pack
-- [ ] Pixel Neon icon pack
 - [ ] Core Line
 - [ ] Core Shift
 - [ ] Core Doctor
@@ -23,7 +22,7 @@ Icon pack bump — every file that carries the version, because `AGENTS.md` is t
 seventh registry and the one nobody remembers (see issue #71):
 - [ ] `app/build.gradle.kts` versionName + versionCode
 - [ ] `tools/catalog.json` meta.version
-- [ ] `Latestrelease/version.json`
+- [ ] `app/src/main/assets/version.json` (NOT `Latestrelease/version.json` — the tag build publishes that one, so users never see an unreleased version)
 - [ ] `suite.json` — versionName, versionCode
 - [ ] `AGENTS.md` — suite table version
 - [ ] `README.md` — headline + release note (NOT covered by
@@ -34,11 +33,6 @@ seventh registry and the one nobody remembers (see issue #71):
 - [ ] `python tools/build_branding.py`
 - [ ] `python tools/build_brand_preview.py`
 - [ ] `python tools/validate.py` — paste last line:
-
-Pixel Neon:
-- [ ] `python tools/build_pixel_neon.py`
-- [ ] `python tools/validate_pixel_neon.py`
-- [ ] `cd pixel-neon && ./gradlew :app:assembleDebug`
 
 Core Line:
 - [ ] `cd ticker && npm test`

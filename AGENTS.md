@@ -6,49 +6,55 @@
 
 | Product | Path | Package ID | Version | Downloader / stable tag |
 |---|---|---|---:|---|
-| Core Builds Icon Pack | `app/` with repo-root Gradle | `tv.corebuilds.iconpack` | `1.9.1` | `5270601` / `iconpack` |
-| Core Builds Pixel Neon | `pixel-neon/` | `tv.corebuilds.pixelneon` | `0.1.0` | `[USER TO SUPPLY]` / `pixel-neon` |
-| Core Builds Pop | `pop/` with repo-root Gradle | `tv.corebuilds.iconpack.pop` | `1.0.0` | `[USER TO SUPPLY]` / `pop` |
+| Core Builds Icon Pack | `app/` with repo-root Gradle | `tv.corebuilds.iconpack` | `1.9.5` | `5270601` / `iconpack` |
 | Core Line | `ticker/` + `ticker/android/` | `dev.corebuilds.line` | `1.3.0` | `7375676` / `coreline` |
 | Core Shift | `shift/` | `dev.corebuilds.shift` | `2.3.5` | `8829421` / `shift` |
 | Core Motion | `motion-plugin/` | `tv.corebuilds.motion` | `1.0.0` | `[USER TO SUPPLY]` / `motion` |
-| Core Doctor | `doctor/` | `dev.corebuilds.doctor` | `0.1.0` | `[USER TO SUPPLY]` / `doctor` |
+| Core Doctor | `doctor/` | `dev.corebuilds.doctor` | `0.1.0` | `8664938` / `doctor` |
 
-`pop/` is the one intentional exception to "one app, one Gradle root": it is a
-second module on the repo-root build that compiles `app/src/main/java` rather
-than a copy of it. Two packs, one codebase, two package IDs. Do not fork the
-Kotlin, and do not turn either pack into a product flavour of the other — that
-relocates the release APK path and breaks `build.yml`.
+(Retired 2026-09-24: Core Builds Pixel Neon and Core Builds Pop. The suite
+keeps one icon pack. Their shipped tags stay as history; do not resurrect
+their modules, manifests or workflows.)
+
+`glyphs/` is the one intentional exception to "one app, one Gradle root",
+and it is not a separate product: Core Builds Glyphs
+(`tv.corebuilds.iconpack.glyphs`) is the icon pack's square companion,
+released in the same `v*` release as `iconpack-glyphs-release.apk` and
+versioned from `app/build.gradle.kts`. Banners are the icon pack's default
+(again, since 1.9.5): its appfilter maps every app to the 16:9 banner. A
+launcher auto-applies whatever the selected package's appfilter maps, so the
+in-app Banners/Glyphs toggle works by pointing launchers at one package or the
+other (`GlyphsCompanion.kt`). The companion has no Kotlin, no dependencies, no
+launcher entry and no committed art: `python tools/build_icons.py` writes its
+square appfilter and browser, `python tools/build_banners_pack.py` derives the
+icon pack's banner XML from them (run it after `build_icons.py` and
+`build_banners.py`), and its Gradle build copies the glyph WebP from `app/`.
+`tests/test_glyphs_pack.py` holds the package name, manifest filters, asset
+filename and release workflow together. (1.9.4 shipped the opposite split, a
+Banners companion `tv.corebuilds.iconpack.banners`; it is retired - do not
+resurrect `banners/`.)
 
 Do not merge Gradle roots. Do not split the GitHub repo. Do not rename package IDs. Do not repoint floating Downloader tags. New apps use `tv.corebuilds.<name>`; the current `dev.` IDs are history, not a style to copy.
 
 ## One rule
 
-`tools/catalog.json` is the only source of truth for **both** icon packs. Never hand-edit generated icon XML, icon PNGs, banner PNGs, `docs/IconPackList.md`, `docs/PopIconList.md`, `docs/preview.*`, `docs/pop-*`, `pop/src/main/**`, `assets/pop/**`, or generated wallpaper output under `Wallpapers/series-5-pop/**` and
-`Wallpapers/series-8-amoled/**`.
+`tools/catalog.json` is the only source of truth for the icon pack. Never hand-edit generated icon XML, icon/banner art, `aliases.xml`, `keep.xml`, `docs/IconPackList.md`, `docs/preview.*`, or generated wallpaper output under `Wallpapers/series-8-amoled/**` and `Wallpapers/series-9-deep-space/**`.
 
 Classic pack changes run the four generators and the validator:
 
 ```bash
+python tools/icon_palette.py         # 18-colour fallback palette for icons with no brand colour
+python tools/fit_classic_glyphs.py   # optical fit of undersized/off-centre glyphs; reads the catalog
 python tools/build_icons.py
 python tools/build_banners.py
+python tools/build_banners_pack.py   # the icon pack's banner XML from the glyph companion's; needs the banner art above
 python tools/build_branding.py
 python tools/build_brand_preview.py
 python tools/validate.py
-python tests/test_icon_identity.py    # 35 style/colour/reference/mapping regressions (after all packs build)
+python tests/test_icon_identity.py    # 55 style/colour/reference/mapping regressions
 ```
 
-Paste the validator receipt. Current receipt: `Validated 943 icons · 1765 components · 25856 checks run`.
-
-Anything touching the catalog, `tools/glyphs.py`, or shared `app/` resources also rebuilds Pop, because Pop mirrors those resources and renders the same catalog:
-
-```bash
-python tools/build_pop.py            # ~5 min: 1850 icon/banner PNGs, 1850 SVGs, XML, branding, docs
-python tools/validate_pop.py
-python tests/test_pop.py
-```
-
-Pop receipts: `Validated 943 icons · 1157 components · 16 swatches · 14775 checks run` and `Ran 29 tests ... OK`.
+Paste the validator receipt. Current receipt: `Validated 961 icons · 1179 components`.
 
 **The pack identity takes precedence over literal vendor-logo reproduction.**
 Reviewed brand entries use `style: core_monoline`: 32px rounded primary strokes,
@@ -58,23 +64,15 @@ other reviewed app. Do not reintroduce vendor-wordmark-only banners.
 
 Catalog `artwork` entries are `usage: reference-only`: pinned SVG hashes, URLs
 and rights, never a live glyph registry. Actual geometry belongs in
-`tools/glyphs.py`. Both Classic and Pop use the shared catalog/style validator.
-`brand` groups must share glyph and accent. Classic applies its shared
+`tools/glyphs.py`.
+`brand` groups must share glyph and accent. The pack applies its shared
 `tools/icon_style.py` contrast fallback without rewriting the source accent.
 See `THIRD_PARTY_NOTICES.md` and `docs/research/icon-fidelity-and-demand-2026-09.md`. Brand language for this suite: `docs/BRAND-GUIDE.md`.
-For the visual receipt, run `python tools/build_icon_review.py` after Classic
-has built. It must show the new icons beside established, unchanged Classic
+For the visual receipt, run `python tools/build_icon_review.py` after the pack
+has built. It must show the new icons beside established, unchanged
 neighbours and actual-size banners, not only an isolated vendor-logo gallery.
 
-`tools/pop_glyph_metrics.json` is committed on purpose. `popart.py` must stay a pure function of committed inputs — measuring glyph bounding boxes at render time makes output depend on the installed rasteriser version and blows up the SVG drift gate on an unrelated dependency bump. Re-run `tools/measure_pop_glyphs.py` (~33 s) only when glyph geometry changes, and rebuild Pop after.
-
-Pop wallpapers are separate and rarely need rebuilding:
-
-```bash
-python tools/build_pop_wallpapers.py  # ~70 s
-```
-
-`Wallpapers/manifest.json` belongs to the classic pack and currently has 84 entries. Pop uses `Wallpapers/pop-manifest.json`. The two collections are asserted disjoint.
+`Wallpapers/manifest.json` belongs to the icon pack and currently has 96 entries.
 
 ## Truth gates
 
@@ -115,17 +113,17 @@ prefills `input`/`textarea` fields only, and the tool refuses to promise more.
 ## Product verification shortcuts
 
 - Icon Pack: four generators + `python tools/validate.py`.
-  Square PNGs get a raster presence pass (`tools/presence.py`) after svg2png —
+  Square art gets a raster presence pass (`tools/presence.py`) after svg2png —
   night keyline + accent bloom as rings. Vectors stay style-AA. Banners skip it.
-- Icon Pack UI (all three modules): `python tools/check_ui_resources.py`
+- Icon Pack UI: `python tools/check_ui_resources.py`
   (every resource reference resolves, no focusable view stranded),
   `python tests/test_navigation_graph.py` (every clickable has a handler, every
   screen is reachable, every focus edge lands somewhere),
   `python tests/test_tv_scale.py` (the dp box normalises per panel), and
   `python tools/build_app_ui_mockups.py --check` against the frames committed in
   `docs/` — regenerate them with the same tool and no flag after any layout
-  change, then commit the PNGs *and* `docs/app-ui-mockups.json`. The check
-  compares sources and drawn structure, not PNG bytes: the manifest records a
+  change, then commit the art *and* `docs/app-ui-mockups.json`. The check
+  compares sources and drawn structure, not art bytes: the manifest records a
   hash of every layout, values file, catalog, manifest, font and pasted raster
   the frames were built from, plus the generator's own source and what each
   frame drew. Text rendering is not reproducible across machines — the same
@@ -144,8 +142,6 @@ prefills `input`/`textarea` fields only, and the tool refuses to promise more.
   is not wired into `.github/workflows/suite-ci.yml` — the one with no path
   filter — does not exist: five tests and two validators had been local-only
   before that check was written.
-- Pixel Neon: `python tools/build_pixel_neon.py`, `python tools/validate_pixel_neon.py`, plus `cd pixel-neon && ./gradlew :app:lintDebug :app:assembleDebug`.
-- Core Builds Pop: `python tools/build_pop.py` + `python tools/validate_pop.py` + `python tests/test_pop.py`.
 - Core Line: `cd ticker && npm test`.
 - Core Shift: `python tools/validate_motion_feed.py` plus Android lint/build in CI.
 - Core Motion: `python tools/verify_motion_plugin.py` plus Android lint/build in CI.

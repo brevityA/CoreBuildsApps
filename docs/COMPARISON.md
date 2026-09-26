@@ -17,7 +17,7 @@ number.
 | Selectable/supported app names | ~980 | **917** |
 | Distinct mapped art IDs | 872 | **917** |
 | Source component mappings | 962 (955 canonical identities) | **1,090** |
-| Unique mapped packages | 887 | **958** |
+| Unique mapped packages | 887 | **961** |
 | Generated appfilter rows | 962 | **1,646** |
 | 16:9 320×180 banners | yes | **917** |
 | Square 512×512 icons | yes | **917** |

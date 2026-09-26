@@ -16,6 +16,12 @@ Outputs:
 - Motion/live/preview.png      contact sheet
 - Motion/live-feed.json        Overflight-compatible feed (url_img + url_1080p)
 
+After the procedural clips the feed lists the Deep Space set: twelve loops of
+the series-9-deep-space walls themselves, rendered by
+tools/build_deep_space_loops.py (their stars twinkle, their nebulae shimmer).
+This script lists them and puts them on the contact sheet; it does not
+re-render them.
+
 Run:  pip install imageio-ffmpeg && python tools/build_motion_feed.py
 """
 
@@ -23,6 +29,9 @@ import json
 import os
 import subprocess
 import sys
+
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from build_deep_space_loops import WALLS as DEEP_SPACE, clip_name  # noqa: E402
 
 BASE_URL = "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Motion/live"
 FPS = 30
@@ -121,27 +130,41 @@ def build_thumb(clip, out):
 
 
 def build_sheet(thumbs, out):
-    inputs = []
-    for t in thumbs:
-        inputs += ["-i", t]
-    n = len(thumbs)
-    cols, rows = 3, (n + 2) // 3
-    cmd = [ffmpeg(), "-y", "-hide_banner", "-loglevel", "error", *inputs,
-           "-filter_complex", f"tile={cols}x{rows}", "-frames:v", "1", out]
-    subprocess.run(cmd, check=True)
+    """Every poster on one sheet, three across, in feed order.
+
+    Composed with Pillow: ffmpeg's tile filter reads frames from its first
+    input only, so the earlier `-i a -i b ... tile=3xN` sheet showed clip 01
+    and nothing else.
+    """
+    from PIL import Image
+    cols = 3
+    rows = (len(thumbs) + cols - 1) // cols
+    sheet = Image.new("RGB", (cols * THUMB_W, rows * THUMB_H), (4, 7, 15))
+    for i, t in enumerate(thumbs):
+        im = Image.open(t).convert("RGB").resize((THUMB_W, THUMB_H))
+        sheet.paste(im, ((i % cols) * THUMB_W, (i // cols) * THUMB_H))
+    sheet.save(out, optimize=True)
+
+
+def deep_space_entries():
+    """(file stem, title) for the Deep Space loops, in feed order."""
+    return [(clip_name(i, slug), title)
+            for i, (_number, slug, title) in enumerate(DEEP_SPACE)]
 
 
 def write_feed():
     feed = []
-    for i, e in enumerate(CLIPS):
-        mp4 = f"coremotion-live-{i + 1:02d}-{e['slug']}.mp4"
-        thumb = f"thumbs/coremotion-live-{i + 1:02d}-{e['slug']}.jpg"
+    rows = [(f"coremotion-live-{i + 1:02d}-{e['slug']}", e["title"], "Core Motion")
+            for i, e in enumerate(CLIPS)]
+    rows += [(stem, title, "Core Motion \u00b7 Deep Space")
+             for stem, title in deep_space_entries()]
+    for stem, title, location in rows:
         feed.append({
-            "location": "Core Motion",
-            "title": e["title"],
+            "location": location,
+            "title": title,
             "author": "Core Builds",
-            "url_img": f"{BASE_URL}/{thumb}",
-            "url_1080p": f"{BASE_URL}/{mp4}",
+            "url_img": f"{BASE_URL}/thumbs/{stem}.jpg",
+            "url_1080p": f"{BASE_URL}/{stem}.mp4",
         })
     with open("Motion/live-feed.json", "w", encoding="utf-8") as f:
         json.dump(feed, f, indent=2)
@@ -163,6 +186,7 @@ def main():
         build_thumb(mp4, thumb)
         thumbs.append(thumb)
 
+    thumbs += [f"Motion/live/thumbs/{stem}.jpg" for stem, _ in deep_space_entries()]
     print("building contact sheet ...")
     build_sheet(thumbs, "Motion/live/preview/live-preview.png")
     write_feed()

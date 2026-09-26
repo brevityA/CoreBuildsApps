@@ -1,6 +1,6 @@
 # Contributing
 
-Everything in this repo generates from one file: **`tools/catalog.json`**. You never hand-edit XML — the build writes `appfilter.xml`, `drawable.xml`, the PNGs, the docs, and the previews. CI fails if committed files drift from what the generator produces.
+Everything in this repo generates from one file: **`tools/catalog.json`**. You never hand-edit XML — the build writes `appfilter.xml`, `drawable.xml`, the art, the docs, and the previews. CI fails if committed files drift from what the generator produces.
 
 ## Setup
 

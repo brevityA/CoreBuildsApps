@@ -17,8 +17,7 @@ not hop over a stop; this file proves the other half - that the stops *do*
 something, that every screen is reachable from the front door, and that every
 named focus edge ends on a view that can hold the cursor in at least one state.
 
-What is checked, per module (app, Pop which shares app's Kotlin, and the
-Pixel Neon fork):
+What is checked of the app module:
 
 1. every `clickable="true"` view in every activity and item layout is named by
    a `setOnClickListener`/`R.id.` reference in the Kotlin that inflates it;
@@ -47,17 +46,6 @@ MODULES = {
         "kotlin": ROOT / "app/src/main/java/tv/corebuilds/iconpack",
         "manifest": ROOT / "app/src/main/AndroidManifest.xml",
     },
-    "pop": {
-        "layout": ROOT / "pop/src/main/res/layout",
-        # Pop compiles app's Kotlin (sourceSets in pop/build.gradle.kts).
-        "kotlin": ROOT / "app/src/main/java/tv/corebuilds/iconpack",
-        "manifest": ROOT / "pop/src/main/AndroidManifest.xml",
-    },
-    "pixel-neon": {
-        "layout": ROOT / "pixel-neon/app/src/main/res/layout",
-        "kotlin": ROOT / "pixel-neon/app/src/main/java/tv/corebuilds/pixelneon",
-        "manifest": ROOT / "pixel-neon/app/src/main/AndroidManifest.xml",
-    },
 }
 
 # layout stem -> the Kotlin file that inflates it
@@ -72,6 +60,8 @@ ACTIVITY_OWNER = {
     "inspector": "InspectorActivity.kt",
     "suite": "SuiteActivity.kt",
     "export_progress": "ExportProgressActivity.kt",
+    "whats_new": "WhatsNewActivity.kt",
+    "launcher_setup": "LauncherSetupActivity.kt",
 }
 
 # Naming a view that is not focusable is how a chain says "stay put" instead of
@@ -79,8 +69,6 @@ ACTIVITY_OWNER = {
 # the site (MainActivity.syncFocusChain); anything new must earn a comment.
 DELIBERATE_UNFOCUSABLE_TARGETS = {
     "app": {"picker_hint"},
-    "pop": {"picker_hint"},
-    "pixel-neon": set(),
 }
 
 FOCUS_CAPABLE_TAGS = {"RecyclerView", "EditText", "ScrollView", "NestedScrollView"}
@@ -135,11 +123,8 @@ class Menus(unittest.TestCase):
                 screen = layout.stem.replace("activity_", "")
                 owner_name = ACTIVITY_OWNER[screen]
                 if owner_name[:-3] not in declared:
-                    # The fork mirrors layouts for screens it does not ship
-                    # (pixel-neon carries settings/about/faq/auditor/inspector/
-                    # suite XML with no Activity to inflate them). Inert, not
-                    # broken: nothing references them, and shipping fewer
-                    # screens is the fork's design.
+                    # A mirrored layout for a screen the manifest does not
+                    # ship is inert, not broken: nothing references it.
                     continue
                 owner = paths["kotlin"] / owner_name
                 code = owner.read_text(encoding="utf-8") if owner.is_file() else kotlin

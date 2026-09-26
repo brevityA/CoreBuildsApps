@@ -4,9 +4,12 @@ Core Builds Icon Pack — asset pipeline.
 
 Reads tools/catalog.json and writes, deterministically:
   assets/svg/<drawable>.svg                    master vector
-  app/src/main/res/drawable-nodpi/<d>.png      512px transparent PNG
-  app/src/main/res/xml/appfilter.xml           component -> drawable mapping
-  app/src/main/res/xml/drawable.xml            icon-pack browser grid
+  app/src/main/res/drawable-nodpi/<d>.webp     512px transparent lossless WebP
+  app/src/main/res/values/aliases.xml          dup-name -> canonical art
+  app/src/main/res/raw/keep.xml                shrinker keep rules (generated)
+  glyphs/src/main/res/xml/appfilter.xml        component -> square glyph
+                                               (Core Builds Glyphs; + assets)
+  glyphs/src/main/res/xml/drawable.xml         square icon browser grid
   app/src/main/res/xml/iconpack.xml            Projectivy/legacy pack list
   app/src/main/res/values/icon_pack.xml        pack metadata array
   docs/IconPackList.md                         human-readable supported list
@@ -21,20 +24,31 @@ import sys
 from pathlib import Path
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-from glyphs import GLYPHS, is_monogram, monoline, render_svg  # noqa: E402
+from glyphs import GLYPHS, family_body, family_glyph_for, is_monogram, monoline, render_svg  # noqa: E402
 from icon_style import CORE_MONOLINE, core_monoline_errors, display_accent  # noqa: E402
+from typeface import MIN_LOCKUP_CAP, lockup_cap  # noqa: E402
 from brandmarks import load_source  # noqa: E402
+from drawable_art import (ART_EXT, BRANDING_PNGS, alias_identical,
+                          write_aliases_file)  # noqa: E402
 
 ROOT = Path(__file__).resolve().parent.parent
 CATALOG = ROOT / "tools" / "catalog.json"
 SVG_DIR = ROOT / "assets" / "svg"
 PNG_DIR = ROOT / "app" / "src" / "main" / "res" / "drawable-nodpi"
 XML_DIR = ROOT / "app" / "src" / "main" / "res" / "xml"
+# Core Builds Glyphs, the square companion (glyphs/). Its appfilter and
+# browser are written here; the icon pack's own, which map to banners, are
+# derived from them by tools/build_banners_pack.py.
+GLYPH_MAIN = ROOT / "glyphs" / "src" / "main"
 VAL_DIR = ROOT / "app" / "src" / "main" / "res" / "values"
 DOC_DIR = ROOT / "docs"
 
 PNG_SIZE = 512
 DRAWABLE_RE = re.compile(r"^[a-z][a-z0-9_]*$")
+
+# Brand-informed mark treatments that have shipped. A style joins this set
+# the way a glyph joins the registry: one researched cue at a time.
+MARK_STYLES = frozenset({"lower"})
 
 
 def esc(s):
@@ -70,6 +84,32 @@ def validate(icons, artwork=None):
             errors.append(f"{n}: gradient must be exactly two #RRGGBB stops")
         if i.get("ink") is not None and not re.fullmatch(r"#[0-9A-Fa-f]{6}", i["ink"]):
             errors.append(f"{n}: ink must be #RRGGBB")
+        mark = i.get("mark")
+        if mark is not None:
+            if not isinstance(mark, str) or not re.fullmatch(r"[A-Z0-9]{2,4}", mark):
+                errors.append(f"{n}: mark '{mark}' must be 2-4 uppercase A-Z0-9 chars")
+            elif family_glyph_for(i.get("glyph", "")) is None:
+                errors.append(f"{n}: mark '{mark}' belongs on a category monogram "
+                              f"(<family>_<L>), not glyph '{i.get('glyph')}'")
+            else:
+                _, cap_h, _, max_w = family_glyph_for(i["glyph"])
+                shown = mark.lower() if i.get("mark_style") == "lower" else mark
+                cap = lockup_cap(shown, cap_h, max_w)
+                if cap < MIN_LOCKUP_CAP:
+                    errors.append(f"{n}: mark '{shown}' sets at {cap:.0f}px in the "
+                                  f"'{i['glyph'].rpartition('_')[0]}' shell — under the "
+                                  f"{MIN_LOCKUP_CAP}px counter floor, it closes at a 48px tile")
+        mstyle = i.get("mark_style")
+        if mstyle is not None:
+            if mark is None:
+                errors.append(f"{n}: mark_style '{mstyle}' needs a mark to style")
+            elif mstyle not in MARK_STYLES:
+                errors.append(f"{n}: unknown mark_style '{mstyle}' "
+                              f"(vocabulary: {', '.join(sorted(MARK_STYLES))}) — a style "
+                              "ships only when a researched logotype cue needs it")
+            elif not i.get("mark_style_source"):
+                errors.append(f"{n}: mark_style '{mstyle}' carries no "
+                              "mark_style_source — where was the cue seen?")
         if not i.get("components"):
             errors.append(f"{n}: no components — icon would never auto-assign")
         if brand := i.get("brand"):
@@ -95,6 +135,31 @@ def validate(icons, artwork=None):
             if comp in seen_c:
                 errors.append(f"{n}: component '{comp}' duplicates {seen_c[comp]}")
             seen_c[comp] = n
+    # Two icons that draw the same shape in the same display colour render the
+    # same PNG — v1.8.14 counted what that costs, so it is a gate now, not a
+    # phase. Every icon is checked, not only monograms: three file managers
+    # once shared one folder. A monogram's letter is replaced by its mark, so
+    # its shape is the shell family plus the mark (app_E "ET" and app_N "ET"
+    # are one picture). Declared brand variants (same `brand`) are one
+    # identity by rule and are supposed to be identical; an icon with no
+    # brand is its own identity, so two brandless icons never excuse each
+    # other (the old `None != None` check let 22 such groups through).
+    seen_render = {}
+    for i in icons:
+        mark = i.get("mark") or ""
+        glyph = i.get("glyph", "")
+        shape = (glyph.rpartition("_")[0] + "_*"
+                 if mark and family_glyph_for(glyph) is not None else glyph)
+        render_key = (shape, mark, i.get("mark_style") or "",
+                      display_accent(i.get("color", "#000000"),
+                                     monochrome=i.get("color_note") == "monochrome"))
+        identity = i.get("brand") or i["name"]
+        prev = seen_render.get(render_key)
+        if prev and prev[1] != identity:
+            errors.append(f"{i['name']}: renders the same picture as {prev[0]} "
+                          "(shape, mark and colour) — one of them needs a "
+                          "different accent or mark")
+        seen_render.setdefault(render_key, (i["name"], identity))
     for glyph, spec in (artwork or {}).items():
         if spec.get("usage") != "reference-only":
             errors.append(f"{glyph}: brand artwork is reference-only, not a rendering override")
@@ -125,51 +190,136 @@ def main():
         return 1
 
     # 1. master SVGs
+    wordmarked = sum(1 for i in icons
+                     if i.get("mark") and family_glyph_for(i["glyph"]))
     for i in icons:
         mono = i.get("color_note") == "monochrome"
         write(SVG_DIR / f"{i['drawable']}.svg",
               render_svg(i["glyph"], i["color"], monochrome=mono,
-                         gradient=i.get("gradient")))
-    print(f"\u2713 SVG masters written ({len(icons)}/{len(icons)}) \u2192 assets/svg/")
+                         gradient=i.get("gradient"), mark=i.get("mark"),
+                         style=i.get("mark_style")))
+    print(f"\u2713 SVG masters written ({len(icons)}/{len(icons)}) \u2192 assets/svg/ "
+          f"({wordmarked} adaptive wordmark monograms)")
 
-    # 2. PNGs
-    png_written = 0
+    # 2. Glyph art: lossless WebP, presence applied in memory before the
+    # encode. resvg cannot emit WebP, so the PNG exists only as bytes.
+    art_written = 0
+    rendered = False
     try:
+        import io
+        from PIL import Image
         from svg_renderer import svg2png
-        from presence import apply_presence_file
+        from presence import apply_presence
         for i in icons:
-            dest = PNG_DIR / f"{i['drawable']}.png"
-            svg2png(
+            dest = PNG_DIR / f"{i['drawable']}{ART_EXT}"
+            png = svg2png(
                 url=str(SVG_DIR / f"{i['drawable']}.svg"),
-                write_to=str(dest),
                 output_width=PNG_SIZE, output_height=PNG_SIZE,
                 background_color=None)
-            apply_presence_file(dest)
-            png_written += 1
-        print(f"\u2713 PNG {PNG_SIZE}px transparent written "
-              f"({png_written}/{len(icons)}) \u2192 res/drawable-nodpi/")
+            art = apply_presence(Image.open(io.BytesIO(png)))
+            art.save(dest, "WEBP", lossless=True)
+            art_written += 1
+        rendered = True
+        print(f"\u2713 WebP {PNG_SIZE}px transparent written "
+              f"({art_written}/{len(icons)}) \u2192 res/drawable-nodpi/")
     except (ImportError, OSError):
         # Never continue with a partial asset set: an appfilter that names a
         # drawable the APK does not carry turns into letter tiles on the
-        # launcher (seen in the wild: a missing tegrazone3.png read as a
-        # "T" card on a Tegra Zone install). If the PNGs already exist on
+        # launcher (seen in the wild: a missing tegrazone3 read as a
+        # "T" card on a Tegra Zone install). If the art already exists on
         # disk from a previous run this is a no-op and we may continue.
         missing = [i["drawable"] for i in icons
-                   if not (PNG_DIR / f"{i['drawable']}.png").exists()]
+                   if not (PNG_DIR / f"{i['drawable']}{ART_EXT}").exists()]
         if missing:
             shown = ", ".join(missing[:5])
             if len(missing) > 5:
                 shown += ", \u2026"
             raise SystemExit(
-                f"\u274c no SVG rasterizer AND {len(missing)} catalog PNGs are "
+                f"\u274c no SVG rasterizer AND {len(missing)} catalog art files are "
                 f"missing ({shown}). Refusing to write an appfilter that "
                 "references absent drawables. "
                 "Run: pip install -r tools/requirements.txt")
-        print("\u26a0 no SVG rasterizer \u2014 reusing existing PNGs "
+        print("\u26a0 no SVG rasterizer \u2014 reusing existing art "
               "(all present). Run: pip install -r tools/requirements.txt "
               "to regenerate.")
 
+    # 2b. Identical renders ship once; later names become aliases. Stale PNGs
+    # from the pre-WebP tree are removed unless they are branding. Skipped
+    # when the rasterizer is absent — the fallback reuses disk as-is.
+    if rendered:
+        glyph_files = [PNG_DIR / f"{i['drawable']}{ART_EXT}" for i in icons]
+        glyph_files = [f for f in glyph_files if f.exists()]
+        aliases = alias_identical(glyph_files)
+        write_aliases_file(VAL_DIR / "aliases.xml", aliases,
+                           "tools/build_icons.py")
+        for stale in PNG_DIR.glob("*.png"):
+            if stale.name not in BRANDING_PNGS:
+                stale.unlink()
+        print(f"\u2713 aliases.xml written ({len(aliases)} dup names \u2192 "
+              f"canonical art); stale PNGs removed")
+
     # 3. appfilter.xml — what makes icons auto-assign
+    #
+    # 3a. Fallback furniture — iconback/iconmask/iconupon/scale. Apps the
+    # catalog does not cover used to arrive as naked stock icons: launcher
+    # launchers composite an unthemed app's own icon over an arbitrary
+    # pack-supplied back, clipped by the pack's mask and topped by its upon,
+    # so supply exactly those. The backs are the grid's card (#151923,
+    # hairline-white stroke) nudged ten ways along the pack palette — near
+    # night, distinguishable from a neighbour unthemed app, never competing
+    # with the actual glyph rows; one shape card, no second zoom level at
+    # 0.70 scale, matching the 352/512 ink box our own glyphs sit in.
+    # Without furniture the "one container" claim dies the moment an app
+    # outside the 961 lands on the home row.
+    BACKS = {
+        # one accent at 10% into the card fill (#151923): the palette's
+        # blues, greens and violets, night-side; graphite-only variants bookend
+        "night": "#151923", "blue": "#132039", "violet": "#211B39",
+        "cyan": "#132C39", "green": "#1B3022", "ember": "#2C2322",
+        "orchid": "#2B2032", "marine": "#132F35", "slate": "#21252F",
+        "graphite": "#10141D",
+    }
+    def furniture_svg(inner):
+        return (f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 '
+                f'{PNG_SIZE} {PNG_SIZE}" width="{PNG_SIZE}" '
+                f'height="{PNG_SIZE}">{inner}</svg>')
+
+    try:
+        import io
+        from PIL import Image
+        from svg_renderer import svg2png
+
+        def emit(stem, inner):
+            raw = svg2png(
+                bytestring=furniture_svg(inner).encode(),
+                output_width=PNG_SIZE, output_height=PNG_SIZE,
+                background_color=None)
+            Image.open(io.BytesIO(raw)).save(
+                PNG_DIR / f"{stem}{ART_EXT}", "WEBP", lossless=True)
+
+        for name, hexv in BACKS.items():
+            emit(f"cb_back_{name}",
+                 f'<rect width="{PNG_SIZE}" height="{PNG_SIZE}" rx="48" '
+                 f'fill="{hexv}"/>')
+        emit("cb_mask",
+             f'<rect width="{PNG_SIZE}" height="{PNG_SIZE}" rx="48" '
+             f'fill="#FFFFFF"/>')
+        emit("cb_upon",
+             f'<rect x="4" y="4" width="{PNG_SIZE - 8}" '
+             f'height="{PNG_SIZE - 8}" rx="46" fill="none" '
+             f'stroke="rgba(255,255,255,0.07)" stroke-width="8"/>')
+        print(f"\u2713 fallback furniture written ({len(BACKS)} backs + mask + "
+              f"upon) \u2192 res/drawable-nodpi/")
+    except (ImportError, OSError, TypeError):
+        missing = [f"cb_back_{n}{ART_EXT}" for n in BACKS
+                   if not (PNG_DIR / f"cb_back_{n}{ART_EXT}").exists()]
+        missing += [f for f in (f"cb_mask{ART_EXT}", f"cb_upon{ART_EXT}")
+                    if not (PNG_DIR / f).exists()]
+        if missing:
+            raise SystemExit(f"fallback furniture art missing and the "
+                             f"rasteriser is unavailable: {', '.join(missing[:4])}")
+        print("\u2713 fallback furniture already on disk (rasteriser absent)")
+
     #
     # Auto-assignment maps to the 16:9 BANNER drawable, not the square icon.
     # Projectivy cards are 16:9 by default and the reference pack ships 1002
@@ -201,6 +351,15 @@ def main():
     lines = ['<?xml version="1.0" encoding="utf-8"?>',
              '<!-- Generated by tools/build_icons.py. Do not edit by hand. -->',
              '<resources>']
+    # Fallback furniture first — launchers that support the composite
+    # schema read these before any <item>, and an unthemed app lands on one
+    # of the card backs instead of arriving naked.
+    backs = " ".join(f'img{n + 1}="cb_back_{name}"'
+                     for n, name in enumerate(BACKS))
+    lines += [f'    <iconback {backs}/>',
+              '    <iconmask img1="cb_mask"/>',
+              '    <iconupon img1="cb_upon"/>',
+              '    <scale factor="0.70"/>']
     comp_count = 0
     emitted_count = 0
     seen_emitted = set()
@@ -213,23 +372,29 @@ def main():
                     continue
                 seen_emitted.add(variant)
                 lines.append(f'    <item component="ComponentInfo{{{esc(variant)}}}" '
-                             f'drawable="{i["drawable"]}_banner"/>')
+                             f'drawable="{i["drawable"]}"/>')
                 emitted_count += 1
     lines.append('</resources>')
     appfilter_text = "\n".join(lines) + "\n"
-    write(XML_DIR / "appfilter.xml", appfilter_text)
+    # This is the square mapping, and it ships in Core Builds Glyphs. The
+    # icon pack itself maps the same components to their banners - the
+    # default style since 1.9.5 - and tools/build_banners_pack.py derives
+    # that appfilter from this one, so the two cannot disagree.
+    write(GLYPH_MAIN / "res" / "xml" / "appfilter.xml", appfilter_text)
     # The ADW convention permits res/xml, res/raw, or assets. Modern launchers
     # prefer res/xml, while several older picker/request implementations only
     # inspect assets. Generate identical files so mappings cannot drift.
-    write(ROOT / "app" / "src" / "main" / "assets" / "appfilter.xml",
-          appfilter_text)
+    write(GLYPH_MAIN / "assets" / "appfilter.xml", appfilter_text)
     print(f"\u2713 appfilter.xml written \u2014 {comp_count} catalog components "
           f"\u2192 {emitted_count} entries (both name forms) "
           f"\u2192 {len(icons)} drawables (res/xml + assets)")
 
     # 4. drawable.xml — launcher icon picker, grouped by catalog category
     # so Projectivy's browser can jump a section instead of scrolling 500
-    # untitled tiles. Banners head each group; squares follow as opt-in.
+    # untitled tiles. Glyphs only: this is Core Builds Glyphs' browser, the
+    # same art its appfilter maps. The icon pack lists the same sections as
+    # banners (tools/build_banners_pack.py), so each pack's icon browser
+    # offers its own style and nothing else.
     CAT_LABEL = {
         "STREAM": "Streaming", "MEDIA": "Media centres", "VOD": "On demand",
         "LIVE": "Live TV", "PLAYER": "Players", "MUSIC": "Music",
@@ -254,19 +419,13 @@ def main():
          '<resources>']
     for cat in cat_order:
         label = CAT_LABEL.get(cat, cat.title())
-        d.append(f'    <category title="Banners \u00b7 {esc(label)}" />')
-        for i in by_cat[cat]:
-            d.append(f'    <item drawable="{i["drawable"]}_banner" />')
-    for cat in cat_order:
-        label = CAT_LABEL.get(cat, cat.title())
         d.append(f'    <category title="Square \u00b7 {esc(label)}" />')
         for i in by_cat[cat]:
             d.append(f'    <item drawable="{i["drawable"]}" />')
     d.append('</resources>')
     drawable_text = "\n".join(d) + "\n"
-    write(XML_DIR / "drawable.xml", drawable_text)
-    write(ROOT / "app" / "src" / "main" / "assets" / "drawable.xml",
-          drawable_text)
+    write(GLYPH_MAIN / "res" / "xml" / "drawable.xml", drawable_text)
+    write(GLYPH_MAIN / "assets" / "drawable.xml", drawable_text)
 
     # 5. iconpack.xml — legacy/alt launcher discovery
     p = ['<?xml version="1.0" encoding="utf-8"?>', '<iconpack>']
@@ -308,6 +467,28 @@ def main():
     v.append('</resources>')
     write(VAL_DIR / "icon_pack.xml", "\n".join(v) + "\n")
 
+    # 6b. res/raw/keep.xml — resource shrinking would strip every drawable
+    # that is only ever resolved by name (appfilter strings, getIdentifier),
+    # which is all of them. The keep set is generated from the same catalog
+    # as the art, so the two cannot drift apart. It lives in raw/, not
+    # values/: aapt rejects <keep> as a values resource declaration. And the
+    # rules are the tools:keep ATTRIBUTE of the root <resources> element:
+    # the shrinker reads only the root's tools:keep / tools:discard /
+    # tools:shrinkMode, so a child <keep tools:keep=...> element is silently
+    # ignored - the build passes and the release APK loses the icons.
+    k = ['<?xml version="1.0" encoding="utf-8"?>',
+         '<!-- Generated by tools/build_icons.py. Do not edit by hand. -->']
+    keep_names = ([i["drawable"] for i in icons]
+                  + [f"{i['drawable']}_banner" for i in icons]
+                  + [f"cb_back_{n}" for n in BACKS]
+                  + ["cb_mask", "cb_upon", "cb_banner"])
+    k.append('<resources xmlns:tools="http://schemas.android.com/tools"\n'
+             '    tools:keep="' + ",".join(f"@drawable/{n}" for n in keep_names) + '" />')
+    raw_dir = ROOT / "app" / "src" / "main" / "res" / "raw"
+    raw_dir.mkdir(parents=True, exist_ok=True)
+    write(raw_dir / "keep.xml", "\n".join(k) + "\n")
+    print(f"\u2713 keep.xml written ({len(keep_names)} drawables pinned)")
+
     # 7. supported list
     md = ["# Supported applications",
           "",
@@ -346,7 +527,9 @@ def main():
     for n, i in enumerate(icons):
         cx, cy = (n % cols) * cell, 78 + (n // cols) * cell
         mono = i.get("color_note") == "monochrome"
-        inner = monoline(GLYPHS[i["glyph"]](display_accent(i["color"], monochrome=mono)))
+        inner = monoline(family_body(i["glyph"],
+                                     display_accent(i["color"], monochrome=mono),
+                                     i.get("mark"), i.get("mark_style")))
         s.append(f'<rect x="{cx + 9}" y="{cy + 5}" width="{cell - 18}" '
                  f'height="{cell - 34}" rx="16" fill="#151923" '
                  f'stroke="rgba(255,255,255,.06)"/>')
@@ -371,7 +554,7 @@ def main():
         pass
 
     print(f"\nBuild complete \u2014 {len(icons)} icons, {comp_count} components, "
-          f"{png_written} PNGs. Verified by re-read of the catalog.")
+          f"{art_written} WebP. Verified by re-read of the catalog.")
     return 0
 
 

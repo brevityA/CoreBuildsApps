@@ -90,11 +90,10 @@ class UpdateInstallerTests(unittest.TestCase):
         )
 
     def test_authority_matches_manifest(self):
-        # AUTHORITY is BuildConfig-supplied so :app and :pop compile this same
-        # file with per-pack authorities (two installed packages may not share
-        # a FileProvider authority). The contract is a chain: the Gradle
-        # buildConfigField must equal the manifest authority, and the code must
-        # defer to BuildConfig rather than hardcode either pack's value.
+        # AUTHORITY is BuildConfig-supplied so the FileProvider authority
+        # always matches the installed package. The contract is a chain:
+        # the Gradle buildConfigField must equal the manifest authority,
+        # and the code must defer to BuildConfig rather than hardcode it.
         self.assertIn(
             "val AUTHORITY: String = BuildConfig.UPDATE_AUTHORITY",
             self.src,
@@ -146,9 +145,15 @@ class PickerTests(unittest.TestCase):
         self.assertIn("ShortcutIconResource.fromContext", src)
         self.assertIn("EXTRA_SHORTCUT_ICON", src)
 
-    def test_pick_default_is_banner(self):
+    def test_pick_default_follows_the_stored_shape(self):
         src = read("app/src/main/java/tv/corebuilds/iconpack/MainActivity.kt")
-        self.assertIn("pickBanners = true", src)
+        # Without a companion (the candidate build) the shipped default is
+        # the banner (matching the appfilter); the picker opens on whatever
+        # shape the user last delivered and the chips can still carve the
+        # banner drawable out of the glyph name. With a companion the pack decides;
+        # tests/test_glyphs_pack.py covers that side.
+        self.assertIn("Prefs.pickerPrefersBanners(this)", src)
+        self.assertIn("Prefs.set(this, Prefs.KEY_PICK_BANNERS, pickBanners)", src)
         self.assertIn("${item.drawable}_banner", src)
         self.assertIn("PICK_BANNER", src)
         self.assertIn("PICK_SQUARE", src)
@@ -206,20 +211,21 @@ class MatchingTests(unittest.TestCase):
                 self.af,
             )
 
-    def test_appfilter_default_is_still_banners(self):
+    def test_appfilter_default_is_banners(self):
         root = ET.parse(RES / "xml" / "appfilter.xml").getroot()
         for item in root.findall("item"):
             d = item.get("drawable") or ""
             self.assertTrue(
                 d.endswith("_banner"),
-                f"{item.get('component')} maps to {d}, not a banner",
+                f"{item.get('component')} maps to {d} — banners are the "
+                "icon pack's default since 1.9.5; glyphs are Core Builds Glyphs'",
             )
 
 
 class VersionAndCiTests(unittest.TestCase):
     def test_gradle_and_version_json_agree(self):
         gradle = read("app/build.gradle.kts")
-        ver = json.loads(read("Latestrelease/version.json"))
+        ver = json.loads(read("app/src/main/assets/version.json"))
         catalog = json.loads(read("tools/catalog.json"))
         g_code = int(re.search(r"versionCode\s*=\s*(\d+)", gradle).group(1))
         g_name = re.search(r'versionName\s*=\s*"([^"]+)"', gradle).group(1)
@@ -243,20 +249,24 @@ class VersionAndCiTests(unittest.TestCase):
         self.assertIn("dist/iconpack-release.apk", wf)
         self.assertIn("dist/app-release.apk", wf)
         self.assertIn("git tag -f iconpack", wf)
-        self.assertIn("tag_name: iconpack", wf)
+        # The floating release must be created on the iconpack tag so the
+        # stable URL (apkUrl in version.json) and Downloader 5270601 keep
+        # resolving. Publish flow is draft-first (immutable release assets
+        # cannot be patched after publish), asserted as its contract:
+        self.assertIn("gh release create iconpack", wf)
         versioned = wf.split("- name: Publish versioned release", 1)[1]
-        self.assertIn("make_latest: true", versioned.split("- name:", 1)[0])
+        self.assertIn("--latest", versioned.split("- name:", 1)[0])
         stable = wf.split("- name: Publish stable Downloader release", 1)[1]
-        self.assertIn("make_latest: false", stable)
+        self.assertIn("--latest=false", stable)
 
     def test_core_line_never_becomes_repository_latest(self):
         wf = read(".github/workflows/core-line-apk.yml")
         self.assertEqual(
-            wf.count("make_latest: false"),
+            wf.count("--latest=false"),
             2,
             "both Core Line versioned and floating releases must opt out of Latest",
         )
-        self.assertNotIn("make_latest: true", wf)
+        self.assertNotIn("--latest ", wf)  # bare --latest would claim Latest
 
 
 class MappingAndFocusTests(unittest.TestCase):
@@ -278,15 +288,6 @@ class MappingAndFocusTests(unittest.TestCase):
         self.assertIn("com.swm.live/au.com.seven.inferno.MainActivity", comps)
         self.assertIn("com.swm.live/.MainActivity", comps)
 
-    def test_pixel_neon_chips_keep_focus_on_pick(self):
-        src = read(
-            "pixel-neon/app/src/main/java/tv/corebuilds/pixelneon/ChipAdapter.kt"
-        )
-        no_block = re.sub(r"/\*.*?\*/", "", src, flags=re.DOTALL)
-        code = "\n".join(line.split("//", 1)[0] for line in no_block.splitlines())
-        self.assertNotIn("notifyDataSetChanged()", code)
-        self.assertIn("notifyItemChanged", code)
-        self.assertIn("KEYCODE_DPAD_LEFT", code)
 
 
 if __name__ == "__main__":

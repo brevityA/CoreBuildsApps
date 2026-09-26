@@ -5,8 +5,8 @@ There is no Android SDK in this environment, so `assembleDebug` cannot run.
 This does the part of resource linking that actually catches mistakes:
 
   1. every modified XML file is well-formed
-  2. every @dimen/@color/@drawable/@string/@array reference in app/, pop/ and
-     pixel-neon/ resolves to a declared resource in that same module
+  2. every @dimen/@color/@drawable/@string/@array reference in app/
+     resolves to a declared resource in that same module
   3. every R.id / R.string / R.drawable referenced from the Kotlin a module
      compiles exists in that module's own layouts and values
   4. every @+id declared in a layout is unique within that layout
@@ -27,18 +27,15 @@ ANDROID = "{http://schemas.android.com/apk/res/android}"
 
 # module -> (res/values root, the Kotlin that module actually compiles).
 #
-# Pop compiles ../app/src/main/java, so app/'s Kotlin must resolve against
-# pop/'s resources as well as app/'s. Pixel Neon keeps its own fork of that
-# Kotlin under its own package, so it needs its own pairing — omitting it is
-# what let R.color.cb_hairline reach main and break the Pixel Neon build while
-# this checker reported OK.
+# One icon pack, one module. (Pop and Pixel Neon were retired 2026-09-24;
+# when they existed they each needed their own pairing here, because Pop
+# compiled ../app/src/main/java against its own resources and Pixel Neon
+# kept a fork of that Kotlin — omitting the fork is what let
+# R.color.cb_hairline reach main and break the Pixel Neon build while
+# this checker reported OK.)
 MODULES = {
     "app": (ROOT / "app" / "src" / "main",
             ROOT / "app/src/main/java/tv/corebuilds/iconpack"),
-    "pop": (ROOT / "pop" / "src" / "main",
-            ROOT / "app/src/main/java/tv/corebuilds/iconpack"),
-    "pixel-neon": (ROOT / "pixel-neon/app/src/main",
-                   ROOT / "pixel-neon/app/src/main/java/tv/corebuilds/pixelneon"),
 }
 
 FAIL: list[str] = []
@@ -433,12 +430,9 @@ def main() -> int:
             for problem in bare_view_refs(kt, ids):
                 fail(f"{problem} ({mod})")
 
-    # Focus reachability. Layout-only, so it covers pixel-neon too even though
-    # that module keeps its own Kotlin and resources.
+    # Focus reachability. Layout-only.
     layout_dirs = [
         ROOT / "app" / "src" / "main" / "res" / "layout",
-        ROOT / "pop" / "src" / "main" / "res" / "layout",
-        ROOT / "pixel-neon" / "app" / "src" / "main" / "res" / "layout",
     ]
     for layout_dir in layout_dirs:
         if not layout_dir.is_dir():

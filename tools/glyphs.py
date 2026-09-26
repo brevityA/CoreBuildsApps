@@ -1,6 +1,8 @@
+import json
+import os
 import re
 
-from typeface import monogram_body, monogram_text, monogram_scaled
+from typeface import adaptive_lockup, lockup_cap, monogram_body, monogram_text, monogram_scaled
 from icon_style import OFFWHITE_INK, display_accent
 """
 Core Builds Icon Pack — glyph library.
@@ -541,24 +543,61 @@ def monoline(body, weight=MONOLINE):
 
 
 def render_svg(glyph_name, color, glow=False, *, monochrome=False,
-               gradient=None):
+               gradient=None, mark=None, style=None):
     """
     Render the transparent Classic glyph in the common monoline treatment.
 
     Glow is opt-in for legacy experiments, never used by the pack generators.
     `gradient` is a pair of hexes: the rendered stroke then runs through a
     vertical userSpace linear gradient instead of the flat accent. It is a
-    Classic-render treatment (catalog `gradient` field), so Pop and Pixel
-    Neon — which repaint every path in their own inks — stay flat.
+    Classic-render treatment (catalog `gradient` field).
+
+    `mark` is the catalog's adaptive wordmark token: on a category monogram
+    it replaces the lone letter (family_body adapts the type to the shell);
+    `style` is its brand-informed treatment. On any other glyph both are
+    ignored.
     """
     color = display_accent(color, monochrome=monochrome)
-    body = monoline(GLYPHS[glyph_name](color))
+    body = monoline(family_body(glyph_name, color, mark, style))
     if glow:
         body = lit(body, color)
     if gradient and not monochrome:
         body = apply_gradient(body, color, gradient)
+    body = classic_fit(glyph_name, body)
     return (f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {GRID} {GRID}" '
             f'width="{GRID}" height="{GRID}">\n  {body}\n</svg>\n')
+
+
+_CLASSIC_FIT = None
+
+
+def classic_fit(glyph_name, body):
+    """Centre and, if undersized, scale a square glyph by its committed fit.
+
+    tools/classic_glyph_fit.json (written by tools/fit_classic_glyphs.py from
+    committed metrics) holds [scale, ink cx, ink cy] for the glyphs that need
+    it; every other glyph is returned untouched. Stroke widths are divided by
+    the scale first, so the monoline weight is the same after the transform.
+    """
+    global _CLASSIC_FIT
+    if _CLASSIC_FIT is None:
+        path = os.path.join(os.path.dirname(os.path.abspath(__file__)),
+                            "classic_glyph_fit.json")
+        try:
+            with open(path, encoding="utf-8") as fh:
+                _CLASSIC_FIT = json.load(fh)["fits"]
+        except FileNotFoundError:
+            _CLASSIC_FIT = {}
+    fit = _CLASSIC_FIT.get(glyph_name)
+    if not fit:
+        return body
+    scale, cx, cy = fit
+    if scale != 1:
+        body = _SW_RE.sub(
+            lambda m: f'stroke-width="{float(m.group(1)) / scale:.2f}"', body)
+    half = GRID / 2
+    return (f'<g transform="translate({half:g} {half:g}) scale({scale:g}) '
+            f'translate({-cx:g} {-cy:g})">{body}</g>')
 
 
 def gradient_defs(stops, y0=80, y1=432, gid="cbGrad"):
@@ -4191,31 +4230,69 @@ def shell_files(c):
             f'{_s(c, 30)}/>')
 
 
-# Cap height and optical centre per shell: each interior is a different shape,
-# and a monogram sized for the squircle either overflows the cloud or floats
-# in the shield. Values are tuned against the 48px check, not by eye.
+# Cap height, optical centre and mark width per shell: each interior is a
+# different shape, and a monogram sized for the squircle either overflows the
+# cloud or floats in the shield. Values are tuned against the 48px check, not
+# by eye. The fourth number is the type budget for adaptive lockups — the
+# interior width a multi-character mark may touch, measured inside the stroke
+# of each shell minus its padding. The lone letter keeps ignoring it.
 FAMILY_SHELLS = {
-    "broadcast": (shell_broadcast, 150, 254),
-    "app":       (shell_app,       200, 256),
-    "tool":      (shell_tool,      200, 264),
-    "sport":     (shell_sport,     210, 256),
-    "music":     (shell_music,     200, 256),
-    "gaming":    (shell_gaming,    150, 240),
-    "vpn":       (shell_vpn,       190, 250),
-    "film":      (shell_film,      170, 256),
-    "store":     (shell_store,     180, 320),
-    "photos":    (shell_photos,    160, 290),
-    "debrid":    (shell_debrid,    150, 290),
-    "browser":   (shell_browser,   180, 300),
-    "anime":     (shell_anime,     190, 262),
-    "kids":      (shell_kids,      210, 296),
-    "files":     (shell_files,     180, 330),
+    "broadcast": (shell_broadcast, 150, 254, 240),
+    "app":       (shell_app,       200, 256, 260),
+    "tool":      (shell_tool,      200, 264, 240),
+    "sport":     (shell_sport,     210, 256, 236),
+    "music":     (shell_music,     200, 256, 216),
+    "gaming":    (shell_gaming,    150, 240, 240),
+    "vpn":       (shell_vpn,       190, 250, 240),
+    "film":      (shell_film,      170, 256, 280),
+    "store":     (shell_store,     180, 320, 200),
+    "photos":    (shell_photos,    160, 290, 260),
+    "debrid":    (shell_debrid,    150, 290, 250),
+    "browser":   (shell_browser,   180, 300, 270),
+    "anime":     (shell_anime,     190, 262, 210),
+    "kids":      (shell_kids,      210, 296, 260),
+    "files":     (shell_files,     180, 330, 280),
 }
 
 
 def _mk_family(family, letter):
-    shell, cap_h, cy = FAMILY_SHELLS[family]
+    shell, cap_h, cy, _max_w = FAMILY_SHELLS[family]
     return lambda c: _fam(letter, c, shell(c), cap_h=cap_h, cy=cy)
+
+
+def _fam_mark(mark, color, shell, cap_h, cy, max_w, style=None):
+    """A category shell with the app's short mark inside it."""
+    return shell + adaptive_lockup(mark, color, cap_h, max_w, cy, style)
+
+
+def family_body(glyph_name, color, mark=None, style=None):
+    """Resolve a category monogram, swapping its lone letter for the app mark.
+
+    The catalog's `mark` field is 2-4 uppercase chars derived from the app
+    name (multi-word: up to three initials; one word: first two letters).
+    `style` is the catalog's brand-informed treatment of that mark
+    (tranche 1: `lower`) — a cue from the app's logotype, set in the pack's
+    own face; literal vendor logotype reproduction stays off-limits. Only
+    <family>_<L> shells adapt; every other glyph resolves to its registered
+    body untouched.
+    """
+    if mark:
+        fam, _, letter = glyph_name.rpartition("_")
+        if fam in FAMILY_SHELLS and len(letter) == 1 and letter.isalnum():
+            shell, cap_h, cy, max_w = FAMILY_SHELLS[fam]
+            return _fam_mark(mark, color, shell(color),
+                             cap_h=cap_h, cy=cy, max_w=max_w, style=style)
+    return GLYPHS[glyph_name](color)
+
+
+def family_glyph_for(glyph_name):
+    """The (shell, cap_h, cy, max_w) budget a <family>_<L> glyph offers, or
+    None when the glyph is not a category monogram. validators import this so
+    they judge a mark against exactly the numbers the renderer will use."""
+    fam, _, letter = glyph_name.rpartition("_")
+    if fam in FAMILY_SHELLS and len(letter) == 1 and letter.isalnum():
+        return FAMILY_SHELLS[fam]
+    return None
 
 
 _family_names = {}

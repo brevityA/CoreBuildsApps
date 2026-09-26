@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  LIVE badge on a motion-loop tile in the wallpapers grid.
+
+  Sits over the thumbnail's top-left corner, where it has to stay legible
+  against whatever frame the loop happens to be showing: a near-opaque night
+  fill with a cyan hairline and the kicker label in signal cyan. Same shape
+  language as bg_chip (radius_field, 1dp stroke) so it reads as a chip rather
+  than as a status dot, and it is deliberately not focusable - it labels the
+  tile, it is not a control.
+
+  Referenced from item_wallpaper.xml as @drawable/bg_live_badge.
+-->
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="rectangle">
+    <solid android:color="#E60D1117" />
+    <corners android:radius="@dimen/cb_radius_field" />
+    <stroke
+        android:width="1dp"
+        android:color="@color/cb_signal_cyan" />
+</shape>

@@ -15,7 +15,7 @@ released 2026-09-10, decompiled 2026-09-12); raw probe output lives in
 | **A wallpaper** | **Yes** (Monet 1.0.72+, Monet Premium) | `ACTION_SEND image/*` → `com.klevico.monet.WallpaperShareActivity`. Wired into the app as **Send to Monet**. |
 | **Several wallpapers** | **Yes** (same) | `ACTION_SEND_MULTIPLE image/*` → same activity. Wired into Export as **Send N to Monet**. |
 | **A folder to rotate** | Manual | Export to `Pictures/CoreBuilds`, then Monet → Settings → Background → Sources → Choose folder. |
-| **The icon pack** | **No** — Manual | Monet has no apply intent and no exported settings activity. It *discovers* packs through the standard actions we already declare; the user picks it under Settings → Apps → Icon pack. |
+| **The icon pack** | **No** — set-up screen | Monet has no apply intent and no exported settings activity, so nothing can be applied for the user. It *discovers* packs through the standard actions we already declare; `ApplyIconPack` returns a **Handoff** and the app shows the walk as numbered steps, ending on one pack, with a button that opens Monet. |
 | **Live wallpapers (Core Motion)** | Indirectly | Monet is a *client* of the Projectivy wallpaper-provider API (it binds Aerial Views through it). A built and released `motion-plugin/` would be a candidate source. Not verified end to end. |
 
 Two things that were assumed in this repo and are **false**, both settled by
@@ -139,9 +139,38 @@ honest place for it.
 
 ### Icons
 
-Unchanged mechanics; corrected copy. `ApplyIconPack.MONET` still tries the
-generic apply contracts and falls to Manual, with `manualPath` now
-"Monet Settings → Apps → Icon pack → Core Builds Icon Pack".
+There is nothing to press, and the app now says so instead of pretending.
+`ApplyIconPack.MONET` carries `inboundApply = false`, so `apply()` returns a
+**`Result.Handoff`** before it ever probes a contract that cannot resolve, and
+the walk lives on its own screen (`LauncherSetupActivity`, reached from the
+sheet's CTA and from Settings) rather than in a toast.
+
+Why a screen and not a toast. The old copy was assembled by appending a
+companion clause to `manualPath` — which already ended in a pack name — so the
+one sentence read *"Set it here: Monet Settings → Apps → Icon pack → Core
+Builds Icon Pack, then pick Core Builds Banners"*: two packs, the second one
+retired in 1.9.5, in the message users were given as the fix. It was also a
+toast, so it expired the moment HOME was pressed to go and follow it.
+
+What the screen states:
+
+- **Why** — `%1$s has no apply action an app can send, so the pack is picked in
+  its own settings.` Honest about the launcher, so the CTA does not read as
+  broken.
+- **The walk**, numbered, built from `setupStops` (Monet Settings → Apps → Icon
+  pack) with the pick appended as the final step — exactly one pack named, the
+  same one `GlyphsCompanion.applyTarget` would have handed a launcher that could
+  take it.
+- **The pick is checked first.** `listedAmongDiscoverers()` resolves the eight
+  discovery actions Monet builds its list from and looks for our package among
+  them. A miss is *reported* on the screen ("if it is missing from the list,
+  restart Monet") rather than discovered inside the picker.
+- **The one real action**: `Open Monet`, which is the launcher's own launch
+  intent. Nothing is changed by the app, and `setup_footer` says so.
+
+The CTA follows Brand Guide §05/§08: a launcher that cannot be called gets
+**Set up in Monet Launcher**, not **Apply**. Flipping `inboundApply = true` is
+the whole change if a Monet build ever accepts an inbound action.
 
 ---
 
@@ -211,6 +240,10 @@ know; if it enumerates, Core Motion appears in Background → Sources for free.
   Closed source, private storage, breaks every update.
 - **Invent a Monet apply action.** `tests/test_v151_robustness.py` guards
   against `com.klevico.monet.APPLY_ICONPACK` for that reason.
+- **Press Monet's button and call it done.** The generic probe cannot resolve on
+  Monet, so a press used to end in a toast naming the wrong packs. A launcher we
+  cannot call gets the walk, and the button says `Set up in Monet Launcher`
+  before it is pressed.
 
 ---
 
@@ -221,7 +254,7 @@ know; if it enumerates, Core Motion appears in Background → Sources for free.
 | Monet | wallpaper | `ACTION_SEND` → `WallpaperShareActivity` | **shipping** (Send to Monet) |
 | Monet | wallpaper set | `ACTION_SEND_MULTIPLE` → same | **shipping** (Send N to Monet) |
 | Monet | folder rotation | Export → Background → Sources → Choose folder | works, manual |
-| Monet | icon pack | discovery + Settings → Apps → Icon pack | Manual (no inbound API) |
+| Monet | icon pack | discovery + Settings → Apps → Icon pack | shipping (setup screen, no inbound API) |
 | Monet | Core Motion video | Aerial Views + `aerial-entries.json` | works today |
 | Monet | Core Motion video | `motion-plugin/` as provider | unverified (Route D) |
 | Projectivy | icon pack / wallpaper | own apply intents | shipping — `docs/PROJECTIVY_DETECTION.md` |

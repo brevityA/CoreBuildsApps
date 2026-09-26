@@ -1,0 +1,102 @@
+name: Deploy icon-request broker
+
+# PREFER the Core-Builds workflow: brevityA/Core-Builds →
+# "Deploy icon-request broker (CoreBuildsApps)" deploys this same code with
+# the Cloudflare credentials that repo already holds (secrets cannot cross
+# repositories). This one remains as a fallback for when this repo is given
+# its own copy of the token.
+#
+# Manual-by-design (the webtools repo's deploy CI runs a version of this on
+# push; here enabling push-to-production is deferred until the first manual
+# production deploy exists — a push-triggered deploy would just fail loudly
+# while the Cloudflare secrets aren't configured).
+#
+# Inputs:
+#   environment  staging (default, rehearsal) | production
+#   url          worker URL to smoke afterwards (default derived from the
+#                environment name and the account subdomain)
+#
+# Repo configuration needed on first use:
+#   secrets.CF_API_TOKEN        Cloudflare API token with Workers edit on the
+#                               account (same shape as the webtools repo uses)
+#   vars.WRK_ICONREQ_KV_ID_STAGING   KV namespace id for the staging bucket
+#   vars.WRK_ICONREQ_KV_ID_PRODUCTION  KV namespace id for production
+#   vars.WORKERS_DEV_SUBDOMAIN      account's workers.dev subdomain
+#                                   (a NAME — set it, or pass `url` explicitly;
+#                                   the numeric Account ID does not form URL)
+# Worker-side secrets (per environment) are set once with wrangler, see
+# tools/icon_request_broker/README.md — CI only deploys code, never secrets.
+
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Target'
+        type: choice
+        options: [staging, production]
+        default: staging
+      url:
+        description: 'URL to smoke after deploy (blank = default workers.dev URL)'
+        type: string
+        required: false
+
+permissions:
+  contents: read
+
+concurrency:
+  group: deploy-icon-request-${{ github.event.inputs.environment }}
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: node --test
+        working-directory: tools/icon_request_broker
+
+      - name: Build wrangler.toml from the example + the environment's KV id
+        working-directory: tools/icon_request_broker
+        env:
+          STAGING_ID: ${{ vars.WRK_ICONREQ_KV_ID_STAGING }}
+          PROD_ID: ${{ vars.WRK_ICONREQ_KV_ID_PRODUCTION }}
+        run: |
+          cp wrangler.toml.example wrangler.toml
+          sed -i "s/REPLACE_WITH_NAMESPACE_ID/$PROD_ID/" wrangler.toml
+          sed -i "s/REPLACE_WITH_STAGING_NAMESPACE_ID/$STAGING_ID/" wrangler.toml
+          grep -q REPLACE wrangler.toml && { echo "KV namespace vars unset"; exit 1; } || true
+
+      - name: Deploy (${{ github.event.inputs.environment }})
+        working-directory: tools/icon_request_broker
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CF_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ vars.CLOUDFLARE_ACCOUNT_ID }}
+          ENV_NAME: ${{ github.event.inputs.environment }}
+        run: |
+          if [ "$ENV_NAME" = "staging" ]; then
+            npx wrangler deploy --env staging
+          else
+            npx wrangler deploy
+          fi
+
+      - name: Smoke (never creates a request)
+        working-directory: tools/icon_request_broker
+        env:
+          ENV_NAME: ${{ github.event.inputs.environment }}
+          SMOKE_URL: ${{ github.event.inputs.url }}
+          SUBDOMAIN: ${{ vars.WORKERS_DEV_SUBDOMAIN }}
+        run: |
+          if [ -z "$SMOKE_URL" ]; then
+            if [ -z "$SUBDOMAIN" ]; then
+              echo "no url input and WORKERS_DEV_SUBDOMAIN unset" && exit 1
+            fi
+            if [ "$ENV_NAME" = "staging" ]; then
+              SMOKE_URL="https://corebuilds-icon-request-staging.${SUBDOMAIN}.workers.dev"
+            else
+              SMOKE_URL="https://corebuilds-icon-request.${SUBDOMAIN}.workers.dev"
+            fi
+          fi
+          node smoke.mjs --strict "$SMOKE_URL"

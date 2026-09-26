@@ -37,6 +37,8 @@ jobs:
         run: python tools/audit_contract.py
       - name: Check prefilled icon-request links against the issue forms
         run: python tools/build_issue_prefills.py --check
+      - name: Check the Banners companion matches the glyph pack
+        run: python tools/build_banners_pack.py --check
       # Depends on no Android SDK and no Gradle, so it runs here rather than in
       # the matrix: it is the check that explains *why* a matrix entry would
       # fail, and it has to be able to fail on a dependency-only PR that never
@@ -60,20 +62,13 @@ jobs:
             compileSdk: 34
             workflow: .github/workflows/build.yml
             artifact: app/build/outputs/apk/debug/*.apk
-          - name: Pixel Neon Icon Pack
-            dir: pixel-neon
-            tasks: :app:lintDebug :app:testDebugUnitTest :app:assembleDebug
-            gradle: pixel-neon/app/build.gradle.kts
-            compileSdk: 34
-            workflow: .github/workflows/pixel-neon-apk.yml
-            artifact: pixel-neon/app/build/outputs/apk/debug/*.apk
-          - name: Core Builds Pop
+          - name: Core Builds Glyphs
             dir: .
-            tasks: :pop:lintDebug :pop:testDebugUnitTest :pop:assembleDebug
-            gradle: pop/build.gradle.kts
+            tasks: :glyphs:lintDebug :glyphs:testDebugUnitTest :glyphs:assembleDebug
+            gradle: glyphs/build.gradle.kts
             compileSdk: 34
-            workflow: .github/workflows/pop-apk.yml
-            artifact: pop/build/outputs/apk/debug/*.apk
+            workflow: .github/workflows/build.yml
+            artifact: glyphs/build/outputs/apk/debug/*.apk
           - name: Core Line
             dir: ticker/android
             tasks: :app:lintDebug :app:testDebugUnitTest :app:assembleDebug
@@ -142,11 +137,15 @@ jobs:
           # Re-run compile + lint (config-cache warm, cheap) with all output
           # captured, then post the failure cause and first errors as
           # annotations - readable without downloading job logs.
-          ./gradlew :app:compileDebugKotlin :app:lintDebug --no-daemon > build_out.txt 2>&1 || true
+          # The module comes from this entry's own tasks (":glyphs:lintDebug ..."
+          # -> glyphs), so a Glyphs failure reports Glyphs, not
+          # :app. compileDebugSources covers Java-only modules too.
+          MOD=$(printf '%s' "${{ matrix.tasks }}" | awk '{print $1}' | cut -d: -f2)
+          ./gradlew ":$MOD:compileDebugSources" ":$MOD:lintDebug" --no-daemon > build_out.txt 2>&1 || true
           {
             grep -A 8 "What went wrong" build_out.txt | head -10 || true
             grep -E "^e: |error: " build_out.txt | head -5 || true
-            LINT_TXT=$(find app/build/reports -name "lint-results-*.txt" 2>/dev/null | head -1)
+            LINT_TXT=$(find "$MOD/build" -name "lint-results-*.txt" 2>/dev/null | head -1)
             if [ -n "$LINT_TXT" ]; then
               grep -iE "Error" "$LINT_TXT" | head -4 || true
             fi
@@ -178,8 +177,11 @@ jobs:
         run: cd ticker && npm test
       - name: Install Python content deps
         run: pip install --quiet -r tools/requirements.txt
-      - name: Pixel Neon generated-asset validation
-        run: python tools/validate_pixel_neon.py
+      # Both import tools/glyphs.py, which needs fontTools from the deps above.
+      - name: Check the Classic glyph fit matches the catalog and metrics
+        run: python tools/fit_classic_glyphs.py --check
+      - name: Check fallback palette colours match their assignment
+        run: python tools/icon_palette.py --check
       # This job installs the render deps and runs no asset builder, so the
       # rasters the frames paste are the committed ones. build.yml runs the
       # same check, ahead of its regeneration step, for that reason. The check
@@ -194,10 +196,10 @@ jobs:
           python tests/test_v151_robustness.py
           python tests/test_wallpapers.py
           python tests/test_wallpaper_export.py
+          python tests/test_live_wallpaper.py
           python tests/test_core_shift_content.py
           python tests/test_core_shift_screensaver.py
           python tests/test_prequel_engine.py
-          python tests/test_pop.py
           python tests/test_devcontainer.py
           python tests/test_tv_layout_fit.py
           python tests/test_search_focus.py
@@ -205,7 +207,6 @@ jobs:
           python tests/test_ui_wiring.py
           python tests/test_brandmark_badge.py
           python tests/test_gradle_envelope.py
-          python tests/test_resource_parity.py
           python tests/test_navigation_graph.py
           python tests/test_tv_scale.py
           python tests/test_mapping_hygiene.py
@@ -213,6 +214,9 @@ jobs:
           python tests/test_presence.py
           python tests/test_render_stack.py
           python tests/test_changelog_contract.py
+          python tests/test_glyphs_pack.py
+          python tests/test_icon_palette.py
+          python tests/test_update_manifest_gate.py
           # Meta-gate, last: it reads the workflows above and fails if any
           # tests/test_*.py or tools/check_*.py has stopped being invoked. This
           # job has no path filter, so it is the one place a new test can be

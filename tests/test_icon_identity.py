@@ -23,6 +23,7 @@ sys.path.insert(0, str(ROOT / "tools"))
 import brandmarks
 from build_banners import render, render_glyph_only
 from build_icons import validate
+from drawable_art import art_path, read_aliases
 from glyphs import GLYPHS, monoline, render_svg
 from icon_style import (CARD, CORE_MONOLINE, CORE_STROKES, LIGHT_INK, MIN_CONTRAST,
                         core_monoline_errors, contrast, display_accent)
@@ -34,6 +35,8 @@ from fontTools.svgLib.path import parse_path
 
 CATALOG = json.loads((ROOT / "tools/catalog.json").read_text())
 ICONS = CATALOG["icons"]
+NODPI = ROOT / "app/src/main/res/drawable-nodpi"
+ALIASES = read_aliases(ROOT / "app/src/main/res/values")
 BY_ID = {i["drawable"]: i for i in ICONS}
 NS = "http://schemas.android.com/apk/res/android"
 
@@ -163,18 +166,68 @@ class IdentityTests(unittest.TestCase):
                 self.assertNotEqual(bg, icon["glyph"], icon["name"])
                 expected = recentre(render(icon["name"], bg, icon["color"],
                                             icon.get("category", ""),
-                                            gradient=icon.get("gradient")))
+                                            gradient=icon.get("gradient"),
+                                            mark=icon.get("mark"),
+                                            style=icon.get("mark_style")))
                 self.assertEqual(
                     (ROOT / "assets/banners" / f"{icon['drawable']}.svg").read_text(),
                     expected, icon["name"])
                 self.assertEqual(
                     (ROOT / "assets/svg" / f"{icon['drawable']}.svg").read_text(),
                     render_svg(icon["glyph"], icon["color"],
-                               gradient=icon.get("gradient")), icon["name"])
+                               gradient=icon.get("gradient"),
+                               mark=icon.get("mark"),
+                               style=icon.get("mark_style")), icon["name"])
+
+    def test_adaptive_marks_fit_their_shell_and_counter_floor(self):
+        """The adaptive font keeps its promise: marks only ever set on
+        category monograms, inside that shell's own type budget, at or above
+        the cap floor where a filled counter survives a 48dp tile. A styled
+        mark is measured as it actually renders (lower, not its cap-token)."""
+        from glyphs import family_glyph_for
+        from typeface import MIN_LOCKUP_CAP, lockup_cap
+        marked = 0
+        for icon in ICONS:
+            mark = icon.get("mark")
+            if not mark:
+                continue
+            marked += 1
+            with self.subTest(icon=icon["name"]):
+                budget = family_glyph_for(icon["glyph"])
+                self.assertIsNotNone(budget,
+                                     f"mark '{mark}' sits on {icon['glyph']}")
+                _, cap_h, _, max_w = budget
+                shown = mark.lower() if icon.get("mark_style") == "lower" else mark
+                self.assertGreaterEqual(lockup_cap(shown, cap_h, max_w),
+                                        MIN_LOCKUP_CAP)
+        self.assertGreater(
+            marked, 0,
+            "no adaptive wordmark monograms — the fallback voice reverted "
+            "to one letter for every app")
+
+    def test_mark_styles_are_shipped_researched_and_styled_as_rendered(self):
+        """A mark_style is tranche work: it must name a shipped treatment,
+        carry its research note, and only ever sit on a styled mark."""
+        from build_icons import MARK_STYLES
+        styled = 0
+        for icon in ICONS:
+            style = icon.get("mark_style")
+            if style is None:
+                continue
+            styled += 1
+            with self.subTest(icon=icon["name"]):
+                self.assertIn(style, MARK_STYLES, icon["name"])
+                self.assertTrue(icon.get("mark"), f"{icon['name']}: style without mark")
+                self.assertTrue(icon.get("mark_style_source"),
+                                f"{icon['name']}: '{style}' cue has no source note")
+        self.assertGreater(
+            styled, 0,
+            "mark_style vocabulary is loaded but no icon ships a researched "
+            "treatment — the tranche regressed")
 
     def test_tizentube_runs_the_measured_field_gradient(self):
         """The owner wants the real logo's ramp: field cyan to pale blue,
-        painted at render time (the Nuvio pattern), flat in Pop/Pixel."""
+        painted at render time (the Nuvio pattern)."""
         square = (ROOT / "assets/svg" / "tizentube.svg").read_text()
         for stop in ("#47DDFF", "#C5E9FF"):
             self.assertIn(stop, square)
@@ -190,7 +243,9 @@ class IdentityTests(unittest.TestCase):
             self.assertEqual(path.read_text(),
                              render_svg(icon["glyph"], icon["color"],
                                         monochrome=mono,
-                                        gradient=icon.get("gradient")),
+                                        gradient=icon.get("gradient"),
+                                        mark=icon.get("mark"),
+                                        style=icon.get("mark_style")),
                              icon["name"])
 
     def test_nuvio_square_runs_the_brand_gradient(self):
@@ -219,7 +274,7 @@ class IdentityTests(unittest.TestCase):
             self.assertNotIn('fill="#0d1117"', body, icon["name"])
 
     def test_youtube_play_counter_is_really_transparent(self):
-        image = Image.open(ROOT / "app/src/main/res/drawable-nodpi/youtube.png").convert("RGBA")
+        image = Image.open(art_path(NODPI, "youtube", ALIASES)).convert("RGBA")
         self.assertEqual(image.getpixel((256, 256))[3], 0)
         self.assertEqual(image.getpixel((64, 256))[:3], (255, 0, 0))
         self.assertEqual(image.getpixel((0, 0))[3], 0)
@@ -262,7 +317,7 @@ class IdentityTests(unittest.TestCase):
             self.assertEqual(alpha.getpixel((x, y)), 0)
 
     def test_mubi_has_seven_separate_dots_in_two_three_two_rows(self):
-        im = Image.open(ROOT / "app/src/main/res/drawable-nodpi/mubi.png").convert("RGBA")
+        im = Image.open(art_path(NODPI, "mubi", ALIASES)).convert("RGBA")
         ink = {(x, y) for y in range(im.height) for x in range(im.width)
                if im.getpixel((x, y))[3] > 128}
         components = []
@@ -359,11 +414,11 @@ class CoreStyleTests(unittest.TestCase):
     def test_revised_rasters_are_open_ink_and_clear_the_shared_safe_area(self):
         for icon in self.revised():
             with self.subTest(icon=icon["name"]):
-                alpha = Image.open(ROOT / "app/src/main/res/drawable-nodpi" / f"{icon['drawable']}.png").convert("RGBA").getchannel("A")
+                alpha = Image.open(art_path(NODPI, icon["drawable"], ALIASES)).convert("RGBA").getchannel("A")
                 binary = alpha.point(lambda p: 255 if p >= 128 else 0)
                 left, top, right, bottom = binary.getbbox()
                 # Presence adds a ring outside the vector SAFE pad. Vectors
-                # still have to clear 40px; committed PNGs may bleed to 24.
+                # still have to clear 40px; committed rasters may bleed to 24.
                 self.assertGreaterEqual(min(left, top), 24)
                 self.assertLessEqual(max(right, bottom), 488)
                 self.assertGreaterEqual(max(right-left, bottom-top), 320)
@@ -460,17 +515,23 @@ class SourceTests(unittest.TestCase):
         self.assertNotEqual(body, monoline(GLYPHS["tile_N"](accent)))
         self.assertFalse(hasattr(brandmarks, "catalog_glyphs"))  # no vendor override route
 
-    def test_nobuffr_maps_to_banner_in_all_three_packs(self):
+    def test_nobuffr_maps_in_the_pack(self):
         expected = "ComponentInfo{com.nobuffr.app/tv.tivitime.compose.app.AppActivity}"
-        for module in (ROOT / "app", ROOT / "pop", ROOT / "pixel-neon/app"):
-            xml = module / "src/main/res/xml/appfilter.xml"
+        # The icon pack maps it to its banner (the default since 1.9.5) and
+        # Core Builds Glyphs to its square glyph; the art for both is the
+        # icon pack's, which the Glyphs build copies.
+        for pack, drawable in ((ROOT / "app", "nobuffr_banner"),
+                               (ROOT / "glyphs", "nobuffr")):
+            xml = pack / "src/main/res/xml/appfilter.xml"
             resources = ET.parse(xml).getroot()
             matches = [r for r in resources.findall("item") if r.get("component") == expected]
             self.assertEqual(len(matches), 1, str(xml))
-            self.assertEqual(matches[0].get("drawable"), "nobuffr_banner")
+            self.assertEqual(matches[0].get("drawable"), drawable)
             self.assertNotIn("com.nobuffr.app/.MainActivity", xml.read_text())
-            for suffix in ("", "_banner"):
-                self.assertTrue((module / "src/main/res/drawable-nodpi" / f"nobuffr{suffix}.png").is_file())
+        nodpi = ROOT / "app/src/main/res/drawable-nodpi"
+        mod_aliases = read_aliases(ROOT / "app/src/main/res/values")
+        for suffix in ("", "_banner"):
+            self.assertTrue(art_path(nodpi, f"nobuffr{suffix}", mod_aliases).is_file())
 
     def test_download_link_is_in_generated_catalog_documentation(self):
         self.assertIn("[NoBuffr](https://downloads.nobuffr.com/android/nobuffr.apk)",
@@ -533,10 +594,16 @@ class DiversityTests(unittest.TestCase):
         return [i for i in ICONS if self._is_generic(i["glyph"])]
 
     def test_generic_glyph_share_has_a_ceiling(self):
+        # 57.7% -> 58.1% on purpose: twelve apps (Fox Nation, Hoichoi, Sun NXT,
+        # Tencent Video, Viki, RaiPlay, Perfect Player, 3Player, Launcher
+        # Manager, NT at Home, Movie HD, Zattoo) had been drawing *other*
+        # companies' marks - Youku's, FloSports', OTT Navigator's - which
+        # counted as bespoke and was false. They are on their own monograms
+        # now. The ceiling still only ever comes down.
         share = len(self._generic()) / len(ICONS)
-        self.assertLessEqual(share, 0.577,
+        self.assertLessEqual(share, 0.581,
                              f"{share:.2%} of icons are generic glyphs, above "
-                             "the 57.7% ceiling")
+                             "the 58.1% ceiling")
 
     def test_bespoke_mark_count_has_a_floor(self):
         bespoke = len(ICONS) - len(self._generic())
@@ -555,6 +622,53 @@ class DiversityTests(unittest.TestCase):
             if icon["drawable"] in self.RESEARCHED_EMBLEMS:
                 self.assertFalse(self._is_generic(icon["glyph"]),
                                  f"{icon['name']} regressed to a generic glyph")
+
+    # Different apps whose Classic square PNGs are byte-identical, as of
+    # 1.9.3: a two-letter monogram on the same category shell and one of the
+    # three shared accents, so the launcher tile says nothing about which app
+    # it is (Tablo and TV App Repo, Thmanyah and ThreeNow). Frozen here so the
+    # count can only fall: a new collision fails, and a pair that has been
+    # given distinct art must be deleted from this list.
+    # Emptied in 1.9.4: the 22 groups frozen here in 1.9.3 were given distinct
+    # accents, and build_icons.py's render gate now catches the cause (two
+    # brandless icons used to excuse each other). The list stays so the
+    # shrink-only contract below still has something to hold.
+    KNOWN_IDENTICAL: list[set[str]] = []
+
+    @staticmethod
+    def _identical_across_apps() -> list[set[str]]:
+        """Groups of different apps whose square art shares every byte.
+
+        Entries of one `brand` are meant to look the same (AGENTS.md: brand
+        groups share glyph and accent), so a group counts only when it spans
+        more than one brand, an unbranded icon being its own brand.
+        """
+        by_hash: dict[str, list[dict]] = {}
+        for icon in ICONS:
+            art = art_path(NODPI, icon["drawable"], ALIASES)
+            if art.is_file():
+                digest = hashlib.sha256(art.read_bytes()).hexdigest()
+                by_hash.setdefault(digest, []).append(icon)
+        return [{i["drawable"] for i in group} for group in by_hash.values()
+                if len({i.get("brand") or i["drawable"] for i in group}) > 1]
+
+    def test_no_new_identical_icons_across_apps(self):
+        known = [frozenset(g) for g in self.KNOWN_IDENTICAL]
+        new = [sorted(g) for g in self._identical_across_apps()
+               if frozenset(g) not in known]
+        self.assertEqual(new, [],
+                         "different apps now share byte-identical icons; give "
+                         "each its own mark or accent (a two-letter monogram "
+                         "on a shared shell and accent is the usual cause)")
+
+    def test_known_identical_list_only_shrinks(self):
+        current = {frozenset(g) for g in self._identical_across_apps()}
+        fixed = [sorted(g) for g in self.KNOWN_IDENTICAL
+                 if frozenset(g) not in current]
+        self.assertEqual(fixed, [],
+                         "these groups no longer collide as listed; delete "
+                         "them from KNOWN_IDENTICAL so the list keeps "
+                         "shrinking")
 
 
 class ApkInspectorTests(unittest.TestCase):
@@ -595,6 +709,40 @@ class ApkInspectorTests(unittest.TestCase):
                 resource_path(name)
         self.assertEqual(resource_path("res/icon.png"), Path("res/icon.png"))
 
+
+
+class ShrinkKeepRules(unittest.TestCase):
+    """Release builds shrink resources, and every icon drawable is resolved
+    by name (appfilter strings, getIdentifier), so all of them are pinned by
+    a generated keep file. The shrinker reads it only from res/raw/, and only
+    the root <resources> element's tools:keep attribute: a child <keep>
+    element is ignored (the APK silently loses the icons), and anything under
+    res/values/ fails the resource merger."""
+
+    RES = ROOT / "app/src/main/res"
+    TOOLS = "{http://schemas.android.com/tools}"
+
+    def test_keep_file_is_raw_with_the_attribute_on_the_root(self):
+        self.assertFalse((self.RES / "values/keep.xml").exists(),
+                         "keep rules under res/values/ break :app:merge*Resources")
+        root = ET.parse(self.RES / "raw/keep.xml").getroot()
+        self.assertEqual(root.tag, "resources")
+        self.assertIn(f"{self.TOOLS}keep", root.attrib,
+                      "tools:keep must sit on the root; a child <keep> is ignored")
+        self.assertEqual(list(root), [], "keep rules are an attribute, not child elements")
+
+    def test_no_values_file_carries_keep_elements(self):
+        for path in (self.RES / "values").glob("*.xml"):
+            with self.subTest(file=path.name):
+                self.assertEqual(ET.parse(path).getroot().findall("keep"), [])
+
+    def test_every_catalog_drawable_and_banner_is_pinned(self):
+        root = ET.parse(self.RES / "raw/keep.xml").getroot()
+        pinned = {v.removeprefix("@drawable/")
+                  for v in root.get(f"{self.TOOLS}keep").split(",")}
+        icons = json.loads((ROOT / "tools/catalog.json").read_text(encoding="utf-8"))["icons"]
+        wanted = {i["drawable"] for i in icons} | {f"{i['drawable']}_banner" for i in icons}
+        self.assertEqual(sorted(wanted - pinned), [])
 
 if __name__ == "__main__":
     unittest.main()

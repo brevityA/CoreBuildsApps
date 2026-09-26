@@ -24,6 +24,10 @@ import androidx.recyclerview.widget.RecyclerView
  * auto-rotate the folder. The header Export button also starts with all visible
  * wallpapers selected if not already in selection mode.
  *
+ * The twelve Deep Space loops ([LiveLoop]) ride the same grid behind the Live chip
+ * with a badge; they preview like stills but set through the system live
+ * picker, and selection skips them (video has no place in Pictures).
+ *
  * TV-first D-pad flow: export/back → series chips → grid.
  */
 class WallpapersActivity : TvActivity() {
@@ -39,7 +43,7 @@ class WallpapersActivity : TvActivity() {
 
     private val requestStorage =
         registerForActivityResult(ActivityResultContracts.RequestPermission()) { granted ->
-            if (granted) startExport(adapter.selectedItems()) else
+            if (granted) startExport(adapter.selectedItems().filter { !it.isLive }) else
                 toast(getString(R.string.wp_storage_permission_denied))
         }
 
@@ -47,7 +51,7 @@ class WallpapersActivity : TvActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_wallpapers)
 
-        all = WallpaperCatalog.load(this)
+        all = WallpaperCatalog.load(this) + LiveLoop.asWallpapers()
         count = findViewById(R.id.wp_count)
         selectionBar = findViewById(R.id.wp_selection_bar)
         selectionCount = findViewById(R.id.wp_selection_count)
@@ -205,6 +209,15 @@ class WallpapersActivity : TvActivity() {
     }
 
     private fun beginExport(wallpapers: List<Wallpaper>) {
+        // Belt and braces with the adapter's selection guards: a live loop
+        // must never reach the stills exporter (its PNG validation would
+        // reject the MP4 as corrupt).
+        val stills = wallpapers.filter { !it.isLive }
+        if (stills.isEmpty()) return
+        beginExportStills(stills)
+    }
+
+    private fun beginExportStills(wallpapers: List<Wallpaper>) {
         val perm = WallpaperSetter.storagePermission()
         if (perm != null && !WallpaperSetter.hasStoragePermission(this)) {
             requestStorage.launch(perm)

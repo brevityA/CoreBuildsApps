@@ -1,0 +1,9 @@
+{
+  "name": "corebuilds-icon-request-broker",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node --test",
+    "rehearse": "node rehearse-local.mjs"
+  }
+}

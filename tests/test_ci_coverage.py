@@ -21,11 +21,10 @@ A gate nobody has watched fail in CI is a gate nobody can trust. So this file
 is the meta-gate: it reads the workflows and asserts that everything in
 `tests/` and every checker/validator in `tools/` is actually invoked
 somewhere, that the mockup check runs in `--check` mode rather than
-regenerating (which cannot fail), and that a workflow whose gates read all
-three app modules also *triggers* on all three - `build.yml` gates `pop/` and
-`pixel-neon/` resources while only watching `app/**`, which is how today's
-Pixel Neon-only fix would have reached main without running a single check
-against it.
+regenerating (which cannot fail), and that a workflow whose gates read the app module also *triggers* on it.
+(When the suite carried three icon packs, `build.yml` gated `pop/` and
+`pixel-neon/` resources while only watching `app/**` - which is how a
+fork-only fix could reach main without running a single check against it.)
 
 Run: `python3 tests/test_ci_coverage.py`
 """
@@ -56,27 +55,21 @@ REQUIRED_TOOLS = (
     "tools/check_appfilter_integrity.py",
     "tools/check_ui_resources.py",
     "tools/validate.py",
-    "tools/validate_pop.py",
-    "tools/validate_pixel_neon.py",
     "tools/validate_motion.py",
     "tools/validate_motion_feed.py",
     "tools/audit_contract.py",
     "tools/check_gradle_envelope.py",
     "tools/build_dependabot.py",
     "tools/build_issue_prefills.py",
-    "tools/build_pop.py",
-    "tools/build_pixel_neon.py",
 )
 
-# `build.yml` runs gates that read app/, pop/ and pixel-neon/ resources, so its
-# path filter has to trigger on all three (plus docs/, where the generated UI
-# mockups live and `--check` compares them). suite-ci.yml has no filter at all
-# and therefore needs no entry here.
+# `build.yml` runs gates that read app/ resources, so its path filter has to
+# trigger on the module (plus docs/, where the generated UI mockups live and
+# `--check` compares them). suite-ci.yml has no filter at all and therefore
+# needs no entry here.
 MODULE_WIDE = {
     "build.yml": {
         "app/**",
-        "pop/**",
-        "pixel-neon/**",
         "docs/**",
         "tests/**",
         "tools/**",
@@ -187,8 +180,8 @@ class CiCoverage(unittest.TestCase):
         )
 
     def test_module_wide_gates_trigger_on_every_module(self) -> None:
-        """A gate that reads pop/ and pixel-neon/ is worthless in a workflow
-        that only triggers on app/**."""
+        """A gate that reads app/ resources is worthless in a workflow
+        that does not trigger on app/**."""
         for name, required in MODULE_WIDE.items():
             text = self.texts.get(name)
             self.assertIsNotNone(text, f"{name} vanished from .github/workflows/")

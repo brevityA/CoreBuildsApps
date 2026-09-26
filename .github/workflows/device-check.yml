@@ -12,13 +12,11 @@ name: Device check
 # Split from build.yml on purpose: an emulator job runs in minutes, not
 # seconds, and the fast feedback loop on catalog edits should stay fast.
 #
-# Both packs are installed, together, in that order. That is not thoroughness
-# for its own sake: :app and :pop compile the same source and declare the same
-# FileProvider, so if their authorities ever collide the SECOND install fails
-# with INSTALL_FAILED_CONFLICTING_PROVIDER. That is an install-time failure —
-# it cannot be caught by compiling, linting, or unit tests, and it would ship.
-# The per-pack BuildConfig authority exists to prevent it; this is where that
-# claim is actually executed rather than asserted.
+# The pack is installed on a booted TV image and launched for real. Its
+# FileProvider authority must be unique on the device, so a second install
+# of the same APK is expected to replace — not conflict with — the first.
+# That is an install-time property: it cannot be caught by compiling,
+# linting, or unit tests, and it would ship.
 #
 # Requires KVM, which GitHub's ubuntu-latest runners expose and most
 # containers do not — that is why this cannot be run locally.
@@ -28,7 +26,6 @@ on:
   pull_request:
     paths:
       - 'app/**'
-      - 'pop/**'
       - 'tools/**'
       - 'gradle/**'
       - '*.gradle.kts'
@@ -72,7 +69,7 @@ jobs:
         # all, and signing here would mean putting the release key on a PR
         # runner. Debug exercises the same resources and the same by-name
         # lookup.
-        run: ./gradlew :app:assembleDebug :pop:assembleDebug --no-daemon
+        run: ./gradlew :app:assembleDebug --no-daemon
 
       - name: Prepare emulator test script
         # The emulator-runner action (v2) executes each line of its `script:`
@@ -85,16 +82,7 @@ jobs:
           set -eu
 
           CLASSIC_PKG=tv.corebuilds.iconpack
-          POP_PKG=tv.corebuilds.iconpack.pop
-          # Both manifests declare `.MainActivity`, which the manifest merger
-          # resolves against the *namespace* — and both modules share the
-          # namespace tv.corebuilds.iconpack, because :pop compiles :app's
-          # Kotlin. `am start -n pkg/.Class` expands the shorthand against the
-          # *applicationId* instead, so Pop must be launched fully qualified or
-          # the launch silently targets tv.corebuilds.iconpack.pop.MainActivity,
-          # which does not exist.
           CLASSIC_ACT="$CLASSIC_PKG/.MainActivity"
-          POP_ACT="$POP_PKG/tv.corebuilds.iconpack.MainActivity"
 
           # Sets APK_PATH rather than echoing it. A function that returns its
           # value on stdout has to be called in $( ), and then its error text
@@ -110,8 +98,6 @@ jobs:
           }
           resolve_apk app/build/outputs/apk/debug app
           CLASSIC_APK="$APK_PATH"
-          resolve_apk pop/build/outputs/apk/debug pop
-          POP_APK="$APK_PATH"
 
           EXPECTED=$(python3 -c "import json;print(len(json.load(open('tools/catalog.json'))['icons']))")
 
@@ -127,35 +113,28 @@ jobs:
           # stale icon_pack.xml or appfilter still changes the number.
           EXPECTED_LINE=$(python3 -c 'import json,re,pathlib; fmt=re.search(r"""name="pack_stats_fmt">([^<]+)<""",pathlib.Path("app/src/main/res/values/strings.xml").read_text()).group(1); icons=len(json.load(open("tools/catalog.json"))["icons"]); comps=pathlib.Path("app/src/main/assets/appfilter.xml").read_text().count("component="); print(fmt.replace("%1$d",str(icons)).replace("%2$d",str(comps)))')
 
-          echo "::group::Install both packs side by side"
-          # Order matters. The second install is the one that would fail if the
-          # two packs ever shared a FileProvider authority.
-          for SPEC in "classic:$CLASSIC_PKG:$CLASSIC_APK" "Pop:$POP_PKG:$POP_APK"; do
-            LABEL=${SPEC%%:*}; REST=${SPEC#*:}; PKG=${REST%%:*}; APK=${REST#*:}
-            echo "Installing $LABEL ($PKG) from $APK"
-            if ! OUT=$(adb install -r "$APK" 2>&1); then
-              echo "$OUT"
-              case "$OUT" in
-                *CONFLICTING_PROVIDER*)
-                  echo "::error::$LABEL hit INSTALL_FAILED_CONFLICTING_PROVIDER — the two packs are declaring the same FileProvider authority. Check UPDATE_AUTHORITY in each module's build.gradle.kts against its AndroidManifest."
-                  ;;
-                *)
-                  echo "::error::$LABEL failed to install."
-                  ;;
-              esac
-              exit 1
-            fi
-          done
+          echo "::group::Install the pack"
+          echo "Installing $CLASSIC_PKG from $CLASSIC_APK"
+          if ! OUT=$(adb install -r "$CLASSIC_APK" 2>&1); then
+            echo "$OUT"
+            case "$OUT" in
+              *CONFLICTING_PROVIDER*)
+                echo "::error::INSTALL_FAILED_CONFLICTING_PROVIDER — another installed package declares the same FileProvider authority. Check UPDATE_AUTHORITY in app/build.gradle.kts against the AndroidManifest."
+                ;;
+              *)
+                echo "::error::Install failed."
+                ;;
+            esac
+            exit 1
+          fi
 
           INSTALLED=$(adb shell pm list packages)
-          for PKG in "$CLASSIC_PKG" "$POP_PKG"; do
-            if ! echo "$INSTALLED" | grep -q "package:$PKG$"; then
-              echo "::error::$PKG is not present after install."
-              echo "$INSTALLED" | grep corebuilds || true
-              exit 1
-            fi
-          done
-          echo "Both packs installed and coexisting."
+          if ! echo "$INSTALLED" | grep -q "package:$CLASSIC_PKG$"; then
+            echo "::error::$CLASSIC_PKG is not present after install."
+            echo "$INSTALLED" | grep corebuilds || true
+            exit 1
+          fi
+          echo "Pack installed."
           adb shell dumpsys package providers | grep -i "corebuilds" || true
           echo "::endgroup::"
 
@@ -189,7 +168,7 @@ jobs:
             # `am start` reports Status: ok even when it resolved nothing on
             # some images, so treat an explicit error line as fatal too.
             if echo "$START" | grep -qiE "Error type|does not exist|Activity class .* does not exist"; then
-              echo "::error::$ACT could not be resolved. For Pop this usually means the activity was named relative to the applicationId instead of the namespace."
+              echo "::error::$ACT could not be resolved."
               exit 1
             fi
             if echo "$START" | grep -q "Status: ok"; then
@@ -215,8 +194,7 @@ jobs:
             # prints its size. Asserting the rendered count proves the
             # generated string-array survived into the APK and loaded on
             # device. A stripped or stale icon_pack.xml changes this number;
-            # nothing else in the pipeline would notice. Both packs render the
-            # same catalog, so both must report the same count.
+            # nothing else in the pipeline would notice.
             adb shell uiautomator dump /sdcard/ui.xml >/dev/null
             adb pull /sdcard/ui.xml "ui-$PKG.xml" >/dev/null
             if ! grep -qF "$EXPECTED_LINE" "ui-$PKG.xml"; then
@@ -230,9 +208,8 @@ jobs:
           }
 
           check_pack "Icon Pack" "$CLASSIC_PKG" "$CLASSIC_ACT"
-          check_pack "Pop" "$POP_PKG" "$POP_ACT"
 
-          echo "Device check passed: both packs installed side by side, discoverable, launched, each reporting '$EXPECTED_LINE'."
+          echo "Device check passed: installed, discoverable, launched, reporting '$EXPECTED_LINE'."
           DEVICE_CHECK
           chmod +x "$RUNNER_TEMP/device-check.sh"
 

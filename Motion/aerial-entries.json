@@ -69,6 +69,90 @@
       "type": "aerial",
       "timeOfDay": "night",
       "url-1080-SDR": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Motion/live/coremotion-live-10-spiral-blue.mp4"
+    },
+    {
+      "id": "coremotion_live_11_deep_space_event_horizon",
+      "accessibilityLabel": "Event Horizon \u2014 Core Motion \u00b7 Deep Space by Core Builds",
+      "type": "aerial",
+      "timeOfDay": "night",
+      "url-1080-SDR": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Motion/live/coremotion-live-11-deep-space-event-horizon.mp4"
+    },
+    {
+      "id": "coremotion_live_12_deep_space_nebula_drift",
+      "accessibilityLabel": "Nebula Drift \u2014 Core Motion \u00b7 Deep Space by Core Builds",
+      "type": "aerial",
+      "timeOfDay": "night",
+      "url-1080-SDR": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Motion/live/coremotion-live-12-deep-space-nebula-drift.mp4"
+    },
+    {
+      "id": "coremotion_live_13_deep_space_starfield",
+      "accessibilityLabel": "Starfield \u2014 Core Motion \u00b7 Deep Space by Core Builds",
+      "type": "aerial",
+      "timeOfDay": "night",
+      "url-1080-SDR": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Motion/live/coremotion-live-13-deep-space-starfield.mp4"
+    },
+    {
+      "id": "coremotion_live_14_deep_space_ringed_planet",
+      "accessibilityLabel": "Ringed Planet \u2014 Core Motion \u00b7 Deep Space by Core Builds",
+      "type": "aerial",
+      "timeOfDay": "night",
+      "url-1080-SDR": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Motion/live/coremotion-live-14-deep-space-ringed-planet.mp4"
+    },
+    {
+      "id": "coremotion_live_15_deep_space_galaxy_spiral",
+      "accessibilityLabel": "Galaxy Spiral \u2014 Core Motion \u00b7 Deep Space by Core Builds",
+      "type": "aerial",
+      "timeOfDay": "night",
+      "url-1080-SDR": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Motion/live/coremotion-live-15-deep-space-galaxy-spiral.mp4"
+    },
+    {
+      "id": "coremotion_live_16_deep_space_aurora_orbit",
+      "accessibilityLabel": "Aurora Orbit \u2014 Core Motion \u00b7 Deep Space by Core Builds",
+      "type": "aerial",
+      "timeOfDay": "night",
+      "url-1080-SDR": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Motion/live/coremotion-live-16-deep-space-aurora-orbit.mp4"
+    },
+    {
+      "id": "coremotion_live_17_deep_space_comet_lane",
+      "accessibilityLabel": "Comet Lane \u2014 Core Motion \u00b7 Deep Space by Core Builds",
+      "type": "aerial",
+      "timeOfDay": "night",
+      "url-1080-SDR": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Motion/live/coremotion-live-17-deep-space-comet-lane.mp4"
+    },
+    {
+      "id": "coremotion_live_18_deep_space_deep_field",
+      "accessibilityLabel": "Deep Field \u2014 Core Motion \u00b7 Deep Space by Core Builds",
+      "type": "aerial",
+      "timeOfDay": "night",
+      "url-1080-SDR": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Motion/live/coremotion-live-18-deep-space-deep-field.mp4"
+    },
+    {
+      "id": "coremotion_live_19_deep_space_ember_nova",
+      "accessibilityLabel": "Ember Nova \u2014 Core Motion \u00b7 Deep Space by Core Builds",
+      "type": "aerial",
+      "timeOfDay": "night",
+      "url-1080-SDR": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Motion/live/coremotion-live-19-deep-space-ember-nova.mp4"
+    },
+    {
+      "id": "coremotion_live_20_deep_space_hex_station",
+      "accessibilityLabel": "Hex Station \u2014 Core Motion \u00b7 Deep Space by Core Builds",
+      "type": "aerial",
+      "timeOfDay": "night",
+      "url-1080-SDR": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Motion/live/coremotion-live-20-deep-space-hex-station.mp4"
+    },
+    {
+      "id": "coremotion_live_21_deep_space_cyan_supernova",
+      "accessibilityLabel": "Cyan Supernova \u2014 Core Motion \u00b7 Deep Space by Core Builds",
+      "type": "aerial",
+      "timeOfDay": "night",
+      "url-1080-SDR": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Motion/live/coremotion-live-21-deep-space-cyan-supernova.mp4"
+    },
+    {
+      "id": "coremotion_live_22_deep_space_dark_side_moon",
+      "accessibilityLabel": "Dark Side Moon \u2014 Core Motion \u00b7 Deep Space by Core Builds",
+      "type": "aerial",
+      "timeOfDay": "night",
+      "url-1080-SDR": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Motion/live/coremotion-live-22-deep-space-dark-side-moon.mp4"
     }
   ]
 }

@@ -21,18 +21,15 @@ import xml.etree.ElementTree as ET
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(ROOT / "tools"))
+
+from drawable_art import read_aliases  # noqa: E402
 
 PACKS = [
     # (label, res root, appfilter copies)
     ("Icon Pack", ROOT / "app/src/main/res",
      [ROOT / "app/src/main/res/xml/appfilter.xml",
       ROOT / "app/src/main/assets/appfilter.xml"]),
-    ("Pop", ROOT / "pop/src/main/res",
-     [ROOT / "pop/src/main/res/xml/appfilter.xml",
-      ROOT / "pop/src/main/assets/appfilter.xml"]),
-    ("Pixel Neon", ROOT / "pixel-neon/app/src/main/res",
-     [ROOT / "pixel-neon/app/src/main/res/xml/appfilter.xml",
-      ROOT / "pixel-neon/app/src/main/assets/appfilter.xml"]),
 ]
 
 DRAWABLE_RE = re.compile(r'drawable="([^"]+)"')
@@ -56,6 +53,8 @@ def available_drawables(res: Path) -> set[str]:
         for f in folder.iterdir():
             if f.suffix in (".png", ".webp", ".jpg", ".xml", ".9.png"):
                 names.add(f.name[: -len(f.suffix)])
+    # <drawable> aliases resolve exactly like files at runtime.
+    names.update(read_aliases(res / "values"))
     return names
 
 

@@ -19,6 +19,7 @@ import androidx.recyclerview.widget.RecyclerView
  */
 class IconAdapter(
     private var items: List<IconItem>,
+    private var showBanners: Boolean = false,
     private val onActivate: (IconItem) -> Unit
 ) : RecyclerView.Adapter<IconAdapter.VH>() {
 
@@ -64,8 +65,9 @@ class IconAdapter(
     override fun onBindViewHolder(holder: VH, position: Int) {
         val item = items[position]
         val ctx = holder.image.context
-        val id = resourceIds.getOrPut(item.drawable) {
-            ctx.resources.getIdentifier(item.drawable, "drawable", ctx.packageName)
+        val drawableName = if (showBanners) "${item.drawable}_banner" else item.drawable
+        val id = resourceIds.getOrPut(drawableName) {
+            ctx.resources.getIdentifier(drawableName, "drawable", ctx.packageName)
         }
         if (id != 0) holder.image.setImageResource(id)
         // The tile is glyph-only by design; the name is spoken, not printed.
@@ -75,8 +77,9 @@ class IconAdapter(
         // The dot is decorative in the tree (importantForAccessibility=no), so
         // the distinction it draws is spoken here instead.
         val kind = if (item.bespoke) "brandmark" else "monogram"
+        val shape = if (showBanners) "banner" else "glyph"
         holder.itemView.contentDescription =
-            "${item.name}, ${item.category.lowercase()} $kind"
+            "${item.name}, ${item.category.lowercase()} $kind, $shape"
         holder.itemView.isFocusable = true
         holder.itemView.setOnClickListener { onActivate(item) }
 
@@ -107,6 +110,13 @@ class IconAdapter(
 
     /** Used by the activity to restore the focused icon after filtering. */
     fun itemAt(position: Int): IconItem? = items.getOrNull(position)
+
+    fun setShowBanners(show: Boolean) {
+        if (showBanners != show) {
+            showBanners = show
+            notifyItemRangeChanged(0, items.size)
+        }
+    }
 
     fun submit(next: List<IconItem>) {
         val previous = items

@@ -20,7 +20,7 @@ every metric from res/values/dimens.xml at the 1080p scale (960dp wide, 2px per
 dp), every colour from res/values/colors.xml, chip labels and counts from the
 generated icon_pack.xml arrays and MainActivity's CHIP_ORDER, suite rows from
 the generated suite_hub.xml, the update bar's bullets from
-Latestrelease/version.json, the inspector's component list from the bundled
+app/src/main/assets/version.json, the inspector's component list from the bundled
 appfilter.xml asset, and the artwork is the real bundled PNG - icon tiles paste
 drawable-nodpi, wallpaper tiles paste wallpapers_thumbs. The auditor frame's QR
 is a real scannable code of the same generated deep link AuditorActivity builds
@@ -85,6 +85,10 @@ import sys
 import urllib.parse
 import xml.etree.ElementTree as ET
 from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+
+from drawable_art import art_path, read_aliases  # noqa: E402
 
 from PIL import Image, ImageDraw, ImageFont
 
@@ -187,7 +191,7 @@ SUITE = load_arrays(
     RES / "values/suite_hub.xml",
     ["suite_hub_names", "suite_hub_pkgs", "suite_hub_codes"],
 )
-VERSION = __import__("json").load(open(ROOT / "Latestrelease/version.json"))
+VERSION = __import__("json").load(open(ROOT / "app/src/main/assets/version.json"))
 
 # The auditor's deep link is generated, not typed: build_issue_prefills.py writes
 # it from the issue forms, and AuditorActivity only URL-encodes its three args.
@@ -207,6 +211,7 @@ CATS = ICON_PACK["icon_categories"]
 BESPOKE = [b == "1" for b in ICON_PACK["icon_bespoke"]]
 
 ICONS_DIR = RES / "drawable-nodpi"
+ALIASES = read_aliases(RES / "values")
 THUMBS_DIR = ROOT / "app/src/main/assets/wallpapers_thumbs"
 
 
@@ -217,6 +222,32 @@ APPFILTER_TEXT = (ROOT / "app/src/main/assets/appfilter.xml").read_text(encoding
 COMPONENT_COUNT = len(re.findall(r'component="ComponentInfo', APPFILTER_TEXT))
 WALLPAPERS = __import__("json").load(
     open(ROOT / "app/src/main/assets/manifest/wallpapers.json"))["wallpapers"]
+
+# The motion loops the browser appends to the catalog (WallpapersActivity:
+# `WallpaperCatalog.load(this) + LiveLoop.asWallpapers()`), so the grid carries
+# them behind a LIVE badge. Parsed from the Kotlin rather than copied here: a
+# loop added there and missing from this frame is exactly the drift the mockup
+# check exists to catch. Their still frames live with the motion art, not in
+# the bundled wallpaper thumbs.
+LIVE_THUMBS = ROOT / "Motion/live/thumbs"
+
+
+def live_loops() -> list[dict]:
+    src = (ROOT / "app/src/main/java/tv/corebuilds/iconpack/LiveLoop.kt").read_text(
+        encoding="utf-8")
+    body = re.search(r"val LOOPS: List<Loop> = listOf\((.*?)\n    \)",
+                     src, re.DOTALL).group(1)
+    base = re.search(r'RAW_BASE\s*=\s*\n?\s*"([^"]+)"', src).group(1)
+    titles = re.findall(r'title = "([^"]+)"', body)
+    files = re.findall(r'fileName = "([^"]+)"', body)
+    series = re.search(r'const val SERIES = "([^"]+)"', src).group(1)
+    return [
+        {"name": title, "series": series, "url": base + file_name, "live": True}
+        for title, file_name in zip(titles, files)
+    ]
+
+
+LIVE_LOOPS = live_loops()
 
 # Example data, named as such in every caption: the launchers a TV with several
 # installed would be detected as. The list under Apply and the ALSO APPLIES TO
@@ -445,8 +476,27 @@ def chip_pill(img: Image.Image, x: int, y: int, label: str, active: bool,
     return w
 
 
+def live_badge(img: Image.Image, draw: ImageDraw.ImageDraw, box, inset: int) -> None:
+    """The LIVE chip from item_wallpaper.xml over a motion-loop tile: a
+    near-opaque night pill with a cyan hairline and the kicker label in signal
+    cyan, over the thumb's top-left corner. A label, never a control, so it
+    carries no focus state the way the chip row's pills do."""
+    f = font("sans", DIMENS["cb_text_kicker"], bold=True)
+    label = STRINGS["wp_live_badge"]
+    pad = dp(DIMENS["cb_space_sm"])
+    h = dp(DIMENS["cb_text_kicker"]) + 2 * dp(2)
+    w = text_width(draw, label, f) + 2 * pad
+    x = box[0] + inset + dp(DIMENS["cb_space_sm"])
+    y = box[1] + inset + dp(DIMENS["cb_space_sm"])
+    rrect(draw, [x, y, x + w, y + h], dp(DIMENS["cb_radius_field"]),
+          fill=colour("cb_night", alpha=0xE6),
+          outline=colour("cb_signal_cyan"), width=dp(1))
+    draw_text(draw, (x + pad, y + h / 2), label, f, colour("cb_signal_cyan"),
+              anchor="lm")
+
+
 def search_field(img: Image.Image, x: int, y: int, w_dp: float,
-                 hint: str | None = None) -> None:
+                hint: str | None = None) -> None:
     """The field. `hint` is what MainActivity sets at runtime (search_hint_fmt);
     the layout's static hint is only what a screenshot before binding shows."""
     draw = ImageDraw.Draw(img, "RGBA")
@@ -458,24 +508,42 @@ def search_field(img: Image.Image, x: int, y: int, w_dp: float,
               hint or STRINGS["search_hint"], f, colour("cb_slate"), anchor="lm")
 
 
-def entry_row_lines(sub: str) -> list[str]:
+# Width a SwitchCompat takes at the end of a row, text column to the switch.
+SWITCH_SLOT_DP = 56
+
+
+def draw_switch(draw, sx: int, sy: int, on: bool) -> None:
+    """A SwitchCompat at (sx, sy), track 46x22dp, as the build renders it."""
+    rrect(draw, [sx, sy, sx + dp(46), sy + dp(22)], dp(11),
+          fill=colour("cb_signal_cyan") if on else colour("cb_panel"),
+          outline=(0x00, 0xD4, 0xFF, 0x33), width=dp(1))
+    knob = sx + dp(24) if on else sx + dp(4)
+    draw.ellipse([knob, sy + dp(3), knob + dp(16), sy + dp(19)],
+                 fill=colour("cb_ink") if on else colour("cb_slate"))
+
+
+def entry_row_lines(sub: str, with_switch: bool = False) -> list[str]:
     """The rail card's subtitle, wrapped to the rail's text width - the same
-    wrap the match_parent TextView does on the device."""
+    wrap the match_parent TextView does on the device, less the switch's slot
+    on the Art style row, whose text column is weighted beside it."""
     inset = dp(DIMENS["cb_card_padding"])
     probe = ImageDraw.Draw(Image.new("RGBA", (8, 8)))
+    slot = dp(SWITCH_SLOT_DP) if with_switch else 0
     return wrap(probe, sub, font("mono", DIMENS["cb_text_data"]),
-                dp(DIMENS["cb_rail_width"]) - 2 * inset)
+                dp(DIMENS["cb_rail_width"]) - 2 * inset - slot)
 
 
-def entry_row_height(sub: str) -> int:
-    lines = entry_row_lines(sub)
+def entry_row_height(sub: str, with_switch: bool = False) -> int:
+    lines = entry_row_lines(sub, with_switch)
     inset = dp(DIMENS["cb_card_padding"])
     return 2 * inset + dp(20) + dp(3) + len(lines) * dp(17)
 
 
-def entry_row(img: Image.Image, box, title: str, sub: str, focused: bool = False) -> None:
-    """One of the rail's three entry cards: title over subtitle, as the sheet
-    draws them - the rail is the one place with the height for both lines."""
+def entry_row(img: Image.Image, box, title: str, sub: str, focused: bool = False,
+              switch: bool | None = None) -> None:
+    """One of the rail's entry cards: title over subtitle, as the sheet draws
+    them - the rail is the one place with the height for both lines. `switch`
+    is the Art style row's state; None for the plain rows."""
     draw = ImageDraw.Draw(img, "RGBA")
     if focused:
         focus_ring(img, box)
@@ -484,9 +552,11 @@ def entry_row(img: Image.Image, box, title: str, sub: str, focused: bool = False
     inset = dp(DIMENS["cb_card_padding"])
     draw_text(draw, (box[0] + inset, box[1] + inset), title,
               font("sans", DIMENS["cb_text_body"], bold=True), colour("cb_ink"))
-    for i, line in enumerate(entry_row_lines(sub)):
+    for i, line in enumerate(entry_row_lines(sub, switch is not None)):
         draw_text(draw, (box[0] + inset, box[1] + inset + dp(23) + i * dp(17)),
                   line, font("mono", DIMENS["cb_text_data"]), colour("cb_slate"))
+    if switch is not None:
+        draw_switch(draw, box[2] - inset - dp(46), (box[1] + box[3]) // 2 - dp(11), switch)
 
 
 def rail_box() -> tuple[int, int, int]:
@@ -627,17 +697,22 @@ def catalogue_frame(with_update_bar: bool) -> tuple[Image.Image, str]:
         ry += dp(20)
     ry += gap
     tile_h = dp(DIMENS["cb_tile_icon"]) + 2 * dp(DIMENS["cb_card_padding"])
+    # (title, subtitle, switch state or None), in activity_main.xml's order.
+    # The Art style row shows the shipped default, Banners (switch on).
     rows = [
-        (STRINGS["wp_entry"], fmt(STRINGS["wp_entry_sub_fmt"], len(WALLPAPERS))),
-        (STRINGS["settings_label"], STRINGS["settings_entry_sub"]),
+        (STRINGS["art_style_label"], STRINGS["art_style_banners"], True),
+        (STRINGS["wp_entry"], fmt(STRINGS["wp_entry_sub_fmt"], len(WALLPAPERS)), None),
+        (STRINGS["settings_label"], STRINGS["settings_entry_sub"], None),
         (STRINGS["about_label"],
-         fmt(STRINGS["about_entry_sub_fmt"], VERSION["versionName"])),
+         fmt(STRINGS["about_entry_sub_fmt"], VERSION["versionName"]), None),
     ]
-    for index, (title, sub_text) in enumerate(rows):
-        h = entry_row_height(sub_text)
+    for index, (title, sub_text, state) in enumerate(rows):
+        h = entry_row_height(sub_text, state is not None)
         entry_row(img, [g, ry, rail_r, ry + h], title, sub_text,
-                  focused=(index == 0 and not with_update_bar))
-        ry += h + gap
+                  focused=(index == 0 and not with_update_bar), switch=state)
+        # The rows sit cb_space_xs apart, as the layout's margins space them.
+        ry += h + dp(DIMENS["cb_space_xs"])
+    ry += gap - dp(DIMENS["cb_space_xs"])
     if not with_update_bar:
         draw_text(draw, (g, ry + dp(4)), STRINGS["cta_also_applies"],
                   font("mono", DIMENS["cb_text_kicker"], bold=True),
@@ -684,10 +759,14 @@ def catalogue_frame(with_update_bar: bool) -> tuple[Image.Image, str]:
                 focus_ring(img, box)
             else:
                 card(img, box)
+            # The catalogue opens on the shipped art style, Banners: the
+            # tile's ImageView is the card's width by cb_tile_icon tall,
+            # fitCenter, so a 16:9 banner spans the card.
             icon = dp(DIMENS["cb_tile_icon"])
-            cx, cy = (box[0] + box[2]) // 2, (box[1] + box[3]) // 2
-            paste_art(img, ICONS_DIR / f"{PACK[index]}.png",
-                      [cx - icon // 2, cy - icon // 2, cx + icon // 2, cy + icon // 2])
+            pad = dp(DIMENS["cb_card_padding"])
+            cy = (box[1] + box[3]) // 2
+            paste_art(img, art_path(ICONS_DIR, f"{PACK[index]}_banner", ALIASES),
+                      [box[0] + pad, cy - icon // 2, box[2] - pad, cy + icon // 2])
         py += tile_h
         row += 1
 
@@ -703,8 +782,8 @@ def catalogue_frame(with_update_bar: bool) -> tuple[Image.Image, str]:
 def wallpapers_frame() -> tuple[Image.Image, str]:
     """The wallpapers browser as built: landscape two-pane. Header across the
     top, series chips and the export foot in the left rail, the named-thumb
-    grid owning the right pane."""
-    walls = WALLPAPERS
+    grid owning the right pane. The motion loops ride the same grid, badged."""
+    walls = WALLPAPERS + LIVE_LOOPS
     img = new_frame()
     draw = ImageDraw.Draw(img, "RGBA")
     g, rail_r, pane_l = rail_box()
@@ -781,32 +860,43 @@ def wallpapers_frame() -> tuple[Image.Image, str]:
             else:
                 card(img, box)
             inset = dp(DIMENS["cb_focus_inset"]) + dp(6)
-            thumb_path = THUMBS_DIR / (
-                walls[index]["url"].split("/")[-1].rsplit(".", 1)[0] + ".jpg")
+            wall = walls[index]
+            stem = wall["url"].split("/")[-1].rsplit(".", 1)[0] + ".jpg"
+            # Motion loops keep their still frame with the motion art; the
+            # stills' thumbs are bundled under assets/.
+            thumb_path = (LIVE_THUMBS if wall.get("live") else THUMBS_DIR) / stem
             paste_art(img, thumb_path,
                       [box[0] + inset, box[1] + inset, box[2] - inset,
                        box[1] + inset + thumb], radius=dp(6))
-            title = walls[index]["name"].split("\u00b7 ", 1)[-1]
+            if wall.get("live"):
+                live_badge(img, draw, box, inset)
+            title = wall["name"].split("\u00b7 ", 1)[-1]
             draw_text(draw, ((box[0] + box[2]) / 2, box[1] + inset + thumb + dp(10)),
                       title, f_tile, colour("cb_ink"), anchor="ma")
         py += tile_h
         row += 1
 
     note = ("MOCKUP - wallpapers from activity_wallpapers.xml + strings.xml + "
-            f"manifest/wallpapers.json ({len(walls)} walls), bundled thumbs; "
+            f"manifest/wallpapers.json ({len(WALLPAPERS)} stills) + LiveLoop.kt "
+            f"({len(LIVE_LOOPS)} motion loops, LIVE badge), bundled thumbs; "
             "example: focus, chip")
     return img, note
 
 
-def settings_frame() -> tuple[Image.Image, str]:
-    img = new_frame()
-    draw = ImageDraw.Draw(img, "RGBA")
-    order = [
+def settings_order() -> list:
+    # One source of truth for the rows, shared by both settings frames: the
+    # existing frame scrolls to LAUNCHER, settings_display_frame scrolls to
+    # DISPLAY, and a hand-copied row list would drift between the two exactly
+    # the way production copy would. Order and grouping mirror
+    # activity_settings.xml — if a row lands in the layout and not here the
+    # frames stop being examples of the build.
+    return [
         ("group", "settings_group_updates"),
         ("switch", "settings_updates_title", "settings_updates_sub", True),
         ("group", "settings_group_display"),
         ("switch", "settings_motion_title", "settings_motion_sub", False),
         ("switch", "settings_amoled_title", "settings_amoled_sub", False),
+        ("switch", "settings_banner_title", "settings_banner_sub", True),
         ("group", "settings_group_storage"),
         ("row", "settings_cache_title", "settings_cache_sub", "settings_cache_clear"),
         ("group", "settings_group_launcher"),
@@ -814,21 +904,24 @@ def settings_frame() -> tuple[Image.Image, str]:
         ("row", "settings_appinfo_title", "settings_appinfo_sub", None),
         ("group", "settings_group_suite"),
         ("row", "settings_suite_title", "settings_suite_sub", None),
+        ("row", "settings_whatsnew_title", "settings_whatsnew_sub", None),
         ("group", "settings_group_help"),
         ("row", "settings_audit_title", "settings_audit_sub", None),
         ("row", "settings_faq_title", "settings_faq_sub", None),
     ]
+
+
+def paint_settings_viewport(img, order, focused_row):
+    """One viewportful of the settings list, already scrolled: rows above the
+    scroll point were popped by the caller, the first visible entry leads,
+    and the footer lands only if the list ends inside the viewport."""
+    draw = ImageDraw.Draw(img, "RGBA")
     top = header(img, STRINGS["settings_kicker"], STRINGS["settings_title"])
     g = dp(DIMENS["cb_gutter_side"])
     y = top + dp(6)
-    # One viewport of a scrolling list, scrolled to the LAUNCHER group: the row
-    # this frame exists to show is the refresh row and its focus ring.
-    while order and order[0][1] != "settings_group_launcher":
-        order.pop(0)
     f_group = font("mono", DIMENS["cb_text_kicker"], bold=True)
     f_title = font("sans", DIMENS["cb_text_body"], bold=True)
     f_sub = font("sans", DIMENS["cb_text_data"])
-    focused_row = "settings_refresh_title"
     def row_height(entry) -> int:
         sub_lines = wrap(draw, STRINGS[entry[2]], f_sub, W - 2 * g - dp(160))[:2]
         return dp(16) + dp(24) + len(sub_lines) * dp(19) + dp(10)
@@ -863,14 +956,7 @@ def settings_frame() -> tuple[Image.Image, str]:
             draw_text(draw, (g + inner + dp(8), y + inner + dp(26) + i * dp(19)), line,
                       f_sub, colour("cb_slate"))
         if entry[0] == "switch":
-            on = entry[3]
-            sx, sy = W - g - dp(56), y + row_h // 2 - dp(11)
-            rrect(draw, [sx, sy, sx + dp(46), sy + dp(22)], dp(11),
-                  fill=colour("cb_signal_cyan") if on else colour("cb_panel"),
-                  outline=(0x00, 0xD4, 0xFF, 0x33), width=dp(1))
-            knob = sx + dp(24) if on else sx + dp(4)
-            draw.ellipse([knob, sy + dp(3), knob + dp(16), sy + dp(19)],
-                         fill=colour("cb_ink") if on else colour("cb_slate"))
+            draw_switch(draw, W - g - dp(56), y + row_h // 2 - dp(11), entry[3])
         elif entry[3]:
             label = STRINGS[entry[3]]
             f_btn = font("sans", DIMENS["cb_text_label"], bold=True)
@@ -882,8 +968,33 @@ def settings_frame() -> tuple[Image.Image, str]:
     if y < H - dp(40):
         draw_text(draw, (g, H - dp(28)), STRINGS["settings_footer"], f_sub,
                   colour("cb_slate"))
+
+
+def settings_frame() -> tuple[Image.Image, str]:
+    img = new_frame()
+    order = settings_order()
+    # One viewport of a scrolling list, scrolled to the LAUNCHER group: the row
+    # this frame exists to show is the refresh row and its focus ring.
+    while order and order[0][1] != "settings_group_launcher":
+        order.pop(0)
+    paint_settings_viewport(img, order, "settings_refresh_title")
     note = ("MOCKUP - settings frame from activity_settings.xml + strings.xml, scrolled "
             "to LAUNCHER; example: focus on the refresh row, switch positions")
+    return img, note
+
+
+def settings_display_frame() -> tuple[Image.Image, str]:
+    img = new_frame()
+    order = settings_order()
+    # The same list parked at the DISPLAY group: this frame exists since the
+    # banner-previews switch landed (1.9.2), because a new toggle nobody can
+    # see is not a toggle. Focus ring on the row, in its shipped state: on,
+    # banners (the default again since 1.9.5).
+    while order and order[0][1] != "settings_group_display":
+        order.pop(0)
+    paint_settings_viewport(img, order, "settings_banner_title")
+    note = ("MOCKUP - settings frame scrolled to DISPLAY; example: focus on the "
+            "art style switch (on - banners, the 1.9.5 default)")
     return img, note
 
 
@@ -993,7 +1104,7 @@ def inspector_frame() -> tuple[Image.Image, str]:
     row_h = dp(40) + dp(160) + dp(20)
     card(img, [g, y, W - g, y + row_h])
     inner = dp(DIMENS["cb_focus_inset"]) + dp(DIMENS["cb_card_padding"])
-    paste_art(img, ICONS_DIR / f"{drawable}.png",
+    paste_art(img, art_path(ICONS_DIR, drawable, ALIASES),
               [g + inner, y + inner, g + inner + dp(160), y + inner + dp(160)])
     f_meta = font("sans", DIMENS["cb_text_data"])
     f_mono = font("mono", DIMENS["cb_text_data"])
@@ -1060,6 +1171,7 @@ FRAMES = [
     ("app-ui-catalogue-update.png", lambda: catalogue_frame(True)),
     ("app-ui-wallpapers.png", wallpapers_frame),
     ("app-ui-settings.png", settings_frame),
+    ("app-ui-settings-display.png", settings_display_frame),
     ("app-ui-faq.png", faq_frame),
     ("app-ui-auditor.png", lambda: auditor_frames()[0]),
     ("app-ui-auditor-qr.png", lambda: auditor_frames()[1]),
@@ -1088,7 +1200,7 @@ def render(name: str) -> tuple[bytes, str]:
 INPUT_GLOBS = (
     "tools/build_app_ui_mockups.py",
     "tools/catalog.json",
-    "Latestrelease/version.json",
+    "app/src/main/assets/version.json",
     "app/src/main/assets/appfilter.xml",
     "app/src/main/assets/manifest/wallpapers.json",
     "app/src/main/res/layout/*.xml",

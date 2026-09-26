@@ -197,6 +197,72 @@ object WallpaperSetter {
     }
 
     /**
+     * Copy a motion-loop MP4 to `Movies/CoreBuilds` — the folder Core Shift
+     * and Monet Premium's video picker both read. Same MediaStore discipline
+     * as [copyFileToPictures], on the video collection instead of images.
+     */
+    fun copyFileToMovies(
+        context: Context,
+        file: File,
+        displayName: String = file.name
+    ): Result {
+        val perm = storagePermission()
+        if (perm != null &&
+            ContextCompat.checkSelfPermission(context, perm) != PackageManager.PERMISSION_GRANTED
+        ) {
+            return Result.NeedsPermission(perm)
+        }
+        if (!file.exists() || file.length() <= 0L) {
+            return Result.Failed("Source file is missing or empty")
+        }
+        return try {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                val values = ContentValues().apply {
+                    put(MediaStore.Video.Media.DISPLAY_NAME, displayName)
+                    put(MediaStore.Video.Media.MIME_TYPE, "video/mp4")
+                    put(
+                        MediaStore.Video.Media.RELATIVE_PATH,
+                        "${Environment.DIRECTORY_MOVIES}/CoreBuilds"
+                    )
+                    put(MediaStore.Video.Media.IS_PENDING, 1)
+                }
+                val uri = context.contentResolver.insert(
+                    MediaStore.Video.Media.EXTERNAL_CONTENT_URI, values
+                ) ?: return Result.Failed("MediaStore returned no uri")
+                try {
+                    context.contentResolver.openOutputStream(uri)?.use { out ->
+                        file.inputStream().use { it.copyTo(out, 64 * 1024) }
+                    } ?: return Result.Failed("Could not open output stream")
+                } catch (e: Exception) {
+                    runCatching { context.contentResolver.delete(uri, null, null) }
+                    throw e
+                }
+                values.clear()
+                values.put(MediaStore.Video.Media.IS_PENDING, 0)
+                context.contentResolver.update(uri, values, null, null)
+                Result.SavedToGallery(uri)
+            } else {
+                @Suppress("DEPRECATION")
+                val dir = File(
+                    Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MOVIES),
+                    "CoreBuilds"
+                )
+                if (!dir.exists() && !dir.mkdirs()) {
+                    return Result.Failed("Could not create Movies/CoreBuilds")
+                }
+                val dest = File(dir, displayName)
+                file.inputStream().use { inp ->
+                    dest.outputStream().use { out -> inp.copyTo(out, 64 * 1024) }
+                }
+                Result.SavedToGallery(Uri.fromFile(dest))
+            }
+        } catch (e: Exception) {
+            Log.e(TAG, "copy to movies failed", e)
+            Result.Failed(e.message ?: "Could not save loop")
+        }
+    }
+
+    /**
      * Check whether a wallpaper named [displayName] has already been exported
      * at the same [sizeBytes]. Cheap idempotency guard for bulk export — avoids
      * re-copying files that are already in shared storage.
