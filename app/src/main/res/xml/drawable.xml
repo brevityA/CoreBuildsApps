@@ -401,6 +401,7 @@
     <item drawable="wireguard_banner" />
     <category title="Banners · Browsers" />
     <item drawable="arc_browser_banner" />
+    <item drawable="browkorf_tv_banner" />
     <item drawable="coji_tv_browser_banner" />
     <item drawable="hi_browser_banner" />
     <item drawable="mediabrowser_banner" />

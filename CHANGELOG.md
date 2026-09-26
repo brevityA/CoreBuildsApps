@@ -6,7 +6,12 @@ All notable changes to the Core Builds Icon Pack. Format follows
 
 ## [Unreleased]
 
+## [1.9.6] — 2026-09-26
+
 ### Added
+
+- **Browkorf TV** now has a browser glyph and Android TV launcher mapping.
+- **Arena4Viewer** is covered through the existing Sports Everywhere mark, with its requested package/activity variants added as device-unverified mappings.
 
 - **Duotone icons.** An icon whose own logo is two colours can now wear
   both: YouTube's play and Emby's play are white inside the brand colour,

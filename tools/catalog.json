@@ -6,7 +6,7 @@
     "grid": 512,
     "safe_area": 432,
     "note": "Core Builds-authored geometric icons on a shared 512 grid. Reviewed brand glyphs use rounded monoline strokes and one accent, not imported vendor silhouettes. Common Outfit/category/rail banners; artwork is reference-only. Canonical brand colours and the dark-card contrast policy remain shared.",
-    "count": 961
+    "count": 962
   },
   "icons": [
     {
@@ -1255,6 +1255,21 @@
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
+    },
+    {
+      "name": "Browkorf TV",
+      "drawable": "browkorf_tv",
+      "color": "#BAAA16",
+      "glyph": "browser_globe",
+      "components": [
+        "org.mlm.browkorftv/org.mlm.browkorftv.activity.main.MainActivity",
+        "org.mlm.browkorftv/.activity.main.MainActivity"
+      ],
+      "category": "BROWSER",
+      "mapping_source": "Browkorf TV official repository AndroidManifest.xml, 2026-09",
+      "color_source": "Browkorf TV official icon.svg yellow gradient endpoint #BAAA16, 2026-09-26",
+      "color_reviewed": "2026-09-26",
+      "style": "core_monoline"
     },
     {
       "name": "Browsehere",
@@ -9553,11 +9568,18 @@
       "glyph": "sport_S",
       "mark": "SE",
       "components": [
-        "com.Arena4Viewer.Sportseverywhere/com.Arena4Viewer.Sportseverywhere.MainActivitysplachscren"
+        "com.Arena4Viewer.Sportseverywhere/com.Arena4Viewer.Sportseverywhere.MainActivitysplachscren",
+        "com.bone.android.a4v.oficial/com.bone.android.a4v.oficial.AVActivity",
+        "com.bone.android.a4v.oficial/.AVActivity"
       ],
       "category": "SPORT",
       "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_reviewed": null,
+      "unverified": [
+        "com.bone.android.a4v.oficial/com.bone.android.a4v.oficial.AVActivity",
+        "com.bone.android.a4v.oficial/.AVActivity"
+      ],
+      "mapping_source": "Arena4Viewer official site + issue #175 package; AVActivity entrypoint from indexed APK manifest analysis, 2026-09-26"
     },
     {
       "name": "Sportscaster",

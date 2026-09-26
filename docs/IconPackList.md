@@ -1,6 +1,6 @@
 # Supported applications
 
-`961` icons · `1179` mapped components · pack v1.9.6
+`962` icons · `1183` mapped components · pack v1.9.6
 
 Every app below auto-assigns in Projectivy. If one doesn't, the app ships a different launcher activity on your device — open an issue with the component name and it gets added.
 
@@ -108,6 +108,7 @@ Source accents are retained in the catalog. **On dark** is the shared square/ban
 | BritBox | `britbox` | `#C41A3B` | `#C41A3B` | `com.britbox.tv/axis.androidtv.sdk.app.MainActivity` |
 | Brkchen Music | `brkchen` | `#34EB7A` | `#34EB7A` | `com.brkchen.music/com.brkchen.music.MainActivity` |
 | Brollie | `brollie` | `#A366FF` | `#A366FF` | `com.shift72.brollie/com.sh72apps.MainActivity`<br>`com.shift72.brollie/com.sh72apps.TVMainActivity` |
+| Browkorf TV | `browkorf_tv` | `#BAAA16` | `#BAAA16` | `org.mlm.browkorftv/org.mlm.browkorftv.activity.main.MainActivity`<br>`org.mlm.browkorftv/.activity.main.MainActivity` |
 | Browsehere | `browsehere` | `#FFB020` | `#FFB020` | `com.tcl.browser/com.tcl.browser.portal.home.activity.HomePageActivity` |
 | Bstation | `bstar` | `#00D4FF` | `#00D4FF` | `com.bstar.intl.tv/com.biliintl.ibstartv.MainActivity` |
 | Button Mapper TV | `buttonmappertv` | `#FF5CA8` | `#FF5CA8` | `com.tv.remote.button.mapper.remap/com.tv.remote.button.mapper.remap.LauncherActivity` |
@@ -731,7 +732,7 @@ Source accents are retained in the catalog. **On dark** is the shared square/ban
 | Speaker Boost | `booster` | `#A366FF` | `#A366FF` | `com.goodev.volume.booster/com.goodev.volume.booster.SpeakerBoost` |
 | Speedtest TV | `speedtesttv` | `#141526` | `#5559A1` | `com.rma.speedtesttv/com.rma.speedtesttv.ui.SplashActivity` |
 | Sport TV | `sport_tv` | `#FFB020` | `#FFB020` | `pt.sporttv.app.androidtv/pt.sporttv.app.ui.SplashScreenTVActivity` |
-| Sports Everywhere | `sportseverywhere` | `#00D4FF` | `#00D4FF` | `com.Arena4Viewer.Sportseverywhere/com.Arena4Viewer.Sportseverywhere.MainActivitysplachscren` |
+| Sports Everywhere | `sportseverywhere` | `#00D4FF` | `#00D4FF` | `com.Arena4Viewer.Sportseverywhere/com.Arena4Viewer.Sportseverywhere.MainActivitysplachscren`<br>`com.bone.android.a4v.oficial/com.bone.android.a4v.oficial.AVActivity`<br>`com.bone.android.a4v.oficial/.AVActivity` |
 | Sportscaster | `sportscaster` | `#FF5CA8` | `#FF5CA8` | `com.handmark.sportscaster.androidtv/com.cbs.commonui.homepage.HomePageActivity` |
 | Sportsfire | `sportsfire` | `#53FC18` | `#53FC18` | `com.leed.sportsfire/com.leed.sportsfire.ui.HomeActivity` |
 | Sportsnet | `sportsnet` | `#7C74FF` | `#7C74FF` | `com.rogers.sportsnet.sportsnet/com.rogers.sportsnet.tv.ui.AppActivity` |

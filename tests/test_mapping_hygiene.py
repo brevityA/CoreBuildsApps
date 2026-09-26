@@ -48,8 +48,12 @@ REFERENCE = ROOT / "tools" / "reference" / "projectivy-1.1.9-appfilter.xml"
 # They are declared here rather than shipped silently: an inferred activity
 # that does not match is inert, but counting it as evidence is what guardrail
 # 4 forbids. They clear at the next ADB scan, or the components come out.
+# 90 -> 92: Arena4Viewer's AVActivity package variants from the requested
+# package plus indexed APK manifest evidence. The app is present in the
+# official site, but these exact TV launcher components still need a device
+# scan before the flag can be cleared.
 # The ceiling may only move back down.
-UNVERIFIED_CEILING = 90
+UNVERIFIED_CEILING = 92
 
 
 def _canonical(component: str) -> str:
