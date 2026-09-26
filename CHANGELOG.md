@@ -46,6 +46,15 @@ All notable changes to the Core Builds Icon Pack. Format follows
 
 ### Changed
 
+- **43 letter tiles now match their app's logo.** A letter tile used to
+  show the first two letters of the app's name, so arte read "AR", cda read
+  "CP" and CW's Full Episodes read "FE". Where the official launcher icon is
+  a short logotype, the tile now carries its letters - HEI, JIO, LFC, M6,
+  RAI, TF1, TIM, 360 and more - and brands whose logo is lowercase (arte,
+  cda, byu, stc, yle, tvo, vrt...) get the lowercase treatment in the
+  pack's own face. Longer logotypes that would set under the 96px
+  legibility floor keep two letters, taken from the logo rather than the
+  app name. Each change records the icon it was read from.
 - **Banner category labels wear the icon's colour.** VOD, STREAM, LIVE and
   every other category kicker used to be one fixed cyan on all 961 banners,
   so Monet's colour sampler could read cyan off a red or violet card. The
