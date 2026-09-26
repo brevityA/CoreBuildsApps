@@ -479,14 +479,14 @@
       "name": "Amnis",
       "drawable": "amnis",
       "color": "#724887",
-      "glyph": "broadcast_A",
-      "mark": "AM",
+      "glyph": "amnis_ff",
       "components": [
         "com.amnis/com.amnis.gui.MainActivity"
       ],
       "category": "APP",
       "color_source": "sampled from the official launcher icon (Google Play listing for com.amnis): dominant brand accent #724887 (2026-09-26)",
-      "color_reviewed": "2026-09-26"
+      "color_reviewed": "2026-09-26",
+      "glyph_source": "brand-informed redraw of the official launcher icon (play listing for com.amnis); Core monoline geometry, not a trace (2026-09-26)"
     },
     {
       "name": "Analiti",
@@ -1302,14 +1302,14 @@
       "name": "Buttons Remapper",
       "drawable": "buttonsremapper",
       "color": "#1976D2",
-      "glyph": "tool_B",
-      "mark": "BR",
+      "glyph": "buttons_swap",
       "components": [
         "com.irishin.buttonsremapper/com.irishin.buttonsremapper.ui.MainActivity"
       ],
       "category": "APP",
       "color_source": "sampled from the official launcher icon (Google Play listing for com.irishin.buttonsremapper): dominant brand accent #1976D2 (2026-09-26)",
-      "color_reviewed": "2026-09-26"
+      "color_reviewed": "2026-09-26",
+      "glyph_source": "brand-informed redraw of the official launcher icon (play listing for com.irishin.buttonsremapper); Core monoline geometry, not a trace (2026-09-26)"
     },
     {
       "name": "Byebyedpi",
@@ -1996,14 +1996,14 @@
       "name": "D-Smart",
       "drawable": "dogusdigital",
       "color": "#F8D030",
-      "glyph": "broadcast_D",
-      "mark": "DS",
+      "glyph": "dsmart_ring",
       "components": [
         "com.dogusdigital.puhutv/com.dogusdigital.puhutv.TVActivity"
       ],
       "category": "APP",
       "color_source": "sampled from the official launcher icon (Google Play listing for com.dogusdigital.puhutv): dominant brand accent #F8D030 (2026-09-26)",
-      "color_reviewed": "2026-09-26"
+      "color_reviewed": "2026-09-26",
+      "glyph_source": "brand-informed redraw of the official launcher icon (play listing for com.dogusdigital.puhutv); Core monoline geometry, not a trace (2026-09-26)"
     },
     {
       "name": "DIG",
@@ -2111,15 +2111,15 @@
       "name": "Debrid Em All",
       "drawable": "debrid_em_all",
       "color": "#E9B822",
-      "glyph": "debrid_D",
-      "mark": "DE",
+      "glyph": "debridemall_magnet",
       "components": [
         "com.yablio.debridemall/com.yablio.debridemall.StartActivity"
       ],
       "category": "APP",
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "sampled from the official launcher icon (Google Play listing for com.yablio.debridemall): dominant brand accent #E9B822 (2026-09-26)",
-      "color_reviewed": "2026-09-26"
+      "color_reviewed": "2026-09-26",
+      "glyph_source": "brand-informed redraw of the official launcher icon (play listing for com.yablio.debridemall); Core monoline geometry, not a trace (2026-09-26)"
     },
     {
       "name": "Debrid Stream",
@@ -3104,14 +3104,14 @@
       "name": "Feeln",
       "drawable": "androidapp",
       "color": "#510D96",
-      "glyph": "broadcast_F",
-      "mark": "FE",
+      "glyph": "feeln_crown",
       "components": [
         "com.feeln.androidapp/tv.accedo.one.app.bootstrap.BootstrapActivity"
       ],
       "category": "APP",
       "color_source": "sampled from the official launcher icon (Google Play listing for com.feeln.androidapp): dominant brand accent #510D96 (2026-09-26)",
-      "color_reviewed": "2026-09-26"
+      "color_reviewed": "2026-09-26",
+      "glyph_source": "brand-informed redraw of the official launcher icon (play listing for com.feeln.androidapp); Core monoline geometry, not a trace (2026-09-26)"
     },
     {
       "name": "FIFA+",
@@ -3621,14 +3621,14 @@
       "name": "FP Basquetebol",
       "drawable": "fpbasquetebol",
       "color": "#242886",
-      "glyph": "sport_F",
-      "mark": "FB",
+      "glyph": "fpb_ball",
       "components": [
         "com.fpbasquetebol.fpbtv/com.fpbasquetebol.fpbtv.MainActivity"
       ],
       "category": "APP",
       "color_source": "sampled from the official launcher icon (Google Play listing for com.fpbasquetebol.fpbtv): dominant brand accent #242886 (2026-09-26)",
-      "color_reviewed": "2026-09-26"
+      "color_reviewed": "2026-09-26",
+      "glyph_source": "brand-informed redraw of the official launcher icon (play listing for com.fpbasquetebol.fpbtv); Core monoline geometry, not a trace (2026-09-26)"
     },
     {
       "name": "Fpt Play",
@@ -4580,15 +4580,15 @@
       "name": "Immich TV",
       "drawable": "immich_tv",
       "color": "#34EB7A",
-      "glyph": "broadcast_I",
-      "mark": "IT",
+      "glyph": "immich_petals",
       "components": [
         "nl.giejay.android.tv.immich/nl.giejay.android.tv.immich.MainActivity"
       ],
       "category": "APP",
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_reviewed": null,
+      "glyph_source": "brand-informed redraw of the official launcher icon (play listing for nl.giejay.android.tv.immich); Core monoline geometry, not a trace (2026-09-26)"
     },
     {
       "name": "iMPlayer",
@@ -5117,15 +5117,15 @@
       "name": "Kijk",
       "drawable": "kijk",
       "color": "#7411B7",
-      "glyph": "broadcast_K",
-      "mark": "KI",
+      "glyph": "kijk_eye",
       "components": [
         "nl.sbs.kijk/nl.sbs.kijk.ui.activity.LaunchActivity"
       ],
       "category": "APP",
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "sampled from the official launcher icon (Google Play listing for nl.sbs.kijk): dominant brand accent #7411B7 (2026-09-26)",
-      "color_reviewed": "2026-09-26"
+      "color_reviewed": "2026-09-26",
+      "glyph_source": "brand-informed redraw of the official launcher icon (play listing for nl.sbs.kijk); Core monoline geometry, not a trace (2026-09-26)"
     },
     {
       "name": "Kika",
@@ -5501,14 +5501,14 @@
       "name": "Live Channels",
       "drawable": "tv",
       "color": "#0EA5EF",
-      "glyph": "broadcast_L",
-      "mark": "LC",
+      "glyph": "livechannels_tv",
       "components": [
         "com.google.android.tv/com.android.tv.TvActivity"
       ],
       "category": "APP",
       "color_source": "sampled from the official launcher icon (Google Play listing for com.google.android.tv): dominant brand accent #0EA5EF (2026-09-26)",
-      "color_reviewed": "2026-09-26"
+      "color_reviewed": "2026-09-26",
+      "glyph_source": "brand-informed redraw of the official launcher icon (play listing for com.google.android.tv); Core monoline geometry, not a trace (2026-09-26)"
     },
     {
       "name": "BitTV",
@@ -6155,15 +6155,15 @@
       "name": "Moonfin",
       "drawable": "moonfin",
       "color": "#E6EDF3",
-      "glyph": "broadcast_M",
-      "mark": "MO",
+      "glyph": "moonfin_wave",
       "components": [
         "org.moonfin.androidtv/org.jellyfin.androidtv.ui.startup.StartupActivity"
       ],
       "category": "APP",
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_reviewed": null,
+      "glyph_source": "brand-informed redraw of the official launcher icon (play listing for org.moonfin.androidtv); Core monoline geometry, not a trace (2026-09-26)"
     },
     {
       "name": "Moonlight",
@@ -6691,15 +6691,15 @@
       "name": "Netzkino",
       "drawable": "netzkino",
       "color": "#6AACE8",
-      "glyph": "film_N",
-      "mark": "NE",
+      "glyph": "netzkino_leader",
       "components": [
         "de.netzkino.android.ics/de.netzkino.android.ics.SplashActivity"
       ],
       "category": "APP",
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "sampled from the official launcher icon (Google Play listing for de.netzkino.android.ics): dominant brand accent #6AACE8 (2026-09-26)",
-      "color_reviewed": "2026-09-26"
+      "color_reviewed": "2026-09-26",
+      "glyph_source": "brand-informed redraw of the official launcher icon (play listing for de.netzkino.android.ics); Core monoline geometry, not a trace (2026-09-26)"
     },
     {
       "name": "Newpipe",
@@ -7727,14 +7727,14 @@
       "name": "Photo Collage",
       "drawable": "photocollage",
       "color": "#FF4D4D",
-      "glyph": "photos_P",
-      "mark": "PC",
+      "glyph": "photocollage_ring",
       "components": [
         "com.oe.photocollage/com.oe.photocollage.SplashActivity"
       ],
       "category": "APP",
       "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_reviewed": null,
+      "glyph_source": "brand-informed redraw of the official launcher icon (play listing for com.oe.photocollage); Core monoline geometry, not a trace (2026-09-26)"
     },
     {
       "name": "Photo Screensaver",
@@ -8011,15 +8011,15 @@
       "name": "Ppsspp",
       "drawable": "ppsspp",
       "color": "#2D4553",
-      "glyph": "gaming_P",
-      "mark": "PP",
+      "glyph": "ppsspp_pad",
       "components": [
         "org.ppsspp.ppsspp/org.ppsspp.ppsspp.PpssppActivity"
       ],
       "category": "APP",
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "sampled from the official launcher icon (Google Play listing for org.ppsspp.ppsspp): dominant brand accent #2D4553 (2026-09-26)",
-      "color_reviewed": "2026-09-26"
+      "color_reviewed": "2026-09-26",
+      "glyph_source": "brand-informed redraw of the official launcher icon (play listing for org.ppsspp.ppsspp); Core monoline geometry, not a trace (2026-09-26)"
     },
     {
       "name": "Premier Sports",
@@ -8651,14 +8651,14 @@
       "name": "RLC+",
       "drawable": "rlcplus",
       "color": "#00B4BA",
-      "glyph": "broadcast_R",
-      "mark": "RL",
+      "glyph": "rlc_shield",
       "components": [
         "com.rlcplus.app/com.rlcplus.app.MainActivity"
       ],
       "category": "APP",
       "color_source": "sampled from the official launcher icon (Google Play listing for com.rlcplus.app): dominant brand accent #00B4BA (2026-09-26)",
-      "color_reviewed": "2026-09-26"
+      "color_reviewed": "2026-09-26",
+      "glyph_source": "brand-informed redraw of the official launcher icon (play listing for com.rlcplus.app); Core monoline geometry, not a trace (2026-09-26)"
     },
     {
       "name": "RMC BFM",
@@ -9001,14 +9001,14 @@
       "name": "SeerrTV",
       "drawable": "seerrtv",
       "color": "#5A13BE",
-      "glyph": "broadcast_S",
-      "mark": "SE",
+      "glyph": "seerr_eye",
       "components": [
         "ca.devmesh.seerrtv/ca.devmesh.seerrtv.MainActivity"
       ],
       "category": "APP",
       "color_source": "sampled from the official launcher icon (Google Play listing for ca.devmesh.seerrtv): dominant brand accent #5A13BE (2026-09-26)",
-      "color_reviewed": "2026-09-26"
+      "color_reviewed": "2026-09-26",
+      "glyph_source": "brand-informed redraw of the official launcher icon (play listing for ca.devmesh.seerrtv); Core monoline geometry, not a trace (2026-09-26)"
     },
     {
       "name": "Send Files to TV",
@@ -9039,14 +9039,14 @@
       "name": "SetEdit",
       "drawable": "setedit22",
       "color": "#4FACFE",
-      "glyph": "tool_S",
-      "mark": "SE",
+      "glyph": "setedit_gear",
       "components": [
         "by4a.setedit22/by4a.setedit.EditorActivity"
       ],
       "category": "APP",
       "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_reviewed": null,
+      "glyph_source": "brand-informed redraw of the official launcher icon (play listing for by4a.setedit22); Core monoline geometry, not a trace (2026-09-26)"
     },
     {
       "name": "Settings",
@@ -9487,15 +9487,15 @@
       "name": "Sooner",
       "drawable": "sooner",
       "color": "#036D8B",
-      "glyph": "broadcast_S",
-      "mark": "SO",
+      "glyph": "sooner_rings",
       "components": [
         "sooner.app.de/de.eyzmedia.sooner.MainActivity"
       ],
       "category": "APP",
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "sampled from the official launcher icon (Google Play listing for sooner.app.de): dominant brand accent #036D8B (2026-09-26)",
-      "color_reviewed": "2026-09-26"
+      "color_reviewed": "2026-09-26",
+      "glyph_source": "brand-informed redraw of the official launcher icon (play listing for sooner.app.de); Core monoline geometry, not a trace (2026-09-26)"
     },
     {
       "name": "Soundcloud",
@@ -11360,15 +11360,15 @@
       "name": "U Next",
       "drawable": "u_next",
       "color": "#C95CFF",
-      "glyph": "broadcast_U",
-      "mark": "UN",
+      "glyph": "unext_shield",
       "components": [
         "jp.unext.mediaplayer/jp.unext.mediaplayer.main.MainActivity"
       ],
       "category": "APP",
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_reviewed": null,
+      "glyph_source": "brand-informed redraw of the official launcher icon (play listing for jp.unext.mediaplayer); Core monoline geometry, not a trace (2026-09-26)"
     },
     {
       "name": "UAE4ARM",
@@ -11510,15 +11510,15 @@
       "name": "Unreal Debrid",
       "drawable": "unreal_debrid",
       "color": "#00C26C",
-      "glyph": "debrid_U",
-      "mark": "UD",
+      "glyph": "unrealdebrid_magnet",
       "components": [
         "com.yablio.realdebridtv/com.yablio.realdebridtv.StartActivity"
       ],
       "category": "APP",
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "sampled from the official launcher icon (Google Play listing for com.yablio.realdebridtv): dominant brand accent #00C26C (2026-09-26)",
-      "color_reviewed": "2026-09-26"
+      "color_reviewed": "2026-09-26",
+      "glyph_source": "brand-informed redraw of the official launcher icon (play listing for com.yablio.realdebridtv); Core monoline geometry, not a trace (2026-09-26)"
     },
     {
       "name": "USA Network",

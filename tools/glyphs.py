@@ -5286,3 +5286,211 @@ GLYPHS.update({
     "unifi_camera": unifi_camera, "vidangel_halo": vidangel_halo,
     "myradar_pin": myradar_pin, "thmanyah_arrow": thmanyah_arrow,
 })
+
+
+# --------------------------------------------------------------------------
+# Brand-informed marks, batch 3 (2026-09-26). Same contract as batches 1-2:
+# each is the defining shape of the app's own launcher icon, redrawn on the
+# Core grid; the reference listing is recorded in the catalogue row.
+
+def _polar(cx, cy, r, deg):
+    import math
+    a = math.radians(deg)
+    return cx + r * math.cos(a), cy + r * math.sin(a)
+
+
+def amnis_ff(c):
+    """Amnis: the fast-forward pair inside its disc."""
+    return (f'<circle cx="256" cy="256" r="172" {_s(c, 32)}/>'
+            + _solid("M 184 196 L 250 256 L 184 316 Z", c, 18)
+            + _solid("M 262 196 L 328 256 L 262 316 Z", c, 18))
+
+
+def buttons_swap(c):
+    """Buttons Remapper: stacked windows and the two swap arrows."""
+    return (f'<rect x="96" y="140" width="122" height="84" rx="16" {_s(c, 26)}/>'
+            f'<path d="M 136 104 L 238 104 C 250 104 256 112 256 122 L 256 186" {_s(c, 22)}/>'
+            f'<path d="M 300 118 C 362 112 404 150 404 210" {_s(c, 28)}/>'
+            f'<path d="M 370 184 L 404 218 L 436 182" {_s(c, 28)}/>'
+            f'<path d="M 212 394 C 150 400 108 362 108 302" {_s(c, 28)}/>'
+            f'<path d="M 76 330 L 108 294 L 142 328" {_s(c, 28)}/>'
+            f'<path d="M 414 404 L 414 364 C 414 340 398 326 374 326 L 298 326" {_s(c, 26)}/>'
+            f'<path d="M 330 294 L 298 326 L 330 358" {_s(c, 26)}/>')
+
+
+def dsmart_ring(c):
+    """D-Smart: the heavy ring with its wedge tail sweeping out to the left."""
+    return (f'<path d="M 426 214 A 130 130 0 1 1 166 214 A 130 130 0 1 1 426 214 Z '
+            f'M 362 214 A 66 66 0 1 0 230 214 A 66 66 0 1 0 362 214 Z" '
+            f'fill="{c}" fill-rule="evenodd" stroke="none"/>'
+            + _solid("M 176 176 L 218 322 L 84 420 C 70 430 58 420 60 404 L 64 316 Z", c, 12))
+
+
+def debridemall_magnet(c):
+    """Debrid Em All: the U magnet inside its six-sided badge."""
+    return (f'<path d="M 156 112 L 356 112 L 440 256 L 356 400 L 156 400 L 72 256 Z" {_s(c, 30)}/>'
+            f'<path d="M 196 186 L 196 262 C 196 342 316 342 316 262 L 316 186" {_s(c, 30)}/>'
+            f'<path d="M 172 186 L 220 186 M 292 186 L 340 186" {_s(c, 26)}/>')
+
+
+def feeln_crown(c):
+    """Feeln: the crown on its halo, with the plus beside it."""
+    tips = "".join(f'<circle cx="{x}" cy="{y}" r="16" {_f(c)}/>'
+                   for x, y in ((84, 150), (196, 118), (308, 150)))
+    return (f'<path d="M 108 318 L 88 176 L 150 236 L 196 146 L 242 236 L 304 176 '
+            f'L 284 318 Z" {_s(c, 28)}/>' + tips
+            + f'<ellipse cx="196" cy="378" rx="112" ry="30" {_s(c, 24)}/>'
+            f'<path d="M 400 196 L 400 304 M 346 250 L 454 250" {_s(c, 30)}/>')
+
+
+def fpb_ball(c):
+    """FP Basquetebol: the basketball with its dotted progress arc."""
+    dots = ""
+    for deg in (-56, -28, 0, 28, 56):
+        x, y = _polar(212, 256, 206, deg)
+        dots += f'<circle cx="{x:.1f}" cy="{y:.1f}" r="15" {_f(c)}/>'
+    return (f'<circle cx="212" cy="256" r="146" {_s(c, 32)}/>'
+            f'<path d="M 212 110 L 212 402 M 66 256 L 358 256" {_s(c, 22)}/>'
+            f'<path d="M 116 146 C 166 196 166 316 116 366" {_s(c, 22)}/>'
+            f'<path d="M 308 146 C 258 196 258 316 308 366" {_s(c, 22)}/>' + dots)
+
+
+def immich_petals(c):
+    """Immich: the five-petal pinwheel flower."""
+    out = ""
+    for k in range(5):
+        base = -90 + 72 * k
+        x0, y0 = _polar(256, 256, 34, base)
+        x3, y3 = _polar(256, 256, 196, base + 10)
+        x1, y1 = _polar(256, 256, 150, base - 30)
+        x2, y2 = _polar(256, 256, 170, base + 44)
+        out += (f'<path d="M {x0:.1f} {y0:.1f} C {x1:.1f} {y1:.1f} {x3:.1f} {y3:.1f} '
+                f'{x3:.1f} {y3:.1f} C {x3:.1f} {y3:.1f} {x2:.1f} {y2:.1f} {x0:.1f} {y0:.1f} Z" '
+                f'{_s(c, 24)}/>')
+    return out
+
+
+def kijk_eye(c):
+    """KIJK: the almond eye with its solid pupil."""
+    return (f'<path d="M 84 256 C 150 96 362 96 428 256 C 362 416 150 416 84 256 Z" {_s(c, 32)}/>'
+            f'<circle cx="256" cy="256" r="64" {_f(c)}/>')
+
+
+def livechannels_tv(c):
+    """Live Channels: the rounded set with its two antennae."""
+    return (f'<rect x="84" y="166" width="344" height="240" rx="48" {_s(c, 32)}/>'
+            f'<path d="M 192 92 L 256 150 L 320 92" {_s(c, 28)}/>')
+
+
+def moonfin_wave(c):
+    """Moonfin: the crescent fin rising out of the waves."""
+    return (_solid("M 348 88 C 196 96 104 232 150 342 L 236 318 "
+                   "C 198 240 238 140 348 88 Z", c, 16)
+            + f'<path d="M 96 382 C 160 346 224 410 288 378 C 340 352 392 372 432 350" {_s(c, 26)}/>'
+            f'<path d="M 132 438 C 196 406 260 460 324 430 C 364 412 398 420 424 410" {_s(c, 22)}/>')
+
+
+def netzkino_leader(c):
+    """Netzkino: the film-leader countdown ring with its 1."""
+    return (f'<circle cx="256" cy="256" r="176" {_s(c, 30)}/>'
+            f'<path d="M 80 256 L 188 256 M 324 256 L 432 256 '
+            f'M 256 80 L 256 132 M 256 380 L 256 432" {_s(c, 22)}/>'
+            f'<path d="M 222 180 L 268 150 L 268 356" {_s(c, 32)}/>')
+
+
+def photocollage_ring(c):
+    """Photo Collage: the folded ribbon ring around a hexagonal window."""
+    outer = [_polar(256, 256, 190, -90 + 60 * k) for k in range(6)]
+    inner = [_polar(256, 256, 84, -60 + 60 * k) for k in range(6)]
+    o = " L ".join(f"{x:.1f} {y:.1f}" for x, y in outer)
+    i = " L ".join(f"{x:.1f} {y:.1f}" for x, y in inner)
+    spokes = " ".join(f"M {inner[k][0]:.1f} {inner[k][1]:.1f} "
+                      f"L {outer[(k + 1) % 6][0]:.1f} {outer[(k + 1) % 6][1]:.1f}"
+                      for k in range(6))
+    return (f'<path d="M {o} Z" {_s(c, 30)}/>'
+            f'<path d="M {i} Z" {_s(c, 26)}/>'
+            f'<path d="{spokes}" {_s(c, 22)}/>')
+
+
+def ppsspp_pad(c):
+    """PPSSPP: the four slanted paddles of its X-shaped pad."""
+    out = ""
+    for k in range(4):
+        d = -90 + 90 * k
+        pts = [_polar(256, 256, 58, d - 38), _polar(256, 256, 192, d - 22),
+               _polar(256, 256, 196, d + 18), _polar(256, 256, 70, d + 34)]
+        p = " L ".join(f"{x:.1f} {y:.1f}" for x, y in pts)
+        out += f'<path d="M {p} Z" {_s(c, 26)}/>'
+    return out
+
+
+def seerr_eye(c):
+    """SeerrTV: the lens ring, its iris and the catch-light."""
+    return (f'<circle cx="256" cy="256" r="172" {_s(c, 32)}/>'
+            f'<circle cx="256" cy="256" r="84" {_s(c, 28)}/>'
+            f'<circle cx="318" cy="186" r="20" {_f(c)}/>')
+
+
+def setedit_gear(c):
+    """SetEdit: the six-tooth settings cog with its round hub."""
+    pts = []
+    for k in range(6):
+        m = -90 + 60 * k
+        pts += [_polar(256, 256, 146, m - 22), _polar(256, 256, 192, m - 12),
+                _polar(256, 256, 192, m + 12), _polar(256, 256, 146, m + 22)]
+    p = " L ".join(f"{x:.1f} {y:.1f}" for x, y in pts)
+    return (f'<path d="M {p} Z" {_s(c, 30)}/>'
+            f'<circle cx="256" cy="256" r="66" {_s(c, 28)}/>')
+
+
+def sooner_rings(c):
+    """Sooner: the two open double rings facing each other."""
+    out = ""
+    for cx, a0, a1 in ((178, 40, 320), (334, 220, 500)):
+        for r, w in ((116, 26), (72, 22)):
+            x0, y0 = _polar(cx, 256, r, a0)
+            x1, y1 = _polar(cx, 256, r, a1)
+            out += (f'<path d="M {x0:.1f} {y0:.1f} A {r} {r} 0 1 1 {x1:.1f} {y1:.1f}" '
+                    f'{_s(c, w)}/>')
+    return out
+
+
+def unrealdebrid_magnet(c):
+    """Unreal Debrid: the horseshoe magnet, tilted so its poles point down-left."""
+    import math
+
+    def q(x, y):
+        k = math.sqrt(0.5)
+        return f"{300 + (x - y) * k:.1f} {206 + (x + y) * k:.1f}"
+    body = (f"M {q(-112, 170)} L {q(-112, 0)} A 112 112 0 0 1 {q(112, 0)} "
+            f"L {q(112, 170)} L {q(44, 170)} L {q(44, 0)} A 44 44 0 0 0 {q(-44, 0)} "
+            f"L {q(-44, 170)} Z")
+    bands = f"M {q(-112, 104)} L {q(-44, 104)} M {q(44, 104)} L {q(112, 104)}"
+    return (f'<path d="{body}" {_s(c, 28)}/>'
+            f'<path d="{bands}" {_s(c, 22)}/>')
+
+
+def rlc_shield(c):
+    """RLC+: the shield with the plus inside its eye."""
+    return (f'<path d="M 256 76 L 424 136 L 424 250 C 424 350 350 412 256 444 '
+            f'C 162 412 88 350 88 250 L 88 136 Z" {_s(c, 30)}/>'
+            f'<path d="M 256 212 L 256 316 M 204 264 L 308 264" {_s(c, 30)}/>')
+
+
+def unext_shield(c):
+    """U-NEXT: the U-shaped crest."""
+    return (f'<path d="M 128 104 L 384 104 L 384 290 C 384 370 326 420 256 420 '
+            f'C 186 420 128 370 128 290 Z" {_s(c, 32)}/>'
+            f'<path d="M 204 164 L 204 290 C 204 340 308 340 308 290 L 308 164" {_s(c, 28)}/>')
+
+
+GLYPHS.update({
+    "amnis_ff": amnis_ff, "buttons_swap": buttons_swap, "dsmart_ring": dsmart_ring,
+    "debridemall_magnet": debridemall_magnet, "feeln_crown": feeln_crown,
+    "fpb_ball": fpb_ball, "immich_petals": immich_petals, "kijk_eye": kijk_eye,
+    "livechannels_tv": livechannels_tv, "moonfin_wave": moonfin_wave,
+    "netzkino_leader": netzkino_leader, "photocollage_ring": photocollage_ring,
+    "ppsspp_pad": ppsspp_pad, "seerr_eye": seerr_eye, "setedit_gear": setedit_gear,
+    "sooner_rings": sooner_rings, "unrealdebrid_magnet": unrealdebrid_magnet,
+    "rlc_shield": rlc_shield, "unext_shield": unext_shield,
+})
