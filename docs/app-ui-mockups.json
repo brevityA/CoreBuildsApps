@@ -9,11 +9,11 @@
       "structure": "06ec534b185e11748b5e6b0771d2be361c90edb90b5f0674271391569b1cb0e9"
     },
     "app-ui-catalogue-update.png": {
-      "bytes": 167413,
-      "structure": "65697b183eb854ff75654f59defb102abd7dc4847e244e630f77404748e0bea1"
+      "bytes": 172480,
+      "structure": "71e59786c30222d9569a09d57e9a29dc02fa7ee8656e901ff28ee08644b46ebb"
     },
     "app-ui-catalogue.png": {
-      "bytes": 172242,
+      "bytes": 173285,
       "structure": "00d4c2315419250e06ad9534d97190940765d6fed2b90b02bf62d8c034a3dddf"
     },
     "app-ui-faq.png": {
@@ -45,7 +45,7 @@
   "inputs": {
     "app/src/main/assets/appfilter.xml": "ea4af09cc11fa420f6992ef941721b97bf5a9172d83d5d3cc48c89b621ab1cfc",
     "app/src/main/assets/manifest/wallpapers.json": "67c5a010561e1f1a6eeac664dac87e01026d556a471216a58480b22d71058960",
-    "app/src/main/assets/version.json": "ed7aad85325808ac11540297c89bcb5e0b49a103df47ca1fb2be40e31c0a33c2",
+    "app/src/main/assets/version.json": "c7f91da097483d69827c4050aaec526f319bf929205fd18de3ee95a8e5e8569d",
     "app/src/main/res/layout/activity_about.xml": "24bf8847817c6c79e0733b25282913f12756331e851a461fdb5f96e43b08d04a",
     "app/src/main/res/layout/activity_auditor.xml": "3353f96d0932249a0ce841ca31ef98c65103132ec9b9efd1c8144e1fe2c34dca",
     "app/src/main/res/layout/activity_export_progress.xml": "3c388eb2b74cc0b5e362069cff6adfe219a4948eed7220f36a9a2d2d06d48210",
@@ -79,7 +79,7 @@
     "tools/fonts/Outfit-Bold.ttf": "04f7c9705153927058475d6c5e9f75b0a1036ec5f6f63ffb69df046191ea8933",
     "tools/fonts/Outfit-ExtraBold.ttf": "056e8cd5840cea4cfc355f672292f7de00d95f5a42bf9b7cd96d511ca8e2883e"
   },
-  "inputs_digest": "eb4bd6666511654bf438fb4bf65a02d70943ff0337c5f172b9752fba584ab64f",
+  "inputs_digest": "94d6d588426fce719f9006c3bb62eaf3563f4e930784b25d06d639e866abd926",
   "metrics": {
     "mono-bold@24": 448.0,
     "mono-bold@32": 608.0,
@@ -94,7 +94,7 @@
   "note": "Which sources the frames in docs/ were generated from, and what each one depicts. Written by build_app_ui_mockups.py; never hand-edit. The PNG bytes are not recorded on purpose: text rendering is not reproducible across machines, so --check compares the sources and the drawn structure instead. See the module docstring.",
   "pasted": {
     "count": 19,
-    "digest": "4ea008cd4f941eec0fec58d66143a8e63b234cda61f7287d74af88a1c4d3123a"
+    "digest": "180a73b086d5bc7d1c3e3313fc511155e111613d25d8843f65598cf34fe21ee2"
   },
   "renderer": "python 3.11.15, freetype 2.13.2, layout raqm, PIL 10.4.0, qrcode installed, fontTools 4.59.0, resvg_py 0.4.0"
 }

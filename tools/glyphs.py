@@ -4217,171 +4217,170 @@ def _fam(letter, color, shell, cap_h=210, cy=GRID / 2):
     return shell + monogram_scaled(letter, color, cap_h=cap_h, cy=cy)
 
 
-def shell_broadcast(c):
-    """A screen on legs with an aerial: any channel, network or catch-up app."""
-    return (f'<rect x="72" y="128" width="368" height="252" rx="44" {_s(c, 30)}/>'
-            f'<path d="M 196 128 L 148 72" {_s(c, 22)}/>'
-            f'<path d="M 316 128 L 364 72" {_s(c, 22)}/>'
-            f'<path d="M 180 428 L 332 428" {_s(c, 26)}/>')
+# Modern pass (2026-09-26): one open-corner tile for every family, with the
+# function carried by a badge in the top-right corner instead of by the
+# container's silhouette. The earlier per-family containers (a CRT on legs, a
+# ball with a seam, a cloud, a gamepad) made the monogram fight the outline -
+# seams and grips crossed the letters, and the sport seam read as a "no entry"
+# sign. Here the letters own the whole interior and never meet a line; the
+# badge answers "what kind of app" at a glance, the way current TV and mobile
+# icon systems pair a mark with a small status glyph. The tile's top-right
+# corner is left open so the badge is framed by it rather than stacked on it.
+
+BX, BY, R = 394, 118, 64      # badge centre and radius on the 512 grid
+BW = 24                        # badge stroke
+
+
+def P(x, y):
+    """Badge-local unit coords (-1..1) -> grid coords."""
+    return f"{BX + x * R:.1f} {BY + y * R:.1f}"
+
+
+def open_tile(c):
+    # Tile x 72..440, y 120..448; the top-right corner stays open for the badge.
+    return (f'<path d="M 300 120 L 148 120 C 106 120 72 154 72 196 L 72 372 '
+            f'C 72 414 106 448 148 448 L 364 448 C 406 448 440 414 440 372 '
+            f'L 440 216" {_s(c, 30)}/>')
+
+
+def closed_tile(c):
+    return f'<rect x="72" y="120" width="368" height="328" rx="76" {_s(c, 30)}/>'
+
+
+def b_live(c):
+    """Live: a dot broadcasting both ways - the modern 'on air' sign."""
+    return (f'<circle cx="{BX}" cy="{BY}" r="{R*.2:.1f}" {_f(c)}/>'
+            f'<path d="M {P(-.42,-.48)} C {P(-.66,-.2)} {P(-.66,.2)} {P(-.42,.48)}" {_s(c, 20)}/>'
+            f'<path d="M {P(.42,-.48)} C {P(.66,-.2)} {P(.66,.2)} {P(.42,.48)}" {_s(c, 20)}/>'
+            f'<path d="M {P(-.78,-.82)} C {P(-1.1,-.3)} {P(-1.1,.3)} {P(-.78,.82)}" {_s(c, 20)}/>'
+            f'<path d="M {P(.78,-.82)} C {P(1.1,-.3)} {P(1.1,.3)} {P(.78,.82)}" {_s(c, 20)}/>')
+
+
+def b_gear(c):
+    return (f'<polygon points="{_gearpts(BX, BY, R, R * .7, teeth=6)}" {_s(c, BW)}/>'
+            f'<circle cx="{BX}" cy="{BY}" r="{R * .22:.1f}" {_f(c)}/>')
+
+
+def b_ball(c):
+    """A trophy cup: the sport cue that cannot be misread as a prohibition."""
+    return (f'<path d="M {P(-.55,-.85)} L {P(.55,-.85)} L {P(.55,-.25)} '
+            f'C {P(.55,.2)} {P(.25,.4)} {P(0,.4)} C {P(-.25,.4)} {P(-.55,.2)} {P(-.55,-.25)} Z" {_s(c, BW)}/>'
+            f'<path d="M {P(-.55,-.62)} C {P(-.95,-.62)} {P(-.95,-.05)} {P(-.5,.02)}" {_s(c, 20)}/>'
+            f'<path d="M {P(.55,-.62)} C {P(.95,-.62)} {P(.95,-.05)} {P(.5,.02)}" {_s(c, 20)}/>'
+            f'<path d="M {P(0,.42)} L {P(0,.72)} M {P(-.4,.85)} L {P(.4,.85)}" {_s(c, BW)}/>')
+
+
+def b_note(c):
+    return (f'<circle cx="{BX - R*.35:.1f}" cy="{BY + R*.55:.1f}" r="{R*.3:.1f}" {_f(c)}/>'
+            f'<path d="M {P(-.07,.55)} L {P(-.07,-.9)} C {P(.35,-.75)} {P(.75,-.5)} {P(.7,-.05)}" {_s(c, BW)}/>')
+
+
+def b_pad(c):
+    return (f'<rect x="{BX - R:.1f}" y="{BY - R*.55:.1f}" width="{2*R:.1f}" height="{1.1*R:.1f}" rx="{R*.55:.1f}" {_s(c, BW)}/>'
+            f'<circle cx="{BX - R*.4:.1f}" cy="{BY}" r="{R*.14:.1f}" {_f(c)}/>'
+            f'<circle cx="{BX + R*.4:.1f}" cy="{BY}" r="{R*.14:.1f}" {_f(c)}/>')
+
+
+def b_lock(c):
+    return (f'<rect x="{BX - R*.62:.1f}" y="{BY - R*.05:.1f}" width="{1.24*R:.1f}" height="{.95*R:.1f}" rx="{R*.2:.1f}" {_s(c, BW)}/>'
+            f'<path d="M {P(-.36,-.05)} L {P(-.36,-.45)} C {P(-.36,-1.05)} {P(.36,-1.05)} {P(.36,-.45)} L {P(.36,-.05)}" {_s(c, BW)}/>')
+
+
+def b_play(c):
+    return (f'<circle cx="{BX}" cy="{BY}" r="{R * .9:.1f}" {_s(c, BW)}/>'
+            f'<path d="M {P(-.22,-.38)} L {P(.4,0)} L {P(-.22,.38)} Z" {_f(c)}/>')
+
+
+def b_down(c):
+    return (f'<path d="M {P(0,-.95)} L {P(0,.3)}" {_s(c, BW)}/>'
+            f'<path d="M {P(-.45,-.12)} L {P(0,.33)} L {P(.45,-.12)}" {_s(c, BW)}/>'
+            f'<path d="M {P(-.8,.82)} L {P(.8,.82)}" {_s(c, BW)}/>')
+
+
+def b_photo(c):
+    """A skyline under a sun, left open so no small counter closes at 96px."""
+    return (f'<path d="M {P(-.95,.75)} L {P(-.3,-.1)} L {P(.1,.4)} L {P(.42,.08)} L {P(.95,.75)}" {_s(c, BW)}/>'
+            f'<circle cx="{BX + R*.5:.1f}" cy="{BY - R*.55:.1f}" r="{R*.22:.1f}" {_f(c)}/>')
+
+
+def b_cloud(c):
+    return (f'<path d="M {P(-.55,.6)} C {P(-.95,.6)} {P(-1,.05)} {P(-.55,-.02)} '
+            f'C {P(-.45,-.55)} {P(.25,-.75)} {P(.45,-.2)} '
+            f'C {P(1,-.25)} {P(1.05,.6)} {P(.55,.6)} Z" {_s(c, BW)}/>')
+
+
+def b_globe(c):
+    """The web: a pointer. Two globe drafts closed their meridian slivers at
+    96px; a solid pointer has no counter to close and reads as 'browse'."""
+    return (f'<path d="M {P(-.5,-.9)} L {P(-.5,.62)} L {P(-.14,.3)} L {P(.1,.88)} '
+            f'L {P(.34,.78)} L {P(.1,.22)} L {P(.55,.22)} Z" {_s(c, 16)} '
+            f'fill="{c}"/>'.replace('fill="none" ', ''))
+
+
+def b_spark(c):
+    return (f'<path d="M {P(0,-1)} C {P(.08,-.3)} {P(.3,-.08)} {P(1,0)} '
+            f'C {P(.3,.08)} {P(.08,.3)} {P(0,1)} C {P(-.08,.3)} {P(-.3,.08)} {P(-1,0)} '
+            f'C {P(-.3,-.08)} {P(-.08,-.3)} {P(0,-1)} Z" {_s(c, 22)}/>')
+
+
+def b_heart(c):
+    return (f'<path d="M {P(0,.85)} C {P(-.7,.35)} {P(-.95,.0)} {P(-.95,-.3)} '
+            f'C {P(-.95,-.72)} {P(-.4,-.9)} {P(0,-.42)} '
+            f'C {P(.4,-.9)} {P(.95,-.72)} {P(.95,-.3)} C {P(.95,0)} {P(.7,.35)} {P(0,.85)} Z" {_s(c, BW)}/>')
+
+
+def b_folder(c):
+    return (f'<path d="M {P(-.95,-.6)} L {P(-.35,-.6)} L {P(-.15,-.35)} L {P(.95,-.35)} '
+            f'L {P(.95,.7)} L {P(-.95,.7)} Z" {_s(c, BW)}/>')
+
+
+
+_BADGES = {
+    "broadcast": b_live, "tool": b_gear, "sport": b_ball, "music": b_note,
+    "gaming": b_pad, "vpn": b_lock, "film": b_play, "store": b_down,
+    "photos": b_photo, "debrid": b_cloud, "browser": b_globe,
+    "anime": b_spark, "kids": b_heart, "files": b_folder,
+}
+
+
+def _badge_shell(family):
+    badge = _BADGES[family]
+    return lambda c: open_tile(c) + badge(c)
 
 
 def shell_app(c):
-    """The neutral squircle, kept for apps whose function cannot be read."""
-    return _tile(c)
+    """The neutral tile, closed, for apps whose function cannot be read."""
+    return closed_tile(c)
 
 
-def shell_tool(c):
-    """A face-on gear: utilities, remotes, system tweaks.
-
-    The old hexagon read as a shield, which weakened the functional cue. A
-    low-frequency gear keeps the shared adaptive-mark centre while making the
-    family legible before the monogram is read.
-    """
-    return f'<polygon points="{_gearpts(256, 256, 196, 170)}" {_s(c, 30)}/>'
-
-
-def shell_sport(c):
-    """A ball with one open seam: sport and fitness services.
-
-    A plain ring was too category-neutral at TV distance. The seam is kept
-    outside the adaptive mark and uses the same keyline/stroke hierarchy as
-    the family outline, so it remains a cue rather than decoration.
-    """
-    return (f'<circle cx="256" cy="256" r="188" {_s(c, 30)}/>'
-            f'<path d="M 112 174 C 128 208 138 232 146 254" {_s(c, 22)}/>'
-            f'<path d="M 400 174 C 384 208 374 232 366 254" {_s(c, 22)}/>')
+shell_broadcast = _badge_shell("broadcast")
+shell_tool = _badge_shell("tool")
+shell_sport = _badge_shell("sport")
+shell_music = _badge_shell("music")
+shell_gaming = _badge_shell("gaming")
+shell_vpn = _badge_shell("vpn")
+shell_film = _badge_shell("film")
+shell_store = _badge_shell("store")
+shell_photos = _badge_shell("photos")
+shell_debrid = _badge_shell("debrid")
+shell_browser = _badge_shell("browser")
+shell_anime = _badge_shell("anime")
+shell_kids = _badge_shell("kids")
+shell_files = _badge_shell("files")
 
 
-def shell_music(c):
-    """A tile with sound leaving it: radio, music, podcasts.
-
-    The outer arc reached x=495 on the 512 grid; both arcs are pulled inside
-    the 40px margin.
-    """
-    return (f'<rect x="56" y="96" width="300" height="320" rx="70" {_s(c, 30)}/>'
-            f'<path d="M 392 196 C 420 230 420 282 392 316" {_s(c, 24)}/>'
-            f'<path d="M 428 158 C 470 212 470 300 428 354" {_s(c, 20)}/>')
-
-
-def shell_gaming(c):
-    """A gamepad: body with two grips hanging below it.
-
-    The first attempt was a single lobed outline that read as goggles rather
-    than a controller, and its interior left the monogram too small to tell a
-    C from a G. Splitting the grips off the body gives the letter the whole
-    body to sit in and makes the silhouette unambiguous.
-    """
-    return (f'<rect x="76" y="112" width="360" height="196" rx="58" {_s(c, 30)}/>'
-            f'<path d="M 132 302 C 104 372 120 430 164 430 '
-            f'C 202 430 214 388 210 330" {_s(c, 26)}/>'
-            f'<path d="M 380 302 C 408 372 392 430 348 430 '
-            f'C 310 430 298 388 302 330" {_s(c, 26)}/>')
-
-
-def shell_vpn(c):
-    """A shield: VPN, proxy, privacy."""
-    return (f'<path d="M 256 68 L 424 132 L 424 268 C 424 360 352 418 256 444 '
-            f'C 160 418 88 360 88 268 L 88 132 Z" {_s(c, 30)}/>')
-
-
-def shell_film(c):
-    """A film frame with its sprocket lanes: cinema and movie VOD."""
-    return (f'<rect x="64" y="112" width="384" height="288" rx="36" {_s(c, 30)}/>'
-            f'<path d="M 124 148 L 164 148 M 224 148 L 264 148 '
-            f'M 324 148 L 364 148" {_s(c, 20)}/>'
-            f'<path d="M 124 364 L 164 364 M 224 364 L 264 364 '
-            f'M 324 364 L 364 364" {_s(c, 20)}/>')
-
-
-def shell_store(c):
-    """A shopping bag: stores, installers, sideload managers."""
-    return (f'<path d="M 92 168 L 420 168 L 400 424 C 398 438 388 446 374 446 '
-            f'L 138 446 C 124 446 114 438 112 424 Z" {_s(c, 30)}/>'
-            f'<path d="M 176 208 L 176 136 C 176 100 212 72 256 72 '
-            f'C 300 72 336 100 336 136 L 336 208" {_s(c, 24)}/>')
-
-
-def shell_photos(c):
-    """A print with its caption band: photo, gallery and slideshow apps.
-
-    A camera body with a viewfinder hump read as a briefcase at tile size -
-    the hump was too small to carry the meaning. A print is a plainer idea and
-    survives the downscale: the band under the image is the whole tell.
-    """
-    return (f'<rect x="76" y="72" width="360" height="368" rx="40" {_s(c, 30)}/>'
-            f'<path d="M 76 348 L 436 348" {_s(c, 24)}/>')
-
-
-def shell_debrid(c):
-    """A cloud: debrid, remote storage, torrent and usenet clients.
-
-    Narrowed from a 482px right edge so the stroke stays inside SAFE.
-    """
-    return (f'<path d="M 158 392 C 108 392 76 354 76 308 C 76 260 114 226 158 230 '
-            f'C 174 174 220 136 276 136 C 344 136 396 190 398 258 '
-            f'C 430 268 450 298 450 332 C 450 364 426 392 392 392 Z" {_s(c, 30)}/>')
-
-
-def shell_browser(c):
-    """A browser window with a title bar and three restrained controls."""
-    return (f'<rect x="64" y="104" width="384" height="304" rx="48" {_s(c, 30)}/>'
-            f'<path d="M 64 180 L 448 180" {_s(c, 22)}/>'
-            f'<circle cx="112" cy="142" r="9" {_f(c)}/>'
-            f'<circle cx="144" cy="142" r="9" {_f(c)}/>'
-            f'<circle cx="176" cy="142" r="9" {_f(c)}/>')
-
-
-def shell_anime(c):
-    """A tile with a spark: anime and manga services.
-
-    Two passes to fit: the spark's right arm first put ink at x=489, and
-    shifting the tile to x=46 then put its left wall at x=31. At x=58 with a
-    30 stroke the wall lands on 43 and the spark ends on 465 - both inside
-    the 40px margin.
-    """
-    return (_tile(c, x=58, y=92, w=330, h=340, rx=80) +
-            f'<path d="M 424 122 L 424 182 M 394 152 L 454 152" {_s(c, 22)}/>')
-
-
-def shell_kids(c):
-    """A tile with ears: kids and family services.
-
-    Ears were clipped at y=35; the whole lockup sits 12px lower.
-    """
-    return (_tile(c, x=64, y=126, w=384, h=330, rx=82) +
-            f'<circle cx="144" cy="102" r="38" {_s(c, 24)}/>'
-            f'<circle cx="368" cy="102" r="38" {_s(c, 24)}/>')
-
-
-def shell_files(c):
-    """A folder."""
-    return (f'<path d="M 64 148 L 212 148 L 252 200 L 448 200 L 448 400 '
-            f'C 448 422 430 440 408 440 L 104 440 C 82 440 64 422 64 400 Z" '
-            f'{_s(c, 30)}/>')
-
-
-# Cap height, optical centre and mark width per shell: each interior is a
-# different shape, and a monogram sized for the squircle either overflows the
-# cloud or floats in the shield. Values are tuned against the 48px check, not
-# by eye. The fourth number is the type budget for adaptive lockups — the
-# interior width a multi-character mark may touch, measured inside the stroke
-# of each shell minus its padding. The lone letter keeps ignoring it.
+# Cap height, optical centre and mark width per shell. Every family now shares
+# one interior (the tile, x 72..440 / y 120..448), so every family shares one
+# budget: the letters sit a little below the tile's centre, clear of the badge.
+_TILE_BUDGET = (170, 298, 240)
 FAMILY_SHELLS = {
-    "broadcast": (shell_broadcast, 150, 254, 240),
-    "app":       (shell_app,       200, 256, 260),
-    "tool":      (shell_tool,      200, 264, 240),
-    "sport":     (shell_sport,     210, 256, 236),
-    "music":     (shell_music,     200, 256, 216),
-    "gaming":    (shell_gaming,    150, 240, 240),
-    "vpn":       (shell_vpn,       190, 250, 240),
-    "film":      (shell_film,      170, 256, 280),
-    "store":     (shell_store,     180, 320, 200),
-    "photos":    (shell_photos,    160, 290, 260),
-    "debrid":    (shell_debrid,    150, 290, 250),
-    "browser":   (shell_browser,   180, 300, 270),
-    "anime":     (shell_anime,     190, 262, 210),
-    "kids":      (shell_kids,      210, 296, 260),
-    "files":     (shell_files,     180, 330, 280),
+    name: (fn, *_TILE_BUDGET) for name, fn in (
+        ("broadcast", shell_broadcast), ("app", shell_app), ("tool", shell_tool),
+        ("sport", shell_sport), ("music", shell_music), ("gaming", shell_gaming),
+        ("vpn", shell_vpn), ("film", shell_film), ("store", shell_store),
+        ("photos", shell_photos), ("debrid", shell_debrid),
+        ("browser", shell_browser), ("anime", shell_anime), ("kids", shell_kids),
+        ("files", shell_files))
 }
 
 

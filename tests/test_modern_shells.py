@@ -18,46 +18,53 @@ from check_glyph import check
 
 
 class ModernFamilyShellTests(unittest.TestCase):
+    """One open-corner tile per family; the function lives in a corner badge.
+
+    The previous containers let seams, grips and aerials cross the monogram
+    (and the sport seam read as a prohibition sign). These checks hold the
+    replacement to its promises: the letters never share space with the
+    badge, every family still fits and keeps its counters at TV sizes, and
+    the art stays single-accent, transparent line work.
+    """
+
     ACCENT = "#4CC9F0"
+    BADGED = sorted(set(glyphs.FAMILY_SHELLS) - {"app"})
 
-    def test_modern_family_cues_are_present_in_the_adaptive_shells(self):
-        tool = glyphs.GLYPHS["tool_A"](self.ACCENT)
-        sport = glyphs.GLYPHS["sport_A"](self.ACCENT)
-        browser = glyphs.GLYPHS["browser_A"](self.ACCENT)
+    def test_every_family_but_app_is_the_open_tile_plus_its_own_badge(self):
+        tile = glyphs.open_tile(self.ACCENT)
+        badges = set()
+        for fam in self.BADGED:
+            with self.subTest(family=fam):
+                body = glyphs.FAMILY_SHELLS[fam][0](self.ACCENT)
+                self.assertTrue(body.startswith(tile), fam)
+                badges.add(body[len(tile):])
+        # fourteen families, fourteen different badges
+        self.assertEqual(len(badges), len(self.BADGED))
+        self.assertEqual(glyphs.FAMILY_SHELLS["app"][0](self.ACCENT),
+                         glyphs.closed_tile(self.ACCENT))
 
-        # A gear has a broad tooth/cut rhythm rather than the former shield-
-        # shaped six-sided host. Keep this count explicit so a future edit
-        # cannot silently return to a generic hexagon.
-        polygon = re.search(r'<polygon points="([^"]+)"', tool)
-        self.assertIsNotNone(polygon)
-        self.assertEqual(len(polygon.group(1).split()), 16)
+    def test_the_badge_stays_out_of_the_letter_box(self):
+        # Letters are set at cy=300 with a 190px cap, so their tops sit at
+        # y=205; the badge (centre BY, radius R, plus half its stroke) must
+        # finish above that, or the corner cue is back on top of the mark.
+        for fam in glyphs.FAMILY_SHELLS:
+            with self.subTest(family=fam):
+                _, cap_h, cy, _ = glyphs.FAMILY_SHELLS[fam]
+                self.assertLess(glyphs.BY + glyphs.R + glyphs.BW / 2,
+                                cy - cap_h / 2)
 
-        # The sport shell has two halves of one open seam, kept beside the
-        # adaptive mark so the cue does not cut through the monogram.
-        self.assertIn('M 112 174 C 128 208 138 232 146 254', sport)
-        self.assertIn('M 400 174 C 384 208 374 232 366 254', sport)
-
-        # The browser shell retains the title bar and three low-detail window
-        # controls; these survive the TV review size without a wordmark.
-        self.assertIn('M 64 180 L 448 180', browser)
-        self.assertEqual(browser.count('cy="142"'), 3)
-
-    def test_modern_shells_pass_small_size_and_safe_area_review(self):
-        for name in ("tool_A", "sport_A", "browser_A"):
-            with self.subTest(name=name):
-                # Family shells retain the established adaptive monogram
-                # renderer; the strict Classic contract is exercised against
-                # shipped catalogue constructions by the existing identity
-                # tests. This check owns the shell's fit/counter behaviour.
-                result = check(name, self.ACCENT, strict=False)
-                self.assertEqual(result["problems"], [])
-                self.assertGreaterEqual(result["holes"][2], 1)
+    def test_every_family_passes_small_size_and_safe_area_review(self):
+        for fam in glyphs.FAMILY_SHELLS:
+            for letter in "AMW8":
+                with self.subTest(glyph=f"{fam}_{letter}"):
+                    result = check(f"{fam}_{letter}", self.ACCENT, strict=False)
+                    self.assertEqual(result["problems"], [])
 
     def test_modern_shells_remain_transparent_single_accent_geometry(self):
-        for name in ("tool_A", "sport_A", "browser_A"):
-            with self.subTest(name=name):
-                body = glyphs.monoline(glyphs.GLYPHS[name](self.ACCENT))
-                self.assertNotIn("fill=\"white\"", body.lower())
+        for fam in glyphs.FAMILY_SHELLS:
+            with self.subTest(family=fam):
+                body = glyphs.monoline(glyphs.GLYPHS[f"{fam}_A"](self.ACCENT))
+                self.assertNotIn('fill="white"', body.lower())
                 self.assertEqual(set(re.findall(r'stroke="([#A-Fa-f0-9]+)"', body)),
                                  {self.ACCENT})
                 self.assertNotIn("<image", body)
