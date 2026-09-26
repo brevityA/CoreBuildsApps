@@ -4903,3 +4903,386 @@ GLYPHS.update({
     "kinopoisk_k": kinopoisk_k,
     "aida_sixty_four": aida_sixty_four,
 })
+
+
+# Brand-informed marks, batch 1 (2026-09-26): long-tail apps whose official
+# launcher icon is a symbol rather than a wordmark. Each is the defining shape
+# of that icon redrawn in Core monoline - the WuPlay / Nuvio method - not a
+# trace: the official icon was the reference, the geometry is original.
+# Reference icons: the app's Google Play listing (see each row's
+# color_source in tools/catalog.json).
+# ==========================================================================
+
+def zeus_bolt(c):
+    """Zeus: the solid lightning bolt of its red tile. Monoline normalises
+    every stroke to 32 at most, so a stroked bolt read as a scribble; the
+    bolt is a filled shape, wide enough that no sliver closes at 48px."""
+    return ('<path d="M 300 60 L 128 300 L 246 300 L 206 452 L 390 196 '
+            'L 270 196 L 332 60 Z" stroke="' + c + '" stroke-width="18" '
+            'stroke-linecap="round" stroke-linejoin="round" fill="' + c + '"/>')
+
+
+def ard_one(c):
+    """ARD Mediathek: the ring-and-1 of the ARD lockup."""
+    return (f'<circle cx="256" cy="256" r="164" {_s(c, 32)}/>'
+            f'<path d="M 214 196 L 272 164 L 272 352" {_s(c, 34)}/>')
+
+
+def dr_play(c):
+    """DRTV: DR's open ring with a play inside it."""
+    return (f'<path d="M 256 104 A 156 156 0 1 1 166 132" {_s(c, 32)}/>'
+            f'<path d="M 256 84 L 256 150" {_s(c, 30)}/>'
+            f'<path d="M 222 196 L 330 260 L 222 324 Z" {_s(c, 28)}/>')
+
+
+def cinemaghar_arrow(c):
+    """Cinemaghar TV: its notched play arrow."""
+    return (f'<path d="M 144 92 L 414 256 L 144 420 L 236 256 Z" {_s(c, 32)}/>')
+
+
+def appnotifier_check(c):
+    """App Notifier: the store triangle with a tick through it."""
+    return (f'<path d="M 132 96 L 412 256 L 132 416 Z" {_s(c, 32)}/>'
+            f'<path d="M 196 262 L 250 318 L 372 176" {_s(c, 30)}/>')
+
+
+def apk_installer_robot(c):
+    """APK Installer: the robot head above a download wedge."""
+    return (f'<path d="M 150 238 A 106 106 0 0 1 362 238 Z" {_s(c, 28)}/>'
+            f'<path d="M 196 152 L 170 108 M 316 152 L 342 108" {_s(c, 22)}/>'
+            f'<circle cx="214" cy="202" r="13" {_f(c)}/>'
+            f'<circle cx="298" cy="202" r="13" {_f(c)}/>'
+            f'<path d="M 150 282 L 362 282 L 256 420 Z" {_s(c, 28)}/>')
+
+
+def torrent_search_lens(c):
+    """Torrent Search: a lens holding a double download chevron."""
+    return (f'<circle cx="276" cy="222" r="130" {_s(c, 32)}/>'
+            f'<path d="M 184 316 L 104 400" {_s(c, 38)}/>'
+            f'<path d="M 230 168 L 276 212 L 322 168 M 230 226 L 276 270 L 322 226" '
+            f'{_s(c, 26)}/>')
+
+
+def speaker_boost(c):
+    """Speaker Boost: a speaker sending two waves."""
+    return (f'<path d="M 96 206 L 164 206 L 250 132 L 250 380 L 164 306 L 96 306 Z" '
+            f'{_s(c, 30)}/>'
+            f'<path d="M 310 196 C 340 226 340 286 310 316" {_s(c, 28)}/>'
+            f'<path d="M 364 142 C 424 204 424 308 364 370" {_s(c, 28)}/>')
+
+
+def snapcast_ring(c):
+    """Snapcast: a speaker broadcasting both ways inside its disc."""
+    return (f'<circle cx="256" cy="256" r="190" {_s(c, 30)}/>'
+            f'<path d="M 206 228 L 236 228 L 276 196 L 276 316 L 236 284 L 206 284 Z" '
+            f'{_s(c, 24)}/>'
+            f'<path d="M 318 214 C 336 236 336 276 318 298" {_s(c, 22)}/>'
+            f'<path d="M 156 214 C 138 236 138 276 156 298" {_s(c, 22)}/>'
+            f'<path d="M 364 178 C 400 222 400 290 364 334" {_s(c, 22)}/>'
+            f'<path d="M 110 178 C 74 222 74 290 110 334" {_s(c, 22)}/>')
+
+
+def hubitat_home(c):
+    """Hubitat: the house with its chimney and a tablet inside."""
+    return (f'<path d="M 88 250 L 256 104 L 424 250" {_s(c, 32)}/>'
+            f'<path d="M 136 216 L 136 416 L 376 416 L 376 216" {_s(c, 30)}/>'
+            f'<path d="M 344 176 L 344 120" {_s(c, 30)}/>'
+            f'<rect x="192" y="278" width="128" height="80" rx="16" {_s(c, 24)}/>')
+
+
+def twilight_sunset(c):
+    """Twilight: the half sun on the horizon, with its reflection."""
+    return (f'<path d="M 150 272 A 106 106 0 0 1 362 272 Z" {_s(c, 30)}/>'
+            f'<path d="M 88 272 L 424 272" {_s(c, 30)}/>'
+            f'<path d="M 164 336 L 348 336 M 208 396 L 304 396" {_s(c, 26)}/>')
+
+
+def yowindow_sun(c):
+    """YoWindow: the winking sun."""
+    import math
+    rays = "".join(
+        f'M {256 + 150 * math.cos(a):.0f} {256 + 150 * math.sin(a):.0f} '
+        f'L {256 + 196 * math.cos(a):.0f} {256 + 196 * math.sin(a):.0f} '
+        for a in (k * math.pi / 4 for k in range(8)))
+    return (f'<circle cx="256" cy="256" r="104" {_s(c, 30)}/>'
+            f'<path d="{rays}" {_s(c, 28)}/>'
+            f'<path d="M 206 236 C 216 222 232 222 242 236" {_s(c, 20)}/>'
+            f'<circle cx="300" cy="232" r="12" {_f(c)}/>'
+            f'<path d="M 214 282 C 236 312 276 312 298 282" {_s(c, 22)}/>')
+
+
+def dropsync_cube(c):
+    """Dropsync: the cube inside its hexagon."""
+    import math
+    hexp = " ".join(f"{256 + 196 * math.cos(math.radians(-90 + 60 * k)):.0f},"
+                    f"{256 + 196 * math.sin(math.radians(-90 + 60 * k)):.0f}"
+                    for k in range(6))
+    return (f'<polygon points="{hexp}" {_s(c, 30)}/>'
+            f'<path d="M 256 164 L 350 214 L 350 316 L 256 366 L 162 316 L 162 214 Z" '
+            f'{_s(c, 26)}/>'
+            f'<path d="M 162 214 L 256 264 L 350 214 M 256 264 L 256 366" {_s(c, 24)}/>')
+
+
+def scholastic_book(c):
+    """Scholastic: the open book."""
+    return (f'<path d="M 256 150 C 210 118 144 114 84 130 L 84 392 '
+            f'C 144 378 210 382 256 414 C 302 382 368 378 428 392 L 428 130 '
+            f'C 368 114 302 118 256 150 Z" {_s(c, 30)}/>'
+            f'<path d="M 256 150 L 256 414" {_s(c, 26)}/>')
+
+
+def zapp_tv(c):
+    """Zapp: the rounded retro set with its aerial and feet."""
+    return (f'<rect x="92" y="170" width="328" height="226" rx="70" {_s(c, 32)}/>'
+            f'<path d="M 212 170 L 176 106 M 300 170 L 336 106" {_s(c, 24)}/>'
+            f'<circle cx="172" cy="96" r="16" {_f(c)}/>'
+            f'<circle cx="340" cy="96" r="16" {_f(c)}/>'
+            f'<path d="M 150 396 L 128 440 M 362 396 L 384 440" {_s(c, 26)}/>')
+
+
+def mango_m(c):
+    """Mango TV: the M set in its rounded screen."""
+    return (f'<path d="M 360 96 L 170 96 C 124 96 96 124 96 170 L 96 342 '
+            f'C 96 388 124 416 170 416 L 342 416 C 388 416 416 388 416 342 '
+            f'L 416 190" {_s(c, 32)}/>'
+            f'<path d="M 180 356 L 180 204 L 256 292 L 332 204 L 332 356" {_s(c, 32)}/>')
+
+
+def youku_play(c):
+    """Youku: the two-piece play - a long upper blade and a short lower one.
+    Drawn solid (as strokes they read as a '>' sign); the catalog's duotone
+    paints part 1, the lower blade, in the brand's orange."""
+    def blade(d):
+        return ('<path d="' + d + '" stroke="' + c + '" stroke-width="18" '
+                'stroke-linecap="round" stroke-linejoin="round" fill="' + c + '"/>')
+    return (blade("M 150 104 L 404 238 C 422 248 422 272 404 282 L 364 304 "
+                  "L 150 188 Z") +
+            blade("M 150 404 L 150 322 L 286 250 L 350 290 Z"))
+
+
+def tving_tv(c):
+    """TVING: the T whose stem opens into a V."""
+    return (f'<path d="M 108 132 L 404 132" {_s(c, 34)}/>'
+            f'<path d="M 184 132 L 256 400 L 328 132" {_s(c, 34)}/>')
+
+
+def flextv_cat(c):
+    """Flex TV: the set with cat ears and a solid play - the icon's inner
+    ring closed three counters at 48px, the play alone survives."""
+    play = (f'<path d="M 226 240 L 306 285 L 226 330 Z" stroke="{c}" '
+            f'stroke-width="16" stroke-linecap="round" stroke-linejoin="round" '
+            f'fill="{c}"/>')
+    return (f'<rect x="92" y="150" width="328" height="270" rx="84" {_s(c, 30)}/>'
+            f'<path d="M 150 156 L 176 108 L 214 152 Z M 298 152 L 336 108 L 362 156 Z" '
+            f'stroke="{c}" stroke-width="18" stroke-linecap="round" '
+            f'stroke-linejoin="round" fill="{c}"/>' + play)
+
+
+def kreate_k(c):
+    """Kreate: the K inside its ring."""
+    return (f'<circle cx="256" cy="256" r="186" {_s(c, 30)}/>'
+            f'<path d="M 204 156 L 204 356" {_s(c, 34)}/>'
+            f'<path d="M 326 156 L 214 262 L 326 356" {_s(c, 34)}/>')
+
+
+GLYPHS.update({
+    "zeus_bolt": zeus_bolt, "ard_one": ard_one, "dr_play": dr_play,
+    "cinemaghar_arrow": cinemaghar_arrow, "appnotifier_check": appnotifier_check,
+    "apk_installer_robot": apk_installer_robot,
+    "torrent_search_lens": torrent_search_lens, "speaker_boost": speaker_boost,
+    "snapcast_ring": snapcast_ring, "hubitat_home": hubitat_home,
+    "twilight_sunset": twilight_sunset, "yowindow_sun": yowindow_sun,
+    "dropsync_cube": dropsync_cube, "scholastic_book": scholastic_book,
+    "zapp_tv": zapp_tv, "mango_m": mango_m, "youku_play": youku_play,
+    "tving_tv": tving_tv, "flextv_cat": flextv_cat, "kreate_k": kreate_k,
+})
+
+
+# Brand-informed marks, batch 2 (2026-09-26). Same method as batch 1.
+
+def _solid(d, c, sw=16):
+    """A filled shape with a rounded edge, for parts that must read solid."""
+    return (f'<path d="{d}" stroke="{c}" stroke-width="{sw}" stroke-linecap="round" '
+            f'stroke-linejoin="round" fill="{c}"/>')
+
+
+def aicam_camera(c):
+    """AI Cam View: the video camera - body and lens horn."""
+    return (f'<rect x="80" y="166" width="262" height="180" rx="42" {_s(c, 32)}/>'
+            f'<path d="M 342 226 L 428 178 L 428 334 L 342 286" {_s(c, 30)}/>')
+
+
+def aircast_screen(c):
+    """Aircast: a screen whose corner opens onto cast waves."""
+    return (f'<path d="M 96 250 L 96 158 C 96 136 114 118 136 118 L 376 118 '
+            f'C 398 118 416 136 416 158 L 416 334 C 416 356 398 374 376 374 L 290 374" '
+            f'{_s(c, 32)}/>'
+            f'<path d="M 96 312 A 88 88 0 0 1 184 400" {_s(c, 28)}/>'
+            f'<path d="M 96 380 A 20 20 0 0 1 116 400" {_s(c, 28)}/>')
+
+
+def airplay_screen(c):
+    """AirPlay Receiver: the screen with the AirPlay wedge rising into it."""
+    return (f'<path d="M 204 330 L 136 330 C 114 330 96 312 96 290 L 96 150 '
+            f'C 96 128 114 110 136 110 L 376 110 C 398 110 416 128 416 150 L 416 290 '
+            f'C 416 312 398 330 376 330 L 308 330" {_s(c, 32)}/>'
+            + _solid("M 256 296 L 340 410 L 172 410 Z", c))
+
+
+def audials_radio(c):
+    """Audials: the radio - body, handle, speaker and tuning lines."""
+    return (f'<rect x="84" y="164" width="344" height="236" rx="46" {_s(c, 32)}/>'
+            f'<path d="M 170 164 L 330 100" {_s(c, 26)}/>'
+            f'<circle cx="330" cy="282" r="58" {_s(c, 28)}/>'
+            f'<path d="M 138 240 L 222 240 M 138 324 L 222 324" {_s(c, 26)}/>')
+
+
+def bstation_tv(c):
+    """Bstation: the TV face - aerial ears, slanted eyes, a small mouth."""
+    return (f'<rect x="84" y="152" width="344" height="262" rx="66" {_s(c, 32)}/>'
+            f'<path d="M 184 152 L 150 98 M 328 152 L 362 98" {_s(c, 28)}/>'
+            f'<path d="M 168 252 L 222 276 M 344 252 L 290 276" {_s(c, 28)}/>'
+            f'<path d="M 222 334 L 240 350 L 256 334 L 272 350 L 290 334" {_s(c, 22)}/>')
+
+
+def canal_plus(c):
+    """CANAL+: the plus that is the brand's whole icon."""
+    return f'<path d="M 256 96 L 256 416 M 96 256 L 416 256" {_s(c, 32)}/>'
+
+
+def capsule_mic(c):
+    """Capsule: the studio microphone in its cradle."""
+    return (f'<rect x="196" y="80" width="120" height="212" rx="60" {_s(c, 30)}/>'
+            f'<path d="M 142 244 C 142 326 196 368 256 368 C 316 368 370 326 370 244" '
+            f'{_s(c, 28)}/>'
+            f'<path d="M 256 368 L 256 424 M 196 428 L 316 428" {_s(c, 28)}/>')
+
+
+def cpu_chip(c):
+    """CPU Info: the chip with its die and pins."""
+    pins = " ".join(f"M {x} 136 L {x} 88 M {x} 376 L {x} 424" for x in (196, 256, 316))
+    pins += " " + " ".join(f"M 136 {y} L 88 {y} M 376 {y} L 424 {y}" for y in (196, 256, 316))
+    return (f'<rect x="136" y="136" width="240" height="240" rx="32" {_s(c, 30)}/>'
+            f'<rect x="210" y="210" width="92" height="92" rx="14" {_s(c, 24)}/>'
+            f'<path d="{pins}" {_s(c, 22)}/>')
+
+
+def drm_lock(c):
+    """DRM Info: the padlock with its keyhole."""
+    return (f'<rect x="124" y="226" width="264" height="204" rx="42" {_s(c, 32)}/>'
+            f'<path d="M 180 226 L 180 166 C 180 72 332 72 332 166 L 332 226" {_s(c, 30)}/>'
+            + _solid("M 256 290 L 256 358", c, 30))
+
+
+def epsxe_pad(c):
+    """ePSXe: the controller - grips, d-pad and face buttons."""
+    return (f'<path d="M 164 140 L 348 140 C 410 140 440 214 440 296 C 440 364 414 404 380 404 '
+            f'C 346 404 330 370 314 334 L 198 334 C 182 370 166 404 132 404 '
+            f'C 98 404 72 364 72 296 C 72 214 102 140 164 140 Z" {_s(c, 30)}/>'
+            f'<path d="M 162 204 L 162 280 M 124 242 L 200 242" {_s(c, 24)}/>'
+            f'<circle cx="344" cy="214" r="15" {_f(c)}/>'
+            f'<circle cx="384" cy="256" r="15" {_f(c)}/>')
+
+
+def flickfolio_grid(c):
+    """Flickfolio: the three-by-three photo grid, as small solid tiles."""
+    tiles = ""
+    for y in (104, 224, 344):
+        for x in (104, 224, 344):
+            tiles += _solid(f"M {x} {y} L {x + 64} {y} L {x + 64} {y + 64} L {x} {y + 64} Z",
+                            c, 12)
+    return tiles
+
+
+def flicky_butterfly(c):
+    """Flicky: the butterfly - two broad upper wings, two small lower ones."""
+    return (f'<path d="M 256 250 C 226 150 132 104 104 170 C 84 222 150 262 256 250 '
+            f'C 362 262 428 222 408 170 C 380 104 286 150 256 250 Z" {_s(c, 28)}/>'
+            f'<path d="M 256 262 C 196 282 158 350 196 386 C 232 414 254 340 256 262 '
+            f'C 258 340 280 414 316 386 C 354 350 316 282 256 262 Z" {_s(c, 26)}/>')
+
+
+def geticon_lens(c):
+    """Get Icon: a picture with a magnifier on its corner."""
+    return (f'<path d="M 272 344 L 132 344 C 110 344 92 326 92 304 L 92 132 '
+            f'C 92 110 110 92 132 92 L 304 92 C 326 92 344 110 344 132 L 344 272" '
+            f'{_s(c, 30)}/>'
+            f'<path d="M 132 300 L 196 224 L 240 272 L 266 246" {_s(c, 24)}/>'
+            f'<circle cx="352" cy="352" r="58" {_s(c, 28)}/>'
+            f'<path d="M 394 394 L 436 436" {_s(c, 32)}/>')
+
+
+def hue_bulb(c):
+    """Hue Shortcuts: the bulb with its S-shaped filament and screw collar."""
+    return (f'<path d="M 204 336 C 158 306 138 258 138 216 C 138 146 192 92 256 92 '
+            f'C 320 92 374 146 374 216 C 374 258 354 306 308 336 Z" {_s(c, 30)}/>'
+            f'<path d="M 286 150 C 226 140 214 196 256 210 C 298 224 290 282 226 274" '
+            f'{_s(c, 22)}/>'
+            f'<path d="M 206 380 L 306 380 M 226 424 L 286 424" {_s(c, 28)}/>')
+
+
+def pikpak_robot(c):
+    """PikPak: the round robot face - aerials, two eyes, a smile."""
+    return (f'<rect x="100" y="158" width="312" height="252" rx="84" {_s(c, 32)}/>'
+            f'<path d="M 196 158 L 196 108 M 316 158 L 316 108" {_s(c, 26)}/>'
+            f'<circle cx="208" cy="266" r="20" {_f(c)}/>'
+            f'<circle cx="304" cy="266" r="20" {_f(c)}/>'
+            f'<path d="M 214 330 C 238 352 274 352 298 330" {_s(c, 24)}/>')
+
+
+def quicksupport_arrows(c):
+    """QuickSupport: the two-way arrow inside its ring."""
+    return (f'<circle cx="256" cy="256" r="184" {_s(c, 30)}/>'
+            f'<path d="M 150 256 L 362 256" {_s(c, 30)}/>'
+            f'<path d="M 198 206 L 148 256 L 198 306 M 314 206 L 364 256 L 314 306" '
+            f'{_s(c, 30)}/>')
+
+
+def tabii_star(c):
+    """Tabii: the eight-point burst with its open centre."""
+    import math
+    pts = " ".join(
+        f"{256 + (190 if k % 2 == 0 else 128) * math.cos(math.pi * k / 8 - math.pi / 2):.0f},"
+        f"{256 + (190 if k % 2 == 0 else 128) * math.sin(math.pi * k / 8 - math.pi / 2):.0f}"
+        for k in range(16))
+    return (f'<polygon points="{pts}" {_s(c, 30)}/>'
+            f'<circle cx="256" cy="256" r="54" {_s(c, 26)}/>')
+
+
+def unifi_camera(c):
+    """UniFi Protect: the upright camera with its lens and stand."""
+    return (f'<rect x="176" y="84" width="160" height="268" rx="80" {_s(c, 32)}/>'
+            f'<circle cx="256" cy="180" r="38" {_s(c, 26)}/>'
+            f'<path d="M 256 352 L 256 404 M 186 424 L 326 424" {_s(c, 28)}/>')
+
+
+def vidangel_halo(c):
+    """VidAngel: the screen with a halo above it and a play inside."""
+    return (f'<rect x="100" y="188" width="312" height="228" rx="46" {_s(c, 32)}/>'
+            f'<path d="M 150 132 C 190 86 322 86 362 132" {_s(c, 28)}/>'
+            + _solid("M 230 256 L 300 302 L 230 348 Z", c, 16))
+
+
+def myradar_pin(c):
+    """MyRadar: the map pin."""
+    return (f'<path d="M 256 440 C 196 360 136 300 136 218 C 136 146 192 92 256 92 '
+            f'C 320 92 376 146 376 218 C 376 300 316 360 256 440 Z" {_s(c, 32)}/>'
+            f'<circle cx="256" cy="218" r="48" {_s(c, 28)}/>')
+
+
+def thmanyah_arrow(c):
+    """Thmanyah: the rising arrowhead."""
+    return (f'<path d="M 256 92 L 420 412 L 256 324 L 92 412 Z" {_s(c, 32)}/>')
+
+
+GLYPHS.update({
+    "aicam_camera": aicam_camera, "aircast_screen": aircast_screen,
+    "airplay_screen": airplay_screen, "audials_radio": audials_radio,
+    "bstation_tv": bstation_tv, "canal_plus": canal_plus, "capsule_mic": capsule_mic,
+    "cpu_chip": cpu_chip, "drm_lock": drm_lock, "epsxe_pad": epsxe_pad,
+    "flickfolio_grid": flickfolio_grid, "flicky_butterfly": flicky_butterfly,
+    "geticon_lens": geticon_lens, "hue_bulb": hue_bulb, "pikpak_robot": pikpak_robot,
+    "quicksupport_arrows": quicksupport_arrows, "tabii_star": tabii_star,
+    "unifi_camera": unifi_camera, "vidangel_halo": vidangel_halo,
+    "myradar_pin": myradar_pin, "thmanyah_arrow": thmanyah_arrow,
+})

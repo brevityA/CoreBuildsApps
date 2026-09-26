@@ -29,14 +29,14 @@
     {
       "name": "3Player",
       "drawable": "threeplayer",
-      "color": "#FF4D4D",
+      "color": "#ED0000",
       "glyph": "broadcast_3",
       "components": [
         "com.axonista.threeplayer/com.simplestream.presentation.startup.StartUpActivity"
       ],
       "category": "APP",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null,
+      "color_source": "sampled from the official launcher icon (Google Play listing for com.axonista.threeplayer): dominant brand accent #ED0000 (2026-09-26)",
+      "color_reviewed": "2026-09-26",
       "mark": "3P"
     },
     {
@@ -243,15 +243,15 @@
     {
       "name": "AI Cam View",
       "drawable": "aicamview",
-      "color": "#A366FF",
-      "glyph": "broadcast_A",
-      "mark": "AC",
+      "color": "#024D39",
+      "glyph": "aicam_camera",
       "components": [
         "com.kapron.ap.aicamview.tv/com.kapron.ap.aicamview.tv.CameraListActivityTv"
       ],
       "category": "APP",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled from the official launcher icon (Google Play listing for com.kapron.ap.aicamview.tv): dominant brand accent #024D39 (2026-09-26)",
+      "color_reviewed": "2026-09-26",
+      "glyph_source": "brand-informed redraw of the official launcher icon (play listing for com.kapron.ap.aicamview.tv); Core monoline geometry, not a trace (2026-09-26)"
     },
     {
       "name": "AIDA64",
@@ -295,16 +295,16 @@
     {
       "name": "Aircast",
       "drawable": "aircast",
-      "color": "#53FC18",
-      "glyph": "broadcast_A",
-      "mark": "AI",
+      "color": "#8353FB",
+      "glyph": "aircast_screen",
       "components": [
         "com.smartdevice.tv.aircast/com.coocaa.icast.ui.home.SplashActivity"
       ],
       "category": "APP",
       "mapping_source": "Projectivy Icon Pack 1.1.9",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled from the official launcher icon (Google Play listing for com.smartdevice.tv.aircast): dominant brand accent #8353FB (2026-09-26)",
+      "color_reviewed": "2026-09-26",
+      "glyph_source": "brand-informed redraw of the official launcher icon (play listing for com.smartdevice.tv.aircast); Core monoline geometry, not a trace (2026-09-26)"
     },
     {
       "name": "Airpin Pro",
@@ -323,15 +323,15 @@
     {
       "name": "AirPlay Receiver",
       "drawable": "receiver",
-      "color": "#FF7A2E",
-      "glyph": "tool_R",
-      "mark": "AR",
+      "color": "#6B94B0",
+      "glyph": "airplay_screen",
       "components": [
         "com.boost.airplay.receiver/com.boost.airplay.receiver.ui.activity.SplashActivity"
       ],
       "category": "APP",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled from the official launcher icon (Google Play listing for com.boost.airplay.receiver): dominant brand accent #6B94B0 (2026-09-26)",
+      "color_reviewed": "2026-09-26",
+      "glyph_source": "brand-informed redraw of the official launcher icon (play listing for com.boost.airplay.receiver); Core monoline geometry, not a trace (2026-09-26)"
     },
     {
       "name": "Airreceiverlite",
@@ -415,7 +415,7 @@
     {
       "name": "Amazing Classics",
       "drawable": "amazing_classics",
-      "color": "#FF4D4D",
+      "color": "#DF0606",
       "glyph": "film_A",
       "mark": "AC",
       "components": [
@@ -423,8 +423,8 @@
       ],
       "category": "APP",
       "mapping_source": "Projectivy Icon Pack 1.1.9",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled from the official launcher icon (Google Play listing for stormcastcinema.amazing.classics): dominant brand accent #DF0606 (2026-09-26)",
+      "color_reviewed": "2026-09-26"
     },
     {
       "name": "Amazon Freevee",
@@ -478,15 +478,15 @@
     {
       "name": "Amnis",
       "drawable": "amnis",
-      "color": "#C95CFF",
+      "color": "#724887",
       "glyph": "broadcast_A",
       "mark": "AM",
       "components": [
         "com.amnis/com.amnis.gui.MainActivity"
       ],
       "category": "APP",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled from the official launcher icon (Google Play listing for com.amnis): dominant brand accent #724887 (2026-09-26)",
+      "color_reviewed": "2026-09-26"
     },
     {
       "name": "Analiti",
@@ -624,16 +624,16 @@
     {
       "name": "Apk Installer",
       "drawable": "apk_installer",
-      "color": "#7C74FF",
-      "glyph": "store_A",
-      "mark": "AI",
+      "color": "#00ABD5",
+      "glyph": "apk_installer_robot",
       "components": [
         "com.uptodown.installer/com.uptodown.installer.activity.SplashActivity"
       ],
       "category": "APP",
       "mapping_source": "Projectivy Icon Pack 1.1.9",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled from the official launcher icon (Google Play listing for com.uptodown.installer): dominant brand accent #00ABD5 (2026-09-26)",
+      "color_reviewed": "2026-09-26",
+      "glyph_source": "brand-informed redraw of the official launcher icon (play listing for com.uptodown.installer); Core monoline geometry, not a trace (2026-09-26)"
     },
     {
       "name": "APK Updater",
@@ -701,28 +701,28 @@
     {
       "name": "App Generation",
       "drawable": "appgeneration",
-      "color": "#3D8BFF",
+      "color": "#AE262C",
       "glyph": "music_A",
       "mark": "AG",
       "components": [
         "com.appgeneration.itunerfree/com.appgeneration.mytunertv.activities.TvActivity"
       ],
       "category": "APP",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled from the official launcher icon (Google Play listing for com.appgeneration.itunerfree): dominant brand accent #AE262C (2026-09-26)",
+      "color_reviewed": "2026-09-26"
     },
     {
       "name": "App Notifier",
       "drawable": "appnotifier",
-      "color": "#FF4D4D",
-      "glyph": "tool_A",
-      "mark": "AN",
+      "color": "#01875F",
+      "glyph": "appnotifier_check",
       "components": [
         "com.farmerbb.appnotifier/com.farmerbb.appnotifier.ui.MainActivity"
       ],
       "category": "APP",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled from the official launcher icon (Google Play listing for com.farmerbb.appnotifier): dominant brand accent #01875F (2026-09-26)",
+      "color_reviewed": "2026-09-26",
+      "glyph_source": "brand-informed redraw of the official launcher icon (play listing for com.farmerbb.appnotifier); Core monoline geometry, not a trace (2026-09-26)"
     },
     {
       "name": "Apple TV",
@@ -778,16 +778,16 @@
     {
       "name": "Ard Mediathek",
       "drawable": "ard_mediathek",
-      "color": "#FFE14D",
-      "glyph": "broadcast_A",
-      "mark": "AM",
+      "color": "#003480",
+      "glyph": "ard_one",
       "components": [
         "de.swr.avp.ard.tv/de.swr.avp.ard.tv.TvActivity"
       ],
       "category": "APP",
       "mapping_source": "Projectivy Icon Pack 1.1.9",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled from the official launcher icon (Google Play listing for de.swr.avp.ard.tv): dominant brand accent #003480 (2026-09-26)",
+      "color_reviewed": "2026-09-26",
+      "glyph_source": "brand-informed redraw of the official launcher icon (play listing for de.swr.avp.ard.tv); Core monoline geometry, not a trace (2026-09-26)"
     },
     {
       "name": "Arrow",
@@ -806,7 +806,7 @@
     {
       "name": "Arte",
       "drawable": "arte",
-      "color": "#E6EDF3",
+      "color": "#FC4700",
       "glyph": "broadcast_A",
       "mark": "AR",
       "components": [
@@ -814,8 +814,8 @@
       ],
       "category": "APP",
       "mapping_source": "Projectivy Icon Pack 1.1.9",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled from the official launcher icon (Google Play listing for tv.arte.plus7): dominant brand accent #FC4700 (2026-09-26)",
+      "color_reviewed": "2026-09-26"
     },
     {
       "name": "Artlume",
@@ -882,15 +882,15 @@
     {
       "name": "Audials",
       "drawable": "audials",
-      "color": "#00D4FF",
-      "glyph": "music_A",
-      "mark": "AU",
+      "color": "#282676",
+      "glyph": "audials_radio",
       "components": [
         "com.audials.paid/com.audials.main.SplashScreenActivity"
       ],
       "category": "APP",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled from the official launcher icon (Google Play listing for com.audials.paid): dominant brand accent #282676 (2026-09-26)",
+      "color_reviewed": "2026-09-26",
+      "glyph_source": "brand-informed redraw of the official launcher icon (play listing for com.audials.paid); Core monoline geometry, not a trace (2026-09-26)"
     },
     {
       "name": "Audiomack",
@@ -1041,7 +1041,7 @@
     {
       "name": "Bell Fibe",
       "drawable": "bellmediaplayer",
-      "color": "#B6F23A",
+      "color": "#1058BE",
       "glyph": "broadcast_B",
       "mark": "BF",
       "components": [
@@ -1049,8 +1049,8 @@
         "com.quickplay.android.bellmediaplayer/ca.bell.fiberemote.tv.MainTvActivity"
       ],
       "category": "APP",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled from the official launcher icon (Google Play listing for com.quickplay.android.bellmediaplayer): dominant brand accent #1058BE (2026-09-26)",
+      "color_reviewed": "2026-09-26"
     },
     {
       "name": "Bet Plus",
@@ -1127,7 +1127,7 @@
     {
       "name": "Blip",
       "drawable": "blip",
-      "color": "#FF4D4D",
+      "color": "#6B0EFF",
       "glyph": "broadcast_B",
       "mark": "BL",
       "components": [
@@ -1135,8 +1135,8 @@
       ],
       "category": "APP",
       "mapping_source": "Projectivy Icon Pack 1.1.9",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled from the official launcher icon (Google Play listing for net.blip.android): dominant brand accent #6B0EFF (2026-09-26)",
+      "color_reviewed": "2026-09-26"
     },
     {
       "name": "Blokada",
@@ -1205,7 +1205,7 @@
     {
       "name": "Bravia Core",
       "drawable": "bravia_core",
-      "color": "#E6EDF3",
+      "color": "#5B01A1",
       "glyph": "broadcast_B",
       "mark": "BC",
       "components": [
@@ -1213,8 +1213,8 @@
       ],
       "category": "APP",
       "mapping_source": "Projectivy Icon Pack 1.1.9",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled from the official launcher icon (Google Play listing for com.sonypicturescore): dominant brand accent #5B01A1 (2026-09-26)",
+      "color_reviewed": "2026-09-26"
     },
     {
       "name": "BritBox",
@@ -1244,7 +1244,7 @@
     {
       "name": "Brollie",
       "drawable": "brollie",
-      "color": "#A366FF",
+      "color": "#E3A11C",
       "glyph": "film_B",
       "mark": "BR",
       "components": [
@@ -1253,8 +1253,8 @@
       ],
       "category": "APP",
       "mapping_source": "Projectivy Icon Pack 1.1.9",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled from the official launcher icon (Google Play listing for com.shift72.brollie): dominant brand accent #E3A11C (2026-09-26)",
+      "color_reviewed": "2026-09-26"
     },
     {
       "name": "Browkorf TV",
@@ -1274,7 +1274,7 @@
     {
       "name": "Browsehere",
       "drawable": "browsehere",
-      "color": "#FFB020",
+      "color": "#2848CF",
       "glyph": "browser_B",
       "mark": "BR",
       "components": [
@@ -1282,34 +1282,34 @@
       ],
       "category": "APP",
       "mapping_source": "Projectivy Icon Pack 1.1.9",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled from the official launcher icon (Google Play listing for com.tcl.browser): dominant brand accent #2848CF (2026-09-26)",
+      "color_reviewed": "2026-09-26"
     },
     {
       "name": "Bstation",
       "drawable": "bstar",
-      "color": "#00D4FF",
-      "glyph": "anime_B",
-      "mark": "BS",
+      "color": "#3672D9",
+      "glyph": "bstation_tv",
       "components": [
         "com.bstar.intl.tv/com.biliintl.ibstartv.MainActivity"
       ],
       "category": "APP",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled from the official launcher icon (Google Play listing for com.bstar.intl.tv): dominant brand accent #3672D9 (2026-09-26)",
+      "color_reviewed": "2026-09-26",
+      "glyph_source": "brand-informed redraw of the official launcher icon (play listing for com.bstar.intl.tv); Core monoline geometry, not a trace (2026-09-26)"
     },
     {
       "name": "Buttons Remapper",
       "drawable": "buttonsremapper",
-      "color": "#53FC18",
+      "color": "#1976D2",
       "glyph": "tool_B",
       "mark": "BR",
       "components": [
         "com.irishin.buttonsremapper/com.irishin.buttonsremapper.ui.MainActivity"
       ],
       "category": "APP",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled from the official launcher icon (Google Play listing for com.irishin.buttonsremapper): dominant brand accent #1976D2 (2026-09-26)",
+      "color_reviewed": "2026-09-26"
     },
     {
       "name": "Byebyedpi",
@@ -1328,7 +1328,7 @@
     {
       "name": "Byutv",
       "drawable": "byutv",
-      "color": "#FF7A2E",
+      "color": "#0056B6",
       "glyph": "broadcast_B",
       "mark": "BY",
       "components": [
@@ -1336,8 +1336,8 @@
       ],
       "category": "APP",
       "mapping_source": "Projectivy Icon Pack 1.1.9",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled from the official launcher icon (Google Play listing for org.byutv.android): dominant brand accent #0056B6 (2026-09-26)",
+      "color_reviewed": "2026-09-26"
     },
     {
       "name": "Cafe Bazaar",
@@ -1355,7 +1355,7 @@
     {
       "name": "Caixaforum Plus",
       "drawable": "caixaforum_plus",
-      "color": "#F04DE0",
+      "color": "#130045",
       "glyph": "broadcast_C",
       "mark": "CP",
       "components": [
@@ -1363,61 +1363,61 @@
       ],
       "category": "APP",
       "mapping_source": "Projectivy Icon Pack 1.1.9",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled from the official launcher icon (Google Play listing for es.caixaforum.cxplus): dominant brand accent #130045 (2026-09-26)",
+      "color_reviewed": "2026-09-26"
     },
     {
       "name": "Canal Digital",
       "drawable": "canaldigital",
-      "color": "#B6F23A",
+      "color": "#FD6100",
       "glyph": "broadcast_C",
       "mark": "CD",
       "components": [
         "com.canaldigital.go/com.rdyrn.MainActivity"
       ],
       "category": "APP",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled from the official launcher icon (Google Play listing for com.canaldigital.go): dominant brand accent #FD6100 (2026-09-26)",
+      "color_reviewed": "2026-09-26"
     },
     {
       "name": "CANAL+",
       "drawable": "canal",
       "color": "#3D8BFF",
-      "glyph": "broadcast_C",
-      "mark": "CA",
+      "glyph": "canal_plus",
       "components": [
         "com.canal.android.canal/com.canal.ui.tv.TvMainActivity"
       ],
       "category": "APP",
       "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_reviewed": null,
+      "glyph_source": "brand-informed redraw of the official launcher icon (play listing for com.canal.android.canal); Core monoline geometry, not a trace (2026-09-26)"
     },
     {
       "name": "Capsule",
       "drawable": "capsule",
-      "color": "#FF4D4D",
-      "glyph": "broadcast_C",
-      "mark": "CA",
+      "color": "#E3C07C",
+      "glyph": "capsule_mic",
       "components": [
         "studio.goodegg.capsule/studio.goodegg.capsule.tv.MainActivity"
       ],
       "category": "APP",
       "mapping_source": "Projectivy Icon Pack 1.1.9",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled from the official launcher icon (Google Play listing for studio.goodegg.capsule): dominant brand accent #E3C07C (2026-09-26)",
+      "color_reviewed": "2026-09-26",
+      "glyph_source": "brand-informed redraw of the official launcher icon (play listing for studio.goodegg.capsule); Core monoline geometry, not a trace (2026-09-26)"
     },
     {
       "name": "Cast4K",
       "drawable": "cast4k",
-      "color": "#1FD19A",
+      "color": "#FF6511",
       "glyph": "broadcast_C",
       "mark": "CA",
       "components": [
         "com.bigint.cast4k/com.bigint.iptv.presentation.MainActivity"
       ],
       "category": "APP",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled from the official launcher icon (Google Play listing for com.bigint.cast4k): dominant brand accent #FF6511 (2026-09-26)",
+      "color_reviewed": "2026-09-26"
     },
     {
       "name": "Catch-On TV",
@@ -1461,7 +1461,7 @@
     {
       "name": "Cda Pl",
       "drawable": "cda_pl",
-      "color": "#FFE14D",
+      "color": "#C91013",
       "glyph": "broadcast_C",
       "mark": "CP",
       "components": [
@@ -1469,8 +1469,8 @@
       ],
       "category": "APP",
       "mapping_source": "Projectivy Icon Pack 1.1.9",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled from the official launcher icon (Google Play listing for pl.cda.tv): dominant brand accent #C91013 (2026-09-26)",
+      "color_reviewed": "2026-09-26"
     },
     {
       "name": "CGTN America",
@@ -1515,7 +1515,7 @@
     {
       "name": "Chaupal",
       "drawable": "chaupal",
-      "color": "#34EB7A",
+      "color": "#E71947",
       "glyph": "broadcast_C",
       "mark": "CH",
       "components": [
@@ -1523,8 +1523,8 @@
       ],
       "category": "APP",
       "mapping_source": "Projectivy Icon Pack 1.1.9",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled from the official launcher icon (Google Play listing for video.laminar.tv.chaupal.android): dominant brand accent #E71947 (2026-09-26)",
+      "color_reviewed": "2026-09-26"
     },
     {
       "name": "Chebut TV",
@@ -1566,16 +1566,16 @@
     {
       "name": "Cinemaghar TV",
       "drawable": "cinemaghar_tv",
-      "color": "#FFB020",
-      "glyph": "film_C",
-      "mark": "CT",
+      "color": "#F07B2B",
+      "glyph": "cinemaghar_arrow",
       "components": [
         "com.thesunbi.cinemaghartv/com.thesunbi.cinemaghartv.ui.main.MainActivity"
       ],
       "category": "APP",
       "mapping_source": "Projectivy Icon Pack 1.1.9",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled from the official launcher icon (Google Play listing for com.thesunbi.cinemaghartv): dominant brand accent #F07B2B (2026-09-26)",
+      "color_reviewed": "2026-09-26",
+      "glyph_source": "brand-informed redraw of the official launcher icon (play listing for com.thesunbi.cinemaghartv); Core monoline geometry, not a trace (2026-09-26)"
     },
     {
       "name": "CinemaGlow",
@@ -1607,15 +1607,15 @@
     {
       "name": "Citytv+",
       "drawable": "citytvplus",
-      "color": "#53FC18",
+      "color": "#003245",
       "glyph": "broadcast_C",
       "mark": "CI",
       "components": [
         "com.rogers.citytvplus/com.rogers.citytvplus.presentation.LauncherActivity"
       ],
       "category": "APP",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled from the official launcher icon (Google Play listing for com.rogers.citytvplus): dominant brand accent #003245 (2026-09-26)",
+      "color_reviewed": "2026-09-26"
     },
     {
       "name": "Clash Meta",
@@ -1809,7 +1809,7 @@
     {
       "name": "Cosmote TV",
       "drawable": "cosmote_tv",
-      "color": "#1FD19A",
+      "color": "#E30074",
       "glyph": "broadcast_C",
       "mark": "CT",
       "components": [
@@ -1817,13 +1817,13 @@
       ],
       "category": "APP",
       "mapping_source": "Projectivy Icon Pack 1.1.9",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled from the official launcher icon (Google Play listing for gr.cosmote.cosmotetv.androidtv): dominant brand accent #E30074 (2026-09-26)",
+      "color_reviewed": "2026-09-26"
     },
     {
       "name": "Couch Puzzles",
       "drawable": "couch_puzzles",
-      "color": "#C95CFF",
+      "color": "#5C6BC0",
       "glyph": "gaming_C",
       "mark": "CP",
       "components": [
@@ -1831,22 +1831,22 @@
       ],
       "category": "APP",
       "mapping_source": "Projectivy Icon Pack 1.1.9",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled from the official launcher icon (Google Play listing for com.roysolberg.couchpuzzles): dominant brand accent #5C6BC0 (2026-09-26)",
+      "color_reviewed": "2026-09-26"
     },
     {
       "name": "CPU Info",
       "drawable": "cpuinfo",
       "color": "#FFE14D",
-      "glyph": "broadcast_C",
-      "mark": "CI",
+      "glyph": "cpu_chip",
       "components": [
         "com.kgurgul.cpuinfo/com.kgurgul.cpuinfo.HostActivity",
         "com.kgurgul.cpuinfo/com.kgurgul.cpuinfo.tv.TvActivity"
       ],
       "category": "APP",
       "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_reviewed": null,
+      "glyph_source": "brand-informed redraw of the official launcher icon (play listing for com.kgurgul.cpuinfo); Core monoline geometry, not a trace (2026-09-26)"
     },
     {
       "name": "Crave",
@@ -1995,15 +1995,15 @@
     {
       "name": "D-Smart",
       "drawable": "dogusdigital",
-      "color": "#53FC18",
+      "color": "#F8D030",
       "glyph": "broadcast_D",
       "mark": "DS",
       "components": [
         "com.dogusdigital.puhutv/com.dogusdigital.puhutv.TVActivity"
       ],
       "category": "APP",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled from the official launcher icon (Google Play listing for com.dogusdigital.puhutv): dominant brand accent #F8D030 (2026-09-26)",
+      "color_reviewed": "2026-09-26"
     },
     {
       "name": "DIG",
@@ -2110,7 +2110,7 @@
     {
       "name": "Debrid Em All",
       "drawable": "debrid_em_all",
-      "color": "#3D8BFF",
+      "color": "#E9B822",
       "glyph": "debrid_D",
       "mark": "DE",
       "components": [
@@ -2118,8 +2118,8 @@
       ],
       "category": "APP",
       "mapping_source": "Projectivy Icon Pack 1.1.9",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled from the official launcher icon (Google Play listing for com.yablio.debridemall): dominant brand accent #E9B822 (2026-09-26)",
+      "color_reviewed": "2026-09-26"
     },
     {
       "name": "Debrid Stream",
@@ -2205,7 +2205,7 @@
     {
       "name": "Digi TV",
       "drawable": "digi_tv",
-      "color": "#E6EDF3",
+      "color": "#0080C2",
       "glyph": "broadcast_D",
       "mark": "DT",
       "components": [
@@ -2213,8 +2213,8 @@
       ],
       "category": "APP",
       "mapping_source": "Projectivy Icon Pack 1.1.9",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled from the official launcher icon (Google Play listing for ro.digionline.tv): dominant brand accent #0080C2 (2026-09-26)",
+      "color_reviewed": "2026-09-26"
     },
     {
       "name": "Direct One",
@@ -2462,16 +2462,16 @@
     {
       "name": "DRM Info",
       "drawable": "androidfung",
-      "color": "#FF4D4D",
-      "glyph": "tool_D",
-      "mark": "DI",
+      "color": "#E64B3D",
+      "glyph": "drm_lock",
       "components": [
         "com.androidfung.drminfo/com.androidfung.drminfo.MobileActivity",
         "com.androidfung.drminfo/com.androidfung.drminfo.TvActivity"
       ],
       "category": "APP",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled from the official launcher icon (Google Play listing for com.androidfung.drminfo): dominant brand accent #E64B3D (2026-09-26)",
+      "color_reviewed": "2026-09-26",
+      "glyph_source": "brand-informed redraw of the official launcher icon (play listing for com.androidfung.drminfo); Core monoline geometry, not a trace (2026-09-26)"
     },
     {
       "name": "Dropbox",
@@ -2501,30 +2501,30 @@
     {
       "name": "Dropsync",
       "drawable": "dropsync",
-      "color": "#C95CFF",
-      "glyph": "files_D",
-      "mark": "DR",
+      "color": "#1370D5",
+      "glyph": "dropsync_cube",
       "components": [
         "com.ttxapps.dropsync/com.ttxapps.sync.app.MainActivity"
       ],
       "category": "APP",
       "mapping_source": "Projectivy Icon Pack 1.1.9",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled from the official launcher icon (Google Play listing for com.ttxapps.dropsync): dominant brand accent #1370D5 (2026-09-26)",
+      "color_reviewed": "2026-09-26",
+      "glyph_source": "brand-informed redraw of the official launcher icon (play listing for com.ttxapps.dropsync); Core monoline geometry, not a trace (2026-09-26)"
     },
     {
       "name": "Drtv",
       "drawable": "drtv",
-      "color": "#FFE14D",
-      "glyph": "broadcast_D",
-      "mark": "DR",
+      "color": "#FF001E",
+      "glyph": "dr_play",
       "components": [
         "dk.dr.tvplayer/axis.androidtv.sdk.app.MainActivity"
       ],
       "category": "APP",
       "mapping_source": "Projectivy Icon Pack 1.1.9",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled from the official launcher icon (Google Play listing for dk.dr.tvplayer): dominant brand accent #FF001E (2026-09-26)",
+      "color_reviewed": "2026-09-26",
+      "glyph_source": "brand-informed redraw of the official launcher icon (play listing for dk.dr.tvplayer); Core monoline geometry, not a trace (2026-09-26)"
     },
     {
       "name": "Dry Bar Comedy Plus",
@@ -2640,15 +2640,15 @@
     {
       "name": "Ds TV Mobile",
       "drawable": "dstvmobile",
-      "color": "#34EB7A",
+      "color": "#1919BA",
       "glyph": "broadcast_D",
       "mark": "DT",
       "components": [
         "com.dstvmobile.android/com.dstv.androidtv.RootActivity"
       ],
       "category": "APP",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled from the official launcher icon (Google Play listing for com.dstvmobile.android): dominant brand accent #1919BA (2026-09-26)",
+      "color_reviewed": "2026-09-26"
     },
     {
       "name": "DS video",
@@ -2685,7 +2685,7 @@
     {
       "name": "Dudeperfect",
       "drawable": "dudeperfect",
-      "color": "#A366FF",
+      "color": "#31FCDE",
       "glyph": "broadcast_D",
       "mark": "DU",
       "components": [
@@ -2693,8 +2693,8 @@
       ],
       "category": "APP",
       "mapping_source": "Projectivy Icon Pack 1.1.9",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled from the official launcher icon (Google Play listing for tv.kidoodle.android.dudeperfect): dominant brand accent #31FCDE (2026-09-26)",
+      "color_reviewed": "2026-09-26"
     },
     {
       "name": "Dw",
@@ -2726,15 +2726,15 @@
     {
       "name": "Echogram",
       "drawable": "echogram",
-      "color": "#00D4FF",
+      "color": "#4765AD",
       "glyph": "music_E",
       "mark": "EC",
       "components": [
         "com.liori.echogram/com.liori.echogram.MainActivity"
       ],
       "category": "APP",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled from the official launcher icon (Google Play listing for com.liori.echogram): dominant brand accent #4765AD (2026-09-26)",
+      "color_reviewed": "2026-09-26"
     },
     {
       "name": "Elefin",
@@ -2772,15 +2772,15 @@
     {
       "name": "Enjoy TV",
       "drawable": "enjoytvandroid",
-      "color": "#53FC18",
+      "color": "#1E3141",
       "glyph": "broadcast_E",
       "mark": "ET",
       "components": [
         "com.myenjoytv.enjoytvandroid/com.myenjoytv.enjoytvandroid.SplashActivity"
       ],
       "category": "APP",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled from the official launcher icon (Google Play listing for com.myenjoytv.enjoytvandroid): dominant brand accent #1E3141 (2026-09-26)",
+      "color_reviewed": "2026-09-26"
     },
     {
       "name": "Eon TV",
@@ -2799,41 +2799,41 @@
     {
       "name": "Epic Channel",
       "drawable": "epicchannel",
-      "color": "#FF7A2E",
+      "color": "#F6643A",
       "glyph": "broadcast_E",
       "mark": "EC",
       "components": [
         "com.epicchannel.epicon/com.epicchannel.epicon.ui.launcher.activity.LauncherActivity"
       ],
       "category": "APP",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled from the official launcher icon (Google Play listing for com.epicchannel.epicon): dominant brand accent #F6643A (2026-09-26)",
+      "color_reviewed": "2026-09-26"
     },
     {
       "name": "ePSXe",
       "drawable": "epsxe",
       "color": "#19D3C5",
-      "glyph": "gaming_E",
-      "mark": "EP",
+      "glyph": "epsxe_pad",
       "components": [
         "com.epsxe.ePSXe/com.epsxe.ePSXe.ePSXe"
       ],
       "category": "APP",
       "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_reviewed": null,
+      "glyph_source": "brand-informed redraw of the official launcher icon (play listing for com.epsxe.ePSXe); Core monoline geometry, not a trace (2026-09-26)"
     },
     {
       "name": "Eros Now",
       "drawable": "eros",
-      "color": "#F04DE0",
+      "color": "#0D96D4",
       "glyph": "broadcast_E",
       "mark": "EN",
       "components": [
         "com.eros.now/com.eros.now.launchscreen.SplashActivity"
       ],
       "category": "APP",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled from the official launcher icon (Google Play listing for com.eros.now): dominant brand accent #0D96D4 (2026-09-26)",
+      "color_reviewed": "2026-09-26"
     },
     {
       "name": "ERTFLIX",
@@ -3050,15 +3050,15 @@
     {
       "name": "FC Porto TV",
       "drawable": "fcportotv",
-      "color": "#A366FF",
+      "color": "#1975BC",
       "glyph": "broadcast_F",
       "mark": "FP",
       "components": [
         "com.fcp.fcportotv/com.fcp.fcportotv.SplashActivity"
       ],
       "category": "APP",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled from the official launcher icon (Google Play listing for com.fcp.fcportotv): dominant brand accent #1975BC (2026-09-26)",
+      "color_reviewed": "2026-09-26"
     },
     {
       "name": "FC TV",
@@ -3089,7 +3089,7 @@
     {
       "name": "Feb",
       "drawable": "feb",
-      "color": "#FF5CA8",
+      "color": "#007AFF",
       "glyph": "tool_F",
       "mark": "FE",
       "components": [
@@ -3097,21 +3097,21 @@
       ],
       "category": "APP",
       "mapping_source": "Projectivy Icon Pack 1.1.9",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled from the official launcher icon (Google Play listing for com.topspeed.febbox2): dominant brand accent #007AFF (2026-09-26)",
+      "color_reviewed": "2026-09-26"
     },
     {
       "name": "Feeln",
       "drawable": "androidapp",
-      "color": "#53FC18",
+      "color": "#510D96",
       "glyph": "broadcast_F",
       "mark": "FE",
       "components": [
         "com.feeln.androidapp/tv.accedo.one.app.bootstrap.BootstrapActivity"
       ],
       "category": "APP",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled from the official launcher icon (Google Play listing for com.feeln.androidapp): dominant brand accent #510D96 (2026-09-26)",
+      "color_reviewed": "2026-09-26"
     },
     {
       "name": "FIFA+",
@@ -3186,7 +3186,7 @@
     {
       "name": "Filmfriend",
       "drawable": "filmfriend",
-      "color": "#19D3C5",
+      "color": "#2BB5B1",
       "glyph": "film_F",
       "mark": "FI",
       "components": [
@@ -3194,8 +3194,8 @@
       ],
       "category": "APP",
       "mapping_source": "Projectivy Icon Pack 1.1.9",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled from the official launcher icon (Google Play listing for de.filmfriend): dominant brand accent #2BB5B1 (2026-09-26)",
+      "color_reviewed": "2026-09-26"
     },
     {
       "name": "Filmnet TV",
@@ -3304,20 +3304,20 @@
     {
       "name": "Fizz TV",
       "drawable": "fizz_app",
-      "color": "#34EB7A",
+      "color": "#00D672",
       "glyph": "broadcast_F",
       "mark": "FT",
       "components": [
         "ca.fizz_app.tv/ca.vmedia.phones_tablets_ui.activity.MainActivity"
       ],
       "category": "APP",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled from the official launcher icon (Google Play listing for ca.fizz_app.tv): dominant brand accent #00D672 (2026-09-26)",
+      "color_reviewed": "2026-09-26"
     },
     {
       "name": "Fladder",
       "drawable": "fladder",
-      "color": "#A366FF",
+      "color": "#471D00",
       "glyph": "broadcast_F",
       "mark": "FL",
       "components": [
@@ -3325,8 +3325,8 @@
       ],
       "category": "APP",
       "mapping_source": "Projectivy Icon Pack 1.1.9",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled from the official launcher icon (Google Play listing for nl.jknaapen.fladder): dominant brand accent #471D00 (2026-09-26)",
+      "color_reviewed": "2026-09-26"
     },
     {
       "name": "FLauncher",
@@ -3343,43 +3343,43 @@
     {
       "name": "Flex TV",
       "drawable": "flextv",
-      "color": "#00D4FF",
-      "glyph": "broadcast_F",
-      "mark": "FT",
+      "color": "#FB3867",
+      "glyph": "flextv_cat",
       "components": [
         "com.aytech.flextv/com.android.emptytest.MainActivity",
         "com.aytech.flextv/com.flex.leanback.ui.splash.TVSplashActivity"
       ],
       "category": "APP",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled from the official launcher icon (Google Play listing for com.aytech.flextv): dominant brand accent #FB3867 (2026-09-26)",
+      "color_reviewed": "2026-09-26",
+      "glyph_source": "brand-informed redraw of the official launcher icon (play listing for com.aytech.flextv); Core monoline geometry, not a trace (2026-09-26)"
     },
     {
       "name": "Flickfolio",
       "drawable": "flickfolio",
       "color": "#FF5CA8",
-      "glyph": "photos_F",
-      "mark": "FL",
+      "glyph": "flickfolio_grid",
       "components": [
         "com.snapwood.flickfolio/com.snapwood.flickfolio.SelectAlbumActivity"
       ],
       "category": "APP",
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_reviewed": null,
+      "glyph_source": "brand-informed redraw of the official launcher icon (play listing for com.snapwood.flickfolio); Core monoline geometry, not a trace (2026-09-26)"
     },
     {
       "name": "Flicky",
       "drawable": "flicky",
-      "color": "#53FC18",
-      "glyph": "store_F",
-      "mark": "FL",
+      "color": "#6D86A5",
+      "glyph": "flicky_butterfly",
       "components": [
         "app.flicky/app.flicky.MainActivity"
       ],
       "category": "APP",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled from the official launcher icon (F-Droid listing for app.flicky): dominant brand accent #6D86A5 (2026-09-26)",
+      "color_reviewed": "2026-09-26",
+      "glyph_source": "brand-informed redraw of the official launcher icon (f-droid listing for app.flicky); Core monoline geometry, not a trace (2026-09-26)"
     },
     {
       "name": "Flix TV",
@@ -3410,7 +3410,7 @@
     {
       "name": "Flixnest",
       "drawable": "flixnest",
-      "color": "#FF7A2E",
+      "color": "#A42521",
       "glyph": "broadcast_F",
       "mark": "FL",
       "components": [
@@ -3418,8 +3418,8 @@
       ],
       "category": "APP",
       "mapping_source": "Projectivy Icon Pack 1.1.9",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled from the official launcher icon (Google Play listing for hu.kinetik.streamapp): dominant brand accent #A42521 (2026-09-26)",
+      "color_reviewed": "2026-09-26"
     },
     {
       "name": "Flosports",
@@ -3504,7 +3504,7 @@
     {
       "name": "Forja TV",
       "drawable": "forja_tv",
-      "color": "#C95CFF",
+      "color": "#E30337",
       "glyph": "broadcast_F",
       "mark": "FT",
       "components": [
@@ -3512,21 +3512,21 @@
       ],
       "category": "APP",
       "mapping_source": "Projectivy Icon Pack 1.1.9",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled from the official launcher icon (Google Play listing for ma.snrt.forja.android.app): dominant brand accent #E30337 (2026-09-26)",
+      "color_reviewed": "2026-09-26"
     },
     {
       "name": "FORMED",
       "drawable": "formed",
-      "color": "#FFE14D",
+      "color": "#327FEF",
       "glyph": "broadcast_F",
       "mark": "FO",
       "components": [
         "com.ai.formed.formed/tv.vhx.LauncherActivity"
       ],
       "category": "APP",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled from the official launcher icon (Google Play listing for com.ai.formed.formed): dominant brand accent #327FEF (2026-09-26)",
+      "color_reviewed": "2026-09-26"
     },
     {
       "name": "Fotoo",
@@ -3620,20 +3620,20 @@
     {
       "name": "FP Basquetebol",
       "drawable": "fpbasquetebol",
-      "color": "#34EB7A",
+      "color": "#242886",
       "glyph": "sport_F",
       "mark": "FB",
       "components": [
         "com.fpbasquetebol.fpbtv/com.fpbasquetebol.fpbtv.MainActivity"
       ],
       "category": "APP",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled from the official launcher icon (Google Play listing for com.fpbasquetebol.fpbtv): dominant brand accent #242886 (2026-09-26)",
+      "color_reviewed": "2026-09-26"
     },
     {
       "name": "Fpt Play",
       "drawable": "fpt_play",
-      "color": "#FFB020",
+      "color": "#F77322",
       "glyph": "broadcast_F",
       "mark": "FP",
       "components": [
@@ -3641,8 +3641,8 @@
       ],
       "category": "APP",
       "mapping_source": "Projectivy Icon Pack 1.1.9",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled from the official launcher icon (Google Play listing for net.fptplay.ottbox): dominant brand accent #F77322 (2026-09-26)",
+      "color_reviewed": "2026-09-26"
     },
     {
       "name": "France 24",
@@ -3675,7 +3675,7 @@
     {
       "name": "Free TV",
       "drawable": "free_tv",
-      "color": "#FF5CA8",
+      "color": "#C00000",
       "glyph": "store_F",
       "mark": "FT",
       "components": [
@@ -3683,8 +3683,8 @@
       ],
       "category": "APP",
       "mapping_source": "Projectivy Icon Pack 1.1.9",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled from the official launcher icon (Google Play listing for net.oqee.androidtv.store): dominant brand accent #C00000 (2026-09-26)",
+      "color_reviewed": "2026-09-26"
     },
     {
       "name": "Freeflix Hq",
@@ -3716,7 +3716,7 @@
     {
       "name": "Fresh Drama",
       "drawable": "fresh_drama",
-      "color": "#FF7A2E",
+      "color": "#FF19B9",
       "glyph": "broadcast_F",
       "mark": "FD",
       "components": [
@@ -3725,8 +3725,8 @@
       ],
       "category": "APP",
       "mapping_source": "Projectivy Icon Pack 1.1.9",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled from the official launcher icon (Google Play listing for com.skylinktv.freshdrama): dominant brand accent #FF19B9 (2026-09-26)",
+      "color_reviewed": "2026-09-26"
     },
     {
       "name": "Ftp Server",
@@ -3758,15 +3758,15 @@
     {
       "name": "Full Episodes",
       "drawable": "fullepisodes",
-      "color": "#F04DE0",
+      "color": "#FF4500",
       "glyph": "broadcast_F",
       "mark": "FE",
       "components": [
         "com.cw.fullepisodes.android/com.cw.fullepisodes.android.TvActivity"
       ],
       "category": "APP",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled from the official launcher icon (Google Play listing for com.cw.fullepisodes.android): dominant brand accent #FF4500 (2026-09-26)",
+      "color_reviewed": "2026-09-26"
     },
     {
       "name": "FX File Explorer",
@@ -3798,7 +3798,7 @@
     {
       "name": "Galaxy Play",
       "drawable": "galaxy_play",
-      "color": "#3D8BFF",
+      "color": "#003D96",
       "glyph": "film_G",
       "mark": "GP",
       "components": [
@@ -3806,8 +3806,8 @@
       ],
       "category": "APP",
       "mapping_source": "Projectivy Icon Pack 1.1.9",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled from the official launcher icon (Google Play listing for movies.fimplus.vn.andtv): dominant brand accent #003D96 (2026-09-26)",
+      "color_reviewed": "2026-09-26"
     },
     {
       "name": "Gallery 3D",
@@ -3837,7 +3837,7 @@
     {
       "name": "Gb News",
       "drawable": "gb_news",
-      "color": "#C95CFF",
+      "color": "#0027A6",
       "glyph": "broadcast_G",
       "mark": "GN",
       "components": [
@@ -3845,8 +3845,8 @@
       ],
       "category": "APP",
       "mapping_source": "Projectivy Icon Pack 1.1.9",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled from the official launcher icon (Google Play listing for uk.gbnews.app): dominant brand accent #0027A6 (2026-09-26)",
+      "color_reviewed": "2026-09-26"
     },
     {
       "name": "GeForce Now",
@@ -3876,16 +3876,16 @@
     {
       "name": "Get Icon",
       "drawable": "get_icon",
-      "color": "#4FACFE",
-      "glyph": "tool_G",
-      "mark": "GI",
+      "color": "#F48FB1",
+      "glyph": "geticon_lens",
       "components": [
         "de.lemke.geticon/de.lemke.geticon.ui.MainActivity"
       ],
       "category": "APP",
       "mapping_source": "Projectivy Icon Pack 1.1.9",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled from the official launcher icon (Google Play listing for de.lemke.geticon): dominant brand accent #F48FB1 (2026-09-26)",
+      "color_reviewed": "2026-09-26",
+      "glyph_source": "brand-informed redraw of the official launcher icon (play listing for de.lemke.geticon); Core monoline geometry, not a trace (2026-09-26)"
     },
     {
       "name": "Getflix VPN",
@@ -4034,28 +4034,28 @@
     {
       "name": "Great American Pure Flix",
       "drawable": "great",
-      "color": "#7C74FF",
+      "color": "#280653",
       "glyph": "broadcast_G",
       "mark": "GA",
       "components": [
         "com.great.tv.android/tv.accedo.one.app.bootstrap.BootstrapActivity"
       ],
       "category": "APP",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled from the official launcher icon (Google Play listing for com.great.tv.android): dominant brand accent #280653 (2026-09-26)",
+      "color_reviewed": "2026-09-26"
     },
     {
       "name": "GT Share",
       "drawable": "gtshare",
-      "color": "#FF7A2E",
+      "color": "#EDAD0A",
       "glyph": "broadcast_G",
       "mark": "GS",
       "components": [
         "com.gtmedia.gtshare/com.winsat.gtshare.MainActivity"
       ],
       "category": "APP",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled from the official launcher icon (Google Play listing for com.gtmedia.gtshare): dominant brand accent #EDAD0A (2026-09-26)",
+      "color_reviewed": "2026-09-26"
     },
     {
       "name": "GuidePlus",
@@ -4073,7 +4073,7 @@
     {
       "name": "Gymondo",
       "drawable": "gymondo",
-      "color": "#F04DE0",
+      "color": "#FF7F66",
       "glyph": "sport_G",
       "mark": "GY",
       "components": [
@@ -4081,8 +4081,8 @@
       ],
       "category": "APP",
       "mapping_source": "Projectivy Icon Pack 1.1.9",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled from the official launcher icon (Google Play listing for de.gymondo.app.gymondo): dominant brand accent #FF7F66 (2026-09-26)",
+      "color_reviewed": "2026-09-26"
     },
     {
       "name": "Hallmark Channel",
@@ -4099,15 +4099,15 @@
     {
       "name": "Haystack News",
       "drawable": "haystack",
-      "color": "#B6F23A",
+      "color": "#D73728",
       "glyph": "broadcast_H",
       "mark": "HN",
       "components": [
         "com.haystack.android/com.haystack.android.tv.ui.activities.LoadingActivity"
       ],
       "category": "APP",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled from the official launcher icon (Google Play listing for com.haystack.android): dominant brand accent #D73728 (2026-09-26)",
+      "color_reviewed": "2026-09-26"
     },
     {
       "name": "Hayu",
@@ -4139,7 +4139,7 @@
     {
       "name": "Hdhomerun",
       "drawable": "hdhomerun",
-      "color": "#FF4D4D",
+      "color": "#6EED00",
       "glyph": "broadcast_H",
       "mark": "HD",
       "components": [
@@ -4147,8 +4147,8 @@
       ],
       "category": "APP",
       "mapping_source": "Projectivy Icon Pack 1.1.9",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled from the official launcher icon (Google Play listing for com.silicondust.view): dominant brand accent #6EED00 (2026-09-26)",
+      "color_reviewed": "2026-09-26"
     },
     {
       "name": "HDMI Source",
@@ -4226,15 +4226,15 @@
     {
       "name": "HEI Network",
       "drawable": "heinetworktv",
-      "color": "#E6EDF3",
+      "color": "#DA3430",
       "glyph": "broadcast_H",
       "mark": "HN",
       "components": [
         "com.heinetwork.HEINetworkTV/com.heinetwork.HEINetworkTV.MainActivity"
       ],
       "category": "APP",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled from the official launcher icon (Google Play listing for com.heinetwork.HEINetworkTV): dominant brand accent #DA3430 (2026-09-26)",
+      "color_reviewed": "2026-09-26"
     },
     {
       "name": "HGTV",
@@ -4272,7 +4272,7 @@
     {
       "name": "Hideme",
       "drawable": "hideme",
-      "color": "#A366FF",
+      "color": "#2AA9E0",
       "glyph": "vpn_H",
       "mark": "HI",
       "components": [
@@ -4280,13 +4280,13 @@
       ],
       "category": "APP",
       "mapping_source": "Projectivy Icon Pack 1.1.9",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled from the official launcher icon (Google Play listing for hideme.android.vpn): dominant brand accent #2AA9E0 (2026-09-26)",
+      "color_reviewed": "2026-09-26"
     },
     {
       "name": "Hidive",
       "drawable": "hidive",
-      "color": "#FFB020",
+      "color": "#23B9F2",
       "glyph": "anime_H",
       "mark": "HI",
       "components": [
@@ -4294,21 +4294,21 @@
       ],
       "category": "APP",
       "mapping_source": "Projectivy Icon Pack 1.1.9",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled from the official launcher icon (Google Play listing for com.twentyfouri.androidtv.hidive): dominant brand accent #23B9F2 (2026-09-26)",
+      "color_reviewed": "2026-09-26"
     },
     {
       "name": "Hippos",
       "drawable": "livingwithhippos",
-      "color": "#00D4FF",
+      "color": "#D20076",
       "glyph": "broadcast_H",
       "mark": "HI",
       "components": [
         "com.github.livingwithhippos.unchained/com.github.livingwithhippos.unchained.base.MainActivity"
       ],
       "category": "APP",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled from the official launcher icon (Google Play listing for com.github.livingwithhippos.unchained): dominant brand accent #D20076 (2026-09-26)",
+      "color_reviewed": "2026-09-26"
     },
     {
       "name": "HISTORY",
@@ -4337,21 +4337,21 @@
     {
       "name": "Hoichoi",
       "drawable": "hoichoi",
-      "color": "#7C74FF",
+      "color": "#BA072B",
       "glyph": "broadcast_H",
       "components": [
         "com.viewlift.hoichoi/com.viewlift.hoichoi.ui.splash.MainActivity"
       ],
       "category": "APP",
       "mapping_source": "Projectivy Icon Pack 1.1.9",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null,
+      "color_source": "sampled from the official launcher icon (Google Play listing for com.viewlift.hoichoi): dominant brand accent #BA072B (2026-09-26)",
+      "color_reviewed": "2026-09-26",
       "mark": "HO"
     },
     {
       "name": "Home Automation TV Dashboard",
       "drawable": "home_automation_tv_dashboard",
-      "color": "#FF7A2E",
+      "color": "#03A9F4",
       "glyph": "broadcast_H",
       "mark": "HA",
       "components": [
@@ -4359,8 +4359,8 @@
       ],
       "category": "APP",
       "mapping_source": "Projectivy Icon Pack 1.1.9",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled from the official launcher icon (Google Play listing for io.homeassistant.companion.androidtv): dominant brand accent #03A9F4 (2026-09-26)",
+      "color_reviewed": "2026-09-26"
     },
     {
       "name": "Home Button",
@@ -4419,7 +4419,7 @@
     {
       "name": "Hrti",
       "drawable": "hrti",
-      "color": "#F04DE0",
+      "color": "#670000",
       "glyph": "broadcast_H",
       "mark": "HR",
       "components": [
@@ -4427,34 +4427,34 @@
       ],
       "category": "APP",
       "mapping_source": "Projectivy Icon Pack 1.1.9",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled from the official launcher icon (Google Play listing for hr.hrt.hrti): dominant brand accent #670000 (2026-09-26)",
+      "color_reviewed": "2026-09-26"
     },
     {
       "name": "Hubitat",
       "drawable": "jpage4500",
-      "color": "#B6F23A",
-      "glyph": "tool_H",
-      "mark": "HU",
+      "color": "#154570",
+      "glyph": "hubitat_home",
       "components": [
         "com.jpage4500.hubitat/com.jpage4500.hubitat.ui.activities.MainActivity"
       ],
       "category": "APP",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled from the official launcher icon (Google Play listing for com.jpage4500.hubitat): dominant brand accent #154570 (2026-09-26)",
+      "color_reviewed": "2026-09-26",
+      "glyph_source": "brand-informed redraw of the official launcher icon (play listing for com.jpage4500.hubitat); Core monoline geometry, not a trace (2026-09-26)"
     },
     {
       "name": "Hue Shortcuts",
       "drawable": "hueshortcuts",
       "color": "#3D8BFF",
-      "glyph": "tool_H",
-      "mark": "HS",
+      "glyph": "hue_bulb",
       "components": [
         "app.mcneill.hueshortcuts/app.mcneill.hueshortcuts.MainActivity"
       ],
       "category": "APP",
       "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_reviewed": null,
+      "glyph_source": "brand-informed redraw of the official launcher icon (play listing for app.mcneill.hueshortcuts); Core monoline geometry, not a trace (2026-09-26)"
     },
     {
       "name": "Hueessentials",
@@ -4513,20 +4513,20 @@
     {
       "name": "IB Player",
       "drawable": "ib",
-      "color": "#C95CFF",
+      "color": "#8E2529",
       "glyph": "broadcast_I",
       "mark": "IP",
       "components": [
         "com.ib.player/com.ib.player.MainActivity"
       ],
       "category": "APP",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled from the official launcher icon (Google Play listing for com.ib.player): dominant brand accent #8E2529 (2026-09-26)",
+      "color_reviewed": "2026-09-26"
     },
     {
       "name": "Ici Tou TV",
       "drawable": "ici_tou_tv",
-      "color": "#FFE14D",
+      "color": "#00A5AC",
       "glyph": "broadcast_I",
       "mark": "ITT",
       "components": [
@@ -4535,8 +4535,8 @@
       ],
       "category": "APP",
       "mapping_source": "Projectivy Icon Pack 1.1.9",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled from the official launcher icon (Google Play listing for tv.toutv.androidtv): dominant brand accent #00A5AC (2026-09-26)",
+      "color_reviewed": "2026-09-26"
     },
     {
       "name": "Iflix",
@@ -4554,15 +4554,15 @@
     {
       "name": "Ignite TV",
       "drawable": "ignitetv",
-      "color": "#E6EDF3",
+      "color": "#DB291D",
       "glyph": "broadcast_I",
       "mark": "IT",
       "components": [
         "com.rogers.ignitetv/com.xfinity.common.view.LaunchActivity"
       ],
       "category": "APP",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled from the official launcher icon (Google Play listing for com.rogers.ignitetv): dominant brand accent #DB291D (2026-09-26)",
+      "color_reviewed": "2026-09-26"
     },
     {
       "name": "iHeartRadio",
@@ -4619,15 +4619,15 @@
     {
       "name": "InstantBits",
       "drawable": "instantbits",
-      "color": "#FFB020",
+      "color": "#F89616",
       "glyph": "broadcast_I",
       "mark": "IN",
       "components": [
         "com.instantbits.cast.receiver/com.instantbits.android.receiver.MainActivity"
       ],
       "category": "APP",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled from the official launcher icon (Google Play listing for com.instantbits.cast.receiver): dominant brand accent #F89616 (2026-09-26)",
+      "color_reviewed": "2026-09-26"
     },
     {
       "name": "Ip Address",
@@ -4792,21 +4792,21 @@
     {
       "name": "Jawwy TV",
       "drawable": "intigral",
-      "color": "#3D8BFF",
+      "color": "#4F008C",
       "glyph": "broadcast_J",
       "mark": "JT",
       "components": [
         "com.intigral.jawwytv/com.intigral.jawwytv.standalone.StandaloneSplashActivity"
       ],
       "category": "APP",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null,
+      "color_source": "sampled from the official launcher icon (Google Play listing for com.intigral.jawwytv): dominant brand accent #4F008C (2026-09-26)",
+      "color_reviewed": "2026-09-26",
       "brand": "jawwy"
     },
     {
       "name": "Jawwy TV",
       "drawable": "jawwy_tv",
-      "color": "#3D8BFF",
+      "color": "#4F008C",
       "glyph": "broadcast_J",
       "mark": "JT",
       "components": [
@@ -4814,8 +4814,8 @@
       ],
       "category": "APP",
       "mapping_source": "Projectivy Icon Pack 1.1.9",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null,
+      "color_source": "sampled from the official launcher icon (Google Play listing for com.intigral.jawwytv): dominant brand accent #4F008C (2026-09-26)",
+      "color_reviewed": "2026-09-26",
       "brand": "jawwy"
     },
     {
@@ -4857,15 +4857,15 @@
     {
       "name": "Jio TV Plus",
       "drawable": "jiotvplus",
-      "color": "#1FD19A",
+      "color": "#BE1220",
       "glyph": "broadcast_J",
       "mark": "JT",
       "components": [
         "com.jio.media.jiotvplus/com.jio.media.stb.ondemand.patchwall.views.MainActivity"
       ],
       "category": "APP",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled from the official launcher icon (Google Play listing for com.jio.media.jiotvplus): dominant brand accent #BE1220 (2026-09-26)",
+      "color_reviewed": "2026-09-26"
     },
     {
       "name": "Jiohotstar",
@@ -4898,7 +4898,7 @@
     {
       "name": "Joyn",
       "drawable": "joyn",
-      "color": "#4FACFE",
+      "color": "#005766",
       "glyph": "broadcast_J",
       "mark": "JO",
       "mark_style": "lower",
@@ -4908,8 +4908,8 @@
       ],
       "category": "APP",
       "mapping_source": "Projectivy Icon Pack 1.1.9",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled from the official launcher icon (Google Play listing for de.prosiebensat1digital.seventv): dominant brand accent #005766 (2026-09-26)",
+      "color_reviewed": "2026-09-26"
     },
     {
       "name": "Jtv Go Server",
@@ -4967,27 +4967,27 @@
     {
       "name": "K+",
       "drawable": "irdeto",
-      "color": "#A366FF",
+      "color": "#D41317",
       "glyph": "broadcast_K",
       "components": [
         "com.irdeto.kplus/tv.solocoo.htmlapp.FullscreenActivity"
       ],
       "category": "APP",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled from the official launcher icon (Google Play listing for com.irdeto.kplus): dominant brand accent #D41317 (2026-09-26)",
+      "color_reviewed": "2026-09-26"
     },
     {
       "name": "Kamal TV",
       "drawable": "androidtv_7",
-      "color": "#FFB020",
+      "color": "#FB0000",
       "glyph": "broadcast_K",
       "mark": "KT",
       "components": [
         "com.kamal.androidtv/com.kamal.androidtv.App"
       ],
       "category": "APP",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled from the official launcher icon (Google Play listing for com.kamal.androidtv): dominant brand accent #FB0000 (2026-09-26)",
+      "color_reviewed": "2026-09-26"
     },
     {
       "name": "Kanopy",
@@ -5004,15 +5004,15 @@
     {
       "name": "Karaoke",
       "drawable": "kfandroid",
-      "color": "#00D4FF",
+      "color": "#D5167A",
       "glyph": "music_K",
       "mark": "KA",
       "components": [
         "com.recisio.kfandroid/com.recisio.kfandroid.start.StartActivity"
       ],
       "category": "APP",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled from the official launcher icon (Google Play listing for com.recisio.kfandroid): dominant brand accent #D5167A (2026-09-26)",
+      "color_reviewed": "2026-09-26"
     },
     {
       "name": "Kayo",
@@ -5090,15 +5090,15 @@
     {
       "name": "Kernel Media",
       "drawable": "kernelmedia",
-      "color": "#19D3C5",
+      "color": "#FFA300",
       "glyph": "broadcast_K",
       "mark": "KM",
       "components": [
         "androidtv.kernelmedia.tv/androidtv.kernelmedia.tv.ui.MainActivity"
       ],
       "category": "APP",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled from the official launcher icon (Google Play listing for androidtv.kernelmedia.tv): dominant brand accent #FFA300 (2026-09-26)",
+      "color_reviewed": "2026-09-26"
     },
     {
       "name": "Kick",
@@ -5116,7 +5116,7 @@
     {
       "name": "Kijk",
       "drawable": "kijk",
-      "color": "#F04DE0",
+      "color": "#7411B7",
       "glyph": "broadcast_K",
       "mark": "KI",
       "components": [
@@ -5124,13 +5124,13 @@
       ],
       "category": "APP",
       "mapping_source": "Projectivy Icon Pack 1.1.9",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled from the official launcher icon (Google Play listing for nl.sbs.kijk): dominant brand accent #7411B7 (2026-09-26)",
+      "color_reviewed": "2026-09-26"
     },
     {
       "name": "Kika",
       "drawable": "kika",
-      "color": "#B6F23A",
+      "color": "#023D61",
       "glyph": "broadcast_K",
       "mark": "KI",
       "components": [
@@ -5139,8 +5139,8 @@
       ],
       "category": "APP",
       "mapping_source": "Projectivy Icon Pack 1.1.9",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled from the official launcher icon (Google Play listing for de.kika.player.androidtv): dominant brand accent #023D61 (2026-09-26)",
+      "color_reviewed": "2026-09-26"
     },
     {
       "name": "Kinopoisk",
@@ -5214,34 +5214,34 @@
     {
       "name": "KPN",
       "drawable": "kpnandroidtv",
-      "color": "#1FD19A",
+      "color": "#02BE03",
       "glyph": "broadcast_K",
       "mark": "KP",
       "components": [
         "com.kpn.kpnandroidtv/com.kpn.tvplusapp.MainActivity"
       ],
       "category": "APP",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled from the official launcher icon (Google Play listing for com.kpn.kpnandroidtv): dominant brand accent #02BE03 (2026-09-26)",
+      "color_reviewed": "2026-09-26"
     },
     {
       "name": "Kreate",
       "drawable": "kreate",
-      "color": "#C95CFF",
-      "glyph": "music_K",
-      "mark": "KR",
+      "color": "#9829FD",
+      "glyph": "kreate_k",
       "components": [
         "me.knighthat.kreate/it.fast4x.rimusic.MainActivity"
       ],
       "category": "APP",
       "mapping_source": "Projectivy Icon Pack 1.1.9",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled from the official launcher icon (F-Droid listing for me.knighthat.kreate): dominant brand accent #9829FD (2026-09-26)",
+      "color_reviewed": "2026-09-26",
+      "glyph_source": "brand-informed redraw of the official launcher icon (f-droid listing for me.knighthat.kreate); Core monoline geometry, not a trace (2026-09-26)"
     },
     {
       "name": "Kuku TV",
       "drawable": "kuku_tv",
-      "color": "#FFE14D",
+      "color": "#600B0E",
       "glyph": "broadcast_K",
       "mark": "KT",
       "components": [
@@ -5249,13 +5249,13 @@
       ],
       "category": "APP",
       "mapping_source": "Projectivy Icon Pack 1.1.9",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled from the official launcher icon (Google Play listing for com.vlv.aravali.reels): dominant brand accent #600B0E (2026-09-26)",
+      "color_reviewed": "2026-09-26"
     },
     {
       "name": "L Equipe",
       "drawable": "l_equipe",
-      "color": "#4FACFE",
+      "color": "#E12C31",
       "glyph": "broadcast_L",
       "mark": "LE",
       "components": [
@@ -5263,8 +5263,8 @@
       ],
       "category": "APP",
       "mapping_source": "Projectivy Icon Pack 1.1.9",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled from the official launcher icon (Google Play listing for lequipe.fr): dominant brand accent #E12C31 (2026-09-26)",
+      "color_reviewed": "2026-09-26"
     },
     {
       "name": "L TV Launcher",
@@ -5308,28 +5308,28 @@
     {
       "name": "Laugh After Dark",
       "drawable": "laughafterdark",
-      "color": "#A366FF",
+      "color": "#E7B90A",
       "glyph": "film_L",
       "mark": "LA",
       "components": [
         "com.laughafterdark.androidtv/com.laughafterdark.androidtv.ui.splashscreen.activity.SplashScreenActivity"
       ],
       "category": "APP",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled from the official launcher icon (Google Play listing for com.laughafterdark.androidtv): dominant brand accent #E7B90A (2026-09-26)",
+      "color_reviewed": "2026-09-26"
     },
     {
       "name": "Launch Sounds",
       "drawable": "launchsounds",
-      "color": "#FFB020",
+      "color": "#FF4B00",
       "glyph": "gaming_L",
       "mark": "LS",
       "components": [
         "com.nvidia.bbciplayer.launchsounds/com.nvidia.bbciplayer.LaunchSoundsActivity"
       ],
       "category": "APP",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled from the official launcher icon (Google Play listing for com.nvidia.bbciplayer.launchsounds): dominant brand accent #FF4B00 (2026-09-26)",
+      "color_reviewed": "2026-09-26"
     },
     {
       "name": "Launchbox",
@@ -5432,7 +5432,7 @@
     {
       "name": "Lemino",
       "drawable": "lemino",
-      "color": "#19D3C5",
+      "color": "#FF2B66",
       "glyph": "broadcast_L",
       "mark": "LE",
       "components": [
@@ -5440,8 +5440,8 @@
       ],
       "category": "APP",
       "mapping_source": "Projectivy Icon Pack 1.1.9",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled from the official launcher icon (Google Play listing for jp.ne.docomo.lemino.androidtv): dominant brand accent #FF2B66 (2026-09-26)",
+      "color_reviewed": "2026-09-26"
     },
     {
       "name": "Lemuroid",
@@ -5474,41 +5474,41 @@
     {
       "name": "Liga Portugal",
       "drawable": "ligaportugal",
-      "color": "#3D8BFF",
+      "color": "#001240",
       "glyph": "sport_L",
       "mark": "LP",
       "components": [
         "com.ligaportugal.ligatv/com.ligaportugal.ligatv.SplashActivity"
       ],
       "category": "APP",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled from the official launcher icon (Google Play listing for com.ligaportugal.ligatv): dominant brand accent #001240 (2026-09-26)",
+      "color_reviewed": "2026-09-26"
     },
     {
       "name": "Ligue 1+",
       "drawable": "ligueunpass",
-      "color": "#FF4D4D",
+      "color": "#0760FF",
       "glyph": "broadcast_L",
       "mark": "L1",
       "components": [
         "com.ligueunpass.app/com.ligueunpass.app.MainActivity"
       ],
       "category": "APP",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled from the official launcher icon (Google Play listing for com.ligueunpass.app): dominant brand accent #0760FF (2026-09-26)",
+      "color_reviewed": "2026-09-26"
     },
     {
       "name": "Live Channels",
       "drawable": "tv",
-      "color": "#1FD19A",
+      "color": "#0EA5EF",
       "glyph": "broadcast_L",
       "mark": "LC",
       "components": [
         "com.google.android.tv/com.android.tv.TvActivity"
       ],
       "category": "APP",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled from the official launcher icon (Google Play listing for com.google.android.tv): dominant brand accent #0EA5EF (2026-09-26)",
+      "color_reviewed": "2026-09-26"
     },
     {
       "name": "BitTV",
@@ -5544,15 +5544,15 @@
     {
       "name": "Liverpool FC",
       "drawable": "liverpoolfc",
-      "color": "#C95CFF",
+      "color": "#E31319",
       "glyph": "broadcast_L",
       "mark": "LF",
       "components": [
         "com.liverpoolfc.goapp/com.applicaster.ui.activities.MainActivity"
       ],
       "category": "APP",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled from the official launcher icon (Google Play listing for com.liverpoolfc.goapp): dominant brand accent #E31319 (2026-09-26)",
+      "color_reviewed": "2026-09-26"
     },
     {
       "name": "Localnow",
@@ -5596,7 +5596,7 @@
     {
       "name": "Loco",
       "drawable": "loco",
-      "color": "#E6EDF3",
+      "color": "#FF5A12",
       "glyph": "broadcast_L",
       "mark": "LO",
       "components": [
@@ -5604,8 +5604,8 @@
       ],
       "category": "APP",
       "mapping_source": "Projectivy Icon Pack 1.1.9",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled from the official launcher icon (Google Play listing for com.showtimeapp): dominant brand accent #FF5A12 (2026-09-26)",
+      "color_reviewed": "2026-09-26"
     },
     {
       "name": "Lrt",
@@ -5679,15 +5679,15 @@
     {
       "name": "MagellanTV",
       "drawable": "magellantv",
-      "color": "#FF5CA8",
+      "color": "#32C2E6",
       "glyph": "broadcast_M",
       "mark": "MA",
       "components": [
         "com.abide.magellantv/com.magellan.tv.splash.SplashActivity"
       ],
       "category": "APP",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled from the official launcher icon (Google Play listing for com.abide.magellantv): dominant brand accent #32C2E6 (2026-09-26)",
+      "color_reviewed": "2026-09-26"
     },
     {
       "name": "Magenta Sport",
@@ -5706,7 +5706,7 @@
     {
       "name": "Magenta TV",
       "drawable": "magenta_tv",
-      "color": "#53FC18",
+      "color": "#E50578",
       "glyph": "broadcast_M",
       "mark": "MT",
       "components": [
@@ -5715,13 +5715,13 @@
       ],
       "category": "APP",
       "mapping_source": "Projectivy Icon Pack 1.1.9",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled from the official launcher icon (Google Play listing for cz.tmobile.tvgo): dominant brand accent #E50578 (2026-09-26)",
+      "color_reviewed": "2026-09-26"
     },
     {
       "name": "Magio TV",
       "drawable": "magio_tv",
-      "color": "#7C74FF",
+      "color": "#E6067A",
       "glyph": "broadcast_M",
       "mark": "MT",
       "components": [
@@ -5729,8 +5729,8 @@
       ],
       "category": "APP",
       "mapping_source": "Projectivy Icon Pack 1.1.9",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled from the official launcher icon (Google Play listing for com.telekom.magiogo): dominant brand accent #E6067A (2026-09-26)",
+      "color_reviewed": "2026-09-26"
     },
     {
       "name": "Mame4droid",
@@ -5749,15 +5749,15 @@
     {
       "name": "Mango TV",
       "drawable": "intl",
-      "color": "#19D3C5",
-      "glyph": "broadcast_M",
-      "mark": "MT",
+      "color": "#FD6001",
+      "glyph": "mango_m",
       "components": [
         "com.mgtv.tv.intl/com.mgtv.tv.launcher.LauncherActivity"
       ],
       "category": "APP",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled from the official launcher icon (Google Play listing for com.mgtv.tv.intl): dominant brand accent #FD6001 (2026-09-26)",
+      "color_reviewed": "2026-09-26",
+      "glyph_source": "brand-informed redraw of the official launcher icon (play listing for com.mgtv.tv.intl); Core monoline geometry, not a trace (2026-09-26)"
     },
     {
       "name": "Material Files",
@@ -5848,15 +5848,15 @@
     {
       "name": "Maz TVOD",
       "drawable": "tvod169",
-      "color": "#1FD19A",
+      "color": "#BB9836",
       "glyph": "broadcast_T",
       "mark": "MT",
       "components": [
         "com.maz.tvod169/com.maz.activities.ViewerLaunchActivity"
       ],
       "category": "APP",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled from the official launcher icon (Google Play listing for com.maz.tvod169): dominant brand accent #BB9836 (2026-09-26)",
+      "color_reviewed": "2026-09-26"
     },
     {
       "name": "Maze",
@@ -5901,15 +5901,15 @@
     {
       "name": "Media Hub",
       "drawable": "utility",
-      "color": "#34EB7A",
+      "color": "#01C67B",
       "glyph": "broadcast_M",
       "mark": "MH",
       "components": [
         "com.oumi.utility.media.hub/com.mac.utility.media.hub.ui_tv.main.TVMainActivity"
       ],
       "category": "APP",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled from the official launcher icon (Google Play listing for com.oumi.utility.media.hub): dominant brand accent #01C67B (2026-09-26)",
+      "color_reviewed": "2026-09-26"
     },
     {
       "name": "Mediaset Infinity TV",
@@ -5953,7 +5953,7 @@
     {
       "name": "Mercado Play",
       "drawable": "mercado_play",
-      "color": "#FF5CA8",
+      "color": "#FFE600",
       "glyph": "broadcast_M",
       "mark": "MP",
       "components": [
@@ -5961,8 +5961,8 @@
       ],
       "category": "APP",
       "mapping_source": "Projectivy Icon Pack 1.1.9",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled from the official launcher icon (Google Play listing for com.mercadolibre.android.mplay_tv): dominant brand accent #FFE600 (2026-09-26)",
+      "color_reviewed": "2026-09-26"
     },
     {
       "name": "Metrolist",
@@ -5980,7 +5980,7 @@
     {
       "name": "Mewatch",
       "drawable": "mewatch",
-      "color": "#53FC18",
+      "color": "#F900E4",
       "glyph": "broadcast_M",
       "mark": "ME",
       "components": [
@@ -5988,8 +5988,8 @@
       ],
       "category": "APP",
       "mapping_source": "Projectivy Icon Pack 1.1.9",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled from the official launcher icon (Google Play listing for sg.mediacorp.android): dominant brand accent #F900E4 (2026-09-26)",
+      "color_reviewed": "2026-09-26"
     },
     {
       "name": "MGM+",
@@ -6102,15 +6102,15 @@
     {
       "name": "Mobily TV",
       "drawable": "mobily",
-      "color": "#C95CFF",
+      "color": "#045DF9",
       "glyph": "broadcast_M",
       "mark": "MT",
       "components": [
         "com.mobily.tvapp/com.parsifal.starz.ui.features.launcher.LauncherActivity"
       ],
       "category": "APP",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled from the official launcher icon (Google Play listing for com.mobily.tvapp): dominant brand accent #045DF9 (2026-09-26)",
+      "color_reviewed": "2026-09-26"
     },
     {
       "name": "Molotov TV",
@@ -6205,15 +6205,15 @@
     {
       "name": "Movideo",
       "drawable": "whitelabel",
-      "color": "#A366FF",
+      "color": "#8BBF3F",
       "glyph": "broadcast_M",
       "mark": "MO",
       "components": [
         "com.movideo.whitelabel/com.movideo.whitelabel.MainActivity"
       ],
       "category": "APP",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled from the official launcher icon (Google Play listing for com.movideo.whitelabel): dominant brand accent #8BBF3F (2026-09-26)",
+      "color_reviewed": "2026-09-26"
     },
     {
       "name": "Movie HD",
@@ -6231,7 +6231,7 @@
     {
       "name": "Movieark",
       "drawable": "movieark",
-      "color": "#00D4FF",
+      "color": "#00C1D2",
       "glyph": "film_M",
       "mark": "MO",
       "components": [
@@ -6239,8 +6239,8 @@
       ],
       "category": "APP",
       "mapping_source": "Projectivy Icon Pack 1.1.9",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled from the official launcher icon (Google Play listing for com.tcl.movieark): dominant brand accent #00C1D2 (2026-09-26)",
+      "color_reviewed": "2026-09-26"
     },
     {
       "name": "MovieBox Pro",
@@ -6325,15 +6325,15 @@
     {
       "name": "MSM Video",
       "drawable": "msmvideo",
-      "color": "#19D3C5",
+      "color": "#FFC400",
       "glyph": "broadcast_M",
       "mark": "MV",
       "components": [
         "com.msmvideo.tv/com.example.msmvideo.ui.SplashActivity"
       ],
       "category": "APP",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled from the official launcher icon (Google Play listing for com.msmvideo.tv): dominant brand accent #FFC400 (2026-09-26)",
+      "color_reviewed": "2026-09-26"
     },
     {
       "name": "Mst3k",
@@ -6353,7 +6353,7 @@
     {
       "name": "Mtv Katsomo",
       "drawable": "mtv_katsomo",
-      "color": "#B6F23A",
+      "color": "#FF3334",
       "glyph": "broadcast_M",
       "mark": "MK",
       "components": [
@@ -6361,8 +6361,8 @@
       ],
       "category": "APP",
       "mapping_source": "Projectivy Icon Pack 1.1.9",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled from the official launcher icon (Google Play listing for fi.mtvkatsomo): dominant brand accent #FF3334 (2026-09-26)",
+      "color_reviewed": "2026-09-26"
     },
     {
       "name": "MUBI",
@@ -6449,15 +6449,15 @@
     {
       "name": "My5",
       "drawable": "channel5",
-      "color": "#FFE14D",
+      "color": "#1A3963",
       "glyph": "broadcast_M",
       "mark": "MY",
       "components": [
         "com.channel5.my5/com.channel5.my5.tv.ui.splash.view.SplashActivity"
       ],
       "category": "APP",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled from the official launcher icon (Google Play listing for com.channel5.my5): dominant brand accent #1A3963 (2026-09-26)",
+      "color_reviewed": "2026-09-26"
     },
     {
       "name": "Myiptv",
@@ -6476,19 +6476,19 @@
       "name": "MyRadar",
       "drawable": "myradar",
       "color": "#E6EDF3",
-      "glyph": "broadcast_M",
-      "mark": "MY",
+      "glyph": "myradar_pin",
       "components": [
         "com.acmeaom.android.myradar/com.acmeaom.android.tv.ui.MyRadarTvActivity"
       ],
       "category": "APP",
       "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_reviewed": null,
+      "glyph_source": "brand-informed redraw of the official launcher icon (play listing for com.acmeaom.android.myradar); Core monoline geometry, not a trace (2026-09-26)"
     },
     {
       "name": "Mytvonline",
       "drawable": "mytvonline",
-      "color": "#34EB7A",
+      "color": "#212249",
       "glyph": "broadcast_M",
       "mark": "MY",
       "components": [
@@ -6496,8 +6496,8 @@
       ],
       "category": "APP",
       "mapping_source": "Projectivy Icon Pack 1.1.9",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled from the official launcher icon (Google Play listing for m.formuler.mol.plus): dominant brand accent #212249 (2026-09-26)",
+      "color_reviewed": "2026-09-26"
     },
     {
       "name": "Māori+",
@@ -6515,7 +6515,7 @@
     {
       "name": "Namava",
       "drawable": "namava",
-      "color": "#FFB020",
+      "color": "#066BCA",
       "glyph": "broadcast_N",
       "mark": "NA",
       "components": [
@@ -6523,8 +6523,8 @@
       ],
       "category": "APP",
       "mapping_source": "Projectivy Icon Pack 1.1.9",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled from the official launcher icon (Google Play listing for com.shatelland.namava.tv): dominant brand accent #066BCA (2026-09-26)",
+      "color_reviewed": "2026-09-26"
     },
     {
       "name": "Nasa",
@@ -6623,15 +6623,15 @@
     {
       "name": "Netfly",
       "drawable": "netfly",
-      "color": "#00D4FF",
+      "color": "#FC5A05",
       "glyph": "broadcast_N",
       "mark": "NE",
       "components": [
         "br.com.netfly.oletv/br.tv.ole.oletv.MainActivity"
       ],
       "category": "APP",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled from the official launcher icon (Google Play listing for br.com.netfly.oletv): dominant brand accent #FC5A05 (2026-09-26)",
+      "color_reviewed": "2026-09-26"
     },
     {
       "name": "Netfly TV",
@@ -6676,7 +6676,7 @@
     {
       "name": "Nettv",
       "drawable": "nettv",
-      "color": "#7C74FF",
+      "color": "#04518D",
       "glyph": "broadcast_N",
       "mark": "NE",
       "components": [
@@ -6684,13 +6684,13 @@
       ],
       "category": "APP",
       "mapping_source": "Projectivy Icon Pack 1.1.9",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled from the official launcher icon (Google Play listing for np.com.androidtv.nettv): dominant brand accent #04518D (2026-09-26)",
+      "color_reviewed": "2026-09-26"
     },
     {
       "name": "Netzkino",
       "drawable": "netzkino",
-      "color": "#FF7A2E",
+      "color": "#6AACE8",
       "glyph": "film_N",
       "mark": "NE",
       "components": [
@@ -6698,8 +6698,8 @@
       ],
       "category": "APP",
       "mapping_source": "Projectivy Icon Pack 1.1.9",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled from the official launcher icon (Google Play listing for de.netzkino.android.ics): dominant brand accent #6AACE8 (2026-09-26)",
+      "color_reviewed": "2026-09-26"
     },
     {
       "name": "Newpipe",
@@ -6756,7 +6756,7 @@
     {
       "name": "Nfolio",
       "drawable": "nfolio",
-      "color": "#3D8BFF",
+      "color": "#004575",
       "glyph": "photos_N",
       "mark": "NF",
       "components": [
@@ -6764,8 +6764,8 @@
       ],
       "category": "APP",
       "mapping_source": "Projectivy Icon Pack 1.1.9",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled from the official launcher icon (Google Play listing for com.snapwood.nfolio): dominant brand accent #004575 (2026-09-26)",
+      "color_reviewed": "2026-09-26"
     },
     {
       "name": "Nhk Plus",
@@ -6784,7 +6784,7 @@
     {
       "name": "Nhk World Japan",
       "drawable": "nhk_world_japan",
-      "color": "#1FD19A",
+      "color": "#E60019",
       "glyph": "broadcast_N",
       "mark": "NW",
       "components": [
@@ -6792,8 +6792,8 @@
       ],
       "category": "APP",
       "mapping_source": "Projectivy Icon Pack 1.1.9",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled from the official launcher icon (Google Play listing for jp.or.nhk.nhkworld.tv): dominant brand accent #E60019 (2026-09-26)",
+      "color_reviewed": "2026-09-26"
     },
     {
       "name": "NHL",
@@ -6841,7 +6841,7 @@
     {
       "name": "Nlziet",
       "drawable": "nlziet",
-      "color": "#FFE14D",
+      "color": "#FF427C",
       "glyph": "broadcast_N",
       "mark": "NL",
       "components": [
@@ -6849,8 +6849,8 @@
       ],
       "category": "APP",
       "mapping_source": "Projectivy Icon Pack 1.1.9",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled from the official launcher icon (Google Play listing for nl.nlziet): dominant brand accent #FF427C (2026-09-26)",
+      "color_reviewed": "2026-09-26"
     },
     {
       "name": "NoBuffr",
@@ -6939,15 +6939,15 @@
     {
       "name": "Nostalgia TV",
       "drawable": "nostalgiatv",
-      "color": "#FFB020",
+      "color": "#B0875E",
       "glyph": "broadcast_N",
       "mark": "NT",
       "components": [
         "com.nostalgiatv/com.nostalgiatv.MainActivity"
       ],
       "category": "APP",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled from the official launcher icon (Google Play listing for com.nostalgiatv): dominant brand accent #B0875E (2026-09-26)",
+      "color_reviewed": "2026-09-26"
     },
     {
       "name": "Notifications For Android TV",
@@ -7008,7 +7008,7 @@
     {
       "name": "Nowo TV",
       "drawable": "nowo_tv",
-      "color": "#7C74FF",
+      "color": "#FD7301",
       "glyph": "broadcast_N",
       "mark": "NT",
       "components": [
@@ -7016,13 +7016,13 @@
       ],
       "category": "APP",
       "mapping_source": "Projectivy Icon Pack 1.1.9",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled from the official launcher icon (Google Play listing for pt.nowo.nowotv.androidtv): dominant brand accent #FD7301 (2026-09-26)",
+      "color_reviewed": "2026-09-26"
     },
     {
       "name": "Npo Start",
       "drawable": "npo_start",
-      "color": "#FF7A2E",
+      "color": "#152360",
       "glyph": "broadcast_N",
       "mark": "NS",
       "components": [
@@ -7030,13 +7030,13 @@
       ],
       "category": "APP",
       "mapping_source": "Projectivy Icon Pack 1.1.9",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled from the official launcher icon (Google Play listing for nl.uitzendinggemist): dominant brand accent #152360 (2026-09-26)",
+      "color_reviewed": "2026-09-26"
     },
     {
       "name": "Nrk TV",
       "drawable": "nrk_tv",
-      "color": "#19D3C5",
+      "color": "#073B84",
       "glyph": "broadcast_N",
       "mark": "NT",
       "components": [
@@ -7045,8 +7045,8 @@
       ],
       "category": "APP",
       "mapping_source": "Projectivy Icon Pack 1.1.9",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled from the official launcher icon (Google Play listing for no.nrk.tv): dominant brand accent #073B84 (2026-09-26)",
+      "color_reviewed": "2026-09-26"
     },
     {
       "name": "NT at Home",
@@ -7116,20 +7116,20 @@
     {
       "name": "NZR+",
       "drawable": "nzrplus",
-      "color": "#FF4D4D",
+      "color": "#1C025B",
       "glyph": "broadcast_N",
       "mark": "NZ",
       "components": [
         "com.nzrplus.app/com.nzrplus.app.MainActivity"
       ],
       "category": "APP",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled from the official launcher icon (Google Play listing for com.nzrplus.app): dominant brand accent #1C025B (2026-09-26)",
+      "color_reviewed": "2026-09-26"
     },
     {
       "name": "Oblivion",
       "drawable": "oblivion",
-      "color": "#1FD19A",
+      "color": "#F28020",
       "glyph": "vpn_O",
       "mark": "OB",
       "components": [
@@ -7137,8 +7137,8 @@
       ],
       "category": "APP",
       "mapping_source": "Projectivy Icon Pack 1.1.9",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled from the official launcher icon (Google Play listing for org.bepass.oblivion): dominant brand accent #F28020 (2026-09-26)",
+      "color_reviewed": "2026-09-26"
     },
     {
       "name": "Obtainium",
@@ -7198,15 +7198,15 @@
     {
       "name": "Oilers+",
       "drawable": "oilers",
-      "color": "#E6EDF3",
+      "color": "#00205B",
       "glyph": "sport_O",
       "mark": "OI",
       "components": [
         "com.oilers.app/com.imggaming.dicemobile.MainActivity"
       ],
       "category": "APP",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled from the official launcher icon (Google Play listing for com.oilers.app): dominant brand accent #00205B (2026-09-26)",
+      "color_reviewed": "2026-09-26"
     },
     {
       "name": "OK TV",
@@ -7251,33 +7251,33 @@
     {
       "name": "Omroep Brabant",
       "drawable": "appomroepbrabant",
-      "color": "#00D4FF",
+      "color": "#C40000",
       "glyph": "broadcast_O",
       "mark": "OB",
       "components": [
         "com.appomroepbrabant/com.applicaster.ui.activities.MainActivity"
       ],
       "category": "APP",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled from the official launcher icon (Google Play listing for com.appomroepbrabant): dominant brand accent #C40000 (2026-09-26)",
+      "color_reviewed": "2026-09-26"
     },
     {
       "name": "Ondamedia",
       "drawable": "ondamedia",
-      "color": "#FF5CA8",
+      "color": "#6BCCD6",
       "glyph": "broadcast_O",
       "mark": "ON",
       "components": [
         "com.mdstrm.ondamedia/com.mdstrm.ondamedia.MainActivity"
       ],
       "category": "APP",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled from the official launcher icon (Google Play listing for com.mdstrm.ondamedia): dominant brand accent #6BCCD6 (2026-09-26)",
+      "color_reviewed": "2026-09-26"
     },
     {
       "name": "One Play",
       "drawable": "one_play",
-      "color": "#53FC18",
+      "color": "#070651",
       "glyph": "broadcast_O",
       "mark": "OP",
       "components": [
@@ -7285,8 +7285,8 @@
       ],
       "category": "APP",
       "mapping_source": "Projectivy Icon Pack 1.1.9",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled from the official launcher icon (Google Play listing for net.cme.voyo.cz.tvapp): dominant brand accent #070651 (2026-09-26)",
+      "color_reviewed": "2026-09-26"
     },
     {
       "name": "OnePix",
@@ -7317,15 +7317,15 @@
     {
       "name": "OnTV",
       "drawable": "andevapps",
-      "color": "#19D3C5",
+      "color": "#D61160",
       "glyph": "broadcast_O",
       "mark": "ON",
       "components": [
         "com.andevapps.ontv/limehd.ru.ctv.MainActivity"
       ],
       "category": "APP",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled from the official launcher icon (Google Play listing for com.andevapps.ontv): dominant brand accent #D61160 (2026-09-26)",
+      "color_reviewed": "2026-09-26"
     },
     {
       "name": "Openvpn For Android",
@@ -7343,34 +7343,34 @@
     {
       "name": "Opta / SIC",
       "drawable": "impresa",
-      "color": "#F04DE0",
+      "color": "#8C4BFF",
       "glyph": "broadcast_O",
       "mark": "OS",
       "components": [
         "com.impresa.opta/com.magycal.androidott.ui.tv.TVBaseActivity"
       ],
       "category": "APP",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled from the official launcher icon (Google Play listing for com.impresa.opta): dominant brand accent #8C4BFF (2026-09-26)",
+      "color_reviewed": "2026-09-26"
     },
     {
       "name": "Oqee By Free",
       "drawable": "oqee_by_free",
-      "color": "#B6F23A",
+      "color": "#C00000",
       "glyph": "broadcast_O",
-      "mark": "OB",
+      "mark": "OQ",
       "components": [
         "net.oqee.androidmobile/net.oqee.android.ui.splash.SplashActivity"
       ],
       "category": "APP",
       "mapping_source": "Projectivy Icon Pack 1.1.9",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled from the official launcher icon (Google Play listing for net.oqee.androidmobile): dominant brand accent #C00000 (2026-09-26)",
+      "color_reviewed": "2026-09-26"
     },
     {
       "name": "Orange TV Go",
       "drawable": "orange_tv_go",
-      "color": "#3D8BFF",
+      "color": "#FF7900",
       "glyph": "broadcast_O",
       "mark": "OT",
       "components": [
@@ -7378,21 +7378,21 @@
       ],
       "category": "APP",
       "mapping_source": "Projectivy Icon Pack 1.1.9",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled from the official launcher icon (Google Play listing for ro.orange.tvlive): dominant brand accent #FF7900 (2026-09-26)",
+      "color_reviewed": "2026-09-26"
     },
     {
       "name": "ORF ON",
       "drawable": "orftvthek",
-      "color": "#FF4D4D",
+      "color": "#474968",
       "glyph": "broadcast_O",
       "mark": "OO",
       "components": [
         "com.nousguide.android.orftvthek/com.nousguide.android.orftvthek.MainActivity"
       ],
       "category": "APP",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled from the official launcher icon (Google Play listing for com.nousguide.android.orftvthek): dominant brand accent #474968 (2026-09-26)",
+      "color_reviewed": "2026-09-26"
     },
     {
       "name": "OSN+",
@@ -7437,15 +7437,15 @@
     {
       "name": "OTTplay",
       "drawable": "ottplay",
-      "color": "#E6EDF3",
+      "color": "#ECDC1C",
       "glyph": "broadcast_O",
       "mark": "OT",
       "components": [
         "com.ottplay.ottplay/com.ottplay.ottplay.StartActivity"
       ],
       "category": "APP",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled from the official launcher icon (Google Play listing for com.ottplay.ottplay): dominant brand accent #ECDC1C (2026-09-26)",
+      "color_reviewed": "2026-09-26"
     },
     {
       "name": "Ottplayer",
@@ -7515,7 +7515,7 @@
     {
       "name": "Panda Plus",
       "drawable": "panda_plus",
-      "color": "#FF5CA8",
+      "color": "#FFA61A",
       "glyph": "broadcast_P",
       "mark": "PP",
       "components": [
@@ -7523,8 +7523,8 @@
       ],
       "category": "APP",
       "mapping_source": "Projectivy Icon Pack 1.1.9",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled from the official launcher icon (Google Play listing for pt.dreamia.pandaplus): dominant brand accent #FFA61A (2026-09-26)",
+      "color_reviewed": "2026-09-26"
     },
     {
       "name": "Pandora",
@@ -7541,15 +7541,15 @@
     {
       "name": "Pano Scrobbler",
       "drawable": "scrobble",
-      "color": "#53FC18",
+      "color": "#951B4D",
       "glyph": "music_S",
       "mark": "PS",
       "components": [
         "com.arn.scrobble/com.arn.scrobble.main.MainActivity"
       ],
       "category": "APP",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled from the official launcher icon (Google Play listing for com.arn.scrobble): dominant brand accent #951B4D (2026-09-26)",
+      "color_reviewed": "2026-09-26"
     },
     {
       "name": "Paramount+",
@@ -7609,7 +7609,7 @@
     {
       "name": "Pathethuis",
       "drawable": "pathethuis",
-      "color": "#7C74FF",
+      "color": "#FFC426",
       "glyph": "film_P",
       "mark": "PA",
       "components": [
@@ -7617,8 +7617,8 @@
       ],
       "category": "APP",
       "mapping_source": "Projectivy Icon Pack 1.1.9",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled from the official launcher icon (Google Play listing for nl.pathe.thuis): dominant brand accent #FFC426 (2026-09-26)",
+      "color_reviewed": "2026-09-26"
     },
     {
       "name": "PBS",
@@ -7752,68 +7752,68 @@
     {
       "name": "PigeonCast",
       "drawable": "pigeoncast",
-      "color": "#C95CFF",
+      "color": "#0092B0",
       "glyph": "broadcast_P",
       "mark": "PI",
       "components": [
         "com.pigeoncast.screen.mirroring.android.tv/com.mirror_universal.receiver.activity.MainActivity"
       ],
       "category": "APP",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled from the official launcher icon (Google Play listing for com.pigeoncast.screen.mirroring.android.tv): dominant brand accent #0092B0 (2026-09-26)",
+      "color_reviewed": "2026-09-26"
     },
     {
       "name": "PikPak",
       "drawable": "pikcloud",
-      "color": "#FFE14D",
-      "glyph": "debrid_P",
-      "mark": "PI",
+      "color": "#4664F3",
+      "glyph": "pikpak_robot",
       "components": [
         "com.pikcloud.pikpak/com.pikcloud.app.SplashActivity",
         "com.pikcloud.pikpak/com.pikcloud.app.TVLaunchActivity"
       ],
       "category": "APP",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled from the official launcher icon (Google Play listing for com.pikcloud.pikpak): dominant brand accent #4664F3 (2026-09-26)",
+      "color_reviewed": "2026-09-26",
+      "glyph_source": "brand-informed redraw of the official launcher icon (play listing for com.pikcloud.pikpak); Core monoline geometry, not a trace (2026-09-26)"
     },
     {
       "name": "Play Now",
       "drawable": "playnow",
-      "color": "#4FACFE",
+      "color": "#391D6F",
       "glyph": "broadcast_P",
       "mark": "PN",
       "components": [
         "com.play.playnow.tv/com.n7mobile.playbox.ui.MainActivity"
       ],
       "category": "APP",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled from the official launcher icon (Google Play listing for com.play.playnow.tv): dominant brand accent #391D6F (2026-09-26)",
+      "color_reviewed": "2026-09-26"
     },
     {
       "name": "Play Suisse",
       "drawable": "playsuisse",
-      "color": "#E6EDF3",
+      "color": "#9A0326",
       "glyph": "broadcast_P",
       "mark": "PS",
       "components": [
         "ch.srgssr.playsuisse.tv/ch.srgssr.playsuisse.tv.MainActivity"
       ],
       "category": "APP",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled from the official launcher icon (Google Play listing for ch.srgssr.playsuisse.tv): dominant brand accent #9A0326 (2026-09-26)",
+      "color_reviewed": "2026-09-26"
     },
     {
       "name": "Play Universal",
       "drawable": "universal",
-      "color": "#34EB7A",
+      "color": "#FCCC12",
       "glyph": "broadcast_U",
       "mark": "PU",
       "components": [
         "com.play.universal/com.play.universal.MainActivity"
       ],
       "category": "APP",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled from the official launcher icon (Google Play listing for com.play.universal): dominant brand accent #FCCC12 (2026-09-26)",
+      "color_reviewed": "2026-09-26"
     },
     {
       "name": "Player",
@@ -8010,7 +8010,7 @@
     {
       "name": "Ppsspp",
       "drawable": "ppsspp",
-      "color": "#FF4D4D",
+      "color": "#2D4553",
       "glyph": "gaming_P",
       "mark": "PP",
       "components": [
@@ -8018,8 +8018,8 @@
       ],
       "category": "APP",
       "mapping_source": "Projectivy Icon Pack 1.1.9",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled from the official launcher icon (Google Play listing for org.ppsspp.ppsspp): dominant brand accent #2D4553 (2026-09-26)",
+      "color_reviewed": "2026-09-26"
     },
     {
       "name": "Premier Sports",
@@ -8037,15 +8037,15 @@
     {
       "name": "Premiere FC",
       "drawable": "premierefc",
-      "color": "#C95CFF",
+      "color": "#2D8F3C",
       "glyph": "broadcast_P",
       "mark": "PF",
       "components": [
         "br.tv.horizonte.android.premierefc/br.tv.horizonte.android.premierefc.splash_tv.SplashTvActivity"
       ],
       "category": "APP",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled from the official launcher icon (Google Play listing for br.tv.horizonte.android.premierefc): dominant brand accent #2D8F3C (2026-09-26)",
+      "color_reviewed": "2026-09-26"
     },
     {
       "name": "Premiumize",
@@ -8247,7 +8247,7 @@
     {
       "name": "Quasitv",
       "drawable": "quasitv",
-      "color": "#19D3C5",
+      "color": "#0087A6",
       "glyph": "broadcast_Q",
       "mark": "QU",
       "components": [
@@ -8255,8 +8255,8 @@
       ],
       "category": "APP",
       "mapping_source": "Projectivy Icon Pack 1.1.9",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled from the official launcher icon (Google Play listing for gonemad.quasi.tv): dominant brand accent #0087A6 (2026-09-26)",
+      "color_reviewed": "2026-09-26"
     },
     {
       "name": "Quickbars For Home Assistant",
@@ -8275,16 +8275,16 @@
     {
       "name": "Quicksupport",
       "drawable": "quicksupport",
-      "color": "#B6F23A",
-      "glyph": "tool_Q",
-      "mark": "QU",
+      "color": "#050A52",
+      "glyph": "quicksupport_arrows",
       "components": [
         "com.teamviewer.quicksupport.market/com.teamviewer.quicksupport.ui.QSActivity"
       ],
       "category": "APP",
       "mapping_source": "Projectivy Icon Pack 1.1.9",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled from the official launcher icon (Google Play listing for com.teamviewer.quicksupport.market): dominant brand accent #050A52 (2026-09-26)",
+      "color_reviewed": "2026-09-26",
+      "glyph_source": "brand-informed redraw of the official launcher icon (play listing for com.teamviewer.quicksupport.market); Core monoline geometry, not a trace (2026-09-26)"
     },
     {
       "name": "Radio Net",
@@ -8357,15 +8357,15 @@
     {
       "name": "Raiplay",
       "drawable": "raiplay",
-      "color": "#4FACFE",
+      "color": "#05BAE0",
       "glyph": "broadcast_R",
       "components": [
         "it.rainet.androidtv/it.rainet.androidtv.ui.MainLeanbackActivity"
       ],
       "category": "APP",
       "mapping_source": "Projectivy Icon Pack 1.1.9",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null,
+      "color_source": "sampled from the official launcher icon (Google Play listing for it.rainet.androidtv): dominant brand accent #05BAE0 (2026-09-26)",
+      "color_reviewed": "2026-09-26",
       "mark": "RP"
     },
     {
@@ -8570,15 +8570,15 @@
     {
       "name": "Replaio Radio",
       "drawable": "replaio",
-      "color": "#B6F23A",
+      "color": "#004AAD",
       "glyph": "music_R",
       "mark": "RR",
       "components": [
         "com.hv.replaio/com.hv.replaio.activities.tv.StartActivityTV"
       ],
       "category": "APP",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled from the official launcher icon (Google Play listing for com.hv.replaio): dominant brand accent #004AAD (2026-09-26)",
+      "color_reviewed": "2026-09-26"
     },
     {
       "name": "RetroArch",
@@ -8623,7 +8623,7 @@
     {
       "name": "Riks TV",
       "drawable": "riks_tv",
-      "color": "#1FD19A",
+      "color": "#EF4642",
       "glyph": "broadcast_R",
       "mark": "RT",
       "components": [
@@ -8631,8 +8631,8 @@
       ],
       "category": "APP",
       "mapping_source": "Projectivy Icon Pack 1.1.9",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled from the official launcher icon (Google Play listing for no.rikstv.atv): dominant brand accent #EF4642 (2026-09-26)",
+      "color_reviewed": "2026-09-26"
     },
     {
       "name": "RlaXX TV",
@@ -8650,15 +8650,15 @@
     {
       "name": "RLC+",
       "drawable": "rlcplus",
-      "color": "#FFE14D",
+      "color": "#00B4BA",
       "glyph": "broadcast_R",
       "mark": "RL",
       "components": [
         "com.rlcplus.app/com.rlcplus.app.MainActivity"
       ],
       "category": "APP",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled from the official launcher icon (Google Play listing for com.rlcplus.app): dominant brand accent #00B4BA (2026-09-26)",
+      "color_reviewed": "2026-09-26"
     },
     {
       "name": "RMC BFM",
@@ -8694,33 +8694,33 @@
     {
       "name": "RSI Play",
       "drawable": "rsi",
-      "color": "#34EB7A",
+      "color": "#AF001D",
       "glyph": "broadcast_R",
       "mark": "RP",
       "components": [
         "ch.rsi.player/ch.srg.srgplayer.tv.MainActivity"
       ],
       "category": "APP",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled from the official launcher icon (Google Play listing for ch.rsi.player): dominant brand accent #AF001D (2026-09-26)",
+      "color_reviewed": "2026-09-26"
     },
     {
       "name": "RTBF Auvio",
       "drawable": "auvio",
-      "color": "#A366FF",
+      "color": "#FFCB00",
       "glyph": "broadcast_A",
       "mark": "RA",
       "components": [
         "be.rtbf.auvio/com.dotscreen.ethanol.tv.ui.MainActivity"
       ],
       "category": "APP",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled from the official launcher icon (Google Play listing for be.rtbf.auvio): dominant brand accent #FFCB00 (2026-09-26)",
+      "color_reviewed": "2026-09-26"
     },
     {
       "name": "RTE Player",
       "drawable": "minimal",
-      "color": "#FFB020",
+      "color": "#FF0134",
       "glyph": "broadcast_R",
       "mark": "RP",
       "components": [
@@ -8728,8 +8728,8 @@
         "air.RTE.OSMF.Minimal/com.finconsgroup.droid.activities.TvActivity"
       ],
       "category": "APP",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled from the official launcher icon (Google Play listing for air.RTE.OSMF.Minimal): dominant brand accent #FF0134 (2026-09-26)",
+      "color_reviewed": "2026-09-26"
     },
     {
       "name": "RTL",
@@ -8749,7 +8749,7 @@
     {
       "name": "RTL Play",
       "drawable": "rtl_play",
-      "color": "#00D4FF",
+      "color": "#17324D",
       "glyph": "broadcast_R",
       "mark": "RP",
       "components": [
@@ -8757,13 +8757,13 @@
       ],
       "category": "APP",
       "mapping_source": "Projectivy Icon Pack 1.1.9",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled from the official launcher icon (Google Play listing for com.tapptic.rtl.tvi): dominant brand accent #17324D (2026-09-26)",
+      "color_reviewed": "2026-09-26"
     },
     {
       "name": "RTP Play",
       "drawable": "rtp_play",
-      "color": "#FF5CA8",
+      "color": "#006CEE",
       "glyph": "broadcast_R",
       "mark": "RP",
       "components": [
@@ -8771,13 +8771,13 @@
       ],
       "category": "APP",
       "mapping_source": "Projectivy Icon Pack 1.1.9",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled from the official launcher icon (Google Play listing for pt.rtp.play): dominant brand accent #006CEE (2026-09-26)",
+      "color_reviewed": "2026-09-26"
     },
     {
       "name": "RTVE Play",
       "drawable": "rtve_play",
-      "color": "#53FC18",
+      "color": "#FB8A05",
       "glyph": "broadcast_R",
       "mark": "RP",
       "components": [
@@ -8785,8 +8785,8 @@
       ],
       "category": "APP",
       "mapping_source": "Projectivy Icon Pack 1.1.9",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled from the official launcher icon (Google Play listing for com.rtve.androidtv): dominant brand accent #FB8A05 (2026-09-26)",
+      "color_reviewed": "2026-09-26"
     },
     {
       "name": "Rugbypass TV",
@@ -8860,7 +8860,7 @@
     {
       "name": "Saff",
       "drawable": "saff",
-      "color": "#F04DE0",
+      "color": "#106736",
       "glyph": "broadcast_S",
       "mark": "SA",
       "components": [
@@ -8868,8 +8868,8 @@
       ],
       "category": "APP",
       "mapping_source": "Projectivy Icon Pack 1.1.9",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled from the official launcher icon (Google Play listing for sa.saffplus): dominant brand accent #106736 (2026-09-26)",
+      "color_reviewed": "2026-09-26"
     },
     {
       "name": "SAI",
@@ -8927,15 +8927,15 @@
     {
       "name": "Scholastic",
       "drawable": "scholastic",
-      "color": "#3D8BFF",
-      "glyph": "tool_S",
-      "mark": "SC",
+      "color": "#E4002B",
+      "glyph": "scholastic_book",
       "components": [
         "com.future.scholastic/com.future.scholastic.SplashActivity"
       ],
       "category": "APP",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled from the official launcher icon (Google Play listing for com.future.scholastic): dominant brand accent #E4002B (2026-09-26)",
+      "color_reviewed": "2026-09-26",
+      "glyph_source": "brand-informed redraw of the official launcher icon (play listing for com.future.scholastic); Core monoline geometry, not a trace (2026-09-26)"
     },
     {
       "name": "Screen Recording App",
@@ -8974,7 +8974,7 @@
     {
       "name": "Sd Maid",
       "drawable": "sd_maid",
-      "color": "#1FD19A",
+      "color": "#95C85A",
       "glyph": "tool_S",
       "mark": "SM",
       "components": [
@@ -8982,8 +8982,8 @@
       ],
       "category": "APP",
       "mapping_source": "Projectivy Icon Pack 1.1.9",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled from the official launcher icon (Google Play listing for eu.thedarken.sdm): dominant brand accent #95C85A (2026-09-26)",
+      "color_reviewed": "2026-09-26"
     },
     {
       "name": "SD Maid SE",
@@ -9000,15 +9000,15 @@
     {
       "name": "SeerrTV",
       "drawable": "seerrtv",
-      "color": "#C95CFF",
+      "color": "#5A13BE",
       "glyph": "broadcast_S",
       "mark": "SE",
       "components": [
         "ca.devmesh.seerrtv/ca.devmesh.seerrtv.MainActivity"
       ],
       "category": "APP",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled from the official launcher icon (Google Play listing for ca.devmesh.seerrtv): dominant brand accent #5A13BE (2026-09-26)",
+      "color_reviewed": "2026-09-26"
     },
     {
       "name": "Send Files to TV",
@@ -9089,7 +9089,7 @@
     {
       "name": "Sfjazz At Home",
       "drawable": "sfjazz_at_home",
-      "color": "#E6EDF3",
+      "color": "#F57F29",
       "glyph": "broadcast_S",
       "mark": "SA",
       "components": [
@@ -9098,13 +9098,13 @@
       ],
       "category": "APP",
       "mapping_source": "Projectivy Icon Pack 1.1.9",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled from the official launcher icon (Google Play listing for com.sfjazzdigital): dominant brand accent #F57F29 (2026-09-26)",
+      "color_reviewed": "2026-09-26"
     },
     {
       "name": "Sfr TV",
       "drawable": "sfr_tv",
-      "color": "#34EB7A",
+      "color": "#E20119",
       "glyph": "broadcast_S",
       "mark": "ST",
       "components": [
@@ -9112,8 +9112,8 @@
       ],
       "category": "APP",
       "mapping_source": "Projectivy Icon Pack 1.1.9",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled from the official launcher icon (Google Play listing for com.sfr.androidtv.gen8): dominant brand accent #E20119 (2026-09-26)",
+      "color_reviewed": "2026-09-26"
     },
     {
       "name": "Shadow",
@@ -9314,7 +9314,7 @@
     {
       "name": "Sledovani",
       "drawable": "sledovani",
-      "color": "#B6F23A",
+      "color": "#1982C3",
       "glyph": "broadcast_S",
       "mark": "SL",
       "components": [
@@ -9322,8 +9322,8 @@
       ],
       "category": "APP",
       "mapping_source": "Projectivy Icon Pack 1.1.9",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled from the official launcher icon (Google Play listing for cz.sledovanitv.android): dominant brand accent #1982C3 (2026-09-26)",
+      "color_reviewed": "2026-09-26"
     },
     {
       "name": "Sling TV",
@@ -9401,16 +9401,16 @@
     {
       "name": "Snapcast",
       "drawable": "snapcast",
-      "color": "#FF4D4D",
-      "glyph": "broadcast_S",
-      "mark": "SN",
+      "color": "#FDBF07",
+      "glyph": "snapcast_ring",
       "components": [
         "de.badaix.snapcast/de.badaix.snapcast.MainActivity"
       ],
       "category": "APP",
       "mapping_source": "Projectivy Icon Pack 1.1.9",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled from the official launcher icon (F-Droid listing for de.badaix.snapcast): dominant brand accent #FDBF07 (2026-09-26)",
+      "color_reviewed": "2026-09-26",
+      "glyph_source": "brand-informed redraw of the official launcher icon (f-droid listing for de.badaix.snapcast); Core monoline geometry, not a trace (2026-09-26)"
     },
     {
       "name": "Snrt Live",
@@ -9486,7 +9486,7 @@
     {
       "name": "Sooner",
       "drawable": "sooner",
-      "color": "#E6EDF3",
+      "color": "#036D8B",
       "glyph": "broadcast_S",
       "mark": "SO",
       "components": [
@@ -9494,8 +9494,8 @@
       ],
       "category": "APP",
       "mapping_source": "Projectivy Icon Pack 1.1.9",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled from the official launcher icon (Google Play listing for sooner.app.de): dominant brand accent #036D8B (2026-09-26)",
+      "color_reviewed": "2026-09-26"
     },
     {
       "name": "Soundcloud",
@@ -9525,15 +9525,15 @@
     {
       "name": "Speaker Boost",
       "drawable": "booster",
-      "color": "#A366FF",
-      "glyph": "music_B",
-      "mark": "SB",
+      "color": "#CF5E5A",
+      "glyph": "speaker_boost",
       "components": [
         "com.goodev.volume.booster/com.goodev.volume.booster.SpeakerBoost"
       ],
       "category": "APP",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled from the official launcher icon (Google Play listing for com.goodev.volume.booster): dominant brand accent #CF5E5A (2026-09-26)",
+      "color_reviewed": "2026-09-26",
+      "glyph_source": "brand-informed redraw of the official launcher icon (play listing for com.goodev.volume.booster); Core monoline geometry, not a trace (2026-09-26)"
     },
     {
       "name": "Speedtest TV",
@@ -9652,15 +9652,15 @@
     {
       "name": "SRF Play",
       "drawable": "srfplayer",
-      "color": "#19D3C5",
+      "color": "#AF001E",
       "glyph": "broadcast_S",
       "mark": "SP",
       "components": [
         "ch.srf.mobile.srfplayer/ch.srg.srgplayer.tv.MainActivity"
       ],
       "category": "APP",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled from the official launcher icon (Google Play listing for ch.srf.mobile.srfplayer): dominant brand accent #AF001E (2026-09-26)",
+      "color_reviewed": "2026-09-26"
     },
     {
       "name": "Sstream",
@@ -9881,7 +9881,7 @@
     {
       "name": "Strim",
       "drawable": "strim",
-      "color": "#A366FF",
+      "color": "#FAED6F",
       "glyph": "broadcast_S",
       "mark": "ST",
       "components": [
@@ -9889,8 +9889,8 @@
       ],
       "category": "APP",
       "mapping_source": "Projectivy Icon Pack 1.1.9",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled from the official launcher icon (Google Play listing for no.strim.atv): dominant brand accent #FAED6F (2026-09-26)",
+      "color_reviewed": "2026-09-26"
     },
     {
       "name": "Strmr",
@@ -9936,15 +9936,15 @@
     {
       "name": "Sunnxt",
       "drawable": "sunnxt",
-      "color": "#FF5CA8",
+      "color": "#C51E40",
       "glyph": "broadcast_S",
       "components": [
         "com.suntv.sunnxt/com.androidtv.myplex.ui.activity.SPlashActivity"
       ],
       "category": "APP",
       "mapping_source": "Projectivy Icon Pack 1.1.9",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null,
+      "color_source": "sampled from the official launcher icon (Google Play listing for com.suntv.sunnxt): dominant brand accent #C51E40 (2026-09-26)",
+      "color_reviewed": "2026-09-26",
       "mark": "SN"
     },
     {
@@ -10007,7 +10007,7 @@
     {
       "name": "Sweet TV",
       "drawable": "sweet_tv",
-      "color": "#19D3C5",
+      "color": "#20BEC6",
       "glyph": "broadcast_S",
       "mark": "ST",
       "components": [
@@ -10015,8 +10015,8 @@
       ],
       "category": "APP",
       "mapping_source": "Projectivy Icon Pack 1.1.9",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled from the official launcher icon (Google Play listing for tv.sweet.tvplayer): dominant brand accent #20BEC6 (2026-09-26)",
+      "color_reviewed": "2026-09-26"
     },
     {
       "name": "SYFY",
@@ -10123,7 +10123,7 @@
     {
       "name": "Synologyphotos",
       "drawable": "synologyphotos",
-      "color": "#3D8BFF",
+      "color": "#FF6F61",
       "glyph": "photos_S",
       "mark": "SY",
       "components": [
@@ -10131,35 +10131,35 @@
       ],
       "category": "APP",
       "mapping_source": "Projectivy Icon Pack 1.1.9",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled from the official launcher icon (Google Play listing for com.synology.projectkailash): dominant brand accent #FF6F61 (2026-09-26)",
+      "color_reviewed": "2026-09-26"
     },
     {
       "name": "Tabii",
       "drawable": "tabii",
-      "color": "#FF4D4D",
-      "glyph": "broadcast_T",
-      "mark": "TA",
+      "color": "#00FF99",
+      "glyph": "tabii_star",
       "components": [
         "com.trt.tabii.android/com.trt.tabii.android.tv.MainActivity"
       ],
       "category": "APP",
       "mapping_source": "Projectivy Icon Pack 1.1.9",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled from the official launcher icon (Google Play listing for com.trt.tabii.android): dominant brand accent #00FF99 (2026-09-26)",
+      "color_reviewed": "2026-09-26",
+      "glyph_source": "brand-informed redraw of the official launcher icon (play listing for com.trt.tabii.android); Core monoline geometry, not a trace (2026-09-26)"
     },
     {
       "name": "Tablo",
       "drawable": "tablofast",
-      "color": "#1FD19A",
+      "color": "#1294D2",
       "glyph": "broadcast_T",
       "mark": "TA",
       "components": [
         "com.nuvyyo.TabloFAST/com.nuvyyo.tablo.LaunchActivity"
       ],
       "category": "APP",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled from the official launcher icon (Google Play listing for com.nuvyyo.TabloFAST): dominant brand accent #1294D2 (2026-09-26)",
+      "color_reviewed": "2026-09-26"
     },
     {
       "name": "Tailscale",
@@ -10271,7 +10271,7 @@
     {
       "name": "TCL Channel",
       "drawable": "tcl_channel",
-      "color": "#A366FF",
+      "color": "#B22B27",
       "glyph": "broadcast_T",
       "mark": "TC",
       "components": [
@@ -10279,13 +10279,13 @@
       ],
       "category": "APP",
       "mapping_source": "Projectivy Icon Pack 1.1.9",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled from the official launcher icon (Google Play listing for com.tcl.waterfall.overseas): dominant brand accent #B22B27 (2026-09-26)",
+      "color_reviewed": "2026-09-26"
     },
     {
       "name": "TCL Home",
       "drawable": "tcl_home",
-      "color": "#FFB020",
+      "color": "#E24638",
       "glyph": "tool_T",
       "mark": "TH",
       "components": [
@@ -10293,13 +10293,13 @@
       ],
       "category": "APP",
       "mapping_source": "Projectivy Icon Pack 1.1.9",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled from the official launcher icon (Google Play listing for com.tcl.tclhome): dominant brand accent #E24638 (2026-09-26)",
+      "color_reviewed": "2026-09-26"
     },
     {
       "name": "Tcn",
       "drawable": "tcn",
-      "color": "#FF5CA8",
+      "color": "#CF0606",
       "glyph": "broadcast_T",
       "mark": "TC",
       "components": [
@@ -10307,8 +10307,8 @@
       ],
       "category": "APP",
       "mapping_source": "Projectivy Icon Pack 1.1.9",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled from the official launcher icon (Google Play listing for com.tuckercarlson.tv): dominant brand accent #CF0606 (2026-09-26)",
+      "color_reviewed": "2026-09-26"
     },
     {
       "name": "Tdtchannels Player",
@@ -10354,7 +10354,7 @@
     {
       "name": "Tele Quebec",
       "drawable": "tele_quebec",
-      "color": "#FF7A2E",
+      "color": "#011592",
       "glyph": "broadcast_T",
       "mark": "TQ",
       "components": [
@@ -10362,8 +10362,8 @@
       ],
       "category": "APP",
       "mapping_source": "Projectivy Icon Pack 1.1.9",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled from the official launcher icon (Google Play listing for tv.telequebec): dominant brand accent #011592 (2026-09-26)",
+      "color_reviewed": "2026-09-26"
     },
     {
       "name": "Tele2 Play",
@@ -10383,7 +10383,7 @@
     {
       "name": "Telenet",
       "drawable": "telenet",
-      "color": "#F04DE0",
+      "color": "#F8E94F",
       "glyph": "broadcast_T",
       "mark": "TE",
       "mark_style": "lower",
@@ -10392,8 +10392,8 @@
         "be.telenet.tv/com.libertyglobal.horizonx.MainActivity"
       ],
       "category": "APP",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled from the official launcher icon (Google Play listing for be.telenet.tv): dominant brand accent #F8E94F (2026-09-26)",
+      "color_reviewed": "2026-09-26"
     },
     {
       "name": "Telewebion",
@@ -10412,7 +10412,7 @@
     {
       "name": "Teliaplaylt",
       "drawable": "teliaplaylt",
-      "color": "#FF4D4D",
+      "color": "#990AE3",
       "glyph": "broadcast_T",
       "mark": "TE",
       "components": [
@@ -10420,8 +10420,8 @@
       ],
       "category": "APP",
       "mapping_source": "Projectivy Icon Pack 1.1.9",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled from the official launcher icon (Google Play listing for lt.telia.tv): dominant brand accent #990AE3 (2026-09-26)",
+      "color_reviewed": "2026-09-26"
     },
     {
       "name": "Telly",
@@ -10495,7 +10495,7 @@
     {
       "name": "Texttv",
       "drawable": "texttv",
-      "color": "#34EB7A",
+      "color": "#1010EE",
       "glyph": "tool_T",
       "mark": "TE",
       "components": [
@@ -10503,13 +10503,13 @@
       ],
       "category": "APP",
       "mapping_source": "Projectivy Icon Pack 1.1.9",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled from the official launcher icon (Google Play listing for com.vonlegohufvud.texttvsv): dominant brand accent #1010EE (2026-09-26)",
+      "color_reviewed": "2026-09-26"
     },
     {
       "name": "Tf1",
       "drawable": "tf1",
-      "color": "#A366FF",
+      "color": "#1937FF",
       "glyph": "broadcast_T",
       "mark": "TF",
       "components": [
@@ -10517,21 +10517,21 @@
       ],
       "category": "APP",
       "mapping_source": "Projectivy Icon Pack 1.1.9",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled from the official launcher icon (Google Play listing for fr.tf1.mytf1): dominant brand accent #1937FF (2026-09-26)",
+      "color_reviewed": "2026-09-26"
     },
     {
       "name": "TFC",
       "drawable": "tfctv",
-      "color": "#FFB020",
+      "color": "#4D038F",
       "glyph": "broadcast_T",
       "mark": "TF",
       "components": [
         "com.absi.tfctv/com.absi.tfctv.MainActivity"
       ],
       "category": "APP",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled from the official launcher icon (Google Play listing for com.absi.tfctv): dominant brand accent #4D038F (2026-09-26)",
+      "color_reviewed": "2026-09-26"
     },
     {
       "name": "Tflix",
@@ -10588,42 +10588,42 @@
     {
       "name": "The Weather Network",
       "drawable": "weathereyeandroid",
-      "color": "#FF7A2E",
+      "color": "#FFEA53",
       "glyph": "broadcast_W",
       "mark": "TW",
       "components": [
         "com.pelmorex.WeatherEyeAndroid.tv/com.pelmorex.WeatherEyeAndroid.tv.ui.activities.SplashActivity"
       ],
       "category": "APP",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled from the official launcher icon (Google Play listing for com.pelmorex.WeatherEyeAndroid.tv): dominant brand accent #FFEA53 (2026-09-26)",
+      "color_reviewed": "2026-09-26"
     },
     {
       "name": "Thmanyah",
       "drawable": "thmanyah",
       "color": "#19D3C5",
-      "glyph": "broadcast_T",
-      "mark": "TH",
+      "glyph": "thmanyah_arrow",
       "components": [
         "com.thmanyah.shasha.tv/com.thmanyah.shasha.SplashActivity"
       ],
       "category": "APP",
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_reviewed": null,
+      "glyph_source": "brand-informed redraw of the official launcher icon (play listing for com.thmanyah.shasha.tv); Core monoline geometry, not a trace (2026-09-26)"
     },
     {
       "name": "ThreeNow",
       "drawable": "mediaworks",
-      "color": "#F04DE0",
+      "color": "#FF004F",
       "glyph": "film_T",
       "mark": "TH",
       "components": [
         "com.mediaworks.android.tv/nz.co.mediaworks.vod.ui.MainActivity"
       ],
       "category": "APP",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled from the official launcher icon (Google Play listing for com.mediaworks.android.tv): dominant brand accent #FF004F (2026-09-26)",
+      "color_reviewed": "2026-09-26"
     },
     {
       "name": "Thunder TV",
@@ -10653,7 +10653,7 @@
     {
       "name": "Timvision",
       "drawable": "timvision",
-      "color": "#3D8BFF",
+      "color": "#0033A1",
       "glyph": "broadcast_T",
       "mark": "TI",
       "components": [
@@ -10661,13 +10661,13 @@
       ],
       "category": "APP",
       "mapping_source": "Projectivy Icon Pack 1.1.9",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled from the official launcher icon (Google Play listing for it.telecomitalia.cubovision): dominant brand accent #0033A1 (2026-09-26)",
+      "color_reviewed": "2026-09-26"
     },
     {
       "name": "Tivify",
       "drawable": "tivify",
-      "color": "#FF4D4D",
+      "color": "#00FFC0",
       "glyph": "broadcast_T",
       "mark": "TI",
       "components": [
@@ -10675,8 +10675,8 @@
       ],
       "category": "APP",
       "mapping_source": "Projectivy Icon Pack 1.1.9",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled from the official launcher icon (Google Play listing for com.tvup.tivify.app.tv): dominant brand accent #00FFC0 (2026-09-26)",
+      "color_reviewed": "2026-09-26"
     },
     {
       "name": "TiviMate",
@@ -10724,15 +10724,15 @@
     {
       "name": "TNA Wrestling",
       "drawable": "fight",
-      "color": "#1FD19A",
+      "color": "#7C0000",
       "glyph": "sport_T",
       "mark": "TW",
       "components": [
         "com.fight.tna/com.fight.tna.MainActivity"
       ],
       "category": "APP",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled from the official launcher icon (Google Play listing for com.fight.tna): dominant brand accent #7C0000 (2026-09-26)",
+      "color_reviewed": "2026-09-26"
     },
     {
       "name": "TNT",
@@ -10750,7 +10750,7 @@
     {
       "name": "Tod",
       "drawable": "tod",
-      "color": "#FFE14D",
+      "color": "#FFBC00",
       "glyph": "sport_T",
       "mark": "TO",
       "components": [
@@ -10758,13 +10758,13 @@
       ],
       "category": "APP",
       "mapping_source": "Projectivy Icon Pack 1.1.9",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled from the official launcher icon (Google Play listing for com.todtv.tod): dominant brand accent #FFBC00 (2026-09-26)",
+      "color_reviewed": "2026-09-26"
     },
     {
       "name": "Toggo",
       "drawable": "toggo",
-      "color": "#4FACFE",
+      "color": "#FF5500",
       "glyph": "film_T",
       "mark": "TO",
       "components": [
@@ -10772,8 +10772,8 @@
       ],
       "category": "APP",
       "mapping_source": "Projectivy Icon Pack 1.1.9",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled from the official launcher icon (Google Play listing for de.toggo): dominant brand accent #FF5500 (2026-09-26)",
+      "color_reviewed": "2026-09-26"
     },
     {
       "name": "Top Radio",
@@ -10819,20 +10819,20 @@
     {
       "name": "Torrent Search",
       "drawable": "torrentsearchengine",
-      "color": "#34EB7A",
-      "glyph": "debrid_T",
-      "mark": "TS",
+      "color": "#22998E",
+      "glyph": "torrent_search_lens",
       "components": [
         "biz.softwareits.torrentsearchengine/com.abc.abc.torrent_search_app_flutter.MainActivity"
       ],
       "category": "APP",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled from the official launcher icon (Google Play listing for biz.softwareits.torrentsearchengine): dominant brand accent #22998E (2026-09-26)",
+      "color_reviewed": "2026-09-26",
+      "glyph_source": "brand-informed redraw of the official launcher icon (play listing for biz.softwareits.torrentsearchengine); Core monoline geometry, not a trace (2026-09-26)"
     },
     {
       "name": "Torrserve",
       "drawable": "torrserve",
-      "color": "#A366FF",
+      "color": "#FB7C00",
       "glyph": "debrid_T",
       "mark": "TO",
       "components": [
@@ -10840,8 +10840,8 @@
       ],
       "category": "APP",
       "mapping_source": "Projectivy Icon Pack 1.1.9",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled from the official launcher icon (F-Droid listing for ru.yourok.torrserve): dominant brand accent #FB7C00 (2026-09-26)",
+      "color_reviewed": "2026-09-26"
     },
     {
       "name": "Total Commander",
@@ -10873,7 +10873,7 @@
     {
       "name": "Trilogy Plus",
       "drawable": "trilogy_plus",
-      "color": "#00D4FF",
+      "color": "#003748",
       "glyph": "broadcast_T",
       "mark": "TP",
       "components": [
@@ -10882,13 +10882,13 @@
       ],
       "category": "APP",
       "mapping_source": "Projectivy Icon Pack 1.1.9",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled from the official launcher icon (Google Play listing for ott.trilogyplus): dominant brand accent #003748 (2026-09-26)",
+      "color_reviewed": "2026-09-26"
     },
     {
       "name": "Trublu",
       "drawable": "trublu",
-      "color": "#FF5CA8",
+      "color": "#0084FF",
       "glyph": "broadcast_T",
       "mark": "TR",
       "components": [
@@ -10897,8 +10897,8 @@
       ],
       "category": "APP",
       "mapping_source": "Projectivy Icon Pack 1.1.9",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled from the official launcher icon (Google Play listing for ott.trublu): dominant brand accent #0084FF (2026-09-26)",
+      "color_reviewed": "2026-09-26"
     },
     {
       "name": "TSN",
@@ -10915,7 +10915,7 @@
     {
       "name": "Tt",
       "drawable": "tt",
-      "color": "#7C74FF",
+      "color": "#041E42",
       "glyph": "broadcast_T",
       "mark": "TT",
       "components": [
@@ -10923,8 +10923,8 @@
       ],
       "category": "APP",
       "mapping_source": "Projectivy Icon Pack 1.1.9",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled from the official launcher icon (Google Play listing for ott.ttplus): dominant brand accent #041E42 (2026-09-26)",
+      "color_reviewed": "2026-09-26"
     },
     {
       "name": "Tubi",
@@ -10955,7 +10955,7 @@
     {
       "name": "TV 2 Play",
       "drawable": "tv_2_play",
-      "color": "#19D3C5",
+      "color": "#6F03FF",
       "glyph": "broadcast_T",
       "mark": "T2",
       "components": [
@@ -10963,8 +10963,8 @@
       ],
       "category": "APP",
       "mapping_source": "Projectivy Icon Pack 1.1.9",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled from the official launcher icon (Google Play listing for no.tv2.sumo): dominant brand accent #6F03FF (2026-09-26)",
+      "color_reviewed": "2026-09-26"
     },
     {
       "name": "TV App Repo",
@@ -11008,15 +11008,15 @@
     {
       "name": "TV Everywhere",
       "drawable": "tveverywhere",
-      "color": "#3D8BFF",
+      "color": "#BF1017",
       "glyph": "broadcast_T",
       "mark": "TV",
       "components": [
         "com.kableone.tveverywhere/com.kableone.tveverywhere.ui.main.view.activity.SplashScreenActivity"
       ],
       "category": "APP",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled from the official launcher icon (Google Play listing for com.kableone.tveverywhere): dominant brand accent #BF1017 (2026-09-26)",
+      "color_reviewed": "2026-09-26"
     },
     {
       "name": "TV Garden",
@@ -11101,7 +11101,7 @@
     {
       "name": "TV Vlaanderen",
       "drawable": "tv_vlaanderen",
-      "color": "#4FACFE",
+      "color": "#FE0000",
       "glyph": "broadcast_T",
       "mark": "TV",
       "components": [
@@ -11109,8 +11109,8 @@
       ],
       "category": "APP",
       "mapping_source": "Projectivy Icon Pack 1.1.9",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled from the official launcher icon (Google Play listing for nl.streamgroup.vlaanderen): dominant brand accent #FE0000 (2026-09-26)",
+      "color_reviewed": "2026-09-26"
     },
     {
       "name": "TV Web Browser",
@@ -11129,7 +11129,7 @@
     {
       "name": "Tv2 Play",
       "drawable": "tv2_play",
-      "color": "#34EB7A",
+      "color": "#F0281E",
       "glyph": "broadcast_T",
       "mark": "TP",
       "components": [
@@ -11137,13 +11137,13 @@
       ],
       "category": "APP",
       "mapping_source": "Projectivy Icon Pack 1.1.9",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled from the official launcher icon (Google Play listing for dk.tv2.tv2play): dominant brand accent #F0281E (2026-09-26)",
+      "color_reviewed": "2026-09-26"
     },
     {
       "name": "Tv360",
       "drawable": "tv360",
-      "color": "#A366FF",
+      "color": "#DB2332",
       "glyph": "broadcast_T",
       "mark": "TV",
       "components": [
@@ -11151,8 +11151,8 @@
       ],
       "category": "APP",
       "mapping_source": "Projectivy Icon Pack 1.1.9",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled from the official launcher icon (Google Play listing for com.viettel.tv360.tv): dominant brand accent #DB2332 (2026-09-26)",
+      "color_reviewed": "2026-09-26"
     },
     {
       "name": "Tv4 Play",
@@ -11199,21 +11199,21 @@
     {
       "name": "Tving",
       "drawable": "tving",
-      "color": "#FF5CA8",
-      "glyph": "broadcast_T",
-      "mark": "TVI",
+      "color": "#FF153C",
+      "glyph": "tving_tv",
       "components": [
         "net.cj.cjhv.gs.tving/net.cj.cjhv.gs.tving.view.scaleup.ScaleupIntroActivity"
       ],
       "category": "APP",
       "mapping_source": "Projectivy Icon Pack 1.1.9",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled from the official launcher icon (Google Play listing for net.cj.cjhv.gs.tving): dominant brand accent #FF153C (2026-09-26)",
+      "color_reviewed": "2026-09-26",
+      "glyph_source": "brand-informed redraw of the official launcher icon (play listing for net.cj.cjhv.gs.tving); Core monoline geometry, not a trace (2026-09-26)"
     },
     {
       "name": "Tvnzplus",
       "drawable": "tvnzplus",
-      "color": "#53FC18",
+      "color": "#182A8F",
       "glyph": "broadcast_T",
       "mark": "TV",
       "components": [
@@ -11221,8 +11221,8 @@
       ],
       "category": "APP",
       "mapping_source": "Projectivy Icon Pack 1.1.9",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled from the official launcher icon (Google Play listing for nz.co.tvnz.ondemand.tv): dominant brand accent #182A8F (2026-09-26)",
+      "color_reviewed": "2026-09-26"
     },
     {
       "name": "Tvo Kids",
@@ -11241,7 +11241,7 @@
     {
       "name": "Tvo Today",
       "drawable": "tvo_today",
-      "color": "#FF7A2E",
+      "color": "#E7131A",
       "glyph": "sport_T",
       "mark": "TT",
       "components": [
@@ -11249,13 +11249,13 @@
       ],
       "category": "APP",
       "mapping_source": "Projectivy Icon Pack 1.1.9",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled from the official launcher icon (Google Play listing for org.tvo.tvoott): dominant brand accent #E7131A (2026-09-26)",
+      "color_reviewed": "2026-09-26"
     },
     {
       "name": "Tvoverlay",
       "drawable": "tvoverlay",
-      "color": "#19D3C5",
+      "color": "#00C380",
       "glyph": "tool_T",
       "mark": "TV",
       "components": [
@@ -11263,13 +11263,13 @@
       ],
       "category": "APP",
       "mapping_source": "Projectivy Icon Pack 1.1.9",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled from the official launcher icon (Google Play listing for com.tabdeveloper.tvoverlay): dominant brand accent #00C380 (2026-09-26)",
+      "color_reviewed": "2026-09-26"
     },
     {
       "name": "Tvp Vod",
       "drawable": "tvp_vod",
-      "color": "#F04DE0",
+      "color": "#3D66CB",
       "glyph": "film_T",
       "mark": "TV",
       "components": [
@@ -11277,8 +11277,8 @@
       ],
       "category": "APP",
       "mapping_source": "Projectivy Icon Pack 1.1.9",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled from the official launcher icon (Google Play listing for com.tvp.vodtv.tv): dominant brand accent #3D66CB (2026-09-26)",
+      "color_reviewed": "2026-09-26"
     },
     {
       "name": "Tvpsport",
@@ -11297,16 +11297,16 @@
     {
       "name": "Twilight",
       "drawable": "twilight",
-      "color": "#3D8BFF",
-      "glyph": "tool_T",
-      "mark": "TW",
+      "color": "#B01A1B",
+      "glyph": "twilight_sunset",
       "components": [
         "com.urbandroid.lux/com.urbandroid.lux.TvActivity"
       ],
       "category": "APP",
       "mapping_source": "Projectivy Icon Pack 1.1.9",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled from the official launcher icon (Google Play listing for com.urbandroid.lux): dominant brand accent #B01A1B (2026-09-26)",
+      "color_reviewed": "2026-09-26",
+      "glyph_source": "brand-informed redraw of the official launcher icon (play listing for com.urbandroid.lux); Core monoline geometry, not a trace (2026-09-26)"
     },
     {
       "name": "Twitch",
@@ -11346,15 +11346,15 @@
     {
       "name": "U",
       "drawable": "u",
-      "color": "#1FD19A",
+      "color": "#FF6A60",
       "glyph": "broadcast_U",
       "components": [
         "uk.co.uktv.dave/uk.co.uktv.dave.UKTVPlayActivity"
       ],
       "category": "APP",
       "mapping_source": "Projectivy Icon Pack 1.1.9",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled from the official launcher icon (Google Play listing for uk.co.uktv.dave): dominant brand accent #FF6A60 (2026-09-26)",
+      "color_reviewed": "2026-09-26"
     },
     {
       "name": "U Next",
@@ -11386,15 +11386,15 @@
     {
       "name": "Ucom TV",
       "drawable": "smarttvapp",
-      "color": "#4FACFE",
+      "color": "#9DD531",
       "glyph": "broadcast_U",
       "mark": "UT",
       "components": [
         "am.ucom.smarttvapp/tv.smartlabs.framework.MainActivity"
       ],
       "category": "APP",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled from the official launcher icon (Google Play listing for am.ucom.smarttvapp): dominant brand accent #9DD531 (2026-09-26)",
+      "color_reviewed": "2026-09-26"
     },
     {
       "name": "UEFA TV",
@@ -11469,16 +11469,16 @@
     {
       "name": "Unifi Protect",
       "drawable": "unifi_protect",
-      "color": "#53FC18",
-      "glyph": "tool_U",
-      "mark": "UP",
+      "color": "#0058D4",
+      "glyph": "unifi_camera",
       "components": [
         "com.ubnt.unifi.protect/com.ubnt.sections.splash.AuthenticationActivity"
       ],
       "category": "APP",
       "mapping_source": "Projectivy Icon Pack 1.1.9",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled from the official launcher icon (Google Play listing for com.ubnt.unifi.protect): dominant brand accent #0058D4 (2026-09-26)",
+      "color_reviewed": "2026-09-26",
+      "glyph_source": "brand-informed redraw of the official launcher icon (play listing for com.ubnt.unifi.protect); Core monoline geometry, not a trace (2026-09-26)"
     },
     {
       "name": "Unifi TV",
@@ -11509,7 +11509,7 @@
     {
       "name": "Unreal Debrid",
       "drawable": "unreal_debrid",
-      "color": "#FF7A2E",
+      "color": "#00C26C",
       "glyph": "debrid_U",
       "mark": "UD",
       "components": [
@@ -11517,8 +11517,8 @@
       ],
       "category": "APP",
       "mapping_source": "Projectivy Icon Pack 1.1.9",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled from the official launcher icon (Google Play listing for com.yablio.realdebridtv): dominant brand accent #00C26C (2026-09-26)",
+      "color_reviewed": "2026-09-26"
     },
     {
       "name": "USA Network",
@@ -11535,7 +11535,7 @@
     {
       "name": "Vbtv",
       "drawable": "vbtv",
-      "color": "#B6F23A",
+      "color": "#C7F300",
       "glyph": "broadcast_V",
       "mark": "VB",
       "components": [
@@ -11543,8 +11543,8 @@
       ],
       "category": "APP",
       "mapping_source": "Projectivy Icon Pack 1.1.9",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled from the official launcher icon (Google Play listing for dce.fivb.volleyballtv): dominant brand accent #C7F300 (2026-09-26)",
+      "color_reviewed": "2026-09-26"
     },
     {
       "name": "Ve Plus",
@@ -11634,16 +11634,16 @@
     {
       "name": "Vidangel",
       "drawable": "vidangel",
-      "color": "#4FACFE",
-      "glyph": "broadcast_V",
-      "mark": "VI",
+      "color": "#00A3E0",
+      "glyph": "vidangel_halo",
       "components": [
         "com.vidangel.tvapp/com.vidangel.tvapp.activities.IntroActivity"
       ],
       "category": "APP",
       "mapping_source": "Projectivy Icon Pack 1.1.9",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled from the official launcher icon (Google Play listing for com.vidangel.tvapp): dominant brand accent #00A3E0 (2026-09-26)",
+      "color_reviewed": "2026-09-26",
+      "glyph_source": "brand-informed redraw of the official launcher icon (play listing for com.vidangel.tvapp); Core monoline geometry, not a trace (2026-09-26)"
     },
     {
       "name": "Videoland",
@@ -11680,7 +11680,7 @@
     {
       "name": "Vieon",
       "drawable": "vieon",
-      "color": "#34EB7A",
+      "color": "#0AD418",
       "glyph": "broadcast_V",
       "mark": "VI",
       "components": [
@@ -11688,21 +11688,21 @@
       ],
       "category": "APP",
       "mapping_source": "Projectivy Icon Pack 1.1.9",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled from the official launcher icon (Google Play listing for com.vieon.tv): dominant brand accent #0AD418 (2026-09-26)",
+      "color_reviewed": "2026-09-26"
     },
     {
       "name": "Viki",
       "drawable": "viki",
-      "color": "#A366FF",
+      "color": "#0C9BFF",
       "glyph": "broadcast_V",
       "components": [
         "com.viki.android/com.viki.android.ui.splash.SplashActivity"
       ],
       "category": "APP",
       "mapping_source": "Projectivy Icon Pack 1.1.9",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null,
+      "color_source": "sampled from the official launcher icon (Google Play listing for com.viki.android): dominant brand accent #0C9BFF (2026-09-26)",
+      "color_reviewed": "2026-09-26",
       "mark": "VK"
     },
     {
@@ -11760,7 +11760,7 @@
     {
       "name": "Viva One TV",
       "drawable": "viva_one_tv",
-      "color": "#FF5CA8",
+      "color": "#00B5DD",
       "glyph": "broadcast_V",
       "mark": "VO",
       "components": [
@@ -11768,13 +11768,13 @@
       ],
       "category": "APP",
       "mapping_source": "Projectivy Icon Pack 1.1.9",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled from the official launcher icon (Google Play listing for com.viva.vivaone): dominant brand accent #00B5DD (2026-09-26)",
+      "color_reviewed": "2026-09-26"
     },
     {
       "name": "ViX",
       "drawable": "vix",
-      "color": "#53FC18",
+      "color": "#FF6628",
       "glyph": "broadcast_V",
       "mark": "VI",
       "components": [
@@ -11782,8 +11782,8 @@
       ],
       "category": "APP",
       "mapping_source": "Projectivy Icon Pack 1.1.9",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled from the official launcher icon (Google Play listing for com.univision.prendetv): dominant brand accent #FF6628 (2026-09-26)",
+      "color_reviewed": "2026-09-26"
     },
     {
       "name": "VLC",
@@ -11810,7 +11810,7 @@
     {
       "name": "Vmx",
       "drawable": "vmx",
-      "color": "#7C74FF",
+      "color": "#F5881F",
       "glyph": "broadcast_V",
       "mark": "VM",
       "components": [
@@ -11818,13 +11818,13 @@
       ],
       "category": "APP",
       "mapping_source": "Projectivy Icon Pack 1.1.9",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled from the official launcher icon (Google Play listing for com.viva.vivamax): dominant brand accent #F5881F (2026-09-26)",
+      "color_reviewed": "2026-09-26"
     },
     {
       "name": "Vodafone TV",
       "drawable": "vodafone_tv",
-      "color": "#FF7A2E",
+      "color": "#C51311",
       "glyph": "broadcast_V",
       "mark": "VT",
       "components": [
@@ -11832,8 +11832,8 @@
       ],
       "category": "APP",
       "mapping_source": "Projectivy Icon Pack 1.1.9",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled from the official launcher icon (Google Play listing for com.vodafone.vtv.atv.pt): dominant brand accent #C51311 (2026-09-26)",
+      "color_reviewed": "2026-09-26"
     },
     {
       "name": "Voyo Sk",
@@ -11894,15 +11894,15 @@
     {
       "name": "VRT MAX",
       "drawable": "vrtnu",
-      "color": "#FF4D4D",
+      "color": "#FF4D4E",
       "glyph": "broadcast_V",
       "mark": "VM",
       "components": [
         "be.vrt.vrtnu/be.vrt.vrtnu.MainActivity"
       ],
       "category": "APP",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled from the official launcher icon (Google Play listing for be.vrt.vrtnu): dominant brand accent #FF4D4E (2026-09-26)",
+      "color_reviewed": "2026-09-26"
     },
     {
       "name": "Vstro Player",
@@ -11933,7 +11933,7 @@
     {
       "name": "Vtvcab On TV",
       "drawable": "vtvcab_on_tv",
-      "color": "#E6EDF3",
+      "color": "#EE0007",
       "glyph": "broadcast_V",
       "mark": "VO",
       "components": [
@@ -11941,13 +11941,13 @@
       ],
       "category": "APP",
       "mapping_source": "Projectivy Icon Pack 1.1.9",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled from the official launcher icon (Google Play listing for com.vtvcab.onTV): dominant brand accent #EE0007 (2026-09-26)",
+      "color_reviewed": "2026-09-26"
     },
     {
       "name": "Vtvgo TV",
       "drawable": "vtvgo_tv",
-      "color": "#34EB7A",
+      "color": "#D50808",
       "glyph": "broadcast_V",
       "mark": "VT",
       "components": [
@@ -11955,8 +11955,8 @@
       ],
       "category": "APP",
       "mapping_source": "Projectivy Icon Pack 1.1.9",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled from the official launcher icon (Google Play listing for vn.vtv.vtvgotv): dominant brand accent #D50808 (2026-09-26)",
+      "color_reviewed": "2026-09-26"
     },
     {
       "name": "Waipu TV",
@@ -11977,33 +11977,33 @@
     {
       "name": "Wako",
       "drawable": "wako",
-      "color": "#FFB020",
+      "color": "#3082C4",
       "glyph": "broadcast_W",
       "mark": "WA",
       "components": [
         "app.wako/app.wako.MainActivity"
       ],
       "category": "APP",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled from the official launcher icon (Google Play listing for app.wako): dominant brand accent #3082C4 (2026-09-26)",
+      "color_reviewed": "2026-09-26"
     },
     {
       "name": "WATCHA",
       "drawable": "frograms",
-      "color": "#00D4FF",
+      "color": "#FF0558",
       "glyph": "broadcast_W",
       "mark": "WA",
       "components": [
         "com.frograms.wplay/com.frograms.wplay.activity.InitActivity"
       ],
       "category": "APP",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled from the official launcher icon (Google Play listing for com.frograms.wplay): dominant brand accent #FF0558 (2026-09-26)",
+      "color_reviewed": "2026-09-26"
     },
     {
       "name": "Watcher TV",
       "drawable": "watcher_tv",
-      "color": "#FF5CA8",
+      "color": "#6F3663",
       "glyph": "broadcast_W",
       "mark": "WT",
       "components": [
@@ -12012,8 +12012,8 @@
       ],
       "category": "APP",
       "mapping_source": "Projectivy Icon Pack 1.1.9",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled from the official launcher icon (Google Play listing for ott.watcherentertainment): dominant brand accent #6F3663 (2026-09-26)",
+      "color_reviewed": "2026-09-26"
     },
     {
       "name": "Watcho",
@@ -12230,7 +12230,7 @@
     {
       "name": "Wow",
       "drawable": "wow",
-      "color": "#FFE14D",
+      "color": "#F47F20",
       "glyph": "broadcast_W",
       "mark": "WO",
       "components": [
@@ -12239,13 +12239,13 @@
       ],
       "category": "APP",
       "mapping_source": "Projectivy Icon Pack 1.1.9",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled from the official launcher icon (Google Play listing for tv.vhx.worldofwonder): dominant brand accent #F47F20 (2026-09-26)",
+      "color_reviewed": "2026-09-26"
     },
     {
       "name": "Wow2",
       "drawable": "wow2",
-      "color": "#4FACFE",
+      "color": "#065E64",
       "glyph": "broadcast_W",
       "mark": "WO",
       "components": [
@@ -12253,8 +12253,8 @@
       ],
       "category": "APP",
       "mapping_source": "Projectivy Icon Pack 1.1.9",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled from the official launcher icon (Google Play listing for de.sky.online): dominant brand accent #065E64 (2026-09-26)",
+      "color_reviewed": "2026-09-26"
     },
     {
       "name": "Wrestle Universe",
@@ -12357,7 +12357,7 @@
     {
       "name": "Xstream Play",
       "drawable": "xstream_play",
-      "color": "#FF5CA8",
+      "color": "#650001",
       "glyph": "broadcast_X",
       "mark": "XP",
       "components": [
@@ -12365,8 +12365,8 @@
       ],
       "category": "APP",
       "mapping_source": "Projectivy Icon Pack 1.1.9",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled from the official launcher icon (Google Play listing for tv.airtel.xstream.tvapp): dominant brand accent #650001 (2026-09-26)",
+      "color_reviewed": "2026-09-26"
     },
     {
       "name": "Xtream Player",
@@ -12425,20 +12425,20 @@
     {
       "name": "Yettel Selfcare",
       "drawable": "selfcare",
-      "color": "#F04DE0",
+      "color": "#002340",
       "glyph": "broadcast_S",
       "mark": "YS",
       "components": [
         "bg.yettel.tv.selfcare/bg.yettel.tv.selfcare.MainActivity"
       ],
       "category": "APP",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled from the official launcher icon (Google Play listing for bg.yettel.tv.selfcare): dominant brand accent #002340 (2026-09-26)",
+      "color_reviewed": "2026-09-26"
     },
     {
       "name": "Yettel TV",
       "drawable": "yettel_tv",
-      "color": "#B6F23A",
+      "color": "#002340",
       "glyph": "broadcast_Y",
       "mark": "YT",
       "components": [
@@ -12446,13 +12446,13 @@
       ],
       "category": "APP",
       "mapping_source": "Projectivy Icon Pack 1.1.9",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled from the official launcher icon (Google Play listing for rs.yettel.tv): dominant brand accent #002340 (2026-09-26)",
+      "color_reviewed": "2026-09-26"
     },
     {
       "name": "Yippee",
       "drawable": "yippee",
-      "color": "#3D8BFF",
+      "color": "#530CC9",
       "glyph": "broadcast_Y",
       "mark": "YI",
       "components": [
@@ -12460,8 +12460,8 @@
       ],
       "category": "APP",
       "mapping_source": "Projectivy Icon Pack 1.1.9",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled from the official launcher icon (Google Play listing for com.yippeeentertainment): dominant brand accent #530CC9 (2026-09-26)",
+      "color_reviewed": "2026-09-26"
     },
     {
       "name": "Yle Areena",
@@ -12508,16 +12508,23 @@
     {
       "name": "Youku",
       "drawable": "youku",
-      "color": "#FFE14D",
-      "glyph": "broadcast_Y",
-      "mark": "YO",
+      "color": "#02BDFF",
+      "secondary": {
+        "color": "#FF7E00",
+        "parts": [
+          1
+        ],
+        "source": "Youku official launcher icon (Google Play, com.youku.intl.tv): the lower blade's orange #FF7E00 (2026-09-26)"
+      },
+      "glyph": "youku_play",
       "components": [
         "com.youku.intl.tv/com.youku.tv.home.activity.HomeActivity"
       ],
       "category": "APP",
       "mapping_source": "Projectivy Icon Pack 1.1.9",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled from the official launcher icon (Google Play listing for com.youku.intl.tv): dominant brand accent #02BDFF (2026-09-26)",
+      "color_reviewed": "2026-09-26",
+      "glyph_source": "brand-informed redraw of the official launcher icon (play listing for com.youku.intl.tv); Core monoline geometry, not a trace (2026-09-26)"
     },
     {
       "name": "Yousee Play",
@@ -12586,22 +12593,22 @@
     {
       "name": "Yowindow",
       "drawable": "yowindow",
-      "color": "#E6EDF3",
-      "glyph": "broadcast_Y",
-      "mark": "YO",
+      "color": "#007DB0",
+      "glyph": "yowindow_sun",
       "components": [
         "yo.app.free/yo.activity.MainActivity",
         "yo.app.free/yo.tv.TvActivity"
       ],
       "category": "APP",
       "mapping_source": "Projectivy Icon Pack 1.1.9",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled from the official launcher icon (Google Play listing for yo.app.free): dominant brand accent #007DB0 (2026-09-26)",
+      "color_reviewed": "2026-09-26",
+      "glyph_source": "brand-informed redraw of the official launcher icon (play listing for yo.app.free); Core monoline geometry, not a trace (2026-09-26)"
     },
     {
       "name": "Zaap TV",
       "drawable": "zaap_tv",
-      "color": "#34EB7A",
+      "color": "#F4AF33",
       "glyph": "broadcast_Z",
       "mark": "ZT",
       "components": [
@@ -12609,8 +12616,8 @@
       ],
       "category": "APP",
       "mapping_source": "Projectivy Icon Pack 1.1.9",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled from the official launcher icon (Google Play listing for com.zaaptv.mw.client.atv): dominant brand accent #F4AF33 (2026-09-26)",
+      "color_reviewed": "2026-09-26"
     },
     {
       "name": "Zank Remote",
@@ -12630,16 +12637,16 @@
     {
       "name": "Zapp",
       "drawable": "zapp",
-      "color": "#FFB020",
-      "glyph": "broadcast_Z",
-      "mark": "ZA",
+      "color": "#DF0079",
+      "glyph": "zapp_tv",
       "components": [
         "de.christinecoenen.code.zapp/de.christinecoenen.code.zapp.tv.main.MainActivity"
       ],
       "category": "APP",
       "mapping_source": "Projectivy Icon Pack 1.1.9",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled from the official launcher icon (F-Droid listing for de.christinecoenen.code.zapp): dominant brand accent #DF0079 (2026-09-26)",
+      "color_reviewed": "2026-09-26",
+      "glyph_source": "brand-informed redraw of the official launcher icon (f-droid listing for de.christinecoenen.code.zapp); Core monoline geometry, not a trace (2026-09-26)"
     },
     {
       "name": "Zattoo",
@@ -12698,22 +12705,22 @@
     {
       "name": "Zeus",
       "drawable": "zeus",
-      "color": "#53FC18",
-      "glyph": "tool_Z",
-      "mark": "ZE",
+      "color": "#FF0000",
+      "glyph": "zeus_bolt",
       "components": [
         "com.thezeusnetwork.www/tv.vhx.LauncherActivity",
         "com.thezeusnetwork.www/tv.vhx.tv.home.TvHomeActivity"
       ],
       "category": "APP",
       "mapping_source": "Projectivy Icon Pack 1.1.9",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled from the official launcher icon (Google Play listing for com.thezeusnetwork.www): dominant brand accent #FF0000 (2026-09-26)",
+      "color_reviewed": "2026-09-26",
+      "glyph_source": "brand-informed redraw of the official launcher icon (play listing for com.thezeusnetwork.www); Core monoline geometry, not a trace (2026-09-26)"
     },
     {
       "name": "Ziggo Go TV",
       "drawable": "ziggo_go_tv",
-      "color": "#7C74FF",
+      "color": "#FF5F00",
       "glyph": "broadcast_Z",
       "mark": "ZG",
       "components": [
@@ -12721,8 +12728,8 @@
       ],
       "category": "APP",
       "mapping_source": "Projectivy Icon Pack 1.1.9",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled from the official launcher icon (Google Play listing for com.ziggo.tv): dominant brand accent #FF5F00 (2026-09-26)",
+      "color_reviewed": "2026-09-26"
     },
     {
       "name": "Zona",

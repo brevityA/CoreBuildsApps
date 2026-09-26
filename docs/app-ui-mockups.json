@@ -9,12 +9,12 @@
       "structure": "06ec534b185e11748b5e6b0771d2be361c90edb90b5f0674271391569b1cb0e9"
     },
     "app-ui-catalogue-update.png": {
-      "bytes": 171595,
-      "structure": "71e59786c30222d9569a09d57e9a29dc02fa7ee8656e901ff28ee08644b46ebb"
+      "bytes": 170998,
+      "structure": "d93e1e56bdbdb4ec9a8319493cf94b920a93d398db868cb2e180be67e3d46b01"
     },
     "app-ui-catalogue.png": {
-      "bytes": 172574,
-      "structure": "00d4c2315419250e06ad9534d97190940765d6fed2b90b02bf62d8c034a3dddf"
+      "bytes": 172121,
+      "structure": "d69855b5276b98a2a268d72432460656bb79557563b16ab63b775aa52711eeff"
     },
     "app-ui-faq.png": {
       "bytes": 139797,
@@ -45,7 +45,7 @@
   "inputs": {
     "app/src/main/assets/appfilter.xml": "ea4af09cc11fa420f6992ef941721b97bf5a9172d83d5d3cc48c89b621ab1cfc",
     "app/src/main/assets/manifest/wallpapers.json": "67c5a010561e1f1a6eeac664dac87e01026d556a471216a58480b22d71058960",
-    "app/src/main/assets/version.json": "c7f91da097483d69827c4050aaec526f319bf929205fd18de3ee95a8e5e8569d",
+    "app/src/main/assets/version.json": "cd6a9f8378546c28a8fe05c86b75cf2802f53ff40e069ce3aa015437648c1e64",
     "app/src/main/res/layout/activity_about.xml": "24bf8847817c6c79e0733b25282913f12756331e851a461fdb5f96e43b08d04a",
     "app/src/main/res/layout/activity_auditor.xml": "3353f96d0932249a0ce841ca31ef98c65103132ec9b9efd1c8144e1fe2c34dca",
     "app/src/main/res/layout/activity_export_progress.xml": "3c388eb2b74cc0b5e362069cff6adfe219a4948eed7220f36a9a2d2d06d48210",
@@ -67,19 +67,19 @@
     "app/src/main/res/values/banner_aliases.xml": "9b269d260ac58ed60f3879cc4cd8b3c0ba3ecf39121c253465b450448448c1eb",
     "app/src/main/res/values/colors.xml": "626417ba2a3fa3bbf1aa913cdc97de4181d1b0037a027e17db753c12290cd4b2",
     "app/src/main/res/values/dimens.xml": "6eb9a59ef7176f3d7b38fa7a0aac9f789ee593415ccf279d5a5084c9ab4d7555",
-    "app/src/main/res/values/icon_pack.xml": "1283b25fc0390f79597635463c842156fd3046bb6eb092b5cf3fd519e5c41ce1",
+    "app/src/main/res/values/icon_pack.xml": "bd777ef53229b61f6ece08b07eb2a1f08bcfec9a1a4f9c15111bf24a34e8ea71",
     "app/src/main/res/values/issue_prefill.xml": "fd85418cdd4ccdc59f0f0793b32fc7d96e01f23f80f7f38a3e3d4d7699393ced",
     "app/src/main/res/values/strings.xml": "8cb905adf18b2b10fd1288bc821f5cd150e8d0bf7d5c54586978db99e1ecc36c",
     "app/src/main/res/values/suite_hub.xml": "6db1311df6a29a1ced5fdbc175f8f97111c0f035786ea3d1f4ed396018580862",
     "app/src/main/res/values/themes.xml": "ecac526951fe40b6c5c01df0ec36730d0e197fd9511862cf587a2143773b46be",
     "tools/build_app_ui_mockups.py": "35207f64a0177534112d4de41d5ae03be128a185f5d24138fc9ef845a56f70f3",
-    "tools/catalog.json": "669bceb8805cf90b058a47cd62a8c951001e49f6520fb022d32804e489a88727",
+    "tools/catalog.json": "a71cf31581832994ee22cb73014253f261342beca9f4843c63d4ae11c2e8d792",
     "tools/fonts/DejaVuSansMono-Bold.ttf": "2964f6dac8e6e9d71613928340f17bf868e9ea51692cca333c79e74962f02233",
     "tools/fonts/DejaVuSansMono.ttf": "0f5db4f1749979d961019838b160bec74abdf7f9eca69553fe1aa856bbff49a4",
     "tools/fonts/Outfit-Bold.ttf": "04f7c9705153927058475d6c5e9f75b0a1036ec5f6f63ffb69df046191ea8933",
     "tools/fonts/Outfit-ExtraBold.ttf": "056e8cd5840cea4cfc355f672292f7de00d95f5a42bf9b7cd96d511ca8e2883e"
   },
-  "inputs_digest": "94d6d588426fce719f9006c3bb62eaf3563f4e930784b25d06d639e866abd926",
+  "inputs_digest": "c66fb6fa063551be62a50900bbe4aa1484db965de65d3db416da67a27a1f4cdc",
   "metrics": {
     "mono-bold@24": 448.0,
     "mono-bold@32": 608.0,
@@ -94,7 +94,7 @@
   "note": "Which sources the frames in docs/ were generated from, and what each one depicts. Written by build_app_ui_mockups.py; never hand-edit. The PNG bytes are not recorded on purpose: text rendering is not reproducible across machines, so --check compares the sources and the drawn structure instead. See the module docstring.",
   "pasted": {
     "count": 19,
-    "digest": "1033699876864926c100c2606dd3657952cc69fad36e32df80e03eadbc4e3e2b"
+    "digest": "cfb033659a2f7bf3971133a330aa780021d262245bdde490843bb9252a431c66"
   },
-  "renderer": "python 3.11.15, freetype 2.13.2, layout raqm, PIL 10.4.0, qrcode installed, fontTools 4.59.0, resvg_py 0.4.0"
+  "renderer": "python 3.11.2, freetype 2.13.2, layout basic, PIL 10.4.0, qrcode installed, fontTools 4.59.0, resvg_py 0.4.0"
 }
