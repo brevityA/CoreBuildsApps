@@ -218,7 +218,6 @@
     <item drawable="fifa_banner" />
     <item drawable="flosports_banner" />
     <item drawable="football_360_banner" />
-    <item drawable="forecast_banner" />
     <item drawable="foxnews_banner" />
     <item drawable="foxsports_banner" />
     <item drawable="foxsports_2_banner" />
@@ -245,7 +244,6 @@
     <item drawable="tvpsport_banner" />
     <item drawable="uefa_tv_banner" />
     <item drawable="smartphone_banner" />
-    <item drawable="rodrigmatrix_banner" />
     <item drawable="yoga_download_banner" />
     <category title="Banners · Gaming" />
     <item drawable="airattack2tv_banner" />
@@ -401,6 +399,7 @@
     <item drawable="wireguard_banner" />
     <category title="Banners · Browsers" />
     <item drawable="arc_browser_banner" />
+    <item drawable="browkorf_tv_banner" />
     <item drawable="coji_tv_browser_banner" />
     <item drawable="hi_browser_banner" />
     <item drawable="mediabrowser_banner" />
@@ -579,6 +578,7 @@
     <item drawable="flix_tv_banner" />
     <item drawable="flixnest_banner" />
     <item drawable="fluffy_banner" />
+    <item drawable="forecast_banner" />
     <item drawable="forja_tv_banner" />
     <item drawable="formed_banner" />
     <item drawable="fotoo_banner" />
@@ -626,8 +626,8 @@
     <item drawable="hoopladigital_banner" />
     <item drawable="hrti_banner" />
     <item drawable="jpage4500_banner" />
-    <item drawable="hueshortcuts_banner" />
     <item drawable="hueessentials_banner" />
+    <item drawable="hueshortcuts_banner" />
     <item drawable="hyperiongrabber_banner" />
     <item drawable="ib_banner" />
     <item drawable="ici_tou_tv_banner" />
@@ -729,8 +729,8 @@
     <item drawable="nextup_watch_stand_up_comedy_banner" />
     <item drawable="nitobi_banner" />
     <item drawable="nfolio_banner" />
-    <item drawable="nhk_plus_banner" />
     <item drawable="nhk_world_japan_banner" />
+    <item drawable="nhk_plus_banner" />
     <item drawable="nhl_banner" />
     <item drawable="njpw_world_banner" />
     <item drawable="nlziet_banner" />
@@ -917,7 +917,6 @@
     <item drawable="tvoverlay_banner" />
     <item drawable="tvp_vod_banner" />
     <item drawable="twilight_banner" />
-    <item drawable="twodf_tivi_banner" />
     <item drawable="u_banner" />
     <item drawable="u_next_banner" />
     <item drawable="uae4arm_banner" />
@@ -953,6 +952,7 @@
     <item drawable="watcher_tv_banner" />
     <item drawable="watcho_banner" />
     <item drawable="weatherbug_banner" />
+    <item drawable="rodrigmatrix_banner" />
     <item drawable="wetv_banner" />
     <item drawable="damontecres_2_banner" />
     <item drawable="linkplay_banner" />
@@ -978,6 +978,7 @@
     <item drawable="zapp_banner" />
     <item drawable="zattoo_banner" />
     <item drawable="zdf_banner" />
+    <item drawable="twodf_tivi_banner" />
     <item drawable="graymatrix_banner" />
     <item drawable="zeus_banner" />
     <item drawable="ziggo_go_tv_banner" />

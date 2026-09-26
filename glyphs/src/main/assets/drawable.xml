@@ -218,7 +218,6 @@
     <item drawable="fifa" />
     <item drawable="flosports" />
     <item drawable="football_360" />
-    <item drawable="forecast" />
     <item drawable="foxnews" />
     <item drawable="foxsports" />
     <item drawable="foxsports_2" />
@@ -245,7 +244,6 @@
     <item drawable="tvpsport" />
     <item drawable="uefa_tv" />
     <item drawable="smartphone" />
-    <item drawable="rodrigmatrix" />
     <item drawable="yoga_download" />
     <category title="Square · Gaming" />
     <item drawable="airattack2tv" />
@@ -401,6 +399,7 @@
     <item drawable="wireguard" />
     <category title="Square · Browsers" />
     <item drawable="arc_browser" />
+    <item drawable="browkorf_tv" />
     <item drawable="coji_tv_browser" />
     <item drawable="hi_browser" />
     <item drawable="mediabrowser" />
@@ -579,6 +578,7 @@
     <item drawable="flix_tv" />
     <item drawable="flixnest" />
     <item drawable="fluffy" />
+    <item drawable="forecast" />
     <item drawable="forja_tv" />
     <item drawable="formed" />
     <item drawable="fotoo" />
@@ -626,8 +626,8 @@
     <item drawable="hoopladigital" />
     <item drawable="hrti" />
     <item drawable="jpage4500" />
-    <item drawable="hueshortcuts" />
     <item drawable="hueessentials" />
+    <item drawable="hueshortcuts" />
     <item drawable="hyperiongrabber" />
     <item drawable="ib" />
     <item drawable="ici_tou_tv" />
@@ -729,8 +729,8 @@
     <item drawable="nextup_watch_stand_up_comedy" />
     <item drawable="nitobi" />
     <item drawable="nfolio" />
-    <item drawable="nhk_plus" />
     <item drawable="nhk_world_japan" />
+    <item drawable="nhk_plus" />
     <item drawable="nhl" />
     <item drawable="njpw_world" />
     <item drawable="nlziet" />
@@ -917,7 +917,6 @@
     <item drawable="tvoverlay" />
     <item drawable="tvp_vod" />
     <item drawable="twilight" />
-    <item drawable="twodf_tivi" />
     <item drawable="u" />
     <item drawable="u_next" />
     <item drawable="uae4arm" />
@@ -953,6 +952,7 @@
     <item drawable="watcher_tv" />
     <item drawable="watcho" />
     <item drawable="weatherbug" />
+    <item drawable="rodrigmatrix" />
     <item drawable="wetv" />
     <item drawable="damontecres_2" />
     <item drawable="linkplay" />
@@ -978,6 +978,7 @@
     <item drawable="zapp" />
     <item drawable="zattoo" />
     <item drawable="zdf" />
+    <item drawable="twodf_tivi" />
     <item drawable="graymatrix" />
     <item drawable="zeus" />
     <item drawable="ziggo_go_tv" />

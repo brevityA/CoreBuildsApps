@@ -21,6 +21,9 @@ This owns that palette and its assignment:
     other app already has, is skipped for the next free one.
   * Brand groups share one accent (AGENTS.md); a group is coloured once.
   * Icons with a sourced brand colour are never touched.
+  * Assignment is sticky: a palette icon keeps its colour while that colour
+    still clears the neighbour and same-picture rules, so sourcing or adding
+    one icon does not re-roll the rest of the pack.
 
     python tools/icon_palette.py           # rewrite palette colours in the catalog
     python tools/icon_palette.py --check   # fail if the catalog drifted (CI)
@@ -113,8 +116,17 @@ def assign(icons: list[dict]) -> dict[int, str]:
             previous = display_accent(i["color"])
             continue
         brand = i.get("brand")
+        current = i["color"].upper()
         if brand and brand in brand_colour:
             colour = brand_colour[brand]
+        elif (current in HEXES and current not in (previous, upcoming.get(id(i)))
+              and owners.get(render_key(i, current), identity(i)) == identity(i)):
+            # Sticky: a palette colour that still leaves the icon distinct is
+            # kept. Without this, sourcing one icon's real colour re-rolled
+            # every palette icon after it in name order (239 sourced colours
+            # recoloured 424 unrelated icons), so users saw apps change
+            # colour for reasons unrelated to those apps.
+            colour = current
         else:
             for attempt in range(len(HEXES)):
                 colour = HEXES[(step + attempt) * STRIDE % len(HEXES)]
@@ -127,8 +139,8 @@ def assign(icons: list[dict]) -> dict[int, str]:
                 break
             else:
                 raise SystemExit(f"{i['name']}: no palette colour leaves it distinct")
-            if brand:
-                brand_colour[brand] = colour
+        if brand:
+            brand_colour.setdefault(brand, colour)
         owners[render_key(i, colour)] = identity(i)
         out[id(i)] = colour
         previous = colour
