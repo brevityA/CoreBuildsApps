@@ -1,6 +1,6 @@
 # Supported applications
 
-`961` icons · `1179` mapped components · pack v1.9.5
+`962` icons · `1183` mapped components · pack v1.9.6
 
 Every app below auto-assigns in Projectivy. If one doesn't, the app ships a different launcher activity on your device — open an issue with the component name and it gets added.
 
@@ -108,6 +108,7 @@ Source accents are retained in the catalog. **On dark** is the shared square/ban
 | BritBox | `britbox` | `#C41A3B` | `#C41A3B` | `com.britbox.tv/axis.androidtv.sdk.app.MainActivity` |
 | Brkchen Music | `brkchen` | `#34EB7A` | `#34EB7A` | `com.brkchen.music/com.brkchen.music.MainActivity` |
 | Brollie | `brollie` | `#A366FF` | `#A366FF` | `com.shift72.brollie/com.sh72apps.MainActivity`<br>`com.shift72.brollie/com.sh72apps.TVMainActivity` |
+| Browkorf TV | `browkorf_tv` | `#BAAA16` | `#BAAA16` | `org.mlm.browkorftv/org.mlm.browkorftv.activity.main.MainActivity`<br>`org.mlm.browkorftv/.activity.main.MainActivity` |
 | Browsehere | `browsehere` | `#FFB020` | `#FFB020` | `com.tcl.browser/com.tcl.browser.portal.home.activity.HomePageActivity` |
 | Bstation | `bstar` | `#00D4FF` | `#00D4FF` | `com.bstar.intl.tv/com.biliintl.ibstartv.MainActivity` |
 | Button Mapper TV | `buttonmappertv` | `#FF5CA8` | `#FF5CA8` | `com.tv.remote.button.mapper.remap/com.tv.remote.button.mapper.remap.LauncherActivity` |
@@ -157,343 +158,343 @@ Source accents are retained in the catalog. **On dark** is the shared square/ban
 | Criterion Channel | `criterionchannel` | `#E6EDF3` | `#E6EDF3` | `com.criterionchannel/tv.vhx.LauncherActivity`<br>`com.criterionchannel/tv.vhx.tv.home.TvHomeActivity` |
 | Crossy Road | `crossy_road` | `#34EB7A` | `#34EB7A` | `com.yodo1.crossyroad/com.google.firebase.MessagingUnityPlayerActivity` |
 | Crunchyroll | `crunchyroid` | `#FF5E00` | `#FF5E00` | `com.crunchyroll.crunchyroid/com.crunchyroll.crunchyroid.splash.ui.SplashActivity` |
-| CTV | `ctvgo` | `#00D4FF` | `#00D4FF` | `ca.ctv.ctvgo/axis.androidtv.sdk.app.MainActivity` |
+| CTV | `ctvgo` | `#FFB020` | `#FFB020` | `ca.ctv.ctvgo/axis.androidtv.sdk.app.MainActivity` |
 | Cue New | `cuenew2` | `#1982C4` | `#1982C4` | `com.cuenew2/com.pythonott.MainActivity` |
 | Curiosity Stream | `curiositystream` | `#1F619E` | `#1F63A0` | `com.curiosity.curiositystream.androidtv/com.curiosity.curiositystream.MainActivity` |
-| CX File Explorer | `cxinventor` | `#FF5CA8` | `#FF5CA8` | `com.cxinventor.file.explorer/com.alphainventor.filemanager.activity.MainActivity`<br>`com.alphainventor.filemanager/.activity.MainActivity`<br>`com.alphainventor.filemanager/com.alphainventor.filemanager.activity.MainActivity` |
-| Cyberflix | `cybermedia` | `#53FC18` | `#53FC18` | `com.cybermedia.cyberflx/com.cybermedia.cyberflix.ui.activity.HomeActivity` |
+| CX File Explorer | `cxinventor` | `#00D4FF` | `#00D4FF` | `com.cxinventor.file.explorer/com.alphainventor.filemanager.activity.MainActivity`<br>`com.alphainventor.filemanager/.activity.MainActivity`<br>`com.alphainventor.filemanager/com.alphainventor.filemanager.activity.MainActivity` |
+| Cyberflix | `cybermedia` | `#FF5CA8` | `#FF5CA8` | `com.cybermedia.cyberflx/com.cybermedia.cyberflix.ui.activity.HomeActivity` |
 | Cyberghost | `cyberghost` | `#FDCB58` | `#FDCB58` | `de.mobileconcepts.cyberghost/de.mobileconcepts.cyberghost.view.app.AppActivity` |
-| D-Smart | `dogusdigital` | `#7C74FF` | `#7C74FF` | `com.dogusdigital.puhutv/com.dogusdigital.puhutv.TVActivity` |
-| Daijishou | `magneticchen` | `#FF7A2E` | `#FF7A2E` | `com.magneticchen.daijishou/com.magneticchen.daijishou.activities.BootstrapActivity` |
+| D-Smart | `dogusdigital` | `#53FC18` | `#53FC18` | `com.dogusdigital.puhutv/com.dogusdigital.puhutv.TVActivity` |
+| Daijishou | `magneticchen` | `#7C74FF` | `#7C74FF` | `com.magneticchen.daijishou/com.magneticchen.daijishou.activities.BootstrapActivity` |
 | Dailymotion | `dailymotion` | `#0066DC` | `#0066DC` | `com.dailymotion.dailymotion/com.dotscreen.ethanol.tv.ui.MainActivity` |
-| Damonte | `damontecres` | `#19D3C5` | `#19D3C5` | `com.github.damontecres.stashapp/com.github.damontecres.stashapp.RootActivity` |
-| Dangbei | `zhushou` | `#F04DE0` | `#F04DE0` | `com.dangbei.zhushou/com.dangbei.zhushou.tuitu` |
-| Dansk Filmskat | `egmont` | `#B6F23A` | `#B6F23A` | `com.egmont.dfs/egmont.danskfilmskat.MainActivity` |
+| Damonte | `damontecres` | `#FF7A2E` | `#FF7A2E` | `com.github.damontecres.stashapp/com.github.damontecres.stashapp.RootActivity` |
+| Dangbei | `zhushou` | `#19D3C5` | `#19D3C5` | `com.dangbei.zhushou/com.dangbei.zhushou.tuitu` |
+| Dansk Filmskat | `egmont` | `#F04DE0` | `#F04DE0` | `com.egmont.dfs/egmont.danskfilmskat.MainActivity` |
 | DAZN | `dazn` | `#F5F500` | `#F5F500` | `com.dazn/com.dazn.MainActivity` |
-| DCS IPTV | `dcsapp` | `#3D8BFF` | `#3D8BFF` | `com.dcsapp.iptv/fr.nextv.atv.foundation.TvActivity` |
-| Debrid Em All | `debrid_em_all` | `#FF4D4D` | `#FF4D4D` | `com.yablio.debridemall/com.yablio.debridemall.StartActivity` |
-| Debrid Stream | `debridstream` | `#1FD19A` | `#1FD19A` | `com.debridstream.tv/com.debridstream.tv.MainActivity` |
+| DCS IPTV | `dcsapp` | `#B6F23A` | `#B6F23A` | `com.dcsapp.iptv/fr.nextv.atv.foundation.TvActivity` |
+| Debrid Em All | `debrid_em_all` | `#3D8BFF` | `#3D8BFF` | `com.yablio.debridemall/com.yablio.debridemall.StartActivity` |
+| Debrid Stream | `debridstream` | `#FF4D4D` | `#FF4D4D` | `com.debridstream.tv/com.debridstream.tv.MainActivity` |
 | Debrify | `debrify` | `#00C48C` | `#00C48C` | `com.debrify.app/com.debrify.app.MainActivity` |
 | Deezer | `deezer` | `#A238FF` | `#A238FF` | `deezer.android.app/deezer.android.app.navigation.ui.MainNavigationActivity`<br>`deezer.android.tv/com.deezer.android.ui.activity.LauncherActivity` |
-| Delta TV | `deltatv` | `#C95CFF` | `#C95CFF` | `com.nowcast.deltatv/com.nowcasttv.SplashActivity` |
-| Developer Tools | `developer_tools` | `#FFE14D` | `#FFE14D` | `com.roysolberg.android.developertools/com.roysolberg.android.developertools.ui.activity.MainActivity` |
-| DevInterest | `devinterestdev` | `#4FACFE` | `#4FACFE` | `com.devinterestdev.streamshow/com.devinterestdev.streamshow.TvActivity` |
-| DIG | `digdroid` | `#E6EDF3` | `#E6EDF3` | `com.digdroid.alman.dig/com.digdroid.alman.dig.MainActivity`<br>`com.digdroid.alman.dig/com.digdroid.alman.dig.TVActivity` |
-| Digi TV | `digi_tv` | `#34EB7A` | `#34EB7A` | `ro.digionline.tv/ro.digionline.tv.MainActivity` |
-| Direct One | `direct_one` | `#A366FF` | `#A366FF` | `nl.streamgroup.upcdirect/tv.solocoo.htmlapp.FullscreenActivity` |
-| DIRECTV | `att` | `#FFB020` | `#FFB020` | `com.att.tv/com.clientapp.MainActivity` |
+| Delta TV | `deltatv` | `#1FD19A` | `#1FD19A` | `com.nowcast.deltatv/com.nowcasttv.SplashActivity` |
+| Developer Tools | `developer_tools` | `#C95CFF` | `#C95CFF` | `com.roysolberg.android.developertools/com.roysolberg.android.developertools.ui.activity.MainActivity` |
+| DevInterest | `devinterestdev` | `#FFE14D` | `#FFE14D` | `com.devinterestdev.streamshow/com.devinterestdev.streamshow.TvActivity` |
+| DIG | `digdroid` | `#4FACFE` | `#4FACFE` | `com.digdroid.alman.dig/com.digdroid.alman.dig.MainActivity`<br>`com.digdroid.alman.dig/com.digdroid.alman.dig.TVActivity` |
+| Digi TV | `digi_tv` | `#E6EDF3` | `#E6EDF3` | `ro.digionline.tv/ro.digionline.tv.MainActivity` |
+| Direct One | `direct_one` | `#34EB7A` | `#34EB7A` | `nl.streamgroup.upcdirect/tv.solocoo.htmlapp.FullscreenActivity` |
+| DIRECTV | `att` | `#A366FF` | `#A366FF` | `com.att.tv/com.clientapp.MainActivity` |
 | Discovery | `discovery` | `#003B73` | `#005FB8` | `com.discovery.dplay/com.discovery.plus.presentation.activities.TVSplashActivity`<br>`com.discovery.dplay/com.wbd.beam.BeamActivity` |
 | Discovery+ | `discoveryplus` | `#003B73` | `#005FB8` | `com.discovery.discoveryplus.mobile/com.wbd.beam.BeamActivity` |
-| Dish Anywhere | `dish_anywhere` | `#00D4FF` | `#00D4FF` | `com.sm.SlingGuide.Dish/com.sm.SlingGuide.Dish.MainActivity` |
-| Dish Home | `dishnepal` | `#FF5CA8` | `#FF5CA8` | `com.conax.golive.dishnepal/com.conax.golive.LoginActivity` |
+| Dish Anywhere | `dish_anywhere` | `#FFB020` | `#FFB020` | `com.sm.SlingGuide.Dish/com.sm.SlingGuide.Dish.MainActivity` |
+| Dish Home | `dishnepal` | `#00D4FF` | `#00D4FF` | `com.conax.golive.dishnepal/com.conax.golive.LoginActivity` |
 | Disney+ | `disneyplus` | `#113CCF` | `#1E4DED` | `com.disney.disneyplus/com.bamtechmedia.dominguez.main.MainActivity`<br>`com.disney.disneyplus/.MainActivity`<br>`com.disney.disneyplus.tv/.MainActivity` |
-| DistroTV | `distroscale` | `#53FC18` | `#53FC18` | `com.distroscale.tv.android/com.distroscale.tv.firetv.MainActivity` |
-| Dixmax | `dixmax` | `#7C74FF` | `#7C74FF` | `es.shufflex.dixmax.android/es.shufflex.dixmax.android.Main`<br>`es.shufflex.dixmax.android/es.shufflex.dixmax.android.activities.tv.activities.LoginActivity` |
-| DNS Changer | `dnschanger` | `#FF7A2E` | `#FF7A2E` | `com.aykutcevik.dnschanger/com.aykutcevik.dnssetter.Activities.MainActivity` |
+| DistroTV | `distroscale` | `#FF5CA8` | `#FF5CA8` | `com.distroscale.tv.android/com.distroscale.tv.firetv.MainActivity` |
+| Dixmax | `dixmax` | `#53FC18` | `#53FC18` | `es.shufflex.dixmax.android/es.shufflex.dixmax.android.Main`<br>`es.shufflex.dixmax.android/es.shufflex.dixmax.android.activities.tv.activities.LoginActivity` |
+| DNS Changer | `dnschanger` | `#7C74FF` | `#7C74FF` | `com.aykutcevik.dnschanger/com.aykutcevik.dnssetter.Activities.MainActivity` |
 | Dodo Stream | `dodostream` | `#FBBF24` | `#FBBF24` | `app.dodora.dodostream/app.dodora.dodostream.MainActivity` |
 | Dolphin Emulator | `dolphin_emulator` | `#2196F3` | `#2196F3` | `org.dolphinemu.dolphinemu/org.dolphinemu.dolphinemu.ui.main.MainActivity`<br>`org.dolphinemu.dolphinemu/org.dolphinemu.dolphinemu.ui.main.TvMainActivity` |
-| Download Navi | `download_navi` | `#19D3C5` | `#19D3C5` | `com.tachibana.downloader/com.tachibana.downloader.ui.main.MainActivity` |
+| Download Navi | `download_navi` | `#FF7A2E` | `#FF7A2E` | `com.tachibana.downloader/com.tachibana.downloader.ui.main.MainActivity` |
 | Downloader | `downloader` | `#F0913A` | `#F0913A` | `com.esaba.downloader/.ui.main.MainActivity`<br>`com.esaba.downloader/.MainActivity`<br>`com.esaba.downloader/com.esaba.downloader.MainActivity` |
-| Dr Nettools | `dr_nettools` | `#F04DE0` | `#F04DE0` | `pl.dronline.nettools/pl.dronline.nettools.activity.CoreActivity` |
-| Drama Live | `drama_live` | `#B6F23A` | `#B6F23A` | `com.sneig.livedrama/com.sneig.livedrama.activities.StartActivity` |
-| Dramox | `dramox` | `#3D8BFF` | `#3D8BFF` | `cz.dramox.dramox/com.elevup.panda.MainActivity` |
-| Dream Player TV | `dream_player_tv` | `#FF4D4D` | `#FF4D4D` | `de.cyberdream.dreamepg.tv.player/de.cyberdream.dreamepg.MainActivityTV` |
-| DRM Info | `androidfung` | `#1FD19A` | `#1FD19A` | `com.androidfung.drminfo/com.androidfung.drminfo.MobileActivity`<br>`com.androidfung.drminfo/com.androidfung.drminfo.TvActivity` |
+| Dr Nettools | `dr_nettools` | `#19D3C5` | `#19D3C5` | `pl.dronline.nettools/pl.dronline.nettools.activity.CoreActivity` |
+| Drama Live | `drama_live` | `#F04DE0` | `#F04DE0` | `com.sneig.livedrama/com.sneig.livedrama.activities.StartActivity` |
+| Dramox | `dramox` | `#B6F23A` | `#B6F23A` | `cz.dramox.dramox/com.elevup.panda.MainActivity` |
+| Dream Player TV | `dream_player_tv` | `#3D8BFF` | `#3D8BFF` | `de.cyberdream.dreamepg.tv.player/de.cyberdream.dreamepg.MainActivityTV` |
+| DRM Info | `androidfung` | `#FF4D4D` | `#FF4D4D` | `com.androidfung.drminfo/com.androidfung.drminfo.MobileActivity`<br>`com.androidfung.drminfo/com.androidfung.drminfo.TvActivity` |
 | Dropbox | `dropbox` | `#0061FF` | `#0061FF` | `com.dropbox.android/com.dropbox.android.activity.DropboxBrowser` |
-| Dropout | `collegehumor` | `#C95CFF` | `#C95CFF` | `com.collegehumor.chdropout/tv.vhx.LauncherActivity`<br>`com.collegehumor.chdropout/tv.vhx.tv.home.TvHomeActivity` |
-| Dropsync | `dropsync` | `#FFE14D` | `#FFE14D` | `com.ttxapps.dropsync/com.ttxapps.sync.app.MainActivity` |
-| Drtv | `drtv` | `#4FACFE` | `#4FACFE` | `dk.dr.tvplayer/axis.androidtv.sdk.app.MainActivity` |
-| Dry Bar Comedy Plus | `dry_bar_comedy_plus` | `#E6EDF3` | `#E6EDF3` | `com.vidangel.drybarcomedy/tv.vhx.LauncherActivity`<br>`com.vidangel.drybarcomedy/tv.vhx.tv.home.TvHomeActivity` |
+| Dropout | `collegehumor` | `#1FD19A` | `#1FD19A` | `com.collegehumor.chdropout/tv.vhx.LauncherActivity`<br>`com.collegehumor.chdropout/tv.vhx.tv.home.TvHomeActivity` |
+| Dropsync | `dropsync` | `#C95CFF` | `#C95CFF` | `com.ttxapps.dropsync/com.ttxapps.sync.app.MainActivity` |
+| Drtv | `drtv` | `#FFE14D` | `#FFE14D` | `dk.dr.tvplayer/axis.androidtv.sdk.app.MainActivity` |
+| Dry Bar Comedy Plus | `dry_bar_comedy_plus` | `#4FACFE` | `#4FACFE` | `com.vidangel.drybarcomedy/tv.vhx.LauncherActivity`<br>`com.vidangel.drybarcomedy/tv.vhx.tv.home.TvHomeActivity` |
 | DS audio | `dsaudio` | `#F472B6` | `#F472B6` | `com.synology.dsaudio/com.synology.dsaudio.ui.SplashActivity`<br>`com.synology.dsaudio/.ui.SplashActivity`<br>`com.synology.dsaudio/com.synology.dsaudio.MainActivity` |
 | DS file | `dsfile` | `#4FACFE` | `#4FACFE` | `com.synology.DSfile/com.synology.DSfile.ui.activity.SplashActivity`<br>`com.synology.DSfile/.ui.activity.SplashActivity`<br>`com.synology.DSfile/com.synology.DSfile.MainActivity`<br>`com.hisona.dsfile/com.hisona.dsfile.MainActivity` |
 | DS finder | `dsfinder` | `#00E5FF` | `#00E5FF` | `com.synology.DSfinder/com.synology.DSfinder.ui.SplashActivity`<br>`com.synology.DSfinder/.ui.SplashActivity`<br>`com.synology.DSfinder/com.synology.DSfinder.MainActivity` |
 | DS get | `dsget` | `#FBBF24` | `#FBBF24` | `com.synology.DSget/com.synology.DSget.ui.SplashActivity`<br>`com.synology.DSget/.ui.SplashActivity`<br>`com.synology.DSget/com.synology.DSget.MainActivity` |
 | DS photo | `dsphoto` | `#34D399` | `#34D399` | `com.synology.dsphoto/com.synology.dsphoto.ui.SplashActivity`<br>`com.synology.dsphoto/.ui.SplashActivity`<br>`com.synology.dsphoto/com.synology.dsphoto.MainActivity` |
-| Ds TV Mobile | `dstvmobile` | `#A366FF` | `#A366FF` | `com.dstvmobile.android/com.dstv.androidtv.RootActivity` |
+| Ds TV Mobile | `dstvmobile` | `#34EB7A` | `#34EB7A` | `com.dstvmobile.android/com.dstv.androidtv.RootActivity` |
 | DS video | `dsvideo` | `#00D4FF` | `#00D4FF` | `com.synology.dsvideo/com.synology.dsvideo.ui.SplashActivity`<br>`com.synology.dsvideo/.ui.SplashActivity`<br>`com.synology.dsvideo/com.synology.dsvideo.MainActivity`<br>`com.synology.dsvideo/com.synology.dsvideo.ui.WelcomeActivity` |
 | DuckDuckGo | `duckduckgo` | `#DE5833` | `#DE5833` | `com.duckduckgo.mobile.android/com.duckduckgo.app.launch.Launcher` |
-| Dudeperfect | `dudeperfect` | `#FFB020` | `#FFB020` | `tv.kidoodle.android.dudeperfect/tv.kidoodle.android.ui.MainActivity` |
-| Dw | `dw` | `#00D4FF` | `#00D4FF` | `dw.com.androidtv.live/com.dw.app.dwforsmarttv.MainActivity` |
+| Dudeperfect | `dudeperfect` | `#A366FF` | `#A366FF` | `tv.kidoodle.android.dudeperfect/tv.kidoodle.android.ui.MainActivity` |
+| Dw | `dw` | `#FFB020` | `#FFB020` | `dw.com.androidtv.live/com.dw.app.dwforsmarttv.MainActivity` |
 | EarthCam | `earthcamtv` | `#1982C4` | `#1982C4` | `com.earthcam.earthcamtv.android/com.earthcam.earthcamtv.mainmvp.MainActivity` |
-| Echogram | `echogram` | `#FF5CA8` | `#FF5CA8` | `com.liori.echogram/com.liori.echogram.MainActivity` |
-| Elefin | `elefin` | `#53FC18` | `#53FC18` | `com.flex.elefin/com.flex.elefin.MainActivity` |
+| Echogram | `echogram` | `#00D4FF` | `#00D4FF` | `com.liori.echogram/com.liori.echogram.MainActivity` |
+| Elefin | `elefin` | `#FF5CA8` | `#FF5CA8` | `com.flex.elefin/com.flex.elefin.MainActivity` |
 | Emby | `emby` | `#52B54B` | `#52B54B` | `tv.emby.embyatv/.startup.StartupActivity`<br>`com.mb.android/.MainActivity` |
-| Enjoy TV | `enjoytvandroid` | `#7C74FF` | `#7C74FF` | `com.myenjoytv.enjoytvandroid/com.myenjoytv.enjoytvandroid.SplashActivity` |
-| Eon TV | `eon_tv` | `#FF7A2E` | `#FF7A2E` | `com.ug.eon.android.tv/com.ug.eon.android.tv.TvActivity` |
-| Epic Channel | `epicchannel` | `#19D3C5` | `#19D3C5` | `com.epicchannel.epicon/com.epicchannel.epicon.ui.launcher.activity.LauncherActivity` |
-| ePSXe | `epsxe` | `#F04DE0` | `#F04DE0` | `com.epsxe.ePSXe/com.epsxe.ePSXe.ePSXe` |
-| Eros Now | `eros` | `#B6F23A` | `#B6F23A` | `com.eros.now/com.eros.now.launchscreen.SplashActivity` |
-| ERTFLIX | `ertflix` | `#3D8BFF` | `#3D8BFF` | `com.ertflix.app/com.ertflix.app.MainActivity` |
-| ERTFLIX | `ertflix_2` | `#3D8BFF` | `#3D8BFF` | `t.yi.erthybrid/com.arxnet.soeasytv.MainActivity` |
-| Es De Frontend | `es_de_frontend` | `#FF4D4D` | `#FF4D4D` | `org.es_de.frontend/org.es_de.frontend.TvActivity` |
+| Enjoy TV | `enjoytvandroid` | `#53FC18` | `#53FC18` | `com.myenjoytv.enjoytvandroid/com.myenjoytv.enjoytvandroid.SplashActivity` |
+| Eon TV | `eon_tv` | `#7C74FF` | `#7C74FF` | `com.ug.eon.android.tv/com.ug.eon.android.tv.TvActivity` |
+| Epic Channel | `epicchannel` | `#FF7A2E` | `#FF7A2E` | `com.epicchannel.epicon/com.epicchannel.epicon.ui.launcher.activity.LauncherActivity` |
+| ePSXe | `epsxe` | `#19D3C5` | `#19D3C5` | `com.epsxe.ePSXe/com.epsxe.ePSXe.ePSXe` |
+| Eros Now | `eros` | `#F04DE0` | `#F04DE0` | `com.eros.now/com.eros.now.launchscreen.SplashActivity` |
+| ERTFLIX | `ertflix` | `#B6F23A` | `#B6F23A` | `com.ertflix.app/com.ertflix.app.MainActivity` |
+| ERTFLIX | `ertflix_2` | `#B6F23A` | `#B6F23A` | `t.yi.erthybrid/com.arxnet.soeasytv.MainActivity` |
+| Es De Frontend | `es_de_frontend` | `#3D8BFF` | `#3D8BFF` | `org.es_de.frontend/org.es_de.frontend.TvActivity` |
 | ES File Explorer | `estrongs` | `#1976D2` | `#1976D2` | `com.estrongs.android.pop/com.estrongs.android.pop.app.openscreenad.NewSplashActivity` |
 | ESPN | `score_center` | `#CC0000` | `#CC0000` | `com.espn.score_center/com.espn.startup.presentation.StartupActivity` |
-| Eternal TV | `eternaltviptvbox` | `#1FD19A` | `#1FD19A` | `com.eternaltv.eternaltviptvbox/com.eternaltv.eternaltviptvbox.view.activity.SplashActivity` |
-| Eternal TV (Nath) | `nathnetwork` | `#C95CFF` | `#C95CFF` | `com.nathnetwork.eternaltv/com.nathnetwork.eternaltv.SplashVideoActivity` |
-| Etube | `etube` | `#FFE14D` | `#FFE14D` | `com.vietts.etube/com.vietts.etube.MainActivity` |
-| eTVnet | `androidtv_6` | `#4FACFE` | `#4FACFE` | `com.etvnet.androidtv.tvstore/com.etvnet.androidtv.ui.init.InitActivity` |
-| Euronews | `euronews` | `#E6EDF3` | `#E6EDF3` | `com.alteox.euronews/com.alteox.euronews.MainActivity` |
+| Eternal TV | `eternaltviptvbox` | `#FF4D4D` | `#FF4D4D` | `com.eternaltv.eternaltviptvbox/com.eternaltv.eternaltviptvbox.view.activity.SplashActivity` |
+| Eternal TV (Nath) | `nathnetwork` | `#1FD19A` | `#1FD19A` | `com.nathnetwork.eternaltv/com.nathnetwork.eternaltv.SplashVideoActivity` |
+| Etube | `etube` | `#C95CFF` | `#C95CFF` | `com.vietts.etube/com.vietts.etube.MainActivity` |
+| eTVnet | `androidtv_6` | `#FFE14D` | `#FFE14D` | `com.etvnet.androidtv.tvstore/com.etvnet.androidtv.ui.init.InitActivity` |
+| Euronews | `euronews` | `#4FACFE` | `#4FACFE` | `com.alteox.euronews/com.alteox.euronews.MainActivity` |
 | ExpressVPN | `expressvpn` | `#DA3940` | `#DA3940` | `com.expressvpn.vpn/com.expressvpn.vpn.splash.ClassicAlias` |
 | F Droid | `f_droid` | `#1976D2` | `#1976D2` | `org.fdroid.fdroid/org.fdroid.fdroid.views.main.MainActivity` |
 | F1 TV | `production` | `#E10600` | `#E10600` | `com.formulaone.production/com.avs.f1.ui.splash.SplashActivity` |
 | Falcon Cast | `falconcast` | `#1982C4` | `#1982C4` | `com.falconcast.live/com.falconcast.live.SplashActivity`<br>`com.falconcast.live/com.falconcast.live.tv.TvSplashActivity` |
 | Fandango at Home | `fandango_at_home` | `#FF7300` | `#FF7300` | `air.com.vudu.air.DownloaderTablet/air.com.vudu.air.DownloaderTablet.SplashActivity` |
-| FANE TV | `fanetv` | `#34EB7A` | `#34EB7A` | `com.fanetv/tv.vhx.LauncherActivity`<br>`com.fanetv/tv.vhx.tv.home.TvHomeActivity` |
-| Fast Task Killer | `fasttaskkiller` | `#A366FF` | `#A366FF` | `jp.snowlife01.android.appkiller2/jp.snowlife01.android.appkiller2.Optimization`<br>`jp.snowlife01.android.appkiller2/jp.snowlife01.android.appkiller2.OptimizationActivity` |
-| FC Porto TV | `fcportotv` | `#FFB020` | `#FFB020` | `com.fcp.fcportotv/com.fcp.fcportotv.SplashActivity` |
-| FC TV | `fctv77` | `#00D4FF` | `#00D4FF` | `com.fctv77.tv/com.rblive.launcher.splash.SplashActivity` |
-| FCast Receiver | `playstore_2` | `#FF5CA8` | `#FF5CA8` | `com.futo.fcast.receiver.playstore/com.futo.fcast.receiver.MainActivity` |
-| Feb | `feb` | `#53FC18` | `#53FC18` | `com.topspeed.febbox2/com.snowtop.diskpanda.view.activity.SplashActivity` |
-| Feeln | `androidapp` | `#7C74FF` | `#7C74FF` | `com.feeln.androidapp/tv.accedo.one.app.bootstrap.BootstrapActivity` |
+| FANE TV | `fanetv` | `#E6EDF3` | `#E6EDF3` | `com.fanetv/tv.vhx.LauncherActivity`<br>`com.fanetv/tv.vhx.tv.home.TvHomeActivity` |
+| Fast Task Killer | `fasttaskkiller` | `#34EB7A` | `#34EB7A` | `jp.snowlife01.android.appkiller2/jp.snowlife01.android.appkiller2.Optimization`<br>`jp.snowlife01.android.appkiller2/jp.snowlife01.android.appkiller2.OptimizationActivity` |
+| FC Porto TV | `fcportotv` | `#A366FF` | `#A366FF` | `com.fcp.fcportotv/com.fcp.fcportotv.SplashActivity` |
+| FC TV | `fctv77` | `#FFB020` | `#FFB020` | `com.fctv77.tv/com.rblive.launcher.splash.SplashActivity` |
+| FCast Receiver | `playstore_2` | `#00D4FF` | `#00D4FF` | `com.futo.fcast.receiver.playstore/com.futo.fcast.receiver.MainActivity` |
+| Feb | `feb` | `#FF5CA8` | `#FF5CA8` | `com.topspeed.febbox2/com.snowtop.diskpanda.view.activity.SplashActivity` |
+| Feeln | `androidapp` | `#53FC18` | `#53FC18` | `com.feeln.androidapp/tv.accedo.one.app.bootstrap.BootstrapActivity` |
 | FIFA+ | `fifa` | `#326295` | `#326396` | `com.fifa.plus.android/com.fifa.tv.FifaTvSplashActivity` |
 | File Commander | `mobisystems` | `#1982C4` | `#1982C4` | `com.mobisystems.fileman/com.mobisystems.files.FileBrowser` |
 | Files | `files` | `#4285F4` | `#4285F4` | `com.google.android.documentsui/.files.FilesActivity`<br>`com.google.android.documentsui/com.android.documentsui.files.FilesActivity`<br>`com.google.android.apps.nbu.files/.home.HomeActivity` |
-| FileSynced | `filesynced` | `#FF7A2E` | `#FF7A2E` | `com.filesynced.app/com.filesynced.app.SplashActivity` |
-| Filimo | `filimo` | `#19D3C5` | `#19D3C5` | `com.sabaidea.filimo.tv/com.bluevod.android.tv.ui.activities.MainActivity` |
-| Filmfriend | `filmfriend` | `#F04DE0` | `#F04DE0` | `de.filmfriend/crc64a5e6c5f1927a9b79.MainActivity` |
-| Filmnet TV | `filmnet_tv` | `#B6F23A` | `#B6F23A` | `ir.filmnet.android.tv/ir.filmnet.android.ui.MainActivity` |
-| FilmRise | `filmrise` | `#3D8BFF` | `#3D8BFF` | `com.recipe.filmrise/com.recipe.filmrise.SplashActivity` |
-| Filmzie | `platform` | `#FF4D4D` | `#FF4D4D` | `com.filmzie.platform/com.filmzie.tv.MainActivity` |
-| FindLink | `findlink` | `#1FD19A` | `#1FD19A` | `com.findlink/com.findlink.ActivitySplash` |
-| Firedown | `firedown` | `#C95CFF` | `#C95CFF` | `com.solarized.firedown/com.solarized.firedown.phone.BrowserActivity` |
-| FireSend | `firesend` | `#FFE14D` | `#FFE14D` | `com.firesend.app/com.firesend.app.MainActivity` |
-| FITE | `fitetv` | `#4FACFE` | `#4FACFE` | `com.flipps.fitetv/com.bianor.ams.androidtv.activity.TvMainActivity` |
-| Five TV | `fivetviptvbox` | `#E6EDF3` | `#E6EDF3` | `com.fivetvbox.fivetviptvbox/com.fivetvbox.fivetviptvbox.view.activity.SplashActivity` |
-| Fizz TV | `fizz_app` | `#A366FF` | `#A366FF` | `ca.fizz_app.tv/ca.vmedia.phones_tablets_ui.activity.MainActivity` |
-| Fladder | `fladder` | `#FFB020` | `#FFB020` | `nl.jknaapen.fladder/nl.jknaapen.fladder.MainActivity` |
-| FLauncher | `launcher` | `#00D4FF` | `#00D4FF` | `com.kfaraj.launcher/com.kfaraj.launcher.LauncherActivity` |
-| Flex TV | `flextv` | `#FF5CA8` | `#FF5CA8` | `com.aytech.flextv/com.android.emptytest.MainActivity`<br>`com.aytech.flextv/com.flex.leanback.ui.splash.TVSplashActivity` |
-| Flickfolio | `flickfolio` | `#53FC18` | `#53FC18` | `com.snapwood.flickfolio/com.snapwood.flickfolio.SelectAlbumActivity` |
-| Flicky | `flicky` | `#7C74FF` | `#7C74FF` | `app.flicky/app.flicky.MainActivity` |
-| Flix TV | `flix_tv` | `#FF7A2E` | `#FF7A2E` | `com.tvflix.ippflixtvbox/com.tvflix.ippflixtvbox.view.activity.SplashActivity` |
+| FileSynced | `filesynced` | `#7C74FF` | `#7C74FF` | `com.filesynced.app/com.filesynced.app.SplashActivity` |
+| Filimo | `filimo` | `#FF7A2E` | `#FF7A2E` | `com.sabaidea.filimo.tv/com.bluevod.android.tv.ui.activities.MainActivity` |
+| Filmfriend | `filmfriend` | `#19D3C5` | `#19D3C5` | `de.filmfriend/crc64a5e6c5f1927a9b79.MainActivity` |
+| Filmnet TV | `filmnet_tv` | `#F04DE0` | `#F04DE0` | `ir.filmnet.android.tv/ir.filmnet.android.ui.MainActivity` |
+| FilmRise | `filmrise` | `#B6F23A` | `#B6F23A` | `com.recipe.filmrise/com.recipe.filmrise.SplashActivity` |
+| Filmzie | `platform` | `#3D8BFF` | `#3D8BFF` | `com.filmzie.platform/com.filmzie.tv.MainActivity` |
+| FindLink | `findlink` | `#FF4D4D` | `#FF4D4D` | `com.findlink/com.findlink.ActivitySplash` |
+| Firedown | `firedown` | `#1FD19A` | `#1FD19A` | `com.solarized.firedown/com.solarized.firedown.phone.BrowserActivity` |
+| FireSend | `firesend` | `#C95CFF` | `#C95CFF` | `com.firesend.app/com.firesend.app.MainActivity` |
+| FITE | `fitetv` | `#FFE14D` | `#FFE14D` | `com.flipps.fitetv/com.bianor.ams.androidtv.activity.TvMainActivity` |
+| Five TV | `fivetviptvbox` | `#4FACFE` | `#4FACFE` | `com.fivetvbox.fivetviptvbox/com.fivetvbox.fivetviptvbox.view.activity.SplashActivity` |
+| Fizz TV | `fizz_app` | `#34EB7A` | `#34EB7A` | `ca.fizz_app.tv/ca.vmedia.phones_tablets_ui.activity.MainActivity` |
+| Fladder | `fladder` | `#A366FF` | `#A366FF` | `nl.jknaapen.fladder/nl.jknaapen.fladder.MainActivity` |
+| FLauncher | `launcher` | `#FFB020` | `#FFB020` | `com.kfaraj.launcher/com.kfaraj.launcher.LauncherActivity` |
+| Flex TV | `flextv` | `#00D4FF` | `#00D4FF` | `com.aytech.flextv/com.android.emptytest.MainActivity`<br>`com.aytech.flextv/com.flex.leanback.ui.splash.TVSplashActivity` |
+| Flickfolio | `flickfolio` | `#FF5CA8` | `#FF5CA8` | `com.snapwood.flickfolio/com.snapwood.flickfolio.SelectAlbumActivity` |
+| Flicky | `flicky` | `#53FC18` | `#53FC18` | `app.flicky/app.flicky.MainActivity` |
+| Flix TV | `flix_tv` | `#7C74FF` | `#7C74FF` | `com.tvflix.ippflixtvbox/com.tvflix.ippflixtvbox.view.activity.SplashActivity` |
 | Flix Vision | `flix_vision` | `#E5533D` | `#E5533D` | `flix.com.vision/.activities.SplashScreenActivity` |
-| Flixnest | `flixnest` | `#19D3C5` | `#19D3C5` | `hu.kinetik.streamapp/hu.kinetik.streamapp.MainActivity` |
-| Flosports | `flosports` | `#F04DE0` | `#F04DE0` | `tv.flosports/tv.flosports.TvActivity` |
-| Fluffy | `fluffy` | `#B6F23A` | `#B6F23A` | `app.fluffy/app.fluffy.MainActivity` |
-| FM Radio | `fmradio` | `#3D8BFF` | `#3D8BFF` | `com.radio.fmradio/com.radio.fmradio.activity.OnboardingActivity` |
-| Folder Sync | `folder_sync` | `#FF4D4D` | `#FF4D4D` | `dk.tacit.android.foldersync.lite/dk.tacit.android.foldersync.activity.MainActivity` |
-| Football 360 | `football_360` | `#1FD19A` | `#1FD19A` | `tv.football360.androidtv/tv.football360.androidtv.MainActivity` |
-| Forecast | `forecast` | `#C95CFF` | `#C95CFF` | `com.bweather.forecast/com.bweather.forecast.SplashActivity` |
-| Forja TV | `forja_tv` | `#FFE14D` | `#FFE14D` | `ma.snrt.forja.android.app/com.ebplatformtv.MainActivity` |
-| FORMED | `formed` | `#4FACFE` | `#4FACFE` | `com.ai.formed.formed/tv.vhx.LauncherActivity` |
-| Fotoo | `fotoo` | `#E6EDF3` | `#E6EDF3` | `com.bo.fotoo/com.bo.fotoo.ui.splash.FTSplashActivity` |
+| Flixnest | `flixnest` | `#FF7A2E` | `#FF7A2E` | `hu.kinetik.streamapp/hu.kinetik.streamapp.MainActivity` |
+| Flosports | `flosports` | `#19D3C5` | `#19D3C5` | `tv.flosports/tv.flosports.TvActivity` |
+| Fluffy | `fluffy` | `#F04DE0` | `#F04DE0` | `app.fluffy/app.fluffy.MainActivity` |
+| FM Radio | `fmradio` | `#B6F23A` | `#B6F23A` | `com.radio.fmradio/com.radio.fmradio.activity.OnboardingActivity` |
+| Folder Sync | `folder_sync` | `#3D8BFF` | `#3D8BFF` | `dk.tacit.android.foldersync.lite/dk.tacit.android.foldersync.activity.MainActivity` |
+| Football 360 | `football_360` | `#FF4D4D` | `#FF4D4D` | `tv.football360.androidtv/tv.football360.androidtv.MainActivity` |
+| Forecast | `forecast` | `#1FD19A` | `#1FD19A` | `com.bweather.forecast/com.bweather.forecast.SplashActivity` |
+| Forja TV | `forja_tv` | `#C95CFF` | `#C95CFF` | `ma.snrt.forja.android.app/com.ebplatformtv.MainActivity` |
+| FORMED | `formed` | `#FFE14D` | `#FFE14D` | `com.ai.formed.formed/tv.vhx.LauncherActivity` |
+| Fotoo | `fotoo` | `#4FACFE` | `#4FACFE` | `com.bo.fotoo/com.bo.fotoo.ui.splash.FTSplashActivity` |
 | Fox Nation | `foxnation` | `#003580` | `#0058D3` | `com.fng.foxnation/com.fox.app.MainActivity` |
 | Fox News | `foxnews` | `#003580` | `#0058D3` | `com.foxnews.android/com.foxnews.androidtv.ui.splash.SplashScreenActivity` |
-| FOX One | `foxone` | `#34EB7A` | `#34EB7A` | `com.fox.foxone/com.app.android.MainActivity` |
+| FOX One | `foxone` | `#E6EDF3` | `#E6EDF3` | `com.fox.foxone/com.app.android.MainActivity` |
 | Fox Sports | `foxsports` | `#003580` | `#0058D3` | `com.foxsports.android/com.fox.app.MainActivity` |
 | Fox Sports Go | `foxsports_2` | `#003580` | `#0058D3` | `com.foxsports.videogo/com.ballysports.tv.ui.screens.main.TvMainActivity` |
 | Foxtel | `foxtel` | `#EE5100` | `#EE5100` | `au.com.foxtel.atv/foxtel.play.droid.atv.SplashView` |
-| FP Basquetebol | `fpbasquetebol` | `#A366FF` | `#A366FF` | `com.fpbasquetebol.fpbtv/com.fpbasquetebol.fpbtv.MainActivity` |
-| Fpt Play | `fpt_play` | `#00D4FF` | `#00D4FF` | `net.fptplay.ottbox/com.tear.modules.tv.welcome.WelcomeActivity` |
+| FP Basquetebol | `fpbasquetebol` | `#34EB7A` | `#34EB7A` | `com.fpbasquetebol.fpbtv/com.fpbasquetebol.fpbtv.MainActivity` |
+| Fpt Play | `fpt_play` | `#FFB020` | `#FFB020` | `net.fptplay.ottbox/com.tear.modules.tv.welcome.WelcomeActivity` |
 | France 24 | `androidapp_2` | `#00AFF0` | `#00AFF0` | `com.france24.androidapp.gtv/com.france24.androidapp.features.skeleton.SplashActivity` |
-| Francetv | `francetv` | `#FF5CA8` | `#FF5CA8` | `fr.francetv.pluzz/fr.francetv.androidtv.main.MainActivity` |
-| Free TV | `free_tv` | `#53FC18` | `#53FC18` | `net.oqee.androidtv.store/net.oqee.androidtv.ui.splash.SplashActivity` |
-| Freeflix Hq | `freeflix_hq` | `#7C74FF` | `#7C74FF` | `tonybits.com.ffhq/tonybits.com.ffhq.activities.SplashScreenActivity` |
-| Freevee | `spiderpork` | `#FF7A2E` | `#FF7A2E` | `com.amazon.spiderpork/com.amazon.spiderpork.activities.MainActivity` |
-| Fresh Drama | `fresh_drama` | `#19D3C5` | `#19D3C5` | `com.skylinktv.freshdrama/co.unreel.videoapp.PreSplashActivity`<br>`com.skylinktv.freshdrama/co.unreel.tvapp.ui.activity.SplashActivity` |
-| Ftp Server | `ftp_server` | `#F04DE0` | `#F04DE0` | `net.xnano.android.ftpserver.tv/net.xnano.android.ftpserver.MainActivity` |
+| Francetv | `francetv` | `#00D4FF` | `#00D4FF` | `fr.francetv.pluzz/fr.francetv.androidtv.main.MainActivity` |
+| Free TV | `free_tv` | `#FF5CA8` | `#FF5CA8` | `net.oqee.androidtv.store/net.oqee.androidtv.ui.splash.SplashActivity` |
+| Freeflix Hq | `freeflix_hq` | `#53FC18` | `#53FC18` | `tonybits.com.ffhq/tonybits.com.ffhq.activities.SplashScreenActivity` |
+| Freevee | `spiderpork` | `#7C74FF` | `#7C74FF` | `com.amazon.spiderpork/com.amazon.spiderpork.activities.MainActivity` |
+| Fresh Drama | `fresh_drama` | `#FF7A2E` | `#FF7A2E` | `com.skylinktv.freshdrama/co.unreel.videoapp.PreSplashActivity`<br>`com.skylinktv.freshdrama/co.unreel.tvapp.ui.activity.SplashActivity` |
+| Ftp Server | `ftp_server` | `#19D3C5` | `#19D3C5` | `net.xnano.android.ftpserver.tv/net.xnano.android.ftpserver.MainActivity` |
 | Fubo | `screen` | `#C83D1E` | `#C83D1E` | `com.fubo.firetv.screen/tv.fubo.mobile.presentation.onboarding.dispatch.controller.DispatchActivity` |
-| Full Episodes | `fullepisodes` | `#B6F23A` | `#B6F23A` | `com.cw.fullepisodes.android/com.cw.fullepisodes.android.TvActivity` |
+| Full Episodes | `fullepisodes` | `#F04DE0` | `#F04DE0` | `com.cw.fullepisodes.android/com.cw.fullepisodes.android.TvActivity` |
 | FX File Explorer | `fxfile` | `#00D4FF` | `#00D4FF` | `nextapp.fx/.FX`<br>`nextapp.fx/nextapp.fx.ui.ExplorerActivity` |
-| Gain | `gain` | `#3D8BFF` | `#3D8BFF` | `com.trgain.mikrogain/com.gain.mikrogain.TVMainActivity` |
-| Galaxy Play | `galaxy_play` | `#FF4D4D` | `#FF4D4D` | `movies.fimplus.vn.andtv/movies.fimplus.vn.andtv.v2.activity.HomeActivityV2` |
+| Gain | `gain` | `#B6F23A` | `#B6F23A` | `com.trgain.mikrogain/com.gain.mikrogain.TVMainActivity` |
+| Galaxy Play | `galaxy_play` | `#3D8BFF` | `#3D8BFF` | `movies.fimplus.vn.andtv/movies.fimplus.vn.andtv.v2.activity.HomeActivityV2` |
 | Galleri | `galleri_tcl` | `#0061FF` | `#0061FF` | `com.tcl.gallery/com.tcl.gallery.module_gallery.activity.MainActivity` |
-| Gallery 3D | `gallery3d` | `#1FD19A` | `#1FD19A` | `com.android.gallery3d/com.android.gallery3d.app.GalleryActivity` |
-| Game Launcher | `gamelauncher` | `#C95CFF` | `#C95CFF` | `com.radikal.gamelauncher/com.radikal.gamelauncher.MainActivity` |
-| Gb News | `gb_news` | `#FFE14D` | `#FFE14D` | `uk.gbnews.app/com.simplestream.presentation.startup.StartUpActivity` |
+| Gallery 3D | `gallery3d` | `#FF4D4D` | `#FF4D4D` | `com.android.gallery3d/com.android.gallery3d.app.GalleryActivity` |
+| Game Launcher | `gamelauncher` | `#1FD19A` | `#1FD19A` | `com.radikal.gamelauncher/com.radikal.gamelauncher.MainActivity` |
+| Gb News | `gb_news` | `#C95CFF` | `#C95CFF` | `uk.gbnews.app/com.simplestream.presentation.startup.StartUpActivity` |
 | GeForce Now | `tegrazone3` | `#76B900` | `#76B900` | `com.nvidia.tegrazone3/com.nvidia.geforcenow.LaunchActivity` |
-| GenPlay | `genplay` | `#4FACFE` | `#4FACFE` | `com.genplay.apps/com.genplay.apps.MainActivity` |
-| Get Icon | `get_icon` | `#E6EDF3` | `#E6EDF3` | `de.lemke.geticon/de.lemke.geticon.ui.MainActivity` |
-| Getflix VPN | `digiport` | `#34EB7A` | `#34EB7A` | `com.digiport.getflix.vpn/com.digiport.vpnapp.ui.modules.MainActivity` |
+| GenPlay | `genplay` | `#FFE14D` | `#FFE14D` | `com.genplay.apps/com.genplay.apps.MainActivity` |
+| Get Icon | `get_icon` | `#4FACFE` | `#4FACFE` | `de.lemke.geticon/de.lemke.geticon.ui.MainActivity` |
+| Getflix VPN | `digiport` | `#E6EDF3` | `#E6EDF3` | `com.digiport.getflix.vpn/com.digiport.vpnapp.ui.modules.MainActivity` |
 | Ghost Commander | `ghostcommander` | `#8B949E` | `#8B949E` | `com.ghostsq.commander/com.ghostsq.commander.FileCommander`<br>`com.ghostsq.commander/.FileCommander` |
-| Global TV | `global_tv` | `#A366FF` | `#A366FF` | `com.shawmedia.smglobal/com.corusent.stream.activity.SplashScreenActivity` |
-| Globoplay | `globotv` | `#FFB020` | `#FFB020` | `com.globo.globotv/com.globo.globotv.splashtv.SplashActivity` |
-| Go3 | `go3` | `#00D4FF` | `#00D4FF` | `lt.go3.android.tv/pl.atende.mobile.tv.ui.gui.main.activity.SplashActivity` |
-| Good Tools | `goodtoolapps` | `#FF5CA8` | `#FF5CA8` | `com.goodtoolapps.zeus/com.goodtoolapps.zeus.MainActivity` |
+| Global TV | `global_tv` | `#34EB7A` | `#34EB7A` | `com.shawmedia.smglobal/com.corusent.stream.activity.SplashScreenActivity` |
+| Globoplay | `globotv` | `#A366FF` | `#A366FF` | `com.globo.globotv/com.globo.globotv.splashtv.SplashActivity` |
+| Go3 | `go3` | `#FFB020` | `#FFB020` | `lt.go3.android.tv/pl.atende.mobile.tv.ui.gui.main.activity.SplashActivity` |
+| Good Tools | `goodtoolapps` | `#00D4FF` | `#00D4FF` | `com.goodtoolapps.zeus/com.goodtoolapps.zeus.MainActivity` |
 | Google Play Games | `games` | `#0F9D58` | `#0F9D58` | `com.google.android.play.games/com.google.android.apps.play.games.app.atv.features.home.HomeActivity` |
 | Google Play Store | `playstore` | `#00A0FF` | `#00A0FF` | `com.android.vending/com.google.android.finsky.tvmainactivity.TvMainActivity` |
 | Google TV | `videos` | `#4285F4` | `#4285F4` | `com.google.android.videos/com.google.android.videos.tv.presenter.activity.TvLauncherActivity` |
-| GoPlay | `goplay` | `#53FC18` | `#53FC18` | `com.eitv.goplay/com.eitv.eitvplay.activities.SplashActivity` |
-| Gotham Sports | `gothamsports` | `#7C74FF` | `#7C74FF` | `com.gothamsports.gotham.tv/com.game.tv.TVMainActivity` |
-| Great American Pure Flix | `great` | `#FF7A2E` | `#FF7A2E` | `com.great.tv.android/tv.accedo.one.app.bootstrap.BootstrapActivity` |
+| GoPlay | `goplay` | `#FF5CA8` | `#FF5CA8` | `com.eitv.goplay/com.eitv.eitvplay.activities.SplashActivity` |
+| Gotham Sports | `gothamsports` | `#53FC18` | `#53FC18` | `com.gothamsports.gotham.tv/com.game.tv.TVMainActivity` |
+| Great American Pure Flix | `great` | `#7C74FF` | `#7C74FF` | `com.great.tv.android/tv.accedo.one.app.bootstrap.BootstrapActivity` |
 | GridStreamr | `gridstreamr` | `#58C6FF` | `#58C6FF` | `com.gridstreamr.gridstreamr/com.gridstreamr.gridstreamr.MainActivity`<br>`com.gridstreamr.androidtv/com.gridstreamr.androidtv.MainActivity` |
-| GT Share | `gtshare` | `#19D3C5` | `#19D3C5` | `com.gtmedia.gtshare/com.winsat.gtshare.MainActivity` |
-| GuidePlus | `guideplus` | `#F04DE0` | `#F04DE0` | `com.guideplus.co/com.guideplus.co.SplashActivity` |
-| Gymondo | `gymondo` | `#B6F23A` | `#B6F23A` | `de.gymondo.app.gymondo/com.gymondo.presentation.features.startup.StartupTvActivity` |
+| GT Share | `gtshare` | `#FF7A2E` | `#FF7A2E` | `com.gtmedia.gtshare/com.winsat.gtshare.MainActivity` |
+| GuidePlus | `guideplus` | `#19D3C5` | `#19D3C5` | `com.guideplus.co/com.guideplus.co.SplashActivity` |
+| Gymondo | `gymondo` | `#F04DE0` | `#F04DE0` | `de.gymondo.app.gymondo/com.gymondo.presentation.features.startup.StartupTvActivity` |
 | Hallmark Channel | `hallmarkchannel` | `#9C1D2B` | `#B92233` | `com.hallmarkchannel.awe/tv.accedo.one.app.bootstrap.BootstrapActivity` |
-| Haystack News | `haystack` | `#3D8BFF` | `#3D8BFF` | `com.haystack.android/com.haystack.android.tv.ui.activities.LoadingActivity` |
+| Haystack News | `haystack` | `#B6F23A` | `#B6F23A` | `com.haystack.android/com.haystack.android.tv.ui.activities.LoadingActivity` |
 | Hayu | `hayu` | `#FF285A` | `#FF285A` | `com.upst.hayu/com.upst.hayu.tv.main.MainActivity` |
-| Hd Streamz | `hd_streamz` | `#FF4D4D` | `#FF4D4D` | `insure.cable.estate/com.android.vending.a.UI`<br>`insure.cable.estate/com.android.vending.a.TV` |
-| Hdhomerun | `hdhomerun` | `#1FD19A` | `#1FD19A` | `com.silicondust.view/com.silicondust.view.App` |
-| HDMI Source | `hdmi_source` | `#C95CFF` | `#C95CFF` | `com.spocky.projengmenu/.activities.input.SourceHDMI1Activity`<br>`com.spocky.projengmenu/.activities.input.SourceHDMI2Activity`<br>`com.spocky.projengmenu/.activities.input.SourceHDMI3Activity`<br>`com.spocky.projengmenu/.activities.input.SourceHDMI4Activity`<br>`com.spocky.projengmenu/.ui.guidedActions.activities.input.SourceHDMI1Activity`<br>`com.spocky.projengmenu/.ui.guidedActions.activities.input.SourceHDMI2Activity`<br>`com.spocky.projengmenu/.ui.guidedActions.activities.input.SourceHDMI3Activity`<br>`com.spocky.projengmenu/.ui.guidedActions.activities.input.SourceHDMI4Activity` |
-| Hdo Box | `hdo_box` | `#FFE14D` | `#FFE14D` | `com.tv.hdobox/com.tv.hdobox.MainActivity` |
-| HDRezka | `falcofemoralis` | `#4FACFE` | `#4FACFE` | `com.falcofemoralis.hdrezkaapp/com.falcofemoralis.hdrezkaapp.views.MainActivity` |
-| Hdtv Player | `hdtv_player` | `#E6EDF3` | `#E6EDF3` | `com.zva3.mobile.litetvandroid/com.zva3.mobile.litetvandroid.MainActivity`<br>`com.zva3.mobile.litetvandroid/com.zva3.mobile.litetvandroid.TvActivity` |
-| HEI Network | `heinetworktv` | `#34EB7A` | `#34EB7A` | `com.heinetwork.HEINetworkTV/com.heinetwork.HEINetworkTV.MainActivity` |
-| HGTV | `watcher` | `#A366FF` | `#A366FF` | `com.hgtv.watcher/com.discovery.tve.presentation.activities.SplashActivity` |
+| Hd Streamz | `hd_streamz` | `#3D8BFF` | `#3D8BFF` | `insure.cable.estate/com.android.vending.a.UI`<br>`insure.cable.estate/com.android.vending.a.TV` |
+| Hdhomerun | `hdhomerun` | `#FF4D4D` | `#FF4D4D` | `com.silicondust.view/com.silicondust.view.App` |
+| HDMI Source | `hdmi_source` | `#1FD19A` | `#1FD19A` | `com.spocky.projengmenu/.activities.input.SourceHDMI1Activity`<br>`com.spocky.projengmenu/.activities.input.SourceHDMI2Activity`<br>`com.spocky.projengmenu/.activities.input.SourceHDMI3Activity`<br>`com.spocky.projengmenu/.activities.input.SourceHDMI4Activity`<br>`com.spocky.projengmenu/.ui.guidedActions.activities.input.SourceHDMI1Activity`<br>`com.spocky.projengmenu/.ui.guidedActions.activities.input.SourceHDMI2Activity`<br>`com.spocky.projengmenu/.ui.guidedActions.activities.input.SourceHDMI3Activity`<br>`com.spocky.projengmenu/.ui.guidedActions.activities.input.SourceHDMI4Activity` |
+| Hdo Box | `hdo_box` | `#C95CFF` | `#C95CFF` | `com.tv.hdobox/com.tv.hdobox.MainActivity` |
+| HDRezka | `falcofemoralis` | `#FFE14D` | `#FFE14D` | `com.falcofemoralis.hdrezkaapp/com.falcofemoralis.hdrezkaapp.views.MainActivity` |
+| Hdtv Player | `hdtv_player` | `#4FACFE` | `#4FACFE` | `com.zva3.mobile.litetvandroid/com.zva3.mobile.litetvandroid.MainActivity`<br>`com.zva3.mobile.litetvandroid/com.zva3.mobile.litetvandroid.TvActivity` |
+| HEI Network | `heinetworktv` | `#E6EDF3` | `#E6EDF3` | `com.heinetwork.HEINetworkTV/com.heinetwork.HEINetworkTV.MainActivity` |
+| HGTV | `watcher` | `#34EB7A` | `#34EB7A` | `com.hgtv.watcher/com.discovery.tve.presentation.activities.SplashActivity` |
 | Hi Browser | `hi_browser` | `#00A8A8` | `#00A8A8` | `com.hisense.odinbrowser/com.hisense.odinbrowser.MainActivity`<br>`com.hisense.odinbrowser/com.hisense.odinbrowser.ui.MainActivity`<br>`com.hisense.odinbrowser/com.hisense.odinbrowser.browser.MainActivity` |
-| Hideme | `hideme` | `#FFB020` | `#FFB020` | `hideme.android.vpn/com.android.vpn.activities.LoginActivity` |
-| Hidive | `hidive` | `#00D4FF` | `#00D4FF` | `com.twentyfouri.androidtv.hidive/com.twentyfouri.androidtv.hidive.MainActivity` |
-| Hippos | `livingwithhippos` | `#FF5CA8` | `#FF5CA8` | `com.github.livingwithhippos.unchained/com.github.livingwithhippos.unchained.base.MainActivity` |
-| HISTORY | `androidtv_4` | `#53FC18` | `#53FC18` | `com.aetn.history.watch.androidtv/com.aetn.android.tveapps.app.MainActivity` |
-| History Hit | `historyhit` | `#7C74FF` | `#7C74FF` | `com.historyhit/tv.vhx.tv.home.TvHomeActivity` |
-| Hoichoi | `hoichoi` | `#FF7A2E` | `#FF7A2E` | `com.viewlift.hoichoi/com.viewlift.hoichoi.ui.splash.MainActivity` |
-| Home Automation TV Dashboard | `home_automation_tv_dashboard` | `#19D3C5` | `#19D3C5` | `io.homeassistant.companion.androidtv/io.homeassistant.companion.androidtv.DefaultLauncherAlias` |
+| Hideme | `hideme` | `#A366FF` | `#A366FF` | `hideme.android.vpn/com.android.vpn.activities.LoginActivity` |
+| Hidive | `hidive` | `#FFB020` | `#FFB020` | `com.twentyfouri.androidtv.hidive/com.twentyfouri.androidtv.hidive.MainActivity` |
+| Hippos | `livingwithhippos` | `#00D4FF` | `#00D4FF` | `com.github.livingwithhippos.unchained/com.github.livingwithhippos.unchained.base.MainActivity` |
+| HISTORY | `androidtv_4` | `#FF5CA8` | `#FF5CA8` | `com.aetn.history.watch.androidtv/com.aetn.android.tveapps.app.MainActivity` |
+| History Hit | `historyhit` | `#53FC18` | `#53FC18` | `com.historyhit/tv.vhx.tv.home.TvHomeActivity` |
+| Hoichoi | `hoichoi` | `#7C74FF` | `#7C74FF` | `com.viewlift.hoichoi/com.viewlift.hoichoi.ui.splash.MainActivity` |
+| Home Automation TV Dashboard | `home_automation_tv_dashboard` | `#FF7A2E` | `#FF7A2E` | `io.homeassistant.companion.androidtv/io.homeassistant.companion.androidtv.DefaultLauncherAlias` |
 | Home Button | `homebutton` | `#9E9E9E` | `#9E9E9E` | `flar2.homebutton/a.a` |
-| Home Workout | `home_workout` | `#F04DE0` | `#F04DE0` | `com.sugarapple.workout/com.sugarapple.workout.MainActivity` |
+| Home Workout | `home_workout` | `#19D3C5` | `#19D3C5` | `com.sugarapple.workout/com.sugarapple.workout.MainActivity` |
 | Hoopla | `hoopladigital` | `#EA4C2C` | `#EA4C2C` | `com.hoopladigital.android/com.hoopladigital.android.ui.activity.SplashScreenActivity`<br>`com.hoopladigital.android/com.hoopladigital.android.ui.activity.leanback.LeanbackSplashScreenActivity` |
 | Hotspot Shield VPN | `hotspot_shield_vpn` | `#2196F3` | `#2196F3` | `hotspotshield.android.vpn/com.anchorfree.hotspotshield.ui.HssActivity`<br>`hotspotshield.android.vpn/com.anchorfree.hotspotshield.ui.tv.HssTvActivity` |
-| Hrti | `hrti` | `#B6F23A` | `#B6F23A` | `hr.hrt.hrti/hr.cs.aviion.ui.splash.SplashActivity` |
-| Hubitat | `jpage4500` | `#3D8BFF` | `#3D8BFF` | `com.jpage4500.hubitat/com.jpage4500.hubitat.ui.activities.MainActivity` |
-| Hue Shortcuts | `hueshortcuts` | `#FF4D4D` | `#FF4D4D` | `app.mcneill.hueshortcuts/app.mcneill.hueshortcuts.MainActivity` |
-| Hueessentials | `hueessentials` | `#1FD19A` | `#1FD19A` | `com.superthomaslab.hueessentials/com.superthomaslab.hueessentials.MainActivity` |
+| Hrti | `hrti` | `#F04DE0` | `#F04DE0` | `hr.hrt.hrti/hr.cs.aviion.ui.splash.SplashActivity` |
+| Hubitat | `jpage4500` | `#B6F23A` | `#B6F23A` | `com.jpage4500.hubitat/com.jpage4500.hubitat.ui.activities.MainActivity` |
+| Hue Shortcuts | `hueshortcuts` | `#3D8BFF` | `#3D8BFF` | `app.mcneill.hueshortcuts/app.mcneill.hueshortcuts.MainActivity` |
+| Hueessentials | `hueessentials` | `#FF4D4D` | `#FF4D4D` | `com.superthomaslab.hueessentials/com.superthomaslab.hueessentials.MainActivity` |
 | Hulu | `livingroomplus` | `#1CE783` | `#1CE783` | `com.hulu.livingroomplus/com.hulu.livingroomplus.WKFactivity` |
 | Hyperion Grabber | `hyperiongrabber` | `#1982C4` | `#1982C4` | `com.abrenoch.hyperiongrabber/com.abrenoch.hyperiongrabber.common.ToggleActivity`<br>`com.abrenoch.hyperiongrabber/com.abrenoch.hyperiongrabber.tv.activities.MainActivity` |
-| Hyperspin | `hyperspin` | `#C95CFF` | `#C95CFF` | `com.shieldcade.hyperspin/com.shieldcade.hyperspin.HSFENativeActivity` |
-| IB Player | `ib` | `#FFE14D` | `#FFE14D` | `com.ib.player/com.ib.player.MainActivity` |
-| Ici Tou TV | `ici_tou_tv` | `#4FACFE` | `#4FACFE` | `tv.toutv.androidtv/tv.tou.android.splash.views.activities.SplashScreenActivity`<br>`tv.tou.android/tv.tou.android.splash.views.activities.SplashScreenActivity` |
-| Iflix | `iflix` | `#E6EDF3` | `#E6EDF3` | `iflix.play/com.ktcp.video.activity.HomeActivity` |
-| Ignite TV | `ignitetv` | `#34EB7A` | `#34EB7A` | `com.rogers.ignitetv/com.xfinity.common.view.LaunchActivity` |
+| Hyperspin | `hyperspin` | `#1FD19A` | `#1FD19A` | `com.shieldcade.hyperspin/com.shieldcade.hyperspin.HSFENativeActivity` |
+| IB Player | `ib` | `#C95CFF` | `#C95CFF` | `com.ib.player/com.ib.player.MainActivity` |
+| Ici Tou TV | `ici_tou_tv` | `#FFE14D` | `#FFE14D` | `tv.toutv.androidtv/tv.tou.android.splash.views.activities.SplashScreenActivity`<br>`tv.tou.android/tv.tou.android.splash.views.activities.SplashScreenActivity` |
+| Iflix | `iflix` | `#4FACFE` | `#4FACFE` | `iflix.play/com.ktcp.video.activity.HomeActivity` |
+| Ignite TV | `ignitetv` | `#E6EDF3` | `#E6EDF3` | `com.rogers.ignitetv/com.xfinity.common.view.LaunchActivity` |
 | iHeartRadio | `clearchannel` | `#C6002B` | `#C6002B` | `com.clearchannel.iheartradio.tv/com.iheartradio.tv.screen.container.ContainerActivity` |
-| Immich TV | `immich_tv` | `#A366FF` | `#A366FF` | `nl.giejay.android.tv.immich/nl.giejay.android.tv.immich.MainActivity` |
-| iMPlayer | `myiptvonline` | `#FFB020` | `#FFB020` | `com.myiptvonline.implayer/com.myiptvonline.implayer.a` |
+| Immich TV | `immich_tv` | `#34EB7A` | `#34EB7A` | `nl.giejay.android.tv.immich/nl.giejay.android.tv.immich.MainActivity` |
+| iMPlayer | `myiptvonline` | `#A366FF` | `#A366FF` | `com.myiptvonline.implayer/com.myiptvonline.implayer.a` |
 | Instagram | `instagram` | `#FF0069` | `#FF0069` | `com.instagram.airwave/com.instagram.airwave.AirwaveMainActivity` |
-| InstantBits | `instantbits` | `#00D4FF` | `#00D4FF` | `com.instantbits.cast.receiver/com.instantbits.android.receiver.MainActivity` |
-| Ip Address | `ip_address` | `#FF5CA8` | `#FF5CA8` | `net.info.az/net.info.az.SplashActivity` |
-| IP Tools | `iptools` | `#53FC18` | `#53FC18` | `com.ddm.iptools/com.ddm.iptools.ui.MainActivity` |
-| IPTV Extreme Pro | `iptvextremepro` | `#7C74FF` | `#7C74FF` | `com.pecana.iptvextremepro/com.pecana.iptvextremepro.SplashActivity` |
-| IPTV Pro | `iptv_pro` | `#FF7A2E` | `#FF7A2E` | `ru.iptvremote.android.iptv.pro/ru.iptvremote.android.iptv.pro.ChannelsActivity` |
+| InstantBits | `instantbits` | `#FFB020` | `#FFB020` | `com.instantbits.cast.receiver/com.instantbits.android.receiver.MainActivity` |
+| Ip Address | `ip_address` | `#00D4FF` | `#00D4FF` | `net.info.az/net.info.az.SplashActivity` |
+| IP Tools | `iptools` | `#FF5CA8` | `#FF5CA8` | `com.ddm.iptools/com.ddm.iptools.ui.MainActivity` |
+| IPTV Extreme Pro | `iptvextremepro` | `#53FC18` | `#53FC18` | `com.pecana.iptvextremepro/com.pecana.iptvextremepro.SplashActivity` |
+| IPTV Pro | `iptv_pro` | `#7C74FF` | `#7C74FF` | `ru.iptvremote.android.iptv.pro/ru.iptvremote.android.iptv.pro.ChannelsActivity` |
 | IPTV Smarters | `iptvsmarterstvbox` | `#1982C4` | `#1982C4` | `com.nst.iptvsmarterstvbox/com.nst.iptvsmarterstvbox.view.activity.SplashActivity` |
-| IPTV Smarters Plus | `iptv_smarters_plus` | `#19D3C5` | `#19D3C5` | `iptv.smarters.plus/flix.pro.player.SplashActivity` |
-| IPTV3u | `iptv3u` | `#F04DE0` | `#F04DE0` | `com.iptv3u/app.dimplay.activities.SplashActivity` |
+| IPTV Smarters Plus | `iptv_smarters_plus` | `#FF7A2E` | `#FF7A2E` | `iptv.smarters.plus/flix.pro.player.SplashActivity` |
+| IPTV3u | `iptv3u` | `#19D3C5` | `#19D3C5` | `com.iptv3u/app.dimplay.activities.SplashActivity` |
 | IPVanish | `ipvanish` | `#6DB33F` | `#6DB33F` | `com.ixolit.ipvanish/com.ixolit.ipvanish.presentation.features.launch.SplashActivity` |
-| iQIYI | `iqiyi` | `#B6F23A` | `#B6F23A` | `com.iqiyi.i18n.tv/com.iqiyi.i18n.tv.launch.LaunchActivity` |
+| iQIYI | `iqiyi` | `#F04DE0` | `#F04DE0` | `com.iqiyi.i18n.tv/com.iqiyi.i18n.tv.launch.LaunchActivity` |
 | ITV Hub | `itvmobileplayer` | `#00B4E5` | `#00B4E5` | `air.ITVMobilePlayer/com.itv.tenft.itvhub.MainActivity` |
-| Ivysiilani | `ivysiilani` | `#3D8BFF` | `#3D8BFF` | `cz.ceskatelevize.ivysilani.tvapp/cz.ceskatelevize.ivysilani.tvapp.MainActivity` |
+| Ivysiilani | `ivysiilani` | `#B6F23A` | `#B6F23A` | `cz.ceskatelevize.ivysilani.tvapp/cz.ceskatelevize.ivysilani.tvapp.MainActivity` |
 | Janky Player | `janky` | `#1E88E5` | `#1E88E5` | `com.player.janky/.MainActivity` |
-| Jawwy TV | `intigral` | `#FF4D4D` | `#FF4D4D` | `com.intigral.jawwytv/com.intigral.jawwytv.standalone.StandaloneSplashActivity` |
-| Jawwy TV | `jawwy_tv` | `#FF4D4D` | `#FF4D4D` | `net.intigral.jawwytv/com.intigral.jawwytv.standalone.StandaloneSplashActivity` |
+| Jawwy TV | `intigral` | `#3D8BFF` | `#3D8BFF` | `com.intigral.jawwytv/com.intigral.jawwytv.standalone.StandaloneSplashActivity` |
+| Jawwy TV | `jawwy_tv` | `#3D8BFF` | `#3D8BFF` | `net.intigral.jawwytv/com.intigral.jawwytv.standalone.StandaloneSplashActivity` |
 | Jellyfin | `jellyfin` | `#00A4DC` | `#00A4DC` | `org.jellyfin.androidtv/.ui.startup.StartupActivity`<br>`org.jellyfin.androidtv/org.jellyfin.androidtv.ui.startup.StartupActivity`<br>`org.jellyfin.mobile/.MainActivity` |
-| Jellyfin Enhanced | `enhanced` | `#1FD19A` | `#1FD19A` | `Dune.enhanced.tv/org.jellyfin.androidtv.ui.startup.StartupActivity` |
-| Jio TV Plus | `jiotvplus` | `#C95CFF` | `#C95CFF` | `com.jio.media.jiotvplus/com.jio.media.stb.ondemand.patchwall.views.MainActivity` |
-| Jiohotstar | `jiohotstar` | `#FFE14D` | `#FFE14D` | `in.startv.hotstar/com.hotstar.MainActivity` |
-| Jojoy | `reddish` | `#4FACFE` | `#4FACFE` | `com.reddish.apples/com.jojoy.delegate.JojoyInstallerActivity`<br>`com.reddish.apples/com.reddish.apples.activities.SplashTvActivity` |
-| Joyn | `joyn` | `#E6EDF3` | `#E6EDF3` | `de.prosiebensat1digital.seventv/de.joyn.mobile.app.splash.SplashActivity` |
-| Jtv Go Server | `jtv_go_server` | `#34EB7A` | `#34EB7A` | `com.skylake.skytv.jgorunner/com.skylake.skytv.jgorunner.Default` |
+| Jellyfin Enhanced | `enhanced` | `#FF4D4D` | `#FF4D4D` | `Dune.enhanced.tv/org.jellyfin.androidtv.ui.startup.StartupActivity` |
+| Jio TV Plus | `jiotvplus` | `#1FD19A` | `#1FD19A` | `com.jio.media.jiotvplus/com.jio.media.stb.ondemand.patchwall.views.MainActivity` |
+| Jiohotstar | `jiohotstar` | `#C95CFF` | `#C95CFF` | `in.startv.hotstar/com.hotstar.MainActivity` |
+| Jojoy | `reddish` | `#FFE14D` | `#FFE14D` | `com.reddish.apples/com.jojoy.delegate.JojoyInstallerActivity`<br>`com.reddish.apples/com.reddish.apples.activities.SplashTvActivity` |
+| Joyn | `joyn` | `#4FACFE` | `#4FACFE` | `de.prosiebensat1digital.seventv/de.joyn.mobile.app.splash.SplashActivity` |
+| Jtv Go Server | `jtv_go_server` | `#E6EDF3` | `#E6EDF3` | `com.skylake.skytv.jgorunner/com.skylake.skytv.jgorunner.Default` |
 | Just Player | `justplayer` | `#03A9F4` | `#03A9F4` | `com.brouken.player/.PlayerActivity`<br>`com.brouken.player/.MainActivity` |
 | JustWatch | `justwatch` | `#FEC500` | `#FEC500` | `com.justwatch.justwatch/com.justwatch.justwatch.MainActivity` |
-| Juuno | `juuno` | `#A366FF` | `#A366FF` | `co.juuno.player.android/co.juuno.player.android.MainActivity`<br>`co.juuno.player.android/co.juuno.player.android.TvActivity` |
-| K+ | `irdeto` | `#FFB020` | `#FFB020` | `com.irdeto.kplus/tv.solocoo.htmlapp.FullscreenActivity` |
-| Kamal TV | `androidtv_7` | `#00D4FF` | `#00D4FF` | `com.kamal.androidtv/com.kamal.androidtv.App` |
+| Juuno | `juuno` | `#34EB7A` | `#34EB7A` | `co.juuno.player.android/co.juuno.player.android.MainActivity`<br>`co.juuno.player.android/co.juuno.player.android.TvActivity` |
+| K+ | `irdeto` | `#A366FF` | `#A366FF` | `com.irdeto.kplus/tv.solocoo.htmlapp.FullscreenActivity` |
+| Kamal TV | `androidtv_7` | `#FFB020` | `#FFB020` | `com.kamal.androidtv/com.kamal.androidtv.App` |
 | Kanopy | `kanopy` | `#6CC24A` | `#6CC24A` | `com.kanopy.tvapp/com.kanopy.tvapp.MainActivity` |
-| Karaoke | `kfandroid` | `#FF5CA8` | `#FF5CA8` | `com.recisio.kfandroid/com.recisio.kfandroid.start.StartActivity` |
+| Karaoke | `kfandroid` | `#00D4FF` | `#00D4FF` | `com.recisio.kfandroid/com.recisio.kfandroid.start.StartActivity` |
 | Kayo | `kayo` | `#58B068` | `#58B068` | `au.com.kayosports.tv/.MainActivity`<br>`au.com.streamotion.hyperion/.MainActivity`<br>`au.com.kayosports.tv/au.com.foxsports.martian.tv.main.MainActivity`<br>`au.com.streamotion.hyperion/au.com.foxsports.martian.tv.main.MainActivity` |
-| KDE Connect | `kde_connect` | `#53FC18` | `#53FC18` | `org.kde.kdeconnect_tp/org.kde.kdeconnect.UserInterface.MainActivity` |
-| Kemo IPTV | `kemo_iptv` | `#7C74FF` | `#7C74FF` | `de.cyberdream.iptv.tv.player/de.cyberdream.dreamepg.MainActivityTV` |
-| Kemo Stream | `streamingkemo` | `#FF7A2E` | `#FF7A2E` | `com.kemoiptv.streamingkemo/com.kemoiptv.streamingkemo.MainActivity` |
-| Kennytv | `kennytv` | `#19D3C5` | `#19D3C5` | `de.wabosh.kenny_tv/de.wabosh.kenny_tv.MainActivity` |
-| Kernel Media | `kernelmedia` | `#F04DE0` | `#F04DE0` | `androidtv.kernelmedia.tv/androidtv.kernelmedia.tv.ui.MainActivity` |
+| KDE Connect | `kde_connect` | `#FF5CA8` | `#FF5CA8` | `org.kde.kdeconnect_tp/org.kde.kdeconnect.UserInterface.MainActivity` |
+| Kemo IPTV | `kemo_iptv` | `#53FC18` | `#53FC18` | `de.cyberdream.iptv.tv.player/de.cyberdream.dreamepg.MainActivityTV` |
+| Kemo Stream | `streamingkemo` | `#7C74FF` | `#7C74FF` | `com.kemoiptv.streamingkemo/com.kemoiptv.streamingkemo.MainActivity` |
+| Kennytv | `kennytv` | `#FF7A2E` | `#FF7A2E` | `de.wabosh.kenny_tv/de.wabosh.kenny_tv.MainActivity` |
+| Kernel Media | `kernelmedia` | `#19D3C5` | `#19D3C5` | `androidtv.kernelmedia.tv/androidtv.kernelmedia.tv.ui.MainActivity` |
 | Kick | `kick` | `#53FC18` | `#53FC18` | `com.kick.mobile/com.kick.mobile.app.MainActivity`<br>`com.kick.mobile/com.kick.tv.MainActivity` |
-| Kijk | `kijk` | `#B6F23A` | `#B6F23A` | `nl.sbs.kijk/nl.sbs.kijk.ui.activity.LaunchActivity` |
-| Kika | `kika` | `#3D8BFF` | `#3D8BFF` | `de.kika.player.androidtv/de.kika.player.androidtv.MainActivity`<br>`de.kika.player.androidtv/com.mitxp.androidtv.MainActivity` |
+| Kijk | `kijk` | `#F04DE0` | `#F04DE0` | `nl.sbs.kijk/nl.sbs.kijk.ui.activity.LaunchActivity` |
+| Kika | `kika` | `#B6F23A` | `#B6F23A` | `de.kika.player.androidtv/de.kika.player.androidtv.MainActivity`<br>`de.kika.player.androidtv/com.mitxp.androidtv.MainActivity` |
 | Kinopoisk | `kinopoisk` | `#FF5500` | `#FF5500` | `ru.kinopoisk.tv/ru.kinopoisk.tv.presentation.splash.SplashActivity` |
-| Knowledge Network | `knowledge` | `#FF4D4D` | `#FF4D4D` | `ca.knowledge.kapp/ca.knowledge.kapp.Main2Activity`<br>`ca.knowledge.kapp/ca.knowledge.kapp.SplashActivity` |
-| Kocowa | `kocowa` | `#1FD19A` | `#1FD19A` | `com.kocowa.android.tv/com.kocowa.base.a_view.launcher.LauncherActivity` |
+| Knowledge Network | `knowledge` | `#3D8BFF` | `#3D8BFF` | `ca.knowledge.kapp/ca.knowledge.kapp.Main2Activity`<br>`ca.knowledge.kapp/ca.knowledge.kapp.SplashActivity` |
+| Kocowa | `kocowa` | `#FF4D4D` | `#FF4D4D` | `com.kocowa.android.tv/com.kocowa.base.a_view.launcher.LauncherActivity` |
 | Kodi | `kodi` | `#17B2E7` | `#17B2E7` | `org.xbmc.kodi/.Splash`<br>`org.xbmc.kodi/org.xbmc.kodi.Splash`<br>`org.xbmc.kodi_touch/.Splash` |
 | Kore | `kore` | `#3EBBF0` | `#3EBBF0` | `org.xbmc.kore/.ui.sections.hosts.AddHostActivity`<br>`org.xbmc.kore/.ui.sections.remote.RemoteActivity` |
-| KPN | `kpnandroidtv` | `#C95CFF` | `#C95CFF` | `com.kpn.kpnandroidtv/com.kpn.tvplusapp.MainActivity` |
-| Kreate | `kreate` | `#FFE14D` | `#FFE14D` | `me.knighthat.kreate/it.fast4x.rimusic.MainActivity` |
-| Kuku TV | `kuku_tv` | `#4FACFE` | `#4FACFE` | `com.vlv.aravali.reels/com.vlv.aravali.television.MainActivity` |
-| L Equipe | `l_equipe` | `#E6EDF3` | `#E6EDF3` | `lequipe.fr/com.dotscreen.ethanol.tv.ui.MainActivity` |
+| KPN | `kpnandroidtv` | `#1FD19A` | `#1FD19A` | `com.kpn.kpnandroidtv/com.kpn.tvplusapp.MainActivity` |
+| Kreate | `kreate` | `#C95CFF` | `#C95CFF` | `me.knighthat.kreate/it.fast4x.rimusic.MainActivity` |
+| Kuku TV | `kuku_tv` | `#FFE14D` | `#FFE14D` | `com.vlv.aravali.reels/com.vlv.aravali.television.MainActivity` |
+| L Equipe | `l_equipe` | `#4FACFE` | `#4FACFE` | `lequipe.fr/com.dotscreen.ethanol.tv.ui.MainActivity` |
 | L TV Launcher | `ltvlauncher` | `#42A5F5` | `#42A5F5` | `com.leanbitlab.ltvL/com.leanbitlab.ltvL.MainActivity` |
-| Laliga | `laliga` | `#34EB7A` | `#34EB7A` | `la.liga.sports.tv.deporte/la.liga.sports.tv.deporte.features.splash.TvSplashActivity` |
-| Lampa | `lampa` | `#A366FF` | `#A366FF` | `top.rootu.lampa/top.rootu.lampa.MainActivity` |
-| Laugh After Dark | `laughafterdark` | `#FFB020` | `#FFB020` | `com.laughafterdark.androidtv/com.laughafterdark.androidtv.ui.splashscreen.activity.SplashScreenActivity` |
+| Laliga | `laliga` | `#E6EDF3` | `#E6EDF3` | `la.liga.sports.tv.deporte/la.liga.sports.tv.deporte.features.splash.TvSplashActivity` |
+| Lampa | `lampa` | `#34EB7A` | `#34EB7A` | `top.rootu.lampa/top.rootu.lampa.MainActivity` |
+| Laugh After Dark | `laughafterdark` | `#A366FF` | `#A366FF` | `com.laughafterdark.androidtv/com.laughafterdark.androidtv.ui.splashscreen.activity.SplashScreenActivity` |
 | Launch on Boot | `launch_on_boot` | `#7AC7E8` | `#7AC7E8` | `news.androidtv.launchonboot/news.androidtv.launchonboot.MainActivity` |
-| Launch Sounds | `launchsounds` | `#00D4FF` | `#00D4FF` | `com.nvidia.bbciplayer.launchsounds/com.nvidia.bbciplayer.LaunchSoundsActivity` |
-| Launchbox | `launchbox` | `#FF5CA8` | `#FF5CA8` | `com.unbrokensoftware.launchbox/crc640d6c5ebcc48c6177.MainActivity` |
+| Launch Sounds | `launchsounds` | `#FFB020` | `#FFB020` | `com.nvidia.bbciplayer.launchsounds/com.nvidia.bbciplayer.LaunchSoundsActivity` |
+| Launchbox | `launchbox` | `#00D4FF` | `#00D4FF` | `com.unbrokensoftware.launchbox/crc640d6c5ebcc48c6177.MainActivity` |
 | Launcher Manager | `luckymanager` | `#FBBF24` | `#FBBF24` | `com.wolf.google.lm/.main.MainActivity` |
-| Launcher Manager | `launcher_manager` | `#53FC18` | `#53FC18` | `com.wolf.lm/com.wolf.lm.main.MainActivity`<br>`com.wolf.lms/com.wolf.lm.main.MainActivity`<br>`com.wolf.lms/.MainActivity` |
-| Lazy IPTV Deluxe | `lazyiptvdeluxe` | `#7C74FF` | `#7C74FF` | `com.lcs.lazyiptvdeluxe/com.lcs.lazyiptvdeluxe.ActivityStart` |
-| LazyCat | `lazycatsoftware` | `#FF7A2E` | `#FF7A2E` | `com.lazycatsoftware.lmd/com.lazycatsoftware.lazymediadeluxe.ActivityStart` |
+| Launcher Manager | `launcher_manager` | `#FF5CA8` | `#FF5CA8` | `com.wolf.lm/com.wolf.lm.main.MainActivity`<br>`com.wolf.lms/com.wolf.lm.main.MainActivity`<br>`com.wolf.lms/.MainActivity` |
+| Lazy IPTV Deluxe | `lazyiptvdeluxe` | `#53FC18` | `#53FC18` | `com.lcs.lazyiptvdeluxe/com.lcs.lazyiptvdeluxe.ActivityStart` |
+| LazyCat | `lazycatsoftware` | `#7C74FF` | `#7C74FF` | `com.lazycatsoftware.lmd/com.lazycatsoftware.lazymediadeluxe.ActivityStart` |
 | Leanback on Fire | `leanbackonfire` | `#FF9800` | `#FF9800` | `com.amazon.tv.leanbacklauncher/com.amazon.tv.leanbacklauncher.MainActivity` |
-| Leankeyboard | `leankeyboard` | `#19D3C5` | `#19D3C5` | `org.liskovsoft.androidtv.rukeyboard/com.liskovsoft.leankeyboard.activity.settings.KbSettingsActivity2` |
-| Lemino | `lemino` | `#F04DE0` | `#F04DE0` | `jp.ne.docomo.lemino.androidtv/jp.ne.docomo.lemino.androidtv.activities.SplashActivity` |
-| Lemuroid | `lemuroid` | `#B6F23A` | `#B6F23A` | `com.swordfish.lemuroid/com.swordfish.lemuroid.app.mobile.feature.main.MainActivity`<br>`com.swordfish.lemuroid/com.swordfish.lemuroid.app.tv.main.MainTVActivity` |
-| Lifetime | `androidtv_5` | `#3D8BFF` | `#3D8BFF` | `com.aetn.lifetime.watch.androidtv/com.aetn.android.tveapps.app.MainActivity` |
-| Liga Portugal | `ligaportugal` | `#FF4D4D` | `#FF4D4D` | `com.ligaportugal.ligatv/com.ligaportugal.ligatv.SplashActivity` |
-| Ligue 1+ | `ligueunpass` | `#1FD19A` | `#1FD19A` | `com.ligueunpass.app/com.ligueunpass.app.MainActivity` |
-| Live Channels | `tv` | `#C95CFF` | `#C95CFF` | `com.google.android.tv/com.android.tv.TvActivity` |
+| Leankeyboard | `leankeyboard` | `#FF7A2E` | `#FF7A2E` | `org.liskovsoft.androidtv.rukeyboard/com.liskovsoft.leankeyboard.activity.settings.KbSettingsActivity2` |
+| Lemino | `lemino` | `#19D3C5` | `#19D3C5` | `jp.ne.docomo.lemino.androidtv/jp.ne.docomo.lemino.androidtv.activities.SplashActivity` |
+| Lemuroid | `lemuroid` | `#F04DE0` | `#F04DE0` | `com.swordfish.lemuroid/com.swordfish.lemuroid.app.mobile.feature.main.MainActivity`<br>`com.swordfish.lemuroid/com.swordfish.lemuroid.app.tv.main.MainTVActivity` |
+| Lifetime | `androidtv_5` | `#B6F23A` | `#B6F23A` | `com.aetn.lifetime.watch.androidtv/com.aetn.android.tveapps.app.MainActivity` |
+| Liga Portugal | `ligaportugal` | `#3D8BFF` | `#3D8BFF` | `com.ligaportugal.ligatv/com.ligaportugal.ligatv.SplashActivity` |
+| Ligue 1+ | `ligueunpass` | `#FF4D4D` | `#FF4D4D` | `com.ligueunpass.app/com.ligueunpass.app.MainActivity` |
+| Live Channels | `tv` | `#1FD19A` | `#1FD19A` | `com.google.android.tv/com.android.tv.TvActivity` |
 | Live TV | `livetv` | `#00BCD4` | `#00BCD4` | `com.mediatek.wwtv.tvcenter/.nav.TurnkeyUiMainActivity` |
-| Liverpool FC | `liverpoolfc` | `#FFE14D` | `#FFE14D` | `com.liverpoolfc.goapp/com.applicaster.ui.activities.MainActivity` |
-| Localnow | `localnow` | `#4FACFE` | `#4FACFE` | `com.weathergroup.localnow/com.weathergroup.localnow.MainActivity` |
-| Locals Google TV | `googletv` | `#E6EDF3` | `#E6EDF3` | `com.locals.googletv/com.aloteq.flutter_tv.MainActivity` |
+| Liverpool FC | `liverpoolfc` | `#C95CFF` | `#C95CFF` | `com.liverpoolfc.goapp/com.applicaster.ui.activities.MainActivity` |
+| Localnow | `localnow` | `#FFE14D` | `#FFE14D` | `com.weathergroup.localnow/com.weathergroup.localnow.MainActivity` |
+| Locals Google TV | `googletv` | `#4FACFE` | `#4FACFE` | `com.locals.googletv/com.aloteq.flutter_tv.MainActivity` |
 | LocalSend | `localsend` | `#008080` | `#008080` | `org.localsend.localsend_app/org.localsend.localsend_app.MainActivity` |
-| Loco | `loco` | `#34EB7A` | `#34EB7A` | `com.showtimeapp/com.showtimeapp.MainActivity` |
-| Lrt | `lrt` | `#A366FF` | `#A366FF` | `lt.lrt.androidtv/com.applicaster.ui.activities.MainActivity` |
+| Loco | `loco` | `#E6EDF3` | `#E6EDF3` | `com.showtimeapp/com.showtimeapp.MainActivity` |
+| Lrt | `lrt` | `#34EB7A` | `#34EB7A` | `lt.lrt.androidtv/com.applicaster.ui.activities.MainActivity` |
 | Lumera | `lumera` | `#FFC53D` | `#FFC53D` | `com.lumera.app/com.lumera.app.MainActivity` |
-| M3u IPTV | `m3u_iptv` | `#FFB020` | `#FFB020` | `de.herber_edevelopment.m3uiptv/de.herber_edevelopment.m3uiptv.MainActivity`<br>`de.herber_edevelopment.m3uiptv/de.herber_edevelopment.m3uiptv.TvActivity` |
-| M6 Plus | `m6_plus` | `#00D4FF` | `#00D4FF` | `fr.m6.m6replay/com.bedrockstreaming.shared.tv.activity.SplashActivity` |
-| M64plus Fz | `m64plus_fz` | `#FF5CA8` | `#FF5CA8` | `org.mupen64plusae.v3.fzurita/paulscode.android.mupen64plusae.SplashActivity` |
-| MagellanTV | `magellantv` | `#53FC18` | `#53FC18` | `com.abide.magellantv/com.magellan.tv.splash.SplashActivity` |
+| M3u IPTV | `m3u_iptv` | `#A366FF` | `#A366FF` | `de.herber_edevelopment.m3uiptv/de.herber_edevelopment.m3uiptv.MainActivity`<br>`de.herber_edevelopment.m3uiptv/de.herber_edevelopment.m3uiptv.TvActivity` |
+| M6 Plus | `m6_plus` | `#FFB020` | `#FFB020` | `fr.m6.m6replay/com.bedrockstreaming.shared.tv.activity.SplashActivity` |
+| M64plus Fz | `m64plus_fz` | `#00D4FF` | `#00D4FF` | `org.mupen64plusae.v3.fzurita/paulscode.android.mupen64plusae.SplashActivity` |
+| MagellanTV | `magellantv` | `#FF5CA8` | `#FF5CA8` | `com.abide.magellantv/com.magellan.tv.splash.SplashActivity` |
 | Magenta Sport | `magenta_sport` | `#E20074` | `#E20074` | `com.telekom.androidtv.sport/com.telekom.firetv.sport.ui.launcher.LauncherActivity` |
-| Magenta TV | `magenta_tv` | `#7C74FF` | `#7C74FF` | `cz.tmobile.tvgo/com.telekom.tv.player.StbPlayerActivity`<br>`de.telekom.magentatv.androidtv/de.telekom.magentatv.androidtv.ApplicationMainActivity` |
+| Magenta TV | `magenta_tv` | `#53FC18` | `#53FC18` | `cz.tmobile.tvgo/com.telekom.tv.player.StbPlayerActivity`<br>`de.telekom.magentatv.androidtv/de.telekom.magentatv.androidtv.ApplicationMainActivity` |
 | MagiConnect | `magiconnect` | `#FF0000` | `#FF0000` | `com.tcl.magiconnectfree/com.tcl.multiscreeninteractiontv.UI.activity.SplashActivity` |
-| Magio TV | `magio_tv` | `#FF7A2E` | `#FF7A2E` | `com.telekom.magiogo/com.telekom.tv.player.StbPlayerActivity` |
-| Mame4droid | `mame4droid` | `#19D3C5` | `#19D3C5` | `com.seleuco.mame4droid/com.seleuco.mame4droid.MAME4droid` |
-| Mango TV | `intl` | `#F04DE0` | `#F04DE0` | `com.mgtv.tv.intl/com.mgtv.tv.launcher.LauncherActivity` |
+| Magio TV | `magio_tv` | `#7C74FF` | `#7C74FF` | `com.telekom.magiogo/com.telekom.tv.player.StbPlayerActivity` |
+| Mame4droid | `mame4droid` | `#FF7A2E` | `#FF7A2E` | `com.seleuco.mame4droid/com.seleuco.mame4droid.MAME4droid` |
+| Mango TV | `intl` | `#19D3C5` | `#19D3C5` | `com.mgtv.tv.intl/com.mgtv.tv.launcher.LauncherActivity` |
 | Material Files | `materialfiles` | `#00E5FF` | `#00E5FF` | `me.zhanghai.android.files/me.zhanghai.android.files.filelist.FileListActivity`<br>`me.zhanghai.android.files/.filelist.FileListActivity` |
-| Matvt Mouse For Android TV Toggle | `matvt_mouse_for_android_tv_toggle` | `#B6F23A` | `#B6F23A` | `io.github.virresh.matvt/io.github.virresh.matvt.gui.GuiActivity` |
+| Matvt Mouse For Android TV Toggle | `matvt_mouse_for_android_tv_toggle` | `#F04DE0` | `#F04DE0` | `io.github.virresh.matvt/io.github.virresh.matvt.gui.GuiActivity` |
 | Max | `max` | `#0046FF` | `#0147FF` | `com.wbd.stream/.MainActivity`<br>`com.hbo.hbonow/.MainActivity`<br>`com.wbd.hbomax/.MainActivity`<br>`com.wbd.hbomax/com.wbd.hbomax.MainActivity`<br>`com.wbd.stream/com.wbd.beam.BeamActivity` |
-| Maz TV | `combo2254` | `#3D8BFF` | `#3D8BFF` | `com.maz.combo2254/com.maz.activities.ViewerLaunchActivity` |
-| Maz TV 2 | `combo3403` | `#FF4D4D` | `#FF4D4D` | `com.maz.combo3403/com.maz.combo3403.MainActivity` |
-| Maz TV 3 | `combo3578` | `#1FD19A` | `#1FD19A` | `com.maz.combo3578/com.maz.activities.ViewerLaunchActivity` |
-| Maz TVOD | `tvod169` | `#C95CFF` | `#C95CFF` | `com.maz.tvod169/com.maz.activities.ViewerLaunchActivity` |
+| Maz TV | `combo2254` | `#B6F23A` | `#B6F23A` | `com.maz.combo2254/com.maz.activities.ViewerLaunchActivity` |
+| Maz TV 2 | `combo3403` | `#3D8BFF` | `#3D8BFF` | `com.maz.combo3403/com.maz.combo3403.MainActivity` |
+| Maz TV 3 | `combo3578` | `#FF4D4D` | `#FF4D4D` | `com.maz.combo3578/com.maz.activities.ViewerLaunchActivity` |
+| Maz TVOD | `tvod169` | `#1FD19A` | `#1FD19A` | `com.maz.tvod169/com.maz.activities.ViewerLaunchActivity` |
 | Maze | `powerpoint45` | `#000000` | `#E6EDF3` | `com.powerpoint45.maze/com.powerpoint45.maze.MainMenuActivity` |
-| Mecool File Manager | `mecool_file_manager` | `#FFE14D` | `#FFE14D` | `com.tvonline.filewizard/com.tvonline.filewizard.ui.MainActivity` |
-| Meddelandelåda | `meddelandelada` | `#4FACFE` | `#4FACFE` | `com.tcl.messagebox/com.tcl.messagebox.activity.MainActivity` |
-| Media Browser | `mediabrowser` | `#E6EDF3` | `#E6EDF3` | `com.cmpsoft.MediaBrowser/com.cmpsoft.MediaBrowser.SplashScreenActivity` |
-| Media Explorer | `media_explorer` | `#34EB7A` | `#34EB7A` | `com.spocky.projengmenu/.ui.guidedActions.activities.shortcut.MediaExplorerShortcutActivity`<br>`com.spocky.projengmenu/.ui.launcherActivities.MediaExplorerShortcutActivity` |
-| Media Hub | `utility` | `#A366FF` | `#A366FF` | `com.oumi.utility.media.hub/com.mac.utility.media.hub.ui_tv.main.TVMainActivity` |
-| Mediaset Infinity TV | `mediaset_infinity_tv` | `#FFB020` | `#FFB020` | `it.mediaset.infinitytv/it.mediaset.mediasetplay.ctv.MainActivity` |
+| Mecool File Manager | `mecool_file_manager` | `#C95CFF` | `#C95CFF` | `com.tvonline.filewizard/com.tvonline.filewizard.ui.MainActivity` |
+| Meddelandelåda | `meddelandelada` | `#FFE14D` | `#FFE14D` | `com.tcl.messagebox/com.tcl.messagebox.activity.MainActivity` |
+| Media Browser | `mediabrowser` | `#4FACFE` | `#4FACFE` | `com.cmpsoft.MediaBrowser/com.cmpsoft.MediaBrowser.SplashScreenActivity` |
+| Media Explorer | `media_explorer` | `#E6EDF3` | `#E6EDF3` | `com.spocky.projengmenu/.ui.guidedActions.activities.shortcut.MediaExplorerShortcutActivity`<br>`com.spocky.projengmenu/.ui.launcherActivities.MediaExplorerShortcutActivity` |
+| Media Hub | `utility` | `#34EB7A` | `#34EB7A` | `com.oumi.utility.media.hub/com.mac.utility.media.hub.ui_tv.main.TVMainActivity` |
+| Mediaset Infinity TV | `mediaset_infinity_tv` | `#A366FF` | `#A366FF` | `it.mediaset.infinitytv/it.mediaset.mediasetplay.ctv.MainActivity` |
 | Mediaspelare | `mediaspelare` | `#7B2BFC` | `#7B2BFC` | `com.tcl.ui_mediaCenter/com.tcl.ui_mediaCenter.main.MainActivity` |
-| MEGOGO | `application` | `#00D4FF` | `#00D4FF` | `com.megogo.application/net.megogo.tv.main.MainActivity` |
-| MEO | `alticelabs` | `#FF5CA8` | `#FF5CA8` | `com.alticelabs.meo.androidtv/com.alticelabs.meo.androidtv.features.splash.ui.SplashActivity` |
-| Mercado Play | `mercado_play` | `#53FC18` | `#53FC18` | `com.mercadolibre.android.mplay_tv/com.mercadolibre.android.mplay_tv.app.feature.splash.SplashActivity` |
+| MEGOGO | `application` | `#FFB020` | `#FFB020` | `com.megogo.application/net.megogo.tv.main.MainActivity` |
+| MEO | `alticelabs` | `#00D4FF` | `#00D4FF` | `com.alticelabs.meo.androidtv/com.alticelabs.meo.androidtv.features.splash.ui.SplashActivity` |
+| Mercado Play | `mercado_play` | `#FF5CA8` | `#FF5CA8` | `com.mercadolibre.android.mplay_tv/com.mercadolibre.android.mplay_tv.app.feature.splash.SplashActivity` |
 | Metrolist | `metrolist` | `#FF5252` | `#FF5252` | `com.metrolist.music/com.metrolist.music.MainActivity`<br>`com.metrolist.music/com.metrolist.music.MainActivityAlias` |
-| Mewatch | `mewatch` | `#7C74FF` | `#7C74FF` | `sg.mediacorp.android/axis.androidtv.sdk.app.startup.ui.StartupActivity` |
+| Mewatch | `mewatch` | `#53FC18` | `#53FC18` | `sg.mediacorp.android/axis.androidtv.sdk.app.startup.ui.StartupActivity` |
 | MGM+ | `epix` | `#43AA8B` | `#43AA8B` | `com.epix.epix.now/com.epix.presentationtv.splash.SplashActivity` |
-| MGS TV | `mgstv` | `#19D3C5` | `#19D3C5` | `com.android.mgstv/com.interactive.brasiliptv.ui.activity.WelcomeActivity` |
+| MGS TV | `mgstv` | `#FF7A2E` | `#FF7A2E` | `com.android.mgstv/com.interactive.brasiliptv.ui.activity.WelcomeActivity` |
 | Mi Gallery | `gallery` | `#1982C4` | `#1982C4` | `com.mitv.gallery/com.mitv.gallery.activity.HomePageActivity` |
-| Mi TV Plus | `mitvplus` | `#F04DE0` | `#F04DE0` | `com.mitv.tvhome.mitvplus/com.mitv.tvhome.mitvplus.app.BannerLogoFree24` |
-| Miracast | `miracast` | `#B6F23A` | `#B6F23A` | `com.xiaomi.mitv.smartshare/com.xiaomi.mitv.smartshare.wifidisplay.WfdActivity` |
-| MiXplorer | `mixplorer` | `#3D8BFF` | `#3D8BFF` | `com.mixplorer.silver/com.mixplorer.activities.BrowseActivity`<br>`com.mixplorer/.activities.BrowseActivity`<br>`com.mixplorer/com.mixplorer.activities.BrowseActivity` |
+| Mi TV Plus | `mitvplus` | `#19D3C5` | `#19D3C5` | `com.mitv.tvhome.mitvplus/com.mitv.tvhome.mitvplus.app.BannerLogoFree24` |
+| Miracast | `miracast` | `#F04DE0` | `#F04DE0` | `com.xiaomi.mitv.smartshare/com.xiaomi.mitv.smartshare.wifidisplay.WfdActivity` |
+| MiXplorer | `mixplorer` | `#B6F23A` | `#B6F23A` | `com.mixplorer.silver/com.mixplorer.activities.BrowseActivity`<br>`com.mixplorer/.activities.BrowseActivity`<br>`com.mixplorer/com.mixplorer.activities.BrowseActivity` |
 | MLB | `bamnetworks` | `#041E42` | `#0C5BC7` | `com.bamnetworks.mobile.android.gameday.atbat/mlb.atbat.activity.MainActivity` |
-| Mo 4media | `mo_4media` | `#FF4D4D` | `#FF4D4D` | `dancingtree.mo4media/crc64fc68bfe11eb03c38.MainActivity`<br>`dancingtree.mo4media/crc64fc68bfe11eb03c38.TVMainActivity` |
-| Mobily TV | `mobily` | `#FFE14D` | `#FFE14D` | `com.mobily.tvapp/com.parsifal.starz.ui.features.launcher.LauncherActivity` |
-| Molotov TV | `molotov_tv` | `#4FACFE` | `#4FACFE` | `tv.molotov.app/tv.molotov.android.splash.SplashActivity` |
+| Mo 4media | `mo_4media` | `#3D8BFF` | `#3D8BFF` | `dancingtree.mo4media/crc64fc68bfe11eb03c38.MainActivity`<br>`dancingtree.mo4media/crc64fc68bfe11eb03c38.TVMainActivity` |
+| Mobily TV | `mobily` | `#C95CFF` | `#C95CFF` | `com.mobily.tvapp/com.parsifal.starz.ui.features.launcher.LauncherActivity` |
+| Molotov TV | `molotov_tv` | `#FFE14D` | `#FFE14D` | `tv.molotov.app/tv.molotov.android.splash.SplashActivity` |
 | Monet | `monet` | `#B388FF` | `#B388FF` | `com.klevico.monet/com.klevico.monet.HomeActivity`<br>`com.klevico.monet/.HomeActivity` |
-| Monplayer | `monplayer` | `#E6EDF3` | `#E6EDF3` | `org.monplayer.mpapp/org.monplayer.mpapp.MainActivity` |
-| Moonfin | `moonfin` | `#34EB7A` | `#34EB7A` | `org.moonfin.androidtv/org.jellyfin.androidtv.ui.startup.StartupActivity` |
+| Monplayer | `monplayer` | `#4FACFE` | `#4FACFE` | `org.monplayer.mpapp/org.monplayer.mpapp.MainActivity` |
+| Moonfin | `moonfin` | `#E6EDF3` | `#E6EDF3` | `org.moonfin.androidtv/org.jellyfin.androidtv.ui.startup.StartupActivity` |
 | Moonlight | `moonlight` | `#76B900` | `#76B900` | `com.limelight/.PcView` |
-| MotoGP | `officialmotogp` | `#A366FF` | `#A366FF` | `com.dorna.officialmotogp/com.dorna.motogpapp.ui.view.tv.splash.SplashTVActivity` |
-| Movideo | `whitelabel` | `#FFB020` | `#FFB020` | `com.movideo.whitelabel/com.movideo.whitelabel.MainActivity` |
-| Movie HD | `moviehd` | `#00D4FF` | `#00D4FF` | `com.ggateam.moviehd.ui/com.ggateam.moviehd.ui.FrmSplash` |
-| Movieark | `movieark` | `#FF5CA8` | `#FF5CA8` | `com.tcl.movieark/com.tcl.waterfall.overseas.main.MainActivity` |
-| MovieBox Pro | `movieboxpro` | `#53FC18` | `#53FC18` | `com.movieboxpro.androidtv/com.movieboxpro.android.view.activity.SplashActivity` |
-| MovieLab | `movielab` | `#7C74FF` | `#7C74FF` | `com.movielab.tv/com.movielab.MainActivity` |
+| MotoGP | `officialmotogp` | `#34EB7A` | `#34EB7A` | `com.dorna.officialmotogp/com.dorna.motogpapp.ui.view.tv.splash.SplashTVActivity` |
+| Movideo | `whitelabel` | `#A366FF` | `#A366FF` | `com.movideo.whitelabel/com.movideo.whitelabel.MainActivity` |
+| Movie HD | `moviehd` | `#FFB020` | `#FFB020` | `com.ggateam.moviehd.ui/com.ggateam.moviehd.ui.FrmSplash` |
+| Movieark | `movieark` | `#00D4FF` | `#00D4FF` | `com.tcl.movieark/com.tcl.waterfall.overseas.main.MainActivity` |
+| MovieBox Pro | `movieboxpro` | `#FF5CA8` | `#FF5CA8` | `com.movieboxpro.androidtv/com.movieboxpro.android.view.activity.SplashActivity` |
+| MovieLab | `movielab` | `#53FC18` | `#53FC18` | `com.movielab.tv/com.movielab.MainActivity` |
 | Movies Anywhere | `moviesanywhere` | `#082E5B` | `#105EBA` | `com.moviesanywhere.goo/com.disney.brooklyn.tv.ui.signin.TVSignInActivity` |
-| Movies By Fawesome | `moviesbyfawesomeandroidtv` | `#FF7A2E` | `#FF7A2E` | `com.future.moviesByFawesomeAndroidTV/com.future.moviesByFawesomeAndroidTV.SplashActivity` |
-| Movistar Plus | `movistar_plus` | `#19D3C5` | `#19D3C5` | `es.plus.yomvi/com.movistar.android.views.HomeActivity` |
+| Movies By Fawesome | `moviesbyfawesomeandroidtv` | `#7C74FF` | `#7C74FF` | `com.future.moviesByFawesomeAndroidTV/com.future.moviesByFawesomeAndroidTV.SplashActivity` |
+| Movistar Plus | `movistar_plus` | `#FF7A2E` | `#FF7A2E` | `es.plus.yomvi/com.movistar.android.views.HomeActivity` |
 | Mpv | `mpv` | `#691F69` | `#9E2F9E` | `is.xyz.mpv/is.xyz.mpv.MainActivity` |
-| MSM Video | `msmvideo` | `#F04DE0` | `#F04DE0` | `com.msmvideo.tv/com.example.msmvideo.ui.SplashActivity` |
-| Mst3k | `mst3k` | `#B6F23A` | `#B6F23A` | `ott.mst3k/tv.vhx.LauncherActivity`<br>`ott.mst3k/tv.vhx.tv.home.TvHomeActivity` |
-| Mtv Katsomo | `mtv_katsomo` | `#3D8BFF` | `#3D8BFF` | `fi.mtvkatsomo/se.tv4.tv4play.ui.tv.navigation.TvHubActivity` |
+| MSM Video | `msmvideo` | `#19D3C5` | `#19D3C5` | `com.msmvideo.tv/com.example.msmvideo.ui.SplashActivity` |
+| Mst3k | `mst3k` | `#F04DE0` | `#F04DE0` | `ott.mst3k/tv.vhx.LauncherActivity`<br>`ott.mst3k/tv.vhx.tv.home.TvHomeActivity` |
+| Mtv Katsomo | `mtv_katsomo` | `#B6F23A` | `#B6F23A` | `fi.mtvkatsomo/se.tv4.tv4play.ui.tv.navigation.TvHubActivity` |
 | MUBI | `mubi` | `#000000` | `#E6EDF3` | `com.mubi/com.mubi.ui.MainActivity`<br>`com.mubi/com.mubi.ui.TvMainActivity` |
 | Mullvad VPN | `mullvad_vpn` | `#294D73` | `#346393` | `net.mullvad.mullvadvpn/net.mullvad.mullvadvpn.ui.MainActivity` |
-| MUTV | `manutd` | `#FF4D4D` | `#FF4D4D` | `com.mutv.manutd/com.oneproduct.TvActivity` |
+| MUTV | `manutd` | `#3D8BFF` | `#3D8BFF` | `com.mutv.manutd/com.oneproduct.TvActivity` |
 | MX Player | `mxplayer` | `#3AB4F2` | `#3AB4F2` | `com.mxtech.videoplayer.ad/.ActivityMediaList`<br>`com.mxtech.videoplayer.pro/.ActivityMediaList`<br>`com.mxtech.videoplayer.tv/.ActivityMediaList`<br>`com.mxtech.videoplayer.ad/com.mxtech.videoplayer.ad.ActivityWelcomeMX` |
-| MX Player TV | `videoplayer` | `#1FD19A` | `#1FD19A` | `com.mxtech.videoplayer.television/com.mxtech.videoplayer.tv.home.HomeActivity` |
+| MX Player TV | `videoplayer` | `#FF4D4D` | `#FF4D4D` | `com.mxtech.videoplayer.television/com.mxtech.videoplayer.tv.home.HomeActivity` |
 | My Family Cinema Player | `my_family_cinema_player` | `#C95CFF` | `#C95CFF` | `com.rxrv.myfamilycpfst/com.atvapps.ibo.MainActivity`<br>`com.rxrv.myfamilycpfst/com.atvapps.ibo.MainTVActivity` |
 | My5 | `channel5` | `#FFE14D` | `#FFE14D` | `com.channel5.my5/com.channel5.my5.tv.ui.splash.view.SplashActivity` |
 | Myiptv | `myiptv` | `#4FACFE` | `#4FACFE` | `com.iptv.myiptv/com.iptv.myiptv.main.activity.LoginActivity` |
@@ -731,7 +732,7 @@ Source accents are retained in the catalog. **On dark** is the shared square/ban
 | Speaker Boost | `booster` | `#A366FF` | `#A366FF` | `com.goodev.volume.booster/com.goodev.volume.booster.SpeakerBoost` |
 | Speedtest TV | `speedtesttv` | `#141526` | `#5559A1` | `com.rma.speedtesttv/com.rma.speedtesttv.ui.SplashActivity` |
 | Sport TV | `sport_tv` | `#FFB020` | `#FFB020` | `pt.sporttv.app.androidtv/pt.sporttv.app.ui.SplashScreenTVActivity` |
-| Sports Everywhere | `sportseverywhere` | `#00D4FF` | `#00D4FF` | `com.Arena4Viewer.Sportseverywhere/com.Arena4Viewer.Sportseverywhere.MainActivitysplachscren` |
+| Sports Everywhere | `sportseverywhere` | `#00D4FF` | `#00D4FF` | `com.Arena4Viewer.Sportseverywhere/com.Arena4Viewer.Sportseverywhere.MainActivitysplachscren`<br>`com.bone.android.a4v.oficial/com.bone.android.a4v.oficial.AVActivity`<br>`com.bone.android.a4v.oficial/.AVActivity` |
 | Sportscaster | `sportscaster` | `#FF5CA8` | `#FF5CA8` | `com.handmark.sportscaster.androidtv/com.cbs.commonui.homepage.HomePageActivity` |
 | Sportsfire | `sportsfire` | `#53FC18` | `#53FC18` | `com.leed.sportsfire/com.leed.sportsfire.ui.HomeActivity` |
 | Sportsnet | `sportsnet` | `#7C74FF` | `#7C74FF` | `com.rogers.sportsnet.sportsnet/com.rogers.sportsnet.tv.ui.AppActivity` |
@@ -839,74 +840,74 @@ Source accents are retained in the catalog. **On dark** is the shared square/ban
 | TV App Repo | `tv_app_repo` | `#F04DE0` | `#F04DE0` | `news.androidtv.tvapprepo.playstore/news.androidtv.tvapprepo.activities.MainActivity` |
 | TV Bro | `tvwebbrowser` | `#F5E71B` | `#F5E71B` | `com.phlox.tvwebbrowser/com.phlox.tvwebbrowser.activity.main.MainActivity` |
 | TV Browser | `tvbrowser` | `#B6F23A` | `#B6F23A` | `com.internet.tvbrowser/com.internet.tvbrowser.MainActivity` |
-| TV Everywhere | `tveverywhere` | `#1FD19A` | `#1FD19A` | `com.kableone.tveverywhere/com.kableone.tveverywhere.ui.main.view.activity.SplashScreenActivity` |
-| TV Garden | `tv_garden` | `#C95CFF` | `#C95CFF` | `com.tvgarden/com.tvgarden.MainActivity` |
-| TV Manager | `tv_manager` | `#FFE14D` | `#FFE14D` | `com.xiaomi.mitv.tvmanager/com.xiaomi.mitv.tvmanager.MainTvManagerActivity` |
+| TV Everywhere | `tveverywhere` | `#3D8BFF` | `#3D8BFF` | `com.kableone.tveverywhere/com.kableone.tveverywhere.ui.main.view.activity.SplashScreenActivity` |
+| TV Garden | `tv_garden` | `#FF4D4D` | `#FF4D4D` | `com.tvgarden/com.tvgarden.MainActivity` |
+| TV Manager | `tv_manager` | `#1FD19A` | `#1FD19A` | `com.xiaomi.mitv.tvmanager/com.xiaomi.mitv.tvmanager.MainTvManagerActivity` |
 | TV on OS | `deadlyduck` | `#1982C4` | `#1982C4` | `com.deadlyduck.tvonos/com.deadlyduck.tvonos.TvActivity` |
-| TV Quick Actions | `tvquickactions` | `#4FACFE` | `#4FACFE` | `dev.vodik7.tvquickactions/.MainActivity` |
-| TV Quick Actions | `tv_quick_actions` | `#4FACFE` | `#4FACFE` | `dev.vodik7.tvquickactions.free/dev.vodik7.tvquickactions.MainActivity` |
-| TV Source | `tv_source` | `#E6EDF3` | `#E6EDF3` | `com.spocky.projengmenu/.activities.input.SourceTVActivity`<br>`com.spocky.projengmenu/.ui.guidedActions.activities.input.SourceTVActivity` |
+| TV Quick Actions | `tvquickactions` | `#C95CFF` | `#C95CFF` | `dev.vodik7.tvquickactions/.MainActivity` |
+| TV Quick Actions | `tv_quick_actions` | `#C95CFF` | `#C95CFF` | `dev.vodik7.tvquickactions.free/dev.vodik7.tvquickactions.MainActivity` |
+| TV Source | `tv_source` | `#FFE14D` | `#FFE14D` | `com.spocky.projengmenu/.activities.input.SourceTVActivity`<br>`com.spocky.projengmenu/.ui.guidedActions.activities.input.SourceTVActivity` |
 | TV Unplugged | `tvunplugged` | `#1982C4` | `#1982C4` | `com.google.android.youtube.tvunplugged/com.google.android.apps.youtube.tvunplugged.activity.MainActivity` |
-| TV Vlaanderen | `tv_vlaanderen` | `#34EB7A` | `#34EB7A` | `nl.streamgroup.vlaanderen/tv.solocoo.htmlapp.FullscreenActivity` |
-| TV Web Browser | `tv_web_browser` | `#A366FF` | `#A366FF` | `jp.co.rarity.tvweb/jp.co.rarity.tvweb.MainActivity` |
-| Tv2 Play | `tv2_play` | `#FFB020` | `#FFB020` | `dk.tv2.tv2play/dk.tv2.tv2play.ui.main.MainActivity` |
-| Tv360 | `tv360` | `#00D4FF` | `#00D4FF` | `com.viettel.tv360.tv/com.viettel.tv360.tv.screen.splash.SplashActivity` |
+| TV Vlaanderen | `tv_vlaanderen` | `#4FACFE` | `#4FACFE` | `nl.streamgroup.vlaanderen/tv.solocoo.htmlapp.FullscreenActivity` |
+| TV Web Browser | `tv_web_browser` | `#E6EDF3` | `#E6EDF3` | `jp.co.rarity.tvweb/jp.co.rarity.tvweb.MainActivity` |
+| Tv2 Play | `tv2_play` | `#34EB7A` | `#34EB7A` | `dk.tv2.tv2play/dk.tv2.tv2play.ui.main.MainActivity` |
+| Tv360 | `tv360` | `#A366FF` | `#A366FF` | `com.viettel.tv360.tv/com.viettel.tv360.tv.screen.splash.SplashActivity` |
 | Tv4 Play | `tv4_play` | `#E0001C` | `#E0001C` | `se.tv4.tv4playtab/se.tv4.tv4play.ui.mobile.main.BottomNavigationActivity`<br>`se.tv4.tv4playtab/se.tv4.tv4play.ui.tv.navigation.TvHubActivity` |
-| TVA+ | `tvaplus` | `#FF5CA8` | `#FF5CA8` | `com.numeriq.tvaplus/ade.tv.main.ui.splash.SplashActivity` |
-| Tvi Player | `tvi_player` | `#7C74FF` | `#7C74FF` | `pt.iol.tviplayer.androidtv/pt.iol.tviplayer.androidtv.MainActivity` |
-| Tving | `tving` | `#FF7A2E` | `#FF7A2E` | `net.cj.cjhv.gs.tving/net.cj.cjhv.gs.tving.view.scaleup.ScaleupIntroActivity` |
+| TVA+ | `tvaplus` | `#FFB020` | `#FFB020` | `com.numeriq.tvaplus/ade.tv.main.ui.splash.SplashActivity` |
+| Tvi Player | `tvi_player` | `#00D4FF` | `#00D4FF` | `pt.iol.tviplayer.androidtv/pt.iol.tviplayer.androidtv.MainActivity` |
+| Tving | `tving` | `#FF5CA8` | `#FF5CA8` | `net.cj.cjhv.gs.tving/net.cj.cjhv.gs.tving.view.scaleup.ScaleupIntroActivity` |
 | TVLok | `tvlok` | `#00F5D4` | `#00F5D4` | `com.tvlok.app/com.tvlok.app.MainActivity`<br>`com.tvlok.tv/com.tvlok.tv.MainActivity` |
-| Tvnzplus | `tvnzplus` | `#19D3C5` | `#19D3C5` | `nz.co.tvnz.ondemand.tv/nz.co.tvnz.ondemand.SplashScreenTVActivity` |
-| Tvo Kids | `tvo_kids` | `#F04DE0` | `#F04DE0` | `com.tvokids.tvokids/tv.accedo.one.app.bootstrap.BootstrapActivity` |
-| Tvo Today | `tvo_today` | `#B6F23A` | `#B6F23A` | `org.tvo.tvoott/tv.accedo.one.app.bootstrap.BootstrapActivity` |
-| Tvoverlay | `tvoverlay` | `#3D8BFF` | `#3D8BFF` | `com.tabdeveloper.tvoverlay/com.tabdeveloper.tvoverlay.SetupActivity` |
-| Tvp Vod | `tvp_vod` | `#FF4D4D` | `#FF4D4D` | `com.tvp.vodtv.tv/com.redgemediaportaltv.MainActivity` |
-| Tvpsport | `tvpsport` | `#1FD19A` | `#1FD19A` | `pl.tvp.sport.tv/pl.tvp.sport.tv.presentation.MainActivity` |
-| Twilight | `twilight` | `#C95CFF` | `#C95CFF` | `com.urbandroid.lux/com.urbandroid.lux.TvActivity` |
+| Tvnzplus | `tvnzplus` | `#53FC18` | `#53FC18` | `nz.co.tvnz.ondemand.tv/nz.co.tvnz.ondemand.SplashScreenTVActivity` |
+| Tvo Kids | `tvo_kids` | `#7C74FF` | `#7C74FF` | `com.tvokids.tvokids/tv.accedo.one.app.bootstrap.BootstrapActivity` |
+| Tvo Today | `tvo_today` | `#FF7A2E` | `#FF7A2E` | `org.tvo.tvoott/tv.accedo.one.app.bootstrap.BootstrapActivity` |
+| Tvoverlay | `tvoverlay` | `#19D3C5` | `#19D3C5` | `com.tabdeveloper.tvoverlay/com.tabdeveloper.tvoverlay.SetupActivity` |
+| Tvp Vod | `tvp_vod` | `#F04DE0` | `#F04DE0` | `com.tvp.vodtv.tv/com.redgemediaportaltv.MainActivity` |
+| Tvpsport | `tvpsport` | `#B6F23A` | `#B6F23A` | `pl.tvp.sport.tv/pl.tvp.sport.tv.presentation.MainActivity` |
+| Twilight | `twilight` | `#3D8BFF` | `#3D8BFF` | `com.urbandroid.lux/com.urbandroid.lux.TvActivity` |
 | Twitch | `twitch` | `#9146FF` | `#9146FF` | `tv.twitch.android.app/tv.twitch.android.apps.TVLandingActivity`<br>`tv.twitch.android.app/.core.LandingActivity`<br>`tv.twitch.android.app/tv.twitch.android.apps.TwitchActivity`<br>`tv.twitch.android.viewer/.MainActivity`<br>`tv.twitch.android.app/tv.twitch.starshot64.app.StarshotActivity` |
-| Twodf Tivi | `twodf_tivi` | `#FFE14D` | `#FFE14D` | `de.zdf.mediathek.tivi/de.zdf.mediathek.tivi.ui.splash.SplashActivity` |
-| U | `u` | `#4FACFE` | `#4FACFE` | `uk.co.uktv.dave/uk.co.uktv.dave.UKTVPlayActivity` |
-| U Next | `u_next` | `#E6EDF3` | `#E6EDF3` | `jp.unext.mediaplayer/jp.unext.mediaplayer.main.MainActivity` |
-| UAE4ARM | `uae4arm` | `#34EB7A` | `#34EB7A` | `atua.anddev.uae4arm/atua.anddev.uae4arm.MainActivity` |
-| Ucom TV | `smarttvapp` | `#A366FF` | `#A366FF` | `am.ucom.smarttvapp/tv.smartlabs.framework.MainActivity` |
-| UEFA TV | `uefa_tv` | `#FFB020` | `#FFB020` | `com.uefa.uefatv.androidtv/com.uefa.uefatv.androidtv.MainActivity` |
+| Twodf Tivi | `twodf_tivi` | `#FF4D4D` | `#FF4D4D` | `de.zdf.mediathek.tivi/de.zdf.mediathek.tivi.ui.splash.SplashActivity` |
+| U | `u` | `#1FD19A` | `#1FD19A` | `uk.co.uktv.dave/uk.co.uktv.dave.UKTVPlayActivity` |
+| U Next | `u_next` | `#C95CFF` | `#C95CFF` | `jp.unext.mediaplayer/jp.unext.mediaplayer.main.MainActivity` |
+| UAE4ARM | `uae4arm` | `#FFE14D` | `#FFE14D` | `atua.anddev.uae4arm/atua.anddev.uae4arm.MainActivity` |
+| Ucom TV | `smarttvapp` | `#4FACFE` | `#4FACFE` | `am.ucom.smarttvapp/tv.smartlabs.framework.MainActivity` |
+| UEFA TV | `uefa_tv` | `#E6EDF3` | `#E6EDF3` | `com.uefa.uefatv.androidtv/com.uefa.uefatv.androidtv.MainActivity` |
 | UFC | `smartphone` | `#D20A0A` | `#D20A0A` | `com.neulion.smartphone.ufc.android/com.neulion.smartphone.ufc.android.MainActivity` |
-| Ugreen NAS | `ugreen_nas` | `#00D4FF` | `#00D4FF` | `com.ugreen.nasprotv/com.ugreen.nasprotv.LaunchActivity` |
-| Ukiku | `ukiku` | `#FF5CA8` | `#FF5CA8` | `knf.kuma.tv/knf.kuma.tv.ui.TVMain` |
-| Ultimate File Manager Pro | `ultimatefilemanager` | `#53FC18` | `#53FC18` | `za.kilowatch.ultimatefilemanager/.MainActivity`<br>`za.kilowatch.ultimatefilemanager/za.kilowatch.ultimatefilemanager.MainActivity` |
-| Unifi Protect | `unifi_protect` | `#7C74FF` | `#7C74FF` | `com.ubnt.unifi.protect/com.ubnt.sections.splash.AuthenticationActivity` |
-| Unifi TV | `unifi_tv` | `#FF7A2E` | `#FF7A2E` | `com.tm.playtv/com.tm.ott.module.login.activity.LoginActivity` |
+| Ugreen NAS | `ugreen_nas` | `#34EB7A` | `#34EB7A` | `com.ugreen.nasprotv/com.ugreen.nasprotv.LaunchActivity` |
+| Ukiku | `ukiku` | `#A366FF` | `#A366FF` | `knf.kuma.tv/knf.kuma.tv.ui.TVMain` |
+| Ultimate File Manager Pro | `ultimatefilemanager` | `#FF5CA8` | `#FF5CA8` | `za.kilowatch.ultimatefilemanager/.MainActivity`<br>`za.kilowatch.ultimatefilemanager/za.kilowatch.ultimatefilemanager.MainActivity` |
+| Unifi Protect | `unifi_protect` | `#53FC18` | `#53FC18` | `com.ubnt.unifi.protect/com.ubnt.sections.splash.AuthenticationActivity` |
+| Unifi TV | `unifi_tv` | `#7C74FF` | `#7C74FF` | `com.tm.playtv/com.tm.ott.module.login.activity.LoginActivity` |
 | Unlinked | `unlinked` | `#00B8D9` | `#00B8D9` | `link.unlinked/.android.core.ui.SplashActivity` |
-| Unreal Debrid | `unreal_debrid` | `#19D3C5` | `#19D3C5` | `com.yablio.realdebridtv/com.yablio.realdebridtv.StartActivity` |
-| USA Network | `androidtv_9` | `#F04DE0` | `#F04DE0` | `com.nbcu.tve.usatv.androidtv/com.nbc.nbctvapp.ui.main.view.MainActivity` |
-| User Center | `user_center` | `#B6F23A` | `#B6F23A` | `com.tcl.usercenter/com.tcl.usercenter.activity.WelActivity` |
-| Vbtv | `vbtv` | `#3D8BFF` | `#3D8BFF` | `dce.fivb.volleyballtv/com.applicaster.ui.activities.MainActivity` |
-| Ve Plus | `venevision` | `#FF4D4D` | `#FF4D4D` | `com.cisneros.venevision.app/com.interfacectvapp.MainActivity` |
-| Veezie | `veezie` | `#1FD19A` | `#1FD19A` | `st.veezie/st.veezie.MainActivity` |
-| Vewd Internet Browser | `vewd_internet_browser` | `#C95CFF` | `#C95CFF` | `com.vewd.core.integration.dia/com.vewd.core.browser.BrowserActivity`<br>`com.vewd.core.integration.dia/com.vewd.core.browser.TVActivity` |
+| Unreal Debrid | `unreal_debrid` | `#FF7A2E` | `#FF7A2E` | `com.yablio.realdebridtv/com.yablio.realdebridtv.StartActivity` |
+| USA Network | `androidtv_9` | `#19D3C5` | `#19D3C5` | `com.nbcu.tve.usatv.androidtv/com.nbc.nbctvapp.ui.main.view.MainActivity` |
+| User Center | `user_center` | `#F04DE0` | `#F04DE0` | `com.tcl.usercenter/com.tcl.usercenter.activity.WelActivity` |
+| Vbtv | `vbtv` | `#B6F23A` | `#B6F23A` | `dce.fivb.volleyballtv/com.applicaster.ui.activities.MainActivity` |
+| Ve Plus | `venevision` | `#3D8BFF` | `#3D8BFF` | `com.cisneros.venevision.app/com.interfacectvapp.MainActivity` |
+| Veezie | `veezie` | `#FF4D4D` | `#FF4D4D` | `st.veezie/st.veezie.MainActivity` |
+| Vewd Internet Browser | `vewd_internet_browser` | `#1FD19A` | `#1FD19A` | `com.vewd.core.integration.dia/com.vewd.core.browser.BrowserActivity`<br>`com.vewd.core.integration.dia/com.vewd.core.browser.TVActivity` |
 | Viaplay | `viaplay` | `#FE365F` | `#FE365F` | `com.viaplay.android/com.viaplay.android.features.home.HomeActivity` |
-| Vibra | `vibra` | `#FFE14D` | `#FFE14D` | `com.vibra/com.ryanheise.audioservice.AudioServiceActivity` |
-| Victory Plus | `victory_plus` | `#4FACFE` | `#4FACFE` | `tv.apmc.android.victorysports/tv.kidoodle.android.ui.MainActivity` |
-| Vidangel | `vidangel` | `#E6EDF3` | `#E6EDF3` | `com.vidangel.tvapp/com.vidangel.tvapp.activities.IntroActivity` |
-| Videoland | `videoland` | `#34EB7A` | `#34EB7A` | `nl.rtl.videoland.v2/com.bedrockstreaming.shared.tv.activity.SplashActivity` |
+| Vibra | `vibra` | `#C95CFF` | `#C95CFF` | `com.vibra/com.ryanheise.audioservice.AudioServiceActivity` |
+| Victory Plus | `victory_plus` | `#FFE14D` | `#FFE14D` | `tv.apmc.android.victorysports/tv.kidoodle.android.ui.MainActivity` |
+| Vidangel | `vidangel` | `#4FACFE` | `#4FACFE` | `com.vidangel.tvapp/com.vidangel.tvapp.activities.IntroActivity` |
+| Videoland | `videoland` | `#E6EDF3` | `#E6EDF3` | `nl.rtl.videoland.v2/com.bedrockstreaming.shared.tv.activity.SplashActivity` |
 | Vidio | `vidio` | `#FB0E4D` | `#FB0E4D` | `com.vidio.android.tv/com.vidio.android.tv.splashscreen.SplashScreenActivity`<br>`com.vidio.android/com.vidio.android.splashscreen.SplashScreenActivity`<br>`com.vidio.android/com.vidio.android.MainActivity` |
-| Vieon | `vieon` | `#A366FF` | `#A366FF` | `com.vieon.tv/com.my.app.MainActivity` |
-| Viki | `viki` | `#FFB020` | `#FFB020` | `com.viki.android/com.viki.android.ui.splash.SplashActivity` |
+| Vieon | `vieon` | `#34EB7A` | `#34EB7A` | `com.vieon.tv/com.my.app.MainActivity` |
+| Viki | `viki` | `#A366FF` | `#A366FF` | `com.viki.android/com.viki.android.ui.splash.SplashActivity` |
 | Vimeo | `vimeo` | `#1AB7EA` | `#1AB7EA` | `com.vimeo.android.videoapp/com.vimeo.android.videoapp.launch.LaunchActivity` |
 | Vimu Player | `vimu` | `#F0913A` | `#F0913A` | `net.gtvbox.videoplayer/net.gtvbox.vimuhd.VimuHDActivity` |
-| Virtualhere USB Server | `virtualhere_usb_server` | `#00D4FF` | `#00D4FF` | `com.virtualhere.androidserver/com.virtualhere.androidserver.GUI` |
-| Viu | `viu` | `#FF5CA8` | `#FF5CA8` | `com.viu.tv/com.viu.tv.mvp.ui.activity.WelcomeActivity` |
-| Viva One TV | `viva_one_tv` | `#53FC18` | `#53FC18` | `com.viva.vivaone/com.viva.vivamax.activity.SplashActivity` |
-| ViX | `vix` | `#7C74FF` | `#7C74FF` | `com.univision.prendetv/com.univision.descarga.tv.ui.MainActivity` |
+| Virtualhere USB Server | `virtualhere_usb_server` | `#FFB020` | `#FFB020` | `com.virtualhere.androidserver/com.virtualhere.androidserver.GUI` |
+| Viu | `viu` | `#00D4FF` | `#00D4FF` | `com.viu.tv/com.viu.tv.mvp.ui.activity.WelcomeActivity` |
+| Viva One TV | `viva_one_tv` | `#FF5CA8` | `#FF5CA8` | `com.viva.vivaone/com.viva.vivamax.activity.SplashActivity` |
+| ViX | `vix` | `#53FC18` | `#53FC18` | `com.univision.prendetv/com.univision.descarga.tv.ui.MainActivity` |
 | VLC | `vlc` | `#FF8800` | `#FF8800` | `org.videolan.vlc/.StartActivity`<br>`org.videolan.vlc/org.videolan.vlc.gui.MainActivity`<br>`org.videolan.vlc/.gui.tv.MainTvActivity` |
-| Vmx | `vmx` | `#FF7A2E` | `#FF7A2E` | `com.viva.vivamax/com.viva.vivamax.activity.SplashActivity` |
-| Vodafone TV | `vodafone_tv` | `#19D3C5` | `#19D3C5` | `com.vodafone.vtv.atv.pt/com.witsoftware.vodafonetv.view.splash.SplashActivity` |
+| Vmx | `vmx` | `#7C74FF` | `#7C74FF` | `com.viva.vivamax/com.viva.vivamax.activity.SplashActivity` |
+| Vodafone TV | `vodafone_tv` | `#FF7A2E` | `#FF7A2E` | `com.vodafone.vtv.atv.pt/com.witsoftware.vodafonetv.view.splash.SplashActivity` |
 | Voltra TV | `voltra_tv` | `#00E676` | `#00E676` | `com.amhkor.voltratv/com.amhkor.voltratv.tv.SplashActivity` |
-| Voyo Sk | `voyo_sk` | `#F04DE0` | `#F04DE0` | `net.cme.voyo.sk.tvapp/net.cme.voyo.sk.tvapp.MainActivity` |
-| VPN Dot | `omnisoft` | `#B6F23A` | `#B6F23A` | `com.omnisoft.vpndot/com.omnisoft.vpndot.main` |
-| VPN Unlimited | `vpn_unlimited` | `#3D8BFF` | `#3D8BFF` | `com.simplexsolutionsinc.vpn_unlimited/com.simplexsolutionsinc.vpn_unlimited.ui.screens.splash.SplashScreenActivity` |
-| vRadio | `vradio` | `#FF4D4D` | `#FF4D4D` | `com.ilv.vradio/com.ilv.vradiotv.MainActivity` |
-| VRT MAX | `vrtnu` | `#1FD19A` | `#1FD19A` | `be.vrt.vrtnu/be.vrt.vrtnu.MainActivity` |
+| Voyo Sk | `voyo_sk` | `#19D3C5` | `#19D3C5` | `net.cme.voyo.sk.tvapp/net.cme.voyo.sk.tvapp.MainActivity` |
+| VPN Dot | `omnisoft` | `#F04DE0` | `#F04DE0` | `com.omnisoft.vpndot/com.omnisoft.vpndot.main` |
+| VPN Unlimited | `vpn_unlimited` | `#B6F23A` | `#B6F23A` | `com.simplexsolutionsinc.vpn_unlimited/com.simplexsolutionsinc.vpn_unlimited.ui.screens.splash.SplashScreenActivity` |
+| vRadio | `vradio` | `#3D8BFF` | `#3D8BFF` | `com.ilv.vradio/com.ilv.vradiotv.MainActivity` |
+| VRT MAX | `vrtnu` | `#FF4D4D` | `#FF4D4D` | `be.vrt.vrtnu/be.vrt.vrtnu.MainActivity` |
 | Vstro Player | `vstro_player` | `#FFE14D` | `#FFE14D` | `com.vs.vsplayer/com.vs.vsplayer.common.view.SplashActivity` |
 | VTM GO | `zenderapp` | `#4FACFE` | `#4FACFE` | `be.vmma.vtm.zenderapp/be.persgroep.vtmgo.presentation.VtmGoMainActivity` |
 | Vtvcab On TV | `vtvcab_on_tv` | `#E6EDF3` | `#E6EDF3` | `com.vtvcab.onTV/com.vtvcab.activities.NewSplashActivity` |

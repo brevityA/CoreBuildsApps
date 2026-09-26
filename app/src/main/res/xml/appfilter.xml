@@ -291,6 +291,9 @@
     <!-- Brollie -->
     <item component="ComponentInfo{com.shift72.brollie/com.sh72apps.MainActivity}" drawable="brollie_banner"/>
     <item component="ComponentInfo{com.shift72.brollie/com.sh72apps.TVMainActivity}" drawable="brollie_banner"/>
+    <!-- Browkorf TV -->
+    <item component="ComponentInfo{org.mlm.browkorftv/org.mlm.browkorftv.activity.main.MainActivity}" drawable="browkorf_tv_banner"/>
+    <item component="ComponentInfo{org.mlm.browkorftv/.activity.main.MainActivity}" drawable="browkorf_tv_banner"/>
     <!-- Browsehere -->
     <item component="ComponentInfo{com.tcl.browser/com.tcl.browser.portal.home.activity.HomePageActivity}" drawable="browsehere_banner"/>
     <item component="ComponentInfo{com.tcl.browser/.portal.home.activity.HomePageActivity}" drawable="browsehere_banner"/>
@@ -2105,6 +2108,8 @@
     <!-- Sports Everywhere -->
     <item component="ComponentInfo{com.Arena4Viewer.Sportseverywhere/com.Arena4Viewer.Sportseverywhere.MainActivitysplachscren}" drawable="sportseverywhere_banner"/>
     <item component="ComponentInfo{com.Arena4Viewer.Sportseverywhere/.MainActivitysplachscren}" drawable="sportseverywhere_banner"/>
+    <item component="ComponentInfo{com.bone.android.a4v.oficial/com.bone.android.a4v.oficial.AVActivity}" drawable="sportseverywhere_banner"/>
+    <item component="ComponentInfo{com.bone.android.a4v.oficial/.AVActivity}" drawable="sportseverywhere_banner"/>
     <!-- Sportscaster -->
     <item component="ComponentInfo{com.handmark.sportscaster.androidtv/com.cbs.commonui.homepage.HomePageActivity}" drawable="sportscaster_banner"/>
     <!-- Sportsfire -->

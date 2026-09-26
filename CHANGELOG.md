@@ -6,6 +6,34 @@ All notable changes to the Core Builds Icon Pack. Format follows
 
 ## [Unreleased]
 
+## [1.9.6] — 2026-09-26
+
+### Added
+
+- **Generic Glyphs were researched end to end.** All 452 remaining app-letter fallbacks now use the closest evidence-backed functional Core shell — broadcast, film, tool, sport, gaming, store, music, and other families — while retaining each app's adaptive mark. No vendor artwork was imported; the classifier and audit report record the evidence and the geometry stays generated from the catalogue.
+- **Browkorf TV** now has a browser glyph and Android TV launcher mapping.
+- **Arena4Viewer** is covered through the existing Sports Everywhere mark, with its requested package/activity variants added as device-unverified mappings.
+
+- **Duotone icons.** An icon whose own logo is two colours can now wear
+  both: YouTube's play and Emby's play are white inside the brand colour,
+  VLC's cone has its white bands back, and Jellyfin's inner triangle takes
+  the purple stop of its official gradient. The catalog gains a `secondary`
+  field (`color`, the `parts` of the glyph it paints, and a `source` for
+  where the colour was seen); a declaration without a source, on a
+  gradient or monochrome icon, or repainting the whole mark is refused.
+  White is drawn as the Brand Guide off-white, the banner rail stays the
+  primary brand colour so launchers that sample it still read the brand,
+  and every other icon renders byte-for-byte as before. The Glyphs
+  companion picks the new squares up from the same art.
+
+### Changed
+
+- **Banner category labels wear the icon's colour.** VOD, STREAM, LIVE and
+  every other category kicker used to be one fixed cyan on all 961 banners,
+  so Monet's colour sampler could read cyan off a red or violet card. The
+  label now uses the same colour as the icon and its rail; the app name
+  stays light ink. On a duotone icon the label takes the primary colour.
+
 ## [1.9.5] — 2026-09-25
 
 ### Added
