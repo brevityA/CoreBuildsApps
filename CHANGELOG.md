@@ -28,6 +28,13 @@ All notable changes to the Core Builds Icon Pack. Format follows
 
 ### Changed
 
+- **239 icons wear their app's real colour.** Letter-tile icons used to take a
+  colour from the pack's fallback palette, so a red app could show up green.
+  Each of these now uses the dominant colour of the app's official launcher
+  icon, sampled from its Google Play or F-Droid listing and recorded in the
+  catalogue as the source. Multi-coloured, black-and-white and unlisted
+  apps keep a palette colour, and the palette is now sticky: sourcing one
+  app's colour no longer reshuffles every other palette icon.
 - **Banner category labels wear the icon's colour.** VOD, STREAM, LIVE and
   every other category kicker used to be one fixed cyan on all 961 banners,
   so Monet's colour sampler could read cyan off a red or violet card. The

@@ -75,5 +75,27 @@ class Palette(unittest.TestCase):
         self.assertEqual(clashes, [])
 
 
+    def test_sourcing_one_icon_does_not_reroll_the_rest(self):
+        """A real brand colour for one app must leave every other app alone.
+
+        Assignment used to walk the pack in name order from scratch, so
+        sourcing 239 colours recoloured 424 unrelated palette icons. It is
+        sticky now: an icon keeps its palette colour while that colour still
+        clears the neighbour and same-picture rules.
+        """
+        import copy
+        from icon_palette import assign
+        icons = copy.deepcopy(ICONS)
+        palette = [i for i in icons if i.get("color_source") == PACK_PALETTE
+                   and not i.get("brand")]
+        target = palette[len(palette) // 2]
+        target["color"] = "#123456"
+        target["color_source"] = "sampled for the test"
+        after = assign(icons)
+        moved = [i["name"] for i in icons if id(i) in after
+                 and after[id(i)].upper() != i["color"].upper()]
+        # the two grid neighbours may need to step aside; nobody else moves
+        self.assertLessEqual(len(moved), 2, moved)
+
 if __name__ == "__main__":
     unittest.main()
