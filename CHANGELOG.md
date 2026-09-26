@@ -32,7 +32,9 @@ All notable changes to the Core Builds Icon Pack. Format follows
   TVING's T-V, CANAL+'s cross, Bstation's TV face, PikPak's robot, Tabii's
   star, Hue Shortcuts' bulb, MyRadar's pin, Immich's flower, PPSSPP's pad,
   Netzkino's countdown, Feeln's crown, Kijk's eye and 39 more replace their
-  letter tiles. Each is the icon's
+  letter tiles. Six whose real icons are gradients - Kijk, Kreate, Moonfin,
+  Photo Collage, Unreal Debrid and Flickfolio - wear the two ends of that
+  gradient, sampled from the icon. Each is the icon's
   defining shape redrawn in the pack's line style - the way WuPlay and Nuvio
   are drawn - with the reference icon recorded in the catalogue; nothing is
   traced.
