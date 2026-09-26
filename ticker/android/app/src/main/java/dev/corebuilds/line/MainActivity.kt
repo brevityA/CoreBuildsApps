@@ -215,9 +215,9 @@ class MainActivity : Activity() {
 
     /**
      * Start the floating ticker. Works on phone, tablet, and Android TV
-     * (some devices require the overlay permission to be granted first via
-     * Settings or ADB). Returns false on Fire TV, which blocks
-     * SYSTEM_ALERT_WINDOW at the OS level.
+     * where Display over other apps can be granted. Returns false on Fire TV,
+     * which does not support overlay windows. Position comes from the
+     * saved ticker setting, default bottom.
      */
     fun startOverlay(): Boolean {
         if (isFireTv()) return false
@@ -231,8 +231,17 @@ class MainActivity : Activity() {
         ) {
             requestPermissions(arrayOf(android.Manifest.permission.POST_NOTIFICATIONS), 7)
         }
-        OverlayService.start(this)
+        webView.evaluateJavascript(
+            "(function(){try{var s=JSON.parse(localStorage.getItem('coreline.v1')||'{}');return s.position==='top'?'top':'bottom';}catch(e){return 'bottom';}})()",
+        ) { raw ->
+            val edge = raw?.trim()?.trim('"')
+            OverlayService.start(this, if (edge == "top") "top" else "bottom")
+        }
         return true
+    }
+
+    fun setOverlayEdge(edge: String) {
+        OverlayService.setEdge(edge)
     }
 
     /** Stop the floating ticker. */

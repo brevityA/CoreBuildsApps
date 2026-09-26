@@ -166,12 +166,17 @@ export function parseJsonFeed(text, meta = {}) {
     : data.items || data.events || data.games || data.entries || data.results || [];
   if (!Array.isArray(rows)) return [];
   const limited = rows.slice(0, MAX_ITEMS_PER_FEED);
+  const bodySource = !Array.isArray(data) && data && data.source != null && String(data.source).trim()
+    ? String(data.source).trim()
+    : '';
+  const bodyVenue = !Array.isArray(data) && data && data.venue ? String(data.venue) : '';
 
   return limited.map((row, index) => {
     if (row == null) return null; // skip null rows instead of crashing (AUDIT B-group)
     if (typeof row === 'string') {
       const event = parseListing(row);
-      event.source = meta.source || 'rss';
+      event.source = bodySource || meta.source || 'rss';
+      if (bodyVenue) event.venue = bodyVenue;
       event.feed = meta.label || 'RSS';
       event.id = event.id || `json-${index}`;
       return event;
@@ -204,7 +209,13 @@ export function parseJsonFeed(text, meta = {}) {
       const ms = Date.parse(row.start || row.date || row.time || row.date_published || row.published);
       if (!Number.isNaN(ms)) event.start = new Date(ms).toISOString();
     }
-    event.source = meta.source || 'rss';
+    if (row.detail) event.detail = String(row.detail);
+    if (row.venue) event.venue = String(row.venue);
+    else if (bodyVenue) event.venue = bodyVenue;
+    // A body source of "stadium" has to win over the caller's default
+    // (client-slate always passes source: 'rss'), including when meta.source
+    // was never set.
+    event.source = row.source ? String(row.source) : (bodySource || meta.source || 'rss');
     event.feed = meta.label || row.feed || 'RSS';
     event.id = row.id || event.id || `json-${index}`;
     return event;

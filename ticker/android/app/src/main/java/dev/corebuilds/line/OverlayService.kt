@@ -10,8 +10,11 @@ import android.content.Intent
 import android.graphics.Color
 import android.graphics.PixelFormat
 import android.os.Build
+import android.os.Handler
 import android.os.IBinder
+import android.os.Looper
 import android.view.Gravity
+import android.webkit.JavascriptInterface
 import android.view.View
 import android.view.WindowManager
 import android.webkit.WebChromeClient
@@ -22,11 +25,9 @@ import android.webkit.WebView
  * Floating ticker — the chyron drawn as a translucent, non-focusable,
  * touch-through overlay window above every other app.
  *
- * It reuses the SAME Core Line web app as the full screen (loaded from
- * https://coreline.local with ?native=1&overlay=1), so it shares the parser,
- * the /api/proxy data path, and — because both WebViews are on the same origin
- * — the same localStorage settings as the main app. The overlay page strips
- * everything but the chyron via the [data-overlay] CSS.
+ * It loads overlay.html, a crawl strip, not the full board. The strip is on
+ * the same origin, so it can read the main app's localStorage (position,
+ * feeds, cached slate) without building the grid. Default edge is the bottom.
  *
  * Supported on phone, tablet, and Android TV (Google TV, NVIDIA Shield, etc.)
  * where SYSTEM_ALERT_WINDOW is granted. Fire TV blocks overlay windows at the
@@ -35,6 +36,7 @@ import android.webkit.WebView
 class OverlayService : Service() {
     private var windowManager: WindowManager? = null
     private var webView: WebView? = null
+    private var edge: String = "bottom"
 
     override fun onBind(intent: Intent?): IBinder? = null
 
@@ -48,6 +50,8 @@ class OverlayService : Service() {
             stopSelf()
             return START_NOT_STICKY
         }
+        val requested = intent?.getStringExtra(EXTRA_POSITION)
+        if (requested == "top" || requested == "bottom") edge = requested
         showOverlay()
         return START_STICKY
     }
@@ -82,7 +86,10 @@ class OverlayService : Service() {
     }
 
     private fun showOverlay() {
-        if (windowManager != null && webView != null) return // already up
+        if (windowManager != null && webView != null) {
+            applyEdge(edge)
+            return
+        }
 
         val wm = getSystemService(WINDOW_SERVICE) as WindowManager
         val overlayType = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -91,10 +98,11 @@ class OverlayService : Service() {
             @Suppress("DEPRECATION")
             WindowManager.LayoutParams.TYPE_PHONE
         }
-        // TV gets a taller bar (80dp) for 10-foot readability; phone/tablet stays at 56dp.
+        // Tall enough for the 2rem crawl used at 10-foot. The window is only
+        // the bar — not a clear WebView over the rest of the screen.
         val isTv = packageManager.hasSystemFeature(android.content.pm.PackageManager.FEATURE_LEANBACK)
             || packageManager.hasSystemFeature(android.content.pm.PackageManager.FEATURE_TELEVISION)
-        val baseDp = if (isTv) 80 else 56
+        val baseDp = if (isTv) 112 else 64
         val height = (baseDp * resources.displayMetrics.density).toInt().coerceAtLeast(96)
         val params = WindowManager.LayoutParams(
             WindowManager.LayoutParams.MATCH_PARENT,
@@ -106,7 +114,7 @@ class OverlayService : Service() {
                 or WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN,
             PixelFormat.TRANSLUCENT,
         ).apply {
-            gravity = Gravity.TOP or Gravity.FILL_HORIZONTAL
+            gravity = gravityFor(edge)
             x = 0
             y = 0
         }
@@ -120,11 +128,11 @@ class OverlayService : Service() {
             isHorizontalScrollBarEnabled = false
             webViewClient = LineWebClient(this@OverlayService)
             webChromeClient = WebChromeClient()
+            addJavascriptInterface(OverlayEdgeBridge(this@OverlayService), "CoreLineNative")
         }
         configure(wv.settings)
-        // Pass tv=1 so the web app applies the 10-foot CSS scale ladder.
         val tvParam = if (isTv) "&tv=1" else ""
-        wv.loadUrl("https://${LineWebClient.HOST}/index.html?native=1&overlay=1$tvParam")
+        wv.loadUrl("https://${LineWebClient.HOST}/overlay.html?native=1$tvParam")
 
         try {
             wm.addView(wv, params)
@@ -136,10 +144,37 @@ class OverlayService : Service() {
         webView = wv
         windowManager = wm
         running = true
+        instance = this
+    }
+
+    fun applyEdge(next: String) {
+        val edgeName = if (next == "top") "top" else "bottom"
+        val run = Runnable {
+            edge = edgeName
+            val view = webView ?: return@Runnable
+            val wm = windowManager ?: return@Runnable
+            val params = view.layoutParams as? WindowManager.LayoutParams ?: return@Runnable
+            val gravity = gravityFor(edgeName)
+            if (params.gravity == gravity) return@Runnable
+            params.gravity = gravity
+            params.y = 0
+            try {
+                wm.updateViewLayout(view, params)
+            } catch (_: Exception) {
+                /* window already gone */
+            }
+        }
+        if (Looper.myLooper() == Looper.getMainLooper()) run.run() else Handler(Looper.getMainLooper()).post(run)
+    }
+
+    private fun gravityFor(edgeName: String): Int {
+        val vertical = if (edgeName == "top") Gravity.TOP else Gravity.BOTTOM
+        return vertical or Gravity.FILL_HORIZONTAL
     }
 
     override fun onDestroy() {
         running = false
+        if (instance === this) instance = null
         try {
             webView?.let { windowManager?.removeView(it) }
         } catch (_: Exception) {
@@ -166,14 +201,21 @@ class OverlayService : Service() {
 
     companion object {
         const val ACTION_STOP = "dev.corebuilds.line.OVERLAY_STOP"
+        const val EXTRA_POSITION = "dev.corebuilds.line.OVERLAY_POSITION"
         const val OVERLAY_NOTIFICATION_ID = 42
 
         @Volatile
         var running = false
             private set
 
-        fun start(context: Context) {
+        @Volatile
+        private var instance: OverlayService? = null
+
+        fun start(context: Context, position: String? = null) {
             val intent = Intent(context, OverlayService::class.java)
+            if (position == "top" || position == "bottom") {
+                intent.putExtra(EXTRA_POSITION, position)
+            }
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 context.startForegroundService(intent)
             } else {
@@ -181,8 +223,20 @@ class OverlayService : Service() {
             }
         }
 
+        fun setEdge(edge: String) {
+            instance?.applyEdge(edge)
+        }
+
         fun stop(context: Context) {
             context.stopService(Intent(context, OverlayService::class.java))
         }
+    }
+}
+
+/** Overlay WebView bridge. Reads nothing itself — the strip passes the saved edge. */
+class OverlayEdgeBridge(private val service: OverlayService) {
+    @JavascriptInterface
+    fun setOverlayEdge(edge: String) {
+        service.applyEdge(edge)
     }
 }
