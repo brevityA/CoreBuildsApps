@@ -1,7 +1,7 @@
 # Modern generic Glyphs design addendum — 25 September 2026
 
 **Scope:** design research for the square Glyphs pack, with the 16:9 Banners pack as the paired output surface.
-**Status:** research plus the 26 September 2026 modern-shell implementation pass. The catalogue, component mappings, package names, Monet identity/mapping, and Arena4Viewer verification status remain unchanged; derived art is regenerated only through the project generators.
+**Status:** research plus the 26 September 2026 implementation passes. The same PR also reassigns the 452 `app_*` rows to functional families through `tools/classify_families.py` (see the [generic glyph audit](generic-glyph-audit-2026-09-26.md)); component mappings, package names, Monet identity/mapping and Arena4Viewer verification status are unchanged. Derived art is regenerated only through the project generators.
 
 This addendum follows the global-toggle feasibility report in [`glyphs-global-toggle-feasibility-2026-09-25.md`](glyphs-global-toggle-feasibility-2026-09-25.md). The toggle/package decision remains separate from the art decision: a launcher selects one complete pack, while both packs derive from the same identity and mapping contract.
 
@@ -35,7 +35,7 @@ The square Glyph is the binding surface. A 16:9 Banner can carry an app name and
 
 `tools/glyphs.py` already contains semantic primitives such as `stream_tower`, `gamepad`, `tools_wrench`, `send_arrow`, `broom`, `shield_key`, `automation`, `home_button`, `tv_stack`, `folder`, `gear`, `remote`, and `waves_circle`. It also contains specialised marks such as `stream_wave`, `folder_tree`, `drive_sync`, `ip_globe`, `net_pulse`, `input_screen`, `hdmi_connector`, `usb_media`, and `tv_antenna`.
 
-Its family-shell registry (`broadcast`, `app`, `tool`, `sport`, `music`, `gaming`, `vpn`, `film`, `store`, `photos`, `debrid`, `browser`, `anime`, `kids`, and `files`) puts an adaptive app mark inside a function-shaped outline. This is a meaningful improvement over a plain letter in a box, but it remains letter-led and is an intermediate fallback, not the final answer for every known app family.
+Its family-shell registry (`broadcast`, `app`, `tool`, `sport`, `music`, `gaming`, `vpn`, `film`, `store`, `photos`, `debrid`, `browser`, `anime`, `kids`, and `files`) puts an adaptive app mark inside a shared tile whose open top-right corner carries a per-family function badge (§7). This is a meaningful improvement over a plain letter in a box, but it remains letter-led and is an intermediate fallback, not the final answer for every known app family.
 
 The current branch's large neutral `app_*` population is the clearest boundary for a future semantic study, but rows must not be converted from names alone. App names, package/component names, and catalogue mappings are separate evidence. A guessed symbol is worse than an honest fallback.
 
@@ -71,7 +71,7 @@ External sources are design references, not platform requirements and not eviden
 
 - [Material 3 icon guidance](https://m3.material.io/styles/icons/designing-icons) reinforces a 24dp baseline, 20dp live area, keyline shapes, optical correction, restrained complexity, and consistent stroke systems. Core Builds borrows the system principle, not Material artwork.
 - [Material Symbols](https://github.com/google/material-design-icons) demonstrates explicit weight, fill, grade, and optical-size axes. These are useful design-system precedents, not source art.
-- [Android TV layout guidance](https://stuff.mit.edu/afs/sipb/project/android/docs/training/tv/optimizing-layouts-tv.html) reinforces large, high-contrast, simple graphics and avoidance of delicate or overly narrow strokes at 10-foot distance.
+- [Android TV design guidance](https://developer.android.com/design/ui/tv) reinforces large, high-contrast, simple graphics and avoidance of delicate or overly narrow strokes at 10-foot distance.
 - [Android TV minimalist icon pack](https://github.com/hqn-scl/android-tv-minimalist-icon-pack) and [minimal-tv-icons](https://github.com/Mortisshadow/minimal-tv-icons) reinforce symbol-first curation and real TV-card review. Their backgrounds, exact geometry, and scope are not Core Builds requirements.
 - [Arcticons](https://github.com/Arcticons-Team/Arcticons) and [Lawnicons](https://github.com/LawnchairLauncher/lawnicons) demonstrate formal line systems and renderer/theme separation. Their mobile density and launcher assumptions are not automatically applicable here.
 - [Projectivy Icon Pack](https://github.com/SicMundus86/ProjectivyIconPack) is a benchmark for per-app recognisability, not a mandate to hand-paint every long-tail mapping.
@@ -106,7 +106,7 @@ Every promoted generic candidate should satisfy all of these:
 - open counters and negative spaces that survive 48 px and 96 px review;
 - a few strong primitives, with detail removed before reducing the primary cue;
 - a silhouette distinct from common neighbours such as `play_round`, `screen`, `shield_key`, `folder`, and `gamepad`;
-- no fixed background or decorative container in Classic Glyphs;
+- no fixed background, and no decorative container beyond the shared family tile, in Classic Glyphs;
 - one resolved accent using the existing contrast policy;
 - the existing grid, safe-area, rounded caps/joins, and stroke hierarchy; and
 - a Banner rendering that preserves the same identity within the 320 × 180 layout.
@@ -126,16 +126,46 @@ Use keyline families and optical corrections rather than mechanically scaling ev
 
 The first group is release and evidence policy. The second group is design judgement; it should be validated visually and must not be mistaken for an Android platform mandate or competitor-specific behaviour.
 
-## 7. Implemented modern-shell pass — 26 September 2026
+## 7. Implemented modern-shell passes — 26 September 2026
 
-This pass improves shared family geometry without changing catalogue identity or mapping:
+**First pass (superseded the same day).** Arena refined three per-family
+containers: a gear for `tool`, a ball with two seams for `sport`, and a
+title-bar window for `browser`. Review of the rendered pack found the
+per-family container itself was the problem: seams, grips, sound waves and
+cloud lobes crossed the adaptive mark, the sport seam read as a prohibition
+sign, and the broadcast CRT-on-legs looked dated.
 
-- **Tool shell:** replaced the shield-like point-up hexagon with an original, low-frequency face-on gear keyline. The adaptive mark remains centred and the teeth are deliberately broad enough to survive 48 px.
-- **Sport shell:** retained the circle but added two open curved seam cues outside the mark. The old plain ring was too category-neutral; the seam carries the function without becoming a detailed ball illustration.
-- **Browser shell:** retained the front-facing window/title-bar silhouette and added three restrained title controls. The cue now reads as a window before the letter is read.
-- **Shared optical treatment:** the new points, seams, and controls use the existing `monoline()` normalisation and accent handling. They are not a second style or an imported icon set.
+**Shipped pass: one tile, one corner badge.** Every family now shares one
+rounded tile (x 72–440, y 120–448) with the adaptive mark large in its
+interior (cap 170, centre 298, width budget 240 — the width at which every
+catalogue mark clears the 96 px counter floor). The tile's top-right corner
+is left open and carries the family's function badge:
 
-The pass intentionally does not convert every family shell to a symbol, delete all adaptive marks, alter `tools/catalog.json`, or infer function from a loose name match. It is a measured geometry improvement while the selection ladder remains available for future evidence-backed rows.
+| Family | Badge |
+|---|---|
+| broadcast | flat screen on a stand (TV & video) |
+| tool | gear |
+| sport | trophy |
+| music | note |
+| gaming | gamepad |
+| vpn | padlock |
+| film | play in a ring |
+| store | download arrow to a tray |
+| photos | open skyline under a sun |
+| debrid | cloud |
+| browser | solid pointer |
+| anime | spark |
+| kids | heart |
+| files | folder |
+| app | none (closed tile) |
+
+The badge ends above the letter box, so no line meets a letter. Globe and
+closed-mountain drafts closed counters at 48–96 px and were replaced by the
+pointer and the open skyline; a live 'on air' badge for `broadcast` was
+dropped because most of that family is VOD or player apps. The geometry
+stays monoline, single-accent and transparent. `tests/test_modern_shells.py`
+pins the tile-plus-badge structure, the badge/letter clearance and
+small-size fit for all fifteen families.
 
 ## 8. Review and acceptance gates
 
@@ -178,15 +208,15 @@ A failed answer to question three means the candidate should not ship, even if t
 
 ### 8.4 Variant/release gate
 
-Only after the square design passes should the generators produce Classic, Pop, Pixel Neon, Banner, preview, and release resources. The release gate compares mapping/component parity and generated output, not only file existence.
+Only after the square design passes should the generators produce the Classic squares, Banners, previews, and release resources. The release gate compares mapping/component parity and generated output, not only file existence.
 
-Classic, Pop, and Pixel Neon are sibling renderers of one identity decision. Do not paste Classic strokes into Pop, rasterise Classic as Pixel Neon, or fork mappings because a renderer changes.
+Pop and Pixel Neon were retired on 2026-09-24 and must not be revived (AGENTS.md). The Glyphs companion and the Banners are the two outputs of one identity decision; do not fork mappings because a renderer changes.
 
 ## 9. Current study boundary
 
 A fresh catalogue census remains a measurement of the current branch, not permission to redraw all rows. The large `app_*` population is the likely future study boundary, but each row needs package/function evidence and a TV cue review. Named family shells without current catalogue rows are not justification for adding taxonomy.
 
-Compare a candidate against both its current fallback and the nearest existing semantic mark. The possible outcome is to keep the existing primitive, reject the candidate, or promote one shared symbol. Do not silently assign a symbol to every app sharing a category label, and do not modify the catalogue until the reviewed rows are approved.
+Compare a candidate against both its current fallback and the nearest existing semantic mark. The possible outcome is to keep the existing primitive, reject the candidate, or promote one shared symbol. Do not silently assign a symbol to every app sharing a category label. (The family reassignment of the 452 `app_*` rows in this PR was reviewed as a catalogue-wide audit and is recorded in [generic-glyph-audit-2026-09-26.md](generic-glyph-audit-2026-09-26.md); its follow-up notes the `broadcast` family's breadth.)
 
 ### 9.1 Census boundary and snapshot note
 
@@ -198,16 +228,16 @@ The current regenerated receipt is **962 catalogue icons**, **1,183 listed compo
 
 Continue with a staged generic semantic-Glyph program that:
 
-1. keeps `tools/catalog.json` and all component mappings unchanged unless separately approved;
+1. changes `tools/catalog.json` only through reviewed, recorded passes (such as the family audit) and keeps component mappings unchanged unless separately approved;
 2. treats family-shell-plus-mark as an intermediate fallback, not a failure to delete wholesale;
 3. defines a small primitive registry with an identifying cue and rejection condition;
 4. prefers open, low-density silhouettes surviving 48–96 px TV review;
 5. keeps strong Core-authored brand cues when they are materially better than a generic symbol;
-6. renders one semantic identity through Classic, Pop, Pixel Neon, Banners, and Glyphs;
+6. renders one semantic identity through the Glyphs squares and the Banners;
 7. requires automated fit/collision checks plus human cue-fidelity review in a mixed row; and
 8. uses isolated candidate APK/device review before catalogue or generated-output promotion.
 
-The 26 September shell pass applies this direction to shared geometry only. It does not change package mappings, Monet, or Arena4Viewer's unverified status.
+The 26 September passes apply this direction to shared geometry, and the same PR's audit reassigns the `app_*` rows to families. Neither changes package mappings, Monet, or Arena4Viewer's unverified status.
 
 ## 11. Source register
 
@@ -225,7 +255,7 @@ The 26 September shell pass applies this direction to shared geometry only. It d
 ### External design references
 
 - [`Material 3 icon design guidance`](https://m3.material.io/styles/icons/designing-icons) and [`Material Symbols`](https://github.com/google/material-design-icons) — keyline, simplification, optical-correction, and style-axis references; not source artwork.
-- [`Android TV layout guidance`](https://stuff.mit.edu/afs/sipb/project/android/docs/training/tv/optimizing-layouts-tv.html) — large, high-contrast, simple TV graphics.
+- [`Android TV design guidance`](https://developer.android.com/design/ui/tv) — large, high-contrast, simple TV graphics.
 - [`android-tv-minimalist-icon-pack`](https://github.com/hqn-scl/android-tv-minimalist-icon-pack) — TV-focused symbol-first/vector redraw reference.
 - [`minimal-tv-icons`](https://github.com/Mortisshadow/minimal-tv-icons) — curated TV-icon quality reference.
 - [`Arcticons`](https://github.com/Arcticons-Team/Arcticons) — monotone line-system reference.

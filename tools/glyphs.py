@@ -4248,12 +4248,16 @@ def closed_tile(c):
 
 
 def b_live(c):
-    """Live: a dot broadcasting both ways - the modern 'on air' sign."""
-    return (f'<circle cx="{BX}" cy="{BY}" r="{R*.2:.1f}" {_f(c)}/>'
-            f'<path d="M {P(-.42,-.48)} C {P(-.66,-.2)} {P(-.66,.2)} {P(-.42,.48)}" {_s(c, 20)}/>'
-            f'<path d="M {P(.42,-.48)} C {P(.66,-.2)} {P(.66,.2)} {P(.42,.48)}" {_s(c, 20)}/>'
-            f'<path d="M {P(-.78,-.82)} C {P(-1.1,-.3)} {P(-1.1,.3)} {P(-.78,.82)}" {_s(c, 20)}/>'
-            f'<path d="M {P(.78,-.82)} C {P(1.1,-.3)} {P(1.1,.3)} {P(.78,.82)}" {_s(c, 20)}/>')
+    """TV & video: a flat screen on a short stand.
+
+    The first badge here was a live 'on air' signal, but the broadcast family
+    holds 320 rows - channels, yes, and also VOD services (Viaplay, Youku,
+    VidAngel) and players (IB Player, Lampa). A live sign told most of them
+    something false; a screen is true for all of them.
+    """
+    return (f'<rect x="{BX - R:.1f}" y="{BY - R*.72:.1f}" width="{2*R:.1f}" '
+            f'height="{R*1.22:.1f}" rx="{R*.22:.1f}" {_s(c, BW)}/>'
+            f'<path d="M {P(-.36,.9)} L {P(.36,.9)}" {_s(c, BW)}/>')
 
 
 def b_gear(c):

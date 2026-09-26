@@ -9,11 +9,11 @@
       "structure": "06ec534b185e11748b5e6b0771d2be361c90edb90b5f0674271391569b1cb0e9"
     },
     "app-ui-catalogue-update.png": {
-      "bytes": 172480,
+      "bytes": 171595,
       "structure": "71e59786c30222d9569a09d57e9a29dc02fa7ee8656e901ff28ee08644b46ebb"
     },
     "app-ui-catalogue.png": {
-      "bytes": 173285,
+      "bytes": 172574,
       "structure": "00d4c2315419250e06ad9534d97190940765d6fed2b90b02bf62d8c034a3dddf"
     },
     "app-ui-faq.png": {
@@ -94,7 +94,7 @@
   "note": "Which sources the frames in docs/ were generated from, and what each one depicts. Written by build_app_ui_mockups.py; never hand-edit. The PNG bytes are not recorded on purpose: text rendering is not reproducible across machines, so --check compares the sources and the drawn structure instead. See the module docstring.",
   "pasted": {
     "count": 19,
-    "digest": "180a73b086d5bc7d1c3e3313fc511155e111613d25d8843f65598cf34fe21ee2"
+    "digest": "1033699876864926c100c2606dd3657952cc69fad36e32df80e03eadbc4e3e2b"
   },
   "renderer": "python 3.11.15, freetype 2.13.2, layout raqm, PIL 10.4.0, qrcode installed, fontTools 4.59.0, resvg_py 0.4.0"
 }

@@ -37,7 +37,7 @@ the app's short identity.
 
 | Core family | Rows moved |
 |---|---:|
-| broadcast | 320 |
+| broadcast (TV & video) | 320 |
 | tool | 36 |
 | film | 20 |
 | sport | 12 |
@@ -87,7 +87,7 @@ listing](https://amnis.en.aptoide.com/app), [Void Play listing](https://play.goo
 [Flicky F-Droid record](https://apt.izzysoft.de/fdroid/index/apk/app.flicky),
 [Fluffy source](https://github.com/mlm-games/fluffy), [Gain package
 listing](https://apkcombo.com/gai%CC%87n/com.trgain.mikrogain/), and [GenPlay
-package record](https://apkpure.com/genplay/genplay.money/download). These
+package record](https://apkpure.com/genplay/genplay.money/download) (note: that listing is for `genplay.money`, not the catalogued `com.genplay.apps`; the gaming classification rests on the app name and package, and should be re-checked against a `com.genplay.apps` listing). These
 sources support the functional classification only; their vendor artwork was
 not imported.
 
@@ -108,3 +108,16 @@ not imported.
 The generated square masters, banners, raster assets, appfilters, Glyphs
 resources, catalogue table, previews, and UI mockups must be rebuilt from this
 catalogue before release.
+
+## Follow-up review — 26 September 2026
+
+- **`broadcast` is a TV-and-video family, not a live-TV family.** 320 of the
+  452 moved rows (71%) landed here, including VOD services (Viaplay, Youku,
+  Mango TV, Lemino, VidAngel), players (IB Player, Lampa, Amnis) and at least
+  one sports publisher (L'Équipe). The shell's corner badge is therefore a
+  screen, not an 'on air' signal, so no row is told it is live when it is not.
+  Splitting VOD rows into `film` and sport publishers into `sport` is left to
+  a reviewed classifier pass.
+- **Rendering.** The family shells described above were superseded the same
+  day by the open-corner tile with a function badge; see §7 of the
+  [modern generic design addendum](glyphs-modern-generic-design-addendum-2026-09-25.md).

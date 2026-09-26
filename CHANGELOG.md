@@ -10,7 +10,7 @@ All notable changes to the Core Builds Icon Pack. Format follows
 
 ### Added
 
-- **Generic Glyphs get a modern look.** The 452 app-letter fallbacks now use one clean tile with the app's letters large in the middle and a small function badge in the open top-right corner: a live signal for TV channels, a trophy for sport, a gear for tools, a note for music, a download arrow for stores, a pointer for browsers, and so on across 14 families. The letters no longer share space with any line, so they stay sharp at TV distance. No vendor artwork is used; the family comes from the classifier's evidence and the geometry is generated from the catalogue.
+- **Generic Glyphs get a modern look.** The 452 app-letter fallbacks now use one clean tile with the app's letters large in the middle and a small function badge in the open top-right corner: a screen for TV and video apps, a trophy for sport, a gear for tools, a note for music, a download arrow for stores, a pointer for browsers, and so on across 14 families. The letters no longer share space with any line, so they stay sharp at TV distance. No vendor artwork is used; the family comes from the classifier's evidence and the geometry is generated from the catalogue.
 - **Browkorf TV** now has a browser glyph and Android TV launcher mapping.
 - **Arena4Viewer** is covered through the existing Sports Everywhere mark, with its requested package/activity variants added as device-unverified mappings.
 
