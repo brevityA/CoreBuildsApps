@@ -210,7 +210,6 @@
     <item drawable="aimitv_banner" />
     <item drawable="ak47sports_banner" />
     <item drawable="aparatsport_banner" />
-    <item drawable="arena4viewer_banner" />
     <item drawable="cbsnews_banner" />
     <item drawable="dazn_banner" />
     <item drawable="score_center_banner" />
@@ -402,7 +401,6 @@
     <item drawable="wireguard_banner" />
     <category title="Banners · Browsers" />
     <item drawable="arc_browser_banner" />
-    <item drawable="browkorf_tv_banner" />
     <item drawable="coji_tv_browser_banner" />
     <item drawable="hi_browser_banner" />
     <item drawable="mediabrowser_banner" />

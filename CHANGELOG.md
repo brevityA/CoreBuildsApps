@@ -19,13 +19,6 @@ All notable changes to the Core Builds Icon Pack. Format follows
   primary brand colour so launchers that sample it still read the brand,
   and every other icon renders byte-for-byte as before. The Glyphs
   companion picks the new squares up from the same art.
-- **Two new icons: Browkorf TV and Arena4Viewer.** Browkorf TV (#176) gets
-  its own mark - the arched B of its icon - in the olive of its tile, mapped
-  from the launcher activity in the app's manifest. Arena4Viewer (#175)
-  takes the coral-red of its tile with an AV mark; it covers the
-  `com.bone.android.arena.viewer` build, whose activity was read from the
-  APK. The newer `com.bone.android.a4v.oficial` package joins once its
-  launcher activity is read off a device. 961 → 963 icons.
 
 ### Changed
 

@@ -1,15 +1,14 @@
 {
   "versionCode": 38,
   "versionName": "1.9.6",
-  "iconCount": 963,
-  "componentCount": 1183,
+  "iconCount": 961,
+  "componentCount": 1179,
   "releaseDate": "2026-09-26",
   "apkUrl": "https://github.com/brevityA/CoreBuildsApps/releases/download/iconpack/iconpack-release.apk",
   "releaseNotesUrl": "https://github.com/brevityA/CoreBuildsApps/releases",
   "minSdk": 21,
   "highlights": [
     "Duotone icons",
-    "Two new icons: Browkorf TV and Arena4Viewer",
     "Banner category labels now follow each icon\u2019s accent"
   ]
 }

@@ -64,7 +64,6 @@
         <item>aptoide</item>
         <item>arc_browser</item>
         <item>ard_mediathek</item>
-        <item>arena4viewer</item>
         <item>arrowfilms</item>
         <item>arte</item>
         <item>limelight</item>
@@ -103,7 +102,6 @@
         <item>britbox</item>
         <item>brkchen</item>
         <item>brollie</item>
-        <item>browkorf_tv</item>
         <item>browsehere</item>
         <item>bstar</item>
         <item>buttonmappertv</item>
@@ -1029,7 +1027,6 @@
         <item>Aptoide TV</item>
         <item>Arc Browser</item>
         <item>Ard Mediathek</item>
-        <item>Arena4Viewer</item>
         <item>Arrow</item>
         <item>Arte</item>
         <item>Artemis</item>
@@ -1068,7 +1065,6 @@
         <item>BritBox</item>
         <item>Brkchen Music</item>
         <item>Brollie</item>
-        <item>Browkorf TV</item>
         <item>Browsehere</item>
         <item>Bstation</item>
         <item>Button Mapper TV</item>
@@ -1994,7 +1990,6 @@
         <item>STORE</item>
         <item>BROWSER</item>
         <item>APP</item>
-        <item>SPORT</item>
         <item>STREAM</item>
         <item>APP</item>
         <item>GAMING</item>
@@ -2033,7 +2028,6 @@
         <item>VOD</item>
         <item>MUSIC</item>
         <item>APP</item>
-        <item>BROWSER</item>
         <item>APP</item>
         <item>APP</item>
         <item>TOOL</item>
@@ -2959,7 +2953,6 @@
         <item>1</item>
         <item>1</item>
         <item>0</item>
-        <item>0</item>
         <item>1</item>
         <item>0</item>
         <item>1</item>
@@ -2998,7 +2991,6 @@
         <item>1</item>
         <item>0</item>
         <item>0</item>
-        <item>1</item>
         <item>0</item>
         <item>0</item>
         <item>0</item>
@@ -3861,5 +3853,5 @@
         <item>0</item>
         <item>0</item>
     </integer-array>
-    <integer name="icon_count">963</integer>
+    <integer name="icon_count">961</integer>
 </resources>

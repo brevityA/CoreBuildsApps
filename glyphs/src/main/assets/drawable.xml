@@ -210,7 +210,6 @@
     <item drawable="aimitv" />
     <item drawable="ak47sports" />
     <item drawable="aparatsport" />
-    <item drawable="arena4viewer" />
     <item drawable="cbsnews" />
     <item drawable="dazn" />
     <item drawable="score_center" />
@@ -402,7 +401,6 @@
     <item drawable="wireguard" />
     <category title="Square · Browsers" />
     <item drawable="arc_browser" />
-    <item drawable="browkorf_tv" />
     <item drawable="coji_tv_browser" />
     <item drawable="hi_browser" />
     <item drawable="mediabrowser" />
