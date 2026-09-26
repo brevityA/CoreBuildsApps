@@ -1,4 +1,5 @@
 import { toTickerText, parseFeed } from '/lib/parser.mjs';
+import { matchesFavorite } from '/lib/favorites.mjs';
 import { LEAGUES, LEAGUE_LABELS, SPORT_GROUPS, compareEvents, buildDemoSlate, mergeEvents } from '/lib/scoreboard.mjs';
 import { WATCH_WEB, sortAppsForPicker, espnWebUrl, watchChoiceFor } from '/lib/watch.mjs';
 import { matchChannels } from '/lib/playlist.mjs';
@@ -210,6 +211,7 @@ function bind() {
     state.position = $('position').value;
     persist();
     document.documentElement.dataset.position = state.position;
+    try { nativeBridge()?.setOverlayEdge?.(state.position); } catch { /* overlay not up */ }
   });
 
   $('overlayEnabled')?.addEventListener('change', () => {
@@ -336,7 +338,8 @@ function applyChrome() {
   renderFeeds();
   if ($('pairBox')) $('pairBox').hidden = !isNativeShell();
   if ($('overlayBlock')) {
-    $('overlayBlock').hidden = !isNativeShell();
+    const platform = isNativeShell() ? nativeBridge()?.overlayPlatform?.() : '';
+    $('overlayBlock').hidden = !isNativeShell() || platform === 'unsupported';
   }
   if ($('overlayEnabled')) {
     $('overlayEnabled').checked = Boolean(nativeBridge()?.overlayActive?.());
@@ -349,7 +352,7 @@ function applyChrome() {
       overlayHint.textContent = 'Floating ticker is not available on Fire TV. The operating system blocks overlay windows on all Fire TV devices.';
       if ($('overlayEnabled')) $('overlayEnabled').disabled = true;
     } else if (globalThis.CORELINE_TV) {
-      overlayHint.textContent = 'Draws the crawl on top of every app. If the toggle does not work, grant the permission via Settings → Apps → Special app access → Display over other apps, or run: adb shell appops set dev.corebuilds.line SYSTEM_ALERT_WINDOW allow';
+      overlayHint.textContent = 'Draws the crawl on top of every app. On Google TV or Shield, grant Display over other apps if the toggle asks. Stock Android TV often has no screen for that permission.';
     } else {
       overlayHint.textContent = 'Draws the crawl on top of every app, edge to edge. Stop it from the notification or untick this box.';
     }
@@ -958,9 +961,7 @@ function matchesFilter(ev, filter) {
 }
 
 function isFav(ev, favs) {
-  if (!favs.length) return false;
-  const bag = [ev.home?.abbr, ev.away?.abbr, ev.home?.name, ev.away?.name].filter(Boolean).map((s) => String(s).toUpperCase());
-  return favs.some((f) => bag.some((b) => b.includes(f)));
+  return matchesFavorite(ev, favs);
 }
 
 function favSet() {
@@ -1087,6 +1088,10 @@ function accentFor(ev) {
 }
 
 function render() {
+  if (globalThis.CORELINE_OVERLAY) {
+    renderCrawl(visibleEvents());
+    return;
+  }
   const focusSnap = captureFocus();
   const list = visibleEvents();
   const live = events.filter((e) => e.status === 'live').length;
@@ -1112,22 +1117,37 @@ function render() {
   renderTeamPicker();
 }
 
+function cssEscape(value) {
+  if (typeof CSS !== 'undefined' && CSS.escape) return CSS.escape(value);
+  return String(value).replace(/["\\]/g, '\\$&');
+}
+
 function captureFocus() {
   const el = document.activeElement;
   if (!el || !el.classList || !el.classList.contains('focusable')) return null;
-  const container = el.closest('#leagues, #grid, #hero');
-  if (!container) return null;
-  const nodes = [...container.querySelectorAll('.focusable')];
-  return { id: container.id, idx: nodes.indexOf(el) };
+  const card = el.closest('[data-id]');
+  if (card?.dataset?.id) {
+    const container = el.closest('#hero, #grid');
+    return { eventId: card.dataset.id, container: container?.id || '' };
+  }
+  if (el.dataset?.action === 'filter' && el.dataset.league) return { filter: el.dataset.league };
+  return null;
 }
 
 function restoreFocus(snap) {
-  if (!snap || snap.idx < 0) return;
-  const container = document.getElementById(snap.id);
-  if (!container) return;
-  const nodes = [...container.querySelectorAll('.focusable')];
-  const target = nodes[Math.min(snap.idx, nodes.length - 1)];
-  if (target) target.focus();
+  if (!snap) return;
+  if (snap.eventId) {
+    const root = snap.container ? document.getElementById(snap.container) : document;
+    const target = root?.querySelector(`.focusable[data-id="${cssEscape(snap.eventId)}"]`);
+    if (target) {
+      target.focus();
+      return;
+    }
+  }
+  if (snap.filter) {
+    const chip = document.querySelector(`[data-action="filter"][data-league="${cssEscape(snap.filter)}"]`);
+    if (chip) chip.focus();
+  }
 }
 
 function renderFilters() {
@@ -1187,7 +1207,7 @@ function renderHero(list) {
       </div>
       <div class="hero-side">
         <div class="pills">${(featured.channels || []).map((c) => `<span class="pill">${esc(c)}</span>`).join('')}</div>
-        <button class="watch-btn focusable" data-action="watch" data-id="${esc(featured.id)}">▶ Watch</button>
+        <button class="watch-btn" data-action="watch" data-id="${esc(featured.id)}">▶ Watch</button>
         <div class="when">${esc(featured.venue || featured.feed || '')}</div>
       </div>
     </article>
@@ -1226,8 +1246,8 @@ function gameCard(ev) {
         <span class="league-tag">${esc(ev.league || ev.feed || 'RSS')}</span>
         <div class="game-top-right">
           <span class="badge ${badge}">${esc(label)}</span>
-          <button class="fav-star focusable ${favOn ? 'on' : ''}" data-action="toggle-card-fav" data-id="${esc(ev.id)}" aria-label="${favOn ? 'Unfavorite' : 'Favorite'} these teams" aria-pressed="${favOn}">★</button>
-          <button class="watch-mini focusable" data-action="watch" data-id="${esc(ev.id)}" aria-label="Watch in app" title="Watch in app">▶</button>
+          <button class="fav-star ${favOn ? 'on' : ''}" data-action="toggle-card-fav" data-id="${esc(ev.id)}" aria-label="${favOn ? 'Unfavorite' : 'Favorite'} these teams" aria-pressed="${favOn}">★</button>
+          <button class="watch-mini" data-action="watch" data-id="${esc(ev.id)}" aria-label="Watch in app" title="Watch in app">▶</button>
         </div>
       </div>
       <div class="game-teams">
@@ -1263,7 +1283,8 @@ function renderCrawl(list) {
       const body = ev.away && ev.home
         ? `${esc(ev.away.abbr)}${ev.status !== 'upcoming' && ev.away.score != null ? ` ${esc(ev.away.score)}-${esc(ev.home.score)} ` : ' vs '}${esc(ev.home.abbr)}`
         : esc(ev.headline || ev.rawTitle || toTickerText(ev));
-      return `<span class="tick"><span class="${klass}">${kind}</span> ${body}${channels ? ` <span class="chs">${esc(channels)}</span>` : ''}</span>`;
+      const detail = ev.detail ? ` ${esc(ev.detail)}` : '';
+      return `<span class="tick"><span class="${klass}">${kind}</span> ${body}${detail}${channels ? ` <span class="chs">${esc(channels)}</span>` : ''}</span>`;
     })
     .join('');
   ticker.setItems(html);

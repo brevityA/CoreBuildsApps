@@ -83,6 +83,17 @@ Built-in scoreboards (when the network can reach them): NFL, NBA, MLB, NHL, NCAA
 
 Keep-screen-awake uses the Wake Lock API when the browser allows it.
 
+## Stadium sync (venue bridge)
+
+[`stadium-sync/`](stadium-sync/) is the in-venue half: a small Node server that reads a
+Daktronics All Sport 5000 over RTD, a Sportzcast / ScoreLink JSON contract, or a volunteer
+on a manual pad, and publishes the game as the exact JSON and RSS Core Line already crawls —
+plus a full-screen gym bug at `/display`. No npm install, no dependencies.
+
+```bash
+cd ticker/stadium-sync && node server.mjs    # :8792 — pad, /display, /coreline.json
+```
+
 ## What this is not
 
 A player. A playlist. A source of streams. Core Line is a TV *guide* chyron. You bring the listings; it reads them.
@@ -90,7 +101,8 @@ A player. A playlist. A source of streams. Core Line is a TV *guide* chyron. You
 ## Tests
 
 ```bash
-cd ticker && npm test
+cd ticker && npm test                        # parsers, SSRF, slate, favorites
+cd ticker/stadium-sync && npm test           # the venue bridge
 ```
 
 Parser coverage includes the original supporter line.

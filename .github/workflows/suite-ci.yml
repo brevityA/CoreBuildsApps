@@ -175,6 +175,12 @@ jobs:
           python-version: '3.12'
       - name: Core Line parser/network tests
         run: cd ticker && npm test
+      # The venue bridge lives inside ticker/, so core-line-apk.yml already
+      # covers it on ticker/** — this job has no path filter, and a gate that
+      # only runs on a filtered workflow is the exact failure mode
+      # tests/test_ci_coverage.py was written for.
+      - name: Core Line venue bridge tests
+        run: cd ticker/stadium-sync && npm test
       - name: Install Python content deps
         run: pip install --quiet -r tools/requirements.txt
       # Both import tools/glyphs.py, which needs fontTools from the deps above.

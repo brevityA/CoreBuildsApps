@@ -7,7 +7,7 @@
 | Product | Path | Package ID | Version | Downloader / stable tag |
 |---|---|---|---:|---|
 | Core Builds Icon Pack | `app/` with repo-root Gradle | `tv.corebuilds.iconpack` | `1.9.6` | `5270601` / `iconpack` |
-| Core Line | `ticker/` + `ticker/android/` | `dev.corebuilds.line` | `1.3.0` | `7375676` / `coreline` |
+| Core Line | `ticker/` + `ticker/android/` | `dev.corebuilds.line` | `1.3.1` | `7375676` / `coreline` |
 | Core Shift | `shift/` | `dev.corebuilds.shift` | `2.3.5` | `8829421` / `shift` |
 | Core Motion | `motion-plugin/` | `tv.corebuilds.motion` | `1.0.0` | `[USER TO SUPPLY]` / `motion` |
 | Core Doctor | `doctor/` | `dev.corebuilds.doctor` | `0.1.0` | `8664938` / `doctor` |
@@ -146,7 +146,12 @@ prefills `input`/`textarea` fields only, and the tool refuses to promise more.
   is not wired into `.github/workflows/suite-ci.yml` — the one with no path
   filter — does not exist: five tests and two validators had been local-only
   before that check was written.
-- Core Line: `cd ticker && npm test`.
+- Core Line: `cd ticker && npm test`. The venue bridge in `ticker/stadium-sync`
+  is a second, dependency-free Node package in the same directory: `cd
+  ticker/stadium-sync && npm test`. It is not a sixth product — do not add it to
+  `suite.json`, the README stamp, or a Gradle root, and note `syncWebAssets`
+  copies only `ticker/public` and `ticker/lib`, so nothing under
+  `ticker/stadium-sync/` reaches the APK.
 - Core Shift: `python tools/validate_motion_feed.py` plus Android lint/build in CI.
 - Core Motion: `python tools/verify_motion_plugin.py` plus Android lint/build in CI.
 - Core Doctor: `cd doctor && ./gradlew :app:testDebugUnitTest` where Android SDK exists.
