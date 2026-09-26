@@ -14,18 +14,19 @@ All notable changes to the Core Builds Icon Pack. Format follows
 - **Browkorf TV** now has a browser glyph and Android TV launcher mapping.
 - **Arena4Viewer** is covered through the existing Sports Everywhere mark, with its requested package/activity variants added as device-unverified mappings.
 
-- **60 apps get marks drawn from their real icons.** Zeus's bolt, ARD's
+- **77 apps get marks drawn from their real icons.** Zeus's bolt, ARD's
   ring-1, DR's ring and play, Hubitat's house, Dropsync's cube, Scholastic's
   book, Zapp's set, Mango TV's M, Youku's two-part play (blue and orange),
   TVING's T-V, CANAL+'s cross, Bstation's TV face, PikPak's robot, Tabii's
   star, Hue Shortcuts' bulb, MyRadar's pin, Immich's flower, PPSSPP's pad,
-  Netzkino's countdown, Feeln's crown, Kijk's eye and 39 more replace their
+  Netzkino's countdown, Feeln's crown, Kijk's eye, NFB's watching eye,
+  Synology Photos' rosette, TorrServe's bolt and 53 more replace their
   letter tiles. Each is the defining shape redrawn in Core line geometry
-  with the reference icon recorded in the catalogue; nothing is traced. Six
+  with the reference icon recorded in the catalogue; nothing is traced. Seven
   whose real icons are gradients - Kijk, Kreate, Moonfin, Photo Collage,
-  Unreal Debrid and Flickfolio - wear the two ends of that gradient,
+  Unreal Debrid, Flickfolio and Avoid - wear the two ends of that gradient,
   sampled from the icon.
-- **239 icons wear their app's real colour.** Letter-tile icons now use the
+- **244 icons wear their app's real colour.** Letter-tile icons now use the
   dominant colour of their official launcher icon when reliable Play/F-Droid
   evidence exists. Multi-colour, black-and-white, and unlisted apps retain a
   palette colour; the palette assignment is sticky so one sourced colour does

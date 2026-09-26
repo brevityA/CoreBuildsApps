@@ -82,7 +82,7 @@ Source accents are retained in the catalog. **On dark** is the shared square/ban
 | Audiomack | `audiomack` | `#FFA200` | `#FFA200` | `com.audiomack/com.audiomack.ui.splash.SplashActivity` |
 | Aurora Store | `aurora_store` | `#00C2FF` | `#00C2FF` | `com.aurora.store/.MainActivity` |
 | AV Source | `av_source` | `#FF5CA8` | `#FF5CA8` | `com.spocky.projengmenu/.activities.input.SourceAVActivity`<br>`com.spocky.projengmenu/.ui.guidedActions.activities.input.SourceAVActivity` |
-| Avoid | `hritwik` | `#53FC18` | `#53FC18` | `com.hritwik.avoid/com.hritwik.avoid.MainActivity` |
+| Avoid | `hritwik` | `#9838D3` | `#9838D3` | `com.hritwik.avoid/com.hritwik.avoid.MainActivity` |
 | Award VPN | `award` | `#7C74FF` | `#7C74FF` | `com.award.VPN/app.award.update.SplashActivity` |
 | Baby Einstein | `babyeinstein` | `#FF7A2E` | `#FF7A2E` | `com.giant.babyeinstein/com.codes.ui.SplashActivity` |
 | Background Apps And Process List | `background_apps_and_process_list` | `#19D3C5` | `#19D3C5` | `io.github.visnkmr.bapl/io.github.visnkmr.bapl.MainActivity` |
@@ -186,7 +186,7 @@ Source accents are retained in the catalog. **On dark** is the shared square/ban
 | Discovery | `discovery` | `#003B73` | `#005FB8` | `com.discovery.dplay/com.discovery.plus.presentation.activities.TVSplashActivity`<br>`com.discovery.dplay/com.wbd.beam.BeamActivity` |
 | Discovery+ | `discoveryplus` | `#003B73` | `#005FB8` | `com.discovery.discoveryplus.mobile/com.wbd.beam.BeamActivity` |
 | Dish Anywhere | `dish_anywhere` | `#FFB020` | `#FFB020` | `com.sm.SlingGuide.Dish/com.sm.SlingGuide.Dish.MainActivity` |
-| Dish Home | `dishnepal` | `#00D4FF` | `#00D4FF` | `com.conax.golive.dishnepal/com.conax.golive.LoginActivity` |
+| Dish Home | `dishnepal` | `#E34BAC` | `#E34BAC` | `com.conax.golive.dishnepal/com.conax.golive.LoginActivity` |
 | Disney+ | `disneyplus` | `#113CCF` | `#1E4DED` | `com.disney.disneyplus/com.bamtechmedia.dominguez.main.MainActivity`<br>`com.disney.disneyplus/.MainActivity`<br>`com.disney.disneyplus.tv/.MainActivity` |
 | DistroTV | `distroscale` | `#FF5CA8` | `#FF5CA8` | `com.distroscale.tv.android/com.distroscale.tv.firetv.MainActivity` |
 | Dixmax | `dixmax` | `#53FC18` | `#53FC18` | `es.shufflex.dixmax.android/es.shufflex.dixmax.android.Main`<br>`es.shufflex.dixmax.android/es.shufflex.dixmax.android.activities.tv.activities.LoginActivity` |

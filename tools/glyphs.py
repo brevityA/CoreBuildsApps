@@ -5494,3 +5494,149 @@ GLYPHS.update({
     "sooner_rings": sooner_rings, "unrealdebrid_magnet": unrealdebrid_magnet,
     "rlc_shield": rlc_shield, "unext_shield": unext_shield,
 })
+
+
+# --------------------------------------------------------------------------
+# Brand-informed marks, batch 4 (2026-09-26). Same contract as batches 1-3.
+
+def dish_d(c):
+    """Dish Home: the rounded D with a play cut into its counter."""
+    return (f'<path d="M 112 96 L 244 96 C 352 96 424 168 424 256 C 424 344 352 416 244 416 '
+            f'L 112 416 Z" {_s(c, 32)}/>'
+            + _solid("M 190 190 L 300 256 L 190 322 Z", c, 18))
+
+
+def gymondo_g(c):
+    """Gymondo: the looping G drawn as one continuous line."""
+    return (f'<path d="M 372 150 C 320 90 204 88 144 152 C 84 216 90 330 158 384 '
+            f'C 226 438 344 420 384 346 C 408 300 400 250 350 236 C 296 222 252 262 262 316 '
+            f'C 272 368 336 372 370 336" {_s(c, 32)}/>')
+
+
+def hippos_loop(c):
+    """Hippos: the large ring, the small ring and the bar slanting across them."""
+    return (f'<circle cx="316" cy="228" r="112" {_s(c, 30)}/>'
+            f'<circle cx="144" cy="344" r="60" {_s(c, 28)}/>'
+            f'<circle cx="144" cy="344" r="16" {_f(c)}/>'
+            f'<path d="M 168 88 L 356 424" {_s(c, 32)}/>')
+
+
+def juuno_j(c):
+    """Juuno: the round dot over the block j with its curved foot."""
+    return (f'<circle cx="300" cy="112" r="46" {_f(c)}/>'
+            + _solid("M 258 196 L 342 196 L 342 330 C 342 390 300 428 242 428 "
+                     "L 170 428 L 170 344 L 258 344 Z", c, 14))
+
+
+def mediahub_play(c):
+    """Media Hub: the play folded from two chevron ribbons."""
+    return (f'<path d="M 128 92 L 300 256 L 128 420" {_s(c, 32)}/>'
+            f'<path d="M 214 164 L 396 256 L 214 348" {_s(c, 30)}/>')
+
+
+def movideo_doc(c):
+    """Movideo: the page with its folded corner and a play."""
+    return (f'<path d="M 120 76 L 318 76 L 398 156 L 398 436 L 120 436 Z" {_s(c, 30)}/>'
+            f'<path d="M 318 76 L 318 156 L 398 156" {_s(c, 24)}/>'
+            + _solid("M 212 214 L 312 276 L 212 338 Z", c, 16))
+
+
+def nfb_eye(c):
+    """NFB: the eye whose pupil is a person, head and shoulders."""
+    return (f'<path d="M 60 232 C 140 118 372 118 452 232" {_s(c, 32)}/>'
+            f'<path d="M 60 232 C 100 290 150 322 190 334" {_s(c, 28)}/>'
+            f'<path d="M 452 232 C 412 290 362 322 322 334" {_s(c, 28)}/>'
+            f'<circle cx="256" cy="244" r="54" {_f(c)}/>'
+            + _solid("M 170 432 C 170 356 206 318 256 318 C 306 318 342 356 342 432 Z", c, 16))
+
+
+def ondamedia_figure(c):
+    """Ondamedia: the round head over its M-shaped stride."""
+    return (f'<circle cx="256" cy="150" r="74" {_s(c, 30)}/>'
+            f'<path d="M 128 424 L 196 262 L 256 352 L 316 262 L 384 424" {_s(c, 30)}/>')
+
+
+def synology_rosette(c):
+    """Synology Photos: the six-petal rosette of overlapping rings."""
+    out = ""
+    for k in range(6):
+        x, y = _polar(256, 256, 88, -90 + 60 * k)
+        out += f'<circle cx="{x:.1f}" cy="{y:.1f}" r="96" {_s(c, 22)}/>'
+    return out
+
+
+def tvoverlay_cards(c):
+    """TvOverlay: the notification card floating over the screen behind it."""
+    return (f'<path d="M 172 132 L 96 132 C 84 132 76 140 76 152 L 76 364 C 76 376 84 384 96 384 '
+            f'L 150 384" {_s(c, 24)}/>'
+            f'<rect x="172" y="170" width="264" height="190" rx="28" {_s(c, 30)}/>'
+            f'<circle cx="236" cy="236" r="24" {_f(c)}/>'
+            f'<path d="M 292 236 L 382 236 M 228 300 L 382 300" {_s(c, 24)}/>')
+
+
+def veezie_play(c):
+    """Veezie: the open play outline with its upright bar inside."""
+    return (f'<path d="M 124 82 L 424 256 L 124 430 Z" {_s(c, 32)}/>'
+            f'<path d="M 200 220 L 200 340" {_s(c, 30)}/>')
+
+
+def wako_tv(c):
+    """Wako: the retro set with its V antenna and two side knobs."""
+    return (f'<rect x="64" y="162" width="384" height="256" rx="44" {_s(c, 30)}/>'
+            f'<rect x="104" y="202" width="228" height="176" rx="26" {_s(c, 24)}/>'
+            f'<circle cx="394" cy="244" r="20" {_f(c)}/>'
+            f'<circle cx="394" cy="324" r="20" {_f(c)}/>'
+            f'<path d="M 190 88 L 256 156 L 322 88" {_s(c, 26)}/>')
+
+
+def instantbits_cast(c):
+    """Web Video Cast (InstantBits): the set with cast waves and a play badge."""
+    return (f'<rect x="72" y="166" width="300" height="236" rx="36" {_s(c, 30)}/>'
+            f'<path d="M 150 102 L 206 160 M 294 102 L 238 160" {_s(c, 24)}/>'
+            f'<path d="M 124 330 C 164 330 180 346 180 372" {_s(c, 24)}/>'
+            f'<path d="M 124 264 C 204 264 246 306 246 372" {_s(c, 24)}/>'
+            f'<circle cx="376" cy="170" r="72" {_s(c, 26)}/>'
+            + _solid("M 358 136 L 408 170 L 358 204 Z", c, 12))
+
+
+def couchpuzzle_tiles(c):
+    """Couch Puzzles: the sliding-tile board with one empty slot."""
+    tiles = ""
+    for r, y in enumerate((72, 208, 344)):
+        for q, x in enumerate((72, 208, 344)):
+            if (r, q) == (2, 2):
+                continue
+            tiles += f'<rect x="{x}" y="{y}" width="96" height="96" rx="20" {_s(c, 22)}/>'
+    return tiles
+
+
+def torrserve_bolt(c):
+    """TorrServe: the bolt striking through its ring."""
+    return (f'<circle cx="256" cy="256" r="172" {_s(c, 30)}/>'
+            + _solid("M 300 72 L 176 276 L 262 276 L 212 440 L 344 222 L 256 222 Z", c, 14))
+
+
+def avoid_play(c):
+    """Avoid: three nested play outlines."""
+    return (f'<path d="M 108 76 C 88 64 72 74 72 98 L 72 414 C 72 438 88 448 108 436 '
+            f'L 380 278 C 400 266 400 246 380 234 Z" {_s(c, 28)}/>'
+            f'<path d="M 144 168 L 144 344 L 296 256 Z" {_s(c, 24)}/>'
+            f'<path d="M 196 232 L 196 280 L 236 256 Z" {_s(c, 20)}/>')
+
+
+def hueessentials_lamp(c):
+    """Hue Essentials: the tall tapered lamp with its capped base."""
+    return (f'<path d="M 160 84 L 352 84 L 318 318 L 194 318 Z" {_s(c, 30)}/>'
+            f'<path d="M 214 318 L 214 380 L 298 380 L 298 318" {_s(c, 26)}/>'
+            f'<path d="M 234 432 L 278 432" {_s(c, 26)}/>')
+
+
+GLYPHS.update({
+    "dish_d": dish_d, "gymondo_g": gymondo_g, "hippos_loop": hippos_loop, "juuno_j": juuno_j,
+    "mediahub_play": mediahub_play, "movideo_doc": movideo_doc, "nfb_eye": nfb_eye,
+    "ondamedia_figure": ondamedia_figure, "synology_rosette": synology_rosette,
+    "tvoverlay_cards": tvoverlay_cards, "veezie_play": veezie_play, "wako_tv": wako_tv,
+    "instantbits_cast": instantbits_cast, "couchpuzzle_tiles": couchpuzzle_tiles,
+    "torrserve_bolt": torrserve_bolt, "avoid_play": avoid_play,
+    "hueessentials_lamp": hueessentials_lamp,
+})

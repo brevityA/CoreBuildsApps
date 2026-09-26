@@ -920,15 +920,20 @@
     {
       "name": "Avoid",
       "drawable": "hritwik",
-      "color": "#53FC18",
-      "glyph": "broadcast_A",
-      "mark": "AV",
+      "color": "#9838D3",
+      "glyph": "avoid_play",
       "components": [
         "com.hritwik.avoid/com.hritwik.avoid.MainActivity"
       ],
       "category": "APP",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled from the official launcher icon (Google Play listing for com.hritwik.avoid): gradient start #9838D3 (2026-09-26)",
+      "color_reviewed": "2026-09-26",
+      "glyph_source": "brand-informed redraw of the official launcher icon (play listing for com.hritwik.avoid); Core monoline geometry, not a trace (2026-09-26)",
+      "gradient": [
+        "#9838D3",
+        "#0E67CD"
+      ],
+      "gradient_source": "sampled from the official launcher icon (Google Play listing for com.hritwik.avoid): the icon's own #9838D3 to #0E67CD gradient, its two ends (2026-09-26)"
     },
     {
       "name": "Award VPN",
@@ -1824,15 +1829,15 @@
       "name": "Couch Puzzles",
       "drawable": "couch_puzzles",
       "color": "#5C6BC0",
-      "glyph": "gaming_C",
-      "mark": "CP",
+      "glyph": "couchpuzzle_tiles",
       "components": [
         "com.roysolberg.couchpuzzles/com.roysolberg.couchpuzzles.AndroidLauncher"
       ],
       "category": "APP",
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "sampled from the official launcher icon (Google Play listing for com.roysolberg.couchpuzzles): dominant brand accent #5C6BC0 (2026-09-26)",
-      "color_reviewed": "2026-09-26"
+      "color_reviewed": "2026-09-26",
+      "glyph_source": "brand-informed redraw of the official launcher icon (play listing for com.roysolberg.couchpuzzles); Core monoline geometry, not a trace (2026-09-26)"
     },
     {
       "name": "CPU Info",
@@ -2285,15 +2290,15 @@
     {
       "name": "Dish Home",
       "drawable": "dishnepal",
-      "color": "#00D4FF",
-      "glyph": "broadcast_D",
-      "mark": "DH",
+      "color": "#E34BAC",
+      "glyph": "dish_d",
       "components": [
         "com.conax.golive.dishnepal/com.conax.golive.LoginActivity"
       ],
       "category": "APP",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled from the official launcher icon (Google Play listing for com.conax.golive.dishnepal): dominant brand accent #E34BAC (2026-09-26)",
+      "color_reviewed": "2026-09-26",
+      "glyph_source": "brand-informed redraw of the official launcher icon (play listing for com.conax.golive.dishnepal); Core monoline geometry, not a trace (2026-09-26)"
     },
     {
       "name": "Disney+",
@@ -4079,15 +4084,15 @@
       "name": "Gymondo",
       "drawable": "gymondo",
       "color": "#FF7F66",
-      "glyph": "sport_G",
-      "mark": "GY",
+      "glyph": "gymondo_g",
       "components": [
         "de.gymondo.app.gymondo/com.gymondo.presentation.features.startup.StartupTvActivity"
       ],
       "category": "APP",
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "sampled from the official launcher icon (Google Play listing for de.gymondo.app.gymondo): dominant brand accent #FF7F66 (2026-09-26)",
-      "color_reviewed": "2026-09-26"
+      "color_reviewed": "2026-09-26",
+      "glyph_source": "brand-informed redraw of the official launcher icon (play listing for de.gymondo.app.gymondo); Core monoline geometry, not a trace (2026-09-26)"
     },
     {
       "name": "Hallmark Channel",
@@ -4306,14 +4311,14 @@
       "name": "Hippos",
       "drawable": "livingwithhippos",
       "color": "#D20076",
-      "glyph": "broadcast_H",
-      "mark": "HI",
+      "glyph": "hippos_loop",
       "components": [
         "com.github.livingwithhippos.unchained/com.github.livingwithhippos.unchained.base.MainActivity"
       ],
       "category": "APP",
       "color_source": "sampled from the official launcher icon (Google Play listing for com.github.livingwithhippos.unchained): dominant brand accent #D20076 (2026-09-26)",
-      "color_reviewed": "2026-09-26"
+      "color_reviewed": "2026-09-26",
+      "glyph_source": "brand-informed redraw of the official launcher icon (play listing for com.github.livingwithhippos.unchained); Core monoline geometry, not a trace (2026-09-26)"
     },
     {
       "name": "HISTORY",
@@ -4465,15 +4470,15 @@
       "name": "Hueessentials",
       "drawable": "hueessentials",
       "color": "#FF4D4D",
-      "glyph": "tool_H",
-      "mark": "HU",
+      "glyph": "hueessentials_lamp",
       "components": [
         "com.superthomaslab.hueessentials/com.superthomaslab.hueessentials.MainActivity"
       ],
       "category": "APP",
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_reviewed": null,
+      "glyph_source": "brand-informed redraw of the official launcher icon (play listing for com.superthomaslab.hueessentials); Core monoline geometry, not a trace (2026-09-26)"
     },
     {
       "name": "Hulu",
@@ -4625,14 +4630,14 @@
       "name": "InstantBits",
       "drawable": "instantbits",
       "color": "#F89616",
-      "glyph": "broadcast_I",
-      "mark": "IN",
+      "glyph": "instantbits_cast",
       "components": [
         "com.instantbits.cast.receiver/com.instantbits.android.receiver.MainActivity"
       ],
       "category": "APP",
       "color_source": "sampled from the official launcher icon (Google Play listing for com.instantbits.cast.receiver): dominant brand accent #F89616 (2026-09-26)",
-      "color_reviewed": "2026-09-26"
+      "color_reviewed": "2026-09-26",
+      "glyph_source": "brand-informed redraw of the official launcher icon (play listing for com.instantbits.cast.receiver); Core monoline geometry, not a trace (2026-09-26)"
     },
     {
       "name": "Ip Address",
@@ -4959,15 +4964,15 @@
       "name": "Juuno",
       "drawable": "juuno",
       "color": "#34EB7A",
-      "glyph": "broadcast_J",
-      "mark": "JU",
+      "glyph": "juuno_j",
       "components": [
         "co.juuno.player.android/co.juuno.player.android.MainActivity",
         "co.juuno.player.android/co.juuno.player.android.TvActivity"
       ],
       "category": "APP",
       "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_reviewed": null,
+      "glyph_source": "brand-informed redraw of the official launcher icon (play listing for co.juuno.player.android); Core monoline geometry, not a trace (2026-09-26)"
     },
     {
       "name": "K+",
@@ -5917,14 +5922,14 @@
       "name": "Media Hub",
       "drawable": "utility",
       "color": "#01C67B",
-      "glyph": "broadcast_M",
-      "mark": "MH",
+      "glyph": "mediahub_play",
       "components": [
         "com.oumi.utility.media.hub/com.mac.utility.media.hub.ui_tv.main.TVMainActivity"
       ],
       "category": "APP",
       "color_source": "sampled from the official launcher icon (Google Play listing for com.oumi.utility.media.hub): dominant brand accent #01C67B (2026-09-26)",
-      "color_reviewed": "2026-09-26"
+      "color_reviewed": "2026-09-26",
+      "glyph_source": "brand-informed redraw of the official launcher icon (play listing for com.oumi.utility.media.hub); Core monoline geometry, not a trace (2026-09-26)"
     },
     {
       "name": "Mediaset Infinity TV",
@@ -6226,14 +6231,14 @@
       "name": "Movideo",
       "drawable": "whitelabel",
       "color": "#8BBF3F",
-      "glyph": "broadcast_M",
-      "mark": "MO",
+      "glyph": "movideo_doc",
       "components": [
         "com.movideo.whitelabel/com.movideo.whitelabel.MainActivity"
       ],
       "category": "APP",
       "color_source": "sampled from the official launcher icon (Google Play listing for com.movideo.whitelabel): dominant brand accent #8BBF3F (2026-09-26)",
-      "color_reviewed": "2026-09-26"
+      "color_reviewed": "2026-09-26",
+      "glyph_source": "brand-informed redraw of the official launcher icon (play listing for com.movideo.whitelabel); Core monoline geometry, not a trace (2026-09-26)"
     },
     {
       "name": "Movie HD",
@@ -6752,14 +6757,14 @@
       "name": "NFB",
       "drawable": "nitobi",
       "color": "#B6F23A",
-      "glyph": "film_N",
-      "mark": "NF",
+      "glyph": "nfb_eye",
       "components": [
         "com.nitobi.nfb/com.nitobi.nfb.MainActivity"
       ],
       "category": "APP",
       "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_reviewed": null,
+      "glyph_source": "brand-informed redraw of the official launcher icon (play listing for com.nitobi.nfb); Core monoline geometry, not a trace (2026-09-26)"
     },
     {
       "name": "NFL",
@@ -7285,14 +7290,14 @@
       "name": "Ondamedia",
       "drawable": "ondamedia",
       "color": "#6BCCD6",
-      "glyph": "broadcast_O",
-      "mark": "ON",
+      "glyph": "ondamedia_figure",
       "components": [
         "com.mdstrm.ondamedia/com.mdstrm.ondamedia.MainActivity"
       ],
       "category": "APP",
       "color_source": "sampled from the official launcher icon (Google Play listing for com.mdstrm.ondamedia): dominant brand accent #6BCCD6 (2026-09-26)",
-      "color_reviewed": "2026-09-26"
+      "color_reviewed": "2026-09-26",
+      "glyph_source": "brand-informed redraw of the official launcher icon (play listing for com.mdstrm.ondamedia); Core monoline geometry, not a trace (2026-09-26)"
     },
     {
       "name": "One Play",
@@ -10149,15 +10154,15 @@
       "name": "Synologyphotos",
       "drawable": "synologyphotos",
       "color": "#FF6F61",
-      "glyph": "photos_S",
-      "mark": "SY",
+      "glyph": "synology_rosette",
       "components": [
         "com.synology.projectkailash/com.synology.projectkailash.ui.login.LoginActivity"
       ],
       "category": "APP",
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "sampled from the official launcher icon (Google Play listing for com.synology.projectkailash): dominant brand accent #FF6F61 (2026-09-26)",
-      "color_reviewed": "2026-09-26"
+      "color_reviewed": "2026-09-26",
+      "glyph_source": "brand-informed redraw of the official launcher icon (play listing for com.synology.projectkailash); Core monoline geometry, not a trace (2026-09-26)"
     },
     {
       "name": "Tabii",
@@ -10858,15 +10863,15 @@
       "name": "Torrserve",
       "drawable": "torrserve",
       "color": "#FB7C00",
-      "glyph": "debrid_T",
-      "mark": "TO",
+      "glyph": "torrserve_bolt",
       "components": [
         "ru.yourok.torrserve/ru.yourok.torrserve.ui.activities.main.MainActivity"
       ],
       "category": "APP",
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "sampled from the official launcher icon (F-Droid listing for ru.yourok.torrserve): dominant brand accent #FB7C00 (2026-09-26)",
-      "color_reviewed": "2026-09-26"
+      "color_reviewed": "2026-09-26",
+      "glyph_source": "brand-informed redraw of the official launcher icon (f-droid listing for ru.yourok.torrserve); Core monoline geometry, not a trace (2026-09-26)"
     },
     {
       "name": "Total Commander",
@@ -11281,15 +11286,15 @@
       "name": "Tvoverlay",
       "drawable": "tvoverlay",
       "color": "#00C380",
-      "glyph": "tool_T",
-      "mark": "TV",
+      "glyph": "tvoverlay_cards",
       "components": [
         "com.tabdeveloper.tvoverlay/com.tabdeveloper.tvoverlay.SetupActivity"
       ],
       "category": "APP",
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "sampled from the official launcher icon (Google Play listing for com.tabdeveloper.tvoverlay): dominant brand accent #00C380 (2026-09-26)",
-      "color_reviewed": "2026-09-26"
+      "color_reviewed": "2026-09-26",
+      "glyph_source": "brand-informed redraw of the official launcher icon (play listing for com.tabdeveloper.tvoverlay); Core monoline geometry, not a trace (2026-09-26)"
     },
     {
       "name": "Tvp Vod",
@@ -11593,15 +11598,15 @@
       "name": "Veezie",
       "drawable": "veezie",
       "color": "#FF4D4D",
-      "glyph": "broadcast_V",
-      "mark": "VE",
+      "glyph": "veezie_play",
       "components": [
         "st.veezie/st.veezie.MainActivity"
       ],
       "category": "APP",
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_reviewed": null,
+      "glyph_source": "brand-informed redraw of the official launcher icon (play listing for st.veezie); Core monoline geometry, not a trace (2026-09-26)"
     },
     {
       "name": "Vewd Internet Browser",
@@ -12008,14 +12013,14 @@
       "name": "Wako",
       "drawable": "wako",
       "color": "#3082C4",
-      "glyph": "broadcast_W",
-      "mark": "WA",
+      "glyph": "wako_tv",
       "components": [
         "app.wako/app.wako.MainActivity"
       ],
       "category": "APP",
       "color_source": "sampled from the official launcher icon (Google Play listing for app.wako): dominant brand accent #3082C4 (2026-09-26)",
-      "color_reviewed": "2026-09-26"
+      "color_reviewed": "2026-09-26",
+      "glyph_source": "brand-informed redraw of the official launcher icon (play listing for app.wako); Core monoline geometry, not a trace (2026-09-26)"
     },
     {
       "name": "WATCHA",
