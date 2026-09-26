@@ -96,5 +96,5 @@
     "count": 19,
     "digest": "4ea008cd4f941eec0fec58d66143a8e63b234cda61f7287d74af88a1c4d3123a"
   },
-  "renderer": "python 3.11.2, freetype 2.13.2, layout basic, PIL 10.4.0, qrcode installed, fontTools 4.59.0, resvg_py 0.4.0"
+  "renderer": "python 3.11.15, freetype 2.13.2, layout raqm, PIL 10.4.0, qrcode installed, fontTools 4.59.0, resvg_py 0.4.0"
 }
