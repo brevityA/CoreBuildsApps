@@ -714,8 +714,8 @@ class DuotoneTests(unittest.TestCase):
                 and node.get("stroke") not in (None, "none")]
 
     def test_the_first_batch_is_declared_and_sourced(self):
-        self.assertEqual({i["name"] for i in self.DUO},
-                         {"YouTube", "VLC", "Emby", "Jellyfin"})
+        self.assertLessEqual({"YouTube", "VLC", "Emby", "Jellyfin"},
+                             {i["name"] for i in self.DUO})
         for icon in self.DUO:
             self.assertEqual(secondary_errors(icon), [], icon["name"])
             self.assertTrue(icon["secondary"]["source"].strip(), icon["name"])
