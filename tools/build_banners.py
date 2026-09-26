@@ -91,7 +91,6 @@ def glyph_ink_x(glyph):
         return 256 - half - HALF_STROKE, 256 + half + HALF_STROKE
     return x0 - HALF_STROKE, x1 + HALF_STROKE
 INK = "#E6EDF3"           # Brand Guide §03
-ACCENT = "#00d4ff"        # --th-accent, from the live configurator
 CARD = "#151923"          # the grid card, also the fallback back fill
 RAIL_W = 16               # brand-true rail, left edge (was a fixed
                           # cyan->violet stripe until 1.9.2: launchers that
@@ -271,7 +270,13 @@ def render(name, glyph, accent, category=None, *, monochrome=False,
     spans = ""
     if has_kick:
         ky = baselines[0] - size * 0.92 - 10
-        kick_paths, _ = wordmark_spans([category], KICKER, tx, [ky], ACCENT)
+        # The category kicker (VOD, STREAM, LIVE...) wears the icon's own
+        # colour. It used to be one fixed cyan on every card, so a
+        # colour-sampling launcher (Monet's navigation glow) could read cyan
+        # off a red, violet or green banner. The already-normalised primary
+        # accent keeps glyph, rail and kicker one colour story; a duotone's
+        # second colour stays inside the mark. The app name stays light ink.
+        kick_paths, _ = wordmark_spans([category], KICKER, tx, [ky], accent)
         spans += kick_paths + "\n  "
 
     name_paths, _ = wordmark_spans(lines, size, tx, baselines, INK)

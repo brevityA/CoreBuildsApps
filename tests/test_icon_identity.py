@@ -414,6 +414,27 @@ class CoreStyleTests(unittest.TestCase):
             self.assertIn('id="cbRail"', actual)
             self.assertIn('fill="#E6EDF3"', actual)  # common Outfit label, not vendor type
 
+    def test_banner_category_kicker_wears_the_icon_colour(self):
+        """VOD / STREAM / LIVE follow the icon, never one global cyan.
+
+        Colour-sampling launchers read the banner as a whole; a fixed cyan
+        kicker made a red YouTube card report cyan. The kicker takes the
+        normalised primary accent (a duotone's second colour stays in the
+        mark), and the app name stays light ink.
+        """
+        banner = render("Monet", "droplet", "#B388FF", "LAUNCHER")
+        self.assertIn('fill="#B388FF"', banner)
+        self.assertNotIn('fill="#00d4ff"', banner.lower().replace("#00D4FF", "#00d4ff"))
+        for icon in ICONS:
+            if not icon.get("category") or icon.get("banner_style") == "glyph":
+                continue
+            mono = icon.get("color_note") == "monochrome"
+            accent = display_accent(icon["color"], monochrome=mono)
+            text = (ROOT / "assets/banners" / f"{icon['drawable']}.svg").read_text()
+            with self.subTest(icon=icon["name"]):
+                self.assertIn(f'fill="{accent}" stroke="none"', text)
+                self.assertNotIn('fill="#00d4ff"', text)
+
     def test_revised_rasters_are_open_ink_and_clear_the_shared_safe_area(self):
         for icon in self.revised():
             with self.subTest(icon=icon["name"]):

@@ -20,6 +20,14 @@ All notable changes to the Core Builds Icon Pack. Format follows
   and every other icon renders byte-for-byte as before. The Glyphs
   companion picks the new squares up from the same art.
 
+### Changed
+
+- **Banner category labels wear the icon's colour.** VOD, STREAM, LIVE and
+  every other category kicker used to be one fixed cyan on all 961 banners,
+  so Monet's colour sampler could read cyan off a red or violet card. The
+  label now uses the same colour as the icon and its rail; the app name
+  stays light ink. On a duotone icon the label takes the primary colour.
+
 ## [1.9.5] — 2026-09-25
 
 ### Added
