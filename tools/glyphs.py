@@ -108,6 +108,23 @@ def _hexpts(cx, cy, r):
     return " ".join(pts)
 
 
+def _gearpts(cx, cy, outer, inner, teeth=8):
+    """Return a restrained face-on gear keyline for utility shells.
+
+    The alternating radii make the tool cue survive at 48px without turning
+    the family shell into a busy illustration. A tooth is centred on each
+    cardinal/diagonal axis, so the adaptive mark remains optically centred.
+    """
+    import math
+    pts = []
+    step = math.pi / teeth
+    for i in range(teeth * 2):
+        radius = outer if i % 2 == 0 else inner
+        angle = i * step - math.pi / 2
+        pts.append(f"{cx + radius * math.cos(angle):.1f},{cy + radius * math.sin(angle):.1f}")
+    return " ".join(pts)
+
+
 def play_hex(c):
     """Stremio: rounded square with the play as an outline (monoline)."""
     return (f'<rect x="70" y="70" width="372" height="372" rx="96" {_s(c, 34)}/>'
@@ -543,7 +560,7 @@ def monoline(body, weight=MONOLINE):
 
 
 def render_svg(glyph_name, color, glow=False, *, monochrome=False,
-               gradient=None, mark=None, style=None):
+               gradient=None, mark=None, style=None, secondary=None):
     """
     Render the transparent Classic glyph in the common monoline treatment.
 
@@ -556,9 +573,15 @@ def render_svg(glyph_name, color, glow=False, *, monochrome=False,
     it replaces the lone letter (family_body adapts the type to the shell);
     `style` is its brand-informed treatment. On any other glyph both are
     ignored.
+
+    `secondary` is the catalog's duotone declaration: the named parts take
+    the brand's second colour (see apply_secondary). Monochrome icons stay
+    one paint.
     """
     color = display_accent(color, monochrome=monochrome)
     body = monoline(family_body(glyph_name, color, mark, style))
+    if secondary and not monochrome:
+        body = apply_secondary(body, color, secondary)
     if glow:
         body = lit(body, color)
     if gradient and not monochrome:
@@ -598,6 +621,98 @@ def classic_fit(glyph_name, body):
     half = GRID / 2
     return (f'<g transform="translate({half:g} {half:g}) scale({scale:g}) '
             f'translate({-cx:g} {-cy:g})">{body}</g>')
+
+
+_PRIMITIVE_RE = re.compile(
+    r"<(?:path|circle|rect|line|polyline|polygon|ellipse)\b[^>]*>")
+
+
+def secondary_paint(secondary):
+    """The drawn colour of a duotone declaration, through the same dark-card
+    ramp as every accent so a dark second colour cannot vanish."""
+    return display_accent(secondary["color"])
+
+
+def apply_secondary(body, color, secondary):
+    """Duotone: repaint the declared parts with the brand's second colour.
+
+    `secondary` is the catalog entry {"color", "parts", "source"}; `parts`
+    are 0-based indexes into the glyph's drawn primitives, in drawing order
+    (YouTube's play is part 1 of rect + play). Parts are named, not inferred
+    from stroke weight, because weight does not separate them: YouTube's
+    frame and play are both 32. Only strokes and fills of the accent are
+    repainted, so a part's `fill="none"` survives.
+    """
+    parts = set(secondary["parts"])
+    paint = secondary_paint(secondary)
+    index = iter(range(10_000))
+
+    def repaint(match):
+        tag = match.group(0)
+        if next(index) not in parts:
+            return tag
+        return (tag.replace(f'stroke="{color}"', f'stroke="{paint}"')
+                .replace(f'fill="{color}"', f'fill="{paint}"'))
+    return _PRIMITIVE_RE.sub(repaint, body)
+
+
+def primitive_count(body):
+    """How many drawn primitives a glyph body has (bounds `parts`)."""
+    return len(_PRIMITIVE_RE.findall(body))
+
+
+def secondary_errors(icon):
+    """Catalog contract for a duotone declaration; [] when absent or sound.
+
+    A second colour is brand identity, so it carries its provenance like the
+    primary does: no `source`, no duotone. It never combines with a gradient
+    (one extra paint story per mark) or a monochrome entry, and its parts
+    must name real primitives of every glyph the icon renders.
+    """
+    sec = icon.get("secondary")
+    if sec is None:
+        return []
+    if not isinstance(sec, dict):
+        return ["secondary must be {color, parts, source}"]
+    errors = []
+    if set(sec) - {"color", "parts", "source"}:
+        errors.append(f"secondary has unknown keys {sorted(set(sec) - {'color', 'parts', 'source'})}")
+    if not re.fullmatch(r"#[0-9A-Fa-f]{6}", str(sec.get("color", ""))):
+        return errors + ["secondary color must be #RRGGBB"]
+    if not str(sec.get("source", "")).strip():
+        errors.append("secondary carries no source - where was the second brand colour seen?")
+    if icon.get("gradient"):
+        errors.append("secondary and gradient cannot both be declared")
+    if icon.get("color_note") == "monochrome":
+        errors.append("a monochrome icon cannot declare a secondary colour")
+    parts = sec.get("parts")
+    if (not isinstance(parts, list) or not parts
+            or not all(isinstance(k, int) and not isinstance(k, bool) for k in parts)
+            or len(set(parts)) != len(parts)):
+        return errors + ["secondary parts must be a non-empty list of distinct part indexes"]
+    accent = display_accent(icon.get("color", "#000000"))
+    if secondary_paint(sec).upper() == accent.upper():
+        errors.append("secondary renders the same as the accent - nothing is two-tone")
+    for glyph in {icon.get("glyph"), icon.get("banner_glyph") or icon.get("glyph")}:
+        if glyph not in GLYPHS:
+            continue
+        count = primitive_count(monoline(family_body(glyph, accent, icon.get("mark"),
+                                                     icon.get("mark_style"))))
+        if min(parts) < 0 or max(parts) >= count:
+            errors.append(f"secondary parts {parts} out of range for '{glyph}' "
+                          f"({count} parts)")
+        elif len(parts) >= count:
+            errors.append(f"secondary repaints every part of '{glyph}' - "
+                          "that is a recolour, not a duotone")
+    return errors
+
+
+def secondary_color(icon):
+    """The drawn second paint an icon declares, or None."""
+    sec = icon.get("secondary")
+    if not sec or secondary_errors(icon) or icon.get("color_note") == "monochrome":
+        return None
+    return secondary_paint(sec)
 
 
 def gradient_defs(stops, y0=80, y1=432, gid="cbGrad"):
@@ -4116,13 +4231,25 @@ def shell_app(c):
 
 
 def shell_tool(c):
-    """A nut seen face on: utilities, remotes, system tweaks."""
-    return f'<polygon points="{_hexpts(256, 256, 196)}" {_s(c, 30)}/>'
+    """A face-on gear: utilities, remotes, system tweaks.
+
+    The old hexagon read as a shield, which weakened the functional cue. A
+    low-frequency gear keeps the shared adaptive-mark centre while making the
+    family legible before the monogram is read.
+    """
+    return f'<polygon points="{_gearpts(256, 256, 196, 170)}" {_s(c, 30)}/>'
 
 
 def shell_sport(c):
-    """A ball."""
-    return f'<circle cx="256" cy="256" r="188" {_s(c, 30)}/>'
+    """A ball with one open seam: sport and fitness services.
+
+    A plain ring was too category-neutral at TV distance. The seam is kept
+    outside the adaptive mark and uses the same keyline/stroke hierarchy as
+    the family outline, so it remains a cue rather than decoration.
+    """
+    return (f'<circle cx="256" cy="256" r="188" {_s(c, 30)}/>'
+            f'<path d="M 112 174 C 128 208 138 232 146 254" {_s(c, 22)}/>'
+            f'<path d="M 400 174 C 384 208 374 232 366 254" {_s(c, 22)}/>')
 
 
 def shell_music(c):
@@ -4196,9 +4323,12 @@ def shell_debrid(c):
 
 
 def shell_browser(c):
-    """A window with a title bar."""
+    """A browser window with a title bar and three restrained controls."""
     return (f'<rect x="64" y="104" width="384" height="304" rx="48" {_s(c, 30)}/>'
-            f'<path d="M 64 180 L 448 180" {_s(c, 22)}/>')
+            f'<path d="M 64 180 L 448 180" {_s(c, 22)}/>'
+            f'<circle cx="112" cy="142" r="9" {_f(c)}/>'
+            f'<circle cx="144" cy="142" r="9" {_f(c)}/>'
+            f'<circle cx="176" cy="142" r="9" {_f(c)}/>')
 
 
 def shell_anime(c):
