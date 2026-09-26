@@ -264,7 +264,7 @@ Source accents are retained in the catalog. **On dark** is the shared square/ban
 | Fladder | `fladder` | `#471D00` | `#A34200` | `nl.jknaapen.fladder/nl.jknaapen.fladder.MainActivity` |
 | FLauncher | `launcher` | `#FFB020` | `#FFB020` | `com.kfaraj.launcher/com.kfaraj.launcher.LauncherActivity` |
 | Flex TV | `flextv` | `#FB3867` | `#FB3867` | `com.aytech.flextv/com.android.emptytest.MainActivity`<br>`com.aytech.flextv/com.flex.leanback.ui.splash.TVSplashActivity` |
-| Flickfolio | `flickfolio` | `#FF5CA8` | `#FF5CA8` | `com.snapwood.flickfolio/com.snapwood.flickfolio.SelectAlbumActivity` |
+| Flickfolio | `flickfolio` | `#2A63DD` | `#2A63DD` | `com.snapwood.flickfolio/com.snapwood.flickfolio.SelectAlbumActivity` |
 | Flicky | `flicky` | `#6D86A5` | `#6D86A5` | `app.flicky/app.flicky.MainActivity` |
 | Flix TV | `flix_tv` | `#7C74FF` | `#7C74FF` | `com.tvflix.ippflixtvbox/com.tvflix.ippflixtvbox.view.activity.SplashActivity` |
 | Flix Vision | `flix_vision` | `#E5533D` | `#E5533D` | `flix.com.vision/.activities.SplashScreenActivity` |
@@ -475,7 +475,7 @@ Source accents are retained in the catalog. **On dark** is the shared square/ban
 | Molotov TV | `molotov_tv` | `#FFE14D` | `#FFE14D` | `tv.molotov.app/tv.molotov.android.splash.SplashActivity` |
 | Monet | `monet` | `#B388FF` | `#B388FF` | `com.klevico.monet/com.klevico.monet.HomeActivity`<br>`com.klevico.monet/.HomeActivity` |
 | Monplayer | `monplayer` | `#4FACFE` | `#4FACFE` | `org.monplayer.mpapp/org.monplayer.mpapp.MainActivity` |
-| Moonfin | `moonfin` | `#E6EDF3` | `#E6EDF3` | `org.moonfin.androidtv/org.jellyfin.androidtv.ui.startup.StartupActivity` |
+| Moonfin | `moonfin` | `#B453E6` | `#B453E6` | `org.moonfin.androidtv/org.jellyfin.androidtv.ui.startup.StartupActivity` |
 | Moonlight | `moonlight` | `#76B900` | `#76B900` | `com.limelight/.PcView` |
 | MotoGP | `officialmotogp` | `#34EB7A` | `#34EB7A` | `com.dorna.officialmotogp/com.dorna.motogpapp.ui.view.tv.splash.SplashTVActivity` |
 | Movideo | `whitelabel` | `#8BBF3F` | `#8BBF3F` | `com.movideo.whitelabel/com.movideo.whitelabel.MainActivity` |
@@ -592,7 +592,7 @@ Source accents are retained in the catalog. **On dark** is the shared square/ban
 | Perfect Player | `niklabs` | `#F04DE0` | `#F04DE0` | `com.niklabs.pp/com.niklabs.perfectplayer.MainActivity` |
 | Perfect TV | `perfecttv` | `#B6F23A` | `#B6F23A` | `com.perfecttv.apks/com.gbscell.aipitv.SplashActivity` |
 | Philo | `philo` | `#3D8BFF` | `#3D8BFF` | `com.philo.philo.google/com.philo.philo.app.activity.MainActivity` |
-| Photo Collage | `photocollage` | `#FF4D4D` | `#FF4D4D` | `com.oe.photocollage/com.oe.photocollage.SplashActivity` |
+| Photo Collage | `photocollage` | `#993AE7` | `#993AE7` | `com.oe.photocollage/com.oe.photocollage.SplashActivity` |
 | Photo Screensaver | `photoscreensaver` | `#1FD19A` | `#1FD19A` | `com.furnaghan.android.photoscreensaver/com.furnaghan.android.photoscreensaver.gallery.GalleryBrowseActivity` |
 | PigeonCast | `pigeoncast` | `#0092B0` | `#0092B0` | `com.pigeoncast.screen.mirroring.android.tv/com.mirror_universal.receiver.activity.MainActivity` |
 | PikPak | `pikcloud` | `#4664F3` | `#4664F3` | `com.pikcloud.pikpak/com.pikcloud.app.SplashActivity`<br>`com.pikcloud.pikpak/com.pikcloud.app.TVLaunchActivity` |

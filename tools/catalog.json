@@ -3357,16 +3357,21 @@
     {
       "name": "Flickfolio",
       "drawable": "flickfolio",
-      "color": "#FF5CA8",
+      "color": "#2A63DD",
       "glyph": "flickfolio_grid",
       "components": [
         "com.snapwood.flickfolio/com.snapwood.flickfolio.SelectAlbumActivity"
       ],
       "category": "APP",
       "mapping_source": "Projectivy Icon Pack 1.1.9",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null,
-      "glyph_source": "brand-informed redraw of the official launcher icon (play listing for com.snapwood.flickfolio); Core monoline geometry, not a trace (2026-09-26)"
+      "color_source": "sampled from the official launcher icon (Google Play listing for com.snapwood.flickfolio): gradient start #2A63DD (2026-09-26)",
+      "color_reviewed": "2026-09-26",
+      "glyph_source": "brand-informed redraw of the official launcher icon (play listing for com.snapwood.flickfolio); Core monoline geometry, not a trace (2026-09-26)",
+      "gradient": [
+        "#E278C5",
+        "#2A63DD"
+      ],
+      "gradient_source": "sampled from the official launcher icon (Google Play listing for com.snapwood.flickfolio): the icon's own #E278C5 to #2A63DD gradient, its two ends (2026-09-26)"
     },
     {
       "name": "Flicky",
@@ -5125,7 +5130,12 @@
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "sampled from the official launcher icon (Google Play listing for nl.sbs.kijk): dominant brand accent #7411B7 (2026-09-26)",
       "color_reviewed": "2026-09-26",
-      "glyph_source": "brand-informed redraw of the official launcher icon (play listing for nl.sbs.kijk); Core monoline geometry, not a trace (2026-09-26)"
+      "glyph_source": "brand-informed redraw of the official launcher icon (play listing for nl.sbs.kijk); Core monoline geometry, not a trace (2026-09-26)",
+      "gradient": [
+        "#A713DA",
+        "#28549E"
+      ],
+      "gradient_source": "sampled from the official launcher icon (Google Play listing for nl.sbs.kijk): the icon's own #A713DA to #28549E gradient, its two ends (2026-09-26)"
     },
     {
       "name": "Kika",
@@ -5236,7 +5246,12 @@
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "sampled from the official launcher icon (F-Droid listing for me.knighthat.kreate): dominant brand accent #9829FD (2026-09-26)",
       "color_reviewed": "2026-09-26",
-      "glyph_source": "brand-informed redraw of the official launcher icon (f-droid listing for me.knighthat.kreate); Core monoline geometry, not a trace (2026-09-26)"
+      "glyph_source": "brand-informed redraw of the official launcher icon (f-droid listing for me.knighthat.kreate); Core monoline geometry, not a trace (2026-09-26)",
+      "gradient": [
+        "#B122FE",
+        "#3C53F8"
+      ],
+      "gradient_source": "sampled from the official launcher icon (F-Droid listing for me.knighthat.kreate): the icon's own #B122FE to #3C53F8 gradient, its two ends (2026-09-26)"
     },
     {
       "name": "Kuku TV",
@@ -6154,16 +6169,21 @@
     {
       "name": "Moonfin",
       "drawable": "moonfin",
-      "color": "#E6EDF3",
+      "color": "#B453E6",
       "glyph": "moonfin_wave",
       "components": [
         "org.moonfin.androidtv/org.jellyfin.androidtv.ui.startup.StartupActivity"
       ],
       "category": "APP",
       "mapping_source": "Projectivy Icon Pack 1.1.9",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null,
-      "glyph_source": "brand-informed redraw of the official launcher icon (play listing for org.moonfin.androidtv); Core monoline geometry, not a trace (2026-09-26)"
+      "color_source": "sampled from the official launcher icon (Google Play listing for org.moonfin.androidtv): gradient start #B453E6 (2026-09-26)",
+      "color_reviewed": "2026-09-26",
+      "glyph_source": "brand-informed redraw of the official launcher icon (play listing for org.moonfin.androidtv); Core monoline geometry, not a trace (2026-09-26)",
+      "gradient": [
+        "#B453E6",
+        "#0C98D7"
+      ],
+      "gradient_source": "sampled from the official launcher icon (Google Play listing for org.moonfin.androidtv): the icon's own #B453E6 to #0C98D7 gradient, its two ends (2026-09-26)"
     },
     {
       "name": "Moonlight",
@@ -7726,15 +7746,20 @@
     {
       "name": "Photo Collage",
       "drawable": "photocollage",
-      "color": "#FF4D4D",
+      "color": "#993AE7",
       "glyph": "photocollage_ring",
       "components": [
         "com.oe.photocollage/com.oe.photocollage.SplashActivity"
       ],
       "category": "APP",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null,
-      "glyph_source": "brand-informed redraw of the official launcher icon (play listing for com.oe.photocollage); Core monoline geometry, not a trace (2026-09-26)"
+      "color_source": "sampled from the official launcher icon (Google Play listing for com.oe.photocollage): gradient start #993AE7 (2026-09-26)",
+      "color_reviewed": "2026-09-26",
+      "glyph_source": "brand-informed redraw of the official launcher icon (play listing for com.oe.photocollage); Core monoline geometry, not a trace (2026-09-26)",
+      "gradient": [
+        "#993AE7",
+        "#F33C25"
+      ],
+      "gradient_source": "sampled from the official launcher icon (Google Play listing for com.oe.photocollage): the icon's own #993AE7 to #F33C25 gradient, its two ends (2026-09-26)"
     },
     {
       "name": "Photo Screensaver",
@@ -11518,7 +11543,12 @@
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "sampled from the official launcher icon (Google Play listing for com.yablio.realdebridtv): dominant brand accent #00C26C (2026-09-26)",
       "color_reviewed": "2026-09-26",
-      "glyph_source": "brand-informed redraw of the official launcher icon (play listing for com.yablio.realdebridtv); Core monoline geometry, not a trace (2026-09-26)"
+      "glyph_source": "brand-informed redraw of the official launcher icon (play listing for com.yablio.realdebridtv); Core monoline geometry, not a trace (2026-09-26)",
+      "gradient": [
+        "#006FAF",
+        "#00EA4A"
+      ],
+      "gradient_source": "sampled from the official launcher icon (Google Play listing for com.yablio.realdebridtv): the icon's own #006FAF to #00EA4A gradient, its two ends (2026-09-26)"
     },
     {
       "name": "USA Network",

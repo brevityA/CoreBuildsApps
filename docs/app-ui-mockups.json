@@ -73,13 +73,13 @@
     "app/src/main/res/values/suite_hub.xml": "6db1311df6a29a1ced5fdbc175f8f97111c0f035786ea3d1f4ed396018580862",
     "app/src/main/res/values/themes.xml": "ecac526951fe40b6c5c01df0ec36730d0e197fd9511862cf587a2143773b46be",
     "tools/build_app_ui_mockups.py": "35207f64a0177534112d4de41d5ae03be128a185f5d24138fc9ef845a56f70f3",
-    "tools/catalog.json": "5224e75c132cf680d6c65018b4cc9a9375cd819f4441836556a87f7028a647f2",
+    "tools/catalog.json": "9fbcc8f74d81935cd96a4a4520786ac429888efdc4b6ab6524baf298739e4764",
     "tools/fonts/DejaVuSansMono-Bold.ttf": "2964f6dac8e6e9d71613928340f17bf868e9ea51692cca333c79e74962f02233",
     "tools/fonts/DejaVuSansMono.ttf": "0f5db4f1749979d961019838b160bec74abdf7f9eca69553fe1aa856bbff49a4",
     "tools/fonts/Outfit-Bold.ttf": "04f7c9705153927058475d6c5e9f75b0a1036ec5f6f63ffb69df046191ea8933",
     "tools/fonts/Outfit-ExtraBold.ttf": "056e8cd5840cea4cfc355f672292f7de00d95f5a42bf9b7cd96d511ca8e2883e"
   },
-  "inputs_digest": "81dd6de3cbef4919dfd96c8b437be69c9537af81b0431dc18d7badda5ffedff2",
+  "inputs_digest": "0e1f66f3e5386c6e0cfe8f055a842f96d806a21089ad2820df651c93b9c6f901",
   "metrics": {
     "mono-bold@24": 448.0,
     "mono-bold@32": 608.0,
