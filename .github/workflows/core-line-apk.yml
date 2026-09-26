@@ -44,6 +44,9 @@ jobs:
       - name: Run parser / SSRF tests
         run: cd ticker && npm test
 
+      - name: Run the venue bridge tests
+        run: cd ticker/stadium-sync && npm test
+
   apk:
     name: Assemble APK
     runs-on: ubuntu-latest
