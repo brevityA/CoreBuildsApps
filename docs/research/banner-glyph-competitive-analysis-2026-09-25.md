@@ -282,6 +282,19 @@ Competitor user reports repeatedly mention manual overrides, stale caches, chang
 
 The official Projectivy plugin page currently says that Projectivy is the only pack supporting TV cards (16:9) while also listing Core Builds as a 900+ pack. That statement is stale now that this checkout ships generated 16:9 banners. Updating the Projectivy listing and the Core README/release screenshots is a high-impact, zero-art-risk task. [Projectivy plugins page](https://projectivylauncher.com/plugins.html), accessed 25 September 2026.
 
+### 7.4 Verification pass, 26 September 2026
+
+Re-checked against the live sources:
+
+- **Google's banner guide** (updated 27 June 2024) still says: 16:9 banner, 320 × 180 xhdpi legacy size, "Text must be included in the image", full logo recommended (icon + text), and "Avoid using text or graphic elements to indicate any additional information". The last point is the strongest platform argument for testing the category kicker as optional. Android TV still doesn't support themed icons.
+- **The Projectivy plugins page** still says the Projectivy Icon Pack "is currently the only pack supporting TV cards (16/9 ratio)", while listing Core Builds at "over 900 icons". The listing is stale on both counts: Core ships 16:9 banners and 961 icons. Asking the Projectivy developer to update it is the cheapest discovery win available.
+- **The same page lists Overflight**, the official wallpaper plugin, with a user-set JSON feed URL. `Motion/live-feed.json` is already Overflight-compatible, so Projectivy users can play Core's loops through Overflight today, with no Core Motion release needed. Document this route.
+- **Projectivy 4.70's release notes** add "Video wallpapers don't change the device's framerate to the one of the video anymore (should fix choppy UI with <60fps videos on devices with QMS enabled)". This supports shipping the live loops at 60 fps.
+- **The Projectivy Icon Pack README** now says its author has "had to take a short break from taking requests". It reads 388 stars at this pass. Core's issue-form request flow is a live differentiator while that pause lasts.
+- **The Blackshield figures** (1,189 drawables, 48,120 components, 13,767 apps, 20 launchers) are exactly as its README states. The repository was created 11 September 2026 and has no stars. Treat it as an unproven newcomer, not a benchmark.
+- **The Monet Play listing** (4.7 stars, 2.48K reviews) still advertises icon-pack support, 7 shapes and 4 tile styles. It adds 26 ambient scenes, including deep space, and user photo/video wallpapers. That is direct competition for Core's wallpaper series, and a reason to route Monet users through the Aerial Views feed.
+- **BareLauncher PR #33** (standard Nova/ADW/Apex/GO pack support, TV activity matched first) is open as described.
+
 ## 8. Objective validation plan
 
 No visual claim should be accepted because it looks good in an isolated preview. Use a small, repeatable lab.

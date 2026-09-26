@@ -135,7 +135,7 @@ The PR is open, so this is not a shipped-platform requirement. It is nevertheles
 
 ### 3.3 `tv-assets` and Tiny Launcher show a provisioning market
 
-[cgio/tv-assets](https://github.com/cgio/tv-assets) contains a normalized landscape-card library with **869 extracted Projectivy 1.1.9 PNGs at 320 × 180** plus `icons.json` documenting package names, activity components, drawable IDs, and filenames. It is not a competing aesthetic, but it demonstrates that users and integrators want a stable CDN/file-level asset library in addition to an APK.
+[cgio/tv-assets](https://github.com/cgio/tv-assets) contains a normalized landscape-card library with **1,002 extracted Projectivy 1.1.9 PNGs at 320 × 180** (re-checked 26 September 2026; an earlier pass read 869) plus a 1,092-entry `icons.json` documenting package names, activity components, drawable IDs, and filenames. It is not a competing aesthetic, but it demonstrates that users and integrators want a stable CDN/file-level asset library in addition to an APK.
 
 [Tiny Launcher](https://github.com/wyattberry-org/Tiny-launcher-) advertises direct Projectivy banner import, custom banner replacement, wallpaper-derived tile accents, card-size controls, corner-radius controls, and text-position controls. It is an important warning: the same Core banner will be viewed in launchers that move the label, crop the image, or apply a different background.
 

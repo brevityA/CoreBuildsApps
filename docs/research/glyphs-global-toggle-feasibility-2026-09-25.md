@@ -159,7 +159,7 @@ For an inbound launcher, the app can download and re-apply. For Monet, it must s
 
 ### 7.3 Android installation is necessarily a user-visible step
 
-The current release uses `REQUEST_INSTALL_PACKAGES` and the system package installer. Android documents that an app must check `canRequestPackageInstalls()` and that external-source installs may require user action. The first Glyphs activation cannot be made a completely silent toggle on ordinary sideloaded Android TV devices.
+The current release uses `REQUEST_INSTALL_PACKAGES` and the system package installer. Android recommends that an app check `canRequestPackageInstalls()` and notes that external-source installs may require user action. The first Glyphs activation cannot be made a completely silent toggle on ordinary sideloaded Android TV devices.
 
 The product should say “Install Glyphs, then apply” during the first activation rather than making the switch appear to have changed the launcher before installation completes.
 
