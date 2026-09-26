@@ -20,10 +20,11 @@ All notable changes to the Core Builds Icon Pack. Format follows
   TVING's T-V, CANAL+'s cross, Bstation's TV face, PikPak's robot, Tabii's
   star, Hue Shortcuts' bulb, MyRadar's pin, Immich's flower, PPSSPP's pad,
   Netzkino's countdown, Feeln's crown, Kijk's eye and 39 more replace their
-  letter tiles. Six whose real icons are gradients - Kijk, Kreate, Moonfin,
-  Photo Collage, Unreal Debrid and Flickfolio - wear the two ends of that
-  gradient, sampled from the icon. Each is the defining shape redrawn in Core line geometry with the
-  reference icon recorded in the catalogue; nothing is traced.
+  letter tiles. Each is the defining shape redrawn in Core line geometry
+  with the reference icon recorded in the catalogue; nothing is traced. Six
+  whose real icons are gradients - Kijk, Kreate, Moonfin, Photo Collage,
+  Unreal Debrid and Flickfolio - wear the two ends of that gradient,
+  sampled from the icon.
 - **239 icons wear their app's real colour.** Letter-tile icons now use the
   dominant colour of their official launcher icon when reliable Play/F-Droid
   evidence exists. Multi-colour, black-and-white, and unlisted apps retain a
