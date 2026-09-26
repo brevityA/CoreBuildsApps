@@ -27,7 +27,7 @@ class GenericGlyphTests(unittest.TestCase):
         expected = {
             "Ace Stream": "broadcast",
             "AllSaves Social": "tool",
-            "Amnis": "broadcast",
+            "Acontra Plus": "broadcast",
             "F Droid": "store",
             "Fluffy": "files",
             "Gain": "film",
