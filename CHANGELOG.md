@@ -26,7 +26,7 @@ All notable changes to the Core Builds Icon Pack. Format follows
   whose real icons are gradients - Kijk, Kreate, Moonfin, Photo Collage,
   Unreal Debrid, Flickfolio and Avoid - wear the two ends of that gradient,
   sampled from the icon.
-- **244 icons wear their app's real colour.** Letter-tile icons now use the
+- **314 icons wear their app's real colour.** Letter-tile icons now use the
   dominant colour of their official launcher icon when reliable Play/F-Droid
   evidence exists. Multi-colour, black-and-white, and unlisted apps retain a
   palette colour; the palette assignment is sticky so one sourced colour does
@@ -46,7 +46,7 @@ All notable changes to the Core Builds Icon Pack. Format follows
 
 ### Changed
 
-- **43 letter tiles now match their app's logo.** A letter tile used to
+- **53 letter tiles now match their app's logo.** A letter tile used to
   show the first two letters of the app's name, so arte read "AR", cda read
   "CP" and CW's Full Episodes read "FE". Where the official launcher icon is
   a short logotype, the tile now carries its letters - HEI, JIO, LFC, M6,
@@ -54,7 +54,12 @@ All notable changes to the Core Builds Icon Pack. Format follows
   cda, byu, stc, yle, tvo, vrt...) get the lowercase treatment in the
   pack's own face. Longer logotypes that would set under the 96px
   legibility floor keep two letters, taken from the logo rather than the
-  app name. Each change records the icon it was read from.
+  app name. Each change records the icon it was read from. A second
+  research pass found reference icons for 136 more apps (Play, F-Droid
+  and the APKCombo mirror of Play, matched on exact package name); 13
+  listings turned out to be a different app and are logged for review in
+  `docs/research/icon-reference-pass2-2026-09-26.md`, with mappings left
+  unchanged.
 - **Banner category labels wear the icon's colour.** VOD, STREAM, LIVE and
   every other category kicker used to be one fixed cyan on all 961 banners,
   so Monet's colour sampler could read cyan off a red or violet card. The
