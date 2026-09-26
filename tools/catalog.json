@@ -628,7 +628,7 @@
       "color_reviewed": null
     },
     {
-      "name": "Apk Installer",
+      "name": "APK Installer",
       "drawable": "apk_installer",
       "color": "#00ABD5",
       "glyph": "apk_installer_robot",
@@ -782,7 +782,7 @@
       "color_reviewed": null
     },
     {
-      "name": "Ard Mediathek",
+      "name": "ARD Mediathek",
       "drawable": "ard_mediathek",
       "color": "#003480",
       "glyph": "ard_one",
@@ -1343,7 +1343,7 @@
       "color_reviewed": "2026-09-26"
     },
     {
-      "name": "Byutv",
+      "name": "BYUtv",
       "drawable": "byutv",
       "color": "#0056B6",
       "glyph": "broadcast_B",
@@ -1483,7 +1483,7 @@
       "color_reviewed": null
     },
     {
-      "name": "Cda Pl",
+      "name": "CDA.pl",
       "drawable": "cda_pl",
       "color": "#C91013",
       "glyph": "broadcast_C",
@@ -2541,7 +2541,7 @@
       "glyph_source": "brand-informed redraw of the official launcher icon (play listing for com.ttxapps.dropsync); Core monoline geometry, not a trace (2026-09-26)"
     },
     {
-      "name": "Drtv",
+      "name": "DRTV",
       "drawable": "drtv",
       "color": "#FF001E",
       "glyph": "dr_play",
@@ -2711,7 +2711,7 @@
       "color_reviewed": null
     },
     {
-      "name": "Dudeperfect",
+      "name": "Dude Perfect",
       "drawable": "dudeperfect",
       "color": "#31FCDE",
       "glyph": "broadcast_D",
@@ -3670,7 +3670,7 @@
       "glyph_source": "brand-informed redraw of the official launcher icon (play listing for com.fpbasquetebol.fpbtv); Core monoline geometry, not a trace (2026-09-26)"
     },
     {
-      "name": "Fpt Play",
+      "name": "FPT Play",
       "drawable": "fpt_play",
       "color": "#F77322",
       "glyph": "broadcast_F",
@@ -3878,7 +3878,7 @@
       "color_reviewed": null
     },
     {
-      "name": "Gb News",
+      "name": "GB News",
       "drawable": "gb_news",
       "color": "#0027A6",
       "glyph": "broadcast_G",
@@ -4180,7 +4180,7 @@
       "color_reviewed": null
     },
     {
-      "name": "Hdhomerun",
+      "name": "HDHomeRun",
       "drawable": "hdhomerun",
       "color": "#6EED00",
       "glyph": "broadcast_H",
@@ -4353,7 +4353,14 @@
       "category": "APP",
       "color_source": "sampled from the official launcher icon (Google Play listing for com.github.livingwithhippos.unchained): dominant brand accent #D20076 (2026-09-26)",
       "color_reviewed": "2026-09-26",
-      "glyph_source": "brand-informed redraw of the official launcher icon (play listing for com.github.livingwithhippos.unchained); Core monoline geometry, not a trace (2026-09-26)"
+      "glyph_source": "brand-informed redraw of the official launcher icon (play listing for com.github.livingwithhippos.unchained); Core monoline geometry, not a trace (2026-09-26)",
+      "secondary": {
+        "color": "#F8B660",
+        "parts": [
+          3
+        ],
+        "source": "Hippos official launcher icon (Google Play listing for com.github.livingwithhippos.unchained): the bar's orange #F8B660 (2026-09-26)"
+      }
     },
     {
       "name": "HISTORY",
@@ -4465,7 +4472,7 @@
       "color_reviewed": null
     },
     {
-      "name": "Hrti",
+      "name": "HRTi",
       "drawable": "hrti",
       "color": "#670000",
       "glyph": "broadcast_H",
@@ -4505,7 +4512,7 @@
       "glyph_source": "brand-informed redraw of the official launcher icon (play listing for app.mcneill.hueshortcuts); Core monoline geometry, not a trace (2026-09-26)"
     },
     {
-      "name": "Hueessentials",
+      "name": "Hue Essentials",
       "drawable": "hueessentials",
       "color": "#FF4D4D",
       "glyph": "hueessentials_lamp",
@@ -5192,7 +5199,7 @@
       "gradient_source": "sampled from the official launcher icon (Google Play listing for nl.sbs.kijk): the icon's own #A713DA to #28549E gradient, its two ends (2026-09-26)"
     },
     {
-      "name": "Kika",
+      "name": "KiKA",
       "drawable": "kika",
       "color": "#023D61",
       "glyph": "broadcast_K",
@@ -5680,7 +5687,7 @@
       "color_reviewed": "2026-09-26"
     },
     {
-      "name": "Lrt",
+      "name": "LRT",
       "drawable": "lrt",
       "color": "#34EB7A",
       "glyph": "broadcast_L",
@@ -6162,7 +6169,7 @@
       "color_reviewed": "2026-09-08"
     },
     {
-      "name": "Mo 4media",
+      "name": "MO4Media",
       "drawable": "mo_4media",
       "color": "#2196F3",
       "glyph": "broadcast_M",
@@ -6434,7 +6441,7 @@
       "color_reviewed": "2026-09-26"
     },
     {
-      "name": "Mtv Katsomo",
+      "name": "MTV Katsomo",
       "drawable": "mtv_katsomo",
       "color": "#FF3334",
       "glyph": "broadcast_M",
@@ -6572,7 +6579,7 @@
       "glyph_source": "brand-informed redraw of the official launcher icon (play listing for com.acmeaom.android.myradar); Core monoline geometry, not a trace (2026-09-26)"
     },
     {
-      "name": "Mytvonline",
+      "name": "MyTVOnline",
       "drawable": "mytvonline",
       "color": "#212249",
       "glyph": "broadcast_M",
@@ -6857,7 +6864,7 @@
       "color_reviewed": "2026-09-26"
     },
     {
-      "name": "Nhk Plus",
+      "name": "NHK+",
       "drawable": "nhk_plus",
       "color": "#FF4D4D",
       "glyph": "broadcast_N",
@@ -6871,7 +6878,7 @@
       "color_reviewed": null
     },
     {
-      "name": "Nhk World Japan",
+      "name": "NHK World-Japan",
       "drawable": "nhk_world_japan",
       "color": "#E60019",
       "glyph": "broadcast_N",
@@ -6914,7 +6921,7 @@
       "color_reviewed": null
     },
     {
-      "name": "Njpw World",
+      "name": "NJPW World",
       "drawable": "njpw_world",
       "color": "#C95CFF",
       "glyph": "sport_N",
@@ -7012,7 +7019,7 @@
       "color_reviewed": null
     },
     {
-      "name": "Nos",
+      "name": "NOS",
       "drawable": "nos",
       "color": "#A366FF",
       "glyph": "broadcast_N",
@@ -7126,7 +7133,7 @@
       "color_reviewed": "2026-09-26"
     },
     {
-      "name": "Nrk TV",
+      "name": "NRK TV",
       "drawable": "nrk_tv",
       "color": "#073B84",
       "glyph": "broadcast_N",
@@ -8115,16 +8122,16 @@
       "color_reviewed": null
     },
     {
-      "name": "Ppsspp",
+      "name": "PPSSPP",
       "drawable": "ppsspp",
-      "color": "#2D4553",
+      "color": "#9BCFDD",
       "glyph": "ppsspp_pad",
       "components": [
         "org.ppsspp.ppsspp/org.ppsspp.ppsspp.PpssppActivity"
       ],
       "category": "APP",
       "mapping_source": "Projectivy Icon Pack 1.1.9",
-      "color_source": "sampled from the official launcher icon (Google Play listing for org.ppsspp.ppsspp): dominant brand accent #2D4553 (2026-09-26)",
+      "color_source": "sampled from the official launcher icon (Google Play listing for org.ppsspp.ppsspp): the light-blue paddles #9BCFDD, not the slate ground, which vanishes on a dark tile (2026-09-26)",
       "color_reviewed": "2026-09-26",
       "glyph_source": "brand-informed redraw of the official launcher icon (play listing for org.ppsspp.ppsspp); Core monoline geometry, not a trace (2026-09-26)"
     },
@@ -8380,7 +8387,7 @@
       "style": "core_monoline"
     },
     {
-      "name": "Quicksupport",
+      "name": "QuickSupport",
       "drawable": "quicksupport",
       "color": "#050A52",
       "glyph": "quicksupport_arrows",
@@ -8462,7 +8469,7 @@
       "color_reviewed": "2026-09-26"
     },
     {
-      "name": "Raiplay",
+      "name": "RaiPlay",
       "drawable": "raiplay",
       "color": "#05BAE0",
       "glyph": "broadcast_R",
@@ -8729,7 +8736,7 @@
       "color_reviewed": null
     },
     {
-      "name": "Riks TV",
+      "name": "RiksTV",
       "drawable": "riks_tv",
       "color": "#EF4642",
       "glyph": "broadcast_R",
@@ -9214,7 +9221,7 @@
       "color_reviewed": "2026-09-26"
     },
     {
-      "name": "Sfr TV",
+      "name": "SFR TV",
       "drawable": "sfr_tv",
       "color": "#E20119",
       "glyph": "broadcast_S",
@@ -9601,16 +9608,21 @@
     {
       "name": "Sooner",
       "drawable": "sooner",
-      "color": "#036D8B",
+      "color": "#D7DADE",
       "glyph": "sooner_rings",
       "components": [
         "sooner.app.de/de.eyzmedia.sooner.MainActivity"
       ],
       "category": "APP",
       "mapping_source": "Projectivy Icon Pack 1.1.9",
-      "color_source": "sampled from the official launcher icon (Google Play listing for sooner.app.de): dominant brand accent #036D8B (2026-09-26)",
+      "color_source": "sampled from the official launcher icon (Google Play listing for sooner.app.de): the ring white #D7DADE (2026-09-26)",
       "color_reviewed": "2026-09-26",
-      "glyph_source": "brand-informed redraw of the official launcher icon (play listing for sooner.app.de); Core monoline geometry, not a trace (2026-09-26)"
+      "glyph_source": "brand-informed redraw of the official launcher icon (play listing for sooner.app.de); Core monoline geometry, not a trace (2026-09-26)",
+      "gradient": [
+        "#D7DADE",
+        "#028AAE"
+      ],
+      "gradient_source": "sampled from the official launcher icon (Google Play listing for sooner.app.de): its white rings #D7DADE over the cyan #028AAE of its gradient ground (2026-09-26)"
     },
     {
       "name": "Soundcloud",
@@ -10036,7 +10048,7 @@
       "color_reviewed": "2026-09-26"
     },
     {
-      "name": "Stv Player",
+      "name": "STV Player",
       "drawable": "stv_player",
       "color": "#00D4FF",
       "glyph": "broadcast_S",
@@ -10053,7 +10065,7 @@
       "mark_style_source": "the logotype on the official launcher icon (Google Play listing for tv.stv.android.player) is set lowercase ('stv')"
     },
     {
-      "name": "Sunnxt",
+      "name": "Sun NXT",
       "drawable": "sunnxt",
       "color": "#C51E40",
       "glyph": "broadcast_S",
@@ -10243,7 +10255,7 @@
       "style": "core_monoline"
     },
     {
-      "name": "Synologyphotos",
+      "name": "Synology Photos",
       "drawable": "synologyphotos",
       "color": "#FF6F61",
       "glyph": "synology_rosette",
@@ -10364,7 +10376,7 @@
       "color_reviewed": null
     },
     {
-      "name": "Tbn Plus",
+      "name": "TBN+",
       "drawable": "tbn_plus",
       "color": "#E6EDF3",
       "glyph": "broadcast_T",
@@ -10419,7 +10431,7 @@
       "color_reviewed": "2026-09-26"
     },
     {
-      "name": "Tcn",
+      "name": "TCN",
       "drawable": "tcn",
       "color": "#CF0606",
       "glyph": "broadcast_T",
@@ -10630,7 +10642,7 @@
       "color_reviewed": "2026-09-26"
     },
     {
-      "name": "Tf1",
+      "name": "TF1+",
       "drawable": "tf1",
       "color": "#1937FF",
       "glyph": "broadcast_T",
@@ -10879,7 +10891,7 @@
       "color_reviewed": null
     },
     {
-      "name": "Tod",
+      "name": "TOD",
       "drawable": "tod",
       "color": "#FFBC00",
       "glyph": "sport_T",
@@ -10964,7 +10976,7 @@
       "glyph_source": "brand-informed redraw of the official launcher icon (play listing for biz.softwareits.torrentsearchengine); Core monoline geometry, not a trace (2026-09-26)"
     },
     {
-      "name": "Torrserve",
+      "name": "TorrServe",
       "drawable": "torrserve",
       "color": "#FB7C00",
       "glyph": "torrserve_bolt",
@@ -11275,7 +11287,7 @@
       "color_reviewed": "2026-09-26"
     },
     {
-      "name": "Tv360",
+      "name": "TV360",
       "drawable": "tv360",
       "color": "#DB2332",
       "glyph": "broadcast_T",
@@ -11332,7 +11344,7 @@
       "color_reviewed": null
     },
     {
-      "name": "Tving",
+      "name": "TVING",
       "drawable": "tving",
       "color": "#FF153C",
       "glyph": "tving_tv",
@@ -11346,7 +11358,7 @@
       "glyph_source": "brand-informed redraw of the official launcher icon (play listing for net.cj.cjhv.gs.tving); Core monoline geometry, not a trace (2026-09-26)"
     },
     {
-      "name": "Tvnzplus",
+      "name": "TVNZ+",
       "drawable": "tvnzplus",
       "color": "#182A8F",
       "glyph": "broadcast_T",
@@ -11363,7 +11375,7 @@
       "mark_source": "logotype letters from the official launcher icon (Google Play listing for nz.co.tvnz.ondemand.tv), which reads 'tvnz+': the first two, because the whole logotype sets under the pack's 96px legibility floor; set in the pack's face, not traced (2026-09-26)"
     },
     {
-      "name": "Tvo Kids",
+      "name": "TVO Kids",
       "drawable": "tvo_kids",
       "color": "#7C74FF",
       "glyph": "kids_T",
@@ -11380,7 +11392,7 @@
       "mark_style_source": "the logotype on the official launcher icon (Google Play listing for com.tvokids.tvokids) is set lowercase ('tvo kids')"
     },
     {
-      "name": "Tvo Today",
+      "name": "TVO Today",
       "drawable": "tvo_today",
       "color": "#E7131A",
       "glyph": "sport_T",
@@ -11397,7 +11409,7 @@
       "mark_style_source": "the logotype on the official launcher icon (Google Play listing for org.tvo.tvoott) is set lowercase ('tvo today')"
     },
     {
-      "name": "Tvoverlay",
+      "name": "TvOverlay",
       "drawable": "tvoverlay",
       "color": "#00C380",
       "glyph": "tvoverlay_cards",
@@ -11411,7 +11423,7 @@
       "glyph_source": "brand-informed redraw of the official launcher icon (play listing for com.tabdeveloper.tvoverlay); Core monoline geometry, not a trace (2026-09-26)"
     },
     {
-      "name": "Tvp Vod",
+      "name": "TVP VOD",
       "drawable": "tvp_vod",
       "color": "#3D66CB",
       "glyph": "film_T",
@@ -11425,7 +11437,7 @@
       "color_reviewed": "2026-09-26"
     },
     {
-      "name": "Tvpsport",
+      "name": "TVP Sport",
       "drawable": "tvpsport",
       "color": "#EEFF00",
       "glyph": "sport_T",
@@ -11474,7 +11486,7 @@
       "color_reviewed": null
     },
     {
-      "name": "Twodf Tivi",
+      "name": "ZDFtivi",
       "drawable": "twodf_tivi",
       "color": "#FF4D4D",
       "glyph": "broadcast_T",
@@ -11504,7 +11516,7 @@
       "color_reviewed": "2026-09-26"
     },
     {
-      "name": "U Next",
+      "name": "U-NEXT",
       "drawable": "u_next",
       "color": "#C95CFF",
       "glyph": "unext_shield",
@@ -11614,7 +11626,7 @@
       "color_reviewed": null
     },
     {
-      "name": "Unifi Protect",
+      "name": "UniFi Protect",
       "drawable": "unifi_protect",
       "color": "#0058D4",
       "glyph": "unifi_camera",
@@ -11784,7 +11796,7 @@
       "color_reviewed": null
     },
     {
-      "name": "Vidangel",
+      "name": "VidAngel",
       "drawable": "vidangel",
       "color": "#00A3E0",
       "glyph": "vidangel_halo",
@@ -11964,7 +11976,7 @@
       "color_reviewed": null
     },
     {
-      "name": "Vmx",
+      "name": "VMX",
       "drawable": "vmx",
       "color": "#F5881F",
       "glyph": "broadcast_V",
@@ -11992,7 +12004,7 @@
       "color_reviewed": "2026-09-26"
     },
     {
-      "name": "Voyo Sk",
+      "name": "Voyo SK",
       "drawable": "voyo_sk",
       "color": "#19D3C5",
       "glyph": "broadcast_V",
@@ -12105,7 +12117,7 @@
       "mark_source": "logotype letters from the official launcher icon (Google Play listing for com.vtvcab.onTV), which reads 'ON'; set in the pack's face, not traced (2026-09-26)"
     },
     {
-      "name": "Vtvgo TV",
+      "name": "VTVgo",
       "drawable": "vtvgo_tv",
       "color": "#D50808",
       "glyph": "broadcast_V",
@@ -12754,7 +12766,7 @@
       "color_reviewed": null
     },
     {
-      "name": "Yowindow",
+      "name": "YoWindow",
       "drawable": "yowindow",
       "color": "#007DB0",
       "glyph": "yowindow_sun",
@@ -12826,7 +12838,7 @@
       "mark": "ZA"
     },
     {
-      "name": "Zdf",
+      "name": "ZDF",
       "drawable": "zdf",
       "color": "#FA7D19",
       "glyph": "broadcast_Z",

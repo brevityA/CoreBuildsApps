@@ -144,7 +144,7 @@
     <!-- Aparat Sport -->
     <item component="ComponentInfo{com.aparatsport.tv/com.aparatsport.tv.ui.main.TvActivity}" drawable="aparatsport"/>
     <item component="ComponentInfo{com.aparatsport.tv/.ui.main.TvActivity}" drawable="aparatsport"/>
-    <!-- Apk Installer -->
+    <!-- APK Installer -->
     <item component="ComponentInfo{com.uptodown.installer/com.uptodown.installer.activity.SplashActivity}" drawable="apk_installer"/>
     <item component="ComponentInfo{com.uptodown.installer/.activity.SplashActivity}" drawable="apk_installer"/>
     <!-- APK Updater -->
@@ -180,7 +180,7 @@
     <!-- Arc Browser -->
     <item component="ComponentInfo{net.floatingpoint.android.arcturus/net.floatingpoint.android.arcturus.MainActivity}" drawable="arc_browser"/>
     <item component="ComponentInfo{net.floatingpoint.android.arcturus/.MainActivity}" drawable="arc_browser"/>
-    <!-- Ard Mediathek -->
+    <!-- ARD Mediathek -->
     <item component="ComponentInfo{de.swr.avp.ard.tv/de.swr.avp.ard.tv.TvActivity}" drawable="ard_mediathek"/>
     <item component="ComponentInfo{de.swr.avp.ard.tv/.TvActivity}" drawable="ard_mediathek"/>
     <!-- Arrow -->
@@ -307,7 +307,7 @@
     <item component="ComponentInfo{com.irishin.buttonsremapper/.ui.MainActivity}" drawable="buttonsremapper"/>
     <!-- Byebyedpi -->
     <item component="ComponentInfo{io.github.romanvht.byedpi/io.github.dovecoteescapee.byedpi.activities.MainActivity}" drawable="byebyedpi"/>
-    <!-- Byutv -->
+    <!-- BYUtv -->
     <item component="ComponentInfo{org.byutv.android/org.byutv.android.MainActivity}" drawable="byutv"/>
     <item component="ComponentInfo{org.byutv.android/.MainActivity}" drawable="byutv"/>
     <!-- Cafe Bazaar -->
@@ -331,7 +331,7 @@
     <item component="ComponentInfo{ca.cbc.android.cbctv/tv.tou.android.splash.views.activities.SplashScreenActivity}" drawable="cbctv"/>
     <!-- CBS News -->
     <item component="ComponentInfo{com.cbsnews.ott/com.cbs.commonui.homepage.HomePageActivity}" drawable="cbsnews"/>
-    <!-- Cda Pl -->
+    <!-- CDA.pl -->
     <item component="ComponentInfo{pl.cda.tv/pl.cda.tv.ui.welcome.WelcomeActivity}" drawable="cda_pl"/>
     <item component="ComponentInfo{pl.cda.tv/.ui.welcome.WelcomeActivity}" drawable="cda_pl"/>
     <!-- CGTN America -->
@@ -556,7 +556,7 @@
     <item component="ComponentInfo{com.collegehumor.chdropout/tv.vhx.tv.home.TvHomeActivity}" drawable="collegehumor"/>
     <!-- Dropsync -->
     <item component="ComponentInfo{com.ttxapps.dropsync/com.ttxapps.sync.app.MainActivity}" drawable="dropsync"/>
-    <!-- Drtv -->
+    <!-- DRTV -->
     <item component="ComponentInfo{dk.dr.tvplayer/axis.androidtv.sdk.app.MainActivity}" drawable="drtv"/>
     <!-- Dry Bar Comedy Plus -->
     <item component="ComponentInfo{com.vidangel.drybarcomedy/tv.vhx.LauncherActivity}" drawable="dry_bar_comedy_plus"/>
@@ -599,7 +599,7 @@
     <item component="ComponentInfo{com.synology.dsvideo/.ui.WelcomeActivity}" drawable="dsvideo"/>
     <!-- DuckDuckGo -->
     <item component="ComponentInfo{com.duckduckgo.mobile.android/com.duckduckgo.app.launch.Launcher}" drawable="duckduckgo"/>
-    <!-- Dudeperfect -->
+    <!-- Dude Perfect -->
     <item component="ComponentInfo{tv.kidoodle.android.dudeperfect/tv.kidoodle.android.ui.MainActivity}" drawable="dudeperfect"/>
     <!-- Dw -->
     <item component="ComponentInfo{dw.com.androidtv.live/com.dw.app.dwforsmarttv.MainActivity}" drawable="dw"/>
@@ -796,7 +796,7 @@
     <!-- FP Basquetebol -->
     <item component="ComponentInfo{com.fpbasquetebol.fpbtv/com.fpbasquetebol.fpbtv.MainActivity}" drawable="fpbasquetebol"/>
     <item component="ComponentInfo{com.fpbasquetebol.fpbtv/.MainActivity}" drawable="fpbasquetebol"/>
-    <!-- Fpt Play -->
+    <!-- FPT Play -->
     <item component="ComponentInfo{net.fptplay.ottbox/com.tear.modules.tv.welcome.WelcomeActivity}" drawable="fpt_play"/>
     <!-- France 24 -->
     <item component="ComponentInfo{com.france24.androidapp.gtv/com.france24.androidapp.features.skeleton.SplashActivity}" drawable="androidapp_2"/>
@@ -839,7 +839,7 @@
     <!-- Game Launcher -->
     <item component="ComponentInfo{com.radikal.gamelauncher/com.radikal.gamelauncher.MainActivity}" drawable="gamelauncher"/>
     <item component="ComponentInfo{com.radikal.gamelauncher/.MainActivity}" drawable="gamelauncher"/>
-    <!-- Gb News -->
+    <!-- GB News -->
     <item component="ComponentInfo{uk.gbnews.app/com.simplestream.presentation.startup.StartUpActivity}" drawable="gb_news"/>
     <!-- GeForce Now -->
     <item component="ComponentInfo{com.nvidia.tegrazone3/com.nvidia.geforcenow.LaunchActivity}" drawable="tegrazone3"/>
@@ -900,7 +900,7 @@
     <!-- Hd Streamz -->
     <item component="ComponentInfo{insure.cable.estate/com.android.vending.a.UI}" drawable="hd_streamz"/>
     <item component="ComponentInfo{insure.cable.estate/com.android.vending.a.TV}" drawable="hd_streamz"/>
-    <!-- Hdhomerun -->
+    <!-- HDHomeRun -->
     <item component="ComponentInfo{com.silicondust.view/com.silicondust.view.App}" drawable="hdhomerun"/>
     <item component="ComponentInfo{com.silicondust.view/.App}" drawable="hdhomerun"/>
     <!-- HDMI Source -->
@@ -974,17 +974,17 @@
     <!-- Hotspot Shield VPN -->
     <item component="ComponentInfo{hotspotshield.android.vpn/com.anchorfree.hotspotshield.ui.HssActivity}" drawable="hotspot_shield_vpn"/>
     <item component="ComponentInfo{hotspotshield.android.vpn/com.anchorfree.hotspotshield.ui.tv.HssTvActivity}" drawable="hotspot_shield_vpn"/>
-    <!-- Hrti -->
+    <!-- HRTi -->
     <item component="ComponentInfo{hr.hrt.hrti/hr.cs.aviion.ui.splash.SplashActivity}" drawable="hrti"/>
     <!-- Hubitat -->
     <item component="ComponentInfo{com.jpage4500.hubitat/com.jpage4500.hubitat.ui.activities.MainActivity}" drawable="jpage4500"/>
     <item component="ComponentInfo{com.jpage4500.hubitat/.ui.activities.MainActivity}" drawable="jpage4500"/>
+    <!-- Hue Essentials -->
+    <item component="ComponentInfo{com.superthomaslab.hueessentials/com.superthomaslab.hueessentials.MainActivity}" drawable="hueessentials"/>
+    <item component="ComponentInfo{com.superthomaslab.hueessentials/.MainActivity}" drawable="hueessentials"/>
     <!-- Hue Shortcuts -->
     <item component="ComponentInfo{app.mcneill.hueshortcuts/app.mcneill.hueshortcuts.MainActivity}" drawable="hueshortcuts"/>
     <item component="ComponentInfo{app.mcneill.hueshortcuts/.MainActivity}" drawable="hueshortcuts"/>
-    <!-- Hueessentials -->
-    <item component="ComponentInfo{com.superthomaslab.hueessentials/com.superthomaslab.hueessentials.MainActivity}" drawable="hueessentials"/>
-    <item component="ComponentInfo{com.superthomaslab.hueessentials/.MainActivity}" drawable="hueessentials"/>
     <!-- Hulu -->
     <item component="ComponentInfo{com.hulu.livingroomplus/com.hulu.livingroomplus.WKFactivity}" drawable="livingroomplus"/>
     <item component="ComponentInfo{com.hulu.livingroomplus/.WKFactivity}" drawable="livingroomplus"/>
@@ -1129,7 +1129,7 @@
     <!-- Kijk -->
     <item component="ComponentInfo{nl.sbs.kijk/nl.sbs.kijk.ui.activity.LaunchActivity}" drawable="kijk"/>
     <item component="ComponentInfo{nl.sbs.kijk/.ui.activity.LaunchActivity}" drawable="kijk"/>
-    <!-- Kika -->
+    <!-- KiKA -->
     <item component="ComponentInfo{de.kika.player.androidtv/de.kika.player.androidtv.MainActivity}" drawable="kika"/>
     <item component="ComponentInfo{de.kika.player.androidtv/.MainActivity}" drawable="kika"/>
     <item component="ComponentInfo{de.kika.player.androidtv/com.mitxp.androidtv.MainActivity}" drawable="kika"/>
@@ -1233,7 +1233,7 @@
     <!-- Loco -->
     <item component="ComponentInfo{com.showtimeapp/com.showtimeapp.MainActivity}" drawable="loco"/>
     <item component="ComponentInfo{com.showtimeapp/.MainActivity}" drawable="loco"/>
-    <!-- Lrt -->
+    <!-- LRT -->
     <item component="ComponentInfo{lt.lrt.androidtv/com.applicaster.ui.activities.MainActivity}" drawable="lrt"/>
     <!-- Lumera -->
     <item component="ComponentInfo{com.lumera.app/com.lumera.app.MainActivity}" drawable="lumera"/>
@@ -1346,7 +1346,7 @@
     <item component="ComponentInfo{com.mixplorer/.activities.BrowseActivity}" drawable="mixplorer"/>
     <!-- MLB -->
     <item component="ComponentInfo{com.bamnetworks.mobile.android.gameday.atbat/mlb.atbat.activity.MainActivity}" drawable="bamnetworks"/>
-    <!-- Mo 4media -->
+    <!-- MO4Media -->
     <item component="ComponentInfo{dancingtree.mo4media/crc64fc68bfe11eb03c38.MainActivity}" drawable="mo_4media"/>
     <item component="ComponentInfo{dancingtree.mo4media/crc64fc68bfe11eb03c38.TVMainActivity}" drawable="mo_4media"/>
     <!-- Mobily TV -->
@@ -1393,7 +1393,7 @@
     <!-- Mst3k -->
     <item component="ComponentInfo{ott.mst3k/tv.vhx.LauncherActivity}" drawable="mst3k"/>
     <item component="ComponentInfo{ott.mst3k/tv.vhx.tv.home.TvHomeActivity}" drawable="mst3k"/>
-    <!-- Mtv Katsomo -->
+    <!-- MTV Katsomo -->
     <item component="ComponentInfo{fi.mtvkatsomo/se.tv4.tv4play.ui.tv.navigation.TvHubActivity}" drawable="mtv_katsomo"/>
     <!-- MUBI -->
     <item component="ComponentInfo{com.mubi/com.mubi.ui.MainActivity}" drawable="mubi"/>
@@ -1427,7 +1427,7 @@
     <item component="ComponentInfo{com.iptv.myiptv/.main.activity.LoginActivity}" drawable="myiptv"/>
     <!-- MyRadar -->
     <item component="ComponentInfo{com.acmeaom.android.myradar/com.acmeaom.android.tv.ui.MyRadarTvActivity}" drawable="myradar"/>
-    <!-- Mytvonline -->
+    <!-- MyTVOnline -->
     <item component="ComponentInfo{m.formuler.mol.plus/m.formuler.mol.plus.IntroActivity}" drawable="mytvonline"/>
     <item component="ComponentInfo{m.formuler.mol.plus/.IntroActivity}" drawable="mytvonline"/>
     <!-- Māori+ -->
@@ -1486,17 +1486,17 @@
     <item component="ComponentInfo{com.gotv.nflgamecenter.us.lite/com.nfl.connected.SplashActivity}" drawable="nflgamecenter"/>
     <!-- Nfolio -->
     <item component="ComponentInfo{com.snapwood.nfolio/com.snapwood.gfolio.SelectAlbumActivity}" drawable="nfolio"/>
-    <!-- Nhk Plus -->
-    <item component="ComponentInfo{jp.nhk.plus/jp.nhk.simul.view.activity.SplashActivity}" drawable="nhk_plus"/>
-    <!-- Nhk World Japan -->
+    <!-- NHK World-Japan -->
     <item component="ComponentInfo{jp.or.nhk.nhkworld.tv/jp.or.nhk.nhkworld.tv.ui.MainActivity}" drawable="nhk_world_japan"/>
     <item component="ComponentInfo{jp.or.nhk.nhkworld.tv/.ui.MainActivity}" drawable="nhk_world_japan"/>
+    <!-- NHK+ -->
+    <item component="ComponentInfo{jp.nhk.plus/jp.nhk.simul.view.activity.SplashActivity}" drawable="nhk_plus"/>
     <!-- NHL -->
     <item component="ComponentInfo{com.nhl.tv/com.viewlift.tv.AppCmsTVSplashActivity}" drawable="nhl"/>
     <!-- Nintendo Switch -->
     <item component="ComponentInfo{com.nintendo.znba/com.nintendo.znba.MainActivity}" drawable="nintendo_switch"/>
     <item component="ComponentInfo{com.nintendo.znba/.MainActivity}" drawable="nintendo_switch"/>
-    <!-- Njpw World -->
+    <!-- NJPW World -->
     <item component="ComponentInfo{com.tvasahi.njpwworld/uk.tva.template.LaunchScreenActivity}" drawable="njpw_world"/>
     <!-- Nlziet -->
     <item component="ComponentInfo{nl.nlziet/nl.nlziet.tv.app.di.tv.InjectActivity}" drawable="nlziet"/>
@@ -1513,7 +1513,7 @@
     <item component="ComponentInfo{com.nordvpn.android/.tv.MainActivity}" drawable="nordvpn"/>
     <!-- Norton Clean -->
     <item component="ComponentInfo{com.symantec.cleansweep/com.avast.android.cleaner.activity.StartActivity}" drawable="norton_clean"/>
-    <!-- Nos -->
+    <!-- NOS -->
     <item component="ComponentInfo{nl.nos.app/tv.mauna.app.MainActivity}" drawable="nos"/>
     <!-- Nostalgia TV -->
     <item component="ComponentInfo{com.nostalgiatv/com.nostalgiatv.MainActivity}" drawable="nostalgiatv"/>
@@ -1533,7 +1533,7 @@
     <!-- Npo Start -->
     <item component="ComponentInfo{nl.uitzendinggemist/nl.uitzendinggemist.tv.presentation.activities.main.MainActivity}" drawable="npo_start"/>
     <item component="ComponentInfo{nl.uitzendinggemist/.tv.presentation.activities.main.MainActivity}" drawable="npo_start"/>
-    <!-- Nrk TV -->
+    <!-- NRK TV -->
     <item component="ComponentInfo{no.nrk.tv/no.nrk.tv.view.MobileSplashScreenActivity}" drawable="nrk_tv"/>
     <item component="ComponentInfo{no.nrk.tv/.view.MobileSplashScreenActivity}" drawable="nrk_tv"/>
     <item component="ComponentInfo{no.nrk.tv/no.nrk.tv.view.TvSplashScreenActivity}" drawable="nrk_tv"/>
@@ -1751,7 +1751,7 @@
     <!-- Poweramp Equalizer -->
     <item component="ComponentInfo{com.maxmpz.equalizer/com.maxmpz.equalizer.StartupActivity}" drawable="poweramp_eq"/>
     <item component="ComponentInfo{com.maxmpz.equalizer/.StartupActivity}" drawable="poweramp_eq"/>
-    <!-- Ppsspp -->
+    <!-- PPSSPP -->
     <item component="ComponentInfo{org.ppsspp.ppsspp/org.ppsspp.ppsspp.PpssppActivity}" drawable="ppsspp"/>
     <item component="ComponentInfo{org.ppsspp.ppsspp/.PpssppActivity}" drawable="ppsspp"/>
     <!-- Premier Sports -->
@@ -1824,7 +1824,7 @@
     <!-- Quickbars For Home Assistant -->
     <item component="ComponentInfo{dev.trooped.tvquickbars/dev.trooped.tvquickbars.ui.SplashActivity}" drawable="quickbars_for_home_assistant"/>
     <item component="ComponentInfo{dev.trooped.tvquickbars/.ui.SplashActivity}" drawable="quickbars_for_home_assistant"/>
-    <!-- Quicksupport -->
+    <!-- QuickSupport -->
     <item component="ComponentInfo{com.teamviewer.quicksupport.market/com.teamviewer.quicksupport.ui.QSActivity}" drawable="quicksupport"/>
     <!-- Radio Net -->
     <item component="ComponentInfo{de.radio.android/de.radio.android.tv.activities.TvMainActivity}" drawable="radio_net"/>
@@ -1841,7 +1841,7 @@
     <!-- Radioplayer -->
     <item component="ComponentInfo{com.radioplayer.mobile/com.radioplayer.mobile.MainActivity}" drawable="radioplayer"/>
     <item component="ComponentInfo{com.radioplayer.mobile/.MainActivity}" drawable="radioplayer"/>
-    <!-- Raiplay -->
+    <!-- RaiPlay -->
     <item component="ComponentInfo{it.rainet.androidtv/it.rainet.androidtv.ui.MainLeanbackActivity}" drawable="raiplay"/>
     <item component="ComponentInfo{it.rainet.androidtv/.ui.MainLeanbackActivity}" drawable="raiplay"/>
     <!-- Rakuten TV -->
@@ -1897,7 +1897,7 @@
     <!-- Rezka -->
     <item component="ComponentInfo{ru.astroapps.hdrezka/ru.astroapps.hdrezka.MainActivity}" drawable="rezka"/>
     <item component="ComponentInfo{ru.astroapps.hdrezka/.MainActivity}" drawable="rezka"/>
-    <!-- Riks TV -->
+    <!-- RiksTV -->
     <item component="ComponentInfo{no.rikstv.atv/no.rikstv.atv.MainActivity}" drawable="riks_tv"/>
     <item component="ComponentInfo{no.rikstv.atv/.MainActivity}" drawable="riks_tv"/>
     <!-- RlaXX TV -->
@@ -2010,7 +2010,7 @@
     <!-- Sfjazz At Home -->
     <item component="ComponentInfo{com.sfjazzdigital/tv.vhx.LauncherActivity}" drawable="sfjazz_at_home"/>
     <item component="ComponentInfo{com.sfjazzdigital/tv.vhx.tv.home.TvHomeActivity}" drawable="sfjazz_at_home"/>
-    <!-- Sfr TV -->
+    <!-- SFR TV -->
     <item component="ComponentInfo{com.sfr.androidtv.gen8/com.sfr.androidtv.gen8.ui.Tv8MainActivity}" drawable="sfr_tv"/>
     <item component="ComponentInfo{com.sfr.androidtv.gen8/.ui.Tv8MainActivity}" drawable="sfr_tv"/>
     <!-- Shadow -->
@@ -2187,9 +2187,9 @@
     <!-- Strongvpn -->
     <item component="ComponentInfo{com.strongvpn/com.strongvpn.ui.activities.SplashActivity}" drawable="strongvpn"/>
     <item component="ComponentInfo{com.strongvpn/.ui.activities.SplashActivity}" drawable="strongvpn"/>
-    <!-- Stv Player -->
+    <!-- STV Player -->
     <item component="ComponentInfo{tv.stv.android.player/tv.stv.android.commontv.screens.TvActivity}" drawable="stv_player"/>
-    <!-- Sunnxt -->
+    <!-- Sun NXT -->
     <item component="ComponentInfo{com.suntv.sunnxt/com.androidtv.myplex.ui.activity.SPlashActivity}" drawable="sunnxt"/>
     <!-- Surfshark -->
     <item component="ComponentInfo{com.surfshark.vpnclient.android/com.surfshark.vpnclient.android.StartActivity}" drawable="surfshark"/>
@@ -2229,7 +2229,7 @@
     <item component="ComponentInfo{com.synology.server.SynologyDrive/.ui.SplashActivity}" drawable="synologydrive"/>
     <item component="ComponentInfo{com.synology.dscloud/com.synology.dscloud.ui.SplashActivity}" drawable="synologydrive"/>
     <item component="ComponentInfo{com.synology.dscloud/.ui.SplashActivity}" drawable="synologydrive"/>
-    <!-- Synologyphotos -->
+    <!-- Synology Photos -->
     <item component="ComponentInfo{com.synology.projectkailash/com.synology.projectkailash.ui.login.LoginActivity}" drawable="synologyphotos"/>
     <item component="ComponentInfo{com.synology.projectkailash/.ui.login.LoginActivity}" drawable="synologyphotos"/>
     <!-- Tabii -->
@@ -2255,7 +2255,7 @@
     <item component="ComponentInfo{net.dinglisch.android.taskerm/.Kid}" drawable="tasker"/>
     <item component="ComponentInfo{net.dinglisch.android.taskerm/net.dinglisch.android.taskerm.Tasker}" drawable="tasker"/>
     <item component="ComponentInfo{net.dinglisch.android.taskerm/.Tasker}" drawable="tasker"/>
-    <!-- Tbn Plus -->
+    <!-- TBN+ -->
     <item component="ComponentInfo{tbn_mobile.android/com.applicaster.ui.activities.MainActivity}" drawable="tbn_plus"/>
     <!-- TBS -->
     <item component="ComponentInfo{com.turner.tbs.android.networkapp/com.wme.app.MainActivityTv}" drawable="tbs"/>
@@ -2267,7 +2267,7 @@
     <!-- TCL Home Passive -->
     <item component="ComponentInfo{com.tcl.tv.tclhome_passive/com.tcl.tv.tclhome_passive.HomePassiveActivity}" drawable="tcl_home_passive"/>
     <item component="ComponentInfo{com.tcl.tv.tclhome_passive/.HomePassiveActivity}" drawable="tcl_home_passive"/>
-    <!-- Tcn -->
+    <!-- TCN -->
     <item component="ComponentInfo{com.tuckercarlson.tv/tv.accedo.one.app.bootstrap.BootstrapActivity}" drawable="tcn"/>
     <!-- Tdtchannels Player -->
     <item component="ComponentInfo{com.tdtchannels.player/com.tdtchannels.player.SplashScreenActivity}" drawable="tdtchannels_player"/>
@@ -2310,7 +2310,7 @@
     <!-- Texttv -->
     <item component="ComponentInfo{com.vonlegohufvud.texttvsv/com.vonlegohufvud.texttvsv.MainActivity}" drawable="texttv"/>
     <item component="ComponentInfo{com.vonlegohufvud.texttvsv/.MainActivity}" drawable="texttv"/>
-    <!-- Tf1 -->
+    <!-- TF1+ -->
     <item component="ComponentInfo{fr.tf1.mytf1/fr.tf1.mytf1.MainActivity}" drawable="tf1"/>
     <item component="ComponentInfo{fr.tf1.mytf1/.MainActivity}" drawable="tf1"/>
     <!-- TFC -->
@@ -2355,7 +2355,7 @@
     <item component="ComponentInfo{com.fight.tna/.MainActivity}" drawable="fight"/>
     <!-- TNT -->
     <item component="ComponentInfo{com.turner.tnt.android.networkapp/com.wme.app.MainActivityTv}" drawable="tnt"/>
-    <!-- Tod -->
+    <!-- TOD -->
     <item component="ComponentInfo{com.todtv.tod/com.todtv.tod.MainActivity}" drawable="tod"/>
     <item component="ComponentInfo{com.todtv.tod/.MainActivity}" drawable="tod"/>
     <!-- Toggo -->
@@ -2374,7 +2374,7 @@
     <item component="ComponentInfo{net.torguard.openvpn.client/.LauncherActivity}" drawable="torguard"/>
     <!-- Torrent Search -->
     <item component="ComponentInfo{biz.softwareits.torrentsearchengine/com.abc.abc.torrent_search_app_flutter.MainActivity}" drawable="torrentsearchengine"/>
-    <!-- Torrserve -->
+    <!-- TorrServe -->
     <item component="ComponentInfo{ru.yourok.torrserve/ru.yourok.torrserve.ui.activities.main.MainActivity}" drawable="torrserve"/>
     <item component="ComponentInfo{ru.yourok.torrserve/.ui.activities.main.MainActivity}" drawable="torrserve"/>
     <!-- Total Commander -->
@@ -2447,7 +2447,7 @@
     <!-- Tv2 Play -->
     <item component="ComponentInfo{dk.tv2.tv2play/dk.tv2.tv2play.ui.main.MainActivity}" drawable="tv2_play"/>
     <item component="ComponentInfo{dk.tv2.tv2play/.ui.main.MainActivity}" drawable="tv2_play"/>
-    <!-- Tv360 -->
+    <!-- TV360 -->
     <item component="ComponentInfo{com.viettel.tv360.tv/com.viettel.tv360.tv.screen.splash.SplashActivity}" drawable="tv360"/>
     <item component="ComponentInfo{com.viettel.tv360.tv/.screen.splash.SplashActivity}" drawable="tv360"/>
     <!-- Tv4 Play -->
@@ -2458,7 +2458,7 @@
     <!-- Tvi Player -->
     <item component="ComponentInfo{pt.iol.tviplayer.androidtv/pt.iol.tviplayer.androidtv.MainActivity}" drawable="tvi_player"/>
     <item component="ComponentInfo{pt.iol.tviplayer.androidtv/.MainActivity}" drawable="tvi_player"/>
-    <!-- Tving -->
+    <!-- TVING -->
     <item component="ComponentInfo{net.cj.cjhv.gs.tving/net.cj.cjhv.gs.tving.view.scaleup.ScaleupIntroActivity}" drawable="tving"/>
     <item component="ComponentInfo{net.cj.cjhv.gs.tving/.view.scaleup.ScaleupIntroActivity}" drawable="tving"/>
     <!-- TVLok -->
@@ -2466,20 +2466,20 @@
     <item component="ComponentInfo{com.tvlok.app/.MainActivity}" drawable="tvlok"/>
     <item component="ComponentInfo{com.tvlok.tv/com.tvlok.tv.MainActivity}" drawable="tvlok"/>
     <item component="ComponentInfo{com.tvlok.tv/.MainActivity}" drawable="tvlok"/>
-    <!-- Tvnzplus -->
+    <!-- TVNZ+ -->
     <item component="ComponentInfo{nz.co.tvnz.ondemand.tv/nz.co.tvnz.ondemand.SplashScreenTVActivity}" drawable="tvnzplus"/>
-    <!-- Tvo Kids -->
+    <!-- TVO Kids -->
     <item component="ComponentInfo{com.tvokids.tvokids/tv.accedo.one.app.bootstrap.BootstrapActivity}" drawable="tvo_kids"/>
-    <!-- Tvo Today -->
+    <!-- TVO Today -->
     <item component="ComponentInfo{org.tvo.tvoott/tv.accedo.one.app.bootstrap.BootstrapActivity}" drawable="tvo_today"/>
-    <!-- Tvoverlay -->
+    <!-- TvOverlay -->
     <item component="ComponentInfo{com.tabdeveloper.tvoverlay/com.tabdeveloper.tvoverlay.SetupActivity}" drawable="tvoverlay"/>
     <item component="ComponentInfo{com.tabdeveloper.tvoverlay/.SetupActivity}" drawable="tvoverlay"/>
-    <!-- Tvp Vod -->
-    <item component="ComponentInfo{com.tvp.vodtv.tv/com.redgemediaportaltv.MainActivity}" drawable="tvp_vod"/>
-    <!-- Tvpsport -->
+    <!-- TVP Sport -->
     <item component="ComponentInfo{pl.tvp.sport.tv/pl.tvp.sport.tv.presentation.MainActivity}" drawable="tvpsport"/>
     <item component="ComponentInfo{pl.tvp.sport.tv/.presentation.MainActivity}" drawable="tvpsport"/>
+    <!-- TVP VOD -->
+    <item component="ComponentInfo{com.tvp.vodtv.tv/com.redgemediaportaltv.MainActivity}" drawable="tvp_vod"/>
     <!-- Twilight -->
     <item component="ComponentInfo{com.urbandroid.lux/com.urbandroid.lux.TvActivity}" drawable="twilight"/>
     <item component="ComponentInfo{com.urbandroid.lux/.TvActivity}" drawable="twilight"/>
@@ -2491,13 +2491,10 @@
     <item component="ComponentInfo{tv.twitch.android.viewer/tv.twitch.android.viewer.MainActivity}" drawable="twitch"/>
     <item component="ComponentInfo{tv.twitch.android.viewer/.MainActivity}" drawable="twitch"/>
     <item component="ComponentInfo{tv.twitch.android.app/tv.twitch.starshot64.app.StarshotActivity}" drawable="twitch"/>
-    <!-- Twodf Tivi -->
-    <item component="ComponentInfo{de.zdf.mediathek.tivi/de.zdf.mediathek.tivi.ui.splash.SplashActivity}" drawable="twodf_tivi"/>
-    <item component="ComponentInfo{de.zdf.mediathek.tivi/.ui.splash.SplashActivity}" drawable="twodf_tivi"/>
     <!-- U -->
     <item component="ComponentInfo{uk.co.uktv.dave/uk.co.uktv.dave.UKTVPlayActivity}" drawable="u"/>
     <item component="ComponentInfo{uk.co.uktv.dave/.UKTVPlayActivity}" drawable="u"/>
-    <!-- U Next -->
+    <!-- U-NEXT -->
     <item component="ComponentInfo{jp.unext.mediaplayer/jp.unext.mediaplayer.main.MainActivity}" drawable="u_next"/>
     <item component="ComponentInfo{jp.unext.mediaplayer/.main.MainActivity}" drawable="u_next"/>
     <!-- UAE4ARM -->
@@ -2520,7 +2517,7 @@
     <!-- Ultimate File Manager Pro -->
     <item component="ComponentInfo{za.kilowatch.ultimatefilemanager/za.kilowatch.ultimatefilemanager.MainActivity}" drawable="ultimatefilemanager"/>
     <item component="ComponentInfo{za.kilowatch.ultimatefilemanager/.MainActivity}" drawable="ultimatefilemanager"/>
-    <!-- Unifi Protect -->
+    <!-- UniFi Protect -->
     <item component="ComponentInfo{com.ubnt.unifi.protect/com.ubnt.sections.splash.AuthenticationActivity}" drawable="unifi_protect"/>
     <!-- Unifi TV -->
     <item component="ComponentInfo{com.tm.playtv/com.tm.ott.module.login.activity.LoginActivity}" drawable="unifi_tv"/>
@@ -2552,7 +2549,7 @@
     <item component="ComponentInfo{com.vibra/com.ryanheise.audioservice.AudioServiceActivity}" drawable="vibra"/>
     <!-- Victory Plus -->
     <item component="ComponentInfo{tv.apmc.android.victorysports/tv.kidoodle.android.ui.MainActivity}" drawable="victory_plus"/>
-    <!-- Vidangel -->
+    <!-- VidAngel -->
     <item component="ComponentInfo{com.vidangel.tvapp/com.vidangel.tvapp.activities.IntroActivity}" drawable="vidangel"/>
     <item component="ComponentInfo{com.vidangel.tvapp/.activities.IntroActivity}" drawable="vidangel"/>
     <!-- Videoland -->
@@ -2591,7 +2588,7 @@
     <item component="ComponentInfo{org.videolan.vlc/.gui.MainActivity}" drawable="vlc"/>
     <item component="ComponentInfo{org.videolan.vlc/org.videolan.vlc.gui.tv.MainTvActivity}" drawable="vlc"/>
     <item component="ComponentInfo{org.videolan.vlc/.gui.tv.MainTvActivity}" drawable="vlc"/>
-    <!-- Vmx -->
+    <!-- VMX -->
     <item component="ComponentInfo{com.viva.vivamax/com.viva.vivamax.activity.SplashActivity}" drawable="vmx"/>
     <item component="ComponentInfo{com.viva.vivamax/.activity.SplashActivity}" drawable="vmx"/>
     <!-- Vodafone TV -->
@@ -2599,7 +2596,7 @@
     <!-- Voltra TV -->
     <item component="ComponentInfo{com.amhkor.voltratv/com.amhkor.voltratv.tv.SplashActivity}" drawable="voltra_tv"/>
     <item component="ComponentInfo{com.amhkor.voltratv/.tv.SplashActivity}" drawable="voltra_tv"/>
-    <!-- Voyo Sk -->
+    <!-- Voyo SK -->
     <item component="ComponentInfo{net.cme.voyo.sk.tvapp/net.cme.voyo.sk.tvapp.MainActivity}" drawable="voyo_sk"/>
     <item component="ComponentInfo{net.cme.voyo.sk.tvapp/.MainActivity}" drawable="voyo_sk"/>
     <!-- VPN Dot -->
@@ -2620,7 +2617,7 @@
     <item component="ComponentInfo{be.vmma.vtm.zenderapp/be.persgroep.vtmgo.presentation.VtmGoMainActivity}" drawable="zenderapp"/>
     <!-- Vtvcab On TV -->
     <item component="ComponentInfo{com.vtvcab.onTV/com.vtvcab.activities.NewSplashActivity}" drawable="vtvcab_on_tv"/>
-    <!-- Vtvgo TV -->
+    <!-- VTVgo -->
     <item component="ComponentInfo{vn.vtv.vtvgotv/com.vtvcab.activities.NewSplashActivity}" drawable="vtvgo_tv"/>
     <!-- Waipu TV -->
     <item component="ComponentInfo{de.exaring.waipu/de.exaring.waipu.ui.login.LoginActivity}" drawable="waipu_tv"/>
@@ -2746,7 +2743,7 @@
     <item component="ComponentInfo{com.google.android.youtube.tvkids/com.google.android.apps.youtube.tvkids.activity.MainActivity}" drawable="youtube_2"/>
     <!-- YouTube Music -->
     <item component="ComponentInfo{com.google.android.youtube.tvmusic/com.google.android.apps.youtube.tvmusic.activity.MainActivity}" drawable="tvmusic"/>
-    <!-- Yowindow -->
+    <!-- YoWindow -->
     <item component="ComponentInfo{yo.app.free/yo.activity.MainActivity}" drawable="yowindow"/>
     <item component="ComponentInfo{yo.app.free/yo.tv.TvActivity}" drawable="yowindow"/>
     <!-- Zaap TV -->
@@ -2761,9 +2758,12 @@
     <item component="ComponentInfo{de.christinecoenen.code.zapp/.tv.main.MainActivity}" drawable="zapp"/>
     <!-- Zattoo -->
     <item component="ComponentInfo{com.zattoo.player/com.utv.MainActivity}" drawable="zattoo"/>
-    <!-- Zdf -->
+    <!-- ZDF -->
     <item component="ComponentInfo{com.zdf.android.mediathek/com.zdf.android.mediathek.tv.MainActivity}" drawable="zdf"/>
     <item component="ComponentInfo{com.zdf.android.mediathek/.tv.MainActivity}" drawable="zdf"/>
+    <!-- ZDFtivi -->
+    <item component="ComponentInfo{de.zdf.mediathek.tivi/de.zdf.mediathek.tivi.ui.splash.SplashActivity}" drawable="twodf_tivi"/>
+    <item component="ComponentInfo{de.zdf.mediathek.tivi/.ui.splash.SplashActivity}" drawable="twodf_tivi"/>
     <!-- ZEE5 -->
     <item component="ComponentInfo{com.graymatrix.did/com.zee5.android.launch.presentation.AppStartActivity}" drawable="graymatrix"/>
     <!-- Zen IPTV -->

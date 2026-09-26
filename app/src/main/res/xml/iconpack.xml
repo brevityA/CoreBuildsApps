@@ -338,8 +338,8 @@
     <item drawable="hotspot_shield_vpn" />
     <item drawable="hrti" />
     <item drawable="jpage4500" />
-    <item drawable="hueshortcuts" />
     <item drawable="hueessentials" />
+    <item drawable="hueshortcuts" />
     <item drawable="livingroomplus" />
     <item drawable="hyperiongrabber" />
     <item drawable="hyperspin" />
@@ -513,8 +513,8 @@
     <item drawable="nitobi" />
     <item drawable="nflgamecenter" />
     <item drawable="nfolio" />
-    <item drawable="nhk_plus" />
     <item drawable="nhk_world_japan" />
+    <item drawable="nhk_plus" />
     <item drawable="nhl" />
     <item drawable="nintendo_switch" />
     <item drawable="njpw_world" />
@@ -853,11 +853,10 @@
     <item drawable="tvo_kids" />
     <item drawable="tvo_today" />
     <item drawable="tvoverlay" />
-    <item drawable="tvp_vod" />
     <item drawable="tvpsport" />
+    <item drawable="tvp_vod" />
     <item drawable="twilight" />
     <item drawable="twitch" />
-    <item drawable="twodf_tivi" />
     <item drawable="u" />
     <item drawable="u_next" />
     <item drawable="uae4arm" />
@@ -956,6 +955,7 @@
     <item drawable="zapp" />
     <item drawable="zattoo" />
     <item drawable="zdf" />
+    <item drawable="twodf_tivi" />
     <item drawable="graymatrix" />
     <item drawable="zeniptv" />
     <item drawable="zeus" />

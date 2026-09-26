@@ -5319,11 +5319,9 @@ def buttons_swap(c):
 
 
 def dsmart_ring(c):
-    """D-Smart: the heavy ring with its wedge tail sweeping out to the left."""
-    return (f'<path d="M 426 214 A 130 130 0 1 1 166 214 A 130 130 0 1 1 426 214 Z '
-            f'M 362 214 A 66 66 0 1 0 230 214 A 66 66 0 1 0 362 214 Z" '
-            f'fill="{c}" fill-rule="evenodd" stroke="none"/>'
-            + _solid("M 176 176 L 218 322 L 84 420 C 70 430 58 420 60 404 L 64 316 Z", c, 12))
+    """D-Smart: the heavy ring with its broad tail running out to the left."""
+    return (f'<circle cx="304" cy="226" r="116" {_s(c, 32)}/>'
+            f'<path d="M 190 206 L 72 316 L 72 390 L 222 318" {_s(c, 30)}/>')
 
 
 def debridemall_magnet(c):
@@ -5413,14 +5411,14 @@ def photocollage_ring(c):
 
 
 def ppsspp_pad(c):
-    """PPSSPP: the four slanted paddles of its X-shaped pad."""
+    """PPSSPP: the four twisted paddles of its X-shaped pad."""
     out = ""
     for k in range(4):
         d = -90 + 90 * k
-        pts = [_polar(256, 256, 58, d - 38), _polar(256, 256, 192, d - 22),
-               _polar(256, 256, 196, d + 18), _polar(256, 256, 70, d + 34)]
+        pts = [_polar(256, 256, 62, d - 42), _polar(256, 256, 186, d - 6),
+               _polar(256, 256, 190, d + 34), _polar(256, 256, 78, d + 22)]
         p = " L ".join(f"{x:.1f} {y:.1f}" for x, y in pts)
-        out += f'<path d="M {p} Z" {_s(c, 26)}/>'
+        out += f'<path d="M {p} Z" {_s(c, 24)}/>'
     return out
 
 
@@ -5514,11 +5512,11 @@ def gymondo_g(c):
 
 
 def hippos_loop(c):
-    """Hippos: the large ring, the small ring and the bar slanting across them."""
-    return (f'<circle cx="316" cy="228" r="112" {_s(c, 30)}/>'
-            f'<circle cx="144" cy="344" r="60" {_s(c, 28)}/>'
-            f'<circle cx="144" cy="344" r="16" {_f(c)}/>'
-            f'<path d="M 168 88 L 356 424" {_s(c, 32)}/>')
+    """Hippos: the large ring and the small ring, with the bar slanting across."""
+    return (f'<circle cx="310" cy="222" r="116" {_s(c, 30)}/>'
+            f'<circle cx="146" cy="352" r="60" {_s(c, 28)}/>'
+            f'<circle cx="146" cy="352" r="16" {_f(c)}/>'
+            f'<path d="M 176 92 L 362 422" {_s(c, 34)}/>')
 
 
 def juuno_j(c):
@@ -5600,14 +5598,15 @@ def instantbits_cast(c):
 
 
 def couchpuzzle_tiles(c):
-    """Couch Puzzles: the sliding-tile board with one empty slot."""
+    """Couch Puzzles: the sliding-tile board, one tile sliding into the empty slot."""
     tiles = ""
     for r, y in enumerate((72, 208, 344)):
         for q, x in enumerate((72, 208, 344)):
             if (r, q) == (2, 2):
                 continue
             tiles += f'<rect x="{x}" y="{y}" width="96" height="96" rx="20" {_s(c, 22)}/>'
-    return tiles
+    return tiles + (f'<path d="M 436 392 L 360 392 M 390 362 L 360 392 L 390 422" '
+                    f'{_s(c, 22)}/>')
 
 
 def torrserve_bolt(c):

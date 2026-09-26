@@ -340,8 +340,8 @@
         <item>hotspot_shield_vpn</item>
         <item>hrti</item>
         <item>jpage4500</item>
-        <item>hueshortcuts</item>
         <item>hueessentials</item>
+        <item>hueshortcuts</item>
         <item>livingroomplus</item>
         <item>hyperiongrabber</item>
         <item>hyperspin</item>
@@ -515,8 +515,8 @@
         <item>nitobi</item>
         <item>nflgamecenter</item>
         <item>nfolio</item>
-        <item>nhk_plus</item>
         <item>nhk_world_japan</item>
+        <item>nhk_plus</item>
         <item>nhl</item>
         <item>nintendo_switch</item>
         <item>njpw_world</item>
@@ -855,11 +855,10 @@
         <item>tvo_kids</item>
         <item>tvo_today</item>
         <item>tvoverlay</item>
-        <item>tvp_vod</item>
         <item>tvpsport</item>
+        <item>tvp_vod</item>
         <item>twilight</item>
         <item>twitch</item>
-        <item>twodf_tivi</item>
         <item>u</item>
         <item>u_next</item>
         <item>uae4arm</item>
@@ -958,6 +957,7 @@
         <item>zapp</item>
         <item>zattoo</item>
         <item>zdf</item>
+        <item>twodf_tivi</item>
         <item>graymatrix</item>
         <item>zeniptv</item>
         <item>zeus</item>
@@ -1015,7 +1015,7 @@
         <item>Användarmanual</item>
         <item>AnyDesk</item>
         <item>Aparat Sport</item>
-        <item>Apk Installer</item>
+        <item>APK Installer</item>
         <item>APK Updater</item>
         <item>APKMirror</item>
         <item>APKPure</item>
@@ -1027,7 +1027,7 @@
         <item>AppLinked</item>
         <item>Aptoide TV</item>
         <item>Arc Browser</item>
-        <item>Ard Mediathek</item>
+        <item>ARD Mediathek</item>
         <item>Arrow</item>
         <item>Arte</item>
         <item>Artemis</item>
@@ -1072,7 +1072,7 @@
         <item>Button Mapper TV</item>
         <item>Buttons Remapper</item>
         <item>Byebyedpi</item>
-        <item>Byutv</item>
+        <item>BYUtv</item>
         <item>Cafe Bazaar</item>
         <item>Caixaforum Plus</item>
         <item>Canal Digital</item>
@@ -1082,7 +1082,7 @@
         <item>Catch-On TV</item>
         <item>CBC Gem</item>
         <item>CBS News</item>
-        <item>Cda Pl</item>
+        <item>CDA.pl</item>
         <item>CGTN America</item>
         <item>Channel 4</item>
         <item>Channels</item>
@@ -1161,7 +1161,7 @@
         <item>Dropbox</item>
         <item>Dropout</item>
         <item>Dropsync</item>
-        <item>Drtv</item>
+        <item>DRTV</item>
         <item>Dry Bar Comedy Plus</item>
         <item>DS audio</item>
         <item>DS file</item>
@@ -1171,7 +1171,7 @@
         <item>Ds TV Mobile</item>
         <item>DS video</item>
         <item>DuckDuckGo</item>
-        <item>Dudeperfect</item>
+        <item>Dude Perfect</item>
         <item>Dw</item>
         <item>EarthCam</item>
         <item>Echogram</item>
@@ -1243,7 +1243,7 @@
         <item>Fox Sports Go</item>
         <item>Foxtel</item>
         <item>FP Basquetebol</item>
-        <item>Fpt Play</item>
+        <item>FPT Play</item>
         <item>France 24</item>
         <item>Francetv</item>
         <item>Free TV</item>
@@ -1259,7 +1259,7 @@
         <item>Galleri</item>
         <item>Gallery 3D</item>
         <item>Game Launcher</item>
-        <item>Gb News</item>
+        <item>GB News</item>
         <item>GeForce Now</item>
         <item>GenPlay</item>
         <item>Get Icon</item>
@@ -1283,7 +1283,7 @@
         <item>Haystack News</item>
         <item>Hayu</item>
         <item>Hd Streamz</item>
-        <item>Hdhomerun</item>
+        <item>HDHomeRun</item>
         <item>HDMI Source</item>
         <item>Hdo Box</item>
         <item>HDRezka</item>
@@ -1302,10 +1302,10 @@
         <item>Home Workout</item>
         <item>Hoopla</item>
         <item>Hotspot Shield VPN</item>
-        <item>Hrti</item>
+        <item>HRTi</item>
         <item>Hubitat</item>
+        <item>Hue Essentials</item>
         <item>Hue Shortcuts</item>
-        <item>Hueessentials</item>
         <item>Hulu</item>
         <item>Hyperion Grabber</item>
         <item>Hyperspin</item>
@@ -1354,7 +1354,7 @@
         <item>Kernel Media</item>
         <item>Kick</item>
         <item>Kijk</item>
-        <item>Kika</item>
+        <item>KiKA</item>
         <item>Kinopoisk</item>
         <item>Knowledge Network</item>
         <item>Kocowa</item>
@@ -1389,7 +1389,7 @@
         <item>Locals Google TV</item>
         <item>LocalSend</item>
         <item>Loco</item>
-        <item>Lrt</item>
+        <item>LRT</item>
         <item>Lumera</item>
         <item>M3u IPTV</item>
         <item>M6 Plus</item>
@@ -1428,7 +1428,7 @@
         <item>Miracast</item>
         <item>MiXplorer</item>
         <item>MLB</item>
-        <item>Mo 4media</item>
+        <item>MO4Media</item>
         <item>Mobily TV</item>
         <item>Molotov TV</item>
         <item>Monet</item>
@@ -1447,7 +1447,7 @@
         <item>Mpv</item>
         <item>MSM Video</item>
         <item>Mst3k</item>
-        <item>Mtv Katsomo</item>
+        <item>MTV Katsomo</item>
         <item>MUBI</item>
         <item>Mullvad VPN</item>
         <item>MUTV</item>
@@ -1457,7 +1457,7 @@
         <item>My5</item>
         <item>Myiptv</item>
         <item>MyRadar</item>
-        <item>Mytvonline</item>
+        <item>MyTVOnline</item>
         <item>Māori+</item>
         <item>Namava</item>
         <item>Nasa</item>
@@ -1479,18 +1479,18 @@
         <item>NFB</item>
         <item>NFL</item>
         <item>Nfolio</item>
-        <item>Nhk Plus</item>
-        <item>Nhk World Japan</item>
+        <item>NHK World-Japan</item>
+        <item>NHK+</item>
         <item>NHL</item>
         <item>Nintendo Switch</item>
-        <item>Njpw World</item>
+        <item>NJPW World</item>
         <item>Nlziet</item>
         <item>NoBuffr</item>
         <item>Noovo</item>
         <item>Nordisk Film+</item>
         <item>NordVPN</item>
         <item>Norton Clean</item>
-        <item>Nos</item>
+        <item>NOS</item>
         <item>Nostalgia TV</item>
         <item>Notifications For Android TV</item>
         <item>Notubetv</item>
@@ -1498,7 +1498,7 @@
         <item>NOW</item>
         <item>Nowo TV</item>
         <item>Npo Start</item>
-        <item>Nrk TV</item>
+        <item>NRK TV</item>
         <item>NT at Home</item>
         <item>Nuvio TV</item>
         <item>NV Player</item>
@@ -1572,7 +1572,7 @@
         <item>Polsat Box Go</item>
         <item>Polygon Player</item>
         <item>Poweramp Equalizer</item>
-        <item>Ppsspp</item>
+        <item>PPSSPP</item>
         <item>Premier Sports</item>
         <item>Premiere FC</item>
         <item>Premiumize</item>
@@ -1595,13 +1595,13 @@
         <item>Qobuz</item>
         <item>Quasitv</item>
         <item>Quickbars For Home Assistant</item>
-        <item>Quicksupport</item>
+        <item>QuickSupport</item>
         <item>Radio Net</item>
         <item>Radio On TV</item>
         <item>Radio Paradise</item>
         <item>Radioline</item>
         <item>Radioplayer</item>
-        <item>Raiplay</item>
+        <item>RaiPlay</item>
         <item>Rakuten TV</item>
         <item>Rally TV</item>
         <item>RAM TV</item>
@@ -1621,7 +1621,7 @@
         <item>RetroArch</item>
         <item>RetroX</item>
         <item>Rezka</item>
-        <item>Riks TV</item>
+        <item>RiksTV</item>
         <item>RlaXX TV</item>
         <item>RLC+</item>
         <item>RMC BFM</item>
@@ -1655,7 +1655,7 @@
         <item>Settings</item>
         <item>Seven Plus</item>
         <item>Sfjazz At Home</item>
-        <item>Sfr TV</item>
+        <item>SFR TV</item>
         <item>Shadow</item>
         <item>Shahid</item>
         <item>Shark TV</item>
@@ -1716,8 +1716,8 @@
         <item>Strim</item>
         <item>Strmr</item>
         <item>Strongvpn</item>
-        <item>Stv Player</item>
-        <item>Sunnxt</item>
+        <item>STV Player</item>
+        <item>Sun NXT</item>
         <item>Surfshark</item>
         <item>SVT</item>
         <item>Swac TV</item>
@@ -1730,7 +1730,7 @@
         <item>Syncler</item>
         <item>Syncler Beta</item>
         <item>Synology Drive</item>
-        <item>Synologyphotos</item>
+        <item>Synology Photos</item>
         <item>Tabii</item>
         <item>Tablo</item>
         <item>Tailscale</item>
@@ -1739,12 +1739,12 @@
         <item>Tamashakhoneh TV</item>
         <item>tapmad</item>
         <item>Tasker</item>
-        <item>Tbn Plus</item>
+        <item>TBN+</item>
         <item>TBS</item>
         <item>TCL Channel</item>
         <item>TCL Home</item>
         <item>TCL Home Passive</item>
-        <item>Tcn</item>
+        <item>TCN</item>
         <item>Tdtchannels Player</item>
         <item>Tduk Screensaver Manager</item>
         <item>Ted</item>
@@ -1760,7 +1760,7 @@
         <item>Tennistv</item>
         <item>Termux</item>
         <item>Texttv</item>
-        <item>Tf1</item>
+        <item>TF1+</item>
         <item>TFC</item>
         <item>Tflix</item>
         <item>Tg4 Player</item>
@@ -1778,13 +1778,13 @@
         <item>TLC</item>
         <item>TNA Wrestling</item>
         <item>TNT</item>
-        <item>Tod</item>
+        <item>TOD</item>
         <item>Toggo</item>
         <item>Top Radio</item>
         <item>TorBox</item>
         <item>Torguard</item>
         <item>Torrent Search</item>
-        <item>Torrserve</item>
+        <item>TorrServe</item>
         <item>Total Commander</item>
         <item>Trakt</item>
         <item>Trilogy Plus</item>
@@ -1809,23 +1809,22 @@
         <item>TV Vlaanderen</item>
         <item>TV Web Browser</item>
         <item>Tv2 Play</item>
-        <item>Tv360</item>
+        <item>TV360</item>
         <item>Tv4 Play</item>
         <item>TVA+</item>
         <item>Tvi Player</item>
-        <item>Tving</item>
+        <item>TVING</item>
         <item>TVLok</item>
-        <item>Tvnzplus</item>
-        <item>Tvo Kids</item>
-        <item>Tvo Today</item>
-        <item>Tvoverlay</item>
-        <item>Tvp Vod</item>
-        <item>Tvpsport</item>
+        <item>TVNZ+</item>
+        <item>TVO Kids</item>
+        <item>TVO Today</item>
+        <item>TvOverlay</item>
+        <item>TVP Sport</item>
+        <item>TVP VOD</item>
         <item>Twilight</item>
         <item>Twitch</item>
-        <item>Twodf Tivi</item>
         <item>U</item>
-        <item>U Next</item>
+        <item>U-NEXT</item>
         <item>UAE4ARM</item>
         <item>Ucom TV</item>
         <item>UEFA TV</item>
@@ -1833,7 +1832,7 @@
         <item>Ugreen NAS</item>
         <item>Ukiku</item>
         <item>Ultimate File Manager Pro</item>
-        <item>Unifi Protect</item>
+        <item>UniFi Protect</item>
         <item>Unifi TV</item>
         <item>Unlinked</item>
         <item>Unreal Debrid</item>
@@ -1846,7 +1845,7 @@
         <item>Viaplay</item>
         <item>Vibra</item>
         <item>Victory Plus</item>
-        <item>Vidangel</item>
+        <item>VidAngel</item>
         <item>Videoland</item>
         <item>Vidio</item>
         <item>Vieon</item>
@@ -1858,10 +1857,10 @@
         <item>Viva One TV</item>
         <item>ViX</item>
         <item>VLC</item>
-        <item>Vmx</item>
+        <item>VMX</item>
         <item>Vodafone TV</item>
         <item>Voltra TV</item>
-        <item>Voyo Sk</item>
+        <item>Voyo SK</item>
         <item>VPN Dot</item>
         <item>VPN Unlimited</item>
         <item>vRadio</item>
@@ -1869,7 +1868,7 @@
         <item>Vstro Player</item>
         <item>VTM GO</item>
         <item>Vtvcab On TV</item>
-        <item>Vtvgo TV</item>
+        <item>VTVgo</item>
         <item>Waipu TV</item>
         <item>Wako</item>
         <item>WATCHA</item>
@@ -1916,12 +1915,13 @@
         <item>YouTube</item>
         <item>YouTube Kids</item>
         <item>YouTube Music</item>
-        <item>Yowindow</item>
+        <item>YoWindow</item>
         <item>Zaap TV</item>
         <item>Zank Remote</item>
         <item>Zapp</item>
         <item>Zattoo</item>
-        <item>Zdf</item>
+        <item>ZDF</item>
+        <item>ZDFtivi</item>
         <item>ZEE5</item>
         <item>Zen IPTV</item>
         <item>Zeus</item>
@@ -2783,11 +2783,10 @@
         <item>APP</item>
         <item>APP</item>
         <item>APP</item>
-        <item>APP</item>
         <item>SPORT</item>
         <item>APP</item>
-        <item>VIDEO</item>
         <item>APP</item>
+        <item>VIDEO</item>
         <item>APP</item>
         <item>APP</item>
         <item>APP</item>
@@ -2883,6 +2882,7 @@
         <item>APP</item>
         <item>APP</item>
         <item>TOOL</item>
+        <item>APP</item>
         <item>APP</item>
         <item>APP</item>
         <item>APP</item>
@@ -3752,7 +3752,6 @@
         <item>1</item>
         <item>1</item>
         <item>0</item>
-        <item>0</item>
         <item>1</item>
         <item>0</item>
         <item>0</item>
@@ -3848,6 +3847,7 @@
         <item>0</item>
         <item>1</item>
         <item>1</item>
+        <item>0</item>
         <item>0</item>
         <item>0</item>
         <item>1</item>

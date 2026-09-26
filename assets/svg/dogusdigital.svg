@@ -1,3 +1,3 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
-  <path d="M 426 214 A 130 130 0 1 1 166 214 A 130 130 0 1 1 426 214 Z M 362 214 A 66 66 0 1 0 230 214 A 66 66 0 1 0 362 214 Z" fill="#F8D030" fill-rule="evenodd" stroke="none"/><path d="M 176 176 L 218 322 L 84 420 C 70 430 58 420 60 404 L 64 316 Z" stroke="#F8D030" stroke-width="21.8" stroke-linecap="round" stroke-linejoin="round" fill="#F8D030"/>
+  <circle cx="304" cy="226" r="116" fill="none" stroke="#F8D030" stroke-width="32.0" stroke-linecap="round" stroke-linejoin="round"/><path d="M 190 206 L 72 316 L 72 390 L 222 318" fill="none" stroke="#F8D030" stroke-width="32.0" stroke-linecap="round" stroke-linejoin="round"/>
 </svg>

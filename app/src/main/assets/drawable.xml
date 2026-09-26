@@ -627,8 +627,8 @@
     <item drawable="hoopladigital_banner" />
     <item drawable="hrti_banner" />
     <item drawable="jpage4500_banner" />
-    <item drawable="hueshortcuts_banner" />
     <item drawable="hueessentials_banner" />
+    <item drawable="hueshortcuts_banner" />
     <item drawable="hyperiongrabber_banner" />
     <item drawable="ib_banner" />
     <item drawable="ici_tou_tv_banner" />
@@ -730,8 +730,8 @@
     <item drawable="nextup_watch_stand_up_comedy_banner" />
     <item drawable="nitobi_banner" />
     <item drawable="nfolio_banner" />
-    <item drawable="nhk_plus_banner" />
     <item drawable="nhk_world_japan_banner" />
+    <item drawable="nhk_plus_banner" />
     <item drawable="nhl_banner" />
     <item drawable="njpw_world_banner" />
     <item drawable="nlziet_banner" />
@@ -918,7 +918,6 @@
     <item drawable="tvoverlay_banner" />
     <item drawable="tvp_vod_banner" />
     <item drawable="twilight_banner" />
-    <item drawable="twodf_tivi_banner" />
     <item drawable="u_banner" />
     <item drawable="u_next_banner" />
     <item drawable="uae4arm_banner" />
@@ -979,6 +978,7 @@
     <item drawable="zapp_banner" />
     <item drawable="zattoo_banner" />
     <item drawable="zdf_banner" />
+    <item drawable="twodf_tivi_banner" />
     <item drawable="graymatrix_banner" />
     <item drawable="zeus_banner" />
     <item drawable="ziggo_go_tv_banner" />

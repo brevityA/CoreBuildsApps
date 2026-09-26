@@ -707,11 +707,18 @@ class DuotoneTests(unittest.TestCase):
     DUO = [i for i in ICONS if i.get("secondary")]
 
     def paints(self, svg):
+        # One entry per drawn primitive, in the same order `parts` indexes
+        # them (glyphs._PRIMITIVE_RE): a stroked part reports its stroke, a
+        # fill-only part (Hippos' dot) its fill.
         root = ET.fromstring(svg)
-        return [node.get("stroke") for node in root.iter()
-                if node.tag.split("}")[-1] in
-                {"path", "circle", "ellipse", "rect", "line", "polyline", "polygon"}
-                and node.get("stroke") not in (None, "none")]
+        out = []
+        for node in root.iter():
+            if node.tag.split("}")[-1] not in {"path", "circle", "ellipse", "rect",
+                                               "line", "polyline", "polygon"}:
+                continue
+            stroke = node.get("stroke")
+            out.append(stroke if stroke not in (None, "none") else node.get("fill"))
+        return out
 
     def test_the_first_batch_is_declared_and_sourced(self):
         self.assertLessEqual({"YouTube", "VLC", "Emby", "Jellyfin"},

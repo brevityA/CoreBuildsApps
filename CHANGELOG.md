@@ -22,10 +22,10 @@ All notable changes to the Core Builds Icon Pack. Format follows
   Netzkino's countdown, Feeln's crown, Kijk's eye, NFB's watching eye,
   Synology Photos' rosette, TorrServe's bolt and 53 more replace their
   letter tiles. Each is the defining shape redrawn in Core line geometry
-  with the reference icon recorded in the catalogue; nothing is traced. Seven
+  with the reference icon recorded in the catalogue; nothing is traced. Eight
   whose real icons are gradients - Kijk, Kreate, Moonfin, Photo Collage,
-  Unreal Debrid, Flickfolio and Avoid - wear the two ends of that gradient,
-  sampled from the icon.
+  Unreal Debrid, Flickfolio, Avoid and Sooner - wear the two ends of that
+  gradient, sampled from the icon, and Hippos' bar wears its own orange.
 - **314 icons wear their app's real colour.** Letter-tile icons now use the
   dominant colour of their official launcher icon when reliable Play/F-Droid
   evidence exists. Multi-colour, black-and-white, and unlisted apps retain a
@@ -60,6 +60,12 @@ All notable changes to the Core Builds Icon Pack. Format follows
   listings turned out to be a different app and are logged for review in
   `docs/research/icon-reference-pass2-2026-09-26.md`, with mappings left
   unchanged.
+- **51 app names are spelled the way the apps spell them.** Banner
+  wordmarks and the in-app list print the catalogue name, and some had been
+  flattened on import: "Synologyphotos", "Ppsspp", "Tving", "U Next",
+  "Twodf Tivi". They now read Synology Photos, PPSSPP, TVING, U-NEXT,
+  ZDFtivi, BYUtv, TVNZ+, NHK World-Japan and so on. Mappings are unchanged;
+  the name is display text only.
 - **Banner category labels wear the icon's colour.** VOD, STREAM, LIVE and
   every other category kicker used to be one fixed cyan on all 961 banners,
   so Monet's colour sampler could read cyan off a red or violet card. The

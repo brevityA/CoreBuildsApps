@@ -627,8 +627,8 @@
     <item drawable="hoopladigital" />
     <item drawable="hrti" />
     <item drawable="jpage4500" />
-    <item drawable="hueshortcuts" />
     <item drawable="hueessentials" />
+    <item drawable="hueshortcuts" />
     <item drawable="hyperiongrabber" />
     <item drawable="ib" />
     <item drawable="ici_tou_tv" />
@@ -730,8 +730,8 @@
     <item drawable="nextup_watch_stand_up_comedy" />
     <item drawable="nitobi" />
     <item drawable="nfolio" />
-    <item drawable="nhk_plus" />
     <item drawable="nhk_world_japan" />
+    <item drawable="nhk_plus" />
     <item drawable="nhl" />
     <item drawable="njpw_world" />
     <item drawable="nlziet" />
@@ -918,7 +918,6 @@
     <item drawable="tvoverlay" />
     <item drawable="tvp_vod" />
     <item drawable="twilight" />
-    <item drawable="twodf_tivi" />
     <item drawable="u" />
     <item drawable="u_next" />
     <item drawable="uae4arm" />
@@ -979,6 +978,7 @@
     <item drawable="zapp" />
     <item drawable="zattoo" />
     <item drawable="zdf" />
+    <item drawable="twodf_tivi" />
     <item drawable="graymatrix" />
     <item drawable="zeus" />
     <item drawable="ziggo_go_tv" />
