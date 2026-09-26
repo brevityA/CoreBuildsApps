@@ -90,7 +90,8 @@ OFFWHITE_INK = "#E6EDF3"  # the one sanctioned secondary paint (Brand Guide ink)
 
 
 def core_monoline_errors(body: str, accent: str, *, gradient: bool = False,
-                         ink: str | None = None) -> list[str]:
+                         ink: str | None = None,
+                         secondary: str | None = None) -> list[str]:
     """Check glyph ink before the common banner placement transform.
 
     A vendor silhouette or fixed-white wordmark must fail even if its brand
@@ -103,6 +104,9 @@ def core_monoline_errors(body: str, accent: str, *, gradient: bool = False,
     catalog ``ink`` sanctions exactly one secondary literal paint for a
     reviewed two-tone mark — Janky Player's off-white J, the shipped tile's
     white hook. Undeclared whites, gradients or effects still fail.
+
+    A catalog ``secondary`` (duotone) is the third declared extension: its
+    drawn paint joins the allowed set, and nothing else does.
     """
     import xml.etree.ElementTree as ET
 
@@ -118,6 +122,8 @@ def core_monoline_errors(body: str, accent: str, *, gradient: bool = False,
         paints.add("URL(#CBGRAD)")
     if ink:
         paints.add(ink.upper())
+    if secondary:
+        paints.add(secondary.upper())
     if not len(root):
         return ["empty monoline glyph"]
     for node in root.iter():
@@ -134,7 +140,7 @@ def core_monoline_errors(body: str, accent: str, *, gradient: bool = False,
             errors.append(f"{tag}: monoline glyphs cannot use solid fills")
         if node.get("stroke", "").upper() not in paints:
             errors.append(f"{tag}: glyph must use its one shared accent"
-                          + (" or its declared gradient/ink" if paints - {accent.upper()} else ""))
+                          + (" or its declared gradient/ink/secondary" if paints - {accent.upper()} else ""))
         try:
             weight = float(node.get("stroke-width", "nan"))
         except ValueError:

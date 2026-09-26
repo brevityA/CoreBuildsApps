@@ -9,8 +9,8 @@
       "structure": "06ec534b185e11748b5e6b0771d2be361c90edb90b5f0674271391569b1cb0e9"
     },
     "app-ui-catalogue-update.png": {
-      "bytes": 171237,
-      "structure": "a74ec48260e788a7a935d2cdc5abe8b1cf6d71cf84d49939a3c7d348a5c1da0d"
+      "bytes": 167394,
+      "structure": "ef59b5225d01c33709ff6ef4b44f30a36c0fdda5ded27ec75747cf99150ceb78"
     },
     "app-ui-catalogue.png": {
       "bytes": 172653,
@@ -45,7 +45,7 @@
   "inputs": {
     "app/src/main/assets/appfilter.xml": "c3e484407e1eefa56e33ad6fde14d49dff49bde874774bbdadc35570cca92fee",
     "app/src/main/assets/manifest/wallpapers.json": "67c5a010561e1f1a6eeac664dac87e01026d556a471216a58480b22d71058960",
-    "app/src/main/assets/version.json": "279040454c58e3778f2642facee02a8e114bfe4eb4f0360186b5dd256e1c6fe9",
+    "app/src/main/assets/version.json": "c7bc08c9077a20f553810eb30e1233da21bd7685eaab0964234a26020799bb86",
     "app/src/main/res/layout/activity_about.xml": "24bf8847817c6c79e0733b25282913f12756331e851a461fdb5f96e43b08d04a",
     "app/src/main/res/layout/activity_auditor.xml": "3353f96d0932249a0ce841ca31ef98c65103132ec9b9efd1c8144e1fe2c34dca",
     "app/src/main/res/layout/activity_export_progress.xml": "3c388eb2b74cc0b5e362069cff6adfe219a4948eed7220f36a9a2d2d06d48210",
@@ -73,13 +73,13 @@
     "app/src/main/res/values/suite_hub.xml": "6db1311df6a29a1ced5fdbc175f8f97111c0f035786ea3d1f4ed396018580862",
     "app/src/main/res/values/themes.xml": "ecac526951fe40b6c5c01df0ec36730d0e197fd9511862cf587a2143773b46be",
     "tools/build_app_ui_mockups.py": "35207f64a0177534112d4de41d5ae03be128a185f5d24138fc9ef845a56f70f3",
-    "tools/catalog.json": "c7f3d461cdadf465bd042f242c14786686c25e069742d21f0013ffa3cc901183",
+    "tools/catalog.json": "e8592103e408079ed14cceb92d4ed974be81f118a4c372d43570ee383b9e0141",
     "tools/fonts/DejaVuSansMono-Bold.ttf": "2964f6dac8e6e9d71613928340f17bf868e9ea51692cca333c79e74962f02233",
     "tools/fonts/DejaVuSansMono.ttf": "0f5db4f1749979d961019838b160bec74abdf7f9eca69553fe1aa856bbff49a4",
     "tools/fonts/Outfit-Bold.ttf": "04f7c9705153927058475d6c5e9f75b0a1036ec5f6f63ffb69df046191ea8933",
     "tools/fonts/Outfit-ExtraBold.ttf": "056e8cd5840cea4cfc355f672292f7de00d95f5a42bf9b7cd96d511ca8e2883e"
   },
-  "inputs_digest": "ccc010add213c26ff77c3cf5be01fd3109dab702ad3f090f7b354ea9d40c7cd3",
+  "inputs_digest": "dda1d8d62118033aae6b986e078da4c590daabbc1c4215f8743a74f53f78eb95",
   "metrics": {
     "mono-bold@24": 448.0,
     "mono-bold@32": 608.0,
@@ -96,5 +96,5 @@
     "count": 19,
     "digest": "e740977688d5934b6549f0fd831977570ab013547177a520f96e6c65fb8df17c"
   },
-  "renderer": "python 3.11.2, freetype 2.13.2, layout basic, PIL 10.4.0, qrcode installed, fontTools 4.59.0, resvg_py 0.4.0"
+  "renderer": "python 3.11.15, freetype 2.13.2, layout raqm, PIL 10.4.0, qrcode installed, fontTools 4.59.0, resvg_py 0.4.0"
 }

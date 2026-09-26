@@ -8,6 +8,7 @@
   "releaseNotesUrl": "https://github.com/brevityA/CoreBuildsApps/releases",
   "minSdk": 21,
   "highlights": [
+    "Duotone icons",
     "Banner category labels now follow each icon\u2019s accent"
   ]
 }

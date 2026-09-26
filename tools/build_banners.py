@@ -34,7 +34,8 @@ import sys
 from pathlib import Path
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-from glyphs import GLYPHS, apply_gradient, classic_fit, family_body, monoline  # noqa: E402
+from glyphs import (GLYPHS, apply_gradient, apply_secondary, classic_fit,  # noqa: E402
+                    family_body, monoline)
 from icon_style import display_accent  # noqa: E402
 from typeface import FONT_WORDMARK, measure as type_measure, wordmark_spans  # noqa: E402
 from drawable_art import (ART_EXT, BRANDING_PNGS, alias_identical,
@@ -202,8 +203,25 @@ def hex_host(cx, cy, r, color):  # retired in style AA
             f'stroke-linejoin="round"/>')
 
 
+def glyph_paint(glyph, accent, *, monochrome=False, gradient=None, mark=None,
+                style=None, secondary=None):
+    """The glyph body in its catalog paint: flat accent, gradient or duotone.
+
+    One place for the three treatments so the banner and the square icon
+    (glyphs.render_svg) cannot drift apart.
+    """
+    body = monoline(family_body(glyph, accent, mark, style))
+    if monochrome:
+        return body
+    if secondary:
+        body = apply_secondary(body, accent, secondary)
+    if gradient:
+        body = apply_gradient(body, accent, gradient)
+    return body
+
+
 def render(name, glyph, accent, category=None, *, monochrome=False,
-         gradient=None, mark=None, style=None):
+         gradient=None, mark=None, style=None, secondary=None):
     """
     Centred glyph + wordmark, with the Core Builds signature:
 
@@ -252,12 +270,12 @@ def render(name, glyph, accent, category=None, *, monochrome=False,
     spans = ""
     if has_kick:
         ky = baselines[0] - size * 0.92 - 10
-        # The category kicker is part of the banner's colour signal. It used
-        # to be the same cyan on every card, which meant colour-sampling
-        # launchers (notably Monet's navigation glow) read cyan even when the
-        # icon and rail were violet, red or green. Use the already-normalised
-        # icon accent so the complete coloured signal agrees, while the app
-        # name remains light ink for readability.
+        # The category kicker (VOD, STREAM, LIVE...) wears the icon's own
+        # colour. It used to be one fixed cyan on every card, so a
+        # colour-sampling launcher (Monet's navigation glow) could read cyan
+        # off a red, violet or green banner. The already-normalised primary
+        # accent keeps glyph, rail and kicker one colour story; a duotone's
+        # second colour stays inside the mark. The app name stays light ink.
         kick_paths, _ = wordmark_spans([category], KICKER, tx, [ky], accent)
         spans += kick_paths + "\n  "
 
@@ -284,13 +302,13 @@ def render(name, glyph, accent, category=None, *, monochrome=False,
         f'viewBox="0 0 {W} {H}">\n'
         f'  {rail}\n'
         f'  <g transform="translate({start_x:.0f},{gy:.0f}) '
-        f'scale({scale:.5f})">{classic_fit(glyph, apply_gradient(monoline(family_body(glyph, accent, mark, style)), accent, gradient) if gradient and not monochrome else monoline(family_body(glyph, accent, mark, style)))}</g>\n'
+        f'scale({scale:.5f})">{classic_fit(glyph, glyph_paint(glyph, accent, monochrome=monochrome, gradient=gradient, mark=mark, style=style, secondary=secondary))}</g>\n'
         f'  {spans}</svg>\n'
     )
 
 
 def render_glyph_only(glyph, accent, *, monochrome=False, gradient=None,
-                      mark=None, style=None):
+                      mark=None, style=None, secondary=None):
     """Mark-only variant — used when a name adds nothing (e.g. Core Builds)."""
     accent = display_accent(accent, monochrome=monochrome)
     box = 380
@@ -299,7 +317,7 @@ def render_glyph_only(glyph, accent, *, monochrome=False, gradient=None,
         f'<svg xmlns="http://www.w3.org/2000/svg" width="{W}" height="{H}" '
         f'viewBox="0 0 {W} {H}">\n'
         f'  <g transform="translate({(W - box) / 2:.0f},{(H - box) / 2:.0f}) '
-        f'scale({scale:.5f})">{apply_gradient(monoline(family_body(glyph, accent, mark, style)), accent, gradient) if gradient and not monochrome else monoline(family_body(glyph, accent, mark, style))}</g>\n'
+        f'scale({scale:.5f})">{glyph_paint(glyph, accent, monochrome=monochrome, gradient=gradient, mark=mark, style=style, secondary=secondary)}</g>\n'
         f'</svg>\n'
     )
 
@@ -359,7 +377,8 @@ def main():
             svg = render_glyph_only(i["glyph"], i["color"], monochrome=mono,
                                     gradient=i.get("gradient"),
                                     mark=i.get("mark"),
-                                    style=i.get("mark_style"))
+                                    style=i.get("mark_style"),
+                                    secondary=i.get("secondary"))
             # Wordmark marks are not ink-centred on the 512 grid either; the
             # banner centring audit holds them to the same 3px tolerance.
             svg = recentre(svg)
@@ -369,7 +388,8 @@ def main():
             svg = render(i["name"], i.get("banner_glyph", i["glyph"]), i["color"],
                          i.get("category"), monochrome=mono,
                          gradient=i.get("gradient"), mark=i.get("mark"),
-                         style=i.get("mark_style"))
+                         style=i.get("mark_style"),
+                         secondary=i.get("secondary"))
             svg = recentre(svg)
         (SVG_DIR / f"{i['drawable']}.svg").write_text(svg, encoding="utf-8")
     print(f"\u2713 banner SVGs written ({len(targets)}/{len(targets)}) "
