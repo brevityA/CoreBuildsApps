@@ -50,7 +50,7 @@ With no token, score pushes are accepted only from LAN peers. Set `STADIUM_TOKEN
 
 `GET /coreline.json` is intentionally readable. A gym score is not a secret. Changing the score is.
 
-## Core Line 1.3.0 will refuse a raw LAN URL
+## Core Line still refuses a raw LAN URL (1.3.1 included)
 
 `SafeUrl.kt` and `lib/ssrf.mjs` block `10.x`, `192.168.x`, and `172.16–31`. That guard is right for arbitrary RSS. It also blocks the gym.
 

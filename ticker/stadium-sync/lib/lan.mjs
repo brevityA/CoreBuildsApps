@@ -1,7 +1,8 @@
 /**
  * Address policy for stadium sync.
  *
- * Core Line 1.3.0 blocks every private host in SafeUrl.kt and lib/ssrf.mjs.
+ * Core Line blocks every private host in SafeUrl.kt and lib/ssrf.mjs — 1.3.0 through
+ * 1.3.1, and by design: it stops the on-device proxy from being aimed at metadata.
  * That is correct for arbitrary RSS (it stops the TV proxy from hitting
  * cloud metadata). It is wrong for a scoreboard on the same gym Wi-Fi.
  *
