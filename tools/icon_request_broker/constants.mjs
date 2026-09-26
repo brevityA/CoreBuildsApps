@@ -16,4 +16,4 @@ export const TITLE_PREFIX = "[Icon] ";
 // filed the way .github/ISSUE_TEMPLATE/2.icon_not_applying.yml files one.
 export const MAPPING_LABEL = "mapping";
 export const MAPPING_TITLE_PREFIX = "[Not applying] ";
-export const WORKER_VERSION = "2026-09-24-iconreq04";
+export const WORKER_VERSION = "2026-09-24-iconreq05";
