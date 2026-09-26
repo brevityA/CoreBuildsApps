@@ -58,7 +58,10 @@ Paste the validator receipt. Current receipt: `Validated 961 icons · 1179 compo
 
 **The pack identity takes precedence over literal vendor-logo reproduction.**
 Reviewed brand entries use `style: core_monoline`: 32px rounded primary strokes,
-26.2px / 21.8px detail, no solid fills/effects/containers, and one accent. Keep
+26.2px / 21.8px detail, no solid fills/effects/containers, and one accent —
+or, where the brand's own logo is two-tone, a catalog `secondary`
+(`color`, the glyph `parts` it paints, and a `source`; white is drawn as the
+Brand Guide off-white, the rail keeps the primary colour). Keep
 the common Outfit + category + cyan/violet rail banner for NoBuffr and every
 other reviewed app. Do not reintroduce vendor-wordmark-only banners.
 

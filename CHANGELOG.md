@@ -6,6 +6,20 @@ All notable changes to the Core Builds Icon Pack. Format follows
 
 ## [Unreleased]
 
+### Added
+
+- **Duotone icons.** An icon whose own logo is two colours can now wear
+  both: YouTube's play and Emby's play are white inside the brand colour,
+  VLC's cone has its white bands back, and Jellyfin's inner triangle takes
+  the purple stop of its official gradient. The catalog gains a `secondary`
+  field (`color`, the `parts` of the glyph it paints, and a `source` for
+  where the colour was seen); a declaration without a source, on a
+  gradient or monochrome icon, or repainting the whole mark is refused.
+  White is drawn as the Brand Guide off-white, the banner rail stays the
+  primary brand colour so launchers that sample it still read the brand,
+  and every other icon renders byte-for-byte as before. The Glyphs
+  companion picks the new squares up from the same art.
+
 ## [1.9.5] — 2026-09-25
 
 ### Added

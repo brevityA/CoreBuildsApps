@@ -2738,6 +2738,13 @@
       "name": "Emby",
       "drawable": "emby",
       "color": "#52B54B",
+      "secondary": {
+        "color": "#E6EDF3",
+        "parts": [
+          1
+        ],
+        "source": "Official Emby logo (Wikimedia Emby-logo.png, adopted by Emby 2015): #52B54B shape with a white play; white drawn as the Brand Guide off-white ink (2026-09-26)"
+      },
       "glyph": "emby_shield",
       "components": [
         "tv.emby.embyatv/.startup.StartupActivity",
@@ -4800,6 +4807,13 @@
       "name": "Jellyfin",
       "drawable": "jellyfin",
       "color": "#00A4DC",
+      "secondary": {
+        "color": "#AA5CC3",
+        "parts": [
+          1
+        ],
+        "source": "jellyfin/jellyfin-ux logos: official gradient #AA5CC3 to #00A4DC; the inner triangle takes the purple stop, the outer keeps the catalog cyan (2026-09-26)"
+      },
       "glyph": "jellyfin_chevrons",
       "components": [
         "org.jellyfin.androidtv/.ui.startup.StartupActivity",
@@ -11753,6 +11767,14 @@
       "name": "VLC",
       "drawable": "vlc",
       "color": "#FF8800",
+      "secondary": {
+        "color": "#E6EDF3",
+        "parts": [
+          1,
+          2
+        ],
+        "source": "VideoLAN cone (videolan.org goodies; Wikimedia VLC_Icon.svg by Richard Øiestad): orange cone with white bands; white drawn as the Brand Guide off-white ink (2026-09-26)"
+      },
       "glyph": "cone",
       "components": [
         "org.videolan.vlc/.StartActivity",
@@ -12493,6 +12515,13 @@
       "name": "YouTube",
       "drawable": "youtube",
       "color": "#FF0000",
+      "secondary": {
+        "color": "#E6EDF3",
+        "parts": [
+          1
+        ],
+        "source": "YouTube brand site (brand.youtube) icon: red rounded frame with a white play triangle; white drawn as the Brand Guide off-white ink (2026-09-26)"
+      },
       "glyph": "yt_play",
       "components": [
         "com.google.android.youtube.tv/com.google.android.apps.youtube.tv.activity.ShellActivity",

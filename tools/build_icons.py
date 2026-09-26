@@ -24,7 +24,9 @@ import sys
 from pathlib import Path
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-from glyphs import GLYPHS, family_body, family_glyph_for, is_monogram, monoline, render_svg  # noqa: E402
+from glyphs import (GLYPHS, apply_secondary, family_body, family_glyph_for,  # noqa: E402
+                    is_monogram, monoline, render_svg, secondary_color,
+                    secondary_errors)
 from icon_style import CORE_MONOLINE, core_monoline_errors, display_accent  # noqa: E402
 from typeface import MIN_LOCKUP_CAP, lockup_cap  # noqa: E402
 from brandmarks import load_source  # noqa: E402
@@ -84,6 +86,7 @@ def validate(icons, artwork=None):
             errors.append(f"{n}: gradient must be exactly two #RRGGBB stops")
         if i.get("ink") is not None and not re.fullmatch(r"#[0-9A-Fa-f]{6}", i["ink"]):
             errors.append(f"{n}: ink must be #RRGGBB")
+        errors.extend(f"{n}: {e}" for e in secondary_errors(i))
         mark = i.get("mark")
         if mark is not None:
             if not isinstance(mark, str) or not re.fullmatch(r"[A-Z0-9]{2,4}", mark):
@@ -127,8 +130,11 @@ def validate(icons, artwork=None):
                 accent = display_accent(i["color"],
                                        monochrome=i.get("color_note") == "monochrome")
                 body = monoline(GLYPHS[i["glyph"]](accent))
+                if i.get("secondary") and not secondary_errors(i):
+                    body = apply_secondary(body, accent, i["secondary"])
                 errors.extend(f"{n}: {e}" for e in core_monoline_errors(
-                    body, accent, gradient=bool(i.get("gradient")), ink=i.get("ink")))
+                    body, accent, gradient=bool(i.get("gradient")), ink=i.get("ink"),
+                    secondary=secondary_color(i)))
         for comp in i.get("components", []):
             if "/" not in comp:
                 errors.append(f"{n}: component '{comp}' missing '/activity'")
@@ -197,7 +203,7 @@ def main():
         write(SVG_DIR / f"{i['drawable']}.svg",
               render_svg(i["glyph"], i["color"], monochrome=mono,
                          gradient=i.get("gradient"), mark=i.get("mark"),
-                         style=i.get("mark_style")))
+                         style=i.get("mark_style"), secondary=i.get("secondary")))
     print(f"\u2713 SVG masters written ({len(icons)}/{len(icons)}) \u2192 assets/svg/ "
           f"({wordmarked} adaptive wordmark monograms)")
 
@@ -527,9 +533,11 @@ def main():
     for n, i in enumerate(icons):
         cx, cy = (n % cols) * cell, 78 + (n // cols) * cell
         mono = i.get("color_note") == "monochrome"
-        inner = monoline(family_body(i["glyph"],
-                                     display_accent(i["color"], monochrome=mono),
+        accent = display_accent(i["color"], monochrome=mono)
+        inner = monoline(family_body(i["glyph"], accent,
                                      i.get("mark"), i.get("mark_style")))
+        if secondary_color(i):
+            inner = apply_secondary(inner, accent, i["secondary"])
         s.append(f'<rect x="{cx + 9}" y="{cy + 5}" width="{cell - 18}" '
                  f'height="{cell - 34}" rx="16" fill="#151923" '
                  f'stroke="rgba(255,255,255,.06)"/>')
