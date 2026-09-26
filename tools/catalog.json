@@ -5977,6 +5977,7 @@
       "color": "#01C67B",
       "glyph": "mediahub_play",
       "components": [
+        "com.oumi.utility.media.hub/com.mac.utility.media.hub.ui_tv.main.TVSplashActivity",
         "com.oumi.utility.media.hub/com.mac.utility.media.hub.ui_tv.main.TVMainActivity"
       ],
       "category": "APP",

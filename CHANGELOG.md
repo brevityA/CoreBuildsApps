@@ -66,6 +66,13 @@ All notable changes to the Core Builds Icon Pack. Format follows
   label now uses the same colour as the icon and its rail; the app name
   stays light ink. On a duotone icon the label takes the primary colour.
 
+### Fixed
+
+- **VidHub's icon now applies (#182).** The pack mapped VidHub's main
+  screen, `TVMainActivity`, but the launcher entry is its splash screen,
+  `TVSplashActivity`, so Projectivy on a Chromecast (Android 14) never
+  matched it. The reported component is now mapped to the same mark.
+
 ## [1.9.5] — 2026-09-25
 
 ### Added

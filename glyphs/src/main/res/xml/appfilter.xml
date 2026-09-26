@@ -1305,6 +1305,7 @@
     <item component="ComponentInfo{com.spocky.projengmenu/com.spocky.projengmenu.ui.launcherActivities.MediaExplorerShortcutActivity}" drawable="media_explorer"/>
     <item component="ComponentInfo{com.spocky.projengmenu/.ui.launcherActivities.MediaExplorerShortcutActivity}" drawable="media_explorer"/>
     <!-- Media Hub -->
+    <item component="ComponentInfo{com.oumi.utility.media.hub/com.mac.utility.media.hub.ui_tv.main.TVSplashActivity}" drawable="utility"/>
     <item component="ComponentInfo{com.oumi.utility.media.hub/com.mac.utility.media.hub.ui_tv.main.TVMainActivity}" drawable="utility"/>
     <!-- Mediaset Infinity TV -->
     <item component="ComponentInfo{it.mediaset.infinitytv/it.mediaset.mediasetplay.ctv.MainActivity}" drawable="mediaset_infinity_tv"/>

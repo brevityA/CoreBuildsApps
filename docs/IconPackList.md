@@ -1,6 +1,6 @@
 # Supported applications
 
-`962` icons · `1183` mapped components · pack v1.9.6
+`962` icons · `1184` mapped components · pack v1.9.6
 
 Every app below auto-assigns in Projectivy. If one doesn't, the app ships a different launcher activity on your device — open an issue with the component name and it gets added.
 
@@ -455,7 +455,7 @@ Source accents are retained in the catalog. **On dark** is the shared square/ban
 | Meddelandelåda | `meddelandelada` | `#119864` | `#119864` | `com.tcl.messagebox/com.tcl.messagebox.activity.MainActivity` |
 | Media Browser | `mediabrowser` | `#4FACFE` | `#4FACFE` | `com.cmpsoft.MediaBrowser/com.cmpsoft.MediaBrowser.SplashScreenActivity` |
 | Media Explorer | `media_explorer` | `#E6EDF3` | `#E6EDF3` | `com.spocky.projengmenu/.ui.guidedActions.activities.shortcut.MediaExplorerShortcutActivity`<br>`com.spocky.projengmenu/.ui.launcherActivities.MediaExplorerShortcutActivity` |
-| Media Hub | `utility` | `#01C67B` | `#01C67B` | `com.oumi.utility.media.hub/com.mac.utility.media.hub.ui_tv.main.TVMainActivity` |
+| Media Hub | `utility` | `#01C67B` | `#01C67B` | `com.oumi.utility.media.hub/com.mac.utility.media.hub.ui_tv.main.TVSplashActivity`<br>`com.oumi.utility.media.hub/com.mac.utility.media.hub.ui_tv.main.TVMainActivity` |
 | Mediaset Infinity TV | `mediaset_infinity_tv` | `#A366FF` | `#A366FF` | `it.mediaset.infinitytv/it.mediaset.mediasetplay.ctv.MainActivity` |
 | Mediaspelare | `mediaspelare` | `#7B2BFC` | `#7B2BFC` | `com.tcl.ui_mediaCenter/com.tcl.ui_mediaCenter.main.MainActivity` |
 | MEGOGO | `application` | `#FFB020` | `#FFB020` | `com.megogo.application/net.megogo.tv.main.MainActivity` |
