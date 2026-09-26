@@ -183,6 +183,9 @@
     <!-- Ard Mediathek -->
     <item component="ComponentInfo{de.swr.avp.ard.tv/de.swr.avp.ard.tv.TvActivity}" drawable="ard_mediathek"/>
     <item component="ComponentInfo{de.swr.avp.ard.tv/.TvActivity}" drawable="ard_mediathek"/>
+    <!-- Arena4Viewer -->
+    <item component="ComponentInfo{com.bone.android.arena.viewer/com.bone.android.arena.viewer.AVActivity}" drawable="arena4viewer"/>
+    <item component="ComponentInfo{com.bone.android.arena.viewer/.AVActivity}" drawable="arena4viewer"/>
     <!-- Arrow -->
     <item component="ComponentInfo{com.arrowfilms/tv.vhx.LauncherActivity}" drawable="arrowfilms"/>
     <item component="ComponentInfo{com.arrowfilms/tv.vhx.tv.home.TvHomeActivity}" drawable="arrowfilms"/>
@@ -291,6 +294,9 @@
     <!-- Brollie -->
     <item component="ComponentInfo{com.shift72.brollie/com.sh72apps.MainActivity}" drawable="brollie"/>
     <item component="ComponentInfo{com.shift72.brollie/com.sh72apps.TVMainActivity}" drawable="brollie"/>
+    <!-- Browkorf TV -->
+    <item component="ComponentInfo{org.mlm.browkorftv/org.mlm.browkorftv.activity.main.MainActivity}" drawable="browkorf_tv"/>
+    <item component="ComponentInfo{org.mlm.browkorftv/.activity.main.MainActivity}" drawable="browkorf_tv"/>
     <!-- Browsehere -->
     <item component="ComponentInfo{com.tcl.browser/com.tcl.browser.portal.home.activity.HomePageActivity}" drawable="browsehere"/>
     <item component="ComponentInfo{com.tcl.browser/.portal.home.activity.HomePageActivity}" drawable="browsehere"/>

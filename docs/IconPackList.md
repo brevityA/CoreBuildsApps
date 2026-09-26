@@ -1,6 +1,6 @@
 # Supported applications
 
-`961` icons · `1179` mapped components · pack v1.9.6
+`963` icons · `1183` mapped components · pack v1.9.6
 
 Every app below auto-assigns in Projectivy. If one doesn't, the app ships a different launcher activity on your device — open an issue with the component name and it gets added.
 
@@ -70,6 +70,7 @@ Source accents are retained in the catalog. **On dark** is the shared square/ban
 | Aptoide TV | `aptoide` | `#F26522` | `#F26522` | `cm.aptoidetv.pt/.activity.MainActivity` |
 | Arc Browser | `arc_browser` | `#C95CFF` | `#C95CFF` | `net.floatingpoint.android.arcturus/net.floatingpoint.android.arcturus.MainActivity` |
 | Ard Mediathek | `ard_mediathek` | `#FFE14D` | `#FFE14D` | `de.swr.avp.ard.tv/de.swr.avp.ard.tv.TvActivity` |
+| Arena4Viewer | `arena4viewer` | `#E04850` | `#E04850` | `com.bone.android.arena.viewer/com.bone.android.arena.viewer.AVActivity`<br>`com.bone.android.arena.viewer/.AVActivity` |
 | Arrow | `arrowfilms` | `#4FACFE` | `#4FACFE` | `com.arrowfilms/tv.vhx.LauncherActivity`<br>`com.arrowfilms/tv.vhx.tv.home.TvHomeActivity` |
 | Arte | `arte` | `#E6EDF3` | `#E6EDF3` | `tv.arte.plus7/tv.arte.plus7.leanback.MainActivity` |
 | Artemis | `limelight` | `#B388FF` | `#B388FF` | `com.limelight.noir/com.limelight.PcView` |
@@ -108,6 +109,7 @@ Source accents are retained in the catalog. **On dark** is the shared square/ban
 | BritBox | `britbox` | `#C41A3B` | `#C41A3B` | `com.britbox.tv/axis.androidtv.sdk.app.MainActivity` |
 | Brkchen Music | `brkchen` | `#34EB7A` | `#34EB7A` | `com.brkchen.music/com.brkchen.music.MainActivity` |
 | Brollie | `brollie` | `#A366FF` | `#A366FF` | `com.shift72.brollie/com.sh72apps.MainActivity`<br>`com.shift72.brollie/com.sh72apps.TVMainActivity` |
+| Browkorf TV | `browkorf_tv` | `#969058` | `#969058` | `org.mlm.browkorftv/org.mlm.browkorftv.activity.main.MainActivity`<br>`org.mlm.browkorftv/.activity.main.MainActivity` |
 | Browsehere | `browsehere` | `#FFB020` | `#FFB020` | `com.tcl.browser/com.tcl.browser.portal.home.activity.HomePageActivity` |
 | Bstation | `bstar` | `#00D4FF` | `#00D4FF` | `com.bstar.intl.tv/com.biliintl.ibstartv.MainActivity` |
 | Button Mapper TV | `buttonmappertv` | `#FF5CA8` | `#FF5CA8` | `com.tv.remote.button.mapper.remap/com.tv.remote.button.mapper.remap.LauncherActivity` |

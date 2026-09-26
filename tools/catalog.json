@@ -6,7 +6,7 @@
     "grid": 512,
     "safe_area": 432,
     "note": "Core Builds-authored geometric icons on a shared 512 grid. Reviewed brand glyphs use rounded monoline strokes and one accent, not imported vendor silhouettes. Common Outfit/category/rail banners; artwork is reference-only. Canonical brand colours and the dark-card contrast policy remain shared.",
-    "count": 961
+    "count": 963
   },
   "icons": [
     {
@@ -13172,6 +13172,36 @@
       "color_reviewed": null,
       "glyph": "broadcast_T",
       "mark": "TL"
+    },
+    {
+      "name": "Browkorf TV",
+      "drawable": "browkorf_tv",
+      "color": "#969058",
+      "glyph": "browkorf_arches",
+      "components": [
+        "org.mlm.browkorftv/org.mlm.browkorftv.activity.main.MainActivity",
+        "org.mlm.browkorftv/.activity.main.MainActivity"
+      ],
+      "category": "BROWSER",
+      "color_source": "sampled from the official launcher icon (mlm-games/browkorf-tv fastlane icon.png): olive field #969058 behind a brown #513D30 B; the olive carries on the dark card (2026-09-26)",
+      "color_reviewed": "2026-09-26",
+      "mapping_source": "app manifest (mlm-games/browkorf-tv app/src/main/AndroidManifest.xml, LEANBACK_LAUNCHER on .activity.main.MainActivity; applicationId org.mlm.browkorftv); issue #176",
+      "style": "core_monoline"
+    },
+    {
+      "name": "Arena4Viewer",
+      "drawable": "arena4viewer",
+      "color": "#E04850",
+      "glyph": "sport_A",
+      "mark": "AV",
+      "components": [
+        "com.bone.android.arena.viewer/com.bone.android.arena.viewer.AVActivity",
+        "com.bone.android.arena.viewer/.AVActivity"
+      ],
+      "category": "SPORT",
+      "color_source": "sampled from the Arena4Viewer launcher icon (com.bone.android.a4v.oficial v1820 store listing): coral-red #E04850 tile behind a white AV mark (2026-09-26)",
+      "color_reviewed": "2026-09-26",
+      "mapping_source": "legacy package com.bone.android.arena.viewer: main activity AVActivity read from the APK's Androguard report (VirusTotal, v1.45.1). The current package com.bone.android.a4v.oficial (issue #175) is not mapped yet: its launcher activity has not been read off a device or APK, and the unverified ratchet admits no guesses"
     }
   ],
   "artwork": {

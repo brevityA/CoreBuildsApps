@@ -4868,3 +4868,22 @@ GLYPHS.update({
     "kinopoisk_k": kinopoisk_k,
     "aida_sixty_four": aida_sixty_four,
 })
+
+
+def browkorf_arches(c):
+    """Browkorf TV: its B, read as two rounded arches standing on a wide bowl.
+
+    The app's own mark (mlm-games/browkorf-tv, fastlane icon.png) is a heavy
+    B whose two counters open downward like arched windows over a rounded
+    base. Drawn here as original monoline geometry - an arch pair, the shared
+    middle post, and the bowl - not a trace of the filled vendor shape.
+    """
+    return (f'<path d="M 132 292 L 132 206 C 132 158 162 128 196 128 '
+            f'C 230 128 256 158 256 200 C 256 158 282 128 316 128 '
+            f'C 350 128 380 158 380 206 L 380 292" {_s(c, 34)}/>'
+            f'<path d="M 104 292 L 408 292 C 408 360 340 404 256 404 '
+            f'C 172 404 104 360 104 292 Z" {_s(c, 34)}/>'
+            f'<path d="M 256 200 L 256 292" {_s(c, 26)}/>')
+
+
+GLYPHS.update({"browkorf_arches": browkorf_arches})
