@@ -6496,3 +6496,127 @@ def teatv_tv(c):
 
 
 GLYPHS.update({"beetv_bee": beetv_bee, "teatv_tv": teatv_tv})
+
+
+# --------------------------------------------------------------------------
+# Brand marks batch 11 (2026-09-27): letter tiles whose launcher icon, seen in
+# the Projectivy Icon Pack 1.1.9 artwork (reference only), carries a symbol.
+
+
+def anten_dots(c):
+    """Anten TV: the three dots in a row over the name's baseline."""
+    return (f'<circle cx="136" cy="222" r="54" {_s(c, 28)}/>'
+            f'<circle cx="256" cy="222" r="54" {_s(c, 28)}/>'
+            f'<circle cx="376" cy="222" r="54" {_s(c, 28)}/>'
+            f'<path d="M 104 350 L 408 350" {_s(c, 30)}/>')
+
+
+def inatbox_robot(c):
+    """İnat Box: the TV-set robot on two feet, with ball-tipped antennae."""
+    return (f'<path d="M 214 176 L 172 106 M 298 176 L 340 106" {_s(c, 24)}/>'
+            f'<circle cx="172" cy="100" r="18" {_f(c)}/>'
+            f'<circle cx="340" cy="100" r="18" {_f(c)}/>'
+            f'<rect x="100" y="176" width="312" height="208" rx="52" {_s(c, 30)}/>'
+            f'<circle cx="200" cy="268" r="26" {_s(c, 22)}/>'
+            f'<circle cx="312" cy="268" r="26" {_s(c, 22)}/>'
+            f'<path d="M 236 318 L 256 336 L 276 318" {_s(c, 20)}/>'
+            f'<path d="M 176 384 L 164 428 M 336 384 L 348 428" {_s(c, 26)}/>')
+
+
+def bazaar_bag(c):
+    """Cafe Bazaar: the shopping bag with its handle and a smile."""
+    return (f'<path d="{_arc_cw(256, 196, 70, 180, 360)}" {_s(c, 26)}/>'
+            f'<path d="M 112 196 L 400 196 L 376 424 L 136 424 Z" {_s(c, 30)}/>'
+            f'<path d="M 192 290 C 214 344 298 344 320 290" {_s(c, 24)}/>')
+
+
+def coreelec_power(c):
+    """CoreELEC Helper: the power symbol inside its ring."""
+    return (f'<circle cx="256" cy="256" r="190" {_s(c, 24)}/>'
+            f'<path d="{_arc_cw(256, 272, 96, 300, 240)}" {_s(c, 30)}/>'
+            f'<path d="M 256 140 L 256 262" {_s(c, 30)}/>')
+
+
+def cricfy_ball(c):
+    """CricFy TV: the cricket ball and its seam, trailing speed lines."""
+    return (f'<circle cx="300" cy="256" r="132" {_s(c, 28)}/>'
+            f'<path d="M 214 164 C 278 204 324 262 354 364 M 244 142 C 310 186 356 246 388 334" '
+            f'{_s(c, 18)}/>'
+            f'<path d="M 80 196 L 136 196 M 64 256 L 136 256 M 80 316 L 136 316" {_s(c, 24)}/>')
+
+
+def ramcleaner_rocket(c):
+    """RAM Cleaner: the rocket lifting off on the diagonal."""
+    return (f'<g transform="rotate(45 256 256)">'
+            f'<path d="M 256 64 C 318 116 332 204 312 316 L 200 316 C 180 204 194 116 256 64 Z" '
+            f'{_s(c, 28)}/>'
+            f'<circle cx="256" cy="196" r="32" {_s(c, 22)}/>'
+            f'<path d="M 200 256 L 150 340 L 204 332 M 312 256 L 362 340 L 308 332" {_s(c, 24)}/>'
+            f'<path d="M 230 352 L 256 420 L 282 352" {_s(c, 24)}/>'
+            f'</g>')
+
+
+def shark_leap(c):
+    """Shark TV: the shark breaching on the diagonal, fin up, tail forked."""
+    return (f'<path d="M 440 120 C 380 118 250 170 150 290 C 232 326 368 286 440 120 Z" '
+            f'{_s(c, 26)}/>'
+            f'<path d="M 150 290 L 84 262 M 150 290 L 112 358" {_s(c, 26)}/>'
+            f'<path d="M 276 196 L 272 84 L 372 150" {_s(c, 24)}/>'
+            f'<path d="M 262 300 L 226 364 L 306 314" {_s(c, 22)}/>'
+            f'<circle cx="398" cy="146" r="11" {_f(c)}/>'
+            f'<path d="M 72 420 C 130 384 178 456 236 420 C 294 384 342 456 400 420 L 440 404" '
+            f'{_s(c, 24)}/>')
+
+
+def fdroid_robot(c):
+    """F-Droid: the robot box with antennae and its round lens."""
+    return (f'<path d="M 156 180 L 116 108 M 356 180 L 396 108" {_s(c, 24)}/>'
+            f'<rect x="92" y="180" width="328" height="240" rx="40" {_s(c, 30)}/>'
+            f'<circle cx="256" cy="300" r="80" {_s(c, 26)}/>'
+            f'<path d="{_arc_cw(256, 300, 38, 200, 340)}" {_s(c, 20)}/>')
+
+
+def iptvextreme_tv(c):
+    """IPTV Extreme: the old set on rabbit ears, colour bars on screen, two knobs."""
+    return (f'<path d="M 256 150 L 196 86 M 256 150 L 324 86" {_s(c, 22)}/>'
+            f'<rect x="72" y="150" width="368" height="266" rx="36" {_s(c, 28)}/>'
+            f'<rect x="108" y="186" width="228" height="194" rx="22" {_s(c, 22)}/>'
+            f'<path d="M 162 222 L 162 344 M 222 222 L 222 344 M 282 222 L 282 344" {_s(c, 22)}/>'
+            f'<circle cx="388" cy="236" r="16" {_f(c)}/>'
+            f'<circle cx="388" cy="300" r="16" {_f(c)}/>')
+
+
+def vodafone_quote(c):
+    """Vodafone TV: the speech mark inside its circle."""
+    return (f'<circle cx="256" cy="256" r="186" {_s(c, 26)}/>'
+            f'<path d="M 318 150 C 244 150 180 206 180 286 C 180 332 212 364 254 364 '
+            f'C 296 364 326 334 326 294 C 326 256 298 230 262 232 C 262 196 286 164 318 150 Z" '
+            f'{_s(c, 26)}/>')
+
+
+def wrestle_ring(c):
+    """Wrestle Universe: the ring seen from a corner, four posts and two rope loops."""
+    return (f'<path d="M 88 196 L 88 368 M 424 196 L 424 368 M 176 140 L 176 186 M 336 140 L 336 186" '
+            f'{_s(c, 28)}/>'
+            f'<path d="M 88 212 L 176 156 L 336 156 L 424 212 Z M 88 282 L 176 226 L 336 226 '
+            f'L 424 282 Z" {_s(c, 20)}/>'
+            f'<path d="M 56 368 L 456 368 L 420 424 L 92 424 Z" {_s(c, 24)}/>')
+
+
+def pano_record(c):
+    """Pano Scrobbler: a record under the tonearm, one groove marked."""
+    return (f'<circle cx="224" cy="288" r="152" {_s(c, 26)}/>'
+            f'<circle cx="224" cy="288" r="28" {_s(c, 20)}/>'
+            f'<path d="{_arc_cw(224, 288, 92, 150, 260)}" {_s(c, 18)}/>'
+            f'<circle cx="408" cy="100" r="22" {_s(c, 20)}/>'
+            f'<path d="M 408 122 L 408 200 L 316 300" {_s(c, 24)}/>')
+
+
+GLYPHS.update({
+    "anten_dots": anten_dots, "inatbox_robot": inatbox_robot,
+    "bazaar_bag": bazaar_bag, "coreelec_power": coreelec_power,
+    "cricfy_ball": cricfy_ball, "ramcleaner_rocket": ramcleaner_rocket,
+    "shark_leap": shark_leap, "fdroid_robot": fdroid_robot,
+    "iptvextreme_tv": iptvextreme_tv, "vodafone_quote": vodafone_quote,
+    "wrestle_ring": wrestle_ring, "pano_record": pano_record,
+})

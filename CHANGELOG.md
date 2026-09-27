@@ -8,6 +8,16 @@ All notable changes to the Core Builds Icon Pack. Format follows
 
 ### Added
 
+- **12 more apps get marks drawn from their real icons, 171 in all.**
+  Anten TV's three dots, İnat Box's TV robot, Cafe Bazaar's smiling bag,
+  CoreELEC Helper's power ring, Cricfy's ball and speed lines, RAM
+  Cleaner's rocket, Shark TV's breaching shark, F-Droid's robot box,
+  IPTV Extreme's old set with colour bars, Vodafone TV's speech mark,
+  Wrestle Universe's ring and Pano Scrobbler's record and tonearm replace
+  their letter tiles. The launcher icons were read from the Projectivy Icon
+  Pack 1.1.9 artwork, as reference only. Anten TV, Cafe Bazaar, Cricfy,
+  Shark TV and Wrestle Universe take their icons' colours instead of palette
+  colours, and F-Droid is spelled like the app.
 - **21 more apps get marks drawn from their real icons, 123 in all.**
   Zattoo's round set, Sweet.tv's donut screen, vRadio's antenna and dial,
   StrongVPN's nested shield, Hotspot Shield's globe, SCB Next's double

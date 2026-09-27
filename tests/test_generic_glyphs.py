@@ -28,7 +28,7 @@ class GenericGlyphTests(unittest.TestCase):
             "Ace Stream": "broadcast",
             "VivaTV": "broadcast",
             "Acontra Plus": "broadcast",
-            "F Droid": "store",
+            "Aurora Store": "store",
             "Fluffy": "files",
             "Gain": "film",
             "GenPlay": "gaming",

@@ -598,15 +598,15 @@
     {
       "name": "Anten TV",
       "drawable": "antentv",
-      "color": "#00D4FF",
-      "glyph": "broadcast_A",
-      "mark": "AT",
+      "color": "#F090B0",
+      "glyph": "anten_dots",
       "components": [
         "com.farakav.antentv/com.farakav.antentv.app.SplashActivity"
       ],
       "category": "APP",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled from the Projectivy Icon Pack 1.1.9 artwork for com.farakav.antentv (github.com/SicMundus86/ProjectivyIconPack, used as reference only): #F090B0 (2026-09-27)",
+      "color_reviewed": "2026-09-27",
+      "glyph_source": "brand-informed redraw of the Projectivy Icon Pack 1.1.9 artwork for com.farakav.antentv (github.com/SicMundus86/ProjectivyIconPack, used as reference only); Core monoline geometry, not a trace (2026-09-27)"
     },
     {
       "name": "AnyDesk",
@@ -1216,15 +1216,15 @@
       "name": "İnat Box",
       "drawable": "box",
       "color": "#E86830",
-      "glyph": "broadcast_I",
-      "mark": "IB",
+      "glyph": "inatbox_robot",
       "components": [
         "com.bp.box/com.bp.box.activities.SplashActivity"
       ],
       "category": "APP",
       "color_source": "sampled from the Projectivy Icon Pack 1.1.9 artwork for com.bp.box (github.com/SicMundus86/ProjectivyIconPack, used as reference only): #E86830 (2026-09-27)",
       "color_reviewed": "2026-09-27",
-      "name_source": "app name from the Projectivy Icon Pack 1.1.9 artwork for com.bp.box (github.com/SicMundus86/ProjectivyIconPack, used as reference only), which shows the İnat Box logo for this package (2026-09-27)"
+      "name_source": "app name from the Projectivy Icon Pack 1.1.9 artwork for com.bp.box (github.com/SicMundus86/ProjectivyIconPack, used as reference only), which shows the İnat Box logo for this package (2026-09-27)",
+      "glyph_source": "brand-informed redraw of the Projectivy Icon Pack 1.1.9 artwork for com.bp.box (github.com/SicMundus86/ProjectivyIconPack, used as reference only); Core monoline geometry, not a trace (2026-09-27)"
     },
     {
       "name": "Bravia Core",
@@ -1373,15 +1373,15 @@
     {
       "name": "Cafe Bazaar",
       "drawable": "farsitel",
-      "color": "#19D3C5",
-      "glyph": "store_C",
-      "mark": "CB",
+      "color": "#60C018",
+      "glyph": "bazaar_bag",
       "components": [
         "com.farsitel.bazaar.tv/com.farsitel.bazaar.tv.ui.splash.SplashActivity"
       ],
       "category": "APP",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled from the Projectivy Icon Pack 1.1.9 artwork for com.farsitel.bazaar.tv (github.com/SicMundus86/ProjectivyIconPack, used as reference only): #60C018 (2026-09-27)",
+      "color_reviewed": "2026-09-27",
+      "glyph_source": "brand-informed redraw of the Projectivy Icon Pack 1.1.9 artwork for com.farsitel.bazaar.tv (github.com/SicMundus86/ProjectivyIconPack, used as reference only); Core monoline geometry, not a trace (2026-09-27)"
     },
     {
       "name": "Caixaforum Plus",
@@ -1825,14 +1825,14 @@
       "name": "CoreELEC Helper",
       "drawable": "jamal2367",
       "color": "#E00010",
-      "glyph": "tool_C",
-      "mark": "CH",
+      "glyph": "coreelec_power",
       "components": [
         "com.jamal2367.coreelec/com.jamal2367.coreelec.MainActivity"
       ],
       "category": "APP",
       "color_source": "sampled from the Projectivy Icon Pack 1.1.9 artwork for com.jamal2367.coreelec (github.com/SicMundus86/ProjectivyIconPack, used as reference only): #E00010 (2026-09-27)",
-      "color_reviewed": "2026-09-27"
+      "color_reviewed": "2026-09-27",
+      "glyph_source": "brand-informed redraw of the Projectivy Icon Pack 1.1.9 artwork for com.jamal2367.coreelec (github.com/SicMundus86/ProjectivyIconPack, used as reference only); Core monoline geometry, not a trace (2026-09-27)"
     },
     {
       "name": "Corridor",
@@ -1905,15 +1905,15 @@
     {
       "name": "Cricfy",
       "drawable": "cricfy",
-      "color": "#4FACFE",
-      "glyph": "broadcast_C",
-      "mark": "CR",
+      "color": "#E81820",
+      "glyph": "cricfy_ball",
       "components": [
         "com.cricfy.tv/com.android.vending.tv.activities.Splash"
       ],
       "category": "APP",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled from the Projectivy Icon Pack 1.1.9 artwork for com.cricfy.tv (github.com/SicMundus86/ProjectivyIconPack, used as reference only): #E81820 (2026-09-27)",
+      "color_reviewed": "2026-09-27",
+      "glyph_source": "brand-informed redraw of the Projectivy Icon Pack 1.1.9 artwork for com.cricfy.tv (github.com/SicMundus86/ProjectivyIconPack, used as reference only); Core monoline geometry, not a trace (2026-09-27)"
     },
     {
       "name": "Criterion Channel",
@@ -3040,18 +3040,19 @@
       "color_reviewed": null
     },
     {
-      "name": "F Droid",
+      "name": "F-Droid",
       "drawable": "f_droid",
       "color": "#1976D2",
-      "glyph": "store_F",
-      "mark": "FD",
+      "glyph": "fdroid_robot",
       "components": [
         "org.fdroid.fdroid/org.fdroid.fdroid.views.main.MainActivity"
       ],
       "category": "APP",
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "brand reference (pre-provenance, unverified)",
-      "color_reviewed": null
+      "color_reviewed": null,
+      "glyph_source": "brand-informed redraw of the Projectivy Icon Pack 1.1.9 artwork for org.fdroid.fdroid (github.com/SicMundus86/ProjectivyIconPack, used as reference only); Core monoline geometry, not a trace (2026-09-27)",
+      "name_source": "app name as the Projectivy Icon Pack 1.1.9 artwork for org.fdroid.fdroid (github.com/SicMundus86/ProjectivyIconPack, used as reference only) and the app itself spell it (2026-09-27)"
     },
     {
       "name": "F1 TV",
@@ -4768,14 +4769,14 @@
       "name": "IPTV Extreme Pro",
       "drawable": "iptvextremepro",
       "color": "#1565C0",
-      "glyph": "broadcast_I",
-      "mark": "IEP",
+      "glyph": "iptvextreme_tv",
       "components": [
         "com.pecana.iptvextremepro/com.pecana.iptvextremepro.SplashActivity"
       ],
       "category": "LIVE",
       "color_source": "sampled from the official launcher icon (Google Play listing for com.pecana.iptvextremepro): dominant brand accent #1565C0 (2026-09-26)",
-      "color_reviewed": "2026-09-26"
+      "color_reviewed": "2026-09-26",
+      "glyph_source": "brand-informed redraw of the Projectivy Icon Pack 1.1.9 artwork for com.pecana.iptvextremepro (github.com/SicMundus86/ProjectivyIconPack, used as reference only); Core monoline geometry, not a trace (2026-09-27)"
     },
     {
       "name": "IPTV Pro",
@@ -7725,14 +7726,14 @@
       "name": "Pano Scrobbler",
       "drawable": "scrobble",
       "color": "#951B4D",
-      "glyph": "music_S",
-      "mark": "PS",
+      "glyph": "pano_record",
       "components": [
         "com.arn.scrobble/com.arn.scrobble.main.MainActivity"
       ],
       "category": "APP",
       "color_source": "sampled from the official launcher icon (Google Play listing for com.arn.scrobble): dominant brand accent #951B4D (2026-09-26)",
-      "color_reviewed": "2026-09-26"
+      "color_reviewed": "2026-09-26",
+      "glyph_source": "brand-informed redraw of the Projectivy Icon Pack 1.1.9 artwork for com.arn.scrobble (github.com/SicMundus86/ProjectivyIconPack, used as reference only); Core monoline geometry, not a trace (2026-09-27)"
     },
     {
       "name": "Paramount+",
@@ -8587,15 +8588,15 @@
       "name": "RAM Cleaner",
       "drawable": "ram",
       "color": "#34EB7A",
-      "glyph": "broadcast_R",
-      "mark": "RC",
+      "glyph": "ramcleaner_rocket",
       "components": [
         "com.ram.tv/com.ram.tv.Update_done.MySplash"
       ],
       "category": "TOOL",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null,
-      "name_source": "app name from the Projectivy Icon Pack 1.1.9 artwork for com.ram.tv (github.com/SicMundus86/ProjectivyIconPack, used as reference only), which shows the RAM Cleaner logo for this package (2026-09-27)"
+      "name_source": "app name from the Projectivy Icon Pack 1.1.9 artwork for com.ram.tv (github.com/SicMundus86/ProjectivyIconPack, used as reference only), which shows the RAM Cleaner logo for this package (2026-09-27)",
+      "glyph_source": "brand-informed redraw of the Projectivy Icon Pack 1.1.9 artwork for com.ram.tv (github.com/SicMundus86/ProjectivyIconPack, used as reference only); Core monoline geometry, not a trace (2026-09-27)"
     },
     {
       "name": "Rapid Streamz",
@@ -9344,15 +9345,15 @@
     {
       "name": "Shark TV",
       "drawable": "sharktvthree",
-      "color": "#FFB020",
-      "glyph": "broadcast_S",
-      "mark": "ST",
+      "color": "#40B0B8",
+      "glyph": "shark_leap",
       "components": [
         "com.nathnetwork.sharktvthree/com.nathnetwork.sharktvthree.SplashVideoActivity"
       ],
       "category": "APP",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled from the Projectivy Icon Pack 1.1.9 artwork for com.nathnetwork.sharktvthree (github.com/SicMundus86/ProjectivyIconPack, used as reference only): #40B0B8 (2026-09-27)",
+      "color_reviewed": "2026-09-27",
+      "glyph_source": "brand-informed redraw of the Projectivy Icon Pack 1.1.9 artwork for com.nathnetwork.sharktvthree (github.com/SicMundus86/ProjectivyIconPack, used as reference only); Core monoline geometry, not a trace (2026-09-27)"
     },
     {
       "name": "Shizuku",
@@ -12081,15 +12082,15 @@
       "name": "Vodafone TV",
       "drawable": "vodafone_tv",
       "color": "#C51311",
-      "glyph": "broadcast_V",
-      "mark": "VT",
+      "glyph": "vodafone_quote",
       "components": [
         "com.vodafone.vtv.atv.pt/com.witsoftware.vodafonetv.view.splash.SplashActivity"
       ],
       "category": "APP",
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "sampled from the official launcher icon (Google Play listing for com.vodafone.vtv.atv.pt): dominant brand accent #C51311 (2026-09-26)",
-      "color_reviewed": "2026-09-26"
+      "color_reviewed": "2026-09-26",
+      "glyph_source": "brand-informed redraw of the Projectivy Icon Pack 1.1.9 artwork for com.vodafone.vtv.atv.pt (github.com/SicMundus86/ProjectivyIconPack, used as reference only); Core monoline geometry, not a trace (2026-09-27)"
     },
     {
       "name": "Voyo SK",
@@ -12521,16 +12522,16 @@
     {
       "name": "Wrestle Universe",
       "drawable": "wrestle_universe",
-      "color": "#E6EDF3",
-      "glyph": "sport_W",
-      "mark": "WU",
+      "color": "#60A0E0",
+      "glyph": "wrestle_ring",
       "components": [
         "com.wrestle_universe/com.wrestle_universe.MainActivity"
       ],
       "category": "APP",
       "mapping_source": "Projectivy Icon Pack 1.1.9",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled from the Projectivy Icon Pack 1.1.9 artwork for com.wrestle_universe (github.com/SicMundus86/ProjectivyIconPack, used as reference only): #60A0E0 (2026-09-27)",
+      "color_reviewed": "2026-09-27",
+      "glyph_source": "brand-informed redraw of the Projectivy Icon Pack 1.1.9 artwork for com.wrestle_universe (github.com/SicMundus86/ProjectivyIconPack, used as reference only); Core monoline geometry, not a trace (2026-09-27)"
     },
     {
       "name": "WuPlay",

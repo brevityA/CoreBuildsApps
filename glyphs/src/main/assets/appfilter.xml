@@ -656,7 +656,7 @@
     <!-- ExpressVPN -->
     <item component="ComponentInfo{com.expressvpn.vpn/com.expressvpn.vpn.splash.ClassicAlias}" drawable="expressvpn"/>
     <item component="ComponentInfo{com.expressvpn.vpn/.splash.ClassicAlias}" drawable="expressvpn"/>
-    <!-- F Droid -->
+    <!-- F-Droid -->
     <item component="ComponentInfo{org.fdroid.fdroid/org.fdroid.fdroid.views.main.MainActivity}" drawable="f_droid"/>
     <item component="ComponentInfo{org.fdroid.fdroid/.views.main.MainActivity}" drawable="f_droid"/>
     <!-- F1 TV -->
