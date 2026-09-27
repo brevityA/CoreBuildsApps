@@ -21,6 +21,14 @@ All notable changes to the Core Builds Icon Pack. Format follows
   apart from the pack's other TV, radio, shield and grid marks. SCB Next
   takes its icon's red `#D40615` instead of a palette lime, and four names
   are spelled like the apps: SCB Next, SD Maid, StrongVPN, Refresh Rate.
+- **12 more apps get marks drawn from their real icons, 157 in all.**
+  PigeonCast's bird in flight, Kernel Media's popcorn badge, Movieark's
+  ship, NZR+'s silver fern and plus, Haystack News's block H, Rally TV's R
+  in a play arrow, Play Suisse's chevron and Swiss plus, Telenet's winking
+  face, WOW's globe with its plus badge, MAME4droid's arcade panel, Nostalgia
+  TV's set inside a play arrow and talkSPORT's football speech bubble replace
+  their letter tiles. NZR+ takes its gradient's violet `#5214D6` instead of
+  the near-black ground.
 - **22 more apps get marks drawn from their real icons, 145 in all.**
   Bell Fibe's outlined play on its bar, Dramox's split ring, Enjoy TV's play
   and chevron, OTTplay's aperture, Play Now's notched arrowhead, Pathé

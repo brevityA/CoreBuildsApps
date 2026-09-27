@@ -545,7 +545,7 @@ Source accents are retained in the catalog. **On dark** is the shared square/ban
 | Nuvio TV | `nuvio` | `#A238F0` | `#A238F0` | `com.nuvio.app/com.nuvio.tv.MainActivity`<br>`com.nuvio.tv/.MainActivity`<br>`com.nuvio.tv/com.nuvio.tv.MainActivity`<br>`com.nuviodebug.com/com.nuvio.tv.MainActivity`<br>`com.nuvio.tv/.launcher.AppIconDefault`<br>`com.nuvio.tv/.launcher.AppIconArcticBlue`<br>`com.nuvio.tv/.launcher.AppIconEmerald`<br>`com.nuvio.tv/.launcher.AppIconRoseGold`<br>`com.nuvio.tv/.launcher.AppIconCopper`<br>`com.nuvio.tv/.launcher.AppIconGraphite` |
 | NV Player | `nvplayer` | `#B6F23A` | `#B6F23A` | `com.acb.nvplayer/com.ae.video.bplayer.ui.SplashActivity` |
 | Nxsha | `nxsha` | `#3D8BFF` | `#3D8BFF` | `com.nxsha/com.nxsha.MainActivity` |
-| NZR+ | `nzrplus` | `#1C025B` | `#682CFA` | `com.nzrplus.app/com.nzrplus.app.MainActivity` |
+| NZR+ | `nzrplus` | `#5214D6` | `#6E32EC` | `com.nzrplus.app/com.nzrplus.app.MainActivity` |
 | Oblivion | `oblivion` | `#F28020` | `#F28020` | `org.bepass.oblivion/org.bepass.oblivion.ui.SplashScreenActivity` |
 | Obtainium | `obtainium` | `#D2BCFD` | `#D2BCFD` | `dev.imranr.obtainium.fdroid/dev.imranr.obtainium.MainActivity` |
 | Ocean Streamz | `ocean_streamz` | `#2A5D8A` | `#2D6494` | `streamzy.com.ocean/streamzy.com.ocean.activities.SplashScreenActivity` |

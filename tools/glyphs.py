@@ -6308,3 +6308,144 @@ GLYPHS.update({
     "etube_bars": etube_bars, "vpnunlimited_shield": vpnunlimited_shield,
     "hideme_cone": hideme_cone, "fasttask_cube": fasttask_cube,
 })
+
+
+# --------------------------------------------------------------------------
+# Brand marks batch 10 (2026-09-27): the harder symbol icons, each reduced to
+# the one silhouette that identifies its launcher icon.
+
+
+def pigeoncast_bird(c):
+    """PigeonCast: the bird in flight, its wing swept up and tail fanned low."""
+    return (f'<path d="M 92 214 C 176 194 262 258 298 354 C 336 330 384 352 424 404" '
+            f'{_s(c, 28)}/>'
+            f'<path d="M 214 212 C 248 146 326 94 412 72 C 414 172 362 250 298 298" '
+            f'{_s(c, 26)}/>')
+
+
+def kernel_popcorn(c):
+    """Kernel Media: the popcorn bucket, heaped over its rim, in its round badge."""
+    return (f'<circle cx="256" cy="256" r="192" {_s(c, 24)}/>'
+            f'<path d="M 192 236 C 170 196 206 164 232 184 C 240 144 290 140 292 184 '
+            f'C 318 164 352 200 320 236" {_s(c, 22)}/>'
+            f'<path d="M 184 244 L 328 244 L 308 372 L 204 372 Z" {_s(c, 22)}/>'
+            f'<path d="M 232 244 L 238 372 M 280 244 L 274 372" {_s(c, 18)}/>')
+
+
+def movieark_ship(c):
+    """Movieark: the ship's hull running right under two peaked sails."""
+    return (f'<path d="M 80 312 L 432 232 C 404 314 352 372 280 380 L 160 380 '
+            f'C 124 380 96 350 80 312 Z" {_s(c, 26)}/>'
+            f'<path d="M 170 290 L 204 150 L 232 222 L 266 132 L 286 262" {_s(c, 22)}/>')
+
+
+def nzr_fern(c):
+    """NZR+: the silver fern frond, with the plus at its foot."""
+    import math
+    p0, p1, p2, p3 = (112, 404), (190, 320), (300, 190), (404, 84)
+    def at(t):
+        u = 1 - t
+        x = u**3*p0[0] + 3*u*u*t*p1[0] + 3*u*t*t*p2[0] + t**3*p3[0]
+        y = u**3*p0[1] + 3*u*u*t*p1[1] + 3*u*t*t*p2[1] + t**3*p3[1]
+        return x, y
+    leaves = []
+    for k in range(9):
+        t = 0.16 + 0.095 * k
+        x, y = at(t)
+        x2, y2 = at(min(t + 0.02, 1))
+        a = math.atan2(y2 - y, x2 - x)
+        ln = 84 - 7 * k
+        for s in (1, -1):
+            b = a + s * 0.95
+            leaves.append(f"M {x:.1f} {y:.1f} L {x + ln * math.cos(b):.1f} {y + ln * math.sin(b):.1f}")
+    return (f'<path d="M {p0[0]} {p0[1]} C {p1[0]} {p1[1]} {p2[0]} {p2[1]} {p3[0]} {p3[1]}" '
+            f'{_s(c, 24)}/>'
+            f'<path d="{" ".join(leaves)}" {_s(c, 20)}/>'
+            f'<path d="M 400 360 L 400 436 M 362 398 L 438 398" {_s(c, 22)}/>')
+
+
+def haystack_blocks(c):
+    """Haystack News: the H built from two stacked blocks and one tall slab."""
+    return (f'<path d="M 128 104 L 232 104 L 232 240 L 128 248 Z '
+            f'M 128 280 L 232 272 L 232 408 L 128 408 Z '
+            f'M 280 104 L 384 88 L 384 424 L 280 408 Z" {_s(c, 26)}/>')
+
+
+def rally_r(c):
+    """Rally TV: the play arrow with a racing-line R inside it."""
+    return (f'<path d="M 104 80 L 440 256 L 104 432 Z" {_s(c, 28)}/>'
+            f'<path d="M 176 330 L 176 190 L 238 190 C 276 190 276 256 238 256 L 190 256 '
+            f'M 228 256 L 264 322" {_s(c, 22)}/>')
+
+
+def playsuisse_mark(c):
+    """Play Suisse: the chevron and the Swiss plus."""
+    return (f'<path d="M 104 192 L 192 256 L 104 320" {_s(c, 34)}/>'
+            f'<path d="M 332 172 L 332 340 M 248 256 L 416 256" {_s(c, 34)}/>')
+
+
+def telenet_face(c):
+    """Telenet: the winking face in its rounded square."""
+    return (f'<rect x="96" y="96" width="320" height="320" rx="76" {_s(c, 30)}/>'
+            f'<circle cx="202" cy="222" r="18" {_f(c)}/>'
+            f'<path d="M 290 222 L 330 222" {_s(c, 22)}/>'
+            f'<path d="M 184 298 C 218 342 294 342 328 298" {_s(c, 24)}/>')
+
+
+def wow_globe(c):
+    """WOW Presents Plus: the globe with the plus badge on its shoulder."""
+    return (f'<circle cx="228" cy="284" r="150" {_s(c, 26)}/>'
+            f'<ellipse cx="228" cy="284" rx="64" ry="150" {_s(c, 20)}/>'
+            f'<path d="M 78 284 L 378 284" {_s(c, 20)}/>'
+            f'<circle cx="384" cy="128" r="64" {_s(c, 22)}/>'
+            f'<path d="M 384 96 L 384 160 M 352 128 L 416 128" {_s(c, 22)}/>')
+
+
+def mame_panel(c):
+    """MAME4droid: the raked arcade panel with a ball-top stick and three fire buttons."""
+    buttons = "".join(f'<circle cx="{x}" cy="{y}" r="22" {_s(c, 20)}/>'
+                      for x, y in ((276, 356), (334, 340), (392, 324)))
+    return (f'<path d="M 72 268 L 440 228 L 440 424 L 72 424 Z" {_s(c, 26)}/>'
+            f'<path d="M 166 344 L 166 214" {_s(c, 24)}/>'
+            f'<circle cx="166" cy="176" r="42" {_f(c)}/>' + buttons)
+
+
+def nostalgia_tvplay(c):
+    """Nostalgia TV: a retro set tucked inside the play arrow."""
+    return (f'<path d="M 104 88 L 440 256 L 104 424 Z" {_s(c, 28)}/>'
+            f'<rect x="136" y="214" width="156" height="88" rx="14" {_s(c, 18)}/>'
+            f'<path d="M 162 236 L 236 236 L 236 280 L 162 280 Z" {_s(c, 14)}/>'
+            f'<circle cx="264" cy="240" r="8" {_f(c)}/>'
+            f'<circle cx="264" cy="274" r="8" {_f(c)}/>')
+
+
+def talksport_ball(c):
+    """talkSPORT: the football as a speech bubble."""
+    import math
+    cx, cy = 256, 232
+    def pt(r, deg):
+        return cx + r * math.cos(math.radians(deg)), cy + r * math.sin(math.radians(deg))
+    pent = [pt(50, -90 + 72 * k) for k in range(5)]
+    seams = []
+    for k in range(5):
+        a = -90 + 72 * k
+        (x0, y0), (x1, y1) = pent[k], pt(104, a)
+        seams.append(f"M {x0:.1f} {y0:.1f} L {x1:.1f} {y1:.1f}")
+        for d in (-26, 26):
+            x2, y2 = pt(160, a + d)
+            seams.append(f"M {x1:.1f} {y1:.1f} L {x2:.1f} {y2:.1f}")
+    pd = "M " + " L ".join(f"{x:.1f} {y:.1f}" for x, y in pent) + " Z"
+    return (f'<path d="M 196 369 L 150 444 L 244 378" {_s(c, 24)}/>'
+            f'<circle cx="{cx}" cy="{cy}" r="160" {_s(c, 26)}/>'
+            + _solid(pd, c, 10)
+            + f'<path d="{" ".join(seams)}" {_s(c, 18)}/>')
+
+
+GLYPHS.update({
+    "pigeoncast_bird": pigeoncast_bird, "kernel_popcorn": kernel_popcorn,
+    "movieark_ship": movieark_ship, "nzr_fern": nzr_fern,
+    "haystack_blocks": haystack_blocks, "rally_r": rally_r,
+    "playsuisse_mark": playsuisse_mark, "telenet_face": telenet_face,
+    "wow_globe": wow_globe, "mame_panel": mame_panel,
+    "nostalgia_tvplay": nostalgia_tvplay, "talksport_ball": talksport_ball,
+})

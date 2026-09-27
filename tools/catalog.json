@@ -4148,14 +4148,14 @@
       "name": "Haystack News",
       "drawable": "haystack",
       "color": "#D73728",
-      "glyph": "broadcast_H",
-      "mark": "HN",
+      "glyph": "haystack_blocks",
       "components": [
         "com.haystack.android/com.haystack.android.tv.ui.activities.LoadingActivity"
       ],
       "category": "APP",
       "color_source": "sampled from the official launcher icon (Google Play listing for com.haystack.android): dominant brand accent #D73728 (2026-09-26)",
-      "color_reviewed": "2026-09-26"
+      "color_reviewed": "2026-09-26",
+      "glyph_source": "brand-informed redraw of the official launcher icon (Google Play listing for com.haystack.android); Core monoline geometry, not a trace (2026-09-27)"
     },
     {
       "name": "Hayu",
@@ -5162,14 +5162,14 @@
       "name": "Kernel Media",
       "drawable": "kernelmedia",
       "color": "#FFA300",
-      "glyph": "broadcast_K",
-      "mark": "KM",
+      "glyph": "kernel_popcorn",
       "components": [
         "androidtv.kernelmedia.tv/androidtv.kernelmedia.tv.ui.MainActivity"
       ],
       "category": "APP",
       "color_source": "sampled from the official launcher icon (Google Play listing for androidtv.kernelmedia.tv): dominant brand accent #FFA300 (2026-09-26)",
-      "color_reviewed": "2026-09-26"
+      "color_reviewed": "2026-09-26",
+      "glyph_source": "brand-informed redraw of the official launcher icon (Google Play listing for androidtv.kernelmedia.tv); Core monoline geometry, not a trace (2026-09-27)"
     },
     {
       "name": "Kick",
@@ -5821,15 +5821,15 @@
       "name": "Mame4droid",
       "drawable": "mame4droid",
       "color": "#BA2C41",
-      "glyph": "gaming_M",
-      "mark": "MA",
+      "glyph": "mame_panel",
       "components": [
         "com.seleuco.mame4droid/com.seleuco.mame4droid.MAME4droid"
       ],
       "category": "GAMING",
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "sampled from the official launcher icon (Google Play listing for com.seleuco.mame4droid): dominant brand accent #BA2C41 (2026-09-26)",
-      "color_reviewed": "2026-09-26"
+      "color_reviewed": "2026-09-26",
+      "glyph_source": "brand-informed redraw of the official launcher icon (Google Play listing for com.seleuco.mame4droid); Core monoline geometry, not a trace (2026-09-27)"
     },
     {
       "name": "Mango TV",
@@ -6327,15 +6327,15 @@
       "name": "Movieark",
       "drawable": "movieark",
       "color": "#00C1D2",
-      "glyph": "film_M",
-      "mark": "MO",
+      "glyph": "movieark_ship",
       "components": [
         "com.tcl.movieark/com.tcl.waterfall.overseas.main.MainActivity"
       ],
       "category": "APP",
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "sampled from the official launcher icon (Google Play listing for com.tcl.movieark): dominant brand accent #00C1D2 (2026-09-26)",
-      "color_reviewed": "2026-09-26"
+      "color_reviewed": "2026-09-26",
+      "glyph_source": "brand-informed redraw of the official launcher icon (Google Play listing for com.tcl.movieark); Core monoline geometry, not a trace (2026-09-27)"
     },
     {
       "name": "MovieBox Pro",
@@ -7041,14 +7041,14 @@
       "name": "Nostalgia TV",
       "drawable": "nostalgiatv",
       "color": "#B0875E",
-      "glyph": "broadcast_N",
-      "mark": "NT",
+      "glyph": "nostalgia_tvplay",
       "components": [
         "com.nostalgiatv/com.nostalgiatv.MainActivity"
       ],
       "category": "APP",
       "color_source": "sampled from the official launcher icon (Google Play listing for com.nostalgiatv): dominant brand accent #B0875E (2026-09-26)",
-      "color_reviewed": "2026-09-26"
+      "color_reviewed": "2026-09-26",
+      "glyph_source": "brand-informed redraw of the official launcher icon (Google Play listing for com.nostalgiatv); Core monoline geometry, not a trace (2026-09-27)"
     },
     {
       "name": "Notifications For Android TV",
@@ -7221,15 +7221,15 @@
     {
       "name": "NZR+",
       "drawable": "nzrplus",
-      "color": "#1C025B",
-      "glyph": "broadcast_N",
-      "mark": "NZ",
+      "color": "#5214D6",
+      "glyph": "nzr_fern",
       "components": [
         "com.nzrplus.app/com.nzrplus.app.MainActivity"
       ],
       "category": "APP",
-      "color_source": "sampled from the official launcher icon (Google Play listing for com.nzrplus.app): dominant brand accent #1C025B (2026-09-26)",
-      "color_reviewed": "2026-09-26"
+      "color_source": "sampled from the official launcher icon (Google Play listing for com.nzrplus.app): the violet at the top of its gradient; the old value was the near-black ground, #5214D6 (2026-09-27)",
+      "color_reviewed": "2026-09-27",
+      "glyph_source": "brand-informed redraw of the official launcher icon (Google Play listing for com.nzrplus.app); Core monoline geometry, not a trace (2026-09-27)"
     },
     {
       "name": "Oblivion",
@@ -7872,14 +7872,14 @@
       "name": "PigeonCast",
       "drawable": "pigeoncast",
       "color": "#0092B0",
-      "glyph": "broadcast_P",
-      "mark": "PI",
+      "glyph": "pigeoncast_bird",
       "components": [
         "com.pigeoncast.screen.mirroring.android.tv/com.mirror_universal.receiver.activity.MainActivity"
       ],
       "category": "APP",
       "color_source": "sampled from the official launcher icon (Google Play listing for com.pigeoncast.screen.mirroring.android.tv): dominant brand accent #0092B0 (2026-09-26)",
-      "color_reviewed": "2026-09-26"
+      "color_reviewed": "2026-09-26",
+      "glyph_source": "brand-informed redraw of the official launcher icon (Google Play listing for com.pigeoncast.screen.mirroring.android.tv); Core monoline geometry, not a trace (2026-09-27)"
     },
     {
       "name": "PikPak",
@@ -7912,14 +7912,14 @@
       "name": "Play Suisse",
       "drawable": "playsuisse",
       "color": "#9A0326",
-      "glyph": "broadcast_P",
-      "mark": "PS",
+      "glyph": "playsuisse_mark",
       "components": [
         "ch.srgssr.playsuisse.tv/ch.srgssr.playsuisse.tv.MainActivity"
       ],
       "category": "APP",
       "color_source": "sampled from the official launcher icon (Google Play listing for ch.srgssr.playsuisse.tv): dominant brand accent #9A0326 (2026-09-26)",
-      "color_reviewed": "2026-09-26"
+      "color_reviewed": "2026-09-26",
+      "glyph_source": "brand-informed redraw of the official launcher icon (Google Play listing for ch.srgssr.playsuisse.tv); Core monoline geometry, not a trace (2026-09-27)"
     },
     {
       "name": "Play Universal",
@@ -8505,15 +8505,15 @@
       "name": "Rally TV",
       "drawable": "rally_tv",
       "color": "#EC532C",
-      "glyph": "sport_R",
-      "mark": "RT",
+      "glyph": "rally_r",
       "components": [
         "laola1.wrc/com.redbull.rallytv.core.MainActivity"
       ],
       "category": "SPORT",
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "sampled from the official launcher icon (Google Play listing for laola1.wrc): dominant brand accent #EC532C (2026-09-26)",
-      "color_reviewed": "2026-09-26"
+      "color_reviewed": "2026-09-26",
+      "glyph_source": "brand-informed redraw of the official launcher icon (Google Play listing for laola1.wrc); Core monoline geometry, not a trace (2026-09-27)"
     },
     {
       "name": "RAM TV",
@@ -10332,15 +10332,15 @@
       "name": "Talksport",
       "drawable": "talksport",
       "color": "#FBEC20",
-      "glyph": "sport_T",
-      "mark": "TA",
+      "glyph": "talksport_ball",
       "components": [
         "com.talksport.tsliveen/com.simplestream.presentation.startup.StartUpActivity"
       ],
       "category": "SPORT",
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "sampled from the official launcher icon (Google Play listing for com.talksport.tsliveen): dominant brand accent #FBEC20 (2026-09-26)",
-      "color_reviewed": "2026-09-26"
+      "color_reviewed": "2026-09-26",
+      "glyph_source": "brand-informed redraw of the official launcher icon (Google Play listing for com.talksport.tsliveen); Core monoline geometry, not a trace (2026-09-27)"
     },
     {
       "name": "Tamashakhoneh TV",
@@ -10524,16 +10524,14 @@
       "name": "Telenet",
       "drawable": "telenet",
       "color": "#F8E94F",
-      "glyph": "broadcast_T",
-      "mark": "TE",
-      "mark_style": "lower",
-      "mark_style_source": "telenet's logotype is lowercase ('telenet.be')",
+      "glyph": "telenet_face",
       "components": [
         "be.telenet.tv/com.libertyglobal.horizonx.MainActivity"
       ],
       "category": "APP",
       "color_source": "sampled from the official launcher icon (Google Play listing for be.telenet.tv): dominant brand accent #F8E94F (2026-09-26)",
-      "color_reviewed": "2026-09-26"
+      "color_reviewed": "2026-09-26",
+      "glyph_source": "brand-informed redraw of the official launcher icon (Google Play listing for be.telenet.tv); Core monoline geometry, not a trace (2026-09-27)"
     },
     {
       "name": "Telewebion",
@@ -12410,8 +12408,7 @@
       "name": "Wow",
       "drawable": "wow",
       "color": "#F47F20",
-      "glyph": "broadcast_W",
-      "mark": "WO",
+      "glyph": "wow_globe",
       "components": [
         "tv.vhx.worldofwonder/tv.vhx.LauncherActivity",
         "tv.vhx.worldofwonder/tv.vhx.tv.home.TvHomeActivity"
@@ -12419,7 +12416,8 @@
       "category": "APP",
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "sampled from the official launcher icon (Google Play listing for tv.vhx.worldofwonder): dominant brand accent #F47F20 (2026-09-26)",
-      "color_reviewed": "2026-09-26"
+      "color_reviewed": "2026-09-26",
+      "glyph_source": "brand-informed redraw of the official launcher icon (Google Play listing for tv.vhx.worldofwonder); Core monoline geometry, not a trace (2026-09-27)"
     },
     {
       "name": "Wow2",
