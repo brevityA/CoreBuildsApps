@@ -1614,7 +1614,7 @@
         <item>Realstream TV</item>
         <item>Red Bull TV</item>
         <item>Redream</item>
-        <item>Refreshrate</item>
+        <item>Refresh Rate</item>
         <item>Remote Capture</item>
         <item>Remote Starter For Yatse</item>
         <item>Replaio Radio</item>
@@ -1642,11 +1642,11 @@
         <item>SAI</item>
         <item>SBS</item>
         <item>Sbsondemand</item>
-        <item>Scb Next</item>
+        <item>SCB Next</item>
         <item>Scholastic</item>
         <item>Screen Recording App</item>
         <item>Screenscape</item>
-        <item>Sd Maid</item>
+        <item>SD Maid</item>
         <item>SD Maid SE</item>
         <item>SeerrTV</item>
         <item>Send Files to TV</item>
@@ -1715,7 +1715,7 @@
         <item>Strexo Player</item>
         <item>Strim</item>
         <item>Strmr</item>
-        <item>Strongvpn</item>
+        <item>StrongVPN</item>
         <item>STV Player</item>
         <item>Sun NXT</item>
         <item>Surfshark</item>
@@ -3229,7 +3229,7 @@
         <item>1</item>
         <item>1</item>
         <item>1</item>
-        <item>0</item>
+        <item>1</item>
         <item>0</item>
         <item>1</item>
         <item>1</item>
@@ -3325,7 +3325,7 @@
         <item>0</item>
         <item>1</item>
         <item>0</item>
-        <item>0</item>
+        <item>1</item>
         <item>0</item>
         <item>0</item>
         <item>1</item>
@@ -3406,7 +3406,7 @@
         <item>1</item>
         <item>1</item>
         <item>1</item>
-        <item>0</item>
+        <item>1</item>
         <item>0</item>
         <item>0</item>
         <item>1</item>
@@ -3541,10 +3541,10 @@
         <item>1</item>
         <item>1</item>
         <item>1</item>
-        <item>0</item>
         <item>0</item>
         <item>1</item>
         <item>1</item>
+        <item>1</item>
         <item>0</item>
         <item>1</item>
         <item>1</item>
@@ -3570,11 +3570,11 @@
         <item>1</item>
         <item>1</item>
         <item>1</item>
-        <item>0</item>
         <item>1</item>
         <item>1</item>
-        <item>0</item>
+        <item>1</item>
         <item>0</item>
+        <item>1</item>
         <item>1</item>
         <item>1</item>
         <item>1</item>
@@ -3643,11 +3643,10 @@
         <item>1</item>
         <item>0</item>
         <item>1</item>
-        <item>0</item>
+        <item>1</item>
         <item>0</item>
         <item>0</item>
         <item>1</item>
-        <item>0</item>
         <item>0</item>
         <item>0</item>
         <item>0</item>
@@ -3660,6 +3659,7 @@
         <item>1</item>
         <item>1</item>
         <item>1</item>
+        <item>1</item>
         <item>0</item>
         <item>1</item>
         <item>0</item>
@@ -3785,13 +3785,13 @@
         <item>0</item>
         <item>0</item>
         <item>1</item>
-        <item>0</item>
         <item>0</item>
         <item>0</item>
         <item>0</item>
         <item>0</item>
         <item>0</item>
         <item>0</item>
+        <item>1</item>
         <item>0</item>
         <item>1</item>
         <item>0</item>
@@ -3847,7 +3847,7 @@
         <item>0</item>
         <item>1</item>
         <item>1</item>
-        <item>0</item>
+        <item>1</item>
         <item>0</item>
         <item>0</item>
         <item>1</item>

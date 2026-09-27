@@ -656,7 +656,7 @@ Source accents are retained in the catalog. **On dark** is the shared square/ban
 | Realstream TV | `realstream_tv` | `#53FC18` | `#53FC18` | `com.doctor.realstream_tv/com.doctor.realstream.ComposeMainActivity` |
 | Red Bull TV | `nousguide` | `#DB0A40` | `#DB0A40` | `com.nousguide.android.rbtv/com.redbull.rbtv.core.MainActivity` |
 | Redream | `redream` | `#2E58D3` | `#2E58D3` | `io.recompiled.redream/io.recompiled.redream.MainActivity` |
-| Refreshrate | `refreshrate` | `#76B900` | `#76B900` | `mobi.bytearray.refreshrate/mobi.bytearray.refreshrate.SettingsActivity` |
+| Refresh Rate | `refreshrate` | `#76B900` | `#76B900` | `mobi.bytearray.refreshrate/mobi.bytearray.refreshrate.SettingsActivity` |
 | Remote Capture | `remote_capture` | `#19D3C5` | `#19D3C5` | `com.emanuelef.remote_capture/com.emanuelef.remote_capture.activities.MainActivity` |
 | Remote Starter For Yatse | `remote_starter_for_yatse` | `#F04DE0` | `#F04DE0` | `tv.yatse.android.remotestarter/tv.yatse.android.remotestarter.ui.MainActivity` |
 | Replaio Radio | `replaio` | `#004AAD` | `#0059CF` | `com.hv.replaio/com.hv.replaio.activities.tv.StartActivityTV` |
@@ -684,11 +684,11 @@ Source accents are retained in the catalog. **On dark** is the shared square/ban
 | SAI | `sai` | `#3DDC84` | `#3DDC84` | `com.apkpreem.sai/.ui.activities.MainActivity` |
 | SBS | `sbs` | `#F0A500` | `#F0A500` | `au.com.sbs.ondemand.tv/.MainActivity`<br>`au.com.sbs.ondemand/.MainActivity` |
 | Sbsondemand | `sbsondemand` | `#182020` | `#E6EDF3` | `com.sbs.ondemand.tv/com.sbs.ondemand.tv.MainActivity` |
-| Scb Next | `scb_next` | `#B6F23A` | `#B6F23A` | `com.scb.next/com.scb.next.SplashActivity` |
+| SCB Next | `scb_next` | `#D40615` | `#D40615` | `com.scb.next/com.scb.next.SplashActivity` |
 | Scholastic | `scholastic` | `#E4002B` | `#E4002B` | `com.future.scholastic/com.future.scholastic.SplashActivity` |
 | Screen Recording App | `screen_recording_app` | `#FF3B30` | `#FF3B30` | `de.twokit.screen.recording.app/de.twokit.screen.recording.app.MainActivity`<br>`de.twokit.screen.recording.app/de.twokit.screen.recording.app.ui.MainActivity`<br>`de.twokit.screen.recording.app/de.twokit.screen.recording.app.tv.TvMainActivity` |
 | Screenscape | `screenscape` | `#FF4D4D` | `#FF4D4D` | `com.screenscape/com.screenscape.MainActivity` |
-| Sd Maid | `sd_maid` | `#95C85A` | `#95C85A` | `eu.thedarken.sdm/eu.thedarken.sdm.main.ui.SDMMainActivity` |
+| SD Maid | `sd_maid` | `#95C85A` | `#95C85A` | `eu.thedarken.sdm/eu.thedarken.sdm.main.ui.SDMMainActivity` |
 | SD Maid SE | `sdmaid` | `#8BC34A` | `#8BC34A` | `eu.darken.sdmse/.main.ui.MainActivity` |
 | SeerrTV | `seerrtv` | `#5A13BE` | `#792AEA` | `ca.devmesh.seerrtv/ca.devmesh.seerrtv.MainActivity` |
 | Send Files to TV | `sendfilestotv` | `#2979FF` | `#2979FF` | `com.yablio.sendfilestotv/.ui.MainActivity` |
@@ -757,7 +757,7 @@ Source accents are retained in the catalog. **On dark** is the shared square/ban
 | Strexo Player | `strexo` | `#E91E63` | `#E91E63` | `com.callum.strexoplayer/.LoginActivity` |
 | Strim | `strim` | `#FAED6F` | `#FAED6F` | `no.strim.atv/no.rikstv.atv.MainActivity` |
 | Strmr | `strmr` | `#FF3366` | `#FF3366` | `com.strmr.ps/com.strmr.ps.ui.auth.SignInActivity`<br>`com.strmr.ps/.ui.auth.SignInActivity` |
-| Strongvpn | `strongvpn` | `#E7AC32` | `#E7AC32` | `com.strongvpn/com.strongvpn.ui.activities.SplashActivity` |
+| StrongVPN | `strongvpn` | `#E7AC32` | `#E7AC32` | `com.strongvpn/com.strongvpn.ui.activities.SplashActivity` |
 | STV Player | `stv_player` | `#00D4FF` | `#00D4FF` | `tv.stv.android.player/tv.stv.android.commontv.screens.TvActivity` |
 | Sun NXT | `sunnxt` | `#C51E40` | `#C51E40` | `com.suntv.sunnxt/com.androidtv.myplex.ui.activity.SPlashActivity` |
 | Surfshark | `surfshark` | `#1EBFBF` | `#1EBFBF` | `com.surfshark.vpnclient.android/com.surfshark.vpnclient.android.StartActivity` |

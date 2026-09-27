@@ -6,6 +6,18 @@ All notable changes to the Core Builds Icon Pack. Format follows
 
 ## [Unreleased]
 
+### Added
+
+- **10 more apps get marks drawn from their real icons, 112 in all.**
+  Zattoo's round set, Sweet.tv's donut screen, vRadio's antenna and dial,
+  StrongVPN's nested shield, Hotspot Shield's globe, SCB Next's double
+  chevrons, SD Maid's droid in a bow, Nfolio's wall of frames, Refresh
+  Rate's settings column and MagiConnect's phone and screen replace their
+  letter tiles. Each carries the one feature of its real icon that sets it
+  apart from the pack's other TV, radio, shield and grid marks. SCB Next
+  takes its icon's red `#D40615` instead of a palette lime, and four names
+  are spelled like the apps: SCB Next, SD Maid, StrongVPN, Refresh Rate.
+
 ## [1.9.6] — 2026-09-26
 
 ### Added

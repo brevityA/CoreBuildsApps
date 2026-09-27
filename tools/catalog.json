@@ -4460,8 +4460,7 @@
       "name": "Hotspot Shield VPN",
       "drawable": "hotspot_shield_vpn",
       "color": "#2196F3",
-      "glyph": "vpn_H",
-      "mark": "HS",
+      "glyph": "hotspot_globe",
       "components": [
         "hotspotshield.android.vpn/com.anchorfree.hotspotshield.ui.HssActivity",
         "hotspotshield.android.vpn/com.anchorfree.hotspotshield.ui.tv.HssTvActivity"
@@ -4469,7 +4468,8 @@
       "category": "VPN",
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "brand reference (pre-provenance, unverified)",
-      "color_reviewed": null
+      "color_reviewed": null,
+      "glyph_source": "brand-informed redraw of the official launcher icon (play listing for hotspotshield.android.vpn); Core monoline geometry, not a trace (2026-09-27)"
     },
     {
       "name": "HRTi",
@@ -6853,15 +6853,15 @@
       "name": "Nfolio",
       "drawable": "nfolio",
       "color": "#004575",
-      "glyph": "photos_N",
-      "mark": "NF",
+      "glyph": "nfolio_grid",
       "components": [
         "com.snapwood.nfolio/com.snapwood.gfolio.SelectAlbumActivity"
       ],
       "category": "APP",
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "sampled from the official launcher icon (Google Play listing for com.snapwood.nfolio): dominant brand accent #004575 (2026-09-26)",
-      "color_reviewed": "2026-09-26"
+      "color_reviewed": "2026-09-26",
+      "glyph_source": "brand-informed redraw of the official launcher icon (play listing for com.snapwood.nfolio); Core monoline geometry, not a trace (2026-09-27)"
     },
     {
       "name": "NHK+",
@@ -8642,18 +8642,18 @@
       "color_reviewed": "2026-09-26"
     },
     {
-      "name": "Refreshrate",
+      "name": "Refresh Rate",
       "drawable": "refreshrate",
       "color": "#76B900",
-      "glyph": "tool_R",
-      "mark": "RE",
+      "glyph": "refreshrate_bars",
       "components": [
         "mobi.bytearray.refreshrate/mobi.bytearray.refreshrate.SettingsActivity"
       ],
       "category": "APP",
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "sampled from the official launcher icon (APKCombo mirror of the Google Play listing for mobi.bytearray.refreshrate): dominant brand accent #76B900 (2026-09-26)",
-      "color_reviewed": "2026-09-26"
+      "color_reviewed": "2026-09-26",
+      "glyph_source": "brand-informed redraw of the official launcher icon (APKCombo mirror of the Google Play listing for mobi.bytearray.refreshrate); Core monoline geometry, not a trace (2026-09-27)"
     },
     {
       "name": "Remote Capture",
@@ -9030,18 +9030,18 @@
       "color_note": "monochrome"
     },
     {
-      "name": "Scb Next",
+      "name": "SCB Next",
       "drawable": "scb_next",
-      "color": "#B6F23A",
-      "glyph": "broadcast_S",
-      "mark": "SN",
+      "color": "#D40615",
+      "glyph": "scb_chevrons",
       "components": [
         "com.scb.next/com.scb.next.SplashActivity"
       ],
       "category": "APP",
       "mapping_source": "Projectivy Icon Pack 1.1.9",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled from the official launcher icon (APKCombo mirror of the Google Play listing for com.scb.next): dominant brand accent #D40615 (2026-09-27)",
+      "color_reviewed": "2026-09-27",
+      "glyph_source": "brand-informed redraw of the official launcher icon (APKCombo mirror of the Google Play listing for com.scb.next); Core monoline geometry, not a trace (2026-09-27)"
     },
     {
       "name": "Scholastic",
@@ -9091,18 +9091,18 @@
       "color_reviewed": null
     },
     {
-      "name": "Sd Maid",
+      "name": "SD Maid",
       "drawable": "sd_maid",
       "color": "#95C85A",
-      "glyph": "tool_S",
-      "mark": "SM",
+      "glyph": "sdmaid_robot",
       "components": [
         "eu.thedarken.sdm/eu.thedarken.sdm.main.ui.SDMMainActivity"
       ],
       "category": "APP",
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "sampled from the official launcher icon (Google Play listing for eu.thedarken.sdm): dominant brand accent #95C85A (2026-09-26)",
-      "color_reviewed": "2026-09-26"
+      "color_reviewed": "2026-09-26",
+      "glyph_source": "brand-informed redraw of the official launcher icon (play listing for eu.thedarken.sdm); Core monoline geometry, not a trace (2026-09-27)"
     },
     {
       "name": "SD Maid SE",
@@ -10034,18 +10034,18 @@
       "color_reviewed": null
     },
     {
-      "name": "Strongvpn",
+      "name": "StrongVPN",
       "drawable": "strongvpn",
       "color": "#E7AC32",
-      "glyph": "vpn_S",
-      "mark": "ST",
+      "glyph": "strongvpn_shield",
       "components": [
         "com.strongvpn/com.strongvpn.ui.activities.SplashActivity"
       ],
       "category": "VPN",
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "sampled from the official launcher icon (Google Play listing for com.strongvpn): dominant brand accent #E7AC32 (2026-09-26)",
-      "color_reviewed": "2026-09-26"
+      "color_reviewed": "2026-09-26",
+      "glyph_source": "brand-informed redraw of the official launcher icon (play listing for com.strongvpn); Core monoline geometry, not a trace (2026-09-27)"
     },
     {
       "name": "STV Player",
@@ -10142,15 +10142,15 @@
       "name": "Sweet TV",
       "drawable": "sweet_tv",
       "color": "#20BEC6",
-      "glyph": "broadcast_S",
-      "mark": "ST",
+      "glyph": "sweettv_donut",
       "components": [
         "tv.sweet.tvplayer/tv.sweet.tvplayer.MainActivity"
       ],
       "category": "APP",
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "sampled from the official launcher icon (Google Play listing for tv.sweet.tvplayer): dominant brand accent #20BEC6 (2026-09-26)",
-      "color_reviewed": "2026-09-26"
+      "color_reviewed": "2026-09-26",
+      "glyph_source": "brand-informed redraw of the official launcher icon (play listing for tv.sweet.tvplayer); Core monoline geometry, not a trace (2026-09-27)"
     },
     {
       "name": "SYFY",
@@ -12050,14 +12050,14 @@
       "name": "vRadio",
       "drawable": "vradio",
       "color": "#2C4C6C",
-      "glyph": "music_V",
-      "mark": "VR",
+      "glyph": "vradio_dial",
       "components": [
         "com.ilv.vradio/com.ilv.vradiotv.MainActivity"
       ],
       "category": "MUSIC",
       "color_source": "sampled from the official launcher icon (Google Play listing for com.ilv.vradio): dominant brand accent #2C4C6C (2026-09-26)",
-      "color_reviewed": "2026-09-26"
+      "color_reviewed": "2026-09-26",
+      "glyph_source": "brand-informed redraw of the official launcher icon (play listing for com.ilv.vradio); Core monoline geometry, not a trace (2026-09-27)"
     },
     {
       "name": "VRT MAX",
@@ -12827,7 +12827,7 @@
       "name": "Zattoo",
       "drawable": "zattoo",
       "color": "#F26528",
-      "glyph": "broadcast_Z",
+      "glyph": "zattoo_tv",
       "components": [
         "com.zattoo.player/com.utv.MainActivity"
       ],
@@ -12835,7 +12835,7 @@
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "sampled from the official launcher icon (Google Play listing for com.zattoo.player): dominant brand accent #F26528 (2026-09-26)",
       "color_reviewed": "2026-09-26",
-      "mark": "ZA"
+      "glyph_source": "brand-informed redraw of the official launcher icon (play listing for com.zattoo.player); Core monoline geometry, not a trace (2026-09-27)"
     },
     {
       "name": "ZDF",
@@ -13213,15 +13213,15 @@
       "name": "MagiConnect",
       "drawable": "magiconnect",
       "color": "#FF0000",
-      "glyph": "tool_M",
-      "mark": "MA",
+      "glyph": "magiconnect_screens",
       "components": [
         "com.tcl.magiconnectfree/com.tcl.multiscreeninteractiontv.UI.activity.SplashActivity"
       ],
       "category": "TOOL",
       "mapping_source": "owner TV audit 2026-09-21 (Auditor screenshots, TCL Google TV)",
       "color_source": "owner TV audit 2026-09-21: TCL stock icon red tile",
-      "color_reviewed": "2026-09-21"
+      "color_reviewed": "2026-09-21",
+      "glyph_source": "brand-informed redraw of the official launcher icon (play listing for com.tcl.magiconnectfree); Core monoline geometry, not a trace (2026-09-27)"
     },
     {
       "name": "Meddelandelåda",

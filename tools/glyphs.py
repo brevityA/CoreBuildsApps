@@ -5896,3 +5896,104 @@ GLYPHS.update({
     "meddelande_chat": meddelande_chat, "pmx_gear": pmx_gear,
     "getflix_popcorn": getflix_popcorn, "radioparadise_phones": radioparadise_phones,
 })
+
+
+# --------------------------------------------------------------------------
+# Brand-informed marks, batch 6 (2026-09-27): the last symbol icons that can
+# be drawn without colliding with an existing mark. Each carries the one
+# feature of its real icon the look-alike group does not have.
+
+def hotspot_globe(c):
+    """Hotspot Shield: the shield with its swirling globe inside."""
+    return (f'<path d="M 256 72 L 420 128 L 420 246 C 420 346 350 410 256 444 '
+            f'C 162 410 92 346 92 246 L 92 128 Z" {_s(c, 30)}/>'
+            f'<circle cx="256" cy="252" r="84" {_s(c, 26)}/>'
+            f'<path d="M 256 168 C 206 204 206 300 256 336 M 180 222 C 222 244 290 244 332 222" '
+            f'{_s(c, 22)}/>')
+
+
+def nfolio_grid(c):
+    """Nfolio: the four-by-four wall of outlined frames."""
+    tiles = ""
+    for y in (92, 188, 284, 380):
+        for x in (92, 188, 284, 380):
+            tiles += f'<rect x="{x}" y="{y}" width="44" height="44" rx="10" {_s(c, 16)}/>'
+    return tiles
+
+
+def refreshrate_bars(c):
+    """Refresh Rate: the list of blocks and lines, like a settings column."""
+    rows = ""
+    for y in (112, 208, 304, 400):
+        rows += (f'<rect x="96" y="{y - 26}" width="136" height="52" rx="14" {_s(c, 22)}/>'
+                 f'<path d="M 280 {y} L 416 {y}" {_s(c, 26)}/>')
+    return rows
+
+
+def scb_chevrons(c):
+    """SCB Next: the X drawn as two pairs of nested chevrons."""
+    return (f'<path d="M 108 108 L 234 256 L 108 404 M 404 108 L 278 256 L 404 404" {_s(c, 30)}/>'
+            f'<path d="M 184 108 L 256 190 L 328 108 M 184 404 L 256 322 L 328 404" {_s(c, 26)}/>')
+
+
+def sdmaid_robot(c):
+    """SD Maid: the droid head wearing a maid's bow, over its apron."""
+    return (f'<path d="M 104 262 C 104 150 408 150 408 262 Z" {_s(c, 28)}/>'
+            f'<path d="M 170 132 L 148 96 M 342 132 L 364 96" {_s(c, 22)}/>'
+            f'<circle cx="196" cy="216" r="16" {_f(c)}/>'
+            f'<circle cx="316" cy="216" r="16" {_f(c)}/>'
+            f'<path d="M 104 304 L 408 304 L 408 386 C 408 410 394 424 370 424 L 142 424 '
+            f'C 118 424 104 410 104 386 Z" {_s(c, 28)}/>'
+            + _solid("M 380 132 L 344 108 L 344 156 Z M 380 132 L 416 108 L 416 156 Z", c, 8))
+
+
+def strongvpn_shield(c):
+    """StrongVPN: the shield with a second shield nested inside."""
+    return (f'<path d="M 256 64 L 424 124 L 424 244 C 424 344 352 410 256 448 '
+            f'C 160 410 88 344 88 244 L 88 124 Z" {_s(c, 30)}/>'
+            f'<path d="M 256 150 L 346 184 L 346 250 C 346 306 306 342 256 364 '
+            f'C 206 342 166 306 166 250 L 166 184 Z" {_s(c, 26)}/>')
+
+
+def sweettv_donut(c):
+    """Sweet.tv: the wide screen on its stand, with the donut on it."""
+    return (f'<rect x="64" y="112" width="384" height="236" rx="28" {_s(c, 28)}/>'
+            f'<path d="M 196 412 L 316 412 M 256 348 L 256 412" {_s(c, 26)}/>'
+            f'<circle cx="256" cy="230" r="62" {_s(c, 28)}/>'
+            f'<circle cx="256" cy="230" r="14" {_f(c)}/>')
+
+
+def vradio_dial(c):
+    """vRadio: the radio with its long antenna, big dial and tuning scale."""
+    return (f'<rect x="72" y="200" width="368" height="224" rx="36" {_s(c, 28)}/>'
+            f'<path d="M 132 200 L 380 104" {_s(c, 22)}/>'
+            f'<circle cx="392" cy="100" r="18" {_f(c)}/>'
+            f'<circle cx="180" cy="312" r="62" {_s(c, 26)}/>'
+            f'<path d="M 290 272 L 390 272 M 290 312 L 390 312" {_s(c, 20)}/>'
+            f'<circle cx="340" cy="366" r="20" {_s(c, 20)}/>')
+
+
+def zattoo_tv(c):
+    """Zattoo: the round set with antennae and its tilted rounded screen."""
+    return (f'<circle cx="256" cy="282" r="164" {_s(c, 30)}/>'
+            f'<path d="M 196 126 L 150 70 M 316 126 L 362 70" {_s(c, 26)}/>'
+            f'<path d="M 172 226 C 236 206 312 208 362 230 C 372 282 364 326 344 362 '
+            f'C 284 346 212 344 164 356 C 148 314 150 262 172 226 Z" {_s(c, 26)}/>')
+
+
+def magiconnect_screens(c):
+    """MagiConnect: the phone casting onto the screen beside it."""
+    return (f'<rect x="200" y="112" width="248" height="190" rx="24" {_s(c, 28)}/>'
+            f'<path d="M 324 302 L 324 350 M 272 350 L 376 350" {_s(c, 22)}/>'
+            f'<rect x="64" y="196" width="104" height="220" rx="22" {_s(c, 28)}/>'
+            f'<path d="M 100 380 L 132 380" {_s(c, 20)}/>'
+            + _solid("M 302 170 L 362 207 L 302 244 Z", c, 12))
+
+
+GLYPHS.update({
+    "hotspot_globe": hotspot_globe, "nfolio_grid": nfolio_grid,
+    "refreshrate_bars": refreshrate_bars, "scb_chevrons": scb_chevrons,
+    "sdmaid_robot": sdmaid_robot, "strongvpn_shield": strongvpn_shield,
+    "sweettv_donut": sweettv_donut, "vradio_dial": vradio_dial,
+    "zattoo_tv": zattoo_tv, "magiconnect_screens": magiconnect_screens,
+})

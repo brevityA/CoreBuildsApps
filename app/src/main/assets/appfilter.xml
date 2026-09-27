@@ -1877,7 +1877,7 @@
     <!-- Redream -->
     <item component="ComponentInfo{io.recompiled.redream/io.recompiled.redream.MainActivity}" drawable="redream_banner"/>
     <item component="ComponentInfo{io.recompiled.redream/.MainActivity}" drawable="redream_banner"/>
-    <!-- Refreshrate -->
+    <!-- Refresh Rate -->
     <item component="ComponentInfo{mobi.bytearray.refreshrate/mobi.bytearray.refreshrate.SettingsActivity}" drawable="refreshrate_banner"/>
     <item component="ComponentInfo{mobi.bytearray.refreshrate/.SettingsActivity}" drawable="refreshrate_banner"/>
     <!-- Remote Capture -->
@@ -1959,7 +1959,7 @@
     <!-- Sbsondemand -->
     <item component="ComponentInfo{com.sbs.ondemand.tv/com.sbs.ondemand.tv.MainActivity}" drawable="sbsondemand_banner"/>
     <item component="ComponentInfo{com.sbs.ondemand.tv/.MainActivity}" drawable="sbsondemand_banner"/>
-    <!-- Scb Next -->
+    <!-- SCB Next -->
     <item component="ComponentInfo{com.scb.next/com.scb.next.SplashActivity}" drawable="scb_next_banner"/>
     <item component="ComponentInfo{com.scb.next/.SplashActivity}" drawable="scb_next_banner"/>
     <!-- Scholastic -->
@@ -1975,7 +1975,7 @@
     <!-- Screenscape -->
     <item component="ComponentInfo{com.screenscape/com.screenscape.MainActivity}" drawable="screenscape_banner"/>
     <item component="ComponentInfo{com.screenscape/.MainActivity}" drawable="screenscape_banner"/>
-    <!-- Sd Maid -->
+    <!-- SD Maid -->
     <item component="ComponentInfo{eu.thedarken.sdm/eu.thedarken.sdm.main.ui.SDMMainActivity}" drawable="sd_maid_banner"/>
     <item component="ComponentInfo{eu.thedarken.sdm/.main.ui.SDMMainActivity}" drawable="sd_maid_banner"/>
     <!-- SD Maid SE -->
@@ -2184,7 +2184,7 @@
     <!-- Strmr -->
     <item component="ComponentInfo{com.strmr.ps/com.strmr.ps.ui.auth.SignInActivity}" drawable="strmr_banner"/>
     <item component="ComponentInfo{com.strmr.ps/.ui.auth.SignInActivity}" drawable="strmr_banner"/>
-    <!-- Strongvpn -->
+    <!-- StrongVPN -->
     <item component="ComponentInfo{com.strongvpn/com.strongvpn.ui.activities.SplashActivity}" drawable="strongvpn_banner"/>
     <item component="ComponentInfo{com.strongvpn/.ui.activities.SplashActivity}" drawable="strongvpn_banner"/>
     <!-- STV Player -->
