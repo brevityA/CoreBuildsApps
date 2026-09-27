@@ -6008,3 +6008,16 @@ def tcl_home_grid(c):
 
 GLYPHS.update({"tcl_guide_pages": tcl_guide_pages, "tcl_media_folder": tcl_media_folder,
                "tcl_home_grid": tcl_home_grid})
+
+
+def tduk_killer_droid(c):
+    """TDUK APP Killer: the Android robot with an X across its chest."""
+    return (f'<path d="M 156 196 C 156 124 356 124 356 196 Z" {_s(c, 24)}/>'
+            f'<path d="M 196 118 L 176 84 M 316 118 L 336 84" {_s(c, 20)}/>'
+            f'<rect x="156" y="224" width="200" height="176" rx="24" {_s(c, 26)}/>'
+            f'<path d="M 112 236 L 112 330 M 400 236 L 400 330 M 212 400 L 212 444 M 300 400 L 300 444" '
+            f'{_s(c, 26)}/>'
+            f'<path d="M 214 270 L 298 354 M 298 270 L 214 354" {_s(c, 26)}/>')
+
+
+GLYPHS.update({"tduk_killer_droid": tduk_killer_droid})

@@ -6,7 +6,7 @@
     "grid": 512,
     "safe_area": 432,
     "note": "Core Builds-authored geometric icons on a shared 512 grid. Reviewed brand glyphs use rounded monoline strokes and one accent, not imported vendor silhouettes. Common Outfit/category/rail banners; artwork is reference-only. Canonical brand colours and the dark-card contrast policy remain shared.",
-    "count": 967
+    "count": 968
   },
   "icons": [
     {
@@ -337,18 +337,20 @@
       "glyph_source": "brand-informed redraw of the official launcher icon (play listing for com.boost.airplay.receiver); Core monoline geometry, not a trace (2026-09-26)"
     },
     {
-      "name": "Airreceiverlite",
+      "name": "AirReceiver",
       "drawable": "airreceiverlite",
       "color": "#19D3C5",
       "glyph": "broadcast_A",
-      "mark": "AI",
+      "mark": "AR",
       "components": [
-        "com.softmedia.receiver.lite/com.softmedia.receiver.app.SplashActivity"
+        "com.softmedia.receiver.lite/com.softmedia.receiver.app.SplashActivity",
+        "com.softmedia.receiver/com.softmedia.receiver.app.SplashActivity"
       ],
       "category": "APP",
-      "mapping_source": "Projectivy Icon Pack 1.1.9",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "mapping_source": "Projectivy Icon Pack 1.1.9; com.softmedia.receiver (full app) from issue #194 (device-reported by onlytanmoy: Core Builds audit screenshot)",
+      "color_source": "core-builds palette: the launcher icon in the issue #194 (device-reported by onlytanmoy: Core Builds audit screenshot) is grey on white, so it carries no brand colour",
+      "color_reviewed": null,
+      "mark_source": "logotype letters from the launcher icon in the issue #194 (device-reported by onlytanmoy: Core Builds audit screenshot), which reads 'AR' on a screen; set in the pack's face, not traced (2026-09-27)"
     },
     {
       "name": "Airscreen",
@@ -10520,6 +10522,27 @@
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
+    },
+    {
+      "name": "TDUK APP Killer",
+      "drawable": "tduk_app_killer",
+      "color": "#90D80C",
+      "glyph": "tduk_killer_droid",
+      "components": [
+        "com.tduk.appklr/com.tduk.cachecleaner.ShellAutoRunner"
+      ],
+      "category": "TOOL",
+      "mapping_source": "issue #193 (device-reported by onlytanmoy: Core Builds audit screenshot)",
+      "color_source": "sampled from the launcher icon in the issue #193 (device-reported by onlytanmoy: Core Builds audit screenshot): the robot's green #90D80C",
+      "color_reviewed": "2026-09-27",
+      "glyph_source": "brand-informed redraw of the launcher icon in the issue #193 (device-reported by onlytanmoy: Core Builds audit screenshot): the Android robot with a red X on its chest; Core monoline geometry, not a trace (2026-09-27)",
+      "secondary": {
+        "color": "#E41800",
+        "parts": [
+          4
+        ],
+        "source": "the launcher icon in the issue #193 (device-reported by onlytanmoy: Core Builds audit screenshot): the X's red #E41800 (2026-09-27)"
+      }
     },
     {
       "name": "Tduk Screensaver Manager",

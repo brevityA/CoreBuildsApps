@@ -78,8 +78,10 @@
     <!-- AirPlay Receiver -->
     <item component="ComponentInfo{com.boost.airplay.receiver/com.boost.airplay.receiver.ui.activity.SplashActivity}" drawable="receiver"/>
     <item component="ComponentInfo{com.boost.airplay.receiver/.ui.activity.SplashActivity}" drawable="receiver"/>
-    <!-- Airreceiverlite -->
+    <!-- AirReceiver -->
     <item component="ComponentInfo{com.softmedia.receiver.lite/com.softmedia.receiver.app.SplashActivity}" drawable="airreceiverlite"/>
+    <item component="ComponentInfo{com.softmedia.receiver/com.softmedia.receiver.app.SplashActivity}" drawable="airreceiverlite"/>
+    <item component="ComponentInfo{com.softmedia.receiver/.app.SplashActivity}" drawable="airreceiverlite"/>
     <!-- Airscreen -->
     <item component="ComponentInfo{com.ionitech.airscreen/com.ionitech.airscreen.ui.activity.welcome.StreamAssistantIndexActivity}" drawable="airscreen"/>
     <item component="ComponentInfo{com.ionitech.airscreen/.ui.activity.welcome.StreamAssistantIndexActivity}" drawable="airscreen"/>
@@ -2286,6 +2288,8 @@
     <!-- Tdtchannels Player -->
     <item component="ComponentInfo{com.tdtchannels.player/com.tdtchannels.player.SplashScreenActivity}" drawable="tdtchannels_player"/>
     <item component="ComponentInfo{com.tdtchannels.player/.SplashScreenActivity}" drawable="tdtchannels_player"/>
+    <!-- TDUK APP Killer -->
+    <item component="ComponentInfo{com.tduk.appklr/com.tduk.cachecleaner.ShellAutoRunner}" drawable="tduk_app_killer"/>
     <!-- Tduk Screensaver Manager -->
     <item component="ComponentInfo{com.tduk.scrmgr/dev.vodik7.tdukscrmng.MainActivity}" drawable="tduk_screensaver_manager"/>
     <!-- Ted -->

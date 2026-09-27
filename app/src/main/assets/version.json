@@ -1,8 +1,8 @@
 {
   "versionCode": 39,
   "versionName": "1.9.7",
-  "iconCount": 967,
-  "componentCount": 1191,
+  "iconCount": 968,
+  "componentCount": 1193,
   "releaseDate": "2026-09-27",
   "apkUrl": "https://github.com/brevityA/CoreBuildsApps/releases/download/iconpack/iconpack-release.apk",
   "releaseNotesUrl": "https://github.com/brevityA/CoreBuildsApps/releases",
@@ -10,8 +10,10 @@
   "highlights": [
     "Vision+",
     "Four TCL system apps",
+    "TDUK APP Killer",
     "AK47Sports, Voltra TV and AnikenTV drawn from their real icons",
     "Three more TCL apps drawn from their tiles",
-    "TCL Home and TCL Home Passive now match on TCL TVs"
+    "TCL Home and TCL Home Passive now match on TCL TVs",
+    "AirReceiver now matches the full app, not just Lite"
   ]
 }

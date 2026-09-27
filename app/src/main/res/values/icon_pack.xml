@@ -786,6 +786,7 @@
         <item>tcl_home_passive</item>
         <item>tcn</item>
         <item>tdtchannels_player</item>
+        <item>tduk_app_killer</item>
         <item>tduk_screensaver_manager</item>
         <item>ted</item>
         <item>tele_quebec</item>
@@ -995,7 +996,7 @@
         <item>Aircast</item>
         <item>Airpin Pro</item>
         <item>AirPlay Receiver</item>
-        <item>Airreceiverlite</item>
+        <item>AirReceiver</item>
         <item>Airscreen</item>
         <item>AK47Sports</item>
         <item>Al Jazeera</item>
@@ -1755,6 +1756,7 @@
         <item>TCL Home Passive</item>
         <item>TCN</item>
         <item>Tdtchannels Player</item>
+        <item>TDUK APP Killer</item>
         <item>Tduk Screensaver Manager</item>
         <item>Ted</item>
         <item>Tele Quebec</item>
@@ -2724,6 +2726,7 @@
         <item>SYSTEM</item>
         <item>APP</item>
         <item>PLAYER</item>
+        <item>TOOL</item>
         <item>TOOL</item>
         <item>APP</item>
         <item>APP</item>
@@ -3695,6 +3698,7 @@
         <item>1</item>
         <item>1</item>
         <item>1</item>
+        <item>1</item>
         <item>0</item>
         <item>0</item>
         <item>0</item>
@@ -3877,5 +3881,5 @@
         <item>1</item>
         <item>0</item>
     </integer-array>
-    <integer name="icon_count">967</integer>
+    <integer name="icon_count">968</integer>
 </resources>

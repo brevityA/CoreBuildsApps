@@ -16,6 +16,9 @@ All notable changes to the Core Builds Icon Pack. Format follows
   sunset on its easel) and T-Solo (a single note) get icons drawn from their
   launcher tiles, in the tiles' own colours. A supporter's TV audit reported
   them with their launch activities. 963 → 967 icons.
+- **TDUK APP Killer.** Its Android robot with the red X across its chest,
+  in the icon's green and red, requested in #193 with its launch activity
+  read off the requester's TV. 967 → 968 icons.
 
 ### Changed
 
@@ -37,7 +40,11 @@ All notable changes to the Core Builds Icon Pack. Format follows
   from a class package the catalogue had wrong, so both gain the reported
   activity. Ultimate File Manager Pro gets a redrawn folder-and-arrow mark
   in its steel blue `#80A0B0`; its launch activity was cut off on screen,
-  so its mapping waits for the full name. 1185 → 1191 components.
+  so its mapping waits for the full name.
+- **AirReceiver now matches the full app, not just Lite.** Issue #194
+  reported `com.softmedia.receiver`; it joins the AirReceiver Lite icon,
+  which is renamed AirReceiver and reads "AR" like its logo. 1185 → 1193
+  components.
 
 ## [1.9.6] — 2026-09-26
 

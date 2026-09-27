@@ -1,6 +1,6 @@
 # Supported applications
 
-`967` icons · `1191` mapped components · pack v1.9.7
+`968` icons · `1193` mapped components · pack v1.9.7
 
 Every app below auto-assigns in Projectivy. If one doesn't, the app ships a different launcher activity on your device — open an issue with the component name and it gets added.
 
@@ -32,7 +32,7 @@ Source accents are retained in the catalog. **On dark** is the shared square/ban
 | Aircast | `aircast` | `#8353FB` | `#8353FB` | `com.smartdevice.tv.aircast/com.coocaa.icast.ui.home.SplashActivity` |
 | Airpin Pro | `airpin_pro` | `#7BAC49` | `#7BAC49` | `com.waxrain.airplaydmr/com.waxrain.ui.WaxPlayerSetting` |
 | AirPlay Receiver | `receiver` | `#6B94B0` | `#6B94B0` | `com.boost.airplay.receiver/com.boost.airplay.receiver.ui.activity.SplashActivity` |
-| Airreceiverlite | `airreceiverlite` | `#19D3C5` | `#19D3C5` | `com.softmedia.receiver.lite/com.softmedia.receiver.app.SplashActivity` |
+| AirReceiver | `airreceiverlite` | `#19D3C5` | `#19D3C5` | `com.softmedia.receiver.lite/com.softmedia.receiver.app.SplashActivity`<br>`com.softmedia.receiver/com.softmedia.receiver.app.SplashActivity` |
 | Airscreen | `airscreen` | `#F04DE0` | `#F04DE0` | `com.ionitech.airscreen/com.ionitech.airscreen.ui.activity.welcome.StreamAssistantIndexActivity` |
 | AK47Sports | `ak47sports` | `#FEC500` | `#FEC500` | `app.aksports.live/app.aksports.live.activities.SplashActivity` |
 | Al Jazeera | `al_jazeera` | `#D4A843` | `#D4A843` | `net.aljazeera.english/net.aljazeera.english.MainActivity` |
@@ -792,6 +792,7 @@ Source accents are retained in the catalog. **On dark** is the shared square/ban
 | TCL Home Passive | `tcl_home_passive` | `#A60202` | `#C30202` | `com.tcl.tv.tclhome_passive/com.tcl.tv.tclhome_passive.HomePassiveActivity`<br>`com.tcl.tv.tclhome_passive/com.tcl.tclhome_passive.HomePassiveActivity` |
 | TCN | `tcn` | `#CF0606` | `#CF0606` | `com.tuckercarlson.tv/tv.accedo.one.app.bootstrap.BootstrapActivity` |
 | Tdtchannels Player | `tdtchannels_player` | `#53FC18` | `#53FC18` | `com.tdtchannels.player/com.tdtchannels.player.SplashScreenActivity` |
+| TDUK APP Killer | `tduk_app_killer` | `#90D80C` | `#90D80C` | `com.tduk.appklr/com.tduk.cachecleaner.ShellAutoRunner` |
 | Tduk Screensaver Manager | `tduk_screensaver_manager` | `#7C74FF` | `#7C74FF` | `com.tduk.scrmgr/dev.vodik7.tdukscrmng.MainActivity` |
 | Ted | `ted` | `#E62B1E` | `#E62B1E` | `com.ted.android.tv/com.ted.android.tv.view.MainActivity` |
 | Tele Quebec | `tele_quebec` | `#011592` | `#2644FE` | `tv.telequebec/uk.tva.template.LaunchScreenActivity` |
