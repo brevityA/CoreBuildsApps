@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Core Line</title>
+  <style>
+    @font-face {
+      font-family: "Barlow Condensed";
+      font-weight: 800;
+      font-display: swap;
+      src: url("./fonts/barlow-condensed-800.woff2") format("woff2");
+    }
+    html, body { margin: 0; height: 100%; background: transparent; overflow: hidden; }
+    body { font-family: "Barlow Condensed", "Arial Narrow", sans-serif; color: #f4f7fb; }
+    .chyron {
+      height: 100%;
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      align-items: stretch;
+      background: rgba(5, 7, 10, .92);
+    }
+    .bug {
+      display: flex; flex-direction: column; justify-content: center;
+      padding: 0 14px; min-width: 72px;
+      background: #14060a;
+      border-right: 1px solid rgba(255,255,255,.12);
+    }
+    .bug-live { font-size: .85rem; letter-spacing: .16em; font-weight: 800; color: #ff2d55; }
+    .bug-name { font-size: 1.35rem; letter-spacing: .14em; font-weight: 800; }
+    .mask { overflow: hidden; display: flex; align-items: center; }
+    .crawl { display: flex; width: max-content; will-change: transform; transform: translate3d(0,0,0); }
+    .crawl-seq { display: flex; align-items: center; white-space: nowrap; }
+    .tick { display: inline-flex; align-items: center; gap: 10px; padding: 0 22px; font-size: 1.35rem; letter-spacing: .03em; }
+    .tick .k { color: #ff2d55; font-weight: 800; letter-spacing: .12em; font-size: .9rem; }
+    .tick .k.up { color: #f5c518; }
+    .tick .k.final { color: #9aa3ad; }
+    .tick .chs { color: #00d4ff; letter-spacing: .06em; }
+    .clock {
+      min-width: 88px; display: grid; place-items: center;
+      font-size: 1.35rem; letter-spacing: .04em;
+      border-left: 1px solid rgba(255,255,255,.12);
+      background: #080b10;
+    }
+    html[data-tv] .tick { font-size: 2rem; }
+    html[data-tv] .tick .k { font-size: 1.15rem; }
+    html[data-tv] .bug-name { font-size: 1.6rem; }
+    html[data-tv] .bug-live { font-size: .85rem; }
+    html[data-tv] .clock { font-size: 2rem; min-width: 120px; }
+  </style>
+</head>
+<body>
+  <div class="chyron" id="chyron">
+    <div class="bug">
+      <span class="bug-live" id="bugLive">LINE</span>
+      <span class="bug-name">LINE</span>
+    </div>
+    <div class="mask" id="crawl-mask">
+      <div class="crawl" id="crawl">
+        <div class="crawl-seq" id="crawlA"></div>
+        <div class="crawl-seq" id="crawlB" aria-hidden="true"></div>
+      </div>
+    </div>
+    <div class="clock" id="clock">00:00</div>
+  </div>
+  <script type="module" src="./js/overlay.js"></script>
+</body>
+</html>

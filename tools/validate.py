@@ -13,6 +13,7 @@ import xml.etree.ElementTree as ET
 from icon_style import (CORE_MONOLINE, MIN_CONTRAST, OFFWHITE_INK,
                         core_monoline_errors, contrast, display_accent)
 from build_icons import validate as validate_catalog
+from glyphs import secondary_color
 from drawable_art import art_path, read_aliases
 from pathlib import Path
 
@@ -50,7 +51,8 @@ def main():
             mono = icon.get("color_note") == "monochrome"
             errors = core_monoline_errors(body, display_accent(icon["color"], monochrome=mono),
                                           gradient=bool(icon.get("gradient")),
-                                          ink=icon.get("ink"))
+                                          ink=icon.get("ink"),
+                                          secondary=secondary_color(icon))
             check(not errors, f"{icon['name']}: shipped SVG violates Core monoline: {errors}")
         banner = ROOT / "assets/banners" / f"{icon['drawable']}.svg"
         check(banner.exists() and 'id="cbRail"' in banner.read_text(),
@@ -58,6 +60,11 @@ def main():
         if icon.get("ink"):
             check(icon["ink"].upper() == OFFWHITE_INK,
                   f"{icon['name']}: declared ink must be the sanctioned off-white {OFFWHITE_INK}")
+        if paint := secondary_color(icon):
+            for kind in ("svg", "banners"):
+                shipped = ROOT / "assets" / kind / f"{icon['drawable']}.svg"
+                check(shipped.exists() and f'stroke="{paint}"' in shipped.read_text(),
+                      f"{icon['name']}: declared secondary is missing from assets/{kind}")
         if icon.get("gradient"):
             svg = ROOT / "assets/svg" / f"{icon['drawable']}.svg"
             check(svg.exists() and 'id="cbGrad"' in svg.read_text(),

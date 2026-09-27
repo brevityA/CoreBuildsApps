@@ -124,6 +124,32 @@ test('league category next to a Sportsnet bug does not become a channel', () => 
   assert.ok(!event.channels.includes('SN ONT NHL'));
 });
 
+test('json body keeps detail, venue, and a stadium source', () => {
+  const json = JSON.stringify({
+    source: 'stadium',
+    venue: 'Riverside Gym',
+    events: [{
+      title: 'Riverside vs Oak Hill',
+      league: 'GYM',
+      status: 'live',
+      detail: 'Q2 3:12 shot 14',
+      venue: 'Court 1',
+      channels: ['GYM'],
+      away: { name: 'Riverside', abbr: 'RIVE', score: '18' },
+      home: { name: 'Oak Hill', abbr: 'OAK', score: '21' },
+    }],
+  });
+  const forced = parseFeed(json, { source: 'rss', label: 'Stadium' });
+  assert.equal(forced[0].detail, 'Q2 3:12 shot 14');
+  assert.equal(forced[0].venue, 'Court 1');
+  assert.equal(forced[0].source, 'stadium');
+  const bare = parseFeed(json);
+  assert.equal(bare[0].source, 'stadium');
+  assert.equal(bare[0].venue, 'Court 1');
+  const plain = parseFeed(JSON.stringify([{ title: 'Lakers vs Celtics' }]), { source: 'rss' });
+  assert.equal(plain[0].source, 'rss');
+});
+
 test('toTickerText includes scores for live games', () => {
   const text = toTickerText({
     status: 'live',

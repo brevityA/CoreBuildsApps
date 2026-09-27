@@ -17,8 +17,8 @@
 <!-- suite-stamp:start -->
 > | App | Current | What it does | Downloader | Release tag |
 > |---|---:|---|---|---|
-> | **[Core Builds Icon Pack](#-core-builds-icon-pack)** | `v1.9.5` | 961 transparent icons + 102 wallpapers for Projectivy Launcher | `5270601` | [`v*` / `iconpack`](../../releases) |
-> | **[Core Line](#-core-line)** | `v1.3.0` | Sports scores & channel RSS ticker (chyron) | `7375676` | [`coreline-v*` / `coreline`](../../releases) |
+> | **[Core Builds Icon Pack](#-core-builds-icon-pack)** | `v1.9.6` | 962 transparent icons + 102 wallpapers for Projectivy Launcher | `5270601` | [`v*` / `iconpack`](../../releases) |
+> | **[Core Line](#-core-line)** | `v1.3.1` | Sports scores & channel RSS ticker (chyron) | `7375676` | [`coreline-v*` / `coreline`](../../releases) |
 > | **[Core Shift](#-core-shift)** | `v2.3.5` | Android TV screensaver + motion wallpaper browser | `8829421` | [`shift-v*` / `shift`](../../releases) |
 > | **[Core Motion](#-core-motion)** | `v1.0.0` | Projectivy wallpaper-provider plugin for Core Motion loops | `[USER TO SUPPLY]` | [`motion-v*` / `motion`](../../releases) |
 > | **[Core Doctor](#-core-doctor)** | `v0.1.0` | Local-only streaming and suite diagnostics (phone) | `8664938` | [`doctor-v*` / `doctor`](../../releases) |
@@ -56,7 +56,7 @@ Designed for [Projectivy Launcher](https://play.google.com/store/apps/details?id
 
 ### What's covered
 
-961 icons across streaming, media centres, debrid services, players, launchers, tools, stores, live TV, music, sport, gaming, VPN, browsers, files, and more — including [NoBuffr](https://downloads.nobuffr.com/android/nobuffr.apk), Stremio, Kodi, Jellyfin, Plex, Syncler, Real-Debrid, TorBox, VLC, SmartTube, Spotify, TiviMate, Downloader, plus Netflix, Disney+, Stan, Kayo, ABC iview and 900+ more.
+962 icons across streaming, media centres, debrid services, players, launchers, tools, stores, live TV, music, sport, gaming, VPN, browsers, files, and more — including [NoBuffr](https://downloads.nobuffr.com/android/nobuffr.apk), Stremio, Kodi, Jellyfin, Plex, Syncler, Real-Debrid, TorBox, VLC, SmartTube, Spotify, TiviMate, Downloader, plus Netflix, Disney+, Stan, Kayo, ABC iview and 900+ more.
 
 Full table with every mapped component: [**docs/IconPackList.md**](docs/IconPackList.md)
 
@@ -64,9 +64,9 @@ Full table with every mapped component: [**docs/IconPackList.md**](docs/IconPack
 
 ### Wallpapers
 
-102 curated wallpapers in eight series — browse in the Wallpapers tab, preview full-screen, **Set** as device wallpaper or **Save** to `Pictures/CoreBuilds`. Multi-select export bulk-saves to a folder any launcher can rotate from. Thumbnails ship in the APK; full images download on demand from GitHub.
+96 curated wallpapers in seven series — browse in the Wallpapers tab, preview full-screen, **Set** as device wallpaper or **Save** to `Pictures/CoreBuilds`. Multi-select export bulk-saves to a folder any launcher can rotate from. Thumbnails ship in the APK; full images download on demand from GitHub.
 
-Series 9 and Series 10 are also **live wallpapers**: eighteen 60 fps loops ride the same grid behind a LIVE badge, under their own series and all together under the **Live** chip. **Set** hands you to the system live picker pre-pointed at Core Builds Live (phones and tablets; Android TV has no live-wallpaper setting). Select loops like stills — or press Export on the Live chip — and they bulk-save to `Movies/CoreBuilds`, where video-wallpaper pickers such as Monet's find them.
+All twelve Series 9 walls are also **live wallpapers**: each one's loop rides the same grid behind a LIVE badge, and **Set** hands you to the system live picker pre-pointed at Core Builds Live — a muted, looping `MediaPlayer` engine that pauses off-screen and shows the bundled frame until the clip has downloaded once. Motion loops stay out of bulk export (video has no place in the Pictures rotation folder); on Monet-as-HOME the action saves the MP4 to `Movies/CoreBuilds` instead, where Monet's own video picker finds it.
 
 | Series | Walls | Theme |
 |---|---|---|
@@ -77,13 +77,10 @@ Series 9 and Series 10 are also **live wallpapers**: eighteen 60 fps loops ride 
 | 7 · Retrowave | 12 | Gradient suns, perspective grids, chrome |
 | 8 · AMOLED | 12 | Exact-black minimalism |
 | 9 · Deep Space | 85–96 | Event horizon, nebulae, ringed planet, comets, novae |
-| 10 · Cinema | 97–102 | Marquee bulbs, velvet stage, projector beam, neon lounge, late rentals, box office |
 
 <div align="center"><img src="docs/deep-space-wallpapers.png" alt="Deep Space series" width="760"></div>
 
-<div align="center"><img src="docs/cinema-wallpapers.png" alt="Cinema series" width="760"></div>
-
-Series 9's twelve walls and Series 10's six each have a moving companion — the same scene, animated at 60 fps, playable as the pack's own live wallpaper. The full map of what plays where (Core Motion plugin, Aerial Views, the in-pack engine): [Space live wallpapers](docs/SPACE_LIVE_WALLPAPERS.md). Everything about the collection (including the Monet **Send to Monet** handoff): [`Wallpapers/README.md`](Wallpapers/README.md).
+Series 9's twelve walls have twelve moving companions — the same scene, animated, playable as the pack's own live wallpaper. The full map of what plays where (Core Motion plugin, Aerial Views, the in-pack engine): [Space live wallpapers](docs/SPACE_LIVE_WALLPAPERS.md). Everything about the collection (including the Monet **Send to Monet** handoff): [`Wallpapers/README.md`](Wallpapers/README.md).
 
 ### 16:9 banners
 
@@ -170,7 +167,7 @@ Design rules (enforced by generator + validator): transparent backgrounds · one
 
 ## 🔷 Core Line
 
-**TV-first sports & channel ticker (chyron).** `v1.3.0`
+**TV-first sports & channel ticker (chyron).** `v1.3.1`
 
 A reader that crawls the listings your channel apps already publish as RSS — not a player, not streams:
 
@@ -192,7 +189,7 @@ Build: `cd ticker/android && ./gradlew :app:assembleDebug` · tests: `cd ticker 
 
 Motion wallpapers on Android TV, three ways: browse + preview + download MP4 loops to `Movies/CoreBuilds` for **Monet Premium**'s video picker · the **Core Motion** plugin serves the feed to **Projectivy Premium** as `VIDEO` wallpapers · the **Aerial Views bridge** (`Motion/aerial-entries.json`) gives Monet an auto-updating feed plus a matching screensaver.
 
-Content: the live feed's 28 MP4 loops (10 procedural, 12 Deep Space, 6 Cinema; 1080p H.264), 3 self-authored GLSL shaders, bundled Lottie vectors — all §03 palette, HTTPS-only, works offline after first sync.
+Content: 13 ffmpeg-procedural MP4 loops (1080p H.264), 3 self-authored GLSL shaders, bundled Lottie vectors — all §03 palette, HTTPS-only, works offline after first sync.
 
 **Install:** Downloader code **`8829421`**, or **https://github.com/brevityA/CoreBuildsApps/releases/download/shift/coreshift-release.apk**
 

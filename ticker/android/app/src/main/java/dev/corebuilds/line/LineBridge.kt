@@ -71,6 +71,12 @@ class LineBridge(private val activity: MainActivity) {
     @JavascriptInterface
     fun startOverlay(): Boolean = activity.startOverlay()
 
+    /** Move a running overlay. The strip also calls this after reading localStorage. */
+    @JavascriptInterface
+    fun setOverlayEdge(edge: String) {
+        activity.setOverlayEdge(edge)
+    }
+
     /** Stop the floating ticker. */
     @JavascriptInterface
     fun stopOverlay(): Boolean = activity.stopOverlay()

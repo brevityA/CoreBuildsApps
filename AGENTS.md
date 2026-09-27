@@ -6,8 +6,8 @@
 
 | Product | Path | Package ID | Version | Downloader / stable tag |
 |---|---|---|---:|---|
-| Core Builds Icon Pack | `app/` with repo-root Gradle | `tv.corebuilds.iconpack` | `1.9.5` | `5270601` / `iconpack` |
-| Core Line | `ticker/` + `ticker/android/` | `dev.corebuilds.line` | `1.3.0` | `7375676` / `coreline` |
+| Core Builds Icon Pack | `app/` with repo-root Gradle | `tv.corebuilds.iconpack` | `1.9.6` | `5270601` / `iconpack` |
+| Core Line | `ticker/` + `ticker/android/` | `dev.corebuilds.line` | `1.3.1` | `7375676` / `coreline` |
 | Core Shift | `shift/` | `dev.corebuilds.shift` | `2.3.5` | `8829421` / `shift` |
 | Core Motion | `motion-plugin/` | `tv.corebuilds.motion` | `1.0.0` | `[USER TO SUPPLY]` / `motion` |
 | Core Doctor | `doctor/` | `dev.corebuilds.doctor` | `0.1.0` | `8664938` / `doctor` |
@@ -44,6 +44,7 @@ Classic pack changes run the four generators and the validator:
 
 ```bash
 python tools/icon_palette.py         # 18-colour fallback palette for icons with no brand colour
+python tools/classify_families.py --write  # researched functional shells for generic app-letter rows
 python tools/fit_classic_glyphs.py   # optical fit of undersized/off-centre glyphs; reads the catalog
 python tools/build_icons.py
 python tools/build_banners.py
@@ -54,12 +55,15 @@ python tools/validate.py
 python tests/test_icon_identity.py    # 55 style/colour/reference/mapping regressions
 ```
 
-Paste the validator receipt. Current receipt: `Validated 961 icons · 1179 components`.
+Paste the validator receipt. Current receipt: `Validated 962 icons · 1184 components`.
 
 **The pack identity takes precedence over literal vendor-logo reproduction.**
 Reviewed brand entries use `style: core_monoline`: 32px rounded primary strokes,
-26.2px / 21.8px detail, no solid fills/effects/containers, and one accent. Keep
-the common Outfit + category + cyan/violet rail banner for NoBuffr and every
+26.2px / 21.8px detail, no solid fills/effects/containers, and one accent —
+or, where the brand's own logo is two-tone, a catalog `secondary`
+(`color`, the glyph `parts` it paints, and a `source`; white is drawn as the
+Brand Guide off-white, the rail keeps the primary colour). Keep
+the common Outfit + icon-coloured category + rail banner for NoBuffr and every
 other reviewed app. Do not reintroduce vendor-wordmark-only banners.
 
 Catalog `artwork` entries are `usage: reference-only`: pinned SVG hashes, URLs
@@ -142,7 +146,12 @@ prefills `input`/`textarea` fields only, and the tool refuses to promise more.
   is not wired into `.github/workflows/suite-ci.yml` — the one with no path
   filter — does not exist: five tests and two validators had been local-only
   before that check was written.
-- Core Line: `cd ticker && npm test`.
+- Core Line: `cd ticker && npm test`. The venue bridge in `ticker/stadium-sync`
+  is a second, dependency-free Node package in the same directory: `cd
+  ticker/stadium-sync && npm test`. It is not a sixth product — do not add it to
+  `suite.json`, the README stamp, or a Gradle root, and note `syncWebAssets`
+  copies only `ticker/public` and `ticker/lib`, so nothing under
+  `ticker/stadium-sync/` reaches the APK.
 - Core Shift: `python tools/validate_motion_feed.py` plus Android lint/build in CI.
 - Core Motion: `python tools/verify_motion_plugin.py` plus Android lint/build in CI.
 - Core Doctor: `cd doctor && ./gradlew :app:testDebugUnitTest` where Android SDK exists.
