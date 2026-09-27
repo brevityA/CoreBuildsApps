@@ -8,6 +8,17 @@ All notable changes to the Core Builds Icon Pack. Format follows
 
 ### Added
 
+- **12 more apps get marks drawn from their real icons, 183 in all.**
+  Ace Stream's four chasing arrows, Browse Here's ringed planet with eyes,
+  ByeByeDPI's dove over a terminal sign, Elefin's elephant with a play button
+  in its ear, Falcon Cast's falcon under cast arcs, Galaxy Play's swept play
+  shape, GT Share's eagle head, Hyperion Grabber's H with its ambilight
+  edges, Shadow's ring and crescent, Stream Fire's striped set in a speech
+  bubble, Playfy's set and magnifier and Zumba's dancer in a ring replace
+  their letter tiles. The launcher icons were read from the Projectivy Icon
+  Pack 1.1.9 artwork, as reference only. Browse Here, Elefin, Falcon Cast,
+  Shadow and Playfy take their icons' colours; Shadow was near-black.
+  Browse Here and ByeByeDPI are spelled like the apps.
 - **12 more apps get marks drawn from their real icons, 171 in all.**
   Anten TV's three dots, İnat Box's TV robot, Cafe Bazaar's smiling bag,
   CoreELEC Helper's power ring, Cricfy's ball and speed lines, RAM

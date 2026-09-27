@@ -287,7 +287,7 @@
     <!-- Browkorf TV -->
     <item component="ComponentInfo{org.mlm.browkorftv/org.mlm.browkorftv.activity.main.MainActivity}" drawable="browkorf_tv_banner"/>
     <item component="ComponentInfo{org.mlm.browkorftv/.activity.main.MainActivity}" drawable="browkorf_tv_banner"/>
-    <!-- Browsehere -->
+    <!-- Browse Here -->
     <item component="ComponentInfo{com.tcl.browser/com.tcl.browser.portal.home.activity.HomePageActivity}" drawable="browsehere_banner"/>
     <item component="ComponentInfo{com.tcl.browser/.portal.home.activity.HomePageActivity}" drawable="browsehere_banner"/>
     <!-- Bstation -->
@@ -298,7 +298,7 @@
     <!-- Buttons Remapper -->
     <item component="ComponentInfo{com.irishin.buttonsremapper/com.irishin.buttonsremapper.ui.MainActivity}" drawable="buttonsremapper_banner"/>
     <item component="ComponentInfo{com.irishin.buttonsremapper/.ui.MainActivity}" drawable="buttonsremapper_banner"/>
-    <!-- Byebyedpi -->
+    <!-- ByeByeDPI -->
     <item component="ComponentInfo{io.github.romanvht.byedpi/io.github.dovecoteescapee.byedpi.activities.MainActivity}" drawable="byebyedpi_banner"/>
     <!-- BYUtv -->
     <item component="ComponentInfo{org.byutv.android/org.byutv.android.MainActivity}" drawable="byutv_banner"/>

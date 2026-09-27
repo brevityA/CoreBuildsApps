@@ -1064,11 +1064,11 @@
         <item>BritBox</item>
         <item>Brollie</item>
         <item>Browkorf TV</item>
-        <item>Browsehere</item>
+        <item>Browse Here</item>
         <item>Bstation</item>
         <item>Button Mapper TV</item>
         <item>Buttons Remapper</item>
-        <item>Byebyedpi</item>
+        <item>ByeByeDPI</item>
         <item>BYUtv</item>
         <item>Cafe Bazaar</item>
         <item>Caixaforum Plus</item>
@@ -2904,7 +2904,7 @@
         <item>1</item>
         <item>1</item>
         <item>1</item>
-        <item>0</item>
+        <item>1</item>
         <item>0</item>
         <item>1</item>
         <item>1</item>
@@ -2992,11 +2992,11 @@
         <item>1</item>
         <item>0</item>
         <item>1</item>
-        <item>0</item>
         <item>1</item>
         <item>1</item>
         <item>1</item>
-        <item>0</item>
+        <item>1</item>
+        <item>1</item>
         <item>0</item>
         <item>1</item>
         <item>0</item>
@@ -3100,10 +3100,10 @@
         <item>1</item>
         <item>0</item>
         <item>0</item>
-        <item>0</item>
         <item>1</item>
         <item>1</item>
         <item>1</item>
+        <item>1</item>
         <item>0</item>
         <item>0</item>
         <item>1</item>
@@ -3121,9 +3121,9 @@
         <item>1</item>
         <item>1</item>
         <item>1</item>
-        <item>0</item>
         <item>1</item>
         <item>1</item>
+        <item>1</item>
         <item>0</item>
         <item>1</item>
         <item>0</item>
@@ -3177,7 +3177,7 @@
         <item>1</item>
         <item>1</item>
         <item>0</item>
-        <item>0</item>
+        <item>1</item>
         <item>1</item>
         <item>0</item>
         <item>1</item>
@@ -3197,13 +3197,13 @@
         <item>1</item>
         <item>0</item>
         <item>0</item>
-        <item>0</item>
         <item>1</item>
         <item>1</item>
         <item>1</item>
         <item>1</item>
         <item>1</item>
         <item>1</item>
+        <item>1</item>
         <item>0</item>
         <item>1</item>
         <item>1</item>
@@ -3227,7 +3227,7 @@
         <item>1</item>
         <item>1</item>
         <item>1</item>
-        <item>0</item>
+        <item>1</item>
         <item>0</item>
         <item>0</item>
         <item>0</item>
@@ -3468,7 +3468,7 @@
         <item>1</item>
         <item>0</item>
         <item>1</item>
-        <item>0</item>
+        <item>1</item>
         <item>0</item>
         <item>0</item>
         <item>1</item>
@@ -3568,10 +3568,10 @@
         <item>1</item>
         <item>0</item>
         <item>0</item>
-        <item>0</item>
         <item>1</item>
         <item>1</item>
         <item>1</item>
+        <item>1</item>
         <item>0</item>
         <item>1</item>
         <item>1</item>
@@ -3615,10 +3615,10 @@
         <item>0</item>
         <item>0</item>
         <item>1</item>
-        <item>0</item>
         <item>1</item>
         <item>1</item>
         <item>1</item>
+        <item>1</item>
         <item>0</item>
         <item>1</item>
         <item>1</item>
@@ -3855,7 +3855,7 @@
         <item>1</item>
         <item>0</item>
         <item>1</item>
-        <item>0</item>
+        <item>1</item>
     </integer-array>
     <integer name="icon_count">962</integer>
 </resources>

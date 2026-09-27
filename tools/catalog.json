@@ -143,15 +143,15 @@
       "name": "Ace Stream",
       "drawable": "ace_stream",
       "color": "#FFE14D",
-      "glyph": "broadcast_A",
-      "mark": "AS",
+      "glyph": "acestream_arrows",
       "components": [
         "org.acestream.node/org.acestream.engine.ui.MainWebViewActivity"
       ],
       "category": "APP",
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_reviewed": null,
+      "glyph_source": "brand-informed redraw of the Projectivy Icon Pack 1.1.9 artwork for org.acestream.node (github.com/SicMundus86/ProjectivyIconPack, used as reference only); Core monoline geometry, not a trace (2026-09-27)"
     },
     {
       "name": "Acontra Plus",
@@ -1300,18 +1300,19 @@
       "style": "core_monoline"
     },
     {
-      "name": "Browsehere",
+      "name": "Browse Here",
       "drawable": "browsehere",
-      "color": "#2848CF",
-      "glyph": "browser_B",
-      "mark": "BR",
+      "color": "#6880E0",
+      "glyph": "browsehere_planet",
       "components": [
         "com.tcl.browser/com.tcl.browser.portal.home.activity.HomePageActivity"
       ],
       "category": "APP",
       "mapping_source": "Projectivy Icon Pack 1.1.9",
-      "color_source": "sampled from the official launcher icon (Google Play listing for com.tcl.browser): dominant brand accent #2848CF (2026-09-26)",
-      "color_reviewed": "2026-09-26"
+      "color_source": "sampled from the Projectivy Icon Pack 1.1.9 artwork for com.tcl.browser (github.com/SicMundus86/ProjectivyIconPack, used as reference only): #6880E0 (2026-09-27)",
+      "color_reviewed": "2026-09-27",
+      "glyph_source": "brand-informed redraw of the Projectivy Icon Pack 1.1.9 artwork for com.tcl.browser (github.com/SicMundus86/ProjectivyIconPack, used as reference only); Core monoline geometry, not a trace (2026-09-27)",
+      "name_source": "app name as the Projectivy Icon Pack 1.1.9 artwork for com.tcl.browser (github.com/SicMundus86/ProjectivyIconPack, used as reference only) shows it (2026-09-27)"
     },
     {
       "name": "Bstation",
@@ -1340,18 +1341,19 @@
       "glyph_source": "brand-informed redraw of the official launcher icon (play listing for com.irishin.buttonsremapper); Core monoline geometry, not a trace (2026-09-26)"
     },
     {
-      "name": "Byebyedpi",
+      "name": "ByeByeDPI",
       "drawable": "byebyedpi",
       "color": "#09457F",
-      "glyph": "vpn_B",
-      "mark": "BY",
+      "glyph": "byedpi_dove",
       "components": [
         "io.github.romanvht.byedpi/io.github.dovecoteescapee.byedpi.activities.MainActivity"
       ],
       "category": "APP",
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "sampled from the official launcher icon (APKCombo mirror of the Google Play listing for io.github.romanvht.byedpi): dominant brand accent #09457F (2026-09-26)",
-      "color_reviewed": "2026-09-26"
+      "color_reviewed": "2026-09-26",
+      "glyph_source": "brand-informed redraw of the Projectivy Icon Pack 1.1.9 artwork for io.github.romanvht.byedpi (github.com/SicMundus86/ProjectivyIconPack, used as reference only); Core monoline geometry, not a trace (2026-09-27)",
+      "name_source": "app name as the Projectivy Icon Pack 1.1.9 artwork for io.github.romanvht.byedpi (github.com/SicMundus86/ProjectivyIconPack, used as reference only) shows it (2026-09-27)"
     },
     {
       "name": "BYUtv",
@@ -2790,15 +2792,15 @@
     {
       "name": "Elefin",
       "drawable": "elefin",
-      "color": "#FF5CA8",
-      "glyph": "broadcast_E",
-      "mark": "EL",
+      "color": "#7058D8",
+      "glyph": "elefin_elephant",
       "components": [
         "com.flex.elefin/com.flex.elefin.MainActivity"
       ],
       "category": "APP",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled from the Projectivy Icon Pack 1.1.9 artwork for com.flex.elefin (github.com/SicMundus86/ProjectivyIconPack, used as reference only): #7058D8 (2026-09-27)",
+      "color_reviewed": "2026-09-27",
+      "glyph_source": "brand-informed redraw of the Projectivy Icon Pack 1.1.9 artwork for com.flex.elefin (github.com/SicMundus86/ProjectivyIconPack, used as reference only); Core monoline geometry, not a trace (2026-09-27)"
     },
     {
       "name": "Emby",
@@ -3069,16 +3071,16 @@
     {
       "name": "Falcon Cast",
       "drawable": "falconcast",
-      "color": "#1982C4",
-      "glyph": "broadcast_F",
-      "mark": "FC",
+      "color": "#0090F8",
+      "glyph": "falconcast_bird",
       "components": [
         "com.falconcast.live/com.falconcast.live.SplashActivity",
         "com.falconcast.live/com.falconcast.live.tv.TvSplashActivity"
       ],
       "category": "APP",
-      "color_source": "brand reference (pre-provenance, unverified)",
-      "color_reviewed": null
+      "color_source": "sampled from the Projectivy Icon Pack 1.1.9 artwork for com.falconcast.live (github.com/SicMundus86/ProjectivyIconPack, used as reference only): #0090F8 (2026-09-27)",
+      "color_reviewed": "2026-09-27",
+      "glyph_source": "brand-informed redraw of the Projectivy Icon Pack 1.1.9 artwork for com.falconcast.live (github.com/SicMundus86/ProjectivyIconPack, used as reference only); Core monoline geometry, not a trace (2026-09-27)"
     },
     {
       "name": "Fandango at Home",
@@ -3887,15 +3889,15 @@
       "name": "Galaxy Play",
       "drawable": "galaxy_play",
       "color": "#003D96",
-      "glyph": "film_G",
-      "mark": "GP",
+      "glyph": "galaxyplay_sweep",
       "components": [
         "movies.fimplus.vn.andtv/movies.fimplus.vn.andtv.v2.activity.HomeActivityV2"
       ],
       "category": "APP",
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "sampled from the official launcher icon (Google Play listing for movies.fimplus.vn.andtv): dominant brand accent #003D96 (2026-09-26)",
-      "color_reviewed": "2026-09-26"
+      "color_reviewed": "2026-09-26",
+      "glyph_source": "brand-informed redraw of the Projectivy Icon Pack 1.1.9 artwork for movies.fimplus.vn.andtv (github.com/SicMundus86/ProjectivyIconPack, used as reference only); Core monoline geometry, not a trace (2026-09-27)"
     },
     {
       "name": "Gallery 3D",
@@ -4137,14 +4139,14 @@
       "name": "GT Share",
       "drawable": "gtshare",
       "color": "#EDAD0A",
-      "glyph": "broadcast_G",
-      "mark": "GS",
+      "glyph": "gtshare_eagle",
       "components": [
         "com.gtmedia.gtshare/com.winsat.gtshare.MainActivity"
       ],
       "category": "APP",
       "color_source": "sampled from the official launcher icon (Google Play listing for com.gtmedia.gtshare): dominant brand accent #EDAD0A (2026-09-26)",
-      "color_reviewed": "2026-09-26"
+      "color_reviewed": "2026-09-26",
+      "glyph_source": "brand-informed redraw of the Projectivy Icon Pack 1.1.9 artwork for com.gtmedia.gtshare (github.com/SicMundus86/ProjectivyIconPack, used as reference only); Core monoline geometry, not a trace (2026-09-27)"
     },
     {
       "name": "FilmPlus",
@@ -4589,15 +4591,15 @@
       "name": "Hyperion Grabber",
       "drawable": "hyperiongrabber",
       "color": "#1982C4",
-      "glyph": "broadcast_H",
-      "mark": "HG",
+      "glyph": "hyperion_h",
       "components": [
         "com.abrenoch.hyperiongrabber/com.abrenoch.hyperiongrabber.common.ToggleActivity",
         "com.abrenoch.hyperiongrabber/com.abrenoch.hyperiongrabber.tv.activities.MainActivity"
       ],
       "category": "APP",
       "color_source": "brand reference (pre-provenance, unverified)",
-      "color_reviewed": null
+      "color_reviewed": null,
+      "glyph_source": "brand-informed redraw of the Projectivy Icon Pack 1.1.9 artwork for com.abrenoch.hyperiongrabber (github.com/SicMundus86/ProjectivyIconPack, used as reference only); Core monoline geometry, not a trace (2026-09-27)"
     },
     {
       "name": "Hyperspin",
@@ -8016,15 +8018,15 @@
     {
       "name": "Playfy",
       "drawable": "playfy",
-      "color": "#00D4FF",
-      "glyph": "broadcast_P",
-      "mark": "PL",
+      "color": "#E88080",
+      "glyph": "playfy_magnifier",
       "components": [
         "com.playfy.tv/com.playfy.tv.activities.SplashActivity"
       ],
       "category": "APP",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled from the Projectivy Icon Pack 1.1.9 artwork for com.playfy.tv (github.com/SicMundus86/ProjectivyIconPack, used as reference only): #E88080 (2026-09-27)",
+      "color_reviewed": "2026-09-27",
+      "glyph_source": "brand-informed redraw of the Projectivy Icon Pack 1.1.9 artwork for com.playfy.tv (github.com/SicMundus86/ProjectivyIconPack, used as reference only); Core monoline geometry, not a trace (2026-09-27)"
     },
     {
       "name": "PlayKids",
@@ -9318,16 +9320,15 @@
     {
       "name": "Shadow",
       "drawable": "shadowcloudgaming",
-      "color": "#0A0C0D",
-      "glyph": "gaming_S",
-      "mark": "SH",
+      "color": "#3848D0",
+      "glyph": "shadow_ring",
       "components": [
         "com.blade.shadowcloudgaming/com.blade.shadow.dispatcher.DispatcherActivity"
       ],
       "category": "APP",
-      "color_source": "simple-icons reference (monochrome ink mark)",
-      "color_note": "monochrome",
-      "color_reviewed": "2026-09-08"
+      "color_source": "sampled from the Projectivy Icon Pack 1.1.9 artwork for com.blade.shadowcloudgaming (github.com/SicMundus86/ProjectivyIconPack, used as reference only): #3848D0 (2026-09-27)",
+      "color_reviewed": "2026-09-27",
+      "glyph_source": "brand-informed redraw of the Projectivy Icon Pack 1.1.9 artwork for com.blade.shadowcloudgaming (github.com/SicMundus86/ProjectivyIconPack, used as reference only); Core monoline geometry, not a trace (2026-09-27)"
     },
     {
       "name": "Shahid",
@@ -9957,15 +9958,15 @@
       "name": "Stream Fire",
       "drawable": "stream_fire",
       "color": "#F8B800",
-      "glyph": "broadcast_S",
-      "mark": "SF",
+      "glyph": "streamfire_tv",
       "components": [
         "com.streamfire.app/com.streamfire.app.ui.HomeActivity"
       ],
       "category": "APP",
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "sampled from the Projectivy Icon Pack 1.1.9 artwork for com.streamfire.app (github.com/SicMundus86/ProjectivyIconPack, used as reference only): #F8B800 (2026-09-27)",
-      "color_reviewed": "2026-09-27"
+      "color_reviewed": "2026-09-27",
+      "glyph_source": "brand-informed redraw of the Projectivy Icon Pack 1.1.9 artwork for com.streamfire.app (github.com/SicMundus86/ProjectivyIconPack, used as reference only); Core monoline geometry, not a trace (2026-09-27)"
     },
     {
       "name": "Stream Vault",
@@ -13016,15 +13017,15 @@
       "name": "Zumba",
       "drawable": "zumba",
       "color": "#19D3C5",
-      "glyph": "broadcast_Z",
-      "mark": "ZU",
+      "glyph": "zumba_dancer",
       "components": [
         "com.zumba.consumerapp.tv/com.maz.activities.ViewerLaunchActivity"
       ],
       "category": "APP",
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_reviewed": null,
+      "glyph_source": "brand-informed redraw of the Projectivy Icon Pack 1.1.9 artwork for com.zumba.consumerapp.tv (github.com/SicMundus86/ProjectivyIconPack, used as reference only); Core monoline geometry, not a trace (2026-09-27)"
     },
     {
       "name": "AV Source",

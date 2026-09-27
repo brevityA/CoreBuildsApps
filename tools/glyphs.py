@@ -6620,3 +6620,140 @@ GLYPHS.update({
     "iptvextreme_tv": iptvextreme_tv, "vodafone_quote": vodafone_quote,
     "wrestle_ring": wrestle_ring, "pano_record": pano_record,
 })
+
+
+# --------------------------------------------------------------------------
+# Brand marks batch 12 (2026-09-27): more letter tiles whose launcher icon,
+# seen in the Projectivy Icon Pack 1.1.9 artwork (reference only), carries a
+# symbol.
+
+
+def _arrow_arc(cx, cy, r, a0, a1, head=34):
+    """A clockwise arc from a0 to a1 degrees with an open arrowhead at a1."""
+    import math
+    x1, y1 = _polar(cx, cy, r, a1)
+    t = math.radians(a1 + 90)
+    tx, ty = math.cos(t), math.sin(t)
+    nx, ny = math.cos(math.radians(a1)), math.sin(math.radians(a1))
+    lx, ly = x1 - head * tx + head * 0.8 * nx, y1 - head * ty + head * 0.8 * ny
+    rx, ry = x1 - head * tx - head * 0.8 * nx, y1 - head * ty - head * 0.8 * ny
+    return (f"{_arc_cw(cx, cy, r, a0, a1)} "
+            f"M {lx:.1f} {ly:.1f} L {x1:.1f} {y1:.1f} L {rx:.1f} {ry:.1f}")
+
+
+def acestream_arrows(c):
+    """Ace Stream: four arrows chasing each other round a ring."""
+    d = " ".join(_arrow_arc(256, 256, 164, a, a + 62) for a in (200, 290, 20, 110))
+    return f'<path d="{d}" {_s(c, 30)}/>'
+
+
+def browsehere_planet(c):
+    """Browse Here: the ringed planet with two eyes."""
+    return (f'<path d="{_arc_cw(256, 236, 124, 196, 344)}" {_s(c, 28)}/>'
+            f'<path d="{_arc_cw(256, 236, 124, 16, 164)}" {_s(c, 28)}/>'
+            f'<ellipse cx="256" cy="244" rx="200" ry="58" transform="rotate(-16 256 244)" '
+            f'{_s(c, 24)}/>'
+            f'<circle cx="222" cy="168" r="17" {_f(c)}/>'
+            f'<circle cx="286" cy="160" r="17" {_f(c)}/>')
+
+
+def byedpi_dove(c):
+    """ByeByeDPI: the dove in flight, wing raised, over a terminal sign."""
+    return (f'<path d="M 96 352 C 170 318 250 300 326 290 C 352 252 396 248 420 270 '
+            f'L 452 268 L 424 292 C 410 332 362 356 300 358 C 230 362 160 368 96 352 Z" '
+            f'{_s(c, 26)}/>'
+            f'<path d="M 232 300 C 214 214 168 146 104 104 C 184 104 270 170 300 290" '
+            f'{_s(c, 24)}/>'
+            f'<circle cx="398" cy="276" r="11" {_f(c)}/>'
+            f'<rect x="232" y="382" width="164" height="78" rx="12" '
+            f'transform="rotate(-8 314 421)" {_s(c, 20)}/>'
+            f'<path d="M 268 406 L 294 422 L 270 440 M 312 440 L 356 434" {_s(c, 16)}/>')
+
+
+def elefin_elephant(c):
+    """Elefin: the elephant's broad head, tusk and curled trunk, a play button in its ear."""
+    return (f'<path d="M 424 420 L 424 300 C 424 226 364 170 280 170 C 200 170 150 212 144 272 '
+            f'C 138 332 124 374 94 402 C 76 420 102 444 124 422" {_s(c, 30)}/>'
+            f'<path d="M 176 312 C 196 342 230 348 256 336" {_s(c, 22)}/>'
+            f'<path d="M 262 228 C 352 212 392 280 360 344 C 330 380 272 366 262 334 Z" '
+            f'{_s(c, 22)}/>'
+            + _solid("M 292 262 L 334 288 L 292 314 Z", c, 10)
+            + f'<circle cx="204" cy="244" r="13" {_f(c)}/>'
+            f'<path d="M 290 172 L 344 90 L 378 190" {_s(c, 20)}/>')
+
+
+def falconcast_bird(c):
+    """Falcon Cast: the falcon's round head and hooked beak under cast arcs."""
+    return (f'<path d="M 92 424 C 92 300 150 198 256 198 C 318 198 362 236 372 286 '
+            f'L 330 300 C 322 350 284 380 240 380 C 200 380 170 404 160 440" {_s(c, 28)}/>'
+            f'<circle cx="286" cy="262" r="14" {_f(c)}/>'
+            f'<path d="{_arc_cw(330, 176, 70, 280, 350)} {_arc_cw(330, 176, 120, 280, 350)}" '
+            f'{_s(c, 24)}/>')
+
+
+def galaxyplay_sweep(c):
+    """Galaxy Play: the play shape swept round from its curved left edge."""
+    return (f'<path d="M 184 432 C 104 330 98 190 170 96 C 270 96 372 170 424 256 '
+            f'C 356 300 270 330 200 330" {_s(c, 30)}/>'
+            f'<path d="M 214 250 C 214 214 230 188 256 172" {_s(c, 22)}/>')
+
+
+def gtshare_eagle(c):
+    """GT Share: the eagle's head, hooked beak forward, feathers swept back."""
+    return (f'<path d="M 96 150 C 200 104 330 110 392 152 C 432 180 446 220 434 262 '
+            f'L 396 244 C 388 276 360 292 320 292 L 250 292 L 150 316 L 226 256 '
+            f'L 116 240 L 210 204 Z" {_s(c, 26)}/>'
+            f'<path d="M 334 240 L 396 244" {_s(c, 20)}/>'
+            f'<circle cx="330" cy="188" r="14" {_f(c)}/>')
+
+
+def hyperion_h(c):
+    """Hyperion Grabber: the H on its screen, with the ambilight glow at its edges."""
+    return (f'<rect x="136" y="136" width="240" height="240" rx="28" {_s(c, 26)}/>'
+            f'<path d="M 200 196 L 200 316 M 312 196 L 312 316 M 200 256 L 312 256" '
+            f'{_s(c, 30)}/>'
+            f'<path d="M 88 176 L 88 336 M 424 176 L 424 336 M 176 88 L 336 88 M 176 424 L 336 424" '
+            f'{_s(c, 22)}/>')
+
+
+def shadow_ring(c):
+    """Shadow: the thick ring holding a smaller disc and a crescent sweep."""
+    return (f'<circle cx="256" cy="256" r="176" {_s(c, 30)}/>'
+            f'<circle cx="244" cy="268" r="64" {_s(c, 26)}/>'
+            f'<path d="{_arc_cw(244, 268, 112, 270, 20)}" {_s(c, 24)}/>')
+
+
+def streamfire_tv(c):
+    """Stream Fire: the striped set on antennae with a speech-bubble tail."""
+    return (f'<path d="M 256 150 L 196 88 M 256 150 L 316 88" {_s(c, 22)}/>'
+            f'<path d="M 112 150 L 400 150 C 424 150 440 166 440 190 L 440 340 '
+            f'C 440 364 424 380 400 380 L 190 380 L 130 440 L 136 380 L 112 380 '
+            f'C 88 380 72 364 72 340 L 72 190 C 72 166 88 150 112 150 Z" {_s(c, 28)}/>'
+            f'<path d="M 184 190 L 184 340 M 256 190 L 256 340 M 328 190 L 328 340" '
+            f'{_s(c, 30)}/>')
+
+
+def playfy_magnifier(c):
+    """PLAYFy TV: the set on its antennae with a magnifier held over its corner."""
+    return (f'<path d="M 300 146 L 262 90 M 300 146 L 340 94" {_s(c, 22)}/>'
+            f'<rect x="168" y="146" width="280" height="200" rx="30" {_s(c, 28)}/>'
+            f'<circle cx="170" cy="332" r="72" {_s(c, 26)}/>'
+            f'<path d="M 170 404 L 170 460" {_s(c, 30)}/>')
+
+
+def zumba_dancer(c):
+    """Zumba: the dancer's zigzag body with a raised arm, in a ring."""
+    return (f'<circle cx="256" cy="256" r="184" {_s(c, 26)}/>'
+            f'<circle cx="290" cy="150" r="24" {_f(c)}/>'
+            f'<path d="M 170 208 L 262 196 L 214 290 L 318 290 L 250 390" {_s(c, 28)}/>'
+            f'<path d="M 262 196 L 360 170" {_s(c, 24)}/>')
+
+
+GLYPHS.update({
+    "acestream_arrows": acestream_arrows, "browsehere_planet": browsehere_planet,
+    "byedpi_dove": byedpi_dove, "elefin_elephant": elefin_elephant,
+    "falconcast_bird": falconcast_bird, "galaxyplay_sweep": galaxyplay_sweep,
+    "gtshare_eagle": gtshare_eagle, "hyperion_h": hyperion_h,
+    "shadow_ring": shadow_ring, "streamfire_tv": streamfire_tv,
+    "playfy_magnifier": playfy_magnifier, "zumba_dancer": zumba_dancer,
+})

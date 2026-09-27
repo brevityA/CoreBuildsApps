@@ -106,11 +106,11 @@ Source accents are retained in the catalog. **On dark** is the shared square/ban
 | BritBox | `britbox` | `#C41A3B` | `#C41A3B` | `com.britbox.tv/axis.androidtv.sdk.app.MainActivity` |
 | Brollie | `brollie` | `#E3A11C` | `#E3A11C` | `com.shift72.brollie/com.sh72apps.MainActivity`<br>`com.shift72.brollie/com.sh72apps.TVMainActivity` |
 | Browkorf TV | `browkorf_tv` | `#BAAA16` | `#BAAA16` | `org.mlm.browkorftv/org.mlm.browkorftv.activity.main.MainActivity`<br>`org.mlm.browkorftv/.activity.main.MainActivity` |
-| Browsehere | `browsehere` | `#2848CF` | `#3352D8` | `com.tcl.browser/com.tcl.browser.portal.home.activity.HomePageActivity` |
+| Browse Here | `browsehere` | `#6880E0` | `#6880E0` | `com.tcl.browser/com.tcl.browser.portal.home.activity.HomePageActivity` |
 | Bstation | `bstar` | `#3672D9` | `#3672D9` | `com.bstar.intl.tv/com.biliintl.ibstartv.MainActivity` |
 | Button Mapper TV | `buttonmappertv` | `#063C9F` | `#0854DE` | `com.tv.remote.button.mapper.remap/com.tv.remote.button.mapper.remap.LauncherActivity` |
 | Buttons Remapper | `buttonsremapper` | `#1976D2` | `#1976D2` | `com.irishin.buttonsremapper/com.irishin.buttonsremapper.ui.MainActivity` |
-| Byebyedpi | `byebyedpi` | `#09457F` | `#0D60B2` | `io.github.romanvht.byedpi/io.github.dovecoteescapee.byedpi.activities.MainActivity` |
+| ByeByeDPI | `byebyedpi` | `#09457F` | `#0D60B2` | `io.github.romanvht.byedpi/io.github.dovecoteescapee.byedpi.activities.MainActivity` |
 | BYUtv | `byutv` | `#0056B6` | `#005DC4` | `org.byutv.android/org.byutv.android.MainActivity` |
 | Cafe Bazaar | `farsitel` | `#60C018` | `#60C018` | `com.farsitel.bazaar.tv/com.farsitel.bazaar.tv.ui.splash.SplashActivity` |
 | Caixaforum Plus | `caixaforum_plus` | `#130045` | `#652BFF` | `es.caixaforum.cxplus/com.mediapro.caixaforum.view.splash.SplashActivity` |
@@ -214,7 +214,7 @@ Source accents are retained in the catalog. **On dark** is the shared square/ban
 | Dw | `dw` | `#FFB020` | `#FFB020` | `dw.com.androidtv.live/com.dw.app.dwforsmarttv.MainActivity` |
 | EarthCam | `earthcamtv` | `#1982C4` | `#1982C4` | `com.earthcam.earthcamtv.android/com.earthcam.earthcamtv.mainmvp.MainActivity` |
 | Echogram | `echogram` | `#4765AD` | `#4765AD` | `com.liori.echogram/com.liori.echogram.MainActivity` |
-| Elefin | `elefin` | `#FF5CA8` | `#FF5CA8` | `com.flex.elefin/com.flex.elefin.MainActivity` |
+| Elefin | `elefin` | `#7058D8` | `#7058D8` | `com.flex.elefin/com.flex.elefin.MainActivity` |
 | Emby | `emby` | `#52B54B` | `#52B54B` | `tv.emby.embyatv/.startup.StartupActivity`<br>`com.mb.android/.MainActivity` |
 | Emotn Store | `appstore` | `#D828E0` | `#D828E0` | `com.overseas.store.appstore/com.overseas.store.appstore.ui.SplashActivity` |
 | Enjoy TV | `enjoytvandroid` | `#08A8D0` | `#08A8D0` | `com.myenjoytv.enjoytvandroid/com.myenjoytv.enjoytvandroid.SplashActivity` |
@@ -235,7 +235,7 @@ Source accents are retained in the catalog. **On dark** is the shared square/ban
 | ExpressVPN | `expressvpn` | `#DA3940` | `#DA3940` | `com.expressvpn.vpn/com.expressvpn.vpn.splash.ClassicAlias` |
 | F-Droid | `f_droid` | `#1976D2` | `#1976D2` | `org.fdroid.fdroid/org.fdroid.fdroid.views.main.MainActivity` |
 | F1 TV | `production` | `#E10600` | `#E10600` | `com.formulaone.production/com.avs.f1.ui.splash.SplashActivity` |
-| Falcon Cast | `falconcast` | `#1982C4` | `#1982C4` | `com.falconcast.live/com.falconcast.live.SplashActivity`<br>`com.falconcast.live/com.falconcast.live.tv.TvSplashActivity` |
+| Falcon Cast | `falconcast` | `#0090F8` | `#0090F8` | `com.falconcast.live/com.falconcast.live.SplashActivity`<br>`com.falconcast.live/com.falconcast.live.tv.TvSplashActivity` |
 | Fandango at Home | `fandango_at_home` | `#FF7300` | `#FF7300` | `air.com.vudu.air.DownloaderTablet/air.com.vudu.air.DownloaderTablet.SplashActivity` |
 | FanDuel Sports | `foxsports_2` | `#003580` | `#0058D3` | `com.foxsports.videogo/com.ballysports.tv.ui.screens.main.TvMainActivity` |
 | FANE TV | `fanetv` | `#28A8C0` | `#28A8C0` | `com.fanetv/tv.vhx.LauncherActivity`<br>`com.fanetv/tv.vhx.tv.home.TvHomeActivity` |
@@ -582,7 +582,7 @@ Source accents are retained in the catalog. **On dark** is the shared square/ban
 | Play Suisse | `playsuisse` | `#9A0326` | `#C20430` | `ch.srgssr.playsuisse.tv/ch.srgssr.playsuisse.tv.MainActivity` |
 | Play Universal | `universal` | `#FCCC12` | `#FCCC12` | `com.play.universal/com.play.universal.MainActivity` |
 | Player | `player` | `#FFB020` | `#FFB020` | `pl.tvn.player.tv/pl.redlabs.redcdn.portal.ui.main.MainActivity` |
-| Playfy | `playfy` | `#00D4FF` | `#00D4FF` | `com.playfy.tv/com.playfy.tv.activities.SplashActivity` |
+| Playfy | `playfy` | `#E88080` | `#E88080` | `com.playfy.tv/com.playfy.tv.activities.SplashActivity` |
 | PlayKids | `playkids` | `#FF5CA8` | `#FF5CA8` | `com.movile.playkids/com.movile.playkids.MainActivity` |
 | PlayLatin | `apksrebrand` | `#53FC18` | `#53FC18` | `boxbr.apksrebrand.playlatin/boxbr.apksrebrand.smarters.view.activity.SplashActivity` |
 | PlayStation | `playstation` | `#0070D1` | `#0070D1` | `com.playstation.remoteplay/.MainActivity`<br>`com.scee.psxandroid/.MainActivity` |
@@ -682,7 +682,7 @@ Source accents are retained in the catalog. **On dark** is the shared square/ban
 | Seven Plus | `seven_plus` | `#E81820` | `#E81820` | `com.swm.live/au.com.seven.inferno.ui.setup.SetupActivity`<br>`com.swm.live/au.com.seven.inferno.ui.tv.setup.SetupTvActivity`<br>`com.swm.live/au.com.seven.inferno.MainActivity`<br>`com.swm.live/.MainActivity` |
 | Sfjazz At Home | `sfjazz_at_home` | `#F57F29` | `#F57F29` | `com.sfjazzdigital/tv.vhx.LauncherActivity`<br>`com.sfjazzdigital/tv.vhx.tv.home.TvHomeActivity` |
 | SFR TV | `sfr_tv` | `#E20119` | `#E20119` | `com.sfr.androidtv.gen8/com.sfr.androidtv.gen8.ui.Tv8MainActivity` |
-| Shadow | `shadowcloudgaming` | `#0A0C0D` | `#E6EDF3` | `com.blade.shadowcloudgaming/com.blade.shadow.dispatcher.DispatcherActivity` |
+| Shadow | `shadowcloudgaming` | `#3848D0` | `#4151D2` | `com.blade.shadowcloudgaming/com.blade.shadow.dispatcher.DispatcherActivity` |
 | Shahid | `shahid` | `#A366FF` | `#A366FF` | `net.mbc.shahidTV/net.mbc.shahidTV.MainActivity` |
 | Shark TV | `sharktvthree` | `#40B0B8` | `#40B0B8` | `com.nathnetwork.sharktvthree/com.nathnetwork.sharktvthree.SplashVideoActivity` |
 | Shizuku | `shizuku` | `#FBBF24` | `#FBBF24` | `moe.shizuku.privileged.api/rikka.shizuku.manager.MainActivity`<br>`moe.shizuku.privileged.api/moe.shizuku.manager.MainActivity` |
