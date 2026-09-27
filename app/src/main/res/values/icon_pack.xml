@@ -889,6 +889,7 @@
         <item>vimeo</item>
         <item>vimu</item>
         <item>virtualhere_usb_server</item>
+        <item>visionplus</item>
         <item>viu</item>
         <item>viva_one_tv</item>
         <item>vix</item>
@@ -1853,6 +1854,7 @@
         <item>Vimeo</item>
         <item>Vimu Player</item>
         <item>Virtualhere USB Server</item>
+        <item>Vision+</item>
         <item>Viu</item>
         <item>Viva One TV</item>
         <item>ViX</item>
@@ -2817,6 +2819,7 @@
         <item>APP</item>
         <item>PLAYER</item>
         <item>TOOL</item>
+        <item>VOD</item>
         <item>APP</item>
         <item>APP</item>
         <item>APP</item>
@@ -3782,6 +3785,7 @@
         <item>1</item>
         <item>1</item>
         <item>1</item>
+        <item>1</item>
         <item>0</item>
         <item>0</item>
         <item>1</item>
@@ -3857,5 +3861,5 @@
         <item>1</item>
         <item>0</item>
     </integer-array>
-    <integer name="icon_count">962</integer>
+    <integer name="icon_count">963</integer>
 </resources>

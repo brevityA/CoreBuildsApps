@@ -2574,6 +2574,8 @@
     <!-- Virtualhere USB Server -->
     <item component="ComponentInfo{com.virtualhere.androidserver/com.virtualhere.androidserver.GUI}" drawable="virtualhere_usb_server"/>
     <item component="ComponentInfo{com.virtualhere.androidserver/.GUI}" drawable="virtualhere_usb_server"/>
+    <!-- Vision+ -->
+    <item component="ComponentInfo{id.visionplus.android.atv/tv.mirada.iris.screens.logosplash.LogoSplashActivity}" drawable="visionplus"/>
     <!-- Viu -->
     <item component="ComponentInfo{com.viu.tv/com.viu.tv.mvp.ui.activity.WelcomeActivity}" drawable="viu"/>
     <item component="ComponentInfo{com.viu.tv/.mvp.ui.activity.WelcomeActivity}" drawable="viu"/>

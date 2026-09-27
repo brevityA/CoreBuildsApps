@@ -1,19 +1,13 @@
 {
-  "versionCode": 38,
-  "versionName": "1.9.6",
-  "iconCount": 962,
-  "componentCount": 1184,
-  "releaseDate": "2026-09-26",
+  "versionCode": 39,
+  "versionName": "1.9.7",
+  "iconCount": 963,
+  "componentCount": 1185,
+  "releaseDate": "2026-09-27",
   "apkUrl": "https://github.com/brevityA/CoreBuildsApps/releases/download/iconpack/iconpack-release.apk",
   "releaseNotesUrl": "https://github.com/brevityA/CoreBuildsApps/releases",
   "minSdk": 21,
   "highlights": [
-    "Generic Glyphs get a modern look",
-    "102 apps get marks drawn from their real icons",
-    "315 icons wear their app's real colour",
-    "Browkorf TV",
-    "Arena4Viewer",
-    "Duotone icons",
-    "Banner category labels wear the icon's colour"
+    "Vision+"
   ]
 }

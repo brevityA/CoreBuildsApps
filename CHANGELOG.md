@@ -6,6 +6,12 @@ All notable changes to the Core Builds Icon Pack. Format follows
 
 ## [Unreleased]
 
+## [1.9.7] — 2026-09-27
+
+### Added
+
+- **Vision+** — a new icon for the Indonesian streaming service, requested in #185. It has a redrawn mark taken from the app's launcher icon: its V as one slanted wedge tapering to a rounded foot, and the plus. Its colour is the icon's cyan (#07E3D0). The launch activity was reported from a real device (AQUA MatrixTV CE, Android 14). 962 → 963 icons, 1184 → 1185 components.
+
 ## [1.9.6] — 2026-09-26
 
 ### Added

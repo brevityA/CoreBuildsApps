@@ -1,6 +1,6 @@
 # Supported applications
 
-`962` icons · `1184` mapped components · pack v1.9.6
+`963` icons · `1185` mapped components · pack v1.9.7
 
 Every app below auto-assigns in Projectivy. If one doesn't, the app ships a different launcher activity on your device — open an issue with the component name and it gets added.
 
@@ -895,6 +895,7 @@ Source accents are retained in the catalog. **On dark** is the shared square/ban
 | Vimeo | `vimeo` | `#1AB7EA` | `#1AB7EA` | `com.vimeo.android.videoapp/com.vimeo.android.videoapp.launch.LaunchActivity` |
 | Vimu Player | `vimu` | `#F0913A` | `#F0913A` | `net.gtvbox.videoplayer/net.gtvbox.vimuhd.VimuHDActivity` |
 | Virtualhere USB Server | `virtualhere_usb_server` | `#FFB020` | `#FFB020` | `com.virtualhere.androidserver/com.virtualhere.androidserver.GUI` |
+| Vision+ | `visionplus` | `#07E3D0` | `#07E3D0` | `id.visionplus.android.atv/tv.mirada.iris.screens.logosplash.LogoSplashActivity` |
 | Viu | `viu` | `#00D4FF` | `#00D4FF` | `com.viu.tv/com.viu.tv.mvp.ui.activity.WelcomeActivity` |
 | Viva One TV | `viva_one_tv` | `#00B5DD` | `#00B5DD` | `com.viva.vivaone/com.viva.vivamax.activity.SplashActivity` |
 | ViX | `vix` | `#FF6628` | `#FF6628` | `com.univision.prendetv/com.univision.descarga.tv.ui.MainActivity` |

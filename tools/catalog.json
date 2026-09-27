@@ -2,11 +2,11 @@
   "$schema": "./catalog.schema.json",
   "meta": {
     "pack": "Core Builds Icon Pack",
-    "version": "1.9.6",
+    "version": "1.9.7",
     "grid": 512,
     "safe_area": 432,
     "note": "Core Builds-authored geometric icons on a shared 512 grid. Reviewed brand glyphs use rounded monoline strokes and one accent, not imported vendor silhouettes. Common Outfit/category/rail banners; artwork is reference-only. Canonical brand colours and the dark-card contrast policy remain shared.",
-    "count": 962
+    "count": 963
   },
   "icons": [
     {
@@ -11907,6 +11907,20 @@
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null,
       "style": "core_monoline"
+    },
+    {
+      "name": "Vision+",
+      "drawable": "visionplus",
+      "color": "#07E3D0",
+      "glyph": "visionplus_vplus",
+      "components": [
+        "id.visionplus.android.atv/tv.mirada.iris.screens.logosplash.LogoSplashActivity"
+      ],
+      "category": "VOD",
+      "mapping_source": "issue #185 (device-reported on AQUA MatrixTV CE, Android 14)",
+      "color_source": "sampled from the official launcher icon (Google Play listing for id.visionplus.android.atv): dominant brand accent #07E3D0 (2026-09-27)",
+      "color_reviewed": "2026-09-27",
+      "glyph_source": "brand-informed redraw of the official launcher icon (play listing for id.visionplus.android.atv); Core monoline geometry, not a trace (2026-09-27)"
     },
     {
       "name": "Viu",

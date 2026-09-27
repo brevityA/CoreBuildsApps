@@ -5896,3 +5896,13 @@ GLYPHS.update({
     "meddelande_chat": meddelande_chat, "pmx_gear": pmx_gear,
     "getflix_popcorn": getflix_popcorn, "radioparadise_phones": radioparadise_phones,
 })
+
+
+def visionplus_vplus(c):
+    """Vision+: the V drawn as one slanted wedge tapering to a rounded foot, and the plus."""
+    return (_solid("M 84 138 L 170 138 L 298 380 C 310 404 296 422 272 416 "
+                   "C 258 412 250 402 242 390 Z", c, 12)
+            + f'<path d="M 364 90 L 364 250 M 284 170 L 444 170" {_s(c, 38)}/>')
+
+
+GLYPHS.update({"visionplus_vplus": visionplus_vplus})
