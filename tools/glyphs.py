@@ -6040,3 +6040,15 @@ def tduk_cleaner_droid(c):
 
 
 GLYPHS.update({"tubplayer_t": tubplayer_t, "tduk_cleaner_droid": tduk_cleaner_droid})
+
+
+def basis_b(c):
+    """Basis: the B whose lower bowl holds a play arrow."""
+    return (f'<path d="M 168 416 L 168 96 L 292 96 C 342 96 368 128 368 168 '
+            f'C 368 206 344 230 306 236 C 364 244 400 286 400 330 C 400 382 362 416 304 416 Z" '
+            f'{_s(c, 32)}/>'
+            f'<path d="M 168 236 L 300 236" {_s(c, 26)}/>'
+            f'<path d="M 234 284 L 316 328 L 234 372 Z" {_s(c, 22)}/>')
+
+
+GLYPHS.update({"basis_b": basis_b})

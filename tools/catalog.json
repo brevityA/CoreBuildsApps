@@ -6,7 +6,7 @@
     "grid": 512,
     "safe_area": 432,
     "note": "Core Builds-authored geometric icons on a shared 512 grid. Reviewed brand glyphs use rounded monoline strokes and one accent, not imported vendor silhouettes. Common Outfit/category/rail banners; artwork is reference-only. Canonical brand colours and the dark-card contrast policy remain shared.",
-    "count": 970
+    "count": 971
   },
   "icons": [
     {
@@ -997,6 +997,25 @@
       "category": "APP",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
+    },
+    {
+      "name": "Basis",
+      "drawable": "basis",
+      "color": "#2C67B7",
+      "glyph": "basis_b",
+      "components": [
+        "com.basis.app/com.basis.app.MainActivityDefault"
+      ],
+      "category": "PLAYER",
+      "mapping_source": "issue #199 (device-reported by onlytanmoy: Core Builds audit screenshot)",
+      "color_source": "sampled from the launcher icon in the issue #199 (device-reported by onlytanmoy: Core Builds audit screenshot): the tile's mid blue #2C67B7",
+      "color_reviewed": "2026-09-27",
+      "gradient": [
+        "#4CAEED",
+        "#1F4899"
+      ],
+      "gradient_source": "sampled from the launcher icon in the issue #199 (device-reported by onlytanmoy: Core Builds audit screenshot): the tile's #4CAEED to #1F4899 gradient, top-right to bottom-left (2026-09-27)",
+      "glyph_source": "brand-informed redraw of the launcher icon in the issue #199 (device-reported by onlytanmoy: Core Builds audit screenshot): the B with a play arrow in its lower bowl; Core monoline geometry, not a trace (2026-09-27)"
     },
     {
       "name": "BBC iPlayer",

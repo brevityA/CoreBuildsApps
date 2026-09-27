@@ -231,6 +231,9 @@
     <item component="ComponentInfo{io.github.visnkmr.bapl/.MainActivity}" drawable="background_apps_and_process_list_banner"/>
     <!-- Bally Sports -->
     <item component="ComponentInfo{com.ballyscorp.ballylive/tv.vizbee.readyapp.firetvandroidtv.SplashActivity}" drawable="ballyscorp_banner"/>
+    <!-- Basis -->
+    <item component="ComponentInfo{com.basis.app/com.basis.app.MainActivityDefault}" drawable="basis_banner"/>
+    <item component="ComponentInfo{com.basis.app/.MainActivityDefault}" drawable="basis_banner"/>
     <!-- BBC iPlayer -->
     <item component="ComponentInfo{bbc.iplayer.android/external.androidtv.bbciplayer.deeplinking.DeepLinkActivity}" drawable="iplayer_banner"/>
     <!-- BBC iPlayer (Freeview) -->

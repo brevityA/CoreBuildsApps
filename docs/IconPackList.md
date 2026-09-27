@@ -1,6 +1,6 @@
 # Supported applications
 
-`970` icons · `1196` mapped components · pack v1.9.7
+`971` icons · `1197` mapped components · pack v1.9.7
 
 Every app below auto-assigns in Projectivy. If one doesn't, the app ships a different launcher activity on your device — open an issue with the component name and it gets added.
 
@@ -87,6 +87,7 @@ Source accents are retained in the catalog. **On dark** is the shared square/ban
 | Baby Einstein | `babyeinstein` | `#FF7A2E` | `#FF7A2E` | `com.giant.babyeinstein/com.codes.ui.SplashActivity` |
 | Background Apps And Process List | `background_apps_and_process_list` | `#19D3C5` | `#19D3C5` | `io.github.visnkmr.bapl/io.github.visnkmr.bapl.MainActivity` |
 | Bally Sports | `ballyscorp` | `#F04DE0` | `#F04DE0` | `com.ballyscorp.ballylive/tv.vizbee.readyapp.firetvandroidtv.SplashActivity` |
+| Basis | `basis` | `#2C67B7` | `#2C67B7` | `com.basis.app/com.basis.app.MainActivityDefault` |
 | BBC iPlayer | `iplayer` | `#FF4C98` | `#FF4C98` | `bbc.iplayer.android/external.androidtv.bbciplayer.deeplinking.DeepLinkActivity` |
 | BBC iPlayer (Freeview) | `bbc_iplayer` | `#FF4C98` | `#FF4C98` | `uk.co.freeview.bbc/uk.co.freeview.templatewrapper.MainActivity` |
 | BBC iPlayer TV | `bbciplayer` | `#FF4C98` | `#FF4C98` | `com.nvidia.bbciplayer/com.nvidia.bbciplayer.MainPlayerActivity` |

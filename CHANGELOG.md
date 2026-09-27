@@ -23,6 +23,9 @@ All notable changes to the Core Builds Icon Pack. Format follows
   play arrow on its blue gradient (#190), and the Cache Cleaner's robot
   head over a yellow broom (#192), both from launch activities read off
   the requester's TV. 968 → 970 icons.
+- **Basis.** Its B with a play arrow in the lower bowl, on the icon's blue
+  gradient, requested in #199 with its launch activity read off the
+  requester's TV. 970 → 971 icons.
 
 ### Changed
 

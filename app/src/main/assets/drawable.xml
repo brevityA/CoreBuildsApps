@@ -143,6 +143,7 @@
     <item drawable="zeniptv_banner" />
     <category title="Banners · Players" />
     <item drawable="a_8k_player_vip_banner" />
+    <item drawable="basis_banner" />
     <item drawable="dream_player_tv_banner" />
     <item drawable="gridstreamr_banner" />
     <item drawable="janky_banner" />

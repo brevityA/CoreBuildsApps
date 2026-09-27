@@ -81,6 +81,7 @@
         <item>babyeinstein</item>
         <item>background_apps_and_process_list</item>
         <item>ballyscorp</item>
+        <item>basis</item>
         <item>iplayer</item>
         <item>bbc_iplayer</item>
         <item>bbciplayer</item>
@@ -1053,6 +1054,7 @@
         <item>Baby Einstein</item>
         <item>Background Apps And Process List</item>
         <item>Bally Sports</item>
+        <item>Basis</item>
         <item>BBC iPlayer</item>
         <item>BBC iPlayer (Freeview)</item>
         <item>BBC iPlayer TV</item>
@@ -2025,6 +2027,7 @@
         <item>APP</item>
         <item>APP</item>
         <item>APP</item>
+        <item>PLAYER</item>
         <item>VOD</item>
         <item>VOD</item>
         <item>VOD</item>
@@ -3001,6 +3004,7 @@
         <item>1</item>
         <item>1</item>
         <item>1</item>
+        <item>1</item>
         <item>0</item>
         <item>0</item>
         <item>0</item>
@@ -3889,5 +3893,5 @@
         <item>1</item>
         <item>0</item>
     </integer-array>
-    <integer name="icon_count">970</integer>
+    <integer name="icon_count">971</integer>
 </resources>
