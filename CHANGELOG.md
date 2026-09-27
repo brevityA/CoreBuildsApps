@@ -15,6 +15,8 @@ All notable changes to the Core Builds Icon Pack. Format follows
 - **`tools/build_core_eq_mockups.py` renders the frames from their sources.** It reuses the icon pack's token loaders and font pins, feeds the graphs real DSP output rather than a hand-shaped curve, and refuses to draw any screen whose content passes the 540dp panel — the frame-level twin of `tests/test_tv_layout_fit.py`.
 - **`.github/workflows/suite-ci.yml` runs the new gates.** The DSP self-test, the pytest chain and the frame check are wired into the no-path-filter job, so `tests/test_ci_coverage.py` sees them on every push.
 
+- **Second research pass: precedents, the apply path, and the audio path.** `docs/research/core-eq-precedents-poweramp-and-audio-path-2026-09-27.md` finds a shipping mainstream precedent in Sonos Trueplay — and the reason it refuses Android microphones, which is the objection Core EQ has to answer — then settles three things the first pass missed: Poweramp Equalizer is the apply target rather than a rival and already imports the exact AutoEQ `.txt` Core EQ exports; the audio output path decides whether an app-level equaliser can reach the sound at all, so it must be probed before anyone measures a room; and every target curve so far has been a music target, when the dominant TV problem is dialogue intelligibility.
+
 ## [1.9.6] — 2026-09-26
 
 ### Added
