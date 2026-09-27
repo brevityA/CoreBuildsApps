@@ -106,7 +106,7 @@ capped dependency forward, change the envelope first (migration steps are at the
 end of `gradle_envelope.json`), watch CI go green, then lift the ceiling and
 regenerate.
 
-`check_suite_truth.py` fails stale README/agent/doc claims, catalog/Gradle/version metadata drift, an AGENTS.md suite-table or wallpaper-count mismatch, missing stamped README block, and the `line-v*` trap. Core Line's prefix is `coreline-v*`.
+`check_suite_truth.py` fails stale README/agent/doc claims, catalog/Gradle/version metadata drift, an AGENTS.md suite-table or wallpaper-count mismatch, missing stamped README block, the `line-v*` trap, and release-tag wiring: every `on.push.tags` glob in `.github/workflows/` must be some app's `tagPrefix` + `*` from `suite.json`, and every declared prefix must have a trigger. Icon Pack is the case that shows why — its prefix is bare `v` and `build.yml` owns it, so `suite-release.yml` must not list `iconpack-v*`. Core Line's prefix is `coreline-v*`.
 
 `build_issue_prefills.py --check` holds the README's prefilled icon-request links to
 `.github/ISSUE_TEMPLATE/`: a renamed form file, a new or shadowing field `id`, or a
