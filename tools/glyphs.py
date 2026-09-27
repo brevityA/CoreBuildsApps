@@ -6035,3 +6035,77 @@ GLYPHS.update({
     "cinemahd_ticket": cinemahd_ticket, "hdobox_hplay": hdobox_hplay,
     "netmirror_n": netmirror_n, "perfectplayer_p": perfectplayer_p,
 })
+
+
+# --------------------------------------------------------------------------
+# Brand-informed marks, batch 8 (2026-09-27): icons first set aside as too
+# detailed, reduced to the one silhouette that still identifies each.
+
+def dangbei_trend(c):
+    """Dangbei: the rising trend arrow in its disc, signal arcs above."""
+    return (f'<circle cx="256" cy="294" r="136" {_s(c, 30)}/>'
+            f'<path d="M 184 340 L 240 284 L 276 318 L 334 256" {_s(c, 28)}/>'
+            f'<path d="M 298 252 L 338 252 L 338 292" {_s(c, 26)}/>'
+            f'<path d="M 150 110 C 214 70 298 70 362 110" {_s(c, 24)}/>')
+
+
+def fladder_wing(c):
+    """Fladder: the two stacked wing strokes, the lower one swept back."""
+    return (f'<path d="M 120 108 C 250 84 380 132 404 206 C 336 196 250 204 176 232 '
+            f'C 140 196 120 150 120 108 Z" {_s(c, 28)}/>'
+            f'<path d="M 176 256 C 290 238 392 270 404 340 C 320 356 250 392 204 432 '
+            f'C 176 380 170 312 176 256 Z" {_s(c, 28)}/>')
+
+
+def fotoo_frame(c):
+    """Fotoo: the tilted photo frame with its handwritten f."""
+    fr = [_polar(256, 256, 188, a) for a in (-100, -10, 80, 170)]
+    inner = [_polar(256, 256, 122, a) for a in (-100, -10, 80, 170)]
+    p = lambda q: " L ".join(f"{x:.1f} {y:.1f}" for x, y in q)
+    return (f'<path d="M {p(fr)} Z" {_s(c, 30)}/>'
+            f'<path d="M {p(inner)} Z" {_s(c, 22)}/>'
+            f'<path d="M 286 196 C 256 176 232 204 244 240 L 262 320 M 222 262 L 294 250" '
+            f'{_s(c, 22)}/>')
+
+
+def maze_square(c):
+    """Maze: the square maze of broken rings with its crossing diagonal."""
+    return (f'<path d="M 256 76 L 436 76 L 436 436 L 76 436 L 76 76 L 196 76" {_s(c, 26)}/>'
+            f'<path d="M 316 140 L 372 140 L 372 372 L 140 372 L 140 140 L 256 140" {_s(c, 24)}/>'
+            f'<path d="M 204 204 L 308 204 L 308 308 L 204 308 L 204 256" {_s(c, 22)}/>'
+            f'<circle cx="256" cy="256" r="14" {_f(c)}/>')
+
+
+def radioline_planet(c):
+    """Radioline: the ringed planet with a sound wave through it."""
+    return (f'<circle cx="256" cy="256" r="142" {_s(c, 30)}/>'
+            f'<path d="M 128 330 C 60 382 70 420 150 398 C 230 376 350 300 420 222 '
+            f'C 470 166 440 140 382 170" {_s(c, 24)}/>'
+            f'<path d="M 162 262 L 194 222 L 222 300 L 256 196 L 290 316 L 318 232 L 350 262" '
+            f'{_s(c, 22)}/>')
+
+
+def smarttwitch_joystick(c):
+    """SmartTwitchTV: the joystick on its base, inside a disc."""
+    return (f'<circle cx="256" cy="256" r="182" {_s(c, 28)}/>'
+            f'<path d="M 150 314 L 256 264 L 368 314 L 262 366 Z" {_s(c, 26)}/>'
+            f'<path d="M 258 292 L 258 132" {_s(c, 24)}/>'
+            f'<circle cx="258" cy="122" r="20" {_f(c)}/>'
+            f'<circle cx="198" cy="318" r="14" {_f(c)}/>')
+
+
+def weathernetwork_globe(c):
+    """The Weather Network: the wireframe globe of tilted rings."""
+    out = f'<circle cx="256" cy="256" r="176" {_s(c, 26)}/>'
+    out += f'<ellipse cx="256" cy="256" rx="96" ry="176" {_s(c, 22)}/>'
+    out += (f'<path d="M 110 160 C 200 130 312 130 402 160 M 110 352 C 200 382 312 382 402 352" '
+            f'{_s(c, 22)}/>')
+    return out
+
+
+GLYPHS.update({
+    "dangbei_trend": dangbei_trend,
+    "fladder_wing": fladder_wing, "fotoo_frame": fotoo_frame, "maze_square": maze_square,
+    "radioline_planet": radioline_planet,
+    "smarttwitch_joystick": smarttwitch_joystick, "weathernetwork_globe": weathernetwork_globe,
+})

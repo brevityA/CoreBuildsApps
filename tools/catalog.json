@@ -2088,14 +2088,14 @@
       "name": "Dangbei",
       "drawable": "zhushou",
       "color": "#106CFE",
-      "glyph": "tool_D",
-      "mark": "DA",
+      "glyph": "dangbei_trend",
       "components": [
         "com.dangbei.zhushou/com.dangbei.zhushou.tuitu"
       ],
       "category": "APP",
       "color_source": "sampled from the official launcher icon (APKCombo mirror of the Google Play listing for com.dangbei.zhushou): dominant brand accent #106CFE (2026-09-26)",
-      "color_reviewed": "2026-09-26"
+      "color_reviewed": "2026-09-26",
+      "glyph_source": "brand-informed redraw of the official launcher icon (APKCombo mirror of the Google Play listing for com.dangbei.zhushou); Core monoline geometry, not a trace (2026-09-27)"
     },
     {
       "name": "Dansk Filmskat",
@@ -3351,16 +3351,21 @@
     {
       "name": "Fladder",
       "drawable": "fladder",
-      "color": "#471D00",
-      "glyph": "broadcast_F",
-      "mark": "FL",
+      "color": "#F1723E",
+      "glyph": "fladder_wing",
       "components": [
         "nl.jknaapen.fladder/nl.jknaapen.fladder.MainActivity"
       ],
       "category": "APP",
       "mapping_source": "Projectivy Icon Pack 1.1.9",
-      "color_source": "sampled from the official launcher icon (Google Play listing for nl.jknaapen.fladder): dominant brand accent #471D00 (2026-09-26)",
-      "color_reviewed": "2026-09-26"
+      "color_source": "sampled from the official launcher icon (Google Play listing for nl.jknaapen.fladder): the mark's orange #F1723E, not the dark ground (2026-09-27)",
+      "color_reviewed": "2026-09-27",
+      "glyph_source": "brand-informed redraw of the official launcher icon (play listing for nl.jknaapen.fladder); Core monoline geometry, not a trace (2026-09-27)",
+      "gradient": [
+        "#EC5144",
+        "#F9AA34"
+      ],
+      "gradient_source": "sampled from the official launcher icon (Google Play listing for nl.jknaapen.fladder): the mark's own #EC5144 to #F9AA34 gradient, its two ends (2026-09-27)"
     },
     {
       "name": "FLauncher",
@@ -3571,14 +3576,14 @@
       "name": "Fotoo",
       "drawable": "fotoo",
       "color": "#4FACFE",
-      "glyph": "photos_F",
-      "mark": "FO",
+      "glyph": "fotoo_frame",
       "components": [
         "com.bo.fotoo/com.bo.fotoo.ui.splash.FTSplashActivity"
       ],
       "category": "APP",
       "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_reviewed": null,
+      "glyph_source": "brand-informed redraw of the official launcher icon (play listing for com.bo.fotoo); Core monoline geometry, not a trace (2026-09-27)"
     },
     {
       "name": "Fox Nation",
@@ -5942,15 +5947,15 @@
       "name": "Maze",
       "drawable": "powerpoint45",
       "color": "#000000",
-      "glyph": "gaming_M",
-      "mark": "MA",
+      "glyph": "maze_square",
       "components": [
         "com.powerpoint45.maze/com.powerpoint45.maze.MainMenuActivity"
       ],
       "category": "APP",
       "color_source": "simple-icons reference (monochrome mark)",
       "color_note": "monochrome",
-      "color_reviewed": "2026-09-08"
+      "color_reviewed": "2026-09-08",
+      "glyph_source": "brand-informed redraw of the official launcher icon (play listing for com.powerpoint45.maze); Core monoline geometry, not a trace (2026-09-27)"
     },
     {
       "name": "Mecool File Manager",
@@ -8446,14 +8451,14 @@
       "name": "Radioline",
       "drawable": "radioline",
       "color": "#162B9E",
-      "glyph": "music_R",
-      "mark": "RA",
+      "glyph": "radioline_planet",
       "components": [
         "com.radioline.android.radioline/com.radioline.android.radioline.MainActivity"
       ],
       "category": "MUSIC",
       "color_source": "sampled from the official launcher icon (Google Play listing for com.radioline.android.radioline): dominant brand accent #162B9E (2026-09-26)",
-      "color_reviewed": "2026-09-26"
+      "color_reviewed": "2026-09-26",
+      "glyph_source": "brand-informed redraw of the official launcher icon (play listing for com.radioline.android.radioline); Core monoline geometry, not a trace (2026-09-27)"
     },
     {
       "name": "Radioplayer",
@@ -9497,14 +9502,14 @@
       "name": "SmartTwitchTV",
       "drawable": "twitch_2",
       "color": "#3D8BFF",
-      "glyph": "film_S",
-      "mark": "SM",
+      "glyph": "smarttwitch_joystick",
       "components": [
         "com.fgl27.twitch/com.fgl27.twitch.PlayerActivity"
       ],
       "category": "VIDEO",
       "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_reviewed": null,
+      "glyph_source": "brand-informed redraw of the official launcher icon (play listing for com.fgl27.twitch); Core monoline geometry, not a trace (2026-09-27)"
     },
     {
       "name": "Smugmug",
@@ -10729,14 +10734,14 @@
       "name": "The Weather Network",
       "drawable": "weathereyeandroid",
       "color": "#FFEA53",
-      "glyph": "broadcast_W",
-      "mark": "TW",
+      "glyph": "weathernetwork_globe",
       "components": [
         "com.pelmorex.WeatherEyeAndroid.tv/com.pelmorex.WeatherEyeAndroid.tv.ui.activities.SplashActivity"
       ],
       "category": "APP",
       "color_source": "sampled from the official launcher icon (Google Play listing for com.pelmorex.WeatherEyeAndroid.tv): dominant brand accent #FFEA53 (2026-09-26)",
-      "color_reviewed": "2026-09-26"
+      "color_reviewed": "2026-09-26",
+      "glyph_source": "brand-informed redraw of the official launcher icon (play listing for com.pelmorex.WeatherEyeAndroid.tv); Core monoline geometry, not a trace (2026-09-27)"
     },
     {
       "name": "Thmanyah",

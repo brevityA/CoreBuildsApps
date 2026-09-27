@@ -8,13 +8,16 @@ All notable changes to the Core Builds Icon Pack. Format follows
 
 ### Added
 
-- **14 more apps get marks drawn from their real icons, 116 in all.**
+- **21 more apps get marks drawn from their real icons, 123 in all.**
   Zattoo's round set, Sweet.tv's donut screen, vRadio's antenna and dial,
   StrongVPN's nested shield, Hotspot Shield's globe, SCB Next's double
   chevrons, SD Maid's droid in a bow, Nfolio's wall of frames, Refresh
   Rate's settings column, MagiConnect's phone and screen, CinemaHD's ticket,
-  HDO Box's H-and-play, NetMirror's ribbon N and Perfect Player's P-and-play
-  replace their letter tiles. Each carries the one feature of its real icon that sets it
+  HDO Box's H-and-play, NetMirror's ribbon N, Perfect Player's P-and-play,
+  Dangbei's trend arrow, Fladder's stacked wing (in its orange-to-red
+  gradient), Fotoo's tilted frame, the Maze square, Radioline's ringed
+  planet, SmartTwitchTV's joystick and The Weather Network's globe replace
+  their letter tiles. Each carries the one feature of its real icon that sets it
   apart from the pack's other TV, radio, shield and grid marks. SCB Next
   takes its icon's red `#D40615` instead of a palette lime, and four names
   are spelled like the apps: SCB Next, SD Maid, StrongVPN, Refresh Rate.

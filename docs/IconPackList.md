@@ -261,7 +261,7 @@ Source accents are retained in the catalog. **On dark** is the shared square/ban
 | FITE | `fitetv` | `#FFE14D` | `#FFE14D` | `com.flipps.fitetv/com.bianor.ams.androidtv.activity.TvMainActivity` |
 | Five TV | `fivetviptvbox` | `#4FACFE` | `#4FACFE` | `com.fivetvbox.fivetviptvbox/com.fivetvbox.fivetviptvbox.view.activity.SplashActivity` |
 | Fizz TV | `fizz_app` | `#00D672` | `#00D672` | `ca.fizz_app.tv/ca.vmedia.phones_tablets_ui.activity.MainActivity` |
-| Fladder | `fladder` | `#471D00` | `#A34200` | `nl.jknaapen.fladder/nl.jknaapen.fladder.MainActivity` |
+| Fladder | `fladder` | `#F1723E` | `#F1723E` | `nl.jknaapen.fladder/nl.jknaapen.fladder.MainActivity` |
 | FLauncher | `launcher` | `#FFB020` | `#FFB020` | `com.kfaraj.launcher/com.kfaraj.launcher.LauncherActivity` |
 | Flex TV | `flextv` | `#FB3867` | `#FB3867` | `com.aytech.flextv/com.android.emptytest.MainActivity`<br>`com.aytech.flextv/com.flex.leanback.ui.splash.TVSplashActivity` |
 | Flickfolio | `flickfolio` | `#2A63DD` | `#2A63DD` | `com.snapwood.flickfolio/com.snapwood.flickfolio.SelectAlbumActivity` |
