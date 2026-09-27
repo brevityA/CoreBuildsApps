@@ -784,6 +784,7 @@
     <item drawable="tcl_home_passive" />
     <item drawable="tcn" />
     <item drawable="tdtchannels_player" />
+    <item drawable="tduk_cache_cleaner" />
     <item drawable="tduk_app_killer" />
     <item drawable="tduk_screensaver_manager" />
     <item drawable="ted" />
@@ -831,6 +832,7 @@
     <item drawable="tsn" />
     <item drawable="tt" />
     <item drawable="tubi" />
+    <item drawable="tubplayer" />
     <item drawable="tunein_radio" />
     <item drawable="tcl_tv" />
     <item drawable="tv_2_play" />

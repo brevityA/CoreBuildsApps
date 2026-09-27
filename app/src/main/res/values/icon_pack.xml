@@ -786,6 +786,7 @@
         <item>tcl_home_passive</item>
         <item>tcn</item>
         <item>tdtchannels_player</item>
+        <item>tduk_cache_cleaner</item>
         <item>tduk_app_killer</item>
         <item>tduk_screensaver_manager</item>
         <item>ted</item>
@@ -833,6 +834,7 @@
         <item>tsn</item>
         <item>tt</item>
         <item>tubi</item>
+        <item>tubplayer</item>
         <item>tunein_radio</item>
         <item>tcl_tv</item>
         <item>tv_2_play</item>
@@ -1756,6 +1758,7 @@
         <item>TCL Home Passive</item>
         <item>TCN</item>
         <item>Tdtchannels Player</item>
+        <item>TDUK APP Cache Cleaner</item>
         <item>TDUK APP Killer</item>
         <item>Tduk Screensaver Manager</item>
         <item>Ted</item>
@@ -1803,6 +1806,7 @@
         <item>TSN</item>
         <item>Tt</item>
         <item>Tubi</item>
+        <item>TubPlayer</item>
         <item>Tunein Radio</item>
         <item>TV</item>
         <item>TV 2 Play</item>
@@ -2728,6 +2732,7 @@
         <item>PLAYER</item>
         <item>TOOL</item>
         <item>TOOL</item>
+        <item>TOOL</item>
         <item>APP</item>
         <item>APP</item>
         <item>APP</item>
@@ -2773,6 +2778,7 @@
         <item>APP</item>
         <item>APP</item>
         <item>APP</item>
+        <item>PLAYER</item>
         <item>MUSIC</item>
         <item>LIVE</item>
         <item>APP</item>
@@ -3699,6 +3705,7 @@
         <item>1</item>
         <item>1</item>
         <item>1</item>
+        <item>1</item>
         <item>0</item>
         <item>0</item>
         <item>0</item>
@@ -3742,6 +3749,7 @@
         <item>0</item>
         <item>1</item>
         <item>0</item>
+        <item>1</item>
         <item>1</item>
         <item>1</item>
         <item>0</item>
@@ -3881,5 +3889,5 @@
         <item>1</item>
         <item>0</item>
     </integer-array>
-    <integer name="icon_count">968</integer>
+    <integer name="icon_count">970</integer>
 </resources>

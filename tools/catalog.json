@@ -6,7 +6,7 @@
     "grid": 512,
     "safe_area": 432,
     "note": "Core Builds-authored geometric icons on a shared 512 grid. Reviewed brand glyphs use rounded monoline strokes and one accent, not imported vendor silhouettes. Common Outfit/category/rail banners; artwork is reference-only. Canonical brand colours and the dark-card contrast policy remain shared.",
-    "count": 968
+    "count": 970
   },
   "icons": [
     {
@@ -10524,6 +10524,28 @@
       "color_reviewed": null
     },
     {
+      "name": "TDUK APP Cache Cleaner",
+      "drawable": "tduk_cache_cleaner",
+      "color": "#98D800",
+      "glyph": "tduk_cleaner_droid",
+      "components": [
+        "com.tduk.cacheclean/com.tduk.cachecleaner.ShellAutoRunner"
+      ],
+      "category": "TOOL",
+      "mapping_source": "issue #192 (device-reported by onlytanmoy: Core Builds audit screenshot)",
+      "color_source": "sampled from the launcher icon in the issue #192 (device-reported by onlytanmoy: Core Builds audit screenshot): the robot's green #98D800",
+      "color_reviewed": "2026-09-27",
+      "glyph_source": "brand-informed redraw of the launcher icon in the issue #192 (device-reported by onlytanmoy: Core Builds audit screenshot): the Android robot with a broom; drawn as the robot's head over the broom so it is not a twin of TDUK APP Killer; Core monoline geometry, not a trace (2026-09-27)",
+      "secondary": {
+        "color": "#F8D800",
+        "parts": [
+          4,
+          5
+        ],
+        "source": "the launcher icon in the issue #192 (device-reported by onlytanmoy: Core Builds audit screenshot): the broom's yellow #F8D800 (2026-09-27)"
+      }
+    },
+    {
       "name": "TDUK APP Killer",
       "drawable": "tduk_app_killer",
       "color": "#90D80C",
@@ -11173,6 +11195,25 @@
       "color_reviewed": "2026-09-14"
     },
     {
+      "name": "TubPlayer",
+      "drawable": "tubplayer",
+      "color": "#60A8F0",
+      "glyph": "tubplayer_t",
+      "components": [
+        "com.tubs.tubplayer/com.tubs.tubplayer.MainActivity"
+      ],
+      "category": "PLAYER",
+      "mapping_source": "issue #190 (device-reported by onlytanmoy: Core Builds audit screenshot)",
+      "color_source": "sampled from the launcher icon in the issue #190 (device-reported by onlytanmoy: Core Builds audit screenshot): the tile's blue #60A8F0",
+      "color_reviewed": "2026-09-27",
+      "gradient": [
+        "#6FCAFB",
+        "#5F84E7"
+      ],
+      "gradient_source": "sampled from the launcher icon in the issue #190 (device-reported by onlytanmoy: Core Builds audit screenshot): the tile's #6FCAFB to #5F84E7 gradient, its two corners (2026-09-27)",
+      "glyph_source": "brand-informed redraw of the launcher icon in the issue #190 (device-reported by onlytanmoy: Core Builds audit screenshot): the T whose arm folds into a play arrow; Core monoline geometry, not a trace (2026-09-27)"
+    },
+    {
       "name": "Tunein Radio",
       "drawable": "tunein_radio",
       "color": "#14D8CC",
@@ -11702,7 +11743,8 @@
       "glyph": "ufm_folder_arrow",
       "components": [
         "za.kilowatch.ultimatefilemanager/.MainActivity",
-        "za.kilowatch.ultimatefilemanager/za.kilowatch.ultimatefilemanager.MainActivity"
+        "za.kilowatch.ultimatefilemanager/za.kilowatch.ultimatefilemanager.MainActivity",
+        "za.kilowatch.ultimatefilemanager/za.kilowatch.ultimatefilemanager.onboarding.LanguageWelcomeActivity"
       ],
       "category": "FILES",
       "unverified": [
@@ -11711,7 +11753,8 @@
       ],
       "color_source": "sampled from the launcher tile in a supporter's device screenshot (2026-09-27): the folder mark's steel blue #80A0B0",
       "color_reviewed": "2026-09-27",
-      "glyph_source": "brand-informed redraw of the launcher tile in a supporter's device screenshot (za.kilowatch.ultimatefilemanager, 2026-09-27); Core monoline geometry, not a trace (2026-09-27)"
+      "glyph_source": "brand-informed redraw of the launcher tile in a supporter's device screenshot (za.kilowatch.ultimatefilemanager, 2026-09-27); Core monoline geometry, not a trace (2026-09-27)",
+      "mapping_source": "onboarding.LanguageWelcomeActivity from issue #191 (device-reported by onlytanmoy: Core Builds audit screenshot) and the 2026-09-27 supporter TV audit"
     },
     {
       "name": "UniFi Protect",

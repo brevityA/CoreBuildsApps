@@ -19,6 +19,10 @@ All notable changes to the Core Builds Icon Pack. Format follows
 - **TDUK APP Killer.** Its Android robot with the red X across its chest,
   in the icon's green and red, requested in #193 with its launch activity
   read off the requester's TV. 967 → 968 icons.
+- **TubPlayer and TDUK APP Cache Cleaner.** TubPlayer's T folding into a
+  play arrow on its blue gradient (#190), and the Cache Cleaner's robot
+  head over a yellow broom (#192), both from launch activities read off
+  the requester's TV. 968 → 970 icons.
 
 ### Changed
 
@@ -39,11 +43,11 @@ All notable changes to the Core Builds Icon Pack. Format follows
   showed TCL Home launching from `com.tcl.dashboard` and TCL Home Passive
   from a class package the catalogue had wrong, so both gain the reported
   activity. Ultimate File Manager Pro gets a redrawn folder-and-arrow mark
-  in its steel blue `#80A0B0`; its launch activity was cut off on screen,
-  so its mapping waits for the full name.
+  in its steel blue `#80A0B0` and, from #191, the onboarding activity it
+  actually launches from on TVs, so its icon now applies.
 - **AirReceiver now matches the full app, not just Lite.** Issue #194
   reported `com.softmedia.receiver`; it joins the AirReceiver Lite icon,
-  which is renamed AirReceiver and reads "AR" like its logo. 1185 → 1193
+  which is renamed AirReceiver and reads "AR" like its logo. 1185 → 1196
   components.
 
 ## [1.9.6] — 2026-09-26

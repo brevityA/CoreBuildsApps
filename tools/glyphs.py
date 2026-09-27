@@ -6021,3 +6021,22 @@ def tduk_killer_droid(c):
 
 
 GLYPHS.update({"tduk_killer_droid": tduk_killer_droid})
+
+
+def tubplayer_t(c):
+    """TubPlayer: the T whose right arm folds down into a play arrow."""
+    return (f'<path d="M 108 150 L 404 150 M 222 150 L 222 404" {_s(c, 36)}/>'
+            + _solid("M 266 184 L 372 262 L 266 340 Z", c, 14))
+
+
+def tduk_cleaner_droid(c):
+    """TDUK APP Cache Cleaner: the Android robot's head over a big sweeping broom."""
+    return (f'<path d="M 136 214 C 136 110 376 110 376 214 Z" {_s(c, 26)}/>'
+            f'<path d="M 190 124 L 164 80 M 322 124 L 348 80" {_s(c, 22)}/>'
+            f'<circle cx="208" cy="176" r="12" {_f(c)}/>'
+            f'<circle cx="304" cy="176" r="12" {_f(c)}/>'
+            f'<path d="M 360 262 L 246 360" {_s(c, 26)}/>'
+            f'<path d="M 246 360 L 178 356 L 132 440 L 234 428 Z" {_s(c, 22)}/>')
+
+
+GLYPHS.update({"tubplayer_t": tubplayer_t, "tduk_cleaner_droid": tduk_cleaner_droid})

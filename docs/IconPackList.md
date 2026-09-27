@@ -1,6 +1,6 @@
 # Supported applications
 
-`968` icons · `1193` mapped components · pack v1.9.7
+`970` icons · `1196` mapped components · pack v1.9.7
 
 Every app below auto-assigns in Projectivy. If one doesn't, the app ships a different launcher activity on your device — open an issue with the component name and it gets added.
 
@@ -792,6 +792,7 @@ Source accents are retained in the catalog. **On dark** is the shared square/ban
 | TCL Home Passive | `tcl_home_passive` | `#A60202` | `#C30202` | `com.tcl.tv.tclhome_passive/com.tcl.tv.tclhome_passive.HomePassiveActivity`<br>`com.tcl.tv.tclhome_passive/com.tcl.tclhome_passive.HomePassiveActivity` |
 | TCN | `tcn` | `#CF0606` | `#CF0606` | `com.tuckercarlson.tv/tv.accedo.one.app.bootstrap.BootstrapActivity` |
 | Tdtchannels Player | `tdtchannels_player` | `#53FC18` | `#53FC18` | `com.tdtchannels.player/com.tdtchannels.player.SplashScreenActivity` |
+| TDUK APP Cache Cleaner | `tduk_cache_cleaner` | `#98D800` | `#98D800` | `com.tduk.cacheclean/com.tduk.cachecleaner.ShellAutoRunner` |
 | TDUK APP Killer | `tduk_app_killer` | `#90D80C` | `#90D80C` | `com.tduk.appklr/com.tduk.cachecleaner.ShellAutoRunner` |
 | Tduk Screensaver Manager | `tduk_screensaver_manager` | `#7C74FF` | `#7C74FF` | `com.tduk.scrmgr/dev.vodik7.tdukscrmng.MainActivity` |
 | Ted | `ted` | `#E62B1E` | `#E62B1E` | `com.ted.android.tv/com.ted.android.tv.view.MainActivity` |
@@ -839,6 +840,7 @@ Source accents are retained in the catalog. **On dark** is the shared square/ban
 | TSN | `tsn` | `#53FC18` | `#53FC18` | `ca.tsn.mobile.android/ca.tsn.mobile.android.main.activity.MainActivity` |
 | Tt | `tt` | `#041E42` | `#0C5BC7` | `ott.ttplus/tv.vhx.tv.home.TvHomeActivity` |
 | Tubi | `tubi` | `#F5E600` | `#F5E600` | `com.tubitv/com.tubitv.activities.MainActivity` |
+| TubPlayer | `tubplayer` | `#60A8F0` | `#60A8F0` | `com.tubs.tubplayer/com.tubs.tubplayer.MainActivity` |
 | Tunein Radio | `tunein_radio` | `#14D8CC` | `#14D8CC` | `tunein.player/tunein.ui.leanback.ui.activities.TvHomeActivity` |
 | TV | `tcl_tv` | `#FF7A2E` | `#FF7A2E` | `com.tcl.tv/com.tcl.player.TVActivity` |
 | TV 2 Play | `tv_2_play` | `#6F03FF` | `#7812FF` | `no.tv2.sumo/no.tv2.android.ui.LauncherBridgeActivity` |
@@ -878,7 +880,7 @@ Source accents are retained in the catalog. **On dark** is the shared square/ban
 | UFC | `smartphone` | `#D20A0A` | `#D20A0A` | `com.neulion.smartphone.ufc.android/com.neulion.smartphone.ufc.android.MainActivity` |
 | Ugreen NAS | `ugreen_nas` | `#34EB7A` | `#34EB7A` | `com.ugreen.nasprotv/com.ugreen.nasprotv.LaunchActivity` |
 | Ukiku | `ukiku` | `#A366FF` | `#A366FF` | `knf.kuma.tv/knf.kuma.tv.ui.TVMain` |
-| Ultimate File Manager Pro | `ultimatefilemanager` | `#80A0B0` | `#80A0B0` | `za.kilowatch.ultimatefilemanager/.MainActivity`<br>`za.kilowatch.ultimatefilemanager/za.kilowatch.ultimatefilemanager.MainActivity` |
+| Ultimate File Manager Pro | `ultimatefilemanager` | `#80A0B0` | `#80A0B0` | `za.kilowatch.ultimatefilemanager/.MainActivity`<br>`za.kilowatch.ultimatefilemanager/za.kilowatch.ultimatefilemanager.MainActivity`<br>`za.kilowatch.ultimatefilemanager/za.kilowatch.ultimatefilemanager.onboarding.LanguageWelcomeActivity` |
 | UniFi Protect | `unifi_protect` | `#0058D4` | `#0058D4` | `com.ubnt.unifi.protect/com.ubnt.sections.splash.AuthenticationActivity` |
 | Unifi TV | `unifi_tv` | `#7C74FF` | `#7C74FF` | `com.tm.playtv/com.tm.ott.module.login.activity.LoginActivity` |
 | Unlinked | `unlinked` | `#00B8D9` | `#00B8D9` | `link.unlinked/.android.core.ui.SplashActivity` |

@@ -2288,6 +2288,8 @@
     <!-- Tdtchannels Player -->
     <item component="ComponentInfo{com.tdtchannels.player/com.tdtchannels.player.SplashScreenActivity}" drawable="tdtchannels_player_banner"/>
     <item component="ComponentInfo{com.tdtchannels.player/.SplashScreenActivity}" drawable="tdtchannels_player_banner"/>
+    <!-- TDUK APP Cache Cleaner -->
+    <item component="ComponentInfo{com.tduk.cacheclean/com.tduk.cachecleaner.ShellAutoRunner}" drawable="tduk_cache_cleaner_banner"/>
     <!-- TDUK APP Killer -->
     <item component="ComponentInfo{com.tduk.appklr/com.tduk.cachecleaner.ShellAutoRunner}" drawable="tduk_app_killer_banner"/>
     <!-- Tduk Screensaver Manager -->
@@ -2419,6 +2421,9 @@
     <!-- Tubi -->
     <item component="ComponentInfo{com.tubitv/com.tubitv.activities.MainActivity}" drawable="tubi_banner"/>
     <item component="ComponentInfo{com.tubitv/.activities.MainActivity}" drawable="tubi_banner"/>
+    <!-- TubPlayer -->
+    <item component="ComponentInfo{com.tubs.tubplayer/com.tubs.tubplayer.MainActivity}" drawable="tubplayer_banner"/>
+    <item component="ComponentInfo{com.tubs.tubplayer/.MainActivity}" drawable="tubplayer_banner"/>
     <!-- Tunein Radio -->
     <item component="ComponentInfo{tunein.player/tunein.ui.leanback.ui.activities.TvHomeActivity}" drawable="tunein_radio_banner"/>
     <!-- TV -->
@@ -2535,6 +2540,8 @@
     <!-- Ultimate File Manager Pro -->
     <item component="ComponentInfo{za.kilowatch.ultimatefilemanager/za.kilowatch.ultimatefilemanager.MainActivity}" drawable="ultimatefilemanager_banner"/>
     <item component="ComponentInfo{za.kilowatch.ultimatefilemanager/.MainActivity}" drawable="ultimatefilemanager_banner"/>
+    <item component="ComponentInfo{za.kilowatch.ultimatefilemanager/za.kilowatch.ultimatefilemanager.onboarding.LanguageWelcomeActivity}" drawable="ultimatefilemanager_banner"/>
+    <item component="ComponentInfo{za.kilowatch.ultimatefilemanager/.onboarding.LanguageWelcomeActivity}" drawable="ultimatefilemanager_banner"/>
     <!-- UniFi Protect -->
     <item component="ComponentInfo{com.ubnt.unifi.protect/com.ubnt.sections.splash.AuthenticationActivity}" drawable="unifi_protect_banner"/>
     <!-- Unifi TV -->
