@@ -60,22 +60,59 @@ checked against their sources.
 ## 3. The measurement → correction chain
 
 ```
-pink noise (20 s, deterministic)
-  → AudioRecord(VOICE_RECOGNITION, 48 kHz)
-  → Welch PSD (NFFT 8192, Hann, 50 % overlap)
-  → 1/3-octave bands, energy-averaged, anchored at 1 kHz
-  → measured vs target (Flat / B&K / Harman / House)
-  → correction: smooth → invert → clamp(+6/−12) → limit slope(6 dB/oct)
-                → recentre → clamp again → taper edges → zero outside 40 Hz–8 kHz
+exponential sine sweep (10 s, Farina) — primary
+pink noise (20 s, deterministic) — cross-check and live RTA
+  → AudioRecord(VOICE_RECOGNITION, 48 kHz), read ~3 s past the stop
+  → deconvolve with the time-reversed inverse filter → impulse response
+        ├→ RT60 (Schroeder backward integration)
+        │      → Schroeder f_s = 2000·√(RT60/V)   [room dims are asked for]
+        ├→ excess group delay → minimum-phase gate
+        └→ magnitude response
+  → 3 captures within the seat envelope (head height, ±25 cm), energy-averaged
+  → measured vs target (Flat / B&K / Room / Olive / Dialogue / House)
+  → room model
+        transition  = min(2·f_s, 400 Hz), or 300 Hz when the room is unknown
+        nulls       = dips deeper than 6 dB below the 2-octave trend
+        floor       = wherever the loudspeaker's own roll-off is detected
+  → correction, in two regimes
+        below the transition   variable smoothing (1/6 oct) → invert
+                               → never boost into a null
+                               → honour the minimum-phase gate
+                               → clamp(+6/−12) → slope limit(6 dB/oct)
+                               → recentre → clamp again
+        above the transition   shaping only, ±3 dB, one-octave smoothing
+        → taper the edges → zero outside floor–8 kHz
   → collapse onto the device's own Equalizer bands (millibel-clamped)
   → fit 8 peaking filters for the parametric export (Q 0.4–4.0, spacing penalty)
-  → export: parametric .txt (with Preamp) / GraphicEQ: / profile .json
+  → export: parametric .txt (Preamp + band limit + "Bands Overlap = Cascade")
+            / GraphicEQ: / profile .json (transition, nulls, room, capability)
 ```
 
 Every constant in that pipeline is commented with its reason in
 `tools/core_eq_dsp.py`. The order of the clamp / recentre / taper steps is
 load-bearing: a first draft re-centred last and silently broke three documented
 budget guarantees at once, which is what `tests/test_core_eq_dsp.py` now pins.
+
+### Why the chain is split at a transition frequency
+
+This is the central design decision, and it comes from
+`docs/research/core-eq-correction-science-2026-09-27.md` §1–2. Below the
+transition the room is a handful of discrete standing waves: correcting them
+is real work, and because low-frequency room modes are **minimum phase**,
+cutting a modal peak also kills its ringing. Above it, a microphone at one
+point is measuring reflections as much as the speaker, and forcing the curve
+smooth there is equalising things an upstream filter cannot touch. So the
+corrector inverts below the line and only shapes above it.
+
+The line itself is computable rather than guessed: `f_s = 2000·√(RT60/V)`, one
+octave up, capped at 400 Hz. The working numbers the field converges on are
+300–500 Hz — Toole's transition, Dirac ART's 150 Hz, `audioxpress`'s 20–400 Hz
+recommendation, and the 250–500 Hz filter limit serious Audyssey users set.
+
+And a null is never filled. It is destructive interference at the capsule; a
+boost raises the direct and reflected arrivals equally and the cancellation
+survives, so all a boost buys is excursion and distortion. The corrector marks
+such dips, leaves them at zero, and the UI says so out loud.
 
 ## 4. Applying the correction — the ladder
 
@@ -99,17 +136,33 @@ every session open — the two bugs that define this category
 
 ## 5. Honesty rules (these are product features)
 
-1. **Correct only 40 Hz–8 kHz.** The rest of the measurement is displayed,
-   greyed, uncorrected. A remote capsule cannot measure it.
+1. **Correct only where the measurement can be trusted** — from the detected
+   loudspeaker roll-off to 8 kHz, and only below the transition frequency. The
+   rest of the measurement is displayed, greyed, uncorrected. A remote capsule
+   cannot measure it, and above the transition the microphone is measuring
+   reflections as much as the speaker.
 2. **A profile travels with its provenance.** Microphone, stimulus, sample
-   rate, target, band, gain budget and the capability verdict at the time it
-   was made — all in the `.json`. Loading a profile from another set shows
-   those limits before it offers to apply.
+   rate, target, band, gain budget, transition frequency, the room it was
+   measured in, the dips that were deliberately left alone, and the capability
+   verdict at the time it was made — all in the `.json`. Loading a profile from
+   another set shows those limits before it offers to apply.
 3. **Cut-only is a first-class toggle,** not a hidden setting, and it says what
    it costs: *lower output, no clipping risk*.
-4. **The preamp ships with the filters** and rounds toward more negative.
-5. **No claim of phase or time-domain correction.** Pink noise cannot do it;
-   the docs and the UI both say so.
+4. **The preamp ships with the filters** and rounds toward more negative. The
+   export carries its own correction band and the Poweramp
+   "Bands Overlap = Cascade" instruction, because both failures sound like
+   "the EQ made it worse" rather than like a missing comment line.
+5. **No claim of mixed-phase time-domain correction.** The sweep's impulse
+   response is used to gate the correction and to measure decay, not to build
+   pre-ringing filters. The docs and the UI both say so.
+6. **Dips that are cancellations are named, not hidden.** When the corrector
+   refuses to fill a null it says which frequency and why: *this is where the
+   room cancels the sound; boosting it cannot work*. Leaving it unsaid would
+   make a deliberate decision look like a bug.
+7. **The target curves are named for what they are.** These are loudspeaker
+   in-a-room curves. The Harman *headphone* target's 3 kHz ear-gain peak is
+   never baked in — it would double-count pinna gain and make dialogue sound
+   like a telephone.
 
 That is `docs/BRAND-GUIDE.md`'s "Honest utility" pillar applied to audio.
 

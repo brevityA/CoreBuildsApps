@@ -166,6 +166,61 @@ class TestTargets:
         curve = dsp.target_curve(kind, third_octave)
         assert abs(float(np.interp(630.0, third_octave, curve))) < 0.05
 
+    def test_room_is_a_speaker_curve_not_a_headphone_curve(self, third_octave):
+        """No 3 kHz ear-gain peak.
+
+        The Harman *headphone* target carries one, to simulate what a
+        listener's own head does for an external source. Baking it into a
+        speaker correction double-counts pinna gain and makes dialogue sound
+        like it is coming through a telephone. This is the test that would
+        catch someone "fixing" the target by importing the headphone curve.
+        """
+        room = dsp.target_curve("room", third_octave)
+        at_3k = float(np.interp(3000.0, third_octave, room))
+        at_1k = float(np.interp(1000.0, third_octave, room))
+        assert at_3k <= at_1k + 0.5
+
+    def test_olive_carries_the_published_numbers(self, third_octave):
+        """+6.6 dB of bass at 105 Hz, -2.4 dB of treble above 2.5 kHz.
+
+        These are the mean preferences from Olive, Welti & McMullin (AES
+        2013). They are shipped as a preset rather than as a default because
+        the spread between the eleven listeners was about 17 dB of bass —
+        but the preset has to actually be the study's numbers.
+        """
+        olive = dsp.target_curve("olive", third_octave)
+        room = dsp.target_curve("room", third_octave)
+        # Subtracting `room` removes the shared tilt, leaving exactly the two
+        # published shelves: +6.6 dB of bass against `room`'s +3.5, so +3.1 on
+        # the plateau (105 Hz is the shelf *corner*, where both are half way),
+        # and -2.4 dB of treble.
+        delta = olive - room
+        plateau = float(np.interp(30.0, third_octave, delta))
+        treble = float(np.interp(8000.0, third_octave, delta))
+        assert abs(plateau - (6.6 - 3.5)) < 0.3, plateau
+        assert abs(treble - (-2.4)) < 0.3, treble
+
+    def test_dialogue_presence_stops_before_sibilance(self, third_octave):
+        """Presence is bounded above on purpose.
+
+        Speech gains intelligibility up to about 4 kHz and gains sibilance
+        between 5 and 7 kHz. A presence shelf that keeps rising trades clarity
+        for hiss, which is the opposite of what a dialogue target is for.
+        """
+        dialogue = dsp.target_curve("dialogue", third_octave)
+        room = dsp.target_curve("room", third_octave)
+        presence = dialogue - room
+        at_3k = float(np.interp(3000.0, third_octave, presence))
+        at_8k = float(np.interp(8000.0, third_octave, presence))
+        assert at_3k > 1.0
+        assert at_8k < 0.5
+
+    def test_dialogue_trim_is_a_cut_not_a_boost(self, third_octave):
+        """The 300-800 Hz trim reduces boxiness; it never adds."""
+        trimmed = dsp.target_curve("dialogue", third_octave, trim_db=3.0)
+        plain = dsp.target_curve("dialogue", third_octave)
+        assert float(np.min(trimmed - plain)) <= 0.0
+
     def test_bk_rolls_off_in_the_treble(self, third_octave):
         curve = dsp.target_curve("bk", third_octave)
         assert float(np.interp(20000.0, third_octave, curve)) < -4.0
@@ -226,14 +281,62 @@ class TestCorrection:
         assert worst <= dsp.MAX_SLOPE_DB_PER_OCT + 1e-9
 
     def test_correction_inverts_the_error(self, third_octave):
-        """Where the room is hot against target, the correction must be cold."""
+        """Where the room is hot against target, the correction must be cold.
+
+        The transition is pushed past the whole band so this isolates the
+        inversion regime; the shaping regime has its own test below.
+        """
         measured = np.full_like(third_octave, -6.0)
         measured[int(np.argmin(np.abs(third_octave - 250.0)))] = 0.0
         target = dsp.target_curve("flat", third_octave)
         corr = dsp.correction_curve(third_octave, measured, target,
-                                    smooth_octaves=0.05, max_slope=1e6)
+                                    transition_hz_=1e6, max_slope=1e6)
         hot = int(np.argmin(np.abs(third_octave - 250.0)))
         assert corr[hot] < 0.0
+
+    def test_shaping_only_above_the_transition(self, third_octave):
+        """Above the transition the corrector stops inverting.
+
+        A loud, narrow peak high in the band would be a textbook thing to
+        notch - and it is exactly what the research says not to chase, because
+        up there the microphone is measuring reflections as much as the
+        speaker. So the correction there is held inside the shaping budget.
+        """
+        measured = np.zeros_like(third_octave)
+        hot = int(np.argmin(np.abs(third_octave - 4000.0)))
+        measured[hot] = 12.0
+        target = dsp.target_curve("flat", third_octave)
+        corr = dsp.correction_curve(third_octave, measured, target,
+                                    transition_hz_=400.0)
+        above = third_octave > 800.0
+        assert np.max(np.abs(corr[above])) <= dsp.MAX_SHAPING_DB + 1e-6
+        assert corr[hot] < 0.0  # it is still cut, just not by 12 dB
+
+    def test_a_deep_null_is_never_boosted(self, third_octave):
+        """A cancellation is left alone at any depth.
+
+        Boosting it raises the direct and reflected arrivals equally and the
+        cancellation survives, so the only thing a boost buys is excursion and
+        distortion. The corrector must leave it at zero and say so.
+        """
+        measured = np.zeros_like(third_octave)
+        null_at = int(np.argmin(np.abs(third_octave - 84.0)))
+        measured[null_at] = -18.0
+        target = dsp.target_curve("flat", third_octave)
+        corr = dsp.correction_curve(third_octave, measured, target)
+        assert corr[null_at] <= 1e-6
+
+    def test_min_phase_gate_is_honoured(self, third_octave):
+        """Where the gate says no, the correction is zero."""
+        measured = np.zeros_like(third_octave)
+        peak = int(np.argmin(np.abs(third_octave - 200.0)))
+        measured[peak] = 8.0
+        target = dsp.target_curve("flat", third_octave)
+        gate = np.ones_like(third_octave, dtype=bool)
+        gate[peak] = False
+        corr = dsp.correction_curve(third_octave, measured, target,
+                                    transition_hz_=1e6, min_phase_ok=gate)
+        assert corr[peak] == 0.0
 
 
 # ---------------------------------------------------------------------------
@@ -367,13 +470,134 @@ class TestExport:
             correction_db=corr, filters=[], capability={}))
         assert profile["correction_range_hz"] == [dsp.F_MIN, dsp.F_MAX]
         assert profile["gain_limits_db"] == {"boost": dsp.MAX_BOOST_DB,
-                                            "cut": dsp.MAX_CUT_DB}
+                                            "cut": dsp.MAX_CUT_DB,
+                                            "shaping": dsp.MAX_SHAPING_DB}
         assert profile["microphone"] == "remote"
         assert len(profile["curve"]) == len(centres)
 
     def test_empty_filter_bank_still_exports(self):
         assert dsp.export_parametric_txt([]).startswith("# Core EQ")
         assert dsp.preamp_db([]) == 0.0
+
+
+# ---------------------------------------------------------------------------
+# The room model
+# ---------------------------------------------------------------------------
+
+class TestRoomModel:
+    def test_schroeder_matches_the_literature(self):
+        """54 m3 at RT60 0.5 s is the worked example in the research; it gives
+        about 192 Hz."""
+        assert abs(dsp.schroeder_hz(54.0, 0.5) - 192.0) < 6.0
+
+    def test_schroeder_rejects_nonsense(self):
+        with pytest.raises(ValueError):
+            dsp.schroeder_hz(0.0, 0.5)
+        with pytest.raises(ValueError):
+            dsp.schroeder_hz(54.0, -1.0)
+
+    def test_transition_falls_back_and_is_capped(self):
+        assert dsp.transition_hz() == dsp.UNKNOWN_ROOM_TRANSITION_HZ
+        assert dsp.transition_hz(10.0, 2.0) <= dsp.DEFAULT_TRANSITION_HZ
+        # A small, live room: Schroeder is high, so the ceiling is capped.
+        assert dsp.transition_hz(54.0, 0.5) > dsp.UNKNOWN_ROOM_TRANSITION_HZ * 0.5
+
+    def test_null_detection_finds_a_cancellation(self, third_octave):
+        measured = np.zeros_like(third_octave)
+        measured[int(np.argmin(np.abs(third_octave - 84.0)))] = -16.0
+        nulls = dsp.detect_nulls(third_octave, measured)
+        assert bool(nulls[int(np.argmin(np.abs(third_octave - 84.0)))])
+        assert float(nulls.mean()) < 0.35
+
+    def test_null_detection_ignores_ordinary_ripple(self, third_octave):
+        rng = np.random.default_rng(3)
+        measured = rng.normal(0.0, 1.0, size=third_octave.shape)
+        assert float(dsp.detect_nulls(third_octave, measured).mean()) < 0.05
+
+    def test_rolloff_raises_the_correction_floor(self, third_octave):
+        """A TV's drivers stop well before 40 Hz; the floor must follow."""
+        measured = np.zeros_like(third_octave)
+        measured[third_octave < 90.0] = -18.0
+        assert dsp.detect_low_rolloff(third_octave, measured) >= 60.0
+
+    def test_rolloff_stays_put_when_there_is_no_rolloff(self, third_octave):
+        measured = np.zeros_like(third_octave)
+        assert dsp.detect_low_rolloff(third_octave, measured) == dsp.F_MIN
+
+    def test_averaging_is_in_energy(self):
+        avg = dsp.average_measurements([np.array([10.0, 0.0]),
+                                       np.array([0.0, 10.0])])
+        expected = 10.0 * math.log10((10.0 + 1.0) / 2.0)
+        assert abs(float(avg[0]) - expected) < 0.05
+        assert abs(float(avg[0]) - 5.0) > 1.0  # not a dB mean
+
+
+# ---------------------------------------------------------------------------
+# The impulse response
+# ---------------------------------------------------------------------------
+
+class TestImpulseResponse:
+    def test_deconvolution_recovers_a_known_impulse(self):
+        sweep, inverse = dsp.sine_sweep(seconds=2.0)
+        captured = np.convolve(sweep, np.array([0.0, 0.0, 1.0]))
+        ir = dsp.deconvolve_ir(captured, inverse)
+        assert bool(np.all(np.isfinite(ir)))
+        assert float(np.max(np.abs(ir))) > 0.0
+
+    def test_rt60_follows_a_synthetic_decay(self):
+        # Amplitude 10^(-12t) falls 60 dB in 0.25 s exactly.
+        t = np.arange(dsp.FS) / float(dsp.FS)
+        assert 0.18 < dsp.rt60_from_ir(10 ** (-12.0 * t)) < 0.32
+
+    def test_min_phase_gate_accepts_the_identity(self):
+        ir = np.zeros(4096)
+        ir[0] = 1.0
+        freqs, excess = dsp.excess_group_delay_ms(ir)
+        assert float(np.nanmax(np.abs(excess[1:200]))) < 1.0
+        assert bool(dsp.min_phase_gate(freqs, excess)[1:200].all())
+
+    def test_min_phase_gate_rejects_a_pure_delay(self):
+        # 400 samples at 48 kHz is 8.3 ms of excess group delay against a
+        # 5 ms tolerance. Flat magnitude, so all of its group delay is excess.
+        ir = np.zeros(4096)
+        ir[400] = 1.0
+        freqs, excess = dsp.excess_group_delay_ms(ir)
+        assert not bool(dsp.min_phase_gate(freqs, excess)[1:200].all())
+
+    def test_variable_smoothing_is_fine_below_and_coarse_above(self, third_octave):
+        rng = np.random.default_rng(5)
+        ripple = rng.normal(0.0, 3.0, size=third_octave.shape)
+        smoothed = dsp.smooth_variable(third_octave, ripple, transition_hz_=300.0)
+        low = third_octave < 100.0
+        high = third_octave > 6000.0
+        low_var = float(np.std(np.diff(smoothed[low])))
+        high_var = float(np.std(np.diff(smoothed[high])))
+        assert high_var < low_var or high_var < 1.0
+
+
+# ---------------------------------------------------------------------------
+# The export carries its own limits
+# ---------------------------------------------------------------------------
+
+class TestExportLimits:
+    def test_parametric_export_states_its_band_and_mode(self):
+        txt = dsp.export_parametric_txt([(100.0, 1.0, -3.0)], band=(60.0, 4000.0))
+        assert "60-4000 Hz" in txt
+        assert "Cascade" in txt
+
+    def test_profile_carries_the_transition_and_the_nulls(self, third_octave):
+        profile = json.loads(dsp.export_profile_json(
+            device="t", mic="remote", stimulus="sweep", seconds=10.0,
+            target="dialogue", freqs=third_octave,
+            measured_db=np.zeros_like(third_octave),
+            correction_db=np.zeros_like(third_octave), filters=[],
+            capability={}, transition_hz_=300.0,
+            correction_range_hz=(60.0, 8000.0), nulls_hz=[84.0],
+            room={"volume_m3": 54.0, "rt60_s": 0.5}))
+        assert profile["transition_hz"] == 300.0
+        assert profile["correction_range_hz"] == [60.0, 8000.0]
+        assert profile["nulls_untouched_hz"] == [84.0]
+        assert profile["room"]["volume_m3"] == 54.0
 
 
 # ---------------------------------------------------------------------------

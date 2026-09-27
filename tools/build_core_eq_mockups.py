@@ -292,13 +292,16 @@ def curve_data():
     f, _ = dsp.welch_db(dsp.pink_noise(seconds=0.5), dsp.FS)
     centres, _ = dsp.octave_bands(f, np.zeros_like(f), n=3.0)
     measured = dsp.synthetic_room_db(centres)
-    target = dsp.target_curve("harman", centres)
-    corr = dsp.correction_curve(centres, measured, target)
+    target = dsp.target_curve("dialogue", centres)
+    nulls = dsp.detect_nulls(centres, measured)
+    t_hz = dsp.transition_hz(54.0, 0.5)
+    corr = dsp.correction_curve(centres, measured, target,
+                                transition_hz_=t_hz, null_mask=nulls)
     filters = dsp.fit_peaking_filters(centres, corr, n_filters=6)
     bands = dsp.collapse_to_bands(
         [60, 230, 910, 3600, 14000],
         lambda hz: float(np.interp(hz, centres, corr)), -1500, 1500)
-    return centres, measured, target, corr, filters, bands
+    return centres, measured, target, corr, filters, bands, t_hz, nulls
 
 
 def draw_graph(img: Image.Image, box, centres, series, y_range=20.0,
@@ -420,13 +423,13 @@ def draw_bands(img: Image.Image, box, bands, focused_index: int = -1):
 # ---------------------------------------------------------------------------
 
 def frame_home(data):
-    centres, measured, target, corr, filters, bands = data
+    centres, measured, target, corr, filters, bands, t_hz, nulls = data
     img = new_frame()
     d = ImageDraw.Draw(img)
 
     gut = dp(DIMENS["cb_gutter_side"])
     y = header(img, "Core EQ · tv.corebuilds.eq", "Equaliser built from this room",
-               "Pink noise out, the remote microphone listening, a curve you can "
+               "A sine sweep out, the remote microphone listening, a curve you can "
                "read before you trust it.")
 
     rail_w = dp(DIMENS["cb_rail_width"])
@@ -472,24 +475,24 @@ def frame_home(data):
 
 
 def frame_measure(data):
-    centres, measured, target, corr, filters, bands = data
+    centres, measured, target, corr, filters, bands, t_hz, nulls = data
     img = new_frame()
     d = ImageDraw.Draw(img)
     gut = dp(DIMENS["cb_gutter_side"])
     y = header(img, "Core EQ · Measure", "Hold the room still for 20 seconds",
-               "The TV plays pink noise. The remote microphone listens. Nothing "
+               "The TV plays a sine sweep. The remote microphone listens. Nothing "
                "leaves this device.")
 
     steps = [
         ("1", "Press OK to start the stimulus",
-         "Pink noise, equal energy per octave. Loud enough to hear over the "
-         "room, quiet enough to live with.", "ok"),
+         "One frequency at a time, so it beats the room noise. Loud enough to "
+         "hear over the room, quiet enough to live with.", "ok"),
         ("2", "Point the remote at your seat",
          "Where your ears are, not at the TV. The remote microphone is the "
          "only microphone this can use.", "warn"),
         ("3", "Keep the room quiet while the bar fills",
          "Talking, footsteps and the kitchen fan land in the same "
-         "measurement. Retakes are free.", None),
+         "measurement. Dips that are cancellations get left alone.", None),
     ]
     sy = y
     for num, title, sub, state in steps:
@@ -520,7 +523,7 @@ def frame_measure(data):
     draw_graph(img, [gx, y, W - gut, y + dp(250)], centres,
                [("cb_slate", measured), ("cb_signal_cyan", target)],
                y_range=20.0,
-               title="LIVE CAPTURE vs TARGET",
+               title=f"LIVE CAPTURE vs TARGET · CORRECTS BELOW {t_hz:.0f} HZ",
                legend=[("cb_slate", "CAPTURE"), ("cb_signal_cyan", "TARGET")])
 
     by = y + dp(262)
@@ -544,7 +547,7 @@ def frame_measure(data):
 
 
 def frame_profiles(data):
-    centres, measured, target, corr, filters, bands = data
+    centres, measured, target, corr, filters, bands, t_hz, nulls = data
     img = new_frame()
     d = ImageDraw.Draw(img)
     gut = dp(DIMENS["cb_gutter_side"])

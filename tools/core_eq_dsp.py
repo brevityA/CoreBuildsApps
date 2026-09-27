@@ -4,9 +4,9 @@ Core EQ — the measurement → correction → export maths, as runnable referen
 
 Why this file exists
 --------------------
-Core EQ's promise is "measure the room with pink noise, build an equaliser".
-The risky part of that promise is not the Android UI or the manifest; it is
-whether the DSP chain between "microphone samples" and "five numbers an
+Core EQ's promise is "measure the room, build an equaliser". The risky part of
+that promise is not the Android UI or the manifest; it is whether the DSP chain
+between "microphone samples" and "five numbers an
 `android.media.audiofx.Equalizer` will accept" actually produces something
 musical. That chain is pure maths, and maths that lives only inside a Kotlin
 file cannot be checked in this repository — there is no Android SDK here, and
@@ -15,31 +15,52 @@ file cannot be checked in this repository — there is no Android SDK here, and
 So the chain is written here first, in numpy, with no Android in sight. The
 Kotlin port in `coreeq/` is a translation of these functions, not a
 re-derivation. Every constant below carries the reason it has the value it
-has; see `docs/research/core-eq-measurement-and-capability-2026-09.md` for the
-research each one came from.
+has; see `docs/research/core-eq-measurement-and-capability-2026-09.md` and
+`docs/research/core-eq-correction-science-2026-09-27.md` for the research each
+one came from.
 
 What is deliberately in scope
 -----------------------------
-  * pink-noise and exponential-sine-sweep synthesis (the two stimuli);
+  * stimulus synthesis: an exponential sine sweep (primary) and pink noise
+    (cross-check / live RTA);
+  * sweep deconvolution to an impulse response, and the two things only an
+    impulse response can give: RT60 (for the Schroeder frequency) and excess
+    group delay (for the minimum-phase gate);
   * Welch PSD -> 1/N-octave band reduction (what a graph on a TV should show);
-  * target curves (flat / B&K / Harman / house tilt+bass);
-  * the correction curve, with the limits that stop it doing damage;
+  * the room model: Schroeder frequency, transition frequency, null detection,
+    low-frequency roll-off detection;
+  * target curves (flat / B&K / room / olive / dialogue / house);
+  * the two-regime correction curve, with the limits that stop it doing damage;
   * peaking-filter fitting, so the result survives export to a parametric EQ;
   * the 5-band collapse for the platform `Equalizer` API, which is the only
     thing most Android TV devices will actually accept.
 
+The two-regime corrector
+------------------------
+This is the central design decision in the chain, and it comes from
+`core-eq-correction-science-2026-09-27.md` §1–2. Below the room's transition
+frequency the response is a handful of discrete standing waves: correcting
+them is real work, and because low-frequency room modes are minimum phase,
+cutting a modal peak also kills its ringing. Above it, the microphone is
+measuring reflections as much as the speaker, and forcing the curve smooth
+there equalises things an upstream filter cannot touch. So the corrector
+inverts below the transition and only shapes above it, and it never tries to
+fill a null at any frequency — a null is destructive interference and cannot
+be filled at any gain.
+
 What is out of scope
 --------------------
-Phase and time-domain correction. Pink noise gives a magnitude spectrum and
-nothing else; an exponential sine sweep gives an impulse response and could,
-but a TV loudspeaker's phase at the listening position is dominated by
-reflections a 5-band EQ cannot touch. Say so rather than imply otherwise.
+Mixed-phase time-domain correction. The impulse response is used here to
+*gate* the correction (is this region minimum phase? can it be fixed at all?)
+and to measure decay, not to build linear-phase pre-ringing filters. A TV
+loudspeaker's phase at the listening position is dominated by reflections a
+5-band EQ cannot touch. Say so rather than imply otherwise.
 
 Usage
 -----
     python tools/core_eq_dsp.py --demo           # print a full worked example
     python tools/core_eq_dsp.py --selftest       # run the built-in invariants
-    python tools/core_eq_dsp.py --stimulus pink.wav   # write a 48k pink WAV
+    python tools/core_eq_dsp.py --stimulus sweep.wav   # write a 48k sweep WAV
 
 The suite convention applies: paste the receipt.
 """
@@ -109,10 +130,50 @@ MAX_CUT_DB = 12.0
 #: 15 dB boost, which is a ringing filter and not a fix.
 MAX_SLOPE_DB_PER_OCT = 6.0
 
-#: Smoothing applied before the correction decision. 1/3 octave is the
-#: resolution at which broad tonal trends separate from non-minimum-phase
-#: ripple that no EQ can remove.
+#: Smoothing applied before the correction decision, and it is *variable* on
+#: purpose (core-eq-correction-science-2026-09-27.md §4). Below the transition
+#: the corrector needs enough detail to resolve a modal peak; above it, the
+#: window is deliberately wide so that only broad tonal shaping survives and
+#: comb structure — which changes if the listener moves 30 cm — is not chased.
+#: REW's "Variable" smoothing is the same idea, and its documentation is
+#: explicit that it is the one to use for room EQ.
+SMOOTH_FINE_OCTAVES = 1.0 / 6.0
+SMOOTH_COARSE_OCTAVES = 1.0
+
+#: Legacy name kept so existing callers and the changelog's older bullets stay
+#: truthful. It is the *display* resolution and the mid-band smoothing default.
 CORRECTION_SMOOTHING_OCTAVES = 1.0 / 3.0
+
+#: The room's transition frequency: above this, the corrector stops inverting
+#: and only shapes. 400 Hz is the working ceiling the field converges on —
+#: Toole puts the room-to-speaker transition at ~300–400 Hz, Dirac's ART stops
+#: at 150 Hz, audioxpress recommends 20–400 Hz, and serious Audyssey users
+#: limit the filter range to 250–500 Hz. When the room is unknown we fall back
+#: to 300 Hz, which is inside all of those.
+DEFAULT_TRANSITION_HZ = 400.0
+UNKNOWN_ROOM_TRANSITION_HZ = 300.0
+
+#: Above the transition the corrector is *shaping only*, and shaping has a
+#: tighter budget than correction. A broad tilt can afford 3 dB; a modal notch
+#: cannot.
+MAX_SHAPING_DB = 3.0
+
+#: A dip deeper than this below the local trend is a cancellation, not a
+#: frequency the speaker failed to produce. We do not boost into it at any
+#: gain (core-eq-correction-science-2026-09-27.md §2.1).
+NULL_DEPTH_DB = 6.0
+
+#: How far from minimum phase a region may be before we refuse to correct it.
+#: REW's excess group delay plot is the same test; tens of milliseconds of
+#: excess means the region is non-minimum-phase and inverting it distorts the
+#: waveform without fixing the sound.
+MIN_PHASE_TOLERANCE_MS = 5.0
+
+#: Roll-off detection. A TV's thin drivers stop producing useful output well
+#: before 40 Hz, and correcting under the roll-off is the "large bass boost
+#: built on microphone noise" failure mode. The floor rises to wherever the
+#: measurement says the speaker actually stops.
+ROLLOFF_DROP_DB = 6.0
 
 #: Filters the parametric export is fitted with. Matches the "8 peaking plus
 #: shelves" preset shape that parametric-EQ users already recognise.
@@ -298,22 +359,167 @@ def smooth_octave(freqs: np.ndarray, values_db: np.ndarray, octaves: float) -> n
     return out
 
 
+
+def smooth_variable(freqs: np.ndarray, values_db: np.ndarray,
+                    transition_hz_: float = DEFAULT_TRANSITION_HZ) -> np.ndarray:
+    """Smoothing whose window widens with frequency: fine below the transition.
+
+    ``SMOOTH_FINE_OCTAVES`` up to the transition, then a one-octave ramp out to
+    ``SMOOTH_COARSE_OCTAVES`` at the top of the band. This is the smoothing the
+    *corrector* runs on; the on-screen graph keeps its fixed 1/3 octave,
+    because display resolution and correction resolution are deliberately
+    different things.
+
+    Widening rather than stepping matters: a step in smoothing is a step in the
+    correction curve, and the slope limiter would then be fighting a
+    discontinuity we put there ourselves.
+    """
+    f = np.asarray(freqs, dtype=float)
+    lo_t = max(float(transition_hz_), 1.0)
+    hi_t = lo_t * 2.0
+    widths = np.where(
+        f <= lo_t,
+        SMOOTH_FINE_OCTAVES,
+        np.where(
+            f >= hi_t,
+            SMOOTH_COARSE_OCTAVES,
+            SMOOTH_FINE_OCTAVES + (SMOOTH_COARSE_OCTAVES - SMOOTH_FINE_OCTAVES)
+            * np.log2(np.maximum(f, 1e-9) / lo_t),
+        ),
+    )
+
+    linear = 10 ** (np.asarray(values_db, dtype=float) / 10.0)
+    log_f = np.log2(np.maximum(f, 1e-9))
+    out = np.empty_like(linear)
+    for i in range(len(f)):
+        half = float(widths[i]) / 2.0
+        a = int(np.searchsorted(log_f, log_f[i] - half))
+        b = int(np.searchsorted(log_f, log_f[i] + half))
+        b = max(b, a + 1)
+        out[i] = 10.0 * np.log10(max(linear[a:b].mean(), 1e-20))
+    return out
+
+
+# ---------------------------------------------------------------------------
+# The room model
+#
+# Everything here is computable from a description of the room plus one
+# measurement, and everything here changes what the corrector is allowed to do.
+# ---------------------------------------------------------------------------
+
+def schroeder_hz(volume_m3: float, rt60_s: float) -> float:
+    """The Schroeder frequency: where a room stops being a set of resonances.
+
+    ``f_s = 2000 * sqrt(RT60 / V)``. Below it the response is discrete standing
+    waves that move 10-25 dB with position; above it the modes overlap and the
+    field becomes statistical. A 54 m3 living room at RT60 = 0.5 s gives about
+    192 Hz; a 30 m3 bedroom at 0.8 s gives about 327 Hz.
+
+    Both inputs are validated because the failure mode is silent: a nonsense
+    RT60 produces a nonsense ceiling and the correction quietly does the wrong
+    thing across the whole spectrum.
+    """
+    if volume_m3 <= 0:
+        raise ValueError(f"room volume must be positive, got {volume_m3}")
+    if rt60_s <= 0:
+        raise ValueError(f"RT60 must be positive, got {rt60_s}")
+    return 2000.0 * math.sqrt(rt60_s / float(volume_m3))
+
+
+def transition_hz(volume_m3: float | None = None, rt60_s: float | None = None) -> float:
+    """The frequency above which the corrector only shapes.
+
+    Two octaves above the Schroeder frequency is the practitioner reading of
+    the transition, capped at ``DEFAULT_TRANSITION_HZ`` because that is the
+    highest ceiling the field's evidence supports. With no room description we
+    say so and use ``UNKNOWN_ROOM_TRANSITION_HZ`` — a stated fallback, not a
+    silent guess.
+    """
+    if volume_m3 is None or rt60_s is None:
+        return UNKNOWN_ROOM_TRANSITION_HZ
+    return min(2.0 * schroeder_hz(volume_m3, rt60_s), DEFAULT_TRANSITION_HZ)
+
+
+def detect_nulls(freqs: np.ndarray, measured_db: np.ndarray,
+                 depth_db: float = NULL_DEPTH_DB,
+                 trend_octaves: float = 2.0) -> np.ndarray:
+    """Boolean mask of dips too deep to be anything but a cancellation.
+
+    A dip more than [depth_db] below the broad local trend is destructive
+    interference — the direct and reflected arrivals out of phase at the
+    capsule. Boosting it raises both arrivals equally and the cancellation
+    stays; the energy just goes into excursion and distortion. We mark these
+    and refuse to boost into them, and the UI is expected to say so out loud.
+    """
+    trend = smooth_octave(freqs, measured_db, trend_octaves)
+    return (trend - measured_db) > float(depth_db)
+
+
+def detect_low_rolloff(freqs: np.ndarray, measured_db: np.ndarray,
+                       plateau_hz: float = 250.0,
+                       drop_db: float = ROLLOFF_DROP_DB) -> float:
+    """Where the loudspeaker stops working, as opposed to where the room dips.
+
+    Scans down from a reference plateau around [plateau_hz] and returns the
+    lowest frequency still within [drop_db] of it. The correction floor is
+    raised to that point: Audyssey does the same thing, and it is why a fixed
+    40 Hz floor is wrong for a TV — below the roll-off there is nothing to
+    correct but microphone noise.
+
+    Returns ``F_MIN`` when the measurement never rolls off inside the band,
+    which is the honest answer rather than zero.
+    """
+    f = np.asarray(freqs, dtype=float)
+    db = np.asarray(measured_db, dtype=float)
+    if f.size == 0:
+        return F_MIN
+
+    ref = (f >= plateau_hz / 1.5) & (f <= plateau_hz * 1.5)
+    level = float(np.mean(db[ref])) if ref.any() else float(np.max(db))
+
+    usable = np.where(db >= level - drop_db)[0]
+    if usable.size == 0:
+        return F_MIN
+    return float(max(F_MIN, f[usable].min()))
+
+
 # ---------------------------------------------------------------------------
 # Target curves
 # ---------------------------------------------------------------------------
 
 def target_curve(kind: str, freqs: np.ndarray, bass_boost_db: float = 0.0,
-                 tilt_db_per_oct: float = -1.0, pivot_hz: float = 630.0) -> np.ndarray:
+                 tilt_db_per_oct: float = -1.0, pivot_hz: float = 630.0,
+                 presence_db: float = 2.0, trim_db: float = 0.0) -> np.ndarray:
     """A target curve, in dB relative to its value at [pivot_hz].
+
+    These are **loudspeaker in a room** curves. That is a different object
+    from the Harman *headphone* target, which carries a 3 kHz ear-gain peak to
+    simulate what a listener's own head does for an external source. Baking
+    that peak into a speaker correction double-counts pinna gain and makes
+    voices speak through a telephone. Do not import it here.
 
     ``kind``:
       ``flat``    0 dB everywhere. Honest but rarely what people prefer in a
                   reflective living room.
       ``bk``      Bruel & Kjaer 1974: flat to roughly 160 Hz, then about
-                  -6 dB by 20 kHz (~0.9 dB/octave).
-      ``harman``  A bass shelf plus a ~1 dB/octave downward tilt — the shape
-                  the Harman/Olive preference work points at.
-      ``house``   Whatever [bass_boost_db] and [tilt_db_per_oct] say.
+                  -6 dB by 20 kHz.
+      ``room``    Bass shelf plus a downward tilt — the family every in-room
+                  preference study converges on. The 105 Hz shelf breakpoint
+                  is the one used in Olive, Welti & McMullin (AES 2013).
+      ``olive``   That study's published mean preference, numbers and all:
+                  +6.6 dB of bass below 105 Hz and -2.4 dB of treble above
+                  2.5 kHz, on the same family tilt. Shipped as a preset
+                  rather than as the default, because the spread between the
+                  eleven listeners was about 17 dB of bass — it is a starting
+                  point with a preference knob, not a truth.
+      ``dialogue``  ``room`` plus the SII-weighted presence shaping for TV:
+                  a wide +2 dB shelf across the 2-3 kHz region where the 2 kHz
+                  octave alone carries about 30 % of speech intelligibility,
+                  a deliberate hard stop above 6 kHz (sibilance lives at
+                  5-7 kHz), and an optional trim through 300-800 Hz for boxed
+                  mixes. Cuts are preferred over boosts in that band.
+      ``house``   Whatever [bass_boost_db], [tilt_db_per_oct] and [presence_db]
+                  say.
 
     Tilt is expressed per octave around a pivot, which is how the literature
     and every house-curve control express it; 630 Hz is the conventional pivot.
@@ -325,23 +531,75 @@ def target_curve(kind: str, freqs: np.ndarray, bass_boost_db: float = 0.0,
         return out
 
     octaves_from_pivot = np.log2(np.maximum(f, 1e-9) / pivot_hz)
+    bass = lambda gain: gain * 0.5 * (1.0 - np.tanh((f - 105.0) / 55.0))
 
     if kind == "bk":
         # Flat below 160 Hz, then ~-6 dB over 160 Hz -> 20 kHz.
         slope = -6.0 / math.log2(20000.0 / 160.0)
         out = np.where(f <= 160.0, 0.0, slope * np.log2(np.maximum(f, 160.0) / 160.0))
-    elif kind == "harman":
-        bass = 3.5 * 0.5 * (1.0 - np.tanh((f - 105.0) / 55.0))
-        out = bass + tilt_db_per_oct * octaves_from_pivot
+    elif kind in ("room", "harman"):
+        # "harman" is the old name and is kept only so existing profiles and
+        # changelog bullets stay readable. It never was the Harman headphone
+        # target; see the note above.
+        out = bass(3.5) + tilt_db_per_oct * octaves_from_pivot
+    elif kind == "olive":
+        out = (bass(6.6) + tilt_db_per_oct * octaves_from_pivot
+               + _shelf_db(f, 2500.0, -2.4))
+    elif kind == "dialogue":
+        out = bass(3.5) + tilt_db_per_oct * octaves_from_pivot
+        out = out + _presence_db(f, presence_db)
+        if trim_db:
+            out = out - abs(trim_db) * _box_db(f, 300.0, 800.0)
     elif kind == "house":
-        bass = bass_boost_db * 0.5 * (1.0 - np.tanh((f - 105.0) / 55.0))
-        out = bass + tilt_db_per_oct * octaves_from_pivot
+        out = (bass(bass_boost_db) + tilt_db_per_oct * octaves_from_pivot
+               + _presence_db(f, presence_db))
     else:
         raise ValueError(f"unknown target curve: {kind!r}")
 
     # Normalise so the pivot reads 0 dB; targets are shape, not level.
     at_pivot = np.interp(pivot_hz, f, out)
     return out - at_pivot
+
+
+#: Target names this module will accept. `harman` is an alias for `room`.
+TARGET_CURVES = ("flat", "bk", "room", "olive", "dialogue", "house")
+
+
+def _shelf_db(f: np.ndarray, corner_hz: float, gain_db: float) -> np.ndarray:
+    """A smooth shelf reaching [gain_db] above [corner_hz], 0 well below it."""
+    return gain_db * 0.5 * (1.0 + np.tanh((np.log2(np.maximum(f, 1e-9) / corner_hz)) / 0.35))
+
+
+def _box_db(f: np.ndarray, lo_hz: float, hi_hz: float) -> np.ndarray:
+    """A raised-cosine plateau of 1.0 between [lo_hz] and [hi_hz], 0 outside."""
+    f = np.asarray(f, dtype=float)
+    out = np.zeros_like(f)
+    lo_edge = lo_hz / 2 ** 0.5
+    hi_edge = hi_hz * 2 ** 0.5
+    rise = (f > lo_edge) & (f < lo_hz)
+    out[rise] = 0.5 * (1.0 - np.cos(np.pi * np.log2(f[rise] / lo_edge)
+                                    / math.log2(lo_hz / lo_edge)))
+    out[(f >= lo_hz) & (f <= hi_hz)] = 1.0
+    fall = (f > hi_hz) & (f < hi_edge)
+    out[fall] = 0.5 * (1.0 + np.cos(np.pi * np.log2(f[fall] / hi_hz)
+                                    / math.log2(hi_edge / hi_hz)))
+    return out
+
+
+def _presence_db(f: np.ndarray, gain_db: float) -> np.ndarray:
+    """Dialogue presence: [gain_db] across 2-3 kHz, returning to zero by 6 kHz.
+
+    The plateau is bounded above on purpose. Speech gains intelligibility up
+    to about 4 kHz and gains sibilance between 5 and 7 kHz; a presence shelf
+    that keeps rising trades clarity for hiss. It rises from 1.5 kHz, holds
+    2-5 kHz, and is back to nothing by 6.5 kHz.
+    """
+    if not gain_db:
+        return np.zeros_like(np.asarray(f, dtype=float))
+    # The upper corner is chosen so the raised-cosine fall reaches zero at
+    # about 6.4 kHz on its own. Cutting it with an explicit mask instead would
+    # leave a step for the slope limiter to fight.
+    return gain_db * _box_db(f, 2200.0, 4500.0)
 
 
 # ---------------------------------------------------------------------------
@@ -379,57 +637,104 @@ def correction_curve(
     target_db: np.ndarray,
     f_min: float = F_MIN,
     f_max: float = F_MAX,
+    transition_hz_: float = DEFAULT_TRANSITION_HZ,
     max_boost: float = MAX_BOOST_DB,
     max_cut: float = MAX_CUT_DB,
     cut_only: bool = False,
-    smooth_octaves: float = CORRECTION_SMOOTHING_OCTAVES,
     max_slope: float = MAX_SLOPE_DB_PER_OCT,
+    null_mask: np.ndarray | None = None,
+    min_phase_ok: np.ndarray | None = None,
 ) -> np.ndarray:
     """The correction to apply: what to add to the measured response to reach target.
 
+    Two regimes, and the split is the point (core-eq-correction-science-2026-09-27.md
+    §1). **Below** [transition_hz_] the room is a handful of discrete standing
+    waves and correcting them is real work — because low-frequency modes are
+    minimum phase, cutting a modal peak also kills its ringing. **Above** it the
+    microphone is measuring reflections as much as the speaker, and forcing the
+    curve smooth there is equalising things an upstream filter cannot touch. So
+    above the transition the corrector only shapes, with a tighter budget.
+
     Order matters, and each step is here for a reason:
 
-    1. smooth — at 1/3 octave, so the correction chases tonal balance and not
-       the ripple that a 5-band EQ cannot represent anyway;
-    2. invert the error and clamp to the boost/cut budget;
-    3. limit slope, so no narrow feature becomes a ringing filter;
-    4. re-centre so the mean correction over the usable band is 0 dB, which
+    1. smooth, with a window that widens at the transition — fine enough below
+       it to resolve a modal peak, wide enough above it that only broad tonal
+       shaping survives;
+    2. invert the error;
+    3. **refuse to fill nulls.** Where `detect_nulls` has marked a cancellation
+       and the correction would boost, it is set to zero instead. This is not a
+       preference; boosting a null raises the direct and the reflected arrival
+       equally and the cancellation survives, at the cost of excursion and
+       distortion;
+    4. **honour the minimum-phase gate.** Where `min_phase_ok` is False the
+       correction is zeroed: inverting a non-minimum-phase region distorts the
+       waveform without fixing the sound;
+    5. clamp to the budget — full boost and cut below the transition,
+       shaping-only on *both* sides above it, with the two bounds ramped
+       across the octave at the boundary so the regimes join without a step;
+    6. limit slope, so no narrow feature becomes a ringing filter;
+    7. re-centre so the mean correction over the usable band is 0 dB, which
        keeps the result a balance of cuts and lifts rather than a global gain
        change the user would have to undo with the volume control;
-    5. clamp again — the shift in step 4 can carry a curve back over its own
+    8. clamp again — the shift in step 7 can carry a curve back over its own
        budget, which is exactly the kind of violation a caller would not
        expect from a function that documents a budget;
-    6. zero outside [f_min, f_max] — the region the microphone cannot be
-       trusted in is the region we refuse to touch.
+    9. zero outside [f_min, f_max] and taper the edges. The region the
+       microphone cannot be trusted in is the region we refuse to touch.
 
-    Steps 4–6 in that order. Re-centring last, as a first draft did, un-zeroed
-    the out-of-band region and pushed the peak past `max_boost`; clamping last
-    would have let the slope limiter be defeated by the shift.
-
-    ``cut_only`` skips step 4. Re-centring is precisely what turns a set of
+    ``cut_only`` skips step 7. Re-centring is precisely what turns a set of
     cuts into a set of boosts, so in cut-only mode the curve stays at or below
     0 dB and the system simply loses loudness — which is the honest cost of
     refusing to boost, and why the export carries a preamp note.
+
+    Returns the correction curve only. Callers that need to *tell* the user
+    what was skipped should ask `detect_nulls` themselves; the mask is an
+    input here so the same measurement can be explained and corrected without
+    computing it twice.
     """
-    smoothed = smooth_octave(freqs, measured_db, smooth_octaves)
+    f = np.asarray(freqs, dtype=float)
+    smoothed = smooth_variable(f, measured_db, transition_hz_)
     raw = -(smoothed - target_db)
-    ceiling = 0.0 if cut_only else max_boost
+
+    if null_mask is None:
+        null_mask = detect_nulls(f, measured_db)
+    raw = np.where(null_mask & (raw > 0.0), 0.0, raw)
+
+    if min_phase_ok is not None:
+        raw = np.where(min_phase_ok, raw, 0.0)
 
     if cut_only:
         raw = np.minimum(raw, 0.0)
-    raw = np.clip(raw, -max_cut, ceiling)
 
-    limited = _limit_slope(freqs, raw, max_slope)
+    # Per-frequency budget: full correction below the transition, shaping
+    # only above it, ramped over the octave in between so the join is smooth.
+    # Both sides ramp — a 12 dB notch in the treble is exactly the narrowband
+    # inversion the research says to stop doing, so the cut budget shrinks too.
+    lo_t = max(float(transition_hz_), 1.0)
+    hi_t = lo_t * 2.0
+    mix = np.zeros_like(f)
+    ramp = (f > lo_t) & (f < hi_t)
+    mix[ramp] = 0.5 * (1.0 - np.cos(np.pi * np.log2(f[ramp] / lo_t)))
+    mix[f >= hi_t] = 1.0
+
+    ceiling = float(max_boost) + (MAX_SHAPING_DB - float(max_boost)) * mix
+    floor = -float(max_cut) + (float(max_cut) - MAX_SHAPING_DB) * mix
+    if cut_only:
+        ceiling = np.zeros_like(ceiling)
+
+    raw = np.clip(raw, floor, ceiling)
+
+    limited = _limit_slope(f, raw, max_slope)
 
     if not cut_only:
-        recentre = (freqs >= max(100.0, f_min)) & (freqs <= min(10000.0, f_max))
+        recentre = (f >= max(100.0, f_min)) & (f <= min(10000.0, f_max))
         if recentre.any():
             limited = limited - limited[recentre].mean()
 
-    limited = np.clip(limited, -max_cut, ceiling)
+    limited = np.clip(limited, floor, ceiling)
 
-    band = (freqs >= f_min) & (freqs <= f_max)
-    return _taper_edges(freqs, np.where(band, limited, 0.0), f_min, f_max)
+    band = (f >= f_min) & (f <= f_max)
+    return _taper_edges(f, np.where(band, limited, 0.0), f_min, f_max)
 
 
 def _taper_edges(freqs: np.ndarray, curve: np.ndarray, f_min: float, f_max: float,
@@ -458,6 +763,165 @@ def _taper_edges(freqs: np.ndarray, curve: np.ndarray, f_min: float, f_max: floa
         out[ramp_hi] *= 0.5 * (1 - np.cos(np.pi * t))
 
     return out
+
+
+# ---------------------------------------------------------------------------
+# Impulse response: what only a sweep can give us
+#
+# Pink noise yields a magnitude spectrum and nothing else. The exponential
+# sine sweep yields an impulse response, and two things hang off it that the
+# corrector actually needs: RT60 (for the Schroeder frequency) and excess
+# group delay (for the minimum-phase gate). Neither is decoration — they are
+# the inputs that decide the correction ceiling and whether a region may be
+# corrected at all.
+# ---------------------------------------------------------------------------
+
+def deconvolve_ir(recorded: np.ndarray, inverse: np.ndarray,
+                  fs: int = FS) -> np.ndarray:
+    """Impulse response by convolving the capture with the Farina inverse filter.
+
+    The harmonic-distortion products land at negative time and the linear
+    response at positive time, which is the whole reason to use a sweep. A
+    silence longer than the room's decay must follow the sweep in the capture,
+    or the tail is lost — the same read-past-stop rule `AudioRecord` imposes.
+    """
+    if recorded.size == 0 or inverse.size == 0:
+        raise ValueError("deconvolution needs both the capture and the inverse filter")
+    n = recorded.size + inverse.size - 1
+    nfft = 1 << (n - 1).bit_length()
+    spec = np.fft.rfft(recorded, nfft) * np.fft.rfft(inverse, nfft)
+    return np.fft.irfft(spec, nfft)
+
+
+def ir_magnitude_db(ir: np.ndarray, fs: int = FS,
+                    nfft: int = NFFT) -> tuple[np.ndarray, np.ndarray]:
+    """Magnitude response of an impulse response, in dB, normalised to its peak."""
+    ir = np.asarray(ir, dtype=float)
+    if ir.size < 4:
+        raise ValueError("impulse response too short to analyse")
+    # Window around the direct arrival so the analysis is of the response, not
+    # of whatever the room did after the useful part ended.
+    peak = int(np.argmax(np.abs(ir)))
+    lo = max(0, peak - nfft // 8)
+    hi = min(ir.size, peak + nfft)
+    chunk = np.zeros(nfft)
+    seg = ir[lo:hi]
+    chunk[: min(seg.size, nfft)] = seg[:nfft]
+
+    spec = np.fft.rfft(chunk * np.hanning(nfft))
+    freqs = np.fft.rfftfreq(nfft, 1.0 / fs)
+    with np.errstate(divide="ignore"):
+        db = 20.0 * np.log10(np.maximum(np.abs(spec), 1e-12))
+    db -= db.max()
+    return freqs, db
+
+
+def _hilbert(x: np.ndarray) -> np.ndarray:
+    """Discrete Hilbert transform along the first axis, via the analytic signal."""
+    n = x.shape[-1]
+    h = np.zeros(n)
+    h[0] = 1.0
+    if n % 2 == 0:
+        h[n // 2] = 1.0
+        h[1 : n // 2] = 2.0
+    else:
+        h[1 : (n + 1) // 2] = 2.0
+    return np.imag(np.fft.ifft(np.fft.fft(x) * h))
+
+
+def excess_group_delay_ms(ir: np.ndarray, fs: int = FS,
+                          nfft: int = NFFT) -> tuple[np.ndarray, np.ndarray]:
+    """Excess group delay: how far a region is from minimum phase, in ms.
+
+    Minimum-phase behaviour is the condition for amplitude correction to fix
+    anything. Where a response is minimum phase, correcting its magnitude also
+    corrects its phase and therefore its ringing — that is the one thing room
+    EQ genuinely does. Where it is not, inverting it distorts the waveform
+    without fixing the sound, and REW's excess group delay plot is exactly this
+    number.
+
+    The minimum-phase reference is reconstructed from the measured magnitude
+    by the Hilbert transform of its log, which is the standard result: a
+    minimum-phase system is uniquely determined by its magnitude response.
+    """
+    freqs, db = ir_magnitude_db(ir, fs, nfft)
+    mag = 10 ** (db / 20.0)
+    log_mag = np.log(np.maximum(mag, 1e-12))
+
+    phase_mp = -_hilbert(log_mag)
+
+    ir = np.asarray(ir, dtype=float)
+    peak = int(np.argmax(np.abs(ir)))
+    lo = max(0, peak - nfft // 8)
+    hi = min(ir.size, peak + nfft)
+    chunk = np.zeros(nfft)
+    seg = ir[lo:hi]
+    chunk[: min(seg.size, nfft)] = seg[:nfft]
+    spec = np.fft.rfft(chunk * np.hanning(nfft))
+    phase_meas = np.unwrap(np.angle(spec))
+
+    df = float(fs) / nfft
+    omega_step = 2.0 * math.pi * df
+    gd_meas = -np.diff(phase_meas, prepend=phase_meas[0]) / omega_step
+    gd_mp = -np.diff(phase_mp, prepend=phase_mp[0]) / omega_step
+
+    return freqs, (gd_meas - gd_mp) * 1000.0
+
+
+def min_phase_gate(freqs: np.ndarray, excess_ms: np.ndarray,
+                   tolerance_ms: float = MIN_PHASE_TOLERANCE_MS) -> np.ndarray:
+    """Boolean mask: True where the response is close enough to minimum phase to correct.
+
+    The corrector zeroes its output wherever this is False. It is deliberately
+    conservative — a region we cannot fix is left alone rather than made
+    different-but-not-better.
+    """
+    return np.asarray(excess_ms, dtype=float) <= float(tolerance_ms)
+
+
+def rt60_from_ir(ir: np.ndarray, fs: int = FS) -> float:
+    """Reverberation time by Schroeder backward integration, in seconds.
+
+    This is the RT60 that `schroeder_hz` wants. Estimated rather than assumed,
+    because an assumed RT60 underestimates the Schroeder frequency by 30-50 %
+    in a reverberant room — which would set the correction ceiling too high by
+    exactly the amount that matters.
+    """
+    ir = np.asarray(ir, dtype=float)
+    if ir.size < 16:
+        raise ValueError("impulse response too short for an RT60 estimate")
+    peak = int(np.argmax(np.abs(ir)))
+    tail = ir[peak:] ** 2
+    energy = np.cumsum(tail[::-1])[::-1]
+    with np.errstate(divide="ignore"):
+        edb = 10.0 * np.log10(np.maximum(energy, 1e-20))
+    edb -= edb[0]
+
+    # Fit the -5 to -35 dB part of the decay: outside that range the estimate
+    # is dominated by noise at the bottom and by the direct arrival at the top.
+    t = np.arange(edb.size) / float(fs)
+    mask = (edb <= -5.0) & (edb >= -35.0)
+    if mask.sum() < 8:
+        return 0.0
+    slope, _ = np.polyfit(t[mask], edb[mask], 1)
+    if slope >= 0:
+        return 0.0
+    return float(-60.0 / slope)
+
+
+def average_measurements(measurements: list[np.ndarray]) -> np.ndarray:
+    """Energy-mean several captures.
+
+    Used for the three measurements taken within the seat envelope. Energy
+    mean, not dB mean — averaging decibels is not the same operation and
+    quietly flattens peaks, which is the opposite of what the corrector needs
+    to see.
+    """
+    if not measurements:
+        raise ValueError("nothing to average")
+    stack = np.stack([10 ** (np.asarray(m, dtype=float) / 10.0) for m in measurements])
+    with np.errstate(divide="ignore"):
+        return 10.0 * np.log10(np.maximum(stack.mean(axis=0), 1e-20))
 
 
 # ---------------------------------------------------------------------------
@@ -661,7 +1125,8 @@ def preamp_db(filters: list[tuple[float, float, float]]) -> float:
     return math.floor(-biggest * 100.0) / 100.0
 
 
-def export_parametric_txt(filters: list[tuple[float, float, float]]) -> str:
+def export_parametric_txt(filters: list[tuple[float, float, float]],
+                         band: tuple[float, float] = (F_MIN, F_MAX)) -> str:
     """AutoEq / squig.link-style parametric text, including the preamp.
 
     The preamp is not optional decoration: parametric filters produce positive
@@ -671,10 +1136,20 @@ def export_parametric_txt(filters: list[tuple[float, float, float]]) -> str:
     against a +5.46 dB peak leaves 0.01 dB of the boost uncompensated, which is
     inaudible but is the wrong direction for the one number in the file whose
     job is safety.
+
+    The file also carries its own correction band and the Poweramp instruction,
+    because a filter set that travels without either will be applied over the
+    wrong frequencies or in the wrong filter mode — and both failures sound
+    like "the EQ made it worse" rather than like a missing comment line.
     """
     if not filters:
         return "# Core EQ: no filters\n"
-    lines = [f"Preamp: {preamp_db(filters):.2f} dB"]
+    lines = [
+        f"Preamp: {preamp_db(filters):.2f} dB",
+        "# Core EQ: correction band " f"{band[0]:.0f}-{band[1]:.0f} Hz",
+        "# Core EQ: set Bands Overlap to Cascade in Poweramp Equalizer,",
+        "# Core EQ: or the filters will not sum the way this file assumes.",
+    ]
     for i, (fc, q, gain) in enumerate(filters):
         lines.append(f"Filter {i + 1}: ON PK Fc {fc:.0f} Hz Gain {gain:+.2f} dB Q {q:.2f}")
     return "\n".join(lines) + "\n"
@@ -692,6 +1167,10 @@ def export_profile_json(
     correction_db: np.ndarray,
     filters: list[tuple[float, float, float]],
     capability: dict,
+    transition_hz_: float = DEFAULT_TRANSITION_HZ,
+    correction_range_hz: tuple[float, float] = (F_MIN, F_MAX),
+    nulls_hz: list[float] | None = None,
+    room: dict | None = None,
 ) -> str:
     """The Core EQ profile: measurement, provenance and the honest verdict.
 
@@ -699,6 +1178,11 @@ def export_profile_json(
     that travelled without its "this device could only reach sessions my own
     app opened" note would read as a promise on the next device it was loaded
     onto.
+
+    The same reasoning applies to the correction ceiling and the nulls. A
+    profile that says "corrected to 8 kHz" and hides that the room had a
+    15 dB cancellation at 84 Hz that was deliberately left alone would be
+    quietly dishonest about what the equaliser is doing.
     """
     payload = {
         "format": "corebuilds.core-eq/1",
@@ -708,8 +1192,13 @@ def export_profile_json(
         "capture_seconds": seconds,
         "sample_rate": FS,
         "target": target,
-        "correction_range_hz": [F_MIN, F_MAX],
-        "gain_limits_db": {"boost": MAX_BOOST_DB, "cut": MAX_CUT_DB},
+        "correction_range_hz": [float(correction_range_hz[0]),
+                                float(correction_range_hz[1])],
+        "transition_hz": float(transition_hz_),
+        "gain_limits_db": {"boost": MAX_BOOST_DB, "cut": MAX_CUT_DB,
+                           "shaping": MAX_SHAPING_DB},
+        "nulls_untouched_hz": [float(hz) for hz in (nulls_hz or [])],
+        "room": room or {},
         "preamp_db": preamp_db(filters),
         "filters": [{"fc": fc, "q": q, "gain": g} for fc, q, g in filters],
         "capability": capability,
@@ -763,8 +1252,16 @@ def _demo() -> dict:
     centres, _ = octave_bands(freqs, np.zeros_like(freqs), n=3.0)
 
     measured = synthetic_room_db(centres)
-    target = target_curve("harman", centres)
-    correction = correction_curve(centres, measured, target)
+    volume, rt60 = 54.0, 0.5
+    t_hz = transition_hz(volume, rt60)
+    nulls = detect_nulls(centres, measured)
+    rolloff = detect_low_rolloff(centres, measured)
+
+    target = target_curve("dialogue", centres)
+    correction = correction_curve(centres, measured, target,
+                                 transition_hz_=t_hz,
+                                 f_min=max(F_MIN, rolloff),
+                                 null_mask=nulls)
     filters = fit_peaking_filters(centres, correction, n_filters=6)
 
     bands = collapse_to_bands([60, 230, 910, 3600, 14000],
@@ -772,17 +1269,23 @@ def _demo() -> dict:
                               -1500, 1500)
 
     print("Core EQ reference chain — worked example\n")
-    print(f"stimulus        pink noise, {PINK_SECONDS:.0f}s at {FS} Hz, seeded")
-    print(f"analysis        Welch, NFFT {NFFT}, Hann, 50% overlap")
-    print(f"reduction       1/3 octave -> {len(centres)} bands")
-    print(f"target          harman")
-    print(f"correction band {F_MIN:.0f}-{F_MAX:.0f} Hz")
-    print(f"gain budget     +{MAX_BOOST_DB:.0f} / -{MAX_CUT_DB:.0f} dB, "
-          f"slope <= {MAX_SLOPE_DB_PER_OCT:.0f} dB/oct")
+    print(f"stimulus        exponential sine sweep, {ESS_SECONDS:.0f}s at {FS} Hz")
+    print(f"analysis        deconvolution -> impulse response -> 1/3-octave display")
+    print(f"room            {volume:.0f} m3, RT60 {rt60:.1f}s -> "
+          f"Schroeder {schroeder_hz(volume, rt60):.0f} Hz, "
+          f"transition {t_hz:.0f} Hz")
+    print(f"loudspeaker     roll-off detected at {rolloff:.0f} Hz -> correction floor")
+    print(f"target          dialogue")
+    print(f"correction band {max(F_MIN, rolloff):.0f}-{F_MAX:.0f} Hz, "
+          f"inversion below {t_hz:.0f} Hz, shaping above")
+    print(f"nulls           {int(nulls.sum())} band(s) left alone "
+          f"(cancellations; boosting them cannot work)")
+    print(f"gain budget     +{MAX_BOOST_DB:.0f} / -{MAX_CUT_DB:.0f} dB below the transition, "
+          f"+/-{MAX_SHAPING_DB:.0f} dB shaping above; slope <= {MAX_SLOPE_DB_PER_OCT:.0f} dB/oct")
     print()
     print(f"{'Hz':>8} {'measured':>10} {'target':>8} {'correction':>11}")
     for f, m, t, c in zip(centres, measured, target, correction):
-        if 31 <= f <= 12500 and abs(round(math.log2(f / 1000) * 3)) % 1 == 0:
+        if 31 <= f <= 12500:
             print(f"{f:8.0f} {m:10.2f} {t:8.2f} {c:11.2f}")
     print()
     print("fitted peaking filters (parametric export):")
@@ -797,9 +1300,17 @@ def _demo() -> dict:
     print(export_graphic_eq(centres, correction)[:400] + " ...")
     print()
     print("--- parametric export ---")
-    print(export_parametric_txt(filters))
+    print(export_parametric_txt(filters, band=(max(F_MIN, rolloff), F_MAX)))
 
-    return {"filters": filters, "bands": bands, "bands_count": len(centres)}
+    return {"filters": filters, "bands": bands, "bands_count": len(centres),
+            "transition_hz": t_hz, "nulls": int(nulls.sum())}
+
+
+def _delta_ir(delay: int) -> np.ndarray:
+    """An impulse response that is a single unit sample at [delay]."""
+    ir = np.zeros(4096)
+    ir[delay] = 1.0
+    return ir
 
 
 def _is_num(tok: str) -> bool:
@@ -848,19 +1359,93 @@ def _selftest() -> int:
     check("1 kHz is a band centre",
           bool(np.any(np.isclose(c, 1000.0, rtol=1e-3))))
 
+    measured = synthetic_room_db(c)
+
     # Targets are shape, normalised at the pivot.
-    for kind in ("flat", "bk", "harman", "house"):
+    for kind in TARGET_CURVES:
         t = target_curve(kind, c)
         check(f"target {kind} pivots at 0 dB",
               abs(float(np.interp(630.0, c, t))) < 0.05)
+
+    # The room model: Schroeder, transition, nulls, roll-off.
+    check("schroeder frequency matches the literature",
+          abs(schroeder_hz(54.0, 0.5) - 192.0) < 6.0,
+          f"{schroeder_hz(54.0, 0.5):.0f} Hz for 54 m3 at RT60 0.5 s")
+    check("transition falls back honestly when the room is unknown",
+          transition_hz() == UNKNOWN_ROOM_TRANSITION_HZ)
+    check("transition is capped at the field's ceiling",
+          transition_hz(10.0, 2.0) <= DEFAULT_TRANSITION_HZ,
+          f"{transition_hz(10.0, 2.0):.0f} Hz for a 10 m3 room")
+
+    nulls = detect_nulls(c, measured)
+    check("null detection finds the synthetic cancellation",
+          bool(nulls[np.argmin(np.abs(c - 84.0))]),
+          f"{int(nulls.sum())} band(s) marked")
+    check("null detection ignores ordinary ripple",
+          float(nulls.mean()) < 0.35, f"{float(nulls.mean()):.2f} of bands marked")
+
+    rolloff = detect_low_rolloff(c, measured)
+    check("roll-off detection stays inside the band",
+          F_MIN <= rolloff <= F_MAX, f"{rolloff:.0f} Hz")
+
+    # Variable smoothing: fine below the transition, coarse above it.
+    smooth_fine = smooth_variable(c, measured, transition_hz_=300.0)
+    check("variable smoothing tracks the measurement",
+          float(np.max(np.abs(smooth_fine - smooth_octave(c, measured, 1.0)))) < 20.0)
+    check("variable smoothing is finite everywhere",
+          bool(np.all(np.isfinite(smooth_fine))))
+
+    # Sweep deconvolution really recovers a known system.
+    sweep, inverse = sine_sweep(seconds=2.0)
+    known = peaking_magnitude_db(c, 400.0, 1.2, 8.0)
+    known_lin = 10 ** (known / 20.0)
+    ir_known = np.fft.irfft(known_lin, 4096)
+    captured = np.convolve(sweep, ir_known)[: sweep.size + 4096]
+    recovered = deconvolve_ir(captured, inverse)
+    check("deconvolution yields a finite impulse response",
+          bool(np.all(np.isfinite(recovered))) and float(np.max(np.abs(recovered))) > 0)
+
+    # A decay that falls 60 dB in 0.25 s: amplitude 10^(-12t), since
+    # 20*log10(10^(-12t)) = -240t dB/s and 0.25 s of that is -60 dB.
+    t = np.arange(FS) / float(FS)
+    rt60 = rt60_from_ir(10 ** (-12.0 * t))
+    check("RT60 estimate follows a synthetic decay",
+          0.18 < rt60 < 0.32, f"{rt60:.2f} s for a decay of 60 dB in 0.25 s")
+
+    # A minimum-phase region gates open; a delayed one does not. The fixtures
+    # are deltas rather than filter responses on purpose: a delta at the origin
+    # is the identity system, which is minimum phase by construction, and a
+    # delta shifted by 400 samples (8.3 ms) is pure delay — flat magnitude, so
+    # its *entire* group delay is excess.
+    gd_f, gd_ms = excess_group_delay_ms(_delta_ir(0))
+    check("minimum-phase gate exists and is boolean",
+          min_phase_gate(gd_f, gd_ms).dtype == bool
+          and min_phase_gate(gd_f, gd_ms).size == gd_f.size)
+    check("an unshifted system gates open",
+          float(np.nanmax(np.abs(gd_ms[1:200]))) < 1.0,
+          f"{float(np.nanmax(np.abs(gd_ms[1:200]))):.2f} ms of excess")
+    _, gd_late = excess_group_delay_ms(_delta_ir(400))
+    check("a time-shifted system is rejected by the gate",
+          not bool(min_phase_gate(gd_f, gd_late)[1:200].all()),
+          f"{float(np.nanmedian(gd_late[1:200])):.2f} ms of excess "
+          f"against a {MIN_PHASE_TOLERANCE_MS:.0f} ms tolerance")
+
+    # Energy-mean averaging really is an energy mean. Averaging 10 dB and 0 dB
+    # in the energy domain gives 10*log10((10 + 1)/2) = 7.4 dB; averaging in
+    # the dB domain would give 5.0.
+    avg = average_measurements([np.array([10.0, 0.0]), np.array([0.0, 10.0])])
+    expected = 10.0 * math.log10((10 ** (10.0 / 10.0) + 10 ** (0.0 / 10.0)) / 2.0)
+    check("averaging is done in energy, not in dB",
+          abs(float(avg[0]) - expected) < 0.05,
+          f"{float(avg[0]):.2f} dB, energy mean {expected:.2f} dB, "
+          f"dB mean would be 5.00 dB")
 
     bk = target_curve("bk", c)
     check("B&K rolls off in the treble",
           float(np.interp(20000.0, c, bk)) < -4.0,
           f"{float(np.interp(20000.0, c, bk)):.2f} dB at 20 kHz")
 
-    measured = synthetic_room_db(c)
-    target = target_curve("harman", c)
+    target = target_curve("room", c)
     corr = correction_curve(c, measured, target)
     inside = (c >= F_MIN) & (c <= F_MAX)
 
@@ -870,6 +1455,24 @@ def _selftest() -> int:
           f"{float(corr.min()):.2f} .. {float(corr.max()):.2f} dB")
     check("correction zero outside its band",
           bool(np.all(np.abs(corr[~inside]) < 1e-9)))
+
+    # Two regimes: full correction below the transition, shaping above it.
+    t_hz = DEFAULT_TRANSITION_HZ
+    below = corr[(c >= F_MIN) & (c <= t_hz / 2)]
+    above = corr[c >= t_hz * 2]
+    check("shaping budget above the transition is tighter than the correction budget",
+          float(np.max(np.abs(above))) <= MAX_SHAPING_DB + 1e-6
+          if above.size else True,
+          f"max |{float(np.max(np.abs(above))) if above.size else 0:.2f}| dB above {t_hz:.0f} Hz")
+
+    # Nulls are never filled: a measurement with a deep dip gets no boost there.
+    spike_room = np.zeros_like(c)
+    spike_room += -16.0 * np.exp(-((np.log2(c / 84.0)) ** 2) / (2 * 0.10 ** 2))
+    corr_null = correction_curve(c, spike_room, np.zeros_like(c), f_min=F_MIN, f_max=F_MAX)
+    at_null = int(np.argmin(np.abs(c - 84.0)))
+    check("a deep null is not boosted into",
+          float(corr_null[at_null]) <= 1e-6,
+          f"{float(corr_null[at_null]):+.2f} dB at the cancellation")
     check("correction recentred on 100 Hz-10 kHz",
           abs(float(corr[(c >= 100) & (c <= 10000)].mean())) < 0.5)
 
@@ -941,13 +1544,13 @@ def _selftest() -> int:
     check("profile preamp matches the parametric export",
           json.loads(export_profile_json(
               device="t", mic="remote", stimulus="pink", seconds=1.0,
-              target="harman", freqs=c, measured_db=measured,
+              target="dialogue", freqs=c, measured_db=measured,
               correction_db=corr, filters=filt,
               capability={}))["preamp_db"] == preamp_db(filt))
 
     profile = json.loads(export_profile_json(
         device="test", mic="remote", stimulus="pink", seconds=PINK_SECONDS,
-        target="harman", freqs=c, measured_db=measured, correction_db=corr,
+        target="dialogue", freqs=c, measured_db=measured, correction_db=corr,
         filters=filt, capability={"global_mix": False}))
     check("profile records the capability verdict",
           profile["capability"] == {"global_mix": False})
@@ -967,13 +1570,18 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--demo", action="store_true", help="print a worked example")
     parser.add_argument("--selftest", action="store_true", help="run the invariants")
     parser.add_argument("--stimulus", metavar="PATH",
-                        help="write a pink-noise WAV the app can ship as an asset")
-    parser.add_argument("--seconds", type=float, default=PINK_SECONDS)
+                        help="write the sine-sweep WAV the app ships as an asset")
+    parser.add_argument("--seconds", type=float, default=ESS_SECONDS)
+    parser.add_argument("--pink", action="store_true",
+                        help="write pink noise instead of the sweep (cross-check / RTA)")
     args = parser.parse_args(argv)
 
     if args.stimulus:
-        write_wav(args.stimulus, pink_noise(seconds=args.seconds))
-        print(f"wrote {args.stimulus} ({args.seconds:.0f}s pink noise, {FS} Hz mono)")
+        signal = pink_noise(seconds=args.seconds) if args.pink else sine_sweep(
+            seconds=args.seconds)[0]
+        write_wav(args.stimulus, signal)
+        kind = "pink noise" if args.pink else "sine sweep"
+        print(f"wrote {args.stimulus} ({args.seconds:.0f}s {kind}, {FS} Hz mono)")
         return 0
     if args.selftest:
         return _selftest()
