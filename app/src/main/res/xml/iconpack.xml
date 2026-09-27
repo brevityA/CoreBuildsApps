@@ -628,6 +628,7 @@
     <item drawable="put_io" />
     <item drawable="music" />
     <item drawable="quasitv" />
+    <item drawable="tcl_quick_panel" />
     <item drawable="quickbars_for_home_assistant" />
     <item drawable="quicksupport" />
     <item drawable="radio_net" />
@@ -672,6 +673,7 @@
     <item drawable="rustore" />
     <item drawable="rutube" />
     <item drawable="s0undtv" />
+    <item drawable="tcl_safety_guard" />
     <item drawable="saff" />
     <item drawable="sai" />
     <item drawable="sbs" />
@@ -765,6 +767,8 @@
     <item drawable="syncler_beta" />
     <item drawable="synologydrive" />
     <item drawable="synologyphotos" />
+    <item drawable="tcl_t_exhibition" />
+    <item drawable="tcl_t_solo" />
     <item drawable="tabii" />
     <item drawable="tablofast" />
     <item drawable="tailscale" />

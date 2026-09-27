@@ -630,6 +630,7 @@
         <item>put_io</item>
         <item>music</item>
         <item>quasitv</item>
+        <item>tcl_quick_panel</item>
         <item>quickbars_for_home_assistant</item>
         <item>quicksupport</item>
         <item>radio_net</item>
@@ -674,6 +675,7 @@
         <item>rustore</item>
         <item>rutube</item>
         <item>s0undtv</item>
+        <item>tcl_safety_guard</item>
         <item>saff</item>
         <item>sai</item>
         <item>sbs</item>
@@ -767,6 +769,8 @@
         <item>syncler_beta</item>
         <item>synologydrive</item>
         <item>synologyphotos</item>
+        <item>tcl_t_exhibition</item>
+        <item>tcl_t_solo</item>
         <item>tabii</item>
         <item>tablofast</item>
         <item>tailscale</item>
@@ -1595,6 +1599,7 @@
         <item>Put Io</item>
         <item>Qobuz</item>
         <item>Quasitv</item>
+        <item>Quick Panel</item>
         <item>Quickbars For Home Assistant</item>
         <item>QuickSupport</item>
         <item>Radio Net</item>
@@ -1639,6 +1644,7 @@
         <item>Rustore</item>
         <item>Rutube</item>
         <item>S0undTV</item>
+        <item>Safety Guard</item>
         <item>Saff</item>
         <item>SAI</item>
         <item>SBS</item>
@@ -1732,6 +1738,8 @@
         <item>Syncler Beta</item>
         <item>Synology Drive</item>
         <item>Synology Photos</item>
+        <item>T-Exhibition</item>
+        <item>T-Solo</item>
         <item>Tabii</item>
         <item>Tablo</item>
         <item>Tailscale</item>
@@ -2560,6 +2568,7 @@
         <item>APP</item>
         <item>MUSIC</item>
         <item>APP</item>
+        <item>SYSTEM</item>
         <item>TOOL</item>
         <item>APP</item>
         <item>MUSIC</item>
@@ -2604,6 +2613,7 @@
         <item>APP</item>
         <item>APP</item>
         <item>VIDEO</item>
+        <item>SYSTEM</item>
         <item>APP</item>
         <item>TOOL</item>
         <item>VOD</item>
@@ -2697,6 +2707,8 @@
         <item>STREAM</item>
         <item>FILES</item>
         <item>APP</item>
+        <item>SYSTEM</item>
+        <item>SYSTEM</item>
         <item>APP</item>
         <item>APP</item>
         <item>VPN</item>
@@ -3527,34 +3539,12 @@
         <item>0</item>
         <item>1</item>
         <item>1</item>
-        <item>0</item>
-        <item>0</item>
-        <item>1</item>
-        <item>0</item>
-        <item>0</item>
-        <item>0</item>
-        <item>1</item>
-        <item>0</item>
-        <item>0</item>
-        <item>0</item>
-        <item>0</item>
-        <item>0</item>
-        <item>0</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
         <item>1</item>
         <item>0</item>
         <item>0</item>
         <item>1</item>
-        <item>1</item>
-        <item>0</item>
-        <item>1</item>
-        <item>1</item>
         <item>0</item>
         <item>0</item>
-        <item>0</item>
-        <item>1</item>
         <item>0</item>
         <item>1</item>
         <item>0</item>
@@ -3563,26 +3553,15 @@
         <item>0</item>
         <item>0</item>
         <item>0</item>
-        <item>0</item>
-        <item>0</item>
         <item>1</item>
         <item>1</item>
-        <item>0</item>
-        <item>1</item>
-        <item>0</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>0</item>
         <item>1</item>
         <item>1</item>
         <item>0</item>
         <item>0</item>
         <item>1</item>
         <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
+        <item>0</item>
         <item>1</item>
         <item>1</item>
         <item>0</item>
@@ -3592,18 +3571,13 @@
         <item>0</item>
         <item>1</item>
         <item>0</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
         <item>0</item>
-        <item>1</item>
         <item>0</item>
-        <item>1</item>
-        <item>1</item>
         <item>0</item>
-        <item>1</item>
         <item>0</item>
-        <item>1</item>
+        <item>0</item>
+        <item>0</item>
+        <item>0</item>
         <item>1</item>
         <item>1</item>
         <item>0</item>
@@ -3612,6 +3586,11 @@
         <item>0</item>
         <item>1</item>
         <item>1</item>
+        <item>1</item>
+        <item>0</item>
+        <item>1</item>
+        <item>1</item>
+        <item>0</item>
         <item>0</item>
         <item>1</item>
         <item>1</item>
@@ -3624,6 +3603,41 @@
         <item>0</item>
         <item>0</item>
         <item>1</item>
+        <item>0</item>
+        <item>1</item>
+        <item>0</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>0</item>
+        <item>1</item>
+        <item>0</item>
+        <item>1</item>
+        <item>1</item>
+        <item>0</item>
+        <item>1</item>
+        <item>0</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>0</item>
+        <item>1</item>
+        <item>1</item>
+        <item>0</item>
+        <item>1</item>
+        <item>1</item>
+        <item>0</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>0</item>
+        <item>0</item>
+        <item>0</item>
+        <item>1</item>
         <item>1</item>
         <item>0</item>
         <item>1</item>
@@ -3654,6 +3668,8 @@
         <item>0</item>
         <item>0</item>
         <item>0</item>
+        <item>1</item>
+        <item>1</item>
         <item>1</item>
         <item>1</item>
         <item>1</item>
@@ -3861,5 +3877,5 @@
         <item>1</item>
         <item>0</item>
     </integer-array>
-    <integer name="icon_count">963</integer>
+    <integer name="icon_count">967</integer>
 </resources>

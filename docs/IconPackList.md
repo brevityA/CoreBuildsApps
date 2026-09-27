@@ -1,6 +1,6 @@
 # Supported applications
 
-`963` icons · `1185` mapped components · pack v1.9.7
+`967` icons · `1191` mapped components · pack v1.9.7
 
 Every app below auto-assigns in Projectivy. If one doesn't, the app ships a different launcher activity on your device — open an issue with the component name and it gets added.
 
@@ -636,6 +636,7 @@ Source accents are retained in the catalog. **On dark** is the shared square/ban
 | Put Io | `put_io` | `#7C74FF` | `#7C74FF` | `io.put.putio/io.put.putio.MainActivity` |
 | Qobuz | `music` | `#FF7A2E` | `#FF7A2E` | `com.qobuz.music/com.qobuz.android.tv.app.launcher.LauncherActivity` |
 | Quasitv | `quasitv` | `#0087A6` | `#0087A6` | `gonemad.quasi.tv/gonemad.quasi.tv.ui.MainActivity` |
+| Quick Panel | `tcl_quick_panel` | `#0080F8` | `#0080F8` | `com.tcl.suspension/com.tcl.suspension.ui.main.MainActivity` |
 | Quickbars For Home Assistant | `quickbars_for_home_assistant` | `#F04DE0` | `#F04DE0` | `dev.trooped.tvquickbars/dev.trooped.tvquickbars.ui.SplashActivity` |
 | QuickSupport | `quicksupport` | `#050A52` | `#3946F3` | `com.teamviewer.quicksupport.market/com.teamviewer.quicksupport.ui.QSActivity` |
 | Radio Net | `radio_net` | `#3D8BFF` | `#3D8BFF` | `de.radio.android/de.radio.android.tv.activities.TvMainActivity` |
@@ -680,6 +681,7 @@ Source accents are retained in the catalog. **On dark** is the shared square/ban
 | Rustore | `rustore` | `#FF7A2E` | `#FF7A2E` | `ru.vk.store.tv/ru.vk.store.tv.app.presentation.MainActivity` |
 | Rutube | `rutube` | `#19D3C5` | `#19D3C5` | `ru.rutube.app.tv/ru.rutube.app.SplashActivity` |
 | S0undTV | `s0undtv` | `#A78BFA` | `#A78BFA` | `com.s0und.s0undtv/.MainActivity`<br>`com.s0und.s0undtv/com.s0und.s0undtv.MainActivity`<br>`com.s0und.s0undtv/com.s0und.s0undtv.activities.FireTVMainActivity`<br>`com.s0und.s0undtv/com.s0und.s0undtv.activities.MainActivity` |
+| Safety Guard | `tcl_safety_guard` | `#4058E0` | `#4058E0` | `com.tcl.guard/com.tcl.guard.mainmenu.splashpage.activity.StartActivity` |
 | Saff | `saff` | `#106736` | `#116F3A` | `sa.saffplus/com.mottostreaming.android.tv.MainActivity` |
 | SAI | `sai` | `#3DDC84` | `#3DDC84` | `com.apkpreem.sai/.ui.activities.MainActivity` |
 | SBS | `sbs` | `#F0A500` | `#F0A500` | `au.com.sbs.ondemand.tv/.MainActivity`<br>`au.com.sbs.ondemand/.MainActivity` |
@@ -773,6 +775,8 @@ Source accents are retained in the catalog. **On dark** is the shared square/ban
 | Syncler Beta | `syncler_beta` | `#00BFA5` | `#00BFA5` | `com.syncler.beta/com.swordfish.ui.screen.splash.StartUpSplashActivity` |
 | Synology Drive | `synologydrive` | `#4FACFE` | `#4FACFE` | `com.synology.server.SynologyDrive/com.synology.server.SynologyDrive.ui.SplashActivity`<br>`com.synology.dscloud/com.synology.dscloud.ui.SplashActivity`<br>`com.synology.dscloud/.ui.SplashActivity` |
 | Synology Photos | `synologyphotos` | `#FF6F61` | `#FF6F61` | `com.synology.projectkailash/com.synology.projectkailash.ui.login.LoginActivity` |
+| T-Exhibition | `tcl_t_exhibition` | `#F0B898` | `#F0B898` | `com.tcl.exhibit/com.tcl.exhibit.portal.view.activity.MainActivity` |
+| T-Solo | `tcl_t_solo` | `#6858C0` | `#6858C0` | `com.tcl.t_solo/com.tcl.bluetoothlistenalone.ListenAloneActivity` |
 | Tabii | `tabii` | `#00FF99` | `#00FF99` | `com.trt.tabii.android/com.trt.tabii.android.tv.MainActivity` |
 | Tablo | `tablofast` | `#1294D2` | `#1294D2` | `com.nuvyyo.TabloFAST/com.nuvyyo.tablo.LaunchActivity` |
 | Tailscale | `tailscale` | `#222222` | `#E6EDF3` | `com.tailscale.ipn/com.tailscale.ipn.MainActivity` |
@@ -784,8 +788,8 @@ Source accents are retained in the catalog. **On dark** is the shared square/ban
 | TBN+ | `tbn_plus` | `#E6EDF3` | `#E6EDF3` | `tbn_mobile.android/com.applicaster.ui.activities.MainActivity` |
 | TBS | `tbs` | `#34EB7A` | `#34EB7A` | `com.turner.tbs.android.networkapp/com.wme.app.MainActivityTv` |
 | TCL Channel | `tcl_channel` | `#B22B27` | `#B42C27` | `com.tcl.waterfall.overseas/com.tcl.waterfall.overseas.main.MainActivity` |
-| TCL Home | `tcl_home` | `#E24638` | `#E24638` | `com.tcl.tclhome/com.tcl.bmmain.SplashActivity` |
-| TCL Home Passive | `tcl_home_passive` | `#A60202` | `#C30202` | `com.tcl.tv.tclhome_passive/com.tcl.tv.tclhome_passive.HomePassiveActivity` |
+| TCL Home | `tcl_home` | `#E24638` | `#E24638` | `com.tcl.tclhome/com.tcl.bmmain.SplashActivity`<br>`com.tcl.dashboard/com.tcl.dashboard.MainActivity` |
+| TCL Home Passive | `tcl_home_passive` | `#A60202` | `#C30202` | `com.tcl.tv.tclhome_passive/com.tcl.tv.tclhome_passive.HomePassiveActivity`<br>`com.tcl.tv.tclhome_passive/com.tcl.tclhome_passive.HomePassiveActivity` |
 | TCN | `tcn` | `#CF0606` | `#CF0606` | `com.tuckercarlson.tv/tv.accedo.one.app.bootstrap.BootstrapActivity` |
 | Tdtchannels Player | `tdtchannels_player` | `#53FC18` | `#53FC18` | `com.tdtchannels.player/com.tdtchannels.player.SplashScreenActivity` |
 | Tduk Screensaver Manager | `tduk_screensaver_manager` | `#7C74FF` | `#7C74FF` | `com.tduk.scrmgr/dev.vodik7.tdukscrmng.MainActivity` |
@@ -873,7 +877,7 @@ Source accents are retained in the catalog. **On dark** is the shared square/ban
 | UFC | `smartphone` | `#D20A0A` | `#D20A0A` | `com.neulion.smartphone.ufc.android/com.neulion.smartphone.ufc.android.MainActivity` |
 | Ugreen NAS | `ugreen_nas` | `#34EB7A` | `#34EB7A` | `com.ugreen.nasprotv/com.ugreen.nasprotv.LaunchActivity` |
 | Ukiku | `ukiku` | `#A366FF` | `#A366FF` | `knf.kuma.tv/knf.kuma.tv.ui.TVMain` |
-| Ultimate File Manager Pro | `ultimatefilemanager` | `#FF5CA8` | `#FF5CA8` | `za.kilowatch.ultimatefilemanager/.MainActivity`<br>`za.kilowatch.ultimatefilemanager/za.kilowatch.ultimatefilemanager.MainActivity` |
+| Ultimate File Manager Pro | `ultimatefilemanager` | `#80A0B0` | `#80A0B0` | `za.kilowatch.ultimatefilemanager/.MainActivity`<br>`za.kilowatch.ultimatefilemanager/za.kilowatch.ultimatefilemanager.MainActivity` |
 | UniFi Protect | `unifi_protect` | `#0058D4` | `#0058D4` | `com.ubnt.unifi.protect/com.ubnt.sections.splash.AuthenticationActivity` |
 | Unifi TV | `unifi_tv` | `#7C74FF` | `#7C74FF` | `com.tm.playtv/com.tm.ott.module.login.activity.LoginActivity` |
 | Unlinked | `unlinked` | `#00B8D9` | `#00B8D9` | `link.unlinked/.android.core.ui.SplashActivity` |

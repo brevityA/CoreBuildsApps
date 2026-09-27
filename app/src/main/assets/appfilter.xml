@@ -1821,6 +1821,9 @@
     <!-- Quasitv -->
     <item component="ComponentInfo{gonemad.quasi.tv/gonemad.quasi.tv.ui.MainActivity}" drawable="quasitv_banner"/>
     <item component="ComponentInfo{gonemad.quasi.tv/.ui.MainActivity}" drawable="quasitv_banner"/>
+    <!-- Quick Panel -->
+    <item component="ComponentInfo{com.tcl.suspension/com.tcl.suspension.ui.main.MainActivity}" drawable="tcl_quick_panel_banner"/>
+    <item component="ComponentInfo{com.tcl.suspension/.ui.main.MainActivity}" drawable="tcl_quick_panel_banner"/>
     <!-- Quickbars For Home Assistant -->
     <item component="ComponentInfo{dev.trooped.tvquickbars/dev.trooped.tvquickbars.ui.SplashActivity}" drawable="quickbars_for_home_assistant_banner"/>
     <item component="ComponentInfo{dev.trooped.tvquickbars/.ui.SplashActivity}" drawable="quickbars_for_home_assistant_banner"/>
@@ -1946,6 +1949,9 @@
     <item component="ComponentInfo{com.s0und.s0undtv/.activities.FireTVMainActivity}" drawable="s0undtv_banner"/>
     <item component="ComponentInfo{com.s0und.s0undtv/com.s0und.s0undtv.activities.MainActivity}" drawable="s0undtv_banner"/>
     <item component="ComponentInfo{com.s0und.s0undtv/.activities.MainActivity}" drawable="s0undtv_banner"/>
+    <!-- Safety Guard -->
+    <item component="ComponentInfo{com.tcl.guard/com.tcl.guard.mainmenu.splashpage.activity.StartActivity}" drawable="tcl_safety_guard_banner"/>
+    <item component="ComponentInfo{com.tcl.guard/.mainmenu.splashpage.activity.StartActivity}" drawable="tcl_safety_guard_banner"/>
     <!-- Saff -->
     <item component="ComponentInfo{sa.saffplus/com.mottostreaming.android.tv.MainActivity}" drawable="saff_banner"/>
     <!-- SAI -->
@@ -2232,6 +2238,11 @@
     <!-- Synology Photos -->
     <item component="ComponentInfo{com.synology.projectkailash/com.synology.projectkailash.ui.login.LoginActivity}" drawable="synologyphotos_banner"/>
     <item component="ComponentInfo{com.synology.projectkailash/.ui.login.LoginActivity}" drawable="synologyphotos_banner"/>
+    <!-- T-Exhibition -->
+    <item component="ComponentInfo{com.tcl.exhibit/com.tcl.exhibit.portal.view.activity.MainActivity}" drawable="tcl_t_exhibition_banner"/>
+    <item component="ComponentInfo{com.tcl.exhibit/.portal.view.activity.MainActivity}" drawable="tcl_t_exhibition_banner"/>
+    <!-- T-Solo -->
+    <item component="ComponentInfo{com.tcl.t_solo/com.tcl.bluetoothlistenalone.ListenAloneActivity}" drawable="tcl_t_solo_banner"/>
     <!-- Tabii -->
     <item component="ComponentInfo{com.trt.tabii.android/com.trt.tabii.android.tv.MainActivity}" drawable="tabii_banner"/>
     <item component="ComponentInfo{com.trt.tabii.android/.tv.MainActivity}" drawable="tabii_banner"/>
@@ -2264,9 +2275,12 @@
     <item component="ComponentInfo{com.tcl.waterfall.overseas/.main.MainActivity}" drawable="tcl_channel_banner"/>
     <!-- TCL Home -->
     <item component="ComponentInfo{com.tcl.tclhome/com.tcl.bmmain.SplashActivity}" drawable="tcl_home_banner"/>
+    <item component="ComponentInfo{com.tcl.dashboard/com.tcl.dashboard.MainActivity}" drawable="tcl_home_banner"/>
+    <item component="ComponentInfo{com.tcl.dashboard/.MainActivity}" drawable="tcl_home_banner"/>
     <!-- TCL Home Passive -->
     <item component="ComponentInfo{com.tcl.tv.tclhome_passive/com.tcl.tv.tclhome_passive.HomePassiveActivity}" drawable="tcl_home_passive_banner"/>
     <item component="ComponentInfo{com.tcl.tv.tclhome_passive/.HomePassiveActivity}" drawable="tcl_home_passive_banner"/>
+    <item component="ComponentInfo{com.tcl.tv.tclhome_passive/com.tcl.tclhome_passive.HomePassiveActivity}" drawable="tcl_home_passive_banner"/>
     <!-- TCN -->
     <item component="ComponentInfo{com.tuckercarlson.tv/tv.accedo.one.app.bootstrap.BootstrapActivity}" drawable="tcn_banner"/>
     <!-- Tdtchannels Player -->

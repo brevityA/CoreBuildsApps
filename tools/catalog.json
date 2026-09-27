@@ -6,7 +6,7 @@
     "grid": 512,
     "safe_area": 432,
     "note": "Core Builds-authored geometric icons on a shared 512 grid. Reviewed brand glyphs use rounded monoline strokes and one accent, not imported vendor silhouettes. Common Outfit/category/rail banners; artwork is reference-only. Canonical brand colours and the dark-card contrast policy remain shared.",
-    "count": 963
+    "count": 967
   },
   "icons": [
     {
@@ -8373,6 +8373,20 @@
       "color_reviewed": "2026-09-26"
     },
     {
+      "name": "Quick Panel",
+      "drawable": "tcl_quick_panel",
+      "color": "#0080F8",
+      "glyph": "tcl_quickpanel_layers",
+      "components": [
+        "com.tcl.suspension/com.tcl.suspension.ui.main.MainActivity"
+      ],
+      "category": "SYSTEM",
+      "mapping_source": "supporter TV audit 2026-09-27 (Auditor screenshots, TCL Google TV)",
+      "color_source": "sampled from the launcher tile in a supporter's device screenshot (2026-09-27): the layers' blue #0080F8",
+      "color_reviewed": "2026-09-27",
+      "glyph_source": "brand-informed redraw of the launcher tile in a supporter's device screenshot (com.tcl.suspension, 2026-09-27); Core monoline geometry, not a trace (2026-09-27)"
+    },
+    {
       "name": "Quickbars For Home Assistant",
       "drawable": "quickbars_for_home_assistant",
       "color": "#F04DE0",
@@ -8975,6 +8989,20 @@
       "category": "VIDEO",
       "color_source": "brand reference (pre-provenance, unverified)",
       "color_reviewed": null
+    },
+    {
+      "name": "Safety Guard",
+      "drawable": "tcl_safety_guard",
+      "color": "#4058E0",
+      "glyph": "tcl_guard_shield",
+      "components": [
+        "com.tcl.guard/com.tcl.guard.mainmenu.splashpage.activity.StartActivity"
+      ],
+      "category": "SYSTEM",
+      "mapping_source": "supporter TV audit 2026-09-27 (Auditor screenshots, TCL Google TV); listed there as Säkerhetsvakt",
+      "color_source": "sampled from the launcher tile in a supporter's device screenshot (2026-09-27): the tile's blue #4058E0",
+      "color_reviewed": "2026-09-27",
+      "glyph_source": "brand-informed redraw of the launcher tile in a supporter's device screenshot (com.tcl.guard, 2026-09-27); Core monoline geometry, not a trace (2026-09-27)"
     },
     {
       "name": "Saff",
@@ -10269,6 +10297,34 @@
       "glyph_source": "brand-informed redraw of the official launcher icon (play listing for com.synology.projectkailash); Core monoline geometry, not a trace (2026-09-26)"
     },
     {
+      "name": "T-Exhibition",
+      "drawable": "tcl_t_exhibition",
+      "color": "#F0B898",
+      "glyph": "tcl_exhibit_easel",
+      "components": [
+        "com.tcl.exhibit/com.tcl.exhibit.portal.view.activity.MainActivity"
+      ],
+      "category": "SYSTEM",
+      "mapping_source": "supporter TV audit 2026-09-27 (Auditor screenshots, TCL Google TV)",
+      "color_source": "sampled from the launcher tile in a supporter's device screenshot (2026-09-27): the tile's peach #F0B898",
+      "color_reviewed": "2026-09-27",
+      "glyph_source": "brand-informed redraw of the launcher tile in a supporter's device screenshot (com.tcl.exhibit, 2026-09-27); Core monoline geometry, not a trace (2026-09-27)"
+    },
+    {
+      "name": "T-Solo",
+      "drawable": "tcl_t_solo",
+      "color": "#6858C0",
+      "glyph": "tcl_tsolo_note",
+      "components": [
+        "com.tcl.t_solo/com.tcl.bluetoothlistenalone.ListenAloneActivity"
+      ],
+      "category": "SYSTEM",
+      "mapping_source": "supporter TV audit 2026-09-27 (Auditor screenshots, TCL Google TV)",
+      "color_source": "sampled from the launcher tile in a supporter's device screenshot (2026-09-27): the tile's violet #6858C0",
+      "color_reviewed": "2026-09-27",
+      "glyph_source": "brand-informed redraw of the launcher tile in a supporter's device screenshot (com.tcl.t_solo, 2026-09-27); Core monoline geometry, not a trace (2026-09-27)"
+    },
+    {
       "name": "Tabii",
       "drawable": "tabii",
       "color": "#00FF99",
@@ -10423,10 +10479,11 @@
       "glyph": "tool_T",
       "mark": "TH",
       "components": [
-        "com.tcl.tclhome/com.tcl.bmmain.SplashActivity"
+        "com.tcl.tclhome/com.tcl.bmmain.SplashActivity",
+        "com.tcl.dashboard/com.tcl.dashboard.MainActivity"
       ],
       "category": "APP",
-      "mapping_source": "Projectivy Icon Pack 1.1.9",
+      "mapping_source": "Projectivy Icon Pack 1.1.9; com.tcl.dashboard entry from supporter TV audit 2026-09-27 (Auditor screenshots, TCL Google TV)",
       "color_source": "sampled from the official launcher icon (Google Play listing for com.tcl.tclhome): dominant brand accent #E24638 (2026-09-26)",
       "color_reviewed": "2026-09-26"
     },
@@ -11611,8 +11668,8 @@
     {
       "name": "Ultimate File Manager Pro",
       "drawable": "ultimatefilemanager",
-      "color": "#FF5CA8",
-      "glyph": "folder",
+      "color": "#80A0B0",
+      "glyph": "ufm_folder_arrow",
       "components": [
         "za.kilowatch.ultimatefilemanager/.MainActivity",
         "za.kilowatch.ultimatefilemanager/za.kilowatch.ultimatefilemanager.MainActivity"
@@ -11622,8 +11679,9 @@
         "za.kilowatch.ultimatefilemanager/.MainActivity",
         "za.kilowatch.ultimatefilemanager/za.kilowatch.ultimatefilemanager.MainActivity"
       ],
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled from the launcher tile in a supporter's device screenshot (2026-09-27): the folder mark's steel blue #80A0B0",
+      "color_reviewed": "2026-09-27",
+      "glyph_source": "brand-informed redraw of the launcher tile in a supporter's device screenshot (za.kilowatch.ultimatefilemanager, 2026-09-27); Core monoline geometry, not a trace (2026-09-27)"
     },
     {
       "name": "UniFi Protect",
@@ -13286,10 +13344,11 @@
       "color": "#A60202",
       "glyph": "tool_T",
       "components": [
-        "com.tcl.tv.tclhome_passive/com.tcl.tv.tclhome_passive.HomePassiveActivity"
+        "com.tcl.tv.tclhome_passive/com.tcl.tv.tclhome_passive.HomePassiveActivity",
+        "com.tcl.tv.tclhome_passive/com.tcl.tclhome_passive.HomePassiveActivity"
       ],
       "category": "SYSTEM",
-      "mapping_source": "owner TV audit 2026-09-21 (Auditor screenshots, TCL Google TV)",
+      "mapping_source": "owner TV audit 2026-09-21 (Auditor screenshots, TCL Google TV); com.tcl.tclhome_passive activity class from supporter TV audit 2026-09-27 (Auditor screenshots, TCL Google TV)",
       "color_source": "sampled from the official launcher icon (APKCombo mirror of the Google Play listing for com.tcl.tv.tclhome_passive): dominant brand accent #A60202 (2026-09-26)",
       "color_reviewed": "2026-09-26",
       "mark": "TH"

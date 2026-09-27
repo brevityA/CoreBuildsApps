@@ -1,13 +1,15 @@
 {
   "versionCode": 39,
   "versionName": "1.9.7",
-  "iconCount": 963,
-  "componentCount": 1185,
+  "iconCount": 967,
+  "componentCount": 1191,
   "releaseDate": "2026-09-27",
   "apkUrl": "https://github.com/brevityA/CoreBuildsApps/releases/download/iconpack/iconpack-release.apk",
   "releaseNotesUrl": "https://github.com/brevityA/CoreBuildsApps/releases",
   "minSdk": 21,
   "highlights": [
-    "Vision+"
+    "Vision+",
+    "Four TCL system apps",
+    "TCL Home and TCL Home Passive now match on TCL TVs"
   ]
 }

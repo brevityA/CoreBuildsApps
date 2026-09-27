@@ -5906,3 +5906,52 @@ def visionplus_vplus(c):
 
 
 GLYPHS.update({"visionplus_vplus": visionplus_vplus})
+
+
+# --------------------------------------------------------------------------
+# TCL system apps and UFM Pro (2026-09-27): drawn from a supporter's device
+# screenshot of each launcher tile.
+
+
+def tcl_quickpanel_layers(c):
+    """TCL Quick Panel: the stack of three layers."""
+    return (f'<path d="M 256 92 L 436 184 L 256 276 L 76 184 Z" {_s(c, 28)}/>'
+            f'<path d="M 76 256 L 256 348 L 436 256 M 76 328 L 256 420 L 436 328" '
+            f'{_s(c, 26)}/>')
+
+
+def tcl_guard_shield(c):
+    """TCL Safety Guard: the shield with a brush stroke across it."""
+    return (f'<path d="M 256 64 C 314 96 368 108 420 108 L 420 250 C 420 344 350 414 256 452 '
+            f'C 162 414 92 344 92 250 L 92 108 C 144 108 198 96 256 64 Z" {_s(c, 28)}/>'
+            f'<path d="M 310 170 L 206 334" {_s(c, 32)}/>')
+
+
+def tcl_exhibit_easel(c):
+    """TCL T-Exhibition: a framed sunset standing on its easel legs."""
+    return (f'<rect x="92" y="88" width="328" height="236" rx="22" {_s(c, 28)}/>'
+            f'<path d="M 132 282 C 196 238 300 252 380 212" {_s(c, 22)}/>'
+            f'<circle cx="326" cy="162" r="24" {_s(c, 20)}/>'
+            f'<path d="M 180 324 L 146 436 M 332 324 L 366 436" {_s(c, 26)}/>')
+
+
+def tcl_tsolo_note(c):
+    """TCL T-Solo: the single music note with a hollow head."""
+    return (f'<path d="M 300 92 L 300 336" {_s(c, 30)}/>'
+            f'<path d="M 300 92 C 338 110 380 138 384 196" {_s(c, 28)}/>'
+            f'<circle cx="236" cy="352" r="66" {_s(c, 30)}/>')
+
+
+def ufm_folder_arrow(c):
+    """Ultimate File Manager Pro: the folder with an arrow launching out of it."""
+    return (f'<path d="M 72 150 L 200 150 L 236 190 L 300 190" {_s(c, 26)}/>'
+            f'<path d="M 440 250 L 440 386 C 440 408 424 424 402 424 L 110 424 '
+            f'C 88 424 72 408 72 386 L 72 150" {_s(c, 26)}/>'
+            f'<path d="M 184 360 L 400 144 M 324 136 L 408 136 L 408 220" {_s(c, 28)}/>')
+
+
+GLYPHS.update({
+    "tcl_quickpanel_layers": tcl_quickpanel_layers, "tcl_guard_shield": tcl_guard_shield,
+    "tcl_exhibit_easel": tcl_exhibit_easel, "tcl_tsolo_note": tcl_tsolo_note,
+    "ufm_folder_arrow": ufm_folder_arrow,
+})

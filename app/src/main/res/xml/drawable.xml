@@ -424,8 +424,12 @@
     <item drawable="projectivy_categories_banner" />
     <item drawable="projectivy_channels_banner" />
     <item drawable="projectivy_settings_banner" />
+    <item drawable="tcl_quick_panel_banner" />
+    <item drawable="tcl_safety_guard_banner" />
     <item drawable="settings_banner" />
     <item drawable="source_input_banner" />
+    <item drawable="tcl_t_exhibition_banner" />
+    <item drawable="tcl_t_solo_banner" />
     <item drawable="tcl_home_passive_banner" />
     <item drawable="tv_source_banner" />
     <item drawable="user_center_banner" />

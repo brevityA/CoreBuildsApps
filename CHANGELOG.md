@@ -11,6 +11,20 @@ All notable changes to the Core Builds Icon Pack. Format follows
 ### Added
 
 - **Vision+** — a new icon for the Indonesian streaming service, requested in #185. It has a redrawn mark taken from the app's launcher icon: its V as one slanted wedge tapering to a rounded foot, and the plus. Its colour is the icon's cyan (#07E3D0). The launch activity was reported from a real device (AQUA MatrixTV CE, Android 14). 962 → 963 icons, 1184 → 1185 components.
+- **Four TCL system apps.** Quick Panel (stacked layers), Safety Guard
+  (Säkerhetsvakt; a shield with a brush stroke), T-Exhibition (a framed
+  sunset on its easel) and T-Solo (a single note) get icons drawn from their
+  launcher tiles, in the tiles' own colours. A supporter's TV audit reported
+  them with their launch activities. 963 → 967 icons.
+
+### Fixed
+
+- **TCL Home and TCL Home Passive now match on TCL TVs.** The same audit
+  showed TCL Home launching from `com.tcl.dashboard` and TCL Home Passive
+  from a class package the catalogue had wrong, so both gain the reported
+  activity. Ultimate File Manager Pro gets a redrawn folder-and-arrow mark
+  in its steel blue `#80A0B0`; its launch activity was cut off on screen,
+  so its mapping waits for the full name. 1185 → 1191 components.
 
 ## [1.9.6] — 2026-09-26
 
