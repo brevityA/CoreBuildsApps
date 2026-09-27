@@ -6,6 +6,84 @@ All notable changes to the Core Builds Icon Pack. Format follows
 
 ## [Unreleased]
 
+## [1.9.6] — 2026-09-26
+
+### Added
+
+- **Generic Glyphs get a modern look.** The 452 app-letter fallbacks now use one clean tile with the app's letters large in the middle and a small function badge in the open top-right corner: a screen for TV and video apps, a trophy for sport, a gear for tools, a note for music, a download arrow for stores, a pointer for browsers, and so on across 14 families. The letters no longer share space with any line, so they stay sharp at TV distance. No vendor artwork is used; the family comes from the classifier's evidence and the geometry is generated from the catalogue.
+- **Browkorf TV** now has a browser glyph and Android TV launcher mapping.
+- **Arena4Viewer** is covered through the existing Sports Everywhere mark, with its requested package/activity variants added as device-unverified mappings.
+
+- **102 apps get marks drawn from their real icons.** Zeus's bolt, ARD's
+  ring-1, DR's ring and play, Hubitat's house, Dropsync's cube, Scholastic's
+  book, Zapp's set, Mango TV's M, Youku's two-part play (blue and orange),
+  TVING's T-V, CANAL+'s cross, Bstation's TV face, PikPak's robot, Tabii's
+  star, Hue Shortcuts' bulb, MyRadar's pin, Immich's flower, PPSSPP's pad,
+  Netzkino's countdown, Feeln's crown, Kijk's eye, NFB's watching eye,
+  Synology Photos' rosette, TorrServe's bolt, Bitdefender's linked shield,
+  Peloton's P, Lemuroid's face, Yoga Download's lotus and 74 more replace
+  their letter tiles. Each is the defining shape redrawn in Core line geometry
+  with the reference icon recorded in the catalogue; nothing is traced. Eight
+  whose real icons are gradients - Kijk, Kreate, Moonfin, Photo Collage,
+  Unreal Debrid, Flickfolio, Avoid and Sooner - wear the two ends of that
+  gradient, sampled from the icon, and Hippos' bar wears its own orange.
+- **315 icons wear their app's real colour.** Letter-tile icons now use the
+  dominant colour of their official launcher icon when reliable Play/F-Droid
+  evidence exists. Multi-colour, black-and-white, and unlisted apps retain a
+  palette colour; the palette assignment is sticky so one sourced colour does
+  not reshuffle unrelated icons.
+
+- **Duotone icons.** An icon whose own logo is two colours can now wear
+  both: YouTube's play and Emby's play are white inside the brand colour,
+  VLC's cone has its white bands back, and Jellyfin's inner triangle takes
+  the purple stop of its official gradient. The catalog gains a `secondary`
+  field (`color`, the `parts` of the glyph it paints, and a `source` for
+  where the colour was seen); a declaration without a source, on a
+  gradient or monochrome icon, or repainting the whole mark is refused.
+  White is drawn as the Brand Guide off-white, the banner rail stays the
+  primary brand colour so launchers that sample it still read the brand,
+  and every other icon renders byte-for-byte as before. The Glyphs
+  companion picks the new squares up from the same art.
+
+### Changed
+
+- **53 letter tiles now match their app's logo.** A letter tile used to
+  show the first two letters of the app's name, so arte read "AR", cda read
+  "CP" and CW's Full Episodes read "FE". Where the official launcher icon is
+  a short logotype, the tile now carries its letters - HEI, JIO, LFC, M6,
+  RAI, TF1, TIM, 360 and more - and brands whose logo is lowercase (arte,
+  cda, byu, stc, yle, tvo, vrt...) get the lowercase treatment in the
+  pack's own face. Longer logotypes that would set under the 96px
+  legibility floor keep two letters, taken from the logo rather than the
+  app name. Each change records the icon it was read from. A second
+  research pass found reference icons for 136 more apps (Play, F-Droid
+  and the APKCombo mirror of Play, matched on exact package name); 13
+  listings turned out to be a different app and are logged for review in
+  `docs/research/icon-reference-pass2-2026-09-26.md`, with mappings left
+  unchanged.
+- **51 app names are spelled the way the apps spell them.** Banner
+  wordmarks and the in-app list print the catalogue name, and some had been
+  flattened on import: "Synologyphotos", "Ppsspp", "Tving", "U Next",
+  "Twodf Tivi". They now read Synology Photos, PPSSPP, TVING, U-NEXT,
+  ZDFtivi, BYUtv, TVNZ+, NHK World-Japan and so on. Mappings are unchanged;
+  the name is display text only.
+- **Banner category labels wear the icon's colour.** VOD, STREAM, LIVE and
+  every other category kicker used to be one fixed cyan on all 961 banners,
+  so Monet's colour sampler could read cyan off a red or violet card. The
+  label now uses the same colour as the icon and its rail; the app name
+  stays light ink. On a duotone icon the label takes the primary colour.
+
+### Fixed
+
+- **VidHub's icon now applies (#182).** The pack mapped VidHub's main
+  screen, `TVMainActivity`, but the launcher entry is its splash screen,
+  `TVSplashActivity`, so Projectivy on a Chromecast (Android 14) never
+  matched it. The reported component is now mapped to the same mark.
+
+- **Weather apps no longer file under SPORT.** WeatherYou and Forecast
+  carried a SPORT category, so their banners read "SPORT" over a sun and
+  cloud. Both are now APP, like WeatherBug.
+
 ## [1.9.5] — 2026-09-25
 
 ### Added

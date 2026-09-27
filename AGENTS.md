@@ -6,7 +6,7 @@
 
 | Product | Path | Package ID | Version | Downloader / stable tag |
 |---|---|---|---:|---|
-| Core Builds Icon Pack | `app/` with repo-root Gradle | `tv.corebuilds.iconpack` | `1.9.5` | `5270601` / `iconpack` |
+| Core Builds Icon Pack | `app/` with repo-root Gradle | `tv.corebuilds.iconpack` | `1.9.6` | `5270601` / `iconpack` |
 | Core Line | `ticker/` + `ticker/android/` | `dev.corebuilds.line` | `1.3.1` | `7375676` / `coreline` |
 | Core Shift | `shift/` | `dev.corebuilds.shift` | `2.3.5` | `8829421` / `shift` |
 | Core Motion | `motion-plugin/` | `tv.corebuilds.motion` | `1.0.0` | `[USER TO SUPPLY]` / `motion` |
@@ -44,6 +44,7 @@ Classic pack changes run the four generators and the validator:
 
 ```bash
 python tools/icon_palette.py         # 18-colour fallback palette for icons with no brand colour
+python tools/classify_families.py --write  # researched functional shells for generic app-letter rows
 python tools/fit_classic_glyphs.py   # optical fit of undersized/off-centre glyphs; reads the catalog
 python tools/build_icons.py
 python tools/build_banners.py
@@ -54,12 +55,15 @@ python tools/validate.py
 python tests/test_icon_identity.py    # 55 style/colour/reference/mapping regressions
 ```
 
-Paste the validator receipt. Current receipt: `Validated 961 icons · 1179 components`.
+Paste the validator receipt. Current receipt: `Validated 962 icons · 1184 components`.
 
 **The pack identity takes precedence over literal vendor-logo reproduction.**
 Reviewed brand entries use `style: core_monoline`: 32px rounded primary strokes,
-26.2px / 21.8px detail, no solid fills/effects/containers, and one accent. Keep
-the common Outfit + category + cyan/violet rail banner for NoBuffr and every
+26.2px / 21.8px detail, no solid fills/effects/containers, and one accent —
+or, where the brand's own logo is two-tone, a catalog `secondary`
+(`color`, the glyph `parts` it paints, and a `source`; white is drawn as the
+Brand Guide off-white, the rail keeps the primary colour). Keep
+the common Outfit + icon-coloured category + rail banner for NoBuffr and every
 other reviewed app. Do not reintroduce vendor-wordmark-only banners.
 
 Catalog `artwork` entries are `usage: reference-only`: pinned SVG hashes, URLs

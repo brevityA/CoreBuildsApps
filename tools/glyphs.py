@@ -108,6 +108,23 @@ def _hexpts(cx, cy, r):
     return " ".join(pts)
 
 
+def _gearpts(cx, cy, outer, inner, teeth=8):
+    """Return a restrained face-on gear keyline for utility shells.
+
+    The alternating radii make the tool cue survive at 48px without turning
+    the family shell into a busy illustration. A tooth is centred on each
+    cardinal/diagonal axis, so the adaptive mark remains optically centred.
+    """
+    import math
+    pts = []
+    step = math.pi / teeth
+    for i in range(teeth * 2):
+        radius = outer if i % 2 == 0 else inner
+        angle = i * step - math.pi / 2
+        pts.append(f"{cx + radius * math.cos(angle):.1f},{cy + radius * math.sin(angle):.1f}")
+    return " ".join(pts)
+
+
 def play_hex(c):
     """Stremio: rounded square with the play as an outline (monoline)."""
     return (f'<rect x="70" y="70" width="372" height="372" rx="96" {_s(c, 34)}/>'
@@ -543,7 +560,7 @@ def monoline(body, weight=MONOLINE):
 
 
 def render_svg(glyph_name, color, glow=False, *, monochrome=False,
-               gradient=None, mark=None, style=None):
+               gradient=None, mark=None, style=None, secondary=None):
     """
     Render the transparent Classic glyph in the common monoline treatment.
 
@@ -556,9 +573,15 @@ def render_svg(glyph_name, color, glow=False, *, monochrome=False,
     it replaces the lone letter (family_body adapts the type to the shell);
     `style` is its brand-informed treatment. On any other glyph both are
     ignored.
+
+    `secondary` is the catalog's duotone declaration: the named parts take
+    the brand's second colour (see apply_secondary). Monochrome icons stay
+    one paint.
     """
     color = display_accent(color, monochrome=monochrome)
     body = monoline(family_body(glyph_name, color, mark, style))
+    if secondary and not monochrome:
+        body = apply_secondary(body, color, secondary)
     if glow:
         body = lit(body, color)
     if gradient and not monochrome:
@@ -598,6 +621,98 @@ def classic_fit(glyph_name, body):
     half = GRID / 2
     return (f'<g transform="translate({half:g} {half:g}) scale({scale:g}) '
             f'translate({-cx:g} {-cy:g})">{body}</g>')
+
+
+_PRIMITIVE_RE = re.compile(
+    r"<(?:path|circle|rect|line|polyline|polygon|ellipse)\b[^>]*>")
+
+
+def secondary_paint(secondary):
+    """The drawn colour of a duotone declaration, through the same dark-card
+    ramp as every accent so a dark second colour cannot vanish."""
+    return display_accent(secondary["color"])
+
+
+def apply_secondary(body, color, secondary):
+    """Duotone: repaint the declared parts with the brand's second colour.
+
+    `secondary` is the catalog entry {"color", "parts", "source"}; `parts`
+    are 0-based indexes into the glyph's drawn primitives, in drawing order
+    (YouTube's play is part 1 of rect + play). Parts are named, not inferred
+    from stroke weight, because weight does not separate them: YouTube's
+    frame and play are both 32. Only strokes and fills of the accent are
+    repainted, so a part's `fill="none"` survives.
+    """
+    parts = set(secondary["parts"])
+    paint = secondary_paint(secondary)
+    index = iter(range(10_000))
+
+    def repaint(match):
+        tag = match.group(0)
+        if next(index) not in parts:
+            return tag
+        return (tag.replace(f'stroke="{color}"', f'stroke="{paint}"')
+                .replace(f'fill="{color}"', f'fill="{paint}"'))
+    return _PRIMITIVE_RE.sub(repaint, body)
+
+
+def primitive_count(body):
+    """How many drawn primitives a glyph body has (bounds `parts`)."""
+    return len(_PRIMITIVE_RE.findall(body))
+
+
+def secondary_errors(icon):
+    """Catalog contract for a duotone declaration; [] when absent or sound.
+
+    A second colour is brand identity, so it carries its provenance like the
+    primary does: no `source`, no duotone. It never combines with a gradient
+    (one extra paint story per mark) or a monochrome entry, and its parts
+    must name real primitives of every glyph the icon renders.
+    """
+    sec = icon.get("secondary")
+    if sec is None:
+        return []
+    if not isinstance(sec, dict):
+        return ["secondary must be {color, parts, source}"]
+    errors = []
+    if set(sec) - {"color", "parts", "source"}:
+        errors.append(f"secondary has unknown keys {sorted(set(sec) - {'color', 'parts', 'source'})}")
+    if not re.fullmatch(r"#[0-9A-Fa-f]{6}", str(sec.get("color", ""))):
+        return errors + ["secondary color must be #RRGGBB"]
+    if not str(sec.get("source", "")).strip():
+        errors.append("secondary carries no source - where was the second brand colour seen?")
+    if icon.get("gradient"):
+        errors.append("secondary and gradient cannot both be declared")
+    if icon.get("color_note") == "monochrome":
+        errors.append("a monochrome icon cannot declare a secondary colour")
+    parts = sec.get("parts")
+    if (not isinstance(parts, list) or not parts
+            or not all(isinstance(k, int) and not isinstance(k, bool) for k in parts)
+            or len(set(parts)) != len(parts)):
+        return errors + ["secondary parts must be a non-empty list of distinct part indexes"]
+    accent = display_accent(icon.get("color", "#000000"))
+    if secondary_paint(sec).upper() == accent.upper():
+        errors.append("secondary renders the same as the accent - nothing is two-tone")
+    for glyph in {icon.get("glyph"), icon.get("banner_glyph") or icon.get("glyph")}:
+        if glyph not in GLYPHS:
+            continue
+        count = primitive_count(monoline(family_body(glyph, accent, icon.get("mark"),
+                                                     icon.get("mark_style"))))
+        if min(parts) < 0 or max(parts) >= count:
+            errors.append(f"secondary parts {parts} out of range for '{glyph}' "
+                          f"({count} parts)")
+        elif len(parts) >= count:
+            errors.append(f"secondary repaints every part of '{glyph}' - "
+                          "that is a recolour, not a duotone")
+    return errors
+
+
+def secondary_color(icon):
+    """The drawn second paint an icon declares, or None."""
+    sec = icon.get("secondary")
+    if not sec or secondary_errors(icon) or icon.get("color_note") == "monochrome":
+        return None
+    return secondary_paint(sec)
 
 
 def gradient_defs(stops, y0=80, y1=432, gid="cbGrad"):
@@ -4102,156 +4217,174 @@ def _fam(letter, color, shell, cap_h=210, cy=GRID / 2):
     return shell + monogram_scaled(letter, color, cap_h=cap_h, cy=cy)
 
 
-def shell_broadcast(c):
-    """A screen on legs with an aerial: any channel, network or catch-up app."""
-    return (f'<rect x="72" y="128" width="368" height="252" rx="44" {_s(c, 30)}/>'
-            f'<path d="M 196 128 L 148 72" {_s(c, 22)}/>'
-            f'<path d="M 316 128 L 364 72" {_s(c, 22)}/>'
-            f'<path d="M 180 428 L 332 428" {_s(c, 26)}/>')
+# Modern pass (2026-09-26): one open-corner tile for every family, with the
+# function carried by a badge in the top-right corner instead of by the
+# container's silhouette. The earlier per-family containers (a CRT on legs, a
+# ball with a seam, a cloud, a gamepad) made the monogram fight the outline -
+# seams and grips crossed the letters, and the sport seam read as a "no entry"
+# sign. Here the letters own the whole interior and never meet a line; the
+# badge answers "what kind of app" at a glance, the way current TV and mobile
+# icon systems pair a mark with a small status glyph. The tile's top-right
+# corner is left open so the badge is framed by it rather than stacked on it.
+
+BX, BY, R = 394, 118, 64      # badge centre and radius on the 512 grid
+BW = 24                        # badge stroke
+
+
+def P(x, y):
+    """Badge-local unit coords (-1..1) -> grid coords."""
+    return f"{BX + x * R:.1f} {BY + y * R:.1f}"
+
+
+def open_tile(c):
+    # Tile x 72..440, y 120..448; the top-right corner stays open for the badge.
+    return (f'<path d="M 300 120 L 148 120 C 106 120 72 154 72 196 L 72 372 '
+            f'C 72 414 106 448 148 448 L 364 448 C 406 448 440 414 440 372 '
+            f'L 440 216" {_s(c, 30)}/>')
+
+
+def closed_tile(c):
+    return f'<rect x="72" y="120" width="368" height="328" rx="76" {_s(c, 30)}/>'
+
+
+def b_live(c):
+    """TV & video: a flat screen on a short stand.
+
+    The first badge here was a live 'on air' signal, but the broadcast family
+    holds 320 rows - channels, yes, and also VOD services (Viaplay, Youku,
+    VidAngel) and players (IB Player, Lampa). A live sign told most of them
+    something false; a screen is true for all of them.
+    """
+    return (f'<rect x="{BX - R:.1f}" y="{BY - R*.72:.1f}" width="{2*R:.1f}" '
+            f'height="{R*1.22:.1f}" rx="{R*.22:.1f}" {_s(c, BW)}/>'
+            f'<path d="M {P(-.36,.9)} L {P(.36,.9)}" {_s(c, BW)}/>')
+
+
+def b_gear(c):
+    return (f'<polygon points="{_gearpts(BX, BY, R, R * .7, teeth=6)}" {_s(c, BW)}/>'
+            f'<circle cx="{BX}" cy="{BY}" r="{R * .22:.1f}" {_f(c)}/>')
+
+
+def b_ball(c):
+    """A trophy cup: the sport cue that cannot be misread as a prohibition."""
+    return (f'<path d="M {P(-.55,-.85)} L {P(.55,-.85)} L {P(.55,-.25)} '
+            f'C {P(.55,.2)} {P(.25,.4)} {P(0,.4)} C {P(-.25,.4)} {P(-.55,.2)} {P(-.55,-.25)} Z" {_s(c, BW)}/>'
+            f'<path d="M {P(-.55,-.62)} C {P(-.95,-.62)} {P(-.95,-.05)} {P(-.5,.02)}" {_s(c, 20)}/>'
+            f'<path d="M {P(.55,-.62)} C {P(.95,-.62)} {P(.95,-.05)} {P(.5,.02)}" {_s(c, 20)}/>'
+            f'<path d="M {P(0,.42)} L {P(0,.72)} M {P(-.4,.85)} L {P(.4,.85)}" {_s(c, BW)}/>')
+
+
+def b_note(c):
+    return (f'<circle cx="{BX - R*.35:.1f}" cy="{BY + R*.55:.1f}" r="{R*.3:.1f}" {_f(c)}/>'
+            f'<path d="M {P(-.07,.55)} L {P(-.07,-.9)} C {P(.35,-.75)} {P(.75,-.5)} {P(.7,-.05)}" {_s(c, BW)}/>')
+
+
+def b_pad(c):
+    return (f'<rect x="{BX - R:.1f}" y="{BY - R*.55:.1f}" width="{2*R:.1f}" height="{1.1*R:.1f}" rx="{R*.55:.1f}" {_s(c, BW)}/>'
+            f'<circle cx="{BX - R*.4:.1f}" cy="{BY}" r="{R*.14:.1f}" {_f(c)}/>'
+            f'<circle cx="{BX + R*.4:.1f}" cy="{BY}" r="{R*.14:.1f}" {_f(c)}/>')
+
+
+def b_lock(c):
+    return (f'<rect x="{BX - R*.62:.1f}" y="{BY - R*.05:.1f}" width="{1.24*R:.1f}" height="{.95*R:.1f}" rx="{R*.2:.1f}" {_s(c, BW)}/>'
+            f'<path d="M {P(-.36,-.05)} L {P(-.36,-.45)} C {P(-.36,-1.05)} {P(.36,-1.05)} {P(.36,-.45)} L {P(.36,-.05)}" {_s(c, BW)}/>')
+
+
+def b_play(c):
+    return (f'<circle cx="{BX}" cy="{BY}" r="{R * .9:.1f}" {_s(c, BW)}/>'
+            f'<path d="M {P(-.22,-.38)} L {P(.4,0)} L {P(-.22,.38)} Z" {_f(c)}/>')
+
+
+def b_down(c):
+    return (f'<path d="M {P(0,-.95)} L {P(0,.3)}" {_s(c, BW)}/>'
+            f'<path d="M {P(-.45,-.12)} L {P(0,.33)} L {P(.45,-.12)}" {_s(c, BW)}/>'
+            f'<path d="M {P(-.8,.82)} L {P(.8,.82)}" {_s(c, BW)}/>')
+
+
+def b_photo(c):
+    """A skyline under a sun, left open so no small counter closes at 96px."""
+    return (f'<path d="M {P(-.95,.75)} L {P(-.3,-.1)} L {P(.1,.4)} L {P(.42,.08)} L {P(.95,.75)}" {_s(c, BW)}/>'
+            f'<circle cx="{BX + R*.5:.1f}" cy="{BY - R*.55:.1f}" r="{R*.22:.1f}" {_f(c)}/>')
+
+
+def b_cloud(c):
+    return (f'<path d="M {P(-.55,.6)} C {P(-.95,.6)} {P(-1,.05)} {P(-.55,-.02)} '
+            f'C {P(-.45,-.55)} {P(.25,-.75)} {P(.45,-.2)} '
+            f'C {P(1,-.25)} {P(1.05,.6)} {P(.55,.6)} Z" {_s(c, BW)}/>')
+
+
+def b_globe(c):
+    """The web: a pointer. Two globe drafts closed their meridian slivers at
+    96px; a solid pointer has no counter to close and reads as 'browse'."""
+    return (f'<path d="M {P(-.5,-.9)} L {P(-.5,.62)} L {P(-.14,.3)} L {P(.1,.88)} '
+            f'L {P(.34,.78)} L {P(.1,.22)} L {P(.55,.22)} Z" {_s(c, 16)} '
+            f'fill="{c}"/>'.replace('fill="none" ', ''))
+
+
+def b_spark(c):
+    return (f'<path d="M {P(0,-1)} C {P(.08,-.3)} {P(.3,-.08)} {P(1,0)} '
+            f'C {P(.3,.08)} {P(.08,.3)} {P(0,1)} C {P(-.08,.3)} {P(-.3,.08)} {P(-1,0)} '
+            f'C {P(-.3,-.08)} {P(-.08,-.3)} {P(0,-1)} Z" {_s(c, 22)}/>')
+
+
+def b_heart(c):
+    return (f'<path d="M {P(0,.85)} C {P(-.7,.35)} {P(-.95,.0)} {P(-.95,-.3)} '
+            f'C {P(-.95,-.72)} {P(-.4,-.9)} {P(0,-.42)} '
+            f'C {P(.4,-.9)} {P(.95,-.72)} {P(.95,-.3)} C {P(.95,0)} {P(.7,.35)} {P(0,.85)} Z" {_s(c, BW)}/>')
+
+
+def b_folder(c):
+    return (f'<path d="M {P(-.95,-.6)} L {P(-.35,-.6)} L {P(-.15,-.35)} L {P(.95,-.35)} '
+            f'L {P(.95,.7)} L {P(-.95,.7)} Z" {_s(c, BW)}/>')
+
+
+
+_BADGES = {
+    "broadcast": b_live, "tool": b_gear, "sport": b_ball, "music": b_note,
+    "gaming": b_pad, "vpn": b_lock, "film": b_play, "store": b_down,
+    "photos": b_photo, "debrid": b_cloud, "browser": b_globe,
+    "anime": b_spark, "kids": b_heart, "files": b_folder,
+}
+
+
+def _badge_shell(family):
+    badge = _BADGES[family]
+    return lambda c: open_tile(c) + badge(c)
 
 
 def shell_app(c):
-    """The neutral squircle, kept for apps whose function cannot be read."""
-    return _tile(c)
+    """The neutral tile, closed, for apps whose function cannot be read."""
+    return closed_tile(c)
 
 
-def shell_tool(c):
-    """A nut seen face on: utilities, remotes, system tweaks."""
-    return f'<polygon points="{_hexpts(256, 256, 196)}" {_s(c, 30)}/>'
+shell_broadcast = _badge_shell("broadcast")
+shell_tool = _badge_shell("tool")
+shell_sport = _badge_shell("sport")
+shell_music = _badge_shell("music")
+shell_gaming = _badge_shell("gaming")
+shell_vpn = _badge_shell("vpn")
+shell_film = _badge_shell("film")
+shell_store = _badge_shell("store")
+shell_photos = _badge_shell("photos")
+shell_debrid = _badge_shell("debrid")
+shell_browser = _badge_shell("browser")
+shell_anime = _badge_shell("anime")
+shell_kids = _badge_shell("kids")
+shell_files = _badge_shell("files")
 
 
-def shell_sport(c):
-    """A ball."""
-    return f'<circle cx="256" cy="256" r="188" {_s(c, 30)}/>'
-
-
-def shell_music(c):
-    """A tile with sound leaving it: radio, music, podcasts.
-
-    The outer arc reached x=495 on the 512 grid; both arcs are pulled inside
-    the 40px margin.
-    """
-    return (f'<rect x="56" y="96" width="300" height="320" rx="70" {_s(c, 30)}/>'
-            f'<path d="M 392 196 C 420 230 420 282 392 316" {_s(c, 24)}/>'
-            f'<path d="M 428 158 C 470 212 470 300 428 354" {_s(c, 20)}/>')
-
-
-def shell_gaming(c):
-    """A gamepad: body with two grips hanging below it.
-
-    The first attempt was a single lobed outline that read as goggles rather
-    than a controller, and its interior left the monogram too small to tell a
-    C from a G. Splitting the grips off the body gives the letter the whole
-    body to sit in and makes the silhouette unambiguous.
-    """
-    return (f'<rect x="76" y="112" width="360" height="196" rx="58" {_s(c, 30)}/>'
-            f'<path d="M 132 302 C 104 372 120 430 164 430 '
-            f'C 202 430 214 388 210 330" {_s(c, 26)}/>'
-            f'<path d="M 380 302 C 408 372 392 430 348 430 '
-            f'C 310 430 298 388 302 330" {_s(c, 26)}/>')
-
-
-def shell_vpn(c):
-    """A shield: VPN, proxy, privacy."""
-    return (f'<path d="M 256 68 L 424 132 L 424 268 C 424 360 352 418 256 444 '
-            f'C 160 418 88 360 88 268 L 88 132 Z" {_s(c, 30)}/>')
-
-
-def shell_film(c):
-    """A film frame with its sprocket lanes: cinema and movie VOD."""
-    return (f'<rect x="64" y="112" width="384" height="288" rx="36" {_s(c, 30)}/>'
-            f'<path d="M 124 148 L 164 148 M 224 148 L 264 148 '
-            f'M 324 148 L 364 148" {_s(c, 20)}/>'
-            f'<path d="M 124 364 L 164 364 M 224 364 L 264 364 '
-            f'M 324 364 L 364 364" {_s(c, 20)}/>')
-
-
-def shell_store(c):
-    """A shopping bag: stores, installers, sideload managers."""
-    return (f'<path d="M 92 168 L 420 168 L 400 424 C 398 438 388 446 374 446 '
-            f'L 138 446 C 124 446 114 438 112 424 Z" {_s(c, 30)}/>'
-            f'<path d="M 176 208 L 176 136 C 176 100 212 72 256 72 '
-            f'C 300 72 336 100 336 136 L 336 208" {_s(c, 24)}/>')
-
-
-def shell_photos(c):
-    """A print with its caption band: photo, gallery and slideshow apps.
-
-    A camera body with a viewfinder hump read as a briefcase at tile size -
-    the hump was too small to carry the meaning. A print is a plainer idea and
-    survives the downscale: the band under the image is the whole tell.
-    """
-    return (f'<rect x="76" y="72" width="360" height="368" rx="40" {_s(c, 30)}/>'
-            f'<path d="M 76 348 L 436 348" {_s(c, 24)}/>')
-
-
-def shell_debrid(c):
-    """A cloud: debrid, remote storage, torrent and usenet clients.
-
-    Narrowed from a 482px right edge so the stroke stays inside SAFE.
-    """
-    return (f'<path d="M 158 392 C 108 392 76 354 76 308 C 76 260 114 226 158 230 '
-            f'C 174 174 220 136 276 136 C 344 136 396 190 398 258 '
-            f'C 430 268 450 298 450 332 C 450 364 426 392 392 392 Z" {_s(c, 30)}/>')
-
-
-def shell_browser(c):
-    """A window with a title bar."""
-    return (f'<rect x="64" y="104" width="384" height="304" rx="48" {_s(c, 30)}/>'
-            f'<path d="M 64 180 L 448 180" {_s(c, 22)}/>')
-
-
-def shell_anime(c):
-    """A tile with a spark: anime and manga services.
-
-    Two passes to fit: the spark's right arm first put ink at x=489, and
-    shifting the tile to x=46 then put its left wall at x=31. At x=58 with a
-    30 stroke the wall lands on 43 and the spark ends on 465 - both inside
-    the 40px margin.
-    """
-    return (_tile(c, x=58, y=92, w=330, h=340, rx=80) +
-            f'<path d="M 424 122 L 424 182 M 394 152 L 454 152" {_s(c, 22)}/>')
-
-
-def shell_kids(c):
-    """A tile with ears: kids and family services.
-
-    Ears were clipped at y=35; the whole lockup sits 12px lower.
-    """
-    return (_tile(c, x=64, y=126, w=384, h=330, rx=82) +
-            f'<circle cx="144" cy="102" r="38" {_s(c, 24)}/>'
-            f'<circle cx="368" cy="102" r="38" {_s(c, 24)}/>')
-
-
-def shell_files(c):
-    """A folder."""
-    return (f'<path d="M 64 148 L 212 148 L 252 200 L 448 200 L 448 400 '
-            f'C 448 422 430 440 408 440 L 104 440 C 82 440 64 422 64 400 Z" '
-            f'{_s(c, 30)}/>')
-
-
-# Cap height, optical centre and mark width per shell: each interior is a
-# different shape, and a monogram sized for the squircle either overflows the
-# cloud or floats in the shield. Values are tuned against the 48px check, not
-# by eye. The fourth number is the type budget for adaptive lockups — the
-# interior width a multi-character mark may touch, measured inside the stroke
-# of each shell minus its padding. The lone letter keeps ignoring it.
+# Cap height, optical centre and mark width per shell. Every family now shares
+# one interior (the tile, x 72..440 / y 120..448), so every family shares one
+# budget: the letters sit a little below the tile's centre, clear of the badge.
+_TILE_BUDGET = (170, 298, 240)
 FAMILY_SHELLS = {
-    "broadcast": (shell_broadcast, 150, 254, 240),
-    "app":       (shell_app,       200, 256, 260),
-    "tool":      (shell_tool,      200, 264, 240),
-    "sport":     (shell_sport,     210, 256, 236),
-    "music":     (shell_music,     200, 256, 216),
-    "gaming":    (shell_gaming,    150, 240, 240),
-    "vpn":       (shell_vpn,       190, 250, 240),
-    "film":      (shell_film,      170, 256, 280),
-    "store":     (shell_store,     180, 320, 200),
-    "photos":    (shell_photos,    160, 290, 260),
-    "debrid":    (shell_debrid,    150, 290, 250),
-    "browser":   (shell_browser,   180, 300, 270),
-    "anime":     (shell_anime,     190, 262, 210),
-    "kids":      (shell_kids,      210, 296, 260),
-    "files":     (shell_files,     180, 330, 280),
+    name: (fn, *_TILE_BUDGET) for name, fn in (
+        ("broadcast", shell_broadcast), ("app", shell_app), ("tool", shell_tool),
+        ("sport", shell_sport), ("music", shell_music), ("gaming", shell_gaming),
+        ("vpn", shell_vpn), ("film", shell_film), ("store", shell_store),
+        ("photos", shell_photos), ("debrid", shell_debrid),
+        ("browser", shell_browser), ("anime", shell_anime), ("kids", shell_kids),
+        ("files", shell_files))
 }
 
 
@@ -4769,4 +4902,997 @@ GLYPHS.update({
     "atres_chevrons": atres_chevrons,
     "kinopoisk_k": kinopoisk_k,
     "aida_sixty_four": aida_sixty_four,
+})
+
+
+# Brand-informed marks, batch 1 (2026-09-26): long-tail apps whose official
+# launcher icon is a symbol rather than a wordmark. Each is the defining shape
+# of that icon redrawn in Core monoline - the WuPlay / Nuvio method - not a
+# trace: the official icon was the reference, the geometry is original.
+# Reference icons: the app's Google Play listing (see each row's
+# color_source in tools/catalog.json).
+# ==========================================================================
+
+def zeus_bolt(c):
+    """Zeus: the solid lightning bolt of its red tile. Monoline normalises
+    every stroke to 32 at most, so a stroked bolt read as a scribble; the
+    bolt is a filled shape, wide enough that no sliver closes at 48px."""
+    return ('<path d="M 300 60 L 128 300 L 246 300 L 206 452 L 390 196 '
+            'L 270 196 L 332 60 Z" stroke="' + c + '" stroke-width="18" '
+            'stroke-linecap="round" stroke-linejoin="round" fill="' + c + '"/>')
+
+
+def ard_one(c):
+    """ARD Mediathek: the ring-and-1 of the ARD lockup."""
+    return (f'<circle cx="256" cy="256" r="164" {_s(c, 32)}/>'
+            f'<path d="M 214 196 L 272 164 L 272 352" {_s(c, 34)}/>')
+
+
+def dr_play(c):
+    """DRTV: DR's open ring with a play inside it."""
+    return (f'<path d="M 256 104 A 156 156 0 1 1 166 132" {_s(c, 32)}/>'
+            f'<path d="M 256 84 L 256 150" {_s(c, 30)}/>'
+            f'<path d="M 222 196 L 330 260 L 222 324 Z" {_s(c, 28)}/>')
+
+
+def cinemaghar_arrow(c):
+    """Cinemaghar TV: its notched play arrow."""
+    return (f'<path d="M 144 92 L 414 256 L 144 420 L 236 256 Z" {_s(c, 32)}/>')
+
+
+def appnotifier_check(c):
+    """App Notifier: the store triangle with a tick through it."""
+    return (f'<path d="M 132 96 L 412 256 L 132 416 Z" {_s(c, 32)}/>'
+            f'<path d="M 196 262 L 250 318 L 372 176" {_s(c, 30)}/>')
+
+
+def apk_installer_robot(c):
+    """APK Installer: the robot head above a download wedge."""
+    return (f'<path d="M 150 238 A 106 106 0 0 1 362 238 Z" {_s(c, 28)}/>'
+            f'<path d="M 196 152 L 170 108 M 316 152 L 342 108" {_s(c, 22)}/>'
+            f'<circle cx="214" cy="202" r="13" {_f(c)}/>'
+            f'<circle cx="298" cy="202" r="13" {_f(c)}/>'
+            f'<path d="M 150 282 L 362 282 L 256 420 Z" {_s(c, 28)}/>')
+
+
+def torrent_search_lens(c):
+    """Torrent Search: a lens holding a double download chevron."""
+    return (f'<circle cx="276" cy="222" r="130" {_s(c, 32)}/>'
+            f'<path d="M 184 316 L 104 400" {_s(c, 38)}/>'
+            f'<path d="M 230 168 L 276 212 L 322 168 M 230 226 L 276 270 L 322 226" '
+            f'{_s(c, 26)}/>')
+
+
+def speaker_boost(c):
+    """Speaker Boost: a speaker sending two waves."""
+    return (f'<path d="M 96 206 L 164 206 L 250 132 L 250 380 L 164 306 L 96 306 Z" '
+            f'{_s(c, 30)}/>'
+            f'<path d="M 310 196 C 340 226 340 286 310 316" {_s(c, 28)}/>'
+            f'<path d="M 364 142 C 424 204 424 308 364 370" {_s(c, 28)}/>')
+
+
+def snapcast_ring(c):
+    """Snapcast: a speaker broadcasting both ways inside its disc."""
+    return (f'<circle cx="256" cy="256" r="190" {_s(c, 30)}/>'
+            f'<path d="M 206 228 L 236 228 L 276 196 L 276 316 L 236 284 L 206 284 Z" '
+            f'{_s(c, 24)}/>'
+            f'<path d="M 318 214 C 336 236 336 276 318 298" {_s(c, 22)}/>'
+            f'<path d="M 156 214 C 138 236 138 276 156 298" {_s(c, 22)}/>'
+            f'<path d="M 364 178 C 400 222 400 290 364 334" {_s(c, 22)}/>'
+            f'<path d="M 110 178 C 74 222 74 290 110 334" {_s(c, 22)}/>')
+
+
+def hubitat_home(c):
+    """Hubitat: the house with its chimney and a tablet inside."""
+    return (f'<path d="M 88 250 L 256 104 L 424 250" {_s(c, 32)}/>'
+            f'<path d="M 136 216 L 136 416 L 376 416 L 376 216" {_s(c, 30)}/>'
+            f'<path d="M 344 176 L 344 120" {_s(c, 30)}/>'
+            f'<rect x="192" y="278" width="128" height="80" rx="16" {_s(c, 24)}/>')
+
+
+def twilight_sunset(c):
+    """Twilight: the half sun on the horizon, with its reflection."""
+    return (f'<path d="M 150 272 A 106 106 0 0 1 362 272 Z" {_s(c, 30)}/>'
+            f'<path d="M 88 272 L 424 272" {_s(c, 30)}/>'
+            f'<path d="M 164 336 L 348 336 M 208 396 L 304 396" {_s(c, 26)}/>')
+
+
+def yowindow_sun(c):
+    """YoWindow: the winking sun."""
+    import math
+    rays = "".join(
+        f'M {256 + 150 * math.cos(a):.0f} {256 + 150 * math.sin(a):.0f} '
+        f'L {256 + 196 * math.cos(a):.0f} {256 + 196 * math.sin(a):.0f} '
+        for a in (k * math.pi / 4 for k in range(8)))
+    return (f'<circle cx="256" cy="256" r="104" {_s(c, 30)}/>'
+            f'<path d="{rays}" {_s(c, 28)}/>'
+            f'<path d="M 206 236 C 216 222 232 222 242 236" {_s(c, 20)}/>'
+            f'<circle cx="300" cy="232" r="12" {_f(c)}/>'
+            f'<path d="M 214 282 C 236 312 276 312 298 282" {_s(c, 22)}/>')
+
+
+def dropsync_cube(c):
+    """Dropsync: the cube inside its hexagon."""
+    import math
+    hexp = " ".join(f"{256 + 196 * math.cos(math.radians(-90 + 60 * k)):.0f},"
+                    f"{256 + 196 * math.sin(math.radians(-90 + 60 * k)):.0f}"
+                    for k in range(6))
+    return (f'<polygon points="{hexp}" {_s(c, 30)}/>'
+            f'<path d="M 256 164 L 350 214 L 350 316 L 256 366 L 162 316 L 162 214 Z" '
+            f'{_s(c, 26)}/>'
+            f'<path d="M 162 214 L 256 264 L 350 214 M 256 264 L 256 366" {_s(c, 24)}/>')
+
+
+def scholastic_book(c):
+    """Scholastic: the open book."""
+    return (f'<path d="M 256 150 C 210 118 144 114 84 130 L 84 392 '
+            f'C 144 378 210 382 256 414 C 302 382 368 378 428 392 L 428 130 '
+            f'C 368 114 302 118 256 150 Z" {_s(c, 30)}/>'
+            f'<path d="M 256 150 L 256 414" {_s(c, 26)}/>')
+
+
+def zapp_tv(c):
+    """Zapp: the rounded retro set with its aerial and feet."""
+    return (f'<rect x="92" y="170" width="328" height="226" rx="70" {_s(c, 32)}/>'
+            f'<path d="M 212 170 L 176 106 M 300 170 L 336 106" {_s(c, 24)}/>'
+            f'<circle cx="172" cy="96" r="16" {_f(c)}/>'
+            f'<circle cx="340" cy="96" r="16" {_f(c)}/>'
+            f'<path d="M 150 396 L 128 440 M 362 396 L 384 440" {_s(c, 26)}/>')
+
+
+def mango_m(c):
+    """Mango TV: the M set in its rounded screen."""
+    return (f'<path d="M 360 96 L 170 96 C 124 96 96 124 96 170 L 96 342 '
+            f'C 96 388 124 416 170 416 L 342 416 C 388 416 416 388 416 342 '
+            f'L 416 190" {_s(c, 32)}/>'
+            f'<path d="M 180 356 L 180 204 L 256 292 L 332 204 L 332 356" {_s(c, 32)}/>')
+
+
+def youku_play(c):
+    """Youku: the two-piece play - a long upper blade and a short lower one.
+    Drawn solid (as strokes they read as a '>' sign); the catalog's duotone
+    paints part 1, the lower blade, in the brand's orange."""
+    def blade(d):
+        return ('<path d="' + d + '" stroke="' + c + '" stroke-width="18" '
+                'stroke-linecap="round" stroke-linejoin="round" fill="' + c + '"/>')
+    return (blade("M 150 104 L 404 238 C 422 248 422 272 404 282 L 364 304 "
+                  "L 150 188 Z") +
+            blade("M 150 404 L 150 322 L 286 250 L 350 290 Z"))
+
+
+def tving_tv(c):
+    """TVING: the T whose stem opens into a V."""
+    return (f'<path d="M 108 132 L 404 132" {_s(c, 34)}/>'
+            f'<path d="M 184 132 L 256 400 L 328 132" {_s(c, 34)}/>')
+
+
+def flextv_cat(c):
+    """Flex TV: the set with cat ears and a solid play - the icon's inner
+    ring closed three counters at 48px, the play alone survives."""
+    play = (f'<path d="M 226 240 L 306 285 L 226 330 Z" stroke="{c}" '
+            f'stroke-width="16" stroke-linecap="round" stroke-linejoin="round" '
+            f'fill="{c}"/>')
+    return (f'<rect x="92" y="150" width="328" height="270" rx="84" {_s(c, 30)}/>'
+            f'<path d="M 150 156 L 176 108 L 214 152 Z M 298 152 L 336 108 L 362 156 Z" '
+            f'stroke="{c}" stroke-width="18" stroke-linecap="round" '
+            f'stroke-linejoin="round" fill="{c}"/>' + play)
+
+
+def kreate_k(c):
+    """Kreate: the K inside its ring."""
+    return (f'<circle cx="256" cy="256" r="186" {_s(c, 30)}/>'
+            f'<path d="M 204 156 L 204 356" {_s(c, 34)}/>'
+            f'<path d="M 326 156 L 214 262 L 326 356" {_s(c, 34)}/>')
+
+
+GLYPHS.update({
+    "zeus_bolt": zeus_bolt, "ard_one": ard_one, "dr_play": dr_play,
+    "cinemaghar_arrow": cinemaghar_arrow, "appnotifier_check": appnotifier_check,
+    "apk_installer_robot": apk_installer_robot,
+    "torrent_search_lens": torrent_search_lens, "speaker_boost": speaker_boost,
+    "snapcast_ring": snapcast_ring, "hubitat_home": hubitat_home,
+    "twilight_sunset": twilight_sunset, "yowindow_sun": yowindow_sun,
+    "dropsync_cube": dropsync_cube, "scholastic_book": scholastic_book,
+    "zapp_tv": zapp_tv, "mango_m": mango_m, "youku_play": youku_play,
+    "tving_tv": tving_tv, "flextv_cat": flextv_cat, "kreate_k": kreate_k,
+})
+
+
+# Brand-informed marks, batch 2 (2026-09-26). Same method as batch 1.
+
+def _solid(d, c, sw=16):
+    """A filled shape with a rounded edge, for parts that must read solid."""
+    return (f'<path d="{d}" stroke="{c}" stroke-width="{sw}" stroke-linecap="round" '
+            f'stroke-linejoin="round" fill="{c}"/>')
+
+
+def aicam_camera(c):
+    """AI Cam View: the video camera - body and lens horn."""
+    return (f'<rect x="80" y="166" width="262" height="180" rx="42" {_s(c, 32)}/>'
+            f'<path d="M 342 226 L 428 178 L 428 334 L 342 286" {_s(c, 30)}/>')
+
+
+def aircast_screen(c):
+    """Aircast: a screen whose corner opens onto cast waves."""
+    return (f'<path d="M 96 250 L 96 158 C 96 136 114 118 136 118 L 376 118 '
+            f'C 398 118 416 136 416 158 L 416 334 C 416 356 398 374 376 374 L 290 374" '
+            f'{_s(c, 32)}/>'
+            f'<path d="M 96 312 A 88 88 0 0 1 184 400" {_s(c, 28)}/>'
+            f'<path d="M 96 380 A 20 20 0 0 1 116 400" {_s(c, 28)}/>')
+
+
+def airplay_screen(c):
+    """AirPlay Receiver: the screen with the AirPlay wedge rising into it."""
+    return (f'<path d="M 204 330 L 136 330 C 114 330 96 312 96 290 L 96 150 '
+            f'C 96 128 114 110 136 110 L 376 110 C 398 110 416 128 416 150 L 416 290 '
+            f'C 416 312 398 330 376 330 L 308 330" {_s(c, 32)}/>'
+            + _solid("M 256 296 L 340 410 L 172 410 Z", c))
+
+
+def audials_radio(c):
+    """Audials: the radio - body, handle, speaker and tuning lines."""
+    return (f'<rect x="84" y="164" width="344" height="236" rx="46" {_s(c, 32)}/>'
+            f'<path d="M 170 164 L 330 100" {_s(c, 26)}/>'
+            f'<circle cx="330" cy="282" r="58" {_s(c, 28)}/>'
+            f'<path d="M 138 240 L 222 240 M 138 324 L 222 324" {_s(c, 26)}/>')
+
+
+def bstation_tv(c):
+    """Bstation: the TV face - aerial ears, slanted eyes, a small mouth."""
+    return (f'<rect x="84" y="152" width="344" height="262" rx="66" {_s(c, 32)}/>'
+            f'<path d="M 184 152 L 150 98 M 328 152 L 362 98" {_s(c, 28)}/>'
+            f'<path d="M 168 252 L 222 276 M 344 252 L 290 276" {_s(c, 28)}/>'
+            f'<path d="M 222 334 L 240 350 L 256 334 L 272 350 L 290 334" {_s(c, 22)}/>')
+
+
+def canal_plus(c):
+    """CANAL+: the plus that is the brand's whole icon."""
+    return f'<path d="M 256 96 L 256 416 M 96 256 L 416 256" {_s(c, 32)}/>'
+
+
+def capsule_mic(c):
+    """Capsule: the studio microphone in its cradle."""
+    return (f'<rect x="196" y="80" width="120" height="212" rx="60" {_s(c, 30)}/>'
+            f'<path d="M 142 244 C 142 326 196 368 256 368 C 316 368 370 326 370 244" '
+            f'{_s(c, 28)}/>'
+            f'<path d="M 256 368 L 256 424 M 196 428 L 316 428" {_s(c, 28)}/>')
+
+
+def cpu_chip(c):
+    """CPU Info: the chip with its die and pins."""
+    pins = " ".join(f"M {x} 136 L {x} 88 M {x} 376 L {x} 424" for x in (196, 256, 316))
+    pins += " " + " ".join(f"M 136 {y} L 88 {y} M 376 {y} L 424 {y}" for y in (196, 256, 316))
+    return (f'<rect x="136" y="136" width="240" height="240" rx="32" {_s(c, 30)}/>'
+            f'<rect x="210" y="210" width="92" height="92" rx="14" {_s(c, 24)}/>'
+            f'<path d="{pins}" {_s(c, 22)}/>')
+
+
+def drm_lock(c):
+    """DRM Info: the padlock with its keyhole."""
+    return (f'<rect x="124" y="226" width="264" height="204" rx="42" {_s(c, 32)}/>'
+            f'<path d="M 180 226 L 180 166 C 180 72 332 72 332 166 L 332 226" {_s(c, 30)}/>'
+            + _solid("M 256 290 L 256 358", c, 30))
+
+
+def epsxe_pad(c):
+    """ePSXe: the controller - grips, d-pad and face buttons."""
+    return (f'<path d="M 164 140 L 348 140 C 410 140 440 214 440 296 C 440 364 414 404 380 404 '
+            f'C 346 404 330 370 314 334 L 198 334 C 182 370 166 404 132 404 '
+            f'C 98 404 72 364 72 296 C 72 214 102 140 164 140 Z" {_s(c, 30)}/>'
+            f'<path d="M 162 204 L 162 280 M 124 242 L 200 242" {_s(c, 24)}/>'
+            f'<circle cx="344" cy="214" r="15" {_f(c)}/>'
+            f'<circle cx="384" cy="256" r="15" {_f(c)}/>')
+
+
+def flickfolio_grid(c):
+    """Flickfolio: the three-by-three photo grid, as small solid tiles."""
+    tiles = ""
+    for y in (104, 224, 344):
+        for x in (104, 224, 344):
+            tiles += _solid(f"M {x} {y} L {x + 64} {y} L {x + 64} {y + 64} L {x} {y + 64} Z",
+                            c, 12)
+    return tiles
+
+
+def flicky_butterfly(c):
+    """Flicky: the butterfly - two broad upper wings, two small lower ones."""
+    return (f'<path d="M 256 250 C 226 150 132 104 104 170 C 84 222 150 262 256 250 '
+            f'C 362 262 428 222 408 170 C 380 104 286 150 256 250 Z" {_s(c, 28)}/>'
+            f'<path d="M 256 262 C 196 282 158 350 196 386 C 232 414 254 340 256 262 '
+            f'C 258 340 280 414 316 386 C 354 350 316 282 256 262 Z" {_s(c, 26)}/>')
+
+
+def geticon_lens(c):
+    """Get Icon: a picture with a magnifier on its corner."""
+    return (f'<path d="M 272 344 L 132 344 C 110 344 92 326 92 304 L 92 132 '
+            f'C 92 110 110 92 132 92 L 304 92 C 326 92 344 110 344 132 L 344 272" '
+            f'{_s(c, 30)}/>'
+            f'<path d="M 132 300 L 196 224 L 240 272 L 266 246" {_s(c, 24)}/>'
+            f'<circle cx="352" cy="352" r="58" {_s(c, 28)}/>'
+            f'<path d="M 394 394 L 436 436" {_s(c, 32)}/>')
+
+
+def hue_bulb(c):
+    """Hue Shortcuts: the bulb with its S-shaped filament and screw collar."""
+    return (f'<path d="M 204 336 C 158 306 138 258 138 216 C 138 146 192 92 256 92 '
+            f'C 320 92 374 146 374 216 C 374 258 354 306 308 336 Z" {_s(c, 30)}/>'
+            f'<path d="M 286 150 C 226 140 214 196 256 210 C 298 224 290 282 226 274" '
+            f'{_s(c, 22)}/>'
+            f'<path d="M 206 380 L 306 380 M 226 424 L 286 424" {_s(c, 28)}/>')
+
+
+def pikpak_robot(c):
+    """PikPak: the round robot face - aerials, two eyes, a smile."""
+    return (f'<rect x="100" y="158" width="312" height="252" rx="84" {_s(c, 32)}/>'
+            f'<path d="M 196 158 L 196 108 M 316 158 L 316 108" {_s(c, 26)}/>'
+            f'<circle cx="208" cy="266" r="20" {_f(c)}/>'
+            f'<circle cx="304" cy="266" r="20" {_f(c)}/>'
+            f'<path d="M 214 330 C 238 352 274 352 298 330" {_s(c, 24)}/>')
+
+
+def quicksupport_arrows(c):
+    """QuickSupport: the two-way arrow inside its ring."""
+    return (f'<circle cx="256" cy="256" r="184" {_s(c, 30)}/>'
+            f'<path d="M 150 256 L 362 256" {_s(c, 30)}/>'
+            f'<path d="M 198 206 L 148 256 L 198 306 M 314 206 L 364 256 L 314 306" '
+            f'{_s(c, 30)}/>')
+
+
+def tabii_star(c):
+    """Tabii: the eight-point burst with its open centre."""
+    import math
+    pts = " ".join(
+        f"{256 + (190 if k % 2 == 0 else 128) * math.cos(math.pi * k / 8 - math.pi / 2):.0f},"
+        f"{256 + (190 if k % 2 == 0 else 128) * math.sin(math.pi * k / 8 - math.pi / 2):.0f}"
+        for k in range(16))
+    return (f'<polygon points="{pts}" {_s(c, 30)}/>'
+            f'<circle cx="256" cy="256" r="54" {_s(c, 26)}/>')
+
+
+def unifi_camera(c):
+    """UniFi Protect: the upright camera with its lens and stand."""
+    return (f'<rect x="176" y="84" width="160" height="268" rx="80" {_s(c, 32)}/>'
+            f'<circle cx="256" cy="180" r="38" {_s(c, 26)}/>'
+            f'<path d="M 256 352 L 256 404 M 186 424 L 326 424" {_s(c, 28)}/>')
+
+
+def vidangel_halo(c):
+    """VidAngel: the screen with a halo above it and a play inside."""
+    return (f'<rect x="100" y="188" width="312" height="228" rx="46" {_s(c, 32)}/>'
+            f'<path d="M 150 132 C 190 86 322 86 362 132" {_s(c, 28)}/>'
+            + _solid("M 230 256 L 300 302 L 230 348 Z", c, 16))
+
+
+def myradar_pin(c):
+    """MyRadar: the map pin."""
+    return (f'<path d="M 256 440 C 196 360 136 300 136 218 C 136 146 192 92 256 92 '
+            f'C 320 92 376 146 376 218 C 376 300 316 360 256 440 Z" {_s(c, 32)}/>'
+            f'<circle cx="256" cy="218" r="48" {_s(c, 28)}/>')
+
+
+def thmanyah_arrow(c):
+    """Thmanyah: the rising arrowhead."""
+    return (f'<path d="M 256 92 L 420 412 L 256 324 L 92 412 Z" {_s(c, 32)}/>')
+
+
+GLYPHS.update({
+    "aicam_camera": aicam_camera, "aircast_screen": aircast_screen,
+    "airplay_screen": airplay_screen, "audials_radio": audials_radio,
+    "bstation_tv": bstation_tv, "canal_plus": canal_plus, "capsule_mic": capsule_mic,
+    "cpu_chip": cpu_chip, "drm_lock": drm_lock, "epsxe_pad": epsxe_pad,
+    "flickfolio_grid": flickfolio_grid, "flicky_butterfly": flicky_butterfly,
+    "geticon_lens": geticon_lens, "hue_bulb": hue_bulb, "pikpak_robot": pikpak_robot,
+    "quicksupport_arrows": quicksupport_arrows, "tabii_star": tabii_star,
+    "unifi_camera": unifi_camera, "vidangel_halo": vidangel_halo,
+    "myradar_pin": myradar_pin, "thmanyah_arrow": thmanyah_arrow,
+})
+
+
+# --------------------------------------------------------------------------
+# Brand-informed marks, batch 3 (2026-09-26). Same contract as batches 1-2:
+# each is the defining shape of the app's own launcher icon, redrawn on the
+# Core grid; the reference listing is recorded in the catalogue row.
+
+def _polar(cx, cy, r, deg):
+    import math
+    a = math.radians(deg)
+    return cx + r * math.cos(a), cy + r * math.sin(a)
+
+
+def amnis_ff(c):
+    """Amnis: the fast-forward pair inside its disc."""
+    return (f'<circle cx="256" cy="256" r="172" {_s(c, 32)}/>'
+            + _solid("M 184 196 L 250 256 L 184 316 Z", c, 18)
+            + _solid("M 262 196 L 328 256 L 262 316 Z", c, 18))
+
+
+def buttons_swap(c):
+    """Buttons Remapper: stacked windows and the two swap arrows."""
+    return (f'<rect x="96" y="140" width="122" height="84" rx="16" {_s(c, 26)}/>'
+            f'<path d="M 136 104 L 238 104 C 250 104 256 112 256 122 L 256 186" {_s(c, 22)}/>'
+            f'<path d="M 300 118 C 362 112 404 150 404 210" {_s(c, 28)}/>'
+            f'<path d="M 370 184 L 404 218 L 436 182" {_s(c, 28)}/>'
+            f'<path d="M 212 394 C 150 400 108 362 108 302" {_s(c, 28)}/>'
+            f'<path d="M 76 330 L 108 294 L 142 328" {_s(c, 28)}/>'
+            f'<path d="M 414 404 L 414 364 C 414 340 398 326 374 326 L 298 326" {_s(c, 26)}/>'
+            f'<path d="M 330 294 L 298 326 L 330 358" {_s(c, 26)}/>')
+
+
+def dsmart_ring(c):
+    """D-Smart: the heavy ring with its broad tail running out to the left."""
+    return (f'<circle cx="304" cy="226" r="116" {_s(c, 32)}/>'
+            f'<path d="M 190 206 L 72 316 L 72 390 L 222 318" {_s(c, 30)}/>')
+
+
+def debridemall_magnet(c):
+    """Debrid Em All: the U magnet inside its six-sided badge."""
+    return (f'<path d="M 156 112 L 356 112 L 440 256 L 356 400 L 156 400 L 72 256 Z" {_s(c, 30)}/>'
+            f'<path d="M 196 186 L 196 262 C 196 342 316 342 316 262 L 316 186" {_s(c, 30)}/>'
+            f'<path d="M 172 186 L 220 186 M 292 186 L 340 186" {_s(c, 26)}/>')
+
+
+def feeln_crown(c):
+    """Feeln: the crown on its halo, with the plus beside it."""
+    tips = "".join(f'<circle cx="{x}" cy="{y}" r="16" {_f(c)}/>'
+                   for x, y in ((84, 150), (196, 118), (308, 150)))
+    return (f'<path d="M 108 318 L 88 176 L 150 236 L 196 146 L 242 236 L 304 176 '
+            f'L 284 318 Z" {_s(c, 28)}/>' + tips
+            + f'<ellipse cx="196" cy="378" rx="112" ry="30" {_s(c, 24)}/>'
+            f'<path d="M 400 196 L 400 304 M 346 250 L 454 250" {_s(c, 30)}/>')
+
+
+def fpb_ball(c):
+    """FP Basquetebol: the basketball with its dotted progress arc."""
+    dots = ""
+    for deg in (-56, -28, 0, 28, 56):
+        x, y = _polar(212, 256, 206, deg)
+        dots += f'<circle cx="{x:.1f}" cy="{y:.1f}" r="15" {_f(c)}/>'
+    return (f'<circle cx="212" cy="256" r="146" {_s(c, 32)}/>'
+            f'<path d="M 212 110 L 212 402 M 66 256 L 358 256" {_s(c, 22)}/>'
+            f'<path d="M 116 146 C 166 196 166 316 116 366" {_s(c, 22)}/>'
+            f'<path d="M 308 146 C 258 196 258 316 308 366" {_s(c, 22)}/>' + dots)
+
+
+def immich_petals(c):
+    """Immich: the five-petal pinwheel flower."""
+    out = ""
+    for k in range(5):
+        base = -90 + 72 * k
+        x0, y0 = _polar(256, 256, 34, base)
+        x3, y3 = _polar(256, 256, 196, base + 10)
+        x1, y1 = _polar(256, 256, 150, base - 30)
+        x2, y2 = _polar(256, 256, 170, base + 44)
+        out += (f'<path d="M {x0:.1f} {y0:.1f} C {x1:.1f} {y1:.1f} {x3:.1f} {y3:.1f} '
+                f'{x3:.1f} {y3:.1f} C {x3:.1f} {y3:.1f} {x2:.1f} {y2:.1f} {x0:.1f} {y0:.1f} Z" '
+                f'{_s(c, 24)}/>')
+    return out
+
+
+def kijk_eye(c):
+    """KIJK: the almond eye with its solid pupil."""
+    return (f'<path d="M 84 256 C 150 96 362 96 428 256 C 362 416 150 416 84 256 Z" {_s(c, 32)}/>'
+            f'<circle cx="256" cy="256" r="64" {_f(c)}/>')
+
+
+def livechannels_tv(c):
+    """Live Channels: the rounded set with its two antennae."""
+    return (f'<rect x="84" y="166" width="344" height="240" rx="48" {_s(c, 32)}/>'
+            f'<path d="M 192 92 L 256 150 L 320 92" {_s(c, 28)}/>')
+
+
+def moonfin_wave(c):
+    """Moonfin: the crescent fin rising out of the waves."""
+    return (_solid("M 348 88 C 196 96 104 232 150 342 L 236 318 "
+                   "C 198 240 238 140 348 88 Z", c, 16)
+            + f'<path d="M 96 382 C 160 346 224 410 288 378 C 340 352 392 372 432 350" {_s(c, 26)}/>'
+            f'<path d="M 132 438 C 196 406 260 460 324 430 C 364 412 398 420 424 410" {_s(c, 22)}/>')
+
+
+def netzkino_leader(c):
+    """Netzkino: the film-leader countdown ring with its 1."""
+    return (f'<circle cx="256" cy="256" r="176" {_s(c, 30)}/>'
+            f'<path d="M 80 256 L 188 256 M 324 256 L 432 256 '
+            f'M 256 80 L 256 132 M 256 380 L 256 432" {_s(c, 22)}/>'
+            f'<path d="M 222 180 L 268 150 L 268 356" {_s(c, 32)}/>')
+
+
+def photocollage_ring(c):
+    """Photo Collage: the folded ribbon ring around a hexagonal window."""
+    outer = [_polar(256, 256, 190, -90 + 60 * k) for k in range(6)]
+    inner = [_polar(256, 256, 84, -60 + 60 * k) for k in range(6)]
+    o = " L ".join(f"{x:.1f} {y:.1f}" for x, y in outer)
+    i = " L ".join(f"{x:.1f} {y:.1f}" for x, y in inner)
+    spokes = " ".join(f"M {inner[k][0]:.1f} {inner[k][1]:.1f} "
+                      f"L {outer[(k + 1) % 6][0]:.1f} {outer[(k + 1) % 6][1]:.1f}"
+                      for k in range(6))
+    return (f'<path d="M {o} Z" {_s(c, 30)}/>'
+            f'<path d="M {i} Z" {_s(c, 26)}/>'
+            f'<path d="{spokes}" {_s(c, 22)}/>')
+
+
+def ppsspp_pad(c):
+    """PPSSPP: the four twisted paddles of its X-shaped pad."""
+    out = ""
+    for k in range(4):
+        d = -90 + 90 * k
+        pts = [_polar(256, 256, 62, d - 42), _polar(256, 256, 186, d - 6),
+               _polar(256, 256, 190, d + 34), _polar(256, 256, 78, d + 22)]
+        p = " L ".join(f"{x:.1f} {y:.1f}" for x, y in pts)
+        out += f'<path d="M {p} Z" {_s(c, 24)}/>'
+    return out
+
+
+def seerr_eye(c):
+    """SeerrTV: the lens ring, its iris and the catch-light."""
+    return (f'<circle cx="256" cy="256" r="172" {_s(c, 32)}/>'
+            f'<circle cx="256" cy="256" r="84" {_s(c, 28)}/>'
+            f'<circle cx="318" cy="186" r="20" {_f(c)}/>')
+
+
+def setedit_gear(c):
+    """SetEdit: the six-tooth settings cog with its round hub."""
+    pts = []
+    for k in range(6):
+        m = -90 + 60 * k
+        pts += [_polar(256, 256, 146, m - 22), _polar(256, 256, 192, m - 12),
+                _polar(256, 256, 192, m + 12), _polar(256, 256, 146, m + 22)]
+    p = " L ".join(f"{x:.1f} {y:.1f}" for x, y in pts)
+    return (f'<path d="M {p} Z" {_s(c, 30)}/>'
+            f'<circle cx="256" cy="256" r="66" {_s(c, 28)}/>')
+
+
+def sooner_rings(c):
+    """Sooner: the two open double rings facing each other."""
+    out = ""
+    for cx, a0, a1 in ((178, 40, 320), (334, 220, 500)):
+        for r, w in ((116, 26), (72, 22)):
+            x0, y0 = _polar(cx, 256, r, a0)
+            x1, y1 = _polar(cx, 256, r, a1)
+            out += (f'<path d="M {x0:.1f} {y0:.1f} A {r} {r} 0 1 1 {x1:.1f} {y1:.1f}" '
+                    f'{_s(c, w)}/>')
+    return out
+
+
+def unrealdebrid_magnet(c):
+    """Unreal Debrid: the horseshoe magnet, tilted so its poles point down-left."""
+    import math
+
+    def q(x, y):
+        k = math.sqrt(0.5)
+        return f"{300 + (x - y) * k:.1f} {206 + (x + y) * k:.1f}"
+    body = (f"M {q(-112, 170)} L {q(-112, 0)} A 112 112 0 0 1 {q(112, 0)} "
+            f"L {q(112, 170)} L {q(44, 170)} L {q(44, 0)} A 44 44 0 0 0 {q(-44, 0)} "
+            f"L {q(-44, 170)} Z")
+    bands = f"M {q(-112, 104)} L {q(-44, 104)} M {q(44, 104)} L {q(112, 104)}"
+    return (f'<path d="{body}" {_s(c, 28)}/>'
+            f'<path d="{bands}" {_s(c, 22)}/>')
+
+
+def rlc_shield(c):
+    """RLC+: the shield with the plus inside its eye."""
+    return (f'<path d="M 256 76 L 424 136 L 424 250 C 424 350 350 412 256 444 '
+            f'C 162 412 88 350 88 250 L 88 136 Z" {_s(c, 30)}/>'
+            f'<path d="M 256 212 L 256 316 M 204 264 L 308 264" {_s(c, 30)}/>')
+
+
+def unext_shield(c):
+    """U-NEXT: the U-shaped crest."""
+    return (f'<path d="M 128 104 L 384 104 L 384 290 C 384 370 326 420 256 420 '
+            f'C 186 420 128 370 128 290 Z" {_s(c, 32)}/>'
+            f'<path d="M 204 164 L 204 290 C 204 340 308 340 308 290 L 308 164" {_s(c, 28)}/>')
+
+
+GLYPHS.update({
+    "amnis_ff": amnis_ff, "buttons_swap": buttons_swap, "dsmart_ring": dsmart_ring,
+    "debridemall_magnet": debridemall_magnet, "feeln_crown": feeln_crown,
+    "fpb_ball": fpb_ball, "immich_petals": immich_petals, "kijk_eye": kijk_eye,
+    "livechannels_tv": livechannels_tv, "moonfin_wave": moonfin_wave,
+    "netzkino_leader": netzkino_leader, "photocollage_ring": photocollage_ring,
+    "ppsspp_pad": ppsspp_pad, "seerr_eye": seerr_eye, "setedit_gear": setedit_gear,
+    "sooner_rings": sooner_rings, "unrealdebrid_magnet": unrealdebrid_magnet,
+    "rlc_shield": rlc_shield, "unext_shield": unext_shield,
+})
+
+
+# --------------------------------------------------------------------------
+# Brand-informed marks, batch 4 (2026-09-26). Same contract as batches 1-3.
+
+def dish_d(c):
+    """Dish Home: the rounded D with a play cut into its counter."""
+    return (f'<path d="M 112 96 L 244 96 C 352 96 424 168 424 256 C 424 344 352 416 244 416 '
+            f'L 112 416 Z" {_s(c, 32)}/>'
+            + _solid("M 190 190 L 300 256 L 190 322 Z", c, 18))
+
+
+def gymondo_g(c):
+    """Gymondo: the looping G drawn as one continuous line."""
+    return (f'<path d="M 372 150 C 320 90 204 88 144 152 C 84 216 90 330 158 384 '
+            f'C 226 438 344 420 384 346 C 408 300 400 250 350 236 C 296 222 252 262 262 316 '
+            f'C 272 368 336 372 370 336" {_s(c, 32)}/>')
+
+
+def hippos_loop(c):
+    """Hippos: the large ring and the small ring, with the bar slanting across."""
+    return (f'<circle cx="310" cy="222" r="116" {_s(c, 30)}/>'
+            f'<circle cx="146" cy="352" r="60" {_s(c, 28)}/>'
+            f'<circle cx="146" cy="352" r="16" {_f(c)}/>'
+            f'<path d="M 176 92 L 362 422" {_s(c, 34)}/>')
+
+
+def juuno_j(c):
+    """Juuno: the round dot over the block j with its curved foot."""
+    return (f'<circle cx="300" cy="112" r="46" {_f(c)}/>'
+            + _solid("M 258 196 L 342 196 L 342 330 C 342 390 300 428 242 428 "
+                     "L 170 428 L 170 344 L 258 344 Z", c, 14))
+
+
+def mediahub_play(c):
+    """Media Hub: the play folded from two chevron ribbons."""
+    return (f'<path d="M 128 92 L 300 256 L 128 420" {_s(c, 32)}/>'
+            f'<path d="M 214 164 L 396 256 L 214 348" {_s(c, 30)}/>')
+
+
+def movideo_doc(c):
+    """Movideo: the page with its folded corner and a play."""
+    return (f'<path d="M 120 76 L 318 76 L 398 156 L 398 436 L 120 436 Z" {_s(c, 30)}/>'
+            f'<path d="M 318 76 L 318 156 L 398 156" {_s(c, 24)}/>'
+            + _solid("M 212 214 L 312 276 L 212 338 Z", c, 16))
+
+
+def nfb_eye(c):
+    """NFB: the eye whose pupil is a person, head and shoulders."""
+    return (f'<path d="M 60 232 C 140 118 372 118 452 232" {_s(c, 32)}/>'
+            f'<path d="M 60 232 C 100 290 150 322 190 334" {_s(c, 28)}/>'
+            f'<path d="M 452 232 C 412 290 362 322 322 334" {_s(c, 28)}/>'
+            f'<circle cx="256" cy="244" r="54" {_f(c)}/>'
+            + _solid("M 170 432 C 170 356 206 318 256 318 C 306 318 342 356 342 432 Z", c, 16))
+
+
+def ondamedia_figure(c):
+    """Ondamedia: the round head over its M-shaped stride."""
+    return (f'<circle cx="256" cy="150" r="74" {_s(c, 30)}/>'
+            f'<path d="M 128 424 L 196 262 L 256 352 L 316 262 L 384 424" {_s(c, 30)}/>')
+
+
+def synology_rosette(c):
+    """Synology Photos: the six-petal rosette of overlapping rings."""
+    out = ""
+    for k in range(6):
+        x, y = _polar(256, 256, 88, -90 + 60 * k)
+        out += f'<circle cx="{x:.1f}" cy="{y:.1f}" r="96" {_s(c, 22)}/>'
+    return out
+
+
+def tvoverlay_cards(c):
+    """TvOverlay: the notification card floating over the screen behind it."""
+    return (f'<path d="M 172 132 L 96 132 C 84 132 76 140 76 152 L 76 364 C 76 376 84 384 96 384 '
+            f'L 150 384" {_s(c, 24)}/>'
+            f'<rect x="172" y="170" width="264" height="190" rx="28" {_s(c, 30)}/>'
+            f'<circle cx="236" cy="236" r="24" {_f(c)}/>'
+            f'<path d="M 292 236 L 382 236 M 228 300 L 382 300" {_s(c, 24)}/>')
+
+
+def veezie_play(c):
+    """Veezie: the open play outline with its upright bar inside."""
+    return (f'<path d="M 124 82 L 424 256 L 124 430 Z" {_s(c, 32)}/>'
+            f'<path d="M 200 220 L 200 340" {_s(c, 30)}/>')
+
+
+def wako_tv(c):
+    """Wako: the retro set with its V antenna and two side knobs."""
+    return (f'<rect x="64" y="162" width="384" height="256" rx="44" {_s(c, 30)}/>'
+            f'<rect x="104" y="202" width="228" height="176" rx="26" {_s(c, 24)}/>'
+            f'<circle cx="394" cy="244" r="20" {_f(c)}/>'
+            f'<circle cx="394" cy="324" r="20" {_f(c)}/>'
+            f'<path d="M 190 88 L 256 156 L 322 88" {_s(c, 26)}/>')
+
+
+def instantbits_cast(c):
+    """Web Video Cast (InstantBits): the set with cast waves and a play badge."""
+    return (f'<rect x="72" y="166" width="300" height="236" rx="36" {_s(c, 30)}/>'
+            f'<path d="M 150 102 L 206 160 M 294 102 L 238 160" {_s(c, 24)}/>'
+            f'<path d="M 124 330 C 164 330 180 346 180 372" {_s(c, 24)}/>'
+            f'<path d="M 124 264 C 204 264 246 306 246 372" {_s(c, 24)}/>'
+            f'<circle cx="376" cy="170" r="72" {_s(c, 26)}/>'
+            + _solid("M 358 136 L 408 170 L 358 204 Z", c, 12))
+
+
+def couchpuzzle_tiles(c):
+    """Couch Puzzles: the sliding-tile board, one tile sliding into the empty slot."""
+    tiles = ""
+    for r, y in enumerate((72, 208, 344)):
+        for q, x in enumerate((72, 208, 344)):
+            if (r, q) == (2, 2):
+                continue
+            tiles += f'<rect x="{x}" y="{y}" width="96" height="96" rx="20" {_s(c, 22)}/>'
+    return tiles + (f'<path d="M 436 392 L 360 392 M 390 362 L 360 392 L 390 422" '
+                    f'{_s(c, 22)}/>')
+
+
+def torrserve_bolt(c):
+    """TorrServe: the bolt striking through its ring."""
+    return (f'<circle cx="256" cy="256" r="172" {_s(c, 30)}/>'
+            + _solid("M 300 72 L 176 276 L 262 276 L 212 440 L 344 222 L 256 222 Z", c, 14))
+
+
+def avoid_play(c):
+    """Avoid: three nested play outlines."""
+    return (f'<path d="M 108 76 C 88 64 72 74 72 98 L 72 414 C 72 438 88 448 108 436 '
+            f'L 380 278 C 400 266 400 246 380 234 Z" {_s(c, 28)}/>'
+            f'<path d="M 144 168 L 144 344 L 296 256 Z" {_s(c, 24)}/>'
+            f'<path d="M 196 232 L 196 280 L 236 256 Z" {_s(c, 20)}/>')
+
+
+def hueessentials_lamp(c):
+    """Hue Essentials: the tall tapered lamp with its capped base."""
+    return (f'<path d="M 160 84 L 352 84 L 318 318 L 194 318 Z" {_s(c, 30)}/>'
+            f'<path d="M 214 318 L 214 380 L 298 380 L 298 318" {_s(c, 26)}/>'
+            f'<path d="M 234 432 L 278 432" {_s(c, 26)}/>')
+
+
+GLYPHS.update({
+    "dish_d": dish_d, "gymondo_g": gymondo_g, "hippos_loop": hippos_loop, "juuno_j": juuno_j,
+    "mediahub_play": mediahub_play, "movideo_doc": movideo_doc, "nfb_eye": nfb_eye,
+    "ondamedia_figure": ondamedia_figure, "synology_rosette": synology_rosette,
+    "tvoverlay_cards": tvoverlay_cards, "veezie_play": veezie_play, "wako_tv": wako_tv,
+    "instantbits_cast": instantbits_cast, "couchpuzzle_tiles": couchpuzzle_tiles,
+    "torrserve_bolt": torrserve_bolt, "avoid_play": avoid_play,
+    "hueessentials_lamp": hueessentials_lamp,
+})
+
+
+# --------------------------------------------------------------------------
+# Brand-informed marks, batch 5 (2026-09-26). Same contract as batches 1-4.
+
+def _scaled(d, s, cx=256, cy=256):
+    """Scale a path made only of M/L/C/Z pairs about (cx, cy)."""
+    nums = iter(re.findall(r"-?\d+(?:\.\d+)?|[MLCZ]", d))
+    out = []
+    for tok in nums:
+        if tok in "MLCZ":
+            out.append(tok)
+            continue
+        x, y = float(tok), float(next(nums))
+        out.append(f"{cx + (x - cx) * s:.1f} {cy + (y - cy) * s:.1f}")
+    return " ".join(out)
+
+
+def bitdefender_shield(c):
+    """Bitdefender: the shield with the chain link across it."""
+    link = _scaled("M 238 290 L 208 320 C 188 340 158 340 140 322 C 122 304 122 274 142 254 "
+                   "L 172 224 M 274 222 L 304 192 C 324 172 354 172 372 190 "
+                   "C 390 208 390 238 370 258 L 340 288 M 226 286 L 286 226", 0.72, 256, 262)
+    return (f'<path d="M 256 72 L 420 128 L 420 246 C 420 346 350 410 256 444 '
+            f'C 162 410 92 346 92 246 L 92 128 Z" {_s(c, 30)}/>'
+            f'<path d="{link}" {_s(c, 26)}/>')
+
+
+def clashmeta_cat(c):
+    """Clash Meta: the M with a cat's whiskers and nose."""
+    return (f'<path d="M 136 390 L 136 112 L 256 262 L 376 112 L 376 390" {_s(c, 32)}/>'
+            f'<path d="M 72 330 L 110 324 M 76 378 L 110 364 '
+            f'M 440 330 L 402 324 M 436 378 L 402 364" {_s(c, 22)}/>'
+            + _solid("M 240 336 L 272 336 L 256 356 Z", c, 12))
+
+
+def firesend_plane(c):
+    """FireSend: the paper plane with its flame trail."""
+    return (f'<path d="M 108 250 L 430 92 L 336 420 L 254 302 Z" {_s(c, 30)}/>'
+            f'<path d="M 254 302 L 430 92" {_s(c, 24)}/>'
+            f'<path d="M 86 420 C 70 380 100 354 124 334 C 128 364 150 374 146 408" {_s(c, 22)}/>')
+
+
+def homeworkout_plank(c):
+    """Home Workout: the figure holding a plank, facing out."""
+    return (f'<circle cx="256" cy="140" r="44" {_s(c, 28)}/>'
+            f'<path d="M 256 214 C 206 214 164 228 146 262 L 118 420 '
+            f'M 256 214 C 306 214 348 228 366 262 L 394 420" {_s(c, 30)}/>'
+            f'<path d="M 256 214 L 256 330" {_s(c, 30)}/>')
+
+
+def lampa_rings(c):
+    """Lampa: the solid eye inside its sweeping rings."""
+    arcs = ""
+    for r, a0, a1, w in ((188, 200, 340, 26), (132, 205, 335, 24), (132, 25, 155, 24)):
+        x0, y0 = _polar(256, 262, r, a0)
+        x1, y1 = _polar(256, 262, r, a1)
+        sweep = 1
+        arcs += (f'<path d="M {x0:.1f} {y0:.1f} A {r} {r} 0 0 {sweep} {x1:.1f} {y1:.1f}" '
+                 f'{_s(c, w)}/>')
+    return arcs + f'<circle cx="256" cy="262" r="58" {_s(c, 30)}/>'
+
+
+def launchbox_cube(c):
+    """LaunchBox: the puzzle cube, each face split into four."""
+    top, rt, bot, lb, lt, ctr = (256, 72), (420, 166), (256, 440), (92, 346), (92, 166), (256, 260)
+    rb = (420, 346)
+    mid = lambda a, b: ((a[0] + b[0]) / 2, (a[1] + b[1]) / 2)
+    seg = lambda a, b: f"M {a[0]:.1f} {a[1]:.1f} L {b[0]:.1f} {b[1]:.1f} "
+    grid = (seg(mid(lt, top), mid(ctr, rt)) + seg(mid(top, rt), mid(lt, ctr))
+            + seg(mid(lt, ctr), mid(lb, bot)) + seg(mid(lt, lb), mid(ctr, bot))
+            + seg(mid(ctr, rt), mid(bot, rb)) + seg(mid(ctr, bot), mid(rt, rb)))
+    return (f'<path d="M 256 72 L 420 166 L 420 346 L 256 440 L 92 346 L 92 166 Z" {_s(c, 28)}/>'
+            f'<path d="M 92 166 L 256 260 L 420 166 M 256 260 L 256 440" {_s(c, 26)}/>'
+            f'<path d="{grid}" {_s(c, 20)}/>')
+
+
+def lemuroid_face(c):
+    """Lemuroid: the two button eyes and the small nose of its face."""
+    dots = "".join(f'<circle cx="{348 + dx}" cy="{232 + dy}" r="13" {_f(c)}/>'
+                   for dx, dy in ((0, -28), (28, 0), (0, 28), (-28, 0)))
+    return (f'<circle cx="164" cy="232" r="76" {_s(c, 26)}/>'
+            f'<circle cx="348" cy="232" r="76" {_s(c, 26)}/>'
+            f'<path d="M 164 200 L 164 264 M 132 232 L 196 232" {_s(c, 22)}/>' + dots
+            + _solid("M 226 344 L 286 344 L 256 384 Z", c, 16))
+
+
+def peloton_p(c):
+    """Peloton: the P whose open bowl is cut by its slanted stem."""
+    x0, y0 = _polar(284, 222, 106, 208)
+    x1, y1 = _polar(284, 222, 106, 128)
+    return (f'<path d="M {x0:.1f} {y0:.1f} A 106 106 0 1 1 {x1:.1f} {y1:.1f}" {_s(c, 32)}/>'
+            f'<path d="M 338 84 L 206 424" {_s(c, 32)}/>')
+
+
+def privado_keyhole(c):
+    """Privado VPN: the keyhole at the centre of its broken rings."""
+    arcs = ""
+    for r, gaps in ((184, (60, 150, 250)), (132, (20, 200))):
+        pts = sorted(gaps)
+        for k, g in enumerate(pts):
+            a0 = g + 12
+            a1 = pts[(k + 1) % len(pts)] - 12 + (360 if k == len(pts) - 1 else 0)
+            x0, y0 = _polar(256, 256, r, a0)
+            x1, y1 = _polar(256, 256, r, a1)
+            large = 1 if (a1 - a0) % 360 > 180 else 0
+            arcs += (f'<path d="M {x0:.1f} {y0:.1f} A {r} {r} 0 {large} 1 {x1:.1f} {y1:.1f}" '
+                     f'{_s(c, 22)}/>')
+    return (arcs + f'<circle cx="256" cy="236" r="34" {_f(c)}/>'
+            + _solid("M 240 250 L 272 250 L 282 318 L 230 318 Z", c, 12))
+
+
+def psiphon_p(c):
+    """Psiphon: the blocky P built from two offset slabs."""
+    return (f'<path d="M 150 96 L 334 96 C 378 96 404 122 404 166 L 404 208 '
+            f'C 404 252 378 278 334 278 L 254 278 L 254 396 C 254 408 246 416 234 416 '
+            f'L 170 416 C 158 416 150 408 150 396 Z" {_s(c, 30)}/>'
+            f'<path d="M 254 188 L 318 188" {_s(c, 26)}/>')
+
+
+def purevpn_drop(c):
+    """PureVPN: the rounded downward wedge inside its disc."""
+    return (f'<circle cx="256" cy="256" r="176" {_s(c, 28)}/>'
+            f'<path d="M 176 200 L 336 200 L 256 334 Z" {_s(c, 30)}/>')
+
+
+def retrox_stick(c):
+    """RetroX: the arcade panel with its stick and button."""
+    return (f'<rect x="84" y="262" width="344" height="150" rx="40" {_s(c, 30)}/>'
+            f'<path d="M 196 262 L 196 186" {_s(c, 26)}/>'
+            f'<circle cx="196" cy="146" r="46" {_s(c, 28)}/>'
+            f'<circle cx="332" cy="316" r="30" {_f(c)}/>')
+
+
+def smugmug_smile(c):
+    """SmugMug: the two eyes over the wide grin."""
+    return (f'<circle cx="186" cy="152" r="26" {_f(c)}/>'
+            f'<circle cx="326" cy="152" r="26" {_f(c)}/>'
+            f'<path d="M 124 252 L 388 252 C 388 350 330 408 256 408 C 182 408 124 350 124 252 Z" '
+            f'{_s(c, 30)}/>')
+
+
+def symfonik_s(c):
+    """Symfonik: the boxy S."""
+    return (f'<path d="M 380 116 L 176 116 C 150 116 136 130 136 156 L 136 220 '
+            f'C 136 246 150 256 176 256 L 336 256 C 362 256 376 266 376 292 L 376 356 '
+            f'C 376 382 362 396 336 396 L 132 396" {_s(c, 32)}/>')
+
+
+def torguard_lock(c):
+    """TorGuard: the padlock whose body is drawn in swept cloud lines."""
+    return (f'<path d="M 176 236 L 176 176 C 176 96 336 96 336 176 L 336 236" {_s(c, 30)}/>'
+            f'<path d="M 108 440 L 108 292 C 108 256 128 236 164 236 L 348 236 '
+            f'C 384 236 404 256 404 292 L 404 330" {_s(c, 30)}/>'
+            f'<path d="M 170 324 L 340 324 C 372 324 388 352 360 368 L 170 368 '
+            f'M 170 412 L 404 412" {_s(c, 24)}/>')
+
+
+def viaplay_play(c):
+    """Viaplay: the play arrow biting into its disc."""
+    return (f'<path d="M 202 96 C 290 72 396 120 422 212 C 450 312 378 412 278 424 '
+            f'C 220 432 174 410 146 380" {_s(c, 32)}/>'
+            + _solid("M 90 164 L 308 256 L 90 348 Z", c, 16))
+
+
+def weatheryou_sun(c):
+    """WeatherYou: the sun rising behind its cloud."""
+    return (f'<circle cx="200" cy="190" r="72" {_s(c, 28)}/>'
+            f'<path d="M 146 410 C 88 410 72 336 126 318 C 128 262 206 242 236 290 '
+            f'C 258 236 348 232 366 298 C 428 296 446 410 370 410 Z" {_s(c, 30)}/>')
+
+
+def yoga_lotus(c):
+    """Yoga Download: the lotus flower over its water line."""
+    return (f'<path d="M 256 110 C 314 176 314 280 256 352 C 198 280 198 176 256 110 Z" {_s(c, 26)}/>'
+            f'<path d="M 256 352 C 186 344 118 296 96 206 C 162 212 222 262 256 352" {_s(c, 24)}/>'
+            f'<path d="M 256 352 C 326 344 394 296 416 206 C 350 212 290 262 256 352" {_s(c, 24)}/>'
+            f'<path d="M 104 406 C 196 378 316 378 408 406" {_s(c, 26)}/>')
+
+
+def zona_z(c):
+    """Zona: the rounded Z of its bow-tie mark."""
+    return (f'<path d="M 132 120 L 380 120 L 132 392 L 380 392" {_s(c, 32)}/>')
+
+
+def buttonmapper_dpad(c):
+    """Button Mapper: the d-pad with its centre button and four corner keys."""
+    corners = "".join(f'<circle cx="{x}" cy="{y}" r="18" {_f(c)}/>'
+                      for x, y in ((104, 104), (408, 104), (104, 408), (408, 408)))
+    return (f'<path d="M 212 96 L 300 96 L 300 212 L 416 212 L 416 300 L 300 300 L 300 416 '
+            f'L 212 416 L 212 300 L 96 300 L 96 212 L 212 212 Z" {_s(c, 28)}/>'
+            f'<circle cx="256" cy="256" r="30" {_s(c, 22)}/>' + corners)
+
+
+def galleri_cloud(c):
+    """Galleri: the cloud with a mountain inside it."""
+    return (f'<path d="M 150 392 C 86 392 68 314 124 294 C 124 226 206 200 244 254 '
+            f'C 268 190 370 188 388 270 C 452 276 460 392 380 392 Z" {_s(c, 30)}/>'
+            f'<path d="M 184 350 L 240 290 L 272 322 L 306 282 L 348 350" {_s(c, 24)}/>')
+
+
+def meddelande_chat(c):
+    """Meddelandelåda: the message bubble with its dots, a second behind it."""
+    dots = "".join(f'<circle cx="{x}" cy="276" r="18" {_f(c)}/>' for x in (180, 238, 296))
+    return (f'<path d="M 170 118 L 400 118 C 424 118 436 130 436 154 L 436 276" {_s(c, 24)}/>'
+            f'<path d="M 112 180 L 356 180 C 380 180 392 192 392 216 L 392 336 '
+            f'C 392 360 380 372 356 372 L 196 372 L 132 424 L 132 372 L 112 372 '
+            f'C 88 372 76 360 76 336 L 76 216 C 76 192 88 180 112 180 Z" {_s(c, 30)}/>' + dots)
+
+
+def pmx_gear(c):
+    """PMX (Permission Manager X): the cog with a warning triangle on its shoulder."""
+    pts = []
+    for k in range(8):
+        m = -90 + 45 * k
+        pts += [_polar(210, 290, 118, m - 12), _polar(210, 290, 150, m - 7),
+                _polar(210, 290, 150, m + 7), _polar(210, 290, 118, m + 12)]
+    p = " L ".join(f"{x:.1f} {y:.1f}" for x, y in pts)
+    return (f'<path d="M {p} Z" {_s(c, 24)}/>'
+            f'<circle cx="210" cy="290" r="48" {_s(c, 24)}/>'
+            f'<path d="M 370 70 L 456 222 L 284 222 Z" {_s(c, 26)}/>'
+            f'<path d="M 370 124 L 370 168" {_s(c, 22)}/>'
+            f'<circle cx="370" cy="198" r="10" {_f(c)}/>')
+
+
+def getflix_popcorn(c):
+    """Getflix: the striped popcorn box with kernels spilling over the rim."""
+    kernels = "".join(f'<circle cx="{x}" cy="{y}" r="{r}" {_s(c, 22)}/>'
+                      for x, y, r in ((188, 166, 40), (256, 128, 46), (324, 166, 40)))
+    return (kernels
+            + f'<path d="M 132 214 L 380 214 L 340 440 L 172 440 Z" {_s(c, 28)}/>'
+            f'<path d="M 214 214 L 226 440 M 298 214 L 286 440" {_s(c, 24)}/>')
+
+
+def radioparadise_phones(c):
+    """Radio Paradise: the headphones with sound between the cups."""
+    return (f'<path d="M 104 300 C 104 112 408 112 408 300" {_s(c, 28)}/>'
+            f'<rect x="80" y="276" width="64" height="130" rx="26" {_s(c, 26)}/>'
+            f'<rect x="368" y="276" width="64" height="130" rx="26" {_s(c, 26)}/>'
+            f'<path d="M 226 292 C 206 314 206 360 226 382 M 286 292 C 306 314 306 360 286 382 '
+            f'M 190 312 C 180 328 180 346 190 362 M 322 312 C 332 328 332 346 322 362" {_s(c, 20)}/>')
+
+
+GLYPHS.update({
+    "bitdefender_shield": bitdefender_shield, "clashmeta_cat": clashmeta_cat,
+    "firesend_plane": firesend_plane, "homeworkout_plank": homeworkout_plank,
+    "lampa_rings": lampa_rings, "launchbox_cube": launchbox_cube,
+    "lemuroid_face": lemuroid_face, "peloton_p": peloton_p,
+    "privado_keyhole": privado_keyhole, "psiphon_p": psiphon_p,
+    "purevpn_drop": purevpn_drop, "retrox_stick": retrox_stick,
+    "smugmug_smile": smugmug_smile, "symfonik_s": symfonik_s,
+    "torguard_lock": torguard_lock, "viaplay_play": viaplay_play,
+    "weatheryou_sun": weatheryou_sun, "yoga_lotus": yoga_lotus, "zona_z": zona_z,
+    "buttonmapper_dpad": buttonmapper_dpad, "galleri_cloud": galleri_cloud,
+    "meddelande_chat": meddelande_chat, "pmx_gear": pmx_gear,
+    "getflix_popcorn": getflix_popcorn, "radioparadise_phones": radioparadise_phones,
 })
