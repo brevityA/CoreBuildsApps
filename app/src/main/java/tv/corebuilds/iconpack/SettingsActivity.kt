@@ -190,7 +190,7 @@ class SettingsActivity : TvActivity() {
     private fun refreshLauncher(launcherKey: String? = null) {
         val launcher = launcherKey
             ?.let { key -> ApplyIconPack.installed(this).firstOrNull { it.key == key } }
-            ?: ApplyIconPack.detectInstalled(this)
+            ?: ApplyIconPack.detectApplyTarget(this)
         if (launcher == null) {
             toast(getString(R.string.refresh_no_launcher))
             return

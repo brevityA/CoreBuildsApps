@@ -295,6 +295,27 @@ object ApplyIconPack {
     }
 
     /**
+     * [installed], reordered for the Apply button: the first launcher is the
+     * one a press should go to.
+     *
+     * HOME still leads when it can take an apply. When it cannot (Monet), the
+     * first installed launcher that can (Projectivy, in [ALL]'s order) goes
+     * first instead, and HOME's setup screen stays one chip away. 1.9.5 sent
+     * the button to HOME unconditionally, so a TV with Monet as its default
+     * home and Projectivy beside it lost the one-press apply it had in 1.9.4.
+     */
+    fun applyOrder(context: Context): List<Launcher> {
+        val all = installed(context)
+        val home = all.firstOrNull() ?: return all
+        if (home.inboundApply) return all
+        val direct = all.firstOrNull { it.inboundApply } ?: return all
+        return listOf(direct) + all.filter { it != direct }
+    }
+
+    /** The launcher an Apply or re-apply press goes to; see [applyOrder]. */
+    fun detectApplyTarget(context: Context): Launcher? = applyOrder(context).firstOrNull()
+
+    /**
      * The actions a launcher resolves to enumerate the icon packs installed on
      * the device. Monet builds its list from exactly this set (see
      * docs/MONET_LAUNCHER.md), so a pack that answers none of them will not

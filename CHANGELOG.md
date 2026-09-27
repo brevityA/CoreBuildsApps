@@ -6,6 +6,19 @@ All notable changes to the Core Builds Icon Pack. Format follows
 
 ## [Unreleased]
 
+### Fixed
+
+- **Apply goes to Projectivy again when Monet is the default home.** Since
+  1.9.5 the Apply button went to the TV's default home launcher every time. On
+  a TV with Monet as its default home and Projectivy installed too, the button
+  opened Monet's setup screen and Projectivy's one-press apply was only a chip
+  away. The button now goes to the home launcher only when that launcher can
+  take an apply; otherwise it goes to one that can, and Monet's setup screen
+  stays a chip below. Settings → Refresh launcher follows the same order.
+- **`tests/test_monet_handoff.py` pins the order.** Monet as home with
+  Projectivy installed puts Projectivy first; Monet alone still opens its
+  setup screen.
+
 ## [1.9.6] — 2026-09-26
 
 ### Added
