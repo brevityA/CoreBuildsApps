@@ -54,7 +54,7 @@ Source accents are retained in the catalog. **On dark** is the shared square/ban
 | Anime One | `anime` | `#A366FF` | `#A366FF` | `com.dev.anime.one/com.dev.anime.one.MainActivity` |
 | Ant1 | `ant1` | `#FFB020` | `#FFB020` | `gr.antenna.ant1/com.arxnet.soeasytv.MainActivity` |
 | Anten TV | `antentv` | `#00D4FF` | `#00D4FF` | `com.farakav.antentv/com.farakav.antentv.app.SplashActivity` |
-| Användarmanual | `anvandarmanual` | `#FF5CA8` | `#FF5CA8` | `com.tcl.ocean.instructions/com.tcl.ocean.instructions.portal.home.HomeActivity` |
+| Användarmanual | `anvandarmanual` | `#94A3C0` | `#94A3C0` | `com.tcl.ocean.instructions/com.tcl.ocean.instructions.portal.home.HomeActivity` |
 | AnyDesk | `anydeskandroid` | `#EF443B` | `#EF443B` | `com.anydesk.anydeskandroid/com.anydesk.anydeskandroid.gui.activity.HubActivity` |
 | Aparat Sport | `aparatsport` | `#53FC18` | `#53FC18` | `com.aparatsport.tv/com.aparatsport.tv.ui.main.TvActivity` |
 | APK Installer | `apk_installer` | `#00ABD5` | `#00ABD5` | `com.uptodown.installer/com.uptodown.installer.activity.SplashActivity` |

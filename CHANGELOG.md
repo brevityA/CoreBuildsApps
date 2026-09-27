@@ -24,6 +24,11 @@ All notable changes to the Core Builds Icon Pack. Format follows
   AK47Sports gets its crossed cricket bats and football, Voltra TV its V
   with a lightning-bolt arm, and AnikenTV's tile reads "AK", as its white
   script logo does.
+- **Three more TCL apps drawn from their tiles.** Användarmanual (User
+  Guide) gets its page and the tile's slate blue instead of a palette pink,
+  Mediaspelare (Media Player) a folder holding a play button, and TCL Home
+  its dashboard grid: three red squares and two yellow bars in the fourth
+  corner.
 
 ### Fixed
 

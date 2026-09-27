@@ -10476,8 +10476,7 @@
       "name": "TCL Home",
       "drawable": "tcl_home",
       "color": "#E24638",
-      "glyph": "tool_T",
-      "mark": "TH",
+      "glyph": "tcl_home_grid",
       "components": [
         "com.tcl.tclhome/com.tcl.bmmain.SplashActivity",
         "com.tcl.dashboard/com.tcl.dashboard.MainActivity"
@@ -10485,7 +10484,15 @@
       "category": "APP",
       "mapping_source": "Projectivy Icon Pack 1.1.9; com.tcl.dashboard entry from supporter TV audit 2026-09-27 (Auditor screenshots, TCL Google TV)",
       "color_source": "sampled from the official launcher icon (Google Play listing for com.tcl.tclhome): dominant brand accent #E24638 (2026-09-26)",
-      "color_reviewed": "2026-09-26"
+      "color_reviewed": "2026-09-26",
+      "glyph_source": "brand-informed redraw of the launcher tile in a supporter's device screenshot (Projectivy on a TCL Google TV, 2026-09-27): three red squares of a dashboard grid, the fourth corner two yellow bars; Core monoline geometry, not a trace (2026-09-27)",
+      "secondary": {
+        "color": "#FAC021",
+        "parts": [
+          3
+        ],
+        "source": "the launcher tile in a supporter's device screenshot (Projectivy on a TCL Google TV, 2026-09-27): the two bars' yellow #FAC021 beside the red squares (2026-09-27)"
+      }
     },
     {
       "name": "TCN",
@@ -13228,16 +13235,16 @@
     {
       "name": "Användarmanual",
       "drawable": "anvandarmanual",
-      "color": "#FF5CA8",
-      "glyph": "tool_A",
-      "mark": "AN",
+      "color": "#94A3C0",
+      "glyph": "tcl_guide_pages",
       "components": [
         "com.tcl.ocean.instructions/com.tcl.ocean.instructions.portal.home.HomeActivity"
       ],
       "category": "SYSTEM",
       "mapping_source": "owner TV audit 2026-09-21 (Auditor screenshots, TCL Google TV)",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled from the launcher tile in a supporter's device screenshot (Projectivy on a TCL Google TV, 2026-09-27): the tile's slate blue #94A3C0 (the page itself is white)",
+      "color_reviewed": "2026-09-27",
+      "glyph_source": "brand-informed redraw of the launcher tile in a supporter's device screenshot (Projectivy on a TCL Google TV, 2026-09-27): a written page with a second page behind it; Core monoline geometry, not a trace (2026-09-27)"
     },
     {
       "name": "Button Mapper TV",
@@ -13314,15 +13321,15 @@
       "name": "Mediaspelare",
       "drawable": "mediaspelare",
       "color": "#7B2BFC",
-      "glyph": "film_M",
-      "mark": "ME",
+      "glyph": "tcl_media_folder",
       "components": [
         "com.tcl.ui_mediaCenter/com.tcl.ui_mediaCenter.main.MainActivity"
       ],
       "category": "PLAYER",
       "mapping_source": "owner TV audit 2026-09-21 (Auditor screenshots, TCL Google TV)",
       "color_source": "owner TV audit 2026-09-21: TCL stock icon purple tile",
-      "color_reviewed": "2026-09-21"
+      "color_reviewed": "2026-09-21",
+      "glyph_source": "brand-informed redraw of the launcher tile in a supporter's device screenshot (Projectivy on a TCL Google TV, 2026-09-27): a folder holding a play button; Core monoline geometry, not a trace (2026-09-27)"
     },
     {
       "name": "PMX",

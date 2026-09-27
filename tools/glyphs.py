@@ -5982,3 +5982,29 @@ def voltra_v(c):
 
 
 GLYPHS.update({"ak47_crest": ak47_crest, "voltra_v": voltra_v})
+
+
+def tcl_guide_pages(c):
+    """TCL User Guide (Användarmanual): a written page with a second page behind it."""
+    return (f'<rect x="112" y="88" width="208" height="336" rx="24" {_s(c, 28)}/>'
+            f'<path d="M 160 176 L 272 176 M 160 236 L 272 236 M 160 296 L 232 296" {_s(c, 22)}/>'
+            f'<path d="M 324 150 L 376 150 C 396 150 404 160 404 178 L 404 396 '
+            f'C 404 414 396 424 376 424 L 324 424" {_s(c, 24)}/>')
+
+
+def tcl_media_folder(c):
+    """TCL Media Player (Mediaspelare): the folder holding a play button."""
+    return (f'<path d="M 100 172 L 100 132 L 206 132 L 238 164 L 412 164 L 412 172" {_s(c, 24)}/>'
+            f'<rect x="80" y="176" width="352" height="232" rx="28" {_s(c, 28)}/>'
+            + _solid("M 226 236 L 306 292 L 226 348 Z", c, 14))
+
+
+def tcl_home_grid(c):
+    """TCL Home: three squares of the dashboard grid, the fourth corner two bars."""
+    boxes = "".join(f'<rect x="{x}" y="{y}" width="132" height="132" rx="14" {_s(c, 28)}/>'
+                    for x, y in ((100, 100), (280, 100), (100, 280)))
+    return boxes + f'<path d="M 284 326 L 412 326 M 284 386 L 380 386" {_s(c, 28)}/>'
+
+
+GLYPHS.update({"tcl_guide_pages": tcl_guide_pages, "tcl_media_folder": tcl_media_folder,
+               "tcl_home_grid": tcl_home_grid})
