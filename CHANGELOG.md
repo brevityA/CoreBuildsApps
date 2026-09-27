@@ -17,6 +17,14 @@ All notable changes to the Core Builds Icon Pack. Format follows
   launcher tiles, in the tiles' own colours. A supporter's TV audit reported
   them with their launch activities. 963 → 967 icons.
 
+### Changed
+
+- **AK47Sports, Voltra TV and AnikenTV drawn from their real icons.** The
+  same supporter's screenshots show three launcher icons no store had:
+  AK47Sports gets its crossed cricket bats and football, Voltra TV its V
+  with a lightning-bolt arm, and AnikenTV's tile reads "AK", as its white
+  script logo does.
+
 ### Fixed
 
 - **TCL Home and TCL Home Passive now match on TCL TVs.** The same audit

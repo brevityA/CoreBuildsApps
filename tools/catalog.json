@@ -13200,29 +13200,30 @@
       "name": "AK47Sports",
       "drawable": "ak47sports",
       "color": "#FEC500",
-      "glyph": "sport_A",
-      "mark": "AK",
+      "glyph": "ak47_crest",
       "components": [
         "app.aksports.live/app.aksports.live.activities.SplashActivity"
       ],
       "category": "SPORT",
       "mapping_source": "owner TV audit 2026-09-21 (Auditor screenshots, TCL Google TV)",
       "color_source": "owner TV audit 2026-09-21: stock icon gold-on-blue crest",
-      "color_reviewed": "2026-09-21"
+      "color_reviewed": "2026-09-21",
+      "glyph_source": "brand-informed redraw of the launcher tile in a supporter's device screenshot (Projectivy on a TCL Google TV, 2026-09-27): crossed cricket bats and football; Core monoline geometry, not a trace (2026-09-27)"
     },
     {
       "name": "AnikenTV",
       "drawable": "anikentv",
       "color": "#FF4C98",
       "glyph": "broadcast_A",
-      "mark": "AN",
+      "mark": "AK",
       "components": [
         "com.shubh.anililitv/com.shubh.anililitv.MainActivity"
       ],
       "category": "APP",
       "mapping_source": "owner TV audit 2026-09-21 (Auditor screenshots, TCL Google TV)",
-      "color_source": "core-builds palette (anime pink slot; no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "core-builds palette (anime pink slot): the launcher tile in a supporter's device screenshot (Projectivy on a TCL Google TV, 2026-09-27) is white on black, so it carries no brand colour",
+      "color_reviewed": null,
+      "mark_source": "logotype letters from the launcher tile in a supporter's device screenshot (Projectivy on a TCL Google TV, 2026-09-27), which reads 'AK' in white script; set in the pack's face, not traced (2026-09-27)"
     },
     {
       "name": "Användarmanual",
@@ -13385,15 +13386,15 @@
       "name": "Voltra TV",
       "drawable": "voltra_tv",
       "color": "#00E676",
-      "glyph": "broadcast_V",
-      "mark": "VT",
+      "glyph": "voltra_v",
       "components": [
         "com.amhkor.voltratv/com.amhkor.voltratv.tv.SplashActivity"
       ],
       "category": "STREAM",
       "mapping_source": "owner TV audit 2026-09-21 (Auditor screenshots, TCL Google TV)",
       "color_source": "owner TV audit 2026-09-21: Voltra green V cue from stock icon",
-      "color_reviewed": "2026-09-21"
+      "color_reviewed": "2026-09-21",
+      "glyph_source": "brand-informed redraw of the launcher tile in a supporter's device screenshot (Projectivy on a TCL Google TV, 2026-09-27): the V with a lightning-bolt arm; Core monoline geometry, not a trace (2026-09-27)"
     },
     {
       "name": "Works with Alexa",

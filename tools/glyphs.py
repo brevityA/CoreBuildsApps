@@ -5955,3 +5955,30 @@ GLYPHS.update({
     "tcl_exhibit_easel": tcl_exhibit_easel, "tcl_tsolo_note": tcl_tsolo_note,
     "ufm_folder_arrow": ufm_folder_arrow,
 })
+
+
+def ak47_crest(c):
+    """AK47Sports: two crossed cricket bats with the football at their crossing."""
+    import math
+    def bat(ang):
+        ux, uy = math.cos(math.radians(ang)), math.sin(math.radians(ang))
+        px, py = -uy, ux
+        def at(t, w):
+            return 256 + ux * t + px * w, 256 + uy * t + py * w
+        blade = [at(40, 26), at(196, 26), at(212, 0), at(196, -26), at(40, -26)]
+        d = "M " + " L ".join(f"{x:.1f} {y:.1f}" for x, y in blade) + " Z"
+        h0, h1 = at(-200, 0), at(-60, 0)
+        return (f'<path d="{d}" {_s(c, 22)}/>'
+                f'<path d="M {h0[0]:.1f} {h0[1]:.1f} L {h1[0]:.1f} {h1[1]:.1f}" {_s(c, 24)}/>')
+    return (bat(45) + bat(135)
+            + f'<circle cx="256" cy="226" r="62" {_s(c, 24)}/>'
+            + _solid("M 256 200 L 281 218 L 271 247 L 241 247 L 231 218 Z", c, 8))
+
+
+def voltra_v(c):
+    """Voltra TV: the V whose left arm is a lightning bolt."""
+    return (_solid("M 94 104 L 178 104 L 230 244 L 202 244 L 256 404 L 168 232 L 196 232 Z", c, 12)
+            + f'<path d="M 256 404 L 420 96" {_s(c, 32)}/>')
+
+
+GLYPHS.update({"ak47_crest": ak47_crest, "voltra_v": voltra_v})
