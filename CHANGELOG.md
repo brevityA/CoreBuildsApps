@@ -48,6 +48,12 @@ All notable changes to the Core Builds Icon Pack. Format follows
   and two more suspected mis-mappings are logged in
   `docs/research/icon-reference-pass2-2026-09-26.md`; no mapping changed.
 
+### Changed
+
+- **Three names spelled like the apps.** Hideme is now hide.me, Pathethuis
+  is Pathé Thuis and Tennistv is Tennis TV, on their banners and in the icon
+  list.
+
 ## [1.9.6] — 2026-09-26
 
 ### Added

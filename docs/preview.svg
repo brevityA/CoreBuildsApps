@@ -979,7 +979,7 @@
 <text x="675.0" y="6216" fill="#8b949e" font-family="ui-monospace,monospace" font-size="10.5" text-anchor="middle">Hi Browser</text>
 <rect x="759" y="6083" width="132" height="116" rx="16" fill="#151923" stroke="rgba(255,255,255,.06)"/>
 <g transform="translate(783,6098) scale(0.1640625)"><path d="M 88 132 L 428 88 L 300 432 Z" fill="none" stroke="#2AA9E0" stroke-width="32.0" stroke-linecap="round" stroke-linejoin="round"/><circle cx="332" cy="160" r="11" fill="#2AA9E0" stroke="none"/><circle cx="354" cy="206" r="9" fill="#2AA9E0" stroke="none"/><circle cx="318" cy="232" r="11" fill="#2AA9E0" stroke="none"/><circle cx="342" cy="276" r="9" fill="#2AA9E0" stroke="none"/><circle cx="306" cy="306" r="11" fill="#2AA9E0" stroke="none"/></g>
-<text x="825.0" y="6216" fill="#8b949e" font-family="ui-monospace,monospace" font-size="10.5" text-anchor="middle">Hideme</text>
+<text x="825.0" y="6216" fill="#8b949e" font-family="ui-monospace,monospace" font-size="10.5" text-anchor="middle">hide.me</text>
 <rect x="909" y="6083" width="132" height="116" rx="16" fill="#151923" stroke="rgba(255,255,255,.06)"/>
 <g transform="translate(933,6098) scale(0.1640625)"><path d="M 300 120 L 148 120 C 106 120 72 154 72 196 L 72 372 C 72 414 106 448 148 448 L 364 448 C 406 448 440 414 440 372 L 440 216" fill="none" stroke="#23B9F2" stroke-width="32.0" stroke-linecap="round" stroke-linejoin="round"/><path d="M 394.0 54.0 C 399.1 98.8 413.2 112.9 458.0 118.0 C 413.2 123.1 399.1 137.2 394.0 182.0 C 388.9 137.2 374.8 123.1 330.0 118.0 C 374.8 112.9 388.9 98.8 394.0 54.0 Z" fill="none" stroke="#23B9F2" stroke-width="21.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M165.7537376586742 367.7V228.29999999999998H200.9478138222849V367.7ZM251.0846262341326 367.7V228.29999999999998H286.2787023977433V367.7ZM185.80846262341328 311.0748942172073V281.5826516220028H263.86459802538786V311.0748942172073Z" fill="#23B9F2" stroke="none"/><path d="M311.0521861777151 367.7V228.29999999999998H346.2462623413258V367.7Z" fill="#23B9F2" stroke="none"/></g>
 <text x="975.0" y="6216" fill="#8b949e" font-family="ui-monospace,monospace" font-size="10.5" text-anchor="middle">Hidive</text>
@@ -1729,7 +1729,7 @@
 <text x="975.0" y="10866" fill="#8b949e" font-family="ui-monospace,monospace" font-size="10.5" text-anchor="middle">Parsec</text>
 <rect x="1059" y="10733" width="132" height="116" rx="16" fill="#151923" stroke="rgba(255,255,255,.06)"/>
 <g transform="translate(1083,10748) scale(0.1640625)"><path d="M 136 96 L 376 96 C 408 96 424 112 424 144 L 424 344 C 424 376 408 392 376 392 L 176 392 L 100 440 L 112 384 C 96 376 88 364 88 344 L 88 144 C 88 112 104 96 136 96 Z" fill="none" stroke="#FFC426" stroke-width="26.2" stroke-linecap="round" stroke-linejoin="round"/><path d="M 214 180 L 324 244 L 214 308 Z" stroke="#FFC426" stroke-width="21.8" stroke-linecap="round" stroke-linejoin="round" fill="#FFC426"/></g>
-<text x="1125.0" y="10866" fill="#8b949e" font-family="ui-monospace,monospace" font-size="10.5" text-anchor="middle">Pathethuis</text>
+<text x="1125.0" y="10866" fill="#8b949e" font-family="ui-monospace,monospace" font-size="10.5" text-anchor="middle">Pathé Thuis</text>
 <rect x="9" y="10883" width="132" height="116" rx="16" fill="#151923" stroke="rgba(255,255,255,.06)"/>
 <g transform="translate(33,10898) scale(0.1640625)"><path d="M 190 366 L 190 148 L 268 148 C 320 148 348 178 348 226 C 348 274 320 304 268 304 L 190 304" fill="none" stroke="#3E55C9" stroke-width="32.0" stroke-linecap="round" stroke-linejoin="round"/></g>
 <text x="75.0" y="11016" fill="#8b949e" font-family="ui-monospace,monospace" font-size="10.5" text-anchor="middle">PBS</text>
@@ -2377,7 +2377,7 @@
 <text x="975.0" y="14916" fill="#8b949e" font-family="ui-monospace,monospace" font-size="10.5" text-anchor="middle">Tennis Channel</text>
 <rect x="1059" y="14783" width="132" height="116" rx="16" fill="#151923" stroke="rgba(255,255,255,.06)"/>
 <g transform="translate(1083,14798) scale(0.1640625)"><circle cx="256" cy="256" r="176" fill="none" stroke="#DDFF4F" stroke-width="26.2" stroke-linecap="round" stroke-linejoin="round"/><path d="M 146 124 C 222 196 222 316 146 388 M 366 124 C 290 196 290 316 366 388" fill="none" stroke="#DDFF4F" stroke-width="21.8" stroke-linecap="round" stroke-linejoin="round"/></g>
-<text x="1125.0" y="14916" fill="#8b949e" font-family="ui-monospace,monospace" font-size="10.5" text-anchor="middle">Tennistv</text>
+<text x="1125.0" y="14916" fill="#8b949e" font-family="ui-monospace,monospace" font-size="10.5" text-anchor="middle">Tennis TV</text>
 <rect x="9" y="14933" width="132" height="116" rx="16" fill="#151923" stroke="rgba(255,255,255,.06)"/>
 <g transform="translate(33,14948) scale(0.1640625)"><path d="M 116 170 L 268 246 L 116 322" fill="none" stroke="#E6EDF3" stroke-width="32.0" stroke-linecap="round" stroke-linejoin="round"/><path d="M 292 322 L 396 322" fill="none" stroke="#E6EDF3" stroke-width="32.0" stroke-linecap="round" stroke-linejoin="round"/></g>
 <text x="75.0" y="15066" fill="#8b949e" font-family="ui-monospace,monospace" font-size="10.5" text-anchor="middle">Termux</text>

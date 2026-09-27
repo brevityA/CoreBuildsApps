@@ -943,7 +943,7 @@
     <item component="ComponentInfo{com.hisense.odinbrowser/.ui.MainActivity}" drawable="hi_browser_banner"/>
     <item component="ComponentInfo{com.hisense.odinbrowser/com.hisense.odinbrowser.browser.MainActivity}" drawable="hi_browser_banner"/>
     <item component="ComponentInfo{com.hisense.odinbrowser/.browser.MainActivity}" drawable="hi_browser_banner"/>
-    <!-- Hideme -->
+    <!-- hide.me -->
     <item component="ComponentInfo{hideme.android.vpn/com.android.vpn.activities.LoginActivity}" drawable="hideme_banner"/>
     <!-- Hidive -->
     <item component="ComponentInfo{com.twentyfouri.androidtv.hidive/com.twentyfouri.androidtv.hidive.MainActivity}" drawable="hidive_banner"/>
@@ -1662,7 +1662,7 @@
     <!-- Parsec -->
     <item component="ComponentInfo{tv.parsec.client/tv.parsec.client.MainActivity}" drawable="parsec_banner"/>
     <item component="ComponentInfo{tv.parsec.client/.MainActivity}" drawable="parsec_banner"/>
-    <!-- Pathethuis -->
+    <!-- Pathé Thuis -->
     <item component="ComponentInfo{nl.pathe.thuis/nl.pathe.thuis.LaunchActivity}" drawable="pathethuis_banner"/>
     <item component="ComponentInfo{nl.pathe.thuis/.LaunchActivity}" drawable="pathethuis_banner"/>
     <!-- PBS -->
@@ -2301,7 +2301,7 @@
     <!-- Tennis Channel -->
     <item component="ComponentInfo{com.tennischannel.foxxum.amazon/com.foxxum.tennis.MainActivity}" drawable="tennis_channel_banner"/>
     <item component="ComponentInfo{com.tennischannel.tceverywhere.amazon/com.foxxum.webapp.MainActivity}" drawable="tennis_channel_banner"/>
-    <!-- Tennistv -->
+    <!-- Tennis TV -->
     <item component="ComponentInfo{com.tennistv.cdtv/com.tennistv.cdtv.MainActivity}" drawable="tennistv_banner"/>
     <item component="ComponentInfo{com.tennistv.cdtv/.MainActivity}" drawable="tennistv_banner"/>
     <!-- Termux -->

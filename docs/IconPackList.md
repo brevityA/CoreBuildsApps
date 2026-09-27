@@ -333,7 +333,7 @@ Source accents are retained in the catalog. **On dark** is the shared square/ban
 | HEI Network | `heinetworktv` | `#DA3430` | `#DA3430` | `com.heinetwork.HEINetworkTV/com.heinetwork.HEINetworkTV.MainActivity` |
 | HGTV | `watcher` | `#34EB7A` | `#34EB7A` | `com.hgtv.watcher/com.discovery.tve.presentation.activities.SplashActivity` |
 | Hi Browser | `hi_browser` | `#00A8A8` | `#00A8A8` | `com.hisense.odinbrowser/com.hisense.odinbrowser.MainActivity`<br>`com.hisense.odinbrowser/com.hisense.odinbrowser.ui.MainActivity`<br>`com.hisense.odinbrowser/com.hisense.odinbrowser.browser.MainActivity` |
-| Hideme | `hideme` | `#2AA9E0` | `#2AA9E0` | `hideme.android.vpn/com.android.vpn.activities.LoginActivity` |
+| hide.me | `hideme` | `#2AA9E0` | `#2AA9E0` | `hideme.android.vpn/com.android.vpn.activities.LoginActivity` |
 | Hidive | `hidive` | `#23B9F2` | `#23B9F2` | `com.twentyfouri.androidtv.hidive/com.twentyfouri.androidtv.hidive.MainActivity` |
 | Hippos | `livingwithhippos` | `#D20076` | `#D20076` | `com.github.livingwithhippos.unchained/com.github.livingwithhippos.unchained.base.MainActivity` |
 | HISTORY | `androidtv_4` | `#FF5CA8` | `#FF5CA8` | `com.aetn.history.watch.androidtv/com.aetn.android.tveapps.app.MainActivity` |
@@ -583,7 +583,7 @@ Source accents are retained in the catalog. **On dark** is the shared square/ban
 | Paramount+ Canada | `cbs` | `#0064FF` | `#0064FF` | `com.cbs.ca/com.paramount.android.pplus.features.splash.tv.SplashMediatorActivity` |
 | Paramount+ TVE | `tve` | `#0064FF` | `#0064FF` | `com.cbs.tve/com.paramount.android.pplus.features.splash.tv.SplashMediatorActivity` |
 | Parsec | `parsec` | `#E94C89` | `#E94C89` | `tv.parsec.client/tv.parsec.client.MainActivity` |
-| Pathethuis | `pathethuis` | `#FFC426` | `#FFC426` | `nl.pathe.thuis/nl.pathe.thuis.LaunchActivity` |
+| Pathé Thuis | `pathethuis` | `#FFC426` | `#FFC426` | `nl.pathe.thuis/nl.pathe.thuis.LaunchActivity` |
 | PBS | `video` | `#283990` | `#3E55C9` | `com.pbs.video/com.pbs.video.StartupActivity` |
 | PBS Kids | `pbs_kids` | `#FF7A2E` | `#FF7A2E` | `org.pbskids.video/org.pbskids.video.ui.root.MainActivity` |
 | Peacock | `peacockandroid` | `#000000` | `#E6EDF3` | `com.peacocktv.peacockandroid/com.peacock.peacocktv.GoogleMainActivity` |
@@ -799,7 +799,7 @@ Source accents are retained in the catalog. **On dark** is the shared square/ban
 | Telly | `telly` | `#1E1EC8` | `#4949E4` | `tv.fournetwork.android.box.digi/tv.fournetwork.android.box.MainActivity` |
 | Tencent | `tencent` | `#C95CFF` | `#C95CFF` | `com.tencent.qqlive/com.tencent.qqlive.ona.activity.SplashHomeActivity` |
 | Tennis Channel | `tennis_channel` | `#FFE14D` | `#FFE14D` | `com.tennischannel.foxxum.amazon/com.foxxum.tennis.MainActivity`<br>`com.tennischannel.tceverywhere.amazon/com.foxxum.webapp.MainActivity` |
-| Tennistv | `tennistv` | `#DDFF4F` | `#DDFF4F` | `com.tennistv.cdtv/com.tennistv.cdtv.MainActivity` |
+| Tennis TV | `tennistv` | `#DDFF4F` | `#DDFF4F` | `com.tennistv.cdtv/com.tennistv.cdtv.MainActivity` |
 | Termux | `termux` | `#000000` | `#E6EDF3` | `com.termux/com.termux.app.TermuxActivity` |
 | Texttv | `texttv` | `#1010EE` | `#4444F2` | `com.vonlegohufvud.texttvsv/com.vonlegohufvud.texttvsv.MainActivity` |
 | TF1+ | `tf1` | `#1937FF` | `#2643FF` | `fr.tf1.mytf1/fr.tf1.mytf1.MainActivity` |

@@ -4320,7 +4320,7 @@
       "color_reviewed": "2026-09-14"
     },
     {
-      "name": "Hideme",
+      "name": "hide.me",
       "drawable": "hideme",
       "color": "#2AA9E0",
       "glyph": "hideme_cone",
@@ -7721,7 +7721,7 @@
       "color_reviewed": null
     },
     {
-      "name": "Pathethuis",
+      "name": "Pathé Thuis",
       "drawable": "pathethuis",
       "color": "#FFC426",
       "glyph": "pathe_bubble",
@@ -10605,7 +10605,7 @@
       "color_reviewed": null
     },
     {
-      "name": "Tennistv",
+      "name": "Tennis TV",
       "drawable": "tennistv",
       "color": "#DDFF4F",
       "glyph": "tennistv_ball",
