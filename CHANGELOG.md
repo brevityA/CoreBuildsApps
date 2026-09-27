@@ -21,6 +21,18 @@ All notable changes to the Core Builds Icon Pack. Format follows
   apart from the pack's other TV, radio, shield and grid marks. SCB Next
   takes its icon's red `#D40615` instead of a palette lime, and four names
   are spelled like the apps: SCB Next, SD Maid, StrongVPN, Refresh Rate.
+- **22 more apps get marks drawn from their real icons, 145 in all.**
+  Bell Fibe's outlined play on its bar, Dramox's split ring, Enjoy TV's play
+  and chevron, OTTplay's aperture, Play Now's notched arrowhead, Pathé
+  Thuis's speech bubble, Ocean Streamz's diamond, XC IPTV's bars and play,
+  Filmfriend's deep frame, Orange TV Go's bezel and power dot, STB Emu's
+  floating panel, TV App Repo's monitor, Home Automation's house in a bubble,
+  the FM Radio, Replaio and World Radios sets (knobs, play dial, grille),
+  Forecast's sun over a cloud, Tennis TV's ball, Etube's slanted E, VPN
+  Unlimited's infinity shield, hide.me's bubbling cone and Fast Task Killer's
+  cube replace their letter tiles. Three colours move from an icon's ground
+  to its mark: Enjoy TV `#08A8D0`, Play Now `#7444A1`, Fast Task Killer
+  `#0070B8`.
 - **12 more reference icons found.** A third research pass (Aptoide, exact
   package match) found icons for apps missing from Play and F-Droid: 11 now
   wear their icon's colour, RB Live's tile reads "RB", and CinemaHD, ES-DE,

@@ -219,7 +219,7 @@ Source accents are retained in the catalog. **On dark** is the shared square/ban
 | Echogram | `echogram` | `#4765AD` | `#4765AD` | `com.liori.echogram/com.liori.echogram.MainActivity` |
 | Elefin | `elefin` | `#FF5CA8` | `#FF5CA8` | `com.flex.elefin/com.flex.elefin.MainActivity` |
 | Emby | `emby` | `#52B54B` | `#52B54B` | `tv.emby.embyatv/.startup.StartupActivity`<br>`com.mb.android/.MainActivity` |
-| Enjoy TV | `enjoytvandroid` | `#1E3141` | `#3D6484` | `com.myenjoytv.enjoytvandroid/com.myenjoytv.enjoytvandroid.SplashActivity` |
+| Enjoy TV | `enjoytvandroid` | `#08A8D0` | `#08A8D0` | `com.myenjoytv.enjoytvandroid/com.myenjoytv.enjoytvandroid.SplashActivity` |
 | Eon TV | `eon_tv` | `#7C74FF` | `#7C74FF` | `com.ug.eon.android.tv/com.ug.eon.android.tv.TvActivity` |
 | Epic Channel | `epicchannel` | `#F6643A` | `#F6643A` | `com.epicchannel.epicon/com.epicchannel.epicon.ui.launcher.activity.LauncherActivity` |
 | ePSXe | `epsxe` | `#19D3C5` | `#19D3C5` | `com.epsxe.ePSXe/com.epsxe.ePSXe.ePSXe` |
@@ -240,7 +240,7 @@ Source accents are retained in the catalog. **On dark** is the shared square/ban
 | Falcon Cast | `falconcast` | `#1982C4` | `#1982C4` | `com.falconcast.live/com.falconcast.live.SplashActivity`<br>`com.falconcast.live/com.falconcast.live.tv.TvSplashActivity` |
 | Fandango at Home | `fandango_at_home` | `#FF7300` | `#FF7300` | `air.com.vudu.air.DownloaderTablet/air.com.vudu.air.DownloaderTablet.SplashActivity` |
 | FANE TV | `fanetv` | `#E6EDF3` | `#E6EDF3` | `com.fanetv/tv.vhx.LauncherActivity`<br>`com.fanetv/tv.vhx.tv.home.TvHomeActivity` |
-| Fast Task Killer | `fasttaskkiller` | `#074E8D` | `#0961AE` | `jp.snowlife01.android.appkiller2/jp.snowlife01.android.appkiller2.Optimization`<br>`jp.snowlife01.android.appkiller2/jp.snowlife01.android.appkiller2.OptimizationActivity` |
+| Fast Task Killer | `fasttaskkiller` | `#0070B8` | `#0070B8` | `jp.snowlife01.android.appkiller2/jp.snowlife01.android.appkiller2.Optimization`<br>`jp.snowlife01.android.appkiller2/jp.snowlife01.android.appkiller2.OptimizationActivity` |
 | FC Porto TV | `fcportotv` | `#1975BC` | `#1975BC` | `com.fcp.fcportotv/com.fcp.fcportotv.SplashActivity` |
 | FC TV | `fctv77` | `#FFB020` | `#FFB020` | `com.fctv77.tv/com.rblive.launcher.splash.SplashActivity` |
 | FCast Receiver | `playstore_2` | `#00D4FF` | `#00D4FF` | `com.futo.fcast.receiver.playstore/com.futo.fcast.receiver.MainActivity` |
@@ -596,7 +596,7 @@ Source accents are retained in the catalog. **On dark** is the shared square/ban
 | Photo Screensaver | `photoscreensaver` | `#1FD19A` | `#1FD19A` | `com.furnaghan.android.photoscreensaver/com.furnaghan.android.photoscreensaver.gallery.GalleryBrowseActivity` |
 | PigeonCast | `pigeoncast` | `#0092B0` | `#0092B0` | `com.pigeoncast.screen.mirroring.android.tv/com.mirror_universal.receiver.activity.MainActivity` |
 | PikPak | `pikcloud` | `#4664F3` | `#4664F3` | `com.pikcloud.pikpak/com.pikcloud.app.SplashActivity`<br>`com.pikcloud.pikpak/com.pikcloud.app.TVLaunchActivity` |
-| Play Now | `playnow` | `#391D6F` | `#7141CD` | `com.play.playnow.tv/com.n7mobile.playbox.ui.MainActivity` |
+| Play Now | `playnow` | `#7444A1` | `#7A48AA` | `com.play.playnow.tv/com.n7mobile.playbox.ui.MainActivity` |
 | Play Suisse | `playsuisse` | `#9A0326` | `#C20430` | `ch.srgssr.playsuisse.tv/ch.srgssr.playsuisse.tv.MainActivity` |
 | Play Universal | `universal` | `#FCCC12` | `#FCCC12` | `com.play.universal/com.play.universal.MainActivity` |
 | Player | `player` | `#FFB020` | `#FFB020` | `pl.tvn.player.tv/pl.redlabs.redcdn.portal.ui.main.MainActivity` |

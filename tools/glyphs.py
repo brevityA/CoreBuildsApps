@@ -6109,3 +6109,202 @@ GLYPHS.update({
     "radioline_planet": radioline_planet,
     "smarttwitch_joystick": smarttwitch_joystick, "weathernetwork_globe": weathernetwork_globe,
 })
+
+
+# --------------------------------------------------------------------------
+# Brand marks batch 9 (2026-09-27): symbol icons redrawn from each app's own
+# launcher icon.
+
+
+def _arc_cw(cx, cy, r, a0, a1):
+    """An SVG arc path clockwise from a0 to a1 degrees (y down)."""
+    x0, y0 = _polar(cx, cy, r, a0)
+    x1, y1 = _polar(cx, cy, r, a1)
+    large = 1 if (a1 - a0) % 360 > 180 else 0
+    return f"M {x0:.1f} {y0:.1f} A {r} {r} 0 {large} 1 {x1:.1f} {y1:.1f}"
+
+
+def _radio_body(c):
+    return f'<rect x="72" y="188" width="368" height="236" rx="36" {_s(c, 28)}/>'
+
+
+def bellfibe_play(c):
+    """Bell Fibe: the outlined play arrow standing on the Bell bar."""
+    return (f'<path d="M 170 92 L 394 222 L 170 352 Z" {_s(c, 30)}/>'
+            f'<path d="M 170 424 L 342 424" {_s(c, 30)}/>')
+
+
+def dramox_ring(c):
+    """Dramox: a solid play inside a ring broken at both sides."""
+    return (f'<path d="{_arc_cw(256, 256, 176, 205, 335)} {_arc_cw(256, 256, 176, 25, 155)}" '
+            f'{_s(c, 30)}/>'
+            + _solid("M 222 190 L 322 256 L 222 322 Z", c, 14))
+
+
+def enjoytv_chevron(c):
+    """Enjoy TV: the outlined play arrow chased by a chevron."""
+    return (f'<path d="M 96 120 L 286 256 L 96 392 Z" {_s(c, 30)}/>'
+            f'<path d="M 318 168 L 424 256 L 318 344" {_s(c, 30)}/>')
+
+
+def ottplay_aperture(c):
+    """OTTplay: the play arrow whose edges run on to the rim, like an aperture."""
+    return (f'<circle cx="256" cy="256" r="180" {_s(c, 28)}/>'
+            f'<path d="M 214 170 L 334 256 L 214 342 Z" {_s(c, 24)}/>'
+            f'<path d="M 214 170 L 214 92 M 334 256 L 400 303 M 214 342 L 150 388" '
+            f'{_s(c, 24)}/>')
+
+
+def playnow_arrow(c):
+    """Play Now: a notched arrowhead inside its disc."""
+    return (f'<circle cx="256" cy="256" r="180" {_s(c, 28)}/>'
+            + _solid("M 212 150 L 346 256 L 212 362 L 252 256 Z", c, 14))
+
+
+def pathe_bubble(c):
+    """Pathé Thuis: the speech bubble with a solid play inside."""
+    return (f'<path d="M 136 96 L 376 96 C 408 96 424 112 424 144 L 424 344 '
+            f'C 424 376 408 392 376 392 L 176 392 L 100 440 L 112 384 '
+            f'C 96 376 88 364 88 344 L 88 144 C 88 112 104 96 136 96 Z" {_s(c, 28)}/>'
+            + _solid("M 214 180 L 324 244 L 214 308 Z", c, 16))
+
+
+def ocean_diamond(c):
+    """Ocean Streamz: the rounded diamond with a play at its heart."""
+    return (f'<path d="M 256 64 L 448 256 L 256 448 L 64 256 Z" {_s(c, 28)}/>'
+            + _solid("M 222 196 L 318 256 L 222 316 Z", c, 14))
+
+
+def xciptv_bars(c):
+    """XC IPTV: two bars and a play arrow in a disc."""
+    return (f'<circle cx="256" cy="256" r="180" {_s(c, 28)}/>'
+            f'<path d="M 160 160 L 160 352 M 204 150 L 204 362" {_s(c, 24)}/>'
+            + _solid("M 246 190 L 350 256 L 246 322 Z", c, 14))
+
+
+def filmfriend_frame(c):
+    """Filmfriend: a soft, deep screen frame with a small play in it."""
+    return (f'<rect x="96" y="136" width="320" height="240" rx="64" {_s(c, 30)}/>'
+            + _solid("M 228 214 L 300 256 L 228 298 Z", c, 14))
+
+
+def orangetv_screen(c):
+    """Orange TV Go: the screen on a deep bottom bezel with its power dot."""
+    return (f'<rect x="88" y="112" width="336" height="288" rx="12" {_s(c, 28)}/>'
+            f'<path d="M 88 336 L 424 336" {_s(c, 26)}/>'
+            f'<circle cx="256" cy="370" r="14" {_f(c)}/>')
+
+
+def stbemu_tv(c):
+    """STB Emu: a wide flat panel floating over its floor shadow."""
+    return (f'<rect x="64" y="128" width="384" height="220" rx="14" {_s(c, 28)}/>'
+            f'<circle cx="256" cy="322" r="9" {_f(c)}/>'
+            f'<path d="M 136 408 L 376 408" {_s(c, 22)}/>')
+
+
+def tvapprepo_monitor(c):
+    """TV App Repo: a monitor on a splayed foot."""
+    return (f'<rect x="96" y="96" width="320" height="232" rx="12" {_s(c, 28)}/>'
+            f'<path d="M 220 328 L 204 396 M 292 328 L 308 396 M 164 404 L 348 404" '
+            f'{_s(c, 24)}/>')
+
+
+def homeassist_bubble(c):
+    """Home Automation TV Dashboard: a house in a square message bubble."""
+    return (f'<path d="M 120 88 L 392 88 C 412 88 424 100 424 120 L 424 328 '
+            f'C 424 348 412 360 392 360 L 188 360 L 120 428 L 120 360 '
+            f'C 100 360 88 348 88 328 L 88 120 C 88 100 100 88 120 88 Z" {_s(c, 28)}/>'
+            f'<path d="M 184 296 L 184 234 L 256 176 L 328 234 L 328 296 Z" {_s(c, 24)}/>')
+
+
+def fmradio_knobs(c):
+    """FM Radio: the portable set with a ball-tipped aerial, two knobs and a speaker."""
+    return (_radio_body(c)
+            + f'<path d="M 150 188 L 364 112" {_s(c, 22)}/>'
+            f'<circle cx="382" cy="106" r="20" {_f(c)}/>'
+            f'<path d="M 120 244 L 392 244" {_s(c, 22)}/>'
+            f'<circle cx="152" cy="304" r="22" {_s(c, 20)}/>'
+            f'<circle cx="152" cy="370" r="14" {_f(c)}/>'
+            f'<circle cx="320" cy="338" r="58" {_s(c, 22)}/>')
+
+
+def replaio_radio(c):
+    """Replaio Radio: the set whose dial is a play button, with a display beside it."""
+    return (_radio_body(c)
+            + f'<path d="M 108 188 L 388 100" {_s(c, 22)}/>'
+            f'<circle cx="176" cy="306" r="66" {_s(c, 22)}/>'
+            + _solid("M 160 276 L 206 306 L 160 336 Z", c, 10)
+            + f'<rect x="282" y="256" width="110" height="52" rx="12" {_s(c, 20)}/>'
+            f'<path d="M 282 360 L 392 360" {_s(c, 22)}/>')
+
+
+def worldradios_grille(c):
+    """World Radios: the set with a slatted grille and a round tuning dial."""
+    return (_radio_body(c)
+            + f'<path d="M 186 188 L 330 112" {_s(c, 22)}/>'
+            f'<path d="M 118 262 L 250 262 M 118 306 L 250 306 M 118 350 L 250 350" '
+            f'{_s(c, 22)}/>'
+            f'<circle cx="346" cy="306" r="50" {_s(c, 22)}/>')
+
+
+def forecast_cloud(c):
+    """Forecast: the sun peeking over a cloud, in a disc."""
+    return (f'<circle cx="256" cy="256" r="190" {_s(c, 24)}/>'
+            f'<path d="{_arc_cw(206, 214, 50, 150, 345)}" {_s(c, 22)}/>'
+            f'<path d="M 170 356 C 124 356 118 296 164 286 C 170 238 236 222 266 262 '
+            f'C 304 236 364 256 360 306 C 396 312 394 356 356 356 Z" {_s(c, 24)}/>')
+
+
+def tennistv_ball(c):
+    """Tennis TV: the tennis ball with its two seams."""
+    return (f'<circle cx="256" cy="256" r="176" {_s(c, 28)}/>'
+            f'<path d="M 146 124 C 222 196 222 316 146 388 M 366 124 C 290 196 290 316 366 388" '
+            f'{_s(c, 22)}/>')
+
+
+def etube_bars(c):
+    """Etube: three slanted, offset bars stacked into an E, in a disc."""
+    bars = ("M 214 162 L 344 162 L 326 200 L 196 200 Z",
+            "M 182 236 L 330 236 L 312 274 L 164 274 Z",
+            "M 190 310 L 306 310 L 288 348 L 172 348 Z")
+    return (f'<circle cx="256" cy="256" r="176" {_s(c, 28)}/>'
+            + "".join(_solid(d, c, 12) for d in bars))
+
+
+def vpnunlimited_shield(c):
+    """VPN Unlimited: the infinity sign on a shield."""
+    return (f'<path d="M 256 60 L 424 118 L 424 250 C 424 350 350 418 256 452 '
+            f'C 162 418 88 350 88 250 L 88 118 Z" {_s(c, 28)}/>'
+            f'<path d="M 256 256 C 226 204 150 204 150 256 C 150 308 226 308 256 256 '
+            f'C 286 204 362 204 362 256 C 362 308 286 308 256 256 Z" {_s(c, 24)}/>')
+
+
+def hideme_cone(c):
+    """hide.me: the rounded triangle with a spray of bubbles along its edge."""
+    dots = "".join(f'<circle cx="{x}" cy="{y}" r="{r}" {_f(c)}/>'
+                   for x, y, r in ((332, 160, 11), (354, 206, 9), (318, 232, 11),
+                                   (342, 276, 9), (306, 306, 11)))
+    return f'<path d="M 88 132 L 428 88 L 300 432 Z" {_s(c, 30)}/>' + dots
+
+
+def fasttask_cube(c):
+    """Fast Task Killer: a cube set in a round bezel."""
+    return (f'<circle cx="256" cy="256" r="190" {_s(c, 26)}/>'
+            f'<path d="M 256 146 L 351 201 L 351 311 L 256 366 L 161 311 L 161 201 Z" '
+            f'{_s(c, 24)}/>'
+            f'<path d="M 161 201 L 256 256 L 351 201 M 256 256 L 256 366" {_s(c, 24)}/>')
+
+
+GLYPHS.update({
+    "bellfibe_play": bellfibe_play, "dramox_ring": dramox_ring,
+    "enjoytv_chevron": enjoytv_chevron, "ottplay_aperture": ottplay_aperture,
+    "playnow_arrow": playnow_arrow, "pathe_bubble": pathe_bubble,
+    "ocean_diamond": ocean_diamond, "xciptv_bars": xciptv_bars,
+    "filmfriend_frame": filmfriend_frame, "orangetv_screen": orangetv_screen,
+    "stbemu_tv": stbemu_tv, "tvapprepo_monitor": tvapprepo_monitor,
+    "homeassist_bubble": homeassist_bubble, "fmradio_knobs": fmradio_knobs,
+    "replaio_radio": replaio_radio, "worldradios_grille": worldradios_grille,
+    "forecast_cloud": forecast_cloud, "tennistv_ball": tennistv_ball,
+    "etube_bars": etube_bars, "vpnunlimited_shield": vpnunlimited_shield,
+    "hideme_cone": hideme_cone, "fasttask_cube": fasttask_cube,
+})
