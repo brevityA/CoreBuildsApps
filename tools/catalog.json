@@ -27,17 +27,18 @@
       "style": "core_monoline"
     },
     {
-      "name": "3Player",
+      "name": "Virgin Media Play",
       "drawable": "threeplayer",
       "color": "#ED0000",
-      "glyph": "broadcast_3",
+      "glyph": "broadcast_V",
       "components": [
         "com.axonista.threeplayer/com.simplestream.presentation.startup.StartUpActivity"
       ],
       "category": "APP",
       "color_source": "sampled from the official launcher icon (Google Play listing for com.axonista.threeplayer): dominant brand accent #ED0000 (2026-09-26)",
       "color_reviewed": "2026-09-26",
-      "mark": "3P"
+      "mark": "VM",
+      "name_source": "app name from the Projectivy Icon Pack 1.1.9 artwork for com.axonista.threeplayer (github.com/SicMundus86/ProjectivyIconPack, used as reference only), which shows the Virgin Media Play logo for this package (2026-09-27)"
     },
     {
       "name": "7plus",
@@ -193,7 +194,7 @@
       "color_reviewed": null
     },
     {
-      "name": "ADB WiFi",
+      "name": "Remote ADB",
       "drawable": "dinhlap",
       "color": "#E6EDF3",
       "glyph": "adb_wifi",
@@ -203,7 +204,8 @@
       "category": "TOOL",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null,
-      "style": "core_monoline"
+      "style": "core_monoline",
+      "name_source": "app name from the Projectivy Icon Pack 1.1.9 artwork for com.dinhlap.adb (github.com/SicMundus86/ProjectivyIconPack, used as reference only), which shows the Remote ADB logo for this package (2026-09-27)"
     },
     {
       "name": "AdGuard",
@@ -270,17 +272,18 @@
       "color_reviewed": null
     },
     {
-      "name": "AIMI TV",
+      "name": "Local 10+",
       "drawable": "aimitv",
-      "color": "#00D4FF",
-      "glyph": "sport_A",
-      "mark": "AT",
+      "color": "#3090E0",
+      "glyph": "sport_L",
+      "mark": "L1",
       "components": [
         "com.aimitv.wplg.news/com.whiz.firetv.activity.SplashScreen"
       ],
-      "category": "SPORT",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "category": "APP",
+      "color_source": "sampled from the Projectivy Icon Pack 1.1.9 artwork for com.aimitv.wplg.news (github.com/SicMundus86/ProjectivyIconPack, used as reference only): #3090E0 (2026-09-27)",
+      "color_reviewed": "2026-09-27",
+      "name_source": "app name from the Projectivy Icon Pack 1.1.9 artwork for com.aimitv.wplg.news (github.com/SicMundus86/ProjectivyIconPack, used as reference only), which shows the Local 10+ logo for this package (2026-09-27)"
     },
     {
       "name": "Air Attack 2",
@@ -390,17 +393,18 @@
       "color_reviewed": null
     },
     {
-      "name": "AllSaves Social",
+      "name": "VivaTV",
       "drawable": "allsaversocial",
-      "color": "#B6F23A",
-      "glyph": "tool_A",
-      "mark": "AS",
+      "color": "#F01048",
+      "glyph": "broadcast_V",
+      "mark": "VI",
       "components": [
         "com.allsaversocial.gl/com.allsaversocial.gl.MainActivityVer2"
       ],
       "category": "APP",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled from the Projectivy Icon Pack 1.1.9 artwork for com.allsaversocial.gl (github.com/SicMundus86/ProjectivyIconPack, used as reference only): #F01048 (2026-09-27)",
+      "color_reviewed": "2026-09-27",
+      "name_source": "app name from the Projectivy Icon Pack 1.1.9 artwork for com.allsaversocial.gl (github.com/SicMundus86/ProjectivyIconPack, used as reference only), which shows the VivaTV logo for this package (2026-09-27)"
     },
     {
       "name": "Aloula TV",
@@ -458,7 +462,7 @@
       "color_reviewed": null
     },
     {
-      "name": "AMC",
+      "name": "Watch Free UK",
       "drawable": "amcnetworks",
       "color": "#D10000",
       "glyph": "amc_a",
@@ -467,7 +471,8 @@
       ],
       "category": "APP",
       "color_source": "brand reference (pre-provenance, unverified)",
-      "color_reviewed": null
+      "color_reviewed": null,
+      "name_source": "app name from the Projectivy Icon Pack 1.1.9 artwork for com.amcnetworks.cbscatchup (github.com/SicMundus86/ProjectivyIconPack, used as reference only), which shows the Watch Free UK logo for this package (2026-09-27)"
     },
     {
       "name": "AMC+",
@@ -537,15 +542,15 @@
     {
       "name": "AniLab",
       "drawable": "anilab",
-      "color": "#E6EDF3",
+      "color": "#D82028",
       "glyph": "broadcast_A",
       "mark": "AN",
       "components": [
         "com.anilab.android.tv/com.anilab.android.tv.ui.TvActivity"
       ],
       "category": "APP",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled from the Projectivy Icon Pack 1.1.9 artwork for com.anilab.android.tv (github.com/SicMundus86/ProjectivyIconPack, used as reference only): #D82028 (2026-09-27)",
+      "color_reviewed": "2026-09-27"
     },
     {
       "name": "Anime Cast",
@@ -563,17 +568,18 @@
       "color_reviewed": "2026-09-27"
     },
     {
-      "name": "Anime One",
+      "name": "AnimeTV",
       "drawable": "anime",
       "color": "#A366FF",
       "glyph": "anime_A",
-      "mark": "AO",
+      "mark": "AN",
       "components": [
         "com.dev.anime.one/com.dev.anime.one.MainActivity"
       ],
       "category": "APP",
       "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_reviewed": null,
+      "name_source": "app name from the Projectivy Icon Pack 1.1.9 artwork for com.dev.anime.one (github.com/SicMundus86/ProjectivyIconPack, used as reference only), which shows the AnimeTV logo for this package (2026-09-27)"
     },
     {
       "name": "Ant1",
@@ -692,30 +698,32 @@
       "color_reviewed": null
     },
     {
-      "name": "Aplicativo X",
+      "name": "Supreme TV",
       "drawable": "aplicativox",
-      "color": "#B6F23A",
-      "glyph": "broadcast_A",
-      "mark": "AX",
+      "color": "#F8D060",
+      "glyph": "broadcast_S",
+      "mark": "ST",
       "components": [
         "com.aplicativox.supremetv/com.lck.lxtream.SplashActivity"
       ],
       "category": "APP",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled from the Projectivy Icon Pack 1.1.9 artwork for com.aplicativox.supremetv (github.com/SicMundus86/ProjectivyIconPack, used as reference only): #F8D060 (2026-09-27)",
+      "color_reviewed": "2026-09-27",
+      "name_source": "app name from the Projectivy Icon Pack 1.1.9 artwork for com.aplicativox.supremetv (github.com/SicMundus86/ProjectivyIconPack, used as reference only), which shows the Supreme TV logo for this package (2026-09-27)"
     },
     {
-      "name": "App Generation",
+      "name": "myTuner Radio",
       "drawable": "appgeneration",
       "color": "#AE262C",
-      "glyph": "music_A",
-      "mark": "AG",
+      "glyph": "music_M",
+      "mark": "MR",
       "components": [
         "com.appgeneration.itunerfree/com.appgeneration.mytunertv.activities.TvActivity"
       ],
-      "category": "APP",
+      "category": "MUSIC",
       "color_source": "sampled from the official launcher icon (Google Play listing for com.appgeneration.itunerfree): dominant brand accent #AE262C (2026-09-26)",
-      "color_reviewed": "2026-09-26"
+      "color_reviewed": "2026-09-26",
+      "name_source": "app name from the Projectivy Icon Pack 1.1.9 artwork for com.appgeneration.itunerfree (github.com/SicMundus86/ProjectivyIconPack, used as reference only), which shows the myTuner Radio logo for this package (2026-09-27)"
     },
     {
       "name": "App Notifier",
@@ -927,7 +935,7 @@
       "color_reviewed": null
     },
     {
-      "name": "Avoid",
+      "name": "Void",
       "drawable": "hritwik",
       "color": "#9838D3",
       "glyph": "avoid_play",
@@ -942,7 +950,8 @@
         "#9838D3",
         "#0E67CD"
       ],
-      "gradient_source": "sampled from the official launcher icon (Google Play listing for com.hritwik.avoid): the icon's own #9838D3 to #0E67CD gradient, its two ends (2026-09-26)"
+      "gradient_source": "sampled from the official launcher icon (Google Play listing for com.hritwik.avoid): the icon's own #9838D3 to #0E67CD gradient, its two ends (2026-09-26)",
+      "name_source": "app name from the Projectivy Icon Pack 1.1.9 artwork for com.hritwik.avoid (github.com/SicMundus86/ProjectivyIconPack, used as reference only), which shows the Void logo for this package (2026-09-27)"
     },
     {
       "name": "Award VPN",
@@ -1204,17 +1213,18 @@
       "color_reviewed": null
     },
     {
-      "name": "BP Box",
+      "name": "İnat Box",
       "drawable": "box",
-      "color": "#4FACFE",
-      "glyph": "broadcast_B",
-      "mark": "BB",
+      "color": "#E86830",
+      "glyph": "broadcast_I",
+      "mark": "IB",
       "components": [
         "com.bp.box/com.bp.box.activities.SplashActivity"
       ],
       "category": "APP",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled from the Projectivy Icon Pack 1.1.9 artwork for com.bp.box (github.com/SicMundus86/ProjectivyIconPack, used as reference only): #E86830 (2026-09-27)",
+      "color_reviewed": "2026-09-27",
+      "name_source": "app name from the Projectivy Icon Pack 1.1.9 artwork for com.bp.box (github.com/SicMundus86/ProjectivyIconPack, used as reference only), which shows the İnat Box logo for this package (2026-09-27)"
     },
     {
       "name": "Bravia Core",
@@ -1243,17 +1253,18 @@
       "color_reviewed": null
     },
     {
-      "name": "Brkchen Music",
+      "name": "Radon Tunes",
       "drawable": "brkchen",
-      "color": "#34EB7A",
-      "glyph": "music_B",
-      "mark": "BM",
+      "color": "#F84850",
+      "glyph": "music_R",
+      "mark": "RT",
       "components": [
         "com.brkchen.music/com.brkchen.music.MainActivity"
       ],
       "category": "MUSIC",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled from the Projectivy Icon Pack 1.1.9 artwork for com.brkchen.music (github.com/SicMundus86/ProjectivyIconPack, used as reference only): #F84850 (2026-09-27)",
+      "color_reviewed": "2026-09-27",
+      "name_source": "app name from the Projectivy Icon Pack 1.1.9 artwork for com.brkchen.music (github.com/SicMundus86/ProjectivyIconPack, used as reference only), which shows the Radon Tunes logo for this package (2026-09-27)"
     },
     {
       "name": "Brollie",
@@ -1387,7 +1398,7 @@
       "color_reviewed": "2026-09-26"
     },
     {
-      "name": "Canal Digital",
+      "name": "Allente",
       "drawable": "canaldigital",
       "color": "#FD6100",
       "glyph": "broadcast_C",
@@ -1400,7 +1411,8 @@
       "color_reviewed": "2026-09-26",
       "mark_source": "logotype letters from the official launcher icon (Google Play listing for com.canaldigital.go), which reads 'all'; set in the pack's face, not traced (2026-09-26)",
       "mark_style": "lower",
-      "mark_style_source": "the logotype on the official launcher icon (Google Play listing for com.canaldigital.go) is set lowercase ('all')"
+      "mark_style_source": "the logotype on the official launcher icon (Google Play listing for com.canaldigital.go) is set lowercase ('all')",
+      "name_source": "app name from the Projectivy Icon Pack 1.1.9 artwork for com.canaldigital.go (github.com/SicMundus86/ProjectivyIconPack, used as reference only), which shows the Allente logo for this package (2026-09-27)"
     },
     {
       "name": "CANAL+",
@@ -1500,18 +1512,19 @@
       "mark_style_source": "the logotype on the official launcher icon (Google Play listing for pl.cda.tv) is set lowercase ('cda')"
     },
     {
-      "name": "CGTN America",
+      "name": "CGTN Now",
       "drawable": "cgtnamericanow",
       "color": "#0D4481",
       "glyph": "broadcast_C",
-      "mark": "CA",
+      "mark": "CN",
       "components": [
         "com.cgtnamericanow/tv.vhx.LauncherActivity",
         "com.cgtnamericanow/tv.vhx.tv.home.TvHomeActivity"
       ],
       "category": "APP",
       "color_source": "sampled from the official launcher icon (APKCombo mirror of the Google Play listing for com.cgtnamericanow): dominant brand accent #0D4481 (2026-09-26)",
-      "color_reviewed": "2026-09-26"
+      "color_reviewed": "2026-09-26",
+      "name_source": "app name from the Projectivy Icon Pack 1.1.9 artwork for com.cgtnamericanow (github.com/SicMundus86/ProjectivyIconPack, used as reference only), which shows the CGTN Now logo for this package (2026-09-27)"
     },
     {
       "name": "Channel 4",
@@ -1554,7 +1567,7 @@
       "color_reviewed": "2026-09-26"
     },
     {
-      "name": "Chebut TV",
+      "name": "Chebur TV",
       "drawable": "chebut",
       "color": "#A366FF",
       "glyph": "broadcast_C",
@@ -1564,7 +1577,8 @@
       ],
       "category": "APP",
       "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_reviewed": null,
+      "name_source": "app name from the Projectivy Icon Pack 1.1.9 artwork for com.chebut.tv (github.com/SicMundus86/ProjectivyIconPack, used as reference only), which shows the Chebur TV logo for this package (2026-09-27)"
     },
     {
       "name": "ChillHub",
@@ -1660,7 +1674,7 @@
     {
       "name": "Clip TV",
       "drawable": "clip_tv",
-      "color": "#FF7A2E",
+      "color": "#F89018",
       "glyph": "broadcast_C",
       "mark": "CT",
       "components": [
@@ -1668,13 +1682,13 @@
       ],
       "category": "APP",
       "mapping_source": "Projectivy Icon Pack 1.1.9",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled from the Projectivy Icon Pack 1.1.9 artwork for vn.com.vega.clipvn.tv (github.com/SicMundus86/ProjectivyIconPack, used as reference only): #F89018 (2026-09-27)",
+      "color_reviewed": "2026-09-27"
     },
     {
       "name": "Clone Hero",
       "drawable": "clone_hero",
-      "color": "#19D3C5",
+      "color": "#B060E0",
       "glyph": "gaming_C",
       "mark": "CH",
       "components": [
@@ -1682,8 +1696,8 @@
       ],
       "category": "GAMING",
       "mapping_source": "Projectivy Icon Pack 1.1.9",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled from the Projectivy Icon Pack 1.1.9 artwork for com.srylain.CloneHero (github.com/SicMundus86/ProjectivyIconPack, used as reference only): #B060E0 (2026-09-27)",
+      "color_reviewed": "2026-09-27"
     },
     {
       "name": "CloudStream",
@@ -1810,15 +1824,15 @@
     {
       "name": "CoreELEC Helper",
       "drawable": "jamal2367",
-      "color": "#3D8BFF",
+      "color": "#E00010",
       "glyph": "tool_C",
       "mark": "CH",
       "components": [
         "com.jamal2367.coreelec/com.jamal2367.coreelec.MainActivity"
       ],
       "category": "APP",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled from the Projectivy Icon Pack 1.1.9 artwork for com.jamal2367.coreelec (github.com/SicMundus86/ProjectivyIconPack, used as reference only): #E00010 (2026-09-27)",
+      "color_reviewed": "2026-09-27"
     },
     {
       "name": "Corridor",
@@ -1955,17 +1969,18 @@
       "color_reviewed": null
     },
     {
-      "name": "Cue New",
+      "name": "CUE Broadcast",
       "drawable": "cuenew2",
       "color": "#1982C4",
       "glyph": "broadcast_C",
-      "mark": "CN",
+      "mark": "CB",
       "components": [
         "com.cuenew2/com.pythonott.MainActivity"
       ],
       "category": "APP",
       "color_source": "brand reference (pre-provenance, unverified)",
-      "color_reviewed": null
+      "color_reviewed": null,
+      "name_source": "app name from the Projectivy Icon Pack 1.1.9 artwork for com.cuenew2 (github.com/SicMundus86/ProjectivyIconPack, used as reference only), which shows the CUE Broadcast logo for this package (2026-09-27)"
     },
     {
       "name": "Curiosity Stream",
@@ -2020,7 +2035,7 @@
       "color_reviewed": null
     },
     {
-      "name": "D-Smart",
+      "name": "puhutv",
       "drawable": "dogusdigital",
       "color": "#F8D030",
       "glyph": "dsmart_ring",
@@ -2030,7 +2045,8 @@
       "category": "APP",
       "color_source": "sampled from the official launcher icon (Google Play listing for com.dogusdigital.puhutv): dominant brand accent #F8D030 (2026-09-26)",
       "color_reviewed": "2026-09-26",
-      "glyph_source": "brand-informed redraw of the official launcher icon (play listing for com.dogusdigital.puhutv); Core monoline geometry, not a trace (2026-09-26)"
+      "glyph_source": "brand-informed redraw of the official launcher icon (play listing for com.dogusdigital.puhutv); Core monoline geometry, not a trace (2026-09-26)",
+      "name_source": "app name from the Projectivy Icon Pack 1.1.9 artwork for com.dogusdigital.puhutv (github.com/SicMundus86/ProjectivyIconPack, used as reference only), which shows the puhutv logo for this package (2026-09-27)"
     },
     {
       "name": "DIG",
@@ -2072,17 +2088,18 @@
       "color_reviewed": null
     },
     {
-      "name": "Damonte",
+      "name": "Stash",
       "drawable": "damontecres",
       "color": "#FF7A2E",
-      "glyph": "debrid_D",
-      "mark": "DA",
+      "glyph": "debrid_S",
+      "mark": "ST",
       "components": [
         "com.github.damontecres.stashapp/com.github.damontecres.stashapp.RootActivity"
       ],
       "category": "APP",
       "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_reviewed": null,
+      "name_source": "app name from the Projectivy Icon Pack 1.1.9 artwork for com.github.damontecres.stashapp (github.com/SicMundus86/ProjectivyIconPack, used as reference only), which shows the Stash logo for this package (2026-09-27)"
     },
     {
       "name": "Dangbei",
@@ -2123,17 +2140,18 @@
       "color_reviewed": null
     },
     {
-      "name": "DCS IPTV",
+      "name": "NexTV",
       "drawable": "dcsapp",
-      "color": "#B6F23A",
-      "glyph": "broadcast_D",
-      "mark": "DI",
+      "color": "#9088F0",
+      "glyph": "broadcast_N",
+      "mark": "NE",
       "components": [
         "com.dcsapp.iptv/fr.nextv.atv.foundation.TvActivity"
       ],
       "category": "LIVE",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled from the Projectivy Icon Pack 1.1.9 artwork for com.dcsapp.iptv (github.com/SicMundus86/ProjectivyIconPack, used as reference only): #9088F0 (2026-09-27)",
+      "color_reviewed": "2026-09-27",
+      "name_source": "app name from the Projectivy Icon Pack 1.1.9 artwork for com.dcsapp.iptv (github.com/SicMundus86/ProjectivyIconPack, used as reference only), which shows the NexTV logo for this package (2026-09-27)"
     },
     {
       "name": "Debrid Em All",
@@ -2218,7 +2236,7 @@
       "style": "core_monoline"
     },
     {
-      "name": "DevInterest",
+      "name": "StreamShow",
       "drawable": "devinterestdev",
       "color": "#FFE14D",
       "glyph": "dev_play",
@@ -2228,7 +2246,8 @@
       "category": "STREAM",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null,
-      "style": "core_monoline"
+      "style": "core_monoline",
+      "name_source": "app name from the Projectivy Icon Pack 1.1.9 artwork for com.devinterestdev.streamshow (github.com/SicMundus86/ProjectivyIconPack, used as reference only), which shows the StreamShow logo for this package (2026-09-27)"
     },
     {
       "name": "Digi TV",
@@ -2666,17 +2685,18 @@
       "color_reviewed": null
     },
     {
-      "name": "Ds TV Mobile",
+      "name": "DStv Stream",
       "drawable": "dstvmobile",
       "color": "#1919BA",
       "glyph": "broadcast_D",
-      "mark": "DT",
+      "mark": "DS",
       "components": [
         "com.dstvmobile.android/com.dstv.androidtv.RootActivity"
       ],
       "category": "APP",
       "color_source": "sampled from the official launcher icon (Google Play listing for com.dstvmobile.android): dominant brand accent #1919BA (2026-09-26)",
-      "color_reviewed": "2026-09-26"
+      "color_reviewed": "2026-09-26",
+      "name_source": "app name from the Projectivy Icon Pack 1.1.9 artwork for com.dstvmobile.android (github.com/SicMundus86/ProjectivyIconPack, used as reference only), which shows the DStv Stream logo for this package (2026-09-27)"
     },
     {
       "name": "DS video",
@@ -2828,17 +2848,18 @@
       "color_reviewed": null
     },
     {
-      "name": "Epic Channel",
+      "name": "EPIC ON",
       "drawable": "epicchannel",
       "color": "#F6643A",
       "glyph": "broadcast_E",
-      "mark": "EC",
+      "mark": "EO",
       "components": [
         "com.epicchannel.epicon/com.epicchannel.epicon.ui.launcher.activity.LauncherActivity"
       ],
       "category": "APP",
       "color_source": "sampled from the official launcher icon (Google Play listing for com.epicchannel.epicon): dominant brand accent #F6643A (2026-09-26)",
-      "color_reviewed": "2026-09-26"
+      "color_reviewed": "2026-09-26",
+      "name_source": "app name from the Projectivy Icon Pack 1.1.9 artwork for com.epicchannel.epicon (github.com/SicMundus86/ProjectivyIconPack, used as reference only), which shows the EPIC ON logo for this package (2026-09-27)"
     },
     {
       "name": "ePSXe",
@@ -2937,30 +2958,34 @@
       "color_reviewed": null
     },
     {
-      "name": "Eternal TV",
+      "name": "Eternal TV Immortal",
       "drawable": "eternaltviptvbox",
-      "color": "#FF4D4D",
+      "color": "#60D0F8",
       "glyph": "broadcast_E",
-      "mark": "ET",
+      "mark": "EI",
       "components": [
         "com.eternaltv.eternaltviptvbox/com.eternaltv.eternaltviptvbox.view.activity.SplashActivity"
       ],
       "category": "LIVE",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled from the Projectivy Icon Pack 1.1.9 artwork for com.eternaltv.eternaltviptvbox (github.com/SicMundus86/ProjectivyIconPack, used as reference only): #60D0F8 (2026-09-27)",
+      "color_reviewed": "2026-09-27",
+      "name_source": "app name from the Projectivy Icon Pack 1.1.9 artwork for com.eternaltv.eternaltviptvbox (github.com/SicMundus86/ProjectivyIconPack, used as reference only), which names the two Eternal TV builds Immortal and Divine (2026-09-27)",
+      "mark_source": "edition initials (E + I / D), because both Eternal TV builds share one logo and colour; set in the pack's face (2026-09-27)"
     },
     {
-      "name": "Eternal TV (Nath)",
+      "name": "Eternal TV Divine",
       "drawable": "nathnetwork",
-      "color": "#1FD19A",
-      "glyph": "broadcast_N",
-      "mark": "ET",
+      "color": "#60D0F8",
+      "glyph": "broadcast_E",
+      "mark": "ED",
       "components": [
         "com.nathnetwork.eternaltv/com.nathnetwork.eternaltv.SplashVideoActivity"
       ],
       "category": "APP",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled from the Projectivy Icon Pack 1.1.9 artwork for com.nathnetwork.eternaltv (github.com/SicMundus86/ProjectivyIconPack, used as reference only): #60D0F8 (2026-09-27)",
+      "color_reviewed": "2026-09-27",
+      "name_source": "app name from the Projectivy Icon Pack 1.1.9 artwork for com.nathnetwork.eternaltv (github.com/SicMundus86/ProjectivyIconPack, used as reference only), which names the two Eternal TV builds Immortal and Divine (2026-09-27)",
+      "mark_source": "edition initials (E + I / D), because both Eternal TV builds share one logo and colour; set in the pack's face (2026-09-27)"
     },
     {
       "name": "Etube",
@@ -3070,7 +3095,7 @@
     {
       "name": "FANE TV",
       "drawable": "fanetv",
-      "color": "#E6EDF3",
+      "color": "#28A8C0",
       "glyph": "broadcast_F",
       "mark": "FT",
       "components": [
@@ -3078,8 +3103,8 @@
         "com.fanetv/tv.vhx.tv.home.TvHomeActivity"
       ],
       "category": "APP",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled from the Projectivy Icon Pack 1.1.9 artwork for com.fanetv (github.com/SicMundus86/ProjectivyIconPack, used as reference only): #28A8C0 (2026-09-27)",
+      "color_reviewed": "2026-09-27"
     },
     {
       "name": "FC Porto TV",
@@ -3095,17 +3120,18 @@
       "color_reviewed": "2026-09-26"
     },
     {
-      "name": "FC TV",
+      "name": "FCTV33",
       "drawable": "fctv77",
-      "color": "#FFB020",
+      "color": "#F8C800",
       "glyph": "broadcast_F",
-      "mark": "FT",
+      "mark": "FC",
       "components": [
         "com.fctv77.tv/com.rblive.launcher.splash.SplashActivity"
       ],
       "category": "APP",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled from the Projectivy Icon Pack 1.1.9 artwork for com.fctv77.tv (github.com/SicMundus86/ProjectivyIconPack, used as reference only): #F8C800 (2026-09-27)",
+      "color_reviewed": "2026-09-27",
+      "name_source": "app name from the Projectivy Icon Pack 1.1.9 artwork for com.fctv77.tv (github.com/SicMundus86/ProjectivyIconPack, used as reference only), which shows the FCTV33 logo for this package (2026-09-27)"
     },
     {
       "name": "FCast Receiver",
@@ -3135,7 +3161,7 @@
       "color_reviewed": "2026-09-26"
     },
     {
-      "name": "Feeln",
+      "name": "Hallmark+",
       "drawable": "androidapp",
       "color": "#510D96",
       "glyph": "feeln_crown",
@@ -3145,7 +3171,8 @@
       "category": "APP",
       "color_source": "sampled from the official launcher icon (Google Play listing for com.feeln.androidapp): dominant brand accent #510D96 (2026-09-26)",
       "color_reviewed": "2026-09-26",
-      "glyph_source": "brand-informed redraw of the official launcher icon (play listing for com.feeln.androidapp); Core monoline geometry, not a trace (2026-09-26)"
+      "glyph_source": "brand-informed redraw of the official launcher icon (play listing for com.feeln.androidapp); Core monoline geometry, not a trace (2026-09-26)",
+      "name_source": "app name from the Projectivy Icon Pack 1.1.9 artwork for com.feeln.androidapp (github.com/SicMundus86/ProjectivyIconPack, used as reference only), which shows the Hallmark+ logo for this package (2026-09-27)"
     },
     {
       "name": "FIFA+",
@@ -3206,7 +3233,7 @@
     {
       "name": "Filimo",
       "drawable": "filimo",
-      "color": "#FF7A2E",
+      "color": "#F8C038",
       "glyph": "broadcast_F",
       "mark": "FI",
       "components": [
@@ -3214,8 +3241,8 @@
       ],
       "category": "APP",
       "mapping_source": "Projectivy Icon Pack 1.1.9",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled from the Projectivy Icon Pack 1.1.9 artwork for com.sabaidea.filimo.tv (github.com/SicMundus86/ProjectivyIconPack, used as reference only): #F8C038 (2026-09-27)",
+      "color_reviewed": "2026-09-27"
     },
     {
       "name": "Filmfriend",
@@ -3234,7 +3261,7 @@
     {
       "name": "Filmnet TV",
       "drawable": "filmnet_tv",
-      "color": "#F04DE0",
+      "color": "#E00010",
       "glyph": "film_F",
       "mark": "FT",
       "components": [
@@ -3242,8 +3269,8 @@
       ],
       "category": "APP",
       "mapping_source": "Projectivy Icon Pack 1.1.9",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled from the Projectivy Icon Pack 1.1.9 artwork for ir.filmnet.android.tv (github.com/SicMundus86/ProjectivyIconPack, used as reference only): #E00010 (2026-09-27)",
+      "color_reviewed": "2026-09-27"
     },
     {
       "name": "FilmRise",
@@ -3271,17 +3298,18 @@
       "style": "core_monoline"
     },
     {
-      "name": "FindLink",
+      "name": "Flixoid",
       "drawable": "findlink",
-      "color": "#FF4D4D",
-      "glyph": "tool_F",
-      "mark": "FI",
+      "color": "#38D880",
+      "glyph": "broadcast_F",
+      "mark": "FL",
       "components": [
         "com.findlink/com.findlink.ActivitySplash"
       ],
       "category": "APP",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled from the Projectivy Icon Pack 1.1.9 artwork for com.findlink (github.com/SicMundus86/ProjectivyIconPack, used as reference only): #38D880 (2026-09-27)",
+      "color_reviewed": "2026-09-27",
+      "name_source": "app name from the Projectivy Icon Pack 1.1.9 artwork for com.findlink (github.com/SicMundus86/ProjectivyIconPack, used as reference only), which shows the Flixoid logo for this package (2026-09-27)"
     },
     {
       "name": "Firedown",
@@ -3316,29 +3344,30 @@
       "glyph_source": "brand-informed redraw of the official launcher icon (APKCombo mirror of the Google Play listing for com.firesend.app); Core monoline geometry, not a trace (2026-09-26)"
     },
     {
-      "name": "FITE",
+      "name": "TrillerTV",
       "drawable": "fitetv",
-      "color": "#FFE14D",
+      "color": "#E01010",
       "glyph": "fite_mark",
       "components": [
         "com.flipps.fitetv/com.bianor.ams.androidtv.activity.TvMainActivity"
       ],
-      "category": "APP",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "category": "SPORT",
+      "color_source": "sampled from the Projectivy Icon Pack 1.1.9 artwork for com.flipps.fitetv (github.com/SicMundus86/ProjectivyIconPack, used as reference only): #E01010 (2026-09-27)",
+      "color_reviewed": "2026-09-27",
+      "name_source": "app name from the Projectivy Icon Pack 1.1.9 artwork for com.flipps.fitetv (github.com/SicMundus86/ProjectivyIconPack, used as reference only), which shows the TrillerTV logo for this package (2026-09-27)"
     },
     {
       "name": "Five TV",
       "drawable": "fivetviptvbox",
-      "color": "#4FACFE",
+      "color": "#F82038",
       "glyph": "broadcast_F",
       "mark": "FT",
       "components": [
         "com.fivetvbox.fivetviptvbox/com.fivetvbox.fivetviptvbox.view.activity.SplashActivity"
       ],
       "category": "LIVE",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled from the Projectivy Icon Pack 1.1.9 artwork for com.fivetvbox.fivetviptvbox (github.com/SicMundus86/ProjectivyIconPack, used as reference only): #F82038 (2026-09-27)",
+      "color_reviewed": "2026-09-27"
     },
     {
       "name": "Fizz TV",
@@ -3431,7 +3460,7 @@
       "glyph_source": "brand-informed redraw of the official launcher icon (f-droid listing for app.flicky); Core monoline geometry, not a trace (2026-09-26)"
     },
     {
-      "name": "Flix TV",
+      "name": "Flik TV",
       "drawable": "flix_tv",
       "color": "#7C74FF",
       "glyph": "broadcast_F",
@@ -3442,7 +3471,8 @@
       "category": "APP",
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_reviewed": null,
+      "name_source": "app name from the Projectivy Icon Pack 1.1.9 artwork for com.tvflix.ippflixtvbox (github.com/SicMundus86/ProjectivyIconPack, used as reference only), which shows the Flik TV logo for this package (2026-09-27)"
     },
     {
       "name": "Flix Vision",
@@ -3526,7 +3556,7 @@
     {
       "name": "Football 360",
       "drawable": "football_360",
-      "color": "#FF4D4D",
+      "color": "#38D060",
       "glyph": "sport_F",
       "mark": "F3",
       "components": [
@@ -3534,21 +3564,22 @@
       ],
       "category": "SPORT",
       "mapping_source": "Projectivy Icon Pack 1.1.9",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled from the Projectivy Icon Pack 1.1.9 artwork for tv.football360.androidtv (github.com/SicMundus86/ProjectivyIconPack, used as reference only): #38D060 (2026-09-27)",
+      "color_reviewed": "2026-09-27"
     },
     {
-      "name": "Forecast",
+      "name": "BeeTV",
       "drawable": "forecast",
-      "color": "#135DD1",
-      "glyph": "forecast_cloud",
+      "color": "#F8B040",
+      "glyph": "beetv_bee",
       "components": [
         "com.bweather.forecast/com.bweather.forecast.SplashActivity"
       ],
       "category": "APP",
-      "color_source": "sampled from the official launcher icon (APKCombo mirror of the Google Play listing for com.bweather.forecast): dominant brand accent #135DD1 (2026-09-26)",
-      "color_reviewed": "2026-09-26",
-      "glyph_source": "brand-informed redraw of the official launcher icon (APKCombo mirror of the Google Play listing for com.bweather.forecast); Core monoline geometry, not a trace (2026-09-27)"
+      "color_source": "sampled from the Projectivy Icon Pack 1.1.9 artwork for com.bweather.forecast (github.com/SicMundus86/ProjectivyIconPack, used as reference only): #F8B040 (2026-09-27)",
+      "color_reviewed": "2026-09-27",
+      "glyph_source": "brand-informed redraw of the Projectivy Icon Pack 1.1.9 artwork for com.bweather.forecast (github.com/SicMundus86/ProjectivyIconPack, used as reference only); the package's store listing shows a decoy app, so the mark follows the app installed on TVs; Core monoline geometry, not a trace (2026-09-27)",
+      "name_source": "app name from the Projectivy Icon Pack 1.1.9 artwork for com.bweather.forecast (github.com/SicMundus86/ProjectivyIconPack, used as reference only), which shows the BeeTV logo for this package (2026-09-27)"
     },
     {
       "name": "Forja TV",
@@ -3642,7 +3673,7 @@
       "brand": "fox_sports"
     },
     {
-      "name": "Fox Sports Go",
+      "name": "FanDuel Sports",
       "drawable": "foxsports_2",
       "color": "#003580",
       "glyph": "foxsports_mark",
@@ -3652,7 +3683,8 @@
       "category": "SPORT",
       "color_source": "brand reference (pre-provenance, unverified)",
       "color_reviewed": null,
-      "brand": "fox_sports"
+      "brand": "fox_sports",
+      "name_source": "app name from the Projectivy Icon Pack 1.1.9 artwork for com.foxsports.videogo (github.com/SicMundus86/ProjectivyIconPack, used as reference only), which shows the FanDuel Sports logo for this package (2026-09-27)"
     },
     {
       "name": "Foxtel",
@@ -3753,17 +3785,18 @@
       "color_reviewed": "2026-09-26"
     },
     {
-      "name": "Freevee",
+      "name": "Amazon Luna",
       "drawable": "spiderpork",
-      "color": "#7C74FF",
-      "glyph": "film_F",
-      "mark": "FR",
+      "color": "#8838F8",
+      "glyph": "film_A",
+      "mark": "AL",
       "components": [
         "com.amazon.spiderpork/com.amazon.spiderpork.activities.MainActivity"
       ],
-      "category": "VOD",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "category": "GAMING",
+      "color_source": "sampled from the Projectivy Icon Pack 1.1.9 artwork for com.amazon.spiderpork (github.com/SicMundus86/ProjectivyIconPack, used as reference only): #8838F8 (2026-09-27)",
+      "color_reviewed": "2026-09-27",
+      "name_source": "app name from the Projectivy Icon Pack 1.1.9 artwork for com.amazon.spiderpork (github.com/SicMundus86/ProjectivyIconPack, used as reference only), which shows the Amazon Luna logo for this package (2026-09-27)"
     },
     {
       "name": "Fresh Drama",
@@ -3808,7 +3841,7 @@
       "color_reviewed": "2026-09-08"
     },
     {
-      "name": "Full Episodes",
+      "name": "The CW",
       "drawable": "fullepisodes",
       "color": "#FF4500",
       "glyph": "broadcast_F",
@@ -3819,7 +3852,8 @@
       "category": "APP",
       "color_source": "sampled from the official launcher icon (Google Play listing for com.cw.fullepisodes.android): dominant brand accent #FF4500 (2026-09-26)",
       "color_reviewed": "2026-09-26",
-      "mark_source": "logotype letters from the official launcher icon (Google Play listing for com.cw.fullepisodes.android), which reads 'CW'; set in the pack's face, not traced (2026-09-26)"
+      "mark_source": "logotype letters from the official launcher icon (Google Play listing for com.cw.fullepisodes.android), which reads 'CW'; set in the pack's face, not traced (2026-09-26)",
+      "name_source": "app name from the Projectivy Icon Pack 1.1.9 artwork for com.cw.fullepisodes.android (github.com/SicMundus86/ProjectivyIconPack, used as reference only), which shows the The CW logo for this package (2026-09-27)"
     },
     {
       "name": "FX File Explorer",
@@ -3916,15 +3950,15 @@
     {
       "name": "GenPlay",
       "drawable": "genplay",
-      "color": "#FFE14D",
+      "color": "#18B0E0",
       "glyph": "gaming_G",
       "mark": "GE",
       "components": [
         "com.genplay.apps/com.genplay.apps.MainActivity"
       ],
       "category": "APP",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled from the Projectivy Icon Pack 1.1.9 artwork for com.genplay.apps (github.com/SicMundus86/ProjectivyIconPack, used as reference only): #18B0E0 (2026-09-27)",
+      "color_reviewed": "2026-09-27"
     },
     {
       "name": "Get Icon",
@@ -4011,17 +4045,18 @@
       "color_reviewed": null
     },
     {
-      "name": "Good Tools",
+      "name": "Zeus Browser",
       "drawable": "goodtoolapps",
-      "color": "#00D4FF",
+      "color": "#F8E838",
       "glyph": "toolbox",
       "components": [
         "com.goodtoolapps.zeus/com.goodtoolapps.zeus.MainActivity"
       ],
       "category": "TOOL",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null,
-      "style": "core_monoline"
+      "color_source": "sampled from the Projectivy Icon Pack 1.1.9 artwork for com.goodtoolapps.zeus (github.com/SicMundus86/ProjectivyIconPack, used as reference only): #F8E838 (2026-09-27)",
+      "color_reviewed": "2026-09-27",
+      "style": "core_monoline",
+      "name_source": "app name from the Projectivy Icon Pack 1.1.9 artwork for com.goodtoolapps.zeus (github.com/SicMundus86/ProjectivyIconPack, used as reference only), which shows the Zeus Browser logo for this package (2026-09-27)"
     },
     {
       "name": "Google Play Games",
@@ -4111,17 +4146,18 @@
       "color_reviewed": "2026-09-26"
     },
     {
-      "name": "GuidePlus",
+      "name": "FilmPlus",
       "drawable": "guideplus",
       "color": "#19D3C5",
-      "glyph": "tool_G",
-      "mark": "GU",
+      "glyph": "broadcast_F",
+      "mark": "FI",
       "components": [
         "com.guideplus.co/com.guideplus.co.SplashActivity"
       ],
       "category": "APP",
       "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_reviewed": null,
+      "name_source": "app name from the Projectivy Icon Pack 1.1.9 artwork for com.guideplus.co (github.com/SicMundus86/ProjectivyIconPack, used as reference only), which shows the FilmPlus logo for this package (2026-09-27)"
     },
     {
       "name": "Gymondo",
@@ -4353,7 +4389,7 @@
       "color_reviewed": "2026-09-26"
     },
     {
-      "name": "Hippos",
+      "name": "Unchained",
       "drawable": "livingwithhippos",
       "color": "#D20076",
       "glyph": "hippos_loop",
@@ -4370,7 +4406,8 @@
           3
         ],
         "source": "Hippos official launcher icon (Google Play listing for com.github.livingwithhippos.unchained): the bar's orange #F8B660 (2026-09-26)"
-      }
+      },
+      "name_source": "app name from the Projectivy Icon Pack 1.1.9 artwork for com.github.livingwithhippos.unchained (github.com/SicMundus86/ProjectivyIconPack, used as reference only), which shows the Unchained logo for this package (2026-09-27)"
     },
     {
       "name": "HISTORY",
@@ -4621,17 +4658,18 @@
       "color_reviewed": null
     },
     {
-      "name": "Ignite TV",
+      "name": "Rogers Xfinity Stream",
       "drawable": "ignitetv",
       "color": "#DB291D",
-      "glyph": "broadcast_I",
-      "mark": "IT",
+      "glyph": "broadcast_R",
+      "mark": "RX",
       "components": [
         "com.rogers.ignitetv/com.xfinity.common.view.LaunchActivity"
       ],
       "category": "APP",
       "color_source": "sampled from the official launcher icon (Google Play listing for com.rogers.ignitetv): dominant brand accent #DB291D (2026-09-26)",
-      "color_reviewed": "2026-09-26"
+      "color_reviewed": "2026-09-26",
+      "name_source": "app name from the Projectivy Icon Pack 1.1.9 artwork for com.rogers.ignitetv (github.com/SicMundus86/ProjectivyIconPack, used as reference only), which shows the Rogers Xfinity Stream logo for this package (2026-09-27)"
     },
     {
       "name": "iHeartRadio",
@@ -4686,7 +4724,7 @@
       "color_reviewed": "2026-09-08"
     },
     {
-      "name": "InstantBits",
+      "name": "Web Video Caster Receiver",
       "drawable": "instantbits",
       "color": "#F89616",
       "glyph": "instantbits_cast",
@@ -4696,7 +4734,8 @@
       "category": "APP",
       "color_source": "sampled from the official launcher icon (Google Play listing for com.instantbits.cast.receiver): dominant brand accent #F89616 (2026-09-26)",
       "color_reviewed": "2026-09-26",
-      "glyph_source": "brand-informed redraw of the official launcher icon (play listing for com.instantbits.cast.receiver); Core monoline geometry, not a trace (2026-09-26)"
+      "glyph_source": "brand-informed redraw of the official launcher icon (play listing for com.instantbits.cast.receiver); Core monoline geometry, not a trace (2026-09-26)",
+      "name_source": "app name from the Projectivy Icon Pack 1.1.9 artwork for com.instantbits.cast.receiver (github.com/SicMundus86/ProjectivyIconPack, used as reference only), which shows the Web Video Caster Receiver logo for this package (2026-09-27)"
     },
     {
       "name": "Ip Address",
@@ -4778,17 +4817,18 @@
       "color_reviewed": null
     },
     {
-      "name": "IPTV3u",
+      "name": "Dimplay",
       "drawable": "iptv3u",
-      "color": "#19D3C5",
-      "glyph": "broadcast_I",
-      "mark": "IP",
+      "color": "#08B878",
+      "glyph": "broadcast_D",
+      "mark": "DI",
       "components": [
         "com.iptv3u/app.dimplay.activities.SplashActivity"
       ],
       "category": "LIVE",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled from the Projectivy Icon Pack 1.1.9 artwork for com.iptv3u (github.com/SicMundus86/ProjectivyIconPack, used as reference only): #08B878 (2026-09-27)",
+      "color_reviewed": "2026-09-27",
+      "name_source": "app name from the Projectivy Icon Pack 1.1.9 artwork for com.iptv3u (github.com/SicMundus86/ProjectivyIconPack, used as reference only), which shows the Dimplay logo for this package (2026-09-27)"
     },
     {
       "name": "IPVanish",
@@ -4815,7 +4855,7 @@
       "color_reviewed": null
     },
     {
-      "name": "ITV Hub",
+      "name": "ITVX",
       "drawable": "itvmobileplayer",
       "color": "#00B4E5",
       "glyph": "itv_hub",
@@ -4824,7 +4864,8 @@
       ],
       "category": "APP",
       "color_source": "brand reference (pre-provenance, unverified)",
-      "color_reviewed": null
+      "color_reviewed": null,
+      "name_source": "app name from the Projectivy Icon Pack 1.1.9 artwork for air.ITVMobilePlayer (github.com/SicMundus86/ProjectivyIconPack, used as reference only), which shows the ITVX logo for this package (2026-09-27)"
     },
     {
       "name": "Ivysiilani",
@@ -4859,7 +4900,7 @@
       "ink": "#E6EDF3"
     },
     {
-      "name": "Jawwy TV",
+      "name": "stc tv",
       "drawable": "intigral",
       "color": "#4F008C",
       "glyph": "broadcast_J",
@@ -4873,10 +4914,11 @@
       "brand": "jawwy",
       "mark_source": "logotype letters from the official launcher icon (Google Play listing for com.intigral.jawwytv), which reads 'stc tv'; set in the pack's face, not traced (2026-09-26)",
       "mark_style": "lower",
-      "mark_style_source": "the logotype on the official launcher icon (Google Play listing for com.intigral.jawwytv) is set lowercase ('stc tv')"
+      "mark_style_source": "the logotype on the official launcher icon (Google Play listing for com.intigral.jawwytv) is set lowercase ('stc tv')",
+      "name_source": "app name from the Projectivy Icon Pack 1.1.9 artwork for com.intigral.jawwytv (github.com/SicMundus86/ProjectivyIconPack, used as reference only), which shows the stc tv logo for this package (2026-09-27)"
     },
     {
-      "name": "Jawwy TV",
+      "name": "stc tv",
       "drawable": "jawwy_tv",
       "color": "#4F008C",
       "glyph": "broadcast_J",
@@ -4891,7 +4933,8 @@
       "brand": "jawwy",
       "mark_source": "logotype letters from the official launcher icon (Google Play listing for com.intigral.jawwytv), which reads 'stc tv'; set in the pack's face, not traced (2026-09-26)",
       "mark_style": "lower",
-      "mark_style_source": "the logotype on the official launcher icon (Google Play listing for com.intigral.jawwytv) is set lowercase ('stc tv')"
+      "mark_style_source": "the logotype on the official launcher icon (Google Play listing for com.intigral.jawwytv) is set lowercase ('stc tv')",
+      "name_source": "app name from the Projectivy Icon Pack 1.1.9 artwork for net.intigral.jawwytv (github.com/SicMundus86/ProjectivyIconPack, used as reference only), which shows the stc tv logo for this package (2026-09-27)"
     },
     {
       "name": "Jellyfin",
@@ -4917,17 +4960,18 @@
       "color_reviewed": null
     },
     {
-      "name": "Jellyfin Enhanced",
+      "name": "Dune",
       "drawable": "enhanced",
       "color": "#FF4D4D",
-      "glyph": "broadcast_E",
-      "mark": "JE",
+      "glyph": "broadcast_D",
+      "mark": "DU",
       "components": [
         "Dune.enhanced.tv/org.jellyfin.androidtv.ui.startup.StartupActivity"
       ],
       "category": "APP",
       "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_reviewed": null,
+      "name_source": "app name from the Projectivy Icon Pack 1.1.9 artwork for Dune.enhanced.tv (github.com/SicMundus86/ProjectivyIconPack, used as reference only), which shows the Dune logo for this package (2026-09-27)"
     },
     {
       "name": "Jio TV Plus",
@@ -4958,18 +5002,19 @@
       "style": "core_monoline"
     },
     {
-      "name": "Jojoy",
+      "name": "RedBox TV",
       "drawable": "reddish",
-      "color": "#FFE14D",
-      "glyph": "store_J",
-      "mark": "JO",
+      "color": "#E82028",
+      "glyph": "store_R",
+      "mark": "RT",
       "components": [
         "com.reddish.apples/com.jojoy.delegate.JojoyInstallerActivity",
         "com.reddish.apples/com.reddish.apples.activities.SplashTvActivity"
       ],
       "category": "APP",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled from the Projectivy Icon Pack 1.1.9 artwork for com.reddish.apples (github.com/SicMundus86/ProjectivyIconPack, used as reference only): #E82028 (2026-09-27)",
+      "color_reviewed": "2026-09-27",
+      "name_source": "app name from the Projectivy Icon Pack 1.1.9 artwork for com.reddish.apples (github.com/SicMundus86/ProjectivyIconPack, used as reference only), which shows the RedBox TV logo for this package (2026-09-27)"
     },
     {
       "name": "Joyn",
@@ -5053,17 +5098,18 @@
       "color_reviewed": "2026-09-26"
     },
     {
-      "name": "Kamal TV",
+      "name": "One TV",
       "drawable": "androidtv_7",
       "color": "#FB0000",
-      "glyph": "broadcast_K",
-      "mark": "KT",
+      "glyph": "broadcast_O",
+      "mark": "OT",
       "components": [
         "com.kamal.androidtv/com.kamal.androidtv.App"
       ],
       "category": "APP",
       "color_source": "sampled from the official launcher icon (Google Play listing for com.kamal.androidtv): dominant brand accent #FB0000 (2026-09-26)",
-      "color_reviewed": "2026-09-26"
+      "color_reviewed": "2026-09-26",
+      "name_source": "app name from the Projectivy Icon Pack 1.1.9 artwork for com.kamal.androidtv (github.com/SicMundus86/ProjectivyIconPack, used as reference only), which shows the One TV logo for this package (2026-09-27)"
     },
     {
       "name": "Kanopy",
@@ -5078,7 +5124,7 @@
       "color_reviewed": null
     },
     {
-      "name": "Karaoke",
+      "name": "KaraFun",
       "drawable": "kfandroid",
       "color": "#D5167A",
       "glyph": "music_K",
@@ -5086,9 +5132,10 @@
       "components": [
         "com.recisio.kfandroid/com.recisio.kfandroid.start.StartActivity"
       ],
-      "category": "APP",
+      "category": "MUSIC",
       "color_source": "sampled from the official launcher icon (Google Play listing for com.recisio.kfandroid): dominant brand accent #D5167A (2026-09-26)",
-      "color_reviewed": "2026-09-26"
+      "color_reviewed": "2026-09-26",
+      "name_source": "app name from the Projectivy Icon Pack 1.1.9 artwork for com.recisio.kfandroid (github.com/SicMundus86/ProjectivyIconPack, used as reference only), which shows the KaraFun logo for this package (2026-09-27)"
     },
     {
       "name": "Kayo",
@@ -5152,7 +5199,7 @@
     {
       "name": "Kennytv",
       "drawable": "kennytv",
-      "color": "#FF7A2E",
+      "color": "#D85800",
       "glyph": "broadcast_K",
       "mark": "KE",
       "components": [
@@ -5160,8 +5207,8 @@
       ],
       "category": "APP",
       "mapping_source": "Projectivy Icon Pack 1.1.9",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled from the Projectivy Icon Pack 1.1.9 artwork for de.wabosh.kenny_tv (github.com/SicMundus86/ProjectivyIconPack, used as reference only): #D85800 (2026-09-27)",
+      "color_reviewed": "2026-09-27"
     },
     {
       "name": "Kernel Media",
@@ -5405,17 +5452,18 @@
       "color_reviewed": "2026-09-26"
     },
     {
-      "name": "Launch Sounds",
+      "name": "BBC Sounds",
       "drawable": "launchsounds",
       "color": "#FF4B00",
-      "glyph": "gaming_L",
-      "mark": "LS",
+      "glyph": "gaming_B",
+      "mark": "BS",
       "components": [
         "com.nvidia.bbciplayer.launchsounds/com.nvidia.bbciplayer.LaunchSoundsActivity"
       ],
-      "category": "APP",
+      "category": "MUSIC",
       "color_source": "sampled from the official launcher icon (Google Play listing for com.nvidia.bbciplayer.launchsounds): dominant brand accent #FF4B00 (2026-09-26)",
-      "color_reviewed": "2026-09-26"
+      "color_reviewed": "2026-09-26",
+      "name_source": "app name from the Projectivy Icon Pack 1.1.9 artwork for com.nvidia.bbciplayer.launchsounds (github.com/SicMundus86/ProjectivyIconPack, used as reference only), which shows the BBC Sounds logo for this package (2026-09-27)"
     },
     {
       "name": "Launchbox",
@@ -5477,7 +5525,7 @@
       "color_reviewed": "2026-09-27"
     },
     {
-      "name": "LazyCat",
+      "name": "Lazy Media Deluxe",
       "drawable": "lazycatsoftware",
       "color": "#087E23",
       "glyph": "broadcast_L",
@@ -5488,7 +5536,8 @@
       "category": "APP",
       "color_source": "sampled from the official launcher icon (APKCombo mirror of the Google Play listing for com.lazycatsoftware.lmd): dominant brand accent #087E23 (2026-09-26)",
       "color_reviewed": "2026-09-26",
-      "mark_source": "logotype letters from the official launcher icon (APKCombo mirror of the Google Play listing for com.lazycatsoftware.lmd), which reads 'LM DELUXE'; set in the pack's face, not traced (2026-09-26)"
+      "mark_source": "logotype letters from the official launcher icon (APKCombo mirror of the Google Play listing for com.lazycatsoftware.lmd), which reads 'LM DELUXE'; set in the pack's face, not traced (2026-09-26)",
+      "name_source": "app name from the Projectivy Icon Pack 1.1.9 artwork for com.lazycatsoftware.lmd (github.com/SicMundus86/ProjectivyIconPack, used as reference only), which shows the Lazy Media Deluxe logo for this package (2026-09-27)"
     },
     {
       "name": "Leanback on Fire",
@@ -5630,7 +5679,7 @@
       "color_reviewed": null
     },
     {
-      "name": "Liverpool FC",
+      "name": "All Red Video",
       "drawable": "liverpoolfc",
       "color": "#E31319",
       "glyph": "broadcast_L",
@@ -5638,10 +5687,11 @@
       "components": [
         "com.liverpoolfc.goapp/com.applicaster.ui.activities.MainActivity"
       ],
-      "category": "APP",
+      "category": "SPORT",
       "color_source": "sampled from the official launcher icon (Google Play listing for com.liverpoolfc.goapp): dominant brand accent #E31319 (2026-09-26)",
       "color_reviewed": "2026-09-26",
-      "mark_source": "logotype letters from the official launcher icon (Google Play listing for com.liverpoolfc.goapp), which reads 'L.F.C.'; set in the pack's face, not traced (2026-09-26)"
+      "mark_source": "logotype letters from the official launcher icon (Google Play listing for com.liverpoolfc.goapp), which reads 'L.F.C.'; set in the pack's face, not traced (2026-09-26)",
+      "name_source": "app name from the Projectivy Icon Pack 1.1.9 artwork for com.liverpoolfc.goapp (github.com/SicMundus86/ProjectivyIconPack, used as reference only), which shows the All Red Video logo for this package (2026-09-27)"
     },
     {
       "name": "Localnow",
@@ -5897,56 +5947,60 @@
       "color_reviewed": null
     },
     {
-      "name": "Maz TV",
+      "name": "Rover's Morning Glory",
       "drawable": "combo2254",
-      "color": "#B6F23A",
-      "glyph": "broadcast_M",
-      "mark": "MT",
+      "color": "#E81820",
+      "glyph": "broadcast_R",
+      "mark": "RS",
       "components": [
         "com.maz.combo2254/com.maz.activities.ViewerLaunchActivity"
       ],
       "category": "APP",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled from the Projectivy Icon Pack 1.1.9 artwork for com.maz.combo2254 (github.com/SicMundus86/ProjectivyIconPack, used as reference only): #E81820 (2026-09-27)",
+      "color_reviewed": "2026-09-27",
+      "name_source": "app name from the Projectivy Icon Pack 1.1.9 artwork for com.maz.combo2254 (github.com/SicMundus86/ProjectivyIconPack, used as reference only), which shows the Rover's Morning Glory logo for this package (2026-09-27)"
     },
     {
-      "name": "Maz TV 2",
+      "name": "RiseTV",
       "drawable": "combo3403",
       "color": "#3D8BFF",
-      "glyph": "broadcast_M",
-      "mark": "MT",
+      "glyph": "broadcast_R",
+      "mark": "RI",
       "components": [
         "com.maz.combo3403/com.maz.combo3403.MainActivity"
       ],
       "category": "APP",
       "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_reviewed": null,
+      "name_source": "app name from the Projectivy Icon Pack 1.1.9 artwork for com.maz.combo3403 (github.com/SicMundus86/ProjectivyIconPack, used as reference only), which shows the RiseTV logo for this package (2026-09-27)"
     },
     {
-      "name": "Maz TV 3",
+      "name": "RSBN",
       "drawable": "combo3578",
-      "color": "#FF4D4D",
-      "glyph": "broadcast_M",
-      "mark": "MT",
+      "color": "#D00000",
+      "glyph": "broadcast_R",
+      "mark": "RS",
       "components": [
         "com.maz.combo3578/com.maz.activities.ViewerLaunchActivity"
       ],
       "category": "APP",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled from the Projectivy Icon Pack 1.1.9 artwork for com.maz.combo3578 (github.com/SicMundus86/ProjectivyIconPack, used as reference only): #D00000 (2026-09-27)",
+      "color_reviewed": "2026-09-27",
+      "name_source": "app name from the Projectivy Icon Pack 1.1.9 artwork for com.maz.combo3578 (github.com/SicMundus86/ProjectivyIconPack, used as reference only), which shows the RSBN logo for this package (2026-09-27)"
     },
     {
-      "name": "Maz TVOD",
+      "name": "UStreme",
       "drawable": "tvod169",
       "color": "#BB9836",
-      "glyph": "broadcast_T",
-      "mark": "MT",
+      "glyph": "broadcast_U",
+      "mark": "US",
       "components": [
         "com.maz.tvod169/com.maz.activities.ViewerLaunchActivity"
       ],
       "category": "APP",
       "color_source": "sampled from the official launcher icon (Google Play listing for com.maz.tvod169): dominant brand accent #BB9836 (2026-09-26)",
-      "color_reviewed": "2026-09-26"
+      "color_reviewed": "2026-09-26",
+      "name_source": "app name from the Projectivy Icon Pack 1.1.9 artwork for com.maz.tvod169 (github.com/SicMundus86/ProjectivyIconPack, used as reference only), which shows the UStreme logo for this package (2026-09-27)"
     },
     {
       "name": "Maze",
@@ -5977,19 +6031,20 @@
       "style": "core_monoline"
     },
     {
-      "name": "Media Browser",
+      "name": "PhotoGuru",
       "drawable": "mediabrowser",
-      "color": "#4FACFE",
+      "color": "#F8A848",
       "glyph": "browser_globe2",
       "components": [
         "com.cmpsoft.MediaBrowser/com.cmpsoft.MediaBrowser.SplashScreenActivity"
       ],
-      "category": "BROWSER",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "category": "MEDIA",
+      "color_source": "sampled from the Projectivy Icon Pack 1.1.9 artwork for com.cmpsoft.MediaBrowser (github.com/SicMundus86/ProjectivyIconPack, used as reference only): #F8A848 (2026-09-27)",
+      "color_reviewed": "2026-09-27",
+      "name_source": "app name from the Projectivy Icon Pack 1.1.9 artwork for com.cmpsoft.MediaBrowser (github.com/SicMundus86/ProjectivyIconPack, used as reference only), which shows the PhotoGuru logo for this package (2026-09-27)"
     },
     {
-      "name": "Media Hub",
+      "name": "VidHub",
       "drawable": "utility",
       "color": "#01C67B",
       "glyph": "mediahub_play",
@@ -6000,7 +6055,8 @@
       "category": "APP",
       "color_source": "sampled from the official launcher icon (Google Play listing for com.oumi.utility.media.hub): dominant brand accent #01C67B (2026-09-26)",
       "color_reviewed": "2026-09-26",
-      "glyph_source": "brand-informed redraw of the official launcher icon (play listing for com.oumi.utility.media.hub); Core monoline geometry, not a trace (2026-09-26)"
+      "glyph_source": "brand-informed redraw of the official launcher icon (play listing for com.oumi.utility.media.hub); Core monoline geometry, not a trace (2026-09-26)",
+      "name_source": "app name from the Projectivy Icon Pack 1.1.9 artwork for com.oumi.utility.media.hub (github.com/SicMundus86/ProjectivyIconPack, used as reference only), which shows the VidHub logo for this package (2026-09-27)"
     },
     {
       "name": "Mediaset Infinity TV",
@@ -6100,17 +6156,18 @@
       "color_reviewed": null
     },
     {
-      "name": "MGS TV",
+      "name": "Magis TV",
       "drawable": "mgstv",
-      "color": "#FF7A2E",
+      "color": "#F06028",
       "glyph": "broadcast_M",
       "mark": "MT",
       "components": [
         "com.android.mgstv/com.interactive.brasiliptv.ui.activity.WelcomeActivity"
       ],
       "category": "APP",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled from the Projectivy Icon Pack 1.1.9 artwork for com.android.mgstv (github.com/SicMundus86/ProjectivyIconPack, used as reference only): #F06028 (2026-09-27)",
+      "color_reviewed": "2026-09-27",
+      "name_source": "app name from the Projectivy Icon Pack 1.1.9 artwork for com.android.mgstv (github.com/SicMundus86/ProjectivyIconPack, used as reference only), which shows the Magis TV logo for this package (2026-09-27)"
     },
     {
       "name": "Mi Gallery",
@@ -6126,21 +6183,22 @@
       "color_reviewed": null
     },
     {
-      "name": "Mi TV Plus",
+      "name": "Xiaomi TV+",
       "drawable": "mitvplus",
       "color": "#19D3C5",
       "glyph": "mitv_mark",
       "components": [
         "com.mitv.tvhome.mitvplus/com.mitv.tvhome.mitvplus.app.BannerLogoFree24"
       ],
-      "category": "LAUNCHER",
+      "category": "LIVE",
       "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_reviewed": null,
+      "name_source": "app name from the Projectivy Icon Pack 1.1.9 artwork for com.mitv.tvhome.mitvplus (github.com/SicMundus86/ProjectivyIconPack, used as reference only), which shows the Xiaomi TV+ logo for this package (2026-09-27)"
     },
     {
       "name": "Miracast",
       "drawable": "miracast",
-      "color": "#F04DE0",
+      "color": "#60C0F8",
       "glyph": "tool_M",
       "mark": "MI",
       "components": [
@@ -6148,8 +6206,8 @@
       ],
       "category": "APP",
       "mapping_source": "Projectivy Icon Pack 1.1.9",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled from the Projectivy Icon Pack 1.1.9 artwork for com.xiaomi.mitv.smartshare (github.com/SicMundus86/ProjectivyIconPack, used as reference only): #60C0F8 (2026-09-27)",
+      "color_reviewed": "2026-09-27"
     },
     {
       "name": "MiXplorer",
@@ -6303,7 +6361,7 @@
       "color_reviewed": null
     },
     {
-      "name": "Movideo",
+      "name": "Danet",
       "drawable": "whitelabel",
       "color": "#8BBF3F",
       "glyph": "movideo_doc",
@@ -6313,7 +6371,8 @@
       "category": "APP",
       "color_source": "sampled from the official launcher icon (Google Play listing for com.movideo.whitelabel): dominant brand accent #8BBF3F (2026-09-26)",
       "color_reviewed": "2026-09-26",
-      "glyph_source": "brand-informed redraw of the official launcher icon (play listing for com.movideo.whitelabel); Core monoline geometry, not a trace (2026-09-26)"
+      "glyph_source": "brand-informed redraw of the official launcher icon (play listing for com.movideo.whitelabel); Core monoline geometry, not a trace (2026-09-26)",
+      "name_source": "app name from the Projectivy Icon Pack 1.1.9 artwork for com.movideo.whitelabel (github.com/SicMundus86/ProjectivyIconPack, used as reference only), which shows the Danet logo for this package (2026-09-27)"
     },
     {
       "name": "Movie HD",
@@ -6563,17 +6622,18 @@
       "color_reviewed": "2026-09-26"
     },
     {
-      "name": "Myiptv",
+      "name": "MYiptv 4K",
       "drawable": "myiptv",
       "color": "#4FACFE",
       "glyph": "broadcast_M",
-      "mark": "MY",
+      "mark": "M4",
       "components": [
         "com.iptv.myiptv/com.iptv.myiptv.main.activity.LoginActivity"
       ],
       "category": "LIVE",
       "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_reviewed": null,
+      "name_source": "app name from the Projectivy Icon Pack 1.1.9 artwork for com.iptv.myiptv (github.com/SicMundus86/ProjectivyIconPack, used as reference only), which shows the MYiptv 4K logo for this package (2026-09-27)"
     },
     {
       "name": "MyRadar",
@@ -7213,15 +7273,15 @@
     {
       "name": "Nxsha",
       "drawable": "nxsha",
-      "color": "#3D8BFF",
+      "color": "#F8C828",
       "glyph": "anime_N",
       "mark": "NX",
       "components": [
         "com.nxsha/com.nxsha.MainActivity"
       ],
       "category": "APP",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled from the Projectivy Icon Pack 1.1.9 artwork for com.nxsha (github.com/SicMundus86/ProjectivyIconPack, used as reference only): #F8C828 (2026-09-27)",
+      "color_reviewed": "2026-09-27"
     },
     {
       "name": "NZR+",
@@ -7293,17 +7353,18 @@
       "color_reviewed": null
     },
     {
-      "name": "Offshore",
+      "name": "Pikashow",
       "drawable": "offshore",
-      "color": "#4FACFE",
-      "glyph": "broadcast_O",
-      "mark": "OF",
+      "color": "#F80010",
+      "glyph": "broadcast_P",
+      "mark": "PI",
       "components": [
         "com.offshore.pikachu/com.offshore.pikachu.view.Splash"
       ],
       "category": "APP",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled from the Projectivy Icon Pack 1.1.9 artwork for com.offshore.pikachu (github.com/SicMundus86/ProjectivyIconPack, used as reference only): #F80010 (2026-09-27)",
+      "color_reviewed": "2026-09-27",
+      "name_source": "app name from the Projectivy Icon Pack 1.1.9 artwork for com.offshore.pikachu (github.com/SicMundus86/ProjectivyIconPack, used as reference only), which shows the Pikashow logo for this package (2026-09-27)"
     },
     {
       "name": "Oilers+",
@@ -7321,15 +7382,15 @@
     {
       "name": "OK TV",
       "drawable": "oktv22",
-      "color": "#34EB7A",
+      "color": "#D82028",
       "glyph": "broadcast_O",
       "mark": "OT",
       "components": [
         "com.iptv.OKTV22/com.iptv.vsaclient.Main"
       ],
       "category": "LIVE",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled from the Projectivy Icon Pack 1.1.9 artwork for com.iptv.OKTV22 (github.com/SicMundus86/ProjectivyIconPack, used as reference only): #D82028 (2026-09-27)",
+      "color_reviewed": "2026-09-27"
     },
     {
       "name": "Ok Video",
@@ -7402,17 +7463,18 @@
       "mark_source": "logotype letters from the official launcher icon (Google Play listing for net.cme.voyo.cz.tvapp), which reads 'one play': the first two, because the whole logotype sets under the pack's 96px legibility floor; set in the pack's face, not traced (2026-09-26)"
     },
     {
-      "name": "OnePix",
+      "name": "1Pix Media",
       "drawable": "onepixmedia",
       "color": "#7C74FF",
-      "glyph": "broadcast_O",
-      "mark": "ON",
+      "glyph": "broadcast_1",
+      "mark": "1M",
       "components": [
         "app1.onepixmedia/app1.onepixmedia.empezar"
       ],
       "category": "APP",
       "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_reviewed": null,
+      "name_source": "app name from the Projectivy Icon Pack 1.1.9 artwork for app1.onepixmedia (github.com/SicMundus86/ProjectivyIconPack, used as reference only), which shows the 1Pix Media logo for this package (2026-09-27)"
     },
     {
       "name": "Onstream",
@@ -7428,17 +7490,18 @@
       "color_reviewed": null
     },
     {
-      "name": "OnTV",
+      "name": "TV+",
       "drawable": "andevapps",
       "color": "#D61160",
-      "glyph": "broadcast_O",
-      "mark": "ON",
+      "glyph": "broadcast_T",
+      "mark": "TV",
       "components": [
         "com.andevapps.ontv/limehd.ru.ctv.MainActivity"
       ],
       "category": "APP",
       "color_source": "sampled from the official launcher icon (Google Play listing for com.andevapps.ontv): dominant brand accent #D61160 (2026-09-26)",
-      "color_reviewed": "2026-09-26"
+      "color_reviewed": "2026-09-26",
+      "name_source": "app name from the Projectivy Icon Pack 1.1.9 artwork for com.andevapps.ontv (github.com/SicMundus86/ProjectivyIconPack, used as reference only), which shows the TV+ logo for this package (2026-09-27)"
     },
     {
       "name": "Openvpn For Android",
@@ -7580,17 +7643,18 @@
       "color_reviewed": null
     },
     {
-      "name": "Overseas App Store",
+      "name": "Emotn Store",
       "drawable": "appstore",
-      "color": "#A366FF",
+      "color": "#D828E0",
       "glyph": "store_globe",
       "components": [
         "com.overseas.store.appstore/com.overseas.store.appstore.ui.SplashActivity"
       ],
       "category": "STORE",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null,
-      "style": "core_monoline"
+      "color_source": "sampled from the Projectivy Icon Pack 1.1.9 artwork for com.overseas.store.appstore (github.com/SicMundus86/ProjectivyIconPack, used as reference only): #D828E0 (2026-09-27)",
+      "color_reviewed": "2026-09-27",
+      "style": "core_monoline",
+      "name_source": "app name from the Projectivy Icon Pack 1.1.9 artwork for com.overseas.store.appstore (github.com/SicMundus86/ProjectivyIconPack, used as reference only), which shows the Emotn Store logo for this package (2026-09-27)"
     },
     {
       "name": "OwnTV",
@@ -7820,15 +7884,15 @@
     {
       "name": "Perfect TV",
       "drawable": "perfecttv",
-      "color": "#B6F23A",
+      "color": "#38B0F8",
       "glyph": "store_P",
       "mark": "PT",
       "components": [
         "com.perfecttv.apks/com.gbscell.aipitv.SplashActivity"
       ],
       "category": "APP",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled from the Projectivy Icon Pack 1.1.9 artwork for com.perfecttv.apks (github.com/SicMundus86/ProjectivyIconPack, used as reference only): #38B0F8 (2026-09-27)",
+      "color_reviewed": "2026-09-27"
     },
     {
       "name": "Philo",
@@ -7843,22 +7907,18 @@
       "color_reviewed": null
     },
     {
-      "name": "Photo Collage",
+      "name": "TeaTV",
       "drawable": "photocollage",
-      "color": "#993AE7",
-      "glyph": "photocollage_ring",
+      "color": "#E05020",
+      "glyph": "teatv_tv",
       "components": [
         "com.oe.photocollage/com.oe.photocollage.SplashActivity"
       ],
       "category": "APP",
-      "color_source": "sampled from the official launcher icon (Google Play listing for com.oe.photocollage): gradient start #993AE7 (2026-09-26)",
-      "color_reviewed": "2026-09-26",
-      "glyph_source": "brand-informed redraw of the official launcher icon (play listing for com.oe.photocollage); Core monoline geometry, not a trace (2026-09-26)",
-      "gradient": [
-        "#993AE7",
-        "#F33C25"
-      ],
-      "gradient_source": "sampled from the official launcher icon (Google Play listing for com.oe.photocollage): the icon's own #993AE7 to #F33C25 gradient, its two ends (2026-09-26)"
+      "color_source": "sampled from the Projectivy Icon Pack 1.1.9 artwork for com.oe.photocollage (github.com/SicMundus86/ProjectivyIconPack, used as reference only): #E05020 (2026-09-27)",
+      "color_reviewed": "2026-09-27",
+      "glyph_source": "brand-informed redraw of the Projectivy Icon Pack 1.1.9 artwork for com.oe.photocollage (github.com/SicMundus86/ProjectivyIconPack, used as reference only); the package's store listing shows a decoy app, so the mark follows the app installed on TVs; Core monoline geometry, not a trace (2026-09-27)",
+      "name_source": "app name from the Projectivy Icon Pack 1.1.9 artwork for com.oe.photocollage (github.com/SicMundus86/ProjectivyIconPack, used as reference only), which shows the TeaTV logo for this package (2026-09-27)"
     },
     {
       "name": "Photo Screensaver",
@@ -7992,18 +8052,19 @@
       "color_reviewed": null
     },
     {
-      "name": "PlayNet",
+      "name": "LiveNetTV Pro",
       "drawable": "androidtv_10",
-      "color": "#7C74FF",
-      "glyph": "broadcast_P",
-      "mark": "PL",
+      "color": "#881010",
+      "glyph": "broadcast_L",
+      "mark": "LP",
       "components": [
         "com.playnet.androidtv.pro/com.playnet.androidtv.pro.DdfzCtdEstCn",
         "com.playnet.androidtv.pro/com.playnet.androidtv.pro.plBqnAaqDlEns"
       ],
       "category": "APP",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled from the Projectivy Icon Pack 1.1.9 artwork for com.playnet.androidtv.pro (github.com/SicMundus86/ProjectivyIconPack, used as reference only): #881010 (2026-09-27)",
+      "color_reviewed": "2026-09-27",
+      "name_source": "app name from the Projectivy Icon Pack 1.1.9 artwork for com.playnet.androidtv.pro (github.com/SicMundus86/ProjectivyIconPack, used as reference only), which shows the LiveNetTV Pro logo for this package (2026-09-27)"
     },
     {
       "name": "PlayStation",
@@ -8053,17 +8114,18 @@
       "color_reviewed": null
     },
     {
-      "name": "Plus Messenger",
+      "name": "Tevegram",
       "drawable": "telegram",
       "color": "#19D3C5",
-      "glyph": "broadcast_P",
-      "mark": "PM",
+      "glyph": "broadcast_T",
+      "mark": "TE",
       "components": [
         "cassian.telegram.ooa.pro/not.a.bug.notificationcenter.MainActivity"
       ],
       "category": "APP",
       "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_reviewed": null,
+      "name_source": "app name from the Projectivy Icon Pack 1.1.9 artwork for cassian.telegram.ooa.pro (github.com/SicMundus86/ProjectivyIconPack, used as reference only), which shows the Tevegram logo for this package (2026-09-27)"
     },
     {
       "name": "Pluto TV",
@@ -8107,17 +8169,18 @@
       "color_reviewed": null
     },
     {
-      "name": "Polygon Player",
+      "name": "NovaTV",
       "drawable": "videoplayer_2",
-      "color": "#3D8BFF",
-      "glyph": "broadcast_P",
-      "mark": "PP",
+      "color": "#F04818",
+      "glyph": "broadcast_N",
+      "mark": "NO",
       "components": [
         "com.polygon.videoplayer/com.polygon.videoplayer.SplashActivity"
       ],
       "category": "APP",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled from the Projectivy Icon Pack 1.1.9 artwork for com.polygon.videoplayer (github.com/SicMundus86/ProjectivyIconPack, used as reference only): #F04818 (2026-09-27)",
+      "color_reviewed": "2026-09-27",
+      "name_source": "app name from the Projectivy Icon Pack 1.1.9 artwork for com.polygon.videoplayer (github.com/SicMundus86/ProjectivyIconPack, used as reference only), which shows the NovaTV logo for this package (2026-09-27)"
     },
     {
       "name": "Poweramp Equalizer",
@@ -8186,7 +8249,7 @@
     {
       "name": "Premiumize TV",
       "drawable": "premiumize_tv",
-      "color": "#FFE14D",
+      "color": "#A80808",
       "glyph": "debrid_P",
       "mark": "PT",
       "components": [
@@ -8194,8 +8257,8 @@
       ],
       "category": "APP",
       "mapping_source": "Projectivy Icon Pack 1.1.9",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled from the Projectivy Icon Pack 1.1.9 artwork for me.premiumize.pmtvfire (github.com/SicMundus86/ProjectivyIconPack, used as reference only): #A80808 (2026-09-27)",
+      "color_reviewed": "2026-09-27"
     },
     {
       "name": "Prime Video",
@@ -8521,22 +8584,23 @@
       "glyph_source": "brand-informed redraw of the official launcher icon (Google Play listing for laola1.wrc); Core monoline geometry, not a trace (2026-09-27)"
     },
     {
-      "name": "RAM TV",
+      "name": "RAM Cleaner",
       "drawable": "ram",
       "color": "#34EB7A",
       "glyph": "broadcast_R",
-      "mark": "RT",
+      "mark": "RC",
       "components": [
         "com.ram.tv/com.ram.tv.Update_done.MySplash"
       ],
-      "category": "APP",
+      "category": "TOOL",
       "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_reviewed": null,
+      "name_source": "app name from the Projectivy Icon Pack 1.1.9 artwork for com.ram.tv (github.com/SicMundus86/ProjectivyIconPack, used as reference only), which shows the RAM Cleaner logo for this package (2026-09-27)"
     },
     {
       "name": "Rapid Streamz",
       "drawable": "rapid_streamz",
-      "color": "#A366FF",
+      "color": "#00D030",
       "glyph": "broadcast_R",
       "mark": "RS",
       "components": [
@@ -8544,11 +8608,11 @@
       ],
       "category": "APP",
       "mapping_source": "Projectivy Icon Pack 1.1.9",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled from the Projectivy Icon Pack 1.1.9 artwork for com.rpstreamz.live (github.com/SicMundus86/ProjectivyIconPack, used as reference only): #00D030 (2026-09-27)",
+      "color_reviewed": "2026-09-27"
     },
     {
-      "name": "RB Live",
+      "name": "RBTV+",
       "drawable": "rblive",
       "color": "#FFAE01",
       "glyph": "broadcast_R",
@@ -8559,20 +8623,22 @@
       "category": "APP",
       "color_source": "sampled from the official launcher icon (Aptoide listing for com.rblive.app): dominant brand accent #FFAE01 (2026-09-27)",
       "color_reviewed": "2026-09-27",
-      "mark_source": "logotype letters from the official launcher icon (Aptoide listing for com.rblive.app), which reads 'RB'; set in the pack's face, not traced (2026-09-27)"
+      "mark_source": "logotype letters from the official launcher icon (Aptoide listing for com.rblive.app), which reads 'RB'; set in the pack's face, not traced (2026-09-27)",
+      "name_source": "app name from the Projectivy Icon Pack 1.1.9 artwork for com.rblive.app (github.com/SicMundus86/ProjectivyIconPack, used as reference only), which shows the RBTV+ logo for this package (2026-09-27)"
     },
     {
-      "name": "RB Main",
+      "name": "Rubika TV",
       "drawable": "rbmain",
       "color": "#00D4FF",
       "glyph": "film_R",
-      "mark": "RM",
+      "mark": "RT",
       "components": [
         "app.rbmain.tv/com.example.vod.pages.main.MainActivity"
       ],
       "category": "APP",
       "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_reviewed": null,
+      "name_source": "app name from the Projectivy Icon Pack 1.1.9 artwork for app.rbmain.tv (github.com/SicMundus86/ProjectivyIconPack, used as reference only), which shows the Rubika TV logo for this package (2026-09-27)"
     },
     {
       "name": "Real America's Voice",
@@ -8667,17 +8733,18 @@
       "glyph_source": "brand-informed redraw of the official launcher icon (APKCombo mirror of the Google Play listing for mobi.bytearray.refreshrate); Core monoline geometry, not a trace (2026-09-27)"
     },
     {
-      "name": "Remote Capture",
+      "name": "PCAPdroid",
       "drawable": "remote_capture",
-      "color": "#19D3C5",
+      "color": "#A068D0",
       "glyph": "capture_dot",
       "components": [
         "com.emanuelef.remote_capture/com.emanuelef.remote_capture.activities.MainActivity"
       ],
       "category": "TOOL",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null,
-      "style": "core_monoline"
+      "color_source": "sampled from the Projectivy Icon Pack 1.1.9 artwork for com.emanuelef.remote_capture (github.com/SicMundus86/ProjectivyIconPack, used as reference only): #A068D0 (2026-09-27)",
+      "color_reviewed": "2026-09-27",
+      "style": "core_monoline",
+      "name_source": "app name from the Projectivy Icon Pack 1.1.9 artwork for com.emanuelef.remote_capture (github.com/SicMundus86/ProjectivyIconPack, used as reference only), which shows the PCAPdroid logo for this package (2026-09-27)"
     },
     {
       "name": "Remote Starter For Yatse",
@@ -8761,30 +8828,32 @@
       "color_reviewed": "2026-09-26"
     },
     {
-      "name": "RlaXX TV",
+      "name": "Whale TV",
       "drawable": "rlaxxtv",
-      "color": "#C95CFF",
-      "glyph": "broadcast_R",
-      "mark": "RT",
+      "color": "#F80050",
+      "glyph": "broadcast_W",
+      "mark": "WT",
       "components": [
         "com.rlaxxtv.tvapp.atv/com.rlaxxtv.tvapp.MainActivity"
       ],
       "category": "APP",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled from the Projectivy Icon Pack 1.1.9 artwork for com.rlaxxtv.tvapp.atv (github.com/SicMundus86/ProjectivyIconPack, used as reference only): #F80050 (2026-09-27)",
+      "color_reviewed": "2026-09-27",
+      "name_source": "app name from the Projectivy Icon Pack 1.1.9 artwork for com.rlaxxtv.tvapp.atv (github.com/SicMundus86/ProjectivyIconPack, used as reference only), which shows the Whale TV logo for this package (2026-09-27)"
     },
     {
-      "name": "RLC+",
+      "name": "Super League+",
       "drawable": "rlcplus",
       "color": "#00B4BA",
       "glyph": "rlc_shield",
       "components": [
         "com.rlcplus.app/com.rlcplus.app.MainActivity"
       ],
-      "category": "APP",
+      "category": "SPORT",
       "color_source": "sampled from the official launcher icon (Google Play listing for com.rlcplus.app): dominant brand accent #00B4BA (2026-09-26)",
       "color_reviewed": "2026-09-26",
-      "glyph_source": "brand-informed redraw of the official launcher icon (play listing for com.rlcplus.app); Core monoline geometry, not a trace (2026-09-26)"
+      "glyph_source": "brand-informed redraw of the official launcher icon (play listing for com.rlcplus.app); Core monoline geometry, not a trace (2026-09-26)",
+      "name_source": "app name from the Projectivy Icon Pack 1.1.9 artwork for com.rlcplus.app (github.com/SicMundus86/ProjectivyIconPack, used as reference only), which shows the Super League+ logo for this package (2026-09-27)"
     },
     {
       "name": "RMC BFM",
@@ -9090,7 +9159,7 @@
     {
       "name": "Screenscape",
       "drawable": "screenscape",
-      "color": "#FF4D4D",
+      "color": "#E8B820",
       "glyph": "tool_S",
       "mark": "SC",
       "components": [
@@ -9098,8 +9167,8 @@
       ],
       "category": "APP",
       "mapping_source": "Projectivy Icon Pack 1.1.9",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled from the Projectivy Icon Pack 1.1.9 artwork for com.screenscape (github.com/SicMundus86/ProjectivyIconPack, used as reference only): #E8B820 (2026-09-27)",
+      "color_reviewed": "2026-09-27"
     },
     {
       "name": "SD Maid",
@@ -9352,17 +9421,18 @@
       "color_reviewed": null
     },
     {
-      "name": "Simple Player",
+      "name": "Drama Player",
       "drawable": "simpleplayer",
-      "color": "#7C74FF",
-      "glyph": "broadcast_S",
-      "mark": "SP",
+      "color": "#F06058",
+      "glyph": "broadcast_D",
+      "mark": "DP",
       "components": [
         "com.drama.simpleplayer/com.drama.simpleplayer.MainActivity"
       ],
       "category": "APP",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled from the Projectivy Icon Pack 1.1.9 artwork for com.drama.simpleplayer (github.com/SicMundus86/ProjectivyIconPack, used as reference only): #F06058 (2026-09-27)",
+      "color_reviewed": "2026-09-27",
+      "name_source": "app name from the Projectivy Icon Pack 1.1.9 artwork for com.drama.simpleplayer (github.com/SicMundus86/ProjectivyIconPack, used as reference only), which shows the Drama Player logo for this package (2026-09-27)"
     },
     {
       "name": "SimpliTV",
@@ -9377,7 +9447,7 @@
       "color_reviewed": null
     },
     {
-      "name": "SIPTV",
+      "name": "Smart IPTV",
       "drawable": "siptv",
       "color": "#1982C4",
       "glyph": "broadcast_S",
@@ -9387,7 +9457,8 @@
       ],
       "category": "LIVE",
       "color_source": "brand reference (pre-provenance, unverified)",
-      "color_reviewed": null
+      "color_reviewed": null,
+      "name_source": "app name from the Projectivy Icon Pack 1.1.9 artwork for app.siptv.android (github.com/SicMundus86/ProjectivyIconPack, used as reference only), which shows the Smart IPTV logo for this package (2026-09-27)"
     },
     {
       "name": "Sirius",
@@ -9661,17 +9732,18 @@
       "color_reviewed": null
     },
     {
-      "name": "Speaker Boost",
+      "name": "Volume Booster",
       "drawable": "booster",
       "color": "#CF5E5A",
       "glyph": "speaker_boost",
       "components": [
         "com.goodev.volume.booster/com.goodev.volume.booster.SpeakerBoost"
       ],
-      "category": "APP",
+      "category": "TOOL",
       "color_source": "sampled from the official launcher icon (Google Play listing for com.goodev.volume.booster): dominant brand accent #CF5E5A (2026-09-26)",
       "color_reviewed": "2026-09-26",
-      "glyph_source": "brand-informed redraw of the official launcher icon (play listing for com.goodev.volume.booster); Core monoline geometry, not a trace (2026-09-26)"
+      "glyph_source": "brand-informed redraw of the official launcher icon (play listing for com.goodev.volume.booster); Core monoline geometry, not a trace (2026-09-26)",
+      "name_source": "app name from the Projectivy Icon Pack 1.1.9 artwork for com.goodev.volume.booster (github.com/SicMundus86/ProjectivyIconPack, used as reference only), which shows the Volume Booster logo for this package (2026-09-27)"
     },
     {
       "name": "Speedtest TV",
@@ -9702,7 +9774,7 @@
     {
       "name": "Sports Everywhere",
       "drawable": "sportseverywhere",
-      "color": "#00D4FF",
+      "color": "#F84048",
       "glyph": "sport_S",
       "mark": "SE",
       "components": [
@@ -9711,8 +9783,8 @@
         "com.bone.android.a4v.oficial/.AVActivity"
       ],
       "category": "SPORT",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null,
+      "color_source": "sampled from the Projectivy Icon Pack 1.1.9 artwork for com.Arena4Viewer.Sportseverywhere (github.com/SicMundus86/ProjectivyIconPack, used as reference only): #F84048 (2026-09-27)",
+      "color_reviewed": "2026-09-27",
       "unverified": [
         "com.bone.android.a4v.oficial/com.bone.android.a4v.oficial.AVActivity",
         "com.bone.android.a4v.oficial/.AVActivity"
@@ -9720,17 +9792,18 @@
       "mapping_source": "Arena4Viewer official site + issue #175 package; AVActivity entrypoint from indexed APK manifest analysis, 2026-09-26"
     },
     {
-      "name": "Sportscaster",
+      "name": "CBS Sports",
       "drawable": "sportscaster",
       "color": "#0154D5",
-      "glyph": "sport_S",
-      "mark": "SP",
+      "glyph": "sport_C",
+      "mark": "CS",
       "components": [
         "com.handmark.sportscaster.androidtv/com.cbs.commonui.homepage.HomePageActivity"
       ],
       "category": "SPORT",
       "color_source": "sampled from the official launcher icon (Google Play listing for com.handmark.sportscaster.androidtv): dominant brand accent #0154D5 (2026-09-26)",
-      "color_reviewed": "2026-09-26"
+      "color_reviewed": "2026-09-26",
+      "name_source": "app name from the Projectivy Icon Pack 1.1.9 artwork for com.handmark.sportscaster.androidtv (github.com/SicMundus86/ProjectivyIconPack, used as reference only), which shows the CBS Sports logo for this package (2026-09-27)"
     },
     {
       "name": "Sportsfire",
@@ -9760,7 +9833,7 @@
     {
       "name": "Sportzx",
       "drawable": "sportzx",
-      "color": "#FF7A2E",
+      "color": "#A888E8",
       "glyph": "sport_S",
       "mark": "SP",
       "components": [
@@ -9768,8 +9841,8 @@
       ],
       "category": "SPORT",
       "mapping_source": "Projectivy Icon Pack 1.1.9",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled from the Projectivy Icon Pack 1.1.9 artwork for com.sportzx.live (github.com/SicMundus86/ProjectivyIconPack, used as reference only): #A888E8 (2026-09-27)",
+      "color_reviewed": "2026-09-27"
     },
     {
       "name": "Spotify",
@@ -9882,7 +9955,7 @@
     {
       "name": "Stream Fire",
       "drawable": "stream_fire",
-      "color": "#1FD19A",
+      "color": "#F8B800",
       "glyph": "broadcast_S",
       "mark": "SF",
       "components": [
@@ -9890,8 +9963,8 @@
       ],
       "category": "APP",
       "mapping_source": "Projectivy Icon Pack 1.1.9",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled from the Projectivy Icon Pack 1.1.9 artwork for com.streamfire.app (github.com/SicMundus86/ProjectivyIconPack, used as reference only): #F8B800 (2026-09-27)",
+      "color_reviewed": "2026-09-27"
     },
     {
       "name": "Stream Vault",
@@ -10666,7 +10739,7 @@
       "mark_source": "logotype letters from the official launcher icon (Google Play listing for fr.tf1.mytf1), which reads 'TF1+'; set in the pack's face, not traced (2026-09-26)"
     },
     {
-      "name": "TFC",
+      "name": "iWant",
       "drawable": "tfctv",
       "color": "#4D038F",
       "glyph": "broadcast_T",
@@ -10679,12 +10752,13 @@
       "color_reviewed": "2026-09-26",
       "mark_source": "logotype letters from the official launcher icon (Google Play listing for com.absi.tfctv), which reads 'iw'; set in the pack's face, not traced (2026-09-26)",
       "mark_style": "lower",
-      "mark_style_source": "the logotype on the official launcher icon (Google Play listing for com.absi.tfctv) is set lowercase ('iw')"
+      "mark_style_source": "the logotype on the official launcher icon (Google Play listing for com.absi.tfctv) is set lowercase ('iw')",
+      "name_source": "app name from the Projectivy Icon Pack 1.1.9 artwork for com.absi.tfctv (github.com/SicMundus86/ProjectivyIconPack, used as reference only), which shows the iWant logo for this package (2026-09-27)"
     },
     {
       "name": "Tflix",
       "drawable": "tflix",
-      "color": "#00D4FF",
+      "color": "#E00870",
       "glyph": "broadcast_T",
       "mark": "TF",
       "components": [
@@ -10692,8 +10766,8 @@
       ],
       "category": "APP",
       "mapping_source": "Projectivy Icon Pack 1.1.9",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled from the Projectivy Icon Pack 1.1.9 artwork for com.tflix.live (github.com/SicMundus86/ProjectivyIconPack, used as reference only): #E00870 (2026-09-27)",
+      "color_reviewed": "2026-09-27"
     },
     {
       "name": "Tg4 Player",
@@ -10874,17 +10948,18 @@
       "color_reviewed": null
     },
     {
-      "name": "TNA Wrestling",
+      "name": "TNA+",
       "drawable": "fight",
       "color": "#7C0000",
       "glyph": "sport_T",
-      "mark": "TW",
+      "mark": "TN",
       "components": [
         "com.fight.tna/com.fight.tna.MainActivity"
       ],
-      "category": "APP",
+      "category": "SPORT",
       "color_source": "sampled from the official launcher icon (Google Play listing for com.fight.tna): dominant brand accent #7C0000 (2026-09-26)",
-      "color_reviewed": "2026-09-26"
+      "color_reviewed": "2026-09-26",
+      "name_source": "app name from the Projectivy Icon Pack 1.1.9 artwork for com.fight.tna (github.com/SicMundus86/ProjectivyIconPack, used as reference only), which shows the TNA+ logo for this package (2026-09-27)"
     },
     {
       "name": "TNT",
@@ -11161,22 +11236,23 @@
       "style": "core_monoline"
     },
     {
-      "name": "TV Everywhere",
+      "name": "Kable One",
       "drawable": "tveverywhere",
       "color": "#BF1017",
-      "glyph": "broadcast_T",
-      "mark": "TV",
+      "glyph": "broadcast_K",
+      "mark": "KO",
       "components": [
         "com.kableone.tveverywhere/com.kableone.tveverywhere.ui.main.view.activity.SplashScreenActivity"
       ],
       "category": "APP",
       "color_source": "sampled from the official launcher icon (Google Play listing for com.kableone.tveverywhere): dominant brand accent #BF1017 (2026-09-26)",
-      "color_reviewed": "2026-09-26"
+      "color_reviewed": "2026-09-26",
+      "name_source": "app name from the Projectivy Icon Pack 1.1.9 artwork for com.kableone.tveverywhere (github.com/SicMundus86/ProjectivyIconPack, used as reference only), which shows the Kable One logo for this package (2026-09-27)"
     },
     {
       "name": "TV Garden",
       "drawable": "tv_garden",
-      "color": "#FF4D4D",
+      "color": "#78C040",
       "glyph": "broadcast_T",
       "mark": "TG",
       "components": [
@@ -11184,8 +11260,8 @@
       ],
       "category": "APP",
       "mapping_source": "Projectivy Icon Pack 1.1.9",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled from the Projectivy Icon Pack 1.1.9 artwork for com.tvgarden (github.com/SicMundus86/ProjectivyIconPack, used as reference only): #78C040 (2026-09-27)",
+      "color_reviewed": "2026-09-27"
     },
     {
       "name": "TV Manager",
@@ -11242,7 +11318,7 @@
       "color_reviewed": null
     },
     {
-      "name": "TV Unplugged",
+      "name": "YouTube TV",
       "drawable": "tvunplugged",
       "color": "#1982C4",
       "glyph": "iptv_player",
@@ -11251,7 +11327,8 @@
       ],
       "category": "VIDEO",
       "color_source": "brand reference (pre-provenance, unverified)",
-      "color_reviewed": null
+      "color_reviewed": null,
+      "name_source": "app name from the Projectivy Icon Pack 1.1.9 artwork for com.google.android.youtube.tvunplugged (github.com/SicMundus86/ProjectivyIconPack, used as reference only), which shows the YouTube TV logo for this package (2026-09-27)"
     },
     {
       "name": "TV Vlaanderen",
@@ -11552,17 +11629,18 @@
       "color_reviewed": null
     },
     {
-      "name": "Ucom TV",
+      "name": "Uplay",
       "drawable": "smarttvapp",
       "color": "#9DD531",
       "glyph": "broadcast_U",
-      "mark": "UT",
+      "mark": "UP",
       "components": [
         "am.ucom.smarttvapp/tv.smartlabs.framework.MainActivity"
       ],
       "category": "APP",
       "color_source": "sampled from the official launcher icon (Google Play listing for am.ucom.smarttvapp): dominant brand accent #9DD531 (2026-09-26)",
-      "color_reviewed": "2026-09-26"
+      "color_reviewed": "2026-09-26",
+      "name_source": "app name from the Projectivy Icon Pack 1.1.9 artwork for am.ucom.smarttvapp (github.com/SicMundus86/ProjectivyIconPack, used as reference only), which shows the Uplay logo for this package (2026-09-27)"
     },
     {
       "name": "UEFA TV",
@@ -11720,17 +11798,18 @@
       "color_reviewed": "2026-09-26"
     },
     {
-      "name": "Ve Plus",
+      "name": "Venevision Play",
       "drawable": "venevision",
-      "color": "#3D8BFF",
+      "color": "#68C0E8",
       "glyph": "chevron_plus",
       "components": [
         "com.cisneros.venevision.app/com.interfacectvapp.MainActivity"
       ],
       "category": "STREAM",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null,
-      "style": "core_monoline"
+      "color_source": "sampled from the Projectivy Icon Pack 1.1.9 artwork for com.cisneros.venevision.app (github.com/SicMundus86/ProjectivyIconPack, used as reference only): #68C0E8 (2026-09-27)",
+      "color_reviewed": "2026-09-27",
+      "style": "core_monoline",
+      "name_source": "app name from the Projectivy Icon Pack 1.1.9 artwork for com.cisneros.venevision.app (github.com/SicMundus86/ProjectivyIconPack, used as reference only), which shows the Venevision Play logo for this package (2026-09-27)"
     },
     {
       "name": "Veezie",
@@ -12029,17 +12108,18 @@
       "color_reviewed": null
     },
     {
-      "name": "VPN Dot",
+      "name": "Monitor Dot",
       "drawable": "omnisoft",
-      "color": "#F04DE0",
-      "glyph": "vpn_V",
-      "mark": "VD",
+      "color": "#F84060",
+      "glyph": "vpn_M",
+      "mark": "MD",
       "components": [
         "com.omnisoft.vpndot/com.omnisoft.vpndot.main"
       ],
-      "category": "VPN",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "category": "TOOL",
+      "color_source": "sampled from the Projectivy Icon Pack 1.1.9 artwork for com.omnisoft.vpndot (github.com/SicMundus86/ProjectivyIconPack, used as reference only): #F84060 (2026-09-27)",
+      "color_reviewed": "2026-09-27",
+      "name_source": "app name from the Projectivy Icon Pack 1.1.9 artwork for com.omnisoft.vpndot (github.com/SicMundus86/ProjectivyIconPack, used as reference only), which shows the Monitor Dot logo for this package (2026-09-27)"
     },
     {
       "name": "VPN Unlimited",
@@ -12551,17 +12631,18 @@
       "color_reviewed": "2026-09-26"
     },
     {
-      "name": "Xtream Player",
+      "name": "9Xtream",
       "drawable": "xtreamplayeranddownloader",
-      "color": "#53FC18",
-      "glyph": "broadcast_X",
-      "mark": "XP",
+      "color": "#F80008",
+      "glyph": "broadcast_9",
+      "mark": "9X",
       "components": [
         "com.divergentftb.xtreamplayeranddownloader/com.divergentftb.xtreamplayeranddownloader.start.SpActivity"
       ],
       "category": "LIVE",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled from the Projectivy Icon Pack 1.1.9 artwork for com.divergentftb.xtreamplayeranddownloader (github.com/SicMundus86/ProjectivyIconPack, used as reference only): #F80008 (2026-09-27)",
+      "color_reviewed": "2026-09-27",
+      "name_source": "app name from the Projectivy Icon Pack 1.1.9 artwork for com.divergentftb.xtreamplayeranddownloader (github.com/SicMundus86/ProjectivyIconPack, used as reference only), which shows the 9Xtream logo for this package (2026-09-27)"
     },
     {
       "name": "Xumo Play",
@@ -12679,7 +12760,7 @@
     {
       "name": "Youcine",
       "drawable": "youcine",
-      "color": "#C95CFF",
+      "color": "#F8A820",
       "glyph": "broadcast_Y",
       "mark": "YO",
       "components": [
@@ -12687,8 +12768,8 @@
       ],
       "category": "APP",
       "mapping_source": "Projectivy Icon Pack 1.1.9",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled from the Projectivy Icon Pack 1.1.9 artwork for com.world.youcinetv (github.com/SicMundus86/ProjectivyIconPack, used as reference only): #F8A820 (2026-09-27)",
+      "color_reviewed": "2026-09-27"
     },
     {
       "name": "Youku",

@@ -55,9 +55,27 @@ All notable changes to the Core Builds Icon Pack. Format follows
 
 ### Changed
 
+- **53 more apps wear their real colour.** Apps no store listing could
+  source take the colour of their logo in Projectivy Icon Pack 1.1.9, used
+  only as a reference; logos without one clear colour keep the palette.
 - **Three names spelled like the apps.** Hideme is now hide.me, Pathethuis
   is Pathé Thuis and Tennistv is Tennis TV, on their banners and in the icon
   list.
+
+### Fixed
+
+- **84 apps now carry their real names.** Checked against Projectivy Icon
+  Pack 1.1.9: many mappings came from that pack, but their names had been
+  rebuilt from package or developer names ("Freevee" was Amazon Luna,
+  "App Generation" myTuner Radio, the four "Maz TV" entries four different
+  apps). Each package was compared with the logo Projectivy shows for it,
+  and 50 letter tiles now read the corrected name. The two Eternal TV builds
+  are told apart as Immortal and Divine, and 14 banners move to the category
+  the real app belongs in (Amazon Luna to Gaming, KaraFun to Music).
+- **BeeTV and TeaTV redrawn from the real apps.** Both install under
+  a package whose store listing shows a different app (a weather app and a
+  photo collage maker); the icons now follow what is on the TV: BeeTV's bee
+  in its orange and TeaTV's tilted TV in its red.
 
 ## [1.9.6] — 2026-09-26
 

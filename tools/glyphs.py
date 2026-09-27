@@ -6466,3 +6466,33 @@ def firedown_flame(c):
 
 
 GLYPHS.update({"award_vpn_check": award_vpn_check, "firedown_flame": firedown_flame})
+
+
+# --------------------------------------------------------------------------
+# Projectivy cross-check (2026-09-27): two sideloaded apps install under a
+# decoy package whose store listing shows a different app. These marks follow
+# the app people actually see on their TV.
+
+
+def beetv_bee(c):
+    """BeeTV: the striped bee whose head is a play button."""
+    return (f'<ellipse cx="214" cy="304" rx="128" ry="92" transform="rotate(-24 214 304)" '
+            f'{_s(c, 28)}/>'
+            f'<path d="M 150 238 L 206 378 M 214 212 L 268 350" {_s(c, 24)}/>'
+            f'<path d="M 196 214 C 150 150 176 88 240 96 C 262 146 246 196 212 222 '
+            f'M 250 206 C 262 138 322 116 356 158 C 334 204 292 222 256 222" {_s(c, 22)}/>'
+            f'<circle cx="372" cy="250" r="58" {_s(c, 24)}/>'
+            + _solid("M 356 222 L 398 250 L 356 278 Z", c, 10))
+
+
+def teatv_tv(c):
+    """TeaTV: the tilted TV on crooked antennae with a play button on screen."""
+    return (f'<path d="M 196 170 L 150 102 M 296 150 L 318 76" {_s(c, 24)}/>'
+            f'<circle cx="150" cy="102" r="15" {_f(c)}/>'
+            f'<circle cx="318" cy="76" r="15" {_f(c)}/>'
+            f'<rect x="96" y="166" width="316" height="240" rx="58" '
+            f'transform="rotate(-10 254 286)" {_s(c, 32)}/>'
+            + _solid("M 222 240 L 316 280 L 232 346 Z", c, 14))
+
+
+GLYPHS.update({"beetv_bee": beetv_bee, "teatv_tv": teatv_tv})

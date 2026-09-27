@@ -26,7 +26,7 @@ class GenericGlyphTests(unittest.TestCase):
     def test_researched_function_examples(self):
         expected = {
             "Ace Stream": "broadcast",
-            "AllSaves Social": "tool",
+            "VivaTV": "broadcast",
             "Acontra Plus": "broadcast",
             "F Droid": "store",
             "Fluffy": "files",
