@@ -6,6 +6,15 @@ All notable changes to the Core Builds Icon Pack. Format follows
 
 ## [Unreleased]
 
+### Added
+
+- **Core EQ — a room equaliser built from pink noise and the TV remote mic.** `docs/research/core-eq-measurement-and-capability-2026-09.md` settles the two questions the idea lives or dies on: the controller microphone *is* supported on Android TV, but an uncalibrated remote capsule cannot be trusted below 40 Hz or above 8 kHz; and Android has no global equaliser API, so applying the correction is a capability to probe and state, not a promise to make.
+- **Core EQ plan and design frames.** `docs/CORE_EQ_PLAN.md` lays out the four screens, the capability ladder and the milestones, and `docs/core-eq-*.png` show them in the suite's own night chrome — Outfit and DejaVu Sans Mono, the `cb_*` tokens, the 3dp ring focus treatment, all read live from `app/src/main/res/values` rather than hand-drawn.
+- **`tools/core_eq_dsp.py` is the measurement chain, written before the Android.** Pink-noise and exponential-sine-sweep synthesis, Welch PSD to 1/3-octave bands anchored at 1 kHz, Flat / B&K / Harman / House targets, and a correction capped at +6/−12 dB with a 6 dB/octave slope limit across 40 Hz–8 kHz — plus the peaking-filter fit, the millibel collapse onto the device's own bands, and the three export formats with a preamp that rounds toward more negative.
+- **`tests/test_core_eq_dsp.py` pins that chain where it cannot drift.** Pink noise is proved to be −3 dB/octave and deterministic, `cut_only` is proved never to boost, the slope limiter is proved to cap a 15 dB null rather than echo it, fitting is proved deterministic, and the exported preamp is proved unable to under-compensate the largest boost. 41 tests.
+- **`tools/build_core_eq_mockups.py` renders the frames from their sources.** It reuses the icon pack's token loaders and font pins, feeds the graphs real DSP output rather than a hand-shaped curve, and refuses to draw any screen whose content passes the 540dp panel — the frame-level twin of `tests/test_tv_layout_fit.py`.
+- **`.github/workflows/suite-ci.yml` runs the new gates.** The DSP self-test, the pytest chain and the frame check are wired into the no-path-filter job, so `tests/test_ci_coverage.py` sees them on every push.
+
 ## [1.9.6] — 2026-09-26
 
 ### Added
