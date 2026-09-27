@@ -253,14 +253,19 @@ class ApplyPriorityTests(unittest.TestCase):
             r"val (\w+) = Launcher\((?:(?!\n    \)).)*?inboundApply = false", src, re.S))
         return keys, no_inbound
 
-    def apply_order(self, home, installed):
-        """Mirror of ApplyIconPack.applyOrder, over the Kotlin's own data."""
+    def apply_order(self, home, installed, resolving=frozenset({"PROJECTIVY"})):
+        """Mirror of ApplyIconPack.applyOrder, over the Kotlin's own data.
+
+        [resolving] stands in for resolvesApply: the launchers whose apply
+        intent reaches an activity on the simulated device.
+        """
         keys, no_inbound = self.launchers()
         rest = [k for k in keys if k in installed and k != home]
         ordered = ([home] if home in installed else []) + rest
         if not ordered or ordered[0] not in no_inbound:
             return ordered
-        direct = next((k for k in ordered if k not in no_inbound), None)
+        direct = next((k for k in ordered
+                       if k not in no_inbound and k in resolving), None)
         if direct is None:
             return ordered
         return [direct] + [k for k in ordered if k != direct]
@@ -276,12 +281,18 @@ class ApplyPriorityTests(unittest.TestCase):
     def test_monet_alone_still_gets_its_setup_screen(self):
         self.assertEqual(self.apply_order("MONET", {"MONET"}), ["MONET"])
 
+    def test_a_launcher_that_cannot_resolve_is_not_promoted(self):
+        """Leanback on Fire has no receiver: Monet's walk keeps the button."""
+        self.assertEqual(self.apply_order("MONET", {"MONET", "LEANBACK"}),
+                         ["MONET", "LEANBACK"])
+
     def test_kotlin_implements_the_fallback(self):
         src = read(self.SRC)
         body = src[src.index("fun applyOrder("):]
         body = body[:body.index("\n    }\n")]
         self.assertIn("if (home.inboundApply) return all", body)
-        self.assertIn("all.firstOrNull { it.inboundApply }", body)
+        self.assertIn("all.firstOrNull { it.inboundApply && resolvesApply(context, it) }", body)
+        self.assertIn("queryIntentActivities(intent, 0).isNotEmpty()", src)
 
     def test_button_and_refresh_use_the_apply_order(self):
         main = read(APP / "java/tv/corebuilds/iconpack/MainActivity.kt")
