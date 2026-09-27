@@ -550,7 +550,7 @@
     {
       "name": "Anime Cast",
       "drawable": "anime_cast",
-      "color": "#34EB7A",
+      "color": "#5454A8",
       "glyph": "anime_A",
       "mark": "AC",
       "components": [
@@ -559,8 +559,8 @@
       ],
       "category": "APP",
       "mapping_source": "Projectivy Icon Pack 1.1.9",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled from the official launcher icon (Aptoide listing for csc.app.anime.cast): dominant brand accent #5454A8 (2026-09-27)",
+      "color_reviewed": "2026-09-27"
     },
     {
       "name": "Anime One",
@@ -1618,18 +1618,18 @@
       "style": "core_monoline"
     },
     {
-      "name": "Cinemahd Stable",
+      "name": "CinemaHD",
       "drawable": "cinemahd_stable",
-      "color": "#FF5CA8",
-      "glyph": "film_C",
-      "mark": "CS",
+      "color": "#F8B947",
+      "glyph": "cinemahd_ticket",
       "components": [
         "com.yoku.marumovie/com.movie.ui.activity.SplashActivity"
       ],
       "category": "APP",
       "mapping_source": "Projectivy Icon Pack 1.1.9",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled from the official launcher icon (Aptoide listing for com.yoku.marumovie): dominant brand accent #F8B947 (2026-09-27)",
+      "color_reviewed": "2026-09-27",
+      "glyph_source": "brand-informed redraw of the official launcher icon (Aptoide listing for com.yoku.marumovie); Core monoline geometry, not a trace (2026-09-27)"
     },
     {
       "name": "Citytv+",
@@ -2899,9 +2899,9 @@
       "style": "core_monoline"
     },
     {
-      "name": "Es De Frontend",
+      "name": "ES-DE",
       "drawable": "es_de_frontend",
-      "color": "#3D8BFF",
+      "color": "#A0001C",
       "glyph": "broadcast_E",
       "mark": "ES",
       "components": [
@@ -2909,8 +2909,8 @@
       ],
       "category": "APP",
       "mapping_source": "Projectivy Icon Pack 1.1.9",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled from the official launcher icon (Aptoide listing for org.es_de.frontend): dominant brand accent #A0001C (2026-09-27)",
+      "color_reviewed": "2026-09-27"
     },
     {
       "name": "ES File Explorer",
@@ -4226,18 +4226,18 @@
       "color_reviewed": null
     },
     {
-      "name": "Hdo Box",
+      "name": "HDO Box",
       "drawable": "hdo_box",
-      "color": "#C95CFF",
-      "glyph": "broadcast_H",
-      "mark": "HB",
+      "color": "#E25100",
+      "glyph": "hdobox_hplay",
       "components": [
         "com.tv.hdobox/com.tv.hdobox.MainActivity"
       ],
       "category": "APP",
       "mapping_source": "Projectivy Icon Pack 1.1.9",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled from the official launcher icon (Aptoide listing for com.tv.hdobox): dominant brand accent #E25100 (2026-09-27)",
+      "color_reviewed": "2026-09-27",
+      "glyph_source": "brand-informed redraw of the official launcher icon (Aptoide listing for com.tv.hdobox); Core monoline geometry, not a trace (2026-09-27)"
     },
     {
       "name": "HDRezka",
@@ -5456,15 +5456,15 @@
     {
       "name": "Lazy IPTV Deluxe",
       "drawable": "lazyiptvdeluxe",
-      "color": "#53FC18",
+      "color": "#008000",
       "glyph": "broadcast_L",
       "mark": "LID",
       "components": [
         "com.lcs.lazyiptvdeluxe/com.lcs.lazyiptvdeluxe.ActivityStart"
       ],
       "category": "LIVE",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled from the official launcher icon (Aptoide listing for com.lcs.lazyiptvdeluxe): dominant brand accent #008000 (2026-09-27)",
+      "color_reviewed": "2026-09-27"
     },
     {
       "name": "LazyCat",
@@ -6308,14 +6308,14 @@
     {
       "name": "Movie HD",
       "drawable": "moviehd",
-      "color": "#FFB020",
+      "color": "#DBA608",
       "glyph": "broadcast_M",
       "components": [
         "com.ggateam.moviehd.ui/com.ggateam.moviehd.ui.FrmSplash"
       ],
       "category": "STREAM",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null,
+      "color_source": "sampled from the official launcher icon (Aptoide listing for com.ggateam.moviehd.ui): dominant brand accent #DBA608 (2026-09-27)",
+      "color_reviewed": "2026-09-27",
       "mark": "MH"
     },
     {
@@ -6746,15 +6746,15 @@
     {
       "name": "NetMirror",
       "drawable": "netmirror",
-      "color": "#53FC18",
-      "glyph": "broadcast_N",
-      "mark": "NE",
+      "color": "#FA0000",
+      "glyph": "netmirror_n",
       "components": [
         "app.netmirror.newtv/app.netmirror.newtv.MainActivity"
       ],
       "category": "APP",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled from the official launcher icon (Aptoide listing for app.netmirror.newtv): dominant brand accent #FA0000 (2026-09-27)",
+      "color_reviewed": "2026-09-27",
+      "glyph_source": "brand-informed redraw of the official launcher icon (Aptoide listing for app.netmirror.newtv); Core monoline geometry, not a trace (2026-09-27)"
     },
     {
       "name": "NetMirror TV",
@@ -7061,7 +7061,7 @@
       "style": "core_monoline"
     },
     {
-      "name": "Notubetv",
+      "name": "NoTubeTV",
       "drawable": "notubetv",
       "color": "#FF5CA8",
       "glyph": "broadcast_N",
@@ -7257,7 +7257,7 @@
     {
       "name": "Ocean Streamz",
       "drawable": "ocean_streamz",
-      "color": "#C95CFF",
+      "color": "#2A5D8A",
       "glyph": "broadcast_O",
       "mark": "OS",
       "components": [
@@ -7265,8 +7265,8 @@
       ],
       "category": "APP",
       "mapping_source": "Projectivy Icon Pack 1.1.9",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled from the official launcher icon (Aptoide listing for streamzy.com.ocean): dominant brand accent #2A5D8A (2026-09-27)",
+      "color_reviewed": "2026-09-27"
     },
     {
       "name": "Odidotv",
@@ -7797,15 +7797,15 @@
     {
       "name": "Perfect Player",
       "drawable": "niklabs",
-      "color": "#F04DE0",
-      "glyph": "broadcast_P",
+      "color": "#00F1EF",
+      "glyph": "perfectplayer_p",
       "components": [
         "com.niklabs.pp/com.niklabs.perfectplayer.MainActivity"
       ],
       "category": "APP",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null,
-      "mark": "PF"
+      "color_source": "sampled from the official launcher icon (Aptoide listing for com.niklabs.pp): dominant brand accent #00F1EF (2026-09-27)",
+      "color_reviewed": "2026-09-27",
+      "glyph_source": "brand-informed redraw of the official launcher icon (Aptoide listing for com.niklabs.pp); Core monoline geometry, not a trace (2026-09-27)"
     },
     {
       "name": "Perfect TV",
@@ -8540,15 +8540,16 @@
     {
       "name": "RB Live",
       "drawable": "rblive",
-      "color": "#FFB020",
+      "color": "#FFAE01",
       "glyph": "broadcast_R",
-      "mark": "RL",
+      "mark": "RB",
       "components": [
         "com.rblive.app/com.rblive.launcher.splash.SplashActivity"
       ],
       "category": "APP",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled from the official launcher icon (Aptoide listing for com.rblive.app): dominant brand accent #FFAE01 (2026-09-27)",
+      "color_reviewed": "2026-09-27",
+      "mark_source": "logotype letters from the official launcher icon (Aptoide listing for com.rblive.app), which reads 'RB'; set in the pack's face, not traced (2026-09-27)"
     },
     {
       "name": "RB Main",
@@ -10770,15 +10771,15 @@
     {
       "name": "Thunder TV",
       "drawable": "thundertv",
-      "color": "#B6F23A",
+      "color": "#EDD333",
       "glyph": "broadcast_T",
       "mark": "TT",
       "components": [
         "com.iptv.thundertv/com.iptv.vsaclient.Main"
       ],
       "category": "LIVE",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled from the official launcher icon (Aptoide listing for com.iptv.thundertv): dominant brand accent #EDD333 (2026-09-27)",
+      "color_reviewed": "2026-09-27"
     },
     {
       "name": "TIDAL",

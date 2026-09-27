@@ -8,15 +8,22 @@ All notable changes to the Core Builds Icon Pack. Format follows
 
 ### Added
 
-- **10 more apps get marks drawn from their real icons, 112 in all.**
+- **14 more apps get marks drawn from their real icons, 116 in all.**
   Zattoo's round set, Sweet.tv's donut screen, vRadio's antenna and dial,
   StrongVPN's nested shield, Hotspot Shield's globe, SCB Next's double
   chevrons, SD Maid's droid in a bow, Nfolio's wall of frames, Refresh
-  Rate's settings column and MagiConnect's phone and screen replace their
-  letter tiles. Each carries the one feature of its real icon that sets it
+  Rate's settings column, MagiConnect's phone and screen, CinemaHD's ticket,
+  HDO Box's H-and-play, NetMirror's ribbon N and Perfect Player's P-and-play
+  replace their letter tiles. Each carries the one feature of its real icon that sets it
   apart from the pack's other TV, radio, shield and grid marks. SCB Next
   takes its icon's red `#D40615` instead of a palette lime, and four names
   are spelled like the apps: SCB Next, SD Maid, StrongVPN, Refresh Rate.
+- **12 more reference icons found.** A third research pass (Aptoide, exact
+  package match) found icons for apps missing from Play and F-Droid: 11 now
+  wear their icon's colour, RB Live's tile reads "RB", and CinemaHD, ES-DE,
+  HDO Box and NoTubeTV are spelled like the apps. Six Aptoide placeholders
+  and two more suspected mis-mappings are logged in
+  `docs/research/icon-reference-pass2-2026-09-26.md`; no mapping changed.
 
 ## [1.9.6] — 2026-09-26
 

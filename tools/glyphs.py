@@ -5997,3 +5997,41 @@ GLYPHS.update({
     "sweettv_donut": sweettv_donut, "vradio_dial": vradio_dial,
     "zattoo_tv": zattoo_tv, "magiconnect_screens": magiconnect_screens,
 })
+
+
+# --------------------------------------------------------------------------
+# Brand-informed marks, batch 7 (2026-09-27): references found in research
+# pass 3 (Aptoide, exact package match).
+
+def cinemahd_ticket(c):
+    """CinemaHD: the admission ticket with its notched ends and stars."""
+    stars = "".join(f'<circle cx="{x}" cy="190" r="12" {_f(c)}/>' for x in (196, 256, 316))
+    return (f'<path d="M 96 136 L 416 136 L 416 206 C 390 214 380 236 380 256 '
+            f'C 380 276 390 298 416 306 L 416 376 L 96 376 L 96 306 C 122 298 132 276 132 256 '
+            f'C 132 236 122 214 96 206 Z" {_s(c, 30)}/>' + stars
+            + f'<path d="M 176 262 L 336 262 M 196 318 L 316 318" {_s(c, 24)}/>')
+
+
+def hdobox_hplay(c):
+    """HDO Box: the H whose right stem turns into a play arrow."""
+    return (f'<path d="M 112 104 L 112 408 M 112 256 L 232 256 M 232 104 L 232 408" {_s(c, 34)}/>'
+            + _solid("M 286 136 L 420 256 L 286 376 Z", c, 18))
+
+
+def netmirror_n(c):
+    """NetMirror: the ribbon N, its diagonal sweeping between two curved stems."""
+    return (f'<path d="M 136 420 L 136 196 C 136 120 196 92 246 150 L 332 286" {_s(c, 32)}/>'
+            f'<path d="M 376 92 L 376 316 C 376 392 316 420 266 362 L 180 226" {_s(c, 32)}/>')
+
+
+def perfectplayer_p(c):
+    """Perfect Player: the P with a play arrow set into its bowl."""
+    return (f'<path d="M 144 432 L 144 96 L 290 96 C 364 96 408 142 408 206 C 408 270 364 316 290 316 '
+            f'L 144 316" {_s(c, 32)}/>'
+            + _solid("M 224 158 L 314 206 L 224 254 Z", c, 14))
+
+
+GLYPHS.update({
+    "cinemahd_ticket": cinemahd_ticket, "hdobox_hplay": hdobox_hplay,
+    "netmirror_n": netmirror_n, "perfectplayer_p": perfectplayer_p,
+})

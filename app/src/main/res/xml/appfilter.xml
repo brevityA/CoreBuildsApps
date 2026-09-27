@@ -357,7 +357,7 @@
     <!-- CinemaGlow -->
     <item component="ComponentInfo{com.danielkorgel.projectivy.plugin.cinemaglow/com.danielkorgel.projectivy.plugin.cinemaglow.SettingsActivity}" drawable="danielkorgel_banner"/>
     <item component="ComponentInfo{com.danielkorgel.projectivy.plugin.cinemaglow/.SettingsActivity}" drawable="danielkorgel_banner"/>
-    <!-- Cinemahd Stable -->
+    <!-- CinemaHD -->
     <item component="ComponentInfo{com.yoku.marumovie/com.movie.ui.activity.SplashActivity}" drawable="cinemahd_stable_banner"/>
     <!-- Citytv+ -->
     <item component="ComponentInfo{com.rogers.citytvplus/com.rogers.citytvplus.presentation.LauncherActivity}" drawable="citytvplus_banner"/>
@@ -636,12 +636,12 @@
     <item component="ComponentInfo{com.ertflix.app/.MainActivity}" drawable="ertflix_banner"/>
     <!-- ERTFLIX -->
     <item component="ComponentInfo{t.yi.erthybrid/com.arxnet.soeasytv.MainActivity}" drawable="ertflix_2_banner"/>
-    <!-- Es De Frontend -->
-    <item component="ComponentInfo{org.es_de.frontend/org.es_de.frontend.TvActivity}" drawable="es_de_frontend_banner"/>
-    <item component="ComponentInfo{org.es_de.frontend/.TvActivity}" drawable="es_de_frontend_banner"/>
     <!-- ES File Explorer -->
     <item component="ComponentInfo{com.estrongs.android.pop/com.estrongs.android.pop.app.openscreenad.NewSplashActivity}" drawable="estrongs_banner"/>
     <item component="ComponentInfo{com.estrongs.android.pop/.app.openscreenad.NewSplashActivity}" drawable="estrongs_banner"/>
+    <!-- ES-DE -->
+    <item component="ComponentInfo{org.es_de.frontend/org.es_de.frontend.TvActivity}" drawable="es_de_frontend_banner"/>
+    <item component="ComponentInfo{org.es_de.frontend/.TvActivity}" drawable="es_de_frontend_banner"/>
     <!-- ESPN -->
     <item component="ComponentInfo{com.espn.score_center/com.espn.startup.presentation.StartupActivity}" drawable="score_center_banner"/>
     <!-- Eternal TV -->
@@ -920,7 +920,7 @@
     <item component="ComponentInfo{com.spocky.projengmenu/.ui.guidedActions.activities.input.SourceHDMI3Activity}" drawable="hdmi_source_banner"/>
     <item component="ComponentInfo{com.spocky.projengmenu/com.spocky.projengmenu.ui.guidedActions.activities.input.SourceHDMI4Activity}" drawable="hdmi_source_banner"/>
     <item component="ComponentInfo{com.spocky.projengmenu/.ui.guidedActions.activities.input.SourceHDMI4Activity}" drawable="hdmi_source_banner"/>
-    <!-- Hdo Box -->
+    <!-- HDO Box -->
     <item component="ComponentInfo{com.tv.hdobox/com.tv.hdobox.MainActivity}" drawable="hdo_box_banner"/>
     <item component="ComponentInfo{com.tv.hdobox/.MainActivity}" drawable="hdo_box_banner"/>
     <!-- HDRezka -->
@@ -1521,7 +1521,7 @@
     <!-- Notifications For Android TV -->
     <item component="ComponentInfo{de.cyberdream.androidtv.notifications.google/de.cyberdream.androidtv.notifications.StartActivity}" drawable="notifications_for_android_tv_banner"/>
     <item component="ComponentInfo{de.cyberdream.androidtv.notifications.google/de.cyberdream.smarttv.leanback.MainActivityLeanBack}" drawable="notifications_for_android_tv_banner"/>
-    <!-- Notubetv -->
+    <!-- NoTubeTV -->
     <item component="ComponentInfo{com.ycngmn.notubetv/com.ycngmn.notubetv.MainActivity}" drawable="notubetv_banner"/>
     <item component="ComponentInfo{com.ycngmn.notubetv/.MainActivity}" drawable="notubetv_banner"/>
     <!-- Nova Video Player -->
