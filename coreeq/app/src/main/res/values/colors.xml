@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="cb_night">#0D1117</color>
+    <color name="cb_slate">#8B949E</color>
+    <color name="cb_ink">#F0F6FC</color>
+    <color name="cb_card_surface">#161B22</color>
+    <color name="cb_card_focus">#30363D</color>
+    <color name="cb_focus_ring">#58A6FF</color>
+    <color name="cb_cta_start">#2EA043</color>
+    <color name="cb_cta_ink">#0D1117</color>
+    <color name="cb_signal_cyan">#39D353</color>
+    <color name="cb_warn">#D29922</color>
+</resources>

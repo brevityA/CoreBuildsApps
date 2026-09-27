@@ -601,6 +601,38 @@ class TestExportLimits:
 
 
 # ---------------------------------------------------------------------------
+# End-to-end sweep processing & WAV I/O
+# ---------------------------------------------------------------------------
+
+class TestRecordingAnalysis:
+    def test_read_and_write_wav_roundtrip(self, tmp_path):
+        wav_path = str(tmp_path / "test.wav")
+        orig_sig = np.sin(np.linspace(0, 2 * np.pi * 440, 48000)) * 0.5
+        dsp.write_wav(wav_path, orig_sig, fs=48000)
+
+        fs, read_sig = dsp.read_wav(wav_path)
+        assert fs == 48000
+        assert len(read_sig) == len(orig_sig)
+        assert np.max(np.abs(orig_sig - read_sig)) < 0.001
+
+    def test_resample_signal_matches_length(self):
+        sig_44k = np.zeros(44100)
+        sig_48k = dsp.resample_signal(sig_44k, 44100, 48000)
+        assert len(sig_48k) == 48000
+
+    def test_analyze_sweep_recording_produces_filters(self):
+        fs = dsp.FS
+        sweep, inverse = dsp.sine_sweep(seconds=2.0, fs=fs)
+        # Perfect direct sound
+        captured = np.concatenate([np.zeros(int(0.1 * fs)), sweep, np.zeros(int(0.2 * fs))])
+        res = dsp.analyze_sweep_recording(captured, fs=fs, sweep_seconds=2.0)
+        assert res["fs"] == fs
+        assert res["transition_hz"] > 0
+        assert "Preamp:" in res["preset_txt"] or "# Core EQ: no filters" in res["preset_txt"]
+        assert len(res["centres"]) > 0
+
+
+# ---------------------------------------------------------------------------
 # The built-in receipt
 # ---------------------------------------------------------------------------
 

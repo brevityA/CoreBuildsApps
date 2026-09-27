@@ -65,6 +65,7 @@ Usage
 The suite convention applies: paste the receipt.
 """
 from __future__ import annotations
+from pathlib import Path
 
 import argparse
 import json
@@ -247,12 +248,14 @@ def sine_sweep(
     phase = 2 * math.pi * f_start * k * (np.exp(t / k) - 1.0)
     sweep = np.sin(phase) * 0.7
 
-    # Inverse: time reversal, then an amplitude envelope rising +3 dB/octave
+    # Inverse: time reversal, with an amplitude envelope rising +3 dB/octave
     # (i.e. doubling per octave) across the sweep's own frequency span.
-    inverse = sweep[::-1].copy()
+    # The envelope scales with instantaneous frequency and is applied to the
+    # sweep before time reversal, so that high frequencies receive the +3 dB/oct
+    # boost in the resulting inverse filter.
     inst_f = f_start * np.exp(t / k)
-    envelope = inst_f / inst_f[0]
-    inverse *= envelope
+    envelope = inst_f / inst_f[-1]
+    inverse = (sweep * envelope)[::-1].copy()
     inverse /= np.max(np.abs(inverse))
     return sweep, inverse
 
@@ -1243,6 +1246,113 @@ def write_wav(path: str, signal: np.ndarray, fs: int = FS) -> None:
         w.writeframes(pcm.tobytes())
 
 
+def read_wav(path: str) -> tuple[int, np.ndarray]:
+    """Read a 16-bit, 24-bit, or 32-bit WAV file. Multi-channel is averaged to mono."""
+    with wave.open(path, "rb") as w:
+        n_channels = w.getnchannels()
+        sampwidth = w.getsampwidth()
+        fs = w.getframerate()
+        n_frames = w.getnframes()
+        raw = w.readframes(n_frames)
+
+    if sampwidth == 2:
+        data = np.frombuffer(raw, dtype="<i2").astype(float) / 32768.0
+    elif sampwidth == 4:
+        data = np.frombuffer(raw, dtype="<i4").astype(float) / 2147483648.0
+    elif sampwidth == 3:
+        a = np.frombuffer(raw, dtype=np.uint8).reshape(-1, 3)
+        data = (a[:, 0].astype(int) | (a[:, 1].astype(int) << 8) | ((a[:, 2].astype(int) & 0x7F) << 16) - ((a[:, 2].astype(int) & 0x80) << 16)).astype(float) / 8388608.0
+    else:
+        raise ValueError(f"unsupported sample width: {sampwidth}")
+
+    if n_channels > 1:
+        data = data.reshape(-1, n_channels).mean(axis=1)
+
+    return fs, data
+
+
+def resample_signal(data: np.ndarray, fs_in: int, fs_out: int = FS) -> np.ndarray:
+    """Resample a 1D signal to a target sample rate via linear interpolation."""
+    if fs_in == fs_out:
+        return data
+    target_n = int(round(len(data) * float(fs_out) / float(fs_in)))
+    orig_idx = np.arange(len(data))
+    new_idx = np.linspace(0, len(data) - 1, target_n)
+    return np.interp(new_idx, orig_idx, data)
+
+
+def analyze_sweep_recording(
+    recording: np.ndarray,
+    fs: int = FS,
+    sweep_seconds: float = ESS_SECONDS,
+    target: str = "dialogue",
+    room_volume_m3: float = 54.0,
+    cut_only: bool = False,
+    n_filters: int = PEAKING_FILTERS,
+) -> dict:
+    """Analyze a recorded room sweep and generate custom Poweramp EQ filters.
+
+    Performs Farina deconvolution against the inverse sweep filter, extracts the
+    impulse response direct arrival, calculates room RT60 (Schroeder backward
+    integration), sets the room transition frequency, detects loudspeaker roll-off
+    and acoustic cancellations (nulls), runs minimum-phase gating, and generates
+    the two-regime correction curve and peaking filters.
+    """
+    if fs != FS:
+        recording = resample_signal(recording, fs, FS)
+        fs = FS
+
+    _, inverse = sine_sweep(seconds=sweep_seconds, fs=fs)
+    ir_full = deconvolve_ir(recording, inverse, fs=fs)
+    peak = int(np.argmax(np.abs(ir_full)))
+
+    # Estimate RT60 from decay tail
+    rt60 = rt60_from_ir(ir_full[peak:], fs=fs)
+    t_hz = transition_hz(room_volume_m3, rt60)
+
+    # Crop IR starting at direct sound arrival
+    ir_crop = ir_full[peak : peak + NFFT]
+    freqs, mag_db = ir_magnitude_db(ir_crop, fs=fs)
+    centres, measured_db = octave_bands(freqs, mag_db, n=3.0)
+
+    nulls = detect_nulls(centres, measured_db)
+    rolloff = detect_low_rolloff(centres, measured_db)
+    target_db = target_curve(target, centres)
+
+    ex_freqs, excess_ms = excess_group_delay_ms(ir_crop, fs=fs)
+    excess_centres = np.interp(centres, ex_freqs, excess_ms)
+    min_phase_ok = min_phase_gate(centres, excess_centres)
+
+    f_floor = max(F_MIN, rolloff)
+    corr = correction_curve(
+        centres, measured_db, target_db,
+        f_min=f_floor,
+        transition_hz_=t_hz,
+        cut_only=cut_only,
+        null_mask=nulls,
+        min_phase_ok=min_phase_ok,
+    )
+
+    filters = fit_peaking_filters(centres, corr, n_filters=n_filters)
+    preset_txt = export_parametric_txt(filters, band=(f_floor, F_MAX))
+
+    return {
+        "fs": fs,
+        "rt60_s": rt60,
+        "transition_hz": t_hz,
+        "rolloff_hz": rolloff,
+        "f_floor_hz": f_floor,
+        "nulls_detected": int(nulls.sum()),
+        "min_phase_passed_fraction": float(min_phase_ok.mean()),
+        "centres": centres,
+        "measured_db": measured_db,
+        "target_db": target_db,
+        "correction_db": corr,
+        "filters": filters,
+        "preset_txt": preset_txt,
+    }
+
+
 # ---------------------------------------------------------------------------
 # CLI
 # ---------------------------------------------------------------------------
@@ -1574,6 +1684,16 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--seconds", type=float, default=ESS_SECONDS)
     parser.add_argument("--pink", action="store_true",
                         help="write pink noise instead of the sweep (cross-check / RTA)")
+    parser.add_argument("--process", metavar="WAV_PATH",
+                        help="analyze a recorded sweep WAV and generate a Poweramp preset")
+    parser.add_argument("--out", metavar="OUT_PATH", default="poweramp_preset.txt",
+                        help="output path for the generated Poweramp preset (default: poweramp_preset.txt)")
+    parser.add_argument("--target", choices=TARGET_CURVES, default="dialogue",
+                        help="target curve (default: dialogue)")
+    parser.add_argument("--volume", type=float, default=54.0,
+                        help="estimated room volume in m3 (default: 54.0)")
+    parser.add_argument("--cut-only", action="store_true",
+                        help="cut-only mode (never boost)")
     args = parser.parse_args(argv)
 
     if args.stimulus:
@@ -1582,6 +1702,25 @@ def main(argv: list[str] | None = None) -> int:
         write_wav(args.stimulus, signal)
         kind = "pink noise" if args.pink else "sine sweep"
         print(f"wrote {args.stimulus} ({args.seconds:.0f}s {kind}, {FS} Hz mono)")
+        return 0
+    if args.process:
+        fs_in, raw_data = read_wav(args.process)
+        print(f"Loaded {args.process}: {len(raw_data)/fs_in:.2f}s at {fs_in} Hz")
+        res = analyze_sweep_recording(
+            raw_data, fs=fs_in, sweep_seconds=args.seconds,
+            target=args.target, room_volume_m3=args.volume,
+            cut_only=args.cut_only
+        )
+        Path(args.out).write_text(res["preset_txt"], encoding="utf-8")
+        print(f"Room analysis:")
+        print(f"  RT60 decay:           {res['rt60_s']:.2f} s")
+        print(f"  Schroeder transition: {res['transition_hz']:.0f} Hz (inversion below, shaping above)")
+        print(f"  Loudspeaker roll-off: {res['rolloff_hz']:.0f} Hz (correction floor: {res['f_floor_hz']:.0f} Hz)")
+        print(f"  Nulls left alone:     {res['nulls_detected']} band(s)")
+        print(f"  Min-phase gate:       {res['min_phase_passed_fraction']*100:.0f}% bands valid")
+        print(f"  Target curve:         {args.target}")
+        print(f"Wrote Poweramp preset to {args.out}:")
+        print(res["preset_txt"])
         return 0
     if args.selftest:
         return _selftest()

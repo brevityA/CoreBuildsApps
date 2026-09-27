@@ -47,6 +47,7 @@ GROUP_NAMES = {
     "shift": "core-shift",
     "doctor": "core-doctor",
     "motion-plugin": "core-motion",
+    "coreeq": "core-eq",
 }
 
 # Rules that apply to every Gradle root regardless of what it declares. They are
@@ -176,7 +177,7 @@ def render() -> str:
     roots = discover_roots()
     # Suite order, the way suite.json lists the apps, so the file reads the same
     # way the docs do rather than in whatever order rglob happened to walk.
-    order = ["", "ticker/android", "shift", "motion-plugin", "doctor"]
+    order = ["", "ticker/android", "shift", "motion-plugin", "doctor", "coreeq"]
     by_rel = {r.rel: r for r in roots}
     unknown = [rel for rel in by_rel if rel not in order]
     if unknown:

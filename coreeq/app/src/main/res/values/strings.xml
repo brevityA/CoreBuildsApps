@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Core EQ</string>
+    <string name="app_tagline">Equaliser built from this room</string>
+    <string name="home_desc">A sine sweep out, the remote microphone listening, a curve you can trust.</string>
+    <string name="active_profile">Active profile</string>
+    <string name="living_room">Living room</string>
+    <string name="profile_details">Measured 24 Sep · Dialogue curve · 40–8000 Hz</string>
+    <string name="action_measure">Measure room</string>
+    <string name="action_profiles">Profiles</string>
+    <string name="action_capability">Capability</string>
+    <string name="action_poweramp_export">Export to Poweramp</string>
+
+    <string name="measure_title">Core EQ · Measure</string>
+    <string name="measure_heading">Hold the room still for 10 seconds</string>
+    <string name="measure_sub">The TV plays a sine sweep. The remote microphone listens. Nothing leaves this device.</string>
+    <string name="measure_step1_title">Press OK to start the stimulus</string>
+    <string name="measure_step1_sub">One frequency at a time, so it beats room noise. Loud enough to hear over the room, quiet enough to live with.</string>
+    <string name="measure_step2_title">Point the remote at your seat</string>
+    <string name="measure_step2_sub">Where your ears are, not at the TV. The remote microphone is the only microphone this can use.</string>
+    <string name="measure_step3_title">Keep the room quiet while the bar fills</string>
+    <string name="measure_step3_sub">Footsteps and fans land in the same capture. Dips that are cancellations get left alone.</string>
+
+    <string name="profiles_title">Core EQ · Profiles</string>
+    <string name="capability_title">Core EQ · Capability</string>
+</resources>
