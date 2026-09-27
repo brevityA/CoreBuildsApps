@@ -947,15 +947,15 @@
     {
       "name": "Award VPN",
       "drawable": "award",
-      "color": "#7C74FF",
-      "glyph": "vpn_A",
-      "mark": "AV",
+      "color": "#20C0A8",
+      "glyph": "award_vpn_check",
       "components": [
         "com.award.VPN/app.award.update.SplashActivity"
       ],
       "category": "VPN",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled from the official launcher icon (Uptodown listing for com.award.VPN): dominant brand accent #20C0A8 (2026-09-27)",
+      "color_reviewed": "2026-09-27",
+      "glyph_source": "brand-informed redraw of the official launcher icon (Uptodown listing for com.award.VPN); Core monoline geometry, not a trace (2026-09-27)"
     },
     {
       "name": "Baby Einstein",
@@ -3286,16 +3286,21 @@
     {
       "name": "Firedown",
       "drawable": "firedown",
-      "color": "#1FD19A",
-      "glyph": "browser_F",
-      "mark": "FI",
+      "color": "#F87068",
+      "glyph": "firedown_flame",
       "components": [
         "com.solarized.firedown/com.solarized.firedown.phone.BrowserActivity"
       ],
       "category": "APP",
       "mapping_source": "Projectivy Icon Pack 1.1.9",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled from the official launcher icon (Uptodown listing for com.solarized.firedown): the arrow's coral #F87068 (2026-09-27)",
+      "color_reviewed": "2026-09-27",
+      "gradient": [
+        "#E03880",
+        "#F87068"
+      ],
+      "gradient_source": "sampled from the official launcher icon (Uptodown listing for com.solarized.firedown): the mark's own #E03880 to #F87068 gradient, its two ends (2026-09-27)",
+      "glyph_source": "brand-informed redraw of the official launcher icon (Uptodown listing for com.solarized.firedown); Core monoline geometry, not a trace (2026-09-27)"
     },
     {
       "name": "FireSend",

@@ -6449,3 +6449,20 @@ GLYPHS.update({
     "wow_globe": wow_globe, "mame_panel": mame_panel,
     "nostalgia_tvplay": nostalgia_tvplay, "talksport_ball": talksport_ball,
 })
+
+
+def award_vpn_check(c):
+    """Award VPN: an A built from a chevron and a tick, under Wi-Fi arcs."""
+    return (f'<path d="{_arc_cw(256, 150, 40, 225, 315)} {_arc_cw(256, 150, 78, 228, 312)}" '
+            f'{_s(c, 22)}/>'
+            f'<path d="M 84 190 L 132 258 M 108 418 L 256 196 L 300 262" {_s(c, 32)}/>'
+            f'<path d="M 208 334 L 258 404 L 428 186" {_s(c, 32)}/>')
+
+
+def firedown_flame(c):
+    """Firedown: a flame that runs down into the download arrowhead."""
+    return (f'<path d="M 256 404 C 186 330 196 196 296 76 C 284 176 340 250 256 404" {_s(c, 26)}/>'
+            f'<path d="M 128 286 L 256 420 L 384 286" {_s(c, 30)}/>')
+
+
+GLYPHS.update({"award_vpn_check": award_vpn_check, "firedown_flame": firedown_flame})

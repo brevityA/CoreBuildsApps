@@ -61,3 +61,18 @@ because a search with no match returns unrelated popular apps instead of an empt
 | Polygon Player | `com.polygon.videoplayer` | NovaTV |
 
 **Still not found anywhere (70):** AK47Sports, Air Attack 2, AllSaves Social, AniLab, AnikenTV, Anime One, Anten TV, Användarmanual, Award VPN, Chebut TV, Clip TV, Clone Hero, CoreELEC Helper, Cyberflix, Damonte, Dansk Filmskat, Elefin, Eternal TV, Eternal TV (Nath), FANE TV, FC TV, Falcon Cast, Filimo, Filmnet TV, Firedown, Five TV, Flix TV, Football 360, GenPlay, HDRezka, Jellyfin Enhanced, Jojoy, Kennytv, MGS TV, Mediaspelare, Mi Gallery, Miracast, Myiptv, NetMirror TV, Nxsha, OK TV, OTT Navigator, Offshore, OnePix, Onstream, Otf TV, Perfect TV, PlayLatin, PlayNet, Premiumize TV, RB Main, Rapid Streamz, Rezka, Screenscape, Shark TV, Sports Everywhere, Sportzx, Stream Fire, TV, TV Garden, TVLok, Televizo, Tflix, Ukiku, VPN Dot, Vibra, WeatherBug, Works with Alexa, Xtream Player, Youcine.
+
+## Pass 4 (2026-09-27): device screenshots, Uptodown and APKPure
+
+- **Supporter device screenshots** (Projectivy on a TCL Google TV) showed the launcher icons of
+  AK47Sports and AnikenTV, which no store had. AK47Sports is redrawn from its crest, and
+  AnikenTV's tile reads "AK", as its script logo does.
+- **Uptodown**, searched by app name, with the top five results and the direct app page opened
+  and accepted only when the page's listed package is the catalogue's package: **2 verified**
+  out of 68. Award VPN (`com.award.VPN`) and Firedown (`com.solarized.firedown`) now wear their
+  icon colours and redrawn marks.
+- **APKPure** was not searched. Every page answers with a Cloudflare bot check, and the pass
+  does not work around bot protection.
+
+**Still not found anywhere (66):** Air Attack 2, AllSaves Social, AniLab, Anime One, Anten TV, Användarmanual, Chebut TV, Clip TV, Clone Hero, CoreELEC Helper, Cyberflix, Damonte, Dansk Filmskat, Elefin, Eternal TV, Eternal TV (Nath), FANE TV, FC TV, Falcon Cast, Filimo, Filmnet TV, Five TV, Flix TV, Football 360, GenPlay, HDRezka, Jellyfin Enhanced, Jojoy, Kennytv, MGS TV, Mediaspelare, Mi Gallery, Miracast, Myiptv, NetMirror TV, Nxsha, OK TV, OTT Navigator, Offshore, OnePix, Onstream, Otf TV, Perfect TV, PlayLatin, PlayNet, Premiumize TV, RB Main, Rapid Streamz, Rezka, Screenscape, Shark TV, Sports Everywhere, Sportzx, Stream Fire, TV, TV Garden, TVLok, Televizo, Tflix, Ukiku, VPN Dot, Vibra, WeatherBug, Works with Alexa, Xtream Player, Youcine.
+

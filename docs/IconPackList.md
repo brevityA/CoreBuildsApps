@@ -83,7 +83,7 @@ Source accents are retained in the catalog. **On dark** is the shared square/ban
 | Aurora Store | `aurora_store` | `#00C2FF` | `#00C2FF` | `com.aurora.store/.MainActivity` |
 | AV Source | `av_source` | `#FF5CA8` | `#FF5CA8` | `com.spocky.projengmenu/.activities.input.SourceAVActivity`<br>`com.spocky.projengmenu/.ui.guidedActions.activities.input.SourceAVActivity` |
 | Avoid | `hritwik` | `#9838D3` | `#9838D3` | `com.hritwik.avoid/com.hritwik.avoid.MainActivity` |
-| Award VPN | `award` | `#7C74FF` | `#7C74FF` | `com.award.VPN/app.award.update.SplashActivity` |
+| Award VPN | `award` | `#20C0A8` | `#20C0A8` | `com.award.VPN/app.award.update.SplashActivity` |
 | Baby Einstein | `babyeinstein` | `#FF7A2E` | `#FF7A2E` | `com.giant.babyeinstein/com.codes.ui.SplashActivity` |
 | Background Apps And Process List | `background_apps_and_process_list` | `#19D3C5` | `#19D3C5` | `io.github.visnkmr.bapl/io.github.visnkmr.bapl.MainActivity` |
 | Bally Sports | `ballyscorp` | `#F04DE0` | `#F04DE0` | `com.ballyscorp.ballylive/tv.vizbee.readyapp.firetvandroidtv.SplashActivity` |
@@ -256,7 +256,7 @@ Source accents are retained in the catalog. **On dark** is the shared square/ban
 | FilmRise | `filmrise` | `#B6F23A` | `#B6F23A` | `com.recipe.filmrise/com.recipe.filmrise.SplashActivity` |
 | Filmzie | `platform` | `#3D8BFF` | `#3D8BFF` | `com.filmzie.platform/com.filmzie.tv.MainActivity` |
 | FindLink | `findlink` | `#FF4D4D` | `#FF4D4D` | `com.findlink/com.findlink.ActivitySplash` |
-| Firedown | `firedown` | `#1FD19A` | `#1FD19A` | `com.solarized.firedown/com.solarized.firedown.phone.BrowserActivity` |
+| Firedown | `firedown` | `#F87068` | `#F87068` | `com.solarized.firedown/com.solarized.firedown.phone.BrowserActivity` |
 | FireSend | `firesend` | `#380A73` | `#7C25EC` | `com.firesend.app/com.firesend.app.MainActivity` |
 | FITE | `fitetv` | `#FFE14D` | `#FFE14D` | `com.flipps.fitetv/com.bianor.ams.androidtv.activity.TvMainActivity` |
 | Five TV | `fivetviptvbox` | `#4FACFE` | `#4FACFE` | `com.fivetvbox.fivetviptvbox/com.fivetvbox.fivetviptvbox.view.activity.SplashActivity` |

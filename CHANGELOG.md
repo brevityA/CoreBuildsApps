@@ -41,6 +41,11 @@ All notable changes to the Core Builds Icon Pack. Format follows
   cube replace their letter tiles. Three colours move from an icon's ground
   to its mark: Enjoy TV `#08A8D0`, Play Now `#7444A1`, Fast Task Killer
   `#0070B8`.
+- **Award VPN and Firedown get marks from their real icons.** A fourth
+  research pass (Uptodown, exact package match) found both: Award VPN's
+  tick-built A under Wi-Fi arcs in its teal `#20C0A8`, and Firedown's flame
+  running into a download arrow in its pink-to-coral gradient. APKPure
+  answers every request with a bot check, so it was not searched.
 - **12 more reference icons found.** A third research pass (Aptoide, exact
   package match) found icons for apps missing from Play and F-Droid: 11 now
   wear their icon's colour, RB Live's tile reads "RB", and CinemaHD, ES-DE,
