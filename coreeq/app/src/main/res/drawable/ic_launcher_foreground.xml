@@ -6,18 +6,15 @@
   transform does the scaling, so the launcher and the pack stay one shape.
 -->
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
-    android:width="320dp"
-    android:height="180dp"
-    android:viewportWidth="320"
-    android:viewportHeight="180">
-    <path
-        android:fillColor="@color/cb_night"
-        android:pathData="M0,0h320v180h-320z" />
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
     <group
-        android:scaleX="0.2656"
-        android:scaleY="0.2656"
-        android:translateX="92.000"
-        android:translateY="22.000">
+        android:scaleX="0.117"
+        android:scaleY="0.117"
+        android:translateX="24.048"
+        android:translateY="24.048">
         <path
             android:pathData="M256,60 L425.7,158 L425.7,354 L256,452 L86.3,354 L86.3,158 Z"
             android:strokeColor="#00D4FF"
