@@ -614,9 +614,9 @@
         <item>tcl_quick_panel</item>
         <item>quickbars_for_home_assistant</item>
         <item>quicksupport</item>
-        <item>radio_net</item>
         <item>radio_on_tv</item>
         <item>radioparadisewidget</item>
+        <item>radio_net</item>
         <item>radioline</item>
         <item>radioplayer</item>
         <item>brkchen</item>
@@ -996,7 +996,7 @@
         <item>AIDA64</item>
         <item>Air Attack 2</item>
         <item>Aircast</item>
-        <item>Airpin Pro</item>
+        <item>AirPin Pro</item>
         <item>AirPlay Receiver</item>
         <item>AirReceiver</item>
         <item>Airscreen</item>
@@ -1372,7 +1372,7 @@
         <item>Lazy IPTV Deluxe</item>
         <item>Lazy Media Deluxe</item>
         <item>Leanback on Fire</item>
-        <item>Leankeyboard</item>
+        <item>LeanKey Keyboard</item>
         <item>Lemino</item>
         <item>Lemuroid</item>
         <item>Lifetime</item>
@@ -1490,7 +1490,7 @@
         <item>NovaTV</item>
         <item>NOW</item>
         <item>Nowo TV</item>
-        <item>Npo Start</item>
+        <item>NPO Start</item>
         <item>NRK TV</item>
         <item>NT at Home</item>
         <item>Nuvio TV</item>
@@ -1500,7 +1500,7 @@
         <item>Oblivion</item>
         <item>Obtainium</item>
         <item>Ocean Streamz</item>
-        <item>Odidotv</item>
+        <item>Odido TV</item>
         <item>Oilers+</item>
         <item>OK TV</item>
         <item>Ok Video</item>
@@ -1587,9 +1587,9 @@
         <item>Quick Panel</item>
         <item>Quickbars For Home Assistant</item>
         <item>QuickSupport</item>
-        <item>Radio Net</item>
         <item>Radio On TV</item>
         <item>Radio Paradise</item>
+        <item>radio.net</item>
         <item>Radioline</item>
         <item>Radioplayer</item>
         <item>Radon Tunes</item>
@@ -2942,8 +2942,8 @@
         <item>1</item>
         <item>0</item>
         <item>1</item>
-        <item>0</item>
         <item>1</item>
+        <item>1</item>
         <item>0</item>
         <item>1</item>
         <item>1</item>
@@ -2971,12 +2971,12 @@
         <item>1</item>
         <item>1</item>
         <item>1</item>
-        <item>0</item>
         <item>1</item>
         <item>1</item>
         <item>1</item>
         <item>1</item>
         <item>1</item>
+        <item>1</item>
         <item>0</item>
         <item>1</item>
         <item>1</item>
@@ -2995,7 +2995,7 @@
         <item>1</item>
         <item>1</item>
         <item>1</item>
-        <item>0</item>
+        <item>1</item>
         <item>1</item>
         <item>1</item>
         <item>1</item>
@@ -3090,13 +3090,13 @@
         <item>0</item>
         <item>0</item>
         <item>0</item>
-        <item>0</item>
         <item>1</item>
         <item>1</item>
         <item>1</item>
         <item>1</item>
         <item>1</item>
         <item>1</item>
+        <item>1</item>
         <item>0</item>
         <item>1</item>
         <item>0</item>
@@ -3318,7 +3318,7 @@
         <item>0</item>
         <item>0</item>
         <item>1</item>
-        <item>0</item>
+        <item>1</item>
         <item>0</item>
         <item>1</item>
         <item>1</item>
@@ -3364,7 +3364,7 @@
         <item>1</item>
         <item>1</item>
         <item>1</item>
-        <item>0</item>
+        <item>1</item>
         <item>1</item>
         <item>1</item>
         <item>1</item>
@@ -3436,7 +3436,7 @@
         <item>0</item>
         <item>0</item>
         <item>0</item>
-        <item>0</item>
+        <item>1</item>
         <item>0</item>
         <item>0</item>
         <item>1</item>
@@ -3446,8 +3446,8 @@
         <item>1</item>
         <item>1</item>
         <item>1</item>
-        <item>0</item>
         <item>1</item>
+        <item>1</item>
         <item>0</item>
         <item>1</item>
         <item>1</item>
@@ -3494,7 +3494,7 @@
         <item>1</item>
         <item>1</item>
         <item>1</item>
-        <item>0</item>
+        <item>1</item>
         <item>1</item>
         <item>1</item>
         <item>0</item>
@@ -3511,7 +3511,6 @@
         <item>1</item>
         <item>0</item>
         <item>1</item>
-        <item>0</item>
         <item>1</item>
         <item>1</item>
         <item>1</item>
@@ -3527,16 +3526,17 @@
         <item>1</item>
         <item>1</item>
         <item>1</item>
+        <item>1</item>
         <item>0</item>
         <item>1</item>
         <item>0</item>
         <item>1</item>
         <item>1</item>
         <item>1</item>
-        <item>0</item>
         <item>1</item>
         <item>1</item>
         <item>1</item>
+        <item>1</item>
         <item>0</item>
         <item>0</item>
         <item>0</item>
@@ -3699,7 +3699,7 @@
         <item>1</item>
         <item>1</item>
         <item>0</item>
-        <item>0</item>
+        <item>1</item>
         <item>1</item>
         <item>0</item>
         <item>0</item>

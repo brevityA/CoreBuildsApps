@@ -313,18 +313,19 @@
       "glyph_source": "brand-informed redraw of the official launcher icon (play listing for com.smartdevice.tv.aircast); Core monoline geometry, not a trace (2026-09-26)"
     },
     {
-      "name": "Airpin Pro",
+      "name": "AirPin Pro",
       "drawable": "airpin_pro",
       "color": "#7BAC49",
-      "glyph": "tool_A",
-      "mark": "AP",
+      "glyph": "airpin_screen",
       "components": [
         "com.waxrain.airplaydmr/com.waxrain.ui.WaxPlayerSetting"
       ],
       "category": "APP",
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "sampled from the official launcher icon (APKCombo mirror of the Google Play listing for com.waxrain.airplaydmr): dominant brand accent #7BAC49 (2026-09-26)",
-      "color_reviewed": "2026-09-26"
+      "color_reviewed": "2026-09-26",
+      "name_source": "app name from the Projectivy Icon Pack 1.1.9 artwork for com.waxrain.airplaydmr (github.com/SicMundus86/ProjectivyIconPack, used as reference only), which shows the AirPin Pro logo for this package (2026-09-28)",
+      "glyph_source": "brand-informed redraw of the Projectivy Icon Pack 1.1.9 artwork for com.waxrain.airplaydmr (github.com/SicMundus86/ProjectivyIconPack, used as reference only); Core monoline geometry, not a trace (2026-09-28)"
     },
     {
       "name": "AirPlay Receiver",
@@ -652,15 +653,15 @@
     {
       "name": "APK Updater",
       "drawable": "apkupdater",
-      "color": "#FF7A2E",
-      "glyph": "store_A",
-      "mark": "AU",
+      "color": "#E8B848",
+      "glyph": "apkupdater_thumb",
       "components": [
         "com.apkupdater/com.apkupdater.ui.activity.MainActivity"
       ],
       "category": "APP",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled from the Projectivy Icon Pack 1.1.9 artwork for com.apkupdater (github.com/SicMundus86/ProjectivyIconPack, used as reference only): #E8B848 (2026-09-28)",
+      "color_reviewed": "2026-09-28",
+      "glyph_source": "brand-informed redraw of the Projectivy Icon Pack 1.1.9 artwork for com.apkupdater (github.com/SicMundus86/ProjectivyIconPack, used as reference only); Core monoline geometry, not a trace (2026-09-28)"
     },
     {
       "name": "APKMirror",
@@ -985,15 +986,15 @@
       "name": "Background Apps And Process List",
       "drawable": "background_apps_and_process_list",
       "color": "#19D3C5",
-      "glyph": "tool_B",
-      "mark": "BA",
+      "glyph": "bapl_pulse",
       "components": [
         "io.github.visnkmr.bapl/io.github.visnkmr.bapl.MainActivity"
       ],
       "category": "APP",
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_reviewed": null,
+      "glyph_source": "brand-informed redraw of the Projectivy Icon Pack 1.1.9 artwork for io.github.visnkmr.bapl (github.com/SicMundus86/ProjectivyIconPack, used as reference only); Core monoline geometry, not a trace (2026-09-28)"
     },
     {
       "name": "Bally Sports",
@@ -2288,15 +2289,15 @@
       "name": "Direct One",
       "drawable": "direct_one",
       "color": "#FF0000",
-      "glyph": "broadcast_D",
-      "mark": "DO",
+      "glyph": "directone_block",
       "components": [
         "nl.streamgroup.upcdirect/tv.solocoo.htmlapp.FullscreenActivity"
       ],
       "category": "APP",
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "sampled from the official launcher icon (APKCombo mirror of the Google Play listing for nl.streamgroup.upcdirect): dominant brand accent #FF0000 (2026-09-26)",
-      "color_reviewed": "2026-09-26"
+      "color_reviewed": "2026-09-26",
+      "glyph_source": "brand-informed redraw of the Projectivy Icon Pack 1.1.9 artwork for nl.streamgroup.upcdirect (github.com/SicMundus86/ProjectivyIconPack, used as reference only); Core monoline geometry, not a trace (2026-09-28)"
     },
     {
       "name": "DIRECTV",
@@ -5574,18 +5575,19 @@
       "color_reviewed": null
     },
     {
-      "name": "Leankeyboard",
+      "name": "LeanKey Keyboard",
       "drawable": "leankeyboard",
-      "color": "#FF7A2E",
-      "glyph": "tool_L",
-      "mark": "LE",
+      "color": "#0898D8",
+      "glyph": "leankey_play",
       "components": [
         "org.liskovsoft.androidtv.rukeyboard/com.liskovsoft.leankeyboard.activity.settings.KbSettingsActivity2"
       ],
       "category": "APP",
       "mapping_source": "Projectivy Icon Pack 1.1.9",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled from the Projectivy Icon Pack 1.1.9 artwork for org.liskovsoft.androidtv.rukeyboard (github.com/SicMundus86/ProjectivyIconPack, used as reference only): #0898D8 (2026-09-28)",
+      "color_reviewed": "2026-09-28",
+      "name_source": "app name from the Projectivy Icon Pack 1.1.9 artwork for org.liskovsoft.androidtv.rukeyboard (github.com/SicMundus86/ProjectivyIconPack, used as reference only), which shows the LeanKey Keyboard logo for this package (2026-09-28)",
+      "glyph_source": "brand-informed redraw of the Projectivy Icon Pack 1.1.9 artwork for org.liskovsoft.androidtv.rukeyboard (github.com/SicMundus86/ProjectivyIconPack, used as reference only); Core monoline geometry, not a trace (2026-09-28)"
     },
     {
       "name": "Lemino",
@@ -6263,8 +6265,7 @@
       "name": "MO4Media",
       "drawable": "mo_4media",
       "color": "#2196F3",
-      "glyph": "broadcast_M",
-      "mark": "MO",
+      "glyph": "mo4media_camera",
       "components": [
         "dancingtree.mo4media/crc64fc68bfe11eb03c38.MainActivity",
         "dancingtree.mo4media/crc64fc68bfe11eb03c38.TVMainActivity"
@@ -6273,7 +6274,7 @@
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "sampled from the official launcher icon (APKCombo mirror of the Google Play listing for dancingtree.mo4media): dominant brand accent #2196F3 (2026-09-26)",
       "color_reviewed": "2026-09-26",
-      "mark_source": "logotype letters from the official launcher icon (APKCombo mirror of the Google Play listing for dancingtree.mo4media), which reads 'MO'; set in the pack's face, not traced (2026-09-26)"
+      "glyph_source": "brand-informed redraw of the Projectivy Icon Pack 1.1.9 artwork for dancingtree.mo4media (github.com/SicMundus86/ProjectivyIconPack, used as reference only); Core monoline geometry, not a trace (2026-09-28)"
     },
     {
       "name": "Mobily TV",
@@ -7211,18 +7212,19 @@
       "mark_source": "logotype letters from the official launcher icon (Google Play listing for pt.nowo.nowotv.androidtv), which reads 'nowo': the first two, because the whole logotype sets under the pack's 96px legibility floor; set in the pack's face, not traced (2026-09-26)"
     },
     {
-      "name": "Npo Start",
+      "name": "NPO Start",
       "drawable": "npo_start",
-      "color": "#152360",
-      "glyph": "broadcast_N",
-      "mark": "NS",
+      "color": "#F86800",
+      "glyph": "npostart_tiles",
       "components": [
         "nl.uitzendinggemist/nl.uitzendinggemist.tv.presentation.activities.main.MainActivity"
       ],
       "category": "APP",
       "mapping_source": "Projectivy Icon Pack 1.1.9",
-      "color_source": "sampled from the official launcher icon (Google Play listing for nl.uitzendinggemist): dominant brand accent #152360 (2026-09-26)",
-      "color_reviewed": "2026-09-26"
+      "color_source": "sampled from the Projectivy Icon Pack 1.1.9 artwork for nl.uitzendinggemist (github.com/SicMundus86/ProjectivyIconPack, used as reference only): #F86800 (2026-09-28)",
+      "color_reviewed": "2026-09-28",
+      "name_source": "app name from the Projectivy Icon Pack 1.1.9 artwork for nl.uitzendinggemist (github.com/SicMundus86/ProjectivyIconPack, used as reference only), which shows the NPO Start logo for this package (2026-09-28)",
+      "glyph_source": "brand-informed redraw of the Projectivy Icon Pack 1.1.9 artwork for nl.uitzendinggemist (github.com/SicMundus86/ProjectivyIconPack, used as reference only); Core monoline geometry, not a trace (2026-09-28)"
     },
     {
       "name": "NRK TV",
@@ -7361,18 +7363,19 @@
       "glyph_source": "brand-informed redraw of the official launcher icon (Aptoide listing for streamzy.com.ocean); Core monoline geometry, not a trace (2026-09-27)"
     },
     {
-      "name": "Odidotv",
+      "name": "Odido TV",
       "drawable": "odidotv",
-      "color": "#FFE14D",
-      "glyph": "broadcast_O",
-      "mark": "OD",
+      "color": "#80A8F8",
+      "glyph": "odido_tv",
       "components": [
         "com.tmobile.tv.nl/com.zodiac.tv.presentation.common.layouts.ZodiacActivity"
       ],
       "category": "APP",
       "mapping_source": "Projectivy Icon Pack 1.1.9",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled from the Projectivy Icon Pack 1.1.9 artwork for com.tmobile.tv.nl (github.com/SicMundus86/ProjectivyIconPack, used as reference only): #80A8F8 (2026-09-28)",
+      "color_reviewed": "2026-09-28",
+      "name_source": "app name from the Projectivy Icon Pack 1.1.9 artwork for com.tmobile.tv.nl (github.com/SicMundus86/ProjectivyIconPack, used as reference only), which shows the Odido TV logo for this package (2026-09-28)",
+      "glyph_source": "brand-informed redraw of the Projectivy Icon Pack 1.1.9 artwork for com.tmobile.tv.nl (github.com/SicMundus86/ProjectivyIconPack, used as reference only); Core monoline geometry, not a trace (2026-09-28)"
     },
     {
       "name": "Pikashow",
@@ -8013,14 +8016,14 @@
       "name": "Play Universal",
       "drawable": "universal",
       "color": "#FCCC12",
-      "glyph": "broadcast_U",
-      "mark": "PU",
+      "glyph": "universal_ring",
       "components": [
         "com.play.universal/com.play.universal.MainActivity"
       ],
       "category": "APP",
       "color_source": "sampled from the official launcher icon (Google Play listing for com.play.universal): dominant brand accent #FCCC12 (2026-09-26)",
-      "color_reviewed": "2026-09-26"
+      "color_reviewed": "2026-09-26",
+      "glyph_source": "brand-informed redraw of the Projectivy Icon Pack 1.1.9 artwork for com.play.universal (github.com/SicMundus86/ProjectivyIconPack, used as reference only); Core monoline geometry, not a trace (2026-09-28)"
     },
     {
       "name": "Player",
@@ -8273,15 +8276,15 @@
       "name": "Premiumize TV",
       "drawable": "premiumize_tv",
       "color": "#A80808",
-      "glyph": "debrid_P",
-      "mark": "PT",
+      "glyph": "premiumize_check",
       "components": [
         "me.premiumize.pmtvfire/me.premiumize.pmtvandroid.MainActivity"
       ],
       "category": "APP",
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "sampled from the Projectivy Icon Pack 1.1.9 artwork for me.premiumize.pmtvfire (github.com/SicMundus86/ProjectivyIconPack, used as reference only): #A80808 (2026-09-27)",
-      "color_reviewed": "2026-09-27"
+      "color_reviewed": "2026-09-27",
+      "glyph_source": "brand-informed redraw of the Projectivy Icon Pack 1.1.9 artwork for me.premiumize.pmtvfire (github.com/SicMundus86/ProjectivyIconPack, used as reference only); Core monoline geometry, not a trace (2026-09-28)"
     },
     {
       "name": "Prime Video",
@@ -8511,18 +8514,19 @@
       "glyph_source": "brand-informed redraw of the official launcher icon (play listing for com.teamviewer.quicksupport.market); Core monoline geometry, not a trace (2026-09-26)"
     },
     {
-      "name": "Radio Net",
+      "name": "radio.net",
       "drawable": "radio_net",
-      "color": "#3D8BFF",
-      "glyph": "music_R",
-      "mark": "RN",
+      "color": "#60E040",
+      "glyph": "radionet_o",
       "components": [
         "de.radio.android/de.radio.android.tv.activities.TvMainActivity"
       ],
       "category": "MUSIC",
       "mapping_source": "Projectivy Icon Pack 1.1.9",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled from the Projectivy Icon Pack 1.1.9 artwork for de.radio.android (github.com/SicMundus86/ProjectivyIconPack, used as reference only): #60E040 (2026-09-28)",
+      "color_reviewed": "2026-09-28",
+      "name_source": "app name from the Projectivy Icon Pack 1.1.9 artwork for de.radio.android (github.com/SicMundus86/ProjectivyIconPack, used as reference only), which shows the radio.net logo for this package (2026-09-28)",
+      "glyph_source": "brand-informed redraw of the Projectivy Icon Pack 1.1.9 artwork for de.radio.android (github.com/SicMundus86/ProjectivyIconPack, used as reference only); Core monoline geometry, not a trace (2026-09-28)"
     },
     {
       "name": "Radio On TV",
@@ -10717,17 +10721,17 @@
     {
       "name": "Tele2 Play",
       "drawable": "tele2_play",
-      "color": "#19D3C5",
-      "glyph": "broadcast_T",
-      "mark": "TP",
+      "color": "#00B8E8",
+      "glyph": "tele2_dots",
       "components": [
         "com.tivo.android.comhem/com.comhem.mandel.mobile.presentation.NavigationActivity",
         "com.tivo.android.comhem/tv.threess.threeready.ui.generic.activity.MainActivity"
       ],
       "category": "APP",
       "mapping_source": "Projectivy Icon Pack 1.1.9",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled from the Projectivy Icon Pack 1.1.9 artwork for com.tivo.android.comhem (github.com/SicMundus86/ProjectivyIconPack, used as reference only): #00B8E8 (2026-09-28)",
+      "color_reviewed": "2026-09-28",
+      "glyph_source": "brand-informed redraw of the Projectivy Icon Pack 1.1.9 artwork for com.tivo.android.comhem (github.com/SicMundus86/ProjectivyIconPack, used as reference only); Core monoline geometry, not a trace (2026-09-28)"
     },
     {
       "name": "Telenet",

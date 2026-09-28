@@ -612,9 +612,9 @@
     <item drawable="tcl_quick_panel" />
     <item drawable="quickbars_for_home_assistant" />
     <item drawable="quicksupport" />
-    <item drawable="radio_net" />
     <item drawable="radio_on_tv" />
     <item drawable="radioparadisewidget" />
+    <item drawable="radio_net" />
     <item drawable="radioline" />
     <item drawable="radioplayer" />
     <item drawable="brkchen" />

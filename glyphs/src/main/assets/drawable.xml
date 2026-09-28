@@ -195,9 +195,9 @@
     <item drawable="podcastaddict" />
     <item drawable="poweramp_eq" />
     <item drawable="music" />
-    <item drawable="radio_net" />
     <item drawable="radio_on_tv" />
     <item drawable="radioparadisewidget" />
+    <item drawable="radio_net" />
     <item drawable="radioline" />
     <item drawable="radioplayer" />
     <item drawable="brkchen" />

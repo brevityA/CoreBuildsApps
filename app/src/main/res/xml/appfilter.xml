@@ -72,7 +72,7 @@
     <item component="ComponentInfo{com.ArtInGames.AirAttack2tv/com.unity3d.player.UnityPlayerActivity}" drawable="airattack2tv_banner"/>
     <!-- Aircast -->
     <item component="ComponentInfo{com.smartdevice.tv.aircast/com.coocaa.icast.ui.home.SplashActivity}" drawable="aircast_banner"/>
-    <!-- Airpin Pro -->
+    <!-- AirPin Pro -->
     <item component="ComponentInfo{com.waxrain.airplaydmr/com.waxrain.ui.WaxPlayerSetting}" drawable="airpin_pro_banner"/>
     <!-- AirPlay Receiver -->
     <item component="ComponentInfo{com.boost.airplay.receiver/com.boost.airplay.receiver.ui.activity.SplashActivity}" drawable="receiver_banner"/>
@@ -1167,7 +1167,7 @@
     <!-- Leanback on Fire -->
     <item component="ComponentInfo{com.amazon.tv.leanbacklauncher/com.amazon.tv.leanbacklauncher.MainActivity}" drawable="leanbackonfire_banner"/>
     <item component="ComponentInfo{com.amazon.tv.leanbacklauncher/.MainActivity}" drawable="leanbackonfire_banner"/>
-    <!-- Leankeyboard -->
+    <!-- LeanKey Keyboard -->
     <item component="ComponentInfo{org.liskovsoft.androidtv.rukeyboard/com.liskovsoft.leankeyboard.activity.settings.KbSettingsActivity2}" drawable="leankeyboard_banner"/>
     <!-- Lemino -->
     <item component="ComponentInfo{jp.ne.docomo.lemino.androidtv/jp.ne.docomo.lemino.androidtv.activities.SplashActivity}" drawable="lemino_banner"/>
@@ -1494,7 +1494,7 @@
     <item component="ComponentInfo{com.bskyb.nowtv.beta/com.peacock.peacocktv.GoogleMainActivity}" drawable="nowtv_banner"/>
     <!-- Nowo TV -->
     <item component="ComponentInfo{pt.nowo.nowotv.androidtv/com.androme.andrometv.ui.boot.SplashScreenActivity}" drawable="nowo_tv_banner"/>
-    <!-- Npo Start -->
+    <!-- NPO Start -->
     <item component="ComponentInfo{nl.uitzendinggemist/nl.uitzendinggemist.tv.presentation.activities.main.MainActivity}" drawable="npo_start_banner"/>
     <item component="ComponentInfo{nl.uitzendinggemist/.tv.presentation.activities.main.MainActivity}" drawable="npo_start_banner"/>
     <!-- NRK TV -->
@@ -1538,7 +1538,7 @@
     <!-- Ocean Streamz -->
     <item component="ComponentInfo{streamzy.com.ocean/streamzy.com.ocean.activities.SplashScreenActivity}" drawable="ocean_streamz_banner"/>
     <item component="ComponentInfo{streamzy.com.ocean/.activities.SplashScreenActivity}" drawable="ocean_streamz_banner"/>
-    <!-- Odidotv -->
+    <!-- Odido TV -->
     <item component="ComponentInfo{com.tmobile.tv.nl/com.zodiac.tv.presentation.common.layouts.ZodiacActivity}" drawable="odidotv_banner"/>
     <!-- Oilers+ -->
     <item component="ComponentInfo{com.oilers.app/com.imggaming.dicemobile.MainActivity}" drawable="oilers_banner"/>
@@ -1784,15 +1784,15 @@
     <item component="ComponentInfo{dev.trooped.tvquickbars/.ui.SplashActivity}" drawable="quickbars_for_home_assistant_banner"/>
     <!-- QuickSupport -->
     <item component="ComponentInfo{com.teamviewer.quicksupport.market/com.teamviewer.quicksupport.ui.QSActivity}" drawable="quicksupport_banner"/>
-    <!-- Radio Net -->
-    <item component="ComponentInfo{de.radio.android/de.radio.android.tv.activities.TvMainActivity}" drawable="radio_net_banner"/>
-    <item component="ComponentInfo{de.radio.android/.tv.activities.TvMainActivity}" drawable="radio_net_banner"/>
     <!-- Radio On TV -->
     <item component="ComponentInfo{de.fitzood.radio.tv/de.fitzood.radio.tv.MainActivity}" drawable="radio_on_tv_banner"/>
     <item component="ComponentInfo{de.fitzood.radio.tv/.MainActivity}" drawable="radio_on_tv_banner"/>
     <!-- Radio Paradise -->
     <item component="ComponentInfo{com.earthflare.android.radioparadisewidget.gpv2/com.cratorsoft.act.ActRPHD}" drawable="radioparadisewidget_banner"/>
     <item component="ComponentInfo{com.earthflare.android.radioparadisewidget.gpv2/com.cratorsoft.act.ActRPHD_}" drawable="radioparadisewidget_banner"/>
+    <!-- radio.net -->
+    <item component="ComponentInfo{de.radio.android/de.radio.android.tv.activities.TvMainActivity}" drawable="radio_net_banner"/>
+    <item component="ComponentInfo{de.radio.android/.tv.activities.TvMainActivity}" drawable="radio_net_banner"/>
     <!-- Radioline -->
     <item component="ComponentInfo{com.radioline.android.radioline/com.radioline.android.radioline.MainActivity}" drawable="radioline_banner"/>
     <item component="ComponentInfo{com.radioline.android.radioline/.MainActivity}" drawable="radioline_banner"/>

@@ -7506,3 +7506,107 @@ GLYPHS.update({
     "bloomberg_tab": bloomberg_tab, "mtvkatsomo_play": mtvkatsomo_play,
     "kuku_k": kuku_k, "pepperbox_guns": pepperbox_guns,
 })
+
+
+def airpin_screen(c):
+    """AirPin Pro: the screen with its crosshair and a clip hooked on the corner."""
+    return (f'<rect x="96" y="112" width="336" height="228" rx="36" {_s(c, 28)}/>'
+            f'<path d="M 264 164 L 264 196 M 264 228 L 264 260 M 264 292 L 264 300 '
+            f'M 160 226 L 192 226 M 224 226 L 304 226 M 336 226 L 368 226" {_s(c, 16)}/>'
+            f'<path d="M 96 400 L 176 400 C 208 400 208 348 176 348 L 132 348 '
+            f'C 104 348 104 380 132 380 L 168 380" {_s(c, 22)}/>')
+
+
+def apkupdater_thumb(c):
+    """APK Updater: the thumbs-up inside the round badge."""
+    return (f'<circle cx="256" cy="256" r="184" {_s(c, 28)}/>'
+            f'<path d="M 156 250 L 204 250 L 204 362 L 156 362 Z" {_s(c, 22)}/>'
+            f'<path d="M 204 262 L 250 168 C 262 144 300 150 294 186 L 284 236 '
+            f'L 348 236 C 372 236 382 258 372 278 L 340 348 C 334 358 326 362 314 362 '
+            f'L 204 362" {_s(c, 24)}/>')
+
+
+def bapl_pulse(c):
+    """Background Apps and Process List: a heartbeat trace running into a heart."""
+    return (f'<path d="M 72 276 L 128 276 L 150 236 L 176 332 L 204 176 L 232 316 '
+            f'L 252 276 L 280 276" {_s(c, 24)}/>'
+            f'<path d="M 370 360 C 300 314 276 260 304 226 C 326 200 358 208 370 234 '
+            f'C 382 208 414 200 436 226 C 464 260 440 314 370 360 Z" {_s(c, 24)}/>')
+
+
+def directone_block(c):
+    """Direct One: the diamond block with a square cut out of its heart."""
+    return (f'<path d="M 256 76 L 436 256 L 256 436 L 76 256 Z" {_s(c, 30)}/>'
+            f'<path d="M 208 208 L 304 208 L 304 304 L 208 304 Z" {_s(c, 26)}/>'
+            f'<path d="M 256 76 L 256 208 M 436 256 L 304 256 M 256 436 L 256 304 '
+            f'M 76 256 L 208 256" {_s(c, 18)}/>')
+
+
+def premiumize_check(c):
+    """Premiumize: the figure with the big tick sweeping past its shoulder."""
+    return (f'<circle cx="200" cy="140" r="56" {_s(c, 26)}/>'
+            f'<path d="M 96 420 C 96 300 140 240 200 240 C 240 240 268 256 284 284" {_s(c, 28)}/>'
+            f'<path d="M 212 340 L 288 412 L 428 228" {_s(c, 36)}/>')
+
+
+def radionet_o(c):
+    """radio.net: the o with its antenna reaching out to a dot."""
+    return (f'<circle cx="224" cy="300" r="132" {_s(c, 32)}/>'
+            f'<path d="M 312 204 L 372 138" {_s(c, 22)}/>'
+            f'<circle cx="392" cy="116" r="32" {_s(c, 22)}/>'
+            f'<circle cx="392" cy="116" r="8" {_f(c)}/>')
+
+
+def tele2_dots(c):
+    """Tele2 Play: the loose cluster of seven dots."""
+    dots = ((150, 110, 30), (150, 214, 30), (150, 318, 30), (150, 410, 30),
+            (262, 166, 34), (262, 290, 34), (378, 236, 38))
+    return "".join(f'<circle cx="{x}" cy="{y}" r="{r}" {_f(c)}/>' for x, y, r in dots)
+
+
+def mo4media_camera(c):
+    """MO4Media: the camera with its round lens and the note's hook on the body."""
+    return (f'<path d="M 80 180 L 176 180 L 204 128 L 308 128 L 336 180 L 432 180 '
+            f'L 432 392 L 80 392 Z" {_s(c, 28)}/>'
+            f'<circle cx="256" cy="288" r="72" {_s(c, 26)}/>'
+            f'<circle cx="256" cy="288" r="22" {_f(c)}/>'
+            f'<circle cx="384" cy="232" r="14" {_f(c)}/>')
+
+
+def universal_ring(c):
+    """Play Universal: the globe ring split by its band, with the plus below."""
+    return (f'<path d="{_arc_cw(256, 256, 176, 196, 344)}" {_s(c, 30)}/>'
+            f'<path d="{_arc_cw(256, 256, 176, 16, 164)}" {_s(c, 30)}/>'
+            f'<path d="M 96 256 L 416 256" {_s(c, 30)}/>'
+            f'<path d="M 256 310 L 256 386 M 218 348 L 294 348" {_s(c, 26)}/>')
+
+
+def leankey_play(c):
+    """LeanKey Keyboard: the rounded play arrow with three key rows inside."""
+    return (f'<path d="M 124 112 C 124 88 144 78 166 90 L 404 232 C 424 244 424 268 404 280 '
+            f'L 166 422 C 144 434 124 424 124 400 Z" {_s(c, 28)}/>'
+            f'<path d="M 180 204 L 276 204 M 180 256 L 316 256 M 180 308 L 276 308" {_s(c, 26)}/>')
+
+
+def odido_tv(c):
+    """Odido TV: the flat screen with its play wedge and a wide foot."""
+    return (f'<rect x="72" y="108" width="368" height="244" rx="28" {_s(c, 28)}/>'
+            + _solid("M 222 176 L 316 230 L 222 284 Z", c, 16)
+            + f'<path d="M 176 412 L 336 412" {_s(c, 28)}/>')
+
+
+def npostart_tiles(c):
+    """NPO Start: two tilted tiles overlapping, the front one carrying the play."""
+    return (f'<path d="M 176 104 L 272 168 L 208 264 L 112 200 Z" {_s(c, 24)}/>'
+            f'<path d="M 312 160 L 432 280 L 312 400 L 192 280 Z" {_s(c, 30)}/>'
+            + _solid("M 286 238 L 358 280 L 286 322 Z", c, 12))
+
+
+GLYPHS.update({
+    "airpin_screen": airpin_screen, "apkupdater_thumb": apkupdater_thumb,
+    "bapl_pulse": bapl_pulse, "directone_block": directone_block,
+    "premiumize_check": premiumize_check, "radionet_o": radionet_o,
+    "tele2_dots": tele2_dots, "mo4media_camera": mo4media_camera,
+    "universal_ring": universal_ring, "leankey_play": leankey_play,
+    "odido_tv": odido_tv, "npostart_tiles": npostart_tiles,
+})

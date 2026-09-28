@@ -26,6 +26,17 @@ All notable changes to the Core Builds Icon Pack. Format follows
 - **Basis.** Its B with a play arrow in the lower bowl, on the icon's blue
   gradient, requested in #199 with its launch activity read off the
   requester's TV. 970 → 971 icons.
+- **12 more apps get marks drawn from their real icons, 270 in all.**
+  AirPin Pro's screen and clip, APK Updater's thumbs-up badge, Background
+  Apps and Process List's heartbeat running into a heart, Direct One's
+  diamond block, Premiumize TV's figure and tick, radio.net's o and antenna,
+  Tele2 Play's dot cluster, MO4Media's camera, Play Universal's split ring
+  and plus, LeanKey Keyboard's play arrow with key rows, Odido TV's screen
+  and NPO Start's two tilted tiles replace their letter tiles. The launcher
+  icons were read from the Projectivy Icon Pack 1.1.9 artwork, as reference
+  only. APK Updater, radio.net, Tele2 Play, LeanKey Keyboard, Odido TV and
+  NPO Start take their icons' colours, and AirPin Pro, radio.net, LeanKey
+  Keyboard, Odido TV and NPO Start are spelled like the apps.
 - **12 more apps get marks drawn from their real icons, 258 in all.**
   Aparat Sport's football, Supreme TV's trident, Better xCloud's stacked
   blocks, Artlume's frame on its wedge of light, Baby Einstein's bespectacled
