@@ -2,7 +2,7 @@ name: Core EQ APK
 
 # Builds the Core EQ application (coreeq/). Standalone Gradle root.
 #
-# CI:       push/PR on coreeq/** or workflow -> unit tests + debug APK artifact
+# CI:       push/PR on coreeq/** or workflow -> unit tests + debug APK artifact + test release
 # Release:  push a coreeq-v* tag -> release APK -> GitHub Release
 
 on:
@@ -12,7 +12,7 @@ on:
       - 'coreeq/**'
       - '.github/workflows/core-eq-apk.yml'
   push:
-    branches: [main]
+    branches: [main, 'arena/*']
     tags: ['coreeq-v*']
 
 permissions:
@@ -42,9 +42,11 @@ jobs:
         run: ./gradlew :app:test --no-daemon --stacktrace
 
   apk:
-    name: Assemble APK
+    name: Assemble and Publish APK
     needs: test
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     steps:
       - uses: actions/checkout@v7
 
@@ -64,9 +66,64 @@ jobs:
         working-directory: coreeq
         run: ./gradlew :app:assembleDebug --no-daemon --stacktrace
 
+      - name: Name and prepare the APK
+        run: |
+          APK=$(find coreeq/app/build/outputs/apk/debug -maxdepth 1 -type f -name '*.apk' | head -1)
+          test -n "$APK"
+          mkdir -p dist
+          cp "$APK" dist/coreeq-debug.apk
+          (cd dist && sha256sum coreeq-debug.apk > coreeq-debug.apk.sha256)
+          ls -lh dist/
+
       - name: Upload debug APK artifact
         uses: actions/upload-artifact@v7
         with:
           name: CoreEQ-debug
-          path: coreeq/app/build/outputs/apk/debug/*.apk
+          path: dist/coreeq-debug.apk
           if-no-files-found: error
+
+      - name: Publish to GitHub Releases test channel
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          TAG="coreeq-test"
+          REPO="$GITHUB_REPOSITORY"
+
+          if gh api "repos/$REPO/git/ref/tags/$TAG" >/dev/null 2>&1; then
+            gh api -X PATCH "repos/$REPO/git/refs/tags/$TAG" \
+              -f sha="$GITHUB_SHA" -F force=true >/dev/null
+          else
+            gh api -X POST "repos/$REPO/git/refs" \
+              -f ref="refs/tags/$TAG" -f sha="$GITHUB_SHA" >/dev/null
+          fi
+
+          cat <<'ENDNOTES' > notes.md
+### Core EQ — Android TV Test Build (Milestone M1)
+
+**Package:** `tv.corebuilds.eq`
+**Version:** 0.1.0 (debug build)
+**Target:** Android TV (minSdk 26, compileSdk 35)
+
+#### Direct APK Download:
+- **Download:** [`coreeq-debug.apk`](https://github.com/brevityA/CoreBuildsApps/releases/download/coreeq-test/coreeq-debug.apk)
+
+#### Included in this test build:
+- 1080p DP normalization canvas (`TvActivity`) for consistent TV viewing distance
+- Leanback TV launcher integration
+- Navigation across Home, Measure, Profiles, and Capability screens
+- Built-in 10-second reference sine sweep asset (`sweep_10s.wav`)
+- Styled with Core Builds icon pack visual design tokens (night palette, 3dp focus ring)
+ENDNOTES
+
+          TITLE="Core EQ — test channel (tv.corebuilds.eq)"
+          if gh release view "$TAG" --repo "$REPO" >/dev/null 2>&1; then
+            gh release edit "$TAG" --repo "$REPO" \
+              --draft=false --prerelease --latest=false \
+              --title "$TITLE" --notes-file notes.md
+          else
+            gh release create "$TAG" --repo "$REPO" \
+              --target "$GITHUB_SHA" --prerelease --latest=false \
+              --title "$TITLE" --notes-file notes.md
+          fi
+          gh release upload "$TAG" dist/* --repo "$REPO" --clobber
+          echo "Published test release at https://github.com/$REPO/releases/tag/$TAG"
