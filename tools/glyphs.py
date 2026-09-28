@@ -8181,7 +8181,7 @@ _WM = {
     "nowo_tv": ("nowo", None), "nrk_tv": ("NRK", None), "nxsha": ("NXS", None),
     "one_play": ("one", "play"), "oqee_by_free": ("oq", None), "panda_plus": ("PA", "plus"),
     "perfecttv": ("PTV", None), "playkids": ("PK", "plus"), "put_io": ("put/io", None),
-    "quasitv": ("QTV", None), "raiplay": ("Rai", "frame"), "redream": ("RD", "ring"),
+    "quasitv": ("QTV", None), "raiplay": ("Rai", "frame"), "redream": ("RD", None),
     "riks_tv": ("RIKS", None), "rtl": ("RTL", "plus"), "rtve_play": ("rt", "play"),
     "rugbypass_tv": ("RP", "ring"), "rutube": ("RU", "dot"), "sfjazz_at_home": ("SFJ", None),
     "sfr_tv": ("SFR", None), "shout_tv": ("ST", "under"), "sledovani": ("SL", "frame"),
@@ -8200,3 +8200,109 @@ _WM = {
     "youcine": ("YOU", "under"), "ziggo_go_tv": ("ZIG/GO", None),
 }
 GLYPHS.update({f"{d}_wm": _wm_glyph(t, cue) for d, (t, cue) in _WM.items()})
+
+
+def mytuner_radio(c):
+    """myTuner Radio: the old set with its grille, dial and carry handle."""
+    return (f'<rect x="72" y="176" width="368" height="248" rx="40" {_s(c, 28)}/>'
+            f'<path d="M 176 176 L 336 96" {_s(c, 22)}/>'
+            f'<circle cx="184" cy="300" r="68" {_s(c, 24)}/>'
+            f'<circle cx="184" cy="300" r="18" {_f(c)}/>'
+            f'<path d="M 304 256 L 376 256 M 304 300 L 376 300 M 304 344 L 376 344" {_s(c, 22)}/>')
+
+
+def radon_note(c):
+    """Radon Tunes: the beamed quaver, drawn on the pack's line."""
+    return (f'<circle cx="184" cy="364" r="56" {_s(c, 28)}/>'
+            f'<path d="M 240 364 L 240 104 C 290 124 340 140 360 196" {_s(c, 30)}/>')
+
+
+def channels_set(c):
+    """Channels: the set on its antenna with test-card bars and a play across them."""
+    return (f'<rect x="72" y="144" width="368" height="272" rx="36" {_s(c, 28)}/>'
+            f'<path d="M 208 84 L 256 144 L 304 84" {_s(c, 22)}/>'
+            f'<path d="M 136 204 L 136 356 M 184 204 L 184 356 M 328 204 L 328 356 M 376 204 L 376 356" {_s(c, 18)}/>'
+            + _solid("M 228 228 L 296 280 L 228 332 Z", c, 12))
+
+
+def filmplus_cloud(c):
+    """FilmPlus: the sun peeking over a cloud on its horizon line."""
+    return (f'<path d="{_arc_cw(196, 212, 72, 150, 330)}" {_s(c, 24)}/>'
+            f'<path d="M 96 204 L 70 190 M 196 108 L 196 80 M 130 136 L 112 116 M 262 136 L 280 116" {_s(c, 20)}/>'
+            f'<path d="M 152 356 C 108 356 96 312 128 292 C 128 244 188 228 216 264 '
+            f'C 240 216 324 220 332 284 C 380 284 400 356 344 356 Z" {_s(c, 26)}/>'
+            f'<path d="M 120 420 L 392 420" {_s(c, 22)}/>')
+
+
+def dimplay_layers(c):
+    """Dimplay: three play arrows stacked into a solid wedge, back to front."""
+    return (f'<path d="M 104 120 L 104 392 L 352 256 Z" {_s(c, 26)}/>'
+            f'<path d="M 172 164 L 172 348 L 340 256" {_s(c, 22)}/>'
+            + _solid("M 236 204 L 332 256 L 236 308 Z", c, 12))
+
+
+def usercenter_person(c):
+    """User Center: head and shoulders inside the account ring."""
+    return (f'<circle cx="256" cy="256" r="184" {_s(c, 28)}/>'
+            f'<circle cx="256" cy="200" r="64" {_s(c, 26)}/>'
+            f'<path d="M 140 396 C 156 320 204 292 256 292 C 308 292 356 320 372 396" {_s(c, 26)}/>')
+
+
+def gridstreamr_grid(c):
+    """GridStreamr: a three-by-three grid of tiles whose last cell is a play arrow."""
+    cells = "".join(f'<rect x="{96 + 116 * col}" y="{96 + 116 * row}" width="72" height="72" rx="16" {_s(c, 22)}/>'
+                    for row in range(3) for col in range(3) if (row, col) not in ((1, 2), (2, 2)))
+    return cells + _solid("M 328 236 L 424 300 L 328 364 Z", c, 14)
+
+
+def launchonboot_cycle(c):
+    """Launch on Boot: two arrows chasing round a power switch."""
+    return (f'<path d="{_arc_cw(256, 256, 176, 200, 340)}" {_s(c, 28)}/>'
+            f'<path d="{_arc_cw(256, 256, 176, 20, 160)}" {_s(c, 28)}/>'
+            + _solid("M 432 196 L 440 268 L 380 236 Z", c, 10)
+            + _solid("M 80 316 L 72 244 L 132 276 Z", c, 10)
+            + f'<path d="M 256 176 L 256 256 M 208 208 C 176 240 188 320 256 324 C 324 320 336 240 304 208" {_s(c, 24)}/>')
+
+
+GLYPHS.update({
+    "mytuner_radio": mytuner_radio, "radon_note": radon_note, "channels_set": channels_set,
+    "filmplus_cloud": filmplus_cloud, "dimplay_layers": dimplay_layers,
+    "usercenter_person": usercenter_person, "gridstreamr_grid": gridstreamr_grid,
+    "launchonboot_cycle": launchonboot_cycle,
+})
+
+
+# The second wordmark pass: apps with no Projectivy artwork, read instead from
+# their store-listing launcher icons (Play, Aptoide, Uptodown, APKCombo;
+# reference only). Same cue rules as _WM.
+_WM2 = {
+    "threeplayer": ("VM", "play"), "acontraplus": ("ac", "plus"), "aimitv": ("10", "plus"),
+    "livingroom": ("fv", None), "angel": ("ANGEL", None), "beachbody": ("BO/Di", None),
+    "canaldigital": ("all", None), "citytvplus": ("city", "plus"), "ctvgo": ("CTV", "ring"),
+    "cuenew2": ("CUE", None), "digdroid": ("DIG", None), "dcsapp": ("Nex", None),
+    "distroscale": ("DTV", "frame"), "dnschanger": ("DNS", None), "dstvmobile": ("DStv", None),
+    "earthcamtv": ("EC", "ring"), "epicchannel": ("EPIC", "under"), "eros": ("EN", "ring"),
+    "fcportotv": ("FCP", "dot"), "fifa": ("FIFA", "plus"), "findlink": ("FLX", None),
+    "fizz_app": ("fizz", None), "foxnation": ("FOX", "under"), "foxone": ("FOX/ONE", None),
+    "fullepisodes": ("CW", None), "great": ("GREAT", None), "heinetworktv": ("HEI", None),
+    "watcher": ("HG/TV", None), "ignitetv": ("R", "play"), "myiptvonline": ("iM", None),
+    "androidtv_7": ("OE", "ring"), "kfandroid": ("K", None), "streamingkemo": ("KS", "under"),
+    "laughafterdark": ("LA", "under"), "launchsounds": ("BBC", "under"), "lazyiptvdeluxe": ("LAZY", None),
+    "ligaportugal": ("LIGA", None), "ligueunpass": ("1", "plus"), "combo3403": ("RISE", None),
+    "combo3578": ("RS/BN", None), "tvod169": ("U", "play"), "alticelabs": ("MEO", None),
+    "mercado_play": ("MP", "play"), "moviehd": ("HD", "frame"), "msmvideo": ("MSM", "play"),
+    "netfly": ("NF", "dot"), "nordiskfilmplus": ("NF", "plus"), "nowtv": ("NOW", None),
+    "ntathome": ("NT", "under"), "appomroepbrabant": ("B", "plus"), "andevapps": ("TV", "plus"),
+    "impresa": ("opto", None), "orftvthek": ("ORF/ON", None), "osn": ("osn", "plus"),
+    "telegram": ("T", "dot"), "premierefc": ("P", "frame"), "radioplayer": ("R", "ring"),
+    "rblive": ("RB", None), "americasvoicenews": ("AV", "under"), "rlaxxtv": ("WTV", "plus"),
+    "nextinteractive": ("RMC", "plus"), "rsi": ("RSI", "play"), "minimal": ("RTE", "play"),
+    "skymais": ("sky", "plus"), "radiomg": ("fm", "ring"), "sportscaster": ("CBS", "under"),
+    "srfplayer": ("SRF", "play"), "tfctv": ("iw", None), "mediaworks": ("NOW", "plus"),
+    "discovery_2": ("TLC", None), "fight": ("TN", "plus"), "tveverywhere": ("K1", None),
+    "deadlyduck": ("TV/OS", None), "tvaplus": ("tva", "plus"), "twodf_tivi": ("tivi", None),
+    "vrtnu": ("vrt/max", None), "zenderapp": ("VTM", None), "frograms": ("W", None),
+    "linkplay": ("WiiM", None), "selfcare": ("Y", "play"), "nextplayer": ("NP", "play"),
+    "tcl_home_passive": ("TCL", "frame"),
+}
+GLYPHS.update({f"{d}_wm": _wm_glyph(t, cue) for d, (t, cue) in _WM2.items()})

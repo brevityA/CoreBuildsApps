@@ -125,7 +125,7 @@ Source accents are retained in the catalog. **On dark** is the shared square/ban
 | CDA.pl | `cda_pl` | `#F81800` | `#F81800` | `pl.cda.tv/pl.cda.tv.ui.welcome.WelcomeActivity` |
 | CGTN Now | `cgtnamericanow` | `#0D4481` | `#125FB5` | `com.cgtnamericanow/tv.vhx.LauncherActivity`<br>`com.cgtnamericanow/tv.vhx.tv.home.TvHomeActivity` |
 | Channel 4 | `ondemand` | `#AAFF89` | `#AAFF89` | `com.channel4.ondemand/external.androidtv.psbwrapper.deeplinking.DeepLinkActivity` |
-| Channels | `getchannels` | `#E6EDF3` | `#E6EDF3` | `com.getchannels.dvr.app/com.getchannels.android.MainActivity` |
+| Channels | `getchannels` | `#7038A8` | `#7E3FBD` | `com.getchannels.dvr.app/com.getchannels.android.MainActivity` |
 | Chaupal | `chaupal` | `#F0D810` | `#F0D810` | `video.laminar.tv.chaupal.android/com.yupptv.ott.ui.activity.SplashActivity` |
 | Chebur TV | `chebut` | `#A366FF` | `#A366FF` | `com.chebut.tv/com.ottplay.ottplas.StartActivity` |
 | ChillHub | `chillhub` | `#4DD0E1` | `#4DD0E1` | `app.lumoslabs.chillhub/app.lumoslabs.chillhub.LauncherActivity` |
@@ -156,7 +156,7 @@ Source accents are retained in the catalog. **On dark** is the shared square/ban
 | Criterion Channel | `criterionchannel` | `#E6EDF3` | `#E6EDF3` | `com.criterionchannel/tv.vhx.LauncherActivity`<br>`com.criterionchannel/tv.vhx.tv.home.TvHomeActivity` |
 | Crossy Road | `crossy_road` | `#34EB7A` | `#34EB7A` | `com.yodo1.crossyroad/com.google.firebase.MessagingUnityPlayerActivity` |
 | Crunchyroll | `crunchyroid` | `#FF5E00` | `#FF5E00` | `com.crunchyroll.crunchyroid/com.crunchyroll.crunchyroid.splash.ui.SplashActivity` |
-| CTV | `ctvgo` | `#FFB020` | `#FFB020` | `ca.ctv.ctvgo/axis.androidtv.sdk.app.MainActivity` |
+| CTV | `ctvgo` | `#0058F8` | `#0058F8` | `ca.ctv.ctvgo/axis.androidtv.sdk.app.MainActivity` |
 | CUE Broadcast | `cuenew2` | `#1982C4` | `#1982C4` | `com.cuenew2/com.pythonott.MainActivity` |
 | Curiosity Stream | `curiositystream` | `#1F619E` | `#1F63A0` | `com.curiosity.curiositystream.androidtv/com.curiosity.curiositystream.MainActivity` |
 | CX File Explorer | `cxinventor` | `#00D4FF` | `#00D4FF` | `com.cxinventor.file.explorer/com.alphainventor.filemanager.activity.MainActivity`<br>`com.alphainventor.filemanager/.activity.MainActivity`<br>`com.alphainventor.filemanager/com.alphainventor.filemanager.activity.MainActivity` |
@@ -184,7 +184,7 @@ Source accents are retained in the catalog. **On dark** is the shared square/ban
 | Dish Anywhere | `dish_anywhere` | `#FFB020` | `#FFB020` | `com.sm.SlingGuide.Dish/com.sm.SlingGuide.Dish.MainActivity` |
 | Dish Home | `dishnepal` | `#E34BAC` | `#E34BAC` | `com.conax.golive.dishnepal/com.conax.golive.LoginActivity` |
 | Disney+ | `disneyplus` | `#113CCF` | `#1E4DED` | `com.disney.disneyplus/com.bamtechmedia.dominguez.main.MainActivity`<br>`com.disney.disneyplus/.MainActivity`<br>`com.disney.disneyplus.tv/.MainActivity` |
-| DistroTV | `distroscale` | `#FF5CA8` | `#FF5CA8` | `com.distroscale.tv.android/com.distroscale.tv.firetv.MainActivity` |
+| DistroTV | `distroscale` | `#28C0B8` | `#28C0B8` | `com.distroscale.tv.android/com.distroscale.tv.firetv.MainActivity` |
 | DixMax | `dixmax` | `#F89800` | `#F89800` | `es.shufflex.dixmax.android/es.shufflex.dixmax.android.Main`<br>`es.shufflex.dixmax.android/es.shufflex.dixmax.android.activities.tv.activities.LoginActivity` |
 | DNS Changer | `dnschanger` | `#7C74FF` | `#7C74FF` | `com.aykutcevik.dnschanger/com.aykutcevik.dnssetter.Activities.MainActivity` |
 | Dodo Stream | `dodostream` | `#FBBF24` | `#FBBF24` | `app.dodora.dodostream/app.dodora.dodostream.MainActivity` |
@@ -213,14 +213,14 @@ Source accents are retained in the catalog. **On dark** is the shared square/ban
 | Dude Perfect | `dudeperfect` | `#31FCDE` | `#31FCDE` | `tv.kidoodle.android.dudeperfect/tv.kidoodle.android.ui.MainActivity` |
 | Dune | `enhanced` | `#FF4D4D` | `#FF4D4D` | `Dune.enhanced.tv/org.jellyfin.androidtv.ui.startup.StartupActivity` |
 | Dw | `dw` | `#FFB020` | `#FFB020` | `dw.com.androidtv.live/com.dw.app.dwforsmarttv.MainActivity` |
-| EarthCam | `earthcamtv` | `#1982C4` | `#1982C4` | `com.earthcam.earthcamtv.android/com.earthcam.earthcamtv.mainmvp.MainActivity` |
+| EarthCam | `earthcamtv` | `#7898C8` | `#7898C8` | `com.earthcam.earthcamtv.android/com.earthcam.earthcamtv.mainmvp.MainActivity` |
 | EchoGram | `echogram` | `#4765AD` | `#4765AD` | `com.liori.echogram/com.liori.echogram.MainActivity` |
 | Elefin | `elefin` | `#7058D8` | `#7058D8` | `com.flex.elefin/com.flex.elefin.MainActivity` |
 | Emby | `emby` | `#52B54B` | `#52B54B` | `tv.emby.embyatv/.startup.StartupActivity`<br>`com.mb.android/.MainActivity` |
 | Emotn Store | `appstore` | `#D828E0` | `#D828E0` | `com.overseas.store.appstore/com.overseas.store.appstore.ui.SplashActivity` |
 | Enjoy TV | `enjoytvandroid` | `#08A8D0` | `#08A8D0` | `com.myenjoytv.enjoytvandroid/com.myenjoytv.enjoytvandroid.SplashActivity` |
 | Eon TV | `eon_tv` | `#7C74FF` | `#7C74FF` | `com.ug.eon.android.tv/com.ug.eon.android.tv.TvActivity` |
-| EPIC ON | `epicchannel` | `#F6643A` | `#F6643A` | `com.epicchannel.epicon/com.epicchannel.epicon.ui.launcher.activity.LauncherActivity` |
+| EPIC ON | `epicchannel` | `#F05068` | `#F05068` | `com.epicchannel.epicon/com.epicchannel.epicon.ui.launcher.activity.LauncherActivity` |
 | ePSXe | `epsxe` | `#19D3C5` | `#19D3C5` | `com.epsxe.ePSXe/com.epsxe.ePSXe.ePSXe` |
 | Eros Now | `eros` | `#0D96D4` | `#0D96D4` | `com.eros.now/com.eros.now.launchscreen.SplashActivity` |
 | ERTFLIX | `ertflix` | `#B6F23A` | `#B6F23A` | `com.ertflix.app/com.ertflix.app.MainActivity` |
@@ -241,18 +241,18 @@ Source accents are retained in the catalog. **On dark** is the shared square/ban
 | FanDuel Sports | `foxsports_2` | `#003580` | `#0058D3` | `com.foxsports.videogo/com.ballysports.tv.ui.screens.main.TvMainActivity` |
 | FANE TV | `fanetv` | `#28A8C0` | `#28A8C0` | `com.fanetv/tv.vhx.LauncherActivity`<br>`com.fanetv/tv.vhx.tv.home.TvHomeActivity` |
 | Fast Task Killer | `fasttaskkiller` | `#0070B8` | `#0070B8` | `jp.snowlife01.android.appkiller2/jp.snowlife01.android.appkiller2.Optimization`<br>`jp.snowlife01.android.appkiller2/jp.snowlife01.android.appkiller2.OptimizationActivity` |
-| FC Porto TV | `fcportotv` | `#1975BC` | `#1975BC` | `com.fcp.fcportotv/com.fcp.fcportotv.SplashActivity` |
+| FC Porto TV | `fcportotv` | `#28A8E0` | `#28A8E0` | `com.fcp.fcportotv/com.fcp.fcportotv.SplashActivity` |
 | FCast Receiver | `playstore_2` | `#00D4FF` | `#00D4FF` | `com.futo.fcast.receiver.playstore/com.futo.fcast.receiver.MainActivity` |
 | FCTV33 | `fctv77` | `#F8C800` | `#F8C800` | `com.fctv77.tv/com.rblive.launcher.splash.SplashActivity` |
 | FEB | `feb` | `#007AFF` | `#007AFF` | `com.topspeed.febbox2/com.snowtop.diskpanda.view.activity.SplashActivity` |
-| FIFA+ | `fifa` | `#326295` | `#326396` | `com.fifa.plus.android/com.fifa.tv.FifaTvSplashActivity` |
+| FIFA+ | `fifa` | `#00F858` | `#00F858` | `com.fifa.plus.android/com.fifa.tv.FifaTvSplashActivity` |
 | File Commander | `mobisystems` | `#1982C4` | `#1982C4` | `com.mobisystems.fileman/com.mobisystems.files.FileBrowser` |
 | Files | `files` | `#4285F4` | `#4285F4` | `com.google.android.documentsui/.files.FilesActivity`<br>`com.google.android.documentsui/com.android.documentsui.files.FilesActivity`<br>`com.google.android.apps.nbu.files/.home.HomeActivity` |
 | FileSynced | `filesynced` | `#7C74FF` | `#7C74FF` | `com.filesynced.app/com.filesynced.app.SplashActivity` |
 | Filimo | `filimo` | `#FEC33D` | `#FEC33D` | `com.sabaidea.filimo.tv/com.bluevod.android.tv.ui.activities.MainActivity` |
 | Filmfriend | `filmfriend` | `#2BB5B1` | `#2BB5B1` | `de.filmfriend/crc64a5e6c5f1927a9b79.MainActivity` |
 | Filmnet TV | `filmnet_tv` | `#E00010` | `#E00010` | `ir.filmnet.android.tv/ir.filmnet.android.ui.MainActivity` |
-| FilmPlus | `guideplus` | `#19D3C5` | `#19D3C5` | `com.guideplus.co/com.guideplus.co.SplashActivity` |
+| FilmPlus | `guideplus` | `#F8C000` | `#F8C000` | `com.guideplus.co/com.guideplus.co.SplashActivity` |
 | FilmRise | `filmrise` | `#B6F23A` | `#B6F23A` | `com.recipe.filmrise/com.recipe.filmrise.SplashActivity` |
 | Filmzie | `platform` | `#3D8BFF` | `#3D8BFF` | `com.filmzie.platform/com.filmzie.tv.MainActivity` |
 | Firedown | `firedown` | `#F87068` | `#F87068` | `com.solarized.firedown/com.solarized.firedown.phone.BrowserActivity` |
@@ -267,7 +267,7 @@ Source accents are retained in the catalog. **On dark** is the shared square/ban
 | flik.tv | `flix_tv` | `#F8A800` | `#F8A800` | `com.tvflix.ippflixtvbox/com.tvflix.ippflixtvbox.view.activity.SplashActivity` |
 | Flix Vision | `flix_vision` | `#E5533D` | `#E5533D` | `flix.com.vision/.activities.SplashScreenActivity` |
 | FlixNest | `flixnest` | `#A42521` | `#B62925` | `hu.kinetik.streamapp/hu.kinetik.streamapp.MainActivity` |
-| Flixoid | `findlink` | `#38D880` | `#38D880` | `com.findlink/com.findlink.ActivitySplash` |
+| Flixoid | `findlink` | `#F85818` | `#F85818` | `com.findlink/com.findlink.ActivitySplash` |
 | Flosports | `flosports` | `#19D3C5` | `#19D3C5` | `tv.flosports/tv.flosports.TvActivity` |
 | Fluffy | `fluffy` | `#3008F0` | `#5938F8` | `app.fluffy/app.fluffy.MainActivity` |
 | FM Radio | `fmradio` | `#8053F0` | `#8053F0` | `com.radio.fmradio/com.radio.fmradio.activity.OnboardingActivity` |
@@ -310,7 +310,7 @@ Source accents are retained in the catalog. **On dark** is the shared square/ban
 | Google TV | `videos` | `#4285F4` | `#4285F4` | `com.google.android.videos/com.google.android.videos.tv.presenter.activity.TvLauncherActivity` |
 | GoPlay | `goplay` | `#00F0C8` | `#00F0C8` | `com.eitv.goplay/com.eitv.eitvplay.activities.SplashActivity` |
 | Gotham Sports | `gothamsports` | `#53FC18` | `#53FC18` | `com.gothamsports.gotham.tv/com.game.tv.TVMainActivity` |
-| Great American Pure Flix | `great` | `#280653` | `#7C22EF` | `com.great.tv.android/tv.accedo.one.app.bootstrap.BootstrapActivity` |
+| Great American Pure Flix | `great` | `#D0A8E8` | `#D0A8E8` | `com.great.tv.android/tv.accedo.one.app.bootstrap.BootstrapActivity` |
 | GridStreamr | `gridstreamr` | `#58C6FF` | `#58C6FF` | `com.gridstreamr.gridstreamr/com.gridstreamr.gridstreamr.MainActivity`<br>`com.gridstreamr.androidtv/com.gridstreamr.androidtv.MainActivity` |
 | GT Share | `gtshare` | `#EDAD0A` | `#EDAD0A` | `com.gtmedia.gtshare/com.winsat.gtshare.MainActivity` |
 | Gymondo | `gymondo` | `#FF7F66` | `#FF7F66` | `de.gymondo.app.gymondo/com.gymondo.presentation.features.startup.StartupTvActivity` |
@@ -325,7 +325,7 @@ Source accents are retained in the catalog. **On dark** is the shared square/ban
 | HDRezka | `falcofemoralis` | `#FFE14D` | `#FFE14D` | `com.falcofemoralis.hdrezkaapp/com.falcofemoralis.hdrezkaapp.views.MainActivity` |
 | HDTV Player | `hdtv_player` | `#EB5405` | `#EB5405` | `com.zva3.mobile.litetvandroid/com.zva3.mobile.litetvandroid.MainActivity`<br>`com.zva3.mobile.litetvandroid/com.zva3.mobile.litetvandroid.TvActivity` |
 | HEI Network | `heinetworktv` | `#DA3430` | `#DA3430` | `com.heinetwork.HEINetworkTV/com.heinetwork.HEINetworkTV.MainActivity` |
-| HGTV | `watcher` | `#34EB7A` | `#34EB7A` | `com.hgtv.watcher/com.discovery.tve.presentation.activities.SplashActivity` |
+| HGTV | `watcher` | `#00A8C0` | `#00A8C0` | `com.hgtv.watcher/com.discovery.tve.presentation.activities.SplashActivity` |
 | Hi Browser | `hi_browser` | `#00A8A8` | `#00A8A8` | `com.hisense.odinbrowser/com.hisense.odinbrowser.MainActivity`<br>`com.hisense.odinbrowser/com.hisense.odinbrowser.ui.MainActivity`<br>`com.hisense.odinbrowser/com.hisense.odinbrowser.browser.MainActivity` |
 | hide.me | `hideme` | `#2AA9E0` | `#2AA9E0` | `hideme.android.vpn/com.android.vpn.activities.LoginActivity` |
 | HIDIVE | `hidive` | `#00A8E8` | `#00A8E8` | `com.twentyfouri.androidtv.hidive/com.twentyfouri.androidtv.hidive.MainActivity` |
@@ -349,7 +349,7 @@ Source accents are retained in the catalog. **On dark** is the shared square/ban
 | Iflix | `iflix` | `#4FACFE` | `#4FACFE` | `iflix.play/com.ktcp.video.activity.HomeActivity` |
 | iHeartRadio | `clearchannel` | `#C6002B` | `#C6002B` | `com.clearchannel.iheartradio.tv/com.iheartradio.tv.screen.container.ContainerActivity` |
 | Immich TV | `immich_tv` | `#34EB7A` | `#34EB7A` | `nl.giejay.android.tv.immich/nl.giejay.android.tv.immich.MainActivity` |
-| iMPlayer | `myiptvonline` | `#A366FF` | `#A366FF` | `com.myiptvonline.implayer/com.myiptvonline.implayer.a` |
+| iMPlayer | `myiptvonline` | `#C81028` | `#C81028` | `com.myiptvonline.implayer/com.myiptvonline.implayer.a` |
 | Instagram | `instagram` | `#FF0069` | `#FF0069` | `com.instagram.airwave/com.instagram.airwave.AirwaveMainActivity` |
 | Ip Address | `ip_address` | `#00D4FF` | `#00D4FF` | `net.info.az/net.info.az.SplashActivity` |
 | IP Tools | `iptools` | `#FF5CA8` | `#FF5CA8` | `com.ddm.iptools/com.ddm.iptools.ui.MainActivity` |
@@ -398,7 +398,7 @@ Source accents are retained in the catalog. **On dark** is the shared square/ban
 | Laliga | `laliga` | `#E6EDF3` | `#E6EDF3` | `la.liga.sports.tv.deporte/la.liga.sports.tv.deporte.features.splash.TvSplashActivity` |
 | Lampa | `lampa` | `#34EB7A` | `#34EB7A` | `top.rootu.lampa/top.rootu.lampa.MainActivity` |
 | Laugh After Dark | `laughafterdark` | `#E7B90A` | `#E7B90A` | `com.laughafterdark.androidtv/com.laughafterdark.androidtv.ui.splashscreen.activity.SplashScreenActivity` |
-| Launch on Boot | `launch_on_boot` | `#7AC7E8` | `#7AC7E8` | `news.androidtv.launchonboot/news.androidtv.launchonboot.MainActivity` |
+| Launch on Boot | `launch_on_boot` | `#00A8F0` | `#00A8F0` | `news.androidtv.launchonboot/news.androidtv.launchonboot.MainActivity` |
 | Launchbox | `launchbox` | `#00D4FF` | `#00D4FF` | `com.unbrokensoftware.launchbox/crc640d6c5ebcc48c6177.MainActivity` |
 | Launcher Manager | `luckymanager` | `#FBBF24` | `#FBBF24` | `com.wolf.google.lm/.main.MainActivity` |
 | Launcher Manager | `launcher_manager` | `#4080F0` | `#4080F0` | `com.wolf.lm/com.wolf.lm.main.MainActivity`<br>`com.wolf.lms/com.wolf.lm.main.MainActivity`<br>`com.wolf.lms/.MainActivity` |
@@ -409,12 +409,12 @@ Source accents are retained in the catalog. **On dark** is the shared square/ban
 | Lemino | `lemino` | `#FFAF2D` | `#FFAF2D` | `jp.ne.docomo.lemino.androidtv/jp.ne.docomo.lemino.androidtv.activities.SplashActivity` |
 | Lemuroid | `lemuroid` | `#00C64E` | `#00C64E` | `com.swordfish.lemuroid/com.swordfish.lemuroid.app.mobile.feature.main.MainActivity`<br>`com.swordfish.lemuroid/com.swordfish.lemuroid.app.tv.main.MainTVActivity` |
 | Lifetime | `androidtv_5` | `#B6F23A` | `#B6F23A` | `com.aetn.lifetime.watch.androidtv/com.aetn.android.tveapps.app.MainActivity` |
-| Liga Portugal | `ligaportugal` | `#001240` | `#0047FE` | `com.ligaportugal.ligatv/com.ligaportugal.ligatv.SplashActivity` |
+| Liga Portugal | `ligaportugal` | `#00F880` | `#00F880` | `com.ligaportugal.ligatv/com.ligaportugal.ligatv.SplashActivity` |
 | Ligue 1+ | `ligueunpass` | `#0760FF` | `#0760FF` | `com.ligueunpass.app/com.ligueunpass.app.MainActivity` |
 | Live Channels | `tv` | `#0EA5EF` | `#0EA5EF` | `com.google.android.tv/com.android.tv.TvActivity` |
 | Live TV | `livetv` | `#00BCD4` | `#00BCD4` | `com.mediatek.wwtv.tvcenter/.nav.TurnkeyUiMainActivity` |
 | LiveNetTV Pro | `androidtv_10` | `#881010` | `#BF1616` | `com.playnet.androidtv.pro/com.playnet.androidtv.pro.DdfzCtdEstCn`<br>`com.playnet.androidtv.pro/com.playnet.androidtv.pro.plBqnAaqDlEns` |
-| Local 10+ | `aimitv` | `#3090E0` | `#3090E0` | `com.aimitv.wplg.news/com.whiz.firetv.activity.SplashScreen` |
+| Local 10+ | `aimitv` | `#003070` | `#0059CF` | `com.aimitv.wplg.news/com.whiz.firetv.activity.SplashScreen` |
 | Local Now | `localnow` | `#48C860` | `#48C860` | `com.weathergroup.localnow/com.weathergroup.localnow.MainActivity` |
 | Locals Google TV | `googletv` | `#4FACFE` | `#4FACFE` | `com.locals.googletv/com.aloteq.flutter_tv.MainActivity` |
 | LocalSend | `localsend` | `#008080` | `#008080` | `org.localsend.localsend_app/org.localsend.localsend_app.MainActivity` |
@@ -498,7 +498,7 @@ Source accents are retained in the catalog. **On dark** is the shared square/ban
 | Nettv | `nettv` | `#04518D` | `#0562AA` | `np.com.androidtv.nettv/com.np.androidTV.main.TVMainActivity` |
 | Netzkino | `netzkino` | `#6AACE8` | `#6AACE8` | `de.netzkino.android.ics/de.netzkino.android.ics.SplashActivity` |
 | Newpipe | `newpipe` | `#CD201F` | `#CD201F` | `org.schabi.newpipe/org.schabi.newpipe.MainActivity` |
-| NextPlayer | `nextplayer` | `#19D3C5` | `#19D3C5` | `dev.anilbeesetti.nextplayer/dev.anilbeesetti.nextplayer.feature.videopicker.MainActivity`<br>`dev.anilbeesetti.nextplayer/.ui.MainActivity` |
+| NextPlayer | `nextplayer` | `#88D0D0` | `#88D0D0` | `dev.anilbeesetti.nextplayer/dev.anilbeesetti.nextplayer.feature.videopicker.MainActivity`<br>`dev.anilbeesetti.nextplayer/.ui.MainActivity` |
 | Nextup Watch Stand Up Comedy | `nextup_watch_stand_up_comedy` | `#F04DE0` | `#F04DE0` | `tv.vhx.nextup/com.example.videoapp.MainActivity` |
 | NexTV | `dcsapp` | `#9088F0` | `#9088F0` | `com.dcsapp.iptv/fr.nextv.atv.foundation.TvActivity` |
 | NFB | `nitobi` | `#B6F23A` | `#B6F23A` | `com.nitobi.nfb/com.nitobi.nfb.MainActivity` |
@@ -512,7 +512,7 @@ Source accents are retained in the catalog. **On dark** is the shared square/ban
 | NLZIET | `nlziet` | `#F81058` | `#F81058` | `nl.nlziet/nl.nlziet.tv.app.di.tv.InjectActivity` |
 | [NoBuffr](https://downloads.nobuffr.com/android/nobuffr.apk) | `nobuffr` | `#56C8F0` | `#56C8F0` | `com.nobuffr.app/tv.tivitime.compose.app.AppActivity` |
 | Noovo | `noovo` | `#4088E0` | `#4088E0` | `com.vmediagroup.noovo/entpay.awl.tv.splash.SplashActivity` |
-| Nordisk Film+ | `nordiskfilmplus` | `#E6EDF3` | `#E6EDF3` | `com.nordiskfilmplus.android/com.nordiskfilmplus.android.ui.splash.SplashActivity` |
+| Nordisk Film+ | `nordiskfilmplus` | `#0030F8` | `#1845FF` | `com.nordiskfilmplus.android/com.nordiskfilmplus.android.ui.splash.SplashActivity` |
 | NordVPN | `nordvpn` | `#4687FF` | `#4687FF` | `com.nordvpn.android/com.nordvpn.android.tv.MainActivity` |
 | Norton Clean | `norton_clean` | `#34EB7A` | `#34EB7A` | `com.symantec.cleansweep/com.avast.android.cleaner.activity.StartActivity` |
 | NOS | `nos` | `#E01810` | `#E01810` | `nl.nos.app/tv.mauna.app.MainActivity` |
@@ -521,7 +521,7 @@ Source accents are retained in the catalog. **On dark** is the shared square/ban
 | NoTube TV | `notubetv` | `#FF5CA8` | `#FF5CA8` | `com.ycngmn.notubetv/com.ycngmn.notubetv.MainActivity` |
 | Nova Video Player | `nova_video_player` | `#53FC18` | `#53FC18` | `org.courville.nova/com.archos.mediacenter.video.leanback.MainActivityLeanback` |
 | NovaTV | `videoplayer_2` | `#F04818` | `#F04818` | `com.polygon.videoplayer/com.polygon.videoplayer.SplashActivity` |
-| NOW | `nowtv` | `#001211` | `#E6EDF3` | `com.bskyb.nowtv.beta/com.peacock.peacocktv.GoogleMainActivity` |
+| NOW | `nowtv` | `#086068` | `#E6EDF3` | `com.bskyb.nowtv.beta/com.peacock.peacocktv.GoogleMainActivity` |
 | Nowo TV | `nowo_tv` | `#FD7301` | `#FD7301` | `pt.nowo.nowotv.androidtv/com.androme.andrometv.ui.boot.SplashScreenActivity` |
 | NPO Start | `npo_start` | `#F86800` | `#F86800` | `nl.uitzendinggemist/nl.uitzendinggemist.tv.presentation.activities.main.MainActivity` |
 | NRK TV | `nrk_tv` | `#B0C8F0` | `#B0C8F0` | `no.nrk.tv/no.nrk.tv.view.MobileSplashScreenActivity`<br>`no.nrk.tv/no.nrk.tv.view.TvSplashScreenActivity` |
@@ -632,7 +632,7 @@ Source accents are retained in the catalog. **On dark** is the shared square/ban
 | RAM Cleaner | `ram` | `#34EB7A` | `#34EB7A` | `com.ram.tv/com.ram.tv.Update_done.MySplash` |
 | Rapid Streamz | `rapid_streamz` | `#00D030` | `#00D030` | `com.rpstreamz.live/com.rpstreamz.live.activity.SplashActivity` |
 | RBTV+ | `rblive` | `#FFAE01` | `#FFAE01` | `com.rblive.app/com.rblive.launcher.splash.SplashActivity` |
-| Real America's Voice | `americasvoicenews` | `#FF5CA8` | `#FF5CA8` | `com.americasvoicenews.androidtv/com.americasvoicenews.androidtv.MainActivity` |
+| Real America's Voice | `americasvoicenews` | `#B80000` | `#C40000` | `com.americasvoicenews.androidtv/com.americasvoicenews.androidtv.MainActivity` |
 | Real-Debrid | `realdebrid` | `#7BC144` | `#7BC144` | `debrid.real.app/.MainActivity`<br>`com.realdebrid.app/.MainActivity` |
 | Real-Debrid App | `realdebrid_2` | `#1982C4` | `#1982C4` | `com.realdebrid.realdebrid/com.realdebrid.realdebrid.MainActivity` |
 | Realstream TV | `realstream_tv` | `#53FC18` | `#53FC18` | `com.doctor.realstream_tv/com.doctor.realstream.ComposeMainActivity` |
@@ -647,8 +647,8 @@ Source accents are retained in the catalog. **On dark** is the shared square/ban
 | RetroX | `archain` | `#01B39E` | `#01B39E` | `com.archain.retrox/com.unity3d.player.UnityPlayerActivity` |
 | Rezka | `rezka` | `#FF4D4D` | `#FF4D4D` | `ru.astroapps.hdrezka/ru.astroapps.hdrezka.MainActivity` |
 | RiksTV | `riks_tv` | `#EF4642` | `#EF4642` | `no.rikstv.atv/no.rikstv.atv.MainActivity` |
-| RiseTV | `combo3403` | `#3D8BFF` | `#3D8BFF` | `com.maz.combo3403/com.maz.combo3403.MainActivity` |
-| RMC BFM | `nextinteractive` | `#E6EDF3` | `#E6EDF3` | `com.nextinteractive.rmcbfmplay.tv.sfr/com.nextinteractive.rmcbfmplay.apptv.SplashActivity` |
+| RiseTV | `combo3403` | `#202860` | `#4655C1` | `com.maz.combo3403/com.maz.combo3403.MainActivity` |
+| RMC BFM | `nextinteractive` | `#00A8F8` | `#00A8F8` | `com.nextinteractive.rmcbfmplay.tv.sfr/com.nextinteractive.rmcbfmplay.apptv.SplashActivity` |
 | Rogers Xfinity Stream | `ignitetv` | `#DB291D` | `#DB291D` | `com.rogers.ignitetv/com.xfinity.common.view.LaunchActivity` |
 | Rover's Morning Glory | `combo2254` | `#E81820` | `#E81820` | `com.maz.combo2254/com.maz.activities.ViewerLaunchActivity` |
 | RS File Manager | `rsfilemanager` | `#4FACFE` | `#4FACFE` | `com.rs.explorer.filemanager/com.rs.explorer.filemanager.MainActivity`<br>`com.rs.explorer.filemanager/.MainActivity`<br>`com.rs.explorer.filemanager/com.edili.filemanager.module.activity.FirstActivity` |
@@ -696,7 +696,7 @@ Source accents are retained in the catalog. **On dark** is the shared square/ban
 | SimpliTV | `androidtv` | `#FF7A2E` | `#FF7A2E` | `at.simplitv.ott.androidtv/tv.threess.threeready.ui.generic.activity.MainActivity` |
 | Sirius | `sirius` | `#19D3C5` | `#19D3C5` | `com.sirius/sxmp.app.welcome.WelcomeActivity` |
 | Sky News | `sky_news` | `#9C0000` | `#C40000` | `com.sky.news.androidtv/com.easeltv.falconheavy.tv.splash.view.SplashIntroVideoActivity` |
-| Sky+ | `skymais` | `#0072C6` | `#0072C6` | `br.com.skymais/com.directvgo.feature.tv.splash.SplashActivity` |
+| Sky+ | `skymais` | `#E00010` | `#E00010` | `br.com.skymais/com.directvgo.feature.tv.splash.SplashActivity` |
 | Skyshowtime | `skyshowtime` | `#F04DE0` | `#F04DE0` | `com.skyshowtime.skyshowtime.google/com.peacock.peacocktv.GoogleMainActivity` |
 | Sledovani | `sledovani` | `#40A0D8` | `#40A0D8` | `cz.sledovanitv.android/cz.sledovanitv.androidtv.entry.EntryActivity` |
 | Sling TV | `sling_tv` | `#FF6D01` | `#FF6D01` | `com.sling/com.sling.MainActivity` |
@@ -709,7 +709,7 @@ Source accents are retained in the catalog. **On dark** is the shared square/ban
 | SNRT Live | `snrt_live` | `#1FD19A` | `#1FD19A` | `ma.snrt.live/ma.snrt.snrtLive.snrt_live_tv_app.MainActivity` |
 | Sofascore | `sofascore` | `#C95CFF` | `#C95CFF` | `com.sofascore.results/com.sofascore.results.main.MainActivity` |
 | Solid Explorer | `solidexplorer` | `#34D399` | `#34D399` | `pl.solidexplorer2/pl.solidexplorer2.SolidExplorer`<br>`pl.solidexplorer2/.SolidExplorer`<br>`pl.solidexplorer2/pl.solidexplorer.SolidExplorer` |
-| SomaFM | `radiomg` | `#FFE14D` | `#FFE14D` | `com.dgmltn.radiomg.somafm/com.dgmltn.radiomg.ui.main.MainActivity` |
+| SomaFM | `radiomg` | `#F01820` | `#F01820` | `com.dgmltn.radiomg.somafm/com.dgmltn.radiomg.ui.main.MainActivity` |
 | Sonyliv | `sonyliv` | `#4FACFE` | `#4FACFE` | `com.sonyliv/com.sonyliv.ui.splash.SplashActivity` |
 | Sooner | `sooner` | `#D7DADE` | `#D7DADE` | `sooner.app.de/de.eyzmedia.sooner.MainActivity` |
 | Soundcloud | `soundcloud` | `#FF5500` | `#FF5500` | `com.soundcloud.android/com.soundcloud.android.tv.app.TvMainActivity` |
@@ -812,7 +812,7 @@ Source accents are retained in the catalog. **On dark** is the shared square/ban
 | Tivify | `tivify` | `#00FFC0` | `#00FFC0` | `com.tvup.tivify.app.tv/com.tvup.tvapp.view.activity.MainActivityTVup` |
 | TiviMate | `tvplayer` | `#F5A623` | `#F5A623` | `ar.tvplayer.tv/ar.tvplayer.tv.ui.MainActivity`<br>`ar.tvplayer.tv/.ui.MainActivity` |
 | TizenTube | `tizentube` | `#47DDFF` | `#47DDFF` | `io.gh.reisxd.tizentube.cobalt/dev.cobalt.app.MainActivity` |
-| TLC | `discovery_2` | `#1982C4` | `#1982C4` | `com.discovery.tlctve/com.discovery.tve.presentation.activities.SplashActivity` |
+| TLC | `discovery_2` | `#F80018` | `#F80018` | `com.discovery.tlctve/com.discovery.tve.presentation.activities.SplashActivity` |
 | TNA+ | `fight` | `#7C0000` | `#C40000` | `com.fight.tna/com.fight.tna.MainActivity` |
 | TNT | `tnt` | `#C95CFF` | `#C95CFF` | `com.turner.tnt.android.networkapp/com.wme.app.MainActivityTv` |
 | TOD | `tod` | `#FFBC00` | `#FFBC00` | `com.todtv.tod/com.todtv.tod.MainActivity` |
@@ -840,7 +840,7 @@ Source accents are retained in the catalog. **On dark** is the shared square/ban
 | TV Browser | `tvbrowser` | `#B6F23A` | `#B6F23A` | `com.internet.tvbrowser/com.internet.tvbrowser.MainActivity` |
 | TV Garden | `tv_garden` | `#78C040` | `#78C040` | `com.tvgarden/com.tvgarden.MainActivity` |
 | TV Manager | `tv_manager` | `#1FD19A` | `#1FD19A` | `com.xiaomi.mitv.tvmanager/com.xiaomi.mitv.tvmanager.MainTvManagerActivity` |
-| TV on OS | `deadlyduck` | `#1982C4` | `#1982C4` | `com.deadlyduck.tvonos/com.deadlyduck.tvonos.TvActivity` |
+| TV on OS | `deadlyduck` | `#D8A868` | `#D8A868` | `com.deadlyduck.tvonos/com.deadlyduck.tvonos.TvActivity` |
 | TV Quick Actions | `tvquickactions` | `#C95CFF` | `#C95CFF` | `dev.vodik7.tvquickactions/.MainActivity` |
 | TV Quick Actions | `tv_quick_actions` | `#C95CFF` | `#C95CFF` | `dev.vodik7.tvquickactions.free/dev.vodik7.tvquickactions.MainActivity` |
 | TV Source | `tv_source` | `#FFE14D` | `#FFE14D` | `com.spocky.projengmenu/.activities.input.SourceTVActivity`<br>`com.spocky.projengmenu/.ui.guidedActions.activities.input.SourceTVActivity` |
@@ -912,7 +912,7 @@ Source accents are retained in the catalog. **On dark** is the shared square/ban
 | vRadio | `vradio` | `#2C4C6C` | `#39638C` | `com.ilv.vradio/com.ilv.vradiotv.MainActivity` |
 | VRT MAX | `vrtnu` | `#FF4D4E` | `#FF4D4E` | `be.vrt.vrtnu/be.vrt.vrtnu.MainActivity` |
 | Vstro Player | `vstro_player` | `#FFE14D` | `#FFE14D` | `com.vs.vsplayer/com.vs.vsplayer.common.view.SplashActivity` |
-| VTM GO | `zenderapp` | `#4FACFE` | `#4FACFE` | `be.vmma.vtm.zenderapp/be.persgroep.vtmgo.presentation.VtmGoMainActivity` |
+| VTM GO | `zenderapp` | `#F8C0B8` | `#F8C0B8` | `be.vmma.vtm.zenderapp/be.persgroep.vtmgo.presentation.VtmGoMainActivity` |
 | VTVcab ON | `vtvcab_on_tv` | `#E02820` | `#E02820` | `com.vtvcab.onTV/com.vtvcab.activities.NewSplashActivity` |
 | VTVgo | `vtvgo_tv` | `#D50808` | `#D50808` | `vn.vtv.vtvgotv/com.vtvcab.activities.NewSplashActivity` |
 | waipu.tv | `waipu_tv` | `#885CA3` | `#885CA3` | `de.exaring.waipu/de.exaring.waipu.ui.login.LoginActivity` |
@@ -953,7 +953,7 @@ Source accents are retained in the catalog. **On dark** is the shared square/ban
 | Xumo Play | `xumo_play` | `#7C74FF` | `#7C74FF` | `com.xumo.xumo/com.xumo.xumo.activity.SplashActivity` |
 | Yacine TV | `yacine_tv` | `#E02828` | `#E02828` | `ver3.ycntivi.off/dev.google.yacinetv.ui.splash.SplashActivity`<br>`ver3.ycntivi.off/dev.google.yacinetv.tvui.splash.SplashActivity` |
 | Yandex Browser | `yandex_browser` | `#19D3C5` | `#19D3C5` | `com.yandex.browser.tv/com.yandex.browser.tv.tvactivity.TvActivity` |
-| Yettel Selfcare | `selfcare` | `#002340` | `#0061B0` | `bg.yettel.tv.selfcare/bg.yettel.tv.selfcare.MainActivity` |
+| Yettel Selfcare | `selfcare` | `#B0F800` | `#B0F800` | `bg.yettel.tv.selfcare/bg.yettel.tv.selfcare.MainActivity` |
 | Yettel TV | `yettel_tv` | `#B0F800` | `#B0F800` | `rs.yettel.tv/rs.yettel.tv.MainActivity` |
 | Yippee | `yippee` | `#F84818` | `#F84818` | `com.yippeeentertainment/tv.vhx.tv.home.TvHomeActivity` |
 | Yle Areena | `yle_areena` | `#10A8C0` | `#10A8C0` | `com.yle.webtv/fi.yle.areena.leanback.ui.LaunchActivity` |
@@ -971,7 +971,7 @@ Source accents are retained in the catalog. **On dark** is the shared square/ban
 | Zapp | `zapp` | `#DF0079` | `#DF0079` | `de.christinecoenen.code.zapp/de.christinecoenen.code.zapp.tv.main.MainActivity` |
 | Zattoo | `zattoo` | `#F26528` | `#F26528` | `com.zattoo.player/com.utv.MainActivity` |
 | ZDF | `zdf` | `#F87818` | `#F87818` | `com.zdf.android.mediathek/com.zdf.android.mediathek.tv.MainActivity` |
-| ZDFtivi | `twodf_tivi` | `#FF4D4D` | `#FF4D4D` | `de.zdf.mediathek.tivi/de.zdf.mediathek.tivi.ui.splash.SplashActivity` |
+| ZDFtivi | `twodf_tivi` | `#F87818` | `#F87818` | `de.zdf.mediathek.tivi/de.zdf.mediathek.tivi.ui.splash.SplashActivity` |
 | ZEE5 | `graymatrix` | `#FF5CA8` | `#FF5CA8` | `com.graymatrix.did/com.zee5.android.launch.presentation.AppStartActivity` |
 | Zen IPTV | `zeniptv` | `#7058F8` | `#7058F8` | `app.zeniptv.mobile/app.zeniptv.mobile.MainActivity` |
 | Zeus | `zeus` | `#FF0000` | `#FF0000` | `com.thezeusnetwork.www/tv.vhx.LauncherActivity`<br>`com.thezeusnetwork.www/tv.vhx.tv.home.TvHomeActivity` |

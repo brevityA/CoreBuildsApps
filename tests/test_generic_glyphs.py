@@ -25,13 +25,12 @@ class GenericGlyphTests(unittest.TestCase):
 
     def test_researched_function_examples(self):
         expected = {
-            "Angel Studios": "broadcast",
+            "CGTN Now": "broadcast",
             "VivaTV": "broadcast",
-            "Acontra Plus": "broadcast",
             "Aurora Store": "store",
-            "Laugh After Dark": "film",
+            "Rubika TV": "film",
             "Air Attack 2": "gaming",
-            "FIFA+": "sport",
+            "Sports Everywhere": "sport",
         }
         for name, family in expected.items():
             with self.subTest(name=name):

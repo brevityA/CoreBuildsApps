@@ -30,15 +30,15 @@
       "name": "Virgin Media Play",
       "drawable": "threeplayer",
       "color": "#ED0000",
-      "glyph": "broadcast_V",
+      "glyph": "threeplayer_wm",
       "components": [
         "com.axonista.threeplayer/com.simplestream.presentation.startup.StartUpActivity"
       ],
       "category": "APP",
       "color_source": "sampled from the official launcher icon (Google Play listing for com.axonista.threeplayer): dominant brand accent #ED0000 (2026-09-26)",
       "color_reviewed": "2026-09-26",
-      "mark": "VM",
-      "name_source": "app name from the Projectivy Icon Pack 1.1.9 artwork for com.axonista.threeplayer (github.com/SicMundus86/ProjectivyIconPack, used as reference only), which shows the Virgin Media Play logo for this package (2026-09-27)"
+      "name_source": "app name from the Projectivy Icon Pack 1.1.9 artwork for com.axonista.threeplayer (github.com/SicMundus86/ProjectivyIconPack, used as reference only), which shows the Virgin Media Play logo for this package (2026-09-27)",
+      "glyph_source": "wordmark-derived mark from the Google Play listing launcher icon for com.axonista.threeplayer (reference only): the logotype's cue 'VM' with its play, set in the pack's own single-stroke letters, not the vendor letterforms (2026-09-28)"
     },
     {
       "name": "7plus",
@@ -157,17 +157,14 @@
       "name": "Acontra Plus",
       "drawable": "acontraplus",
       "color": "#4FACFE",
-      "glyph": "broadcast_A",
-      "mark": "AC",
+      "glyph": "acontraplus_wm",
       "components": [
         "com.acontraplus.android/com.magine.android.mamo.ui.splash.SplashActivity"
       ],
       "category": "APP",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null,
-      "mark_source": "logotype letters from the official launcher icon (Google Play listing for com.acontraplus.android), which reads 'acontra+'; set in the pack's face, not traced (2026-09-26)",
-      "mark_style": "lower",
-      "mark_style_source": "the logotype on the official launcher icon (Google Play listing for com.acontraplus.android) is set lowercase ('acontra+')"
+      "glyph_source": "wordmark-derived mark from the Google Play listing launcher icon for com.acontraplus.android (reference only): the logotype's cue 'ac' with its plus, set in the pack's own single-stroke letters, not the vendor letterforms (2026-09-28)"
     },
     {
       "name": "Acorn TV",
@@ -274,16 +271,16 @@
     {
       "name": "Local 10+",
       "drawable": "aimitv",
-      "color": "#3090E0",
-      "glyph": "sport_L",
-      "mark": "L1",
+      "color": "#003070",
+      "glyph": "aimitv_wm",
       "components": [
         "com.aimitv.wplg.news/com.whiz.firetv.activity.SplashScreen"
       ],
       "category": "APP",
-      "color_source": "sampled from the Projectivy Icon Pack 1.1.9 artwork for com.aimitv.wplg.news (github.com/SicMundus86/ProjectivyIconPack, used as reference only): #3090E0 (2026-09-27)",
-      "color_reviewed": "2026-09-27",
-      "name_source": "app name from the Projectivy Icon Pack 1.1.9 artwork for com.aimitv.wplg.news (github.com/SicMundus86/ProjectivyIconPack, used as reference only), which shows the Local 10+ logo for this package (2026-09-27)"
+      "color_source": "sampled from the APKCombo mirror launcher icon for com.aimitv.wplg.news (reference only): #003070 (2026-09-28)",
+      "color_reviewed": "2026-09-28",
+      "name_source": "app name from the Projectivy Icon Pack 1.1.9 artwork for com.aimitv.wplg.news (github.com/SicMundus86/ProjectivyIconPack, used as reference only), which shows the Local 10+ logo for this package (2026-09-27)",
+      "glyph_source": "wordmark-derived mark from the APKCombo mirror launcher icon for com.aimitv.wplg.news (reference only): the logotype's cue '10' with its plus, set in the pack's own single-stroke letters, not the vendor letterforms (2026-09-28)"
     },
     {
       "name": "Air Attack 2",
@@ -444,17 +441,14 @@
       "name": "Amazon Freevee",
       "drawable": "livingroom",
       "color": "#D8FF03",
-      "glyph": "film_A",
-      "mark": "FV",
+      "glyph": "livingroom_wm",
       "components": [
         "com.imdbtv.livingroom/com.amazon.ignition.MainActivity"
       ],
       "category": "VOD",
       "color_source": "sampled from the official launcher icon (APKCombo mirror of the Google Play listing for com.imdbtv.livingroom): dominant brand accent #D8FF03 (2026-09-26)",
       "color_reviewed": "2026-09-26",
-      "mark_source": "logotype letters from the official launcher icon (APKCombo mirror of the Google Play listing for com.imdbtv.livingroom), which reads 'fv'; set in the pack's face, not traced (2026-09-26)",
-      "mark_style": "lower",
-      "mark_style_source": "the logotype on the official launcher icon (APKCombo mirror of the Google Play listing for com.imdbtv.livingroom) is set lowercase ('fv')"
+      "glyph_source": "wordmark-derived mark from the APKCombo mirror launcher icon for com.imdbtv.livingroom (reference only): the logotype's cue 'fv', set in the pack's own single-stroke letters, not the vendor letterforms (2026-09-28)"
     },
     {
       "name": "Amazon Music",
@@ -537,14 +531,14 @@
       "name": "Angel Studios",
       "drawable": "angel",
       "color": "#4FACFE",
-      "glyph": "broadcast_A",
-      "mark": "AS",
+      "glyph": "angel_wm",
       "components": [
         "com.angel.tv/com.angel.tv.MainActivity"
       ],
       "category": "APP",
       "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_reviewed": null,
+      "glyph_source": "wordmark-derived mark from the Google Play listing launcher icon for com.angel.tv (reference only): the logotype's cue 'ANGEL', set in the pack's own single-stroke letters, not the vendor letterforms (2026-09-28)"
     },
     {
       "name": "AniLab",
@@ -722,15 +716,15 @@
       "name": "myTuner Radio",
       "drawable": "appgeneration",
       "color": "#AE262C",
-      "glyph": "music_M",
-      "mark": "MR",
+      "glyph": "mytuner_radio",
       "components": [
         "com.appgeneration.itunerfree/com.appgeneration.mytunertv.activities.TvActivity"
       ],
       "category": "MUSIC",
       "color_source": "sampled from the official launcher icon (Google Play listing for com.appgeneration.itunerfree): dominant brand accent #AE262C (2026-09-26)",
       "color_reviewed": "2026-09-26",
-      "name_source": "app name from the Projectivy Icon Pack 1.1.9 artwork for com.appgeneration.itunerfree (github.com/SicMundus86/ProjectivyIconPack, used as reference only), which shows the myTuner Radio logo for this package (2026-09-27)"
+      "name_source": "app name from the Projectivy Icon Pack 1.1.9 artwork for com.appgeneration.itunerfree (github.com/SicMundus86/ProjectivyIconPack, used as reference only), which shows the myTuner Radio logo for this package (2026-09-27)",
+      "glyph_source": "brand-informed redraw of the Google Play listing launcher icon for com.appgeneration.itunerfree (reference only); Core monoline geometry, not a trace (2026-09-28)"
     },
     {
       "name": "App Notifier",
@@ -1216,14 +1210,14 @@
       "name": "BODi",
       "drawable": "beachbody",
       "color": "#173078",
-      "glyph": "film_B",
-      "mark": "BO",
+      "glyph": "beachbody_wm",
       "components": [
         "com.beachbody.bod/com.beachbody.bodfiretv.activities.SplashActivity"
       ],
       "category": "VOD",
       "color_source": "sampled from the official launcher icon (Google Play listing for com.beachbody.bod): dominant brand accent #173078 (2026-09-26)",
-      "color_reviewed": "2026-09-26"
+      "color_reviewed": "2026-09-26",
+      "glyph_source": "wordmark-derived mark from the Google Play listing launcher icon for com.beachbody.bod (reference only): the logotype's cue 'BO Di', set in the pack's own single-stroke letters, not the vendor letterforms (2026-09-28)"
     },
     {
       "name": "Boosteroid",
@@ -1281,15 +1275,15 @@
       "name": "Radon Tunes",
       "drawable": "brkchen",
       "color": "#F84850",
-      "glyph": "music_R",
-      "mark": "RT",
+      "glyph": "radon_note",
       "components": [
         "com.brkchen.music/com.brkchen.music.MainActivity"
       ],
       "category": "MUSIC",
       "color_source": "sampled from the Projectivy Icon Pack 1.1.9 artwork for com.brkchen.music (github.com/SicMundus86/ProjectivyIconPack, used as reference only): #F84850 (2026-09-27)",
       "color_reviewed": "2026-09-27",
-      "name_source": "app name from the Projectivy Icon Pack 1.1.9 artwork for com.brkchen.music (github.com/SicMundus86/ProjectivyIconPack, used as reference only), which shows the Radon Tunes logo for this package (2026-09-27)"
+      "name_source": "app name from the Projectivy Icon Pack 1.1.9 artwork for com.brkchen.music (github.com/SicMundus86/ProjectivyIconPack, used as reference only), which shows the Radon Tunes logo for this package (2026-09-27)",
+      "glyph_source": "brand-informed redraw of the Google Play listing launcher icon for com.brkchen.music (reference only); Core monoline geometry, not a trace (2026-09-28)"
     },
     {
       "name": "Brollie",
@@ -1423,18 +1417,15 @@
       "name": "Allente",
       "drawable": "canaldigital",
       "color": "#FD6100",
-      "glyph": "broadcast_C",
-      "mark": "ALL",
+      "glyph": "canaldigital_wm",
       "components": [
         "com.canaldigital.go/com.rdyrn.MainActivity"
       ],
       "category": "APP",
       "color_source": "sampled from the official launcher icon (Google Play listing for com.canaldigital.go): dominant brand accent #FD6100 (2026-09-26)",
       "color_reviewed": "2026-09-26",
-      "mark_source": "logotype letters from the official launcher icon (Google Play listing for com.canaldigital.go), which reads 'all'; set in the pack's face, not traced (2026-09-26)",
-      "mark_style": "lower",
-      "mark_style_source": "the logotype on the official launcher icon (Google Play listing for com.canaldigital.go) is set lowercase ('all')",
-      "name_source": "app name from the Projectivy Icon Pack 1.1.9 artwork for com.canaldigital.go (github.com/SicMundus86/ProjectivyIconPack, used as reference only), which shows the Allente logo for this package (2026-09-27)"
+      "name_source": "app name from the Projectivy Icon Pack 1.1.9 artwork for com.canaldigital.go (github.com/SicMundus86/ProjectivyIconPack, used as reference only), which shows the Allente logo for this package (2026-09-27)",
+      "glyph_source": "wordmark-derived mark from the Google Play listing launcher icon for com.canaldigital.go (reference only): the logotype's cue 'all', set in the pack's own single-stroke letters, not the vendor letterforms (2026-09-28)"
     },
     {
       "name": "CANAL+",
@@ -1561,15 +1552,15 @@
     {
       "name": "Channels",
       "drawable": "getchannels",
-      "color": "#E6EDF3",
-      "glyph": "broadcast_C",
-      "mark": "CH",
+      "color": "#7038A8",
+      "glyph": "channels_set",
       "components": [
         "com.getchannels.dvr.app/com.getchannels.android.MainActivity"
       ],
       "category": "APP",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled from the Google Play listing launcher icon for com.getchannels.dvr.app (reference only): #7038A8 (2026-09-28)",
+      "color_reviewed": "2026-09-28",
+      "glyph_source": "brand-informed redraw of the Google Play listing launcher icon for com.getchannels.dvr.app (reference only); Core monoline geometry, not a trace (2026-09-28)"
     },
     {
       "name": "Chaupal",
@@ -1668,14 +1659,14 @@
       "name": "Citytv+",
       "drawable": "citytvplus",
       "color": "#003245",
-      "glyph": "broadcast_C",
-      "mark": "CI",
+      "glyph": "citytvplus_wm",
       "components": [
         "com.rogers.citytvplus/com.rogers.citytvplus.presentation.LauncherActivity"
       ],
       "category": "APP",
       "color_source": "sampled from the official launcher icon (Google Play listing for com.rogers.citytvplus): dominant brand accent #003245 (2026-09-26)",
-      "color_reviewed": "2026-09-26"
+      "color_reviewed": "2026-09-26",
+      "glyph_source": "wordmark-derived mark from the Google Play listing launcher icon for com.rogers.citytvplus (reference only): the logotype's cue 'city' with its plus, set in the pack's own single-stroke letters, not the vendor letterforms (2026-09-28)"
     },
     {
       "name": "Clash Meta",
@@ -1977,29 +1968,29 @@
     {
       "name": "CTV",
       "drawable": "ctvgo",
-      "color": "#FFB020",
-      "glyph": "broadcast_C",
-      "mark": "CT",
+      "color": "#0058F8",
+      "glyph": "ctvgo_wm",
       "components": [
         "ca.ctv.ctvgo/axis.androidtv.sdk.app.MainActivity"
       ],
       "category": "APP",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled from the APKCombo mirror launcher icon for ca.ctv.ctvgo (reference only): #0058F8 (2026-09-28)",
+      "color_reviewed": "2026-09-28",
+      "glyph_source": "wordmark-derived mark from the APKCombo mirror launcher icon for ca.ctv.ctvgo (reference only): the logotype's cue 'CTV' with its ring, set in the pack's own single-stroke letters, not the vendor letterforms (2026-09-28)"
     },
     {
       "name": "CUE Broadcast",
       "drawable": "cuenew2",
       "color": "#1982C4",
-      "glyph": "broadcast_C",
-      "mark": "CB",
+      "glyph": "cuenew2_wm",
       "components": [
         "com.cuenew2/com.pythonott.MainActivity"
       ],
       "category": "APP",
       "color_source": "brand reference (pre-provenance, unverified)",
       "color_reviewed": null,
-      "name_source": "app name from the Projectivy Icon Pack 1.1.9 artwork for com.cuenew2 (github.com/SicMundus86/ProjectivyIconPack, used as reference only), which shows the CUE Broadcast logo for this package (2026-09-27)"
+      "name_source": "app name from the Projectivy Icon Pack 1.1.9 artwork for com.cuenew2 (github.com/SicMundus86/ProjectivyIconPack, used as reference only), which shows the CUE Broadcast logo for this package (2026-09-27)",
+      "glyph_source": "wordmark-derived mark from the Google Play listing launcher icon for com.cuenew2 (reference only): the logotype's cue 'CUE', set in the pack's own single-stroke letters, not the vendor letterforms (2026-09-28)"
     },
     {
       "name": "Curiosity Stream",
@@ -2071,8 +2062,7 @@
       "name": "DIG",
       "drawable": "digdroid",
       "color": "#90F08A",
-      "glyph": "gaming_D",
-      "mark": "DIG",
+      "glyph": "digdroid_wm",
       "components": [
         "com.digdroid.alman.dig/com.digdroid.alman.dig.MainActivity",
         "com.digdroid.alman.dig/com.digdroid.alman.dig.TVActivity"
@@ -2080,7 +2070,7 @@
       "category": "APP",
       "color_source": "sampled from the official launcher icon (APKCombo mirror of the Google Play listing for com.digdroid.alman.dig): dominant brand accent #90F08A (2026-09-26)",
       "color_reviewed": "2026-09-26",
-      "mark_source": "logotype letters from the official launcher icon (APKCombo mirror of the Google Play listing for com.digdroid.alman.dig), which reads 'DIG'; set in the pack's face, not traced (2026-09-26)"
+      "glyph_source": "wordmark-derived mark from the APKCombo mirror launcher icon for com.digdroid.alman.dig (reference only): the logotype's cue 'DIG', set in the pack's own single-stroke letters, not the vendor letterforms (2026-09-28)"
     },
     {
       "name": "Daijishou",
@@ -2162,15 +2152,15 @@
       "name": "NexTV",
       "drawable": "dcsapp",
       "color": "#9088F0",
-      "glyph": "broadcast_N",
-      "mark": "NE",
+      "glyph": "dcsapp_wm",
       "components": [
         "com.dcsapp.iptv/fr.nextv.atv.foundation.TvActivity"
       ],
       "category": "LIVE",
       "color_source": "sampled from the Projectivy Icon Pack 1.1.9 artwork for com.dcsapp.iptv (github.com/SicMundus86/ProjectivyIconPack, used as reference only): #9088F0 (2026-09-27)",
       "color_reviewed": "2026-09-27",
-      "name_source": "app name from the Projectivy Icon Pack 1.1.9 artwork for com.dcsapp.iptv (github.com/SicMundus86/ProjectivyIconPack, used as reference only), which shows the NexTV logo for this package (2026-09-27)"
+      "name_source": "app name from the Projectivy Icon Pack 1.1.9 artwork for com.dcsapp.iptv (github.com/SicMundus86/ProjectivyIconPack, used as reference only), which shows the NexTV logo for this package (2026-09-27)",
+      "glyph_source": "wordmark-derived mark from the Google Play listing launcher icon for com.dcsapp.iptv (reference only): the logotype's cue 'Nex', set in the pack's own single-stroke letters, not the vendor letterforms (2026-09-28)"
     },
     {
       "name": "Debrid Em All",
@@ -2378,15 +2368,15 @@
     {
       "name": "DistroTV",
       "drawable": "distroscale",
-      "color": "#FF5CA8",
-      "glyph": "broadcast_D",
-      "mark": "DI",
+      "color": "#28C0B8",
+      "glyph": "distroscale_wm",
       "components": [
         "com.distroscale.tv.android/com.distroscale.tv.firetv.MainActivity"
       ],
       "category": "APP",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled from the APKCombo mirror launcher icon for com.distroscale.tv.android (reference only): #28C0B8 (2026-09-28)",
+      "color_reviewed": "2026-09-28",
+      "glyph_source": "wordmark-derived mark from the APKCombo mirror launcher icon for com.distroscale.tv.android (reference only): the logotype's cue 'DTV' with its frame, set in the pack's own single-stroke letters, not the vendor letterforms (2026-09-28)"
     },
     {
       "name": "DixMax",
@@ -2408,14 +2398,14 @@
       "name": "DNS Changer",
       "drawable": "dnschanger",
       "color": "#7C74FF",
-      "glyph": "tool_D",
-      "mark": "DC",
+      "glyph": "dnschanger_wm",
       "components": [
         "com.aykutcevik.dnschanger/com.aykutcevik.dnssetter.Activities.MainActivity"
       ],
       "category": "APP",
       "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_reviewed": null,
+      "glyph_source": "wordmark-derived mark from the Google Play listing launcher icon for com.aykutcevik.dnschanger (reference only): the logotype's cue 'DNS', set in the pack's own single-stroke letters, not the vendor letterforms (2026-09-28)"
     },
     {
       "name": "Dodo Stream",
@@ -2708,15 +2698,15 @@
       "name": "DStv Stream",
       "drawable": "dstvmobile",
       "color": "#1919BA",
-      "glyph": "broadcast_D",
-      "mark": "DS",
+      "glyph": "dstvmobile_wm",
       "components": [
         "com.dstvmobile.android/com.dstv.androidtv.RootActivity"
       ],
       "category": "APP",
       "color_source": "sampled from the official launcher icon (Google Play listing for com.dstvmobile.android): dominant brand accent #1919BA (2026-09-26)",
       "color_reviewed": "2026-09-26",
-      "name_source": "app name from the Projectivy Icon Pack 1.1.9 artwork for com.dstvmobile.android (github.com/SicMundus86/ProjectivyIconPack, used as reference only), which shows the DStv Stream logo for this package (2026-09-27)"
+      "name_source": "app name from the Projectivy Icon Pack 1.1.9 artwork for com.dstvmobile.android (github.com/SicMundus86/ProjectivyIconPack, used as reference only), which shows the DStv Stream logo for this package (2026-09-27)",
+      "glyph_source": "wordmark-derived mark from the Google Play listing launcher icon for com.dstvmobile.android (reference only): the logotype's cue 'DStv', set in the pack's own single-stroke letters, not the vendor letterforms (2026-09-28)"
     },
     {
       "name": "DS video",
@@ -2781,15 +2771,15 @@
     {
       "name": "EarthCam",
       "drawable": "earthcamtv",
-      "color": "#1982C4",
-      "glyph": "broadcast_E",
-      "mark": "EA",
+      "color": "#7898C8",
+      "glyph": "earthcamtv_wm",
       "components": [
         "com.earthcam.earthcamtv.android/com.earthcam.earthcamtv.mainmvp.MainActivity"
       ],
       "category": "APP",
-      "color_source": "brand reference (pre-provenance, unverified)",
-      "color_reviewed": null
+      "color_source": "sampled from the Google Play listing launcher icon for com.earthcam.earthcamtv.android (reference only): #7898C8 (2026-09-28)",
+      "color_reviewed": "2026-09-28",
+      "glyph_source": "wordmark-derived mark from the Google Play listing launcher icon for com.earthcam.earthcamtv.android (reference only): the logotype's cue 'EC' with its ring, set in the pack's own single-stroke letters, not the vendor letterforms (2026-09-28)"
     },
     {
       "name": "EchoGram",
@@ -2868,16 +2858,16 @@
     {
       "name": "EPIC ON",
       "drawable": "epicchannel",
-      "color": "#F6643A",
-      "glyph": "broadcast_E",
-      "mark": "EO",
+      "color": "#F05068",
+      "glyph": "epicchannel_wm",
       "components": [
         "com.epicchannel.epicon/com.epicchannel.epicon.ui.launcher.activity.LauncherActivity"
       ],
       "category": "APP",
-      "color_source": "sampled from the official launcher icon (Google Play listing for com.epicchannel.epicon): dominant brand accent #F6643A (2026-09-26)",
-      "color_reviewed": "2026-09-26",
-      "name_source": "app name from the Projectivy Icon Pack 1.1.9 artwork for com.epicchannel.epicon (github.com/SicMundus86/ProjectivyIconPack, used as reference only), which shows the EPIC ON logo for this package (2026-09-27)"
+      "color_source": "sampled from the Google Play listing launcher icon for com.epicchannel.epicon (reference only): #F05068 (2026-09-28)",
+      "color_reviewed": "2026-09-28",
+      "name_source": "app name from the Projectivy Icon Pack 1.1.9 artwork for com.epicchannel.epicon (github.com/SicMundus86/ProjectivyIconPack, used as reference only), which shows the EPIC ON logo for this package (2026-09-27)",
+      "glyph_source": "wordmark-derived mark from the Google Play listing launcher icon for com.epicchannel.epicon (reference only): the logotype's cue 'EPIC' with its under, set in the pack's own single-stroke letters, not the vendor letterforms (2026-09-28)"
     },
     {
       "name": "ePSXe",
@@ -2896,17 +2886,14 @@
       "name": "Eros Now",
       "drawable": "eros",
       "color": "#0D96D4",
-      "glyph": "broadcast_E",
-      "mark": "ER",
+      "glyph": "eros_wm",
       "components": [
         "com.eros.now/com.eros.now.launchscreen.SplashActivity"
       ],
       "category": "APP",
       "color_source": "sampled from the official launcher icon (Google Play listing for com.eros.now): dominant brand accent #0D96D4 (2026-09-26)",
       "color_reviewed": "2026-09-26",
-      "mark_style": "lower",
-      "mark_style_source": "the logotype on the official launcher icon (Google Play listing for com.eros.now) is set lowercase ('eros now')",
-      "mark_source": "logotype letters from the official launcher icon (Google Play listing for com.eros.now), which reads 'eros now': the first two, because the whole logotype sets under the pack's 96px legibility floor; set in the pack's face, not traced (2026-09-26)"
+      "glyph_source": "wordmark-derived mark from the Google Play listing launcher icon for com.eros.now (reference only): the logotype's cue 'EN' with its ring, set in the pack's own single-stroke letters, not the vendor letterforms (2026-09-28)"
     },
     {
       "name": "ERTFLIX",
@@ -3129,15 +3116,15 @@
     {
       "name": "FC Porto TV",
       "drawable": "fcportotv",
-      "color": "#1975BC",
-      "glyph": "broadcast_F",
-      "mark": "FP",
+      "color": "#28A8E0",
+      "glyph": "fcportotv_wm",
       "components": [
         "com.fcp.fcportotv/com.fcp.fcportotv.SplashActivity"
       ],
       "category": "APP",
-      "color_source": "sampled from the official launcher icon (Google Play listing for com.fcp.fcportotv): dominant brand accent #1975BC (2026-09-26)",
-      "color_reviewed": "2026-09-26"
+      "color_source": "sampled from the Google Play listing launcher icon for com.fcp.fcportotv (reference only): #28A8E0 (2026-09-28)",
+      "color_reviewed": "2026-09-28",
+      "glyph_source": "wordmark-derived mark from the Google Play listing launcher icon for com.fcp.fcportotv (reference only): the logotype's cue 'FCP' with its dot, set in the pack's own single-stroke letters, not the vendor letterforms (2026-09-28)"
     },
     {
       "name": "FCTV33",
@@ -3198,15 +3185,15 @@
     {
       "name": "FIFA+",
       "drawable": "fifa",
-      "color": "#326295",
-      "glyph": "sport_F",
-      "mark": "FI",
+      "color": "#00F858",
+      "glyph": "fifa_wm",
       "components": [
         "com.fifa.plus.android/com.fifa.tv.FifaTvSplashActivity"
       ],
       "category": "SPORT",
-      "color_source": "simple-icons reference (FIFA brand blue)",
-      "color_reviewed": "2026-09-08"
+      "color_source": "sampled from the APKCombo mirror launcher icon for com.fifa.plus.android (reference only): #00F858 (2026-09-28)",
+      "color_reviewed": "2026-09-28",
+      "glyph_source": "wordmark-derived mark from the APKCombo mirror launcher icon for com.fifa.plus.android (reference only): the logotype's cue 'FIFA' with its plus, set in the pack's own single-stroke letters, not the vendor letterforms (2026-09-28)"
     },
     {
       "name": "File Commander",
@@ -3326,16 +3313,16 @@
     {
       "name": "Flixoid",
       "drawable": "findlink",
-      "color": "#38D880",
-      "glyph": "broadcast_F",
-      "mark": "FL",
+      "color": "#F85818",
+      "glyph": "findlink_wm",
       "components": [
         "com.findlink/com.findlink.ActivitySplash"
       ],
       "category": "APP",
-      "color_source": "sampled from the Projectivy Icon Pack 1.1.9 artwork for com.findlink (github.com/SicMundus86/ProjectivyIconPack, used as reference only): #38D880 (2026-09-27)",
-      "color_reviewed": "2026-09-27",
-      "name_source": "app name from the Projectivy Icon Pack 1.1.9 artwork for com.findlink (github.com/SicMundus86/ProjectivyIconPack, used as reference only), which shows the Flixoid logo for this package (2026-09-27)"
+      "color_source": "sampled from the store-listing launcher icon for com.findlink (reference only): #F85818 (2026-09-28)",
+      "color_reviewed": "2026-09-28",
+      "name_source": "app name from the Projectivy Icon Pack 1.1.9 artwork for com.findlink (github.com/SicMundus86/ProjectivyIconPack, used as reference only), which shows the Flixoid logo for this package (2026-09-27)",
+      "glyph_source": "wordmark-derived mark from the store-listing launcher icon for com.findlink (reference only): the logotype's cue 'FLX', set in the pack's own single-stroke letters, not the vendor letterforms (2026-09-28)"
     },
     {
       "name": "Firedown",
@@ -3399,14 +3386,14 @@
       "name": "Fizz TV",
       "drawable": "fizz_app",
       "color": "#00D672",
-      "glyph": "broadcast_F",
-      "mark": "FT",
+      "glyph": "fizz_app_wm",
       "components": [
         "ca.fizz_app.tv/ca.vmedia.phones_tablets_ui.activity.MainActivity"
       ],
       "category": "APP",
       "color_source": "sampled from the official launcher icon (Google Play listing for ca.fizz_app.tv): dominant brand accent #00D672 (2026-09-26)",
-      "color_reviewed": "2026-09-26"
+      "color_reviewed": "2026-09-26",
+      "glyph_source": "wordmark-derived mark from the Google Play listing launcher icon for ca.fizz_app.tv (reference only): the logotype's cue 'fizz', set in the pack's own single-stroke letters, not the vendor letterforms (2026-09-28)"
     },
     {
       "name": "Fladder",
@@ -3652,14 +3639,14 @@
       "name": "Fox Nation",
       "drawable": "foxnation",
       "color": "#003580",
-      "glyph": "broadcast_F",
+      "glyph": "foxnation_wm",
       "components": [
         "com.fng.foxnation/com.fox.app.MainActivity"
       ],
       "category": "APP",
       "color_source": "brand reference (pre-provenance, unverified)",
       "color_reviewed": null,
-      "mark": "FN"
+      "glyph_source": "wordmark-derived mark from the Google Play listing launcher icon for com.fng.foxnation (reference only): the logotype's cue 'FOX' with its under, set in the pack's own single-stroke letters, not the vendor letterforms (2026-09-28)"
     },
     {
       "name": "Fox News",
@@ -3677,14 +3664,14 @@
       "name": "FOX One",
       "drawable": "foxone",
       "color": "#E6EDF3",
-      "glyph": "broadcast_F",
-      "mark": "FO",
+      "glyph": "foxone_wm",
       "components": [
         "com.fox.foxone/com.app.android.MainActivity"
       ],
       "category": "APP",
       "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_reviewed": null,
+      "glyph_source": "wordmark-derived mark from the Google Play listing launcher icon for com.fox.foxone (reference only): the logotype's cue 'FOX ONE', set in the pack's own single-stroke letters, not the vendor letterforms (2026-09-28)"
     },
     {
       "name": "Fox Sports",
@@ -3870,16 +3857,15 @@
       "name": "The CW",
       "drawable": "fullepisodes",
       "color": "#FF4500",
-      "glyph": "broadcast_F",
-      "mark": "CW",
+      "glyph": "fullepisodes_wm",
       "components": [
         "com.cw.fullepisodes.android/com.cw.fullepisodes.android.TvActivity"
       ],
       "category": "APP",
       "color_source": "sampled from the official launcher icon (Google Play listing for com.cw.fullepisodes.android): dominant brand accent #FF4500 (2026-09-26)",
       "color_reviewed": "2026-09-26",
-      "mark_source": "logotype letters from the official launcher icon (Google Play listing for com.cw.fullepisodes.android), which reads 'CW'; set in the pack's face, not traced (2026-09-26)",
-      "name_source": "app name from the Projectivy Icon Pack 1.1.9 artwork for com.cw.fullepisodes.android (github.com/SicMundus86/ProjectivyIconPack, used as reference only), which shows the The CW logo for this package (2026-09-27)"
+      "name_source": "app name from the Projectivy Icon Pack 1.1.9 artwork for com.cw.fullepisodes.android (github.com/SicMundus86/ProjectivyIconPack, used as reference only), which shows the The CW logo for this package (2026-09-27)",
+      "glyph_source": "wordmark-derived mark from the Google Play listing launcher icon for com.cw.fullepisodes.android (reference only): the logotype's cue 'CW', set in the pack's own single-stroke letters, not the vendor letterforms (2026-09-28)"
     },
     {
       "name": "FX File Explorer",
@@ -4149,15 +4135,15 @@
     {
       "name": "Great American Pure Flix",
       "drawable": "great",
-      "color": "#280653",
-      "glyph": "broadcast_G",
-      "mark": "GA",
+      "color": "#D0A8E8",
+      "glyph": "great_wm",
       "components": [
         "com.great.tv.android/tv.accedo.one.app.bootstrap.BootstrapActivity"
       ],
       "category": "APP",
-      "color_source": "sampled from the official launcher icon (Google Play listing for com.great.tv.android): dominant brand accent #280653 (2026-09-26)",
-      "color_reviewed": "2026-09-26"
+      "color_source": "sampled from the Google Play listing launcher icon for com.great.tv.android (reference only): #D0A8E8 (2026-09-28)",
+      "color_reviewed": "2026-09-28",
+      "glyph_source": "wordmark-derived mark from the Google Play listing launcher icon for com.great.tv.android (reference only): the logotype's cue 'GREAT', set in the pack's own single-stroke letters, not the vendor letterforms (2026-09-28)"
     },
     {
       "name": "GT Share",
@@ -4175,16 +4161,16 @@
     {
       "name": "FilmPlus",
       "drawable": "guideplus",
-      "color": "#19D3C5",
-      "glyph": "broadcast_F",
-      "mark": "FI",
+      "color": "#F8C000",
+      "glyph": "filmplus_cloud",
       "components": [
         "com.guideplus.co/com.guideplus.co.SplashActivity"
       ],
       "category": "APP",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null,
-      "name_source": "app name from the Projectivy Icon Pack 1.1.9 artwork for com.guideplus.co (github.com/SicMundus86/ProjectivyIconPack, used as reference only), which shows the FilmPlus logo for this package (2026-09-27)"
+      "color_source": "sampled from the APKCombo mirror launcher icon for com.guideplus.co (reference only): #F8C000 (2026-09-28)",
+      "color_reviewed": "2026-09-28",
+      "name_source": "app name from the Projectivy Icon Pack 1.1.9 artwork for com.guideplus.co (github.com/SicMundus86/ProjectivyIconPack, used as reference only), which shows the FilmPlus logo for this package (2026-09-27)",
+      "glyph_source": "brand-informed redraw of the APKCombo mirror launcher icon for com.guideplus.co (reference only); Core monoline geometry, not a trace (2026-09-28)"
     },
     {
       "name": "Gymondo",
@@ -4344,28 +4330,27 @@
       "name": "HEI Network",
       "drawable": "heinetworktv",
       "color": "#DA3430",
-      "glyph": "broadcast_H",
-      "mark": "HEI",
+      "glyph": "heinetworktv_wm",
       "components": [
         "com.heinetwork.HEINetworkTV/com.heinetwork.HEINetworkTV.MainActivity"
       ],
       "category": "APP",
       "color_source": "sampled from the official launcher icon (Google Play listing for com.heinetwork.HEINetworkTV): dominant brand accent #DA3430 (2026-09-26)",
       "color_reviewed": "2026-09-26",
-      "mark_source": "logotype letters from the official launcher icon (Google Play listing for com.heinetwork.HEINetworkTV), which reads 'HEI'; set in the pack's face, not traced (2026-09-26)"
+      "glyph_source": "wordmark-derived mark from the Google Play listing launcher icon for com.heinetwork.HEINetworkTV (reference only): the logotype's cue 'HEI', set in the pack's own single-stroke letters, not the vendor letterforms (2026-09-28)"
     },
     {
       "name": "HGTV",
       "drawable": "watcher",
-      "color": "#34EB7A",
-      "glyph": "film_H",
-      "mark": "HG",
+      "color": "#00A8C0",
+      "glyph": "watcher_wm",
       "components": [
         "com.hgtv.watcher/com.discovery.tve.presentation.activities.SplashActivity"
       ],
       "category": "VOD",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled from the Google Play listing launcher icon for com.hgtv.watcher (reference only): #00A8C0 (2026-09-28)",
+      "color_reviewed": "2026-09-28",
+      "glyph_source": "wordmark-derived mark from the Google Play listing launcher icon for com.hgtv.watcher (reference only): the logotype's cue 'HG TV', set in the pack's own single-stroke letters, not the vendor letterforms (2026-09-28)"
     },
     {
       "name": "Hi Browser",
@@ -4685,15 +4670,15 @@
       "name": "Rogers Xfinity Stream",
       "drawable": "ignitetv",
       "color": "#DB291D",
-      "glyph": "broadcast_R",
-      "mark": "RX",
+      "glyph": "ignitetv_wm",
       "components": [
         "com.rogers.ignitetv/com.xfinity.common.view.LaunchActivity"
       ],
       "category": "APP",
       "color_source": "sampled from the official launcher icon (Google Play listing for com.rogers.ignitetv): dominant brand accent #DB291D (2026-09-26)",
       "color_reviewed": "2026-09-26",
-      "name_source": "app name from the Projectivy Icon Pack 1.1.9 artwork for com.rogers.ignitetv (github.com/SicMundus86/ProjectivyIconPack, used as reference only), which shows the Rogers Xfinity Stream logo for this package (2026-09-27)"
+      "name_source": "app name from the Projectivy Icon Pack 1.1.9 artwork for com.rogers.ignitetv (github.com/SicMundus86/ProjectivyIconPack, used as reference only), which shows the Rogers Xfinity Stream logo for this package (2026-09-27)",
+      "glyph_source": "wordmark-derived mark from the Google Play listing launcher icon for com.rogers.ignitetv (reference only): the logotype's cue 'R' with its play, set in the pack's own single-stroke letters, not the vendor letterforms (2026-09-28)"
     },
     {
       "name": "iHeartRadio",
@@ -4724,15 +4709,15 @@
     {
       "name": "iMPlayer",
       "drawable": "myiptvonline",
-      "color": "#A366FF",
-      "glyph": "broadcast_I",
-      "mark": "IM",
+      "color": "#C81028",
+      "glyph": "myiptvonline_wm",
       "components": [
         "com.myiptvonline.implayer/com.myiptvonline.implayer.a"
       ],
       "category": "LIVE",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled from the Google Play listing launcher icon for com.myiptvonline.implayer (reference only): #C81028 (2026-09-28)",
+      "color_reviewed": "2026-09-28",
+      "glyph_source": "wordmark-derived mark from the Google Play listing launcher icon for com.myiptvonline.implayer (reference only): the logotype's cue 'iM', set in the pack's own single-stroke letters, not the vendor letterforms (2026-09-28)"
     },
     {
       "name": "Instagram",
@@ -4844,15 +4829,15 @@
       "name": "Dimplay",
       "drawable": "iptv3u",
       "color": "#08B878",
-      "glyph": "broadcast_D",
-      "mark": "DI",
+      "glyph": "dimplay_layers",
       "components": [
         "com.iptv3u/app.dimplay.activities.SplashActivity"
       ],
       "category": "LIVE",
       "color_source": "sampled from the Projectivy Icon Pack 1.1.9 artwork for com.iptv3u (github.com/SicMundus86/ProjectivyIconPack, used as reference only): #08B878 (2026-09-27)",
       "color_reviewed": "2026-09-27",
-      "name_source": "app name from the Projectivy Icon Pack 1.1.9 artwork for com.iptv3u (github.com/SicMundus86/ProjectivyIconPack, used as reference only), which shows the Dimplay logo for this package (2026-09-27)"
+      "name_source": "app name from the Projectivy Icon Pack 1.1.9 artwork for com.iptv3u (github.com/SicMundus86/ProjectivyIconPack, used as reference only), which shows the Dimplay logo for this package (2026-09-27)",
+      "glyph_source": "brand-informed redraw of the Google Play listing launcher icon for com.iptv3u (reference only); Core monoline geometry, not a trace (2026-09-28)"
     },
     {
       "name": "IPVanish",
@@ -5118,15 +5103,15 @@
       "name": "One TV",
       "drawable": "androidtv_7",
       "color": "#FB0000",
-      "glyph": "broadcast_O",
-      "mark": "OT",
+      "glyph": "androidtv_7_wm",
       "components": [
         "com.kamal.androidtv/com.kamal.androidtv.App"
       ],
       "category": "APP",
       "color_source": "sampled from the official launcher icon (Google Play listing for com.kamal.androidtv): dominant brand accent #FB0000 (2026-09-26)",
       "color_reviewed": "2026-09-26",
-      "name_source": "app name from the Projectivy Icon Pack 1.1.9 artwork for com.kamal.androidtv (github.com/SicMundus86/ProjectivyIconPack, used as reference only), which shows the One TV logo for this package (2026-09-27)"
+      "name_source": "app name from the Projectivy Icon Pack 1.1.9 artwork for com.kamal.androidtv (github.com/SicMundus86/ProjectivyIconPack, used as reference only), which shows the One TV logo for this package (2026-09-27)",
+      "glyph_source": "wordmark-derived mark from the Google Play listing launcher icon for com.kamal.androidtv (reference only): the logotype's cue 'OE' with its ring, set in the pack's own single-stroke letters, not the vendor letterforms (2026-09-28)"
     },
     {
       "name": "Kanopy",
@@ -5144,15 +5129,15 @@
       "name": "KaraFun",
       "drawable": "kfandroid",
       "color": "#D5167A",
-      "glyph": "music_K",
-      "mark": "KA",
+      "glyph": "kfandroid_wm",
       "components": [
         "com.recisio.kfandroid/com.recisio.kfandroid.start.StartActivity"
       ],
       "category": "MUSIC",
       "color_source": "sampled from the official launcher icon (Google Play listing for com.recisio.kfandroid): dominant brand accent #D5167A (2026-09-26)",
       "color_reviewed": "2026-09-26",
-      "name_source": "app name from the Projectivy Icon Pack 1.1.9 artwork for com.recisio.kfandroid (github.com/SicMundus86/ProjectivyIconPack, used as reference only), which shows the KaraFun logo for this package (2026-09-27)"
+      "name_source": "app name from the Projectivy Icon Pack 1.1.9 artwork for com.recisio.kfandroid (github.com/SicMundus86/ProjectivyIconPack, used as reference only), which shows the KaraFun logo for this package (2026-09-27)",
+      "glyph_source": "wordmark-derived mark from the Google Play listing launcher icon for com.recisio.kfandroid (reference only): the logotype's cue 'K', set in the pack's own single-stroke letters, not the vendor letterforms (2026-09-28)"
     },
     {
       "name": "Kayo",
@@ -5204,14 +5189,14 @@
       "name": "Kemo Stream",
       "drawable": "streamingkemo",
       "color": "#7C74FF",
-      "glyph": "broadcast_S",
-      "mark": "KS",
+      "glyph": "streamingkemo_wm",
       "components": [
         "com.kemoiptv.streamingkemo/com.kemoiptv.streamingkemo.MainActivity"
       ],
       "category": "LIVE",
       "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_reviewed": null,
+      "glyph_source": "wordmark-derived mark from the APKCombo mirror launcher icon for com.kemoiptv.streamingkemo (reference only): the logotype's cue 'KS' with its under, set in the pack's own single-stroke letters, not the vendor letterforms (2026-09-28)"
     },
     {
       "name": "Kennytv",
@@ -5461,28 +5446,28 @@
       "name": "Laugh After Dark",
       "drawable": "laughafterdark",
       "color": "#E7B90A",
-      "glyph": "film_L",
-      "mark": "LA",
+      "glyph": "laughafterdark_wm",
       "components": [
         "com.laughafterdark.androidtv/com.laughafterdark.androidtv.ui.splashscreen.activity.SplashScreenActivity"
       ],
       "category": "APP",
       "color_source": "sampled from the official launcher icon (Google Play listing for com.laughafterdark.androidtv): dominant brand accent #E7B90A (2026-09-26)",
-      "color_reviewed": "2026-09-26"
+      "color_reviewed": "2026-09-26",
+      "glyph_source": "wordmark-derived mark from the Google Play listing launcher icon for com.laughafterdark.androidtv (reference only): the logotype's cue 'LA' with its under, set in the pack's own single-stroke letters, not the vendor letterforms (2026-09-28)"
     },
     {
       "name": "BBC Sounds",
       "drawable": "launchsounds",
       "color": "#FF4B00",
-      "glyph": "gaming_B",
-      "mark": "BS",
+      "glyph": "launchsounds_wm",
       "components": [
         "com.nvidia.bbciplayer.launchsounds/com.nvidia.bbciplayer.LaunchSoundsActivity"
       ],
       "category": "MUSIC",
       "color_source": "sampled from the official launcher icon (Google Play listing for com.nvidia.bbciplayer.launchsounds): dominant brand accent #FF4B00 (2026-09-26)",
       "color_reviewed": "2026-09-26",
-      "name_source": "app name from the Projectivy Icon Pack 1.1.9 artwork for com.nvidia.bbciplayer.launchsounds (github.com/SicMundus86/ProjectivyIconPack, used as reference only), which shows the BBC Sounds logo for this package (2026-09-27)"
+      "name_source": "app name from the Projectivy Icon Pack 1.1.9 artwork for com.nvidia.bbciplayer.launchsounds (github.com/SicMundus86/ProjectivyIconPack, used as reference only), which shows the BBC Sounds logo for this package (2026-09-27)",
+      "glyph_source": "wordmark-derived mark from the Google Play listing launcher icon for com.nvidia.bbciplayer.launchsounds (reference only): the logotype's cue 'BBC' with its under, set in the pack's own single-stroke letters, not the vendor letterforms (2026-09-28)"
     },
     {
       "name": "Launchbox",
@@ -5534,14 +5519,14 @@
       "name": "Lazy IPTV Deluxe",
       "drawable": "lazyiptvdeluxe",
       "color": "#008000",
-      "glyph": "broadcast_L",
-      "mark": "LID",
+      "glyph": "lazyiptvdeluxe_wm",
       "components": [
         "com.lcs.lazyiptvdeluxe/com.lcs.lazyiptvdeluxe.ActivityStart"
       ],
       "category": "LIVE",
       "color_source": "sampled from the official launcher icon (Aptoide listing for com.lcs.lazyiptvdeluxe): dominant brand accent #008000 (2026-09-27)",
-      "color_reviewed": "2026-09-27"
+      "color_reviewed": "2026-09-27",
+      "glyph_source": "wordmark-derived mark from the Aptoide listing launcher icon for com.lcs.lazyiptvdeluxe (reference only): the logotype's cue 'LAZY', set in the pack's own single-stroke letters, not the vendor letterforms (2026-09-28)"
     },
     {
       "name": "Lazy Media Deluxe",
@@ -5635,29 +5620,28 @@
     {
       "name": "Liga Portugal",
       "drawable": "ligaportugal",
-      "color": "#001240",
-      "glyph": "sport_L",
-      "mark": "LP",
+      "color": "#00F880",
+      "glyph": "ligaportugal_wm",
       "components": [
         "com.ligaportugal.ligatv/com.ligaportugal.ligatv.SplashActivity"
       ],
       "category": "APP",
-      "color_source": "sampled from the official launcher icon (Google Play listing for com.ligaportugal.ligatv): dominant brand accent #001240 (2026-09-26)",
-      "color_reviewed": "2026-09-26"
+      "color_source": "sampled from the Google Play listing launcher icon for com.ligaportugal.ligatv (reference only): #00F880 (2026-09-28)",
+      "color_reviewed": "2026-09-28",
+      "glyph_source": "wordmark-derived mark from the Google Play listing launcher icon for com.ligaportugal.ligatv (reference only): the logotype's cue 'LIGA', set in the pack's own single-stroke letters, not the vendor letterforms (2026-09-28)"
     },
     {
       "name": "Ligue 1+",
       "drawable": "ligueunpass",
       "color": "#0760FF",
-      "glyph": "broadcast_L",
-      "mark": "L1",
+      "glyph": "ligueunpass_wm",
       "components": [
         "com.ligueunpass.app/com.ligueunpass.app.MainActivity"
       ],
       "category": "APP",
       "color_source": "sampled from the official launcher icon (Google Play listing for com.ligueunpass.app): dominant brand accent #0760FF (2026-09-26)",
       "color_reviewed": "2026-09-26",
-      "mark_source": "logotype letters from the official launcher icon (Google Play listing for com.ligueunpass.app), which reads '1+'; set in the pack's face, not traced (2026-09-26)"
+      "glyph_source": "wordmark-derived mark from the Google Play listing launcher icon for com.ligueunpass.app (reference only): the logotype's cue '1' with its plus, set in the pack's own single-stroke letters, not the vendor letterforms (2026-09-28)"
     },
     {
       "name": "Live Channels",
@@ -5990,44 +5974,44 @@
     {
       "name": "RiseTV",
       "drawable": "combo3403",
-      "color": "#3D8BFF",
-      "glyph": "broadcast_R",
-      "mark": "RI",
+      "color": "#202860",
+      "glyph": "combo3403_wm",
       "components": [
         "com.maz.combo3403/com.maz.combo3403.MainActivity"
       ],
       "category": "APP",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null,
-      "name_source": "app name from the Projectivy Icon Pack 1.1.9 artwork for com.maz.combo3403 (github.com/SicMundus86/ProjectivyIconPack, used as reference only), which shows the RiseTV logo for this package (2026-09-27)"
+      "color_source": "sampled from the Google Play listing launcher icon for com.maz.combo3403 (reference only): #202860 (2026-09-28)",
+      "color_reviewed": "2026-09-28",
+      "name_source": "app name from the Projectivy Icon Pack 1.1.9 artwork for com.maz.combo3403 (github.com/SicMundus86/ProjectivyIconPack, used as reference only), which shows the RiseTV logo for this package (2026-09-27)",
+      "glyph_source": "wordmark-derived mark from the Google Play listing launcher icon for com.maz.combo3403 (reference only): the logotype's cue 'RISE', set in the pack's own single-stroke letters, not the vendor letterforms (2026-09-28)"
     },
     {
       "name": "RSBN",
       "drawable": "combo3578",
       "color": "#D00000",
-      "glyph": "broadcast_R",
-      "mark": "RS",
+      "glyph": "combo3578_wm",
       "components": [
         "com.maz.combo3578/com.maz.activities.ViewerLaunchActivity"
       ],
       "category": "APP",
       "color_source": "sampled from the Projectivy Icon Pack 1.1.9 artwork for com.maz.combo3578 (github.com/SicMundus86/ProjectivyIconPack, used as reference only): #D00000 (2026-09-27)",
       "color_reviewed": "2026-09-27",
-      "name_source": "app name from the Projectivy Icon Pack 1.1.9 artwork for com.maz.combo3578 (github.com/SicMundus86/ProjectivyIconPack, used as reference only), which shows the RSBN logo for this package (2026-09-27)"
+      "name_source": "app name from the Projectivy Icon Pack 1.1.9 artwork for com.maz.combo3578 (github.com/SicMundus86/ProjectivyIconPack, used as reference only), which shows the RSBN logo for this package (2026-09-27)",
+      "glyph_source": "wordmark-derived mark from the Google Play listing launcher icon for com.maz.combo3578 (reference only): the logotype's cue 'RS BN', set in the pack's own single-stroke letters, not the vendor letterforms (2026-09-28)"
     },
     {
       "name": "UStreme",
       "drawable": "tvod169",
       "color": "#BB9836",
-      "glyph": "broadcast_U",
-      "mark": "US",
+      "glyph": "tvod169_wm",
       "components": [
         "com.maz.tvod169/com.maz.activities.ViewerLaunchActivity"
       ],
       "category": "APP",
       "color_source": "sampled from the official launcher icon (Google Play listing for com.maz.tvod169): dominant brand accent #BB9836 (2026-09-26)",
       "color_reviewed": "2026-09-26",
-      "name_source": "app name from the Projectivy Icon Pack 1.1.9 artwork for com.maz.tvod169 (github.com/SicMundus86/ProjectivyIconPack, used as reference only), which shows the UStreme logo for this package (2026-09-27)"
+      "name_source": "app name from the Projectivy Icon Pack 1.1.9 artwork for com.maz.tvod169 (github.com/SicMundus86/ProjectivyIconPack, used as reference only), which shows the UStreme logo for this package (2026-09-27)",
+      "glyph_source": "wordmark-derived mark from the Google Play listing launcher icon for com.maz.tvod169 (reference only): the logotype's cue 'U' with its play, set in the pack's own single-stroke letters, not the vendor letterforms (2026-09-28)"
     },
     {
       "name": "Maze",
@@ -6115,21 +6099,20 @@
       "name": "MEO",
       "drawable": "alticelabs",
       "color": "#00D4FF",
-      "glyph": "broadcast_M",
-      "mark": "ME",
+      "glyph": "alticelabs_wm",
       "components": [
         "com.alticelabs.meo.androidtv/com.alticelabs.meo.androidtv.features.splash.ui.SplashActivity"
       ],
       "category": "APP",
       "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_reviewed": null,
+      "glyph_source": "wordmark-derived mark from the Google Play listing launcher icon for com.alticelabs.meo.androidtv (reference only): the logotype's cue 'MEO', set in the pack's own single-stroke letters, not the vendor letterforms (2026-09-28)"
     },
     {
       "name": "Mercado Play",
       "drawable": "mercado_play",
       "color": "#FFE600",
-      "glyph": "broadcast_M",
-      "mark": "MP",
+      "glyph": "mercado_play_wm",
       "components": [
         "com.mercadolibre.android.mplay_tv/com.mercadolibre.android.mplay_tv.app.feature.splash.SplashActivity"
       ],
@@ -6137,9 +6120,7 @@
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "sampled from the official launcher icon (Google Play listing for com.mercadolibre.android.mplay_tv): dominant brand accent #FFE600 (2026-09-26)",
       "color_reviewed": "2026-09-26",
-      "mark_source": "logotype letters from the official launcher icon (Google Play listing for com.mercadolibre.android.mplay_tv), which reads 'mercado play'; set in the pack's face, not traced (2026-09-26)",
-      "mark_style": "lower",
-      "mark_style_source": "the logotype on the official launcher icon (Google Play listing for com.mercadolibre.android.mplay_tv) is set lowercase ('mercado play')"
+      "glyph_source": "wordmark-derived mark from the Google Play listing launcher icon for com.mercadolibre.android.mplay_tv (reference only): the logotype's cue 'MP' with its play, set in the pack's own single-stroke letters, not the vendor letterforms (2026-09-28)"
     },
     {
       "name": "Metrolist",
@@ -6405,14 +6386,14 @@
       "name": "Movie HD",
       "drawable": "moviehd",
       "color": "#DBA608",
-      "glyph": "broadcast_M",
+      "glyph": "moviehd_wm",
       "components": [
         "com.ggateam.moviehd.ui/com.ggateam.moviehd.ui.FrmSplash"
       ],
       "category": "STREAM",
       "color_source": "sampled from the official launcher icon (Aptoide listing for com.ggateam.moviehd.ui): dominant brand accent #DBA608 (2026-09-27)",
       "color_reviewed": "2026-09-27",
-      "mark": "MH"
+      "glyph_source": "wordmark-derived mark from the Aptoide listing launcher icon for com.ggateam.moviehd.ui (reference only): the logotype's cue 'HD' with its frame, set in the pack's own single-stroke letters, not the vendor letterforms (2026-09-28)"
     },
     {
       "name": "Movieark",
@@ -6510,14 +6491,14 @@
       "name": "MSM Video",
       "drawable": "msmvideo",
       "color": "#FFC400",
-      "glyph": "broadcast_M",
-      "mark": "MV",
+      "glyph": "msmvideo_wm",
       "components": [
         "com.msmvideo.tv/com.example.msmvideo.ui.SplashActivity"
       ],
       "category": "APP",
       "color_source": "sampled from the official launcher icon (Google Play listing for com.msmvideo.tv): dominant brand accent #FFC400 (2026-09-26)",
-      "color_reviewed": "2026-09-26"
+      "color_reviewed": "2026-09-26",
+      "glyph_source": "wordmark-derived mark from the Google Play listing launcher icon for com.msmvideo.tv (reference only): the logotype's cue 'MSM' with its play, set in the pack's own single-stroke letters, not the vendor letterforms (2026-09-28)"
     },
     {
       "name": "MST3K",
@@ -6810,14 +6791,14 @@
       "name": "Netfly",
       "drawable": "netfly",
       "color": "#FC5A05",
-      "glyph": "broadcast_N",
-      "mark": "NE",
+      "glyph": "netfly_wm",
       "components": [
         "br.com.netfly.oletv/br.tv.ole.oletv.MainActivity"
       ],
       "category": "APP",
       "color_source": "sampled from the official launcher icon (Google Play listing for br.com.netfly.oletv): dominant brand accent #FC5A05 (2026-09-26)",
-      "color_reviewed": "2026-09-26"
+      "color_reviewed": "2026-09-26",
+      "glyph_source": "wordmark-derived mark from the Google Play listing launcher icon for br.com.netfly.oletv (reference only): the logotype's cue 'NF' with its dot, set in the pack's own single-stroke letters, not the vendor letterforms (2026-09-28)"
     },
     {
       "name": "Netfly Live TV",
@@ -7073,15 +7054,15 @@
     {
       "name": "Nordisk Film+",
       "drawable": "nordiskfilmplus",
-      "color": "#E6EDF3",
-      "glyph": "film_N",
-      "mark": "NF",
+      "color": "#0030F8",
+      "glyph": "nordiskfilmplus_wm",
       "components": [
         "com.nordiskfilmplus.android/com.nordiskfilmplus.android.ui.splash.SplashActivity"
       ],
       "category": "VOD",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled from the Google Play listing launcher icon for com.nordiskfilmplus.android (reference only): #0030F8 (2026-09-28)",
+      "color_reviewed": "2026-09-28",
+      "glyph_source": "wordmark-derived mark from the Google Play listing launcher icon for com.nordiskfilmplus.android (reference only): the logotype's cue 'NF' with its plus, set in the pack's own single-stroke letters, not the vendor letterforms (2026-09-28)"
     },
     {
       "name": "NordVPN",
@@ -7183,16 +7164,16 @@
     {
       "name": "NOW",
       "drawable": "nowtv",
-      "color": "#001211",
-      "glyph": "broadcast_N",
-      "mark": "NO",
+      "color": "#086068",
+      "glyph": "nowtv_wm",
       "components": [
         "com.bskyb.nowtv.beta/com.peacock.peacocktv.GoogleMainActivity"
       ],
       "category": "APP",
-      "color_source": "simple-icons reference (monochrome ink mark)",
+      "color_source": "sampled from the Google Play listing launcher icon for com.bskyb.nowtv.beta (reference only): #086068 (2026-09-28)",
       "color_note": "monochrome",
-      "color_reviewed": "2026-09-08"
+      "color_reviewed": "2026-09-28",
+      "glyph_source": "wordmark-derived mark from the Google Play listing launcher icon for com.bskyb.nowtv.beta (reference only): the logotype's cue 'NOW', set in the pack's own single-stroke letters, not the vendor letterforms (2026-09-28)"
     },
     {
       "name": "Nowo TV",
@@ -7242,7 +7223,7 @@
       "name": "NT at Home",
       "drawable": "ntathome",
       "color": "#F04DE0",
-      "glyph": "tool_N",
+      "glyph": "ntathome_wm",
       "components": [
         "com.ntathome/tv.vhx.LauncherActivity",
         "com.ntathome/tv.vhx.tv.home.TvHomeActivity"
@@ -7250,8 +7231,7 @@
       "category": "LAUNCHER",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null,
-      "mark": "NT",
-      "mark_source": "logotype letters from the official launcher icon (Google Play listing for com.ntathome), which reads 'National Theatre at Home'; set in the pack's face, not traced (2026-09-26)"
+      "glyph_source": "wordmark-derived mark from the Google Play listing launcher icon for com.ntathome (reference only): the logotype's cue 'NT' with its under, set in the pack's own single-stroke letters, not the vendor letterforms (2026-09-28)"
     },
     {
       "name": "Nuvio TV",
@@ -7445,14 +7425,14 @@
       "name": "Omroep Brabant",
       "drawable": "appomroepbrabant",
       "color": "#C40000",
-      "glyph": "broadcast_O",
-      "mark": "OB",
+      "glyph": "appomroepbrabant_wm",
       "components": [
         "com.appomroepbrabant/com.applicaster.ui.activities.MainActivity"
       ],
       "category": "APP",
       "color_source": "sampled from the official launcher icon (Google Play listing for com.appomroepbrabant): dominant brand accent #C40000 (2026-09-26)",
-      "color_reviewed": "2026-09-26"
+      "color_reviewed": "2026-09-26",
+      "glyph_source": "wordmark-derived mark from the Google Play listing launcher icon for com.appomroepbrabant (reference only): the logotype's cue 'B' with its plus, set in the pack's own single-stroke letters, not the vendor letterforms (2026-09-28)"
     },
     {
       "name": "Ondamedia",
@@ -7514,15 +7494,15 @@
       "name": "TV+",
       "drawable": "andevapps",
       "color": "#D61160",
-      "glyph": "broadcast_T",
-      "mark": "TV",
+      "glyph": "andevapps_wm",
       "components": [
         "com.andevapps.ontv/limehd.ru.ctv.MainActivity"
       ],
       "category": "APP",
       "color_source": "sampled from the official launcher icon (Google Play listing for com.andevapps.ontv): dominant brand accent #D61160 (2026-09-26)",
       "color_reviewed": "2026-09-26",
-      "name_source": "app name from the Projectivy Icon Pack 1.1.9 artwork for com.andevapps.ontv (github.com/SicMundus86/ProjectivyIconPack, used as reference only), which shows the TV+ logo for this package (2026-09-27)"
+      "name_source": "app name from the Projectivy Icon Pack 1.1.9 artwork for com.andevapps.ontv (github.com/SicMundus86/ProjectivyIconPack, used as reference only), which shows the TV+ logo for this package (2026-09-27)",
+      "glyph_source": "wordmark-derived mark from the Google Play listing launcher icon for com.andevapps.ontv (reference only): the logotype's cue 'TV' with its plus, set in the pack's own single-stroke letters, not the vendor letterforms (2026-09-28)"
     },
     {
       "name": "Openvpn For Android",
@@ -7541,17 +7521,14 @@
       "name": "Opta / SIC",
       "drawable": "impresa",
       "color": "#8C4BFF",
-      "glyph": "broadcast_O",
-      "mark": "OPTO",
+      "glyph": "impresa_wm",
       "components": [
         "com.impresa.opta/com.magycal.androidott.ui.tv.TVBaseActivity"
       ],
       "category": "APP",
       "color_source": "sampled from the official launcher icon (Google Play listing for com.impresa.opta): dominant brand accent #8C4BFF (2026-09-26)",
       "color_reviewed": "2026-09-26",
-      "mark_source": "logotype letters from the official launcher icon (Google Play listing for com.impresa.opta), which reads 'opto'; set in the pack's face, not traced (2026-09-26)",
-      "mark_style": "lower",
-      "mark_style_source": "the logotype on the official launcher icon (Google Play listing for com.impresa.opta) is set lowercase ('opto')"
+      "glyph_source": "wordmark-derived mark from the Google Play listing launcher icon for com.impresa.opta (reference only): the logotype's cue 'opto', set in the pack's own single-stroke letters, not the vendor letterforms (2026-09-28)"
     },
     {
       "name": "OQEE by Free",
@@ -7586,30 +7563,27 @@
       "name": "ORF ON",
       "drawable": "orftvthek",
       "color": "#474968",
-      "glyph": "broadcast_O",
-      "mark": "OO",
+      "glyph": "orftvthek_wm",
       "components": [
         "com.nousguide.android.orftvthek/com.nousguide.android.orftvthek.MainActivity"
       ],
       "category": "APP",
       "color_source": "sampled from the official launcher icon (Google Play listing for com.nousguide.android.orftvthek): dominant brand accent #474968 (2026-09-26)",
-      "color_reviewed": "2026-09-26"
+      "color_reviewed": "2026-09-26",
+      "glyph_source": "wordmark-derived mark from the Google Play listing launcher icon for com.nousguide.android.orftvthek (reference only): the logotype's cue 'ORF ON', set in the pack's own single-stroke letters, not the vendor letterforms (2026-09-28)"
     },
     {
       "name": "OSN+",
       "drawable": "osn",
       "color": "#1FD19A",
-      "glyph": "broadcast_O",
-      "mark": "OS",
+      "glyph": "osn_wm",
       "components": [
         "com.osn.go/com.osn.go.MainActivity"
       ],
       "category": "APP",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null,
-      "mark_style": "lower",
-      "mark_style_source": "the logotype on the official launcher icon (Google Play listing for com.osn.go) is set lowercase ('osn+')",
-      "mark_source": "logotype letters from the official launcher icon (Google Play listing for com.osn.go), which reads 'osn+': the first two, because the whole logotype sets under the pack's 96px legibility floor; set in the pack's face, not traced (2026-09-26)"
+      "glyph_source": "wordmark-derived mark from the Google Play listing launcher icon for com.osn.go (reference only): the logotype's cue 'osn' with its plus, set in the pack's own single-stroke letters, not the vendor letterforms (2026-09-28)"
     },
     {
       "name": "OTF TV",
@@ -8146,15 +8120,15 @@
       "name": "Tevegram",
       "drawable": "telegram",
       "color": "#19D3C5",
-      "glyph": "broadcast_T",
-      "mark": "TE",
+      "glyph": "telegram_wm",
       "components": [
         "cassian.telegram.ooa.pro/not.a.bug.notificationcenter.MainActivity"
       ],
       "category": "APP",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null,
-      "name_source": "app name from the Projectivy Icon Pack 1.1.9 artwork for cassian.telegram.ooa.pro (github.com/SicMundus86/ProjectivyIconPack, used as reference only), which shows the Tevegram logo for this package (2026-09-27)"
+      "name_source": "app name from the Projectivy Icon Pack 1.1.9 artwork for cassian.telegram.ooa.pro (github.com/SicMundus86/ProjectivyIconPack, used as reference only), which shows the Tevegram logo for this package (2026-09-27)",
+      "glyph_source": "wordmark-derived mark from the Google Play listing launcher icon for cassian.telegram.ooa.pro (reference only): the logotype's cue 'T' with its dot, set in the pack's own single-stroke letters, not the vendor letterforms (2026-09-28)"
     },
     {
       "name": "Pluto TV",
@@ -8254,14 +8228,14 @@
       "name": "Premiere FC",
       "drawable": "premierefc",
       "color": "#2D8F3C",
-      "glyph": "broadcast_P",
-      "mark": "PF",
+      "glyph": "premierefc_wm",
       "components": [
         "br.tv.horizonte.android.premierefc/br.tv.horizonte.android.premierefc.splash_tv.SplashTvActivity"
       ],
       "category": "APP",
       "color_source": "sampled from the official launcher icon (Google Play listing for br.tv.horizonte.android.premierefc): dominant brand accent #2D8F3C (2026-09-26)",
-      "color_reviewed": "2026-09-26"
+      "color_reviewed": "2026-09-26",
+      "glyph_source": "wordmark-derived mark from the Google Play listing launcher icon for br.tv.horizonte.android.premierefc (reference only): the logotype's cue 'P' with its frame, set in the pack's own single-stroke letters, not the vendor letterforms (2026-09-28)"
     },
     {
       "name": "Premiumize",
@@ -8578,14 +8552,14 @@
       "name": "Radioplayer",
       "drawable": "radioplayer",
       "color": "#CE0030",
-      "glyph": "music_R",
-      "mark": "RA",
+      "glyph": "radioplayer_wm",
       "components": [
         "com.radioplayer.mobile/com.radioplayer.mobile.MainActivity"
       ],
       "category": "MUSIC",
       "color_source": "sampled from the official launcher icon (Google Play listing for com.radioplayer.mobile): dominant brand accent #CE0030 (2026-09-26)",
-      "color_reviewed": "2026-09-26"
+      "color_reviewed": "2026-09-26",
+      "glyph_source": "wordmark-derived mark from the Google Play listing launcher icon for com.radioplayer.mobile (reference only): the logotype's cue 'R' with its ring, set in the pack's own single-stroke letters, not the vendor letterforms (2026-09-28)"
     },
     {
       "name": "RaiPlay",
@@ -8660,16 +8634,15 @@
       "name": "RBTV+",
       "drawable": "rblive",
       "color": "#FFAE01",
-      "glyph": "broadcast_R",
-      "mark": "RB",
+      "glyph": "rblive_wm",
       "components": [
         "com.rblive.app/com.rblive.launcher.splash.SplashActivity"
       ],
       "category": "APP",
       "color_source": "sampled from the official launcher icon (Aptoide listing for com.rblive.app): dominant brand accent #FFAE01 (2026-09-27)",
       "color_reviewed": "2026-09-27",
-      "mark_source": "logotype letters from the official launcher icon (Aptoide listing for com.rblive.app), which reads 'RB'; set in the pack's face, not traced (2026-09-27)",
-      "name_source": "app name from the Projectivy Icon Pack 1.1.9 artwork for com.rblive.app (github.com/SicMundus86/ProjectivyIconPack, used as reference only), which shows the RBTV+ logo for this package (2026-09-27)"
+      "name_source": "app name from the Projectivy Icon Pack 1.1.9 artwork for com.rblive.app (github.com/SicMundus86/ProjectivyIconPack, used as reference only), which shows the RBTV+ logo for this package (2026-09-27)",
+      "glyph_source": "wordmark-derived mark from the Aptoide listing launcher icon for com.rblive.app (reference only): the logotype's cue 'RB', set in the pack's own single-stroke letters, not the vendor letterforms (2026-09-28)"
     },
     {
       "name": "Rubika TV",
@@ -8688,15 +8661,15 @@
     {
       "name": "Real America's Voice",
       "drawable": "americasvoicenews",
-      "color": "#FF5CA8",
-      "glyph": "sport_A",
-      "mark": "RA",
+      "color": "#B80000",
+      "glyph": "americasvoicenews_wm",
       "components": [
         "com.americasvoicenews.androidtv/com.americasvoicenews.androidtv.MainActivity"
       ],
       "category": "SPORT",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled from the Google Play listing launcher icon for com.americasvoicenews.androidtv (reference only): #B80000 (2026-09-28)",
+      "color_reviewed": "2026-09-28",
+      "glyph_source": "wordmark-derived mark from the Google Play listing launcher icon for com.americasvoicenews.androidtv (reference only): the logotype's cue 'AV' with its under, set in the pack's own single-stroke letters, not the vendor letterforms (2026-09-28)"
     },
     {
       "name": "Real-Debrid",
@@ -8876,15 +8849,15 @@
       "name": "Whale TV",
       "drawable": "rlaxxtv",
       "color": "#F80050",
-      "glyph": "broadcast_W",
-      "mark": "WT",
+      "glyph": "rlaxxtv_wm",
       "components": [
         "com.rlaxxtv.tvapp.atv/com.rlaxxtv.tvapp.MainActivity"
       ],
       "category": "APP",
       "color_source": "sampled from the Projectivy Icon Pack 1.1.9 artwork for com.rlaxxtv.tvapp.atv (github.com/SicMundus86/ProjectivyIconPack, used as reference only): #F80050 (2026-09-27)",
       "color_reviewed": "2026-09-27",
-      "name_source": "app name from the Projectivy Icon Pack 1.1.9 artwork for com.rlaxxtv.tvapp.atv (github.com/SicMundus86/ProjectivyIconPack, used as reference only), which shows the Whale TV logo for this package (2026-09-27)"
+      "name_source": "app name from the Projectivy Icon Pack 1.1.9 artwork for com.rlaxxtv.tvapp.atv (github.com/SicMundus86/ProjectivyIconPack, used as reference only), which shows the Whale TV logo for this package (2026-09-27)",
+      "glyph_source": "wordmark-derived mark from the Google Play listing launcher icon for com.rlaxxtv.tvapp.atv (reference only): the logotype's cue 'WTV' with its plus, set in the pack's own single-stroke letters, not the vendor letterforms (2026-09-28)"
     },
     {
       "name": "Super League+",
@@ -8903,15 +8876,15 @@
     {
       "name": "RMC BFM",
       "drawable": "nextinteractive",
-      "color": "#E6EDF3",
-      "glyph": "broadcast_R",
-      "mark": "RB",
+      "color": "#00A8F8",
+      "glyph": "nextinteractive_wm",
       "components": [
         "com.nextinteractive.rmcbfmplay.tv.sfr/com.nextinteractive.rmcbfmplay.apptv.SplashActivity"
       ],
       "category": "APP",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled from the Google Play listing launcher icon for com.nextinteractive.rmcbfmplay.tv.sfr (reference only): #00A8F8 (2026-09-28)",
+      "color_reviewed": "2026-09-28",
+      "glyph_source": "wordmark-derived mark from the Google Play listing launcher icon for com.nextinteractive.rmcbfmplay.tv.sfr (reference only): the logotype's cue 'RMC' with its plus, set in the pack's own single-stroke letters, not the vendor letterforms (2026-09-28)"
     },
     {
       "name": "RS File Manager",
@@ -8935,15 +8908,14 @@
       "name": "RSI Play",
       "drawable": "rsi",
       "color": "#AF001D",
-      "glyph": "broadcast_R",
-      "mark": "RSI",
+      "glyph": "rsi_wm",
       "components": [
         "ch.rsi.player/ch.srg.srgplayer.tv.MainActivity"
       ],
       "category": "APP",
       "color_source": "sampled from the official launcher icon (Google Play listing for ch.rsi.player): dominant brand accent #AF001D (2026-09-26)",
       "color_reviewed": "2026-09-26",
-      "mark_source": "logotype letters from the official launcher icon (Google Play listing for ch.rsi.player), which reads 'PLAY RSI'; set in the pack's face, not traced (2026-09-26)"
+      "glyph_source": "wordmark-derived mark from the Google Play listing launcher icon for ch.rsi.player (reference only): the logotype's cue 'RSI' with its play, set in the pack's own single-stroke letters, not the vendor letterforms (2026-09-28)"
     },
     {
       "name": "RTBF Auvio",
@@ -8962,15 +8934,15 @@
       "name": "RTE Player",
       "drawable": "minimal",
       "color": "#FF0134",
-      "glyph": "broadcast_R",
-      "mark": "RP",
+      "glyph": "minimal_wm",
       "components": [
         "air.RTE.OSMF.Minimal/com.finconsgroup.droid.activities.MainActivity",
         "air.RTE.OSMF.Minimal/com.finconsgroup.droid.activities.TvActivity"
       ],
       "category": "APP",
       "color_source": "sampled from the official launcher icon (Google Play listing for air.RTE.OSMF.Minimal): dominant brand accent #FF0134 (2026-09-26)",
-      "color_reviewed": "2026-09-26"
+      "color_reviewed": "2026-09-26",
+      "glyph_source": "wordmark-derived mark from the Google Play listing launcher icon for air.RTE.OSMF.Minimal (reference only): the logotype's cue 'RTE' with its play, set in the pack's own single-stroke letters, not the vendor letterforms (2026-09-28)"
     },
     {
       "name": "RTL",
@@ -9549,18 +9521,15 @@
     {
       "name": "Sky+",
       "drawable": "skymais",
-      "color": "#0072C6",
-      "glyph": "broadcast_S",
-      "mark": "SKY",
+      "color": "#E00010",
+      "glyph": "skymais_wm",
       "components": [
         "br.com.skymais/com.directvgo.feature.tv.splash.SplashActivity"
       ],
       "category": "APP",
-      "color_source": "brand reference (pre-provenance, unverified)",
-      "color_reviewed": null,
-      "mark_source": "logotype letters from the official launcher icon (Google Play listing for br.com.skymais), which reads 'sky+'; set in the pack's face, not traced (2026-09-26)",
-      "mark_style": "lower",
-      "mark_style_source": "the logotype on the official launcher icon (Google Play listing for br.com.skymais) is set lowercase ('sky+')"
+      "color_source": "sampled from the Google Play listing launcher icon for br.com.skymais (reference only): #E00010 (2026-09-28)",
+      "color_reviewed": "2026-09-28",
+      "glyph_source": "wordmark-derived mark from the Google Play listing launcher icon for br.com.skymais (reference only): the logotype's cue 'sky' with its plus, set in the pack's own single-stroke letters, not the vendor letterforms (2026-09-28)"
     },
     {
       "name": "Skyshowtime",
@@ -9725,15 +9694,15 @@
     {
       "name": "SomaFM",
       "drawable": "radiomg",
-      "color": "#FFE14D",
-      "glyph": "music_S",
-      "mark": "SO",
+      "color": "#F01820",
+      "glyph": "radiomg_wm",
       "components": [
         "com.dgmltn.radiomg.somafm/com.dgmltn.radiomg.ui.main.MainActivity"
       ],
       "category": "MUSIC",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled from the Google Play listing launcher icon for com.dgmltn.radiomg.somafm (reference only): #F01820 (2026-09-28)",
+      "color_reviewed": "2026-09-28",
+      "glyph_source": "wordmark-derived mark from the Google Play listing launcher icon for com.dgmltn.radiomg.somafm (reference only): the logotype's cue 'fm' with its ring, set in the pack's own single-stroke letters, not the vendor letterforms (2026-09-28)"
     },
     {
       "name": "Sonyliv",
@@ -9856,15 +9825,15 @@
       "name": "CBS Sports",
       "drawable": "sportscaster",
       "color": "#0154D5",
-      "glyph": "sport_C",
-      "mark": "CS",
+      "glyph": "sportscaster_wm",
       "components": [
         "com.handmark.sportscaster.androidtv/com.cbs.commonui.homepage.HomePageActivity"
       ],
       "category": "SPORT",
       "color_source": "sampled from the official launcher icon (Google Play listing for com.handmark.sportscaster.androidtv): dominant brand accent #0154D5 (2026-09-26)",
       "color_reviewed": "2026-09-26",
-      "name_source": "app name from the Projectivy Icon Pack 1.1.9 artwork for com.handmark.sportscaster.androidtv (github.com/SicMundus86/ProjectivyIconPack, used as reference only), which shows the CBS Sports logo for this package (2026-09-27)"
+      "name_source": "app name from the Projectivy Icon Pack 1.1.9 artwork for com.handmark.sportscaster.androidtv (github.com/SicMundus86/ProjectivyIconPack, used as reference only), which shows the CBS Sports logo for this package (2026-09-27)",
+      "glyph_source": "wordmark-derived mark from the Google Play listing launcher icon for com.handmark.sportscaster.androidtv (reference only): the logotype's cue 'CBS' with its under, set in the pack's own single-stroke letters, not the vendor letterforms (2026-09-28)"
     },
     {
       "name": "Sportsfire",
@@ -9926,15 +9895,14 @@
       "name": "SRF Play",
       "drawable": "srfplayer",
       "color": "#AF001E",
-      "glyph": "broadcast_S",
-      "mark": "SRF",
+      "glyph": "srfplayer_wm",
       "components": [
         "ch.srf.mobile.srfplayer/ch.srg.srgplayer.tv.MainActivity"
       ],
       "category": "APP",
       "color_source": "sampled from the official launcher icon (Google Play listing for ch.srf.mobile.srfplayer): dominant brand accent #AF001E (2026-09-26)",
       "color_reviewed": "2026-09-26",
-      "mark_source": "logotype letters from the official launcher icon (Google Play listing for ch.srf.mobile.srfplayer), which reads 'PLAY SRF'; set in the pack's face, not traced (2026-09-26)"
+      "glyph_source": "wordmark-derived mark from the Google Play listing launcher icon for ch.srf.mobile.srfplayer (reference only): the logotype's cue 'SRF' with its play, set in the pack's own single-stroke letters, not the vendor letterforms (2026-09-28)"
     },
     {
       "name": "Sstream",
@@ -10886,18 +10854,15 @@
       "name": "iWant",
       "drawable": "tfctv",
       "color": "#4D038F",
-      "glyph": "broadcast_T",
-      "mark": "IW",
+      "glyph": "tfctv_wm",
       "components": [
         "com.absi.tfctv/com.absi.tfctv.MainActivity"
       ],
       "category": "APP",
       "color_source": "sampled from the official launcher icon (Google Play listing for com.absi.tfctv): dominant brand accent #4D038F (2026-09-26)",
       "color_reviewed": "2026-09-26",
-      "mark_source": "logotype letters from the official launcher icon (Google Play listing for com.absi.tfctv), which reads 'iw'; set in the pack's face, not traced (2026-09-26)",
-      "mark_style": "lower",
-      "mark_style_source": "the logotype on the official launcher icon (Google Play listing for com.absi.tfctv) is set lowercase ('iw')",
-      "name_source": "app name from the Projectivy Icon Pack 1.1.9 artwork for com.absi.tfctv (github.com/SicMundus86/ProjectivyIconPack, used as reference only), which shows the iWant logo for this package (2026-09-27)"
+      "name_source": "app name from the Projectivy Icon Pack 1.1.9 artwork for com.absi.tfctv (github.com/SicMundus86/ProjectivyIconPack, used as reference only), which shows the iWant logo for this package (2026-09-27)",
+      "glyph_source": "wordmark-derived mark from the Google Play listing launcher icon for com.absi.tfctv (reference only): the logotype's cue 'iw', set in the pack's own single-stroke letters, not the vendor letterforms (2026-09-28)"
     },
     {
       "name": "Tflix",
@@ -10982,17 +10947,14 @@
       "name": "ThreeNow",
       "drawable": "mediaworks",
       "color": "#FF004F",
-      "glyph": "film_T",
-      "mark": "NO",
+      "glyph": "mediaworks_wm",
       "components": [
         "com.mediaworks.android.tv/nz.co.mediaworks.vod.ui.MainActivity"
       ],
       "category": "APP",
       "color_source": "sampled from the official launcher icon (Google Play listing for com.mediaworks.android.tv): dominant brand accent #FF004F (2026-09-26)",
       "color_reviewed": "2026-09-26",
-      "mark_style": "lower",
-      "mark_style_source": "the logotype on the official launcher icon (Google Play listing for com.mediaworks.android.tv) is set lowercase ('three now')",
-      "mark_source": "logotype letters from the official launcher icon (Google Play listing for com.mediaworks.android.tv), which reads 'three now': the first two, because the whole logotype sets under the pack's 96px legibility floor; set in the pack's face, not traced (2026-09-26)"
+      "glyph_source": "wordmark-derived mark from the Google Play listing launcher icon for com.mediaworks.android.tv (reference only): the logotype's cue 'NOW' with its plus, set in the pack's own single-stroke letters, not the vendor letterforms (2026-09-28)"
     },
     {
       "name": "Thunder TV",
@@ -11081,29 +11043,29 @@
     {
       "name": "TLC",
       "drawable": "discovery_2",
-      "color": "#1982C4",
-      "glyph": "film_T",
-      "mark": "TL",
+      "color": "#F80018",
+      "glyph": "discovery_2_wm",
       "components": [
         "com.discovery.tlctve/com.discovery.tve.presentation.activities.SplashActivity"
       ],
       "category": "VOD",
-      "color_source": "brand reference (pre-provenance, unverified)",
-      "color_reviewed": null
+      "color_source": "sampled from the Google Play listing launcher icon for com.discovery.tlctve (reference only): #F80018 (2026-09-28)",
+      "color_reviewed": "2026-09-28",
+      "glyph_source": "wordmark-derived mark from the Google Play listing launcher icon for com.discovery.tlctve (reference only): the logotype's cue 'TLC', set in the pack's own single-stroke letters, not the vendor letterforms (2026-09-28)"
     },
     {
       "name": "TNA+",
       "drawable": "fight",
       "color": "#7C0000",
-      "glyph": "sport_T",
-      "mark": "TN",
+      "glyph": "fight_wm",
       "components": [
         "com.fight.tna/com.fight.tna.MainActivity"
       ],
       "category": "SPORT",
       "color_source": "sampled from the official launcher icon (Google Play listing for com.fight.tna): dominant brand accent #7C0000 (2026-09-26)",
       "color_reviewed": "2026-09-26",
-      "name_source": "app name from the Projectivy Icon Pack 1.1.9 artwork for com.fight.tna (github.com/SicMundus86/ProjectivyIconPack, used as reference only), which shows the TNA+ logo for this package (2026-09-27)"
+      "name_source": "app name from the Projectivy Icon Pack 1.1.9 artwork for com.fight.tna (github.com/SicMundus86/ProjectivyIconPack, used as reference only), which shows the TNA+ logo for this package (2026-09-27)",
+      "glyph_source": "wordmark-derived mark from the Google Play listing launcher icon for com.fight.tna (reference only): the logotype's cue 'TN' with its plus, set in the pack's own single-stroke letters, not the vendor letterforms (2026-09-28)"
     },
     {
       "name": "TNT",
@@ -11401,15 +11363,15 @@
       "name": "Kable One",
       "drawable": "tveverywhere",
       "color": "#BF1017",
-      "glyph": "broadcast_K",
-      "mark": "KO",
+      "glyph": "tveverywhere_wm",
       "components": [
         "com.kableone.tveverywhere/com.kableone.tveverywhere.ui.main.view.activity.SplashScreenActivity"
       ],
       "category": "APP",
       "color_source": "sampled from the official launcher icon (Google Play listing for com.kableone.tveverywhere): dominant brand accent #BF1017 (2026-09-26)",
       "color_reviewed": "2026-09-26",
-      "name_source": "app name from the Projectivy Icon Pack 1.1.9 artwork for com.kableone.tveverywhere (github.com/SicMundus86/ProjectivyIconPack, used as reference only), which shows the Kable One logo for this package (2026-09-27)"
+      "name_source": "app name from the Projectivy Icon Pack 1.1.9 artwork for com.kableone.tveverywhere (github.com/SicMundus86/ProjectivyIconPack, used as reference only), which shows the Kable One logo for this package (2026-09-27)",
+      "glyph_source": "wordmark-derived mark from the Google Play listing launcher icon for com.kableone.tveverywhere (reference only): the logotype's cue 'K1', set in the pack's own single-stroke letters, not the vendor letterforms (2026-09-28)"
     },
     {
       "name": "TV Garden",
@@ -11442,15 +11404,15 @@
     {
       "name": "TV on OS",
       "drawable": "deadlyduck",
-      "color": "#1982C4",
-      "glyph": "broadcast_T",
-      "mark": "TO",
+      "color": "#D8A868",
+      "glyph": "deadlyduck_wm",
       "components": [
         "com.deadlyduck.tvonos/com.deadlyduck.tvonos.TvActivity"
       ],
       "category": "APP",
-      "color_source": "brand reference (pre-provenance, unverified)",
-      "color_reviewed": null
+      "color_source": "sampled from the Google Play listing launcher icon for com.deadlyduck.tvonos (reference only): #D8A868 (2026-09-28)",
+      "color_reviewed": "2026-09-28",
+      "glyph_source": "wordmark-derived mark from the Google Play listing launcher icon for com.deadlyduck.tvonos (reference only): the logotype's cue 'TV OS', set in the pack's own single-stroke letters, not the vendor letterforms (2026-09-28)"
     },
     {
       "name": "TV Quick Actions",
@@ -11570,14 +11532,14 @@
       "name": "TVA+",
       "drawable": "tvaplus",
       "color": "#FFB020",
-      "glyph": "broadcast_T",
-      "mark": "TV",
+      "glyph": "tvaplus_wm",
       "components": [
         "com.numeriq.tvaplus/ade.tv.main.ui.splash.SplashActivity"
       ],
       "category": "APP",
       "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_reviewed": null,
+      "glyph_source": "wordmark-derived mark from the Google Play listing launcher icon for com.numeriq.tvaplus (reference only): the logotype's cue 'tva' with its plus, set in the pack's own single-stroke letters, not the vendor letterforms (2026-09-28)"
     },
     {
       "name": "Tvi Player",
@@ -11733,19 +11695,16 @@
     {
       "name": "ZDFtivi",
       "drawable": "twodf_tivi",
-      "color": "#FF4D4D",
-      "glyph": "broadcast_T",
-      "mark": "TIVI",
+      "color": "#F87818",
+      "glyph": "twodf_tivi_wm",
       "components": [
         "de.zdf.mediathek.tivi/de.zdf.mediathek.tivi.ui.splash.SplashActivity"
       ],
       "category": "APP",
       "mapping_source": "Projectivy Icon Pack 1.1.9",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null,
-      "mark_source": "logotype letters from the official launcher icon (Google Play listing for de.zdf.mediathek.tivi), which reads 'ZDF tivi'; set in the pack's face, not traced (2026-09-26)",
-      "mark_style": "lower",
-      "mark_style_source": "the logotype on the official launcher icon (Google Play listing for de.zdf.mediathek.tivi) is set lowercase ('ZDF tivi')"
+      "color_source": "sampled from the Google Play listing launcher icon for de.zdf.mediathek.tivi (reference only): #F87818 (2026-09-28)",
+      "color_reviewed": "2026-09-28",
+      "glyph_source": "wordmark-derived mark from the Google Play listing launcher icon for de.zdf.mediathek.tivi (reference only): the logotype's cue 'tivi', set in the pack's own single-stroke letters, not the vendor letterforms (2026-09-28)"
     },
     {
       "name": "U",
@@ -12330,17 +12289,14 @@
       "name": "VRT MAX",
       "drawable": "vrtnu",
       "color": "#FF4D4E",
-      "glyph": "broadcast_V",
-      "mark": "VRT",
+      "glyph": "vrtnu_wm",
       "components": [
         "be.vrt.vrtnu/be.vrt.vrtnu.MainActivity"
       ],
       "category": "APP",
       "color_source": "sampled from the official launcher icon (Google Play listing for be.vrt.vrtnu): dominant brand accent #FF4D4E (2026-09-26)",
       "color_reviewed": "2026-09-26",
-      "mark_source": "logotype letters from the official launcher icon (Google Play listing for be.vrt.vrtnu), which reads 'vrt max'; set in the pack's face, not traced (2026-09-26)",
-      "mark_style": "lower",
-      "mark_style_source": "the logotype on the official launcher icon (Google Play listing for be.vrt.vrtnu) is set lowercase ('vrt max')"
+      "glyph_source": "wordmark-derived mark from the Google Play listing launcher icon for be.vrt.vrtnu (reference only): the logotype's cue 'vrt max', set in the pack's own single-stroke letters, not the vendor letterforms (2026-09-28)"
     },
     {
       "name": "Vstro Player",
@@ -12358,15 +12314,15 @@
     {
       "name": "VTM GO",
       "drawable": "zenderapp",
-      "color": "#4FACFE",
-      "glyph": "broadcast_V",
-      "mark": "VG",
+      "color": "#F8C0B8",
+      "glyph": "zenderapp_wm",
       "components": [
         "be.vmma.vtm.zenderapp/be.persgroep.vtmgo.presentation.VtmGoMainActivity"
       ],
       "category": "APP",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled from the Google Play listing launcher icon for be.vmma.vtm.zenderapp (reference only): #F8C0B8 (2026-09-28)",
+      "color_reviewed": "2026-09-28",
+      "glyph_source": "wordmark-derived mark from the Google Play listing launcher icon for be.vmma.vtm.zenderapp (reference only): the logotype's cue 'VTM', set in the pack's own single-stroke letters, not the vendor letterforms (2026-09-28)"
     },
     {
       "name": "VTVcab ON",
@@ -12434,14 +12390,14 @@
       "name": "WATCHA",
       "drawable": "frograms",
       "color": "#FF0558",
-      "glyph": "broadcast_W",
-      "mark": "WA",
+      "glyph": "frograms_wm",
       "components": [
         "com.frograms.wplay/com.frograms.wplay.activity.InitActivity"
       ],
       "category": "APP",
       "color_source": "sampled from the official launcher icon (Google Play listing for com.frograms.wplay): dominant brand accent #FF0558 (2026-09-26)",
-      "color_reviewed": "2026-09-26"
+      "color_reviewed": "2026-09-26",
+      "glyph_source": "wordmark-derived mark from the Google Play listing launcher icon for com.frograms.wplay (reference only): the logotype's cue 'W', set in the pack's own single-stroke letters, not the vendor letterforms (2026-09-28)"
     },
     {
       "name": "Watcher TV",
@@ -12596,14 +12552,14 @@
       "name": "WiiM",
       "drawable": "linkplay",
       "color": "#1982C4",
-      "glyph": "music_W",
-      "mark": "WI",
+      "glyph": "linkplay_wm",
       "components": [
         "com.linkplay.wiimtv/com.linkplay.wiimtv.home.SplashActivity"
       ],
       "category": "APP",
       "color_source": "brand reference (pre-provenance, unverified)",
-      "color_reviewed": null
+      "color_reviewed": null,
+      "glyph_source": "wordmark-derived mark from the Google Play listing launcher icon for com.linkplay.wiimtv (reference only): the logotype's cue 'WiiM', set in the pack's own single-stroke letters, not the vendor letterforms (2026-09-28)"
     },
     {
       "name": "Windscribe",
@@ -12870,15 +12826,15 @@
     {
       "name": "Yettel Selfcare",
       "drawable": "selfcare",
-      "color": "#002340",
-      "glyph": "broadcast_S",
-      "mark": "YS",
+      "color": "#B0F800",
+      "glyph": "selfcare_wm",
       "components": [
         "bg.yettel.tv.selfcare/bg.yettel.tv.selfcare.MainActivity"
       ],
       "category": "APP",
-      "color_source": "sampled from the official launcher icon (Google Play listing for bg.yettel.tv.selfcare): dominant brand accent #002340 (2026-09-26)",
-      "color_reviewed": "2026-09-26"
+      "color_source": "sampled from the Google Play listing launcher icon for bg.yettel.tv.selfcare (reference only): #B0F800 (2026-09-28)",
+      "color_reviewed": "2026-09-28",
+      "glyph_source": "wordmark-derived mark from the Google Play listing launcher icon for bg.yettel.tv.selfcare (reference only): the logotype's cue 'Y' with its play, set in the pack's own single-stroke letters, not the vendor letterforms (2026-09-28)"
     },
     {
       "name": "Yettel TV",
@@ -13342,21 +13298,21 @@
     {
       "name": "NextPlayer",
       "drawable": "nextplayer",
-      "color": "#19D3C5",
-      "glyph": "film_N",
-      "mark": "NE",
+      "color": "#88D0D0",
+      "glyph": "nextplayer_wm",
       "category": "PLAYER",
       "components": [
         "dev.anilbeesetti.nextplayer/dev.anilbeesetti.nextplayer.feature.videopicker.MainActivity",
         "dev.anilbeesetti.nextplayer/.ui.MainActivity"
       ],
       "mapping_source": "research document 2026-09-18 (component unverified against APK)",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null,
+      "color_source": "sampled from the Google Play listing launcher icon for dev.anilbeesetti.nextplayer (reference only): #88D0D0 (2026-09-28)",
+      "color_reviewed": "2026-09-28",
       "unverified": [
         "dev.anilbeesetti.nextplayer/dev.anilbeesetti.nextplayer.feature.videopicker.MainActivity",
         "dev.anilbeesetti.nextplayer/.ui.MainActivity"
-      ]
+      ],
+      "glyph_source": "wordmark-derived mark from the Google Play listing launcher icon for dev.anilbeesetti.nextplayer (reference only): the logotype's cue 'NP' with its play, set in the pack's own single-stroke letters, not the vendor letterforms (2026-09-28)"
     },
     {
       "name": "OTT Navigator",
@@ -13543,7 +13499,7 @@
       "name": "TCL Home Passive",
       "drawable": "tcl_home_passive",
       "color": "#A60202",
-      "glyph": "tool_T",
+      "glyph": "tcl_home_passive_wm",
       "components": [
         "com.tcl.tv.tclhome_passive/com.tcl.tv.tclhome_passive.HomePassiveActivity",
         "com.tcl.tv.tclhome_passive/com.tcl.tclhome_passive.HomePassiveActivity"
@@ -13552,7 +13508,7 @@
       "mapping_source": "owner TV audit 2026-09-21 (Auditor screenshots, TCL Google TV); com.tcl.tclhome_passive activity class from supporter TV audit 2026-09-27 (Auditor screenshots, TCL Google TV)",
       "color_source": "sampled from the official launcher icon (APKCombo mirror of the Google Play listing for com.tcl.tv.tclhome_passive): dominant brand accent #A60202 (2026-09-26)",
       "color_reviewed": "2026-09-26",
-      "mark": "TH"
+      "glyph_source": "wordmark-derived mark from the APKCombo mirror launcher icon for com.tcl.tv.tclhome_passive (reference only): the logotype's cue 'TCL' with its frame, set in the pack's own single-stroke letters, not the vendor letterforms (2026-09-28)"
     },
     {
       "name": "TV",
@@ -13572,15 +13528,15 @@
       "name": "User Center",
       "drawable": "user_center",
       "color": "#F04DE0",
-      "glyph": "tool_U",
-      "mark": "UC",
+      "glyph": "usercenter_person",
       "components": [
         "com.tcl.usercenter/com.tcl.usercenter.activity.WelActivity"
       ],
       "category": "SYSTEM",
       "mapping_source": "owner TV audit 2026-09-21 (Auditor screenshots, TCL Google TV)",
       "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_reviewed": null,
+      "glyph_source": "brand-informed redraw of the Google Play listing launcher icon for com.tcl.usercenter (reference only); Core monoline geometry, not a trace (2026-09-28)"
     },
     {
       "name": "Voltra TV",
@@ -13621,21 +13577,21 @@
       "category": "PLAYER",
       "color_source": "Google Play listings (com.gridstreamr.gridstreamr + com.gridstreamr.androidtv), 2026-09",
       "color_reviewed": null,
-      "glyph": "film_G",
-      "mark": "GS"
+      "glyph": "gridstreamr_grid",
+      "glyph_source": "brand-informed redraw of the Google Play listing launcher icon for com.gridstreamr.gridstreamr (reference only); Core monoline geometry, not a trace (2026-09-28)"
     },
     {
       "name": "Launch on Boot",
       "drawable": "launch_on_boot",
-      "color": "#7AC7E8",
+      "color": "#00A8F0",
       "components": [
         "news.androidtv.launchonboot/news.androidtv.launchonboot.MainActivity"
       ],
       "category": "TOOL",
-      "color_source": "F-Droid package news.androidtv.launchonboot, 2026-09",
-      "color_reviewed": null,
-      "glyph": "tool_L",
-      "mark": "LB"
+      "color_source": "sampled from the APKCombo mirror launcher icon for news.androidtv.launchonboot (reference only): #00A8F0 (2026-09-28)",
+      "color_reviewed": "2026-09-28",
+      "glyph": "launchonboot_cycle",
+      "glyph_source": "brand-informed redraw of the APKCombo mirror launcher icon for news.androidtv.launchonboot (reference only); Core monoline geometry, not a trace (2026-09-28)"
     },
     {
       "name": "TVLok",

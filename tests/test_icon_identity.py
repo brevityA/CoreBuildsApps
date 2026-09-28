@@ -220,8 +220,14 @@ class IdentityTests(unittest.TestCase):
                 self.assertTrue(icon.get("mark"), f"{icon['name']}: style without mark")
                 self.assertTrue(icon.get("mark_style_source"),
                                 f"{icon['name']}: '{style}' cue has no source note")
+        # 1.9.7 graduated every `lower`-styled tile into a drawn wordmark
+        # mark (tools/glyphs.py _WM / _WM2, glyph `<drawable>_wm`), which
+        # carries the logotype's case in the pack's own stroke letters. The
+        # guard is that the researched logotype cue still ships somewhere:
+        # on a styled tile, or on its graduated mark.
+        graduated = sum(1 for icon in ICONS if icon["glyph"].endswith("_wm"))
         self.assertGreater(
-            styled, 0,
+            styled + graduated, 0,
             "mark_style vocabulary is loaded but no icon ships a researched "
             "treatment — the tranche regressed")
 
