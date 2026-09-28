@@ -8327,3 +8327,28 @@ GLYPHS.update({"applinked_ribbon": applinked_ribbon, "photogrid_tiles": photogri
 _WM2.update({"cgtnamericanow": ("CG/TN", None), "lazycatsoftware": ("LM", "frame"),
              "videoplayer_2": ("NOVA", None)})
 GLYPHS.update({f"{d}_wm": _wm_glyph(*_WM2[d]) for d in ("cgtnamericanow", "lazycatsoftware", "videoplayer_2")})
+
+
+def rubika_cube(c):
+    """Rubika TV: the hexagonal cube seen corner-on, its three faces split by a Y."""
+    import math
+    pts = [(256 + 176 * math.cos(math.radians(a)), 256 + 176 * math.sin(math.radians(a)))
+           for a in range(-90, 270, 60)]
+    d = "M " + " L ".join(f"{x:.1f} {y:.1f}" for x, y in pts) + " Z"
+    return (f'<path d="{d}" {_s(c, 28)}/>'
+            f'<path d="M 256 256 L 256 432 M 256 256 L 104 168 M 256 256 L 408 168" {_s(c, 24)}/>')
+
+
+GLYPHS["rubika_cube"] = rubika_cube
+
+# Letter tiles whose Projectivy Icon Pack 1.1.9 artwork was missed by the
+# first wordmark scan (its component index was incomplete); same cue rules.
+_WM3 = {
+    "airattack2tv": ("air/2", None), "allsaversocial": ("Viva", None), "anime": ("ani", None),
+    "cybermedia": ("CF", "ring"), "damontecres": ("SH", "over"), "eternaltviptvbox": ("ET", "frame"),
+    "nathnetwork": ("ET", "ring"), "fanetv": ("FANE", None), "fctv77": ("FC", "under"),
+    "enhanced": ("DUNE", None), "mgstv": ("MG", "under"), "myiptv": ("MY", None),
+    "oktv22": ("OK", None), "onepixmedia": ("PIX", "dot"), "apksrebrand": ("PL", "play"),
+    "sportseverywhere": ("4V", "under"), "xtreamplayeranddownloader": ("9X", None),
+}
+GLYPHS.update({f"{d}_wm": _wm_glyph(t, cue) for d, (t, cue) in _WM3.items()})

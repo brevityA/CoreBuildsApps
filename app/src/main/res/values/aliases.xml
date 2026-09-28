@@ -10,6 +10,7 @@
     <drawable name="jawwy_tv">@drawable/intigral</drawable>
     <drawable name="ninenow_2">@drawable/ninenow</drawable>
     <drawable name="ott">@drawable/cbs</drawable>
+    <drawable name="rezka">@drawable/falcofemoralis</drawable>
     <drawable name="sevenplus">@drawable/seven_plus</drawable>
     <drawable name="shows">@drawable/bet_plus</drawable>
     <drawable name="smarttubenext">@drawable/smarttube</drawable>

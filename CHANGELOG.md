@@ -26,6 +26,16 @@ All notable changes to the Core Builds Icon Pack. Format follows
 - **Basis.** Its B with a play arrow in the lower bowl, on the icon's blue
   gradient, requested in #199 with its launch activity read off the
   requester's TV. 970 → 971 icons.
+- **17 more letter tiles get marks from their Projectivy artwork.** The
+  first wordmark pass missed their art (its component index was
+  incomplete): Air Attack 2, VivaTV, AnimeTV, Cyberflix, Stash, both
+  Eternal TV apps, FANE TV, FCTV33, Dune, Magis TV, MYiptv 4K, OK TV,
+  1Pix Media, PlayLatin, Sports Everywhere and 9Xtream get wordmark
+  marks, Rubika TV its hexagonal cube, and HDRezka joins Rezka's brand
+  group on the same HD mark. 17 letter tiles remain: 11 whose logos are a
+  character, crest, photo or someone else's mark (or, for WeatherBug, whose
+  artwork shows a different app), AnikenTV's deliberate AK tile, and 5
+  apps with no icon anywhere.
 - **95 more letter tiles get marks from their store-listing icons.** These
   apps have no Projectivy artwork, so their launcher icons were read from
   their Google Play, APKCombo, Aptoide or Uptodown listings instead, as
@@ -36,9 +46,8 @@ All notable changes to the Core Builds Icon Pack. Format follows
   Screensaver's tile wall. The other 85 are logotypes and get the
   same wordmark treatment as below (Virgin Media Play's VM and play, The
   CW, HGTV, BBC Sounds, CGTN Now, VRT MAX, sky+, TLC, WiiM and the rest);
-  30 take their icons' colours. 26 apps have no icon on any store and keep letter
-  tiles, as do All Red Video (a club crest) and Rover's Morning Glory (a
-  photo of its host).
+  30 take their icons' colours. All Red Video (a club crest) and Rover's
+  Morning Glory (a photo of its host) keep letter tiles.
 - **117 wordmark-only apps get marks from their logotypes.** Their
   launcher icons are a name with no symbol in it, so each mark is the
   logotype's own cue: the short form and case the logo uses (arte's
@@ -216,6 +225,18 @@ All notable changes to the Core Builds Icon Pack. Format follows
 
 ### Changed
 
+- **124 accents now match their apps' logos.** A colour sweep compared
+  every icon's accent with the dominant hue of its reference icon (the
+  Projectivy Icon Pack 1.1.9 artwork, or the store listing, as reference
+  only) and reviewed the 197 that disagreed by eye. 116 were plainly wrong
+  and take the logo's colour, and 8 palette fallbacks with a clear logo
+  colour (Crossy Road, Juuno, Lampa, TBS, Ugreen NAS, FileSynced, The Roku
+  Channel, Eon TV) take theirs too: Dish, eTVnet, FilmRise, Globoplay, YouTube TV,
+  USA Network, Shudder and Peloton go red; APKPure, iQIYI, PBS Kids and
+  Tennis Channel go green; SYFY, DRM Info, Norton and MovieBox Pro go
+  yellow; MX Player, Sling, TiviMate and Solid Explorer go blue, among
+  others. Brand groups stay on one colour. Launcher shortcuts, white or
+  multicolour logos and brand groups were left as they were.
 - **AK47Sports, Voltra TV and AnikenTV drawn from their real icons.** The
   same supporter's screenshots show three launcher icons no store had:
   AK47Sports gets its crossed cricket bats and football, Voltra TV its V
