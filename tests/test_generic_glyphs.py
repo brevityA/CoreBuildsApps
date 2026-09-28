@@ -31,7 +31,7 @@ class GenericGlyphTests(unittest.TestCase):
             "Aurora Store": "store",
             "Fluffy": "files",
             "Gain": "film",
-            "GenPlay": "gaming",
+            "Clone Hero": "gaming",
             "Aparat Sport": "sport",
         }
         for name, family in expected.items():

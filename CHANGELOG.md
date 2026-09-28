@@ -26,6 +26,15 @@ All notable changes to the Core Builds Icon Pack. Format follows
 - **Basis.** Its B with a play arrow in the lower bowl, on the icon's blue
   gradient, requested in #199 with its launch activity read off the
   requester's TV. 970 → 971 icons.
+- **12 more apps get marks drawn from their real icons, 234 in all.**
+  Tablo's bar and TV tab, Radio On TV's set with its keypad, EchoGram's play
+  arrow and echo, Monitor Dot's split panes, Screenscape's S coin, GenPlay's
+  spiral G, Amazon Luna's three joined nodes, Fresh Drama's slashed
+  triangle, HDHomeRun's HD box, KPN's open play arrow and plus, Polsat Box
+  Go's turning boxes and RTBF Auvio's heavy O replace their letter tiles. The
+  launcher icons were read from the Projectivy Icon Pack 1.1.9 artwork, as
+  reference only. Polsat Box Go takes its logo's yellow instead of a palette
+  lime, and EchoGram is spelled like the app.
 - **12 more apps get marks drawn from their real icons, 222 in all.**
   Bravia Core's swirling lens, Brollie's pencil mascot, Eon TV's ring on its
   horizon, FEB's hooked pin, Five TV's flame-flagged 5, Global TV's chevron,

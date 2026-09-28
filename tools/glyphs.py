@@ -7146,3 +7146,114 @@ GLYPHS.update({
     "onstream_bolt": onstream_bolt, "swampdog_diamond": swampdog_diamond,
     "talktv_bubble": talktv_bubble, "uae4arm_stripes": uae4arm_stripes,
 })
+
+
+# --------------------------------------------------------------------------
+# Brand marks batch 15 (2026-09-28): more letter tiles whose launcher icon,
+# seen in the Projectivy Icon Pack 1.1.9 artwork (reference only), carries a
+# symbol.
+
+
+def tablo_bar(c):
+    """Tablo: the long rounded bar with its TV tab hanging from the right."""
+    return (f'<rect x="56" y="196" width="400" height="96" rx="48" {_s(c, 28)}/>'
+            f'<path d="M 300 292 L 300 344 C 300 360 312 372 328 372 L 404 372 '
+            f'C 420 372 432 360 432 344 L 432 292" {_s(c, 24)}/>'
+            f'<path d="M 128 244 L 384 244" {_s(c, 20)}/>')
+
+
+def radioontv_set(c):
+    """Radio On TV: the set with its aerial, round speaker and keypad."""
+    keys = "".join(f'<circle cx="{x}" cy="{y}" r="10" {_f(c)}/>'
+                   for x in (310, 350, 390) for y in (312, 352))
+    return (f'<path d="M 120 192 L 372 96" {_s(c, 22)}/>'
+            f'<circle cx="380" cy="92" r="16" {_f(c)}/>'
+            f'<rect x="72" y="192" width="368" height="220" rx="36" {_s(c, 28)}/>'
+            f'<circle cx="178" cy="304" r="62" {_s(c, 22)}/>'
+            f'<rect x="286" y="230" width="128" height="44" rx="10" {_s(c, 18)}/>' + keys)
+
+
+def echogram_play(c):
+    """EchoGram: a play arrow with its echo trailing behind it."""
+    return (f'<path d="M 188 108 L 424 256 L 188 404 Z" {_s(c, 28)}/>'
+            f'<path d="M 124 150 L 124 362 M 72 196 L 72 316" {_s(c, 26)}/>'
+            + _solid("M 236 200 L 326 256 L 236 312 Z", c, 14))
+
+
+def monitordot_panes(c):
+    """Monitor Dot: two tall panes side by side, a split screen."""
+    return (f'<rect x="80" y="112" width="160" height="288" rx="20" {_s(c, 28)}/>'
+            f'<rect x="272" y="112" width="160" height="288" rx="20" {_s(c, 28)}/>'
+            f'<circle cx="352" cy="256" r="26" {_f(c)}/>')
+
+
+def screenscape_s(c):
+    """Screenscape: the S cut into a coin."""
+    return (f'<circle cx="256" cy="256" r="184" {_s(c, 28)}/>'
+            f'<path d="M 346 170 L 208 170 C 170 170 150 196 150 222 C 150 250 170 266 208 266 '
+            f'L 304 266 C 342 266 362 284 362 310 C 362 338 342 352 304 352 L 166 352" '
+            f'{_s(c, 30)}/>')
+
+
+def genplay_spiral(c):
+    """GenPlay: a G that spirals in to a dot."""
+    return (f'<path d="{_arc_cw(256, 256, 180, 330, 630)} L 436 256" {_s(c, 28)}/>'
+            f'<path d="{_arc_cw(256, 256, 110, 30, 300)}" {_s(c, 24)}/>'
+            f'<circle cx="256" cy="256" r="26" {_f(c)}/>')
+
+
+def luna_figure(c):
+    """Amazon Luna: three joined nodes, a head over two planted feet."""
+    return (f'<path d="M 256 120 L 120 380 L 392 380 Z" {_s(c, 34)}/>'
+            f'<circle cx="256" cy="120" r="48" {_s(c, 26)}/>'
+            f'<circle cx="120" cy="380" r="40" {_f(c)}/>'
+            f'<circle cx="392" cy="380" r="40" {_f(c)}/>')
+
+
+def freshdrama_tri(c):
+    """Fresh Drama: the downward triangle slashed through with a stroke."""
+    return (f'<path d="M 72 112 L 440 112 L 256 432 Z" {_s(c, 28)}/>'
+            f'<path d="M 150 250 L 360 170 M 190 312 L 316 264" {_s(c, 24)}/>')
+
+
+def hdhomerun_box(c):
+    """HDHomeRun: the rounded tuner box stamped with HD."""
+    return (f'<rect x="72" y="120" width="368" height="272" rx="48" {_s(c, 28)}/>'
+            f'<path d="M 144 184 L 144 328 M 232 184 L 232 328 M 144 256 L 232 256" '
+            f'{_s(c, 26)}/>'
+            f'<path d="M 284 184 L 284 328 L 320 328 C 368 328 384 296 384 256 '
+            f'C 384 216 368 184 320 184 Z" {_s(c, 26)}/>')
+
+
+def kpn_play(c):
+    """KPN: the open play arrow, broken at its back, with a plus beside."""
+    return (f'<path d="M 188 196 L 188 96 L 436 256 L 188 416 L 188 316" {_s(c, 30)}/>'
+            f'<path d="M 128 208 L 128 304 M 80 256 L 176 256" {_s(c, 28)}/>')
+
+
+def polsat_swirl(c):
+    """Polsat Box Go: three rounded boxes, each turned a little further in."""
+    return (f'<rect x="80" y="104" width="352" height="304" rx="88" '
+            f'transform="rotate(-12 256 256)" {_s(c, 26)}/>'
+            f'<rect x="150" y="160" width="232" height="196" rx="56" '
+            f'transform="rotate(-24 266 258)" {_s(c, 24)}/>'
+            f'<rect x="218" y="214" width="116" height="92" rx="26" '
+            f'transform="rotate(-36 276 260)" {_s(c, 22)}/>')
+
+
+def auvio_o(c):
+    """RTBF Auvio: the heavy tilted O with its offset counter."""
+    return (f'<ellipse cx="256" cy="256" rx="192" ry="136" transform="rotate(-24 256 256)" '
+            f'{_s(c, 34)}/>'
+            f'<ellipse cx="282" cy="240" rx="104" ry="58" transform="rotate(-24 282 240)" '
+            f'{_s(c, 26)}/>')
+
+
+GLYPHS.update({
+    "tablo_bar": tablo_bar, "radioontv_set": radioontv_set,
+    "echogram_play": echogram_play, "monitordot_panes": monitordot_panes,
+    "screenscape_s": screenscape_s, "genplay_spiral": genplay_spiral,
+    "luna_figure": luna_figure, "freshdrama_tri": freshdrama_tri,
+    "hdhomerun_box": hdhomerun_box, "kpn_play": kpn_play,
+    "polsat_swirl": polsat_swirl, "auvio_o": auvio_o,
+})

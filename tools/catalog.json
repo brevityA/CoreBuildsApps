@@ -2795,17 +2795,18 @@
       "color_reviewed": null
     },
     {
-      "name": "Echogram",
+      "name": "EchoGram",
       "drawable": "echogram",
       "color": "#4765AD",
-      "glyph": "music_E",
-      "mark": "EC",
+      "glyph": "echogram_play",
       "components": [
         "com.liori.echogram/com.liori.echogram.MainActivity"
       ],
       "category": "APP",
       "color_source": "sampled from the official launcher icon (Google Play listing for com.liori.echogram): dominant brand accent #4765AD (2026-09-26)",
-      "color_reviewed": "2026-09-26"
+      "color_reviewed": "2026-09-26",
+      "glyph_source": "brand-informed redraw of the Projectivy Icon Pack 1.1.9 artwork for com.liori.echogram (github.com/SicMundus86/ProjectivyIconPack, used as reference only); Core monoline geometry, not a trace (2026-09-28)",
+      "name_source": "app name as the Projectivy Icon Pack 1.1.9 artwork for com.liori.echogram (github.com/SicMundus86/ProjectivyIconPack, used as reference only) shows it (2026-09-28)"
     },
     {
       "name": "Elefin",
@@ -3810,22 +3811,21 @@
       "name": "Amazon Luna",
       "drawable": "spiderpork",
       "color": "#8838F8",
-      "glyph": "film_A",
-      "mark": "AL",
+      "glyph": "luna_figure",
       "components": [
         "com.amazon.spiderpork/com.amazon.spiderpork.activities.MainActivity"
       ],
       "category": "GAMING",
       "color_source": "sampled from the Projectivy Icon Pack 1.1.9 artwork for com.amazon.spiderpork (github.com/SicMundus86/ProjectivyIconPack, used as reference only): #8838F8 (2026-09-27)",
       "color_reviewed": "2026-09-27",
-      "name_source": "app name from the Projectivy Icon Pack 1.1.9 artwork for com.amazon.spiderpork (github.com/SicMundus86/ProjectivyIconPack, used as reference only), which shows the Amazon Luna logo for this package (2026-09-27)"
+      "name_source": "app name from the Projectivy Icon Pack 1.1.9 artwork for com.amazon.spiderpork (github.com/SicMundus86/ProjectivyIconPack, used as reference only), which shows the Amazon Luna logo for this package (2026-09-27)",
+      "glyph_source": "brand-informed redraw of the Projectivy Icon Pack 1.1.9 artwork for com.amazon.spiderpork (github.com/SicMundus86/ProjectivyIconPack, used as reference only); Core monoline geometry, not a trace (2026-09-28)"
     },
     {
       "name": "Fresh Drama",
       "drawable": "fresh_drama",
       "color": "#FF19B9",
-      "glyph": "broadcast_F",
-      "mark": "FD",
+      "glyph": "freshdrama_tri",
       "components": [
         "com.skylinktv.freshdrama/co.unreel.videoapp.PreSplashActivity",
         "com.skylinktv.freshdrama/co.unreel.tvapp.ui.activity.SplashActivity"
@@ -3833,7 +3833,8 @@
       "category": "APP",
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "sampled from the official launcher icon (Google Play listing for com.skylinktv.freshdrama): dominant brand accent #FF19B9 (2026-09-26)",
-      "color_reviewed": "2026-09-26"
+      "color_reviewed": "2026-09-26",
+      "glyph_source": "brand-informed redraw of the Projectivy Icon Pack 1.1.9 artwork for com.skylinktv.freshdrama (github.com/SicMundus86/ProjectivyIconPack, used as reference only); Core monoline geometry, not a trace (2026-09-28)"
     },
     {
       "name": "Ftp Server",
@@ -3973,14 +3974,14 @@
       "name": "GenPlay",
       "drawable": "genplay",
       "color": "#18B0E0",
-      "glyph": "gaming_G",
-      "mark": "GE",
+      "glyph": "genplay_spiral",
       "components": [
         "com.genplay.apps/com.genplay.apps.MainActivity"
       ],
       "category": "APP",
       "color_source": "sampled from the Projectivy Icon Pack 1.1.9 artwork for com.genplay.apps (github.com/SicMundus86/ProjectivyIconPack, used as reference only): #18B0E0 (2026-09-27)",
-      "color_reviewed": "2026-09-27"
+      "color_reviewed": "2026-09-27",
+      "glyph_source": "brand-informed redraw of the Projectivy Icon Pack 1.1.9 artwork for com.genplay.apps (github.com/SicMundus86/ProjectivyIconPack, used as reference only); Core monoline geometry, not a trace (2026-09-28)"
     },
     {
       "name": "Get Icon",
@@ -4251,8 +4252,7 @@
       "name": "HDHomeRun",
       "drawable": "hdhomerun",
       "color": "#6EED00",
-      "glyph": "broadcast_H",
-      "mark": "HD",
+      "glyph": "hdhomerun_box",
       "components": [
         "com.silicondust.view/com.silicondust.view.App"
       ],
@@ -4260,7 +4260,7 @@
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "sampled from the official launcher icon (Google Play listing for com.silicondust.view): dominant brand accent #6EED00 (2026-09-26)",
       "color_reviewed": "2026-09-26",
-      "mark_source": "logotype letters from the official launcher icon (Google Play listing for com.silicondust.view), which reads 'HD'; set in the pack's face, not traced (2026-09-26)"
+      "glyph_source": "brand-informed redraw of the Projectivy Icon Pack 1.1.9 artwork for com.silicondust.view (github.com/SicMundus86/ProjectivyIconPack, used as reference only); Core monoline geometry, not a trace (2026-09-28)"
     },
     {
       "name": "HDMI Source",
@@ -5365,14 +5365,14 @@
       "name": "KPN",
       "drawable": "kpnandroidtv",
       "color": "#02BE03",
-      "glyph": "broadcast_K",
-      "mark": "KP",
+      "glyph": "kpn_play",
       "components": [
         "com.kpn.kpnandroidtv/com.kpn.tvplusapp.MainActivity"
       ],
       "category": "APP",
       "color_source": "sampled from the official launcher icon (Google Play listing for com.kpn.kpnandroidtv): dominant brand accent #02BE03 (2026-09-26)",
-      "color_reviewed": "2026-09-26"
+      "color_reviewed": "2026-09-26",
+      "glyph_source": "brand-informed redraw of the Projectivy Icon Pack 1.1.9 artwork for com.kpn.kpnandroidtv (github.com/SicMundus86/ProjectivyIconPack, used as reference only); Core monoline geometry, not a trace (2026-09-28)"
     },
     {
       "name": "Kreate",
@@ -8179,17 +8179,17 @@
     {
       "name": "Polsat Box Go",
       "drawable": "polsat_box_go",
-      "color": "#B6F23A",
-      "glyph": "broadcast_P",
-      "mark": "PB",
+      "color": "#F8C800",
+      "glyph": "polsat_swirl",
       "components": [
         "pl.cyfrowypolsat.cpgo/pl.cyfrowypolsat.cpframework.presentation.mobile.launch.LaunchActivity",
         "pl.cyfrowypolsat.cpgo/pl.cyfrowypolsat.cpframework.presentation.tv.launch.TvLaunchActivity"
       ],
       "category": "APP",
       "mapping_source": "Projectivy Icon Pack 1.1.9",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled from the Projectivy Icon Pack 1.1.9 artwork for pl.cyfrowypolsat.cpgo (github.com/SicMundus86/ProjectivyIconPack, used as reference only): #F8C800 (2026-09-28)",
+      "color_reviewed": "2026-09-28",
+      "glyph_source": "brand-informed redraw of the Projectivy Icon Pack 1.1.9 artwork for pl.cyfrowypolsat.cpgo (github.com/SicMundus86/ProjectivyIconPack, used as reference only); Core monoline geometry, not a trace (2026-09-28)"
     },
     {
       "name": "NovaTV",
@@ -8528,15 +8528,15 @@
       "name": "Radio On TV",
       "drawable": "radio_on_tv",
       "color": "#FF4D4D",
-      "glyph": "music_R",
-      "mark": "RO",
+      "glyph": "radioontv_set",
       "components": [
         "de.fitzood.radio.tv/de.fitzood.radio.tv.MainActivity"
       ],
       "category": "MUSIC",
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_reviewed": null,
+      "glyph_source": "brand-informed redraw of the Projectivy Icon Pack 1.1.9 artwork for de.fitzood.radio.tv (github.com/SicMundus86/ProjectivyIconPack, used as reference only); Core monoline geometry, not a trace (2026-09-28)"
     },
     {
       "name": "Radio Paradise",
@@ -8941,14 +8941,14 @@
       "name": "RTBF Auvio",
       "drawable": "auvio",
       "color": "#FFCB00",
-      "glyph": "broadcast_A",
-      "mark": "RA",
+      "glyph": "auvio_o",
       "components": [
         "be.rtbf.auvio/com.dotscreen.ethanol.tv.ui.MainActivity"
       ],
       "category": "APP",
       "color_source": "sampled from the official launcher icon (Google Play listing for be.rtbf.auvio): dominant brand accent #FFCB00 (2026-09-26)",
-      "color_reviewed": "2026-09-26"
+      "color_reviewed": "2026-09-26",
+      "glyph_source": "brand-informed redraw of the Projectivy Icon Pack 1.1.9 artwork for be.rtbf.auvio (github.com/SicMundus86/ProjectivyIconPack, used as reference only); Core monoline geometry, not a trace (2026-09-28)"
     },
     {
       "name": "RTE Player",
@@ -9211,15 +9211,15 @@
       "name": "Screenscape",
       "drawable": "screenscape",
       "color": "#E8B820",
-      "glyph": "tool_S",
-      "mark": "SC",
+      "glyph": "screenscape_s",
       "components": [
         "com.screenscape/com.screenscape.MainActivity"
       ],
       "category": "APP",
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "sampled from the Projectivy Icon Pack 1.1.9 artwork for com.screenscape (github.com/SicMundus86/ProjectivyIconPack, used as reference only): #E8B820 (2026-09-27)",
-      "color_reviewed": "2026-09-27"
+      "color_reviewed": "2026-09-27",
+      "glyph_source": "brand-informed redraw of the Projectivy Icon Pack 1.1.9 artwork for com.screenscape (github.com/SicMundus86/ProjectivyIconPack, used as reference only); Core monoline geometry, not a trace (2026-09-28)"
     },
     {
       "name": "SD Maid",
@@ -10450,14 +10450,14 @@
       "name": "Tablo",
       "drawable": "tablofast",
       "color": "#1294D2",
-      "glyph": "broadcast_T",
-      "mark": "TA",
+      "glyph": "tablo_bar",
       "components": [
         "com.nuvyyo.TabloFAST/com.nuvyyo.tablo.LaunchActivity"
       ],
       "category": "APP",
       "color_source": "sampled from the official launcher icon (Google Play listing for com.nuvyyo.TabloFAST): dominant brand accent #1294D2 (2026-09-26)",
-      "color_reviewed": "2026-09-26"
+      "color_reviewed": "2026-09-26",
+      "glyph_source": "brand-informed redraw of the Projectivy Icon Pack 1.1.9 artwork for com.nuvyyo.TabloFAST (github.com/SicMundus86/ProjectivyIconPack, used as reference only); Core monoline geometry, not a trace (2026-09-28)"
     },
     {
       "name": "Tailscale",
@@ -12278,15 +12278,15 @@
       "name": "Monitor Dot",
       "drawable": "omnisoft",
       "color": "#F84060",
-      "glyph": "vpn_M",
-      "mark": "MD",
+      "glyph": "monitordot_panes",
       "components": [
         "com.omnisoft.vpndot/com.omnisoft.vpndot.main"
       ],
       "category": "TOOL",
       "color_source": "sampled from the Projectivy Icon Pack 1.1.9 artwork for com.omnisoft.vpndot (github.com/SicMundus86/ProjectivyIconPack, used as reference only): #F84060 (2026-09-27)",
       "color_reviewed": "2026-09-27",
-      "name_source": "app name from the Projectivy Icon Pack 1.1.9 artwork for com.omnisoft.vpndot (github.com/SicMundus86/ProjectivyIconPack, used as reference only), which shows the Monitor Dot logo for this package (2026-09-27)"
+      "name_source": "app name from the Projectivy Icon Pack 1.1.9 artwork for com.omnisoft.vpndot (github.com/SicMundus86/ProjectivyIconPack, used as reference only), which shows the Monitor Dot logo for this package (2026-09-27)",
+      "glyph_source": "brand-informed redraw of the Projectivy Icon Pack 1.1.9 artwork for com.omnisoft.vpndot (github.com/SicMundus86/ProjectivyIconPack, used as reference only); Core monoline geometry, not a trace (2026-09-28)"
     },
     {
       "name": "VPN Unlimited",

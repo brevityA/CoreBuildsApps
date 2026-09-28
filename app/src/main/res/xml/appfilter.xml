@@ -602,7 +602,7 @@
     <item component="ComponentInfo{dw.com.androidtv.live/com.dw.app.dwforsmarttv.MainActivity}" drawable="dw_banner"/>
     <!-- EarthCam -->
     <item component="ComponentInfo{com.earthcam.earthcamtv.android/com.earthcam.earthcamtv.mainmvp.MainActivity}" drawable="earthcamtv_banner"/>
-    <!-- Echogram -->
+    <!-- EchoGram -->
     <item component="ComponentInfo{com.liori.echogram/com.liori.echogram.MainActivity}" drawable="echogram_banner"/>
     <item component="ComponentInfo{com.liori.echogram/.MainActivity}" drawable="echogram_banner"/>
     <!-- Elefin -->

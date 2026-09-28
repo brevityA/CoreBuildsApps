@@ -214,7 +214,7 @@ Source accents are retained in the catalog. **On dark** is the shared square/ban
 | Dune | `enhanced` | `#FF4D4D` | `#FF4D4D` | `Dune.enhanced.tv/org.jellyfin.androidtv.ui.startup.StartupActivity` |
 | Dw | `dw` | `#FFB020` | `#FFB020` | `dw.com.androidtv.live/com.dw.app.dwforsmarttv.MainActivity` |
 | EarthCam | `earthcamtv` | `#1982C4` | `#1982C4` | `com.earthcam.earthcamtv.android/com.earthcam.earthcamtv.mainmvp.MainActivity` |
-| Echogram | `echogram` | `#4765AD` | `#4765AD` | `com.liori.echogram/com.liori.echogram.MainActivity` |
+| EchoGram | `echogram` | `#4765AD` | `#4765AD` | `com.liori.echogram/com.liori.echogram.MainActivity` |
 | Elefin | `elefin` | `#7058D8` | `#7058D8` | `com.flex.elefin/com.flex.elefin.MainActivity` |
 | Emby | `emby` | `#52B54B` | `#52B54B` | `tv.emby.embyatv/.startup.StartupActivity`<br>`com.mb.android/.MainActivity` |
 | Emotn Store | `appstore` | `#D828E0` | `#D828E0` | `com.overseas.store.appstore/com.overseas.store.appstore.ui.SplashActivity` |
@@ -592,7 +592,7 @@ Source accents are retained in the catalog. **On dark** is the shared square/ban
 | Pluto TV | `pluto_tv` | `#FFF200` | `#FFF200` | `tv.pluto.android/tv.pluto.android.EntryPoint` |
 | PMX | `pmx` | `#00C2C2` | `#00C2C2` | `com.mirfatif.permissionmanagerx/com.mirfatif.permissionmanagerx.fwk.MainActivityM`<br>`com.mirfatif.permissionmanagerx/com.mirfatif.permissionmanagerx.fwk.MainActivity` |
 | Podcast Addict | `podcastaddict` | `#F4842D` | `#F4842D` | `com.bambuna.podcastaddict/com.bambuna.podcastaddict.activity.PodcastListActivity` |
-| Polsat Box Go | `polsat_box_go` | `#B6F23A` | `#B6F23A` | `pl.cyfrowypolsat.cpgo/pl.cyfrowypolsat.cpframework.presentation.mobile.launch.LaunchActivity`<br>`pl.cyfrowypolsat.cpgo/pl.cyfrowypolsat.cpframework.presentation.tv.launch.TvLaunchActivity` |
+| Polsat Box Go | `polsat_box_go` | `#F8C800` | `#F8C800` | `pl.cyfrowypolsat.cpgo/pl.cyfrowypolsat.cpframework.presentation.mobile.launch.LaunchActivity`<br>`pl.cyfrowypolsat.cpgo/pl.cyfrowypolsat.cpframework.presentation.tv.launch.TvLaunchActivity` |
 | Poweramp Equalizer | `poweramp_eq` | `#FF6D00` | `#FF6D00` | `com.maxmpz.equalizer/.StartupActivity` |
 | PPSSPP | `ppsspp` | `#9BCFDD` | `#9BCFDD` | `org.ppsspp.ppsspp/org.ppsspp.ppsspp.PpssppActivity` |
 | Premier Sports | `premier_sports` | `#1FD19A` | `#1FD19A` | `premierplayer.premiersports.com.premierplayer/com.premiersports.premiersportstv.ui.login.DeviceLinkActivity` |
