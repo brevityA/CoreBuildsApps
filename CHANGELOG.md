@@ -14,6 +14,9 @@ All notable changes to the Core Builds Icon Pack. Format follows
   hexagon, in the suite's `#00D4FF` like Core Line, Shift and Doctor, mapped
   to `tv.corebuilds.eq/.MainActivity` from Core EQ's own manifest (#195).
   971 → 972 icons, 1197 → 1198 components.
+- **Core EQ in the suite hub.** The hub lists Core EQ (`tv.corebuilds.eq`)
+  beside the other companions and can see whether it is installed. It has no
+  Downloader code yet, so the hub shows none, the same as Core Motion.
 
 ## [1.9.7] — 2026-09-27
 

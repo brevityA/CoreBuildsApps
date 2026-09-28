@@ -5,6 +5,7 @@
 - [ ] Core Shift
 - [ ] Core Doctor
 - [ ] Core Motion
+- [ ] Core EQ
 - [ ] Docs / CI / suite
 
 ## Why this exists
@@ -45,6 +46,9 @@ Core Doctor:
 
 Core Motion:
 - [ ] `python tools/verify_motion_plugin.py`
+
+Core EQ:
+- [ ] `python tests/test_core_eq_dsp.py` and `cd coreeq && ./gradlew test`
 
 ## Notes / unverified
 

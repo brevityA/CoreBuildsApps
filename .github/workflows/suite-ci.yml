@@ -196,6 +196,19 @@ jobs:
       # nobody regenerated, not on a runner's rasteriser.
       - name: Check the committed UI frames depict the source
         run: python tools/build_app_ui_mockups.py --check
+      # Core EQ's frames read the same res/values tokens plus the live output
+      # of tools/core_eq_dsp.py, so they are checked the same way: against the
+      # sources in the tree, not against PNG bytes.
+      - name: Check the committed Core EQ frames depict the source
+        run: python tools/build_core_eq_mockups.py --check
+      # test_core_eq_dsp.py is the pytest half of this; the self-test is the
+      # half a maintainer can run with no test runner at all.
+      - name: Core EQ DSP invariants
+        run: |
+          pip install --quiet pytest
+          python tools/core_eq_dsp.py --selftest
+          python tests/test_core_eq_dsp.py
+          python tests/test_core_eq_parity.py
       - name: Python content tests
         run: |
           python tests/test_icon_identity.py

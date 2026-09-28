@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Core EQ mark: the Core Builds Icon Pack's `coreeq` icon (glyph
+  `coreeq_faders`, assets/svg/coreeq.svg) - three equaliser faders in the
+  brand hex. Path data is that SVG's, verbatim, on its 512 grid; the group
+  transform does the scaling, so the launcher and the pack stay one shape.
+-->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <group
+        android:scaleX="0.117"
+        android:scaleY="0.117"
+        android:translateX="24.048"
+        android:translateY="24.048">
+        <path
+            android:pathData="M256,60 L425.7,158 L425.7,354 L256,452 L86.3,354 L86.3,158 Z"
+            android:strokeColor="#00D4FF"
+            android:strokeWidth="32"
+            android:strokeLineCap="round"
+            android:strokeLineJoin="round"
+            android:fillColor="@android:color/transparent" />
+        <path
+            android:pathData="M176,176 V336 M256,176 V336 M336,176 V336"
+            android:strokeColor="#00D4FF"
+            android:strokeWidth="21.8"
+            android:strokeLineCap="round"
+            android:strokeLineJoin="round"
+            android:fillColor="@android:color/transparent" />
+        <path
+            android:pathData="M150,292 H202 M230,212 H282 M310,262 H362"
+            android:strokeColor="#00D4FF"
+            android:strokeWidth="32"
+            android:strokeLineCap="round"
+            android:strokeLineJoin="round"
+            android:fillColor="@android:color/transparent" />
+    </group>
+</vector>

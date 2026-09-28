@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Core EQ UI metrics, matching Core Builds UI standards.
+  Scale is 8dp-based. TV 10-foot 960dp normalized box.
+-->
+<resources>
+    <!-- Screen gutters -->
+    <dimen name="cb_gutter_side">48dp</dimen>
+    <dimen name="cb_gutter_top">40dp</dimen>
+    <dimen name="cb_gutter_bottom">24dp</dimen>
+    <dimen name="cb_gutter_side_narrow">32dp</dimen>
+    <dimen name="cb_rail_width">300dp</dimen>
+
+    <!-- Spacing rhythm -->
+    <dimen name="cb_space_xs">8dp</dimen>
+    <dimen name="cb_space_sm">12dp</dimen>
+    <dimen name="cb_space_md">16dp</dimen>
+    <dimen name="cb_space_lg">26dp</dimen>
+    <dimen name="cb_space_xl">30dp</dimen>
+
+    <!-- Radii -->
+    <dimen name="cb_radius_card">14dp</dimen>
+    <dimen name="cb_radius_button">10dp</dimen>
+    <dimen name="cb_radius_field">10dp</dimen>
+    <dimen name="cb_radius_pill">999dp</dimen>
+    <dimen name="cb_radius_card_inner">8dp</dimen>
+    <dimen name="cb_radius_card_gap">11dp</dimen>
+
+    <!-- Card inner padding, same as the icon pack app -->
+    <dimen name="cb_card_padding">14dp</dimen>
+
+    <!-- Focus ring: 3dp ring, 3dp gap, 6dp inset -->
+    <dimen name="cb_focus_ring">3dp</dimen>
+    <dimen name="cb_focus_gap">3dp</dimen>
+    <dimen name="cb_focus_inset">6dp</dimen>
+
+    <!-- Minimum touch / D-pad target -->
+    <dimen name="cb_target_min">48dp</dimen>
+    <dimen name="cb_button_min_width">220dp</dimen>
+
+    <!-- Type scale: 12sp floor for 10-foot TV readability -->
+    <dimen name="cb_text_kicker">12sp</dimen>
+    <dimen name="cb_text_data">14sp</dimen>
+    <dimen name="cb_text_label">16sp</dimen>
+    <dimen name="cb_text_body">17sp</dimen>
+    <dimen name="cb_text_section">19sp</dimen>
+    <dimen name="cb_text_title">32sp</dimen>
+    <dimen name="cb_text_display">34sp</dimen>
+</resources>

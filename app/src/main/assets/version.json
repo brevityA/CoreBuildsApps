@@ -8,6 +8,7 @@
   "releaseNotesUrl": "https://github.com/brevityA/CoreBuildsApps/releases",
   "minSdk": 21,
   "highlights": [
-    "Core EQ has its own icon"
+    "Core EQ has its own icon",
+    "Core EQ in the suite hub"
   ]
 }

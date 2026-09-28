@@ -3,18 +3,21 @@
 <resources>
     <string-array name="suite_hub_names">
         <item>Core Doctor</item>
+        <item>Core EQ</item>
         <item>Core Line</item>
         <item>Core Motion</item>
         <item>Core Shift</item>
     </string-array>
     <string-array name="suite_hub_pkgs">
         <item>dev.corebuilds.doctor</item>
+        <item>tv.corebuilds.eq</item>
         <item>dev.corebuilds.line</item>
         <item>tv.corebuilds.motion</item>
         <item>dev.corebuilds.shift</item>
     </string-array>
     <string-array name="suite_hub_codes">
         <item>8664938</item>
+        <item></item>
         <item>7375676</item>
         <item></item>
         <item>8829421</item>

@@ -183,7 +183,7 @@ class GradleParsing(unittest.TestCase):
     def test_finds_every_gradle_root_in_the_suite(self):
         self.assertEqual(
             set(self.roots),
-            {"", "ticker/android", "shift", "motion-plugin", "doctor"},
+            {"", "ticker/android", "shift", "motion-plugin", "doctor", "coreeq"},
         )
 
     def test_root_build_file_maps_to_two_modules(self):
@@ -261,7 +261,7 @@ class DependabotParsing(unittest.TestCase):
     def test_reads_every_directory(self):
         self.assertEqual(
             set(self.gradle),
-            {"/", "/ticker/android", "/shift", "/motion-plugin", "/doctor"},
+            {"/", "/ticker/android", "/shift", "/motion-plugin", "/doctor", "/coreeq"},
         )
 
     def test_non_gradle_ecosystems_survive(self):
