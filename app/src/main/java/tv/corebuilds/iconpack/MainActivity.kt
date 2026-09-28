@@ -1203,7 +1203,9 @@ class MainActivity : TvActivity() {
         button.visibility = View.VISIBLE
         sub.visibility = View.VISIBLE
 
-        val installed = ApplyIconPack.installed(this)
+        // HOME first unless HOME cannot take an apply and another launcher can:
+        // see ApplyIconPack.applyOrder.
+        val installed = ApplyIconPack.applyOrder(this)
         val detected = installed.firstOrNull()
         target = detected
 
