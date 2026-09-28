@@ -4,17 +4,286 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:background="@color/cb_night"
-    android:paddingLeft="48dp"
-    android:paddingRight="48dp"
-    android:paddingTop="36dp"
-    android:paddingBottom="36dp">
+    android:paddingLeft="@dimen/cb_gutter_side"
+    android:paddingRight="@dimen/cb_gutter_side"
+    android:paddingTop="@dimen/cb_gutter_top"
+    android:paddingBottom="@dimen/cb_gutter_bottom">
 
+    <!-- Header -->
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/capability_title"
         android:textColor="@color/cb_slate"
-        android:textSize="12sp"
+        android:textSize="@dimen/cb_text_kicker"
+        android:fontFamily="monospace"
         android:textAllCaps="true" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/capability_heading"
+        android:textColor="@color/cb_ink"
+        android:textSize="@dimen/cb_text_title"
+        android:textStyle="bold"
+        android:layout_marginTop="4dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/capability_sub"
+        android:textColor="@color/cb_slate"
+        android:textSize="@dimen/cb_text_data"
+        android:layout_marginTop="2dp" />
+
+    <!-- Two-pane content -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:orientation="horizontal"
+        android:layout_marginTop="@dimen/cb_space_md">
+
+        <!-- Left rail: 5 probed paths -->
+        <LinearLayout
+            android:layout_width="380dp"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <!-- Row 1: Global session 0 -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:background="@drawable/bg_card"
+                android:padding="@dimen/cb_card_padding"
+                android:focusable="true"
+                android:layout_marginBottom="6dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Global output mix (session 0)"
+                    android:textColor="@color/cb_ink"
+                    android:textSize="@dimen/cb_text_data"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/status_session0"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Deprecated in 2012, never removed. Probing..."
+                    android:textColor="@color/cb_slate"
+                    android:textSize="@dimen/cb_text_kicker"
+                    android:layout_marginTop="2dp" />
+            </LinearLayout>
+
+            <!-- Row 2: Session broadcasts -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:background="@drawable/bg_card"
+                android:padding="@dimen/cb_card_padding"
+                android:focusable="true"
+                android:layout_marginBottom="6dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Session open/close broadcasts"
+                    android:textColor="@color/cb_ink"
+                    android:textSize="@dimen/cb_text_data"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Players that announce a session. Netflix and YouTube do not."
+                    android:textColor="@color/cb_slate"
+                    android:textSize="@dimen/cb_text_kicker"
+                    android:layout_marginTop="2dp" />
+            </LinearLayout>
+
+            <!-- Row 3: This app's own playback -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:background="@drawable/bg_card"
+                android:padding="@dimen/cb_card_padding"
+                android:focusable="true"
+                android:layout_marginBottom="6dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="This app's own playback"
+                    android:textColor="@color/cb_ink"
+                    android:textSize="@dimen/cb_text_data"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Always works. The correction applies to what Core EQ plays."
+                    android:textColor="@color/cb_slate"
+                    android:textSize="@dimen/cb_text_kicker"
+                    android:layout_marginTop="2dp" />
+            </LinearLayout>
+
+            <!-- Row 4: DynamicsProcessing -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:background="@drawable/bg_card"
+                android:padding="@dimen/cb_card_padding"
+                android:focusable="true"
+                android:layout_marginBottom="6dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="DynamicsProcessing (API 28+)"
+                    android:textColor="@color/cb_ink"
+                    android:textSize="@dimen/cb_text_data"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/status_dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Your own band layout, up to 31 bands, plus a limiter."
+                    android:textColor="@color/cb_slate"
+                    android:textSize="@dimen/cb_text_kicker"
+                    android:layout_marginTop="2dp" />
+            </LinearLayout>
+
+            <!-- Row 5: Platform Equalizer -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:background="@drawable/bg_card"
+                android:padding="@dimen/cb_card_padding"
+                android:focusable="true">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Platform Equalizer"
+                    android:textColor="@color/cb_ink"
+                    android:textSize="@dimen/cb_text_data"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/status_platform_eq"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Device reports its own bands and millibel range. Always present."
+                    android:textColor="@color/cb_slate"
+                    android:textSize="@dimen/cb_text_kicker"
+                    android:layout_marginTop="2dp" />
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <!-- Right pane: Verdict card + Fallback guidance -->
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:layout_marginStart="@dimen/cb_space_lg">
+
+            <!-- Verdict card -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:background="@drawable/bg_card"
+                android:padding="@dimen/cb_card_padding">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/capability_verdict_title"
+                    android:textColor="@color/cb_signal_cyan"
+                    android:textSize="@dimen/cb_text_kicker"
+                    android:fontFamily="monospace"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/text_verdict_bands"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="5 bands"
+                    android:textColor="@color/cb_ink"
+                    android:textSize="@dimen/cb_text_title"
+                    android:textStyle="bold"
+                    android:layout_marginTop="4dp" />
+
+                <TextView
+                    android:id="@+id/text_verdict_session"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="session broadcast: no"
+                    android:textColor="@color/cb_slate"
+                    android:textSize="@dimen/cb_text_kicker"
+                    android:fontFamily="monospace"
+                    android:layout_marginTop="4dp" />
+
+                <TextView
+                    android:id="@+id/text_verdict_global"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="global mix: not supported"
+                    android:textColor="@color/cb_slate"
+                    android:textSize="@dimen/cb_text_kicker"
+                    android:fontFamily="monospace"
+                    android:layout_marginTop="2dp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Profiles from other sets keep the limits they were built under."
+                    android:textColor="@color/cb_slate"
+                    android:textSize="@dimen/cb_text_kicker"
+                    android:layout_marginTop="@dimen/cb_space_xs" />
+            </LinearLayout>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/capability_fallback_title"
+                android:textColor="@color/cb_slate"
+                android:textSize="@dimen/cb_text_kicker"
+                android:fontFamily="monospace"
+                android:layout_marginTop="@dimen/cb_space_md" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/capability_fallback_desc"
+                android:textColor="@color/cb_ink"
+                android:textSize="@dimen/cb_text_data"
+                android:layout_marginTop="4dp" />
+
+            <Button
+                android:id="@+id/btn_export_tv_settings"
+                android:layout_width="260dp"
+                android:layout_height="@dimen/cb_target_min"
+                android:background="@drawable/bg_cta"
+                android:text="@string/action_tv_export"
+                android:textColor="@color/cb_cta_ink"
+                android:textSize="@dimen/cb_text_label"
+                android:textStyle="bold"
+                android:focusable="true"
+                android:layout_marginTop="@dimen/cb_space_sm" />
+
+        </LinearLayout>
+
+    </LinearLayout>
 
 </LinearLayout>

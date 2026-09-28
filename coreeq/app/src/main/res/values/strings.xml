@@ -2,25 +2,63 @@
 <resources>
     <string name="app_name">Core EQ</string>
     <string name="app_tagline">Equaliser built from this room</string>
-    <string name="home_desc">A sine sweep out, the remote microphone listening, a curve you can trust.</string>
+    <string name="home_desc">A sine sweep out, the remote microphone listening, a curve you can read before you trust it.</string>
     <string name="active_profile">Active profile</string>
     <string name="living_room">Living room</string>
-    <string name="profile_details">Measured 24 Sep · Dialogue curve · 40–8000 Hz</string>
-    <string name="action_measure">Measure room</string>
+    <string name="action_measure">Measure</string>
+    <string name="action_measure_sub">Pink noise · 20 s · this room</string>
+    <string name="action_remeasure">Re-measure</string>
     <string name="action_profiles">Profiles</string>
+    <string name="action_profiles_sub">3 saved · Living room active</string>
+    <string name="action_targets">Targets</string>
+    <string name="action_targets_sub">Harman, B&amp;K, Flat, House</string>
     <string name="action_capability">Capability</string>
+    <string name="action_capability_sub">What this device will accept</string>
     <string name="action_poweramp_export">Export to Poweramp</string>
+    <string name="action_tv_export">Export for TV settings</string>
+    <string name="platform_eq_title">Platform equaliser — the 5 bands this device reports</string>
 
+    <!-- Measure screen -->
     <string name="measure_title">Core EQ · Measure</string>
-    <string name="measure_heading">Hold the room still for 10 seconds</string>
+    <string name="measure_heading">Hold the room still for 20 seconds</string>
     <string name="measure_sub">The TV plays a sine sweep. The remote microphone listens. Nothing leaves this device.</string>
     <string name="measure_step1_title">Press OK to start the stimulus</string>
-    <string name="measure_step1_sub">One frequency at a time, so it beats room noise. Loud enough to hear over the room, quiet enough to live with.</string>
+    <string name="measure_step1_sub">One frequency at a time, so it beats the room noise. Loud enough to hear over the room, quiet enough to live with.</string>
     <string name="measure_step2_title">Point the remote at your seat</string>
     <string name="measure_step2_sub">Where your ears are, not at the TV. The remote microphone is the only microphone this can use.</string>
     <string name="measure_step3_title">Keep the room quiet while the bar fills</string>
-    <string name="measure_step3_sub">Footsteps and fans land in the same capture. Dips that are cancellations get left alone.</string>
+    <string name="measure_step3_sub">Talking, footsteps and the kitchen fan land in the same measurement. Dips that are cancellations get left alone.</string>
+    <string name="measure_progress_title">Capture progress</string>
+    <string name="measure_stop">Stop</string>
+    <string name="measure_start_over">Start over</string>
+    <string name="measure_save">Save profile</string>
 
+    <!-- Profiles screen -->
     <string name="profiles_title">Core EQ · Profiles</string>
+    <string name="profiles_heading">Saved corrections</string>
+    <string name="profiles_sub">Every profile carries its own microphone, limits and capability verdict.</string>
+    <string name="export_title">Export</string>
+    <string name="export_chip_parametric">Parametric .txt</string>
+    <string name="export_chip_graphiceq">GraphicEQ</string>
+    <string name="export_chip_json">Profile .json</string>
+    <string name="export_preamp_label">Preamp</string>
+    <string name="export_preamp_desc">The export ships its own headroom note. Copy the preamp with the filters or the boost clips.</string>
+    <string name="action_export">Export</string>
+    <string name="action_delete">Delete</string>
+
+    <!-- Capability screen -->
     <string name="capability_title">Core EQ · Capability</string>
+    <string name="capability_heading">What this device will accept</string>
+    <string name="capability_sub">Android has no global equaliser API. Each row is a path we probe, and the verdict is the truth.</string>
+    <string name="capability_verdict_title">Verdict on this set</string>
+    <string name="capability_fallback_title">If nothing applies, the curve still travels</string>
+    <string name="capability_fallback_desc">Export the profile and set the numbers in the TV\'s own sound settings, or in the player\'s built-in equaliser. It is the same curve.</string>
+
+    <!-- Target curves -->
+    <string name="target_flat">Flat (0 dB reference)</string>
+    <string name="target_bk">Brüel &amp; Kjær 1974 (Living room standard)</string>
+    <string name="target_room">Room / Harman (In-room preferred)</string>
+    <string name="target_olive">Olive &amp; Welti 2013 (Mean listener preference)</string>
+    <string name="target_dialogue">Dialogue (Speech intelligibility boost)</string>
+    <string name="target_house">House Curve (Custom)</string>
 </resources>

@@ -4,118 +4,182 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:background="@color/cb_night"
-    android:paddingLeft="48dp"
-    android:paddingRight="48dp"
-    android:paddingTop="36dp"
-    android:paddingBottom="36dp">
+    android:paddingLeft="@dimen/cb_gutter_side"
+    android:paddingRight="@dimen/cb_gutter_side"
+    android:paddingTop="@dimen/cb_gutter_top"
+    android:paddingBottom="@dimen/cb_gutter_bottom">
 
+    <!-- Header -->
     <TextView
+        android:id="@+id/header_kicker"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="CORE EQ · TV.COREBUILDS.EQ"
         android:textColor="@color/cb_slate"
-        android:textSize="12sp"
-        android:fontFamily="sans-serif-medium"
+        android:textSize="@dimen/cb_text_kicker"
+        android:fontFamily="monospace"
         android:textAllCaps="true" />
 
     <TextView
+        android:id="@+id/header_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/app_tagline"
         android:textColor="@color/cb_ink"
-        android:textSize="28sp"
-        android:fontFamily="sans-serif"
+        android:textSize="@dimen/cb_text_title"
         android:textStyle="bold"
-        android:layout_marginTop="6dp" />
+        android:layout_marginTop="4dp" />
 
     <TextView
+        android:id="@+id/header_desc"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/home_desc"
         android:textColor="@color/cb_slate"
-        android:textSize="14sp"
-        android:layout_marginTop="4dp" />
+        android:textSize="@dimen/cb_text_data"
+        android:layout_marginTop="2dp" />
 
+    <!-- Two-pane content -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
         android:orientation="horizontal"
-        android:layout_marginTop="24dp">
+        android:layout_marginTop="@dimen/cb_space_md">
 
+        <!-- Left rail -->
         <LinearLayout
-            android:layout_width="320dp"
-            android:layout_height="wrap_content"
+            android:layout_width="@dimen/cb_rail_width"
+            android:layout_height="match_parent"
             android:orientation="vertical">
 
-            <Button
-                android:id="@+id/btn_measure"
+            <!-- Active profile card -->
+            <LinearLayout
+                android:id="@+id/card_active_profile"
                 android:layout_width="match_parent"
-                android:layout_height="56dp"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
                 android:background="@drawable/bg_card"
-                android:text="@string/action_measure"
+                android:padding="@dimen/cb_card_padding"
+                android:focusable="false"
+                android:layout_marginBottom="@dimen/cb_space_sm">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/active_profile"
+                    android:textColor="@color/cb_signal_cyan"
+                    android:textSize="@dimen/cb_text_kicker"
+                    android:fontFamily="monospace"
+                    android:textAllCaps="true"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/text_active_profile_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/living_room"
+                    android:textColor="@color/cb_ink"
+                    android:textSize="@dimen/cb_text_section"
+                    android:textStyle="bold"
+                    android:layout_marginTop="4dp" />
+
+                <TextView
+                    android:id="@+id/text_active_profile_sub"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Dialogue · 6 filters · remote mic"
+                    android:textColor="@color/cb_slate"
+                    android:textSize="@dimen/cb_text_kicker"
+                    android:fontFamily="monospace"
+                    android:layout_marginTop="2dp" />
+
+                <Button
+                    android:id="@+id/btn_remeasure"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/cb_target_min"
+                    android:background="@drawable/bg_cta"
+                    android:text="@string/action_remeasure"
+                    android:textColor="@color/cb_cta_ink"
+                    android:textSize="@dimen/cb_text_label"
+                    android:textStyle="bold"
+                    android:focusable="true"
+                    android:layout_marginTop="@dimen/cb_space_sm" />
+            </LinearLayout>
+
+            <!-- Navigation entry rows -->
+            <Button
+                android:id="@+id/btn_nav_measure"
+                android:layout_width="match_parent"
+                android:layout_height="52dp"
+                android:background="@drawable/bg_card"
+                android:text="Measure  ·  Pink noise · 20 s · this room"
                 android:textColor="@color/cb_ink"
-                android:textSize="16sp"
+                android:textSize="@dimen/cb_text_data"
+                android:gravity="start|center_vertical"
+                android:paddingStart="@dimen/cb_card_padding"
+                android:paddingEnd="@dimen/cb_card_padding"
                 android:focusable="true"
-                android:layout_marginBottom="12dp" />
+                android:layout_marginBottom="@dimen/cb_space_xs" />
 
             <Button
-                android:id="@+id/btn_profiles"
+                android:id="@+id/btn_nav_profiles"
                 android:layout_width="match_parent"
-                android:layout_height="56dp"
+                android:layout_height="52dp"
                 android:background="@drawable/bg_card"
-                android:text="@string/action_profiles"
+                android:text="Profiles  ·  Saved corrections"
                 android:textColor="@color/cb_ink"
-                android:textSize="16sp"
+                android:textSize="@dimen/cb_text_data"
+                android:gravity="start|center_vertical"
+                android:paddingStart="@dimen/cb_card_padding"
+                android:paddingEnd="@dimen/cb_card_padding"
                 android:focusable="true"
-                android:layout_marginBottom="12dp" />
+                android:layout_marginBottom="@dimen/cb_space_xs" />
 
             <Button
-                android:id="@+id/btn_capability"
+                android:id="@+id/btn_nav_capability"
                 android:layout_width="match_parent"
-                android:layout_height="56dp"
+                android:layout_height="52dp"
                 android:background="@drawable/bg_card"
-                android:text="@string/action_capability"
+                android:text="Capability  ·  What this device will accept"
                 android:textColor="@color/cb_ink"
-                android:textSize="16sp"
+                android:textSize="@dimen/cb_text_data"
+                android:gravity="start|center_vertical"
+                android:paddingStart="@dimen/cb_card_padding"
+                android:paddingEnd="@dimen/cb_card_padding"
                 android:focusable="true" />
 
         </LinearLayout>
 
+        <!-- Right pane -->
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:orientation="vertical"
-            android:background="@drawable/bg_card"
-            android:padding="20dp"
-            android:layout_marginStart="24dp">
+            android:layout_marginStart="@dimen/cb_space_lg">
+
+            <!-- Measured vs Correction graph -->
+            <tv.corebuilds.eq.ui.CurveGraphView
+                android:id="@+id/graph_home"
+                android:layout_width="match_parent"
+                android:layout_height="220dp" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/active_profile"
-                android:textColor="@color/cb_signal_cyan"
-                android:textSize="12sp"
-                android:textStyle="bold"
-                android:textAllCaps="true" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/living_room"
-                android:textColor="@color/cb_ink"
-                android:textSize="22sp"
-                android:textStyle="bold"
-                android:layout_marginTop="4dp" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/profile_details"
+                android:text="@string/platform_eq_title"
                 android:textColor="@color/cb_slate"
-                android:textSize="13sp"
-                android:layout_marginTop="2dp" />
+                android:textSize="@dimen/cb_text_kicker"
+                android:fontFamily="monospace"
+                android:layout_marginTop="@dimen/cb_space_sm"
+                android:layout_marginBottom="@dimen/cb_space_xs" />
+
+            <!-- Platform equaliser bands row -->
+            <tv.corebuilds.eq.ui.BandSlidersView
+                android:id="@+id/bands_home"
+                android:layout_width="match_parent"
+                android:layout_height="90dp" />
 
         </LinearLayout>
 

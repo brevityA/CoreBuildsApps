@@ -4,17 +4,178 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:background="@color/cb_night"
-    android:paddingLeft="48dp"
-    android:paddingRight="48dp"
-    android:paddingTop="36dp"
-    android:paddingBottom="36dp">
+    android:paddingLeft="@dimen/cb_gutter_side"
+    android:paddingRight="@dimen/cb_gutter_side"
+    android:paddingTop="@dimen/cb_gutter_top"
+    android:paddingBottom="@dimen/cb_gutter_bottom">
 
+    <!-- Header -->
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/profiles_title"
         android:textColor="@color/cb_slate"
-        android:textSize="12sp"
+        android:textSize="@dimen/cb_text_kicker"
+        android:fontFamily="monospace"
         android:textAllCaps="true" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/profiles_heading"
+        android:textColor="@color/cb_ink"
+        android:textSize="@dimen/cb_text_title"
+        android:textStyle="bold"
+        android:layout_marginTop="4dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/profiles_sub"
+        android:textColor="@color/cb_slate"
+        android:textSize="@dimen/cb_text_data"
+        android:layout_marginTop="2dp" />
+
+    <!-- Two-pane content -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:orientation="horizontal"
+        android:layout_marginTop="@dimen/cb_space_md">
+
+        <!-- Left rail: saved profiles list -->
+        <LinearLayout
+            android:layout_width="340dp"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recycler_profiles"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+
+        </LinearLayout>
+
+        <!-- Right pane: Curve preview + Export chips + Preamp + Actions -->
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:layout_marginStart="@dimen/cb_space_lg">
+
+            <tv.corebuilds.eq.ui.CurveGraphView
+                android:id="@+id/graph_profile"
+                android:layout_width="match_parent"
+                android:layout_height="200dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/export_title"
+                android:textColor="@color/cb_slate"
+                android:textSize="@dimen/cb_text_kicker"
+                android:fontFamily="monospace"
+                android:layout_marginTop="@dimen/cb_space_sm" />
+
+            <!-- Export format chips -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="6dp">
+
+                <Button
+                    android:id="@+id/chip_parametric"
+                    android:layout_width="wrap_content"
+                    android:layout_height="40dp"
+                    android:background="@drawable/bg_chip_toggle"
+                    android:text="@string/export_chip_parametric"
+                    android:textColor="@color/cb_ink"
+                    android:textSize="@dimen/cb_text_data"
+                    android:paddingStart="16dp"
+                    android:paddingEnd="16dp"
+                    android:focusable="true"
+                    android:layout_marginEnd="@dimen/cb_space_xs" />
+
+                <Button
+                    android:id="@+id/chip_graphiceq"
+                    android:layout_width="wrap_content"
+                    android:layout_height="40dp"
+                    android:background="@drawable/bg_chip_toggle"
+                    android:text="@string/export_chip_graphiceq"
+                    android:textColor="@color/cb_ink"
+                    android:textSize="@dimen/cb_text_data"
+                    android:paddingStart="16dp"
+                    android:paddingEnd="16dp"
+                    android:focusable="true"
+                    android:layout_marginEnd="@dimen/cb_space_xs" />
+
+                <Button
+                    android:id="@+id/chip_json"
+                    android:layout_width="wrap_content"
+                    android:layout_height="40dp"
+                    android:background="@drawable/bg_chip_toggle"
+                    android:text="@string/export_chip_json"
+                    android:textColor="@color/cb_ink"
+                    android:textSize="@dimen/cb_text_data"
+                    android:paddingStart="16dp"
+                    android:paddingEnd="16dp"
+                    android:focusable="true" />
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/text_preamp_display"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Preamp  −3.72 dB"
+                android:textColor="@color/cb_ink"
+                android:textSize="@dimen/cb_text_label"
+                android:fontFamily="monospace"
+                android:textStyle="bold"
+                android:layout_marginTop="@dimen/cb_space_sm" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/export_preamp_desc"
+                android:textColor="@color/cb_slate"
+                android:textSize="@dimen/cb_text_kicker"
+                android:layout_marginTop="2dp" />
+
+            <!-- Buttons: Export & Delete -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="@dimen/cb_space_md">
+
+                <Button
+                    android:id="@+id/btn_export_profile"
+                    android:layout_width="180dp"
+                    android:layout_height="@dimen/cb_target_min"
+                    android:background="@drawable/bg_cta"
+                    android:text="@string/action_export"
+                    android:textColor="@color/cb_cta_ink"
+                    android:textSize="@dimen/cb_text_label"
+                    android:textStyle="bold"
+                    android:focusable="true"
+                    android:layout_marginEnd="@dimen/cb_space_sm" />
+
+                <Button
+                    android:id="@+id/btn_delete_profile"
+                    android:layout_width="140dp"
+                    android:layout_height="@dimen/cb_target_min"
+                    android:background="@drawable/bg_ghost"
+                    android:text="@string/action_delete"
+                    android:textColor="@color/cb_ember"
+                    android:textSize="@dimen/cb_text_label"
+                    android:focusable="true" />
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </LinearLayout>
 
 </LinearLayout>
