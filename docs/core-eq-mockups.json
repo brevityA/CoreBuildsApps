@@ -1,8 +1,8 @@
 {
   "generator": "tools/build_core_eq_mockups.py",
   "sources": {
-    "colors": "/home/user/CoreBuildsApps/app/src/main/res/values/colors.xml",
-    "dimens": "/home/user/CoreBuildsApps/app/src/main/res/values/dimens.xml",
+    "colors": "/tmp/claude-0/wt195/app/src/main/res/values/colors.xml",
+    "dimens": "/tmp/claude-0/wt195/app/src/main/res/values/dimens.xml",
     "dsp": "tools/core_eq_dsp.py"
   },
   "frames": {
@@ -151,9 +151,9 @@
       "T|(1800, 678)|TARGET|24|DejaVuSansMono-Bold.ttf|(138, 72, 144, 255)|rd",
       "T|(1676, 678)|CORRECTION|24|DejaVuSansMono-Bold.ttf|(0, 212, 255, 255)|rd",
       "T|(996, 726)|EXPORT|24|DejaVuSansMono-Bold.ttf|(139, 148, 158, 255)|la",
-      "T|(1147, 798)|Parametric .txt|32|Outfit-ExtraBold.ttf|(4, 32, 43, 255)|mm",
-      "T|(1439, 798)|GraphicEQ|32|Outfit-ExtraBold.ttf|(230, 237, 243, 255)|mm",
-      "T|(1704, 798)|Profile .json|32|Outfit-ExtraBold.ttf|(230, 237, 243, 255)|mm",
+      "T|(1144, 798)|Parametric .txt|32|Outfit-ExtraBold.ttf|(4, 32, 43, 255)|mm",
+      "T|(1432, 798)|GraphicEQ|32|Outfit-ExtraBold.ttf|(230, 237, 243, 255)|mm",
+      "T|(1695, 798)|Profile .json|32|Outfit-ExtraBold.ttf|(230, 237, 243, 255)|mm",
       "T|(996, 850)|Preamp  \u22123.72 dB|28|DejaVuSansMono-Bold.ttf|(230, 237, 243, 255)|la",
       "T|(996, 894)|The export ships its own headroom note. Copy the preamp with the filters or the boost clips.|24|Outfit-Bold.ttf|(139, 148, 158, 255)|la",
       "T|(1186, 980)|Export|32|Outfit-ExtraBold.ttf|(4, 32, 43, 255)|mm",
