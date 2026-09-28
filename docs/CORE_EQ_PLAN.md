@@ -122,7 +122,7 @@ profile**:
 | Rung | Path | Expected reach |
 |---|---|---|
 | 1 | `ACTION_OPEN_AUDIO_EFFECT_CONTROL_SESSION` broadcast | Players that announce sessions. Netflix, YouTube do not. |
-| 2 | Broadcast + `DUMP`-assisted session discovery (one-time ADB grant) | Most of the rest, Wavelet-style. |
+| 2 | Broadcast + `DUMP`-assisted session discovery (one-time ADB grant) — **v1.1**, not in v1 | Most of the rest, Wavelet-style. |
 | 3 | `Equalizer(0, 0)` / `DynamicsProcessing(0)` global mix | Deprecated but real on some sets. Probed, never promised. |
 | 4 | Nothing applies | Export the profile for the TV's own sound settings. The curve is still the curve. |
 
@@ -230,13 +230,14 @@ same WAV and asserting the corrections match within a stated tolerance.
 
 1. **Downloader code** — `suite.json` will carry `[USER TO SUPPLY]` until one
    is generated at https://go.aftvnews.com/, same as Core Motion.
-2. **DUMP-assisted session detection** — ship it as an optional, clearly-labeled
-   mode (the audience already sideloads), or leave it out of v1? The research
-   says it is the difference between "works with my player" and "does not" for
-   a large share of users.
-3. **USB measurement microphone support** — worth a v1.1. It changes the
-   correction floor from 40 Hz down to ~20 Hz and makes the result a real
-   measurement rather than a good estimate.
+2. **DUMP-assisted session detection** — *decided: v1.1.* v1 ships rungs 1,
+   3 and 4 of the ladder; rung 2 lands in v1.1 as an optional, clearly-labeled
+   mode behind the one-time ADB grant. Until then, players that do not
+   announce sessions (Netflix, YouTube) fall through to rung 3 or to export.
+3. **USB measurement microphone support** (UMIK-1 and similar) — *decided:
+   later, after v1.1.* It changes the correction floor from 40 Hz down to
+   ~20 Hz and makes the result a real measurement rather than a good estimate;
+   until it lands, `CorrectionLimits.MIN_HZ` stays at 40 Hz.
 4. **Name** — *Core EQ* keeps the `core-*` tag-prefix family legible next to
    `coreline-v*` and `coreshift-*`. Alternatives considered and rejected:
    Core Tone, Core Room, Core Tune.
