@@ -38,3 +38,41 @@ These rows need an owner check. Either the component is mis-mapped, or the packa
 AK47Sports, Air Attack 2, AllSaves Social, AniLab, AnikenTV, Anime Cast, Anime One, Anten TV, Användarmanual, Aparat Sport, Award VPN, Cafe Bazaar, Chebut TV, Cinemahd Stable, Clip TV, Clone Hero, CoreELEC Helper, Cricfy, Cyberflix, Damonte, Dansk Filmskat, Elefin, Es De Frontend, Eternal TV, Eternal TV (Nath), FANE TV, FC TV, Falcon Cast, Filimo, Filmnet TV, FindLink, Firedown, Five TV, Flix TV, Football 360, GenPlay, HDRezka, Hdo Box, Jellyfin Enhanced, Jojoy, Kennytv, Lazy IPTV Deluxe, MGS TV, Mediaspelare, Mi Gallery, Miracast, Movie HD, Myiptv, NetMirror, NetMirror TV, Notubetv, Nxsha, OK TV, OTT Navigator, Ocean Streamz, Offshore, OnePix, Onstream, Otf TV, Perfect Player, Perfect TV, PlayLatin, PlayNet, Polygon Player, Premiumize TV, RB Live, RB Main, Rapid Streamz, Rezka, Rutube, Screenscape, Shark TV, Sports Everywhere, Sportzx, Stream Fire, TV, TV Garden, TVLok, Televizo, Tflix, Thunder TV, Ukiku, VPN Dot, Vibra, WeatherBug, Works with Alexa, Xtream Player, Yacine TV, Youcine.
 
 They keep their generic tiles. An owner screenshot of the launcher icon on a device is the remaining honest source.
+
+## Pass 3 (2026-09-27): Aptoide
+
+The 89 apps that were not found were looked up again in Aptoide's app API by exact package name
+(`ws75.aptoide.com/api/7/app/getMeta?package_name=…`), under the same rule: a result counts only
+if the listing's package is the catalogue's package. APKMirror was also tried, but it was not used,
+because a search with no match returns unrelated popular apps instead of an empty result.
+
+- **12 verified.** 11 now use their sampled icon colour; NoTubeTV keeps the palette because its
+  icon is a multicolour gradient. Four got redrawn marks: CinemaHD (ticket), HDO Box (H with a play),
+  NetMirror (ribbon N) and Perfect Player (P with a play in its bowl). RB Live's tile now reads
+  "RB", as its logo does.
+- **6 rejected as placeholders.** Aparat Sport, Cafe Bazaar, Cricfy, FindLink, Rutube and Yacine TV
+  return only Aptoide's stock Android icon.
+- **2 more suspected mismatches** for the owner review above. They keep their tiles, and their
+  mappings were not changed:
+
+| Catalogue name | Package | What the listing is |
+|---|---|---|
+| FindLink | `com.findlink` | Flixoid |
+| Polygon Player | `com.polygon.videoplayer` | NovaTV |
+
+**Still not found anywhere (70):** AK47Sports, Air Attack 2, AllSaves Social, AniLab, AnikenTV, Anime One, Anten TV, Användarmanual, Award VPN, Chebut TV, Clip TV, Clone Hero, CoreELEC Helper, Cyberflix, Damonte, Dansk Filmskat, Elefin, Eternal TV, Eternal TV (Nath), FANE TV, FC TV, Falcon Cast, Filimo, Filmnet TV, Firedown, Five TV, Flix TV, Football 360, GenPlay, HDRezka, Jellyfin Enhanced, Jojoy, Kennytv, MGS TV, Mediaspelare, Mi Gallery, Miracast, Myiptv, NetMirror TV, Nxsha, OK TV, OTT Navigator, Offshore, OnePix, Onstream, Otf TV, Perfect TV, PlayLatin, PlayNet, Premiumize TV, RB Main, Rapid Streamz, Rezka, Screenscape, Shark TV, Sports Everywhere, Sportzx, Stream Fire, TV, TV Garden, TVLok, Televizo, Tflix, Ukiku, VPN Dot, Vibra, WeatherBug, Works with Alexa, Xtream Player, Youcine.
+
+## Pass 4 (2026-09-27): device screenshots, Uptodown and APKPure
+
+- **Supporter device screenshots** (Projectivy on a TCL Google TV) showed the launcher icons of
+  AK47Sports and AnikenTV, which no store had. AK47Sports is redrawn from its crest, and
+  AnikenTV's tile reads "AK", as its script logo does.
+- **Uptodown**, searched by app name, with the top five results and the direct app page opened
+  and accepted only when the page's listed package is the catalogue's package: **2 verified**
+  out of 68. Award VPN (`com.award.VPN`) and Firedown (`com.solarized.firedown`) now wear their
+  icon colours and redrawn marks.
+- **APKPure** was not searched. Every page answers with a Cloudflare bot check, and the pass
+  does not work around bot protection.
+
+**Still not found anywhere (66):** Air Attack 2, AllSaves Social, AniLab, Anime One, Anten TV, Användarmanual, Chebut TV, Clip TV, Clone Hero, CoreELEC Helper, Cyberflix, Damonte, Dansk Filmskat, Elefin, Eternal TV, Eternal TV (Nath), FANE TV, FC TV, Falcon Cast, Filimo, Filmnet TV, Five TV, Flix TV, Football 360, GenPlay, HDRezka, Jellyfin Enhanced, Jojoy, Kennytv, MGS TV, Mediaspelare, Mi Gallery, Miracast, Myiptv, NetMirror TV, Nxsha, OK TV, OTT Navigator, Offshore, OnePix, Onstream, Otf TV, Perfect TV, PlayLatin, PlayNet, Premiumize TV, RB Main, Rapid Streamz, Rezka, Screenscape, Shark TV, Sports Everywhere, Sportzx, Stream Fire, TV, TV Garden, TVLok, Televizo, Tflix, Ukiku, VPN Dot, Vibra, WeatherBug, Works with Alexa, Xtream Player, Youcine.
+

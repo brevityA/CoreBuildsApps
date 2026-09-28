@@ -295,6 +295,39 @@ object ApplyIconPack {
     }
 
     /**
+     * [installed], reordered for the Apply button: the first launcher is the
+     * one a press should go to.
+     *
+     * HOME still leads when it can take an apply. When it cannot (Monet), the
+     * first installed launcher whose apply intent actually resolves
+     * (Projectivy, in [ALL]'s order) goes first instead, and HOME's setup
+     * screen stays one chip away. 1.9.5 sent the button to HOME
+     * unconditionally, so a TV with Monet as its default home and Projectivy
+     * beside it lost the one-press apply it had in 1.9.4.
+     *
+     * Resolving, not just [Launcher.inboundApply], decides the promotion:
+     * Leanback on Fire claims no inbound flag of its own but has no receiver
+     * either, and promoting it would trade Monet's walk for a manual toast.
+     */
+    fun applyOrder(context: Context): List<Launcher> {
+        val all = installed(context)
+        val home = all.firstOrNull() ?: return all
+        if (home.inboundApply) return all
+        val direct = all.firstOrNull { it.inboundApply && resolvesApply(context, it) }
+            ?: return all
+        return listOf(direct) + all.filter { it != direct }
+    }
+
+    /** True when [launcher]'s apply intent reaches an activity on this device. */
+    private fun resolvesApply(context: Context, launcher: Launcher): Boolean {
+        val intent = launcher.intent(context, context.packageName) ?: return false
+        return context.packageManager.queryIntentActivities(intent, 0).isNotEmpty()
+    }
+
+    /** The launcher an Apply or re-apply press goes to; see [applyOrder]. */
+    fun detectApplyTarget(context: Context): Launcher? = applyOrder(context).firstOrNull()
+
+    /**
      * The actions a launcher resolves to enumerate the icon packs installed on
      * the device. Monet builds its list from exactly this set (see
      * docs/MONET_LAUNCHER.md), so a pack that answers none of them will not
