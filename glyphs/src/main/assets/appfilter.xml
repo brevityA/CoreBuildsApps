@@ -502,7 +502,7 @@
     <item component="ComponentInfo{com.disney.disneyplus.tv/.MainActivity}" drawable="disneyplus"/>
     <!-- DistroTV -->
     <item component="ComponentInfo{com.distroscale.tv.android/com.distroscale.tv.firetv.MainActivity}" drawable="distroscale"/>
-    <!-- Dixmax -->
+    <!-- DixMax -->
     <item component="ComponentInfo{es.shufflex.dixmax.android/es.shufflex.dixmax.android.Main}" drawable="dixmax"/>
     <item component="ComponentInfo{es.shufflex.dixmax.android/.Main}" drawable="dixmax"/>
     <item component="ComponentInfo{es.shufflex.dixmax.android/es.shufflex.dixmax.android.activities.tv.activities.LoginActivity}" drawable="dixmax"/>
@@ -1213,7 +1213,7 @@
     <!-- Lumera -->
     <item component="ComponentInfo{com.lumera.app/com.lumera.app.MainActivity}" drawable="lumera"/>
     <item component="ComponentInfo{com.lumera.app/.MainActivity}" drawable="lumera"/>
-    <!-- M3u IPTV -->
+    <!-- M3U IPTV -->
     <item component="ComponentInfo{de.herber_edevelopment.m3uiptv/de.herber_edevelopment.m3uiptv.MainActivity}" drawable="m3u_iptv"/>
     <item component="ComponentInfo{de.herber_edevelopment.m3uiptv/.MainActivity}" drawable="m3u_iptv"/>
     <item component="ComponentInfo{de.herber_edevelopment.m3uiptv/de.herber_edevelopment.m3uiptv.TvActivity}" drawable="m3u_iptv"/>
@@ -1482,7 +1482,7 @@
     <!-- Notifications For Android TV -->
     <item component="ComponentInfo{de.cyberdream.androidtv.notifications.google/de.cyberdream.androidtv.notifications.StartActivity}" drawable="notifications_for_android_tv"/>
     <item component="ComponentInfo{de.cyberdream.androidtv.notifications.google/de.cyberdream.smarttv.leanback.MainActivityLeanBack}" drawable="notifications_for_android_tv"/>
-    <!-- NoTubeTV -->
+    <!-- NoTube TV -->
     <item component="ComponentInfo{com.ycngmn.notubetv/com.ycngmn.notubetv.MainActivity}" drawable="notubetv"/>
     <item component="ComponentInfo{com.ycngmn.notubetv/.MainActivity}" drawable="notubetv"/>
     <!-- Nova Video Player -->
@@ -2285,7 +2285,7 @@
     <!-- Telewebion -->
     <item component="ComponentInfo{tv.telewebion/tv.telewebion.ui.main.MainActivity}" drawable="telewebion"/>
     <item component="ComponentInfo{tv.telewebion/.ui.main.MainActivity}" drawable="telewebion"/>
-    <!-- Teliaplaylt -->
+    <!-- Telia Play -->
     <item component="ComponentInfo{lt.telia.tv/lt.telia.tv.MainActivity}" drawable="teliaplaylt"/>
     <item component="ComponentInfo{lt.telia.tv/.MainActivity}" drawable="teliaplaylt"/>
     <!-- Telly -->
@@ -2758,7 +2758,7 @@
     <item component="ComponentInfo{com.world.youcinetv/com.interactive.brasiliptv.ui.activity.WelcomeActivity}" drawable="youcine"/>
     <!-- Youku -->
     <item component="ComponentInfo{com.youku.intl.tv/com.youku.tv.home.activity.HomeActivity}" drawable="youku"/>
-    <!-- Yousee Play -->
+    <!-- YouSee Play -->
     <item component="ComponentInfo{dk.yousee.tv.leanback/dk.yousee.ott.leanback.main.MainActivity}" drawable="yousee_play"/>
     <!-- YouTube -->
     <item component="ComponentInfo{com.google.android.youtube.tv/com.google.android.apps.youtube.tv.activity.ShellActivity}" drawable="youtube"/>

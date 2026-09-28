@@ -1152,7 +1152,7 @@
         <item>Dish Home</item>
         <item>Disney+</item>
         <item>DistroTV</item>
-        <item>Dixmax</item>
+        <item>DixMax</item>
         <item>DNS Changer</item>
         <item>Dodo Stream</item>
         <item>Dolphin Emulator</item>
@@ -1388,7 +1388,7 @@
         <item>Loco</item>
         <item>LRT</item>
         <item>Lumera</item>
-        <item>M3u IPTV</item>
+        <item>M3U IPTV</item>
         <item>M6 Plus</item>
         <item>M64plus Fz</item>
         <item>MagellanTV</item>
@@ -1485,7 +1485,7 @@
         <item>NOS</item>
         <item>Nostalgia TV</item>
         <item>Notifications For Android TV</item>
-        <item>NoTubeTV</item>
+        <item>NoTube TV</item>
         <item>Nova Video Player</item>
         <item>NovaTV</item>
         <item>NOW</item>
@@ -1757,7 +1757,7 @@
         <item>Telenet</item>
         <item>Televizo</item>
         <item>Telewebion</item>
-        <item>Teliaplaylt</item>
+        <item>Telia Play</item>
         <item>Telly</item>
         <item>Tencent</item>
         <item>Tennis Channel</item>
@@ -1927,7 +1927,7 @@
         <item>Yoga Download</item>
         <item>Youcine</item>
         <item>Youku</item>
-        <item>Yousee Play</item>
+        <item>YouSee Play</item>
         <item>YouTube</item>
         <item>YouTube Kids</item>
         <item>YouTube Music</item>
@@ -3098,7 +3098,7 @@
         <item>1</item>
         <item>1</item>
         <item>0</item>
-        <item>0</item>
+        <item>1</item>
         <item>0</item>
         <item>1</item>
         <item>1</item>
@@ -3106,7 +3106,6 @@
         <item>1</item>
         <item>1</item>
         <item>1</item>
-        <item>0</item>
         <item>1</item>
         <item>1</item>
         <item>1</item>
@@ -3121,6 +3120,7 @@
         <item>1</item>
         <item>1</item>
         <item>1</item>
+        <item>1</item>
         <item>0</item>
         <item>1</item>
         <item>0</item>
@@ -3207,7 +3207,7 @@
         <item>0</item>
         <item>1</item>
         <item>1</item>
-        <item>0</item>
+        <item>1</item>
         <item>1</item>
         <item>0</item>
         <item>1</item>
@@ -3257,7 +3257,7 @@
         <item>1</item>
         <item>1</item>
         <item>0</item>
-        <item>0</item>
+        <item>1</item>
         <item>0</item>
         <item>1</item>
         <item>1</item>
@@ -3326,7 +3326,7 @@
         <item>0</item>
         <item>1</item>
         <item>1</item>
-        <item>0</item>
+        <item>1</item>
         <item>0</item>
         <item>0</item>
         <item>1</item>
@@ -3334,7 +3334,7 @@
         <item>0</item>
         <item>0</item>
         <item>1</item>
-        <item>0</item>
+        <item>1</item>
         <item>0</item>
         <item>0</item>
         <item>0</item>
@@ -3431,8 +3431,8 @@
         <item>0</item>
         <item>1</item>
         <item>1</item>
-        <item>0</item>
         <item>1</item>
+        <item>1</item>
         <item>0</item>
         <item>0</item>
         <item>0</item>
@@ -3443,9 +3443,9 @@
         <item>0</item>
         <item>0</item>
         <item>1</item>
-        <item>0</item>
         <item>1</item>
         <item>1</item>
+        <item>1</item>
         <item>0</item>
         <item>1</item>
         <item>0</item>
@@ -3613,7 +3613,7 @@
         <item>1</item>
         <item>0</item>
         <item>1</item>
-        <item>0</item>
+        <item>1</item>
         <item>1</item>
         <item>1</item>
         <item>1</item>
@@ -3703,7 +3703,7 @@
         <item>1</item>
         <item>0</item>
         <item>0</item>
-        <item>0</item>
+        <item>1</item>
         <item>0</item>
         <item>0</item>
         <item>1</item>
@@ -3873,12 +3873,12 @@
         <item>1</item>
         <item>0</item>
         <item>1</item>
-        <item>0</item>
         <item>1</item>
         <item>1</item>
         <item>1</item>
         <item>1</item>
         <item>1</item>
+        <item>1</item>
         <item>0</item>
         <item>1</item>
         <item>1</item>
@@ -3886,7 +3886,7 @@
         <item>0</item>
         <item>0</item>
         <item>1</item>
-        <item>0</item>
+        <item>1</item>
         <item>1</item>
         <item>1</item>
         <item>0</item>

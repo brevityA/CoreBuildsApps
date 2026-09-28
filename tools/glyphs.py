@@ -7257,3 +7257,113 @@ GLYPHS.update({
     "hdhomerun_box": hdhomerun_box, "kpn_play": kpn_play,
     "polsat_swirl": polsat_swirl, "auvio_o": auvio_o,
 })
+
+
+# --------------------------------------------------------------------------
+# Brand marks batch 16 (2026-09-28): more letter tiles whose launcher icon,
+# seen in the Projectivy Icon Pack 1.1.9 artwork (reference only), carries a
+# symbol.
+
+
+def livenettv_badge(c):
+    """LiveNetTV: the round badge holding a TV with a play and cast waves."""
+    return (f'<circle cx="256" cy="256" r="188" {_s(c, 26)}/>'
+            f'<rect x="146" y="188" width="196" height="140" rx="18" {_s(c, 22)}/>'
+            + _solid("M 222 226 L 280 258 L 222 290 Z", c, 10)
+            + f'<path d="M 214 360 L 274 360" {_s(c, 20)}/>'
+            f'<path d="{_arc_cw(342, 188, 44, 270, 360)} {_arc_cw(342, 188, 80, 270, 360)}" '
+            f'{_s(c, 18)}/>')
+
+
+def dramaplayer_ring(c):
+    """Drama Player: the ring broken at the top, a play inside, a dot at the break."""
+    return (f'<path d="{_arc_cw(256, 256, 180, 300, 600)}" {_s(c, 28)}/>'
+            f'<circle cx="{256 + 180 * 0.5:.0f}" cy="{256 - 180 * 0.866:.0f}" r="16" {_f(c)}/>'
+            f'<path d="M 216 176 L 348 256 L 216 336 Z" {_s(c, 26)}/>')
+
+
+def gallery3d_stack(c):
+    """Gallery 3D: a photo with its mountain, stacked on a second print."""
+    return (f'<path d="M 128 152 L 128 108 C 128 96 136 88 148 88 L 424 88 C 436 88 444 96 444 108 '
+            f'L 444 320 C 444 332 436 340 424 340 L 392 340" {_s(c, 22)}/>'
+            f'<rect x="68" y="152" width="324" height="272" rx="24" {_s(c, 28)}/>'
+            f'<path d="M 100 392 L 196 280 L 256 344 L 296 304 L 360 392" {_s(c, 24)}/>'
+            f'<circle cx="300" cy="222" r="26" {_s(c, 20)}/>')
+
+
+def smartiptv_tv(c):
+    """Smart IPTV: the tilted set under its three-line aerial."""
+    return (f'<path d="M 196 92 L 316 84 M 208 124 L 304 118" {_s(c, 20)}/>'
+            f'<rect x="96" y="164" width="320" height="244" rx="44" '
+            f'transform="rotate(-5 256 286)" {_s(c, 30)}/>'
+            f'<path d="M 172 270 L 340 256 M 176 330 L 300 320" {_s(c, 24)}/>')
+
+
+def m3u_tv(c):
+    """M3U IPTV: the flat screen on its stand, showing a playlist."""
+    return (f'<rect x="72" y="112" width="368" height="248" rx="10" {_s(c, 28)}/>'
+            f'<path d="M 152 408 L 360 408" {_s(c, 28)}/>'
+            f'<path d="M 144 184 L 368 184 M 144 236 L 368 236 M 144 288 L 296 288" '
+            f'{_s(c, 22)}/>')
+
+
+def dixmax_d(c):
+    """DixMax: a play arrow with a slanted spine, reading as a D."""
+    return (f'<path d="M 132 84 L 436 256 L 172 436 Z" {_s(c, 30)}/>'
+            f'<path d="M 212 196 L 226 330" {_s(c, 26)}/>')
+
+
+def notube_n(c):
+    """NoTube TV: an N whose diagonal sweeps out into a play arrow."""
+    return (f'<path d="M 132 420 L 132 124 C 132 100 156 90 176 104 L 404 296 '
+            f'C 424 312 414 344 388 344 L 300 344 L 300 420" {_s(c, 30)}/>')
+
+
+def telia_play(c):
+    """Telia Play: a play arrow in a tilted pebble."""
+    return (f'<path d="M 120 176 C 136 100 240 72 344 104 C 432 132 452 226 428 306 '
+            f'C 404 388 316 436 224 420 C 128 404 100 280 120 176 Z" {_s(c, 28)}/>'
+            + _solid("M 228 188 L 344 262 L 228 336 Z", c, 16))
+
+
+def yousee_disc(c):
+    """YouSee Play: an outlined play set right of centre in its disc."""
+    return (f'<circle cx="256" cy="256" r="180" {_s(c, 28)}/>'
+            f'<path d="M 232 176 L 352 256 L 232 336 Z" {_s(c, 22)}/>'
+            f'<path d="M 152 208 L 152 304" {_s(c, 22)}/>')
+
+
+def ibplayer_ib(c):
+    """IB Player: the i and b set against a play arrow."""
+    return (f'<circle cx="120" cy="128" r="18" {_f(c)}/>'
+            f'<path d="M 120 190 L 120 400 M 188 96 L 188 400" {_s(c, 30)}/>'
+            f'<circle cx="252" cy="334" r="64" {_s(c, 26)}/>'
+            f'<path d="M 300 136 L 436 216 L 336 276" {_s(c, 26)}/>')
+
+
+def oblivion_face(c):
+    """Oblivion: the spiky-haired face in profile-free front view."""
+    return (f'<path d="M 108 236 L 132 132 L 188 186 L 220 96 L 268 170 L 320 92 L 346 184 '
+            f'L 404 136 L 408 240" {_s(c, 26)}/>'
+            f'<path d="M 124 236 C 124 350 190 416 256 416 C 322 416 392 350 392 236" '
+            f'{_s(c, 28)}/>'
+            f'<circle cx="208" cy="292" r="18" {_f(c)}/>'
+            f'<circle cx="304" cy="292" r="18" {_f(c)}/>'
+            f'<path d="M 224 356 C 244 370 268 370 288 356" {_s(c, 20)}/>')
+
+
+def zen_z(c):
+    """Zen IPTV: the Z swept round at its foot, with a play dot."""
+    return (f'<path d="M 104 104 L 392 104 L 144 360 C 116 392 136 424 176 424 L 256 424" '
+            f'{_s(c, 32)}/>'
+            f'<circle cx="360" cy="384" r="56" {_s(c, 24)}/>'
+            + _solid("M 344 358 L 384 384 L 344 410 Z", c, 8))
+
+
+GLYPHS.update({
+    "livenettv_badge": livenettv_badge, "dramaplayer_ring": dramaplayer_ring,
+    "gallery3d_stack": gallery3d_stack, "smartiptv_tv": smartiptv_tv,
+    "m3u_tv": m3u_tv, "dixmax_d": dixmax_d, "notube_n": notube_n,
+    "telia_play": telia_play, "yousee_disc": yousee_disc,
+    "ibplayer_ib": ibplayer_ib, "oblivion_face": oblivion_face, "zen_z": zen_z,
+})

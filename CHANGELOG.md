@@ -26,6 +26,16 @@ All notable changes to the Core Builds Icon Pack. Format follows
 - **Basis.** Its B with a play arrow in the lower bowl, on the icon's blue
   gradient, requested in #199 with its launch activity read off the
   requester's TV. 970 → 971 icons.
+- **12 more apps get marks drawn from their real icons, 246 in all.**
+  LiveNetTV's badge with its TV and cast waves, Drama Player's broken ring,
+  Gallery 3D's stacked prints, Smart IPTV's tilted set, M3U IPTV's playlist
+  screen, DixMax's play-shaped D, NoTube TV's N sweeping into a play arrow,
+  Telia Play's pebble, YouSee Play's disc, IB Player's "ib" and play arrow,
+  Oblivion's spiky-haired face and Zen IPTV's swept Z replace their letter
+  tiles. The launcher icons were read from the Projectivy Icon Pack 1.1.9
+  artwork, as reference only. IB Player, YouSee Play, Zen IPTV, Smart IPTV,
+  M3U IPTV and DixMax take their icons' colours, and Telia Play, M3U IPTV,
+  NoTube TV, YouSee Play and DixMax are spelled like the apps.
 - **12 more apps get marks drawn from their real icons, 234 in all.**
   Tablo's bar and TV tab, Radio On TV's set with its keypad, EchoGram's play
   arrow and echo, Monitor Dot's split panes, Screenscape's S coin, GenPlay's
