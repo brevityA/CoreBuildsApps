@@ -22,7 +22,6 @@ The suite now has one central PR gate plus the existing per-app workflows.
 Triggers:
 
 - Tag push:
-  - `iconpack-v*`
   - `coreline-v*`
   - `shift-v*`
   - `doctor-v*`
@@ -30,6 +29,18 @@ Triggers:
 - Manual `workflow_dispatch` with `app` and `publish` inputs.
   - `publish=false` is a dry run: builds artifacts and checklist only.
   - `publish=true` requires signing secrets and publishes GitHub Release assets.
+  - `publish=true` only makes sense on a tag push: the release step names the
+    release after `GITHUB_REF_NAME`, and a dispatch has a branch there, not a
+    tag — `--verify-tag` then fails. Dry-run from dispatch; publish from a tag.
+
+Icon Pack is not on this list, and its `iconpack-v*` trigger was removed rather
+than reconciled: the pack's `tagPrefix` in `suite.json` is bare `v`, and only
+`build.yml` (which triggers on `v*`) moves the floating `iconpack` tag, ships the
+legacy `app-release.apk` the existing Downloader code reads, and publishes the
+Glyphs companion. A release cut here for Icon Pack would carry a versioned APK
+and nothing users actually install from. `tools/check_suite_truth.py` now fails if
+any workflow triggers on a prefix `suite.json` does not declare, or declares a
+prefix no workflow triggers on, so the two halves cannot drift apart again.
 
 For each selected app, the workflow:
 
@@ -62,6 +73,17 @@ Updater metadata lives in `Latestrelease/` and is backward-compatible JSON:
 - `Latestrelease/version.json` — Icon Pack.
 - `Latestrelease/coreline-version.json` — Core Line.
 - `Latestrelease/shift-version.json` — Core Shift.
+
+Core Doctor and Core Motion have no `Latestrelease/` file, and that is the
+contract, not an omission: neither app ships an updater (Doctor is local-only by
+spec and its `SuiteHealthChecks` probes exactly these three feeds, and Motion is a
+Projectivy plugin with no launcher entry to run an updater from), so
+`suite.json` records `"metadata": null` for both and `tools/audit_contract.py`
+asserts a manifest only for the three apps that read one. Do not create a
+`Latestrelease/*-version.json` for them to make a directory look complete — a
+polled-and-ignored manifest is worse than none, because the next reader treats it
+as the release record. `PUBLISHING.md`'s `[USER TO SUPPLY]` Core Motion Downloader
+code is held to the same rule: no code is assigned, so none is invented.
 
 Mandatory fields:
 
