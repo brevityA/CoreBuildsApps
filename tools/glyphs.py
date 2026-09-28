@@ -7710,3 +7710,279 @@ GLYPHS.update({
     "anilab_badge": anilab_badge, "nvplayer_p": nvplayer_p, "otf_chevrons": otf_chevrons,
     "lemino_bubble": lemino_bubble, "unifi_smile": unifi_smile, "saff_pixels": saff_pixels,
 })
+
+
+def fpt_badge(c):
+    """FPT Play: the soft-cornered square with a play wedge set inside."""
+    return (f'<rect x="88" y="88" width="336" height="336" rx="104" {_s(c, 30)}/>'
+            + _solid("M 214 170 L 350 256 L 214 342 Z", c, 18))
+
+
+def cliptv_c(c):
+    """Clip TV: the square tile with its C turned out of the middle."""
+    return (f'<rect x="88" y="88" width="336" height="336" rx="44" {_s(c, 28)}/>'
+            f'<path d="{_arc_cw(256, 256, 96, 40, 320)}" {_s(c, 34)}/>')
+
+
+def svt_tplay(c):
+    """SVT Play: the lowercase t running into a solid play arrow."""
+    return (f'<path d="M 144 104 L 144 360 C 144 396 168 412 204 404 M 96 200 L 204 200" '
+            f'{_s(c, 32)}/>'
+            + _solid("M 256 176 L 416 272 L 256 368 Z", c, 22))
+
+
+def rtp_wedge(c):
+    """RTP Play: a narrow wedge chasing the play arrow in front of it."""
+    return (f'<path d="M 104 136 L 176 256 L 104 376" {_s(c, 26)}/>'
+            + _solid("M 216 136 L 408 256 L 216 376 Z", c, 20))
+
+
+def rtlplay_prism(c):
+    """RTL Play: the rounded play arrow cut into three facets."""
+    return (f'<path d="M 132 112 C 132 88 152 78 172 90 L 400 230 C 420 242 420 270 400 282 '
+            f'L 172 422 C 152 434 132 424 132 400 Z" {_s(c, 28)}/>'
+            f'<path d="M 132 112 L 226 256 L 132 400 M 226 256 L 412 256" {_s(c, 20)}/>')
+
+
+def thunder_bolt(c):
+    """Thunder TV: the forked bolt with a spark flicking off its tip."""
+    return (f'<path d="M 300 72 L 160 276 L 252 276 L 208 440 L 364 216 L 272 216 L 316 72 Z" '
+            f'{_s(c, 28)}/>'
+            f'<path d="M 96 176 L 140 196 M 380 336 L 424 356" {_s(c, 24)}/>')
+
+
+def tim_bars(c):
+    """TIM Vision: the TIM bars, three rows breaking around the middle."""
+    return (f'<path d="M 88 152 L 224 152 M 288 152 L 424 152 '
+            f'M 88 256 L 152 256 M 216 256 L 296 256 M 360 256 L 424 256 '
+            f'M 88 360 L 224 360 M 288 360 L 424 360" {_s(c, 44)}/>')
+
+
+def tvp_box(c):
+    """TVP VOD: the small TVP tab sitting on a screen with a ringed play."""
+    return (f'<rect x="176" y="72" width="160" height="72" rx="14" {_s(c, 22)}/>'
+            f'<rect x="80" y="176" width="352" height="256" rx="36" {_s(c, 28)}/>'
+            f'<circle cx="256" cy="304" r="76" {_s(c, 22)}/>'
+            + _solid("M 236 268 L 292 304 L 236 340 Z", c, 12))
+
+
+def yacine_set(c):
+    """Yacine TV: the wide set with a V antenna and TV lettered across its screen."""
+    return (f'<rect x="72" y="176" width="368" height="240" rx="32" {_s(c, 28)}/>'
+            f'<path d="M 256 176 L 196 96 M 256 176 L 316 96" {_s(c, 22)}/>'
+            f'<path d="M 144 236 L 236 236 M 190 236 L 190 356 M 272 236 L 314 356 L 356 236" '
+            f'{_s(c, 26)}/>')
+
+
+def tvgarden_sprout(c):
+    """TV Garden: the rounded set on ball-tipped antennae, a sprout on its screen."""
+    return (f'<rect x="88" y="160" width="336" height="264" rx="72" {_s(c, 28)}/>'
+            f'<path d="M 204 160 L 164 104 M 308 160 L 348 104" {_s(c, 20)}/>'
+            f'<circle cx="160" cy="96" r="20" {_f(c)}/><circle cx="352" cy="96" r="20" {_f(c)}/>'
+            f'<path d="M 256 368 L 256 268 M 256 300 C 256 256 216 236 184 244 '
+            f'C 188 280 216 300 256 300 M 256 284 C 256 244 296 224 328 232 '
+            f'C 324 268 296 284 256 284" {_s(c, 20)}/>')
+
+
+def zaap_set(c):
+    """Zaap TV: the chunky framed set with its screen inset and two stubby feet."""
+    return (f'<rect x="72" y="100" width="368" height="288" rx="40" {_s(c, 28)}/>'
+            f'<rect x="124" y="148" width="264" height="192" rx="28" {_s(c, 22)}/>'
+            f'<path d="M 144 388 L 144 428 M 368 388 L 368 428" {_s(c, 28)}/>')
+
+
+def yettel_play(c):
+    """Yettel TV: the thin ring with the play wedge leaning into it."""
+    return (f'<circle cx="256" cy="256" r="176" {_s(c, 22)}/>'
+            f'<path d="M 214 170 C 214 158 224 152 234 158 L 352 238 C 364 246 364 266 352 274 '
+            f'L 234 354 C 224 360 214 354 214 342 Z" {_s(c, 26)}/>')
+
+
+def streamlocator_pin(c):
+    """Stream Locator: the map pin with a play arrow where the hole would be."""
+    return (f'<path d="M 256 440 C 256 440 104 296 104 204 C 104 120 172 64 256 64 '
+            f'C 340 64 408 120 408 204 C 408 296 256 440 256 440 Z" {_s(c, 28)}/>'
+            + _solid("M 222 148 L 318 204 L 222 260 Z", c, 14))
+
+
+def vieon_on(c):
+    """VieON: the ring with its bright centre dot, and the N's bracket beside it."""
+    return (f'<circle cx="224" cy="256" r="152" {_s(c, 28)}/>'
+            f'<circle cx="224" cy="256" r="72" {_f(c)}/>'
+            f'<path d="M 408 128 C 448 176 448 336 408 384" {_s(c, 26)}/>')
+
+
+def hoichoi_bang(c):
+    """hoichoi: the two leaning exclamation marks, one tall and one short."""
+    return (f'<path d="M 212 88 L 188 324 M 332 168 L 316 324" {_s(c, 40)}/>'
+            f'<circle cx="182" cy="400" r="26" {_f(c)}/><circle cx="312" cy="400" r="26" {_f(c)}/>')
+
+
+def hyperspin_swirl(c):
+    """HyperSpin: three arcs whirling round a hub, each a turn behind the last."""
+    return (f'<path d="{_arc_cw(256, 256, 180, 200, 330)}" {_s(c, 30)}/>'
+            f'<path d="{_arc_cw(256, 256, 180, 350, 480)}" {_s(c, 30)}/>'
+            f'<path d="{_arc_cw(256, 256, 110, 60, 200)}" {_s(c, 26)}/>'
+            f'<path d="{_arc_cw(256, 256, 110, 240, 380)}" {_s(c, 26)}/>'
+            f'<circle cx="256" cy="256" r="28" {_f(c)}/>')
+
+
+def topradio_cloud(c):
+    """Top Radio: the puffed-up bubble with its tail hooked underneath."""
+    return (f'<path d="M 148 344 C 88 344 72 272 120 244 C 108 180 172 140 220 168 '
+            f'C 244 112 336 112 356 176 C 420 172 452 256 400 300 C 408 336 380 352 352 344 '
+            f'L 260 344 L 220 416 L 212 344 Z" {_s(c, 28)}/>')
+
+
+def tv4_four(c):
+    """TV4 Play: the numeral 4 with a play arrow tucked under its arm."""
+    return (f'<path d="M 232 80 L 96 300 L 280 300 M 232 80 L 232 432" {_s(c, 36)}/>'
+            + _solid("M 324 200 L 428 264 L 324 328 Z", c, 16))
+
+
+def sunnxt_x(c):
+    """Sun NXT: the X with a play arrow in its crossing and the sun's rays above."""
+    return (f'<path d="M 120 176 L 208 264 M 304 360 L 392 448 M 392 176 L 304 264 '
+            f'M 208 360 L 120 448" {_s(c, 36)}/>'
+            + _solid("M 228 272 L 300 312 L 228 352 Z", c, 12)
+            + f'<path d="M 176 80 L 196 120 M 256 60 L 256 108 M 336 80 L 316 120" {_s(c, 22)}/>')
+
+
+def tvnz_plus(c):
+    """TVNZ+: the plus drawn as a hollow cross with rounded arms."""
+    return (f'<path d="M 212 80 L 300 80 L 300 212 L 432 212 L 432 300 L 300 300 L 300 432 '
+            f'L 212 432 L 212 300 L 80 300 L 80 212 L 212 212 Z" {_s(c, 28)}/>')
+
+
+def tamasha_chevrons(c):
+    """Tamashakhoneh TV: three chevrons marching right."""
+    return (f'<path d="M 80 136 L 176 256 L 80 376 M 188 136 L 284 256 L 188 376 '
+            f'M 296 136 L 392 256 L 296 376" {_s(c, 40)}/>')
+
+
+def swac_star(c):
+    """Swac TV: the five-point star with speed lines trailing off behind it."""
+    import math
+    pts = []
+    for k in range(10):
+        r = 168 if k % 2 == 0 else 72
+        a = math.radians(-90 + 36 * k)
+        pts.append((296 + r * math.cos(a), 272 + r * math.sin(a)))
+    d = "M " + " L ".join(f"{x:.1f} {y:.1f}" for x, y in pts) + " Z"
+    return (f'<path d="{d}" {_s(c, 26)}/>'
+            f'<path d="M 72 232 L 132 232 M 88 300 L 140 300" {_s(c, 24)}/>')
+
+
+def esde_es(c):
+    """ES-DE: the rounded block with its E and S set side by side."""
+    return (f'<rect x="72" y="104" width="368" height="304" rx="48" {_s(c, 28)}/>'
+            f'<path d="M 232 176 L 144 176 L 144 336 L 232 336 M 144 256 L 216 256" {_s(c, 28)}/>'
+            f'<path d="M 376 188 C 360 168 280 164 280 214 C 280 262 376 248 376 294 '
+            f'C 376 344 296 344 276 320" {_s(c, 28)}/>')
+
+
+def telequebec_cards(c):
+    """Tele-Quebec: three tilted cards fanned one behind the other."""
+    return (f'<path d="M 152 104 L 424 152 L 392 280 L 120 232 Z" {_s(c, 24)}/>'
+            f'<path d="M 120 232 L 104 296 L 376 344 L 392 280" {_s(c, 24)}/>'
+            f'<path d="M 104 296 L 88 360 L 360 408 L 376 344" {_s(c, 24)}/>')
+
+
+def go3_three(c):
+    """Go3: the three with its flat top and deep round belly."""
+    return (f'<path d="M 144 104 L 360 104 L 248 216 C 352 208 400 264 400 320 '
+            f'C 400 384 344 424 272 424 C 208 424 160 396 136 352" {_s(c, 40)}/>')
+
+
+def football360_ring(c):
+    """Football 360: the ball inside the arrowed ring that runs all the way round."""
+    return (f'<circle cx="256" cy="256" r="104" {_s(c, 26)}/>'
+            + _solid("M 256 212 L 298 242 L 282 290 L 230 290 L 214 242 Z", c, 10)
+            + f'<path d="{_arc_cw(256, 256, 176, 120, 400)}" {_s(c, 26)}/>'
+            + _solid("M 408 160 L 420 232 L 360 204 Z", c, 10))
+
+
+def freeflix_play(c):
+    """FreeFlix HQ: the play arrow with two speed slashes in front of it."""
+    return (f'<path d="M 72 176 L 136 176 M 88 256 L 152 256 M 72 336 L 136 336" {_s(c, 24)}/>'
+            f'<path d="M 196 112 L 428 256 L 196 400 Z" {_s(c, 32)}/>')
+
+
+def my5_five(c):
+    """My5: the five with its square shoulder and round belly."""
+    return (f'<path d="M 360 96 L 176 96 L 160 240 C 196 216 232 208 264 208 '
+            f'C 336 208 384 256 384 320 C 384 384 336 424 264 424 C 208 424 168 404 144 376" '
+            f'{_s(c, 42)}/>')
+
+
+def movistar_m(c):
+    """Movistar+: the soft M of two rounded humps with its plus above."""
+    return (f'<path d="M 88 408 L 124 196 C 132 152 180 148 196 188 L 256 336 L 316 188 '
+            f'C 332 148 380 152 388 196 L 424 408" {_s(c, 36)}/>'
+            f'<path d="M 376 64 L 376 144 M 336 104 L 416 104" {_s(c, 28)}/>')
+
+
+def freetv_ring(c):
+    """Free TV: the open ring that sweeps round a small tv set."""
+    return (f'<path d="{_arc_cw(256, 256, 176, 250, 560)}" {_s(c, 28)}/>'
+            f'<path d="M 192 208 L 256 208 M 224 208 L 224 316 M 280 208 L 304 316 L 328 208" '
+            f'{_s(c, 28)}/>')
+
+
+def delta_d(c):
+    """Delta TV: the D with a delta cut into its heart."""
+    return (f'<path d="M 104 96 L 240 96 C 352 96 416 168 416 256 C 416 344 352 416 240 416 '
+            f'L 104 416 Z" {_s(c, 30)}/>'
+            f'<path d="M 184 336 L 256 184 L 328 336 Z" {_s(c, 24)}/>')
+
+
+def digi_dot(c):
+    """Digi TV: the i's stem and dot followed by a small play arrow."""
+    return (f'<path d="M 176 216 L 176 424" {_s(c, 44)}/>'
+            f'<circle cx="176" cy="116" r="36" {_f(c)}/>'
+            + _solid("M 272 208 L 408 304 L 272 400 Z", c, 18))
+
+
+def mytv_wings(c):
+    """MyTVOnline: three swept bands rising over the screen line."""
+    return (f'<path d="M 72 304 C 180 192 300 140 440 136 M 104 360 C 204 260 316 216 440 212 '
+            f'M 136 416 C 228 328 332 292 440 288" {_s(c, 30)}/>')
+
+
+def tv2_disc(c):
+    """TV 2 Play: the ring with the v and 2 set tightly inside."""
+    return (f'<circle cx="256" cy="256" r="180" {_s(c, 28)}/>'
+            f'<path d="M 128 208 L 172 312 L 216 208" {_s(c, 28)}/>'
+            f'<path d="M 256 220 C 264 184 352 184 352 232 C 352 268 280 290 256 312 L 360 312" '
+            f'{_s(c, 28)}/>')
+
+
+def zdf_two(c):
+    """ZDF: the big 2 whose foot runs out of the ring to the right."""
+    return (f'<path d="{_arc_cw(232, 256, 168, 10, 345)}" {_s(c, 28)}/>'
+            f'<path d="M 152 208 C 160 144 296 136 304 208 C 312 264 200 300 152 344 L 440 344" '
+            f'{_s(c, 34)}/>')
+
+
+def tflix_t(c):
+    """Tflix: the T in its disc with a spray of sparks flying off the corner."""
+    return (f'<circle cx="280" cy="288" r="148" {_s(c, 28)}/>'
+            f'<path d="M 212 232 L 348 232 M 280 232 L 368 232 M 280 232 L 280 368" {_s(c, 30)}/>'
+            f'<circle cx="112" cy="112" r="18" {_f(c)}/><circle cx="168" cy="80" r="12" {_f(c)}/>'
+            f'<circle cx="92" cy="176" r="12" {_f(c)}/><circle cx="148" cy="144" r="10" {_f(c)}/>')
+
+
+GLYPHS.update({
+    "fpt_badge": fpt_badge, "cliptv_c": cliptv_c, "svt_tplay": svt_tplay,
+    "rtp_wedge": rtp_wedge, "rtlplay_prism": rtlplay_prism, "thunder_bolt": thunder_bolt,
+    "tim_bars": tim_bars, "tvp_box": tvp_box, "yacine_set": yacine_set,
+    "tvgarden_sprout": tvgarden_sprout, "zaap_set": zaap_set, "yettel_play": yettel_play,
+    "streamlocator_pin": streamlocator_pin, "vieon_on": vieon_on, "hoichoi_bang": hoichoi_bang,
+    "hyperspin_swirl": hyperspin_swirl, "topradio_cloud": topradio_cloud, "tv4_four": tv4_four,
+    "sunnxt_x": sunnxt_x, "tvnz_plus": tvnz_plus, "tamasha_chevrons": tamasha_chevrons,
+    "swac_star": swac_star, "esde_es": esde_es, "telequebec_cards": telequebec_cards,
+    "go3_three": go3_three, "football360_ring": football360_ring, "freeflix_play": freeflix_play,
+    "my5_five": my5_five, "movistar_m": movistar_m, "freetv_ring": freetv_ring,
+    "delta_d": delta_d, "digi_dot": digi_dot, "mytv_wings": mytv_wings,
+    "tv2_disc": tv2_disc, "zdf_two": zdf_two, "tflix_t": tflix_t,
+})

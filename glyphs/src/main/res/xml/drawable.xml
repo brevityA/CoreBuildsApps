@@ -873,7 +873,6 @@
     <item drawable="tcn" />
     <item drawable="photocollage" />
     <item drawable="ted" />
-    <item drawable="tele_quebec" />
     <item drawable="tele2_play" />
     <item drawable="telenet" />
     <item drawable="telewebion" />
@@ -901,12 +900,12 @@
     <item drawable="tt" />
     <item drawable="tubi" />
     <item drawable="tv_2_play" />
+    <item drawable="tv2_play" />
     <item drawable="tv_app_repo" />
     <item drawable="tv_garden" />
     <item drawable="deadlyduck" />
     <item drawable="tv_vlaanderen" />
     <item drawable="andevapps" />
-    <item drawable="tv2_play" />
     <item drawable="tv360" />
     <item drawable="tv4_play" />
     <item drawable="tvaplus" />
@@ -917,6 +916,7 @@
     <item drawable="tvoverlay" />
     <item drawable="tvp_vod" />
     <item drawable="twilight" />
+    <item drawable="tele_quebec" />
     <item drawable="u" />
     <item drawable="u_next" />
     <item drawable="uae4arm" />

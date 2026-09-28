@@ -26,6 +26,27 @@ All notable changes to the Core Builds Icon Pack. Format follows
 - **Basis.** Its B with a play arrow in the lower bowl, on the icon's blue
   gradient, requested in #199 with its launch activity read off the
   requester's TV. 970 → 971 icons.
+- **36 more apps get marks drawn from their real icons, 318 in all.**
+  The last of the letter tiles whose icons carry a symbol. FPT Play's
+  rounded badge, Clip TV's C, SVT's t and play arrow, RTP Play's chasing
+  wedge, RTL Play's faceted play arrow, Thunder TV's bolt, TIMVISION's
+  bars, TVP VOD's tab and screen, Yacine TV's lettered set, TV Garden's
+  sprouting set, ZAAP TV's framed set and Yettel TV's ringed play;
+  Stream Locator's map pin, VieON's lit ring, hoichoi's two exclamation
+  marks, HyperSpin's whirl, Top Radio's bubble, TV4 Play's 4 and arrow,
+  Sun NXT's X under the sun, TVNZ+'s hollow plus, Tamashakhoneh TV's
+  chevrons, SWAC TV's star, ES-DE's block and Télé-Québec's fanned cards;
+  Go3's 3, Football 360's ball in its arrowed ring, FreeFlix HQ's play
+  arrow, My5's 5, Movistar+'s M and plus, Free TV's open ring, Delta TV's
+  D, Digi TV's i and play arrow, MyTVOnline's swept bands, TV 2 Play's
+  disc, ZDF's 2 and Tflix's T with its sparks replace their letter tiles.
+  The launcher icons were read from the Projectivy Icon Pack 1.1.9
+  artwork, as reference only. Stream Locator and TVNZ+ carry their icons'
+  gradients, 30 more take their icons' colours in place of palette guesses
+  (Yettel TV, TIMVISION and Top Radio were near-black or off-brand), and
+  ten are spelled like the apps. The rest of the letter tiles are
+  wordmark-only logos, characters owned by others, or apps with no
+  Projectivy artwork.
 - **12 more apps get marks drawn from their real icons, 282 in all.**
   Vibra's looped V, waipu.tv's two leaning capsules, Tencent Video's play
   wedge, Wink's chevron, Filimo's hexagon and play, Filmnet's swept F,

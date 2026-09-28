@@ -725,10 +725,10 @@
     <item drawable="jawwy_tv" />
     <item drawable="steam_link" />
     <item drawable="stream_fire" />
+    <item drawable="streamlocator_vpn" />
     <item drawable="streamvault" />
     <item drawable="streamflix" />
     <item drawable="streamflix_2" />
-    <item drawable="streamlocator_vpn" />
     <item drawable="devinterestdev" />
     <item drawable="fredrikburmester" />
     <item drawable="dpgmedia" />
@@ -777,7 +777,6 @@
     <item drawable="tduk_screensaver_manager" />
     <item drawable="photocollage" />
     <item drawable="ted" />
-    <item drawable="tele_quebec" />
     <item drawable="tele2_play" />
     <item drawable="telenet" />
     <item drawable="televizo" />
@@ -827,6 +826,7 @@
     <item drawable="tunein_radio" />
     <item drawable="tcl_tv" />
     <item drawable="tv_2_play" />
+    <item drawable="tv2_play" />
     <item drawable="tv_app_repo" />
     <item drawable="tvwebbrowser" />
     <item drawable="tvbrowser" />
@@ -839,7 +839,6 @@
     <item drawable="tv_vlaanderen" />
     <item drawable="tv_web_browser" />
     <item drawable="andevapps" />
-    <item drawable="tv2_play" />
     <item drawable="tv360" />
     <item drawable="tv4_play" />
     <item drawable="tvaplus" />
@@ -854,6 +853,7 @@
     <item drawable="tvp_vod" />
     <item drawable="twilight" />
     <item drawable="twitch" />
+    <item drawable="tele_quebec" />
     <item drawable="u" />
     <item drawable="u_next" />
     <item drawable="uae4arm" />

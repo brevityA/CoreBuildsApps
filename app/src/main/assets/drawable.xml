@@ -873,7 +873,6 @@
     <item drawable="tcn_banner" />
     <item drawable="photocollage_banner" />
     <item drawable="ted_banner" />
-    <item drawable="tele_quebec_banner" />
     <item drawable="tele2_play_banner" />
     <item drawable="telenet_banner" />
     <item drawable="telewebion_banner" />
@@ -901,12 +900,12 @@
     <item drawable="tt_banner" />
     <item drawable="tubi_banner" />
     <item drawable="tv_2_play_banner" />
+    <item drawable="tv2_play_banner" />
     <item drawable="tv_app_repo_banner" />
     <item drawable="tv_garden_banner" />
     <item drawable="deadlyduck_banner" />
     <item drawable="tv_vlaanderen_banner" />
     <item drawable="andevapps_banner" />
-    <item drawable="tv2_play_banner" />
     <item drawable="tv360_banner" />
     <item drawable="tv4_play_banner" />
     <item drawable="tvaplus_banner" />
@@ -917,6 +916,7 @@
     <item drawable="tvoverlay_banner" />
     <item drawable="tvp_vod_banner" />
     <item drawable="twilight_banner" />
+    <item drawable="tele_quebec_banner" />
     <item drawable="u_banner" />
     <item drawable="u_next_banner" />
     <item drawable="uae4arm_banner" />

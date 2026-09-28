@@ -727,10 +727,10 @@
         <item>jawwy_tv</item>
         <item>steam_link</item>
         <item>stream_fire</item>
+        <item>streamlocator_vpn</item>
         <item>streamvault</item>
         <item>streamflix</item>
         <item>streamflix_2</item>
-        <item>streamlocator_vpn</item>
         <item>devinterestdev</item>
         <item>fredrikburmester</item>
         <item>dpgmedia</item>
@@ -779,7 +779,6 @@
         <item>tduk_screensaver_manager</item>
         <item>photocollage</item>
         <item>ted</item>
-        <item>tele_quebec</item>
         <item>tele2_play</item>
         <item>telenet</item>
         <item>televizo</item>
@@ -829,6 +828,7 @@
         <item>tunein_radio</item>
         <item>tcl_tv</item>
         <item>tv_2_play</item>
+        <item>tv2_play</item>
         <item>tv_app_repo</item>
         <item>tvwebbrowser</item>
         <item>tvbrowser</item>
@@ -841,7 +841,6 @@
         <item>tv_vlaanderen</item>
         <item>tv_web_browser</item>
         <item>andevapps</item>
-        <item>tv2_play</item>
         <item>tv360</item>
         <item>tv4_play</item>
         <item>tvaplus</item>
@@ -856,6 +855,7 @@
         <item>tvp_vod</item>
         <item>twilight</item>
         <item>twitch</item>
+        <item>tele_quebec</item>
         <item>u</item>
         <item>u_next</item>
         <item>uae4arm</item>
@@ -1253,7 +1253,7 @@
         <item>France 24</item>
         <item>Francetv</item>
         <item>Free TV</item>
-        <item>Freeflix Hq</item>
+        <item>FreeFlix HQ</item>
         <item>Fresh Drama</item>
         <item>Ftp Server</item>
         <item>Fubo</item>
@@ -1298,7 +1298,7 @@
         <item>Hidive</item>
         <item>HISTORY</item>
         <item>History Hit</item>
-        <item>Hoichoi</item>
+        <item>hoichoi</item>
         <item>Home Automation TV Dashboard</item>
         <item>Home Button</item>
         <item>Home Workout</item>
@@ -1310,7 +1310,7 @@
         <item>Hue Shortcuts</item>
         <item>Hulu</item>
         <item>Hyperion Grabber</item>
-        <item>Hyperspin</item>
+        <item>HyperSpin</item>
         <item>IB Player</item>
         <item>Ici Tou TV</item>
         <item>Iflix</item>
@@ -1700,10 +1700,10 @@
         <item>stc tv</item>
         <item>Steam Link</item>
         <item>Stream Fire</item>
+        <item>Stream Locator</item>
         <item>Stream Vault</item>
         <item>Streamflix</item>
         <item>Streamflix</item>
-        <item>Streamlocator VPN</item>
         <item>StreamShow</item>
         <item>Streamyfin</item>
         <item>Streamz</item>
@@ -1719,7 +1719,7 @@
         <item>Supreme TV</item>
         <item>Surfshark</item>
         <item>SVT</item>
-        <item>Swac TV</item>
+        <item>SWAC TV</item>
         <item>Swampdog Media</item>
         <item>Sweet TV</item>
         <item>SYFY</item>
@@ -1752,7 +1752,6 @@
         <item>Tduk Screensaver Manager</item>
         <item>TeaTV</item>
         <item>Ted</item>
-        <item>Tele Quebec</item>
         <item>Tele2 Play</item>
         <item>Telenet</item>
         <item>Televizo</item>
@@ -1776,7 +1775,7 @@
         <item>ThreeNow</item>
         <item>Thunder TV</item>
         <item>TIDAL</item>
-        <item>Timvision</item>
+        <item>TIMVISION</item>
         <item>Tivify</item>
         <item>TiviMate</item>
         <item>TizenTube</item>
@@ -1802,6 +1801,7 @@
         <item>Tunein Radio</item>
         <item>TV</item>
         <item>TV 2 Play</item>
+        <item>TV 2 Play</item>
         <item>TV App Repo</item>
         <item>TV Bro</item>
         <item>TV Browser</item>
@@ -1814,9 +1814,8 @@
         <item>TV Vlaanderen</item>
         <item>TV Web Browser</item>
         <item>TV+</item>
-        <item>Tv2 Play</item>
         <item>TV360</item>
-        <item>Tv4 Play</item>
+        <item>TV4 Play</item>
         <item>TVA+</item>
         <item>Tvi Player</item>
         <item>TVING</item>
@@ -1829,6 +1828,7 @@
         <item>TVP VOD</item>
         <item>Twilight</item>
         <item>Twitch</item>
+        <item>Télé-Québec</item>
         <item>U</item>
         <item>U-NEXT</item>
         <item>UAE4ARM</item>
@@ -1857,7 +1857,7 @@
         <item>Videoland</item>
         <item>VidHub</item>
         <item>Vidio</item>
-        <item>Vieon</item>
+        <item>VieON</item>
         <item>Viki</item>
         <item>Vimeo</item>
         <item>Vimu Player</item>
@@ -2673,10 +2673,10 @@
         <item>APP</item>
         <item>GAMING</item>
         <item>APP</item>
+        <item>VPN</item>
         <item>LIVE</item>
         <item>STREAM</item>
         <item>APP</item>
-        <item>VPN</item>
         <item>STREAM</item>
         <item>STREAM</item>
         <item>STREAM</item>
@@ -2723,7 +2723,6 @@
         <item>TOOL</item>
         <item>TOOL</item>
         <item>TOOL</item>
-        <item>APP</item>
         <item>APP</item>
         <item>APP</item>
         <item>APP</item>
@@ -2776,6 +2775,7 @@
         <item>LIVE</item>
         <item>APP</item>
         <item>APP</item>
+        <item>APP</item>
         <item>BROWSER</item>
         <item>BROWSER</item>
         <item>APP</item>
@@ -2786,7 +2786,6 @@
         <item>SYSTEM</item>
         <item>APP</item>
         <item>BROWSER</item>
-        <item>APP</item>
         <item>APP</item>
         <item>APP</item>
         <item>APP</item>
@@ -2802,6 +2801,7 @@
         <item>APP</item>
         <item>APP</item>
         <item>VIDEO</item>
+        <item>APP</item>
         <item>APP</item>
         <item>APP</item>
         <item>APP</item>
@@ -3048,7 +3048,7 @@
         <item>1</item>
         <item>0</item>
         <item>1</item>
-        <item>0</item>
+        <item>1</item>
         <item>0</item>
         <item>1</item>
         <item>1</item>
@@ -3085,10 +3085,10 @@
         <item>1</item>
         <item>1</item>
         <item>1</item>
-        <item>0</item>
         <item>1</item>
-        <item>0</item>
+        <item>1</item>
         <item>0</item>
+        <item>1</item>
         <item>0</item>
         <item>1</item>
         <item>1</item>
@@ -3139,8 +3139,8 @@
         <item>1</item>
         <item>1</item>
         <item>1</item>
-        <item>0</item>
         <item>1</item>
+        <item>1</item>
         <item>0</item>
         <item>0</item>
         <item>1</item>
@@ -3185,7 +3185,7 @@
         <item>0</item>
         <item>1</item>
         <item>1</item>
-        <item>0</item>
+        <item>1</item>
         <item>0</item>
         <item>0</item>
         <item>1</item>
@@ -3195,15 +3195,15 @@
         <item>1</item>
         <item>1</item>
         <item>1</item>
-        <item>0</item>
         <item>1</item>
-        <item>0</item>
-        <item>0</item>
+        <item>1</item>
         <item>0</item>
+        <item>1</item>
         <item>1</item>
         <item>1</item>
         <item>1</item>
         <item>1</item>
+        <item>1</item>
         <item>0</item>
         <item>1</item>
         <item>1</item>
@@ -3217,7 +3217,7 @@
         <item>1</item>
         <item>1</item>
         <item>1</item>
-        <item>0</item>
+        <item>1</item>
         <item>1</item>
         <item>1</item>
         <item>1</item>
@@ -3244,7 +3244,7 @@
         <item>0</item>
         <item>1</item>
         <item>1</item>
-        <item>0</item>
+        <item>1</item>
         <item>1</item>
         <item>1</item>
         <item>1</item>
@@ -3256,7 +3256,7 @@
         <item>1</item>
         <item>1</item>
         <item>1</item>
-        <item>0</item>
+        <item>1</item>
         <item>1</item>
         <item>0</item>
         <item>1</item>
@@ -3379,7 +3379,7 @@
         <item>1</item>
         <item>1</item>
         <item>1</item>
-        <item>0</item>
+        <item>1</item>
         <item>1</item>
         <item>0</item>
         <item>1</item>
@@ -3390,12 +3390,12 @@
         <item>1</item>
         <item>1</item>
         <item>1</item>
-        <item>0</item>
-        <item>0</item>
         <item>1</item>
         <item>0</item>
+        <item>1</item>
         <item>0</item>
         <item>1</item>
+        <item>1</item>
         <item>0</item>
         <item>1</item>
         <item>1</item>
@@ -3568,10 +3568,10 @@
         <item>0</item>
         <item>0</item>
         <item>1</item>
-        <item>0</item>
         <item>0</item>
         <item>0</item>
-        <item>0</item>
+        <item>1</item>
+        <item>1</item>
         <item>0</item>
         <item>0</item>
         <item>0</item>
@@ -3649,23 +3649,20 @@
         <item>1</item>
         <item>1</item>
         <item>1</item>
-        <item>0</item>
         <item>1</item>
         <item>1</item>
         <item>1</item>
         <item>1</item>
         <item>1</item>
         <item>1</item>
+        <item>1</item>
         <item>0</item>
         <item>1</item>
         <item>1</item>
         <item>0</item>
-        <item>0</item>
         <item>1</item>
         <item>1</item>
         <item>1</item>
-        <item>0</item>
-        <item>0</item>
         <item>1</item>
         <item>1</item>
         <item>1</item>
@@ -3683,9 +3680,12 @@
         <item>1</item>
         <item>1</item>
         <item>1</item>
-        <item>0</item>
+        <item>1</item>
+        <item>1</item>
         <item>1</item>
         <item>1</item>
+        <item>1</item>
+        <item>1</item>
         <item>0</item>
         <item>1</item>
         <item>0</item>
@@ -3698,7 +3698,6 @@
         <item>1</item>
         <item>1</item>
         <item>1</item>
-        <item>0</item>
         <item>1</item>
         <item>1</item>
         <item>0</item>
@@ -3712,7 +3711,7 @@
         <item>0</item>
         <item>0</item>
         <item>0</item>
-        <item>0</item>
+        <item>1</item>
         <item>1</item>
         <item>1</item>
         <item>0</item>
@@ -3720,9 +3719,9 @@
         <item>1</item>
         <item>1</item>
         <item>0</item>
-        <item>0</item>
         <item>1</item>
-        <item>0</item>
+        <item>1</item>
+        <item>1</item>
         <item>0</item>
         <item>1</item>
         <item>1</item>
@@ -3731,7 +3730,7 @@
         <item>1</item>
         <item>0</item>
         <item>0</item>
-        <item>0</item>
+        <item>1</item>
         <item>1</item>
         <item>1</item>
         <item>1</item>
@@ -3751,7 +3750,8 @@
         <item>1</item>
         <item>1</item>
         <item>1</item>
-        <item>0</item>
+        <item>1</item>
+        <item>1</item>
         <item>1</item>
         <item>0</item>
         <item>1</item>
@@ -3761,20 +3761,20 @@
         <item>1</item>
         <item>0</item>
         <item>0</item>
-        <item>0</item>
-        <item>0</item>
+        <item>1</item>
         <item>0</item>
         <item>1</item>
         <item>1</item>
-        <item>0</item>
         <item>0</item>
+        <item>1</item>
         <item>0</item>
         <item>0</item>
         <item>1</item>
-        <item>0</item>
         <item>0</item>
         <item>1</item>
         <item>1</item>
+        <item>1</item>
+        <item>1</item>
         <item>0</item>
         <item>1</item>
         <item>1</item>
@@ -3803,7 +3803,7 @@
         <item>1</item>
         <item>1</item>
         <item>1</item>
-        <item>0</item>
+        <item>1</item>
         <item>0</item>
         <item>1</item>
         <item>1</item>
@@ -3864,11 +3864,11 @@
         <item>1</item>
         <item>1</item>
         <item>1</item>
-        <item>0</item>
         <item>1</item>
-        <item>0</item>
+        <item>1</item>
         <item>0</item>
         <item>1</item>
+        <item>1</item>
         <item>0</item>
         <item>1</item>
         <item>0</item>
@@ -3879,11 +3879,11 @@
         <item>1</item>
         <item>1</item>
         <item>1</item>
-        <item>0</item>
         <item>1</item>
         <item>1</item>
         <item>1</item>
-        <item>0</item>
+        <item>1</item>
+        <item>1</item>
         <item>0</item>
         <item>1</item>
         <item>1</item>
