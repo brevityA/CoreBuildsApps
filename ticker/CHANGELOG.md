@@ -1,0 +1,86 @@
+# Changelog
+
+All notable changes to **Core Line**. Format follows
+[Keep a Changelog](https://keepachangelog.com/en/1.1.0/); versions follow
+[SemVer](https://semver.org/spec/v2.0.0.html).
+
+The repo-root `CHANGELOG.md` is the icon pack's. Core Line keeps its own here.
+
+## [Unreleased]
+
+## [1.4.0] — 2026-09-28
+
+A structural release. The front end had grown into a single 1,340-line
+`public/js/app.js` and a 1,000-line `public/css/app.css`, and the audit's
+findings — drawer focus trap, focus lost on re-render, a slider no remote could
+operate — were three symptoms of that one shape. Both files are now split by
+concern, and the design system is ported from the Core Builds Icon Pack so the
+two apps draw from one brand.
+
+### Added
+
+- **Search across the whole slate.** The board, the hero and the crawl all
+  filter together. Matching is generous on purpose: "leafs" finds Toronto and
+  "tsn" finds the game on TSN, because that is how people type. Multiple terms
+  are ANDed. `lib/query.mjs`, covered by `tests/query.test.mjs`.
+- **My Teams rail.** Starred teams get their own rail section with a live
+  count each, so a favourite is addressable without scanning the board.
+- **Score alerts.** A score change, a lead change, the start of a game or the
+  final for a starred team raises one brief alert. The crawl scrolls past once
+  and is gone; for the two or three teams someone actually follows that was the
+  wrong trade-off. One alert per cycle — three stacked toasts on a TV is noise.
+  `lib/alerts.mjs`, covered by `tests/alerts.test.mjs`.
+- **Overscan calibration.** Classic TV panels crop 2.5–5% of the frame and the
+  amount differs by set, so the margin is now calibrated on the device against
+  corner marks (`Settings → Ticker & display → Calibrate overscan`) instead of
+  guessed once.
+- **First-run onboarding.** Two skippable questions — favourite teams, and a
+  feed. Nothing blocks: the bundled sample feed already fills the crawl.
+- **Start times in the viewer's own timezone** on upcoming game cards.
+- **Three distinct empty states** (no listings, no search matches, nothing on
+  this tab), each offering the action that undoes it.
+- `ticker/STRUCTURE.md` — the module map and the rules that keep it that way.
+
+### Changed
+
+- **Two-pane TV layout.** A fixed-width left rail carries the brand, counts,
+  source health, My Teams, the league nav and the actions; the right pane holds
+  the board. The chyron spans both, for the reason the icon pack gives its
+  update bar: it is the one thing on the screen wider than the rail and more
+  urgent than the grid. Below 1100px the rail becomes a strip above the board.
+- **The design system is now the icon pack's.** `tokens.css` carries the brand
+  palette from `colors.xml` and the metrics from `dimens.xml` — 8px grid, one
+  type scale with a 12px floor, 48px minimum targets, the 3px-ring / 3px-gap
+  focus treatment. `components.css` is a line-by-line port of `bg_cta.xml`,
+  `bg_ghost.xml`, `bg_chip_toggle.xml`, `bg_search.xml`, `bg_card.xml` and
+  `bg_update.xml`, keeping their reasons.
+- **The 10-foot pass scales tokens instead of patching components.** The old
+  `tv.css` overrode ~40 component rules with hard-coded rem values, which is
+  how a UI ends up with two parallel scale ladders that disagree.
+- **Themes no longer restyle status.** LIVE, UP and FINAL were being recoloured
+  per theme — in Broadcast red, the accent and the LIVE badge were the same red.
+  Themes now remap only the accent and the surface ramp; status is fixed, like
+  a traffic light.
+- **The chyron separator is a real element with symmetric margins**, not a
+  `::after` with a one-sided margin. A trailing separator on every item is what
+  makes the seam seamless.
+- **The phone overlay uses the shared stylesheet.** `overlay.html` carried its
+  own copy of the strip's CSS, which is how the two drifted apart; it now links
+  the same `tokens.css`, `base.css` and `chyron.css` and shares `tickHtml`.
+- `public/js/app.js` is 1,340 → 352 lines and contains only wiring and input.
+
+### Fixed
+
+- **The speed slider works with a D-pad.** It was exempt from key handling
+  entirely, so arrows moved focus instead of the value and the control could
+  not be operated by remote at all. Horizontal arrows now drive the slider and
+  vertical arrows navigate. There are also −/+ buttons. (AUDIT D7)
+- **Focus survives re-render.** Every render is wrapped in
+  `captureFocus`/`restoreFocus`, which identify the focused element by event id
+  rather than by node, because the node is about to be replaced. (AUDIT D5)
+- **Escape closes the topmost layer** — calibration, onboarding, game detail,
+  then the drawer — instead of only the drawer.
+- **Feeds are SSRF-validated when added**, not only when fetched, so an unsafe
+  URL never enters persisted state and is never retried. (AUDIT B7)
+- Missing hero and card interior styles (`.teams`, `.hero-meta`, `.hero-side`,
+  `.pills`, `.game-teams`) reinstated after the stylesheet split.

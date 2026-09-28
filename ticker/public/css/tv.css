@@ -1,0 +1,190 @@
+/* ============================================================================
+   Core Line — the 10-foot pass
+
+   A TV is not a phone at a distance, so the app is not the same app scaled
+   up: the floor rises, the gaps widen, and the chyron takes more of the
+   screen than the board wants to give it.
+
+   The earlier version of this file overrode ~40 component rules with
+   hard-coded rem values. That is how a UI ends up with two parallel scale
+   ladders that disagree — the audit found exactly that (F3: "no element may
+   skip the ladder; that's what made TV look inconsistent").
+
+   So this pass only moves tokens. Three things change and everything else
+   follows:
+
+     1. Size — spacing, type, radii and targets all step up one rung.
+     2. The type floor rises from 12px to 16px. Twelve pixels is legible at
+        arm's length and is noise at three metres, which is why the icon pack
+        calls 12sp the floor and treats it as the smallest thing it will draw.
+     3. The chyron grows and the overscan guard widens, because the frame a
+        TV actually shows is smaller than the frame it is sent.
+
+   Nothing below this line names a product concept except where a control has
+   a fixed visual size that is deliberately not a token (the star, the QR).
+   ========================================================================== */
+
+[data-tv] {
+  /* ---- Size ------------------------------------------------------------ */
+  --cb-space-xs: 10px;
+  --cb-space-sm: 16px;
+  --cb-space-md: 20px;
+  --cb-space-lg: 32px;
+  --cb-space-xl: 40px;
+
+  --cb-gutter-side: 60px;
+  --cb-gutter-top: 48px;
+  --cb-rail-width: 340px;
+  --cb-card-padding: 18px;
+
+  --cb-radius-card: 18px;
+  --cb-radius-card-inner: 12px;
+  --cb-radius-card-gap: 15px;
+  --cb-radius-button: 12px;
+  --cb-radius-field: 12px;
+
+  /* Every focusable reaches 56dp, not the 48dp phone floor: a D-pad target is
+     an entire card, and the ring needs room inside it. */
+  --cb-target-min: 56px;
+
+  /* ---- Type: the floor rises ------------------------------------------- */
+  --cb-text-kicker: 16px;
+  --cb-text-data: 18px;
+  --cb-text-label: 20px;
+  --cb-text-body: 21px;
+  --cb-text-section: 24px;
+  --cb-text-title: 40px;
+  --cb-text-display: 44px;
+
+  /* Display roles are in rem on purpose: they ride the root size below, so
+     sports numerals and the crawl scale together instead of drifting apart
+     as the panel gets larger. */
+  --text-abbr: 2.4rem;
+  --text-score: 2.8rem;
+  --text-team: 2rem;
+  --text-ticker: 2rem;
+  --text-clock: 2rem;
+  --text-badge: 1rem;
+  --text-pill: 1rem;
+  --text-nav: 1.15rem;
+  --text-brand: 2rem;
+  --text-stat: 1.5rem;
+  --text-bug: 1.6rem;
+  --text-code: 2.4rem;
+
+  /* ---- Chrome ---------------------------------------------------------- */
+  --chyron-h: 108px;
+  --overscan: 40px;
+
+  font-size: 20px;
+}
+
+/* The focus gap opens slightly: on a large panel the ring reads as part of
+   the card at a 3px offset. The ring itself stays 3dp — it is a line, not
+   type, and a thick ring looks like a border. */
+[data-tv] .focusable:focus-visible,
+[data-tv] .focusable:focus,
+[data-tv] .card:focus,
+[data-tv] .tile:focus {
+  outline-width: var(--cb-focus-ring);
+  outline-offset: 5px;
+}
+
+/* ---- Board: fewer, larger tiles ----------------------------------------
+   The column floor rises so a 1080p panel shows three or four cards rather
+   than eight, each of which can actually be read. */
+[data-tv] .board {
+  grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+  gap: var(--cb-space-md);
+}
+[data-tv] .card {
+  min-height: 200px;
+  padding: var(--cb-card-padding) var(--cb-space-lg) var(--cb-space-md);
+}
+[data-tv] .tile {
+  gap: var(--cb-space-xl);
+  padding: var(--cb-space-xl) var(--cb-space-xl);
+}
+
+/* ---- Controls with a fixed visual size ---------------------------------
+   The star is deliberately smaller than a card control — it is an inline
+   affordance, not a navigation target — so it is the one thing here that
+   does not follow --cb-target-min. */
+[data-tv] .fav-star {
+  width: 48px;
+  height: 48px;
+  font-size: 1.3rem;
+}
+[data-tv] .check input {
+  width: 26px;
+  height: 26px;
+}
+[data-tv] .field {
+  padding: 14px var(--cb-space-md);
+}
+[data-tv] .chip--row {
+  padding: var(--cb-space-md) var(--cb-space-md);
+}
+[data-tv] .pair__qr {
+  width: 260px;
+  height: 260px;
+}
+
+/* Hero interiors scale with the display roles, not the UI scale. */
+[data-tv] .hero-meta {
+  font-size: var(--cb-text-data);
+  gap: var(--cb-space-sm);
+}
+[data-tv] .teams {
+  gap: var(--cb-space-sm);
+}
+
+/* ---- Drawer: two panes, like the board --------------------------------- */
+[data-tv] .drawer__panel {
+  width: min(900px, 96vw);
+  padding: var(--cb-space-xl) var(--cb-space-xl)
+    calc(var(--chyron-h) + var(--cb-space-xl));
+}
+[data-tv] .drawer__body {
+  display: grid;
+  grid-template-columns: 300px minmax(0, 1fr);
+  gap: var(--cb-space-lg);
+  min-height: 0;
+}
+[data-tv] .drawer__rail {
+  flex-direction: column;
+  overflow-x: visible;
+  overflow-y: auto;
+  margin-bottom: 0;
+}
+[data-tv] .drawer__sections {
+  overflow-y: auto;
+  min-height: 0;
+  padding-right: var(--cb-space-xs);
+}
+
+/* ---- Game detail -------------------------------------------------------- */
+[data-tv] .game-detail__panel {
+  width: min(960px, 94vw);
+  padding: var(--cb-space-xl);
+}
+[data-tv] .gd-row {
+  padding: var(--cb-space-md) var(--cb-space-lg);
+  margin: var(--cb-space-xs) 0;
+  border-radius: var(--cb-radius-card);
+}
+[data-tv] .gd-actions .btn,
+[data-tv] .gd-actions .btn--ghost {
+  padding: var(--cb-space-sm) var(--cb-space-lg);
+}
+
+/* The scanline texture is invisible at 3m and costs a composited layer on a
+   weak TV GPU. Drop it. */
+[data-tv] .chyron::after {
+  display: none;
+}
+
+/* Crawl-mode clock takes the pane it has been given. */
+[data-tv] .bigclock__next {
+  font-size: var(--cb-text-title);
+}

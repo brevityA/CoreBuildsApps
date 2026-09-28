@@ -1,0 +1,306 @@
+/* ============================================================================
+   Core Line — app shell
+
+   The icon pack's approved TV structure (app/src/main/res/layout/activity_main.xml):
+   a fixed-width LEFT RAIL carrying the chrome, and a RIGHT PANE that takes
+   every pixel the chrome leaves. The rail is a fixed width so the pane — and
+   therefore the board's column count — is derived, not guessed.
+
+   The chyron spans BOTH panes at the bottom. In the icon pack the element that
+   does this is the update bar, for the reason written into that layout:
+
+     it is the one thing on the screen that is wider than the rail and more
+     urgent than the grid.
+
+   That is exactly the chyron's claim here. It is the product. Everything above
+   it is a way of choosing what it says, so it gets the full width and the
+   board gives up the height.
+
+   Rail contents, top to bottom: wordmark and counts, source health, MY TEAMS,
+   the league nav, and the actions. Actions sit at the rail's foot because a
+   D-pad user walks the rail downward and Settings is where that walk ends.
+   ========================================================================== */
+
+.app {
+  height: 100dvh;
+  display: grid;
+  grid-template-rows: minmax(0, 1fr) var(--chyron-h);
+  /* Side padding is the overscan guard: classic TVs crop ~2.5-5% of the
+     frame, so nothing interactive may live in that margin. The chyron has no
+     bottom padding — it sits flush to the panel edge like a real broadcast
+     strip. */
+  padding: var(--safe-y) var(--overscan) 0;
+}
+
+.app__main {
+  display: grid;
+  grid-template-columns: var(--cb-rail-width) minmax(0, 1fr);
+  gap: var(--cb-space-md);
+  min-height: 0;
+}
+
+/* Ticker position is a user setting, so the chyron swaps grid rows rather
+   than being re-ordered in the DOM — the crawl's transform survives a
+   settings change. */
+[data-position="top"] .app {
+  grid-template-rows: var(--chyron-h) minmax(0, 1fr);
+}
+[data-position="top"] .chyron {
+  grid-row: 1;
+  border-top: 0;
+  border-bottom: 2px solid var(--accent);
+}
+[data-position="top"] .app__main {
+  grid-row: 2;
+}
+
+/* ---- Rail --------------------------------------------------------------- */
+.rail {
+  display: flex;
+  flex-direction: column;
+  gap: var(--cb-space-sm);
+  min-height: 0;
+  padding-right: var(--cb-space-xs);
+  overflow-y: auto;
+}
+
+.rail__brand {
+  display: flex;
+  align-items: center;
+  gap: var(--cb-space-sm);
+  min-width: 0;
+  padding-bottom: var(--cb-space-xs);
+}
+.rail__mark {
+  width: 42px;
+  height: 42px;
+  flex: 0 0 auto;
+  filter: drop-shadow(0 0 10px var(--accent-soft));
+}
+.brand__name {
+  font-family: var(--font);
+  font-size: var(--text-brand);
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  line-height: 1;
+}
+.brand__name span {
+  color: var(--accent);
+}
+.brand__sub {
+  font-size: var(--cb-text-kicker);
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--cb-slate);
+  margin-top: 3px;
+}
+
+/* Counts: Live / Up / RSS. Three numbers, read at a glance, tabular so they
+   don't jitter as they change. */
+.rail__stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--cb-space-xs);
+}
+.stat {
+  text-align: center;
+  padding: var(--cb-space-xs) 4px;
+  border-radius: var(--cb-radius-card);
+  background: var(--surface-card);
+  border: 1px solid var(--cb-hairline);
+}
+.stat b {
+  display: block;
+  font-family: var(--font);
+  font-size: var(--text-stat);
+  line-height: 1;
+  color: var(--accent);
+  font-variant-numeric: tabular-nums;
+}
+.stat span {
+  font-size: var(--cb-text-kicker);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--cb-slate);
+}
+.stat--live b { color: var(--st-live); }
+.stat--up b { color: var(--st-up); }
+
+.rail__section {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-height: 0;
+}
+.rail__section-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--cb-space-xs);
+  padding: 0 2px;
+}
+.rail__nav {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-height: 0;
+  overflow-y: auto;
+}
+
+/* The rail's foot: actions. margin-top:auto pins them to the bottom of a
+   tall rail instead of leaving them stranded under a short list. */
+.rail__actions {
+  display: flex;
+  gap: var(--cb-space-xs);
+  margin-top: auto;
+  padding-top: var(--cb-space-sm);
+}
+
+/* ---- Stage (right pane) ------------------------------------------------- */
+.stage {
+  display: flex;
+  flex-direction: column;
+  gap: var(--cb-space-sm);
+  min-height: 0;
+  overflow-y: auto;
+  padding: 0 var(--cb-space-xs) var(--cb-space-md);
+  scroll-padding: var(--cb-space-md) 0;
+}
+
+.stage__search {
+  display: flex;
+  gap: var(--cb-space-xs);
+  align-items: center;
+}
+
+/* The board. Column count is derived from the pane width, so a 4K panel that
+   reports a larger box gets more columns rather than bigger tiles. */
+.board {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: var(--cb-space-sm);
+  align-content: start;
+}
+
+/* ---- Big clock (ticker-only mode) ---------------------------------------
+   Everything except the chyron and the clock leaves the screen. The clock is
+   the reason someone runs this mode, so it takes the whole pane. */
+.bigclock {
+  display: none;
+  height: 100%;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  gap: var(--cb-space-xs);
+}
+.bigclock__kicker {
+  letter-spacing: 0.42em;
+  color: var(--accent);
+  font-size: var(--cb-text-data);
+}
+.bigclock__time {
+  font-family: var(--font);
+  font-size: clamp(4rem, 16vw, 11rem);
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  line-height: 0.85;
+  text-shadow: 0 0 48px var(--accent-soft);
+  font-variant-numeric: tabular-nums;
+}
+.bigclock__date {
+  color: var(--cb-slate);
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+.bigclock__next {
+  margin-top: var(--cb-space-lg);
+  color: var(--cb-ink);
+  font-family: var(--font);
+  font-size: var(--cb-text-title);
+  letter-spacing: 0.04em;
+}
+
+[data-mode="crawl"] .stage__search,
+[data-mode="crawl"] .rail__section,
+[data-mode="crawl"] .board,
+[data-mode="crawl"] .empty,
+[data-mode="crawl"] .tile {
+  display: none !important;
+}
+[data-mode="crawl"] .bigclock {
+  display: flex;
+}
+[data-mode="crawl"] .rail {
+  opacity: 0.72;
+}
+[data-mode="crawl"] {
+  background-image:
+    radial-gradient(ellipse at 50% 30%, var(--accent-soft), transparent 50%),
+    linear-gradient(0deg, var(--surface-night), var(--surface-night));
+}
+
+/* ============================================================================
+   Narrow / phone
+
+   Below the two-pane threshold the rail becomes a horizontal strip above the
+   board. The chyron stays where it is: it is the point of the app on every
+   screen size.
+   ========================================================================== */
+@media (max-width: 1100px) {
+  .app__main {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: auto minmax(0, 1fr);
+  }
+  .rail {
+    flex-direction: column;
+    overflow: visible;
+    padding-right: 0;
+  }
+  .rail__stats {
+    order: 2;
+  }
+  .rail__actions {
+    margin-top: 0;
+    padding-top: 0;
+  }
+  /* The league nav becomes a single scrollable row — a vertical list would
+     eat the board on a phone. */
+  .rail__nav {
+    flex-direction: row;
+    overflow-x: auto;
+    overflow-y: hidden;
+    scrollbar-width: none;
+  }
+  .rail__nav::-webkit-scrollbar {
+    display: none;
+  }
+  .chip--row {
+    width: auto;
+  }
+  .chip--row .chip__count {
+    margin-left: 0;
+  }
+}
+
+@media (max-width: 720px) {
+  :root {
+    --chyron-h: 56px;
+    --overscan: 12px;
+    --safe-x: 14px;
+  }
+  /* Phone: shrink the token, not the component. */
+  .brand__name {
+    --text-brand: 1.4rem;
+  }
+  .brand__sub {
+    display: none;
+  }
+  .board {
+    grid-template-columns: 1fr;
+  }
+  .tile {
+    grid-template-columns: 1fr;
+    padding: var(--cb-space-md);
+  }
+}
