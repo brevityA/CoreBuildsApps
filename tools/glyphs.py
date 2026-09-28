@@ -6757,3 +6757,128 @@ GLYPHS.update({
     "shadow_ring": shadow_ring, "streamfire_tv": streamfire_tv,
     "playfy_magnifier": playfy_magnifier, "zumba_dancer": zumba_dancer,
 })
+
+
+# --------------------------------------------------------------------------
+# Brand marks batch 13 (2026-09-28): more letter tiles whose launcher icon,
+# seen in the Projectivy Icon Pack 1.1.9 artwork (reference only), carries a
+# symbol.
+
+
+def uplay_swirl(c):
+    """Uplay: the play arrow with a bowed back, a smaller play inside it."""
+    return (f'<path d="M 112 96 C 250 110 384 184 436 256 C 384 328 250 402 112 416 '
+            f'C 148 300 148 212 112 96 Z" {_s(c, 30)}/>'
+            f'<path d="M 214 198 L 318 256 L 214 314 Z" {_s(c, 24)}/>')
+
+
+def cast4k_tv(c):
+    """Cast4K: the rounded shield on two antennae with the 4K on its face."""
+    return (f'<path d="M 214 170 L 184 106 M 298 170 L 346 94" {_s(c, 22)}/>'
+            f'<circle cx="346" cy="92" r="14" {_f(c)}/>'
+            f'<path d="M 96 170 L 416 170 C 444 170 456 194 440 218 L 300 420 '
+            f'C 280 448 232 448 212 420 L 72 218 C 56 194 68 170 96 170 Z" {_s(c, 28)}/>'
+            f'<path d="M 214 216 L 160 290 L 232 290 M 212 250 L 212 334" {_s(c, 22)}/>'
+            f'<path d="M 278 216 L 278 334 M 340 216 L 280 276 L 344 334" {_s(c, 22)}/>')
+
+
+def dramalive_globe(c):
+    """Drama Live: the globe crossed by a comet's sweep, two stars above."""
+    return (f'<circle cx="256" cy="256" r="182" {_s(c, 26)}/>'
+            f'<path d="M 150 400 C 170 300 240 220 350 168" {_s(c, 30)}/>'
+            f'<path d="M 214 404 C 236 330 290 270 384 232" {_s(c, 22)}/>'
+            f'<circle cx="200" cy="146" r="12" {_f(c)}/>'
+            f'<circle cx="262" cy="118" r="12" {_f(c)}/>')
+
+
+def xstream_ribbon(c):
+    """Xstream Play: a ribbon curling from a hook at its foot to a loop at its head."""
+    return (f'<path d="M 188 432 C 110 404 104 318 186 296 C 282 270 364 236 360 156 '
+            f'C 356 86 262 74 222 128 C 196 166 222 212 272 204" {_s(c, 32)}/>')
+
+
+def mobily_screen(c):
+    """Mobily TV: the screen whose lower corner runs out into a tail."""
+    return (f'<path d="M 364 356 L 404 356 L 404 144 C 404 124 392 112 372 112 '
+            f'L 140 112 C 120 112 108 124 108 144 L 108 324 C 108 344 120 356 140 356 '
+            f'L 300 356 L 428 420" {_s(c, 30)}/>')
+
+
+def rapidstreamz_tv(c):
+    """Rapid Streamz: the play set on antennae, rushing forward on speed lines."""
+    return (f'<path d="M 256 150 L 222 92 M 300 150 L 336 92" {_s(c, 22)}/>'
+            f'<rect x="168" y="150" width="272" height="216" rx="26" {_s(c, 28)}/>'
+            + _solid("M 268 212 L 356 258 L 268 304 Z", c, 14)
+            + f'<path d="M 74 212 L 128 212 M 60 262 L 128 262 M 74 312 L 128 312 '
+            f'M 212 366 L 212 410 M 396 366 L 396 410" {_s(c, 22)}/>')
+
+
+def waveiptv_antenna(c):
+    """Wave IPTV: the crossed antenna over three waves."""
+    waves = " ".join(
+        f"M 104 {y} C 160 {y - 40} 204 {y + 40} 256 {y} C 308 {y - 40} 352 {y + 40} 408 {y}"
+        for y in (272, 332, 392))
+    return (f'<path d="M 206 92 L 306 212 M 306 92 L 206 212" {_s(c, 24)}/>'
+            f'<circle cx="206" cy="92" r="16" {_f(c)}/>'
+            f'<circle cx="306" cy="92" r="16" {_f(c)}/>'
+            f'<path d="{waves}" {_s(c, 24)}/>')
+
+
+def snrt_star(c):
+    """SNRT Live: the faceted five-point star."""
+    import math
+    outer = [_polar(256, 272, 196, -90 + 72 * k) for k in range(5)]
+    inner = [_polar(256, 272, 84, -54 + 72 * k) for k in range(5)]
+    pts = [p for pair in zip(outer, inner) for p in pair]
+    d = "M " + " L ".join(f"{x:.1f} {y:.1f}" for x, y in pts) + " Z"
+    facets = " ".join(f"M 256 272 L {x:.1f} {y:.1f}" for x, y in outer[::2])
+    return f'<path d="{d}" {_s(c, 26)}/><path d="{facets}" {_s(c, 18)}/>'
+
+
+def oilers_drop(c):
+    """Oilers+: the oil drop under its arc, with the plus beside it."""
+    return (f'<path d="{_arc_cw(236, 312, 156, 180, 360)}" {_s(c, 28)}/>'
+            f'<path d="M 236 176 C 208 224 192 254 192 280 C 192 306 212 324 236 324 '
+            f'C 260 324 280 306 280 280 C 280 254 264 224 236 176 Z" {_s(c, 24)}/>'
+            f'<path d="M 412 330 L 412 418 M 368 374 L 456 374" {_s(c, 26)}/>')
+
+
+def sportzx_s(c):
+    """Sportz X: the play arrow folded into an S."""
+    return (f'<path d="M 364 144 L 164 96 C 128 88 108 120 128 150 L 196 256 L 128 362 '
+            f'C 108 392 128 424 164 416 L 408 356 C 440 348 444 316 416 296 L 300 220" '
+            f'{_s(c, 30)}/>')
+
+
+def redbox_box(c):
+    """RedBox TV: the open box with its flaps up and a TV antenna rising out."""
+    return (f'<path d="M 256 212 L 222 118 M 256 212 L 300 124" {_s(c, 22)}/>'
+            f'<circle cx="222" cy="112" r="14" {_f(c)}/>'
+            f'<circle cx="300" cy="118" r="14" {_f(c)}/>'
+            f'<path d="M 120 232 L 392 232 L 392 424 L 120 424 Z" {_s(c, 28)}/>'
+            f'<path d="M 120 232 L 64 300 M 392 232 L 448 300 M 120 232 L 170 176 '
+            f'M 392 232 L 342 176" {_s(c, 24)}/>'
+            f'<path d="M 120 300 L 392 300" {_s(c, 22)}/>')
+
+
+def launchermanager_gear(c):
+    """Launcher Manager: the eight-tooth gear with its round hub."""
+    import math
+    pts = []
+    for k in range(8):
+        a = math.radians(k * 45)
+        for da, r in ((-15, 138), (-9, 184), (9, 184), (15, 138)):
+            b = a + math.radians(da)
+            pts.append((256 + r * math.cos(b), 256 + r * math.sin(b)))
+    d = "M " + " L ".join(f"{x:.1f} {y:.1f}" for x, y in pts) + " Z"
+    return f'<path d="{d}" {_s(c, 26)}/><circle cx="256" cy="256" r="56" {_s(c, 26)}/>'
+
+
+GLYPHS.update({
+    "uplay_swirl": uplay_swirl, "cast4k_tv": cast4k_tv,
+    "dramalive_globe": dramalive_globe, "xstream_ribbon": xstream_ribbon,
+    "mobily_screen": mobily_screen, "rapidstreamz_tv": rapidstreamz_tv,
+    "waveiptv_antenna": waveiptv_antenna, "snrt_star": snrt_star,
+    "oilers_drop": oilers_drop, "sportzx_s": sportzx_s,
+    "redbox_box": redbox_box, "launchermanager_gear": launchermanager_gear,
+})

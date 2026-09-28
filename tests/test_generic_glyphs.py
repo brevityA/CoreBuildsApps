@@ -32,7 +32,7 @@ class GenericGlyphTests(unittest.TestCase):
             "Fluffy": "files",
             "Gain": "film",
             "GenPlay": "gaming",
-            "Oilers+": "sport",
+            "Aparat Sport": "sport",
         }
         for name, family in expected.items():
             with self.subTest(name=name):

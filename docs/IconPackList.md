@@ -400,7 +400,7 @@ Source accents are retained in the catalog. **On dark** is the shared square/ban
 | Launch on Boot | `launch_on_boot` | `#7AC7E8` | `#7AC7E8` | `news.androidtv.launchonboot/news.androidtv.launchonboot.MainActivity` |
 | Launchbox | `launchbox` | `#00D4FF` | `#00D4FF` | `com.unbrokensoftware.launchbox/crc640d6c5ebcc48c6177.MainActivity` |
 | Launcher Manager | `luckymanager` | `#FBBF24` | `#FBBF24` | `com.wolf.google.lm/.main.MainActivity` |
-| Launcher Manager | `launcher_manager` | `#FF5CA8` | `#FF5CA8` | `com.wolf.lm/com.wolf.lm.main.MainActivity`<br>`com.wolf.lms/com.wolf.lm.main.MainActivity`<br>`com.wolf.lms/.MainActivity` |
+| Launcher Manager | `launcher_manager` | `#4080F0` | `#4080F0` | `com.wolf.lm/com.wolf.lm.main.MainActivity`<br>`com.wolf.lms/com.wolf.lm.main.MainActivity`<br>`com.wolf.lms/.MainActivity` |
 | Lazy IPTV Deluxe | `lazyiptvdeluxe` | `#008000` | `#008000` | `com.lcs.lazyiptvdeluxe/com.lcs.lazyiptvdeluxe.ActivityStart` |
 | Lazy Media Deluxe | `lazycatsoftware` | `#087E23` | `#087E23` | `com.lazycatsoftware.lmd/com.lazycatsoftware.lazymediadeluxe.ActivityStart` |
 | Leanback on Fire | `leanbackonfire` | `#FF9800` | `#FF9800` | `com.amazon.tv.leanbacklauncher/com.amazon.tv.leanbacklauncher.MainActivity` |
@@ -451,7 +451,7 @@ Source accents are retained in the catalog. **On dark** is the shared square/ban
 | MiXplorer | `mixplorer` | `#B6F23A` | `#B6F23A` | `com.mixplorer.silver/com.mixplorer.activities.BrowseActivity`<br>`com.mixplorer/.activities.BrowseActivity`<br>`com.mixplorer/com.mixplorer.activities.BrowseActivity` |
 | MLB | `bamnetworks` | `#041E42` | `#0C5BC7` | `com.bamnetworks.mobile.android.gameday.atbat/mlb.atbat.activity.MainActivity` |
 | MO4Media | `mo_4media` | `#2196F3` | `#2196F3` | `dancingtree.mo4media/crc64fc68bfe11eb03c38.MainActivity`<br>`dancingtree.mo4media/crc64fc68bfe11eb03c38.TVMainActivity` |
-| Mobily TV | `mobily` | `#045DF9` | `#045DF9` | `com.mobily.tvapp/com.parsifal.starz.ui.features.launcher.LauncherActivity` |
+| Mobily TV | `mobily` | `#0090D0` | `#0090D0` | `com.mobily.tvapp/com.parsifal.starz.ui.features.launcher.LauncherActivity` |
 | Molotov TV | `molotov_tv` | `#FFE14D` | `#FFE14D` | `tv.molotov.app/tv.molotov.android.splash.SplashActivity` |
 | Monet | `monet` | `#B388FF` | `#B388FF` | `com.klevico.monet/com.klevico.monet.HomeActivity`<br>`com.klevico.monet/.HomeActivity` |
 | Monitor Dot | `omnisoft` | `#F84060` | `#F84060` | `com.omnisoft.vpndot/com.omnisoft.vpndot.main` |
@@ -533,7 +533,7 @@ Source accents are retained in the catalog. **On dark** is the shared square/ban
 | Obtainium | `obtainium` | `#D2BCFD` | `#D2BCFD` | `dev.imranr.obtainium.fdroid/dev.imranr.obtainium.MainActivity` |
 | Ocean Streamz | `ocean_streamz` | `#2A5D8A` | `#2D6494` | `streamzy.com.ocean/streamzy.com.ocean.activities.SplashScreenActivity` |
 | Odidotv | `odidotv` | `#FFE14D` | `#FFE14D` | `com.tmobile.tv.nl/com.zodiac.tv.presentation.common.layouts.ZodiacActivity` |
-| Oilers+ | `oilers` | `#00205B` | `#0051E7` | `com.oilers.app/com.imggaming.dicemobile.MainActivity` |
+| Oilers+ | `oilers` | `#1880E0` | `#1880E0` | `com.oilers.app/com.imggaming.dicemobile.MainActivity` |
 | OK TV | `oktv22` | `#D82028` | `#D82028` | `com.iptv.OKTV22/com.iptv.vsaclient.Main` |
 | Ok Video | `ok_video` | `#A366FF` | `#A366FF` | `ru.ok.androidtv/ru.ok.androidtv.activities.MainActivity` |
 | Old Movies | `oldmovies` | `#FFB020` | `#FFB020` | `com.acowboys.oldmovies/com.iart.chromecastapps.atv.ATVOnBoarding`<br>`com.acowboys.oldmovies/com.iart.chromecastapps.onboarding.OnBoardingNew` |
@@ -703,7 +703,7 @@ Source accents are retained in the catalog. **On dark** is the shared square/ban
 | SmartTwitchTV | `twitch_2` | `#3D8BFF` | `#3D8BFF` | `com.fgl27.twitch/com.fgl27.twitch.PlayerActivity` |
 | Smugmug | `smugmug` | `#6DB944` | `#6DB944` | `com.snapwood.smugfolio/com.smugmug.android.activities.SmugMainActivity` |
 | Snapcast | `snapcast` | `#FDBF07` | `#FDBF07` | `de.badaix.snapcast/de.badaix.snapcast.MainActivity` |
-| Snrt Live | `snrt_live` | `#1FD19A` | `#1FD19A` | `ma.snrt.live/ma.snrt.snrtLive.snrt_live_tv_app.MainActivity` |
+| SNRT Live | `snrt_live` | `#1FD19A` | `#1FD19A` | `ma.snrt.live/ma.snrt.snrtLive.snrt_live_tv_app.MainActivity` |
 | Sofascore | `sofascore` | `#C95CFF` | `#C95CFF` | `com.sofascore.results/com.sofascore.results.main.MainActivity` |
 | Solid Explorer | `solidexplorer` | `#34D399` | `#34D399` | `pl.solidexplorer2/pl.solidexplorer2.SolidExplorer`<br>`pl.solidexplorer2/.SolidExplorer`<br>`pl.solidexplorer2/pl.solidexplorer.SolidExplorer` |
 | SomaFM | `radiomg` | `#FFE14D` | `#FFE14D` | `com.dgmltn.radiomg.somafm/com.dgmltn.radiomg.ui.main.MainActivity` |
@@ -717,7 +717,7 @@ Source accents are retained in the catalog. **On dark** is the shared square/ban
 | Sports Everywhere | `sportseverywhere` | `#F84048` | `#F84048` | `com.Arena4Viewer.Sportseverywhere/com.Arena4Viewer.Sportseverywhere.MainActivitysplachscren`<br>`com.bone.android.a4v.oficial/com.bone.android.a4v.oficial.AVActivity`<br>`com.bone.android.a4v.oficial/.AVActivity` |
 | Sportsfire | `sportsfire` | `#53FC18` | `#53FC18` | `com.leed.sportsfire/com.leed.sportsfire.ui.HomeActivity` |
 | Sportsnet | `sportsnet` | `#7C74FF` | `#7C74FF` | `com.rogers.sportsnet.sportsnet/com.rogers.sportsnet.tv.ui.AppActivity` |
-| Sportzx | `sportzx` | `#A888E8` | `#A888E8` | `com.sportzx.live/com.sportzx.live.activities.SplashActivity` |
+| Sportz X | `sportzx` | `#A888E8` | `#A888E8` | `com.sportzx.live/com.sportzx.live.activities.SplashActivity` |
 | Spotify | `spotify` | `#1ED760` | `#1ED760` | `com.spotify.tv.android/com.spotify.app.androidtv.MainActivity`<br>`com.spotify.tv.android/.SpotifyTVActivity`<br>`com.spotify.music/.MainActivity` |
 | SRF Play | `srfplayer` | `#AF001E` | `#C30021` | `ch.srf.mobile.srfplayer/ch.srg.srgplayer.tv.MainActivity` |
 | Sstream | `sstream` | `#F04DE0` | `#F04DE0` | `cloud.app.sstream/cloud.app.sstream.MainActivity` |
@@ -940,7 +940,7 @@ Source accents are retained in the catalog. **On dark** is the shared square/ban
 | XC IPTV | `nathnetwork_2` | `#074192` | `#0A5ACB` | `com.nathnetwork.xciptv/com.nathnetwork.xciptv.SplashVideoActivity` |
 | Xiaomi Media Player | `xiaomi_media_player` | `#00D4FF` | `#00D4FF` | `com.xiaomi.mitv.mediaexplorer/com.xiaomi.mitv.mediaexplorer.NewScraperMainEntryActivity` |
 | Xiaomi TV+ | `mitvplus` | `#19D3C5` | `#19D3C5` | `com.mitv.tvhome.mitvplus/com.mitv.tvhome.mitvplus.app.BannerLogoFree24` |
-| Xstream Play | `xstream_play` | `#650001` | `#C40002` | `tv.airtel.xstream.tvapp/tv.airtel.xstream.login.LoginActivity` |
+| Xstream Play | `xstream_play` | `#C80000` | `#C80000` | `tv.airtel.xstream.tvapp/tv.airtel.xstream.login.LoginActivity` |
 | Xumo Play | `xumo_play` | `#7C74FF` | `#7C74FF` | `com.xumo.xumo/com.xumo.xumo.activity.SplashActivity` |
 | Yacine TV | `yacine_tv` | `#FF7A2E` | `#FF7A2E` | `ver3.ycntivi.off/dev.google.yacinetv.ui.splash.SplashActivity`<br>`ver3.ycntivi.off/dev.google.yacinetv.tvui.splash.SplashActivity` |
 | Yandex Browser | `yandex_browser` | `#19D3C5` | `#19D3C5` | `com.yandex.browser.tv/com.yandex.browser.tv.tvactivity.TvActivity` |

@@ -2029,7 +2029,7 @@
     <!-- Snapcast -->
     <item component="ComponentInfo{de.badaix.snapcast/de.badaix.snapcast.MainActivity}" drawable="snapcast"/>
     <item component="ComponentInfo{de.badaix.snapcast/.MainActivity}" drawable="snapcast"/>
-    <!-- Snrt Live -->
+    <!-- SNRT Live -->
     <item component="ComponentInfo{ma.snrt.live/ma.snrt.snrtLive.snrt_live_tv_app.MainActivity}" drawable="snrt_live"/>
     <!-- Sofascore -->
     <item component="ComponentInfo{com.sofascore.results/com.sofascore.results.main.MainActivity}" drawable="sofascore"/>
@@ -2071,7 +2071,7 @@
     <item component="ComponentInfo{com.leed.sportsfire/.ui.HomeActivity}" drawable="sportsfire"/>
     <!-- Sportsnet -->
     <item component="ComponentInfo{com.rogers.sportsnet.sportsnet/com.rogers.sportsnet.tv.ui.AppActivity}" drawable="sportsnet"/>
-    <!-- Sportzx -->
+    <!-- Sportz X -->
     <item component="ComponentInfo{com.sportzx.live/com.sportzx.live.activities.SplashActivity}" drawable="sportzx"/>
     <item component="ComponentInfo{com.sportzx.live/.activities.SplashActivity}" drawable="sportzx"/>
     <!-- Spotify -->

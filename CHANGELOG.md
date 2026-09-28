@@ -8,6 +8,16 @@ All notable changes to the Core Builds Icon Pack. Format follows
 
 ### Added
 
+- **12 more apps get marks drawn from their real icons, 195 in all.**
+  Uplay's bowed play arrow, Cast4K's shield on antennae, Drama Live's globe
+  and comet, Xstream Play's curled ribbon, Mobily TV's tailed screen, Rapid
+  Streamz's set on speed lines, Wave IPTV's antenna over waves, SNRT Live's
+  faceted star, Oilers+'s drop under its arc, Sportz X's folded play arrow,
+  RedBox TV's open box and Launcher Manager's gear replace their letter
+  tiles. The launcher icons were read from the Projectivy Icon Pack 1.1.9
+  artwork, as reference only. Xstream Play and Oilers+ were near-black and
+  take their icons' red and blue, Mobily TV and Launcher Manager take their
+  icons' blues, and SNRT Live and Sportz X are spelled like the apps.
 - **12 more apps get marks drawn from their real icons, 183 in all.**
   Ace Stream's four chasing arrows, Browse Here's ringed planet with eyes,
   ByeByeDPI's dove over a terminal sign, Elefin's elephant with a play button
