@@ -756,14 +756,14 @@
       "name": "AppLinked",
       "drawable": "applinkednew",
       "color": "#04A96D",
-      "glyph": "store_A",
-      "mark": "AP",
+      "glyph": "applinked_ribbon",
       "components": [
         "com.i4apps.applinkednew/com.applinked.applinkedapp.SplashScreenActivity"
       ],
       "category": "APP",
       "color_source": "sampled from the official launcher icon (APKCombo mirror of the Google Play listing for com.i4apps.applinkednew): dominant brand accent #04A96D (2026-09-26)",
-      "color_reviewed": "2026-09-26"
+      "color_reviewed": "2026-09-26",
+      "glyph_source": "brand-informed redraw of the APKCombo mirror launcher icon for com.i4apps.applinkednew (reference only); Core monoline geometry, not a trace (2026-09-28)"
     },
     {
       "name": "Aptoide TV",
@@ -1525,8 +1525,7 @@
       "name": "CGTN Now",
       "drawable": "cgtnamericanow",
       "color": "#0D4481",
-      "glyph": "broadcast_C",
-      "mark": "CN",
+      "glyph": "cgtnamericanow_wm",
       "components": [
         "com.cgtnamericanow/tv.vhx.LauncherActivity",
         "com.cgtnamericanow/tv.vhx.tv.home.TvHomeActivity"
@@ -1534,7 +1533,8 @@
       "category": "APP",
       "color_source": "sampled from the official launcher icon (APKCombo mirror of the Google Play listing for com.cgtnamericanow): dominant brand accent #0D4481 (2026-09-26)",
       "color_reviewed": "2026-09-26",
-      "name_source": "app name from the Projectivy Icon Pack 1.1.9 artwork for com.cgtnamericanow (github.com/SicMundus86/ProjectivyIconPack, used as reference only), which shows the CGTN Now logo for this package (2026-09-27)"
+      "name_source": "app name from the Projectivy Icon Pack 1.1.9 artwork for com.cgtnamericanow (github.com/SicMundus86/ProjectivyIconPack, used as reference only), which shows the CGTN Now logo for this package (2026-09-27)",
+      "glyph_source": "wordmark-derived mark from the APKCombo mirror launcher icon for com.cgtnamericanow (reference only): the logotype's cue 'CG TN', set in the pack's own single-stroke letters, not the vendor letterforms (2026-09-28)"
     },
     {
       "name": "Channel 4",
@@ -5532,16 +5532,15 @@
       "name": "Lazy Media Deluxe",
       "drawable": "lazycatsoftware",
       "color": "#087E23",
-      "glyph": "broadcast_L",
-      "mark": "LM",
+      "glyph": "lazycatsoftware_wm",
       "components": [
         "com.lazycatsoftware.lmd/com.lazycatsoftware.lazymediadeluxe.ActivityStart"
       ],
       "category": "APP",
       "color_source": "sampled from the official launcher icon (APKCombo mirror of the Google Play listing for com.lazycatsoftware.lmd): dominant brand accent #087E23 (2026-09-26)",
       "color_reviewed": "2026-09-26",
-      "mark_source": "logotype letters from the official launcher icon (APKCombo mirror of the Google Play listing for com.lazycatsoftware.lmd), which reads 'LM DELUXE'; set in the pack's face, not traced (2026-09-26)",
-      "name_source": "app name from the Projectivy Icon Pack 1.1.9 artwork for com.lazycatsoftware.lmd (github.com/SicMundus86/ProjectivyIconPack, used as reference only), which shows the Lazy Media Deluxe logo for this package (2026-09-27)"
+      "name_source": "app name from the Projectivy Icon Pack 1.1.9 artwork for com.lazycatsoftware.lmd (github.com/SicMundus86/ProjectivyIconPack, used as reference only), which shows the Lazy Media Deluxe logo for this package (2026-09-27)",
+      "glyph_source": "wordmark-derived mark from the APKCombo mirror launcher icon for com.lazycatsoftware.lmd (reference only): the logotype's cue 'LM' with its frame, set in the pack's own single-stroke letters, not the vendor letterforms (2026-09-28)"
     },
     {
       "name": "Leanback on Fire",
@@ -7926,15 +7925,15 @@
     {
       "name": "Photo Screensaver",
       "drawable": "photoscreensaver",
-      "color": "#1FD19A",
-      "glyph": "tool_P",
-      "mark": "PS",
+      "color": "#007878",
+      "glyph": "photogrid_tiles",
       "components": [
         "com.furnaghan.android.photoscreensaver/com.furnaghan.android.photoscreensaver.gallery.GalleryBrowseActivity"
       ],
       "category": "APP",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled from the APKCombo mirror launcher icon for com.furnaghan.android.photoscreensaver (reference only): #007878 (2026-09-28)",
+      "color_reviewed": "2026-09-28",
+      "glyph_source": "brand-informed redraw of the APKCombo mirror launcher icon for com.furnaghan.android.photoscreensaver (reference only); Core monoline geometry, not a trace (2026-09-28)"
     },
     {
       "name": "PigeonCast",
@@ -8174,16 +8173,16 @@
     {
       "name": "NovaTV",
       "drawable": "videoplayer_2",
-      "color": "#F04818",
-      "glyph": "broadcast_N",
-      "mark": "NO",
+      "color": "#F82800",
+      "glyph": "videoplayer_2_wm",
       "components": [
         "com.polygon.videoplayer/com.polygon.videoplayer.SplashActivity"
       ],
       "category": "APP",
-      "color_source": "sampled from the Projectivy Icon Pack 1.1.9 artwork for com.polygon.videoplayer (github.com/SicMundus86/ProjectivyIconPack, used as reference only): #F04818 (2026-09-27)",
-      "color_reviewed": "2026-09-27",
-      "name_source": "app name from the Projectivy Icon Pack 1.1.9 artwork for com.polygon.videoplayer (github.com/SicMundus86/ProjectivyIconPack, used as reference only), which shows the NovaTV logo for this package (2026-09-27)"
+      "color_source": "sampled from the store-listing launcher icon for com.polygon.videoplayer (reference only): #F82800 (2026-09-28)",
+      "color_reviewed": "2026-09-28",
+      "name_source": "app name from the Projectivy Icon Pack 1.1.9 artwork for com.polygon.videoplayer (github.com/SicMundus86/ProjectivyIconPack, used as reference only), which shows the NovaTV logo for this package (2026-09-27)",
+      "glyph_source": "wordmark-derived mark from the store-listing launcher icon for com.polygon.videoplayer (reference only): the logotype's cue 'NOVA', set in the pack's own single-stroke letters, not the vendor letterforms (2026-09-28)"
     },
     {
       "name": "Poweramp Equalizer",

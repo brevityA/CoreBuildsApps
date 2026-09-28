@@ -8306,3 +8306,21 @@ _WM2 = {
     "tcl_home_passive": ("TCL", "frame"),
 }
 GLYPHS.update({f"{d}_wm": _wm_glyph(t, cue) for d, (t, cue) in _WM2.items()})
+
+
+def applinked_ribbon(c):
+    """AppLinked: the M folded from three parallel ribbons."""
+    return (f'<path d="M 96 416 L 96 112 L 256 280 L 416 112 L 416 416" {_s(c, 26)}/>'
+            f'<path d="M 160 416 L 160 232 L 256 336 L 352 232 L 352 416" {_s(c, 22)}/>')
+
+
+def photogrid_tiles(c):
+    """Photo Screensaver: the four-by-four wall of photo tiles, one of them missing."""
+    return "".join(f'<rect x="{88 + 88 * col}" y="{88 + 88 * row}" width="64" height="64" rx="12" {_s(c, 20)}/>'
+                   for row in range(4) for col in range(4) if (row, col) != (1, 2))
+
+
+GLYPHS.update({"applinked_ribbon": applinked_ribbon, "photogrid_tiles": photogrid_tiles})
+_WM2.update({"cgtnamericanow": ("CG/TN", None), "lazycatsoftware": ("LM", "frame"),
+             "videoplayer_2": ("NOVA", None)})
+GLYPHS.update({f"{d}_wm": _wm_glyph(*_WM2[d]) for d in ("cgtnamericanow", "lazycatsoftware", "videoplayer_2")})

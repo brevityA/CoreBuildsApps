@@ -520,7 +520,7 @@ Source accents are retained in the catalog. **On dark** is the shared square/ban
 | Notifications For Android TV | `notifications_for_android_tv` | `#00D4FF` | `#00D4FF` | `de.cyberdream.androidtv.notifications.google/de.cyberdream.androidtv.notifications.StartActivity`<br>`de.cyberdream.androidtv.notifications.google/de.cyberdream.smarttv.leanback.MainActivityLeanBack` |
 | NoTube TV | `notubetv` | `#FF5CA8` | `#FF5CA8` | `com.ycngmn.notubetv/com.ycngmn.notubetv.MainActivity` |
 | Nova Video Player | `nova_video_player` | `#53FC18` | `#53FC18` | `org.courville.nova/com.archos.mediacenter.video.leanback.MainActivityLeanback` |
-| NovaTV | `videoplayer_2` | `#F04818` | `#F04818` | `com.polygon.videoplayer/com.polygon.videoplayer.SplashActivity` |
+| NovaTV | `videoplayer_2` | `#F82800` | `#F82800` | `com.polygon.videoplayer/com.polygon.videoplayer.SplashActivity` |
 | NOW | `nowtv` | `#086068` | `#E6EDF3` | `com.bskyb.nowtv.beta/com.peacock.peacocktv.GoogleMainActivity` |
 | Nowo TV | `nowo_tv` | `#FD7301` | `#FD7301` | `pt.nowo.nowotv.androidtv/com.androme.andrometv.ui.boot.SplashScreenActivity` |
 | NPO Start | `npo_start` | `#F86800` | `#F86800` | `nl.uitzendinggemist/nl.uitzendinggemist.tv.presentation.activities.main.MainActivity` |
@@ -574,7 +574,7 @@ Source accents are retained in the catalog. **On dark** is the shared square/ban
 | Perfect Player | `niklabs` | `#00F1EF` | `#00F1EF` | `com.niklabs.pp/com.niklabs.perfectplayer.MainActivity` |
 | Perfect TV | `perfecttv` | `#38B0F8` | `#38B0F8` | `com.perfecttv.apks/com.gbscell.aipitv.SplashActivity` |
 | Philo | `philo` | `#3D8BFF` | `#3D8BFF` | `com.philo.philo.google/com.philo.philo.app.activity.MainActivity` |
-| Photo Screensaver | `photoscreensaver` | `#1FD19A` | `#1FD19A` | `com.furnaghan.android.photoscreensaver/com.furnaghan.android.photoscreensaver.gallery.GalleryBrowseActivity` |
+| Photo Screensaver | `photoscreensaver` | `#007878` | `#007878` | `com.furnaghan.android.photoscreensaver/com.furnaghan.android.photoscreensaver.gallery.GalleryBrowseActivity` |
 | PhotoGuru | `mediabrowser` | `#F8A848` | `#F8A848` | `com.cmpsoft.MediaBrowser/com.cmpsoft.MediaBrowser.SplashScreenActivity` |
 | PigeonCast | `pigeoncast` | `#0092B0` | `#0092B0` | `com.pigeoncast.screen.mirroring.android.tv/com.mirror_universal.receiver.activity.MainActivity` |
 | Pikashow | `offshore` | `#F80010` | `#F80010` | `com.offshore.pikachu/com.offshore.pikachu.view.Splash` |

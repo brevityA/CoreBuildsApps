@@ -26,16 +26,17 @@ All notable changes to the Core Builds Icon Pack. Format follows
 - **Basis.** Its B with a play arrow in the lower bowl, on the icon's blue
   gradient, requested in #199 with its launch activity read off the
   requester's TV. 970 → 971 icons.
-- **90 more letter tiles get marks from their store-listing icons.** These
+- **95 more letter tiles get marks from their store-listing icons.** These
   apps have no Projectivy artwork, so their launcher icons were read from
   their Google Play, APKCombo, Aptoide or Uptodown listings instead, as
-  reference only. Eight carry a symbol and are drawn from it: myTuner
+  reference only. Ten carry a symbol and are drawn from it: myTuner
   Radio's set, Radon Tunes' quaver, Channels' test-card set, FilmPlus's sun
   and cloud, Dimplay's stacked play, User Center's person, GridStreamr's
-  grid and Launch on Boot's cycle. The other 82 are logotypes and get the
+  grid, Launch on Boot's cycle, AppLinked's ribboned M and Photo
+  Screensaver's tile wall. The other 85 are logotypes and get the
   same wordmark treatment as below (Virgin Media Play's VM and play, The
-  CW, HGTV, BBC Sounds, VRT MAX, sky+, TLC, WiiM and the rest); 28 take
-  their icons' colours. 26 apps have no icon on any store and keep letter
+  CW, HGTV, BBC Sounds, CGTN Now, VRT MAX, sky+, TLC, WiiM and the rest);
+  30 take their icons' colours. 26 apps have no icon on any store and keep letter
   tiles, as do All Red Video (a club crest) and Rover's Morning Glory (a
   photo of its host).
 - **116 wordmark-only apps get marks from their logotypes.** Their

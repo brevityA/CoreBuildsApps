@@ -25,7 +25,7 @@ class GenericGlyphTests(unittest.TestCase):
 
     def test_researched_function_examples(self):
         expected = {
-            "CGTN Now": "broadcast",
+            "Cyberflix": "broadcast",
             "VivaTV": "broadcast",
             "Aurora Store": "store",
             "Rubika TV": "film",
