@@ -8280,7 +8280,7 @@ GLYPHS.update({
 # reference only). Same cue rules as _WM.
 _WM2 = {
     "threeplayer": ("VM", "play"), "acontraplus": ("ac", "plus"), "aimitv": ("10", "plus"),
-    "livingroom": ("fv", None), "angel": ("ANGEL", None), "beachbody": ("BO/Di", None),
+    "livingroom": ("fv", None), "angel": ("AN", "under"), "beachbody": ("BO/Di", None),
     "canaldigital": ("all", None), "citytvplus": ("city", "plus"), "ctvgo": ("CTV", "ring"),
     "cuenew2": ("CUE", None), "digdroid": ("DIG", None), "dcsapp": ("Nex", None),
     "distroscale": ("DTV", "frame"), "dnschanger": ("DNS", None), "dstvmobile": ("DStv", None),
