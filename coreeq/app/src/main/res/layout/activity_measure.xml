@@ -1,0 +1,282 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/cb_night"
+    android:paddingLeft="@dimen/cb_gutter_side"
+    android:paddingRight="@dimen/cb_gutter_side"
+    android:paddingTop="@dimen/cb_gutter_top"
+    android:paddingBottom="@dimen/cb_gutter_bottom">
+
+    <!-- Header -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/measure_title"
+        android:textColor="@color/cb_slate"
+        android:textSize="@dimen/cb_text_kicker"
+        android:fontFamily="monospace"
+        android:textAllCaps="true" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/measure_heading"
+        android:textColor="@color/cb_ink"
+        android:textSize="@dimen/cb_text_title"
+        android:textStyle="bold"
+        android:layout_marginTop="4dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/measure_sub"
+        android:textColor="@color/cb_slate"
+        android:textSize="@dimen/cb_text_data"
+        android:layout_marginTop="2dp" />
+
+    <!-- Two-pane content -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:orientation="horizontal"
+        android:layout_marginTop="@dimen/cb_space_md">
+
+        <!-- Left rail: 3 Step cards -->
+        <LinearLayout
+            android:layout_width="340dp"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <!-- Step 1: the room and the target -->
+            <LinearLayout
+                android:id="@+id/card_step_1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:background="@drawable/bg_card"
+                android:padding="@dimen/cb_card_padding"
+                android:layout_marginBottom="@dimen/cb_space_xs">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="STEP 1"
+                    android:textColor="@color/cb_cta_end"
+                    android:textSize="@dimen/cb_text_kicker"
+                    android:fontFamily="monospace"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/measure_step1_title"
+                    android:textColor="@color/cb_ink"
+                    android:textSize="@dimen/cb_text_label"
+                    android:textStyle="bold"
+                    android:layout_marginTop="2dp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/measure_step1_sub"
+                    android:textColor="@color/cb_slate"
+                    android:textSize="@dimen/cb_text_kicker"
+                    android:layout_marginTop="2dp" />
+
+                <Button
+                    android:id="@+id/btn_room_size"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/cb_target_min"
+                    android:background="@drawable/bg_ghost"
+                    android:textColor="@color/cb_ink"
+                    android:textSize="@dimen/cb_text_data"
+                    android:textAllCaps="false"
+                    android:gravity="start|center_vertical"
+                    android:paddingStart="@dimen/cb_space_sm"
+                    android:paddingEnd="@dimen/cb_space_sm"
+                    android:focusable="true"
+                    android:layout_marginTop="@dimen/cb_space_xs" />
+
+                <Button
+                    android:id="@+id/btn_target"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/cb_target_min"
+                    android:background="@drawable/bg_ghost"
+                    android:textColor="@color/cb_ink"
+                    android:textSize="@dimen/cb_text_data"
+                    android:textAllCaps="false"
+                    android:gravity="start|center_vertical"
+                    android:paddingStart="@dimen/cb_space_sm"
+                    android:paddingEnd="@dimen/cb_space_sm"
+                    android:focusable="true"
+                    android:layout_marginTop="@dimen/cb_space_xs" />
+            </LinearLayout>
+
+            <!-- Step 2 -->
+            <LinearLayout
+                android:id="@+id/card_step_2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:background="@drawable/bg_card"
+                android:padding="@dimen/cb_card_padding"
+                android:layout_marginBottom="@dimen/cb_space_xs">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="STEP 2"
+                    android:textColor="@color/cb_warning"
+                    android:textSize="@dimen/cb_text_kicker"
+                    android:fontFamily="monospace"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/measure_step2_title"
+                    android:textColor="@color/cb_ink"
+                    android:textSize="@dimen/cb_text_label"
+                    android:textStyle="bold"
+                    android:layout_marginTop="2dp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/measure_step2_sub"
+                    android:textColor="@color/cb_slate"
+                    android:textSize="@dimen/cb_text_kicker"
+                    android:layout_marginTop="2dp" />
+            </LinearLayout>
+
+            <!-- Step 3 -->
+            <LinearLayout
+                android:id="@+id/card_step_3"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:background="@drawable/bg_card"
+                android:padding="@dimen/cb_card_padding">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="STEP 3"
+                    android:textColor="@color/cb_slate"
+                    android:textSize="@dimen/cb_text_kicker"
+                    android:fontFamily="monospace"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/measure_step3_title"
+                    android:textColor="@color/cb_ink"
+                    android:textSize="@dimen/cb_text_label"
+                    android:textStyle="bold"
+                    android:layout_marginTop="2dp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/measure_step3_sub"
+                    android:textColor="@color/cb_slate"
+                    android:textSize="@dimen/cb_text_kicker"
+                    android:layout_marginTop="2dp" />
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <!-- Right pane: Live capture graph + Progress -->
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:layout_marginStart="@dimen/cb_space_lg">
+
+            <tv.corebuilds.eq.ui.CurveGraphView
+                android:id="@+id/graph_measure"
+                android:layout_width="match_parent"
+                android:layout_height="220dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/measure_progress_title"
+                android:textColor="@color/cb_slate"
+                android:textSize="@dimen/cb_text_kicker"
+                android:fontFamily="monospace"
+                android:layout_marginTop="@dimen/cb_space_sm" />
+
+            <!-- Capture progress bar -->
+            <ProgressBar
+                android:id="@+id/progress_measure"
+                style="?android:attr/progressBarStyleHorizontal"
+                android:layout_width="match_parent"
+                android:layout_height="18dp"
+                android:max="100"
+                android:progress="0"
+                android:layout_marginTop="6dp" />
+
+            <TextView
+                android:id="@+id/text_measure_status"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/measure_ready"
+                android:textColor="@color/cb_slate"
+                android:textSize="@dimen/cb_text_kicker"
+                android:fontFamily="monospace"
+                android:layout_marginTop="6dp" />
+
+            <!-- Action buttons -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="@dimen/cb_space_md">
+
+                <Button
+                    android:id="@+id/btn_measure_start"
+                    android:layout_width="160dp"
+                    android:layout_height="@dimen/cb_target_min"
+                    android:background="@drawable/bg_cta"
+                    android:text="@string/measure_start"
+                    android:textColor="@color/cb_cta_ink"
+                    android:textSize="@dimen/cb_text_label"
+                    android:textStyle="bold"
+                    android:focusable="true"
+                    android:layout_marginEnd="@dimen/cb_space_sm" />
+
+                <Button
+                    android:id="@+id/btn_measure_stop"
+                    android:layout_width="140dp"
+                    android:layout_height="@dimen/cb_target_min"
+                    android:background="@drawable/bg_ghost"
+                    android:text="@string/measure_stop"
+                    android:textColor="@color/cb_ink"
+                    android:textSize="@dimen/cb_text_label"
+                    android:focusable="true"
+                    android:layout_marginEnd="@dimen/cb_space_sm" />
+
+                <Button
+                    android:id="@+id/btn_measure_save"
+                    android:layout_width="160dp"
+                    android:layout_height="@dimen/cb_target_min"
+                    android:background="@drawable/bg_cta"
+                    android:text="@string/measure_save"
+                    android:textColor="@color/cb_cta_ink"
+                    android:textSize="@dimen/cb_text_label"
+                    android:textStyle="bold"
+                    android:visibility="gone"
+                    android:focusable="true" />
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</LinearLayout>

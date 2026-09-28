@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/profile_row_root"
+    android:layout_width="match_parent"
+    android:layout_height="78dp"
+    android:orientation="vertical"
+    android:background="@drawable/bg_card"
+    android:padding="@dimen/cb_card_padding"
+    android:focusable="true"
+    android:layout_marginBottom="@dimen/cb_space_xs">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/item_profile_name"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Living room"
+            android:textColor="@color/cb_ink"
+            android:textSize="@dimen/cb_text_label"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/item_profile_badge"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="ACTIVE"
+            android:textColor="@color/cb_success"
+            android:textSize="@dimen/cb_text_kicker"
+            android:fontFamily="monospace"
+            android:textStyle="bold" />
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/item_profile_sub"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Harman · 6 filters · remote mic"
+        android:textColor="@color/cb_slate"
+        android:textSize="@dimen/cb_text_kicker"
+        android:fontFamily="monospace"
+        android:layout_marginTop="4dp" />
+
+</LinearLayout>

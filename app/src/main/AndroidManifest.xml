@@ -109,9 +109,10 @@
             <category android:name="android.intent.category.LAUNCHER" />
         </intent>
         <!-- Suite companions, for the hub's installed/version probes and its
-             launch buttons. Four targeted entries, same grammar as the
+             launch buttons. Five targeted entries, same grammar as the
              launcher block above. -->
         <package android:name="dev.corebuilds.doctor" />
+        <package android:name="tv.corebuilds.eq" />
         <package android:name="dev.corebuilds.line" />
         <package android:name="tv.corebuilds.motion" />
         <package android:name="dev.corebuilds.shift" />

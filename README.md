@@ -22,6 +22,7 @@
 > | **[Core Shift](#-core-shift)** | `v2.3.5` | Android TV screensaver + motion wallpaper browser | `8829421` | [`shift-v*` / `shift`](../../releases) |
 > | **[Core Motion](#-core-motion)** | `v1.0.0` | Projectivy wallpaper-provider plugin for Core Motion loops | `[USER TO SUPPLY]` | [`motion-v*` / `motion`](../../releases) |
 > | **[Core Doctor](#-core-doctor)** | `v0.1.0` | Local-only streaming and suite diagnostics (phone) | `8664938` | [`doctor-v*` / `doctor`](../../releases) |
+> | **[Core EQ](#-core-eq)** | `v1.0.0` | Room EQ from a test sweep and the TV remote mic (in development) | `[USER TO SUPPLY]` | [`coreeq-v*` / `coreeq`](../../releases) |
 >
 > Each app has its own CI workflow and release tag. Do not merge Gradle roots, split the repo, or repoint floating Downloader tags.
 <!-- suite-stamp:end -->
@@ -218,6 +219,18 @@ Six checks on your setup's health — DNS, VPN detection, addon manifest + strea
 **Install:** Downloader code **`8664938`**, or [**Releases**](../../releases) under `doctor-v*` tags.
 
 Build: `cd doctor && ./gradlew :app:assembleDebug` · [`doctor/SPEC.md`](doctor/SPEC.md)
+
+---
+
+## 🔷 Core EQ
+
+**Measure the room you sit in, with the remote you already hold.** `v1.0.0`
+
+Plays a test sweep through the TV, records it through the remote's microphone, and hands back an equaliser setting for this room — corrected only between 40 Hz and 8 kHz, the band a remote capsule can be trusted in. Android TV has no global equaliser, so the app probes what it can apply on each device and says so. Real measurement via Farina swept-sine deconvolution, minimum-phase modal correction, speech intelligibility targets, and companion export to Poweramp Equalizer. Permissions: RECORD_AUDIO, MODIFY_AUDIO_SETTINGS.
+
+**Install:** test builds on the [`coreeq-test`](../../releases/tag/coreeq-test) prerelease; releases under `coreeq-v*` tags. Downloader code: not yet generated.
+
+Build: `cd coreeq && ./gradlew :app:assembleDebug` · [`coreeq/CHANGELOG.md`](coreeq/CHANGELOG.md)
 
 ---
 
