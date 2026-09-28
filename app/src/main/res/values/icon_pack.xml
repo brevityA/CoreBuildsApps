@@ -1211,7 +1211,7 @@
         <item>FC Porto TV</item>
         <item>FCast Receiver</item>
         <item>FCTV33</item>
-        <item>Feb</item>
+        <item>FEB</item>
         <item>FIFA+</item>
         <item>File Commander</item>
         <item>Files</item>
@@ -1509,7 +1509,7 @@
         <item>Ondamedia</item>
         <item>One Play</item>
         <item>One TV</item>
-        <item>Onstream</item>
+        <item>OnStream</item>
         <item>Openvpn For Android</item>
         <item>Opta / SIC</item>
         <item>Oqee By Free</item>
@@ -3016,15 +3016,15 @@
         <item>0</item>
         <item>0</item>
         <item>1</item>
-        <item>0</item>
         <item>1</item>
-        <item>0</item>
+        <item>1</item>
         <item>1</item>
         <item>1</item>
         <item>1</item>
         <item>1</item>
         <item>1</item>
         <item>1</item>
+        <item>1</item>
         <item>0</item>
         <item>1</item>
         <item>0</item>
@@ -3132,7 +3132,7 @@
         <item>1</item>
         <item>1</item>
         <item>1</item>
-        <item>0</item>
+        <item>1</item>
         <item>0</item>
         <item>1</item>
         <item>0</item>
@@ -3157,7 +3157,7 @@
         <item>0</item>
         <item>1</item>
         <item>0</item>
-        <item>0</item>
+        <item>1</item>
         <item>0</item>
         <item>1</item>
         <item>1</item>
@@ -3170,7 +3170,7 @@
         <item>1</item>
         <item>1</item>
         <item>1</item>
-        <item>0</item>
+        <item>1</item>
         <item>0</item>
         <item>1</item>
         <item>1</item>
@@ -3215,7 +3215,7 @@
         <item>1</item>
         <item>1</item>
         <item>1</item>
-        <item>0</item>
+        <item>1</item>
         <item>1</item>
         <item>0</item>
         <item>1</item>
@@ -3360,10 +3360,10 @@
         <item>1</item>
         <item>0</item>
         <item>1</item>
-        <item>0</item>
-        <item>0</item>
+        <item>1</item>
         <item>1</item>
         <item>1</item>
+        <item>1</item>
         <item>0</item>
         <item>1</item>
         <item>1</item>
@@ -3455,7 +3455,7 @@
         <item>1</item>
         <item>0</item>
         <item>0</item>
-        <item>0</item>
+        <item>1</item>
         <item>1</item>
         <item>0</item>
         <item>0</item>
@@ -3666,7 +3666,6 @@
         <item>1</item>
         <item>0</item>
         <item>0</item>
-        <item>0</item>
         <item>1</item>
         <item>1</item>
         <item>1</item>
@@ -3679,10 +3678,11 @@
         <item>1</item>
         <item>1</item>
         <item>1</item>
-        <item>0</item>
         <item>1</item>
         <item>0</item>
+        <item>1</item>
         <item>1</item>
+        <item>1</item>
         <item>0</item>
         <item>1</item>
         <item>1</item>
@@ -3777,7 +3777,7 @@
         <item>1</item>
         <item>0</item>
         <item>1</item>
-        <item>0</item>
+        <item>1</item>
         <item>1</item>
         <item>1</item>
         <item>1</item>

@@ -7036,3 +7036,113 @@ def basis_b(c):
 
 
 GLYPHS.update({"basis_b": basis_b})
+
+
+# --------------------------------------------------------------------------
+# Brand marks batch 14 (2026-09-28): more letter tiles whose launcher icon,
+# seen in the Projectivy Icon Pack 1.1.9 artwork (reference only), carries a
+# symbol.
+
+
+def braviacore_lens(c):
+    """Bravia Core: the lens, its rings swirling in toward the pupil."""
+    return (f'<circle cx="256" cy="256" r="184" {_s(c, 28)}/>'
+            f'<path d="{_arc_cw(256, 256, 124, 200, 470)}" {_s(c, 24)}/>'
+            f'<path d="{_arc_cw(256, 256, 68, 20, 290)}" {_s(c, 22)}/>'
+            f'<circle cx="256" cy="256" r="20" {_f(c)}/>')
+
+
+def brollie_pencil(c):
+    """Brollie: the pencil mascot, sharpened tip up, with its face, arms and feet."""
+    return (f'<path d="M 196 184 L 256 72 L 316 184" {_s(c, 26)}/>'
+            f'<rect x="196" y="184" width="120" height="206" rx="14" {_s(c, 28)}/>'
+            f'<path d="M 196 344 L 316 344" {_s(c, 22)}/>'
+            f'<circle cx="234" cy="244" r="12" {_f(c)}/>'
+            f'<circle cx="278" cy="244" r="12" {_f(c)}/>'
+            f'<path d="M 196 280 L 146 318 M 316 280 L 366 318 '
+            f'M 232 390 L 216 436 M 280 390 L 296 436" {_s(c, 22)}/>')
+
+
+def eon_horizon(c):
+    """Eon TV: the ring rising through its horizon line."""
+    return (f'<path d="M 56 256 L 160 256 M 352 256 L 456 256" {_s(c, 26)}/>'
+            f'<circle cx="256" cy="256" r="96" {_s(c, 28)}/>'
+            f'<path d="M 188 186 L 88 186 M 188 326 L 88 326 M 324 186 L 424 186 '
+            f'M 324 326 L 424 326" {_s(c, 20)}/>')
+
+
+def feb_pin(c):
+    """Feb: the round head of a pin that curls down into a hooked tail."""
+    return (f'<circle cx="244" cy="200" r="98" {_s(c, 32)}/>'
+            f'<path d="M 342 200 L 342 318 C 342 390 290 432 226 424" {_s(c, 32)}/>'
+            f'<circle cx="244" cy="200" r="24" {_f(c)}/>')
+
+
+def fivetv_five(c):
+    """Five TV: the 5 drawn as a flame, its flag flying off the top."""
+    return (f'<path d="M 300 92 L 204 108 L 188 212 C 252 184 344 204 344 292 '
+            f'C 344 380 250 414 174 368" {_s(c, 32)}/>'
+            f'<path d="M 300 92 L 384 76 L 352 128" {_s(c, 26)}/>'
+            f'<circle cx="236" cy="292" r="30" {_f(c)}/>')
+
+
+def global_chevron(c):
+    """Global TV: the bold chevron that ends its wordmark, as a pointer."""
+    return (f'<path d="M 152 80 L 152 180 L 280 256 L 152 332 L 152 432 L 400 256 Z" '
+            f'{_s(c, 30)}/>')
+
+
+def migallery_peaks(c):
+    """Mi Gallery: rounded peaks under a sun, in a photo frame."""
+    return (f'<rect x="80" y="112" width="352" height="288" rx="40" {_s(c, 26)}/>'
+            f'<circle cx="324" cy="196" r="34" {_s(c, 24)}/>'
+            f'<path d="M 120 360 L 206 252 C 214 242 228 242 236 252 L 280 306 '
+            f'L 316 270 C 324 262 336 262 344 270 L 392 330" {_s(c, 26)}/>')
+
+
+def miracast_screen(c):
+    """Miracast: the square screen with cast waves rising from its corner."""
+    return (f'<rect x="96" y="96" width="320" height="320" rx="64" {_s(c, 28)}/>'
+            f'<circle cx="178" cy="334" r="16" {_f(c)}/>'
+            f'<path d="{_arc_cw(178, 334, 76, 270, 360)} {_arc_cw(178, 334, 136, 270, 360)}" '
+            f'{_s(c, 26)}/>')
+
+
+def onstream_bolt(c):
+    """OnStream: the lightning bolt crossing an open ring."""
+    return (f'<path d="{_arc_cw(256, 256, 176, 320, 580)}" {_s(c, 28)}/>'
+            f'<path d="M 300 96 L 190 272 L 270 272 L 214 416 L 336 232 L 256 232 Z" '
+            f'{_s(c, 26)}/>')
+
+
+def swampdog_diamond(c):
+    """Swampdog Media: four rounded squares set as a diamond, one standing apart."""
+    def sq(cx, cy, r=62):
+        return (f'<rect x="{cx - r}" y="{cy - r}" width="{2 * r}" height="{2 * r}" rx="18" '
+                f'transform="rotate(45 {cx} {cy})" {_s(c, 24)}/>')
+    return sq(256, 138, 56) + sq(138, 256, 56) + sq(256, 374, 56) + sq(386, 256, 48)
+
+
+def talktv_bubble(c):
+    """Talk TV: the round speech bubble with a small screen inside."""
+    return (f'<path d="M 256 76 C 356 76 436 156 436 256 C 436 356 356 436 256 436 '
+            f'C 156 436 76 356 76 256 C 76 156 156 76 256 76 Z M 400 364 L 448 440 L 356 412" '
+            f'{_s(c, 28)}/>'
+            f'<rect x="170" y="196" width="172" height="120" rx="18" {_s(c, 22)}/>'
+            f'<path d="M 226 348 L 286 348" {_s(c, 20)}/>')
+
+
+def uae4arm_stripes(c):
+    """UAE4ARM: the Amiga check, three parallel stripes swept up to the right."""
+    d = " ".join(f"M {80 + k * 52} 300 L {140 + k * 52} 404 L {340 + k * 52} 104" for k in range(3))
+    return f'<path d="{d}" {_s(c, 28)}/>'
+
+
+GLYPHS.update({
+    "braviacore_lens": braviacore_lens, "brollie_pencil": brollie_pencil,
+    "eon_horizon": eon_horizon, "feb_pin": feb_pin,
+    "fivetv_five": fivetv_five, "global_chevron": global_chevron,
+    "migallery_peaks": migallery_peaks, "miracast_screen": miracast_screen,
+    "onstream_bolt": onstream_bolt, "swampdog_diamond": swampdog_diamond,
+    "talktv_bubble": talktv_bubble, "uae4arm_stripes": uae4arm_stripes,
+})

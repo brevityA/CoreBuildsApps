@@ -26,6 +26,16 @@ All notable changes to the Core Builds Icon Pack. Format follows
 - **Basis.** Its B with a play arrow in the lower bowl, on the icon's blue
   gradient, requested in #199 with its launch activity read off the
   requester's TV. 970 → 971 icons.
+- **12 more apps get marks drawn from their real icons, 222 in all.**
+  Bravia Core's swirling lens, Brollie's pencil mascot, Eon TV's ring on its
+  horizon, FEB's hooked pin, Five TV's flame-flagged 5, Global TV's chevron,
+  Mi Gallery's peaks under a sun, Miracast's cast screen, OnStream's bolt in
+  a ring, Swampdog Media's diamond of squares, Talk TV's speech bubble and
+  UAE4ARM's striped check replace their letter tiles. The launcher icons
+  were read from the Projectivy Icon Pack 1.1.9 artwork, as reference only.
+  Talk TV was near-black and takes its icon's orange; Global TV, OnStream,
+  Swampdog Media and UAE4ARM take their icons' colours instead of palette
+  colours, and OnStream and FEB are spelled like the apps.
 - **12 more apps get marks drawn from their real icons, 195 in all.**
   Uplay's bowed play arrow, Cast4K's shield on antennae, Drama Live's globe
   and comet, Xstream Play's curled ribbon, Mobily TV's tailed screen, Rapid

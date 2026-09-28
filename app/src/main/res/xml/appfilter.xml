@@ -691,7 +691,7 @@
     <item component="ComponentInfo{com.futo.fcast.receiver.playstore/com.futo.fcast.receiver.MainActivity}" drawable="playstore_2_banner"/>
     <!-- FCTV33 -->
     <item component="ComponentInfo{com.fctv77.tv/com.rblive.launcher.splash.SplashActivity}" drawable="fctv77_banner"/>
-    <!-- Feb -->
+    <!-- FEB -->
     <item component="ComponentInfo{com.topspeed.febbox2/com.snowtop.diskpanda.view.activity.SplashActivity}" drawable="feb_banner"/>
     <!-- FIFA+ -->
     <item component="ComponentInfo{com.fifa.plus.android/com.fifa.tv.FifaTvSplashActivity}" drawable="fifa_banner"/>
@@ -1561,7 +1561,7 @@
     <!-- One TV -->
     <item component="ComponentInfo{com.kamal.androidtv/com.kamal.androidtv.App}" drawable="androidtv_7_banner"/>
     <item component="ComponentInfo{com.kamal.androidtv/.App}" drawable="androidtv_7_banner"/>
-    <!-- Onstream -->
+    <!-- OnStream -->
     <item component="ComponentInfo{com.maertsno.tv/com.maertsno.tv.ui.activity.TvActivity}" drawable="maertsno_banner"/>
     <item component="ComponentInfo{com.maertsno.tv/.ui.activity.TvActivity}" drawable="maertsno_banner"/>
     <!-- Openvpn For Android -->

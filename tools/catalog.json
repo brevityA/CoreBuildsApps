@@ -1251,15 +1251,15 @@
       "name": "Bravia Core",
       "drawable": "bravia_core",
       "color": "#5B01A1",
-      "glyph": "broadcast_B",
-      "mark": "BC",
+      "glyph": "braviacore_lens",
       "components": [
         "com.sonypicturescore/com.sphe.bravialounge.SplashActivity"
       ],
       "category": "APP",
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "sampled from the official launcher icon (Google Play listing for com.sonypicturescore): dominant brand accent #5B01A1 (2026-09-26)",
-      "color_reviewed": "2026-09-26"
+      "color_reviewed": "2026-09-26",
+      "glyph_source": "brand-informed redraw of the Projectivy Icon Pack 1.1.9 artwork for com.sonypicturescore (github.com/SicMundus86/ProjectivyIconPack, used as reference only); Core monoline geometry, not a trace (2026-09-28)"
     },
     {
       "name": "BritBox",
@@ -1291,8 +1291,7 @@
       "name": "Brollie",
       "drawable": "brollie",
       "color": "#E3A11C",
-      "glyph": "film_B",
-      "mark": "BR",
+      "glyph": "brollie_pencil",
       "components": [
         "com.shift72.brollie/com.sh72apps.MainActivity",
         "com.shift72.brollie/com.sh72apps.TVMainActivity"
@@ -1301,9 +1300,7 @@
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "sampled from the official launcher icon (Google Play listing for com.shift72.brollie): dominant brand accent #E3A11C (2026-09-26)",
       "color_reviewed": "2026-09-26",
-      "mark_source": "logotype letters from the official launcher icon (Google Play listing for com.shift72.brollie), which reads 'brollie'; set in the pack's face, not traced (2026-09-26)",
-      "mark_style": "lower",
-      "mark_style_source": "the logotype on the official launcher icon (Google Play listing for com.shift72.brollie) is set lowercase ('brollie')"
+      "glyph_source": "brand-informed redraw of the pencil mascot in the Projectivy Icon Pack 1.1.9 artwork for com.shift72.brollie (github.com/SicMundus86/ProjectivyIconPack, used as reference only); Core monoline geometry, not a trace (2026-09-28)"
     },
     {
       "name": "Browkorf TV",
@@ -2860,15 +2857,15 @@
       "name": "Eon TV",
       "drawable": "eon_tv",
       "color": "#7C74FF",
-      "glyph": "broadcast_E",
-      "mark": "ET",
+      "glyph": "eon_horizon",
       "components": [
         "com.ug.eon.android.tv/com.ug.eon.android.tv.TvActivity"
       ],
       "category": "APP",
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_reviewed": null,
+      "glyph_source": "brand-informed redraw of the Projectivy Icon Pack 1.1.9 artwork for com.ug.eon.android.tv (github.com/SicMundus86/ProjectivyIconPack, used as reference only); Core monoline geometry, not a trace (2026-09-28)"
     },
     {
       "name": "EPIC ON",
@@ -3171,18 +3168,19 @@
       "style": "core_monoline"
     },
     {
-      "name": "Feb",
+      "name": "FEB",
       "drawable": "feb",
       "color": "#007AFF",
-      "glyph": "tool_F",
-      "mark": "FE",
+      "glyph": "feb_pin",
       "components": [
         "com.topspeed.febbox2/com.snowtop.diskpanda.view.activity.SplashActivity"
       ],
       "category": "APP",
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "sampled from the official launcher icon (Google Play listing for com.topspeed.febbox2): dominant brand accent #007AFF (2026-09-26)",
-      "color_reviewed": "2026-09-26"
+      "color_reviewed": "2026-09-26",
+      "glyph_source": "brand-informed redraw of the Projectivy Icon Pack 1.1.9 artwork for com.topspeed.febbox2 (github.com/SicMundus86/ProjectivyIconPack, used as reference only); Core monoline geometry, not a trace (2026-09-28)",
+      "name_source": "app name as the Projectivy Icon Pack 1.1.9 artwork for com.topspeed.febbox2 (github.com/SicMundus86/ProjectivyIconPack, used as reference only) shows it (2026-09-28)"
     },
     {
       "name": "Hallmark+",
@@ -3384,14 +3382,14 @@
       "name": "Five TV",
       "drawable": "fivetviptvbox",
       "color": "#F82038",
-      "glyph": "broadcast_F",
-      "mark": "FT",
+      "glyph": "fivetv_five",
       "components": [
         "com.fivetvbox.fivetviptvbox/com.fivetvbox.fivetviptvbox.view.activity.SplashActivity"
       ],
       "category": "LIVE",
       "color_source": "sampled from the Projectivy Icon Pack 1.1.9 artwork for com.fivetvbox.fivetviptvbox (github.com/SicMundus86/ProjectivyIconPack, used as reference only): #F82038 (2026-09-27)",
-      "color_reviewed": "2026-09-27"
+      "color_reviewed": "2026-09-27",
+      "glyph_source": "brand-informed redraw of the Projectivy Icon Pack 1.1.9 artwork for com.fivetvbox.fivetviptvbox (github.com/SicMundus86/ProjectivyIconPack, used as reference only); Core monoline geometry, not a trace (2026-09-28)"
     },
     {
       "name": "Fizz TV",
@@ -4031,16 +4029,16 @@
     {
       "name": "Global TV",
       "drawable": "global_tv",
-      "color": "#34EB7A",
-      "glyph": "broadcast_G",
-      "mark": "GT",
+      "color": "#E82000",
+      "glyph": "global_chevron",
       "components": [
         "com.shawmedia.smglobal/com.corusent.stream.activity.SplashScreenActivity"
       ],
       "category": "APP",
       "mapping_source": "Projectivy Icon Pack 1.1.9",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled from the Projectivy Icon Pack 1.1.9 artwork for com.shawmedia.smglobal (github.com/SicMundus86/ProjectivyIconPack, used as reference only): #E82000 (2026-09-28)",
+      "color_reviewed": "2026-09-28",
+      "glyph_source": "brand-informed redraw of the Projectivy Icon Pack 1.1.9 artwork for com.shawmedia.smglobal (github.com/SicMundus86/ProjectivyIconPack, used as reference only); Core monoline geometry, not a trace (2026-09-28)"
     },
     {
       "name": "Globoplay",
@@ -6197,14 +6195,14 @@
       "name": "Mi Gallery",
       "drawable": "gallery",
       "color": "#1982C4",
-      "glyph": "photos_G",
-      "mark": "MG",
+      "glyph": "migallery_peaks",
       "components": [
         "com.mitv.gallery/com.mitv.gallery.activity.HomePageActivity"
       ],
       "category": "APP",
       "color_source": "brand reference (pre-provenance, unverified)",
-      "color_reviewed": null
+      "color_reviewed": null,
+      "glyph_source": "brand-informed redraw of the Projectivy Icon Pack 1.1.9 artwork for com.mitv.gallery (github.com/SicMundus86/ProjectivyIconPack, used as reference only); Core monoline geometry, not a trace (2026-09-28)"
     },
     {
       "name": "Xiaomi TV+",
@@ -6223,15 +6221,15 @@
       "name": "Miracast",
       "drawable": "miracast",
       "color": "#60C0F8",
-      "glyph": "tool_M",
-      "mark": "MI",
+      "glyph": "miracast_screen",
       "components": [
         "com.xiaomi.mitv.smartshare/com.xiaomi.mitv.smartshare.wifidisplay.WfdActivity"
       ],
       "category": "APP",
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "sampled from the Projectivy Icon Pack 1.1.9 artwork for com.xiaomi.mitv.smartshare (github.com/SicMundus86/ProjectivyIconPack, used as reference only): #60C0F8 (2026-09-27)",
-      "color_reviewed": "2026-09-27"
+      "color_reviewed": "2026-09-27",
+      "glyph_source": "brand-informed redraw of the Projectivy Icon Pack 1.1.9 artwork for com.xiaomi.mitv.smartshare (github.com/SicMundus86/ProjectivyIconPack, used as reference only); Core monoline geometry, not a trace (2026-09-28)"
     },
     {
       "name": "MiXplorer",
@@ -7501,17 +7499,18 @@
       "name_source": "app name from the Projectivy Icon Pack 1.1.9 artwork for app1.onepixmedia (github.com/SicMundus86/ProjectivyIconPack, used as reference only), which shows the 1Pix Media logo for this package (2026-09-27)"
     },
     {
-      "name": "Onstream",
+      "name": "OnStream",
       "drawable": "maertsno",
-      "color": "#FF7A2E",
-      "glyph": "broadcast_O",
-      "mark": "ON",
+      "color": "#D8F830",
+      "glyph": "onstream_bolt",
       "components": [
         "com.maertsno.tv/com.maertsno.tv.ui.activity.TvActivity"
       ],
       "category": "APP",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled from the Projectivy Icon Pack 1.1.9 artwork for com.maertsno.tv (github.com/SicMundus86/ProjectivyIconPack, used as reference only): #D8F830 (2026-09-28)",
+      "color_reviewed": "2026-09-28",
+      "glyph_source": "brand-informed redraw of the Projectivy Icon Pack 1.1.9 artwork for com.maertsno.tv (github.com/SicMundus86/ProjectivyIconPack, used as reference only); Core monoline geometry, not a trace (2026-09-28)",
+      "name_source": "app name as the Projectivy Icon Pack 1.1.9 artwork for com.maertsno.tv (github.com/SicMundus86/ProjectivyIconPack, used as reference only) shows it (2026-09-28)"
     },
     {
       "name": "TV+",
@@ -10264,16 +10263,16 @@
     {
       "name": "Swampdog Media",
       "drawable": "swampdog_media",
-      "color": "#FF7A2E",
-      "glyph": "broadcast_S",
-      "mark": "SM",
+      "color": "#289838",
+      "glyph": "swampdog_diamond",
       "components": [
         "com.semperpax.eumc16/org.xbmc.kodi.Splash"
       ],
       "category": "APP",
       "mapping_source": "Projectivy Icon Pack 1.1.9",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled from the Projectivy Icon Pack 1.1.9 artwork for com.semperpax.eumc16 (github.com/SicMundus86/ProjectivyIconPack, used as reference only): #289838 (2026-09-28)",
+      "color_reviewed": "2026-09-28",
+      "glyph_source": "brand-informed redraw of the Projectivy Icon Pack 1.1.9 artwork for com.semperpax.eumc16 (github.com/SicMundus86/ProjectivyIconPack, used as reference only); Core monoline geometry, not a trace (2026-09-28)"
     },
     {
       "name": "Sweet TV",
@@ -10476,16 +10475,16 @@
     {
       "name": "Talk TV",
       "drawable": "talk_tv",
-      "color": "#032548",
-      "glyph": "broadcast_T",
-      "mark": "TT",
+      "color": "#E86818",
+      "glyph": "talktv_bubble",
       "components": [
         "uk.co.news.talkradiotv/com.simplestream.presentation.startup.StartUpActivity"
       ],
       "category": "APP",
       "mapping_source": "Projectivy Icon Pack 1.1.9",
-      "color_source": "sampled from the official launcher icon (APKCombo mirror of the Google Play listing for uk.co.news.talkradiotv): dominant brand accent #032548 (2026-09-26)",
-      "color_reviewed": "2026-09-26"
+      "color_source": "sampled from the Projectivy Icon Pack 1.1.9 artwork for uk.co.news.talkradiotv (github.com/SicMundus86/ProjectivyIconPack, used as reference only): #E86818 (2026-09-28)",
+      "color_reviewed": "2026-09-28",
+      "glyph_source": "brand-informed redraw of the Projectivy Icon Pack 1.1.9 artwork for uk.co.news.talkradiotv (github.com/SicMundus86/ProjectivyIconPack, used as reference only); Core monoline geometry, not a trace (2026-09-28)"
     },
     {
       "name": "Talksport",
@@ -11769,15 +11768,15 @@
     {
       "name": "UAE4ARM",
       "drawable": "uae4arm",
-      "color": "#FFE14D",
-      "glyph": "gaming_U",
-      "mark": "UA",
+      "color": "#F8A000",
+      "glyph": "uae4arm_stripes",
       "components": [
         "atua.anddev.uae4arm/atua.anddev.uae4arm.MainActivity"
       ],
       "category": "APP",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled from the Projectivy Icon Pack 1.1.9 artwork for atua.anddev.uae4arm (github.com/SicMundus86/ProjectivyIconPack, used as reference only): #F8A000 (2026-09-28)",
+      "color_reviewed": "2026-09-28",
+      "glyph_source": "brand-informed redraw of the Projectivy Icon Pack 1.1.9 artwork for atua.anddev.uae4arm (github.com/SicMundus86/ProjectivyIconPack, used as reference only); Core monoline geometry, not a trace (2026-09-28)"
     },
     {
       "name": "Uplay",
