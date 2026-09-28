@@ -626,14 +626,14 @@
       "name": "Aparat Sport",
       "drawable": "aparatsport",
       "color": "#53FC18",
-      "glyph": "sport_A",
-      "mark": "AS",
+      "glyph": "aparat_ball",
       "components": [
         "com.aparatsport.tv/com.aparatsport.tv.ui.main.TvActivity"
       ],
       "category": "SPORT",
       "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_reviewed": null,
+      "glyph_source": "brand-informed redraw of the Projectivy Icon Pack 1.1.9 artwork for com.aparatsport.tv (github.com/SicMundus86/ProjectivyIconPack, used as reference only); Core monoline geometry, not a trace (2026-09-28)"
     },
     {
       "name": "APK Installer",
@@ -703,15 +703,15 @@
       "name": "Supreme TV",
       "drawable": "aplicativox",
       "color": "#F8D060",
-      "glyph": "broadcast_S",
-      "mark": "ST",
+      "glyph": "supreme_trident",
       "components": [
         "com.aplicativox.supremetv/com.lck.lxtream.SplashActivity"
       ],
       "category": "APP",
       "color_source": "sampled from the Projectivy Icon Pack 1.1.9 artwork for com.aplicativox.supremetv (github.com/SicMundus86/ProjectivyIconPack, used as reference only): #F8D060 (2026-09-27)",
       "color_reviewed": "2026-09-27",
-      "name_source": "app name from the Projectivy Icon Pack 1.1.9 artwork for com.aplicativox.supremetv (github.com/SicMundus86/ProjectivyIconPack, used as reference only), which shows the Supreme TV logo for this package (2026-09-27)"
+      "name_source": "app name from the Projectivy Icon Pack 1.1.9 artwork for com.aplicativox.supremetv (github.com/SicMundus86/ProjectivyIconPack, used as reference only), which shows the Supreme TV logo for this package (2026-09-27)",
+      "glyph_source": "brand-informed redraw of the Projectivy Icon Pack 1.1.9 artwork for com.aplicativox.supremetv (github.com/SicMundus86/ProjectivyIconPack, used as reference only); Core monoline geometry, not a trace (2026-09-28)"
     },
     {
       "name": "myTuner Radio",
@@ -839,16 +839,16 @@
     {
       "name": "Artlume",
       "drawable": "artlume",
-      "color": "#34EB7A",
-      "glyph": "broadcast_A",
-      "mark": "AR",
+      "color": "#D81890",
+      "glyph": "artlume_frame",
       "components": [
         "io.artlume.mobile/io.artlume.tv.presentation.MainActivity"
       ],
       "category": "APP",
       "mapping_source": "Projectivy Icon Pack 1.1.9",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled from the Projectivy Icon Pack 1.1.9 artwork for io.artlume.mobile (github.com/SicMundus86/ProjectivyIconPack, used as reference only): #D81890 (2026-09-28)",
+      "color_reviewed": "2026-09-28",
+      "glyph_source": "brand-informed redraw of the Projectivy Icon Pack 1.1.9 artwork for io.artlume.mobile (github.com/SicMundus86/ProjectivyIconPack, used as reference only); Core monoline geometry, not a trace (2026-09-28)"
     },
     {
       "name": "Arvio",
@@ -972,14 +972,14 @@
       "name": "Baby Einstein",
       "drawable": "babyeinstein",
       "color": "#FF7A2E",
-      "glyph": "kids_B",
-      "mark": "BE",
+      "glyph": "babyeinstein_sun",
       "components": [
         "com.giant.babyeinstein/com.codes.ui.SplashActivity"
       ],
       "category": "APP",
       "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_reviewed": null,
+      "glyph_source": "brand-informed redraw of the Projectivy Icon Pack 1.1.9 artwork for com.giant.babyeinstein (github.com/SicMundus86/ProjectivyIconPack, used as reference only); Core monoline geometry, not a trace (2026-09-28)"
     },
     {
       "name": "Background Apps And Process List",
@@ -1124,17 +1124,18 @@
       "color_reviewed": null
     },
     {
-      "name": "Better XC",
+      "name": "Better xCloud",
       "drawable": "betterxc",
       "color": "#3D8BFF",
-      "glyph": "broadcast_B",
-      "mark": "BX",
+      "glyph": "betterxc_cubes",
       "components": [
         "com.redphx.betterxc/com.redphx.betterxc.activity.MainActivity"
       ],
       "category": "APP",
       "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_reviewed": null,
+      "glyph_source": "brand-informed redraw of the Projectivy Icon Pack 1.1.9 artwork for com.redphx.betterxc (github.com/SicMundus86/ProjectivyIconPack, used as reference only); Core monoline geometry, not a trace (2026-09-28)",
+      "name_source": "app name as the Projectivy Icon Pack 1.1.9 artwork for com.redphx.betterxc (github.com/SicMundus86/ProjectivyIconPack, used as reference only) shows it (2026-09-28)"
     },
     {
       "name": "Binge",
@@ -1198,15 +1199,15 @@
     {
       "name": "Bloomberg TV+",
       "drawable": "bloomberg",
-      "color": "#1FD19A",
-      "glyph": "broadcast_B",
-      "mark": "BT",
+      "color": "#F89018",
+      "glyph": "bloomberg_tab",
       "components": [
         "com.bloomberg.btva/tv.accedo.one.app.bootstrap.BootstrapActivity"
       ],
       "category": "APP",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled from the Projectivy Icon Pack 1.1.9 artwork for com.bloomberg.btva (github.com/SicMundus86/ProjectivyIconPack, used as reference only): #F89018 (2026-09-28)",
+      "color_reviewed": "2026-09-28",
+      "glyph_source": "brand-informed redraw of the Projectivy Icon Pack 1.1.9 artwork for com.bloomberg.btva (github.com/SicMundus86/ProjectivyIconPack, used as reference only); Core monoline geometry, not a trace (2026-09-28)"
     },
     {
       "name": "BODi",
@@ -2138,14 +2139,14 @@
       "name": "Dansk Filmskat",
       "drawable": "egmont",
       "color": "#F04DE0",
-      "glyph": "film_D",
-      "mark": "DF",
+      "glyph": "dansk_globe",
       "components": [
         "com.egmont.dfs/egmont.danskfilmskat.MainActivity"
       ],
       "category": "APP",
       "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_reviewed": null,
+      "glyph_source": "brand-informed redraw of the Projectivy Icon Pack 1.1.9 artwork for com.egmont.dfs (github.com/SicMundus86/ProjectivyIconPack, used as reference only); Core monoline geometry, not a trace (2026-09-28)"
     },
     {
       "name": "DAZN",
@@ -5392,18 +5393,19 @@
       "gradient_source": "sampled from the official launcher icon (F-Droid listing for me.knighthat.kreate): the icon's own #B122FE to #3C53F8 gradient, its two ends (2026-09-26)"
     },
     {
-      "name": "Kuku TV",
+      "name": "KUKU TV",
       "drawable": "kuku_tv",
-      "color": "#600B0E",
-      "glyph": "broadcast_K",
-      "mark": "KT",
+      "color": "#E81820",
+      "glyph": "kuku_k",
       "components": [
         "com.vlv.aravali.reels/com.vlv.aravali.television.MainActivity"
       ],
       "category": "APP",
       "mapping_source": "Projectivy Icon Pack 1.1.9",
-      "color_source": "sampled from the official launcher icon (Google Play listing for com.vlv.aravali.reels): dominant brand accent #600B0E (2026-09-26)",
-      "color_reviewed": "2026-09-26"
+      "color_source": "sampled from the Projectivy Icon Pack 1.1.9 artwork for com.vlv.aravali.reels (github.com/SicMundus86/ProjectivyIconPack, used as reference only): #E81820 (2026-09-28)",
+      "color_reviewed": "2026-09-28",
+      "glyph_source": "brand-informed redraw of the Projectivy Icon Pack 1.1.9 artwork for com.vlv.aravali.reels (github.com/SicMundus86/ProjectivyIconPack, used as reference only); Core monoline geometry, not a trace (2026-09-28)",
+      "name_source": "app name as the Projectivy Icon Pack 1.1.9 artwork for com.vlv.aravali.reels (github.com/SicMundus86/ProjectivyIconPack, used as reference only) shows it (2026-09-28)"
     },
     {
       "name": "L Equipe",
@@ -6516,26 +6518,26 @@
       "color_reviewed": "2026-09-26"
     },
     {
-      "name": "Mst3k",
+      "name": "MST3K",
       "drawable": "mst3k",
-      "color": "#014793",
-      "glyph": "broadcast_M",
-      "mark": "MS",
+      "color": "#507890",
+      "glyph": "mst3k_moon",
       "components": [
         "ott.mst3k/tv.vhx.LauncherActivity",
         "ott.mst3k/tv.vhx.tv.home.TvHomeActivity"
       ],
       "category": "APP",
       "mapping_source": "Projectivy Icon Pack 1.1.9",
-      "color_source": "sampled from the official launcher icon (APKCombo mirror of the Google Play listing for ott.mst3k): dominant brand accent #014793 (2026-09-26)",
-      "color_reviewed": "2026-09-26"
+      "color_source": "sampled from the Projectivy Icon Pack 1.1.9 artwork for ott.mst3k (github.com/SicMundus86/ProjectivyIconPack, used as reference only): #507890 (2026-09-28)",
+      "color_reviewed": "2026-09-28",
+      "glyph_source": "brand-informed redraw of the Projectivy Icon Pack 1.1.9 artwork for ott.mst3k (github.com/SicMundus86/ProjectivyIconPack, used as reference only); Core monoline geometry, not a trace (2026-09-28)",
+      "name_source": "app name as the Projectivy Icon Pack 1.1.9 artwork for ott.mst3k (github.com/SicMundus86/ProjectivyIconPack, used as reference only) shows it (2026-09-28)"
     },
     {
       "name": "MTV Katsomo",
       "drawable": "mtv_katsomo",
       "color": "#FF3334",
-      "glyph": "broadcast_M",
-      "mark": "MT",
+      "glyph": "mtvkatsomo_play",
       "components": [
         "fi.mtvkatsomo/se.tv4.tv4play.ui.tv.navigation.TvHubActivity"
       ],
@@ -6543,9 +6545,7 @@
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "sampled from the official launcher icon (Google Play listing for fi.mtvkatsomo): dominant brand accent #FF3334 (2026-09-26)",
       "color_reviewed": "2026-09-26",
-      "mark_style": "lower",
-      "mark_style_source": "the logotype on the official launcher icon (Google Play listing for fi.mtvkatsomo) is set lowercase ('mtv katsomo')",
-      "mark_source": "logotype letters from the official launcher icon (Google Play listing for fi.mtvkatsomo), which reads 'mtv katsomo': the first two, because the whole logotype sets under the pack's 96px legibility floor; set in the pack's face, not traced (2026-09-26)"
+      "glyph_source": "brand-informed redraw of the Projectivy Icon Pack 1.1.9 artwork for fi.mtvkatsomo (github.com/SicMundus86/ProjectivyIconPack, used as reference only); Core monoline geometry, not a trace (2026-09-28)"
     },
     {
       "name": "MUBI",
@@ -7880,16 +7880,16 @@
     {
       "name": "Pepperbox TV",
       "drawable": "pepperbox_tv",
-      "color": "#19D3C5",
-      "glyph": "broadcast_P",
-      "mark": "PT",
+      "color": "#F86830",
+      "glyph": "pepperbox_guns",
       "components": [
         "com.watchvelocity.android/com.corridordigital.watchcorridortv.feature.main.MainActivity"
       ],
       "category": "APP",
       "mapping_source": "Projectivy Icon Pack 1.1.9",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled from the Projectivy Icon Pack 1.1.9 artwork for com.watchvelocity.android (github.com/SicMundus86/ProjectivyIconPack, used as reference only): #F86830 (2026-09-28)",
+      "color_reviewed": "2026-09-28",
+      "glyph_source": "brand-informed redraw of the Projectivy Icon Pack 1.1.9 artwork for com.watchvelocity.android (github.com/SicMundus86/ProjectivyIconPack, used as reference only); Core monoline geometry, not a trace (2026-09-28)"
     },
     {
       "name": "Perfect Player",
@@ -12883,16 +12883,16 @@
     {
       "name": "Yippee",
       "drawable": "yippee",
-      "color": "#530CC9",
-      "glyph": "broadcast_Y",
-      "mark": "YI",
+      "color": "#F84818",
+      "glyph": "yippee_confetti",
       "components": [
         "com.yippeeentertainment/tv.vhx.tv.home.TvHomeActivity"
       ],
       "category": "APP",
       "mapping_source": "Projectivy Icon Pack 1.1.9",
-      "color_source": "sampled from the official launcher icon (Google Play listing for com.yippeeentertainment): dominant brand accent #530CC9 (2026-09-26)",
-      "color_reviewed": "2026-09-26"
+      "color_source": "sampled from the Projectivy Icon Pack 1.1.9 artwork for com.yippeeentertainment (github.com/SicMundus86/ProjectivyIconPack, used as reference only): #F84818 (2026-09-28)",
+      "color_reviewed": "2026-09-28",
+      "glyph_source": "brand-informed redraw of the Projectivy Icon Pack 1.1.9 artwork for com.yippeeentertainment (github.com/SicMundus86/ProjectivyIconPack, used as reference only); Core monoline geometry, not a trace (2026-09-28)"
     },
     {
       "name": "Yle Areena",

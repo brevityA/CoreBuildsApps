@@ -26,6 +26,17 @@ All notable changes to the Core Builds Icon Pack. Format follows
 - **Basis.** Its B with a play arrow in the lower bowl, on the icon's blue
   gradient, requested in #199 with its launch activity read off the
   requester's TV. 970 → 971 icons.
+- **12 more apps get marks drawn from their real icons, 258 in all.**
+  Aparat Sport's football, Supreme TV's trident, Better xCloud's stacked
+  blocks, Artlume's frame on its wedge of light, Baby Einstein's bespectacled
+  sun, Dansk Filmskat's globe and heart, MST3K's cratered moon, Yippee's
+  confetti, Bloomberg TV+'s folded tab, MTV Katsomo's m and play button,
+  KUKU TV's k and dot and Pepperbox TV's two pistols replace their letter
+  tiles. The launcher icons were read from the Projectivy Icon Pack 1.1.9
+  artwork, as reference only. Yippee, KUKU TV and MST3K were near-black and
+  take their icons' orange, red and blue-grey; Artlume, Bloomberg TV+ and
+  Pepperbox TV take their icons' colours instead of palette colours, and
+  MST3K, Better xCloud and KUKU TV are spelled like the apps.
 - **12 more apps get marks drawn from their real icons, 246 in all.**
   LiveNetTV's badge with its TV and cast waves, Drama Player's broken ring,
   Gallery 3D's stacked prints, Smart IPTV's tilted set, M3U IPTV's playlist

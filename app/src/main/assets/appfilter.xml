@@ -250,7 +250,7 @@
     <item component="ComponentInfo{com.viacom.betplus/com.vmn.playplex.tv.ui.splash.TvSplashActivity}" drawable="bet_plus_banner"/>
     <!-- BET+ -->
     <item component="ComponentInfo{com.bet.shows/com.vmn.playplex.tv.ui.splash.TvSplashActivity}" drawable="shows_banner"/>
-    <!-- Better XC -->
+    <!-- Better xCloud -->
     <item component="ComponentInfo{com.redphx.betterxc/com.redphx.betterxc.activity.MainActivity}" drawable="betterxc_banner"/>
     <item component="ComponentInfo{com.redphx.betterxc/.activity.MainActivity}" drawable="betterxc_banner"/>
     <!-- Binge -->
@@ -1129,7 +1129,7 @@
     <item component="ComponentInfo{com.kpn.kpnandroidtv/com.kpn.tvplusapp.MainActivity}" drawable="kpnandroidtv_banner"/>
     <!-- Kreate -->
     <item component="ComponentInfo{me.knighthat.kreate/it.fast4x.rimusic.MainActivity}" drawable="kreate_banner"/>
-    <!-- Kuku TV -->
+    <!-- KUKU TV -->
     <item component="ComponentInfo{com.vlv.aravali.reels/com.vlv.aravali.television.MainActivity}" drawable="kuku_tv_banner"/>
     <!-- L Equipe -->
     <item component="ComponentInfo{lequipe.fr/com.dotscreen.ethanol.tv.ui.MainActivity}" drawable="l_equipe_banner"/>
@@ -1347,7 +1347,7 @@
     <item component="ComponentInfo{is.xyz.mpv/.MainActivity}" drawable="mpv_banner"/>
     <!-- MSM Video -->
     <item component="ComponentInfo{com.msmvideo.tv/com.example.msmvideo.ui.SplashActivity}" drawable="msmvideo_banner"/>
-    <!-- Mst3k -->
+    <!-- MST3K -->
     <item component="ComponentInfo{ott.mst3k/tv.vhx.LauncherActivity}" drawable="mst3k_banner"/>
     <item component="ComponentInfo{ott.mst3k/tv.vhx.tv.home.TvHomeActivity}" drawable="mst3k_banner"/>
     <!-- MTV Katsomo -->

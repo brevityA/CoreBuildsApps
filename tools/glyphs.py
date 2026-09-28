@@ -7367,3 +7367,142 @@ GLYPHS.update({
     "telia_play": telia_play, "yousee_disc": yousee_disc,
     "ibplayer_ib": ibplayer_ib, "oblivion_face": oblivion_face, "zen_z": zen_z,
 })
+
+
+# --------------------------------------------------------------------------
+# Brand marks batch 17 (2026-09-28): the last letter tiles whose launcher
+# icon, seen in the Projectivy Icon Pack 1.1.9 artwork (reference only),
+# carries a symbol beside its wordmark.
+
+
+def aparat_ball(c):
+    """Aparat Sport: the football, its centre panel and seams."""
+    import math
+    def pt(r, deg):
+        return 256 + r * math.cos(math.radians(deg)), 256 + r * math.sin(math.radians(deg))
+    pent = [pt(56, -90 + 72 * k) for k in range(5)]
+    pd = "M " + " L ".join(f"{x:.1f} {y:.1f}" for x, y in pent) + " Z"
+    seams = " ".join(f"M {pent[k][0]:.1f} {pent[k][1]:.1f} L {pt(118, -90 + 72 * k)[0]:.1f} "
+                     f"{pt(118, -90 + 72 * k)[1]:.1f}" for k in range(5))
+    rim = " ".join(f"M {pt(118, -90 + 72 * k)[0]:.1f} {pt(118, -90 + 72 * k)[1]:.1f} "
+                   f"L {pt(176, -90 + 72 * k - 24)[0]:.1f} {pt(176, -90 + 72 * k - 24)[1]:.1f} "
+                   f"M {pt(118, -90 + 72 * k)[0]:.1f} {pt(118, -90 + 72 * k)[1]:.1f} "
+                   f"L {pt(176, -90 + 72 * k + 24)[0]:.1f} {pt(176, -90 + 72 * k + 24)[1]:.1f}"
+                   for k in range(5))
+    return (f'<circle cx="256" cy="256" r="184" {_s(c, 28)}/>' + _solid(pd, c, 10)
+            + f'<path d="{seams} {rim}" {_s(c, 18)}/>')
+
+
+def supreme_trident(c):
+    """Supreme TV: the trident crown standing on its bar."""
+    return (f'<path d="M 256 92 L 256 380 M 160 120 C 160 220 200 260 256 260 '
+            f'C 312 260 352 220 352 120" {_s(c, 28)}/>'
+            f'<path d="M 160 120 L 136 156 M 160 120 L 184 156 M 352 120 L 328 156 '
+            f'M 352 120 L 376 156 M 256 92 L 232 128 M 256 92 L 280 128" {_s(c, 20)}/>'
+            f'<path d="M 120 420 L 392 420 M 200 380 L 312 380" {_s(c, 26)}/>')
+
+
+def betterxc_cubes(c):
+    """Better xCloud: two stacks of blocks joined in the middle, an H set on edge."""
+    def cube(x, y, s=76):
+        h = s * 0.5
+        return (f"M {x} {y} L {x + s} {y - h} L {x + 2 * s} {y} L {x + s} {y + h} Z "
+                f"M {x} {y} L {x} {y + s} L {x + s} {y + s + h} L {x + s} {y + h} "
+                f"M {x + 2 * s} {y} L {x + 2 * s} {y + s} L {x + s} {y + s + h}")
+    d = " ".join(cube(x, y) for x, y in ((80, 120), (80, 304), (280, 212)))
+    return f'<path d="{d}" {_s(c, 20)}/>'
+
+
+def artlume_frame(c):
+    """Artlume: the open frame sitting on a wedge of light."""
+    return (f'<path d="M 176 96 L 416 96 L 416 316 L 176 316 Z" {_s(c, 30)}/>'
+            f'<path d="M 256 176 L 336 176 L 336 244" {_s(c, 22)}/>'
+            f'<path d="M 80 424 L 176 316 L 416 316 L 360 424 Z" {_s(c, 24)}/>')
+
+
+def babyeinstein_sun(c):
+    """Baby Einstein: the round face in glasses under a halo of wild hair."""
+    import math
+    rays = " ".join(
+        f"M {256 + 150 * math.cos(math.radians(a)):.1f} {276 + 150 * math.sin(math.radians(a)):.1f} "
+        f"L {256 + 200 * math.cos(math.radians(a)):.1f} {276 + 200 * math.sin(math.radians(a)):.1f}"
+        for a in range(-165, -10, 22))
+    return (f'<circle cx="256" cy="296" r="126" {_s(c, 28)}/>'
+            f'<path d="{rays}" {_s(c, 20)}/>'
+            f'<circle cx="208" cy="282" r="34" {_s(c, 20)}/>'
+            f'<circle cx="304" cy="282" r="34" {_s(c, 20)}/>'
+            f'<path d="M 242 282 L 270 282 M 208 350 C 236 376 276 376 304 350" {_s(c, 20)}/>')
+
+
+def dansk_globe(c):
+    """Dansk Filmskat: the globe with the heart beside it."""
+    return (f'<circle cx="228" cy="292" r="140" {_s(c, 26)}/>'
+            f'<ellipse cx="228" cy="292" rx="60" ry="140" {_s(c, 18)}/>'
+            f'<path d="M 88 292 L 368 292 M 112 222 L 344 222 M 112 362 L 344 362" {_s(c, 18)}/>'
+            f'<path d="M 384 176 C 344 148 330 110 354 92 C 372 80 384 92 384 104 '
+            f'C 384 92 396 80 414 92 C 438 110 424 148 384 176 Z" {_s(c, 20)}/>')
+
+
+def mst3k_moon(c):
+    """MST3K: the cratered moon with a satellite crossing in front."""
+    return (f'<circle cx="256" cy="256" r="180" {_s(c, 28)}/>'
+            f'<circle cx="196" cy="188" r="40" {_s(c, 20)}/>'
+            f'<circle cx="320" cy="224" r="26" {_s(c, 18)}/>'
+            f'<circle cx="236" cy="326" r="32" {_s(c, 18)}/>'
+            f'<path d="M 316 336 L 404 336 M 360 314 L 360 358" {_s(c, 22)}/>')
+
+
+def yippee_confetti(c):
+    """Yippee: a burst of confetti strips and dots."""
+    strips = ((150, 150, 30), (256, 104, 90), (362, 150, 150), (406, 256, 0),
+              (362, 362, 30), (256, 408, 90), (150, 362, 150), (106, 256, 0))
+    d = " ".join(
+        f"M {x - 22 * __import__('math').cos(__import__('math').radians(a)):.1f} "
+        f"{y - 22 * __import__('math').sin(__import__('math').radians(a)):.1f} "
+        f"L {x + 22 * __import__('math').cos(__import__('math').radians(a)):.1f} "
+        f"{y + 22 * __import__('math').sin(__import__('math').radians(a)):.1f}"
+        for x, y, a in strips)
+    dots = "".join(f'<circle cx="{x}" cy="{y}" r="14" {_f(c)}/>'
+                   for x, y in ((206, 196), (306, 196), (306, 316), (206, 316), (256, 256)))
+    return f'<path d="{d}" {_s(c, 26)}/>' + dots
+
+
+def bloomberg_tab(c):
+    """Bloomberg TV+: the tab, its top corner folded back."""
+    return (f'<path d="M 96 136 L 336 136 L 416 216 L 416 376 L 96 376 Z" {_s(c, 30)}/>'
+            f'<path d="M 336 136 L 336 216 L 416 216" {_s(c, 24)}/>')
+
+
+def mtvkatsomo_play(c):
+    """MTV Katsomo: the m's arches perched above a ringed play button."""
+    return (f'<path d="M 84 220 L 84 128 C 84 92 136 92 136 128 L 136 220 '
+            f'M 136 128 C 136 92 188 92 188 128 L 188 220" {_s(c, 24)}/>'
+            f'<circle cx="300" cy="300" r="132" {_s(c, 30)}/>'
+            + _solid("M 262 236 L 362 300 L 262 364 Z", c, 14))
+
+
+def kuku_k(c):
+    """KUKU TV: the lowercase k and its dot in a rounded square."""
+    return (f'<rect x="88" y="88" width="336" height="336" rx="64" {_s(c, 28)}/>'
+            f'<path d="M 184 148 L 184 364 M 296 212 L 188 290 L 300 364" {_s(c, 28)}/>'
+            f'<circle cx="340" cy="344" r="22" {_f(c)}/>')
+
+
+def pepperbox_guns(c):
+    """Pepperbox TV: two pepperbox pistols standing barrel-up, side by side."""
+    def gun(x):
+        return (f'<rect x="{x}" y="72" width="68" height="200" rx="14" {_s(c, 22)}/>'
+                f'<path d="M {x} 172 L {x + 68} 172" {_s(c, 16)}/>'
+                f'<path d="M {x + 10} 272 L {x - 20} 424 L {x + 44} 424 L {x + 60} 272 '
+                f'M {x + 64} 296 C {x + 116} 296 {x + 116} 372 {x + 50} 372" {_s(c, 22)}/>')
+    return gun(118) + gun(290)
+
+
+GLYPHS.update({
+    "aparat_ball": aparat_ball, "supreme_trident": supreme_trident,
+    "betterxc_cubes": betterxc_cubes, "artlume_frame": artlume_frame,
+    "babyeinstein_sun": babyeinstein_sun, "dansk_globe": dansk_globe,
+    "mst3k_moon": mst3k_moon, "yippee_confetti": yippee_confetti,
+    "bloomberg_tab": bloomberg_tab, "mtvkatsomo_play": mtvkatsomo_play,
+    "kuku_k": kuku_k, "pepperbox_guns": pepperbox_guns,
+})
