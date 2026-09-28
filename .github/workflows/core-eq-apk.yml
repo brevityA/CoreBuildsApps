@@ -98,22 +98,22 @@ jobs:
           fi
 
           cat <<'ENDNOTES' > notes.md
-### Core EQ — Android TV Test Build (Milestone M1)
+          ### Core EQ — Android TV Test Build (Milestone M1)
 
-**Package:** `tv.corebuilds.eq`
-**Version:** 0.1.0 (debug build)
-**Target:** Android TV (minSdk 26, compileSdk 35)
+          **Package:** `tv.corebuilds.eq`
+          **Version:** 0.1.0 (debug build)
+          **Target:** Android TV (minSdk 26, compileSdk 35)
 
-#### Direct APK Download:
-- **Download:** [`coreeq-debug.apk`](https://github.com/brevityA/CoreBuildsApps/releases/download/coreeq-test/coreeq-debug.apk)
+          #### Direct APK Download:
+          - **Download:** [`coreeq-debug.apk`](https://github.com/brevityA/CoreBuildsApps/releases/download/coreeq-test/coreeq-debug.apk)
 
-#### Included in this test build:
-- 1080p DP normalization canvas (`TvActivity`) for consistent TV viewing distance
-- Leanback TV launcher integration
-- Navigation across Home, Measure, Profiles, and Capability screens
-- Built-in 10-second reference sine sweep asset (`sweep_10s.wav`)
-- Styled with Core Builds icon pack visual design tokens (night palette, 3dp focus ring)
-ENDNOTES
+          #### Included in this test build:
+          - 1080p DP normalization canvas (`TvActivity`) for consistent TV viewing distance
+          - Leanback TV launcher integration
+          - Navigation across Home, Measure, Profiles, and Capability screens
+          - Built-in 10-second reference sine sweep asset (`sweep_10s.wav`)
+          - Styled with Core Builds icon pack visual design tokens (night palette, 3dp focus ring)
+          ENDNOTES
 
           TITLE="Core EQ — test channel (tv.corebuilds.eq)"
           if gh release view "$TAG" --repo "$REPO" >/dev/null 2>&1; then
