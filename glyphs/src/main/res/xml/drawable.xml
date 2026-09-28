@@ -101,6 +101,7 @@
     <item drawable="stan" />
     <item drawable="bydeluxe" />
     <item drawable="discovery_2" />
+    <item drawable="visionplus" />
     <category title="Square · Live TV" />
     <item drawable="xtreamplayeranddownloader" />
     <item drawable="iptv3u" />
@@ -143,6 +144,7 @@
     <item drawable="zeniptv" />
     <category title="Square · Players" />
     <item drawable="a_8k_player_vip" />
+    <item drawable="basis" />
     <item drawable="dream_player_tv" />
     <item drawable="gridstreamr" />
     <item drawable="janky" />
@@ -158,6 +160,7 @@
     <item drawable="player" />
     <item drawable="tdtchannels_player" />
     <item drawable="tg4_player" />
+    <item drawable="tubplayer" />
     <item drawable="tvi_player" />
     <item drawable="vimu" />
     <item drawable="vlc" />
@@ -348,6 +351,8 @@
     <item drawable="shizuku" />
     <item drawable="speedtesttv" />
     <item drawable="tasker" />
+    <item drawable="tduk_cache_cleaner" />
+    <item drawable="tduk_app_killer" />
     <item drawable="tduk_screensaver_manager" />
     <item drawable="termux" />
     <item drawable="tv_manager" />
@@ -431,8 +436,12 @@
     <item drawable="projectivy_categories" />
     <item drawable="projectivy_channels" />
     <item drawable="projectivy_settings" />
+    <item drawable="tcl_quick_panel" />
+    <item drawable="tcl_safety_guard" />
     <item drawable="settings" />
     <item drawable="source_input" />
+    <item drawable="tcl_t_exhibition" />
+    <item drawable="tcl_t_solo" />
     <item drawable="tcl_home_passive" />
     <item drawable="tv_source" />
     <item drawable="user_center" />

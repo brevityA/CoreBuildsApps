@@ -2,11 +2,11 @@
   "$schema": "./catalog.schema.json",
   "meta": {
     "pack": "Core Builds Icon Pack",
-    "version": "1.9.6",
+    "version": "1.9.7",
     "grid": 512,
     "safe_area": 432,
     "note": "Core Builds-authored geometric icons on a shared 512 grid. Reviewed brand glyphs use rounded monoline strokes and one accent, not imported vendor silhouettes. Common Outfit/category/rail banners; artwork is reference-only. Canonical brand colours and the dark-card contrast policy remain shared.",
-    "count": 962
+    "count": 971
   },
   "icons": [
     {
@@ -340,18 +340,20 @@
       "glyph_source": "brand-informed redraw of the official launcher icon (play listing for com.boost.airplay.receiver); Core monoline geometry, not a trace (2026-09-26)"
     },
     {
-      "name": "Airreceiverlite",
+      "name": "AirReceiver",
       "drawable": "airreceiverlite",
       "color": "#19D3C5",
       "glyph": "broadcast_A",
-      "mark": "AI",
+      "mark": "AR",
       "components": [
-        "com.softmedia.receiver.lite/com.softmedia.receiver.app.SplashActivity"
+        "com.softmedia.receiver.lite/com.softmedia.receiver.app.SplashActivity",
+        "com.softmedia.receiver/com.softmedia.receiver.app.SplashActivity"
       ],
       "category": "APP",
-      "mapping_source": "Projectivy Icon Pack 1.1.9",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "mapping_source": "Projectivy Icon Pack 1.1.9; com.softmedia.receiver (full app) from issue #194 (device-reported by onlytanmoy: Core Builds audit screenshot)",
+      "color_source": "core-builds palette: the launcher icon in the issue #194 (device-reported by onlytanmoy: Core Builds audit screenshot) is grey on white, so it carries no brand colour",
+      "color_reviewed": null,
+      "mark_source": "logotype letters from the launcher icon in the issue #194 (device-reported by onlytanmoy: Core Builds audit screenshot), which reads 'AR' on a screen; set in the pack's face, not traced (2026-09-27)"
     },
     {
       "name": "Airscreen",
@@ -1004,6 +1006,25 @@
       "category": "APP",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
+    },
+    {
+      "name": "Basis",
+      "drawable": "basis",
+      "color": "#2C67B7",
+      "glyph": "basis_b",
+      "components": [
+        "com.basis.app/com.basis.app.MainActivityDefault"
+      ],
+      "category": "PLAYER",
+      "mapping_source": "issue #199 (device-reported by onlytanmoy: Core Builds audit screenshot)",
+      "color_source": "sampled from the launcher icon in the issue #199 (device-reported by onlytanmoy: Core Builds audit screenshot): the tile's mid blue #2C67B7",
+      "color_reviewed": "2026-09-27",
+      "gradient": [
+        "#4CAEED",
+        "#1F4899"
+      ],
+      "gradient_source": "sampled from the launcher icon in the issue #199 (device-reported by onlytanmoy: Core Builds audit screenshot): the tile's #4CAEED to #1F4899 gradient, top-right to bottom-left (2026-09-27)",
+      "glyph_source": "brand-informed redraw of the launcher icon in the issue #199 (device-reported by onlytanmoy: Core Builds audit screenshot): the B with a play arrow in its lower bowl; Core monoline geometry, not a trace (2026-09-27)"
     },
     {
       "name": "BBC iPlayer",
@@ -8449,6 +8470,20 @@
       "color_reviewed": "2026-09-26"
     },
     {
+      "name": "Quick Panel",
+      "drawable": "tcl_quick_panel",
+      "color": "#0080F8",
+      "glyph": "tcl_quickpanel_layers",
+      "components": [
+        "com.tcl.suspension/com.tcl.suspension.ui.main.MainActivity"
+      ],
+      "category": "SYSTEM",
+      "mapping_source": "supporter TV audit 2026-09-27 (Auditor screenshots, TCL Google TV)",
+      "color_source": "sampled from the launcher tile in a supporter's device screenshot (2026-09-27): the layers' blue #0080F8",
+      "color_reviewed": "2026-09-27",
+      "glyph_source": "brand-informed redraw of the launcher tile in a supporter's device screenshot (com.tcl.suspension, 2026-09-27); Core monoline geometry, not a trace (2026-09-27)"
+    },
+    {
       "name": "Quickbars For Home Assistant",
       "drawable": "quickbars_for_home_assistant",
       "color": "#F04DE0",
@@ -9058,6 +9093,20 @@
       "category": "VIDEO",
       "color_source": "brand reference (pre-provenance, unverified)",
       "color_reviewed": null
+    },
+    {
+      "name": "Safety Guard",
+      "drawable": "tcl_safety_guard",
+      "color": "#4058E0",
+      "glyph": "tcl_guard_shield",
+      "components": [
+        "com.tcl.guard/com.tcl.guard.mainmenu.splashpage.activity.StartActivity"
+      ],
+      "category": "SYSTEM",
+      "mapping_source": "supporter TV audit 2026-09-27 (Auditor screenshots, TCL Google TV); listed there as Säkerhetsvakt",
+      "color_source": "sampled from the launcher tile in a supporter's device screenshot (2026-09-27): the tile's blue #4058E0",
+      "color_reviewed": "2026-09-27",
+      "glyph_source": "brand-informed redraw of the launcher tile in a supporter's device screenshot (com.tcl.guard, 2026-09-27); Core monoline geometry, not a trace (2026-09-27)"
     },
     {
       "name": "Saff",
@@ -10357,6 +10406,34 @@
       "glyph_source": "brand-informed redraw of the official launcher icon (play listing for com.synology.projectkailash); Core monoline geometry, not a trace (2026-09-26)"
     },
     {
+      "name": "T-Exhibition",
+      "drawable": "tcl_t_exhibition",
+      "color": "#F0B898",
+      "glyph": "tcl_exhibit_easel",
+      "components": [
+        "com.tcl.exhibit/com.tcl.exhibit.portal.view.activity.MainActivity"
+      ],
+      "category": "SYSTEM",
+      "mapping_source": "supporter TV audit 2026-09-27 (Auditor screenshots, TCL Google TV)",
+      "color_source": "sampled from the launcher tile in a supporter's device screenshot (2026-09-27): the tile's peach #F0B898",
+      "color_reviewed": "2026-09-27",
+      "glyph_source": "brand-informed redraw of the launcher tile in a supporter's device screenshot (com.tcl.exhibit, 2026-09-27); Core monoline geometry, not a trace (2026-09-27)"
+    },
+    {
+      "name": "T-Solo",
+      "drawable": "tcl_t_solo",
+      "color": "#6858C0",
+      "glyph": "tcl_tsolo_note",
+      "components": [
+        "com.tcl.t_solo/com.tcl.bluetoothlistenalone.ListenAloneActivity"
+      ],
+      "category": "SYSTEM",
+      "mapping_source": "supporter TV audit 2026-09-27 (Auditor screenshots, TCL Google TV)",
+      "color_source": "sampled from the launcher tile in a supporter's device screenshot (2026-09-27): the tile's violet #6858C0",
+      "color_reviewed": "2026-09-27",
+      "glyph_source": "brand-informed redraw of the launcher tile in a supporter's device screenshot (com.tcl.t_solo, 2026-09-27); Core monoline geometry, not a trace (2026-09-27)"
+    },
+    {
       "name": "Tabii",
       "drawable": "tabii",
       "color": "#00FF99",
@@ -10508,15 +10585,23 @@
       "name": "TCL Home",
       "drawable": "tcl_home",
       "color": "#E24638",
-      "glyph": "tool_T",
-      "mark": "TH",
+      "glyph": "tcl_home_grid",
       "components": [
-        "com.tcl.tclhome/com.tcl.bmmain.SplashActivity"
+        "com.tcl.tclhome/com.tcl.bmmain.SplashActivity",
+        "com.tcl.dashboard/com.tcl.dashboard.MainActivity"
       ],
       "category": "APP",
-      "mapping_source": "Projectivy Icon Pack 1.1.9",
+      "mapping_source": "Projectivy Icon Pack 1.1.9; com.tcl.dashboard entry from supporter TV audit 2026-09-27 (Auditor screenshots, TCL Google TV)",
       "color_source": "sampled from the official launcher icon (Google Play listing for com.tcl.tclhome): dominant brand accent #E24638 (2026-09-26)",
-      "color_reviewed": "2026-09-26"
+      "color_reviewed": "2026-09-26",
+      "glyph_source": "brand-informed redraw of the launcher tile in a supporter's device screenshot (Projectivy on a TCL Google TV, 2026-09-27): three red squares of a dashboard grid, the fourth corner two yellow bars; Core monoline geometry, not a trace (2026-09-27)",
+      "secondary": {
+        "color": "#FAC021",
+        "parts": [
+          3
+        ],
+        "source": "the launcher tile in a supporter's device screenshot (Projectivy on a TCL Google TV, 2026-09-27): the two bars' yellow #FAC021 beside the red squares (2026-09-27)"
+      }
     },
     {
       "name": "TCN",
@@ -10544,6 +10629,49 @@
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
+    },
+    {
+      "name": "TDUK APP Cache Cleaner",
+      "drawable": "tduk_cache_cleaner",
+      "color": "#98D800",
+      "glyph": "tduk_cleaner_droid",
+      "components": [
+        "com.tduk.cacheclean/com.tduk.cachecleaner.ShellAutoRunner"
+      ],
+      "category": "TOOL",
+      "mapping_source": "issue #192 (device-reported by onlytanmoy: Core Builds audit screenshot)",
+      "color_source": "sampled from the launcher icon in the issue #192 (device-reported by onlytanmoy: Core Builds audit screenshot): the robot's green #98D800",
+      "color_reviewed": "2026-09-27",
+      "glyph_source": "brand-informed redraw of the launcher icon in the issue #192 (device-reported by onlytanmoy: Core Builds audit screenshot): the Android robot with a broom; drawn as the robot's head over the broom so it is not a twin of TDUK APP Killer; Core monoline geometry, not a trace (2026-09-27)",
+      "secondary": {
+        "color": "#F8D800",
+        "parts": [
+          4,
+          5
+        ],
+        "source": "the launcher icon in the issue #192 (device-reported by onlytanmoy: Core Builds audit screenshot): the broom's yellow #F8D800 (2026-09-27)"
+      }
+    },
+    {
+      "name": "TDUK APP Killer",
+      "drawable": "tduk_app_killer",
+      "color": "#90D80C",
+      "glyph": "tduk_killer_droid",
+      "components": [
+        "com.tduk.appklr/com.tduk.cachecleaner.ShellAutoRunner"
+      ],
+      "category": "TOOL",
+      "mapping_source": "issue #193 (device-reported by onlytanmoy: Core Builds audit screenshot)",
+      "color_source": "sampled from the launcher icon in the issue #193 (device-reported by onlytanmoy: Core Builds audit screenshot): the robot's green #90D80C",
+      "color_reviewed": "2026-09-27",
+      "glyph_source": "brand-informed redraw of the launcher icon in the issue #193 (device-reported by onlytanmoy: Core Builds audit screenshot): the Android robot with a red X on its chest; Core monoline geometry, not a trace (2026-09-27)",
+      "secondary": {
+        "color": "#E41800",
+        "parts": [
+          4
+        ],
+        "source": "the launcher icon in the issue #193 (device-reported by onlytanmoy: Core Builds audit screenshot): the X's red #E41800 (2026-09-27)"
+      }
     },
     {
       "name": "Tduk Screensaver Manager",
@@ -11174,6 +11302,25 @@
       "color_reviewed": "2026-09-14"
     },
     {
+      "name": "TubPlayer",
+      "drawable": "tubplayer",
+      "color": "#60A8F0",
+      "glyph": "tubplayer_t",
+      "components": [
+        "com.tubs.tubplayer/com.tubs.tubplayer.MainActivity"
+      ],
+      "category": "PLAYER",
+      "mapping_source": "issue #190 (device-reported by onlytanmoy: Core Builds audit screenshot)",
+      "color_source": "sampled from the launcher icon in the issue #190 (device-reported by onlytanmoy: Core Builds audit screenshot): the tile's blue #60A8F0",
+      "color_reviewed": "2026-09-27",
+      "gradient": [
+        "#6FCAFB",
+        "#5F84E7"
+      ],
+      "gradient_source": "sampled from the launcher icon in the issue #190 (device-reported by onlytanmoy: Core Builds audit screenshot): the tile's #6FCAFB to #5F84E7 gradient, its two corners (2026-09-27)",
+      "glyph_source": "brand-informed redraw of the launcher icon in the issue #190 (device-reported by onlytanmoy: Core Builds audit screenshot): the T whose arm folds into a play arrow; Core monoline geometry, not a trace (2026-09-27)"
+    },
+    {
       "name": "Tunein Radio",
       "drawable": "tunein_radio",
       "color": "#14D8CC",
@@ -11702,19 +11849,22 @@
     {
       "name": "Ultimate File Manager Pro",
       "drawable": "ultimatefilemanager",
-      "color": "#FF5CA8",
-      "glyph": "folder",
+      "color": "#80A0B0",
+      "glyph": "ufm_folder_arrow",
       "components": [
         "za.kilowatch.ultimatefilemanager/.MainActivity",
-        "za.kilowatch.ultimatefilemanager/za.kilowatch.ultimatefilemanager.MainActivity"
+        "za.kilowatch.ultimatefilemanager/za.kilowatch.ultimatefilemanager.MainActivity",
+        "za.kilowatch.ultimatefilemanager/za.kilowatch.ultimatefilemanager.onboarding.LanguageWelcomeActivity"
       ],
       "category": "FILES",
       "unverified": [
         "za.kilowatch.ultimatefilemanager/.MainActivity",
         "za.kilowatch.ultimatefilemanager/za.kilowatch.ultimatefilemanager.MainActivity"
       ],
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled from the launcher tile in a supporter's device screenshot (2026-09-27): the folder mark's steel blue #80A0B0",
+      "color_reviewed": "2026-09-27",
+      "glyph_source": "brand-informed redraw of the launcher tile in a supporter's device screenshot (za.kilowatch.ultimatefilemanager, 2026-09-27); Core monoline geometry, not a trace (2026-09-27)",
+      "mapping_source": "onboarding.LanguageWelcomeActivity from issue #191 (device-reported by onlytanmoy: Core Builds audit screenshot) and the 2026-09-27 supporter TV audit"
     },
     {
       "name": "UniFi Protect",
@@ -11999,6 +12149,20 @@
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null,
       "style": "core_monoline"
+    },
+    {
+      "name": "Vision+",
+      "drawable": "visionplus",
+      "color": "#07E3D0",
+      "glyph": "visionplus_vplus",
+      "components": [
+        "id.visionplus.android.atv/tv.mirada.iris.screens.logosplash.LogoSplashActivity"
+      ],
+      "category": "VOD",
+      "mapping_source": "issue #185 (device-reported on AQUA MatrixTV CE, Android 14)",
+      "color_source": "sampled from the official launcher icon (Google Play listing for id.visionplus.android.atv): dominant brand accent #07E3D0 (2026-09-27)",
+      "color_reviewed": "2026-09-27",
+      "glyph_source": "brand-informed redraw of the official launcher icon (play listing for id.visionplus.android.atv); Core monoline geometry, not a trace (2026-09-27)"
     },
     {
       "name": "Viu",
@@ -13223,43 +13387,44 @@
       "name": "AK47Sports",
       "drawable": "ak47sports",
       "color": "#FEC500",
-      "glyph": "sport_A",
-      "mark": "AK",
+      "glyph": "ak47_crest",
       "components": [
         "app.aksports.live/app.aksports.live.activities.SplashActivity"
       ],
       "category": "SPORT",
       "mapping_source": "owner TV audit 2026-09-21 (Auditor screenshots, TCL Google TV)",
       "color_source": "owner TV audit 2026-09-21: stock icon gold-on-blue crest",
-      "color_reviewed": "2026-09-21"
+      "color_reviewed": "2026-09-21",
+      "glyph_source": "brand-informed redraw of the launcher tile in a supporter's device screenshot (Projectivy on a TCL Google TV, 2026-09-27): crossed cricket bats and football; Core monoline geometry, not a trace (2026-09-27)"
     },
     {
       "name": "AnikenTV",
       "drawable": "anikentv",
       "color": "#FF4C98",
       "glyph": "broadcast_A",
-      "mark": "AN",
+      "mark": "AK",
       "components": [
         "com.shubh.anililitv/com.shubh.anililitv.MainActivity"
       ],
       "category": "APP",
       "mapping_source": "owner TV audit 2026-09-21 (Auditor screenshots, TCL Google TV)",
-      "color_source": "core-builds palette (anime pink slot; no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "core-builds palette (anime pink slot): the launcher tile in a supporter's device screenshot (Projectivy on a TCL Google TV, 2026-09-27) is white on black, so it carries no brand colour",
+      "color_reviewed": null,
+      "mark_source": "logotype letters from the launcher tile in a supporter's device screenshot (Projectivy on a TCL Google TV, 2026-09-27), which reads 'AK' in white script; set in the pack's face, not traced (2026-09-27)"
     },
     {
       "name": "Användarmanual",
       "drawable": "anvandarmanual",
-      "color": "#FF5CA8",
-      "glyph": "tool_A",
-      "mark": "AN",
+      "color": "#94A3C0",
+      "glyph": "tcl_guide_pages",
       "components": [
         "com.tcl.ocean.instructions/com.tcl.ocean.instructions.portal.home.HomeActivity"
       ],
       "category": "SYSTEM",
       "mapping_source": "owner TV audit 2026-09-21 (Auditor screenshots, TCL Google TV)",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled from the launcher tile in a supporter's device screenshot (Projectivy on a TCL Google TV, 2026-09-27): the tile's slate blue #94A3C0 (the page itself is white)",
+      "color_reviewed": "2026-09-27",
+      "glyph_source": "brand-informed redraw of the launcher tile in a supporter's device screenshot (Projectivy on a TCL Google TV, 2026-09-27): a written page with a second page behind it; Core monoline geometry, not a trace (2026-09-27)"
     },
     {
       "name": "Button Mapper TV",
@@ -13336,15 +13501,15 @@
       "name": "Mediaspelare",
       "drawable": "mediaspelare",
       "color": "#7B2BFC",
-      "glyph": "film_M",
-      "mark": "ME",
+      "glyph": "tcl_media_folder",
       "components": [
         "com.tcl.ui_mediaCenter/com.tcl.ui_mediaCenter.main.MainActivity"
       ],
       "category": "PLAYER",
       "mapping_source": "owner TV audit 2026-09-21 (Auditor screenshots, TCL Google TV)",
       "color_source": "owner TV audit 2026-09-21: TCL stock icon purple tile",
-      "color_reviewed": "2026-09-21"
+      "color_reviewed": "2026-09-21",
+      "glyph_source": "brand-informed redraw of the launcher tile in a supporter's device screenshot (Projectivy on a TCL Google TV, 2026-09-27): a folder holding a play button; Core monoline geometry, not a trace (2026-09-27)"
     },
     {
       "name": "PMX",
@@ -13367,10 +13532,11 @@
       "color": "#A60202",
       "glyph": "tool_T",
       "components": [
-        "com.tcl.tv.tclhome_passive/com.tcl.tv.tclhome_passive.HomePassiveActivity"
+        "com.tcl.tv.tclhome_passive/com.tcl.tv.tclhome_passive.HomePassiveActivity",
+        "com.tcl.tv.tclhome_passive/com.tcl.tclhome_passive.HomePassiveActivity"
       ],
       "category": "SYSTEM",
-      "mapping_source": "owner TV audit 2026-09-21 (Auditor screenshots, TCL Google TV)",
+      "mapping_source": "owner TV audit 2026-09-21 (Auditor screenshots, TCL Google TV); com.tcl.tclhome_passive activity class from supporter TV audit 2026-09-27 (Auditor screenshots, TCL Google TV)",
       "color_source": "sampled from the official launcher icon (APKCombo mirror of the Google Play listing for com.tcl.tv.tclhome_passive): dominant brand accent #A60202 (2026-09-26)",
       "color_reviewed": "2026-09-26",
       "mark": "TH"
@@ -13407,15 +13573,15 @@
       "name": "Voltra TV",
       "drawable": "voltra_tv",
       "color": "#00E676",
-      "glyph": "broadcast_V",
-      "mark": "VT",
+      "glyph": "voltra_v",
       "components": [
         "com.amhkor.voltratv/com.amhkor.voltratv.tv.SplashActivity"
       ],
       "category": "STREAM",
       "mapping_source": "owner TV audit 2026-09-21 (Auditor screenshots, TCL Google TV)",
       "color_source": "owner TV audit 2026-09-21: Voltra green V cue from stock icon",
-      "color_reviewed": "2026-09-21"
+      "color_reviewed": "2026-09-21",
+      "glyph_source": "brand-informed redraw of the launcher tile in a supporter's device screenshot (Projectivy on a TCL Google TV, 2026-09-27): the V with a lightning-bolt arm; Core monoline geometry, not a trace (2026-09-27)"
     },
     {
       "name": "Works with Alexa",

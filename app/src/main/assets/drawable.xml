@@ -101,6 +101,7 @@
     <item drawable="stan_banner" />
     <item drawable="bydeluxe_banner" />
     <item drawable="discovery_2_banner" />
+    <item drawable="visionplus_banner" />
     <category title="Banners · Live TV" />
     <item drawable="xtreamplayeranddownloader_banner" />
     <item drawable="iptv3u_banner" />
@@ -143,6 +144,7 @@
     <item drawable="zeniptv_banner" />
     <category title="Banners · Players" />
     <item drawable="a_8k_player_vip_banner" />
+    <item drawable="basis_banner" />
     <item drawable="dream_player_tv_banner" />
     <item drawable="gridstreamr_banner" />
     <item drawable="janky_banner" />
@@ -158,6 +160,7 @@
     <item drawable="player_banner" />
     <item drawable="tdtchannels_player_banner" />
     <item drawable="tg4_player_banner" />
+    <item drawable="tubplayer_banner" />
     <item drawable="tvi_player_banner" />
     <item drawable="vimu_banner" />
     <item drawable="vlc_banner" />
@@ -348,6 +351,8 @@
     <item drawable="shizuku_banner" />
     <item drawable="speedtesttv_banner" />
     <item drawable="tasker_banner" />
+    <item drawable="tduk_cache_cleaner_banner" />
+    <item drawable="tduk_app_killer_banner" />
     <item drawable="tduk_screensaver_manager_banner" />
     <item drawable="termux_banner" />
     <item drawable="tv_manager_banner" />
@@ -431,8 +436,12 @@
     <item drawable="projectivy_categories_banner" />
     <item drawable="projectivy_channels_banner" />
     <item drawable="projectivy_settings_banner" />
+    <item drawable="tcl_quick_panel_banner" />
+    <item drawable="tcl_safety_guard_banner" />
     <item drawable="settings_banner" />
     <item drawable="source_input_banner" />
+    <item drawable="tcl_t_exhibition_banner" />
+    <item drawable="tcl_t_solo_banner" />
     <item drawable="tcl_home_passive_banner" />
     <item drawable="tv_source_banner" />
     <item drawable="user_center_banner" />

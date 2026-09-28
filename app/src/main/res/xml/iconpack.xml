@@ -76,6 +76,7 @@
     <item drawable="babyeinstein" />
     <item drawable="background_apps_and_process_list" />
     <item drawable="ballyscorp" />
+    <item drawable="basis" />
     <item drawable="iplayer" />
     <item drawable="bbc_iplayer" />
     <item drawable="bbciplayer" />
@@ -608,6 +609,7 @@
     <item drawable="put_io" />
     <item drawable="music" />
     <item drawable="quasitv" />
+    <item drawable="tcl_quick_panel" />
     <item drawable="quickbars_for_home_assistant" />
     <item drawable="quicksupport" />
     <item drawable="radio_net" />
@@ -656,6 +658,7 @@
     <item drawable="rustore" />
     <item drawable="rutube" />
     <item drawable="s0undtv" />
+    <item drawable="tcl_safety_guard" />
     <item drawable="saff" />
     <item drawable="sai" />
     <item drawable="sbs" />
@@ -752,6 +755,8 @@
     <item drawable="syncler_beta" />
     <item drawable="synologydrive" />
     <item drawable="synologyphotos" />
+    <item drawable="tcl_t_exhibition" />
+    <item drawable="tcl_t_solo" />
     <item drawable="tabii" />
     <item drawable="tablofast" />
     <item drawable="tailscale" />
@@ -767,6 +772,8 @@
     <item drawable="tcl_home_passive" />
     <item drawable="tcn" />
     <item drawable="tdtchannels_player" />
+    <item drawable="tduk_cache_cleaner" />
+    <item drawable="tduk_app_killer" />
     <item drawable="tduk_screensaver_manager" />
     <item drawable="photocollage" />
     <item drawable="ted" />
@@ -816,6 +823,7 @@
     <item drawable="tsn" />
     <item drawable="tt" />
     <item drawable="tubi" />
+    <item drawable="tubplayer" />
     <item drawable="tunein_radio" />
     <item drawable="tcl_tv" />
     <item drawable="tv_2_play" />
@@ -880,6 +888,7 @@
     <item drawable="vimu" />
     <item drawable="threeplayer" />
     <item drawable="virtualhere_usb_server" />
+    <item drawable="visionplus" />
     <item drawable="viu" />
     <item drawable="viva_one_tv" />
     <item drawable="allsaversocial" />

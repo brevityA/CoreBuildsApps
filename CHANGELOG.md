@@ -6,8 +6,26 @@ All notable changes to the Core Builds Icon Pack. Format follows
 
 ## [Unreleased]
 
+## [1.9.7] — 2026-09-27
+
 ### Added
 
+- **Vision+** — a new icon for the Indonesian streaming service, requested in #185. It has a redrawn mark taken from the app's launcher icon: its V as one slanted wedge tapering to a rounded foot, and the plus. Its colour is the icon's cyan (#07E3D0). The launch activity was reported from a real device (AQUA MatrixTV CE, Android 14). 962 → 963 icons, 1184 → 1185 components.
+- **Four TCL system apps.** Quick Panel (stacked layers), Safety Guard
+  (Säkerhetsvakt; a shield with a brush stroke), T-Exhibition (a framed
+  sunset on its easel) and T-Solo (a single note) get icons drawn from their
+  launcher tiles, in the tiles' own colours. A supporter's TV audit reported
+  them with their launch activities. 963 → 967 icons.
+- **TDUK APP Killer.** Its Android robot with the red X across its chest,
+  in the icon's green and red, requested in #193 with its launch activity
+  read off the requester's TV. 967 → 968 icons.
+- **TubPlayer and TDUK APP Cache Cleaner.** TubPlayer's T folding into a
+  play arrow on its blue gradient (#190), and the Cache Cleaner's robot
+  head over a yellow broom (#192), both from launch activities read off
+  the requester's TV. 968 → 970 icons.
+- **Basis.** Its B with a play arrow in the lower bowl, on the icon's blue
+  gradient, requested in #199 with its launch activity read off the
+  requester's TV. 970 → 971 icons.
 - **12 more apps get marks drawn from their real icons, 195 in all.**
   Uplay's bowed play arrow, Cast4K's shield on antennae, Drama Live's globe
   and comet, Xstream Play's curled ribbon, Mobily TV's tailed screen, Rapid
@@ -86,6 +104,16 @@ All notable changes to the Core Builds Icon Pack. Format follows
 
 ### Changed
 
+- **AK47Sports, Voltra TV and AnikenTV drawn from their real icons.** The
+  same supporter's screenshots show three launcher icons no store had:
+  AK47Sports gets its crossed cricket bats and football, Voltra TV its V
+  with a lightning-bolt arm, and AnikenTV's tile reads "AK", as its white
+  script logo does.
+- **Three more TCL apps drawn from their tiles.** Användarmanual (User
+  Guide) gets its page and the tile's slate blue instead of a palette pink,
+  Mediaspelare (Media Player) a folder holding a play button, and TCL Home
+  its dashboard grid: three red squares and two yellow bars in the fourth
+  corner.
 - **53 more apps wear their real colour.** Apps no store listing could
   source take the colour of their logo in Projectivy Icon Pack 1.1.9, used
   only as a reference; logos without one clear colour keep the palette.
@@ -95,6 +123,16 @@ All notable changes to the Core Builds Icon Pack. Format follows
 
 ### Fixed
 
+- **TCL Home and TCL Home Passive now match on TCL TVs.** The same audit
+  showed TCL Home launching from `com.tcl.dashboard` and TCL Home Passive
+  from a class package the catalogue had wrong, so both gain the reported
+  activity. Ultimate File Manager Pro gets a redrawn folder-and-arrow mark
+  in its steel blue `#80A0B0` and, from #191, the onboarding activity it
+  actually launches from on TVs, so its icon now applies.
+- **AirReceiver now matches the full app, not just Lite.** Issue #194
+  reported `com.softmedia.receiver`; it joins the AirReceiver Lite icon,
+  which is renamed AirReceiver and reads "AR" like its logo. 1185 → 1196
+  components.
 - **84 apps now carry their real names.** Checked against Projectivy Icon
   Pack 1.1.9: many mappings came from that pack, but their names had been
   rebuilt from package or developer names ("Freevee" was Amazon Luna,
@@ -107,6 +145,7 @@ All notable changes to the Core Builds Icon Pack. Format follows
   a package whose store listing shows a different app (a weather app and a
   photo collage maker); the icons now follow what is on the TV: BeeTV's bee
   in its orange and TeaTV's tilted TV in its red.
+
 
 ## [1.9.6] — 2026-09-26
 

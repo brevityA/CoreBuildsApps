@@ -78,6 +78,7 @@
         <item>babyeinstein</item>
         <item>background_apps_and_process_list</item>
         <item>ballyscorp</item>
+        <item>basis</item>
         <item>iplayer</item>
         <item>bbc_iplayer</item>
         <item>bbciplayer</item>
@@ -610,6 +611,7 @@
         <item>put_io</item>
         <item>music</item>
         <item>quasitv</item>
+        <item>tcl_quick_panel</item>
         <item>quickbars_for_home_assistant</item>
         <item>quicksupport</item>
         <item>radio_net</item>
@@ -658,6 +660,7 @@
         <item>rustore</item>
         <item>rutube</item>
         <item>s0undtv</item>
+        <item>tcl_safety_guard</item>
         <item>saff</item>
         <item>sai</item>
         <item>sbs</item>
@@ -754,6 +757,8 @@
         <item>syncler_beta</item>
         <item>synologydrive</item>
         <item>synologyphotos</item>
+        <item>tcl_t_exhibition</item>
+        <item>tcl_t_solo</item>
         <item>tabii</item>
         <item>tablofast</item>
         <item>tailscale</item>
@@ -769,6 +774,8 @@
         <item>tcl_home_passive</item>
         <item>tcn</item>
         <item>tdtchannels_player</item>
+        <item>tduk_cache_cleaner</item>
+        <item>tduk_app_killer</item>
         <item>tduk_screensaver_manager</item>
         <item>photocollage</item>
         <item>ted</item>
@@ -818,6 +825,7 @@
         <item>tsn</item>
         <item>tt</item>
         <item>tubi</item>
+        <item>tubplayer</item>
         <item>tunein_radio</item>
         <item>tcl_tv</item>
         <item>tv_2_play</item>
@@ -882,6 +890,7 @@
         <item>vimu</item>
         <item>threeplayer</item>
         <item>virtualhere_usb_server</item>
+        <item>visionplus</item>
         <item>viu</item>
         <item>viva_one_tv</item>
         <item>allsaversocial</item>
@@ -989,7 +998,7 @@
         <item>Aircast</item>
         <item>Airpin Pro</item>
         <item>AirPlay Receiver</item>
-        <item>Airreceiverlite</item>
+        <item>AirReceiver</item>
         <item>Airscreen</item>
         <item>AK47Sports</item>
         <item>Al Jazeera</item>
@@ -1042,6 +1051,7 @@
         <item>Baby Einstein</item>
         <item>Background Apps And Process List</item>
         <item>Bally Sports</item>
+        <item>Basis</item>
         <item>BBC iPlayer</item>
         <item>BBC iPlayer (Freeview)</item>
         <item>BBC iPlayer TV</item>
@@ -1574,6 +1584,7 @@
         <item>Put Io</item>
         <item>Qobuz</item>
         <item>Quasitv</item>
+        <item>Quick Panel</item>
         <item>Quickbars For Home Assistant</item>
         <item>QuickSupport</item>
         <item>Radio Net</item>
@@ -1622,6 +1633,7 @@
         <item>Rustore</item>
         <item>Rutube</item>
         <item>S0undTV</item>
+        <item>Safety Guard</item>
         <item>Saff</item>
         <item>SAI</item>
         <item>SBS</item>
@@ -1718,6 +1730,8 @@
         <item>Syncler Beta</item>
         <item>Synology Drive</item>
         <item>Synology Photos</item>
+        <item>T-Exhibition</item>
+        <item>T-Solo</item>
         <item>Tabii</item>
         <item>Tablo</item>
         <item>Tailscale</item>
@@ -1733,6 +1747,8 @@
         <item>TCL Home Passive</item>
         <item>TCN</item>
         <item>Tdtchannels Player</item>
+        <item>TDUK APP Cache Cleaner</item>
+        <item>TDUK APP Killer</item>
         <item>Tduk Screensaver Manager</item>
         <item>TeaTV</item>
         <item>Ted</item>
@@ -1782,6 +1798,7 @@
         <item>TSN</item>
         <item>Tt</item>
         <item>Tubi</item>
+        <item>TubPlayer</item>
         <item>Tunein Radio</item>
         <item>TV</item>
         <item>TV 2 Play</item>
@@ -1846,6 +1863,7 @@
         <item>Vimu Player</item>
         <item>Virgin Media Play</item>
         <item>Virtualhere USB Server</item>
+        <item>Vision+</item>
         <item>Viu</item>
         <item>Viva One TV</item>
         <item>VivaTV</item>
@@ -2006,6 +2024,7 @@
         <item>APP</item>
         <item>APP</item>
         <item>APP</item>
+        <item>PLAYER</item>
         <item>VOD</item>
         <item>VOD</item>
         <item>VOD</item>
@@ -2538,6 +2557,7 @@
         <item>APP</item>
         <item>MUSIC</item>
         <item>APP</item>
+        <item>SYSTEM</item>
         <item>TOOL</item>
         <item>APP</item>
         <item>MUSIC</item>
@@ -2586,6 +2606,7 @@
         <item>APP</item>
         <item>APP</item>
         <item>VIDEO</item>
+        <item>SYSTEM</item>
         <item>APP</item>
         <item>TOOL</item>
         <item>VOD</item>
@@ -2682,6 +2703,8 @@
         <item>STREAM</item>
         <item>FILES</item>
         <item>APP</item>
+        <item>SYSTEM</item>
+        <item>SYSTEM</item>
         <item>APP</item>
         <item>APP</item>
         <item>VPN</item>
@@ -2697,6 +2720,8 @@
         <item>SYSTEM</item>
         <item>APP</item>
         <item>PLAYER</item>
+        <item>TOOL</item>
+        <item>TOOL</item>
         <item>TOOL</item>
         <item>APP</item>
         <item>APP</item>
@@ -2746,6 +2771,7 @@
         <item>APP</item>
         <item>APP</item>
         <item>APP</item>
+        <item>PLAYER</item>
         <item>MUSIC</item>
         <item>LIVE</item>
         <item>APP</item>
@@ -2810,6 +2836,7 @@
         <item>PLAYER</item>
         <item>APP</item>
         <item>TOOL</item>
+        <item>VOD</item>
         <item>APP</item>
         <item>APP</item>
         <item>APP</item>
@@ -2919,7 +2946,7 @@
         <item>1</item>
         <item>0</item>
         <item>1</item>
-        <item>0</item>
+        <item>1</item>
         <item>1</item>
         <item>0</item>
         <item>1</item>
@@ -2940,7 +2967,7 @@
         <item>0</item>
         <item>0</item>
         <item>1</item>
-        <item>0</item>
+        <item>1</item>
         <item>1</item>
         <item>0</item>
         <item>1</item>
@@ -2973,6 +3000,7 @@
         <item>1</item>
         <item>1</item>
         <item>1</item>
+        <item>1</item>
         <item>0</item>
         <item>1</item>
         <item>1</item>
@@ -3324,9 +3352,9 @@
         <item>1</item>
         <item>1</item>
         <item>1</item>
-        <item>0</item>
         <item>0</item>
         <item>1</item>
+        <item>1</item>
         <item>0</item>
         <item>0</item>
         <item>1</item>
@@ -3504,6 +3532,7 @@
         <item>0</item>
         <item>1</item>
         <item>1</item>
+        <item>1</item>
         <item>0</item>
         <item>0</item>
         <item>1</item>
@@ -3549,6 +3578,7 @@
         <item>1</item>
         <item>1</item>
         <item>0</item>
+        <item>1</item>
         <item>1</item>
         <item>0</item>
         <item>1</item>
@@ -3647,6 +3677,8 @@
         <item>1</item>
         <item>1</item>
         <item>1</item>
+        <item>1</item>
+        <item>1</item>
         <item>0</item>
         <item>1</item>
         <item>0</item>
@@ -3657,13 +3689,15 @@
         <item>0</item>
         <item>1</item>
         <item>0</item>
-        <item>0</item>
+        <item>1</item>
         <item>0</item>
         <item>0</item>
+        <item>1</item>
         <item>1</item>
         <item>1</item>
         <item>1</item>
         <item>1</item>
+        <item>1</item>
         <item>0</item>
         <item>0</item>
         <item>1</item>
@@ -3709,6 +3743,7 @@
         <item>0</item>
         <item>1</item>
         <item>0</item>
+        <item>1</item>
         <item>1</item>
         <item>1</item>
         <item>0</item>
@@ -3775,6 +3810,7 @@
         <item>0</item>
         <item>1</item>
         <item>1</item>
+        <item>1</item>
         <item>0</item>
         <item>0</item>
         <item>0</item>
@@ -3782,7 +3818,7 @@
         <item>0</item>
         <item>1</item>
         <item>1</item>
-        <item>0</item>
+        <item>1</item>
         <item>1</item>
         <item>0</item>
         <item>1</item>
@@ -3857,5 +3893,5 @@
         <item>1</item>
         <item>1</item>
     </integer-array>
-    <integer name="icon_count">962</integer>
+    <integer name="icon_count">971</integer>
 </resources>

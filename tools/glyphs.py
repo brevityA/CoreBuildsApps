@@ -6882,3 +6882,157 @@ GLYPHS.update({
     "oilers_drop": oilers_drop, "sportzx_s": sportzx_s,
     "redbox_box": redbox_box, "launchermanager_gear": launchermanager_gear,
 })
+def visionplus_vplus(c):
+    """Vision+: the V drawn as one slanted wedge tapering to a rounded foot, and the plus."""
+    return (_solid("M 84 138 L 170 138 L 298 380 C 310 404 296 422 272 416 "
+                   "C 258 412 250 402 242 390 Z", c, 12)
+            + f'<path d="M 364 90 L 364 250 M 284 170 L 444 170" {_s(c, 38)}/>')
+
+
+GLYPHS.update({"visionplus_vplus": visionplus_vplus})
+
+
+# --------------------------------------------------------------------------
+# TCL system apps and UFM Pro (2026-09-27): drawn from a supporter's device
+# screenshot of each launcher tile.
+
+
+def tcl_quickpanel_layers(c):
+    """TCL Quick Panel: the stack of three layers."""
+    return (f'<path d="M 256 92 L 436 184 L 256 276 L 76 184 Z" {_s(c, 28)}/>'
+            f'<path d="M 76 256 L 256 348 L 436 256 M 76 328 L 256 420 L 436 328" '
+            f'{_s(c, 26)}/>')
+
+
+def tcl_guard_shield(c):
+    """TCL Safety Guard: the shield with a brush stroke across it."""
+    return (f'<path d="M 256 64 C 314 96 368 108 420 108 L 420 250 C 420 344 350 414 256 452 '
+            f'C 162 414 92 344 92 250 L 92 108 C 144 108 198 96 256 64 Z" {_s(c, 28)}/>'
+            f'<path d="M 310 170 L 206 334" {_s(c, 32)}/>')
+
+
+def tcl_exhibit_easel(c):
+    """TCL T-Exhibition: a framed sunset standing on its easel legs."""
+    return (f'<rect x="92" y="88" width="328" height="236" rx="22" {_s(c, 28)}/>'
+            f'<path d="M 132 282 C 196 238 300 252 380 212" {_s(c, 22)}/>'
+            f'<circle cx="326" cy="162" r="24" {_s(c, 20)}/>'
+            f'<path d="M 180 324 L 146 436 M 332 324 L 366 436" {_s(c, 26)}/>')
+
+
+def tcl_tsolo_note(c):
+    """TCL T-Solo: the single music note with a hollow head."""
+    return (f'<path d="M 300 92 L 300 336" {_s(c, 30)}/>'
+            f'<path d="M 300 92 C 338 110 380 138 384 196" {_s(c, 28)}/>'
+            f'<circle cx="236" cy="352" r="66" {_s(c, 30)}/>')
+
+
+def ufm_folder_arrow(c):
+    """Ultimate File Manager Pro: the folder with an arrow launching out of it."""
+    return (f'<path d="M 72 150 L 200 150 L 236 190 L 300 190" {_s(c, 26)}/>'
+            f'<path d="M 440 250 L 440 386 C 440 408 424 424 402 424 L 110 424 '
+            f'C 88 424 72 408 72 386 L 72 150" {_s(c, 26)}/>'
+            f'<path d="M 184 360 L 400 144 M 324 136 L 408 136 L 408 220" {_s(c, 28)}/>')
+
+
+GLYPHS.update({
+    "tcl_quickpanel_layers": tcl_quickpanel_layers, "tcl_guard_shield": tcl_guard_shield,
+    "tcl_exhibit_easel": tcl_exhibit_easel, "tcl_tsolo_note": tcl_tsolo_note,
+    "ufm_folder_arrow": ufm_folder_arrow,
+})
+
+
+def ak47_crest(c):
+    """AK47Sports: two crossed cricket bats with the football at their crossing."""
+    import math
+    def bat(ang):
+        ux, uy = math.cos(math.radians(ang)), math.sin(math.radians(ang))
+        px, py = -uy, ux
+        def at(t, w):
+            return 256 + ux * t + px * w, 256 + uy * t + py * w
+        blade = [at(40, 26), at(196, 26), at(212, 0), at(196, -26), at(40, -26)]
+        d = "M " + " L ".join(f"{x:.1f} {y:.1f}" for x, y in blade) + " Z"
+        h0, h1 = at(-200, 0), at(-60, 0)
+        return (f'<path d="{d}" {_s(c, 22)}/>'
+                f'<path d="M {h0[0]:.1f} {h0[1]:.1f} L {h1[0]:.1f} {h1[1]:.1f}" {_s(c, 24)}/>')
+    return (bat(45) + bat(135)
+            + f'<circle cx="256" cy="226" r="62" {_s(c, 24)}/>'
+            + _solid("M 256 200 L 281 218 L 271 247 L 241 247 L 231 218 Z", c, 8))
+
+
+def voltra_v(c):
+    """Voltra TV: the V whose left arm is a lightning bolt."""
+    return (_solid("M 94 104 L 178 104 L 230 244 L 202 244 L 256 404 L 168 232 L 196 232 Z", c, 12)
+            + f'<path d="M 256 404 L 420 96" {_s(c, 32)}/>')
+
+
+GLYPHS.update({"ak47_crest": ak47_crest, "voltra_v": voltra_v})
+
+
+def tcl_guide_pages(c):
+    """TCL User Guide (Användarmanual): a written page with a second page behind it."""
+    return (f'<rect x="112" y="88" width="208" height="336" rx="24" {_s(c, 28)}/>'
+            f'<path d="M 160 176 L 272 176 M 160 236 L 272 236 M 160 296 L 232 296" {_s(c, 22)}/>'
+            f'<path d="M 324 150 L 376 150 C 396 150 404 160 404 178 L 404 396 '
+            f'C 404 414 396 424 376 424 L 324 424" {_s(c, 24)}/>')
+
+
+def tcl_media_folder(c):
+    """TCL Media Player (Mediaspelare): the folder holding a play button."""
+    return (f'<path d="M 100 172 L 100 132 L 206 132 L 238 164 L 412 164 L 412 172" {_s(c, 24)}/>'
+            f'<rect x="80" y="176" width="352" height="232" rx="28" {_s(c, 28)}/>'
+            + _solid("M 226 236 L 306 292 L 226 348 Z", c, 14))
+
+
+def tcl_home_grid(c):
+    """TCL Home: three squares of the dashboard grid, the fourth corner two bars."""
+    boxes = "".join(f'<rect x="{x}" y="{y}" width="132" height="132" rx="14" {_s(c, 28)}/>'
+                    for x, y in ((100, 100), (280, 100), (100, 280)))
+    return boxes + f'<path d="M 284 326 L 412 326 M 284 386 L 380 386" {_s(c, 28)}/>'
+
+
+GLYPHS.update({"tcl_guide_pages": tcl_guide_pages, "tcl_media_folder": tcl_media_folder,
+               "tcl_home_grid": tcl_home_grid})
+
+
+def tduk_killer_droid(c):
+    """TDUK APP Killer: the Android robot with an X across its chest."""
+    return (f'<path d="M 156 196 C 156 124 356 124 356 196 Z" {_s(c, 24)}/>'
+            f'<path d="M 196 118 L 176 84 M 316 118 L 336 84" {_s(c, 20)}/>'
+            f'<rect x="156" y="224" width="200" height="176" rx="24" {_s(c, 26)}/>'
+            f'<path d="M 112 236 L 112 330 M 400 236 L 400 330 M 212 400 L 212 444 M 300 400 L 300 444" '
+            f'{_s(c, 26)}/>'
+            f'<path d="M 214 270 L 298 354 M 298 270 L 214 354" {_s(c, 26)}/>')
+
+
+GLYPHS.update({"tduk_killer_droid": tduk_killer_droid})
+
+
+def tubplayer_t(c):
+    """TubPlayer: the T whose right arm folds down into a play arrow."""
+    return (f'<path d="M 108 150 L 404 150 M 222 150 L 222 404" {_s(c, 36)}/>'
+            + _solid("M 266 184 L 372 262 L 266 340 Z", c, 14))
+
+
+def tduk_cleaner_droid(c):
+    """TDUK APP Cache Cleaner: the Android robot's head over a big sweeping broom."""
+    return (f'<path d="M 136 214 C 136 110 376 110 376 214 Z" {_s(c, 26)}/>'
+            f'<path d="M 190 124 L 164 80 M 322 124 L 348 80" {_s(c, 22)}/>'
+            f'<circle cx="208" cy="176" r="12" {_f(c)}/>'
+            f'<circle cx="304" cy="176" r="12" {_f(c)}/>'
+            f'<path d="M 360 262 L 246 360" {_s(c, 26)}/>'
+            f'<path d="M 246 360 L 178 356 L 132 440 L 234 428 Z" {_s(c, 22)}/>')
+
+
+GLYPHS.update({"tubplayer_t": tubplayer_t, "tduk_cleaner_droid": tduk_cleaner_droid})
+
+
+def basis_b(c):
+    """Basis: the B whose lower bowl holds a play arrow."""
+    return (f'<path d="M 168 416 L 168 96 L 292 96 C 342 96 368 128 368 168 '
+            f'C 368 206 344 230 306 236 C 364 244 400 286 400 330 C 400 382 362 416 304 416 Z" '
+            f'{_s(c, 32)}/>'
+            f'<path d="M 168 236 L 300 236" {_s(c, 26)}/>'
+            f'<path d="M 234 284 L 316 328 L 234 372 Z" {_s(c, 22)}/>')
+
+
+GLYPHS.update({"basis_b": basis_b})

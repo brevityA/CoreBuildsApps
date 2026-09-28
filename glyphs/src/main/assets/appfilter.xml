@@ -77,8 +77,10 @@
     <!-- AirPlay Receiver -->
     <item component="ComponentInfo{com.boost.airplay.receiver/com.boost.airplay.receiver.ui.activity.SplashActivity}" drawable="receiver"/>
     <item component="ComponentInfo{com.boost.airplay.receiver/.ui.activity.SplashActivity}" drawable="receiver"/>
-    <!-- Airreceiverlite -->
+    <!-- AirReceiver -->
     <item component="ComponentInfo{com.softmedia.receiver.lite/com.softmedia.receiver.app.SplashActivity}" drawable="airreceiverlite"/>
+    <item component="ComponentInfo{com.softmedia.receiver/com.softmedia.receiver.app.SplashActivity}" drawable="airreceiverlite"/>
+    <item component="ComponentInfo{com.softmedia.receiver/.app.SplashActivity}" drawable="airreceiverlite"/>
     <!-- Airscreen -->
     <item component="ComponentInfo{com.ionitech.airscreen/com.ionitech.airscreen.ui.activity.welcome.StreamAssistantIndexActivity}" drawable="airscreen"/>
     <item component="ComponentInfo{com.ionitech.airscreen/.ui.activity.welcome.StreamAssistantIndexActivity}" drawable="airscreen"/>
@@ -223,6 +225,9 @@
     <item component="ComponentInfo{io.github.visnkmr.bapl/.MainActivity}" drawable="background_apps_and_process_list"/>
     <!-- Bally Sports -->
     <item component="ComponentInfo{com.ballyscorp.ballylive/tv.vizbee.readyapp.firetvandroidtv.SplashActivity}" drawable="ballyscorp"/>
+    <!-- Basis -->
+    <item component="ComponentInfo{com.basis.app/com.basis.app.MainActivityDefault}" drawable="basis"/>
+    <item component="ComponentInfo{com.basis.app/.MainActivityDefault}" drawable="basis"/>
     <!-- BBC iPlayer -->
     <item component="ComponentInfo{bbc.iplayer.android/external.androidtv.bbciplayer.deeplinking.DeepLinkActivity}" drawable="iplayer"/>
     <!-- BBC iPlayer (Freeview) -->
@@ -1771,6 +1776,9 @@
     <!-- Quasitv -->
     <item component="ComponentInfo{gonemad.quasi.tv/gonemad.quasi.tv.ui.MainActivity}" drawable="quasitv"/>
     <item component="ComponentInfo{gonemad.quasi.tv/.ui.MainActivity}" drawable="quasitv"/>
+    <!-- Quick Panel -->
+    <item component="ComponentInfo{com.tcl.suspension/com.tcl.suspension.ui.main.MainActivity}" drawable="tcl_quick_panel"/>
+    <item component="ComponentInfo{com.tcl.suspension/.ui.main.MainActivity}" drawable="tcl_quick_panel"/>
     <!-- Quickbars For Home Assistant -->
     <item component="ComponentInfo{dev.trooped.tvquickbars/dev.trooped.tvquickbars.ui.SplashActivity}" drawable="quickbars_for_home_assistant"/>
     <item component="ComponentInfo{dev.trooped.tvquickbars/.ui.SplashActivity}" drawable="quickbars_for_home_assistant"/>
@@ -1907,6 +1915,9 @@
     <item component="ComponentInfo{com.s0und.s0undtv/.activities.FireTVMainActivity}" drawable="s0undtv"/>
     <item component="ComponentInfo{com.s0und.s0undtv/com.s0und.s0undtv.activities.MainActivity}" drawable="s0undtv"/>
     <item component="ComponentInfo{com.s0und.s0undtv/.activities.MainActivity}" drawable="s0undtv"/>
+    <!-- Safety Guard -->
+    <item component="ComponentInfo{com.tcl.guard/com.tcl.guard.mainmenu.splashpage.activity.StartActivity}" drawable="tcl_safety_guard"/>
+    <item component="ComponentInfo{com.tcl.guard/.mainmenu.splashpage.activity.StartActivity}" drawable="tcl_safety_guard"/>
     <!-- Saff -->
     <item component="ComponentInfo{sa.saffplus/com.mottostreaming.android.tv.MainActivity}" drawable="saff"/>
     <!-- SAI -->
@@ -2201,6 +2212,11 @@
     <!-- Synology Photos -->
     <item component="ComponentInfo{com.synology.projectkailash/com.synology.projectkailash.ui.login.LoginActivity}" drawable="synologyphotos"/>
     <item component="ComponentInfo{com.synology.projectkailash/.ui.login.LoginActivity}" drawable="synologyphotos"/>
+    <!-- T-Exhibition -->
+    <item component="ComponentInfo{com.tcl.exhibit/com.tcl.exhibit.portal.view.activity.MainActivity}" drawable="tcl_t_exhibition"/>
+    <item component="ComponentInfo{com.tcl.exhibit/.portal.view.activity.MainActivity}" drawable="tcl_t_exhibition"/>
+    <!-- T-Solo -->
+    <item component="ComponentInfo{com.tcl.t_solo/com.tcl.bluetoothlistenalone.ListenAloneActivity}" drawable="tcl_t_solo"/>
     <!-- Tabii -->
     <item component="ComponentInfo{com.trt.tabii.android/com.trt.tabii.android.tv.MainActivity}" drawable="tabii"/>
     <item component="ComponentInfo{com.trt.tabii.android/.tv.MainActivity}" drawable="tabii"/>
@@ -2233,14 +2249,21 @@
     <item component="ComponentInfo{com.tcl.waterfall.overseas/.main.MainActivity}" drawable="tcl_channel"/>
     <!-- TCL Home -->
     <item component="ComponentInfo{com.tcl.tclhome/com.tcl.bmmain.SplashActivity}" drawable="tcl_home"/>
+    <item component="ComponentInfo{com.tcl.dashboard/com.tcl.dashboard.MainActivity}" drawable="tcl_home"/>
+    <item component="ComponentInfo{com.tcl.dashboard/.MainActivity}" drawable="tcl_home"/>
     <!-- TCL Home Passive -->
     <item component="ComponentInfo{com.tcl.tv.tclhome_passive/com.tcl.tv.tclhome_passive.HomePassiveActivity}" drawable="tcl_home_passive"/>
     <item component="ComponentInfo{com.tcl.tv.tclhome_passive/.HomePassiveActivity}" drawable="tcl_home_passive"/>
+    <item component="ComponentInfo{com.tcl.tv.tclhome_passive/com.tcl.tclhome_passive.HomePassiveActivity}" drawable="tcl_home_passive"/>
     <!-- TCN -->
     <item component="ComponentInfo{com.tuckercarlson.tv/tv.accedo.one.app.bootstrap.BootstrapActivity}" drawable="tcn"/>
     <!-- Tdtchannels Player -->
     <item component="ComponentInfo{com.tdtchannels.player/com.tdtchannels.player.SplashScreenActivity}" drawable="tdtchannels_player"/>
     <item component="ComponentInfo{com.tdtchannels.player/.SplashScreenActivity}" drawable="tdtchannels_player"/>
+    <!-- TDUK APP Cache Cleaner -->
+    <item component="ComponentInfo{com.tduk.cacheclean/com.tduk.cachecleaner.ShellAutoRunner}" drawable="tduk_cache_cleaner"/>
+    <!-- TDUK APP Killer -->
+    <item component="ComponentInfo{com.tduk.appklr/com.tduk.cachecleaner.ShellAutoRunner}" drawable="tduk_app_killer"/>
     <!-- Tduk Screensaver Manager -->
     <item component="ComponentInfo{com.tduk.scrmgr/dev.vodik7.tdukscrmng.MainActivity}" drawable="tduk_screensaver_manager"/>
     <!-- TeaTV -->
@@ -2377,6 +2400,9 @@
     <!-- Tubi -->
     <item component="ComponentInfo{com.tubitv/com.tubitv.activities.MainActivity}" drawable="tubi"/>
     <item component="ComponentInfo{com.tubitv/.activities.MainActivity}" drawable="tubi"/>
+    <!-- TubPlayer -->
+    <item component="ComponentInfo{com.tubs.tubplayer/com.tubs.tubplayer.MainActivity}" drawable="tubplayer"/>
+    <item component="ComponentInfo{com.tubs.tubplayer/.MainActivity}" drawable="tubplayer"/>
     <!-- Tunein Radio -->
     <item component="ComponentInfo{tunein.player/tunein.ui.leanback.ui.activities.TvHomeActivity}" drawable="tunein_radio"/>
     <!-- TV -->
@@ -2488,6 +2514,8 @@
     <!-- Ultimate File Manager Pro -->
     <item component="ComponentInfo{za.kilowatch.ultimatefilemanager/za.kilowatch.ultimatefilemanager.MainActivity}" drawable="ultimatefilemanager"/>
     <item component="ComponentInfo{za.kilowatch.ultimatefilemanager/.MainActivity}" drawable="ultimatefilemanager"/>
+    <item component="ComponentInfo{za.kilowatch.ultimatefilemanager/za.kilowatch.ultimatefilemanager.onboarding.LanguageWelcomeActivity}" drawable="ultimatefilemanager"/>
+    <item component="ComponentInfo{za.kilowatch.ultimatefilemanager/.onboarding.LanguageWelcomeActivity}" drawable="ultimatefilemanager"/>
     <!-- Unchained -->
     <item component="ComponentInfo{com.github.livingwithhippos.unchained/com.github.livingwithhippos.unchained.base.MainActivity}" drawable="livingwithhippos"/>
     <item component="ComponentInfo{com.github.livingwithhippos.unchained/.base.MainActivity}" drawable="livingwithhippos"/>
@@ -2557,6 +2585,8 @@
     <!-- Virtualhere USB Server -->
     <item component="ComponentInfo{com.virtualhere.androidserver/com.virtualhere.androidserver.GUI}" drawable="virtualhere_usb_server"/>
     <item component="ComponentInfo{com.virtualhere.androidserver/.GUI}" drawable="virtualhere_usb_server"/>
+    <!-- Vision+ -->
+    <item component="ComponentInfo{id.visionplus.android.atv/tv.mirada.iris.screens.logosplash.LogoSplashActivity}" drawable="visionplus"/>
     <!-- Viu -->
     <item component="ComponentInfo{com.viu.tv/com.viu.tv.mvp.ui.activity.WelcomeActivity}" drawable="viu"/>
     <item component="ComponentInfo{com.viu.tv/.mvp.ui.activity.WelcomeActivity}" drawable="viu"/>
