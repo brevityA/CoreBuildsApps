@@ -357,8 +357,8 @@
     <item drawable="box" />
     <item drawable="janky" />
     <item drawable="jellyfin" />
-    <item drawable="jiotvplus" />
     <item drawable="jiohotstar" />
+    <item drawable="jiotvplus" />
     <item drawable="joyn" />
     <item drawable="jtv_go_server" />
     <item drawable="justplayer" />
@@ -385,8 +385,8 @@
     <item drawable="kpnandroidtv" />
     <item drawable="kreate" />
     <item drawable="kuku_tv" />
-    <item drawable="l_equipe" />
     <item drawable="ltvlauncher" />
+    <item drawable="l_equipe" />
     <item drawable="laliga" />
     <item drawable="lampa" />
     <item drawable="laughafterdark" />
@@ -532,8 +532,8 @@
     <item drawable="oldmovies" />
     <item drawable="appomroepbrabant" />
     <item drawable="ondamedia" />
-    <item drawable="one_play" />
     <item drawable="androidtv_7" />
+    <item drawable="one_play" />
     <item drawable="maertsno" />
     <item drawable="openvpn_for_android" />
     <item drawable="impresa" />

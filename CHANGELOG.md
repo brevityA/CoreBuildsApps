@@ -26,6 +26,21 @@ All notable changes to the Core Builds Icon Pack. Format follows
 - **Basis.** Its B with a play arrow in the lower bowl, on the icon's blue
   gradient, requested in #199 with its launch activity read off the
   requester's TV. 970 → 971 icons.
+- **116 wordmark-only apps get marks from their logotypes.** Their
+  launcher icons are a name with no symbol in it, so each mark is the
+  logotype's own cue: the short form and case the logo uses (arte's
+  lowercase a, NOS, KiKA, joyn and RTL, and stacked names such as
+  BYU/tv and NET/FLY), drawn in the pack's new single-stroke monoline
+  letters rather than the vendor's letterforms, plus the one device the
+  logo hangs on the name: a plus (BET+, TF1+, M6+, NHK+), a dot
+  (france.tv, flik.tv), a play wedge (meWATCH, STV Player), an underline
+  or overline, a ring (JioTV+, HD Rezka) or a frame (RaiPlay). They were
+  read from the Projectivy Icon Pack 1.1.9 artwork, as reference only. 62
+  take their logotypes' colours and 33 are spelled like the apps. stc tv's
+  intigral package shares its brand's mark.
+  Kenny TV, Pikashow, M64plus, MUTV, Chebur TV, Anime Cast and Ukiku keep
+  letter tiles (their logos are characters or crests owned by others), as
+  does Magenta TV, whose logo is its owner's T.
 - **36 more apps get marks drawn from their real icons, 318 in all.**
   The last of the letter tiles whose icons carry a symbol. FPT Play's
   rounded badge, Clip TV's C, SVT's t and play arrow, RTP Play's chasing

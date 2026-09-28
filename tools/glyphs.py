@@ -7986,3 +7986,217 @@ GLYPHS.update({
     "delta_d": delta_d, "digi_dot": digi_dot, "mytv_wings": mytv_wings,
     "tv2_disc": tv2_disc, "zdf_two": zdf_two, "tflix_t": tflix_t,
 })
+
+
+# --------------------------------------------------------------------------
+# Wordmark-derived marks (1.9.7). For apps whose launcher icon is a logotype
+# with no symbol in it, the mark is the logotype's cue: its short form and its
+# case, drawn in the pack's own single-stroke monoline letters (below), plus
+# the one device the logo hangs on the name - a plus, a dot, a play wedge, an
+# underline, an overline, a ring or a frame. The vendor's letterforms are
+# never reproduced; every letter here is the same Core stroke skeleton.
+#
+# Letters live on a unit grid: cap line 0, x-height 0.3, baseline 1,
+# descender 1.34. "D x y" in a path is a dot (the i and j tittles).
+# --------------------------------------------------------------------------
+_STROKE_LETTERS = {
+    "A": (.72, "M 0 1 L .36 0 L .72 1 M .13 .66 L .59 .66"),
+    "B": (.58, "M 0 .5 L .3 .5 C .56 .5 .58 1 .3 1 L 0 1 L 0 0 L .28 0 C .52 0 .52 .5 .28 .5"),
+    "C": (.68, "M .68 .18 C .56 .04 .46 0 .38 0 C .14 0 0 .22 0 .5 C 0 .78 .14 1 .38 1 C .46 1 .56 .96 .68 .82"),
+    "D": (.66, "M 0 0 L 0 1 L .26 1 C .52 1 .66 .78 .66 .5 C .66 .22 .52 0 .26 0 Z"),
+    "E": (.52, "M .52 0 L 0 0 L 0 1 L .52 1 M 0 .5 L .42 .5"),
+    "F": (.5, "M .5 0 L 0 0 L 0 1 M 0 .5 L .4 .5"),
+    "G": (.72, "M .68 .18 C .56 .04 .46 0 .38 0 C .14 0 0 .22 0 .5 C 0 .78 .14 1 .38 1 C .58 1 .72 .84 .72 .54 L .44 .54"),
+    "H": (.64, "M 0 0 L 0 1 M .64 0 L .64 1 M 0 .5 L .64 .5"),
+    "I": (0, "M 0 0 L 0 1"),
+    "J": (.46, "M .46 0 L .46 .7 C .46 .92 .34 1 .22 1 C .1 1 0 .92 0 .8"),
+    "K": (.6, "M 0 0 L 0 1 M .6 0 L 0 .62 M .2 .42 L .6 1"),
+    "L": (.5, "M 0 0 L 0 1 L .5 1"),
+    "M": (.8, "M 0 1 L 0 0 L .4 .62 L .8 0 L .8 1"),
+    "N": (.66, "M 0 1 L 0 0 L .66 1 L .66 0"),
+    "O": (.8, "M .4 0 C .62 0 .8 .22 .8 .5 C .8 .78 .62 1 .4 1 C .18 1 0 .78 0 .5 C 0 .22 .18 0 .4 0 Z"),
+    "P": (.56, "M 0 1 L 0 0 L .28 0 C .56 0 .56 .54 .28 .54 L 0 .54"),
+    "Q": (.84, "M .4 0 C .62 0 .8 .22 .8 .5 C .8 .78 .62 1 .4 1 C .18 1 0 .78 0 .5 C 0 .22 .18 0 .4 0 Z M .54 .72 L .84 1.02"),
+    "R": (.6, "M 0 1 L 0 0 L .28 0 C .56 0 .56 .54 .28 .54 L 0 .54 M .28 .54 L .6 1"),
+    "S": (.56, "M .54 .14 C .46 .04 .36 0 .28 0 C .12 0 .02 .1 .02 .25 C .02 .56 .56 .42 .56 .74 C .56 .9 .44 1 .28 1 C .18 1 .06 .96 0 .86"),
+    "T": (.64, "M 0 0 L .64 0 M .32 0 L .32 1"),
+    "U": (.64, "M 0 0 L 0 .66 C 0 .88 .14 1 .32 1 C .5 1 .64 .88 .64 .66 L .64 0"),
+    "V": (.7, "M 0 0 L .35 1 L .7 0"),
+    "W": (.96, "M 0 0 L .22 1 L .48 .3 L .74 1 L .96 0"),
+    "X": (.66, "M 0 0 L .66 1 M .66 0 L 0 1"),
+    "Y": (.68, "M 0 0 L .34 .52 L .68 0 M .34 .52 L .34 1"),
+    "Z": (.6, "M 0 0 L .6 0 L 0 1 L .6 1"),
+    "0": (.6, "M .3 0 C .48 0 .6 .22 .6 .5 C .6 .78 .48 1 .3 1 C .12 1 0 .78 0 .5 C 0 .22 .12 0 .3 0 Z"),
+    "1": (.28, "M 0 .2 L .28 0 L .28 1"),
+    "2": (.58, "M .02 .22 C .06 .08 .18 0 .3 0 C .46 0 .56 .12 .56 .28 C .56 .5 .2 .7 0 1 L .58 1"),
+    "3": (.58, "M .04 .1 C .12 .03 .22 0 .3 0 C .46 0 .54 .12 .54 .25 C .54 .4 .42 .48 .26 .48 C .46 .48 .58 .6 .58 .74 C .58 .9 .46 1 .3 1 C .18 1 .08 .95 0 .86"),
+    "4": (.62, "M .44 1 L .44 0 L 0 .7 L .62 .7"),
+    "5": (.58, "M .52 0 L .1 0 L .06 .44 C .14 .4 .22 .38 .3 .38 C .46 .38 .58 .5 .58 .68 C .58 .88 .44 1 .28 1 C .16 1 .06 .96 0 .88"),
+    "6": (.58, "M .5 .06 C .44 .02 .38 0 .32 0 C .12 0 0 .24 0 .56 C 0 .84 .12 1 .3 1 C .48 1 .58 .86 .58 .7 C .58 .52 .46 .42 .3 .42 C .16 .42 .04 .5 0 .62"),
+    "7": (.56, "M 0 0 L .56 0 L .2 1"),
+    "9": (.58, "M .08 .94 C .14 .98 .2 1 .26 1 C .46 1 .58 .76 .58 .44 C .58 .16 .46 0 .28 0 C .1 0 0 .14 0 .3 C 0 .48 .12 .58 .28 .58 C .42 .58 .54 .5 .58 .38"),
+    "+": (.5, "M .25 .25 L .25 .75 M 0 .5 L .5 .5"),
+    "a": (.5, "M .5 .3 L .5 1 M .5 .65 C .5 .45 .4 .3 .25 .3 C .1 .3 0 .45 0 .65 C 0 .85 .1 1 .25 1 C .4 1 .5 .85 .5 .65"),
+    "b": (.5, "M 0 0 L 0 1 M 0 .65 C 0 .45 .1 .3 .25 .3 C .4 .3 .5 .45 .5 .65 C .5 .85 .4 1 .25 1 C .1 1 0 .85 0 .65"),
+    "c": (.46, "M .46 .4 C .4 .33 .32 .3 .25 .3 C .1 .3 0 .45 0 .65 C 0 .85 .1 1 .25 1 C .32 1 .4 .97 .46 .9"),
+    "d": (.5, "M .5 0 L .5 1 M .5 .65 C .5 .45 .4 .3 .25 .3 C .1 .3 0 .45 0 .65 C 0 .85 .1 1 .25 1 C .4 1 .5 .85 .5 .65"),
+    "e": (.5, "M 0 .65 L .5 .65 C .5 .45 .4 .3 .25 .3 C .1 .3 0 .45 0 .65 C 0 .85 .1 1 .25 1 C .34 1 .42 .97 .48 .9"),
+    "f": (.34, "M .34 .03 C .3 .01 .26 0 .22 0 C .12 0 .08 .06 .08 .18 L .08 1 M 0 .34 L .32 .34"),
+    "g": (.5, "M .5 .3 L .5 1.1 C .5 1.26 .4 1.34 .26 1.34 C .16 1.34 .08 1.3 .02 1.24 M .5 .62 C .5 .44 .4 .3 .25 .3 C .1 .3 0 .44 0 .62 C 0 .8 .1 .94 .25 .94 C .4 .94 .5 .8 .5 .62"),
+    "h": (.48, "M 0 0 L 0 1 M 0 .56 C 0 .4 .1 .3 .24 .3 C .38 .3 .48 .4 .48 .56 L .48 1"),
+    "i": (0, "M 0 .36 L 0 1 D 0 .1"),
+    "j": (.16, "M .16 .36 L .16 1.14 C .16 1.28 .08 1.34 0 1.34 D .16 .1"),
+    "k": (.44, "M 0 0 L 0 1 M .44 .32 L 0 .72 M .14 .6 L .44 1"),
+    "l": (0, "M 0 0 L 0 1"),
+    "m": (.78, "M 0 1 L 0 .3 M 0 .52 C 0 .38 .08 .3 .2 .3 C .32 .3 .39 .38 .39 .52 L .39 1 M .39 .52 C .39 .38 .47 .3 .59 .3 C .71 .3 .78 .38 .78 .52 L .78 1"),
+    "n": (.48, "M 0 1 L 0 .3 M 0 .56 C 0 .4 .1 .3 .24 .3 C .38 .3 .48 .4 .48 .56 L .48 1"),
+    "o": (.52, "M .26 .3 C .42 .3 .52 .45 .52 .65 C .52 .85 .42 1 .26 1 C .1 1 0 .85 0 .65 C 0 .45 .1 .3 .26 .3 Z"),
+    "p": (.5, "M 0 .3 L 0 1.34 M 0 .65 C 0 .45 .1 .3 .25 .3 C .4 .3 .5 .45 .5 .65 C .5 .85 .4 1 .25 1 C .1 1 0 .85 0 .65"),
+    "q": (.5, "M .5 .3 L .5 1.34 M .5 .65 C .5 .45 .4 .3 .25 .3 C .1 .3 0 .45 0 .65 C 0 .85 .1 1 .25 1 C .4 1 .5 .85 .5 .65"),
+    "r": (.32, "M 0 1 L 0 .3 M 0 .56 C 0 .4 .12 .3 .32 .3"),
+    "s": (.42, "M .4 .38 C .34 .32 .28 .3 .2 .3 C .1 .3 .02 .36 .02 .46 C .02 .66 .42 .6 .42 .82 C .42 .94 .32 1 .2 1 C .12 1 .04 .96 0 .9"),
+    "t": (.34, "M .1 .06 L .1 .86 C .1 .96 .16 1 .24 1 C .28 1 .32 .99 .34 .98 M 0 .34 L .32 .34"),
+    "u": (.48, "M 0 .3 L 0 .74 C 0 .9 .1 1 .24 1 C .38 1 .48 .9 .48 .74 M .48 .3 L .48 1"),
+    "v": (.5, "M 0 .3 L .25 1 L .5 .3"),
+    "w": (.74, "M 0 .3 L .18 1 L .37 .46 L .56 1 L .74 .3"),
+    "x": (.48, "M 0 .3 L .48 1 M .48 .3 L 0 1"),
+    "y": (.5, "M 0 .3 L .25 1 M .5 .3 L .2 1.2 C .16 1.3 .1 1.34 .02 1.34"),
+    "z": (.44, "M 0 .3 L .44 .3 L 0 1 L .44 1"),
+}
+_STROKE_TOKEN = re.compile(r"[MLCZD]|-?\d*\.?\d+")
+
+
+_STROKE_GAP = 46      # px between letters, whatever the scale: strokes never touch
+
+
+def _stroke_line(text, x0, y0, s):
+    """One line of stroke letters at scale `s`, top-left of the cap box at x0,y0.
+    Returns (path d, dots [(x, y)])."""
+    d, dots, x = [], [], x0
+    for ch in text:
+        w, spec = _STROKE_LETTERS[ch]
+        toks = _STROKE_TOKEN.findall(spec)
+        k = 0
+        while k < len(toks):
+            t = toks[k]
+            if t == "Z":
+                d.append("Z"); k += 1; continue
+            n = {"M": 1, "L": 1, "C": 3, "D": 1}[t]
+            pts = [(float(toks[k + 1 + 2 * j]), float(toks[k + 2 + 2 * j])) for j in range(n)]
+            k += 1 + 2 * n
+            xy = [(x + px * s, y0 + py * s) for px, py in pts]
+            if t == "D":
+                dots.append(xy[0])
+            else:
+                d.append(t + " " + " ".join(f"{a:.1f} {b:.1f}" for a, b in xy))
+        x += w * s + _STROKE_GAP
+    return " ".join(d), dots
+
+
+def _stroke_px(text, s):
+    return sum(_STROKE_LETTERS[ch][0] for ch in text) * s + _STROKE_GAP * (len(text) - 1)
+
+
+def _stroke_text(text, c, box=(96, 136, 416, 376), weight=30):
+    """Stroke-letter lockup centred in `box`; '/' splits it onto two lines."""
+    lines = text.split("/")
+    bx0, by0, bx1, by1 = box
+    bw, bh = bx1 - bx0, by1 - by0
+    desc = any(ch in "gjpqy" for ch in lines[-1])
+    rows = len(lines)
+    lead = 44
+    units_h = rows + (.34 if desc else 0)
+    s = (bh - lead * (rows - 1)) / units_h
+    for line in lines:
+        units_w = sum(_STROKE_LETTERS[ch][0] for ch in line) or .01
+        s = min(s, (bw - _STROKE_GAP * (len(line) - 1)) / units_w)
+    ink_h = units_h * s + lead * (rows - 1)
+    out, dots = [], []
+    y = by0 + (bh - ink_h) / 2
+    for line in lines:
+        lw = _stroke_px(line, s)
+        d, dd = _stroke_line(line, bx0 + (bw - lw) / 2, y, s)
+        out.append(d); dots += dd
+        y += s + lead
+    body = f'<path d="{" ".join(out)}" {_s(c, weight)}/>'
+    r = weight * .62
+    return body + "".join(f'<circle cx="{x:.1f}" cy="{y:.1f}" r="{r:.1f}" {_f(c)}/>' for x, y in dots)
+
+
+def _wm_cue(cue, c):
+    if cue == "plus":
+        return f'<path d="M 404 64 L 404 136 M 368 100 L 440 100" {_s(c, 28)}/>'
+    if cue == "dot":
+        return f'<circle cx="412" cy="400" r="24" {_f(c)}/>'
+    if cue == "play":
+        return _solid("M 386 68 L 440 100 L 386 132 Z", c, 12)
+    if cue == "under":
+        return f'<path d="M 120 432 L 392 432" {_s(c, 28)}/>'
+    if cue == "over":
+        return f'<path d="M 120 80 L 392 80" {_s(c, 28)}/>'
+    if cue == "ring":
+        return f'<circle cx="256" cy="256" r="196" {_s(c, 26)}/>'
+    if cue == "frame":
+        return f'<rect x="60" y="92" width="392" height="328" rx="52" {_s(c, 26)}/>'
+    return ""
+
+
+_WM_BOX = {
+    None: (88, 120, 424, 392), "plus": (88, 144, 400, 408), "play": (88, 144, 400, 408),
+    "dot": (88, 112, 392, 380), "under": (96, 112, 416, 384), "over": (96, 128, 416, 400),
+    "ring": (152, 176, 360, 336), "frame": (120, 168, 392, 344),
+}
+
+
+def _wm_glyph(text, cue=None):
+    def draw(c):
+        return _stroke_text(text, c, _WM_BOX[cue]) + _wm_cue(cue, c)
+    draw.__doc__ = f"Wordmark cue: '{text}'" + (f" with its {cue}" if cue else "") + "."
+    return draw
+
+
+# drawable -> (logotype cue, device). Each read off the app's launcher icon in
+# the Projectivy Icon Pack 1.1.9 artwork (reference only): the short form and
+# case the logo itself uses, and the one device it carries, if any.
+_WM = {
+    "airreceiverlite": ("Air", "play"), "aloulatv": ("AL", "under"),
+    "amazing_classics": ("AC", None), "ant1": ("ANT1", "plus"), "arte": ("a", None),
+    "bet_plus": ("BET", "plus"), "blip": ("blip", None), "byutv": ("byu/tv", None),
+    "caixaforum_plus": ("CF", "plus"), "cda_pl": ("cda", None), "chaupal": ("CH", "under"),
+    "clone_hero": ("C/H", None), "cosmote_tv": ("CTV", None), "dudeperfect": ("DP", "under"),
+    "euronews": ("EN", "under"), "flix_tv": ("FLIK", "dot"), "flixnest": ("FN", "dot"),
+    "fluffy": ("FL", "ring"), "forja_tv": ("For/ja", None), "formed": ("fo", "under"),
+    "francetv": ("ftv", "dot"), "gain": ("GAiN", None), "gb_news": ("GBN", None),
+    "goplay": ("GO", "play"), "rezka": ("HD", "ring"), "hdtv_player": ("HD/TV", None),
+    "hidive": ("HI/DIVE", None), "hrti": ("HRTi", None), "ici_tou_tv": ("tou/tv", "dot"),
+    "iptv_pro": ("IPTV", None), "ivysiilani": ("iV", None), "jawwy_tv": ("stc/tv", None),
+    "jiotvplus": ("jio", "ring"), "joyn": ("joyn", None), "kemo_iptv": ("KEMO", None),
+    "kika": ("KiKA", None), "knowledge": ("KN", "under"), "l_equipe": ("LE", "over"),
+    "localnow": ("LN", "under"), "loco": ("LOCO", None), "lrt": ("LRT", None),
+    "m6_plus": ("M6", "plus"), "magellantv": ("MAG", "play"), "magio_tv": ("MG/TV", None),
+    "mediaset_infinity_tv": ("inf", None), "mewatch": ("me", "play"), "namava": ("NMV", "under"),
+    "netfly_tv": ("NET/FLY", None), "netmirrortv": ("NM", None), "nettv": ("NET/TV", None),
+    "nhk_plus": ("NHK", "plus"), "nhk_world_japan": ("NHK", "under"), "njpw_world": ("NJ/PW", None),
+    "nlziet": ("NLZ", "play"), "noovo": ("noo/vo", None), "nos": ("NOS", None),
+    "nowo_tv": ("nowo", None), "nrk_tv": ("NRK", None), "nxsha": ("NXS", None),
+    "one_play": ("one", "play"), "oqee_by_free": ("oq", None), "panda_plus": ("PA", "plus"),
+    "perfecttv": ("PTV", None), "playkids": ("PK", "plus"), "put_io": ("put/io", None),
+    "quasitv": ("QTV", None), "raiplay": ("Rai", "frame"), "redream": ("RD", "ring"),
+    "riks_tv": ("RIKS", None), "rtl": ("RTL", "plus"), "rtve_play": ("rt", "play"),
+    "rugbypass_tv": ("RP", "ring"), "rutube": ("RU", "dot"), "sfjazz_at_home": ("SFJ", None),
+    "sfr_tv": ("SFR", None), "shout_tv": ("ST", "under"), "sledovani": ("SL", "frame"),
+    "sport_tv": ("sp", "dot"), "strim": ("strim", None), "stv_player": ("STV", "play"),
+    "tbn_plus": ("TBN", "plus"), "tcl_channel": ("TCL", "under"), "tcn": ("TCN", None),
+    "telewebion": ("TW", None), "telly": ("Telly", None), "texttv": ("TXT", "under"),
+    "tf1": ("TF1", "plus"), "tivify": ("tiv/ify", None), "tod": ("TOD", None),
+    "toggo": ("TOG/GO", None), "trilogy_plus": ("TRI", "plus"), "trublu": ("TRU/BLU", None),
+    "tt": ("TT", "plus"), "tv_2_play": ("2", "play"), "tv_vlaanderen": ("TVV", None),
+    "tv360": ("TV/360", None), "tvo_kids": ("tvo/kids", None), "tvo_today": ("tvo", "under"),
+    "tvpsport": ("TVP", "over"), "vbtv": ("VB/TV", None), "victory_plus": ("VIC", "plus"),
+    "viki": ("viki", None), "viva_one_tv": ("vi/va", None), "vix": ("ViX", None),
+    "vmx": ("VMX", None), "voyo_sk": ("VOYO", None), "vtvcab_on_tv": ("VTV/cab", None),
+    "vtvgo_tv": ("VTV/GO", None), "watcher_tv": ("WT", "over"), "watcho": ("wat/cho", None),
+    "wow2": ("WOW", None), "x_tv": ("XTV", None), "yle_areena": ("yle", "under"),
+    "youcine": ("YOU", "under"), "ziggo_go_tv": ("ZIG/GO", None),
+}
+GLYPHS.update({f"{d}_wm": _wm_glyph(t, cue) for d, (t, cue) in _WM.items()})
