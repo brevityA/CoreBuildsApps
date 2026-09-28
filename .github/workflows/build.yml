@@ -155,7 +155,7 @@ jobs:
           java-version: '17'
 
       - name: Set up Gradle
-        uses: gradle/actions/setup-gradle@v6
+        uses: gradle/actions/setup-gradle@v5
 
       - name: Decode keystore
         if: env.KEYSTORE_BASE64 != ''
