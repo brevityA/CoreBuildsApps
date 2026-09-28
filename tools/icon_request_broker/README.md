@@ -12,7 +12,8 @@ TV auditor row ──POST {app_name, component, device, mapped?}──> this wor
               (KV)                                      │ on brevityA/CoreBuildsApps
                                                         ▼
                                             issue "[Icon] <app>" by
-                                            CoreBuilds-requests[bot],
+                                            CoreBuilds-requests[bot]
+                                            (or the owner, via GITHUB_TOKEN),
                                             label "icon request"
                                             (a repeat press = a +1 comment)
 ```
@@ -157,7 +158,42 @@ cross repositories, so this repo's own workflow below would need its own
 copy of the token; it stays as the fallback: `secrets.CF_API_TOKEN`,
 `vars.CLOUDFLARE_ACCOUNT_ID`, `vars.WRK_ICONREQ_KV_ID_{STAGING,PRODUCTION}`
 and either `vars.WORKERS_DEV_SUBDOMAIN` or the `url` input each run.
-Either way CI deploys code only; worker secrets stay with wrangler.
+That fallback deploys code only.
+
+The Core-Builds workflow also pushes the worker's filing secrets, so no
+`wrangler secret put` is needed. It reads these Core-Builds Actions
+secrets (repository or environment level) and sets each one that exists:
+
+| Core-Builds secret | Worker secret |
+|---|---|
+| `ICONREQ_GITHUB_TOKEN` | `GITHUB_TOKEN` |
+| `ICONREQ_GITHUB_APP_ID` | `GITHUB_APP_ID` |
+| `ICONREQ_GITHUB_APP_INSTALLATION_ID` | `GITHUB_APP_INSTALLATION_ID` |
+| `ICONREQ_GITHUB_APP_PRIVATE_KEY` | `GITHUB_APP_PRIVATE_KEY` |
+| `ICONREQ_DISCORD_WEBHOOK_URL` | `ICON_REQUEST_DISCORD_WEBHOOK_URL` |
+
+Secret names cannot start with `GITHUB_` in Actions, hence the prefix.
+When any is set, smoke runs with `--require-sink` and fails if `/healthz`
+still reports `"sink": "none"`.
+
+### Filing with your own GitHub account (`GITHUB_TOKEN`)
+
+The quickest GitHub path: no App, one token. Issues are filed as the
+token's owner instead of `CoreBuilds-requests[bot]`.
+
+1. *GitHub → Settings → Developer settings → Personal access tokens →
+   Fine-grained tokens → Generate new token.*
+2. Resource owner: your account. Repository access: **Only select
+   repositories → brevityA/CoreBuildsApps**.
+3. Repository permissions: **Issues: Read and write**. Nothing else
+   (Metadata: Read is added automatically).
+4. Pick an expiry, generate, and store the value as the Core-Builds
+   secret `ICONREQ_GITHUB_TOKEN` (or `wrangler secret put GITHUB_TOKEN`).
+
+The token can do exactly what the App could: read and write issues on
+this one repo. When the App trio is also set, the App wins. When the
+token expires, requests fail with a 502 and the auditor falls back to the
+QR; replace the secret and redeploy.
 
 The rate-limit `namespace_id`s (3201 production, 3202 staging) are
 account-wide, and this worker shares its account with the cors-proxy,
@@ -223,10 +259,11 @@ QR panel.
 
 ## Tests
 
-`node --test` — 36 contracts: payload grammar, issue-body parity with
+`node --test` — 39 contracts: payload grammar, issue-body parity with
 `.github/ISSUE_TEMPLATE/1.new_icon_request.yml` and, for mapping reports,
 `2.icon_not_applying.yml` (parsed, so a form edit fails the parity test),
 each form's title prefix and label, hourly rate-limit buckets, a real RS256 JWT
 sign-and-verify, the full file-or-+1 flows against a stubbed GitHub API,
-the Discord fallback, and the workerd entry-export constraint. For the
+the personal-token sink and sink precedence, the Discord fallback, and the
+workerd entry-export constraint. For the
 deployed-runtime proof run `npm run rehearse` (see above).

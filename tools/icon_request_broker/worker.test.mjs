@@ -4,7 +4,7 @@ import { readFileSync } from "node:fs";
 import { webcrypto } from "node:crypto";
 import {
   validate, issueBody, discordPayload, rateLimitKey, rateLimited, appJwt,
-  readCapped, handle, reportKind,
+  readCapped, handle, reportKind, sinkFor,
 } from "./worker.mjs";
 import { TITLE_PREFIX, ISSUE_LABEL, MAPPING_LABEL, MAPPING_TITLE_PREFIX,
          WORKER_VERSION } from "./constants.mjs";
@@ -70,7 +70,7 @@ test("issue body mirrors the issue form's text fields, in form order", () => {
     assert.ok(at > cursor, `form label missing or out of order: ${label}`);
     cursor = at;
   }
-  assert.ok(body.includes("CoreBuilds-requests[bot]"), "anonymous provenance line");
+  assert.ok(body.includes("Core Builds request broker"), "anonymous provenance line");
 });
 
 test("a mapped report mirrors the not-applying form's text fields, in form order", () => {
@@ -232,7 +232,9 @@ async function withFetch(stubF, fn) {
 test("healthz answers the version with no I/O; unknown routes 404", async () => {
   const res = await handle(new Request("https://x/healthz"), {});
   assert.equal(res.status, 200);
-  assert.equal((await res.json()).version, WORKER_VERSION);
+  const health = await res.json();
+  assert.equal(health.version, WORKER_VERSION);
+  assert.equal(health.sink, "none");
   assert.equal((await handle(new Request("https://x/nope"), {})).status, 404);
 });
 
@@ -325,6 +327,43 @@ test("a mapped Discord card is titled as a mapping report", () => {
   const p = discordPayload({ appName: OK.app_name, component: OK.component,
                              device: OK.device, mapped: true });
   assert.equal(p.embeds[0].title, `${MAPPING_TITLE_PREFIX}${OK.app_name}`);
+});
+
+test("sink precedence: GitHub App, then personal token, then Discord", () => {
+  const app = { GITHUB_APP_ID: "1", GITHUB_APP_INSTALLATION_ID: "2", GITHUB_APP_PRIVATE_KEY: "k" };
+  const token = { GITHUB_TOKEN: "github_pat_x" };
+  const hook = { ICON_REQUEST_DISCORD_WEBHOOK_URL: "https://discord.com/api/webhooks/t/x" };
+  assert.equal(sinkFor({ ...app, ...token, ...hook }), "github-app");
+  assert.equal(sinkFor({ ...token, ...hook }), "github-token");
+  assert.equal(sinkFor({ GITHUB_APP_ID: "1", ...hook }), "discord", "a partial App trio is not a sink");
+  assert.equal(sinkFor(hook), "discord");
+  assert.equal(sinkFor({}), "none");
+});
+
+test("healthz names the sink and never echoes a secret", async () => {
+  const env = { GITHUB_TOKEN: "github_pat_SECRET" };
+  const res = await handle(new Request("https://x/healthz"), env);
+  const text = await res.text();
+  assert.equal(JSON.parse(text).sink, "github-token");
+  assert.ok(!text.includes("SECRET"));
+});
+
+test("a personal token files the issue directly, with no App token exchange", async () => {
+  const auths = [];
+  const stub = githubStub();
+  const f = async (url, init = {}) => {
+    auths.push(init.headers?.Authorization);
+    return stub.f(url, init);
+  };
+  await withFetch(f, async () => {
+    const res = await handle(req(OK, "7.7.7.8"),
+                             { GITHUB_TOKEN: "github_pat_x", RATE_KV: mapKv() });
+    assert.equal(res.status, 201);
+    assert.equal((await res.json()).issue, 777);
+    assert.ok(!stub.calls.some(([u]) => u.includes("/access_tokens")));
+    assert.ok(auths.every((a) => a === "Bearer github_pat_x"));
+    assert.ok(stub.calls.some(([u, m]) => u.endsWith("/issues") && m === "POST"));
+  });
 });
 
 test("with neither sink configured the broker says 503", async () => {
