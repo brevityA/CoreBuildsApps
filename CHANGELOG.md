@@ -39,7 +39,7 @@ All notable changes to the Core Builds Icon Pack. Format follows
   30 take their icons' colours. 26 apps have no icon on any store and keep letter
   tiles, as do All Red Video (a club crest) and Rover's Morning Glory (a
   photo of its host).
-- **116 wordmark-only apps get marks from their logotypes.** Their
+- **117 wordmark-only apps get marks from their logotypes.** Their
   launcher icons are a name with no symbol in it, so each mark is the
   logotype's own cue: the short form and case the logo uses (arte's
   lowercase a, NOS, KiKA, joyn and RTL, and stacked names such as
@@ -50,7 +50,8 @@ All notable changes to the Core Builds Icon Pack. Format follows
   or overline, a ring (JioTV+, HD Rezka) or a frame (RaiPlay). They were
   read from the Projectivy Icon Pack 1.1.9 artwork, as reference only. 62
   take their logotypes' colours and 33 are spelled like the apps. stc tv's
-  intigral package shares its brand's mark.
+  intigral package and BET+'s com.bet.shows package share their brands'
+  marks.
   Kenny TV, Pikashow, M64plus, MUTV, Chebur TV, Anime Cast and Ukiku keep
   letter tiles (their logos are characters or crests owned by others), as
   does Magenta TV, whose logo is its owner's T.

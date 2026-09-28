@@ -65,6 +65,7 @@ class IdentityTests(unittest.TestCase):
             ("tvquickactions", "tv_quick_actions"),
             ("intigral", "jawwy_tv"),
             ("ertflix", "ertflix_2"),
+            ("bet_plus", "shows"),
         ]
         for group in groups:
             with self.subTest(group=group):

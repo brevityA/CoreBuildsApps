@@ -1105,20 +1105,22 @@
       "color_source": "sampled from the Projectivy Icon Pack 1.1.9 artwork for com.viacom.betplus (github.com/SicMundus86/ProjectivyIconPack, used as reference only): the logotype's #B80898 (2026-09-28)",
       "color_reviewed": "2026-09-28",
       "name_source": "app name from the Projectivy Icon Pack 1.1.9 artwork for com.viacom.betplus (github.com/SicMundus86/ProjectivyIconPack, used as reference only), which shows the BET+ logo for this package (2026-09-28)",
-      "glyph_source": "wordmark-derived mark from the Projectivy Icon Pack 1.1.9 artwork for com.viacom.betplus (github.com/SicMundus86/ProjectivyIconPack, used as reference only): the logotype's cue 'BET' with its plus, set in the pack's own single-stroke letters, not the vendor letterforms (2026-09-28)"
+      "glyph_source": "wordmark-derived mark from the Projectivy Icon Pack 1.1.9 artwork for com.viacom.betplus (github.com/SicMundus86/ProjectivyIconPack, used as reference only): the logotype's cue 'BET' with its plus, set in the pack's own single-stroke letters, not the vendor letterforms (2026-09-28)",
+      "brand": "betplus"
     },
     {
       "name": "BET+",
       "drawable": "shows",
-      "color": "#000000",
-      "glyph": "film_B",
-      "mark": "BE",
+      "color": "#B80898",
+      "glyph": "bet_plus_wm",
       "components": [
         "com.bet.shows/com.vmn.playplex.tv.ui.splash.TvSplashActivity"
       ],
       "category": "VOD",
-      "color_source": "brand reference (pre-provenance, unverified)",
-      "color_reviewed": null
+      "color_source": "matched to its brand group (betplus): the other BET+ package, com.viacom.betplus, whose Projectivy Icon Pack 1.1.9 artwork logotype is #B80898 (2026-09-28)",
+      "color_reviewed": "2026-09-28",
+      "brand": "betplus",
+      "glyph_source": "brand group betplus (owner-confirmed 2026-09-28: com.bet.shows is BET+, one app on two packages): shares com.viacom.betplus's wordmark-derived mark (2026-09-28)"
     },
     {
       "name": "Better xCloud",

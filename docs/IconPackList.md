@@ -93,7 +93,7 @@ Source accents are retained in the catalog. **On dark** is the shared square/ban
 | begin | `begin` | `#00C9B7` | `#00C9B7` | `z2c.begin.tv/.MainActivity` |
 | Bell Fibe | `bellmediaplayer` | `#1058BE` | `#115BC6` | `com.quickplay.android.bellmediaplayer/ca.bell.fiberemote.boot.BootstrapActivity`<br>`com.quickplay.android.bellmediaplayer/ca.bell.fiberemote.tv.MainTvActivity` |
 | BET+ | `bet_plus` | `#B80898` | `#B80898` | `com.viacom.betplus/com.vmn.playplex.tv.ui.splash.TvSplashActivity` |
-| BET+ | `shows` | `#000000` | `#E6EDF3` | `com.bet.shows/com.vmn.playplex.tv.ui.splash.TvSplashActivity` |
+| BET+ | `shows` | `#B80898` | `#B80898` | `com.bet.shows/com.vmn.playplex.tv.ui.splash.TvSplashActivity` |
 | Better xCloud | `betterxc` | `#3D8BFF` | `#3D8BFF` | `com.redphx.betterxc/com.redphx.betterxc.activity.MainActivity` |
 | Binge | `binge` | `#B80472` | `#BA0473` | `au.com.streamotion.ares/.MainActivity`<br>`au.com.binge.tv/.MainActivity`<br>`au.com.binge.tv/au.com.foxsports.martian.tv.main.MainActivity`<br>`au.com.streamotion.ares/au.com.foxsports.martian.tv.main.MainActivity` |
 | Bitdefender | `bitdefender` | `#ED1C24` | `#ED1C24` | `com.bitdefender.vpn/com.bitdefender.vpn.MainActivity` |
