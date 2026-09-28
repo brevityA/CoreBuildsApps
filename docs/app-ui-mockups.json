@@ -33,8 +33,8 @@
       "structure": "f107ba64690449692b0cccf0987e1f7f44bbf6c4ede04d59b0a267a6848ea130"
     },
     "app-ui-suite.png": {
-      "bytes": 96503,
-      "structure": "6e53193b0613ba9630994d89d133d2de5eaf2e7ef3e090343029d94c6d6ca55f"
+      "bytes": 93518,
+      "structure": "6d18a8e72e153d89882d782142a22a6835248a76379b7846720848f7fe2c533c"
     },
     "app-ui-wallpapers.png": {
       "bytes": 306984,
@@ -70,7 +70,7 @@
     "app/src/main/res/values/icon_pack.xml": "feaf129f417f53c374c6f133336c3fcfc52dd48e92cde458f486b7ee8765d845",
     "app/src/main/res/values/issue_prefill.xml": "fd85418cdd4ccdc59f0f0793b32fc7d96e01f23f80f7f38a3e3d4d7699393ced",
     "app/src/main/res/values/strings.xml": "8cb905adf18b2b10fd1288bc821f5cd150e8d0bf7d5c54586978db99e1ecc36c",
-    "app/src/main/res/values/suite_hub.xml": "09731b8fdc2b0713ea21e1d42c169236ca73d007696bdd1bd1eec10b4b1ec2fd",
+    "app/src/main/res/values/suite_hub.xml": "aff339700a9e6751b31ed189c2695e77ce18b80332f104f94e9235cdd05ef74a",
     "app/src/main/res/values/themes.xml": "ecac526951fe40b6c5c01df0ec36730d0e197fd9511862cf587a2143773b46be",
     "tools/build_app_ui_mockups.py": "35207f64a0177534112d4de41d5ae03be128a185f5d24138fc9ef845a56f70f3",
     "tools/catalog.json": "0015b04e705f617004d3213fdd02135255cbcfcb1155e3b83a97bcf43b5ce67c",
@@ -79,7 +79,7 @@
     "tools/fonts/Outfit-Bold.ttf": "04f7c9705153927058475d6c5e9f75b0a1036ec5f6f63ffb69df046191ea8933",
     "tools/fonts/Outfit-ExtraBold.ttf": "056e8cd5840cea4cfc355f672292f7de00d95f5a42bf9b7cd96d511ca8e2883e"
   },
-  "inputs_digest": "cf70709cfd9357fb641da970e116d6b6bd8adf3721a605aa628906f9f287f7ff",
+  "inputs_digest": "9e718583cba84c2aa454e7a92929c5ad46340340850a0a4f73f698a4909d8262",
   "metrics": {
     "mono-bold@24": 448.0,
     "mono-bold@32": 608.0,

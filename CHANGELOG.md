@@ -15,8 +15,8 @@ All notable changes to the Core Builds Icon Pack. Format follows
   to `tv.corebuilds.eq/.MainActivity` from Core EQ's own manifest (#195).
   971 → 972 icons, 1197 → 1198 components.
 - **Core EQ in the suite hub.** The hub lists Core EQ (`tv.corebuilds.eq`)
-  beside the other companions and can see whether it is installed. It has no
-  Downloader code yet, so the hub shows none, the same as Core Motion.
+  beside the other companions, can see whether it is installed, and shows
+  its Downloader code, `7946159`.
 
 ## [1.9.7] — 2026-09-27
 

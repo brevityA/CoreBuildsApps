@@ -81,7 +81,7 @@
       "versionCode": 2,
       "tagPrefix": "coreeq-v",
       "floatingTag": "coreeq",
-      "downloader": "[USER TO SUPPLY]",
+      "downloader": "7946159",
       "applicationId": "tv.corebuilds.eq",
       "gradle": "coreeq/app/build.gradle.kts",
       "path": "coreeq/",
