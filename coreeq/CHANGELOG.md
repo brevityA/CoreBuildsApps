@@ -6,7 +6,9 @@ Core EQ (`tv.corebuilds.eq`) keeps its own changelog. The repository-root
 must never land there. Releases are `coreeq-v<version>` tags (see
 `PUBLISHING.md`).
 
-## [Unreleased] — 0.1.0 (M1)
+## [Unreleased]
+
+## [1.0.0] — 2026-09-29
 
 ### Fixed
 
