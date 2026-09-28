@@ -203,7 +203,7 @@ object Correction {
 
         for (i in freqs.indices) {
             val f = freqs[i]
-            if (f in fMin until loEdge) {
+            if (f >= fMin && f < loEdge) {
                 val t = log2(f / fMin) / octaves
                 out[i] *= 0.5 * (1.0 - cos(Math.PI * t))
             } else if (f in hiEdge..fMax) {
