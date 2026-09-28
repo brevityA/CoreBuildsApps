@@ -6,6 +6,12 @@ All notable changes to the Core Builds Icon Pack. Format follows
 
 ## [Unreleased]
 
+### Added
+
+- **Core EQ in the suite hub.** The hub lists Core EQ (`tv.corebuilds.eq`)
+  beside the other companions and can see whether it is installed. It has no
+  Downloader code yet, so the hub shows none, the same as Core Motion.
+
 ## [1.9.7] — 2026-09-27
 
 ### Added

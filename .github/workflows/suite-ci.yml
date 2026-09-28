@@ -208,6 +208,7 @@ jobs:
           pip install --quiet pytest
           python tools/core_eq_dsp.py --selftest
           python tests/test_core_eq_dsp.py
+          python tests/test_core_eq_parity.py
       - name: Python content tests
         run: |
           python tests/test_icon_identity.py

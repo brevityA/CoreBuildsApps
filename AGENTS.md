@@ -11,6 +11,7 @@
 | Core Shift | `shift/` | `dev.corebuilds.shift` | `2.3.5` | `8829421` / `shift` |
 | Core Motion | `motion-plugin/` | `tv.corebuilds.motion` | `1.0.0` | `[USER TO SUPPLY]` / `motion` |
 | Core Doctor | `doctor/` | `dev.corebuilds.doctor` | `0.1.0` | `8664938` / `doctor` |
+| Core EQ | `coreeq/` | `tv.corebuilds.eq` | `0.1.0` | `[USER TO SUPPLY]` / `coreeq` |
 
 (Retired 2026-09-24: Core Builds Pixel Neon and Core Builds Pop. The suite
 keeps one icon pack. Their shipped tags stay as history; do not resurrect
@@ -155,5 +156,6 @@ prefills `input`/`textarea` fields only, and the tool refuses to promise more.
 - Core Shift: `python tools/validate_motion_feed.py` plus Android lint/build in CI.
 - Core Motion: `python tools/verify_motion_plugin.py` plus Android lint/build in CI.
 - Core Doctor: `cd doctor && ./gradlew :app:testDebugUnitTest` where Android SDK exists.
+- Core EQ: `python tools/core_eq_dsp.py --selftest`, `python tests/test_core_eq_dsp.py`, and `cd coreeq && ./gradlew :app:testDebugUnitTest` where Android SDK exists. Its changelog is `coreeq/CHANGELOG.md`, never the icon pack's: `prepare_release.py` turns the root `[Unreleased]` into the icon pack's in-app What's New.
 
 If local SDK/device access is missing, say so. A named unverified step is better than a confident guess.

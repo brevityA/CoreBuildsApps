@@ -44,7 +44,7 @@ def readme_stamp(suite: dict) -> str:
 def check_suite_json() -> None:
     suite = json.loads(read("suite.json"))
     apps = suite.get("apps", {})
-    expected = ["iconpack", "line", "shift", "motion", "doctor"]
+    expected = ["iconpack", "line", "shift", "motion", "doctor", "eq"]
     if list(apps.keys()) != expected:
         fail(f"suite.json apps must be in order {expected}")
     for key, app in apps.items():

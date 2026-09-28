@@ -13,6 +13,7 @@ WHAT = {
     "shift": "Android TV screensaver + motion wallpaper browser",
     "motion": "Projectivy wallpaper-provider plugin for Core Motion loops",
     "doctor": "Local-only streaming and suite diagnostics (phone)",
+    "eq": "Room EQ from a test sweep and the TV remote mic (in development)",
 }
 ANCHOR = {
     "iconpack": "core-builds-icon-pack",
@@ -20,6 +21,7 @@ ANCHOR = {
     "shift": "core-shift",
     "motion": "core-motion",
     "doctor": "core-doctor",
+    "eq": "core-eq",
 }
 
 def block(suite: dict) -> str:
@@ -29,7 +31,7 @@ def block(suite: dict) -> str:
         "> |---|---:|---|---|---|",
     ]
     wallpapers = json.loads((ROOT / "Wallpapers/manifest.json").read_text())["count"]
-    for key in ["iconpack", "line", "shift", "motion", "doctor"]:
+    for key in ["iconpack", "line", "shift", "motion", "doctor", "eq"]:
         app = suite["apps"][key]
         releases = "../../releases"
         downloader = app["downloader"]

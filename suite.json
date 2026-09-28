@@ -74,6 +74,20 @@
       "stableApk": "coredoctor-release.apk",
       "metadata": null,
       "section": "core-doctor"
+    },
+    "eq": {
+      "name": "Core EQ",
+      "versionName": "0.1.0",
+      "versionCode": 1,
+      "tagPrefix": "coreeq-v",
+      "floatingTag": "coreeq",
+      "downloader": "[USER TO SUPPLY]",
+      "applicationId": "tv.corebuilds.eq",
+      "gradle": "coreeq/app/build.gradle.kts",
+      "path": "coreeq/",
+      "stableApk": "coreeq-release.apk",
+      "metadata": null,
+      "section": "core-eq"
     }
   }
 }
