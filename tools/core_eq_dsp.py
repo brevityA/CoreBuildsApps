@@ -796,17 +796,17 @@ def deconvolve_ir(recorded: np.ndarray, inverse: np.ndarray,
     return np.fft.irfft(spec, nfft)
 
 
-def ir_magnitude_db(ir: np.ndarray, fs: int = FS,
-                    nfft: int = NFFT) -> tuple[np.ndarray, np.ndarray]:
-    """Magnitude response of an impulse response, in dB, normalised to its peak.
+def _direct_window(ir: np.ndarray, fs: int = FS,
+                   nfft: int = NFFT) -> tuple[np.ndarray, int]:
+    """The analysis window both the magnitude and the excess group delay use.
 
-    The window starts 2 ms before the direct arrival with a short raised-cosine
-    rise, stays flat through the first half and fades out over the second.
-    A symmetric Hann centred elsewhere weights the direct sound by whatever
-    the window happens to be at its position: cropped at the peak, as
-    `analyze_sweep_recording` used to, that weight was 0 and the "response"
-    was only the room's reflections. The Kotlin analysis
-    (`SweepAnalysis.bandMagnitudes`) uses this same window.
+    Starts ``pre`` (2 ms) before the direct arrival with a raised-cosine rise,
+    stays flat through the first half and fades over the second. Returns the
+    windowed chunk and ``pre``, the index of the direct arrival inside it.
+    A symmetric Hann placed anywhere else weights the direct sound by whatever
+    the window happens to be there; cropped at the peak, as
+    `analyze_sweep_recording` used to, that weight was 0. The Kotlin analysis
+    (`SweepAnalysis.windowedChunk`) uses this same window.
     """
     ir = np.asarray(ir, dtype=float)
     if ir.size < 4:
@@ -824,26 +824,19 @@ def ir_magnitude_db(ir: np.ndarray, fs: int = FS,
     window = np.ones(nfft)
     window[:pre] = 0.5 * (1.0 - np.cos(np.pi * i[:pre] / pre))
     window[fade_start:] = 0.5 * (1.0 + np.cos(np.pi * (i[fade_start:] - fade_start) / (nfft - fade_start)))
+    return chunk * window, pre
 
-    spec = np.fft.rfft(chunk * window)
+
+def ir_magnitude_db(ir: np.ndarray, fs: int = FS,
+                    nfft: int = NFFT) -> tuple[np.ndarray, np.ndarray]:
+    """Magnitude response of an impulse response, in dB, normalised to its peak."""
+    chunk, _ = _direct_window(ir, fs, nfft)
+    spec = np.fft.rfft(chunk)
     freqs = np.fft.rfftfreq(nfft, 1.0 / fs)
     with np.errstate(divide="ignore"):
         db = 20.0 * np.log10(np.maximum(np.abs(spec), 1e-12))
     db -= db.max()
     return freqs, db
-
-
-def _hilbert(x: np.ndarray) -> np.ndarray:
-    """Discrete Hilbert transform along the first axis, via the analytic signal."""
-    n = x.shape[-1]
-    h = np.zeros(n)
-    h[0] = 1.0
-    if n % 2 == 0:
-        h[n // 2] = 1.0
-        h[1 : n // 2] = 2.0
-    else:
-        h[1 : (n + 1) // 2] = 2.0
-    return np.imag(np.fft.ifft(np.fft.fft(x) * h))
 
 
 def excess_group_delay_ms(ir: np.ndarray, fs: int = FS,
@@ -857,32 +850,53 @@ def excess_group_delay_ms(ir: np.ndarray, fs: int = FS,
     without fixing the sound, and REW's excess group delay plot is exactly this
     number.
 
-    The minimum-phase reference is reconstructed from the measured magnitude
-    by the Hilbert transform of its log, which is the standard result: a
-    minimum-phase system is uniquely determined by its magnitude response.
+    * The window is the magnitude's own (`_direct_window`), rotated so the
+      direct arrival sits at t = 0. Latency is not excess: sound travel plus
+      the TV's output path is always more than the tolerance, and counting it
+      would gate every band on every set, which is what REW avoids by the
+      same alignment.
+    * The minimum-phase reference comes from the folded real cepstrum of the
+      full log-magnitude spectrum: the standard construction, and the one that
+      is exact for a sampled spectrum. (A Hilbert transform run along the
+      half spectrum, as this used to do, is not.)
     """
-    freqs, db = ir_magnitude_db(ir, fs, nfft)
-    mag = 10 ** (db / 20.0)
-    log_mag = np.log(np.maximum(mag, 1e-12))
+    chunk, pre = _direct_window(ir, fs, nfft)
+    spec = np.fft.fft(np.roll(chunk, -pre))
+    mag = np.abs(spec)
+    log_mag = np.log(np.maximum(mag, max(float(mag.max()), 1e-30) * 1e-6))
+    cep = np.real(np.fft.ifft(log_mag))
+    fold = np.zeros(nfft)
+    half = nfft // 2
+    fold[0] = cep[0]
+    fold[1:half] = 2.0 * cep[1:half]
+    fold[half] = cep[half]
+    phase_mp = np.unwrap(np.imag(np.fft.fft(fold))[: half + 1])
+    phase_meas = np.unwrap(np.angle(spec[: half + 1]))
 
-    phase_mp = -_hilbert(log_mag)
-
-    ir = np.asarray(ir, dtype=float)
-    peak = int(np.argmax(np.abs(ir)))
-    lo = max(0, peak - nfft // 8)
-    hi = min(ir.size, peak + nfft)
-    chunk = np.zeros(nfft)
-    seg = ir[lo:hi]
-    chunk[: min(seg.size, nfft)] = seg[:nfft]
-    spec = np.fft.rfft(chunk * np.hanning(nfft))
-    phase_meas = np.unwrap(np.angle(spec))
-
-    df = float(fs) / nfft
-    omega_step = 2.0 * math.pi * df
+    omega_step = 2.0 * math.pi * float(fs) / nfft
     gd_meas = -np.diff(phase_meas, prepend=phase_meas[0]) / omega_step
     gd_mp = -np.diff(phase_mp, prepend=phase_mp[0]) / omega_step
+    gd_meas[0] = gd_meas[1]
+    gd_mp[0] = gd_mp[1]
+    return np.fft.rfftfreq(nfft, 1.0 / fs), (gd_meas - gd_mp) * 1000.0
 
-    return freqs, (gd_meas - gd_mp) * 1000.0
+
+def band_min_phase_ok(centres: np.ndarray, freqs: np.ndarray, excess_ms: np.ndarray,
+                      n: float = 3.0,
+                      tolerance_ms: float = MIN_PHASE_TOLERANCE_MS) -> np.ndarray:
+    """The gate per 1/N-octave band: the band's median excess group delay.
+
+    Group delay spikes at every deep null (the phase turns fast there), so a
+    single bin read at the band centre is noise. The median across the band's
+    bins is what the band as a whole does.
+    """
+    out = np.ones(len(centres), dtype=bool)
+    for k, fc in enumerate(np.asarray(centres, dtype=float)):
+        lo, hi = fc * 2 ** (-1.0 / (2 * n)), fc * 2 ** (1.0 / (2 * n))
+        mask = (freqs >= lo) & (freqs < hi)
+        vals = excess_ms[mask] if mask.any() else excess_ms[[int(np.argmin(np.abs(freqs - fc)))]]
+        out[k] = float(np.median(vals)) <= float(tolerance_ms)
+    return out
 
 
 def min_phase_gate(freqs: np.ndarray, excess_ms: np.ndarray,
@@ -1324,18 +1338,22 @@ def analyze_sweep_recording(
     rt60 = rt60_from_ir(ir_full[peak:], fs=fs)
     t_hz = transition_hz(room_volume_m3, rt60)
 
-    # Crop IR starting at direct sound arrival
-    ir_crop = ir_full[peak : peak + NFFT]
-    freqs, mag_db = ir_magnitude_db(ir_crop, fs=fs)
+    # Both analyses window from 2 ms before the direct arrival themselves.
+    freqs, mag_db = ir_magnitude_db(ir_full, fs=fs)
     centres, measured_db = octave_bands(freqs, mag_db, n=3.0)
 
     nulls = detect_nulls(centres, measured_db)
     rolloff = detect_low_rolloff(centres, measured_db)
     target_db = target_curve(target, centres)
 
-    ex_freqs, excess_ms = excess_group_delay_ms(ir_crop, fs=fs)
-    excess_centres = np.interp(centres, ex_freqs, excess_ms)
-    min_phase_ok = min_phase_gate(centres, excess_centres)
+    # The gate applies below the transition only. That is the regime the
+    # corrector inverts in, and the one the minimum-phase argument is about
+    # (low-frequency modes). Above it the field is diffuse, excess group
+    # delay is always large, and the correction is gentle one-octave shaping
+    # that inverts nothing: gating it there would switch off e.g. the
+    # dialogue presence lift in every real room.
+    ex_freqs, excess_ms = excess_group_delay_ms(ir_full, fs=fs)
+    min_phase_ok = band_min_phase_ok(centres, ex_freqs, excess_ms) | (centres >= t_hz)
 
     f_floor = max(F_MIN, rolloff)
     corr = correction_curve(
@@ -1428,6 +1446,28 @@ def _demo() -> dict:
 
     return {"filters": filters, "bands": bands, "bands_count": len(centres),
             "transition_hz": t_hz, "nulls": int(nulls.sum())}
+
+
+def _allpass_ir(f0: float, q: float, fs: int = FS, n: int = 16384) -> np.ndarray:
+    """Impulse response of an RBJ second-order allpass: flat magnitude, and
+    a group delay of roughly 2Q/(pi f0) seconds at f0. It is the textbook
+    non-minimum-phase system: its magnitude says "nothing to correct" while
+    its phase smears f0 over tens of milliseconds."""
+    w0 = 2.0 * math.pi * f0 / fs
+    alpha = math.sin(w0) / (2.0 * q)
+    b = (1.0 - alpha, -2.0 * math.cos(w0), 1.0 + alpha)
+    a = (1.0 + alpha, -2.0 * math.cos(w0), 1.0 - alpha)
+    x = np.zeros(n)
+    x[0] = 1.0
+    y = np.zeros(n)
+    for i in range(n):
+        acc = b[0] * x[i]
+        if i >= 1:
+            acc += b[1] * x[i - 1] - a[1] * y[i - 1]
+        if i >= 2:
+            acc += b[2] * x[i - 2] - a[2] * y[i - 2]
+        y[i] = acc / a[0]
+    return y
 
 
 def _delta_ir(delay: int) -> np.ndarray:
@@ -1537,10 +1577,8 @@ def _selftest() -> int:
           0.18 < rt60 < 0.32, f"{rt60:.2f} s for a decay of 60 dB in 0.25 s")
 
     # A minimum-phase region gates open; a delayed one does not. The fixtures
-    # are deltas rather than filter responses on purpose: a delta at the origin
-    # is the identity system, which is minimum phase by construction, and a
-    # delta shifted by 400 samples (8.3 ms) is pure delay — flat magnitude, so
-    # its *entire* group delay is excess.
+    # start from deltas: a delta at the origin is the identity system, which
+    # is minimum phase by construction.
     gd_f, gd_ms = excess_group_delay_ms(_delta_ir(0))
     check("minimum-phase gate exists and is boolean",
           min_phase_gate(gd_f, gd_ms).dtype == bool
@@ -1548,11 +1586,18 @@ def _selftest() -> int:
     check("an unshifted system gates open",
           float(np.nanmax(np.abs(gd_ms[1:200]))) < 1.0,
           f"{float(np.nanmax(np.abs(gd_ms[1:200]))):.2f} ms of excess")
+    # Latency is aligned out, not counted: a delayed identity is still the
+    # identity. An allpass is flat in magnitude but smears 63 Hz by ~20 ms,
+    # so the gate must close there and stay open where the allpass is inert.
     _, gd_late = excess_group_delay_ms(_delta_ir(400))
-    check("a time-shifted system is rejected by the gate",
-          not bool(min_phase_gate(gd_f, gd_late)[1:200].all()),
-          f"{float(np.nanmedian(gd_late[1:200])):.2f} ms of excess "
-          f"against a {MIN_PHASE_TOLERANCE_MS:.0f} ms tolerance")
+    check("latency alone is not excess group delay",
+          float(np.nanmax(np.abs(gd_late[1:200]))) < 1.0,
+          f"{float(np.nanmax(np.abs(gd_late[1:200]))):.2f} ms of excess")
+    ap_f, ap_ms = excess_group_delay_ms(_allpass_ir(63.0, 2.0))
+    ap_gate = band_min_phase_ok(np.array([63.0, 1000.0]), ap_f, ap_ms)
+    check("an allpass is rejected at its centre and accepted where it is inert",
+          (not bool(ap_gate[0])) and bool(ap_gate[1]),
+          f"gate at 63 Hz / 1 kHz = {ap_gate.tolist()}")
 
     # Energy-mean averaging really is an energy mean. Averaging 10 dB and 0 dB
     # in the energy domain gives 10*log10((10 + 1)/2) = 7.4 dB; averaging in

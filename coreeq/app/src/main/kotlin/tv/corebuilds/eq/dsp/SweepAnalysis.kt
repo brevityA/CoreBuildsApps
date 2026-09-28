@@ -2,7 +2,9 @@ package tv.corebuilds.eq.dsp
 
 import kotlin.math.PI
 import kotlin.math.abs
+import kotlin.math.atan2
 import kotlin.math.cos
+import kotlin.math.ln
 import kotlin.math.log10
 import kotlin.math.log2
 import kotlin.math.max
@@ -20,6 +22,8 @@ data class SweepResult(
     val targetDb: DoubleArray,
     val correctionDb: DoubleArray,
     val nullMask: BooleanArray,
+    /** False where the band is too far from minimum phase to correct; the corrector leaves it at 0. */
+    val minPhaseOk: BooleanArray,
     /** Null when the decay could not be fitted: the transition then falls back to 300 Hz. */
     val rt60Seconds: Double?,
     val schroederHz: Double?,
@@ -47,7 +51,11 @@ data class SweepResult(
  * 4. Magnitude from a 170 ms window that starts 2 ms before the direct sound
  *    and fades out over its second half, reduced to 1/3-octave bands by
  *    energy mean, then level-aligned to the target over 300 Hz-3 kHz.
- * 5. Nulls, roll-off, transition and the two-regime correction exactly as the
+ * 5. The minimum-phase gate, below the transition: excess group delay over
+ *    the same window, aligned to the direct arrival, against the cepstral
+ *    minimum-phase reference; a band whose median exceeds
+ *    [DspConstants.MIN_PHASE_TOLERANCE_MS] is not corrected.
+ * 6. Nulls, roll-off, transition and the two-regime correction exactly as the
  *    reference chain computes them.
  */
 object SweepAnalysis {
@@ -113,11 +121,18 @@ object SweepAnalysis {
         val nulls = Correction.detectNulls(centres, measured)
         val rolloff = Correction.detectLowRolloff(centres, measured)
         val floorHz = max(DspConstants.F_MIN, rolloff)
+        val (gdFreqs, excess) = excessGroupDelayMs(ir, peak, fs)
+        // Below the transition only, as in the reference: that is where the
+        // corrector inverts; above it the field is diffuse and the correction
+        // is one-octave shaping that a phase gate would only switch off.
+        val gate = bandMinPhaseOk(centres, gdFreqs, excess)
+        val minPhaseOk = BooleanArray(centres.size) { gate[it] || centres[it] >= transition }
         val correction = Correction.calculateCorrectionCurve(
             centres, measured, targetDb,
             fMin = floorHz,
             transitionHz = transition,
-            nullMask = nulls
+            nullMask = nulls,
+            minPhaseOk = minPhaseOk
         )
         val filters = Peaking.fitPeakingFilters(centres, correction, nFilters)
 
@@ -127,6 +142,7 @@ object SweepAnalysis {
             targetDb = targetDb,
             correctionDb = correction,
             nullMask = nulls,
+            minPhaseOk = minPhaseOk,
             rt60Seconds = rt60,
             schroederHz = schroeder,
             transitionHz = transition,
@@ -193,13 +209,17 @@ object SweepAnalysis {
         return if (rt60 in 0.05..3.0) rt60 else null
     }
 
-    /** 1/3-octave magnitudes (dB, relative) at the ISO centres the capture rate can hold. */
-    fun bandMagnitudes(ir: DoubleArray, peak: Int, fs: Int): Pair<DoubleArray, DoubleArray> {
+    /**
+     * The analysis window both the magnitude and the excess group delay use
+     * (tools/core_eq_dsp.py `_direct_window`): from 2 ms before the direct
+     * arrival, a raised-cosine rise, flat through the first half, faded over
+     * the second. Returns the chunk (power-of-two long) and the index of the
+     * direct arrival inside it.
+     */
+    fun windowedChunk(ir: DoubleArray, peak: Int, fs: Int): Pair<DoubleArray, Int> {
         val winLen = (DspConstants.NFFT.toDouble() * fs / DspConstants.FS).roundToInt()
         val pre = max(1, (PRE_SECONDS * fs).roundToInt())
-        val nfft = Fft.nextPow2(winLen)
-        val re = DoubleArray(nfft)
-        val im = DoubleArray(nfft)
+        val chunk = DoubleArray(Fft.nextPow2(winLen))
         val fadeStart = winLen / 2
         for (i in 0 until winLen) {
             val src = peak - pre + i
@@ -209,8 +229,17 @@ object SweepAnalysis {
                 i >= fadeStart -> 0.5 * (1.0 + cos(PI * (i - fadeStart) / (winLen - fadeStart)))
                 else -> 1.0
             }
-            re[i] = ir[src] * w
+            chunk[i] = ir[src] * w
         }
+        return Pair(chunk, pre)
+    }
+
+    /** 1/3-octave magnitudes (dB, relative) at the ISO centres the capture rate can hold. */
+    fun bandMagnitudes(ir: DoubleArray, peak: Int, fs: Int): Pair<DoubleArray, DoubleArray> {
+        val (chunk, _) = windowedChunk(ir, peak, fs)
+        val nfft = chunk.size
+        val re = chunk.copyOf()
+        val im = DoubleArray(nfft)
         Fft.transform(re, im)
         val binHz = fs.toDouble() / nfft
         val power = DoubleArray(nfft / 2 + 1) { re[it] * re[it] + im[it] * im[it] }
@@ -239,6 +268,77 @@ object SweepAnalysis {
         val maxDb = db.maxOrNull() ?: 0.0
         for (k in db.indices) db[k] -= maxDb
         return Pair(centres.toDoubleArray(), db)
+    }
+
+    /**
+     * Excess group delay in ms per FFT bin (tools/core_eq_dsp.py
+     * `excess_group_delay_ms`). The window is rotated so the direct arrival
+     * sits at t = 0 (latency is not excess), and the minimum-phase reference
+     * comes from the folded real cepstrum of the full log-magnitude spectrum.
+     * Returns (bin frequencies, excess ms) for bins 0..nfft/2.
+     */
+    fun excessGroupDelayMs(ir: DoubleArray, peak: Int, fs: Int): Pair<DoubleArray, DoubleArray> {
+        val (chunk, pre) = windowedChunk(ir, peak, fs)
+        val n = chunk.size
+        val half = n / 2
+        val re = DoubleArray(n) { chunk[(it + pre) % n] }
+        val im = DoubleArray(n)
+        Fft.transform(re, im)
+
+        var maxMag = 0.0
+        val mag = DoubleArray(n) { val m = sqrt(re[it] * re[it] + im[it] * im[it]); if (m > maxMag) maxMag = m; m }
+        val floor = max(maxMag, 1e-30) * 1e-6
+        val cRe = DoubleArray(n) { ln(max(mag[it], floor)) }
+        val cIm = DoubleArray(n)
+        Fft.transform(cRe, cIm, inverse = true) // real cepstrum
+        val fRe = DoubleArray(n)
+        val fIm = DoubleArray(n)
+        fRe[0] = cRe[0]
+        for (k in 1 until half) fRe[k] = 2.0 * cRe[k]
+        fRe[half] = cRe[half]
+        Fft.transform(fRe, fIm) // log of the minimum-phase spectrum; its imaginary part is the phase
+
+        val phaseMeas = unwrap(DoubleArray(half + 1) { atan2(im[it], re[it]) })
+        val phaseMp = unwrap(DoubleArray(half + 1) { fIm[it] })
+        val omegaStep = 2.0 * PI * fs / n
+        val excess = DoubleArray(half + 1)
+        for (k in 1..half) {
+            val gdMeas = -(phaseMeas[k] - phaseMeas[k - 1]) / omegaStep
+            val gdMp = -(phaseMp[k] - phaseMp[k - 1]) / omegaStep
+            excess[k] = (gdMeas - gdMp) * 1000.0
+        }
+        excess[0] = excess[1]
+        return Pair(DoubleArray(half + 1) { it.toDouble() * fs / n }, excess)
+    }
+
+    /** Per band: the median excess group delay across its bins against [toleranceMs]. */
+    fun bandMinPhaseOk(
+        centres: DoubleArray,
+        freqs: DoubleArray,
+        excessMs: DoubleArray,
+        toleranceMs: Double = DspConstants.MIN_PHASE_TOLERANCE_MS
+    ): BooleanArray = BooleanArray(centres.size) { k ->
+        val exact = 1000.0 * 2.0.pow((3.0 * log2(centres[k] / 1000.0)).roundToInt() / 3.0)
+        val lo = exact * 2.0.pow(-1.0 / 6.0)
+        val hi = exact * 2.0.pow(1.0 / 6.0)
+        val inBand = freqs.indices.filter { freqs[it] >= lo && freqs[it] < hi }.map { excessMs[it] }
+        val values = inBand.ifEmpty {
+            listOf(excessMs[freqs.indices.minByOrNull { abs(freqs[it] - exact) } ?: 0])
+        }.sorted()
+        val median = if (values.size % 2 == 1) values[values.size / 2]
+        else 0.5 * (values[values.size / 2 - 1] + values[values.size / 2])
+        median <= toleranceMs
+    }
+
+    private fun unwrap(p: DoubleArray): DoubleArray {
+        val out = p.copyOf()
+        var offset = 0.0
+        for (i in 1 until p.size) {
+            val d = p[i] - p[i - 1]
+            if (d > PI) offset -= 2.0 * PI else if (d < -PI) offset += 2.0 * PI
+            out[i] = p[i] + offset
+        }
+        return out
     }
 
     /**

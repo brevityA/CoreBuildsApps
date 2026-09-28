@@ -21,6 +21,7 @@ object DspConstants {
     const val UNKNOWN_ROOM_TRANSITION_HZ = 300.0
     const val NULL_DEPTH_DB = 6.0
     const val ROLLOFF_DROP_DB = 6.0
+    const val MIN_PHASE_TOLERANCE_MS = 5.0
 
     const val SMOOTH_FINE_OCTAVES = 1.0 / 6.0
     const val SMOOTH_COARSE_OCTAVES = 1.0

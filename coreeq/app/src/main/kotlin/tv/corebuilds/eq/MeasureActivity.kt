@@ -242,9 +242,11 @@ class MeasureActivity : TvActivity() {
         )
         val rt = r.rt60Seconds?.let { String.format(Locale.US, "RT60 %.2f s", it) } ?: "RT60 not measurable (noisy decay)"
         val nulls = r.nullMask.count { it }
+        val gated = r.centresHz.indices.count { !r.minPhaseOk[it] && r.centresHz[it] >= r.floorHz }
         textStatus.text = String.format(
-            Locale.US, "%s · corrects %.0f Hz–%.0f kHz · %d null%s left alone · SNR %.0f dB",
-            rt, r.floorHz, DspConstants.F_MAX / 1000, nulls, if (nulls == 1) "" else "s", r.snrDb
+            Locale.US, "%s · corrects %.0f Hz–%.0f kHz · %d null%s and %d non-minimum-phase band%s left alone · SNR %.0f dB",
+            rt, r.floorHz, DspConstants.F_MAX / 1000, nulls, if (nulls == 1) "" else "s",
+            gated, if (gated == 1) "" else "s", r.snrDb
         )
     }
 

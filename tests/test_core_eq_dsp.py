@@ -556,13 +556,42 @@ class TestImpulseResponse:
         assert float(np.nanmax(np.abs(excess[1:200]))) < 1.0
         assert bool(dsp.min_phase_gate(freqs, excess)[1:200].all())
 
-    def test_min_phase_gate_rejects_a_pure_delay(self):
-        # 400 samples at 48 kHz is 8.3 ms of excess group delay against a
-        # 5 ms tolerance. Flat magnitude, so all of its group delay is excess.
+    def test_latency_is_not_excess_group_delay(self):
+        # 400 samples at 48 kHz is 8.3 ms, more than the 5 ms tolerance. Real
+        # captures always carry that much latency; counting it as excess
+        # would gate every band on every TV.
         ir = np.zeros(4096)
         ir[400] = 1.0
         freqs, excess = dsp.excess_group_delay_ms(ir)
-        assert not bool(dsp.min_phase_gate(freqs, excess)[1:200].all())
+        assert float(np.nanmax(np.abs(excess[1:200]))) < 1.0
+
+    def test_min_phase_gate_rejects_an_allpass_at_its_centre(self):
+        # Flat magnitude, ~20 ms of group delay at 63 Hz: nothing an EQ can fix.
+        freqs, excess = dsp.excess_group_delay_ms(dsp._allpass_ir(63.0, 2.0))
+        gate = dsp.band_min_phase_ok(np.array([63.0, 1000.0]), freqs, excess)
+        assert not bool(gate[0])
+        assert bool(gate[1])
+
+    def test_a_room_mode_is_minimum_phase(self):
+        # A resonance is minimum phase: cutting it also kills its ringing,
+        # which is the one thing room EQ genuinely does. The gate must pass it.
+        fs = dsp.FS
+        w0 = 2 * math.pi * 63.0 / fs
+        alpha = math.sin(w0) / (2 * 4.0)
+        amp = 10 ** (9.0 / 40.0)
+        b = (1 + alpha * amp, -2 * math.cos(w0), 1 - alpha * amp)
+        a = (1 + alpha / amp, -2 * math.cos(w0), 1 - alpha / amp)
+        x = np.zeros(16384); x[0] = 1.0
+        y = np.zeros_like(x)
+        for i in range(x.size):
+            acc = b[0] * x[i]
+            if i >= 1:
+                acc += b[1] * x[i - 1] - a[1] * y[i - 1]
+            if i >= 2:
+                acc += b[2] * x[i - 2] - a[2] * y[i - 2]
+            y[i] = acc / a[0]
+        freqs, excess = dsp.excess_group_delay_ms(y)
+        assert bool(dsp.band_min_phase_ok(np.array([50.0, 63.0, 80.0]), freqs, excess).all())
 
     def test_variable_smoothing_is_fine_below_and_coarse_above(self, third_octave):
         rng = np.random.default_rng(5)

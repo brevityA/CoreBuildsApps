@@ -18,6 +18,17 @@ must never land there. Releases are `coreeq-v<version>` tags (see
 - **`ROLLOFF_DROP_DB` matched to the reference (6 dB, was 10).** `test_core_eq_parity.py` now also holds `ROLLOFF_DROP_DB`, `NULL_DEPTH_DB`, `NFFT` and `ESS_SECONDS`.
 - **Reference: `ir_magnitude_db` no longer windows out the direct sound.** `analyze_sweep_recording` cropped the IR at its peak and applied a Hann window, whose value there is 0, so the analysed response was the reflections alone. Both chains now use a window that rises over 2 ms before the direct arrival, stays flat, and fades over its second half; a Python loopback measures flat to within 0.03 dB from 63 Hz to 6.3 kHz.
 
+- **The minimum-phase gate runs on device.**
+  - **What it does.** `SweepAnalysis` computes excess group delay and closes the correction on any band below the transition whose median exceeds 5 ms. Those are regions an amplitude correction would distort without fixing. The Measure status line says how many bands it left alone.
+  - **Reference fixes found while porting (`tools/core_eq_dsp.py`):**
+    - the measured phase was windowed by a Hann that was 0 at the direct sound;
+    - the minimum-phase reference was a Hilbert transform run along the half spectrum, which is not exact, and is now the folded real cepstrum of the full spectrum;
+    - latency counted as excess, so any real capture (always more than 5 ms of sound travel) would have gated every band. The analysis is now aligned to the direct arrival, as REW does;
+    - each band was judged at one frequency, where the group delay spikes at nulls, and is now judged by its median.
+  - **Why only below the transition.** That is where the corrector inverts. Above it the field is diffuse, excess group delay is always large, and gating would switch off the one-octave shaping (the dialogue presence lift) in every real room.
+  - **Tests.** Both chains pin the same physics: the identity and pure latency pass, a room mode (a resonance) passes, and an allpass fails at its centre but passes at 1 kHz. The Kotlin simulated room was rebuilt with low-frequency modes and a diffuse tail only above 300 Hz, because a diffuse field below the Schroeder frequency is not physical.
+  - **Parity.** `MIN_PHASE_TOLERANCE_MS` joins the parity test.
+
 ### Added
 
 - **`SweepAnalysisTest`: the measurement chain against physical ground truth.** Rooms are simulated at 48 kHz and captured at 16 kHz, and the analysis must:
