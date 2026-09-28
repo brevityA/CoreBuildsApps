@@ -30,6 +30,32 @@ const SPEED_MIN = 20;
 const SPEED_MAX = 120;
 const OVERSCAN_MAX = 80;
 
+/**
+ * The default for --overscan is defined in tokens.css, because it differs by
+ * form factor: a phone wants a small gutter, a television wants the 5% the
+ * platform guidance specifies. Read it back from the cascade instead of
+ * restating the number here, so there is one place it lives and a fresh
+ * install follows whatever the stylesheet says for this screen.
+ */
+function cssOverscan() {
+  try {
+    const raw = getComputedStyle(document.documentElement).getPropertyValue('--overscan');
+    const n = parseFloat(String(raw).trim());
+    if (Number.isFinite(n)) return Math.round(n);
+  } catch {
+    // getComputedStyle is not guaranteed to work — headless harnesses with no
+    // real cascade can throw rather than return. Fall through to the numbers
+    // below, which mirror tokens.css.
+  }
+  return document.documentElement.hasAttribute('data-tv') ? 48 : 24;
+}
+
+/** The margin in effect: the viewer's calibration, else the platform default. */
+export function currentOverscan() {
+  const s = store.state;
+  return s.overscan == null ? cssOverscan() : s.overscan;
+}
+
 let lastFocusBeforeDrawer = null;
 
 export function initSettings() {
@@ -42,7 +68,10 @@ export function applyChrome() {
   root.dataset.theme = s.theme;
   root.dataset.mode = s.mode;
   root.dataset.position = s.position;
-  root.style.setProperty('--overscan', `${s.overscan}px`);
+  // A null overscan means the viewer has never calibrated, so leave the
+  // stylesheet's platform default in place rather than stamping a phone-sized
+  // number over a television's 5%.
+  if (s.overscan != null) root.style.setProperty('--overscan', `${s.overscan}px`);
 
   set($('sampleFeed'), 'checked', s.sampleFeed);
   set($('speed'), 'value', s.speed);
@@ -50,13 +79,13 @@ export function applyChrome() {
   set($('position'), 'value', s.position);
   set($('theme'), 'value', s.theme);
   set($('clockFmt'), 'value', s.clockFmt);
-  set($('overscan'), 'value', s.overscan);
+  set($('overscan'), 'value', currentOverscan());
   set($('favorites'), 'value', s.favorites);
   set($('showFinals'), 'checked', s.showFinals);
   set($('wakeLock'), 'checked', s.wakeLock);
   set($('alerts'), 'checked', s.alerts);
   setText('speedVal', `${s.speed} px/s`);
-  setText('overscanVal', `${s.overscan} px`);
+  setText('overscanVal', `${currentOverscan()} px`);
 
   renderLeagueToggles();
   renderFeeds();
@@ -190,11 +219,12 @@ export function nudgeSpeed(delta) {
 }
 
 export function nudgeOverscan(delta) {
-  store.state.overscan = clampInt(store.state.overscan + delta, 0, OVERSCAN_MAX, 28);
-  document.documentElement.style.setProperty('--overscan', `${store.state.overscan}px`);
-  set($('overscan'), 'value', store.state.overscan);
-  setText('overscanVal', `${store.state.overscan} px`);
-  setText('calibrateValue', `${store.state.overscan} px`);
+  const px = clampInt(currentOverscan() + delta, 0, OVERSCAN_MAX, 0);
+  store.state.overscan = px;
+  document.documentElement.style.setProperty('--overscan', `${px}px`);
+  set($('overscan'), 'value', px);
+  setText('overscanVal', `${px} px`);
+  setText('calibrateValue', `${px} px`);
   persist();
 }
 
@@ -214,9 +244,10 @@ export function wireSettings() {
   });
 
   $('overscan')?.addEventListener('input', (e) => {
-    store.state.overscan = clampInt(e.target.value, 0, OVERSCAN_MAX, 28);
-    document.documentElement.style.setProperty('--overscan', `${store.state.overscan}px`);
-    setText('overscanVal', `${store.state.overscan} px`);
+    const px = clampInt(e.target.value, 0, OVERSCAN_MAX, 0);
+    store.state.overscan = px;
+    document.documentElement.style.setProperty('--overscan', `${px}px`);
+    setText('overscanVal', `${px} px`);
     persist();
   });
 

@@ -25,11 +25,12 @@
   height: 100dvh;
   display: grid;
   grid-template-rows: minmax(0, 1fr) var(--chyron-h);
-  /* Side padding is the overscan guard: classic TVs crop ~2.5-5% of the
-     frame, so nothing interactive may live in that margin. The chyron has no
-     bottom padding — it sits flush to the panel edge like a real broadcast
-     strip. */
-  padding: var(--safe-y) var(--overscan) 0;
+  /* The horizontal padding is the overscan guard — see --overscan in
+     tokens.css. Nothing interactive may live in that margin. The background
+     deliberately bleeds past it: only content is inset, which is the one rule
+     the platform guidance is unambiguous about. The chyron has no bottom
+     padding; it sits flush to the panel edge like a real broadcast strip. */
+  padding: max(var(--safe-y), var(--overscan-y)) var(--overscan-x) 0;
 }
 
 .app__main {

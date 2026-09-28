@@ -34,7 +34,7 @@
 
   --cb-gutter-side: 60px;
   --cb-gutter-top: 48px;
-  --cb-rail-width: 340px;
+  --cb-rail-width: 300px;
   --cb-card-padding: 18px;
 
   --cb-radius-card: 18px;
@@ -74,7 +74,9 @@
 
   /* ---- Chrome ---------------------------------------------------------- */
   --chyron-h: 108px;
-  --overscan: 40px;
+  /* The documented 5%: 48dp on the sides, 27dp top and bottom at the
+     960x540 baseline, where 1dp is 1 CSS px. Calibration starts here. */
+  --overscan: 48px;
 
   font-size: 20px;
 }
@@ -91,10 +93,17 @@
 }
 
 /* ---- Board: fewer, larger tiles ----------------------------------------
-   The column floor rises so a 1080p panel shows three or four cards rather
-   than eight, each of which can actually be read. */
+   The column floor rises so a 1080p panel shows two or three cards rather
+   than eight, each of which can actually be read.
+
+   The floor is bounded by the rail, not chosen for its own sake. A 1080p
+   panel is 960dp wide; less the 48dp guards that is 864dp of content, and
+   less the 300dp rail and its 20dp gutter the board has 544dp to work with.
+   At a 260px floor that fits two columns. At the 360px this used to be it
+   fitted one, and a board one card wide is not a board. A 4K panel reporting
+   1920dp fits five. */
 [data-tv] .board {
-  grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
   gap: var(--cb-space-md);
 }
 [data-tv] .card {

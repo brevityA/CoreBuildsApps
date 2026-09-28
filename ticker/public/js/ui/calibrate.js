@@ -10,12 +10,11 @@
  * thinks about, which is most of the difference between the two.
  */
 
-import { store } from '../core/store.js';
 import { $, setHidden, setText } from '../core/dom.js';
-import { nudgeOverscan } from './settings.js';
+import { nudgeOverscan, currentOverscan } from './settings.js';
 
 export function openCalibrate() {
-  setText('calibrateValue', `${store.state.overscan} px`);
+  setText('calibrateValue', `${currentOverscan()} px`);
   setHidden('calibrate', false);
   $('calibrate')?.querySelector('[data-action="calibrate-done"]')?.focus();
 }

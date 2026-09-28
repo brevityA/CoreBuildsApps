@@ -27,7 +27,10 @@ export const DEFAULTS = {
   overlay: false,
   // How much of the frame the panel crops (classic TV overscan). Stored in px
   // and applied as the app shell's side padding; calibrated once per set.
-  overscan: 28,
+  // null means the viewer has never calibrated, and the stylesheet's own
+  // platform default is left in place — a phone gutter and a TV's 5% are
+  // different numbers and only the stylesheet knows which one applies.
+  overscan: null,
   // Announce score changes for starred teams.
   alerts: true,
   // First-run onboarding has been dismissed.
@@ -66,7 +69,9 @@ export function sanitizeState(raw) {
   }
 
   out.speed = clampInt(out.speed, SPEED_MIN, SPEED_MAX, DEFAULTS.speed);
-  out.overscan = clampInt(out.overscan, 0, OVERSCAN_MAX, DEFAULTS.overscan);
+  out.overscan = out.overscan == null
+    ? null
+    : clampInt(out.overscan, 0, OVERSCAN_MAX, null);
   out.alerts = out.alerts !== false;
   out.onboarded = Boolean(out.onboarded);
   out.refreshSec = REFRESH_CHOICES.includes(Number(out.refreshSec)) ? Number(out.refreshSec) : DEFAULTS.refreshSec;

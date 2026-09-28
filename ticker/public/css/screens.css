@@ -643,7 +643,7 @@
   background: var(--surface-night);
   /* The same token the app shell uses, so nudging the margin moves the frame
      live instead of only updating the number. */
-  padding: var(--overscan);
+  padding: var(--overscan-y) var(--overscan-x);
 }
 .calibrate__frame {
   position: relative;

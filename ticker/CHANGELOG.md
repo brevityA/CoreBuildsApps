@@ -43,6 +43,22 @@ two apps draw from one brand.
 
 ### Changed
 
+- **Overscan now follows the platform spec instead of a guess.** The margin was
+  28px on one axis, applied to the sides only, with the top inheriting an
+  unrelated safe-area token. Android's TV guidance specifies a 5% margin at the
+  960×540 baseline — 48dp on the sides, 27dp top and bottom — so `--overscan`
+  is now 48px there, with `--overscan-y` derived from `--overscan-x` at that
+  same 27:48 ratio. One slider still drives both. A phone keeps a small gutter,
+  because a phone has no overscan to survive.
+- **The overscan default lives in one place.** `state.overscan` is `null` until
+  the viewer calibrates, so the stylesheet owns the number appropriate to the
+  form factor. Previously JavaScript stamped a phone's 28 over a television's
+  5% on first boot, before anyone had chosen anything.
+- **The rail no longer eats the board's columns.** At a 360px card floor and a
+  340px rail, a 1080p panel — 960dp wide, 864dp of content after the guards —
+  left the board 504dp and fitted exactly one card per row. The rail is 300dp,
+  as it is in the icon pack, and the card floor 260px: two columns at 1080p,
+  five at 4K.
 - **Two-pane TV layout.** A fixed-width left rail carries the brand, counts,
   source health, My Teams, the league nav and the actions; the right pane holds
   the board. The chyron spans both, for the reason the icon pack gives its

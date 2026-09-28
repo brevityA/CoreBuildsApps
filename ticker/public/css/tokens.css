@@ -75,6 +75,15 @@
   --accent-edge: rgba(0, 212, 255, 0.25);
   --accent-quiet: rgba(0, 212, 255, 0.35);
 
+  /* --acc is the per-entity accent, and it is deliberately absent from this
+     file. A card, a tile, a league chip or a watch-row sets it inline
+     (`style="--acc:#7FD4FF"`) so each can carry its own league's colour
+     without a class per league. Every rule that reads it passes a fallback,
+     so an entity that never sets one simply takes --accent.
+
+     A CSS audit that greps for var() and finds no matching definition will
+     flag it. It is defined in markup, not here; that is not a bug. */
+
   --surface-void: var(--cb-void);
   --surface-night: var(--cb-night);
   --surface-panel: var(--cb-panel);
@@ -159,7 +168,17 @@
   /* ---- Surfaces: the chrome that isn't a token -------------------------- */
   --chyron-h: 72px;
   --radius: 16px;
-  --overscan: 28px;      /* classic TVs crop ~2.5-5% of the frame */
+  /* ---- Overscan guard -------------------------------------------------
+     A television shows less of the frame than it is sent. Android's TV
+     guidance for that is a 5% margin measured at the 960x540 MDPI baseline:
+     48dp on the left and right, 27dp top and bottom, with 58dp/28dp as the
+     safer variant. The vertical margin is derived from the horizontal one at
+     that same 27:48 ratio, so calibration stays a single setting the viewer
+     can walk out with one control. 24px is a phone gutter; a phone has no
+     overscan to survive. */
+  --overscan: 24px;
+  --overscan-x: var(--overscan);
+  --overscan-y: calc(var(--overscan) * 0.5625);
   --safe-x: max(24px, env(safe-area-inset-left), 3vw);
   --safe-y: max(16px, env(safe-area-inset-top), 2vh);
 
