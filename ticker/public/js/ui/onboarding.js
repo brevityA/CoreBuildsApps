@@ -19,6 +19,15 @@ const STEPS = 2;
 
 export function maybeShowOnboarding() {
   if (store.state.onboarded) return;
+  // Someone upgrading has already added feeds or starred teams — they do not
+  // need to be walked through a product they are already using. Onboarding is
+  // for a fresh install, so the test is "has this person configured anything
+  // yet", not merely "have they dismissed this before".
+  if (store.state.feeds.length > 0 || String(store.state.favorites || '').trim()) {
+    store.state.onboarded = true;
+    persist();
+    return;
+  }
   // Only offer team choice when there is actually a slate to choose from.
   if (step === 0 && teamListFromEvents().length === 0) step = 1;
   render();
