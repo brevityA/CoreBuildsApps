@@ -3,6 +3,7 @@ package tv.corebuilds.eq
 import android.os.Bundle
 import android.widget.Button
 import android.widget.TextView
+import android.widget.Toast
 import tv.corebuilds.eq.apply.EffectLadder
 import tv.corebuilds.eq.export.Formats
 import tv.corebuilds.eq.export.ProfileStore
@@ -19,6 +20,7 @@ class CapabilityActivity : TvActivity() {
     private lateinit var textVerdictSession: TextView
     private lateinit var textVerdictGlobal: TextView
     private lateinit var btnExportTv: Button
+    private var lastBandCentres: List<Double>? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -43,6 +45,7 @@ class CapabilityActivity : TvActivity() {
         thread(name = "CapabilityProbeThread") {
             val verdict = EffectLadder.probe(this)
             runOnUiThread {
+                lastBandCentres = if (verdict.platformEqualizerSupported) verdict.bandCentresHz else null
                 statusSession0.text = if (verdict.session0Supported) {
                     "Supported on this hardware HAL"
                 } else {
@@ -62,7 +65,12 @@ class CapabilityActivity : TvActivity() {
                 }
 
                 textVerdictBands.text = "${verdict.bandCount} bands"
-                textVerdictSession.text = "session broadcast: ${if (verdict.sessionBroadcastSupported) "yes" else "no"}"
+                val announced = profileStore.sessionPackages()
+                textVerdictSession.text = if (announced.isEmpty()) {
+                    "session broadcast: none seen yet (turn correction on, then play something)"
+                } else {
+                    "session broadcast: ${announced.size} player(s) seen, latest ${announced.first()}"
+                }
                 textVerdictGlobal.text = "global mix: ${if (verdict.session0Supported) "supported" else "not supported"}"
             }
         }
@@ -70,24 +78,29 @@ class CapabilityActivity : TvActivity() {
 
     private fun exportForTvSettings() {
         val active = profileStore.getActiveProfile()
+        if (active == null) {
+            Toast.makeText(this, getString(R.string.no_profile_sub), Toast.LENGTH_LONG).show()
+            return
+        }
+        val centres = lastBandCentres ?: listOf(60.0, 230.0, 910.0, 3600.0, 14000.0)
+        val gains = centres.map { active.correctionAt(it) }
+        val headroom = maxOf(0.0, gains.maxOrNull() ?: 0.0)
         val sb = StringBuilder()
         sb.append("CORE EQ · TV SOUND SETTINGS REFERENCE\n")
         sb.append("Profile: ").append(active.name).append("\n")
         sb.append("Target: ").append(active.target).append("\n")
+        sb.append(String.format(Locale.US, "Bands: %s\n", if (lastBandCentres != null) "this TV's own equaliser" else "the common 5-band layout"))
         sb.append("------------------------------------\n")
-        for (b in active.platformBands) {
-            val db = b.millibels / 100.0
+        for (i in centres.indices) {
+            val db = gains[i] - headroom
             val sign = if (db > 0) "+" else ""
-            sb.append(String.format(Locale.US, "  %6.0f Hz : %s%.1f dB\n", b.centerHz, sign, db))
+            sb.append(String.format(Locale.US, "  %6.0f Hz : %s%.1f dB\n", centres[i], sign, db))
         }
         sb.append("------------------------------------\n")
-        sb.append("Enter these band values directly into your TV's built-in sound equaliser.\n")
+        sb.append("Enter these values in the TV's own sound equaliser, at the nearest band it offers.\n")
+        sb.append("Every band is lowered by the largest boost, so the correction cannot clip.\n")
 
-        Formats.exportToDevice(
-            this,
-            sb.toString(),
-            "tv_settings_bands.txt",
-            "TV Settings Band Levels"
-        )
+        val result = Formats.exportToDevice(this, sb.toString(), "tv_settings_bands.txt")
+        Toast.makeText(this, result.message, Toast.LENGTH_LONG).show()
     }
 }

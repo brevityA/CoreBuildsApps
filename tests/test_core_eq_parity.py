@@ -36,6 +36,12 @@ DSP_PAIRS = {
     "MAX_SLOPE_DB_PER_OCT": "MAX_SLOPE_DB_PER_OCT",
     "DEFAULT_TRANSITION_HZ": "DEFAULT_TRANSITION_HZ",
     "UNKNOWN_ROOM_TRANSITION_HZ": "UNKNOWN_ROOM_TRANSITION_HZ",
+    # Added after the Kotlin port shipped ROLLOFF_DROP_DB = 10 against the
+    # reference's 6, which raised every correction floor.
+    "ROLLOFF_DROP_DB": "ROLLOFF_DROP_DB",
+    "NULL_DEPTH_DB": "NULL_DEPTH_DB",
+    "NFFT": "NFFT",
+    "ESS_SECONDS": "ESS_SECONDS",
 }
 
 

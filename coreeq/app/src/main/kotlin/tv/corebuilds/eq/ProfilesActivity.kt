@@ -10,7 +10,7 @@ import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import tv.corebuilds.eq.dsp.DspConstants
+import tv.corebuilds.eq.apply.EqService
 import tv.corebuilds.eq.dsp.Peaking
 import tv.corebuilds.eq.dsp.Targets
 import tv.corebuilds.eq.export.Formats
@@ -92,18 +92,25 @@ class ProfilesActivity : TvActivity() {
         val active = profileStore.getActiveProfile()
         selectedProfile = active
 
-        val adapter = ProfileAdapter(
+        recyclerProfiles.adapter = ProfileAdapter(
             items = profilesList,
-            activeId = active.id,
+            activeId = { profileStore.getActiveProfile()?.id },
             onProfileSelected = { profile ->
                 selectedProfile = profile
                 profileStore.setActiveProfile(profile.id)
+                EqService.send(this, EqService.ACTION_REAPPLY)
                 displayProfile(profile)
                 recyclerProfiles.adapter?.notifyDataSetChanged()
             }
         )
-        recyclerProfiles.adapter = adapter
-        displayProfile(active)
+        btnExport.isEnabled = active != null
+        btnDelete.isEnabled = active != null
+        if (active != null) {
+            displayProfile(active)
+        } else {
+            textPreamp.text = getString(R.string.no_profile_sub)
+            graphProfile.setData(DoubleArray(0), emptyList(), "NO SAVED PROFILES")
+        }
     }
 
     private fun displayProfile(profile: Profile) {
@@ -153,23 +160,25 @@ class ProfilesActivity : TvActivity() {
             }
         }
 
-        Formats.exportToDevice(this, content, filename, label)
+        val result = Formats.exportToDevice(this, content, filename)
+        Toast.makeText(this, if (result.ok) "${result.message} ($label)" else result.message, Toast.LENGTH_LONG).show()
     }
 
     private fun deleteCurrentProfile() {
         val p = selectedProfile ?: return
-        if (profilesList.size <= 1) {
-            Toast.makeText(this, "Cannot delete the only remaining profile", Toast.LENGTH_SHORT).show()
-            return
-        }
         profileStore.deleteProfile(p.id)
+        if (profileStore.getActiveProfile() == null) {
+            EqService.disable(this)
+        } else {
+            EqService.send(this, EqService.ACTION_REAPPLY)
+        }
         Toast.makeText(this, "Deleted ${p.name}", Toast.LENGTH_SHORT).show()
         loadProfiles()
     }
 
     private class ProfileAdapter(
         private val items: List<Profile>,
-        private val activeId: String,
+        private val activeId: () -> String?,
         private val onProfileSelected: (Profile) -> Unit
     ) : RecyclerView.Adapter<ProfileViewHolder>() {
 
@@ -184,9 +193,10 @@ class ProfilesActivity : TvActivity() {
             val item = items[position]
             holder.textName.text = item.name
             val targetTitle = item.target.replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.US) else it.toString() }
-            holder.textSub.text = "$targetTitle · ${item.filters.size} filters · ${item.micType}"
+            val rt = item.rt60Seconds?.let { String.format(Locale.US, "RT60 %.2f s", it) } ?: "RT60 unknown"
+            holder.textSub.text = "$targetTitle · ${item.filters.size} filters · $rt · ${item.micType}"
 
-            val isActive = item.id == activeId
+            val isActive = item.id == activeId()
             holder.textBadge.visibility = if (isActive) View.VISIBLE else View.GONE
 
             holder.itemView.setOnClickListener {

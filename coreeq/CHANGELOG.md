@@ -8,7 +8,26 @@ must never land there. Releases are `coreeq-v<version>` tags (see
 
 ## [Unreleased] — 0.1.0 (M1)
 
+### Fixed
+
+- **Measurements are real.** `CaptureEngine` opened the remote mic but only used it for a level meter: the spectrum every profile saved was `SyntheticRoom` data plus random jitter, RT60 was the constant `0.50`, and without mic permission it quietly ran a simulation. It now records the sweep through `VOICE_RECOGNITION` at 16 kHz (48 kHz decimated when that is all the TV offers) and `SweepAnalysis` works out the room from the capture itself. It deconvolves with the Farina inverse, takes RT60 from a noise-compensated T20, reads 1/3-octave magnitudes from the direct sound on, and lines the level up with the target over 300 Hz–3 kHz. A sweep the room drowns out (under 20 dB SNR), or one that clips the mic, is refused with the reason, and nothing is saved. Microphone permission is requested at Start.
+- **Correction reaches players.** `SessionReceiver` called `startService` from a manifest receiver, which Android 8+ blocks, and implicit session broadcasts no longer reach manifest receivers at all. `EqService` is now started from Core EQ's own screen by a Correction On/Off switch, registers for the session broadcasts itself, and uses either the whole-TV output mix or per-player sessions, never both (that would correct twice). Band gains come from the profile's curve at the TV's own band centres, lowered by the largest boost so the platform `Equalizer`, which has no preamp, cannot clip. Correction resumes after a reboot, or on the next launch where Android 15 forbids that.
+- **Profiles carry what was measured.** Room volume (chosen on the Measure screen), RT60, transition, roll-off floor, SNR, mic and device come from the measurement, and the graph caption uses the computed transition. Before, every profile said 54 m³, 40 Hz, "dialogue", "Living room (Calibrated)" and "384 Hz". `ProfileStore` also never read `volume_m3` and `rt60_s` back, so saved profiles reloaded with the defaults.
+- **No demo data.** The three seeded profiles (Living room, Bedroom TV, Kitchen), built from a synthetic room, are gone, and existing installs purge them. A fresh install shows "No measurement yet".
+- **Failures are named.** Every apply outcome, including another equaliser app holding priority, a refused whole-TV mix and an Android refusal to start, goes to the notification and the Home screen status line. Exports save to Downloads/CoreEQ through MediaStore and say where they went or why they could not. Before, the file write failed on Android 10+ and the app said "Copied to clipboard".
+- **`ROLLOFF_DROP_DB` matched to the reference (6 dB, was 10).** `test_core_eq_parity.py` now also holds `ROLLOFF_DROP_DB`, `NULL_DEPTH_DB`, `NFFT` and `ESS_SECONDS`.
+- **Reference: `ir_magnitude_db` no longer windows out the direct sound.** `analyze_sweep_recording` cropped the IR at its peak and applied a Hann window, whose value there is 0, so the analysed response was the reflections alone. Both chains now use a window that rises over 2 ms before the direct arrival, stays flat, and fades over its second half; a Python loopback measures flat to within 0.03 dB from 63 Hz to 6.3 kHz.
+
 ### Added
+
+- **`SweepAnalysisTest`: the measurement chain against physical ground truth.** Rooms are simulated at 48 kHz and captured at 16 kHz, and the analysis must:
+  - measure a loopback flat to ±1.5 dB (63 Hz–6.3 kHz);
+  - recover 350 ms latency to within 3 ms, and a 0.5 s RT60 to within 0.1 s;
+  - show a +9 dB 80 Hz mode as a rise of more than 5 dB, and deepen the cut there;
+  - refuse a buried sweep with a reason;
+  - keep every gain inside the trusted band and limits.
+
+  `ApplyPathTest` covers band interpolation and decimation. 22 Kotlin tests in all.
 
 - **Core EQ has a launcher icon and a real TV banner.** The manifest named no `android:icon`, and `tv_banner` was an outlined rectangle. Both now draw the Icon Pack's `coreeq` mark (three equaliser faders in the brand hex, `#00D4FF` on `cb_night`) from the pack's own 512-grid path data: an adaptive `ic_launcher`/`ic_launcher_round` sized inside the 66dp safe zone, and the mark centred on the 320×180 banner. All vector, no rasters.
 - **Core EQ — a room equaliser built from pink noise and the TV remote mic.** `docs/research/core-eq-measurement-and-capability-2026-09.md` settles the two questions the idea lives or dies on: the controller microphone *is* supported on Android TV, but an uncalibrated remote capsule cannot be trusted below 40 Hz or above 8 kHz; and Android has no global equaliser API, so applying the correction is a capability to probe and state, not a promise to make.

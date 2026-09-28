@@ -1,10 +1,11 @@
 package tv.corebuilds.eq.export
 
-import android.content.ClipData
-import android.content.ClipboardManager
+import android.content.ContentValues
 import android.content.Context
+import android.os.Build
 import android.os.Environment
-import android.widget.Toast
+import android.provider.MediaStore
+import android.util.Log
 import org.json.JSONArray
 import org.json.JSONObject
 import tv.corebuilds.eq.dsp.DspConstants
@@ -24,7 +25,7 @@ object Formats {
         val pDb = if (profile.preampDb != 0.0) profile.preampDb else Peaking.preampDb(profile.filters)
         val sb = StringBuilder()
         sb.append(String.format(Locale.US, "Preamp: %.2f dB\n", pDb))
-        sb.append(String.format(Locale.US, "# Core EQ: correction band %.0f-%.0f Hz\n", DspConstants.F_MIN, DspConstants.F_MAX))
+        sb.append(String.format(Locale.US, "# Core EQ: correction band %.0f-%.0f Hz\n", maxOf(DspConstants.F_MIN, profile.rolloffHz), DspConstants.F_MAX))
         sb.append("# Core EQ: set Bands Overlap to Cascade in Poweramp Equalizer,\n")
         sb.append("# Core EQ: or the filters will not sum the way this file assumes.\n")
 
@@ -65,7 +66,8 @@ object Formats {
         root.put("correction_range_hz", rangeArr)
 
         root.put("transition_hz", profile.transitionHz)
-        root.put("schroeder_hz", profile.schroederHz)
+        profile.schroederHz?.let { root.put("schroeder_hz", it) }
+        profile.snrDb?.let { root.put("snr_db", it) }
         root.put("rolloff_hz", profile.rolloffHz)
 
         val gainLimits = JSONObject()
@@ -126,32 +128,39 @@ object Formats {
         return root.toString(2) + "\n"
     }
 
-    fun exportToDevice(
-        context: Context,
-        content: String,
-        filename: String,
-        label: String
-    ): Boolean {
-        try {
-            // 1. Copy to clipboard
-            val clipboard = context.getSystemService(Context.CLIPBOARD_SERVICE) as? ClipboardManager
-            val clip = ClipData.newPlainText(label, content)
-            clipboard?.setPrimaryClip(clip)
+    /** Where an export landed, or why it did not, in words for the user. */
+    data class ExportResult(val ok: Boolean, val message: String)
 
-            // 2. Save to external Downloads/CoreEQ directory
-            val downloadsDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
-            val coreEqDir = File(downloadsDir, "CoreEQ")
-            if (!coreEqDir.exists()) {
-                coreEqDir.mkdirs()
+    /**
+     * Saves [content] as Downloads/CoreEQ/[filename]: MediaStore on Android 10+,
+     * which needs no permission, and the public directory below that. A TV
+     * clipboard reaches nothing, so there is no clipboard fallback.
+     */
+    fun exportToDevice(context: Context, content: String, filename: String): ExportResult {
+        return try {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                val values = ContentValues().apply {
+                    put(MediaStore.MediaColumns.DISPLAY_NAME, filename)
+                    put(MediaStore.MediaColumns.MIME_TYPE, if (filename.endsWith(".json")) "application/json" else "text/plain")
+                    put(MediaStore.MediaColumns.RELATIVE_PATH, Environment.DIRECTORY_DOWNLOADS + "/CoreEQ")
+                }
+                val resolver = context.contentResolver
+                val uri = resolver.insert(MediaStore.Downloads.EXTERNAL_CONTENT_URI, values)
+                    ?: return ExportResult(false, "Could not create Downloads/CoreEQ/$filename: the TV's storage refused the file.")
+                resolver.openOutputStream(uri)?.use { it.write(content.toByteArray(Charsets.UTF_8)) }
+                    ?: return ExportResult(false, "Could not open Downloads/CoreEQ/$filename for writing.")
+            } else {
+                @Suppress("DEPRECATION")
+                val dir = File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), "CoreEQ")
+                if (!dir.exists() && !dir.mkdirs()) {
+                    return ExportResult(false, "Could not create ${dir.path}: storage permission is missing or the disk is full.")
+                }
+                File(dir, filename).writeText(content, Charsets.UTF_8)
             }
-            val outFile = File(coreEqDir, filename)
-            outFile.writeText(content, Charsets.UTF_8)
-
-            Toast.makeText(context, "Exported to Downloads/CoreEQ/$filename & copied to clipboard", Toast.LENGTH_LONG).show()
-            return true
+            ExportResult(true, "Saved to Downloads/CoreEQ/$filename")
         } catch (e: Exception) {
-            Toast.makeText(context, "Copied to clipboard ($label)", Toast.LENGTH_SHORT).show()
-            return false
+            Log.e("CoreEqExport", "Export of $filename failed", e)
+            ExportResult(false, "Export failed: ${e.message ?: e.javaClass.simpleName}")
         }
     }
 }

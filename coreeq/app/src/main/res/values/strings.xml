@@ -4,34 +4,48 @@
     <string name="app_tagline">Equaliser built from this room</string>
     <string name="home_desc">A sine sweep out, the remote microphone listening, a curve you can read before you trust it.</string>
     <string name="active_profile">Active profile</string>
-    <string name="living_room">Living room</string>
+    <string name="no_profile">No measurement yet</string>
+    <string name="no_profile_sub">Measure this room to create a correction.</string>
     <string name="action_measure">Measure</string>
-    <string name="action_measure_sub">Pink noise · 20 s · this room</string>
+    <string name="action_measure_sub">Sine sweep · 13 s · this room</string>
     <string name="action_remeasure">Re-measure</string>
     <string name="action_profiles">Profiles</string>
-    <string name="action_profiles_sub">3 saved · Living room active</string>
+    <string name="action_profiles_sub">Saved corrections</string>
     <string name="action_targets">Targets</string>
-    <string name="action_targets_sub">Harman, B&amp;K, Flat, House</string>
+    <string name="action_targets_sub">Dialogue, Room, B&amp;K, Flat</string>
     <string name="action_capability">Capability</string>
     <string name="action_capability_sub">What this device will accept</string>
     <string name="action_poweramp_export">Export to Poweramp</string>
     <string name="action_tv_export">Export for TV settings</string>
-    <string name="platform_eq_title">Platform equaliser — the 5 bands this device reports</string>
+    <string name="platform_eq_title">Preview on the common 5-band layout · the service uses this TV\'s own bands</string>
 
     <!-- Measure screen -->
     <string name="measure_title">Core EQ · Measure</string>
-    <string name="measure_heading">Hold the room still for 20 seconds</string>
+    <string name="measure_heading">Keep the room quiet for 13 seconds</string>
     <string name="measure_sub">The TV plays a sine sweep. The remote microphone listens. Nothing leaves this device.</string>
-    <string name="measure_step1_title">Press OK to start the stimulus</string>
-    <string name="measure_step1_sub">One frequency at a time, so it beats the room noise. Loud enough to hear over the room, quiet enough to live with.</string>
+    <string name="measure_step1_title">Tell Core EQ about the room</string>
+    <string name="measure_step1_sub">Room size sets where full correction stops. Turn off the TV\'s own sound effects first (AI sound, bass boost, virtual surround): they would be measured too.</string>
     <string name="measure_step2_title">Point the remote at your seat</string>
-    <string name="measure_step2_sub">Where your ears are, not at the TV. The remote microphone is the only microphone this can use.</string>
+    <string name="measure_step2_sub">Hold it where your head is, microphone end up, and keep it still until the bar fills.</string>
     <string name="measure_step3_title">Keep the room quiet while the bar fills</string>
-    <string name="measure_step3_sub">Talking, footsteps and the kitchen fan land in the same measurement. Dips that are cancellations get left alone.</string>
+    <string name="measure_step3_sub">Talking, footsteps and fans land in the same measurement. A sweep the room drowns out is refused, not guessed at.</string>
     <string name="measure_progress_title">Capture progress</string>
     <string name="measure_stop">Stop</string>
     <string name="measure_start_over">Start over</string>
     <string name="measure_save">Save profile</string>
+    <string name="measure_start">Start</string>
+    <string name="measure_ready">Ready · set the room, then press Start</string>
+    <string name="measure_opening_mic">Opening the microphone…</string>
+    <string name="measure_analysing">Analysing the sweep…</string>
+    <string name="measure_failed">Not measured: %1$s</string>
+    <string name="measure_saved">Saved and made active: %1$s</string>
+    <string name="measure_profile_name">Room · %1$s</string>
+    <string name="measure_room_button">Room size: %1$s</string>
+    <string name="measure_target_button">Target: %1$s</string>
+
+    <!-- Correction switch -->
+    <string name="correction_on">Correction: On</string>
+    <string name="correction_off">Correction: Off</string>
 
     <!-- Profiles screen -->
     <string name="profiles_title">Core EQ · Profiles</string>

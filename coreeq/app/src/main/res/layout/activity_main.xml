@@ -78,7 +78,7 @@
                     android:id="@+id/text_active_profile_name"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/living_room"
+                    android:text="@string/no_profile"
                     android:textColor="@color/cb_ink"
                     android:textSize="@dimen/cb_text_section"
                     android:textStyle="bold"
@@ -88,7 +88,7 @@
                     android:id="@+id/text_active_profile_sub"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Dialogue · 6 filters · remote mic"
+                    android:text="@string/no_profile_sub"
                     android:textColor="@color/cb_slate"
                     android:textSize="@dimen/cb_text_kicker"
                     android:fontFamily="monospace"
@@ -109,11 +109,11 @@
 
             <!-- Navigation entry rows -->
             <Button
-                android:id="@+id/btn_nav_measure"
+                android:id="@+id/btn_toggle_correction"
                 android:layout_width="match_parent"
                 android:layout_height="52dp"
                 android:background="@drawable/bg_card"
-                android:text="Measure  ·  Pink noise · 20 s · this room"
+                android:text="@string/correction_off"
                 android:textColor="@color/cb_ink"
                 android:textSize="@dimen/cb_text_data"
                 android:gravity="start|center_vertical"
@@ -180,6 +180,19 @@
                 android:id="@+id/bands_home"
                 android:layout_width="match_parent"
                 android:layout_height="90dp" />
+
+            <!-- What the correction service last did, including every failure -->
+            <TextView
+                android:id="@+id/text_eq_status"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/correction_off"
+                android:textColor="@color/cb_slate"
+                android:textSize="@dimen/cb_text_kicker"
+                android:fontFamily="monospace"
+                android:maxLines="3"
+                android:ellipsize="end"
+                android:layout_marginTop="@dimen/cb_space_sm" />
 
         </LinearLayout>
 

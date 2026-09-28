@@ -798,20 +798,34 @@ def deconvolve_ir(recorded: np.ndarray, inverse: np.ndarray,
 
 def ir_magnitude_db(ir: np.ndarray, fs: int = FS,
                     nfft: int = NFFT) -> tuple[np.ndarray, np.ndarray]:
-    """Magnitude response of an impulse response, in dB, normalised to its peak."""
+    """Magnitude response of an impulse response, in dB, normalised to its peak.
+
+    The window starts 2 ms before the direct arrival with a short raised-cosine
+    rise, stays flat through the first half and fades out over the second.
+    A symmetric Hann centred elsewhere weights the direct sound by whatever
+    the window happens to be at its position: cropped at the peak, as
+    `analyze_sweep_recording` used to, that weight was 0 and the "response"
+    was only the room's reflections. The Kotlin analysis
+    (`SweepAnalysis.bandMagnitudes`) uses this same window.
+    """
     ir = np.asarray(ir, dtype=float)
     if ir.size < 4:
         raise ValueError("impulse response too short to analyse")
-    # Window around the direct arrival so the analysis is of the response, not
-    # of whatever the room did after the useful part ended.
     peak = int(np.argmax(np.abs(ir)))
-    lo = max(0, peak - nfft // 8)
-    hi = min(ir.size, peak + nfft)
+    pre = max(1, int(round(0.002 * fs)))
+    lo = peak - pre
     chunk = np.zeros(nfft)
-    seg = ir[lo:hi]
-    chunk[: min(seg.size, nfft)] = seg[:nfft]
+    src_lo = max(0, lo)
+    seg = ir[src_lo: src_lo + nfft - (src_lo - lo)]
+    chunk[src_lo - lo: src_lo - lo + seg.size] = seg
 
-    spec = np.fft.rfft(chunk * np.hanning(nfft))
+    i = np.arange(nfft)
+    fade_start = nfft // 2
+    window = np.ones(nfft)
+    window[:pre] = 0.5 * (1.0 - np.cos(np.pi * i[:pre] / pre))
+    window[fade_start:] = 0.5 * (1.0 + np.cos(np.pi * (i[fade_start:] - fade_start) / (nfft - fade_start)))
+
+    spec = np.fft.rfft(chunk * window)
     freqs = np.fft.rfftfreq(nfft, 1.0 / fs)
     with np.errstate(divide="ignore"):
         db = 20.0 * np.log10(np.maximum(np.abs(spec), 1e-12))

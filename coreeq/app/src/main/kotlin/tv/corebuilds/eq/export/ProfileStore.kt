@@ -2,27 +2,39 @@ package tv.corebuilds.eq.export
 
 import android.content.Context
 import android.content.SharedPreferences
+import android.util.Log
 import org.json.JSONArray
+import org.json.JSONException
 import org.json.JSONObject
-import tv.corebuilds.eq.dsp.Correction
-import tv.corebuilds.eq.dsp.DspConstants
-import tv.corebuilds.eq.dsp.Peaking
 import tv.corebuilds.eq.dsp.PeakingFilter
-import tv.corebuilds.eq.dsp.SyntheticRoom
-import tv.corebuilds.eq.dsp.Targets
+
+/** What the correction service last did, in words the Home screen can show. */
+data class EqStatus(
+    val message: String,
+    val isError: Boolean,
+    val updatedMs: Long
+)
 
 /**
- * Manages persistent storage of Core EQ profiles.
- * Automatically seeds default calibrated profiles if the database is fresh.
+ * Saved profiles, the active one, whether correction is switched on, and the
+ * service's last status. A fresh install has no profiles: nothing is shown as
+ * a measurement until this room has been measured.
  */
 class ProfileStore(context: Context) {
 
     private val prefs: SharedPreferences =
-        context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
+        context.applicationContext.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
 
     init {
-        if (!prefs.contains(KEY_PROFILES)) {
-            seedDefaults()
+        // Builds before this one seeded three demo profiles made from a
+        // synthetic room. They were never measurements, so they go.
+        if (!prefs.getBoolean(KEY_DEMO_PURGED, false)) {
+            val kept = getAllProfiles().filterNot { it.id in DEMO_IDS }
+            persistProfiles(kept)
+            if (prefs.getString(KEY_ACTIVE_ID, null) in DEMO_IDS) {
+                prefs.edit().remove(KEY_ACTIVE_ID).apply()
+            }
+            prefs.edit().putBoolean(KEY_DEMO_PURGED, true).apply()
         }
     }
 
@@ -32,19 +44,23 @@ class ProfileStore(context: Context) {
         try {
             val arr = JSONArray(raw)
             for (i in 0 until arr.length()) {
-                val obj = arr.getJSONObject(i)
-                list.add(parseProfile(obj))
+                try {
+                    list.add(parseProfile(arr.getJSONObject(i)))
+                } catch (e: JSONException) {
+                    Log.e(TAG, "Skipping unreadable profile #$i", e)
+                }
             }
-        } catch (e: Exception) {
-            e.printStackTrace()
+        } catch (e: JSONException) {
+            Log.e(TAG, "Saved profiles are not valid JSON", e)
         }
-        return list
+        return list.sortedByDescending { it.timestampMs }
     }
 
-    fun getActiveProfile(): Profile {
+    /** The active profile, or null before anything has been measured. */
+    fun getActiveProfile(): Profile? {
         val all = getAllProfiles()
         val activeId = prefs.getString(KEY_ACTIVE_ID, null)
-        return all.firstOrNull { it.id == activeId } ?: all.firstOrNull() ?: createFallbackProfile()
+        return all.firstOrNull { it.id == activeId } ?: all.firstOrNull()
     }
 
     fun setActiveProfile(id: String) {
@@ -54,15 +70,9 @@ class ProfileStore(context: Context) {
     fun saveProfile(profile: Profile, setAsActive: Boolean = false) {
         val list = getAllProfiles().toMutableList()
         val existingIndex = list.indexOfFirst { it.id == profile.id }
-        if (existingIndex >= 0) {
-            list[existingIndex] = profile
-        } else {
-            list.add(profile)
-        }
+        if (existingIndex >= 0) list[existingIndex] = profile else list.add(profile)
         persistProfiles(list)
-        if (setAsActive) {
-            setActiveProfile(profile.id)
-        }
+        if (setAsActive) setActiveProfile(profile.id)
     }
 
     fun deleteProfile(id: String): Boolean {
@@ -70,86 +80,99 @@ class ProfileStore(context: Context) {
         val removed = list.removeAll { it.id == id }
         if (removed) {
             persistProfiles(list)
-            val currentActive = prefs.getString(KEY_ACTIVE_ID, null)
-            if (currentActive == id) {
-                list.firstOrNull()?.let { setActiveProfile(it.id) }
+            if (prefs.getString(KEY_ACTIVE_ID, null) == id) {
+                val next = list.firstOrNull()
+                if (next != null) setActiveProfile(next.id) else prefs.edit().remove(KEY_ACTIVE_ID).apply()
             }
         }
         return removed
     }
 
+    var correctionEnabled: Boolean
+        get() = prefs.getBoolean(KEY_ENABLED, false)
+        set(value) { prefs.edit().putBoolean(KEY_ENABLED, value).apply() }
+
+    fun status(): EqStatus? {
+        val msg = prefs.getString(KEY_STATUS_MSG, null) ?: return null
+        return EqStatus(msg, prefs.getBoolean(KEY_STATUS_ERR, false), prefs.getLong(KEY_STATUS_TIME, 0L))
+    }
+
+    fun setStatus(message: String, isError: Boolean) {
+        prefs.edit()
+            .putString(KEY_STATUS_MSG, message)
+            .putBoolean(KEY_STATUS_ERR, isError)
+            .putLong(KEY_STATUS_TIME, System.currentTimeMillis())
+            .apply()
+    }
+
+    /** Packages that have announced an audio session to Core EQ, most recent first. */
+    fun sessionPackages(): List<String> =
+        prefs.getString(KEY_SESSION_PKGS, "")!!.split(',').filter { it.isNotBlank() }
+
+    fun noteSessionPackage(pkg: String) {
+        if (pkg.isBlank()) return
+        val list = (listOf(pkg) + sessionPackages().filter { it != pkg }).take(8)
+        prefs.edit().putString(KEY_SESSION_PKGS, list.joinToString(",")).apply()
+    }
+
     private fun persistProfiles(list: List<Profile>) {
         val arr = JSONArray()
-        for (p in list) {
-            arr.put(JSONObject(Formats.exportProfileJson(p)))
-        }
+        for (p in list) arr.put(JSONObject(Formats.exportProfileJson(p)))
         prefs.edit().putString(KEY_PROFILES, arr.toString()).apply()
     }
 
     private fun parseProfile(obj: JSONObject): Profile {
-        val id = obj.optString("id", "profile-1")
-        val name = obj.optString("name", "Living room")
-        val timestamp = obj.optLong("timestamp_ms", System.currentTimeMillis())
-        val target = obj.optString("target", "dialogue")
-        val mic = obj.optString("microphone", "remote_mic")
-        val device = obj.optString("device", "Android TV")
-        val stimulus = obj.optString("stimulus", "sweep_10s")
-        val capSec = obj.optDouble("capture_seconds", 10.0)
-        val transHz = obj.optDouble("transition_hz", 384.0)
-        val schroeder = obj.optDouble("schroeder_hz", 192.0)
-        val rolloff = obj.optDouble("rolloff_hz", 40.0)
-        val preamp = obj.optDouble("preamp_db", -3.39)
+        val room = obj.optJSONObject("room")
+        fun optNullable(o: JSONObject?, key: String): Double? =
+            if (o != null && o.has(key) && !o.isNull(key)) o.optDouble(key).takeIf { !it.isNaN() } else null
 
         val nullsList = mutableListOf<Double>()
-        obj.optJSONArray("nulls_untouched_hz")?.let { narr ->
-            for (i in 0 until narr.length()) nullsList.add(narr.getDouble(i))
-        }
+        obj.optJSONArray("nulls_untouched_hz")?.let { a -> for (i in 0 until a.length()) nullsList.add(a.getDouble(i)) }
 
         val filtersList = mutableListOf<PeakingFilter>()
-        obj.optJSONArray("filters")?.let { farr ->
-            for (i in 0 until farr.length()) {
-                val fo = farr.getJSONObject(i)
-                filtersList.add(PeakingFilter(fo.getDouble("fc"), fo.getDouble("q"), fo.getDouble("gain")))
+        obj.optJSONArray("filters")?.let { a ->
+            for (i in 0 until a.length()) {
+                val f = a.getJSONObject(i)
+                filtersList.add(PeakingFilter(f.getDouble("fc"), f.getDouble("q"), f.getDouble("gain")))
             }
         }
 
         val bandsList = mutableListOf<PlatformBand>()
-        obj.optJSONArray("platform_bands")?.let { barr ->
-            for (i in 0 until barr.length()) {
-                val bo = barr.getJSONObject(i)
-                bandsList.add(PlatformBand(bo.getDouble("center_hz"), bo.getInt("millibels")))
+        obj.optJSONArray("platform_bands")?.let { a ->
+            for (i in 0 until a.length()) {
+                val b = a.getJSONObject(i)
+                bandsList.add(PlatformBand(b.getDouble("center_hz"), b.getInt("millibels")))
             }
         }
 
         val curveList = mutableListOf<CurvePoint>()
-        obj.optJSONArray("curve")?.let { carr ->
-            for (i in 0 until carr.length()) {
-                val co = carr.getJSONObject(i)
-                curveList.add(CurvePoint(co.getDouble("hz"), co.getDouble("measured_db"), co.getDouble("correction_db")))
+        obj.optJSONArray("curve")?.let { a ->
+            for (i in 0 until a.length()) {
+                val c = a.getJSONObject(i)
+                curveList.add(CurvePoint(c.getDouble("hz"), c.getDouble("measured_db"), c.getDouble("correction_db")))
             }
         }
 
         val capMap = mutableMapOf<String, String>()
-        obj.optJSONObject("capability")?.let { co ->
-            for (k in co.keys()) {
-                capMap[k] = co.optString(k, "")
-            }
-        }
+        obj.optJSONObject("capability")?.let { c -> for (k in c.keys()) capMap[k] = c.optString(k, "") }
 
         return Profile(
-            id = id,
-            name = name,
-            timestampMs = timestamp,
-            target = target,
-            micType = mic,
-            deviceName = device,
-            stimulus = stimulus,
-            captureSeconds = capSec,
-            schroederHz = schroeder,
-            transitionHz = transHz,
-            rolloffHz = rolloff,
+            id = obj.getString("id"),
+            name = obj.optString("name", "Unnamed room"),
+            timestampMs = obj.optLong("timestamp_ms", 0L),
+            target = obj.optString("target", "dialogue"),
+            micType = obj.optString("microphone", "microphone"),
+            deviceName = obj.optString("device", "Android TV"),
+            stimulus = obj.optString("stimulus", "sweep_10s"),
+            captureSeconds = obj.optDouble("capture_seconds", 10.0),
+            volumeM3 = optNullable(room, "volume_m3"),
+            rt60Seconds = optNullable(room, "rt60_s"),
+            schroederHz = optNullable(obj, "schroeder_hz"),
+            transitionHz = obj.optDouble("transition_hz", 300.0),
+            rolloffHz = obj.optDouble("rolloff_hz", 40.0),
+            snrDb = optNullable(obj, "snr_db"),
             nullsUntouchedHz = nullsList,
-            preampDb = preamp,
+            preampDb = obj.optDouble("preamp_db", 0.0),
             filters = filtersList,
             platformBands = bandsList,
             curve = curveList,
@@ -157,132 +180,17 @@ class ProfileStore(context: Context) {
         )
     }
 
-    private fun seedDefaults() {
-        val centres = DspConstants.ISO_CENTRES_HZ
-        val measured = SyntheticRoom.generateDb(centres, 11L)
-        val nulls = Correction.detectNulls(centres, measured)
-        val tHz = Correction.transitionHz(54.0, 0.5)
-
-        // 1. Living room (Dialogue target, remote mic)
-        val targetDialogue = Targets.targetCurve("dialogue", centres)
-        val corrDialogue = Correction.calculateCorrectionCurve(centres, measured, targetDialogue, transitionHz = tHz, nullMask = nulls)
-        val filtersDialogue = Peaking.fitPeakingFilters(centres, corrDialogue, 6)
-        val preampDialogue = Peaking.preampDb(filtersDialogue)
-        val platformBands5 = Correction.collapseToBands(
-            doubleArrayOf(60.0, 230.0, 910.0, 3600.0, 14000.0),
-            { hz -> interpolate(hz, centres, corrDialogue) },
-            -1500, 1500
-        ).map { PlatformBand(it.first, it.second) }
-
-        val curveDialogue = centres.indices.map {
-            CurvePoint(centres[it], measured[it], corrDialogue[it])
-        }
-
-        val livingRoom = Profile(
-            id = "profile-living-room",
-            name = "Living room",
-            timestampMs = System.currentTimeMillis() - 86400000L * 4,
-            target = "dialogue",
-            micType = "remote mic",
-            deviceName = "Android TV",
-            stimulus = "sweep_10s",
-            captureSeconds = 10.0,
-            volumeM3 = 54.0,
-            rt60Seconds = 0.5,
-            schroederHz = 192.0,
-            transitionHz = tHz,
-            rolloffHz = 40.0,
-            nullsUntouchedHz = listOf(84.0),
-            preampDb = preampDialogue,
-            filters = filtersDialogue,
-            platformBands = platformBands5,
-            curve = curveDialogue,
-            capabilityVerdict = mapOf(
-                "bands" to "5 bands",
-                "session_broadcast" to "no",
-                "global_mix" to "not supported"
-            )
-        )
-
-        // 2. Bedroom TV (B&K target, remote mic)
-        val targetBk = Targets.targetCurve("bk", centres)
-        val corrBk = Correction.calculateCorrectionCurve(centres, measured, targetBk, transitionHz = 320.0, nullMask = nulls)
-        val filtersBk = Peaking.fitPeakingFilters(centres, corrBk, 5)
-        val preampBk = Peaking.preampDb(filtersBk)
-        val curveBk = centres.indices.map {
-            CurvePoint(centres[it], measured[it], corrBk[it])
-        }
-        val bedroom = Profile(
-            id = "profile-bedroom",
-            name = "Bedroom TV",
-            timestampMs = System.currentTimeMillis() - 86400000L * 2,
-            target = "bk",
-            micType = "remote mic",
-            volumeM3 = 30.0,
-            rt60Seconds = 0.6,
-            schroederHz = 282.0,
-            transitionHz = 320.0,
-            preampDb = preampBk,
-            filters = filtersBk,
-            platformBands = platformBands5,
-            curve = curveBk
-        )
-
-        // 3. Kitchen (Flat target, USB mic)
-        val targetFlat = Targets.targetCurve("flat", centres)
-        val corrFlat = Correction.calculateCorrectionCurve(centres, measured, targetFlat, transitionHz = 400.0, nullMask = nulls)
-        val filtersFlat = Peaking.fitPeakingFilters(centres, corrFlat, 8)
-        val preampFlat = Peaking.preampDb(filtersFlat)
-        val curveFlat = centres.indices.map {
-            CurvePoint(centres[it], measured[it], corrFlat[it])
-        }
-        val kitchen = Profile(
-            id = "profile-kitchen",
-            name = "Kitchen",
-            timestampMs = System.currentTimeMillis() - 86400000L * 7,
-            target = "flat",
-            micType = "USB mic",
-            volumeM3 = 25.0,
-            rt60Seconds = 0.4,
-            schroederHz = 252.0,
-            transitionHz = 400.0,
-            preampDb = preampFlat,
-            filters = filtersFlat,
-            platformBands = platformBands5,
-            curve = curveFlat
-        )
-
-        val list = listOf(livingRoom, bedroom, kitchen)
-        persistProfiles(list)
-        setActiveProfile(livingRoom.id)
-    }
-
-    private fun createFallbackProfile(): Profile {
-        return Profile(
-            id = "profile-default",
-            name = "Default",
-            timestampMs = System.currentTimeMillis(),
-            target = "dialogue",
-            micType = "remote mic"
-        )
-    }
-
-    private fun interpolate(x: Double, xs: DoubleArray, ys: DoubleArray): Double {
-        if (xs.isEmpty()) return 0.0
-        if (x <= xs[0]) return ys[0]
-        if (x >= xs[xs.size - 1]) return ys[ys.size - 1]
-        for (i in 0 until xs.size - 1) {
-            if (x in xs[i]..xs[i + 1]) {
-                val frac = (x - xs[i]) / (xs[i + 1] - xs[i])
-                return ys[i] + frac * (ys[i + 1] - ys[i])
-            }
-        }
-        return ys[0]
-    }
-
     companion object {
+        private const val TAG = "CoreEqProfiles"
         private const val PREFS_NAME = "core_eq_profiles"
         private const val KEY_PROFILES = "profiles_json"
         private const val KEY_ACTIVE_ID = "active_profile_id"
+        private const val KEY_ENABLED = "correction_enabled"
+        private const val KEY_STATUS_MSG = "status_message"
+        private const val KEY_STATUS_ERR = "status_is_error"
+        private const val KEY_STATUS_TIME = "status_time"
+        private const val KEY_SESSION_PKGS = "session_packages"
+        private const val KEY_DEMO_PURGED = "demo_profiles_purged"
+        private val DEMO_IDS = setOf("profile-living-room", "profile-bedroom", "profile-kitchen")
     }
 }

@@ -50,7 +50,7 @@
             android:layout_height="match_parent"
             android:orientation="vertical">
 
-            <!-- Step 1 -->
+            <!-- Step 1: the room and the target -->
             <LinearLayout
                 android:id="@+id/card_step_1"
                 android:layout_width="match_parent"
@@ -58,7 +58,6 @@
                 android:orientation="vertical"
                 android:background="@drawable/bg_card"
                 android:padding="@dimen/cb_card_padding"
-                android:focusable="true"
                 android:layout_marginBottom="@dimen/cb_space_xs">
 
                 <TextView
@@ -86,6 +85,34 @@
                     android:textColor="@color/cb_slate"
                     android:textSize="@dimen/cb_text_kicker"
                     android:layout_marginTop="2dp" />
+
+                <Button
+                    android:id="@+id/btn_room_size"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/cb_target_min"
+                    android:background="@drawable/bg_ghost"
+                    android:textColor="@color/cb_ink"
+                    android:textSize="@dimen/cb_text_data"
+                    android:textAllCaps="false"
+                    android:gravity="start|center_vertical"
+                    android:paddingStart="@dimen/cb_space_sm"
+                    android:paddingEnd="@dimen/cb_space_sm"
+                    android:focusable="true"
+                    android:layout_marginTop="@dimen/cb_space_xs" />
+
+                <Button
+                    android:id="@+id/btn_target"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/cb_target_min"
+                    android:background="@drawable/bg_ghost"
+                    android:textColor="@color/cb_ink"
+                    android:textSize="@dimen/cb_text_data"
+                    android:textAllCaps="false"
+                    android:gravity="start|center_vertical"
+                    android:paddingStart="@dimen/cb_space_sm"
+                    android:paddingEnd="@dimen/cb_space_sm"
+                    android:focusable="true"
+                    android:layout_marginTop="@dimen/cb_space_xs" />
             </LinearLayout>
 
             <!-- Step 2 -->
@@ -96,7 +123,6 @@
                 android:orientation="vertical"
                 android:background="@drawable/bg_card"
                 android:padding="@dimen/cb_card_padding"
-                android:focusable="true"
                 android:layout_marginBottom="@dimen/cb_space_xs">
 
                 <TextView
@@ -133,8 +159,7 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
                 android:background="@drawable/bg_card"
-                android:padding="@dimen/cb_card_padding"
-                android:focusable="true">
+                android:padding="@dimen/cb_card_padding">
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -201,7 +226,7 @@
                 android:id="@+id/text_measure_status"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="0.0 s of 20 s · Ready · Noise floor -61 dB"
+                android:text="@string/measure_ready"
                 android:textColor="@color/cb_slate"
                 android:textSize="@dimen/cb_text_kicker"
                 android:fontFamily="monospace"
@@ -219,7 +244,7 @@
                     android:layout_width="160dp"
                     android:layout_height="@dimen/cb_target_min"
                     android:background="@drawable/bg_cta"
-                    android:text="Start"
+                    android:text="@string/measure_start"
                     android:textColor="@color/cb_cta_ink"
                     android:textSize="@dimen/cb_text_label"
                     android:textStyle="bold"
