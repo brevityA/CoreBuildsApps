@@ -4,6 +4,7 @@
     <category title="Banners · Core Builds" />
     <item drawable="corebuilds_banner" />
     <item drawable="coredoctor_banner" />
+    <item drawable="coreeq_banner" />
     <item drawable="coreline_banner" />
     <item drawable="coreshift_banner" />
     <category title="Banners · Streaming" />

@@ -62,6 +62,10 @@ README_END = "<!-- suite-stamp:end -->"
 BUILDERS = [
     "tools/build_icons.py",
     "tools/build_banners.py",
+    # The icon pack's appfilter/drawable.xml list banners, and this writes
+    # them. Without it a release that adds an icon fails its own validate gate
+    # ("component was not emitted", "banner not listed") - 1.9.8 did.
+    "tools/build_banners_pack.py",
     "tools/build_branding.py",
     "tools/build_brand_preview.py",
     "tools/build_icon_review.py",

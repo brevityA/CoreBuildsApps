@@ -6,6 +6,15 @@ All notable changes to the Core Builds Icon Pack. Format follows
 
 ## [Unreleased]
 
+## [1.9.8] — 2026-09-28
+
+### Added
+
+- **Core EQ has its own icon.** Three equaliser faders inside the Core
+  hexagon, in the suite's `#00D4FF` like Core Line, Shift and Doctor, mapped
+  to `tv.corebuilds.eq/.MainActivity` from Core EQ's own manifest (#195).
+  971 → 972 icons, 1197 → 1198 components.
+
 ## [1.9.7] — 2026-09-27
 
 ### Added
