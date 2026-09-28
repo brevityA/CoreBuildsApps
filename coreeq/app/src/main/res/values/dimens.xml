@@ -26,6 +26,9 @@
     <dimen name="cb_radius_card_inner">8dp</dimen>
     <dimen name="cb_radius_card_gap">11dp</dimen>
 
+    <!-- Card inner padding, same as the icon pack app -->
+    <dimen name="cb_card_padding">14dp</dimen>
+
     <!-- Focus ring: 3dp ring, 3dp gap, 6dp inset -->
     <dimen name="cb_focus_ring">3dp</dimen>
     <dimen name="cb_focus_gap">3dp</dimen>
