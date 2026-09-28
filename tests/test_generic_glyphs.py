@@ -25,14 +25,11 @@ class GenericGlyphTests(unittest.TestCase):
 
     def test_researched_function_examples(self):
         expected = {
-            "Ace Stream": "broadcast",
-            "AllSaves Social": "tool",
-            "Acontra Plus": "broadcast",
-            "F Droid": "store",
-            "Fluffy": "files",
-            "Gain": "film",
-            "GenPlay": "gaming",
-            "Oilers+": "sport",
+            "OTT Navigator": "broadcast",
+            "Televizo": "broadcast",
+            "Aurora Store": "store",
+            "M64plus Fz": "gaming",
+            "MUTV": "sport",
         }
         for name, family in expected.items():
             with self.subTest(name=name):

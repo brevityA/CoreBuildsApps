@@ -1,19 +1,20 @@
 {
-  "versionCode": 38,
-  "versionName": "1.9.6",
-  "iconCount": 962,
-  "componentCount": 1184,
-  "releaseDate": "2026-09-26",
+  "versionCode": 39,
+  "versionName": "1.9.7",
+  "iconCount": 971,
+  "componentCount": 1197,
+  "releaseDate": "2026-09-27",
   "apkUrl": "https://github.com/brevityA/CoreBuildsApps/releases/download/iconpack/iconpack-release.apk",
   "releaseNotesUrl": "https://github.com/brevityA/CoreBuildsApps/releases",
   "minSdk": 21,
   "highlights": [
-    "Generic Glyphs get a modern look",
-    "102 apps get marks drawn from their real icons",
-    "315 icons wear their app's real colour",
-    "Browkorf TV",
-    "Arena4Viewer",
-    "Duotone icons",
-    "Banner category labels wear the icon's colour"
+    "227 apps drawn from their icons, 219 from their logos",
+    "Vision+, Basis and TubPlayer",
+    "TDUK APP Killer and Cache Cleaner",
+    "Seven TCL system apps",
+    "89 apps now carry their real names",
+    "TCL Home and TCL Home Passive now match on TCL TVs",
+    "AirReceiver and Ultimate File Manager Pro now apply",
+    "Apply goes to Projectivy again when Monet is home"
   ]
 }

@@ -6,24 +6,289 @@ All notable changes to the Core Builds Icon Pack. Format follows
 
 ## [Unreleased]
 
+## [1.9.7] — 2026-09-27
+
 ### Added
 
-- **Core EQ — a room equaliser built from pink noise and the TV remote mic.** `docs/research/core-eq-measurement-and-capability-2026-09.md` settles the two questions the idea lives or dies on: the controller microphone *is* supported on Android TV, but an uncalibrated remote capsule cannot be trusted below 40 Hz or above 8 kHz; and Android has no global equaliser API, so applying the correction is a capability to probe and state, not a promise to make.
-- **Core EQ plan and design frames.** `docs/CORE_EQ_PLAN.md` lays out the four screens, the capability ladder and the milestones, and `docs/core-eq-*.png` show them in the suite's own night chrome — Outfit and DejaVu Sans Mono, the `cb_*` tokens, the 3dp ring focus treatment, all read live from `app/src/main/res/values` rather than hand-drawn.
-- **`tools/core_eq_dsp.py` is the measurement chain, written before the Android.** Pink-noise and exponential-sine-sweep synthesis, Welch PSD to 1/3-octave bands anchored at 1 kHz, Flat / B&K / Harman / House targets, and a correction capped at +6/−12 dB with a 6 dB/octave slope limit across 40 Hz–8 kHz — plus the peaking-filter fit, the millibel collapse onto the device's own bands, and the three export formats with a preamp that rounds toward more negative.
-- **`tests/test_core_eq_dsp.py` pins that chain where it cannot drift.** Pink noise is proved to be −3 dB/octave and deterministic, `cut_only` is proved never to boost, the slope limiter is proved to cap a 15 dB null rather than echo it, fitting is proved deterministic, and the exported preamp is proved unable to under-compensate the largest boost. 41 tests.
-- **`tools/build_core_eq_mockups.py` renders the frames from their sources.** It reuses the icon pack's token loaders and font pins, feeds the graphs real DSP output rather than a hand-shaped curve, and refuses to draw any screen whose content passes the 540dp panel — the frame-level twin of `tests/test_tv_layout_fit.py`.
-- **`.github/workflows/suite-ci.yml` runs the new gates.** The DSP self-test, the pytest chain and the frame check are wired into the no-path-filter job, so `tests/test_ci_coverage.py` sees them on every push.
+- **Vision+** — a new icon for the Indonesian streaming service, requested in #185. It has a redrawn mark taken from the app's launcher icon: its V as one slanted wedge tapering to a rounded foot, and the plus. Its colour is the icon's cyan (#07E3D0). The launch activity was reported from a real device (AQUA MatrixTV CE, Android 14). 962 → 963 icons, 1184 → 1185 components.
+- **Four TCL system apps.** Quick Panel (stacked layers), Safety Guard
+  (Säkerhetsvakt; a shield with a brush stroke), T-Exhibition (a framed
+  sunset on its easel) and T-Solo (a single note) get icons drawn from their
+  launcher tiles, in the tiles' own colours. A supporter's TV audit reported
+  them with their launch activities. 963 → 967 icons.
+- **TDUK APP Killer.** Its Android robot with the red X across its chest,
+  in the icon's green and red, requested in #193 with its launch activity
+  read off the requester's TV. 967 → 968 icons.
+- **TubPlayer and TDUK APP Cache Cleaner.** TubPlayer's T folding into a
+  play arrow on its blue gradient (#190), and the Cache Cleaner's robot
+  head over a yellow broom (#192), both from launch activities read off
+  the requester's TV. 968 → 970 icons.
+- **Basis.** Its B with a play arrow in the lower bowl, on the icon's blue
+  gradient, requested in #199 with its launch activity read off the
+  requester's TV. 970 → 971 icons.
+- **17 more letter tiles get marks from their Projectivy artwork.** The
+  first wordmark pass missed their art (its component index was
+  incomplete): Air Attack 2, VivaTV, AnimeTV, Cyberflix, Stash, both
+  Eternal TV apps, FANE TV, FCTV33, Dune, Magis TV, MYiptv 4K, OK TV,
+  1Pix Media, PlayLatin, Sports Everywhere and 9Xtream get wordmark
+  marks, Rubika TV its hexagonal cube, and HDRezka joins Rezka's brand
+  group on the same HD mark. 17 letter tiles remain: 11 whose logos are a
+  character, crest, photo or someone else's mark (or, for WeatherBug, whose
+  artwork shows a different app), AnikenTV's deliberate AK tile, and 5
+  apps with no icon anywhere.
+- **95 more letter tiles get marks from their store-listing icons.** These
+  apps have no Projectivy artwork, so their launcher icons were read from
+  their Google Play, APKCombo, Aptoide or Uptodown listings instead, as
+  reference only. Ten carry a symbol and are drawn from it: myTuner
+  Radio's set, Radon Tunes' quaver, Channels' test-card set, FilmPlus's sun
+  and cloud, Dimplay's stacked play, User Center's person, GridStreamr's
+  grid, Launch on Boot's cycle, AppLinked's ribboned M and Photo
+  Screensaver's tile wall. The other 85 are logotypes and get the
+  same wordmark treatment as below (Virgin Media Play's VM and play, The
+  CW, HGTV, BBC Sounds, CGTN Now, VRT MAX, sky+, TLC, WiiM and the rest);
+  30 take their icons' colours. All Red Video (a club crest) and Rover's
+  Morning Glory (a photo of its host) keep letter tiles.
+- **117 wordmark-only apps get marks from their logotypes.** Their
+  launcher icons are a name with no symbol in it, so each mark is the
+  logotype's own cue: the short form and case the logo uses (arte's
+  lowercase a, NOS, KiKA, joyn and RTL, and stacked names such as
+  BYU/tv and NET/FLY), drawn in the pack's new single-stroke monoline
+  letters rather than the vendor's letterforms, plus the one device the
+  logo hangs on the name: a plus (BET+, TF1+, M6+, NHK+), a dot
+  (france.tv, flik.tv), a play wedge (meWATCH, STV Player), an underline
+  or overline, a ring (JioTV+, HD Rezka) or a frame (RaiPlay). They were
+  read from the Projectivy Icon Pack 1.1.9 artwork, as reference only. 62
+  take their logotypes' colours and 33 are spelled like the apps. stc tv's
+  intigral package and BET+'s com.bet.shows package share their brands'
+  marks.
+  Kenny TV, Pikashow, M64plus, MUTV, Chebur TV, Anime Cast and Ukiku keep
+  letter tiles (their logos are characters or crests owned by others), as
+  does Magenta TV, whose logo is its owner's T.
+- **36 more apps get marks drawn from their real icons, 318 in all.**
+  The last of the letter tiles whose icons carry a symbol. FPT Play's
+  rounded badge, Clip TV's C, SVT's t and play arrow, RTP Play's chasing
+  wedge, RTL Play's faceted play arrow, Thunder TV's bolt, TIMVISION's
+  bars, TVP VOD's tab and screen, Yacine TV's lettered set, TV Garden's
+  sprouting set, ZAAP TV's framed set and Yettel TV's ringed play;
+  Stream Locator's map pin, VieON's lit ring, hoichoi's two exclamation
+  marks, HyperSpin's whirl, Top Radio's bubble, TV4 Play's 4 and arrow,
+  Sun NXT's X under the sun, TVNZ+'s hollow plus, Tamashakhoneh TV's
+  chevrons, SWAC TV's star, ES-DE's block and Télé-Québec's fanned cards;
+  Go3's 3, Football 360's ball in its arrowed ring, FreeFlix HQ's play
+  arrow, My5's 5, Movistar+'s M and plus, Free TV's open ring, Delta TV's
+  D, Digi TV's i and play arrow, MyTVOnline's swept bands, TV 2 Play's
+  disc, ZDF's 2 and Tflix's T with its sparks replace their letter tiles.
+  The launcher icons were read from the Projectivy Icon Pack 1.1.9
+  artwork, as reference only. Stream Locator and TVNZ+ carry their icons'
+  gradients, 30 more take their icons' colours in place of palette guesses
+  (Yettel TV, TIMVISION and Top Radio were near-black or off-brand), and
+  ten are spelled like the apps. The rest of the letter tiles are
+  wordmark-only logos, characters owned by others, or apps with no
+  Projectivy artwork.
+- **12 more apps get marks drawn from their real icons, 282 in all.**
+  Vibra's looped V, waipu.tv's two leaning capsules, Tencent Video's play
+  wedge, Wink's chevron, Filimo's hexagon and play, Filmnet's swept F,
+  AniLab's badge, NV Player's split P, OTF TV's folded play arrow, Lemino's
+  speech bubble, unifi TV's smile and SAFF's stepped pixels replace their
+  letter tiles. The launcher icons were read from the Projectivy Icon Pack
+  1.1.9 artwork, as reference only. Vibra, waipu.tv, Tencent Video, Wink,
+  NV Player, OTF TV, unifi TV and SAFF take their icons' colours, and
+  waipu.tv, Tencent Video, OTF TV, unifi TV and SAFF are spelled like the
+  apps. Vibra, waipu.tv, Filimo, Lemino and OTF TV carry their icons' own
+  two-colour gradients, and so does batch 18's AirPin Pro.
+- **12 more apps get marks drawn from their real icons, 270 in all.**
+  AirPin Pro's screen and clip, APK Updater's thumbs-up badge, Background
+  Apps and Process List's heartbeat running into a heart, Direct One's
+  diamond block, Premiumize TV's figure and tick, radio.net's o and antenna,
+  Tele2 Play's dot cluster, MO4Media's camera, Play Universal's split ring
+  and plus, LeanKey Keyboard's play arrow with key rows, Odido TV's screen
+  and NPO Start's two tilted tiles replace their letter tiles. The launcher
+  icons were read from the Projectivy Icon Pack 1.1.9 artwork, as reference
+  only. APK Updater, radio.net, Tele2 Play, LeanKey Keyboard, Odido TV and
+  NPO Start take their icons' colours, and AirPin Pro, radio.net, LeanKey
+  Keyboard, Odido TV and NPO Start are spelled like the apps.
+- **12 more apps get marks drawn from their real icons, 258 in all.**
+  Aparat Sport's football, Supreme TV's trident, Better xCloud's stacked
+  blocks, Artlume's frame on its wedge of light, Baby Einstein's bespectacled
+  sun, Dansk Filmskat's globe and heart, MST3K's cratered moon, Yippee's
+  confetti, Bloomberg TV+'s folded tab, MTV Katsomo's m and play button,
+  KUKU TV's k and dot and Pepperbox TV's two pistols replace their letter
+  tiles. The launcher icons were read from the Projectivy Icon Pack 1.1.9
+  artwork, as reference only. Yippee, KUKU TV and MST3K were near-black and
+  take their icons' orange, red and blue-grey; Artlume, Bloomberg TV+ and
+  Pepperbox TV take their icons' colours instead of palette colours, and
+  MST3K, Better xCloud and KUKU TV are spelled like the apps.
+- **12 more apps get marks drawn from their real icons, 246 in all.**
+  LiveNetTV's badge with its TV and cast waves, Drama Player's broken ring,
+  Gallery 3D's stacked prints, Smart IPTV's tilted set, M3U IPTV's playlist
+  screen, DixMax's play-shaped D, NoTube TV's N sweeping into a play arrow,
+  Telia Play's pebble, YouSee Play's disc, IB Player's "ib" and play arrow,
+  Oblivion's spiky-haired face and Zen IPTV's swept Z replace their letter
+  tiles. The launcher icons were read from the Projectivy Icon Pack 1.1.9
+  artwork, as reference only. IB Player, YouSee Play, Zen IPTV, Smart IPTV,
+  M3U IPTV and DixMax take their icons' colours, and Telia Play, M3U IPTV,
+  NoTube TV, YouSee Play and DixMax are spelled like the apps.
+- **12 more apps get marks drawn from their real icons, 234 in all.**
+  Tablo's bar and TV tab, Radio On TV's set with its keypad, EchoGram's play
+  arrow and echo, Monitor Dot's split panes, Screenscape's S coin, GenPlay's
+  spiral G, Amazon Luna's three joined nodes, Fresh Drama's slashed
+  triangle, HDHomeRun's HD box, KPN's open play arrow and plus, Polsat Box
+  Go's turning boxes and RTBF Auvio's heavy O replace their letter tiles. The
+  launcher icons were read from the Projectivy Icon Pack 1.1.9 artwork, as
+  reference only. Polsat Box Go takes its logo's yellow instead of a palette
+  lime, and EchoGram is spelled like the app.
+- **12 more apps get marks drawn from their real icons, 222 in all.**
+  Bravia Core's swirling lens, Brollie's pencil mascot, Eon TV's ring on its
+  horizon, FEB's hooked pin, Five TV's flame-flagged 5, Global TV's chevron,
+  Mi Gallery's peaks under a sun, Miracast's cast screen, OnStream's bolt in
+  a ring, Swampdog Media's diamond of squares, Talk TV's speech bubble and
+  UAE4ARM's striped check replace their letter tiles. The launcher icons
+  were read from the Projectivy Icon Pack 1.1.9 artwork, as reference only.
+  Talk TV was near-black and takes its icon's orange; Global TV, OnStream,
+  Swampdog Media and UAE4ARM take their icons' colours instead of palette
+  colours, and OnStream and FEB are spelled like the apps.
+- **12 more apps get marks drawn from their real icons, 195 in all.**
+  Uplay's bowed play arrow, Cast4K's shield on antennae, Drama Live's globe
+  and comet, Xstream Play's curled ribbon, Mobily TV's tailed screen, Rapid
+  Streamz's set on speed lines, Wave IPTV's antenna over waves, SNRT Live's
+  faceted star, Oilers+'s drop under its arc, Sportz X's folded play arrow,
+  RedBox TV's open box and Launcher Manager's gear replace their letter
+  tiles. The launcher icons were read from the Projectivy Icon Pack 1.1.9
+  artwork, as reference only. Xstream Play and Oilers+ were near-black and
+  take their icons' red and blue, Mobily TV and Launcher Manager take their
+  icons' blues, and SNRT Live and Sportz X are spelled like the apps.
+- **12 more apps get marks drawn from their real icons, 183 in all.**
+  Ace Stream's four chasing arrows, Browse Here's ringed planet with eyes,
+  ByeByeDPI's dove over a terminal sign, Elefin's elephant with a play button
+  in its ear, Falcon Cast's falcon under cast arcs, Galaxy Play's swept play
+  shape, GT Share's eagle head, Hyperion Grabber's H with its ambilight
+  edges, Shadow's ring and crescent, Stream Fire's striped set in a speech
+  bubble, Playfy's set and magnifier and Zumba's dancer in a ring replace
+  their letter tiles. The launcher icons were read from the Projectivy Icon
+  Pack 1.1.9 artwork, as reference only. Browse Here, Elefin, Falcon Cast,
+  Shadow and Playfy take their icons' colours; Shadow was near-black.
+  Browse Here and ByeByeDPI are spelled like the apps.
+- **12 more apps get marks drawn from their real icons, 171 in all.**
+  Anten TV's three dots, İnat Box's TV robot, Cafe Bazaar's smiling bag,
+  CoreELEC Helper's power ring, Cricfy's ball and speed lines, RAM
+  Cleaner's rocket, Shark TV's breaching shark, F-Droid's robot box,
+  IPTV Extreme's old set with colour bars, Vodafone TV's speech mark,
+  Wrestle Universe's ring and Pano Scrobbler's record and tonearm replace
+  their letter tiles. The launcher icons were read from the Projectivy Icon
+  Pack 1.1.9 artwork, as reference only. Anten TV, Cafe Bazaar, Cricfy,
+  Shark TV and Wrestle Universe take their icons' colours instead of palette
+  colours, and F-Droid is spelled like the app.
+- **21 more apps get marks drawn from their real icons, 123 in all.**
+  Zattoo's round set, Sweet.tv's donut screen, vRadio's antenna and dial,
+  StrongVPN's nested shield, Hotspot Shield's globe, SCB Next's double
+  chevrons, SD Maid's droid in a bow, Nfolio's wall of frames, Refresh
+  Rate's settings column, MagiConnect's phone and screen, CinemaHD's ticket,
+  HDO Box's H-and-play, NetMirror's ribbon N, Perfect Player's P-and-play,
+  Dangbei's trend arrow, Fladder's stacked wing (in its orange-to-red
+  gradient), Fotoo's tilted frame, the Maze square, Radioline's ringed
+  planet, SmartTwitchTV's joystick and The Weather Network's globe replace
+  their letter tiles. Each carries the one feature of its real icon that sets it
+  apart from the pack's other TV, radio, shield and grid marks. SCB Next
+  takes its icon's red `#D40615` instead of a palette lime, and four names
+  are spelled like the apps: SCB Next, SD Maid, StrongVPN, Refresh Rate.
+- **12 more apps get marks drawn from their real icons, 157 in all.**
+  PigeonCast's bird in flight, Kernel Media's popcorn badge, Movieark's
+  ship, NZR+'s silver fern and plus, Haystack News's block H, Rally TV's R
+  in a play arrow, Play Suisse's chevron and Swiss plus, Telenet's winking
+  face, WOW's globe with its plus badge, MAME4droid's arcade panel, Nostalgia
+  TV's set inside a play arrow and talkSPORT's football speech bubble replace
+  their letter tiles. NZR+ takes its gradient's violet `#5214D6` instead of
+  the near-black ground.
+- **22 more apps get marks drawn from their real icons, 145 in all.**
+  Bell Fibe's outlined play on its bar, Dramox's split ring, Enjoy TV's play
+  and chevron, OTTplay's aperture, Play Now's notched arrowhead, Pathé
+  Thuis's speech bubble, Ocean Streamz's diamond, XC IPTV's bars and play,
+  Filmfriend's deep frame, Orange TV Go's bezel and power dot, STB Emu's
+  floating panel, TV App Repo's monitor, Home Automation's house in a bubble,
+  the FM Radio, Replaio and World Radios sets (knobs, play dial, grille),
+  Forecast's sun over a cloud, Tennis TV's ball, Etube's slanted E, VPN
+  Unlimited's infinity shield, hide.me's bubbling cone and Fast Task Killer's
+  cube replace their letter tiles. Three colours move from an icon's ground
+  to its mark: Enjoy TV `#08A8D0`, Play Now `#7444A1`, Fast Task Killer
+  `#0070B8`.
+- **Award VPN and Firedown get marks from their real icons.** A fourth
+  research pass (Uptodown, exact package match) found both: Award VPN's
+  tick-built A under Wi-Fi arcs in its teal `#20C0A8`, and Firedown's flame
+  running into a download arrow in its pink-to-coral gradient. APKPure
+  answers every request with a bot check, so it was not searched.
+- **12 more reference icons found.** A third research pass (Aptoide, exact
+  package match) found icons for apps missing from Play and F-Droid: 11 now
+  wear their icon's colour, RB Live's tile reads "RB", and CinemaHD, ES-DE,
+  HDO Box and NoTubeTV are spelled like the apps. Six Aptoide placeholders
+  and two more suspected mis-mappings are logged in
+  `docs/research/icon-reference-pass2-2026-09-26.md`; no mapping changed.
 
-- **Second research pass: precedents, the apply path, and the audio path.** `docs/research/core-eq-precedents-poweramp-and-audio-path-2026-09-27.md` finds a shipping mainstream precedent in Sonos Trueplay — and the reason it refuses Android microphones, which is the objection Core EQ has to answer — then settles three things the first pass missed: Poweramp Equalizer is the apply target rather than a rival and already imports the exact AutoEQ `.txt` Core EQ exports; the audio output path decides whether an app-level equaliser can reach the sound at all, so it must be probed before anyone measures a room; and every target curve so far has been a music target, when the dominant TV problem is dialogue intelligibility.
+### Changed
 
-- **Third research pass: the correction science.** `docs/research/core-eq-correction-science-2026-09-27.md` settles what a measured response is *allowed* to be corrected toward. Correction has a computable ceiling — the room stops being a set of discrete resonances above its Schroeder frequency, `2000·sqrt(RT60/V)`, and the industry inverts only below about 300–500 Hz. A null is destructive interference and cannot be filled at any price, so the corrector must cut peaks and leave cancellations alone, while cutting a modal peak genuinely does kill its ringing because low-frequency room modes are minimum phase. It also audits the reference DSP: its `harman` target is speaker-family rather than headphone-family, which is lucky, because the headphone curve's 3 kHz ear-gain peak would double-count pinna gain if baked into a speaker correction — but the name overclaims and the bass sits at half the published Olive 2013 preference. And the swept-sine stimulus the tool already generates should be what it measures with: it buys 15–20 dB of dynamic range over noise, and it is the only path to the RT60 and group-delay numbers the ceiling and the minimum-phase gate need.
+- **124 accents now match their apps' logos.** A colour sweep compared
+  every icon's accent with the dominant hue of its reference icon (the
+  Projectivy Icon Pack 1.1.9 artwork, or the store listing, as reference
+  only) and reviewed the 197 that disagreed by eye. 116 were plainly wrong
+  and take the logo's colour, and 8 palette fallbacks with a clear logo
+  colour (Crossy Road, Juuno, Lampa, TBS, Ugreen NAS, FileSynced, The Roku
+  Channel, Eon TV) take theirs too: Dish, eTVnet, FilmRise, Globoplay, YouTube TV,
+  USA Network, Shudder and Peloton go red; APKPure, iQIYI, PBS Kids and
+  Tennis Channel go green; SYFY, DRM Info, Norton and MovieBox Pro go
+  yellow; MX Player, Sling, TiviMate and Solid Explorer go blue, among
+  others. Brand groups stay on one colour. Launcher shortcuts, white or
+  multicolour logos and brand groups were left as they were.
+- **AK47Sports, Voltra TV and AnikenTV drawn from their real icons.** The
+  same supporter's screenshots show three launcher icons no store had:
+  AK47Sports gets its crossed cricket bats and football, Voltra TV its V
+  with a lightning-bolt arm, and AnikenTV's tile reads "AK", as its white
+  script logo does.
+- **Three more TCL apps drawn from their tiles.** Användarmanual (User
+  Guide) gets its page and the tile's slate blue instead of a palette pink,
+  Mediaspelare (Media Player) a folder holding a play button, and TCL Home
+  its dashboard grid: three red squares and two yellow bars in the fourth
+  corner.
+- **53 more apps wear their real colour.** Apps no store listing could
+  source take the colour of their logo in Projectivy Icon Pack 1.1.9, used
+  only as a reference; logos without one clear colour keep the palette.
+- **Three names spelled like the apps.** Hideme is now hide.me, Pathethuis
+  is Pathé Thuis and Tennistv is Tennis TV, on their banners and in the icon
+  list.
 
-- **Built what the third research pass found.** The DSP reference is now a two-regime corrector: full inversion below the room's transition frequency (`min(2·f_s, 400 Hz)` from `2000·√(RT60/V)`, 300 Hz when the room is unknown), and shaping-only within ±3 dB above it — because above that line a microphone at one point is measuring reflections as much as the speaker. Dips deeper than 6 dB below the trend are detected as cancellations and never boosted into, and a minimum-phase gate built on the sweep's excess group delay zeroes any region inverting would only distort. The measurement stimulus moved to the exponential sine sweep the tool already generated and did not use: it buys 15–20 dB of dynamic range and is the only path to the RT60 and group-delay numbers the ceiling and the gate need. Targets are named for what they are — `room` replaces `harman`, `olive` ships the published Olive 2013 shelves as a preset, `dialogue` adds SII-weighted presence that stops before sibilance — and the correction floor now follows the loudspeaker's measured roll-off instead of a fixed 40 Hz. Exports carry their own band limit, the transition, the untouched nulls and the Poweramp "Bands Overlap = Cascade" instruction. 63 tests pin it.
+### Fixed
 
-- **Test pipeline and Core EQ Android TV app scaffolding (M1).** `tools/core_eq_dsp.py` now includes `read_wav` (16/24/32-bit), automatic resampling, and `--process` to deconvolve recorded sine sweeps directly into AutoEQ/Poweramp Equalizer presets — giving an immediate acoustic test loop before on-device audio wiring. The Farina inverse sweep filter was also corrected: the +3 dB/octave amplitude envelope is now applied before time-reversal, eliminating an inverted-slope deconvolution error and yielding flat-to-0.2 dB loopback deconvolution. Milestone M1 scaffolds the standalone `coreeq/` Android Gradle root (`tv.corebuilds.eq`), implementing `TvActivity` 1080p density normalization, Leanback launcher, Home/Measure/Profiles/Capability activities, UI tokens matching the icon pack palette, and `.github/workflows/core-eq-apk.yml` to assemble debug APK artifacts on PRs. 66 DSP tests; 472 suite tests passing.
+- **Apply goes to Projectivy again when Monet is the default home.** Since
+  1.9.5 the Apply button went to the TV's default home launcher every time. On
+  a TV with Monet as its default home and Projectivy installed too, the button
+  opened Monet's setup screen and Projectivy's one-press apply was only a chip
+  away. The button now goes to the home launcher only when that launcher can
+  take an apply; otherwise it goes to one that can, and Monet's setup screen
+  stays a chip below. Settings → Refresh launcher follows the same order.
+- **`tests/test_monet_handoff.py` pins the order.** Monet as home with
+  Projectivy installed puts Projectivy first; Monet alone still opens its
+  setup screen.
+- **TCL Home and TCL Home Passive now match on TCL TVs.** The same audit
+  showed TCL Home launching from `com.tcl.dashboard` and TCL Home Passive
+  from a class package the catalogue had wrong, so both gain the reported
+  activity. Ultimate File Manager Pro gets a redrawn folder-and-arrow mark
+  in its steel blue `#80A0B0` and, from #191, the onboarding activity it
+  actually launches from on TVs, so its icon now applies.
+- **AirReceiver now matches the full app, not just Lite.** Issue #194
+  reported `com.softmedia.receiver`; it joins the AirReceiver Lite icon,
+  which is renamed AirReceiver and reads "AR" like its logo. 1185 → 1196
+  components.
+- **84 apps now carry their real names.** Checked against Projectivy Icon
+  Pack 1.1.9: many mappings came from that pack, but their names had been
+  rebuilt from package or developer names ("Freevee" was Amazon Luna,
+  "App Generation" myTuner Radio, the four "Maz TV" entries four different
+  apps). Each package was compared with the logo Projectivy shows for it,
+  and 50 letter tiles now read the corrected name. The two Eternal TV builds
+  are told apart as Immortal and Divine, and 14 banners move to the category
+  the real app belongs in (Amazon Luna to Gaming, KaraFun to Music).
+- **BeeTV and TeaTV redrawn from the real apps.** Both install under
+  a package whose store listing shows a different app (a weather app and a
+  photo collage maker); the icons now follow what is on the TV: BeeTV's bee
+  in its orange and TeaTV's tilted TV in its red.
 
-- **Fourth research pass: remote hardware reality, equal loudness, and spatial averaging.** `docs/research/core-eq-remote-hardware-loudness-and-spatial-averaging-2026-09-28.md` resolves the open hardware and acoustic questions from pass three: TV remotes stream 16 kHz ADPCM over Bluetooth LE (ATVV / Voice over HOGP), proving the 8 kHz correction limit is a physical Nyquist constraint; Android CDD §5.4.2 explicitly mandates that `AudioSource.VOICE_RECOGNITION` disables both AGC and noise reduction while enforcing flat response and 30 dB linearity; spatial seat averaging must use power (energy) averaging preceded by 300–3000 Hz broadband alignment, because complex vector averaging creates artificial comb nulls; and ISO 226:2003 equal-loudness contours explain the evening TV volume trap — taming room modes relieves upward masking on consonants so viewers hear dialogue without cranking the master volume.
 
 ## [1.9.6] — 2026-09-26
 

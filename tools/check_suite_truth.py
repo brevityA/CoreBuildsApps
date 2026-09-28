@@ -141,6 +141,49 @@ def check_line_v_trap() -> None:
         fail("line-v* release prefix trap present outside docs warning: " + ", ".join(sorted(set(offenders))))
 
 
+WORKFLOWS = ROOT / ".github" / "workflows"
+
+
+def workflow_tag_globs(text: str) -> list[str]:
+    """Every tag glob a workflow triggers on, from either YAML shape in use:
+    `tags: ['v*']` and a block list of `- 'coreline-v*'` items."""
+    globs: list[str] = []
+    for inline in re.findall(r"^\s*tags:\s*\[([^\]]*)\]", text, flags=re.M):
+        globs += [g.strip().strip("'\"") for g in inline.split(",") if g.strip()]
+    for block in re.findall(r"^\s*tags:\s*\n((?:\s*-\s.+\n?)+)", text, flags=re.M):
+        globs += [m.group(1).strip().strip("'\"")
+                  for m in re.finditer(r"^\s*-\s*(.+?)\s*$", block, flags=re.M)]
+    return [g for g in globs if g]
+
+
+def check_release_tag_wiring(suite: dict) -> None:
+    """A tag prefix is a release contract, and the two halves of it have drifted
+    before: suite.json declared Icon Pack's prefix as bare `v` while
+    `suite-release.yml` still triggered on `iconpack-v*` - a dead trigger that,
+    if a tag ever used it, would publish a versioned release without moving the
+    floating tag or shipping the Downloader assets. Hold every workflow trigger
+    to a declared prefix, and require each declared prefix to have a trigger.
+    """
+    declared = {key: app["tagPrefix"] for key, app in suite["apps"].items()}
+    seen: dict[str, list[str]] = {}
+    for wf in sorted(WORKFLOWS.glob("*.yml")):
+        for glob in workflow_tag_globs(wf.read_text(encoding="utf-8")):
+            if not glob.endswith("*"):
+                fail(f"{wf.name} triggers on tag pattern {glob!r}, which is not a "
+                     f"`<prefix>*` release glob; suite.json tagPrefix must own it")
+            prefix = glob[:-1]
+            seen.setdefault(prefix, []).append(wf.name)
+    matched = {key: prefix for key, prefix in declared.items() if prefix in seen}
+    for key, prefix in declared.items():
+        if key not in matched:
+            fail(f"suite.json {key}.tagPrefix {prefix!r} has no workflow trigger; "
+                 f"no workflow builds a release from a `{prefix}*` tag")
+    for prefix, files in sorted(seen.items()):
+        if prefix not in declared.values():
+            fail(f"{', '.join(files)} triggers on tag {prefix}*, a prefix no app "
+                 f"declares in suite.json (declared: {', '.join(sorted(set(declared.values())))})")
+
+
 def check_agents_guide(suite: dict) -> None:
     """AGENTS.md is outside the README stamp, so its suite table and wallpaper
     count can rot without any other gate noticing. Hold them to suite.json and
@@ -234,6 +277,7 @@ def main() -> int:
     check_readme_stamp(suite)
     check_stale_claims()
     check_line_v_trap()
+    check_release_tag_wiring(suite)
     check_agents_guide(suite)
     check_suite_hub(suite)
     print("suite truth checks passed")

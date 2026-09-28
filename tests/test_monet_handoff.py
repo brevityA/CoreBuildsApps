@@ -234,6 +234,73 @@ class SetupScreenTests(unittest.TestCase):
             self.assertRegex(s, rf'<string name="{key}"', f"{key} missing")
 
 
+class ApplyPriorityTests(unittest.TestCase):
+    """Monet as HOME must not take the Apply button from Projectivy.
+
+    1.9.5 aimed the button at HOME unconditionally. On a TV with Monet as its
+    default home and Projectivy installed beside it, the one-press apply that
+    1.9.4 gave Projectivy became Monet's setup screen. The button now goes to
+    HOME only when HOME can take an apply.
+    """
+
+    SRC = APP / "java/tv/corebuilds/iconpack/ApplyIconPack.kt"
+
+    def launchers(self):
+        src = read(self.SRC)
+        order = re.search(r"val ALL = listOf\(([^)]*)\)", src).group(1)
+        keys = [k.strip() for k in order.split(",") if k.strip()]
+        no_inbound = set(re.findall(
+            r"val (\w+) = Launcher\((?:(?!\n    \)).)*?inboundApply = false", src, re.S))
+        return keys, no_inbound
+
+    def apply_order(self, home, installed, resolving=frozenset({"PROJECTIVY"})):
+        """Mirror of ApplyIconPack.applyOrder, over the Kotlin's own data.
+
+        [resolving] stands in for resolvesApply: the launchers whose apply
+        intent reaches an activity on the simulated device.
+        """
+        keys, no_inbound = self.launchers()
+        rest = [k for k in keys if k in installed and k != home]
+        ordered = ([home] if home in installed else []) + rest
+        if not ordered or ordered[0] not in no_inbound:
+            return ordered
+        direct = next((k for k in ordered
+                       if k not in no_inbound and k in resolving), None)
+        if direct is None:
+            return ordered
+        return [direct] + [k for k in ordered if k != direct]
+
+    def test_monet_home_hands_the_button_to_projectivy(self):
+        self.assertEqual(self.apply_order("MONET", {"MONET", "PROJECTIVY"}),
+                         ["PROJECTIVY", "MONET"])
+
+    def test_projectivy_home_keeps_the_button(self):
+        self.assertEqual(self.apply_order("PROJECTIVY", {"MONET", "PROJECTIVY"})[0],
+                         "PROJECTIVY")
+
+    def test_monet_alone_still_gets_its_setup_screen(self):
+        self.assertEqual(self.apply_order("MONET", {"MONET"}), ["MONET"])
+
+    def test_a_launcher_that_cannot_resolve_is_not_promoted(self):
+        """Leanback on Fire has no receiver: Monet's walk keeps the button."""
+        self.assertEqual(self.apply_order("MONET", {"MONET", "LEANBACK"}),
+                         ["MONET", "LEANBACK"])
+
+    def test_kotlin_implements_the_fallback(self):
+        src = read(self.SRC)
+        body = src[src.index("fun applyOrder("):]
+        body = body[:body.index("\n    }\n")]
+        self.assertIn("if (home.inboundApply) return all", body)
+        self.assertIn("all.firstOrNull { it.inboundApply && resolvesApply(context, it) }", body)
+        self.assertIn("queryIntentActivities(intent, 0).isNotEmpty()", src)
+
+    def test_button_and_refresh_use_the_apply_order(self):
+        main = read(APP / "java/tv/corebuilds/iconpack/MainActivity.kt")
+        self.assertIn("val installed = ApplyIconPack.applyOrder(this)", main)
+        settings = read(APP / "java/tv/corebuilds/iconpack/SettingsActivity.kt")
+        self.assertIn("?: ApplyIconPack.detectApplyTarget(this)", settings)
+
+
 class KotlinCommentTests(unittest.TestCase):
     """Kotlin block comments nest. A literal `image/*` inside a KDoc opens a
     second comment that swallows the rest of the file — WallpaperSetter.kt

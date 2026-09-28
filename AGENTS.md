@@ -6,7 +6,7 @@
 
 | Product | Path | Package ID | Version | Downloader / stable tag |
 |---|---|---|---:|---|
-| Core Builds Icon Pack | `app/` with repo-root Gradle | `tv.corebuilds.iconpack` | `1.9.6` | `5270601` / `iconpack` |
+| Core Builds Icon Pack | `app/` with repo-root Gradle | `tv.corebuilds.iconpack` | `1.9.7` | `5270601` / `iconpack` |
 | Core Line | `ticker/` + `ticker/android/` | `dev.corebuilds.line` | `1.3.1` | `7375676` / `coreline` |
 | Core Shift | `shift/` | `dev.corebuilds.shift` | `2.3.5` | `8829421` / `shift` |
 | Core Motion | `motion-plugin/` | `tv.corebuilds.motion` | `1.0.0` | `[USER TO SUPPLY]` / `motion` |
@@ -55,7 +55,7 @@ python tools/validate.py
 python tests/test_icon_identity.py    # 55 style/colour/reference/mapping regressions
 ```
 
-Paste the validator receipt. Current receipt: `Validated 962 icons · 1184 components`.
+Paste the validator receipt. Current receipt: `Validated 971 icons · 1197 components`.
 
 **The pack identity takes precedence over literal vendor-logo reproduction.**
 Reviewed brand entries use `style: core_monoline`: 32px rounded primary strokes,
@@ -106,7 +106,7 @@ capped dependency forward, change the envelope first (migration steps are at the
 end of `gradle_envelope.json`), watch CI go green, then lift the ceiling and
 regenerate.
 
-`check_suite_truth.py` fails stale README/agent/doc claims, catalog/Gradle/version metadata drift, an AGENTS.md suite-table or wallpaper-count mismatch, missing stamped README block, and the `line-v*` trap. Core Line's prefix is `coreline-v*`.
+`check_suite_truth.py` fails stale README/agent/doc claims, catalog/Gradle/version metadata drift, an AGENTS.md suite-table or wallpaper-count mismatch, missing stamped README block, the `line-v*` trap, and release-tag wiring: every `on.push.tags` glob in `.github/workflows/` must be some app's `tagPrefix` + `*` from `suite.json`, and every declared prefix must have a trigger. Icon Pack is the case that shows why — its prefix is bare `v` and `build.yml` owns it, so `suite-release.yml` must not list `iconpack-v*`. Core Line's prefix is `coreline-v*`.
 
 `build_issue_prefills.py --check` holds the README's prefilled icon-request links to
 `.github/ISSUE_TEMPLATE/`: a renamed form file, a new or shadowing field `id`, or a

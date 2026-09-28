@@ -55,7 +55,7 @@ git tag <tag>
 git push origin <tag>
 ```
 
-The per-app workflow builds the stable APK asset and moves the matching floating tag/release. `suite-release.yml` can also run as a signed dry-run or published release when secrets are configured.
+The per-app workflow builds the stable APK asset and moves the matching floating tag/release. `suite-release.yml` covers the other four apps and can run as a signed dry-run from `workflow_dispatch`; publishing needs a tag push, because it names the release after the ref it ran on (see `docs/RELEASE-INFRA.md`). Icon Pack is not on its tag list — bare `v*` belongs to `build.yml`, which alone repoints the floating `iconpack` tag and ships `app-release.apk` plus the Glyphs companion.
 
 ## Signing secrets
 
