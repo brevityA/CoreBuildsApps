@@ -1,5 +1,6 @@
 import json
 import os
+import math
 import re
 
 from typeface import adaptive_lockup, lockup_cap, monogram_body, monogram_text, monogram_scaled
@@ -8094,7 +8095,9 @@ def _stroke_line(text, x0, y0, s):
 
 
 def _stroke_px(text, s):
-    return sum(_STROKE_LETTERS[ch][0] for ch in text) * s + _STROKE_GAP * (len(text) - 1)
+    # math.fsum, not sum: CPython 3.12 made sum() compensated, so the two
+    # disagree in the last bit and a .x5 coordinate rounds differently in CI.
+    return math.fsum(_STROKE_LETTERS[ch][0] for ch in text) * s + _STROKE_GAP * (len(text) - 1)
 
 
 def _stroke_text(text, c, box=(96, 136, 416, 376), weight=30):
@@ -8108,7 +8111,7 @@ def _stroke_text(text, c, box=(96, 136, 416, 376), weight=30):
     units_h = rows + (.34 if desc else 0)
     s = (bh - lead * (rows - 1)) / units_h
     for line in lines:
-        units_w = sum(_STROKE_LETTERS[ch][0] for ch in line) or .01
+        units_w = math.fsum(_STROKE_LETTERS[ch][0] for ch in line) or .01
         s = min(s, (bw - _STROKE_GAP * (len(line) - 1)) / units_w)
     ink_h = units_h * s + lead * (rows - 1)
     out, dots = [], []
