@@ -7610,3 +7610,103 @@ GLYPHS.update({
     "universal_ring": universal_ring, "leankey_play": leankey_play,
     "odido_tv": odido_tv, "npostart_tiles": npostart_tiles,
 })
+
+
+def vibra_v(c):
+    """Vibra: the V whose arms curl over into loops at the top."""
+    return (f'<path d="M 256 424 L 156 196 C 128 132 176 88 212 110 C 246 132 222 190 180 176 '
+            f'M 256 424 L 356 196 C 384 132 336 88 300 110 C 266 132 290 190 332 176" '
+            f'{_s(c, 30)}/>')
+
+
+def waipu_pills(c):
+    """waipu.tv: two capsules leaning right, the front one overlapping the back."""
+    import math
+    def capsule(cx, w):
+        a = math.radians(14)
+        dx, dy = math.sin(a) * 130, -math.cos(a) * 130
+        nx, ny = math.cos(a) * 52, math.sin(a) * 52
+        x1, y1, x2, y2 = cx - dx, 256 - dy, cx + dx, 256 + dy
+        return (f'<path d="M {x1 - nx:.1f} {y1 - ny:.1f} L {x2 - nx:.1f} {y2 - ny:.1f} '
+                f'A 52 52 0 0 1 {x2 + nx:.1f} {y2 + ny:.1f} L {x1 + nx:.1f} {y1 + ny:.1f} '
+                f'A 52 52 0 0 1 {x1 - nx:.1f} {y1 - ny:.1f} Z" {_s(c, w)}/>')
+    return capsule(212, 24) + capsule(300, 30)
+
+
+def tencent_play(c):
+    """Tencent Video: the rounded play wedge wrapped by a sweeping outer arc."""
+    return (f'<path d="M 128 136 C 128 104 152 88 180 104 L 380 220 C 408 236 408 276 380 292 '
+            f'L 180 408 C 152 424 128 408 128 376" {_s(c, 30)}/>'
+            + _solid("M 204 196 L 316 256 L 204 316 Z", c, 16)
+            + f'<path d="M 128 196 L 128 316" {_s(c, 30)}/>')
+
+
+def wink_chevron(c):
+    """Wink: the fat chevron built from two bars meeting at a point."""
+    return (f'<path d="M 152 92 L 280 92 L 424 256 L 280 420 L 152 420 L 296 256 Z" {_s(c, 28)}/>'
+            f'<path d="M 96 256 L 216 256" {_s(c, 28)}/>')
+
+
+def filimo_hex(c):
+    """Filimo: the rounded hexagon cradling a play wedge."""
+    import math
+    pts = [(256 + 180 * math.cos(math.radians(a)), 256 + 180 * math.sin(math.radians(a)))
+           for a in range(-90, 270, 60)]
+    d = "M " + " L ".join(f"{x:.1f} {y:.1f}" for x, y in pts) + " Z"
+    return (f'<path d="{d}" {_s(c, 30)}/>'
+            + _solid("M 218 180 L 336 256 L 218 332 Z", c, 16))
+
+
+def filmnet_flag(c):
+    """Filmnet: the swept F, its two bars trailing off like a flag in the wind."""
+    return (f'<path d="M 136 420 L 176 120 C 250 96 330 132 408 96" {_s(c, 32)}/>'
+            f'<path d="M 160 268 C 220 248 290 280 360 252" {_s(c, 30)}/>')
+
+
+def anilab_badge(c):
+    """AniLab: the tilted rounded badge with its stacked s-strokes."""
+    return (f'<path d="M 256 72 L 420 164 L 420 348 L 256 440 L 92 348 L 92 164 Z" {_s(c, 28)}/>'
+            f'<path d="M 316 180 L 204 244 M 308 268 L 196 332" {_s(c, 36)}/>')
+
+
+def nvplayer_p(c):
+    """NV Player: a P assembled from a stem and a bowl that do not quite meet."""
+    return (f'<path d="M 152 104 L 152 424" {_s(c, 36)}/>'
+            f'<path d="M 200 104 L 272 104 C 368 104 392 164 392 204 C 392 244 368 304 272 304 '
+            f'L 200 304" {_s(c, 32)}/>')
+
+
+def otf_chevrons(c):
+    """OTF TV: a play arrow folded from two overlapping blades."""
+    return (f'<path d="M 128 96 L 408 256 L 128 416 Z" {_s(c, 28)}/>'
+            f'<path d="M 128 96 L 264 256 L 128 416" {_s(c, 24)}/>')
+
+
+def lemino_bubble(c):
+    """Lemino: the speech bubble with its tail kicked out at the bottom right."""
+    return (f'<path d="M 108 116 L 404 116 C 420 116 428 124 428 140 L 428 320 C 428 336 420 344 404 344 '
+            f'L 356 344 L 340 412 L 288 344 L 108 344 C 92 344 84 336 84 320 L 84 140 '
+            f'C 84 124 92 116 108 116 Z" {_s(c, 28)}/>'
+            f'<path d="M 160 208 C 160 260 200 284 256 284 C 312 284 352 260 352 208" {_s(c, 26)}/>')
+
+
+def unifi_smile(c):
+    """unifi TV: the two eyes and the wide smile under them."""
+    return (f'<circle cx="192" cy="176" r="40" {_f(c)}/>'
+            f'<circle cx="320" cy="176" r="40" {_f(c)}/>'
+            f'<path d="M 112 272 C 132 380 212 420 256 420 C 300 420 380 380 400 272" {_s(c, 32)}/>')
+
+
+def saff_pixels(c):
+    """SAFF: the stepped cluster of square pixels climbing to the corner."""
+    sq = ((96, 320), (192, 320), (288, 320), (192, 224), (288, 224), (288, 128), (384, 128), (384, 32))
+    return "".join(f'<rect x="{x - 8}" y="{y + 56}" width="72" height="72" rx="10" {_s(c, 22)}/>'
+                   for x, y in sq)
+
+
+GLYPHS.update({
+    "vibra_v": vibra_v, "waipu_pills": waipu_pills, "tencent_play": tencent_play,
+    "wink_chevron": wink_chevron, "filimo_hex": filimo_hex, "filmnet_flag": filmnet_flag,
+    "anilab_badge": anilab_badge, "nvplayer_p": nvplayer_p, "otf_chevrons": otf_chevrons,
+    "lemino_bubble": lemino_bubble, "unifi_smile": unifi_smile, "saff_pixels": saff_pixels,
+})

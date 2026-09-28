@@ -26,6 +26,17 @@ All notable changes to the Core Builds Icon Pack. Format follows
 - **Basis.** Its B with a play arrow in the lower bowl, on the icon's blue
   gradient, requested in #199 with its launch activity read off the
   requester's TV. 970 → 971 icons.
+- **12 more apps get marks drawn from their real icons, 282 in all.**
+  Vibra's looped V, waipu.tv's two leaning capsules, Tencent Video's play
+  wedge, Wink's chevron, Filimo's hexagon and play, Filmnet's swept F,
+  AniLab's badge, NV Player's split P, OTF TV's folded play arrow, Lemino's
+  speech bubble, unifi TV's smile and SAFF's stepped pixels replace their
+  letter tiles. The launcher icons were read from the Projectivy Icon Pack
+  1.1.9 artwork, as reference only. Vibra, waipu.tv, Tencent Video, Wink,
+  NV Player, OTF TV, unifi TV and SAFF take their icons' colours, and
+  waipu.tv, Tencent Video, OTF TV, unifi TV and SAFF are spelled like the
+  apps. Vibra, waipu.tv, Filimo, Lemino and OTF TV carry their icons' own
+  two-colour gradients, and so does batch 18's AirPin Pro.
 - **12 more apps get marks drawn from their real icons, 270 in all.**
   AirPin Pro's screen and clip, APK Updater's thumbs-up badge, Background
   Apps and Process List's heartbeat running into a heart, Direct One's

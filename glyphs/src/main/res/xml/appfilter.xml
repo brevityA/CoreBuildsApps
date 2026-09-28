@@ -1579,7 +1579,7 @@
     <!-- OSN+ -->
     <item component="ComponentInfo{com.osn.go/com.osn.go.MainActivity}" drawable="osn"/>
     <item component="ComponentInfo{com.osn.go/.MainActivity}" drawable="osn"/>
-    <!-- Otf TV -->
+    <!-- OTF TV -->
     <item component="ComponentInfo{com.t100v.otf/com.t100v.otf.intro}" drawable="otf_tv"/>
     <item component="ComponentInfo{com.t100v.otf/.intro}" drawable="otf_tv"/>
     <!-- Ott Navigator -->
@@ -1918,7 +1918,7 @@
     <!-- Safety Guard -->
     <item component="ComponentInfo{com.tcl.guard/com.tcl.guard.mainmenu.splashpage.activity.StartActivity}" drawable="tcl_safety_guard"/>
     <item component="ComponentInfo{com.tcl.guard/.mainmenu.splashpage.activity.StartActivity}" drawable="tcl_safety_guard"/>
-    <!-- Saff -->
+    <!-- SAFF -->
     <item component="ComponentInfo{sa.saffplus/com.mottostreaming.android.tv.MainActivity}" drawable="saff"/>
     <!-- SAI -->
     <item component="ComponentInfo{com.apkpreem.sai/com.apkpreem.sai.ui.activities.MainActivity}" drawable="sai"/>
@@ -2290,7 +2290,7 @@
     <item component="ComponentInfo{lt.telia.tv/.MainActivity}" drawable="teliaplaylt"/>
     <!-- Telly -->
     <item component="ComponentInfo{tv.fournetwork.android.box.digi/tv.fournetwork.android.box.MainActivity}" drawable="telly"/>
-    <!-- Tencent -->
+    <!-- Tencent Video -->
     <item component="ComponentInfo{com.tencent.qqlive/com.tencent.qqlive.ona.activity.SplashHomeActivity}" drawable="tencent"/>
     <item component="ComponentInfo{com.tencent.qqlive/.ona.activity.SplashHomeActivity}" drawable="tencent"/>
     <!-- Tennis Channel -->
@@ -2521,7 +2521,7 @@
     <item component="ComponentInfo{com.github.livingwithhippos.unchained/.base.MainActivity}" drawable="livingwithhippos"/>
     <!-- UniFi Protect -->
     <item component="ComponentInfo{com.ubnt.unifi.protect/com.ubnt.sections.splash.AuthenticationActivity}" drawable="unifi_protect"/>
-    <!-- Unifi TV -->
+    <!-- unifi TV -->
     <item component="ComponentInfo{com.tm.playtv/com.tm.ott.module.login.activity.LoginActivity}" drawable="unifi_tv"/>
     <!-- Unlinked -->
     <item component="ComponentInfo{link.unlinked/link.unlinked.android.core.ui.SplashActivity}" drawable="unlinked"/>
@@ -2638,7 +2638,7 @@
     <item component="ComponentInfo{com.vtvcab.onTV/com.vtvcab.activities.NewSplashActivity}" drawable="vtvcab_on_tv"/>
     <!-- VTVgo -->
     <item component="ComponentInfo{vn.vtv.vtvgotv/com.vtvcab.activities.NewSplashActivity}" drawable="vtvgo_tv"/>
-    <!-- Waipu TV -->
+    <!-- waipu.tv -->
     <item component="ComponentInfo{de.exaring.waipu/de.exaring.waipu.ui.login.LoginActivity}" drawable="waipu_tv"/>
     <item component="ComponentInfo{de.exaring.waipu/.ui.login.LoginActivity}" drawable="waipu_tv"/>
     <!-- Wako -->

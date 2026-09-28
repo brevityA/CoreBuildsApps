@@ -315,17 +315,22 @@
     {
       "name": "AirPin Pro",
       "drawable": "airpin_pro",
-      "color": "#7BAC49",
+      "color": "#85F7AB",
       "glyph": "airpin_screen",
       "components": [
         "com.waxrain.airplaydmr/com.waxrain.ui.WaxPlayerSetting"
       ],
       "category": "APP",
       "mapping_source": "Projectivy Icon Pack 1.1.9",
-      "color_source": "sampled from the official launcher icon (APKCombo mirror of the Google Play listing for com.waxrain.airplaydmr): dominant brand accent #7BAC49 (2026-09-26)",
-      "color_reviewed": "2026-09-26",
+      "color_source": "sampled from the Projectivy Icon Pack 1.1.9 artwork for com.waxrain.airplaydmr (github.com/SicMundus86/ProjectivyIconPack, used as reference only): gradient start #85F7AB (2026-09-28)",
+      "color_reviewed": "2026-09-28",
       "name_source": "app name from the Projectivy Icon Pack 1.1.9 artwork for com.waxrain.airplaydmr (github.com/SicMundus86/ProjectivyIconPack, used as reference only), which shows the AirPin Pro logo for this package (2026-09-28)",
-      "glyph_source": "brand-informed redraw of the Projectivy Icon Pack 1.1.9 artwork for com.waxrain.airplaydmr (github.com/SicMundus86/ProjectivyIconPack, used as reference only); Core monoline geometry, not a trace (2026-09-28)"
+      "glyph_source": "brand-informed redraw of the Projectivy Icon Pack 1.1.9 artwork for com.waxrain.airplaydmr (github.com/SicMundus86/ProjectivyIconPack, used as reference only); Core monoline geometry, not a trace (2026-09-28)",
+      "gradient": [
+        "#85F7AB",
+        "#1ACEF7"
+      ],
+      "gradient_source": "sampled from the Projectivy Icon Pack 1.1.9 artwork for com.waxrain.airplaydmr (github.com/SicMundus86/ProjectivyIconPack, used as reference only): the screen's own green to cyan gradient, left to right (2026-09-28)"
     },
     {
       "name": "AirPlay Receiver",
@@ -546,14 +551,14 @@
       "name": "AniLab",
       "drawable": "anilab",
       "color": "#D82028",
-      "glyph": "broadcast_A",
-      "mark": "AN",
+      "glyph": "anilab_badge",
       "components": [
         "com.anilab.android.tv/com.anilab.android.tv.ui.TvActivity"
       ],
       "category": "APP",
       "color_source": "sampled from the Projectivy Icon Pack 1.1.9 artwork for com.anilab.android.tv (github.com/SicMundus86/ProjectivyIconPack, used as reference only): #D82028 (2026-09-27)",
-      "color_reviewed": "2026-09-27"
+      "color_reviewed": "2026-09-27",
+      "glyph_source": "brand-informed redraw of the Projectivy Icon Pack 1.1.9 artwork for com.anilab.android.tv (github.com/SicMundus86/ProjectivyIconPack, used as reference only); Core monoline geometry, not a trace (2026-09-28)"
     },
     {
       "name": "Anime Cast",
@@ -3259,16 +3264,21 @@
     {
       "name": "Filimo",
       "drawable": "filimo",
-      "color": "#F8C038",
-      "glyph": "broadcast_F",
-      "mark": "FI",
+      "color": "#FEC33D",
+      "glyph": "filimo_hex",
       "components": [
         "com.sabaidea.filimo.tv/com.bluevod.android.tv.ui.activities.MainActivity"
       ],
       "category": "APP",
       "mapping_source": "Projectivy Icon Pack 1.1.9",
-      "color_source": "sampled from the Projectivy Icon Pack 1.1.9 artwork for com.sabaidea.filimo.tv (github.com/SicMundus86/ProjectivyIconPack, used as reference only): #F8C038 (2026-09-27)",
-      "color_reviewed": "2026-09-27"
+      "color_source": "sampled from the Projectivy Icon Pack 1.1.9 artwork for com.sabaidea.filimo.tv (github.com/SicMundus86/ProjectivyIconPack, used as reference only): gradient start #FEC33D (2026-09-28)",
+      "color_reviewed": "2026-09-28",
+      "glyph_source": "brand-informed redraw of the Projectivy Icon Pack 1.1.9 artwork for com.sabaidea.filimo.tv (github.com/SicMundus86/ProjectivyIconPack, used as reference only); Core monoline geometry, not a trace (2026-09-28)",
+      "gradient": [
+        "#FEC33D",
+        "#F4833D"
+      ],
+      "gradient_source": "sampled from the Projectivy Icon Pack 1.1.9 artwork for com.sabaidea.filimo.tv (github.com/SicMundus86/ProjectivyIconPack, used as reference only): the hexagon's own yellow to orange gradient, top to bottom (2026-09-28)"
     },
     {
       "name": "Filmfriend",
@@ -3288,15 +3298,15 @@
       "name": "Filmnet TV",
       "drawable": "filmnet_tv",
       "color": "#E00010",
-      "glyph": "film_F",
-      "mark": "FT",
+      "glyph": "filmnet_flag",
       "components": [
         "ir.filmnet.android.tv/ir.filmnet.android.ui.MainActivity"
       ],
       "category": "APP",
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "sampled from the Projectivy Icon Pack 1.1.9 artwork for ir.filmnet.android.tv (github.com/SicMundus86/ProjectivyIconPack, used as reference only): #E00010 (2026-09-27)",
-      "color_reviewed": "2026-09-27"
+      "color_reviewed": "2026-09-27",
+      "glyph_source": "brand-informed redraw of the Projectivy Icon Pack 1.1.9 artwork for ir.filmnet.android.tv (github.com/SicMundus86/ProjectivyIconPack, used as reference only); Core monoline geometry, not a trace (2026-09-28)"
     },
     {
       "name": "FilmRise",
@@ -5592,16 +5602,21 @@
     {
       "name": "Lemino",
       "drawable": "lemino",
-      "color": "#FF2B66",
-      "glyph": "broadcast_L",
-      "mark": "LE",
+      "color": "#FFAF2D",
+      "glyph": "lemino_bubble",
       "components": [
         "jp.ne.docomo.lemino.androidtv/jp.ne.docomo.lemino.androidtv.activities.SplashActivity"
       ],
       "category": "APP",
       "mapping_source": "Projectivy Icon Pack 1.1.9",
-      "color_source": "sampled from the official launcher icon (Google Play listing for jp.ne.docomo.lemino.androidtv): dominant brand accent #FF2B66 (2026-09-26)",
-      "color_reviewed": "2026-09-26"
+      "color_source": "sampled from the Projectivy Icon Pack 1.1.9 artwork for jp.ne.docomo.lemino.androidtv (github.com/SicMundus86/ProjectivyIconPack, used as reference only): gradient start #FFAF2D (2026-09-28)",
+      "color_reviewed": "2026-09-28",
+      "glyph_source": "brand-informed redraw of the Projectivy Icon Pack 1.1.9 artwork for jp.ne.docomo.lemino.androidtv (github.com/SicMundus86/ProjectivyIconPack, used as reference only); Core monoline geometry, not a trace (2026-09-28)",
+      "gradient": [
+        "#FFAF2D",
+        "#FF0974"
+      ],
+      "gradient_source": "sampled from the Projectivy Icon Pack 1.1.9 artwork for jp.ne.docomo.lemino.androidtv (github.com/SicMundus86/ProjectivyIconPack, used as reference only): the bubble's own orange to pink gradient, left to right (2026-09-28)"
     },
     {
       "name": "Lemuroid",
@@ -7284,15 +7299,15 @@
     {
       "name": "NV Player",
       "drawable": "nvplayer",
-      "color": "#B6F23A",
-      "glyph": "broadcast_N",
-      "mark": "NP",
+      "color": "#50D8F8",
+      "glyph": "nvplayer_p",
       "components": [
         "com.acb.nvplayer/com.ae.video.bplayer.ui.SplashActivity"
       ],
       "category": "APP",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled from the Projectivy Icon Pack 1.1.9 artwork for com.acb.nvplayer (github.com/SicMundus86/ProjectivyIconPack, used as reference only): #50D8F8 (2026-09-28)",
+      "color_reviewed": "2026-09-28",
+      "glyph_source": "brand-informed redraw of the Projectivy Icon Pack 1.1.9 artwork for com.acb.nvplayer (github.com/SicMundus86/ProjectivyIconPack, used as reference only); Core monoline geometry, not a trace (2026-09-28)"
     },
     {
       "name": "Nxsha",
@@ -7616,18 +7631,24 @@
       "mark_source": "logotype letters from the official launcher icon (Google Play listing for com.osn.go), which reads 'osn+': the first two, because the whole logotype sets under the pack's 96px legibility floor; set in the pack's face, not traced (2026-09-26)"
     },
     {
-      "name": "Otf TV",
+      "name": "OTF TV",
       "drawable": "otf_tv",
-      "color": "#C95CFF",
-      "glyph": "broadcast_O",
-      "mark": "OT",
+      "color": "#F6473A",
+      "glyph": "otf_chevrons",
       "components": [
         "com.t100v.otf/com.t100v.otf.intro"
       ],
       "category": "APP",
       "mapping_source": "Projectivy Icon Pack 1.1.9",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled from the Projectivy Icon Pack 1.1.9 artwork for com.t100v.otf (github.com/SicMundus86/ProjectivyIconPack, used as reference only): gradient start #F6473A (2026-09-28)",
+      "color_reviewed": "2026-09-28",
+      "name_source": "app name from the Projectivy Icon Pack 1.1.9 artwork for com.t100v.otf (github.com/SicMundus86/ProjectivyIconPack, used as reference only), which shows the OTF TV logo for this package (2026-09-28)",
+      "glyph_source": "brand-informed redraw of the Projectivy Icon Pack 1.1.9 artwork for com.t100v.otf (github.com/SicMundus86/ProjectivyIconPack, used as reference only); Core monoline geometry, not a trace (2026-09-28)",
+      "gradient": [
+        "#F6473A",
+        "#C52019"
+      ],
+      "gradient_source": "sampled from the Projectivy Icon Pack 1.1.9 artwork for com.t100v.otf (github.com/SicMundus86/ProjectivyIconPack, used as reference only): the arrow's own light to deep red gradient, its two ends (2026-09-28)"
     },
     {
       "name": "Ott Navigator",
@@ -9112,18 +9133,19 @@
       "glyph_source": "brand-informed redraw of the launcher tile in a supporter's device screenshot (com.tcl.guard, 2026-09-27); Core monoline geometry, not a trace (2026-09-27)"
     },
     {
-      "name": "Saff",
+      "name": "SAFF",
       "drawable": "saff",
-      "color": "#106736",
-      "glyph": "broadcast_S",
-      "mark": "SA",
+      "color": "#50A888",
+      "glyph": "saff_pixels",
       "components": [
         "sa.saffplus/com.mottostreaming.android.tv.MainActivity"
       ],
       "category": "APP",
       "mapping_source": "Projectivy Icon Pack 1.1.9",
-      "color_source": "sampled from the official launcher icon (Google Play listing for sa.saffplus): dominant brand accent #106736 (2026-09-26)",
-      "color_reviewed": "2026-09-26"
+      "color_source": "sampled from the Projectivy Icon Pack 1.1.9 artwork for sa.saffplus (github.com/SicMundus86/ProjectivyIconPack, used as reference only): #50A888 (2026-09-28)",
+      "color_reviewed": "2026-09-28",
+      "name_source": "app name from the Projectivy Icon Pack 1.1.9 artwork for sa.saffplus (github.com/SicMundus86/ProjectivyIconPack, used as reference only), which shows the SAFF logo for this package (2026-09-28)",
+      "glyph_source": "brand-informed redraw of the Projectivy Icon Pack 1.1.9 artwork for sa.saffplus (github.com/SicMundus86/ProjectivyIconPack, used as reference only); Core monoline geometry, not a trace (2026-09-28)"
     },
     {
       "name": "SAI",
@@ -10791,18 +10813,19 @@
       "color_reviewed": "2026-09-26"
     },
     {
-      "name": "Tencent",
+      "name": "Tencent Video",
       "drawable": "tencent",
-      "color": "#C95CFF",
-      "glyph": "broadcast_T",
+      "color": "#30A0F8",
+      "glyph": "tencent_play",
       "components": [
         "com.tencent.qqlive/com.tencent.qqlive.ona.activity.SplashHomeActivity"
       ],
       "category": "APP",
       "mapping_source": "Projectivy Icon Pack 1.1.9",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null,
-      "mark": "TX"
+      "color_source": "sampled from the Projectivy Icon Pack 1.1.9 artwork for com.tencent.qqlive (github.com/SicMundus86/ProjectivyIconPack, used as reference only): #30A0F8 (2026-09-28)",
+      "color_reviewed": "2026-09-28",
+      "name_source": "app name from the Projectivy Icon Pack 1.1.9 artwork for com.tencent.qqlive (github.com/SicMundus86/ProjectivyIconPack, used as reference only), which shows the Tencent Video logo for this package (2026-09-28)",
+      "glyph_source": "brand-informed redraw of the Projectivy Icon Pack 1.1.9 artwork for com.tencent.qqlive (github.com/SicMundus86/ProjectivyIconPack, used as reference only); Core monoline geometry, not a trace (2026-09-28)"
     },
     {
       "name": "Tennis Channel",
@@ -11885,18 +11908,19 @@
       "glyph_source": "brand-informed redraw of the official launcher icon (play listing for com.ubnt.unifi.protect); Core monoline geometry, not a trace (2026-09-26)"
     },
     {
-      "name": "Unifi TV",
+      "name": "unifi TV",
       "drawable": "unifi_tv",
-      "color": "#7C74FF",
-      "glyph": "broadcast_U",
-      "mark": "UT",
+      "color": "#8880F0",
+      "glyph": "unifi_smile",
       "components": [
         "com.tm.playtv/com.tm.ott.module.login.activity.LoginActivity"
       ],
       "category": "APP",
       "mapping_source": "Projectivy Icon Pack 1.1.9",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled from the Projectivy Icon Pack 1.1.9 artwork for com.tm.playtv (github.com/SicMundus86/ProjectivyIconPack, used as reference only): #8880F0 (2026-09-28)",
+      "color_reviewed": "2026-09-28",
+      "name_source": "app name from the Projectivy Icon Pack 1.1.9 artwork for com.tm.playtv (github.com/SicMundus86/ProjectivyIconPack, used as reference only), which shows the unifi TV logo for this package (2026-09-28)",
+      "glyph_source": "brand-informed redraw of the Projectivy Icon Pack 1.1.9 artwork for com.tm.playtv (github.com/SicMundus86/ProjectivyIconPack, used as reference only); Core monoline geometry, not a trace (2026-09-28)"
     },
     {
       "name": "Unlinked",
@@ -12016,16 +12040,21 @@
     {
       "name": "Vibra",
       "drawable": "vibra",
-      "color": "#C95CFF",
-      "glyph": "music_V",
-      "mark": "VI",
+      "color": "#C82088",
+      "glyph": "vibra_v",
       "components": [
         "com.vibra/com.ryanheise.audioservice.AudioServiceActivity"
       ],
       "category": "APP",
       "mapping_source": "Projectivy Icon Pack 1.1.9",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled from the Projectivy Icon Pack 1.1.9 artwork for com.vibra (github.com/SicMundus86/ProjectivyIconPack, used as reference only): gradient start #C82088 (2026-09-28)",
+      "color_reviewed": "2026-09-28",
+      "glyph_source": "brand-informed redraw of the Projectivy Icon Pack 1.1.9 artwork for com.vibra (github.com/SicMundus86/ProjectivyIconPack, used as reference only); Core monoline geometry, not a trace (2026-09-28)",
+      "gradient": [
+        "#C82088",
+        "#E08838"
+      ],
+      "gradient_source": "sampled from the Projectivy Icon Pack 1.1.9 artwork for com.vibra (github.com/SicMundus86/ProjectivyIconPack, used as reference only): the V's own magenta to orange gradient, its two ends (2026-09-28)"
     },
     {
       "name": "Victory Plus",
@@ -12392,20 +12421,24 @@
       "color_reviewed": "2026-09-26"
     },
     {
-      "name": "Waipu TV",
+      "name": "waipu.tv",
       "drawable": "waipu_tv",
-      "color": "#A366FF",
-      "glyph": "broadcast_W",
-      "mark": "WT",
-      "mark_style": "lower",
-      "mark_style_source": "waipu's logotype is lowercase ('waipu.tv')",
+      "color": "#885CA3",
+      "glyph": "waipu_pills",
       "components": [
         "de.exaring.waipu/de.exaring.waipu.ui.login.LoginActivity"
       ],
       "category": "APP",
       "mapping_source": "Projectivy Icon Pack 1.1.9",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled from the Projectivy Icon Pack 1.1.9 artwork for de.exaring.waipu (github.com/SicMundus86/ProjectivyIconPack, used as reference only): gradient start #885CA3 (2026-09-28)",
+      "color_reviewed": "2026-09-28",
+      "name_source": "app name from the Projectivy Icon Pack 1.1.9 artwork for de.exaring.waipu (github.com/SicMundus86/ProjectivyIconPack, used as reference only), which shows the waipu.tv logo for this package (2026-09-28)",
+      "glyph_source": "brand-informed redraw of the Projectivy Icon Pack 1.1.9 artwork for de.exaring.waipu (github.com/SicMundus86/ProjectivyIconPack, used as reference only); Core monoline geometry, not a trace (2026-09-28)",
+      "gradient": [
+        "#885CA3",
+        "#56BDC0"
+      ],
+      "gradient_source": "sampled from the Projectivy Icon Pack 1.1.9 artwork for de.exaring.waipu (github.com/SicMundus86/ProjectivyIconPack, used as reference only): the capsules' own purple to teal gradient, its two ends (2026-09-28)"
     },
     {
       "name": "Wako",
@@ -12611,16 +12644,16 @@
     {
       "name": "Wink",
       "drawable": "wink",
-      "color": "#3D8BFF",
-      "glyph": "broadcast_W",
-      "mark": "WI",
+      "color": "#F85820",
+      "glyph": "wink_chevron",
       "components": [
         "ru.rt.video.app.tv/ru.rt.video.app.splash.view.SplashActivity"
       ],
       "category": "APP",
       "mapping_source": "Projectivy Icon Pack 1.1.9",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "sampled from the Projectivy Icon Pack 1.1.9 artwork for ru.rt.video.app.tv (github.com/SicMundus86/ProjectivyIconPack, used as reference only): #F85820 (2026-09-28)",
+      "color_reviewed": "2026-09-28",
+      "glyph_source": "brand-informed redraw of the Projectivy Icon Pack 1.1.9 artwork for ru.rt.video.app.tv (github.com/SicMundus86/ProjectivyIconPack, used as reference only); Core monoline geometry, not a trace (2026-09-28)"
     },
     {
       "name": "Wireguard",

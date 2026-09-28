@@ -1579,7 +1579,7 @@
     <!-- OSN+ -->
     <item component="ComponentInfo{com.osn.go/com.osn.go.MainActivity}" drawable="osn_banner"/>
     <item component="ComponentInfo{com.osn.go/.MainActivity}" drawable="osn_banner"/>
-    <!-- Otf TV -->
+    <!-- OTF TV -->
     <item component="ComponentInfo{com.t100v.otf/com.t100v.otf.intro}" drawable="otf_tv_banner"/>
     <item component="ComponentInfo{com.t100v.otf/.intro}" drawable="otf_tv_banner"/>
     <!-- Ott Navigator -->
@@ -1918,7 +1918,7 @@
     <!-- Safety Guard -->
     <item component="ComponentInfo{com.tcl.guard/com.tcl.guard.mainmenu.splashpage.activity.StartActivity}" drawable="tcl_safety_guard_banner"/>
     <item component="ComponentInfo{com.tcl.guard/.mainmenu.splashpage.activity.StartActivity}" drawable="tcl_safety_guard_banner"/>
-    <!-- Saff -->
+    <!-- SAFF -->
     <item component="ComponentInfo{sa.saffplus/com.mottostreaming.android.tv.MainActivity}" drawable="saff_banner"/>
     <!-- SAI -->
     <item component="ComponentInfo{com.apkpreem.sai/com.apkpreem.sai.ui.activities.MainActivity}" drawable="sai_banner"/>
@@ -2290,7 +2290,7 @@
     <item component="ComponentInfo{lt.telia.tv/.MainActivity}" drawable="teliaplaylt_banner"/>
     <!-- Telly -->
     <item component="ComponentInfo{tv.fournetwork.android.box.digi/tv.fournetwork.android.box.MainActivity}" drawable="telly_banner"/>
-    <!-- Tencent -->
+    <!-- Tencent Video -->
     <item component="ComponentInfo{com.tencent.qqlive/com.tencent.qqlive.ona.activity.SplashHomeActivity}" drawable="tencent_banner"/>
     <item component="ComponentInfo{com.tencent.qqlive/.ona.activity.SplashHomeActivity}" drawable="tencent_banner"/>
     <!-- Tennis Channel -->
@@ -2521,7 +2521,7 @@
     <item component="ComponentInfo{com.github.livingwithhippos.unchained/.base.MainActivity}" drawable="livingwithhippos_banner"/>
     <!-- UniFi Protect -->
     <item component="ComponentInfo{com.ubnt.unifi.protect/com.ubnt.sections.splash.AuthenticationActivity}" drawable="unifi_protect_banner"/>
-    <!-- Unifi TV -->
+    <!-- unifi TV -->
     <item component="ComponentInfo{com.tm.playtv/com.tm.ott.module.login.activity.LoginActivity}" drawable="unifi_tv_banner"/>
     <!-- Unlinked -->
     <item component="ComponentInfo{link.unlinked/link.unlinked.android.core.ui.SplashActivity}" drawable="unlinked_banner"/>
@@ -2638,7 +2638,7 @@
     <item component="ComponentInfo{com.vtvcab.onTV/com.vtvcab.activities.NewSplashActivity}" drawable="vtvcab_on_tv_banner"/>
     <!-- VTVgo -->
     <item component="ComponentInfo{vn.vtv.vtvgotv/com.vtvcab.activities.NewSplashActivity}" drawable="vtvgo_tv_banner"/>
-    <!-- Waipu TV -->
+    <!-- waipu.tv -->
     <item component="ComponentInfo{de.exaring.waipu/de.exaring.waipu.ui.login.LoginActivity}" drawable="waipu_tv_banner"/>
     <item component="ComponentInfo{de.exaring.waipu/.ui.login.LoginActivity}" drawable="waipu_tv_banner"/>
     <!-- Wako -->
