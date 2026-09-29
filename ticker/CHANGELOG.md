@@ -109,8 +109,9 @@ The repo-root `CHANGELOG.md` is the icon pack's. Core Line keeps its own here.
   phone they were 0px, because the phone layout for the banner sat in
   `layout.css`, which loads before `components.css` and so never applied.
   Below 1280 on a TV, and on a phone, the banner now stacks: teams across the
-  full width (280px of name at 960), then one row of channels, venue and
-  Watch, with the venue the thing that truncates. At 960x540 the banner is
+  full width (280px of name at 960), then one row of channels and Watch. The
+  venue leaves that row, since beside three channels it came down to one
+  letter; Game Detail still shows it. At 960x540 the banner is
   267px, so the first card stays above the chyron. With the banner now
   rotating, this is the frame a viewer sees most.
 

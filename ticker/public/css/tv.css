@@ -168,11 +168,11 @@
     min-width: 0;
     justify-content: flex-start;
   }
+  /* The venue is dropped here rather than truncated: beside three channel
+     pills and Watch it came down to one letter ("E"), which reads as a
+     glitch. Game Detail still shows it in full. */
   [data-tv] .hero-side .when {
-    flex: 1 1 0;
-    min-width: 0;
-    overflow: hidden;
-    text-overflow: ellipsis;
+    display: none;
   }
   [data-tv] .hero-side .btn {
     flex: 0 0 auto;
