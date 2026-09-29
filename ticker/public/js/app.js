@@ -201,6 +201,19 @@ function bindActions() {
   $('gameDetail')?.addEventListener('click', (event) => {
     if (event.target.id === 'gameDetail') closeGameDetail();
   });
+
+  // A team logo that fails to load — a dead CDN, a VPN that blocks it, a
+  // team with no art. The mark already falls back structurally (the monogram
+  // is under the logo), so this only tidies up after the browsers that paint
+  // a broken-image glyph, and drops the empty slot the compact form leaves.
+  //
+  // Capture phase on purpose: image `error` events do not bubble, but they do
+  // propagate down, so one listener at the document covers every mark the
+  // board will ever rebuild — including the ones the 12s rotation swaps in.
+  document.addEventListener('error', (event) => {
+    const img = event.target;
+    if (img?.classList?.contains('mark__img')) img.closest('.mark')?.classList.add('is-broken');
+  }, true);
 }
 
 function bindKeys() {

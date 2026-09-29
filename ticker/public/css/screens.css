@@ -477,6 +477,73 @@
   text-overflow: ellipsis;
   white-space: nowrap;
 }
+
+/* ---- Team marks ---------------------------------------------------------
+   A logo with its monogram as the structural fallback. The monogram is
+   painted first and the logo is laid over it, so every failure mode — 404,
+   blocked CDN, refused URL, no JavaScript — lands on a readable mark rather
+   than a hole. `.is-broken` is added by a delegated listener for browsers
+   that draw a glyph for a failed image.
+
+   The plate behind the logo is not decoration. ESPN and the NHL ship
+   transparent marks drawn in team colours, and a dark mark (Brooklyn, the
+   Spurs, half the Premier League) would otherwise vanish into a card that is
+   nearly black — worst of all under the OLED theme, where the card really is
+   #111. A raised plate guarantees every logo has something to sit on, in
+   every theme, without touching the artwork. */
+.mark {
+  position: relative;
+  display: inline-grid;
+  place-items: center;
+  /* One number for the box, so a parent can resize a mark without touching
+     both axes — and 68px is what fits the 88px abbreviation column in
+     `.team-row` without re-flowing the row. */
+  --mark-size: 68px;
+  width: var(--mark-size);
+  height: var(--mark-size);
+  border-radius: var(--cb-radius-card-inner);
+}
+.mark__img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  background: var(--surface-raised);
+  border-radius: var(--cb-radius-card-inner);
+}
+/* No logo: the monogram is the mark, so it keeps the column's own type
+   rather than being boxed. */
+.mark--mono {
+  width: auto;
+  height: auto;
+  display: block;
+  font-size: var(--text-abbr);
+}
+
+/* Compact form — cards. The mark sits *in front of* the abbreviation rather
+   than over it, because a 26px logo is a colour cue and not text: at three
+   metres the viewer reads the letters and recognises the logo. */
+.mark--row {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--cb-space-xs);
+  width: auto;
+  height: auto;
+  font: inherit;
+  letter-spacing: inherit;
+}
+.mark--row .mark__img {
+  position: static;
+  width: 26px;
+  height: 26px;
+  flex: 0 0 auto;
+  background: none;
+  border-radius: 2px;
+}
+.mark.is-broken .mark__img {
+  display: none;
+}
 .team-name {
   color: var(--cb-slate);
   font-size: var(--text-pill);

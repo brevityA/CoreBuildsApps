@@ -1,6 +1,44 @@
 <!doctype html>
 <html lang="en" data-theme="core" data-mode="board" data-position="bottom">
 <head>
+  <!--
+    Content-Security-Policy.
+
+    Shipped as a meta tag rather than a header on purpose: the app is served
+    three different ways — `server.mjs` over HTTP, `LineWebClient` out of the
+    APK's assets, and any static host — and a meta policy is the one form all
+    three carry without each server having to remember it. (A meta policy
+    cannot express `frame-ancestors`; that is the one directive left out.)
+
+    What each directive is doing here, and what it is not:
+
+    - `script-src 'self'` is strict, and it is the reason the boot guard moved
+      out of this file into `js/boot.js`. There is no inline script and no
+      `on*=` attribute anywhere in the app, so `'unsafe-inline'` would buy
+      nothing and would let any injected handler run.
+    - `style-src` needs `'unsafe-inline'`: every card, chip and tile carries
+      its league accent as an inline `style="--acc:#7FD4FF"`. That is the
+      house pattern and it is load-bearing, so the allowance is real and this
+      comment is the place it is declared rather than discovered.
+    - `img-src` lists `data:` for the pairing QR code, which is a canvas
+      data URL, and the team-logo CDNs. The CDN list is the same policy as
+      `LOGO_DOMAINS` in `lib/logos.mjs`, and `tests/logos.test.mjs` asserts
+      the two stay in step: the module decides what we render, this decides
+      what can be fetched, and neither is allowed to drift from the other.
+    - `connect-src` is `'self'` plus http/https, and that is the honest
+      answer rather than a hole. The feed URLs are *user input* — pasting in
+      your own RSS or IPTV source is the app's purpose — so an allowlist here
+      would break its main feature. The control on where the app may fetch is
+      `lib/ssrf.mjs` (and `SafeUrl` on the native side), which is tested;
+      `connect-src` here only rules out the schemes that are never a feed.
+    - `worker-src 'self'` is the service worker registered in non-native
+      builds; `manifest-src 'self'` is the web manifest.
+
+    `frame-ancestors` is absent because a meta policy cannot set it, and
+    `form-action 'none'` is safe because the app has no form: every control
+    is a button, a select or a checkbox read by a delegated handler.
+  -->
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https://espncdn.com https://*.espncdn.com https://nhle.com https://*.nhle.com https://mlbstatic.com https://*.mlbstatic.com; font-src 'self'; connect-src 'self' http: https:; worker-src 'self'; manifest-src 'self'; base-uri 'none'; form-action 'none'; object-src 'none'">
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
   <meta name="theme-color" content="#04070F">
@@ -9,22 +47,7 @@
   <meta name="apple-mobile-web-app-title" content="Core Line">
   <meta name="description" content="Sports and channel ticker for Android and TV. Team vs team — ESPN, TSN4, SN 3.">
   <title>Core Line</title>
-  <script>window.CORELINE_NATIVE=window.CORELINE_NATIVE||false;window.CORELINE_TV=window.CORELINE_TV||false;</script>
-  <script>
-    // Boot guard (AUDIT.md A1): this classic script always runs, even on
-    // WebViews too old for ES modules. If the module app never reports in, we
-    // paint a friendly upgrade message instead of a blank screen.
-    window.__CORELINE_BOOT = { ready: false, t: 0 };
-    (function () {
-      var timer = setTimeout(function () {
-        if (!window.__CORELINE_BOOT.ready) {
-          var d = document.getElementById('bootfallback');
-          if (d) d.hidden = false;
-        }
-      }, 4000);
-      window.__CORELINE_BOOT.t = timer;
-    })();
-  </script>
+  <script src="./js/boot.js"></script>
   <link rel="icon" href="./icon.svg" type="image/svg+xml">
   <link rel="apple-touch-icon" href="./icons/core-line-icon.png">
   <link rel="manifest" href="./manifest.webmanifest">

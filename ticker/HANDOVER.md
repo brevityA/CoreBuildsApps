@@ -237,6 +237,22 @@ Pair box is hidden on the web (`isNativeShell()` false).
 - IPv6 unique-local (`fc` / `fd` / `fe80`) must be applied **only when the host contains `:`**. A previous bug blocked `facebook.com`.
 - Pair server: code-gated POST, no proxy on that port, only while the panel is open.
 - Pair HTML escapes label / reason text.
+- **The page ships a Content-Security-Policy** (`public/index.html`, as a
+  `<meta>` — the app is served by `server.mjs`, by `LineWebClient` out of the
+  APK, and by any static host, and a meta policy is the one form all three
+  carry). `script-src 'self'`: **never add an inline `<script>` or an `on*=`
+  attribute** — the boot guard lives in `js/boot.js` precisely so that
+  allowance is not needed. `style-src` does allow `'unsafe-inline'`, because
+  every card sets its league accent as `style="--acc:…"`. `img-src` lists the
+  team-logo CDNs and `data:` (the pairing QR); `connect-src` stays open to
+  http/https because **feed URLs are user input** — the control on where the
+  app may fetch is `lib/ssrf.mjs` / `SafeUrl`, not this directive.
+- **Team logos: https only, and only the CDNs the providers emit**
+  (`LOGO_DOMAINS` in `lib/logos.mjs` — espncdn.com, nhle.com, mlbstatic.com).
+  That list is mirrored in `img-src`, and `tests/logos.test.mjs` fails if the
+  two drift. A mark always draws its monogram under the logo, so a 404, a
+  blocked CDN or a refused URL degrades to today's abbreviation rather than a
+  hole.
 
 ---
 

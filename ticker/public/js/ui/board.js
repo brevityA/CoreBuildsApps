@@ -14,6 +14,7 @@ import { emit } from '../core/bus.js';
 import { $, $$, esc, cssEscape, setHidden } from '../core/dom.js';
 import { accentFor, accentStyle, statusOf, cardFavTeams, favSet, startLabel } from '../core/format.js';
 import { HERO_ROTATE_MS, heroCandidates, pickHero, shouldRotate } from '/lib/hero.mjs';
+import { teamLine, gameTeams } from '../core/marks.js';
 
 export function captureFocus() {
   const el = document.activeElement;
@@ -135,16 +136,6 @@ function renderHero(list, index = 0) {
     </article>`;
 }
 
-function teamLine(team, event) {
-  const win = event.status === 'final' && team.winner;
-  return `
-    <div class="team-row">
-      <div class="abbr">${esc(team.abbr || '—')}</div>
-      <div class="team-name">${esc(team.name || '')}</div>
-      <div class="score ${win ? 'is-win' : ''}">${team.score ?? ''}</div>
-    </div>`;
-}
-
 function renderCards(list) {
   const host = $('board');
   if (!host) return;
@@ -171,10 +162,7 @@ export function gameCard(ev) {
           <button class="btn--mini focusable" data-action="watch" data-id="${esc(ev.id)}" aria-label="Watch in app" title="Watch in app">&#9654;</button>
         </div>
       </div>
-      <div class="game-teams">
-        <div class="gt ${ev.away?.winner ? 'is-win' : ''}"><span class="who">${esc(ev.away.abbr)}</span><span class="sc">${ev.away.score ?? ''}</span></div>
-        <div class="gt ${ev.home?.winner ? 'is-win' : ''}"><span class="who">${esc(ev.home.abbr)}</span><span class="sc">${ev.home.score ?? ''}</span></div>
-      </div>
+      ${gameTeams(ev)}
       <div class="card__foot">
         <div class="channels">${(ev.channels || []).map((c) => `<span class="pill pill--plain">${esc(c)}</span>`).join('') || '<span class="when">No channel listed</span>'}</div>
         <span class="when" title="${esc(when)}">${esc(when)}</span>

@@ -28,6 +28,34 @@ The repo-root `CHANGELOG.md` is the icon pack's. Core Line keeps its own here.
   `tests/vpn-ui.test.mjs` for the markup/model/bridge seams. Research:
   `docs/research/core-line-vpn-dot-android-tv-2026-09-29.md`.
 
+- **Team logos.** Every scoreboard source has carried a `logo` on each
+  competitor since it was written, and no view ever drew one — the hero, the
+  cards and the game detail all printed an abbreviation and nothing else. They
+  are now rendered from ESPN, the NHL and MLB, in two shapes: a large mark over
+  the abbreviation in the hero and the game detail (the team's name is spelled
+  out beside it, so covering the monogram costs nothing), and a small mark
+  *beside* the abbreviation on the cards, because a 26px logo is a colour cue
+  rather than text and the letters are what a viewer reads from a couch.
+
+  The fallback is structural rather than a handler: the monogram is painted
+  first and the logo over it, so a dead CDN, a blocked host, a refused URL or a
+  document with no JavaScript all land on a readable mark. There is no inline
+  `onerror=` — see the policy below — only one capture-phase `error` listener
+  for the whole app, which drops the empty slot a failed image leaves in the
+  compact form. `lib/logos.mjs`, `public/js/core/marks.js`, `tests/logos.test.mjs`.
+
+- **A Content-Security-Policy, and the decision written down.** The page now
+  ships a meta CSP rather than inheriting the browser's defaults. `script-src
+  'self'` is the load-bearing part, and it is why the boot guard moved out of
+  `index.html` into `js/boot.js`: keeping two inline `<script>` tags would have
+  meant allowing inline script, and any injected handler anywhere would then
+  run. `style-src` allows `'unsafe-inline'` because the app is built on inline
+  custom-property accents — declared in the policy's own comment rather than
+  discovered later. `img-src` names the logo CDNs, matching `LOGO_DOMAINS`, and
+  the test asserts they agree. `connect-src` stays open to http/https on
+  purpose: feeds are user input, so `lib/ssrf.mjs` is the control there, not a
+  directive that would break the app's main feature.
+
 - **The banner rotates through what is live.** The hero tile used to be pinned
   to the same game until it ended — on a Saturday with six games on, the other
   five were only ever cards. It now moves through the slate every 12s, real
