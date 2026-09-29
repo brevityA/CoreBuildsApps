@@ -103,9 +103,10 @@
   --cb-gutter-top-tight: 24px;
   --cb-gutter-bottom-tight: 12px;
 
-  /* The rail is a fixed width, so the pane — and therefore the board's tile
-     columns — is derived, not guessed. Same rail on every panel. */
-  --cb-rail-width: 300px;
+  /* The rail is the menu: icons only, a fixed width, so the board's columns
+     are derived from what is left. It was 300dp while it carried the league
+     list, which left a 1080p board one card wide. */
+  --cb-rail-width: 64px;
 
   /* ---- Metrics: spacing rhythm -----------------------------------------
      8dp grid. */

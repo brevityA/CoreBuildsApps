@@ -27,7 +27,7 @@ Core Line is that reader. It does not play video. It does not ship streams. It r
   start time in your own timezone.
 - **Search** — one box filters the board, the hero and the crawl together.
   "leafs" finds Toronto; "tsn" finds the game on TSN.
-- **My Teams** — star a team and it sorts to the top, gets a rail entry with a
+- **My Teams** — star a team and it sorts to the top, gets a pill with a
   live count, and raises a short alert when it scores, takes the lead, starts
   or goes final.
 - **Watch handoff** — assign an app to each league; pressing Watch opens the

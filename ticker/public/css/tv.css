@@ -34,7 +34,7 @@
 
   --cb-gutter-side: 60px;
   --cb-gutter-top: 48px;
-  --cb-rail-width: 300px;
+  --cb-rail-width: 80px;
   --cb-card-padding: 18px;
 
   --cb-radius-card: 18px;
@@ -92,27 +92,21 @@
   outline-offset: 5px;
 }
 
-/* ---- Board: fewer, larger tiles ----------------------------------------
-   The column floor rises so a 1080p panel shows two or three cards rather
-   than eight, each of which can actually be read.
-
-   The floor is bounded by the rail, not chosen for its own sake. A 1080p
-   panel is 960dp wide; less the 48dp guards that is 864dp of content, and
-   less the 300dp rail and its 20dp gutter the board has 544dp to work with.
-   At a 260px floor that fits two columns. At the 360px this used to be it
-   fitted one, and a board one card wide is not a board. A 4K panel reporting
-   1920dp fits five. */
+/* ---- Board ---------------------------------------------------------------
+   A 1080p panel is 960dp; less the 48dp guards and the 80dp rail, the stage
+   is about 770dp. At a 220px floor that is three cards a row, which is what
+   a supporter's reference layout shows and what reads at three metres. A 4K
+   panel reporting 1920dp fits seven. */
 [data-tv] .board {
-  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
   gap: var(--cb-space-md);
 }
 [data-tv] .card {
-  min-height: 200px;
-  padding: var(--cb-card-padding) var(--cb-space-lg) var(--cb-space-md);
+  padding: var(--cb-space-sm) var(--cb-space-sm) 0;
 }
 [data-tv] .tile {
-  gap: var(--cb-space-xl);
-  padding: var(--cb-space-xl) var(--cb-space-xl);
+  gap: var(--cb-space-sm);
+  padding: var(--cb-space-md) var(--cb-space-xl);
 }
 
 /* ---- Controls with a fixed visual size ---------------------------------
@@ -139,45 +133,52 @@
   height: 260px;
 }
 
-/* ---- Hero on a 1080p panel ---------------------------------------------
-   A 1080p TV reports 960 CSS px, so its board is 544dp beside the 300dp rail.
-   Side by side, the Watch column took its content width and the team column
-   got what was left: 4px, so "Philadelphia Eagles" and "Chicago Bears" were
-   not drawn at all once scores were on. Below 1280 the banner stacks the
-   same way a phone's does (screens.css): teams across the full width, then
-   one row of channels, venue and Watch, short enough to leave a card on a
-   540px screen.
-   TV mode always has the fixed rail, so the viewport width is the board's
+/* ---- A 1080p panel ------------------------------------------------------
+   A 1080p TV reports 960x540 CSS px. Less the overscan guards and the rail,
+   the stage is about 770 x 486. The supporter's complaint was "you can only
+   see one event when opening"; the budget below puts the top bar, the sport
+   pills, the live banner and the first row of cards on that one screen.
+   TV mode always has the fixed rail, so the viewport width is the stage's
    width here, not a guess at it. */
 @media (max-width: 1279px) {
-  [data-tv] .tile {
-    grid-template-columns: minmax(0, 1fr);
-    gap: var(--cb-space-sm);
-    /* 40px of padding on each side is the 4K banner's; at 540 tall it is
-       the difference between the first card showing and not. */
-    padding: var(--cb-space-md) var(--cb-space-lg);
-  }
-  [data-tv] .hero-side {
-    flex-direction: row;
-    align-items: center;
-    justify-content: flex-start;
-    min-width: 0;
-  }
-  [data-tv] .hero-side .pills {
-    flex: 0 1 auto;
-    min-width: 0;
-    justify-content: flex-start;
-  }
-  /* The venue is dropped here rather than truncated: beside three channel
-     pills and Watch it came down to one letter ("E"), which reads as a
-     glitch. Game Detail still shows it in full. */
-  [data-tv] .hero-side .when {
+  /* One line: Today, the counts, a health dot, search, the clock. The long
+     date, the RSS count and the health label wait for a wider panel; the
+     dot keeps its colour and the label is its tooltip. */
+  [data-tv] .topbar__date,
+  [data-tv] .topbar__stats .stat:not(.stat--live):not(.stat--up) {
     display: none;
   }
-  [data-tv] .hero-side .btn {
-    flex: 0 0 auto;
-    order: 2;
+  [data-tv] .health {
+    font-size: 0;
+    padding: 0;
+    border: 0;
+    gap: 0;
   }
+  [data-tv] .health::before {
+    width: 14px;
+    height: 14px;
+  }
+  [data-tv] .tile {
+    padding: var(--cb-space-sm) var(--cb-space-lg);
+    gap: var(--cb-space-xs);
+  }
+  [data-tv] .hm .mark {
+    --mark-size: 56px;
+  }
+  /* The section labels cost ~60px of a 486px stage. The banner carries its
+     own LIVE badge and the top bar the live count, so on this panel they
+     are the thing to drop; a wider panel keeps them. */
+  [data-tv] .section-label {
+    display: none;
+  }
+}
+
+/* Card type on a TV: the abbreviation and score step down from the banner's
+   display size, so three cards a row read as a list under the banner rather
+   than three more banners. */
+[data-tv] .card .gt .who,
+[data-tv] .card .gt .sc {
+  font-size: 1.6rem;
 }
 
 /* Hero interiors scale with the display roles, not the UI scale. */

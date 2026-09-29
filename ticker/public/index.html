@@ -63,59 +63,57 @@
   </div>
 
   <!-- ====================================================================
-       App shell. Two panes: a fixed-width rail for the chrome, and a stage
-       that takes every pixel the rail leaves. The chyron spans both.
+       App shell. A slim icon rail on the left (menu, like a TV launcher's),
+       and a stage that takes every other pixel: a top bar that says what
+       day it is and how much is live, the sport pills, the live banner, and
+       everything live or upcoming today. Supporter feedback, 2026-09-29:
+       "settings on left, banner shows sport of choice that's live, bottom
+       shows all upcoming and live, pills with the different sports."
        ==================================================================== -->
   <div class="app" id="app">
     <div class="app__main">
-
-      <!-- LEFT RAIL -->
-      <aside class="rail scroll-y" id="rail" aria-label="Filters and status">
-        <div class="rail__brand">
-          <img class="rail__mark" src="./icon.svg" width="42" height="42" alt="">
-          <div>
-            <div class="brand__name"><span>CORE</span> LINE</div>
-            <div class="brand__sub" id="brandSub">Sports &amp; channel ticker</div>
-          </div>
-        </div>
-
-        <div class="rail__stats">
-          <div class="stat stat--live"><b id="statLive">0</b><span>Live</span></div>
-          <div class="stat stat--up"><b id="statUp">0</b><span>Up</span></div>
-          <div class="stat"><b id="statRss">0</b><span>RSS</span></div>
-        </div>
-
-        <div class="health is-ok" id="health" role="status" aria-live="polite">All sources live</div>
-
-        <div class="rail__section" id="myTeamsBlock" hidden>
-          <div class="rail__section-head">
-            <span class="kicker">My teams</span>
-          </div>
-          <div class="rail__nav" id="myTeams" role="group" aria-label="My teams"></div>
-        </div>
-
-        <div class="rail__section">
-          <div class="rail__section-head">
-            <span class="kicker">Leagues</span>
-            <span class="hint--small" id="leagueHint"></span>
-          </div>
-          <div class="rail__nav" id="leagues" role="tablist" aria-label="Leagues"></div>
-        </div>
-
+      <!-- LEFT RAIL: the menu. Icons only, so the board keeps the width. -->
+      <aside class="rail" id="rail" aria-label="Menu">
+        <img class="rail__mark" src="./icon.svg" width="40" height="40" alt="Core Line">
         <div class="rail__actions">
           <button class="btn--icon focusable" data-action="refresh" title="Refresh" aria-label="Refresh">&#8635;</button>
           <button class="btn--icon focusable" data-action="mode" title="Ticker only" aria-label="Ticker only">&#9644;</button>
           <button class="btn--icon focusable" data-action="settings" title="Settings" aria-label="Settings">&#9881;</button>
         </div>
       </aside>
-
-      <!-- RIGHT PANE -->
-      <main class="stage scroll-y" id="stage">
-        <div class="stage__search">
-          <input class="field focusable" id="search" type="search" placeholder="Search teams, channels, listings"
-                 autocomplete="off" spellcheck="false" aria-label="Search the slate">
-        </div>
-
+      <!-- STAGE -->
+      <main class="stage" id="stage">
+        <header class="topbar">
+          <div class="topbar__day">
+            <span class="topbar__today">Today</span>
+            <span class="topbar__date" id="topDate"></span>
+          </div>
+          <div class="topbar__stats">
+            <span class="stat stat--live"><b id="statLive">0</b><span>Live</span></span>
+            <span class="stat stat--up"><b id="statUp">0</b><span>Up</span></span>
+            <span class="stat"><b id="statRss">0</b><span>RSS</span></span>
+          </div>
+          <div class="health is-ok" id="health" role="status" aria-live="polite">All sources live</div>
+          <div class="topbar__search">
+            <input class="field focusable" id="search" type="search" placeholder="Search teams, channels"
+                   autocomplete="off" spellcheck="false" aria-label="Search the slate">
+          </div>
+          <div class="topbar__clock" id="topClock" aria-hidden="true">00:00</div>
+          <div class="brand__sub" id="brandSub"></div>
+        </header>
+        <nav class="sportbar" aria-label="Sports">
+          <div class="sportbar__row" id="myTeamsBlock" hidden>
+            <span class="kicker">My teams</span>
+            <div class="sportbar__chips" id="myTeams" role="group" aria-label="My teams"></div>
+          </div>
+          <div class="sportbar__row">
+            <div class="sportbar__chips" id="leagues" role="tablist" aria-label="Sports and leagues"></div>
+            <span class="hint--small" id="leagueHint"></span>
+          </div>
+        </nav>
+        <!-- Everything below the header scrolls; the header stays put, the
+             way a TV guide keeps its date and filters in view. -->
+        <div class="stage__body scroll-y" id="stageBody">
         <section class="bigclock" id="bigclock">
           <div class="bigclock__kicker">CORE LINE</div>
           <div class="bigclock__time" id="bigTime">00:00</div>
@@ -124,6 +122,7 @@
         </section>
 
         <section id="hero" hidden></section>
+        <h2 class="section-label" id="boardLabel">Live &amp; upcoming</h2>
         <section class="board" id="board"></section>
 
         <section class="empty" id="empty" hidden>
@@ -136,6 +135,7 @@
           <button class="btn focusable" data-action="settings">Open settings</button>
           <button class="btn btn--ghost focusable" data-action="empty-clear" id="emptyClear" hidden>Clear filters</button>
         </section>
+        </div>
       </main>
     </div>
 

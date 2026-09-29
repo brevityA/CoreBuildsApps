@@ -186,8 +186,7 @@
 }
 [data-overlay] .rail,
 [data-overlay] .stage,
-[data-overlay] .drawer,
-[data-overlay] .rail__brand {
+[data-overlay] .drawer {
   display: none !important;
 }
 [data-overlay] .app {

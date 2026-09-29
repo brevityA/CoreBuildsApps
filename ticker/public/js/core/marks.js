@@ -43,3 +43,26 @@ export function gameTeams(ev) {
     + `<span class="sc">${team?.score ?? ''}</span></div>`;
   return `<div class="game-teams">${line(ev.away)}${line(ev.home)}</div>`;
 }
+
+/**
+ * The banner's match line: away team, the score, home team — the layout a
+ * broadcast graphic uses, and the one in the supporter's reference. One row
+ * instead of two stacked score rows is what lets the banner and a row of
+ * cards share a 540dp screen. The name may take two lines ("Philadelphia /
+ * Eagles") rather than truncate; the mark carries the abbreviation, as a
+ * logo or, without one, as the monogram.
+ */
+export function heroMatch(ev) {
+  const side = (team, home) => `
+    <div class="hm__team${home ? ' hm__team--home' : ''}${team?.winner ? ' is-win' : ''}">
+      <span class="hm__mark">${teamMark(team)}</span>
+      <span class="hm__name">${esc(team?.name || team?.abbr || '')}</span>
+    </div>`;
+  const a = ev?.away?.score;
+  const h = ev?.home?.score;
+  const hasScore = (a ?? '') !== '' || (h ?? '') !== '';
+  const score = hasScore
+    ? `${esc(String(a ?? 0))}<span class="hm__dash">&ndash;</span>${esc(String(h ?? 0))}`
+    : '<span class="hm__vs">vs</span>';
+  return `<div class="hm">${side(ev?.away, false)}<div class="hm__score">${score}</div>${side(ev?.home, true)}</div>`;
+}

@@ -74,9 +74,9 @@ export async function refresh(manual = false) {
     store.events = data.events || [];
     cacheSlate(data);
     updateHealth(data);
-    setText('brandSub', data.demo
-      ? 'Demo slate · live scoreboards unreachable'
-      : `Updated ${new Date(data.generatedAt || Date.now()).toLocaleTimeString()}`);
+    // Only the demo warning earns a line in the top bar; a timestamp that
+    // changes every minute is noise on a board that refreshes itself.
+    setText('brandSub', data.demo ? 'Demo slate · live scoreboards unreachable' : '');
 
     emit('slate', { manual, demo: Boolean(data.demo) });
     if (manual) {

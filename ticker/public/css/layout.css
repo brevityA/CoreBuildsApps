@@ -74,73 +74,105 @@
   grid-row: auto;
 }
 
-/* ---- Rail --------------------------------------------------------------- */
+/* ---- Rail: the menu -----------------------------------------------------
+   Icons only. It used to be a 300dp column of brand, counts, health, My
+   Teams and the league list, which on a 1080p panel (960dp) left the board
+   one card wide. Everything but the menu moved into the stage: counts and
+   health to the top bar, leagues and My Teams to the sport pills. */
 .rail {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--cb-space-md);
+  min-height: 0;
+  padding: var(--cb-space-xs) 0;
+  border-right: 1px solid var(--cb-hairline);
+}
+.rail__mark {
+  width: 40px;
+  height: 40px;
+  flex: 0 0 auto;
+  filter: drop-shadow(0 0 10px var(--accent-soft));
+}
+.rail__actions {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--cb-space-sm);
+}
+
+/* ---- Stage (right pane) ------------------------------------------------- */
+.stage {
   display: flex;
   flex-direction: column;
   gap: var(--cb-space-sm);
   min-height: 0;
-  padding-right: var(--cb-space-xs);
+  padding: 0 var(--cb-space-xs);
+}
+/* The header (top bar + sport pills) does not scroll; only the body does,
+   so "Today", the counts and the pills are always where the eye expects
+   them, and walking back up with the D-pad never lands on a half-scrolled
+   header. */
+.stage > .topbar,
+.stage > .sportbar {
+  flex: 0 0 auto;
+}
+.stage__body {
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+  gap: var(--cb-space-sm);
+  min-height: 0;
   overflow-y: auto;
+  /* Room for the focus ring on the first and last rows. */
+  padding: 6px 6px var(--cb-space-md);
+  margin: 0 -6px;
+  scroll-padding: var(--cb-space-sm) 0;
 }
 
-/* Rail children keep their natural height; the rail scrolls as one column.
-   At 960x540 — a real 1080p TV — shrinking them flattened the source-health
-   pill to a sliver and left the league list about one and a half chips tall,
-   a scroll box inside a scroll box that a D-pad can't see the edge of. */
-.rail > * {
-  flex-shrink: 0;
-}
-
-.rail__brand {
+/* ---- Top bar: what day it is, and how much is on ------------------------ */
+.topbar {
   display: flex;
   align-items: center;
+  flex-wrap: wrap;
+  gap: var(--cb-space-xs) var(--cb-space-md);
+  min-width: 0;
+}
+.topbar__day {
+  display: flex;
+  align-items: baseline;
   gap: var(--cb-space-sm);
   min-width: 0;
-  padding-bottom: var(--cb-space-xs);
 }
-.rail__mark {
-  width: 42px;
-  height: 42px;
-  flex: 0 0 auto;
-  filter: drop-shadow(0 0 10px var(--accent-soft));
-}
-.brand__name {
+.topbar__today {
   font-family: var(--font);
   font-size: var(--text-brand);
   font-weight: 800;
-  letter-spacing: 0.08em;
   line-height: 1;
 }
-.brand__name span {
-  color: var(--accent);
-}
-.brand__sub {
-  font-size: var(--cb-text-kicker);
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
+.topbar__date {
   color: var(--cb-slate);
-  margin-top: 3px;
+  font-size: var(--cb-text-data);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  white-space: nowrap;
 }
-
-/* Counts: Live / Up / RSS. Three numbers, read at a glance, tabular so they
-   don't jitter as they change. */
-.rail__stats {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
+.topbar__stats {
+  display: flex;
   gap: var(--cb-space-xs);
 }
 .stat {
-  text-align: center;
-  padding: var(--cb-space-xs) 4px;
-  border-radius: var(--cb-radius-card);
-  background: var(--surface-card);
+  display: inline-flex;
+  align-items: baseline;
+  gap: 6px;
+  padding: 4px var(--cb-space-xs);
+  border-radius: var(--cb-radius-button);
   border: 1px solid var(--cb-hairline);
+  background: var(--surface-card);
 }
 .stat b {
-  display: block;
   font-family: var(--font);
-  font-size: var(--text-stat);
+  font-size: var(--cb-text-label);
   line-height: 1;
   color: var(--accent);
   font-variant-numeric: tabular-nums;
@@ -153,52 +185,81 @@
 }
 .stat--live b { color: var(--st-live); }
 .stat--up b { color: var(--st-up); }
+.topbar__search {
+  flex: 1 1 180px;
+  max-width: 360px;
+  min-width: 0;
+}
+.topbar__search .field {
+  width: 100%;
+}
+.topbar__clock {
+  margin-left: auto;
+  font-family: var(--font);
+  font-size: var(--text-brand);
+  font-weight: 800;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+.brand__sub:empty {
+  display: none;
+}
+.brand__sub {
+  flex-basis: 100%;
+  font-size: var(--cb-text-kicker);
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--cb-slate);
+}
 
-.rail__section {
+/* ---- Sport pills ---------------------------------------------------------
+   One scrollable row each; a vertical list would push the banner below the
+   fold. Focus scrolls a chip into view, so the D-pad never loses one. */
+.sportbar {
   display: flex;
   flex-direction: column;
-  gap: 6px;
-  min-height: 0;
-}
-.rail__section-head {
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
   gap: var(--cb-space-xs);
-  padding: 0 2px;
+  min-width: 0;
 }
-.rail__nav {
+.sportbar__row {
   display: flex;
-  flex-direction: column;
-  gap: 6px;
-  min-height: 0;
-  overflow-y: auto;
-}
-
-/* The rail's foot: actions. margin-top:auto pins them to the bottom of a
-   tall rail instead of leaving them stranded under a short list. */
-.rail__actions {
-  display: flex;
-  gap: var(--cb-space-xs);
-  margin-top: auto;
-  padding-top: var(--cb-space-sm);
-}
-
-/* ---- Stage (right pane) ------------------------------------------------- */
-.stage {
-  display: flex;
-  flex-direction: column;
-  gap: var(--cb-space-sm);
-  min-height: 0;
-  overflow-y: auto;
-  padding: 0 var(--cb-space-xs) var(--cb-space-md);
-  scroll-padding: var(--cb-space-md) 0;
-}
-
-.stage__search {
-  display: flex;
-  gap: var(--cb-space-xs);
   align-items: center;
+  gap: var(--cb-space-xs);
+  min-width: 0;
+}
+.sportbar__row[hidden] {
+  display: none;
+}
+.sportbar__chips {
+  display: flex;
+  gap: var(--cb-space-xs);
+  min-width: 0;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scrollbar-width: none;
+  /* Room for the 3px focus ring and its 3px gap inside the scroll box. */
+  padding: 6px;
+  margin: -6px;
+}
+.sportbar__chips::-webkit-scrollbar {
+  display: none;
+}
+.sportbar .chip--row {
+  width: auto;
+  flex: 0 0 auto;
+}
+.sportbar .chip--row .chip__count {
+  margin-left: 6px;
+}
+
+/* Section labels: "Live now", "Live & upcoming". */
+.section-label {
+  font-size: var(--cb-text-kicker);
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--cb-slate);
+  font-weight: 700;
+  margin: var(--cb-space-xs) 0 0;
 }
 
 /* The board. Column count is derived from the pane width, so a 4K panel that
@@ -249,8 +310,9 @@
   letter-spacing: 0.04em;
 }
 
-[data-mode="crawl"] .stage__search,
-[data-mode="crawl"] .rail__section,
+[data-mode="crawl"] .topbar,
+[data-mode="crawl"] .sportbar,
+[data-mode="crawl"] .section-label,
 [data-mode="crawl"] .board,
 [data-mode="crawl"] .empty,
 [data-mode="crawl"] .tile {
@@ -269,53 +331,12 @@
 }
 
 /* ============================================================================
-   Narrow / phone
+   Phone
 
-   Below the two-pane threshold the rail becomes a horizontal strip above the
-   board. The chyron stays where it is: it is the point of the app on every
-   screen size.
-
-   Never on a TV. A 1080p panel reports 960 CSS px (density 2), so a width
-   query alone put every real television in this layout: the rail, the stats
-   and the chyron filled 540px and not one card was above the fold. The
-   two-pane arithmetic in tv.css is written for exactly that 960dp frame.
+   The rail turns into a row across the top, so the stage keeps the whole
+   width. Never on a TV: a 1080p panel reports 960 CSS px, and TV mode always
+   keeps the rail on the left.
    ========================================================================== */
-@media (max-width: 1100px) {
-  :root:not([data-tv]) .app__main {
-    grid-template-columns: minmax(0, 1fr);
-    grid-template-rows: auto minmax(0, 1fr);
-  }
-  :root:not([data-tv]) .rail {
-    flex-direction: column;
-    overflow: visible;
-    padding-right: 0;
-  }
-  :root:not([data-tv]) .rail__stats {
-    order: 2;
-  }
-  :root:not([data-tv]) .rail__actions {
-    margin-top: 0;
-    padding-top: 0;
-  }
-  /* The league nav becomes a single scrollable row — a vertical list would
-     eat the board on a phone. */
-  :root:not([data-tv]) .rail__nav {
-    flex-direction: row;
-    overflow-x: auto;
-    overflow-y: hidden;
-    scrollbar-width: none;
-  }
-  :root:not([data-tv]) .rail__nav::-webkit-scrollbar {
-    display: none;
-  }
-  :root:not([data-tv]) .chip--row {
-    width: auto;
-  }
-  :root:not([data-tv]) .chip--row .chip__count {
-    margin-left: 0;
-  }
-}
-
 @media (max-width: 720px) {
   :root {
     --chyron-h: 56px;
@@ -323,10 +344,25 @@
     --safe-x: 14px;
   }
   /* Phone: shrink the token, not the component. */
-  .brand__name {
+  :root:not([data-tv]) {
     --text-brand: 1.4rem;
   }
-  .brand__sub {
+  :root:not([data-tv]) .app__main {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: auto minmax(0, 1fr);
+  }
+  :root:not([data-tv]) .rail {
+    flex-direction: row;
+    border-right: 0;
+    border-bottom: 1px solid var(--cb-hairline);
+    padding: 0 0 var(--cb-space-xs);
+  }
+  :root:not([data-tv]) .rail__actions {
+    flex-direction: row;
+    margin-left: auto;
+  }
+  :root:not([data-tv]) .topbar__clock,
+  :root:not([data-tv]) .brand__sub {
     display: none;
   }
   .board {
@@ -335,4 +371,12 @@
   /* The banner's phone layout is in screens.css. It was here, where it
      never applied: layout.css loads before components.css, so the base
      .tile grid overrode it and the team names drew at 0px. */
+}
+
+/* The banner section holds its "Live now" label and the tile. :not([hidden])
+   so the id selector cannot out-rank the [hidden] rule when nothing is live. */
+#hero:not([hidden]) {
+  display: flex;
+  flex-direction: column;
+  gap: var(--cb-space-xs);
 }
