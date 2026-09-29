@@ -137,8 +137,11 @@ async function open(path, viewport) {
 
 // ---- 4. Updates panel (web mode) ------------------------------------------
 {
-  const { page, errors } = await open('/', { width: 1440, height: 900 });
-  await page.waitForSelector('.card', { timeout: 15000 });
+  const page = await browser.newPage({ viewport: { width: 1440, height: 900 } });
+  await seedReturningViewer(page);
+  const errors = [];
+  page.on('pageerror', (e) => errors.push(String(e)));
+  page.on('console', (m) => { if (m.type() === 'error') errors.push(m.text()); });
   // Stub the *manifest the app actually reads* so the test is deterministic
   // offline. This used to stub `api.github.com`, which the updater stopped
   // calling at some point — so the stub was bypassed, the live manifest was
@@ -159,6 +162,13 @@ async function open(path, viewport) {
       }),
     });
   });
+  // ...and only then load the app. The updater reads the manifest at boot, so
+  // a route registered after `goto` is a route the app has already been past —
+  // which is why this block reported the *real* version ("up to date (latest
+  // 1.4.0)") while claiming to test an update to 99.0.0.
+  await page.goto(`${BASE}/`, { waitUntil: 'networkidle' });
+  await page.waitForSelector('.card', { timeout: 15000 });
+
   // Open settings drawer via its rail trigger.
   await page.click('[data-action="settings"]');
   await page.click('[data-action="drawer-section"][data-section="updates"]');
