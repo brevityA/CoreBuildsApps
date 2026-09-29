@@ -30,6 +30,12 @@ export const DEFAULT_LEAGUES = ['mlb', 'nfl', 'ncaaf', 'nba', 'ncaab', 'nhl', 'e
 export const SPORT_GROUPS = [
   { id: 'sport:football', label: 'Football', leagues: ['nfl', 'ncaaf'] },
   { id: 'sport:basketball', label: 'Basketball', leagues: ['nba', 'ncaab', 'wnba'] },
+  // Supporter feedback, 2026-09-29: "Maybe its easier to have a NCAA category
+  // that pulls all the sports. Because rarely is there college football on say
+  // a tuesday so it pulls whatever there is." College football and college
+  // basketball never run on the same day, so one pill that shows whatever
+  // college sport is on beats two pills that are empty half the week.
+  { id: 'sport:college', label: 'College', leagues: ['ncaaf', 'ncaab'] },
   { id: 'sport:baseball', label: 'Baseball', leagues: ['mlb'] },
   { id: 'sport:hockey', label: 'Hockey', leagues: ['nhl'] },
   { id: 'sport:soccer', label: 'Soccer', leagues: ['epl', 'mls', 'ucl'] },

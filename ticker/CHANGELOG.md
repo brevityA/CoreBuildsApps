@@ -28,6 +28,27 @@ The repo-root `CHANGELOG.md` is the icon pack's. Core Line keeps its own here.
   `tests/vpn-ui.test.mjs` for the markup/model/bridge seams. Research:
   `docs/research/core-line-vpn-dot-android-tv-2026-09-29.md`.
 
+- **A College pill in the sport filter.** "Whatever college sport is on" was
+  two pills to check by hand. `sport:college` groups NCAA football and
+  basketball into one filter, so football Saturdays and March Madness both
+  answer to a single tap. It is a grouping in `SPORT_GROUPS`, not a new league
+  — the pills, counts and labels are all derived from that one table.
+
+### Fixed
+
+- **Channels whose whole name *is* a streaming tier now match.** The Tier 1
+  "network bug" comparison in the guide matched a playlist entry's channel name
+  against the badge the slate prints, which worked for broadcast networks and
+  silently failed for the tiers that only exist as a suffix: `ESPN+ 1`,
+  `SEC Network+`, `ACC Network Extra`, `Big Ten Network`, `Longhorn Network`.
+  Those rows simply never appeared under their network. The comparison now
+  collapses an entry to its tier (`ESPN+ 1` → `ESPN+`, `ESPN Unlimited` →
+  `ESPN+`) and expands the shorthand back to its brand before matching, with a
+  guard so that real channels that merely look numbered (`ESPN2`, `TSN4`,
+  `SN 3`, `F1`) are left exactly as they are. Dot-carrying names like `MLB.TV`
+  also survive the splitter now; they were being trimmed off the end of a
+  comma-separated list. `tests/niche-channels.test.mjs`.
+
 ## [1.4.0] — 2026-09-29
 
 A structural release. The front end had grown into a single 1,340-line
