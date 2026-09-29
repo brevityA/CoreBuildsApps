@@ -4,7 +4,7 @@ import { readFile, stat } from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-import { LEAGUES, DEFAULT_LEAGUES, espnScoreboardUrl, eventsFromEspn, eventsFromNhl, eventsFromMlb, buildDemoSlate, mergeEvents } from './lib/scoreboard.mjs';
+import { LEAGUES, DEFAULT_LEAGUES, espnScoreboardUrl, loadEspnLeague, eventsFromEspn, eventsFromNhl, eventsFromMlb, buildDemoSlate, mergeEvents } from './lib/scoreboard.mjs';
 import { fetchFeed, fetchJson } from './lib/rss.mjs';
 import { isSafeFeedUrl } from './lib/ssrf.mjs';
 import { parseFeed } from './lib/parser.mjs';
@@ -218,8 +218,7 @@ async function getScoreboard(leagues) {
 
 async function fetchLeagueServer(id) {
   try {
-    const data = await fetchJson(espnScoreboardUrl(id));
-    const events = eventsFromEspn(data, id);
+    const events = await loadEspnLeague(id, fetchJson);
     return { ok: true, events, report: { id, provider: 'espn', ok: true, count: events.length } };
   } catch (err) {
     if (id === 'nhl') {

@@ -101,6 +101,18 @@ The repo-root `CHANGELOG.md` is the icon pack's. Core Line keeps its own here.
 
 ### Fixed
 
+- **FCS college football shows up — including games on ESPN2.** A supporter
+  reported that Harvard at Brown on ESPN2 (2026-09-25) never appeared. ESPN's
+  college-football scoreboard returns only the top division (FBS) unless it is
+  asked for a group, so every FCS game was missing, whatever channel it was
+  on. Asking for all of Division I in one request (`groups=90`) returns about
+  1.7MB, over the 1.5MB feed cap on both the server and the Android proxy, so
+  the slate now asks for FBS (`groups=80`) and FCS (`groups=81`) separately —
+  about 1MB each — and merges them. On Saturday 2026-09-26 that is 116 games
+  where it was 65. One half failing still shows the other.
+  `espnScoreboardUrls()` / `loadEspnLeague()` in `lib/scoreboard.mjs`, used by
+  both `server.mjs` and `lib/client-slate.mjs`; `tests/espn-groups.test.mjs`.
+
 - **Channels whose whole name *is* a streaming tier now match.** The Tier 1
   "network bug" comparison in the guide matched a playlist entry's channel name
   against the badge the slate prints, which worked for broadcast networks and
