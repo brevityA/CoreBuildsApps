@@ -3382,10 +3382,25 @@ def coredoctor_pulse(c):
     )
 
 
+def coreeq_faders(c):
+    """Core EQ: three equaliser faders inside the brand hex.
+
+    Three vertical tracks, each with a knob at a different height - the
+    correction curve as a mixing desk sets it. Tracks sit 80 apart so the
+    knobs never touch at tile size.
+    """
+    return (
+        f'<polygon points="{_hexpts(256, 256, 196)}" {_s(c, 34)}/>'
+        f'<path d="M 176 176 V 336 M 256 176 V 336 M 336 176 V 336" {_s(c, 20)}/>'
+        f'<path d="M 150 292 H 202 M 230 212 H 282 M 310 262 H 362" {_s(c, 30)}/>'
+    )
+
+
 GLYPHS.update({
     "coreline_ticker": coreline_ticker,
     "coreshift_frames": coreshift_frames,
     "coredoctor_pulse": coredoctor_pulse,
+    "coreeq_faders": coreeq_faders,
 })
 
 

@@ -1,6 +1,6 @@
 # Supported applications
 
-`971` icons · `1197` mapped components · pack v1.9.7
+`972` icons · `1198` mapped components · pack v1.9.8
 
 Every app below auto-assigns in Projectivy. If one doesn't, the app ships a different launcher activity on your device — open an issue with the component name and it gets added.
 
@@ -144,6 +144,7 @@ Source accents are retained in the catalog. **On dark** is the shared square/ban
 | Comedy Box | `comedybox` | `#B6F23A` | `#B6F23A` | `com.comedybox.app/com.android.comedybox.ui.TvSplashActivity` |
 | Core Builds | `corebuilds` | `#00D4FF` | `#00D4FF` | `tv.corebuilds.iconpack/.MainActivity` |
 | Core Doctor | `coredoctor` | `#00D4FF` | `#00D4FF` | `dev.corebuilds.doctor/.MainActivity` |
+| Core EQ | `coreeq` | `#00D4FF` | `#00D4FF` | `tv.corebuilds.eq/.MainActivity` |
 | Core Line | `coreline` | `#00D4FF` | `#00D4FF` | `dev.corebuilds.line/.MainActivity` |
 | Core Shift | `coreshift` | `#00D4FF` | `#00D4FF` | `dev.corebuilds.shift/.MainActivity` |
 | CoreELEC Helper | `jamal2367` | `#E00010` | `#E00010` | `com.jamal2367.coreelec/com.jamal2367.coreelec.MainActivity` |
