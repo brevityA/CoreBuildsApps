@@ -69,6 +69,9 @@ class MeasureActivity : TvActivity() {
     private var result: SweepResult? = null
     /** A REW import replaces the sweep result for display and saving (plan M10). */
     private var importResult: ImportResult? = null
+    private var importInput: RewMeasurement? = null
+    private var importing = false
+    private var importThread: Thread? = null
     private var micName: String? = null
     private var measuring = false
 
