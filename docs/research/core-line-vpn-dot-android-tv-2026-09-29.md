@@ -324,10 +324,18 @@ pre-existing + 18 model + 5 seam). The web app was served from `server.mjs` and
 the modified modules fetched back over HTTP to confirm they are served with the
 right MIME type and contain the new wiring.
 
-**Not run here, and why:** the Kotlin was not compiled and no APK was built —
-this sandbox has no JDK and no Android SDK, and its shell has no outbound
-network for Gradle to fetch anything. Nothing in this document has been seen on
-a television, and no emulator exists here either (no `/dev/kvm`).
+**Run in CI, green (PR #210):** `Core Line build lint tests` compiles the module
+against API 34 and runs Android lint over it, and `Assemble APK` builds the
+debug APK. Both pass on this branch's head. CI is the compiler for the native
+half — and the first run of `:app:compileDebugKotlin` rejected
+`WindowManager.LayoutParams` margin fields, which is exactly the class of
+mistake no amount of reading catches and no sandbox without a JDK can find.
+
+**Not run anywhere:** no device and no emulator (no `/dev/kvm` here), so nothing
+in this document has been seen on a television. The Kotlin was not compiled *in
+the sandbox* — no JDK, no Android SDK, no outbound network for Gradle — and the
+device-level behaviour in §2, §6 and §7 is still inference from documentation
+and field reports rather than observation.
 
 **On-device checklist — the steps that would move this from reasoned to
 proven:**
