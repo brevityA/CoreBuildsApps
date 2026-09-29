@@ -56,7 +56,7 @@ class DpMappingTest {
         assertEquals((-1500).toShort(), mbs[1]) // -30 dB clamps to the device floor
         assertEquals(150.toShort(), mbs[2])
 
-        val narrow = BandMapping.millibels(doubleArrayOf(2.0, -2.0), -600..600)
+        val narrow = BandMapping.millibels(doubleArrayOf(8.0, -2.0), -600..600)
         assertEquals(600.toShort(), narrow[0])
         assertEquals((-200).toShort(), narrow[1])
     }
