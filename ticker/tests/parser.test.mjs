@@ -160,3 +160,17 @@ test('toTickerText includes scores for live games', () => {
   });
   assert.equal(text, 'LIVE TOR 4-3 NYY · 7th · ESPN, SN 1');
 });
+
+test('the bundled sample feed never claims a game is live or final', async () => {
+  // The sample exists to show the parser and fill the crawl on first run. A
+  // "LIVE" title in it counted a game nobody was playing in the LIVE total and
+  // on the board, beside real scoreboard games. Every item stays a listing.
+  const { readFile } = await import('node:fs/promises');
+  const xml = await readFile(new URL('../public/feeds/sample-sports.xml', import.meta.url), 'utf8');
+  const parsed = parseFeed(xml, 'Sample');
+  const events = parsed.events || parsed;
+  assert.ok(events.length >= 5, `sample parsed to ${events.length} items`);
+  for (const ev of events) {
+    assert.equal(ev.status, 'upcoming', `${ev.rawTitle} parsed as ${ev.status}`);
+  }
+});

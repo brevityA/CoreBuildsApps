@@ -7,7 +7,7 @@
 | Product | Path | Package ID | Version | Downloader / stable tag |
 |---|---|---|---:|---|
 | Core Builds Icon Pack | `app/` with repo-root Gradle | `tv.corebuilds.iconpack` | `1.9.7` | `5270601` / `iconpack` |
-| Core Line | `ticker/` + `ticker/android/` | `dev.corebuilds.line` | `1.3.1` | `7375676` / `coreline` |
+| Core Line | `ticker/` + `ticker/android/` | `dev.corebuilds.line` | `1.4.0` | `7375676` / `coreline` |
 | Core Shift | `shift/` | `dev.corebuilds.shift` | `2.3.5` | `8829421` / `shift` |
 | Core Motion | `motion-plugin/` | `tv.corebuilds.motion` | `1.0.0` | `[USER TO SUPPLY]` / `motion` |
 | Core Doctor | `doctor/` | `dev.corebuilds.doctor` | `0.1.0` | `8664938` / `doctor` |
@@ -135,6 +135,18 @@ prefills `input`/`textarea` fields only, and the tool refuses to promise more.
   pins on CPython 3.11 and 3.12 differ in every frame — so bytes are the wrong
   thing to compare, and structure is the stricter half anyway: it fails on a
   one-dp move.
+- Core Line: `cd ticker && npm test`. Its front-end structure is documented in
+  `ticker/STRUCTURE.md` and is load-bearing, not descriptive:
+  - no CSS literal outside `ticker/public/css/tokens.css`;
+  - `tv.css` moves tokens rather than overriding components;
+  - `data/` never imports `ui/` — they meet at `core/bus.js` (`slate`,
+    `state`, `filter`, `toast`, `alert`);
+  - `public/js/app.js` is a composition root with no markup and no fetching.
+  Anything worth unit-testing belongs in `ticker/lib/`, which Node can import
+  without a DOM — that is why search matching is `lib/query.mjs` and alert
+  diffing is `lib/alerts.mjs` rather than living in `ui/`.
+  Design tokens are ported from the icon pack's `colors.xml` / `dimens.xml`, so
+  a change there is a one-line change in `tokens.css`.
 - Changelog: `python tests/test_changelog_contract.py`. `## [Unreleased]` runs
   Added, Changed, Fixed once each, in that order, every top-level bullet leading
   `- **Name.**` — `prepare_release.py` takes those leads as the in-app what's-new

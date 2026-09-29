@@ -1,9 +1,9 @@
 <!doctype html>
-<html lang="en" data-theme="core" data-mode="board">
+<html lang="en" data-theme="core" data-mode="board" data-position="bottom">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-  <meta name="theme-color" content="#07090d">
+  <meta name="theme-color" content="#04070F">
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-title" content="Core Line">
@@ -12,8 +12,8 @@
   <script>window.CORELINE_NATIVE=window.CORELINE_NATIVE||false;window.CORELINE_TV=window.CORELINE_TV||false;</script>
   <script>
     // Boot guard (AUDIT.md A1): this classic script always runs, even on
-    // WebViews too old for ES modules. If the module app never reports in,
-    // we paint a friendly upgrade message instead of a blank screen.
+    // WebViews too old for ES modules. If the module app never reports in, we
+    // paint a friendly upgrade message instead of a blank screen.
     window.__CORELINE_BOOT = { ready: false, t: 0 };
     (function () {
       var timer = setTimeout(function () {
@@ -32,91 +32,155 @@
 </head>
 <body>
   <div class="bootfallback" id="bootfallback" hidden>
-    <div class="bootfallback-card">
-      <div class="bootfallback-mark">CORE LINE</div>
+    <div class="bootfallback__card">
+      <div class="bootfallback__mark">CORE LINE</div>
       <p>This TV's system WebView is too old to run Core Line.</p>
       <p>Update <b>Android System WebView</b> (Play Store) or use <b>Fire OS 7+</b> / Android 8+.</p>
     </div>
   </div>
+
+  <!-- ====================================================================
+       App shell. Two panes: a fixed-width rail for the chrome, and a stage
+       that takes every pixel the rail leaves. The chyron spans both.
+       ==================================================================== -->
   <div class="app" id="app">
-    <header class="topbar">
-      <div class="brand">
-        <img class="brand-mark" src="./icon.svg" width="42" height="42" alt="">
-        <div class="brand-text">
-          <div class="brand-name"><span>CORE</span> LINE</div>
-          <div class="brand-sub" id="brandSub">Sports &amp; channel ticker</div>
+    <div class="app__main">
+
+      <!-- LEFT RAIL -->
+      <aside class="rail scroll-y" id="rail" aria-label="Filters and status">
+        <div class="rail__brand">
+          <img class="rail__mark" src="./icon.svg" width="42" height="42" alt="">
+          <div>
+            <div class="brand__name"><span>CORE</span> LINE</div>
+            <div class="brand__sub" id="brandSub">Sports &amp; channel ticker</div>
+          </div>
+        </div>
+
+        <div class="rail__stats">
+          <div class="stat stat--live"><b id="statLive">0</b><span>Live</span></div>
+          <div class="stat stat--up"><b id="statUp">0</b><span>Up</span></div>
+          <div class="stat"><b id="statRss">0</b><span>RSS</span></div>
+        </div>
+
+        <div class="health is-ok" id="health" role="status" aria-live="polite">All sources live</div>
+
+        <div class="rail__section" id="myTeamsBlock" hidden>
+          <div class="rail__section-head">
+            <span class="kicker">My teams</span>
+          </div>
+          <div class="rail__nav" id="myTeams" role="group" aria-label="My teams"></div>
+        </div>
+
+        <div class="rail__section">
+          <div class="rail__section-head">
+            <span class="kicker">Leagues</span>
+            <span class="hint--small" id="leagueHint"></span>
+          </div>
+          <div class="rail__nav" id="leagues" role="tablist" aria-label="Leagues"></div>
+        </div>
+
+        <div class="rail__actions">
+          <button class="btn--icon focusable" data-action="refresh" title="Refresh" aria-label="Refresh">&#8635;</button>
+          <button class="btn--icon focusable" data-action="mode" title="Ticker only" aria-label="Ticker only">&#9644;</button>
+          <button class="btn--icon focusable" data-action="settings" title="Settings" aria-label="Settings">&#9881;</button>
+        </div>
+      </aside>
+
+      <!-- RIGHT PANE -->
+      <main class="stage scroll-y" id="stage">
+        <div class="stage__search">
+          <input class="field focusable" id="search" type="search" placeholder="Search teams, channels, listings"
+                 autocomplete="off" spellcheck="false" aria-label="Search the slate">
+        </div>
+
+        <section class="bigclock" id="bigclock">
+          <div class="bigclock__kicker">CORE LINE</div>
+          <div class="bigclock__time" id="bigTime">00:00</div>
+          <div class="bigclock__date" id="bigDate"></div>
+          <div class="bigclock__next" id="bigNext"></div>
+        </section>
+
+        <section id="hero" hidden></section>
+        <section class="board" id="board"></section>
+
+        <section class="empty" id="empty" hidden>
+          <div class="kicker" id="emptyKicker">No listings yet</div>
+          <h2 class="empty__title" id="emptyTitle">Add a sports RSS feed</h2>
+          <p class="empty__body" id="emptyBody">
+            The three channel apps already publish the slate. Core Line is the reader — a crawl that says
+            <em>Team vs Team · ESPN, TSN4, SN 3</em>.
+          </p>
+          <button class="btn focusable" data-action="settings">Open settings</button>
+          <button class="btn btn--ghost focusable" data-action="empty-clear" id="emptyClear" hidden>Clear filters</button>
+        </section>
+      </main>
+    </div>
+
+    <!-- THE CHYRON — spans both panes, the one element allowed to. -->
+    <footer class="chyron" id="chyron">
+      <div class="chyron__bug" id="chyronBug">
+        <span class="bug__live" id="bugLive">CORE</span>
+        <span class="bug__name">LINE</span>
+      </div>
+      <div class="chyron__mask" id="crawlMask">
+        <div class="crawl" id="crawl">
+          <div class="crawl__seq" id="crawlA"></div>
+          <div class="crawl__seq" id="crawlB" aria-hidden="true"></div>
         </div>
       </div>
-      <div class="stats" id="stats">
-        <div class="stat"><b id="statLive">0</b><span>Live</span></div>
-        <div class="stat"><b id="statUp">0</b><span>Up</span></div>
-        <div class="stat"><b id="statRss">0</b><span>RSS</span></div>
-      </div>
-      <div class="health ok" id="health" role="status" aria-live="polite">All sources live</div>
-      <div class="top-actions">
-        <button class="icon-btn focusable" data-action="refresh" title="Refresh" aria-label="Refresh">↻</button>
-        <button class="icon-btn focusable" data-action="mode" title="Ticker only" aria-label="Ticker only">▬</button>
-        <button class="icon-btn focusable" data-action="settings" title="Settings" aria-label="Settings">⚙</button>
-      </div>
-    </header>
+      <div class="chyron__clock" id="clock">00:00</div>
+    </footer>
+  </div>
 
-    <nav class="leagues" id="leagues" aria-label="Leagues"></nav>
+  <!-- ====================================================================
+       Overlays
+       ==================================================================== -->
 
-    <main class="stage" id="stage">
-      <section class="bigclock" id="bigclock" hidden>
-        <div class="bigclock-kicker">CORE LINE</div>
-        <div class="bigclock-time" id="bigTime">00:00</div>
-        <div class="bigclock-date" id="bigDate"></div>
-        <div class="bigclock-next" id="bigNext"></div>
-      </section>
-      <section class="hero" id="hero" hidden></section>
-      <section class="grid" id="grid"></section>
-      <section class="empty" id="empty" hidden>
-        <div class="empty-kicker">No listings yet</div>
-        <h2>Add a sports RSS feed</h2>
-        <p>The three channel apps already publish the slate. Core Line is the reader — a crawl that says <em>Team vs Team · ESPN, TSN4, SN 3</em>.</p>
-        <button class="primary focusable" data-action="settings">Open settings</button>
-      </section>
-    </main>
+  <!-- Game detail -->
+  <div class="game-detail" id="gameDetail" hidden>
+    <div class="game-detail__panel" id="gameDetailPanel" role="dialog" aria-modal="true" aria-label="Game detail"></div>
+  </div>
 
-    <aside class="drawer" id="drawer" hidden>
-      <div class="drawer-panel">
-        <header class="drawer-head">
-          <div>
-            <div class="kicker">Setup</div>
-            <h2>Settings</h2>
-          </div>
-          <button class="icon-btn focusable" data-action="close-settings" aria-label="Close">✕</button>
-        </header>
+  <!-- Settings drawer -->
+  <aside class="drawer" id="drawer" hidden>
+    <div class="drawer__panel">
+      <header class="drawer__head">
+        <div>
+          <div class="kicker">Setup</div>
+          <h2 class="drawer__title">Settings</h2>
+        </div>
+        <button class="btn--icon focusable" data-action="close-settings" aria-label="Close">&#10005;</button>
+      </header>
 
-        <div class="drawer-body">
-          <nav class="drawer-rail" id="drawerRail" aria-label="Settings sections">
-            <button class="rail-item focusable is-active" data-action="drawer-section" data-section="feeds" aria-pressed="true"><span class="rail-ic">📡</span> Feeds</button>
-            <button class="rail-item focusable" data-action="drawer-section" data-section="scoreboards" aria-pressed="false"><span class="rail-ic">🏆</span> Scoreboards</button>
-            <button class="rail-item focusable" data-action="drawer-section" data-section="ticker" aria-pressed="false"><span class="rail-ic">🎚️</span> Ticker &amp; display</button>
-            <button class="rail-item focusable" data-action="drawer-section" data-section="watch" aria-pressed="false"><span class="rail-ic">▶️</span> Watch apps</button>
-            <button class="rail-item focusable" data-action="drawer-section" data-section="channels" aria-pressed="false"><span class="rail-ic">📺</span> Channels</button>
-            <button class="rail-item focusable" data-action="drawer-section" data-section="updates" aria-pressed="false"><span class="rail-ic">⬇️</span> Updates</button>
-            <button class="rail-item focusable" data-action="drawer-section" data-section="about" aria-pressed="false"><span class="rail-ic">?</span> Help &amp; about</button>
-          </nav>
+      <div class="drawer__body">
+        <nav class="drawer__rail" id="drawerRail" aria-label="Settings sections">
+          <button class="chip chip--row focusable is-active" data-action="drawer-section" data-section="feeds" aria-pressed="true">Feeds</button>
+          <button class="chip chip--row focusable" data-action="drawer-section" data-section="scoreboards" aria-pressed="false">Scoreboards</button>
+          <button class="chip chip--row focusable" data-action="drawer-section" data-section="ticker" aria-pressed="false">Ticker &amp; display</button>
+          <button class="chip chip--row focusable" data-action="drawer-section" data-section="watch" aria-pressed="false">Watch apps</button>
+          <button class="chip chip--row focusable" data-action="drawer-section" data-section="channels" aria-pressed="false">Channels</button>
+          <button class="chip chip--row focusable" data-action="drawer-section" data-section="updates" aria-pressed="false">Updates</button>
+          <button class="chip chip--row focusable" data-action="drawer-section" data-section="about" aria-pressed="false">Help &amp; about</button>
+        </nav>
 
-          <div class="drawer-sections">
-            <section class="block drawer-section is-active" data-panel="feeds">
-              <h3>Your RSS feeds</h3>
+        <div class="drawer__sections scroll-y">
+          <section class="drawer__section is-active" data-panel="feeds">
+            <div class="block">
+              <h3 class="block__title">Your RSS feeds</h3>
               <p class="hint">Paste any RSS, Atom, or JSON listing. Channel-list apps, sports blogs, or a homemade XML file all work. Core Line never plays video — it only reads names and channels.</p>
               <div class="feed-add">
-                <input class="focusable" id="feedUrl" type="url" placeholder="https://example.com/sports.xml" autocomplete="off" spellcheck="false">
-                <input class="focusable" id="feedLabel" type="text" placeholder="Label" maxlength="24">
-                <button class="primary focusable" data-action="add-feed">Add</button>
+                <input class="field focusable" id="feedUrl" type="url" placeholder="https://example.com/sports.xml" autocomplete="off" spellcheck="false">
+                <input class="field focusable" id="feedLabel" type="text" placeholder="Label" maxlength="24">
+                <button class="btn focusable" data-action="add-feed">Add</button>
               </div>
               <div class="pair" id="pairBox">
-                <button class="ghost focusable" data-action="pair-start" id="pairStart">Add from phone (same Wi-Fi)</button>
-                <div class="pair-card" id="pairCard" hidden>
+                <button class="btn btn--ghost focusable" data-action="pair-start" id="pairStart">Add from phone (same Wi-Fi)</button>
+                <div class="pair__card" id="pairCard" hidden>
                   <p class="hint">On your phone, same Wi-Fi as this TV. Scan or open the address. Type the code. Do not type the RSS URL on the Stick.</p>
-                  <img class="pair-qr" id="pairQr" alt="QR to add a feed">
-                  <div class="pair-url" id="pairUrl"></div>
-                  <div class="pair-code" id="pairCode"></div>
-                  <button class="ghost focusable" data-action="pair-stop">Stop pairing</button>
+                  <img class="pair__qr" id="pairQr" alt="QR to add a feed">
+                  <div class="pair__url" id="pairUrl"></div>
+                  <div class="pair__code" id="pairCode"></div>
+                  <button class="btn btn--ghost focusable" data-action="pair-stop">Stop pairing</button>
                 </div>
               </div>
               <ul class="feed-list" id="feedList"></ul>
@@ -124,27 +188,31 @@
                 <input class="focusable" type="checkbox" id="sampleFeed" checked>
                 <span>Include the bundled sample feed so the crawl is never empty</span>
               </label>
-            </section>
+            </div>
+          </section>
 
-            <section class="block drawer-section" data-panel="scoreboards">
-              <h3>Scoreboards</h3>
+          <section class="drawer__section" data-panel="scoreboards">
+            <div class="block">
+              <h3 class="block__title">Scoreboards</h3>
               <p class="hint">Checked leagues are fetched from public scoreboards and shown as their own tabs. Unchecked leagues are hidden but stay available to re-enable.</p>
               <div class="chip-grid" id="leagueToggles"></div>
-            </section>
+            </div>
+          </section>
 
-            <section class="block drawer-section" data-panel="ticker">
-              <h3>Ticker &amp; display</h3>
+          <section class="drawer__section" data-panel="ticker">
+            <div class="block">
+              <h3 class="block__title">Ticker &amp; display</h3>
               <div class="split">
-                <label>Ticker speed
-                  <div class="stepper">
-                    <button class="ghost focusable" data-action="speed-down" aria-label="Slower">−</button>
-                    <input class="focusable" id="speed" type="range" min="20" max="120" value="52" aria-label="Ticker speed">
-                    <button class="ghost focusable" data-action="speed-up" aria-label="Faster">+</button>
-                  </div>
+                <label class="field-label">Ticker speed
+                  <span class="stepper">
+                    <button class="btn--mini focusable" data-action="speed-down" aria-label="Slower">&minus;</button>
+                    <input class="field focusable" id="speed" type="range" min="20" max="120" value="52" aria-label="Ticker speed">
+                    <button class="btn--mini focusable" data-action="speed-up" aria-label="Faster">+</button>
+                  </span>
                   <span class="speed-val" id="speedVal">52 px/s</span>
                 </label>
-                <label>Refresh every
-                  <select class="focusable" id="refreshSec">
+                <label class="field-label">Refresh every
+                  <select class="field focusable" id="refreshSec">
                     <option value="15">15 seconds</option>
                     <option value="30">30 seconds</option>
                     <option value="60" selected>1 minute</option>
@@ -153,95 +221,141 @@
                     <option value="600">10 minutes</option>
                   </select>
                 </label>
-                <label>Ticker position
-                  <select class="focusable" id="position">
+                <label class="field-label">Ticker position
+                  <select class="field focusable" id="position">
                     <option value="bottom" selected>Bottom</option>
                     <option value="top">Top</option>
                   </select>
                 </label>
-                <label>Theme
-                  <select class="focusable" id="theme">
+                <label class="field-label">Theme
+                  <select class="field focusable" id="theme">
                     <option value="core">Core midnight</option>
                     <option value="broadcast">Broadcast red</option>
                     <option value="stadium">Stadium night</option>
                     <option value="mono">High contrast</option>
                   </select>
                 </label>
-                <label>Clock
-                  <select class="focusable" id="clockFmt">
+                <label class="field-label">Clock
+                  <select class="field focusable" id="clockFmt">
                     <option value="12">12-hour</option>
                     <option value="24">24-hour</option>
                   </select>
                 </label>
               </div>
-              <div class="fav-block">
-                <label>Favorite teams
-                  <input class="focusable" id="favorites" type="text" placeholder="TOR, LAL, KC, ARS">
-                </label>
-                <div class="team-picker" id="teamPicker" role="group" aria-label="Teams in this slate"></div>
-              </div>
-              <div class="split checks">
+
+              <div class="split--checks">
                 <label class="check"><input class="focusable" type="checkbox" id="showFinals" checked><span>Show finals</span></label>
                 <label class="check"><input class="focusable" type="checkbox" id="wakeLock" checked><span>Keep screen awake</span></label>
               </div>
-              <div class="overlay-block" id="overlayBlock" hidden>
-                <label class="check"><input class="focusable" type="checkbox" id="overlayEnabled"><span>Floating ticker over other apps</span></label>
-                <p class="hint small" id="overlayHint">Draws the crawl on top of every app, edge to edge. Stop it from the notification or untick this box.</p>
+
+              <div class="block" style="margin-top: var(--cb-space-md)">
+                <h3 class="block__title">Screen fit</h3>
+                <p class="hint">Classic TVs crop the edge of the picture. Calibrate once and Core Line keeps everything inside the frame.</p>
+                <label class="field-label">Overscan margin
+                  <span class="stepper">
+                    <button class="btn--mini focusable" data-action="overscan-down" aria-label="Less margin">&minus;</button>
+                    <input class="field focusable" id="overscan" type="range" min="0" max="80" step="4" value="28" aria-label="Overscan margin">
+                    <button class="btn--mini focusable" data-action="overscan-up" aria-label="More margin">+</button>
+                  </span>
+                  <span class="speed-val" id="overscanVal">28 px</span>
+                </label>
+                <button class="btn btn--ghost focusable" data-action="calibrate" style="margin-top: var(--cb-space-xs)">Calibrate overscan</button>
               </div>
-            </section>
 
-            <section class="block drawer-section" data-panel="watch">
-              <h3>Open games in other apps</h3>
-              <p class="hint">Assign an installed app to each league. Pressing <b>▶ Watch</b> on a game (or the W key) opens that app so you can watch; “Web browser” opens the game page on ESPN instead.</p>
+              <div class="block" id="overlayBlock" hidden>
+                <h3 class="block__title">Floating ticker</h3>
+                <label class="check"><input class="focusable" type="checkbox" id="overlayEnabled"><span>Floating ticker over other apps</span></label>
+                <p class="hint hint--small" id="overlayHint">Draws the crawl on top of every app, edge to edge. Stop it from the notification or untick this box.</p>
+              </div>
+            </div>
+
+            <div class="block">
+              <h3 class="block__title">Favorite teams</h3>
+              <label class="field-label">Favorites
+                <input class="field focusable" id="favorites" type="text" placeholder="TOR, LAL, KC, ARS">
+              </label>
+              <div class="chip-grid" id="teamPicker" role="group" aria-label="Teams in this slate" style="margin-top: var(--cb-space-sm)"></div>
+              <label class="check" style="margin-top: var(--cb-space-sm)">
+                <input class="focusable" type="checkbox" id="alerts" checked>
+                <span>Announce score changes for my teams</span>
+              </label>
+              <p class="hint hint--small">A short alert on the crawl when a favorite team scores or takes the lead.</p>
+            </div>
+          </section>
+
+          <section class="drawer__section" data-panel="watch">
+            <div class="block">
+              <h3 class="block__title">Open games in other apps</h3>
+              <p class="hint">Assign an installed app to each league. Pressing <b>&#9654; Watch</b> on a game (or the W key) opens that app so you can watch; “Web browser” opens the game page on ESPN instead.</p>
               <div class="watch-list" id="watchList"></div>
-              <p class="hint small" id="watchAppsStatus"></p>
-            </section>
+              <p class="hint hint--small" id="watchAppsStatus"></p>
+            </div>
+          </section>
 
-            <section class="block drawer-section" data-panel="channels">
-              <h3>IPTV playlist (M3U)</h3>
+          <section class="drawer__section" data-panel="channels">
+            <div class="block">
+              <h3 class="block__title">IPTV playlist (M3U)</h3>
               <p class="hint">Import the M3U link from your IPTV provider (Xtream “m3u_plus” links work too). Game details then list your channels that carry the game, and open them in your player app — Core Line itself never plays video.</p>
               <div class="feed-add">
-                <input class="focusable" id="playlistUrl" type="url" placeholder="https://provider.example/get.php?…m3u_plus" autocomplete="off" spellcheck="false">
-                <button class="primary focusable" data-action="playlist-import" id="playlistImportBtn">Import</button>
+                <input class="field focusable" id="playlistUrl" type="url" placeholder="https://provider.example/get.php?…m3u_plus" autocomplete="off" spellcheck="false">
+                <button class="btn focusable" data-action="playlist-import" id="playlistImportBtn">Import</button>
               </div>
-              <p class="hint small" id="playlistStatus"></p>
-              <button class="ghost focusable" data-action="playlist-clear" id="playlistClearBtn" hidden>Remove playlist</button>
-              <p class="hint small">The link is fetched by Core Line on this device and never leaves it. Opening a channel needs a player that accepts stream links — TiviMate, VLC, or similar.</p>
-            </section>
+              <p class="hint hint--small" id="playlistStatus"></p>
+              <button class="btn btn--ghost focusable" data-action="playlist-clear" id="playlistClearBtn" hidden>Remove playlist</button>
+              <p class="hint hint--small">The link is fetched by Core Line on this device and never leaves it. Opening a channel needs a player that accepts stream links — TiviMate, VLC, or similar.</p>
+            </div>
+          </section>
 
-            <section class="block drawer-section" data-panel="updates">
-              <h3>Updates</h3>
+          <section class="drawer__section" data-panel="updates">
+            <div class="block">
+              <h3 class="block__title">Updates</h3>
               <p class="hint">Core Line updates come from the GitHub release feed. On a TV, download the new APK and the system installer takes over — your settings are kept.</p>
               <div id="updatePanel" role="status" aria-live="polite"></div>
-            </section>
+            </div>
+          </section>
 
-            <section class="block drawer-section" data-panel="about">
-              <h3>Help &amp; about</h3>
-              <p class="fineprint">D-pad: move · OK: select · Air mouse: point &amp; click · S: settings · T: ticker · R: refresh · W: watch · F: fullscreen. This is a TV guide, not a player.</p>
+          <section class="drawer__section" data-panel="about">
+            <div class="block">
+              <h3 class="block__title">Help &amp; about</h3>
               <p class="hint">Core Line reads public scoreboards (ESPN, NHL, MLB) and your own RSS/JSON feeds. It never plays video — the Watch feature hands a game off to the app you choose.</p>
-            </section>
-          </div>
+              <p class="fineprint">D-pad: move · OK: select · Air mouse: point &amp; click · S: settings · T: ticker · R: refresh · W: watch · /: search · F: fullscreen.</p>
+              <p class="hint hint--small" id="aboutVersion"></p>
+            </div>
+          </section>
         </div>
       </div>
-    </aside>
+    </div>
+  </aside>
 
-    <footer class="chyron" id="chyron">
-      <div class="chyron-bug" id="chyronBug">
-        <span class="bug-live" id="bugLive">LIVE</span>
-        <span class="bug-name">LINE</span>
+  <!-- Overscan calibration -->
+  <div class="calibrate" id="calibrate" hidden>
+    <div class="calibrate__frame">
+      <span></span><span></span><span></span><span></span>
+      <div class="calibrate__hint">
+        <div class="kicker">Screen fit</div>
+        <div class="calibrate__value" id="calibrateValue">28 px</div>
+        <p class="hint">Adjust until all four corner marks are fully visible. Up / Down or the − and + buttons.</p>
       </div>
-      <div class="crawl-mask" id="crawl-mask">
-        <div class="crawl" id="crawl">
-          <div class="crawl-seq" id="crawlA"></div>
-          <div class="crawl-seq" id="crawlB" aria-hidden="true"></div>
-        </div>
-      </div>
-      <div class="chyron-clock" id="clock">00:00</div>
-    </footer>
+    </div>
+    <div class="calibrate__actions">
+      <button class="btn--mini focusable" data-action="overscan-down" aria-label="Less margin">&minus;</button>
+      <button class="btn focusable" data-action="calibrate-done">Looks right</button>
+      <button class="btn--mini focusable" data-action="overscan-up" aria-label="More margin">+</button>
+    </div>
   </div>
 
-  <div class="game-detail" id="gameDetail" hidden>
-    <div class="game-detail-panel" id="gameDetailPanel" role="dialog" aria-modal="true" aria-label="Game detail"></div>
+  <!-- First run -->
+  <div class="onboard" id="onboard" hidden>
+    <div class="onboard__panel">
+      <div class="onboard__step" id="onboardStep">
+        <span class="onboard__dot is-on"></span><span class="onboard__dot"></span>
+      </div>
+      <div class="onboard__body" id="onboardBody"></div>
+      <div class="onboard__actions">
+        <button class="btn focusable" data-action="onboard-next" id="onboardNext">Next</button>
+        <button class="btn btn--ghost focusable" data-action="onboard-skip">Skip</button>
+      </div>
+    </div>
   </div>
 
   <div class="toast" id="toast" hidden></div>

@@ -1,0 +1,834 @@
+/* ============================================================================
+   Core Line — screens
+
+   Overlays that sit on top of the app shell: the settings drawer, the game
+   detail modal, the first-run onboarding, the overscan calibration, and the
+   boot fallback for WebViews too old to run ES modules (AUDIT A1).
+
+   The drawer uses the same two-pane grammar as the main screen — a fixed rail
+   of sections on the left, the active section's content on the right. It is
+   the standard 10-foot settings layout for the same reason it is the standard
+   board layout: a vertical rail is what a D-pad walks.
+   ========================================================================== */
+
+/* ---- Settings drawer ---------------------------------------------------- */
+.drawer {
+  position: fixed;
+  inset: 0;
+  z-index: 40;
+  background: rgba(0, 0, 0, 0.62);
+  display: flex;
+  justify-content: flex-end;
+}
+.drawer__panel {
+  display: flex;
+  flex-direction: column;
+  width: min(560px, 100%);
+  height: 100%;
+  background: var(--surface-panel);
+  border-left: 1px solid var(--cb-hairline);
+  padding: var(--cb-space-lg) var(--safe-x) calc(var(--chyron-h) + var(--cb-space-lg));
+  box-shadow: -28px 0 80px rgba(0, 0, 0, 0.55);
+  animation: cb-drawer-in 0.22s var(--ease);
+}
+.drawer__head {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: var(--cb-space-sm);
+  margin-bottom: var(--cb-space-lg);
+  flex: 0 0 auto;
+}
+.drawer__title {
+  font-size: var(--cb-text-title);
+  font-weight: 800;
+}
+.drawer__body {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  flex: 1 1 auto;
+}
+.drawer__rail {
+  display: flex;
+  gap: var(--cb-space-xs);
+  overflow-x: auto;
+  margin-bottom: var(--cb-space-lg);
+  padding: 2px;
+  scrollbar-width: none;
+  flex: 0 0 auto;
+}
+.drawer__rail::-webkit-scrollbar {
+  display: none;
+}
+.drawer__sections {
+  min-height: 0;
+}
+.drawer__section {
+  display: none;
+}
+.drawer__section.is-active {
+  display: block;
+  animation: cb-rise-in var(--dur) var(--ease);
+}
+
+@keyframes cb-drawer-in {
+  from { transform: translateX(28px); opacity: 0.5; }
+  to { transform: none; opacity: 1; }
+}
+
+/* ---- Blocks inside a section -------------------------------------------- */
+.block {
+  margin-bottom: var(--cb-space-lg);
+}
+.block__title {
+  display: flex;
+  align-items: center;
+  gap: var(--cb-space-xs);
+  font-size: var(--cb-text-label);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--cb-slate);
+  margin-bottom: var(--cb-space-xs);
+}
+.block__title::before {
+  content: "";
+  width: 3px;
+  height: 1em;
+  border-radius: 2px;
+  background: var(--accent);
+}
+.hint {
+  color: var(--cb-slate);
+  font-size: var(--cb-text-data);
+  line-height: 1.55;
+  margin-bottom: var(--cb-space-sm);
+}
+.hint--small {
+  font-size: var(--cb-text-kicker);
+}
+.fineprint {
+  color: var(--cb-slate);
+  font-size: var(--cb-text-data);
+  line-height: 1.55;
+  margin-top: var(--cb-space-xs);
+}
+
+/* Two-up field rows. Collapses to one column on a phone. */
+.split {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--cb-space-sm);
+}
+.split--checks {
+  margin-top: var(--cb-space-lg);
+}
+
+/* Add-feed row: URL takes the room, label is fixed, button is intrinsic. */
+.feed-add {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 110px auto;
+  gap: var(--cb-space-xs);
+  margin-bottom: var(--cb-space-sm);
+  align-items: center;
+}
+/* The house button min-width is for stacked CTAs; inline, next to a field, it
+   would push the URL input down to nothing. */
+.feed-add .btn {
+  min-width: 0;
+}
+
+.feed-list {
+  list-style: none;
+  display: grid;
+  gap: var(--cb-space-xs);
+  margin-bottom: var(--cb-space-sm);
+}
+.feed-list li {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--cb-space-sm);
+  padding: 10px var(--cb-space-sm);
+  border-radius: var(--cb-radius-button);
+  background: var(--surface-card);
+  border: 1px solid var(--cb-hairline);
+  transition: border-color var(--dur) var(--ease);
+}
+.feed-list li:hover {
+  border-color: var(--accent);
+}
+.feed-list__text {
+  min-width: 0;
+}
+.feed-list b {
+  display: block;
+  font-size: var(--cb-text-label);
+}
+.feed-list span {
+  color: var(--cb-slate);
+  font-size: var(--cb-text-kicker);
+  word-break: break-all;
+}
+.row-actions {
+  display: flex;
+  gap: 6px;
+  flex: 0 0 auto;
+}
+
+/* ---- Stepper (ticker speed) --------------------------------------------
+   The range input alone is not D-pad operable (AUDIT D7): arrows move focus
+   instead of the value. The -/+ buttons are the real control; the range is a
+   pointer affordance that stays in sync. */
+.stepper {
+  display: flex;
+  align-items: center;
+  gap: var(--cb-space-xs);
+}
+.stepper .field {
+  flex: 1;
+  min-width: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  min-height: var(--cb-target-min);
+}
+.speed-val {
+  font-family: var(--font);
+  color: var(--accent);
+  letter-spacing: 0.08em;
+  font-size: var(--text-nav);
+  font-variant-numeric: tabular-nums;
+}
+
+.chip-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--cb-space-xs);
+}
+.league-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--cb-space-sm);
+  min-width: 148px;
+  padding: var(--cb-space-xs) 10px;
+  border-radius: var(--cb-radius-button);
+  background: var(--surface-card);
+  border: 1px solid var(--cb-hairline);
+}
+
+/* ---- Pairing (add a feed from a phone) --------------------------------- */
+.pair {
+  margin: var(--cb-space-sm) 0 4px;
+}
+.pair__card {
+  margin-top: var(--cb-space-sm);
+  padding: var(--cb-space-md);
+  border-radius: var(--cb-radius-card);
+  border: 1px solid var(--cb-hairline);
+  background: var(--surface-card);
+  text-align: center;
+}
+.pair__qr {
+  width: 200px;
+  height: 200px;
+  background: #fff;
+  border-radius: var(--cb-radius-button);
+  margin: var(--cb-space-xs) auto;
+  display: block;
+}
+.pair__url {
+  font-size: var(--text-pill);
+  word-break: break-all;
+  margin: var(--cb-space-xs) 0 4px;
+}
+.pair__code {
+  font-family: var(--font);
+  font-size: var(--text-code);
+  letter-spacing: 0.28em;
+  color: var(--accent);
+  font-weight: 800;
+  margin-bottom: var(--cb-space-sm);
+}
+
+/* ---- Watch apps --------------------------------------------------------- */
+.watch-list {
+  display: grid;
+  gap: 10px;
+}
+.watch-row {
+  display: grid;
+  grid-template-columns: 96px minmax(0, 1fr);
+  gap: var(--cb-space-sm);
+  align-items: center;
+}
+.watch-league {
+  font-family: var(--font);
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: var(--cb-ink);
+  display: flex;
+  align-items: center;
+}
+.watch-league::before {
+  content: "";
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 2px;
+  margin-right: var(--cb-space-xs);
+  background: var(--acc, var(--accent));
+  flex: 0 0 auto;
+}
+
+/* ---- Updates panel ------------------------------------------------------ */
+.update-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: var(--cb-space-sm);
+  padding: 2px 0;
+}
+.update-label {
+  color: var(--cb-slate);
+  font-size: var(--cb-text-data);
+  letter-spacing: 0.04em;
+}
+.update-value {
+  font-family: var(--font);
+  font-size: var(--text-nav);
+  letter-spacing: 0.06em;
+  color: var(--cb-ink);
+}
+.update-note {
+  color: var(--cb-slate);
+  font-size: var(--cb-text-data);
+  margin: var(--cb-space-xs) 0;
+}
+.update-note.is-ok {
+  color: var(--cb-success);
+}
+.update-note.is-error {
+  color: var(--st-live);
+}
+.update-note.is-checking {
+  color: var(--accent);
+  display: flex;
+  align-items: center;
+}
+.update-note.is-checking::before {
+  content: "";
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--accent);
+  margin-right: var(--cb-space-xs);
+  animation: cb-pulse 1.2s ease-in-out infinite;
+}
+.update-banner {
+  border: 1px solid var(--accent-quiet);
+  background: var(--accent-soft);
+  border-radius: var(--cb-radius-card);
+  padding: var(--cb-space-md);
+  margin: 10px 0;
+}
+.update-banner__title {
+  font-family: var(--font);
+  font-size: var(--cb-text-section);
+  letter-spacing: 0.04em;
+  color: var(--accent);
+}
+.update-notes {
+  color: var(--cb-slate);
+  font-size: var(--cb-text-data);
+  line-height: 1.5;
+  margin-top: 6px;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+/* ---- Game detail modal --------------------------------------------------
+   ScoreBox-style channel matching plus handoff. Focus is trapped inside while
+   open (public/js/tv.js), so it needs its own close affordance. */
+.game-detail {
+  position: fixed;
+  inset: 0;
+  z-index: 70;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--cb-space-lg);
+  background: rgba(4, 9, 15, 0.66);
+}
+.game-detail__panel {
+  width: min(720px, 96vw);
+  max-height: min(84vh, 760px);
+  overflow-y: auto;
+  background: var(--surface-panel);
+  border: 1px solid var(--cb-hairline);
+  border-radius: 18px;
+  padding: var(--cb-space-lg) var(--cb-space-lg) var(--cb-space-lg);
+  box-shadow: 0 30px 90px rgba(0, 0, 0, 0.55);
+  animation: cb-rise-in var(--dur) var(--ease);
+}
+.gd-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--cb-space-sm);
+}
+.gd-meta {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  flex-wrap: wrap;
+  color: var(--cb-slate);
+  font-size: var(--cb-text-data);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+.gd-teams .team-row {
+  padding: var(--cb-space-xs) 0;
+}
+.gd-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 10px 0 2px;
+}
+.gd-actions {
+  display: flex;
+  gap: 10px;
+  margin: var(--cb-space-md) 0 4px;
+  flex-wrap: wrap;
+}
+.gd-section {
+  margin: var(--cb-space-md) 0 var(--cb-space-xs);
+  font-size: var(--cb-text-data);
+  color: var(--cb-slate);
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+}
+/* A matched channel row: name, why it matched, and the open affordance. */
+.gd-row {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  gap: 10px;
+  text-align: left;
+  padding: 11px var(--cb-space-sm);
+  margin: 6px 0;
+  border-radius: var(--cb-radius-card);
+  background: var(--surface-card);
+  border: 1px solid var(--cb-hairline);
+  color: var(--cb-ink);
+  font: inherit;
+  cursor: pointer;
+  transition: border-color var(--dur) var(--ease);
+}
+.gd-row:hover {
+  border-color: var(--accent);
+}
+.gd-row .gd-ch {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.gd-why {
+  font-size: var(--cb-text-kicker);
+  letter-spacing: 0.08em;
+  color: var(--cb-slate);
+  border: 1px solid var(--cb-hairline);
+  padding: 2px 7px;
+  border-radius: var(--cb-radius-pill);
+  white-space: nowrap;
+}
+.gd-star {
+  color: var(--st-up);
+}
+.gd-open {
+  color: var(--accent);
+  font-size: var(--cb-text-data);
+  white-space: nowrap;
+}
+.gd-foot {
+  margin-top: var(--cb-space-sm);
+  color: var(--cb-slate);
+  font-size: var(--cb-text-data);
+}
+
+/* ---- Board cards: score rows ------------------------------------------- */
+.team-row {
+  display: grid;
+  grid-template-columns: 88px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: var(--cb-space-sm);
+}
+.abbr {
+  font-family: var(--font);
+  font-weight: 800;
+  font-size: var(--text-abbr);
+  letter-spacing: 0.02em;
+  line-height: 0.9;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.team-name {
+  color: var(--cb-slate);
+  font-size: var(--text-pill);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.score {
+  font-family: var(--font);
+  font-size: var(--text-score);
+  font-weight: 800;
+  line-height: 0.85;
+  font-variant-numeric: tabular-nums;
+}
+.score.is-win {
+  color: var(--accent);
+}
+.gt {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: var(--cb-space-xs);
+  align-items: baseline;
+}
+.gt .who {
+  font-family: var(--font);
+  font-size: var(--text-team);
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.gt .sc {
+  font-family: var(--font);
+  font-size: var(--text-team);
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+}
+.gt.is-win .who,
+.gt.is-win .sc {
+  color: var(--accent);
+}
+.when {
+  color: var(--cb-slate);
+  font-size: var(--cb-text-kicker);
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+}
+.card__top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--cb-space-xs);
+  min-width: 0;
+}
+/* The right cluster may shrink, and inside it only the status badge gives
+   way: a start time like "9/29 - 6:30 PM EDT" used to push the star and the
+   Watch button past the card edge on a 1080p board. The badge truncates
+   (the full time is also in the card foot and in Game Detail); the two
+   48px targets never shrink. */
+.card__top-right {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+  flex: 0 1 auto;
+}
+.card__top-right .badge {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.card__top-right .fav-star,
+.card__top-right .btn--mini {
+  flex: 0 0 auto;
+}
+.card__foot {
+  margin-top: auto;
+  display: flex;
+  justify-content: space-between;
+  gap: var(--cb-space-xs);
+  align-items: center;
+  min-width: 0;
+}
+/* The venue gives way to the channels, not the other way round: live ESPN
+   data carries names like "Empower Field at Mile High", which ran 32px past
+   a 266px card at 720p. The channel is what the viewer came for; the venue
+   truncates, and the full name stays in the title and in Game Detail. */
+.card__foot > .when {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.card__foot > .channels {
+  flex: 0 1 auto;
+}
+.league-tag {
+  font-size: var(--cb-text-kicker);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  /* Text takes the lifted ink (lib/contrast.mjs); the marker keeps the
+     league's own colour. */
+  color: var(--acc-ink, var(--acc, var(--cb-slate)));
+  /* League names are five letters at most: the tag stays whole and the
+     status badge is what gives way. */
+  flex: 0 0 auto;
+  white-space: nowrap;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+}
+.league-tag::before {
+  content: "";
+  display: inline-block;
+  width: 7px;
+  height: 7px;
+  border-radius: 1px;
+  margin-right: 7px;
+  background: var(--acc, var(--cb-slate));
+  flex: 0 0 auto;
+}
+.channels {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+}
+
+/* Star toggle on a card. 30px visual, 48px target on TV (see tv.css). */
+.fav-star {
+  width: 30px;
+  height: 30px;
+  display: grid;
+  place-items: center;
+  border: 1px solid var(--cb-hairline);
+  border-radius: 50%;
+  background: transparent;
+  color: var(--cb-slate);
+  font-size: var(--cb-text-label);
+  line-height: 1;
+  padding: 0;
+  flex: 0 0 auto;
+}
+.fav-star.is-on {
+  color: var(--st-up);
+  border-color: rgba(251, 191, 36, 0.55);
+  background: rgba(251, 191, 36, 0.08);
+}
+.fav-star:hover,
+.fav-star:focus-visible,
+[data-tv] .fav-star:focus {
+  color: var(--st-up);
+  border-color: var(--st-up);
+}
+
+/* ---- Hero tile + card interiors ----------------------------------------
+   The scoreboard grammar: abbreviation, name, score, then channels. These are
+   the parts a viewer actually reads, so they are the parts that carry the
+   display type roles rather than the UI scale. */
+.teams {
+  display: grid;
+  gap: var(--cb-space-xs);
+}
+.hero-meta {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  color: var(--cb-slate);
+  font-size: var(--cb-text-data);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  margin-bottom: 10px;
+  flex-wrap: wrap;
+}
+.hero-side {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: var(--cb-space-sm);
+}
+.pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  justify-content: flex-end;
+}
+.game-teams {
+  display: grid;
+  gap: 6px;
+}
+
+/* ---- Overscan calibration ----------------------------------------------
+   Classic TV panels crop the frame, and the amount varies by set. Rather
+   than guess, draw a frame the viewer can walk out to the edge of with the
+   D-pad and confirm the corner marks are visible. */
+.calibrate {
+  position: fixed;
+  inset: 0;
+  z-index: 80;
+  background: var(--surface-night);
+  /* The same token the app shell uses, so nudging the margin moves the frame
+     live instead of only updating the number. */
+  padding: var(--overscan-y) var(--overscan-x);
+}
+.calibrate__frame {
+  position: relative;
+  height: 100%;
+  border: 2px dashed var(--accent);
+  border-radius: var(--cb-radius-card);
+}
+.calibrate__frame span {
+  position: absolute;
+  width: 26px;
+  height: 26px;
+  border: 4px solid var(--accent);
+}
+.calibrate__frame span:nth-child(1) { top: -2px; left: -2px; border-right: 0; border-bottom: 0; }
+.calibrate__frame span:nth-child(2) { top: -2px; right: -2px; border-left: 0; border-bottom: 0; }
+.calibrate__frame span:nth-child(3) { bottom: -2px; left: -2px; border-right: 0; border-top: 0; }
+.calibrate__frame span:nth-child(4) { bottom: -2px; right: -2px; border-left: 0; border-top: 0; }
+.calibrate__hint {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+  max-width: 620px;
+}
+.calibrate__value {
+  font-family: var(--font);
+  font-size: var(--text-abbr);
+  color: var(--accent);
+  font-variant-numeric: tabular-nums;
+}
+.calibrate__actions {
+  position: absolute;
+  left: 50%;
+  bottom: var(--cb-space-xl);
+  transform: translateX(-50%);
+  display: flex;
+  gap: var(--cb-space-sm);
+  align-items: center;
+}
+
+/* ---- First-run onboarding ----------------------------------------------
+   Shown once. It asks for the two things that make the board useful —
+   favourite teams and a feed — and never blocks: Skip is a first-class
+   button, because the bundled sample feed already fills the crawl. */
+.onboard {
+  position: fixed;
+  inset: 0;
+  z-index: 90;
+  display: grid;
+  place-items: center;
+  background: var(--surface-night);
+  padding: var(--cb-space-lg);
+}
+.onboard__panel {
+  width: min(620px, 96vw);
+  /* The panel never outgrows the screen. On a 1080p TV (960x540) a slate's
+     24 team chips plus the header came to 772px: Next and Skip were below the
+     panel edge on the first screen a new viewer sees. Now only the body
+     scrolls, and the actions stay put. */
+  max-height: 100%;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  padding: var(--cb-space-xl);
+  border-radius: 18px;
+  background: var(--surface-panel);
+  border: 1px solid var(--cb-hairline);
+  box-shadow: 0 30px 90px rgba(0, 0, 0, 0.5);
+}
+.onboard__step {
+  display: flex;
+  gap: var(--cb-space-xs);
+  margin-bottom: var(--cb-space-md);
+}
+.onboard__dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--cb-hairline);
+}
+.onboard__dot.is-on {
+  background: var(--accent);
+}
+.onboard__title {
+  font-size: var(--cb-text-title);
+  margin-bottom: var(--cb-space-xs);
+}
+/* Scrolls on its own. The inset padding keeps the 3px ring and its gap
+   inside the scroll box, which would otherwise clip them. */
+.onboard__body {
+  min-height: 0;
+  overflow-y: auto;
+  padding: 10px;
+  margin: -10px;
+}
+.onboard__league {
+  margin: var(--cb-space-md) 0 var(--cb-space-xs);
+  color: var(--cb-slate);
+}
+.onboard__actions {
+  flex: 0 0 auto;
+  display: flex;
+  gap: var(--cb-space-sm);
+  margin-top: var(--cb-space-lg);
+  align-items: center;
+}
+
+/* ---- Boot fallback (AUDIT A1) ------------------------------------------
+   WebViews older than Chrome 61 ignore a <script type="module"> silently, so
+   the module app never reports in. This classic script paints a real message
+   instead of a blank screen. */
+.bootfallback {
+  position: fixed;
+  inset: 0;
+  z-index: 999;
+  display: grid;
+  place-items: center;
+  background: var(--surface-night);
+  color: var(--cb-ink);
+  font-family: system-ui, sans-serif;
+  text-align: center;
+  padding: var(--cb-space-lg);
+}
+.bootfallback__card {
+  max-width: 520px;
+  padding: var(--cb-space-xl) var(--cb-space-lg);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: var(--cb-radius-card);
+  background: var(--surface-panel);
+  line-height: 1.6;
+}
+.bootfallback__mark {
+  font-weight: 800;
+  letter-spacing: 0.3em;
+  color: var(--accent);
+  margin-bottom: var(--cb-space-md);
+}
+.bootfallback p {
+  color: var(--cb-slate);
+  margin-bottom: var(--cb-space-xs);
+}
+
+@media (max-width: 720px) {
+  .feed-add,
+  .split {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .drawer__panel {
+    width: 100%;
+  }
+}

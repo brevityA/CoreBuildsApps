@@ -1,6 +1,7 @@
 export function initTvNav(root) {
   const onKey = (event) => {
-    if (isEditing(event.target)) return;
+    const map0 = { ArrowUp: 'up', ArrowDown: 'down', ArrowLeft: 'left', ArrowRight: 'right' };
+    if (isEditing(event.target, map0[event.key])) return;
     const map = {
       ArrowUp: 'up', ArrowDown: 'down', ArrowLeft: 'left', ArrowRight: 'right',
       Enter: 'ok', Escape: 'back',
@@ -16,12 +17,20 @@ export function initTvNav(root) {
       return;
     }
     if (dir === 'back') {
-      // Back closes the topmost layer: Game Detail first, then the drawer.
-      const detail = document.getElementById('gameDetail');
-      if (detail && !detail.hidden) {
-        event.preventDefault();
-        detail.querySelector('[data-action="detail-close"]')?.click();
-        return;
+      // Back closes the topmost layer: calibration, onboarding, game detail,
+      // then the drawer.
+      const layers = [
+        ['calibrate', '[data-action="calibrate-done"]'],
+        ['onboard', '[data-action="onboard-skip"]'],
+        ['gameDetail', '[data-action="detail-close"]'],
+      ];
+      for (const [id, selector] of layers) {
+        const layer = document.getElementById(id);
+        if (layer && !layer.hidden) {
+          event.preventDefault();
+          layer.querySelector(selector)?.click();
+          return;
+        }
       }
       const close = root.querySelector('[data-action="close-settings"]');
       if (close && !document.getElementById('drawer').hidden) {
@@ -45,40 +54,57 @@ export function initTvNav(root) {
     if (el) el.focus();
   });
   if (!document.activeElement || document.activeElement === document.body) {
-    root.querySelector('.focusable')?.focus();
+    // Prefer the league rail over the chrome: it is what a viewer came to
+    // change, and the action buttons are one press away from it.
+    (root.querySelector('#leagues .focusable')
+      || root.querySelector('.stage .focusable')
+      || root.querySelector('.focusable'))?.focus();
   }
   return () => window.removeEventListener('keydown', onKey);
 }
 
+// Overlays in stacking order, topmost first: the same order Back closes them.
+const MODALS = ['calibrate', 'onboard', 'gameDetail'];
+
+function topModal() {
+  for (const id of MODALS) {
+    const layer = document.getElementById(id);
+    if (layer && !layer.hidden) return layer;
+  }
+  return null;
+}
+
 function nearest(current, dir) {
   const drawerOpen = drawerShown();
-  const detailOpen = detailShown();
+  // While an overlay is up, the D-pad stays inside it. Onboarding and
+  // calibration had no such rule, so Down from a team chip walked onto a game
+  // card hidden behind the dialog, on the very first screen a viewer sees.
+  const modal = topModal();
   const nodes = [...document.querySelectorAll('.focusable')].filter((el) => {
     if (!visible(el)) return false;
-    // While the Game Detail modal is open, D-pad stays inside it.
-    if (detailOpen) return el.closest('#gameDetail') !== null;
+    if (modal) return modal.contains(el);
     if (drawerOpen && !el.closest('#drawer')) return false;
     return true;
   });
   if (!nodes.length) return null;
   if (!current || !nodes.includes(current)) return nodes[0];
 
-  const inRail = current.closest('.drawer-rail');
-  const inSections = current.closest('.drawer-sections');
+  const inRail = current.closest('.drawer__rail');
+  const inSections = current.closest('.drawer__sections');
 
   if (drawerOpen && inRail && dir === 'right') {
-    const active = document.querySelector('.drawer-section.is-active .focusable');
+    const active = document.querySelector('.drawer__section.is-active .focusable');
     if (active && visible(active)) return active;
   }
   if (drawerOpen && inSections && dir === 'left') {
-    const active = document.querySelector('.rail-item.is-active');
+    const active = document.querySelector('.drawer__rail .chip--row.is-active');
     if (active && visible(active)) return active;
   }
 
   const candidates = drawerOpen && (dir === 'up' || dir === 'down')
     ? nodes.filter((el) => {
-        if (inRail) return el.closest('.drawer-rail');
-        if (inSections) return el.closest('.drawer-sections');
+        if (inRail) return el.closest('.drawer__rail');
+        if (inSections) return el.closest('.drawer__sections');
         return true;
       })
     : nodes;
@@ -142,18 +168,24 @@ function drawerShown() {
   return Boolean(drawer && !drawer.hidden);
 }
 
-function detailShown() {
-  const detail = document.getElementById('gameDetail');
-  return Boolean(detail && !detail.hidden);
-}
-
-function isEditing(el) {
+/**
+ * Is the focused control consuming this key itself?
+ *
+ * A range input is the interesting case (AUDIT D7): exempting it entirely
+ * meant the D-pad moved focus instead of the value, so the speed slider could
+ * not be operated from a remote at all. Exempting it for every key is also
+ * wrong, because a range only handles horizontal arrows — vertical arrows
+ * would strand the cursor on it. So: horizontal arrows drive the slider,
+ * vertical arrows navigate.
+ */
+function isEditing(el, dir) {
   if (!el || el === document.body) return false;
   const tag = (el.tagName || '').toLowerCase();
   if (tag === 'textarea' || tag === 'select') return true;
   if (tag === 'input') {
     const type = (el.type || 'text').toLowerCase();
-    return !['button', 'submit', 'checkbox', 'radio', 'range'].includes(type);
+    if (type === 'range') return dir === 'left' || dir === 'right';
+    return !['button', 'submit', 'checkbox', 'radio'].includes(type);
   }
   return Boolean(el.isContentEditable);
 }

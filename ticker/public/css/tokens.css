@@ -1,0 +1,267 @@
+/* ============================================================================
+   Core Line — design tokens
+
+   The single source of truth for colour and metrics. Ported from the Core
+   Builds Icon Pack's design system so both apps draw from one brand:
+
+     app/src/main/res/values/colors.xml  ->  brand palette (below)
+     app/src/main/res/values/dimens.xml  ->  metrics (below)
+
+   Brand & Style Guide v1.0 §03 (colour) and §05 (layout).
+
+   Two rules carried over from the icon pack, because they are why that app
+   reads as one object at three metres:
+
+   1. Every colour has exactly one meaning slot. Status colours (LIVE, UP,
+      FINAL, health) are NOT themeable — a red that means "in progress" in one
+      theme and "brand chrome" in another is two meanings for one hue. Themes
+      may only remap the accent and the surface ramp.
+
+   2. No literal outside this file. A component that needs 14px asks for
+      --cb-space-md. The previous stylesheet had ~90 hard-coded values, which
+      is why the TV pass needed a second, parallel scale ladder to fix what
+      the first one got wrong.
+
+   Metric names keep the icon pack's `cb_` prefix so a change there is a
+   one-line change here. 1dp == 1px: the icon pack's values are dp, and CSS px
+   at a TV's usual DPR is the same physical size.
+   ========================================================================== */
+
+:root {
+  /* ---- Brand palette --------------------------------------------------- */
+
+  --cb-core-cyan: #00E5FF;
+  --cb-signal-cyan: #00D4FF;
+  --cb-glow-cyan: #7EEEFF;
+  --cb-build-blue: #4FACFE;
+  --cb-dusk-violet: #8A4890;
+  --cb-ember: #C03A20;
+
+  --cb-night: #0D1117;
+  --cb-panel: #1A2030;
+  --cb-card: #151923;
+  --cb-void: #04070F;
+  --cb-slate: #8B949E;
+  --cb-ink: #E6EDF3;
+
+  --cb-cta-start: #00ABD3;
+  --cb-cta-end: #00D4FF;
+  --cb-cta-ink: #04202B;
+
+  --cb-success: #34D399;
+  --cb-warning: #FBBF24;
+
+  /* Interaction-state colours, not brand accents. Each has one meaning slot
+     and may not be reused for identity or artwork. */
+  --cb-focus-glow: #3300D4FF; /* halo behind the ring, so focus reads at 3m */
+  --cb-ripple: #2E00D4FF;     /* press feedback, brand cyan not platform grey */
+  --cb-hairline: #0FFFFFFF;   /* resting border: 1dp at 6% white */
+
+  /* ---- Status colours (fixed across every theme) ------------------------
+     A game in progress is red in Core midnight and red in Stadium night.
+     Theming these would make the ribbon re-learnable in every theme. */
+  --st-live: #FF3B5C;
+  --st-live-soft: rgba(255, 59, 92, 0.14);
+  --st-up: var(--cb-warning);
+  --st-up-soft: rgba(251, 191, 36, 0.13);
+  --st-final: var(--cb-slate);
+  --st-final-soft: rgba(139, 148, 158, 0.10);
+
+  /* ---- Themeable slots --------------------------------------------------
+     Only these change between themes: the accent and the surface ramp. */
+  --accent: var(--cb-signal-cyan);
+  --accent-glow: var(--cb-glow-cyan);
+  --accent-soft: rgba(0, 212, 255, 0.16);
+  --accent-edge: rgba(0, 212, 255, 0.25);
+  --accent-quiet: rgba(0, 212, 255, 0.35);
+
+  /* --acc is the per-entity accent, and it is deliberately absent from this
+     file. A card, a tile, a league chip or a watch-row sets it inline
+     (`style="--acc:#7FD4FF"`) so each can carry its own league's colour
+     without a class per league. Every rule that reads it passes a fallback,
+     so an entity that never sets one simply takes --accent.
+
+     A CSS audit that greps for var() and finds no matching definition will
+     flag it. It is defined in markup, not here; that is not a bug. */
+
+  --surface-void: var(--cb-void);
+  --surface-night: var(--cb-night);
+  --surface-panel: var(--cb-panel);
+  --surface-card: var(--cb-card);
+  --surface-raised: #1F2736;
+
+  --cta-start: var(--cb-cta-start);
+  --cta-end: var(--cb-cta-end);
+  --cta-ink: var(--cb-cta-ink);
+
+  /* ---- Metrics: gutters -------------------------------------------------
+     Side padding is inset-aware; see --safe-x below. */
+  --cb-gutter-side: 48px;
+  --cb-gutter-side-narrow: 32px;
+  --cb-gutter-top: 40px;
+  --cb-gutter-bottom: 24px;
+  --cb-gutter-top-tight: 24px;
+  --cb-gutter-bottom-tight: 12px;
+
+  /* The rail is a fixed width, so the pane — and therefore the board's tile
+     columns — is derived, not guessed. Same rail on every panel. */
+  --cb-rail-width: 300px;
+
+  /* ---- Metrics: spacing rhythm -----------------------------------------
+     8dp grid. */
+  --cb-space-xs: 8px;
+  --cb-space-sm: 12px;
+  --cb-space-md: 16px;
+  --cb-space-lg: 26px;
+  --cb-space-xl: 30px;
+
+  /* ---- Metrics: card + control ----------------------------------------- */
+  --cb-card-padding: 14px;
+  --cb-target-min: 48px; /* Material floor; every focusable reaches it */
+  --cb-button-min-width: 220px;
+  --cb-icon-size: 76px;
+
+  /* ---- Metrics: radii --------------------------------------------------- */
+  --cb-radius-card: 14px;
+  --cb-radius-card-inner: 8px;  /* card radius minus the focus inset */
+  --cb-radius-card-gap: 11px;   /* card radius minus the ring, for the gap layer */
+  --cb-radius-button: 10px;
+  --cb-radius-field: 10px;
+  --cb-radius-pill: 999px;
+
+  /* ---- Metrics: focus ---------------------------------------------------
+     A 3px ring, a 3px gap of background, then the card. Three opaque layers
+     rather than a stroke on a glow, so the ring is sharp and the gap reads as
+     true background at 3m. The inset is identical focused and unfocused, so
+     the surface never jumps when focus arrives. */
+  --cb-focus-ring: 3px;
+  --cb-focus-gap: 3px;
+  --cb-focus-inset: 6px;
+
+  /* ---- Metrics: type scale ----------------------------------------------
+     12px is the floor. Nothing in the app renders smaller, because a TV is
+     read at ~3m, not at arm's length. */
+  --cb-text-kicker: 12px;
+  --cb-text-data: 14px;
+  --cb-text-label: 16px;
+  --cb-text-body: 17px;
+  --cb-text-section: 19px;
+  --cb-text-title: 32px;
+  --cb-text-display: 34px;
+
+  /* Product roles the icon pack's scale has no slot for: sports numerals and
+     broadcast chrome. Named, never literal — this is the set tv.css scales to
+     make the whole app legible at ten feet in one place. */
+  --text-abbr: 3.1rem;
+  --text-score: 3.4rem;
+  --text-team: 1.55rem;
+  --text-ticker: 1.55rem;
+  --text-clock: 1.7rem;
+  --text-badge: 13px;
+  --text-pill: 15px;
+  --text-nav: 17px;
+  --text-brand: 1.7rem;
+  --text-stat: 1.5rem;
+  --text-bug: 1.35rem;
+  --text-code: 2.2rem;
+
+  /* ---- Surfaces: the chrome that isn't a token -------------------------- */
+  --chyron-h: 72px;
+  --radius: 16px;
+  /* ---- Overscan guard -------------------------------------------------
+     A television shows less of the frame than it is sent. Android's TV
+     guidance for that is a 5% margin measured at the 960x540 MDPI baseline:
+     48dp on the left and right, 27dp top and bottom, with 58dp/28dp as the
+     safer variant. The vertical margin is derived from the horizontal one at
+     that same 27:48 ratio, so calibration stays a single setting the viewer
+     can walk out with one control. 24px is a phone gutter; a phone has no
+     overscan to survive. */
+  --overscan: 24px;
+  --overscan-x: var(--overscan);
+  --overscan-y: calc(var(--overscan) * 0.5625);
+  --safe-x: max(24px, env(safe-area-inset-left), 3vw);
+  --safe-y: max(16px, env(safe-area-inset-top), 2vh);
+
+  /* ---- Motion ----------------------------------------------------------- */
+  --ease: cubic-bezier(0.4, 0, 0.2, 1);
+  --dur-fast: 0.12s;
+  --dur: 0.18s;
+
+  /* ---- Fonts ------------------------------------------------------------ */
+  --font: "Barlow Condensed", "Arial Narrow", "Oswald", Impact, sans-serif;
+  --ui: "Outfit", "Sora", "Segoe UI", system-ui, sans-serif;
+}
+
+/* ============================================================================
+   Themes
+
+   Each theme remaps only the accent and the surface ramp. Status colours,
+   focus colours and metrics are identical in all four — which is the point:
+   switching theme must not make the board re-learn itself.
+   ========================================================================== */
+
+/* Core midnight — the house palette. */
+[data-theme="core"] { /* default, declared above */ }
+
+/* Broadcast red — the ESPN/TSN chyron look. */
+[data-theme="broadcast"] {
+  --accent: #FF3B5C;
+  --accent-glow: #FF8A9E;
+  --accent-soft: rgba(255, 59, 92, 0.16);
+  --accent-edge: rgba(255, 59, 92, 0.28);
+  --accent-quiet: rgba(255, 59, 92, 0.38);
+
+  --surface-night: #0B0B0D;
+  --surface-panel: #151515;
+  --surface-card: #1B1B1B;
+  --surface-raised: #232323;
+
+  --cta-start: #D62B49;
+  --cta-end: #FF3B5C;
+  --cta-ink: #2A0510;
+
+  /* LIVE stays red in every theme, so here it is carried by a halo instead
+     of a hue change — it must not disappear into the chrome. */
+  --st-live: #FF5673;
+}
+
+/* Stadium night — floodlit pitch. */
+[data-theme="stadium"] {
+  --accent: #4ADE80;
+  --accent-glow: #A7F3C4;
+  --accent-soft: rgba(74, 222, 128, 0.16);
+  --accent-edge: rgba(74, 222, 128, 0.28);
+  --accent-quiet: rgba(74, 222, 128, 0.38);
+
+  --surface-night: #06140C;
+  --surface-panel: #0B1C12;
+  --surface-card: #102418;
+  --surface-raised: #16301F;
+
+  --cta-start: #22A75B;
+  --cta-end: #4ADE80;
+  --cta-ink: #03200F;
+}
+
+/* High contrast — maximum legibility on a bad panel. */
+[data-theme="mono"] {
+  --accent: #FFFFFF;
+  --accent-glow: #FFFFFF;
+  --accent-soft: rgba(255, 255, 255, 0.14);
+  --accent-edge: rgba(255, 255, 255, 0.3);
+  --accent-quiet: rgba(255, 255, 255, 0.45);
+
+  --surface-night: #000000;
+  --surface-panel: #0A0A0A;
+  --surface-card: #141414;
+  --surface-raised: #1E1E1E;
+
+  --cta-start: #D4D4D4;
+  --cta-end: #FFFFFF;
+  --cta-ink: #000000;
+
+  /* Contrast theme: status is carried by weight and outline, not hue. */
+  --st-live: #FFFFFF;
+  --st-up: #FFFFFF;
+  --st-final: #A3A3A3;
+}
