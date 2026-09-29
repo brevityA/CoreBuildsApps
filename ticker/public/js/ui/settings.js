@@ -74,6 +74,9 @@ export function applyChrome() {
   const root = document.documentElement;
   const s = store.state;
   root.dataset.theme = s.theme;
+  // A bare attribute rather than data-oled="false": the selector in
+  // tokens.css is a presence check, so `off` must mean absent.
+  root.toggleAttribute('data-oled', Boolean(s.oled));
   root.dataset.mode = s.mode;
   root.dataset.position = s.position;
   // A null overscan means the viewer has never calibrated, so leave the
@@ -86,6 +89,7 @@ export function applyChrome() {
   set($('refreshSec'), 'value', String(s.refreshSec));
   set($('position'), 'value', s.position);
   set($('theme'), 'value', s.theme);
+  set($('oled'), 'checked', s.oled);
   set($('clockFmt'), 'value', s.clockFmt);
   set($('overscan'), 'value', currentOverscan());
   set($('favorites'), 'value', s.favorites);
@@ -381,6 +385,15 @@ export function wireSettings() {
     store.state.showFinals = e.target.checked;
     persist();
     emit('state');
+  });
+
+  $('oled')?.addEventListener('change', (e) => {
+    store.state.oled = e.target.checked;
+    // Applied here as well as in applyChrome: the viewer is looking at the
+    // panel while they flip this, and waiting for the next state emit to
+    // repaint the whole field black is a visible flash.
+    document.documentElement.toggleAttribute('data-oled', e.target.checked);
+    persist();
   });
 
   $('alerts')?.addEventListener('change', (e) => {

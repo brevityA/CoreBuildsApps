@@ -28,6 +28,20 @@ The repo-root `CHANGELOG.md` is the icon pack's. Core Line keeps its own here.
   `tests/vpn-ui.test.mjs` for the markup/model/bridge seams. Research:
   `docs/research/core-line-vpn-dot-android-tv-2026-09-29.md`.
 
+- **True black for OLED panels.** The house near-black (`#0B0B0D`) is a
+  deliberate choice on a backlit panel, where pure black is a hole. On an OLED
+  it is the opposite problem: every one of those pixels is still emitting, and
+  a full-screen field of it in a dark room reads as grey haze against a bezel
+  that is genuinely off. Settings → Appearance now offers *True black (OLED)*,
+  which drops the shell and the board's field to `#000000` and steps the
+  surfaces above it up the way Material's dark ramp does, so elevation — the
+  only thing keeping a focused card from dissolving into the field — survives.
+  It is applied as a `data-oled` attribute beside `data-theme` rather than as
+  a fifth theme, because it says nothing about the accent: broadcast red and
+  Core midnight both have to work on it. `tests/oled.test.mjs` parses the ramp
+  out of `tokens.css` and compares luminances, so raising the house ramp in
+  some later release cannot silently put the haze back.
+
 - **A College pill in the sport filter.** "Whatever college sport is on" was
   two pills to check by hand. `sport:college` groups NCAA football and
   basketball into one filter, so football Saturdays and March Madness both

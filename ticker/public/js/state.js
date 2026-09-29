@@ -17,6 +17,9 @@ export const DEFAULTS = {
   showFinals: true,
   wakeLock: true,
   theme: 'core',
+  // True-black surfaces for an OLED panel. Independent of `theme`: it
+  // remaps only the surface ramp, so any accent can sit on it.
+  oled: false,
   clockFmt: '12',
   mode: 'board',
   leagueFilter: 'ALL',
@@ -98,6 +101,7 @@ export function sanitizeState(raw) {
   out.clockFmt = out.clockFmt === '24' ? '24' : '12';
   out.mode = out.mode === 'crawl' ? 'crawl' : 'board';
   out.theme = ['core', 'broadcast', 'stadium', 'mono'].includes(out.theme) ? out.theme : 'core';
+  out.oled = Boolean(out.oled);
   out.leagueFilter = typeof out.leagueFilter === 'string' ? out.leagueFilter : 'ALL';
 
   // watchApps: leagueId → installed app package id (or the string 'web').
