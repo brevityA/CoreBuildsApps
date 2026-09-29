@@ -10,7 +10,7 @@
  * link, and only ever shown or reported as a host (maskUrl).
  */
 
-import { mergeGuide, maskUrl, GUIDE_VERSION } from '/lib/guide.mjs';
+import { mergeGuide, mapGuideChannels, isLiveEvent, maskUrl, GUIDE_VERSION } from '/lib/guide.mjs';
 import { store, persist } from '../core/store.js';
 import { emit } from '../core/bus.js';
 import { $, setHidden, setText } from '../core/dom.js';
@@ -43,11 +43,26 @@ export function applyGuide(events) {
   baseEvents = Array.isArray(events) ? events : [];
   if (!guide || !store.playlistChannels.length) return baseEvents;
   try {
-    return mergeGuide(baseEvents, guide, store.playlistChannels).events;
+    return mergeGuide(baseEvents, liveGuide(), store.playlistChannels).events;
   } catch (err) {
     console.warn('core-line: guide merge failed', err?.name || 'error');
     return baseEvents;
   }
+}
+
+/**
+ * The guide cut to live events on the viewer's channels, recomputed only when
+ * the guide or the playlist changes. The slate refreshes every minute; the
+ * guide changes every six hours, and re-judging 12,000 listings each minute
+ * is work a TV box feels.
+ */
+let prepared = { guide: null, playlist: null, value: null };
+function liveGuide() {
+  if (prepared.guide === guide && prepared.playlist === store.playlistChannels) return prepared.value;
+  const carriers = mapGuideChannels(guide, store.playlistChannels);
+  const value = { ...guide, programmes: guide.programmes.filter((p) => carriers.has(p?.c) && isLiveEvent(p)) };
+  prepared = { guide, playlist: store.playlistChannels, value };
+  return value;
 }
 
 /** Re-merge after the guide or the playlist changed. */

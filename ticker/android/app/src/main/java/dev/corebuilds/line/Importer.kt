@@ -3,7 +3,6 @@ package dev.corebuilds.line
 import org.json.JSONArray
 import org.json.JSONObject
 import java.io.BufferedInputStream
-import java.io.BufferedReader
 import java.io.File
 import java.io.FilterInputStream
 import java.io.IOException
@@ -63,7 +62,7 @@ class Importer(
     fun startPlaylist(url: String): Boolean {
         val safe = SafeUrl.check(url)
         if (!safe.ok) {
-            finish(Kind.PLAYLIST, "error", "That link isn't a web address Core Line can open.", 0)
+            refuse(Kind.PLAYLIST, "That link isn't a web address Core Line can open.")
             return false
         }
         return launch(Kind.PLAYLIST) { importPlaylist(safe.url) }
@@ -74,7 +73,7 @@ class Importer(
         val safe = urls.asSequence().map { SafeUrl.check(it) }.filter { it.ok }.map { it.url }
             .distinct().take(MAX_GUIDE_URLS).toList()
         if (safe.isEmpty()) {
-            finish(Kind.GUIDE, "error", "No guide link Core Line can open.", 0)
+            refuse(Kind.GUIDE, "No guide link Core Line can open.")
             return false
         }
         return launch(Kind.GUIDE) { importGuide(safe) }
@@ -115,15 +114,17 @@ class Importer(
         synchronized(lock) {
             if (state == "running") return false
             state = "running"; kind = k; message = ""; count = 0
+            cancelled = false
         }
-        cancelled = false
         executor.execute {
             try {
                 val n = job()
                 if (cancelled) finish(k, "idle", "", 0)
                 else finish(k, "done", "", n)
             } catch (e: ImportError) {
-                finish(k, "error", e.message ?: GENERIC, 0)
+                // A cancel surfaces as a read failure; it is not an error.
+                if (cancelled) finish(k, "idle", "", 0)
+                else finish(k, "error", e.message ?: GENERIC, 0)
             } catch (_: SocketTimeoutException) {
                 finish(k, "error", "The server took too long to answer.", 0)
             } catch (_: IOException) {
@@ -138,6 +139,11 @@ class Importer(
         return true
     }
 
+    /** A start refused up front. Recorded only when idle: never over a running job's status. */
+    private fun refuse(k: Kind, msg: String) = synchronized(lock) {
+        if (state != "running") { state = "error"; kind = k; message = msg; count = 0; finishedAt = now() }
+    }
+
     private fun finish(k: Kind, s: String, msg: String, n: Int) = synchronized(lock) {
         state = s; kind = k; message = msg; count = n; finishedAt = now()
     }
@@ -146,8 +152,8 @@ class Importer(
 
     internal fun importPlaylist(url: String): Int {
         val result = open.open(url, MAX_PLAYLIST_BYTES) { cancelled }.use { raw ->
-            val reader = BufferedReader(InputStreamReader(maybeGunzip(raw), Charsets.UTF_8), 64 * 1024)
-            PlaylistParser.parse(reader) { cancelled }
+            val body = ContentGuard(maybeGunzip(raw), MAX_PLAYLIST_TEXT_BYTES, xml = false)
+            PlaylistParser.parse(BoundedLineReader(InputStreamReader(body, Charsets.UTF_8))) { cancelled }
         }
         if (cancelled) return 0
         if (result.channels.isEmpty()) {
@@ -186,13 +192,16 @@ class Importer(
         var lastError: Exception? = null
         var parsedAny = false
 
+        val budgetEnd = now() + GUIDE_BUDGET_MS
         for (url in urls) {
             if (cancelled) return 0
+            // Never start another link past the budget: the page stops waiting at 7 min.
+            if (parsedAny && now() > budgetEnd) { lastError = ImportError("The guide took too long."); break }
             try {
                 val room = GuideParser.MAX_PROGRAMMES - programmes.size
                 if (room <= 0) { truncated = true; break }
                 val r = open.open(url, MAX_GUIDE_BYTES) { cancelled }.use { raw ->
-                    GuideParser.parse(maybeGunzip(raw), wStart, wEnd, room) { cancelled }
+                    GuideParser.parse(ContentGuard(maybeGunzip(raw), MAX_GUIDE_XML_BYTES, xml = true), wStart, wEnd, room) { cancelled }
                 }
                 parsedAny = true
                 for ((id, name) in r.channels) channels.putIfAbsent(id, name)
@@ -248,6 +257,10 @@ class Importer(
         const val MAX_GUIDE_URLS = 4
         const val MAX_PLAYLIST_BYTES = 64L * 1024 * 1024
         const val MAX_GUIDE_BYTES = 400L * 1024 * 1024
+        /** Decompressed ceilings: a gzip bomb passes the download cap. */
+        const val MAX_PLAYLIST_TEXT_BYTES = 256L * 1024 * 1024
+        const val MAX_GUIDE_XML_BYTES = 1536L * 1024 * 1024
+        private const val GUIDE_BUDGET_MS = 3 * 60_000L
         private const val WINDOW_BEFORE_MS = 4 * 3600_000L
         private const val GENERIC = "Couldn't read it. Check the link and try again."
 
@@ -276,7 +289,7 @@ class Importer(
 
 /** HTTP(S) with every redirect hop re-checked by SafeUrl, timeouts, a byte cap and an overall deadline. */
 class HttpOpener(
-    private val deadlineMs: Long = 5 * 60_000L,
+    private val deadlineMs: Long = 150_000L,
 ) : Importer.Opener {
     override fun open(url: String, maxBytes: Long, cancelled: () -> Boolean): InputStream {
         val deadline = System.currentTimeMillis() + deadlineMs

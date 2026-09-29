@@ -9,8 +9,9 @@
 import { nativeBridge } from '../core/bridge.js';
 
 const POLL_MS = 750;
-// A 300 MB guide on a slow TV box: generous, but a hung job must end.
-const MAX_WAIT_MS = 6 * 60_000;
+// Past the native job's own ceiling (Importer.kt: 3 min budget + one
+// 150 s download), so the page never gives up on a job that is still going.
+const MAX_WAIT_MS = 7 * 60_000;
 
 export function canImportNatively() {
   const b = nativeBridge();

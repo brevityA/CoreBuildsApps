@@ -169,7 +169,9 @@ async function fetchPlaylist(url) {
     if (!parsed.ok) return { ok: false, error: parsed.error || 'unparseable playlist', count: 0, channels: [] };
     return { ok: true, count: parsed.count, channels: parsed.channels };
   } catch (err) {
-    const message = err?.name === 'AbortError' ? 'playlist timed out' : (err?.message || 'fetch failed');
+    // Fixed phrases only: some fetch errors quote the URL, and a playlist URL
+    // carries the provider account.
+    const message = err?.name === 'AbortError' ? 'playlist timed out' : 'could not download the playlist';
     return { ok: false, error: message, count: 0, channels: [] };
   } finally {
     clearTimeout(timer);

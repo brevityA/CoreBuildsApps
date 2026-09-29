@@ -15,7 +15,8 @@ class PlaylistParserTest {
     /** The same file and the same answer as the parity test in tests/playlist.test.mjs. */
     @Test
     fun matchesTheJavaScriptParserOnTheParityFixture() {
-        val got = fixture("playlist-parity.m3u").bufferedReader(Charsets.UTF_8).use { PlaylistParser.parse(it) }
+        // Read the way the importer reads a download, so line splitting is under test too.
+        val got = BoundedLineReader(fixture("playlist-parity.m3u").reader(Charsets.UTF_8)).use { PlaylistParser.parse(it) }
         val want = JSONObject(fixture("playlist-parity.expected.json").readText())
         val chans = want.getJSONArray("channels")
         assertEquals(chans.length(), got.channels.size)

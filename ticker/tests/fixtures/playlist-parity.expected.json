@@ -1,6 +1,6 @@
 {
   "ok": true,
-  "count": 8,
+  "count": 9,
   "channels": [
     {
       "name": "UK| Sky Sports Main Event HD",
@@ -56,6 +56,13 @@
       "url": "http://prov.example.com/",
       "group": "Ünïcødé",
       "tvgId": "",
+      "tvgName": ""
+    },
+    {
+      "name": "Lone Carriage",
+      "url": "http://prov.example.com/live/user/pass/5005.ts",
+      "group": "Ünïcødé",
+      "tvgId": "cr.test",
       "tvgName": ""
     }
   ],

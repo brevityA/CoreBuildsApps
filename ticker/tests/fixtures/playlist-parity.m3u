@@ -26,3 +26,5 @@ HTTPS://prov.example.com/live/user/pass/3001.ts?token=abc#frag
 #EXTINF:-1,A Title With, Comma
 http://prov.example.com/live/user/pass/4001.ts
 http://prov.example.com/
+#EXTINF:-1 tvg-id="cr.test",LoneCarriage
+http://prov.example.com/live/user/pass/5005.ts

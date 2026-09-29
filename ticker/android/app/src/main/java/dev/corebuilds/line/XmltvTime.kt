@@ -23,9 +23,10 @@ object XmltvTime {
         if (month !in 1..12 || day !in 1..31 || hour > 23 || minute > 59 || second > 60) return null
         val cal = Calendar.getInstance(TimeZone.getTimeZone("UTC")).apply {
             clear()
+            isLenient = false
             set(year, month - 1, day, hour, minute, second)
         }
-        var ms = cal.timeInMillis
+        var ms = try { cal.timeInMillis } catch (_: IllegalArgumentException) { return null } // 31 February
         if (g[7].isNotEmpty()) {
             val offH = g[8].toInt()
             val offM = g[9].toInt()

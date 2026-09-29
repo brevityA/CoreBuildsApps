@@ -17,6 +17,7 @@ import java.io.InputStream
  */
 object GuideParser {
     const val MAX_PROGRAMMES = 12_000
+    private const val MAX_CHANNELS = 50_000
     private const val MAX_TEXT = 160
     private const val MAX_CATS = 4
     private const val MAX_ID = 128
@@ -63,7 +64,9 @@ object GuideParser {
         xpp.setInput(input, null)
 
         val channels = HashMap<String, String>()
-        val programmes = ArrayList<Programme>()
+        // Past the cap, keep the programmes that start soonest: a guide sorted
+        // by channel would otherwise lose whole channels, not far-off slots.
+        val programmes = java.util.PriorityQueue<Programme>(64, compareByDescending { it.start })
         var truncated = false
         var seen = 0
         var sawRoot = false
@@ -73,13 +76,20 @@ object GuideParser {
             if (event == XmlPullParser.START_TAG) {
                 when (xpp.name) {
                     "tv" -> sawRoot = true
-                    "channel" -> readChannel(xpp)?.let { (id, name) -> if (id !in channels) channels[id] = name }
+                    "channel" -> readChannel(xpp)?.let { (id, name) ->
+                        if (id !in channels && channels.size < MAX_CHANNELS) channels[id] = name
+                    }
                     "programme" -> {
                         seen += 1
                         if (seen % 512 == 0 && cancelled()) break
                         val p = readProgramme(xpp, windowStart, windowEnd)
                         if (p != null) {
-                            if (programmes.size < maxProgrammes) programmes.add(p) else truncated = true
+                            if (programmes.size < maxProgrammes) {
+                                programmes.add(p)
+                            } else {
+                                truncated = true
+                                if (p.start < programmes.peek()!!.start) { programmes.poll(); programmes.add(p) }
+                            }
                         }
                     }
                 }
@@ -87,7 +97,7 @@ object GuideParser {
             event = xpp.next()
         }
         if (!sawRoot) throw NotAGuide()
-        return Result(channels, programmes, truncated, seen)
+        return Result(channels, programmes.sortedBy { it.start }, truncated, seen)
     }
 
     /** `<channel id="…"><display-name>…</display-name>…</channel>`: the id and its first name. */
