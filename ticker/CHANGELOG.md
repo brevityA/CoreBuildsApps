@@ -28,6 +28,15 @@ The repo-root `CHANGELOG.md` is the icon pack's. Core Line keeps its own here.
   `tests/vpn-ui.test.mjs` for the markup/model/bridge seams. Research:
   `docs/research/core-line-vpn-dot-android-tv-2026-09-29.md`.
 
+- **The banner rotates through what is live.** The hero tile used to be pinned
+  to the same game until it ended — on a Saturday with six games on, the other
+  five were only ever cards. It now moves through the slate every 12s, real
+  games ahead of feed listings. It deliberately stands still while a viewer has
+  focus on it (rotating then replaces the node they are on, and the focus ring
+  falls to the body mid-read), while the app is not visible, and when the
+  viewer has asked for reduced motion. The running order and the "may I move?"
+  rule are in `lib/hero.mjs` and unit-tested; the board only paints the pick.
+
 - **True black for OLED panels.** The house near-black (`#0B0B0D`) is a
   deliberate choice on a backlit panel, where pure black is a hole. On an OLED
   it is the opposite problem: every one of those pixels is still emitting, and
