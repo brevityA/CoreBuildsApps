@@ -68,7 +68,9 @@ export function tickClock() {
 }
 
 export function setBug(liveCount) {
-  setText('bugLive', liveCount ? `${liveCount} LIVE` : 'LINE');
+  // Idle, the bug reads as the wordmark — CORE over LINE. It used to fall back
+  // to "LINE", which since the bug gained its own name line read LINE / LINE.
+  setText('bugLive', liveCount ? `${liveCount} LIVE` : 'CORE');
   $('chyron')?.classList.toggle('is-live', liveCount > 0);
 }
 

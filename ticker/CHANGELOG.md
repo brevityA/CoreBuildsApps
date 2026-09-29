@@ -120,10 +120,15 @@ two apps draw from one brand.
 - **Onboarding lists every team on the slate, grouped by league.** It showed
   the first 24 alphabetically, which on a live slate of 91 teams stopped at
   DEN. They now follow the viewer's league order.
-- **The hero is a real game.** The bundled sample feed carries a "LIVE Chiefs
-  vs Bills" listing with no score or clock, and it took the hero over a real
-  game in progress. A scoreboard game is featured first; a feed listing only
-  when nothing else is live.
+- **The sample game no longer claims to be live.** The bundled sample feed
+  carried a "LIVE Chiefs vs Bills" listing with no score or clock. It was
+  counted in the LIVE total, badged LIVE on the board, and took the hero over a
+  real game in progress. The title no longer says LIVE, so all seven sample
+  items are listings (`UP`); a test now fails if the sample ever parses as live
+  or final. Separately, a scoreboard game is featured before any feed listing.
+- **The idle chyron bug reads CORE / LINE.** With nothing live it fell back to
+  "LINE" above the new "LINE" name line — LINE / LINE, on the TV and in the
+  phone overlay. Red is kept for "N LIVE"; idle, the kicker takes the accent.
 - **Long venue names stay on the card.** Live ESPN data carries names like
   "Empower Field at Mile High", which ran 32px past a 266px card at 720p. The
   venue truncates and keeps the full name in its tooltip; the channels never

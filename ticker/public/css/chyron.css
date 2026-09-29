@@ -64,6 +64,11 @@
   font-weight: 800;
   color: var(--st-live);
 }
+/* Red is a status, so it belongs to "N LIVE" only; idle, the kicker takes
+   the accent like the wordmark it now spells. */
+.chyron:not(.is-live) .bug__live {
+  color: var(--accent);
+}
 .bug__name {
   font-family: var(--font);
   font-size: var(--text-bug);

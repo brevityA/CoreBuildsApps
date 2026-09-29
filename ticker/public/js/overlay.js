@@ -87,7 +87,7 @@ function visible() {
 function paint() {
   const list = visible();
   const live = list.filter((ev) => ev.status === 'live').length;
-  $('bugLive').textContent = live ? `${live} LIVE` : 'LINE';
+  $('bugLive').textContent = live ? `${live} LIVE` : 'CORE';
   $('chyron').classList.toggle('is-live', live > 0);
   const items = list.length ? list : [{ headline: 'Waiting for a slate', channels: [], status: 'upcoming' }];
   ticker.setItems(items.map(tickHtml).join(''));
