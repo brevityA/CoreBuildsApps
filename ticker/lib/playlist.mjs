@@ -54,15 +54,28 @@ const GENERIC_TOKENS = new Set([
  *
  * @param {string} text raw playlist body
  * @param {{maxChannels?: number}} [opts]
- * @returns {{ok: boolean, count: number, channels: Array<{name:string,url:string,group:string}>, error?: string}}
+ * Also reads what the TV guide needs: each channel's `tvg-id` (the key its
+ * programmes are listed under in the provider's XMLTV) and the guide URL(s)
+ * the header advertises (`url-tvg` / `x-tvg-url`). Movies and series are
+ * skipped before the cap is counted: an Xtream-style playlist lists tens of
+ * thousands of them first, and they would crowd every live channel out.
+ * The Android importer (PlaylistParser.kt) mirrors these rules; the parity
+ * fixtures in tests/fixtures/playlist-parity.m3u keep them in step.
+ *
+ * @returns {{ok: boolean, count: number, guideUrls: string[], vodSkipped: number,
+ *   channels: Array<{name:string,url:string,group:string,tvgId:string,tvgName:string}>, error?: string}}
  */
 export function parseM3U(text, { maxChannels = MAX_CHANNELS } = {}) {
   const raw = String(text || '');
-  if (!raw.trim()) return { ok: false, count: 0, channels: [], error: 'empty playlist' };
+  if (!raw.trim()) return { ok: false, count: 0, channels: [], guideUrls: [], vodSkipped: 0, error: 'empty playlist' };
 
   const channels = [];
   const seenUrls = new Set();
+  const guideUrls = [];
+  let vodSkipped = 0;
   let pendingName = '';
+  let pendingId = '';
+  let pendingTvgName = '';
   let group = '';
 
   const lines = raw.split(/\r?\n/);
@@ -70,8 +83,19 @@ export function parseM3U(text, { maxChannels = MAX_CHANNELS } = {}) {
     const s = line.trim();
     if (!s) continue;
 
+    if (s.startsWith('#EXTM3U')) {
+      for (const key of ['url-tvg', 'x-tvg-url']) {
+        for (const u of attr(s, key).split(',')) {
+          const v = u.trim();
+          if (/^https?:\/\//i.test(v) && !guideUrls.includes(v) && guideUrls.length < 4) guideUrls.push(v.slice(0, MAX_URL));
+        }
+      }
+      continue;
+    }
     if (s.startsWith('#EXTINF')) {
       pendingName = extinfName(s);
+      pendingId = attr(s, 'tvg-id').trim().slice(0, MAX_NAME * 2);
+      pendingTvgName = collapse(attr(s, 'tvg-name')).slice(0, MAX_NAME);
       const title = attr(s, 'group-title');
       if (title) group = title.slice(0, 40);
       continue;
@@ -84,21 +108,40 @@ export function parseM3U(text, { maxChannels = MAX_CHANNELS } = {}) {
 
     // A non-comment line is a candidate URL.
     if (!/^https?:\/\//i.test(s)) continue;
+    if (isVodUrl(s)) {
+      vodSkipped += 1;
+      pendingName = ''; pendingId = ''; pendingTvgName = '';
+      continue;
+    }
     if (seenUrls.has(s)) continue;
     seenUrls.add(s);
 
     const name = (pendingName || fallbackName(s, channels.length + 1)).slice(0, MAX_NAME).trim();
-    pendingName = '';
     channels.push({
       name,
       url: s.slice(0, MAX_URL),
       group,
+      tvgId: pendingId,
+      tvgName: pendingTvgName,
     });
+    pendingName = ''; pendingId = ''; pendingTvgName = '';
     if (channels.length >= maxChannels) break;
   }
 
-  if (!channels.length) return { ok: false, count: 0, channels: [], error: 'no channels found in playlist' };
-  return { ok: true, count: channels.length, channels };
+  if (!channels.length) return { ok: false, count: 0, channels: [], guideUrls, vodSkipped, error: 'no channels found in playlist' };
+  return { ok: true, count: channels.length, channels, guideUrls, vodSkipped };
+}
+
+/**
+ * A movie or series entry rather than a live channel. Xtream-style panels put
+ * them under /movie/ and /series/; elsewhere they are a file with a media
+ * extension. A live stream is .ts, .m3u8, or no extension at all.
+ */
+export function isVodUrl(url) {
+  let path;
+  try { path = new URL(url).pathname.toLowerCase(); } catch { return false; }
+  if (/\/(?:movie|movies|series|vod)\//.test(path)) return true;
+  return /\.(?:mp4|mkv|avi|mov|wmv|flv|webm)$/.test(path);
 }
 
 /** Display name from an #EXTINF line: text after the last comma, else tvg-name. */

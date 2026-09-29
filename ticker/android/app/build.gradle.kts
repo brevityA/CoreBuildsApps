@@ -57,6 +57,18 @@ android {
 dependencies {
     // FileProvider + main-executor for the sideload updater (UpdateManager.kt).
     implementation("androidx.core:core-ktx:1.13.1")
+
+    // JVM unit tests for the playlist/guide parsers. android.jar only stubs
+    // XmlPullParser and org.json, so the tests bring real implementations.
+    testImplementation("junit:junit:4.13.2")
+    testImplementation("net.sf.kxml:kxml2:2.3.0")
+    testImplementation("org.json:json:20240303")
+}
+
+android.testOptions.unitTests.all {
+    // The large-guide benchmark reads its size from here (MB); CI keeps the default.
+    it.systemProperty("coreline.guideMb", System.getProperty("coreline.guideMb") ?: "120")
+    it.maxHeapSize = "512m"
 }
 
 val webPublic = rootProject.file("../public")
