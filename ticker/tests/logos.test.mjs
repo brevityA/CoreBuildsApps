@@ -8,10 +8,12 @@ import {
   LOGO_DOMAINS,
   logoDomainAllowed,
   logoUrl,
+  logoPlate,
   logoOf,
   monogram,
   teamMark,
 } from '../lib/logos.mjs';
+import { teamLine, gameTeams } from '../lib/team-rows.mjs';
 
 /**
  * Team logos: the policy, the markup, and the CSP that enforces the same
@@ -33,7 +35,7 @@ const indexHtml = read('public/index.html');
 const appJs = read('public/js/app.js');
 const boardJs = read('public/js/ui/board.js');
 const detailJs = read('public/js/ui/detail.js');
-const marksJs = read('public/js/core/marks.js');
+const rowsJs = read('lib/team-rows.mjs');
 const swJs = read('public/sw.js');
 
 const csp = indexHtml.match(/http-equiv="Content-Security-Policy" content="([^"]+)"/)?.[1] ?? '';
@@ -50,8 +52,9 @@ test('an ESPN logo URL is accepted, and its subdomains are not pinned', () => {
   for (const h of ['a1', 'a2', 'a4']) {
     assert.ok(logoUrl(`https://${h}.espncdn.com/i/teamlogos/nba/500/scoreboard/tor.png`));
   }
+  // The exact host the NHL payload serves, taken from the live endpoint:
+  // https://api-web.nhle.com/v1/score/now → assets.nhle.com/.../_light.svg
   assert.ok(logoUrl('https://assets.nhle.com/logos/nhl/svg/TOR_light.svg'));
-  assert.ok(logoUrl('https://img.mlbstatic.com/mlb-images/image/upload/tor.png'));
 });
 
 test('the bare domain is allowed too, not only its subdomains', () => {
@@ -83,7 +86,17 @@ test('a feed cannot point the television at its own network', () => {
   }
   // ...and the allowlist is what refuses it, so it does not depend on a
   // second, weaker check being correct.
-  assert.equal(logoUrl('https://a.espncdn.com:8443/tor.png'), ESPN.endsWith('.png') ? 'https://a.espncdn.com:8443/tor.png' : null);
+});
+
+test('a logo URL carries no credentials and no non-standard port', () => {
+  // This assertion used to be `ESPN.endsWith('.png') ? X : null` — a condition
+  // that is always true, so it compared a value with itself and pinned
+  // nothing. Meanwhile `logoUrl` accepted both of these, because it only ever
+  // checked the protocol and the hostname.
+  assert.equal(logoUrl('https://user:pass@a.espncdn.com/tor.png'), null, 'credentials accepted');
+  assert.equal(logoUrl('https://a.espncdn.com:8443/tor.png'), null, 'odd port accepted');
+  // The explicit default port is the same origin and stays allowed.
+  assert.equal(logoUrl('https://a.espncdn.com:443/tor.png'), 'https://a.espncdn.com/tor.png');
 });
 
 test('junk is not a URL, and is not rendered as one', () => {
@@ -125,6 +138,27 @@ test('a logo we may not fetch is not drawn at all', () => {
   }
 });
 
+test('the plate follows the artwork, not one colour for everything', () => {
+  // Verified from the live payload: the NHL publishes only the
+  // light-background variant (`_light.svg`, i.e. dark ink), so it needs a
+  // light plate. ESPN's scoreboard marks are drawn for a dark UI.
+  assert.equal(logoPlate('https://assets.nhle.com/logos/nhl/svg/FLA_light.svg'), 'light');
+  assert.equal(logoPlate('https://a.espncdn.com/i/teamlogos/nba/500/scoreboard/tor.png'), 'dark');
+  // Defensive: a light-background variant from any source is dark ink.
+  assert.equal(logoPlate('https://a.espncdn.com/x/TOR_light.png'), 'light');
+  // Junk must not throw and must not claim a light plate.
+  assert.equal(logoPlate(null), 'dark');
+  assert.equal(logoPlate('not a url'), 'dark');
+});
+
+test('the plate reaches the markup, in both mark forms', () => {
+  const nhl = { abbr: 'FLA', logo: 'https://assets.nhle.com/logos/nhl/svg/FLA_light.svg' };
+  assert.match(teamMark(nhl), /data-plate="light"/);
+  assert.match(teamMark(nhl, { compact: true }), /data-plate="light"/);
+  const espn = { abbr: 'TOR', logo: ESPN };
+  assert.match(teamMark(espn), /data-plate="dark"/);
+});
+
 test('the compact form puts the mark beside a readable label', () => {
   const html = teamMark({ abbr: 'TOR', logo: ESPN }, { compact: true });
   assert.match(html, /class="mark mark--row"/);
@@ -149,7 +183,7 @@ test('markup is escaped rather than trusted', () => {
   const attrs = [...img.matchAll(/([a-z-]+)="/g)].map((m) => m[1]);
   assert.deepEqual(
     attrs,
-    ['class', 'src', 'alt', 'loading', 'decoding', 'referrerpolicy'],
+    ['class', 'data-plate', 'src', 'alt', 'loading', 'decoding', 'referrerpolicy'],
     `an attribute broke out of the tag: ${img}`,
   );
   // `onload` is present in the src value as `%20onload=%22`, which is a URL
@@ -165,6 +199,31 @@ test('the fallback does not depend on an inline handler', () => {
   // the layered monogram is that it does not need one.
   const html = teamMark({ abbr: 'TOR', logo: ESPN });
   assert.doesNotMatch(html, /\son[a-z]+=/i, 'an inline event handler was emitted');
+});
+
+test('a hostile score cannot escape its own element', () => {
+  // The rows live in lib/ precisely so this test can execute them. Before
+  // that, the same markup sat in two browser modules and the test could only
+  // read the source for `esc(` — which is not the same assertion.
+  const hostile = '<img src=x onerror=alert(1)>';
+  for (const html of [
+    teamLine({ abbr: 'TOR', name: 'Raptors', score: hostile }, { status: 'live' }),
+    gameTeams({ away: { abbr: 'TOR', score: hostile }, home: { abbr: 'MTL', score: 2 } }),
+  ]) {
+    assert.doesNotMatch(html, /<img[^>]*onerror/, 'the score was interpolated as markup');
+    assert.match(html, /&lt;img/);
+  }
+  // A numeric zero is a score, not an absence.
+  assert.match(gameTeams({ away: { abbr: 'TOR', score: 0 }, home: { abbr: 'MTL' } }), />0</);
+});
+
+test('every remote value in a row is escaped', () => {
+  const html = teamLine(
+    { abbr: '<b>x</b>', name: '<i>n</i>', score: '<u>s</u>' },
+    { status: 'live' },
+  );
+  for (const tag of ['<b>', '<i>', '<u>']) assert.doesNotMatch(html, new RegExp(tag));
+  assert.match(html, /&lt;b&gt;/);
 });
 
 /* ---- The policy is enforced twice, and the two must agree ---------------- */
@@ -236,14 +295,16 @@ test('the app can still navigate to a watched stream', () => {
 
 test('all three renderers draw the mark through one module', () => {
   for (const [name, src] of [['board', boardJs], ['detail', detailJs]]) {
-    assert.match(src, /from '\.\.\/core\/marks\.js'/, `${name}.js does not use the shared rows`);
+    assert.match(src, /from '\/lib\/team-rows\.mjs'/, `${name}.js does not use the shared rows`);
     // The duplicate row builders are what hid the logo gap; assert they are gone.
     assert.doesNotMatch(src, /function teamRow\(/, `${name}.js still has its own teamRow`);
     assert.doesNotMatch(src, /function teamLine\(/, `${name}.js still has its own teamLine`);
   }
-  assert.match(marksJs, /export function teamLine/);
-  assert.match(marksJs, /export function gameTeams/);
-  assert.match(marksJs, /from '\/lib\/logos\.mjs'/);
+  assert.match(rowsJs, /export function teamLine/);
+  assert.match(rowsJs, /export function gameTeams/);
+  assert.match(rowsJs, /from '\.\/logos\.mjs'/);
+  // The browser copy is gone; a second renderer is how the gap survived.
+  assert.throws(() => read('public/js/core/marks.js'), 'the duplicate renderer is back');
 });
 
 test('a failed image is caught in the capture phase, once for the whole app', () => {
@@ -256,14 +317,32 @@ test('a failed image is caught in the capture phase, once for the whole app', ()
   assert.match(appJs, /classList\.add\('is-broken'\)/);
 });
 
+test('the OLED default is static, so boot does not flash the wrong surface', () => {
+  // The page paints `html { background: var(--surface-night) }` at first
+  // paint, before any script runs. While the default was off that was
+  // invisible; now that it is on, a script-applied attribute would show the
+  // house near-black and then snap to #000 on every boot.
+  const htmlTag = indexHtml.match(/<html[^>]*>/)?.[0] ?? '';
+  assert.match(htmlTag, /\bdata-oled\b/, 'the document does not declare the default surface');
+  const stateJs = read('public/js/state.js');
+  const defaultOled = /oled:\s*(true|false)/.exec(stateJs)?.[1];
+  assert.equal(defaultOled, 'true', 'the static attribute only matches while the default is on');
+  // ...and the off path still exists, for the viewer who opted out.
+  assert.match(read('public/js/ui/settings.js'), /toggleAttribute\('data-oled'/);
+});
+
 test('the mark stylesheet covers both forms and the broken state', () => {
   const css = read('public/css/screens.css');
   assert.match(css, /\.mark\s*\{/, '.mark is unstyled');
   assert.match(css, /\.mark__img\s*\{/);
   assert.match(css, /\.mark--row\s+\.mark__img\s*\{/, 'the compact mark is unsized');
   assert.match(css, /\.mark\.is-broken\s+\.mark__img\s*\{\s*display:\s*none/, 'a broken logo would leave a hole');
-  // The plate is what keeps a dark logo visible on a near-black card.
-  assert.match(css, /\.mark__img[\s\S]{0,220}background:\s*var\(--surface-raised\)/);
+  // The plate is what keeps a dark logo visible on a near-black card, and it
+  // has to be a per-artwork choice: one colour makes one of the two sources
+  // invisible.
+  assert.match(css, /\.mark__img\[data-plate="light"\]\s*\{\s*--mark-plate:/, 'no light plate');
+  assert.match(css, /\.mark__img\[data-plate="dark"\]\s*\{\s*--mark-plate:/, 'no dark plate');
+  assert.match(css, /\.mark--row\s+\.mark__img[\s\S]{0,420}?var\(--mark-plate/, 'the compact mark has no plate');
 });
 
 test('the service worker ships the file the page now depends on', () => {

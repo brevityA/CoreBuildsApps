@@ -509,8 +509,18 @@
   width: 100%;
   height: 100%;
   object-fit: contain;
-  background: var(--surface-raised);
   border-radius: var(--cb-radius-card-inner);
+  /* The plate is chosen per artwork, not per theme: `logoPlate()` in
+     lib/logos.mjs reads the variant out of the URL. ESPN draws for a dark UI
+     and the NHL only publishes its light-background variant, so one plate
+     colour would make one of the two invisible. */
+  background: var(--mark-plate, var(--surface-raised));
+}
+.mark__img[data-plate="light"] {
+  --mark-plate: #F2F3F5;
+}
+.mark__img[data-plate="dark"] {
+  --mark-plate: var(--surface-raised);
 }
 /* No logo: the monogram is the mark, so it keeps the column's own type
    rather than being boxed. */
@@ -538,8 +548,11 @@
   width: 26px;
   height: 26px;
   flex: 0 0 auto;
-  background: none;
-  border-radius: 2px;
+  border-radius: 3px;
+  /* Kept, unlike the old `background: none`: the compact mark is the same
+     artwork at 26px, so an NHL mark needs its plate here too or the card
+     shows a dark smudge. */
+  background: var(--mark-plate, var(--surface-raised));
 }
 .mark.is-broken .mark__img {
   display: none;

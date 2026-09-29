@@ -13,7 +13,7 @@ import { $, esc, setHidden } from '../core/dom.js';
 import { accentFor, statusOf, startLabel } from '../core/format.js';
 import { matchesFor, openMatchedChannel } from '../data/playlist.js';
 import { watchEvent, openWebForEvent } from '../data/watch.js';
-import { teamLine } from '../core/marks.js';
+import { teamLine } from '/lib/team-rows.mjs';
 
 let detailEvent = null;
 let detailMatches = [];

@@ -40,7 +40,9 @@ The repo-root `CHANGELOG.md` is the icon pack's. Core Line keeps its own here.
 - **Team logos.** Every scoreboard source has carried a `logo` on each
   competitor since it was written, and no view ever drew one — the hero, the
   cards and the game detail all printed an abbreviation and nothing else. They
-  are now rendered from ESPN, the NHL and MLB, in two shapes: a large mark over
+  are now rendered from whichever provider served the event — ESPN (which
+  covers the NBA, NFL, MLB, college and soccer) and the NHL — in two shapes: a
+  large mark over
   the abbreviation in the hero and the game detail (the team's name is spelled
   out beside it, so covering the monogram costs nothing), and a small mark
   *beside* the abbreviation on the cards, because a 26px logo is a colour cue
@@ -51,7 +53,39 @@ The repo-root `CHANGELOG.md` is the icon pack's. Core Line keeps its own here.
   document with no JavaScript all land on a readable mark. There is no inline
   `onerror=` — see the policy below — only one capture-phase `error` listener
   for the whole app, which drops the empty slot a failed image leaves in the
-  compact form. `lib/logos.mjs`, `public/js/core/marks.js`, `tests/logos.test.mjs`.
+  compact form. `lib/logos.mjs`, `lib/team-rows.mjs`, `tests/logos.test.mjs`.
+
+  Corrections from the review that followed, each verified against the live
+  endpoints rather than recalled:
+
+  - **The plate now follows the artwork.** One plate colour for every source
+    was not a guarantee, it was half a guarantee. ESPN draws its scoreboard
+    marks for a dark UI; the NHL publishes only `assets.nhle.com/.../_light.svg`,
+    the *dark-ink* variant drawn for a light background — so on a dark plate the
+    league this app's supporter names first would have rendered as a smudge.
+    `logoPlate()` reads the variant out of the URL and the CSS paints a light or
+    dark plate to match, in both mark forms.
+  - **Scores are escaped.** The two row builders this change merged into one
+    place interpolated `team.score` raw. A score reads like a number, so it is
+    easy to miss that it arrived from a third party — a hostile or malformed
+    payload could put markup in the document, in an app that now ships a CSP
+    partly as defence against exactly that. The rows moved to
+    `lib/team-rows.mjs` so a test can *execute* them and assert a hostile score
+    comes out inert, which reading the source for `esc(` never could.
+  - **`mlbstatic.com` is no longer allowlisted**, because nothing ever built a
+    URL on it: `eventsFromMlb` sets `logo: null` and MLB reaches ESPN first. An
+    allowlist entry nothing uses is surface with no benefit, and it made the
+    "ESPN, the NHL and MLB" claim read as true when the statsapi fallback
+    supplies no logo at all. That claim is now the accurate one above.
+  - **A logo URL can no longer carry credentials or a non-standard port.** It
+    was accepted before, and the case was pinned by a test that asserted
+    nothing (`ESPN.endsWith('.png') ? X : null` — always `X`), which is how it
+    survived.
+  - **`data-oled` is declared statically on `<html>`.** It used to be applied
+    only by script, so the page painted the house near-black and then snapped to
+    true black. Invisible while the default was off; a flash on every boot once
+    it flipped to on, on the panels this feature exists for. `applyChrome()`
+    still removes it for a viewer who turned the option off.
 
 - **A Content-Security-Policy, and the decision written down.** The page now
   ships a meta CSP rather than inheriting the browser's defaults. `script-src

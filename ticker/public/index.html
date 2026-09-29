@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en" data-theme="core" data-mode="board" data-position="bottom">
+<html lang="en" data-theme="core" data-mode="board" data-position="bottom" data-oled>
 <head>
   <!--
     Content-Security-Policy.
@@ -25,6 +25,14 @@
       `LOGO_DOMAINS` in `lib/logos.mjs`, and `tests/logos.test.mjs` asserts
       the two stay in step: the module decides what we render, this decides
       what can be fetched, and neither is allowed to drift from the other.
+      `mlbstatic.com` was here and is not: nothing ever built a URL on it.
+    - `data-oled` is set statically on <html> above, matching the stored
+      default in `public/js/state.js`. It used to be applied only by script,
+      which meant the page painted the house near-black and then snapped to
+      true black — invisible while the default was off, and a visible flash on
+      every boot once it flipped to on. `applyChrome()` still removes it for a
+      viewer who turned the option off; that path only affects the people who
+      asked for the other surface.
     - `connect-src` is `'self'` plus http/https, and that is the honest
       answer rather than a hole. The feed URLs are *user input* — pasting in
       your own RSS or IPTV source is the app's purpose — so an allowlist here
@@ -38,7 +46,7 @@
     `form-action 'none'` is safe because the app has no form: every control
     is a button, a select or a checkbox read by a delegated handler.
   -->
-  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https://espncdn.com https://*.espncdn.com https://nhle.com https://*.nhle.com https://mlbstatic.com https://*.mlbstatic.com; font-src 'self'; connect-src 'self' http: https:; worker-src 'self'; manifest-src 'self'; base-uri 'none'; form-action 'none'; object-src 'none'">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https://espncdn.com https://*.espncdn.com https://nhle.com https://*.nhle.com; font-src 'self'; connect-src 'self' http: https:; worker-src 'self'; manifest-src 'self'; base-uri 'none'; form-action 'none'; object-src 'none'">
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
   <meta name="theme-color" content="#04070F">
