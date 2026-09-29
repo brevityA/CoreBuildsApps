@@ -92,7 +92,7 @@ test('it is a second axis, not a fifth theme: accents are untouched', () => {
 });
 
 test('the setting is stored, sanitised, applied and wired to a real control', () => {
-  assert.match(stateJs, /oled:\s*false/, 'not in DEFAULTS');
+  assert.match(stateJs, /oled:\s*true/, 'not in DEFAULTS, or no longer on by default');
   assert.match(stateJs, /out\.oled\s*=\s*Boolean\(out\.oled\)/, 'not sanitised on load');
   assert.match(settingsJs, /toggleAttribute\('data-oled'/, 'never applied to the root element');
   assert.match(indexHtml, /id="oled"/, 'markup has no control with that id');

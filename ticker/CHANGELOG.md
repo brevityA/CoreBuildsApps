@@ -10,6 +10,15 @@ The repo-root `CHANGELOG.md` is the icon pack's. Core Line keeps its own here.
 
 ### Added
 
+- **The scrolling ticker can be turned off, and a fresh install starts with it
+  off.** Settings → Ticker & display → Scrolling ticker. With it off, the
+  chyron's row collapses and the board takes the height, keeping the overscan
+  guard at the bottom edge. A hidden ticker is also a stopped one, so it costs
+  nothing and the frozen-ribbon watchdog does not restart it. An install from
+  before this setting keeps its ticker on, because that is what the viewer has
+  been looking at; crawl mode and the phone's floating overlay always show it.
+  `lib/chrome.mjs`, `tests/chrome.test.mjs`.
+
 - **A VPN status dot over every other app.** Android TV has no status bar, so
   once a stream is playing there is no way to tell whether the VPN is still up
   — you have to leave the game and open its app to find out. Settings → Ticker
@@ -73,6 +82,8 @@ The repo-root `CHANGELOG.md` is the icon pack's. Core Line keeps its own here.
   it is the opposite problem: every one of those pixels is still emitting, and
   a full-screen field of it in a dark room reads as grey haze against a bezel
   that is genuinely off. Settings → Appearance now offers *True black (OLED)*,
+  **on by default** — OLED sets are what this audience is buying, and on a
+  backlit panel `#000` costs almost nothing over the house near-black —
   which drops the shell and the board's field to `#000000` and steps the
   surfaces above it up the way Material's dark ramp does, so elevation — the
   only thing keeping a focused card from dissolving into the field — survives.

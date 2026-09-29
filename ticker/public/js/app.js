@@ -36,7 +36,7 @@ import { renderBoard } from './ui/board.js';
 import { initSearch, clearSearch, focusSearch } from './ui/search.js';
 import { openGameDetail, closeGameDetail, openMatched, watchDetail, watchDetailWeb, getDetailEvent } from './ui/detail.js';
 import {
-  applyChrome, openDrawer, activateDrawerSection, wireSettings, initSettings,
+  applyChrome, applyTicker, openDrawer, activateDrawerSection, wireSettings, initSettings,
   nudgeSpeed, nudgeOverscan, nudgeVpnDot, renderFeeds,
 } from './ui/settings.js';
 import { maybeShowOnboarding, nextStep, finish as finishOnboarding } from './ui/onboarding.js';
@@ -331,7 +331,9 @@ async function init() {
       tickClock();
     },
     onWake: () => {
-      getTicker()?.restart();
+      // Restart only a ticker that is meant to be on: restart() also starts
+      // one that the viewer has turned off.
+      if (!document.documentElement.hasAttribute('data-no-ticker')) getTicker()?.restart();
       loadSlate(false); // silent resume refresh — no toast spam on focus
     },
   });
@@ -341,6 +343,7 @@ async function init() {
   store.events = buildDemoSlate();
   render();
   startChyron();
+  applyTicker(); // stops the loop startChyron began if the ticker is off
 
   await loadSlate();
   armRefreshTimer();

@@ -22,6 +22,8 @@ import {
   vpnHeadline,
 } from '/lib/vpn.mjs';
 import { isNativeShell } from '/lib/client-slate.mjs';
+import { tickerShown } from '/lib/chrome.mjs';
+import { getTicker } from './chyron.js';
 import { store, persist } from '../core/store.js';
 import { on, emit } from '../core/bus.js';
 import { $, $$, esc, clampInt, setHidden, setText } from '../core/dom.js';
@@ -70,6 +72,20 @@ export function initSettings() {
   on('feeds', renderFeeds);
 }
 
+/**
+ * Show or hide the chyron, and run its loop only while it is shown: a crawl
+ * nobody can see still costs a TV box a layout per frame, and the frozen-ribbon
+ * watchdog would read a hidden ribbon as a stalled one.
+ */
+export function applyTicker() {
+  const shown = tickerShown(store.state, { overlay: Boolean(globalThis.CORELINE_OVERLAY) });
+  document.documentElement.toggleAttribute('data-no-ticker', !shown);
+  const t = getTicker();
+  if (!t) return;
+  if (shown && !t.running) t.start();
+  if (!shown && t.running) t.stop();
+}
+
 export function applyChrome() {
   const root = document.documentElement;
   const s = store.state;
@@ -77,6 +93,7 @@ export function applyChrome() {
   // A bare attribute rather than data-oled="false": the selector in
   // tokens.css is a presence check, so `off` must mean absent.
   root.toggleAttribute('data-oled', Boolean(s.oled));
+  applyTicker();
   root.dataset.mode = s.mode;
   root.dataset.position = s.position;
   // A null overscan means the viewer has never calibrated, so leave the
@@ -90,6 +107,7 @@ export function applyChrome() {
   set($('position'), 'value', s.position);
   set($('theme'), 'value', s.theme);
   set($('oled'), 'checked', s.oled);
+  set($('ticker'), 'checked', s.ticker);
   set($('clockFmt'), 'value', s.clockFmt);
   set($('overscan'), 'value', currentOverscan());
   set($('favorites'), 'value', s.favorites);
@@ -393,6 +411,12 @@ export function wireSettings() {
     // panel while they flip this, and waiting for the next state emit to
     // repaint the whole field black is a visible flash.
     document.documentElement.toggleAttribute('data-oled', e.target.checked);
+    persist();
+  });
+
+  $('ticker')?.addEventListener('change', (e) => {
+    store.state.ticker = e.target.checked;
+    applyTicker();
     persist();
   });
 
