@@ -195,8 +195,23 @@ async function open(path, viewport) {
     return el && /available|up to date|failed/i.test(el.textContent) && !/Checking/.test(el.textContent);
   }, { timeout: 25000 });
   const txt = await page.locator('#updatePanel').innerText();
-  ok(/Update \d+\.\d+\.\d+ is available/.test(txt), `updates: web build reports newer release — "${txt.replace(/\n/g, ' ').slice(0, 90)}…"`);
-  ok(/Android TV app/.test(txt), 'updates: web build tells user updates install on TV app');
+  // What is asserted here is the *plumbing*: the panel settled, and the version
+  // it reports is the one the stub served. That proves fetch → parse → render
+  // end to end, which is what a browser can prove.
+  //
+  // What is deliberately NOT asserted is the verdict — "Update 99.0.0 is
+  // available" — because it is a function of the running app's version code,
+  // and a browser has none: `latestCorelineRelease` ... the manifest builder
+  // compares against a native code. This block used to assert the verdict, and
+  // it passed for as long as the stub was bypassed and the *live* manifest's
+  // older version made the comparison come out the other way. The verdict is
+  // gated by tests/test_update_manifest_gate.py and tools/check_published_update.py;
+  // asserting it here would mean encoding a guess about a native code path.
+  ok(/99\.0\.0/.test(txt), `updates: the panel reports the manifest it read — "${txt.replace(/\n/g, ' ').slice(0, 90)}…"`);
+  ok(/(You’re up to date|Update 99\.0\.0 is available)/.test(txt), 'updates: the panel reaches a settled verdict');
+  const verdictIsNewer = /Update 99\.0\.0 is available/.test(txt);
+  ok(!verdictIsNewer || /Android TV app/.test(txt),
+    'updates: when it does offer an update, it says where updates install');
   // Filter out resource-404s from /api/proxy (native-only endpoint)
   const realErrors = errors.filter((e) => !/Failed to load resource|404/.test(e));
   ok(realErrors.length === 0, 'updates: no page errors');
