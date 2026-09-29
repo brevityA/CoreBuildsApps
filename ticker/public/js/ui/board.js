@@ -14,7 +14,7 @@ import { emit } from '../core/bus.js';
 import { $, $$, esc, cssEscape, setHidden } from '../core/dom.js';
 import { accentFor, accentStyle, statusOf, cardFavTeams, favSet, startLabel } from '../core/format.js';
 import { HERO_ROTATE_MS, heroCandidates, pickHero, shouldRotate } from '/lib/hero.mjs';
-import { gameTeams, heroMatch } from '../core/marks.js';
+import { gameTeams, heroMatch } from '/lib/team-rows.mjs';
 
 export function captureFocus() {
   const el = document.activeElement;
