@@ -63,7 +63,8 @@ class DumpsysSessionsTest {
         assertEquals(5, DumpsysSessions.USAGE_NOTIFICATION)
         assertEquals(13, DumpsysSessions.USAGE_SONIFICATION)
         assertEquals(14, DumpsysSessions.USAGE_GAME)
-        assertEquals(15, DumpsysSessions.USAGE_ASSISTANT)
+        assertEquals(15, DumpsysSessions.USAGE_VIRTUAL_SOURCE)
+        assertEquals(16, DumpsysSessions.USAGE_ASSISTANT)
     }
 
     @Test
@@ -131,11 +132,12 @@ class DumpsysSessionsTest {
             DiscoveredSession(7, uid = 100, usage = DumpsysSessions.USAGE_ALARM),
             DiscoveredSession(8, uid = 100, usage = DumpsysSessions.USAGE_SONIFICATION),
             DiscoveredSession(9, uid = 100, usage = DumpsysSessions.USAGE_ASSISTANT),
-            DiscoveredSession(10, uid = 100, usage = DumpsysSessions.USAGE_EXCLUDED),
+            DiscoveredSession(10, uid = 100, usage = DumpsysSessions.USAGE_VIRTUAL_SOURCE),
+            DiscoveredSession(16, uid = 100, usage = DumpsysSessions.USAGE_EXCLUDED),
             DiscoveredSession(0, uid = 100, usage = DumpsysSessions.USAGE_MEDIA), // global mix
             DiscoveredSession(-5, uid = 100, usage = DumpsysSessions.USAGE_MEDIA), // not a session
-            DiscoveredSession(11, uid = null, usage = DumpsysSessions.USAGE_MEDIA), // unattributable
-            DiscoveredSession(12, uid = 200, usage = DumpsysSessions.USAGE_MEDIA) // us
+            DiscoveredSession(17, uid = null, usage = DumpsysSessions.USAGE_MEDIA), // unattributable
+            DiscoveredSession(18, uid = 200, usage = DumpsysSessions.USAGE_MEDIA) // us
         )
         val attachable = DumpsysSessions.attachable(sessions, ourUid = 200).map { it.sessionId }
         assertEquals(listOf(1, 2, 3, 4), attachable)

@@ -60,7 +60,8 @@ object DumpsysSessions {
     const val USAGE_NOTIFICATION = 5
     const val USAGE_SONIFICATION = 13
     const val USAGE_GAME = 14
-    const val USAGE_ASSISTANT = 15
+    const val USAGE_VIRTUAL_SOURCE = 15
+    const val USAGE_ASSISTANT = 16
 
     /** A key whose value follows it: `session: 392`, `uid=10234`. */
     private val KEY = Regex("""([A-Za-z_][A-Za-z0-9_]*)\s*[:=]""")
@@ -232,6 +233,7 @@ object DumpsysSessions {
             "alarm" -> USAGE_ALARM
             "notification" -> USAGE_NOTIFICATION
             "sonification" -> USAGE_SONIFICATION
+            "virtual_source", "virtualsource" -> USAGE_VIRTUAL_SOURCE
             "assistant" -> USAGE_ASSISTANT
             else -> USAGE_EXCLUDED
         }
