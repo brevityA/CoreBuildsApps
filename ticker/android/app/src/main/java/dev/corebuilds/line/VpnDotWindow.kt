@@ -107,12 +107,13 @@ class VpnDotWindow(context: Context) {
         val bottom = config.corner == DotConfig.CORNER_BOTTOM_RIGHT || config.corner == DotConfig.CORNER_BOTTOM_LEFT
         params.gravity = (if (bottom) Gravity.BOTTOM else Gravity.TOP) or
             (if (right) Gravity.RIGHT else Gravity.LEFT)
-        params.x = 0
-        params.y = 0
-        params.leftMargin = if (right) 0 else margin
-        params.rightMargin = if (right) margin else 0
-        params.topMargin = if (bottom) 0 else margin
-        params.bottomMargin = if (bottom) margin else 0
+        // WindowManager.LayoutParams extends ViewGroup.LayoutParams, not
+        // MarginLayoutParams: there are no margin fields to set. The inset is
+        // x/y instead, which the framework documents as an offset *from the
+        // edge the gravity anchors to* — so a positive value moves the window
+        // inward in every corner, and one pair of values serves all four.
+        params.x = margin
+        params.y = margin
         return params
     }
 

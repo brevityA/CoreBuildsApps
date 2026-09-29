@@ -352,8 +352,14 @@ proven:**
 5. Toggle the VPN from the VPN app's own screen and confirm green→red within a
    couple of seconds; toggle a per-app VPN that excludes Core Line and confirm
    amber.
-6. Reboot and confirm the dot comes back without opening Core Line.
-7. Confirm the D-pad walks past the dot untouched while it is up.
+6. Step through all four corners and confirm the dot sits fully on screen in
+   each, inside the calibrated safe area. `WindowManager.LayoutParams` has no
+   margin fields — the inset rides on `x`/`y`, documented as offsets from the
+   edge the gravity anchors to, so a positive value should place the window
+   inward. If any panel anchors it outward, the fix is a sign flip in
+   `VpnDotWindow.layoutParams()`; this step is what would catch that.
+7. Reboot and confirm the dot comes back without opening Core Line.
+8. Confirm the D-pad walks past the dot untouched while it is up.
 
 ---
 

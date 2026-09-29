@@ -81,6 +81,7 @@ class OverlayService : Service() {
         }
 
         val action = intent?.action
+        val dotPayload = intent?.getStringExtra(EXTRA_DOT_CONFIG)
         var position = intent?.getStringExtra(EXTRA_POSITION)
         if (position == null) position = OverlayPrefs(this).tickerPosition
         if (position == "top" || position == "bottom") edge = position
@@ -93,7 +94,7 @@ class OverlayService : Service() {
             ACTION_STOP_TICKER -> stopTicker()
             ACTION_STOP_DOT -> stopDot()
             ACTION_START_DOT -> {
-                DotConfig.fromJson(intent.getStringExtra(EXTRA_DOT_CONFIG))?.let { dotConfig = it }
+                DotConfig.fromJson(dotPayload)?.let { dotConfig = it }
                 showDot()
             }
             ACTION_START_TICKER -> showTicker()
@@ -298,7 +299,12 @@ class OverlayService : Service() {
         OverlayPrefs(this).writeDotConfig(dotConfig)
 
         watcher?.stop()
-        val watch = VpnState.Watcher(this) { snapshot -> dotWindow?.apply(snapshot.state) }
+        // Connectivity callbacks arrive on a binder thread, and a View may only
+        // be touched from the UI thread (View.invalidate() is explicitly
+        // UI-thread-only), so the update hops through the main handler.
+        val watch = VpnState.Watcher(this) { snapshot ->
+            handler.post { dotWindow?.apply(snapshot.state) }
+        }
         watcher = if (watch.start()) watch else null
 
         handler.removeCallbacks(dotRefresh)
