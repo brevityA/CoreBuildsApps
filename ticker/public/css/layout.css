@@ -313,8 +313,7 @@
   .board {
     grid-template-columns: 1fr;
   }
-  .tile {
-    grid-template-columns: 1fr;
-    padding: var(--cb-space-md);
-  }
+  /* The banner's phone layout is in screens.css. It was here, where it
+     never applied: layout.css loads before components.css, so the base
+     .tile grid overrode it and the team names drew at 0px. */
 }

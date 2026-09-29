@@ -71,6 +71,17 @@ The repo-root `CHANGELOG.md` is the icon pack's. Core Line keeps its own here.
   `SN 3`, `F1`) are left exactly as they are. Dot-carrying names like `MLB.TV`
   also survive the splitter now; they were being trimmed off the end of a
   comma-separated list. `tests/niche-channels.test.mjs`.
+- **Team names show in the banner on a 1080p TV and on a phone.** A 1080p
+  panel reports 960 CSS px, so the board beside the rail is 544dp. With scores
+  on, the banner's Watch column took its content width and the team column got
+  4px: "Philadelphia Eagles" and "Chicago Bears" were not drawn at all. On a
+  phone they were 0px, because the phone layout for the banner sat in
+  `layout.css`, which loads before `components.css` and so never applied.
+  Below 1280 on a TV, and on a phone, the banner now stacks: teams across the
+  full width (280px of name at 960), then one row of channels, venue and
+  Watch, with the venue the thing that truncates. At 960x540 the banner is
+  267px, so the first card stays above the chyron. With the banner now
+  rotating, this is the frame a viewer sees most.
 
 ## [1.4.0] — 2026-09-29
 

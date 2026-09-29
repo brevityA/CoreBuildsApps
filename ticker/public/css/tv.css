@@ -139,6 +139,47 @@
   height: 260px;
 }
 
+/* ---- Hero on a 1080p panel ---------------------------------------------
+   A 1080p TV reports 960 CSS px, so its board is 544dp beside the 300dp rail.
+   Side by side, the Watch column took its content width and the team column
+   got what was left: 4px, so "Philadelphia Eagles" and "Chicago Bears" were
+   not drawn at all once scores were on. Below 1280 the banner stacks the
+   same way a phone's does (screens.css): teams across the full width, then
+   one row of channels, venue and Watch, short enough to leave a card on a
+   540px screen.
+   TV mode always has the fixed rail, so the viewport width is the board's
+   width here, not a guess at it. */
+@media (max-width: 1279px) {
+  [data-tv] .tile {
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--cb-space-sm);
+    /* 40px of padding on each side is the 4K banner's; at 540 tall it is
+       the difference between the first card showing and not. */
+    padding: var(--cb-space-md) var(--cb-space-lg);
+  }
+  [data-tv] .hero-side {
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
+    min-width: 0;
+  }
+  [data-tv] .hero-side .pills {
+    flex: 0 1 auto;
+    min-width: 0;
+    justify-content: flex-start;
+  }
+  [data-tv] .hero-side .when {
+    flex: 1 1 0;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  [data-tv] .hero-side .btn {
+    flex: 0 0 auto;
+    order: 2;
+  }
+}
+
 /* Hero interiors scale with the display roles, not the UI scale. */
 [data-tv] .hero-meta {
   font-size: var(--cb-text-data);

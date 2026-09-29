@@ -657,6 +657,38 @@
   justify-content: space-between;
   gap: var(--cb-space-sm);
 }
+/* Stacked banner, one row of actions: teams across the full width, then
+   channels, venue and Watch. The venue is what gives way; Watch never wraps
+   to a line of its own, because that is what made the banner too tall to
+   leave a card on screen. Used on a phone here and on a 1080p TV in tv.css. */
+@media (max-width: 720px) {
+  .tile {
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--cb-space-sm);
+    padding: var(--cb-space-md);
+  }
+  .hero-side {
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
+    min-width: 0;
+  }
+  .hero-side .pills {
+    flex: 0 1 auto;
+    min-width: 0;
+    justify-content: flex-start;
+  }
+  .hero-side .when {
+    flex: 1 1 0;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .hero-side .btn {
+    flex: 0 0 auto;
+    order: 2;
+  }
+}
 .pills {
   display: flex;
   flex-wrap: wrap;
