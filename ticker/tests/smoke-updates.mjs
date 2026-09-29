@@ -5,9 +5,38 @@ const BASE = 'http://127.0.0.1:8787';
 const bin = process.env.CHROMIUM_PATH || '/usr/bin/chromium';
 let failures = 0;
 
+/**
+ * Failures are emitted twice: to stdout, for a human reading the job log, and
+ * as a GitHub workflow command, which becomes a check-run *annotation*.
+ *
+ * That second copy is not decoration. Downloading this repo's job logs fails
+ * at the archive endpoint (`EOF` from results-receiver), so a failing run in
+ * this workflow is otherwise invisible from outside CI — "Process completed
+ * with exit code 1" and nothing else. Annotations are readable through the
+ * API, so a failing assertion names itself.
+ */
 function ok(cond, msg) {
   console.log((cond ? 'PASS' : 'FAIL') + '  ' + msg);
-  if (!cond) failures++;
+  if (!cond) {
+    failures++;
+    console.log(`::error title=smoke::${msg.replace(/[\r\n]+/g, ' ').slice(0, 800)}`);
+  }
+}
+
+/** The app's console output, surfaced whether or not the count check passed. */
+function reportConsole(label, errors) {
+  if (!errors.length) return;
+  console.log(`::notice title=${label}-console::${errors.join(' | ').replace(/[\r\n]+/g, ' ').slice(0, 700)}`);
+}
+
+// A thrown assertion (a `waitForSelector` timeout, a null dereference) exits
+// the script before any summary, which is the least diagnosable outcome. Turn
+// it into an annotation too.
+for (const ev of ['uncaughtException', 'unhandledRejection']) {
+  process.on(ev, (err) => {
+    console.log(`::error title=smoke-crash (${ev})::${String(err && err.stack || err).replace(/[\r\n]+/g, ' ').slice(0, 900)}`);
+    process.exit(1);
+  });
 }
 
 const browser = await chromium.launch({
@@ -31,6 +60,7 @@ async function open(path, viewport) {
   const games = await page.locator('.card').count();
   ok(games > 0, `desktop: ${games} game cards render`);
   ok(await page.locator('.chyron').count() === 1, 'desktop: chyron present');
+  reportConsole('desktop', errors);
   ok(errors.length === 0, `desktop: no page errors (${errors.join(' | ').slice(0, 140) || 'none'})`);
   await page.close();
 }
@@ -40,6 +70,7 @@ async function open(path, viewport) {
   const { page, errors } = await open('/', { width: 390, height: 844 });
   await page.waitForSelector('.card', { timeout: 15000 });
   ok(await page.locator('.card').count() > 0, 'mobile: cards render at 390px');
+  reportConsole('mobile', errors);
   ok(errors.length === 0, 'mobile: no page errors');
   await page.close();
 }
@@ -50,6 +81,7 @@ async function open(path, viewport) {
   await page.waitForSelector('.card', { timeout: 15000 });
   const isTv = await page.evaluate(() => document.documentElement.hasAttribute('data-tv'));
   ok(isTv, 'tv: data-tv attribute set');
+  reportConsole('tv', errors);
   ok(errors.length === 0, 'tv: no page errors');
 
   // TV consistency (the coherent 10-foot ladder): same-role elements share a
