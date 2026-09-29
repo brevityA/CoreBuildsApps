@@ -325,3 +325,63 @@ test('every source expression is one a browser will parse', () => {
     }
   }
 });
+
+/* ---- The second document ------------------------------------------------- */
+
+const overlayHtml = read('public/overlay.html');
+const overlayCsp = overlayHtml.match(/http-equiv="Content-Security-Policy" content="([^"]+)"/)?.[1] ?? '';
+
+test('every document the app serves carries a policy', () => {
+  // index.html and overlay.html are separate documents, loaded by
+  // MainActivity and OverlayService respectively, and a CSP does not inherit
+  // between them — the overlay is the one that floats over other apps.
+  assert.ok(csp, 'index.html has no policy');
+  assert.ok(overlayCsp, 'overlay.html has no policy — it would inherit nothing');
+  assert.match(overlayCsp, /default-src 'none'/);
+  assert.match(overlayCsp, /script-src 'self'/);
+  // The overlay may allow inline *styles* (it shares the app's inline accent
+  // pattern) but never inline script.
+  const overlayScriptSrc = overlayCsp.match(/(?:^|;\s*)script-src\s+([^;]+)/)?.[1] ?? '';
+  assert.doesNotMatch(overlayScriptSrc, /'unsafe-inline'/, 'inline script allowed in the overlay');
+});
+
+test('the overlay policy is spelled correctly too', () => {
+  const names = overlayCsp.split(';').map((t) => t.trim().split(/\s+/)[0]).filter(Boolean);
+  for (const name of names) {
+    assert.ok(REAL_DIRECTIVES.has(name), `"${name}" is not a CSP directive — it would be ignored`);
+  }
+  assert.equal(new Set(names).size, names.length, 'duplicate directive in the overlay policy');
+  assert.doesNotMatch(overlayCsp, /frame-ancestors|report-(uri|to)/);
+});
+
+test('the overlay declares no inline script to match', () => {
+  const inline = [...overlayHtml.matchAll(/<script\b([^>]*)>/g)].filter((m) => !/\bsrc=/.test(m[1]));
+  assert.deepEqual(inline, [], 'an inline <script> would be blocked by the overlay policy');
+});
+
+test('every document loads its CSS and modules from its own origin', () => {
+  // The policy allows 'self' for scripts, styles and fonts, so an absolute
+  // third-party URL in any of the three would be dead on arrival. This is
+  // the check that catches it at review time instead of on a television.
+  for (const [name, html] of [['index.html', indexHtml], ['overlay.html', overlayHtml]]) {
+    for (const m of html.matchAll(/<(?:script|link)\b[^>]*?(?:src|href)="([^"]+)"/g)) {
+      const url = m[1];
+      assert.ok(
+        url.startsWith('./') || url.startsWith('/') || url.startsWith('data:'),
+        `${name} loads a cross-origin asset that the policy forbids: ${url}`,
+      );
+    }
+  }
+});
+
+test('no stylesheet reaches outside the origin either', () => {
+  const css = ['tokens', 'base', 'chyron', 'layout', 'components', 'screens', 'tv', 'app']
+    .map((n) => read(`public/css/${n}.css`)).join('\n');
+  for (const m of css.matchAll(/url\((["']?)([^"')]+)\1\)/g)) {
+    const url = m[2].trim();
+    assert.ok(
+      url.startsWith('./') || url.startsWith('../'),
+      `a stylesheet points off-origin at ${url}, which the policy would block`,
+    );
+  }
+});

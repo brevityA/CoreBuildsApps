@@ -44,6 +44,10 @@ The repo-root `CHANGELOG.md` is the icon pack's. Core Line keeps its own here.
   for the whole app, which drops the empty slot a failed image leaves in the
   compact form. `lib/logos.mjs`, `public/js/core/marks.js`, `tests/logos.test.mjs`.
 
+  The phone overlay (`public/overlay.html`) ships the same policy, narrowed to
+  what that document loads: it is the surface that floats over other apps, and
+  a CSP does not inherit between documents.
+
 - **A Content-Security-Policy, and the decision written down.** The page now
   ships a meta CSP rather than inheriting the browser's defaults. `script-src
   'self'` is the load-bearing part, and it is why the boot guard moved out of
