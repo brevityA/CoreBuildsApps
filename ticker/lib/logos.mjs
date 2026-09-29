@@ -10,8 +10,8 @@
  * reason: the browser modules import the shared parsers as `/lib/...`, which
  * Node cannot resolve, so a `public/js` renderer can only ever be read as text
  * by the test runner. Here it can be called — and the escaping, the two mark
- * forms and the fallback are all things worth calling. `public/js/core/marks.js`
- * is the thin part: it composes the rows those marks sit in.
+ * forms and the fallback are all things worth calling. The rows those marks
+ * sit in are `lib/team-rows.mjs`, for the same reason.
  *
  * Two questions, and they are separate:
  *
@@ -45,8 +45,15 @@
  * This list is mirrored in the `img-src` of `public/index.html`. The CSP is
  * the enforcement; this is the same policy stated where it can be tested,
  * and `tests/logos.test.mjs` asserts the two agree so they cannot drift.
+ *
+ * `mlbstatic.com` was here and is not any more. Nothing in the app ever built
+ * a URL on that host — `eventsFromMlb` sets `logo: null`, and MLB reaches ESPN
+ * first — so it was permission for a fetch that could not happen. An allowlist
+ * entry nothing uses is surface with no benefit, and it made the changelog's
+ * "from ESPN, the NHL and MLB" read as true when the MLB fallback supplies no
+ * logo at all.
  */
-export const LOGO_DOMAINS = ['espncdn.com', 'nhle.com', 'mlbstatic.com'];
+export const LOGO_DOMAINS = ['espncdn.com', 'nhle.com'];
 
 /** True when `host` is one of LOGO_DOMAINS, or a subdomain of one. */
 export function logoDomainAllowed(host) {
@@ -73,12 +80,50 @@ export function logoUrl(raw) {
   }
   if (url.protocol !== 'https:') return null;
   if (!logoDomainAllowed(url.hostname)) return null;
+  // Credentials in an image URL are never legitimate here, and a logo has no
+  // business on a non-standard port: the first leaks whatever the payload's
+  // author wanted sent to a host we trust, the second is a way to reach a
+  // service the CDN domain happens to expose. Both were accepted before this
+  // check existed — the port case was even pinned by a test that asserted
+  // nothing, which is how it survived review.
+  if (url.username || url.password) return null;
+  if (url.port && url.port !== '443') return null;
   return url.toString();
 }
 
 /** The logo URL for a competitor-shaped object, or null. */
 export function logoOf(team) {
   return logoUrl(team?.logo);
+}
+
+/**
+ * Which plate the artwork needs behind it: `'light'` or `'dark'`.
+ *
+ * A plate exists because logos are drawn for a particular background. The
+ * mistake this function fixes was picking one plate colour for every source
+ * and calling it a guarantee: ESPN's `scoreboard/` marks are drawn for ESPN's
+ * own dark UI and read on a dark plate, but the NHL serves
+ * `.../svg/FLA_light.svg` — the `_light` variant, meaning dark ink drawn for
+ * a **light** background — which on a dark plate is close to invisible. That
+ * is the league this app's supporter named first.
+ *
+ * The NHL exposes only the light-background variant, so the plate is what
+ * compensates. Verified against `https://api-web.nhle.com/v1/score/now`:
+ * every team logo in that payload is an `assets.nhle.com/.../_light.svg`.
+ */
+export function logoPlate(raw) {
+  let url;
+  try {
+    url = new URL(String(raw ?? ''));
+  } catch {
+    return 'dark';
+  }
+  if (logoDomainAllowed(url.hostname) && /(^|\.)nhle\.com$/.test(url.hostname.toLowerCase())) {
+    return 'light';
+  }
+  // Defensive: a `_light` variant from anywhere is dark ink by convention.
+  if (/_light\.(svg|png)$/i.test(url.pathname)) return 'light';
+  return 'dark';
 }
 
 /**
@@ -130,7 +175,8 @@ export function teamMark(team, { compact = false } = {}) {
   const label = escapeHtml(monogram(team));
   const src = logoOf(team);
   if (!src) return `<span class="mark mark--mono">${label}</span>`;
-  const img = `<img class="mark__img" src="${escapeHtml(src)}" alt="" `
+  const img = `<img class="mark__img" data-plate="${logoPlate(src)}" `
+    + `src="${escapeHtml(src)}" alt="" `
     + 'loading="lazy" decoding="async" referrerpolicy="no-referrer">';
   return compact
     ? `<span class="mark mark--row">${img}${label}</span>`
