@@ -360,6 +360,21 @@
               <button class="btn btn--ghost focusable" data-action="playlist-clear" id="playlistClearBtn" hidden>Remove playlist</button>
               <p class="hint hint--small">The link is fetched by Core Line on this device and never leaves it. Opening a channel needs a player that accepts stream links — TiviMate, VLC, or similar.</p>
             </div>
+            <div class="block" id="guideBlock">
+              <h3 class="block__title">TV guide (XMLTV)</h3>
+              <p class="hint">Your provider's guide finds which of your channels carry a game, and adds live events the scoreboards miss — Sky, the BBC, conference networks. Today and tomorrow only; refreshed every 6 hours.</p>
+              <p class="hint hint--small" id="guideWebNote" hidden>The guide imports in the Core Line Android app.</p>
+              <div id="guideControls">
+                <p class="hint hint--small" id="guideSource"></p>
+                <div class="feed-add">
+                  <input class="field focusable" id="guideUrl" type="url" placeholder="Optional: your own XMLTV link" autocomplete="off" spellcheck="false">
+                  <button class="btn focusable" data-action="guide-save">Use link</button>
+                </div>
+                <p class="hint hint--small" id="guideStatus" aria-live="polite"></p>
+                <button class="btn focusable" data-action="guide-refresh" id="guideRefreshBtn">Refresh guide</button>
+                <button class="btn btn--ghost focusable" data-action="guide-clear-url" id="guideClearUrlBtn" hidden>Use the playlist's guide</button>
+              </div>
+            </div>
           </section>
 
           <section class="drawer__section" data-panel="updates">
