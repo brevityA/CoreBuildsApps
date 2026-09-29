@@ -10,11 +10,12 @@
 
 import { store, persist } from '../core/store.js';
 import { emit } from '../core/bus.js';
-import { $, $$, esc, setHidden } from '../core/dom.js';
+import { $, $$, esc, setHidden, restoreFocus } from '../core/dom.js';
 import { favSet } from '../core/format.js';
 import { teamListFromEvents } from '../data/slate.js';
 
 let step = 0;
+let returnFocus = null;
 const STEPS = 2;
 
 export function maybeShowOnboarding() {
@@ -30,6 +31,7 @@ export function maybeShowOnboarding() {
   }
   // Only offer team choice when there is actually a slate to choose from.
   if (step === 0 && teamListFromEvents().length === 0) step = 1;
+  returnFocus = document.activeElement;
   render();
   setHidden('onboard', false);
   $('onboard')?.querySelector('.focusable')?.focus();
@@ -51,6 +53,8 @@ export function finish() {
   persist();
   setHidden('onboard', true);
   emit('state');
+  restoreFocus(returnFocus);
+  returnFocus = null;
 }
 
 function render() {

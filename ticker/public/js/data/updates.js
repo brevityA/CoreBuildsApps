@@ -81,7 +81,7 @@ export function renderUpdates() {
     rows.push('<div class="update-note">Not checked yet.</div>');
   }
 
-  rows.push(`<button class="btn--ghost focusable" data-action="check-updates" ${updateChecking ? 'disabled' : ''}>Check for updates</button>`);
+  rows.push(`<button class="btn btn--ghost focusable" data-action="check-updates" ${updateChecking ? 'disabled' : ''}>Check for updates</button>`);
   el.innerHTML = rows.join('');
 }
 

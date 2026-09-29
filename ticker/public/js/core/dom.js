@@ -52,3 +52,24 @@ export function toggleAttr(name, on) {
 export function timeout(ms) {
   return new Promise((resolve) => setTimeout(() => resolve(null), ms));
 }
+
+/**
+ * Give focus back when an overlay closes. A TV has no pointer: if focus is
+ * left on a node that was just hidden, it falls to <body> and the screen shows
+ * no selection at all until the viewer presses an arrow and hopes. [previous]
+ * is where focus was when the overlay opened; if it is gone, the league rail
+ * and then the board are the places a viewer expects to land.
+ */
+export function restoreFocus(previous) {
+  // Never hand focus back to a text field: on a TV that raises the on-screen
+  // keyboard, which is not what closing a dialog should do.
+  const typing = (el) => /^(input|textarea|select)$/i.test(el.tagName)
+    && !['button', 'submit', 'checkbox', 'radio', 'range'].includes((el.type || '').toLowerCase());
+  const usable = (el) => el && el.isConnected && !el.closest('[hidden]')
+    && el.getBoundingClientRect().width > 0 && !typing(el);
+  const target = [previous,
+    document.querySelector('#leagues .focusable'),
+    document.querySelector('.stage .focusable'),
+    document.querySelector('.focusable')].find(usable);
+  target?.focus();
+}

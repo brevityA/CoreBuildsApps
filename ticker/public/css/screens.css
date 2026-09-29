@@ -530,11 +530,28 @@
   justify-content: space-between;
   align-items: center;
   gap: var(--cb-space-xs);
+  min-width: 0;
 }
+/* The right cluster may shrink, and inside it only the status badge gives
+   way: a start time like "9/29 - 6:30 PM EDT" used to push the star and the
+   Watch button past the card edge on a 1080p board. The badge truncates
+   (the full time is also in the card foot and in Game Detail); the two
+   48px targets never shrink. */
 .card__top-right {
   display: flex;
   align-items: center;
   gap: 6px;
+  min-width: 0;
+  flex: 0 1 auto;
+}
+.card__top-right .badge {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.card__top-right .fav-star,
+.card__top-right .btn--mini {
+  flex: 0 0 auto;
 }
 .card__foot {
   margin-top: auto;
@@ -547,7 +564,13 @@
   font-size: var(--cb-text-kicker);
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: var(--acc, var(--cb-slate));
+  /* Text takes the lifted ink (lib/contrast.mjs); the marker keeps the
+     league's own colour. */
+  color: var(--acc-ink, var(--acc, var(--cb-slate)));
+  /* League names are five letters at most: the tag stays whole and the
+     status badge is what gives way. */
+  flex: 0 0 auto;
+  white-space: nowrap;
   font-weight: 700;
   display: flex;
   align-items: center;

@@ -7,6 +7,7 @@
 
 import { LEAGUES } from '/lib/scoreboard.mjs';
 import { matchesFavorite } from '/lib/favorites.mjs';
+import { readableOn } from '/lib/contrast.mjs';
 
 /** The league accent for an event, for the card's left edge and league tag. */
 export function accentFor(ev) {
@@ -14,6 +15,16 @@ export function accentFor(ev) {
     if (league.label === ev.league) return league.accent;
   }
   return 'var(--accent)';
+}
+
+/**
+ * The card's inline style: --acc is the league's brand colour (left edge,
+ * tag marker), --acc-ink the same hue lifted until it reads as text on the
+ * card surface. See lib/contrast.mjs for why they differ.
+ */
+export function accentStyle(ev) {
+  const acc = accentFor(ev);
+  return `--acc:${acc};--acc-ink:${readableOn(acc)}`;
 }
 
 /** Badge class + label for an event's status. */

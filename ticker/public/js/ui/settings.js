@@ -167,7 +167,7 @@ export function renderFeeds() {
       <div class="row-actions">
         <button class="btn--mini focusable" data-action="feed-up" data-url="${esc(feed.url)}" aria-label="Move ${esc(feed.label)} up" ${i === 0 ? 'disabled' : ''}>&#9650;</button>
         <button class="btn--mini focusable" data-action="feed-down" data-url="${esc(feed.url)}" aria-label="Move ${esc(feed.label)} down" ${i === feeds.length - 1 ? 'disabled' : ''}>&#9660;</button>
-        <button class="btn--ghost focusable" data-action="remove-feed" data-url="${esc(feed.url)}">Remove</button>
+        <button class="btn btn--ghost focusable" data-action="remove-feed" data-url="${esc(feed.url)}">Remove</button>
       </div>
     </li>`).join('')
     || '<li><span class="hint hint--small">No custom feeds yet — add one above or keep the sample on.</span></li>';

@@ -10,10 +10,13 @@
  * thinks about, which is most of the difference between the two.
  */
 
-import { $, setHidden, setText } from '../core/dom.js';
+import { $, setHidden, setText, restoreFocus } from '../core/dom.js';
 import { nudgeOverscan, currentOverscan } from './settings.js';
 
+let returnFocus = null;
+
 export function openCalibrate() {
+  returnFocus = document.activeElement;
   setText('calibrateValue', `${currentOverscan()} px`);
   setHidden('calibrate', false);
   $('calibrate')?.querySelector('[data-action="calibrate-done"]')?.focus();
@@ -21,6 +24,8 @@ export function openCalibrate() {
 
 export function closeCalibrate() {
   setHidden('calibrate', true);
+  restoreFocus(returnFocus);
+  returnFocus = null;
 }
 
 export function isCalibrating() {

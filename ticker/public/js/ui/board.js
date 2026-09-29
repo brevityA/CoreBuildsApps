@@ -12,7 +12,7 @@
 import { store } from '../core/store.js';
 import { emit } from '../core/bus.js';
 import { $, $$, esc, cssEscape, setHidden } from '../core/dom.js';
-import { accentFor, statusOf, cardFavTeams, favSet, startLabel } from '../core/format.js';
+import { accentFor, accentStyle, statusOf, cardFavTeams, favSet, startLabel } from '../core/format.js';
 
 export function captureFocus() {
   const el = document.activeElement;
@@ -62,7 +62,7 @@ function renderHero(list) {
   }
   hero.hidden = false;
   hero.innerHTML = `
-    <article class="tile focusable" tabindex="0" data-action="game-detail" data-id="${esc(featured.id)}" style="--acc:${esc(accentFor(featured))}">
+    <article class="tile focusable" tabindex="0" data-action="game-detail" data-id="${esc(featured.id)}" style="${esc(accentStyle(featured))}">
       <div>
         <div class="hero-meta">
           <span class="badge badge--live">LIVE</span>
@@ -108,7 +108,7 @@ export function gameCard(ev) {
   const favOn = teams.length > 0 && teams.every((t) => favs.has(t));
   const when = ev.status === 'upcoming' ? startLabel(ev) : (ev.venue || '');
   return `
-    <article class="card focusable" tabindex="0" data-action="game-detail" data-id="${esc(ev.id)}" style="--acc:${esc(accentFor(ev))}">
+    <article class="card focusable" tabindex="0" data-action="game-detail" data-id="${esc(ev.id)}" style="${esc(accentStyle(ev))}">
       <div class="card__top">
         <span class="league-tag">${esc(ev.league || ev.feed || 'RSS')}</span>
         <div class="card__top-right">
@@ -132,7 +132,7 @@ export function gameCard(ev) {
 export function headlineCard(ev) {
   const { badge, label } = statusOf(ev);
   return `
-    <article class="card focusable" tabindex="0" data-action="game-detail" data-id="${esc(ev.id)}" style="--acc:${esc(accentFor(ev))}">
+    <article class="card focusable" tabindex="0" data-action="game-detail" data-id="${esc(ev.id)}" style="${esc(accentStyle(ev))}">
       <div class="card__top">
         <span class="league-tag">${esc(ev.league || ev.feed || 'RSS')}</span>
         <span class="badge badge--${badge}">${esc(label)}</span>

@@ -69,7 +69,7 @@ export function detailHtml(ev, matches) {
   if (!store.playlistChannels.length) {
     channelBlock = `
       <p class="hint">Import your IPTV playlist to see which of your channels carry this game.</p>
-      <button class="btn--ghost focusable" data-action="open-channels-settings">Set up in Settings → Channels</button>`;
+      <button class="btn btn--ghost focusable" data-action="open-channels-settings">Set up in Settings → Channels</button>`;
   } else if (!matches.length) {
     channelBlock = `
       <p class="hint">No channels matched ${esc((ev.channels || []).join(', ') || 'this game')}. Your provider may carry it under a different network name.</p>`;
@@ -97,7 +97,7 @@ export function detailHtml(ev, matches) {
     ${pills ? `<div class="gd-pills">${pills}</div>` : ''}
     <div class="gd-actions">
       ${ev.away && ev.home ? `<button class="btn focusable" data-action="watch" data-id="${esc(ev.id)}">&#9654; Watch</button>` : ''}
-      <button class="btn--ghost focusable" data-action="watch-web" data-id="${esc(ev.id)}">Web page</button>
+      <button class="btn btn--ghost focusable" data-action="watch-web" data-id="${esc(ev.id)}">Web page</button>
     </div>
     <div class="gd-section">Your channels</div>
     ${channelBlock}

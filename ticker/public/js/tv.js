@@ -63,13 +63,26 @@ export function initTvNav(root) {
   return () => window.removeEventListener('keydown', onKey);
 }
 
+// Overlays in stacking order, topmost first: the same order Back closes them.
+const MODALS = ['calibrate', 'onboard', 'gameDetail'];
+
+function topModal() {
+  for (const id of MODALS) {
+    const layer = document.getElementById(id);
+    if (layer && !layer.hidden) return layer;
+  }
+  return null;
+}
+
 function nearest(current, dir) {
   const drawerOpen = drawerShown();
-  const detailOpen = detailShown();
+  // While an overlay is up, the D-pad stays inside it. Onboarding and
+  // calibration had no such rule, so Down from a team chip walked onto a game
+  // card hidden behind the dialog, on the very first screen a viewer sees.
+  const modal = topModal();
   const nodes = [...document.querySelectorAll('.focusable')].filter((el) => {
     if (!visible(el)) return false;
-    // While the Game Detail modal is open, D-pad stays inside it.
-    if (detailOpen) return el.closest('#gameDetail') !== null;
+    if (modal) return modal.contains(el);
     if (drawerOpen && !el.closest('#drawer')) return false;
     return true;
   });
@@ -153,11 +166,6 @@ function visible(el) {
 function drawerShown() {
   const drawer = document.getElementById('drawer');
   return Boolean(drawer && !drawer.hidden);
-}
-
-function detailShown() {
-  const detail = document.getElementById('gameDetail');
-  return Boolean(detail && !detail.hidden);
 }
 
 /**

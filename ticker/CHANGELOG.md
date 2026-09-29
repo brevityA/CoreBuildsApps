@@ -87,6 +87,26 @@ two apps draw from one brand.
 
 ### Fixed
 
+- **The D-pad stays inside onboarding and calibration.** Only Game Detail
+  kept focus inside itself, so Down from a team chip on the very first screen
+  walked onto a game card hidden behind the dialog. Every overlay now holds
+  the D-pad until it closes (`MODALS` in `public/js/tv.js`).
+- **Closing an overlay puts focus somewhere visible.** Onboarding and
+  calibration left focus on a hidden node, so nothing was highlighted until
+  an arrow was pressed. Focus returns to where it was, or to the league rail,
+  and never to a text field: on a TV that raises the on-screen keyboard.
+- **Card controls stay on the card.** A start time such as "9/29 - 6:30 PM
+  EDT" pushed the star and Watch buttons past the card edge on a 1080p board.
+  The status badge now truncates; the two 48px targets never shrink.
+- **League tags are readable.** They used the raw brand colour as text, and
+  NFL, MLB, EPL and UCL navies land near 1.3:1 on the card. The text is now
+  lifted to 4.5:1 or better while keeping its hue, and the marker keeps the
+  true colour (`lib/contrast.mjs`, covered by `tests/contrast.test.mjs`).
+- **Ghost buttons have their size back.** `.btn--ghost` is a modifier of
+  `.btn`, but ten buttons (Skip, Clear filters, pairing, Calibrate overscan,
+  Remove playlist, feed Remove, Check for updates, and two in Game Detail)
+  used it alone and rendered as small browser-default buttons.
+
 - **The speed slider works with a D-pad.** It was exempt from key handling
   entirely, so arrows moved focus instead of the value and the control could
   not be operated by remote at all. Horizontal arrows now drive the slider and

@@ -72,8 +72,8 @@ fetching.
 
 **6. Anything worth testing goes in `lib/`.** The browser modules import it
 over `/lib/...`; `npm test` runs under Node with no DOM. That is why search
-matching lives in `lib/query.mjs` and alert diffing in `lib/alerts.mjs` rather
-than in `ui/`.
+matching lives in `lib/query.mjs`, alert diffing in `lib/alerts.mjs` and
+league-tag contrast in `lib/contrast.mjs` rather than in `ui/`.
 
 ## Design system
 
