@@ -137,18 +137,33 @@ async function open(path, viewport) {
 
 // ---- 4. Updates panel (web mode) ------------------------------------------
 {
-  const page = await browser.newPage({ viewport: { width: 1440, height: 900 } });
+  // Service workers blocked for this block, and that is the whole reason it
+  // now works. The app registers one in web mode; it claims the page on
+  // activation and then mediates the page's fetches, and Playwright's routing
+  // does not see requests a service worker handles — so the stub below was
+  // never consulted and the block read the live manifest. Block 1 still loads
+  // the app with the worker enabled, so the worker itself stays covered.
+  const context = await browser.newContext({
+    viewport: { width: 1440, height: 900 },
+    serviceWorkers: 'block',
+  });
+  const page = await context.newPage();
   await seedReturningViewer(page);
   const errors = [];
   page.on('pageerror', (e) => errors.push(String(e)));
   page.on('console', (m) => { if (m.type() === 'error') errors.push(m.text()); });
+  // Say out loud whether the manifest request even happened, and who answered
+  // it: a future failure should not need four runs to diagnose.
+  page.on('request', (r) => {
+    if (/coreline-version/.test(r.url())) console.log(`::notice title=update-manifest-request::${r.url()}`);
+  });
   // Stub the *manifest the app actually reads* so the test is deterministic
   // offline. This used to stub `api.github.com`, which the updater stopped
   // calling at some point — so the stub was bypassed, the live manifest was
   // fetched, and the block asserted "an update is available" against an app
   // that was correctly reporting it was up to date. The source is
   // `raw.githubusercontent.com/.../Latestrelease/coreline-version.json`.
-  await page.route('**/Latestrelease/coreline-version.json', (route) => {
+  await page.route('**/coreline-version.json', (route) => {
     route.fulfill({
       status: 200,
       contentType: 'application/json',
@@ -185,7 +200,7 @@ async function open(path, viewport) {
   // Filter out resource-404s from /api/proxy (native-only endpoint)
   const realErrors = errors.filter((e) => !/Failed to load resource|404/.test(e));
   ok(realErrors.length === 0, 'updates: no page errors');
-  await page.close();
+  await context.close();
 }
 
 // ---- 5. Phone floating overlay page (native=1&overlay=1) -----------------
