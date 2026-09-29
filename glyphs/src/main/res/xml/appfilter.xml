@@ -386,6 +386,9 @@
     <!-- Core Doctor -->
     <item component="ComponentInfo{dev.corebuilds.doctor/dev.corebuilds.doctor.MainActivity}" drawable="coredoctor"/>
     <item component="ComponentInfo{dev.corebuilds.doctor/.MainActivity}" drawable="coredoctor"/>
+    <!-- Core EQ -->
+    <item component="ComponentInfo{tv.corebuilds.eq/tv.corebuilds.eq.MainActivity}" drawable="coreeq"/>
+    <item component="ComponentInfo{tv.corebuilds.eq/.MainActivity}" drawable="coreeq"/>
     <!-- Core Line -->
     <item component="ComponentInfo{dev.corebuilds.line/dev.corebuilds.line.MainActivity}" drawable="coreline"/>
     <item component="ComponentInfo{dev.corebuilds.line/.MainActivity}" drawable="coreline"/>

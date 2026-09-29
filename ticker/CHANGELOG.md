@@ -28,7 +28,7 @@ The repo-root `CHANGELOG.md` is the icon pack's. Core Line keeps its own here.
   `tests/vpn-ui.test.mjs` for the markup/model/bridge seams. Research:
   `docs/research/core-line-vpn-dot-android-tv-2026-09-29.md`.
 
-## [1.4.0] — 2026-09-28
+## [1.4.0] — 2026-09-29
 
 A structural release. The front end had grown into a single 1,340-line
 `public/js/app.js` and a 1,000-line `public/css/app.css`, and the audit's
@@ -36,6 +36,10 @@ findings — drawer focus trap, focus lost on re-render, a slider no remote coul
 operate — were three symptoms of that one shape. Both files are now split by
 concern, and the design system is ported from the Core Builds Icon Pack so the
 two apps draw from one brand.
+
+**Install:** Downloader code `7375676`, which follows the floating `coreline`
+release, or the `coreline-v1.4.0` release once it is tagged. Installed copies
+offer the update from Settings → Updates.
 
 ### Added
 

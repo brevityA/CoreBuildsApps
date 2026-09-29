@@ -2,11 +2,11 @@
   "$schema": "./catalog.schema.json",
   "meta": {
     "pack": "Core Builds Icon Pack",
-    "version": "1.9.7",
+    "version": "1.9.8",
     "grid": 512,
     "safe_area": 432,
     "note": "Core Builds-authored geometric icons on a shared 512 grid. Reviewed brand glyphs use rounded monoline strokes and one accent, not imported vendor silhouettes. Common Outfit/category/rail banners; artwork is reference-only. Canonical brand colours and the dark-card contrast policy remain shared.",
-    "count": 971
+    "count": 972
   },
   "icons": [
     {
@@ -1801,6 +1801,19 @@
       ],
       "category": "CORE",
       "color_source": "brand reference (pre-provenance, unverified)",
+      "color_reviewed": null
+    },
+    {
+      "name": "Core EQ",
+      "drawable": "coreeq",
+      "color": "#00D4FF",
+      "glyph": "coreeq_faders",
+      "components": [
+        "tv.corebuilds.eq/.MainActivity"
+      ],
+      "mapping_source": "Core EQ's own coreeq/app/src/main/AndroidManifest.xml (PR #195): .MainActivity is the LEANBACK_LAUNCHER activity of tv.corebuilds.eq",
+      "category": "CORE",
+      "color_source": "brand reference: Core Builds suite accent, same as Core Line/Shift/Doctor",
       "color_reviewed": null
     },
     {

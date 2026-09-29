@@ -11,7 +11,7 @@ This repo ships five products from independent Gradle roots. Keep versioned tags
 | Core Shift | `shift-v<version>` | `shift` | `coreshift-release.apk` | `8829421` |
 | Core Motion | `motion-v<version>` | `motion` | `coremotion-release.apk` | `[USER TO SUPPLY]` |
 | Core Doctor | `doctor-v<version>` | `doctor` | `coredoctor-release.apk` | `8664938` |
-| Core EQ | `coreeq-v<version>` | `coreeq` | `coreeq-release.apk` | `[USER TO SUPPLY]` |
+| Core EQ | `coreeq-v<version>` | `coreeq` | `coreeq-release.apk` | `7946159` |
 | Core EQ (test channel) | none — pushes to `main` only | `coreeq-test` | `coreeq-debug.apk` | none |
 | Icon Pack (test channel) | none — `workflow_dispatch` only | `iconpack-test` | `iconpack-test.apk` | `9255317` |
 

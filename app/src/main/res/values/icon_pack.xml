@@ -138,6 +138,7 @@
         <item>comedybox</item>
         <item>corebuilds</item>
         <item>coredoctor</item>
+        <item>coreeq</item>
         <item>coreline</item>
         <item>coreshift</item>
         <item>jamal2367</item>
@@ -1111,6 +1112,7 @@
         <item>Comedy Box</item>
         <item>Core Builds</item>
         <item>Core Doctor</item>
+        <item>Core EQ</item>
         <item>Core Line</item>
         <item>Core Shift</item>
         <item>CoreELEC Helper</item>
@@ -2082,6 +2084,7 @@
         <item>APP</item>
         <item>BROWSER</item>
         <item>APP</item>
+        <item>CORE</item>
         <item>CORE</item>
         <item>CORE</item>
         <item>CORE</item>
@@ -3285,6 +3288,7 @@
         <item>1</item>
         <item>1</item>
         <item>1</item>
+        <item>1</item>
         <item>0</item>
         <item>1</item>
         <item>1</item>
@@ -3893,5 +3897,5 @@
         <item>1</item>
         <item>1</item>
     </integer-array>
-    <integer name="icon_count">971</integer>
+    <integer name="icon_count">972</integer>
 </resources>

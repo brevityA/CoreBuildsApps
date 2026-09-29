@@ -4,6 +4,7 @@
     <category title="Square · Core Builds" />
     <item drawable="corebuilds" />
     <item drawable="coredoctor" />
+    <item drawable="coreeq" />
     <item drawable="coreline" />
     <item drawable="coreshift" />
     <category title="Square · Streaming" />

@@ -6,12 +6,12 @@
 
 | Product | Path | Package ID | Version | Downloader / stable tag |
 |---|---|---|---:|---|
-| Core Builds Icon Pack | `app/` with repo-root Gradle | `tv.corebuilds.iconpack` | `1.9.7` | `5270601` / `iconpack` |
+| Core Builds Icon Pack | `app/` with repo-root Gradle | `tv.corebuilds.iconpack` | `1.9.8` | `5270601` / `iconpack` |
 | Core Line | `ticker/` + `ticker/android/` | `dev.corebuilds.line` | `1.4.0` | `7375676` / `coreline` |
 | Core Shift | `shift/` | `dev.corebuilds.shift` | `2.3.5` | `8829421` / `shift` |
 | Core Motion | `motion-plugin/` | `tv.corebuilds.motion` | `1.0.0` | `[USER TO SUPPLY]` / `motion` |
 | Core Doctor | `doctor/` | `dev.corebuilds.doctor` | `0.1.0` | `8664938` / `doctor` |
-| Core EQ | `coreeq/` | `tv.corebuilds.eq` | `1.0.0` | `[USER TO SUPPLY]` / `coreeq` |
+| Core EQ | `coreeq/` | `tv.corebuilds.eq` | `1.0.0` | `7946159` / `coreeq` |
 
 (Retired 2026-09-24: Core Builds Pixel Neon and Core Builds Pop. The suite
 keeps one icon pack. Their shipped tags stay as history; do not resurrect
