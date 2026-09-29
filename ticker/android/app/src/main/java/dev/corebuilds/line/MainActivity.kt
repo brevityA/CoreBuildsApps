@@ -181,8 +181,8 @@ class MainActivity : Activity() {
     /** True when the OS has granted "display over other apps". */
     fun canDrawOverlays(): Boolean = android.provider.Settings.canDrawOverlays(this)
 
-    /** Is the floating ticker window currently up? */
-    fun overlayActive(): Boolean = OverlayService.running
+    /** Is the floating ticker strip currently up? */
+    fun overlayActive(): Boolean = OverlayService.tickerRunning
 
     /**
      * Overlay platform status for the JS bridge. Returns one of:
@@ -235,7 +235,7 @@ class MainActivity : Activity() {
             "(function(){try{var s=JSON.parse(localStorage.getItem('coreline.v1')||'{}');return s.position==='top'?'top':'bottom';}catch(e){return 'bottom';}})()",
         ) { raw ->
             val edge = raw?.trim()?.trim('"')
-            OverlayService.start(this, if (edge == "top") "top" else "bottom")
+            OverlayService.startTicker(this, if (edge == "top") "top" else "bottom")
         }
         return true
     }
@@ -244,9 +244,63 @@ class MainActivity : Activity() {
         OverlayService.setEdge(edge)
     }
 
-    /** Stop the floating ticker. */
+    /** Stop the floating ticker. The VPN dot, if it is on, keeps running. */
     fun stopOverlay(): Boolean {
-        OverlayService.stop(this)
+        OverlayService.stopTicker(this)
+        return true
+    }
+
+    // ---- VPN status dot ---------------------------------------------------
+
+    /**
+     * Live VPN state as JSON: `{tunnelUp, covering, validated, transport, state}`.
+     * The dot draws `state`; the settings pane shows the rest.
+     */
+    fun vpnStatus(): String = VpnState.read(this).toJson()
+
+    /** Is the VPN dot on screen? */
+    fun vpnDotActive(): Boolean = OverlayService.dotRunning
+
+    /**
+     * Same platform gate as the ticker: Fire TV blocks overlay windows at the
+     * OS level, so the dot cannot be offered there either.
+     */
+    fun vpnDotPlatform(): String = overlayPlatform()
+
+    /**
+     * Turn the VPN dot on. Returns false — and sends the viewer to the system
+     * "Display over other apps" screen — when the overlay permission is
+     * missing, exactly as the ticker does. The config payload comes from the
+     * settings drawer so the native side never has to read the WebView's
+     * localStorage for it.
+     */
+    fun startVpnDot(config: String): Boolean {
+        if (isFireTv()) return false
+        if (!android.provider.Settings.canDrawOverlays(this)) {
+            openOverlaySettings()
+            return false
+        }
+        if (android.os.Build.VERSION.SDK_INT >= 33 &&
+            checkSelfPermission(android.Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED
+        ) {
+            requestPermissions(arrayOf(android.Manifest.permission.POST_NOTIFICATIONS), 7)
+        }
+        val parsed = DotConfig.fromJson(config) ?: DotConfig.DEFAULT
+        OverlayPrefs(this).writeDotConfig(parsed)
+        OverlayService.startDot(this, parsed)
+        return true
+    }
+
+    /** Re-shape a running dot without dropping the window (corner, opacity, blink). */
+    fun setVpnDotConfig(config: String): Boolean {
+        val parsed = DotConfig.fromJson(config) ?: return false
+        OverlayPrefs(this).writeDotConfig(parsed)
+        OverlayService.applyDotConfig(parsed)
+        return true
+    }
+
+    fun stopVpnDot(): Boolean {
+        OverlayService.stopDot(this)
         return true
     }
 

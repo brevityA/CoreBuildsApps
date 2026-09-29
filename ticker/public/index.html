@@ -266,6 +266,37 @@
                 <h3 class="block__title">Floating ticker</h3>
                 <label class="check"><input class="focusable" type="checkbox" id="overlayEnabled"><span>Floating ticker over other apps</span></label>
                 <p class="hint hint--small" id="overlayHint">Draws the crawl on top of every app, edge to edge. Stop it from the notification or untick this box.</p>
+
+                <div class="block" style="margin-top: var(--cb-space-md)">
+                  <h3 class="block__title">VPN status dot</h3>
+                  <p class="hint">Android TV has no status bar, so once you are watching something there is no way to tell whether your VPN is still up. This draws one small dot in a corner of every app until you switch it off.</p>
+                  <label class="check"><input class="focusable" type="checkbox" id="vpnDotEnabled"><span>Show a VPN dot over other apps</span></label>
+                  <label class="field-label">Corner
+                    <select class="field focusable" id="vpnDotCorner">
+                      <option value="bottom_right">Bottom right</option>
+                      <option value="bottom_left">Bottom left</option>
+                      <option value="top_right">Top right</option>
+                      <option value="top_left">Top left</option>
+                    </select>
+                  </label>
+                  <label class="field-label">Brightness
+                    <span class="stepper">
+                      <button class="btn--mini focusable" data-action="vpn-dot-dim" aria-label="Dimmer">&minus;</button>
+                      <input class="field focusable" id="vpnDotOpacity" type="range" min="15" max="100" step="5" value="55" aria-label="Dot brightness">
+                      <button class="btn--mini focusable" data-action="vpn-dot-bright" aria-label="Brighter">+</button>
+                    </span>
+                    <span class="speed-val" id="vpnDotOpacityVal">55%</span>
+                  </label>
+                  <div class="split--checks">
+                    <label class="check"><input class="focusable" type="checkbox" id="vpnDotHideWhenOk"><span>Hide it while the VPN is up</span></label>
+                    <label class="check"><input class="focusable" type="checkbox" id="vpnDotBlink" checked><span>Pulse it when the VPN drops</span></label>
+                  </div>
+                  <p class="vpn-status" id="vpnStatusLine" role="status">
+                    <span class="vpn-dot is-down" id="vpnStatusDot" aria-hidden="true"></span>
+                    <span id="vpnStatusText">Checking the VPN…</span>
+                  </p>
+                  <p class="hint hint--small" id="vpnDotHint">Green means a tunnel is up and Core Line is inside it. Amber means a tunnel is up but this app is outside it (per-app VPN). Red means there is no tunnel.</p>
+                </div>
               </div>
             </div>
 

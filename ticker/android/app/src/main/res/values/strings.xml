@@ -1,4 +1,16 @@
 <resources>
     <string name="app_name">Core Line</string>
     <string name="app_banner">Core Line sports ticker</string>
+
+    <!-- Foreground-service notification for the always-on-top surfaces. The id
+         (coreline.overlay) is unchanged; only the wording grew to cover the
+         VPN dot, which shares the service. -->
+    <string name="overlay_channel">Overlays over other apps</string>
+    <string name="overlay_title_ticker">Core Line ticker</string>
+    <string name="overlay_title_dot">Core Line VPN dot</string>
+    <string name="overlay_title_both">Core Line overlays</string>
+    <string name="overlay_text_ticker">Ticker over your apps — tap to stop</string>
+    <string name="overlay_text_dot">VPN status dot over your apps — tap to stop</string>
+    <string name="overlay_text_both">Ticker and VPN dot over your apps — tap to stop</string>
+    <string name="overlay_stop">Stop</string>
 </resources>

@@ -236,6 +236,15 @@ Platform reality (researched live, cited):
   supported idle path is a Daydream **screen saver**, which on many Google TV /
   Fire OS devices can only be set via a one-time ADB
   `settings put secure screensaver_components …` (AerialViews README).
+  **Corrected 2026-09-29:** the "no SYSTEM_ALERT_WINDOW" half of that was true
+  of the stock Android TV 9/10 era, not of Google TV as it ships now — Google
+  TV and Shield both expose Settings → … → Special app access → **Display over
+  other apps**, and stock builds without the screen can be granted over ADB
+  (`appops set <pkg> SYSTEM_ALERT_WINDOW allow`). The claim is left here as the
+  2026-09-04 record; see
+  `docs/research/core-line-vpn-dot-android-tv-2026-09-29.md` §2 for the
+  evidence and for the SURFACES that now use it. Fire TV remains genuinely
+  blocked and is still refused.
 - **Phone home widget** — possible but RemoteViews only (no animated crawl).
 - **Phone floating overlay** — feasible: translucent always-on-top window
   hosting the existing WebView renderer. **Built this.**

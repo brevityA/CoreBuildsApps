@@ -8,6 +8,26 @@ The repo-root `CHANGELOG.md` is the icon pack's. Core Line keeps its own here.
 
 ## [Unreleased]
 
+### Added
+
+- **A VPN status dot over every other app.** Android TV has no status bar, so
+  once a stream is playing there is no way to tell whether the VPN is still up
+  — you have to leave the game and open its app to find out. Settings → Ticker
+  & display now offers a small dot in the corner of the screen: green when a
+  tunnel is up and Core Line's traffic is inside it, amber when a tunnel is up
+  but this app is outside it (per-app VPN), red when there is no tunnel. Corner,
+  brightness, hide-while-healthy and pulse-on-fault are the viewer's choice, it
+  respects the panel's calibrated overscan, and it survives a reboot. It runs
+  on the same foreground service as the ticker but independently of it — either
+  surface can be on alone. Detection is `NetworkCapabilities.TRANSPORT_VPN` on
+  the active network; the dot names the *state*, never the provider, because
+  `getOwnerUid()` is only readable by the VPN's own app, and it does not treat
+  `NET_CAPABILITY_VALIDATED` as a colour, because local VPNs report validation
+  with no upstream connection at all. `lib/vpn.mjs`, `tests/vpn.test.mjs`,
+  `VpnState.kt`/`VpnDotView.kt`/`VpnDotWindow.kt`/`BootReceiver.kt`, and
+  `tests/vpn-ui.test.mjs` for the markup/model/bridge seams. Research:
+  `docs/research/core-line-vpn-dot-android-tv-2026-09-29.md`.
+
 ## [1.4.0] — 2026-09-28
 
 A structural release. The front end had grown into a single 1,340-line

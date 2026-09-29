@@ -1,4 +1,5 @@
 import { DEFAULT_LEAGUES, LEAGUES } from '/lib/scoreboard.mjs';
+import { VPN_CORNERS, VPN_OPACITY } from '/lib/vpn.mjs';
 
 const KEY = 'coreline.v1';
 
@@ -25,6 +26,14 @@ export const DEFAULTS = {
   playlist: { url: '', importedAt: 0, count: 0 },
   preferredChannels: {},
   overlay: false,
+  // The VPN status dot: an always-on-top indicator of whether this device's
+  // traffic is inside a tunnel. Shape only — the state itself is read live
+  // from the Android shell, never persisted.
+  vpnDot: false,
+  vpnDotCorner: 'bottom_right',
+  vpnDotOpacity: VPN_OPACITY.default,
+  vpnDotHideWhenOk: false,
+  vpnDotBlink: true,
   // How much of the frame the panel crops (classic TV overscan). Stored in px
   // and applied as the app shell's side padding; calibrated once per set.
   // null means the viewer has never calibrated, and the stylesheet's own
@@ -67,6 +76,14 @@ export function sanitizeState(raw) {
   } else {
     out.overlay = false;
   }
+
+  // vpnDot mirrors the overlay flag's tolerance: booleans, or the string
+  // "true" that an older persisted blob may carry.
+  out.vpnDot = out.vpnDot === true || out.vpnDot === 'true';
+  out.vpnDotCorner = VPN_CORNERS.includes(out.vpnDotCorner) ? out.vpnDotCorner : DEFAULTS.vpnDotCorner;
+  out.vpnDotOpacity = clampInt(out.vpnDotOpacity, VPN_OPACITY.min, VPN_OPACITY.max, VPN_OPACITY.default);
+  out.vpnDotHideWhenOk = Boolean(out.vpnDotHideWhenOk);
+  out.vpnDotBlink = out.vpnDotBlink !== false;
 
   out.speed = clampInt(out.speed, SPEED_MIN, SPEED_MAX, DEFAULTS.speed);
   out.overscan = out.overscan == null
