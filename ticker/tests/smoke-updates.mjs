@@ -139,20 +139,24 @@ async function open(path, viewport) {
 {
   const { page, errors } = await open('/', { width: 1440, height: 900 });
   await page.waitForSelector('.card', { timeout: 15000 });
-  // Stub the GitHub releases API so the test is deterministic offline.
-  await page.route('https://api.github.com/**', (route) => {
+  // Stub the *manifest the app actually reads* so the test is deterministic
+  // offline. This used to stub `api.github.com`, which the updater stopped
+  // calling at some point — so the stub was bypassed, the live manifest was
+  // fetched, and the block asserted "an update is available" against an app
+  // that was correctly reporting it was up to date. The source is
+  // `raw.githubusercontent.com/.../Latestrelease/coreline-version.json`.
+  await page.route('**/Latestrelease/coreline-version.json', (route) => {
     route.fulfill({
       status: 200,
       contentType: 'application/json',
-      body: JSON.stringify([
-        {
-          tag_name: 'coreline-v99.0.0',
-          body: 'Test release notes',
-          assets: [
-            { name: 'coreline-release.apk', browser_download_url: 'https://github.com/brevityA/CoreBuildsApps/releases/download/coreline-v99.0.0/coreline-release.apk' },
-          ],
-        },
-      ]),
+      body: JSON.stringify({
+        versionCode: 99,
+        versionName: '99.0.0',
+        releaseDate: '2099-01-01',
+        apkUrl: 'https://github.com/brevityA/CoreBuildsApps/releases/download/coreline/coreline-release.apk',
+        releaseNotesUrl: 'https://github.com/brevityA/CoreBuildsApps/releases/tag/coreline-v99.0.0',
+        minSdk: 24,
+      }),
     });
   });
   // Open settings drawer via its rail trigger.
@@ -187,13 +191,17 @@ async function open(path, viewport) {
       const cs = getComputedStyle(el);
       return cs.display === 'none' ? 'hidden' : 'visible';
     };
+    // `.rail`, `.stage` and `.drawer` are what `[data-overlay]` hides
+    // (chyron.css). This block used to assert `.topbar`, a class that has not
+    // been in the markup for a long time — so the check reported `missing`
+    // rather than `hidden`, and had been failing on a class name.
     return {
-      topbar: vis('.topbar'), stage: vis('.stage'), drawer: vis('.drawer'),
+      rail: vis('.rail'), stage: vis('.stage'), drawer: vis('.drawer'),
       chyron: vis('.chyron'),
       bodyBg: getComputedStyle(document.body).backgroundColor,
     };
   });
-  ok(chrome.topbar === 'hidden', `overlay: topbar hidden (${chrome.topbar})`);
+  ok(chrome.rail === 'hidden', `overlay: rail hidden (${chrome.rail})`);
   ok(chrome.stage === 'hidden', `overlay: stage hidden (${chrome.stage})`);
   ok(chrome.drawer === 'hidden', `overlay: drawer hidden (${chrome.drawer})`);
   ok(chrome.chyron === 'visible', 'overlay: chyron visible');
