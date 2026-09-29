@@ -169,6 +169,13 @@ class ProfileStore(context: Context) {
 
         val capMap = mutableMapOf<String, String>()
         obj.optJSONObject("capability")?.let { c -> for (k in c.keys()) capMap[k] = c.optString(k, "") }
+        val measurementNotes = mutableListOf<String>()
+        obj.optJSONArray("measurement_notes")?.let { a ->
+            for (i in 0 until a.length()) {
+                val note = a.optString(i, "")
+                if (note.isNotBlank()) measurementNotes.add(note)
+            }
+        }
 
         return Profile(
             id = obj.getString("id"),
@@ -190,7 +197,8 @@ class ProfileStore(context: Context) {
             filters = filtersList,
             platformBands = bandsList,
             curve = curveList,
-            capabilityVerdict = capMap
+            capabilityVerdict = capMap,
+            measurementNotes = measurementNotes
         )
     }
 

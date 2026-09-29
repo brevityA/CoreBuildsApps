@@ -1,6 +1,6 @@
 # Core EQ v1.1 — reach every player
 
-*Status: in progress — M5–M7 and M8's UI half landed; the rest is named below.*
+*Status: in progress — M5–M7, M8's UI half and M10 implemented; M6a, M8 pairing and M9 remain.*
 Builds on `docs/CORE_EQ_PLAN.md` §4 (the ladder), §8 (milestones) and §9.2
 (*decided: v1.1*): rung 2 of the capability ladder lands in v1.1 as an
 optional, clearly-labelled mode. This plan adds one scope decision made with
@@ -40,6 +40,14 @@ only; v1.1 completes the engine choice.
 - UI: Capability screen row for the discovery mode with the exact grant
   action for this device; status-line and correction-indicator wording that
   names the rung in use (polish allowed per maintainer).
+- REW measurement import (M10, *decided 2026-09-30 from community input*): a
+  REW text export of a real measurement enters the same magnitude correction
+  chain as a sweep. The phase column is not analysed in this milestone, so
+  RT60/Schroeder stay null and the min-phase gate is explicitly unverified.
+  The imported profile is saved for export, not auto-applied; selecting it in
+  Profiles is the explicit apply action. The Measure screen names the
+  downstream-correction rule: if the AVR/soundbar already calibrates, measure
+  and export rather than stacking a second correction.
 - Release: version 1.1.0, `coreeq/CHANGELOG.md`, `coreeq-v1.1.0` tag wiring.
 
 **Explicitly out (v1.2 and later, per `CORE_EQ_PLAN.md` §9)**
@@ -123,10 +131,13 @@ behind a spike milestone; path 1 alone is enough to ship the rung.
 | **M6a** | DP spike on one device: config actually engages, limiter clamps, band centres read back | **needs hardware — named** |
 | **M7** | `EqService` rung selection: discovery attach rules, single-path invariant, status/indicator wording | logic yes, behaviour on device |
 | **M8** | Capability UI + on-device pairing helper (spike-gated) | pairing needs hardware |
+| **M10** | Magnitude-only REW text/FRD/CSV import (`RewImport`, `RewImportTest`, Measure screen), profile limit note, save-for-export (not auto-apply), downstream-correction honesty line | yes |
 | **M9** | Gates, changelog, version 1.1.0, release tag | CI |
 
 M5 and M6 are written test-first, the suite's DSP rule: the parser and the
-band maths exist and are pinned before the service is built on them.
+band maths exist and are pinned before the service is built on them. M10
+follows the same rule — `RewImportTest` pins the parser, the analysis, and
+the community roll-off fixture before the screen is wired.
 
 ## 8. Gates
 
@@ -139,6 +150,13 @@ CI coverage, changelog contract, `:app:testDebugUnitTest`) plus:
   input named not guessed.
 - `DpMappingTest` — band interpolation, headroom, clamp parity with
   `ApplyPathTest`.
+- `RewImportTest` — REW/FRD/CSV and decimal-comma parsing; named refusals
+  (not enough points, unsorted, unsupported coverage); finite/range checks;
+  flat import needs almost no correction; a modal peak is cut and a null is
+  never boosted; phase-gate provenance remains unverified; the community
+  fixture confirms a ~45 Hz room mode does not raise the roll-off floor.
+- `DspParityTest` — the persisted measurement-limit note survives parametric
+  export, including the empty-filter case.
 - A changelog `### Added` / `### Changed` entry that names the optional mode
   as optional.
 
@@ -193,6 +211,15 @@ CI coverage, changelog contract, `:app:testDebugUnitTest`) plus:
    complete v1.1 rung 2 if the spike fails.*
 4. **Throttle for `dumpsys`** — *decided in implementation: debounce ~2 s on
    playback changes; never during measurement.*
+5. **REW measurement import** — *decided 2026-09-30 (community input): in
+   v1.1 as M10. Magnitude-only text/FRD/CSV; optional phase is not analysed;
+   the existing Target button sets the curve; the room-size choice is retained
+   as context, but without decay data it cannot alter the 300 Hz transition
+   fallback. Provenance is `micType "REW import"` / `stimulus "rew_import"`;
+   RT60, Schroeder and SNR stay null, and the min-phase gate is unverified in
+   a persisted profile note. Save for export, not active by default; Profiles
+   is the explicit apply action. The downstream-correction honesty line ships
+   with it.*
 
 ## Receipt
 
@@ -203,6 +230,7 @@ python tests/test_core_eq_parity.py           → OK
 python tools/build_core_eq_mockups.py --check → mockups ok - 4 frames match the sources
 suite gates (truth, changelog contract, CI coverage, envelope) → pass
 :app:testDebugUnitTest                        → runs in CI (core-eq-apk.yml) — no SDK in the agent sandbox
+RewImportTest                                  → runs in CI (core-eq-apk.yml) — no local JDK/SDK
 ```
 
 Landed: **M5** (grant check, `DumpsysSessions` + shapes + `DumpsysSessionsTest`),
@@ -210,7 +238,10 @@ Landed: **M5** (grant check, `DumpsysSessions` + shapes + `DumpsysSessionsTest`)
 **M7** (rung selection: discovery attach/release rules, announced-wins
 upgrade, provenance in the status line, one-path invariant kept),
 **M8 UI half** (Capability grant row with the exact command; the rail gained
-a scroll boundary so the added row cannot clip a 540dp panel).
+a scroll boundary so the added row cannot clip a 540dp panel), and **M10**
+(`RewImport`/`RewImportTest`, bounded async file import, locale-safe parsing,
+shared correction chain, persisted measurement limits, save-for-export,
+downstream-correction honesty line, and roll-off regression fixture).
 
 Named, still open: **M6a** (the `DynamicsProcessing` spike on real hardware —
 the platform `Config.Builder`/`Limiter` construction is the part only a

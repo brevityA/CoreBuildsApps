@@ -37,7 +37,9 @@ data class Profile(
     val filters: List<PeakingFilter> = emptyList(),
     val platformBands: List<PlatformBand> = emptyList(),
     val curve: List<CurvePoint> = emptyList(),
-    val capabilityVerdict: Map<String, String> = emptyMap()
+    val capabilityVerdict: Map<String, String> = emptyMap(),
+    /** Measurement limits that must travel with the curve (e.g. phase not analysed on a REW magnitude import). */
+    val measurementNotes: List<String> = emptyList()
 ) {
     /** Correction in dB at [hz], interpolated on the measured curve; 0 outside it. */
     fun correctionAt(hz: Double): Double {

@@ -95,4 +95,22 @@ class DspParityTest {
         assertTrue(txt.contains("Bands Overlap to Cascade"))
         assertTrue(txt.contains("Filter 1: ON PK Fc 100 Hz Gain +2.00 dB Q 1.00"))
     }
+
+    @Test
+    fun importedMeasurementLimitsTravelWithParametricExports() {
+        val note = "REW magnitude-only import: minimum-phase gate unverified."
+        val profile = Profile(
+            id = "rew-test",
+            name = "REW Test",
+            timestampMs = 1000L,
+            target = "flat",
+            micType = "REW import",
+            filters = listOf(PeakingFilter(100.0, 1.0, -2.0)),
+            measurementNotes = listOf(note)
+        )
+        assertTrue(Formats.exportParametricTxt(profile).contains("# Core EQ measurement note: $note"))
+
+        val noFilters = profile.copy(filters = emptyList())
+        assertTrue(Formats.exportParametricTxt(noFilters).contains("# Core EQ measurement note: $note"))
+    }
 }

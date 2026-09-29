@@ -195,7 +195,8 @@ class MainActivity : TvActivity() {
         textProfileName.text = profile.name
         val targetName = profile.target.replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.US) else it.toString() }
         val rt = profile.rt60Seconds?.let { String.format(Locale.US, "RT60 %.2f s", it) } ?: "RT60 unknown"
-        textProfileSub.text = "$targetName · ${profile.filters.size} filters · $rt · ${profile.micType}"
+        val measurementLimit = if (profile.measurementNotes.isNotEmpty()) " · magnitude-only; phase unverified" else ""
+        textProfileSub.text = "$targetName · ${profile.filters.size} filters · $rt · ${profile.micType}$measurementLimit"
 
         if (profile.curve.isNotEmpty()) {
             val freqs = DoubleArray(profile.curve.size) { profile.curve[it].hz }
