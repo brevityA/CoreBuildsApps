@@ -37,6 +37,7 @@ class MainActivity : TvActivity() {
     private lateinit var badgeDot: View
     private lateinit var badgeLabel: TextView
     private var pulse: ObjectAnimator? = null
+    private var lastIndicatorState: CorrectionIndicator? = null
 
     private val statusReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) = refreshStatus()
@@ -124,7 +125,7 @@ class MainActivity : TvActivity() {
     }
 
     /**
-     * The "is this working?" badge beside the Correction switch. [LIVE][CorrectionIndicator.LIVE]
+     * The "is this working?" badge under the Correction switch. [LIVE][CorrectionIndicator.LIVE]
      * pulses — the one state where audio is flowing through the correction
      * right now. A stale playing flag cannot light it: the badge trusts it
      * only while [EqService] is actually running.
@@ -135,26 +136,31 @@ class MainActivity : TvActivity() {
             playing = EqService.running && status?.playing == true,
             fault = status?.isError == true
         )
-        if (state == CorrectionIndicator.OFF) {
-            stopPulse()
-            badgeIndicator.visibility = View.GONE
-            return
+        if (state != lastIndicatorState) {
+            lastIndicatorState = state
+            if (state == CorrectionIndicator.OFF) {
+                badgeIndicator.visibility = View.GONE
+            } else {
+                badgeIndicator.visibility = View.VISIBLE
+                val (bgRes, tintRes, labelRes) = when (state) {
+                    CorrectionIndicator.FAULT ->
+                        Triple(R.drawable.bg_fault_badge, R.color.cb_ember, R.string.indicator_not_applied)
+                    CorrectionIndicator.STANDBY ->
+                        Triple(R.drawable.bg_idle_badge, R.color.cb_slate, R.string.indicator_standby)
+                    CorrectionIndicator.LIVE ->
+                        Triple(R.drawable.bg_live_badge, R.color.cb_success, R.string.indicator_live)
+                    CorrectionIndicator.OFF -> return // handled above
+                }
+                badgeIndicator.setBackgroundResource(bgRes)
+                val tint = ContextCompat.getColor(this, tintRes)
+                badgeDot.setBackgroundColor(tint)
+                badgeLabel.setTextColor(tint)
+                badgeLabel.setText(labelRes)
+            }
         }
-        badgeIndicator.visibility = View.VISIBLE
-        val (bgRes, tintRes, labelRes) = when (state) {
-            CorrectionIndicator.FAULT ->
-                Triple(R.drawable.bg_fault_badge, R.color.cb_ember, R.string.indicator_not_applied)
-            CorrectionIndicator.STANDBY ->
-                Triple(R.drawable.bg_idle_badge, R.color.cb_slate, R.string.indicator_standby)
-            CorrectionIndicator.LIVE ->
-                Triple(R.drawable.bg_live_badge, R.color.cb_success, R.string.indicator_live)
-            CorrectionIndicator.OFF -> return // handled above
-        }
-        badgeIndicator.setBackgroundResource(bgRes)
-        val tint = ContextCompat.getColor(this, tintRes)
-        badgeDot.setBackgroundColor(tint)
-        badgeLabel.setTextColor(tint)
-        badgeLabel.setText(labelRes)
+        // The pulse is animation state, not style state: restore it on every
+        // render, because returning to the screen stops it while the state
+        // itself did not change.
         if (state == CorrectionIndicator.LIVE) startPulse() else stopPulse()
     }
 

@@ -6,9 +6,11 @@ package tv.corebuilds.eq.ui
  *
  * - [OFF] – correction is switched off. Nothing is shown.
  * - [FAULT] – the switch is on but nothing reached the audio (another equaliser
- *   app holds priority, Android refused, no measurement yet). The status line
- *   below the badge says why.
- * - [STANDBY] – correction is applied and armed, but the TV is silent.
+ *   app holds priority, Android refused, the profile vanished). The status
+ *   line below the badge says why.
+ * - [STANDBY] – the switch is on but nothing is audible through the
+ *   correction right now: armed and the TV is silent, or waiting for a player
+ *   to attach to.
  * - [LIVE] – audio is playing and the correction is attached to it. The badge
  *   pulses in this state only.
  *

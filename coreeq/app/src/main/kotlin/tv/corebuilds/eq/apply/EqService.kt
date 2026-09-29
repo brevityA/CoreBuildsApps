@@ -74,7 +74,9 @@ class EqService : Service() {
 
     private val playbackCallback = object : AudioManager.AudioPlaybackCallback() {
         override fun onPlaybackConfigChanged(configs: MutableList<AudioPlaybackConfiguration>?) {
-            publish()
+            // The delivered list is the change that fired this: use it instead
+            // of re-querying, which costs a binder call and can race the event.
+            publish(configs)
         }
     }
 
@@ -278,9 +280,9 @@ class EqService : Service() {
      * is audible right now. Unchanged reports publish nothing, so a playback
      * callback on every focus change cannot spam the notification.
      */
-    private fun publish() {
+    private fun publish(configs: List<AudioPlaybackConfiguration>? = null) {
         if (!running || messageBody.isEmpty()) return
-        val playingNow = !suspended && !messageError && correcting() && audioIsPlaying()
+        val playingNow = !suspended && !messageError && correcting() && audioIsPlaying(configs)
         val shown = if (playingNow) "▶ Playing · $messageBody" else messageBody
         if (shown == lastShown && playingNow == lastPlaying) return
         lastShown = shown
@@ -310,20 +312,21 @@ class EqService : Service() {
      *
      * [AudioManager.getActivePlaybackConfigurations] lists only streams that
      * are actually playing (the platform sanitizes the list down to active
-     * ones), and [playbackCallback] re-runs this on every change. Only media
-     * traffic counts: notification beeps and the like must not light the
-     * badge. It cannot say *which* app is playing — player identity is hidden
-     * from third-party apps — and our own measurement sweep is silenced by
-     * [suspended], never by guessing at the caller.
+     * ones) — or [configs], the list [playbackCallback] just delivered — and
+     * the callback re-runs this on every change. Only media traffic counts:
+     * notification beeps and the like must not light the badge. It cannot say
+     * *which* app is playing — player identity is hidden from third-party
+     * apps — and our own measurement sweep is silenced by [suspended], never
+     * by guessing at the caller.
      */
-    private fun audioIsPlaying(): Boolean {
-        val configs = try {
-            audioManager.activePlaybackConfigurations
+    private fun audioIsPlaying(configs: List<AudioPlaybackConfiguration>? = null): Boolean {
+        val active = try {
+            configs ?: audioManager.activePlaybackConfigurations
         } catch (e: Exception) {
             Log.w(TAG, "Playback probe failed", e)
             return false
         }
-        return configs.any { config ->
+        return active.any { config ->
             when (config.audioAttributes?.usage) {
                 null, AudioAttributes.USAGE_MEDIA, AudioAttributes.USAGE_GAME, AudioAttributes.USAGE_UNKNOWN -> true
                 else -> false
@@ -336,6 +339,10 @@ class EqService : Service() {
             super.onDestroy()
             return
         }
+        // Down first: teardown below closes sessions, and publish() must not
+        // write a transient "Correcting …" status (or light the indicator)
+        // mid-teardown only to have it overwritten a moment later.
+        running = false
         try {
             unregisterReceiver(sessionReceiver)
         } catch (e: IllegalArgumentException) {
@@ -349,8 +356,17 @@ class EqService : Service() {
         releaseSessions()
         globalEq?.release()
         globalEq = null
-        running = false
-        store.setStatus("Correction is off.", isError = false)
+        // "Off" is the user's switch, not the service's fate: a service the
+        // system stopped is not a correction the user turned off, and the
+        // screen must not say so.
+        store.setStatus(
+            if (store.correctionEnabled) {
+                "Correction stopped in the background. It resumes as soon as you open Core EQ."
+            } else {
+                "Correction is off."
+            },
+            isError = false
+        )
         sendBroadcast(Intent(ACTION_STATUS_CHANGED).setPackage(packageName))
         super.onDestroy()
     }

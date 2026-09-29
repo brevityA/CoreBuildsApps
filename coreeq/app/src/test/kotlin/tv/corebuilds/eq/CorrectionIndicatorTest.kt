@@ -49,15 +49,13 @@ class CorrectionIndicatorTest {
     }
 
     @Test
-    fun liveIsTheOnlyStateThatPulses() {
-        // The pulse means "audio is flowing through the correction right now":
-        // only LIVE may animate. Everything else is a still badge.
-        val animatable = setOf(CorrectionIndicator.LIVE)
+    fun playingWithoutAFaultIsTheOnlyLiveRow() {
+        // The pulse means "audio is flowing through the correction right now"
+        // and lives in MainActivity: this table decides LIVE, the screen
+        // animates only in it. One row may claim it, and it is this one.
         assertEquals(
-            animatable,
-            setOf(
-                correctionIndicator(enabled = true, playing = true, fault = false)
-            )
+            CorrectionIndicator.LIVE,
+            correctionIndicator(enabled = true, playing = true, fault = false)
         )
     }
 }
