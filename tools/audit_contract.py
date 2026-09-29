@@ -104,10 +104,26 @@ def check_metadata() -> None:
         if not meta_path:
             continue
         meta = json.loads(text(meta_path))
-        if meta.get("versionCode") != code:
-            fail(f"{meta_path} versionCode {meta.get('versionCode')} != Gradle {code}")
-        if meta.get("versionName") != name:
-            fail(f"{meta_path} versionName {meta.get('versionName')} != Gradle {name}")
+        if meta_path.startswith("Latestrelease/"):
+            # A published manifest is what installed copies poll. It names the
+            # newest *released* build and nothing newer: suite-release.yml
+            # writes it from the signed APK after the tag. Requiring it to
+            # equal Gradle forced every version-bump PR to stamp it early, and
+            # merging that told every user an update was out while Download
+            # still served the old APK - the icon pack's 1.9.4/1.9.5 bug
+            # (validate.py 5j), repeated by Core Line 1.4.0 in #203. So it may
+            # lag Gradle, never lead it, and a matching code means the
+            # released build, so the name must match too.
+            published = meta.get("versionCode")
+            if not isinstance(published, int) or published > code:
+                fail(f"{meta_path} versionCode {published} is ahead of Gradle {code}")
+            elif published == code and meta.get("versionName") != name:
+                fail(f"{meta_path} versionName {meta.get('versionName')} != Gradle {name} at the same versionCode")
+        else:
+            if meta.get("versionCode") != code:
+                fail(f"{meta_path} versionCode {meta.get('versionCode')} != Gradle {code}")
+            if meta.get("versionName") != name:
+                fail(f"{meta_path} versionName {meta.get('versionName')} != Gradle {name}")
         apk_url = str(meta.get("apkUrl", ""))
         if not apk_url.startswith("https://github.com/brevityA/CoreBuildsApps/releases/download/"):
             fail(f"{meta_path} apkUrl is not the CoreBuildsApps GitHub release channel")

@@ -18,6 +18,26 @@ Core Line is that reader. It does not play video. It does not ship streams. It r
   <img src="public/icons/core-line-og.jpg" width="720" alt="Core Line on a living-room TV"/>
 </p>
 
+## What you get
+
+- **The crawl** — `LIVE · TOR 3-2 MTL · TSN4  SN 3`, scrolling at a constant
+  px/s, always on. It is the product; everything else is a way of choosing what
+  it says.
+- **The board** — every game as a card: league accent, status, score, channels,
+  start time in your own timezone.
+- **Search** — one box filters the board, the hero and the crawl together.
+  "leafs" finds Toronto; "tsn" finds the game on TSN.
+- **My Teams** — star a team and it sorts to the top, gets a rail entry with a
+  live count, and raises a short alert when it scores, takes the lead, starts
+  or goes final.
+- **Watch handoff** — assign an app to each league; pressing Watch opens the
+  game there. Core Line never plays video.
+- **Your channels** — import an IPTV playlist and a game's detail lists the
+  channels *you* receive that carry it, with the reason each one matched.
+- **Built for a real television** — two-pane 10-foot layout, a focus system
+  that survives re-rendering, and overscan calibration so the panel's crop
+  never eats the edge of the board.
+
 ## Why it exists
 
 A supporter put it plainly:
@@ -76,10 +96,13 @@ Built-in scoreboards (when the network can reach them): NFL, NBA, MLB, NHL, NCAA
 |---|---|
 | D-pad / arrows | Move |
 | OK / Enter | Select |
+| `/` | Search the slate |
 | `S` | Settings |
 | `T` | Ticker-only clock |
 | `R` | Refresh |
+| `W` | Watch — open the featured game in its app |
 | `F` | Fullscreen |
+| `Esc` / Back | Close the topmost layer |
 
 Keep-screen-awake uses the Wake Lock API when the browser allows it.
 
@@ -101,11 +124,20 @@ A player. A playlist. A source of streams. Core Line is a TV *guide* chyron. You
 ## Tests
 
 ```bash
-cd ticker && npm test                        # parsers, SSRF, slate, favorites
+cd ticker && npm test                        # parsers, SSRF, slate, search, alerts
 cd ticker/stadium-sync && npm test           # the venue bridge
 ```
 
 Parser coverage includes the original supporter line.
+
+## Structure
+
+The front end is split by concern — `core/`, `data/`, `ui/` under `public/js/`,
+and seven CSS layers under `public/css/` — and the design tokens are ported
+from the Core Builds Icon Pack so both apps draw from one brand. The rules
+(no CSS literal outside `tokens.css`, the 10-foot pass scaling tokens rather
+than components, `data/` never importing `ui/`) are in
+[`STRUCTURE.md`](STRUCTURE.md).
 
 ## Part of Core Builds
 

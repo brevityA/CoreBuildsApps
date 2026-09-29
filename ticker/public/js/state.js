@@ -5,6 +5,7 @@ const KEY = 'coreline.v1';
 export const REFRESH_CHOICES = [15, 30, 60, 120, 300, 600];
 export const SPEED_MIN = 20;
 export const SPEED_MAX = 120;
+export const OVERSCAN_MAX = 80;
 
 export const DEFAULTS = {
   leagues: [...DEFAULT_LEAGUES],
@@ -24,6 +25,16 @@ export const DEFAULTS = {
   playlist: { url: '', importedAt: 0, count: 0 },
   preferredChannels: {},
   overlay: false,
+  // How much of the frame the panel crops (classic TV overscan). Stored in px
+  // and applied as the app shell's side padding; calibrated once per set.
+  // null means the viewer has never calibrated, and the stylesheet's own
+  // platform default is left in place — a phone gutter and a TV's 5% are
+  // different numbers and only the stylesheet knows which one applies.
+  overscan: null,
+  // Announce score changes for starred teams.
+  alerts: true,
+  // First-run onboarding has been dismissed.
+  onboarded: false,
 };
 
 /**
@@ -58,6 +69,11 @@ export function sanitizeState(raw) {
   }
 
   out.speed = clampInt(out.speed, SPEED_MIN, SPEED_MAX, DEFAULTS.speed);
+  out.overscan = out.overscan == null
+    ? null
+    : clampInt(out.overscan, 0, OVERSCAN_MAX, null);
+  out.alerts = out.alerts !== false;
+  out.onboarded = Boolean(out.onboarded);
   out.refreshSec = REFRESH_CHOICES.includes(Number(out.refreshSec)) ? Number(out.refreshSec) : DEFAULTS.refreshSec;
   out.position = out.position === 'top' ? 'top' : 'bottom';
 

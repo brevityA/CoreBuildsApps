@@ -5,6 +5,7 @@ import { parseFeed } from '/lib/parser.mjs';
 import { matchesFavorite } from '/lib/favorites.mjs';
 import { Ticker } from './ticker.js';
 import { startWatchdog } from './watchdog.js';
+import { tickHtml } from './ui/chyron.js';
 
 const params = new URLSearchParams(location.search);
 if (params.get('native') === '1') globalThis.CORELINE_NATIVE = true;
@@ -35,7 +36,7 @@ ticker = new Ticker({
   track: $('crawl'),
   seqA: $('crawlA'),
   seqB: $('crawlB'),
-  mask: $('crawl-mask'),
+  mask: $('crawlMask'),
   speed: state.speed,
 });
 if (typeof matchMedia !== 'undefined' && matchMedia('(prefers-reduced-motion: reduce)').matches) {
@@ -86,23 +87,10 @@ function visible() {
 function paint() {
   const list = visible();
   const live = list.filter((ev) => ev.status === 'live').length;
-  $('bugLive').textContent = live ? `${live} LIVE` : 'LINE';
+  $('bugLive').textContent = live ? `${live} LIVE` : 'CORE';
   $('chyron').classList.toggle('is-live', live > 0);
-  const html = (list.length ? list : [{ headline: 'Waiting for a slate', channels: [], status: 'upcoming' }])
-    .map(itemHtml)
-    .join('');
-  ticker.setItems(html);
-}
-
-function itemHtml(ev) {
-  const kind = ev.status === 'live' ? 'LIVE' : ev.status === 'final' ? 'FINAL' : 'UP';
-  const klass = ev.status === 'live' ? 'k' : ev.status === 'final' ? 'k final' : 'k up';
-  const channels = (ev.channels || []).join('  ');
-  const body = ev.away && ev.home
-    ? `${esc(ev.away.abbr || ev.away.name)}${ev.status !== 'upcoming' && ev.away.score != null ? ` ${esc(ev.away.score)}-${esc(ev.home.score)} ` : ' vs '}${esc(ev.home.abbr || ev.home.name)}`
-    : esc(ev.headline || ev.rawTitle || 'Listing');
-  const detail = ev.detail ? ` ${esc(ev.detail)}` : '';
-  return `<span class="tick"><span class="${klass}">${kind}</span> ${body}${detail}${channels ? ` <span class="chs">${esc(channels)}</span>` : ''}</span>`;
+  const items = list.length ? list : [{ headline: 'Waiting for a slate', channels: [], status: 'upcoming' }];
+  ticker.setItems(items.map(tickHtml).join(''));
 }
 
 async function refresh() {
@@ -164,10 +152,3 @@ async function localFallback() {
   }
 }
 
-function esc(value) {
-  return String(value ?? '')
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;');
-}

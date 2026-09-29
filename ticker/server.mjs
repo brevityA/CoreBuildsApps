@@ -1,4 +1,5 @@
 import http from 'node:http';
+import { readFileSync } from 'node:fs';
 import { readFile, stat } from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -13,6 +14,8 @@ import { parseM3U } from './lib/playlist.mjs';
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const PUBLIC_DIR = path.join(__dirname, 'public');
 const LIB_DIR = path.join(__dirname, 'lib');
+// /api/health reports the shipping version; package.json is the one place it is set.
+const VERSION = JSON.parse(readFileSync(path.join(__dirname, 'package.json'), 'utf8')).version;
 const PORT = Number(process.env.PORT || 8787);
 const HOST = process.env.HOST || '0.0.0.0';
 
@@ -48,7 +51,7 @@ const server = http.createServer(async (req, res) => {
       return;
     }
     if (url.pathname === '/api/health') {
-      json(res, { ok: true, name: 'core-line', version: '1.0.0' });
+      json(res, { ok: true, name: 'core-line', version: VERSION });
       return;
     }
     if (url.pathname === '/api/leagues') {

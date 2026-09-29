@@ -1,0 +1,188 @@
+/* ============================================================================
+   Core Line — base layer
+
+   Port of the icon pack's themes.xml (app/src/main/res/values/themes.xml):
+   night chrome, brand-cyan press feedback, and one focus treatment that every
+   control in the app inherits. Nothing here is app-specific — if a rule names
+   a product concept (game, chyron, drawer) it belongs in components.css or
+   screens.css instead.
+   ========================================================================== */
+
+/* Bundled fonts (AUDIT F4): Barlow Condensed 600/700/800 + Outfit variable.
+   OFL-licensed, served from the app itself, so there is no CDN, no FOUT, and
+   the ribbon renders identically offline. */
+@font-face {
+  font-family: "Barlow Condensed";
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url("../fonts/barlow-condensed-600.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Barlow Condensed";
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url("../fonts/barlow-condensed-700.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Barlow Condensed";
+  font-style: normal;
+  font-weight: 800;
+  font-display: swap;
+  src: url("../fonts/barlow-condensed-800.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Outfit";
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+  src: url("../fonts/outfit-var.woff2") format("woff2");
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html,
+body {
+  height: 100%;
+  background: var(--surface-night);
+  color: var(--cb-ink);
+}
+
+html {
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+body {
+  font-family: var(--ui);
+  font-size: var(--cb-text-body);
+  overflow: hidden;
+  /* Two soft brand washes: cyan top-left, ember bottom-right. Kept very low
+     opacity so it reads as a lit room rather than a gradient. */
+  background-image:
+    radial-gradient(ellipse at 12% 0%, rgba(0, 212, 255, 0.07), transparent 42%),
+    radial-gradient(ellipse at 100% 80%, rgba(255, 59, 92, 0.045), transparent 40%);
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+  color: inherit;
+}
+
+button {
+  cursor: pointer;
+  background: none;
+  border: 0;
+}
+
+::selection {
+  background: var(--accent);
+  color: var(--cta-ink);
+}
+
+/* ============================================================================
+   Focus
+
+   The icon pack draws focus as three opaque layers — a 3dp ring, a 3dp gap of
+   true background, then the card — instead of a stroke on a glow. The web
+   equivalent is `outline` plus `outline-offset`: the offset is exactly the gap,
+   and because outline paints outside the border box it never reflows or moves
+   the surface. That matters on a D-pad, where focus moves on every keypress
+   and a surface that shifts 2px each time is visibly restless.
+
+   The gap is why focus and the filled selected-chip state stay distinguishable
+   at 3m: one is a ring around the control, the other fills it.
+   ========================================================================== */
+
+:focus {
+  outline: none;
+}
+
+.focusable:focus-visible,
+[data-tv] .focusable:focus,
+.focusable.is-focused {
+  outline: var(--cb-focus-ring) solid var(--accent);
+  outline-offset: var(--cb-focus-gap);
+}
+
+/* Press feedback is brand cyan rather than the platform grey — the icon pack
+   sets colorControlHighlight for the same reason, and it is the only
+   off-palette colour most apps ship by accident. */
+.focusable:active {
+  transform: scale(0.97);
+}
+
+.focusable[disabled],
+.focusable:disabled {
+  opacity: 0.35;
+  outline: none;
+  pointer-events: none;
+}
+
+/* A labelled control rings its whole label, not just the 18px checkbox inside
+   it (AUDIT D3). The ring is on the row so the D-pad target is the row. */
+[data-tv] .check:focus-within,
+[data-tv] .league-toggle:focus-within,
+[data-tv] label:has(.focusable:focus) {
+  outline: var(--cb-focus-ring) solid var(--accent);
+  outline-offset: var(--cb-focus-gap);
+  border-radius: var(--cb-radius-button);
+}
+
+/* `hidden` must always win over component display rules. The settings drawer
+   is `display:flex`, and an author rule beats the UA's `[hidden]` rule — which
+   is how a full-screen dimmed overlay used to paint over the board on first
+   load (AUDIT A3, P0). */
+[hidden] {
+  display: none !important;
+}
+
+/* ---- scrollbars (desktop web; a TV has no pointer wheel) ---------------- */
+.scroll-y,
+.scroll-x {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.18) transparent;
+}
+.scroll-y::-webkit-scrollbar,
+.scroll-x::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+.scroll-y::-webkit-scrollbar-thumb,
+.scroll-x::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.14);
+  border-radius: var(--cb-radius-pill);
+}
+.scroll-y::-webkit-scrollbar-thumb:hover,
+.scroll-x::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.26);
+}
+
+/* D-pad scroll-into-view breathing room, so a focused row is never flush
+   against the edge it scrolled in from. */
+.focusable {
+  scroll-margin: var(--cb-space-md);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+  .focusable:active {
+    transform: none;
+  }
+}

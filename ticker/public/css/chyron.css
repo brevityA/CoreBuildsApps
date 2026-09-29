@@ -1,0 +1,227 @@
+/* ============================================================================
+   Core Line — the chyron
+
+   The signature surface: LIVE bug, crawling listings, clock. It spans the full
+   width of the app and is the only element allowed to break the rail/pane
+   split, for the reason the icon pack gives its update bar:
+
+     the one thing on the screen that is wider than the rail and more urgent
+     than the grid.
+
+   Two details do the work at ten feet:
+
+   The separator is a real element with symmetric fixed margins, not a ::after
+   with a one-sided margin. A trailing separator on every item is what makes
+   the seam seamless — the last item of sequence A carries the same separator
+   before the first item of sequence B as any two items within a sequence. With
+   a one-sided margin the gap before a separator differs from the gap after it,
+   which is visible as a stutter once per loop (AUDIT F5).
+
+   The mask fades both edges into the bug and the clock, so items do not pop
+   into existence at the boundary.
+   ========================================================================== */
+
+.chyron {
+  height: var(--chyron-h);
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: stretch;
+  position: relative;
+  background: var(--surface-void);
+  border-top: 2px solid var(--accent);
+  box-shadow: 0 -12px 40px rgba(0, 0, 0, 0.45);
+}
+
+/* Scanlines. One repeating gradient at 1.5% white — enough to read as
+   broadcast glass at 3m, invisible on a phone. */
+.chyron::after {
+  content: "";
+  pointer-events: none;
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(
+    to bottom,
+    transparent 0 2px,
+    rgba(255, 255, 255, 0.015) 2px 3px
+  );
+}
+
+/* ---- LIVE bug ----------------------------------------------------------- */
+.chyron__bug {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 0 var(--cb-space-md);
+  min-width: 92px;
+  background-image: linear-gradient(180deg, #1C2330, var(--surface-void));
+  border-right: 1px solid var(--cb-hairline);
+  transition: background-image 0.4s var(--ease);
+}
+.bug__live {
+  font-family: var(--font);
+  font-size: var(--cb-text-kicker);
+  letter-spacing: 0.18em;
+  font-weight: 800;
+  color: var(--st-live);
+}
+/* Red is a status, so it belongs to "N LIVE" only; idle, the kicker takes
+   the accent like the wordmark it now spells. */
+.chyron:not(.is-live) .bug__live {
+  color: var(--accent);
+}
+.bug__name {
+  font-family: var(--font);
+  font-size: var(--text-bug);
+  letter-spacing: 0.16em;
+  font-weight: 800;
+  color: var(--cb-ink);
+}
+/* When something is actually live the bug goes red — the one place on the
+   whole screen that is allowed to shout. */
+.chyron.is-live .chyron__bug {
+  background-image: linear-gradient(180deg, #3A0B16, #14060A);
+}
+
+/* ---- Crawl -------------------------------------------------------------- */
+.chyron__mask {
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+}
+.chyron__mask::before,
+.chyron__mask::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 46px;
+  z-index: 1;
+  pointer-events: none;
+}
+.chyron__mask::before {
+  left: 0;
+  background: linear-gradient(90deg, var(--surface-void), rgba(4, 7, 15, 0));
+}
+.chyron__mask::after {
+  right: 0;
+  background: linear-gradient(270deg, var(--surface-void), rgba(4, 7, 15, 0));
+}
+
+/* Only the transform of this one compositor-promoted element is written each
+   frame (public/js/ticker.js drives it at constant px/s). */
+.crawl {
+  display: flex;
+  width: max-content;
+  will-change: transform;
+  transform: translate3d(0, 0, 0);
+  backface-visibility: hidden;
+}
+.crawl__seq {
+  display: flex;
+  align-items: center;
+  white-space: nowrap;
+}
+
+.tick {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--cb-space-sm);
+  font-family: var(--font);
+  font-size: var(--text-ticker);
+  letter-spacing: 0.03em;
+  color: var(--cb-ink);
+}
+/* Fixed-width separator with symmetric margins: the seam depends on it. */
+.tick__sep {
+  margin: 0 28px;
+  color: var(--accent);
+  font-size: var(--cb-text-data);
+  opacity: 0.85;
+  flex: 0 0 auto;
+}
+.tick__k {
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  font-size: var(--text-nav);
+  color: var(--st-live);
+}
+.tick__k--up {
+  color: var(--st-up);
+}
+.tick__k--final {
+  color: var(--st-final);
+}
+.tick__chs {
+  color: var(--accent);
+  letter-spacing: 0.08em;
+}
+
+/* ---- Clock -------------------------------------------------------------- */
+.chyron__clock {
+  min-width: 110px;
+  display: grid;
+  place-items: center;
+  font-family: var(--font);
+  font-size: var(--text-clock);
+  letter-spacing: 0.06em;
+  font-variant-numeric: tabular-nums;
+  border-left: 1px solid var(--cb-hairline);
+  background: #080B10;
+}
+
+/* ============================================================================
+   Phone floating overlay (OverlayService.kt)
+
+   The same app with everything except the chyron stripped out. The window
+   itself is translucent and touch-through, so the strip needs enough ink to
+   stay legible over any app behind it.
+   ========================================================================== */
+[data-overlay] {
+  background: transparent;
+}
+[data-overlay] body {
+  background: transparent;
+  background-image: none;
+}
+[data-overlay] .rail,
+[data-overlay] .stage,
+[data-overlay] .drawer,
+[data-overlay] .rail__brand {
+  display: none !important;
+}
+[data-overlay] .app {
+  display: block;
+  height: 100%;
+  padding: 0;
+}
+[data-overlay] .chyron {
+  height: 100%;
+  border: 0;
+  box-shadow: none;
+  background-image: linear-gradient(180deg, rgba(5, 7, 10, 0.92), rgba(5, 7, 10, 0.82));
+}
+/* The strip is a fraction of the board's height, so it re-scales the type
+   tokens rather than overriding nine component rules. Same idea as
+   values-sw720dp: one panel, one set of numbers. */
+[data-overlay] {
+  --text-ticker: 1.02rem;
+  --text-nav: 13px;
+  --text-bug: 1.05rem;
+  --text-clock: 1.05rem;
+}
+
+[data-overlay] .chyron__bug {
+  min-width: 68px;
+  padding: 0 var(--cb-space-sm);
+  border-right-color: rgba(255, 255, 255, 0.12);
+}
+[data-overlay] .tick {
+  gap: var(--cb-space-xs);
+}
+[data-overlay] .tick__sep {
+  margin: 0 var(--cb-space-md);
+}
+[data-overlay] .chyron__clock {
+  min-width: 76px;
+}

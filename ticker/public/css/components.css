@@ -1,0 +1,524 @@
+/* ============================================================================
+   Core Line — components
+
+   A line-by-line port of the icon pack's drawable vocabulary:
+
+     bg_cta.xml          ->  .btn
+     bg_ghost.xml        ->  .btn--ghost
+     bg_chip_toggle.xml  ->  .chip
+     bg_search.xml       ->  .field
+     bg_card.xml         ->  .card / .tile
+     bg_update.xml       ->  .notice
+
+   The icon pack separates focus into two techniques and the reasons carry
+   over exactly:
+
+     Cards use the three-layer ring (outline + outline-offset). They sit in a
+     grid, and the ring's margin is what stops tiles touching.
+
+     Buttons, chips and fields use a stroke drawn *inside* their bounds. A
+     control that grows when focused moves its own label, and these are the
+     controls a D-pad user crosses most often; a field that shifts when focus
+     arrives also shifts its caret and hint.
+
+   Selection and focus are deliberately different shapes, not different
+   thicknesses of the same shape: selection fills the chip with the CTA
+   gradient, focus rings it. At three metres, two thicknesses of one stroke
+   are the same chip.
+   ========================================================================== */
+
+/* ---- Buttons ----------------------------------------------------------- */
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--cb-space-xs);
+  min-height: var(--cb-target-min);
+  min-width: var(--cb-button-min-width);
+  padding: var(--cb-space-sm) var(--cb-space-lg);
+  border-radius: var(--cb-radius-button);
+  font-weight: 700;
+  font-size: var(--cb-text-body);
+  color: var(--cta-ink);
+  background-image: linear-gradient(135deg, var(--cta-start), var(--cta-end));
+  transition: filter var(--dur) var(--ease), transform var(--dur-fast) var(--ease);
+}
+
+.btn:focus-visible,
+[data-tv] .btn:focus {
+  outline: none;
+  /* Stroke inside the bounds: the label must not move when focus arrives. */
+  box-shadow: inset 0 0 0 var(--cb-focus-ring) var(--accent-glow);
+}
+
+.btn:hover {
+  filter: brightness(1.12);
+}
+.btn:active {
+  filter: brightness(0.95);
+}
+.btn:disabled {
+  background-image: none;
+  background-color: var(--surface-panel);
+  color: var(--cb-slate);
+  box-shadow: inset 0 0 0 1px var(--cb-hairline);
+  cursor: not-allowed;
+}
+
+/* Ghost / secondary: transparent body, cyan edge. Focus is a stroke inside
+   the bounds, matching .btn so both button ranks behave alike. */
+.btn--ghost {
+  min-width: 0;
+  color: var(--cb-slate);
+  background: transparent;
+  background-image: none;
+  border: 1px solid var(--cb-hairline);
+}
+.btn--ghost:hover,
+.btn--ghost:focus-visible,
+[data-tv] .btn--ghost:focus {
+  color: var(--cb-ink);
+  border-color: var(--accent);
+  box-shadow: none;
+}
+.btn--ghost:focus-visible,
+[data-tv] .btn--ghost:focus {
+  box-shadow: inset 0 0 0 var(--cb-focus-ring) var(--accent);
+}
+
+/* Square icon button. 48dp minimum target, reached by size rather than
+   padding so the visual chip stays square. */
+.btn--icon {
+  width: var(--cb-target-min);
+  height: var(--cb-target-min);
+  min-width: 0;
+  padding: 0;
+  font-size: var(--cb-text-body);
+  color: var(--cb-ink);
+  background-image: none;
+  background-color: var(--surface-panel);
+  border: 1px solid var(--cb-hairline);
+  border-radius: var(--cb-radius-button);
+}
+.btn--icon:hover,
+.btn--icon:focus-visible,
+[data-tv] .btn--icon:focus {
+  color: var(--accent);
+  border-color: var(--accent);
+  box-shadow: none;
+}
+.btn--icon:focus-visible,
+[data-tv] .btn--icon:focus {
+  box-shadow: inset 0 0 0 var(--cb-focus-ring) var(--accent);
+}
+
+/* Compact row button (reorder, remove). Square, 48dp target. */
+.btn--mini {
+  width: var(--cb-target-min);
+  height: var(--cb-target-min);
+  min-width: 0;
+  padding: 0;
+  display: grid;
+  place-items: center;
+  color: var(--cb-slate);
+  background-image: none;
+  background-color: transparent;
+  border: 1px solid var(--cb-hairline);
+  border-radius: var(--cb-radius-button);
+  font-size: var(--cb-text-label);
+  line-height: 1;
+}
+.btn--mini:hover,
+.btn--mini:focus-visible,
+[data-tv] .btn--mini:focus {
+  color: var(--cb-ink);
+  border-color: var(--accent);
+  box-shadow: none;
+}
+.btn--mini:focus-visible,
+[data-tv] .btn--mini:focus {
+  box-shadow: inset 0 0 0 var(--cb-focus-ring) var(--accent);
+}
+
+/* ---- Chips --------------------------------------------------------------
+   Pill radius. Chips take no focus inset: at 48dp tall a 6dp inset would eat
+   a quarter of the control, so every state has identical geometry. */
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--cb-space-xs);
+  min-height: var(--cb-target-min);
+  padding: var(--cb-space-xs) var(--cb-space-md);
+  border-radius: var(--cb-radius-pill);
+  border: 1px solid var(--cb-hairline);
+  background-color: var(--surface-card);
+  color: var(--cb-slate);
+  font-family: var(--font);
+  font-size: var(--text-nav);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  transition: color var(--dur) var(--ease), border-color var(--dur) var(--ease),
+    background-color var(--dur) var(--ease);
+}
+
+.chip:hover {
+  color: var(--cb-ink);
+  border-color: var(--accent);
+}
+
+/* Selected: filled CTA gradient. */
+.chip[aria-pressed="true"],
+.chip.is-active {
+  color: var(--cta-ink);
+  border-color: transparent;
+  background-image: linear-gradient(135deg, var(--cta-start), var(--cta-end));
+}
+
+/* Focused: a ring — plus the fill if also selected, so you can still see
+   where focus is while a filter is active. */
+.chip:focus-visible,
+[data-tv] .chip:focus {
+  outline: none;
+  box-shadow: inset 0 0 0 var(--cb-focus-ring) var(--accent);
+}
+.chip[aria-pressed="true"]:focus-visible,
+.chip.is-active:focus-visible,
+[data-tv] .chip[aria-pressed="true"]:focus,
+[data-tv] .chip.is-active:focus {
+  box-shadow: inset 0 0 0 var(--cb-focus-ring) var(--accent-glow);
+}
+
+/* Chip with a count. The count is data, so it takes the data type size and
+   the slate colour rather than competing with the label. */
+.chip__count {
+  font-family: var(--ui);
+  font-size: var(--cb-text-kicker);
+  letter-spacing: 0.04em;
+  color: var(--cb-slate);
+  font-variant-numeric: tabular-nums;
+}
+.chip[aria-pressed="true"] .chip__count,
+.chip.is-active .chip__count {
+  color: inherit;
+  opacity: 0.75;
+}
+
+/* A chip in a vertical rail (leagues, settings sections) is a row, not a
+   pill: 10-foot rails are walked with up/down, and a pill's rounded ends
+   waste the left edge the eye aligns to. */
+.chip--row {
+  border-radius: var(--cb-radius-card);
+  justify-content: flex-start;
+  font-family: var(--ui);
+  font-size: var(--cb-text-label);
+  text-transform: none;
+  letter-spacing: 0.01em;
+  padding: var(--cb-space-sm) var(--cb-space-md);
+  width: 100%;
+}
+.chip--row .chip__count {
+  margin-left: auto;
+}
+
+/* ---- Fields -------------------------------------------------------------
+   Focus is a stroke inside the bounds so the caret and hint do not shift. */
+.field {
+  width: 100%;
+  min-height: var(--cb-target-min);
+  padding: 11px var(--cb-space-md);
+  border-radius: var(--cb-radius-field);
+  border: 1px solid var(--cb-hairline);
+  background-color: var(--surface-card);
+  color: var(--cb-ink);
+  font-size: var(--cb-text-label);
+  transition: border-color var(--dur) var(--ease), box-shadow var(--dur) var(--ease);
+}
+.field::placeholder {
+  color: var(--cb-slate);
+}
+.field:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: inset 0 0 0 var(--cb-focus-ring) var(--accent);
+}
+
+input[type="checkbox"],
+input[type="radio"],
+input[type="range"] {
+  accent-color: var(--accent);
+}
+
+/* A labelled row: the whole label is the ring, the whole label is the target. */
+.check {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--cb-space-sm);
+  color: var(--cb-slate);
+  font-size: var(--cb-text-data);
+  min-height: var(--cb-target-min);
+  padding: var(--cb-space-xs) 0;
+  cursor: pointer;
+}
+.check input {
+  width: 18px;
+  height: 18px;
+  margin-top: 2px;
+  flex: 0 0 auto;
+}
+.check:hover {
+  color: var(--cb-ink);
+}
+
+.field-label {
+  display: grid;
+  gap: 6px;
+  font-size: var(--cb-text-data);
+  color: var(--cb-slate);
+}
+
+/* ---- Cards --------------------------------------------------------------
+   Three opaque layers at rest and focused: ring, gap of true background,
+   card. The inset is identical in both states, so the surface sits at the
+   same place whether or not focus is on it. */
+.card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: var(--cb-space-xs);
+  min-height: 148px;
+  padding: var(--cb-card-padding) var(--cb-space-md) var(--cb-space-sm);
+  border-radius: var(--cb-radius-card);
+  border: 1px solid var(--cb-hairline);
+  background-color: var(--surface-card);
+  box-shadow: 0 1px 0 rgba(0, 0, 0, 0.25);
+  transition: border-color var(--dur) var(--ease), transform var(--dur) var(--ease),
+    box-shadow var(--dur) var(--ease);
+}
+
+/* The league accent rides the left edge. It is identity, so it is set per
+   card from JS via --acc and never themed away. */
+.card::before {
+  content: "";
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 3px;
+  border-radius: var(--cb-radius-card) 0 0 var(--cb-radius-card);
+  background: var(--acc, var(--accent));
+}
+
+.card:hover {
+  border-color: var(--acc, var(--accent));
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+}
+.card:focus-visible,
+[data-tv] .card:focus {
+  outline: var(--cb-focus-ring) solid var(--accent);
+  outline-offset: var(--cb-focus-gap);
+  transform: translateY(-1px);
+}
+
+/* Hero tile: the featured game. Same geometry as a card, more ink. */
+.tile {
+  position: relative;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: var(--cb-space-lg);
+  padding: var(--cb-space-lg) var(--cb-space-xl);
+  border-radius: 18px;
+  border: 1px solid var(--cb-hairline);
+  background-image: linear-gradient(135deg, var(--accent-soft), transparent 42%),
+    linear-gradient(0deg, var(--surface-panel), var(--surface-panel));
+  box-shadow: 0 18px 50px rgba(0, 0, 0, 0.35);
+  overflow: hidden;
+}
+.tile::before {
+  content: "";
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 4px;
+  background: var(--st-live);
+  box-shadow: 0 0 18px var(--st-live);
+}
+.tile:focus-visible,
+[data-tv] .tile:focus {
+  outline: var(--cb-focus-ring) solid var(--accent);
+  outline-offset: var(--cb-focus-gap);
+}
+
+/* ---- Status badge ------------------------------------------------------- */
+.badge {
+  font-family: var(--font);
+  font-size: var(--text-badge);
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  padding: 3px var(--cb-space-xs);
+  border-radius: var(--cb-radius-pill);
+  white-space: nowrap;
+}
+.badge--live {
+  background: var(--st-live);
+  color: #fff;
+  box-shadow: 0 0 14px var(--st-live-soft);
+  animation: cb-pulse 1.6s ease-in-out infinite;
+}
+.badge--upcoming {
+  background: var(--st-up-soft);
+  color: var(--st-up);
+}
+.badge--final {
+  background: var(--st-final-soft);
+  color: var(--st-final);
+}
+
+@keyframes cb-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.62; }
+}
+
+/* ---- Kicker: the small cyan caps label above a heading ------------------ */
+.kicker {
+  font-family: var(--ui);
+  font-size: var(--cb-text-kicker);
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+
+/* Channel pill. */
+.pill {
+  font-family: var(--font);
+  font-size: var(--text-pill);
+  letter-spacing: 0.06em;
+  padding: 3px 9px;
+  border-radius: 6px;
+  background: var(--accent-soft);
+  color: var(--accent);
+  border: 1px solid var(--accent-edge);
+  white-space: nowrap;
+}
+
+/* Neutral pill: a channel name on a card, where cyan on every row would
+   out-shout the score. */
+.pill--plain {
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--cb-ink);
+  border-color: transparent;
+  font-size: var(--text-badge);
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+
+/* ---- Health pill --------------------------------------------------------
+   Source health. Subtle and self-updating; it must never compete with the
+   ribbon for attention, so it is a hairline pill with one dot. */
+.health {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  font-size: var(--cb-text-kicker);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 4px 10px;
+  border-radius: var(--cb-radius-pill);
+  border: 1px solid var(--cb-hairline);
+  color: var(--cb-slate);
+  white-space: nowrap;
+  max-width: 30vw;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  transition: color 0.3s var(--ease), border-color 0.3s var(--ease);
+}
+.health::before {
+  content: "";
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: currentColor;
+  flex: 0 0 auto;
+}
+.health.is-ok {
+  color: var(--cb-success);
+  border-color: rgba(52, 211, 153, 0.35);
+}
+.health.is-degraded {
+  color: var(--cb-warning);
+  border-color: rgba(251, 191, 36, 0.35);
+}
+.health.is-demo {
+  color: var(--st-live);
+  border-color: var(--st-live-soft);
+}
+
+/* ---- Notice bar (updates, transient banners) ---------------------------
+   A gradient rather than a flat tint, so the bar reads as a surface with a
+   direction of light, matching the card treatment. The border stays at 1px:
+   this is a passive notice, not a control, and a heavy border would compete
+   with the CTA inside it. */
+.notice {
+  display: flex;
+  align-items: center;
+  gap: var(--cb-space-md);
+  padding: var(--cb-space-sm) var(--cb-space-md);
+  border-radius: var(--cb-radius-card);
+  border: 1px solid var(--accent-quiet);
+  background-image: linear-gradient(90deg, var(--accent-soft), transparent 70%);
+}
+
+/* ---- Empty state --------------------------------------------------------
+   Without one, a filter with no match renders a blank grid and gives the
+   user nothing to undo. */
+.empty {
+  max-width: 560px;
+  margin: 0 auto;
+  padding: var(--cb-gutter-top) var(--cb-space-xs);
+  text-align: center;
+}
+.empty__title {
+  font-size: var(--cb-text-title);
+  margin-bottom: 10px;
+}
+.empty__body {
+  color: var(--cb-slate);
+  line-height: 1.6;
+  margin-bottom: var(--cb-space-md);
+}
+
+/* ---- Toast -------------------------------------------------------------- */
+.toast {
+  position: fixed;
+  left: 50%;
+  bottom: calc(var(--chyron-h) + var(--cb-space-lg));
+  transform: translateX(-50%);
+  z-index: 60;
+  padding: 10px var(--cb-space-md);
+  border-radius: var(--cb-radius-button);
+  background: var(--surface-panel);
+  border: 1px solid var(--accent);
+  color: var(--accent);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.5);
+  animation: cb-toast-in var(--dur) var(--ease);
+}
+
+/* A score alert is louder than a toast: it carries a change the viewer is
+   waiting for, so it takes a filled body and the status colour. */
+.toast--alert {
+  background: var(--st-live);
+  border-color: var(--st-live);
+  color: #fff;
+  font-family: var(--font);
+  font-size: var(--cb-text-section);
+  letter-spacing: 0.04em;
+  padding: var(--cb-space-sm) var(--cb-space-lg);
+}
+
+@keyframes cb-toast-in {
+  from { transform: translate(-50%, 8px); opacity: 0; }
+  to { transform: translate(-50%, 0); opacity: 1; }
+}
+@keyframes cb-rise-in {
+  from { transform: translateY(12px); opacity: 0; }
+  to { transform: none; opacity: 1; }
+}

@@ -1,0 +1,151 @@
+# Changelog
+
+All notable changes to **Core Line**. Format follows
+[Keep a Changelog](https://keepachangelog.com/en/1.1.0/); versions follow
+[SemVer](https://semver.org/spec/v2.0.0.html).
+
+The repo-root `CHANGELOG.md` is the icon pack's. Core Line keeps its own here.
+
+## [Unreleased]
+
+## [1.4.0] — 2026-09-28
+
+A structural release. The front end had grown into a single 1,340-line
+`public/js/app.js` and a 1,000-line `public/css/app.css`, and the audit's
+findings — drawer focus trap, focus lost on re-render, a slider no remote could
+operate — were three symptoms of that one shape. Both files are now split by
+concern, and the design system is ported from the Core Builds Icon Pack so the
+two apps draw from one brand.
+
+### Added
+
+- **Search across the whole slate.** The board, the hero and the crawl all
+  filter together. Matching is generous on purpose: "leafs" finds Toronto and
+  "tsn" finds the game on TSN, because that is how people type. Multiple terms
+  are ANDed. `lib/query.mjs`, covered by `tests/query.test.mjs`.
+- **My Teams rail.** Starred teams get their own rail section with a live
+  count each, so a favourite is addressable without scanning the board.
+- **Score alerts.** A score change, a lead change, the start of a game or the
+  final for a starred team raises one brief alert. The crawl scrolls past once
+  and is gone; for the two or three teams someone actually follows that was the
+  wrong trade-off. One alert per cycle — three stacked toasts on a TV is noise.
+  `lib/alerts.mjs`, covered by `tests/alerts.test.mjs`.
+- **Overscan calibration.** Classic TV panels crop 2.5–5% of the frame and the
+  amount differs by set, so the margin is now calibrated on the device against
+  corner marks (`Settings → Ticker & display → Calibrate overscan`) instead of
+  guessed once.
+- **First-run onboarding.** Two skippable questions — favourite teams, and a
+  feed. Nothing blocks: the bundled sample feed already fills the crawl.
+- **Start times in the viewer's own timezone** on upcoming game cards.
+- **Three distinct empty states** (no listings, no search matches, nothing on
+  this tab), each offering the action that undoes it.
+- `ticker/STRUCTURE.md` — the module map and the rules that keep it that way.
+
+### Changed
+
+- **Overscan now follows the platform spec instead of a guess.** The margin was
+  28px on one axis, applied to the sides only, with the top inheriting an
+  unrelated safe-area token. Android's TV guidance specifies a 5% margin at the
+  960×540 baseline — 48dp on the sides, 27dp top and bottom — so `--overscan`
+  is now 48px there, with `--overscan-y` derived from `--overscan-x` at that
+  same 27:48 ratio. One slider still drives both. A phone keeps a small gutter,
+  because a phone has no overscan to survive.
+- **The overscan default lives in one place.** `state.overscan` is `null` until
+  the viewer calibrates, so the stylesheet owns the number appropriate to the
+  form factor. Previously JavaScript stamped a phone's 28 over a television's
+  5% on first boot, before anyone had chosen anything.
+- **The rail no longer eats the board's columns.** At a 360px card floor and a
+  340px rail, a 1080p panel — 960dp wide, 864dp of content after the guards —
+  left the board 504dp and fitted exactly one card per row. The rail is 300dp,
+  as it is in the icon pack, and the card floor 260px: two columns at 1080p,
+  five at 4K.
+- **Two-pane TV layout.** A fixed-width left rail carries the brand, counts,
+  source health, My Teams, the league nav and the actions; the right pane holds
+  the board. The chyron spans both, for the reason the icon pack gives its
+  update bar: it is the one thing on the screen wider than the rail and more
+  urgent than the grid. Below 1100px the rail becomes a strip above the board.
+- **The design system is now the icon pack's.** `tokens.css` carries the brand
+  palette from `colors.xml` and the metrics from `dimens.xml` — 8px grid, one
+  type scale with a 12px floor, 48px minimum targets, the 3px-ring / 3px-gap
+  focus treatment. `components.css` is a line-by-line port of `bg_cta.xml`,
+  `bg_ghost.xml`, `bg_chip_toggle.xml`, `bg_search.xml`, `bg_card.xml` and
+  `bg_update.xml`, keeping their reasons.
+- **The 10-foot pass scales tokens instead of patching components.** The old
+  `tv.css` overrode ~40 component rules with hard-coded rem values, which is
+  how a UI ends up with two parallel scale ladders that disagree.
+- **Themes no longer restyle status.** LIVE, UP and FINAL were being recoloured
+  per theme — in Broadcast red, the accent and the LIVE badge were the same red.
+  Themes now remap only the accent and the surface ramp; status is fixed, like
+  a traffic light.
+- **The chyron separator is a real element with symmetric margins**, not a
+  `::after` with a one-sided margin. A trailing separator on every item is what
+  makes the seam seamless.
+- **The phone overlay uses the shared stylesheet.** `overlay.html` carried its
+  own copy of the strip's CSS, which is how the two drifted apart; it now links
+  the same `tokens.css`, `base.css` and `chyron.css` and shares `tickHtml`.
+- `public/js/app.js` is 1,340 → 352 lines and contains only wiring and input.
+
+### Fixed
+
+- **The D-pad stays inside onboarding and calibration.** Only Game Detail
+  kept focus inside itself, so Down from a team chip on the very first screen
+  walked onto a game card hidden behind the dialog. Every overlay now holds
+  the D-pad until it closes (`MODALS` in `public/js/tv.js`).
+- **Closing an overlay puts focus somewhere visible.** Onboarding and
+  calibration left focus on a hidden node, so nothing was highlighted until
+  an arrow was pressed. Focus returns to where it was, or to the league rail,
+  and never to a text field: on a TV that raises the on-screen keyboard.
+- **Card controls stay on the card.** A start time such as "9/29 - 6:30 PM
+  EDT" pushed the star and Watch buttons past the card edge on a 1080p board.
+  The status badge now truncates; the two 48px targets never shrink.
+- **League tags are readable.** They used the raw brand colour as text, and
+  NFL, MLB, EPL and UCL navies land near 1.3:1 on the card. The text is now
+  lifted to 4.5:1 or better while keeping its hue, and the marker keeps the
+  true colour (`lib/contrast.mjs`, covered by `tests/contrast.test.mjs`).
+- **Ghost buttons have their size back.** `.btn--ghost` is a modifier of
+  `.btn`, but ten buttons (Skip, Clear filters, pairing, Calibrate overscan,
+  Remove playlist, feed Remove, Check for updates, and two in Game Detail)
+  used it alone and rendered as small browser-default buttons.
+- **A 1080p TV gets the two-pane layout.** A 1080p panel reports 960 CSS px
+  (density 2), and the narrow layout's `max-width: 1100px` query caught it:
+  the rail, counts and chyron filled the 540px frame and not one card was
+  above the fold. TV mode now always keeps the rail beside the board; the
+  strip is for phones and narrow windows only.
+- **The rail keeps its shape at 960×540.** Its children shrank to fit, which
+  flattened the source-health pill and left the league list about one and a
+  half chips tall. They keep their height and the rail scrolls as one column.
+- **Onboarding fits the screen.** On a 1080p TV the teams step was 772px on a
+  540px frame, with Next and Skip below the panel edge. Only the body scrolls
+  now; the actions stay put.
+- **Onboarding lists every team on the slate, grouped by league.** It showed
+  the first 24 alphabetically, which on a live slate of 91 teams stopped at
+  DEN. They now follow the viewer's league order.
+- **The sample game no longer claims to be live.** The bundled sample feed
+  carried a "LIVE Chiefs vs Bills" listing with no score or clock. It was
+  counted in the LIVE total, badged LIVE on the board, and took the hero over a
+  real game in progress. The title no longer says LIVE, so all seven sample
+  items are listings (`UP`); a test now fails if the sample ever parses as live
+  or final. Separately, a scoreboard game is featured before any feed listing.
+- **The idle chyron bug reads CORE / LINE.** With nothing live it fell back to
+  "LINE" above the new "LINE" name line — LINE / LINE, on the TV and in the
+  phone overlay. Red is kept for "N LIVE"; idle, the kicker takes the accent.
+- **Long venue names stay on the card.** Live ESPN data carries names like
+  "Empower Field at Mile High", which ran 32px past a 266px card at 720p. The
+  venue truncates and keeps the full name in its tooltip; the channels never
+  give way.
+- **`/api/health` reports the real version.** It said `1.0.0` whatever was
+  running; it now reads `package.json`.
+
+- **The speed slider works with a D-pad.** It was exempt from key handling
+  entirely, so arrows moved focus instead of the value and the control could
+  not be operated by remote at all. Horizontal arrows now drive the slider and
+  vertical arrows navigate. There are also −/+ buttons. (AUDIT D7)
+- **Focus survives re-render.** Every render is wrapped in
+  `captureFocus`/`restoreFocus`, which identify the focused element by event id
+  rather than by node, because the node is about to be replaced. (AUDIT D5)
+- **Escape closes the topmost layer** — calibration, onboarding, game detail,
+  then the drawer — instead of only the drawer.
+- **Feeds are SSRF-validated when added**, not only when fetched, so an unsafe
+  URL never enters persisted state and is never retried. (AUDIT B7)
+- Missing hero and card interior styles (`.teams`, `.hero-meta`, `.hero-side`,
+  `.pills`, `.game-teams`) reinstated after the stylesheet split.
