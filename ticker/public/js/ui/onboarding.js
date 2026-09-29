@@ -75,17 +75,32 @@ function render() {
 
 function teamsStep() {
   const set = favSet(store.state);
-  const teams = teamListFromEvents().slice(0, 24);
+  // Every team on the slate, grouped by league. This was the first 24
+  // alphabetically, which on a live slate of ~100 teams stopped at DEN: a
+  // Leafs or Yankees fan could not pick their own team. The body scrolls now,
+  // and a league heading is how a viewer finds their sport without reading
+  // every chip.
+  const byLeague = new Map();
+  for (const t of teamListFromEvents()) {
+    const key = t.league || 'Other';
+    if (!byLeague.has(key)) byLeague.set(key, []);
+    byLeague.get(key).push(t);
+  }
+  const chip = (t) => `
+        <button class="chip focusable" data-abbr="${esc(t.abbr)}" aria-pressed="${set.has(t.abbr)}" title="${esc(t.name)}">
+          ${set.has(t.abbr) ? '★' : '☆'} ${esc(t.abbr)}
+        </button>`;
+  // Leagues in the viewer's own order (Settings → Leagues), feeds last.
+  const order = store.state.leagues.map((id) => String(id).toUpperCase());
+  const rank = (l) => (order.indexOf(l) + 1 || order.length + 1);
+  const groups = [...byLeague].sort((a, b) => rank(a[0]) - rank(b[0])).map(([league, teams]) => `
+    <div class="kicker onboard__league">${esc(league)}</div>
+    <div class="chip-grid">${teams.map(chip).join('')}</div>`).join('');
   return `
     <div class="kicker">Step 1 of 2</div>
     <h2 class="onboard__title">Which teams do you follow?</h2>
     <p class="hint">Picked teams sort to the top of the board, appear under My Teams in the rail, and get a score alert when something happens.</p>
-    <div class="chip-grid">
-      ${teams.map((t) => `
-        <button class="chip focusable" data-abbr="${esc(t.abbr)}" aria-pressed="${set.has(t.abbr)}" title="${esc(t.name)}">
-          ${set.has(t.abbr) ? '★' : '☆'} ${esc(t.abbr)}
-        </button>`).join('') || '<span class="hint">No teams yet — skip and pick them later in Settings.</span>'}
-    </div>`;
+    ${groups || '<span class="hint">No teams yet — skip and pick them later in Settings.</span>'}`;
 }
 
 function feedsStep() {

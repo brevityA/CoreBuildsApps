@@ -202,7 +202,7 @@ export function teamListFromEvents() {
     for (const team of [ev.away, ev.home]) {
       if (!team?.abbr) continue;
       const key = String(team.abbr).toUpperCase();
-      if (!seen.has(key)) seen.set(key, { abbr: key, name: team.name || key });
+      if (!seen.has(key)) seen.set(key, { abbr: key, name: team.name || key, league: ev.league || '' });
     }
   }
   return [...seen.values()].sort((a, b) => a.abbr.localeCompare(b.abbr)).slice(0, 100);

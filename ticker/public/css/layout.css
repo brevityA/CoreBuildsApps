@@ -65,6 +65,14 @@
   overflow-y: auto;
 }
 
+/* Rail children keep their natural height; the rail scrolls as one column.
+   At 960x540 — a real 1080p TV — shrinking them flattened the source-health
+   pill to a sliver and left the league list about one and a half chips tall,
+   a scroll box inside a scroll box that a D-pad can't see the edge of. */
+.rail > * {
+  flex-shrink: 0;
+}
+
 .rail__brand {
   display: flex;
   align-items: center;
@@ -247,39 +255,44 @@
    Below the two-pane threshold the rail becomes a horizontal strip above the
    board. The chyron stays where it is: it is the point of the app on every
    screen size.
+
+   Never on a TV. A 1080p panel reports 960 CSS px (density 2), so a width
+   query alone put every real television in this layout: the rail, the stats
+   and the chyron filled 540px and not one card was above the fold. The
+   two-pane arithmetic in tv.css is written for exactly that 960dp frame.
    ========================================================================== */
 @media (max-width: 1100px) {
-  .app__main {
+  :root:not([data-tv]) .app__main {
     grid-template-columns: minmax(0, 1fr);
     grid-template-rows: auto minmax(0, 1fr);
   }
-  .rail {
+  :root:not([data-tv]) .rail {
     flex-direction: column;
     overflow: visible;
     padding-right: 0;
   }
-  .rail__stats {
+  :root:not([data-tv]) .rail__stats {
     order: 2;
   }
-  .rail__actions {
+  :root:not([data-tv]) .rail__actions {
     margin-top: 0;
     padding-top: 0;
   }
   /* The league nav becomes a single scrollable row — a vertical list would
      eat the board on a phone. */
-  .rail__nav {
+  :root:not([data-tv]) .rail__nav {
     flex-direction: row;
     overflow-x: auto;
     overflow-y: hidden;
     scrollbar-width: none;
   }
-  .rail__nav::-webkit-scrollbar {
+  :root:not([data-tv]) .rail__nav::-webkit-scrollbar {
     display: none;
   }
-  .chip--row {
+  :root:not([data-tv]) .chip--row {
     width: auto;
   }
-  .chip--row .chip__count {
+  :root:not([data-tv]) .chip--row .chip__count {
     margin-left: 0;
   }
 }

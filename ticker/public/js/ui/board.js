@@ -50,11 +50,17 @@ export function renderBoard(list) {
   restoreFocus(focusSnap);
 }
 
-/** The featured game: the first live game with two teams. */
+/**
+ * The featured game: the first live game with two teams, and a scoreboard
+ * game before a feed listing. An RSS title can say "LIVE" with no score and
+ * no clock — the bundled sample feed has one — and it used to take the hero
+ * over a real game in progress. A listing only features when nothing else is on.
+ */
 function renderHero(list) {
   const hero = $('hero');
   if (!hero) return;
-  const featured = list.find((e) => e.status === 'live' && e.away && e.home);
+  const live = list.filter((e) => e.status === 'live' && e.away && e.home);
+  const featured = live.find((e) => e.source !== 'rss') || live[0];
   if (!featured) {
     hero.hidden = true;
     hero.innerHTML = '';
@@ -124,7 +130,7 @@ export function gameCard(ev) {
       </div>
       <div class="card__foot">
         <div class="channels">${(ev.channels || []).map((c) => `<span class="pill pill--plain">${esc(c)}</span>`).join('') || '<span class="when">No channel listed</span>'}</div>
-        <span class="when">${esc(when)}</span>
+        <span class="when" title="${esc(when)}">${esc(when)}</span>
       </div>
     </article>`;
 }

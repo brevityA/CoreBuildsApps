@@ -106,6 +106,30 @@ two apps draw from one brand.
   `.btn`, but ten buttons (Skip, Clear filters, pairing, Calibrate overscan,
   Remove playlist, feed Remove, Check for updates, and two in Game Detail)
   used it alone and rendered as small browser-default buttons.
+- **A 1080p TV gets the two-pane layout.** A 1080p panel reports 960 CSS px
+  (density 2), and the narrow layout's `max-width: 1100px` query caught it:
+  the rail, counts and chyron filled the 540px frame and not one card was
+  above the fold. TV mode now always keeps the rail beside the board; the
+  strip is for phones and narrow windows only.
+- **The rail keeps its shape at 960×540.** Its children shrank to fit, which
+  flattened the source-health pill and left the league list about one and a
+  half chips tall. They keep their height and the rail scrolls as one column.
+- **Onboarding fits the screen.** On a 1080p TV the teams step was 772px on a
+  540px frame, with Next and Skip below the panel edge. Only the body scrolls
+  now; the actions stay put.
+- **Onboarding lists every team on the slate, grouped by league.** It showed
+  the first 24 alphabetically, which on a live slate of 91 teams stopped at
+  DEN. They now follow the viewer's league order.
+- **The hero is a real game.** The bundled sample feed carries a "LIVE Chiefs
+  vs Bills" listing with no score or clock, and it took the hero over a real
+  game in progress. A scoreboard game is featured first; a feed listing only
+  when nothing else is live.
+- **Long venue names stay on the card.** Live ESPN data carries names like
+  "Empower Field at Mile High", which ran 32px past a 266px card at 720p. The
+  venue truncates and keeps the full name in its tooltip; the channels never
+  give way.
+- **`/api/health` reports the real version.** It said `1.0.0` whatever was
+  running; it now reads `package.json`.
 
 - **The speed slider works with a D-pad.** It was exempt from key handling
   entirely, so arrows moved focus instead of the value and the control could
