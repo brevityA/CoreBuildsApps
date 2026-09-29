@@ -44,8 +44,37 @@ const browser = await chromium.launch({
   args: ['--no-sandbox', '--disable-dev-shm-usage'],
 });
 
+const STATE_KEY = 'coreline.v1';
+
+/**
+ * Seed the one thing a returning viewer would have: that they have finished
+ * onboarding.
+ *
+ * A fresh CI profile is a fresh *install*, so the first-run overlay appears and
+ * — being a full-screen dialog — intercepts pointer events. The Updates block
+ * failed with a 30-second click timeout because of it, and failed *only* in CI:
+ * locally the profile doing the authoring had onboarded long ago. A test that
+ * exercises the settings drawer has to look like a viewer who has used the app.
+ *
+ * Merged rather than replaced, because block 6 stores an OLED opt-out in the
+ * same key and reloads; a seed that overwrote the blob would silently undo it.
+ */
+async function seedReturningViewer(page) {
+  await page.addInitScript((key) => {
+    try {
+      const raw = localStorage.getItem(key);
+      const state = raw ? JSON.parse(raw) : {};
+      if (state.onboarded !== true) {
+        state.onboarded = true;
+        localStorage.setItem(key, JSON.stringify(state));
+      }
+    } catch { /* a storage-less context still renders; the assertions will say so */ }
+  }, STATE_KEY);
+}
+
 async function open(path, viewport) {
   const page = await browser.newPage({ viewport });
+  await seedReturningViewer(page);
   const errors = [];
   page.on('pageerror', (e) => errors.push(String(e)));
   page.on('console', (m) => { if (m.type() === 'error') errors.push(m.text()); });
@@ -92,7 +121,7 @@ async function open(path, viewport) {
     const abbr = document.querySelector('.team-row .abbr');
     return {
       health: fs('.health'), brandSub: fs('.brand-sub'), when: fs('.when'),
-      leagueTag: fs('.league-tag'), tick: fs('.tick'), brandName: fs('.brand-name'),
+      leagueTag: fs('.league-tag'), tick: fs('.tick'), brandName: fs('.brand__name'),
       who: fs('.gt .who'), abbr: fs('.abbr'), score: fs('.score'), hint: fs('.hint'),
       abbrOverflow: abbr ? abbr.scrollWidth > abbr.clientWidth + 1 : false,
     };
@@ -194,6 +223,7 @@ async function open(path, viewport) {
 //  - the banner's clock, which either advances or silently never fires.
 {
   const page = await browser.newPage({ viewport: { width: 1920, height: 1080 } });
+  await seedReturningViewer(page);
   const errors = [];
   page.on('pageerror', (e) => errors.push(String(e)));
   page.on('console', (m) => { if (m.type() === 'error') errors.push(m.text()); });
@@ -266,6 +296,25 @@ async function open(path, viewport) {
   await page.waitForTimeout(13500);
   ok((await heroId()) === focused, 'rotation: the banner holds while focused');
 
+  await page.close();
+}
+
+
+// ---- 7. A fresh install is still offered onboarding -----------------------
+//
+// The seed above suppresses this overlay for the interaction blocks, so this
+// asserts the surface it suppresses still exists — otherwise "dismissed in
+// tests" would quietly become "removed from the product".
+{
+  const page = await browser.newPage({ viewport: { width: 1440, height: 900 } });
+  await page.goto(`${BASE}/`, { waitUntil: 'networkidle' });
+  let shown = true;
+  try {
+    await page.locator('#onboard').waitFor({ state: 'visible', timeout: 10000 });
+  } catch {
+    shown = false;
+  }
+  ok(shown, 'onboarding: a fresh profile is offered the first-run overlay');
   await page.close();
 }
 
