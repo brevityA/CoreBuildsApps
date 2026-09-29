@@ -17,6 +17,10 @@ operate — were three symptoms of that one shape. Both files are now split by
 concern, and the design system is ported from the Core Builds Icon Pack so the
 two apps draw from one brand.
 
+**Install:** Downloader code `7375676`, which follows the floating `coreline`
+release, or the `coreline-v1.4.0` release once it is tagged. Installed copies
+offer the update from Settings → Updates.
+
 ### Added
 
 - **Search across the whole slate.** The board, the hero and the crawl all
