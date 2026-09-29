@@ -8,6 +8,10 @@ must never land there. Releases are `coreeq-v<version>` tags (see
 
 ## [Unreleased]
 
+### Added
+
+- **A live indicator says the correction is working while audio plays.** The Correction switch on the Home screen now wears a badge: `LIVE · CORRECTING` with a pulsing dot while audio the correction is attached to is audible right now, `STANDBY` while it is armed and the TV is silent, `NOT APPLIED` when the platform refused. `EqService` watches `AudioManager` playback callbacks to know — the status line and the notification gain a `▶ Playing ·` marker at the same moment, all published from one place so they cannot disagree — and `CorrectionIndicator` holds the state table with `CorrectionIndicatorTest`. It cannot see which app is playing (Android hides player identity from third-party apps), so `LIVE` means the TV is playing and the correction is applied; the status line names exactly what is being corrected.
+
 ## [1.0.0] — 2026-09-29
 
 ### Fixed

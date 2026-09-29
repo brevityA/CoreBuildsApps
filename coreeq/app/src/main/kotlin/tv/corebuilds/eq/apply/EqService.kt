@@ -12,6 +12,9 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.content.pm.PackageManager
 import android.content.pm.ServiceInfo
+import android.media.AudioAttributes
+import android.media.AudioManager
+import android.media.AudioPlaybackConfiguration
 import android.media.audiofx.AudioEffect
 import android.media.audiofx.Equalizer
 import android.os.Build
@@ -43,6 +46,13 @@ import kotlin.math.roundToInt
  * largest boost: the correction never pushes the signal into clipping.
  * Every outcome, good or bad, is written to [ProfileStore.setStatus] and the
  * notification, so a failure is always named somewhere the user can see.
+ *
+ * While audio is playing through the correction the status gains a
+ * "▶ Playing ·" marker — the Home screen indicator and the notification both
+ * light from that one fact. The platform reports *that* something is playing
+ * ([AudioManager] playback callbacks) but never *which* app is playing, so the
+ * marker means "the TV is playing and the correction is attached", and the
+ * status line is what names the players being corrected.
  */
 class EqService : Service() {
 
@@ -51,6 +61,22 @@ class EqService : Service() {
     private var globalEq: Equalizer? = null
     private var globalError: String? = null
     private var suspended = false
+
+    // The last words report() chose, and what publish() last put on screen, so
+    // a playback change can re-publish the same status with (or without) the
+    // playing marker without inventing new text.
+    private var messageBody = ""
+    private var messageError = false
+    private var lastShown: String? = null
+    private var lastPlaying: Boolean? = null
+
+    private val audioManager by lazy { getSystemService(AudioManager::class.java) }
+
+    private val playbackCallback = object : AudioManager.AudioPlaybackCallback() {
+        override fun onPlaybackConfigChanged(configs: MutableList<AudioPlaybackConfiguration>?) {
+            publish()
+        }
+    }
 
     private val sessionReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
@@ -88,6 +114,14 @@ class EqService : Service() {
         }
         // Exported: the broadcasts come from the players, which are other apps.
         ContextCompat.registerReceiver(this, sessionReceiver, filter, ContextCompat.RECEIVER_EXPORTED)
+        // The indicator is not a guess: the platform says when a player is
+        // audible, and the badge follows that. A refusal only costs the pulse;
+        // the status line still works.
+        try {
+            audioManager.registerAudioPlaybackCallback(playbackCallback, null)
+        } catch (e: Exception) {
+            Log.w(TAG, "Playback watcher refused; the playing marker is off", e)
+        }
         running = true
     }
 
@@ -134,8 +168,8 @@ class EqService : Service() {
         if (global != null) {
             try {
                 val bands = configure(global, profile)
-                releaseSessions() // the whole-TV path already covers them
                 report("Correcting the whole TV · ${profile.name} · $bands bands", isError = false)
+                releaseSessions() // the whole-TV path already covers them
                 return
             } catch (e: Exception) {
                 Log.w(TAG, "Output-mix Equalizer could not be configured", e)
@@ -197,6 +231,7 @@ class EqService : Service() {
             Log.w(TAG, "Session $session already gone", e)
         }
         eq.release()
+        publish() // what is being corrected may have just changed
     }
 
     private fun releaseSessions() {
@@ -235,16 +270,65 @@ class EqService : Service() {
         pkg.ifBlank { "a player" }
     }
 
-    private fun report(message: String, isError: Boolean) {
-        store.setStatus(message, isError)
+    /**
+     * Publishes the status to every visible surface — the Home screen status
+     * line, its correction indicator, and the notification — from one place,
+     * so they cannot disagree. The words are whatever [report] last chose; the
+     * "▶ Playing ·" marker is added while audio the correction is attached to
+     * is audible right now. Unchanged reports publish nothing, so a playback
+     * callback on every focus change cannot spam the notification.
+     */
+    private fun publish() {
+        if (!running || messageBody.isEmpty()) return
+        val playingNow = !suspended && !messageError && correcting() && audioIsPlaying()
+        val shown = if (playingNow) "▶ Playing · $messageBody" else messageBody
+        if (shown == lastShown && playingNow == lastPlaying) return
+        lastShown = shown
+        lastPlaying = playingNow
+        store.setStatus(shown, messageError, playing = playingNow)
         // Without POST_NOTIFICATIONS (Android 13+) the update is not shown; the
         // Home screen still shows the same status from ProfileStore.
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU ||
             ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) == PackageManager.PERMISSION_GRANTED
         ) {
-            getSystemService(NotificationManager::class.java)?.notify(NOTIFICATION_ID, notification(message))
+            getSystemService(NotificationManager::class.java)?.notify(NOTIFICATION_ID, notification(shown))
         }
         sendBroadcast(Intent(ACTION_STATUS_CHANGED).setPackage(packageName))
+    }
+
+    private fun report(message: String, isError: Boolean) {
+        messageBody = message
+        messageError = isError
+        publish()
+    }
+
+    /** True while an equaliser is configured and enabled on something. */
+    private fun correcting(): Boolean = globalEq != null || sessionEqs.isNotEmpty()
+
+    /**
+     * True when something on this TV is playing audio right now.
+     *
+     * [AudioManager.getActivePlaybackConfigurations] lists only streams that
+     * are actually playing (the platform sanitizes the list down to active
+     * ones), and [playbackCallback] re-runs this on every change. Only media
+     * traffic counts: notification beeps and the like must not light the
+     * badge. It cannot say *which* app is playing — player identity is hidden
+     * from third-party apps — and our own measurement sweep is silenced by
+     * [suspended], never by guessing at the caller.
+     */
+    private fun audioIsPlaying(): Boolean {
+        val configs = try {
+            audioManager.activePlaybackConfigurations
+        } catch (e: Exception) {
+            Log.w(TAG, "Playback probe failed", e)
+            return false
+        }
+        return configs.any { config ->
+            when (config.audioAttributes?.usage) {
+                null, AudioAttributes.USAGE_MEDIA, AudioAttributes.USAGE_GAME, AudioAttributes.USAGE_UNKNOWN -> true
+                else -> false
+            }
+        }
     }
 
     override fun onDestroy() {
@@ -256,6 +340,11 @@ class EqService : Service() {
             unregisterReceiver(sessionReceiver)
         } catch (e: IllegalArgumentException) {
             Log.w(TAG, "Session receiver was not registered", e)
+        }
+        try {
+            audioManager.unregisterAudioPlaybackCallback(playbackCallback)
+        } catch (e: Exception) {
+            Log.w(TAG, "Playback watcher was not registered", e)
         }
         releaseSessions()
         globalEq?.release()

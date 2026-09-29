@@ -1,6 +1,8 @@
 package tv.corebuilds.eq
 
 import android.Manifest
+import android.animation.ObjectAnimator
+import android.animation.ValueAnimator
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
@@ -13,10 +15,13 @@ import android.widget.Button
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import tv.corebuilds.eq.apply.EqService
+import tv.corebuilds.eq.export.EqStatus
 import tv.corebuilds.eq.export.ProfileStore
 import tv.corebuilds.eq.ui.BandSlidersView
+import tv.corebuilds.eq.ui.CorrectionIndicator
 import tv.corebuilds.eq.ui.CurveGraphView
 import tv.corebuilds.eq.ui.Series
+import tv.corebuilds.eq.ui.correctionIndicator
 import java.util.Locale
 
 class MainActivity : TvActivity() {
@@ -28,6 +33,10 @@ class MainActivity : TvActivity() {
     private lateinit var btnToggle: Button
     private lateinit var graphHome: CurveGraphView
     private lateinit var bandsHome: BandSlidersView
+    private lateinit var badgeIndicator: View
+    private lateinit var badgeDot: View
+    private lateinit var badgeLabel: TextView
+    private var pulse: ObjectAnimator? = null
 
     private val statusReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) = refreshStatus()
@@ -45,6 +54,9 @@ class MainActivity : TvActivity() {
         btnToggle = findViewById(R.id.btn_toggle_correction)
         graphHome = findViewById(R.id.graph_home)
         bandsHome = findViewById(R.id.bands_home)
+        badgeIndicator = findViewById(R.id.badge_correction)
+        badgeDot = findViewById(R.id.badge_dot)
+        badgeLabel = findViewById(R.id.badge_label)
 
         findViewById<Button>(R.id.btn_remeasure).setOnClickListener {
             startActivity(Intent(this, MeasureActivity::class.java))
@@ -76,6 +88,7 @@ class MainActivity : TvActivity() {
     }
 
     override fun onPause() {
+        stopPulse()
         unregisterReceiver(statusReceiver)
         super.onPause()
     }
@@ -107,6 +120,58 @@ class MainActivity : TvActivity() {
         textStatus.setTextColor(
             ContextCompat.getColor(this, if (status?.isError == true) R.color.cb_ember else R.color.cb_slate)
         )
+        renderIndicator(status)
+    }
+
+    /**
+     * The "is this working?" badge beside the Correction switch. [LIVE][CorrectionIndicator.LIVE]
+     * pulses — the one state where audio is flowing through the correction
+     * right now. A stale playing flag cannot light it: the badge trusts it
+     * only while [EqService] is actually running.
+     */
+    private fun renderIndicator(status: EqStatus?) {
+        val state = correctionIndicator(
+            enabled = profileStore.correctionEnabled,
+            playing = EqService.running && status?.playing == true,
+            fault = status?.isError == true
+        )
+        if (state == CorrectionIndicator.OFF) {
+            stopPulse()
+            badgeIndicator.visibility = View.GONE
+            return
+        }
+        badgeIndicator.visibility = View.VISIBLE
+        val (bgRes, tintRes, labelRes) = when (state) {
+            CorrectionIndicator.FAULT ->
+                Triple(R.drawable.bg_fault_badge, R.color.cb_ember, R.string.indicator_not_applied)
+            CorrectionIndicator.STANDBY ->
+                Triple(R.drawable.bg_idle_badge, R.color.cb_slate, R.string.indicator_standby)
+            CorrectionIndicator.LIVE ->
+                Triple(R.drawable.bg_live_badge, R.color.cb_success, R.string.indicator_live)
+            CorrectionIndicator.OFF -> return // handled above
+        }
+        badgeIndicator.setBackgroundResource(bgRes)
+        val tint = ContextCompat.getColor(this, tintRes)
+        badgeDot.setBackgroundColor(tint)
+        badgeLabel.setTextColor(tint)
+        badgeLabel.setText(labelRes)
+        if (state == CorrectionIndicator.LIVE) startPulse() else stopPulse()
+    }
+
+    private fun startPulse() {
+        if (pulse?.isRunning == true) return
+        pulse = ObjectAnimator.ofFloat(badgeDot, View.ALPHA, 1f, 0.25f).apply {
+            duration = 800
+            repeatMode = ValueAnimator.REVERSE
+            repeatCount = ValueAnimator.INFINITE
+            start()
+        }
+    }
+
+    private fun stopPulse() {
+        pulse?.cancel()
+        pulse = null
+        badgeDot.alpha = 1f
     }
 
     private fun loadActiveProfile() {

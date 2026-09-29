@@ -47,6 +47,11 @@
     <string name="correction_on">Correction: On</string>
     <string name="correction_off">Correction: Off</string>
 
+    <!-- Correction indicator badge (Home screen, under the switch) -->
+    <string name="indicator_live">LIVE · CORRECTING</string>
+    <string name="indicator_standby">STANDBY</string>
+    <string name="indicator_not_applied">NOT APPLIED</string>
+
     <!-- Profiles screen -->
     <string name="profiles_title">Core EQ · Profiles</string>
     <string name="profiles_heading">Saved corrections</string>

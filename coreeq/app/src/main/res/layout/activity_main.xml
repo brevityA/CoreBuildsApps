@@ -108,19 +108,59 @@
             </LinearLayout>
 
             <!-- Navigation entry rows -->
-            <Button
-                android:id="@+id/btn_toggle_correction"
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="52dp"
-                android:background="@drawable/bg_card"
-                android:text="@string/correction_off"
-                android:textColor="@color/cb_ink"
-                android:textSize="@dimen/cb_text_data"
-                android:gravity="start|center_vertical"
-                android:paddingStart="@dimen/cb_card_padding"
-                android:paddingEnd="@dimen/cb_card_padding"
-                android:focusable="true"
-                android:layout_marginBottom="@dimen/cb_space_xs" />
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginBottom="@dimen/cb_space_xs">
+
+                <Button
+                    android:id="@+id/btn_toggle_correction"
+                    android:layout_width="match_parent"
+                    android:layout_height="52dp"
+                    android:background="@drawable/bg_card"
+                    android:text="@string/correction_off"
+                    android:textColor="@color/cb_ink"
+                    android:textSize="@dimen/cb_text_data"
+                    android:gravity="start|center_vertical"
+                    android:paddingStart="@dimen/cb_card_padding"
+                    android:paddingEnd="@dimen/cb_card_padding"
+                    android:focusable="true" />
+
+                <!-- The correction indicator: pulses LIVE only while audio the
+                     correction is attached to is actually playing. -->
+                <LinearLayout
+                    android:id="@+id/badge_correction"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:background="@drawable/bg_idle_badge"
+                    android:paddingStart="12dp"
+                    android:paddingEnd="14dp"
+                    android:paddingTop="5dp"
+                    android:paddingBottom="5dp"
+                    android:layout_marginTop="4dp"
+                    android:focusable="false"
+                    android:visibility="gone">
+
+                    <View
+                        android:id="@+id/badge_dot"
+                        android:layout_width="8dp"
+                        android:layout_height="8dp"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginEnd="8dp" />
+
+                    <TextView
+                        android:id="@+id/badge_label"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/indicator_standby"
+                        android:textColor="@color/cb_slate"
+                        android:textSize="@dimen/cb_text_kicker"
+                        android:fontFamily="monospace"
+                        android:textStyle="bold" />
+                </LinearLayout>
+            </LinearLayout>
 
             <Button
                 android:id="@+id/btn_nav_profiles"
