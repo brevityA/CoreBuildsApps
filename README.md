@@ -168,7 +168,7 @@ Design rules (enforced by generator + validator): transparent backgrounds · one
 
 ## 🔷 Core Line
 
-**TV-first sports & channel ticker (chyron).** `v1.3.1`
+**TV-first sports & channel ticker (chyron).** `v1.4.0`
 
 A reader that crawls the listings your channel apps already publish as RSS — not a player, not streams:
 
@@ -178,7 +178,7 @@ LIVE  TOR 3-2 MTL  ·  TSN4  SN 3     ◆     LAL vs BOS  7:00 PM  ·  ESPN
 
 One APK for phone, Shield, Google TV, Fire TV · messy listing lines parsed (`Team vs team epn, tsn4` → ESPN, TSN4) · ESPN/NHL/MLB scoreboards with a labeled demo fallback · same-Wi-Fi QR pairing so a Fire remote never types a URL · zero npm dependencies.
 
-**Install:** Downloader code **`7375676`**, or the [**stable release**](../../releases/tag/coreline). Open it — a demo ticker loads immediately, then add feeds or pair from your phone.
+**Install:** Downloader code **`7375676`**, or the [**stable release**](../../releases/tag/coreline). Open it — a demo ticker loads immediately, then add feeds or pair from your phone. Already installed? Settings → Updates. Changes: [`ticker/CHANGELOG.md`](ticker/CHANGELOG.md).
 
 Build: `cd ticker/android && ./gradlew :app:assembleDebug` · tests: `cd ticker && npm test` · [`ticker/HANDOVER.md`](ticker/HANDOVER.md)
 
