@@ -44,10 +44,6 @@ The repo-root `CHANGELOG.md` is the icon pack's. Core Line keeps its own here.
   for the whole app, which drops the empty slot a failed image leaves in the
   compact form. `lib/logos.mjs`, `public/js/core/marks.js`, `tests/logos.test.mjs`.
 
-  The phone overlay (`public/overlay.html`) ships the same policy, narrowed to
-  what that document loads: it is the surface that floats over other apps, and
-  a CSP does not inherit between documents.
-
 - **A Content-Security-Policy, and the decision written down.** The page now
   ships a meta CSP rather than inheriting the browser's defaults. `script-src
   'self'` is the load-bearing part, and it is why the boot guard moved out of
@@ -59,6 +55,9 @@ The repo-root `CHANGELOG.md` is the icon pack's. Core Line keeps its own here.
   the test asserts they agree. `connect-src` stays open to http/https on
   purpose: feeds are user input, so `lib/ssrf.mjs` is the control there, not a
   directive that would break the app's main feature.
+
+  Both documents carry one — `index.html` and `overlay.html`, the strip that
+  floats over other apps — because a CSP does not inherit between documents.
 
 - **The banner rotates through what is live.** The hero tile used to be pinned
   to the same game until it ended — on a Saturday with six games on, the other
