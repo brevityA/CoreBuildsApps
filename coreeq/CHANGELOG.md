@@ -11,6 +11,13 @@ must never land there. Releases are `coreeq-v<version>` tags (see
 ### Added
 
 - **A live indicator says the correction is working while audio plays.** The Correction switch on the Home screen now wears a badge: `LIVE · CORRECTING` with a pulsing dot while audio the correction is attached to is audible right now, `STANDBY` while it is armed and the TV is silent, `NOT APPLIED` when the platform refused. `EqService` watches `AudioManager` playback callbacks to know — the status line and the notification gain a `▶ Playing ·` marker at the same moment, all published from one place so they cannot disagree — and `CorrectionIndicator` holds the state table with `CorrectionIndicatorTest`. It cannot see which app is playing (Android hides player identity from third-party apps), so `LIVE` means the TV is playing and the correction is applied; the status line names exactly what is being corrected.
+- **DUMP discovery reaches players that never announce a session.** Optional and clearly labelled: grant `android.permission.DUMP` once — the exact `adb shell pm grant tv.corebuilds.eq android.permission.DUMP` command is shown on the Capability screen — and `EqService` reads the system's own audio dumps, finds the sessions Netflix-class players are playing on, and attaches the correction to them, releasing each one the moment its player disappears. Without the grant nothing changes. Core EQ's own sweep is never corrected, only media and game sessions are touched, and the status line and indicator say "found by DUMP discovery" when a session came from there. `DumpsysSessions` is the parser and `DumpsysSessionsTest` pins it to representative dump shapes.
+- **The DynamicsProcessing groundwork is in.** `BandMapping` holds the shared band maths (curve sampled at the engine's own band centres, headroom-shifted so nothing boosts) and `LimiterSettings` holds the protection-only limiter the M6a hardware spike will wire to `DynamicsProcessing.Limiter`; `DpMappingTest` pins both.
+
+### Changed
+
+- **The band maths has one home.** `EqService` and the TV-settings export both sample the correction through `BandMapping`, so the preview, the export and the applied bands cannot drift apart.
+- **The waiting status names the way out.** On a TV that refuses whole-TV correction and has no DUMP grant, the status line now points at the Capability screen's grant command instead of only at export.
 
 ## [1.0.0] — 2026-09-29
 

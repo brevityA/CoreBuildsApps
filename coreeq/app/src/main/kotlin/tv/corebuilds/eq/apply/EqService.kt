@@ -18,7 +18,9 @@ import android.media.AudioPlaybackConfiguration
 import android.media.audiofx.AudioEffect
 import android.media.audiofx.Equalizer
 import android.os.Build
+import android.os.Handler
 import android.os.IBinder
+import android.os.Looper
 import android.util.Log
 import androidx.core.app.NotificationCompat
 import androidx.core.app.ServiceCompat
@@ -26,8 +28,7 @@ import androidx.core.content.ContextCompat
 import tv.corebuilds.eq.MainActivity
 import tv.corebuilds.eq.export.Profile
 import tv.corebuilds.eq.export.ProfileStore
-import kotlin.math.max
-import kotlin.math.roundToInt
+import java.util.concurrent.Executors
 
 /**
  * Applies the active profile and keeps it applied.
@@ -40,7 +41,11 @@ import kotlin.math.roundToInt
  * Two paths, never both at once (that would correct twice):
  * - **Whole TV** – an [Equalizer] on the output mix (session 0). Deprecated,
  *   never removed, and accepted by some TVs.
- * - **Per player** – an [Equalizer] on each session a player announces.
+ * - **Per player** – an [Equalizer] on each session a player announces, or
+ *   that DUMP discovery finds (rung 2, only where the user granted the
+ *   one-time [DumpsysDiscovery.DUMP_PERMISSION]). Announced sessions win over
+ *   discovered ones for the same session id; a discovered session is released
+ *   the moment its player disappears from the dump.
  *
  * The platform [Equalizer] has no preamp, so every band is lowered by the
  * largest boost: the correction never pushes the signal into clipping.
@@ -56,8 +61,11 @@ import kotlin.math.roundToInt
  */
 class EqService : Service() {
 
+    /** An equaliser held on one session, and where that session came from. */
+    private data class Held(val eq: Equalizer, val pkg: String, val discovered: Boolean)
+
     private lateinit var store: ProfileStore
-    private val sessionEqs = mutableMapOf<Int, Pair<Equalizer, String>>()
+    private val sessionEqs = mutableMapOf<Int, Held>()
     private var globalEq: Equalizer? = null
     private var globalError: String? = null
     private var suspended = false
@@ -72,11 +80,28 @@ class EqService : Service() {
 
     private val audioManager by lazy { getSystemService(AudioManager::class.java) }
 
+    // DUMP discovery runs off the main thread and applies its results back on
+    // it; a playback change coalesces into one re-discovery after the debounce.
+    private val mainHandler = Handler(Looper.getMainLooper())
+    private val discoveryExecutor = Executors.newSingleThreadExecutor()
+    private val discoveryRunnable = Runnable {
+        discoveryExecutor.execute {
+            val found = try {
+                DumpsysDiscovery.discover(android.os.Process.myUid())
+            } catch (e: Exception) {
+                Log.w(TAG, "DUMP discovery failed", e)
+                emptyList()
+            }
+            mainHandler.post { applyDiscovered(found) }
+        }
+    }
+
     private val playbackCallback = object : AudioManager.AudioPlaybackCallback() {
         override fun onPlaybackConfigChanged(configs: MutableList<AudioPlaybackConfiguration>?) {
             // The delivered list is the change that fired this: use it instead
             // of re-querying, which costs a binder call and can race the event.
             publish(configs)
+            scheduleDiscovery()
         }
     }
 
@@ -182,41 +207,52 @@ class EqService : Service() {
         }
 
         var failed: String? = null
-        for ((session, pair) in sessionEqs.toMap()) {
+        for ((session, held) in sessionEqs.toMap()) {
             try {
-                configure(pair.first, profile)
+                configure(held.eq, profile)
             } catch (e: Exception) {
-                failed = "Could not correct ${label(pair.second)}: ${e.message ?: e.javaClass.simpleName}"
+                failed = "Could not correct ${label(held.pkg)}: ${e.message ?: e.javaClass.simpleName}"
                 closeSession(session)
             }
         }
         when {
             failed != null -> report(failed, isError = true)
-            sessionEqs.isNotEmpty() -> report(
-                "Correcting ${sessionEqs.values.joinToString { label(it.second) }} · ${profile.name}", isError = false
-            )
-            else -> report(
-                "Waiting for a player that shares its audio (Kodi, VLC, Poweramp). " +
-                    "This TV refused whole-TV correction ($globalError), so apps that do not " +
-                    "share their audio, such as Netflix and YouTube, are not corrected. " +
-                    "Export the profile for the TV's own sound settings instead.",
-                isError = false
-            )
+            sessionEqs.isNotEmpty() -> report(sessionReport(profile), isError = false)
+            else -> {
+                if (DumpsysDiscovery.hasGrant(this)) scheduleDiscovery(0L)
+                report(waitingStatus(), isError = false)
+            }
         }
     }
+
+    /** What to say when nothing is attached: the way forward, named per grant. */
+    private fun waitingStatus(): String =
+        if (DumpsysDiscovery.hasGrant(this)) {
+            "DUMP discovery is looking for players. This TV refused whole-TV correction " +
+                "($globalError), so Core EQ attaches to each player it finds and names them here."
+        } else {
+            "Waiting for a player that shares its audio (Kodi, VLC, Poweramp). " +
+                "This TV refused whole-TV correction ($globalError), so apps that do not " +
+                "share their audio, such as Netflix and YouTube, are not corrected. " +
+                "Grant DUMP discovery on the Capability screen to reach them, or export " +
+                "the profile for the TV's own sound settings."
+        }
 
     private fun openSession(session: Int, pkg: String) {
         store.noteSessionPackage(pkg)
         if (globalEq != null) return // already corrected by the whole-TV path
         val profile = store.getActiveProfile() ?: return
         try {
-            val eq = sessionEqs[session]?.first ?: Equalizer(PRIORITY, session)
-            sessionEqs[session] = Pair(eq, pkg)
+            // A discovered session a player just announced is upgraded, not
+            // duplicated: the announcement carries the player's own name.
+            val eq = sessionEqs[session]?.eq ?: Equalizer(PRIORITY, session)
+            val name = pkg.ifBlank { sessionEqs[session]?.pkg ?: "" }
+            sessionEqs[session] = Held(eq, name, discovered = false)
             if (suspended) {
                 eq.enabled = false
             } else {
                 val bands = configure(eq, profile)
-                report("Correcting ${label(pkg)} · ${profile.name} · $bands bands", isError = false)
+                report("Correcting ${label(name)} · ${profile.name} · $bands bands", isError = false)
             }
         } catch (e: Exception) {
             Log.w(TAG, "Equalizer on session $session ($pkg) failed", e)
@@ -226,7 +262,7 @@ class EqService : Service() {
     }
 
     private fun closeSession(session: Int) {
-        val eq = sessionEqs.remove(session)?.first ?: return
+        val eq = sessionEqs.remove(session)?.eq ?: return
         try {
             eq.enabled = false
         } catch (e: IllegalStateException) {
@@ -244,19 +280,19 @@ class EqService : Service() {
     private fun configure(eq: Equalizer, profile: Profile): Int {
         val n = eq.numberOfBands.toInt()
         val range = eq.bandLevelRange
-        val gains = DoubleArray(n) { profile.correctionAt(eq.getCenterFreq(it.toShort()) / 1000.0) }
-        val headroom = max(0.0, gains.maxOrNull() ?: 0.0)
-        for (i in 0 until n) {
-            val mb = ((gains[i] - headroom) * 100.0).roundToInt().coerceIn(range[0].toInt(), range[1].toInt())
-            eq.setBandLevel(i.toShort(), mb.toShort())
-        }
+        val centres = DoubleArray(n) { eq.getCenterFreq(it.toShort()) / 1000.0 }
+        val mbs = BandMapping.millibels(
+            BandMapping.gainsDb(profile, centres.toList()),
+            range[0].toInt()..range[1].toInt()
+        )
+        for (i in 0 until n) eq.setBandLevel(i.toShort(), mbs[i])
         eq.enabled = true
         check(eq.hasControl()) { "another equaliser app has priority over this audio" }
         return n
     }
 
     private fun setAllEnabled(on: Boolean) {
-        val all = listOfNotNull(globalEq) + sessionEqs.values.map { it.first }
+        val all = listOfNotNull(globalEq) + sessionEqs.values.map { it.eq }
         for (eq in all) {
             try {
                 eq.enabled = on
@@ -264,6 +300,73 @@ class EqService : Service() {
                 Log.w(TAG, "Equalizer no longer valid", e)
             }
         }
+    }
+
+    /**
+     * Debounced re-discovery (plan §4: `dumpsys` is a heavy IPC). Playback
+     * changes coalesce into one run; measurement never competes with it.
+     */
+    private fun scheduleDiscovery(delayMs: Long = DISCOVERY_DEBOUNCE_MS) {
+        if (suspended || globalEq != null) return
+        if (!DumpsysDiscovery.hasGrant(this)) return
+        mainHandler.removeCallbacks(discoveryRunnable)
+        mainHandler.postDelayed(discoveryRunnable, delayMs)
+    }
+
+    /**
+     * Applies one discovery result on the main thread: attaches to new
+     * sessions, releases discovered sessions whose player left the dump, and
+     * names exactly what is being corrected. Announced sessions are never
+     * released here — their CLOSE broadcast is their owner.
+     */
+    private fun applyDiscovered(found: List<DiscoveredSession>) {
+        if (!running || suspended || globalEq != null) return
+        val profile = store.getActiveProfile() ?: return
+        var changed = false
+        for (s in found) {
+            if (sessionEqs.containsKey(s.sessionId)) continue
+            val pkg = packageManager.getPackagesForUid(s.uid ?: continue)?.firstOrNull() ?: continue
+            try {
+                val eq = Equalizer(PRIORITY, s.sessionId)
+                sessionEqs[s.sessionId] = Held(eq, pkg, discovered = true)
+                configure(eq, profile)
+                changed = true
+            } catch (e: Exception) {
+                Log.w(TAG, "Equalizer on discovered session ${s.sessionId} failed", e)
+                closeSession(s.sessionId)
+                report(
+                    "Could not correct ${label(pkg)} (found by DUMP discovery): ${e.message ?: e.javaClass.simpleName}",
+                    isError = true
+                )
+                return
+            }
+        }
+        val present = found.mapTo(mutableSetOf()) { it.sessionId }
+        for (session in sessionEqs.keys.toList()) {
+            val held = sessionEqs[session] ?: continue
+            if (held.discovered && session !in present) {
+                closeSession(session)
+                changed = true
+            }
+        }
+        if (changed) {
+            // The last player leaving is not "Correcting nobody": it is back
+            // to waiting, with the same words applyAll would use.
+            if (sessionEqs.isEmpty()) {
+                report(waitingStatus(), isError = false)
+            } else {
+                report(sessionReport(profile), isError = false)
+            }
+        }
+    }
+
+    /** The status line for whatever is attached right now, with its provenance. */
+    private fun sessionReport(profile: Profile?): String {
+        val held = sessionEqs.values.sortedBy { it.discovered }
+        if (held.isEmpty()) return waitingStatus()
+        val names = held.joinToString { label(it.pkg) }
+        val marker = if (held.any { it.discovered }) " · found by DUMP discovery" else ""
+        return "Correcting $names · ${profile?.name ?: "the active profile"}$marker"
     }
 
     private fun label(pkg: String): String = try {
@@ -353,6 +456,8 @@ class EqService : Service() {
         } catch (e: Exception) {
             Log.w(TAG, "Playback watcher was not registered", e)
         }
+        mainHandler.removeCallbacksAndMessages(null)
+        discoveryExecutor.shutdownNow()
         releaseSessions()
         globalEq?.release()
         globalEq = null
@@ -406,6 +511,9 @@ class EqService : Service() {
         private const val CHANNEL_ID = "core_eq_service_channel"
         private const val NOTIFICATION_ID = 1010
         private const val PRIORITY = 0
+
+        /** Playback changes coalesce into one re-discovery after this pause. */
+        private const val DISCOVERY_DEBOUNCE_MS = 2000L
 
         @Volatile
         var running = false

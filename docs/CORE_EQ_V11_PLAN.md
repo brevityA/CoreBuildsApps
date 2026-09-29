@@ -1,6 +1,6 @@
 # Core EQ v1.1 — reach every player
 
-*Status: proposed — awaiting maintainer green-light before implementation.*
+*Status: in progress — M5–M7 and M8's UI half landed; the rest is named below.*
 Builds on `docs/CORE_EQ_PLAN.md` §4 (the ladder), §8 (milestones) and §9.2
 (*decided: v1.1*): rung 2 of the capability ladder lands in v1.1 as an
 optional, clearly-labelled mode. This plan adds one scope decision made with
@@ -196,5 +196,23 @@ CI coverage, changelog contract, `:app:testDebugUnitTest`) plus:
 
 ## Receipt
 
-This document is the plan; the implementation receipt replaces this section
-when the maintainer green-lights M5.
+```
+python tools/core_eq_dsp.py --selftest        → all invariants hold
+python tests/test_core_eq_dsp.py              → 68 passed
+python tests/test_core_eq_parity.py           → OK
+python tools/build_core_eq_mockups.py --check → mockups ok - 4 frames match the sources
+suite gates (truth, changelog contract, CI coverage, envelope) → pass
+:app:testDebugUnitTest                        → runs in CI (core-eq-apk.yml) — no SDK in the agent sandbox
+```
+
+Landed: **M5** (grant check, `DumpsysSessions` + shapes + `DumpsysSessionsTest`),
+**M6 pure** (`BandMapping`, `LimiterSettings`, `DpMappingTest`),
+**M7** (rung selection: discovery attach/release rules, announced-wins
+upgrade, provenance in the status line, one-path invariant kept),
+**M8 UI half** (Capability grant row with the exact command; the rail gained
+a scroll boundary so the added row cannot clip a 540dp panel).
+
+Named, still open: **M6a** (the `DynamicsProcessing` spike on real hardware —
+the platform `Config.Builder`/`Limiter` construction is the part only a
+device can prove), **M8 pairing helper** (spike-gated; PC ADB alone is a
+complete rung 2 meanwhile), **M9** (version 1.1.0 + `coreeq-v1.1.0` tag).
