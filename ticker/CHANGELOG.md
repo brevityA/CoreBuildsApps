@@ -8,7 +8,7 @@ The repo-root `CHANGELOG.md` is the icon pack's. Core Line keeps its own here.
 
 ## [Unreleased]
 
-## [1.4.0] — 2026-09-28
+## [1.4.0] — 2026-09-29
 
 A structural release. The front end had grown into a single 1,340-line
 `public/js/app.js` and a 1,000-line `public/css/app.css`, and the audit's
