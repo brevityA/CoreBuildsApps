@@ -73,11 +73,37 @@ object OutputRoute {
         val devices = am.getDevices(AudioManager.GET_DEVICES_OUTPUTS).toList()
         val kind = pickKind(devices.map { it.type }) ?: return null
         val device = devices.firstOrNull { kindOf(it.type) == kind }
-        val product = device?.productName?.toString()?.trim().orEmpty()
-        // A built-in speaker reports the TV's model as its product name; only
-        // an external device's name tells the viewer something.
-        val name = if (kind == SPEAKER || product.isEmpty() || product == Build.MODEL) label(kind) else product
-        return Output(kind, name)
+        return Output(kind, displayName(kind, device?.productName?.toString()))
+    }
+
+    /** The name to show for an output: the device's own, unless it only repeats the TV's model. */
+    fun displayName(kind: String, product: String?, model: String = Build.MODEL): String {
+        val p = product?.trim().orEmpty()
+        return if (kind == SPEAKER || p.isEmpty() || p == model) label(kind) else p
+    }
+
+    /**
+     * What a measurement is tagged with.
+     *
+     * The key ([Output.kind]) is always [pickKind]'s answer: at play time
+     * Core EQ cannot see where another app's audio goes, only what is
+     * connected, so selection must use the same rule on both sides — then a
+     * setup always finds the profile measured in that setup, and that curve
+     * was measured on whatever that setup really plays through.
+     *
+     * The name is the truth where Android gives it: the device the sweep's own
+     * AudioTrack was routed to. When that differs from the ranked guess, the
+     * profile says what was actually measured ("TV speakers") rather than
+     * what was merely connected ("Sonos Beam").
+     */
+    fun tag(ranked: Output?, routedType: Int?, routedProduct: String?, model: String = Build.MODEL): Output? {
+        val routedKind = routedType?.let(::kindOf)
+        return when {
+            ranked == null && routedKind == null -> null
+            ranked == null -> Output(routedKind!!, displayName(routedKind, routedProduct, model))
+            routedKind == null -> ranked
+            else -> Output(ranked.kind, displayName(routedKind, routedProduct, model))
+        }
     }
 
     /** Why a profile was, or was not, picked for the current output. */

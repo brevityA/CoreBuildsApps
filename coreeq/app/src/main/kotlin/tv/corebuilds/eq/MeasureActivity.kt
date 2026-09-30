@@ -167,10 +167,18 @@ class MeasureActivity : TvActivity() {
         captureEngine.start(total, object : CaptureListener {
             override fun onRecording(deviceName: String?) {
                 micName = deviceName
-                // The sweep is about to play: this is the chain being measured.
-                measuredOutput = OutputRoute.current(this@MeasureActivity)
+                // The sweep is about to play: the chain being measured is what
+                // is connected now, named after the device the sweep reaches.
+                val ranked = OutputRoute.current(this@MeasureActivity)
+                measuredOutput = ranked
                 btnStart.postDelayed({
-                    if (measuring) stimulusPlayer.playSweep { msg -> runOnUiThread { fail(msg) } }
+                    if (measuring) stimulusPlayer.playSweep(
+                        onError = { msg -> runOnUiThread { fail(msg) } },
+                        onRouted = { device ->
+                            val tagged = OutputRoute.tag(ranked, device?.type, device?.productName?.toString())
+                            runOnUiThread { measuredOutput = tagged }
+                        }
+                    )
                 }, (LEAD_SECONDS * 1000).toLong())
             }
 

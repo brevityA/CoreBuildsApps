@@ -91,4 +91,31 @@ class OutputRouteTest {
         assertEquals("TV speakers", OutputRoute.label(SPEAKER))
         assertEquals("any output", OutputRoute.label(null))
     }
+
+    @Test
+    fun theKeyStaysTheRankedGuessButTheNameIsWhatTheSweepReached() {
+        // Soundbar connected, but this TV kept the sweep on its own speakers:
+        // the setup keys as ARC (so play time finds it in the same setup), and
+        // the profile says what was really measured.
+        val ranked = OutputRoute.Output(HDMI_ARC, "Sonos Beam")
+        val tagged = OutputRoute.tag(ranked, AudioDeviceInfo.TYPE_BUILTIN_SPEAKER, "MiTV", model = "MiTV")
+        assertEquals(HDMI_ARC, tagged?.kind)
+        assertEquals("TV speakers", tagged?.name)
+    }
+
+    @Test
+    fun whenAndroidDoesNotSayTheRankedGuessStands() {
+        val ranked = OutputRoute.Output(HDMI_ARC, "Sonos Beam")
+        assertEquals(ranked, OutputRoute.tag(ranked, null, null, model = "MiTV"))
+        assertEquals(ranked, OutputRoute.tag(ranked, AudioDeviceInfo.TYPE_REMOTE_SUBMIX, null, model = "MiTV"))
+        assertNull(OutputRoute.tag(null, null, null, model = "MiTV"))
+        assertEquals(BLUETOOTH, OutputRoute.tag(null, AudioDeviceInfo.TYPE_BLUETOOTH_A2DP, "Buds", model = "MiTV")?.kind)
+    }
+
+    @Test
+    fun aSpeakerNamedAfterTheTvIsCalledTvSpeakers() {
+        assertEquals("TV speakers", OutputRoute.displayName(SPEAKER, "MiTV", model = "MiTV"))
+        assertEquals("HDMI", OutputRoute.displayName(HDMI, "MiTV", model = "MiTV"))
+        assertEquals("Sonos Beam", OutputRoute.displayName(HDMI_ARC, " Sonos Beam ", model = "MiTV"))
+    }
 }
