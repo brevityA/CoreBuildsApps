@@ -53,6 +53,18 @@ The repo-root `CHANGELOG.md` is the icon pack's. Core Line keeps its own here.
   the top and the banner shows marks and score. `tests/layout.test.mjs`
   checks that every id the app looks up still exists after the move.
 
+### Fixed
+
+- **Playlist import works on the TV.** The APK never served `/api/playlist`
+  (the WebView client answers 404 for it), and a provider playlist is past the
+  1.5 MB proxy cap anyway, so Import failed on every Android install. The shell
+  now downloads and parses it (`PlaylistParser.kt`, held to the same answer as
+  `parseM3U` by `tests/fixtures/playlist-parity.m3u`), skips movie and series
+  entries before the 4000-channel cap, and keeps `tvg-id`/`tvg-name`. A
+  provider link is shown only as its host after import, and no error message
+  quotes one — including the dev server's, which could pass a fetch error
+  through.
+
 ## [1.4.1] — 2026-09-30
 
 ### Added
@@ -181,16 +193,6 @@ The repo-root `CHANGELOG.md` is the icon pack's. Core Line keeps its own here.
   — the pills, counts and labels are all derived from that one table.
 
 ### Fixed
-
-- **Playlist import works on the TV.** The APK never served `/api/playlist`
-  (the WebView client answers 404 for it), and a provider playlist is past the
-  1.5 MB proxy cap anyway, so Import failed on every Android install. The shell
-  now downloads and parses it (`PlaylistParser.kt`, held to the same answer as
-  `parseM3U` by `tests/fixtures/playlist-parity.m3u`), skips movie and series
-  entries before the 4000-channel cap, and keeps `tvg-id`/`tvg-name`. A
-  provider link is shown only as its host after import, and no error message
-  quotes one — including the dev server's, which could pass a fetch error
-  through.
 
 - **FCS college football shows up — including games on ESPN2.** A supporter
   reported that Harvard at Brown on ESPN2 (2026-09-25) never appeared. ESPN's
