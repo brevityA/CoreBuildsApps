@@ -118,4 +118,18 @@ class OutputRouteTest {
         assertEquals("HDMI", OutputRoute.displayName(HDMI, "MiTV", model = "MiTV"))
         assertEquals("Sonos Beam", OutputRoute.displayName(HDMI_ARC, " Sonos Beam ", model = "MiTV"))
     }
+
+    @Test
+    fun aMeasurementOnAnUnnamedOutputAppliesOnlyWhileItStaysUnnamed() {
+        // Never saved as null: null means "from before outputs were recorded"
+        // and applies everywhere, which would put this curve on a soundbar.
+        assertEquals(OutputRoute.UNKNOWN, OutputRoute.keyFor(null))
+        assertEquals(HDMI_ARC, OutputRoute.keyFor(OutputRoute.Output(HDMI_ARC, "Sonos Beam")))
+        val unnamed = profile("unnamed", 400, OutputRoute.UNKNOWN)
+        assertEquals("unnamed", OutputRoute.pick(listOf(unnamed), "unnamed", null).profile?.id)
+        assertNull(OutputRoute.pick(listOf(unnamed), "unnamed", HDMI_ARC).profile)
+        assertNull(OutputRoute.pick(listOf(unnamed), "unnamed", SPEAKER).profile)
+        // A real output finds its own profile past the unnamed one.
+        assertEquals("speakers", OutputRoute.pick(listOf(unnamed, speakers), "unnamed", SPEAKER).profile?.id)
+    }
 }

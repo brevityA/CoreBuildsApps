@@ -319,7 +319,7 @@ class MeasureActivity : TvActivity() {
             filters = r.filters,
             platformBands = bands,
             curve = r.centresHz.indices.map { CurvePoint(r.centresHz[it], r.measuredDb[it], r.correctionDb[it]) },
-            outputKind = output?.kind,
+            outputKind = OutputRoute.keyFor(output),
             outputName = output?.name
         )
         profileStore.saveProfile(profile, setAsActive = true)

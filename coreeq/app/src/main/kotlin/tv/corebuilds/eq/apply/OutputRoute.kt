@@ -32,6 +32,13 @@ object OutputRoute {
     const val BLUETOOTH = "bluetooth"
     const val USB = "usb"
     const val WIRED = "wired"
+    /**
+     * A measurement made where Android named no output Core EQ recognises.
+     * Unlike a profile from before outputs were recorded (null, applies
+     * everywhere), it applies only while the output is still unknown, and
+     * steps aside once Android reports a real one.
+     */
+    const val UNKNOWN = "unknown"
 
     data class Output(val kind: String, val name: String)
 
@@ -43,6 +50,7 @@ object OutputRoute {
         BLUETOOTH -> "Bluetooth"
         USB -> "USB audio"
         WIRED -> "Wired headphones or line out"
+        UNKNOWN -> "an output Android did not name"
         null -> "any output"
         else -> kind
     }
@@ -105,6 +113,9 @@ object OutputRoute {
             else -> Output(ranked.kind, displayName(routedKind, routedProduct, model))
         }
     }
+
+    /** The key a new measurement is saved under: never null, which is reserved for old profiles. */
+    fun keyFor(output: Output?): String = output?.kind ?: UNKNOWN
 
     /** Why a profile was, or was not, picked for the current output. */
     data class Pick(val profile: Profile?, val switched: Boolean)
