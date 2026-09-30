@@ -24,7 +24,8 @@ import {
   paintHealth, applyFavorites,
 } from './data/slate.js';
 import { startPair, stopPair } from './data/pairing.js';
-import { importPlaylist, clearPlaylist } from './data/playlist.js';
+import { importPlaylist, clearPlaylist, hydrateNativePlaylist } from './data/playlist.js';
+import { applyGuide, initGuide, refreshGuide, saveGuideUrl, clearGuideUrl } from './data/guide.js';
 import { watchEvent, loadInstalledApps } from './data/watch.js';
 import { addFeed } from './data/feeds.js';
 import { initToasts } from './ui/toast.js';
@@ -36,8 +37,8 @@ import { renderBoard } from './ui/board.js';
 import { initSearch, clearSearch, focusSearch } from './ui/search.js';
 import { openGameDetail, closeGameDetail, openMatched, watchDetail, watchDetailWeb, getDetailEvent } from './ui/detail.js';
 import {
-  applyChrome, openDrawer, activateDrawerSection, wireSettings, initSettings,
-  nudgeSpeed, nudgeOverscan, renderFeeds,
+  applyChrome, applyTicker, openDrawer, activateDrawerSection, wireSettings, initSettings,
+  nudgeSpeed, nudgeOverscan, nudgeVpnDot, renderFeeds,
 } from './ui/settings.js';
 import { maybeShowOnboarding, nextStep, finish as finishOnboarding } from './ui/onboarding.js';
 import { openCalibrate, closeCalibrate, isCalibrating } from './ui/calibrate.js';
@@ -98,6 +99,9 @@ function wireBus() {
   initSettings();
 
   on('slate', () => {
+    // Fold the TV guide in before anyone reads the slate: it names channels
+    // the scoreboards left blank and adds the games they do not list.
+    store.events = applyGuide(store.events);
     // Alerts first: they compare the new slate against the previous one, so
     // they have to run before anything else re-reads the store.
     noteScores(store.events);
@@ -149,6 +153,8 @@ const ACTIONS = {
   'speed-down': () => nudgeSpeed(-4),
   'overscan-up': () => nudgeOverscan(4),
   'overscan-down': () => nudgeOverscan(-4),
+  'vpn-dot-bright': () => nudgeVpnDot(5),
+  'vpn-dot-dim': () => nudgeVpnDot(-5),
   calibrate: openCalibrate,
   'calibrate-done': () => { closeCalibrate(); },
   'toggle-team': (el) => { toggleTeam(el.dataset.abbr); refocusTeam(el.dataset.abbr); },
@@ -165,6 +171,9 @@ const ACTIONS = {
   },
   'playlist-import': importPlaylist,
   'playlist-clear': clearPlaylist,
+  'guide-refresh': () => refreshGuide(true),
+  'guide-save': saveGuideUrl,
+  'guide-clear-url': clearGuideUrl,
   'drawer-section': (el) => activateDrawerSection(el.dataset.section),
   'check-updates': () => emit('check-updates'),
   'install-update': () => emit('install-update'),
@@ -199,6 +208,19 @@ function bindActions() {
   $('gameDetail')?.addEventListener('click', (event) => {
     if (event.target.id === 'gameDetail') closeGameDetail();
   });
+
+  // A team logo that fails to load — a dead CDN, a VPN that blocks it, a
+  // team with no art. The mark already falls back structurally (the monogram
+  // is under the logo), so this only tidies up after the browsers that paint
+  // a broken-image glyph, and drops the empty slot the compact form leaves.
+  //
+  // Capture phase on purpose: image `error` events do not bubble, but they do
+  // propagate down, so one listener at the document covers every mark the
+  // board will ever rebuild — including the ones the 12s rotation swaps in.
+  document.addEventListener('error', (event) => {
+    const img = event.target;
+    if (img?.classList?.contains('mark__img')) img.closest('.mark')?.classList.add('is-broken');
+  }, true);
 }
 
 function bindKeys() {
@@ -316,7 +338,9 @@ async function init() {
       tickClock();
     },
     onWake: () => {
-      getTicker()?.restart();
+      // Restart only a ticker that is meant to be on: restart() also starts
+      // one that the viewer has turned off.
+      if (!document.documentElement.hasAttribute('data-no-ticker')) getTicker()?.restart();
       loadSlate(false); // silent resume refresh — no toast spam on focus
     },
   });
@@ -326,6 +350,14 @@ async function init() {
   store.events = buildDemoSlate();
   render();
   startChyron();
+  applyTicker(); // stops the loop startChyron began if the ticker is off
+
+  // The guide and the shell's copy of the playlist are read before the first
+  // slate lands, so that slate is already merged rather than the next one.
+  if (isNativeShell() && !globalThis.CORELINE_OVERLAY) {
+    hydrateNativePlaylist();
+    initGuide();
+  }
 
   await loadSlate();
   armRefreshTimer();

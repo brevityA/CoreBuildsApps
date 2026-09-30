@@ -63,6 +63,10 @@ export function tickClock() {
   const opts = clockOptions(store.state.clockFmt);
   const now = new Date();
   setText('clock', now.toLocaleTimeString([], opts));
+  // The top bar keeps its own clock: with the ticker off by default, the
+  // chyron's clock is not on screen.
+  setText('topClock', now.toLocaleTimeString([], opts));
+  setText('topDate', now.toLocaleDateString([], { weekday: 'long', month: 'long', day: 'numeric' }));
   setText('bigTime', now.toLocaleTimeString([], opts));
   setText('bigDate', now.toLocaleDateString([], { weekday: 'long', month: 'long', day: 'numeric' }));
 }

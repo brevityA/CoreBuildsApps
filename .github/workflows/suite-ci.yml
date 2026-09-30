@@ -243,3 +243,51 @@ jobs:
           # job has no path filter, so it is the one place a new test can be
           # wired and be certain to run on every push and PR.
           python tests/test_ci_coverage.py
+
+  # A browser that actually exists. The authoring sandbox cannot run one — the
+  # Debian mirrors are blocked and Chromium's runtime libraries are absent, so a
+  # downloaded binary cannot start — and that matters because a
+  # Content-Security-Policy is the one change that fails *open* in a unit test
+  # and *closed* in a browser: a dropped or misspelled directive is silent, and
+  # the only witness is a request that never happens. The same is true of the
+  # true-black default (declared in the document, removed by script — two halves
+  # that can disagree) and of the banner's clock (it either advances or silently
+  # never fires).
+  #
+  # This runs the harness that has been in the repo all along
+  # (ticker/tests/smoke-updates.mjs) and that nothing invoked, which is how its
+  # waits on a `.game` selector the board no longer renders went unnoticed.
+  #
+  # Playwright's Chromium is installed per run rather than restored from a
+  # cache: a cached browser is a test against last week's engine.
+  ticker-browser:
+    name: Core Line browser (CSP, OLED, rotation)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 22
+
+      - name: Install Chromium
+        working-directory: ticker
+        # `playwright` rather than `playwright-core`: the harness drives the
+        # browser through playwright-core, but only the full package knows
+        # which revision it installed and can resolve its path for
+        # CHROMIUM_PATH.
+        run: |
+          npm install --no-save playwright@1.63.0
+          npx playwright install --with-deps chromium
+
+      - name: Serve the app and run the headless smoke
+        working-directory: ticker
+        run: |
+          export CHROMIUM_PATH="$(node -e "console.log(require('playwright').chromium.executablePath())")"
+          echo "chromium: $CHROMIUM_PATH"
+          node server.mjs &
+          for _ in $(seq 1 20); do
+            curl -sf -o /dev/null http://127.0.0.1:8787/ && break
+            sleep 1
+          done
+          node tests/smoke-updates.mjs

@@ -71,6 +71,9 @@ class ProfileStore(context: Context) {
         return all.firstOrNull { it.id == activeId } ?: all.firstOrNull()
     }
 
+    /** The id the viewer chose, which may not be the one applied on the current output. */
+    fun chosenId(): String? = prefs.getString(KEY_ACTIVE_ID, null)
+
     fun setActiveProfile(id: String) {
         prefs.edit().putString(KEY_ACTIVE_ID, id).apply()
     }
@@ -231,7 +234,10 @@ class ProfileStore(context: Context) {
             platformBands = bandsList,
             curve = curveList,
             capabilityVerdict = capMap,
-            measurementNotes = measurementNotes
+            measurementNotes = measurementNotes,
+            outputKind = obj.optJSONObject("output")?.optString("kind", "")?.takeIf { it.isNotBlank() },
+            outputName = obj.optJSONObject("output")?.let { o -> if (o.isNull("name")) null else o.optString("name") }
+                ?.takeIf { it.isNotBlank() }
         )
     }
 

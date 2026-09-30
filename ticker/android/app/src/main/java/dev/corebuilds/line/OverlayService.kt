@@ -22,51 +22,130 @@ import android.webkit.WebSettings
 import android.webkit.WebView
 
 /**
- * Floating ticker — the chyron drawn as a translucent, non-focusable,
- * touch-through overlay window above every other app.
+ * The always-on-top surfaces: the floating ticker (a WebView crawl) and the
+ * VPN status dot (a native view). One foreground service owns both, because
+ * Android wants one ongoing notification per app's overlay work, not two.
  *
- * It loads overlay.html, a crawl strip, not the full board. The strip is on
- * the same origin, so it can read the main app's localStorage (position,
+ * The ticker loads overlay.html, a crawl strip, not the full board. The strip
+ * is on the same origin, so it can read the main app's localStorage (position,
  * feeds, cached slate) without building the grid. Default edge is the bottom.
+ *
+ * The dot is independent: it can run with the ticker off (that is the normal
+ * case — you want to know your tunnel is up while someone else's app is on
+ * screen) and the ticker can run with the dot off. Each surface is rebuilt
+ * from [OverlayPrefs] when the service is restarted with a null intent, which
+ * is also what [BootReceiver] restores after a reboot.
  *
  * Supported on phone, tablet, and Android TV (Google TV, NVIDIA Shield, etc.)
  * where SYSTEM_ALERT_WINDOW is granted. Fire TV blocks overlay windows at the
- * OS level — the main app refuses to start the service on Fire TV devices.
+ * OS level — the main app refuses to start either surface on Fire TV devices.
  */
 class OverlayService : Service() {
     private var windowManager: WindowManager? = null
     private var webView: WebView? = null
     private var edge: String = "bottom"
 
-    override fun onBind(intent: Intent?): IBinder? = null
+    private var dotWindow: VpnDotWindow? = null
+    private var dotConfig: DotConfig = DotConfig.DEFAULT
+    private var watcher: VpnState.Watcher? = null
+    private val handler = Handler(Looper.getMainLooper())
 
-    override fun onCreate() {
-        super.onCreate()
-        startAsForeground()
+    /**
+     * The dot also re-reads its state on a timer. Network callbacks are the
+     * fast path; this is the floor under them, so a vendor ROM that drops a
+     * callback cannot leave a dot frozen in the wrong colour — the failure
+     * mode every review of the competing dots complains about.
+     */
+    private val dotRefresh = object : Runnable {
+        override fun run() {
+            val dot = dotWindow ?: return
+            dot.apply(VpnState.read(this@OverlayService).state)
+            handler.postDelayed(this, DOT_REFRESH_MS)
+        }
     }
 
+    override fun onBind(intent: Intent?): IBinder? = null
+
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        if (intent?.action == ACTION_STOP) {
+        // startForegroundService gives us seconds, not minutes, so the
+        // notification goes up before any work — even when the command that
+        // follows turns out to be "stop". A refused start is refused here, not
+        // at the call site: on Android 12+ the platform throws
+        // ForegroundServiceStartNotAllowedException from startForeground(), so
+        // a caller's try/catch cannot see it (boot restore is the case that
+        // matters). Stopping immediately is the documented remedy and beats
+        // crashing at boot.
+        if (!startAsForeground()) {
             stopSelf()
             return START_NOT_STICKY
         }
-        val requested = intent?.getStringExtra(EXTRA_POSITION)
-        if (requested == "top" || requested == "bottom") edge = requested
-        showOverlay()
+
+        val action = intent?.action
+        val dotPayload = intent?.getStringExtra(EXTRA_DOT_CONFIG)
+        var position = intent?.getStringExtra(EXTRA_POSITION)
+        if (position == null) position = OverlayPrefs(this).tickerPosition
+        if (position == "top" || position == "bottom") edge = position
+
+        when (action) {
+            ACTION_STOP -> {
+                stopTicker()
+                stopDot()
+            }
+            ACTION_STOP_TICKER -> stopTicker()
+            ACTION_STOP_DOT -> stopDot()
+            ACTION_START_DOT -> {
+                DotConfig.fromJson(dotPayload)?.let { dotConfig = it }
+                showDot()
+            }
+            ACTION_START_TICKER -> showTicker()
+            else -> {
+                // Null intent means the system restarted us; rebuild whatever
+                // the viewer had running rather than assuming the ticker.
+                if (intent == null && !tickerRunning && !dotRunning) {
+                    val prefs = OverlayPrefs(this)
+                    prefs.readDotConfig()?.let {
+                        dotConfig = it
+                        showDot()
+                    }
+                } else {
+                    showTicker()
+                }
+            }
+        }
+
+        if (!tickerRunning && !dotRunning) {
+            stopSelf()
+            return START_NOT_STICKY
+        }
+        updateNotification()
         return START_STICKY
     }
 
-    private fun startAsForeground() {
-        val stopIntent = PendingIntent.getService(
-            this, 1,
-            Intent(this, OverlayService::class.java).setAction(ACTION_STOP),
-            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE,
-        )
+    private fun asPendingIntent(action: String): PendingIntent = PendingIntent.getService(
+        this, 1,
+        Intent(this, OverlayService::class.java).setAction(action),
+        PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE,
+    )
+
+    private fun notificationText(): String = when {
+        tickerRunning && dotRunning -> getString(R.string.overlay_text_both)
+        dotRunning -> getString(R.string.overlay_text_dot)
+        else -> getString(R.string.overlay_text_ticker)
+    }
+
+    private fun notificationTitle(): String = when {
+        tickerRunning && dotRunning -> getString(R.string.overlay_title_both)
+        dotRunning -> getString(R.string.overlay_title_dot)
+        else -> getString(R.string.overlay_title_ticker)
+    }
+
+    private fun buildNotification(): Notification {
+        val stopIntent = asPendingIntent(ACTION_STOP)
         val channelId = "coreline.overlay"
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val nm = getSystemService(NotificationManager::class.java)
             nm?.createNotificationChannel(
-                NotificationChannel(channelId, "Floating ticker", NotificationManager.IMPORTANCE_LOW),
+                NotificationChannel(channelId, getString(R.string.overlay_channel), NotificationManager.IMPORTANCE_LOW),
             )
         }
         val note = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -76,17 +155,44 @@ class OverlayService : Service() {
             Notification.Builder(this)
         }
             .setSmallIcon(dev.corebuilds.line.R.drawable.ic_notification)
-            .setContentTitle("Core Line ticker")
-            .setContentText("Running over your apps — tap to stop")
+            .setContentTitle(notificationTitle())
+            .setContentText(notificationText())
             .setOngoing(true)
             .setContentIntent(stopIntent)
-            .addAction(0, "Stop", stopIntent)
+            .addAction(0, getString(R.string.overlay_stop), stopIntent)
             .build()
-        startForeground(OVERLAY_NOTIFICATION_ID, note)
+        return note
     }
 
-    private fun showOverlay() {
-        if (windowManager != null && webView != null) {
+    /** False when the platform refused a background start; the caller stops. */
+    private fun startAsForeground(): Boolean {
+        return try {
+            startForeground(OVERLAY_NOTIFICATION_ID, buildNotification())
+            true
+        } catch (err: IllegalStateException) {
+            // ForegroundServiceStartNotAllowedException extends
+            // IllegalStateException, and is an API 31 class this minSdk 24
+            // build must not name.
+            false
+        } catch (err: Exception) {
+            // Notification permission revoked, or a vendor ROM's own refusal.
+            false
+        }
+    }
+
+    private fun updateNotification() {
+        try {
+            val nm = getSystemService(NotificationManager::class.java)
+            nm?.notify(OVERLAY_NOTIFICATION_ID, buildNotification())
+        } catch (err: Exception) {
+            // Notification permission revoked mid-flight; the surfaces still work.
+        }
+    }
+
+    // ---- Ticker -----------------------------------------------------------
+
+    private fun showTicker() {
+        if (webView != null) {
             applyEdge(edge)
             return
         }
@@ -138,14 +244,92 @@ class OverlayService : Service() {
             wm.addView(wv, params)
         } catch (err: Exception) {
             wv.destroy() // clean up before stopping so no WebView leaks
-            stopSelf() // permission was revoked mid-flight
-            return
+            return // permission was revoked mid-flight
         }
         webView = wv
         windowManager = wm
-        running = true
+        tickerRunning = true
         instance = this
+        OverlayPrefs(this).let {
+            it.ticker = true
+            it.tickerPosition = edge
+        }
     }
+
+    private fun stopTicker() {
+        val wv = webView ?: return
+        webView = null
+        tickerRunning = false
+        try {
+            windowManager?.removeView(wv)
+        } catch (err: Exception) {
+            /* already detached */
+        }
+        wv.removeJavascriptInterface("CoreLineNative")
+        wv.destroy()
+        windowManager = null
+        OverlayPrefs(this).ticker = false
+    }
+
+    // ---- VPN dot ----------------------------------------------------------
+
+    private fun showDot() {
+        if (!android.provider.Settings.canDrawOverlays(this)) {
+            // Permission was revoked (or the boot restore ran on a device where
+            // it never existed). Drop the surface but keep the stored setting:
+            // forgetting it here would silently lose the viewer's choice, and
+            // re-granting the permission should bring the dot back.
+            handler.removeCallbacks(dotRefresh)
+            watcher?.stop()
+            watcher = null
+            dotWindow?.hide()
+            dotWindow = null
+            dotRunning = false
+            return
+        }
+        val window = dotWindow ?: VpnDotWindow(this).also { dotWindow = it }
+        window.configure(dotConfig)
+        if (!window.show()) {
+            stopDot()
+            return
+        }
+        window.apply(VpnState.read(this).state)
+        dotRunning = true
+        instance = this
+        OverlayPrefs(this).writeDotConfig(dotConfig)
+
+        watcher?.stop()
+        // Connectivity callbacks arrive on a binder thread, and a View may only
+        // be touched from the UI thread (View.invalidate() is explicitly
+        // UI-thread-only), so the update hops through the main handler.
+        val watch = VpnState.Watcher(this) { snapshot ->
+            handler.post { dotWindow?.apply(snapshot.state) }
+        }
+        watcher = if (watch.start()) watch else null
+
+        handler.removeCallbacks(dotRefresh)
+        handler.postDelayed(dotRefresh, DOT_REFRESH_MS)
+    }
+
+    private fun stopDot() {
+        handler.removeCallbacks(dotRefresh)
+        watcher?.stop()
+        watcher = null
+        dotWindow?.hide()
+        dotWindow = null
+        dotRunning = false
+        OverlayPrefs(this).clearDot()
+    }
+
+    /** Live re-shape from the settings drawer, without dropping the window. */
+    fun applyDotConfig(next: DotConfig) {
+        dotConfig = next
+        val window = dotWindow ?: return
+        window.configure(next)
+        OverlayPrefs(this).writeDotConfig(next)
+    }
+
+    // ---- Shared -----------------------------------------------------------
 
     fun applyEdge(next: String) {
         val edgeName = if (next == "top") "top" else "bottom"
@@ -164,7 +348,7 @@ class OverlayService : Service() {
                 /* window already gone */
             }
         }
-        if (Looper.myLooper() == Looper.getMainLooper()) run.run() else Handler(Looper.getMainLooper()).post(run)
+        if (Looper.myLooper() == Looper.getMainLooper()) run.run() else handler.post(run)
     }
 
     private fun gravityFor(edgeName: String): Int {
@@ -173,8 +357,14 @@ class OverlayService : Service() {
     }
 
     override fun onDestroy() {
-        running = false
+        tickerRunning = false
+        dotRunning = false
         if (instance === this) instance = null
+        handler.removeCallbacks(dotRefresh)
+        watcher?.stop()
+        watcher = null
+        dotWindow?.hide()
+        dotWindow = null
         try {
             webView?.let { windowManager?.removeView(it) }
         } catch (_: Exception) {
@@ -200,19 +390,34 @@ class OverlayService : Service() {
     }
 
     companion object {
+        const val ACTION_START_TICKER = "dev.corebuilds.line.OVERLAY_START"
+        const val ACTION_STOP_TICKER = "dev.corebuilds.line.OVERLAY_STOP_TICKER"
+        const val ACTION_START_DOT = "dev.corebuilds.line.VPN_DOT_START"
+        const val ACTION_STOP_DOT = "dev.corebuilds.line.VPN_DOT_STOP"
+
+        /** Stops every surface. Kept for the notification's action and older callers. */
         const val ACTION_STOP = "dev.corebuilds.line.OVERLAY_STOP"
         const val EXTRA_POSITION = "dev.corebuilds.line.OVERLAY_POSITION"
+        const val EXTRA_DOT_CONFIG = "dev.corebuilds.line.VPN_DOT_CONFIG"
         const val OVERLAY_NOTIFICATION_ID = 42
 
+        private const val DOT_REFRESH_MS = 15_000L
+
+        /** The ticker strip is up. What `overlayActive()` on the bridge reports. */
         @Volatile
-        var running = false
+        var tickerRunning = false
+            private set
+
+        /** The VPN status dot is up. */
+        @Volatile
+        var dotRunning = false
             private set
 
         @Volatile
         private var instance: OverlayService? = null
 
-        fun start(context: Context, position: String? = null) {
-            val intent = Intent(context, OverlayService::class.java)
+        fun startTicker(context: Context, position: String? = null) {
+            val intent = Intent(context, OverlayService::class.java).setAction(ACTION_START_TICKER)
             if (position == "top" || position == "bottom") {
                 intent.putExtra(EXTRA_POSITION, position)
             }
@@ -223,12 +428,47 @@ class OverlayService : Service() {
             }
         }
 
-        fun setEdge(edge: String) {
-            instance?.applyEdge(edge)
+        fun stopTicker(context: Context) {
+            val intent = Intent(context, OverlayService::class.java).setAction(ACTION_STOP_TICKER)
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                context.startForegroundService(intent)
+            } else {
+                context.startService(intent)
+            }
         }
 
-        fun stop(context: Context) {
-            context.stopService(Intent(context, OverlayService::class.java))
+        /**
+         * Brings the dot up. The caller has already checked
+         * Settings.canDrawOverlays(); this is the one path that also runs
+         * from a boot broadcast, where no activity exists to ask.
+         */
+        fun startDot(context: Context, config: DotConfig) {
+            val intent = Intent(context, OverlayService::class.java)
+                .setAction(ACTION_START_DOT)
+                .putExtra(EXTRA_DOT_CONFIG, config.toJson())
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                context.startForegroundService(intent)
+            } else {
+                context.startService(intent)
+            }
+        }
+
+        fun stopDot(context: Context) {
+            val intent = Intent(context, OverlayService::class.java).setAction(ACTION_STOP_DOT)
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                context.startForegroundService(intent)
+            } else {
+                context.startService(intent)
+            }
+        }
+
+        /** Re-shape a running dot (corner, opacity, blink) without a restart. */
+        fun applyDotConfig(config: DotConfig) {
+            instance?.applyDotConfig(config)
+        }
+
+        fun setEdge(edge: String) {
+            instance?.applyEdge(edge)
         }
     }
 }

@@ -13,6 +13,8 @@ import android.content.IntentFilter
 import android.content.pm.PackageManager
 import android.content.pm.ServiceInfo
 import android.media.AudioAttributes
+import android.media.AudioDeviceCallback
+import android.media.AudioDeviceInfo
 import android.media.AudioManager
 import android.media.AudioPlaybackConfiguration
 import android.media.audiofx.AudioEffect
@@ -41,6 +43,11 @@ import kotlin.math.roundToInt
  * the background), it registers for the players' audio-session broadcasts
  * itself: implicit broadcasts no longer reach manifest receivers, so a
  * receiver that lives in the manifest would never hear them.
+ *
+ * Correction follows the output ([OutputRoute]): each profile belongs to the
+ * chain it was measured on, the device callback re-picks when a soundbar or
+ * headphones come and go, and an output nothing was measured on gets no
+ * correction rather than another chain's.
  *
  * Two correction scopes, never both at once (that would correct twice):
  * - **Whole TV** – an effect on the output mix (session 0), where firmware allows it.
@@ -81,6 +88,8 @@ class EqService : Service() {
     private var globalEffect: AppliedEffect? = null
     private var globalError: String? = null
     private var suspended = false
+    /** True while the current output has no profile of its own: effects are held, disabled. */
+    private var outputPaused = false
 
     // The last words report() chose, and what publish() last put on screen, so
     // a playback change can re-publish the same status with (or without) the
@@ -129,6 +138,20 @@ class EqService : Service() {
         }
     }
 
+    /** Plugging in a soundbar or headphones changes which profile is right. */
+    private val deviceCallback = object : AudioDeviceCallback() {
+        override fun onAudioDevicesAdded(addedDevices: Array<out AudioDeviceInfo>) = onOutputsChanged()
+        override fun onAudioDevicesRemoved(removedDevices: Array<out AudioDeviceInfo>) = onOutputsChanged()
+    }
+    private var lastKind: String? = null
+
+    private fun onOutputsChanged() {
+        val kind = OutputRoute.current(this)?.kind
+        if (kind == lastKind) return // an input, or a second device of the same kind
+        lastKind = kind
+        applyAll()
+    }
+
     override fun onCreate() {
         super.onCreate()
         store = ProfileStore(this)
@@ -162,6 +185,9 @@ class EqService : Service() {
         } catch (e: Exception) {
             Log.w(TAG, "Playback watcher refused; the playing marker is off", e)
         }
+        lastKind = OutputRoute.current(this)?.kind
+        // Registering delivers the current devices once; lastKind makes that a no-op.
+        getSystemService(AudioManager::class.java)?.registerAudioDeviceCallback(deviceCallback, Handler(Looper.getMainLooper()))
         running = true
     }
 
@@ -187,13 +213,44 @@ class EqService : Service() {
         return START_STICKY
     }
 
+    /** The profile for the output playing now, and that output. */
+    private fun resolve(): Triple<Profile?, OutputRoute.Output?, Boolean> {
+        val output = OutputRoute.current(this)
+        val pick = OutputRoute.pick(store.getAllProfiles(), store.chosenId(), output?.kind)
+        return Triple(pick.profile, output, pick.switched)
+    }
+
+    /** " · on Sonos Beam", plus the passthrough caveat where it applies. */
+    private fun where(output: OutputRoute.Output?): String {
+        if (output == null) return ""
+        val passthrough = if (OutputRoute.mayPassThrough(this, output.kind)) {
+            ". Dolby and DTS sent to it as a bitstream bypass any on-device EQ; set Surround sound to PCM to correct them"
+        } else {
+            ""
+        }
+        return " · on ${output.name}$passthrough"
+    }
+
     private fun applyAll() {
         if (suspended) return
-        val profile = store.getActiveProfile()
-        if (profile == null) {
+        if (store.getAllProfiles().isEmpty()) {
             report("No measurement yet. Measure this room to create a correction.", isError = true)
             return
         }
+        val (profile, output, switched) = resolve()
+        if (profile == null) {
+            // Another chain's curve would be wrong here: step aside, say why.
+            outputPaused = true
+            setAllEnabled(false)
+            report(
+                "Nothing measured on ${OutputRoute.label(output?.kind)} yet, so correction is paused there. " +
+                    "Measure with it playing, or switch back to an output you measured.",
+                isError = false
+            )
+            return
+        }
+        val via = if (switched) " (this output's own profile)" else ""
+        outputPaused = false
 
         var createdGlobalNow = false
         if (globalEffect == null && globalError == null) {
@@ -213,7 +270,7 @@ class EqService : Service() {
                 globalEffect = configured
                 syncRuntimeBands()
                 report(
-                    "Correcting the whole TV · ${configured.engine} · ${profile.name} · ${configured.bands.size} bands",
+                    "Correcting the whole TV · ${configured.engine} · ${profile.name}$via · ${configured.bands.size} bands${where(output)}",
                     isError = false
                 )
                 releaseSessions() // the whole-TV path already covers them
@@ -239,7 +296,7 @@ class EqService : Service() {
         syncRuntimeBands()
         when {
             failed != null -> report(failed, isError = true)
-            sessionEqs.isNotEmpty() -> report(sessionReport(profile), isError = false)
+            sessionEqs.isNotEmpty() -> report(sessionReport(profile, via, output), isError = false)
             else -> {
                 if (DumpsysDiscovery.hasGrant(this)) scheduleDiscovery(0L)
                 report(waitingStatus(), isError = false)
@@ -264,7 +321,12 @@ class EqService : Service() {
     private fun openSession(session: Int, pkg: String) {
         store.noteSessionPackage(pkg)
         if (globalEffect != null) return // already corrected by the whole-TV path
-        val profile = store.getActiveProfile() ?: return
+        if (store.getAllProfiles().isEmpty()) return
+        val (picked, output, _) = resolve()
+        // An output nothing was measured on still gets the session held, just
+        // disabled, so an output change or a resume can apply it later. The
+        // effect needs some curve to be built with; it is never enabled with it.
+        val profile = picked ?: store.getActiveProfile() ?: return
         val previous = sessionEqs[session]
         try {
             // A discovered session a player just announced is upgraded, not
@@ -274,11 +336,11 @@ class EqService : Service() {
             val name = pkg.ifBlank { previous?.pkg ?: "" }
             sessionEqs[session] = Held(applied, name, discovered = false)
             syncRuntimeBands()
-            if (suspended) {
+            if (suspended || picked == null) {
                 applied.effect.setEnabled(false)
             } else {
                 report(
-                    "Correcting ${label(name)} · ${applied.engine} · ${profile.name} · ${applied.bands.size} bands",
+                    "Correcting ${label(name)} · ${applied.engine} · ${profile.name} · ${applied.bands.size} bands${where(output)}",
                     isError = false
                 )
             }
@@ -446,7 +508,12 @@ class EqService : Service() {
      */
     private fun applyDiscovered(found: List<DiscoveredSession>) {
         if (!running || suspended || globalEffect != null) return
-        val profile = store.getActiveProfile() ?: return
+        // The same output-aware pick as applyAll: an output nothing was
+        // measured on gets no discovered sessions attached, not another
+        // output's curve. An output change re-runs applyAll, which re-runs this.
+        val (profile, output, switched) = resolve()
+        if (profile == null) return
+        val via = if (switched) " (this output's own profile)" else ""
         var changed = false
         // One player refusing an equaliser must not stop the others being
         // attached, or stale sessions below being released: remember the
@@ -481,19 +548,19 @@ class EqService : Service() {
             if (sessionEqs.isEmpty()) {
                 report(waitingStatus(), isError = false)
             } else {
-                report(sessionReport(profile), isError = false)
+                report(sessionReport(profile, via, output), isError = false)
             }
         }
     }
 
     /** The status line for whatever is attached right now, with its provenance. */
-    private fun sessionReport(profile: Profile?): String {
+    private fun sessionReport(profile: Profile?, via: String = "", output: OutputRoute.Output? = null): String {
         val held = sessionEqs.values.sortedBy { it.discovered }
         if (held.isEmpty()) return waitingStatus()
         val names = held.joinToString { label(it.pkg) }
         val engines = held.map { it.applied.engine }.distinct().joinToString(" + ")
         val marker = if (held.any { it.discovered }) " · found by DUMP discovery" else ""
-        return "Correcting $names · $engines · ${profile?.name ?: "the active profile"}$marker"
+        return "Correcting $names · $engines · ${profile?.name ?: "the active profile"}$via$marker${where(output)}"
     }
 
     private fun label(pkg: String): String = try {
@@ -513,7 +580,7 @@ class EqService : Service() {
      */
     private fun publish(configs: List<AudioPlaybackConfiguration>? = null) {
         if (!running || messageBody.isEmpty()) return
-        val playingNow = !suspended && !messageError && globalEffect != null && audioIsPlaying(configs)
+        val playingNow = !suspended && !outputPaused && !messageError && globalEffect != null && audioIsPlaying(configs)
         val shown = if (playingNow) "▶ Playing · $messageBody" else messageBody
         if (shown == lastShown && playingNow == lastPlaying) return
         lastShown = shown
@@ -583,6 +650,7 @@ class EqService : Service() {
         }
         mainHandler.removeCallbacksAndMessages(null)
         discoveryExecutor.shutdownNow()
+        getSystemService(AudioManager::class.java)?.unregisterAudioDeviceCallback(deviceCallback)
         releaseSessions()
         globalEffect?.let(::releaseApplied)
         globalEffect = null

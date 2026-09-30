@@ -1,7 +1,7 @@
-const CACHE = 'core-line-v1';
+const CACHE = 'core-line-v2';
 const SHELL = [
   './', './index.html', './css/app.css',
-  './js/app.js', './js/tv.js', './js/state.js', './js/qr.js',
+  './js/boot.js', './js/app.js', './js/tv.js', './js/state.js', './js/qr.js',
   './icon.svg',
   '/lib/parser.mjs', '/lib/scoreboard.mjs', '/lib/client-slate.mjs',
   '/lib/channels.mjs', '/lib/teams.mjs',

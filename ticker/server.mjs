@@ -4,7 +4,7 @@ import { readFile, stat } from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-import { LEAGUES, DEFAULT_LEAGUES, espnScoreboardUrl, eventsFromEspn, eventsFromNhl, eventsFromMlb, buildDemoSlate, mergeEvents } from './lib/scoreboard.mjs';
+import { LEAGUES, DEFAULT_LEAGUES, espnScoreboardUrl, loadEspnLeague, eventsFromEspn, eventsFromNhl, eventsFromMlb, buildDemoSlate, mergeEvents } from './lib/scoreboard.mjs';
 import { fetchFeed, fetchJson } from './lib/rss.mjs';
 import { isSafeFeedUrl } from './lib/ssrf.mjs';
 import { parseFeed } from './lib/parser.mjs';
@@ -169,7 +169,9 @@ async function fetchPlaylist(url) {
     if (!parsed.ok) return { ok: false, error: parsed.error || 'unparseable playlist', count: 0, channels: [] };
     return { ok: true, count: parsed.count, channels: parsed.channels };
   } catch (err) {
-    const message = err?.name === 'AbortError' ? 'playlist timed out' : (err?.message || 'fetch failed');
+    // Fixed phrases only: some fetch errors quote the URL, and a playlist URL
+    // carries the provider account.
+    const message = err?.name === 'AbortError' ? 'playlist timed out' : 'could not download the playlist';
     return { ok: false, error: message, count: 0, channels: [] };
   } finally {
     clearTimeout(timer);
@@ -218,8 +220,7 @@ async function getScoreboard(leagues) {
 
 async function fetchLeagueServer(id) {
   try {
-    const data = await fetchJson(espnScoreboardUrl(id));
-    const events = eventsFromEspn(data, id);
+    const events = await loadEspnLeague(id, fetchJson);
     return { ok: true, events, report: { id, provider: 'espn', ok: true, count: events.length } };
   } catch (err) {
     if (id === 'nhl') {

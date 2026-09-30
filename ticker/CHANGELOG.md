@@ -8,6 +8,229 @@ The repo-root `CHANGELOG.md` is the icon pack's. Core Line keeps its own here.
 
 ## [Unreleased]
 
+### Added
+
+- **Your TV guide as a second listings source (Android app).** Supporter
+  feedback (2026-09-29): Sky, the BBC, CFL on TSN and ESPN's conference
+  networks carry games the scoreboards never list, and "if you do EPG it will
+  need a way to refresh that data". Settings → Channels → TV guide uses the
+  XMLTV link the playlist names (`url-tvg`), or one the viewer pastes. It
+  refreshes on open when 6 hours old or from another day, then every 6 hours,
+  plus a Refresh button; today and tomorrow only. Three jobs:
+  - *Match my channels:* a scoreboard game the guide lists gets the exact
+    channels airing it, shown first in Game Detail as `GUIDE` rows.
+  - *Fix bad names:* guide channels join the playlist by `tvg-id`, and by
+    cleaned name when the ids are missing or disagree.
+  - *Add missing games:* live events only the guide has get their own cards
+    and an "On TV" tab — as a matchup when the title parses ("Arsenal v
+    Chelsea", "Chiefs @ Bills"), otherwise as the title. Repeats, highlights,
+    news and studio shows are left out; at most 60 are added.
+
+  The importer (`Importer.kt`, `GuideParser.kt`) streams the file and keeps
+  only two days of sport — past 12,000 listings, the soonest. A generated
+  120 MB guide parses in 1.9 s with a ~44 MB heap delta, 300 MB in 3.5 s (JVM
+  on a build machine, not a TV box). Files that would exhaust a TV's memory —
+  entity declarations, a single line or text node the size of the file, a
+  gzip bomb — fail the import with a named reason instead. Judgement and
+  merging live in `lib/guide.mjs` (`tests/guide.test.mjs`).
+
+- **A TV-first home screen.** Supporter feedback (2026-09-29): "you can only
+  see one event when opening", with a reference layout — settings on the left,
+  a banner of what is live, pills for the sports, and everything upcoming and
+  live below. The 300dp rail that carried the brand, counts, health, My Teams
+  and the league list is now an 80dp icon rail (Refresh, Ticker only,
+  Settings), and the stage gets a fixed header — a one-line top bar (Today,
+  the Live/Up counts, a health dot, search, a clock of its own now the ticker
+  is off by default) and the sport pills in a scrolling row — over a body that
+  scrolls. The banner is one match line, away | score | home, with the
+  status, channels and Watch on the line above it. Cards lead with the
+  channel as a footer band, show the local start time instead of "UP", and
+  lose their second Watch button (Watch is one OK away in Game Detail).
+  Measured at 960x540 — a 1080p panel — the header, pills, banner and the
+  first row of three cards share one screen, where before only the banner
+  and a one-card-wide board did; 1920 fits five cards a row. The section
+  labels step aside on that panel. On a phone the rail becomes a row across
+  the top and the banner shows marks and score. `tests/layout.test.mjs`
+  checks that every id the app looks up still exists after the move.
+
+### Fixed
+
+- **Playlist import works on the TV.** The APK never served `/api/playlist`
+  (the WebView client answers 404 for it), and a provider playlist is past the
+  1.5 MB proxy cap anyway, so Import failed on every Android install. The shell
+  now downloads and parses it (`PlaylistParser.kt`, held to the same answer as
+  `parseM3U` by `tests/fixtures/playlist-parity.m3u`), skips movie and series
+  entries before the 4000-channel cap, and keeps `tvg-id`/`tvg-name`. A
+  provider link is shown only as its host after import, and no error message
+  quotes one — including the dev server's, which could pass a fetch error
+  through.
+
+## [1.4.1] — 2026-09-30
+
+### Added
+
+- **The scrolling ticker can be turned off, and a fresh install starts with it
+  off.** Settings → Ticker & display → Scrolling ticker. With it off, the
+  chyron's row collapses and the board takes the height, keeping the overscan
+  guard at the bottom edge. A hidden ticker is also a stopped one, so it costs
+  nothing and the frozen-ribbon watchdog does not restart it. An install from
+  before this setting keeps its ticker on, because that is what the viewer has
+  been looking at; crawl mode and the phone's floating overlay always show it.
+  `lib/chrome.mjs`, `tests/chrome.test.mjs`.
+
+- **A VPN status dot over every other app.** Android TV has no status bar, so
+  once a stream is playing there is no way to tell whether the VPN is still up
+  — you have to leave the game and open its app to find out. Settings → Ticker
+  & display now offers a small dot in the corner of the screen: green when a
+  tunnel is up and Core Line's traffic is inside it, amber when a tunnel is up
+  but this app is outside it (per-app VPN), red when there is no tunnel. Corner,
+  brightness, hide-while-healthy and pulse-on-fault are the viewer's choice, it
+  respects the panel's calibrated overscan, and it survives a reboot. It runs
+  on the same foreground service as the ticker but independently of it — either
+  surface can be on alone. Detection is `NetworkCapabilities.TRANSPORT_VPN` on
+  the active network; the dot names the *state*, never the provider, because
+  `getOwnerUid()` is only readable by the VPN's own app, and it does not treat
+  `NET_CAPABILITY_VALIDATED` as a colour, because local VPNs report validation
+  with no upstream connection at all. `lib/vpn.mjs`, `tests/vpn.test.mjs`,
+  `VpnState.kt`/`VpnDotView.kt`/`VpnDotWindow.kt`/`BootReceiver.kt`, and
+  `tests/vpn-ui.test.mjs` for the markup/model/bridge seams. Research:
+  `docs/research/core-line-vpn-dot-android-tv-2026-09-29.md`.
+
+- **Team logos.** Every scoreboard source has carried a `logo` on each
+  competitor since it was written, and no view ever drew one — the hero, the
+  cards and the game detail all printed an abbreviation and nothing else. They
+  are now rendered from whichever provider served the event — ESPN (which
+  covers the NBA, NFL, MLB, college and soccer) and the NHL — in two shapes: a
+  large mark over
+  the abbreviation in the hero and the game detail (the team's name is spelled
+  out beside it, so covering the monogram costs nothing), and a small mark
+  *beside* the abbreviation on the cards, because a 26px logo is a colour cue
+  rather than text and the letters are what a viewer reads from a couch.
+
+  The fallback is structural rather than a handler: the monogram is painted
+  first and the logo over it, so a dead CDN, a blocked host, a refused URL or a
+  document with no JavaScript all land on a readable mark. There is no inline
+  `onerror=` — see the policy below — only one capture-phase `error` listener
+  for the whole app, which drops the empty slot a failed image leaves in the
+  compact form. `lib/logos.mjs`, `lib/team-rows.mjs`, `tests/logos.test.mjs`.
+
+  Corrections from the review that followed, each verified against the live
+  endpoints rather than recalled:
+
+  - **The plate now follows the artwork.** One plate colour for every source
+    was not a guarantee, it was half a guarantee. ESPN draws its scoreboard
+    marks for a dark UI; the NHL publishes only `assets.nhle.com/.../_light.svg`,
+    the *dark-ink* variant drawn for a light background — so on a dark plate the
+    league this app's supporter names first would have rendered as a smudge.
+    `logoPlate()` reads the variant out of the URL and the CSS paints a light or
+    dark plate to match, in both mark forms.
+  - **Scores are escaped.** The two row builders this change merged into one
+    place interpolated `team.score` raw. A score reads like a number, so it is
+    easy to miss that it arrived from a third party — a hostile or malformed
+    payload could put markup in the document, in an app that now ships a CSP
+    partly as defence against exactly that. The rows moved to
+    `lib/team-rows.mjs` so a test can *execute* them and assert a hostile score
+    comes out inert, which reading the source for `esc(` never could.
+  - **`mlbstatic.com` is no longer allowlisted**, because nothing ever built a
+    URL on it: `eventsFromMlb` sets `logo: null` and MLB reaches ESPN first. An
+    allowlist entry nothing uses is surface with no benefit, and it made the
+    "ESPN, the NHL and MLB" claim read as true when the statsapi fallback
+    supplies no logo at all. That claim is now the accurate one above.
+  - **A logo URL can no longer carry credentials or a non-standard port.** It
+    was accepted before, and the case was pinned by a test that asserted
+    nothing (`ESPN.endsWith('.png') ? X : null` — always `X`), which is how it
+    survived.
+  - **`data-oled` is declared statically on `<html>`.** It used to be applied
+    only by script, so the page painted the house near-black and then snapped to
+    true black. Invisible while the default was off; a flash on every boot once
+    it flipped to on, on the panels this feature exists for. `applyChrome()`
+    still removes it for a viewer who turned the option off.
+
+- **A Content-Security-Policy, and the decision written down.** The page now
+  ships a meta CSP rather than inheriting the browser's defaults. `script-src
+  'self'` is the load-bearing part, and it is why the boot guard moved out of
+  `index.html` into `js/boot.js`: keeping two inline `<script>` tags would have
+  meant allowing inline script, and any injected handler anywhere would then
+  run. `style-src` allows `'unsafe-inline'` because the app is built on inline
+  custom-property accents — declared in the policy's own comment rather than
+  discovered later. `img-src` names the logo CDNs, matching `LOGO_DOMAINS`, and
+  the test asserts they agree. `connect-src` stays open to http/https on
+  purpose: feeds are user input, so `lib/ssrf.mjs` is the control there, not a
+  directive that would break the app's main feature.
+
+  Both documents carry one — `index.html` and `overlay.html`, the strip that
+  floats over other apps — because a CSP does not inherit between documents.
+
+- **The banner rotates through what is live.** The hero tile used to be pinned
+  to the same game until it ended — on a Saturday with six games on, the other
+  five were only ever cards. It now moves through the slate every 12s, real
+  games ahead of feed listings. It deliberately stands still while a viewer has
+  focus on it (rotating then replaces the node they are on, and the focus ring
+  falls to the body mid-read), while the app is not visible, and when the
+  viewer has asked for reduced motion. The running order and the "may I move?"
+  rule are in `lib/hero.mjs` and unit-tested; the board only paints the pick.
+
+- **True black for OLED panels.** The house near-black (`#0B0B0D`) is a
+  deliberate choice on a backlit panel, where pure black is a hole. On an OLED
+  it is the opposite problem: every one of those pixels is still emitting, and
+  a full-screen field of it in a dark room reads as grey haze against a bezel
+  that is genuinely off. Settings → Appearance now offers *True black (OLED)*,
+  **on by default** — OLED sets are what this audience is buying, and on a
+  backlit panel `#000` costs almost nothing over the house near-black —
+  which drops the shell and the board's field to `#000000` and steps the
+  surfaces above it up the way Material's dark ramp does, so elevation — the
+  only thing keeping a focused card from dissolving into the field — survives.
+  It is applied as a `data-oled` attribute beside `data-theme` rather than as
+  a fifth theme, because it says nothing about the accent: broadcast red and
+  Core midnight both have to work on it. `tests/oled.test.mjs` parses the ramp
+  out of `tokens.css` and compares luminances, so raising the house ramp in
+  some later release cannot silently put the haze back.
+
+- **A College pill in the sport filter.** "Whatever college sport is on" was
+  two pills to check by hand. `sport:college` groups NCAA football and
+  basketball into one filter, so football Saturdays and March Madness both
+  answer to a single tap. It is a grouping in `SPORT_GROUPS`, not a new league
+  — the pills, counts and labels are all derived from that one table.
+
+### Fixed
+
+- **FCS college football shows up — including games on ESPN2.** A supporter
+  reported that Harvard at Brown on ESPN2 (2026-09-25) never appeared. ESPN's
+  college-football scoreboard returns only the top division (FBS) unless it is
+  asked for a group, so every FCS game was missing, whatever channel it was
+  on. Asking for all of Division I in one request (`groups=90`) returns about
+  1.7MB, over the 1.5MB feed cap on both the server and the Android proxy, so
+  the slate now asks for FBS (`groups=80`) and FCS (`groups=81`) separately —
+  about 1MB each — and merges them. On Saturday 2026-09-26 that is 116 games
+  where it was 65. One half failing still shows the other.
+  `espnScoreboardUrls()` / `loadEspnLeague()` in `lib/scoreboard.mjs`, used by
+  both `server.mjs` and `lib/client-slate.mjs`; `tests/espn-groups.test.mjs`.
+
+- **Channels whose whole name *is* a streaming tier now match.** The Tier 1
+  "network bug" comparison in the guide matched a playlist entry's channel name
+  against the badge the slate prints, which worked for broadcast networks and
+  silently failed for the tiers that only exist as a suffix: `ESPN+ 1`,
+  `SEC Network+`, `ACC Network Extra`, `Big Ten Network`, `Longhorn Network`.
+  Those rows simply never appeared under their network. The comparison now
+  collapses an entry to its tier (`ESPN+ 1` → `ESPN+`, `ESPN Unlimited` →
+  `ESPN+`) and expands the shorthand back to its brand before matching, with a
+  guard so that real channels that merely look numbered (`ESPN2`, `TSN4`,
+  `SN 3`, `F1`) are left exactly as they are. Dot-carrying names like `MLB.TV`
+  also survive the splitter now; they were being trimmed off the end of a
+  comma-separated list. `tests/niche-channels.test.mjs`.
+- **Team names show in the banner on a 1080p TV and on a phone.** A 1080p
+  panel reports 960 CSS px, so the board beside the rail is 544dp. With scores
+  on, the banner's Watch column took its content width and the team column got
+  4px: "Philadelphia Eagles" and "Chicago Bears" were not drawn at all. On a
+  phone they were 0px, because the phone layout for the banner sat in
+  `layout.css`, which loads before `components.css` and so never applied.
+  Below 1280 on a TV, and on a phone, the banner now stacks: teams across the
+  full width (280px of name at 960), then one row of channels and Watch. The
+  venue leaves that row, since beside three channels it came down to one
+  letter; Game Detail still shows it. At 960x540 the banner is
+  267px, so the first card stays above the chyron. With the banner now
+  rotating, this is the frame a viewer sees most.
+
 ## [1.4.0] — 2026-09-29
 
 A structural release. The front end had grown into a single 1,340-line

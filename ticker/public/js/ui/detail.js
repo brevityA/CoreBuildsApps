@@ -13,6 +13,11 @@ import { $, esc, setHidden } from '../core/dom.js';
 import { accentFor, statusOf, startLabel } from '../core/format.js';
 import { matchesFor, openMatchedChannel } from '../data/playlist.js';
 import { watchEvent, openWebForEvent } from '../data/watch.js';
+import { teamLine } from '/lib/team-rows.mjs';
+
+// Why a channel is listed: the guide says it airs this game; the network
+// name matches the broadcaster; or the team's name is in the channel name.
+const REASONS = { guide: 'GUIDE', network: 'NETWORK', team: 'TEAM' };
 
 let detailEvent = null;
 let detailMatches = [];
@@ -62,7 +67,7 @@ export function detailHtml(ev, matches) {
   const { badge, label } = statusOf(ev);
   const pills = (ev.channels || []).map((c) => `<span class="pill">${esc(c)}</span>`).join('');
   const teams = ev.away && ev.home
-    ? `<div class="teams">${teamRow(ev.away, ev)}${teamRow(ev.home, ev)}</div>`
+    ? `<div class="teams">${teamLine(ev.away, ev)}${teamLine(ev.home, ev)}</div>`
     : (ev.headline ? `<p class="hint">${esc(ev.headline)}</p>` : '');
 
   let channelBlock;
@@ -72,13 +77,13 @@ export function detailHtml(ev, matches) {
       <button class="btn btn--ghost focusable" data-action="open-channels-settings">Set up in Settings → Channels</button>`;
   } else if (!matches.length) {
     channelBlock = `
-      <p class="hint">No channels matched ${esc((ev.channels || []).join(', ') || 'this game')}. Your provider may carry it under a different network name.</p>`;
+      <p class="hint">No channels matched ${esc((ev.channels || []).join(', ') || 'this game')}. Your provider may carry it under a different network name${store.state.guide.fetchedAt ? '' : ' — adding your TV guide in Settings → Channels finds more'}.</p>`;
   } else {
     channelBlock = matches.map((m, i) => `
       <button class="gd-row focusable" data-action="open-channel" data-mindex="${i}">
         <span class="gd-ch">${esc(m.name)}</span>
         ${m.group ? `<span class="gd-why">${esc(m.group)}</span>` : ''}
-        <span class="gd-why">${m.reason === 'network' ? 'NETWORK' : 'TEAM'}</span>
+        <span class="gd-why">${REASONS[m.reason] || 'TEAM'}</span>
         ${m.preferred ? '<span class="gd-star" title="Preferred channel">★</span>' : ''}
         <span class="gd-open">Open ▸</span>
       </button>`).join('');
@@ -102,16 +107,6 @@ export function detailHtml(ev, matches) {
     <div class="gd-section">Your channels</div>
     ${channelBlock}
     <div class="gd-foot">${esc(ev.venue || ev.feed || '')}</div>`;
-}
-
-function teamRow(team, event) {
-  const win = event.status === 'final' && team.winner;
-  return `
-    <div class="team-row">
-      <div class="abbr">${esc(team.abbr || '—')}</div>
-      <div class="team-name">${esc(team.name || '')}</div>
-      <div class="score ${win ? 'is-win' : ''}">${team.score ?? ''}</div>
-    </div>`;
 }
 
 export { emit };

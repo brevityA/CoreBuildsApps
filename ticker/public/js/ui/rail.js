@@ -62,12 +62,15 @@ export function renderFilters() {
     ALL: events.length,
     LIVE: events.filter((e) => e.status === 'live').length,
     RSS: events.filter((e) => e.source === 'rss').length,
+    TV: events.filter((e) => e.source === 'epg').length,
   };
   for (const label of LEAGUE_LABELS) {
     counts[label] = events.filter((e) => e.league === label).length;
   }
 
   const chips = ['ALL', 'LIVE', 'RSS'].map((label) => filterChip(label, label, counts[label]));
+  // Live events only the TV guide lists (Sky, BBC, conference networks).
+  if (counts.TV) chips.push(filterChip('TV', 'On TV', counts.TV));
   for (const g of SPORT_GROUPS) {
     const n = g.leagues.reduce((sum, id) => sum + (counts[LEAGUES[id]?.label] || 0), 0);
     if (n) chips.push(filterChip(g.id, g.label, n));

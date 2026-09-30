@@ -1,6 +1,7 @@
 package tv.corebuilds.eq.measure
 
 import android.media.AudioAttributes
+import android.media.AudioDeviceInfo
 import android.media.AudioFormat
 import android.media.AudioTrack
 import android.util.Log
@@ -20,7 +21,12 @@ class StimulusPlayer {
     @Volatile
     private var playing = false
 
-    fun playSweep(onError: (String) -> Unit) {
+    /**
+     * @param onRouted the device the sweep is actually playing through, once
+     *   Android has routed it (null when it never says) — the ground truth for
+     *   which chain this measurement is of.
+     */
+    fun playSweep(onError: (String) -> Unit, onRouted: (AudioDeviceInfo?) -> Unit = {}) {
         stop()
         playing = true
         thread(name = "CoreEqStimulus") {
@@ -65,7 +71,17 @@ class StimulusPlayer {
                 Log.e(TAG, "AudioTrack.play failed", e)
                 stop()
                 onError("The TV would not start playback: ${e.message ?: "IllegalStateException"}")
+                return@thread
             }
+            // Routing settles just after play(); ask for up to half a second.
+            var routed: AudioDeviceInfo? = null
+            for (i in 0 until ROUTE_POLLS) {
+                routed = try { track.routedDevice } catch (e: IllegalStateException) { null }
+                if (routed != null || !playing) break
+                Thread.sleep(ROUTE_POLL_MS)
+            }
+            // Only this sweep's answer: a cancelled or replaced sweep says nothing.
+            if (playing && audioTrack === track) onRouted(routed)
         }
     }
 
@@ -85,5 +101,7 @@ class StimulusPlayer {
 
     private companion object {
         const val TAG = "CoreEqStimulus"
+        const val ROUTE_POLLS = 10
+        const val ROUTE_POLL_MS = 50L
     }
 }

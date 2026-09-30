@@ -1,0 +1,30 @@
+﻿#EXTM3U url-tvg="https://epg.example.com/guide.xml.gz,file:///etc/passwd" x-tvg-url="https://epg2.example.com/a.xml"
+#EXTINF:-1 tvg-id="SkySpMainEvent.uk" tvg-name="UK| Sky Sports Main Event HD" group-title="UK Sports",UK| Sky Sports Main Event HD
+http://prov.example.com/live/user/pass/1001.ts
+#EXTINF:-1 tvg-id="" tvg-name="ESPN2" group-title="US Sports",US: ESPN2  FHD 
+http://prov.example.com/live/user/pass/1002.m3u8
+#EXTINF:-1 tvg-id="espn2.us",ESPN2 (backup)
+http://prov.example.com/live/user/pass/1002.m3u8
+#EXTINF:-1 tvg-id="movie1",Some Movie (2021)
+http://prov.example.com/movie/user/pass/5001.mkv
+#EXTINF:-1,Series Episode
+http://prov.example.com/series/user/pass/7001.mp4
+#EXTGRP:Canada
+#EXTINF:-1 tvg-id=TSN4.ca tvg-name=TSN4,TSN 4
+#EXTVLCOPT:http-user-agent=Foo
+https://prov.example.com/live/user/pass/2004
+#EXTINF:-1 tvg-name="BBC One London",
+http://prov.example.com/live/user/pass/bbc%20one.m3u8
+http://prov.example.com/live/user/pass/Channel%zz.ts
+
+   
+#KODIPROP:inputstream=adaptive
+rtmp://nope.example.com/x
+#EXTINF:-1 group-title="Ünïcødé",  Canal+   Sport   360 
+HTTPS://prov.example.com/live/user/pass/3001.ts?token=abc#frag
+#EXTINF:-1,Last Name Wins
+#EXTINF:-1,A Title With, Comma
+http://prov.example.com/live/user/pass/4001.ts
+http://prov.example.com/
+#EXTINF:-1 tvg-id="cr.test",LoneCarriage
+http://prov.example.com/live/user/pass/5005.ts

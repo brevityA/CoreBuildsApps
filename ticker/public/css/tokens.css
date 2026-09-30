@@ -103,9 +103,10 @@
   --cb-gutter-top-tight: 24px;
   --cb-gutter-bottom-tight: 12px;
 
-  /* The rail is a fixed width, so the pane — and therefore the board's tile
-     columns — is derived, not guessed. Same rail on every panel. */
-  --cb-rail-width: 300px;
+  /* The rail is the menu: icons only, a fixed width, so the board's columns
+     are derived from what is left. It was 300dp while it carried the league
+     list, which left a 1080p board one card wide. */
+  --cb-rail-width: 64px;
 
   /* ---- Metrics: spacing rhythm -----------------------------------------
      8dp grid. */
@@ -264,4 +265,33 @@
   --st-live: #FFFFFF;
   --st-up: #FFFFFF;
   --st-final: #A3A3A3;
+}
+
+/* ============================================================================
+   True black (OLED)
+
+   A fifth theme would be the wrong shape for this. A theme in this file remaps
+   the accent *and* the ramp together, but "true black" has nothing to say about
+   the accent: a viewer who wants broadcast red on their OLED wants both, and a
+   viewer on a 200-nit laptop wants neither. So it is a second axis — set by
+   `data-oled` alongside `data-theme`, not instead of it — and every accent
+   above stays exactly as it was.
+
+   What it fixes: #0B0B0D is not black. On an OLED panel every one of those
+   near-black pixels is still lit, and a 65" field of it in a dark room reads
+   as a grey haze the bezel does not share — the app floats in a rectangle
+   instead of dissolving into the set. #000000 emits nothing.
+
+   What it must not break: elevation. A pure-black ramp has no headroom, so a
+   card drawn "one step up" from a black field disappears into it. The steps
+   here are the ones Material's dark tonal ramp uses off black, and they are
+   the *only* reason a focused card still separates — the focus ring is drawn
+   on top of a surface, not around a hole.
+   ========================================================================== */
+[data-oled] {
+  --surface-void: #000000;
+  --surface-night: #000000;
+  --surface-panel: #0A0A0A;
+  --surface-card: #141414;
+  --surface-raised: #1E1E1E;
 }

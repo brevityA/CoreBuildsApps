@@ -1,0 +1,260 @@
+name: Core Line device check
+
+# The gap the browser job cannot close, and VERIFICATION.md names in its own
+# words: "Clean install + first run on a real Android TV target (or emulator)
+# remains [USER TO SUPPLY]".
+#
+# `Core Line browser (CSP, OLED, rotation)` runs the shipped page in desktop
+# Chromium. That proves the policy parses and the app paints — in Chromium.
+# It does not prove that the **Android WebView** on a television honours a
+# `<meta>` Content-Security-Policy, that the APK installs on an Android TV
+# image at all, or that the activity reaches the resumed state there. Those are
+# install-time and runtime properties: compiling, linting and a desktop browser
+# are all blind to them, and the failure mode is the worst one available —
+# a policy the desktop engine accepts and the platform engine does not turns
+# the app into a black screen for every viewer at once.
+#
+# So this boots the same TV image the icon pack's device-check uses
+# (`tv_1080p`, API 34, x86 — see that workflow for why that arch) and asserts
+# against a running system.
+#
+# What it still cannot reach, and what remains [USER TO SUPPLY]: a real VPN
+# tunnel, a DRM-protected stream, a physical OLED panel, and a real remote. The
+# checklist for those is §9 of the VPN-dot research doc under `docs/research/`.
+#
+# (Written without that file's literal name on purpose: the name embeds the
+# two-token release prefix this repository forbids outside `docs/`, which is
+# exactly what `check_suite_truth.py`'s trap greps for. The trap is right — the
+# only Core Line tag prefix is the one in `suite.json` — and the cheap way to
+# respect it is to not spell the filename out here.)
+#
+# Feedback speed, like device-check: split from `core-line-apk.yml` on purpose,
+# so the compile-and-lint loop stays in seconds and this one takes minutes.
+
+on:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - 'ticker/**'
+      - '.github/workflows/core-line-device-check.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'ticker/**'
+      - '.github/workflows/core-line-device-check.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  emulator:
+    name: Core Line on an Android TV image
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v6
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - uses: gradle/actions/setup-gradle@v6
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install Pillow for the screenshot assertion
+        # Pinned in tools/requirements.txt; installing the pin rather than
+        # `pip install pillow` keeps this job's decoder the same one the icon
+        # builders use.
+        run: pip install --quiet "Pillow==10.4.0"
+
+      - name: Assemble the debug APK
+        # Debug, not release: an unsigned release APK cannot be installed, and
+        # the release path is already covered by core-line-apk.yml on a tag.
+        run: cd ticker/android && ./gradlew :app:assembleDebug --no-daemon --stacktrace
+
+      - name: Enable KVM
+        # ubuntu-latest ships /dev/kvm but not with permissions the emulator
+        # can use. Without this the emulator falls back to software rendering
+        # and effectively never boots.
+        run: |
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' \
+            | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+          sudo udevadm control --reload-rules
+          sudo udevadm trigger --name-match=kvm
+
+      - name: Prepare the device check script
+        # The emulator-runner action (v2) executes each line of its `script:`
+        # parameter as a separate `sh -c` call, so shell variables set on one
+        # line are lost by the next. Writing the check to a file and invoking
+        # it as one bash process avoids that — the same reason device-check.yml
+        # does it this way.
+        run: |
+          cat > "$RUNNER_TEMP/coreline-device-check.sh" << 'DEVICE_CHECK'
+          #!/usr/bin/env bash
+          set -eu
+
+          PKG=dev.corebuilds.line
+          ACT="$PKG/.MainActivity"
+          APK=$(ls "$GITHUB_WORKSPACE"/ticker/android/app/build/outputs/apk/debug/*.apk 2>/dev/null | head -1 || true)
+          [ -n "$APK" ] || fail "no debug APK was produced — the assemble step did not run or did not write ticker/android/app/build/outputs/apk/debug/"
+          [ -f "$APK" ] || fail "APK not found at $APK"
+
+          FRAME="$RUNNER_TEMP/frame.png"
+
+          # Annotations, not just stdout. Job logs for this repository cannot be
+          # downloaded (the archive endpoint returns EOF), so a failing run is
+          # otherwise visible only as "Process completed with exit code 1" — the
+          # lesson the browser job learned the hard way.
+          fail() { echo "::error title=device-check::$1"; echo "FAIL  $1"; exit 1; }
+          note() { echo "::notice title=$1::$2"; echo "NOTE  $2"; }
+          pass() { echo "PASS  $1"; }
+
+          # `set -e` aborts are the least diagnosable ending: the script stops
+          # at whatever line failed and this repository's job logs cannot be
+          # downloaded, so the run reads as "exit code 1" and nothing else. Any
+          # exit that is not a clean pass now names itself.
+          trap 'code=$?; [ "$code" -eq 0 ] || echo "::error title=device-check::aborted at line $LINENO with exit $code — see the lines above"' EXIT
+
+          # The expected version is *derived*, never quoted: a hard-coded
+          # version in a test is a test that passes after the version moved.
+          GRADLE="$GITHUB_WORKSPACE/ticker/android/app/build.gradle.kts"
+          EXPECTED_NAME=$(grep -oP 'versionName = "\K[^"]+' "$GRADLE")
+          EXPECTED_CODE=$(grep -oP 'versionCode = \K[0-9]+' "$GRADLE")
+          echo "expecting $EXPECTED_NAME (code $EXPECTED_CODE) from $APK"
+
+          # ---- 1. It installs on an Android TV image ----------------------
+          if ! OUT=$(adb install -r "$APK" 2>&1); then
+            echo "$OUT"
+            fail "adb install failed: $(echo "$OUT" | tail -3 | tr '\n' ' ')"
+          fi
+          pass "installs on the TV image"
+
+          if ! adb shell pm list packages | grep -q "package:$PKG$"; then
+            adb shell pm list packages | grep -i corebuilds || true
+            fail "$PKG is not present after install"
+          fi
+          pass "package present"
+
+          # ---- 2. The installed build is the version the repo claims ------
+          # Right after a version bump this is the check that the bump reached
+          # the APK rather than only the manifest.
+          PKGDUMP=$(adb shell dumpsys package "$PKG")
+          GOT_NAME=$(echo "$PKGDUMP" | grep -oP 'versionName=\K[^ ]+' | head -1)
+          GOT_CODE=$(echo "$PKGDUMP" | grep -oP 'versionCode=\K[0-9]+' | head -1)
+          [ "$GOT_NAME" = "$EXPECTED_NAME" ] || fail "installed versionName $GOT_NAME != gradle $EXPECTED_NAME"
+          [ "$GOT_CODE" = "$EXPECTED_CODE" ] || fail "installed versionCode $GOT_CODE != gradle $EXPECTED_CODE"
+          pass "reports $GOT_NAME (code $GOT_CODE), matching build.gradle.kts"
+
+          # ---- 3. It launches and is resumed ------------------------------
+          adb logcat -c || true
+          START=$(adb shell am start -W -n "$ACT" 2>&1) || true
+          echo "$START"
+          if echo "$START" | grep -qiE "Error type|does not exist|Permission Denial"; then
+            fail "activity did not start: $(echo "$START" | head -3 | tr '\n' ' ')"
+          fi
+          echo "$START" | grep -q "Status: ok" || fail "am start reported no 'Status: ok'"
+          # Wait for the app to *take the screen*, polling rather than sleeping
+          # a fixed amount: this failed on its first run against a single
+          # `mResumedActivity` grep — a key API 34's dumpsys no longer prints in
+          # that form — and a fixed sleep would have hidden the same class of
+          # problem on a slow emulator. Focus is the stronger claim anyway: it
+          # says the app is what the display is showing, which is what the
+          # screenshot below then measures.
+          FOCUS=""
+          for _ in $(seq 1 15); do
+            FOCUS=$(adb shell dumpsys window 2>/dev/null | grep -E "mCurrentFocus|mFocusedApp" | head -4 || true)
+            echo "$FOCUS" | grep -q "$PKG" && break
+            sleep 2
+          done
+          if ! echo "$FOCUS" | grep -q "$PKG"; then
+            # Put the evidence in the annotation, not just the log: a second
+            # cycle spent finding out *why* would be a cycle wasted.
+            CRASHES=$(adb logcat -d -s AndroidRuntime:E 2>/dev/null | grep -A 6 "FATAL EXCEPTION" | head -20 || true)
+            fail "not the focused window after 30s. focus=[$(echo "$FOCUS" | tr '\n' ' ' | cut -c1-180)] crashes=[$(echo "$CRASHES" | tr '\n' ' ' | cut -c1-320)]"
+          fi
+          pass "launches and takes the screen"
+          sleep 8   # the first slate paint on software rendering
+
+          # ---- 4. It has not crashed --------------------------------------
+          CRASH=$(adb logcat -d -s AndroidRuntime:E | grep -E "FATAL EXCEPTION" || true)
+          [ -z "$CRASH" ] || fail "crash in logcat: $(echo "$CRASH" | head -2 | tr '\n' ' ')"
+          pass "no fatal exception"
+
+          # ---- 5. The real WebView accepted the shipped policy -------------
+          # The assertion this job exists for. Desktop Chromium is not the
+          # platform engine, and a `<meta>` policy is exactly the kind of
+          # thing the two can disagree about — silently, and for everyone.
+          CSP=$(adb logcat -d | grep -iE "Content Security Policy|Refused to (load|execute|apply)" || true)
+          if [ -n "$CSP" ]; then
+            echo "$CSP" | head -5
+            fail "the WebView blocked something: $(echo "$CSP" | head -1 | tr '\n' ' ')"
+          fi
+          pass "no CSP violations in the WebView console"
+
+          # Say what the WebView *did* say, so "no violations" is
+          # distinguishable from "the WebView said nothing at all".
+          CHROME=$(adb logcat -d | grep -c "chromium" || true)
+          note "webview-console" "$CHROME chromium log lines; none matched a blocked resource"
+
+          # ---- 6. The display-over-other-apps grant, on a real TV image ----
+          # Research doc §9 asserts this is the supported route on modern
+          # Google TV builds that do not expose the settings page. That claim
+          # was read from documentation; this is it, running.
+          adb shell appops set "$PKG" SYSTEM_ALERT_WINDOW allow || true
+          APPOPS=$(adb shell appops get "$PKG" SYSTEM_ALERT_WINDOW 2>&1 || true)
+          # Tolerant of the mode suffix an API level may add ("allow (default)"
+          # on some builds); the point is that the grant took.
+          echo "$APPOPS" | grep -qE "SYSTEM_ALERT_WINDOW:.*allow" \
+            || fail "could not grant SYSTEM_ALERT_WINDOW: $APPOPS"
+          pass "SYSTEM_ALERT_WINDOW granted over adb (the §9 recipe works here)"
+
+          # ---- 7. Something actually painted ------------------------------
+          # Two failures are possible that nothing above would catch: a policy
+          # that blocks every script leaves a pure black page (the OLED
+          # background paints, the app never does), and a blocked stylesheet
+          # leaves an unstyled white one.
+          #
+          # So: the frame must be overwhelmingly dark — true black is the
+          # default surface — and it must contain real bright pixels, because
+          # text is bright and a black screen has none. The grid is printed as
+          # a notice so a human can see *where* the content sits when it fails.
+          adb shell screencap -p /sdcard/coreline-frame.png
+          adb pull /sdcard/coreline-frame.png "$FRAME" >/dev/null
+          if ! python3 "$GITHUB_WORKSPACE/ticker/tests/device_frame_check.py" "$FRAME"; then
+            cp "$FRAME" "$RUNNER_TEMP/coreline-frame-failed.png" 2>/dev/null || true
+            fail "the screen is not a rendered board (see the notice above)"
+          fi
+          pass "the board painted on the device"
+
+          echo "Device check passed: installed, launched, nothing blocked by the policy, and the board painted."
+          DEVICE_CHECK
+          chmod +x "$RUNNER_TEMP/coreline-device-check.sh"
+
+      - name: Boot emulator, install, and verify
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          # API 34 matches the app's targetSdk. Note the arch: the android-tv
+          # images are x86 (32-bit) or arm64-v8a at this level — there is no
+          # android-tv x86_64 until API 36, and naming one fails the job
+          # immediately with an image-not-found. Verified against
+          # `sdkmanager --list`.
+          api-level: 34
+          target: android-tv
+          arch: x86
+          profile: tv_1080p
+          disable-animations: true
+          emulator-options: -no-window -gpu swiftshader_indirect -no-snapshot -noaudio -no-boot-anim
+          script: bash ${{ runner.temp }}/coreline-device-check.sh
+
+      - name: Upload what the screen looked like, on failure
+        if: failure()
+        uses: actions/upload-artifact@v7
+        with:
+          name: coreline-device-frame
+          path: |
+            ${{ runner.temp }}/coreline-frame*.png
+          if-no-files-found: warn

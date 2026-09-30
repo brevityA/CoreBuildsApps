@@ -1,6 +1,52 @@
 <!doctype html>
-<html lang="en" data-theme="core" data-mode="board" data-position="bottom">
+<html lang="en" data-theme="core" data-mode="board" data-position="bottom" data-oled>
 <head>
+  <!--
+    Content-Security-Policy.
+
+    Shipped as a meta tag rather than a header on purpose: the app is served
+    three different ways — `server.mjs` over HTTP, `LineWebClient` out of the
+    APK's assets, and any static host — and a meta policy is the one form all
+    three carry without each server having to remember it. (A meta policy
+    cannot express `frame-ancestors`; that is the one directive left out.)
+
+    What each directive is doing here, and what it is not:
+
+    - `script-src 'self'` is strict, and it is the reason the boot guard moved
+      out of this file into `js/boot.js`. There is no inline script and no
+      `on*=` attribute anywhere in the app, so `'unsafe-inline'` would buy
+      nothing and would let any injected handler run.
+    - `style-src` needs `'unsafe-inline'`: every card, chip and tile carries
+      its league accent as an inline `style="--acc:#7FD4FF"`. That is the
+      house pattern and it is load-bearing, so the allowance is real and this
+      comment is the place it is declared rather than discovered.
+    - `img-src` lists `data:` for the pairing QR code, which is a canvas
+      data URL, and the team-logo CDNs. The CDN list is the same policy as
+      `LOGO_DOMAINS` in `lib/logos.mjs`, and `tests/logos.test.mjs` asserts
+      the two stay in step: the module decides what we render, this decides
+      what can be fetched, and neither is allowed to drift from the other.
+      `mlbstatic.com` was here and is not: nothing ever built a URL on it.
+    - `data-oled` is set statically on <html> above, matching the stored
+      default in `public/js/state.js`. It used to be applied only by script,
+      which meant the page painted the house near-black and then snapped to
+      true black — invisible while the default was off, and a visible flash on
+      every boot once it flipped to on. `applyChrome()` still removes it for a
+      viewer who turned the option off; that path only affects the people who
+      asked for the other surface.
+    - `connect-src` is `'self'` plus http/https, and that is the honest
+      answer rather than a hole. The feed URLs are *user input* — pasting in
+      your own RSS or IPTV source is the app's purpose — so an allowlist here
+      would break its main feature. The control on where the app may fetch is
+      `lib/ssrf.mjs` (and `SafeUrl` on the native side), which is tested;
+      `connect-src` here only rules out the schemes that are never a feed.
+    - `worker-src 'self'` is the service worker registered in non-native
+      builds; `manifest-src 'self'` is the web manifest.
+
+    `frame-ancestors` is absent because a meta policy cannot set it, and
+    `form-action 'none'` is safe because the app has no form: every control
+    is a button, a select or a checkbox read by a delegated handler.
+  -->
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https://espncdn.com https://*.espncdn.com https://nhle.com https://*.nhle.com; font-src 'self'; connect-src 'self' http: https:; worker-src 'self'; manifest-src 'self'; base-uri 'none'; form-action 'none'; object-src 'none'">
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
   <meta name="theme-color" content="#04070F">
@@ -9,22 +55,7 @@
   <meta name="apple-mobile-web-app-title" content="Core Line">
   <meta name="description" content="Sports and channel ticker for Android and TV. Team vs team — ESPN, TSN4, SN 3.">
   <title>Core Line</title>
-  <script>window.CORELINE_NATIVE=window.CORELINE_NATIVE||false;window.CORELINE_TV=window.CORELINE_TV||false;</script>
-  <script>
-    // Boot guard (AUDIT.md A1): this classic script always runs, even on
-    // WebViews too old for ES modules. If the module app never reports in, we
-    // paint a friendly upgrade message instead of a blank screen.
-    window.__CORELINE_BOOT = { ready: false, t: 0 };
-    (function () {
-      var timer = setTimeout(function () {
-        if (!window.__CORELINE_BOOT.ready) {
-          var d = document.getElementById('bootfallback');
-          if (d) d.hidden = false;
-        }
-      }, 4000);
-      window.__CORELINE_BOOT.t = timer;
-    })();
-  </script>
+  <script src="./js/boot.js"></script>
   <link rel="icon" href="./icon.svg" type="image/svg+xml">
   <link rel="apple-touch-icon" href="./icons/core-line-icon.png">
   <link rel="manifest" href="./manifest.webmanifest">
@@ -40,59 +71,57 @@
   </div>
 
   <!-- ====================================================================
-       App shell. Two panes: a fixed-width rail for the chrome, and a stage
-       that takes every pixel the rail leaves. The chyron spans both.
+       App shell. A slim icon rail on the left (menu, like a TV launcher's),
+       and a stage that takes every other pixel: a top bar that says what
+       day it is and how much is live, the sport pills, the live banner, and
+       everything live or upcoming today. Supporter feedback, 2026-09-29:
+       "settings on left, banner shows sport of choice that's live, bottom
+       shows all upcoming and live, pills with the different sports."
        ==================================================================== -->
   <div class="app" id="app">
     <div class="app__main">
-
-      <!-- LEFT RAIL -->
-      <aside class="rail scroll-y" id="rail" aria-label="Filters and status">
-        <div class="rail__brand">
-          <img class="rail__mark" src="./icon.svg" width="42" height="42" alt="">
-          <div>
-            <div class="brand__name"><span>CORE</span> LINE</div>
-            <div class="brand__sub" id="brandSub">Sports &amp; channel ticker</div>
-          </div>
-        </div>
-
-        <div class="rail__stats">
-          <div class="stat stat--live"><b id="statLive">0</b><span>Live</span></div>
-          <div class="stat stat--up"><b id="statUp">0</b><span>Up</span></div>
-          <div class="stat"><b id="statRss">0</b><span>RSS</span></div>
-        </div>
-
-        <div class="health is-ok" id="health" role="status" aria-live="polite">All sources live</div>
-
-        <div class="rail__section" id="myTeamsBlock" hidden>
-          <div class="rail__section-head">
-            <span class="kicker">My teams</span>
-          </div>
-          <div class="rail__nav" id="myTeams" role="group" aria-label="My teams"></div>
-        </div>
-
-        <div class="rail__section">
-          <div class="rail__section-head">
-            <span class="kicker">Leagues</span>
-            <span class="hint--small" id="leagueHint"></span>
-          </div>
-          <div class="rail__nav" id="leagues" role="tablist" aria-label="Leagues"></div>
-        </div>
-
+      <!-- LEFT RAIL: the menu. Icons only, so the board keeps the width. -->
+      <aside class="rail" id="rail" aria-label="Menu">
+        <img class="rail__mark" src="./icon.svg" width="40" height="40" alt="Core Line">
         <div class="rail__actions">
           <button class="btn--icon focusable" data-action="refresh" title="Refresh" aria-label="Refresh">&#8635;</button>
           <button class="btn--icon focusable" data-action="mode" title="Ticker only" aria-label="Ticker only">&#9644;</button>
           <button class="btn--icon focusable" data-action="settings" title="Settings" aria-label="Settings">&#9881;</button>
         </div>
       </aside>
-
-      <!-- RIGHT PANE -->
-      <main class="stage scroll-y" id="stage">
-        <div class="stage__search">
-          <input class="field focusable" id="search" type="search" placeholder="Search teams, channels, listings"
-                 autocomplete="off" spellcheck="false" aria-label="Search the slate">
-        </div>
-
+      <!-- STAGE -->
+      <main class="stage" id="stage">
+        <header class="topbar">
+          <div class="topbar__day">
+            <span class="topbar__today">Today</span>
+            <span class="topbar__date" id="topDate"></span>
+          </div>
+          <div class="topbar__stats">
+            <span class="stat stat--live"><b id="statLive">0</b><span>Live</span></span>
+            <span class="stat stat--up"><b id="statUp">0</b><span>Up</span></span>
+            <span class="stat"><b id="statRss">0</b><span>RSS</span></span>
+          </div>
+          <div class="health is-ok" id="health" role="status" aria-live="polite">All sources live</div>
+          <div class="topbar__search">
+            <input class="field focusable" id="search" type="search" placeholder="Search teams, channels"
+                   autocomplete="off" spellcheck="false" aria-label="Search the slate">
+          </div>
+          <div class="topbar__clock" id="topClock" aria-hidden="true">00:00</div>
+          <div class="brand__sub" id="brandSub" role="status" aria-live="polite"></div>
+        </header>
+        <nav class="sportbar" aria-label="Sports">
+          <div class="sportbar__row" id="myTeamsBlock" hidden>
+            <span class="kicker">My teams</span>
+            <div class="sportbar__chips" id="myTeams" role="group" aria-label="My teams"></div>
+          </div>
+          <div class="sportbar__row">
+            <div class="sportbar__chips" id="leagues" role="tablist" aria-label="Sports and leagues"></div>
+            <span class="hint--small" id="leagueHint"></span>
+          </div>
+        </nav>
+        <!-- Everything below the header scrolls; the header stays put, the
+             way a TV guide keeps its date and filters in view. -->
+        <div class="stage__body scroll-y" id="stageBody">
         <section class="bigclock" id="bigclock">
           <div class="bigclock__kicker">CORE LINE</div>
           <div class="bigclock__time" id="bigTime">00:00</div>
@@ -101,6 +130,7 @@
         </section>
 
         <section id="hero" hidden></section>
+        <h2 class="section-label" id="boardLabel">Live &amp; upcoming</h2>
         <section class="board" id="board"></section>
 
         <section class="empty" id="empty" hidden>
@@ -113,6 +143,7 @@
           <button class="btn focusable" data-action="settings">Open settings</button>
           <button class="btn btn--ghost focusable" data-action="empty-clear" id="emptyClear" hidden>Clear filters</button>
         </section>
+        </div>
       </main>
     </div>
 
@@ -246,6 +277,8 @@
               <div class="split--checks">
                 <label class="check"><input class="focusable" type="checkbox" id="showFinals" checked><span>Show finals</span></label>
                 <label class="check"><input class="focusable" type="checkbox" id="wakeLock" checked><span>Keep screen awake</span></label>
+                <label class="check"><input class="focusable" type="checkbox" id="oled"><span>True black (OLED)</span></label>
+                <label class="check"><input class="focusable" type="checkbox" id="ticker"><span>Scrolling ticker</span></label>
               </div>
 
               <div class="block" style="margin-top: var(--cb-space-md)">
@@ -266,6 +299,37 @@
                 <h3 class="block__title">Floating ticker</h3>
                 <label class="check"><input class="focusable" type="checkbox" id="overlayEnabled"><span>Floating ticker over other apps</span></label>
                 <p class="hint hint--small" id="overlayHint">Draws the crawl on top of every app, edge to edge. Stop it from the notification or untick this box.</p>
+
+                <div class="block" style="margin-top: var(--cb-space-md)">
+                  <h3 class="block__title">VPN status dot</h3>
+                  <p class="hint">Android TV has no status bar, so once you are watching something there is no way to tell whether your VPN is still up. This draws one small dot in a corner of every app until you switch it off.</p>
+                  <label class="check"><input class="focusable" type="checkbox" id="vpnDotEnabled"><span>Show a VPN dot over other apps</span></label>
+                  <label class="field-label">Corner
+                    <select class="field focusable" id="vpnDotCorner">
+                      <option value="bottom_right">Bottom right</option>
+                      <option value="bottom_left">Bottom left</option>
+                      <option value="top_right">Top right</option>
+                      <option value="top_left">Top left</option>
+                    </select>
+                  </label>
+                  <label class="field-label">Brightness
+                    <span class="stepper">
+                      <button class="btn--mini focusable" data-action="vpn-dot-dim" aria-label="Dimmer">&minus;</button>
+                      <input class="field focusable" id="vpnDotOpacity" type="range" min="15" max="100" step="5" value="55" aria-label="Dot brightness">
+                      <button class="btn--mini focusable" data-action="vpn-dot-bright" aria-label="Brighter">+</button>
+                    </span>
+                    <span class="speed-val" id="vpnDotOpacityVal">55%</span>
+                  </label>
+                  <div class="split--checks">
+                    <label class="check"><input class="focusable" type="checkbox" id="vpnDotHideWhenOk"><span>Hide it while the VPN is up</span></label>
+                    <label class="check"><input class="focusable" type="checkbox" id="vpnDotBlink" checked><span>Pulse it when the VPN drops</span></label>
+                  </div>
+                  <p class="vpn-status" id="vpnStatusLine" role="status">
+                    <span class="vpn-dot is-down" id="vpnStatusDot" aria-hidden="true"></span>
+                    <span id="vpnStatusText">Checking the VPN…</span>
+                  </p>
+                  <p class="hint hint--small" id="vpnDotHint">Green means a tunnel is up and Core Line is inside it. Amber means a tunnel is up but this app is outside it (per-app VPN). Red means there is no tunnel.</p>
+                </div>
               </div>
             </div>
 
@@ -303,6 +367,21 @@
               <p class="hint hint--small" id="playlistStatus"></p>
               <button class="btn btn--ghost focusable" data-action="playlist-clear" id="playlistClearBtn" hidden>Remove playlist</button>
               <p class="hint hint--small">The link is fetched by Core Line on this device and never leaves it. Opening a channel needs a player that accepts stream links — TiviMate, VLC, or similar.</p>
+            </div>
+            <div class="block" id="guideBlock">
+              <h3 class="block__title">TV guide (XMLTV)</h3>
+              <p class="hint">Your provider's guide finds which of your channels carry a game, and adds live events the scoreboards miss — Sky, the BBC, conference networks. Today and tomorrow only; refreshed every 6 hours.</p>
+              <p class="hint hint--small" id="guideWebNote" hidden>The guide imports in the Core Line Android app.</p>
+              <div id="guideControls">
+                <p class="hint hint--small" id="guideSource"></p>
+                <div class="feed-add">
+                  <input class="field focusable" id="guideUrl" type="url" placeholder="Optional: your own XMLTV link" autocomplete="off" spellcheck="false">
+                  <button class="btn focusable" data-action="guide-save">Use link</button>
+                </div>
+                <p class="hint hint--small" id="guideStatus" aria-live="polite"></p>
+                <button class="btn focusable" data-action="guide-refresh" id="guideRefreshBtn">Refresh guide</button>
+                <button class="btn btn--ghost focusable" data-action="guide-clear-url" id="guideClearUrlBtn" hidden>Use the playlist's guide</button>
+              </div>
             </div>
           </section>
 

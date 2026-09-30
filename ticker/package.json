@@ -1,9 +1,9 @@
 {
   "name": "core-line",
-  "version": "1.4.0",
+  "version": "1.4.1",
   "private": true,
   "type": "module",
-  "description": "Core Line — sports and channel RSS ticker for Android, TV, and the web",
+  "description": "Core Line \u2014 sports and channel RSS ticker for Android, TV, and the web",
   "scripts": {
     "start": "node server.mjs",
     "dev": "node server.mjs",

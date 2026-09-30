@@ -477,6 +477,92 @@
   text-overflow: ellipsis;
   white-space: nowrap;
 }
+
+/* ---- Team marks ---------------------------------------------------------
+   A logo with its monogram as the structural fallback. The monogram is
+   painted first and the logo is laid over it, so every failure mode — 404,
+   blocked CDN, refused URL, no JavaScript — lands on a readable mark rather
+   than a hole. `.is-broken` is added by a delegated listener for browsers
+   that draw a glyph for a failed image.
+
+   The plate behind the logo is not decoration. ESPN and the NHL ship
+   transparent marks drawn in team colours, and a dark mark (Brooklyn, the
+   Spurs, half the Premier League) would otherwise vanish into a card that is
+   nearly black — worst of all under the OLED theme, where the card really is
+   #111. A raised plate guarantees every logo has something to sit on, in
+   every theme, without touching the artwork. */
+.mark {
+  position: relative;
+  display: inline-grid;
+  place-items: center;
+  /* One number for the box, so a parent can resize a mark without touching
+     both axes — and 68px is what fits the 88px abbreviation column in
+     `.team-row` without re-flowing the row. */
+  --mark-size: 68px;
+  width: var(--mark-size);
+  height: var(--mark-size);
+  border-radius: var(--cb-radius-card-inner);
+}
+.mark__img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  border-radius: var(--cb-radius-card-inner);
+  /* The plate is chosen per artwork, not per theme: `logoPlate()` in
+     lib/logos.mjs reads the variant out of the URL. ESPN draws for a dark UI
+     and the NHL only publishes its light-background variant, so one plate
+     colour would make one of the two invisible. */
+  background: var(--mark-plate, var(--surface-raised));
+}
+.mark__img[data-plate="light"] {
+  --mark-plate: #F2F3F5;
+}
+.mark__img[data-plate="dark"] {
+  --mark-plate: var(--surface-raised);
+}
+/* No logo: the monogram is the mark, so it keeps the column's own type
+   rather than being boxed. */
+.mark--mono {
+  width: auto;
+  height: auto;
+  display: block;
+  font-size: var(--text-abbr);
+}
+
+/* Compact form — cards. The mark sits *in front of* the abbreviation rather
+   than over it, because a 26px logo is a colour cue and not text: at three
+   metres the viewer reads the letters and recognises the logo. */
+.mark--row {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--cb-space-xs);
+  width: auto;
+  height: auto;
+  font: inherit;
+  letter-spacing: inherit;
+}
+.mark--row .mark__img {
+  position: static;
+  width: 26px;
+  height: 26px;
+  flex: 0 0 auto;
+  border-radius: 3px;
+  /* Kept, unlike the old `background: none`: the compact mark is the same
+     artwork at 26px, so an NHL mark needs its plate here too or the card
+     shows a dark smudge. */
+  background: var(--mark-plate, var(--surface-raised));
+}
+/* In a card row the monogram is text in the row's own size: the banner's
+   display size made a no-logo card row 58px tall on a TV. */
+.gt .mark--mono {
+  font-size: inherit;
+  line-height: inherit;
+}
+.mark.is-broken .mark__img {
+  display: none;
+}
 .team-name {
   color: var(--cb-slate);
   font-size: var(--text-pill);
@@ -532,46 +618,48 @@
   gap: var(--cb-space-xs);
   min-width: 0;
 }
-/* The right cluster may shrink, and inside it only the status badge gives
-   way: a start time like "9/29 - 6:30 PM EDT" used to push the star and the
-   Watch button past the card edge on a 1080p board. The badge truncates
-   (the full time is also in the card foot and in Game Detail); the two
-   48px targets never shrink. */
-.card__top-right {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  min-width: 0;
-  flex: 0 1 auto;
-}
-.card__top-right .badge {
+/* The time badge is the one thing on the top row that may give way; the
+   league tag never shrinks. */
+.card__top > .badge {
   min-width: 0;
   overflow: hidden;
   text-overflow: ellipsis;
+  white-space: nowrap;
 }
-.card__top-right .fav-star,
-.card__top-right .btn--mini {
+.card__foot > .fav-star {
   flex: 0 0 auto;
+  margin-left: auto;
 }
+/* The channel is the card's headline, set on a darker band at the foot like
+   a guide listing: it is the answer to the question the viewer opened the
+   app with. Extra channels collapse to "+2" (full list in the tooltip and in
+   Game Detail) so a four-network game does not wrap into a second band. */
 .card__foot {
-  margin-top: auto;
+  margin: auto calc(-1 * var(--cb-space-sm)) 0;
+  padding: 6px var(--cb-space-xs) 6px var(--cb-space-sm);
   display: flex;
-  justify-content: space-between;
-  gap: var(--cb-space-xs);
   align-items: center;
+  gap: var(--cb-space-xs);
   min-width: 0;
+  background: rgba(0, 0, 0, 0.28);
+  border-radius: 0 0 var(--cb-radius-card) var(--cb-radius-card);
 }
-/* The venue gives way to the channels, not the other way round: live ESPN
-   data carries names like "Empower Field at Mile High", which ran 32px past
-   a 266px card at 720p. The channel is what the viewer came for; the venue
-   truncates, and the full name stays in the title and in Game Detail. */
-.card__foot > .when {
+.card__net {
   min-width: 0;
   overflow: hidden;
   text-overflow: ellipsis;
+  white-space: nowrap;
+  font-family: var(--font);
+  font-size: var(--cb-text-label);
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
 }
-.card__foot > .channels {
-  flex: 0 1 auto;
+.card__more {
+  flex: 0 0 auto;
+  color: var(--cb-slate);
+  font-size: var(--cb-text-data);
+  font-weight: 700;
 }
 .league-tag {
   font-size: var(--cb-text-kicker);
@@ -647,15 +735,93 @@
   font-size: var(--cb-text-data);
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  margin-bottom: 10px;
   flex-wrap: wrap;
 }
-.hero-side {
+/* The meta line carries the status, the channels and Watch, so the match
+   line below it has the full width. Channels and Watch sit at the right end;
+   the meta wraps rather than squeezing the match line. */
+.hero-meta__chans {
   display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-left: auto;
+  text-transform: none;
+  letter-spacing: 0;
+}
+.btn--slim {
+  padding-inline: var(--cb-space-sm);
+}
+
+/* The match line: away | score | home. */
+.hm {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+  align-items: center;
+  gap: var(--cb-space-md);
+}
+.hm__team {
+  display: flex;
+  align-items: center;
   gap: var(--cb-space-sm);
+  min-width: 0;
+}
+.hm__team--home {
+  flex-direction: row-reverse;
+  text-align: right;
+}
+.hm__mark {
+  flex: 0 0 auto;
+}
+.hm .mark {
+  --mark-size: 64px;
+}
+/* Two lines before an ellipsis: "Philadelphia / Eagles" reads; "Philade…"
+   does not. */
+.hm__name {
+  min-width: 0;
+  font-size: var(--cb-text-section);
+  font-weight: 800;
+  line-height: 1.15;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  overflow-wrap: anywhere;
+}
+.hm__team.is-win .hm__name {
+  color: var(--accent);
+}
+.hm__score {
+  font-family: var(--font);
+  font-size: calc(var(--text-score) * 1.25);
+  font-weight: 800;
+  line-height: 0.9;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+.hm__dash {
+  color: var(--cb-slate);
+  margin: 0 0.18em;
+}
+.hm__vs {
+  color: var(--cb-slate);
+  font-size: 0.5em;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+@media (max-width: 720px) {
+  .tile {
+    padding: var(--cb-space-md);
+  }
+  .hm .mark {
+    --mark-size: 48px;
+  }
+  /* A phone is too narrow for two names beside the score ("PHI T…", "DA L").
+     The marks carry the teams — a logo, or the abbreviation without one —
+     and the full names are one tap away in Game Detail. */
+  .hm__name {
+    display: none;
+  }
 }
 .pills {
   display: flex;

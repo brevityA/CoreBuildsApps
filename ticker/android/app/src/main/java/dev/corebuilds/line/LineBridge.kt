@@ -80,4 +80,66 @@ class LineBridge(private val activity: MainActivity) {
     /** Stop the floating ticker. */
     @JavascriptInterface
     fun stopOverlay(): Boolean = activity.stopOverlay()
+
+    // ---- VPN status dot ---------------------------------------------------
+
+    /** Live VPN state as JSON: {tunnelUp, covering, validated, transport, state}. */
+    @JavascriptInterface
+    fun vpnStatus(): String = activity.vpnStatus()
+
+    /** Is the VPN dot on screen right now? */
+    @JavascriptInterface
+    fun vpnDotActive(): Boolean = activity.vpnDotActive()
+
+    /** Same platform answer as overlayPlatform(): Fire TV cannot draw overlays. */
+    @JavascriptInterface
+    fun vpnDotPlatform(): String = activity.vpnDotPlatform()
+
+    /** Turn the dot on; opens the overlay-permission screen when it is missing. */
+    @JavascriptInterface
+    fun startVpnDot(configJson: String): Boolean = activity.startVpnDot(configJson)
+
+    /** Re-shape a running dot (corner, opacity, blink) without a restart. */
+    @JavascriptInterface
+    fun setVpnDotConfig(configJson: String): Boolean = activity.setVpnDotConfig(configJson)
+
+    /** Turn the dot off. */
+    @JavascriptInterface
+    fun stopVpnDot(): Boolean = activity.stopVpnDot()
+
+    // ---- Playlist + TV guide import (Importer.kt) ----------------------------
+
+    /** Download and parse a playlist on the device. False when a job is running or the link is refused. */
+    @JavascriptInterface
+    fun startPlaylistImport(url: String): Boolean = activity.importer.startPlaylist(url)
+
+    /** Download and parse the TV guide from a JSON array of up to four links. */
+    @JavascriptInterface
+    fun startGuideImport(urlsJson: String): Boolean {
+        val urls = try {
+            val arr = org.json.JSONArray(urlsJson)
+            (0 until arr.length()).map { arr.optString(it) }.filter { it.isNotBlank() }
+        } catch (_: Exception) {
+            emptyList()
+        }
+        return activity.importer.startGuide(urls)
+    }
+
+    /** `{state, kind, message, count, at}` for the current or last import. */
+    @JavascriptInterface
+    fun importStatus(): String = activity.importer.status()
+
+    /** The last imported playlist as JSON, or "" when there is none. */
+    @JavascriptInterface
+    fun readPlaylist(): String = activity.importer.read(Importer.Kind.PLAYLIST)
+
+    /** The last imported guide as JSON, or "" when there is none. */
+    @JavascriptInterface
+    fun readGuide(): String = activity.importer.read(Importer.Kind.GUIDE)
+
+    /** Delete both imports. */
+    @JavascriptInterface
+    fun clearImports() {
+        activity.importer.clear()
+    }
 }

@@ -13,7 +13,17 @@
  */
 
 import { LEAGUES } from '/lib/scoreboard.mjs';
+import {
+  VPN_OPACITY,
+  normalizeVpnStatus,
+  vpnDetail,
+  vpnDotConfig,
+  vpnDotTone,
+  vpnHeadline,
+} from '/lib/vpn.mjs';
 import { isNativeShell } from '/lib/client-slate.mjs';
+import { tickerShown } from '/lib/chrome.mjs';
+import { getTicker } from './chyron.js';
 import { store, persist } from '../core/store.js';
 import { on, emit } from '../core/bus.js';
 import { $, $$, esc, clampInt, setHidden, setText } from '../core/dom.js';
@@ -62,10 +72,28 @@ export function initSettings() {
   on('feeds', renderFeeds);
 }
 
+/**
+ * Show or hide the chyron, and run its loop only while it is shown: a crawl
+ * nobody can see still costs a TV box a layout per frame, and the frozen-ribbon
+ * watchdog would read a hidden ribbon as a stalled one.
+ */
+export function applyTicker() {
+  const shown = tickerShown(store.state, { overlay: Boolean(globalThis.CORELINE_OVERLAY) });
+  document.documentElement.toggleAttribute('data-no-ticker', !shown);
+  const t = getTicker();
+  if (!t) return;
+  if (shown && !t.running) t.start();
+  if (!shown && t.running) t.stop();
+}
+
 export function applyChrome() {
   const root = document.documentElement;
   const s = store.state;
   root.dataset.theme = s.theme;
+  // A bare attribute rather than data-oled="false": the selector in
+  // tokens.css is a presence check, so `off` must mean absent.
+  root.toggleAttribute('data-oled', Boolean(s.oled));
+  applyTicker();
   root.dataset.mode = s.mode;
   root.dataset.position = s.position;
   // A null overscan means the viewer has never calibrated, so leave the
@@ -78,6 +106,8 @@ export function applyChrome() {
   set($('refreshSec'), 'value', String(s.refreshSec));
   set($('position'), 'value', s.position);
   set($('theme'), 'value', s.theme);
+  set($('oled'), 'checked', s.oled);
+  set($('ticker'), 'checked', s.ticker);
   set($('clockFmt'), 'value', s.clockFmt);
   set($('overscan'), 'value', currentOverscan());
   set($('favorites'), 'value', s.favorites);
@@ -97,7 +127,78 @@ export function applyChrome() {
   setHidden('overlayBlock', !isNativeShell() || platform === 'unsupported');
   if ($('overlayEnabled')) $('overlayEnabled').checked = Boolean(nativeBridge()?.overlayActive?.());
   updateOverlayHint(platform);
+
+  // The VPN dot. Its switch reflects what is actually on screen (the service
+  // can be restarted by the system), its shape comes from state.
+  set($('vpnDotEnabled'), 'checked', Boolean(nativeBridge()?.vpnDotActive?.()));
+  set($('vpnDotCorner'), 'value', s.vpnDotCorner);
+  set($('vpnDotOpacity'), 'value', s.vpnDotOpacity);
+  set($('vpnDotHideWhenOk'), 'checked', s.vpnDotHideWhenOk);
+  set($('vpnDotBlink'), 'checked', s.vpnDotBlink);
+  setText('vpnDotOpacityVal', `${s.vpnDotOpacity}%`);
+  renderVpnStatus();
+
   renderChannelsPanel();
+}
+
+/** The dot's config payload, with the panel's calibrated safe area folded in. */
+function dotConfig() {
+  return vpnDotConfig(store.state, {
+    overscanPx: currentOverscan(),
+    devicePixelRatio: globalThis.devicePixelRatio || 1,
+  });
+}
+
+/**
+ * Push a shape change to a dot that is already on screen. The switch's own
+ * handler deals with starting and stopping; everything else is a live tweak.
+ */
+function syncVpnDot() {
+  const bridge = nativeBridge();
+  setText('vpnDotOpacityVal', `${store.state.vpnDotOpacity}%`);
+  if (bridge?.vpnDotActive?.() !== true) return;
+  bridge?.setVpnDotConfig?.(JSON.stringify(dotConfig()));
+}
+
+/**
+ * Paint the live VPN state into the drawer.
+ *
+ * Re-read on open, on every change, and on a slow timer while the drawer is
+ * visible: the state can change underneath a stationary settings screen (the
+ * VPN app reconnects, Wi-Fi drops), and a status line that only updates on
+ * demand is the exact thing the dot exists to replace.
+ */
+export function renderVpnStatus() {
+  if (!isNativeShell()) return;
+  const raw = (() => {
+    try {
+      return JSON.parse(nativeBridge()?.vpnStatus?.() || '{}');
+    } catch {
+      return {};
+    }
+  })();
+  const status = normalizeVpnStatus(raw);
+  setText('vpnStatusText', `${vpnHeadline(status)} — ${vpnDetail(status)}`);
+  const swatch = $('vpnStatusDot');
+  if (swatch) {
+    swatch.classList.remove('is-ok', 'is-warn', 'is-down');
+    swatch.classList.add(`is-${vpnDotTone(status.state)}`);
+  }
+}
+
+let vpnPoll = null;
+
+/** Poll only while the drawer is open: nothing else shows the live state. */
+function armVpnPoll(on) {
+  if (vpnPoll) {
+    clearInterval(vpnPoll);
+    vpnPoll = null;
+  }
+  if (!on || !isNativeShell()) return;
+  vpnPoll = setInterval(() => {
+    renderVpnStatus();
+    set($('vpnDotEnabled'), 'checked', Boolean(nativeBridge()?.vpnDotActive?.()));
+  }, 2000);
 }
 
 function set(el, prop, value) {
@@ -123,6 +224,9 @@ export function openDrawer(open) {
   if (open && !$('gameDetail').hidden) emit('detail:close');
   drawer.hidden = !open;
   if (open) {
+    // The VPN state is live, not a snapshot from when the drawer was built.
+    renderVpnStatus();
+    armVpnPoll(true);
     lastFocusBeforeDrawer = document.activeElement;
     const first = $('drawerRail')?.querySelector('.chip--row');
     if (globalThis.CORELINE_TV) {
@@ -133,6 +237,7 @@ export function openDrawer(open) {
       $('feedUrl')?.focus();
     }
   } else {
+    armVpnPoll(false);
     emit('pair:stop');
     if (lastFocusBeforeDrawer && document.contains(lastFocusBeforeDrawer)) {
       lastFocusBeforeDrawer.focus();
@@ -228,6 +333,18 @@ export function nudgeOverscan(delta) {
   persist();
 }
 
+export function nudgeVpnDot(delta) {
+  store.state.vpnDotOpacity = clampInt(
+    store.state.vpnDotOpacity + delta,
+    VPN_OPACITY.min,
+    VPN_OPACITY.max,
+    VPN_OPACITY.default,
+  );
+  set($('vpnDotOpacity'), 'value', store.state.vpnDotOpacity);
+  persist();
+  syncVpnDot();
+}
+
 /** Wire every control in the drawer. Called once from app.js. */
 export function wireSettings() {
   $('sampleFeed')?.addEventListener('change', (e) => {
@@ -288,6 +405,21 @@ export function wireSettings() {
     emit('state');
   });
 
+  $('oled')?.addEventListener('change', (e) => {
+    store.state.oled = e.target.checked;
+    // Applied here as well as in applyChrome: the viewer is looking at the
+    // panel while they flip this, and waiting for the next state emit to
+    // repaint the whole field black is a visible flash.
+    document.documentElement.toggleAttribute('data-oled', e.target.checked);
+    persist();
+  });
+
+  $('ticker')?.addEventListener('change', (e) => {
+    store.state.ticker = e.target.checked;
+    applyTicker();
+    persist();
+  });
+
   $('alerts')?.addEventListener('change', (e) => {
     store.state.alerts = e.target.checked;
     persist();
@@ -319,6 +451,58 @@ export function wireSettings() {
     }
     store.state.overlay = Boolean(bridge?.overlayActive?.());
     persist();
+  });
+
+  $('vpnDotEnabled')?.addEventListener('change', (e) => {
+    const bridge = nativeBridge();
+    if (e.target.checked) {
+      if (bridge?.vpnDotPlatform?.() === 'unsupported') {
+        e.target.checked = false;
+        emit('toast', 'The VPN dot is not available on Fire TV');
+        return;
+      }
+      const started = bridge?.startVpnDot?.(JSON.stringify(dotConfig())) === true;
+      e.target.checked = bridge?.vpnDotActive?.() === true;
+      if (!started) {
+        emit('toast', globalThis.CORELINE_TV
+          ? 'Enable “Display over other apps” for Core Line in Settings, then retick'
+          : 'Allow “display over other apps” for Core Line, then retick');
+      }
+      if (store.state.vpnDot !== e.target.checked) {
+        store.state.vpnDot = Boolean(e.target.checked);
+        persist();
+      }
+      renderVpnStatus();
+      return;
+    }
+    bridge?.stopVpnDot?.();
+    store.state.vpnDot = false;
+    persist();
+    renderVpnStatus();
+  });
+
+  $('vpnDotCorner')?.addEventListener('change', (e) => {
+    store.state.vpnDotCorner = e.target.value;
+    persist();
+    syncVpnDot();
+  });
+
+  $('vpnDotOpacity')?.addEventListener('input', (e) => {
+    store.state.vpnDotOpacity = clampInt(e.target.value, VPN_OPACITY.min, VPN_OPACITY.max, VPN_OPACITY.default);
+    persist();
+    syncVpnDot();
+  });
+
+  $('vpnDotHideWhenOk')?.addEventListener('change', (e) => {
+    store.state.vpnDotHideWhenOk = e.target.checked;
+    persist();
+    syncVpnDot();
+  });
+
+  $('vpnDotBlink')?.addEventListener('change', (e) => {
+    store.state.vpnDotBlink = e.target.checked;
+    persist();
+    syncVpnDot();
   });
 
   // Focusing a rail item activates its section, so walking the rail with the

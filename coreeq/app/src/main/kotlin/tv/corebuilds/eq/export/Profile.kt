@@ -39,7 +39,15 @@ data class Profile(
     val curve: List<CurvePoint> = emptyList(),
     val capabilityVerdict: Map<String, String> = emptyMap(),
     /** Measurement limits that must travel with the curve (e.g. phase not analysed on a REW magnitude import). */
-    val measurementNotes: List<String> = emptyList()
+    val measurementNotes: List<String> = emptyList(),
+    /**
+     * The output this was measured on (see OutputRoute: "speaker", "hdmi_arc",
+     * "bluetooth", …). Null for profiles saved before outputs were recorded:
+     * those apply on any output, as they always did.
+     */
+    val outputKind: String? = null,
+    /** What that output called itself ("Sonos Beam"), for display. */
+    val outputName: String? = null
 ) {
     /** Correction in dB at [hz], interpolated on the measured curve; 0 outside it. */
     fun correctionAt(hz: Double): Double {

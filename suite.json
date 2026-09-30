@@ -1,6 +1,6 @@
 {
   "suite": "Core Builds Apps",
-  "asOf": "2026-09-29",
+  "asOf": "2026-09-30",
   "apps": {
     "iconpack": {
       "name": "Core Builds Icon Pack",
@@ -21,8 +21,8 @@
     },
     "line": {
       "name": "Core Line",
-      "versionName": "1.4.0",
-      "versionCode": 8,
+      "versionName": "1.4.1",
+      "versionCode": 9,
       "tagPrefix": "coreline-v",
       "floatingTag": "coreline",
       "downloader": "7375676",

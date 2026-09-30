@@ -14,6 +14,7 @@ import tv.corebuilds.eq.apply.EqService
 import tv.corebuilds.eq.dsp.Peaking
 import tv.corebuilds.eq.dsp.Targets
 import tv.corebuilds.eq.export.Formats
+import tv.corebuilds.eq.apply.OutputRoute
 import tv.corebuilds.eq.export.Profile
 import tv.corebuilds.eq.export.ProfileStore
 import tv.corebuilds.eq.ui.CurveGraphView
@@ -115,7 +116,9 @@ class ProfilesActivity : TvActivity() {
 
     private fun displayProfile(profile: Profile) {
         val pDb = if (profile.preampDb != 0.0) profile.preampDb else Peaking.preampDb(profile.filters)
-        textPreamp.text = String.format(Locale.US, "Preamp  %.2f dB", pDb)
+        // Which output this corrects: correction only applies there (OutputRoute).
+        val on = profile.outputKind?.let { profile.outputName ?: OutputRoute.label(it) } ?: "any output (measured before outputs were recorded)"
+        textPreamp.text = String.format(Locale.US, "Preamp  %.2f dB  ·  For %s", pDb, on)
 
         if (profile.curve.isNotEmpty()) {
             val freqs = DoubleArray(profile.curve.size) { profile.curve[it].hz }
