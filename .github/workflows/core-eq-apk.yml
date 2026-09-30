@@ -53,11 +53,13 @@ jobs:
       - name: Set up Gradle
         uses: gradle/actions/setup-gradle@v6
 
-      - name: Run unit tests
+      # Lint runs in the same Gradle call so a manifest or resource error
+      # (e.g. ProtectedPermissions on DUMP) fails the PR, not a later build.
+      - name: Run unit tests and lint
         working-directory: coreeq
         run: |
           set -o pipefail
-          ./gradlew :app:testDebugUnitTest --no-daemon --stacktrace 2>&1 | tee "$RUNNER_TEMP/coreeq-gradle.log"
+          ./gradlew :app:testDebugUnitTest :app:lintDebug --no-daemon --stacktrace 2>&1 | tee "$RUNNER_TEMP/coreeq-gradle.log"
 
       # The action log archive is not always reachable from this runner; emit
       # concise failures as check annotations as well as in the full log.

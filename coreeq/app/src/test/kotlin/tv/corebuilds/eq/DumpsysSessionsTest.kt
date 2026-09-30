@@ -144,6 +144,22 @@ class DumpsysSessionsTest {
     }
 
     @Test
+    fun stoppedSessionsAreNotAttachable() {
+        val sessions = listOf(
+            DiscoveredSession(1, uid = 100, usage = DumpsysSessions.USAGE_MEDIA, active = true),
+            DiscoveredSession(2, uid = 100, usage = DumpsysSessions.USAGE_MEDIA, active = null), // dump is silent
+            DiscoveredSession(3, uid = 100, usage = DumpsysSessions.USAGE_MEDIA, active = false) // paused/left behind
+        )
+        assertEquals(listOf(1, 2), DumpsysSessions.attachable(sessions, ourUid = 200).map { it.sessionId })
+        // The merged fixture's session 392 is active=no in the Tracks table.
+        val merged = DumpsysSessions.merge(
+            DumpsysSessions.parse(googleTvTable),
+            DumpsysSessions.parse(aospClientsRows)
+        )
+        assertFalse(DumpsysSessions.attachable(merged, ourUid = 200).any { it.sessionId == 392 })
+    }
+
+    @Test
     fun anUnrecognisedUsageWordIsNamedNotSilent() {
         // "usage: podcast" is a usage the dump named: treat it as named and
         // leave it alone, unlike a dump that prints no usage at all.

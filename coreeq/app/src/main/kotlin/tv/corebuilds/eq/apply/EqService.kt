@@ -56,8 +56,10 @@ import java.util.concurrent.Executors
  * "▶ Playing ·" marker — the Home screen indicator and the notification both
  * light from that one fact. The platform reports *that* something is playing
  * ([AudioManager] playback callbacks) but never *which* app is playing, so the
- * marker means "the TV is playing and the correction is attached", and the
- * status line is what names the players being corrected.
+ * marker is only shown on the whole-TV path, where anything playing is
+ * corrected. On the per-player path the TV playing proves nothing — YouTube
+ * can be audible while only Kodi's paused session is held — so the badge stays
+ * armed and the status line names the players being corrected.
  */
 class EqService : Service() {
 
@@ -234,7 +236,8 @@ class EqService : Service() {
             "Waiting for a player that shares its audio (Kodi, VLC, Poweramp). " +
                 "This TV refused whole-TV correction ($globalError), so apps that do not " +
                 "share their audio, such as Netflix and YouTube, are not corrected. " +
-                "Grant DUMP discovery on the Capability screen to reach them, or export " +
+                "Granting DUMP discovery on the Capability screen reaches some of them " +
+                "(not YouTube), or export " +
                 "the profile for the TV's own sound settings."
         }
 
@@ -323,6 +326,10 @@ class EqService : Service() {
         if (!running || suspended || globalEq != null) return
         val profile = store.getActiveProfile() ?: return
         var changed = false
+        // One player refusing an equaliser must not stop the others being
+        // attached, or stale sessions below being released: remember the
+        // failure, carry on, and name it once everything else is settled.
+        var failed: String? = null
         for (s in found) {
             if (sessionEqs.containsKey(s.sessionId)) continue
             val pkg = packageManager.getPackagesForUid(s.uid ?: continue)?.firstOrNull() ?: continue
@@ -334,11 +341,7 @@ class EqService : Service() {
             } catch (e: Exception) {
                 Log.w(TAG, "Equalizer on discovered session ${s.sessionId} failed", e)
                 closeSession(s.sessionId)
-                report(
-                    "Could not correct ${label(pkg)} (found by DUMP discovery): ${e.message ?: e.javaClass.simpleName}",
-                    isError = true
-                )
-                return
+                failed = "Could not correct ${label(pkg)} (found by DUMP discovery): ${e.message ?: e.javaClass.simpleName}"
             }
         }
         val present = found.mapTo(mutableSetOf()) { it.sessionId }
@@ -349,7 +352,9 @@ class EqService : Service() {
                 changed = true
             }
         }
-        if (changed) {
+        if (failed != null) {
+            report(failed, isError = true)
+        } else if (changed) {
             // The last player leaving is not "Correcting nobody": it is back
             // to waiting, with the same words applyAll would use.
             if (sessionEqs.isEmpty()) {
@@ -379,13 +384,14 @@ class EqService : Service() {
      * Publishes the status to every visible surface — the Home screen status
      * line, its correction indicator, and the notification — from one place,
      * so they cannot disagree. The words are whatever [report] last chose; the
-     * "▶ Playing ·" marker is added while audio the correction is attached to
-     * is audible right now. Unchanged reports publish nothing, so a playback
+     * "▶ Playing ·" marker is added while the whole-TV correction is on and
+     * something is audible right now (see the class note for why only then).
+     * Unchanged reports publish nothing, so a playback
      * callback on every focus change cannot spam the notification.
      */
     private fun publish(configs: List<AudioPlaybackConfiguration>? = null) {
         if (!running || messageBody.isEmpty()) return
-        val playingNow = !suspended && !messageError && correcting() && audioIsPlaying(configs)
+        val playingNow = !suspended && !messageError && globalEq != null && audioIsPlaying(configs)
         val shown = if (playingNow) "▶ Playing · $messageBody" else messageBody
         if (shown == lastShown && playingNow == lastPlaying) return
         lastShown = shown
@@ -406,9 +412,6 @@ class EqService : Service() {
         messageError = isError
         publish()
     }
-
-    /** True while an equaliser is configured and enabled on something. */
-    private fun correcting(): Boolean = globalEq != null || sessionEqs.isNotEmpty()
 
     /**
      * True when something on this TV is playing audio right now.

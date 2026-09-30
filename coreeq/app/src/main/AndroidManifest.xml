@@ -1,13 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
     <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
     <!-- Ladder rung 2 (DUMP discovery): a development permission that only
          `adb shell pm grant` can give (the Capability screen shows the exact
          command). Declared, never granted at install: without the grant the
-         app is exactly the v1.0 ladder. -->
-    <uses-permission android:name="android.permission.DUMP" />
+         app is exactly the v1.0 ladder. Lint's ProtectedPermissions check
+         assumes a permission nothing can grant; this one is granted by hand. -->
+    <uses-permission
+        android:name="android.permission.DUMP"
+        tools:ignore="ProtectedPermissions" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MEDIA_PLAYBACK" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />

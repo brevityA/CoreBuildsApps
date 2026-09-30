@@ -106,8 +106,14 @@ object DumpsysSessions {
 
     /**
      * Sessions the correction may attach to: a real session, not our own uid
-     * (the measurement sweep must never correct itself), and named as media or
-     * game — or nameless.
+     * (the measurement sweep must never correct itself), not one the dump says
+     * has stopped, and named as media or game — or nameless.
+     *
+     * A stopped session is a track a player left behind (paused, or released
+     * but not yet reaped); attaching to it would name a player as "being
+     * corrected" that is not playing. When it plays again the playback
+     * callback re-runs discovery, which finds it active. A dump that says
+     * nothing about playback (null) is kept, as with usage below.
      *
      * The nameless case is deliberate and narrow: a dump that prints no usage
      * column at all (old firmware) cannot be *shown* to be non-media, and
@@ -120,6 +126,7 @@ object DumpsysSessions {
             s.sessionId > 0 &&
                 s.uid != null &&
                 s.uid != ourUid &&
+                s.active != false &&
                 attachableUsage(s.usage)
         }
 

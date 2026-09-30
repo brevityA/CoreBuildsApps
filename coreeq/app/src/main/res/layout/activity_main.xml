@@ -127,8 +127,8 @@
                     android:paddingEnd="@dimen/cb_card_padding"
                     android:focusable="true" />
 
-                <!-- The correction indicator: pulses LIVE only while audio the
-                     correction is attached to is actually playing. -->
+                <!-- The correction indicator: pulses LIVE only while whole-TV
+                     correction is on and audio is actually playing. -->
                 <LinearLayout
                     android:id="@+id/badge_correction"
                     android:layout_width="wrap_content"

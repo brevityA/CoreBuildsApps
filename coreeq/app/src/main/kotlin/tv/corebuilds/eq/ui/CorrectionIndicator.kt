@@ -11,14 +11,16 @@ package tv.corebuilds.eq.ui
  * - [STANDBY] – the switch is on but nothing is audible through the
  *   correction right now: armed and the TV is silent, or waiting for a player
  *   to attach to.
- * - [LIVE] – audio is playing and the correction is attached to it. The badge
- *   pulses in this state only.
+ * - [LIVE] – whole-TV correction is on and audio is playing, so what is
+ *   playing is being corrected. The badge pulses in this state only.
  *
  * Pure on purpose: the inputs are known by [tv.corebuilds.eq.apply.EqService]
  * (playing) and the Home screen (enabled, fault), and the table between them is
  * what [CorrectionIndicatorTest] pins. "Playing" is the TV's, not one app's:
- * Android hides player identity from third-party apps, so the service watches
- * playback state and the status line names what is actually being corrected.
+ * Android hides player identity from third-party apps, so the service reports
+ * it only on the whole-TV path, where the two are the same thing. On the
+ * per-player path the badge stays [STANDBY] and the status line names the
+ * players being corrected.
  */
 enum class CorrectionIndicator { OFF, FAULT, STANDBY, LIVE }
 

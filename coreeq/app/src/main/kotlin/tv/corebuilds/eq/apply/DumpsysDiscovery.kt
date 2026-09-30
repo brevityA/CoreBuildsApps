@@ -12,8 +12,11 @@ import java.util.concurrent.TimeUnit
  * With the one-time `android.permission.DUMP` grant (a development permission,
  * `pm grant`-able; the Capability screen shows the exact command), Core EQ can
  * read the system's own audio dumps and find the sessions players are playing
- * on — including players like Netflix that never announce a session. Without
- * the grant nothing here runs and the ladder behaves exactly as v1.0.
+ * on — including some players that never announce a session. Not all of them:
+ * Wavelet's DUMP-based detection is documented as not working with YouTube,
+ * and which streaming apps it reaches on a given TV is unverified until device
+ * runs say so. Without the grant nothing here runs and the ladder behaves
+ * exactly as v1.0.
  *
  * All parsing lives in [DumpsysSessions] (pure, fixture-tested); this object
  * is only the exec and the uid question. [discover] blocks — call it from a
