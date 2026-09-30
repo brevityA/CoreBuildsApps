@@ -7,9 +7,9 @@ package tv.corebuilds.eq.apply
  * clip, never to make things louder. It boosts nothing ([postGainDb] is 0),
  * clamps at the top of the headroom ([thresholdDb] ≤ 0), and engages fast.
  *
- * Pure data on purpose: `DpMappingTest` pins the invariants here, and the
- * M6a hardware spike maps this onto `DynamicsProcessing.Limiter` — the
- * platform constructor is the part only a device can prove.
+ * Pure data on purpose: `DpMappingTest` pins the invariants here, while
+ * `DynamicsProcessingEngine` maps them onto the platform limiter. M6a must
+ * still prove that the configured limiter clamps real audio on a TV.
  */
 data class LimiterSettings(
     val enabled: Boolean = true,

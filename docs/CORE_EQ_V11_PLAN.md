@@ -1,6 +1,6 @@
 # Core EQ v1.1 — reach every player
 
-*Status: in progress — M5–M7, M8's UI half and M10 implemented; M6a, M8 pairing and M9 remain.*
+*Status: in progress — M5–M7, M8's UI half and M10 implemented; the DP apply path is now wired with runtime read-back checks, but M6a hardware acceptance, M8 pairing and M9 remain.*
 Builds on `docs/CORE_EQ_PLAN.md` §4 (the ladder), §8 (milestones) and §9.2
 (*decided: v1.1*): rung 2 of the capability ladder lands in v1.1 as an
 optional, clearly-labelled mode. This plan adds one scope decision made with
@@ -98,18 +98,35 @@ behind a spike milestone; path 1 alone is enough to ship the rung.
 
 ## 5. DynamicsProcessing engine
 
-- API 28+ and supported by the probe: `DynamicsProcessing` with the pre-EQ
-  stage in use on the engine's own band layout, `MBC` off, **limiter on**
-  (conservative defaults: high threshold, fast release — protection, not
-  loudness). Below 28 or on a refusal: the v1.0 `Equalizer` path, unchanged.
-- Band mapping is pure and parity-tested: `profile.correctionAt` at the
-  engine's reported band centres, headroom-shifted, clamped to the engine's
-  range — the same maths `ApplyPathTest` pins for `Equalizer`.
-- The band row on Home draws the engine's reported centres, whichever engine
-  is live; the profile still stores the curve, not the bands.
-- A spike (M6a) pins the exact `Config.Builder` / `Limiter` construction on
-  real hardware before the apply path is written around it — the API's
-  channel-wise setters are the kind of thing that silently no-ops.
+- API 28+ and supported by the probe: `DynamicsProcessing` with a 25-band
+  PreEQ: 24 correction bands ending at 8 kHz plus a neutral high-frequency
+  guard band; MBC and PostEQ are off, and a linked **limiter is on**
+  (1 ms attack, 50 ms release, 10:1, −1 dBFS threshold, 0 dB post-gain).
+  Below API 28 or on any config/control/read-back refusal, the v1.0
+  `Equalizer` path is used instead.
+- `DynamicsProcessingEngine` constructs the `Config.Builder`, maps the
+  profile at the layout's log-spaced centres, applies the limiter to every
+  channel, and checks band gains/cutoffs, stage state, limiter settings,
+  enable state and control before reporting DP as active. These checks catch
+  framework/API refusals; they do not prove the acoustic output is correct.
+- **AOSP numeric-range caveat (release risk):** the default AIDL
+  [`DynamicsProcessingSw.cpp`](https://android.googlesource.com/platform/hardware/interfaces/+/main/audio/aidl/default/dynamicProcessing/DynamicsProcessingSw.cpp)
+  descriptor advertises PreEQ cutoffs of 220 Hz
+  to 20,000 Hz and `gainDb` from `std::numeric_limits<float>::min()` to
+  `max()` (`min()` is the smallest *positive* float, not the most negative
+  float). Its `validateEqBandConfig()` checks channel and band indices, but
+  does not enforce those numeric fields. This is neither a Java API guarantee
+  nor an OEM-HAL capability contract. Core EQ's first cutoffs are below the
+  advertised 220 Hz floor, so the app deliberately does not clamp the layout:
+  changed read-back fails the DP path and falls back to Equalizer; M6a must
+  record the actual device behaviour before release.
+- The band row on Home uses the currently applied engine's read-back bands;
+  the saved profile continues to store the correction curve, not engine bands.
+- **Release remains held for M6a hardware acceptance.** On one real TV, prove
+  the configured effect engages, the returned band layout is sensible, a
+  known over-threshold signal is clamped by the limiter, and a refused effect
+  falls back without double correction. Runtime read-back alone cannot prove
+  that the limiter clamps audio.
 
 ## 6. UI (polish allowed)
 
@@ -157,6 +174,12 @@ CI coverage, changelog contract, `:app:testDebugUnitTest`) plus:
   fixture confirms a ~45 Hz room mode does not raise the roll-off floor.
 - `DspParityTest` — the persisted measurement-limit note survives parametric
   export, including the empty-filter case.
+- **M6a physical acceptance before release:** on one Android TV, record model,
+  Android/API level, configured/read-back PreEQ centres and limiter values;
+  confirm audible effect engagement and clamp with a known over-threshold
+  signal; confirm a refused DP config falls back to `Equalizer` without
+  leaving two effects attached. This cannot be replaced by JVM tests or a
+  successful APK build.
 - A changelog `### Added` / `### Changed` entry that names the optional mode
   as optional.
 
@@ -170,10 +193,10 @@ CI coverage, changelog contract, `:app:testDebugUnitTest`) plus:
    unreadable parse attaches nothing and says so.
 2. **`DynamicsProcessing` misconfiguration.** The wrong config can mean
    silence, distortion, or a limiter that pumps — "the EQ made it worse".
-   *Mitigation:* spike M6a before the apply path is written; limiter as
-   protection only; identical gain maths to the `Equalizer` path (same
-   parity tests); instant fallback to `Equalizer` on any refusal; the
-   capability verdict records which engine ran.
+   *Mitigation:* the apply path has explicit stage/config/read-back guards,
+   protection-only limiter settings, identical headroom maths and immediate
+   fallback to `Equalizer`; status names the engine actually used. M6a's
+   real-device engagement and limiter-clamp acceptance is a release blocker.
 3. **On-device pairing protocol.** The ADB TLS pairing handshake is real
    crypto/protocol work; a broken helper is a worse user experience than no
    helper. *Mitigation:* path 2 is spike-gated and never blocks path 1;
@@ -233,17 +256,21 @@ suite gates (truth, changelog contract, CI coverage, envelope) → pass
 RewImportTest                                  → runs in CI (core-eq-apk.yml) — no local JDK/SDK
 ```
 
-Landed: **M5** (grant check, `DumpsysSessions` + shapes + `DumpsysSessionsTest`),
-**M6 pure** (`BandMapping`, `LimiterSettings`, `DpMappingTest`),
-**M7** (rung selection: discovery attach/release rules, announced-wins
-upgrade, provenance in the status line, one-path invariant kept),
-**M8 UI half** (Capability grant row with the exact command; the rail gained
-a scroll boundary so the added row cannot clip a 540dp panel), and **M10**
-(`RewImport`/`RewImportTest`, bounded async file import, locale-safe parsing,
-shared correction chain, persisted measurement limits, save-for-export,
-downstream-correction honesty line, and roll-off regression fixture).
+Landed in the current worktree: **M5** (grant check, `DumpsysSessions` +
+shapes + `DumpsysSessionsTest`), **M6 pure and apply path** (`BandMapping`,
+`LimiterSettings`, `DpBandLayout`, `DynamicsProcessingEngine`, fallback,
+read-back checks and `DpMappingTest`), **M7** (rung selection: discovery
+attach/release rules, announced-wins upgrade, provenance in the status line,
+one-path invariant kept), **M8 UI half** (Capability grant row with the exact
+PC ADB command; the rail gained a scroll boundary so the added row cannot
+clip a 540dp panel), and **M10** (`RewImport`/`RewImportTest`, bounded async
+file import, locale-safe parsing, shared correction chain, persisted
+measurement limits, save-for-export, downstream-correction honesty line,
+and roll-off regression fixture).
 
-Named, still open: **M6a** (the `DynamicsProcessing` spike on real hardware —
-the platform `Config.Builder`/`Limiter` construction is the part only a
-device can prove), **M8 pairing helper** (spike-gated; PC ADB alone is a
-complete rung 2 meanwhile), **M9** (version 1.1.0 + `coreeq-v1.1.0` tag).
+Still open: **M6a** (real-device acceptance of the configured DP path and
+limiter; release is held until this passes), **M8 pairing helper**
+(spike-gated; the documented cut is PC-ADB-only if pairing is unavailable),
+**M9** (version 1.1.0 + `coreeq-v1.1.0` tag). The current sandbox has no
+Android device, Java or SDK, so it cannot claim M6a or run Gradle; CI and a
+physical device are still required.

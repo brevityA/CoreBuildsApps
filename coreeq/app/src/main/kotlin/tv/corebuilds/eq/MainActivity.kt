@@ -40,7 +40,10 @@ class MainActivity : TvActivity() {
     private var lastIndicatorState: CorrectionIndicator? = null
 
     private val statusReceiver = object : BroadcastReceiver() {
-        override fun onReceive(context: Context, intent: Intent) = refreshStatus()
+        override fun onReceive(context: Context, intent: Intent) {
+            loadActiveProfile() // runtime effect bands are published with status changes
+            refreshStatus()
+        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -214,7 +217,8 @@ class MainActivity : TvActivity() {
             )
         }
         bandsHome.visibility = View.VISIBLE
-        bandsHome.setBands(profile.platformBands)
+        val runtimeBands = if (EqService.running) profileStore.runtimeBands() else emptyList()
+        bandsHome.setBands(runtimeBands.ifEmpty { profile.platformBands })
     }
 
     private companion object {

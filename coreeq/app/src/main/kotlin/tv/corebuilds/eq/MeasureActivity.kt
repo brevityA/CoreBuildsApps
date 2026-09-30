@@ -588,7 +588,7 @@ class MeasureActivity : TvActivity() {
         /** Silence recorded before the sweep, so the noise estimate and latency have room. */
         private const val LEAD_SECONDS = 0.5
         private const val CLIP_DBFS = -0.5
-        /** The common 5-band layout, used for the Home preview only; the service reads the TV's own bands. */
+        /** Saved common 5-band preview; Home uses the live engine's read-back bands while correction is active. */
         private val DISPLAY_BANDS_HZ = doubleArrayOf(60.0, 230.0, 910.0, 3600.0, 14000.0)
 
         private val ROOMS = listOf(

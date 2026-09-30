@@ -129,6 +129,39 @@ class ProfileStore(context: Context) {
         prefs.edit().putString(KEY_SESSION_PKGS, list.joinToString(",")).apply()
     }
 
+    /** The currently-applied engine layout; transient runtime state, not profile data. */
+    fun runtimeBands(): List<PlatformBand> {
+        val raw = prefs.getString(KEY_RUNTIME_BANDS, null) ?: return emptyList()
+        return try {
+            val array = JSONArray(raw)
+            List(array.length()) { index ->
+                val band = array.getJSONObject(index)
+                PlatformBand(band.getDouble("center_hz"), band.getInt("millibels"))
+            }
+        } catch (e: JSONException) {
+            Log.w(TAG, "Ignoring unreadable runtime band layout", e)
+            emptyList()
+        }
+    }
+
+    fun setRuntimeBands(bands: List<PlatformBand>) {
+        if (bands.isEmpty()) {
+            clearRuntimeBands()
+            return
+        }
+        val array = JSONArray()
+        for (band in bands) {
+            array.put(JSONObject()
+                .put("center_hz", band.centerHz)
+                .put("millibels", band.millibels))
+        }
+        prefs.edit().putString(KEY_RUNTIME_BANDS, array.toString()).apply()
+    }
+
+    fun clearRuntimeBands() {
+        prefs.edit().remove(KEY_RUNTIME_BANDS).apply()
+    }
+
     private fun persistProfiles(list: List<Profile>) {
         val arr = JSONArray()
         for (p in list) arr.put(JSONObject(Formats.exportProfileJson(p)))
@@ -213,6 +246,7 @@ class ProfileStore(context: Context) {
         private const val KEY_STATUS_TIME = "status_time"
         private const val KEY_STATUS_PLAYING = "status_playing"
         private const val KEY_SESSION_PKGS = "session_packages"
+        private const val KEY_RUNTIME_BANDS = "runtime_effect_bands"
         private const val KEY_DEMO_PURGED = "demo_profiles_purged"
         private val DEMO_IDS = setOf("profile-living-room", "profile-bedroom", "profile-kitchen")
     }

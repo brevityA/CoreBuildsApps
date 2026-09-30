@@ -74,9 +74,9 @@ class CapabilityActivity : TvActivity() {
                 }
 
                 statusDp.text = if (verdict.dynamicsProcessingSupported) {
-                    "Supported (API 28+ DynamicsProcessing engine available)"
+                    "API 28+ effect available; configuration is verified on apply, with Equalizer fallback."
                 } else {
-                    "Not supported on this Android API version"
+                    "Unavailable on this Android version; Equalizer fallback."
                 }
 
                 statusPlatformEq.text = if (verdict.platformEqualizerSupported) {
@@ -85,7 +85,7 @@ class CapabilityActivity : TvActivity() {
                     "Default 5-band layout"
                 }
 
-                textVerdictBands.text = "${verdict.bandCount} bands"
+                textVerdictBands.text = "${verdict.bandCount} Equalizer fallback bands"
                 val announced = profileStore.sessionPackages()
                 textVerdictSession.text = if (announced.isEmpty()) {
                     "session broadcast: none seen yet (turn correction on, then play something)"

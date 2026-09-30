@@ -17,7 +17,7 @@
     <string name="action_capability_sub">What this device will accept</string>
     <string name="action_poweramp_export">Export to Poweramp</string>
     <string name="action_tv_export">Export for TV settings</string>
-    <string name="platform_eq_title">Preview on the common 5-band layout · the service uses this TV\'s own bands</string>
+    <string name="platform_eq_title">Live engine bands when applied · profile preview otherwise · gain in dB</string>
 
     <!-- Measure screen -->
     <string name="measure_title">Core EQ · Measure</string>
@@ -79,7 +79,7 @@
     <string name="capability_fallback_desc">Export the profile and set the numbers in the TV\'s own sound settings, or in the player\'s built-in equaliser. It is the same curve.</string>
     <string name="capability_discovery_title">DUMP discovery (optional)</string>
     <string name="capability_discovery_granted">Granted · some players that never announce a session can be found and corrected. Not all: YouTube is reported not to be reachable this way.</string>
-    <string name="capability_discovery_denied">Not granted · run this once from a computer with ADB, then correction can reach some players that never announce a session:</string>
+    <string name="capability_discovery_denied">Not granted · this build uses PC ADB; on-device pairing is not included. Run this once from a computer with ADB, then correction can reach some players that never announce a session:</string>
     <string name="capability_discovery_command">adb shell pm grant tv.corebuilds.eq android.permission.DUMP</string>
 
     <!-- Target curves -->

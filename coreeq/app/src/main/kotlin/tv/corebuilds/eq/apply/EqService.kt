@@ -16,19 +16,23 @@ import android.media.AudioAttributes
 import android.media.AudioManager
 import android.media.AudioPlaybackConfiguration
 import android.media.audiofx.AudioEffect
+import android.media.audiofx.DynamicsProcessing
 import android.media.audiofx.Equalizer
 import android.os.Build
 import android.os.Handler
 import android.os.IBinder
 import android.os.Looper
 import android.util.Log
+import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
 import androidx.core.app.ServiceCompat
 import androidx.core.content.ContextCompat
 import tv.corebuilds.eq.MainActivity
+import tv.corebuilds.eq.export.PlatformBand
 import tv.corebuilds.eq.export.Profile
 import tv.corebuilds.eq.export.ProfileStore
 import java.util.concurrent.Executors
+import kotlin.math.roundToInt
 
 /**
  * Applies the active profile and keeps it applied.
@@ -38,17 +42,17 @@ import java.util.concurrent.Executors
  * itself: implicit broadcasts no longer reach manifest receivers, so a
  * receiver that lives in the manifest would never hear them.
  *
- * Two paths, never both at once (that would correct twice):
- * - **Whole TV** – an [Equalizer] on the output mix (session 0). Deprecated,
- *   never removed, and accepted by some TVs.
- * - **Per player** – an [Equalizer] on each session a player announces, or
- *   that DUMP discovery finds (rung 2, only where the user granted the
- *   one-time [DumpsysDiscovery.DUMP_PERMISSION]). Announced sessions win over
- *   discovered ones for the same session id; a discovered session is released
- *   the moment its player disappears from the dump.
+ * Two correction scopes, never both at once (that would correct twice):
+ * - **Whole TV** – an effect on the output mix (session 0), where firmware allows it.
+ * - **Per player** – an effect on each session a player announces, or that DUMP
+ *   discovery finds (rung 2, only where the user granted the one-time
+ *   [DumpsysDiscovery.DUMP_PERMISSION]). Announced sessions win over discovered
+ *   ones for the same session id; a discovered session is released the moment
+ *   its player disappears from the dump.
  *
- * The platform [Equalizer] has no preamp, so every band is lowered by the
- * largest boost: the correction never pushes the signal into clipping.
+ * On API 28+ the service tries a DynamicsProcessing PreEQ with its limiter
+ *   enabled, then falls back to the platform Equalizer on any refusal. Both
+ *   paths lower gains by the largest boost; neither applies positive EQ gain.
  * Every outcome, good or bad, is written to [ProfileStore.setStatus] and the
  * notification, so a failure is always named somewhere the user can see.
  *
@@ -63,12 +67,18 @@ import java.util.concurrent.Executors
  */
 class EqService : Service() {
 
-    /** An equaliser held on one session, and where that session came from. */
-    private data class Held(val eq: Equalizer, val pkg: String, val discovered: Boolean)
+    private data class AppliedEffect(
+        val effect: AudioEffect,
+        val engine: String,
+        val bands: List<PlatformBand>
+    )
+
+    /** An effect held on one session, and where that session came from. */
+    private data class Held(val applied: AppliedEffect, val pkg: String, val discovered: Boolean)
 
     private lateinit var store: ProfileStore
     private val sessionEqs = mutableMapOf<Int, Held>()
-    private var globalEq: Equalizer? = null
+    private var globalEffect: AppliedEffect? = null
     private var globalError: String? = null
     private var suspended = false
 
@@ -122,6 +132,7 @@ class EqService : Service() {
     override fun onCreate() {
         super.onCreate()
         store = ProfileStore(this)
+        store.clearRuntimeBands()
         createChannel()
         val type = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) ServiceInfo.FOREGROUND_SERVICE_TYPE_MEDIA_PLAYBACK else 0
         try {
@@ -184,26 +195,33 @@ class EqService : Service() {
             return
         }
 
-        if (globalEq == null && globalError == null) {
+        var createdGlobalNow = false
+        if (globalEffect == null && globalError == null) {
             try {
-                globalEq = Equalizer(PRIORITY, 0)
+                globalEffect = createBestEffect(0, profile)
+                createdGlobalNow = true
             } catch (e: Exception) {
-                Log.w(TAG, "Output-mix Equalizer (session 0) refused", e)
+                Log.w(TAG, "Output-mix correction refused", e)
                 globalError = e.message ?: e.javaClass.simpleName
             }
         }
 
-        val global = globalEq
+        val global = globalEffect
         if (global != null) {
             try {
-                val bands = configure(global, profile)
-                report("Correcting the whole TV · ${profile.name} · $bands bands", isError = false)
+                val configured = if (createdGlobalNow) global else configureOrReplace(global, 0, profile)
+                globalEffect = configured
+                syncRuntimeBands()
+                report(
+                    "Correcting the whole TV · ${configured.engine} · ${profile.name} · ${configured.bands.size} bands",
+                    isError = false
+                )
                 releaseSessions() // the whole-TV path already covers them
                 return
             } catch (e: Exception) {
-                Log.w(TAG, "Output-mix Equalizer could not be configured", e)
-                global.release()
-                globalEq = null
+                Log.w(TAG, "Output-mix correction could not be configured", e)
+                releaseApplied(global)
+                globalEffect = null
                 globalError = e.message ?: e.javaClass.simpleName
             }
         }
@@ -211,12 +229,14 @@ class EqService : Service() {
         var failed: String? = null
         for ((session, held) in sessionEqs.toMap()) {
             try {
-                configure(held.eq, profile)
+                val configured = configureOrReplace(held.applied, session, profile)
+                sessionEqs[session] = held.copy(applied = configured)
             } catch (e: Exception) {
                 failed = "Could not correct ${label(held.pkg)}: ${e.message ?: e.javaClass.simpleName}"
                 closeSession(session)
             }
         }
+        syncRuntimeBands()
         when {
             failed != null -> report(failed, isError = true)
             sessionEqs.isNotEmpty() -> report(sessionReport(profile), isError = false)
@@ -243,35 +263,36 @@ class EqService : Service() {
 
     private fun openSession(session: Int, pkg: String) {
         store.noteSessionPackage(pkg)
-        if (globalEq != null) return // already corrected by the whole-TV path
+        if (globalEffect != null) return // already corrected by the whole-TV path
         val profile = store.getActiveProfile() ?: return
+        val previous = sessionEqs[session]
         try {
             // A discovered session a player just announced is upgraded, not
             // duplicated: the announcement carries the player's own name.
-            val eq = sessionEqs[session]?.eq ?: Equalizer(PRIORITY, session)
-            val name = pkg.ifBlank { sessionEqs[session]?.pkg ?: "" }
-            sessionEqs[session] = Held(eq, name, discovered = false)
+            val applied = previous?.let { configureOrReplace(it.applied, session, profile) }
+                ?: createBestEffect(session, profile)
+            val name = pkg.ifBlank { previous?.pkg ?: "" }
+            sessionEqs[session] = Held(applied, name, discovered = false)
+            syncRuntimeBands()
             if (suspended) {
-                eq.enabled = false
+                applied.effect.setEnabled(false)
             } else {
-                val bands = configure(eq, profile)
-                report("Correcting ${label(name)} · ${profile.name} · $bands bands", isError = false)
+                report(
+                    "Correcting ${label(name)} · ${applied.engine} · ${profile.name} · ${applied.bands.size} bands",
+                    isError = false
+                )
             }
         } catch (e: Exception) {
-            Log.w(TAG, "Equalizer on session $session ($pkg) failed", e)
+            Log.w(TAG, "Correction effect on session $session ($pkg) failed", e)
             closeSession(session)
             report("Could not correct ${label(pkg)}: ${e.message ?: e.javaClass.simpleName}", isError = true)
         }
     }
 
     private fun closeSession(session: Int) {
-        val eq = sessionEqs.remove(session)?.eq ?: return
-        try {
-            eq.enabled = false
-        } catch (e: IllegalStateException) {
-            Log.w(TAG, "Session $session already gone", e)
-        }
-        eq.release()
+        val applied = sessionEqs.remove(session)?.applied ?: return
+        releaseApplied(applied)
+        syncRuntimeBands()
         publish() // what is being corrected may have just changed
     }
 
@@ -279,28 +300,129 @@ class EqService : Service() {
         for (s in sessionEqs.keys.toList()) closeSession(s)
     }
 
-    /** Sets every band from the profile's curve; returns the band count. Throws when control is lost. */
-    private fun configure(eq: Equalizer, profile: Profile): Int {
+    /** Prefer DP on API 28+, and fall back to Equalizer on any construction/configuration refusal. */
+    private fun createBestEffect(session: Int, profile: Profile): AppliedEffect {
+        var dpFailure: String? = null
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+            try {
+                val dp = DynamicsProcessingEngine.create(session, profile)
+                return AppliedEffect(
+                    effect = dp.effect,
+                    engine = ENGINE_DYNAMICS_PROCESSING,
+                    bands = dp.bandCentresHz.zip(dp.bandGainsDb).map { (hz, db) ->
+                        PlatformBand(hz, (db * 100.0).roundToInt())
+                    }
+                )
+            } catch (e: Exception) {
+                dpFailure = e.message ?: e.javaClass.simpleName
+                Log.w(TAG, "DynamicsProcessing refused on session $session; trying Equalizer", e)
+            }
+        } else {
+            dpFailure = "DynamicsProcessing requires API 28"
+        }
+
+        var eq: Equalizer? = null
+        try {
+            eq = Equalizer(PRIORITY, session)
+            return configureEqualizer(eq, profile)
+        } catch (e: Exception) {
+            try {
+                eq?.release()
+            } catch (_: Exception) {
+                // Preserve the Equalizer refusal below.
+            }
+            throw IllegalStateException(
+                "DynamicsProcessing refused ($dpFailure); Equalizer refused (${e.message ?: e.javaClass.simpleName})",
+                e
+            )
+        }
+    }
+
+    /** Reconfigure a held effect; replace it with the preferred path if it no longer accepts control. */
+    private fun configureOrReplace(current: AppliedEffect, session: Int, profile: Profile): AppliedEffect =
+        try {
+            configure(current, profile)
+        } catch (e: Exception) {
+            Log.w(TAG, "${current.engine} reconfiguration failed on session $session; replacing the effect", e)
+            releaseApplied(current)
+            createBestEffect(session, profile)
+        }
+
+    // Equalizer is checked first, and DynamicsProcessing only behind the SDK
+    // check: on API 26–27 the class does not exist, and even an `is` test
+    // against it throws NoClassDefFoundError on every re-apply.
+    private fun configure(current: AppliedEffect, profile: Profile): AppliedEffect {
+        val effect = current.effect
+        return when {
+            effect is Equalizer -> configureEqualizer(effect, profile)
+            Build.VERSION.SDK_INT >= Build.VERSION_CODES.P -> configureDynamicsProcessing(effect, profile)
+            else -> throw IllegalArgumentException("Unknown audio effect ${effect.javaClass.simpleName}")
+        }
+    }
+
+    @RequiresApi(Build.VERSION_CODES.P)
+    private fun configureDynamicsProcessing(effect: AudioEffect, profile: Profile): AppliedEffect {
+        require(effect is DynamicsProcessing) { "Unknown audio effect ${effect.javaClass.simpleName}" }
+        val dp = DynamicsProcessingEngine.configure(effect, profile)
+        return AppliedEffect(
+            effect = effect,
+            engine = ENGINE_DYNAMICS_PROCESSING,
+            bands = dp.bandCentresHz.zip(dp.bandGainsDb).map { (hz, db) ->
+                PlatformBand(hz, (db * 100.0).roundToInt())
+            }
+        )
+    }
+
+    /** Samples the profile at the effect's actual bands and verifies applied EQ levels. */
+    private fun configureEqualizer(eq: Equalizer, profile: Profile): AppliedEffect {
         val n = eq.numberOfBands.toInt()
+        check(n > 0) { "Equalizer reports no bands" }
         val range = eq.bandLevelRange
-        val centres = DoubleArray(n) { eq.getCenterFreq(it.toShort()) / 1000.0 }
+        check(range != null && range.size >= 2) { "Equalizer reports no gain range" }
+        val centres = List(n) { eq.getCenterFreq(it.toShort()) / 1000.0 }
         val mbs = BandMapping.millibels(
-            BandMapping.gainsDb(profile, centres.toList()),
+            BandMapping.gainsDb(profile, centres),
             range[0].toInt()..range[1].toInt()
         )
         for (i in 0 until n) eq.setBandLevel(i.toShort(), mbs[i])
         eq.enabled = true
         check(eq.hasControl()) { "another equaliser app has priority over this audio" }
-        return n
+        val actual = List(n) { index ->
+            val millibels = eq.getBandLevel(index.toShort()).toInt()
+            PlatformBand(centres[index], millibels)
+        }
+        return AppliedEffect(eq, ENGINE_PLATFORM_EQUALIZER, actual)
+    }
+
+    private fun releaseApplied(applied: AppliedEffect) {
+        try {
+            applied.effect.setEnabled(false)
+        } catch (e: Exception) {
+            Log.w(TAG, "Could not disable ${applied.engine} during teardown", e)
+        }
+        try {
+            applied.effect.release()
+        } catch (e: Exception) {
+            Log.w(TAG, "Could not release ${applied.engine} during teardown", e)
+        }
+    }
+
+    /** The Home band rail follows the layout of the effect that is actually live. */
+    private fun syncRuntimeBands() {
+        val representative = globalEffect ?: sessionEqs.values.firstOrNull()?.applied
+        if (representative == null) store.clearRuntimeBands()
+        else store.setRuntimeBands(representative.bands)
     }
 
     private fun setAllEnabled(on: Boolean) {
-        val all = listOfNotNull(globalEq) + sessionEqs.values.map { it.eq }
-        for (eq in all) {
+        val all = listOfNotNull(globalEffect) + sessionEqs.values.map { it.applied }
+        for (applied in all) {
             try {
-                eq.enabled = on
-            } catch (e: IllegalStateException) {
-                Log.w(TAG, "Equalizer no longer valid", e)
+                check(applied.effect.setEnabled(on) == AudioEffect.SUCCESS) {
+                    "${applied.engine} refused enable=$on"
+                }
+            } catch (e: Exception) {
+                Log.w(TAG, "${applied.engine} no longer valid", e)
             }
         }
     }
@@ -310,7 +432,7 @@ class EqService : Service() {
      * changes coalesce into one run; measurement never competes with it.
      */
     private fun scheduleDiscovery(delayMs: Long = DISCOVERY_DEBOUNCE_MS) {
-        if (suspended || globalEq != null) return
+        if (suspended || globalEffect != null) return
         if (!DumpsysDiscovery.hasGrant(this)) return
         mainHandler.removeCallbacks(discoveryRunnable)
         mainHandler.postDelayed(discoveryRunnable, delayMs)
@@ -323,7 +445,7 @@ class EqService : Service() {
      * released here — their CLOSE broadcast is their owner.
      */
     private fun applyDiscovered(found: List<DiscoveredSession>) {
-        if (!running || suspended || globalEq != null) return
+        if (!running || suspended || globalEffect != null) return
         val profile = store.getActiveProfile() ?: return
         var changed = false
         // One player refusing an equaliser must not stop the others being
@@ -334,13 +456,11 @@ class EqService : Service() {
             if (sessionEqs.containsKey(s.sessionId)) continue
             val pkg = packageManager.getPackagesForUid(s.uid ?: continue)?.firstOrNull() ?: continue
             try {
-                val eq = Equalizer(PRIORITY, s.sessionId)
-                sessionEqs[s.sessionId] = Held(eq, pkg, discovered = true)
-                configure(eq, profile)
+                val applied = createBestEffect(s.sessionId, profile)
+                sessionEqs[s.sessionId] = Held(applied, pkg, discovered = true)
                 changed = true
             } catch (e: Exception) {
-                Log.w(TAG, "Equalizer on discovered session ${s.sessionId} failed", e)
-                closeSession(s.sessionId)
+                Log.w(TAG, "Correction effect on discovered session ${s.sessionId} failed", e)
                 failed = "Could not correct ${label(pkg)} (found by DUMP discovery): ${e.message ?: e.javaClass.simpleName}"
             }
         }
@@ -352,6 +472,7 @@ class EqService : Service() {
                 changed = true
             }
         }
+        if (changed) syncRuntimeBands()
         if (failed != null) {
             report(failed, isError = true)
         } else if (changed) {
@@ -370,8 +491,9 @@ class EqService : Service() {
         val held = sessionEqs.values.sortedBy { it.discovered }
         if (held.isEmpty()) return waitingStatus()
         val names = held.joinToString { label(it.pkg) }
+        val engines = held.map { it.applied.engine }.distinct().joinToString(" + ")
         val marker = if (held.any { it.discovered }) " · found by DUMP discovery" else ""
-        return "Correcting $names · ${profile?.name ?: "the active profile"}$marker"
+        return "Correcting $names · $engines · ${profile?.name ?: "the active profile"}$marker"
     }
 
     private fun label(pkg: String): String = try {
@@ -391,7 +513,7 @@ class EqService : Service() {
      */
     private fun publish(configs: List<AudioPlaybackConfiguration>? = null) {
         if (!running || messageBody.isEmpty()) return
-        val playingNow = !suspended && !messageError && globalEq != null && audioIsPlaying(configs)
+        val playingNow = !suspended && !messageError && globalEffect != null && audioIsPlaying(configs)
         val shown = if (playingNow) "▶ Playing · $messageBody" else messageBody
         if (shown == lastShown && playingNow == lastPlaying) return
         lastShown = shown
@@ -462,8 +584,9 @@ class EqService : Service() {
         mainHandler.removeCallbacksAndMessages(null)
         discoveryExecutor.shutdownNow()
         releaseSessions()
-        globalEq?.release()
-        globalEq = null
+        globalEffect?.let(::releaseApplied)
+        globalEffect = null
+        store.clearRuntimeBands()
         // "Off" is the user's switch, not the service's fate: a service the
         // system stopped is not a correction the user turned off, and the
         // screen must not say so.
@@ -514,6 +637,8 @@ class EqService : Service() {
         private const val CHANNEL_ID = "core_eq_service_channel"
         private const val NOTIFICATION_ID = 1010
         private const val PRIORITY = 0
+        private const val ENGINE_DYNAMICS_PROCESSING = "DynamicsProcessing"
+        private const val ENGINE_PLATFORM_EQUALIZER = "Equalizer"
 
         /** Playback changes coalesce into one re-discovery after this pause. */
         private const val DISCOVERY_DEBOUNCE_MS = 2000L
