@@ -15,6 +15,7 @@ import { parseFeed } from './parser.mjs';
 import {
   LEAGUES,
   espnScoreboardUrl,
+  loadEspnLeague,
   eventsFromEspn,
   eventsFromNhl,
   eventsFromMlb,
@@ -174,8 +175,7 @@ export async function buildClientSlate({ leagues = [], feeds = [] } = {}) {
 async function fetchLeague(id, key) {
   // 1) ESPN
   try {
-    const data = await loadJson(espnScoreboardUrl(id));
-    const events = eventsFromEspn(data, id);
+    const events = await loadEspnLeague(id, loadJson);
     registry.recordSuccess(key, id, events);
     return {
       ok: true,

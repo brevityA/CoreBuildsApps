@@ -10,7 +10,13 @@ export const LEAGUES = {
   nfl: { id: 'nfl', label: 'NFL', sport: 'football', espn: 'football/nfl', accent: '#013369' },  nba: { id: 'nba', label: 'NBA', sport: 'basketball', espn: 'basketball/nba', accent: '#c8102e' },
   mlb: { id: 'mlb', label: 'MLB', sport: 'baseball', espn: 'baseball/mlb', accent: '#002d72' },
   nhl: { id: 'nhl', label: 'NHL', sport: 'hockey', espn: 'hockey/nhl', accent: '#a2aaad' },
-  ncaaf: { id: 'ncaaf', label: 'NCAAF', sport: 'football', espn: 'football/college-football', accent: '#9e7c0c' },
+  // ESPN's college-football scoreboard returns only the top division (FBS)
+  // unless asked for a group, so an FCS game on ESPN2 — Harvard at Brown on
+  // 2026-09-25 — never reached the slate. All of Division I in one request
+  // (groups=90) is ~1.7MB, over the 1.5MB feed cap on both the server and the
+  // Android proxy; FBS (80) and FCS (81) apart are ~1MB each, so it is asked
+  // for in two halves and merged.
+  ncaaf: { id: 'ncaaf', label: 'NCAAF', sport: 'football', espn: 'football/college-football', espnGroups: ['80', '81'], accent: '#9e7c0c' },
   ncaab: { id: 'ncaab', label: 'NCAAB', sport: 'basketball', espn: 'basketball/mens-college-basketball', accent: '#7c3aed' },
   wnba: { id: 'wnba', label: 'WNBA', sport: 'basketball', espn: 'basketball/wnba', accent: '#f472b6' },
   epl: { id: 'epl', label: 'EPL', sport: 'soccer', espn: 'soccer/eng.1', accent: '#38003c' },
@@ -30,6 +36,12 @@ export const DEFAULT_LEAGUES = ['mlb', 'nfl', 'ncaaf', 'nba', 'ncaab', 'nhl', 'e
 export const SPORT_GROUPS = [
   { id: 'sport:football', label: 'Football', leagues: ['nfl', 'ncaaf'] },
   { id: 'sport:basketball', label: 'Basketball', leagues: ['nba', 'ncaab', 'wnba'] },
+  // Supporter feedback, 2026-09-29: "Maybe its easier to have a NCAA category
+  // that pulls all the sports. Because rarely is there college football on say
+  // a tuesday so it pulls whatever there is." College football and college
+  // basketball never run on the same day, so one pill that shows whatever
+  // college sport is on beats two pills that are empty half the week.
+  { id: 'sport:college', label: 'College', leagues: ['ncaaf', 'ncaab'] },
   { id: 'sport:baseball', label: 'Baseball', leagues: ['mlb'] },
   { id: 'sport:hockey', label: 'Hockey', leagues: ['nhl'] },
   { id: 'sport:soccer', label: 'Soccer', leagues: ['epl', 'mls', 'ucl'] },
@@ -44,6 +56,43 @@ export function espnScoreboardUrl(leagueId) {
   const league = LEAGUES[leagueId];
   if (!league) return null;
   return `https://site.api.espn.com/apis/site/v2/sports/${league.espn}/scoreboard`;
+}
+
+/**
+ * Every ESPN scoreboard URL a league needs. Most leagues are one request; a
+ * league with `espnGroups` is one request per group (see NCAAF above).
+ */
+export function espnScoreboardUrls(leagueId) {
+  const base = espnScoreboardUrl(leagueId);
+  if (!base) return [];
+  const groups = LEAGUES[leagueId].espnGroups;
+  if (!groups?.length) return [base];
+  return groups.map((g) => `${base}?groups=${encodeURIComponent(g)}`);
+}
+
+/**
+ * Load a league's ESPN events through `load(url) -> Promise<json>`, which is
+ * the caller's fetcher (the server's capped fetchJson, or the app's native
+ * proxy), merging the groups and dropping duplicate event ids. One group
+ * failing still shows the others; only all of them failing is an error, so
+ * the caller's fallback and backoff behave exactly as they did for one URL.
+ */
+export async function loadEspnLeague(leagueId, load) {
+  const urls = espnScoreboardUrls(leagueId);
+  if (!urls.length) throw new Error(`unknown league ${leagueId}`);
+  const settled = await Promise.allSettled(urls.map((u) => load(u)));
+  const ok = settled.filter((r) => r.status === 'fulfilled');
+  if (!ok.length) throw settled[0].reason;
+  const seen = new Set();
+  const events = [];
+  for (const r of ok) {
+    for (const ev of eventsFromEspn(r.value, leagueId)) {
+      if (ev.id && seen.has(ev.id)) continue;
+      if (ev.id) seen.add(ev.id);
+      events.push(ev);
+    }
+  }
+  return events;
 }
 
 export function eventsFromEspn(payload, leagueId) {

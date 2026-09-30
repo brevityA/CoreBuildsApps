@@ -80,4 +80,30 @@ class LineBridge(private val activity: MainActivity) {
     /** Stop the floating ticker. */
     @JavascriptInterface
     fun stopOverlay(): Boolean = activity.stopOverlay()
+
+    // ---- VPN status dot ---------------------------------------------------
+
+    /** Live VPN state as JSON: {tunnelUp, covering, validated, transport, state}. */
+    @JavascriptInterface
+    fun vpnStatus(): String = activity.vpnStatus()
+
+    /** Is the VPN dot on screen right now? */
+    @JavascriptInterface
+    fun vpnDotActive(): Boolean = activity.vpnDotActive()
+
+    /** Same platform answer as overlayPlatform(): Fire TV cannot draw overlays. */
+    @JavascriptInterface
+    fun vpnDotPlatform(): String = activity.vpnDotPlatform()
+
+    /** Turn the dot on; opens the overlay-permission screen when it is missing. */
+    @JavascriptInterface
+    fun startVpnDot(configJson: String): Boolean = activity.startVpnDot(configJson)
+
+    /** Re-shape a running dot (corner, opacity, blink) without a restart. */
+    @JavascriptInterface
+    fun setVpnDotConfig(configJson: String): Boolean = activity.setVpnDotConfig(configJson)
+
+    /** Turn the dot off. */
+    @JavascriptInterface
+    fun stopVpnDot(): Boolean = activity.stopVpnDot()
 }

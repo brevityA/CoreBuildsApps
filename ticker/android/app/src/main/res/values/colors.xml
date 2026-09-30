@@ -2,4 +2,11 @@
     <color name="core_bg">#07090D</color>
     <color name="core_line">#00D4FF</color>
     <color name="core_live">#FF2D55</color>
+
+    <!-- VPN dot states. Status colours with one meaning each, so they are never
+         themed: they mirror the web tokens (cb-success, cb-warning, st-live)
+         that the settings drawer previews the dot with. -->
+    <color name="vpn_ok">#34D399</color>
+    <color name="vpn_warn">#FBBF24</color>
+    <color name="vpn_down">#FF3B5C</color>
 </resources>

@@ -1,4 +1,6 @@
 import { DEFAULT_LEAGUES, LEAGUES } from '/lib/scoreboard.mjs';
+import { VPN_CORNERS, VPN_OPACITY } from '/lib/vpn.mjs';
+import { resolveTicker } from '/lib/chrome.mjs';
 
 const KEY = 'coreline.v1';
 
@@ -16,6 +18,16 @@ export const DEFAULTS = {
   showFinals: true,
   wakeLock: true,
   theme: 'core',
+  // True-black surfaces for an OLED panel. Independent of `theme`: it
+  // remaps only the surface ramp, so any accent can sit on it. On by default
+  // (supporter feedback, 2026-09-29): OLED sets are what this audience is
+  // buying, and on a backlit panel #000 is only slightly deeper than the
+  // house near-black, so the default costs an LCD almost nothing.
+  oled: true,
+  // The scrolling ticker (chyron). Off for a fresh install; an install from
+  // before this key existed keeps it on — see resolveTicker() in
+  // lib/chrome.mjs. Crawl mode and the phone overlay always show it.
+  ticker: false,
   clockFmt: '12',
   mode: 'board',
   leagueFilter: 'ALL',
@@ -25,6 +37,14 @@ export const DEFAULTS = {
   playlist: { url: '', importedAt: 0, count: 0 },
   preferredChannels: {},
   overlay: false,
+  // The VPN status dot: an always-on-top indicator of whether this device's
+  // traffic is inside a tunnel. Shape only — the state itself is read live
+  // from the Android shell, never persisted.
+  vpnDot: false,
+  vpnDotCorner: 'bottom_right',
+  vpnDotOpacity: VPN_OPACITY.default,
+  vpnDotHideWhenOk: false,
+  vpnDotBlink: true,
   // How much of the frame the panel crops (classic TV overscan). Stored in px
   // and applied as the app shell's side padding; calibrated once per set.
   // null means the viewer has never calibrated, and the stylesheet's own
@@ -68,6 +88,14 @@ export function sanitizeState(raw) {
     out.overlay = false;
   }
 
+  // vpnDot mirrors the overlay flag's tolerance: booleans, or the string
+  // "true" that an older persisted blob may carry.
+  out.vpnDot = out.vpnDot === true || out.vpnDot === 'true';
+  out.vpnDotCorner = VPN_CORNERS.includes(out.vpnDotCorner) ? out.vpnDotCorner : DEFAULTS.vpnDotCorner;
+  out.vpnDotOpacity = clampInt(out.vpnDotOpacity, VPN_OPACITY.min, VPN_OPACITY.max, VPN_OPACITY.default);
+  out.vpnDotHideWhenOk = Boolean(out.vpnDotHideWhenOk);
+  out.vpnDotBlink = out.vpnDotBlink !== false;
+
   out.speed = clampInt(out.speed, SPEED_MIN, SPEED_MAX, DEFAULTS.speed);
   out.overscan = out.overscan == null
     ? null
@@ -81,6 +109,8 @@ export function sanitizeState(raw) {
   out.clockFmt = out.clockFmt === '24' ? '24' : '12';
   out.mode = out.mode === 'crawl' ? 'crawl' : 'board';
   out.theme = ['core', 'broadcast', 'stadium', 'mono'].includes(out.theme) ? out.theme : 'core';
+  out.oled = Boolean(out.oled);
+  out.ticker = resolveTicker(raw);
   out.leagueFilter = typeof out.leagueFilter === 'string' ? out.leagueFilter : 'ALL';
 
   // watchApps: leagueId → installed app package id (or the string 'web').

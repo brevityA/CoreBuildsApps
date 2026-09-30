@@ -522,3 +522,40 @@ input[type="range"] {
   from { transform: translateY(12px); opacity: 0; }
   to { transform: none; opacity: 1; }
 }
+
+/* ---- VPN status dot ------------------------------------------------------
+   The in-app preview of the always-on-top indicator, drawn from the same
+   status colours the native view uses. Each tone has one meaning and no theme
+   may move it — the same rule the ribbon's LIVE/UP/FINAL colours follow. */
+.vpn-status {
+  display: flex;
+  align-items: center;
+  gap: var(--cb-space-sm);
+  margin-top: var(--cb-space-md);
+  color: var(--cb-ink);
+  font-size: var(--cb-text-body);
+}
+
+.vpn-dot {
+  flex: none;
+  width: .8em;
+  height: .8em;
+  border-radius: 50%;
+  background: var(--st-final);
+  box-shadow: 0 0 0 1px var(--cb-void), 0 0 10px currentColor;
+}
+
+.vpn-dot.is-ok {
+  background: var(--cb-success);
+  color: var(--cb-success);
+}
+
+.vpn-dot.is-warn {
+  background: var(--cb-warning);
+  color: var(--cb-warning);
+}
+
+.vpn-dot.is-down {
+  background: var(--st-live);
+  color: var(--st-live);
+}

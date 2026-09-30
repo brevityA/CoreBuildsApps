@@ -55,6 +55,25 @@
   grid-row: 2;
 }
 
+/* Ticker off (the default for a fresh install): the chyron's row collapses
+   and the board takes the height. The bottom edge then needs the overscan
+   guard the chyron used to sit in, or the last row of cards is cropped on a
+   classic panel. Specificity beats [data-tv]'s --chyron-h on the same root
+   and the ticker-on-top rules above. */
+:root[data-no-ticker] {
+  --chyron-h: 0px;
+}
+:root[data-no-ticker] .chyron {
+  display: none;
+}
+:root[data-no-ticker] .app {
+  grid-template-rows: minmax(0, 1fr);
+  padding-bottom: var(--overscan-y);
+}
+:root[data-no-ticker] .app__main {
+  grid-row: auto;
+}
+
 /* ---- Rail --------------------------------------------------------------- */
 .rail {
   display: flex;
@@ -313,8 +332,7 @@
   .board {
     grid-template-columns: 1fr;
   }
-  .tile {
-    grid-template-columns: 1fr;
-    padding: var(--cb-space-md);
-  }
+  /* The banner's phone layout is in screens.css. It was here, where it
+     never applied: layout.css loads before components.css, so the base
+     .tile grid overrode it and the team names drew at 0px. */
 }

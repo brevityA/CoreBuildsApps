@@ -13,6 +13,8 @@ import { store } from '../core/store.js';
 import { emit } from '../core/bus.js';
 import { $, $$, esc, cssEscape, setHidden } from '../core/dom.js';
 import { accentFor, accentStyle, statusOf, cardFavTeams, favSet, startLabel } from '../core/format.js';
+import { HERO_ROTATE_MS, heroCandidates, pickHero, shouldRotate } from '/lib/hero.mjs';
+import { teamLine, gameTeams } from '/lib/team-rows.mjs';
 
 export function captureFocus() {
   const el = document.activeElement;
@@ -44,23 +46,69 @@ export function restoreFocus(snap) {
 
 export function renderBoard(list) {
   const focusSnap = captureFocus();
-  renderHero(list);
+  renderHero(list, heroIndex);
   renderCards(list);
   renderEmpty(list);
   restoreFocus(focusSnap);
+  armHeroRotation(list);
+}
+
+/* ---- The banner's clock -------------------------------------------------
+   `heroIndex` is the banner's position in the running order, and it is
+   module-level because it has to survive the 60s refresh — a re-render that
+   reset the index would snap the viewer back to the same game every minute,
+   which is the bug this feature exists to fix. */
+let heroIndex = 0;
+let heroTimer = null;
+let lastList = [];
+
+function prefersReducedMotion() {
+  return globalThis.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches === true;
 }
 
 /**
- * The featured game: the first live game with two teams, and a scoreboard
- * game before a feed listing. An RSS title can say "LIVE" with no score and
- * no clock — the bundled sample feed has one — and it used to take the hero
- * over a real game in progress. A listing only features when nothing else is on.
+ * (Re)start the banner's timer for the list we just rendered.
+ *
+ * The timer is torn down and rebuilt on every render rather than left running,
+ * because the render is what decides whether there is more than one game worth
+ * rotating through; and because an interval that outlives the slate it was
+ * built for is how a stale game ends up back on screen.
  */
-function renderHero(list) {
+function armHeroRotation(list) {
+  lastList = list;
+  clearInterval(heroTimer);
+  heroTimer = null;
+  if (heroCandidates(list).length < 2) return;
+  heroTimer = setInterval(tickHero, HERO_ROTATE_MS);
+}
+
+function tickHero() {
+  const hero = $('hero');
+  // The list is re-read from the module rather than closed over: the tick runs
+  // up to 12s after the render that armed it, and a refresh in between has
+  // replaced the slate.
+  if (!shouldRotate({
+    list: lastList,
+    focused: Boolean(hero && hero.contains(document.activeElement)),
+    reducedMotion: prefersReducedMotion(),
+    hidden: Boolean(document.hidden),
+  })) return;
+  heroIndex += 1;
+  renderHero(lastList, heroIndex);
+}
+
+/**
+ * The featured game: a live game with two teams, a scoreboard game before a
+ * feed listing, rotating through them on the clock armed in `armHeroRotation`.
+ *
+ * The running order and the "may I move?" rule live in `lib/hero.mjs`, where
+ * they are unit-tested; this function only paints whichever game that rule
+ * picked.
+ */
+function renderHero(list, index = 0) {
   const hero = $('hero');
   if (!hero) return;
-  const live = list.filter((e) => e.status === 'live' && e.away && e.home);
-  const featured = live.find((e) => e.source !== 'rss') || live[0];
+  const featured = pickHero(list, index);
   if (!featured) {
     hero.hidden = true;
     hero.innerHTML = '';
@@ -86,16 +134,6 @@ function renderHero(list) {
         <div class="when">${esc(featured.venue || featured.feed || '')}</div>
       </div>
     </article>`;
-}
-
-function teamLine(team, event) {
-  const win = event.status === 'final' && team.winner;
-  return `
-    <div class="team-row">
-      <div class="abbr">${esc(team.abbr || '—')}</div>
-      <div class="team-name">${esc(team.name || '')}</div>
-      <div class="score ${win ? 'is-win' : ''}">${team.score ?? ''}</div>
-    </div>`;
 }
 
 function renderCards(list) {
@@ -124,10 +162,7 @@ export function gameCard(ev) {
           <button class="btn--mini focusable" data-action="watch" data-id="${esc(ev.id)}" aria-label="Watch in app" title="Watch in app">&#9654;</button>
         </div>
       </div>
-      <div class="game-teams">
-        <div class="gt ${ev.away?.winner ? 'is-win' : ''}"><span class="who">${esc(ev.away.abbr)}</span><span class="sc">${ev.away.score ?? ''}</span></div>
-        <div class="gt ${ev.home?.winner ? 'is-win' : ''}"><span class="who">${esc(ev.home.abbr)}</span><span class="sc">${ev.home.score ?? ''}</span></div>
-      </div>
+      ${gameTeams(ev)}
       <div class="card__foot">
         <div class="channels">${(ev.channels || []).map((c) => `<span class="pill pill--plain">${esc(c)}</span>`).join('') || '<span class="when">No channel listed</span>'}</div>
         <span class="when" title="${esc(when)}">${esc(when)}</span>

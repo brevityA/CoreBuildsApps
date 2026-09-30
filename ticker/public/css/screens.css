@@ -477,6 +477,86 @@
   text-overflow: ellipsis;
   white-space: nowrap;
 }
+
+/* ---- Team marks ---------------------------------------------------------
+   A logo with its monogram as the structural fallback. The monogram is
+   painted first and the logo is laid over it, so every failure mode — 404,
+   blocked CDN, refused URL, no JavaScript — lands on a readable mark rather
+   than a hole. `.is-broken` is added by a delegated listener for browsers
+   that draw a glyph for a failed image.
+
+   The plate behind the logo is not decoration. ESPN and the NHL ship
+   transparent marks drawn in team colours, and a dark mark (Brooklyn, the
+   Spurs, half the Premier League) would otherwise vanish into a card that is
+   nearly black — worst of all under the OLED theme, where the card really is
+   #111. A raised plate guarantees every logo has something to sit on, in
+   every theme, without touching the artwork. */
+.mark {
+  position: relative;
+  display: inline-grid;
+  place-items: center;
+  /* One number for the box, so a parent can resize a mark without touching
+     both axes — and 68px is what fits the 88px abbreviation column in
+     `.team-row` without re-flowing the row. */
+  --mark-size: 68px;
+  width: var(--mark-size);
+  height: var(--mark-size);
+  border-radius: var(--cb-radius-card-inner);
+}
+.mark__img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  border-radius: var(--cb-radius-card-inner);
+  /* The plate is chosen per artwork, not per theme: `logoPlate()` in
+     lib/logos.mjs reads the variant out of the URL. ESPN draws for a dark UI
+     and the NHL only publishes its light-background variant, so one plate
+     colour would make one of the two invisible. */
+  background: var(--mark-plate, var(--surface-raised));
+}
+.mark__img[data-plate="light"] {
+  --mark-plate: #F2F3F5;
+}
+.mark__img[data-plate="dark"] {
+  --mark-plate: var(--surface-raised);
+}
+/* No logo: the monogram is the mark, so it keeps the column's own type
+   rather than being boxed. */
+.mark--mono {
+  width: auto;
+  height: auto;
+  display: block;
+  font-size: var(--text-abbr);
+}
+
+/* Compact form — cards. The mark sits *in front of* the abbreviation rather
+   than over it, because a 26px logo is a colour cue and not text: at three
+   metres the viewer reads the letters and recognises the logo. */
+.mark--row {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--cb-space-xs);
+  width: auto;
+  height: auto;
+  font: inherit;
+  letter-spacing: inherit;
+}
+.mark--row .mark__img {
+  position: static;
+  width: 26px;
+  height: 26px;
+  flex: 0 0 auto;
+  border-radius: 3px;
+  /* Kept, unlike the old `background: none`: the compact mark is the same
+     artwork at 26px, so an NHL mark needs its plate here too or the card
+     shows a dark smudge. */
+  background: var(--mark-plate, var(--surface-raised));
+}
+.mark.is-broken .mark__img {
+  display: none;
+}
 .team-name {
   color: var(--cb-slate);
   font-size: var(--text-pill);
@@ -656,6 +736,38 @@
   align-items: flex-end;
   justify-content: space-between;
   gap: var(--cb-space-sm);
+}
+/* Stacked banner, one row of actions: teams across the full width, then
+   channels, venue and Watch. The venue is what gives way; Watch never wraps
+   to a line of its own, because that is what made the banner too tall to
+   leave a card on screen. Used on a phone here and on a 1080p TV in tv.css. */
+@media (max-width: 720px) {
+  .tile {
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--cb-space-sm);
+    padding: var(--cb-space-md);
+  }
+  .hero-side {
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
+    min-width: 0;
+  }
+  .hero-side .pills {
+    flex: 0 1 auto;
+    min-width: 0;
+    justify-content: flex-start;
+  }
+  /* The venue is dropped here rather than truncated: beside three channel
+     pills and Watch it came down to one letter ("E"), which reads as a
+     glitch. Game Detail still shows it in full. */
+  .hero-side .when {
+    display: none;
+  }
+  .hero-side .btn {
+    flex: 0 0 auto;
+    order: 2;
+  }
 }
 .pills {
   display: flex;

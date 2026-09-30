@@ -13,6 +13,7 @@ import { $, esc, setHidden } from '../core/dom.js';
 import { accentFor, statusOf, startLabel } from '../core/format.js';
 import { matchesFor, openMatchedChannel } from '../data/playlist.js';
 import { watchEvent, openWebForEvent } from '../data/watch.js';
+import { teamLine } from '/lib/team-rows.mjs';
 
 let detailEvent = null;
 let detailMatches = [];
@@ -62,7 +63,7 @@ export function detailHtml(ev, matches) {
   const { badge, label } = statusOf(ev);
   const pills = (ev.channels || []).map((c) => `<span class="pill">${esc(c)}</span>`).join('');
   const teams = ev.away && ev.home
-    ? `<div class="teams">${teamRow(ev.away, ev)}${teamRow(ev.home, ev)}</div>`
+    ? `<div class="teams">${teamLine(ev.away, ev)}${teamLine(ev.home, ev)}</div>`
     : (ev.headline ? `<p class="hint">${esc(ev.headline)}</p>` : '');
 
   let channelBlock;
@@ -102,16 +103,6 @@ export function detailHtml(ev, matches) {
     <div class="gd-section">Your channels</div>
     ${channelBlock}
     <div class="gd-foot">${esc(ev.venue || ev.feed || '')}</div>`;
-}
-
-function teamRow(team, event) {
-  const win = event.status === 'final' && team.winner;
-  return `
-    <div class="team-row">
-      <div class="abbr">${esc(team.abbr || '—')}</div>
-      <div class="team-name">${esc(team.name || '')}</div>
-      <div class="score ${win ? 'is-win' : ''}">${team.score ?? ''}</div>
-    </div>`;
 }
 
 export { emit };

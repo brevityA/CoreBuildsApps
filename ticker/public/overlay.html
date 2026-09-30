@@ -15,6 +15,24 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>Core Line</title>
+  <!--
+    The same policy the board ships (`index.html`), for the same reasons, and
+    narrower because this document is narrower: no images, no manifest, no
+    service worker. It is a separate file and so needs its own copy — a CSP
+    does not inherit between documents, and this one floats over whatever app
+    the viewer is actually using.
+
+    `style-src` keeps `'unsafe-inline'` for the same reason the board does
+    (inline custom-property accents), and `connect-src` stays open to
+    http/https because the strip renders the same slate as the board, from
+    the same user-supplied feeds.
+
+    `default-src 'none'` means this document can load nothing that is not
+    named below — if the crawl ever grows a team logo it will be blocked
+    until someone adds the host here on purpose, which is the intended
+    conversation.
+  -->
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self' 'unsafe-inline'; font-src 'self'; connect-src 'self' http: https:">
   <link rel="stylesheet" href="./css/tokens.css">
   <link rel="stylesheet" href="./css/base.css">
   <link rel="stylesheet" href="./css/chyron.css">
