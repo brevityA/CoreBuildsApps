@@ -63,6 +63,8 @@ class MeasureActivity : TvActivity() {
     private var result: SweepResult? = null
     private var micName: String? = null
     private var measuredOutput: OutputRoute.Output? = null
+    /** Bumped per measurement, so a late callback from an earlier one is ignored. */
+    private var measurementGeneration = 0
     private var measuring = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -155,6 +157,8 @@ class MeasureActivity : TvActivity() {
             return
         }
         measuring = true
+        measurementGeneration += 1
+        val generation = measurementGeneration
         result = null
         micName = null
         btnStart.isEnabled = false
@@ -172,11 +176,13 @@ class MeasureActivity : TvActivity() {
                 val ranked = OutputRoute.current(this@MeasureActivity)
                 measuredOutput = ranked
                 btnStart.postDelayed({
-                    if (measuring) stimulusPlayer.playSweep(
+                    if (measuring && measurementGeneration == generation) stimulusPlayer.playSweep(
                         onError = { msg -> runOnUiThread { fail(msg) } },
                         onRouted = { device ->
                             val tagged = OutputRoute.tag(ranked, device?.type, device?.productName?.toString())
-                            runOnUiThread { measuredOutput = tagged }
+                            runOnUiThread {
+                                if (measuring && measurementGeneration == generation) measuredOutput = tagged
+                            }
                         }
                     )
                 }, (LEAD_SECONDS * 1000).toLong())

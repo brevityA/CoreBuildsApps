@@ -80,7 +80,8 @@ class StimulusPlayer {
                 if (routed != null || !playing) break
                 Thread.sleep(ROUTE_POLL_MS)
             }
-            onRouted(routed)
+            // Only this sweep's answer: a cancelled or replaced sweep says nothing.
+            if (playing && audioTrack === track) onRouted(routed)
         }
     }
 
