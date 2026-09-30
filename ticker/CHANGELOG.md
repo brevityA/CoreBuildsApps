@@ -8,7 +8,26 @@ The repo-root `CHANGELOG.md` is the icon pack's. Core Line keeps its own here.
 
 ## [Unreleased]
 
-_Next release. Nothing landed yet._
+### Added
+
+- **A TV-first home screen.** Supporter feedback (2026-09-29): "you can only
+  see one event when opening", with a reference layout — settings on the left,
+  a banner of what is live, pills for the sports, and everything upcoming and
+  live below. The 300dp rail that carried the brand, counts, health, My Teams
+  and the league list is now an 80dp icon rail (Refresh, Ticker only,
+  Settings), and the stage gets a fixed header — a one-line top bar (Today,
+  the Live/Up counts, a health dot, search, a clock of its own now the ticker
+  is off by default) and the sport pills in a scrolling row — over a body that
+  scrolls. The banner is one match line, away | score | home, with the
+  status, channels and Watch on the line above it. Cards lead with the
+  channel as a footer band, show the local start time instead of "UP", and
+  lose their second Watch button (Watch is one OK away in Game Detail).
+  Measured at 960x540 — a 1080p panel — the header, pills, banner and the
+  first row of three cards share one screen, where before only the banner
+  and a one-card-wide board did; 1920 fits five cards a row. The section
+  labels step aside on that panel. On a phone the rail becomes a row across
+  the top and the banner shows marks and score. `tests/layout.test.mjs`
+  checks that every id the app looks up still exists after the move.
 
 ## [1.4.1] — 2026-09-30
 

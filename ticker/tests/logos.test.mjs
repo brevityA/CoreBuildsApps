@@ -13,7 +13,7 @@ import {
   monogram,
   teamMark,
 } from '../lib/logos.mjs';
-import { teamLine, gameTeams } from '../lib/team-rows.mjs';
+import { teamLine, gameTeams, heroMatch } from '../lib/team-rows.mjs';
 
 /**
  * Team logos: the policy, the markup, and the CSP that enforces the same
@@ -209,6 +209,8 @@ test('a hostile score cannot escape its own element', () => {
   for (const html of [
     teamLine({ abbr: 'TOR', name: 'Raptors', score: hostile }, { status: 'live' }),
     gameTeams({ away: { abbr: 'TOR', score: hostile }, home: { abbr: 'MTL', score: 2 } }),
+    // The banner's one-line match (layout PR) is the third row builder.
+    heroMatch({ away: { abbr: 'TOR', name: '<i>n</i>', score: hostile }, home: { abbr: 'MTL', score: 2 } }),
   ]) {
     assert.doesNotMatch(html, /<img[^>]*onerror/, 'the score was interpolated as markup');
     assert.match(html, /&lt;img/);

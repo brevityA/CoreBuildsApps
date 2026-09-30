@@ -14,7 +14,7 @@ import { emit } from '../core/bus.js';
 import { $, $$, esc, cssEscape, setHidden } from '../core/dom.js';
 import { accentFor, accentStyle, statusOf, cardFavTeams, favSet, startLabel } from '../core/format.js';
 import { HERO_ROTATE_MS, heroCandidates, pickHero, shouldRotate } from '/lib/hero.mjs';
-import { teamLine, gameTeams } from '/lib/team-rows.mjs';
+import { gameTeams, heroMatch } from '/lib/team-rows.mjs';
 
 export function captureFocus() {
   const el = document.activeElement;
@@ -115,24 +115,18 @@ function renderHero(list, index = 0) {
     return;
   }
   hero.hidden = false;
+  const liveCount = heroCandidates(list).length;
   hero.innerHTML = `
+    <h2 class="section-label">Live now &middot; ${liveCount}</h2>
     <article class="tile focusable" tabindex="0" data-action="game-detail" data-id="${esc(featured.id)}" style="${esc(accentStyle(featured))}">
-      <div>
-        <div class="hero-meta">
-          <span class="badge badge--live">LIVE</span>
-          <span>${esc(featured.league || '')}</span>
-          <span>${esc(featured.detail || '')}</span>
-        </div>
-        <div class="teams">
-          ${teamLine(featured.away, featured)}
-          ${teamLine(featured.home, featured)}
-        </div>
+      <div class="hero-meta">
+        <span class="badge badge--live">LIVE</span>
+        <span>${esc(featured.league || '')}</span>
+        <span class="hero-meta__clock">${esc(featured.detail || '')}</span>
+        <span class="hero-meta__chans">${(featured.channels || []).map((c) => `<span class="pill">${esc(c)}</span>`).join('')}</span>
+        <button class="btn btn--slim focusable" data-action="watch" data-id="${esc(featured.id)}">&#9654; Watch</button>
       </div>
-      <div class="hero-side">
-        <div class="pills">${(featured.channels || []).map((c) => `<span class="pill">${esc(c)}</span>`).join('')}</div>
-        <button class="btn focusable" data-action="watch" data-id="${esc(featured.id)}">&#9654; Watch</button>
-        <div class="when">${esc(featured.venue || featured.feed || '')}</div>
-      </div>
+      ${heroMatch(featured)}
     </article>`;
 }
 
@@ -145,29 +139,41 @@ function renderCards(list) {
   setHidden('board', cards.length + headlines.length === 0);
 }
 
+/**
+ * A game card, laid out the way a guide reads: when (or the live clock), the
+ * two teams with their marks, and the channel — the answer to "where is it
+ * on" — as the card's headline. Watch lives one OK away, in Game Detail and
+ * on the banner; a second button on every card was a second D-pad stop on
+ * every card.
+ */
 export function gameCard(ev) {
   const { badge, label } = statusOf(ev);
   const favs = favSet(store.state);
   const teams = cardFavTeams(ev);
   const favOn = teams.length > 0 && teams.every((t) => favs.has(t));
-  const when = ev.status === 'upcoming' ? startLabel(ev) : (ev.venue || '');
+  // Upcoming games show their local start time; ESPN's `detail` for a game
+  // that has not started is a full date sentence that no card can fit.
+  const when = ev.status === 'upcoming' ? (startLabel(ev) || label) : label;
+  const [net, ...more] = ev.channels || [];
   return `
     <article class="card focusable" tabindex="0" data-action="game-detail" data-id="${esc(ev.id)}" style="${esc(accentStyle(ev))}">
       <div class="card__top">
+        <span class="badge badge--${badge}" title="${esc(label)}">${esc(when)}</span>
         <span class="league-tag">${esc(ev.league || ev.feed || 'RSS')}</span>
-        <div class="card__top-right">
-          <span class="badge badge--${badge}">${esc(label)}</span>
-          <button class="fav-star ${favOn ? 'is-on' : ''}" data-action="toggle-card-fav" data-id="${esc(ev.id)}"
-                  aria-label="${favOn ? 'Unfavorite' : 'Favorite'} these teams" aria-pressed="${favOn}">&#9733;</button>
-          <button class="btn--mini focusable" data-action="watch" data-id="${esc(ev.id)}" aria-label="Watch in app" title="Watch in app">&#9654;</button>
-        </div>
       </div>
       ${gameTeams(ev)}
       <div class="card__foot">
-        <div class="channels">${(ev.channels || []).map((c) => `<span class="pill pill--plain">${esc(c)}</span>`).join('') || '<span class="when">No channel listed</span>'}</div>
-        <span class="when" title="${esc(when)}">${esc(when)}</span>
+        <span class="card__net">${esc(net || 'No channel listed')}</span>
+        ${more.length ? `<span class="card__more" title="${esc(more.join(', '))}" aria-label="${esc(moreChannelsLabel(more))}">+${more.length}</span>` : ''}
+        <button class="fav-star ${favOn ? 'is-on' : ''}" data-action="toggle-card-fav" data-id="${esc(ev.id)}"
+                aria-label="${favOn ? 'Unfavorite' : 'Favorite'} these teams" aria-pressed="${favOn}">&#9733;</button>
       </div>
     </article>`;
+}
+
+/** What "+N" says aloud: a title tooltip is not reliably read, and a TV never hovers. */
+function moreChannelsLabel(more) {
+  return `${more.length} more ${more.length === 1 ? 'channel' : 'channels'}: ${more.join(', ')}`;
 }
 
 export function headlineCard(ev) {
@@ -180,7 +186,8 @@ export function headlineCard(ev) {
       </div>
       <div class="gt"><span class="who">${esc(ev.headline || ev.rawTitle || 'Listing')}</span></div>
       <div class="card__foot">
-        <div class="channels">${(ev.channels || []).map((c) => `<span class="pill pill--plain">${esc(c)}</span>`).join('')}</div>
+        <span class="card__net">${esc((ev.channels || [])[0] || ev.feed || 'Listing')}</span>
+        ${(ev.channels || []).length > 1 ? `<span class="card__more" title="${esc(ev.channels.slice(1).join(', '))}" aria-label="${esc(moreChannelsLabel(ev.channels.slice(1)))}">+${ev.channels.length - 1}</span>` : ''}
       </div>
     </article>`;
 }

@@ -28,7 +28,7 @@ public/
     tokens.css        colour + metrics. The only place a literal may appear.
     base.css          reset, typography, the focus system
     chyron.css        the broadcast strip: bug, crawl, clock
-    layout.css        app shell: rail, stage, board
+    layout.css        app shell: icon rail, header, stage body, board
     components.css    buttons, chips, cards, fields
     screens.css       drawer, game detail, onboarding, calibration
     tv.css            the 10-foot pass (moves tokens, not components)
@@ -100,16 +100,19 @@ Two techniques, both carried over with their reasons:
   bounds, because a control that grows when focused moves its own label, and
   these are what a D-pad user crosses most often.
 
-## The two-pane shell
+## The shell
 
-The icon pack's approved TV structure: a fixed-width rail for the chrome, and a
-pane that takes every pixel the rail leaves. The chyron spans both, for the
-reason that layout gives its update bar — *the one thing on the screen that is
-wider than the rail and more urgent than the grid*. That is exactly the
-chyron's claim here.
+A slim icon rail on the left is the menu (Refresh, Ticker only, Settings), the
+way a TV launcher's is. Everything else is in the stage: a fixed header — the
+top bar (Today, the Live/Up counts, source health, search, the clock) and the
+sport pills — over a body that scrolls: the live banner, then every game live
+or upcoming today as cards that lead with the channel. The chyron, when it is
+on, spans the whole width under both.
 
-Below 1100px the rail becomes a horizontal strip above the board. The chyron
-stays where it is on every screen size.
+The header does not scroll, so "Today", the counts and the pills are always
+where the eye expects them. On a 1080p panel (960x540dp) the top bar, pills,
+banner and the first row of three cards share one screen. Below 720px, off a
+TV, the rail becomes a row across the top.
 
 ## Focus
 

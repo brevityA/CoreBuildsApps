@@ -115,23 +115,44 @@ async function open(path, viewport) {
 
   // TV consistency (the coherent 10-foot ladder): same-role elements share a
   // size, nothing is stranded tiny (micro ≥16px) or blown out, and no card
-  // text overflows its column.
+  // text overflows its column. Selectors follow the TV-first layout (#211):
+  // the brand left the rail, the card's start time is its badge, and the
+  // banner is one match line (.hm). A selector that finds nothing fails —
+  // `null <= null` is true in JS, which is how a check passes on a layout
+  // it no longer matches.
+  // The banner only draws a match line for a live or upcoming game with two
+  // teams, and today's fixtures may have none (a quiet morning did exactly
+  // that) — so inject one, as the rotation block below does, rather than
+  // measure whatever happens to be on.
+  await page.evaluate(() => {
+    window.__CORELINE__.getEvents().unshift({
+      id: 'smoke-tv', status: 'live', league: 'NHL', source: 'espn', detail: 'P2 04:11', venue: 'Smoke',
+      away: { abbr: 'TOR', name: 'Toronto Maple Leafs', score: 1, logo: null, winner: false },
+      home: { abbr: 'MTL', name: 'Montreal Canadiens', score: 2, logo: null, winner: false },
+      channels: ['TSN4'],
+    });
+    window.__CORELINE__.render();
+  });
+  await page.waitForSelector('#hero .hm__name', { timeout: 5000 });
   const tv = await page.evaluate(() => {
     const fs = (sel) => { const el = document.querySelector(sel); return el ? parseFloat(getComputedStyle(el).fontSize) : null; };
-    const abbr = document.querySelector('.team-row .abbr');
+    const name = document.querySelector('.hm__name');
     return {
-      health: fs('.health'), brandSub: fs('.brand-sub'), when: fs('.when'),
-      leagueTag: fs('.league-tag'), tick: fs('.tick'), brandName: fs('.brand__name'),
-      who: fs('.gt .who'), abbr: fs('.abbr'), score: fs('.score'), hint: fs('.hint'),
-      abbrOverflow: abbr ? abbr.scrollWidth > abbr.clientWidth + 1 : false,
+      health: fs('.health'), when: fs('.card__top .badge'), net: fs('.card__net'),
+      tick: fs('.tick'), who: fs('.gt .who'), today: fs('.topbar__today'), clock: fs('.topbar__clock'),
+      hmName: fs('.hm__name'), hmScore: fs('.hm__score'),
+      nameOverflow: name ? name.scrollWidth > name.clientWidth + 1 : null,
     };
   });
+  const num = (v) => typeof v === 'number' && Number.isFinite(v);
   ok(tv.health >= 16, `tv: health pill not stranded tiny (${tv.health}px ≥ 16)`);
-  ok(tv.when >= 16, `tv: .when meta ≥ 16px (${tv.when})`);
+  ok(num(tv.when) && tv.when >= 16, `tv: card start time ≥ 16px (${tv.when})`);
+  ok(num(tv.net) && tv.net >= 16, `tv: card channel band ≥ 16px (${tv.net})`);
   ok(tv.tick >= 32, `tv: chyron tick large (${tv.tick}px)`);
-  ok(tv.who === tv.brandName, `tv: card team names and brand share one display size (${tv.who}px == ${tv.brandName}px)`);
-  ok(tv.abbr <= tv.score, `tv: hero numerals tame (abbr ${tv.abbr} ≤ score ${tv.score})`);
-  ok(!tv.abbrOverflow, 'tv: hero abbreviation does not overflow its column');
+  ok(num(tv.today) && tv.today === tv.clock, `tv: top bar day and clock share one display size (${tv.today}px == ${tv.clock}px)`);
+  ok(num(tv.who) && tv.who >= 24, `tv: card team names readable at 10 ft (${tv.who}px ≥ 24)`);
+  ok(num(tv.hmName) && num(tv.hmScore) && tv.hmName <= tv.hmScore, `tv: banner score leads its names (name ${tv.hmName} ≤ score ${tv.hmScore})`);
+  ok(tv.nameOverflow === false, 'tv: banner team name does not overflow its column');
   await page.close();
 }
 
