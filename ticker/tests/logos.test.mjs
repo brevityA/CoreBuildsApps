@@ -411,6 +411,8 @@ test('every source expression is one a browser will parse', () => {
 
 const overlayHtml = read('public/overlay.html');
 const overlayCsp = overlayHtml.match(/http-equiv="Content-Security-Policy" content="([^"]+)"/)?.[1] ?? '';
+const scorebugHtml = read('public/scorebug.html');
+const scorebugCsp = scorebugHtml.match(/http-equiv="Content-Security-Policy" content="([^"]+)"/)?.[1] ?? '';
 
 test('every document the app serves carries a policy', () => {
   // index.html and overlay.html are separate documents, loaded by
@@ -435,6 +437,23 @@ test('the overlay policy is spelled correctly too', () => {
   assert.doesNotMatch(overlayCsp, /frame-ancestors|report-(uri|to)/);
 });
 
+test('the scoreboard bug carries its own policy, and the logo hosts the board allows', () => {
+  // The third document: ScoreBugWindow loads it over other apps. Unlike the
+  // crawl it shows team marks, so it needs the board's img-src — and nothing
+  // wider, and never inline script.
+  assert.ok(scorebugCsp, 'scorebug.html has no policy — it would inherit nothing');
+  assert.match(scorebugCsp, /default-src 'none'/);
+  const scriptSrc = scorebugCsp.match(/(?:^|;\s*)script-src\s+([^;]+)/)?.[1] ?? '';
+  assert.doesNotMatch(scriptSrc, /'unsafe-inline'/, 'inline script allowed in the scoreboard bug');
+  const imgOf = (policy) => (policy.match(/(?:^|;\s*)img-src\s+([^;]+)/)?.[1] ?? '').trim().split(/\s+/).sort();
+  assert.deepEqual(imgOf(scorebugCsp), imgOf(csp), 'the bug must allow exactly the logo hosts the board allows');
+  const names = scorebugCsp.split(';').map((t) => t.trim().split(/\s+/)[0]).filter(Boolean);
+  for (const name of names) assert.ok(REAL_DIRECTIVES.has(name), `"${name}" is not a CSP directive`);
+  assert.equal(new Set(names).size, names.length, 'duplicate directive in the scoreboard bug policy');
+  const inline = [...scorebugHtml.matchAll(/<script\b([^>]*)>/g)].filter((m) => !/\bsrc=/.test(m[1]));
+  assert.deepEqual(inline, [], 'an inline <script> would be blocked by the scoreboard bug policy');
+});
+
 test('the overlay declares no inline script to match', () => {
   const inline = [...overlayHtml.matchAll(/<script\b([^>]*)>/g)].filter((m) => !/\bsrc=/.test(m[1]));
   assert.deepEqual(inline, [], 'an inline <script> would be blocked by the overlay policy');
@@ -444,7 +463,7 @@ test('every document loads its CSS and modules from its own origin', () => {
   // The policy allows 'self' for scripts, styles and fonts, so an absolute
   // third-party URL in any of the three would be dead on arrival. This is
   // the check that catches it at review time instead of on a television.
-  for (const [name, html] of [['index.html', indexHtml], ['overlay.html', overlayHtml]]) {
+  for (const [name, html] of [['index.html', indexHtml], ['overlay.html', overlayHtml], ['scorebug.html', scorebugHtml]]) {
     for (const m of html.matchAll(/<(?:script|link)\b[^>]*?(?:src|href)="([^"]+)"/g)) {
       const url = m[1];
       assert.ok(

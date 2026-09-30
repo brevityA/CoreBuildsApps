@@ -38,7 +38,7 @@ import { initSearch, clearSearch, focusSearch } from './ui/search.js';
 import { openGameDetail, closeGameDetail, openMatched, watchDetail, watchDetailWeb, getDetailEvent } from './ui/detail.js';
 import {
   applyChrome, applyTicker, openDrawer, activateDrawerSection, wireSettings, initSettings,
-  nudgeSpeed, nudgeOverscan, nudgeVpnDot, renderFeeds,
+  nudgeSpeed, nudgeOverscan, nudgeVpnDot, nudgeScoreBug, renderFeeds,
 } from './ui/settings.js';
 import { maybeShowOnboarding, nextStep, finish as finishOnboarding } from './ui/onboarding.js';
 import { openCalibrate, closeCalibrate, isCalibrating } from './ui/calibrate.js';
@@ -155,6 +155,8 @@ const ACTIONS = {
   'overscan-down': () => nudgeOverscan(-4),
   'vpn-dot-bright': () => nudgeVpnDot(5),
   'vpn-dot-dim': () => nudgeVpnDot(-5),
+  'score-bug-bright': () => nudgeScoreBug(5),
+  'score-bug-dim': () => nudgeScoreBug(-5),
   calibrate: openCalibrate,
   'calibrate-done': () => { closeCalibrate(); },
   'toggle-team': (el) => { toggleTeam(el.dataset.abbr); refocusTeam(el.dataset.abbr); },

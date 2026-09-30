@@ -22,9 +22,10 @@ import android.webkit.WebSettings
 import android.webkit.WebView
 
 /**
- * The always-on-top surfaces: the floating ticker (a WebView crawl) and the
- * VPN status dot (a native view). One foreground service owns both, because
- * Android wants one ongoing notification per app's overlay work, not two.
+ * The always-on-top surfaces: the floating ticker (a WebView crawl), the
+ * scoreboard bug (a WebView score box at the top, see [ScoreBugWindow]) and
+ * the VPN status dot (a native view). One foreground service owns all three,
+ * because Android wants one ongoing notification per app's overlay work.
  *
  * The ticker loads overlay.html, a crawl strip, not the full board. The strip
  * is on the same origin, so it can read the main app's localStorage (position,
@@ -44,6 +45,9 @@ class OverlayService : Service() {
     private var windowManager: WindowManager? = null
     private var webView: WebView? = null
     private var edge: String = "bottom"
+
+    private var scoreWindow: ScoreBugWindow? = null
+    private var scoreConfig: ScoreBugConfig = ScoreBugConfig.DEFAULT
 
     private var dotWindow: VpnDotWindow? = null
     private var dotConfig: DotConfig = DotConfig.DEFAULT
@@ -82,6 +86,7 @@ class OverlayService : Service() {
 
         val action = intent?.action
         val dotPayload = intent?.getStringExtra(EXTRA_DOT_CONFIG)
+        val scorePayload = intent?.getStringExtra(EXTRA_SCORE_CONFIG)
         var position = intent?.getStringExtra(EXTRA_POSITION)
         if (position == null) position = OverlayPrefs(this).tickerPosition
         if (position == "top" || position == "bottom") edge = position
@@ -89,31 +94,40 @@ class OverlayService : Service() {
         when (action) {
             ACTION_STOP -> {
                 stopTicker()
+                stopScores()
                 stopDot()
             }
             ACTION_STOP_TICKER -> stopTicker()
+            ACTION_START_SCORES -> {
+                ScoreBugConfig.fromJson(scorePayload)?.let { scoreConfig = it }
+                showScores()
+            }
+            ACTION_STOP_SCORES -> stopScores()
             ACTION_STOP_DOT -> stopDot()
             ACTION_START_DOT -> {
                 DotConfig.fromJson(dotPayload)?.let { dotConfig = it }
                 showDot()
             }
             ACTION_START_TICKER -> showTicker()
-            else -> {
-                // Null intent means the system restarted us; rebuild whatever
-                // the viewer had running rather than assuming the ticker.
-                if (intent == null && !tickerRunning && !dotRunning) {
-                    val prefs = OverlayPrefs(this)
-                    prefs.readDotConfig()?.let {
+            null -> {
+                // A null action is the system restarting us (START_STICKY).
+                // Rebuild only what survives a restart — the native dot, see
+                // [OverlayPrefs] — and never put the crawl up unasked: with
+                // three surfaces, "something else is already running" is the
+                // common case, and it used to fall through to showTicker().
+                if (intent == null && !dotRunning) {
+                    OverlayPrefs(this).readDotConfig()?.let {
                         dotConfig = it
                         showDot()
                     }
-                } else {
-                    showTicker()
+                } else if (intent != null) {
+                    showTicker() // an explicit start from an older caller
                 }
             }
+            else -> showTicker()
         }
 
-        if (!tickerRunning && !dotRunning) {
+        if (!tickerRunning && !scoresRunning && !dotRunning) {
             stopSelf()
             return START_NOT_STICKY
         }
@@ -127,15 +141,27 @@ class OverlayService : Service() {
         PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE,
     )
 
-    private fun notificationText(): String = when {
-        tickerRunning && dotRunning -> getString(R.string.overlay_text_both)
-        dotRunning -> getString(R.string.overlay_text_dot)
-        else -> getString(R.string.overlay_text_ticker)
+    /** The surfaces on screen, in the order the notification names them. */
+    private fun runningNames(): List<String> = listOfNotNull(
+        getString(R.string.overlay_name_ticker).takeIf { tickerRunning },
+        getString(R.string.overlay_name_scores).takeIf { scoresRunning },
+        getString(R.string.overlay_name_dot).takeIf { dotRunning },
+    )
+
+    private fun notificationText(): String {
+        val names = runningNames()
+        return when {
+            names.size > 1 -> getString(R.string.overlay_text_many, names.joinToString(", "))
+            dotRunning -> getString(R.string.overlay_text_dot)
+            scoresRunning -> getString(R.string.overlay_text_scores)
+            else -> getString(R.string.overlay_text_ticker)
+        }
     }
 
     private fun notificationTitle(): String = when {
-        tickerRunning && dotRunning -> getString(R.string.overlay_title_both)
+        runningNames().size > 1 -> getString(R.string.overlay_title_both)
         dotRunning -> getString(R.string.overlay_title_dot)
+        scoresRunning -> getString(R.string.overlay_title_scores)
         else -> getString(R.string.overlay_title_ticker)
     }
 
@@ -271,6 +297,41 @@ class OverlayService : Service() {
         OverlayPrefs(this).ticker = false
     }
 
+    // ---- Scoreboard bug ---------------------------------------------------
+
+    private fun showScores() {
+        if (!android.provider.Settings.canDrawOverlays(this)) {
+            // Permission revoked since the drawer checked it: drop the surface.
+            scoreWindow?.hide()
+            scoreWindow = null
+            scoresRunning = false
+            return
+        }
+        val window = scoreWindow ?: ScoreBugWindow(this).also { scoreWindow = it }
+        window.configure(scoreConfig)
+        if (!window.show()) {
+            stopScores()
+            return
+        }
+        scoresRunning = true
+        instance = this
+    }
+
+    private fun stopScores() {
+        scoreWindow?.hide()
+        scoreWindow = null
+        scoresRunning = false
+    }
+
+    /** Live move or dim from the settings drawer, without reloading the page. */
+    fun applyScoreConfig(next: ScoreBugConfig) {
+        val run = Runnable {
+            scoreConfig = next.sanitized()
+            scoreWindow?.configure(scoreConfig)
+        }
+        if (Looper.myLooper() == Looper.getMainLooper()) run.run() else handler.post(run)
+    }
+
     // ---- VPN dot ----------------------------------------------------------
 
     private fun showDot() {
@@ -358,7 +419,10 @@ class OverlayService : Service() {
 
     override fun onDestroy() {
         tickerRunning = false
+        scoresRunning = false
         dotRunning = false
+        scoreWindow?.hide()
+        scoreWindow = null
         if (instance === this) instance = null
         handler.removeCallbacks(dotRefresh)
         watcher?.stop()
@@ -394,6 +458,9 @@ class OverlayService : Service() {
         const val ACTION_STOP_TICKER = "dev.corebuilds.line.OVERLAY_STOP_TICKER"
         const val ACTION_START_DOT = "dev.corebuilds.line.VPN_DOT_START"
         const val ACTION_STOP_DOT = "dev.corebuilds.line.VPN_DOT_STOP"
+        const val ACTION_START_SCORES = "dev.corebuilds.line.SCOREBUG_START"
+        const val ACTION_STOP_SCORES = "dev.corebuilds.line.SCOREBUG_STOP"
+        const val EXTRA_SCORE_CONFIG = "dev.corebuilds.line.SCOREBUG_CONFIG"
 
         /** Stops every surface. Kept for the notification's action and older callers. */
         const val ACTION_STOP = "dev.corebuilds.line.OVERLAY_STOP"
@@ -406,6 +473,11 @@ class OverlayService : Service() {
         /** The ticker strip is up. What `overlayActive()` on the bridge reports. */
         @Volatile
         var tickerRunning = false
+            private set
+
+        /** The scoreboard bug is up. */
+        @Volatile
+        var scoresRunning = false
             private set
 
         /** The VPN status dot is up. */
@@ -460,6 +532,32 @@ class OverlayService : Service() {
             } else {
                 context.startService(intent)
             }
+        }
+
+        /** Bring the scoreboard bug up. The caller has already checked canDrawOverlays(). */
+        fun startScores(context: Context, config: ScoreBugConfig) {
+            val intent = Intent(context, OverlayService::class.java)
+                .setAction(ACTION_START_SCORES)
+                .putExtra(EXTRA_SCORE_CONFIG, config.toJson())
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                context.startForegroundService(intent)
+            } else {
+                context.startService(intent)
+            }
+        }
+
+        fun stopScores(context: Context) {
+            val intent = Intent(context, OverlayService::class.java).setAction(ACTION_STOP_SCORES)
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                context.startForegroundService(intent)
+            } else {
+                context.startService(intent)
+            }
+        }
+
+        /** Move or dim a running bug without reloading it. */
+        fun applyScoreConfig(config: ScoreBugConfig) {
+            instance?.applyScoreConfig(config)
         }
 
         /** Re-shape a running dot (corner, opacity, blink) without a restart. */

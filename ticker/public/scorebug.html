@@ -1,0 +1,29 @@
+<!doctype html>
+<!--
+  The scoreboard bug (ScoreBugWindow.kt): one game at a time, at the top of
+  the screen, over whatever app the viewer is watching.
+
+  The window is translucent, non-focusable and touch-through, like the VPN
+  dot's. The bug carries its own dark plate so it reads over any picture, and
+  the page around it is transparent.
+
+  Its CSP is the crawl's (overlay.html) plus the team-logo hosts the board
+  allows (index.html): the bug shows marks, the crawl does not. A CSP does not
+  inherit between documents, so this one carries its own copy.
+-->
+<html lang="en" data-scorebug>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Core Line</title>
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https://espncdn.com https://*.espncdn.com https://nhle.com https://*.nhle.com; font-src 'self'; connect-src 'self' http: https:; base-uri 'none'; form-action 'none'; object-src 'none'">
+  <link rel="stylesheet" href="./css/tokens.css">
+  <link rel="stylesheet" href="./css/base.css">
+  <link rel="stylesheet" href="./css/tv.css">
+  <link rel="stylesheet" href="./css/scorebug.css">
+</head>
+<body>
+  <main id="bug" class="scorebug" aria-live="polite" hidden></main>
+  <script type="module" src="./js/scorebug.js"></script>
+</body>
+</html>

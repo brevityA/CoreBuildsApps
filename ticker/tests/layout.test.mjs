@@ -15,8 +15,9 @@ function jsFiles(dir) {
   });
 }
 
-// The phone overlay page has its own markup and its own script.
-const appJs = jsFiles('js').filter((f) => !f.endsWith('overlay.js') && !f.endsWith('boot.js'));
+// The pages that float over other apps (the crawl and the scoreboard bug)
+// have their own markup and their own scripts.
+const appJs = jsFiles('js').filter((f) => !f.endsWith('overlay.js') && !f.endsWith('scorebug.js') && !f.endsWith('boot.js'));
 
 test('every element id the app looks up exists in index.html', () => {
   // The 2026-09-29 layout moved most of the chrome out of the rail. A moved

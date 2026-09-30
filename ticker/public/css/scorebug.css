@@ -1,0 +1,183 @@
+/* ============================================================================
+   Core Line — the scoreboard bug
+
+   A broadcast score box, not a crawl. It floats in its own window at the top
+   of the screen over another app's picture, so the page is transparent and
+   the bug carries its own plate: the only pixels it owns are the box.
+
+   The window is sized natively (ScoreBugWindow.kt) and the bug fills it. It
+   has two rows — a slim rail (LIVE, league, clock) and the match line — plus
+   an optional channel tag, laid out so the line never wraps: abbreviations,
+   not full names, because a bug that grows a second line over a film is the
+   thing people turn off.
+
+   Sizes are tokens (`--sb-*` in tokens.css); the 10-foot pass moves them in
+   tv.css, like every other surface, so this file has no TV rules of its own.
+   ========================================================================== */
+
+html,
+body {
+  background: transparent;
+  background-image: none;
+  height: 100%;
+  margin: 0;
+  overflow: hidden;
+}
+
+.scorebug {
+  height: 100%;
+  display: grid;
+  place-items: stretch;
+}
+.scorebug[hidden] {
+  display: none;
+}
+
+.sb {
+  display: grid;
+  grid-template-rows: auto 1fr;
+  grid-template-columns: minmax(0, 1fr) auto;
+  grid-template-areas:
+    "rail rail"
+    "line chan";
+  height: 100%;
+  box-sizing: border-box;
+  overflow: hidden;
+  background: color-mix(in srgb, var(--surface-void) 92%, transparent);
+  border: 1px solid rgba(255, 255, 255, 0.10);
+  border-radius: var(--sb-radius);
+  font-family: var(--font);
+  color: var(--cb-ink);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.45);
+}
+.sb.is-live {
+  border-top: var(--sb-edge) solid var(--st-live);
+}
+.sb.is-next {
+  border-top: var(--sb-edge) solid var(--cb-signal-cyan);
+}
+
+/* ---- Rail: LIVE · league · clock · n/N -------------------------------- */
+.sb__rail {
+  grid-area: rail;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 3px var(--sb-pad-x) 2px;
+  font-family: var(--ui);
+  font-size: var(--sb-text-rail);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--cb-slate);
+  white-space: nowrap;
+  min-width: 0;
+}
+.sb__live {
+  color: var(--st-live);
+  font-weight: 700;
+}
+.sb__league {
+  color: var(--cb-ink);
+  font-weight: 600;
+}
+.sb__status {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  min-width: 0;
+}
+.sb__count {
+  margin-left: auto;
+  font-variant-numeric: tabular-nums;
+}
+
+/* ---- Match line: MARK ABBR score – score ABBR MARK -------------------- */
+.sb__line {
+  grid-area: line;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 0 var(--sb-pad-x) 4px;
+  min-width: 0;
+  overflow: hidden;
+}
+.sb__team {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+.sb__team--home {
+  flex-direction: row-reverse;
+}
+.sb__abbr {
+  font-size: var(--sb-text-abbr);
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+}
+.sb__score {
+  font-size: var(--sb-text-score);
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  min-width: 1.2ch;
+  /* A score is a few digits. Anything longer is a bad feed, and it must not
+     be able to push the box around: cap it, never wrap it. */
+  max-width: 4ch;
+  overflow: hidden;
+  text-overflow: clip;
+  white-space: nowrap;
+  text-align: center;
+}
+.sb__sep {
+  font-size: var(--sb-text-sep);
+  color: var(--cb-slate);
+}
+
+/* Team marks. The board's `.mark` rules live in screens.css, which this page
+   does not load; the bug needs only the small form, so it carries it here. */
+.sb__mark {
+  display: inline-grid;
+}
+.sb .mark {
+  position: relative;
+  display: inline-grid;
+  place-items: center;
+  width: var(--sb-mark);
+  height: var(--sb-mark);
+  border-radius: 6px;
+  font-size: var(--sb-text-mark);
+  font-weight: 700;
+}
+.sb .mark--mono {
+  background: var(--surface-raised);
+}
+.sb .mark__img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  border-radius: 6px;
+  background: var(--mark-plate, var(--surface-raised));
+}
+.sb .mark__img[data-plate="light"] {
+  --mark-plate: #F2F3F5;
+}
+
+/* ---- Channel ---------------------------------------------------------- */
+.sb__chan {
+  grid-area: chan;
+  align-self: center;
+  margin: 0 var(--sb-pad-x) 4px 0;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: var(--surface-raised);
+  font-family: var(--ui);
+  font-size: var(--sb-text-chan);
+  font-weight: 600;
+  white-space: nowrap;
+  max-width: 14ch;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}

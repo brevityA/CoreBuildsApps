@@ -1,8 +1,7 @@
-import { loadState, readCachedSlate } from './state.js';
-import { buildClientSlate, hydrateClientSlateRegistry, isNativeShell } from '/lib/client-slate.mjs';
-import { compareEvents, buildDemoSlate, mergeEvents } from '/lib/scoreboard.mjs';
-import { parseFeed } from '/lib/parser.mjs';
+import { loadState } from './state.js';
+import { compareEvents } from '/lib/scoreboard.mjs';
 import { matchesFavorite } from '/lib/favorites.mjs';
+import { startOverlaySlate } from './overlay-slate.js';
 import { Ticker } from './ticker.js';
 import { startWatchdog } from './watchdog.js';
 import { tickHtml } from './ui/chyron.js';
@@ -11,15 +10,12 @@ const params = new URLSearchParams(location.search);
 if (params.get('native') === '1') globalThis.CORELINE_NATIVE = true;
 if (params.get('tv') === '1') document.documentElement.setAttribute('data-tv', '');
 
-const SAMPLE = { url: `${location.origin}/feeds/sample-sports.xml`, label: 'Sample' };
 const $ = (id) => document.getElementById(id);
 
 let state = loadState();
 let events = [];
-let refreshing = false;
 let ticker = null;
 
-hydrateClientSlateRegistry();
 reportEdge();
 window.addEventListener('storage', (event) => {
   if (event.key === 'coreline.v1') {
@@ -48,18 +44,17 @@ startWatchdog({
   onStall: () => ticker.restart(),
   onWake: () => {
     ticker.restart();
-    refresh();
+    slate.refresh();
   },
 });
 
-const cached = readCachedSlate();
-events = cached?.events?.length ? cached.events : buildDemoSlate();
-paint();
+const slate = startOverlaySlate((next) => {
+  events = next;
+  paint();
+});
 ticker.start();
 tickClock();
 setInterval(tickClock, 1000);
-refresh();
-setInterval(refresh, Math.max(15, state.refreshSec || 60) * 1000);
 
 function reportEdge() {
   const edge = state.position === 'top' ? 'top' : 'bottom';
@@ -92,63 +87,3 @@ function paint() {
   const items = list.length ? list : [{ headline: 'Waiting for a slate', channels: [], status: 'upcoming' }];
   ticker.setItems(items.map(tickHtml).join(''));
 }
-
-async function refresh() {
-  if (refreshing) return;
-  refreshing = true;
-  try {
-    const fresh = freshCache();
-    const data = fresh || await loadSlate();
-    if (data?.events) {
-      events = data.events;
-      paint();
-    }
-  } catch {
-    const cachedSlate = readCachedSlate();
-    if (cachedSlate?.events?.length) {
-      events = cachedSlate.events;
-      paint();
-    } else {
-      events = await localFallback();
-      paint();
-    }
-  } finally {
-    refreshing = false;
-  }
-}
-
-function freshCache() {
-  try {
-    const raw = localStorage.getItem('coreline.v1.slate');
-    if (!raw) return null;
-    const parsed = JSON.parse(raw);
-    const age = Date.now() - Number(parsed.at || 0);
-    const limit = Math.max(15, state.refreshSec || 60) * 1000;
-    if (!parsed.payload?.events?.length || age > limit) return null;
-    return parsed.payload;
-  } catch {
-    return null;
-  }
-}
-
-async function loadSlate() {
-  const feeds = [...(state.feeds || []), ...(state.sampleFeed ? [SAMPLE] : [])].slice(0, 20);
-  if (isNativeShell()) return buildClientSlate({ leagues: state.leagues, feeds });
-  const query = new URLSearchParams({
-    leagues: (state.leagues || []).join(','),
-    feeds: feeds.map((f) => `${encodeURIComponent(f.url)}|${encodeURIComponent(f.label)}`).join(','),
-  });
-  const res = await fetch(`/api/slate?${query}`);
-  if (!res.ok) throw new Error(`slate ${res.status}`);
-  return res.json();
-}
-
-async function localFallback() {
-  try {
-    const xml = await fetch('./feeds/sample-sports.xml').then((r) => r.text());
-    return mergeEvents([buildDemoSlate(), parseFeed(xml, { source: 'rss', label: 'Sample' })]);
-  } catch {
-    return buildDemoSlate();
-  }
-}
-

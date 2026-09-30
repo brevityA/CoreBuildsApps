@@ -168,6 +168,18 @@
 
   /* ---- Surfaces: the chrome that isn't a token -------------------------- */
   --chyron-h: 72px;
+  /* The scoreboard bug (scorebug.html). Its window is sized natively
+     (ScoreBugWindow.kt); these size what goes inside it. */
+  --sb-radius: 10px;
+  --sb-edge: 3px;
+  --sb-pad-x: 10px;
+  --sb-text-rail: 11px;
+  --sb-text-abbr: 22px;
+  --sb-text-score: 28px;
+  --sb-text-sep: 20px;
+  --sb-text-chan: 12px;
+  --sb-mark: 30px;
+  --sb-text-mark: 11px;
   --radius: 16px;
   /* ---- Overscan guard -------------------------------------------------
      A television shows less of the frame than it is sent. Android's TV

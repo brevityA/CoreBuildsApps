@@ -11,6 +11,11 @@
     <string name="overlay_title_both">Core Line overlays</string>
     <string name="overlay_text_ticker">Ticker over your apps — tap to stop</string>
     <string name="overlay_text_dot">VPN status dot over your apps — tap to stop</string>
-    <string name="overlay_text_both">Ticker and VPN dot over your apps — tap to stop</string>
+    <string name="overlay_title_scores">Core Line scoreboard</string>
+    <string name="overlay_text_scores">Scoreboard at the top of your apps — tap to stop</string>
+    <string name="overlay_text_many">%1$s over your apps — tap to stop</string>
+    <string name="overlay_name_ticker">Ticker</string>
+    <string name="overlay_name_scores">scoreboard</string>
+    <string name="overlay_name_dot">VPN dot</string>
     <string name="overlay_stop">Stop</string>
 </resources>

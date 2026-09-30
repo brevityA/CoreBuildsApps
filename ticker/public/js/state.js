@@ -1,5 +1,6 @@
 import { DEFAULT_LEAGUES, LEAGUES } from '/lib/scoreboard.mjs';
 import { VPN_CORNERS, VPN_OPACITY } from '/lib/vpn.mjs';
+import { SCOREBUG_POSITIONS, SCOREBUG_OPACITY } from '/lib/scorebug.mjs';
 import { resolveTicker } from '/lib/chrome.mjs';
 
 const KEY = 'coreline.v1';
@@ -42,6 +43,12 @@ export const DEFAULTS = {
   guide: { url: '', playlistUrls: [], fetchedAt: 0, count: 0, error: '' },
   preferredChannels: {},
   overlay: false,
+  // The scoreboard bug: one game at a time in a box at the top of the screen,
+  // over other apps (Android). Shape only; whether it is up is asked of the
+  // shell, like the dot.
+  scoreBug: false,
+  scoreBugPosition: 'top_center',
+  scoreBugOpacity: SCOREBUG_OPACITY.default,
   // The VPN status dot: an always-on-top indicator of whether this device's
   // traffic is inside a tunnel. Shape only — the state itself is read live
   // from the Android shell, never persisted.
@@ -96,6 +103,9 @@ export function sanitizeState(raw) {
   // vpnDot mirrors the overlay flag's tolerance: booleans, or the string
   // "true" that an older persisted blob may carry.
   out.vpnDot = out.vpnDot === true || out.vpnDot === 'true';
+  out.scoreBug = out.scoreBug === true || out.scoreBug === 'true';
+  out.scoreBugPosition = SCOREBUG_POSITIONS.includes(out.scoreBugPosition) ? out.scoreBugPosition : DEFAULTS.scoreBugPosition;
+  out.scoreBugOpacity = clampInt(out.scoreBugOpacity, SCOREBUG_OPACITY.min, SCOREBUG_OPACITY.max, SCOREBUG_OPACITY.default);
   out.vpnDotCorner = VPN_CORNERS.includes(out.vpnDotCorner) ? out.vpnDotCorner : DEFAULTS.vpnDotCorner;
   out.vpnDotOpacity = clampInt(out.vpnDotOpacity, VPN_OPACITY.min, VPN_OPACITY.max, VPN_OPACITY.default);
   out.vpnDotHideWhenOk = Boolean(out.vpnDotHideWhenOk);
