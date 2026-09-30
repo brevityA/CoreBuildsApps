@@ -54,6 +54,9 @@ object Formats {
         root.put("name", profile.name)
         root.put("timestamp_ms", profile.timestampMs)
         root.put("device", profile.deviceName)
+        profile.outputKind?.let { kind ->
+            root.put("output", JSONObject().put("kind", kind).put("name", profile.outputName ?: JSONObject.NULL))
+        }
         root.put("microphone", profile.micType)
         root.put("stimulus", profile.stimulus)
         root.put("capture_seconds", profile.captureSeconds)

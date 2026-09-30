@@ -12,6 +12,7 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.core.content.ContextCompat
 import tv.corebuilds.eq.apply.EqService
+import tv.corebuilds.eq.apply.OutputRoute
 import tv.corebuilds.eq.dsp.Correction
 import tv.corebuilds.eq.dsp.DspConstants
 import tv.corebuilds.eq.dsp.MeasurementException
@@ -61,6 +62,7 @@ class MeasureActivity : TvActivity() {
     private var targetIndex = 0
     private var result: SweepResult? = null
     private var micName: String? = null
+    private var measuredOutput: OutputRoute.Output? = null
     private var measuring = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -165,6 +167,8 @@ class MeasureActivity : TvActivity() {
         captureEngine.start(total, object : CaptureListener {
             override fun onRecording(deviceName: String?) {
                 micName = deviceName
+                // The sweep is about to play: this is the chain being measured.
+                measuredOutput = OutputRoute.current(this@MeasureActivity)
                 btnStart.postDelayed({
                     if (measuring) stimulusPlayer.playSweep { msg -> runOnUiThread { fail(msg) } }
                 }, (LEAD_SECONDS * 1000).toLong())
@@ -279,9 +283,11 @@ class MeasureActivity : TvActivity() {
         val bands = Correction.collapseToBands(
             DISPLAY_BANDS_HZ, { hz -> interpolate(hz, r.centresHz, r.correctionDb) }, -1500, 1500
         ).map { PlatformBand(it.first, it.second) }
+        val output = measuredOutput
+        val baseName = getString(R.string.measure_profile_name, DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.SHORT).format(Date(now)))
         val profile = Profile(
             id = "profile-$now",
-            name = getString(R.string.measure_profile_name, DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.SHORT).format(Date(now))),
+            name = if (output != null) "$baseName · ${output.name}" else baseName,
             timestampMs = now,
             target = TARGETS[targetIndex].key,
             micType = micName ?: "microphone",
@@ -298,7 +304,9 @@ class MeasureActivity : TvActivity() {
             preampDb = r.preampDb,
             filters = r.filters,
             platformBands = bands,
-            curve = r.centresHz.indices.map { CurvePoint(r.centresHz[it], r.measuredDb[it], r.correctionDb[it]) }
+            curve = r.centresHz.indices.map { CurvePoint(r.centresHz[it], r.measuredDb[it], r.correctionDb[it]) },
+            outputKind = output?.kind,
+            outputName = output?.name
         )
         profileStore.saveProfile(profile, setAsActive = true)
         EqService.send(this, EqService.ACTION_REAPPLY)
