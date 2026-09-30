@@ -142,8 +142,11 @@
    width here, not a guess at it. */
 @media (max-width: 1279px) {
   /* One line: Today, the counts, a health dot, search, the clock. The long
-     date, the RSS count and the health label wait for a wider panel; the
-     dot keeps its colour and the label is its tooltip. */
+     date, the RSS count and the health label wait for a wider panel. The
+     dot's shape carries the state as well as its colour, since a D-pad
+     never hovers a tooltip: round when all is well, a diamond when a source
+     is degraded, a hollow ring on the demo slate. The label stays in the
+     accessibility tree (#health is a live region). */
   [data-tv] .topbar__date,
   [data-tv] .topbar__stats .stat:not(.stat--live):not(.stat--up) {
     display: none;
@@ -157,6 +160,14 @@
   [data-tv] .health::before {
     width: 14px;
     height: 14px;
+  }
+  [data-tv] .health.is-degraded::before {
+    border-radius: 2px;
+    transform: rotate(45deg) scale(0.85);
+  }
+  [data-tv] .health.is-demo::before {
+    background: transparent;
+    box-shadow: inset 0 0 0 3px currentColor;
   }
   [data-tv] .tile {
     padding: var(--cb-space-sm) var(--cb-space-lg);
