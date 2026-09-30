@@ -120,6 +120,20 @@ async function open(path, viewport) {
   // banner is one match line (.hm). A selector that finds nothing fails —
   // `null <= null` is true in JS, which is how a check passes on a layout
   // it no longer matches.
+  // The banner only draws a match line for a live or upcoming game with two
+  // teams, and today's fixtures may have none (a quiet morning did exactly
+  // that) — so inject one, as the rotation block below does, rather than
+  // measure whatever happens to be on.
+  await page.evaluate(() => {
+    window.__CORELINE__.getEvents().unshift({
+      id: 'smoke-tv', status: 'live', league: 'NHL', source: 'espn', detail: 'P2 04:11', venue: 'Smoke',
+      away: { abbr: 'TOR', name: 'Toronto Maple Leafs', score: 1, logo: null, winner: false },
+      home: { abbr: 'MTL', name: 'Montreal Canadiens', score: 2, logo: null, winner: false },
+      channels: ['TSN4'],
+    });
+    window.__CORELINE__.render();
+  });
+  await page.waitForSelector('#hero .hm__name', { timeout: 5000 });
   const tv = await page.evaluate(() => {
     const fs = (sel) => { const el = document.querySelector(sel); return el ? parseFloat(getComputedStyle(el).fontSize) : null; };
     const name = document.querySelector('.hm__name');
