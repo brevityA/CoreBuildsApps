@@ -8,6 +8,8 @@ The repo-root `CHANGELOG.md` is the icon pack's. Core Line keeps its own here.
 
 ## [Unreleased]
 
+## [1.4.2] — 2026-09-30
+
 ### Added
 
 - **Your TV guide as a second listings source (Android app).** Supporter
@@ -55,6 +57,11 @@ The repo-root `CHANGELOG.md` is the icon pack's. Core Line keeps its own here.
 
 ### Fixed
 
+- **The new header and cards work without colour or a tooltip.** On TV panels
+  under 1280px the health dot changes shape as well as colour (round when all
+  sources are live, a diamond when one is degraded, a hollow ring on the demo
+  slate). The demo-slate warning is announced by screen readers. A card's "+N"
+  reads its other channels aloud ("2 more channels: ABC, ESPN+").
 - **Playlist import works on the TV.** The APK never served `/api/playlist`
   (the WebView client answers 404 for it), and a provider playlist is past the
   1.5 MB proxy cap anyway, so Import failed on every Android install. The shell
