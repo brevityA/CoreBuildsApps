@@ -17,14 +17,14 @@
     <string name="action_capability_sub">What this device will accept</string>
     <string name="action_poweramp_export">Export to Poweramp</string>
     <string name="action_tv_export">Export for TV settings</string>
-    <string name="platform_eq_title">Preview on the common 5-band layout · the service uses this TV\'s own bands</string>
+    <string name="platform_eq_title">Live engine bands when applied · profile preview otherwise · gain in dB</string>
 
     <!-- Measure screen -->
     <string name="measure_title">Core EQ · Measure</string>
     <string name="measure_heading">Keep the room quiet for 13 seconds</string>
     <string name="measure_sub">The TV plays a sine sweep. The remote microphone listens. Nothing leaves this device.</string>
     <string name="measure_step1_title">Tell Core EQ about the room</string>
-    <string name="measure_step1_sub">Room size sets where full correction stops. Turn off the TV\'s own sound effects first (AI sound, bass boost, virtual surround): they would be measured too.</string>
+    <string name="measure_step1_sub">Room size sets where full correction stops. Turn off the TV\'s own sound effects first (AI sound, bass boost, virtual surround): they would be measured too. If your AVR or soundbar already calibrates the room, do not stack Core EQ on it: measure and export the profile instead.</string>
     <string name="measure_step2_title">Point the remote at your seat</string>
     <string name="measure_step2_sub">Hold it where your head is, microphone end up, and keep it still until the bar fills.</string>
     <string name="measure_step3_title">Keep the room quiet while the bar fills</string>
@@ -38,6 +38,11 @@
     <string name="measure_opening_mic">Opening the microphone…</string>
     <string name="measure_analysing">Analysing the sweep…</string>
     <string name="measure_failed">Not measured: %1$s</string>
+    <string name="measure_import_rew">Import REW measurement</string>
+    <string name="measure_importing">Reading and analysing the REW measurement…</string>
+    <string name="measure_import_save">Save for export</string>
+    <string name="measure_import_saved">Saved for export, not applied to the TV: %1$s</string>
+    <string name="measure_import_failed">Not imported: %1$s</string>
     <string name="measure_saved">Saved and made active: %1$s</string>
     <string name="measure_profile_name">Room · %1$s</string>
     <string name="measure_room_button">Room size: %1$s</string>
@@ -46,6 +51,11 @@
     <!-- Correction switch -->
     <string name="correction_on">Correction: On</string>
     <string name="correction_off">Correction: Off</string>
+
+    <!-- Correction indicator badge (Home screen, under the switch) -->
+    <string name="indicator_live">LIVE · CORRECTING</string>
+    <string name="indicator_standby">STANDBY</string>
+    <string name="indicator_not_applied">NOT APPLIED</string>
 
     <!-- Profiles screen -->
     <string name="profiles_title">Core EQ · Profiles</string>
@@ -67,6 +77,10 @@
     <string name="capability_verdict_title">Verdict on this set</string>
     <string name="capability_fallback_title">If nothing applies, the curve still travels</string>
     <string name="capability_fallback_desc">Export the profile and set the numbers in the TV\'s own sound settings, or in the player\'s built-in equaliser. It is the same curve.</string>
+    <string name="capability_discovery_title">DUMP discovery (optional)</string>
+    <string name="capability_discovery_granted">Granted · some players that never announce a session can be found and corrected. Not all: YouTube is reported not to be reachable this way.</string>
+    <string name="capability_discovery_denied">Not granted · this build uses PC ADB; on-device pairing is not included. Run this once from a computer with ADB, then correction can reach some players that never announce a session:</string>
+    <string name="capability_discovery_command">adb shell pm grant tv.corebuilds.eq android.permission.DUMP</string>
 
     <!-- Target curves -->
     <string name="target_flat">Flat (0 dB reference)</string>

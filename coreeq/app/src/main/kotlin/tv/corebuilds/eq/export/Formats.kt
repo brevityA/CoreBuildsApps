@@ -20,7 +20,10 @@ object Formats {
 
     fun exportParametricTxt(profile: Profile): String {
         if (profile.filters.isEmpty()) {
-            return "# Core EQ: no filters\n"
+            return buildString {
+                append("# Core EQ: no filters\n")
+                for (note in profile.measurementNotes) append("# Core EQ measurement note: $note\n")
+            }
         }
         val pDb = if (profile.preampDb != 0.0) profile.preampDb else Peaking.preampDb(profile.filters)
         val sb = StringBuilder()
@@ -28,6 +31,9 @@ object Formats {
         sb.append(String.format(Locale.US, "# Core EQ: correction band %.0f-%.0f Hz\n", maxOf(DspConstants.F_MIN, profile.rolloffHz), DspConstants.F_MAX))
         sb.append("# Core EQ: set Bands Overlap to Cascade in Poweramp Equalizer,\n")
         sb.append("# Core EQ: or the filters will not sum the way this file assumes.\n")
+        for (note in profile.measurementNotes) {
+            sb.append("# Core EQ measurement note: $note\n")
+        }
 
         for (i in profile.filters.indices) {
             val f = profile.filters[i]
@@ -60,6 +66,9 @@ object Formats {
         root.put("microphone", profile.micType)
         root.put("stimulus", profile.stimulus)
         root.put("capture_seconds", profile.captureSeconds)
+        val measurementNotes = JSONArray()
+        for (note in profile.measurementNotes) measurementNotes.put(note)
+        root.put("measurement_notes", measurementNotes)
         root.put("sample_rate", DspConstants.FS)
         root.put("target", profile.target)
 

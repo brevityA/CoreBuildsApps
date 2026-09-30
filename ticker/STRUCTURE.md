@@ -23,11 +23,14 @@ here it is a convention instead.
 ```
 public/
   index.html          app shell + overlays
+  overlay.html        the crawl over other apps (OverlayService)
+  scorebug.html       the scoreboard bug over other apps (ScoreBugWindow)
   css/
     app.css           manifest — the only file index.html links
     tokens.css        colour + metrics. The only place a literal may appear.
     base.css          reset, typography, the focus system
     chyron.css        the broadcast strip: bug, crawl, clock
+    scorebug.css      the scoreboard bug's box (loaded by scorebug.html only)
     layout.css        app shell: icon rail, header, stage body, board
     components.css    buttons, chips, cards, fields
     screens.css       drawer, game detail, onboarding, calibration
@@ -42,6 +45,8 @@ public/
     ticker.js         constant px/s ribbon
     tv.js             D-pad geometric navigation
     watchdog.js       stalled-ribbon detection
+    overlay.js        the crawl page; overlay-slate.js is its slate, shared
+    scorebug.js       the scoreboard bug page, on the same shared slate
   lib/  (repo-level)  shared with the Node server; importable in tests
 ```
 

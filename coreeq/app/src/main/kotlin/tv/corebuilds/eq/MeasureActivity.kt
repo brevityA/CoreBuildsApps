@@ -1,7 +1,10 @@
 package tv.corebuilds.eq
 
 import android.Manifest
+import android.content.ActivityNotFoundException
+import android.content.Intent
 import android.content.pm.PackageManager
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
@@ -15,7 +18,9 @@ import tv.corebuilds.eq.apply.EqService
 import tv.corebuilds.eq.apply.OutputRoute
 import tv.corebuilds.eq.dsp.Correction
 import tv.corebuilds.eq.dsp.DspConstants
+import tv.corebuilds.eq.dsp.ImportResult
 import tv.corebuilds.eq.dsp.MeasurementException
+import tv.corebuilds.eq.dsp.RewImport
 import tv.corebuilds.eq.dsp.Sweep
 import tv.corebuilds.eq.dsp.SweepAnalysis
 import tv.corebuilds.eq.dsp.SweepResult
@@ -44,6 +49,7 @@ class MeasureActivity : TvActivity() {
 
     private data class RoomSize(val label: String, val volumeM3: Double?)
     private data class TargetChoice(val key: String, val label: String)
+    private data class RewMeasurement(val frequenciesHz: DoubleArray, val magnitudesDb: DoubleArray)
 
     private lateinit var profileStore: ProfileStore
     private lateinit var stimulusPlayer: StimulusPlayer
@@ -55,12 +61,18 @@ class MeasureActivity : TvActivity() {
     private lateinit var btnStart: Button
     private lateinit var btnStop: Button
     private lateinit var btnSave: Button
+    private lateinit var btnImport: Button
     private lateinit var btnRoom: Button
     private lateinit var btnTarget: Button
 
     private var roomIndex = 1
     private var targetIndex = 0
     private var result: SweepResult? = null
+    /** A REW import replaces the sweep result for display and saving (plan M10). */
+    private var importResult: ImportResult? = null
+    private var importInput: RewMeasurement? = null
+    private var importing = false
+    private var importThread: Thread? = null
     private var micName: String? = null
     private var measuredOutput: OutputRoute.Output? = null
     /** Bumped per measurement, so a late callback from an earlier one is ignored. */
@@ -81,6 +93,7 @@ class MeasureActivity : TvActivity() {
         btnStart = findViewById(R.id.btn_measure_start)
         btnStop = findViewById(R.id.btn_measure_stop)
         btnSave = findViewById(R.id.btn_measure_save)
+        btnImport = findViewById(R.id.btn_measure_import)
         btnRoom = findViewById(R.id.btn_room_size)
         btnTarget = findViewById(R.id.btn_target)
 
@@ -101,6 +114,7 @@ class MeasureActivity : TvActivity() {
         btnStart.setOnClickListener { startMeasurement() }
         btnStop.setOnClickListener { cancelMeasurement("Stopped. Nothing was saved.") }
         btnSave.setOnClickListener { saveAndFinish() }
+        btnImport.setOnClickListener { pickRewImport() }
 
         refreshChoices()
         textStatus.text = getString(R.string.measure_ready)
@@ -112,7 +126,12 @@ class MeasureActivity : TvActivity() {
         btnTarget.text = getString(R.string.measure_target_button, TARGETS[targetIndex].label)
         val r = result
         val capture = lastCapture
-        if (r != null && capture != null && !measuring) {
+        val imported = importInput
+        if (imported != null && importResult != null && !measuring && !importing) {
+            // The same imported measurement is re-analysed for the new target
+            // and room choice; the graph and saved profile cannot drift apart.
+            reanalyzeImport(imported)
+        } else if (r != null && capture != null && !measuring) {
             // Re-run the correction for the new choices from the same capture.
             val target = TARGETS[targetIndex].key
             val volume = ROOMS[roomIndex].volumeM3
@@ -151,7 +170,7 @@ class MeasureActivity : TvActivity() {
     }
 
     private fun startMeasurement() {
-        if (measuring) return
+        if (measuring || importing) return
         if (!captureEngine.hasPermission()) {
             requestPermissions(arrayOf(Manifest.permission.RECORD_AUDIO), REQ_MIC)
             return
@@ -160,9 +179,15 @@ class MeasureActivity : TvActivity() {
         measurementGeneration += 1
         val generation = measurementGeneration
         result = null
+        importResult = null
+        importInput = null
         micName = null
         btnStart.isEnabled = false
+        btnRoom.isEnabled = false
+        btnTarget.isEnabled = false
+        btnSave.setText(R.string.measure_save)
         btnSave.visibility = View.GONE
+        btnImport.isEnabled = false
         progressMeasure.progress = 0
         textStatus.text = getString(R.string.measure_opening_mic)
         EqService.send(this, EqService.ACTION_SUSPEND) // our own correction must not colour the sweep
@@ -238,6 +263,8 @@ class MeasureActivity : TvActivity() {
                     lastRate = rate
                     finishMeasuring()
                     result = it
+                    importResult = null
+                    importInput = null
                     showResult(it)
                     btnSave.visibility = View.VISIBLE
                     btnSave.requestFocus()
@@ -247,6 +274,7 @@ class MeasureActivity : TvActivity() {
     }
 
     private fun showResult(r: SweepResult) {
+        btnSave.setText(R.string.measure_save)
         graphMeasure.setData(
             r.centresHz,
             listOf(
@@ -268,9 +296,158 @@ class MeasureActivity : TvActivity() {
         )
     }
 
+    /** REW measurement import (plan M10): File → Export → Measurement as text. */
+    private fun pickRewImport() {
+        if (measuring || importing) return
+        val intent = Intent(Intent.ACTION_OPEN_DOCUMENT)
+            .addCategory(Intent.CATEGORY_OPENABLE)
+            .setType("*/*")
+        try {
+            startActivityForResult(intent, REQ_IMPORT)
+        } catch (e: ActivityNotFoundException) {
+            importFailed("This TV's system file picker is unavailable. Enable its Files app or use a TV file-transfer app, then try again.")
+        }
+    }
+
+    private fun importRewFile(uri: Uri) {
+        if (measuring || importing) return
+        val target = TARGETS[targetIndex].key
+        val volume = ROOMS[roomIndex].volumeM3
+        setImportBusy(true)
+        textStatus.text = getString(R.string.measure_importing)
+
+        val worker = thread(name = "CoreEqRewImport", start = false) {
+            val outcome = try {
+                val text = readRewText(uri)
+                val (freqs, mags) = RewImport.parseMagnitudeText(text)
+                val source = RewMeasurement(freqs, mags)
+                val analyzed = RewImport.analyze(freqs, mags, target, volume)
+                Result.success(source to analyzed)
+            } catch (e: Exception) {
+                Log.w(TAG, "REW import failed", e)
+                Result.failure<Pair<RewMeasurement, ImportResult>>(e)
+            }
+            runOnUiThread {
+                importThread = null
+                if (isFinishing || isDestroyed) return@runOnUiThread
+                setImportBusy(false)
+                outcome.onSuccess { (source, analyzed) ->
+                    result = null
+                    importInput = source
+                    importResult = analyzed
+                    showImportResult(analyzed)
+                }.onFailure { error ->
+                    importFailed(error.message ?: "the file could not be read")
+                }
+            }
+        }
+        importThread = worker
+        worker.start()
+    }
+
+    /** Bounded read: reject an oversized provider stream before it can exhaust TV memory. */
+    private fun readRewText(uri: Uri): String {
+        val input = contentResolver.openInputStream(uri)
+            ?: throw MeasurementException("That file could not be opened.")
+        val output = java.io.ByteArrayOutputStream()
+        input.use { stream ->
+            val buffer = ByteArray(8192)
+            var total = 0
+            while (true) {
+                val count = stream.read(buffer)
+                if (count < 0) break
+                total += count
+                if (total > IMPORT_MAX_BYTES) {
+                    throw MeasurementException("The file is larger than 1 MB. Export one REW measurement as text and try again.")
+                }
+                output.write(buffer, 0, count)
+            }
+        }
+        return String(output.toByteArray(), Charsets.UTF_8)
+    }
+
+    private fun reanalyzeImport(source: RewMeasurement) {
+        val target = TARGETS[targetIndex].key
+        val volume = ROOMS[roomIndex].volumeM3
+        setImportBusy(true)
+        textStatus.text = getString(R.string.measure_importing)
+        val worker = thread(name = "CoreEqRewReanalysis", start = false) {
+            val analyzed = try {
+                RewImport.analyze(source.frequenciesHz, source.magnitudesDb, target, volume)
+            } catch (e: Exception) {
+                Log.w(TAG, "REW re-analysis failed", e)
+                null
+            }
+            runOnUiThread {
+                importThread = null
+                if (isFinishing || isDestroyed) return@runOnUiThread
+                setImportBusy(false)
+                if (analyzed != null) {
+                    importResult = analyzed
+                    showImportResult(analyzed)
+                } else {
+                    // Do not leave an old correction available under the new
+                    // target/room label if the re-analysis ever fails.
+                    importResult = null
+                    importInput = null
+                    btnSave.visibility = View.GONE
+                    btnSave.setText(R.string.measure_save)
+                    showTargetOnly()
+                    importFailed("the imported data could not be analysed for this target")
+                }
+            }
+        }
+        importThread = worker
+        worker.start()
+    }
+
+    private fun setImportBusy(busy: Boolean) {
+        importing = busy
+        btnStart.isEnabled = !busy && !measuring
+        btnImport.isEnabled = !busy && !measuring
+        btnRoom.isEnabled = !busy && !measuring
+        btnTarget.isEnabled = !busy && !measuring
+        btnSave.isEnabled = !busy
+    }
+
+    private fun importFailed(reason: String) {
+        // Preserve any previous unsaved result; a bad file must not destroy it.
+        progressMeasure.progress = 0
+        textStatus.text = getString(R.string.measure_import_failed, reason)
+        btnStart.requestFocus()
+    }
+
+    private fun showImportResult(imp: ImportResult) {
+        btnSave.setText(R.string.measure_import_save)
+        graphMeasure.setData(
+            imp.centresHz,
+            listOf(
+                Series("MEASURED", ContextCompat.getColor(this, R.color.cb_slate), imp.measuredDb),
+                Series("TARGET", ContextCompat.getColor(this, R.color.cb_dusk_violet), imp.targetDb),
+                Series("CORRECTION", ContextCompat.getColor(this, R.color.cb_signal_cyan), imp.correctionDb)
+            ),
+            String.format(Locale.US, "REW MAGNITUDE · PHASE UNVERIFIED · %.0f HZ", imp.transitionHz),
+            20.0,
+            imp.transitionHz
+        )
+        val nulls = imp.nullMask.count { it }
+        textStatus.text = String.format(
+            Locale.US,
+            "REW %d pts · %.0f Hz–%.0f kHz · %d null%s untouched · %.0f Hz fallback; room size unused; min-phase unverified",
+            imp.pointsRead, imp.floorHz, DspConstants.F_MAX / 1000,
+            nulls, if (nulls == 1) "" else "s", imp.transitionHz
+        )
+        btnSave.visibility = View.VISIBLE
+        btnSave.requestFocus()
+    }
+
     private fun fail(message: String) {
         finishMeasuring()
         result = null
+        importResult = null
+        importInput = null
+        btnSave.visibility = View.GONE
+        btnSave.setText(R.string.measure_save)
         progressMeasure.progress = 0
         textStatus.text = getString(R.string.measure_failed, message)
         btnStart.requestFocus()
@@ -281,6 +458,9 @@ class MeasureActivity : TvActivity() {
         stimulusPlayer.stop()
         captureEngine.stop()
         btnStart.isEnabled = true
+        btnRoom.isEnabled = true
+        btnTarget.isEnabled = true
+        btnImport.isEnabled = true
         EqService.send(this, EqService.ACTION_RESUME)
     }
 
@@ -292,8 +472,13 @@ class MeasureActivity : TvActivity() {
     }
 
     private fun saveAndFinish() {
-        val r = result ?: return
         val now = System.currentTimeMillis()
+        val imp = importResult
+        if (imp != null) {
+            saveImportProfile(imp, now)
+            return
+        }
+        val r = result ?: return
         val bands = Correction.collapseToBands(
             DISPLAY_BANDS_HZ, { hz -> interpolate(hz, r.centresHz, r.correctionDb) }, -1500, 1500
         ).map { PlatformBand(it.first, it.second) }
@@ -328,6 +513,54 @@ class MeasureActivity : TvActivity() {
         finish()
     }
 
+    /**
+     * The profile an import builds (plan M10): everything the file can prove,
+     * nothing it cannot. RT60 and Schroeder stay null, SNR was never measured,
+     * and the stimulus is named `rew_import` so provenance is never guesswork.
+     */
+    private fun saveImportProfile(imp: ImportResult, now: Long) {
+        val bands = Correction.collapseToBands(
+            DISPLAY_BANDS_HZ, { hz -> interpolate(hz, imp.centresHz, imp.correctionDb) }, -1500, 1500
+        ).map { PlatformBand(it.first, it.second) }
+        val profile = Profile(
+            id = "profile-$now",
+            name = getString(R.string.measure_profile_name, DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.SHORT).format(Date(now))),
+            timestampMs = now,
+            target = TARGETS[targetIndex].key,
+            micType = "REW import",
+            deviceName = "REW",
+            stimulus = "rew_import",
+            captureSeconds = 0.0,
+            volumeM3 = ROOMS[roomIndex].volumeM3,
+            rt60Seconds = null,
+            schroederHz = null,
+            transitionHz = imp.transitionHz,
+            rolloffHz = imp.floorHz,
+            snrDb = null,
+            nullsUntouchedHz = imp.centresHz.indices.filter { imp.nullMask[it] }.map { imp.centresHz[it] },
+            preampDb = imp.preampDb,
+            filters = imp.filters,
+            platformBands = bands,
+            curve = imp.centresHz.indices.map { CurvePoint(imp.centresHz[it], imp.measuredDb[it], imp.correctionDb[it]) },
+            measurementNotes = listOf(REW_IMPORT_MEASUREMENT_NOTE)
+        )
+        // An AVR or soundbar may already correct this response. Save the
+        // imported profile for export only; choosing it in Profiles is the
+        // explicit action that applies it to the TV.
+        profileStore.saveProfile(profile, setAsActive = false)
+        Toast.makeText(this, getString(R.string.measure_import_saved, profile.name), Toast.LENGTH_SHORT).show()
+        finish()
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode != REQ_IMPORT) return
+        val uri = data?.data
+        if (resultCode == RESULT_OK && uri != null) {
+            importRewFile(uri)
+        }
+    }
+
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         if (requestCode != REQ_MIC) return
@@ -342,6 +575,12 @@ class MeasureActivity : TvActivity() {
     override fun onPause() {
         super.onPause()
         cancelMeasurement("Measurement stopped because Core EQ left the screen. Nothing was saved.")
+    }
+
+    override fun onDestroy() {
+        importThread?.interrupt()
+        importThread = null
+        super.onDestroy()
     }
 
     private fun interpolate(x: Double, xs: DoubleArray, ys: DoubleArray): Double {
@@ -360,13 +599,18 @@ class MeasureActivity : TvActivity() {
     companion object {
         private const val TAG = "CoreEqMeasure"
         private const val REQ_MIC = 42
+        private const val REQ_IMPORT = 43
+        private const val REW_IMPORT_MEASUREMENT_NOTE =
+            "REW magnitude-only import: no decay analysis; optional phase column is not analysed; room size cannot inform transition; transition defaults to 300 Hz; minimum-phase gate unverified."
+        /** A normal REW response is far smaller; keep a hostile provider file bounded. */
+        private const val IMPORT_MAX_BYTES = 1024 * 1024
         private const val PREFS = "core_eq_measure"
         private const val KEY_ROOM = "room_index"
         private const val KEY_TARGET = "target_index"
         /** Silence recorded before the sweep, so the noise estimate and latency have room. */
         private const val LEAD_SECONDS = 0.5
         private const val CLIP_DBFS = -0.5
-        /** The common 5-band layout, used for the Home preview only; the service reads the TV's own bands. */
+        /** Saved common 5-band preview; Home uses the live engine's read-back bands while correction is active. */
         private val DISPLAY_BANDS_HZ = doubleArrayOf(60.0, 230.0, 910.0, 3600.0, 14000.0)
 
         private val ROOMS = listOf(

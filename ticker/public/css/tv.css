@@ -74,6 +74,14 @@
 
   /* ---- Chrome ---------------------------------------------------------- */
   --chyron-h: 108px;
+  --sb-pad-x: 14px;
+  --sb-text-rail: 14px;
+  --sb-text-abbr: 30px;
+  --sb-text-score: 38px;
+  --sb-text-sep: 26px;
+  --sb-text-chan: 15px;
+  --sb-mark: 40px;
+  --sb-text-mark: 14px;
   /* The documented 5%: 48dp on the sides, 27dp top and bottom at the
      960x540 baseline, where 1dp is 1 CSS px. Calibration starts here. */
   --overscan: 48px;

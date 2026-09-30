@@ -38,6 +38,8 @@ data class Profile(
     val platformBands: List<PlatformBand> = emptyList(),
     val curve: List<CurvePoint> = emptyList(),
     val capabilityVerdict: Map<String, String> = emptyMap(),
+    /** Measurement limits that must travel with the curve (e.g. phase not analysed on a REW magnitude import). */
+    val measurementNotes: List<String> = emptyList(),
     /**
      * The output this was measured on (see OutputRoute: "speaker", "hdmi_arc",
      * "bluetooth", …). Null for profiles saved before outputs were recorded:

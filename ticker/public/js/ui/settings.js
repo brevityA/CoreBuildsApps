@@ -21,6 +21,7 @@ import {
   vpnDotTone,
   vpnHeadline,
 } from '/lib/vpn.mjs';
+import { scoreBugConfig, shouldAutoStartScoreBug, SCOREBUG_OPACITY } from '/lib/scorebug.mjs';
 import { isNativeShell } from '/lib/client-slate.mjs';
 import { tickerShown } from '/lib/chrome.mjs';
 import { getTicker } from './chyron.js';
@@ -128,6 +129,13 @@ export function applyChrome() {
   if ($('overlayEnabled')) $('overlayEnabled').checked = Boolean(nativeBridge()?.overlayActive?.());
   updateOverlayHint(platform);
 
+  // The scoreboard bug: the switch asks the shell what is on screen, the
+  // shape comes from state — the dot's rules.
+  set($('scoreBugEnabled'), 'checked', Boolean(nativeBridge()?.scoreBugActive?.()));
+  set($('scoreBugPosition'), 'value', s.scoreBugPosition);
+  set($('scoreBugOpacity'), 'value', s.scoreBugOpacity);
+  setText('scoreBugOpacityVal', `${s.scoreBugOpacity}%`);
+
   // The VPN dot. Its switch reflects what is actually on screen (the service
   // can be restarted by the system), its shape comes from state.
   set($('vpnDotEnabled'), 'checked', Boolean(nativeBridge()?.vpnDotActive?.()));
@@ -139,6 +147,39 @@ export function applyChrome() {
   renderVpnStatus();
 
   renderChannelsPanel();
+}
+
+/** The scoreboard bug's config payload, calibrated safe area folded in (the dot's seam). */
+function bugConfig() {
+  return scoreBugConfig(store.state, {
+    overscanPx: currentOverscan(),
+    devicePixelRatio: globalThis.devicePixelRatio || 1,
+  });
+}
+
+/**
+ * Put the bug up as the app opens, when it is on and the grant is already
+ * there. Never asks for the permission itself (see shouldAutoStartScoreBug).
+ */
+export function autoStartScoreBug() {
+  const bridge = nativeBridge();
+  const go = shouldAutoStartScoreBug({
+    enabled: store.state.scoreBug,
+    native: isNativeShell(),
+    platform: bridge?.overlayPlatform?.(),
+    canDraw: bridge?.canDrawOverlays?.() === true,
+    active: bridge?.scoreBugActive?.() === true,
+  });
+  if (go) bridge?.startScoreBug?.(JSON.stringify(bugConfig()));
+  return go;
+}
+
+/** Move or dim a bug that is already up; the switch handles start and stop. */
+function syncScoreBug() {
+  const bridge = nativeBridge();
+  setText('scoreBugOpacityVal', `${store.state.scoreBugOpacity}%`);
+  if (bridge?.scoreBugActive?.() !== true) return;
+  bridge?.setScoreBugConfig?.(JSON.stringify(bugConfig()));
 }
 
 /** The dot's config payload, with the panel's calibrated safe area folded in. */
@@ -333,6 +374,18 @@ export function nudgeOverscan(delta) {
   persist();
 }
 
+export function nudgeScoreBug(delta) {
+  store.state.scoreBugOpacity = clampInt(
+    store.state.scoreBugOpacity + delta,
+    SCOREBUG_OPACITY.min,
+    SCOREBUG_OPACITY.max,
+    SCOREBUG_OPACITY.default,
+  );
+  set($('scoreBugOpacity'), 'value', store.state.scoreBugOpacity);
+  persist();
+  syncScoreBug();
+}
+
 export function nudgeVpnDot(delta) {
   store.state.vpnDotOpacity = clampInt(
     store.state.vpnDotOpacity + delta,
@@ -451,6 +504,40 @@ export function wireSettings() {
     }
     store.state.overlay = Boolean(bridge?.overlayActive?.());
     persist();
+  });
+
+  $('scoreBugEnabled')?.addEventListener('change', (e) => {
+    const bridge = nativeBridge();
+    if (e.target.checked) {
+      if (bridge?.overlayPlatform?.() === 'unsupported') {
+        e.target.checked = false;
+        emit('toast', 'The scoreboard overlay is not available on Fire TV');
+        return;
+      }
+      const started = bridge?.startScoreBug?.(JSON.stringify(bugConfig())) === true;
+      e.target.checked = started || bridge?.scoreBugActive?.() === true;
+      if (!started) {
+        emit('toast', globalThis.CORELINE_TV
+          ? 'Enable “Display over other apps” for Core Line in Settings, then retick'
+          : 'Allow “display over other apps” for Core Line, then retick');
+      }
+    } else {
+      bridge?.stopScoreBug?.();
+    }
+    store.state.scoreBug = Boolean(e.target.checked);
+    persist();
+  });
+
+  $('scoreBugPosition')?.addEventListener('change', (e) => {
+    store.state.scoreBugPosition = e.target.value;
+    persist();
+    syncScoreBug();
+  });
+
+  $('scoreBugOpacity')?.addEventListener('input', (e) => {
+    store.state.scoreBugOpacity = clampInt(e.target.value, SCOREBUG_OPACITY.min, SCOREBUG_OPACITY.max, SCOREBUG_OPACITY.default);
+    persist();
+    syncScoreBug();
   });
 
   $('vpnDotEnabled')?.addEventListener('change', (e) => {

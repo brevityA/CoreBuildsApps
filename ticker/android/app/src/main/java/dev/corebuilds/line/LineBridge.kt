@@ -81,6 +81,24 @@ class LineBridge(private val activity: MainActivity) {
     @JavascriptInterface
     fun stopOverlay(): Boolean = activity.stopOverlay()
 
+    // ---- Scoreboard bug ---------------------------------------------------
+
+    /** Is the scoreboard bug on screen right now? */
+    @JavascriptInterface
+    fun scoreBugActive(): Boolean = activity.scoreBugActive()
+
+    /** Put the bug up; opens the overlay-permission screen when it is missing. */
+    @JavascriptInterface
+    fun startScoreBug(configJson: String): Boolean = activity.startScoreBug(configJson)
+
+    /** Move or dim a running bug (position, opacity) without reloading it. */
+    @JavascriptInterface
+    fun setScoreBugConfig(configJson: String): Boolean = activity.setScoreBugConfig(configJson)
+
+    /** Take the bug down. */
+    @JavascriptInterface
+    fun stopScoreBug(): Boolean = activity.stopScoreBug()
+
     // ---- VPN status dot ---------------------------------------------------
 
     /** Live VPN state as JSON: {tunnelUp, covering, validated, transport, state}. */

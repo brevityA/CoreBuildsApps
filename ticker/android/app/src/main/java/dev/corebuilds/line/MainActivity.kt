@@ -251,6 +251,44 @@ class MainActivity : Activity() {
         return true
     }
 
+    // ---- Scoreboard bug ---------------------------------------------------
+
+    /** Is the scoreboard bug on screen? */
+    fun scoreBugActive(): Boolean = OverlayService.scoresRunning
+
+    /**
+     * Put the scoreboard bug at the top of the screen. Same gate as the ticker
+     * and the dot: false on Fire TV, and false — after opening the system
+     * "Display over other apps" screen — when the permission is missing. The
+     * config comes from the drawer (`scoreBugConfig` in lib/scorebug.mjs).
+     */
+    fun startScoreBug(config: String): Boolean {
+        if (isFireTv()) return false
+        if (!android.provider.Settings.canDrawOverlays(this)) {
+            openOverlaySettings()
+            return false
+        }
+        if (android.os.Build.VERSION.SDK_INT >= 33 &&
+            checkSelfPermission(android.Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED
+        ) {
+            requestPermissions(arrayOf(android.Manifest.permission.POST_NOTIFICATIONS), 7)
+        }
+        OverlayService.startScores(this, ScoreBugConfig.fromJson(config) ?: ScoreBugConfig.DEFAULT)
+        return true
+    }
+
+    /** Move or dim a running bug without reloading it. */
+    fun setScoreBugConfig(config: String): Boolean {
+        val parsed = ScoreBugConfig.fromJson(config) ?: return false
+        OverlayService.applyScoreConfig(parsed)
+        return true
+    }
+
+    fun stopScoreBug(): Boolean {
+        OverlayService.stopScores(this)
+        return true
+    }
+
     // ---- VPN status dot ---------------------------------------------------
 
     /**
