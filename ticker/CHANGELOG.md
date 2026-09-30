@@ -10,6 +10,24 @@ The repo-root `CHANGELOG.md` is the icon pack's. Core Line keeps its own here.
 
 ### Added
 
+- **A scoreboard at the top of the screen, over other apps (Android).**
+  Settings → Overlays → Scoreboard at the top. A broadcast-style score box
+  shows one game at a time over whatever you are watching: the league, the
+  clock, both teams with their marks, the score and the channel. It cycles
+  through the live games every 10 seconds, with your starred teams first. When
+  nothing is live it shows the next game within 12 hours ("Next · 7:00 PM").
+  When nothing is on or coming up, it disappears rather than sit empty. It
+  goes top centre, top left or top right, with its own brightness setting.
+  **On by default:** it comes up with Core Line whenever "Display over other
+  apps" is already allowed. The app never opens that permission screen on its
+  own; ticking the switch is how you grant it. Unticking the switch turns it
+  off for good, and Stop in the notification hides it until the next launch.
+  It is built the way the VPN dot is: its own small window, which never takes
+  focus or touches, so the remote works exactly as if it were not there. It
+  runs on its own switch, independent of the crawl and the dot, and the
+  notification's Stop takes it down with them. It uses the crawl's slate
+  (`overlay-slate.js`, now shared), so the two cannot disagree about a score.
+  Not on Fire TV, which blocks overlay windows.
 - **Your TV guide as a second listings source (Android app).** Supporter
   feedback (2026-09-29): Sky, the BBC, CFL on TSN and ESPN's conference
   networks carry games the scoreboards never list, and "if you do EPG it will
