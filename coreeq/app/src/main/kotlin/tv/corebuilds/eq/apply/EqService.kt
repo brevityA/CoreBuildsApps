@@ -12,10 +12,15 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.content.pm.PackageManager
 import android.content.pm.ServiceInfo
+import android.media.AudioDeviceCallback
+import android.media.AudioDeviceInfo
+import android.media.AudioManager
 import android.media.audiofx.AudioEffect
 import android.media.audiofx.Equalizer
 import android.os.Build
+import android.os.Handler
 import android.os.IBinder
+import android.os.Looper
 import android.util.Log
 import androidx.core.app.NotificationCompat
 import androidx.core.app.ServiceCompat
@@ -33,6 +38,11 @@ import kotlin.math.roundToInt
  * the background), it registers for the players' audio-session broadcasts
  * itself: implicit broadcasts no longer reach manifest receivers, so a
  * receiver that lives in the manifest would never hear them.
+ *
+ * Correction follows the output ([OutputRoute]): each profile belongs to the
+ * chain it was measured on, the device callback re-picks when a soundbar or
+ * headphones come and go, and an output nothing was measured on gets no
+ * correction rather than another chain's.
  *
  * Two paths, never both at once (that would correct twice):
  * - **Whole TV** – an [Equalizer] on the output mix (session 0). Deprecated,
@@ -64,6 +74,20 @@ class EqService : Service() {
         }
     }
 
+    /** Plugging in a soundbar or headphones changes which profile is right. */
+    private val deviceCallback = object : AudioDeviceCallback() {
+        override fun onAudioDevicesAdded(addedDevices: Array<out AudioDeviceInfo>) = onOutputsChanged()
+        override fun onAudioDevicesRemoved(removedDevices: Array<out AudioDeviceInfo>) = onOutputsChanged()
+    }
+    private var lastKind: String? = null
+
+    private fun onOutputsChanged() {
+        val kind = OutputRoute.current(this)?.kind
+        if (kind == lastKind) return // an input, or a second device of the same kind
+        lastKind = kind
+        applyAll()
+    }
+
     override fun onCreate() {
         super.onCreate()
         store = ProfileStore(this)
@@ -88,6 +112,9 @@ class EqService : Service() {
         }
         // Exported: the broadcasts come from the players, which are other apps.
         ContextCompat.registerReceiver(this, sessionReceiver, filter, ContextCompat.RECEIVER_EXPORTED)
+        lastKind = OutputRoute.current(this)?.kind
+        // Registering delivers the current devices once; lastKind makes that a no-op.
+        getSystemService(AudioManager::class.java)?.registerAudioDeviceCallback(deviceCallback, Handler(Looper.getMainLooper()))
         running = true
     }
 
@@ -113,13 +140,42 @@ class EqService : Service() {
         return START_STICKY
     }
 
+    /** The profile for the output playing now, and that output. */
+    private fun resolve(): Triple<Profile?, OutputRoute.Output?, Boolean> {
+        val output = OutputRoute.current(this)
+        val pick = OutputRoute.pick(store.getAllProfiles(), store.chosenId(), output?.kind)
+        return Triple(pick.profile, output, pick.switched)
+    }
+
+    /** " · on Sonos Beam", plus the passthrough caveat where it applies. */
+    private fun where(output: OutputRoute.Output?): String {
+        if (output == null) return ""
+        val passthrough = if (OutputRoute.mayPassThrough(this, output.kind)) {
+            ". Dolby and DTS sent to it as a bitstream bypass any on-device EQ; set Surround sound to PCM to correct them"
+        } else {
+            ""
+        }
+        return " · on ${output.name}$passthrough"
+    }
+
     private fun applyAll() {
         if (suspended) return
-        val profile = store.getActiveProfile()
-        if (profile == null) {
+        if (store.getAllProfiles().isEmpty()) {
             report("No measurement yet. Measure this room to create a correction.", isError = true)
             return
         }
+        val (profile, output, switched) = resolve()
+        if (profile == null) {
+            // Another chain's curve would be wrong here: step aside, say why.
+            setAllEnabled(false)
+            report(
+                "Nothing measured on ${OutputRoute.label(output?.kind)} yet, so correction is paused there. " +
+                    "Measure with it playing, or switch back to an output you measured.",
+                isError = false
+            )
+            return
+        }
+        val via = if (switched) " (this output's own profile)" else ""
 
         if (globalEq == null && globalError == null) {
             try {
@@ -135,7 +191,7 @@ class EqService : Service() {
             try {
                 val bands = configure(global, profile)
                 releaseSessions() // the whole-TV path already covers them
-                report("Correcting the whole TV · ${profile.name} · $bands bands", isError = false)
+                report("Correcting the whole TV · ${profile.name}$via · $bands bands${where(output)}", isError = false)
                 return
             } catch (e: Exception) {
                 Log.w(TAG, "Output-mix Equalizer could not be configured", e)
@@ -157,7 +213,8 @@ class EqService : Service() {
         when {
             failed != null -> report(failed, isError = true)
             sessionEqs.isNotEmpty() -> report(
-                "Correcting ${sessionEqs.values.joinToString { label(it.second) }} · ${profile.name}", isError = false
+                "Correcting ${sessionEqs.values.joinToString { label(it.second) }} · ${profile.name}$via${where(output)}",
+                isError = false
             )
             else -> report(
                 "Waiting for a player that shares its audio (Kodi, VLC, Poweramp). " +
@@ -172,15 +229,17 @@ class EqService : Service() {
     private fun openSession(session: Int, pkg: String) {
         store.noteSessionPackage(pkg)
         if (globalEq != null) return // already corrected by the whole-TV path
-        val profile = store.getActiveProfile() ?: return
+        if (store.getAllProfiles().isEmpty()) return
+        val (profile, output, _) = resolve()
         try {
             val eq = sessionEqs[session]?.first ?: Equalizer(PRIORITY, session)
             sessionEqs[session] = Pair(eq, pkg)
-            if (suspended) {
+            if (suspended || profile == null) {
+                // Held, not dropped: an output change or a resume re-applies it.
                 eq.enabled = false
             } else {
                 val bands = configure(eq, profile)
-                report("Correcting ${label(pkg)} · ${profile.name} · $bands bands", isError = false)
+                report("Correcting ${label(pkg)} · ${profile.name} · $bands bands${where(output)}", isError = false)
             }
         } catch (e: Exception) {
             Log.w(TAG, "Equalizer on session $session ($pkg) failed", e)
@@ -257,6 +316,7 @@ class EqService : Service() {
         } catch (e: IllegalArgumentException) {
             Log.w(TAG, "Session receiver was not registered", e)
         }
+        getSystemService(AudioManager::class.java)?.unregisterAudioDeviceCallback(deviceCallback)
         releaseSessions()
         globalEq?.release()
         globalEq = null

@@ -8,6 +8,11 @@ must never land there. Releases are `coreeq-v<version>` tags (see
 
 ## [Unreleased]
 
+### Fixed
+
+- **Correction follows the output it was measured on.** Asked on Discord (2026-09-30): does it matter whether the sound comes from the TV, a soundbar or a system? It does. A measurement captures one chain, but a profile recorded nothing about which one, so switching from the TV speakers to a soundbar kept applying the speakers' curve. Each new profile now records its output (`TV speakers`, `HDMI ARC (soundbar or receiver)`, `HDMI`, `Bluetooth`, `USB audio`, `Wired`, plus the device's own name where Android gives one, e.g. "Sonos Beam") and puts it in the profile name. `EqService` re-picks when a device comes or goes: the chosen profile on its own output, else the newest one measured on the current output, else correction pauses on that output and says so ("Nothing measured on Bluetooth yet…") instead of applying another chain's curve. Profiles saved before this apply on every output, as they did, so an update switches nothing off. A profile's name comes from the device the sweep's own `AudioTrack` was routed to, so it says what was really measured; its selection key stays the connected-output ranking, because at play time that is all Core EQ can see of another app's audio, and the same setup must find the same profile. `OutputRoute.kt`, `OutputRouteTest` (12 tests).
+- **Passthrough is named.** Dolby and DTS sent to a soundbar or receiver as a bitstream never pass through Android's mixer, so no on-device EQ reaches them. On HDMI outputs where Android 12+ reports surround passthrough as possible, the status says so and how to correct them (Surround sound → PCM).
+
 ## [1.0.0] — 2026-09-29
 
 ### Fixed
