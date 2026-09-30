@@ -115,7 +115,37 @@ APK contents verified:
 - `android.software.leanback` uses-feature + `CATEGORY_LEANBACK_LAUNCHER` + `@drawable/tv_banner` present → the app appears in the Android TV launcher.
 - `FileProvider` authority `dev.corebuilds.line.fileprovider` (exported=false, grantUriPermissions=true) backed by `file_paths.xml` exposing only `cache/updates/` → the sideload updater can hand the downloaded APK to the system installer.
 
-**Clean install + first run on a real Android TV target (or emulator) remains [USER TO SUPPLY]** — say which device/emulator when reporting back; the sandbox has no display. The production signing path is the CI workflow `ticker/android/github-workflow-core-line-apk.yml` (land at `.github/workflows/core-line-apk.yml`): `npm test` then `assembleDebug` on push/PR, and a **signed release** on a `coreline-v*` tag with the keystore from GitHub Secrets.
+**Clean install + first run now happens in CI** (2026-09-30).
+`.github/workflows/core-line-device-check.yml` boots the same Android TV image
+the icon pack's device check uses (`tv_1080p`, API 34, x86), installs the debug
+APK and asserts against a running system:
+
+- it installs, the package is present, and the activity **starts and stays
+  resumed** on a TV image;
+- the **installed build reports the version `build.gradle.kts` declares**
+  (derived, never quoted — this is the check that a version bump reached the
+  APK and not only the manifest);
+- no `FATAL EXCEPTION` in logcat;
+- **the Android WebView raised no Content-Security-Policy violation.** This is
+  the assertion the job exists for: desktop Chromium is not the platform
+  engine, and a `<meta>` policy the two disagree about produces a black screen
+  for every viewer at once. The browser job tests the policy in Chromium; this
+  tests it in the engine that actually ships;
+- `appops set … SYSTEM_ALERT_WINDOW allow` succeeds — the §2/§9 deviation path
+  for TV builds with no *Display over other apps* page, executed rather than
+  cited;
+- the screen is **overwhelmingly dark and contains real ink**
+  (`ticker/tests/device_frame_check.py`), which is what distinguishes a board
+  that painted from the black rectangle a blocked module graph leaves.
+
+**What is still [USER TO SUPPLY], and why an emulator cannot close it:** a real
+VPN tunnel (the emulator has no VPN client, and `TRANSPORT_VPN` never becomes
+true there), a DRM-protected stream to draw the dot over, a physical OLED panel
+(the emulator renders through swiftshader — it proves the ramp is `#000000`, not
+that the panel looks right in a dark room), and a real remote. §9 of
+`docs/research/core-line-vpn-dot-android-tv-2026-09-29.md` is that checklist.
+
+The production signing path is the CI workflow `ticker/android/github-workflow-core-line-apk.yml` (land at `.github/workflows/core-line-apk.yml`): `npm test` then `assembleDebug` on push/PR, and a **signed release** on a `coreline-v*` tag with the keystore from GitHub Secrets.
 
 ## 7. Notes / corrections to earlier findings
 

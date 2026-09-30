@@ -8,6 +8,10 @@ The repo-root `CHANGELOG.md` is the icon pack's. Core Line keeps its own here.
 
 ## [Unreleased]
 
+_Next release. Nothing landed yet._
+
+## [1.4.1] — 2026-09-30
+
 ### Added
 
 - **A TV-first home screen.** Supporter feedback (2026-09-29): "you can only
