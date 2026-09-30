@@ -157,12 +157,27 @@ jobs:
             fail "activity did not start: $(echo "$START" | head -3 | tr '\n' ' ')"
           fi
           echo "$START" | grep -q "Status: ok" || fail "am start reported no 'Status: ok'"
-          sleep 12   # the WebView, the module graph, and the first slate paint
-          if ! adb shell dumpsys activity activities | grep -q "mResumedActivity.*$PKG"; then
-            adb shell dumpsys activity activities | grep -i "ResumedActivity" || true
-            fail "$PKG is not the resumed activity — it launched and then left"
+          # Wait for the app to *take the screen*, polling rather than sleeping
+          # a fixed amount: this failed on its first run against a single
+          # `mResumedActivity` grep — a key API 34's dumpsys no longer prints in
+          # that form — and a fixed sleep would have hidden the same class of
+          # problem on a slow emulator. Focus is the stronger claim anyway: it
+          # says the app is what the display is showing, which is what the
+          # screenshot below then measures.
+          FOCUS=""
+          for _ in $(seq 1 15); do
+            FOCUS=$(adb shell dumpsys window 2>/dev/null | grep -E "mCurrentFocus|mFocusedApp" | head -4 || true)
+            echo "$FOCUS" | grep -q "$PKG" && break
+            sleep 2
+          done
+          if ! echo "$FOCUS" | grep -q "$PKG"; then
+            # Put the evidence in the annotation, not just the log: a second
+            # cycle spent finding out *why* would be a cycle wasted.
+            CRASHES=$(adb logcat -d -s AndroidRuntime:E 2>/dev/null | grep -A 6 "FATAL EXCEPTION" | head -20 || true)
+            fail "not the focused window after 30s. focus=[$(echo "$FOCUS" | tr '\n' ' ' | cut -c1-180)] crashes=[$(echo "$CRASHES" | tr '\n' ' ' | cut -c1-320)]"
           fi
-          pass "launches and stays resumed"
+          pass "launches and takes the screen"
+          sleep 8   # the first slate paint on software rendering
 
           # ---- 4. It has not crashed --------------------------------------
           CRASH=$(adb logcat -d -s AndroidRuntime:E | grep -E "FATAL EXCEPTION" || true)
