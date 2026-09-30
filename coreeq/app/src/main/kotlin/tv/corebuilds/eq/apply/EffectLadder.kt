@@ -32,7 +32,7 @@ data class ProbeVerdict(
 object EffectLadder {
 
     fun probe(context: Context): ProbeVerdict {
-        var session0Ok = false
+        var equalizerSession0Ok = false
         var eqSupported = false
         var bands = 5
         val centres = mutableListOf<Double>()
@@ -44,7 +44,7 @@ object EffectLadder {
         try {
             eq = Equalizer(0, 0)
             eqSupported = true
-            session0Ok = true
+            equalizerSession0Ok = true
             val count = eq.numberOfBands.toInt()
             if (count > 0) {
                 bands = count
@@ -59,7 +59,7 @@ object EffectLadder {
                 }
             }
         } catch (e: Exception) {
-            session0Ok = false
+            equalizerSession0Ok = false
         } finally {
             try {
                 eq?.release()
@@ -70,17 +70,26 @@ object EffectLadder {
             centres.addAll(listOf(60.0, 230.0, 910.0, 3600.0, 14000.0))
         }
 
-        // Test DynamicsProcessing (API 28+)
+        // A constructible, controlling DP instance also counts as a session-0 path.
+        // The apply service still builds/verifies its real PreEQ+limiter config.
         var dpOk = false
+        var dynamicsProcessingSession0Ok = false
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+            var dp: DynamicsProcessing? = null
             try {
-                val dp = DynamicsProcessing(0)
-                dpOk = true
-                dp.release()
+                dp = DynamicsProcessing(0)
+                dpOk = dp.hasControl()
+                dynamicsProcessingSession0Ok = dpOk
             } catch (e: Exception) {
                 dpOk = false
+                dynamicsProcessingSession0Ok = false
+            } finally {
+                try {
+                    dp?.release()
+                } catch (ignored: Exception) {}
             }
         }
+        val session0Ok = equalizerSession0Ok || dynamicsProcessingSession0Ok
 
         // Recommendation
         val recommended = when {

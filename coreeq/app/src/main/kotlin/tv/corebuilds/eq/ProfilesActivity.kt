@@ -197,7 +197,8 @@ class ProfilesActivity : TvActivity() {
             holder.textName.text = item.name
             val targetTitle = item.target.replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.US) else it.toString() }
             val rt = item.rt60Seconds?.let { String.format(Locale.US, "RT60 %.2f s", it) } ?: "RT60 unknown"
-            holder.textSub.text = "$targetTitle · ${item.filters.size} filters · $rt · ${item.micType}"
+            val measurementLimit = if (item.measurementNotes.isNotEmpty()) " · magnitude-only; phase unverified" else ""
+            holder.textSub.text = "$targetTitle · ${item.filters.size} filters · $rt · ${item.micType}$measurementLimit"
 
             val isActive = item.id == activeId()
             holder.textBadge.visibility = if (isActive) View.VISIBLE else View.GONE

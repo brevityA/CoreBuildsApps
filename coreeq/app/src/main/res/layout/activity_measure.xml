@@ -44,11 +44,17 @@
         android:orientation="horizontal"
         android:layout_marginTop="@dimen/cb_space_md">
 
-        <!-- Left rail: 3 Step cards -->
-        <LinearLayout
+        <!-- Left rail: scrolls so the optional REW import cannot clip on a 540dp panel. -->
+        <ScrollView
             android:layout_width="340dp"
             android:layout_height="match_parent"
-            android:orientation="vertical">
+            android:fillViewport="true"
+            android:scrollbars="none">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
 
             <!-- Step 1: the room and the target -->
             <LinearLayout
@@ -188,7 +194,20 @@
                     android:layout_marginTop="2dp" />
             </LinearLayout>
 
-        </LinearLayout>
+            <!-- REW import (plan M10): measure elsewhere, correct here. -->
+            <Button
+                android:id="@+id/btn_measure_import"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/cb_target_min"
+                android:background="@drawable/bg_ghost"
+                android:text="@string/measure_import_rew"
+                android:textColor="@color/cb_ink"
+                android:textSize="@dimen/cb_text_label"
+                android:focusable="true"
+                android:layout_marginTop="@dimen/cb_space_sm" />
+
+            </LinearLayout>
+        </ScrollView>
 
         <!-- Right pane: Live capture graph + Progress -->
         <LinearLayout
@@ -224,7 +243,7 @@
 
             <TextView
                 android:id="@+id/text_measure_status"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/measure_ready"
                 android:textColor="@color/cb_slate"

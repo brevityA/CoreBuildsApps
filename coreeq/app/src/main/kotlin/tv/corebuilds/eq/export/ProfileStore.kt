@@ -8,11 +8,19 @@ import org.json.JSONException
 import org.json.JSONObject
 import tv.corebuilds.eq.dsp.PeakingFilter
 
-/** What the correction service last did, in words the Home screen can show. */
+/**
+ * What the correction service last did, in words the Home screen can show.
+ *
+ * [playing] is the live half of the same report: true while audio the
+ * correction is attached to is audible, which is what the Home screen's
+ * indicator pulses on. It dies with the service — a stale flag can never light
+ * the badge, because the screen only trusts it while the service is running.
+ */
 data class EqStatus(
     val message: String,
     val isError: Boolean,
-    val updatedMs: Long
+    val updatedMs: Long,
+    val playing: Boolean = false
 )
 
 /**
@@ -97,14 +105,20 @@ class ProfileStore(context: Context) {
 
     fun status(): EqStatus? {
         val msg = prefs.getString(KEY_STATUS_MSG, null) ?: return null
-        return EqStatus(msg, prefs.getBoolean(KEY_STATUS_ERR, false), prefs.getLong(KEY_STATUS_TIME, 0L))
+        return EqStatus(
+            msg,
+            prefs.getBoolean(KEY_STATUS_ERR, false),
+            prefs.getLong(KEY_STATUS_TIME, 0L),
+            prefs.getBoolean(KEY_STATUS_PLAYING, false)
+        )
     }
 
-    fun setStatus(message: String, isError: Boolean) {
+    fun setStatus(message: String, isError: Boolean, playing: Boolean = false) {
         prefs.edit()
             .putString(KEY_STATUS_MSG, message)
             .putBoolean(KEY_STATUS_ERR, isError)
             .putLong(KEY_STATUS_TIME, System.currentTimeMillis())
+            .putBoolean(KEY_STATUS_PLAYING, playing)
             .apply()
     }
 
@@ -116,6 +130,39 @@ class ProfileStore(context: Context) {
         if (pkg.isBlank()) return
         val list = (listOf(pkg) + sessionPackages().filter { it != pkg }).take(8)
         prefs.edit().putString(KEY_SESSION_PKGS, list.joinToString(",")).apply()
+    }
+
+    /** The currently-applied engine layout; transient runtime state, not profile data. */
+    fun runtimeBands(): List<PlatformBand> {
+        val raw = prefs.getString(KEY_RUNTIME_BANDS, null) ?: return emptyList()
+        return try {
+            val array = JSONArray(raw)
+            List(array.length()) { index ->
+                val band = array.getJSONObject(index)
+                PlatformBand(band.getDouble("center_hz"), band.getInt("millibels"))
+            }
+        } catch (e: JSONException) {
+            Log.w(TAG, "Ignoring unreadable runtime band layout", e)
+            emptyList()
+        }
+    }
+
+    fun setRuntimeBands(bands: List<PlatformBand>) {
+        if (bands.isEmpty()) {
+            clearRuntimeBands()
+            return
+        }
+        val array = JSONArray()
+        for (band in bands) {
+            array.put(JSONObject()
+                .put("center_hz", band.centerHz)
+                .put("millibels", band.millibels))
+        }
+        prefs.edit().putString(KEY_RUNTIME_BANDS, array.toString()).apply()
+    }
+
+    fun clearRuntimeBands() {
+        prefs.edit().remove(KEY_RUNTIME_BANDS).apply()
     }
 
     private fun persistProfiles(list: List<Profile>) {
@@ -158,6 +205,13 @@ class ProfileStore(context: Context) {
 
         val capMap = mutableMapOf<String, String>()
         obj.optJSONObject("capability")?.let { c -> for (k in c.keys()) capMap[k] = c.optString(k, "") }
+        val measurementNotes = mutableListOf<String>()
+        obj.optJSONArray("measurement_notes")?.let { a ->
+            for (i in 0 until a.length()) {
+                val note = a.optString(i, "")
+                if (note.isNotBlank()) measurementNotes.add(note)
+            }
+        }
 
         return Profile(
             id = obj.getString("id"),
@@ -180,6 +234,7 @@ class ProfileStore(context: Context) {
             platformBands = bandsList,
             curve = curveList,
             capabilityVerdict = capMap,
+            measurementNotes = measurementNotes,
             outputKind = obj.optJSONObject("output")?.optString("kind", "")?.takeIf { it.isNotBlank() },
             outputName = obj.optJSONObject("output")?.let { o -> if (o.isNull("name")) null else o.optString("name") }
                 ?.takeIf { it.isNotBlank() }
@@ -195,7 +250,9 @@ class ProfileStore(context: Context) {
         private const val KEY_STATUS_MSG = "status_message"
         private const val KEY_STATUS_ERR = "status_is_error"
         private const val KEY_STATUS_TIME = "status_time"
+        private const val KEY_STATUS_PLAYING = "status_playing"
         private const val KEY_SESSION_PKGS = "session_packages"
+        private const val KEY_RUNTIME_BANDS = "runtime_effect_bands"
         private const val KEY_DEMO_PURGED = "demo_profiles_purged"
         private val DEMO_IDS = setOf("profile-living-room", "profile-bedroom", "profile-kitchen")
     }

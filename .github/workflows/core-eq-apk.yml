@@ -53,9 +53,52 @@ jobs:
       - name: Set up Gradle
         uses: gradle/actions/setup-gradle@v6
 
-      - name: Run unit tests
+      # Lint runs in the same Gradle call so a manifest or resource error
+      # (e.g. ProtectedPermissions on DUMP) fails the PR, not a later build.
+      - name: Run unit tests and lint
         working-directory: coreeq
-        run: ./gradlew :app:testDebugUnitTest --no-daemon --stacktrace
+        run: |
+          set -o pipefail
+          ./gradlew :app:testDebugUnitTest :app:lintDebug --no-daemon --stacktrace 2>&1 | tee "$RUNNER_TEMP/coreeq-gradle.log"
+
+      # The action log archive is not always reachable from this runner; emit
+      # concise failures as check annotations as well as in the full log.
+      - name: Summarize unit-test failures
+        if: failure()
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import os
+          import xml.etree.ElementTree as ET
+
+          failures = []
+          for path in Path("coreeq/app/build/test-results/testDebugUnitTest").glob("TEST-*.xml"):
+              try:
+                  root = ET.parse(path).getroot()
+              except ET.ParseError:
+                  continue
+              for case in root.iter("testcase"):
+                  for node in list(case.findall("failure")) + list(case.findall("error")):
+                      detail = " ".join(filter(None, [node.get("message", ""), node.text or ""]))
+                      failures.append(f"{case.get('classname', '?')}#{case.get('name', '?')}: {detail[:2400]}")
+
+          gradle_log = Path(os.environ["RUNNER_TEMP"]) / "coreeq-gradle.log"
+          if not failures and gradle_log.is_file():
+              lines = gradle_log.read_text(errors="replace").splitlines()
+              needles = ("e: ", "error:", "What went wrong:", "Execution failed for task", "BUILD FAILED")
+              failures = [line.strip() for line in lines if any(n in line for n in needles)][-20:]
+              if not failures:
+                  failures = lines[-25:]
+
+          if not failures:
+              failures = ["Gradle failed before producing a test report; inspect the full job log."]
+          summary = "\n".join(f"- {item}" for item in failures)
+          with open(os.environ["GITHUB_STEP_SUMMARY"], "a", encoding="utf-8") as stream:
+              stream.write("## Core EQ test failure details\n\n" + summary + "\n")
+          for item in failures:
+              escaped = item.replace("%", "%25").replace("\r", "%0D").replace("\n", "%0A")
+              print(f"::error title=Core EQ unit-test failure::{escaped}")
+          PY
 
   apk:
     name: Assemble APK

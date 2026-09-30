@@ -16,7 +16,8 @@ import kotlin.math.max
 import kotlin.math.min
 
 /**
- * Platform equaliser bands D-pad row: vertical slider cards matching the mockups.
+ * Applied engine band D-pad row. Dense layouts stay legible when a DP engine
+ * reports more bands than a platform five-band Equalizer.
  */
 class BandSlidersView @JvmOverloads constructor(
     context: Context,
@@ -123,6 +124,10 @@ class BandSlidersView @JvmOverloads constructor(
         canvas.drawRoundRect(rect, 20f, 20f, borderPaint)
 
         val n = bands.size
+        val dense = n > 10
+        val labelSize = if (dense) 14f else 22f
+        textPaint.textSize = labelSize
+        textActivePaint.textSize = labelSize
         val slotWidth = w / n
         val midY = h / 2f
         val span = h * 0.28f
@@ -135,7 +140,7 @@ class BandSlidersView @JvmOverloads constructor(
             val cx = slotWidth * (i + 0.5f)
             val db = b.millibels / 100f
             val y = midY - (db / 15f) * span
-            val barW = 18f
+            val barW = min(18f, slotWidth * 0.5f)
             val isFocused = (i == focusedBandIndex && hasFocus())
 
             if (isFocused) {
@@ -160,14 +165,20 @@ class BandSlidersView @JvmOverloads constructor(
             // Frequency label below
             val freqLabel = if (b.centerHz >= 1000.0) {
                 String.format(Locale.US, "%.1fk", b.centerHz / 1000.0)
+            } else if (dense) {
+                String.format(Locale.US, "%.0f", b.centerHz)
             } else {
                 String.format(Locale.US, "%.0fHz", b.centerHz)
             }
             canvas.drawText(freqLabel, cx, h - 14f, if (isFocused) textActivePaint else textPaint)
 
-            // dB level label above
+            // Dense engine layouts omit units from each tick; the heading supplies them.
             val sign = if (db > 0) "+" else ""
-            val dbLabel = String.format(Locale.US, "%s%.1fdB", sign, db)
+            val dbLabel = if (dense) {
+                String.format(Locale.US, "%s%.0f", sign, db)
+            } else {
+                String.format(Locale.US, "%s%.1fdB", sign, db)
+            }
             canvas.drawText(dbLabel, cx, 30f, if (isFocused) textActivePaint else textPaint)
         }
     }

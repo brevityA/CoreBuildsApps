@@ -44,10 +44,16 @@
         android:orientation="horizontal"
         android:layout_marginTop="@dimen/cb_space_md">
 
-        <!-- Left rail: 5 probed paths -->
-        <LinearLayout
+        <!-- Left rail: the probed paths, scroll-bounded so an added row can
+             never clip on a 540dp panel -->
+        <ScrollView
             android:layout_width="380dp"
             android:layout_height="match_parent"
+            android:scrollbars="none">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:orientation="vertical">
 
             <!-- Row 1: Global session 0 -->
@@ -105,7 +111,46 @@
                     android:layout_marginTop="2dp" />
             </LinearLayout>
 
-            <!-- Row 3: This app's own playback -->
+            <!-- Row 3: DUMP discovery (optional, ladder rung 2) -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:background="@drawable/bg_card"
+                android:padding="@dimen/cb_card_padding"
+                android:focusable="true"
+                android:layout_marginBottom="6dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/capability_discovery_title"
+                    android:textColor="@color/cb_ink"
+                    android:textSize="@dimen/cb_text_data"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/status_discovery"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/capability_discovery_granted"
+                    android:textColor="@color/cb_slate"
+                    android:textSize="@dimen/cb_text_kicker"
+                    android:layout_marginTop="2dp" />
+
+                <TextView
+                    android:id="@+id/text_discovery_command"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/capability_discovery_command"
+                    android:textColor="@color/cb_signal_cyan"
+                    android:textSize="@dimen/cb_text_kicker"
+                    android:fontFamily="monospace"
+                    android:layout_marginTop="2dp"
+                    android:visibility="gone" />
+            </LinearLayout>
+
+            <!-- Row 4: This app's own playback -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -132,7 +177,7 @@
                     android:layout_marginTop="2dp" />
             </LinearLayout>
 
-            <!-- Row 4: DynamicsProcessing -->
+            <!-- Row 5: DynamicsProcessing -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -160,7 +205,7 @@
                     android:layout_marginTop="2dp" />
             </LinearLayout>
 
-            <!-- Row 5: Platform Equalizer -->
+            <!-- Row 6: Platform Equalizer -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -188,6 +233,8 @@
             </LinearLayout>
 
         </LinearLayout>
+
+        </ScrollView>
 
         <!-- Right pane: Verdict card + Fallback guidance -->
         <LinearLayout
