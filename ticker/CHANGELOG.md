@@ -8,10 +8,6 @@ The repo-root `CHANGELOG.md` is the icon pack's. Core Line keeps its own here.
 
 ## [Unreleased]
 
-_Next release. Nothing landed yet._
-
-## [1.4.1] — 2026-09-30
-
 ### Added
 
 - **A TV-first home screen.** Supporter feedback (2026-09-29): "you can only
@@ -32,6 +28,10 @@ _Next release. Nothing landed yet._
   labels step aside on that panel. On a phone the rail becomes a row across
   the top and the banner shows marks and score. `tests/layout.test.mjs`
   checks that every id the app looks up still exists after the move.
+
+## [1.4.1] — 2026-09-30
+
+### Added
 
 - **The scrolling ticker can be turned off, and a fresh install starts with it
   off.** Settings → Ticker & display → Scrolling ticker. With it off, the
