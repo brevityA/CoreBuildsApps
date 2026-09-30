@@ -9,6 +9,7 @@ import {
   scoreBugAt,
   scoreBugStatus,
   scoreBugHtml,
+  shouldAutoStartScoreBug,
   SCOREBUG_POSITIONS,
   SCOREBUG_OPACITY,
 } from '../lib/scorebug.mjs';
@@ -198,4 +199,28 @@ test('a system restart never puts the crawl up unasked', () => {
   assert.ok(nullBranch.length > 0, 'no explicit null-action branch');
   assert.match(nullBranch, /intent == null && !dotRunning/);
   assert.match(serviceKt, /ACTION_STOP -> \{[^}]*stopScores\(\)/, 'Stop in the notification must take the bug down too');
+});
+
+/* ---- On by default --------------------------------------------------------- */
+
+
+test('the bug is on by default, for new installs and for installs that never set it', () => {
+  assert.match(stateJs, /scoreBug: true,/);
+});
+
+test('it comes up with the app only when it can, and never asks for the permission itself', () => {
+  const ready = { enabled: true, native: true, platform: 'supported', canDraw: true, active: false };
+  assert.equal(shouldAutoStartScoreBug(ready), true);
+  assert.equal(shouldAutoStartScoreBug({ ...ready, enabled: false }), false, 'the viewer unticked it');
+  assert.equal(shouldAutoStartScoreBug({ ...ready, native: false }), false, 'a browser has no overlay');
+  assert.equal(shouldAutoStartScoreBug({ ...ready, platform: 'unsupported' }), false, 'Fire TV');
+  assert.equal(shouldAutoStartScoreBug({ ...ready, platform: 'needs_permission', canDraw: false }), false, 'no grant: no settings page at launch');
+  assert.equal(shouldAutoStartScoreBug({ ...ready, active: true }), false, 'already up');
+  assert.equal(shouldAutoStartScoreBug(), false);
+  // startScoreBug() opens the permission screen when the grant is missing, so
+  // the launch path must be gated on canDrawOverlays before it ever calls it.
+  const auto = settingsJs.slice(settingsJs.indexOf('export function autoStartScoreBug'), settingsJs.indexOf('/** Move or dim a bug'));
+  assert.match(auto, /canDrawOverlays/);
+  assert.match(auto, /if \(go\) bridge\?\.startScoreBug/);
+  assert.match(appJs, /autoStartScoreBug\(\)/, 'app.js never calls it');
 });

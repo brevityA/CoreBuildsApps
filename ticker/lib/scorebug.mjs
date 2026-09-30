@@ -83,6 +83,24 @@ export function scoreBugQueue(events, { favorites = '', now = Date.now() } = {})
   return soon.sort((a, b) => favFirst(a, b) || compareEvents(a, b)).slice(0, 3);
 }
 
+/**
+ * Should the app put the bug up by itself as it opens?
+ *
+ * The bug is on by default, but "on" is a setting, not a permission: showing
+ * over other apps needs the viewer's own "Display over other apps" grant, and
+ * Fire TV refuses overlays outright. So it starts only when every one of these
+ * holds, and never opens the permission screen on its own — a settings page
+ * thrown up at every launch is how an app gets uninstalled. Without the grant
+ * the drawer's switch is where the viewer asks for it.
+ */
+export function shouldAutoStartScoreBug({ enabled, native, platform, canDraw, active } = {}) {
+  return enabled === true
+    && native === true
+    && platform === 'supported'
+    && canDraw === true
+    && active !== true;
+}
+
 /** The game on the bug at `index`, wrapping; null when the queue is empty. */
 export function scoreBugAt(queue, index) {
   if (!queue?.length) return null;

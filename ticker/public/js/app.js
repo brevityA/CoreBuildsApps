@@ -37,7 +37,7 @@ import { renderBoard } from './ui/board.js';
 import { initSearch, clearSearch, focusSearch } from './ui/search.js';
 import { openGameDetail, closeGameDetail, openMatched, watchDetail, watchDetailWeb, getDetailEvent } from './ui/detail.js';
 import {
-  applyChrome, applyTicker, openDrawer, activateDrawerSection, wireSettings, initSettings,
+  applyChrome, applyTicker, openDrawer, activateDrawerSection, wireSettings, initSettings, autoStartScoreBug,
   nudgeSpeed, nudgeOverscan, nudgeVpnDot, nudgeScoreBug, renderFeeds,
 } from './ui/settings.js';
 import { maybeShowOnboarding, nextStep, finish as finishOnboarding } from './ui/onboarding.js';
@@ -359,6 +359,9 @@ async function init() {
   if (isNativeShell() && !globalThis.CORELINE_OVERLAY) {
     hydrateNativePlaylist();
     initGuide();
+    // The scoreboard at the top is on by default; it comes up with the app
+    // when the overlay permission is already granted.
+    autoStartScoreBug();
   }
 
   await loadSlate();

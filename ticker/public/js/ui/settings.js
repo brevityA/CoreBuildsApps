@@ -21,7 +21,7 @@ import {
   vpnDotTone,
   vpnHeadline,
 } from '/lib/vpn.mjs';
-import { scoreBugConfig, SCOREBUG_OPACITY } from '/lib/scorebug.mjs';
+import { scoreBugConfig, shouldAutoStartScoreBug, SCOREBUG_OPACITY } from '/lib/scorebug.mjs';
 import { isNativeShell } from '/lib/client-slate.mjs';
 import { tickerShown } from '/lib/chrome.mjs';
 import { getTicker } from './chyron.js';
@@ -155,6 +155,23 @@ function bugConfig() {
     overscanPx: currentOverscan(),
     devicePixelRatio: globalThis.devicePixelRatio || 1,
   });
+}
+
+/**
+ * Put the bug up as the app opens, when it is on and the grant is already
+ * there. Never asks for the permission itself (see shouldAutoStartScoreBug).
+ */
+export function autoStartScoreBug() {
+  const bridge = nativeBridge();
+  const go = shouldAutoStartScoreBug({
+    enabled: store.state.scoreBug,
+    native: isNativeShell(),
+    platform: bridge?.overlayPlatform?.(),
+    canDraw: bridge?.canDrawOverlays?.() === true,
+    active: bridge?.scoreBugActive?.() === true,
+  });
+  if (go) bridge?.startScoreBug?.(JSON.stringify(bugConfig()));
+  return go;
 }
 
 /** Move or dim a bug that is already up; the switch handles start and stop. */

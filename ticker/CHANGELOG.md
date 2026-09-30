@@ -18,6 +18,10 @@ The repo-root `CHANGELOG.md` is the icon pack's. Core Line keeps its own here.
   nothing is live it shows the next game within 12 hours ("Next · 7:00 PM").
   When nothing is on or coming up, it disappears rather than sit empty. It
   goes top centre, top left or top right, with its own brightness setting.
+  **On by default:** it comes up with Core Line whenever "Display over other
+  apps" is already allowed. The app never opens that permission screen on its
+  own; ticking the switch is how you grant it. Unticking the switch turns it
+  off for good, and Stop in the notification hides it until the next launch.
   It is built the way the VPN dot is: its own small window, which never takes
   focus or touches, so the remote works exactly as if it were not there. It
   runs on its own switch, independent of the crawl and the dot, and the

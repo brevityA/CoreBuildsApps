@@ -44,9 +44,12 @@ export const DEFAULTS = {
   preferredChannels: {},
   overlay: false,
   // The scoreboard bug: one game at a time in a box at the top of the screen,
-  // over other apps (Android). Shape only; whether it is up is asked of the
-  // shell, like the dot.
-  scoreBug: false,
+  // over other apps (Android). On by default (Brevity, 2026-09-30): the app
+  // puts it up as it opens whenever the overlay permission is already
+  // granted (shouldAutoStartScoreBug). Unticking the switch is what turns it
+  // off for good; Stop in the notification only takes it down until the next
+  // launch. Whether it is up right now is asked of the shell, like the dot.
+  scoreBug: true,
   scoreBugPosition: 'top_center',
   scoreBugOpacity: SCOREBUG_OPACITY.default,
   // The VPN status dot: an always-on-top indicator of whether this device's
