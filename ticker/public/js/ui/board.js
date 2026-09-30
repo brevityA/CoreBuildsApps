@@ -164,11 +164,16 @@ export function gameCard(ev) {
       ${gameTeams(ev)}
       <div class="card__foot">
         <span class="card__net">${esc(net || 'No channel listed')}</span>
-        ${more.length ? `<span class="card__more" title="${esc(more.join(', '))}">+${more.length}</span>` : ''}
+        ${more.length ? `<span class="card__more" title="${esc(more.join(', '))}" aria-label="${esc(moreChannelsLabel(more))}">+${more.length}</span>` : ''}
         <button class="fav-star ${favOn ? 'is-on' : ''}" data-action="toggle-card-fav" data-id="${esc(ev.id)}"
                 aria-label="${favOn ? 'Unfavorite' : 'Favorite'} these teams" aria-pressed="${favOn}">&#9733;</button>
       </div>
     </article>`;
+}
+
+/** What "+N" says aloud: a title tooltip is not reliably read, and a TV never hovers. */
+function moreChannelsLabel(more) {
+  return `${more.length} more ${more.length === 1 ? 'channel' : 'channels'}: ${more.join(', ')}`;
 }
 
 export function headlineCard(ev) {
@@ -182,7 +187,7 @@ export function headlineCard(ev) {
       <div class="gt"><span class="who">${esc(ev.headline || ev.rawTitle || 'Listing')}</span></div>
       <div class="card__foot">
         <span class="card__net">${esc((ev.channels || [])[0] || ev.feed || 'Listing')}</span>
-        ${(ev.channels || []).length > 1 ? `<span class="card__more">+${ev.channels.length - 1}</span>` : ''}
+        ${(ev.channels || []).length > 1 ? `<span class="card__more" title="${esc(ev.channels.slice(1).join(', '))}" aria-label="${esc(moreChannelsLabel(ev.channels.slice(1)))}">+${ev.channels.length - 1}</span>` : ''}
       </div>
     </article>`;
 }
