@@ -15,6 +15,10 @@ import { matchesFor, openMatchedChannel } from '../data/playlist.js';
 import { watchEvent, openWebForEvent } from '../data/watch.js';
 import { teamLine } from '/lib/team-rows.mjs';
 
+// Why a channel is listed: the guide says it airs this game; the network
+// name matches the broadcaster; or the team's name is in the channel name.
+const REASONS = { guide: 'GUIDE', network: 'NETWORK', team: 'TEAM' };
+
 let detailEvent = null;
 let detailMatches = [];
 let lastFocus = null;
@@ -73,13 +77,13 @@ export function detailHtml(ev, matches) {
       <button class="btn btn--ghost focusable" data-action="open-channels-settings">Set up in Settings → Channels</button>`;
   } else if (!matches.length) {
     channelBlock = `
-      <p class="hint">No channels matched ${esc((ev.channels || []).join(', ') || 'this game')}. Your provider may carry it under a different network name.</p>`;
+      <p class="hint">No channels matched ${esc((ev.channels || []).join(', ') || 'this game')}. Your provider may carry it under a different network name${store.state.guide.fetchedAt ? '' : ' — adding your TV guide in Settings → Channels finds more'}.</p>`;
   } else {
     channelBlock = matches.map((m, i) => `
       <button class="gd-row focusable" data-action="open-channel" data-mindex="${i}">
         <span class="gd-ch">${esc(m.name)}</span>
         ${m.group ? `<span class="gd-why">${esc(m.group)}</span>` : ''}
-        <span class="gd-why">${m.reason === 'network' ? 'NETWORK' : 'TEAM'}</span>
+        <span class="gd-why">${REASONS[m.reason] || 'TEAM'}</span>
         ${m.preferred ? '<span class="gd-star" title="Preferred channel">★</span>' : ''}
         <span class="gd-open">Open ▸</span>
       </button>`).join('');

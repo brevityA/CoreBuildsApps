@@ -106,4 +106,40 @@ class LineBridge(private val activity: MainActivity) {
     /** Turn the dot off. */
     @JavascriptInterface
     fun stopVpnDot(): Boolean = activity.stopVpnDot()
+
+    // ---- Playlist + TV guide import (Importer.kt) ----------------------------
+
+    /** Download and parse a playlist on the device. False when a job is running or the link is refused. */
+    @JavascriptInterface
+    fun startPlaylistImport(url: String): Boolean = activity.importer.startPlaylist(url)
+
+    /** Download and parse the TV guide from a JSON array of up to four links. */
+    @JavascriptInterface
+    fun startGuideImport(urlsJson: String): Boolean {
+        val urls = try {
+            val arr = org.json.JSONArray(urlsJson)
+            (0 until arr.length()).map { arr.optString(it) }.filter { it.isNotBlank() }
+        } catch (_: Exception) {
+            emptyList()
+        }
+        return activity.importer.startGuide(urls)
+    }
+
+    /** `{state, kind, message, count, at}` for the current or last import. */
+    @JavascriptInterface
+    fun importStatus(): String = activity.importer.status()
+
+    /** The last imported playlist as JSON, or "" when there is none. */
+    @JavascriptInterface
+    fun readPlaylist(): String = activity.importer.read(Importer.Kind.PLAYLIST)
+
+    /** The last imported guide as JSON, or "" when there is none. */
+    @JavascriptInterface
+    fun readGuide(): String = activity.importer.read(Importer.Kind.GUIDE)
+
+    /** Delete both imports. */
+    @JavascriptInterface
+    fun clearImports() {
+        activity.importer.clear()
+    }
 }

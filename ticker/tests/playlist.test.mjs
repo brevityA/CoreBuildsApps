@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 
 import {
-  parseM3U, stripDecorations, networkBugFor, qualityRank,
+  parseM3U, isVodUrl, stripDecorations, networkBugFor, qualityRank,
   buildChannelIndex, matchChannels, MAX_CHANNELS,
 } from '../lib/playlist.mjs';
 
@@ -22,7 +22,11 @@ test('parseM3U reads EXTINF name, tvg-name and group-title', () => {
   ].join('\n'));
   assert.equal(out.ok, true);
   assert.equal(out.count, 2);
-  assert.deepEqual(out.channels[0], { name: 'TSN4 HD', url: 'http://a.example/tsn4.m3u8', group: 'Canada' });
+  assert.deepEqual(out.channels[0], {
+    name: 'TSN4 HD', url: 'http://a.example/tsn4.m3u8', group: 'Canada', tvgId: 'tsn4', tvgName: 'TSN 4',
+  });
+  // Attributes belong to their own entry: the second had no tvg-id.
+  assert.equal(out.channels[1].tvgId, '');
   assert.equal(out.channels[1].group, 'Sports');
 });
 
@@ -169,4 +173,43 @@ test('buildChannelIndex is reusable across calls (import once, match per game)',
   const got = matchChannels(ev(['FOX']), chans, { index });
   assert.equal(got.length, 2);
   assert.equal(got[0].name, 'US| FOX UHD'); // quality tiebreak still applies
+});
+
+test('parseM3U reads the guide URLs the header advertises', () => {
+  const out = parseM3U([
+    '#EXTM3U url-tvg="https://epg.example/a.xml.gz,https://epg.example/b.xml" x-tvg-url="https://epg.example/a.xml.gz"',
+    '#EXTINF:-1,ESPN',
+    'http://a.example/espn',
+  ].join('\n'));
+  assert.deepEqual(out.guideUrls, ['https://epg.example/a.xml.gz', 'https://epg.example/b.xml']);
+  assert.deepEqual(parseM3U('#EXTM3U\n#EXTINF:-1,A\nhttp://a.example/a').guideUrls, []);
+  // Only http(s) — a guide URL is fetched, so anything else is dropped.
+  assert.deepEqual(parseM3U('#EXTM3U url-tvg="file:///etc/passwd"\n#EXTINF:-1,A\nhttp://a.example/a').guideUrls, []);
+});
+
+test('parseM3U skips movies and series before counting the cap', () => {
+  const vod = Array.from({ length: 50 }, (_, i) => `#EXTINF:-1 tvg-id="m${i}",Movie ${i}\nhttp://p.example/movie/u/p/${i}.mkv`).join('\n');
+  const out = parseM3U(`${vod}\n#EXTINF:-1,Show\nhttp://p.example/series/u/p/9.mp4\n#EXTINF:-1 tvg-id="espn.us",ESPN\nhttp://p.example/live/u/p/1.ts`, { maxChannels: 1 });
+  assert.equal(out.count, 1);
+  assert.equal(out.channels[0].name, 'ESPN');
+  assert.equal(out.channels[0].tvgId, 'espn.us');
+  assert.equal(out.vodSkipped, 51);
+});
+
+test('isVodUrl tells live streams from files', () => {
+  assert.equal(isVodUrl('http://p.example/movie/u/p/1.mkv'), true);
+  assert.equal(isVodUrl('http://p.example/series/u/p/2.mp4'), true);
+  assert.equal(isVodUrl('http://p.example/films/x.mp4'), true);
+  assert.equal(isVodUrl('http://p.example/live/u/p/1.ts'), false);
+  assert.equal(isVodUrl('http://p.example/u/p/123'), false);
+  assert.equal(isVodUrl('https://cdn.example/sports/espn/index.m3u8'), false);
+  assert.equal(isVodUrl('not a url'), false);
+});
+
+test('parseM3U: parity fixture matches the answer PlaylistParser.kt is held to', async () => {
+  const { readFileSync } = await import('node:fs');
+  const dir = new URL('./fixtures/', import.meta.url);
+  const got = parseM3U(readFileSync(new URL('playlist-parity.m3u', dir), 'utf8'));
+  const want = JSON.parse(readFileSync(new URL('playlist-parity.expected.json', dir), 'utf8'));
+  assert.deepEqual(got, want);
 });

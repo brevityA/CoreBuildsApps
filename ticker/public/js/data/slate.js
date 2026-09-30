@@ -30,7 +30,7 @@ const REFRESH_TIMEOUT_MS = 25_000;
 
 const SAMPLE_FEED = { url: `${location.origin}/feeds/sample-sports.xml`, label: 'Sample' };
 
-export const LEAGUE_ORDER = ['ALL', 'LIVE', 'RSS', ...LEAGUE_LABELS];
+export const LEAGUE_ORDER = ['ALL', 'LIVE', 'RSS', 'TV', ...LEAGUE_LABELS];
 
 /** sport-group id -> the set of league labels it covers. */
 export const SPORT_LABELS = Object.fromEntries(
@@ -162,6 +162,7 @@ export function matchesFilter(ev, filter) {
   if (!filter || filter === 'ALL') return true;
   if (filter === 'LIVE') return ev.status === 'live';
   if (filter === 'RSS') return ev.source === 'rss';
+  if (filter === 'TV') return ev.source === 'epg';
   if (filter.startsWith('sport:')) return SPORT_LABELS[filter]?.has(ev.league) ?? false;
   if (filter.startsWith('feed:')) return ev.feed === filter.slice(5);
   return ev.league === filter;

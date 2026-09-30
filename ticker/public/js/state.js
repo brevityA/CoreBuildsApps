@@ -35,6 +35,11 @@ export const DEFAULTS = {
   position: 'bottom',
   watchApps: {},
   playlist: { url: '', importedAt: 0, count: 0 },
+  // The TV guide (XMLTV), Android app only. `url` is one the viewer typed;
+  // empty means use the guide links the playlist itself names
+  // (`playlistUrls`, from its #EXTM3U url-tvg). Both carry the provider
+  // account, so the UI only ever shows their host (maskUrl in lib/guide.mjs).
+  guide: { url: '', playlistUrls: [], fetchedAt: 0, count: 0, error: '' },
   preferredChannels: {},
   overlay: false,
   // The VPN status dot: an always-on-top indicator of whether this device's
@@ -134,6 +139,19 @@ export function sanitizeState(raw) {
     count: clampInt(out.playlist.count, 0, 1_000_000, 0),
   };
 
+  if (!out.guide || typeof out.guide !== 'object' || Array.isArray(out.guide)) {
+    out.guide = { ...DEFAULTS.guide };
+  }
+  const httpUrl = (u) => typeof u === 'string' && /^https?:\/\//i.test(u.trim());
+  out.guide = {
+    url: httpUrl(out.guide.url) ? out.guide.url.trim().slice(0, 500) : '',
+    playlistUrls: (Array.isArray(out.guide.playlistUrls) ? out.guide.playlistUrls : [])
+      .filter(httpUrl).map((u) => u.trim().slice(0, 500)).slice(0, 4),
+    fetchedAt: Number.isFinite(Number(out.guide.fetchedAt)) ? Number(out.guide.fetchedAt) : 0,
+    count: clampInt(out.guide.count, 0, 1_000_000, 0),
+    error: typeof out.guide.error === 'string' ? out.guide.error.slice(0, 160) : '',
+  };
+
   // preferredChannels: network bug ("TSN4") → channel name ("US| TSN4 UHD").
   if (!out.preferredChannels || typeof out.preferredChannels !== 'object' || Array.isArray(out.preferredChannels)) {
     out.preferredChannels = {};
@@ -190,13 +208,24 @@ export function savePlaylistChannels(channels) {
   try {
     const clean = (Array.isArray(channels) ? channels : [])
       .filter((c) => c && typeof c.name === 'string' && typeof c.url === 'string')
-      .map((c) => ({ name: c.name.slice(0, 64), url: c.url.slice(0, 500), group: String(c.group || '').slice(0, 40) }))
+      .map(cleanChannel)
       .slice(0, 4000);
     localStorage.setItem(`${KEY}.channels`, JSON.stringify(clean));
     return true;
   } catch {
     return false;
   }
+}
+
+/** One stored channel. tvgId/tvgName are what the TV guide joins on. */
+export function cleanChannel(c) {
+  return {
+    name: String(c.name).slice(0, 64),
+    url: String(c.url).slice(0, 500),
+    group: String(c.group || '').slice(0, 40),
+    tvgId: String(c.tvgId || '').slice(0, 128),
+    tvgName: String(c.tvgName || '').slice(0, 64),
+  };
 }
 
 export function readPlaylistChannels() {
@@ -207,7 +236,7 @@ export function readPlaylistChannels() {
     if (!Array.isArray(parsed)) return [];
     return parsed
       .filter((c) => c && typeof c.name === 'string' && typeof c.url === 'string')
-      .map((c) => ({ name: String(c.name).slice(0, 64), url: String(c.url).slice(0, 500), group: String(c.group || '').slice(0, 40) }))
+      .map(cleanChannel)
       .slice(0, 4000);
   } catch {
     return [];

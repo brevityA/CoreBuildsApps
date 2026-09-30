@@ -17,6 +17,7 @@ import org.json.JSONObject
 class MainActivity : Activity() {
     private lateinit var webView: WebView
     private val pairServer = PairServer()
+    val importer by lazy { Importer(filesDir) }
 
     @SuppressLint("SetJavaScriptEnabled")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -343,6 +344,7 @@ class MainActivity : Activity() {
 
     override fun onDestroy() {
         stopPair()
+        importer.shutdown()
         webView.removeJavascriptInterface("CoreLineNative")
         webView.destroy()
         super.onDestroy()

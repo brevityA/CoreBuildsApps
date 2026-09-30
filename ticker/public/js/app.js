@@ -24,7 +24,8 @@ import {
   paintHealth, applyFavorites,
 } from './data/slate.js';
 import { startPair, stopPair } from './data/pairing.js';
-import { importPlaylist, clearPlaylist } from './data/playlist.js';
+import { importPlaylist, clearPlaylist, hydrateNativePlaylist } from './data/playlist.js';
+import { applyGuide, initGuide, refreshGuide, saveGuideUrl, clearGuideUrl } from './data/guide.js';
 import { watchEvent, loadInstalledApps } from './data/watch.js';
 import { addFeed } from './data/feeds.js';
 import { initToasts } from './ui/toast.js';
@@ -98,6 +99,9 @@ function wireBus() {
   initSettings();
 
   on('slate', () => {
+    // Fold the TV guide in before anyone reads the slate: it names channels
+    // the scoreboards left blank and adds the games they do not list.
+    store.events = applyGuide(store.events);
     // Alerts first: they compare the new slate against the previous one, so
     // they have to run before anything else re-reads the store.
     noteScores(store.events);
@@ -167,6 +171,9 @@ const ACTIONS = {
   },
   'playlist-import': importPlaylist,
   'playlist-clear': clearPlaylist,
+  'guide-refresh': () => refreshGuide(true),
+  'guide-save': saveGuideUrl,
+  'guide-clear-url': clearGuideUrl,
   'drawer-section': (el) => activateDrawerSection(el.dataset.section),
   'check-updates': () => emit('check-updates'),
   'install-update': () => emit('install-update'),
@@ -344,6 +351,13 @@ async function init() {
   render();
   startChyron();
   applyTicker(); // stops the loop startChyron began if the ticker is off
+
+  // The guide and the shell's copy of the playlist are read before the first
+  // slate lands, so that slate is already merged rather than the next one.
+  if (isNativeShell() && !globalThis.CORELINE_OVERLAY) {
+    hydrateNativePlaylist();
+    initGuide();
+  }
 
   await loadSlate();
   armRefreshTimer();

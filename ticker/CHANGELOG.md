@@ -10,6 +10,30 @@ The repo-root `CHANGELOG.md` is the icon pack's. Core Line keeps its own here.
 
 ### Added
 
+- **Your TV guide as a second listings source (Android app).** Supporter
+  feedback (2026-09-29): Sky, the BBC, CFL on TSN and ESPN's conference
+  networks carry games the scoreboards never list, and "if you do EPG it will
+  need a way to refresh that data". Settings → Channels → TV guide uses the
+  XMLTV link the playlist names (`url-tvg`), or one the viewer pastes. It
+  refreshes on open when 6 hours old or from another day, then every 6 hours,
+  plus a Refresh button; today and tomorrow only. Three jobs:
+  - *Match my channels:* a scoreboard game the guide lists gets the exact
+    channels airing it, shown first in Game Detail as `GUIDE` rows.
+  - *Fix bad names:* guide channels join the playlist by `tvg-id`, and by
+    cleaned name when the ids are missing or disagree.
+  - *Add missing games:* live events only the guide has get their own cards
+    and an "On TV" tab — as a matchup when the title parses ("Arsenal v
+    Chelsea", "Chiefs @ Bills"), otherwise as the title. Repeats, highlights,
+    news and studio shows are left out; at most 60 are added.
+
+  The importer (`Importer.kt`, `GuideParser.kt`) streams the file and keeps
+  only two days of sport — past 12,000 listings, the soonest. A generated
+  120 MB guide parses in 1.9 s with a ~44 MB heap delta, 300 MB in 3.5 s (JVM
+  on a build machine, not a TV box). Files that would exhaust a TV's memory —
+  entity declarations, a single line or text node the size of the file, a
+  gzip bomb — fail the import with a named reason instead. Judgement and
+  merging live in `lib/guide.mjs` (`tests/guide.test.mjs`).
+
 - **A TV-first home screen.** Supporter feedback (2026-09-29): "you can only
   see one event when opening", with a reference layout — settings on the left,
   a banner of what is live, pills for the sports, and everything upcoming and
@@ -28,6 +52,18 @@ The repo-root `CHANGELOG.md` is the icon pack's. Core Line keeps its own here.
   labels step aside on that panel. On a phone the rail becomes a row across
   the top and the banner shows marks and score. `tests/layout.test.mjs`
   checks that every id the app looks up still exists after the move.
+
+### Fixed
+
+- **Playlist import works on the TV.** The APK never served `/api/playlist`
+  (the WebView client answers 404 for it), and a provider playlist is past the
+  1.5 MB proxy cap anyway, so Import failed on every Android install. The shell
+  now downloads and parses it (`PlaylistParser.kt`, held to the same answer as
+  `parseM3U` by `tests/fixtures/playlist-parity.m3u`), skips movie and series
+  entries before the 4000-channel cap, and keeps `tvg-id`/`tvg-name`. A
+  provider link is shown only as its host after import, and no error message
+  quotes one — including the dev server's, which could pass a fetch error
+  through.
 
 ## [1.4.1] — 2026-09-30
 
