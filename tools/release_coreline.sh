@@ -126,7 +126,9 @@ cmd_release() {
 
   # Do not race CI: if core-line-apk.yml is already publishing this tag, stop.
   local running
-  running="$(gh run list --repo "$REPO" --workflow core-line-apk.yml --branch "$TAG" --json status --jq '[.[] | select(.status != "completed")] | length' 2>/dev/null || echo 0)"
+  # Fail closed: an unanswered query is not "nothing running".
+  running="$(gh run list --repo "$REPO" --workflow core-line-apk.yml --branch "$TAG" --json status --jq '[.[] | select(.status != "completed")] | length')" \
+    || fail "could not query core-line-apk.yml runs for $TAG; not publishing blind"
   [ "$running" = "0" ] || fail "core-line-apk.yml is still running for $TAG; let it finish (path A) or cancel it before publishing by hand"
   if gh release view "$TAG" --repo "$REPO" --json assets --jq '.assets[].name' 2>/dev/null | grep -qx "$APK_NAME"; then
     fail "$TAG already has $APK_NAME (CI published it). Skip to: $0 metadata"
