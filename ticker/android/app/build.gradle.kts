@@ -39,6 +39,15 @@ android {
                 signingConfig = signingConfigs.getByName("release")
             }
         }
+        // A debug APK is signed with the SDK's debug key, never the release
+        // key. Under the release package name Android refuses it over an
+        // installed release ("package conflicts with an existing package"),
+        // so it gets its own id and installs beside the real app, the way
+        // Core EQ's does. versionName stays unsuffixed: the device check
+        // compares it with this file.
+        debug {
+            applicationIdSuffix = ".debug"
+        }
     }
 
     compileOptions {
