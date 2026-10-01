@@ -59,6 +59,26 @@ git push origin <tag>
 
 The per-app workflow builds the stable APK asset and moves the matching floating tag/release. `suite-release.yml` covers the other four apps and can run as a signed dry-run from `workflow_dispatch`; publishing needs a tag push, because it names the release after the ref it ran on (see `docs/RELEASE-INFRA.md`). Icon Pack is not on its tag list — bare `v*` belongs to `build.yml`, which alone repoints the floating `iconpack` tag and ships `app-release.apk` plus the Glyphs companion.
 
+### Core Line: `tools/release_coreline.sh`
+
+Core Line has a script for the whole release, run from the repo root with `gh`
+logged in. It reads the version from Gradle, so do the version-bump PR first.
+
+```bash
+tools/release_coreline.sh check      # read-only: main on the new version, CI green, tag free
+tools/release_coreline.sh tag        # push coreline-v<version>; core-line-apk.yml publishes it
+tools/release_coreline.sh metadata   # once the APK is live: opens the updater-metadata PR
+```
+
+`tag` needs no secrets on your machine: `core-line-apk.yml` signs with the
+repo's `KEYSTORE_*` Actions secrets and moves the floating `coreline` release.
+`release` is the fallback for when CI cannot publish; it builds and signs
+locally and so needs your own copy of the key in `KEYSTORE_PATH`,
+`KEYSTORE_PASSWORD`, `KEY_ALIAS`, `KEY_PASSWORD`, and refuses to publish if the
+certificate differs from the APK already on `coreline`. `metadata` writes
+`Latestrelease/coreline-version.json` from the published APK's SHA-256 and opens
+a PR; merge it last, because installed copies act on it.
+
 ## Signing secrets
 
 Keystores and Play credentials never go in git. GitHub Actions secrets:
