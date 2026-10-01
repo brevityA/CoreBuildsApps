@@ -97,8 +97,11 @@ jobs:
           #!/usr/bin/env bash
           set -eu
 
-          PKG=dev.corebuilds.line
-          ACT="$PKG/.MainActivity"
+          # The debug build carries applicationIdSuffix ".debug"; its classes
+          # keep the dev.corebuilds.line namespace, so the activity is spelled
+          # out rather than relative to the package.
+          PKG=dev.corebuilds.line.debug
+          ACT="$PKG/dev.corebuilds.line.MainActivity"
           APK=$(ls "$GITHUB_WORKSPACE"/ticker/android/app/build/outputs/apk/debug/*.apk 2>/dev/null | head -1 || true)
           [ -n "$APK" ] || fail "no debug APK was produced — the assemble step did not run or did not write ticker/android/app/build/outputs/apk/debug/"
           [ -f "$APK" ] || fail "APK not found at $APK"
