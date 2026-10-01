@@ -8,6 +8,15 @@ The repo-root `CHANGELOG.md` is the icon pack's. Core Line keeps its own here.
 
 ## [Unreleased]
 
+### Fixed
+
+- **The floating ticker turns on again (Android).** Ticking Settings →
+  Overlays → Floating ticker did nothing: the app read the ticker's edge from
+  the page on the wrong thread, Android refused the call, and the overlay
+  service was never started. The edge is now kept natively and the ticker
+  starts at once. The switch also no longer flips back off with a "Display
+  over other apps" message when the permission is already granted.
+
 ## [1.4.2] — 2026-09-30
 
 ### Added
