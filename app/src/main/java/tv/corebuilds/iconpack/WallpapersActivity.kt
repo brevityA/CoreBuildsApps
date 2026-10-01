@@ -24,9 +24,12 @@ import androidx.recyclerview.widget.RecyclerView
  * auto-rotate the folder. The header Export button also starts with all visible
  * wallpapers selected if not already in selection mode.
  *
- * The twelve Deep Space loops ([LiveLoop]) ride the same grid behind the Live chip
- * with a badge; they preview like stills but set through the system live
- * picker, and selection skips them (video has no place in Pictures).
+ * The live loops ([LiveLoop]: Deep Space and Cinema) ride the same grid with
+ * a LIVE badge, under their own series chip and all together under the Live
+ * chip. They preview like stills and set through the system live picker; a
+ * bulk save sends them to Movies/CoreBuilds, where Projectivy's and Monet's
+ * video pickers find them - so Live, Export and Select all save every loop
+ * in one go instead of one preview at a time.
  *
  * TV-first D-pad flow: export/back → series chips → grid.
  */
@@ -43,7 +46,7 @@ class WallpapersActivity : TvActivity() {
 
     private val requestStorage =
         registerForActivityResult(ActivityResultContracts.RequestPermission()) { granted ->
-            if (granted) startExport(adapter.selectedItems().filter { !it.isLive }) else
+            if (granted) startExport(adapter.selectedItems()) else
                 toast(getString(R.string.wp_storage_permission_denied))
         }
 
@@ -178,6 +181,12 @@ class WallpapersActivity : TvActivity() {
         val present = all.map { it.series }.distinct()
         val labels = mutableListOf(getString(R.string.chip_all))
         val keys = mutableListOf<String?>(null)
+        // Every moving wallpaper in one place, whichever series it belongs
+        // to - the chip a TV user reaches for to save the loops in one go.
+        if (all.any { it.isLive }) {
+            labels += getString(R.string.chip_live)
+            keys += LIVE_KEY
+        }
         for (s in present) {
             labels += WallpaperCatalog.seriesLabel(s)
             keys += s
@@ -201,7 +210,11 @@ class WallpapersActivity : TvActivity() {
     }
 
     private fun applyFilter() {
-        val filtered = all.filter { series == null || it.series == series }
+        val filtered = when (series) {
+            null -> all
+            LIVE_KEY -> all.filter { it.isLive }
+            else -> all.filter { it.series == series }
+        }
         adapter.submit(filtered)
         if (!adapter.selectionMode) {
             count.text = getString(R.string.wp_count_fmt, all.size)
@@ -209,15 +222,14 @@ class WallpapersActivity : TvActivity() {
     }
 
     private fun beginExport(wallpapers: List<Wallpaper>) {
-        // Belt and braces with the adapter's selection guards: a live loop
-        // must never reach the stills exporter (its PNG validation would
-        // reject the MP4 as corrupt).
-        val stills = wallpapers.filter { !it.isLive }
-        if (stills.isEmpty()) return
-        beginExportStills(stills)
+        // Stills and loops travel together: WallpaperExporter sends each to
+        // its own shared folder (Pictures / Movies), so a mixed selection
+        // is one progress screen, not two.
+        if (wallpapers.isEmpty()) return
+        beginExportAll(wallpapers)
     }
 
-    private fun beginExportStills(wallpapers: List<Wallpaper>) {
+    private fun beginExportAll(wallpapers: List<Wallpaper>) {
         val perm = WallpaperSetter.storagePermission()
         if (perm != null && !WallpaperSetter.hasStoragePermission(this)) {
             requestStorage.launch(perm)
@@ -255,4 +267,9 @@ class WallpapersActivity : TvActivity() {
 
     private fun toast(msg: String) =
         android.widget.Toast.makeText(this, msg, android.widget.Toast.LENGTH_LONG).show()
+
+    companion object {
+        /** Chip key for "every live loop"; never a real series folder name. */
+        private const val LIVE_KEY = "__live__"
+    }
 }

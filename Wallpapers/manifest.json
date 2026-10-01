@@ -1,9 +1,9 @@
 {
   "collection": "Core Builds Wallpapers",
-  "version": "5.1",
+  "version": "5.2",
   "author": "brevityA",
   "brand_guide": "Core-Builds Brand Guide v1.0 (2026-08-11)",
-  "count": 96,
+  "count": 102,
   "wallpapers": [
     {
       "name": "01 Mesh Drift",
@@ -675,6 +675,48 @@
       "series": "series-9-deep-space",
       "url": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/series-9-deep-space/corebuilds-96-dark-side-moon.png",
       "thumb": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/thumbs/corebuilds-96-dark-side-moon.jpg",
+      "resolution": "3840x2160"
+    },
+    {
+      "name": "97 Marquee Lights",
+      "series": "series-10-cinema",
+      "url": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/series-10-cinema/corebuilds-97-marquee-lights.png",
+      "thumb": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/thumbs/corebuilds-97-marquee-lights.jpg",
+      "resolution": "3840x2160"
+    },
+    {
+      "name": "98 Velvet Curtain",
+      "series": "series-10-cinema",
+      "url": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/series-10-cinema/corebuilds-98-velvet-curtain.png",
+      "thumb": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/thumbs/corebuilds-98-velvet-curtain.jpg",
+      "resolution": "3840x2160"
+    },
+    {
+      "name": "99 Projector Beam",
+      "series": "series-10-cinema",
+      "url": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/series-10-cinema/corebuilds-99-projector-beam.png",
+      "thumb": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/thumbs/corebuilds-99-projector-beam.jpg",
+      "resolution": "3840x2160"
+    },
+    {
+      "name": "100 Neon Lounge",
+      "series": "series-10-cinema",
+      "url": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/series-10-cinema/corebuilds-100-neon-lounge.png",
+      "thumb": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/thumbs/corebuilds-100-neon-lounge.jpg",
+      "resolution": "3840x2160"
+    },
+    {
+      "name": "101 Late Rentals",
+      "series": "series-10-cinema",
+      "url": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/series-10-cinema/corebuilds-101-late-rentals.png",
+      "thumb": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/thumbs/corebuilds-101-late-rentals.jpg",
+      "resolution": "3840x2160"
+    },
+    {
+      "name": "102 Box Office",
+      "series": "series-10-cinema",
+      "url": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/series-10-cinema/corebuilds-102-box-office.png",
+      "thumb": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/thumbs/corebuilds-102-box-office.jpg",
       "resolution": "3840x2160"
     }
   ]

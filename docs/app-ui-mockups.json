@@ -9,12 +9,12 @@
       "structure": "9b4fb2668790e9f327edc1e7b554d1ce89289b841abc429fe8da82e385a7c97c"
     },
     "app-ui-catalogue-update.png": {
-      "bytes": 169153,
-      "structure": "c321f11007b42e57c5ae5c3acf99ac0255f226c4d79fb69a1b74a144a445958e"
+      "bytes": 169079,
+      "structure": "e1393cf2186bef42c025af9dddd1212aedeb00301eb109348c5df0bfe9167c5b"
     },
     "app-ui-catalogue.png": {
-      "bytes": 172994,
-      "structure": "da295984213bac09d5d917b000b27aebeaf1023dab71d2b68ea39eb4b8ff4170"
+      "bytes": 172931,
+      "structure": "6ae30bbc2747c8900c51ca89b822f0bc731c141e657b4e015fd97991c24dc1f2"
     },
     "app-ui-faq.png": {
       "bytes": 139797,
@@ -37,14 +37,14 @@
       "structure": "6d18a8e72e153d89882d782142a22a6835248a76379b7846720848f7fe2c533c"
     },
     "app-ui-wallpapers.png": {
-      "bytes": 306984,
-      "structure": "a49aaa1a1fdd90ed7193e78fae1bd31d2cc68e29b21094785bec035756c6843a"
+      "bytes": 306591,
+      "structure": "abe039dec93c64c5e19019beb5ab7de8cc745968580816676d4a3eb04a341360"
     }
   },
   "generator": "tools/build_app_ui_mockups.py",
   "inputs": {
     "app/src/main/assets/appfilter.xml": "4ca707ae936fbdae1dcca345ff4974e4b6300a7e53b66e6171f1aa29c00b2b9f",
-    "app/src/main/assets/manifest/wallpapers.json": "67c5a010561e1f1a6eeac664dac87e01026d556a471216a58480b22d71058960",
+    "app/src/main/assets/manifest/wallpapers.json": "36a91cdca6d6d1a6ee864f01b992f6ab8f2be159fa9bc6cc5219b88cb95b8719",
     "app/src/main/assets/version.json": "e572b8e7b760477f90af30b0b02a229908e76a872eb65dff3becdb780addd872",
     "app/src/main/res/layout/activity_about.xml": "24bf8847817c6c79e0733b25282913f12756331e851a461fdb5f96e43b08d04a",
     "app/src/main/res/layout/activity_auditor.xml": "3353f96d0932249a0ce841ca31ef98c65103132ec9b9efd1c8144e1fe2c34dca",
@@ -69,7 +69,7 @@
     "app/src/main/res/values/dimens.xml": "6eb9a59ef7176f3d7b38fa7a0aac9f789ee593415ccf279d5a5084c9ab4d7555",
     "app/src/main/res/values/icon_pack.xml": "feaf129f417f53c374c6f133336c3fcfc52dd48e92cde458f486b7ee8765d845",
     "app/src/main/res/values/issue_prefill.xml": "fd85418cdd4ccdc59f0f0793b32fc7d96e01f23f80f7f38a3e3d4d7699393ced",
-    "app/src/main/res/values/strings.xml": "8cb905adf18b2b10fd1288bc821f5cd150e8d0bf7d5c54586978db99e1ecc36c",
+    "app/src/main/res/values/strings.xml": "dc68c0e68d8b7765e5acddb0db98666a06a9c628c9dafc52dd127be6c1ee0041",
     "app/src/main/res/values/suite_hub.xml": "aff339700a9e6751b31ed189c2695e77ce18b80332f104f94e9235cdd05ef74a",
     "app/src/main/res/values/themes.xml": "ecac526951fe40b6c5c01df0ec36730d0e197fd9511862cf587a2143773b46be",
     "tools/build_app_ui_mockups.py": "35207f64a0177534112d4de41d5ae03be128a185f5d24138fc9ef845a56f70f3",
@@ -79,7 +79,7 @@
     "tools/fonts/Outfit-Bold.ttf": "04f7c9705153927058475d6c5e9f75b0a1036ec5f6f63ffb69df046191ea8933",
     "tools/fonts/Outfit-ExtraBold.ttf": "056e8cd5840cea4cfc355f672292f7de00d95f5a42bf9b7cd96d511ca8e2883e"
   },
-  "inputs_digest": "9e718583cba84c2aa454e7a92929c5ad46340340850a0a4f73f698a4909d8262",
+  "inputs_digest": "8adb51520b9d60dd8ca44b24a77320f56fbf7435e1ca7c534a9e7e9b4e8a9219",
   "metrics": {
     "mono-bold@24": 448.0,
     "mono-bold@32": 608.0,
@@ -96,5 +96,5 @@
     "count": 19,
     "digest": "8f69b152a034cfc9dd59991d024f820a178c143857a5a2d2239d62b5f487e12e"
   },
-  "renderer": "python 3.11.15, freetype 2.13.2, layout raqm, PIL 10.4.0, qrcode installed, fontTools 4.59.0, resvg_py 0.4.0"
+  "renderer": "python 3.11.2, freetype 2.13.2, layout basic, PIL 10.4.0, qrcode installed, fontTools 4.59.0, resvg_py 0.4.0"
 }

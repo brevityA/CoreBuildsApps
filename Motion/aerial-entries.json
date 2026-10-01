@@ -153,6 +153,48 @@
       "type": "aerial",
       "timeOfDay": "night",
       "url-1080-SDR": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Motion/live/coremotion-live-22-deep-space-dark-side-moon.mp4"
+    },
+    {
+      "id": "coremotion_live_23_cinema_marquee_lights",
+      "accessibilityLabel": "Marquee Lights \u2014 Core Motion \u00b7 Cinema by Core Builds",
+      "type": "aerial",
+      "timeOfDay": "night",
+      "url-1080-SDR": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Motion/live/coremotion-live-23-cinema-marquee-lights.mp4"
+    },
+    {
+      "id": "coremotion_live_24_cinema_velvet_curtain",
+      "accessibilityLabel": "Velvet Curtain \u2014 Core Motion \u00b7 Cinema by Core Builds",
+      "type": "aerial",
+      "timeOfDay": "night",
+      "url-1080-SDR": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Motion/live/coremotion-live-24-cinema-velvet-curtain.mp4"
+    },
+    {
+      "id": "coremotion_live_25_cinema_projector_beam",
+      "accessibilityLabel": "Projector Beam \u2014 Core Motion \u00b7 Cinema by Core Builds",
+      "type": "aerial",
+      "timeOfDay": "night",
+      "url-1080-SDR": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Motion/live/coremotion-live-25-cinema-projector-beam.mp4"
+    },
+    {
+      "id": "coremotion_live_26_cinema_neon_lounge",
+      "accessibilityLabel": "Neon Lounge \u2014 Core Motion \u00b7 Cinema by Core Builds",
+      "type": "aerial",
+      "timeOfDay": "night",
+      "url-1080-SDR": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Motion/live/coremotion-live-26-cinema-neon-lounge.mp4"
+    },
+    {
+      "id": "coremotion_live_27_cinema_late_rentals",
+      "accessibilityLabel": "Late Rentals \u2014 Core Motion \u00b7 Cinema by Core Builds",
+      "type": "aerial",
+      "timeOfDay": "night",
+      "url-1080-SDR": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Motion/live/coremotion-live-27-cinema-late-rentals.mp4"
+    },
+    {
+      "id": "coremotion_live_28_cinema_box_office",
+      "accessibilityLabel": "Box Office \u2014 Core Motion \u00b7 Cinema by Core Builds",
+      "type": "aerial",
+      "timeOfDay": "night",
+      "url-1080-SDR": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Motion/live/coremotion-live-28-cinema-box-office.mp4"
     }
   ]
 }
