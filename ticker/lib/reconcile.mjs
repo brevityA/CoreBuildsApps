@@ -45,14 +45,17 @@ export function reconcile(host, items, cache, make) {
     }
   }
 
+  // Drop the stale nodes first. Left in place, a card that disappeared from
+  // the top would push every kept card after it one slot out of position,
+  // and each of those would be moved (detached and re-inserted) below.
+  const wanted = new Set(nodes);
+  for (const child of [...host.children]) {
+    if (!wanted.has(child)) host.removeChild(child);
+  }
   // Place each node at its index, moving only the ones out of place.
   for (let i = 0; i < nodes.length; i += 1) {
     const at = host.children[i] || null;
     if (at !== nodes[i]) host.insertBefore(nodes[i], at);
-  }
-  // Whatever is left after the last kept or created node is stale.
-  while (host.children.length > nodes.length) {
-    host.removeChild(host.children[host.children.length - 1]);
   }
   return { cache: next, created, kept };
 }
