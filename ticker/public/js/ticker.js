@@ -136,7 +136,13 @@ export class Ticker {
       this._anim.cancel();
       this._anim = null;
     }
-    if (!(this.seqWidth > 0) || !(this.speed > 0)) return;
+    if (!(this.seqWidth > 0) || !(this.speed > 0)) {
+      // Nothing to play (speed 0, or an empty strip): hold the ribbon where
+      // it was, as stop() does, rather than letting the cancelled animation
+      // snap it back to the start.
+      this.track.style.transform = `translate3d(${-this.offset}px,0,0)`;
+      return;
+    }
     const duration = (this.seqWidth / this.speed) * 1000;
     this._animWidth = this.seqWidth;
     this._animSpeed = this.speed;

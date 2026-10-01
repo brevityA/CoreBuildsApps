@@ -178,6 +178,15 @@ test('compositor: stop holds the ribbon in place; restart resumes there', () => 
   assert.equal(live()[0].currentTime, 3_000);
 });
 
+test('compositor: setSpeed(0) holds the ribbon where it is', () => {
+  const { t, track, live } = waapiTicker({ seqW: 800, speed: 50 });
+  t.start();
+  live()[0].currentTime = 4_000; // 200 px in
+  t.setSpeed(0);
+  assert.equal(live().length, 0, 'nothing left playing');
+  assert.equal(track.style.transform, 'translate3d(-200px,0,0)', 'snapped back to the start');
+});
+
 test('compositor: an empty strip plays nothing until it has a width', () => {
   const { t, seqA, live } = waapiTicker({ seqW: 0, maskW: 0 });
   t.start();
