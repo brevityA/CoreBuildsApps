@@ -90,3 +90,99 @@ test('background-tab time jumps are clamped (no teleport after resume)', () => {
   t._tick(60_000); // 60 s jump clamped to 0.1 s → +5 px, not +3000 px
   assert.equal(t.offset, 5);
 });
+
+// ---- Compositor path (Web Animations API) ---------------------------------
+// The WebView runs the crawl as one infinite transform animation, so the main
+// thread does nothing per frame. A stand-in `animate()` records what was asked
+// for; its `currentTime` is what a real animation would report.
+
+function waapiTicker({ seqW = 800, maskW = 500, speed = 50 } = {}) {
+  const made = [];
+  const track = {
+    style: {},
+    animate(keyframes, options) {
+      const anim = { keyframes, options, currentTime: 0, cancelled: false, cancel() { this.cancelled = true; } };
+      made.push(anim);
+      return anim;
+    },
+  };
+  const seqA = fakeSeq(seqW);
+  const t = new Ticker({ track, seqA, seqB: fakeSeq(seqW), mask: { clientWidth: maskW }, speed });
+  return { t, track, seqA, made, live: () => made.filter((a) => !a.cancelled) };
+}
+
+test('compositor: start builds one linear infinite animation over one copy', () => {
+  const { t, live } = waapiTicker({ seqW: 800, speed: 50 });
+  t.start();
+  const [anim] = live();
+  assert.equal(live().length, 1);
+  assert.equal(anim.options.duration, 16_000, '800 px at 50 px/s');
+  assert.equal(anim.options.iterations, Infinity);
+  assert.equal(anim.options.easing, 'linear');
+  assert.equal(anim.keyframes.at(-1).transform, 'translate3d(-800px,0,0)');
+});
+
+test('compositor: no per-frame main-thread loop', () => {
+  let frames = 0;
+  const saved = globalThis.requestAnimationFrame;
+  globalThis.requestAnimationFrame = () => { frames += 1; return 1; };
+  try {
+    const { t } = waapiTicker();
+    t.start();
+    assert.equal(frames, 0);
+  } finally {
+    globalThis.requestAnimationFrame = saved;
+  }
+});
+
+test('compositor: progress reads the animation, wrapping at one copy', () => {
+  const { t, live } = waapiTicker({ seqW: 800, speed: 50 });
+  t.start();
+  live()[0].currentTime = 2_000; // 2 s at 50 px/s
+  assert.equal(t.progress(), 100);
+  live()[0].currentTime = 17_000; // one full copy (16 s) plus 1 s
+  assert.equal(t.progress(), 50);
+});
+
+test('compositor: a width change rebuilds from the same position (no teleport)', () => {
+  const { t, seqA, live } = waapiTicker({ seqW: 800, speed: 50 });
+  t.start();
+  live()[0].currentTime = 4_000; // 200 px in
+  seqA.getBoundingClientRect = () => ({ width: 1000 });
+  t.measure();
+  const [anim] = live();
+  assert.equal(live().length, 1, 'the old animation is cancelled');
+  assert.equal(anim.options.duration, 20_000, '1000 px at 50 px/s');
+  assert.equal(anim.currentTime, 4_000, 'still 200 px in');
+  assert.equal(t.progress(), 200);
+});
+
+test('compositor: a speed change keeps position and changes px/s', () => {
+  const { t, live } = waapiTicker({ seqW: 800, speed: 50 });
+  t.start();
+  live()[0].currentTime = 4_000; // 200 px
+  t.setSpeed(100);
+  const [anim] = live();
+  assert.equal(anim.options.duration, 8_000);
+  assert.equal(anim.currentTime, 2_000, '200 px at the new speed');
+});
+
+test('compositor: stop holds the ribbon in place; restart resumes there', () => {
+  const { t, track, live } = waapiTicker({ seqW: 800, speed: 50 });
+  t.start();
+  live()[0].currentTime = 3_000; // 150 px
+  t.stop();
+  assert.equal(live().length, 0);
+  assert.equal(track.style.transform, 'translate3d(-150px,0,0)');
+  t.start();
+  assert.equal(live()[0].currentTime, 3_000);
+});
+
+test('compositor: an empty strip plays nothing until it has a width', () => {
+  const { t, seqA, live } = waapiTicker({ seqW: 0, maskW: 0 });
+  t.start();
+  assert.equal(live().length, 0);
+  seqA.getBoundingClientRect = () => ({ width: 600 });
+  t.measure();
+  assert.equal(live().length, 1);
+});
