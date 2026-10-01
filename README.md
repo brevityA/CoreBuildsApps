@@ -17,7 +17,7 @@
 <!-- suite-stamp:start -->
 > | App | Current | What it does | Downloader | Release tag |
 > |---|---:|---|---|---|
-> | **[Core Builds Icon Pack](#-core-builds-icon-pack)** | `v1.9.8` | 972 transparent icons + 96 wallpapers for Projectivy Launcher | `5270601` | [`v*` / `iconpack`](../../releases) |
+> | **[Core Builds Icon Pack](#-core-builds-icon-pack)** | `v1.9.8` | 972 transparent icons + 102 wallpapers for Projectivy Launcher | `5270601` | [`v*` / `iconpack`](../../releases) |
 > | **[Core Line](#-core-line)** | `v1.4.2` | Sports scores & channel RSS ticker (chyron) | `7375676` | [`coreline-v*` / `coreline`](../../releases) |
 > | **[Core Shift](#-core-shift)** | `v2.3.5` | Android TV screensaver + motion wallpaper browser | `8829421` | [`shift-v*` / `shift`](../../releases) |
 > | **[Core Motion](#-core-motion)** | `v1.0.0` | Projectivy wallpaper-provider plugin for Core Motion loops | `[USER TO SUPPLY]` | [`motion-v*` / `motion`](../../releases) |
@@ -65,9 +65,9 @@ Full table with every mapped component: [**docs/IconPackList.md**](docs/IconPack
 
 ### Wallpapers
 
-96 curated wallpapers in seven series — browse in the Wallpapers tab, preview full-screen, **Set** as device wallpaper or **Save** to `Pictures/CoreBuilds`. Multi-select export bulk-saves to a folder any launcher can rotate from. Thumbnails ship in the APK; full images download on demand from GitHub.
+102 curated wallpapers in eight series — browse in the Wallpapers tab, preview full-screen, **Set** as device wallpaper or **Save** to `Pictures/CoreBuilds`. Multi-select export bulk-saves to a folder any launcher can rotate from. Thumbnails ship in the APK; full images download on demand from GitHub.
 
-All twelve Series 9 walls are also **live wallpapers**: each one's loop rides the same grid behind a LIVE badge, and **Set** hands you to the system live picker pre-pointed at Core Builds Live — a muted, looping `MediaPlayer` engine that pauses off-screen and shows the bundled frame until the clip has downloaded once. Motion loops stay out of bulk export (video has no place in the Pictures rotation folder); on Monet-as-HOME the action saves the MP4 to `Movies/CoreBuilds` instead, where Monet's own video picker finds it.
+All twelve Series 9 walls and all six Series 10 walls are also **live wallpapers**: each one's loop rides the same grid behind a LIVE badge, and **Set** hands you to the system live picker pre-pointed at Core Builds Live — a muted, looping `MediaPlayer` engine that pauses off-screen and shows the bundled frame until the clip has downloaded once. Loops sit under their own **Live** chip and bulk-export alongside stills: loops save as MP4 to `Movies/CoreBuilds`, where video-wallpaper pickers such as Monet's find them, and stills to `Pictures/CoreBuilds` for launcher rotation. On Monet-as-HOME, **Set** saves the MP4 to `Movies/CoreBuilds` instead.
 
 | Series | Walls | Theme |
 |---|---|---|
@@ -78,6 +78,7 @@ All twelve Series 9 walls are also **live wallpapers**: each one's loop rides th
 | 7 · Retrowave | 12 | Gradient suns, perspective grids, chrome |
 | 8 · AMOLED | 12 | Exact-black minimalism |
 | 9 · Deep Space | 85–96 | Event horizon, nebulae, ringed planet, comets, novae |
+| 10 · Cinema | 97–102 | Neon cinema nights: marquee, velvet curtain, projector beam, lounge, late rentals, box office |
 
 <div align="center"><img src="docs/deep-space-wallpapers.png" alt="Deep Space series" width="760"></div>
 

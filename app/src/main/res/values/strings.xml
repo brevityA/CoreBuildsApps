@@ -32,6 +32,7 @@
     <string name="empty_clear_filter">Show all %1$d icons</string>
     <string name="search_hint">Find an app by name</string>
     <string name="chip_all">All</string>
+    <string name="chip_live">Live</string>
     <string name="chip_brandmarks">Brandmarks</string>
     <string name="icon_selected_fmt">%1$s · %2$s. Assign it from the launcher icon picker if it did not auto-apply.</string>
     <string name="picker_hint">Tap an icon to assign it to the app.</string>
@@ -148,6 +149,8 @@
     <string name="wp_export_title">Exporting wallpapers</string>
     <string name="wp_export_progress_fmt">%1$d of %2$d · %3$s</string>
     <string name="wp_export_done_fmt">%1$d saved to Pictures/CoreBuilds</string>
+    <string name="wp_export_loops_done_fmt">%1$d loops saved to Movies/CoreBuilds</string>
+    <string name="wp_after_export_hint_live">Loops are in Movies/CoreBuilds. Pick one in your launcher\'s video wallpaper setting (Monet: Settings → Background).</string>
     <string name="wp_export_skipped_fmt">%1$d already there</string>
     <string name="wp_export_failed_fmt">%1$d failed — tap to retry</string>
     <string name="wp_retry_failed">Retry failed</string>
@@ -168,7 +171,7 @@
     <string name="wp_live_download_needed">Downloading the loop first…</string>
     <string name="wp_live_monet_hint">Monet plays video from its own library — saved to Movies/CoreBuilds, pick it in Monet Settings → Background.</string>
     <string name="live_wallpaper_label">Core Builds Live</string>
-    <string name="live_wallpaper_desc">The Deep Space motion loops, playing on the home screen.</string>
+    <string name="live_wallpaper_desc">The Deep Space and Cinema motion loops, playing on the home screen.</string>
 
     <!-- Shared -->
     <string name="action_back">Back</string>

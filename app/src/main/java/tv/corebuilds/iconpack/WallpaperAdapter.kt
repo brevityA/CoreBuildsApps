@@ -69,13 +69,8 @@ class WallpaperAdapter(
             if (selectionMode) toggle(item) else onSelect(item)
         }
         holder.itemView.setOnLongClickListener {
-            // Live loops cannot be bulk-exported (video has no place in the
-            // Pictures rotation folder), so a long-press previews instead of
-            // selecting — a press that silently did nothing would read broken.
-            if (item.isLive) {
-                onSelect(item)
-                return@setOnLongClickListener true
-            }
+            // Loops select like stills: a bulk save sends them to
+            // Movies/CoreBuilds, where Projectivy and Monet pick up video.
             if (!selectionMode) enterSelectionMode()
             toggle(item)
             true
@@ -150,7 +145,6 @@ class WallpaperAdapter(
     }
 
     fun toggle(item: Wallpaper) {
-        if (item.isLive) return
         if (!selectionMode) enterSelectionMode()
         if (!selected.add(item.cacheName)) selected.remove(item.cacheName)
         notifyItemChanged(
@@ -160,7 +154,7 @@ class WallpaperAdapter(
     }
 
     fun selectAll() {
-        selected.addAll(items.filter { !it.isLive }.map { it.cacheName })
+        selected.addAll(items.map { it.cacheName })
         notifyItemRangeChanged(0, itemCount, SELECTION_PAYLOAD)
     }
 

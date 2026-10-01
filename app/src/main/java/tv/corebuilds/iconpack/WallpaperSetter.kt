@@ -286,6 +286,34 @@ object WallpaperSetter {
         }
     }
 
+    /**
+     * [alreadyExported] for a loop saved to Movies/CoreBuilds. Only that
+     * folder counts: a same-named, same-sized video elsewhere must not skip
+     * the copy. MediaStore stores RELATIVE_PATH with a trailing slash, so the
+     * match is `Movies/CoreBuilds/%` - the slash keeps a sibling folder such
+     * as `Movies/CoreBuildsBackup/` out.
+     */
+    fun alreadyExportedVideo(context: Context, displayName: String, sizeBytes: Long): Boolean {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) return false
+        return try {
+            val proj = arrayOf(MediaStore.Video.Media._ID)
+            context.contentResolver.query(
+                MediaStore.Video.Media.EXTERNAL_CONTENT_URI,
+                proj,
+                "${MediaStore.Video.Media.DISPLAY_NAME}=? AND ${MediaStore.Video.Media.SIZE}=? " +
+                    "AND ${MediaStore.Video.Media.RELATIVE_PATH} LIKE ?",
+                arrayOf(
+                    displayName,
+                    sizeBytes.toString(),
+                    "${Environment.DIRECTORY_MOVIES}/CoreBuilds/%"
+                ),
+                null
+            )?.use { it.count > 0 } == true
+        } catch (e: Exception) {
+            false
+        }
+    }
+
     // ---- Monet Launcher ------------------------------------------------------
 
     /** Monet Launcher package (Klevico). */

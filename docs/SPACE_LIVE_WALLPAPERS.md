@@ -46,8 +46,8 @@ the committed 4K stills, so each loop *is* its wall, moving:
   dozen pixels on a 1.1× working canvas.
 
 Every motion completes a whole number of cycles in the 20 s clip, so the last
-frame leads straight back into the first: no seam. 30 fps, silent,
-`+faststart`, about 1.5–3.5 MB each.
+frame leads straight back into the first: no seam. 60 fps (30 until 1.9.6:
+the drift and twinkle stepped visibly on a large TV), silent, `+faststart`.
 
 1.9.4 shipped three abstract lavfi clips here (Nebula Drift, Event Horizon,
 Ion Storm) that only borrowed wall names. 1.9.5 replaced them with these.
@@ -56,6 +56,19 @@ They ride the existing plumbing: `tools/build_motion_feed.py` lists them in
 `Motion/live-feed.json` after the ten procedural clips (location
 `Core Motion · Deep Space`), and `build_overflight_feed.py`,
 `build_aerial_feed.py` and Core Shift's bundled fallback follow that feed.
+
+## The Cinema set (clips 23–28)
+
+`series-10-cinema` is the lounge-room half: six night-time cinema scenes in
+neon and marquee light (Marquee Lights, Velvet Curtain, Projector Beam, Neon
+Lounge, Late Rentals, Box Office). Where Deep Space animates a finished still,
+`tools/build_cinema_wallpapers.py` draws each scene once as layers — facade,
+bulb groups, tubes, beam — and animates it by weighting those layers: marquee
+bulbs chase in three phases, tubes stutter at fixed moments, dust drifts
+through the projector beam, rain falls past the rental shop. Every motion is a
+whole number of cycles per 20 s, so the loop is seamless, and the 4K still is
+the same drawing at t = 0. 60 fps, location `Core Motion · Cinema` in the
+feed.
 
 ## What plays where
 
@@ -67,6 +80,7 @@ They ride the existing plumbing: `tools/build_motion_feed.py` lists them in
 | Monet screensaver | same Aerial bridge, or local `Movies/CoreBuilds` | MP4 loops |
 | Icon-pack Wallpapers tab | bundled manifest + thumbs, raw PNG on demand | stills |
 | Any launcher rotation folder | multi-export to `Pictures/CoreBuilds` | stills |
+| Any launcher's video picker | multi-export to `Movies/CoreBuilds` | MP4 loops |
 
 The stills and the loops are companions, not duplicates: the stills are
 detailed 4K compositions for static wallpaper slots; the loops are slow
@@ -76,7 +90,7 @@ ambient motion for video-wallpaper slots. Same palette, same night.
 
 `LiveWallpaperService` (`app/src/main/java/tv/corebuilds/iconpack/`) is the
 first option the list below used to weigh, shipped: `MediaPlayer` onto the
-engine's surface, playing clips 11–22. The pack declares the service with
+engine's surface, playing clips 11–28. The pack declares the service with
 `android.permission.BIND_WALLPAPER`, so only the system binds it — there is
 no direct-apply for a live wallpaper, so the picker *is* the apply. Set on a
 loop in the preview screen stores the loop id in `Prefs` and opens
@@ -98,11 +112,13 @@ What it took, and what it deliberately did not:
   check. The cache is persistent because the system may reclaim the cache
   directory at any time, and a wallpaper that quietly stopped playing is
   worse than one that never started.
-- **Loops stay out of the stills export path.** Video has no place in the
-  Pictures rotation folder, so the grid badges them LIVE, a long-press
-  previews instead of selecting, and both export paths filter `isLive` out.
-  On Monet-as-HOME the primary action saves the MP4 to `Movies/CoreBuilds`
-  instead, where Monet's own video picker finds it.
+- **Loops bulk-save to Movies, stills to Pictures.** Saving loops one
+  preview at a time was the 1.9.5 complaint. Loops now select like stills
+  (long-press, Select all, or Export on the **Live** chip, which gathers
+  every loop), and `WallpaperExporter` sends each MP4 through
+  `LiveLoopDownloader` into `Movies/CoreBuilds` — where Monet's and other
+  launchers' video pickers look — while stills still go to
+  `Pictures/CoreBuilds`. A loop never reaches the stills PNG path.
 - **No new permission, no new dependency.** The engine is framework
   `WallpaperService` + `MediaPlayer`; the module still declares exactly
   appcompat, core-ktx and recyclerview.

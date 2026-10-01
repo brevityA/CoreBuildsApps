@@ -7,7 +7,7 @@ Plain unittest over the repo tree, no Android SDK (mirrors
 tests/test_wallpaper_export.py). Guards the wiring that would otherwise rot
 silently:
 
-  * the loop catalogue is the twelve Deep Space loops, each with a real
+  * the loop catalogue is the twelve Deep Space and six Cinema loops, each with a real
     MP4 in Motion/live/ and a bundled still frame for the grid and the engine
     fallback - a loop with no file is a 404 in the app, a frame with no bundle
     is a blank home screen before the first download
@@ -68,18 +68,22 @@ class LoopCatalogueTests(unittest.TestCase):
         cls.titles = re.findall(r'title = "([^"]+)"', cls.loops_body)
         cls.files = re.findall(r'fileName = "([^"]+)"', cls.loops_body)
 
-    def test_the_loops_are_exactly_the_deep_space_set(self):
-        # One loop per series-9 wall, in wall order, and nothing else: the
-        # app's list is the feed's Deep Space entries, so a loop the feed
-        # drops (or adds) cannot linger (or go missing) in the picker.
+    def test_the_loops_are_exactly_the_deep_space_and_cinema_sets(self):
+        # One loop per series-9 and series-10 wall, in wall order, and nothing
+        # else: the app's list is the feed's Deep Space then Cinema entries,
+        # so a loop the feed drops (or adds) cannot linger (or go missing) in
+        # the picker.
         feed = json.loads(read(MOTION_FEED))
         deep = [e["url_1080p"].rsplit("/", 1)[-1] for e in feed
                 if "Deep Space" in e.get("location", "")]
+        cinema = [e["url_1080p"].rsplit("/", 1)[-1] for e in feed
+                  if "Cinema" in e.get("location", "")]
         self.assertEqual(len(deep), 12, "live-feed.json should list twelve Deep Space loops")
-        self.assertEqual(self.files, deep)
-        self.assertEqual(len(re.findall(r"\bLoop\(", self.loops_body)), 12, "twelve Loop entries")
-        self.assertEqual(len(self.ids), 12)
-        self.assertEqual(len(set(self.ids)), 12, "loop ids must be unique")
+        self.assertEqual(len(cinema), 6, "live-feed.json should list six Cinema loops")
+        self.assertEqual(self.files, deep + cinema)
+        self.assertEqual(len(re.findall(r"\bLoop\(", self.loops_body)), 18, "eighteen Loop entries")
+        self.assertEqual(len(self.ids), 18)
+        self.assertEqual(len(set(self.ids)), 18, "loop ids must be unique")
 
     def test_no_stale_bundled_frames(self):
         # Every bundled frame belongs to a listed loop (the 1.9.4 placeholder
@@ -139,11 +143,18 @@ class LoopCatalogueTests(unittest.TestCase):
             self.assertIn(name, by_file, f"{name} is not in live-feed.json")
             self.assertEqual(title, by_file[name], f"{name} is titled differently in the feed")
 
-    def test_loops_ride_the_deep_space_series(self):
-        # They are the moving half of series 9, so they appear under that chip
-        # rather than in a series of their own that splits one wallpaper.
+    def test_loops_ride_their_own_still_series(self):
+        # Each loop is the moving half of a still series, so it appears under
+        # that chip (and under Live) rather than in a series that splits one
+        # wallpaper's two forms.
         self.assertIn('const val SERIES = "series-9-deep-space"', self.src)
-        self.assertIn("series = SERIES", self.src)
+        self.assertIn('const val CINEMA_SERIES = "series-10-cinema"', self.src)
+        self.assertIn("val series: String = LiveLoop.SERIES", self.src)
+        self.assertEqual(self.loops_body.count("series = CINEMA_SERIES"), 6)
+        self.assertIn("series = loop.series", self.src)
+        manifest = json.loads(read(ROOT / "Wallpapers" / "manifest.json"))
+        series = {w["series"] for w in manifest["wallpapers"]}
+        self.assertIn("series-10-cinema", series, "the Cinema stills must exist for their chip")
 
     def test_as_wallpapers_marks_them_live(self):
         self.assertIn("isLive = true", self.src)
@@ -319,28 +330,40 @@ class BrowserIntegrationTests(unittest.TestCase):
         src = kt("WallpapersActivity.kt")
         self.assertIn("WallpaperCatalog.load(this) + LiveLoop.asWallpapers()", src)
 
-    def test_export_filters_live_out_of_both_paths(self):
-        src = kt("WallpapersActivity.kt")
-        self.assertIn("adapter.selectedItems().filter { !it.isLive }", src)
-        self.assertIn("val stills = wallpapers.filter { !it.isLive }", src)
-        self.assertIn("if (stills.isEmpty()) return", src)
+    def test_bulk_save_routes_loops_to_movies(self):
+        # A loop is saved like a still, but as video into Movies/CoreBuilds
+        # through the loop downloader - never through the stills exporter's
+        # PNG path, which would reject the MP4.
+        src = kt("WallpaperExporter.kt")
+        self.assertIn("if (wp.isLive) {", src)
+        self.assertIn("LiveLoopDownloader.fetch(context, loop)", src)
+        self.assertIn("WallpaperSetter.copyFileToMovies(context, file, loop.fileName)", src)
+        self.assertIn("WallpaperSetter.alreadyExportedVideo(", src)
+        act = kt("WallpapersActivity.kt")
+        self.assertIn("startExport(adapter.selectedItems())", act)
 
     def test_adapter_badges_and_describes_live_tiles(self):
         src = kt("WallpaperAdapter.kt")
         self.assertIn("holder.badge.visibility = if (item.isLive)", src)
         self.assertIn("R.string.wp_live_spoken", src)
 
-    def test_adapter_keeps_live_out_of_selection(self):
+    def test_loops_are_selectable_for_bulk_save(self):
+        # Saving loops one preview at a time was the complaint: Select all and
+        # long-press take loops like stills.
         src = kt("WallpaperAdapter.kt")
-        self.assertIn("if (item.isLive) return", src)
-        self.assertIn("items.filter { !it.isLive }.map { it.cacheName }", src)
+        self.assertNotIn("if (item.isLive) return", src)
+        self.assertIn("selected.addAll(items.map { it.cacheName })", src)
 
-    def test_long_press_on_a_loop_previews_it(self):
-        # A long-press that did nothing would read broken, and a loop in the
-        # Pictures rotation folder would break the rotation.
-        src = kt("WallpaperAdapter.kt")
-        self.assertIn("if (item.isLive) {", src)
-        self.assertIn("onSelect(item)", src)
+    def test_live_chip_gathers_every_loop(self):
+        src = kt("WallpapersActivity.kt")
+        self.assertIn("R.string.chip_live", src)
+        self.assertIn("LIVE_KEY -> all.filter { it.isLive }", src)
+        self.assertRegex(read(STRINGS), r'<string name="chip_live">Live</string>')
+
+    def test_receipt_names_the_movies_folder(self):
+        src = kt("ExportProgressActivity.kt")
+        self.assertIn("R.string.wp_export_loops_done_fmt", src)
+        self.assertIn("R.string.wp_after_export_hint_live", src)
 
     def test_preview_hides_save_and_switches_the_label(self):
         src = kt("WallpaperPreviewActivity.kt")
