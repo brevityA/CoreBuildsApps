@@ -8,6 +8,8 @@ The repo-root `CHANGELOG.md` is the icon pack's. Core Line keeps its own here.
 
 ## [Unreleased]
 
+## [1.4.3] — 2026-10-01
+
 ### Fixed
 
 - **The floating ticker turns on again (Android).** Ticking Settings →

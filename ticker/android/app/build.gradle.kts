@@ -11,8 +11,8 @@ android {
         applicationId = "dev.corebuilds.line"
         minSdk = 24
         targetSdk = 34
-        versionCode = 10
-        versionName = "1.4.2"
+        versionCode = 11
+        versionName = "1.4.3"
     }
 
     signingConfigs {
