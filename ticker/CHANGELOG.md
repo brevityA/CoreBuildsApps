@@ -22,6 +22,15 @@ The repo-root `CHANGELOG.md` is the icon pack's. Core Line keeps its own here.
   keeps its focus. A refresh with nothing new went from 1.0–1.9 s of work to
   0.4–0.6 s at the same slowdown, and layout from 250–450 ms to 32–45 ms.
 
+### Fixed
+
+- **The floating ticker turns on again (Android).** Ticking Settings →
+  Overlays → Floating ticker did nothing: the app read the ticker's edge from
+  the page on the wrong thread, Android refused the call, and the overlay
+  service was never started. The edge is now kept natively and the ticker
+  starts at once. The switch also no longer flips back off with a "Display
+  over other apps" message when the permission is already granted.
+
 ## [1.4.2] — 2026-09-30
 
 ### Added
