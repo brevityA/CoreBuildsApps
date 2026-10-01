@@ -1,8 +1,9 @@
 {
-  "versionCode": 9,
-  "versionName": "1.4.1",
-  "releaseDate": "2026-09-30",
+  "versionCode": 10,
+  "versionName": "1.4.2",
+  "releaseDate": "2026-10-01",
   "apkUrl": "https://github.com/brevityA/CoreBuildsApps/releases/download/coreline/coreline-release.apk",
-  "releaseNotesUrl": "https://github.com/brevityA/CoreBuildsApps/releases/tag/coreline-v1.4.1",
-  "minSdk": 24
+  "releaseNotesUrl": "https://github.com/brevityA/CoreBuildsApps/releases/tag/coreline-v1.4.2",
+  "minSdk": 24,
+  "apkSha256": "3d4fdcce69906e39118cc4ce9a5dcced9d83f2bb9da6511e2da07902ae23b224"
 }
