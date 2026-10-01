@@ -1,20 +1,14 @@
 {
-  "versionCode": 39,
-  "versionName": "1.9.7",
-  "iconCount": 971,
-  "componentCount": 1197,
-  "releaseDate": "2026-09-27",
+  "versionCode": 40,
+  "versionName": "1.9.8",
+  "iconCount": 972,
+  "componentCount": 1198,
+  "releaseDate": "2026-09-28",
   "apkUrl": "https://github.com/brevityA/CoreBuildsApps/releases/download/iconpack/iconpack-release.apk",
   "releaseNotesUrl": "https://github.com/brevityA/CoreBuildsApps/releases",
   "minSdk": 21,
   "highlights": [
-    "227 apps drawn from their icons, 219 from their logos",
-    "Vision+, Basis and TubPlayer",
-    "TDUK APP Killer and Cache Cleaner",
-    "Seven TCL system apps",
-    "89 apps now carry their real names",
-    "TCL Home and TCL Home Passive now match on TCL TVs",
-    "AirReceiver and Ultimate File Manager Pro now apply",
-    "Apply goes to Projectivy again when Monet is home"
+    "Core EQ has its own icon",
+    "Core EQ in the suite hub"
   ]
 }
