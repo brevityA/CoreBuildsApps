@@ -109,6 +109,19 @@ Style surfaces (official release notes, `github.com/spocky/miproja1/releases`):
   because the *bundled transparent default* is further ecosystem confirmation
   that borderless marks are the baseline expectation, not a style option.
 
+**Addendum 2026-10-01 (r/AT4K thread, developer replies):** AT4K has since
+grown third-party pack consumption — installed packs are listed under
+**Settings > Themes > Icon packs**, per the launcher's own developer routing
+a stuck user there. No incoming apply action is documented, and our standard
+probes miss, so the pack models AT4K like Monet (`inboundApply = false`):
+the apply flow hands over the setup-screen walk
+(AT4K Settings → Themes → Icon packs → pick) instead of firing a probe that
+cannot resolve. The 1.9.x fallback toast said "Settings → Icon pack", a
+screen AT4K does not have — the exact dead end the thread shows
+("there is no icon pack under settings!?"). The matrix row "Pack
+consumption: none (bundled set)" is superseded for v1.2+ builds by
+"appfilter picker under Settings > Themes > Icon packs, no apply intent".
+
 ### Mentioned, not audited
 
 ATV Launcher (atvlauncher.trekgonewild.de, Apple-TV-style, German community) and

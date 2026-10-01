@@ -6,6 +6,24 @@ All notable changes to the Core Builds Icon Pack. Format follows
 
 ## [Unreleased]
 
+### Changed
+
+- **A walk screen when a probe misses.** A launcher whose apply intent does
+  not resolve on your box no longer gets a one-line toast that expires on
+  the way to following it: the setup screen shows the numbered walk through
+  the launcher's own settings, ending on the one pack to pick. Projectivy,
+  L TV, ChillHub, Nova, Lawnchair, Apex and ADW now carry their settings
+  trees for it.
+
+### Fixed
+
+- **AT4K's setup walk names real screens.** The apply fallback told AT4K
+  users "Settings → Icon pack", a screen AT4K does not have — the dead end
+  in the r/AT4K thread of 2026-10-01. AT4K's developer routes the manual
+  pick to Settings > Themes > Icon packs, and documents no apply intent, so
+  AT4K now hands off to the setup-screen walk like Monet instead of probing
+  an action it cannot resolve.
+
 ## [1.9.9] — 2026-10-01
 
 ### Added

@@ -51,7 +51,7 @@ class LauncherSetupActivity : TvActivity() {
         // launcher being uninstalled and this screen being opened.
         val launcher = ApplyIconPack.installed(this).firstOrNull { it.key == key }
             ?: ApplyIconPack.ALL.firstOrNull { it.key == key }
-        if (launcher == null || launcher.inboundApply) {
+        if (launcher == null || launcher.setupStops.isEmpty()) {
             // Nothing to walk through. The sheet it came from is one Back press
             // away and still correct, so leave rather than show an empty screen.
             finish()
@@ -61,8 +61,14 @@ class LauncherSetupActivity : TvActivity() {
         val handoff = ApplyIconPack.handoff(this, launcher)
         findViewById<TextView>(R.id.setup_title).text =
             getString(R.string.setup_title_fmt, handoff.launcherName)
-        findViewById<TextView>(R.id.setup_why).text =
-            getString(R.string.setup_why_fmt, handoff.launcherName)
+        // Two honest reasons: a launcher with no apply action at all (Monet,
+        // AT4K), and one whose apply the probe could not reach on this box
+        // (Projectivy on an odd build). Both end in the same walk.
+        findViewById<TextView>(R.id.setup_why).text = getString(
+            if (launcher.inboundApply) R.string.setup_why_probe_fmt
+            else R.string.setup_why_fmt,
+            handoff.launcherName
+        )
         // One line per step, in order: the numbering is the launcher's own
         // settings tree, so it is the one thing on this screen that must not be
         // reordered or summarised.

@@ -119,7 +119,8 @@ object ApplyIconPack {
                 extra = "com.spocky.projengmenu.extra.ICONPACK_PACKAGENAME" to self
             )
         },
-        manualPath = "Projectivy Settings → Appearance → Cards → Icon Pack → Core Builds"
+        manualPath = "Projectivy Settings → Appearance → Cards → Icon Pack → Core Builds",
+        setupStops = listOf("Projectivy Settings", "Appearance", "Cards", "Icon Pack")
     )
 
     val MONET = Launcher(
@@ -150,8 +151,19 @@ object ApplyIconPack {
         key = "at4k",
         displayName = "AT4K Launcher",
         packages = listOf("com.overdevs.at4k"),
+        // The 2026-09 audit found no third-party pack consumption; by 2026-10
+        // AT4K lists installed packs under Settings → Themes → Icon packs but
+        // documents no incoming apply action — the developer routes manual
+        // cases there (r/AT4K, 2026-10-01), and the standard probes miss, so
+        // the honest contract is the walk, as with Monet. The 1.9.x toast
+        // said "Settings → Icon pack", a screen AT4K does not have; users
+        // followed it into a dead end (r/AT4K "no icon pack under
+        // settings!?"). The lambda is kept, and inboundApply flips to true
+        // the day an AT4K build accepts an apply intent.
         intent = { ctx, self -> tryStandardApply(ctx, "com.overdevs.at4k", self) },
-        manualPath = "Open AT4K → Settings → Icon pack → Core Builds Icon Pack"
+        manualPath = "AT4K Settings → Themes → Icon packs → Core Builds Icon Pack",
+        inboundApply = false,
+        setupStops = listOf("AT4K Settings", "Themes", "Icon packs")
     )
 
     val LEANBACK = Launcher(
@@ -169,7 +181,8 @@ object ApplyIconPack {
         displayName = "L TV Launcher",
         packages = listOf("com.leanbitlab.ltvL"),
         intent = { ctx, self -> tryStandardApply(ctx, "com.leanbitlab.ltvL", self) },
-        manualPath = "L TV Launcher Settings → Icon pack"
+        manualPath = "L TV Launcher Settings → Icon pack",
+        setupStops = listOf("L TV Launcher Settings", "Icon pack")
     )
 
     // FLauncher is intentionally not listed as an applicable launcher. Its
@@ -182,7 +195,8 @@ object ApplyIconPack {
         displayName = "ChillHub",
         packages = listOf("app.lumoslabs.chillhub"),
         intent = { ctx, self -> tryStandardApply(ctx, "app.lumoslabs.chillhub", self) },
-        manualPath = "ChillHub Settings → Icon pack"
+        manualPath = "ChillHub Settings → Icon pack",
+        setupStops = listOf("ChillHub Settings", "Icon pack")
     )
 
     val NOVA = Launcher(
@@ -199,7 +213,8 @@ object ApplyIconPack {
                 )
             )
         },
-        manualPath = "Nova Settings → Look & feel → Icon style → Icon theme"
+        manualPath = "Nova Settings → Look & feel → Icon style → Icon theme",
+        setupStops = listOf("Nova Settings", "Look & feel", "Icon style", "Icon theme")
     )
 
     private val LAWNCHAIR_PACKAGES = listOf(
@@ -220,7 +235,8 @@ object ApplyIconPack {
                 applyIntent("ch.deletescape.lawnchair.APPLY_ICONS", p, extra = "packageName" to self)
             }
         },
-        manualPath = "Lawnchair Settings → General → Icon style → Icon pack"
+        manualPath = "Lawnchair Settings → General → Icon style → Icon pack",
+        setupStops = listOf("Lawnchair Settings", "General", "Icon style", "Icon pack")
     )
 
     val APEX = Launcher(
@@ -233,7 +249,8 @@ object ApplyIconPack {
                 addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
             }
         },
-        manualPath = "Apex Settings → Theme settings"
+        manualPath = "Apex Settings → Theme settings",
+        setupStops = listOf("Apex Settings", "Theme settings")
     )
 
     val ADW = Launcher(
@@ -248,7 +265,8 @@ object ApplyIconPack {
                 addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
             }
         },
-        manualPath = "ADW Settings → Themes"
+        manualPath = "ADW Settings → Themes",
+        setupStops = listOf("ADW Settings", "Themes")
     )
 
     /** Known launchers. HOME detection walks this list. Projectivy first. */
@@ -420,21 +438,33 @@ object ApplyIconPack {
         }
 
         val intent = launcher.intent(context, pack)
-            ?: return Result.Manual(launcher.displayName, manual)
+            ?: return probeMissed(context, launcher, manual)
 
         val resolves = context.packageManager
             .queryIntentActivities(intent, 0).isNotEmpty()
         if (!resolves) {
-            return Result.Manual(launcher.displayName, manual)
+            return probeMissed(context, launcher, manual)
         }
 
         return try {
             context.startActivity(intent)
             Result.Applied(launcher.displayName)
         } catch (_: Exception) {
-            Result.Manual(launcher.displayName, manual)
+            probeMissed(context, launcher, manual)
         }
     }
+
+    /**
+     * The apply probe missed on this box. A launcher whose settings tree we
+     * know gets the walk screen instead of the one-line toast: the toast
+     * expires on the way to following it, and when the path it names is stale
+     * it is a dead end - the AT4K "Settings → Icon pack" toast sent users to
+     * a screen that does not exist (r/AT4K, 2026-10-01). Only launchers with
+     * no known tree (Leanback on Fire) keep the sentence.
+     */
+    private fun probeMissed(context: Context, launcher: Launcher, manual: String): Result =
+        if (launcher.setupStops.isNotEmpty()) handoff(context, launcher)
+        else Result.Manual(launcher.displayName, manual)
 
     fun openLauncher(context: Context, launcher: Launcher): Boolean {
         val pkg = launcher.packages.firstOrNull { context.isInstalled(it) } ?: return false
