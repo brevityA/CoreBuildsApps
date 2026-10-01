@@ -91,15 +91,18 @@ check_ci_green() {
 tag_exists_remote() { [ -n "$(git ls-remote --tags origin "refs/tags/$1")" ]; }
 
 # What the tag will point at must be on main (core-line-apk.yml refuses a tag
-# that is not), and must not carry [skip ci]: GitHub skips every workflow for
-# a commit whose message says so, tag pushes included, so the tag would
-# publish nothing (docs/RELEASE-INFRA.md).
+# that is not), and must not skip CI: GitHub skips every workflow for a
+# commit whose message carries [skip ci] (or an alias) or a `skip-checks: true`
+# trailer, tag pushes included, so the tag would publish nothing
+# (docs/RELEASE-INFRA.md).
 check_taggable() {
   git merge-base --is-ancestor HEAD origin/main || fail "HEAD $(git rev-parse --short HEAD) is not on origin/main"
-  if git show -s --format=%B HEAD | grep -qiE '\[(skip ci|ci skip|no ci|skip actions|actions skip)\]'; then
-    fail "main's head commit says [skip ci]; a tag on it would build nothing. Merge something without it first"
+  local msg; msg="$(git show -s --format=%B HEAD)"
+  if grep -qiE '\[(skip ci|ci skip|no ci|skip actions|actions skip)\]' <<<"$msg" \
+     || grep -qiE '^skip-checks:[[:space:]]*true[[:space:]]*$' <<<"$msg"; then
+    fail "main's head commit skips CI ([skip ci] or a skip-checks: true trailer); a tag on it would build nothing. Merge something without it first"
   fi
-  ok "HEAD $(git rev-parse --short HEAD) is on main, no [skip ci]"
+  ok "HEAD $(git rev-parse --short HEAD) is on main and does not skip CI"
 }
 
 # ---------------------------------------------------------------------------
