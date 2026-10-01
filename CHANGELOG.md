@@ -6,6 +6,8 @@ All notable changes to the Core Builds Icon Pack. Format follows
 
 ## [Unreleased]
 
+## [1.9.9] — 2026-10-01
+
 ### Added
 
 - **Cinema wallpapers, still and moving.** Series 10 (walls 97–102): six
@@ -21,6 +23,11 @@ All notable changes to the Core Builds Icon Pack. Format follows
   `Movies/CoreBuilds`, where video-wallpaper pickers such as Monet's find
   them, instead of one preview at a time. Stills still go to
   `Pictures/CoreBuilds`; the receipt names both.
+
+- **MaxPlayer.** Its soft-cornered play triangle, drawn as authored corner
+  arcs on the pack grid and carried on the tile's red-to-pink gradient,
+  requested in #219 with its launch activity read off the requester's
+  SHIELD Android TV. 972 → 973 icons, 1198 → 1199 components.
 
 ### Changed
 
