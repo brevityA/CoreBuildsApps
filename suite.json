@@ -21,8 +21,8 @@
     },
     "line": {
       "name": "Core Line",
-      "versionName": "1.4.2",
-      "versionCode": 10,
+      "versionName": "1.4.3",
+      "versionCode": 11,
       "tagPrefix": "coreline-v",
       "floatingTag": "coreline",
       "downloader": "7375676",
