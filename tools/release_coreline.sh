@@ -90,11 +90,24 @@ check_ci_green() {
 
 tag_exists_remote() { [ -n "$(git ls-remote --tags origin "refs/tags/$1")" ]; }
 
+# What the tag will point at must be on main (core-line-apk.yml refuses a tag
+# that is not), and must not carry [skip ci]: GitHub skips every workflow for
+# a commit whose message says so, tag pushes included, so the tag would
+# publish nothing (docs/RELEASE-INFRA.md).
+check_taggable() {
+  git merge-base --is-ancestor HEAD origin/main || fail "HEAD $(git rev-parse --short HEAD) is not on origin/main"
+  if git show -s --format=%B HEAD | grep -qiE '\[(skip ci|ci skip|no ci|skip actions|actions skip)\]'; then
+    fail "main's head commit says [skip ci]; a tag on it would build nothing. Merge something without it first"
+  fi
+  ok "HEAD $(git rev-parse --short HEAD) is on main, no [skip ci]"
+}
+
 # ---------------------------------------------------------------------------
 
 cmd_check() {
   on_main
   check_version
+  check_taggable
   check_ci_green
   if tag_exists_remote "$TAG"; then note "$TAG already exists on origin ($(git rev-list -n1 "$TAG" | cut -c1-9))"
   else ok "$TAG not tagged yet"; fi
@@ -105,6 +118,7 @@ cmd_check() {
 cmd_tag() {
   on_main
   check_version
+  check_taggable
   check_ci_green
   tag_exists_remote "$TAG" && fail "$TAG already exists. Never move a release tag; bump to a new version instead"
   git tag -a "$TAG" -m "Core Line $VERSION (versionCode $CODE)"
