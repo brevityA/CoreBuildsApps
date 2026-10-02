@@ -66,7 +66,7 @@
     <string name="setup_kicker">SET UP</string>
     <string name="setup_title_fmt">Set up in %1$s</string>
     <string name="setup_why_fmt">%1$s has no apply action an app can send, so the pack is picked in its own settings. These steps are that walk.</string>
-    <string name="setup_why_probe_fmt">Direct apply didn\\'t reach %1$s on this box, so the pack is picked in its own settings. These steps are that walk.</string>
+    <string name="setup_why_probe_fmt">Direct apply didn\'t reach %1$s on this box, so the pack is picked in its own settings. These steps are that walk.</string>
     <string name="setup_steps_header">STEPS</string>
     <string name="setup_step_open_fmt">%1$d.  Open %2$s</string>
     <string name="setup_step_pick_fmt">%1$d.  Pick %2$s</string>
