@@ -1,6 +1,6 @@
 # Supported applications
 
-`972` icons · `1198` mapped components · pack v1.9.8
+`973` icons · `1199` mapped components · pack v1.9.9
 
 Every app below auto-assigns in Projectivy. If one doesn't, the app ships a different launcher activity on your device — open an issue with the component name and it gets added.
 
@@ -436,6 +436,7 @@ Source accents are retained in the catalog. **On dark** is the shared square/ban
 | Material Files | `materialfiles` | `#00E5FF` | `#00E5FF` | `me.zhanghai.android.files/me.zhanghai.android.files.filelist.FileListActivity`<br>`me.zhanghai.android.files/.filelist.FileListActivity` |
 | Matvt Mouse For Android TV Toggle | `matvt_mouse_for_android_tv_toggle` | `#24EDA3` | `#24EDA3` | `io.github.virresh.matvt/io.github.virresh.matvt.gui.GuiActivity` |
 | Max | `max` | `#0046FF` | `#0147FF` | `com.wbd.stream/.MainActivity`<br>`com.hbo.hbonow/.MainActivity`<br>`com.wbd.hbomax/.MainActivity`<br>`com.wbd.hbomax/com.wbd.hbomax.MainActivity`<br>`com.wbd.stream/com.wbd.beam.BeamActivity` |
+| MaxPlayer | `maxplayer` | `#F5316B` | `#F5316B` | `tv.maxplayer.android/tv.maxplayer.android.MainActivity` |
 | Maze | `powerpoint45` | `#000000` | `#E6EDF3` | `com.powerpoint45.maze/com.powerpoint45.maze.MainMenuActivity` |
 | Mecool File Manager | `mecool_file_manager` | `#6477FF` | `#6477FF` | `com.tvonline.filewizard/com.tvonline.filewizard.ui.MainActivity` |
 | Meddelandelåda | `meddelandelada` | `#119864` | `#119864` | `com.tcl.messagebox/com.tcl.messagebox.activity.MainActivity` |

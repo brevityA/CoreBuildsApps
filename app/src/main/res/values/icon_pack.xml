@@ -430,6 +430,7 @@
         <item>materialfiles</item>
         <item>matvt_mouse_for_android_tv_toggle</item>
         <item>max</item>
+        <item>maxplayer</item>
         <item>powerpoint45</item>
         <item>mecool_file_manager</item>
         <item>meddelandelada</item>
@@ -1404,6 +1405,7 @@
         <item>Material Files</item>
         <item>Matvt Mouse For Android TV Toggle</item>
         <item>Max</item>
+        <item>MaxPlayer</item>
         <item>Maze</item>
         <item>Mecool File Manager</item>
         <item>Meddelandelåda</item>
@@ -2378,6 +2380,7 @@
         <item>FILES</item>
         <item>TOOL</item>
         <item>VOD</item>
+        <item>PLAYER</item>
         <item>APP</item>
         <item>FILES</item>
         <item>SYSTEM</item>
@@ -3390,6 +3393,7 @@
         <item>1</item>
         <item>1</item>
         <item>1</item>
+        <item>1</item>
         <item>0</item>
         <item>1</item>
         <item>1</item>
@@ -3897,5 +3901,5 @@
         <item>1</item>
         <item>1</item>
     </integer-array>
-    <integer name="icon_count">972</integer>
+    <integer name="icon_count">973</integer>
 </resources>

@@ -2,11 +2,11 @@
   "$schema": "./catalog.schema.json",
   "meta": {
     "pack": "Core Builds Icon Pack",
-    "version": "1.9.8",
+    "version": "1.9.9",
     "grid": 512,
     "safe_area": 432,
     "note": "Core Builds-authored geometric icons on a shared 512 grid. Reviewed brand glyphs use rounded monoline strokes and one accent, not imported vendor silhouettes. Common Outfit/category/rail banners; artwork is reference-only. Canonical brand colours and the dark-card contrast policy remain shared.",
-    "count": 972
+    "count": 973
   },
   "icons": [
     {
@@ -13620,6 +13620,26 @@
       "color_reviewed": null,
       "glyph": "broadcast_T",
       "mark": "TL"
+    },
+    {
+      "name": "MaxPlayer",
+      "drawable": "maxplayer",
+      "color": "#F5316B",
+      "glyph": "maxplayer_tri",
+      "components": [
+        "tv.maxplayer.android/tv.maxplayer.android.MainActivity"
+      ],
+      "mapping_source": "issue #219 (device-reported on SHIELD Android TV, Android 11, pack 1.9.7): .MainActivity is the reported launch activity of tv.maxplayer.android",
+      "category": "PLAYER",
+      "style": "core_monoline",
+      "color_source": "sampled from the Play-listing launcher icon (play.google.com/store/apps/details?id=tv.maxplayer.android, reference only): the tile's red-pink #F5316B between its two gradient corners",
+      "color_reviewed": "2026-10-01",
+      "gradient": [
+        "#F6474A",
+        "#F51D66"
+      ],
+      "gradient_source": "sampled from the Play-listing launcher icon (reference only): the tile's red top-left corner #F6474A to pink right corner #F51D66 (2026-10-01)",
+      "glyph_source": "brand-informed redraw of the Play-listing launcher icon (reference only): the soft-cornered play triangle, authored as Core monoline corner arcs, not a trace (2026-10-01)"
     }
   ],
   "artwork": {

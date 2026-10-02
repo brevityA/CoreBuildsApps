@@ -1,14 +1,18 @@
 {
-  "versionCode": 40,
-  "versionName": "1.9.8",
-  "iconCount": 972,
-  "componentCount": 1198,
-  "releaseDate": "2026-09-28",
+  "versionCode": 41,
+  "versionName": "1.9.9",
+  "iconCount": 973,
+  "componentCount": 1199,
+  "releaseDate": "2026-10-01",
   "apkUrl": "https://github.com/brevityA/CoreBuildsApps/releases/download/iconpack/iconpack-release.apk",
   "releaseNotesUrl": "https://github.com/brevityA/CoreBuildsApps/releases",
   "minSdk": 21,
   "highlights": [
-    "Core EQ has its own icon",
-    "Core EQ in the suite hub"
+    "Cinema wallpapers, still and moving",
+    "A Live chip, and loops save in bulk",
+    "MaxPlayer",
+    "Live loops run at 60 fps",
+    "A walk screen when a probe misses",
+    "AT4K's setup walk names real screens"
   ]
 }

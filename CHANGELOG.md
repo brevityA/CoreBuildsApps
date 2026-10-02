@@ -6,6 +6,8 @@ All notable changes to the Core Builds Icon Pack. Format follows
 
 ## [Unreleased]
 
+## [1.9.9] — 2026-10-01
+
 ### Added
 
 - **Cinema wallpapers, still and moving.** Series 10 (walls 97–102): six
@@ -22,11 +24,31 @@ All notable changes to the Core Builds Icon Pack. Format follows
   them, instead of one preview at a time. Stills still go to
   `Pictures/CoreBuilds`; the receipt names both.
 
+- **MaxPlayer.** Its soft-cornered play triangle, drawn as authored corner
+  arcs on the pack grid and carried on the tile's red-to-pink gradient,
+  requested in #219 with its launch activity read off the requester's
+  SHIELD Android TV. 972 → 973 icons, 1198 → 1199 components.
+
 ### Changed
 
 - **Live loops run at 60 fps.** The twelve Deep Space loops are re-rendered
   at 60 fps (from 30), so the camera drift and the twinkle no longer step on
   a large TV; the Cinema loops ship at 60 fps.
+- **A walk screen when a probe misses.** A launcher whose apply intent does
+  not resolve on your box no longer gets a one-line toast that expires on
+  the way to following it: the setup screen shows the numbered walk through
+  the launcher's own settings, ending on the one pack to pick. Projectivy,
+  L TV, ChillHub, Nova, Lawnchair, Apex and ADW now carry their settings
+  trees for it.
+
+### Fixed
+
+- **AT4K's setup walk names real screens.** The apply fallback told AT4K
+  users "Settings → Icon pack", a screen AT4K does not have — the dead end
+  in the r/AT4K thread of 2026-10-01. AT4K's developer routes the manual
+  pick to Settings > Themes > Icon packs, and documents no apply intent, so
+  AT4K now hands off to the setup-screen walk like Monet instead of probing
+  an action it cannot resolve.
 
 ## [1.9.8] — 2026-09-28
 

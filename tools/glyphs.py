@@ -3396,11 +3396,25 @@ def coreeq_faders(c):
     )
 
 
+def maxplayer_tri(c):
+    """MaxPlayer: the rounded play triangle from its store tile, redrawn.
+
+    The launcher icon is one soft-cornered play triangle on a red-to-pink
+    tile (catalog gradient), so the mark is exactly that outline in Core
+    monoline geometry - corner arcs authored, not traced - with nothing
+    else: no circle, no box, no letter.
+    """
+    return (f'<path d="M 172 117.8 L 339.8 214.4 A 48 48 0 0 1 339.8 297.6 '
+            f'L 172 394.2 A 48 48 0 0 1 148 380.3 L 148 131.7 '
+            f'A 48 48 0 0 1 172 117.8 Z" {_s(c, 32)}/>')
+
+
 GLYPHS.update({
     "coreline_ticker": coreline_ticker,
     "coreshift_frames": coreshift_frames,
     "coredoctor_pulse": coredoctor_pulse,
     "coreeq_faders": coreeq_faders,
+    "maxplayer_tri": maxplayer_tri,
 })
 
 
