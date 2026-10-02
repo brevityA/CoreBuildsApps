@@ -1,12 +1,12 @@
 /**
  * The board: hero tile, card grid, and the empty state.
  *
- * Everything here rebuilds its container's innerHTML on every render, which
- * is cheap and simple but destroys whatever had focus (AUDIT D5 — focus a
- * card, wait for the 60s refresh, and the focus ring vanishes). So every
- * render is wrapped in captureFocus/restoreFocus, which identifies the focused
- * element by *event id* rather than by node, because the node it was is about
- * to be replaced.
+ * The card grid is updated by key (lib/reconcile.mjs): a card whose markup is
+ * unchanged keeps its node, so a refresh only rebuilds the cards that moved.
+ * The hero still rebuilds its innerHTML, which destroys whatever had focus
+ * there (AUDIT D5), and a changed card is a new node too. So every render is
+ * still wrapped in captureFocus/restoreFocus, which identifies the focused
+ * element by *event id* rather than by node.
  */
 
 import { store } from '../core/store.js';
@@ -15,6 +15,7 @@ import { $, $$, esc, cssEscape, setHidden } from '../core/dom.js';
 import { accentFor, accentStyle, statusOf, cardFavTeams, favSet, startLabel } from '../core/format.js';
 import { HERO_ROTATE_MS, heroCandidates, pickHero, shouldRotate } from '/lib/hero.mjs';
 import { gameTeams, heroMatch } from '/lib/team-rows.mjs';
+import { reconcile } from '/lib/reconcile.mjs';
 
 export function captureFocus() {
   const el = document.activeElement;
@@ -130,13 +131,34 @@ function renderHero(list, index = 0) {
     </article>`;
 }
 
+/* Markup and node per event id from the last render, so a refresh only
+   rebuilds the cards whose markup changed (lib/reconcile.mjs). */
+let cardCache = new Map();
+let cardHost = null;
+
+function cardNode(html) {
+  const t = document.createElement('template');
+  t.innerHTML = html.trim();
+  return t.content.firstElementChild;
+}
+
 function renderCards(list) {
   const host = $('board');
   if (!host) return;
+  // A new #board element (a fresh document, a test harness) starts clean.
+  if (host !== cardHost) {
+    cardCache = new Map();
+    cardHost = host;
+    host.textContent = '';
+  }
   const cards = list.filter((e) => e.away && e.home);
   const headlines = list.filter((e) => !(e.away && e.home));
-  host.innerHTML = [...cards.map(gameCard), ...headlines.map(headlineCard)].join('');
-  setHidden('board', cards.length + headlines.length === 0);
+  const items = [
+    ...cards.map((ev) => ({ key: String(ev.id), html: gameCard(ev) })),
+    ...headlines.map((ev) => ({ key: String(ev.id), html: headlineCard(ev) })),
+  ];
+  cardCache = reconcile(host, items, cardCache, cardNode).cache;
+  setHidden('board', items.length === 0);
 }
 
 /**

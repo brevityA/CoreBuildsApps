@@ -492,8 +492,14 @@ export function wireSettings() {
         emit('toast', 'Floating ticker is not supported on Fire TV');
         return;
       }
-      const started = bridge?.startOverlay?.() === true;
-      e.target.checked = bridge?.overlayActive?.() === true;
+      // Hand the edge over first: the native side reads it from its own prefs
+      // rather than from this page's storage.
+      try { bridge?.setOverlayEdge?.(store.state.position); } catch { /* older shell */ }
+      let started = false;
+      try { started = bridge?.startOverlay?.() === true; } catch { started = false; }
+      // The service comes up asynchronously, so overlayActive() is usually
+      // still false here; a true from startOverlay() is the answer.
+      e.target.checked = started || bridge?.overlayActive?.() === true;
       if (!started) {
         emit('toast', globalThis.CORELINE_TV
           ? 'Enable “Display over other apps” for Core Line in Settings, then retick'

@@ -218,7 +218,14 @@ class MainActivity : Activity() {
      * Start the floating ticker. Works on phone, tablet, and Android TV
      * where Display over other apps can be granted. Returns false on Fire TV,
      * which does not support overlay windows. Position comes from the
-     * saved ticker setting, default bottom.
+     * saved ticker setting ([OverlayPrefs], written by [setOverlayEdge]),
+     * default bottom.
+     *
+     * This runs on the JavaBridge thread, not the UI thread, so it must not
+     * touch [webView]. It used to read the edge with `evaluateJavascript`,
+     * which Android refuses off the UI thread ("A WebView method was called
+     * on thread 'JavaBridge'"): the call threw before the service was ever
+     * started, and the ticker never came up.
      */
     fun startOverlay(): Boolean {
         if (isFireTv()) return false
@@ -232,17 +239,19 @@ class MainActivity : Activity() {
         ) {
             requestPermissions(arrayOf(android.Manifest.permission.POST_NOTIFICATIONS), 7)
         }
-        webView.evaluateJavascript(
-            "(function(){try{var s=JSON.parse(localStorage.getItem('coreline.v1')||'{}');return s.position==='top'?'top':'bottom';}catch(e){return 'bottom';}})()",
-        ) { raw ->
-            val edge = raw?.trim()?.trim('"')
-            OverlayService.startTicker(this, if (edge == "top") "top" else "bottom")
-        }
+        OverlayService.startTicker(this, OverlayPrefs(this).tickerPosition)
         return true
     }
 
+    /**
+     * Remember the ticker's edge and move it if it is up. The drawer calls
+     * this before [startOverlay] and whenever the position changes, so the
+     * native side never has to read the WebView's localStorage for it.
+     */
     fun setOverlayEdge(edge: String) {
-        OverlayService.setEdge(edge)
+        val clean = if (edge == "top") "top" else "bottom"
+        OverlayPrefs(this).tickerPosition = clean
+        OverlayService.setEdge(clean)
     }
 
     /** Stop the floating ticker. The VPN dot, if it is on, keeps running. */

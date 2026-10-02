@@ -8,6 +8,33 @@ The repo-root `CHANGELOG.md` is the icon pack's. Core Line keeps its own here.
 
 ## [Unreleased]
 
+## [1.4.4] — 2026-10-01
+
+### Changed
+
+- **The crawl no longer ties up the TV.** The scrolling strip, on the board
+  and floating over other apps, now moves as one animation the graphics side
+  runs by itself, instead of being pushed along a pixel at a time sixty times
+  a second. With the crawl on, the app's main thread went from busy about half
+  the time to the same as with it off (2.46 s → 0.24 s per 5 s, measured at a
+  6× CPU slowdown), which leaves it free for the remote.
+- **A refresh only redraws what changed.** Every refresh used to throw away
+  and rebuild all the cards on the board, logos included; now a card is only
+  rebuilt when its score, clock or channel changed, so the card you are on
+  keeps its focus. A refresh with nothing new went from 1.0–1.9 s of work to
+  0.4–0.6 s at the same slowdown, and layout from 250–450 ms to 32–45 ms.
+
+## [1.4.3] — 2026-10-01
+
+### Fixed
+
+- **The floating ticker turns on again (Android).** Ticking Settings →
+  Overlays → Floating ticker did nothing: the app read the ticker's edge from
+  the page on the wrong thread, Android refused the call, and the overlay
+  service was never started. The edge is now kept natively and the ticker
+  starts at once. The switch also no longer flips back off with a "Display
+  over other apps" message when the permission is already granted.
+
 ## [1.4.2] — 2026-09-30
 
 ### Added
