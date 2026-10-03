@@ -30,6 +30,21 @@ All notable changes to the Core Builds Icon Pack. Format follows
   marks get a wider box inside the ring.
   `GREAT` now breaks onto two lines. `validate.py` fails any mark outside
   the band by name, and `tests/test_wordmark_type.py` pins the rules.
+- **One alphabet for every letter in an icon.** Icons drew letters three
+  ways: the stroke letters above (220 wordmarks), solid Outfit ExtraBold
+  (23 tiles, category shells and single letters such as Tubi's t, Crave's c,
+  Vidio's v and BitTV's b) and hand-drawn strokes inside 16 brand marks. All
+  of them now use the same stroke letters under the same size rules. The
+  16 marks keep their rings, screens and boxes and set only their text
+  anew: Yacine TV, nobuffr, IB Player, TV 2, France 24, DW, AIDA64, Trakt,
+  KUKU, APKMirror, Netzkino, ARD, Cast4K, ES-DE, HDHomeRun and Premiumize.
+  Letters fused into a brand's device (SVT's t into a play arrow, ESPN's
+  notched E, Go3's 3) are unchanged. Banner labels stay in Outfit Bold.
+- **Lowercase marks are sized by what you see.** A mark made only of
+  x-height letters (a lone c, `no`, `noo/vo`) is now held to the same
+  visible height as capitals. That found `noo/vo` and `nowo` setting
+  80px and 91px tall, under the floor since they shipped; `nowo` now
+  breaks onto two lines.
 
 ### Fixed
 
@@ -37,6 +52,12 @@ All notable changes to the Core Builds Icon Pack. Format follows
   splash screen, a component the pack did not know, so its icon stopped
   applying. The new component is mapped beside the old one, as read off the
   reporter's Philips Google TV (Android 14) in #232.
+- **CNBC sits on the grid.** A full review of all 975 shipped icons found
+  the CNBC peacock 96px below centre and leaning left: its fan pivoted near
+  the bottom edge. The fan is now symmetric and centred. Every other icon's
+  ink box sits within 36px of centre (median 1px), and
+  `tests/test_icon_review.py` now fails any icon over 40px off centre or
+  under 256px across.
 - **MaxPlayer is amber.** 1.9.9 coloured it from an older red-to-pink tile;
   the app's current icon is an amber m folded into a play triangle on navy,
   and the pack now uses that amber.

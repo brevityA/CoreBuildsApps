@@ -3534,15 +3534,19 @@ def cnbc_peacock(c):
     standalone peacock_fan uses, so this mark stays inside the monoline
     contract.
     """
+    # 2.0.0 review: the fan pivoted at y 424 with feathers from -168 to -38
+    # degrees, so the mark sat 96px below centre and leaned left. The fan is
+    # now symmetric about the vertical axis and its ink centred on the grid.
     import math
     out = ''
+    pivot = 340
     for i in range(6):
-        a = math.radians(-168 + i * 26)
-        bx, by = 256 + 20 * math.cos(a), 424 + 20 * math.sin(a)
-        tx, ty = 256 + 174 * math.cos(a), 424 + 174 * math.sin(a)
+        a = math.radians(-155 + i * 26)
+        bx, by = 256 + 22 * math.cos(a), pivot + 22 * math.sin(a)
+        tx, ty = 256 + 196 * math.cos(a), pivot + 196 * math.sin(a)
         w = 32 if i % 2 == 0 else 26
         out += f'<path d="M {bx:.1f} {by:.1f} L {tx:.1f} {ty:.1f}" {_s(c, w)}/>'
-    out += f'<path d="M 256 404 L 256 454" {_s(c, 28)}/>'
+    out += f'<path d="M 256 {pivot - 20} L 256 {pivot + 52}" {_s(c, 28)}/>'
     return out
 
 
