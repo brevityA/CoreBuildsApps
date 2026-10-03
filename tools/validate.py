@@ -450,6 +450,23 @@ def main():
                       f"banner {f.stem}: live <text> wordmark is missing "
                       f"font-weight 700 — convert it via typeface.wordmark_spans")
 
+    # 5f2. Stroke-letter marks share one type band (tools/glyphs.py). A cap
+    # under the floor closes its counters at a 48dp tile; one over the
+    # ceiling makes a single letter outweigh every word beside it. Stroke
+    # weight follows the cap, so the band also holds the stroke-to-cap ratio.
+    from glyphs import GLYPHS as _G, wm_layout, _WM_CAP_MIN, _WM_CAP_MAX
+    for i in icons:
+        fn = _G.get(i["glyph"])
+        if fn is None or not hasattr(fn, "wm"):
+            continue
+        _box, cap, weight, _gap = wm_layout(*fn.wm)
+        check(_WM_CAP_MIN <= cap <= _WM_CAP_MAX,
+              f"{i['name']}: wordmark '{fn.wm[0]}' sets at a {cap:.0f}px cap, "
+              f"outside the {_WM_CAP_MIN}-{_WM_CAP_MAX}px band - shorten it or "
+              f"break it with '/'")
+        check(26 <= weight <= 34,
+              f"{i['name']}: wordmark stroke {weight}px is outside 26-34px")
+
     # 5g. Monoline discipline (style AA).
     #
     # AA is: one uniform stroke weight, no fill, no glow, no container.

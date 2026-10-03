@@ -6,6 +6,19 @@ All notable changes to the Core Builds Icon Pack. Format follows
 
 ## [Unreleased]
 
+### Changed
+
+- **Wordmark icons share one set of proportions.** The 217 icons that spell
+  a short form of the app's name (`_WM` in `tools/glyphs.py`) used a fixed
+  30px stroke at any size, so letters ran from 48px to 272px tall: single
+  letters looked hairline and five-letter words clogged. Letters now stay
+  between 96px and 200px, stroke follows the letter height (26-34px), and
+  letter spacing does too. A mark that would set under 120px with nothing
+  beside it (68 of them) may use 384px of width instead of 336px; ring
+  marks get a wider box inside the ring.
+  `GREAT` now breaks onto two lines. `validate.py` fails any mark outside
+  the band by name, and `tests/test_wordmark_type.py` pins the rules.
+
 ## [2.0.0] — 2026-10-03
 
 ### Added

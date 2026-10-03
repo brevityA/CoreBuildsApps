@@ -3,7 +3,7 @@ import os
 import math
 import re
 
-from typeface import adaptive_lockup, lockup_cap, monogram_body, monogram_text, monogram_scaled
+from typeface import MIN_LOCKUP_CAP, adaptive_lockup, lockup_cap, monogram_body, monogram_text, monogram_scaled
 from icon_style import OFFWHITE_INK, display_accent
 """
 Core Builds Icon Pack — glyph library.
@@ -8136,10 +8136,30 @@ _STROKE_LETTERS = {
 _STROKE_TOKEN = re.compile(r"[MLCZD]|-?\d*\.?\d+")
 
 
-_STROKE_GAP = 46      # px between letters, whatever the scale: strokes never touch
+_STROKE_GAP = 46      # px between letters at full size: strokes never touch
+
+# The type band for every stroke-letter mark. Before 2.0.1 each mark filled
+# its box at a fixed 30px stroke, so cap heights ran 48-272px and the stroke
+# was 11% of a single letter's height but 63% of a five-letter word's: the
+# same face read as hairline on one card and clogged on the next. Caps now
+# stay in [_WM_CAP_MIN, _WM_CAP_MAX], and stroke and spacing follow the cap,
+# so every mark keeps the same proportions. The floor is MIN_LOCKUP_CAP, the
+# Outfit tiles' own: below it a counter closes at a 48dp tile.
+_WM_CAP_MIN = MIN_LOCKUP_CAP
+_WM_CAP_MAX = 200
+_WM_WEIGHT = (.2, 26, 34)    # stroke = cap x .2, held to the pack's 26-34px
+_WM_SPACING = (.3, 30, 46)   # gap = cap x .3, held to 30-46px
+_WM_WIDE = 384               # text width a long mark may claim (open cues only):
+                             # 384 + a 34px stroke keeps ink inside SAFE=432
+_WM_WIDEN_BELOW = 120        # only marks this small widen; a short word that
+                             # widened would set as a full-width band (RB4)
 
 
-def _stroke_line(text, x0, y0, s):
+def _clamp(v, lo, hi):
+    return max(lo, min(hi, v))
+
+
+def _stroke_line(text, x0, y0, s, gap=_STROKE_GAP):
     """One line of stroke letters at scale `s`, top-left of the cap box at x0,y0.
     Returns (path d, dots [(x, y)])."""
     d, dots, x = [], [], x0
@@ -8159,18 +8179,32 @@ def _stroke_line(text, x0, y0, s):
                 dots.append(xy[0])
             else:
                 d.append(t + " " + " ".join(f"{a:.1f} {b:.1f}" for a, b in xy))
-        x += w * s + _STROKE_GAP
+        x += w * s + gap
     return " ".join(d), dots
 
 
-def _stroke_px(text, s):
+def _stroke_px(text, s, gap=_STROKE_GAP):
     # math.fsum, not sum: CPython 3.12 made sum() compensated, so the two
     # disagree in the last bit and a .x5 coordinate rounds differently in CI.
-    return math.fsum(_STROKE_LETTERS[ch][0] for ch in text) * s + _STROKE_GAP * (len(text) - 1)
+    return math.fsum(_STROKE_LETTERS[ch][0] for ch in text) * s + gap * (len(text) - 1)
 
 
-def _stroke_text(text, c, box=(96, 136, 416, 376), weight=30):
-    """Stroke-letter lockup centred in `box`; '/' splits it onto two lines."""
+def _stroke_fit(text, box, gap=_STROKE_GAP):
+    """Largest cap height at which `text` ('/' = line break) fits `box`."""
+    lines = text.split("/")
+    bx0, by0, bx1, by1 = box
+    desc = any(ch in "gjpqy" for ch in lines[-1])
+    s = (by1 - by0 - 44 * (len(lines) - 1)) / (len(lines) + (.34 if desc else 0))
+    for line in lines:
+        units_w = math.fsum(_STROKE_LETTERS[ch][0] for ch in line) or .01
+        s = min(s, (bx1 - bx0 - gap * (len(line) - 1)) / units_w)
+    return s
+
+
+def _stroke_text(text, c, box=(96, 136, 416, 376), weight=30, gap=_STROKE_GAP, cap_max=None):
+    """Stroke-letter lockup centred in `box`; '/' splits it onto two lines.
+    `cap_max` stops a short mark filling the box: it is set no taller and
+    centred, instead of growing to the box's full height."""
     lines = text.split("/")
     bx0, by0, bx1, by1 = box
     bw, bh = bx1 - bx0, by1 - by0
@@ -8178,16 +8212,15 @@ def _stroke_text(text, c, box=(96, 136, 416, 376), weight=30):
     rows = len(lines)
     lead = 44
     units_h = rows + (.34 if desc else 0)
-    s = (bh - lead * (rows - 1)) / units_h
-    for line in lines:
-        units_w = math.fsum(_STROKE_LETTERS[ch][0] for ch in line) or .01
-        s = min(s, (bw - _STROKE_GAP * (len(line) - 1)) / units_w)
+    s = _stroke_fit(text, box, gap)
+    if cap_max:
+        s = min(s, cap_max)
     ink_h = units_h * s + lead * (rows - 1)
     out, dots = [], []
     y = by0 + (bh - ink_h) / 2
     for line in lines:
-        lw = _stroke_px(line, s)
-        d, dd = _stroke_line(line, bx0 + (bw - lw) / 2, y, s)
+        lw = _stroke_px(line, s, gap)
+        d, dd = _stroke_line(line, bx0 + (bw - lw) / 2, y, s, gap)
         out.append(d); dots += dd
         y += s + lead
     body = f'<path d="{" ".join(out)}" {_s(c, weight)}/>'
@@ -8216,14 +8249,39 @@ def _wm_cue(cue, c):
 _WM_BOX = {
     None: (88, 120, 424, 392), "plus": (88, 144, 400, 408), "play": (88, 144, 400, 408),
     "dot": (88, 112, 392, 380), "under": (96, 112, 416, 384), "over": (96, 128, 416, 400),
-    "ring": (152, 176, 360, 336), "frame": (120, 168, 392, 344),
+    "ring": (126, 176, 386, 336), "frame": (120, 168, 392, 344),
 }
 
 
+def wm_layout(text, cue=None):
+    """(box, cap, weight, gap) for a stroke-letter mark: the band rules above.
+    Shared with the validator so a mark outside the band fails by name."""
+    box = _WM_BOX[cue]
+    if cue in (None, "under", "over"):
+        # Bare marks and rules above or below leave the sides free, so a long
+        # word may widen into the safe area. Plus, play and dot sit in a
+        # corner beside the text and rings and frames enclose it: their boxes
+        # already stop where the cue starts.
+        if _stroke_fit(text, box) < _WM_WIDEN_BELOW:
+            half = _WM_WIDE / 2
+            box = (256 - half, box[1], 256 + half, box[3])
+    gap = _STROKE_GAP
+    for _ in range(3):   # gap follows the cap, and the cap the gap: settle it
+        cap = min(_stroke_fit(text, box, gap), _WM_CAP_MAX)
+        gap = round(_clamp(cap * _WM_SPACING[0], *_WM_SPACING[1:]))
+    cap = min(_stroke_fit(text, box, gap), _WM_CAP_MAX)
+    weight = round(_clamp(cap * _WM_WEIGHT[0], *_WM_WEIGHT[1:]))
+    return box, cap, weight, gap
+
+
 def _wm_glyph(text, cue=None):
+    box, _cap, weight, gap = wm_layout(text, cue)
+
     def draw(c):
-        return _stroke_text(text, c, _WM_BOX[cue]) + _wm_cue(cue, c)
+        return (_stroke_text(text, c, box, weight=weight, gap=gap, cap_max=_WM_CAP_MAX)
+                + _wm_cue(cue, c))
     draw.__doc__ = f"Wordmark cue: '{text}'" + (f" with its {cue}" if cue else "") + "."
+    draw.wm = (text, cue)   # read by validate.py's type-band check
     return draw
 
 
@@ -8356,7 +8414,7 @@ _WM2 = {
     "earthcamtv": ("EC", "ring"), "epicchannel": ("EPIC", "under"), "eros": ("EN", "ring"),
     "fcportotv": ("FCP", "dot"), "fifa": ("FIFA", "plus"), "findlink": ("FLX", None),
     "fizz_app": ("fizz", None), "foxnation": ("FOX", "under"), "foxone": ("FOX/ONE", None),
-    "fullepisodes": ("CW", None), "great": ("GREAT", None), "heinetworktv": ("HEI", None),
+    "fullepisodes": ("CW", None), "great": ("GRE/AT", None), "heinetworktv": ("HEI", None),
     "watcher": ("HG/TV", None), "ignitetv": ("R", "play"), "myiptvonline": ("iM", None),
     "androidtv_7": ("OE", "ring"), "kfandroid": ("K", None), "streamingkemo": ("KS", "under"),
     "laughafterdark": ("LA", "under"), "launchsounds": ("BBC", "under"), "lazyiptvdeluxe": ("LAZY", None),
