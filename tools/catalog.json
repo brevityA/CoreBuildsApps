@@ -2,11 +2,11 @@
   "$schema": "./catalog.schema.json",
   "meta": {
     "pack": "Core Builds Icon Pack",
-    "version": "1.9.9",
+    "version": "2.0.0",
     "grid": 512,
     "safe_area": 432,
     "note": "Core Builds-authored geometric icons on a shared 512 grid. Reviewed brand glyphs use rounded monoline strokes and one accent, not imported vendor silhouettes. Common Outfit/category/rail banners; artwork is reference-only. Canonical brand colours and the dark-card contrast policy remain shared.",
-    "count": 973
+    "count": 976
   },
   "icons": [
     {
@@ -980,6 +980,7 @@
     {
       "name": "Background Apps And Process List",
       "drawable": "background_apps_and_process_list",
+      "banner_name": "Background Apps",
       "color": "#19D3C5",
       "glyph": "bapl_pulse",
       "components": [
@@ -4478,6 +4479,7 @@
     {
       "name": "Home Automation TV Dashboard",
       "drawable": "home_automation_tv_dashboard",
+      "banner_name": "Home Automation",
       "color": "#03A9F4",
       "glyph": "homeassist_bubble",
       "components": [
@@ -4749,6 +4751,7 @@
     {
       "name": "Web Video Caster Receiver",
       "drawable": "instantbits",
+      "banner_name": "Web Video Caster",
       "color": "#F89616",
       "glyph": "instantbits_cast",
       "components": [
@@ -5943,6 +5946,7 @@
     {
       "name": "Matvt Mouse For Android TV Toggle",
       "drawable": "matvt_mouse_for_android_tv_toggle",
+      "banner_name": "Matvt Mouse",
       "color": "#24EDA3",
       "glyph": "cursor_mark",
       "components": [
@@ -6207,15 +6211,24 @@
     {
       "name": "Xiaomi TV+",
       "drawable": "mitvplus",
-      "color": "#19D3C5",
-      "glyph": "mitv_mark",
+      "color": "#F86800",
+      "glyph": "mitv_tvplus",
       "components": [
-        "com.mitv.tvhome.mitvplus/com.mitv.tvhome.mitvplus.app.BannerLogoFree24"
+        "com.mitv.tvhome.mitvplus/com.mitv.tvhome.mitvplus.app.BannerLogoFree24",
+        "com.mitv.tvhome.mitvplus/com.mitv.tvhome.mitvplus.app.SplashActivity"
       ],
       "category": "LIVE",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null,
-      "name_source": "app name from the Projectivy Icon Pack 1.1.9 artwork for com.mitv.tvhome.mitvplus (github.com/SicMundus86/ProjectivyIconPack, used as reference only), which shows the Xiaomi TV+ logo for this package (2026-09-27)"
+      "color_source": "sampled from the Google Play listing icon for com.mitv.tvhome.mitvplus (\"Xiaomi TV+: Watch Live TV\", reference bundle corebuilds-missing-reference-icons-2026-10-03 (references.md, sha256-checked; reference only), sha256 85bf87f1d339fab7): the orange plus #F86800 beside a black TV wordmark (2026-10-03)",
+      "color_reviewed": "2026-10-03",
+      "name_source": "app name from the Projectivy Icon Pack 1.1.9 artwork for com.mitv.tvhome.mitvplus (github.com/SicMundus86/ProjectivyIconPack, used as reference only), which shows the Xiaomi TV+ logo for this package (2026-09-27)",
+      "glyph_source": "brand-informed redraw of the Play listing icon (reference bundle corebuilds-missing-reference-icons-2026-10-03 (references.md, sha256-checked; reference only)): TV in the pack's stroke letters and the big plus beside it, not a trace (2026-10-03)",
+      "secondary": {
+        "color": "#E6EDF3",
+        "parts": [
+          0
+        ],
+        "source": "Play listing icon for com.mitv.tvhome.mitvplus (reference bundle corebuilds-missing-reference-icons-2026-10-03 (references.md, sha256-checked; reference only)): the wordmark's black TV, drawn as the Brand Guide off-white ink on the night card (2026-10-03)"
+      }
     },
     {
       "name": "Miracast",
@@ -6614,6 +6627,7 @@
     {
       "name": "My Family Cinema Player",
       "drawable": "my_family_cinema_player",
+      "banner_name": "My Family Cinema",
       "color": "#F89432",
       "glyph": "iptv_player",
       "components": [
@@ -6899,6 +6913,7 @@
     {
       "name": "Nextup Watch Stand Up Comedy",
       "drawable": "nextup_watch_stand_up_comedy",
+      "banner_name": "Nextup Comedy",
       "color": "#68DDD4",
       "glyph": "comedy_mark",
       "components": [
@@ -7134,6 +7149,7 @@
     {
       "name": "Notifications For Android TV",
       "drawable": "notifications_for_android_tv",
+      "banner_name": "TV Notifications",
       "color": "#00D4FF",
       "glyph": "bell",
       "components": [
@@ -8149,10 +8165,11 @@
       "color": "#FFF200",
       "glyph": "pluto_echo",
       "components": [
-        "tv.pluto.android/tv.pluto.android.EntryPoint"
+        "tv.pluto.android/tv.pluto.android.EntryPoint",
+        "tv.pluto.android/com.paramount.android.pplus.features.splash.tv.SplashMediatorActivity"
       ],
       "category": "APP",
-      "mapping_source": "Projectivy Icon Pack 1.1.9",
+      "mapping_source": "Projectivy Icon Pack 1.1.9; com.paramount.android.pplus.features.splash.tv.SplashMediatorActivity from issue #232 (device-reported on Philips Google TV TA1, Android 14, pack 1.9.9: the launch activity after Pluto moved onto the Paramount TV splash)",
       "color_source": "brand reference — Pluto TV 2024 disc yellow (sampled 2026-09-14)",
       "color_reviewed": "2026-09-14"
     },
@@ -8480,6 +8497,7 @@
     {
       "name": "Quickbars For Home Assistant",
       "drawable": "quickbars_for_home_assistant",
+      "banner_name": "Quickbars",
       "color": "#80D2E9",
       "glyph": "home_bar",
       "components": [
@@ -8780,6 +8798,7 @@
     {
       "name": "Remote Starter For Yatse",
       "drawable": "remote_starter_for_yatse",
+      "banner_name": "Yatse Starter",
       "color": "#2CCAC5",
       "glyph": "remote_play",
       "components": [
@@ -9004,16 +9023,22 @@
     {
       "name": "RTVE Play",
       "drawable": "rtve_play",
-      "color": "#D83818",
+      "color": "#F89800",
       "glyph": "rtve_play_wm",
       "components": [
-        "com.rtve.androidtv/com.rtve.androidtv.Activity.SplashActivity"
+        "com.rtve.androidtv/com.rtve.androidtv.Activity.SplashActivity",
+        "com.rtve.androidtv/com.google.android.archive.ReactivateActivity"
       ],
       "category": "APP",
       "mapping_source": "Projectivy Icon Pack 1.1.9",
-      "color_source": "sampled from the Projectivy Icon Pack 1.1.9 artwork for com.rtve.androidtv (github.com/SicMundus86/ProjectivyIconPack, used as reference only): the logotype's #D83818 (2026-09-28)",
-      "color_reviewed": "2026-09-28",
-      "glyph_source": "wordmark-derived mark from the Projectivy Icon Pack 1.1.9 artwork for com.rtve.androidtv (github.com/SicMundus86/ProjectivyIconPack, used as reference only): the logotype's cue 'rt' with its play, set in the pack's own single-stroke letters, not the vendor letterforms (2026-09-28)"
+      "color_source": "sampled from the Google Play listing icon for com.rtve.androidtv (\"RTVE Play Android TV\", reference bundle corebuilds-missing-reference-icons-2026-10-03 (references.md, sha256-checked; reference only), sha256 9cf84aeb756744f8): the rtve wordmark's orange #F89800 (2026-10-03); was #D83818 from Projectivy 1.1.9 artwork",
+      "color_reviewed": "2026-10-03",
+      "glyph_source": "wordmark-derived mark from the Play listing icon (reference bundle corebuilds-missing-reference-icons-2026-10-03 (references.md, sha256-checked; reference only)): the full lowercase rtve with a play for the 'play' line, set in the pack's own stroke letters, not the vendor letterforms (2026-10-03)",
+      "gradient": [
+        "#F89800",
+        "#F06008"
+      ],
+      "gradient_source": "the same Play listing icon: the rtve wordmark runs orange #F89800 to red-orange #F06008 (2026-10-03)"
     },
     {
       "name": "RugbyPass TV",
@@ -9184,6 +9209,7 @@
     {
       "name": "Screen Recording App",
       "drawable": "screen_recording_app",
+      "banner_name": "Screen Recording",
       "color": "#FF3B30",
       "glyph": "screen_record_mark",
       "components": [
@@ -10308,17 +10334,22 @@
       "glyph_source": "brand-informed redraw of the official launcher icon (play listing for app.symfonik.music.player); Core monoline geometry, not a trace (2026-09-26)"
     },
     {
-      "name": "SYNC",
+      "name": "Stadium Sync",
       "drawable": "sync_sports",
-      "color": "#C8CED6",
-      "glyph": "stadium",
+      "color": "#00E0F8",
+      "glyph": "stadiumsync_dome",
       "components": [
         "com.sync.tv/.MainActivity",
-        "tv.sync.app/.MainActivity"
+        "tv.sync.app/.MainActivity",
+        "com.sportio.tv/com.sportio.tv.MainActivity",
+        "com.stadiumsync.mobile/com.stadiumsync.mobile.MainActivity"
       ],
+      "mapping_source": "the developer, Streamers86, on Discord (2026-10-03): com.sportio.tv.MainActivity is the Android TV launch activity and com.stadiumsync.mobile.MainActivity the mobile one; package taken as the class's own namespace",
       "category": "SPORT",
-      "color_source": "brand reference (pre-provenance, unverified)",
-      "color_reviewed": null
+      "color_source": "sampled from Stadium Sync's own dark-background logo, shared by Brevity from the developer Streamers86 (2026-10-03): the cyan #00E0F8 its dome is drawn in on dark",
+      "color_reviewed": "2026-10-03",
+      "name_source": "the developer, Streamers86, on Discord (2026-10-03): the app is Stadium Sync, not SYNC",
+      "glyph_source": "brand-informed redraw of the Stadium Sync logo's domed arena, the shape its developer asked for (2026-10-03): ribbed dome, truss ring, drum, low stands and entrance on one ground line, drawn as Core strokes on the pack grid, not traced"
     },
     {
       "name": "Syncler",
@@ -10625,6 +10656,7 @@
     {
       "name": "TDUK APP Cache Cleaner",
       "drawable": "tduk_cache_cleaner",
+      "banner_name": "TDUK Cache Cleaner",
       "color": "#98D800",
       "glyph": "tduk_cleaner_droid",
       "components": [
@@ -10668,6 +10700,7 @@
     {
       "name": "Tduk Screensaver Manager",
       "drawable": "tduk_screensaver_manager",
+      "banner_name": "Tduk Screensaver",
       "color": "#7C74FF",
       "glyph": "screensaver_moon",
       "components": [
@@ -11965,6 +11998,7 @@
     {
       "name": "Vewd Internet Browser",
       "drawable": "vewd_internet_browser",
+      "banner_name": "Vewd Browser",
       "color": "#E83F2D",
       "glyph": "vewd_browser",
       "components": [
@@ -13624,22 +13658,72 @@
     {
       "name": "MaxPlayer",
       "drawable": "maxplayer",
-      "color": "#F5316B",
-      "glyph": "maxplayer_tri",
+      "color": "#F8A000",
+      "glyph": "maxplayer_m",
       "components": [
         "tv.maxplayer.android/tv.maxplayer.android.MainActivity"
       ],
       "mapping_source": "issue #219 (device-reported on SHIELD Android TV, Android 11, pack 1.9.7): .MainActivity is the reported launch activity of tv.maxplayer.android",
       "category": "PLAYER",
       "style": "core_monoline",
-      "color_source": "sampled from the Play-listing launcher icon (play.google.com/store/apps/details?id=tv.maxplayer.android, reference only): the tile's red-pink #F5316B between its two gradient corners",
-      "color_reviewed": "2026-10-01",
-      "gradient": [
-        "#F6474A",
-        "#F51D66"
+      "color_source": "sampled from the Play-listing launcher icon (play.google.com/store/apps/details?id=tv.maxplayer.android, Max Player ™ by E Galactic e.U, reference only): the amber m-in-a-play-triangle #F8A000 on its navy #001038 tile (2026-10-03); the 1.9.9 pink came from an older tile",
+      "color_reviewed": "2026-10-03",
+      "glyph_source": "brand-informed redraw of the Play listing icon (reference bundle corebuilds-missing-reference-icons-2026-10-03 (references.md, sha256-checked; reference only), sha256 1cf03a8b7d3ff98d): the soft-cornered play triangle with the m's arcs fanning from its lower-left corner, Core monoline, not a trace (2026-10-03)"
+    },
+    {
+      "name": "HeatLive",
+      "drawable": "heatlive",
+      "color": "#EB1E54",
+      "glyph": "heatlive_drop",
+      "components": [
+        "com.google.heatlive/com.huishine.traveler.page.SplashActivity"
       ],
-      "gradient_source": "sampled from the Play-listing launcher icon (reference only): the tile's red top-left corner #F6474A to pink right corner #F51D66 (2026-10-01)",
-      "glyph_source": "brand-informed redraw of the Play-listing launcher icon (reference only): the soft-cornered play triangle, authored as Core monoline corner arcs, not a trace (2026-10-01)"
+      "category": "LIVE",
+      "mapping_source": "issue #205 (device-reported on V6-Plus, Android 14, pack 1.9.7, heat-live-v5.9.1.apk): com.huishine.traveler.page.SplashActivity is the launch activity of com.google.heatlive",
+      "color_source": "read from the adaptive icon inside the HeatLive APK 5.0.3 (Aptoide #70735777; res/3N.xml, reference bundle corebuilds-missing-reference-icons-2026-10-03 (references.md, sha256-checked; reference only)): gradient #EB1E54 to #6900FF at 315 degrees (2026-10-03); was #E800F0 sampled from a screenshot",
+      "color_reviewed": "2026-10-03",
+      "glyph_source": "brand-informed redraw of the HeatLive logo's symbol (vSeeBox app list, reference only): its flame inside a teardrop, drawn as a Core stroke drop around a solid flame on the pack grid, not a trace (2026-10-03)",
+      "gradient": [
+        "#EB1E54",
+        "#6900FF"
+      ],
+      "gradient_source": "the same APK background shape: #EB1E54 to #6900FF (2026-10-03)"
+    },
+    {
+      "name": "AnimeTV",
+      "drawable": "animetv",
+      "color": "#440066",
+      "glyph": "animetv_wm",
+      "components": [
+        "com.amarullz.androidtv.animetvjmto/com.amarullz.androidtv.animetvjmto.MainActivity"
+      ],
+      "category": "VOD",
+      "mapping_source": "issue #230 (device-reported on onn 4K Pro Streaming Device, Android 14, pack 1.9.8): .MainActivity is the launch activity of com.amarullz.androidtv.animetvjmto",
+      "color_source": "read from the launcher icon inside the AnimeTV fork APK 5.9.2-Nightly (Aptoide #70598020; res/xC.webp, sha256 e4ed3a09caf61131; reference bundle corebuilds-missing-reference-icons-2026-10-03 (references.md, sha256-checked; reference only)): the purple tile #440066, lifted for the night card by display_accent (2026-10-03); replaces the site favicon's teal, which is not the app's launcher icon",
+      "color_reviewed": "2026-10-03",
+      "glyph_source": "wordmark-derived mark from the APK launcher icon (reference bundle corebuilds-missing-reference-icons-2026-10-03 (references.md, sha256-checked; reference only)): Anime over TV (the play hidden in its T is too small to survive the tile, so it is left out), in the pack's stroke letters, not the vendor letterforms (2026-10-03)"
+    },
+    {
+      "name": "PatchWall",
+      "drawable": "patchwall",
+      "color": "#F8C808",
+      "glyph": "patchwall_grid",
+      "components": [
+        "com.mitv.tvhome.atv/com.mitv.tvhome.atv.app.PatchWallActivity"
+      ],
+      "category": "LAUNCHER",
+      "mapping_source": "issue #235 (device-reported on MiTV-AFMU0, Android 14, pack 1.9.9): com.mitv.tvhome.atv.app.PatchWallActivity is the launch activity of com.mitv.tvhome.atv",
+      "color_source": "sampled from the Google Play listing icon for com.mitv.tvhome.atv (\"Xiaomi PatchWall\", reference bundle corebuilds-missing-reference-icons-2026-10-03 (references.md, sha256-checked; reference only), sha256 1b4068b6b0dc47bc, byte-identical on Aptoide #74315656): the amber #F8C808 tiles and wordmark (2026-10-03)",
+      "color_reviewed": "2026-10-03",
+      "glyph_source": "brand-informed redraw of the Play listing icon (reference bundle corebuilds-missing-reference-icons-2026-10-03 (references.md, sha256-checked; reference only)): its four-tile patchwork square as an offset 2x2 of rounded outlines, not a trace (2026-10-03)",
+      "secondary": {
+        "color": "#9058F8",
+        "parts": [
+          1,
+          3
+        ],
+        "source": "the same Play listing icon: the violet #9058F8 tiles on the right of the patchwork (2026-10-03)"
+      }
     }
   ],
   "artwork": {

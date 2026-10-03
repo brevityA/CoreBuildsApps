@@ -133,6 +133,9 @@
     <!-- AnimeTV -->
     <item component="ComponentInfo{com.dev.anime.one/com.dev.anime.one.MainActivity}" drawable="anime_banner"/>
     <item component="ComponentInfo{com.dev.anime.one/.MainActivity}" drawable="anime_banner"/>
+    <!-- AnimeTV -->
+    <item component="ComponentInfo{com.amarullz.androidtv.animetvjmto/com.amarullz.androidtv.animetvjmto.MainActivity}" drawable="animetv_banner"/>
+    <item component="ComponentInfo{com.amarullz.androidtv.animetvjmto/.MainActivity}" drawable="animetv_banner"/>
     <!-- Ant1 -->
     <item component="ComponentInfo{gr.antenna.ant1/com.arxnet.soeasytv.MainActivity}" drawable="ant1_banner"/>
     <!-- Anten TV -->
@@ -920,6 +923,8 @@
     <item component="ComponentInfo{com.zva3.mobile.litetvandroid/.MainActivity}" drawable="hdtv_player_banner"/>
     <item component="ComponentInfo{com.zva3.mobile.litetvandroid/com.zva3.mobile.litetvandroid.TvActivity}" drawable="hdtv_player_banner"/>
     <item component="ComponentInfo{com.zva3.mobile.litetvandroid/.TvActivity}" drawable="hdtv_player_banner"/>
+    <!-- HeatLive -->
+    <item component="ComponentInfo{com.google.heatlive/com.huishine.traveler.page.SplashActivity}" drawable="heatlive_banner"/>
     <!-- HEI Network -->
     <item component="ComponentInfo{com.heinetwork.HEINetworkTV/com.heinetwork.HEINetworkTV.MainActivity}" drawable="heinetworktv_banner"/>
     <item component="ComponentInfo{com.heinetwork.HEINetworkTV/.MainActivity}" drawable="heinetworktv_banner"/>
@@ -1624,6 +1629,9 @@
     <!-- Parsec -->
     <item component="ComponentInfo{tv.parsec.client/tv.parsec.client.MainActivity}" drawable="parsec_banner"/>
     <item component="ComponentInfo{tv.parsec.client/.MainActivity}" drawable="parsec_banner"/>
+    <!-- PatchWall -->
+    <item component="ComponentInfo{com.mitv.tvhome.atv/com.mitv.tvhome.atv.app.PatchWallActivity}" drawable="patchwall_banner"/>
+    <item component="ComponentInfo{com.mitv.tvhome.atv/.app.PatchWallActivity}" drawable="patchwall_banner"/>
     <!-- Pathé Thuis -->
     <item component="ComponentInfo{nl.pathe.thuis/nl.pathe.thuis.LaunchActivity}" drawable="pathethuis_banner"/>
     <item component="ComponentInfo{nl.pathe.thuis/.LaunchActivity}" drawable="pathethuis_banner"/>
@@ -1695,6 +1703,7 @@
     <!-- Pluto TV -->
     <item component="ComponentInfo{tv.pluto.android/tv.pluto.android.EntryPoint}" drawable="pluto_tv_banner"/>
     <item component="ComponentInfo{tv.pluto.android/.EntryPoint}" drawable="pluto_tv_banner"/>
+    <item component="ComponentInfo{tv.pluto.android/com.paramount.android.pplus.features.splash.tv.SplashMediatorActivity}" drawable="pluto_tv_banner"/>
     <!-- PMX -->
     <item component="ComponentInfo{com.mirfatif.permissionmanagerx/com.mirfatif.permissionmanagerx.fwk.MainActivityM}" drawable="pmx_banner"/>
     <item component="ComponentInfo{com.mirfatif.permissionmanagerx/.fwk.MainActivityM}" drawable="pmx_banner"/>
@@ -1901,6 +1910,7 @@
     <!-- RTVE Play -->
     <item component="ComponentInfo{com.rtve.androidtv/com.rtve.androidtv.Activity.SplashActivity}" drawable="rtve_play_banner"/>
     <item component="ComponentInfo{com.rtve.androidtv/.Activity.SplashActivity}" drawable="rtve_play_banner"/>
+    <item component="ComponentInfo{com.rtve.androidtv/com.google.android.archive.ReactivateActivity}" drawable="rtve_play_banner"/>
     <!-- Rubika TV -->
     <item component="ComponentInfo{app.rbmain.tv/com.example.vod.pages.main.MainActivity}" drawable="rbmain_banner"/>
     <!-- RugbyPass TV -->
@@ -2102,6 +2112,15 @@
     <!-- Sstream -->
     <item component="ComponentInfo{cloud.app.sstream/cloud.app.sstream.MainActivity}" drawable="sstream_banner"/>
     <item component="ComponentInfo{cloud.app.sstream/.MainActivity}" drawable="sstream_banner"/>
+    <!-- Stadium Sync -->
+    <item component="ComponentInfo{com.sync.tv/com.sync.tv.MainActivity}" drawable="sync_sports_banner"/>
+    <item component="ComponentInfo{com.sync.tv/.MainActivity}" drawable="sync_sports_banner"/>
+    <item component="ComponentInfo{tv.sync.app/tv.sync.app.MainActivity}" drawable="sync_sports_banner"/>
+    <item component="ComponentInfo{tv.sync.app/.MainActivity}" drawable="sync_sports_banner"/>
+    <item component="ComponentInfo{com.sportio.tv/com.sportio.tv.MainActivity}" drawable="sync_sports_banner"/>
+    <item component="ComponentInfo{com.sportio.tv/.MainActivity}" drawable="sync_sports_banner"/>
+    <item component="ComponentInfo{com.stadiumsync.mobile/com.stadiumsync.mobile.MainActivity}" drawable="sync_sports_banner"/>
+    <item component="ComponentInfo{com.stadiumsync.mobile/.MainActivity}" drawable="sync_sports_banner"/>
     <!-- Stan -->
     <item component="ComponentInfo{au.com.stan.and/au.com.stan.presentation.tv.splash.SplashScreenActivity}" drawable="stan_banner"/>
     <item component="ComponentInfo{au.com.stan.and/au.com.stan.and.MainActivity}" drawable="stan_banner"/>
@@ -2195,11 +2214,6 @@
     <!-- Symfonik -->
     <item component="ComponentInfo{app.symfonik.music.player/app.symfonik.ui.MainActivity}" drawable="symfonik_banner"/>
     <item component="ComponentInfo{app.symfonik.music.player/app.symfonik.ui.StartActivity}" drawable="symfonik_banner"/>
-    <!-- SYNC -->
-    <item component="ComponentInfo{com.sync.tv/com.sync.tv.MainActivity}" drawable="sync_sports_banner"/>
-    <item component="ComponentInfo{com.sync.tv/.MainActivity}" drawable="sync_sports_banner"/>
-    <item component="ComponentInfo{tv.sync.app/tv.sync.app.MainActivity}" drawable="sync_sports_banner"/>
-    <item component="ComponentInfo{tv.sync.app/.MainActivity}" drawable="sync_sports_banner"/>
     <!-- Syncler -->
     <item component="ComponentInfo{com.wolfpack.syncler/com.wolfpack.syncler.ui.SplashActivity}" drawable="syncler_banner"/>
     <item component="ComponentInfo{com.wolfpack.syncler/.ui.SplashActivity}" drawable="syncler_banner"/>
@@ -2736,6 +2750,8 @@
     <!-- Xiaomi TV+ -->
     <item component="ComponentInfo{com.mitv.tvhome.mitvplus/com.mitv.tvhome.mitvplus.app.BannerLogoFree24}" drawable="mitvplus_banner"/>
     <item component="ComponentInfo{com.mitv.tvhome.mitvplus/.app.BannerLogoFree24}" drawable="mitvplus_banner"/>
+    <item component="ComponentInfo{com.mitv.tvhome.mitvplus/com.mitv.tvhome.mitvplus.app.SplashActivity}" drawable="mitvplus_banner"/>
+    <item component="ComponentInfo{com.mitv.tvhome.mitvplus/.app.SplashActivity}" drawable="mitvplus_banner"/>
     <!-- Xstream Play -->
     <item component="ComponentInfo{tv.airtel.xstream.tvapp/tv.airtel.xstream.login.LoginActivity}" drawable="xstream_play_banner"/>
     <!-- Xumo Play -->

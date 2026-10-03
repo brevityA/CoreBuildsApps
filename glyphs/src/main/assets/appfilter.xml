@@ -133,6 +133,9 @@
     <!-- AnimeTV -->
     <item component="ComponentInfo{com.dev.anime.one/com.dev.anime.one.MainActivity}" drawable="anime"/>
     <item component="ComponentInfo{com.dev.anime.one/.MainActivity}" drawable="anime"/>
+    <!-- AnimeTV -->
+    <item component="ComponentInfo{com.amarullz.androidtv.animetvjmto/com.amarullz.androidtv.animetvjmto.MainActivity}" drawable="animetv"/>
+    <item component="ComponentInfo{com.amarullz.androidtv.animetvjmto/.MainActivity}" drawable="animetv"/>
     <!-- Ant1 -->
     <item component="ComponentInfo{gr.antenna.ant1/com.arxnet.soeasytv.MainActivity}" drawable="ant1"/>
     <!-- Anten TV -->
@@ -920,6 +923,8 @@
     <item component="ComponentInfo{com.zva3.mobile.litetvandroid/.MainActivity}" drawable="hdtv_player"/>
     <item component="ComponentInfo{com.zva3.mobile.litetvandroid/com.zva3.mobile.litetvandroid.TvActivity}" drawable="hdtv_player"/>
     <item component="ComponentInfo{com.zva3.mobile.litetvandroid/.TvActivity}" drawable="hdtv_player"/>
+    <!-- HeatLive -->
+    <item component="ComponentInfo{com.google.heatlive/com.huishine.traveler.page.SplashActivity}" drawable="heatlive"/>
     <!-- HEI Network -->
     <item component="ComponentInfo{com.heinetwork.HEINetworkTV/com.heinetwork.HEINetworkTV.MainActivity}" drawable="heinetworktv"/>
     <item component="ComponentInfo{com.heinetwork.HEINetworkTV/.MainActivity}" drawable="heinetworktv"/>
@@ -1624,6 +1629,9 @@
     <!-- Parsec -->
     <item component="ComponentInfo{tv.parsec.client/tv.parsec.client.MainActivity}" drawable="parsec"/>
     <item component="ComponentInfo{tv.parsec.client/.MainActivity}" drawable="parsec"/>
+    <!-- PatchWall -->
+    <item component="ComponentInfo{com.mitv.tvhome.atv/com.mitv.tvhome.atv.app.PatchWallActivity}" drawable="patchwall"/>
+    <item component="ComponentInfo{com.mitv.tvhome.atv/.app.PatchWallActivity}" drawable="patchwall"/>
     <!-- Pathé Thuis -->
     <item component="ComponentInfo{nl.pathe.thuis/nl.pathe.thuis.LaunchActivity}" drawable="pathethuis"/>
     <item component="ComponentInfo{nl.pathe.thuis/.LaunchActivity}" drawable="pathethuis"/>
@@ -1695,6 +1703,7 @@
     <!-- Pluto TV -->
     <item component="ComponentInfo{tv.pluto.android/tv.pluto.android.EntryPoint}" drawable="pluto_tv"/>
     <item component="ComponentInfo{tv.pluto.android/.EntryPoint}" drawable="pluto_tv"/>
+    <item component="ComponentInfo{tv.pluto.android/com.paramount.android.pplus.features.splash.tv.SplashMediatorActivity}" drawable="pluto_tv"/>
     <!-- PMX -->
     <item component="ComponentInfo{com.mirfatif.permissionmanagerx/com.mirfatif.permissionmanagerx.fwk.MainActivityM}" drawable="pmx"/>
     <item component="ComponentInfo{com.mirfatif.permissionmanagerx/.fwk.MainActivityM}" drawable="pmx"/>
@@ -1901,6 +1910,7 @@
     <!-- RTVE Play -->
     <item component="ComponentInfo{com.rtve.androidtv/com.rtve.androidtv.Activity.SplashActivity}" drawable="rtve_play"/>
     <item component="ComponentInfo{com.rtve.androidtv/.Activity.SplashActivity}" drawable="rtve_play"/>
+    <item component="ComponentInfo{com.rtve.androidtv/com.google.android.archive.ReactivateActivity}" drawable="rtve_play"/>
     <!-- Rubika TV -->
     <item component="ComponentInfo{app.rbmain.tv/com.example.vod.pages.main.MainActivity}" drawable="rbmain"/>
     <!-- RugbyPass TV -->
@@ -2102,6 +2112,15 @@
     <!-- Sstream -->
     <item component="ComponentInfo{cloud.app.sstream/cloud.app.sstream.MainActivity}" drawable="sstream"/>
     <item component="ComponentInfo{cloud.app.sstream/.MainActivity}" drawable="sstream"/>
+    <!-- Stadium Sync -->
+    <item component="ComponentInfo{com.sync.tv/com.sync.tv.MainActivity}" drawable="sync_sports"/>
+    <item component="ComponentInfo{com.sync.tv/.MainActivity}" drawable="sync_sports"/>
+    <item component="ComponentInfo{tv.sync.app/tv.sync.app.MainActivity}" drawable="sync_sports"/>
+    <item component="ComponentInfo{tv.sync.app/.MainActivity}" drawable="sync_sports"/>
+    <item component="ComponentInfo{com.sportio.tv/com.sportio.tv.MainActivity}" drawable="sync_sports"/>
+    <item component="ComponentInfo{com.sportio.tv/.MainActivity}" drawable="sync_sports"/>
+    <item component="ComponentInfo{com.stadiumsync.mobile/com.stadiumsync.mobile.MainActivity}" drawable="sync_sports"/>
+    <item component="ComponentInfo{com.stadiumsync.mobile/.MainActivity}" drawable="sync_sports"/>
     <!-- Stan -->
     <item component="ComponentInfo{au.com.stan.and/au.com.stan.presentation.tv.splash.SplashScreenActivity}" drawable="stan"/>
     <item component="ComponentInfo{au.com.stan.and/au.com.stan.and.MainActivity}" drawable="stan"/>
@@ -2195,11 +2214,6 @@
     <!-- Symfonik -->
     <item component="ComponentInfo{app.symfonik.music.player/app.symfonik.ui.MainActivity}" drawable="symfonik"/>
     <item component="ComponentInfo{app.symfonik.music.player/app.symfonik.ui.StartActivity}" drawable="symfonik"/>
-    <!-- SYNC -->
-    <item component="ComponentInfo{com.sync.tv/com.sync.tv.MainActivity}" drawable="sync_sports"/>
-    <item component="ComponentInfo{com.sync.tv/.MainActivity}" drawable="sync_sports"/>
-    <item component="ComponentInfo{tv.sync.app/tv.sync.app.MainActivity}" drawable="sync_sports"/>
-    <item component="ComponentInfo{tv.sync.app/.MainActivity}" drawable="sync_sports"/>
     <!-- Syncler -->
     <item component="ComponentInfo{com.wolfpack.syncler/com.wolfpack.syncler.ui.SplashActivity}" drawable="syncler"/>
     <item component="ComponentInfo{com.wolfpack.syncler/.ui.SplashActivity}" drawable="syncler"/>
@@ -2736,6 +2750,8 @@
     <!-- Xiaomi TV+ -->
     <item component="ComponentInfo{com.mitv.tvhome.mitvplus/com.mitv.tvhome.mitvplus.app.BannerLogoFree24}" drawable="mitvplus"/>
     <item component="ComponentInfo{com.mitv.tvhome.mitvplus/.app.BannerLogoFree24}" drawable="mitvplus"/>
+    <item component="ComponentInfo{com.mitv.tvhome.mitvplus/com.mitv.tvhome.mitvplus.app.SplashActivity}" drawable="mitvplus"/>
+    <item component="ComponentInfo{com.mitv.tvhome.mitvplus/.app.SplashActivity}" drawable="mitvplus"/>
     <!-- Xstream Play -->
     <item component="ComponentInfo{tv.airtel.xstream.tvapp/tv.airtel.xstream.login.LoginActivity}" drawable="xstream_play"/>
     <!-- Xumo Play -->

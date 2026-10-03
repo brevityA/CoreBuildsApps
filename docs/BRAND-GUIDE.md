@@ -61,6 +61,25 @@ share theirs. Never hand-pick a fallback colour. Run the tool.
 Serif for editorial display. Bold sans for product names and TV UI. Mono for
 versions, rails, receipts. Do not put serif on dense controls.
 
+### Icon Pack letters (2.0.0)
+
+Every letter the icon pack draws comes from one stroke alphabet, the
+rounded monoline letters in `tools/glyphs.py` (`_STROKE_LETTERS`): wordmark
+glyphs, letter tiles, category shells, text inside brand marks, and the
+banner name and category line. A filled sans next to a line-drawn mark read
+as two voices on one card, so the banners left Outfit Bold in 2.0.0.
+
+| Use | Rule |
+|---|---|
+| Icon marks | Letters stand 96–200px tall on the 512 grid; stroke 0.2 × letter height, 26–34px |
+| Banner name | Stroke 0.19 × cap, a step under the glyph's banner stroke so the mark leads |
+| Banner category | Uppercase, tracked out (gap 0.6 × cap), in the icon's accent |
+| Long names | A catalog `banner_name` shortens the card label only; trim descriptors, never the brand |
+| Brand marks | A letter fused into a brand's device keeps its drawn shape |
+
+Outfit stays the face of the pack's own branding (app banner, store art).
+`tests/test_wordmark_type.py` fails any icon that draws Outfit letters again.
+
 ## Icon Pack
 
 | Spec | Contract |
@@ -69,7 +88,7 @@ versions, rails, receipts. Do not put serif on dense controls.
 | Stroke | **32 / 26.2 / 21.8** rounded monoline |
 | Background | Transparent. The launcher owns the card |
 | Composition | One accent, Core Builds linework, vendor logos are cues only |
-| Banners | 320×180 transparent Projectivy cards |
+| Banners | 320×180 transparent Projectivy cards, labels in the stroke alphabet |
 | Contrast | Accents that fail 3:1 on `#0D1117` render as `#E6EDF3` |
 
 The v1.0 PDF lists Classic stroke as 34px. That page is wrong. `monoline()`

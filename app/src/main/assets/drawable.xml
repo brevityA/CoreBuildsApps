@@ -71,6 +71,7 @@
     <item drawable="abciview_banner" />
     <item drawable="androidtv_2_banner" />
     <item drawable="livingroom_banner" />
+    <item drawable="animetv_banner" />
     <item drawable="appletv_banner" />
     <item drawable="iplayer_banner" />
     <item drawable="bbc_iplayer_banner" />
@@ -111,6 +112,7 @@
     <item drawable="fivetviptvbox_banner" />
     <item drawable="screen_banner" />
     <item drawable="hdtv_player_banner" />
+    <item drawable="heatlive_banner" />
     <item drawable="myiptvonline_banner" />
     <item drawable="iptvextremepro_banner" />
     <item drawable="iptv_pro_banner" />
@@ -246,8 +248,8 @@
     <item drawable="sportsfire_banner" />
     <item drawable="sportsnet_banner" />
     <item drawable="sportzx_banner" />
-    <item drawable="rlcplus_banner" />
     <item drawable="sync_sports_banner" />
+    <item drawable="rlcplus_banner" />
     <item drawable="talksport_banner" />
     <item drawable="tennis_channel_banner" />
     <item drawable="tennistv_banner" />
@@ -386,6 +388,7 @@
     <item drawable="leanbackonfire_banner" />
     <item drawable="monet_banner" />
     <item drawable="ntathome_banner" />
+    <item drawable="patchwall_banner" />
     <item drawable="projectivy_blueprint_banner" />
     <item drawable="projectivy_banner" />
     <item drawable="projectivy_overflight_banner" />

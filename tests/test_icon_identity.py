@@ -166,7 +166,7 @@ class IdentityTests(unittest.TestCase):
             with self.subTest(icon=icon["name"]):
                 self.assertIn(bg, GLYPHS, icon["name"])
                 self.assertNotEqual(bg, icon["glyph"], icon["name"])
-                expected = recentre(render(icon["name"], bg, icon["color"],
+                expected = recentre(render(icon.get("banner_name", icon["name"]), bg, icon["color"],
                                             icon.get("category", ""),
                                             gradient=icon.get("gradient"),
                                             mark=icon.get("mark"),
@@ -184,10 +184,10 @@ class IdentityTests(unittest.TestCase):
     def test_adaptive_marks_fit_their_shell_and_counter_floor(self):
         """The adaptive font keeps its promise: marks only ever set on
         category monograms, inside that shell's own type budget, at or above
-        the cap floor where a filled counter survives a 48dp tile. A styled
+        the cap floor where a counter survives a 48dp tile. A styled
         mark is measured as it actually renders (lower, not its cap-token)."""
-        from glyphs import family_glyph_for
-        from typeface import MIN_LOCKUP_CAP, lockup_cap
+        from glyphs import family_glyph_for, stroke_lockup_cap as lockup_cap
+        from typeface import MIN_LOCKUP_CAP
         marked = 0
         for icon in ICONS:
             mark = icon.get("mark")
@@ -414,13 +414,14 @@ class CoreStyleTests(unittest.TestCase):
         from build_banners import recentre
         for icon in self.revised():
             actual = (ROOT / "assets/banners" / f"{icon['drawable']}.svg").read_text()
-            expected = recentre(render(icon["name"], icon["glyph"], icon["color"],
+            expected = recentre(render(icon.get("banner_name", icon["name"]), icon["glyph"], icon["color"],
                                        icon.get("category", ""),
                                        gradient=icon.get("gradient"),
                                        secondary=icon.get("secondary")))
             self.assertEqual(actual, expected, icon["name"])
             self.assertIn('id="cbRail"', actual)
-            self.assertIn('fill="#E6EDF3"', actual)  # common Outfit label, not vendor type
+            # the name in the shared stroke letters and light ink, not vendor type
+            self.assertIn('stroke="#E6EDF3"', actual)
 
     def test_banner_category_kicker_wears_the_icon_colour(self):
         """VOD / STREAM / LIVE follow the icon, never one global cyan.
@@ -430,8 +431,11 @@ class CoreStyleTests(unittest.TestCase):
         normalised primary accent (a duotone's second colour stays in the
         mark), and the app name stays light ink.
         """
+        import re
+        from build_banners import KICK_WEIGHT
+        kick = re.compile(r'stroke="(#[0-9A-Fa-f]{6})" stroke-width="%.1f"' % KICK_WEIGHT)
         banner = render("Monet", "droplet", "#B388FF", "LAUNCHER")
-        self.assertIn('fill="#B388FF"', banner)
+        self.assertEqual(kick.findall(banner), ["#B388FF"])
         self.assertNotIn('fill="#00d4ff"', banner.lower().replace("#00D4FF", "#00d4ff"))
         for icon in ICONS:
             if not icon.get("category") or icon.get("banner_style") == "glyph":
@@ -440,7 +444,9 @@ class CoreStyleTests(unittest.TestCase):
             accent = display_accent(icon["color"], monochrome=mono)
             text = (ROOT / "assets/banners" / f"{icon['drawable']}.svg").read_text()
             with self.subTest(icon=icon["name"]):
-                self.assertIn(f'fill="{accent}" stroke="none"', text)
+                # the category line is drawn first, at the kicker weight (a
+                # small name can land on the same weight after it)
+                self.assertEqual(kick.findall(text)[:1], [accent])
                 self.assertNotIn('fill="#00d4ff"', text)
 
     def test_revised_rasters_are_open_ink_and_clear_the_shared_safe_area(self):
@@ -542,8 +548,10 @@ class SourceTests(unittest.TestCase):
         self.assertEqual(core_monoline_errors(body, accent), [])
         self.assertNotIn("#FFFFFF", body.upper())
         root = ET.fromstring(f"<g>{body}</g>")
-        self.assertEqual(len(root.findall("ellipse")), 1)  # the lowercase o
-        self.assertEqual(len(root.findall("path")), 3)  # n, three ticks, long underline
+        # 'no' is set in the pack's stroke letters (one path), then the three
+        # ticks and the long underline: the interrupted buffer line.
+        self.assertEqual(len(root.findall("ellipse")), 0)
+        self.assertEqual(len(root.findall("path")), 3)
         self.assertNotEqual(body, monoline(GLYPHS["tile_N"](accent)))
         self.assertFalse(hasattr(brandmarks, "catalog_glyphs"))  # no vendor override route
 

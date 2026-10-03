@@ -6,7 +6,7 @@
 
 | Product | Path | Package ID | Version | Downloader / stable tag |
 |---|---|---|---:|---|
-| Core Builds Icon Pack | `app/` with repo-root Gradle | `tv.corebuilds.iconpack` | `1.9.9` | `5270601` / `iconpack` |
+| Core Builds Icon Pack | `app/` with repo-root Gradle | `tv.corebuilds.iconpack` | `2.0.0` | `5270601` / `iconpack` |
 | Core Line | `ticker/` + `ticker/android/` | `dev.corebuilds.line` | `1.4.4` | `7375676` / `coreline` |
 | Core Shift | `shift/` | `dev.corebuilds.shift` | `2.3.5` | `8829421` / `shift` |
 | Core Motion | `motion-plugin/` | `tv.corebuilds.motion` | `1.0.0` | `[USER TO SUPPLY]` / `motion` |
@@ -56,7 +56,7 @@ python tools/validate.py
 python tests/test_icon_identity.py    # 66 style/colour/reference/mapping regressions
 ```
 
-Paste the validator receipt. Current receipt: `Validated 973 icons · 1837 components`.
+Paste the validator receipt. Current receipt: `Validated 976 icons · 1850 components`.
 
 **The pack identity takes precedence over literal vendor-logo reproduction.**
 Reviewed brand entries use `style: core_monoline`: 32px rounded primary strokes,

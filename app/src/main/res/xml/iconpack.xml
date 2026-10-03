@@ -44,6 +44,7 @@
     <item drawable="anilab" />
     <item drawable="anime_cast" />
     <item drawable="anime" />
+    <item drawable="animetv" />
     <item drawable="ant1" />
     <item drawable="antentv" />
     <item drawable="anvandarmanual" />
@@ -317,6 +318,7 @@
     <item drawable="hdo_box" />
     <item drawable="falcofemoralis" />
     <item drawable="hdtv_player" />
+    <item drawable="heatlive" />
     <item drawable="heinetworktv" />
     <item drawable="watcher" />
     <item drawable="hi_browser" />
@@ -558,6 +560,7 @@
     <item drawable="cbs" />
     <item drawable="tve" />
     <item drawable="parsec" />
+    <item drawable="patchwall" />
     <item drawable="pathethuis" />
     <item drawable="video" />
     <item drawable="pbs_kids" />
@@ -718,6 +721,7 @@
     <item drawable="spotify" />
     <item drawable="srfplayer" />
     <item drawable="sstream" />
+    <item drawable="sync_sports" />
     <item drawable="stan" />
     <item drawable="standupcomedytv" />
     <item drawable="bydeluxe" />
@@ -751,7 +755,6 @@
     <item drawable="sweet_tv" />
     <item drawable="androidtv_8" />
     <item drawable="symfonik" />
-    <item drawable="sync_sports" />
     <item drawable="syncler" />
     <item drawable="syncler_2" />
     <item drawable="syncler_beta" />

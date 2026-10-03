@@ -6,6 +6,92 @@ All notable changes to the Core Builds Icon Pack. Format follows
 
 ## [Unreleased]
 
+## [2.0.0] — 2026-10-03
+
+### Added
+
+- **HeatLive.** Its flame inside a teardrop, in the app's own gradient,
+  `#EB1E54` to `#6900FF`, read from the adaptive icon inside its APK.
+  Requested in #205 with the launch activity read off the requester's
+  V6-Plus (Android 14).
+- **AnimeTV.** Its wordmark, Anime over TV, in the purple of
+  the launcher icon inside the fork's APK (not the site favicon's teal).
+  Requested in #230 with the launch activity read off the requester's onn
+  4K Pro (Android 14).
+- **PatchWall.** Xiaomi's launcher, as its four-tile patchwork square in
+  amber and violet, from its Play listing icon. Requested in #235 with the
+  launch activity read off the requester's MiTV (Android 14).
+  973 → 976 icons, 1199 → 1207 components.
+
+### Changed
+
+- **Wordmark icons share one set of proportions.** The 217 icons that spell
+  a short form of the app's name (`_WM` in `tools/glyphs.py`) used a fixed
+  30px stroke at any size, so letters ran from 48px to 272px tall: single
+  letters looked hairline and five-letter words clogged. Letters now stay
+  between 96px and 200px, stroke follows the letter height (26-34px), and
+  letter spacing does too. A mark that would set under 120px with nothing
+  beside it (68 of them) may use 384px of width instead of 336px; ring
+  marks get a wider box inside the ring.
+  `GREAT` now breaks onto two lines. `validate.py` fails any mark outside
+  the band by name, and `tests/test_wordmark_type.py` pins the rules.
+- **One alphabet for every letter in an icon.** Icons drew letters three
+  ways: the stroke letters above (220 wordmarks), solid Outfit ExtraBold
+  (23 tiles, category shells and single letters such as Tubi's t, Crave's c,
+  Vidio's v and BitTV's b) and hand-drawn strokes inside 16 brand marks. All
+  of them now use the same stroke letters under the same size rules. The
+  16 marks keep their rings, screens and boxes and set only their text
+  anew: Yacine TV, nobuffr, IB Player, TV 2, France 24, DW, AIDA64, Trakt,
+  KUKU, APKMirror, Netzkino, ARD, Cast4K, ES-DE, HDHomeRun and Premiumize.
+  Letters fused into a brand's device (SVT's t into a play arrow, ESPN's
+  notched E, Go3's 3) are unchanged. Banner labels stay in Outfit Bold.
+- **Banner names are drawn like the icons.** The app name and category on
+  every banner were set in solid Outfit Bold beside line-drawn icons. Both
+  now use the same rounded stroke letters as the icons, a step lighter than
+  the icon's line so the mark still leads. The category line (VOD, LIVE,
+  SPORT…) is now spaced out as a label: the spacing was always defined but
+  never applied, so it set tight in the same bold as the name. The letters
+  gained the punctuation and accents app names use (`-`, `.`, `'`, `&`, `( )`,
+  `/`, `!`, `é í á ā ä å É İ`). 13 long names get a shorter banner form, so
+  "Matvt Mouse For Android TV Toggle" reads "Matvt Mouse"; the full name is
+  unchanged everywhere else.
+- **Lowercase marks are sized by what you see.** A mark made only of
+  x-height letters (a lone c, `no`, `noo/vo`) is now held to the same
+  visible height as capitals. That found `noo/vo` and `nowo` setting
+  80px and 91px tall, under the floor since they shipped; `nowo` now
+  breaks onto two lines.
+
+### Fixed
+
+- **Pluto TV applies again.** Pluto now launches through Paramount's TV
+  splash screen, a component the pack did not know, so its icon stopped
+  applying. The new component is mapped beside the old one, as read off the
+  reporter's Philips Google TV (Android 14) in #232.
+- **Stadium Sync is Stadium Sync.** The icon was labelled SYNC and drawn as
+  a generic arena bowl. At its developer's request it now carries the
+  app's name and its domed arena (ribbed dome, truss ring, drum and stands)
+  in the cyan of Stadium Sync's own logo on dark, and maps to the launch
+  activities the developer gave for its Android TV and mobile apps.
+- **CNBC sits on the grid.** A full review of all 975 shipped icons found
+  the CNBC peacock 96px below centre and leaning left: its fan pivoted near
+  the bottom edge. The fan is now symmetric and centred. Every other icon's
+  ink box sits within 36px of centre (median 1px), and
+  `tests/test_icon_review.py` now fails any icon over 40px off centre or
+  under 256px across.
+- **Xiaomi TV+ and RTVE Play match their own icons.** Xiaomi TV+ was a
+  generic teal set; it is now TV with Xiaomi's orange plus. RTVE Play shows
+  the full lowercase rtve with its play, in the wordmark's orange gradient.
+  Both were drawn from their Play listing icons.
+- **Xiaomi TV+ and RTVE Play apply again.** Xiaomi TV+ now launches
+  through a splash screen the pack did not map, and an archived RTVE Play
+  shows Android's reactivate placeholder instead of the app. Both components
+  are mapped beside the existing ones, as read off the reporter's MiTV
+  (Android 14) in #237 and #236.
+- **MaxPlayer is amber.** 1.9.9 coloured it from an older red-to-pink tile;
+  the app's current icon is an amber m folded into a play triangle on navy,
+  and the pack now uses that amber and draws the m's arcs inside the
+  triangle.
+
 ## [1.9.9] — 2026-10-01
 
 ### Added

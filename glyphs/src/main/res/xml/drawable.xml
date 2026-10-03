@@ -71,6 +71,7 @@
     <item drawable="abciview" />
     <item drawable="androidtv_2" />
     <item drawable="livingroom" />
+    <item drawable="animetv" />
     <item drawable="appletv" />
     <item drawable="iplayer" />
     <item drawable="bbc_iplayer" />
@@ -111,6 +112,7 @@
     <item drawable="fivetviptvbox" />
     <item drawable="screen" />
     <item drawable="hdtv_player" />
+    <item drawable="heatlive" />
     <item drawable="myiptvonline" />
     <item drawable="iptvextremepro" />
     <item drawable="iptv_pro" />
@@ -246,8 +248,8 @@
     <item drawable="sportsfire" />
     <item drawable="sportsnet" />
     <item drawable="sportzx" />
-    <item drawable="rlcplus" />
     <item drawable="sync_sports" />
+    <item drawable="rlcplus" />
     <item drawable="talksport" />
     <item drawable="tennis_channel" />
     <item drawable="tennistv" />
@@ -386,6 +388,7 @@
     <item drawable="leanbackonfire" />
     <item drawable="monet" />
     <item drawable="ntathome" />
+    <item drawable="patchwall" />
     <item drawable="projectivy_blueprint" />
     <item drawable="projectivy" />
     <item drawable="projectivy_overflight" />
