@@ -22,6 +22,7 @@ class WordmarkType(unittest.TestCase):
         bad = []
         for d, (text, cue) in MARKS.items():
             _box, cap, _w, _g = G.wm_layout(text, cue)
+            cap = G.letter_size(text, cap)
             if not G._WM_CAP_MIN <= cap <= G._WM_CAP_MAX:
                 bad.append(f"{d} '{text}': cap {cap:.0f}")
         self.assertEqual(bad, [])
@@ -30,6 +31,7 @@ class WordmarkType(unittest.TestCase):
         ratios = []
         for text, cue in MARKS.values():
             _box, cap, weight, _g = G.wm_layout(text, cue)
+            cap = G.letter_size(text, cap)
             self.assertTrue(26 <= weight <= 34, (text, weight))
             ratios.append(weight / cap)
         # Was .11-.63 at a fixed 30px stroke.
@@ -47,6 +49,26 @@ class WordmarkType(unittest.TestCase):
     def test_glyph_carries_its_mark(self):
         for d, (text, cue) in MARKS.items():
             self.assertEqual(G.GLYPHS[f"{d}_wm"].wm, (text, cue))
+
+    def test_icon_letters_are_one_face(self):
+        # 2.0.0: tiles, category shells, adaptive marks and bespoke glyphs
+        # draw letters with the stroke alphabet. Outfit is the banner label's
+        # face only; an icon that outlined it again would bring back a filled
+        # second alphabet beside the monoline one.
+        for name in ("monogram_body", "monogram_scaled", "monogram_text", "adaptive_lockup"):
+            self.assertEqual(getattr(G, name).__module__, "glyphs", name)
+        src = (Path(G.__file__)).read_text(encoding="utf-8")
+        for outfit in ("monogram_outline", "wordmark_spans", "from typeface import monogram",
+                       "from typeface import adaptive"):
+            self.assertNotIn(outfit, src)
+        body = G.GLYPHS["broadcast_K"]("#FF0000")
+        self.assertNotIn('fill="#FF0000" stroke="none"/><path', body.split("<path")[-1])
+
+    def test_x_height_marks_stand_as_tall_as_capitals(self):
+        self.assertEqual(G.letter_body("no"), .7)
+        self.assertEqual(G.letter_body("No"), 1.0)
+        self.assertAlmostEqual(G.stroke_lockup_cap("c", 400, 400),
+                               G.stroke_lockup_cap("C", 400, 400), delta=1)
 
 
 if __name__ == "__main__":

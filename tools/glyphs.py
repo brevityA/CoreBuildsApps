@@ -3,7 +3,7 @@ import os
 import math
 import re
 
-from typeface import MIN_LOCKUP_CAP, adaptive_lockup, lockup_cap, monogram_body, monogram_text, monogram_scaled
+from typeface import MIN_LOCKUP_CAP
 from icon_style import OFFWHITE_INK, display_accent
 """
 Core Builds Icon Pack — glyph library.
@@ -201,8 +201,13 @@ def tubi_mono(c):
     cross, so the wordmark's detached shoulder dot sits at the crossbar —
     the brand quirk, kept as a glyph cue.
     """
+    cap = _settle("t", _WM_WIDE, _WM_CAP_MAX)[0]
+    w, _ = _STROKE_LETTERS["t"]
+    # The dot sits level with the crossbar, one letter-gap past its end.
+    x = 256 + w * cap / 2 + _WM_SPACING[2]
+    y = 256 - cap / 2 + .34 * cap
     return (monogram_body("t", c) +
-            f'<circle cx="396" cy="204" r="34" fill="{c}" stroke="none"/>')
+            f'<circle cx="{x:.1f}" cy="{y:.1f}" r="28" fill="{c}" stroke="none"/>')
 
 
 def vidio_mono(c):
@@ -931,8 +936,7 @@ def torbox_cube(c):
 def premiumize_p(c):
     """Premiumize: P in a rounded square."""
     return (f'<rect x="76" y="76" width="360" height="360" rx="84" {_s(c, 32)}/>'
-            f'<path d="M 202 366 L 202 152 L 282 152 C 340 152 366 186 366 224 '
-            f'C 366 262 340 296 282 296 L 202 296" {_s(c, 36)}/>')
+            + stroke_lockup("P", c, cap_h=200, max_w=260))
 
 
 def monitor_wave(c):
@@ -1880,7 +1884,6 @@ def _mk_tile(letter):
 
 def two_char_tile(text, color):
     """Multi-character lockup (e.g. '10') inside the shared tile."""
-    from typeface import monogram_text
     body = monogram_text(text, color)
     return _tile(color) + body
 
@@ -3004,8 +3007,7 @@ def apkpure_d(c):
 def apkmirror_mark(c):
     """APKMirror: the mirror box — a box with an R."""
     return (f'<rect x="96" y="130" width="320" height="260" rx="40" {_s(c, 32)}/>'
-            f'<path d="M 210 340 L 210 214 L 256 214 C 300 214 316 286 316 320" '
-            f'{_s(c, 28)}/>')
+            + stroke_lockup("R", c, cap_h=150, max_w=200, cy=260))
 
 
 def rustore_mark(c):
@@ -3422,10 +3424,8 @@ GLYPHS.update({
 # Keep the full name in the same Outfit-labelled banner as every neighbouring app.
 def nobuffr_mark(c):
     """Lowercase 'no' + interrupted buffer line, authored in Core Builds linework."""
-    return (f'<path d="M 104 292 V 148 M 104 208 '
-            f'C 104 128 232 128 232 208 V 292" {_s(c, 32)}/>'
-            f'<ellipse cx="352" cy="220" rx="64" ry="80" {_s(c, 32)}/>'
-            f'<path d="M 104 360 V 380 M 142 360 V 380 M 180 360 V 380" {_s(c, 20)}/>'
+    return (stroke_lockup("no", c, cap_h=150, max_w=300, cy=224, cx=260)
+            + f'<path d="M 104 360 V 380 M 142 360 V 380 M 180 360 V 380" {_s(c, 20)}/>'
             f'<path d="M 232 370 H 416" {_s(c, 26)}/>')
 
 
@@ -3507,8 +3507,7 @@ def france24_mark(c):
     no information the digits did not, so it is gone and the numerals take the
     whole safe area.
     """
-    from typeface import monogram_outline
-    return monogram_outline("24", c, cap_h=300, weight=32, max_width=392)
+    return stroke_lockup("24", c, max_w=392)
 
 
 def cbc_gem(c):
@@ -4489,9 +4488,7 @@ def trakt_mark(c):
     lowercase t; drawn here in our linework rather than lifted.
     """
     return (f'<circle cx="256" cy="256" r="182" {_s(c, 32)}/>'
-            f'<path d="M 226 136 L 226 306 C 226 336 246 352 276 352 '
-            f'L 312 352" {_s(c, 30)}/>'
-            f'<path d="M 168 198 L 292 198" {_s(c, 26)}/>')
+            + stroke_lockup("t", c, cap_h=196, max_w=200))
 
 
 def drive_sync(c):
@@ -4741,11 +4738,8 @@ def dw_circles(c):
     return (
         f'<circle cx="180" cy="256" r="112" {_s(c, 32)}/>'
         f'<circle cx="332" cy="256" r="112" {_s(c, 32)}/>'
-        f'<path d="M 142 190 L 142 322" {_s(c, 26)}/>'
-        f'<path d="M 142 190 L 178 190 C 214 190 232 216 232 256 '
-        f'C 232 296 214 322 178 322 L 142 322" {_s(c, 26)}/>'
-        f'<path d="M 282 196 L 302 320 L 332 242 L 362 320 L 382 196" '
-        f'{_s(c, 26)}/>'
+        + stroke_lockup("D", c, cap_h=112, max_w=120, cx=180)
+        + stroke_lockup("W", c, cap_h=112, max_w=120, cx=332)
     )
 
 
@@ -4915,12 +4909,7 @@ def aida_sixty_four(c):
     counters are large enough to survive the 96px tile, which is the binding
     constraint on a two-numeral mark at this size.
     """
-    return (f'<path d="M 212 118 C 158 118 128 176 128 256 '
-            f'C 128 344 168 396 212 396 C 256 396 284 356 284 312 '
-            f'C 284 266 254 232 212 232 C 172 232 140 262 134 300" '
-            f'{_s(c, 32)}/>'
-            f'<path d="M 386 118 L 306 306 L 446 306" {_s(c, 32)}/>'
-            f'<path d="M 400 216 L 400 396" {_s(c, 32)}/>')
+    return stroke_lockup("64", c, max_w=360)
 
 
 GLYPHS.update({
@@ -4955,7 +4944,7 @@ def zeus_bolt(c):
 def ard_one(c):
     """ARD Mediathek: the ring-and-1 of the ARD lockup."""
     return (f'<circle cx="256" cy="256" r="164" {_s(c, 32)}/>'
-            f'<path d="M 214 196 L 272 164 L 272 352" {_s(c, 34)}/>')
+            + stroke_lockup("1", c, cap_h=190, max_w=120))
 
 
 def dr_play(c):
@@ -5423,7 +5412,7 @@ def netzkino_leader(c):
     return (f'<circle cx="256" cy="256" r="176" {_s(c, 30)}/>'
             f'<path d="M 80 256 L 188 256 M 324 256 L 432 256 '
             f'M 256 80 L 256 132 M 256 380 L 256 432" {_s(c, 22)}/>'
-            f'<path d="M 222 180 L 268 150 L 268 356" {_s(c, 32)}/>')
+            + stroke_lockup("1", c, cap_h=200, max_w=120))
 
 
 def photocollage_ring(c):
@@ -6808,8 +6797,7 @@ def cast4k_tv(c):
             f'<circle cx="346" cy="92" r="14" {_f(c)}/>'
             f'<path d="M 96 170 L 416 170 C 444 170 456 194 440 218 L 300 420 '
             f'C 280 448 232 448 212 420 L 72 218 C 56 194 68 170 96 170 Z" {_s(c, 28)}/>'
-            f'<path d="M 214 216 L 160 290 L 232 290 M 212 250 L 212 334" {_s(c, 22)}/>'
-            f'<path d="M 278 216 L 278 334 M 340 216 L 280 276 L 344 334" {_s(c, 22)}/>')
+            + stroke_lockup("4K", c, cap_h=100, max_w=180, cy=266))
 
 
 def dramalive_globe(c):
@@ -7249,10 +7237,7 @@ def freshdrama_tri(c):
 def hdhomerun_box(c):
     """HDHomeRun: the rounded tuner box stamped with HD."""
     return (f'<rect x="72" y="120" width="368" height="272" rx="48" {_s(c, 28)}/>'
-            f'<path d="M 144 184 L 144 328 M 232 184 L 232 328 M 144 256 L 232 256" '
-            f'{_s(c, 26)}/>'
-            f'<path d="M 284 184 L 284 328 L 320 328 C 368 328 384 296 384 256 '
-            f'C 384 216 368 184 320 184 Z" {_s(c, 26)}/>')
+            + stroke_lockup("HD", c, cap_h=150, max_w=260))
 
 
 def kpn_play(c):
@@ -7405,10 +7390,8 @@ def yousee_disc(c):
 
 def ibplayer_ib(c):
     """IB Player: the i and b set against a play arrow."""
-    return (f'<circle cx="120" cy="128" r="18" {_f(c)}/>'
-            f'<path d="M 120 190 L 120 400 M 188 96 L 188 400" {_s(c, 30)}/>'
-            f'<circle cx="252" cy="334" r="64" {_s(c, 26)}/>'
-            f'<path d="M 300 136 L 436 216 L 336 276" {_s(c, 26)}/>')
+    return (stroke_lockup("ib", c, cap_h=200, max_w=180, cy=280, cx=176)
+            + f'<path d="M 300 136 L 436 216 L 336 276" {_s(c, 26)}/>')
 
 
 def oblivion_face(c):
@@ -7554,8 +7537,8 @@ def mtvkatsomo_play(c):
 def kuku_k(c):
     """KUKU TV: the lowercase k and its dot in a rounded square."""
     return (f'<rect x="88" y="88" width="336" height="336" rx="64" {_s(c, 28)}/>'
-            f'<path d="M 184 148 L 184 364 M 296 212 L 188 290 L 300 364" {_s(c, 28)}/>'
-            f'<circle cx="340" cy="344" r="22" {_f(c)}/>')
+            + stroke_lockup("k", c, cap_h=180, max_w=200, cx=236)
+            + f'<circle cx="{236 + .22 * 180 + 40:.1f}" cy="{256 + 90:.1f}" r="22" {_f(c)}/>')
 
 
 def pepperbox_guns(c):
@@ -7840,8 +7823,7 @@ def yacine_set(c):
     """Yacine TV: the wide set with a V antenna and TV lettered across its screen."""
     return (f'<rect x="72" y="176" width="368" height="240" rx="32" {_s(c, 28)}/>'
             f'<path d="M 256 176 L 196 96 M 256 176 L 316 96" {_s(c, 22)}/>'
-            f'<path d="M 144 236 L 236 236 M 190 236 L 190 356 M 272 236 L 314 356 L 356 236" '
-            f'{_s(c, 26)}/>')
+            + stroke_lockup("TV", c, cap_h=120, max_w=260, cy=296))
 
 
 def tvgarden_sprout(c):
@@ -7946,9 +7928,7 @@ def swac_star(c):
 def esde_es(c):
     """ES-DE: the rounded block with its E and S set side by side."""
     return (f'<rect x="72" y="104" width="368" height="304" rx="48" {_s(c, 28)}/>'
-            f'<path d="M 232 176 L 144 176 L 144 336 L 232 336 M 144 256 L 216 256" {_s(c, 28)}/>'
-            f'<path d="M 376 188 C 360 168 280 164 280 214 C 280 262 376 248 376 294 '
-            f'C 376 344 296 344 276 320" {_s(c, 28)}/>')
+            + stroke_lockup("ES", c, cap_h=170, max_w=260))
 
 
 def telequebec_cards(c):
@@ -8022,9 +8002,7 @@ def mytv_wings(c):
 def tv2_disc(c):
     """TV 2 Play: the ring with the v and 2 set tightly inside."""
     return (f'<circle cx="256" cy="256" r="180" {_s(c, 28)}/>'
-            f'<path d="M 128 208 L 172 312 L 216 208" {_s(c, 28)}/>'
-            f'<path d="M 256 220 C 264 184 352 184 352 232 C 352 268 280 290 256 312 L 360 312" '
-            f'{_s(c, 28)}/>')
+            + stroke_lockup("v2", c, cap_h=130, max_w=250))
 
 
 def zdf_two(c):
@@ -8104,6 +8082,7 @@ _STROKE_LETTERS = {
     "5": (.58, "M .52 0 L .1 0 L .06 .44 C .14 .4 .22 .38 .3 .38 C .46 .38 .58 .5 .58 .68 C .58 .88 .44 1 .28 1 C .16 1 .06 .96 0 .88"),
     "6": (.58, "M .5 .06 C .44 .02 .38 0 .32 0 C .12 0 0 .24 0 .56 C 0 .84 .12 1 .3 1 C .48 1 .58 .86 .58 .7 C .58 .52 .46 .42 .3 .42 C .16 .42 .04 .5 0 .62"),
     "7": (.56, "M 0 0 L .56 0 L .2 1"),
+    "8": (.58, "M .29 .48 C .13 .48 .04 .38 .04 .25 C .04 .1 .15 0 .29 0 C .43 0 .54 .1 .54 .25 C .54 .38 .45 .48 .29 .48 C .1 .48 0 .6 0 .74 C 0 .9 .13 1 .29 1 C .45 1 .58 .9 .58 .74 C .58 .6 .48 .48 .29 .48 Z"),
     "9": (.58, "M .08 .94 C .14 .98 .2 1 .26 1 C .46 1 .58 .76 .58 .44 C .58 .16 .46 0 .28 0 C .1 0 0 .14 0 .3 C 0 .48 .12 .58 .28 .58 C .42 .58 .54 .5 .58 .38"),
     "+": (.5, "M .25 .25 L .25 .75 M 0 .5 L .5 .5"),
     "a": (.5, "M .5 .3 L .5 1 M .5 .65 C .5 .45 .4 .3 .25 .3 C .1 .3 0 .45 0 .65 C 0 .85 .1 1 .25 1 C .4 1 .5 .85 .5 .65"),
@@ -8190,11 +8169,13 @@ def _stroke_px(text, s, gap=_STROKE_GAP):
 
 
 def _stroke_fit(text, box, gap=_STROKE_GAP):
-    """Largest cap height at which `text` ('/' = line break) fits `box`."""
+    """Largest cap height at which `text` ('/' = line break) fits `box`.
+    Lines of x-height letters stack by their x-height, not their cap box:
+    the empty top of each would otherwise read as extra leading."""
     lines = text.split("/")
     bx0, by0, bx1, by1 = box
     desc = any(ch in "gjpqy" for ch in lines[-1])
-    s = (by1 - by0 - 44 * (len(lines) - 1)) / (len(lines) + (.34 if desc else 0))
+    s = (by1 - by0 - 44 * (len(lines) - 1)) / (len(lines) * letter_body(text) + (.34 if desc else 0))
     for line in lines:
         units_w = math.fsum(_STROKE_LETTERS[ch][0] for ch in line) or .01
         s = min(s, (bx1 - bx0 - gap * (len(line) - 1)) / units_w)
@@ -8211,18 +8192,19 @@ def _stroke_text(text, c, box=(96, 136, 416, 376), weight=30, gap=_STROKE_GAP, c
     desc = any(ch in "gjpqy" for ch in lines[-1])
     rows = len(lines)
     lead = 44
-    units_h = rows + (.34 if desc else 0)
+    body = letter_body(text)
+    units_h = rows * body + (.34 if desc else 0)
     s = _stroke_fit(text, box, gap)
     if cap_max:
         s = min(s, cap_max)
     ink_h = units_h * s + lead * (rows - 1)
     out, dots = [], []
-    y = by0 + (bh - ink_h) / 2
+    y = by0 + (bh - ink_h) / 2 - (1 - body) * s
     for line in lines:
         lw = _stroke_px(line, s, gap)
         d, dd = _stroke_line(line, bx0 + (bw - lw) / 2, y, s, gap)
         out.append(d); dots += dd
-        y += s + lead
+        y += body * s + lead
     body = f'<path d="{" ".join(out)}" {_s(c, weight)}/>'
     r = weight * .62
     return body + "".join(f'<circle cx="{x:.1f}" cy="{y:.1f}" r="{r:.1f}" {_f(c)}/>' for x, y in dots)
@@ -8253,6 +8235,23 @@ _WM_BOX = {
 }
 
 
+_XHEIGHT = frozenset("acemnorsuvwxzgpqy+")
+
+
+def letter_body(text):
+    """How much of the cap grid `text`'s letters stand on: 1 when any letter
+    reaches the cap line, .7 when every one stops at the x-height (a lone c
+    or 'no'). The band is about the letters people see, so an all-x-height
+    mark is set on a larger grid until its letters stand as tall as capitals
+    would. Descenders never count, as in a cap height."""
+    return .7 if set(text.replace("/", "")) <= _XHEIGHT else 1.0
+
+
+def letter_size(text, cap):
+    """The height the band holds: cap height, or x-height for x-height marks."""
+    return cap * letter_body(text)
+
+
 def wm_layout(text, cue=None):
     """(box, cap, weight, gap) for a stroke-letter mark: the band rules above.
     Shared with the validator so a mark outside the band fails by name."""
@@ -8262,15 +8261,16 @@ def wm_layout(text, cue=None):
         # word may widen into the safe area. Plus, play and dot sit in a
         # corner beside the text and rings and frames enclose it: their boxes
         # already stop where the cue starts.
-        if _stroke_fit(text, box) < _WM_WIDEN_BELOW:
+        if letter_size(text, _stroke_fit(text, box)) < _WM_WIDEN_BELOW:
             half = _WM_WIDE / 2
             box = (256 - half, box[1], 256 + half, box[3])
+    body = letter_body(text)
     gap = _STROKE_GAP
     for _ in range(3):   # gap follows the cap, and the cap the gap: settle it
-        cap = min(_stroke_fit(text, box, gap), _WM_CAP_MAX)
-        gap = round(_clamp(cap * _WM_SPACING[0], *_WM_SPACING[1:]))
-    cap = min(_stroke_fit(text, box, gap), _WM_CAP_MAX)
-    weight = round(_clamp(cap * _WM_WEIGHT[0], *_WM_WEIGHT[1:]))
+        cap = min(_stroke_fit(text, box, gap), _WM_CAP_MAX / body)
+        gap = round(_clamp(cap * body * _WM_SPACING[0], *_WM_SPACING[1:]))
+    cap = min(_stroke_fit(text, box, gap), _WM_CAP_MAX / body)
+    weight = round(_clamp(cap * body * _WM_WEIGHT[0], *_WM_WEIGHT[1:]))
     return box, cap, weight, gap
 
 
@@ -8283,6 +8283,63 @@ def _wm_glyph(text, cue=None):
     draw.__doc__ = f"Wordmark cue: '{text}'" + (f" with its {cue}" if cue else "") + "."
     draw.wm = (text, cue)   # read by validate.py's type-band check
     return draw
+
+
+# --------------------------------------------------------------------------
+# One face for every letter an icon draws (2.0.0). Monogram tiles, category
+# shells and their adaptive marks used to set filled Outfit ExtraBold while
+# the wordmarks used these stroke letters: two alphabets, one solid and one
+# monoline, side by side on the same home screen. Every icon letter now
+# comes from _STROKE_LETTERS under the same band rules as the wordmarks;
+# Outfit stays the face of banner labels (Brand Guide §04), which are UI
+# text, not icon art. The entry points keep their old names and arguments
+# so no caller changes.
+# --------------------------------------------------------------------------
+def _settle(text, max_w, cap_h):
+    """(cap, gap) for `text` held to `max_w` and to `cap_h` of letter size."""
+    body = letter_body(text)
+    gap = _STROKE_GAP
+    units = max(math.fsum(_STROKE_LETTERS[ch][0] for ch in line)
+                for line in text.split("/")) or .01
+    longest = max(len(line) for line in text.split("/"))
+    for _ in range(3):
+        cap = min(min(cap_h, _WM_CAP_MAX) / body, (max_w - gap * (longest - 1)) / units)
+        gap = round(_clamp(cap * body * _WM_SPACING[0], *_WM_SPACING[1:]))
+    cap = min(min(cap_h, _WM_CAP_MAX) / body, (max_w - gap * (longest - 1)) / units)
+    return cap, gap
+
+
+def stroke_lockup_cap(text, cap_h, max_w):
+    """The letter size `text` reaches in a budget: the validator's measure."""
+    return letter_size(text, _settle(text, max_w, cap_h)[0])
+
+
+def stroke_lockup(text, c, cap_h=_WM_CAP_MAX, max_w=_WM_WIDE, cy=256, style=None, cx=256):
+    """`text` in the pack's stroke letters, ink centred on `cx` and `cy`;
+    `cap_h` is the letter size it may reach (see letter_size)."""
+    if style == "lower":
+        text = text.lower()
+    cap, gap = _settle(text, max_w, cap_h)
+    weight = round(_clamp(letter_size(text, cap) * _WM_WEIGHT[0], *_WM_WEIGHT[1:]))
+    half = max_w / 2 + 1
+    box = (cx - half, cy - 256, cx + half, cy + 256)
+    return _stroke_text(text, c, box, weight=weight, gap=gap, cap_max=cap)
+
+
+def monogram_body(ch, c):
+    return stroke_lockup(ch, c)
+
+
+def monogram_scaled(letter, color, cap_h=210, cy=256):
+    return stroke_lockup(letter, color, cap_h=cap_h, cy=cy)
+
+
+def monogram_text(text, color):
+    return stroke_lockup(text, color)
+
+
+def adaptive_lockup(mark, color, cap_h, max_w, cy=256, style=None):
+    return stroke_lockup(mark, color, cap_h=cap_h, max_w=max_w, cy=cy, style=style)
 
 
 # drawable -> (logotype cue, device). Each read off the app's launcher icon in
@@ -8308,7 +8365,7 @@ _WM = {
     "netfly_tv": ("NET/FLY", None), "netmirrortv": ("NM", None), "nettv": ("NET/TV", None),
     "nhk_plus": ("NHK", "plus"), "nhk_world_japan": ("NHK", "under"), "njpw_world": ("NJ/PW", None),
     "nlziet": ("NLZ", "play"), "noovo": ("noo/vo", None), "nos": ("NOS", None),
-    "nowo_tv": ("nowo", None), "nrk_tv": ("NRK", None), "nxsha": ("NXS", None),
+    "nowo_tv": ("no/wo", None), "nrk_tv": ("NRK", None), "nxsha": ("NXS", None),
     "one_play": ("one", "play"), "oqee_by_free": ("oq", None), "panda_plus": ("PA", "plus"),
     "perfecttv": ("PTV", None), "playkids": ("PK", "plus"), "put_io": ("put/io", None),
     "quasitv": ("QTV", None), "raiplay": ("Rai", "frame"), "redream": ("RD", None),

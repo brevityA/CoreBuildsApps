@@ -28,7 +28,8 @@ from glyphs import (GLYPHS, apply_secondary, family_body, family_glyph_for,  # n
                     is_monogram, monoline, render_svg, secondary_color,
                     secondary_errors)
 from icon_style import CORE_MONOLINE, core_monoline_errors, display_accent  # noqa: E402
-from typeface import MIN_LOCKUP_CAP, lockup_cap  # noqa: E402
+from typeface import MIN_LOCKUP_CAP  # noqa: E402
+from glyphs import stroke_lockup_cap  # noqa: E402
 from brandmarks import load_source  # noqa: E402
 from drawable_art import (ART_EXT, BRANDING_PNGS, alias_identical,
                           write_aliases_file)  # noqa: E402
@@ -97,11 +98,11 @@ def validate(icons, artwork=None):
             else:
                 _, cap_h, _, max_w = family_glyph_for(i["glyph"])
                 shown = mark.lower() if i.get("mark_style") == "lower" else mark
-                cap = lockup_cap(shown, cap_h, max_w)
+                cap = stroke_lockup_cap(shown, cap_h, max_w)
                 if cap < MIN_LOCKUP_CAP:
                     errors.append(f"{n}: mark '{shown}' sets at {cap:.0f}px in the "
                                   f"'{i['glyph'].rpartition('_')[0]}' shell — under the "
-                                  f"{MIN_LOCKUP_CAP}px counter floor, it closes at a 48px tile")
+                                  f"{MIN_LOCKUP_CAP}px cap floor, it closes at a 48px tile")
         mstyle = i.get("mark_style")
         if mstyle is not None:
             if mark is None:

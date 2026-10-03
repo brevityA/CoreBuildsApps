@@ -454,14 +454,15 @@ def main():
     # under the floor closes its counters at a 48dp tile; one over the
     # ceiling makes a single letter outweigh every word beside it. Stroke
     # weight follows the cap, so the band also holds the stroke-to-cap ratio.
-    from glyphs import GLYPHS as _G, wm_layout, _WM_CAP_MIN, _WM_CAP_MAX
+    from glyphs import GLYPHS as _G, wm_layout, letter_size, _WM_CAP_MIN, _WM_CAP_MAX
     for i in icons:
         fn = _G.get(i["glyph"])
         if fn is None or not hasattr(fn, "wm"):
             continue
         _box, cap, weight, _gap = wm_layout(*fn.wm)
+        cap = letter_size(fn.wm[0], cap)
         check(_WM_CAP_MIN <= cap <= _WM_CAP_MAX,
-              f"{i['name']}: wordmark '{fn.wm[0]}' sets at a {cap:.0f}px cap, "
+              f"{i['name']}: wordmark '{fn.wm[0]}' sets its letters {cap:.0f}px tall, "
               f"outside the {_WM_CAP_MIN}-{_WM_CAP_MAX}px band - shorten it or "
               f"break it with '/'")
         check(26 <= weight <= 34,

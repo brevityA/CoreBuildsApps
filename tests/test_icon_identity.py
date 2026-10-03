@@ -184,10 +184,10 @@ class IdentityTests(unittest.TestCase):
     def test_adaptive_marks_fit_their_shell_and_counter_floor(self):
         """The adaptive font keeps its promise: marks only ever set on
         category monograms, inside that shell's own type budget, at or above
-        the cap floor where a filled counter survives a 48dp tile. A styled
+        the cap floor where a counter survives a 48dp tile. A styled
         mark is measured as it actually renders (lower, not its cap-token)."""
-        from glyphs import family_glyph_for
-        from typeface import MIN_LOCKUP_CAP, lockup_cap
+        from glyphs import family_glyph_for, stroke_lockup_cap as lockup_cap
+        from typeface import MIN_LOCKUP_CAP
         marked = 0
         for icon in ICONS:
             mark = icon.get("mark")
@@ -542,8 +542,10 @@ class SourceTests(unittest.TestCase):
         self.assertEqual(core_monoline_errors(body, accent), [])
         self.assertNotIn("#FFFFFF", body.upper())
         root = ET.fromstring(f"<g>{body}</g>")
-        self.assertEqual(len(root.findall("ellipse")), 1)  # the lowercase o
-        self.assertEqual(len(root.findall("path")), 3)  # n, three ticks, long underline
+        # 'no' is set in the pack's stroke letters (one path), then the three
+        # ticks and the long underline: the interrupted buffer line.
+        self.assertEqual(len(root.findall("ellipse")), 0)
+        self.assertEqual(len(root.findall("path")), 3)
         self.assertNotEqual(body, monoline(GLYPHS["tile_N"](accent)))
         self.assertFalse(hasattr(brandmarks, "catalog_glyphs"))  # no vendor override route
 
