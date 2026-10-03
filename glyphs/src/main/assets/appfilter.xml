@@ -1907,6 +1907,7 @@
     <!-- RTVE Play -->
     <item component="ComponentInfo{com.rtve.androidtv/com.rtve.androidtv.Activity.SplashActivity}" drawable="rtve_play"/>
     <item component="ComponentInfo{com.rtve.androidtv/.Activity.SplashActivity}" drawable="rtve_play"/>
+    <item component="ComponentInfo{com.rtve.androidtv/com.google.android.archive.ReactivateActivity}" drawable="rtve_play"/>
     <!-- Rubika TV -->
     <item component="ComponentInfo{app.rbmain.tv/com.example.vod.pages.main.MainActivity}" drawable="rbmain"/>
     <!-- RugbyPass TV -->
@@ -2113,6 +2114,10 @@
     <item component="ComponentInfo{com.sync.tv/.MainActivity}" drawable="sync_sports"/>
     <item component="ComponentInfo{tv.sync.app/tv.sync.app.MainActivity}" drawable="sync_sports"/>
     <item component="ComponentInfo{tv.sync.app/.MainActivity}" drawable="sync_sports"/>
+    <item component="ComponentInfo{com.sportio.tv/com.sportio.tv.MainActivity}" drawable="sync_sports"/>
+    <item component="ComponentInfo{com.sportio.tv/.MainActivity}" drawable="sync_sports"/>
+    <item component="ComponentInfo{com.stadiumsync.mobile/com.stadiumsync.mobile.MainActivity}" drawable="sync_sports"/>
+    <item component="ComponentInfo{com.stadiumsync.mobile/.MainActivity}" drawable="sync_sports"/>
     <!-- Stan -->
     <item component="ComponentInfo{au.com.stan.and/au.com.stan.presentation.tv.splash.SplashScreenActivity}" drawable="stan"/>
     <item component="ComponentInfo{au.com.stan.and/au.com.stan.and.MainActivity}" drawable="stan"/>
@@ -2742,6 +2747,8 @@
     <!-- Xiaomi TV+ -->
     <item component="ComponentInfo{com.mitv.tvhome.mitvplus/com.mitv.tvhome.mitvplus.app.BannerLogoFree24}" drawable="mitvplus"/>
     <item component="ComponentInfo{com.mitv.tvhome.mitvplus/.app.BannerLogoFree24}" drawable="mitvplus"/>
+    <item component="ComponentInfo{com.mitv.tvhome.mitvplus/com.mitv.tvhome.mitvplus.app.SplashActivity}" drawable="mitvplus"/>
+    <item component="ComponentInfo{com.mitv.tvhome.mitvplus/.app.SplashActivity}" drawable="mitvplus"/>
     <!-- Xstream Play -->
     <item component="ComponentInfo{tv.airtel.xstream.tvapp/tv.airtel.xstream.login.LoginActivity}" drawable="xstream_play"/>
     <!-- Xumo Play -->

@@ -16,7 +16,7 @@ All notable changes to the Core Builds Icon Pack. Format follows
 - **AnimeTV.** Its teal swirl, redrawn as one unbroken curl that winds in
   on itself. Requested in #230 with the launch activity read off the
   requester's onn 4K Pro (Android 14).
-  973 → 975 icons, 1199 → 1202 components.
+  973 → 975 icons, 1199 → 1206 components.
 
 ### Changed
 
@@ -65,13 +65,19 @@ All notable changes to the Core Builds Icon Pack. Format follows
 - **Stadium Sync is Stadium Sync.** The icon was labelled SYNC and drawn as
   a generic arena bowl. At its developer's request it now carries the
   app's name and its domed arena (ribbed dome, truss ring, drum and stands)
-  in the cyan of Stadium Sync's own logo on dark.
+  in the cyan of Stadium Sync's own logo on dark, and maps to the launch
+  activities the developer gave for its Android TV and mobile apps.
 - **CNBC sits on the grid.** A full review of all 975 shipped icons found
   the CNBC peacock 96px below centre and leaning left: its fan pivoted near
   the bottom edge. The fan is now symmetric and centred. Every other icon's
   ink box sits within 36px of centre (median 1px), and
   `tests/test_icon_review.py` now fails any icon over 40px off centre or
   under 256px across.
+- **Xiaomi TV+ and RTVE Play apply again.** Xiaomi TV+ now launches
+  through a splash screen the pack did not map, and an archived RTVE Play
+  shows Android's reactivate placeholder instead of the app. Both components
+  are mapped beside the existing ones, as read off the reporter's MiTV
+  (Android 14) in #237 and #236.
 - **MaxPlayer is amber.** 1.9.9 coloured it from an older red-to-pink tile;
   the app's current icon is an amber m folded into a play triangle on navy,
   and the pack now uses that amber.

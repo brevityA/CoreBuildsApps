@@ -1,6 +1,6 @@
 # Supported applications
 
-`975` icons · `1202` mapped components · pack v2.0.0
+`975` icons · `1206` mapped components · pack v2.0.0
 
 Every app below auto-assigns in Projectivy. If one doesn't, the app ships a different launcher activity on your device — open an issue with the component name and it gets added.
 
@@ -663,7 +663,7 @@ Source accents are retained in the catalog. **On dark** is the shared square/ban
 | RTL | `rtl` | `#D00008` | `#D00008` | `de.rtli.tvnow/de.rtl.plus.RtlPlusLauncherActivity` |
 | RTL Play | `rtl_play` | `#48A0F8` | `#48A0F8` | `com.tapptic.rtl.tvi/be.persgroep.rtlplay.RtlPlayMainActivity` |
 | RTP Play | `rtp_play` | `#0070F8` | `#0070F8` | `pt.rtp.play/pt.rtp.play.IntroActivity` |
-| RTVE Play | `rtve_play` | `#D83818` | `#D83818` | `com.rtve.androidtv/com.rtve.androidtv.Activity.SplashActivity` |
+| RTVE Play | `rtve_play` | `#D83818` | `#D83818` | `com.rtve.androidtv/com.rtve.androidtv.Activity.SplashActivity`<br>`com.rtve.androidtv/com.google.android.archive.ReactivateActivity` |
 | Rubika TV | `rbmain` | `#F6A925` | `#F6A925` | `app.rbmain.tv/com.example.vod.pages.main.MainActivity` |
 | RugbyPass TV | `rugbypass_tv` | `#48E000` | `#48E000` | `com.worldrugbypass.app/com.worldrugbypass.app.MainActivity` |
 | Rumble | `rumble` | `#85C742` | `#85C742` | `com.rumble.battles/com.rumble.battles.LauncherActivity` |
@@ -728,7 +728,7 @@ Source accents are retained in the catalog. **On dark** is the shared square/ban
 | Spotify | `spotify` | `#1ED760` | `#1ED760` | `com.spotify.tv.android/com.spotify.app.androidtv.MainActivity`<br>`com.spotify.tv.android/.SpotifyTVActivity`<br>`com.spotify.music/.MainActivity` |
 | SRF Play | `srfplayer` | `#AF001E` | `#C30021` | `ch.srf.mobile.srfplayer/ch.srg.srgplayer.tv.MainActivity` |
 | Sstream | `sstream` | `#F04DE0` | `#F04DE0` | `cloud.app.sstream/cloud.app.sstream.MainActivity` |
-| Stadium Sync | `sync_sports` | `#00E0F8` | `#00E0F8` | `com.sync.tv/.MainActivity`<br>`tv.sync.app/.MainActivity` |
+| Stadium Sync | `sync_sports` | `#00E0F8` | `#00E0F8` | `com.sync.tv/.MainActivity`<br>`tv.sync.app/.MainActivity`<br>`com.sportio.tv/com.sportio.tv.MainActivity`<br>`com.stadiumsync.mobile/com.stadiumsync.mobile.MainActivity` |
 | Stan | `stan` | `#0091EA` | `#0091EA` | `au.com.stan.and/au.com.stan.presentation.tv.splash.SplashScreenActivity`<br>`au.com.stan.and/.MainActivity`<br>`au.com.stan.and.tv/.MainActivity`<br>`au.com.stan.and/au.com.stan.and.ui.screens.splash.SplashActivity` |
 | Stand-Up Comedy TV | `standupcomedytv` | `#3D8BFF` | `#3D8BFF` | `com.pnm.standupcomedytv/com.tv.playnowmedia.ui.launcher.LauncherActivity` |
 | STARZ | `bydeluxe` | `#000000` | `#E6EDF3` | `com.bydeluxe.d3.android.program.starz/com.starz.amznfiretv.SplashActivity` |
@@ -952,7 +952,7 @@ Source accents are retained in the catalog. **On dark** is the shared square/ban
 | Xbox | `xbox` | `#107C10` | `#107C10` | `com.microsoft.xboxone.gamepass/.MainActivity` |
 | XC IPTV | `nathnetwork_2` | `#074192` | `#0A5ACB` | `com.nathnetwork.xciptv/com.nathnetwork.xciptv.SplashVideoActivity` |
 | Xiaomi Media Player | `xiaomi_media_player` | `#00D4FF` | `#00D4FF` | `com.xiaomi.mitv.mediaexplorer/com.xiaomi.mitv.mediaexplorer.NewScraperMainEntryActivity` |
-| Xiaomi TV+ | `mitvplus` | `#19D3C5` | `#19D3C5` | `com.mitv.tvhome.mitvplus/com.mitv.tvhome.mitvplus.app.BannerLogoFree24` |
+| Xiaomi TV+ | `mitvplus` | `#19D3C5` | `#19D3C5` | `com.mitv.tvhome.mitvplus/com.mitv.tvhome.mitvplus.app.BannerLogoFree24`<br>`com.mitv.tvhome.mitvplus/com.mitv.tvhome.mitvplus.app.SplashActivity` |
 | Xstream Play | `xstream_play` | `#C80000` | `#C80000` | `tv.airtel.xstream.tvapp/tv.airtel.xstream.login.LoginActivity` |
 | Xumo Play | `xumo_play` | `#7C74FF` | `#7C74FF` | `com.xumo.xumo/com.xumo.xumo.activity.SplashActivity` |
 | Yacine TV | `yacine_tv` | `#E02828` | `#E02828` | `ver3.ycntivi.off/dev.google.yacinetv.ui.splash.SplashActivity`<br>`ver3.ycntivi.off/dev.google.yacinetv.tvui.splash.SplashActivity` |

@@ -6214,7 +6214,8 @@
       "color": "#19D3C5",
       "glyph": "mitv_mark",
       "components": [
-        "com.mitv.tvhome.mitvplus/com.mitv.tvhome.mitvplus.app.BannerLogoFree24"
+        "com.mitv.tvhome.mitvplus/com.mitv.tvhome.mitvplus.app.BannerLogoFree24",
+        "com.mitv.tvhome.mitvplus/com.mitv.tvhome.mitvplus.app.SplashActivity"
       ],
       "category": "LIVE",
       "color_source": "core-builds palette (no published brand colour found)",
@@ -9017,7 +9018,8 @@
       "color": "#D83818",
       "glyph": "rtve_play_wm",
       "components": [
-        "com.rtve.androidtv/com.rtve.androidtv.Activity.SplashActivity"
+        "com.rtve.androidtv/com.rtve.androidtv.Activity.SplashActivity",
+        "com.rtve.androidtv/com.google.android.archive.ReactivateActivity"
       ],
       "category": "APP",
       "mapping_source": "Projectivy Icon Pack 1.1.9",
@@ -10325,8 +10327,11 @@
       "glyph": "stadiumsync_dome",
       "components": [
         "com.sync.tv/.MainActivity",
-        "tv.sync.app/.MainActivity"
+        "tv.sync.app/.MainActivity",
+        "com.sportio.tv/com.sportio.tv.MainActivity",
+        "com.stadiumsync.mobile/com.stadiumsync.mobile.MainActivity"
       ],
+      "mapping_source": "the developer, Streamers86, on Discord (2026-10-03): com.sportio.tv.MainActivity is the Android TV launch activity and com.stadiumsync.mobile.MainActivity the mobile one; package taken as the class's own namespace",
       "category": "SPORT",
       "color_source": "sampled from Stadium Sync's own dark-background logo, shared by Brevity from the developer Streamers86 (2026-10-03): the cyan #00E0F8 its dome is drawn in on dark",
       "color_reviewed": "2026-10-03",
