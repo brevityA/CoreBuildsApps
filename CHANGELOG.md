@@ -6,6 +6,18 @@ All notable changes to the Core Builds Icon Pack. Format follows
 
 ## [Unreleased]
 
+## [2.0.0] — 2026-10-03
+
+### Added
+
+- **HeatLive.** Its flame inside a teardrop, in its magenta.
+  Requested in #205 with the launch activity read off the requester's
+  V6-Plus (Android 14).
+- **AnimeTV.** Its teal swirl, redrawn as one unbroken curl that winds in
+  on itself. Requested in #230 with the launch activity read off the
+  requester's onn 4K Pro (Android 14).
+  973 → 975 icons, 1199 → 1202 components.
+
 ### Changed
 
 - **Wordmark icons share one set of proportions.** The 217 icons that spell
@@ -18,18 +30,6 @@ All notable changes to the Core Builds Icon Pack. Format follows
   marks get a wider box inside the ring.
   `GREAT` now breaks onto two lines. `validate.py` fails any mark outside
   the band by name, and `tests/test_wordmark_type.py` pins the rules.
-
-## [2.0.0] — 2026-10-03
-
-### Added
-
-- **HeatLive.** Its flame inside a teardrop, in its magenta.
-  Requested in #205 with the launch activity read off the requester's
-  V6-Plus (Android 14).
-- **AnimeTV.** Its teal swirl, redrawn as one unbroken curl that winds in
-  on itself. Requested in #230 with the launch activity read off the
-  requester's onn 4K Pro (Android 14).
-  973 → 975 icons, 1199 → 1202 components.
 
 ### Fixed
 
