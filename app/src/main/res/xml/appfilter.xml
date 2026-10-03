@@ -2108,6 +2108,11 @@
     <!-- Sstream -->
     <item component="ComponentInfo{cloud.app.sstream/cloud.app.sstream.MainActivity}" drawable="sstream_banner"/>
     <item component="ComponentInfo{cloud.app.sstream/.MainActivity}" drawable="sstream_banner"/>
+    <!-- Stadium Sync -->
+    <item component="ComponentInfo{com.sync.tv/com.sync.tv.MainActivity}" drawable="sync_sports_banner"/>
+    <item component="ComponentInfo{com.sync.tv/.MainActivity}" drawable="sync_sports_banner"/>
+    <item component="ComponentInfo{tv.sync.app/tv.sync.app.MainActivity}" drawable="sync_sports_banner"/>
+    <item component="ComponentInfo{tv.sync.app/.MainActivity}" drawable="sync_sports_banner"/>
     <!-- Stan -->
     <item component="ComponentInfo{au.com.stan.and/au.com.stan.presentation.tv.splash.SplashScreenActivity}" drawable="stan_banner"/>
     <item component="ComponentInfo{au.com.stan.and/au.com.stan.and.MainActivity}" drawable="stan_banner"/>
@@ -2201,11 +2206,6 @@
     <!-- Symfonik -->
     <item component="ComponentInfo{app.symfonik.music.player/app.symfonik.ui.MainActivity}" drawable="symfonik_banner"/>
     <item component="ComponentInfo{app.symfonik.music.player/app.symfonik.ui.StartActivity}" drawable="symfonik_banner"/>
-    <!-- SYNC -->
-    <item component="ComponentInfo{com.sync.tv/com.sync.tv.MainActivity}" drawable="sync_sports_banner"/>
-    <item component="ComponentInfo{com.sync.tv/.MainActivity}" drawable="sync_sports_banner"/>
-    <item component="ComponentInfo{tv.sync.app/tv.sync.app.MainActivity}" drawable="sync_sports_banner"/>
-    <item component="ComponentInfo{tv.sync.app/.MainActivity}" drawable="sync_sports_banner"/>
     <!-- Syncler -->
     <item component="ComponentInfo{com.wolfpack.syncler/com.wolfpack.syncler.ui.SplashActivity}" drawable="syncler_banner"/>
     <item component="ComponentInfo{com.wolfpack.syncler/.ui.SplashActivity}" drawable="syncler_banner"/>

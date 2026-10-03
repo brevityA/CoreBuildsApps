@@ -10309,17 +10309,19 @@
       "glyph_source": "brand-informed redraw of the official launcher icon (play listing for app.symfonik.music.player); Core monoline geometry, not a trace (2026-09-26)"
     },
     {
-      "name": "SYNC",
+      "name": "Stadium Sync",
       "drawable": "sync_sports",
-      "color": "#C8CED6",
-      "glyph": "stadium",
+      "color": "#00E0F8",
+      "glyph": "stadiumsync_dome",
       "components": [
         "com.sync.tv/.MainActivity",
         "tv.sync.app/.MainActivity"
       ],
       "category": "SPORT",
-      "color_source": "brand reference (pre-provenance, unverified)",
-      "color_reviewed": null
+      "color_source": "sampled from Stadium Sync's own dark-background logo, shared by Brevity from the developer Streamers86 (2026-10-03): the cyan #00E0F8 its dome is drawn in on dark",
+      "color_reviewed": "2026-10-03",
+      "name_source": "the developer, Streamers86, on Discord (2026-10-03): the app is Stadium Sync, not SYNC",
+      "glyph_source": "brand-informed redraw of the Stadium Sync logo's domed arena, the shape its developer asked for (2026-10-03): ribbed dome, truss ring, drum, low stands and entrance on one ground line, drawn as Core strokes on the pack grid, not traced"
     },
     {
       "name": "Syncler",

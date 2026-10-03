@@ -728,6 +728,7 @@ Source accents are retained in the catalog. **On dark** is the shared square/ban
 | Spotify | `spotify` | `#1ED760` | `#1ED760` | `com.spotify.tv.android/com.spotify.app.androidtv.MainActivity`<br>`com.spotify.tv.android/.SpotifyTVActivity`<br>`com.spotify.music/.MainActivity` |
 | SRF Play | `srfplayer` | `#AF001E` | `#C30021` | `ch.srf.mobile.srfplayer/ch.srg.srgplayer.tv.MainActivity` |
 | Sstream | `sstream` | `#F04DE0` | `#F04DE0` | `cloud.app.sstream/cloud.app.sstream.MainActivity` |
+| Stadium Sync | `sync_sports` | `#00E0F8` | `#00E0F8` | `com.sync.tv/.MainActivity`<br>`tv.sync.app/.MainActivity` |
 | Stan | `stan` | `#0091EA` | `#0091EA` | `au.com.stan.and/au.com.stan.presentation.tv.splash.SplashScreenActivity`<br>`au.com.stan.and/.MainActivity`<br>`au.com.stan.and.tv/.MainActivity`<br>`au.com.stan.and/au.com.stan.and.ui.screens.splash.SplashActivity` |
 | Stand-Up Comedy TV | `standupcomedytv` | `#3D8BFF` | `#3D8BFF` | `com.pnm.standupcomedytv/com.tv.playnowmedia.ui.launcher.LauncherActivity` |
 | STARZ | `bydeluxe` | `#000000` | `#E6EDF3` | `com.bydeluxe.d3.android.program.starz/com.starz.amznfiretv.SplashActivity` |
@@ -761,7 +762,6 @@ Source accents are retained in the catalog. **On dark** is the shared square/ban
 | Sweet TV | `sweet_tv` | `#20BEC6` | `#20BEC6` | `tv.sweet.tvplayer/tv.sweet.tvplayer.MainActivity` |
 | SYFY | `androidtv_8` | `#E1FD36` | `#E1FD36` | `com.nbcu.tve.syfy.androidtv/com.nbc.nbctvapp.ui.main.view.MainActivity` |
 | Symfonik | `symfonik` | `#E22728` | `#E22728` | `app.symfonik.music.player/app.symfonik.ui.MainActivity`<br>`app.symfonik.music.player/app.symfonik.ui.StartActivity` |
-| SYNC | `sync_sports` | `#C8CED6` | `#C8CED6` | `com.sync.tv/.MainActivity`<br>`tv.sync.app/.MainActivity` |
 | Syncler | `syncler` | `#00BFA5` | `#00BFA5` | `com.wolfpack.syncler/.ui.SplashActivity`<br>`com.wolfpack.syncler/com.wolfpack.syncler.MainActivity` |
 | Syncler | `syncler_2` | `#00BFA5` | `#00BFA5` | `com.syncler/urbanMedia.android.touchDevice.ui.activities.StartUpSplashActivity`<br>`com.syncler/com.swordfish.ui.screen.splash.StartUpSplashActivity` |
 | Syncler Beta | `syncler_beta` | `#00BFA5` | `#00BFA5` | `com.syncler.beta/com.swordfish.ui.screen.splash.StartUpSplashActivity` |

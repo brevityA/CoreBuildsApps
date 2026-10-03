@@ -52,6 +52,10 @@ All notable changes to the Core Builds Icon Pack. Format follows
   splash screen, a component the pack did not know, so its icon stopped
   applying. The new component is mapped beside the old one, as read off the
   reporter's Philips Google TV (Android 14) in #232.
+- **Stadium Sync is Stadium Sync.** The icon was labelled SYNC and drawn as
+  a generic arena bowl. At its developer's request it now carries the
+  app's name and its domed arena (ribbed dome, truss ring, drum and stands)
+  in the cyan of Stadium Sync's own logo on dark.
 - **CNBC sits on the grid.** A full review of all 975 shipped icons found
   the CNBC peacock 96px below centre and leaning left: its fan pivoted near
   the bottom edge. The fan is now symmetric and centred. Every other icon's

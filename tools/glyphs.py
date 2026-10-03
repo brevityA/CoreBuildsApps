@@ -1355,6 +1355,24 @@ def browser_globe(c):
             f'<path d="M 256 380 L 256 434" {_s(c, 24)}/>')
 
 
+def stadiumsync_dome(c):
+    """Stadium Sync: the domed arena of its logo - a dome with three ribs,
+    the truss ring round its rim, the drum it sits on with low stands
+    either side, and the entrance, on one ground line. Drawn on the pack grid from the shape the
+    developer pointed to, not traced; the name rides the banner label."""
+    return (
+        f'<path d="M 104 272 C 104 168 180 112 256 112 C 332 112 408 168 408 272" {_s(c, 30)}/>'
+        f'<path d="M 256 112 C 226 160 218 220 220 272 M 256 112 C 286 160 294 220 292 272 '
+        f'M 196 132 C 160 176 148 226 150 272 M 316 132 C 352 176 364 226 362 272" {_s(c, 20)}/>'
+        f'<path d="M 72 272 L 440 272" {_s(c, 28)}/>'
+        f'<path d="M 120 272 L 120 400 M 392 272 L 392 400" {_s(c, 28)}/>'
+        f'<path d="M 72 400 L 72 344 L 120 344 M 440 400 L 440 344 L 392 344 '
+        f'M 168 400 L 168 328 L 344 328 L 344 400" {_s(c, 24)}/>'
+        f'<path d="M 64 400 L 448 400" {_s(c, 30)}/>'
+    )
+
+
+GLYPHS.update({"stadiumsync_dome": stadiumsync_dome})
 GLYPHS.update({"stadium": stadium, "browser_globe": browser_globe,
                   "artemis_pad": artemis_pad})
 

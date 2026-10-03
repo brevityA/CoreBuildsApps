@@ -722,6 +722,7 @@
         <item>spotify</item>
         <item>srfplayer</item>
         <item>sstream</item>
+        <item>sync_sports</item>
         <item>stan</item>
         <item>standupcomedytv</item>
         <item>bydeluxe</item>
@@ -755,7 +756,6 @@
         <item>sweet_tv</item>
         <item>androidtv_8</item>
         <item>symfonik</item>
-        <item>sync_sports</item>
         <item>syncler</item>
         <item>syncler_2</item>
         <item>syncler_beta</item>
@@ -1699,6 +1699,7 @@
         <item>Spotify</item>
         <item>SRF Play</item>
         <item>Sstream</item>
+        <item>Stadium Sync</item>
         <item>Stan</item>
         <item>Stand-Up Comedy TV</item>
         <item>STARZ</item>
@@ -1732,7 +1733,6 @@
         <item>Sweet TV</item>
         <item>SYFY</item>
         <item>Symfonik</item>
-        <item>SYNC</item>
         <item>Syncler</item>
         <item>Syncler</item>
         <item>Syncler Beta</item>
@@ -2676,6 +2676,7 @@
         <item>MUSIC</item>
         <item>APP</item>
         <item>STREAM</item>
+        <item>SPORT</item>
         <item>VOD</item>
         <item>APP</item>
         <item>VOD</item>
@@ -2709,7 +2710,6 @@
         <item>APP</item>
         <item>APP</item>
         <item>MUSIC</item>
-        <item>SPORT</item>
         <item>STREAM</item>
         <item>STREAM</item>
         <item>STREAM</item>

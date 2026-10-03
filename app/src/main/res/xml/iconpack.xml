@@ -720,6 +720,7 @@
     <item drawable="spotify" />
     <item drawable="srfplayer" />
     <item drawable="sstream" />
+    <item drawable="sync_sports" />
     <item drawable="stan" />
     <item drawable="standupcomedytv" />
     <item drawable="bydeluxe" />
@@ -753,7 +754,6 @@
     <item drawable="sweet_tv" />
     <item drawable="androidtv_8" />
     <item drawable="symfonik" />
-    <item drawable="sync_sports" />
     <item drawable="syncler" />
     <item drawable="syncler_2" />
     <item drawable="syncler_beta" />
