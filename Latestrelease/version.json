@@ -1,18 +1,20 @@
 {
-  "versionCode": 41,
-  "versionName": "1.9.9",
-  "iconCount": 973,
-  "componentCount": 1199,
-  "releaseDate": "2026-10-01",
+  "versionCode": 42,
+  "versionName": "2.0.0",
+  "iconCount": 976,
+  "componentCount": 1207,
+  "releaseDate": "2026-10-03",
   "apkUrl": "https://github.com/brevityA/CoreBuildsApps/releases/download/iconpack/iconpack-release.apk",
   "releaseNotesUrl": "https://github.com/brevityA/CoreBuildsApps/releases",
   "minSdk": 21,
   "highlights": [
-    "Cinema wallpapers, still and moving",
-    "A Live chip, and loops save in bulk",
-    "MaxPlayer",
-    "Live loops run at 60 fps",
-    "A walk screen when a probe misses",
-    "AT4K's setup walk names real screens"
+    "HeatLive",
+    "AnimeTV",
+    "PatchWall",
+    "Wordmark icons share one set of proportions",
+    "One alphabet for every letter in an icon",
+    "Banner names are drawn like the icons",
+    "Lowercase marks are sized by what you see",
+    "Pluto TV applies again"
   ]
 }
