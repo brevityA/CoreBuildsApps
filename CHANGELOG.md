@@ -10,9 +10,10 @@ All notable changes to the Core Builds Icon Pack. Format follows
 
 ### Added
 
-- **HeatLive.** The logo's own HEAT wordmark with the play device it
-  carries in the A, in its magenta. Requested in #205 with the launch
-  activity read off the requester's V6-Plus (Android 14).
+- **HeatLive.** Its two-tier badge, in its magenta: the slanted HEAT whose
+  A holds a play triangle, over the LIVE bar with its camera-lens notch.
+  Requested in #205 with the launch activity read off the requester's
+  V6-Plus (Android 14).
 - **AnimeTV.** Its teal swirl, redrawn as one unbroken curl that winds in
   on itself. Requested in #230 with the launch activity read off the
   requester's onn 4K Pro (Android 14).

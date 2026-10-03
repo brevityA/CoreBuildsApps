@@ -7309,6 +7309,42 @@ def animetv_curl(c):
 GLYPHS.update({"animetv_curl": animetv_curl})
 
 
+def heatlive_badge(c):
+    """HeatLive: its two-tier badge. HEAT in slanted block capitals whose A
+    is a bare peak holding a play triangle where the crossbar would be, over
+    the LIVE bar - a rounded frame with a camera's lens notch on its right
+    end. Letters are drawn on the pack grid, not set from the logo's face."""
+    top, base = 104, 228
+    mid = (top + base) / 2
+    # Cell widths for H, E, A, T: the A is widest so its play has room, and
+    # the gaps clear a 28-unit stroke so no two letters touch at 96 px.
+    cells, gap, x = (64, 56, 92, 66), 34, 66
+    xs = []
+    for w in cells:
+        xs.append((x, x + w))
+        x += w + gap
+    (h0, h1), (e0, e1), (a0, a1), (t0, t1) = xs
+    apex = (a0 + a1) / 2
+    letters = (
+        f"M {h0} {top} L {h0} {base} M {h1} {top} L {h1} {base} M {h0} {mid} L {h1} {mid} "
+        f"M {e1} {top} L {e0} {top} L {e0} {base} L {e1} {base} M {e0} {mid} L {e1 - 10} {mid} "
+        f"M {a0} {base} L {apex} {top} L {a1} {base} "
+        f"M {t0} {top} L {t1} {top} M {(t0 + t1) / 2} {top} L {(t0 + t1) / 2} {base}"
+    )
+    play = _solid(f"M {a0 + 37} 190 L {a0 + 37} 214 L {a0 + 56} 202 Z", c, 6)
+    # Slant the word, sheared about its own middle so it stays centred.
+    lean = math.tan(math.radians(10)) * mid
+    word = (f'<g transform="translate({lean:.1f} 0) skewX(-10)">'
+            f'<path d="{letters}" {_s(c, 28)}/>{play}</g>')
+    bar = (f'<rect x="84" y="292" width="304" height="100" rx="30" {_s(c, 24)}/>'
+           f'<path d="M 388 318 L 436 296 L 436 388 L 388 366" {_s(c, 24)}/>')
+    live = _stroke_text("LIVE", c, (118, 318, 354, 366), weight=22)
+    return f'<g transform="translate(0 10)">{word}{bar}{live}</g>'
+
+
+GLYPHS.update({"heatlive_badge": heatlive_badge})
+
+
 # --------------------------------------------------------------------------
 # Brand marks batch 16 (2026-09-28): more letter tiles whose launcher icon,
 # seen in the Projectivy Icon Pack 1.1.9 artwork (reference only), carries a
@@ -8220,7 +8256,7 @@ _WM = {
     "fluffy": ("FL", "ring"), "forja_tv": ("For/ja", None), "formed": ("fo", "under"),
     "francetv": ("ftv", "dot"), "gain": ("GAiN", None), "gb_news": ("GBN", None),
     "goplay": ("GO", "play"), "rezka": ("HD", "ring"), "hdtv_player": ("HD/TV", None),
-    "heatlive": ("HEAT", "play"), "hidive": ("HI/DIVE", None), "hrti": ("HRTi", None), "ici_tou_tv": ("tou/tv", "dot"),
+    "hidive": ("HI/DIVE", None), "hrti": ("HRTi", None), "ici_tou_tv": ("tou/tv", "dot"),
     "iptv_pro": ("IPTV", None), "ivysiilani": ("iV", None), "jawwy_tv": ("stc/tv", None),
     "jiotvplus": ("jio", "ring"), "joyn": ("joyn", None), "kemo_iptv": ("KEMO", None),
     "kika": ("KiKA", None), "knowledge": ("KN", "under"), "l_equipe": ("LE", "over"),

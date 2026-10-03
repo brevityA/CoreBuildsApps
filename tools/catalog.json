@@ -13641,7 +13641,7 @@
       "name": "HeatLive",
       "drawable": "heatlive",
       "color": "#E800F0",
-      "glyph": "heatlive_wm",
+      "glyph": "heatlive_badge",
       "components": [
         "com.google.heatlive/com.huishine.traveler.page.SplashActivity"
       ],
@@ -13649,7 +13649,7 @@
       "mapping_source": "issue #205 (device-reported on V6-Plus, Android 14, pack 1.9.7, heat-live-v5.9.1.apk): com.huishine.traveler.page.SplashActivity is the launch activity of com.google.heatlive",
       "color_source": "sampled from the HeatLive launcher tile as shown in the vSeeBox app list (reference only): the magenta field #E800F0 (2026-10-03)",
       "color_reviewed": "2026-10-03",
-      "glyph_source": "wordmark cue: the logo's own HEAT wordmark with the play device it carries in the A, set in the pack's stroke type (2026-10-03)"
+      "glyph_source": "brand-informed redraw of the HeatLive launcher logo (vSeeBox app list, reference only): the slanted HEAT whose A is a bare peak holding a play triangle, over the LIVE bar with its camera-lens notch, drawn as Core strokes on the pack grid, not a trace (2026-10-03)"
     },
     {
       "name": "AnimeTV",
