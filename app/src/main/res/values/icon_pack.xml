@@ -562,6 +562,7 @@
         <item>cbs</item>
         <item>tve</item>
         <item>parsec</item>
+        <item>patchwall</item>
         <item>pathethuis</item>
         <item>video</item>
         <item>pbs_kids</item>
@@ -1539,6 +1540,7 @@
         <item>Paramount+ Canada</item>
         <item>Paramount+ TVE</item>
         <item>Parsec</item>
+        <item>PatchWall</item>
         <item>Pathé Thuis</item>
         <item>PBS</item>
         <item>PBS Kids</item>
@@ -2516,6 +2518,7 @@
         <item>VOD</item>
         <item>VOD</item>
         <item>APP</item>
+        <item>LAUNCHER</item>
         <item>APP</item>
         <item>APP</item>
         <item>APP</item>
@@ -3506,6 +3509,7 @@
         <item>1</item>
         <item>1</item>
         <item>1</item>
+        <item>1</item>
         <item>0</item>
         <item>1</item>
         <item>1</item>
@@ -3909,5 +3913,5 @@
         <item>1</item>
         <item>1</item>
     </integer-array>
-    <integer name="icon_count">975</integer>
+    <integer name="icon_count">976</integer>
 </resources>

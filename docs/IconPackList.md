@@ -1,6 +1,6 @@
 # Supported applications
 
-`975` icons · `1206` mapped components · pack v2.0.0
+`976` icons · `1207` mapped components · pack v2.0.0
 
 Every app below auto-assigns in Projectivy. If one doesn't, the app ships a different launcher activity on your device — open an issue with the component name and it gets added.
 
@@ -52,7 +52,7 @@ Source accents are retained in the catalog. **On dark** is the shared square/ban
 | AniLab | `anilab` | `#D82028` | `#D82028` | `com.anilab.android.tv/com.anilab.android.tv.ui.TvActivity` |
 | Anime Cast | `anime_cast` | `#5454A8` | `#5757AB` | `csc.app.anime.cast/csc.app.app.tv.activity.Splash`<br>`csc.app.anime.cast/csc.app.app.movil.activity.Splash` |
 | AnimeTV | `anime` | `#F98E41` | `#F98E41` | `com.dev.anime.one/com.dev.anime.one.MainActivity` |
-| AnimeTV | `animetv` | `#18D0C8` | `#18D0C8` | `com.amarullz.androidtv.animetvjmto/com.amarullz.androidtv.animetvjmto.MainActivity` |
+| AnimeTV | `animetv` | `#440066` | `#9500DF` | `com.amarullz.androidtv.animetvjmto/com.amarullz.androidtv.animetvjmto.MainActivity` |
 | Ant1 | `ant1` | `#FFB020` | `#FFB020` | `gr.antenna.ant1/com.arxnet.soeasytv.MainActivity` |
 | Anten TV | `antentv` | `#F090B0` | `#F090B0` | `com.farakav.antentv/com.farakav.antentv.app.SplashActivity` |
 | Användarmanual | `anvandarmanual` | `#94A3C0` | `#94A3C0` | `com.tcl.ocean.instructions/com.tcl.ocean.instructions.portal.home.HomeActivity` |
@@ -326,7 +326,7 @@ Source accents are retained in the catalog. **On dark** is the shared square/ban
 | HDO Box | `hdo_box` | `#E25100` | `#E25100` | `com.tv.hdobox/com.tv.hdobox.MainActivity` |
 | HDRezka | `falcofemoralis` | `#FF4D4D` | `#FF4D4D` | `com.falcofemoralis.hdrezkaapp/com.falcofemoralis.hdrezkaapp.views.MainActivity` |
 | HDTV Player | `hdtv_player` | `#EB5405` | `#EB5405` | `com.zva3.mobile.litetvandroid/com.zva3.mobile.litetvandroid.MainActivity`<br>`com.zva3.mobile.litetvandroid/com.zva3.mobile.litetvandroid.TvActivity` |
-| HeatLive | `heatlive` | `#E800F0` | `#E800F0` | `com.google.heatlive/com.huishine.traveler.page.SplashActivity` |
+| HeatLive | `heatlive` | `#EB1E54` | `#EB1E54` | `com.google.heatlive/com.huishine.traveler.page.SplashActivity` |
 | HEI Network | `heinetworktv` | `#DA3430` | `#DA3430` | `com.heinetwork.HEINetworkTV/com.heinetwork.HEINetworkTV.MainActivity` |
 | HGTV | `watcher` | `#00A8C0` | `#00A8C0` | `com.hgtv.watcher/com.discovery.tve.presentation.activities.SplashActivity` |
 | Hi Browser | `hi_browser` | `#00A8A8` | `#00A8A8` | `com.hisense.odinbrowser/com.hisense.odinbrowser.MainActivity`<br>`com.hisense.odinbrowser/com.hisense.odinbrowser.ui.MainActivity`<br>`com.hisense.odinbrowser/com.hisense.odinbrowser.browser.MainActivity` |
@@ -568,6 +568,7 @@ Source accents are retained in the catalog. **On dark** is the shared square/ban
 | Paramount+ Canada | `cbs` | `#0064FF` | `#0064FF` | `com.cbs.ca/com.paramount.android.pplus.features.splash.tv.SplashMediatorActivity` |
 | Paramount+ TVE | `tve` | `#0064FF` | `#0064FF` | `com.cbs.tve/com.paramount.android.pplus.features.splash.tv.SplashMediatorActivity` |
 | Parsec | `parsec` | `#E94C89` | `#E94C89` | `tv.parsec.client/tv.parsec.client.MainActivity` |
+| PatchWall | `patchwall` | `#F8C808` | `#F8C808` | `com.mitv.tvhome.atv/com.mitv.tvhome.atv.app.PatchWallActivity` |
 | Pathé Thuis | `pathethuis` | `#FFC426` | `#FFC426` | `nl.pathe.thuis/nl.pathe.thuis.LaunchActivity` |
 | PBS | `video` | `#283990` | `#3E55C9` | `com.pbs.video/com.pbs.video.StartupActivity` |
 | PBS Kids | `pbs_kids` | `#A6CE38` | `#A6CE38` | `org.pbskids.video/org.pbskids.video.ui.root.MainActivity` |
@@ -663,7 +664,7 @@ Source accents are retained in the catalog. **On dark** is the shared square/ban
 | RTL | `rtl` | `#D00008` | `#D00008` | `de.rtli.tvnow/de.rtl.plus.RtlPlusLauncherActivity` |
 | RTL Play | `rtl_play` | `#48A0F8` | `#48A0F8` | `com.tapptic.rtl.tvi/be.persgroep.rtlplay.RtlPlayMainActivity` |
 | RTP Play | `rtp_play` | `#0070F8` | `#0070F8` | `pt.rtp.play/pt.rtp.play.IntroActivity` |
-| RTVE Play | `rtve_play` | `#D83818` | `#D83818` | `com.rtve.androidtv/com.rtve.androidtv.Activity.SplashActivity`<br>`com.rtve.androidtv/com.google.android.archive.ReactivateActivity` |
+| RTVE Play | `rtve_play` | `#F89800` | `#F89800` | `com.rtve.androidtv/com.rtve.androidtv.Activity.SplashActivity`<br>`com.rtve.androidtv/com.google.android.archive.ReactivateActivity` |
 | Rubika TV | `rbmain` | `#F6A925` | `#F6A925` | `app.rbmain.tv/com.example.vod.pages.main.MainActivity` |
 | RugbyPass TV | `rugbypass_tv` | `#48E000` | `#48E000` | `com.worldrugbypass.app/com.worldrugbypass.app.MainActivity` |
 | Rumble | `rumble` | `#85C742` | `#85C742` | `com.rumble.battles/com.rumble.battles.LauncherActivity` |
@@ -952,7 +953,7 @@ Source accents are retained in the catalog. **On dark** is the shared square/ban
 | Xbox | `xbox` | `#107C10` | `#107C10` | `com.microsoft.xboxone.gamepass/.MainActivity` |
 | XC IPTV | `nathnetwork_2` | `#074192` | `#0A5ACB` | `com.nathnetwork.xciptv/com.nathnetwork.xciptv.SplashVideoActivity` |
 | Xiaomi Media Player | `xiaomi_media_player` | `#00D4FF` | `#00D4FF` | `com.xiaomi.mitv.mediaexplorer/com.xiaomi.mitv.mediaexplorer.NewScraperMainEntryActivity` |
-| Xiaomi TV+ | `mitvplus` | `#19D3C5` | `#19D3C5` | `com.mitv.tvhome.mitvplus/com.mitv.tvhome.mitvplus.app.BannerLogoFree24`<br>`com.mitv.tvhome.mitvplus/com.mitv.tvhome.mitvplus.app.SplashActivity` |
+| Xiaomi TV+ | `mitvplus` | `#F86800` | `#F86800` | `com.mitv.tvhome.mitvplus/com.mitv.tvhome.mitvplus.app.BannerLogoFree24`<br>`com.mitv.tvhome.mitvplus/com.mitv.tvhome.mitvplus.app.SplashActivity` |
 | Xstream Play | `xstream_play` | `#C80000` | `#C80000` | `tv.airtel.xstream.tvapp/tv.airtel.xstream.login.LoginActivity` |
 | Xumo Play | `xumo_play` | `#7C74FF` | `#7C74FF` | `com.xumo.xumo/com.xumo.xumo.activity.SplashActivity` |
 | Yacine TV | `yacine_tv` | `#E02828` | `#E02828` | `ver3.ycntivi.off/dev.google.yacinetv.ui.splash.SplashActivity`<br>`ver3.ycntivi.off/dev.google.yacinetv.tvui.splash.SplashActivity` |

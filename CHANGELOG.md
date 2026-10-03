@@ -10,13 +10,18 @@ All notable changes to the Core Builds Icon Pack. Format follows
 
 ### Added
 
-- **HeatLive.** Its flame inside a teardrop, in its magenta.
+- **HeatLive.** Its flame inside a teardrop, in the app's own gradient,
+  `#EB1E54` to `#6900FF`, read from the adaptive icon inside its APK.
   Requested in #205 with the launch activity read off the requester's
   V6-Plus (Android 14).
-- **AnimeTV.** Its teal swirl, redrawn as one unbroken curl that winds in
-  on itself. Requested in #230 with the launch activity read off the
-  requester's onn 4K Pro (Android 14).
-  973 → 975 icons, 1199 → 1206 components.
+- **AnimeTV.** Its wordmark, Anime over TV, in the purple of
+  the launcher icon inside the fork's APK (not the site favicon's teal).
+  Requested in #230 with the launch activity read off the requester's onn
+  4K Pro (Android 14).
+- **PatchWall.** Xiaomi's launcher, as its four-tile patchwork square in
+  amber and violet, from its Play listing icon. Requested in #235 with the
+  launch activity read off the requester's MiTV (Android 14).
+  973 → 976 icons, 1199 → 1207 components.
 
 ### Changed
 
@@ -73,6 +78,10 @@ All notable changes to the Core Builds Icon Pack. Format follows
   ink box sits within 36px of centre (median 1px), and
   `tests/test_icon_review.py` now fails any icon over 40px off centre or
   under 256px across.
+- **Xiaomi TV+ and RTVE Play match their own icons.** Xiaomi TV+ was a
+  generic teal set; it is now TV with Xiaomi's orange plus. RTVE Play shows
+  the full lowercase rtve with its play, in the wordmark's orange gradient.
+  Both were drawn from their Play listing icons.
 - **Xiaomi TV+ and RTVE Play apply again.** Xiaomi TV+ now launches
   through a splash screen the pack did not map, and an archived RTVE Play
   shows Android's reactivate placeholder instead of the app. Both components
@@ -80,7 +89,8 @@ All notable changes to the Core Builds Icon Pack. Format follows
   (Android 14) in #237 and #236.
 - **MaxPlayer is amber.** 1.9.9 coloured it from an older red-to-pink tile;
   the app's current icon is an amber m folded into a play triangle on navy,
-  and the pack now uses that amber.
+  and the pack now uses that amber and draws the m's arcs inside the
+  triangle.
 
 ## [1.9.9] — 2026-10-01
 

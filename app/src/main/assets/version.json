@@ -1,8 +1,8 @@
 {
   "versionCode": 42,
   "versionName": "2.0.0",
-  "iconCount": 975,
-  "componentCount": 1206,
+  "iconCount": 976,
+  "componentCount": 1207,
   "releaseDate": "2026-10-03",
   "apkUrl": "https://github.com/brevityA/CoreBuildsApps/releases/download/iconpack/iconpack-release.apk",
   "releaseNotesUrl": "https://github.com/brevityA/CoreBuildsApps/releases",
@@ -10,11 +10,11 @@
   "highlights": [
     "HeatLive",
     "AnimeTV",
+    "PatchWall",
     "Wordmark icons share one set of proportions",
     "One alphabet for every letter in an icon",
     "Banner names are drawn like the icons",
     "Lowercase marks are sized by what you see",
-    "Pluto TV applies again",
-    "Stadium Sync is Stadium Sync"
+    "Pluto TV applies again"
   ]
 }

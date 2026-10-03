@@ -8439,6 +8439,33 @@ def adaptive_lockup(mark, color, cap_h, max_w, cy=256, style=None):
     return stroke_lockup(mark, color, cap_h=cap_h, max_w=max_w, cy=cy, style=style)
 
 
+def patchwall_grid(c):
+    """Xiaomi PatchWall: its patchwork square - four tiles in an offset 2x2,
+    the large and small amber tiles on the left, the violet pair on the
+    right (catalog secondary). Drawn as rounded outlines, not traced."""
+    return (f'<rect x="88" y="88" width="200" height="200" rx="28" {_s(c, 30)}/>'
+            f'<rect x="320" y="88" width="104" height="136" rx="24" {_s(c, 28)}/>'
+            f'<rect x="88" y="320" width="168" height="104" rx="24" {_s(c, 28)}/>'
+            f'<rect x="288" y="256" width="136" height="168" rx="26" {_s(c, 30)}/>')
+
+
+def mitv_tvplus(c):
+    """Xiaomi TV+: its lockup's TV in the pack's stroke letters with the big
+    plus beside it - the plus in Xiaomi orange, TV in light ink (secondary)."""
+    return (stroke_lockup("TV", c, cap_h=170, max_w=216, cx=196)
+            + f'<path d="M 386 196 L 386 316 M 326 256 L 446 256" {_s(c, 36)}/>')
+
+
+def maxplayer_m(c):
+    """MaxPlayer: the soft-cornered play triangle from its store tile with the
+    m that cuts through it - two arcs fanning from the lower-left corner,
+    drawn as Core strokes inside the outline, not traced."""
+    return (f'<path d="M 172 117.8 L 339.8 214.4 A 48 48 0 0 1 339.8 297.6 '
+            f'L 172 394.2 A 48 48 0 0 1 100 352.6 L 100 159.4 A 48 48 0 0 1 172 117.8 Z" {_s(c, 32)}/>'
+            f'<path d="{_arc_cw(150, 330, 92, 285, 345)}" {_s(c, 26)}/>'
+            f'<path d="{_arc_cw(150, 330, 156, 290, 335)}" {_s(c, 26)}/>')
+
+
 # drawable -> (logotype cue, device). Each read off the app's launcher icon in
 # the Projectivy Icon Pack 1.1.9 artwork (reference only): the short form and
 # case the logo itself uses, and the one device it carries, if any.
@@ -8466,7 +8493,7 @@ _WM = {
     "one_play": ("one", "play"), "oqee_by_free": ("oq", None), "panda_plus": ("PA", "plus"),
     "perfecttv": ("PTV", None), "playkids": ("PK", "plus"), "put_io": ("put/io", None),
     "quasitv": ("QTV", None), "raiplay": ("Rai", "frame"), "redream": ("RD", None),
-    "riks_tv": ("RIKS", None), "rtl": ("RTL", "plus"), "rtve_play": ("rt", "play"),
+    "riks_tv": ("RIKS", None), "rtl": ("RTL", "plus"), "rtve_play": ("rtve", "play"),
     "rugbypass_tv": ("RP", "ring"), "rutube": ("RU", "dot"), "sfjazz_at_home": ("SFJ", None),
     "sfr_tv": ("SFR", None), "shout_tv": ("ST", "under"), "sledovani": ("SL", "frame"),
     "sport_tv": ("sp", "dot"), "strim": ("strim", None), "stv_player": ("STV", "play"),
@@ -8484,6 +8511,7 @@ _WM = {
     "youcine": ("YOU", "under"), "ziggo_go_tv": ("ZIG/GO", None),
 }
 GLYPHS.update({f"{d}_wm": _wm_glyph(t, cue) for d, (t, cue) in _WM.items()})
+GLYPHS.update({"patchwall_grid": patchwall_grid, "mitv_tvplus": mitv_tvplus, "maxplayer_m": maxplayer_m})
 
 
 def mytuner_radio(c):
@@ -8631,5 +8659,6 @@ _WM3 = {
     "enhanced": ("DUNE", None), "mgstv": ("MG", "under"), "myiptv": ("MY", None),
     "oktv22": ("OK", None), "onepixmedia": ("PIX", "dot"), "apksrebrand": ("PL", "play"),
     "sportseverywhere": ("4V", "under"), "xtreamplayeranddownloader": ("9X", None),
+    "animetv": ("Anime/TV", None),
 }
 GLYPHS.update({f"{d}_wm": _wm_glyph(t, cue) for d, (t, cue) in _WM3.items()})

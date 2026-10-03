@@ -1629,6 +1629,9 @@
     <!-- Parsec -->
     <item component="ComponentInfo{tv.parsec.client/tv.parsec.client.MainActivity}" drawable="parsec"/>
     <item component="ComponentInfo{tv.parsec.client/.MainActivity}" drawable="parsec"/>
+    <!-- PatchWall -->
+    <item component="ComponentInfo{com.mitv.tvhome.atv/com.mitv.tvhome.atv.app.PatchWallActivity}" drawable="patchwall"/>
+    <item component="ComponentInfo{com.mitv.tvhome.atv/.app.PatchWallActivity}" drawable="patchwall"/>
     <!-- Pathé Thuis -->
     <item component="ComponentInfo{nl.pathe.thuis/nl.pathe.thuis.LaunchActivity}" drawable="pathethuis"/>
     <item component="ComponentInfo{nl.pathe.thuis/.LaunchActivity}" drawable="pathethuis"/>

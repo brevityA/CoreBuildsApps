@@ -56,7 +56,7 @@ python tools/validate.py
 python tests/test_icon_identity.py    # 66 style/colour/reference/mapping regressions
 ```
 
-Paste the validator receipt. Current receipt: `Validated 975 icons · 1848 components`.
+Paste the validator receipt. Current receipt: `Validated 976 icons · 1850 components`.
 
 **The pack identity takes precedence over literal vendor-logo reproduction.**
 Reviewed brand entries use `style: core_monoline`: 32px rounded primary strokes,
