@@ -133,6 +133,9 @@
     <!-- AnimeTV -->
     <item component="ComponentInfo{com.dev.anime.one/com.dev.anime.one.MainActivity}" drawable="anime_banner"/>
     <item component="ComponentInfo{com.dev.anime.one/.MainActivity}" drawable="anime_banner"/>
+    <!-- AnimeTV -->
+    <item component="ComponentInfo{com.amarullz.androidtv.animetvjmto/com.amarullz.androidtv.animetvjmto.MainActivity}" drawable="animetv_banner"/>
+    <item component="ComponentInfo{com.amarullz.androidtv.animetvjmto/.MainActivity}" drawable="animetv_banner"/>
     <!-- Ant1 -->
     <item component="ComponentInfo{gr.antenna.ant1/com.arxnet.soeasytv.MainActivity}" drawable="ant1_banner"/>
     <!-- Anten TV -->
@@ -920,6 +923,8 @@
     <item component="ComponentInfo{com.zva3.mobile.litetvandroid/.MainActivity}" drawable="hdtv_player_banner"/>
     <item component="ComponentInfo{com.zva3.mobile.litetvandroid/com.zva3.mobile.litetvandroid.TvActivity}" drawable="hdtv_player_banner"/>
     <item component="ComponentInfo{com.zva3.mobile.litetvandroid/.TvActivity}" drawable="hdtv_player_banner"/>
+    <!-- HeatLive -->
+    <item component="ComponentInfo{com.google.heatlive/com.huishine.traveler.page.SplashActivity}" drawable="heatlive_banner"/>
     <!-- HEI Network -->
     <item component="ComponentInfo{com.heinetwork.HEINetworkTV/com.heinetwork.HEINetworkTV.MainActivity}" drawable="heinetworktv_banner"/>
     <item component="ComponentInfo{com.heinetwork.HEINetworkTV/.MainActivity}" drawable="heinetworktv_banner"/>
@@ -1695,6 +1700,7 @@
     <!-- Pluto TV -->
     <item component="ComponentInfo{tv.pluto.android/tv.pluto.android.EntryPoint}" drawable="pluto_tv_banner"/>
     <item component="ComponentInfo{tv.pluto.android/.EntryPoint}" drawable="pluto_tv_banner"/>
+    <item component="ComponentInfo{tv.pluto.android/com.paramount.android.pplus.features.splash.tv.SplashMediatorActivity}" drawable="pluto_tv_banner"/>
     <!-- PMX -->
     <item component="ComponentInfo{com.mirfatif.permissionmanagerx/com.mirfatif.permissionmanagerx.fwk.MainActivityM}" drawable="pmx_banner"/>
     <item component="ComponentInfo{com.mirfatif.permissionmanagerx/.fwk.MainActivityM}" drawable="pmx_banner"/>

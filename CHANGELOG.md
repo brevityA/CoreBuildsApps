@@ -6,6 +6,28 @@ All notable changes to the Core Builds Icon Pack. Format follows
 
 ## [Unreleased]
 
+## [2.0.0] — 2026-10-03
+
+### Added
+
+- **HeatLive.** The logo's own HEAT wordmark with the play device it
+  carries in the A, in its magenta. Requested in #205 with the launch
+  activity read off the requester's V6-Plus (Android 14).
+- **AnimeTV.** Its teal swirl, redrawn as one unbroken curl that winds in
+  on itself. Requested in #230 with the launch activity read off the
+  requester's onn 4K Pro (Android 14).
+  973 → 975 icons, 1199 → 1202 components.
+
+### Fixed
+
+- **Pluto TV applies again.** Pluto now launches through Paramount's TV
+  splash screen, a component the pack did not know, so its icon stopped
+  applying. The new component is mapped beside the old one, as read off the
+  reporter's Philips Google TV (Android 14) in #232.
+- **MaxPlayer is amber.** 1.9.9 coloured it from an older red-to-pink tile;
+  the app's current icon is an amber m folded into a play triangle on navy,
+  and the pack now uses that amber.
+
 ## [1.9.9] — 2026-10-01
 
 ### Added

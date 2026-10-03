@@ -71,6 +71,7 @@
     <item drawable="abciview_banner" />
     <item drawable="androidtv_2_banner" />
     <item drawable="livingroom_banner" />
+    <item drawable="animetv_banner" />
     <item drawable="appletv_banner" />
     <item drawable="iplayer_banner" />
     <item drawable="bbc_iplayer_banner" />
@@ -111,6 +112,7 @@
     <item drawable="fivetviptvbox_banner" />
     <item drawable="screen_banner" />
     <item drawable="hdtv_player_banner" />
+    <item drawable="heatlive_banner" />
     <item drawable="myiptvonline_banner" />
     <item drawable="iptvextremepro_banner" />
     <item drawable="iptv_pro_banner" />

@@ -44,6 +44,7 @@
     <item drawable="anilab" />
     <item drawable="anime_cast" />
     <item drawable="anime" />
+    <item drawable="animetv" />
     <item drawable="ant1" />
     <item drawable="antentv" />
     <item drawable="anvandarmanual" />
@@ -317,6 +318,7 @@
     <item drawable="hdo_box" />
     <item drawable="falcofemoralis" />
     <item drawable="hdtv_player" />
+    <item drawable="heatlive" />
     <item drawable="heinetworktv" />
     <item drawable="watcher" />
     <item drawable="hi_browser" />

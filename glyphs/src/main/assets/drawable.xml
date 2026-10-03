@@ -71,6 +71,7 @@
     <item drawable="abciview" />
     <item drawable="androidtv_2" />
     <item drawable="livingroom" />
+    <item drawable="animetv" />
     <item drawable="appletv" />
     <item drawable="iplayer" />
     <item drawable="bbc_iplayer" />
@@ -111,6 +112,7 @@
     <item drawable="fivetviptvbox" />
     <item drawable="screen" />
     <item drawable="hdtv_player" />
+    <item drawable="heatlive" />
     <item drawable="myiptvonline" />
     <item drawable="iptvextremepro" />
     <item drawable="iptv_pro" />

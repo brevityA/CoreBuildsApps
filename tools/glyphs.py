@@ -7289,6 +7289,26 @@ GLYPHS.update({
 })
 
 
+def animetv_curl(c):
+    """AnimeTV: one unbroken curl that winds in on itself, the swirl of its
+    teal launcher mark redrawn as a single Core line. Two arcs share a
+    tangent where they meet - the inner one's centre sits on the outer's
+    radius - so the stroke turns inward without a corner, and it stops open
+    rather than closing on a dot, which keeps it clear of GenPlay's spiral."""
+    import math
+    cx, cy, r_out, r_in, turn = 256, 256, 176, 104, 140
+    ox, oy = _polar(cx, cy, r_out - r_in, turn)
+    x0, y0 = _polar(cx, cy, r_out, 220)
+    x1, y1 = _polar(cx, cy, r_out, turn)
+    x2, y2 = _polar(ox, oy, r_in, turn + 250)
+    d = (f"M {x0:.1f} {y0:.1f} A {r_out} {r_out} 0 1 1 {x1:.1f} {y1:.1f} "
+         f"A {r_in} {r_in} 0 1 1 {x2:.1f} {y2:.1f}")
+    return f'<path d="{d}" {_s(c, 34)}/>'
+
+
+GLYPHS.update({"animetv_curl": animetv_curl})
+
+
 # --------------------------------------------------------------------------
 # Brand marks batch 16 (2026-09-28): more letter tiles whose launcher icon,
 # seen in the Projectivy Icon Pack 1.1.9 artwork (reference only), carries a
@@ -8200,7 +8220,7 @@ _WM = {
     "fluffy": ("FL", "ring"), "forja_tv": ("For/ja", None), "formed": ("fo", "under"),
     "francetv": ("ftv", "dot"), "gain": ("GAiN", None), "gb_news": ("GBN", None),
     "goplay": ("GO", "play"), "rezka": ("HD", "ring"), "hdtv_player": ("HD/TV", None),
-    "hidive": ("HI/DIVE", None), "hrti": ("HRTi", None), "ici_tou_tv": ("tou/tv", "dot"),
+    "heatlive": ("HEAT", "play"), "hidive": ("HI/DIVE", None), "hrti": ("HRTi", None), "ici_tou_tv": ("tou/tv", "dot"),
     "iptv_pro": ("IPTV", None), "ivysiilani": ("iV", None), "jawwy_tv": ("stc/tv", None),
     "jiotvplus": ("jio", "ring"), "joyn": ("joyn", None), "kemo_iptv": ("KEMO", None),
     "kika": ("KiKA", None), "knowledge": ("KN", "under"), "l_equipe": ("LE", "over"),

@@ -133,6 +133,9 @@
     <!-- AnimeTV -->
     <item component="ComponentInfo{com.dev.anime.one/com.dev.anime.one.MainActivity}" drawable="anime"/>
     <item component="ComponentInfo{com.dev.anime.one/.MainActivity}" drawable="anime"/>
+    <!-- AnimeTV -->
+    <item component="ComponentInfo{com.amarullz.androidtv.animetvjmto/com.amarullz.androidtv.animetvjmto.MainActivity}" drawable="animetv"/>
+    <item component="ComponentInfo{com.amarullz.androidtv.animetvjmto/.MainActivity}" drawable="animetv"/>
     <!-- Ant1 -->
     <item component="ComponentInfo{gr.antenna.ant1/com.arxnet.soeasytv.MainActivity}" drawable="ant1"/>
     <!-- Anten TV -->
@@ -920,6 +923,8 @@
     <item component="ComponentInfo{com.zva3.mobile.litetvandroid/.MainActivity}" drawable="hdtv_player"/>
     <item component="ComponentInfo{com.zva3.mobile.litetvandroid/com.zva3.mobile.litetvandroid.TvActivity}" drawable="hdtv_player"/>
     <item component="ComponentInfo{com.zva3.mobile.litetvandroid/.TvActivity}" drawable="hdtv_player"/>
+    <!-- HeatLive -->
+    <item component="ComponentInfo{com.google.heatlive/com.huishine.traveler.page.SplashActivity}" drawable="heatlive"/>
     <!-- HEI Network -->
     <item component="ComponentInfo{com.heinetwork.HEINetworkTV/com.heinetwork.HEINetworkTV.MainActivity}" drawable="heinetworktv"/>
     <item component="ComponentInfo{com.heinetwork.HEINetworkTV/.MainActivity}" drawable="heinetworktv"/>
@@ -1695,6 +1700,7 @@
     <!-- Pluto TV -->
     <item component="ComponentInfo{tv.pluto.android/tv.pluto.android.EntryPoint}" drawable="pluto_tv"/>
     <item component="ComponentInfo{tv.pluto.android/.EntryPoint}" drawable="pluto_tv"/>
+    <item component="ComponentInfo{tv.pluto.android/com.paramount.android.pplus.features.splash.tv.SplashMediatorActivity}" drawable="pluto_tv"/>
     <!-- PMX -->
     <item component="ComponentInfo{com.mirfatif.permissionmanagerx/com.mirfatif.permissionmanagerx.fwk.MainActivityM}" drawable="pmx"/>
     <item component="ComponentInfo{com.mirfatif.permissionmanagerx/.fwk.MainActivityM}" drawable="pmx"/>

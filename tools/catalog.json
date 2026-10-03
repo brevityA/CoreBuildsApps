@@ -2,11 +2,11 @@
   "$schema": "./catalog.schema.json",
   "meta": {
     "pack": "Core Builds Icon Pack",
-    "version": "1.9.9",
+    "version": "2.0.0",
     "grid": 512,
     "safe_area": 432,
     "note": "Core Builds-authored geometric icons on a shared 512 grid. Reviewed brand glyphs use rounded monoline strokes and one accent, not imported vendor silhouettes. Common Outfit/category/rail banners; artwork is reference-only. Canonical brand colours and the dark-card contrast policy remain shared.",
-    "count": 973
+    "count": 975
   },
   "icons": [
     {
@@ -8149,10 +8149,11 @@
       "color": "#FFF200",
       "glyph": "pluto_echo",
       "components": [
-        "tv.pluto.android/tv.pluto.android.EntryPoint"
+        "tv.pluto.android/tv.pluto.android.EntryPoint",
+        "tv.pluto.android/com.paramount.android.pplus.features.splash.tv.SplashMediatorActivity"
       ],
       "category": "APP",
-      "mapping_source": "Projectivy Icon Pack 1.1.9",
+      "mapping_source": "Projectivy Icon Pack 1.1.9; com.paramount.android.pplus.features.splash.tv.SplashMediatorActivity from issue #232 (device-reported on Philips Google TV TA1, Android 14, pack 1.9.9: the launch activity after Pluto moved onto the Paramount TV splash)",
       "color_source": "brand reference — Pluto TV 2024 disc yellow (sampled 2026-09-14)",
       "color_reviewed": "2026-09-14"
     },
@@ -13624,7 +13625,7 @@
     {
       "name": "MaxPlayer",
       "drawable": "maxplayer",
-      "color": "#F5316B",
+      "color": "#F8A000",
       "glyph": "maxplayer_tri",
       "components": [
         "tv.maxplayer.android/tv.maxplayer.android.MainActivity"
@@ -13632,14 +13633,37 @@
       "mapping_source": "issue #219 (device-reported on SHIELD Android TV, Android 11, pack 1.9.7): .MainActivity is the reported launch activity of tv.maxplayer.android",
       "category": "PLAYER",
       "style": "core_monoline",
-      "color_source": "sampled from the Play-listing launcher icon (play.google.com/store/apps/details?id=tv.maxplayer.android, reference only): the tile's red-pink #F5316B between its two gradient corners",
-      "color_reviewed": "2026-10-01",
-      "gradient": [
-        "#F6474A",
-        "#F51D66"
+      "color_source": "sampled from the Play-listing launcher icon (play.google.com/store/apps/details?id=tv.maxplayer.android, Max Player ™ by E Galactic e.U, reference only): the amber m-in-a-play-triangle #F8A000 on its navy #001038 tile (2026-10-03); the 1.9.9 pink came from an older tile",
+      "color_reviewed": "2026-10-03",
+      "glyph_source": "brand-informed redraw of the Play-listing launcher icon (reference only): the play triangle the m is folded into, authored as Core monoline corner arcs, not a trace (2026-10-01; rechecked against the current amber icon 2026-10-03)"
+    },
+    {
+      "name": "HeatLive",
+      "drawable": "heatlive",
+      "color": "#E800F0",
+      "glyph": "heatlive_wm",
+      "components": [
+        "com.google.heatlive/com.huishine.traveler.page.SplashActivity"
       ],
-      "gradient_source": "sampled from the Play-listing launcher icon (reference only): the tile's red top-left corner #F6474A to pink right corner #F51D66 (2026-10-01)",
-      "glyph_source": "brand-informed redraw of the Play-listing launcher icon (reference only): the soft-cornered play triangle, authored as Core monoline corner arcs, not a trace (2026-10-01)"
+      "category": "LIVE",
+      "mapping_source": "issue #205 (device-reported on V6-Plus, Android 14, pack 1.9.7, heat-live-v5.9.1.apk): com.huishine.traveler.page.SplashActivity is the launch activity of com.google.heatlive",
+      "color_source": "sampled from the HeatLive launcher tile as shown in the vSeeBox app list (reference only): the magenta field #E800F0 (2026-10-03)",
+      "color_reviewed": "2026-10-03",
+      "glyph_source": "wordmark cue: the logo's own HEAT wordmark with the play device it carries in the A, set in the pack's stroke type (2026-10-03)"
+    },
+    {
+      "name": "AnimeTV",
+      "drawable": "animetv",
+      "color": "#18D0C8",
+      "glyph": "animetv_curl",
+      "components": [
+        "com.amarullz.androidtv.animetvjmto/com.amarullz.androidtv.animetvjmto.MainActivity"
+      ],
+      "category": "VOD",
+      "mapping_source": "issue #230 (device-reported on onn 4K Pro Streaming Device, Android 14, pack 1.9.8): .MainActivity is the launch activity of com.amarullz.androidtv.animetvjmto",
+      "color_source": "sampled from the official site's launcher mark (animetv-fork.github.io/favicon.png, reference only): the teal #18D0C8 (2026-10-03)",
+      "color_reviewed": "2026-10-03",
+      "glyph_source": "brand-informed redraw of the AnimeTV teal swirl (reference only): one unbroken Core-line curl winding inward, not a trace (2026-10-03)"
     }
   ],
   "artwork": {

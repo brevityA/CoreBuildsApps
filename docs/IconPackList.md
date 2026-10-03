@@ -1,6 +1,6 @@
 # Supported applications
 
-`973` icons · `1199` mapped components · pack v1.9.9
+`975` icons · `1202` mapped components · pack v2.0.0
 
 Every app below auto-assigns in Projectivy. If one doesn't, the app ships a different launcher activity on your device — open an issue with the component name and it gets added.
 
@@ -52,6 +52,7 @@ Source accents are retained in the catalog. **On dark** is the shared square/ban
 | AniLab | `anilab` | `#D82028` | `#D82028` | `com.anilab.android.tv/com.anilab.android.tv.ui.TvActivity` |
 | Anime Cast | `anime_cast` | `#5454A8` | `#5757AB` | `csc.app.anime.cast/csc.app.app.tv.activity.Splash`<br>`csc.app.anime.cast/csc.app.app.movil.activity.Splash` |
 | AnimeTV | `anime` | `#F98E41` | `#F98E41` | `com.dev.anime.one/com.dev.anime.one.MainActivity` |
+| AnimeTV | `animetv` | `#18D0C8` | `#18D0C8` | `com.amarullz.androidtv.animetvjmto/com.amarullz.androidtv.animetvjmto.MainActivity` |
 | Ant1 | `ant1` | `#FFB020` | `#FFB020` | `gr.antenna.ant1/com.arxnet.soeasytv.MainActivity` |
 | Anten TV | `antentv` | `#F090B0` | `#F090B0` | `com.farakav.antentv/com.farakav.antentv.app.SplashActivity` |
 | Användarmanual | `anvandarmanual` | `#94A3C0` | `#94A3C0` | `com.tcl.ocean.instructions/com.tcl.ocean.instructions.portal.home.HomeActivity` |
@@ -325,6 +326,7 @@ Source accents are retained in the catalog. **On dark** is the shared square/ban
 | HDO Box | `hdo_box` | `#E25100` | `#E25100` | `com.tv.hdobox/com.tv.hdobox.MainActivity` |
 | HDRezka | `falcofemoralis` | `#FF4D4D` | `#FF4D4D` | `com.falcofemoralis.hdrezkaapp/com.falcofemoralis.hdrezkaapp.views.MainActivity` |
 | HDTV Player | `hdtv_player` | `#EB5405` | `#EB5405` | `com.zva3.mobile.litetvandroid/com.zva3.mobile.litetvandroid.MainActivity`<br>`com.zva3.mobile.litetvandroid/com.zva3.mobile.litetvandroid.TvActivity` |
+| HeatLive | `heatlive` | `#E800F0` | `#E800F0` | `com.google.heatlive/com.huishine.traveler.page.SplashActivity` |
 | HEI Network | `heinetworktv` | `#DA3430` | `#DA3430` | `com.heinetwork.HEINetworkTV/com.heinetwork.HEINetworkTV.MainActivity` |
 | HGTV | `watcher` | `#00A8C0` | `#00A8C0` | `com.hgtv.watcher/com.discovery.tve.presentation.activities.SplashActivity` |
 | Hi Browser | `hi_browser` | `#00A8A8` | `#00A8A8` | `com.hisense.odinbrowser/com.hisense.odinbrowser.MainActivity`<br>`com.hisense.odinbrowser/com.hisense.odinbrowser.ui.MainActivity`<br>`com.hisense.odinbrowser/com.hisense.odinbrowser.browser.MainActivity` |
@@ -436,7 +438,7 @@ Source accents are retained in the catalog. **On dark** is the shared square/ban
 | Material Files | `materialfiles` | `#00E5FF` | `#00E5FF` | `me.zhanghai.android.files/me.zhanghai.android.files.filelist.FileListActivity`<br>`me.zhanghai.android.files/.filelist.FileListActivity` |
 | Matvt Mouse For Android TV Toggle | `matvt_mouse_for_android_tv_toggle` | `#24EDA3` | `#24EDA3` | `io.github.virresh.matvt/io.github.virresh.matvt.gui.GuiActivity` |
 | Max | `max` | `#0046FF` | `#0147FF` | `com.wbd.stream/.MainActivity`<br>`com.hbo.hbonow/.MainActivity`<br>`com.wbd.hbomax/.MainActivity`<br>`com.wbd.hbomax/com.wbd.hbomax.MainActivity`<br>`com.wbd.stream/com.wbd.beam.BeamActivity` |
-| MaxPlayer | `maxplayer` | `#F5316B` | `#F5316B` | `tv.maxplayer.android/tv.maxplayer.android.MainActivity` |
+| MaxPlayer | `maxplayer` | `#F8A000` | `#F8A000` | `tv.maxplayer.android/tv.maxplayer.android.MainActivity` |
 | Maze | `powerpoint45` | `#000000` | `#E6EDF3` | `com.powerpoint45.maze/com.powerpoint45.maze.MainMenuActivity` |
 | Mecool File Manager | `mecool_file_manager` | `#6477FF` | `#6477FF` | `com.tvonline.filewizard/com.tvonline.filewizard.ui.MainActivity` |
 | Meddelandelåda | `meddelandelada` | `#119864` | `#119864` | `com.tcl.messagebox/com.tcl.messagebox.activity.MainActivity` |
@@ -591,7 +593,7 @@ Source accents are retained in the catalog. **On dark** is the shared square/ban
 | PlayStation | `playstation` | `#0070D1` | `#0070D1` | `com.playstation.remoteplay/.MainActivity`<br>`com.scee.psxandroid/.MainActivity` |
 | Plex | `plex` | `#EBAF00` | `#EBAF00` | `com.plexapp.android/com.plexapp.plex.activities.SplashActivity`<br>`com.plexapp.mediaserver.smb/.MainActivity` |
 | Plexamp | `plexamp` | `#FF7A2E` | `#FF7A2E` | `tv.plex.labs.plexamp/com.plexamp.MainActivity` |
-| Pluto TV | `pluto_tv` | `#FFF200` | `#FFF200` | `tv.pluto.android/tv.pluto.android.EntryPoint` |
+| Pluto TV | `pluto_tv` | `#FFF200` | `#FFF200` | `tv.pluto.android/tv.pluto.android.EntryPoint`<br>`tv.pluto.android/com.paramount.android.pplus.features.splash.tv.SplashMediatorActivity` |
 | PMX | `pmx` | `#00C2C2` | `#00C2C2` | `com.mirfatif.permissionmanagerx/com.mirfatif.permissionmanagerx.fwk.MainActivityM`<br>`com.mirfatif.permissionmanagerx/com.mirfatif.permissionmanagerx.fwk.MainActivity` |
 | Podcast Addict | `podcastaddict` | `#F4842D` | `#F4842D` | `com.bambuna.podcastaddict/com.bambuna.podcastaddict.activity.PodcastListActivity` |
 | Polsat Box Go | `polsat_box_go` | `#F8C800` | `#F8C800` | `pl.cyfrowypolsat.cpgo/pl.cyfrowypolsat.cpframework.presentation.mobile.launch.LaunchActivity`<br>`pl.cyfrowypolsat.cpgo/pl.cyfrowypolsat.cpframework.presentation.tv.launch.TvLaunchActivity` |
