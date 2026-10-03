@@ -149,6 +149,7 @@ jobs:
           python tests/test_string_resources.py
           python tests/test_wordmark_type.py
           python tests/test_icon_review.py
+          python tests/test_play_build.py
           python tests/test_ci_coverage.py
 
       - name: Set up JDK 17
@@ -172,7 +173,7 @@ jobs:
           KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
           KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
           KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
-        run: ./gradlew assembleRelease --no-daemon
+        run: ./gradlew assembleRelease :app:bundlePlay :glyphs:bundleRelease --no-daemon
 
       - name: Verify the APK is signed before releasing
         # An unsigned APK cannot be installed on Android at all, so publishing
@@ -236,6 +237,20 @@ jobs:
           path: |
             app/build/outputs/apk/release/*.apk
             glyphs/build/outputs/apk/release/*.apk
+          if-no-files-found: error
+
+      # The Google Play uploads: the icon pack's Play build (no updater, no
+      # install permission - see app/src/play/) and Core Builds Glyphs, both
+      # as App Bundles. Signed with the release key whenever the keystore
+      # secrets are present (pushes to main and v* tags); upload these to
+      # Play Console, not the APKs.
+      - name: Upload Play bundles
+        uses: actions/upload-artifact@v7
+        with:
+          name: core-builds-play-bundles
+          path: |
+            app/build/outputs/bundle/play/*.aab
+            glyphs/build/outputs/bundle/release/*.aab
           if-no-files-found: error
 
       - name: Publish versioned release

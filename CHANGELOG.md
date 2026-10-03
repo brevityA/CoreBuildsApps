@@ -6,6 +6,24 @@ All notable changes to the Core Builds Icon Pack. Format follows
 
 ## [Unreleased]
 
+### Added
+
+- **A Google Play build.** `./gradlew :app:bundlePlay` builds the icon
+  pack's Play upload (an App Bundle) from the same code and art. It drops
+  everything Play forbids a Play app to do: no `REQUEST_INSTALL_PACKAGES`,
+  no update check against GitHub (Play updates it), and the Glyphs switch
+  opens Core Builds Glyphs' own Play listing instead of downloading it.
+  CI uploads both Play bundles (`core-builds-play-bundles`). The GitHub
+  builds are unchanged.
+
+### Changed
+
+- **Picking one icon follows the Art style switch.** Choosing a single
+  card's icon through Core Builds now returns a banner or a square to match
+  the switch, so one pack can hand out either shape card by card. Picks
+  through Core Builds Glyphs are still always square, and picking never
+  changes what the launcher auto-applies.
+
 ## [2.0.0] — 2026-10-03
 
 ### Added

@@ -134,12 +134,16 @@ class OneStylePerPack(unittest.TestCase):
         forward = java.split("if (isPickRequest(in))", 1)[1].split("} else {", 1)[0]
         self.assertIn("putExtra(EXTRA_PICK_GLYPHS, true)", forward)
 
-    def test_picker_shape_comes_from_the_pack_not_the_toggle(self):
+    def test_picker_shape_follows_the_toggle_except_through_glyphs(self):
         src = read(self.MAIN_KT)
         self.assertIn("fun pickFixedByPack(): Boolean = pickMode && GlyphsCompanion.supported()",
                       src)
-        # An unmarked pick came through the icon pack: banners.
-        self.assertIn("!intent.getBooleanExtra(GlyphsCompanion.EXTRA_PICK_GLYPHS, false)", src)
+        # A pick forwarded by Core Builds Glyphs is always square; one through
+        # this pack follows the Art style switch (2.0.1).
+        pick = src.split("pickBanners = if (pickFixedByPack() &&", 1)[1].split("adapter = IconAdapter", 1)[0]
+        self.assertIn("intent.getBooleanExtra(GlyphsCompanion.EXTRA_PICK_GLYPHS, false)", pick)
+        self.assertIn("false", pick.split("} else {", 1)[0])
+        self.assertIn("Prefs.pickerPrefersBanners(this)", pick.split("} else {", 1)[1])
         # With a companion the picker shows no shape chips, so no pick can
         # write the art style the whole launcher applies.
         chips = src.split("private fun bindPickShape()", 1)[1]
@@ -158,9 +162,11 @@ class OneStylePerPack(unittest.TestCase):
     def test_switch_never_claims_glyphs_the_launcher_lacks(self):
         src = read(COMPANION_KT)
         ensure = src.split("fun ensure(", 1)[1].split("\n    }\n", 1)[0]
-        # Every way ensure() can fail to deliver the pack reverts the style.
-        self.assertEqual(ensure.count("revertToBanners(activity)"), 3, ensure)
-        self.assertEqual(ensure.count("onUnavailable()"), 3, ensure)
+        # Every way ensure() can fail to deliver the pack reverts the style:
+        # no install permission, a refused hand-off, a failed download, and
+        # (Play build) no store to open the companion's listing in.
+        self.assertEqual(ensure.count("revertToBanners(activity)"), 4, ensure)
+        self.assertEqual(ensure.count("onUnavailable()"), 4, ensure)
         revert = src.split("private fun revertToBanners(", 1)[1].split("\n    }\n", 1)[0]
         self.assertIn("Prefs.KEY_PICK_BANNERS, true", revert)
         # A superseded download must not install or revert over a newer one.

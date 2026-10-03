@@ -38,6 +38,9 @@ android {
             "GLYPHS_PACKAGE",
             "\"tv.corebuilds.iconpack.glyphs\"",
         )
+        // github: self-updates from GitHub releases. play: see the play
+        // build type below and Distribution.kt.
+        buildConfigField("String", "DISTRIBUTION", "\"github\"")
     }
 
     // This variant is intentionally separate from both production release and
@@ -91,6 +94,19 @@ android {
             if (ks != null && file(ks).exists()) {
                 signingConfig = signingConfigs.getByName("release")
             }
+        }
+        // The Google Play upload: `./gradlew :app:bundlePlay` -> an AAB at
+        // app/build/outputs/bundle/play/. Same code, art and signing key as
+        // release, minus everything Play forbids a Play app to do: no
+        // REQUEST_INSTALL_PACKAGES (src/play/AndroidManifest.xml), no GitHub
+        // update check, and the Glyphs switch opens the companion's Play
+        // listing instead of downloading it. A separate build type, not a
+        // flavour, so the release APK paths CI publishes stay as they are.
+        create("play") {
+            initWith(getByName("release"))
+            matchingFallbacks += listOf("release")
+            buildConfigField("String", "DISTRIBUTION", "\"play\"")
+            buildConfigField("String", "UPDATE_MANIFEST_URL", "\"\"")
         }
     }
 

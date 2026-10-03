@@ -78,6 +78,8 @@
     <string name="glyphs_downloading">Downloading Core Builds Glyphs, the square pack your launcher applies</string>
     <string name="glyphs_install_permission">Allow installs from Core Builds, then switch to Glyphs again to fetch Core Builds Glyphs</string>
     <string name="glyphs_failed_fmt">Couldn\'t fetch Core Builds Glyphs: %1$s. Art style is back to Banners.</string>
+    <string name="glyphs_play_listing">Install Core Builds Glyphs from Google Play, then come back here: your launcher switches to the square pack</string>
+    <string name="glyphs_no_store">Google Play isn\'t available on this device, so your launcher keeps the banners. Art style is back to Banners.</string>
     <string name="glyphs_declined">Core Builds Glyphs wasn\'t installed, so your launcher keeps the banners. Art style is back to Banners.</string>
     <string name="update_available_fmt">Update available — v%1$s · %2$d icons</string>
     <string name="update_current_fmt">Up to date — v%1$s.</string>

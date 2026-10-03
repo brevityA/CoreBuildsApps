@@ -1,8 +1,11 @@
 package tv.corebuilds.iconpack
 
 import android.app.Activity
+import android.content.ActivityNotFoundException
 import android.content.Context
+import android.content.Intent
 import android.content.pm.PackageManager
+import android.net.Uri
 import android.os.Build
 import android.widget.Toast
 
@@ -72,8 +75,45 @@ object GlyphsCompanion {
     fun ready(context: Context): Boolean {
         val code = installedVersionCode(context) ?: return false
         if (code < BuildConfig.VERSION_CODE) return false
-        return context.packageManager.checkSignatures(context.packageName, PACKAGE) ==
-            PackageManager.SIGNATURE_MATCH
+        if (context.packageManager.checkSignatures(context.packageName, PACKAGE) ==
+            PackageManager.SIGNATURE_MATCH) return true
+        // Play builds: Play App Signing gives each listing its own key unless
+        // the same key is uploaded to both, so a Play-installed companion is
+        // trusted on its installer. A package name is owned by one developer
+        // account on Play, so Play can only have installed ours.
+        return Distribution.PLAY && installedByPlay(context)
+    }
+
+    private fun installedByPlay(context: Context): Boolean = try {
+        val pm = context.packageManager
+        val installer = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            pm.getInstallSourceInfo(PACKAGE).installingPackageName
+        } else {
+            @Suppress("DEPRECATION")
+            pm.getInstallerPackageName(PACKAGE)
+        }
+        installer == Distribution.PLAY_STORE
+    } catch (_: Exception) {
+        false
+    }
+
+    /**
+     * Play builds: open the companion's Play listing and owe the apply to
+     * [launcherKey]; [takePendingApply] lands it on resume once Play has
+     * installed it. False when no store can be opened at all.
+     */
+    private fun openPlayListing(activity: Activity, launcherKey: String): Boolean {
+        Prefs.setCompanionPendingApply(activity, launcherKey)
+        for (uri in listOf(Distribution.playListing(PACKAGE), Distribution.playListingWeb(PACKAGE))) {
+            try {
+                activity.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(uri)))
+                return true
+            } catch (_: ActivityNotFoundException) {
+                // try the next form
+            }
+        }
+        Prefs.setCompanionPendingApply(activity, null)
+        return false
     }
 
     /** The package a launcher should be told to apply right now. */
@@ -113,6 +153,16 @@ object GlyphsCompanion {
     fun ensure(activity: Activity, launcherKey: String, onUnavailable: () -> Unit = {}) {
         if (!supported()) return
         val generation = ++ensureGeneration
+        if (Distribution.PLAY) {
+            if (openPlayListing(activity, launcherKey)) {
+                toast(activity, activity.getString(R.string.glyphs_play_listing))
+            } else {
+                toast(activity, activity.getString(R.string.glyphs_no_store))
+                revertToBanners(activity)
+                onUnavailable()
+            }
+            return
+        }
         if (!UpdateInstaller.canInstall(activity)) {
             toast(activity, activity.getString(R.string.glyphs_install_permission))
             revertToBanners(activity)

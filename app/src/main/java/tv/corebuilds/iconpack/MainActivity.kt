@@ -108,11 +108,15 @@ class MainActivity : TvActivity() {
         findViewById<TextView>(R.id.count).text =
             getString(R.string.pack_stats_fmt, all.size, mappedComponents())
 
-        pickBanners = if (pickFixedByPack()) {
-            // Which pack the launcher opened decides the shape, not the
-            // toggle: Core Builds Glyphs forwards its picks here marked.
-            !intent.getBooleanExtra(GlyphsCompanion.EXTRA_PICK_GLYPHS, false)
+        pickBanners = if (pickFixedByPack() &&
+            intent.getBooleanExtra(GlyphsCompanion.EXTRA_PICK_GLYPHS, false)) {
+            // Core Builds Glyphs forwards its picks here marked: squares only.
+            false
         } else {
+            // A pick through this pack follows the Art style switch (2.0.1),
+            // so one app can hand out either shape card by card. Picking
+            // never writes the switch, so it cannot flip what the launcher
+            // auto-applies.
             Prefs.pickerPrefersBanners(this)
         }
         adapter = IconAdapter(all, showBanners = pickBanners) { item -> onIconChosen(item) }
@@ -429,7 +433,9 @@ class MainActivity : TvActivity() {
             // the app issues no network request of its own at all — which is
             // what the About screen's network list claims, and the claim has
             // to stay checkable.
-            if (!updateChecked && Prefs.updateChecks(this)) {
+            // Play builds update through Play only (Device and Network Abuse
+            // policy), so they never check GitHub or offer an APK.
+            if (!Distribution.PLAY && !updateChecked && Prefs.updateChecks(this)) {
                 updateChecked = true
                 checkForUpdate()
             }
@@ -1106,8 +1112,9 @@ class MainActivity : TvActivity() {
 
     private fun pickHint(): String = getString(
         when {
+            pickFixedByPack() && intent.getBooleanExtra(GlyphsCompanion.EXTRA_PICK_GLYPHS, false) ->
+                R.string.picker_hint_glyphs_only
             pickFixedByPack() && pickBanners -> R.string.picker_hint_banners_only
-            pickFixedByPack() -> R.string.picker_hint_glyphs_only
             pickBanners -> R.string.picker_hint_banner
             else -> R.string.picker_hint_square
         }
