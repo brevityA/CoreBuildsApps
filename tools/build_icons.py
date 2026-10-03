@@ -76,6 +76,11 @@ def validate(icons, artwork=None):
         seen_d[d] = n
         if i.get("glyph") not in GLYPHS:
             errors.append(f"{n}: unknown glyph '{i.get('glyph')}'")
+        bn = i.get("banner_name")
+        if bn is not None and (not isinstance(bn, str) or not bn.strip()
+                               or len(bn) >= len(i.get("name", ""))):
+            errors.append(f"{n}: banner_name '{bn}' must be a shorter form of the "
+                          f"name - it exists only to keep a long name readable on the card")
         if i.get("banner_glyph") and i["banner_glyph"] not in GLYPHS:
             errors.append(f"{n}: unknown banner glyph '{i.get('banner_glyph')}'")
         if not re.match(r"^#[0-9A-Fa-f]{6}$", i.get("color", "")):

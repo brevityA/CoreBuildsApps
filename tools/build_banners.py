@@ -15,7 +15,7 @@ language. What was measured from their pack, over a 150-icon sample:
 
 Those are their structural rules and they are sound for a 10-foot UI. What we
 keep is the Core Builds identity: original rounded-line glyphs, one accent,
-one Outfit label/category/rail lockup. Vendor artwork is reference material,
+one stroke-letter label/category/rail lockup. Vendor artwork is reference material,
 not a second icon style. Colour and provenance remain in tools/catalog.json.
 
 No pack branding appears on any banner. Their DAZN icon is just DAZN; a
@@ -37,7 +37,7 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from glyphs import (GLYPHS, apply_gradient, apply_secondary, classic_fit,  # noqa: E402
                     family_body, monoline)
 from icon_style import display_accent  # noqa: E402
-from typeface import FONT_WORDMARK, measure as type_measure, wordmark_spans  # noqa: E402
+from glyphs import stroke_label, stroke_label_width  # noqa: E402
 from drawable_art import (ART_EXT, BRANDING_PNGS, alias_identical,
                           write_aliases_file)  # noqa: E402
 
@@ -102,8 +102,14 @@ RAIL_W = 16               # brand-true rail, left edge (was a fixed
                           # own accent, top stop, sinking 55% toward the card
                           # at the bottom so no rail ever goes full-bleed.)
 RAIL_PAD = 168            # rail inset from top/bottom, keeps ink under 72%
-KICKER = 46               # uppercase mono category size
-KICK_TRACK = 7.0          # .08em at this size, matching the site
+KICKER = 46               # category line size, in the name's em units
+KICK_CAP = 34             # its cap height: a label, a step under the name
+KICK_WEIGHT = 9           # its stroke
+KICK_TRACK = .6           # letter gap as a share of the cap: tracked out so
+                          # the category reads as a label, not a second name.
+                          # Until 2.0.0 this constant existed (as 7.0px) but
+                          # nothing applied it, so VOD/LIVE/SPORT set tight in
+                          # the same bold as the name and competed with it.
 
 
 def _mix(hex_from: str, hex_to: str, t: float) -> str:
@@ -114,22 +120,18 @@ def _mix(hex_from: str, hex_to: str, t: float) -> str:
     b = tuple(int(hex_to[i:i + 2], 16) for i in (1, 3, 5))
     return "#" + "".join(f"{round(x + (y - x) * t):02X}" for x, y in zip(f, b))
 
-# Wordmarks are Outfit Bold, converted to paths.
+# Banner labels are drawn in the icons' own stroke letters (2.0.0).
 #
-# Brand Guide §04 scopes the serif to display copy — splash headlines, question
-# cards, doc covers — and says "never bold". An app card is not display copy;
-# it is a label read at distance, which §04 assigns to the system-ui stack at
-# 600-800 weight. One bundled family keeps every card the same optical voice
-# instead of whatever sans the host happens to have (DejaVu vs Liberation vs
-# missing), which is what made earlier wordmarks look mixed in a row.
+# Until 2.0.0 the name was Outfit Bold beside a monoline glyph: a solid sans
+# next to a drawn line, two voices on one card. The name now uses the same
+# _STROKE_LETTERS skeleton as every letter inside the icons, a step lighter
+# than the glyph's stroke so the mark still leads (glyphs.stroke_label_metrics).
+# Sizes keep the old em scale, so the layout grid below is unchanged.
 
 
 def _measure(text, size):
-    """Width of `text` at `size`, measured from Outfit Bold."""
-    try:
-        return type_measure(text, size, FONT_WORDMARK)
-    except Exception:
-        return len(text) * size * 0.52
+    """Width of `text` at `size` in the stroke-letter label."""
+    return stroke_label_width(text, size)
 
 
 def esc(s):
@@ -276,10 +278,11 @@ def render(name, glyph, accent, category=None, *, monochrome=False,
         # off a red, violet or green banner. The already-normalised primary
         # accent keeps glyph, rail and kicker one colour story; a duotone's
         # second colour stays inside the mark. The app name stays light ink.
-        kick_paths, _ = wordmark_spans([category], KICKER, tx, [ky], accent)
+        kick_paths, _ = stroke_label([category], KICK_CAP / .7, tx, [ky + 2], accent,
+                                     weight=KICK_WEIGHT, gap=KICK_CAP * KICK_TRACK)
         spans += kick_paths + "\n  "
 
-    name_paths, _ = wordmark_spans(lines, size, tx, baselines, INK)
+    name_paths, _ = stroke_label(lines, size, tx, baselines, INK)
     spans += name_paths
 
     # The rail used to be the same cyan->violet stripe on 960 cards: the
@@ -385,7 +388,7 @@ def main():
         else:
             # banner_glyph overrides the square icon's mark on the 16:9 card
             # (e.g. TizenTube: banner carries the emblem's tip dot).
-            svg = render(i["name"], i.get("banner_glyph", i["glyph"]), i["color"],
+            svg = render(i.get("banner_name", i["name"]), i.get("banner_glyph", i["glyph"]), i["color"],
                          i.get("category"), monochrome=mono,
                          gradient=i.get("gradient"), mark=i.get("mark"),
                          style=i.get("mark_style"),

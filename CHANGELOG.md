@@ -40,6 +40,16 @@ All notable changes to the Core Builds Icon Pack. Format follows
   KUKU, APKMirror, Netzkino, ARD, Cast4K, ES-DE, HDHomeRun and Premiumize.
   Letters fused into a brand's device (SVT's t into a play arrow, ESPN's
   notched E, Go3's 3) are unchanged. Banner labels stay in Outfit Bold.
+- **Banner names are drawn like the icons.** The app name and category on
+  every banner were set in solid Outfit Bold beside line-drawn icons. Both
+  now use the same rounded stroke letters as the icons, a step lighter than
+  the icon's line so the mark still leads. The category line (VOD, LIVE,
+  SPORT…) is now spaced out as a label: the spacing was always defined but
+  never applied, so it set tight in the same bold as the name. The letters
+  gained the punctuation and accents app names use (`-`, `.`, `'`, `&`, `( )`,
+  `/`, `!`, `é í á ā ä å É İ`). 13 long names get a shorter banner form, so
+  "Matvt Mouse For Android TV Toggle" reads "Matvt Mouse"; the full name is
+  unchanged everywhere else.
 - **Lowercase marks are sized by what you see.** A mark made only of
   x-height letters (a lone c, `no`, `noo/vo`) is now held to the same
   visible height as capitals. That found `noo/vo` and `nowo` setting

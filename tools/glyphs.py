@@ -8136,6 +8136,49 @@ _STROKE_LETTERS = {
 }
 _STROKE_TOKEN = re.compile(r"[MLCZD]|-?\d*\.?\d+")
 
+# Banner labels (2.0.0) set whole app names in these letters, so the set grows
+# the punctuation and accents the catalog's names use. Accented letters are
+# composed from their base letter and one mark, so every e, i and a keeps the
+# same skeleton whatever it carries.
+_STROKE_LETTERS.update({
+    " ": (.06, ""),    # plus a letter gap each side: a word space ~2x the letter gap
+    "-": (.32, "M 0 .64 L .32 .64"),
+    ".": (0, "D 0 1"),
+    "'": (0, "M 0 0 L 0 .22"),
+    "!": (0, "M 0 0 L 0 .64 D 0 1"),
+    "(": (.2, "M .2 -.04 C .02 .22 .02 .78 .2 1.04"),
+    ")": (.2, "M 0 -.04 C .18 .22 .18 .78 0 1.04"),
+    "/": (.4, "M .4 -.02 L 0 1.02"),
+    "&": (.66, "M .66 1 L .14 .42 C .04 .3 .08 0 .3 0 C .48 0 .54 .18 .46 .3 "
+               "C .38 .42 .14 .5 .06 .66 C -.02 .86 .14 1 .32 1 C .46 1 .56 .9 .64 .74"),
+})
+
+
+def _accent(base, mark, cap=False):
+    w, spec = _STROKE_LETTERS[base]
+    c = w / 2
+    top = -.3 if cap else 0       # marks sit above the cap line or the x-height
+    marks = {
+        "acute": f"M {c - .05:.2f} {top + .2:.2f} L {c + .09:.2f} {top + .06:.2f}",
+        "macron": f"M {c - .17:.2f} {top + .16:.2f} L {c + .17:.2f} {top + .16:.2f}",
+        "diaeresis": f"D {c - .12:.2f} {top + .14:.2f} D {c + .12:.2f} {top + .14:.2f}",
+        "ring": f"M {c:.2f} {top + .02:.2f} C {c + .08:.2f} {top + .02:.2f} {c + .08:.2f} {top + .18:.2f} {c:.2f} {top + .18:.2f} "
+                f"C {c - .08:.2f} {top + .18:.2f} {c - .08:.2f} {top + .02:.2f} {c:.2f} {top + .02:.2f} Z",
+        "dot": f"D {c:.2f} {top + .1:.2f}",
+    }
+    return (w, f"{spec} {marks[mark]}")
+
+
+_DOTLESS_I = (0, "M 0 .36 L 0 1")
+_STROKE_LETTERS["ı"] = _DOTLESS_I
+for _ch, _base, _mark, _cap in (("é", "e", "acute", False), ("á", "a", "acute", False),
+                                ("í", "ı", "acute", False), ("ā", "a", "macron", False),
+                                ("ä", "a", "diaeresis", False), ("å", "a", "ring", False),
+                                ("É", "E", "acute", True), ("İ", "I", "dot", True)):
+    _STROKE_LETTERS[_ch] = _accent(_base, _mark, _cap)
+
+
+
 
 _STROKE_GAP = 46      # px between letters at full size: strokes never touch
 
@@ -8232,6 +8275,38 @@ def _stroke_text(text, c, box=(96, 136, 416, 376), weight=30, gap=_STROKE_GAP, c
     return body + "".join(f'<circle cx="{x:.1f}" cy="{y:.1f}" r="{r:.1f}" {_f(c)}/>' for x, y in dots)
 
 
+def stroke_label_metrics(size):
+    """(cap, weight, gap, space) for a banner label set at Outfit-equivalent
+    em `size`. Outfit's cap is .7em, so the label keeps the banner's sizes."""
+    cap = .7 * size
+    # .19 of the cap sits a step under the glyph's own banner stroke (34 on
+    # the 512 grid at 360 = 24), so the mark leads and the name follows;
+    # spacing opens with the weight so counters and gaps stay level.
+    return cap, min(24.0, max(8.0, .19 * cap)), .36 * cap, .3 * cap
+
+
+def stroke_label_width(text, size, gap=None):
+    cap, _w, g, _sp = stroke_label_metrics(size)
+    return _stroke_px(text, cap, g if gap is None else gap)
+
+
+def stroke_label(lines, size, x, baselines, color, weight=None, gap=None):
+    """Banner text in the icons' own stroke letters, one path per line.
+    Returns (svg, widest line), as the Outfit label renderer did."""
+    cap, w, g, _sp = stroke_label_metrics(size)
+    w = w if weight is None else weight
+    g = g if gap is None else gap
+    out, widest = [], 0.0
+    for line, base in zip(lines, baselines):
+        d, dots = _stroke_line(line, x, base - cap, cap, g)
+        out.append(f'<path d="{d}" fill="none" stroke="{color}" stroke-width="{w:.1f}" '
+                   f'stroke-linecap="round" stroke-linejoin="round"/>')
+        out += [f'<circle cx="{px:.1f}" cy="{py:.1f}" r="{w * .62:.1f}" fill="{color}" stroke="none"/>'
+                for px, py in dots]
+        widest = max(widest, _stroke_px(line, cap, g))
+    return "\n  ".join(out), widest
+
+
 def _wm_cue(cue, c):
     if cue == "plus":
         return f'<path d="M 404 64 L 404 136 M 368 100 L 440 100" {_s(c, 28)}/>'
@@ -8312,10 +8387,10 @@ def _wm_glyph(text, cue=None):
 # shells and their adaptive marks used to set filled Outfit ExtraBold while
 # the wordmarks used these stroke letters: two alphabets, one solid and one
 # monoline, side by side on the same home screen. Every icon letter now
-# comes from _STROKE_LETTERS under the same band rules as the wordmarks;
-# Outfit stays the face of banner labels (Brand Guide §04), which are UI
-# text, not icon art. The entry points keep their old names and arguments
-# so no caller changes.
+# comes from _STROKE_LETTERS under the same band rules as the wordmarks,
+# and so do the banner labels beside them (stroke_label, below). Outfit is
+# left to the pack's own branding. The entry points keep their old names
+# and arguments so no caller changes.
 # --------------------------------------------------------------------------
 def _settle(text, max_w, cap_h):
     """(cap, gap) for `text` held to `max_w` and to `cap_h` of letter size."""

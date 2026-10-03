@@ -52,9 +52,9 @@ class WordmarkType(unittest.TestCase):
 
     def test_icon_letters_are_one_face(self):
         # 2.0.0: tiles, category shells, adaptive marks and bespoke glyphs
-        # draw letters with the stroke alphabet. Outfit is the banner label's
-        # face only; an icon that outlined it again would bring back a filled
-        # second alphabet beside the monoline one.
+        # draw letters with the stroke alphabet, and since the banner pass the
+        # card labels do too. An icon that outlined Outfit again would bring
+        # back a filled second alphabet beside the monoline one.
         for name in ("monogram_body", "monogram_scaled", "monogram_text", "adaptive_lockup"):
             self.assertEqual(getattr(G, name).__module__, "glyphs", name)
         src = (Path(G.__file__)).read_text(encoding="utf-8")

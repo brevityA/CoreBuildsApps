@@ -980,6 +980,7 @@
     {
       "name": "Background Apps And Process List",
       "drawable": "background_apps_and_process_list",
+      "banner_name": "Background Apps",
       "color": "#19D3C5",
       "glyph": "bapl_pulse",
       "components": [
@@ -4478,6 +4479,7 @@
     {
       "name": "Home Automation TV Dashboard",
       "drawable": "home_automation_tv_dashboard",
+      "banner_name": "Home Automation",
       "color": "#03A9F4",
       "glyph": "homeassist_bubble",
       "components": [
@@ -4749,6 +4751,7 @@
     {
       "name": "Web Video Caster Receiver",
       "drawable": "instantbits",
+      "banner_name": "Web Video Caster",
       "color": "#F89616",
       "glyph": "instantbits_cast",
       "components": [
@@ -5943,6 +5946,7 @@
     {
       "name": "Matvt Mouse For Android TV Toggle",
       "drawable": "matvt_mouse_for_android_tv_toggle",
+      "banner_name": "Matvt Mouse",
       "color": "#24EDA3",
       "glyph": "cursor_mark",
       "components": [
@@ -6614,6 +6618,7 @@
     {
       "name": "My Family Cinema Player",
       "drawable": "my_family_cinema_player",
+      "banner_name": "My Family Cinema",
       "color": "#F89432",
       "glyph": "iptv_player",
       "components": [
@@ -6899,6 +6904,7 @@
     {
       "name": "Nextup Watch Stand Up Comedy",
       "drawable": "nextup_watch_stand_up_comedy",
+      "banner_name": "Nextup Comedy",
       "color": "#68DDD4",
       "glyph": "comedy_mark",
       "components": [
@@ -7134,6 +7140,7 @@
     {
       "name": "Notifications For Android TV",
       "drawable": "notifications_for_android_tv",
+      "banner_name": "TV Notifications",
       "color": "#00D4FF",
       "glyph": "bell",
       "components": [
@@ -8481,6 +8488,7 @@
     {
       "name": "Quickbars For Home Assistant",
       "drawable": "quickbars_for_home_assistant",
+      "banner_name": "Quickbars",
       "color": "#80D2E9",
       "glyph": "home_bar",
       "components": [
@@ -8781,6 +8789,7 @@
     {
       "name": "Remote Starter For Yatse",
       "drawable": "remote_starter_for_yatse",
+      "banner_name": "Yatse Starter",
       "color": "#2CCAC5",
       "glyph": "remote_play",
       "components": [
@@ -9185,6 +9194,7 @@
     {
       "name": "Screen Recording App",
       "drawable": "screen_recording_app",
+      "banner_name": "Screen Recording",
       "color": "#FF3B30",
       "glyph": "screen_record_mark",
       "components": [
@@ -10628,6 +10638,7 @@
     {
       "name": "TDUK APP Cache Cleaner",
       "drawable": "tduk_cache_cleaner",
+      "banner_name": "TDUK Cache Cleaner",
       "color": "#98D800",
       "glyph": "tduk_cleaner_droid",
       "components": [
@@ -10671,6 +10682,7 @@
     {
       "name": "Tduk Screensaver Manager",
       "drawable": "tduk_screensaver_manager",
+      "banner_name": "Tduk Screensaver",
       "color": "#7C74FF",
       "glyph": "screensaver_moon",
       "components": [
@@ -11968,6 +11980,7 @@
     {
       "name": "Vewd Internet Browser",
       "drawable": "vewd_internet_browser",
+      "banner_name": "Vewd Browser",
       "color": "#E83F2D",
       "glyph": "vewd_browser",
       "components": [
