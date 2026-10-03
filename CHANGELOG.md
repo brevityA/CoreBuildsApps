@@ -10,8 +10,7 @@ All notable changes to the Core Builds Icon Pack. Format follows
 
 ### Added
 
-- **HeatLive.** Its two-tier badge, in its magenta: the slanted HEAT whose
-  A holds a play triangle, over the LIVE bar with its camera-lens notch.
+- **HeatLive.** Its flame inside a teardrop, in its magenta.
   Requested in #205 with the launch activity read off the requester's
   V6-Plus (Android 14).
 - **AnimeTV.** Its teal swirl, redrawn as one unbroken curl that winds in
