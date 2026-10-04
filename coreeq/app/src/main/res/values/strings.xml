@@ -6,6 +6,8 @@
     <string name="active_profile">Active profile</string>
     <string name="no_profile">No measurement yet</string>
     <string name="no_profile_sub">Measure this room or open Manual EQ to create a profile.</string>
+    <string name="output_profile_missing_name">No profile for this output</string>
+    <string name="output_profile_missing_sub">Nothing measured for %1$s. Measure it or connect an output with a saved profile.</string>
     <string name="action_measure">Measure</string>
     <string name="action_measure_sub">Sine sweep · 13 s · this room</string>
     <string name="action_remeasure">Re-measure</string>
@@ -17,9 +19,30 @@
     <string name="action_capability_sub">What this device will accept</string>
     <string name="action_poweramp_export">Export to Poweramp</string>
     <string name="action_tv_export">Export for TV settings</string>
-    <string name="platform_eq_title">Applied engine band preview · gain in dB</string>
+    <string name="platform_eq_title">Live engine bands when applied · profile preview otherwise · gain in dB</string>
     <string name="action_manual_eq">Manual EQ · 10-band tone control</string>
+    <string name="action_content_modes">Content modes · Movie, Everyday, Gaming</string>
+    <string name="home_mode_button">Mode · %1$s</string>
+    <string name="mode_title">Core EQ · Content modes</string>
+    <string name="mode_heading">Choose how TV audio should sound</string>
+    <string name="mode_subtitle">Room correction stays the base for each output. Each selected mode adds its own tone layer; automatic app switching is best-effort while correction runs.</string>
+    <string name="mode_movie_tv">Movie / TV</string>
+    <string name="mode_everyday">Everyday</string>
+    <string name="mode_gaming">Gaming</string>
+    <string name="mode_auto_on">Automatic app switching: On</string>
+    <string name="mode_auto_off">Automatic app switching: Off</string>
+    <string name="mode_override_sticky">Manual override: Sticky</string>
+    <string name="mode_override_temporary">Manual override: Temporary</string>
+    <string name="mode_manage_apps">Set app-to-mode rules…</string>
+    <string name="mode_done">Done</string>
+    <string name="mode_active_status">Current: %1$s · %2$s</string>
+    <string name="mode_rule_title">Choose a mode for %1$s</string>
+    <string name="mode_rule_remove">Remove app rule</string>
+    <string name="mode_apps_empty">No launchable TV apps or recently detected players were found.</string>
+    <string name="mode_app_rules_hint">Automatic switching runs while correction is on. Player identity is best-effort: session broadcasts work for some apps, optional DUMP discovery may find more, and apps Android does not expose use Everyday. Conflicting app rules also use Everyday. A temporary manual override ends when the detected player set changes.</string>
     <string name="manual_eq_heading">Manual equaliser</string>
+    <string name="manual_eq_edit_mode">Editing mode: %1$s</string>
+    <string name="manual_eq_mode_picker_title">Choose the mode overlay to edit</string>
     <string name="manual_eq_subtitle">Ten editable bands from 40 Hz to 8 kHz. Manual tone layers over room correction; positive peaks reserve digital headroom.</string>
     <string name="manual_eq_loading_profile">Preparing an output profile…</string>
     <string name="manual_eq_choose_preset">Preset: %1$s</string>
@@ -78,14 +101,15 @@
     <string name="correction_off">Correction: Off</string>
 
     <!-- Correction indicator badge (Home screen, under the switch) -->
-    <string name="indicator_live">LIVE · CORRECTING</string>
+    <string name="indicator_live">PLAYING · EFFECT ACTIVE</string>
     <string name="indicator_standby">STANDBY</string>
     <string name="indicator_not_applied">NOT APPLIED</string>
 
     <!-- Profiles screen -->
     <string name="profiles_title">Core EQ · Profiles</string>
     <string name="profiles_heading">Saved corrections</string>
-    <string name="profiles_sub">Measured rooms keep their limits; manual-only EQ profiles are clearly marked. Select one to apply or export.</string>
+    <string name="profiles_sub">Room correction is tied to the output it was measured on. The chosen profile is a fallback; Core EQ prefers a matching output profile and switches modes on top.</string>
+    <string name="profile_selected_badge">CHOSEN</string>
     <string name="export_title">Export</string>
     <string name="export_chip_parametric">Parametric .txt</string>
     <string name="export_chip_graphiceq">GraphicEQ</string>

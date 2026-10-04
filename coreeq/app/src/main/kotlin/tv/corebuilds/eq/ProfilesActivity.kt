@@ -18,6 +18,8 @@ import tv.corebuilds.eq.export.Formats
 import tv.corebuilds.eq.apply.OutputRoute
 import tv.corebuilds.eq.export.Profile
 import tv.corebuilds.eq.export.ProfileStore
+import tv.corebuilds.eq.mode.ContentMode
+import tv.corebuilds.eq.mode.ContentModeStore
 import tv.corebuilds.eq.ui.CurveGraphView
 import tv.corebuilds.eq.ui.Series
 import java.util.Locale
@@ -25,6 +27,7 @@ import java.util.Locale
 class ProfilesActivity : TvActivity() {
 
     private lateinit var profileStore: ProfileStore
+    private lateinit var modeStore: ContentModeStore
     private lateinit var recyclerProfiles: RecyclerView
     private lateinit var graphProfile: CurveGraphView
     private lateinit var textPreamp: TextView
@@ -47,6 +50,7 @@ class ProfilesActivity : TvActivity() {
         setContentView(R.layout.activity_profiles)
 
         profileStore = ProfileStore(this)
+        modeStore = ContentModeStore(this)
 
         recyclerProfiles = findViewById(R.id.recycler_profiles)
         graphProfile = findViewById(R.id.graph_profile)
@@ -91,14 +95,24 @@ class ProfilesActivity : TvActivity() {
     private fun loadProfiles() {
         profilesList.clear()
         profilesList.addAll(profileStore.getAllProfiles())
-        val active = profileStore.getActiveProfile()
+        val output = OutputRoute.current(this)
+        val routeMatch = OutputRoute.pick(
+            profilesList,
+            profileStore.chosenId(),
+            output?.kind,
+            output?.name
+        ).profile
+        val active = routeMatch ?: if (output?.kind == null) profileStore.getActiveProfile() else null
         selectedProfile = active
 
         recyclerProfiles.adapter = ProfileAdapter(
             items = profilesList,
             activeId = { profileStore.getActiveProfile()?.id },
+            modeStore = modeStore,
             onProfileSelected = { profile ->
                 selectedProfile = profile
+                btnExport.isEnabled = true
+                btnDelete.isEnabled = true
                 profileStore.setActiveProfile(profile.id)
                 EqService.send(this, EqService.ACTION_REAPPLY)
                 displayProfile(profile)
@@ -109,6 +123,9 @@ class ProfilesActivity : TvActivity() {
         btnDelete.isEnabled = active != null
         if (active != null) {
             displayProfile(active)
+        } else if (output?.kind != null && profilesList.isNotEmpty()) {
+            textPreamp.text = getString(R.string.output_profile_missing_sub, OutputRoute.label(output.kind))
+            graphProfile.setData(DoubleArray(0), emptyList(), "NO PROFILE FOR THIS OUTPUT")
         } else {
             textPreamp.text = getString(R.string.no_profile_sub)
             graphProfile.setData(DoubleArray(0), emptyList(), "NO SAVED PROFILES")
@@ -116,16 +133,18 @@ class ProfilesActivity : TvActivity() {
     }
 
     private fun displayProfile(profile: Profile) {
-        val pDb = Formats.recommendedPreampDb(profile)
+        val mode = modeStore.resolve(modeStore.lastActivePackages()).mode
+        val effective = modeStore.effectiveProfile(profile, mode)
+        val pDb = Formats.recommendedPreampDb(effective)
         // Which output this corrects: correction only applies there (OutputRoute).
         val on = profile.outputKind?.let { profile.outputName ?: OutputRoute.label(it) } ?: "any output (output not specified)"
-        textPreamp.text = String.format(Locale.US, "Preamp  %.2f dB  ·  For %s", pDb, on)
+        textPreamp.text = String.format(Locale.US, "Preamp  %.2f dB  ·  %s ·  For %s", pDb, mode.title, on)
 
-        if (profile.curve.isNotEmpty()) {
-            val freqs = DoubleArray(profile.curve.size) { profile.curve[it].hz }
-            val corr = DoubleArray(profile.curve.size) { index ->
-                val hz = profile.curve[index].hz
-                profile.correctionAt(hz) + ManualEq.responseDb(profile.manualFilters, hz)
+        if (effective.curve.isNotEmpty()) {
+            val freqs = DoubleArray(effective.curve.size) { effective.curve[it].hz }
+            val corr = DoubleArray(effective.curve.size) { index ->
+                val hz = effective.curve[index].hz
+                effective.correctionAt(hz) + ManualEq.responseDb(effective.manualFilters, hz)
             }
             val target = Targets.targetCurve(profile.target, freqs)
 
@@ -136,17 +155,17 @@ class ProfilesActivity : TvActivity() {
             graphProfile.setData(
                 freqs = freqs,
                 series = series,
-                title = "${profile.name.uppercase(Locale.US)} — EQ vs TARGET",
+                title = "${profile.name.uppercase(Locale.US)} · ${mode.title.uppercase(Locale.US)} — EQ vs TARGET",
                 yRange = 15.0,
                 tHz = profile.transitionHz
             )
-        } else if (profile.manualOnly) {
+        } else if (effective.manualOnly) {
             val freqs = DspConstants.ISO_CENTRES_HZ.filter { it in DspConstants.F_MIN..DspConstants.F_MAX }.toDoubleArray()
-            val response = DoubleArray(freqs.size) { ManualEq.responseDb(profile.manualFilters, freqs[it]) }
+            val response = DoubleArray(freqs.size) { ManualEq.responseDb(effective.manualFilters, freqs[it]) }
             graphProfile.setData(
                 freqs = freqs,
-                series = listOf(Series("MANUAL EQ", ContextCompat.getColor(this, R.color.cb_signal_cyan), response)),
-                title = "MANUAL EQ · NOT ROOM-MEASURED",
+                series = listOf(Series("${mode.title.uppercase(Locale.US)} EQ", ContextCompat.getColor(this, R.color.cb_signal_cyan), response)),
+                title = "${mode.title.uppercase(Locale.US)} · NO ROOM MEASUREMENT",
                 yRange = 15.0,
                 tHz = profile.transitionHz
             )
@@ -157,25 +176,28 @@ class ProfilesActivity : TvActivity() {
 
     private fun exportCurrentProfile() {
         val p = selectedProfile ?: return
+        val mode = modeStore.resolve(modeStore.lastActivePackages()).mode
+        val effective = modeStore.effectiveProfile(p, mode)
+        val stem = "${p.name.replace(" ", "_").lowercase(Locale.US)}_${mode.key}"
         val filename: String
         val content: String
         val label: String
 
         when (selectedExportFormat) {
             ExportFormat.PARAMETRIC -> {
-                filename = "${p.name.replace(" ", "_").lowercase(Locale.US)}_parametric.txt"
-                content = Formats.exportParametricTxt(p)
-                label = "Poweramp Parametric Filters"
+                filename = "${stem}_parametric.txt"
+                content = Formats.exportParametricTxt(effective)
+                label = "Poweramp Parametric Filters · ${mode.title}"
             }
             ExportFormat.GRAPHIC_EQ -> {
-                filename = "${p.name.replace(" ", "_").lowercase(Locale.US)}_graphiceq.txt"
-                content = Formats.exportGraphicEq(p)
-                label = "GraphicEQ Curve"
+                filename = "${stem}_graphiceq.txt"
+                content = Formats.exportGraphicEq(effective)
+                label = "GraphicEQ Curve · ${mode.title}"
             }
             ExportFormat.JSON -> {
-                filename = "${p.name.replace(" ", "_").lowercase(Locale.US)}_profile.json"
-                content = Formats.exportProfileJson(p)
-                label = "Core EQ Profile JSON"
+                filename = "${stem}_profile.json"
+                content = Formats.exportProfileJson(p, modeStore.allModeFilters(p.id), mode)
+                label = "Core EQ Profile JSON · all mode overlays"
             }
         }
 
@@ -198,6 +220,7 @@ class ProfilesActivity : TvActivity() {
     private class ProfileAdapter(
         private val items: List<Profile>,
         private val activeId: () -> String?,
+        private val modeStore: ContentModeStore,
         private val onProfileSelected: (Profile) -> Unit
     ) : RecyclerView.Adapter<ProfileViewHolder>() {
 
@@ -214,11 +237,17 @@ class ProfilesActivity : TvActivity() {
             val targetTitle = item.target.replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.US) else it.toString() }
             val rt = item.rt60Seconds?.let { String.format(Locale.US, "RT60 %.2f s", it) } ?: "RT60 unknown"
             val measurementLimit = if (item.measurementNotes.isNotEmpty()) " · magnitude-only; phase unverified" else ""
+            val overlays = ContentMode.entries
+                .filter { modeStore.modeFilters(item.id, it).isNotEmpty() }
+                .joinToString { it.title }
+                .takeIf { it.isNotEmpty() }
+                ?.let { " · mode EQ: $it" }
+                .orEmpty()
             holder.textSub.text = if (item.manualOnly) {
-                "Manual EQ only · ${item.manualFilters.size} active tone bands · not measured"
+                "Manual EQ only · not measured$overlays"
             } else {
-                val manual = if (item.manualFilters.isNotEmpty()) " · ${item.manualFilters.size} manual bands" else ""
-                "$targetTitle · ${item.filters.size} filters$manual · $rt · ${item.micType}$measurementLimit"
+                val manual = if (item.manualFilters.isNotEmpty()) " · ${item.manualFilters.size} legacy manual bands" else ""
+                "$targetTitle · ${item.filters.size} filters$manual$overlays · $rt · ${item.micType}$measurementLimit"
             }
 
             val isActive = item.id == activeId()

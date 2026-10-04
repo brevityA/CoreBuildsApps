@@ -22,16 +22,21 @@ import tv.corebuilds.eq.apply.OutputRoute
 import tv.corebuilds.eq.dsp.DspConstants
 import tv.corebuilds.eq.dsp.ManualEq
 import tv.corebuilds.eq.dsp.ManualEqPreset
+import tv.corebuilds.eq.dsp.PeakingFilter
 import tv.corebuilds.eq.export.Profile
 import tv.corebuilds.eq.export.ProfileStore
+import tv.corebuilds.eq.mode.ContentMode
+import tv.corebuilds.eq.mode.ContentModeStore
 import tv.corebuilds.eq.ui.CurveGraphView
 import tv.corebuilds.eq.ui.ManualEqBandsView
 import tv.corebuilds.eq.ui.Series
+import java.util.Locale
 
 /** TV-first manual graphic EQ editor layered on an optional room measurement. */
 class ManualEqActivity : TvActivity() {
 
     private lateinit var profileStore: ProfileStore
+    private lateinit var modeStore: ContentModeStore
     private lateinit var graph: CurveGraphView
     private lateinit var bands: ManualEqBandsView
     private lateinit var textProfile: TextView
@@ -39,7 +44,9 @@ class ManualEqActivity : TvActivity() {
     private lateinit var textApplyHint: TextView
     private lateinit var textStatus: TextView
     private lateinit var btnPreset: Button
+    private lateinit var btnEditMode: Button
     private var profile: Profile? = null
+    private var editingMode: ContentMode = ContentMode.EVERYDAY
     private var statusReceiverRegistered = false
 
     private val statusReceiver = object : BroadcastReceiver() {
@@ -50,10 +57,8 @@ class ManualEqActivity : TvActivity() {
 
     private val applyHandler = Handler(Looper.getMainLooper())
     private val applyRunnable = Runnable {
-        profile?.let {
-            profileStore.saveProfile(it)
-            EqService.send(this, EqService.ACTION_REAPPLY)
-        }
+        saveCurrentModeFilters()
+        EqService.send(this, EqService.ACTION_REAPPLY)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -61,6 +66,8 @@ class ManualEqActivity : TvActivity() {
         setContentView(R.layout.activity_manual_eq)
 
         profileStore = ProfileStore(this)
+        modeStore = ContentModeStore(this)
+        editingMode = modeStore.resolve(modeStore.lastActivePackages()).mode
         profile = resolveProfileForCurrentOutput()
 
         graph = findViewById(R.id.graph_manual_eq)
@@ -70,7 +77,9 @@ class ManualEqActivity : TvActivity() {
         textApplyHint = findViewById(R.id.text_manual_eq_status)
         textStatus = findViewById(R.id.text_manual_selected_band)
         btnPreset = findViewById(R.id.btn_choose_eq_preset)
+        btnEditMode = findViewById(R.id.btn_manual_eq_mode)
 
+        btnEditMode.setOnClickListener { showEditingModePicker() }
         findViewById<Button>(R.id.btn_choose_eq_preset).setOnClickListener { showPresetPicker() }
         findViewById<Button>(R.id.btn_save_eq_preset).setOnClickListener { promptSavePreset() }
         findViewById<Button>(R.id.btn_reset_eq).setOnClickListener {
@@ -81,17 +90,14 @@ class ManualEqActivity : TvActivity() {
 
         bands.onBandDescriptionChanged = { textStatus.text = it }
         bands.onBandGainChanged = { index, gainDb ->
-            val current = profile
-            if (current != null) {
-                profile = current.copy(
-                    manualFilters = ManualEq.withBandGain(current.manualFilters, index, gainDb)
-                )
+            if (profile != null) {
+                modeStore.saveModeFilters(profile!!.id, editingMode, ManualEq.withBandGain(currentManualFilters(), index, gainDb))
                 saveAndApplySoon()
                 renderProfile()
                 textStatus.text = bands.contentDescription
             }
         }
-        bands.setManualFilters(profile?.manualFilters.orEmpty())
+        bands.setManualFilters(currentManualFilters())
         updatePresetLabel()
         renderProfile()
         bands.requestFocus()
@@ -119,7 +125,7 @@ class ManualEqActivity : TvActivity() {
 
     override fun onPause() {
         applyHandler.removeCallbacks(applyRunnable)
-        profile?.let { profileStore.saveProfile(it) }
+        saveCurrentModeFilters()
         EqService.send(this, EqService.ACTION_REAPPLY)
         if (statusReceiverRegistered) {
             unregisterReceiver(statusReceiver)
@@ -133,12 +139,10 @@ class ManualEqActivity : TvActivity() {
         val picked = OutputRoute.pick(
             profileStore.getAllProfiles(),
             profileStore.chosenId(),
-            output?.kind
+            output?.kind,
+            output?.name
         ).profile
-        if (picked != null) {
-            profileStore.setActiveProfile(picked.id)
-            return picked
-        }
+        if (picked != null) return picked
         return createManualOnlyProfile()
     }
 
@@ -155,21 +159,22 @@ class ManualEqActivity : TvActivity() {
             deviceName = "${Build.MANUFACTURER} ${Build.MODEL}".trim(),
             stimulus = "manual_eq",
             captureSeconds = 0.0,
-            outputKind = output?.kind,
+            outputKind = OutputRoute.keyFor(output),
             outputName = output?.name,
             manualOnly = true
-        ).also { profileStore.saveProfile(it, setAsActive = true) }
+        ).also { profileStore.saveProfile(it) }
     }
 
     private fun renderProfile() {
         val active = profile ?: return
+        val effective = modeStore.effectiveProfile(active, editingMode)
         val outputLabel = active.outputName
             ?: active.outputKind?.let { OutputRoute.label(it) }
             ?: "current output"
         textProfile.text = if (active.manualOnly) {
-            "Manual EQ only\nNo room measurement\nFor $outputLabel"
+            "Manual EQ only\nNo room measurement\nFor $outputLabel\nEditing ${editingMode.title}"
         } else {
-            "Room profile\n${active.name}\nManual tone is applied on top"
+            "Room profile\n${active.name}\nEditing ${editingMode.title} overlay"
         }
 
         val frequencies: DoubleArray
@@ -180,22 +185,22 @@ class ManualEqActivity : TvActivity() {
             val measured = DoubleArray(active.curve.size) { active.curve[it].measuredDb }
             val corrected = DoubleArray(frequencies.size) { index ->
                 val hz = frequencies[index]
-                active.correctionAt(hz) + ManualEq.responseDb(active.manualFilters, hz)
+                effective.correctionAt(hz) + ManualEq.responseDb(effective.manualFilters, hz)
             }
             series = listOf(
                 Series("MEASURED", ContextCompat.getColor(this, R.color.cb_slate), measured),
-                Series("TOTAL EQ", ContextCompat.getColor(this, R.color.cb_signal_cyan), corrected)
+                Series("ROOM + ${editingMode.title.uppercase(Locale.US)}", ContextCompat.getColor(this, R.color.cb_signal_cyan), corrected)
             )
-            title = "ROOM RESPONSE + MANUAL TONE"
+            title = "ROOM RESPONSE + ${editingMode.title.uppercase(Locale.US)} EQ"
         } else {
             frequencies = DspConstants.ISO_CENTRES_HZ
                 .filter { it in DspConstants.F_MIN..DspConstants.F_MAX }
                 .toDoubleArray()
             val response = DoubleArray(frequencies.size) { index ->
-                active.correctionAt(frequencies[index]) + ManualEq.responseDb(active.manualFilters, frequencies[index])
+                effective.correctionAt(frequencies[index]) + ManualEq.responseDb(effective.manualFilters, frequencies[index])
             }
-            series = listOf(Series("MANUAL EQ", ContextCompat.getColor(this, R.color.cb_signal_cyan), response))
-            title = "MANUAL EQ · NO ROOM MEASUREMENT"
+            series = listOf(Series("${editingMode.title.uppercase(Locale.US)} EQ", ContextCompat.getColor(this, R.color.cb_signal_cyan), response))
+            title = "${editingMode.title.uppercase(Locale.US)} · NO ROOM MEASUREMENT"
         }
         graph.setData(
             frequencies,
@@ -206,8 +211,10 @@ class ManualEqActivity : TvActivity() {
         )
 
         val engineCentres = DpBandLayout.specs().map { it.centerHz }
-        val reserveDb = BandMapping.headroomDb(active, engineCentres)
+        val reserveDb = BandMapping.headroomDb(effective, engineCentres)
         textHeadroom.text = getString(R.string.manual_eq_headroom, reserveDb)
+        btnEditMode.text = getString(R.string.manual_eq_edit_mode, editingMode.title)
+        bands.setManualFilters(currentManualFilters())
         renderApplyHint()
         textStatus.text = bands.contentDescription ?: getString(R.string.manual_eq_dpad_help)
         updatePresetLabel()
@@ -224,15 +231,37 @@ class ManualEqActivity : TvActivity() {
         }
     }
 
-    private fun updatePresetLabel() {
+    private fun currentManualFilters(): List<PeakingFilter> =
+        profile?.let { modeStore.modeFilters(it.id, editingMode) }.orEmpty()
+
+    private fun saveCurrentModeFilters() {
         val active = profile ?: return
-        val presetName = ManualEq.matchingPreset(active.manualFilters, profileStore.manualEqPresets())?.name ?: "Custom"
+        modeStore.saveModeFilters(active.id, editingMode, currentManualFilters())
+    }
+
+    private fun updatePresetLabel() {
+        val presetName = ManualEq.matchingPreset(currentManualFilters(), profileStore.manualEqPresets())?.name ?: "Custom"
         btnPreset.text = getString(R.string.manual_eq_choose_preset, presetName)
+    }
+
+    private fun showEditingModePicker() {
+        val modes = ContentMode.entries.toTypedArray()
+        val selected = modes.indexOf(editingMode)
+        AlertDialog.Builder(this)
+            .setTitle(R.string.manual_eq_mode_picker_title)
+            .setSingleChoiceItems(modes.map { it.title }.toTypedArray(), selected) { dialog, which ->
+                editingMode = modes[which]
+                bands.setManualFilters(currentManualFilters())
+                renderProfile()
+                dialog.dismiss()
+            }
+            .setNegativeButton(android.R.string.cancel, null)
+            .show()
     }
 
     private fun showPresetPicker() {
         val presets = profileStore.manualEqPresets()
-        val current = profile?.manualFilters.orEmpty()
+        val current = currentManualFilters()
         val selected = presets.indexOfFirst { ManualEq.sameFilters(it.filters, current) }
         AlertDialog.Builder(this)
             .setTitle(R.string.manual_eq_presets_title)
@@ -261,7 +290,7 @@ class ManualEqActivity : TvActivity() {
                     return@setPositiveButton
                 }
                 try {
-                    val saved = profileStore.saveManualEqPreset(name, profile?.manualFilters.orEmpty())
+                    val saved = profileStore.saveManualEqPreset(name, currentManualFilters())
                     updatePresetLabel()
                     Toast.makeText(this, getString(R.string.manual_eq_preset_saved, saved.name), Toast.LENGTH_SHORT).show()
                 } catch (e: IllegalArgumentException) {
@@ -274,15 +303,15 @@ class ManualEqActivity : TvActivity() {
 
     private fun applyPreset(preset: ManualEqPreset) {
         val active = profile ?: return
-        profile = active.copy(manualFilters = ManualEq.sanitize(preset.filters))
-        bands.setManualFilters(profile?.manualFilters.orEmpty())
+        modeStore.saveModeFilters(active.id, editingMode, ManualEq.sanitize(preset.filters))
+        bands.setManualFilters(currentManualFilters())
         saveAndApplySoon()
         renderProfile()
         textStatus.text = getString(R.string.manual_eq_preset_applied, preset.name)
     }
 
     private fun saveAndApplySoon() {
-        profile?.let { profileStore.saveProfile(it) }
+        saveCurrentModeFilters()
         applyHandler.removeCallbacks(applyRunnable)
         applyHandler.postDelayed(applyRunnable, APPLY_DEBOUNCE_MS)
     }

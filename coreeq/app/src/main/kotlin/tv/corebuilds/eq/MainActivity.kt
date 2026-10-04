@@ -16,11 +16,13 @@ import android.widget.TextView
 import androidx.core.content.ContextCompat
 import tv.corebuilds.eq.apply.BandMapping
 import tv.corebuilds.eq.apply.EqService
+import tv.corebuilds.eq.apply.OutputRoute
 import tv.corebuilds.eq.dsp.DspConstants
 import tv.corebuilds.eq.dsp.ManualEq
 import tv.corebuilds.eq.export.EqStatus
 import tv.corebuilds.eq.export.PlatformBand
 import tv.corebuilds.eq.export.ProfileStore
+import tv.corebuilds.eq.mode.ContentModeStore
 import tv.corebuilds.eq.ui.BandSlidersView
 import tv.corebuilds.eq.ui.CorrectionIndicator
 import tv.corebuilds.eq.ui.CurveGraphView
@@ -32,12 +34,14 @@ import kotlin.math.roundToInt
 class MainActivity : TvActivity() {
 
     private lateinit var profileStore: ProfileStore
+    private lateinit var modeStore: ContentModeStore
     private lateinit var textProfileName: TextView
     private lateinit var textProfileSub: TextView
     private lateinit var textStatus: TextView
     private lateinit var btnToggle: Button
     private lateinit var graphHome: CurveGraphView
     private lateinit var bandsHome: BandSlidersView
+    private lateinit var btnModes: Button
     private lateinit var badgeIndicator: View
     private lateinit var badgeDot: View
     private lateinit var badgeLabel: TextView
@@ -47,6 +51,7 @@ class MainActivity : TvActivity() {
     private val statusReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
             loadActiveProfile() // runtime effect bands are published with status changes
+            refreshModeButton()
             refreshStatus()
         }
     }
@@ -56,6 +61,7 @@ class MainActivity : TvActivity() {
         setContentView(R.layout.activity_main)
 
         profileStore = ProfileStore(this)
+        modeStore = ContentModeStore(this)
 
         textProfileName = findViewById(R.id.text_active_profile_name)
         textProfileSub = findViewById(R.id.text_active_profile_sub)
@@ -63,6 +69,7 @@ class MainActivity : TvActivity() {
         btnToggle = findViewById(R.id.btn_toggle_correction)
         graphHome = findViewById(R.id.graph_home)
         bandsHome = findViewById(R.id.bands_home)
+        btnModes = findViewById(R.id.btn_nav_modes)
         badgeIndicator = findViewById(R.id.badge_correction)
         badgeDot = findViewById(R.id.badge_dot)
         badgeLabel = findViewById(R.id.badge_label)
@@ -74,6 +81,7 @@ class MainActivity : TvActivity() {
         findViewById<Button>(R.id.btn_nav_manual_eq).setOnClickListener {
             startActivity(Intent(this, ManualEqActivity::class.java))
         }
+        btnModes.setOnClickListener { startActivity(Intent(this, ModeActivity::class.java)) }
         findViewById<Button>(R.id.btn_nav_profiles).setOnClickListener {
             startActivity(Intent(this, ProfilesActivity::class.java))
         }
@@ -96,6 +104,7 @@ class MainActivity : TvActivity() {
             EqService.enable(this)?.let { profileStore.setStatus(it, isError = true) }
         }
         loadActiveProfile()
+        refreshModeButton()
         refreshStatus()
     }
 
@@ -119,6 +128,11 @@ class MainActivity : TvActivity() {
             }
         }
         refreshStatus()
+    }
+
+    private fun refreshModeButton() {
+        val decision = modeStore.resolve(modeStore.lastActivePackages())
+        btnModes.text = getString(R.string.home_mode_button, decision.mode.title)
     }
 
     private fun refreshStatus() {
@@ -192,12 +206,27 @@ class MainActivity : TvActivity() {
     }
 
     private fun loadActiveProfile() {
-        val profile = profileStore.getActiveProfile()
+        val output = OutputRoute.current(this)
+        val routed = OutputRoute.pick(
+            profileStore.getAllProfiles(),
+            profileStore.chosenId(),
+            output?.kind,
+            output?.name
+        ).profile
+        val base = routed ?: if (output?.kind == null) profileStore.getActiveProfile() else null
+        val profile = base?.let { modeStore.effectiveProfile(it, modeStore.currentDecision().mode) }
         if (profile == null) {
-            textProfileName.text = getString(R.string.no_profile)
-            textProfileSub.text = getString(R.string.no_profile_sub)
+            val anotherOutputHasProfile = output?.kind != null && profileStore.getAllProfiles().isNotEmpty()
+            textProfileName.text = getString(
+                if (anotherOutputHasProfile) R.string.output_profile_missing_name else R.string.no_profile
+            )
+            textProfileSub.text = if (anotherOutputHasProfile) {
+                getString(R.string.output_profile_missing_sub, OutputRoute.label(output?.kind))
+            } else {
+                getString(R.string.no_profile_sub)
+            }
             findViewById<Button>(R.id.btn_remeasure).text = getString(R.string.action_measure)
-            graphHome.setData(DoubleArray(0), emptyList(), "NO MEASUREMENT YET")
+            graphHome.setData(DoubleArray(0), emptyList(), if (anotherOutputHasProfile) "NO PROFILE FOR THIS OUTPUT" else "NO MEASUREMENT YET")
             bandsHome.setBands(emptyList())
             bandsHome.visibility = View.INVISIBLE
             return
@@ -206,14 +235,17 @@ class MainActivity : TvActivity() {
             if (profile.manualOnly) R.string.action_measure else R.string.action_remeasure
         )
         textProfileName.text = profile.name
+        val outputLabel = profile.outputName
+            ?: profile.outputKind?.let { OutputRoute.label(it) }
+            ?: "any output"
         if (profile.manualOnly) {
-            textProfileSub.text = "Manual EQ · no room measurement · ${profile.manualFilters.size} tone bands"
+            textProfileSub.text = "Manual EQ · no room measurement · ${profile.manualFilters.size} tone bands · $outputLabel"
         } else {
             val targetName = profile.target.replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.US) else it.toString() }
             val rt = profile.rt60Seconds?.let { String.format(Locale.US, "RT60 %.2f s", it) } ?: "RT60 unknown"
             val measurementLimit = if (profile.measurementNotes.isNotEmpty()) " · magnitude-only; phase unverified" else ""
-            val manual = if (profile.manualFilters.isNotEmpty()) " · ${profile.manualFilters.size} manual trims" else ""
-            textProfileSub.text = "$targetName · ${profile.filters.size} filters$manual · $rt · ${profile.micType}$measurementLimit"
+            val manual = if (profile.manualFilters.isNotEmpty()) " · ${profile.manualFilters.size} tone bands" else ""
+            textProfileSub.text = "$targetName · ${profile.filters.size} filters$manual · $rt · ${profile.micType} · $outputLabel$measurementLimit"
         }
 
         if (profile.curve.isNotEmpty()) {

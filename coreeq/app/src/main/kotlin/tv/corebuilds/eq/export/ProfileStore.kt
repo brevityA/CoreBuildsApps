@@ -8,6 +8,8 @@ import org.json.JSONException
 import org.json.JSONObject
 import tv.corebuilds.eq.dsp.ManualEq
 import tv.corebuilds.eq.dsp.ManualEqPreset
+import tv.corebuilds.eq.mode.ContentMode
+import tv.corebuilds.eq.mode.ContentModeStore
 import tv.corebuilds.eq.dsp.PeakingFilter
 import java.util.UUID
 
@@ -34,8 +36,9 @@ data class EqStatus(
  */
 class ProfileStore(context: Context) {
 
+    private val appContext = context.applicationContext
     private val prefs: SharedPreferences =
-        context.applicationContext.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
+        appContext.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
 
     init {
         // Builds before this one seeded three demo profiles made from a
@@ -48,6 +51,25 @@ class ProfileStore(context: Context) {
             }
             prefs.edit().putBoolean(KEY_DEMO_PURGED, true).apply()
         }
+        migrateLegacyManualFiltersToEveryday()
+    }
+
+    /** Move v1 manual trims into the Everyday overlay without losing profile-specific edits. */
+    private fun migrateLegacyManualFiltersToEveryday() {
+        if (prefs.getBoolean(KEY_MODE_EQ_MIGRATED, false)) return
+        val modes = ContentModeStore(appContext)
+        var changed = false
+        val migrated = getAllProfiles().map { profile ->
+            if (profile.manualFilters.isEmpty()) {
+                profile
+            } else {
+                modes.importLegacyEveryday(profile.id, profile.manualFilters)
+                changed = true
+                profile.copy(manualFilters = emptyList())
+            }
+        }
+        if (changed) persistProfiles(migrated, synchronous = true)
+        prefs.edit().putBoolean(KEY_MODE_EQ_MIGRATED, true).commit()
     }
 
     fun getAllProfiles(): List<Profile> {
@@ -95,6 +117,7 @@ class ProfileStore(context: Context) {
         val removed = list.removeAll { it.id == id }
         if (removed) {
             persistProfiles(list)
+            ContentModeStore(appContext).deleteProfileOverlays(id)
             if (prefs.getString(KEY_ACTIVE_ID, null) == id) {
                 val next = list.firstOrNull()
                 if (next != null) setActiveProfile(next.id) else prefs.edit().remove(KEY_ACTIVE_ID).apply()
@@ -248,10 +271,11 @@ class ProfileStore(context: Context) {
         prefs.edit().remove(KEY_RUNTIME_BANDS).apply()
     }
 
-    private fun persistProfiles(list: List<Profile>) {
+    private fun persistProfiles(list: List<Profile>, synchronous: Boolean = false) {
         val arr = JSONArray()
         for (p in list) arr.put(JSONObject(Formats.exportProfileJson(p)))
-        prefs.edit().putString(KEY_PROFILES, arr.toString()).apply()
+        val editor = prefs.edit().putString(KEY_PROFILES, arr.toString())
+        if (synchronous) editor.commit() else editor.apply()
     }
 
     private fun parseProfile(obj: JSONObject): Profile {
@@ -352,6 +376,7 @@ class ProfileStore(context: Context) {
         private const val KEY_SESSION_PKGS = "session_packages"
         private const val KEY_RUNTIME_BANDS = "runtime_effect_bands"
         private const val KEY_MANUAL_PRESETS = "manual_eq_presets"
+        private const val KEY_MODE_EQ_MIGRATED = "manual_eq_migrated_to_modes"
         private const val KEY_DEMO_PURGED = "demo_profiles_purged"
         private val DEMO_IDS = setOf("profile-living-room", "profile-bedroom", "profile-kitchen")
     }

@@ -37,8 +37,16 @@ re-derivation.
 
 It is **not** a headphone equaliser (Wavelet's territory), not a player
 companion (Poweramp EQ's), and not hardware-bound room correction (Dirac,
-Audyssey). Those are the three things already done well; this is the fourth
-thing that is not done at all.
+Audyssey). Those remain separate tools; Core EQ is focused on room correction
+for Android TV.
+
+**One measured base belongs to one output.** Profiles record the output kind
+and, where Android supplies it, its device name. Core EQ first selects an exact
+same-kind/name match, then a generic same-kind profile; it does not borrow a
+named curve from another device. API 33+ uses Android's anticipated media route
+when available; older versions rank connected outputs. Neither is proof of
+where another app's stream is actually routed. With no profile for the current
+output, on-device correction pauses rather than applying another chain's curve.
 
 ## 2. The screens
 
@@ -48,10 +56,11 @@ DejaVu Sans Mono, a 12sp type floor.
 
 | Screen | Job | D-pad contract |
 |---|---|---|
-| **Home** | Active profile card; measured-vs-total-EQ graph; applied-engine band preview; entry to measurement, manual EQ, profiles and capability | `Measure` is focused at open. The left rail scrolls on short TV panels. Right enters the graph/preview; the manual editor has its own explicit band controls. |
-| **Manual EQ** | Ten editable peaking bands from 40 Hz to 8 kHz, built-in and saved user presets, and a graph of room correction plus manual tone | Left/right selects a band; up/down changes it by 0.5 dB within ±6 dB. Back returns to Home; touch-and-drag is also supported. A manual-only profile is labelled as not room-measured. |
+| **Home** | Output-matched room profile; measured-vs-total-EQ graph; current mode; applied-engine band preview; entry to measurement, manual EQ, modes, profiles and capability | `Measure` is focused at open. The left rail scrolls on short TV panels. |
+| **Manual EQ** | Ten editable peaking bands from 40 Hz to 8 kHz, with separate Movie / TV, Everyday and Gaming overlays, presets, and a graph of the selected layer over room correction | Choose the overlay to edit; left/right selects a band; up/down changes it by 0.5 dB within ±6 dB. A manual-only profile is labelled as not room-measured. |
+| **Modes** | Remote-selectable Movie / TV, Everyday and Gaming; optional app rules; sticky or temporary manual override; current mode/reason and detected players | Single-action mode controls and dialogs are D-pad reachable. Automatic detection is best-effort and runs while correction is on. Conflicts choose Everyday. |
 | **Measure** | Three numbered steps, live capture graph, progress bar, Stop / Start over | Step 1 focused. OK starts the stimulus. Back cancels and restores Home's focus. |
-| **Profiles** | Saved room corrections or explicitly marked manual-only profiles; each measured profile carries its mic, target, limits and capability verdict; export row | Rows first, then export chips, then Export / Delete. |
+| **Profiles** | Saved room bases per output or explicitly marked manual-only profiles; per-mode tone overlays; output-matched preview and selected-mode export | Rows first, then export chips, then Export / Delete. |
 | **Capability** | Every path the app can use to apply an equaliser, probed, with a verdict and a fallback | Rows focusable; the verdict card is read-only but focusable so it can be narrated. |
 
 The existing mockup set (`docs/core-eq-home.png`, `core-eq-measure.png`,
@@ -91,16 +100,25 @@ pink noise (20 s, deterministic) — cross-check and live RTA
             / GraphicEQ: / profile .json (transition, nulls, room, capability)
 ```
 
-The room curve is never overwritten by hand. A separate manual tone layer holds
-ten fixed-frequency peaking filters (40 Hz–8 kHz, ±6 dB in 0.5 dB steps), with
-Flat, Bass lift, Speech clarity and Less bass presets plus user-saved presets.
-The same `BandMapping` composes room correction + manual tone for DynamicsProcessing,
-the platform Equalizer fallback and TV-settings export, shifting any positive
-peak down to preserve digital headroom. Parametric and GraphicEQ exports include
-the manual layer and its combined preamp; profile JSON keeps measured and manual
-filters separate, records the combined recommendation in `preamp_db`, and keeps
-the room-only reserve in `room_preamp_db` so later edits can restore headroom.
-A manual-only profile is allowed, but is labelled as not measured.
+The room curve is never overwritten by hand. Each profile has a measured room
+base and three independent manual tone overlays (Movie / TV, Everyday and
+Gaming), each holding ten fixed-frequency peaking filters (40 Hz–8 kHz, ±6 dB
+in 0.5 dB steps), with Flat, Bass lift, Speech clarity and Less bass presets
+plus user-saved presets. The same `BandMapping` composes the selected overlay
+with room correction for DynamicsProcessing, the platform Equalizer fallback
+and TV-settings export, shifting any positive peak down to preserve digital
+headroom. Parametric and GraphicEQ exports include the selected mode's overlay
+and combined preamp; profile JSON backups preserve the room base and all three
+mode overlays separately, record the selected mode, and calculate its combined
+preamp. A manual-only profile is allowed, but is labelled as not measured.
+
+Mode selection is manual by default. Optional app rules use session-open/close
+broadcasts and, after a one-time ADB grant, best-effort DUMP discovery. Android
+may hide an app's identity; unknown identities fall back to Everyday. If two
+simultaneous apps request different modes, Everyday is used because the app has
+one global curve. A manual choice in automatic mode creates a configurable
+sticky override or a temporary override that lasts until the detected player
+set changes.
 
 Every constant in that pipeline is commented with its reason in
 `tools/core_eq_dsp.py`. The order of the clamp / recentre / taper steps is
@@ -135,10 +153,10 @@ profile**:
 
 | Rung | Path | Expected reach |
 |---|---|---|
-| 1 | `ACTION_OPEN_AUDIO_EFFECT_CONTROL_SESSION` broadcast | Players that announce sessions. Netflix, YouTube do not. |
-| 2 | Broadcast + `DUMP`-assisted session discovery (one-time ADB grant) — **v1.1**, not in v1 | Most of the rest, Wavelet-style. |
-| 3 | `Equalizer(0, 0)` / `DynamicsProcessing(0)` global mix | Deprecated but real on some sets. Probed, never promised. |
-| 4 | Nothing applies | Export the profile for the TV's own sound settings. The curve is still the curve. |
+| 1 | `ACTION_OPEN_AUDIO_EFFECT_CONTROL_SESSION` broadcast | Players that announce sessions. App identity and actual audibility still vary by player. |
+| 2 | Optional `DUMP`-assisted session discovery (one-time ADB grant) | Some players that do not announce sessions; device/app coverage is unverified, and YouTube is a known gap. |
+| 3 | `Equalizer(0, 0)` / `DynamicsProcessing(0)` output-mix effect | Deprecated but accepted by some vendor HALs. A configured effect is not proof every audio route passes through it. |
+| 4 | No on-device effect path | Export the profile and current mode for the TV's own sound settings. The curve is still the curve. |
 
 Engine choice: `DynamicsProcessing` on API 28+ (own band layout, own limiter,
 limiter **on**), `android.media.audiofx.Equalizer` below. Band UI always draws
@@ -231,7 +249,7 @@ and `test_tv_layout_fit.py` extended to the new module, and
 | | Ships | Verifiable without hardware |
 |---|---|---|
 | **M0** | DSP reference, tests, research, frames, plan — **this change** | yes |
-| **M1** | `coreeq/` module: Home + Manual EQ + Measure + Profiles + Capability, View-based TV UI, audio effects and exports | yes (lint, tests, hardware apply gates) |
+| **M1** | `coreeq/` module: Home + Manual EQ + Modes + Measure + Profiles + Capability, output-aware profiles, View-based TV UI, audio effects and exports | yes (lint, tests, hardware apply gates) |
 | **M2** | Stimulus playback + capture + live graph; the correction is computed on-device and compared against the reference chain on the same synthetic input | yes, with an emulator mic |
 | **M3** | Effect ladder + foreground service + export formats | needs a device |
 | **M4** | `suite.json`, README stamp, dependabot, workflow, release tags | CI |
@@ -244,15 +262,21 @@ same WAV and asserting the corrections match within a stated tolerance.
 
 1. **Downloader code** — *decided: `7946159`*, generated by the maintainer at
    https://go.aftvnews.com/ and recorded in `suite.json`.
-2. **DUMP-assisted session detection** — *decided: v1.1.* v1 ships rungs 1,
-   3 and 4 of the ladder; rung 2 lands in v1.1 as an optional, clearly-labeled
-   mode behind the one-time ADB grant. Until then, players that do not
-   announce sessions (Netflix, YouTube) fall through to rung 3 or to export.
-3. **USB measurement microphone support** (UMIK-1 and similar) — *decided:
-   later, after v1.1.* It changes the correction floor from 40 Hz down to
-   ~20 Hz and makes the result a real measurement rather than a good estimate;
-   until it lands, `CorrectionLimits.MIN_HZ` stays at 40 Hz.
-4. **Name** — *Core EQ* keeps the `core-*` tag-prefix family legible next to
+2. **Automatic app-based modes** — *decided and implemented best-effort.*
+   Manual mode selection always remains available. Optional rules use player
+   session broadcasts and DUMP discovery after an ADB grant; simultaneous
+   conflicting rules select Everyday because only one global curve is
+   available. Device/app coverage remains a hardware-validation question.
+3. **Generic stock Android TV coverage** — *target, not yet proven.* Verify on
+   representative stock TV hardware whether session-0 effects reach common
+   streaming apps, which outputs are actually routed through the mixer, and
+   how PCM/passthrough settings affect HDMI audio. No root, privileged install,
+   or system-image change is in scope; a one-time ADB grant is acceptable.
+4. **USB measurement microphone support** (UMIK-1 and similar) — later. It
+   changes the correction floor from 40 Hz down to ~20 Hz and makes the result
+   a real measurement rather than a good estimate; until it lands,
+   `CorrectionLimits.MIN_HZ` stays at 40 Hz.
+5. **Name** — *Core EQ* keeps the `core-*` tag-prefix family legible next to
    `coreline-v*` and `coreshift-*`. Alternatives considered and rejected:
    Core Tone, Core Room, Core Tune.
 

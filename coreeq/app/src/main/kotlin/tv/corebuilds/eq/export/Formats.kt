@@ -12,6 +12,7 @@ import tv.corebuilds.eq.dsp.DspConstants
 import tv.corebuilds.eq.dsp.ManualEq
 import tv.corebuilds.eq.dsp.Peaking
 import tv.corebuilds.eq.dsp.PeakingFilter
+import tv.corebuilds.eq.mode.ContentMode
 import java.io.File
 import java.util.Locale
 import kotlin.math.floor
@@ -21,6 +22,8 @@ import kotlin.math.min
  * Exporters for Poweramp Equalizer, Equalizer APO, and Core EQ profile JSON.
  */
 object Formats {
+
+    private const val PREAMP_ROUNDING_EPSILON_DB = 1e-9
 
     fun exportParametricTxt(profile: Profile): String {
         val filters = profile.filters + ManualEq.sanitize(profile.manualFilters)
@@ -96,11 +99,23 @@ object Formats {
             DspConstants.F_MIN * Math.pow(DspConstants.F_MAX / DspConstants.F_MIN, index / 240.0)
         } + filters.map { it.fc }).distinct().toDoubleArray()
         val peakDb = Peaking.filterSumDb(sampleHz, filters).maxOrNull() ?: 0.0
-        val combined = floor(-maxOf(0.0, peakDb) * 100.0) / 100.0
+        // Keep the preamp conservative to hundredths without turning a tiny
+        // floating-point overshoot at an exact value into an extra 0.01 dB.
+        val combined = floor((-maxOf(0.0, peakDb) + PREAMP_ROUNDING_EPSILON_DB) * 100.0) / 100.0
         return min(existing, combined)
     }
 
-    fun exportProfileJson(profile: Profile): String {
+    fun exportProfileJson(profile: Profile): String = exportProfileJson(profile, emptyMap(), selectedMode = null)
+
+    /** Include all saved mode overlays when exporting a user-facing profile backup. */
+    fun exportProfileJson(
+        profile: Profile,
+        modeOverlays: Map<ContentMode, List<PeakingFilter>>,
+        selectedMode: ContentMode?
+    ): String {
+        val selectedProfile = selectedMode?.let { mode ->
+            profile.copy(manualFilters = ManualEq.sanitize(profile.manualFilters + modeOverlays[mode].orEmpty()))
+        } ?: profile
         val root = JSONObject()
         root.put("format", "corebuilds.core-eq/1")
         root.put("id", profile.id)
@@ -147,7 +162,8 @@ object Formats {
         profile.rt60Seconds?.let { roomObj.put("rt60_s", it) }
         root.put("room", roomObj)
 
-        root.put("preamp_db", recommendedPreampDb(profile))
+        selectedMode?.let { root.put("selected_mode", it.key) }
+        root.put("preamp_db", recommendedPreampDb(selectedProfile))
         root.put("room_preamp_db", roomPreampDb(profile))
 
         val filtersArr = JSONArray()
@@ -168,6 +184,20 @@ object Formats {
                 .put("gain", f.gain))
         }
         root.put("manual_filters", manualFiltersArr)
+        if (modeOverlays.isNotEmpty()) {
+            val modeOverlaysObj = JSONObject()
+            for (mode in ContentMode.entries) {
+                val filters = JSONArray()
+                for (filter in ManualEq.sanitize(modeOverlays[mode].orEmpty())) {
+                    filters.put(JSONObject()
+                        .put("fc", filter.fc)
+                        .put("q", filter.q)
+                        .put("gain", filter.gain))
+                }
+                modeOverlaysObj.put(mode.key, filters)
+            }
+            root.put("mode_overlays", modeOverlaysObj)
+        }
 
         val bandsArr = JSONArray()
         for (b in profile.platformBands) {

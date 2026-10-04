@@ -183,6 +183,20 @@
                 android:layout_marginBottom="@dimen/cb_space_xs" />
 
             <Button
+                android:id="@+id/btn_nav_modes"
+                android:layout_width="match_parent"
+                android:layout_height="52dp"
+                android:background="@drawable/bg_card"
+                android:text="@string/action_content_modes"
+                android:textColor="@color/cb_ink"
+                android:textSize="@dimen/cb_text_data"
+                android:gravity="start|center_vertical"
+                android:paddingStart="@dimen/cb_card_padding"
+                android:paddingEnd="@dimen/cb_card_padding"
+                android:focusable="true"
+                android:layout_marginBottom="@dimen/cb_space_xs" />
+
+            <Button
                 android:id="@+id/btn_nav_profiles"
                 android:layout_width="match_parent"
                 android:layout_height="52dp"

@@ -32,6 +32,17 @@
         android:name="android.hardware.microphone"
         android:required="false" />
 
+    <queries>
+        <intent>
+            <action android:name="android.intent.action.MAIN" />
+            <category android:name="android.intent.category.LEANBACK_LAUNCHER" />
+        </intent>
+        <intent>
+            <action android:name="android.intent.action.MAIN" />
+            <category android:name="android.intent.category.LAUNCHER" />
+        </intent>
+    </queries>
+
     <application
         android:allowBackup="true"
         android:banner="@drawable/tv_banner"
@@ -67,6 +78,11 @@
             android:name=".ManualEqActivity"
             android:exported="false"
             android:label="@string/manual_eq_heading" />
+
+        <activity
+            android:name=".ModeActivity"
+            android:exported="false"
+            android:label="@string/mode_title" />
 
         <activity
             android:name=".CapabilityActivity"

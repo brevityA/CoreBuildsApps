@@ -16,8 +16,8 @@ import tv.corebuilds.eq.export.Profile
 /** Correction follows the output: a profile belongs to the chain it was measured on. */
 class OutputRouteTest {
 
-    private fun profile(id: String, at: Long, kind: String?) =
-        Profile(id = id, name = id, timestampMs = at, target = "flat", micType = "test", outputKind = kind)
+    private fun profile(id: String, at: Long, kind: String?, outputName: String? = null) =
+        Profile(id = id, name = id, timestampMs = at, target = "flat", micType = "test", outputKind = kind, outputName = outputName)
 
     private val speakers = profile("speakers", 100, SPEAKER)
     private val soundbar = profile("soundbar", 200, HDMI_ARC)
@@ -131,5 +131,28 @@ class OutputRouteTest {
         assertNull(OutputRoute.pick(listOf(unnamed), "unnamed", SPEAKER).profile)
         // A real output finds its own profile past the unnamed one.
         assertEquals("speakers", OutputRoute.pick(listOf(unnamed, speakers), "unnamed", SPEAKER).profile?.id)
+    }
+
+    @Test
+    fun anExactOutputNameBeatsTheChosenProfileOnTheSameKind() {
+        val beam = profile("beam", 300, HDMI_ARC, "Sonos Beam")
+        val denon = profile("denon", 400, HDMI_ARC, "Denon AVR")
+        val pick = OutputRoute.pick(listOf(beam, denon), "denon", HDMI_ARC, "sonos beam")
+        assertEquals("beam", pick.profile?.id)
+        assertTrue(pick.switched)
+    }
+
+    @Test
+    fun aDifferentNamedOutputDoesNotBorrowAnotherDevicesCurve() {
+        val beam = profile("beam", 300, HDMI_ARC, "Sonos Beam")
+        val denon = profile("denon", 400, HDMI_ARC, "Denon AVR")
+        assertNull(OutputRoute.pick(listOf(beam, denon), "beam", HDMI_ARC, "Yamaha Receiver").profile)
+    }
+
+    @Test
+    fun aGenericProfileIsTheFallbackForAnUnmatchedOutputName() {
+        val beam = profile("beam", 300, HDMI_ARC, "Sonos Beam")
+        val generic = profile("generic", 200, HDMI_ARC)
+        assertEquals("generic", OutputRoute.pick(listOf(beam, generic), "beam", HDMI_ARC, "Yamaha Receiver").profile?.id)
     }
 }

@@ -33,6 +33,8 @@ import tv.corebuilds.eq.MainActivity
 import tv.corebuilds.eq.export.PlatformBand
 import tv.corebuilds.eq.export.Profile
 import tv.corebuilds.eq.export.ProfileStore
+import tv.corebuilds.eq.mode.ContentMode
+import tv.corebuilds.eq.mode.ContentModeStore
 import java.util.concurrent.Executors
 import kotlin.math.roundToInt
 
@@ -84,7 +86,10 @@ class EqService : Service() {
     private data class Held(val applied: AppliedEffect, val pkg: String, val discovered: Boolean)
 
     private lateinit var store: ProfileStore
+    private lateinit var modeStore: ContentModeStore
     private val sessionEqs = mutableMapOf<Int, Held>()
+    private val announcedSessions = mutableMapOf<Int, String>()
+    private var discoveredPackages: Set<String> = emptySet()
     private var globalEffect: AppliedEffect? = null
     private var globalError: String? = null
     private var suspended = false
@@ -122,6 +127,7 @@ class EqService : Service() {
             // The delivered list is the change that fired this: use it instead
             // of re-querying, which costs a binder call and can race the event.
             publish(configs)
+            mainHandler.post { onOutputsChanged() }
             scheduleDiscovery()
         }
     }
@@ -132,8 +138,18 @@ class EqService : Service() {
             val pkg = intent.getStringExtra(AudioEffect.EXTRA_PACKAGE_NAME) ?: ""
             if (session == AudioEffect.ERROR_BAD_VALUE || session == 0) return
             when (intent.action) {
-                AudioEffect.ACTION_OPEN_AUDIO_EFFECT_CONTROL_SESSION -> openSession(session, pkg)
-                AudioEffect.ACTION_CLOSE_AUDIO_EFFECT_CONTROL_SESSION -> closeSession(session)
+                AudioEffect.ACTION_OPEN_AUDIO_EFFECT_CONTROL_SESSION -> {
+                    val previousMode = modeStore.currentDecision().mode
+                    if (pkg.isNotBlank()) announcedSessions[session] = pkg
+                    store.noteSessionPackage(pkg)
+                    if (globalEffect != null) refreshModeAndReapply(previousMode) else openSession(session, pkg)
+                }
+                AudioEffect.ACTION_CLOSE_AUDIO_EFFECT_CONTROL_SESSION -> {
+                    val previousMode = modeStore.currentDecision().mode
+                    announcedSessions.remove(session)
+                    closeSession(session)
+                    refreshModeAndReapply(previousMode)
+                }
             }
         }
     }
@@ -143,18 +159,19 @@ class EqService : Service() {
         override fun onAudioDevicesAdded(addedDevices: Array<out AudioDeviceInfo>) = onOutputsChanged()
         override fun onAudioDevicesRemoved(removedDevices: Array<out AudioDeviceInfo>) = onOutputsChanged()
     }
-    private var lastKind: String? = null
+    private var lastOutput: OutputRoute.Output? = null
 
     private fun onOutputsChanged() {
-        val kind = OutputRoute.current(this)?.kind
-        if (kind == lastKind) return // an input, or a second device of the same kind
-        lastKind = kind
+        val output = OutputRoute.current(this)
+        if (output == lastOutput) return
+        lastOutput = output
         applyAll()
     }
 
     override fun onCreate() {
         super.onCreate()
         store = ProfileStore(this)
+        modeStore = ContentModeStore(this)
         store.clearRuntimeBands()
         createChannel()
         val type = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) ServiceInfo.FOREGROUND_SERVICE_TYPE_MEDIA_PLAYBACK else 0
@@ -185,8 +202,8 @@ class EqService : Service() {
         } catch (e: Exception) {
             Log.w(TAG, "Playback watcher refused; the playing marker is off", e)
         }
-        lastKind = OutputRoute.current(this)?.kind
-        // Registering delivers the current devices once; lastKind makes that a no-op.
+        lastOutput = OutputRoute.current(this)
+        // Registering delivers the current devices once; the full route identity makes that a no-op.
         getSystemService(AudioManager::class.java)?.registerAudioDeviceCallback(deviceCallback, Handler(Looper.getMainLooper()))
         running = true
     }
@@ -213,11 +230,33 @@ class EqService : Service() {
         return START_STICKY
     }
 
-    /** The profile for the output playing now, and that output. */
+    /** Session-visible app identities are best-effort; DUMP adds active sessions when granted. */
+    private fun activeAppPackages(): Set<String> =
+        (announcedSessions.values + discoveredPackages)
+            .filter { it.isNotBlank() && it != packageName }
+            .toSet()
+
+    private fun refreshModeAndReapply(previousMode: ContentMode) {
+        val decision = modeStore.resolve(activeAppPackages())
+        if (decision.mode != previousMode && running && store.correctionEnabled && !suspended) {
+            applyAll()
+        } else if (running) {
+            publish()
+        }
+    }
+
+    /** The route-matched room base plus its current content-mode overlay. */
     private fun resolve(): Triple<Profile?, OutputRoute.Output?, Boolean> {
         val output = OutputRoute.current(this)
-        val pick = OutputRoute.pick(store.getAllProfiles(), store.chosenId(), output?.kind)
-        return Triple(pick.profile, output, pick.switched)
+        val pick = OutputRoute.pick(
+            store.getAllProfiles(),
+            store.chosenId(),
+            output?.kind,
+            output?.name
+        )
+        val mode = modeStore.resolve(activeAppPackages()).mode
+        val effective = pick.profile?.let { modeStore.effectiveProfile(it, mode) }
+        return Triple(effective, output, pick.switched)
     }
 
     /** " · on Sonos Beam", plus the passthrough caveat where it applies. */
@@ -250,6 +289,7 @@ class EqService : Service() {
             return
         }
         val via = if (switched) " (this output's own profile)" else ""
+        val modeName = modeStore.currentDecision().mode.title
         outputPaused = false
 
         var createdGlobalNow = false
@@ -270,10 +310,11 @@ class EqService : Service() {
                 globalEffect = configured
                 syncRuntimeBands()
                 report(
-                    "Correcting the whole TV · ${configured.engine} · ${profile.name}$via · ${configured.bands.size} bands${where(output)}",
+                    "Output-mix effect configured · $modeName · ${configured.engine} · ${profile.name}$via · ${configured.bands.size} bands · coverage depends on TV routing${where(output)}",
                     isError = false
                 )
-                releaseSessions() // the whole-TV path already covers them
+                releaseSessions() // avoid applying the same curve twice where the mix effect is accepted
+                if (DumpsysDiscovery.hasGrant(this)) scheduleDiscovery(0L)
                 return
             } catch (e: Exception) {
                 Log.w(TAG, "Output-mix correction could not be configured", e)
@@ -307,20 +348,19 @@ class EqService : Service() {
     /** What to say when nothing is attached: the way forward, named per grant. */
     private fun waitingStatus(): String =
         if (DumpsysDiscovery.hasGrant(this)) {
-            "DUMP discovery is looking for players. This TV refused whole-TV correction " +
-                "($globalError), so Core EQ attaches to each player it finds and names them here."
+            "DUMP discovery is looking for active players. The output-mix effect path was unavailable " +
+                "($globalError), so Core EQ attaches to supported player sessions it finds and names them here."
         } else {
             "Waiting for a player that shares its audio (Kodi, VLC, Poweramp). " +
-                "This TV refused whole-TV correction ($globalError), so apps that do not " +
-                "share their audio, such as Netflix and YouTube, are not corrected. " +
+                "The output-mix effect path was unavailable ($globalError), so apps that do not " +
+                "share their audio, such as Netflix and YouTube, are not covered by the session fallback. " +
                 "Granting DUMP discovery on the Capability screen reaches some of them " +
                 "(not YouTube), or export " +
                 "the profile for the TV's own sound settings."
         }
 
     private fun openSession(session: Int, pkg: String) {
-        store.noteSessionPackage(pkg)
-        if (globalEffect != null) return // already corrected by the whole-TV path
+        if (globalEffect != null) return // already corrected by the output-mix path
         if (store.getAllProfiles().isEmpty()) return
         val (picked, output, _) = resolve()
         // An output nothing was measured on still gets the session held, just
@@ -340,7 +380,7 @@ class EqService : Service() {
                 applied.effect.setEnabled(false)
             } else {
                 report(
-                    "Correcting ${label(name)} · ${applied.engine} · ${profile.name} · ${applied.bands.size} bands${where(output)}",
+                    "Effect attached to ${label(name)} · ${modeStore.currentDecision().mode.title} · ${applied.engine} · ${profile.name} · ${applied.bands.size} bands${where(output)}",
                     isError = false
                 )
             }
@@ -494,41 +534,56 @@ class EqService : Service() {
      * changes coalesce into one run; measurement never competes with it.
      */
     private fun scheduleDiscovery(delayMs: Long = DISCOVERY_DEBOUNCE_MS) {
-        if (suspended || globalEffect != null) return
+        if (suspended) return
         if (!DumpsysDiscovery.hasGrant(this)) return
         mainHandler.removeCallbacks(discoveryRunnable)
         mainHandler.postDelayed(discoveryRunnable, delayMs)
     }
 
     /**
-     * Applies one discovery result on the main thread: attaches to new
-     * sessions, releases discovered sessions whose player left the dump, and
-     * names exactly what is being corrected. Announced sessions are never
-     * released here — their CLOSE broadcast is their owner.
+     * Uses DUMP both as an optional active-app signal for mode selection and,
+     * when the output-mix path is unavailable, as a per-session attach fallback.
+     * Announced sessions remain owned by their open/close broadcasts.
      */
     private fun applyDiscovered(found: List<DiscoveredSession>) {
-        if (!running || suspended || globalEffect != null) return
+        if (!running || suspended) return
+        val previousMode = modeStore.currentDecision().mode
+        val foundPackages = linkedSetOf<String>()
+        for (session in found) {
+            val uid = session.uid ?: continue
+            packageManager.getPackagesForUid(uid)
+                ?.filterNot { it == packageName }
+                ?.forEach { foundPackages += it }
+        }
+        discoveredPackages = foundPackages
+        val decision = modeStore.resolve(activeAppPackages())
+
+        if (globalEffect != null) {
+            if (decision.mode != previousMode) applyAll()
+            return
+        }
+        if (decision.mode != previousMode && sessionEqs.isNotEmpty()) applyAll()
+
         // The same output-aware pick as applyAll: an output nothing was
         // measured on gets no discovered sessions attached, not another
-        // output's curve. An output change re-runs applyAll, which re-runs this.
+        // output's curve. An output change re-runs applyAll.
         val (profile, output, switched) = resolve()
         if (profile == null) return
         val via = if (switched) " (this output's own profile)" else ""
         var changed = false
-        // One player refusing an equaliser must not stop the others being
-        // attached, or stale sessions below being released: remember the
-        // failure, carry on, and name it once everything else is settled.
         var failed: String? = null
-        for (s in found) {
-            if (sessionEqs.containsKey(s.sessionId)) continue
-            val pkg = packageManager.getPackagesForUid(s.uid ?: continue)?.firstOrNull() ?: continue
+        for (session in found) {
+            if (sessionEqs.containsKey(session.sessionId)) continue
+            val uid = session.uid ?: continue
+            val packages = packageManager.getPackagesForUid(uid)?.filterNot { it == packageName }.orEmpty()
+            val pkg = packages.firstOrNull() ?: continue
             try {
-                val applied = createBestEffect(s.sessionId, profile)
-                sessionEqs[s.sessionId] = Held(applied, pkg, discovered = true)
+                val applied = createBestEffect(session.sessionId, profile)
+                sessionEqs[session.sessionId] = Held(applied, pkg, discovered = true)
                 changed = true
             } catch (e: Exception) {
-                Log.w(TAG, "Correction effect on discovered session ${s.sessionId} failed", e)
-                failed = "Could not correct ${label(pkg)} (found by DUMP discovery): ${e.message ?: e.javaClass.simpleName}"
+                Log.w(TAG, "Correction effect on discovered session ${session.sessionId} failed", e)
+                failed = "Could not attach to ${label(pkg)} (DUMP discovery): ${e.message ?: e.javaClass.simpleName}"
             }
         }
         val present = found.mapTo(mutableSetOf()) { it.sessionId }
@@ -543,13 +598,8 @@ class EqService : Service() {
         if (failed != null) {
             report(failed, isError = true)
         } else if (changed) {
-            // The last player leaving is not "Correcting nobody": it is back
-            // to waiting, with the same words applyAll would use.
-            if (sessionEqs.isEmpty()) {
-                report(waitingStatus(), isError = false)
-            } else {
-                report(sessionReport(profile, via, output), isError = false)
-            }
+            if (sessionEqs.isEmpty()) report(waitingStatus(), isError = false)
+            else report(sessionReport(profile, via, output), isError = false)
         }
     }
 
@@ -560,7 +610,7 @@ class EqService : Service() {
         val names = held.joinToString { label(it.pkg) }
         val engines = held.map { it.applied.engine }.distinct().joinToString(" + ")
         val marker = if (held.any { it.discovered }) " · found by DUMP discovery" else ""
-        return "Correcting $names · $engines · ${profile?.name ?: "the active profile"}$via$marker${where(output)}"
+        return "Effect attached to $names · ${modeStore.currentDecision().mode.title} · $engines · ${profile?.name ?: "the active profile"}$via$marker${where(output)}"
     }
 
     private fun label(pkg: String): String = try {

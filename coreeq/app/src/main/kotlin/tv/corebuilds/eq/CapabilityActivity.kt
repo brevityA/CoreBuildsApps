@@ -8,14 +8,17 @@ import android.widget.Toast
 import tv.corebuilds.eq.apply.BandMapping
 import tv.corebuilds.eq.apply.DumpsysDiscovery
 import tv.corebuilds.eq.apply.EffectLadder
+import tv.corebuilds.eq.apply.OutputRoute
 import tv.corebuilds.eq.export.Formats
 import tv.corebuilds.eq.export.ProfileStore
+import tv.corebuilds.eq.mode.ContentModeStore
 import java.util.Locale
 import kotlin.concurrent.thread
 
 class CapabilityActivity : TvActivity() {
 
     private lateinit var profileStore: ProfileStore
+    private lateinit var modeStore: ContentModeStore
     private lateinit var statusSession0: TextView
     private lateinit var statusDp: TextView
     private lateinit var statusPlatformEq: TextView
@@ -32,6 +35,7 @@ class CapabilityActivity : TvActivity() {
         setContentView(R.layout.activity_capability)
 
         profileStore = ProfileStore(this)
+        modeStore = ContentModeStore(this)
 
         statusSession0 = findViewById(R.id.status_session0)
         statusDp = findViewById(R.id.status_dp)
@@ -98,18 +102,32 @@ class CapabilityActivity : TvActivity() {
     }
 
     private fun exportForTvSettings() {
-        val active = profileStore.getActiveProfile()
-        if (active == null) {
-            Toast.makeText(this, getString(R.string.no_profile_sub), Toast.LENGTH_LONG).show()
+        val output = OutputRoute.current(this)
+        val routed = OutputRoute.pick(
+            profileStore.getAllProfiles(),
+            profileStore.chosenId(),
+            output?.kind,
+            output?.name
+        ).profile
+        val base = routed ?: if (output?.kind == null) profileStore.getActiveProfile() else null
+        if (base == null) {
+            val message = if (output?.kind != null && profileStore.getAllProfiles().isNotEmpty()) {
+                getString(R.string.output_profile_missing_sub, OutputRoute.label(output.kind))
+            } else {
+                getString(R.string.no_profile_sub)
+            }
+            Toast.makeText(this, message, Toast.LENGTH_LONG).show()
             return
         }
+        val mode = modeStore.resolve(modeStore.lastActivePackages()).mode
+        val active = modeStore.effectiveProfile(base, mode)
         val centres = lastBandCentres ?: listOf(60.0, 230.0, 910.0, 3600.0, 14000.0)
         // One home for the band maths (BandMapping): the export cannot drift
         // from what the service applies.
         val gains = BandMapping.gainsDb(active, centres)
         val sb = StringBuilder()
         sb.append("CORE EQ · TV SOUND SETTINGS REFERENCE\n")
-        sb.append("Profile: ").append(active.name).append("\n")
+        sb.append("Profile: ").append(active.name).append(" · ").append(mode.title).append("\n")
         sb.append("Target: ").append(active.target).append("\n")
         sb.append(String.format(Locale.US, "Bands: %s\n", if (lastBandCentres != null) "this TV's own equaliser" else "the common 5-band layout"))
         sb.append("------------------------------------\n")
@@ -122,7 +140,7 @@ class CapabilityActivity : TvActivity() {
         sb.append("Enter these values in the TV's own sound equaliser, at the nearest band it offers.\n")
         sb.append("Every band is lowered by the largest boost, so the correction cannot clip.\n")
 
-        val result = Formats.exportToDevice(this, sb.toString(), "tv_settings_bands.txt")
+        val result = Formats.exportToDevice(this, sb.toString(), "tv_settings_bands_${mode.key}.txt")
         Toast.makeText(this, result.message, Toast.LENGTH_LONG).show()
     }
 }

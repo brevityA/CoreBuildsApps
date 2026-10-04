@@ -227,7 +227,7 @@ Build: `cd doctor && ./gradlew :app:assembleDebug` · [`doctor/SPEC.md`](doctor/
 
 **Measure the room you sit in, with the remote you already hold.** `v1.0.0`
 
-Core EQ combines TV-room measurement with a manual 10-band tone EQ. It can play a test sweep through the TV, analyse the remote microphone over the trusted 40 Hz–8 kHz span, then layer editable manual bands and saved presets over the measured correction. Profiles can be applied through the audio-effect paths the device accepts or exported for Poweramp Equalizer and TV sound settings. Android does not guarantee a global equaliser, so Core EQ probes and reports the apply path rather than promising every app will be affected. Permissions: RECORD_AUDIO, MODIFY_AUDIO_SETTINGS.
+Core EQ combines TV-room measurement with a manual 10-band tone EQ. Each measured base belongs to its output; Movie / TV, Everyday and Gaming add independent tone overlays. Choose a mode with the remote or optionally assign app rules for best-effort automatic switching (conflicts use Everyday; a temporary or sticky manual override is configurable). Profiles and the current mode can be exported for Poweramp Equalizer or TV sound settings. Android does not guarantee a global equaliser or expose every player's identity, so Core EQ reports the apply path and falls back to manual selection rather than promising every app will be affected. Permissions: RECORD_AUDIO, MODIFY_AUDIO_SETTINGS; optional one-time ADB DUMP grant for additional player discovery.
 
 **Install:** test builds on the [`coreeq-test`](../../releases/tag/coreeq-test) prerelease; releases under `coreeq-v*` tags. Downloader code **`7946159`**.
 

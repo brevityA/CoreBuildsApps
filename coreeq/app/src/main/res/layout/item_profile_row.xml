@@ -28,7 +28,7 @@
             android:id="@+id/item_profile_badge"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="ACTIVE"
+            android:text="@string/profile_selected_badge"
             android:textColor="@color/cb_success"
             android:textSize="@dimen/cb_text_kicker"
             android:fontFamily="monospace"
@@ -43,6 +43,8 @@
         android:textColor="@color/cb_slate"
         android:textSize="@dimen/cb_text_kicker"
         android:fontFamily="monospace"
+        android:maxLines="1"
+        android:ellipsize="end"
         android:layout_marginTop="4dp" />
 
 </LinearLayout>
