@@ -6,6 +6,28 @@ All notable changes to the Core Builds Icon Pack. Format follows
 
 ## [Unreleased]
 
+### Added
+
+- **Google Play apps, separate from the sideload ones.** Core Builds Icon
+  Pack (`tv.corebuilds.iconpack.play`) and Core Builds Glyphs
+  (`tv.corebuilds.iconpack.glyphs.play`) are their own apps with their own
+  upload key, so they install next to the GitHub builds and never update
+  them. They drop everything Play forbids a Play app to do: no
+  `REQUEST_INSTALL_PACKAGES`, no update check against GitHub (Play updates
+  them), and the Art style switch opens the Glyphs listing on Play instead
+  of downloading it. The Play Glyphs app has a TV launcher entry that opens
+  the icon pack. A new hand-run workflow, `play.yml`, builds both App
+  Bundles (`core-builds-play-bundles`). The GitHub builds and `build.yml`
+  are unchanged.
+
+### Changed
+
+- **Picking one icon follows the Art style switch.** Choosing a single
+  card's icon through Core Builds now returns a banner or a square to match
+  the switch, so one pack can hand out either shape card by card. Picks
+  through Core Builds Glyphs are still always square, and picking never
+  changes what the launcher auto-applies.
+
 ## [2.0.0] — 2026-10-03
 
 ### Added

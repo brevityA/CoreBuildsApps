@@ -14,7 +14,7 @@
     <!-- Android 11+ package visibility: the icon-picker forward below starts
          an activity in the icon pack, which must be visible to do that. -->
     <queries>
-        <package android:name="tv.corebuilds.iconpack" />
+        <package android:name="${iconPackId}" />
     </queries>
 
     <!-- No android.software.leanback declaration: that marks a TV *app*,

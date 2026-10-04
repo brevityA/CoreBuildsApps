@@ -145,6 +145,34 @@ Runtime behavior:
    - TV listing assets and screenshots for TV apps.
 5. Prefer a Play flavor without `REQUEST_INSTALL_PACKAGES` once Play distribution is primary. Sideload-first builds keep it for Downloader/GitHub Releases.
 
+### Icon Pack on Google Play
+
+The icon pack's Play apps are separate apps from the sideload ones, so both
+can sit on one TV and neither ever updates the other:
+
+| | Sideload (GitHub, Downloader `5270601`) | Google Play |
+|---|---|---|
+| Icon Pack | `tv.corebuilds.iconpack` | `tv.corebuilds.iconpack.play` |
+| Glyphs | `tv.corebuilds.iconpack.glyphs` | `tv.corebuilds.iconpack.glyphs.play` |
+| Built by | `build.yml` on `v*` tags | `play.yml`, run by hand from `main` |
+| Signed with | `KEYSTORE_*` release key | `PLAY_KEYSTORE_*` upload key |
+| Updates | in-app, from GitHub | Play only |
+
+The `play` build type (`app/` and `glyphs/` `build.gradle.kts`) drops
+`REQUEST_INSTALL_PACKAGES` and the GitHub update check, and the Art style
+switch opens the Glyphs twin's Play listing instead of downloading an APK.
+`tests/test_play_build.py` pins all of it.
+
+Secrets for `play.yml` (a new upload keystore, never the sideload key):
+
+- `PLAY_KEYSTORE_BASE64` — base64-encoded Play upload keystore.
+- `PLAY_KEYSTORE_PASSWORD`, `PLAY_KEY_ALIAS`, `PLAY_KEY_PASSWORD`.
+
+Without them the workflow still builds, warns, and uploads unsigned bundles
+Play Console will refuse. With them set, an unsigned bundle fails the run.
+The artifact `core-builds-play-bundles` holds `app-play.aab` and
+`glyphs-play.aab`; upload each to its own Play Console app.
+
 ## Release checklist artifact contents
 
 Every `suite-release.yml` run writes a checklist summary with:

@@ -69,7 +69,7 @@
     "app/src/main/res/values/dimens.xml": "6eb9a59ef7176f3d7b38fa7a0aac9f789ee593415ccf279d5a5084c9ab4d7555",
     "app/src/main/res/values/icon_pack.xml": "c1c08b1344b8152c4b8341a65d31ab28d32cb020d627e807476c7ccf8538777c",
     "app/src/main/res/values/issue_prefill.xml": "fd85418cdd4ccdc59f0f0793b32fc7d96e01f23f80f7f38a3e3d4d7699393ced",
-    "app/src/main/res/values/strings.xml": "cc89f66491e1ec6aa9b28857770eee771736a6fe8bbe729cfdf3d4a990ddbb47",
+    "app/src/main/res/values/strings.xml": "b898889a18fa6ffa6b7eddbeabdfbbd49bcac365f88895b85cf94321582ac04d",
     "app/src/main/res/values/suite_hub.xml": "aff339700a9e6751b31ed189c2695e77ce18b80332f104f94e9235cdd05ef74a",
     "app/src/main/res/values/themes.xml": "ecac526951fe40b6c5c01df0ec36730d0e197fd9511862cf587a2143773b46be",
     "tools/build_app_ui_mockups.py": "35207f64a0177534112d4de41d5ae03be128a185f5d24138fc9ef845a56f70f3",
@@ -79,7 +79,7 @@
     "tools/fonts/Outfit-Bold.ttf": "04f7c9705153927058475d6c5e9f75b0a1036ec5f6f63ffb69df046191ea8933",
     "tools/fonts/Outfit-ExtraBold.ttf": "056e8cd5840cea4cfc355f672292f7de00d95f5a42bf9b7cd96d511ca8e2883e"
   },
-  "inputs_digest": "ff28d8a02feba2c3fcf2f81de40ceb4af059f92d643179d6a8a4a9f4874b5c1c",
+  "inputs_digest": "0d3df799e4cc5841a60755ae9faa33f370596bdff965f71cfc44904470593942",
   "metrics": {
     "mono-bold@24": 448.0,
     "mono-bold@32": 608.0,

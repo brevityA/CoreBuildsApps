@@ -39,6 +39,7 @@
     <string name="picker_hint_banner">Assigning the 16:9 banner. Switch to Square for the 1:1 glyph.</string>
     <string name="picker_hint_square">Assigning the 1:1 glyph. Switch to Banner for the 16:9 card.</string>
     <string name="picker_hint_glyphs_only">Assigning the 1:1 glyph. For the 16:9 banner, pick from Core Builds Icon Pack in your launcher.</string>
+    <string name="picker_hint_square_by_style">Assigning the 1:1 glyph. For the 16:9 banner, set Art style to Banners on the Core Builds home screen.</string>
     <string name="picker_hint_banners_only">Assigning the 16:9 banner. For the 1:1 glyph, pick from Core Builds Glyphs in your launcher.</string>
     <string name="picker_chip_banner">Banner</string>
     <string name="picker_chip_square">Square</string>
@@ -78,6 +79,8 @@
     <string name="glyphs_downloading">Downloading Core Builds Glyphs, the square pack your launcher applies</string>
     <string name="glyphs_install_permission">Allow installs from Core Builds, then switch to Glyphs again to fetch Core Builds Glyphs</string>
     <string name="glyphs_failed_fmt">Couldn\'t fetch Core Builds Glyphs: %1$s. Art style is back to Banners.</string>
+    <string name="glyphs_play_listing">Install Core Builds Glyphs from Google Play, then come back here: your launcher switches to the square pack</string>
+    <string name="glyphs_no_store">Google Play isn\'t available on this device, so your launcher keeps the banners. Art style is back to Banners.</string>
     <string name="glyphs_declined">Core Builds Glyphs wasn\'t installed, so your launcher keeps the banners. Art style is back to Banners.</string>
     <string name="update_available_fmt">Update available — v%1$s · %2$d icons</string>
     <string name="update_current_fmt">Up to date — v%1$s.</string>

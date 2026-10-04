@@ -38,6 +38,10 @@ android {
             "GLYPHS_PACKAGE",
             "\"tv.corebuilds.iconpack.glyphs\"",
         )
+        manifestPlaceholders["glyphsPackage"] = "tv.corebuilds.iconpack.glyphs"
+        // github: self-updates from GitHub releases. play: see the play
+        // build type below and Distribution.kt.
+        buildConfigField("String", "DISTRIBUTION", "\"github\"")
     }
 
     // This variant is intentionally separate from both production release and
@@ -65,6 +69,18 @@ android {
     // build type. In particular, no KEYSTORE_* value is read by :test.
 
     signingConfigs {
+        // The Google Play upload key: its own keystore, never the sideload
+        // release key (PLAY_KEYSTORE_* in .github/workflows/play.yml). Play
+        // App Signing re-signs what users install.
+        create("play") {
+            val ksPath = System.getenv("PLAY_KEYSTORE_PATH")
+            if (ksPath != null && file(ksPath).exists()) {
+                storeFile = file(ksPath)
+                storePassword = System.getenv("PLAY_KEYSTORE_PASSWORD")
+                keyAlias = System.getenv("PLAY_KEY_ALIAS")
+                keyPassword = System.getenv("PLAY_KEY_PASSWORD")
+            }
+        }
         create("release") {
             // Supplied by CI (see .github/workflows/build.yml) or a local
             // keystore.properties. Unsigned builds still produce a usable
@@ -90,6 +106,34 @@ android {
             val ks = System.getenv("KEYSTORE_PATH")
             if (ks != null && file(ks).exists()) {
                 signingConfig = signingConfigs.getByName("release")
+            }
+        }
+        // The Google Play app: `./gradlew :app:bundlePlay` -> an AAB at
+        // app/build/outputs/bundle/play/, built by .github/workflows/play.yml.
+        // A separate app from the sideload one: its own application id
+        // (tv.corebuilds.iconpack.play), its own Glyphs twin
+        // (tv.corebuilds.iconpack.glyphs.play), its own upload key, its own
+        // FileProvider authority - so both can sit on one TV and neither ever
+        // updates the other. It also drops what Play forbids a Play app to do:
+        // no REQUEST_INSTALL_PACKAGES (src/play/AndroidManifest.xml), no
+        // GitHub update check, and the Glyphs switch opens the twin's Play
+        // listing. A build type, not a flavour, so the sideload release paths
+        // CI publishes stay as they are.
+        create("play") {
+            initWith(getByName("release"))
+            matchingFallbacks += listOf("release")
+            applicationIdSuffix = ".play"
+            buildConfigField("String", "DISTRIBUTION", "\"play\"")
+            buildConfigField("String", "UPDATE_MANIFEST_URL", "\"\"")
+            buildConfigField("String", "UPDATE_AUTHORITY", "\"tv.corebuilds.iconpack.play.update\"")
+            manifestPlaceholders["fileProviderAuthority"] = "tv.corebuilds.iconpack.play.update"
+            buildConfigField("String", "GLYPHS_PACKAGE", "\"tv.corebuilds.iconpack.glyphs.play\"")
+            manifestPlaceholders["glyphsPackage"] = "tv.corebuilds.iconpack.glyphs.play"
+            val playKs = System.getenv("PLAY_KEYSTORE_PATH")
+            signingConfig = if (playKs != null && file(playKs).exists()) {
+                signingConfigs.getByName("play")
+            } else {
+                null
             }
         }
     }

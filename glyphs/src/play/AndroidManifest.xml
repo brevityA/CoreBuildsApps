@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Play build of Core Builds Glyphs (see glyphs/build.gradle.kts).
+     Google Play lists an app for Android TV only when it declares the
+     leanback feature and has a LEANBACK_LAUNCHER entry, so the Play twin
+     gets both; opening it opens the Play icon pack, where the Art style
+     switch lives. The sideload companion keeps no launcher entry. -->
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- Lint reads this file on its own, so the touchscreen opt-out and the
+         banner repeat what src/main already declares. -->
+    <uses-feature
+        android:name="android.software.leanback"
+        android:required="false" />
+    <uses-feature
+        android:name="android.hardware.touchscreen"
+        android:required="false" />
+
+    <application android:banner="@drawable/cb_banner">
+        <activity
+            android:name=".GlyphsActivity"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LEANBACK_LAUNCHER" />
+            </intent-filter>
+        </activity>
+    </application>
+
+</manifest>

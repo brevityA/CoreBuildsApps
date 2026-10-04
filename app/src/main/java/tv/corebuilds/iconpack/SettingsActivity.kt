@@ -72,7 +72,10 @@ class SettingsActivity : TvActivity() {
         amoledSwitch.isChecked = Prefs.amoled(this)
         bannerSwitch.isChecked = Prefs.pickerPrefersBanners(this)
 
-        row(R.id.set_updates_row) {
+        if (Distribution.PLAY) {
+            // Google Play updates the Play build; it has no updater to switch.
+            findViewById<android.view.View>(R.id.set_updates_row).visibility = android.view.View.GONE
+        } else row(R.id.set_updates_row) {
             val next = !updateSwitch.isChecked
             updateSwitch.isChecked = next
             Prefs.set(this, Prefs.KEY_UPDATE_CHECKS, next)

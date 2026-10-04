@@ -134,12 +134,23 @@ class OneStylePerPack(unittest.TestCase):
         forward = java.split("if (isPickRequest(in))", 1)[1].split("} else {", 1)[0]
         self.assertIn("putExtra(EXTRA_PICK_GLYPHS, true)", forward)
 
-    def test_picker_shape_comes_from_the_pack_not_the_toggle(self):
+    def test_picker_shape_follows_the_toggle_except_through_glyphs(self):
         src = read(self.MAIN_KT)
         self.assertIn("fun pickFixedByPack(): Boolean = pickMode && GlyphsCompanion.supported()",
                       src)
-        # An unmarked pick came through the icon pack: banners.
-        self.assertIn("!intent.getBooleanExtra(GlyphsCompanion.EXTRA_PICK_GLYPHS, false)", src)
+        # A pick forwarded by Core Builds Glyphs is always square; one through
+        # this pack follows the Art style switch (2.0.1).
+        pick = src.split("pickBanners = if (pickFixedByPack() &&", 1)[1].split("adapter = IconAdapter", 1)[0]
+        self.assertIn("intent.getBooleanExtra(GlyphsCompanion.EXTRA_PICK_GLYPHS, false)", pick)
+        # The branch value itself, not the default in getBooleanExtra(..., false).
+        self.assertRegex(pick.split("} else {", 1)[0], r"\n\s*false\s*\n")
+        # Without chips, an unmarked square pick names the switch, never a
+        # Banner chip that is not on screen.
+        hint = src.split("private fun pickHint()", 1)[1].split("\n    )\n", 1)[0]
+        self.assertIn("pickFixedByPack() -> R.string.picker_hint_square_by_style", hint)
+        self.assertLess(hint.index("picker_hint_square_by_style"),
+                        hint.index("else -> R.string.picker_hint_square"))
+        self.assertIn("Prefs.pickerPrefersBanners(this)", pick.split("} else {", 1)[1])
         # With a companion the picker shows no shape chips, so no pick can
         # write the art style the whole launcher applies.
         chips = src.split("private fun bindPickShape()", 1)[1]
@@ -158,9 +169,11 @@ class OneStylePerPack(unittest.TestCase):
     def test_switch_never_claims_glyphs_the_launcher_lacks(self):
         src = read(COMPANION_KT)
         ensure = src.split("fun ensure(", 1)[1].split("\n    }\n", 1)[0]
-        # Every way ensure() can fail to deliver the pack reverts the style.
-        self.assertEqual(ensure.count("revertToBanners(activity)"), 3, ensure)
-        self.assertEqual(ensure.count("onUnavailable()"), 3, ensure)
+        # Every way ensure() can fail to deliver the pack reverts the style:
+        # no install permission, a refused hand-off, a failed download, and
+        # (Play build) no store to open the companion's listing in.
+        self.assertEqual(ensure.count("revertToBanners(activity)"), 4, ensure)
+        self.assertEqual(ensure.count("onUnavailable()"), 4, ensure)
         revert = src.split("private fun revertToBanners(", 1)[1].split("\n    }\n", 1)[0]
         self.assertIn("Prefs.KEY_PICK_BANNERS, true", revert)
         # A superseded download must not install or revert over a newer one.
@@ -196,10 +209,16 @@ class Manifest(unittest.TestCase):
         self.assertNotIn("android.intent.action.MAIN", text)
 
     def test_each_side_can_see_the_other(self):
-        self.assertIn('<package android:name="tv.corebuilds.iconpack" />',
+        # Placeholders, so the Play twins see each other and not the
+        # sideload pair; the gradle values are pinned here.
+        self.assertIn('<package android:name="${iconPackId}" />',
                       read(PACK_MANIFEST))
-        self.assertIn('<package android:name="tv.corebuilds.iconpack.glyphs" />',
+        self.assertIn('<package android:name="${glyphsPackage}" />',
                       read(APP_MANIFEST))
+        self.assertIn('manifestPlaceholders["iconPackId"] = "tv.corebuilds.iconpack"',
+                      read(PACK_GRADLE))
+        self.assertIn('manifestPlaceholders["glyphsPackage"] = "tv.corebuilds.iconpack.glyphs"',
+                      read(APP_GRADLE))
 
 
 class Contracts(unittest.TestCase):
@@ -209,8 +228,16 @@ class Contracts(unittest.TestCase):
         self.assertIn(f'"\\"{pack_id}\\""', read(APP_GRADLE))
 
     def test_forward_targets_the_icon_pack(self):
+        # The twin derives its icon pack from its own id, so the sideload
+        # and Play companions each forward to their own app.
         app_id = re.search(r'applicationId = "([^"]+)"', read(APP_GRADLE)).group(1)
-        self.assertIn(f'ICON_PACK = "{app_id}"', read(ACTIVITY_JAVA))
+        pack_id = re.search(r'applicationId = "([^"]+)"', read(PACK_GRADLE)).group(1)
+        java = read(ACTIVITY_JAVA)
+        self.assertIn('return ownPackage.replace(".glyphs", "");', java)
+        self.assertIn("iconPackFor(getPackageName())", java)
+        self.assertNotIn("ICON_PACK", java)
+        self.assertEqual(pack_id.replace(".glyphs", ""), app_id)
+        self.assertEqual((pack_id + ".play").replace(".glyphs", ""), app_id + ".play")
 
     def test_builds_without_a_companion_offer_none(self):
         # The debug-signed candidate build ships no companion APK, so an

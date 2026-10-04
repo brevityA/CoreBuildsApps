@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Google Play build type (see app/build.gradle.kts and Distribution.kt).
+     Play's Device and Network Abuse policy: an app distributed on Play may
+     not install APKs from outside Play, so the Play build drops the install
+     permission its updater and the Glyphs download need. The FileProvider
+     stays: wallpaper sharing uses it too. -->
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <uses-permission
+        android:name="android.permission.REQUEST_INSTALL_PACKAGES"
+        tools:node="remove" />
+
+</manifest>

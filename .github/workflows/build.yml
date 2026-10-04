@@ -149,6 +149,7 @@ jobs:
           python tests/test_string_resources.py
           python tests/test_wordmark_type.py
           python tests/test_icon_review.py
+          python tests/test_play_build.py
           python tests/test_ci_coverage.py
 
       - name: Set up JDK 17

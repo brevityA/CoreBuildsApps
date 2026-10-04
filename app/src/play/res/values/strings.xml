@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Play build wording: what the Play build actually sends. -->
+<resources>
+    <string name="about_network_one">1.  Nothing for updates: Google Play updates this app.</string>
+    <string name="about_network_two">2.  A request for each wallpaper you choose to download. Core Builds Glyphs comes from its own Google Play listing.</string>
+</resources>
