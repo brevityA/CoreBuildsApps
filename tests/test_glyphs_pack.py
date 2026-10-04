@@ -202,10 +202,16 @@ class Manifest(unittest.TestCase):
         self.assertNotIn("android.intent.action.MAIN", text)
 
     def test_each_side_can_see_the_other(self):
-        self.assertIn('<package android:name="tv.corebuilds.iconpack" />',
+        # Placeholders, so the Play twins see each other and not the
+        # sideload pair; the gradle values are pinned here.
+        self.assertIn('<package android:name="${iconPackId}" />',
                       read(PACK_MANIFEST))
-        self.assertIn('<package android:name="tv.corebuilds.iconpack.glyphs" />',
+        self.assertIn('<package android:name="${glyphsPackage}" />',
                       read(APP_MANIFEST))
+        self.assertIn('manifestPlaceholders["iconPackId"] = "tv.corebuilds.iconpack"',
+                      read(PACK_GRADLE))
+        self.assertIn('manifestPlaceholders["glyphsPackage"] = "tv.corebuilds.iconpack.glyphs"',
+                      read(APP_GRADLE))
 
 
 class Contracts(unittest.TestCase):
@@ -215,8 +221,16 @@ class Contracts(unittest.TestCase):
         self.assertIn(f'"\\"{pack_id}\\""', read(APP_GRADLE))
 
     def test_forward_targets_the_icon_pack(self):
+        # The twin derives its icon pack from its own id, so the sideload
+        # and Play companions each forward to their own app.
         app_id = re.search(r'applicationId = "([^"]+)"', read(APP_GRADLE)).group(1)
-        self.assertIn(f'ICON_PACK = "{app_id}"', read(ACTIVITY_JAVA))
+        pack_id = re.search(r'applicationId = "([^"]+)"', read(PACK_GRADLE)).group(1)
+        java = read(ACTIVITY_JAVA)
+        self.assertIn('return ownPackage.replace(".glyphs", "");', java)
+        self.assertIn("iconPackFor(getPackageName())", java)
+        self.assertNotIn("ICON_PACK", java)
+        self.assertEqual(pack_id.replace(".glyphs", ""), app_id)
+        self.assertEqual((pack_id + ".play").replace(".glyphs", ""), app_id + ".play")
 
     def test_builds_without_a_companion_offer_none(self):
         # The debug-signed candidate build ships no companion APK, so an

@@ -7,6 +7,9 @@ twice - the self-updater and the Core Builds Glyphs download - so the `play`
 build type (app/build.gradle.kts) has to switch both off, and these tests pin
 every part of that so a later change cannot quietly put one back.
 
+The Play apps are also separate apps from the sideload ones: their own ids,
+upload key and FileProvider authority, so neither can update the other.
+
 Run: `python3 tests/test_play_build.py`
 """
 import re
@@ -22,12 +25,19 @@ def read(p):
     return Path(p).read_text(encoding="utf-8")
 
 
+def play_type(module):
+    """The body of a module's `play` build type (not its signing config)."""
+    gradle = read(ROOT / module / "build.gradle.kts")
+    body = gradle.split('create("play") {\n            initWith', 1)[1]
+    return body.split("\n        }\n", 1)[0]
+
+
 class PlayBuild(unittest.TestCase):
     def test_play_build_type_exists_and_reports_play(self):
         gradle = read(APP / "build.gradle.kts")
         self.assertIn('buildConfigField("String", "DISTRIBUTION", "\\"github\\"")', gradle)
-        play = gradle.split('create("play")', 1)[1].split("\n        }\n", 1)[0]
-        self.assertIn('initWith(getByName("release"))', play)
+        play = play_type("app")
+        self.assertIn('(getByName("release"))', play)
         self.assertIn('"DISTRIBUTION", "\\"play\\""', play)
         self.assertIn('"UPDATE_MANIFEST_URL", "\\"\\""', play)
 
@@ -68,6 +78,53 @@ class PlayBuild(unittest.TestCase):
         names = set(re.findall(r'<string name="([^"]+)"', play))
         self.assertEqual(names, {"about_network_one", "about_network_two"})
         self.assertIn("Google Play", play)
+
+
+class SeparateApps(unittest.TestCase):
+    def test_both_play_apps_have_their_own_ids(self):
+        for module in ("app", "glyphs"):
+            self.assertIn('applicationIdSuffix = ".play"', play_type(module), module)
+        app = play_type("app")
+        self.assertIn('"GLYPHS_PACKAGE", "\\"tv.corebuilds.iconpack.glyphs.play\\""', app)
+        self.assertIn('manifestPlaceholders["glyphsPackage"] = "tv.corebuilds.iconpack.glyphs.play"', app)
+        self.assertIn('manifestPlaceholders["iconPackId"] = "tv.corebuilds.iconpack.play"',
+                      play_type("glyphs"))
+
+    def test_play_app_has_its_own_file_provider(self):
+        # Two apps cannot install side by side with one provider authority.
+        app = play_type("app")
+        self.assertIn('"UPDATE_AUTHORITY", "\\"tv.corebuilds.iconpack.play.update\\""', app)
+        self.assertIn('manifestPlaceholders["fileProviderAuthority"] = "tv.corebuilds.iconpack.play.update"', app)
+
+    def test_play_apps_sign_with_the_play_upload_key_only(self):
+        for module in ("app", "glyphs"):
+            play = play_type(module)
+            self.assertIn('System.getenv("PLAY_KEYSTORE_PATH")', play, module)
+            self.assertIn('signingConfigs.getByName("play")', play, module)
+            self.assertNotIn('signingConfigs.getByName("release")', play, module)
+            gradle = read(ROOT / module / "build.gradle.kts")
+            signing = gradle.split("signingConfigs {", 1)[1].split('create("release")', 1)[0]
+            self.assertIn('System.getenv("PLAY_KEY_ALIAS")', signing, module)
+
+    def test_play_glyphs_has_a_tv_launcher_entry(self):
+        manifest = read(ROOT / "glyphs/src/play/AndroidManifest.xml")
+        self.assertIn("android.software.leanback", manifest)
+        self.assertIn("android.intent.category.LEANBACK_LAUNCHER", manifest)
+        # The sideload companion stays hidden from the launcher.
+        self.assertNotIn("android.intent.category.LEANBACK_LAUNCHER",
+                         read(ROOT / "glyphs/src/main/AndroidManifest.xml"))
+
+    def test_play_workflow_is_its_own(self):
+        play = read(ROOT / ".github/workflows/play.yml")
+        self.assertIn(":app:bundlePlay", play)
+        self.assertIn(":glyphs:bundlePlay", play)
+        self.assertIn("PLAY_KEYSTORE_BASE64", play)
+        # Hand-run only: a tag prefix is a suite.json release contract
+        # (tools/check_suite_truth.py), and a Play build cuts no release.
+        self.assertNotIn("tags:", play)
+        build = read(ROOT / ".github/workflows/build.yml")
+        self.assertNotIn("bundlePlay", build)
+        self.assertNotIn("PLAY_KEYSTORE", build)
 
 
 if __name__ == "__main__":

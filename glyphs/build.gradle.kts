@@ -67,9 +67,22 @@ android {
         targetSdk = 34
         versionCode = packVersionCode
         versionName = packVersionName
+        // The icon pack this twin forwards picks to and opens; GlyphsActivity
+        // derives the same id from its own package name at runtime.
+        manifestPlaceholders["iconPackId"] = "tv.corebuilds.iconpack"
     }
 
     signingConfigs {
+        // The Google Play upload key, as in :app.
+        create("play") {
+            val ksPath = System.getenv("PLAY_KEYSTORE_PATH")
+            if (ksPath != null && file(ksPath).exists()) {
+                storeFile = file(ksPath)
+                storePassword = System.getenv("PLAY_KEYSTORE_PASSWORD")
+                keyAlias = System.getenv("PLAY_KEY_ALIAS")
+                keyPassword = System.getenv("PLAY_KEY_PASSWORD")
+            }
+        }
         create("release") {
             // Same keystore as :app. :app refuses to install a companion whose
             // signing certificate differs from its own.
@@ -91,6 +104,21 @@ android {
             val ks = System.getenv("KEYSTORE_PATH")
             if (ks != null && file(ks).exists()) {
                 signingConfig = signingConfigs.getByName("release")
+            }
+        }
+        // The Play twin of the Play icon pack (tv.corebuilds.iconpack.play):
+        // tv.corebuilds.iconpack.glyphs.play, Play upload key, and a TV
+        // launcher entry (src/play/AndroidManifest.xml) because Play only
+        // offers an app on Android TV when it has one.
+        create("play") {
+            initWith(getByName("release"))
+            applicationIdSuffix = ".play"
+            manifestPlaceholders["iconPackId"] = "tv.corebuilds.iconpack.play"
+            val playKs = System.getenv("PLAY_KEYSTORE_PATH")
+            signingConfig = if (playKs != null && file(playKs).exists()) {
+                signingConfigs.getByName("play")
+            } else {
+                null
             }
         }
     }

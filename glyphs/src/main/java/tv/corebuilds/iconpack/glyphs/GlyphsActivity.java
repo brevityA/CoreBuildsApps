@@ -28,7 +28,15 @@ import android.os.Bundle;
  */
 public class GlyphsActivity extends Activity {
 
-    static final String ICON_PACK = "tv.corebuilds.iconpack";
+    /**
+     * The icon pack this twin belongs to: its own id without ".glyphs".
+     * tv.corebuilds.iconpack.glyphs -> tv.corebuilds.iconpack (sideload) and
+     * tv.corebuilds.iconpack.glyphs.play -> tv.corebuilds.iconpack.play
+     * (Google Play), so a Play pick never lands in the sideload app.
+     */
+    static String iconPackFor(String ownPackage) {
+        return ownPackage.replace(".glyphs", "");
+    }
 
     /** GlyphsCompanion.EXTRA_PICK_GLYPHS in the icon pack; kept equal by tests. */
     static final String EXTRA_PICK_GLYPHS = "tv.corebuilds.iconpack.extra.PICK_GLYPHS";
@@ -37,16 +45,17 @@ public class GlyphsActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Intent in = getIntent();
+        String iconPack = iconPackFor(getPackageName());
         try {
             if (isPickRequest(in)) {
                 Intent forward = new Intent(in);
                 forward.setComponent(null);
-                forward.setPackage(ICON_PACK);
+                forward.setPackage(iconPack);
                 forward.addFlags(Intent.FLAG_ACTIVITY_FORWARD_RESULT);
                 forward.putExtra(EXTRA_PICK_GLYPHS, true);
                 startActivity(forward);
             } else {
-                Intent open = getPackageManager().getLaunchIntentForPackage(ICON_PACK);
+                Intent open = getPackageManager().getLaunchIntentForPackage(iconPack);
                 if (open != null) {
                     startActivity(open);
                 }

@@ -118,7 +118,7 @@
         <package android:name="dev.corebuilds.shift" />
         <!-- Core Builds Glyphs, the square companion the Banners/Glyphs toggle
              points launchers at: its installed version gates the apply. -->
-        <package android:name="tv.corebuilds.iconpack.glyphs" />
+        <package android:name="${glyphsPackage}" />
     </queries>
 
     <application

@@ -8,13 +8,17 @@ All notable changes to the Core Builds Icon Pack. Format follows
 
 ### Added
 
-- **A Google Play build.** `./gradlew :app:bundlePlay` builds the icon
-  pack's Play upload (an App Bundle) from the same code and art. It drops
-  everything Play forbids a Play app to do: no `REQUEST_INSTALL_PACKAGES`,
-  no update check against GitHub (Play updates it), and the Glyphs switch
-  opens Core Builds Glyphs' own Play listing instead of downloading it.
-  CI uploads both Play bundles (`core-builds-play-bundles`). The GitHub
-  builds are unchanged.
+- **Google Play apps, separate from the sideload ones.** Core Builds Icon
+  Pack (`tv.corebuilds.iconpack.play`) and Core Builds Glyphs
+  (`tv.corebuilds.iconpack.glyphs.play`) are their own apps with their own
+  upload key, so they install next to the GitHub builds and never update
+  them. They drop everything Play forbids a Play app to do: no
+  `REQUEST_INSTALL_PACKAGES`, no update check against GitHub (Play updates
+  them), and the Art style switch opens the Glyphs listing on Play instead
+  of downloading it. The Play Glyphs app has a TV launcher entry that opens
+  the icon pack. A new hand-run workflow, `play.yml`, builds both App
+  Bundles (`core-builds-play-bundles`). The GitHub builds and `build.yml`
+  are unchanged.
 
 ### Changed
 
