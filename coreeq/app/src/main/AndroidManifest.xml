@@ -64,6 +64,11 @@
             android:label="@string/profiles_title" />
 
         <activity
+            android:name=".ManualEqActivity"
+            android:exported="false"
+            android:label="@string/manual_eq_heading" />
+
+        <activity
             android:name=".CapabilityActivity"
             android:exported="false"
             android:label="@string/capability_title" />

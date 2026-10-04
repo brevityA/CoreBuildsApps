@@ -9,9 +9,13 @@ import android.util.Log
 import org.json.JSONArray
 import org.json.JSONObject
 import tv.corebuilds.eq.dsp.DspConstants
+import tv.corebuilds.eq.dsp.ManualEq
 import tv.corebuilds.eq.dsp.Peaking
+import tv.corebuilds.eq.dsp.PeakingFilter
 import java.io.File
 import java.util.Locale
+import kotlin.math.floor
+import kotlin.math.min
 
 /**
  * Exporters for Poweramp Equalizer, Equalizer APO, and Core EQ profile JSON.
@@ -19,24 +23,28 @@ import java.util.Locale
 object Formats {
 
     fun exportParametricTxt(profile: Profile): String {
-        if (profile.filters.isEmpty()) {
+        val filters = profile.filters + ManualEq.sanitize(profile.manualFilters)
+        if (filters.isEmpty()) {
             return buildString {
                 append("# Core EQ: no filters\n")
                 for (note in profile.measurementNotes) append("# Core EQ measurement note: $note\n")
             }
         }
-        val pDb = if (profile.preampDb != 0.0) profile.preampDb else Peaking.preampDb(profile.filters)
+        val pDb = exportPreampDb(profile, filters)
         val sb = StringBuilder()
         sb.append(String.format(Locale.US, "Preamp: %.2f dB\n", pDb))
         sb.append(String.format(Locale.US, "# Core EQ: correction band %.0f-%.0f Hz\n", maxOf(DspConstants.F_MIN, profile.rolloffHz), DspConstants.F_MAX))
         sb.append("# Core EQ: set Bands Overlap to Cascade in Poweramp Equalizer,\n")
         sb.append("# Core EQ: or the filters will not sum the way this file assumes.\n")
+        if (profile.manualFilters.isNotEmpty()) {
+            sb.append("# Core EQ: manual EQ filters are included after the measured correction.\n")
+        }
         for (note in profile.measurementNotes) {
             sb.append("# Core EQ measurement note: $note\n")
         }
 
-        for (i in profile.filters.indices) {
-            val f = profile.filters[i]
+        for (i in filters.indices) {
+            val f = filters[i]
             val sign = if (f.gain >= 0) "+" else ""
             sb.append(String.format(Locale.US, "Filter %d: ON PK Fc %.0f Hz Gain %s%.2f dB Q %.2f\n",
                 i + 1, f.fc, sign, f.gain, f.q))
@@ -45,12 +53,51 @@ object Formats {
     }
 
     fun exportGraphicEq(profile: Profile): String {
-        val parts = mutableListOf<String>()
-        for (cp in profile.curve) {
-            val sign = if (cp.correctionDb >= 0) "+" else ""
-            parts.add(String.format(Locale.US, "%.0f %s%.2f", cp.hz, sign, cp.correctionDb))
+        val frequencies = if (profile.curve.isNotEmpty()) {
+            profile.curve.map { it.hz }
+        } else {
+            DspConstants.ISO_CENTRES_HZ.filter { it in DspConstants.F_MIN..DspConstants.F_MAX }
         }
-        return "GraphicEQ: " + parts.joinToString("; ") + "\n"
+        val parts = frequencies.map { hz ->
+            val response = profile.correctionAt(hz) + ManualEq.responseDb(profile.manualFilters, hz)
+            val sign = if (response >= 0) "+" else ""
+            String.format(Locale.US, "%.0f %s%.2f", hz, sign, response)
+        }
+        val preamp = if (profile.manualFilters.isNotEmpty()) {
+            String.format(Locale.US, "Preamp: %.2f dB\n", exportPreampDb(profile, profile.filters + profile.manualFilters))
+        } else {
+            ""
+        }
+        return preamp + "GraphicEQ: " + parts.joinToString("; ") + "\n"
+    }
+
+    /** Headroom for a PA parametric export, preserving the measured correction's existing reserve. */
+    fun recommendedPreampDb(profile: Profile): Double {
+        val filters = profile.filters + ManualEq.sanitize(profile.manualFilters)
+        val roomPreamp = roomPreampDb(profile)
+        if (profile.manualFilters.isEmpty()) return roomPreamp
+        return exportPreampDb(profile, filters, roomPreamp)
+    }
+
+    /** Room-only reserve persisted separately so changing a manual boost can restore headroom. */
+    private fun roomPreampDb(profile: Profile): Double =
+        if (profile.preampDb != 0.0) profile.preampDb else Peaking.preampDb(profile.filters)
+
+    private fun exportPreampDb(profile: Profile, filters: List<PeakingFilter>): Double {
+        return exportPreampDb(profile, filters, roomPreampDb(profile))
+    }
+
+    private fun exportPreampDb(profile: Profile, filters: List<PeakingFilter>, existing: Double): Double {
+        if (profile.manualFilters.isEmpty()) return existing
+
+        // Sample densely over Core EQ's trusted span to catch overlapping bands,
+        // then never reduce the headroom the measured correction already requested.
+        val sampleHz = ((0..240).map { index ->
+            DspConstants.F_MIN * Math.pow(DspConstants.F_MAX / DspConstants.F_MIN, index / 240.0)
+        } + filters.map { it.fc }).distinct().toDoubleArray()
+        val peakDb = Peaking.filterSumDb(sampleHz, filters).maxOrNull() ?: 0.0
+        val combined = floor(-maxOf(0.0, peakDb) * 100.0) / 100.0
+        return min(existing, combined)
     }
 
     fun exportProfileJson(profile: Profile): String {
@@ -60,6 +107,7 @@ object Formats {
         root.put("name", profile.name)
         root.put("timestamp_ms", profile.timestampMs)
         root.put("device", profile.deviceName)
+        root.put("manual_only", profile.manualOnly)
         profile.outputKind?.let { kind ->
             root.put("output", JSONObject().put("kind", kind).put("name", profile.outputName ?: JSONObject.NULL))
         }
@@ -99,8 +147,8 @@ object Formats {
         profile.rt60Seconds?.let { roomObj.put("rt60_s", it) }
         root.put("room", roomObj)
 
-        val pDb = if (profile.preampDb != 0.0) profile.preampDb else Peaking.preampDb(profile.filters)
-        root.put("preamp_db", pDb)
+        root.put("preamp_db", recommendedPreampDb(profile))
+        root.put("room_preamp_db", roomPreampDb(profile))
 
         val filtersArr = JSONArray()
         for (f in profile.filters) {
@@ -111,6 +159,15 @@ object Formats {
             filtersArr.put(fObj)
         }
         root.put("filters", filtersArr)
+
+        val manualFiltersArr = JSONArray()
+        for (f in ManualEq.sanitize(profile.manualFilters)) {
+            manualFiltersArr.put(JSONObject()
+                .put("fc", f.fc)
+                .put("q", f.q)
+                .put("gain", f.gain))
+        }
+        root.put("manual_filters", manualFiltersArr)
 
         val bandsArr = JSONArray()
         for (b in profile.platformBands) {

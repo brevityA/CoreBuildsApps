@@ -47,10 +47,15 @@
         android:orientation="horizontal"
         android:layout_marginTop="@dimen/cb_space_md">
 
-        <!-- Left rail -->
-        <LinearLayout
+        <!-- Left rail; scroll-bounded so the manual EQ entry also fits on a 540dp TV panel. -->
+        <ScrollView
             android:layout_width="@dimen/cb_rail_width"
             android:layout_height="match_parent"
+            android:fillViewport="true"
+            android:scrollbars="none">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:orientation="vertical">
 
             <!-- Active profile card -->
@@ -164,6 +169,20 @@
             </LinearLayout>
 
             <Button
+                android:id="@+id/btn_nav_manual_eq"
+                android:layout_width="match_parent"
+                android:layout_height="52dp"
+                android:background="@drawable/bg_card"
+                android:text="@string/action_manual_eq"
+                android:textColor="@color/cb_ink"
+                android:textSize="@dimen/cb_text_data"
+                android:gravity="start|center_vertical"
+                android:paddingStart="@dimen/cb_card_padding"
+                android:paddingEnd="@dimen/cb_card_padding"
+                android:focusable="true"
+                android:layout_marginBottom="@dimen/cb_space_xs" />
+
+            <Button
                 android:id="@+id/btn_nav_profiles"
                 android:layout_width="match_parent"
                 android:layout_height="52dp"
@@ -191,6 +210,7 @@
                 android:focusable="true" />
 
         </LinearLayout>
+        </ScrollView>
 
         <!-- Right pane -->
         <LinearLayout

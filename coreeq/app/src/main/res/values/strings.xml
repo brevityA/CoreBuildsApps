@@ -5,7 +5,7 @@
     <string name="home_desc">A sine sweep out, the remote microphone listening, a curve you can read before you trust it.</string>
     <string name="active_profile">Active profile</string>
     <string name="no_profile">No measurement yet</string>
-    <string name="no_profile_sub">Measure this room to create a correction.</string>
+    <string name="no_profile_sub">Measure this room or open Manual EQ to create a profile.</string>
     <string name="action_measure">Measure</string>
     <string name="action_measure_sub">Sine sweep · 13 s · this room</string>
     <string name="action_remeasure">Re-measure</string>
@@ -17,7 +17,32 @@
     <string name="action_capability_sub">What this device will accept</string>
     <string name="action_poweramp_export">Export to Poweramp</string>
     <string name="action_tv_export">Export for TV settings</string>
-    <string name="platform_eq_title">Live engine bands when applied · profile preview otherwise · gain in dB</string>
+    <string name="platform_eq_title">Applied engine band preview · gain in dB</string>
+    <string name="action_manual_eq">Manual EQ · 10-band tone control</string>
+    <string name="manual_eq_heading">Manual equaliser</string>
+    <string name="manual_eq_subtitle">Ten editable bands from 40 Hz to 8 kHz. Manual tone layers over room correction; positive peaks reserve digital headroom.</string>
+    <string name="manual_eq_loading_profile">Preparing an output profile…</string>
+    <string name="manual_eq_choose_preset">Preset: %1$s</string>
+    <string name="manual_eq_choose_preset_default">Choose EQ preset</string>
+    <string name="manual_eq_save_preset">Save as preset…</string>
+    <string name="manual_eq_reset">Reset manual EQ</string>
+    <string name="manual_eq_done">Done</string>
+    <string name="manual_eq_headroom_pending">HEADROOM\nCalculating…</string>
+    <string name="manual_eq_headroom">HEADROOM\n%1$.1f dB reserved to offset EQ boosts</string>
+    <string name="manual_eq_apply_hint">Changes save to this profile. Enable Correction on Home to apply them.</string>
+    <string name="manual_eq_running_hint">Correction is running; changes are reapplied automatically.</string>
+    <string name="manual_eq_resume_hint">Correction is set on and resumes when Core EQ is opened.</string>
+    <string name="manual_eq_dpad_help">Left/right choose a band · Up/down adjust by 0.5 dB. Touch and drag also works.</string>
+    <string name="manual_eq_band_caption">MANUAL EQ · dB PER BAND · RANGE ±6 dB</string>
+    <string name="manual_eq_presets_title">Choose an EQ preset</string>
+    <string name="manual_eq_save_title">Save manual EQ preset</string>
+    <string name="manual_eq_save">Save</string>
+    <string name="manual_eq_save_hint">Preset name</string>
+    <string name="manual_eq_preset_saved">Saved EQ preset “%1$s”</string>
+    <string name="manual_eq_preset_applied">Preset applied: %1$s</string>
+    <string name="manual_eq_preset_name_required">Enter a name for this preset.</string>
+    <string name="manual_eq_builtin_name">That name is already used by a built-in preset.</string>
+    <string name="manual_eq_reset_done">Manual EQ reset to Flat.</string>
 
     <!-- Measure screen -->
     <string name="measure_title">Core EQ · Measure</string>
@@ -60,7 +85,7 @@
     <!-- Profiles screen -->
     <string name="profiles_title">Core EQ · Profiles</string>
     <string name="profiles_heading">Saved corrections</string>
-    <string name="profiles_sub">Every profile carries its own microphone, limits and capability verdict.</string>
+    <string name="profiles_sub">Measured rooms keep their limits; manual-only EQ profiles are clearly marked. Select one to apply or export.</string>
     <string name="export_title">Export</string>
     <string name="export_chip_parametric">Parametric .txt</string>
     <string name="export_chip_graphiceq">GraphicEQ</string>

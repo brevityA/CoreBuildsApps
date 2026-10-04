@@ -227,7 +227,7 @@ Build: `cd doctor && ./gradlew :app:assembleDebug` · [`doctor/SPEC.md`](doctor/
 
 **Measure the room you sit in, with the remote you already hold.** `v1.0.0`
 
-Plays a test sweep through the TV, records it through the remote's microphone, and hands back an equaliser setting for this room — corrected only between 40 Hz and 8 kHz, the band a remote capsule can be trusted in. Android TV has no global equaliser, so the app probes what it can apply on each device and says so. Real measurement via Farina swept-sine deconvolution, minimum-phase modal correction, speech intelligibility targets, and companion export to Poweramp Equalizer. Permissions: RECORD_AUDIO, MODIFY_AUDIO_SETTINGS.
+Core EQ combines TV-room measurement with a manual 10-band tone EQ. It can play a test sweep through the TV, analyse the remote microphone over the trusted 40 Hz–8 kHz span, then layer editable manual bands and saved presets over the measured correction. Profiles can be applied through the audio-effect paths the device accepts or exported for Poweramp Equalizer and TV sound settings. Android does not guarantee a global equaliser, so Core EQ probes and reports the apply path rather than promising every app will be affected. Permissions: RECORD_AUDIO, MODIFY_AUDIO_SETTINGS.
 
 **Install:** test builds on the [`coreeq-test`](../../releases/tag/coreeq-test) prerelease; releases under `coreeq-v*` tags. Downloader code **`7946159`**.
 

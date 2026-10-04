@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/cb_night"
+    android:paddingLeft="@dimen/cb_gutter_side"
+    android:paddingRight="@dimen/cb_gutter_side"
+    android:paddingTop="@dimen/cb_gutter_top"
+    android:paddingBottom="@dimen/cb_gutter_bottom">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="CORE EQ · MANUAL TONE"
+        android:textColor="@color/cb_slate"
+        android:textSize="@dimen/cb_text_kicker"
+        android:fontFamily="monospace"
+        android:textAllCaps="true" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/manual_eq_heading"
+        android:textColor="@color/cb_ink"
+        android:textSize="@dimen/cb_text_title"
+        android:textStyle="bold"
+        android:layout_marginTop="4dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/manual_eq_subtitle"
+        android:textColor="@color/cb_slate"
+        android:textSize="@dimen/cb_text_data"
+        android:layout_marginTop="2dp" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:orientation="horizontal"
+        android:layout_marginTop="@dimen/cb_space_md">
+
+        <LinearLayout
+            android:layout_width="280dp"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/text_manual_profile"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/bg_card"
+                android:padding="@dimen/cb_card_padding"
+                android:text="@string/manual_eq_loading_profile"
+                android:textColor="@color/cb_ink"
+                android:textSize="@dimen/cb_text_data"
+                android:focusable="false" />
+
+            <Button
+                android:id="@+id/btn_choose_eq_preset"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/cb_target_min"
+                android:layout_marginTop="@dimen/cb_space_sm"
+                android:background="@drawable/bg_chip_toggle"
+                android:text="@string/manual_eq_choose_preset_default"
+                android:textColor="@color/cb_ink"
+                android:textSize="@dimen/cb_text_data"
+                android:focusable="true" />
+
+            <Button
+                android:id="@+id/btn_save_eq_preset"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/cb_target_min"
+                android:layout_marginTop="@dimen/cb_space_xs"
+                android:background="@drawable/bg_card"
+                android:text="@string/manual_eq_save_preset"
+                android:textColor="@color/cb_ink"
+                android:textSize="@dimen/cb_text_data"
+                android:focusable="true" />
+
+            <Button
+                android:id="@+id/btn_reset_eq"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/cb_target_min"
+                android:layout_marginTop="@dimen/cb_space_xs"
+                android:background="@drawable/bg_ghost"
+                android:text="@string/manual_eq_reset"
+                android:textColor="@color/cb_signal_cyan"
+                android:textSize="@dimen/cb_text_data"
+                android:focusable="true" />
+
+            <TextView
+                android:id="@+id/text_manual_headroom"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/cb_space_md"
+                android:text="@string/manual_eq_headroom_pending"
+                android:textColor="@color/cb_signal_cyan"
+                android:textSize="@dimen/cb_text_kicker"
+                android:fontFamily="monospace" />
+
+            <TextView
+                android:id="@+id/text_manual_eq_status"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:gravity="bottom|start"
+                android:text="@string/manual_eq_apply_hint"
+                android:textColor="@color/cb_slate"
+                android:textSize="@dimen/cb_text_kicker" />
+
+            <Button
+                android:id="@+id/btn_manual_eq_done"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/cb_target_min"
+                android:layout_marginTop="@dimen/cb_space_sm"
+                android:background="@drawable/bg_cta"
+                android:text="@string/manual_eq_done"
+                android:textColor="@color/cb_cta_ink"
+                android:textSize="@dimen/cb_text_label"
+                android:textStyle="bold"
+                android:focusable="true" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:layout_marginStart="@dimen/cb_space_lg"
+            android:orientation="vertical">
+
+            <tv.corebuilds.eq.ui.CurveGraphView
+                android:id="@+id/graph_manual_eq"
+                android:layout_width="match_parent"
+                android:layout_height="145dp" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/cb_space_xs"
+                android:text="@string/manual_eq_band_caption"
+                android:textColor="@color/cb_slate"
+                android:textSize="@dimen/cb_text_kicker"
+                android:fontFamily="monospace" />
+
+            <tv.corebuilds.eq.ui.ManualEqBandsView
+                android:id="@+id/manual_eq_bands"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:layout_marginTop="@dimen/cb_space_xs"
+                android:contentDescription="@string/manual_eq_dpad_help" />
+
+            <TextView
+                android:id="@+id/text_manual_selected_band"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/cb_space_xs"
+                android:text="@string/manual_eq_dpad_help"
+                android:textColor="@color/cb_slate"
+                android:textSize="@dimen/cb_text_kicker"
+                android:fontFamily="monospace" />
+        </LinearLayout>
+    </LinearLayout>
+</LinearLayout>

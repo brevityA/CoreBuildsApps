@@ -6,7 +6,10 @@ import android.util.Log
 import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
+import tv.corebuilds.eq.dsp.ManualEq
+import tv.corebuilds.eq.dsp.ManualEqPreset
 import tv.corebuilds.eq.dsp.PeakingFilter
+import java.util.UUID
 
 /**
  * What the correction service last did, in words the Home screen can show.
@@ -26,7 +29,8 @@ data class EqStatus(
 /**
  * Saved profiles, the active one, whether correction is switched on, and the
  * service's last status. A fresh install has no profiles: nothing is shown as
- * a measurement until this room has been measured.
+ * a measurement until the room is measured. A separate manual-only profile can
+ * exist without pretending that a measurement happened.
  */
 class ProfileStore(context: Context) {
 
@@ -64,7 +68,7 @@ class ProfileStore(context: Context) {
         return list.sortedByDescending { it.timestampMs }
     }
 
-    /** The active profile, or null before anything has been measured. */
+    /** The active room or manual profile, or null until one is created. */
     fun getActiveProfile(): Profile? {
         val all = getAllProfiles()
         val activeId = prefs.getString(KEY_ACTIVE_ID, null)
@@ -97,6 +101,85 @@ class ProfileStore(context: Context) {
             }
         }
         return removed
+    }
+
+    /** Built-in tone presets followed by any presets the viewer saved. */
+    fun manualEqPresets(): List<ManualEqPreset> = ManualEq.BUILT_IN_PRESETS + storedManualEqPresets()
+
+    /** Save (or replace by case-insensitive name) a reusable user preset. */
+    fun saveManualEqPreset(name: String, filters: List<PeakingFilter>): ManualEqPreset {
+        val cleanName = name.trim()
+        require(cleanName.isNotEmpty()) { "Preset name cannot be empty" }
+        require(cleanName.length <= 32) { "Preset names must be 32 characters or fewer" }
+        require(ManualEq.BUILT_IN_PRESETS.none { it.name.equals(cleanName, ignoreCase = true) }) {
+            "Choose a name other than a built-in preset"
+        }
+        val existing = storedManualEqPresets().firstOrNull { it.name.equals(cleanName, ignoreCase = true) }
+        val preset = ManualEqPreset(
+            id = existing?.id ?: "custom-${UUID.randomUUID()}",
+            name = cleanName,
+            filters = ManualEq.sanitize(filters)
+        )
+        val updated = storedManualEqPresets().filterNot { it.id == preset.id } + preset
+        persistManualEqPresets(updated)
+        return preset
+    }
+
+    fun deleteManualEqPreset(id: String): Boolean {
+        if (ManualEq.BUILT_IN_PRESETS.any { it.id == id }) return false
+        val presets = storedManualEqPresets()
+        val updated = presets.filterNot { it.id == id }
+        if (updated.size == presets.size) return false
+        persistManualEqPresets(updated)
+        return true
+    }
+
+    private fun storedManualEqPresets(): List<ManualEqPreset> {
+        val raw = prefs.getString(KEY_MANUAL_PRESETS, null) ?: return emptyList()
+        return try {
+            val array = JSONArray(raw)
+            buildList {
+                for (index in 0 until array.length()) {
+                    val item = array.optJSONObject(index) ?: continue
+                    val filters = mutableListOf<PeakingFilter>()
+                    val savedFilters = item.optJSONArray("filters") ?: JSONArray()
+                    for (filterIndex in 0 until savedFilters.length()) {
+                        val filter = savedFilters.optJSONObject(filterIndex) ?: continue
+                        filters += PeakingFilter(
+                            filter.optDouble("fc", Double.NaN),
+                            filter.optDouble("q", Double.NaN),
+                            filter.optDouble("gain", Double.NaN)
+                        )
+                    }
+                    val id = item.optString("id", "")
+                    val name = item.optString("name", "").trim()
+                    if (id.isNotBlank() && name.isNotBlank()) {
+                        add(ManualEqPreset(id, name, ManualEq.sanitize(filters)))
+                    }
+                }
+            }
+        } catch (e: JSONException) {
+            Log.w(TAG, "Ignoring unreadable manual EQ presets", e)
+            emptyList()
+        }
+    }
+
+    private fun persistManualEqPresets(presets: List<ManualEqPreset>) {
+        val array = JSONArray()
+        for (preset in presets) {
+            val filters = JSONArray()
+            for (filter in ManualEq.sanitize(preset.filters)) {
+                filters.put(JSONObject()
+                    .put("fc", filter.fc)
+                    .put("q", filter.q)
+                    .put("gain", filter.gain))
+            }
+            array.put(JSONObject()
+                .put("id", preset.id)
+                .put("name", preset.name)
+                .put("filters", filters))
+        }
+        prefs.edit().putString(KEY_MANUAL_PRESETS, array.toString()).apply()
     }
 
     var correctionEnabled: Boolean
@@ -186,6 +269,19 @@ class ProfileStore(context: Context) {
                 filtersList.add(PeakingFilter(f.getDouble("fc"), f.getDouble("q"), f.getDouble("gain")))
             }
         }
+        val manualFiltersList = mutableListOf<PeakingFilter>()
+        obj.optJSONArray("manual_filters")?.let { a ->
+            for (i in 0 until a.length()) {
+                val f = a.optJSONObject(i) ?: continue
+                manualFiltersList.add(
+                    PeakingFilter(
+                        f.optDouble("fc", Double.NaN),
+                        f.optDouble("q", Double.NaN),
+                        f.optDouble("gain", Double.NaN)
+                    )
+                )
+            }
+        }
 
         val bandsList = mutableListOf<PlatformBand>()
         obj.optJSONArray("platform_bands")?.let { a ->
@@ -229,7 +325,7 @@ class ProfileStore(context: Context) {
             rolloffHz = obj.optDouble("rolloff_hz", 40.0),
             snrDb = optNullable(obj, "snr_db"),
             nullsUntouchedHz = nullsList,
-            preampDb = obj.optDouble("preamp_db", 0.0),
+            preampDb = obj.optDouble("room_preamp_db", obj.optDouble("preamp_db", 0.0)),
             filters = filtersList,
             platformBands = bandsList,
             curve = curveList,
@@ -237,7 +333,9 @@ class ProfileStore(context: Context) {
             measurementNotes = measurementNotes,
             outputKind = obj.optJSONObject("output")?.optString("kind", "")?.takeIf { it.isNotBlank() },
             outputName = obj.optJSONObject("output")?.let { o -> if (o.isNull("name")) null else o.optString("name") }
-                ?.takeIf { it.isNotBlank() }
+                ?.takeIf { it.isNotBlank() },
+            manualFilters = ManualEq.sanitize(manualFiltersList),
+            manualOnly = obj.optBoolean("manual_only", false)
         )
     }
 
@@ -253,6 +351,7 @@ class ProfileStore(context: Context) {
         private const val KEY_STATUS_PLAYING = "status_playing"
         private const val KEY_SESSION_PKGS = "session_packages"
         private const val KEY_RUNTIME_BANDS = "runtime_effect_bands"
+        private const val KEY_MANUAL_PRESETS = "manual_eq_presets"
         private const val KEY_DEMO_PURGED = "demo_profiles_purged"
         private val DEMO_IDS = setOf("profile-living-room", "profile-bedroom", "profile-kitchen")
     }

@@ -33,6 +33,7 @@ data class Profile(
     val rolloffHz: Double = 40.0,
     val snrDb: Double? = null,
     val nullsUntouchedHz: List<Double> = emptyList(),
+    /** Room-correction-only reserve; Formats recomputes the combined value with manual filters. */
     val preampDb: Double = 0.0,
     val filters: List<PeakingFilter> = emptyList(),
     val platformBands: List<PlatformBand> = emptyList(),
@@ -47,7 +48,11 @@ data class Profile(
      */
     val outputKind: String? = null,
     /** What that output called itself ("Sonos Beam"), for display. */
-    val outputName: String? = null
+    val outputName: String? = null,
+    /** User-authored graphic EQ trims layered on top of [curve]. */
+    val manualFilters: List<PeakingFilter> = emptyList(),
+    /** True only for a manual profile created without a room measurement. */
+    val manualOnly: Boolean = false
 ) {
     /** Correction in dB at [hz], interpolated on the measured curve; 0 outside it. */
     fun correctionAt(hz: Double): Double {

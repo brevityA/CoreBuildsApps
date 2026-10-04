@@ -11,7 +11,8 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import tv.corebuilds.eq.apply.EqService
-import tv.corebuilds.eq.dsp.Peaking
+import tv.corebuilds.eq.dsp.DspConstants
+import tv.corebuilds.eq.dsp.ManualEq
 import tv.corebuilds.eq.dsp.Targets
 import tv.corebuilds.eq.export.Formats
 import tv.corebuilds.eq.apply.OutputRoute
@@ -115,27 +116,42 @@ class ProfilesActivity : TvActivity() {
     }
 
     private fun displayProfile(profile: Profile) {
-        val pDb = if (profile.preampDb != 0.0) profile.preampDb else Peaking.preampDb(profile.filters)
+        val pDb = Formats.recommendedPreampDb(profile)
         // Which output this corrects: correction only applies there (OutputRoute).
-        val on = profile.outputKind?.let { profile.outputName ?: OutputRoute.label(it) } ?: "any output (measured before outputs were recorded)"
+        val on = profile.outputKind?.let { profile.outputName ?: OutputRoute.label(it) } ?: "any output (output not specified)"
         textPreamp.text = String.format(Locale.US, "Preamp  %.2f dB  ·  For %s", pDb, on)
 
         if (profile.curve.isNotEmpty()) {
             val freqs = DoubleArray(profile.curve.size) { profile.curve[it].hz }
-            val corr = DoubleArray(profile.curve.size) { profile.curve[it].correctionDb }
+            val corr = DoubleArray(profile.curve.size) { index ->
+                val hz = profile.curve[index].hz
+                profile.correctionAt(hz) + ManualEq.responseDb(profile.manualFilters, hz)
+            }
             val target = Targets.targetCurve(profile.target, freqs)
 
             val series = listOf(
-                Series("CORRECTION", ContextCompat.getColor(this, R.color.cb_signal_cyan), corr),
+                Series("TOTAL EQ", ContextCompat.getColor(this, R.color.cb_signal_cyan), corr),
                 Series("TARGET", ContextCompat.getColor(this, R.color.cb_dusk_violet), target)
             )
             graphProfile.setData(
                 freqs = freqs,
                 series = series,
-                title = "${profile.name.uppercase(Locale.US)} — CORRECTION vs TARGET",
+                title = "${profile.name.uppercase(Locale.US)} — EQ vs TARGET",
                 yRange = 15.0,
                 tHz = profile.transitionHz
             )
+        } else if (profile.manualOnly) {
+            val freqs = DspConstants.ISO_CENTRES_HZ.filter { it in DspConstants.F_MIN..DspConstants.F_MAX }.toDoubleArray()
+            val response = DoubleArray(freqs.size) { ManualEq.responseDb(profile.manualFilters, freqs[it]) }
+            graphProfile.setData(
+                freqs = freqs,
+                series = listOf(Series("MANUAL EQ", ContextCompat.getColor(this, R.color.cb_signal_cyan), response)),
+                title = "MANUAL EQ · NOT ROOM-MEASURED",
+                yRange = 15.0,
+                tHz = profile.transitionHz
+            )
+        } else {
+            graphProfile.setData(DoubleArray(0), emptyList(), "NO MEASUREMENT DATA")
         }
     }
 
@@ -198,7 +214,12 @@ class ProfilesActivity : TvActivity() {
             val targetTitle = item.target.replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.US) else it.toString() }
             val rt = item.rt60Seconds?.let { String.format(Locale.US, "RT60 %.2f s", it) } ?: "RT60 unknown"
             val measurementLimit = if (item.measurementNotes.isNotEmpty()) " · magnitude-only; phase unverified" else ""
-            holder.textSub.text = "$targetTitle · ${item.filters.size} filters · $rt · ${item.micType}$measurementLimit"
+            holder.textSub.text = if (item.manualOnly) {
+                "Manual EQ only · ${item.manualFilters.size} active tone bands · not measured"
+            } else {
+                val manual = if (item.manualFilters.isNotEmpty()) " · ${item.manualFilters.size} manual bands" else ""
+                "$targetTitle · ${item.filters.size} filters$manual · $rt · ${item.micType}$measurementLimit"
+            }
 
             val isActive = item.id == activeId()
             holder.textBadge.visibility = if (isActive) View.VISIBLE else View.GONE

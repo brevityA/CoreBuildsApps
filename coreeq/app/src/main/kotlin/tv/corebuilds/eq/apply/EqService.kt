@@ -159,7 +159,7 @@ class EqService : Service() {
         createChannel()
         val type = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) ServiceInfo.FOREGROUND_SERVICE_TYPE_MEDIA_PLAYBACK else 0
         try {
-            ServiceCompat.startForeground(this, NOTIFICATION_ID, notification("Starting room correction…"), type)
+            ServiceCompat.startForeground(this, NOTIFICATION_ID, notification("Starting audio correction…"), type)
         } catch (e: Exception) {
             // Android 12+ refuses foreground starts from the background, and
             // Android 15 refuses media-playback ones after a reboot.
@@ -673,7 +673,7 @@ class EqService : Service() {
     override fun onBind(intent: Intent?): IBinder? = null
 
     private fun createChannel() {
-        val channel = NotificationChannel(CHANNEL_ID, "Room correction", NotificationManager.IMPORTANCE_LOW)
+        val channel = NotificationChannel(CHANNEL_ID, "Audio correction", NotificationManager.IMPORTANCE_LOW)
             .apply { description = "Shows what Core EQ is correcting" }
         getSystemService(NotificationManager::class.java)?.createNotificationChannel(channel)
     }
@@ -721,7 +721,7 @@ class EqService : Service() {
          */
         fun enable(context: Context): String? {
             val store = ProfileStore(context)
-            if (store.getActiveProfile() == null) return "Measure this room first: there is no correction to apply yet."
+            if (store.getActiveProfile() == null) return "Measure this room or open Manual EQ to create a profile before applying correction."
             store.correctionEnabled = true
             return try {
                 ContextCompat.startForegroundService(context, Intent(context, EqService::class.java).setAction(ACTION_START))
