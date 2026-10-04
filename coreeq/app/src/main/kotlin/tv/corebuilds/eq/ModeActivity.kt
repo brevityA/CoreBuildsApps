@@ -182,7 +182,7 @@ class ModeActivity : TvActivity() {
             if (pkg !in discovered) discovered[pkg] = appLabel(pkg)
         }
         return discovered.map { (pkg, label) -> AppChoice(pkg, label) }
-            .sortedWith(compareBy(String.CASE_INSENSITIVE_ORDER) { it.label }.thenBy { it.packageName })
+            .sortedWith(compareBy<AppChoice, String>(String.CASE_INSENSITIVE_ORDER) { it.label }.thenBy { it.packageName })
     }
 
     private fun appLabel(pkg: String): String = try {
