@@ -142,7 +142,14 @@ class OneStylePerPack(unittest.TestCase):
         # this pack follows the Art style switch (2.0.1).
         pick = src.split("pickBanners = if (pickFixedByPack() &&", 1)[1].split("adapter = IconAdapter", 1)[0]
         self.assertIn("intent.getBooleanExtra(GlyphsCompanion.EXTRA_PICK_GLYPHS, false)", pick)
-        self.assertIn("false", pick.split("} else {", 1)[0])
+        # The branch value itself, not the default in getBooleanExtra(..., false).
+        self.assertRegex(pick.split("} else {", 1)[0], r"\n\s*false\s*\n")
+        # Without chips, an unmarked square pick names the switch, never a
+        # Banner chip that is not on screen.
+        hint = src.split("private fun pickHint()", 1)[1].split("\n    )\n", 1)[0]
+        self.assertIn("pickFixedByPack() -> R.string.picker_hint_square_by_style", hint)
+        self.assertLess(hint.index("picker_hint_square_by_style"),
+                        hint.index("else -> R.string.picker_hint_square"))
         self.assertIn("Prefs.pickerPrefersBanners(this)", pick.split("} else {", 1)[1])
         # With a companion the picker shows no shape chips, so no pick can
         # write the art style the whole launcher applies.

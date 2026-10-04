@@ -1115,6 +1115,8 @@ class MainActivity : TvActivity() {
             pickFixedByPack() && intent.getBooleanExtra(GlyphsCompanion.EXTRA_PICK_GLYPHS, false) ->
                 R.string.picker_hint_glyphs_only
             pickFixedByPack() && pickBanners -> R.string.picker_hint_banners_only
+            // No shape chips here, so point at the switch that sets the shape.
+            pickFixedByPack() -> R.string.picker_hint_square_by_style
             pickBanners -> R.string.picker_hint_banner
             else -> R.string.picker_hint_square
         }
