@@ -15,7 +15,7 @@ language. What was measured from their pack, over a 150-icon sample:
 
 Those are their structural rules and they are sound for a 10-foot UI. What we
 keep is the Core Builds identity: original rounded-line glyphs, one accent,
-one stroke-letter label/category/rail lockup. Vendor artwork is reference material,
+one stroke-letter label/category lockup. Vendor artwork is reference material,
 not a second icon style. Colour and provenance remain in tools/catalog.json.
 
 No pack branding appears on any banner. Their DAZN icon is just DAZN; a
@@ -52,8 +52,7 @@ W, H = 1280, 720
 PNG_W, PNG_H = 320, 180
 
 # Their measured ink box, scaled to our master: 78% x 43%.
-# Budget must also clear the rail and its gutter, or the lockup
-# overflows the 90% safe limit the validator enforces.
+# Budget keeps the lockup inside, or it overflows the 90% safe limit the validator enforces.
 INK_W = W * 0.78
 INK_H = H * 0.43          # 310
 
@@ -92,16 +91,10 @@ def glyph_ink_x(glyph):
     return x0 - HALF_STROKE, x1 + HALF_STROKE
 INK = "#E6EDF3"           # Brand Guide §03
 CARD = "#151923"          # the grid card, also the fallback back fill
-RAIL_W = 16               # brand-true rail, left edge (was a fixed
-                          # cyan->violet stripe until 1.9.2: launchers that
-                          # colour-sample the icon - Monet's navigation glow
-                          # picks its tint this way - read the rail, not the
-                          # thin glyph strokes, and bleached a cyan halo
-                          # around a red SmartTube. The rail keeps its shape
-                          # across the pack; its colour is now each icon's
-                          # own accent, top stop, sinking 55% toward the card
-                          # at the bottom so no rail ever goes full-bleed.)
-RAIL_PAD = 168            # rail inset from top/bottom, keeps ink under 72%
+# No rail since 2.0.1. Banners carried a 16px accent bar down the left edge
+# from 1.x; users read it as clutter beside the mark. The glyph and the
+# icon-coloured kicker still give colour-sampling launchers (Monet's
+# navigation glow) the icon's own hue to read.
 KICKER = 46               # category line size, in the name's em units
 KICK_CAP = 34             # its cap height: a label, a step under the name
 KICK_WEIGHT = 9           # its stroke
@@ -111,14 +104,6 @@ KICK_TRACK = .6           # letter gap as a share of the cap: tracked out so
                           # nothing applied it, so VOD/LIVE/SPORT set tight in
                           # the same bold as the name and competed with it.
 
-
-def _mix(hex_from: str, hex_to: str, t: float) -> str:
-    """Linear RGB blend of two #RRGGBB stops. tiny, self-contained: the only
-    rider it has is the rail gradient, which wants accent-at-top sinking
-    into the card, and colour liberties the sample size doesn't justify."""
-    f = tuple(int(hex_from[i:i + 2], 16) for i in (1, 3, 5))
-    b = tuple(int(hex_to[i:i + 2], 16) for i in (1, 3, 5))
-    return "#" + "".join(f"{round(x + (y - x) * t):02X}" for x, y in zip(f, b))
 
 # Banner labels are drawn in the icons' own stroke letters (2.0.0).
 #
@@ -227,8 +212,6 @@ def render(name, glyph, accent, category=None, *, monochrome=False,
     """
     Centred glyph + wordmark, with the Core Builds signature:
 
-      * a rail on the left edge, brand-true since 1.9.2: the icon's own
-        accent, dimming toward the card (concept H, hue from the brand)
       * an uppercase mono category kicker above the name (concept H)
       * the same single-accent rounded-line glyph as the square icon
 
@@ -237,7 +220,7 @@ def render(name, glyph, accent, category=None, *, monochrome=False,
 
     Concepts E/G/I were rejected: their signal lives in the card BACKGROUND,
     which we do not own — these PNGs are transparent and Projectivy draws
-    whatever colour the user picked behind them. Rail, kicker and glyph are
+    whatever colour the user picked behind them. Kicker, name and glyph are
     all drawn ink, so they survive any card colour.
     """
     accent = display_accent(accent, monochrome=monochrome)
@@ -251,8 +234,7 @@ def render(name, glyph, accent, category=None, *, monochrome=False,
     glyph_w = (ink_r - ink_l) * scale
     total = glyph_w + GAP + text_w
 
-    # Shift the lockup right so the rail never crowds the glyph.
-    ink_x = (W - total) / 2 + RAIL_W
+    ink_x = (W - total) / 2
     start_x = ink_x - ink_l * scale
 
     gy = (H - GLYPH_H) / 2
@@ -276,7 +258,7 @@ def render(name, glyph, accent, category=None, *, monochrome=False,
         # colour. It used to be one fixed cyan on every card, so a
         # colour-sampling launcher (Monet's navigation glow) could read cyan
         # off a red, violet or green banner. The already-normalised primary
-        # accent keeps glyph, rail and kicker one colour story; a duotone's
+        # accent keeps glyph and kicker one colour story; a duotone's
         # second colour stays inside the mark. The app name stays light ink.
         kick_paths, _ = stroke_label([category], KICK_CAP / .7, tx, [ky + 2], accent,
                                      weight=KICK_WEIGHT, gap=KICK_CAP * KICK_TRACK)
@@ -285,25 +267,9 @@ def render(name, glyph, accent, category=None, *, monochrome=False,
     name_paths, _ = stroke_label(lines, size, tx, baselines, INK)
     spans += name_paths
 
-    # The rail used to be the same cyan->violet stripe on 960 cards: the
-    # launcher that reads "the app's colour" (Monet's navigation glow, any
-    # Palette-swatch theme engine) met exactly one big saturated mass in our
-    # art - the rail - and answered with our cyan instead of the brand.
-    # Its stops are the icon's own accent now; when the catalog declares a
-    # two-stop gradient the rail rides the same ramp as the glyph.
-    rail_from, rail_to = (gradient if gradient else
-                          (accent, _mix(accent, CARD, 0.55)))
-    rail = (f'<defs><linearGradient id="cbRail" x1="0" y1="0" x2="0" y2="1">'
-            f'<stop offset="0%" stop-color="{rail_from}"/>'
-            f'<stop offset="100%" stop-color="{rail_to}"/>'
-            f'</linearGradient></defs>'
-            f'<rect x="70" y="{RAIL_PAD}" width="{RAIL_W}" '
-            f'height="{H - RAIL_PAD * 2}" rx="{RAIL_W / 2}" fill="url(#cbRail)"/>')
-
     return (
         f'<svg xmlns="http://www.w3.org/2000/svg" width="{W}" height="{H}" '
         f'viewBox="0 0 {W} {H}">\n'
-        f'  {rail}\n'
         f'  <g transform="translate({start_x:.0f},{gy:.0f}) '
         f'scale({scale:.5f})">{classic_fit(glyph, glyph_paint(glyph, accent, monochrome=monochrome, gradient=gradient, mark=mark, style=style, secondary=secondary))}</g>\n'
         f'  {spans}</svg>\n'

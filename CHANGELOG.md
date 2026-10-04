@@ -6,6 +6,22 @@ All notable changes to the Core Builds Icon Pack. Format follows
 
 ## [Unreleased]
 
+## [2.0.1] — 2026-10-04
+
+### Changed
+
+- **Banners drop the left-edge bar.** Every 16:9 banner carried a 16px
+  accent bar down its left edge since 1.x; on the shelf it read as clutter
+  beside the mark (r/CoreBuilds feedback). All 976 banners now show only
+  the glyph, the category in the icon's colour and the name, and the
+  lockup sits dead centre on the card instead of shifting right to clear
+  the bar. Square glyphs are unchanged.
+
+### Removed
+
+- A stale `assets/banners/gridstreamr_tv.svg` from 1.9.2 that no catalog
+  entry used; GridStreamr ships as `gridstreamr`.
+
 ## [2.0.0] — 2026-10-03
 
 ### Added

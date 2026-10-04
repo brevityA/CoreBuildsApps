@@ -394,7 +394,7 @@ class CoreStyleTests(unittest.TestCase):
     def test_catalog_rejects_a_private_wordmark_only_banner(self):
         icon = copy.deepcopy(BY_ID["nobuffr"])
         icon["banner_style"] = "glyph"
-        self.assertTrue(any("standard Outfit" in e for e in validate([icon])))
+        self.assertTrue(any("standard glyph/category/name" in e for e in validate([icon])))
 
     def test_catalog_rejects_direct_rendering_of_reference_art(self):
         refs = copy.deepcopy(CATALOG["artwork"])
@@ -419,7 +419,8 @@ class CoreStyleTests(unittest.TestCase):
                                        gradient=icon.get("gradient"),
                                        secondary=icon.get("secondary")))
             self.assertEqual(actual, expected, icon["name"])
-            self.assertIn('id="cbRail"', actual)
+            # No left-edge rail since 2.0.1.
+            self.assertNotIn('id="cbRail"', actual)
             # the name in the shared stroke letters and light ink, not vendor type
             self.assertIn('stroke="#E6EDF3"', actual)
 
@@ -763,15 +764,19 @@ class DuotoneTests(unittest.TestCase):
                     text = (ROOT / "assets" / kind / f"{icon['drawable']}.svg").read_text()
                     self.assertIn(f'stroke="{paint}"', text)
 
-    def test_banner_rail_stays_the_primary_brand_colour(self):
-        # Colour-sampling launchers (Monet) read the rail; the second colour
-        # is detail inside the mark, never the card's headline hue.
+    def test_no_banner_carries_the_retired_rail(self):
+        # The left-edge accent bar left in 2.0.1. Colour-sampling launchers
+        # (Monet) now read the glyph and the kicker, both the primary colour;
+        # the second colour stays detail inside the mark.
         yt = next(i for i in self.DUO if i["name"] == "YouTube")
         banner = render("YouTube", yt["glyph"], yt["color"], yt.get("category"),
                         secondary=yt["secondary"])
-        rail = banner.split('id="cbRail"', 1)[1].split("</linearGradient>", 1)[0]
-        self.assertIn(display_accent(yt["color"]), rail)
-        self.assertNotIn(secondary_color(yt), rail)
+        self.assertNotIn("cbRail", banner)
+        self.assertNotIn("linearGradient", banner)
+        self.assertIn(display_accent(yt["color"]), banner)
+        shipped = [p.name for p in (ROOT / "assets/banners").glob("*.svg")
+                   if "cbRail" in p.read_text()]
+        self.assertEqual(shipped, [])
 
     def test_the_contract_passes_the_declared_paint_and_rejects_others(self):
         yt = next(i for i in self.DUO if i["name"] == "YouTube")

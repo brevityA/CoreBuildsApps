@@ -55,8 +55,9 @@ def main():
                                           secondary=secondary_color(icon))
             check(not errors, f"{icon['name']}: shipped SVG violates Core monoline: {errors}")
         banner = ROOT / "assets/banners" / f"{icon['drawable']}.svg"
-        check(banner.exists() and 'id="cbRail"' in banner.read_text(),
-              f"{icon['name']}: standard Core banner rail is missing")
+        # No rail since 2.0.1: the left-edge accent bar read as clutter.
+        check(banner.exists() and 'id="cbRail"' not in banner.read_text(),
+              f"{icon['name']}: banner is missing or still carries the retired rail")
         if icon.get("ink"):
             check(icon["ink"].upper() == OFFWHITE_INK,
                   f"{icon['name']}: declared ink must be the sanctioned off-white {OFFWHITE_INK}")

@@ -6,7 +6,7 @@
 
 | Product | Path | Package ID | Version | Downloader / stable tag |
 |---|---|---|---:|---|
-| Core Builds Icon Pack | `app/` with repo-root Gradle | `tv.corebuilds.iconpack` | `2.0.0` | `5270601` / `iconpack` |
+| Core Builds Icon Pack | `app/` with repo-root Gradle | `tv.corebuilds.iconpack` | `2.0.1` | `5270601` / `iconpack` |
 | Core Line | `ticker/` + `ticker/android/` | `dev.corebuilds.line` | `1.4.4` | `7375676` / `coreline` |
 | Core Shift | `shift/` | `dev.corebuilds.shift` | `2.3.5` | `8829421` / `shift` |
 | Core Motion | `motion-plugin/` | `tv.corebuilds.motion` | `1.0.0` | `[USER TO SUPPLY]` / `motion` |
@@ -63,8 +63,9 @@ Reviewed brand entries use `style: core_monoline`: 32px rounded primary strokes,
 26.2px / 21.8px detail, no solid fills/effects/containers, and one accent —
 or, where the brand's own logo is two-tone, a catalog `secondary`
 (`color`, the glyph `parts` it paints, and a `source`; white is drawn as the
-Brand Guide off-white, the rail keeps the primary colour). Keep
-the common Outfit + icon-coloured category + rail banner for NoBuffr and every
+Brand Guide off-white, the kicker keeps the primary colour). Keep
+the common stroke-letter name + icon-coloured category banner (no rail since
+2.0.1) for NoBuffr and every
 other reviewed app. Do not reintroduce vendor-wordmark-only banners.
 
 Catalog `artwork` entries are `usage: reference-only`: pinned SVG hashes, URLs
