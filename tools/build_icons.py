@@ -131,7 +131,7 @@ def validate(icons, artwork=None):
             errors.append(f"{n}: unknown Classic style {style!r}")
         if style == CORE_MONOLINE:
             if i.get("banner_style", "standard") != "standard":
-                errors.append(f"{n}: Core monoline apps must use the standard Outfit/category/rail banner")
+                errors.append(f"{n}: Core monoline apps must use the standard glyph/category/name banner")
             if i.get("glyph") in GLYPHS and re.fullmatch(r"#[0-9A-Fa-f]{6}", i.get("color", "")):
                 accent = display_accent(i["color"],
                                        monochrome=i.get("color_note") == "monochrome")
