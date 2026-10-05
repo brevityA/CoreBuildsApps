@@ -25,9 +25,12 @@ and nothing else; `tv.corebuilds.iconpack.glyphs` is the resource-only
 companion the in-app toggle installs. The flavor, not a second module, because
 two source sets cannot both provide `res/xml/appfilter.xml`: a second module
 means a second copy of every resource, which is the drift that retired Pixel
-Neon. It is not a suite product — no `suite.json` entry, no Downloader code, no
-tag of its own; it ships in the icon pack's `v*` release as
-`corebuilds-glyphs-release.apk`.
+Neon. It is not a suite product — no `suite.json` entry and no tag of its own;
+it ships in the icon pack's `v*` release as `corebuilds-glyphs-release.apk`.
+Its Downloader code `5804177` is a convenience pointer to that asset, read out
+of the README suite stamp (and the Icon Pack install steps), not a registry
+row — it must never be repointed at another asset, exactly like a floating
+tag.
 
 `glyphs/` is the one intentional exception to "one app, one Gradle root",
 and it is not a separate product: Core Builds Glyphs Pack

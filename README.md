@@ -25,6 +25,7 @@
 > | **[Core EQ](#-core-eq)** | `v1.1.0` | Room EQ measured per TV audio output, with manual/content-mode tone controls | `7946159` | [`coreeq-v*` / `coreeq`](../../releases) |
 >
 > Each app has its own CI workflow and release tag. Do not merge Gradle roots, split the repo, or repoint floating Downloader tags.
+> The Icon Pack release also carries a glyphs-only build of the same app — square art, no banners (`tv.corebuilds.glyphs`) — Downloader `5804177`.
 <!-- suite-stamp:end -->
 
 ---
@@ -55,9 +56,18 @@ Designed for [Projectivy Launcher](https://play.google.com/store/apps/details?id
 
 > **Updates:** at launch the app checks `Latestrelease/version.json`. When a newer build exists, a **Download** button pulls the APK from GitHub and opens the system installer.
 
+#### Glyphs-only build
+
+Prefer square glyphs everywhere and no banners at all? Install **Core Builds Glyphs** — `tv.corebuilds.glyphs`, the same app (catalog, wallpapers, settings) built with the square appfilter and no Art style toggle — instead of, or beside, the pack above:
+
+- **Downloader code `5804177`**
+- permanent URL: **https://github.com/brevityA/CoreBuildsApps/releases/download/iconpack/corebuilds-glyphs-release.apk**
+
+It ships in the pack's `v*` release at the pack's version, so its catalog can't lag the banner build, and it keeps its own package ID and FileProvider authority so it installs alongside the pack — a launcher applies whichever one you point it at. One gap: it ships no update feed of its own yet, and **Settings → Updates** names that rather than offering the banner APK it couldn't install over itself.
+
 ### What's covered
 
-976 icons across streaming, media centres, debrid services, players, launchers, tools, stores, live TV, music, sport, gaming, VPN, browsers, files, and more — including [NoBuffr](https://downloads.nobuffr.com/android/nobuffr.apk), Stremio, Kodi, Jellyfin, Plex, Syncler, Real-Debrid, TorBox, VLC, SmartTube, Spotify, TiviMate, Downloader, plus Netflix, Disney+, Stan, Kayo, ABC iview and 900+ more.
+981 icons across streaming, media centres, debrid services, players, launchers, tools, stores, live TV, music, sport, gaming, VPN, browsers, files, and more — including [NoBuffr](https://downloads.nobuffr.com/android/nobuffr.apk), Stremio, Kodi, Jellyfin, Plex, Syncler, Real-Debrid, TorBox, VLC, SmartTube, Spotify, TiviMate, Downloader, plus Netflix, Disney+, Stan, Kayo, ABC iview and 900+ more.
 
 Full table with every mapped component: [**docs/IconPackList.md**](docs/IconPackList.md)
 
@@ -72,13 +82,15 @@ All twelve Series 9 walls and all six Series 10 walls are also **live wallpapers
 | Series | Walls | Theme |
 |---|---|---|
 | 1 · Fieldwork | 01–24 | Mesh gradients, aurora, light trails, topo |
-| 2 · Motion | 25–32 | Long-exposure kinetics: orbitals, warp, spiral |
-| 3 · Horizons | 33–40 | One horizon, eight meanings |
-| 6 · Circuit Core | 12 | Lit-circuit fields on near-black |
-| 7 · Retrowave | 12 | Gradient suns, perspective grids, chrome |
-| 8 · AMOLED | 12 | Exact-black minimalism |
+| 2 · Motion | 25–32, 51–54 | Long-exposure kinetics: orbitals, warp, spiral |
+| 3 · Horizons | 33–40, 55–58 | One horizon, eight meanings |
+| 6 · Circuit Core | 41–50, 79–80 | Lit-circuit fields on near-black |
+| 7 · Retrowave | 59–68, 81–82 | Gradient suns, perspective grids, chrome |
+| 8 · AMOLED | 69–78, 83–84 | Exact-black minimalism |
 | 9 · Deep Space | 85–96 | Event horizon, nebulae, ringed planet, comets, novae |
 | 10 · Cinema | 97–102 | Neon cinema nights: marquee, velvet curtain, projector beam, lounge, late rentals, box office |
+
+Series numbers are historical — 4 and 5 both retired with earlier packs. The [series map](Wallpapers/README.md) has the full numbering.
 
 <div align="center"><img src="docs/deep-space-wallpapers.png" alt="Deep Space series" width="760"></div>
 
@@ -86,7 +98,7 @@ Series 9's twelve walls have twelve moving companions — the same scene, animat
 
 ### 16:9 banners
 
-Every icon ships a **320×180 transparent banner** for Projectivy's wide-card layout — monoline glyph, icon-coloured category, stroke-letter name, nothing else on the card. Banners are what the pack applies by default; the in-app Art style toggle switches to square glyphs by pointing launchers at the small Core Builds Glyphs Pack companion instead, and `tv.corebuilds.glyphs` ships the same app with square glyphs baked in for a launcher that should never apply banners. Generated from `tools/build_banners.py`.
+Every icon ships a **320×180 transparent banner** for Projectivy's wide-card layout — monoline glyph, icon-coloured category, stroke-letter name, nothing else on the card. Banners are what the pack applies by default; the in-app Art style toggle switches to square glyphs by pointing launchers at the small Core Builds Glyphs Pack companion instead, and `tv.corebuilds.glyphs` ships the same app with square glyphs baked in for a launcher that should never apply banners (Downloader `5804177`, [permanent URL](https://github.com/brevityA/CoreBuildsApps/releases/download/iconpack/corebuilds-glyphs-release.apk)). Generated from `tools/build_banners.py`.
 
 <div align="center"><img src="docs/banner-preview.png" alt="Banner styles" width="760"></div>
 
@@ -150,6 +162,7 @@ Everything generates from one file — `tools/catalog.json`. Never hand-edit XML
 pip install -r tools/requirements.txt
 python tools/build_icons.py      # SVGs, PNGs, appfilter, docs, preview
 python tools/build_banners.py    # 16:9 monoline banners
+python tools/build_banners_pack.py  # banner appfilter + glyph companion XML
 python tools/build_branding.py   # launcher icon + TV banner
 python tools/validate.py         # 26,000+ coherence checks
 ```

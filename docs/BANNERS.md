@@ -49,15 +49,16 @@ drawable, so auto-assign gives a 16:9 card straight away. Projectivy cards are
 — a banner is what a card actually wants. (1.9.2–1.9.4 defaulted to square
 glyphs; 1.9.5 put banners back.)
 
-The square set still ships, in **Core Builds Glyphs**
+The square set still ships, in **Core Builds Glyphs Pack**
 (`tv.corebuilds.iconpack.glyphs`, built from `glyphs/`): a resource-only
 companion whose appfilter maps the same components to the square glyphs. A
 launcher reads the appfilter of the package it applies, so the in-app
 **Art style** switch (Banners on by default) works by pointing the launcher at
-one package or the other, installing Core Builds Glyphs from the matching
+one package or the other, installing Core Builds Glyphs Pack from the matching
 release the first time Glyphs is picked. Each pack's `drawable.xml` lists its
 own style only, and the icon picker answers in the style of the pack the
-launcher opened.
+launcher opened. The same app also ships glyphs-only, as the `glyphs` flavor
+`tv.corebuilds.glyphs` — square appfilter, no toggle, Downloader `5804177`.
 
 Every icon gets a banner, unconditionally. The old `"banner": true` flag is
 gone: partial generation would have left `appfilter` pointing at drawables

@@ -2,8 +2,8 @@
 
 The icon pack's square twin: the same icons, mapped to the same components,
 with no banners. Package `tv.corebuilds.iconpack.glyphs`, label *Core Builds
-Glyphs*. It is not a sixth product and not in `suite.json` — it is part of the
-Icon Pack release and has no version of its own.
+Glyphs Pack*. It is not a sixth product and not in `suite.json` — it is part of
+the Icon Pack release and has no version of its own.
 
 ## Why a second package exists
 
@@ -18,8 +18,10 @@ telling the launcher to apply one package or the other.
 There is a third package to keep straight. `tv.corebuilds.glyphs` is the
 `:app` module's `glyphs` flavor: the whole icon pack — catalog, wallpapers,
 settings — built with the square appfilter, for a user who wants glyphs as
-their only pack and no toggle. This module stays the resource-only one the
-toggle installs, and its generated `appfilter.xml` / `drawable.xml` are written
+their only pack and no toggle. It installs standalone with Downloader
+`5804177` (`corebuilds-glyphs-release.apk` in the same `v*` release). This
+module stays the resource-only one the toggle installs, and its generated
+`appfilter.xml` / `drawable.xml` are written
 into `app/src/glyphs/` at the same time by the same generator, byte-identical
 (`tools/build_banners_pack.py --check` fails if they ever part). That is also
 why this pack is labelled Core Builds Glyphs **Pack**: both appear in a
