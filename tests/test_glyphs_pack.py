@@ -32,11 +32,25 @@ KT = ROOT / "app/src/main/java/tv/corebuilds/iconpack"
 COMPANION_KT = KT / "GlyphsCompanion.kt"
 ACTIVITY_JAVA = (ROOT / "glyphs/src/main/java/tv/corebuilds/iconpack/glyphs/"
                  "GlyphsActivity.java")
+HOME_ACTIVITY_JAVA = (ROOT / "glyphs/src/main/java/tv/corebuilds/iconpack/glyphs/"
+                      "GlyphsHomeActivity.java")
 BUILD_YML = ROOT / ".github/workflows/build.yml"
 
 
 def read(path: Path) -> str:
     return path.read_text(encoding="utf-8")
+
+
+def launcher_categories(manifest: Path) -> list[frozenset[str]]:
+    """Category set of every MAIN filter, in document order."""
+    out: list[frozenset[str]] = []
+    for activity in ET.parse(manifest).getroot().iter("activity"):
+        for f in activity.findall("intent-filter"):
+            actions = [a.get(f"{ANDROID}name") for a in f.findall("action")]
+            if "android.intent.action.MAIN" in actions:
+                out.append(frozenset(c.get(f"{ANDROID}name")
+                                     for c in f.findall("category")))
+    return out
 
 
 def mapping(module: str) -> list[tuple[str, str]]:
@@ -188,12 +202,83 @@ class Manifest(unittest.TestCase):
     def test_discovered_by_the_same_launchers(self):
         self.assertEqual(pack_filters(PACK_MANIFEST), pack_filters(APP_MANIFEST))
 
-    def test_no_launcher_entry(self):
-        # One app for the user: the companion must not appear in the drawer.
-        text = read(PACK_MANIFEST)
-        self.assertNotIn("android.intent.category.LAUNCHER", text)
-        self.assertNotIn("android.intent.category.LEANBACK_LAUNCHER", text)
-        self.assertNotIn("android.intent.action.MAIN", text)
+    def test_launcher_entry_is_solo_on_the_home_activity(self):
+        # Reversed 2026-10-04, and the reversal is the point of these three
+        # tests. This manifest used to assert no MAIN and no LAUNCHER at all
+        # ("one app for the user"), which meant a package a user could install
+        # - or that the Art style toggle installed for them - could never be
+        # opened, and nothing in it said what it was or where the toggle
+        # lived. It now has a front door: exactly one MAIN filter, on the
+        # activity that shows the pack's own screen.
+        #
+        # Not on .GlyphsActivity. That window has to stay translucent because
+        # it forwards every pick to the icon pack, and an opaque one would
+        # flash on each forward.
+        root = ET.parse(PACK_MANIFEST).getroot()
+        with_main = [a.get(f"{ANDROID}name") for a in root.iter("activity")
+                     if any(act.get(f"{ANDROID}name") == "android.intent.action.MAIN"
+                            for f in a.findall("intent-filter")
+                            for act in f.findall("action"))]
+        self.assertEqual(with_main, [".GlyphsHomeActivity"])
+
+    def test_it_lands_in_a_drawer_and_on_the_tv_row(self):
+        # The pack is used mostly on Android TV, so LAUNCHER alone would put it
+        # on a phone and leave it off the shelf. Both packages declare the
+        # same launcher categories on one filter.
+        self.assertEqual(launcher_categories(PACK_MANIFEST),
+                         launcher_categories(APP_MANIFEST))
+        self.assertEqual(launcher_categories(PACK_MANIFEST),
+                         [frozenset({"android.intent.category.LAUNCHER",
+                                     "android.intent.category.LEANBACK_LAUNCHER"})])
+
+    def test_the_tv_row_is_declared_and_the_door_is_exported(self):
+        # android.software.leanback is what puts the entry on the TV row, and
+        # lint reads declaring it as a promise of a LEANBACK_LAUNCHER activity
+        # - which the test above holds. required=false: a sideloaded install
+        # does not filter on features, and the pack is useful on a phone
+        # launcher too. exported is not optional on targetSdk 34.
+        root = ET.parse(PACK_MANIFEST).getroot()
+        home = next(a for a in root.iter("activity")
+                    if a.get(f"{ANDROID}name") == ".GlyphsHomeActivity")
+        self.assertEqual(home.get(f"{ANDROID}exported"), "true")
+        leanback = [f for f in root.iter("uses-feature")
+                    if f.get(f"{ANDROID}name") == "android.software.leanback"]
+        self.assertEqual(len(leanback), 1)
+        self.assertEqual(leanback[0].get(f"{ANDROID}required"), "false")
+
+    def test_the_discovery_filters_stay_on_the_translucent_carrier(self):
+        # A launcher finds the pack through .GlyphsActivity, so the front door
+        # must not become a second discovery surface, and the carrier must not
+        # pick up an opaque theme.
+        root = ET.parse(PACK_MANIFEST).getroot()
+        for activity in root.iter("activity"):
+            name = activity.get(f"{ANDROID}name")
+            filters = activity.findall("intent-filter")
+            if name == ".GlyphsHomeActivity":
+                self.assertEqual(len(filters), 1)
+                continue
+            self.assertEqual(name, ".GlyphsActivity")
+            self.assertEqual(activity.get(f"{ANDROID}theme"),
+                             "@android:style/Theme.Translucent.NoTitleBar")
+            self.assertGreater(len(filters), 10)
+
+    def test_the_screen_reads_its_counts_from_the_generated_pack(self):
+        # The home screen quotes how much the pack covers. Reading the shipped
+        # generated XML is what keeps that honest when the catalog grows; a
+        # hard-coded number would go stale the first time build_icons.py ran.
+        home = read(HOME_ACTIVITY_JAVA)
+        self.assertIn('countItems(R.xml.drawable, "drawable")', home)
+        self.assertIn('countItems(R.xml.appfilter, "component")', home)
+        # A count it cannot read is hidden, never guessed.
+        self.assertIn("counts.setVisibility(View.GONE)", home)
+
+    def test_the_front_door_adds_no_dependency(self):
+        # The companion stays a resource pack with a door on it: framework
+        # widgets and a framework theme. The day a UI needs appcompat is the
+        # day this module stops being cheap to build and impossible to drift.
+        gradle = read(PACK_GRADLE)
+        self.assertNotIn("implementation(", gradle)
+        self.assertNotIn("api(", gradle)
 
     def test_each_side_can_see_the_other(self):
         self.assertIn('<package android:name="tv.corebuilds.iconpack" />',

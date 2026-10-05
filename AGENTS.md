@@ -25,11 +25,17 @@ versioned from `app/build.gradle.kts`. Banners are the icon pack's default
 (again, since 1.9.5): its appfilter maps every app to the 16:9 banner. A
 launcher auto-applies whatever the selected package's appfilter maps, so the
 in-app Banners/Glyphs toggle works by pointing launchers at one package or the
-other (`GlyphsCompanion.kt`). The companion has no Kotlin, no dependencies, no
-launcher entry and no committed art: `python tools/build_icons.py` writes its
-square appfilter and browser, `python tools/build_banners_pack.py` derives the
-icon pack's banner XML from them (run it after `build_icons.py` and
-`build_banners.py`), and its Gradle build copies the glyph WebP from `app/`.
+other (`GlyphsCompanion.kt`). The companion has no Kotlin, no dependencies and
+no committed art: `python tools/build_icons.py` writes its square appfilter and
+browser, `python tools/build_banners_pack.py` derives the icon pack's banner XML
+from them (run it after `build_icons.py` and `build_banners.py`), and its Gradle
+build copies the glyph WebP from `app/`. Its two Java activities split by window:
+`.GlyphsActivity` is the translucent carrier for the launcher discovery filters
+and forwards icon picks to the icon pack, and `.GlyphsHomeActivity` is the
+drawer / TV-row entry, so an installed companion can actually be opened and says
+what it covers. That entry is deliberate but bounded — one framework-widget
+screen, no dependencies, and the discovery filters stay on the carrier;
+`tests/test_glyphs_pack.py` pins all three. It is still not a second icon pack.
 `tests/test_glyphs_pack.py` holds the package name, manifest filters, asset
 filename and release workflow together. (1.9.4 shipped the opposite split, a
 Banners companion `tv.corebuilds.iconpack.banners`; it is retired - do not

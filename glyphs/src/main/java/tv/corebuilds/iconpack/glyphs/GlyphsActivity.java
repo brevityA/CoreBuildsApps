@@ -5,7 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 
 /**
- * The companion's only code, and it has no UI of its own.
+ * The discovery carrier: translucent, no UI of its own.
  *
  * Launchers find an icon pack by the intent filters on one of its activities,
  * so this activity exists to carry them. What a launcher does with it:
@@ -22,8 +22,11 @@ import android.os.Bundle;
  *       directly. The forward is marked {@link #EXTRA_PICK_GLYPHS}, so the
  *       picker answers with glyphs only - asked through this pack, the
  *       launcher gets this pack's art.</li>
- *   <li>Opens the pack from its list. There is nothing to show here, so the
- *       icon pack opens instead - it is where the toggle lives.</li>
+ *   <li>Opens the pack from its list. That is {@link GlyphsHomeActivity}'s
+ *       job now, so a non-pick open shows this package's own screen instead of
+ *       bouncing to the icon pack. This activity hands over rather than
+ *       showing it itself because its window has to stay translucent: an
+ *       opaque one would flash on every forwarded pick.</li>
  * </ul>
  */
 public class GlyphsActivity extends Activity {
@@ -46,10 +49,10 @@ public class GlyphsActivity extends Activity {
                 forward.putExtra(EXTRA_PICK_GLYPHS, true);
                 startActivity(forward);
             } else {
-                Intent open = getPackageManager().getLaunchIntentForPackage(ICON_PACK);
-                if (open != null) {
-                    startActivity(open);
-                }
+                // Not a pick: a launcher or the user opened the pack. Hand to
+                // this package's own screen, which is what says what the pack
+                // covers and where the Art style toggle lives.
+                startActivity(new Intent(this, GlyphsHomeActivity.class));
             }
         } catch (RuntimeException e) {
             // The icon pack is missing or refused the hand-off. Answer the

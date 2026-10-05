@@ -24,16 +24,22 @@ Committed, and all of it hand-written:
 
 | Path | What it is |
 |---|---|
-| `src/main/AndroidManifest.xml` | The launcher discovery intent filters, the same set the icon pack declares, plus `queries` for the icon-pick forward. No launcher entry and no `android.software.leanback`: this is a resource pack, not a TV app. |
-| `src/main/java/…/GlyphsActivity.java` | Exists only so launchers can discover the pack through an activity intent filter. Forwards icon-pick requests to the icon pack. |
+| `src/main/AndroidManifest.xml` | The launcher discovery intent filters — the same set the icon pack declares, so any launcher that lists one lists the other — plus `queries` for the icon-pick forward, and one `MAIN` filter (`LAUNCHER` + `LEANBACK_LAUNCHER`) on the home activity. |
+| `src/main/java/…/GlyphsActivity.java` | Translucent, no UI. Exists so launchers can discover the pack through an activity intent filter, and forwards icon-pick requests to the icon pack. It has to stay translucent: an opaque window would flash on every forward. |
+| `src/main/java/…/GlyphsHomeActivity.java` | The drawer / Android TV row entry. What the pack is, how many icons and components it covers, and the way through to the icon pack where the toggle lives. |
+| `src/main/res/layout/`, `res/drawable/`, `res/color/`, `res/values/` (not the generated `strings.xml`) | That one screen: a stack of framework widgets, and a state selector for the TV focus ring. |
 | `src/main/res/xml/appfilter.xml`, `src/main/res/xml/drawable.xml` | **Generated** — see below. |
 | `src/main/assets/appfilter.xml`, `src/main/assets/drawable.xml` | **Generated** copies for launchers that read `assets/` instead of `res/xml/`. |
-| `src/main/res/values/strings.xml` | **Generated** — the `app_name` launchers list. |
+| `src/main/res/values/strings.xml` | **Generated** — the `app_name` launchers list. UI strings live in `strings_home.xml`; never add one here. |
 | `build.gradle.kts` | `copyGlyphArt` + the Android config. |
 
 Deliberately absent:
 
-- **No Kotlin and no library dependencies.**
+- **No Kotlin and no library dependencies.** Both activities are Java against
+  the framework, and `tests/test_glyphs_pack.py` fails the day an
+  `implementation(` appears in `build.gradle.kts` — the front door was added
+  without giving up the property that makes this module cheap to build and
+  impossible to drift.
 - **No art in git.** The glyphs and fallback furniture are copied from
   `app/src/main/res/drawable-nodpi` at build time by `copyGlyphArt`, so each
   art file exists exactly once and the two packages cannot drift. That copy

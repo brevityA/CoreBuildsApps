@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  The companion's one screen. Framework widgets only: this module ships no
+  library dependencies, so the layout is a plain stack in a ScrollView and the
+  focus ring is a state selector (see drawable/glyphs_button_bg.xml).
+
+  TV-first: 48dp side padding keeps the text inside the overscan safe area,
+  the button is the only focusable view and takes focus on entry, and the
+  ScrollView means the screen survives a 720p panel without clipping.
+-->
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/glyphs_night"
+    android:fillViewport="true">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingStart="@dimen/glyphs_home_pad_h"
+        android:paddingTop="@dimen/glyphs_home_pad_v"
+        android:paddingEnd="@dimen/glyphs_home_pad_h"
+        android:paddingBottom="@dimen/glyphs_home_pad_v">
+
+        <TextView
+            android:id="@+id/home_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/glyphs_home_title"
+            android:textColor="@color/glyphs_ink"
+            android:textSize="@dimen/glyphs_home_title"
+            android:textStyle="bold" />
+
+        <!-- Icon and component counts, read from this package's own generated
+             drawable.xml and appfilter.xml. Hidden if they cannot be read. -->
+        <TextView
+            android:id="@+id/home_counts"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/glyphs_home_gap"
+            android:textColor="@color/glyphs_cyan"
+            android:textSize="@dimen/glyphs_home_counts" />
+
+        <TextView
+            android:id="@+id/home_body"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/glyphs_home_gap"
+            android:lineSpacingExtra="@dimen/glyphs_home_leading"
+            android:text="@string/glyphs_home_body"
+            android:textColor="@color/glyphs_slate"
+            android:textSize="@dimen/glyphs_home_body" />
+
+        <Button
+            android:id="@+id/open_icon_pack"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/glyphs_home_button_gap"
+            android:background="@drawable/glyphs_button_bg"
+            android:focusable="true"
+            android:minWidth="@dimen/glyphs_home_button_w"
+            android:minHeight="@dimen/glyphs_home_button_h"
+            android:paddingStart="@dimen/glyphs_home_button_pad"
+            android:paddingEnd="@dimen/glyphs_home_button_pad"
+            android:text="@string/glyphs_home_open"
+            android:textAllCaps="false"
+            android:textColor="@color/glyphs_button_text"
+            android:textSize="@dimen/glyphs_home_button_text">
+
+            <!-- Sole focusable view: focus lands here on entry, on a phone as
+                 well as on a TV remote. -->
+            <requestFocus />
+        </Button>
+
+        <TextView
+            android:id="@+id/home_hint"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/glyphs_home_gap"
+            android:lineSpacingExtra="@dimen/glyphs_home_leading"
+            android:text="@string/glyphs_home_hint"
+            android:textColor="@color/glyphs_slate"
+            android:textSize="@dimen/glyphs_home_hint" />
+    </LinearLayout>
+</ScrollView>

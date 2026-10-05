@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Brand Guide v1.0 §03 palette — the same values the icon pack's colors.xml
+  carries. Prefixed glyphs_ because this module has no shared resources to
+  import them from and must not depend on :app to compile.
+-->
+<resources>
+    <color name="glyphs_night">#0D1117</color>
+    <color name="glyphs_ink">#E6EDF3</color>
+    <color name="glyphs_slate">#8B949E</color>
+    <color name="glyphs_cyan">#00D4FF</color>
+    <color name="glyphs_cta_ink">#04202B</color>
+    <color name="glyphs_hairline">#0FFFFFFF</color>
+</resources>
