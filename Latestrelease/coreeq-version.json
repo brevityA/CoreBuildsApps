@@ -1,9 +1,19 @@
 {
-  "versionCode": 2,
-  "versionName": "1.0.0",
-  "releaseDate": "2026-09-29",
+  "versionCode": 4,
+  "versionName": "1.1.1",
+  "releaseDate": "2026-10-05",
   "apkUrl": "https://github.com/brevityA/CoreBuildsApps/releases/download/coreeq/coreeq-release.apk",
-  "apkSha256": "66718f558b486f0b5e8da33832a286c81ab8abd3702b2a41ead61b6adf6f215d",
-  "releaseNotesUrl": "https://github.com/brevityA/CoreBuildsApps/releases/tag/coreeq-v1.0.0",
-  "minSdk": 26
+  "apkSha256": "f584461520658a4a5b7a36e39b497645d19a428d96e083347532466b1a15a96f",
+  "releaseNotesUrl": "https://github.com/brevityA/CoreBuildsApps/releases/tag/coreeq-v1.1.1",
+  "minSdk": 30,
+  "highlights": [
+    "Core EQ updates itself from the same release feed the other Core apps use.",
+    "A real manual equaliser is available on TV, alongside room correction.",
+    "Movie / TV, Everyday and Gaming modes layer over the room base.",
+    "The Home indicator distinguishes playback from verified coverage.",
+    "Optional DUMP discovery can expose additional player sessions.",
+    "DynamicsProcessing is now an apply path on API 28+.",
+    "A REW measurement can be imported instead of a sweep.",
+    "Android 11 (API 30) is now the minimum; Core EQ builds and targets Android 17 (API 37)."
+  ]
 }
