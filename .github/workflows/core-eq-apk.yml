@@ -260,7 +260,7 @@ jobs:
     name: Install on Android API ${{ matrix.api-level }}
     needs: apk
     runs-on: ubuntu-latest
-    timeout-minutes: 35
+    timeout-minutes: 50
     strategy:
       fail-fast: false
       matrix:
@@ -271,8 +271,13 @@ jobs:
           # to be the full id (37.0). Its packages are on the canary channel.
           - api-level: '30'
             channel: stable
+          # The 37.0 preview image boots far slower than a stable one under
+          # swiftshader; give it the machine's cores and more RAM, and the boot
+          # wait below the time it needs rather than the 600 s default.
           - api-level: '37.0'
             channel: canary
+            cores: 4
+            ram-size: 4096M
     steps:
       - uses: actions/checkout@v7
 
@@ -304,6 +309,9 @@ jobs:
           target: google_apis
           arch: x86_64
           channel: ${{ matrix.channel }}
+          cores: ${{ matrix.cores || 2 }}
+          ram-size: ${{ matrix.ram-size || '2048M' }}
+          emulator-boot-timeout: 1800
           disable-animations: true
           emulator-options: -no-window -gpu swiftshader_indirect -no-snapshot -noaudio -no-boot-anim
           # One line on purpose: the action runs each line of `script:` as its

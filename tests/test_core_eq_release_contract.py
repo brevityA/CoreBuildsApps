@@ -29,6 +29,9 @@ class CoreEqReleaseContract(unittest.TestCase):
         for level in ("'30'", "'37.0'"):
             self.assertIn(f"api-level: {level}", self.workflow)
         self.assertIn("channel: canary", self.workflow)
+        # The 37.0 preview image boots far slower than a stable one; the 600 s
+        # default timed out on it once already.
+        self.assertIn("emulator-boot-timeout: 1800", self.workflow)
         # The emulator runner executes each line of its `script:` input as a
         # separate `sh -c`, so the check has to be one call to one file; a
         # multi-line script loses its variables between lines (that is how the
