@@ -13693,72 +13693,97 @@
     {
       "name": "HeatVod",
       "drawable": "heatvod",
-      "color": "#0042DF",
-      "glyph": "heatvod_wm",
+      "color": "#2F7BFF",
+      "glyph": "heatvod_drop",
       "components": [
         "com.google.heatvod/com.chuangkevideo.SplashActivity"
       ],
       "category": "VOD",
       "mapping_source": "issue #243 (device-reported on V6-Plus, Android 14, pack 2.0.1, heat-vod-v6.9.6.apk): com.chuangkevideo.SplashActivity is the launch activity of com.google.heatvod",
-      "color_source": "sampled from the HeatVod splash screen's own blue field (a user's photo of the splash, r/vSeeBox_Support_Gurus, JPEG, reference only): #0042DF, lifted for the night card by display_accent (2026-10-05); its launcher tile is the same blue",
+      "color_source": "its tile's blue: light blue over the deep blue of its own splash screen #0042DF (a user's photo of the splash, r/vSeeBox_Support_Gurus; tile sampled from the vSeeBox launcher's Recommend row as photographed by its users (r/vSeeBox 'Confused about apps' and 'What Are Heat Apps?' home-screen screenshots, JPEG, reference only), so approximate) (2026-10-05)",
       "color_reviewed": "2026-10-05",
-      "glyph_source": "wordmark-derived mark from the app's launcher tile on the vSeeBox home screen (r/vSeeBox home-screen screenshots and the examples attached to issue #243, reference only): Heat over Vod in the case of its splash logotype (HEAT/VOD in capitals, as the tile sets it, falls under the 96px band beside the play), with the play its logotype hides in the o of Vod kept as the corner play cue, set in the pack's own single-stroke letters, not the vendor letterforms (2026-10-05)"
+      "glyph_source": "brand-informed redraw in the HeatLive construction (vSeeBox home-screen tiles and the examples attached to issue #243, reference only): the family's Core stroke teardrop, point up, with a solid play standing on its floor where HeatLive has the flame - on demand, the play its logotype hides in the o of Vod, drawn on the pack grid, not traced (2026-10-05)",
+      "gradient": [
+        "#2F7BFF",
+        "#0042DF"
+      ],
+      "gradient_source": "its tile, top to bottom: #2F7BFF to #0042DF (2026-10-05)"
     },
     {
       "name": "HeatVod Ultra",
       "drawable": "heatvod_ultra",
-      "color": "#DE4F7A",
-      "glyph": "heatvod_ultra_wm",
+      "color": "#FF5A7E",
+      "glyph": "heatvod_ultra_drop",
       "components": [
         "com.google.heatvodultra/com.google.chuangke.page.SplashActivity"
       ],
       "category": "VOD",
       "mapping_source": "issue #245 (device-reported on V6-Plus, Android 14, pack 2.0.1, heat-vod-ultra-v3.8.2.apk): com.google.chuangke.page.SplashActivity is the launch activity of com.google.heatvodultra",
-      "color_source": "the pink-magenta of its VOD Ultra tile, sampled from the vSeeBox launcher's Recommend row as photographed by its users (r/vSeeBox 'Confused about apps' and 'What Are Heat Apps?' home-screen screenshots, JPEG, reference only), so the value is approximate (2026-10-05)",
+      "color_source": "the pink-to-magenta of its VOD Ultra tile, sampled from the vSeeBox launcher's Recommend row as photographed by its users (r/vSeeBox 'Confused about apps' and 'What Are Heat Apps?' home-screen screenshots, JPEG, reference only), so approximate (2026-10-05)",
       "color_reviewed": "2026-10-05",
-      "glyph_source": "wordmark-derived mark from the app's launcher tile on the vSeeBox home screen (r/vSeeBox home-screen screenshots and the examples attached to issue #243, reference only): VOD over Ultra, the tile's own lockup, with the play cone it carries as the corner play cue, set in the pack's own single-stroke letters, not the vendor letterforms (2026-10-05)"
+      "glyph_source": "brand-informed redraw in the HeatLive construction (vSeeBox home-screen tiles and the examples attached to issue #243, reference only): the family's Core stroke teardrop, point up, with HeatVod's solid play on its floor and the play-cone its VOD Ultra tile carries at the top-right corner, where the pack's wordmark cues sit, drawn on the pack grid, not traced (2026-10-05)",
+      "gradient": [
+        "#FF5A7E",
+        "#D7267A"
+      ],
+      "gradient_source": "its tile, top to bottom: #FF5A7E to #D7267A (2026-10-05)"
     },
     {
       "name": "Live Ultra",
       "drawable": "live_ultra",
-      "color": "#8127CE",
-      "glyph": "live_ultra_wm",
+      "color": "#A24BFF",
+      "glyph": "live_ultra_drop",
       "components": [
         "com.google.liveultra/com.google.chuangke.page.SplashActivity"
       ],
       "category": "LIVE",
       "mapping_source": "issue #247 (device-reported on V6-Plus, Android 14, pack 2.0.1, LiveUltra-v580.apk): com.google.chuangke.page.SplashActivity is the launch activity of com.google.liveultra",
-      "color_source": "the purple of its LIVE Ultra tile, sampled from the vSeeBox launcher's Recommend row as photographed by its users (r/vSeeBox 'Confused about apps' and 'What Are Heat Apps?' home-screen screenshots, JPEG, reference only), so the value is approximate (2026-10-05)",
+      "color_source": "the purple-to-violet of its LIVE Ultra tile, sampled from the vSeeBox launcher's Recommend row as photographed by its users (r/vSeeBox 'Confused about apps' and 'What Are Heat Apps?' home-screen screenshots, JPEG, reference only), so approximate (2026-10-05)",
       "color_reviewed": "2026-10-05",
-      "glyph_source": "wordmark-derived mark from the app's launcher tile on the vSeeBox home screen (r/vSeeBox home-screen screenshots and the examples attached to issue #243, reference only): LIVE over Ultra, the tile's own lockup, with the play cone it carries as the corner play cue, set in the pack's own single-stroke letters, not the vendor letterforms (2026-10-05)"
+      "glyph_source": "brand-informed redraw in the HeatLive construction (vSeeBox home-screen tiles and the examples attached to issue #243, reference only): the family's Core stroke teardrop, point up, with HeatLive's solid flame on its floor - live TV and the play-cone its LIVE Ultra tile carries at the top-right corner, drawn on the pack grid, not traced (2026-10-05)",
+      "gradient": [
+        "#A24BFF",
+        "#6A1FD6"
+      ],
+      "gradient_source": "its tile, top to bottom: #A24BFF to #6A1FD6 (2026-10-05)"
     },
     {
       "name": "Live Ultra+",
       "drawable": "live_ultra_plus",
-      "color": "#F0A93A",
-      "glyph": "live_ultra_plus_wm",
+      "color": "#FFB83D",
+      "glyph": "live_ultra_plus_drop",
       "components": [
         "com.google.liveultraplus/com.google.chuangke.page.SplashActivity"
       ],
       "category": "LIVE",
       "mapping_source": "issue #248 (device-reported on V6-Plus, Android 14, pack 2.0.1, LiveUltraPlus-v580.apk): com.google.chuangke.page.SplashActivity is the launch activity of com.google.liveultraplus",
-      "color_source": "the amber of its LIVE+ Ultra tile (the one warm tile in the family, which is what tells it from Live Ultra on the shelf), sampled from the vSeeBox launcher's Recommend row as photographed by its users (r/vSeeBox 'Confused about apps' and 'What Are Heat Apps?' home-screen screenshots, JPEG, reference only), so the value is approximate (2026-10-05)",
+      "color_source": "the amber-to-orange of its LIVE+ Ultra tile (the family's one warm tile, which is what tells it from Live Ultra on the shelf), sampled from the vSeeBox launcher's Recommend row as photographed by its users (r/vSeeBox 'Confused about apps' and 'What Are Heat Apps?' home-screen screenshots, JPEG, reference only), so approximate (2026-10-05)",
       "color_reviewed": "2026-10-05",
-      "glyph_source": "wordmark-derived mark from the app's launcher tile on the vSeeBox home screen (r/vSeeBox home-screen screenshots and the examples attached to issue #243, reference only): LIVE over Ultra with the plus that follows LIVE on the tile as the corner plus cue, set in the pack's own single-stroke letters, not the vendor letterforms (2026-10-05)"
+      "glyph_source": "brand-informed redraw in the HeatLive construction (vSeeBox home-screen tiles and the examples attached to issue #243, reference only): the family's Core stroke teardrop, point up, with HeatLive's solid flame on its floor and the plus of its LIVE+ tile at the top-right corner, drawn on the pack grid, not traced (2026-10-05)",
+      "gradient": [
+        "#FFB83D",
+        "#F07A1E"
+      ],
+      "gradient_source": "its tile, top to bottom: #FFB83D to #F07A1E (2026-10-05)"
     },
     {
       "name": "HeatLive Backup",
       "drawable": "heatlive_backup",
-      "color": "#9B2AA1",
-      "glyph": "heatlive_backup_wm",
+      "color": "#C83CC8",
+      "glyph": "heatlive_backup_drop",
       "components": [
         "com.google.heatlivebackup/com.google.chuangke.page.SplashActivity"
       ],
       "category": "LIVE",
       "mapping_source": "issue #242 (device-reported on V6-Plus, Android 14, pack 2.0.1, heat-live-backup-v.4.7.8.apk): com.google.chuangke.page.SplashActivity is the launch activity of com.google.heatlivebackup",
-      "color_source": "the magenta-violet of its BACKUP BY HEAT tile, sampled from the vSeeBox launcher's Recommend row as photographed by its users (r/vSeeBox 'Confused about apps' and 'What Are Heat Apps?' home-screen screenshots, JPEG, reference only), so the value is approximate (2026-10-05)",
+      "color_source": "the magenta-to-violet of its BACKUP BY HEAT tile, sampled from the vSeeBox launcher's Recommend row as photographed by its users (r/vSeeBox 'Confused about apps' and 'What Are Heat Apps?' home-screen screenshots, JPEG, reference only), so approximate (2026-10-05)",
       "color_reviewed": "2026-10-05",
-      "glyph_source": "wordmark-derived mark from the app's launcher tile on the vSeeBox home screen (r/vSeeBox home-screen screenshots and the examples attached to issue #243, reference only): BACK over UP with the 'BY HEAT' strap under the tile's wordmark as the underline cue, set in the pack's own single-stroke letters, not the vendor letterforms (2026-10-05)"
+      "glyph_source": "brand-informed redraw in the HeatLive construction (vSeeBox home-screen tiles and the examples attached to issue #243, reference only): the family's Core stroke teardrop, point up, with HeatLive's solid flame on its floor, set left, and a second, smaller, empty drop standing beside it on the same floor - the spare, drawn on the pack grid, not traced (2026-10-05)",
+      "gradient": [
+        "#C83CC8",
+        "#6E1EC8"
+      ],
+      "gradient_source": "its tile, top to bottom: #C83CC8 to #6E1EC8 (2026-10-05)"
     },
     {
       "name": "AnimeTV",

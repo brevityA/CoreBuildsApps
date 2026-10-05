@@ -12,17 +12,18 @@ All notable changes to the Core Builds Icon Pack. Format follows
 
 - **The vSeeBox Heat family.** HeatLive shipped in 2.0.0; the four apps
   that sit beside it on a vSeeBox's Recommend row, and the fifth that the
-  V6 Plus adds, now apply too. Each launcher tile is a two-word wordmark on
-  its own gradient, so each keeps its tile's lockup in the pack's stroke
-  letters and its tile's colour, which is what tells the five apart on a
-  shelf where they sit side by side: **HeatVod** (Heat over Vod in its
-  splash logotype's case, with the play its logo hides in the o, blue),
-  **HeatVod Ultra** (VOD over Ultra with the tile's play cone, pink),
-  **Live Ultra** (LIVE over Ultra with the play cone, purple),
-  **Live Ultra+** (the same lockup with its plus, and the family's one
-  warm tile, amber) and **HeatLive Backup** (BACK over UP with the
-  "BY HEAT" strap as its underline, magenta-violet). Requested in #243,
-  #245, #247, #248 and #242 with every launch activity read off the
+  V6 Plus adds, now apply too, each drawn in HeatLive's own construction:
+  the stroke teardrop, point up, with a solid shape standing on its floor.
+  What stands there says what the app is - HeatLive's flame for live TV, a
+  play for on demand - and one small device says which one: **HeatVod**
+  (drop and play, in its splash's blue), **HeatVod Ultra** (drop and play
+  with the play-cone its tile carries, pink), **Live Ultra** (drop and
+  flame with the cone, purple), **Live Ultra+** (drop and flame with its
+  plus, and the family's one warm tile, amber) and **HeatLive Backup**
+  (drop and flame with a second, smaller, empty drop beside it - the
+  spare - magenta-violet). Each keeps the gradient of its own tile, so the
+  five read apart on a shelf where they sit side by side. Requested in
+  #243, #245, #247, #248 and #242 with every launch activity read off the
   requester's V6-Plus (Android 14).
 - **WAVEO.** Wave IPTV's beta is on Google Play under a new package name,
   `com.smartwave.waveo`, with the same splash activity; it now applies the

@@ -327,9 +327,9 @@ Source accents are retained in the catalog. **On dark** is the shared square/ban
 | HDRezka | `falcofemoralis` | `#FF4D4D` | `#FF4D4D` | `com.falcofemoralis.hdrezkaapp/com.falcofemoralis.hdrezkaapp.views.MainActivity` |
 | HDTV Player | `hdtv_player` | `#EB5405` | `#EB5405` | `com.zva3.mobile.litetvandroid/com.zva3.mobile.litetvandroid.MainActivity`<br>`com.zva3.mobile.litetvandroid/com.zva3.mobile.litetvandroid.TvActivity` |
 | HeatLive | `heatlive` | `#EB1E54` | `#EB1E54` | `com.google.heatlive/com.huishine.traveler.page.SplashActivity` |
-| HeatLive Backup | `heatlive_backup` | `#9B2AA1` | `#9E2BA4` | `com.google.heatlivebackup/com.google.chuangke.page.SplashActivity` |
-| HeatVod | `heatvod` | `#0042DF` | `#004AF8` | `com.google.heatvod/com.chuangkevideo.SplashActivity` |
-| HeatVod Ultra | `heatvod_ultra` | `#DE4F7A` | `#DE4F7A` | `com.google.heatvodultra/com.google.chuangke.page.SplashActivity` |
+| HeatLive Backup | `heatlive_backup` | `#C83CC8` | `#C83CC8` | `com.google.heatlivebackup/com.google.chuangke.page.SplashActivity` |
+| HeatVod | `heatvod` | `#2F7BFF` | `#2F7BFF` | `com.google.heatvod/com.chuangkevideo.SplashActivity` |
+| HeatVod Ultra | `heatvod_ultra` | `#FF5A7E` | `#FF5A7E` | `com.google.heatvodultra/com.google.chuangke.page.SplashActivity` |
 | HEI Network | `heinetworktv` | `#DA3430` | `#DA3430` | `com.heinetwork.HEINetworkTV/com.heinetwork.HEINetworkTV.MainActivity` |
 | HGTV | `watcher` | `#00A8C0` | `#00A8C0` | `com.hgtv.watcher/com.discovery.tve.presentation.activities.SplashActivity` |
 | Hi Browser | `hi_browser` | `#00A8A8` | `#00A8A8` | `com.hisense.odinbrowser/com.hisense.odinbrowser.MainActivity`<br>`com.hisense.odinbrowser/com.hisense.odinbrowser.ui.MainActivity`<br>`com.hisense.odinbrowser/com.hisense.odinbrowser.browser.MainActivity` |
@@ -419,8 +419,8 @@ Source accents are retained in the catalog. **On dark** is the shared square/ban
 | Ligue 1+ | `ligueunpass` | `#0760FF` | `#0760FF` | `com.ligueunpass.app/com.ligueunpass.app.MainActivity` |
 | Live Channels | `tv` | `#0EA5EF` | `#0EA5EF` | `com.google.android.tv/com.android.tv.TvActivity` |
 | Live TV | `livetv` | `#00BCD4` | `#00BCD4` | `com.mediatek.wwtv.tvcenter/.nav.TurnkeyUiMainActivity` |
-| Live Ultra | `live_ultra` | `#8127CE` | `#872AD7` | `com.google.liveultra/com.google.chuangke.page.SplashActivity` |
-| Live Ultra+ | `live_ultra_plus` | `#F0A93A` | `#F0A93A` | `com.google.liveultraplus/com.google.chuangke.page.SplashActivity` |
+| Live Ultra | `live_ultra` | `#A24BFF` | `#A24BFF` | `com.google.liveultra/com.google.chuangke.page.SplashActivity` |
+| Live Ultra+ | `live_ultra_plus` | `#FFB83D` | `#FFB83D` | `com.google.liveultraplus/com.google.chuangke.page.SplashActivity` |
 | LiveNetTV Pro | `androidtv_10` | `#881010` | `#BF1616` | `com.playnet.androidtv.pro/com.playnet.androidtv.pro.DdfzCtdEstCn`<br>`com.playnet.androidtv.pro/com.playnet.androidtv.pro.plBqnAaqDlEns` |
 | Local 10+ | `aimitv` | `#003070` | `#0059CF` | `com.aimitv.wplg.news/com.whiz.firetv.activity.SplashScreen` |
 | Local Now | `localnow` | `#48C860` | `#48C860` | `com.weathergroup.localnow/com.weathergroup.localnow.MainActivity` |

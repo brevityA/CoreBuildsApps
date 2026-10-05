@@ -510,20 +510,15 @@
       256.0,
       256.0
     ],
-    "heatlive_backup_wm": [
+    "heatlive_backup_drop": [
       1.0,
-      256.0,
-      273.75
+      252.25,
+      287.5
     ],
-    "heatvod_ultra_wm": [
+    "heatvod_ultra_drop": [
       1.0,
-      264.0,
-      235.25
-    ],
-    "heatvod_wm": [
-      1.0,
-      264.0,
-      237.75
+      277.0,
+      257.25
     ],
     "history_h": [
       1.1152,
@@ -640,15 +635,15 @@
       328.0,
       220.0
     ],
-    "live_ultra_plus_wm": [
+    "live_ultra_drop": [
       1.0,
-      264.0,
-      233.25
+      277.0,
+      257.25
     ],
-    "live_ultra_wm": [
+    "live_ultra_plus_drop": [
       1.0,
-      264.0,
-      235.25
+      274.0,
+      256.25
     ],
     "livingroom_wm": [
       1.3953,

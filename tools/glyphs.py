@@ -7337,6 +7337,112 @@ GLYPHS.update({"heatlive_drop": heatlive_drop})
 
 
 # --------------------------------------------------------------------------
+# The vSeeBox Heat family (issues #242 #243 #245 #247 #248, 2026-10-05).
+# HeatLive's construction is the family's: a Core stroke teardrop, point up,
+# with a solid shape standing on its floor. What stands there says which
+# kind of app it is - the flame for live TV, a play for on demand - and one
+# small device, placed as the wordmark cues are, says which variant: the
+# play-cone the Ultra tiles carry, the plus of LIVE+, and for Backup a
+# second, smaller, empty drop beside the first. Each app keeps the gradient
+# of its own tile, so the five read apart on a shelf where they sit side
+# by side. All geometry is baked on the pack grid: no transforms.
+# --------------------------------------------------------------------------
+_HEAT_DROP = ("M 256 56 C 300 128 404 208 404 300 A 148 148 0 0 1 108 300 "
+              "C 108 208 212 128 256 56 Z")
+
+
+def _heat_flame_d(cx=256, fb=396, hw=76):
+    """The HeatLive flame: one solid teardrop whose tip bends right, with a
+    lick split off its left shoulder, standing on the drop's floor `fb`."""
+    return (f"M {cx + 10} {fb - 206} C {cx + 40} {fb - 158} {cx + hw} {fb - 120} {cx + hw} {fb - 70} "
+            f"C {cx + hw} {fb - 26} {cx + 42} {fb} {cx} {fb} C {cx - 42} {fb} {cx - hw} {fb - 26} {cx - hw} {fb - 70} "
+            f"C {cx - hw} {fb - 108} {cx - 50} {fb - 128} {cx - 36} {fb - 150} "
+            f"C {cx - 28} {fb - 120} {cx - 18} {fb - 108} {cx - 4} {fb - 104} "
+            f"C {cx - 6} {fb - 140} {cx - 6} {fb - 176} {cx + 10} {fb - 206} Z")
+
+
+# The play that stands where the flame does: optically centred in the
+# drop's bowl (circle centre 256,300 r 148), a touch right of true centre.
+_HEAT_PLAY = "M 204 216 L 204 384 L 350 300 Z"
+
+
+def _heat_scaled(d, s, dx, dy):
+    """`d` scaled by `s` about the grid origin and moved by (dx, dy), baked
+    into the path numbers. Handles M/L/C pairs and A's radii, flags and end."""
+    out, toks, i = [], d.split(), 0
+    while i < len(toks):
+        t = toks[i]
+        if t in "MLC":
+            out.append(t)
+            i += 1
+            while i < len(toks) and toks[i] not in "MLCAZ":
+                out.append(f"{float(toks[i]) * s + dx:.1f} {float(toks[i + 1]) * s + dy:.1f}")
+                i += 2
+        elif t == "A":
+            rx, ry, rot, laf, sf, x, y = toks[i + 1:i + 8]
+            out.append(f"A {float(rx) * s:.1f} {float(ry) * s:.1f} {rot} {laf} {sf} "
+                       f"{float(x) * s + dx:.1f} {float(y) * s + dy:.1f}")
+            i += 8
+        else:
+            out.append(t)
+            i += 1
+    return " ".join(out)
+
+
+def _heat_mark(c, inner, s=1.0, dx=0, dy=0, cue=""):
+    drop = _heat_scaled(_HEAT_DROP, s, dx, dy)
+    body = _heat_scaled(inner, s, dx, dy)
+    return f'<path d="{drop}" {_s(c, 34)}/>' + _solid(body, c, 10) + cue
+
+
+# Room for a corner device: the drop at .88, anchored bottom-left, the way
+# the wordmark cue boxes leave the top-right corner free.
+_HEAT_CUE_FIT = dict(s=.88, dx=13, dy=54)
+_HEAT_CONE = ("M 362 86 L 388 86 L 388 66 L 446 100 L 388 134 L 388 114 L 362 114 Z")
+
+
+def heatvod_drop(c):
+    """HeatVod: the family drop with a solid play standing on its floor -
+    on demand where HeatLive has the flame. Blue, from its splash and tile."""
+    return _heat_mark(c, _HEAT_PLAY)
+
+
+def heatvod_ultra_drop(c):
+    """HeatVod Ultra: the HeatVod drop and play, with the play-cone its VOD
+    Ultra tile carries at the top-right corner, drawn solid like the play."""
+    return _heat_mark(c, _HEAT_PLAY, cue=_solid(_HEAT_CONE, c, 10), **_HEAT_CUE_FIT)
+
+
+def live_ultra_drop(c):
+    """Live Ultra: the HeatLive drop and flame, with the play-cone its LIVE
+    Ultra tile carries at the top-right corner."""
+    return _heat_mark(c, _heat_flame_d(), cue=_solid(_HEAT_CONE, c, 10), **_HEAT_CUE_FIT)
+
+
+def live_ultra_plus_drop(c):
+    """Live Ultra+: the HeatLive drop and flame with the plus of its LIVE+
+    tile at the top-right corner."""
+    plus = f'<path d="M 404 64 L 404 136 M 368 100 L 440 100" {_s(c, 28)}/>'
+    return _heat_mark(c, _heat_flame_d(), cue=plus, **_HEAT_CUE_FIT)
+
+
+def heatlive_backup_drop(c):
+    """HeatLive Backup: the HeatLive drop and flame at the left, and a
+    second, smaller, empty drop standing beside it on the same floor - the
+    spare. The two never overlap, so no clipping is needed."""
+    main = _heat_mark(c, _heat_flame_d(), s=.82, dx=-24, dy=81)
+    spare = _heat_scaled(_HEAT_DROP, .44, 262, 251)
+    return main + f'<path d="{spare}" {_s(c, 26)}/>'
+
+
+GLYPHS.update({
+    "heatvod_drop": heatvod_drop, "heatvod_ultra_drop": heatvod_ultra_drop,
+    "live_ultra_drop": live_ultra_drop, "live_ultra_plus_drop": live_ultra_plus_drop,
+    "heatlive_backup_drop": heatlive_backup_drop,
+})
+
+
+# --------------------------------------------------------------------------
 # Brand marks batch 16 (2026-09-28): more letter tiles whose launcher icon,
 # seen in the Projectivy Icon Pack 1.1.9 artwork (reference only), carries a
 # symbol.
@@ -8662,16 +8768,3 @@ _WM3 = {
     "animetv": ("Anime/TV", None),
 }
 GLYPHS.update({f"{d}_wm": _wm_glyph(t, cue) for d, (t, cue) in _WM3.items()})
-
-# The vSeeBox Heat family (issues #242 #243 #245 #247 #248, 2026-10-05). Each
-# launcher tile is a two-word wordmark on its own gradient, and the Ultra
-# tiles carry a play cone; HeatLive alone has a drawn symbol (heatlive_drop).
-# The siblings keep their tiles' own lockups so the five read apart on the
-# shelf where they sit side by side: the warm plus tile is Live Ultra+, the
-# underline is BACKUP's "BY HEAT" strap, the play is the cone.
-_WM4 = {
-    "heatvod": ("Heat/Vod", "play"), "heatvod_ultra": ("VOD/Ultra", "play"),
-    "live_ultra": ("LIVE/Ultra", "play"), "live_ultra_plus": ("LIVE/Ultra", "plus"),
-    "heatlive_backup": ("BACK/UP", "under"),
-}
-GLYPHS.update({f"{d}_wm": _wm_glyph(t, cue) for d, (t, cue) in _WM4.items()})
