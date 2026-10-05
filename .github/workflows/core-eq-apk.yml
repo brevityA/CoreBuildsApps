@@ -278,6 +278,7 @@ jobs:
             channel: canary
             cores: 4
             ram-size: 4096M
+            disk-size: 4096M
     steps:
       - uses: actions/checkout@v7
 

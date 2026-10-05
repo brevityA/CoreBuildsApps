@@ -41,7 +41,8 @@ class CoreEqReleaseContract(unittest.TestCase):
         self.assertIn("script: bash tools/install_core_eq_on_emulator.sh", self.workflow)
         self.assertNotIn("script: |", self.workflow)
         body = emulator.read_text(encoding="utf-8")
-        self.assertIn("adb install -r", body)
+        self.assertIn("adb install", body)
+        self.assertIn("--no-streaming", body)
         self.assertIn("tv.corebuilds.eq.debug", body)
 
     def test_preview_sdk_ids_are_covered_by_the_install_fallback(self) -> None:
