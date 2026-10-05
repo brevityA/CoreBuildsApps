@@ -43,6 +43,11 @@ XML_DIR = ROOT / "app" / "src" / "main" / "res" / "xml"
 # browser are written here; the icon pack's own, which map to banners, are
 # derived from them by tools/build_banners_pack.py.
 GLYPH_MAIN = ROOT / "glyphs" / "src" / "main"
+# The :app module's glyphs flavor — the standalone glyph app,
+# tv.corebuilds.glyphs. It maps exactly what the companion maps, so the same
+# generated text is written into both trees and tests/test_glyphs_pack.py
+# holds the two identical. One generator, two committed copies, one gate.
+GLYPH_FLAVOR = ROOT / "app" / "src" / "glyphs"
 VAL_DIR = ROOT / "app" / "src" / "main" / "res" / "values"
 DOC_DIR = ROOT / "docs"
 
@@ -388,18 +393,23 @@ def main():
                 emitted_count += 1
     lines.append('</resources>')
     appfilter_text = "\n".join(lines) + "\n"
-    # This is the square mapping, and it ships in Core Builds Glyphs. The
-    # icon pack itself maps the same components to their banners - the
-    # default style since 1.9.5 - and tools/build_banners_pack.py derives
-    # that appfilter from this one, so the two cannot disagree.
-    write(GLYPH_MAIN / "res" / "xml" / "appfilter.xml", appfilter_text)
+    # This is the square mapping, and it ships in both glyph packages: Core
+    # Builds Glyphs (the resource-only companion the Art style toggle
+    # installs) and the :app module's glyphs flavor (the standalone glyph
+    # app). The icon pack itself maps the same components to their banners -
+    # the default style since 1.9.5 - and tools/build_banners_pack.py derives
+    # that appfilter from this one, so the three cannot disagree.
+    #
     # The ADW convention permits res/xml, res/raw, or assets. Modern launchers
     # prefer res/xml, while several older picker/request implementations only
     # inspect assets. Generate identical files so mappings cannot drift.
-    write(GLYPH_MAIN / "assets" / "appfilter.xml", appfilter_text)
+    for tree in (GLYPH_MAIN, GLYPH_FLAVOR):
+        write(tree / "res" / "xml" / "appfilter.xml", appfilter_text)
+        write(tree / "assets" / "appfilter.xml", appfilter_text)
     print(f"\u2713 appfilter.xml written \u2014 {comp_count} catalog components "
           f"\u2192 {emitted_count} entries (both name forms) "
-          f"\u2192 {len(icons)} drawables (res/xml + assets)")
+          f"\u2192 {len(icons)} drawables (glyph companion + glyphs flavor, "
+          f"res/xml + assets)")
 
     # 4. drawable.xml — launcher icon picker, grouped by catalog category
     # so Projectivy's browser can jump a section instead of scrolling 500
@@ -436,8 +446,9 @@ def main():
             d.append(f'    <item drawable="{i["drawable"]}" />')
     d.append('</resources>')
     drawable_text = "\n".join(d) + "\n"
-    write(GLYPH_MAIN / "res" / "xml" / "drawable.xml", drawable_text)
-    write(GLYPH_MAIN / "assets" / "drawable.xml", drawable_text)
+    for tree in (GLYPH_MAIN, GLYPH_FLAVOR):
+        write(tree / "res" / "xml" / "drawable.xml", drawable_text)
+        write(tree / "assets" / "drawable.xml", drawable_text)
 
     # 5. iconpack.xml — legacy/alt launcher discovery
     p = ['<?xml version="1.0" encoding="utf-8"?>', '<iconpack>']

@@ -86,7 +86,7 @@ Series 9's twelve walls have twelve moving companions — the same scene, animat
 
 ### 16:9 banners
 
-Every icon ships a **320×180 transparent banner** for Projectivy's wide-card layout — monoline glyph, icon-coloured category, stroke-letter name, nothing else on the card. Banners are what the pack applies by default; the in-app Art style toggle switches to square glyphs by pointing launchers at the small Core Builds Glyphs companion instead. Generated from `tools/build_banners.py`.
+Every icon ships a **320×180 transparent banner** for Projectivy's wide-card layout — monoline glyph, icon-coloured category, stroke-letter name, nothing else on the card. Banners are what the pack applies by default; the in-app Art style toggle switches to square glyphs by pointing launchers at the small Core Builds Glyphs Pack companion instead, and `tv.corebuilds.glyphs` ships the same app with square glyphs baked in for a launcher that should never apply banners. Generated from `tools/build_banners.py`.
 
 <div align="center"><img src="docs/banner-preview.png" alt="Banner styles" width="760"></div>
 

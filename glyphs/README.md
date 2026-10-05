@@ -15,6 +15,16 @@ second package, and the in-app Banners/Glyphs toggle
 (`app/src/main/java/tv/corebuilds/iconpack/GlyphsCompanion.kt`) works by
 telling the launcher to apply one package or the other.
 
+There is a third package to keep straight. `tv.corebuilds.glyphs` is the
+`:app` module's `glyphs` flavor: the whole icon pack — catalog, wallpapers,
+settings — built with the square appfilter, for a user who wants glyphs as
+their only pack and no toggle. This module stays the resource-only one the
+toggle installs, and its generated `appfilter.xml` / `drawable.xml` are written
+into `app/src/glyphs/` at the same time by the same generator, byte-identical
+(`tools/build_banners_pack.py --check` fails if they ever part). That is also
+why this pack is labelled Core Builds Glyphs **Pack**: both appear in a
+launcher's icon-pack list mapping square glyphs.
+
 1.9.4 shipped the opposite split, a banners companion
 `tv.corebuilds.iconpack.banners`. It is retired; do not resurrect `banners/`.
 

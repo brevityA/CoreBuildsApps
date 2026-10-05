@@ -74,6 +74,13 @@ object UpdateChecker {
     }
 
     private fun fetch(installedCode: Int): Result {
+        // The `glyphs` flavor ships no feed of its own - Latestrelease/
+        // carries the icon pack's, whose APK is a different package this app
+        // could not install over itself - and a blank URL is reported as the
+        // named gap it is rather than surfacing as a malformed-URL error.
+        if (MANIFEST_URLS.all { it.isBlank() }) {
+            return Result.Failed("this build has no update feed")
+        }
         var lastError: String? = null
         for (url in MANIFEST_URLS) {
             var conn: HttpURLConnection? = null

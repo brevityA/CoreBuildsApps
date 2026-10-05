@@ -329,5 +329,96 @@ class Contracts(unittest.TestCase):
                       src)
 
 
+FLAVOR_MAIN = ROOT / "app/src/glyphs"
+
+
+class StandaloneGlyphApp(unittest.TestCase):
+    """The :app module's `glyphs` flavor: the same app, square art.
+
+    tv.corebuilds.glyphs is the icon pack's own code and catalog built with
+    the square appfilter, for a user who wants glyphs as their only pack and
+    no toggle. It is a flavor rather than a module because a second module
+    cannot share :app's res/ and override just appfilter.xml - two source
+    sets providing the same resource is a merge error, which is what the
+    retired Pixel Neon forked its Kotlin to get around and then drifted on.
+
+    These pin the joins a flavor introduces: one mapping in two trees, a
+    package id and provider authority that cannot collide with the pack it
+    installs beside, and a release asset name of its own.
+    """
+
+    def test_the_flavor_maps_exactly_what_the_companion_maps(self):
+        # One generator, two committed trees, so the standalone app and the
+        # resource pack can never apply different art to the same component.
+        for name in ("res/xml/appfilter.xml", "assets/appfilter.xml",
+                     "res/xml/drawable.xml", "assets/drawable.xml"):
+            self.assertEqual(read(FLAVOR_MAIN / name),
+                             read(ROOT / "glyphs/src/main" / name), name)
+
+    def test_the_two_glyph_packages_map_glyphs_only(self):
+        for tree in (FLAVOR_MAIN, ROOT / "glyphs/src/main"):
+            drawables = re.findall(r'<item component="[^"]+" drawable="([^"]+)"',
+                                   read(tree / "res/xml/appfilter.xml"))
+            self.assertGreater(len(drawables), 1000)
+            self.assertEqual([d for d in drawables if d.endswith("_banner")], [],
+                             str(tree))
+
+    def test_it_has_its_own_package_id(self):
+        # Not the companion's: tv.corebuilds.iconpack.glyphs is the resource
+        # pack the toggle installs, and two apps cannot hold one package name.
+        gradle = read(APP_GRADLE)
+        glyphs = gradle.split('create("glyphs")', 1)[1]
+        self.assertIn('applicationId = "tv.corebuilds.glyphs"', glyphs)
+        self.assertIn('applicationId = "tv.corebuilds.iconpack"', gradle)
+
+    def test_its_provider_authority_cannot_collide(self):
+        # Two installed apps declaring one FileProvider authority is
+        # INSTALL_FAILED_CONFLICTING_PROVIDER, and these two are meant to be
+        # installed side by side.
+        gradle = read(APP_GRADLE)
+        glyphs = gradle.split('create("glyphs")', 1)[1]
+        self.assertIn('"tv.corebuilds.glyphs.update"', glyphs)
+        self.assertIn('"tv.corebuilds.iconpack.update"', gradle)
+
+    def test_it_offers_no_art_style_toggle(self):
+        # The flavor *is* a glyph pack: there is nothing to switch to and no
+        # companion for it to fetch, so it ships an empty package the way the
+        # candidate build always has, which is what keeps the toggle hidden.
+        glyphs = read(APP_GRADLE).split('create("glyphs")', 1)[1]
+        self.assertIn(r'"GLYPHS_PACKAGE", "\"\""', glyphs)
+
+    def test_it_does_not_poll_the_icon_packs_update_feed(self):
+        # That feed names the banner APK, which this app could not install
+        # over itself. A blank URL has to be a named gap, not a
+        # MalformedURLException surfacing as an update error.
+        glyphs = read(APP_GRADLE).split('create("glyphs")', 1)[1]
+        self.assertIn(r'"UPDATE_MANIFEST_URL", "\"\""', glyphs)
+        checker = read(KT / "UpdateChecker.kt")
+        self.assertIn("if (MANIFEST_URLS.all { it.isBlank() })", checker)
+
+    def test_the_release_publishes_it_under_its_own_name(self):
+        # iconpack-glyphs-release.apk is the companion's, fetched by name
+        # from GlyphsCompanion.ASSET; the app needs a name of its own.
+        yml = read(BUILD_YML)
+        self.assertIn("dist/corebuilds-glyphs-release.apk", yml)
+        self.assertIn("app/build/outputs/apk/glyphs/release/", yml)
+        self.assertIn("app/build/outputs/apk/banners/release/", yml)
+        self.assertNotEqual("corebuilds-glyphs-release.apk",
+                            re.search(r'const val ASSET = "([^"]+)"',
+                                      read(COMPANION_KT)).group(1))
+
+    def test_the_companion_label_is_the_one_the_icon_pack_says(self):
+        # Both glyph packages appear in a launcher's icon-pack list, so the
+        # resource pack carries "Pack" and the icon pack has to name it that
+        # way when it offers to install it.
+        label = re.search(r'const val LABEL = "([^"]+)"',
+                          read(COMPANION_KT)).group(1)
+        shipped = re.search(r'<string name="app_name">([^<]+)</string>',
+                            read(ROOT / "glyphs/src/main/res/values/strings.xml")
+                            ).group(1)
+        self.assertEqual(label, shipped)
+        self.assertEqual(label, "Core Builds Glyphs Pack")
+
+
 if __name__ == "__main__":
     unittest.main()

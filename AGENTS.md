@@ -17,8 +17,20 @@
 keeps one icon pack. Their shipped tags stay as history; do not resurrect
 their modules, manifests or workflows.)
 
+Three packages ship square or banner art, and only two of them are apps the
+user opens. `tv.corebuilds.iconpack` is the icon pack (banners, the default);
+`tv.corebuilds.glyphs` is its `glyphs` flavor — the same code, catalog and
+wallpapers with the square appfilter, for a launcher that should apply glyphs
+and nothing else; `tv.corebuilds.iconpack.glyphs` is the resource-only
+companion the in-app toggle installs. The flavor, not a second module, because
+two source sets cannot both provide `res/xml/appfilter.xml`: a second module
+means a second copy of every resource, which is the drift that retired Pixel
+Neon. It is not a suite product — no `suite.json` entry, no Downloader code, no
+tag of its own; it ships in the icon pack's `v*` release as
+`corebuilds-glyphs-release.apk`.
+
 `glyphs/` is the one intentional exception to "one app, one Gradle root",
-and it is not a separate product: Core Builds Glyphs
+and it is not a separate product: Core Builds Glyphs Pack
 (`tv.corebuilds.iconpack.glyphs`) is the icon pack's square companion,
 released in the same `v*` release as `iconpack-glyphs-release.apk` and
 versioned from `app/build.gradle.kts`. Banners are the icon pack's default
@@ -27,7 +39,9 @@ launcher auto-applies whatever the selected package's appfilter maps, so the
 in-app Banners/Glyphs toggle works by pointing launchers at one package or the
 other (`GlyphsCompanion.kt`). The companion has no Kotlin, no dependencies and
 no committed art: `python tools/build_icons.py` writes its square appfilter and
-browser, `python tools/build_banners_pack.py` derives the icon pack's banner XML
+browser (and the `glyphs` flavor's identical copies under `app/src/glyphs/`,
+which `build_banners_pack.py --check` holds byte-equal),
+`python tools/build_banners_pack.py` derives the icon pack's banner XML
 from them (run it after `build_icons.py` and `build_banners.py`), and its Gradle
 build copies the glyph WebP from `app/`. Its two Java activities split by window:
 `.GlyphsActivity` is the translucent carrier for the launcher discovery filters

@@ -55,13 +55,22 @@ jobs:
       fail-fast: false
       matrix:
         include:
+          # Variant tasks are named explicitly because :app has an art flavor
+          # dimension: lintDebug would name no variant once flavors exist.
           - name: Icon Pack
             dir: .
-            tasks: :app:lintDebug :app:testDebugUnitTest :app:assembleDebug
+            tasks: :app:lintBannersDebug :app:testBannersDebugUnitTest :app:assembleBannersDebug
             gradle: app/build.gradle.kts
             compileSdk: 34
             workflow: .github/workflows/build.yml
-            artifact: app/build/outputs/apk/debug/*.apk
+            artifact: app/build/outputs/apk/banners/debug/*.apk
+          - name: Core Builds Glyphs app
+            dir: .
+            tasks: :app:lintGlyphsDebug :app:testGlyphsDebugUnitTest :app:assembleGlyphsDebug
+            gradle: app/build.gradle.kts
+            compileSdk: 34
+            workflow: .github/workflows/build.yml
+            artifact: app/build/outputs/apk/glyphs/debug/*.apk
           - name: Core Builds Glyphs
             dir: .
             tasks: :glyphs:lintDebug :glyphs:testDebugUnitTest :glyphs:assembleDebug

@@ -69,7 +69,7 @@ jobs:
         # all, and signing here would mean putting the release key on a PR
         # runner. Debug exercises the same resources and the same by-name
         # lookup.
-        run: ./gradlew :app:assembleDebug --no-daemon
+        run: ./gradlew :app:assembleBannersDebug --no-daemon
 
       - name: Prepare emulator test script
         # The emulator-runner action (v2) executes each line of its `script:`
@@ -96,7 +96,7 @@ jobs:
               exit 1
             fi
           }
-          resolve_apk app/build/outputs/apk/debug app
+          resolve_apk app/build/outputs/apk/banners/debug app
           CLASSIC_APK="$APK_PATH"
 
           EXPECTED=$(python3 -c "import json;print(len(json.load(open('tools/catalog.json'))['icons']))")

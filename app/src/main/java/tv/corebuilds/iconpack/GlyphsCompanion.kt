@@ -13,9 +13,16 @@ import android.widget.Toast
  * reads that appfilter out of the pack's APK: this app cannot change its own
  * at runtime. So the toggle changes *which package* the launcher is told to
  * apply. Banners - the default - is this app, whose appfilter maps every app
- * to its 16:9 art. Glyphs is Core Builds Glyphs ([PACKAGE], built from
+ * to its 16:9 art. Glyphs is Core Builds Glyphs Pack ([PACKAGE], built from
  * glyphs/), a resource-only twin whose appfilter maps the same components to
  * the same apps' square glyphs.
+ *
+ * Not to be confused with this module's own `glyphs` flavor
+ * (tv.corebuilds.glyphs, resources in app/src/glyphs): that is this same app
+ * - catalog, wallpapers, settings and all - built with the square appfilter,
+ * for a user who wants glyphs as their only pack and no toggle. [PACKAGE]
+ * exists for the other case: switching art from inside this app, without
+ * leaving it.
  *
  * The companion ships in the same release as this app and must be exactly
  * this app's version: a pack a version behind would silently miss every icon
@@ -35,8 +42,16 @@ object GlyphsCompanion {
         "https://github.com/brevityA/CoreBuildsApps/releases/download"
     const val ASSET = "iconpack-glyphs-release.apk"
 
-    /** The companion's display name, as launchers list it. */
-    const val LABEL = "Core Builds Glyphs"
+    /**
+     * The companion's display name, as launchers list it.
+     *
+     * "Pack" on the end because the :app module's glyphs flavor
+     * (tv.corebuilds.glyphs) is a full app called Core Builds Glyphs, and
+     * both show up in a launcher's icon-pack list mapping square glyphs.
+     * Must equal the app_name tools/build_banners_pack.py generates into the
+     * companion; tests/test_glyphs_pack.py holds the two together.
+     */
+    const val LABEL = "Core Builds Glyphs Pack"
 
     /**
      * Set by the companion's GlyphsActivity on the icon-pick requests it
