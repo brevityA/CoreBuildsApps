@@ -14,25 +14,34 @@ import android.view.View
 import android.widget.Button
 import android.widget.TextView
 import androidx.core.content.ContextCompat
+import tv.corebuilds.eq.apply.BandMapping
 import tv.corebuilds.eq.apply.EqService
+import tv.corebuilds.eq.apply.OutputRoute
+import tv.corebuilds.eq.dsp.DspConstants
+import tv.corebuilds.eq.dsp.ManualEq
 import tv.corebuilds.eq.export.EqStatus
+import tv.corebuilds.eq.export.PlatformBand
 import tv.corebuilds.eq.export.ProfileStore
+import tv.corebuilds.eq.mode.ContentModeStore
 import tv.corebuilds.eq.ui.BandSlidersView
 import tv.corebuilds.eq.ui.CorrectionIndicator
 import tv.corebuilds.eq.ui.CurveGraphView
 import tv.corebuilds.eq.ui.Series
 import tv.corebuilds.eq.ui.correctionIndicator
 import java.util.Locale
+import kotlin.math.roundToInt
 
 class MainActivity : TvActivity() {
 
     private lateinit var profileStore: ProfileStore
+    private lateinit var modeStore: ContentModeStore
     private lateinit var textProfileName: TextView
     private lateinit var textProfileSub: TextView
     private lateinit var textStatus: TextView
     private lateinit var btnToggle: Button
     private lateinit var graphHome: CurveGraphView
     private lateinit var bandsHome: BandSlidersView
+    private lateinit var btnModes: Button
     private lateinit var badgeIndicator: View
     private lateinit var badgeDot: View
     private lateinit var badgeLabel: TextView
@@ -42,6 +51,7 @@ class MainActivity : TvActivity() {
     private val statusReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
             loadActiveProfile() // runtime effect bands are published with status changes
+            refreshModeButton()
             refreshStatus()
         }
     }
@@ -51,6 +61,7 @@ class MainActivity : TvActivity() {
         setContentView(R.layout.activity_main)
 
         profileStore = ProfileStore(this)
+        modeStore = ContentModeStore(this)
 
         textProfileName = findViewById(R.id.text_active_profile_name)
         textProfileSub = findViewById(R.id.text_active_profile_sub)
@@ -58,6 +69,7 @@ class MainActivity : TvActivity() {
         btnToggle = findViewById(R.id.btn_toggle_correction)
         graphHome = findViewById(R.id.graph_home)
         bandsHome = findViewById(R.id.bands_home)
+        btnModes = findViewById(R.id.btn_nav_modes)
         badgeIndicator = findViewById(R.id.badge_correction)
         badgeDot = findViewById(R.id.badge_dot)
         badgeLabel = findViewById(R.id.badge_label)
@@ -66,6 +78,10 @@ class MainActivity : TvActivity() {
             startActivity(Intent(this, MeasureActivity::class.java))
         }
         btnToggle.setOnClickListener { toggleCorrection() }
+        findViewById<Button>(R.id.btn_nav_manual_eq).setOnClickListener {
+            startActivity(Intent(this, ManualEqActivity::class.java))
+        }
+        btnModes.setOnClickListener { startActivity(Intent(this, ModeActivity::class.java)) }
         findViewById<Button>(R.id.btn_nav_profiles).setOnClickListener {
             startActivity(Intent(this, ProfilesActivity::class.java))
         }
@@ -88,6 +104,7 @@ class MainActivity : TvActivity() {
             EqService.enable(this)?.let { profileStore.setStatus(it, isError = true) }
         }
         loadActiveProfile()
+        refreshModeButton()
         refreshStatus()
     }
 
@@ -113,6 +130,11 @@ class MainActivity : TvActivity() {
         refreshStatus()
     }
 
+    private fun refreshModeButton() {
+        val decision = modeStore.currentDecision()
+        btnModes.text = getString(R.string.home_mode_button, decision.mode.title)
+    }
+
     private fun refreshStatus() {
         val on = profileStore.correctionEnabled
         btnToggle.text = getString(if (on) R.string.correction_on else R.string.correction_off)
@@ -128,10 +150,11 @@ class MainActivity : TvActivity() {
     }
 
     /**
-     * The "is this working?" badge under the Correction switch. [LIVE][CorrectionIndicator.LIVE]
-     * pulses — the one state where audio is flowing through the correction
-     * right now. A stale playing flag cannot light it: the badge trusts it
-     * only while [EqService] is actually running.
+     * The playback-hint badge under the Correction switch. [LIVE][CorrectionIndicator.LIVE]
+     * pulses when the output-mix effect is configured and Android reports
+     * media playback. It does not prove that the stream traverses the effect.
+     * A stale playing flag cannot light it: the badge trusts it only while
+     * [EqService] is actually running.
      */
     private fun renderIndicator(status: EqStatus?) {
         val state = correctionIndicator(
@@ -184,41 +207,95 @@ class MainActivity : TvActivity() {
     }
 
     private fun loadActiveProfile() {
-        val profile = profileStore.getActiveProfile()
+        val output = OutputRoute.current(this)
+        val profiles = profileStore.getAllProfiles()
+        val routed = OutputRoute.pick(
+            profiles,
+            profileStore.chosenId(),
+            output?.kind,
+            output?.name
+        ).profile
+        val profile = routed?.let { modeStore.effectiveProfile(it, modeStore.currentDecision().mode) }
         if (profile == null) {
-            textProfileName.text = getString(R.string.no_profile)
-            textProfileSub.text = getString(R.string.no_profile_sub)
+            val anotherOutputHasProfile = profiles.isNotEmpty()
+            textProfileName.text = getString(
+                if (anotherOutputHasProfile) R.string.output_profile_missing_name else R.string.no_profile
+            )
+            textProfileSub.text = if (!anotherOutputHasProfile) {
+                getString(R.string.no_profile_sub)
+            } else if (output?.kind == null) {
+                getString(R.string.output_profile_unknown_sub)
+            } else {
+                getString(R.string.output_profile_missing_sub, OutputRoute.label(output.kind))
+            }
             findViewById<Button>(R.id.btn_remeasure).text = getString(R.string.action_measure)
-            graphHome.setData(DoubleArray(0), emptyList(), "NO MEASUREMENT YET")
+            graphHome.setData(DoubleArray(0), emptyList(), if (anotherOutputHasProfile) "NO PROFILE FOR THIS OUTPUT" else "NO MEASUREMENT YET")
             bandsHome.setBands(emptyList())
             bandsHome.visibility = View.INVISIBLE
             return
         }
-        findViewById<Button>(R.id.btn_remeasure).text = getString(R.string.action_remeasure)
+        findViewById<Button>(R.id.btn_remeasure).text = getString(
+            if (profile.manualOnly) R.string.action_measure else R.string.action_remeasure
+        )
         textProfileName.text = profile.name
-        val targetName = profile.target.replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.US) else it.toString() }
-        val rt = profile.rt60Seconds?.let { String.format(Locale.US, "RT60 %.2f s", it) } ?: "RT60 unknown"
-        val measurementLimit = if (profile.measurementNotes.isNotEmpty()) " · magnitude-only; phase unverified" else ""
-        textProfileSub.text = "$targetName · ${profile.filters.size} filters · $rt · ${profile.micType}$measurementLimit"
+        val outputLabel = profile.outputName
+            ?: profile.outputKind?.let { OutputRoute.label(it) }
+            ?: "any output"
+        if (profile.manualOnly) {
+            textProfileSub.text = "Manual EQ · no room measurement · ${profile.manualFilters.size} tone bands · $outputLabel"
+        } else {
+            val targetName = profile.target.replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.US) else it.toString() }
+            val rt = profile.rt60Seconds?.let { String.format(Locale.US, "RT60 %.2f s", it) } ?: "RT60 unknown"
+            val measurementLimit = if (profile.measurementNotes.isNotEmpty()) " · magnitude-only; phase unverified" else ""
+            val manual = if (profile.manualFilters.isNotEmpty()) " · ${profile.manualFilters.size} tone bands" else ""
+            textProfileSub.text = "$targetName · ${profile.filters.size} filters$manual · $rt · ${profile.micType} · $outputLabel$measurementLimit"
+        }
 
         if (profile.curve.isNotEmpty()) {
             val freqs = DoubleArray(profile.curve.size) { profile.curve[it].hz }
             val measured = DoubleArray(profile.curve.size) { profile.curve[it].measuredDb }
-            val corr = DoubleArray(profile.curve.size) { profile.curve[it].correctionDb }
+            val corr = DoubleArray(profile.curve.size) {
+                val hz = profile.curve[it].hz
+                profile.correctionAt(hz) + ManualEq.responseDb(profile.manualFilters, hz)
+            }
             graphHome.setData(
                 freqs = freqs,
                 series = listOf(
                     Series("MEASURED", ContextCompat.getColor(this, R.color.cb_slate), measured),
-                    Series("CORRECTION", ContextCompat.getColor(this, R.color.cb_signal_cyan), corr)
+                    Series("TOTAL EQ", ContextCompat.getColor(this, R.color.cb_signal_cyan), corr)
                 ),
-                title = "MEASURED vs CORRECTION",
+                title = "MEASURED vs TOTAL EQ",
                 yRange = 20.0,
                 tHz = profile.transitionHz
             )
+        } else if (profile.manualOnly) {
+            val freqs = DspConstants.ISO_CENTRES_HZ
+                .filter { it in DspConstants.F_MIN..DspConstants.F_MAX }
+                .toDoubleArray()
+            val response = DoubleArray(freqs.size) { ManualEq.responseDb(profile.manualFilters, freqs[it]) }
+            graphHome.setData(
+                freqs = freqs,
+                series = listOf(Series("MANUAL EQ", ContextCompat.getColor(this, R.color.cb_signal_cyan), response)),
+                title = "MANUAL EQ · NOT ROOM-MEASURED",
+                yRange = 12.0,
+                tHz = profile.transitionHz
+            )
+        } else {
+            graphHome.setData(DoubleArray(0), emptyList(), "NO MEASUREMENT DATA")
         }
-        bandsHome.visibility = View.VISIBLE
         val runtimeBands = if (EqService.running) profileStore.runtimeBands() else emptyList()
-        bandsHome.setBands(runtimeBands.ifEmpty { profile.platformBands })
+        val profilePreview = if (profile.platformBands.isEmpty()) {
+            emptyList()
+        } else {
+            val centres = profile.platformBands.map { it.centerHz }
+            val gains = BandMapping.gainsDb(profile, centres)
+            profile.platformBands.mapIndexed { index, band ->
+                PlatformBand(band.centerHz, (gains[index] * 100.0).roundToInt())
+            }
+        }
+        val shownBands = runtimeBands.ifEmpty { profilePreview }
+        bandsHome.visibility = if (shownBands.isEmpty()) View.INVISIBLE else View.VISIBLE
+        bandsHome.setBands(shownBands)
     }
 
     private companion object {

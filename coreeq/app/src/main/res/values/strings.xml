@@ -5,7 +5,11 @@
     <string name="home_desc">A sine sweep out, the remote microphone listening, a curve you can read before you trust it.</string>
     <string name="active_profile">Active profile</string>
     <string name="no_profile">No measurement yet</string>
-    <string name="no_profile_sub">Measure this room to create a correction.</string>
+    <string name="no_profile_sub">Measure this room or open Manual EQ to create a profile.</string>
+    <string name="output_profile_missing_name">No profile for this output</string>
+    <string name="output_profile_missing_sub">Nothing measured for %1$s. Measure it or connect an output with a saved profile.</string>
+    <string name="output_profile_unknown_sub">Android could not identify the current output. Core EQ will not guess a known-output room curve; connect a recognized output or measure while this output is unknown.</string>
+    <string name="profile_not_active_on_output">This profile does not match the current output. It is preview/export only and will not be applied here.</string>
     <string name="action_measure">Measure</string>
     <string name="action_measure_sub">Sine sweep · 13 s · this room</string>
     <string name="action_remeasure">Re-measure</string>
@@ -18,6 +22,52 @@
     <string name="action_poweramp_export">Export to Poweramp</string>
     <string name="action_tv_export">Export for TV settings</string>
     <string name="platform_eq_title">Live engine bands when applied · profile preview otherwise · gain in dB</string>
+    <string name="action_manual_eq">Manual EQ · 10-band tone control</string>
+    <string name="action_content_modes">Content modes · Movie, Everyday, Gaming</string>
+    <string name="home_mode_button">Mode · %1$s</string>
+    <string name="mode_title">Core EQ · Content modes</string>
+    <string name="mode_heading">Choose how TV audio should sound</string>
+    <string name="mode_subtitle">Room correction stays the base for each output. Each selected mode adds its own tone layer; automatic app switching is best-effort while correction runs.</string>
+    <string name="mode_movie_tv">Movie / TV</string>
+    <string name="mode_everyday">Everyday</string>
+    <string name="mode_gaming">Gaming</string>
+    <string name="mode_auto_on">Automatic app switching: On</string>
+    <string name="mode_auto_off">Automatic app switching: Off</string>
+    <string name="mode_override_sticky">Manual override: Sticky</string>
+    <string name="mode_override_temporary">Manual override: Temporary</string>
+    <string name="mode_manage_apps">Set app-to-mode rules…</string>
+    <string name="mode_done">Done</string>
+    <string name="mode_active_status">Current: %1$s · %2$s</string>
+    <string name="mode_rule_title">Choose a mode for %1$s</string>
+    <string name="mode_rule_remove">Remove app rule</string>
+    <string name="mode_apps_empty">No launchable TV apps or recently detected players were found.</string>
+    <string name="mode_app_rules_hint">Automatic switching runs while correction is on and requires DUMP-discovered session UIDs that map to one visible package. Session broadcasts and playback callbacks only trigger a rescan; their package and session extras are never trusted as identity. Android documents DUMP as not for third-party apps, so an ADB grant may be refused on your TV. Unmapped or unidentified players default to Everyday, including alongside a different app rule. Conflicting app rules use Everyday. A temporary manual override ends when the detected player set changes.</string>
+    <string name="manual_eq_heading">Manual equaliser</string>
+    <string name="manual_eq_edit_mode">Editing mode: %1$s</string>
+    <string name="manual_eq_mode_picker_title">Choose the mode overlay to edit</string>
+    <string name="manual_eq_subtitle">Ten editable bands from 40 Hz to 8 kHz. Manual tone layers over room correction; positive peaks reserve digital headroom.</string>
+    <string name="manual_eq_loading_profile">Preparing an output profile…</string>
+    <string name="manual_eq_choose_preset">Preset: %1$s</string>
+    <string name="manual_eq_choose_preset_default">Choose EQ preset</string>
+    <string name="manual_eq_save_preset">Save as preset…</string>
+    <string name="manual_eq_reset">Reset manual EQ</string>
+    <string name="manual_eq_done">Done</string>
+    <string name="manual_eq_headroom_pending">HEADROOM\nCalculating…</string>
+    <string name="manual_eq_headroom">HEADROOM\n%1$.1f dB reserved to offset EQ boosts</string>
+    <string name="manual_eq_apply_hint">Changes save to this profile. Enable Correction on Home to apply them.</string>
+    <string name="manual_eq_running_hint">Correction is running; changes are reapplied automatically.</string>
+    <string name="manual_eq_resume_hint">Correction is set on and resumes when Core EQ is opened.</string>
+    <string name="manual_eq_dpad_help">Left/right choose a band · Up/down adjust by 0.5 dB. Touch and drag also works.</string>
+    <string name="manual_eq_band_caption">MANUAL EQ · dB PER BAND · RANGE ±6 dB</string>
+    <string name="manual_eq_presets_title">Choose an EQ preset</string>
+    <string name="manual_eq_save_title">Save manual EQ preset</string>
+    <string name="manual_eq_save">Save</string>
+    <string name="manual_eq_save_hint">Preset name</string>
+    <string name="manual_eq_preset_saved">Saved EQ preset “%1$s”</string>
+    <string name="manual_eq_preset_applied">Preset applied: %1$s</string>
+    <string name="manual_eq_preset_name_required">Enter a name for this preset.</string>
+    <string name="manual_eq_builtin_name">That name is already used by a built-in preset.</string>
+    <string name="manual_eq_reset_done">Manual EQ reset to Flat.</string>
 
     <!-- Measure screen -->
     <string name="measure_title">Core EQ · Measure</string>
@@ -43,6 +93,8 @@
     <string name="measure_import_save">Save for export</string>
     <string name="measure_import_saved">Saved for export, not applied to the TV: %1$s</string>
     <string name="measure_import_failed">Not imported: %1$s</string>
+    <string name="measure_import_output_estimate"> · tagged to route estimate %1$s; confirm it matches the REW measurement</string>
+    <string name="measure_import_output_unknown"> · Android route unknown; REW output chain is not identified</string>
     <string name="measure_saved">Saved and made active: %1$s</string>
     <string name="measure_profile_name">Room · %1$s</string>
     <string name="measure_room_button">Room size: %1$s</string>
@@ -53,20 +105,26 @@
     <string name="correction_off">Correction: Off</string>
 
     <!-- Correction indicator badge (Home screen, under the switch) -->
-    <string name="indicator_live">LIVE · CORRECTING</string>
+    <string name="indicator_live">PLAYING · COVERAGE UNKNOWN</string>
     <string name="indicator_standby">STANDBY</string>
     <string name="indicator_not_applied">NOT APPLIED</string>
 
     <!-- Profiles screen -->
     <string name="profiles_title">Core EQ · Profiles</string>
     <string name="profiles_heading">Saved corrections</string>
-    <string name="profiles_sub">Every profile carries its own microphone, limits and capability verdict.</string>
+    <string name="profiles_sub">Room correction is tied to the output it was measured on. The chosen profile is a fallback; Core EQ prefers a matching output profile and switches modes on top.</string>
+    <string name="profile_selected_badge">CHOSEN</string>
     <string name="export_title">Export</string>
     <string name="export_chip_parametric">Parametric .txt</string>
     <string name="export_chip_graphiceq">GraphicEQ</string>
     <string name="export_chip_json">Profile .json</string>
     <string name="export_preamp_label">Preamp</string>
     <string name="export_preamp_desc">The export ships its own headroom note. Copy the preamp with the filters or the boost clips.</string>
+    <string name="profile_preamp_parametric">Parametric preamp  %1$.2f dB  ·  %2$s · For %3$s</string>
+    <string name="profile_preamp_graphic">GraphicEQ preamp  %1$.2f dB  ·  %2$s · For %3$s</string>
+    <string name="profile_preamp_graphic_no_line">GraphicEQ base-only export has no preamp line · %1$s · For %2$s</string>
+    <string name="profile_preamp_json">Profile JSON preamp  %1$.2f dB  ·  %2$s · For %3$s</string>
+    <string name="profile_preamp_no_filters">Parametric export has no filters or preamp line · %1$s · For %2$s</string>
     <string name="action_export">Export</string>
     <string name="action_delete">Delete</string>
 
@@ -78,9 +136,14 @@
     <string name="capability_fallback_title">If nothing applies, the curve still travels</string>
     <string name="capability_fallback_desc">Export the profile and set the numbers in the TV\'s own sound settings, or in the player\'s built-in equaliser. It is the same curve.</string>
     <string name="capability_discovery_title">DUMP discovery (optional)</string>
-    <string name="capability_discovery_granted">Granted · some players that never announce a session can be found and corrected. Not all: YouTube is reported not to be reachable this way.</string>
-    <string name="capability_discovery_denied">Not granted · this build uses PC ADB; on-device pairing is not included. Run this once from a computer with ADB, then correction can reach some players that never announce a session:</string>
+    <string name="capability_discovery_granted">Granted · Core EQ will try to inspect active media/game sessions. Dump formats, UID visibility and effect support vary; this is not a coverage guarantee.</string>
+    <string name="capability_discovery_denied">Not granted · Android documents DUMP as not for third-party apps, so a grant may be refused on a stock or release build. If your TV allows it, try once from a computer with ADB:</string>
     <string name="capability_discovery_command">adb shell pm grant tv.corebuilds.eq android.permission.DUMP</string>
+    <string name="capability_app_identity_not_granted">app identity: DUMP not granted · broadcasts are rescan triggers only</string>
+    <string name="capability_app_identity_detected">DUMP apps: %1$d package(s) identified</string>
+    <string name="capability_app_identity_partial">DUMP apps: %1$d package(s) identified · another session is unknown</string>
+    <string name="capability_app_identity_unknown">DUMP apps: active session found, package identity unavailable</string>
+    <string name="capability_app_identity_none">DUMP apps: none recorded yet · enable correction and start playback</string>
 
     <!-- Target curves -->
     <string name="target_flat">Flat (0 dB reference)</string>

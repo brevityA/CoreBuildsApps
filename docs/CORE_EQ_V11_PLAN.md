@@ -273,4 +273,7 @@ limiter; release is held until this passes), **M8 pairing helper**
 (spike-gated; the documented cut is PC-ADB-only if pairing is unavailable),
 **M9** (version 1.1.0 + `coreeq-v1.1.0` tag). The current sandbox has no
 Android device, Java or SDK, so it cannot claim M6a or run Gradle; CI and a
-physical device are still required.
+physical device are still required. The maintainer reports the last version
+works on their setup, but did not identify its build, device/API level or
+acceptance readings. That report is not M6a sign-off for this PR's worktree
+delta or a validation of generic-TV coverage.

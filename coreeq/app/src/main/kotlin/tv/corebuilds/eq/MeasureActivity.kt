@@ -75,8 +75,12 @@ class MeasureActivity : TvActivity() {
     private var importThread: Thread? = null
     private var micName: String? = null
     private var measuredOutput: OutputRoute.Output? = null
+    /** Current media-route estimate captured when an external REW file is imported. */
+    private var importedOutputEstimate: OutputRoute.Output? = null
     /** Bumped per measurement, so a late callback from an earlier one is ignored. */
     private var measurementGeneration = 0
+    private var sweepReanalysisGeneration = 0
+    private var sweepReanalysisInProgress = false
     private var measuring = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -124,17 +128,20 @@ class MeasureActivity : TvActivity() {
     private fun refreshChoices() {
         btnRoom.text = getString(R.string.measure_room_button, ROOMS[roomIndex].label)
         btnTarget.text = getString(R.string.measure_target_button, TARGETS[targetIndex].label)
-        val r = result
         val capture = lastCapture
         val imported = importInput
         if (imported != null && importResult != null && !measuring && !importing) {
             // The same imported measurement is re-analysed for the new target
             // and room choice; the graph and saved profile cannot drift apart.
             reanalyzeImport(imported)
-        } else if (r != null && capture != null && !measuring) {
+        } else if (capture != null && !measuring) {
             // Re-run the correction for the new choices from the same capture.
+            // Lock the controls until the matching analysis completes so Save
+            // cannot combine a new target label with the previous correction.
+            val generation = ++sweepReanalysisGeneration
             val target = TARGETS[targetIndex].key
             val volume = ROOMS[roomIndex].volumeM3
+            setSweepReanalysisBusy(true)
             textStatus.text = getString(R.string.measure_analysing)
             thread(name = "CoreEqReanalysis") {
                 val updated = try {
@@ -144,11 +151,19 @@ class MeasureActivity : TvActivity() {
                     null
                 }
                 runOnUiThread {
+                    if (generation != sweepReanalysisGeneration || isFinishing || isDestroyed) return@runOnUiThread
+                    setSweepReanalysisBusy(false)
                     if (updated != null) {
                         result = updated
                         showResult(updated)
                     } else {
-                        showResult(r)
+                        result = null
+                        btnSave.visibility = View.GONE
+                        showTargetOnly()
+                        textStatus.text = getString(
+                            R.string.measure_failed,
+                            "The saved sweep could not be re-analysed for this room and target. Measure again."
+                        )
                     }
                 }
             }
@@ -170,7 +185,8 @@ class MeasureActivity : TvActivity() {
     }
 
     private fun startMeasurement() {
-        if (measuring || importing) return
+        if (measuring || importing || sweepReanalysisInProgress) return
+        sweepReanalysisGeneration += 1
         if (!captureEngine.hasPermission()) {
             requestPermissions(arrayOf(Manifest.permission.RECORD_AUDIO), REQ_MIC)
             return
@@ -179,8 +195,11 @@ class MeasureActivity : TvActivity() {
         measurementGeneration += 1
         val generation = measurementGeneration
         result = null
+        lastCapture = null
         importResult = null
         importInput = null
+        importedOutputEstimate = null
+        measuredOutput = null
         micName = null
         btnStart.isEnabled = false
         btnRoom.isEnabled = false
@@ -196,8 +215,8 @@ class MeasureActivity : TvActivity() {
         captureEngine.start(total, object : CaptureListener {
             override fun onRecording(deviceName: String?) {
                 micName = deviceName
-                // The sweep is about to play: the chain being measured is what
-                // is connected now, named after the device the sweep reaches.
+                // Keep an output estimate as a fallback if Android does not
+                // report which device receives the sweep's own AudioTrack.
                 val ranked = OutputRoute.current(this@MeasureActivity)
                 measuredOutput = ranked
                 btnStart.postDelayed({
@@ -335,6 +354,9 @@ class MeasureActivity : TvActivity() {
                     result = null
                     importInput = source
                     importResult = analyzed
+                    // REW's file does not identify the TV output it measured.
+                    // Tag it to the route estimate now, never as an all-output profile.
+                    importedOutputEstimate = OutputRoute.current(this@MeasureActivity)
                     showImportResult(analyzed)
                 }.onFailure { error ->
                     importFailed(error.message ?: "the file could not be read")
@@ -390,6 +412,7 @@ class MeasureActivity : TvActivity() {
                     // target/room label if the re-analysis ever fails.
                     importResult = null
                     importInput = null
+                    importedOutputEstimate = null
                     btnSave.visibility = View.GONE
                     btnSave.setText(R.string.measure_save)
                     showTargetOnly()
@@ -401,13 +424,24 @@ class MeasureActivity : TvActivity() {
         worker.start()
     }
 
+    private fun setSweepReanalysisBusy(busy: Boolean) {
+        sweepReanalysisInProgress = busy
+        val enabled = !busy && !measuring && !importing
+        btnStart.isEnabled = enabled
+        btnImport.isEnabled = enabled
+        btnRoom.isEnabled = enabled
+        btnTarget.isEnabled = enabled
+        btnSave.isEnabled = !busy && !importing
+    }
+
     private fun setImportBusy(busy: Boolean) {
         importing = busy
-        btnStart.isEnabled = !busy && !measuring
-        btnImport.isEnabled = !busy && !measuring
-        btnRoom.isEnabled = !busy && !measuring
-        btnTarget.isEnabled = !busy && !measuring
-        btnSave.isEnabled = !busy
+        val enabled = !busy && !measuring && !sweepReanalysisInProgress
+        btnStart.isEnabled = enabled
+        btnImport.isEnabled = enabled
+        btnRoom.isEnabled = enabled
+        btnTarget.isEnabled = enabled
+        btnSave.isEnabled = !busy && !sweepReanalysisInProgress
     }
 
     private fun importFailed(reason: String) {
@@ -431,12 +465,16 @@ class MeasureActivity : TvActivity() {
             imp.transitionHz
         )
         val nulls = imp.nullMask.count { it }
-        textStatus.text = String.format(
+        val analysisStatus = String.format(
             Locale.US,
             "REW %d pts · %.0f Hz–%.0f kHz · %d null%s untouched · %.0f Hz fallback; room size unused; min-phase unverified",
             imp.pointsRead, imp.floorHz, DspConstants.F_MAX / 1000,
             nulls, if (nulls == 1) "" else "s", imp.transitionHz
         )
+        val outputStatus = importedOutputEstimate?.let {
+            getString(R.string.measure_import_output_estimate, it.name)
+        } ?: getString(R.string.measure_import_output_unknown)
+        textStatus.text = analysisStatus + outputStatus
         btnSave.visibility = View.VISIBLE
         btnSave.requestFocus()
     }
@@ -446,6 +484,7 @@ class MeasureActivity : TvActivity() {
         result = null
         importResult = null
         importInput = null
+        importedOutputEstimate = null
         btnSave.visibility = View.GONE
         btnSave.setText(R.string.measure_save)
         progressMeasure.progress = 0
@@ -514,17 +553,19 @@ class MeasureActivity : TvActivity() {
     }
 
     /**
-     * The profile an import builds (plan M10): everything the file can prove,
-     * nothing it cannot. RT60 and Schroeder stay null, SNR was never measured,
-     * and the stimulus is named `rew_import` so provenance is never guesswork.
+     * The profile an import builds (plan M10): no invented decay, SNR or
+     * stimulus data. Because REW exports do not name a TV output, the profile is
+     * tagged to the current Android route estimate, not treated as all-output.
      */
     private fun saveImportProfile(imp: ImportResult, now: Long) {
         val bands = Correction.collapseToBands(
             DISPLAY_BANDS_HZ, { hz -> interpolate(hz, imp.centresHz, imp.correctionDb) }, -1500, 1500
         ).map { PlatformBand(it.first, it.second) }
+        val output = importedOutputEstimate
+        val baseName = getString(R.string.measure_profile_name, DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.SHORT).format(Date(now)))
         val profile = Profile(
             id = "profile-$now",
-            name = getString(R.string.measure_profile_name, DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.SHORT).format(Date(now))),
+            name = if (output != null) "$baseName · ${output.name}" else baseName,
             timestampMs = now,
             target = TARGETS[targetIndex].key,
             micType = "REW import",
@@ -542,11 +583,17 @@ class MeasureActivity : TvActivity() {
             filters = imp.filters,
             platformBands = bands,
             curve = imp.centresHz.indices.map { CurvePoint(imp.centresHz[it], imp.measuredDb[it], imp.correctionDb[it]) },
-            measurementNotes = listOf(REW_IMPORT_MEASUREMENT_NOTE)
+            outputKind = OutputRoute.keyFor(output),
+            outputName = output?.name,
+            measurementNotes = listOf(
+                REW_IMPORT_MEASUREMENT_NOTE,
+                if (output == null) REW_IMPORT_OUTPUT_UNKNOWN_NOTE else REW_IMPORT_OUTPUT_ESTIMATE_NOTE
+            )
         )
         // An AVR or soundbar may already correct this response. Save the
         // imported profile for export only; choosing it in Profiles is the
-        // explicit action that applies it to the TV.
+        // explicit action that applies it. Its output tag is only the Android
+        // route estimate captured at import time; the REW file itself names none.
         profileStore.saveProfile(profile, setAsActive = false)
         Toast.makeText(this, getString(R.string.measure_import_saved, profile.name), Toast.LENGTH_SHORT).show()
         finish()
@@ -602,6 +649,10 @@ class MeasureActivity : TvActivity() {
         private const val REQ_IMPORT = 43
         private const val REW_IMPORT_MEASUREMENT_NOTE =
             "REW magnitude-only import: no decay analysis; optional phase column is not analysed; room size cannot inform transition; transition defaults to 300 Hz; minimum-phase gate unverified."
+        private const val REW_IMPORT_OUTPUT_ESTIMATE_NOTE =
+            "Output association is Android's current media-route estimate at import time; confirm it matches the chain measured in REW."
+        private const val REW_IMPORT_OUTPUT_UNKNOWN_NOTE =
+            "Android reported no recognized media route at import time; output association is unknown and does not identify the REW measurement chain."
         /** A normal REW response is far smaller; keep a hostile provider file bounded. */
         private const val IMPORT_MAX_BYTES = 1024 * 1024
         private const val PREFS = "core_eq_measure"

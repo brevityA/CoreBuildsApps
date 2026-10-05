@@ -4,11 +4,11 @@
 
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
     <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
-    <!-- Ladder rung 2 (DUMP discovery): a development permission that only
-         `adb shell pm grant` can give (the Capability screen shows the exact
-         command). Declared, never granted at install: without the grant the
-         app is exactly the v1.0 ladder. Lint's ProtectedPermissions check
-         assumes a permission nothing can grant; this one is granted by hand. -->
+    <!-- Optional, best-effort DUMP discovery. Android's API reference says
+         this permission is not for third-party apps; an ADB grant may be
+         refused by stock/release builds. Manual modes and room EQ do not rely
+         on it. The Capability screen presents the command only as a device
+         check, never as a guarantee. -->
     <uses-permission
         android:name="android.permission.DUMP"
         tools:ignore="ProtectedPermissions" />
@@ -31,6 +31,17 @@
     <uses-feature
         android:name="android.hardware.microphone"
         android:required="false" />
+
+    <queries>
+        <intent>
+            <action android:name="android.intent.action.MAIN" />
+            <category android:name="android.intent.category.LEANBACK_LAUNCHER" />
+        </intent>
+        <intent>
+            <action android:name="android.intent.action.MAIN" />
+            <category android:name="android.intent.category.LAUNCHER" />
+        </intent>
+    </queries>
 
     <application
         android:allowBackup="true"
@@ -62,6 +73,16 @@
             android:name=".ProfilesActivity"
             android:exported="false"
             android:label="@string/profiles_title" />
+
+        <activity
+            android:name=".ManualEqActivity"
+            android:exported="false"
+            android:label="@string/manual_eq_heading" />
+
+        <activity
+            android:name=".ModeActivity"
+            android:exported="false"
+            android:label="@string/mode_title" />
 
         <activity
             android:name=".CapabilityActivity"
