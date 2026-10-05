@@ -1,5 +1,6 @@
 package tv.corebuilds.eq.apply
 
+import tv.corebuilds.eq.dsp.ManualEq
 import tv.corebuilds.eq.export.Profile
 import kotlin.math.max
 import kotlin.math.roundToInt
@@ -7,10 +8,11 @@ import kotlin.math.roundToInt
 /**
  * The one place the correction curve becomes engine bands.
  *
- * [gainsDb] samples the profile's curve at an engine's own band centres and
- * shifts every band down by the largest boost, so the largest boost lands on
- * 0 dB: an engine with no preamp (the platform [android.media.audiofx.Equalizer],
- * and DynamicsProcessing without an input-gain stage) cannot clip the signal.
+ * [gainsDb] samples the measured correction plus manual filters at an engine's
+ * own band centres, then shifts every band down by the largest boost. The
+ * largest boost lands on 0 dB, so an engine with no preamp (the platform
+ * [android.media.audiofx.Equalizer], and DynamicsProcessing without an input-gain
+ * stage) retains the required digital headroom.
  * [millibels] is what the platform Equalizer wants; DynamicsProcessing takes
  * the dB values directly.
  *
@@ -20,9 +22,23 @@ import kotlin.math.roundToInt
  */
 object BandMapping {
 
+    /**
+     * Requested response sampled at the actual engine centres: measured room
+     * correction plus the user's independent manual EQ layer.
+     */
+    fun requestedGainsDb(profile: Profile, centresHz: List<Double>): DoubleArray =
+        DoubleArray(centresHz.size) { hzIndex ->
+            val hz = centresHz[hzIndex]
+            profile.correctionAt(hz) + ManualEq.responseDb(profile.manualFilters, hz)
+        }
+
+    /** The positive peak which must be offset to keep an engine without preamp headroom-safe. */
+    fun headroomDb(profile: Profile, centresHz: List<Double>): Double =
+        max(0.0, requestedGainsDb(profile, centresHz).maxOrNull() ?: 0.0)
+
     /** Per-band gain in dB, headroom-shifted so nothing is ever boosted above 0. */
     fun gainsDb(profile: Profile, centresHz: List<Double>): DoubleArray {
-        val raw = DoubleArray(centresHz.size) { profile.correctionAt(centresHz[it]) }
+        val raw = requestedGainsDb(profile, centresHz)
         val headroom = max(0.0, raw.maxOrNull() ?: 0.0)
         return DoubleArray(raw.size) { raw[it] - headroom }
     }

@@ -84,7 +84,7 @@
                     android:layout_marginTop="2dp" />
             </LinearLayout>
 
-            <!-- Row 2: Session broadcasts -->
+            <!-- Row 2: session/playback signals trigger rescans only -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -97,7 +97,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Session open/close broadcasts"
+                    android:text="Playback and session signals"
                     android:textColor="@color/cb_ink"
                     android:textSize="@dimen/cb_text_data"
                     android:textStyle="bold" />
@@ -105,7 +105,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Players that announce a session. Netflix and YouTube do not."
+                    android:text="They request a fresh DUMP scan; broadcast extras are not trusted as app or session identity."
                     android:textColor="@color/cb_slate"
                     android:textSize="@dimen/cb_text_kicker"
                     android:layout_marginTop="2dp" />
@@ -275,7 +275,7 @@
                     android:id="@+id/text_verdict_session"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="session broadcast: no"
+                    android:text="app identity: DUMP not granted"
                     android:textColor="@color/cb_slate"
                     android:textSize="@dimen/cb_text_kicker"
                     android:fontFamily="monospace"

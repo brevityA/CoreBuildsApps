@@ -8,14 +8,18 @@ import android.widget.Toast
 import tv.corebuilds.eq.apply.BandMapping
 import tv.corebuilds.eq.apply.DumpsysDiscovery
 import tv.corebuilds.eq.apply.EffectLadder
+import tv.corebuilds.eq.apply.EqService
+import tv.corebuilds.eq.apply.OutputRoute
 import tv.corebuilds.eq.export.Formats
 import tv.corebuilds.eq.export.ProfileStore
+import tv.corebuilds.eq.mode.ContentModeStore
 import java.util.Locale
 import kotlin.concurrent.thread
 
 class CapabilityActivity : TvActivity() {
 
     private lateinit var profileStore: ProfileStore
+    private lateinit var modeStore: ContentModeStore
     private lateinit var statusSession0: TextView
     private lateinit var statusDp: TextView
     private lateinit var statusPlatformEq: TextView
@@ -32,6 +36,7 @@ class CapabilityActivity : TvActivity() {
         setContentView(R.layout.activity_capability)
 
         profileStore = ProfileStore(this)
+        modeStore = ContentModeStore(this)
 
         statusSession0 = findViewById(R.id.status_session0)
         statusDp = findViewById(R.id.status_dp)
@@ -86,11 +91,18 @@ class CapabilityActivity : TvActivity() {
                 }
 
                 textVerdictBands.text = "${verdict.bandCount} Equalizer fallback bands"
-                val announced = profileStore.sessionPackages()
-                textVerdictSession.text = if (announced.isEmpty()) {
-                    "session broadcast: none seen yet (turn correction on, then play something)"
-                } else {
-                    "session broadcast: ${announced.size} player(s) seen, latest ${announced.first()}"
+                val activePackages = if (EqService.running) modeStore.lastActivePackages() else emptySet()
+                val unidentifiedPlayer = EqService.running && modeStore.lastActivePlayerUnknown()
+                textVerdictSession.text = when {
+                    !DumpsysDiscovery.hasGrant(this@CapabilityActivity) ->
+                        getString(R.string.capability_app_identity_not_granted)
+                    unidentifiedPlayer && activePackages.isNotEmpty() ->
+                        getString(R.string.capability_app_identity_partial, activePackages.size)
+                    activePackages.isNotEmpty() ->
+                        getString(R.string.capability_app_identity_detected, activePackages.size)
+                    unidentifiedPlayer ->
+                        getString(R.string.capability_app_identity_unknown)
+                    else -> getString(R.string.capability_app_identity_none)
                 }
                 textVerdictGlobal.text = "global mix: ${if (verdict.session0Supported) "supported" else "not supported"}"
             }
@@ -98,18 +110,32 @@ class CapabilityActivity : TvActivity() {
     }
 
     private fun exportForTvSettings() {
-        val active = profileStore.getActiveProfile()
-        if (active == null) {
-            Toast.makeText(this, getString(R.string.no_profile_sub), Toast.LENGTH_LONG).show()
+        val output = OutputRoute.current(this)
+        val profiles = profileStore.getAllProfiles()
+        val base = OutputRoute.pick(
+            profiles,
+            profileStore.chosenId(),
+            output?.kind,
+            output?.name
+        ).profile
+        if (base == null) {
+            val message = when {
+                profiles.isEmpty() -> getString(R.string.no_profile_sub)
+                output?.kind == null -> getString(R.string.output_profile_unknown_sub)
+                else -> getString(R.string.output_profile_missing_sub, OutputRoute.label(output.kind))
+            }
+            Toast.makeText(this, message, Toast.LENGTH_LONG).show()
             return
         }
+        val mode = modeStore.currentDecision().mode
+        val active = modeStore.effectiveProfile(base, mode)
         val centres = lastBandCentres ?: listOf(60.0, 230.0, 910.0, 3600.0, 14000.0)
         // One home for the band maths (BandMapping): the export cannot drift
         // from what the service applies.
         val gains = BandMapping.gainsDb(active, centres)
         val sb = StringBuilder()
         sb.append("CORE EQ · TV SOUND SETTINGS REFERENCE\n")
-        sb.append("Profile: ").append(active.name).append("\n")
+        sb.append("Profile: ").append(active.name).append(" · ").append(mode.title).append("\n")
         sb.append("Target: ").append(active.target).append("\n")
         sb.append(String.format(Locale.US, "Bands: %s\n", if (lastBandCentres != null) "this TV's own equaliser" else "the common 5-band layout"))
         sb.append("------------------------------------\n")
@@ -122,7 +148,7 @@ class CapabilityActivity : TvActivity() {
         sb.append("Enter these values in the TV's own sound equaliser, at the nearest band it offers.\n")
         sb.append("Every band is lowered by the largest boost, so the correction cannot clip.\n")
 
-        val result = Formats.exportToDevice(this, sb.toString(), "tv_settings_bands.txt")
+        val result = Formats.exportToDevice(this, sb.toString(), "tv_settings_bands_${mode.key}.txt")
         Toast.makeText(this, result.message, Toast.LENGTH_LONG).show()
     }
 }

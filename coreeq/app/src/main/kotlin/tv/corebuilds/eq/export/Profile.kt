@@ -33,6 +33,7 @@ data class Profile(
     val rolloffHz: Double = 40.0,
     val snrDb: Double? = null,
     val nullsUntouchedHz: List<Double> = emptyList(),
+    /** Room-correction-only reserve; Formats recomputes the combined value with manual filters. */
     val preampDb: Double = 0.0,
     val filters: List<PeakingFilter> = emptyList(),
     val platformBands: List<PlatformBand> = emptyList(),
@@ -41,13 +42,20 @@ data class Profile(
     /** Measurement limits that must travel with the curve (e.g. phase not analysed on a REW magnitude import). */
     val measurementNotes: List<String> = emptyList(),
     /**
-     * The output this was measured on (see OutputRoute: "speaker", "hdmi_arc",
-     * "bluetooth", …). Null for profiles saved before outputs were recorded:
-     * those apply on any output, as they always did.
+     * The output chain this profile is assigned to (see OutputRoute: "speaker",
+     * "hdmi_arc", "bluetooth", …). A TV sweep uses its reported AudioTrack
+     * route; an external REW import can only use the current route estimate,
+     * which is recorded in [measurementNotes]. Null is reserved for older
+     * profiles saved before outputs were recorded; those retain legacy
+     * all-output behavior.
      */
     val outputKind: String? = null,
     /** What that output called itself ("Sonos Beam"), for display. */
-    val outputName: String? = null
+    val outputName: String? = null,
+    /** User-authored graphic EQ trims layered on top of [curve]. */
+    val manualFilters: List<PeakingFilter> = emptyList(),
+    /** True only for a manual profile created without a room measurement. */
+    val manualOnly: Boolean = false
 ) {
     /** Correction in dB at [hz], interpolated on the measured curve; 0 outside it. */
     fun correctionAt(hz: Double): Double {
