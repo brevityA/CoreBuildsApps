@@ -1,14 +1,14 @@
 {
-  "versionCode": 44,
-  "versionName": "2.1.0",
-  "iconCount": 976,
-  "componentCount": 1207,
+  "versionCode": 45,
+  "versionName": "2.1.1",
+  "iconCount": 981,
+  "componentCount": 1213,
   "releaseDate": "2026-10-05",
   "apkUrl": "https://github.com/brevityA/CoreBuildsApps/releases/download/iconpack/iconpack-release.apk",
   "releaseNotesUrl": "https://github.com/brevityA/CoreBuildsApps/releases",
   "minSdk": 21,
   "highlights": [
-    "Core Builds Glyphs, the standalone app",
-    "Core Builds Glyphs can be opened"
+    "The vSeeBox Heat family",
+    "WAVEO"
   ]
 }
