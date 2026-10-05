@@ -6,6 +6,40 @@ All notable changes to the Core Builds Icon Pack. Format follows
 
 ## [Unreleased]
 
+## [2.1.0] — 2026-10-05
+
+### Added
+
+- **Core Builds Glyphs, the standalone app.** `tv.corebuilds.glyphs` is the
+  icon pack's own catalog, wallpapers, settings, auditor and inspector built
+  with the square appfilter, for a launcher that should apply glyphs and
+  nothing else. It is the `glyphs` flavor of `:app` rather than a second
+  module, because two source sets cannot both provide `res/xml/appfilter.xml`
+  and a second module would mean a second copy of every resource — the drift
+  that retired Pixel Neon. It ships in the same `v*` release as
+  `corebuilds-glyphs-release.apk`, with its own FileProvider authority so it
+  installs beside the icon pack, no Art style toggle (it has nothing to switch
+  to) and no update feed of its own yet, which the updater names instead of
+  failing on. The companion the toggle installs stays, and now answers to Core
+  Builds Glyphs Pack so the two are tellable apart in a launcher's list.
+  `tests/test_glyphs_pack.py` pins the flavor's joins: 26 tests → 34.
+
+### Changed
+
+- **Core Builds Glyphs can be opened.** The square companion shipped with no
+  launcher entry at all, so a user who installed it — or who let the Art style
+  toggle install it for them — had an app they could never open, and nothing
+  anywhere said what it was or whether it matched the pack. It now appears in
+  the drawer and on the Android TV row with one screen: the icon and component
+  counts read out of this package's own generated `drawable.xml` and
+  `appfilter.xml`, so the numbers cannot go stale when the catalog grows, and
+  a button through to the icon pack where the toggle lives. Still no Kotlin
+  and no dependencies — both activities are framework Java, the discovery
+  filters stay on the translucent one that forwards icon picks, and the module
+  now fails its own gate the day a dependency appears.
+  `tests/test_glyphs_pack.py` pinned the opposite contract, `test_no_launcher_entry`,
+  and pins this one instead: 21 tests → 26.
+
 ## [2.0.1] — 2026-10-04
 
 ### Changed

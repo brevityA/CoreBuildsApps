@@ -1,20 +1,20 @@
 {
   "frames": {
     "app-ui-auditor-qr.png": {
-      "bytes": 73553,
-      "structure": "9cc1329d71f9064252804f8ae80114fe304874fedd9d271fd481f15fb97adf0c"
+      "bytes": 73538,
+      "structure": "a814b0c80ea6fe79514b45b3f3b53f9ea4f903db790986a2f2e151b83d7bde13"
     },
     "app-ui-auditor.png": {
       "bytes": 72560,
-      "structure": "b53281353be748b38b002edf3d610fa19a99c92f1db53e6a4913f32e66c10988"
+      "structure": "1d328f30d90792a22ba9ab10495aa7c565f812dc8be99bc924589c7fdc11ccc7"
     },
     "app-ui-catalogue-update.png": {
-      "bytes": 171281,
-      "structure": "93afbc4587494802edb92ead1680bccd35084e2d22663051e659391ebfd0f7bc"
+      "bytes": 172412,
+      "structure": "77c1e3c9c85384e92536b24225146ae2127900fc31de74b6b430bb5c2ad437ea"
     },
     "app-ui-catalogue.png": {
-      "bytes": 174209,
-      "structure": "353e7189e4ce921ef2c39a5c2b65c3426b873b0212a6b6b2f9c0af5fed83f95a"
+      "bytes": 174220,
+      "structure": "4bbd461d7383a7f652e193e005bc2d3dc9716f817c2723b1edbbb3b192b6f174"
     },
     "app-ui-faq.png": {
       "bytes": 139797,
@@ -45,7 +45,7 @@
   "inputs": {
     "app/src/main/assets/appfilter.xml": "99a1121138887b6b08609925904fdb48d24b0e1943a8e2c0d2dac53f1215846e",
     "app/src/main/assets/manifest/wallpapers.json": "36a91cdca6d6d1a6ee864f01b992f6ab8f2be159fa9bc6cc5219b88cb95b8719",
-    "app/src/main/assets/version.json": "82516b1636252f6cc33c32699c1b943a3126664e85b661137792c8ae56b0f1f6",
+    "app/src/main/assets/version.json": "9a734bdc257084fbbae7683a6d75db9ddd3160c7d30e28eca010843b41a75376",
     "app/src/main/res/layout/activity_about.xml": "24bf8847817c6c79e0733b25282913f12756331e851a461fdb5f96e43b08d04a",
     "app/src/main/res/layout/activity_auditor.xml": "3353f96d0932249a0ce841ca31ef98c65103132ec9b9efd1c8144e1fe2c34dca",
     "app/src/main/res/layout/activity_export_progress.xml": "3c388eb2b74cc0b5e362069cff6adfe219a4948eed7220f36a9a2d2d06d48210",
@@ -69,17 +69,17 @@
     "app/src/main/res/values/dimens.xml": "6eb9a59ef7176f3d7b38fa7a0aac9f789ee593415ccf279d5a5084c9ab4d7555",
     "app/src/main/res/values/icon_pack.xml": "c1c08b1344b8152c4b8341a65d31ab28d32cb020d627e807476c7ccf8538777c",
     "app/src/main/res/values/issue_prefill.xml": "fd85418cdd4ccdc59f0f0793b32fc7d96e01f23f80f7f38a3e3d4d7699393ced",
-    "app/src/main/res/values/strings.xml": "cc89f66491e1ec6aa9b28857770eee771736a6fe8bbe729cfdf3d4a990ddbb47",
+    "app/src/main/res/values/strings.xml": "a37e5d7e8de12b3a52a00776371f2f2467e1aa7401a6cbc54cbc4eedd8c9acb3",
     "app/src/main/res/values/suite_hub.xml": "aff339700a9e6751b31ed189c2695e77ce18b80332f104f94e9235cdd05ef74a",
     "app/src/main/res/values/themes.xml": "ecac526951fe40b6c5c01df0ec36730d0e197fd9511862cf587a2143773b46be",
     "tools/build_app_ui_mockups.py": "35207f64a0177534112d4de41d5ae03be128a185f5d24138fc9ef845a56f70f3",
-    "tools/catalog.json": "d6632fe06059ed0ce6ca5494a4f43e88a83ce05f9bcdd1475bcbc113c4ff1514",
+    "tools/catalog.json": "5273588cad705f2facbebed85f2c3f31266aaba1e85449ed9ecede76c86dac22",
     "tools/fonts/DejaVuSansMono-Bold.ttf": "2964f6dac8e6e9d71613928340f17bf868e9ea51692cca333c79e74962f02233",
     "tools/fonts/DejaVuSansMono.ttf": "0f5db4f1749979d961019838b160bec74abdf7f9eca69553fe1aa856bbff49a4",
     "tools/fonts/Outfit-Bold.ttf": "04f7c9705153927058475d6c5e9f75b0a1036ec5f6f63ffb69df046191ea8933",
     "tools/fonts/Outfit-ExtraBold.ttf": "056e8cd5840cea4cfc355f672292f7de00d95f5a42bf9b7cd96d511ca8e2883e"
   },
-  "inputs_digest": "3a9cd99765581345bd3dbc5994b99f591506a0520aa481226c5db36cf3263ea1",
+  "inputs_digest": "d994f4cab84ac81e738a26df9919b3eb0e06317e1946522b6d9e2b797bc4d4f9",
   "metrics": {
     "mono-bold@24": 448.0,
     "mono-bold@32": 608.0,
@@ -96,5 +96,5 @@
     "count": 19,
     "digest": "f6ef83d67b21e19d9ee9e06ae8de3d1bd61c4a61482653bd632823570f3dffa0"
   },
-  "renderer": "python 3.11.15, freetype 2.13.2, layout raqm, PIL 10.4.0, qrcode installed, fontTools 4.59.0, resvg_py 0.4.0"
+  "renderer": "python 3.11.2, freetype 2.13.2, layout basic, PIL 10.4.0, qrcode installed, fontTools 4.59.0, resvg_py 0.4.0"
 }

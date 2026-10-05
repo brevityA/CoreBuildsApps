@@ -1,26 +1,43 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-  Core Builds Glyphs: a resource pack, not an app. It has no launcher entry;
-  the Core Builds Icon Pack is the app, and its Banners/Glyphs toggle decides
-  whether launchers are pointed at that package (banners, the default) or
-  this one (square glyphs).
+  Core Builds Glyphs: a resource pack with a front door.
 
-  The discovery actions below are the same set app/src/main/AndroidManifest.xml
-  declares for the icon pack, so any launcher that lists one lists the other.
-  tests/test_glyphs_pack.py holds the two sets equal.
+  Two activities, on purpose, because they need different windows:
+
+    .GlyphsActivity      translucent, no UI. Carries the icon-pack discovery
+                         intent filters launchers look for, forwards
+                         ACTION_PICK_ICON requests to the icon pack and
+                         finishes. It must stay translucent: a pick is
+                         answered by the other package, and an opaque window
+                         here would flash on every forward.
+
+    .GlyphsHomeActivity  the drawer / Android TV row entry. What a user sees
+                         when they open the pack: what it is, how many icons
+                         it covers, and the way through to the icon pack
+                         where the Art style toggle lives.
+
+  The discovery filters stay on .GlyphsActivity so that the set of launchers
+  that can find this pack is exactly the set that can find the icon pack;
+  tests/test_glyphs_pack.py holds the two sets equal and holds the MAIN filter
+  solo on the home activity.
 -->
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <!-- Android 11+ package visibility: the icon-picker forward below starts
-         an activity in the icon pack, which must be visible to do that. -->
+    <!-- Android 11+ package visibility: the icon-picker forward and the home
+         screen's Open button both start an activity in the icon pack, which
+         must be visible to do that. -->
     <queries>
         <package android:name="tv.corebuilds.iconpack" />
     </queries>
 
-    <!-- No android.software.leanback declaration: that marks a TV *app*,
-         and lint then requires a LEANBACK_LAUNCHER entry this resource
-         pack deliberately does not have. Sideloaded installs do not filter
-         on features, and launchers find the pack by the filters below. -->
+    <!-- Declared now that there is a launcher entry to put on the TV row.
+         required=false: sideloaded installs do not filter on features, and
+         the pack is useful on a phone launcher too. Lint reads this
+         declaration as a promise of a LEANBACK_LAUNCHER activity, which
+         .GlyphsHomeActivity below is. -->
+    <uses-feature
+        android:name="android.software.leanback"
+        android:required="false" />
     <uses-feature
         android:name="android.hardware.touchscreen"
         android:required="false" />
@@ -33,8 +50,25 @@
         android:roundIcon="@mipmap/ic_launcher">
 
         <activity
+            android:name=".GlyphsHomeActivity"
+            android:exported="true"
+            android:label="@string/app_name"
+            android:theme="@style/GlyphsHome">
+
+            <!-- Same grammar as the icon pack's own launcher filter, so the
+                 companion lands in a phone drawer and on a TV row exactly
+                 where the pack does. -->
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+                <category android:name="android.intent.category.LEANBACK_LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <activity
             android:name=".GlyphsActivity"
             android:exported="true"
+            android:excludeFromRecents="true"
             android:label="@string/app_name"
             android:theme="@android:style/Theme.Translucent.NoTitleBar">
 

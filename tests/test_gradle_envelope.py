@@ -238,7 +238,17 @@ class MatrixParsing(unittest.TestCase):
         ]
 
     def test_reads_exactly_the_matrix_entries(self):
-        self.assertEqual(len(self.entries), 6)
+        # Named, not merely counted: a bare count still passes if the parser
+        # picks up a workflow step and drops a real entry. Seven since the
+        # :app module's glyphs flavor (tv.corebuilds.glyphs) got an entry of
+        # its own, so the standalone glyph app is compiled, linted and unit
+        # tested on every PR and not only when a release is tagged.
+        self.assertEqual(
+            {e["name"] for e in self.entries},
+            {"Icon Pack", "Core Builds Glyphs app", "Core Builds Glyphs",
+             "Core Line", "Core Shift", "Core Doctor", "Core Motion plugin"},
+        )
+        self.assertEqual(len(self.entries), 7)
 
     def test_step_names_are_not_mistaken_for_matrix_entries(self):
         # A whole-file search for `- name:` also matches every workflow step, and

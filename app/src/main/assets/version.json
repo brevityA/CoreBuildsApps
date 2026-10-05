@@ -1,14 +1,14 @@
 {
-  "versionCode": 43,
-  "versionName": "2.0.1",
+  "versionCode": 44,
+  "versionName": "2.1.0",
   "iconCount": 976,
   "componentCount": 1207,
-  "releaseDate": "2026-10-04",
+  "releaseDate": "2026-10-05",
   "apkUrl": "https://github.com/brevityA/CoreBuildsApps/releases/download/iconpack/iconpack-release.apk",
   "releaseNotesUrl": "https://github.com/brevityA/CoreBuildsApps/releases",
   "minSdk": 21,
   "highlights": [
-    "Banners drop the left-edge bar",
-    "Every banner lockup sits dead centre"
+    "Core Builds Glyphs, the standalone app",
+    "Core Builds Glyphs can be opened"
   ]
 }

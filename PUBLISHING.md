@@ -7,6 +7,8 @@ This repo ships five products from independent Gradle roots. Keep versioned tags
 | Product | Versioned tag | Floating tag | Stable APK asset | Downloader |
 |---|---|---|---|---|
 | Icon Pack | `v<version>` | `iconpack` | `iconpack-release.apk` plus legacy `app-release.apk` | `5270601` |
+| Icon Pack (glyph flavor) | none — ships in the icon pack's `v*` release | none | `corebuilds-glyphs-release.apk` | none |
+| Icon Pack (glyph companion) | none — ships in the icon pack's `v*` release | none | `iconpack-glyphs-release.apk` | none |
 | Core Line | `coreline-v<version>` | `coreline` | `coreline-release.apk` | `7375676` |
 | Core Shift | `shift-v<version>` | `shift` | `coreshift-release.apk` | `8829421` |
 | Core Motion | `motion-v<version>` | `motion` | `coremotion-release.apk` | `[USER TO SUPPLY]` |

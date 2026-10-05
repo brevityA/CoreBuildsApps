@@ -172,7 +172,12 @@ jobs:
           KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
           KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
           KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
-        run: ./gradlew assembleRelease --no-daemon
+        # Explicit variant tasks, not the assembleRelease anchor: :app now has
+        # an art flavor dimension, so the anchor would build both flavors
+        # without saying which two APKs this release is about to publish.
+        run: |
+          ./gradlew :app:assembleBannersRelease :app:assembleGlyphsRelease \
+            :glyphs:assembleRelease --no-daemon
 
       - name: Verify the APK is signed before releasing
         # An unsigned APK cannot be installed on Android at all, so publishing
@@ -185,39 +190,38 @@ jobs:
         # is what PUBLISHING.md documents for contributors without the keystore.
         if: startsWith(github.ref, 'refs/tags/v')
         run: |
-          APK=$(ls app/build/outputs/apk/release/*.apk)
-          echo "Verifying $APK"
-          case "$APK" in
-            *-unsigned.apk)
-              echo "::error::$APK is unsigned — a tagged release must be installable."
-              echo "KEYSTORE_BASE64 is unset or failed to decode. See PUBLISHING.md step 4."
-              exit 1
-              ;;
-          esac
-          "$ANDROID_HOME/build-tools/34.0.0/apksigner" verify --print-certs "$APK"
-          echo "APK signature verified."
-          # Core Builds Glyphs ships in the same release and the icon pack
-          # installs it only if its certificate matches its own, so an
-          # unsigned or differently signed companion is a broken toggle.
+          # Three APKs ship in this release and all three have to carry one
+          # certificate: the icon pack installs the companion only if its
+          # signature matches its own, and the standalone glyph app is a
+          # sibling of both.
+          APK=$(ls app/build/outputs/apk/banners/release/*.apk)
+          GLYPHS_APP=$(ls app/build/outputs/apk/glyphs/release/*.apk)
           GLYPHS=$(ls glyphs/build/outputs/apk/release/*.apk)
-          case "$GLYPHS" in
-            *-unsigned.apk)
-              echo "::error::$GLYPHS is unsigned."
+          for CANDIDATE in "$APK" "$GLYPHS_APP" "$GLYPHS"; do
+            echo "Verifying $CANDIDATE"
+            case "$CANDIDATE" in
+              *-unsigned.apk)
+                echo "::error::$CANDIDATE is unsigned — a tagged release must be installable."
+                echo "KEYSTORE_BASE64 is unset or failed to decode. See PUBLISHING.md step 4."
+                exit 1
+                ;;
+            esac
+          done
+          SIGNER="$ANDROID_HOME/build-tools/34.0.0/apksigner"
+          A=$("$SIGNER" verify --print-certs "$APK" | grep 'SHA-256 digest')
+          for CANDIDATE in "$GLYPHS_APP" "$GLYPHS"; do
+            B=$("$SIGNER" verify --print-certs "$CANDIDATE" | grep 'SHA-256 digest')
+            if [ "$A" != "$B" ]; then
+              echo "::error::$CANDIDATE is not signed with the icon pack's certificate."
               exit 1
-              ;;
-          esac
-          A=$("$ANDROID_HOME/build-tools/34.0.0/apksigner" verify --print-certs "$APK" | grep 'SHA-256 digest')
-          B=$("$ANDROID_HOME/build-tools/34.0.0/apksigner" verify --print-certs "$GLYPHS" | grep 'SHA-256 digest')
-          if [ "$A" != "$B" ]; then
-            echo "::error::Core Builds Glyphs is not signed with the icon pack's certificate."
-            exit 1
-          fi
-          echo "Companion signed with the same certificate."
+            fi
+          done
+          echo "All three APKs signed with the same certificate."
 
       - name: Name the APK for the stable Downloader URL
         if: startsWith(github.ref, 'refs/tags/v')
         run: |
-          SRC=$(ls app/build/outputs/apk/release/*.apk | grep -v unsigned | head -1)
+          SRC=$(ls app/build/outputs/apk/banners/release/*.apk | grep -v unsigned | head -1)
           mkdir -p dist
           cp "$SRC" dist/iconpack-release.apk
           # Compatibility filename requested by existing Downloader code 5270601.
@@ -227,6 +231,12 @@ jobs:
           # name is a contract: tests/test_glyphs_pack.py holds the two together.
           cp "$(ls glyphs/build/outputs/apk/release/*.apk | grep -v unsigned | head -1)" \
             dist/iconpack-glyphs-release.apk
+          # The standalone glyph app (:app's glyphs flavor,
+          # tv.corebuilds.glyphs). Its own name, because
+          # iconpack-glyphs-release.apk is the companion's and the icon pack
+          # fetches that one by name.
+          cp "$(ls app/build/outputs/apk/glyphs/release/*.apk | grep -v unsigned | head -1)" \
+            dist/corebuilds-glyphs-release.apk
           ls -lh dist/
 
       - name: Upload APK artifact
@@ -234,7 +244,7 @@ jobs:
         with:
           name: core-builds-icon-pack
           path: |
-            app/build/outputs/apk/release/*.apk
+            app/build/outputs/apk/*/release/*.apk
             glyphs/build/outputs/apk/release/*.apk
           if-no-files-found: error
 
@@ -253,7 +263,7 @@ jobs:
           gh release delete "$TAG" --yes 2>/dev/null || true
           gh release create "$TAG" --draft --generate-notes --verify-tag \
             dist/iconpack-release.apk dist/app-release.apk \
-            dist/iconpack-glyphs-release.apk
+            dist/iconpack-glyphs-release.apk dist/corebuilds-glyphs-release.apk
           gh release edit "$TAG" --draft=false --latest
 
       - name: Point floating tag iconpack at this commit
@@ -282,7 +292,7 @@ jobs:
           EOF
           )" \
             dist/iconpack-release.apk dist/app-release.apk \
-            dist/iconpack-glyphs-release.apk
+            dist/iconpack-glyphs-release.apk dist/corebuilds-glyphs-release.apk
           gh release edit iconpack --draft=false --latest=false
 
       - name: Publish the update manifest

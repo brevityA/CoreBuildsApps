@@ -95,13 +95,16 @@ jobs:
         run: |
           set -euo pipefail
           case "${{ needs.select.outputs.app }}" in
-            iconpack) DIR=. ; APK=app/build/outputs/apk/release/*.apk ; AAB=app/build/outputs/bundle/release/*.aab ; OUT=iconpack-release.apk ;;
-            coreline) DIR=ticker/android ; APK=ticker/android/app/build/outputs/apk/release/*.apk ; AAB=ticker/android/app/build/outputs/bundle/release/*.aab ; OUT=coreline-release.apk ;;
-            coreshift) DIR=shift ; APK=shift/app/build/outputs/apk/release/*.apk ; AAB=shift/app/build/outputs/bundle/release/*.aab ; OUT=coreshift-release.apk ;;
-            coredoctor) DIR=doctor ; APK=doctor/app/build/outputs/apk/release/*.apk ; AAB=doctor/app/build/outputs/bundle/release/*.aab ; OUT=coredoctor-release.apk ;;
-            coremotion) DIR=motion-plugin ; APK=motion-plugin/app/build/outputs/apk/release/*.apk ; AAB=motion-plugin/app/build/outputs/bundle/release/*.aab ; OUT=coremotion-release.apk ;;
+            # :app has an art flavor dimension, so its variant tasks and its
+            # output paths are named; the other roots have no flavors and keep
+            # the plain build-type tasks.
+            iconpack) DIR=. ; APK=app/build/outputs/apk/banners/release/*.apk ; AAB=app/build/outputs/bundle/bannersRelease/*.aab ; OUT=iconpack-release.apk ; TASKS=":app:lintBannersRelease :app:testBannersReleaseUnitTest :app:assembleBannersRelease :app:bundleBannersRelease" ;;
+            coreline) DIR=ticker/android ; APK=ticker/android/app/build/outputs/apk/release/*.apk ; AAB=ticker/android/app/build/outputs/bundle/release/*.aab ; OUT=coreline-release.apk ; TASKS=":app:lintRelease :app:testReleaseUnitTest :app:assembleRelease :app:bundleRelease" ;;
+            coreshift) DIR=shift ; APK=shift/app/build/outputs/apk/release/*.apk ; AAB=shift/app/build/outputs/bundle/release/*.aab ; OUT=coreshift-release.apk ; TASKS=":app:lintRelease :app:testReleaseUnitTest :app:assembleRelease :app:bundleRelease" ;;
+            coredoctor) DIR=doctor ; APK=doctor/app/build/outputs/apk/release/*.apk ; AAB=doctor/app/build/outputs/bundle/release/*.aab ; OUT=coredoctor-release.apk ; TASKS=":app:lintRelease :app:testReleaseUnitTest :app:assembleRelease :app:bundleRelease" ;;
+            coremotion) DIR=motion-plugin ; APK=motion-plugin/app/build/outputs/apk/release/*.apk ; AAB=motion-plugin/app/build/outputs/bundle/release/*.aab ; OUT=coremotion-release.apk ; TASKS=":app:lintRelease :app:testReleaseUnitTest :app:assembleRelease :app:bundleRelease" ;;
           esac
-          (cd "$DIR" && ./gradlew :app:lintRelease :app:testReleaseUnitTest :app:assembleRelease :app:bundleRelease --no-daemon --stacktrace)
+          (cd "$DIR" && ./gradlew $TASKS --no-daemon --stacktrace)
           mkdir -p dist
           cp $(ls $APK | grep -v unsigned | head -1) "dist/$OUT"
           if compgen -G "$AAB" >/dev/null; then cp $(ls $AAB | head -1) dist/; fi
