@@ -37,11 +37,11 @@ Icon Pack is not on this list, and its `iconpack-v*` trigger was removed rather
 than reconciled: the pack's `tagPrefix` in `suite.json` is bare `v`, and only
 `build.yml` (which triggers on `v*`) moves the floating `iconpack` tag, ships the
 legacy `app-release.apk` the existing Downloader code reads, and publishes both
-glyph artifacts from the same release — the Glyphs companion the Art style
-toggle fetches (`iconpack-glyphs-release.apk`) and the glyphs-only build of the
-pack itself (`corebuilds-glyphs-release.apk`, Downloader `5804177`). A release
-cut here for Icon Pack would carry a versioned APK and nothing users actually
-install from. `tools/check_suite_truth.py` now fails if
+glyph artifacts from the same release — `iconpack-glyphs-release.apk`, the
+Glyphs companion the Art style toggle fetches and the asset Downloader `5804177`
+resolves to, and `corebuilds-glyphs-release.apk`, the glyphs-only build of the
+pack itself, which is URL-only. A release cut here for Icon Pack would carry a
+versioned APK and nothing users actually install from. `tools/check_suite_truth.py` now fails if
 any workflow triggers on a prefix `suite.json` does not declare, or declares a
 prefix no workflow triggers on, so the two halves cannot drift apart again.
 

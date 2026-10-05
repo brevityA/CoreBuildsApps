@@ -57,8 +57,9 @@ launcher reads the appfilter of the package it applies, so the in-app
 one package or the other, installing Core Builds Glyphs Pack from the matching
 release the first time Glyphs is picked. Each pack's `drawable.xml` lists its
 own style only, and the icon picker answers in the style of the pack the
-launcher opened. The same app also ships glyphs-only, as the `glyphs` flavor
-`tv.corebuilds.glyphs` — square appfilter, no toggle, Downloader `5804177`.
+launcher opened. The companion installs standalone with Downloader `5804177`,
+and the same app also ships glyphs-only, as the `glyphs` flavor
+`tv.corebuilds.glyphs` — square appfilter, no toggle, permanent URL only.
 
 Every icon gets a banner, unconditionally. The old `"banner": true` flag is
 gone: partial generation would have left `appfilter` pointing at drawables

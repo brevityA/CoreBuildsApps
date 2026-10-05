@@ -25,7 +25,7 @@
 > | **[Core EQ](#-core-eq)** | `v1.1.0` | Room EQ measured per TV audio output, with manual/content-mode tone controls | `7946159` | [`coreeq-v*` / `coreeq`](../../releases) |
 >
 > Each app has its own CI workflow and release tag. Do not merge Gradle roots, split the repo, or repoint floating Downloader tags.
-> The Icon Pack release also carries a glyphs-only build of the same app — square art, no banners (`tv.corebuilds.glyphs`) — Downloader `5804177`.
+> The Icon Pack release also carries a glyphs-only pack — square art, no banners (`tv.corebuilds.iconpack.glyphs`) — Downloader `5804177`.
 <!-- suite-stamp:end -->
 
 ---
@@ -56,14 +56,14 @@ Designed for [Projectivy Launcher](https://play.google.com/store/apps/details?id
 
 > **Updates:** at launch the app checks `Latestrelease/version.json`. When a newer build exists, a **Download** button pulls the APK from GitHub and opens the system installer.
 
-#### Glyphs-only build
+#### Glyphs-only builds
 
-Prefer square glyphs everywhere and no banners at all? Install **Core Builds Glyphs** — `tv.corebuilds.glyphs`, the same app (catalog, wallpapers, settings) built with the square appfilter and no Art style toggle — instead of, or beside, the pack above:
+Prefer square glyphs and no banners? The pack's `v*` release carries two builds for that, both at the pack's version:
 
-- **Downloader code `5804177`**
-- permanent URL: **https://github.com/brevityA/CoreBuildsApps/releases/download/iconpack/corebuilds-glyphs-release.apk**
+- **Core Builds Glyphs Pack** (`tv.corebuilds.iconpack.glyphs`) — the resource-only square twin the Art style toggle installs: the same 981 icons mapped to the same components, square, no banners, plus one info screen. **Downloader code `5804177`** · **https://github.com/brevityA/CoreBuildsApps/releases/download/iconpack/iconpack-glyphs-release.apk**
+- **Core Builds Glyphs** (`tv.corebuilds.glyphs`) — the whole app (catalog, wallpapers, settings, auditor) built with the square appfilter and no Art style toggle, for a launcher that should never apply banners. No Downloader code yet — install it from **https://github.com/brevityA/CoreBuildsApps/releases/download/iconpack/corebuilds-glyphs-release.apk**
 
-It ships in the pack's `v*` release at the pack's version, so its catalog can't lag the banner build, and it keeps its own package ID and FileProvider authority so it installs alongside the pack — a launcher applies whichever one you point it at. One gap: it ships no update feed of its own yet, and **Settings → Updates** names that rather than offering the banner APK it couldn't install over itself.
+Both install beside the icon pack (their own package IDs and FileProvider authorities), and a launcher applies whichever one you point it at. The standalone app ships no update feed of its own yet, and **Settings → Updates** names that rather than offering the banner APK it couldn't install over itself.
 
 ### What's covered
 
@@ -98,7 +98,7 @@ Series 9's twelve walls have twelve moving companions — the same scene, animat
 
 ### 16:9 banners
 
-Every icon ships a **320×180 transparent banner** for Projectivy's wide-card layout — monoline glyph, icon-coloured category, stroke-letter name, nothing else on the card. Banners are what the pack applies by default; the in-app Art style toggle switches to square glyphs by pointing launchers at the small Core Builds Glyphs Pack companion instead, and `tv.corebuilds.glyphs` ships the same app with square glyphs baked in for a launcher that should never apply banners (Downloader `5804177`, [permanent URL](https://github.com/brevityA/CoreBuildsApps/releases/download/iconpack/corebuilds-glyphs-release.apk)). Generated from `tools/build_banners.py`.
+Every icon ships a **320×180 transparent banner** for Projectivy's wide-card layout — monoline glyph, icon-coloured category, stroke-letter name, nothing else on the card. Banners are what the pack applies by default; the in-app Art style toggle switches to square glyphs by pointing launchers at the small Core Builds Glyphs Pack companion instead (`tv.corebuilds.iconpack.glyphs`, Downloader `5804177`, [permanent URL](https://github.com/brevityA/CoreBuildsApps/releases/download/iconpack/iconpack-glyphs-release.apk)), and `tv.corebuilds.glyphs` ships the same app with square glyphs baked in for a launcher that should never apply banners ([permanent URL](https://github.com/brevityA/CoreBuildsApps/releases/download/iconpack/corebuilds-glyphs-release.apk)). Generated from `tools/build_banners.py`.
 
 <div align="center"><img src="docs/banner-preview.png" alt="Banner styles" width="760"></div>
 

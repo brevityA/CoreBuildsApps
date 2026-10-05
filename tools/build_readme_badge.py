@@ -44,11 +44,14 @@ def block(suite: dict) -> str:
         ">",
         "> Each app has its own CI workflow and release tag. Do not merge Gradle roots, split the repo, or repoint floating Downloader tags.",
         # Hand-maintained, and deliberately not a suite.json entry: the
-        # glyphs-only build is the icon pack's own `glyphs` flavor
-        # (tv.corebuilds.glyphs), not a suite product — no registry row, no
-        # tag of its own. It ships in the pack's v* release, so the code
-        # lives here where the other Downloader codes are read.
-        "> The Icon Pack release also carries a glyphs-only build of the same app — square art, no banners (`tv.corebuilds.glyphs`) — Downloader `5804177`.",
+        # glyphs-only pack is the icon pack's square companion
+        # (tv.corebuilds.iconpack.glyphs), not a suite product - no registry
+        # row, no tag of its own. It ships in the pack's v* release, so the
+        # code lives here where the other Downloader codes are read.
+        # 5804177 resolves to iconpack-glyphs-release.apk, the companion;
+        # the standalone glyphs flavor (corebuilds-glyphs-release.apk) is
+        # URL-only. Never repoint either at another asset.
+        "> The Icon Pack release also carries a glyphs-only pack — square art, no banners (`tv.corebuilds.iconpack.glyphs`) — Downloader `5804177`.",
         END,
     ]
     return "\n".join(lines)
