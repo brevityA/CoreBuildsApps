@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<paths>
+    <!-- Downloaded release APKs handed to the package installer. Nothing else
+         in Core EQ shares a cache path with the update path, so a bug in the
+         updater cannot expose a measurement or a profile. -->
+    <cache-path name="updates" path="updates/" />
+</paths>

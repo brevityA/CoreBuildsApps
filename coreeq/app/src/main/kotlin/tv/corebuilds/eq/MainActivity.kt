@@ -28,6 +28,9 @@ import tv.corebuilds.eq.ui.CorrectionIndicator
 import tv.corebuilds.eq.ui.CurveGraphView
 import tv.corebuilds.eq.ui.Series
 import tv.corebuilds.eq.ui.correctionIndicator
+import tv.corebuilds.eq.update.UpdateChecker
+import tv.corebuilds.eq.update.UpdateInstaller
+import tv.corebuilds.eq.update.UpdatePrefs
 import java.util.Locale
 import kotlin.math.roundToInt
 
@@ -45,6 +48,12 @@ class MainActivity : TvActivity() {
     private lateinit var badgeIndicator: View
     private lateinit var badgeDot: View
     private lateinit var badgeLabel: TextView
+    private lateinit var updateBar: View
+    private lateinit var updateBarText: TextView
+    private lateinit var updateBarInstall: Button
+    private lateinit var updatePrefs: UpdatePrefs
+    private var pendingUpdate: UpdateChecker.Result.Available? = null
+    private var updateChecked = false
     private var pulse: ObjectAnimator? = null
     private var lastIndicatorState: CorrectionIndicator? = null
 
@@ -62,6 +71,7 @@ class MainActivity : TvActivity() {
 
         profileStore = ProfileStore(this)
         modeStore = ContentModeStore(this)
+        updatePrefs = UpdatePrefs(this)
 
         textProfileName = findViewById(R.id.text_active_profile_name)
         textProfileSub = findViewById(R.id.text_active_profile_sub)
@@ -73,6 +83,9 @@ class MainActivity : TvActivity() {
         badgeIndicator = findViewById(R.id.badge_correction)
         badgeDot = findViewById(R.id.badge_dot)
         badgeLabel = findViewById(R.id.badge_label)
+        updateBar = findViewById(R.id.update_bar)
+        updateBarText = findViewById(R.id.update_bar_text)
+        updateBarInstall = findViewById(R.id.update_bar_install)
 
         findViewById<Button>(R.id.btn_remeasure).setOnClickListener {
             startActivity(Intent(this, MeasureActivity::class.java))
@@ -87,6 +100,12 @@ class MainActivity : TvActivity() {
         }
         findViewById<Button>(R.id.btn_nav_capability).setOnClickListener {
             startActivity(Intent(this, CapabilityActivity::class.java))
+        }
+        updateBarInstall.setOnClickListener { startPendingUpdate() }
+        findViewById<Button>(R.id.update_bar_later).setOnClickListener {
+            pendingUpdate?.let { updatePrefs.dismiss(it.versionCode) }
+            pendingUpdate = null
+            updateBar.visibility = View.GONE
         }
 
         findViewById<Button>(R.id.btn_remeasure).requestFocus()
@@ -106,6 +125,89 @@ class MainActivity : TvActivity() {
         loadActiveProfile()
         refreshModeButton()
         refreshStatus()
+        maybeCheckForUpdate()
+    }
+
+    /**
+     * One check per app process, and only when the user has left checks on.
+     * The result is a bar, never a download: nothing is fetched until Update is
+     * pressed, and a version the user already pushed away does not come back.
+     */
+    private fun maybeCheckForUpdate() {
+        if (updateChecked || !updatePrefs.checksEnabled) return
+        if (pendingUpdate != null) return
+        updateChecked = true
+        UpdateChecker.check(this) { result ->
+            if (isFinishing || isDestroyed) return@check
+            when (result) {
+                is UpdateChecker.Result.Available -> {
+                    if (result.versionCode == updatePrefs.dismissedVersionCode()) return@check
+                    pendingUpdate = result
+                    val lead = result.highlights.firstOrNull()
+                    updateBarText.text = if (lead.isNullOrBlank()) {
+                        getString(R.string.update_available, result.versionName)
+                    } else {
+                        getString(R.string.update_available, result.versionName) + " · " + lead
+                    }
+                    updateBar.visibility = View.VISIBLE
+                    updateBarInstall.requestFocus()
+                }
+                // Up to date and failures are both "nothing to say" on Home.
+                // Capability names the reason when the user asks for a check.
+                else -> Unit
+            }
+        }
+    }
+
+    /**
+     * Download and verify the offered release, then hand it to the installer.
+     * The bar's own line carries progress and every refusal in words; the
+     * screen behind it stays usable, but this is deliberately the only thing
+     * the update bar does.
+     */
+    private fun startPendingUpdate() {
+        val update = pendingUpdate ?: return
+        if (!UpdateInstaller.canInstall(this)) {
+            UpdateInstaller.requestInstallPermission(this)
+            updateBarText.text = getString(R.string.update_permission_needed)
+            return
+        }
+        updateBarInstall.isEnabled = false
+        updateBarText.text = getString(R.string.update_downloading, 0)
+        UpdateInstaller.download(this, update.apkUrl, update.versionCode, update.apkSha256) { event ->
+            if (isFinishing || isDestroyed) return@download
+            when (event) {
+                is UpdateInstaller.Event.Progress -> {
+                    val percent = if (event.total > 0) {
+                        ((event.received * 100) / event.total).toInt()
+                    } else {
+                        0
+                    }
+                    updateBarText.text = getString(R.string.update_downloading, percent)
+                }
+                is UpdateInstaller.Event.Ready -> {
+                    updateBarText.text = getString(R.string.update_verifying)
+                    updateBarInstall.isEnabled = true
+                    updatePrefs.dismiss(update.versionCode)
+                    UpdateInstaller.installForResult(this, event.file, REQ_INSTALL)
+                }
+                is UpdateInstaller.Event.Failed -> {
+                    updateBarInstall.isEnabled = true
+                    updateBarText.text = getString(R.string.update_install_failed, event.reason)
+                }
+            }
+        }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode != REQ_INSTALL) return
+        // RESULT_CANCELED also arrives when Android tears the activity down to
+        // replace it, so silence here is correct in both readings: an installed
+        // update restarts Core EQ by itself, and a declined one needs no note.
+        if (resultCode == RESULT_OK) {
+            updateBarText.text = getString(R.string.update_installed_done)
+        }
     }
 
     override fun onPause() {
@@ -300,5 +402,6 @@ class MainActivity : TvActivity() {
 
     private companion object {
         const val REQ_NOTIFY = 7
+        const val REQ_INSTALL = 8
     }
 }

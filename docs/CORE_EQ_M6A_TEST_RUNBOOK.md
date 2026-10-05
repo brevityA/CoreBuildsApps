@@ -5,14 +5,27 @@ This is a test record template, not evidence that a device has passed.
 
 ## 1. Test build
 
-Use the current v1.1 worktree or a reviewed debug APK. The local build requires
-JDK 17, Android SDK platform 35, and ADB:
+Use the current v1.1 worktree or a reviewed debug APK. Core EQ now supports
+Android 11/API 30 and later, and targets Android 17/API 37. A local build
+requires JDK 17, Android SDK platform 37, and ADB:
 
 ```sh
 cd coreeq
 ./gradlew :app:testDebugUnitTest :app:assembleDebug --no-daemon
 adb install -r app/build/outputs/apk/debug/app-debug.apk
 ```
+
+The public `coreeq-test` APK uses package `tv.corebuilds.eq.debug` and is now
+signed with the same stable certificate as production. That certificate comes
+from the suite's existing repository secrets (`KEYSTORE_BASE64`,
+`KEYSTORE_PASSWORD`, `KEY_ALIAS`, `KEY_PASSWORD`) — the same four every other
+app's workflow reads, so there is nothing new to configure in GitHub. The test
+package is handed a blank update feed by Gradle on purpose: it can never install
+a `tv.corebuilds.eq` release APK, so it must not offer one. Install each new
+test build by hand; only release builds check for updates themselves. The first install after
+this signing change cannot update an older runner-debug-signed test build: if
+one is present, uninstall only the test package once, then install the new APK.
+Production `tv.corebuilds.eq` is a separate package and is not removed.
 
 Record the APK SHA-256 so the logs and audio captures can be tied to the exact
 build:

@@ -208,8 +208,8 @@ object OutputRoute {
         return am.encodedSurroundMode != AudioManager.ENCODED_SURROUND_OUTPUT_NEVER
     }
 
-    // Types added after minSdk 26: the constants are inlined, so naming them
-    // here keeps older devices working (they simply never report them).
+    // API 31 route constants are guarded by the SDK checks above; Android 11
+    // devices stay on the same generic route handling as before.
     private const val TYPE_HDMI_EARC = 29 // AudioDeviceInfo.TYPE_HDMI_EARC, API 31
     private const val TYPE_BLE_HEADSET = 26 // API 31
     private const val TYPE_BLE_SPEAKER = 27 // API 31

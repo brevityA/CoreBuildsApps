@@ -36,6 +36,28 @@ Each dispatch force-moves the `iconpack-test` tag and replaces the asset, so the
 filename is load-bearing: `iconpack-test.apk` is baked into a numeric code that
 cannot be repointed afterwards. Never add a version or commit sha to it.
 
+### Core EQ test channel
+
+`coreeq-test` is a main-only prerelease. Its APK has package ID
+`tv.corebuilds.eq.debug` so it installs alongside production, but it is signed
+with the same stable certificate as production. The workflow compares that
+certificate to the currently published APK and installs candidates on API 30
+and 37 before publishing. This lets test builds update in place without
+changing the production package.
+
+The first test APK signed by the stable certificate cannot update an older
+runner-debug-signed test APK: uninstall only the test package once, then install
+the new build. Production `tv.corebuilds.eq` is a separate package and is not
+removed.
+
+Release builds also carry an in-app updater of their own:
+`Latestrelease/coreeq-version.json` is the feed, a `coreeq-v*` tag writes it
+from the APK it just published, and nothing else may touch it — a feed that
+names a build before the release carries that APK is how users are told about
+an update that cannot install. The test package is handed a blank feed by
+Gradle, so `coreeq-test` never offers an APK it could not install over itself.
+`tests/test_core_eq_update_contract.py` holds both halves.
+
 ## Before tagging
 
 1. Update `suite.json`.
@@ -89,5 +111,11 @@ Keystores and Play credentials never go in git. GitHub Actions secrets:
 - `KEYSTORE_PASSWORD`
 - `KEY_ALIAS`
 - `KEY_PASSWORD`
+
+Every Android app in this repo, including Core EQ and the `coreeq-test` lane,
+signs from this one set — there are no per-app secret names to add when a new
+app, or a new channel for an existing app, starts publishing. `KEYSTORE_PATH`
+is not a secret: the workflow decodes the bytes above to a runner temp file and
+exports the path to Gradle.
 
 Play credentials are `[USER TO SUPPLY]` and must be environment-scoped if Play upload automation is added.

@@ -1,5 +1,6 @@
 package tv.corebuilds.eq
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.widget.Button
@@ -13,6 +14,9 @@ import tv.corebuilds.eq.apply.OutputRoute
 import tv.corebuilds.eq.export.Formats
 import tv.corebuilds.eq.export.ProfileStore
 import tv.corebuilds.eq.mode.ContentModeStore
+import tv.corebuilds.eq.update.UpdateChecker
+import tv.corebuilds.eq.update.UpdateInstaller
+import tv.corebuilds.eq.update.UpdatePrefs
 import java.util.Locale
 import kotlin.concurrent.thread
 
@@ -29,6 +33,13 @@ class CapabilityActivity : TvActivity() {
     private lateinit var textVerdictSession: TextView
     private lateinit var textVerdictGlobal: TextView
     private lateinit var btnExportTv: Button
+    private lateinit var updatePrefs: UpdatePrefs
+    private lateinit var textUpdateInstalled: TextView
+    private lateinit var textUpdateStatus: TextView
+    private lateinit var btnCheckUpdate: Button
+    private lateinit var btnInstallUpdate: Button
+    private lateinit var btnUpdateAuto: Button
+    private var pendingUpdate: UpdateChecker.Result.Available? = null
     private var lastBandCentres: List<Double>? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -50,8 +61,115 @@ class CapabilityActivity : TvActivity() {
 
         btnExportTv.setOnClickListener { exportForTvSettings() }
 
+        setUpUpdateCard()
         showDiscoveryGrant()
         runCapabilityProbe()
+    }
+
+    /**
+     * The Capability screen is where a user asks the device questions, so the
+     * updater lives here too: it names the installed build, runs a check on
+     * demand, and shows the exact refusal when the feed cannot be read. The
+     * test package carries no feed at all, and says so instead of pretending a
+     * check happened.
+     */
+    private fun setUpUpdateCard() {
+        updatePrefs = UpdatePrefs(this)
+        textUpdateInstalled = findViewById(R.id.text_update_installed)
+        textUpdateStatus = findViewById(R.id.text_update_status)
+        btnCheckUpdate = findViewById(R.id.btn_check_update)
+        btnInstallUpdate = findViewById(R.id.btn_install_update)
+        btnUpdateAuto = findViewById(R.id.btn_update_auto)
+
+        textUpdateInstalled.text = getString(R.string.update_installed, BuildConfig.VERSION_NAME)
+        val hasFeed = BuildConfig.UPDATE_MANIFEST_URL.isNotBlank()
+        if (!hasFeed) {
+            textUpdateStatus.text = getString(R.string.update_no_feed)
+            btnCheckUpdate.isEnabled = false
+            btnUpdateAuto.visibility = View.GONE
+        } else {
+            textUpdateStatus.text = ""
+            refreshAutoButton()
+            btnUpdateAuto.setOnClickListener {
+                updatePrefs.checksEnabled = !updatePrefs.checksEnabled
+                refreshAutoButton()
+            }
+            btnCheckUpdate.setOnClickListener { runUpdateCheck() }
+        }
+        btnInstallUpdate.setOnClickListener { startPendingUpdate() }
+    }
+
+    private fun refreshAutoButton() {
+        btnUpdateAuto.text = getString(
+            if (updatePrefs.checksEnabled) R.string.update_auto_on else R.string.update_auto_off
+        )
+    }
+
+    private fun runUpdateCheck() {
+        textUpdateStatus.text = getString(R.string.update_checking)
+        btnCheckUpdate.isEnabled = false
+        UpdateChecker.check(this) { result ->
+            if (isFinishing || isDestroyed) return@check
+            btnCheckUpdate.isEnabled = true
+            when (result) {
+                is UpdateChecker.Result.Available -> {
+                    pendingUpdate = result
+                    textUpdateStatus.text = getString(R.string.update_available, result.versionName)
+                    btnInstallUpdate.visibility = View.VISIBLE
+                    btnInstallUpdate.requestFocus()
+                }
+                is UpdateChecker.Result.UpToDate -> {
+                    pendingUpdate = null
+                    btnInstallUpdate.visibility = View.GONE
+                    textUpdateStatus.text = getString(R.string.update_up_to_date, result.versionName)
+                }
+                is UpdateChecker.Result.Failed -> {
+                    pendingUpdate = null
+                    btnInstallUpdate.visibility = View.GONE
+                    textUpdateStatus.text = getString(R.string.update_failed, result.reason)
+                }
+            }
+        }
+    }
+
+    private fun startPendingUpdate() {
+        val update = pendingUpdate ?: return
+        if (!UpdateInstaller.canInstall(this)) {
+            UpdateInstaller.requestInstallPermission(this)
+            textUpdateStatus.text = getString(R.string.update_permission_needed)
+            return
+        }
+        btnInstallUpdate.isEnabled = false
+        textUpdateStatus.text = getString(R.string.update_downloading, 0)
+        UpdateInstaller.download(this, update.apkUrl, update.versionCode, update.apkSha256) { event ->
+            if (isFinishing || isDestroyed) return@download
+            when (event) {
+                is UpdateInstaller.Event.Progress -> {
+                    val percent = if (event.total > 0) {
+                        ((event.received * 100) / event.total).toInt()
+                    } else {
+                        0
+                    }
+                    textUpdateStatus.text = getString(R.string.update_downloading, percent)
+                }
+                is UpdateInstaller.Event.Ready -> {
+                    textUpdateStatus.text = getString(R.string.update_verifying)
+                    btnInstallUpdate.isEnabled = true
+                    updatePrefs.dismiss(update.versionCode)
+                    UpdateInstaller.installForResult(this, event.file, REQ_INSTALL)
+                }
+                is UpdateInstaller.Event.Failed -> {
+                    btnInstallUpdate.isEnabled = true
+                    textUpdateStatus.text = getString(R.string.update_install_failed, event.reason)
+                }
+            }
+        }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode != REQ_INSTALL || resultCode != RESULT_OK) return
+        textUpdateStatus.text = getString(R.string.update_installed_done)
     }
 
     /**
@@ -150,5 +268,9 @@ class CapabilityActivity : TvActivity() {
 
         val result = Formats.exportToDevice(this, sb.toString(), "tv_settings_bands_${mode.key}.txt")
         Toast.makeText(this, result.message, Toast.LENGTH_LONG).show()
+    }
+
+    private companion object {
+        const val REQ_INSTALL = 9
     }
 }

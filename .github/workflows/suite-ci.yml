@@ -106,6 +106,21 @@ jobs:
             compileSdk: 34
             workflow: .github/workflows/core-motion-apk.yml
             artifact: motion-plugin/app/build/outputs/apk/debug/*.apk
+          # Core EQ is its own Gradle root on AGP 9.4.0 / compileSdk 37. Its
+          # build-tools floor is the toolchain's, not the platform's: AGP
+          # 9.4.0's floor is 36.0.0 and this entry names it explicitly rather
+          # than inheriting whatever the runner image happens to carry. API 37
+          # carries a minor version, declared as platformId below; compileSdk
+          # stays the plain 37.
+          - name: Core EQ
+            dir: coreeq
+            tasks: :app:lintDebug :app:testDebugUnitTest :app:assembleDebug
+            gradle: coreeq/app/build.gradle.kts
+            compileSdk: 37
+            platformId: 37.0
+            buildTools: 36
+            workflow: .github/workflows/core-eq-apk.yml
+            artifact: coreeq/app/build/outputs/apk/debug/*.apk
     steps:
       - uses: actions/checkout@v4
 
@@ -128,9 +143,21 @@ jobs:
       # compileSdk in the build file it points at.
       - name: Install Android platform ${{ matrix.compileSdk }}
         run: |
+          # buildTools defaults to the platform version (what every entry used
+          # before the field existed); Core EQ pins 36, the AGP 9.4.0 floor,
+          # so the job states its toolchain instead of inheriting the image's.
+          # The parameterised line is the job's own statement of its platform
+          # requirement; platformId is the package id when it is not simply
+          # the compileSdk (the 37 entry carries a minor version that way).
+          # The fallback covers an SDK level that only exists as a preview
+          # codename on the canary channel; if no id resolves, Gradle resolves
+          # the platform itself and names the hash string it cannot find. See
+          # tools/install_android_platform.sh.
           "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" \
-            "platforms;android-${{ matrix.compileSdk }}" \
-            "build-tools;${{ matrix.compileSdk }}.0.0"
+            "platforms;android-${{ matrix.platformId || matrix.compileSdk }}" \
+            "build-tools;${{ matrix.buildTools || matrix.compileSdk }}.0.0" \
+            || bash tools/install_android_platform.sh \
+                 "${{ matrix.platformId || matrix.compileSdk }}" "${{ matrix.buildTools || matrix.compileSdk }}.0.0"
       - uses: gradle/actions/setup-gradle@v6
       - name: Verify tracked workflow/build files exist
         run: |
@@ -237,6 +264,7 @@ jobs:
           python tests/test_ui_wiring.py
           python tests/test_brandmark_badge.py
           python tests/test_gradle_envelope.py
+          python tests/test_core_eq_release_contract.py
           python tests/test_navigation_graph.py
           python tests/test_tv_scale.py
           python tests/test_mapping_hygiene.py
@@ -248,6 +276,7 @@ jobs:
           python tests/test_glyphs_pack.py
           python tests/test_icon_palette.py
           python tests/test_update_manifest_gate.py
+          python tests/test_core_eq_update_contract.py
           # Meta-gate, last: it reads the workflows above and fails if any
           # tests/test_*.py or tools/check_*.py has stopped being invoked. This
           # job has no path filter, so it is the one place a new test can be
