@@ -163,7 +163,7 @@
     <string name="update_auto_on">Check for updates on open: On</string>
     <string name="update_auto_off">Check for updates on open: Off</string>
     <string name="update_no_feed">This test build has no update feed · release builds install from the coreeq-v* tags</string>
-    <string name="update_note">Checks the same release feed the other Core apps use (Latestrelease/coreeq-version.json on main). A download is offered only when the release APK matches this app's package, is newer than this build, and is signed by the certificate that signed it — otherwise the file is deleted and nothing is installed.</string>
+    <string name="update_note">Checks the same release feed the other Core apps use (Latestrelease/coreeq-version.json on main). A download is offered only when the release APK matches this app\'s package, is newer than this build, and is signed by the certificate that signed it — otherwise the file is deleted and nothing is installed.</string>
 
     <!-- Target curves -->
     <string name="target_flat">Flat (0 dB reference)</string>
