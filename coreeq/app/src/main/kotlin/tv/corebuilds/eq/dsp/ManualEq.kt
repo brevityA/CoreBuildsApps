@@ -78,6 +78,13 @@ object ManualEq {
         return (kept + PeakingFilter(centre, DEFAULT_Q, gain)).sortedBy { it.fc }
     }
 
+    /**
+     * Merge a pre-mode manual EQ into an existing overlay: preserve untouched
+     * legacy bands, but let a newer overlay value win at a duplicated centre.
+     */
+    fun mergeLegacyWithOverlay(legacy: List<PeakingFilter>, overlay: List<PeakingFilter>): List<PeakingFilter> =
+        sanitize(legacy + overlay)
+
     /** Keep stored/custom presets finite, in range, unique by centre, and in the app's correction span. */
     fun sanitize(filters: List<PeakingFilter>): List<PeakingFilter> {
         val byCentre = linkedMapOf<Double, PeakingFilter>()

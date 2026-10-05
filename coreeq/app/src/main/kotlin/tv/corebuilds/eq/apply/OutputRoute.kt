@@ -13,16 +13,18 @@ import tv.corebuilds.eq.export.Profile
  * A measurement is a measurement of one chain — the TV's speakers, or the
  * soundbar on HDMI ARC, or Bluetooth headphones — so its correction is only
  * right for that chain. Each profile is tagged with the output it was measured
- * on, and correction follows the output: switch to the soundbar and the
- * soundbar's profile applies; switch to an output nothing was measured on and
- * correction steps aside instead of applying another chain's curve.
+ * on, and correction follows the measured chain: switch to the soundbar and
+ * the soundbar's profile applies; switch to an output nothing was measured on
+ * and correction steps aside instead of applying another chain's curve.
  *
  * Android does not expose another app's actual media destination. On API 33+
  * [current] asks for the anticipated route for media attributes; earlier
  * versions rank connected outputs as a fallback: Bluetooth or USB, then wired,
- * HDMI (eARC/ARC before plain HDMI), then the built-in speaker. That estimate
- * is also the key used to tag a measurement, so the setup can map to the same
- * profile kind without claiming to know every app's true route.
+ * HDMI (eARC/ARC before plain HDMI), then the built-in speaker. At measurement
+ * time the sweep's own `AudioTrack` route is more direct evidence: when Android
+ * reports a recognized device, [tag] stores that actual output kind. If it does
+ * not, the connected-output estimate is used. A mismatch later means the
+ * profile is not applied to a different chain.
  */
 object OutputRoute {
 
@@ -94,11 +96,16 @@ object OutputRoute {
             } catch (_: Exception) {
                 emptyList()
             }
-            mediaRoute.firstNotNullOfOrNull { device ->
-                kindOf(device.type)?.let { kind ->
-                    Output(kind, displayName(kind, device.productName?.toString()))
+            if (mediaRoute.isNotEmpty()) {
+                // Android returned an anticipated route but Core EQ does not
+                // recognize its device kind: do not replace that evidence with
+                // a lower-confidence connected-device ranking.
+                return mediaRoute.firstNotNullOfOrNull { device ->
+                    kindOf(device.type)?.let { kind ->
+                        Output(kind, displayName(kind, device.productName?.toString()))
+                    }
                 }
-            }?.let { return it }
+            }
         }
 
         val connected = am.getDevices(AudioManager.GET_DEVICES_OUTPUTS).toList()
@@ -114,26 +121,17 @@ object OutputRoute {
     }
 
     /**
-     * What a measurement is tagged with.
-     *
-     * The key ([Output.kind]) is always [pickKind]'s answer: at play time
-     * Core EQ cannot see where another app's audio goes, only what is
-     * connected, so selection must use the same rule on both sides — then a
-     * setup always finds the profile measured in that setup, and that curve
-     * was measured on whatever that setup really plays through.
-     *
-     * The name is the truth where Android gives it: the device the sweep's own
-     * AudioTrack was routed to. When that differs from the ranked guess, the
-     * profile says what was actually measured ("TV speakers") rather than
-     * what was merely connected ("Sonos Beam").
+     * Tag a measurement with the sweep's actual routed output when recognized.
+     * The predicted/connected-output estimate is only the fallback when Android
+     * does not report a useful routed device. This prevents a sweep measured on
+     * TV speakers from being mislabeled as an attached HDMI soundbar merely
+     * because that endpoint had higher connection priority.
      */
     fun tag(ranked: Output?, routedType: Int?, routedProduct: String?, model: String = Build.MODEL): Output? {
         val routedKind = routedType?.let(::kindOf)
         return when {
-            ranked == null && routedKind == null -> null
-            ranked == null -> Output(routedKind!!, displayName(routedKind, routedProduct, model))
-            routedKind == null -> ranked
-            else -> Output(ranked.kind, displayName(routedKind, routedProduct, model))
+            routedKind != null -> Output(routedKind, displayName(routedKind, routedProduct, model))
+            else -> ranked
         }
     }
 
@@ -150,11 +148,19 @@ object OutputRoute {
      * - otherwise the newest profile measured on this output;
      * - otherwise none — correcting a soundbar with the TV speakers' curve is
      *   worse than not correcting it.
-     * When the output is unknown, the chosen profile applies, as before.
+     * With an unknown current output, only an explicitly unknown-output or
+     * legacy untagged profile is safe; a known-output profile is not guessed.
      */
     fun pick(profiles: List<Profile>, chosenId: String?, kind: String?, outputName: String? = null): Pick {
         val chosen = profiles.firstOrNull { it.id == chosenId } ?: profiles.maxByOrNull { it.timestampMs }
-        if (kind == null) return Pick(chosen, switched = false)
+        if (kind == null) {
+            if (chosen == null || chosen.outputKind == null || chosen.outputKind == UNKNOWN) {
+                return Pick(chosen, switched = false)
+            }
+            val fallback = profiles.filter { it.outputKind == UNKNOWN }.maxByOrNull { it.timestampMs }
+                ?: profiles.filter { it.outputKind == null }.maxByOrNull { it.timestampMs }
+            return Pick(fallback, switched = fallback?.id != chosen.id)
+        }
 
         val sameKind = profiles.filter { it.outputKind == kind }
         val routeName = specificName(kind, outputName)
@@ -166,21 +172,21 @@ object OutputRoute {
         }
 
         if (chosen != null && chosen.outputKind == null) return Pick(chosen, switched = false)
-        if (chosen != null && chosen.outputKind == kind &&
-            (routeName == null || specificName(kind, chosen.outputName) == null)
-        ) return Pick(chosen, switched = false)
+        if (chosen != null && chosen.outputKind == kind && specificName(kind, chosen.outputName) == null) {
+            return Pick(chosen, switched = false)
+        }
 
         val generic = sameKind.filter { specificName(kind, it.outputName) == null }
-        if (routeName != null && generic.isNotEmpty()) {
+        if (generic.isNotEmpty()) {
             val match = generic.maxByOrNull { it.timestampMs }
             return Pick(match, switched = match?.id != chosen?.id)
         }
-        if (routeName != null && sameKind.any { specificName(kind, it.outputName) != null }) {
-            // The TV named a different same-kind output; don't apply another device's curve.
+        if (sameKind.any { specificName(kind, it.outputName) != null }) {
+            // Android did not name this output, or named a different one; don't
+            // apply a profile tied to another specific device of the same kind.
             return Pick(null, switched = false)
         }
-        val match = sameKind.maxByOrNull { it.timestampMs }
-        return Pick(match, switched = match?.id != chosen?.id)
+        return Pick(null, switched = chosen != null)
     }
 
     private fun specificName(kind: String, name: String?): String? {

@@ -40,13 +40,18 @@ companion (Poweramp EQ's), and not hardware-bound room correction (Dirac,
 Audyssey). Those remain separate tools; Core EQ is focused on room correction
 for Android TV.
 
-**One measured base belongs to one output.** Profiles record the output kind
-and, where Android supplies it, its device name. Core EQ first selects an exact
-same-kind/name match, then a generic same-kind profile; it does not borrow a
-named curve from another device. API 33+ uses Android's anticipated media route
-when available; older versions rank connected outputs. Neither is proof of
-where another app's stream is actually routed. With no profile for the current
-output, on-device correction pauses rather than applying another chain's curve.
+**One measured base belongs to one output.** Profiles record the sweep's
+reported `AudioTrack` output kind and, where Android supplies it, its device
+name; the connected-output estimate is only a fallback when the track route is
+unavailable or unrecognized. Core EQ first selects an exact same-kind/name
+match, then a generic same-kind profile; it does not borrow a named curve from
+another device. At apply time, API 33+ uses Android's anticipated media route
+when available; older versions rank connected outputs. Neither proves where
+another app's stream is actually routed. If Android supplies no recognized
+route or the estimate does not match a measured profile, on-device correction
+pauses rather than guessing with another chain's curve; only a legacy
+all-output profile or an explicitly unknown-output profile applies while the
+route remains unidentified.
 
 ## 2. The screens
 
@@ -107,18 +112,25 @@ in 0.5 dB steps), with Flat, Bass lift, Speech clarity and Less bass presets
 plus user-saved presets. The same `BandMapping` composes the selected overlay
 with room correction for DynamicsProcessing, the platform Equalizer fallback
 and TV-settings export, shifting any positive peak down to preserve digital
-headroom. Parametric and GraphicEQ exports include the selected mode's overlay
-and combined preamp; profile JSON backups preserve the room base and all three
-mode overlays separately, record the selected mode, and calculate its combined
-preamp. A manual-only profile is allowed, but is labelled as not measured.
+headroom. Parametric exports include the selected mode's overlay and a
+combined filter-based preamp. GraphicEQ exports include the selected overlay;
+when tone filters are present, their preamp is calculated from the exact curve
+points serialized and preserves any more-conservative room reserve. Base-only
+GraphicEQ exports still omit a preamp line (a pre-existing limitation). Profile
+JSON backups preserve the room base and all three mode overlays separately,
+record the selected mode, and calculate its combined preamp. A manual-only
+profile is allowed, but is labelled as not measured.
 
-Mode selection is manual by default. Optional app rules use session-open/close
-broadcasts and, after a one-time ADB grant, best-effort DUMP discovery. Android
-may hide an app's identity; unknown identities fall back to Everyday. If two
-simultaneous apps request different modes, Everyday is used because the app has
-one global curve. A manual choice in automatic mode creates a configurable
-sticky override or a temporary override that lasts until the detected player
-set changes.
+Mode selection is manual by default. Optional app rules use only DUMP-discovered
+media/game session UIDs, and a UID selects a rule only when `PackageManager`
+returns one distinct non-Core-EQ package. Session broadcasts and public playback
+callbacks are rescan triggers only; their session/package extras are ignored.
+Android documents DUMP as not for third-party apps, so an ADB grant may be
+refused by a stock or release build. Unmapped or unidentified active players,
+and simultaneous conflicting app rules, fall back to Everyday while
+automatic switching is on because Core EQ has one shared curve. A manual choice
+in automatic mode creates a configurable sticky override or a temporary
+override that lasts until the detected player set changes.
 
 Every constant in that pipeline is commented with its reason in
 `tools/core_eq_dsp.py`. The order of the clamp / recentre / taper steps is
@@ -148,19 +160,34 @@ such dips, leaves them at zero, and the UI says so out loud.
 
 ## 4. Applying the correction — the ladder
 
-Probe in order, stop at the first that works, and **write the verdict into the
-profile**:
+The current runtime is **not an ordered capability probe**. `EqService.applyAll()`
+tries the output-mix/session-0 path first, configures and verifies the chosen
+engine, and releases per-session effects to avoid applying the same curve
+twice. Only if that path cannot be created or configured does it attach to
+DUMP-discovered sessions. The same DUMP snapshot may supply app identity while
+the output-mix path is active. Session-open/close broadcasts and public
+playback callbacks only request a debounced DUMP rescan; their extras are not
+used as session IDs or package claims. If no on-device path attaches, the user
+can export the selected profile and mode.
 
-| Rung | Path | Expected reach |
+| Runtime path | What Core EQ does | What the result does **not** prove |
 |---|---|---|
-| 1 | `ACTION_OPEN_AUDIO_EFFECT_CONTROL_SESSION` broadcast | Players that announce sessions. App identity and actual audibility still vary by player. |
-| 2 | Optional `DUMP`-assisted session discovery (one-time ADB grant) | Some players that do not announce sessions; device/app coverage is unverified, and YouTube is a known gap. |
-| 3 | `Equalizer(0, 0)` / `DynamicsProcessing(0)` output-mix effect | Deprecated but accepted by some vendor HALs. A configured effect is not proof every audio route passes through it. |
-| 4 | No on-device effect path | Export the profile and current mode for the TV's own sound settings. The curve is still the curve. |
+| Output mix (`DynamicsProcessing(0)` / `Equalizer(0, 0)`) | Tries this first. API 28+ prefers DynamicsProcessing, then falls back to the platform Equalizer; the service checks control/configuration and reads settings back. | A constructible/configured session-0 effect does not prove that every app, codec or output route traverses it. |
+| Session/playback signals | Treats session-open/close broadcasts and public playback callbacks as rescan triggers only; ignores their session/package extras. | Signals do not identify another app's active audio session or route. |
+| Optional DUMP discovery | If Android grants `android.permission.DUMP`, parses `dumpsys media.audio_flinger` and `dumpsys audio` for candidate session IDs, UID, usage and activity. It may attach sessions when the output-mix path failed. A UID selects an app rule only when its package mapping is unique. | Android says DUMP is not for third-party apps; an ADB grant may be refused on stock/release builds. Dump text is firmware/version-dependent and fixtures are not TV captures; a discovered session still does not prove effect coverage. |
+| TV / companion export | Exports the measured room base plus selected mode overlay for the TV's own sound controls or a compatible companion equalizer. | Export success does not mean the external EQ was entered or is applied on the measured signal chain. |
 
-Engine choice: `DynamicsProcessing` on API 28+ (own band layout, own limiter,
-limiter **on**), `android.media.audiofx.Equalizer` below. Band UI always draws
-the device's reported bands and clamps to its reported `getBandLevelRange()`.
+`EffectLadder.probe()` itself only attempts session-0 effect construction and
+checks DynamicsProcessing control; it does not test session announcements,
+run DUMP discovery or verify end-to-end coverage. The existing Capability
+screen copy still treats some of these probes as a device-level verdict; that
+pre-existing overstatement is recorded in the audio-routing research rather
+than silently presenting construction as proof.
+
+Engine choice at apply time: `DynamicsProcessing` on API 28+ (own band layout,
+own limiter, limiter **on**), `android.media.audiofx.Equalizer` below. Band UI
+draws the device's reported bands when available and clamps to the reported
+`getBandLevelRange()`.
 
 A foreground service keeps the effect chain alive, and gains are re-applied on
 every session open — the two bugs that define this category
@@ -263,10 +290,12 @@ same WAV and asserting the corrections match within a stated tolerance.
 1. **Downloader code** — *decided: `7946159`*, generated by the maintainer at
    https://go.aftvnews.com/ and recorded in `suite.json`.
 2. **Automatic app-based modes** — *decided and implemented best-effort.*
-   Manual mode selection always remains available. Optional rules use player
-   session broadcasts and DUMP discovery after an ADB grant; simultaneous
-   conflicting rules select Everyday because only one global curve is
-   available. Device/app coverage remains a hardware-validation question.
+   Manual mode selection always remains available. Optional rules use
+   DUMP-discovered UID/package mappings; session broadcasts and public playback
+   callbacks only trigger rescans. Android may refuse a DUMP grant to a
+   third-party release. Unmapped/unidentified players and conflicting demands
+   select Everyday because only one global curve is available. Device/app
+   coverage remains a hardware-validation question.
 3. **Generic stock Android TV coverage** — *target, not yet proven.* Verify on
    representative stock TV hardware whether session-0 effects reach common
    streaming apps, which outputs are actually routed through the mixer, and

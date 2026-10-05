@@ -29,26 +29,39 @@ class ContentModeStore(context: Context) {
         }
     }
 
-    fun setAutomaticSwitching(enabled: Boolean) {
+    fun setAutomaticSwitching(
+        enabled: Boolean,
+        activePackages: Set<String> = lastActivePackages(),
+        hasUnidentifiedPlayer: Boolean = lastActivePlayerUnknown()
+    ) {
         val editor = prefs.edit().putBoolean(KEY_AUTOMATIC, enabled)
         if (!enabled) editor.putString(KEY_SELECTED_MODE, currentDecision().mode.key)
         editor.apply()
         clearOverride()
+        resolve(activePackages, hasUnidentifiedPlayer)
     }
 
     /** Select a mode manually; in automatic mode this becomes a sticky or temporary override. */
-    fun selectMode(mode: ContentMode, activePackages: Set<String> = lastActivePackages()) {
+    fun selectMode(
+        mode: ContentMode,
+        activePackages: Set<String> = lastActivePackages(),
+        hasUnidentifiedPlayer: Boolean = lastActivePlayerUnknown()
+    ) {
         if (!automaticSwitching()) {
             prefs.edit().putString(KEY_SELECTED_MODE, mode.key).apply()
             clearOverride()
+            resolve(activePackages, hasUnidentifiedPlayer)
             return
         }
+        val playbackStarted = activePackages.isNotEmpty() || hasUnidentifiedPlayer
         prefs.edit()
             .putString(KEY_OVERRIDE_MODE, mode.key)
             .putBoolean(KEY_OVERRIDE_STICKY, stickyManualOverride())
             .putString(KEY_OVERRIDE_PACKAGES, encodePackages(activePackages))
-            .putBoolean(KEY_OVERRIDE_STARTED, activePackages.isNotEmpty())
+            .putBoolean(KEY_OVERRIDE_STARTED, playbackStarted)
+            .putBoolean(KEY_OVERRIDE_UNKNOWN_PLAYER, hasUnidentifiedPlayer)
             .apply()
+        resolve(activePackages, hasUnidentifiedPlayer)
     }
 
     fun setAppRule(packageName: String, mode: ContentMode?) {
@@ -59,6 +72,7 @@ class ContentModeStore(context: Context) {
         val json = JSONObject()
         rules.toSortedMap().forEach { (name, value) -> json.put(name, value.key) }
         prefs.edit().putString(KEY_APP_RULES, json.toString()).apply()
+        resolve(lastActivePackages(), lastActivePlayerUnknown())
     }
 
     fun appRules(): Map<String, ContentMode> = readRules()
@@ -91,11 +105,15 @@ class ContentModeStore(context: Context) {
         prefs.edit().putString(KEY_MODE_EQ, root.toString()).apply()
     }
 
-    /** Used only by the one-time migration so legacy manual EQ is durable before it is cleared. */
-    fun importLegacyEveryday(profileId: String, filters: List<PeakingFilter>) {
-        if (filters.isNotEmpty() && modeFilters(profileId, ContentMode.EVERYDAY).isEmpty()) {
-            writeModeFilters(profileId, ContentMode.EVERYDAY, filters, synchronous = true)
-        }
+    /** Merge legacy trims into Everyday without overwriting newer per-mode edits. */
+    fun importLegacyEveryday(profileId: String, filters: List<PeakingFilter>): Boolean {
+        if (filters.isEmpty()) return true
+        val existing = modeFilters(profileId, ContentMode.EVERYDAY)
+        // ManualEq.sanitize keeps the later filter at a duplicated band centre,
+        // so a previously edited Everyday band wins while untouched legacy
+        // bands are preserved. Re-running after a failed profile commit is safe.
+        val merged = ManualEq.mergeLegacyWithOverlay(filters, existing)
+        return writeModeFilters(profileId, ContentMode.EVERYDAY, merged, synchronous = true)
     }
 
     fun effectiveProfile(profile: Profile, mode: ContentMode): Profile = profile.copy(
@@ -105,26 +123,45 @@ class ContentModeStore(context: Context) {
     /** Current app set and last resolver result are persisted for visible UI and override lifetime. */
     fun lastActivePackages(): Set<String> = decodePackages(prefs.getString(KEY_ACTIVE_PACKAGES, null))
 
+    fun lastActivePlayerUnknown(): Boolean = prefs.getBoolean(KEY_UNKNOWN_ACTIVE_PLAYER, false)
+
+    /** Whether the persisted player set came from a complete, recognized scan. */
+    fun lastActiveSnapshotComplete(): Boolean = prefs.getBoolean(KEY_ACTIVE_SNAPSHOT_COMPLETE, false)
+
     fun currentDecision(): ModeDecision = ModeDecision(
         mode = ContentMode.fromKey(prefs.getString(KEY_EFFECTIVE_MODE, null) ?: selectedMode().key),
         reason = prefs.getString(KEY_EFFECTIVE_REASON, null) ?: "Manual selection",
         activePackages = lastActivePackages(),
-        conflictingPackages = decodePackages(prefs.getString(KEY_CONFLICTING_PACKAGES, null))
+        conflictingPackages = decodePackages(prefs.getString(KEY_CONFLICTING_PACKAGES, null)),
+        hasUnidentifiedPlayer = lastActivePlayerUnknown()
     )
 
-    fun resolve(activePackages: Set<String>): ModeDecision {
+    fun resolve(
+        activePackages: Set<String>,
+        hasUnidentifiedPlayer: Boolean = false,
+        advanceTemporaryOverride: Boolean = lastActiveSnapshotComplete()
+    ): ModeDecision {
         val cleanPackages = activePackages.filter { it.isNotBlank() }.toSortedSet()
-        val nextOverride = ContentModeResolver.advanceTemporaryOverride(readOverride(), cleanPackages)
+        val savedOverride = readOverride()
+        val nextOverride = ContentModeResolver.reconcileTemporaryOverride(
+            override = savedOverride,
+            activePackages = cleanPackages,
+            hasUnidentifiedPlayer = hasUnidentifiedPlayer,
+            snapshotComplete = advanceTemporaryOverride
+        )
         persistOverride(nextOverride)
         val decision = ContentModeResolver.resolve(
             activePackages = cleanPackages,
             rules = readRules(),
             automatic = automaticSwitching(),
             selectedMode = selectedMode(),
-            override = nextOverride
+            override = nextOverride,
+            hasUnidentifiedPlayer = hasUnidentifiedPlayer
         )
         prefs.edit()
             .putString(KEY_ACTIVE_PACKAGES, encodePackages(cleanPackages))
+            .putBoolean(KEY_UNKNOWN_ACTIVE_PLAYER, hasUnidentifiedPlayer)
+            .putBoolean(KEY_ACTIVE_SNAPSHOT_COMPLETE, advanceTemporaryOverride)
             .putString(KEY_EFFECTIVE_MODE, decision.mode.key)
             .putString(KEY_EFFECTIVE_REASON, decision.reason)
             .putString(KEY_CONFLICTING_PACKAGES, encodePackages(decision.conflictingPackages))
@@ -138,7 +175,8 @@ class ContentModeStore(context: Context) {
             mode = ContentMode.fromKey(modeKey),
             sticky = prefs.getBoolean(KEY_OVERRIDE_STICKY, false),
             anchorPackages = decodePackages(prefs.getString(KEY_OVERRIDE_PACKAGES, null)),
-            playbackStarted = prefs.getBoolean(KEY_OVERRIDE_STARTED, false)
+            playbackStarted = prefs.getBoolean(KEY_OVERRIDE_STARTED, false),
+            anchorHasUnidentifiedPlayer = prefs.getBoolean(KEY_OVERRIDE_UNKNOWN_PLAYER, false)
         )
     }
 
@@ -149,11 +187,13 @@ class ContentModeStore(context: Context) {
                 .remove(KEY_OVERRIDE_PACKAGES)
                 .remove(KEY_OVERRIDE_STARTED)
                 .remove(KEY_OVERRIDE_STICKY)
+                .remove(KEY_OVERRIDE_UNKNOWN_PLAYER)
         } else {
             editor.putString(KEY_OVERRIDE_MODE, override.mode.key)
                 .putString(KEY_OVERRIDE_PACKAGES, encodePackages(override.anchorPackages))
                 .putBoolean(KEY_OVERRIDE_STARTED, override.playbackStarted)
                 .putBoolean(KEY_OVERRIDE_STICKY, override.sticky)
+                .putBoolean(KEY_OVERRIDE_UNKNOWN_PLAYER, override.anchorHasUnidentifiedPlayer)
         }
         editor.apply()
     }
@@ -164,6 +204,7 @@ class ContentModeStore(context: Context) {
             .remove(KEY_OVERRIDE_PACKAGES)
             .remove(KEY_OVERRIDE_STARTED)
             .remove(KEY_OVERRIDE_STICKY)
+            .remove(KEY_OVERRIDE_UNKNOWN_PLAYER)
             .apply()
     }
 
@@ -198,8 +239,8 @@ class ContentModeStore(context: Context) {
         mode: ContentMode,
         filters: List<PeakingFilter>,
         synchronous: Boolean
-    ) {
-        if (profileId.isBlank()) return
+    ): Boolean {
+        if (profileId.isBlank()) return false
         val root = readModeRoot()
         val byMode = root.optJSONObject(profileId) ?: JSONObject()
         val clean = ManualEq.sanitize(filters)
@@ -217,7 +258,12 @@ class ContentModeStore(context: Context) {
         }
         if (byMode.length() == 0) root.remove(profileId) else root.put(profileId, byMode)
         val editor = prefs.edit().putString(KEY_MODE_EQ, root.toString())
-        if (synchronous) editor.commit() else editor.apply()
+        return if (synchronous) {
+            editor.commit()
+        } else {
+            editor.apply()
+            true
+        }
     }
 
     private fun parseFilters(array: JSONArray): List<PeakingFilter> {
@@ -263,8 +309,11 @@ class ContentModeStore(context: Context) {
         private const val KEY_OVERRIDE_STICKY = "manual_override_sticky"
         private const val KEY_OVERRIDE_PACKAGES = "manual_override_packages"
         private const val KEY_OVERRIDE_STARTED = "manual_override_started"
+        private const val KEY_OVERRIDE_UNKNOWN_PLAYER = "manual_override_unknown_player"
         private const val KEY_APP_RULES = "app_mode_rules"
         private const val KEY_ACTIVE_PACKAGES = "active_packages"
+        private const val KEY_UNKNOWN_ACTIVE_PLAYER = "unknown_active_player"
+        private const val KEY_ACTIVE_SNAPSHOT_COMPLETE = "active_snapshot_complete"
         private const val KEY_EFFECTIVE_MODE = "effective_mode"
         private const val KEY_EFFECTIVE_REASON = "effective_reason"
         private const val KEY_CONFLICTING_PACKAGES = "conflicting_packages"

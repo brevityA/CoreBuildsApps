@@ -131,7 +131,7 @@ class MainActivity : TvActivity() {
     }
 
     private fun refreshModeButton() {
-        val decision = modeStore.resolve(modeStore.lastActivePackages())
+        val decision = modeStore.currentDecision()
         btnModes.text = getString(R.string.home_mode_button, decision.mode.title)
     }
 
@@ -150,10 +150,11 @@ class MainActivity : TvActivity() {
     }
 
     /**
-     * The "is this working?" badge under the Correction switch. [LIVE][CorrectionIndicator.LIVE]
-     * pulses — the one state where audio is flowing through the correction
-     * right now. A stale playing flag cannot light it: the badge trusts it
-     * only while [EqService] is actually running.
+     * The playback-hint badge under the Correction switch. [LIVE][CorrectionIndicator.LIVE]
+     * pulses when the output-mix effect is configured and Android reports
+     * media playback. It does not prove that the stream traverses the effect.
+     * A stale playing flag cannot light it: the badge trusts it only while
+     * [EqService] is actually running.
      */
     private fun renderIndicator(status: EqStatus?) {
         val state = correctionIndicator(
@@ -207,23 +208,25 @@ class MainActivity : TvActivity() {
 
     private fun loadActiveProfile() {
         val output = OutputRoute.current(this)
+        val profiles = profileStore.getAllProfiles()
         val routed = OutputRoute.pick(
-            profileStore.getAllProfiles(),
+            profiles,
             profileStore.chosenId(),
             output?.kind,
             output?.name
         ).profile
-        val base = routed ?: if (output?.kind == null) profileStore.getActiveProfile() else null
-        val profile = base?.let { modeStore.effectiveProfile(it, modeStore.currentDecision().mode) }
+        val profile = routed?.let { modeStore.effectiveProfile(it, modeStore.currentDecision().mode) }
         if (profile == null) {
-            val anotherOutputHasProfile = output?.kind != null && profileStore.getAllProfiles().isNotEmpty()
+            val anotherOutputHasProfile = profiles.isNotEmpty()
             textProfileName.text = getString(
                 if (anotherOutputHasProfile) R.string.output_profile_missing_name else R.string.no_profile
             )
-            textProfileSub.text = if (anotherOutputHasProfile) {
-                getString(R.string.output_profile_missing_sub, OutputRoute.label(output?.kind))
-            } else {
+            textProfileSub.text = if (!anotherOutputHasProfile) {
                 getString(R.string.no_profile_sub)
+            } else if (output?.kind == null) {
+                getString(R.string.output_profile_unknown_sub)
+            } else {
+                getString(R.string.output_profile_missing_sub, OutputRoute.label(output.kind))
             }
             findViewById<Button>(R.id.btn_remeasure).text = getString(R.string.action_measure)
             graphHome.setData(DoubleArray(0), emptyList(), if (anotherOutputHasProfile) "NO PROFILE FOR THIS OUTPUT" else "NO MEASUREMENT YET")

@@ -33,7 +33,6 @@ import tv.corebuilds.eq.MainActivity
 import tv.corebuilds.eq.export.PlatformBand
 import tv.corebuilds.eq.export.Profile
 import tv.corebuilds.eq.export.ProfileStore
-import tv.corebuilds.eq.mode.ContentMode
 import tv.corebuilds.eq.mode.ContentModeStore
 import java.util.concurrent.Executors
 import kotlin.math.roundToInt
@@ -42,9 +41,9 @@ import kotlin.math.roundToInt
  * Applies the active profile and keeps it applied.
  *
  * Started only from Core EQ's own screens (Android 8+ forbids starting it from
- * the background), it registers for the players' audio-session broadcasts
- * itself: implicit broadcasts no longer reach manifest receivers, so a
- * receiver that lives in the manifest would never hear them.
+ * the background), it registers for player session broadcasts itself. These
+ * and public playback callbacks are rescan triggers only: broadcast-provided
+ * session IDs and package names never establish player identity or ownership.
  *
  * Correction follows the output ([OutputRoute]): each profile belongs to the
  * chain it was measured on, the device callback re-picks when a soundbar or
@@ -52,12 +51,13 @@ import kotlin.math.roundToInt
  * correction rather than another chain's.
  *
  * Two correction scopes, never both at once (that would correct twice):
- * - **Whole TV** – an effect on the output mix (session 0), where firmware allows it.
- * - **Per player** – an effect on each session a player announces, or that DUMP
- *   discovery finds (rung 2, only where the user granted the one-time
- *   [DumpsysDiscovery.DUMP_PERMISSION]). Announced sessions win over discovered
- *   ones for the same session id; a discovered session is released the moment
- *   its player disappears from the dump.
+ * - **Output mix** – an effect on session 0, where firmware accepts it. The
+ *   effect's state does not prove every app or route traverses that mix.
+ * - **Per session** – DUMP-discovered media/game sessions, only where the user
+ *   granted the one-time [DumpsysDiscovery.DUMP_PERMISSION]. Raw broadcast IDs
+ *   are not used as proof of session ownership; open/close events trigger a
+ *   fresh scan instead. A discovered session is released when it disappears
+ *   from a later dump.
  *
  * On API 28+ the service tries a DynamicsProcessing PreEQ with its limiter
  *   enabled, then falls back to the platform Equalizer on any refusal. Both
@@ -65,14 +65,12 @@ import kotlin.math.roundToInt
  * Every outcome, good or bad, is written to [ProfileStore.setStatus] and the
  * notification, so a failure is always named somewhere the user can see.
  *
- * While audio is playing through the correction the status gains a
- * "▶ Playing ·" marker — the Home screen indicator and the notification both
- * light from that one fact. The platform reports *that* something is playing
- * ([AudioManager] playback callbacks) but never *which* app is playing, so the
- * marker is only shown on the whole-TV path, where anything playing is
- * corrected. On the per-player path the TV playing proves nothing — YouTube
- * can be audible while only Kodi's paused session is held — so the badge stays
- * armed and the status line names the players being corrected.
+ * When the platform reports media playback while the output-mix effect is
+ * configured, the Home indicator and notification show a playback hint. The
+ * callback does not identify the app or prove its route passes through the
+ * effect, so the wording explicitly says coverage is unknown. On the
+ * per-session path the callback cannot be correlated with a held session, so
+ * there is no playback badge there.
  */
 class EqService : Service() {
 
@@ -88,8 +86,9 @@ class EqService : Service() {
     private lateinit var store: ProfileStore
     private lateinit var modeStore: ContentModeStore
     private val sessionEqs = mutableMapOf<Int, Held>()
-    private val announcedSessions = mutableMapOf<Int, String>()
+    /** Only unambiguous DUMP UID-to-package matches may influence app-mode rules. */
     private var discoveredPackages: Set<String> = emptySet()
+    private var discoveredHasUnknownPlayer = false
     private var globalEffect: AppliedEffect? = null
     private var globalError: String? = null
     private var suspended = false
@@ -107,18 +106,39 @@ class EqService : Service() {
     private val audioManager by lazy { getSystemService(AudioManager::class.java) }
 
     // DUMP discovery runs off the main thread and applies its results back on
-    // it; a playback change coalesces into one re-discovery after the debounce.
+    // it. Playback callbacks and session broadcasts are coalesced; untrusted
+    // broadcasts cannot queue an unbounded stream of dump processes.
     private val mainHandler = Handler(Looper.getMainLooper())
     private val discoveryExecutor = Executors.newSingleThreadExecutor()
+    private var discoveryQueued = false
+    private var discoveryInFlight = false
+    private var discoveryAgain = false
+    /** Do not expire a temporary override against an empty pre-scan snapshot. */
+    private var discoveryInitialized = false
+    /** Whether the last discovery result was complete enough to prove absences. */
+    private var discoverySnapshotComplete = false
     private val discoveryRunnable = Runnable {
-        discoveryExecutor.execute {
-            val found = try {
-                DumpsysDiscovery.discover(android.os.Process.myUid())
-            } catch (e: Exception) {
-                Log.w(TAG, "DUMP discovery failed", e)
-                emptyList()
+        discoveryQueued = false
+        if (discoveryInFlight) {
+            discoveryAgain = true
+        } else {
+            discoveryInFlight = true
+            discoveryExecutor.execute {
+                val snapshot = try {
+                    DumpsysDiscovery.discover(android.os.Process.myUid())
+                } catch (e: Exception) {
+                    Log.w(TAG, "DUMP discovery failed; retaining the last known player set", e)
+                    DiscoverySnapshot(emptyList(), hasUnidentifiedPlayer = false, complete = false)
+                }
+                mainHandler.post {
+                    applyDiscovered(snapshot)
+                    discoveryInFlight = false
+                    if (discoveryAgain) {
+                        discoveryAgain = false
+                        scheduleDiscovery()
+                    }
+                }
             }
-            mainHandler.post { applyDiscovered(found) }
         }
     }
 
@@ -134,22 +154,12 @@ class EqService : Service() {
 
     private val sessionReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
-            val session = intent.getIntExtra(AudioEffect.EXTRA_AUDIO_SESSION, AudioEffect.ERROR_BAD_VALUE)
-            val pkg = intent.getStringExtra(AudioEffect.EXTRA_PACKAGE_NAME) ?: ""
-            if (session == AudioEffect.ERROR_BAD_VALUE || session == 0) return
-            when (intent.action) {
-                AudioEffect.ACTION_OPEN_AUDIO_EFFECT_CONTROL_SESSION -> {
-                    val previousMode = modeStore.currentDecision().mode
-                    if (pkg.isNotBlank()) announcedSessions[session] = pkg
-                    store.noteSessionPackage(pkg)
-                    if (globalEffect != null) refreshModeAndReapply(previousMode) else openSession(session, pkg)
-                }
-                AudioEffect.ACTION_CLOSE_AUDIO_EFFECT_CONTROL_SESSION -> {
-                    val previousMode = modeStore.currentDecision().mode
-                    announcedSessions.remove(session)
-                    closeSession(session)
-                    refreshModeAndReapply(previousMode)
-                }
+            if (intent.action == AudioEffect.ACTION_OPEN_AUDIO_EFFECT_CONTROL_SESSION ||
+                intent.action == AudioEffect.ACTION_CLOSE_AUDIO_EFFECT_CONTROL_SESSION
+            ) {
+                // Extras are deliberately ignored. The event only asks the
+                // optional DUMP path to refresh its independently discovered snapshot.
+                scheduleDiscovery()
             }
         }
     }
@@ -166,12 +176,17 @@ class EqService : Service() {
         if (output == lastOutput) return
         lastOutput = output
         applyAll()
+        if (DumpsysDiscovery.hasGrant(this)) scheduleDiscovery(0L)
     }
 
     override fun onCreate() {
         super.onCreate()
         store = ProfileStore(this)
         modeStore = ContentModeStore(this)
+        // Keep the persisted last-known set until a complete dump proves it
+        // changed; service recreation is not evidence that playback stopped.
+        discoveredPackages = modeStore.lastActivePackages()
+        discoveredHasUnknownPlayer = modeStore.lastActivePlayerUnknown()
         store.clearRuntimeBands()
         createChannel()
         val type = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) ServiceInfo.FOREGROUND_SERVICE_TYPE_MEDIA_PLAYBACK else 0
@@ -194,9 +209,9 @@ class EqService : Service() {
         }
         // Exported: the broadcasts come from the players, which are other apps.
         ContextCompat.registerReceiver(this, sessionReceiver, filter, ContextCompat.RECEIVER_EXPORTED)
-        // The indicator is not a guess: the platform says when a player is
-        // audible, and the badge follows that. A refusal only costs the pulse;
-        // the status line still works.
+        // Playback callbacks provide a coarse activity hint, not app identity,
+        // audibility, route or effect coverage. A refusal only hides the pulse;
+        // the correction status itself remains available.
         try {
             audioManager.registerAudioPlaybackCallback(playbackCallback, null)
         } catch (e: Exception) {
@@ -224,26 +239,17 @@ class EqService : Service() {
             ACTION_RESUME -> {
                 suspended = false
                 applyAll()
+                if (DumpsysDiscovery.hasGrant(this)) scheduleDiscovery(0L)
             }
             else -> applyAll() // ACTION_START, ACTION_REAPPLY, or a sticky restart
         }
         return START_STICKY
     }
 
-    /** Session-visible app identities are best-effort; DUMP adds active sessions when granted. */
-    private fun activeAppPackages(): Set<String> =
-        (announcedSessions.values + discoveredPackages)
-            .filter { it.isNotBlank() && it != packageName }
-            .toSet()
-
-    private fun refreshModeAndReapply(previousMode: ContentMode) {
-        val decision = modeStore.resolve(activeAppPackages())
-        if (decision.mode != previousMode && running && store.correctionEnabled && !suspended) {
-            applyAll()
-        } else if (running) {
-            publish()
-        }
-    }
+    /** DUMP-discovered UID mappings are the only package identities used for automatic modes. */
+    private fun activeAppPackages(): Set<String> = discoveredPackages
+        .filter { it.isNotBlank() && it != packageName }
+        .toSet()
 
     /** The route-matched room base plus its current content-mode overlay. */
     private fun resolve(): Triple<Profile?, OutputRoute.Output?, Boolean> {
@@ -254,7 +260,16 @@ class EqService : Service() {
             output?.kind,
             output?.name
         )
-        val mode = modeStore.resolve(activeAppPackages()).mode
+        val mode = when {
+            !DumpsysDiscovery.hasGrant(this) ->
+                modeStore.resolve(emptySet(), advanceTemporaryOverride = false).mode
+            !discoveryInitialized -> modeStore.currentDecision().mode
+            else -> modeStore.resolve(
+                activeAppPackages(),
+                discoveredHasUnknownPlayer,
+                advanceTemporaryOverride = discoverySnapshotComplete
+            ).mode
+        }
         val effective = pick.profile?.let { modeStore.effectiveProfile(it, mode) }
         return Triple(effective, output, pick.switched)
     }
@@ -281,8 +296,9 @@ class EqService : Service() {
             // Another chain's curve would be wrong here: step aside, say why.
             outputPaused = true
             setAllEnabled(false)
+            val routeName = output?.name ?: "the output Android could not identify"
             report(
-                "Nothing measured on ${OutputRoute.label(output?.kind)} yet, so correction is paused there. " +
+                "Nothing measured on $routeName yet, so correction is paused there. " +
                     "Measure with it playing, or switch back to an output you measured.",
                 isError = false
             )
@@ -348,48 +364,13 @@ class EqService : Service() {
     /** What to say when nothing is attached: the way forward, named per grant. */
     private fun waitingStatus(): String =
         if (DumpsysDiscovery.hasGrant(this)) {
-            "DUMP discovery is looking for active players. The output-mix effect path was unavailable " +
-                "($globalError), so Core EQ attaches to supported player sessions it finds and names them here."
+            "No active media/game session with a usable UID is visible yet. DUMP discovery is checking. " +
+                "The output-mix effect path was unavailable ($globalError); dump visibility and effect support vary by player and TV."
         } else {
-            "Waiting for a player that shares its audio (Kodi, VLC, Poweramp). " +
-                "The output-mix effect path was unavailable ($globalError), so apps that do not " +
-                "share their audio, such as Netflix and YouTube, are not covered by the session fallback. " +
-                "Granting DUMP discovery on the Capability screen reaches some of them " +
-                "(not YouTube), or export " +
-                "the profile for the TV's own sound settings."
+            "No output-mix effect could be configured ($globalError). Per-session correction and automatic app switching need optional DUMP discovery. " +
+                "Android documents DUMP as unavailable to third-party apps, so this grant may be refused on your TV. " +
+                "Try the Capability-screen command if supported, or export the profile for the TV's own sound settings."
         }
-
-    private fun openSession(session: Int, pkg: String) {
-        if (globalEffect != null) return // already corrected by the output-mix path
-        if (store.getAllProfiles().isEmpty()) return
-        val (picked, output, _) = resolve()
-        // An output nothing was measured on still gets the session held, just
-        // disabled, so an output change or a resume can apply it later. The
-        // effect needs some curve to be built with; it is never enabled with it.
-        val profile = picked ?: store.getActiveProfile() ?: return
-        val previous = sessionEqs[session]
-        try {
-            // A discovered session a player just announced is upgraded, not
-            // duplicated: the announcement carries the player's own name.
-            val applied = previous?.let { configureOrReplace(it.applied, session, profile) }
-                ?: createBestEffect(session, profile)
-            val name = pkg.ifBlank { previous?.pkg ?: "" }
-            sessionEqs[session] = Held(applied, name, discovered = false)
-            syncRuntimeBands()
-            if (suspended || picked == null) {
-                applied.effect.setEnabled(false)
-            } else {
-                report(
-                    "Effect attached to ${label(name)} · ${modeStore.currentDecision().mode.title} · ${applied.engine} · ${profile.name} · ${applied.bands.size} bands${where(output)}",
-                    isError = false
-                )
-            }
-        } catch (e: Exception) {
-            Log.w(TAG, "Correction effect on session $session ($pkg) failed", e)
-            closeSession(session)
-            report("Could not correct ${label(pkg)}: ${e.message ?: e.javaClass.simpleName}", isError = true)
-        }
-    }
 
     private fun closeSession(session: Int) {
         val applied = sessionEqs.remove(session)?.applied ?: return
@@ -530,39 +511,99 @@ class EqService : Service() {
     }
 
     /**
-     * Debounced re-discovery (plan §4: `dumpsys` is a heavy IPC). Playback
-     * changes coalesce into one run; measurement never competes with it.
+     * Debounced re-discovery (`dumpsys` is a heavy IPC). Playback changes
+     * coalesce into one run; during a scan, at most one follow-up is retained.
      */
     private fun scheduleDiscovery(delayMs: Long = DISCOVERY_DEBOUNCE_MS) {
-        if (suspended) return
-        if (!DumpsysDiscovery.hasGrant(this)) return
-        mainHandler.removeCallbacks(discoveryRunnable)
+        if (!running || suspended || !DumpsysDiscovery.hasGrant(this)) return
+        if (discoveryInFlight) {
+            discoveryAgain = true
+            return
+        }
+        if (discoveryQueued) return
+        discoveryQueued = true
         mainHandler.postDelayed(discoveryRunnable, delayMs)
     }
 
     /**
-     * Uses DUMP both as an optional active-app signal for mode selection and,
-     * when the output-mix path is unavailable, as a per-session attach fallback.
-     * Announced sessions remain owned by their open/close broadcasts.
+     * Uses DUMP as the only source for session IDs and app identity. Package
+     * visibility gaps and shared UIDs stay unidentified; their sessions may
+     * still be corrected, but they cannot select a content-mode rule.
      */
-    private fun applyDiscovered(found: List<DiscoveredSession>) {
+    private fun applyDiscovered(snapshot: DiscoverySnapshot) {
         if (!running || suspended) return
-        val previousMode = modeStore.currentDecision().mode
+        val previousDecision = modeStore.currentDecision()
         val foundPackages = linkedSetOf<String>()
-        for (session in found) {
+        val packageBySession = mutableMapOf<Int, String?>()
+        var hasUnknownPlayer = snapshot.hasUnidentifiedPlayer
+        for (session in snapshot.sessions) {
             val uid = session.uid ?: continue
-            packageManager.getPackagesForUid(uid)
-                ?.filterNot { it == packageName }
-                ?.forEach { foundPackages += it }
+            val packages = try {
+                packageManager.getPackagesForUid(uid)
+            } catch (e: Exception) {
+                Log.w(TAG, "Could not map discovered UID $uid to a package", e)
+                null
+            }
+            val pkg = DiscoveredPackageResolver.uniquePackage(packages, packageName)
+            packageBySession[session.sessionId] = pkg
+            if (pkg == null) hasUnknownPlayer = true else foundPackages += pkg
         }
-        discoveredPackages = foundPackages
-        val decision = modeStore.resolve(activeAppPackages())
+
+        // A complete pair of recognized dumps is the only trusted snapshot:
+        // it may remove players and expire a temporary override. An incomplete
+        // scan may add newly seen players, but cannot erase state or expire one.
+        val positiveEvidence = snapshot.sessions.isNotEmpty() || hasUnknownPlayer
+        if (snapshot.complete) {
+            discoveredPackages = foundPackages
+            discoveredHasUnknownPlayer = hasUnknownPlayer
+            discoveryInitialized = true
+            discoverySnapshotComplete = true
+        } else {
+            discoveredPackages = discoveredPackages + foundPackages
+            discoveredHasUnknownPlayer = discoveredHasUnknownPlayer || hasUnknownPlayer
+            discoverySnapshotComplete = false
+            if (positiveEvidence) discoveryInitialized = true
+        }
+        val decision = if (!snapshot.complete && !positiveEvidence && !discoveryInitialized) {
+            // Before the first usable scan, an incomplete/empty result must not
+            // replace the persisted mode with the automatic empty-set default.
+            // Keep that mode/player state but mark it untrusted for override expiry.
+            modeStore.resolve(
+                previousDecision.activePackages,
+                previousDecision.hasUnidentifiedPlayer,
+                advanceTemporaryOverride = false
+            )
+            previousDecision
+        } else {
+            modeStore.resolve(
+                activeAppPackages(),
+                discoveredHasUnknownPlayer,
+                advanceTemporaryOverride = snapshot.complete
+            )
+        }
+        val playerSnapshotChanged = decision.activePackages != previousDecision.activePackages ||
+            decision.hasUnidentifiedPlayer != previousDecision.hasUnidentifiedPlayer
 
         if (globalEffect != null) {
-            if (decision.mode != previousMode) applyAll()
+            if (decision.mode != previousDecision.mode) applyAll()
+            else if (playerSnapshotChanged) notifyModeSnapshotChanged()
             return
         }
-        if (decision.mode != previousMode && sessionEqs.isNotEmpty()) applyAll()
+        if (decision.mode != previousDecision.mode && sessionEqs.isNotEmpty()) applyAll()
+
+        // Prune only against a complete snapshot. A failed command, permission
+        // refusal, or unrecognized firmware format is not proof a player ended.
+        var changed = false
+        if (snapshot.complete) {
+            val present = snapshot.sessions.mapTo(mutableSetOf()) { it.sessionId }
+            for (session in sessionEqs.keys.toList()) {
+                val held = sessionEqs[session] ?: continue
+                if (held.discovered && session !in present) {
+                    closeSession(session)
+                    changed = true
+                }
+            }
+        }
 
         // The same output-aware pick as applyAll: an output nothing was
         // measured on gets no discovered sessions attached, not another
@@ -570,13 +611,11 @@ class EqService : Service() {
         val (profile, output, switched) = resolve()
         if (profile == null) return
         val via = if (switched) " (this output's own profile)" else ""
-        var changed = false
         var failed: String? = null
-        for (session in found) {
+        for (session in snapshot.sessions) {
             if (sessionEqs.containsKey(session.sessionId)) continue
-            val uid = session.uid ?: continue
-            val packages = packageManager.getPackagesForUid(uid)?.filterNot { it == packageName }.orEmpty()
-            val pkg = packages.firstOrNull() ?: continue
+            if (session.uid == null) continue // attribution is required to hold an effect
+            val pkg = packageBySession[session.sessionId].orEmpty()
             try {
                 val applied = createBestEffect(session.sessionId, profile)
                 sessionEqs[session.sessionId] = Held(applied, pkg, discovered = true)
@@ -586,21 +625,19 @@ class EqService : Service() {
                 failed = "Could not attach to ${label(pkg)} (DUMP discovery): ${e.message ?: e.javaClass.simpleName}"
             }
         }
-        val present = found.mapTo(mutableSetOf()) { it.sessionId }
-        for (session in sessionEqs.keys.toList()) {
-            val held = sessionEqs[session] ?: continue
-            if (held.discovered && session !in present) {
-                closeSession(session)
-                changed = true
-            }
-        }
         if (changed) syncRuntimeBands()
         if (failed != null) {
             report(failed, isError = true)
         } else if (changed) {
             if (sessionEqs.isEmpty()) report(waitingStatus(), isError = false)
             else report(sessionReport(profile, via, output), isError = false)
+        } else if (playerSnapshotChanged) {
+            notifyModeSnapshotChanged()
         }
+    }
+
+    private fun notifyModeSnapshotChanged() {
+        sendBroadcast(Intent(ACTION_STATUS_CHANGED).setPackage(packageName))
     }
 
     /** The status line for whatever is attached right now, with its provenance. */
@@ -623,10 +660,10 @@ class EqService : Service() {
      * Publishes the status to every visible surface — the Home screen status
      * line, its correction indicator, and the notification — from one place,
      * so they cannot disagree. The words are whatever [report] last chose; the
-     * "▶ Playing ·" marker is added while the whole-TV correction is on and
-     * something is audible right now (see the class note for why only then).
-     * Unchanged reports publish nothing, so a playback
-     * callback on every focus change cannot spam the notification.
+     * "▶ Playing ·" marker is added while the output-mix effect is configured
+     * and Android reports media playback, not as proof of end-to-end coverage.
+     * Unchanged reports publish nothing, so playback callbacks cannot spam
+     * the notification on every focus change.
      */
     private fun publish(configs: List<AudioPlaybackConfiguration>? = null) {
         if (!running || messageBody.isEmpty()) return
@@ -653,16 +690,14 @@ class EqService : Service() {
     }
 
     /**
-     * True when something on this TV is playing audio right now.
+     * True when Android reports an active media-like playback configuration.
      *
-     * [AudioManager.getActivePlaybackConfigurations] lists only streams that
-     * are actually playing (the platform sanitizes the list down to active
-     * ones) — or [configs], the list [playbackCallback] just delivered — and
-     * the callback re-runs this on every change. Only media traffic counts:
-     * notification beeps and the like must not light the badge. It cannot say
-     * *which* app is playing — player identity is hidden from third-party
-     * apps — and our own measurement sweep is silenced by [suspended], never
-     * by guessing at the caller.
+     * [AudioManager.getActivePlaybackConfigurations] returns the platform's
+     * sanitized active-player list — or [configs], the list
+     * [playbackCallback] just delivered — and the callback re-runs this on
+     * every change. Only media traffic counts; this does not prove the stream
+     * is audible, identify its app, reveal its route, or show that it traverses
+     * the configured effect. The measurement sweep is excluded by [suspended].
      */
     private fun audioIsPlaying(configs: List<AudioPlaybackConfiguration>? = null): Boolean {
         val active = try {
@@ -688,6 +723,13 @@ class EqService : Service() {
         // write a transient "Correcting …" status (or light the indicator)
         // mid-teardown only to have it overwritten a moment later.
         running = false
+        discoveredPackages = emptySet()
+        discoveredHasUnknownPlayer = false
+        discoveryInitialized = false
+        // Service teardown is not evidence that the detected player set
+        // changed. Clear the visible snapshot without expiring a temporary
+        // manual override; the next DUMP scan will compare against its anchor.
+        modeStore.resolve(emptySet(), advanceTemporaryOverride = false)
         try {
             unregisterReceiver(sessionReceiver)
         } catch (e: IllegalArgumentException) {
@@ -699,6 +741,8 @@ class EqService : Service() {
             Log.w(TAG, "Playback watcher was not registered", e)
         }
         mainHandler.removeCallbacksAndMessages(null)
+        discoveryQueued = false
+        discoveryAgain = false
         discoveryExecutor.shutdownNow()
         getSystemService(AudioManager::class.java)?.unregisterAudioDeviceCallback(deviceCallback)
         releaseSessions()

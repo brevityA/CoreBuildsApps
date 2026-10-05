@@ -61,17 +61,39 @@ object Formats {
         } else {
             DspConstants.ISO_CENTRES_HZ.filter { it in DspConstants.F_MIN..DspConstants.F_MAX }
         }
-        val parts = frequencies.map { hz ->
-            val response = profile.correctionAt(hz) + ManualEq.responseDb(profile.manualFilters, hz)
+        val manualFilters = ManualEq.sanitize(profile.manualFilters)
+        val responses = frequencies.map { hz ->
+            profile.correctionAt(hz) + ManualEq.responseDb(manualFilters, hz)
+        }
+        val parts = frequencies.indices.map { index ->
+            val response = responses[index]
             val sign = if (response >= 0) "+" else ""
-            String.format(Locale.US, "%.0f %s%.2f", hz, sign, response)
+            String.format(Locale.US, "%.0f %s%.2f", frequencies[index], sign, response)
         }
-        val preamp = if (profile.manualFilters.isNotEmpty()) {
-            String.format(Locale.US, "Preamp: %.2f dB\n", exportPreampDb(profile, profile.filters + profile.manualFilters))
-        } else {
-            ""
-        }
+        val preamp = graphicEqPreampDb(profile)?.let { db ->
+            String.format(Locale.US, "Preamp: %.2f dB\n", db)
+        }.orEmpty()
         return preamp + "GraphicEQ: " + parts.joinToString("; ") + "\n"
+    }
+
+    /**
+     * Headroom for the GraphicEQ points actually serialized, or null when the
+     * base-only export intentionally has no preamp line (pre-existing behavior).
+     */
+    fun graphicEqPreampDb(profile: Profile): Double? {
+        val manualFilters = ManualEq.sanitize(profile.manualFilters)
+        if (manualFilters.isEmpty()) return null
+        val frequencies = if (profile.curve.isNotEmpty()) {
+            profile.curve.map { it.hz }
+        } else {
+            DspConstants.ISO_CENTRES_HZ.filter { it in DspConstants.F_MIN..DspConstants.F_MAX }
+        }
+        val peak = frequencies.maxOfOrNull { hz ->
+            profile.correctionAt(hz) + ManualEq.responseDb(manualFilters, hz)
+        } ?: 0.0
+        // GraphicEQ serializes the measured curve, not the fitted parametric
+        // filters. Preserve any more-conservative room-only reserve.
+        return min(roomPreampDb(profile), conservativePreampDb(peak))
     }
 
     /** Headroom for a PA parametric export, preserving the measured correction's existing reserve. */
@@ -99,11 +121,12 @@ object Formats {
             DspConstants.F_MIN * Math.pow(DspConstants.F_MAX / DspConstants.F_MIN, index / 240.0)
         } + filters.map { it.fc }).distinct().toDoubleArray()
         val peakDb = Peaking.filterSumDb(sampleHz, filters).maxOrNull() ?: 0.0
-        // Keep the preamp conservative to hundredths without turning a tiny
-        // floating-point overshoot at an exact value into an extra 0.01 dB.
-        val combined = floor((-maxOf(0.0, peakDb) + PREAMP_ROUNDING_EPSILON_DB) * 100.0) / 100.0
-        return min(existing, combined)
+        return min(existing, conservativePreampDb(peakDb))
     }
+
+    /** Round a peak reserve toward more-negative hundredths without a 0.01 dB float artifact. */
+    private fun conservativePreampDb(peakDb: Double): Double =
+        floor((-maxOf(0.0, peakDb) + PREAMP_ROUNDING_EPSILON_DB) * 100.0) / 100.0
 
     fun exportProfileJson(profile: Profile): String = exportProfileJson(profile, emptyMap(), selectedMode = null)
 

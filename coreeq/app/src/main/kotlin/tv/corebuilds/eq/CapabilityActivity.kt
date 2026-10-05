@@ -8,6 +8,7 @@ import android.widget.Toast
 import tv.corebuilds.eq.apply.BandMapping
 import tv.corebuilds.eq.apply.DumpsysDiscovery
 import tv.corebuilds.eq.apply.EffectLadder
+import tv.corebuilds.eq.apply.EqService
 import tv.corebuilds.eq.apply.OutputRoute
 import tv.corebuilds.eq.export.Formats
 import tv.corebuilds.eq.export.ProfileStore
@@ -90,11 +91,18 @@ class CapabilityActivity : TvActivity() {
                 }
 
                 textVerdictBands.text = "${verdict.bandCount} Equalizer fallback bands"
-                val announced = profileStore.sessionPackages()
-                textVerdictSession.text = if (announced.isEmpty()) {
-                    "session broadcast: none seen yet (turn correction on, then play something)"
-                } else {
-                    "session broadcast: ${announced.size} player(s) seen, latest ${announced.first()}"
+                val activePackages = if (EqService.running) modeStore.lastActivePackages() else emptySet()
+                val unidentifiedPlayer = EqService.running && modeStore.lastActivePlayerUnknown()
+                textVerdictSession.text = when {
+                    !DumpsysDiscovery.hasGrant(this@CapabilityActivity) ->
+                        getString(R.string.capability_app_identity_not_granted)
+                    unidentifiedPlayer && activePackages.isNotEmpty() ->
+                        getString(R.string.capability_app_identity_partial, activePackages.size)
+                    activePackages.isNotEmpty() ->
+                        getString(R.string.capability_app_identity_detected, activePackages.size)
+                    unidentifiedPlayer ->
+                        getString(R.string.capability_app_identity_unknown)
+                    else -> getString(R.string.capability_app_identity_none)
                 }
                 textVerdictGlobal.text = "global mix: ${if (verdict.session0Supported) "supported" else "not supported"}"
             }
@@ -103,23 +111,23 @@ class CapabilityActivity : TvActivity() {
 
     private fun exportForTvSettings() {
         val output = OutputRoute.current(this)
-        val routed = OutputRoute.pick(
-            profileStore.getAllProfiles(),
+        val profiles = profileStore.getAllProfiles()
+        val base = OutputRoute.pick(
+            profiles,
             profileStore.chosenId(),
             output?.kind,
             output?.name
         ).profile
-        val base = routed ?: if (output?.kind == null) profileStore.getActiveProfile() else null
         if (base == null) {
-            val message = if (output?.kind != null && profileStore.getAllProfiles().isNotEmpty()) {
-                getString(R.string.output_profile_missing_sub, OutputRoute.label(output.kind))
-            } else {
-                getString(R.string.no_profile_sub)
+            val message = when {
+                profiles.isEmpty() -> getString(R.string.no_profile_sub)
+                output?.kind == null -> getString(R.string.output_profile_unknown_sub)
+                else -> getString(R.string.output_profile_missing_sub, OutputRoute.label(output.kind))
             }
             Toast.makeText(this, message, Toast.LENGTH_LONG).show()
             return
         }
-        val mode = modeStore.resolve(modeStore.lastActivePackages()).mode
+        val mode = modeStore.currentDecision().mode
         val active = modeStore.effectiveProfile(base, mode)
         val centres = lastBandCentres ?: listOf(60.0, 230.0, 910.0, 3600.0, 14000.0)
         // One home for the band maths (BandMapping): the export cannot drift

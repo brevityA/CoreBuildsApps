@@ -1,12 +1,16 @@
 package tv.corebuilds.eq
 
+import android.content.BroadcastReceiver
+import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
 import android.content.pm.ResolveInfo
 import android.os.Bundle
 import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
+import androidx.core.content.ContextCompat
 import tv.corebuilds.eq.apply.DumpsysDiscovery
 import tv.corebuilds.eq.apply.EqService
 import tv.corebuilds.eq.mode.ContentMode
@@ -16,7 +20,6 @@ import tv.corebuilds.eq.mode.ContentModeStore
 class ModeActivity : TvActivity() {
 
     private lateinit var modeStore: ContentModeStore
-    private lateinit var profileStore: tv.corebuilds.eq.export.ProfileStore
     private lateinit var textCurrent: TextView
     private lateinit var textRules: TextView
     private lateinit var btnMovie: Button
@@ -24,6 +27,13 @@ class ModeActivity : TvActivity() {
     private lateinit var btnGaming: Button
     private lateinit var btnAuto: Button
     private lateinit var btnOverridePolicy: Button
+    private var statusReceiverRegistered = false
+
+    private val statusReceiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context, intent: Intent) {
+            render()
+        }
+    }
 
     private data class AppChoice(val packageName: String, val label: String)
 
@@ -31,7 +41,6 @@ class ModeActivity : TvActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_mode)
         modeStore = ContentModeStore(this)
-        profileStore = tv.corebuilds.eq.export.ProfileStore(this)
 
         textCurrent = findViewById(R.id.text_mode_current)
         textRules = findViewById(R.id.text_mode_rules)
@@ -65,7 +74,24 @@ class ModeActivity : TvActivity() {
 
     override fun onResume() {
         super.onResume()
+        if (!statusReceiverRegistered) {
+            ContextCompat.registerReceiver(
+                this,
+                statusReceiver,
+                IntentFilter(EqService.ACTION_STATUS_CHANGED),
+                ContextCompat.RECEIVER_NOT_EXPORTED
+            )
+            statusReceiverRegistered = true
+        }
         render()
+    }
+
+    override fun onPause() {
+        if (statusReceiverRegistered) {
+            unregisterReceiver(statusReceiver)
+            statusReceiverRegistered = false
+        }
+        super.onPause()
     }
 
     private fun selectMode(mode: ContentMode) {
@@ -80,7 +106,7 @@ class ModeActivity : TvActivity() {
 
     private fun render() {
         if (!::modeStore.isInitialized) return
-        val decision = modeStore.resolve(modeStore.lastActivePackages())
+        val decision = modeStore.currentDecision()
         textCurrent.text = getString(R.string.mode_active_status, decision.mode.title, decision.reason)
         btnMovie.isActivated = decision.mode == ContentMode.MOVIE_TV
         btnEveryday.isActivated = decision.mode == ContentMode.EVERYDAY
@@ -107,8 +133,15 @@ class ModeActivity : TvActivity() {
                 append("\nDETECTED PLAYERS\n")
                 active.forEach { append(appLabel(it)).append("\n") }
             }
+            if (decision.hasUnidentifiedPlayer) {
+                append("\nUNKNOWN ACTIVE PLAYER · app identity unavailable")
+                if (modeStore.automaticSwitching() && decision.mode == ContentMode.EVERYDAY && decision.reason != "Manual override") {
+                    append(" · Everyday fallback")
+                }
+                append("\n")
+            }
             if (!DumpsysDiscovery.hasGrant(this@ModeActivity)) {
-                append("\nOptional: grant DUMP on the Capability screen to discover more players.")
+                append("\nOptional app switching needs DUMP discovery. Android may refuse this grant on a stock or release build.")
             }
         }.trim()
     }
@@ -173,8 +206,9 @@ class ModeActivity : TvActivity() {
                 discovered[pkg] = label
             }
         }
-        // Session-announcing players may not have a TV launcher activity; retain them as choices.
-        for (pkg in profileStore.sessionPackages()) {
+        // DUMP-discovered players may lack a TV launcher activity.
+        val recentPlayers = if (EqService.running) modeStore.lastActivePackages() else emptySet()
+        for (pkg in recentPlayers) {
             if (pkg == packageName || pkg in discovered) continue
             discovered[pkg] = appLabel(pkg)
         }

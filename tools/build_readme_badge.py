@@ -13,7 +13,7 @@ WHAT = {
     "shift": "Android TV screensaver + motion wallpaper browser",
     "motion": "Projectivy wallpaper-provider plugin for Core Motion loops",
     "doctor": "Local-only streaming and suite diagnostics (phone)",
-    "eq": "Room EQ from a test sweep and the TV remote mic (in development)",
+    "eq": "Room EQ measured per TV audio output, with manual/content-mode tone controls",
 }
 ANCHOR = {
     "iconpack": "core-builds-icon-pack",

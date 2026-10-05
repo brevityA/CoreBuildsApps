@@ -7,6 +7,7 @@ import org.junit.Test
 import tv.corebuilds.eq.apply.BandMapping
 import tv.corebuilds.eq.dsp.ManualEq
 import tv.corebuilds.eq.dsp.PeakingFilter
+import tv.corebuilds.eq.export.CurvePoint
 import tv.corebuilds.eq.export.Formats
 import tv.corebuilds.eq.export.Profile
 
@@ -30,6 +31,24 @@ class ManualEqTest {
         assertEquals(4.0, ManualEq.responseDb(filters, 1_000.0), 1e-9)
         assertEquals(0.0, ManualEq.responseDb(filters, 8_001.0), 0.0)
         assertEquals(0.0, ManualEq.responseDb(filters, 39.0), 0.0)
+    }
+
+    @Test
+    fun legacyMigrationPreservesUntouchedBandsAndPrefersExistingOverlayValues() {
+        val legacy = listOf(
+            PeakingFilter(1_000.0, 1.0, 2.0),
+            PeakingFilter(2_000.0, 1.0, -1.0)
+        )
+        val existingEveryday = listOf(
+            PeakingFilter(1_000.0, 1.2, 4.0),
+            PeakingFilter(4_000.0, 1.0, 1.0)
+        )
+
+        val merged = ManualEq.mergeLegacyWithOverlay(legacy, existingEveryday)
+        assertEquals(3, merged.size)
+        assertEquals(4.0, ManualEq.gainAtBand(merged, 5), 0.0)
+        assertEquals(-1.0, ManualEq.gainAtBand(merged, 6), 0.0)
+        assertEquals(1.0, ManualEq.gainAtBand(merged, 7), 0.0)
     }
 
     @Test
@@ -78,6 +97,31 @@ class ManualEqTest {
 
         assertEquals(-3.0, Formats.recommendedPreampDb(boosted), 1e-9)
         assertEquals(-2.0, Formats.recommendedPreampDb(boosted.copy(manualFilters = emptyList())), 1e-9)
+    }
+
+    @Test
+    fun graphicEqHeadroomUsesTheExportedCurveAndPreservesTheRoomReserve() {
+        val room = Profile(
+            id = "graphic-curve-headroom",
+            name = "Room",
+            timestampMs = 1L,
+            target = "flat",
+            micType = "not measured",
+            preampDb = -0.5,
+            filters = listOf(PeakingFilter(1_000.0, 1.0, 0.5)),
+            curve = listOf(CurvePoint(1_000.0, 0.0, 6.0)),
+            manualFilters = listOf(PeakingFilter(1_000.0, 1.0, 0.5))
+        )
+
+        val graphic = Formats.exportGraphicEq(room)
+        assertTrue(graphic.startsWith("Preamp: -6.50 dB\nGraphicEQ: "))
+        assertEquals(-6.5, Formats.graphicEqPreampDb(room)!!, 1e-9)
+        assertTrue(graphic.contains("1000 +6.50"))
+
+        val roomReserve = Formats.exportGraphicEq(room.copy(preampDb = -8.0))
+        assertTrue(roomReserve.startsWith("Preamp: -8.00 dB\nGraphicEQ: "))
+        assertEquals(-8.0, Formats.graphicEqPreampDb(room.copy(preampDb = -8.0))!!, 1e-9)
+        assertEquals(null, Formats.graphicEqPreampDb(room.copy(manualFilters = emptyList())))
     }
 
     @Test

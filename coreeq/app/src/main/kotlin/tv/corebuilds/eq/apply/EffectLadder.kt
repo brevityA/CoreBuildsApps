@@ -7,8 +7,8 @@ import android.media.audiofx.Equalizer
 import android.os.Build
 
 enum class LadderRung(val rank: Int, val title: String, val description: String) {
-    BROADCAST_SESSION(1, "Session open/close broadcasts", "Players that announce a session. Netflix and YouTube do not."),
-    DUMP_DISCOVERY(2, "DUMP-assisted discovery (v1.1)", "ADB grant dumpsys media.audio_flinger discovery."),
+    BROADCAST_SESSION(1, "Playback/session signals", "Request a DUMP rescan; never trusted as app or session identity."),
+    DUMP_DISCOVERY(2, "DUMP-assisted discovery (v1.1)", "Optional UID/session scan; Android may refuse this third-party grant."),
     GLOBAL_MIX(3, "Global output mix (session 0)", "Deprecated in 2012, never removed. Works on some sets."),
     COMPANION_EXPORT(4, "Companion export", "Export for Poweramp Equalizer or TV sound settings. Always works.")
 }

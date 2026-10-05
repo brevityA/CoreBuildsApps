@@ -39,10 +39,16 @@ class ProfilesActivity : TvActivity() {
 
     private var profilesList = mutableListOf<Profile>()
     private var selectedProfile: Profile? = null
+    private var activeProfileId: String? = null
     private var selectedExportFormat = ExportFormat.PARAMETRIC
 
     private enum class ExportFormat {
         PARAMETRIC, GRAPHIC_EQ, JSON
+    }
+
+    override fun onResume() {
+        super.onResume()
+        if (::profileStore.isInitialized) loadProfiles()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -74,14 +80,17 @@ class ProfilesActivity : TvActivity() {
         btnChipParametric.setOnClickListener {
             selectedExportFormat = ExportFormat.PARAMETRIC
             updateChipStates()
+            selectedProfile?.let { refreshPreampDisplay(it) }
         }
         btnChipGraphicEq.setOnClickListener {
             selectedExportFormat = ExportFormat.GRAPHIC_EQ
             updateChipStates()
+            selectedProfile?.let { refreshPreampDisplay(it) }
         }
         btnChipJson.setOnClickListener {
             selectedExportFormat = ExportFormat.JSON
             updateChipStates()
+            selectedProfile?.let { refreshPreampDisplay(it) }
         }
         updateChipStates()
     }
@@ -102,20 +111,32 @@ class ProfilesActivity : TvActivity() {
             output?.kind,
             output?.name
         ).profile
-        val active = routeMatch ?: if (output?.kind == null) profileStore.getActiveProfile() else null
+        val active = routeMatch
         selectedProfile = active
+        activeProfileId = active?.id
 
         recyclerProfiles.adapter = ProfileAdapter(
             items = profilesList,
-            activeId = { profileStore.getActiveProfile()?.id },
+            activeId = { activeProfileId },
             modeStore = modeStore,
             onProfileSelected = { profile ->
                 selectedProfile = profile
                 btnExport.isEnabled = true
                 btnDelete.isEnabled = true
                 profileStore.setActiveProfile(profile.id)
+                val currentOutput = OutputRoute.current(this)
+                val routeMatch = OutputRoute.pick(
+                    profilesList,
+                    profileStore.chosenId(),
+                    currentOutput?.kind,
+                    currentOutput?.name
+                ).profile
+                activeProfileId = routeMatch?.id
                 EqService.send(this, EqService.ACTION_REAPPLY)
                 displayProfile(profile)
+                if (routeMatch?.id != profile.id) {
+                    Toast.makeText(this, R.string.profile_not_active_on_output, Toast.LENGTH_LONG).show()
+                }
                 recyclerProfiles.adapter?.notifyDataSetChanged()
             }
         )
@@ -123,6 +144,9 @@ class ProfilesActivity : TvActivity() {
         btnDelete.isEnabled = active != null
         if (active != null) {
             displayProfile(active)
+        } else if (profilesList.isNotEmpty() && output?.kind == null) {
+            textPreamp.text = getString(R.string.output_profile_unknown_sub)
+            graphProfile.setData(DoubleArray(0), emptyList(), "OUTPUT NOT IDENTIFIED")
         } else if (output?.kind != null && profilesList.isNotEmpty()) {
             textPreamp.text = getString(R.string.output_profile_missing_sub, OutputRoute.label(output.kind))
             graphProfile.setData(DoubleArray(0), emptyList(), "NO PROFILE FOR THIS OUTPUT")
@@ -133,12 +157,9 @@ class ProfilesActivity : TvActivity() {
     }
 
     private fun displayProfile(profile: Profile) {
-        val mode = modeStore.resolve(modeStore.lastActivePackages()).mode
+        val mode = modeStore.currentDecision().mode
         val effective = modeStore.effectiveProfile(profile, mode)
-        val pDb = Formats.recommendedPreampDb(effective)
-        // Which output this corrects: correction only applies there (OutputRoute).
-        val on = profile.outputKind?.let { profile.outputName ?: OutputRoute.label(it) } ?: "any output (output not specified)"
-        textPreamp.text = String.format(Locale.US, "Preamp  %.2f dB  ·  %s ·  For %s", pDb, mode.title, on)
+        refreshPreampDisplay(profile, mode, effective)
 
         if (effective.curve.isNotEmpty()) {
             val freqs = DoubleArray(effective.curve.size) { effective.curve[it].hz }
@@ -174,9 +195,42 @@ class ProfilesActivity : TvActivity() {
         }
     }
 
+    private fun refreshPreampDisplay(profile: Profile) {
+        val mode = modeStore.currentDecision().mode
+        refreshPreampDisplay(profile, mode, modeStore.effectiveProfile(profile, mode))
+    }
+
+    private fun refreshPreampDisplay(profile: Profile, mode: ContentMode, effective: Profile) {
+        // Which output this corrects: correction only applies there (OutputRoute).
+        val output = profile.outputKind?.let { profile.outputName ?: OutputRoute.label(it) }
+            ?: "any output (output not specified)"
+        textPreamp.text = when (selectedExportFormat) {
+            ExportFormat.PARAMETRIC -> {
+                val filters = profile.filters + ManualEq.sanitize(effective.manualFilters)
+                if (filters.isEmpty()) {
+                    getString(R.string.profile_preamp_no_filters, mode.title, output)
+                } else {
+                    getString(R.string.profile_preamp_parametric, Formats.recommendedPreampDb(effective), mode.title, output)
+                }
+            }
+            ExportFormat.GRAPHIC_EQ -> {
+                val preamp = Formats.graphicEqPreampDb(effective)
+                if (preamp == null) {
+                    getString(R.string.profile_preamp_graphic_no_line, mode.title, output)
+                } else {
+                    getString(R.string.profile_preamp_graphic, preamp, mode.title, output)
+                }
+            }
+            ExportFormat.JSON -> getString(
+                R.string.profile_preamp_json,
+                Formats.recommendedPreampDb(effective), mode.title, output
+            )
+        }
+    }
+
     private fun exportCurrentProfile() {
         val p = selectedProfile ?: return
-        val mode = modeStore.resolve(modeStore.lastActivePackages()).mode
+        val mode = modeStore.currentDecision().mode
         val effective = modeStore.effectiveProfile(p, mode)
         val stem = "${p.name.replace(" ", "_").lowercase(Locale.US)}_${mode.key}"
         val filename: String

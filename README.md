@@ -4,7 +4,7 @@
 
 # Core Builds Apps
 
-**Five Android apps. One brand, one living-room bar.**
+**Six Android apps. One brand, one living-room bar.**
 
 [![Suite CI](https://github.com/brevityA/CoreBuildsApps/actions/workflows/suite-ci.yml/badge.svg)](https://github.com/brevityA/CoreBuildsApps/actions/workflows/suite-ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-00d4ff.svg)](LICENSE)
@@ -22,7 +22,7 @@
 > | **[Core Shift](#-core-shift)** | `v2.3.5` | Android TV screensaver + motion wallpaper browser | `8829421` | [`shift-v*` / `shift`](../../releases) |
 > | **[Core Motion](#-core-motion)** | `v1.0.0` | Projectivy wallpaper-provider plugin for Core Motion loops | `[USER TO SUPPLY]` | [`motion-v*` / `motion`](../../releases) |
 > | **[Core Doctor](#-core-doctor)** | `v0.1.0` | Local-only streaming and suite diagnostics (phone) | `8664938` | [`doctor-v*` / `doctor`](../../releases) |
-> | **[Core EQ](#-core-eq)** | `v1.0.0` | Room EQ from a test sweep and the TV remote mic (in development) | `7946159` | [`coreeq-v*` / `coreeq`](../../releases) |
+> | **[Core EQ](#-core-eq)** | `v1.1.0` | Room EQ measured per TV audio output, with manual/content-mode tone controls | `7946159` | [`coreeq-v*` / `coreeq`](../../releases) |
 >
 > Each app has its own CI workflow and release tag. Do not merge Gradle roots, split the repo, or repoint floating Downloader tags.
 <!-- suite-stamp:end -->
@@ -225,9 +225,9 @@ Build: `cd doctor && ./gradlew :app:assembleDebug` · [`doctor/SPEC.md`](doctor/
 
 ## 🔷 Core EQ
 
-**Measure the room you sit in, with the remote you already hold.** `v1.0.0`
+**Measure the room you sit in, with the remote you already hold.** `v1.1.0`
 
-Core EQ combines TV-room measurement with a manual 10-band tone EQ. Each measured base belongs to its output; Movie / TV, Everyday and Gaming add independent tone overlays. Choose a mode with the remote or optionally assign app rules for best-effort automatic switching (conflicts use Everyday; a temporary or sticky manual override is configurable). Profiles and the current mode can be exported for Poweramp Equalizer or TV sound settings. Android does not guarantee a global equaliser or expose every player's identity, so Core EQ reports the apply path and falls back to manual selection rather than promising every app will be affected. Permissions: RECORD_AUDIO, MODIFY_AUDIO_SETTINGS; optional one-time ADB DUMP grant for additional player discovery.
+Core EQ combines TV-room measurement with a manual 10-band tone EQ. Each measured base belongs to its output; Movie / TV, Everyday and Gaming add independent tone overlays. Choose a mode with the remote or optionally assign app rules for best-effort automatic switching (unmapped, unidentified or conflicting players use Everyday; a temporary or sticky manual override is configurable). Profiles and the current mode can be exported for Poweramp Equalizer or TV sound settings. Android does not guarantee a global equaliser, reveal every player's identity, or prove another app's actual output route, so Core EQ reports its apply path instead of promising every app will be affected. Optional DUMP discovery may require an ADB grant that stock/release builds can refuse. Permissions: RECORD_AUDIO, MODIFY_AUDIO_SETTINGS.
 
 **Install:** test builds on the [`coreeq-test`](../../releases/tag/coreeq-test) prerelease; releases under `coreeq-v*` tags. Downloader code **`7946159`**.
 

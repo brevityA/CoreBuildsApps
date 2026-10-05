@@ -16,10 +16,11 @@ import java.util.UUID
 /**
  * What the correction service last did, in words the Home screen can show.
  *
- * [playing] is the live half of the same report: true while audio the
- * correction is attached to is audible, which is what the Home screen's
- * indicator pulses on. It dies with the service — a stale flag can never light
- * the badge, because the screen only trusts it while the service is running.
+ * [playing] is a live playback hint for the output-mix path: true when that
+ * effect is configured and Android reports active media playback. It does not
+ * prove the reported stream traverses the effect or is audible at the output.
+ * The flag dies with the service, and Home trusts it only while the service is
+ * running.
  */
 data class EqStatus(
     val message: String,
@@ -51,6 +52,7 @@ class ProfileStore(context: Context) {
             }
             prefs.edit().putBoolean(KEY_DEMO_PURGED, true).apply()
         }
+        if (prefs.contains(KEY_SESSION_PKGS)) prefs.edit().remove(KEY_SESSION_PKGS).apply()
         migrateLegacyManualFiltersToEveryday()
     }
 
@@ -58,18 +60,28 @@ class ProfileStore(context: Context) {
     private fun migrateLegacyManualFiltersToEveryday() {
         if (prefs.getBoolean(KEY_MODE_EQ_MIGRATED, false)) return
         val modes = ContentModeStore(appContext)
+        val profiles = getAllProfiles()
+        val migrated = mutableListOf<Profile>()
         var changed = false
-        val migrated = getAllProfiles().map { profile ->
+        for (profile in profiles) {
             if (profile.manualFilters.isEmpty()) {
-                profile
-            } else {
-                modes.importLegacyEveryday(profile.id, profile.manualFilters)
-                changed = true
-                profile.copy(manualFilters = emptyList())
+                migrated += profile
+                continue
             }
+            if (!modes.importLegacyEveryday(profile.id, profile.manualFilters)) {
+                Log.e(TAG, "Could not durably migrate manual EQ for profile ${profile.id}; legacy filters were kept")
+                return
+            }
+            migrated += profile.copy(manualFilters = emptyList())
+            changed = true
         }
-        if (changed) persistProfiles(migrated, synchronous = true)
-        prefs.edit().putBoolean(KEY_MODE_EQ_MIGRATED, true).commit()
+        if (changed && !persistProfiles(migrated, synchronous = true)) {
+            Log.e(TAG, "Could not durably save migrated profiles; legacy manual EQ was kept")
+            return
+        }
+        if (!prefs.edit().putBoolean(KEY_MODE_EQ_MIGRATED, true).commit()) {
+            Log.e(TAG, "Could not record manual EQ migration completion; migration will retry next launch")
+        }
     }
 
     fun getAllProfiles(): List<Profile> {
@@ -228,16 +240,6 @@ class ProfileStore(context: Context) {
             .apply()
     }
 
-    /** Packages that have announced an audio session to Core EQ, most recent first. */
-    fun sessionPackages(): List<String> =
-        prefs.getString(KEY_SESSION_PKGS, "")!!.split(',').filter { it.isNotBlank() }
-
-    fun noteSessionPackage(pkg: String) {
-        if (pkg.isBlank()) return
-        val list = (listOf(pkg) + sessionPackages().filter { it != pkg }).take(8)
-        prefs.edit().putString(KEY_SESSION_PKGS, list.joinToString(",")).apply()
-    }
-
     /** The currently-applied engine layout; transient runtime state, not profile data. */
     fun runtimeBands(): List<PlatformBand> {
         val raw = prefs.getString(KEY_RUNTIME_BANDS, null) ?: return emptyList()
@@ -271,11 +273,16 @@ class ProfileStore(context: Context) {
         prefs.edit().remove(KEY_RUNTIME_BANDS).apply()
     }
 
-    private fun persistProfiles(list: List<Profile>, synchronous: Boolean = false) {
+    private fun persistProfiles(list: List<Profile>, synchronous: Boolean = false): Boolean {
         val arr = JSONArray()
         for (p in list) arr.put(JSONObject(Formats.exportProfileJson(p)))
         val editor = prefs.edit().putString(KEY_PROFILES, arr.toString())
-        if (synchronous) editor.commit() else editor.apply()
+        return if (synchronous) {
+            editor.commit()
+        } else {
+            editor.apply()
+            true
+        }
     }
 
     private fun parseProfile(obj: JSONObject): Profile {

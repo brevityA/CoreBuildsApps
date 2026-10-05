@@ -8,6 +8,8 @@
     <string name="no_profile_sub">Measure this room or open Manual EQ to create a profile.</string>
     <string name="output_profile_missing_name">No profile for this output</string>
     <string name="output_profile_missing_sub">Nothing measured for %1$s. Measure it or connect an output with a saved profile.</string>
+    <string name="output_profile_unknown_sub">Android could not identify the current output. Core EQ will not guess a known-output room curve; connect a recognized output or measure while this output is unknown.</string>
+    <string name="profile_not_active_on_output">This profile does not match the current output. It is preview/export only and will not be applied here.</string>
     <string name="action_measure">Measure</string>
     <string name="action_measure_sub">Sine sweep · 13 s · this room</string>
     <string name="action_remeasure">Re-measure</string>
@@ -39,7 +41,7 @@
     <string name="mode_rule_title">Choose a mode for %1$s</string>
     <string name="mode_rule_remove">Remove app rule</string>
     <string name="mode_apps_empty">No launchable TV apps or recently detected players were found.</string>
-    <string name="mode_app_rules_hint">Automatic switching runs while correction is on. Player identity is best-effort: session broadcasts work for some apps, optional DUMP discovery may find more, and apps Android does not expose use Everyday. Conflicting app rules also use Everyday. A temporary manual override ends when the detected player set changes.</string>
+    <string name="mode_app_rules_hint">Automatic switching runs while correction is on and requires DUMP-discovered session UIDs that map to one visible package. Session broadcasts and playback callbacks only trigger a rescan; their package and session extras are never trusted as identity. Android documents DUMP as not for third-party apps, so an ADB grant may be refused on your TV. Unmapped or unidentified players default to Everyday, including alongside a different app rule. Conflicting app rules use Everyday. A temporary manual override ends when the detected player set changes.</string>
     <string name="manual_eq_heading">Manual equaliser</string>
     <string name="manual_eq_edit_mode">Editing mode: %1$s</string>
     <string name="manual_eq_mode_picker_title">Choose the mode overlay to edit</string>
@@ -91,6 +93,8 @@
     <string name="measure_import_save">Save for export</string>
     <string name="measure_import_saved">Saved for export, not applied to the TV: %1$s</string>
     <string name="measure_import_failed">Not imported: %1$s</string>
+    <string name="measure_import_output_estimate"> · tagged to route estimate %1$s; confirm it matches the REW measurement</string>
+    <string name="measure_import_output_unknown"> · Android route unknown; REW output chain is not identified</string>
     <string name="measure_saved">Saved and made active: %1$s</string>
     <string name="measure_profile_name">Room · %1$s</string>
     <string name="measure_room_button">Room size: %1$s</string>
@@ -101,7 +105,7 @@
     <string name="correction_off">Correction: Off</string>
 
     <!-- Correction indicator badge (Home screen, under the switch) -->
-    <string name="indicator_live">PLAYING · EFFECT ACTIVE</string>
+    <string name="indicator_live">PLAYING · COVERAGE UNKNOWN</string>
     <string name="indicator_standby">STANDBY</string>
     <string name="indicator_not_applied">NOT APPLIED</string>
 
@@ -116,6 +120,11 @@
     <string name="export_chip_json">Profile .json</string>
     <string name="export_preamp_label">Preamp</string>
     <string name="export_preamp_desc">The export ships its own headroom note. Copy the preamp with the filters or the boost clips.</string>
+    <string name="profile_preamp_parametric">Parametric preamp  %1$.2f dB  ·  %2$s · For %3$s</string>
+    <string name="profile_preamp_graphic">GraphicEQ preamp  %1$.2f dB  ·  %2$s · For %3$s</string>
+    <string name="profile_preamp_graphic_no_line">GraphicEQ base-only export has no preamp line · %1$s · For %2$s</string>
+    <string name="profile_preamp_json">Profile JSON preamp  %1$.2f dB  ·  %2$s · For %3$s</string>
+    <string name="profile_preamp_no_filters">Parametric export has no filters or preamp line · %1$s · For %2$s</string>
     <string name="action_export">Export</string>
     <string name="action_delete">Delete</string>
 
@@ -127,9 +136,14 @@
     <string name="capability_fallback_title">If nothing applies, the curve still travels</string>
     <string name="capability_fallback_desc">Export the profile and set the numbers in the TV\'s own sound settings, or in the player\'s built-in equaliser. It is the same curve.</string>
     <string name="capability_discovery_title">DUMP discovery (optional)</string>
-    <string name="capability_discovery_granted">Granted · some players that never announce a session can be found and corrected. Not all: YouTube is reported not to be reachable this way.</string>
-    <string name="capability_discovery_denied">Not granted · this build uses PC ADB; on-device pairing is not included. Run this once from a computer with ADB, then correction can reach some players that never announce a session:</string>
+    <string name="capability_discovery_granted">Granted · Core EQ will try to inspect active media/game sessions. Dump formats, UID visibility and effect support vary; this is not a coverage guarantee.</string>
+    <string name="capability_discovery_denied">Not granted · Android documents DUMP as not for third-party apps, so a grant may be refused on a stock or release build. If your TV allows it, try once from a computer with ADB:</string>
     <string name="capability_discovery_command">adb shell pm grant tv.corebuilds.eq android.permission.DUMP</string>
+    <string name="capability_app_identity_not_granted">app identity: DUMP not granted · broadcasts are rescan triggers only</string>
+    <string name="capability_app_identity_detected">DUMP apps: %1$d package(s) identified</string>
+    <string name="capability_app_identity_partial">DUMP apps: %1$d package(s) identified · another session is unknown</string>
+    <string name="capability_app_identity_unknown">DUMP apps: active session found, package identity unavailable</string>
+    <string name="capability_app_identity_none">DUMP apps: none recorded yet · enable correction and start playback</string>
 
     <!-- Target curves -->
     <string name="target_flat">Flat (0 dB reference)</string>

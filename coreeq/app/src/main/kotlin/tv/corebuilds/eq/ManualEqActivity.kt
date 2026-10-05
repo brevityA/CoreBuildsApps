@@ -67,7 +67,7 @@ class ManualEqActivity : TvActivity() {
 
         profileStore = ProfileStore(this)
         modeStore = ContentModeStore(this)
-        editingMode = modeStore.resolve(modeStore.lastActivePackages()).mode
+        editingMode = modeStore.currentDecision().mode
         profile = resolveProfileForCurrentOutput()
 
         graph = findViewById(R.id.graph_manual_eq)

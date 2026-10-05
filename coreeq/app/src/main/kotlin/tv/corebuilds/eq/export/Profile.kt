@@ -42,9 +42,12 @@ data class Profile(
     /** Measurement limits that must travel with the curve (e.g. phase not analysed on a REW magnitude import). */
     val measurementNotes: List<String> = emptyList(),
     /**
-     * The output this was measured on (see OutputRoute: "speaker", "hdmi_arc",
-     * "bluetooth", …). Null for profiles saved before outputs were recorded:
-     * those apply on any output, as they always did.
+     * The output chain this profile is assigned to (see OutputRoute: "speaker",
+     * "hdmi_arc", "bluetooth", …). A TV sweep uses its reported AudioTrack
+     * route; an external REW import can only use the current route estimate,
+     * which is recorded in [measurementNotes]. Null is reserved for older
+     * profiles saved before outputs were recorded; those retain legacy
+     * all-output behavior.
      */
     val outputKind: String? = null,
     /** What that output called itself ("Sonos Beam"), for display. */
