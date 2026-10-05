@@ -10,7 +10,7 @@ enum class LadderRung(val rank: Int, val title: String, val description: String)
     BROADCAST_SESSION(1, "Playback/session signals", "Request a DUMP rescan; never trusted as app or session identity."),
     DUMP_DISCOVERY(2, "DUMP-assisted discovery (v1.1)", "Optional UID/session scan; Android may refuse this third-party grant."),
     GLOBAL_MIX(3, "Global output mix (session 0)", "Deprecated in 2012, never removed. Works on some sets."),
-    COMPANION_EXPORT(4, "Companion export", "Export for Poweramp Equalizer or TV sound settings. Always works.")
+    COMPANION_EXPORT(4, "Companion export", "Export for Poweramp Equalizer or TV sound settings when on-device application is unavailable.")
 }
 
 data class ProbeVerdict(
@@ -43,9 +43,9 @@ object EffectLadder {
         var eq: Equalizer? = null
         try {
             eq = Equalizer(0, 0)
-            eqSupported = true
-            equalizerSession0Ok = true
-            val count = eq.numberOfBands.toInt()
+            eqSupported = eq.hasControl()
+            equalizerSession0Ok = eqSupported
+            val count = if (eqSupported) eq.numberOfBands.toInt() else 0
             if (count > 0) {
                 bands = count
                 centres.clear()
@@ -94,6 +94,7 @@ object EffectLadder {
         // Recommendation
         val recommended = when {
             session0Ok -> LadderRung.GLOBAL_MIX
+            DumpsysDiscovery.hasGrant(context) -> LadderRung.DUMP_DISCOVERY
             else -> LadderRung.COMPANION_EXPORT
         }
 

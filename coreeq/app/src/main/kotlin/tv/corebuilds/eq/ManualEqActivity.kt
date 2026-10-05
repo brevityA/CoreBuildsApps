@@ -46,6 +46,7 @@ class ManualEqActivity : TvActivity() {
     private lateinit var btnPreset: Button
     private lateinit var btnEditMode: Button
     private var profile: Profile? = null
+    private var editingOutput: OutputRoute.Output? = null
     private var editingMode: ContentMode = ContentMode.EVERYDAY
     private var statusReceiverRegistered = false
 
@@ -68,7 +69,7 @@ class ManualEqActivity : TvActivity() {
         profileStore = ProfileStore(this)
         modeStore = ContentModeStore(this)
         editingMode = modeStore.currentDecision().mode
-        profile = resolveProfileForCurrentOutput()
+        profile = resolveProfileForCurrentOutput(OutputRoute.current(this))
 
         graph = findViewById(R.id.graph_manual_eq)
         bands = findViewById(R.id.manual_eq_bands)
@@ -120,6 +121,14 @@ class ManualEqActivity : TvActivity() {
             ContextCompat.RECEIVER_NOT_EXPORTED
         )
         statusReceiverRegistered = true
+        val currentOutput = OutputRoute.current(this)
+        if (currentOutput != editingOutput) {
+            saveCurrentModeFilters()
+            profile = resolveProfileForCurrentOutput(currentOutput)
+            bands.setManualFilters(currentManualFilters())
+            renderProfile()
+            EqService.send(this, EqService.ACTION_REAPPLY)
+        }
         renderApplyHint()
     }
 
@@ -134,8 +143,8 @@ class ManualEqActivity : TvActivity() {
         super.onPause()
     }
 
-    private fun resolveProfileForCurrentOutput(): Profile {
-        val output = OutputRoute.current(this)
+    private fun resolveProfileForCurrentOutput(output: OutputRoute.Output?): Profile {
+        editingOutput = output
         val picked = OutputRoute.pick(
             profileStore.getAllProfiles(),
             profileStore.chosenId(),
@@ -143,12 +152,11 @@ class ManualEqActivity : TvActivity() {
             output?.name
         ).profile
         if (picked != null) return picked
-        return createManualOnlyProfile()
+        return createManualOnlyProfile(output)
     }
 
-    private fun createManualOnlyProfile(): Profile {
+    private fun createManualOnlyProfile(output: OutputRoute.Output?): Profile {
         val now = System.currentTimeMillis()
-        val output = OutputRoute.current(this)
         val displayOutput = output?.name ?: "Current output"
         return Profile(
             id = "manual-$now",

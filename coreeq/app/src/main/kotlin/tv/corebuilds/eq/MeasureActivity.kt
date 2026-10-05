@@ -79,6 +79,8 @@ class MeasureActivity : TvActivity() {
     private var importedOutputEstimate: OutputRoute.Output? = null
     /** Bumped per measurement, so a late callback from an earlier one is ignored. */
     private var measurementGeneration = 0
+    private var sweepReanalysisGeneration = 0
+    private var sweepReanalysisInProgress = false
     private var measuring = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -126,17 +128,20 @@ class MeasureActivity : TvActivity() {
     private fun refreshChoices() {
         btnRoom.text = getString(R.string.measure_room_button, ROOMS[roomIndex].label)
         btnTarget.text = getString(R.string.measure_target_button, TARGETS[targetIndex].label)
-        val r = result
         val capture = lastCapture
         val imported = importInput
         if (imported != null && importResult != null && !measuring && !importing) {
             // The same imported measurement is re-analysed for the new target
             // and room choice; the graph and saved profile cannot drift apart.
             reanalyzeImport(imported)
-        } else if (r != null && capture != null && !measuring) {
+        } else if (capture != null && !measuring) {
             // Re-run the correction for the new choices from the same capture.
+            // Lock the controls until the matching analysis completes so Save
+            // cannot combine a new target label with the previous correction.
+            val generation = ++sweepReanalysisGeneration
             val target = TARGETS[targetIndex].key
             val volume = ROOMS[roomIndex].volumeM3
+            setSweepReanalysisBusy(true)
             textStatus.text = getString(R.string.measure_analysing)
             thread(name = "CoreEqReanalysis") {
                 val updated = try {
@@ -146,11 +151,19 @@ class MeasureActivity : TvActivity() {
                     null
                 }
                 runOnUiThread {
+                    if (generation != sweepReanalysisGeneration || isFinishing || isDestroyed) return@runOnUiThread
+                    setSweepReanalysisBusy(false)
                     if (updated != null) {
                         result = updated
                         showResult(updated)
                     } else {
-                        showResult(r)
+                        result = null
+                        btnSave.visibility = View.GONE
+                        showTargetOnly()
+                        textStatus.text = getString(
+                            R.string.measure_failed,
+                            "The saved sweep could not be re-analysed for this room and target. Measure again."
+                        )
                     }
                 }
             }
@@ -172,7 +185,8 @@ class MeasureActivity : TvActivity() {
     }
 
     private fun startMeasurement() {
-        if (measuring || importing) return
+        if (measuring || importing || sweepReanalysisInProgress) return
+        sweepReanalysisGeneration += 1
         if (!captureEngine.hasPermission()) {
             requestPermissions(arrayOf(Manifest.permission.RECORD_AUDIO), REQ_MIC)
             return
@@ -181,6 +195,7 @@ class MeasureActivity : TvActivity() {
         measurementGeneration += 1
         val generation = measurementGeneration
         result = null
+        lastCapture = null
         importResult = null
         importInput = null
         importedOutputEstimate = null
@@ -409,13 +424,24 @@ class MeasureActivity : TvActivity() {
         worker.start()
     }
 
+    private fun setSweepReanalysisBusy(busy: Boolean) {
+        sweepReanalysisInProgress = busy
+        val enabled = !busy && !measuring && !importing
+        btnStart.isEnabled = enabled
+        btnImport.isEnabled = enabled
+        btnRoom.isEnabled = enabled
+        btnTarget.isEnabled = enabled
+        btnSave.isEnabled = !busy && !importing
+    }
+
     private fun setImportBusy(busy: Boolean) {
         importing = busy
-        btnStart.isEnabled = !busy && !measuring
-        btnImport.isEnabled = !busy && !measuring
-        btnRoom.isEnabled = !busy && !measuring
-        btnTarget.isEnabled = !busy && !measuring
-        btnSave.isEnabled = !busy
+        val enabled = !busy && !measuring && !sweepReanalysisInProgress
+        btnStart.isEnabled = enabled
+        btnImport.isEnabled = enabled
+        btnRoom.isEnabled = enabled
+        btnTarget.isEnabled = enabled
+        btnSave.isEnabled = !busy && !sweepReanalysisInProgress
     }
 
     private fun importFailed(reason: String) {
