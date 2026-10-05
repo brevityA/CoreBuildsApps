@@ -29,7 +29,17 @@ class CoreEqReleaseContract(unittest.TestCase):
         for level in ("'30'", "'37.0'"):
             self.assertIn(f"api-level: {level}", self.workflow)
         self.assertIn("channel: canary", self.workflow)
-        self.assertIn("adb install -r", self.workflow)
+        # The emulator runner executes each line of its `script:` input as a
+        # separate `sh -c`, so the check has to be one call to one file; a
+        # multi-line script loses its variables between lines (that is how the
+        # first run of this job failed with an unreadable sh exit code).
+        emulator = ROOT / "tools/install_core_eq_on_emulator.sh"
+        self.assertTrue(emulator.is_file(), "the emulator install script vanished")
+        self.assertIn("script: bash tools/install_core_eq_on_emulator.sh", self.workflow)
+        self.assertNotIn("script: |", self.workflow)
+        body = emulator.read_text(encoding="utf-8")
+        self.assertIn("adb install -r", body)
+        self.assertIn("tv.corebuilds.eq.debug", body)
 
     def test_preview_sdk_ids_are_covered_by_the_install_fallback(self) -> None:
         """The job states `platforms;android-37`, then has somewhere to go.

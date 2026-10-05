@@ -306,17 +306,10 @@ jobs:
           channel: ${{ matrix.channel }}
           disable-animations: true
           emulator-options: -no-window -gpu swiftshader_indirect -no-snapshot -noaudio -no-boot-anim
-          script: |
-            set -eu
-            APK=$(find dist -maxdepth 1 -type f -name '*.apk' -print -quit)
-            test -n "$APK" || { echo "No Core EQ APK artifact was downloaded"; exit 1; }
-            case "$APK" in
-              *coreeq-release.apk) PACKAGE=tv.corebuilds.eq ;;
-              *coreeq-debug.apk) PACKAGE=tv.corebuilds.eq.debug ;;
-              *) echo "Unexpected APK asset: $APK"; exit 1 ;;
-            esac
-            adb install -r "$APK"
-            adb shell pm path "$PACKAGE"
+          # One line on purpose: the action runs each line of `script:` as its
+          # own `sh -c`, so state has to live in the script it calls. The whole
+          # check lives in tools/install_core_eq_on_emulator.sh.
+          script: bash tools/install_core_eq_on_emulator.sh
 
   publish:
     name: Publish verified APK
