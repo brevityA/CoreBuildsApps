@@ -145,6 +145,26 @@
     <string name="capability_app_identity_unknown">DUMP apps: active session found, package identity unavailable</string>
     <string name="capability_app_identity_none">DUMP apps: none recorded yet · enable correction and start playback</string>
 
+    <!-- App updates (Capability card + Home bar) -->
+    <string name="update_title">App updates</string>
+    <string name="update_installed">Installed: Core EQ %1$s</string>
+    <string name="update_check_now">Check for updates</string>
+    <string name="update_checking">Checking the release feed…</string>
+    <string name="update_available">Core EQ %1$s is available</string>
+    <string name="update_up_to_date">Core EQ %1$s is the newest release</string>
+    <string name="update_failed">Update check failed: %1$s</string>
+    <string name="update_downloading">Downloading update · %1$d%%</string>
+    <string name="update_verifying">Verifying package, version, checksum and signature…</string>
+    <string name="update_now">Update</string>
+    <string name="update_later">Later</string>
+    <string name="update_permission_needed">Allow Core EQ to install unknown apps, then press Update again.</string>
+    <string name="update_install_failed">The update was not installed: %1$s</string>
+    <string name="update_installed_done">Update handed to Android. Core EQ closes while it installs.</string>
+    <string name="update_auto_on">Check for updates on open: On</string>
+    <string name="update_auto_off">Check for updates on open: Off</string>
+    <string name="update_no_feed">This test build has no update feed · release builds install from the coreeq-v* tags</string>
+    <string name="update_note">Checks the same release feed the other Core apps use (Latestrelease/coreeq-version.json on main). A download is offered only when the release APK matches this app's package, is newer than this build, and is signed by the certificate that signed it — otherwise the file is deleted and nothing is installed.</string>
+
     <!-- Target curves -->
     <string name="target_flat">Flat (0 dB reference)</string>
     <string name="target_bk">Brüel &amp; Kjær 1974 (Living room standard)</string>

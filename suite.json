@@ -1,6 +1,6 @@
 {
   "suite": "Core Builds Apps",
-  "asOf": "2026-09-30",
+  "asOf": "2026-10-05",
   "apps": {
     "iconpack": {
       "name": "Core Builds Icon Pack",
@@ -77,8 +77,8 @@
     },
     "eq": {
       "name": "Core EQ",
-      "versionName": "1.1.0",
-      "versionCode": 3,
+      "versionName": "1.1.1",
+      "versionCode": 4,
       "tagPrefix": "coreeq-v",
       "floatingTag": "coreeq",
       "downloader": "7946159",
@@ -86,7 +86,7 @@
       "gradle": "coreeq/app/build.gradle.kts",
       "path": "coreeq/",
       "stableApk": "coreeq-release.apk",
-      "metadata": null,
+      "metadata": "Latestrelease/coreeq-version.json",
       "section": "core-eq"
     }
   }

@@ -50,6 +50,18 @@ APPS = {
         "workflow": ".github/workflows/core-motion-apk.yml",
         "apk": "coremotion-release.apk",
     },
+    # Core EQ's updater arrived in 1.1.1. It is held to the icon pack's bar:
+    # the feed may lag the build but never lead it, the APK URL must be the
+    # suite's own release channel, and the checker and installer carry the same
+    # bounded reads and signature checks as every other updater in the suite.
+    "coreeq": {
+        "gradle": "coreeq/app/build.gradle.kts",
+        "metadata": "Latestrelease/coreeq-version.json",
+        "workflow": ".github/workflows/core-eq-apk.yml",
+        "apk": "coreeq-release.apk",
+        "checker": "coreeq/app/src/main/kotlin/tv/corebuilds/eq/update/UpdateChecker.kt",
+        "installer": "coreeq/app/src/main/kotlin/tv/corebuilds/eq/update/UpdateInstaller.kt",
+    },
 }
 
 

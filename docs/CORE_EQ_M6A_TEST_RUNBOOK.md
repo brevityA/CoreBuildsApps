@@ -19,7 +19,10 @@ The public `coreeq-test` APK uses package `tv.corebuilds.eq.debug` and is now
 signed with the same stable certificate as production. That certificate comes
 from the suite's existing repository secrets (`KEYSTORE_BASE64`,
 `KEYSTORE_PASSWORD`, `KEY_ALIAS`, `KEY_PASSWORD`) — the same four every other
-app's workflow reads, so there is nothing new to configure in GitHub. The first install after
+app's workflow reads, so there is nothing new to configure in GitHub. The test
+package is handed a blank update feed by Gradle on purpose: it can never install
+a `tv.corebuilds.eq` release APK, so it must not offer one. Install each new
+test build by hand; only release builds check for updates themselves. The first install after
 this signing change cannot update an older runner-debug-signed test build: if
 one is present, uninstall only the test package once, then install the new APK.
 Production `tv.corebuilds.eq` is a separate package and is not removed.

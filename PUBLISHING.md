@@ -50,6 +50,14 @@ runner-debug-signed test APK: uninstall only the test package once, then install
 the new build. Production `tv.corebuilds.eq` is a separate package and is not
 removed.
 
+Release builds also carry an in-app updater of their own:
+`Latestrelease/coreeq-version.json` is the feed, a `coreeq-v*` tag writes it
+from the APK it just published, and nothing else may touch it — a feed that
+names a build before the release carries that APK is how users are told about
+an update that cannot install. The test package is handed a blank feed by
+Gradle, so `coreeq-test` never offers an APK it could not install over itself.
+`tests/test_core_eq_update_contract.py` holds both halves.
+
 ## Before tagging
 
 1. Update `suite.json`.

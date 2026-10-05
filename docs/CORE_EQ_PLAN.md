@@ -269,6 +269,7 @@ this order:
 | `python tools/check_gradle_envelope.py` | Every coordinate inside its ceiling |
 | `python tests/test_ci_coverage.py` | The new tests are wired into `suite-ci.yml` |
 | `python tests/test_changelog_contract.py` | The Unreleased block is well-formed |
+| `python tests/test_core_eq_update_contract.py` | The release feed never leads the build, the test package carries no feed, and the tag build publishes the manifest after the releases |
 
 Plus, once `coreeq/` exists: `check_ui_resources.py`, `test_navigation_graph.py`
 and `test_tv_layout_fit.py` extended to the new module, and

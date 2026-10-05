@@ -39,6 +39,55 @@
         android:textSize="@dimen/cb_text_data"
         android:layout_marginTop="2dp" />
 
+    <!-- Update bar. GONE until the release feed names a newer build; the same
+         shape as the icon pack's bar: say which version, then offer Update or
+         Later. Later is remembered per version, so it does not nag. -->
+    <LinearLayout
+        android:id="@+id/update_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:background="@drawable/bg_card"
+        android:padding="@dimen/cb_card_padding"
+        android:visibility="gone"
+        android:layout_marginTop="@dimen/cb_space_sm">
+
+        <TextView
+            android:id="@+id/update_bar_text"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text=""
+            android:textColor="@color/cb_ink"
+            android:textSize="@dimen/cb_text_data" />
+
+        <Button
+            android:id="@+id/update_bar_install"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/cb_target_min"
+            android:minWidth="120dp"
+            android:background="@drawable/bg_cta"
+            android:text="@string/update_now"
+            android:textColor="@color/cb_cta_ink"
+            android:textSize="@dimen/cb_text_label"
+            android:textStyle="bold"
+            android:focusable="true"
+            android:layout_marginStart="@dimen/cb_space_sm" />
+
+        <Button
+            android:id="@+id/update_bar_later"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/cb_target_min"
+            android:minWidth="96dp"
+            android:background="@drawable/bg_ghost"
+            android:text="@string/update_later"
+            android:textColor="@color/cb_ink"
+            android:textSize="@dimen/cb_text_label"
+            android:focusable="true"
+            android:layout_marginStart="@dimen/cb_space_xs" />
+    </LinearLayout>
+
     <!-- Two-pane content -->
     <LinearLayout
         android:layout_width="match_parent"
