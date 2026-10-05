@@ -271,14 +271,26 @@ jobs:
           # to be the full id (37.0). Its packages are on the canary channel.
           - api-level: '30'
             channel: stable
+            emulator-options: -no-window -gpu swiftshader_indirect -no-snapshot -noaudio -no-boot-anim
           # The 37.0 preview image boots far slower than a stable one under
           # swiftshader; give it the machine's cores and more RAM, and the boot
           # wait below the time it needs rather than the 600 s default.
+          #
+          # Its data partition also comes up too small to hold even the 4 MB
+          # debug APK, and `disk-size` alone (disk.dataPartition.size in
+          # config.ini) did not change that: `adb install` failed with
+          # "remote write failed: No space left on device" and the streaming
+          # and stdin forms with "Requested internal only, but not enough
+          # space". -partition-size is the emulator's own command-line override
+          # for the system and data partitions, so this leg passes it too.
           - api-level: '37.0'
             channel: canary
             cores: 4
             ram-size: 4096M
             disk-size: 8192M
+            emulator-options: >-
+              -no-window -gpu swiftshader_indirect -no-snapshot -noaudio
+              -no-boot-anim -partition-size 8192
     steps:
       - uses: actions/checkout@v7
 
@@ -314,7 +326,7 @@ jobs:
           ram-size: ${{ matrix.ram-size || '2048M' }}
           emulator-boot-timeout: 1800
           disable-animations: true
-          emulator-options: -no-window -gpu swiftshader_indirect -no-snapshot -noaudio -no-boot-anim
+          emulator-options: ${{ matrix.emulator-options }}
           # One line on purpose: the action runs each line of `script:` as its
           # own `sh -c`, so state has to live in the script it calls. The whole
           # check lives in tools/install_core_eq_on_emulator.sh.

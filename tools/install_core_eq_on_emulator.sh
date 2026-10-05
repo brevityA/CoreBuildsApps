@@ -41,6 +41,19 @@ escape() { # % , CR and LF are the workflow-command escapes
   printf '%s' "${text//$'\n'/ | }"
 }
 
+# The raw job log cannot be downloaded from every run, so the numbers that
+# decide whether a retry can work are attached as annotations instead: the
+# guest's free space on /data, the host's free space, the AVD's own partition
+# settings and the APK size. A missing or tiny data partition is the difference
+# between "no space left on device" being a storage setting and a real bug.
+storage_report() {
+  local data host avd_size
+  data=$(adb shell 'df -h /data | tail -n 1' 2>&1 | tr -s ' \n' ' ')
+  host=$(df -h . 2>&1 | tail -n 1 | tr -s ' \n' ' ')
+  avd_size=$(grep -h -iE 'disk|partition' "${ANDROID_AVD_HOME:-$HOME/.android/avd}"/*.avd/config.ini 2>/dev/null | tr '\n' ' ' || true)
+  echo "::notice title=emulator storage::apk=$(stat -c%s "$APK")B | guest /data: ${data} | host: ${host} | avd: ${avd_size:-no disk/partition settings}"
+}
+
 # adb reports a streaming failure as a Java stack trace and a push failure as
 # `adb: error: ...`; the informative line is the one naming INSTALL_*/Failure/
 # Exception, and the first lines of output when there is no such line.
@@ -66,6 +79,7 @@ install_apk() { # <label> <adb args...>
   return 1
 }
 
+storage_report
 install_apk "streaming" -r || {
   # Preview images ship the package verifier on; a verifier that cannot reach
   # its service rejects the session with a createSession failure rather than a
@@ -78,7 +92,7 @@ install_apk "streaming" -r || {
     # the 37.0 preview image, so clear the staging area, say how much room
     # /data has, and install straight from stdin instead of copying the APK
     # into /data/local/tmp first.
-    echo "data partition before the stdin install: $(adb shell 'df -h /data | tail -n 1' 2>&1 | tr -s ' ')"
+    storage_report
     adb shell 'rm -rf /data/local/tmp/*' || true
     size=$(stat -c%s "$APK")
     out=$(cat "$APK" | adb shell pm install -r -S "$size" 2>&1) || {

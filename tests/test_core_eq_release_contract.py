@@ -44,6 +44,14 @@ class CoreEqReleaseContract(unittest.TestCase):
         self.assertIn("adb install", body)
         self.assertIn("--no-streaming", body)
         self.assertIn("tv.corebuilds.eq.debug", body)
+        # The 37.0 preview image's data partition comes up too small for even a
+        # 4 MB APK: the streaming and no-streaming forms both failed with
+        # "not enough space". -partition-size overrides the partition sizes on
+        # the emulator command line (disk.dataPartition.size alone did not),
+        # and the script streams the APK into `pm install -S` afterwards.
+        self.assertIn("-partition-size 8192", self.workflow)
+        self.assertIn("pm install -r -S", body)
+        self.assertIn("::notice title=emulator storage::", body)
 
     def test_preview_sdk_ids_are_covered_by_the_install_fallback(self) -> None:
         """The job states `platforms;android-37`, then has somewhere to go.
