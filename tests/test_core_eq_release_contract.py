@@ -34,6 +34,27 @@ class CoreEqReleaseContract(unittest.TestCase):
         self.assertIn("KEYSTORE_BASE64 KEYSTORE_PASSWORD KEY_ALIAS KEY_PASSWORD", self.workflow)
         self.assertIn("tv.corebuilds.eq.debug", self.workflow)
 
+    def test_signing_secrets_are_the_suite_shared_ones(self) -> None:
+        """Core EQ must sign with the repo secrets the other apps already use.
+
+        Routing Core EQ through its own credential names would need a second
+        copy of the release key in GitHub, which is how two apps end up with
+        two certificates and an app nobody can update over. The shared set is
+        derived from the sibling workflows that decode the same keystore, so a
+        new suite-wide secret has to reach Core EQ or this test fails.
+        """
+        shared: set[str] = set()
+        for path in sorted((ROOT / ".github/workflows").glob("*.yml")):
+            if path == WORKFLOW:
+                continue
+            body = path.read_text(encoding="utf-8")
+            if "release.jks" not in body:
+                continue
+            shared |= set(re.findall(r"secrets\.((?:KEYSTORE|KEY)_[A-Z0-9_]+)", body))
+        self.assertTrue(shared, "no sibling workflow decodes the shared keystore")
+        eq_secrets = set(re.findall(r"secrets\.((?:KEYSTORE|KEY)_[A-Z0-9_]+)", self.workflow))
+        self.assertEqual(shared, eq_secrets)
+
     def test_release_and_public_test_builds_pin_the_published_certificate(self) -> None:
         self.assertIn("Verify candidate certificate matches current stable APK", self.workflow)
         self.assertIn("gh release download coreeq", self.workflow)

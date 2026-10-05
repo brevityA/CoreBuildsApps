@@ -104,4 +104,10 @@ Keystores and Play credentials never go in git. GitHub Actions secrets:
 - `KEY_ALIAS`
 - `KEY_PASSWORD`
 
+Every Android app in this repo, including Core EQ and the `coreeq-test` lane,
+signs from this one set — there are no per-app secret names to add when a new
+app, or a new channel for an existing app, starts publishing. `KEYSTORE_PATH`
+is not a secret: the workflow decodes the bytes above to a runner temp file and
+exports the path to Gradle.
+
 Play credentials are `[USER TO SUPPLY]` and must be environment-scoped if Play upload automation is added.
