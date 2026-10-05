@@ -319,6 +319,9 @@
     <item drawable="falcofemoralis" />
     <item drawable="hdtv_player" />
     <item drawable="heatlive" />
+    <item drawable="heatlive_backup" />
+    <item drawable="heatvod" />
+    <item drawable="heatvod_ultra" />
     <item drawable="heinetworktv" />
     <item drawable="watcher" />
     <item drawable="hi_browser" />
@@ -408,6 +411,8 @@
     <item drawable="ligueunpass" />
     <item drawable="tv" />
     <item drawable="livetv" />
+    <item drawable="live_ultra" />
+    <item drawable="live_ultra_plus" />
     <item drawable="androidtv_10" />
     <item drawable="aimitv" />
     <item drawable="localnow" />

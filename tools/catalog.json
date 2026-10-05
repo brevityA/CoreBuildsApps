@@ -2,11 +2,11 @@
   "$schema": "./catalog.schema.json",
   "meta": {
     "pack": "Core Builds Icon Pack",
-    "version": "2.1.0",
+    "version": "2.1.1",
     "grid": 512,
     "safe_area": 432,
     "note": "Core Builds-authored geometric icons on a shared 512 grid. Reviewed brand glyphs use rounded monoline strokes and one accent, not imported vendor silhouettes. Common Outfit/category/rail banners; artwork is reference-only. Canonical brand colours and the dark-card contrast policy remain shared.",
-    "count": 976
+    "count": 981
   },
   "icons": [
     {
@@ -12482,10 +12482,11 @@
       "color": "#7C74FF",
       "glyph": "waveiptv_antenna",
       "components": [
-        "com.smartwave.wave_iptv/com.smartwave.wave_iptv.SplashActivity"
+        "com.smartwave.wave_iptv/com.smartwave.wave_iptv.SplashActivity",
+        "com.smartwave.waveo/com.smartwave.wave_iptv.SplashActivity"
       ],
       "category": "LIVE",
-      "mapping_source": "Projectivy Icon Pack 1.1.9",
+      "mapping_source": "Projectivy Icon Pack 1.1.9; com.smartwave.waveo/com.smartwave.wave_iptv.SplashActivity from issue #246 (device-reported on SHIELD Android TV, Android 11, pack 2.0.1): WAVEO, the same app's beta published on Google Play under a new package name (play.google.com/store/apps/details?id=com.smartwave.waveo), same splash activity class",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null,
       "glyph_source": "brand-informed redraw of the Projectivy Icon Pack 1.1.9 artwork for com.smartwave.wave_iptv (github.com/SicMundus86/ProjectivyIconPack, used as reference only); Core monoline geometry, not a trace (2026-09-28)"
@@ -13688,6 +13689,76 @@
         "#6900FF"
       ],
       "gradient_source": "the same APK background shape: #EB1E54 to #6900FF (2026-10-03)"
+    },
+    {
+      "name": "HeatVod",
+      "drawable": "heatvod",
+      "color": "#0042DF",
+      "glyph": "heatvod_wm",
+      "components": [
+        "com.google.heatvod/com.chuangkevideo.SplashActivity"
+      ],
+      "category": "VOD",
+      "mapping_source": "issue #243 (device-reported on V6-Plus, Android 14, pack 2.0.1, heat-vod-v6.9.6.apk): com.chuangkevideo.SplashActivity is the launch activity of com.google.heatvod",
+      "color_source": "sampled from the HeatVod splash screen's own blue field (a user's photo of the splash, r/vSeeBox_Support_Gurus, JPEG, reference only): #0042DF, lifted for the night card by display_accent (2026-10-05); its launcher tile is the same blue",
+      "color_reviewed": "2026-10-05",
+      "glyph_source": "wordmark-derived mark from the app's launcher tile on the vSeeBox home screen (r/vSeeBox home-screen screenshots and the examples attached to issue #243, reference only): Heat over Vod in the case of its splash logotype (HEAT/VOD in capitals, as the tile sets it, falls under the 96px band beside the play), with the play its logotype hides in the o of Vod kept as the corner play cue, set in the pack's own single-stroke letters, not the vendor letterforms (2026-10-05)"
+    },
+    {
+      "name": "HeatVod Ultra",
+      "drawable": "heatvod_ultra",
+      "color": "#DE4F7A",
+      "glyph": "heatvod_ultra_wm",
+      "components": [
+        "com.google.heatvodultra/com.google.chuangke.page.SplashActivity"
+      ],
+      "category": "VOD",
+      "mapping_source": "issue #245 (device-reported on V6-Plus, Android 14, pack 2.0.1, heat-vod-ultra-v3.8.2.apk): com.google.chuangke.page.SplashActivity is the launch activity of com.google.heatvodultra",
+      "color_source": "the pink-magenta of its VOD Ultra tile, sampled from the vSeeBox launcher's Recommend row as photographed by its users (r/vSeeBox 'Confused about apps' and 'What Are Heat Apps?' home-screen screenshots, JPEG, reference only), so the value is approximate (2026-10-05)",
+      "color_reviewed": "2026-10-05",
+      "glyph_source": "wordmark-derived mark from the app's launcher tile on the vSeeBox home screen (r/vSeeBox home-screen screenshots and the examples attached to issue #243, reference only): VOD over Ultra, the tile's own lockup, with the play cone it carries as the corner play cue, set in the pack's own single-stroke letters, not the vendor letterforms (2026-10-05)"
+    },
+    {
+      "name": "Live Ultra",
+      "drawable": "live_ultra",
+      "color": "#8127CE",
+      "glyph": "live_ultra_wm",
+      "components": [
+        "com.google.liveultra/com.google.chuangke.page.SplashActivity"
+      ],
+      "category": "LIVE",
+      "mapping_source": "issue #247 (device-reported on V6-Plus, Android 14, pack 2.0.1, LiveUltra-v580.apk): com.google.chuangke.page.SplashActivity is the launch activity of com.google.liveultra",
+      "color_source": "the purple of its LIVE Ultra tile, sampled from the vSeeBox launcher's Recommend row as photographed by its users (r/vSeeBox 'Confused about apps' and 'What Are Heat Apps?' home-screen screenshots, JPEG, reference only), so the value is approximate (2026-10-05)",
+      "color_reviewed": "2026-10-05",
+      "glyph_source": "wordmark-derived mark from the app's launcher tile on the vSeeBox home screen (r/vSeeBox home-screen screenshots and the examples attached to issue #243, reference only): LIVE over Ultra, the tile's own lockup, with the play cone it carries as the corner play cue, set in the pack's own single-stroke letters, not the vendor letterforms (2026-10-05)"
+    },
+    {
+      "name": "Live Ultra+",
+      "drawable": "live_ultra_plus",
+      "color": "#F0A93A",
+      "glyph": "live_ultra_plus_wm",
+      "components": [
+        "com.google.liveultraplus/com.google.chuangke.page.SplashActivity"
+      ],
+      "category": "LIVE",
+      "mapping_source": "issue #248 (device-reported on V6-Plus, Android 14, pack 2.0.1, LiveUltraPlus-v580.apk): com.google.chuangke.page.SplashActivity is the launch activity of com.google.liveultraplus",
+      "color_source": "the amber of its LIVE+ Ultra tile (the one warm tile in the family, which is what tells it from Live Ultra on the shelf), sampled from the vSeeBox launcher's Recommend row as photographed by its users (r/vSeeBox 'Confused about apps' and 'What Are Heat Apps?' home-screen screenshots, JPEG, reference only), so the value is approximate (2026-10-05)",
+      "color_reviewed": "2026-10-05",
+      "glyph_source": "wordmark-derived mark from the app's launcher tile on the vSeeBox home screen (r/vSeeBox home-screen screenshots and the examples attached to issue #243, reference only): LIVE over Ultra with the plus that follows LIVE on the tile as the corner plus cue, set in the pack's own single-stroke letters, not the vendor letterforms (2026-10-05)"
+    },
+    {
+      "name": "HeatLive Backup",
+      "drawable": "heatlive_backup",
+      "color": "#9B2AA1",
+      "glyph": "heatlive_backup_wm",
+      "components": [
+        "com.google.heatlivebackup/com.google.chuangke.page.SplashActivity"
+      ],
+      "category": "LIVE",
+      "mapping_source": "issue #242 (device-reported on V6-Plus, Android 14, pack 2.0.1, heat-live-backup-v.4.7.8.apk): com.google.chuangke.page.SplashActivity is the launch activity of com.google.heatlivebackup",
+      "color_source": "the magenta-violet of its BACKUP BY HEAT tile, sampled from the vSeeBox launcher's Recommend row as photographed by its users (r/vSeeBox 'Confused about apps' and 'What Are Heat Apps?' home-screen screenshots, JPEG, reference only), so the value is approximate (2026-10-05)",
+      "color_reviewed": "2026-10-05",
+      "glyph_source": "wordmark-derived mark from the app's launcher tile on the vSeeBox home screen (r/vSeeBox home-screen screenshots and the examples attached to issue #243, reference only): BACK over UP with the 'BY HEAT' strap under the tile's wordmark as the underline cue, set in the pack's own single-stroke letters, not the vendor letterforms (2026-10-05)"
     },
     {
       "name": "AnimeTV",

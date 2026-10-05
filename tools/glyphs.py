@@ -8662,3 +8662,16 @@ _WM3 = {
     "animetv": ("Anime/TV", None),
 }
 GLYPHS.update({f"{d}_wm": _wm_glyph(t, cue) for d, (t, cue) in _WM3.items()})
+
+# The vSeeBox Heat family (issues #242 #243 #245 #247 #248, 2026-10-05). Each
+# launcher tile is a two-word wordmark on its own gradient, and the Ultra
+# tiles carry a play cone; HeatLive alone has a drawn symbol (heatlive_drop).
+# The siblings keep their tiles' own lockups so the five read apart on the
+# shelf where they sit side by side: the warm plus tile is Live Ultra+, the
+# underline is BACKUP's "BY HEAT" strap, the play is the cone.
+_WM4 = {
+    "heatvod": ("Heat/Vod", "play"), "heatvod_ultra": ("VOD/Ultra", "play"),
+    "live_ultra": ("LIVE/Ultra", "play"), "live_ultra_plus": ("LIVE/Ultra", "plus"),
+    "heatlive_backup": ("BACK/UP", "under"),
+}
+GLYPHS.update({f"{d}_wm": _wm_glyph(t, cue) for d, (t, cue) in _WM4.items()})
