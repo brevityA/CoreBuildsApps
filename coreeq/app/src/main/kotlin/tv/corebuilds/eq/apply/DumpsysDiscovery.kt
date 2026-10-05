@@ -47,7 +47,7 @@ object DumpsysDiscovery {
         ContextCompat.checkSelfPermission(context, DUMP_PERMISSION) == PackageManager.PERMISSION_GRANTED
 
     /** Sessions the correction may attach to right now, plus snapshot confidence. */
-    fun discover(ourUid: Int): DiscoverySnapshot {
+    internal fun discover(ourUid: Int): DiscoverySnapshot {
         val flinger = runDumpsys("media.audio_flinger")
         val audio = runDumpsys("audio")
         val parsedFlinger = DumpsysSessions.parseWithStatus(flinger.text)
