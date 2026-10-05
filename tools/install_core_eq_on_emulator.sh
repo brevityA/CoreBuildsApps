@@ -41,17 +41,17 @@ escape() { # % , CR and LF are the workflow-command escapes
   printf '%s' "${text//$'\n'/ | }"
 }
 
-# adb prints something like `Failure [INSTALL_FAILED_...: message]` before a
-# stack trace; that line is the one worth annotating, plus a couple of
-# surrounding lines when it is absent.
+# adb reports a streaming failure as a Java stack trace and a push failure as
+# `adb: error: ...`; the informative line is the one naming INSTALL_*/Failure/
+# Exception, and the first lines of output when there is no such line.
 report_failure() { # <label> <output>
-  local label="$1" output="$2" line
+  local label="$1" output="$2" summary
   printf '%s\n' "$output"
-  line="$(printf '%s\n' "$output" | grep -m1 -E '^Failure \[|INSTALL_FAILED|INSTALL_PARSE_FAILED|Error:' || true)"
-  if [[ -z "$line" ]]; then
-    line="$(printf '%s\n' "$output" | tail -n 2 | tr '\n' ' ')"
+  summary="$(printf '%s\n' "$output" | grep -m2 -E 'Failure|INSTALL_|Exception|error:|No space' || true)"
+  if [[ -z "$summary" ]]; then
+    summary="$(printf '%s\n' "$output" | head -n 3)"
   fi
-  echo "::error title=adb install failed ($label)::$(escape "$line")"
+  echo "::error title=adb install failed ($label)::$(escape "$summary")"
 }
 
 install_apk() { # <label> <adb args...>
@@ -66,16 +66,28 @@ install_apk() { # <label> <adb args...>
   return 1
 }
 
-if ! install_apk "streaming" -r; then
+install_apk "streaming" -r || {
   # Preview images ship the package verifier on; a verifier that cannot reach
   # its service rejects the session with a createSession failure rather than a
-  # readable error.
+  # readable error. --no-streaming then covers a session failure, and -t a
+  # debug build that AGP marks test-only.
   adb shell settings put global verifier_verify_adb_installs 0 || true
   adb shell settings put global package_verifier_enable 0 || true
-  # --no-streaming works around a session failure on preview images; -t covers
-  # a debug build that AGP marks test-only, which a stable image accepts.
-  install_apk "no-streaming" --no-streaming -r -t || exit 1
-fi
+  install_apk "no-streaming" --no-streaming -r -t || {
+    # A failed push reported `remote write failed: No space left on device` on
+    # the 37.0 preview image, so clear the staging area, say how much room
+    # /data has, and install straight from stdin instead of copying the APK
+    # into /data/local/tmp first.
+    echo "data partition before the stdin install: $(adb shell 'df -h /data | tail -n 1' 2>&1 | tr -s ' ')"
+    adb shell 'rm -rf /data/local/tmp/*' || true
+    size=$(stat -c%s "$APK")
+    out=$(cat "$APK" | adb shell pm install -r -S "$size" 2>&1) || {
+      report_failure "pm install -S" "$out"
+      exit 1
+    }
+    printf '%s\n' "$out"
+  }
+}
 
 if ! PATH_OUT=$(adb shell pm path "$PACKAGE" 2>&1); then
   echo "::error title=package not installed::${PACKAGE} is not on the device after installing ${APK}: $(escape "$PATH_OUT")"
