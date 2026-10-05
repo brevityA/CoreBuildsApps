@@ -1,16 +1,17 @@
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+
 plugins {
     id("com.android.application")
-    id("org.jetbrains.kotlin.android")
 }
 
 android {
     namespace = "tv.corebuilds.eq"
-    compileSdk = 35
+    compileSdk = 37
 
     defaultConfig {
         applicationId = "tv.corebuilds.eq"
-        minSdk = 26
-        targetSdk = 35
+        minSdk = 30
+        targetSdk = 37
         versionCode = 3
         versionName = "1.1.0"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
@@ -42,6 +43,14 @@ android {
         }
         debug {
             applicationIdSuffix = ".debug"
+            // Public main-branch test APKs use the same stable certificate as
+            // production so they can be upgraded in place. PR artifacts still
+            // use the ephemeral Android debug key because the release key is
+            // never decoded outside main pushes and release tags.
+            val ks = System.getenv("KEYSTORE_PATH")
+            if (ks != null && file(ks).exists()) {
+                signingConfig = signingConfigs.getByName("release")
+            }
         }
     }
 
@@ -49,9 +58,12 @@ android {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
     }
+}
 
-    kotlinOptions {
-        jvmTarget = "17"
+// AGP 9's built-in Kotlin replaces the external kotlin-android plugin.
+kotlin {
+    compilerOptions {
+        jvmTarget = JvmTarget.JVM_17
     }
 }
 

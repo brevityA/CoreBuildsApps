@@ -161,11 +161,11 @@ class VersionOrdering(unittest.TestCase):
 
     def test_a_bare_major_is_not_read_as_a_minor(self):
         # The rank element that puts alphas below releases would otherwise make
-        # "9" parse as (9, 1) — i.e. 9.1 — and AGP 9.0.0 would slip under a
-        # ">= 9" cap. Both the dependabot AGP rule and the envelope rely on this.
-        self.assertFalse(gate.parse_version("9.0.0") < gate.parse_version("9"))
-        self.assertTrue(gate.parse_version("8.13.2") < gate.parse_version("9"))
-        self.assertTrue(gate.parse_version("9.1.0") > gate.parse_version("9"))
+        # "10" parse as (10, 1) — i.e. 10.1 — and let the next breaking major
+        # through an exclusive 10 cap.
+        self.assertFalse(gate.parse_version("10.0.0") < gate.parse_version("10"))
+        self.assertTrue(gate.parse_version("9.4.0") < gate.parse_version("10"))
+        self.assertTrue(gate.parse_version("10.1.0") > gate.parse_version("10"))
 
     def test_within_is_inclusive_at_the_ceiling(self):
         self.assertTrue(gate.within("1.13.1", "1.13.1"))
@@ -199,12 +199,20 @@ class GradleParsing(unittest.TestCase):
         self.assertEqual(app.min_sdk, 21)
         doctor = self.roots["doctor"].modules[0]
         self.assertEqual(doctor.compile_sdk, 35)
+        coreeq = self.roots["coreeq"].modules[0]
+        self.assertEqual(coreeq.compile_sdk, 37)
+        self.assertEqual(coreeq.min_sdk, 30)
+        self.assertEqual(coreeq.target_sdk, 37)
 
     def test_reads_the_toolchain_versions(self):
         for rel, root in self.roots.items():
-            self.assertEqual(root.agp, "8.5.2", f"{rel} AGP")
-            self.assertEqual(root.kotlin, "1.9.24", f"{rel} Kotlin")
-        # Compared with the properties files themselves rather than literals:
+            if rel == "coreeq":
+                self.assertEqual(root.agp, "9.4.0", f"{rel} AGP")
+                self.assertIsNone(root.kotlin, f"{rel} should use AGP built-in Kotlin")
+                self.assertTrue(root.builtin_kotlin)
+            else:
+                self.assertEqual(root.agp, "8.5.2", f"{rel} AGP")
+                self.assertEqual(root.kotlin, "1.9.24", f"{rel} Kotlin")
         # the wrapper is a Dependabot-managed version, and a test that pins it
         # fails every wrapper bump for reasons that have nothing to do with the
         # gate (PR #160 went red on exactly this).
@@ -360,10 +368,23 @@ class EnvelopeTable(unittest.TestCase):
                 ceiling = ceilings.get(coord)
                 if ceiling is None:
                     continue
+                directory = "/" + root.rel if root.rel else "/"
+                maximum = ceiling.get("maxByDirectory", {}).get(directory, ceiling["max"])
                 self.assertTrue(
-                    gate.within(version, ceiling["max"]),
-                    f"{root.label}: {coord} {version} is above its own ceiling {ceiling['max']}",
+                    gate.within(version, maximum),
+                    f"{root.label}: {coord} {version} is above its own ceiling {maximum}",
                 )
+
+    def test_api37_toolchain_exception_is_limited_to_coreeq(self):
+        agp = next(c for c in self.table["ceilings"] if c["coordinate"] == "com.android.application")
+        self.assertEqual(agp["max"], "8.5.2")
+        self.assertEqual(agp.get("maxByDirectory"), {"/coreeq": "9.4.0"})
+        self.assertEqual(self.table["envelope"]["minGradleForAgp9"], "9.6.0")
+        coreeq_root = next(root for root in self.roots if root.rel == "coreeq")
+        self.assertGreaterEqual(
+            gate.parse_version(coreeq_root.wrapper),
+            gate.parse_version("9.6.0"),
+        )
 
     def test_migration_path_is_recorded(self):
         steps = self.table["migration"]["steps"]
@@ -549,10 +570,15 @@ class Mutants(unittest.TestCase):
             )
             repo.assert_blocked("must match Kotlin", "parcelize out of lockstep")
 
-    def test_agp_9_is_caught(self):
+    def test_agp_9_is_caught_on_roots_without_the_api37_migration(self):
         with ScratchRepo() as repo:
             repo.edit("build.gradle.kts", 'version "8.5.2"', 'version "9.0.0"')
-            repo.assert_blocked("breaking major", "AGP 9")
+            repo.assert_blocked("above its ceiling 8.5.2", "AGP 9 on the repo root")
+
+    def test_next_breaking_agp_major_is_caught(self):
+        with ScratchRepo() as repo:
+            repo.edit("build.gradle.kts", 'version "8.5.2"', 'version "10.0.0"')
+            repo.assert_blocked("next breaking major", "AGP 10")
 
     def test_an_agp_8x_bump_on_the_9_7_0_wrapper_is_caught(self):
         # The 2026-09-19 batch (#144 #145 #146 #147 #148 #149) proposed exactly

@@ -117,6 +117,11 @@ class GradleRoot:
         self.plugins = read(self.build_file)
         self.agp = _plugin_version(self.plugins, "com.android.application")
         self.kotlin = _plugin_version(self.plugins, "org.jetbrains.kotlin.android")
+        self.builtin_kotlin = bool(
+            self.agp
+            and self.kotlin is None
+            and parse_version(self.agp) >= parse_version("9.0.0")
+        )
         self.kotlin_plugins = {
             pid: ver
             for pid, ver in _all_plugins(self.plugins).items()
@@ -281,29 +286,46 @@ def gradle_entry_for(directory: str, entries: list[DependabotEntry]) -> Dependab
 def check_roots(roots: list[GradleRoot], table: dict) -> None:
     envelope = table["envelope"]
     agp_cap = envelope["agpMaxExclusive"]
-    gradle_floor = envelope["minGradleForAgp8"]
     for root in roots:
         if root.agp is None:
             fail(f"{root.label}: no com.android.application version in {root.build_file.relative_to(ROOT)}")
         elif not parse_version(root.agp) < parse_version(agp_cap):
             fail(
-                f"{root.label}: AGP {root.agp} is at or past {agp_cap}, the breaking major with "
-                f"built-in Kotlin. That is a migration, not a bump — see tools/gradle_envelope.json."
+                f"{root.label}: AGP {root.agp} is at or past {agp_cap}, the next breaking major. "
+                f"That is a migration, not a bump — see tools/gradle_envelope.json."
             )
-        if root.kotlin is None:
+
+        if root.agp and parse_version(root.agp) >= parse_version("9.0.0"):
+            if root.kotlin is not None:
+                fail(
+                    f"{root.label}: AGP {root.agp} has built-in Kotlin; remove the external "
+                    "org.jetbrains.kotlin.android plugin to avoid applying Kotlin twice"
+                )
+            elif not root.builtin_kotlin:
+                fail(f"{root.label}: AGP {root.agp} has no recognized built-in Kotlin configuration")
+        elif root.kotlin is None:
             fail(f"{root.label}: no org.jetbrains.kotlin.android version")
-        # Every Kotlin sub-plugin must move in lockstep with the Kotlin plugin.
-        for pid, version in sorted(root.kotlin_plugins.items()):
-            if version != root.kotlin:
-                fail(f"{root.label}: {pid} {version} must match Kotlin {root.kotlin}")
+        # Every external Kotlin sub-plugin must move in lockstep with the Kotlin plugin.
+        if root.kotlin is not None:
+            for pid, version in sorted(root.kotlin_plugins.items()):
+                if version != root.kotlin:
+                    fail(f"{root.label}: {pid} {version} must match Kotlin {root.kotlin}")
+
+        if root.agp and parse_version(root.agp) >= parse_version("9.0.0"):
+            gradle_floor = envelope["minGradleForAgp9"]
+            agp_family = "AGP 9.x"
+        else:
+            gradle_floor = envelope["minGradleForAgp8"]
+            agp_family = "AGP 8.x"
         if root.wrapper is None:
             fail(f"{root.label}: no Gradle wrapper distributionUrl found")
         elif parse_version(root.wrapper) < parse_version(gradle_floor):
             fail(
                 f"{root.label}: Gradle wrapper {root.wrapper} is below {gradle_floor}, the minimum "
-                f"AGP 8.x runs on"
+                f"{agp_family} runs on"
             )
-        receipt.append(f"{root.label}: AGP {root.agp} · Kotlin {root.kotlin} · Gradle {root.wrapper}")
+        kotlin_label = f"Kotlin {root.kotlin}" if root.kotlin else "built-in Kotlin"
+        receipt.append(f"{root.label}: AGP {root.agp} · {kotlin_label} · Gradle {root.wrapper}")
 
 def check_ceilings(roots: list[GradleRoot], table: dict) -> dict[str, set[str]]:
     """Assert no declared dependency is above its ceiling.
@@ -322,11 +344,13 @@ def check_ceilings(roots: list[GradleRoot], table: dict) -> dict[str, set[str]]:
             if ceiling is None:
                 continue
             declaring.setdefault(coord, set()).add(directory)
-            if not within(version, ceiling["max"]):
+            maximum = ceiling.get("maxByDirectory", {}).get(directory, ceiling["max"])
+            reason = ceiling.get("reasonByDirectory", {}).get(directory, ceiling["reason"])
+            if not within(version, maximum):
                 fail(
                     f"{root.build_file.relative_to(ROOT)} applies {coord} {version}, "
-                    f"above its ceiling {ceiling['max']}.\n"
-                    f"    why it is capped: {ceiling['reason']}"
+                    f"above its ceiling {maximum}.\n"
+                    f"    why it is capped: {reason}"
                 )
         for module in root.modules:
             for coord, version in sorted(module.deps.items()):
@@ -334,11 +358,13 @@ def check_ceilings(roots: list[GradleRoot], table: dict) -> dict[str, set[str]]:
                 if ceiling is None:
                     continue
                 declaring.setdefault(coord, set()).add(directory)
-                if not within(version, ceiling["max"]):
+                maximum = ceiling.get("maxByDirectory", {}).get(directory, ceiling["max"])
+                reason = ceiling.get("reasonByDirectory", {}).get(directory, ceiling["reason"])
+                if not within(version, maximum):
                     fail(
                         f"{module.path.relative_to(ROOT)}/build.gradle.kts declares {coord}:{version}, "
-                        f"above its ceiling {ceiling['max']}.\n"
-                        f"    why it is capped: {ceiling['reason']}"
+                        f"above its ceiling {maximum}.\n"
+                        f"    why it is capped: {reason}"
                     )
     # A ceiling nobody declares is dead weight, and worse, it silently stops
     # Dependabot proposing updates for a library the suite does not use.
@@ -377,12 +403,14 @@ def check_dependabot(
             entry = gradle_entry_for(directory, entries)
             if entry is None:
                 continue  # already reported as an unwatched root
+            maximum = ceiling.get("maxByDirectory", {}).get(directory, ceiling["max"])
+            reason = ceiling.get("reasonByDirectory", {}).get(directory, ceiling["reason"])
             blocked = entry.ignores.get(coord)
             if blocked is None:
                 fail(
                     f'dependabot.yml directory "{directory}" does not ignore {coord}, which is capped at '
-                    f'{ceiling["max"]} in tools/gradle_envelope.json.\n'
-                    f"    Dependabot will keep proposing versions that cannot build: {ceiling['reason']}\n"
+                    f'{maximum} in tools/gradle_envelope.json.\n'
+                    f"    Dependabot will keep proposing versions that cannot build: {reason}\n"
                     f'    add under `ignore:`:\n'
                     f'      - dependency-name: "{coord}"\n'
                     f'        update-types: {json.dumps(sorted(wanted))}'

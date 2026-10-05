@@ -230,9 +230,9 @@ That is `docs/BRAND-GUIDE.md`'s "Honest utility" pillar applied to audio.
 ```
 coreeq/
   settings.gradle.kts            # own Gradle root — do not merge
-  app/build.gradle.kts           # AGP 8.5.2, Kotlin 1.9.24, compileSdk 35,
-                                 # minSdk 26 (DynamicsProcessing), inside the
-                                 # envelope in tools/gradle_envelope.json
+  app/build.gradle.kts           # AGP 9.4.0, built-in Kotlin, compileSdk /
+                                 # targetSdk 37, minSdk 30 (Android 11), with
+                                 # a Core-EQ-only envelope exception
   app/src/main/kotlin/tv/corebuilds/eq/
     TvActivity.kt                # dp-box normaliser, same as the icon pack
     MainActivity.kt              # Home
@@ -248,9 +248,12 @@ coreeq/
               Formats.kt
 ```
 
-Gradle stays inside `tools/gradle_envelope.json`: AGP 8.5.2, Kotlin 1.9.24,
-`core-ktx` 1.13.1, `appcompat` 1.7.0, `recyclerview` 1.3.2, `okhttp` 4.12.0.
-No Compose — the icon pack's `Theme.CoreBuilds` note applies here too.
+Core EQ uses its own Gradle root and is the suite's API 37 exception: AGP
+9.4.0, Gradle 9.7.0 and AGP built-in Kotlin. The other suite roots remain on
+AGP 8.5.2 / Kotlin 1.9.24; `tools/gradle_envelope.json` keeps those ceilings
+root-specific. Core EQ dependencies remain `core-ktx` 1.13.1, `appcompat` 1.7.0
+and `recyclerview` 1.3.2. No Compose — the icon pack's `Theme.CoreBuilds` note
+applies here too.
 
 ## 7. Gates
 

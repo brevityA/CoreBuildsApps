@@ -96,17 +96,13 @@ HEADER = """\
 # steps are at the end of gradle_envelope.json), watch CI go green, then lift
 # the ceiling and regenerate this file.
 #
-# Note on the `gradle-wrapper >= 9.6` rule and the `com.android.application`
-# ceiling below. They are two halves of ONE constraint, and the 2026-09-19
-# Dependabot batch (#144 #145 #146 #147 #148 #149) is what settled it. Gradle
-# 9.6.0 removed org.gradle.api.problems.internal.InternalProblems
-# (gradle/gradle#38073) and AGP 8.13.2 still binds it, so AGP 8.13.2 on the
-# 9.7.0 wrapper that five of six roots run dies at plugin apply - before a
-# single line compiles. #146 moved its wrapper to 9.5.1 with the same AGP
-# 8.13.2 and built green, so AGP 8.13.2 is not broken by itself, only in that
-# combination. AGP 8.5.2 runs on 9.7.0, which is why main is green today: that
-# is one AGP version tolerating the removal, not AGP 8.x as a whole. The AGP
-# ceiling is therefore 8.5.2, not 9, until the wrappers move or AGP 9 lands.
+# The com.android.application ceiling is root-specific. The icon pack, Core
+# Line, Shift, Motion and Doctor remain on the proven AGP 8.5.2 / Kotlin 1.9.24
+# toolchain: AGP 8.13.2 fails on their Gradle 9.7 wrappers because Gradle 9.6
+# removed org.gradle.api.problems.internal.InternalProblems (see PRs #144-#149).
+# Core EQ is its own Gradle root and has deliberately migrated to AGP 9.4.0,
+# Gradle 9.7, built-in Kotlin and API 37. Do not generalise that exception to
+# the other roots without their own toolchain migration and CI evidence.
 version: 2
 updates:
 """
@@ -161,7 +157,8 @@ def render_entry(root, table: dict) -> str:
         coord = ceiling["coordinate"]
         modules = sorted({m.name for m in root.modules if coord in m.deps})
         declared = f" — declared by {', '.join(modules)}" if modules else ""
-        lines.append(f"      # {coord} <= {ceiling['max']}{declared}")
+        maximum = ceiling.get("maxByDirectory", {}).get(directory, ceiling["max"])
+        lines.append(f"      # {coord} <= {maximum}{declared}")
         types = ", ".join(f'"{t}"' for t in ceiling["blockedUpdateTypes"])
         lines.append(f'      - dependency-name: "{coord}"')
         lines.append(f"        update-types: [{types}]")

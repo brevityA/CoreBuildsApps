@@ -1,19 +1,14 @@
 name: Core EQ APK
 
-# Builds the Core EQ room equaliser (coreeq/). Standalone Gradle root — not
-# part of the icon-pack, Core Line, Core Shift, Core Motion or Core Doctor
-# builds.
+# Builds the standalone Core EQ app.
 #
-# CI:        PRs on coreeq/** → unit tests + debug APK artifact. Nothing is
-#            published from a PR: unreviewed code never reaches a public page.
-# Test lane: push to main → unit tests + debug APK → the `coreeq-test`
-#            prerelease (public, marked prerelease, never "latest").
-# Release:   push a coreeq-v* tag on main → signed release APK → versioned
-#            GitHub Release + the floating `coreeq` release (stable URL for a
-#            Downloader code, once one is generated).
-#
-# Tag prefix is "coreeq-v", declared in suite.json; check_suite_truth.py
-# refuses any workflow tag glob that is not a declared prefix.
+# CI:       PRs run unit tests, lint, build, then install the APK on Android 11
+#           (API 30) and Android 17 (API 37) emulators.
+# Test:     pushes to main publish a debug-package APK signed by the stable
+#           production certificate, so test builds can update in place.
+# Release:  coreeq-v* tags build the production package with that same
+#           certificate. A certificate comparison and emulator installs must
+#           pass before any release or floating tag is moved.
 
 on:
   workflow_dispatch:
@@ -41,28 +36,24 @@ jobs:
       - name: Check suite truth
         run: python tools/check_suite_truth.py
 
-      - uses: actions/setup-java@v5
+      - uses: actions/setup-java@v6
         with:
           distribution: temurin
           java-version: '17'
 
-      - name: Install Android platform 35
+      - name: Install Android platform 37
         run: |
-          "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" "platforms;android-35" "build-tools;35.0.0"
+          "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" "platforms;android-37" "build-tools;36.0.0"
 
       - name: Set up Gradle
         uses: gradle/actions/setup-gradle@v6
 
-      # Lint runs in the same Gradle call so a manifest or resource error
-      # (e.g. ProtectedPermissions on DUMP) fails the PR, not a later build.
       - name: Run unit tests and lint
         working-directory: coreeq
         run: |
           set -o pipefail
           ./gradlew :app:testDebugUnitTest :app:lintDebug --no-daemon --stacktrace 2>&1 | tee "$RUNNER_TEMP/coreeq-gradle.log"
 
-      # The action log archive is not always reachable from this runner; emit
-      # concise failures as check annotations as well as in the full log.
       - name: Summarize unit-test failures
         if: failure()
         run: |
@@ -101,13 +92,11 @@ jobs:
           PY
 
   apk:
-    name: Assemble APK
+    name: Assemble candidate APK
     needs: test
     runs-on: ubuntu-latest
     permissions:
-      contents: write
-    env:
-      KEYSTORE_BASE64: ${{ secrets.KEYSTORE_BASE64 }}
+      contents: read
     steps:
       - uses: actions/checkout@v7
 
@@ -122,24 +111,39 @@ jobs:
           [ "$TAG" = "$GRADLE" ] \
             || { echo "::error::tag $TAG != versionName $GRADLE"; exit 1; }
 
-      - uses: actions/setup-java@v5
+      - uses: actions/setup-java@v6
         with:
           distribution: temurin
           java-version: '17'
 
-      - name: Install Android platform 35
+      - name: Install Android platform 37
         run: |
-          "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" "platforms;android-35" "build-tools;35.0.0"
+          "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" "platforms;android-37" "build-tools;36.0.0"
 
       - name: Set up Gradle
         uses: gradle/actions/setup-gradle@v6
 
-      - name: Decode keystore
-        if: startsWith(github.ref, 'refs/tags/coreeq-v') && env.KEYSTORE_BASE64 != ''
+      # The release key is used only on main pushes (public test lane) and
+      # version tags. Pull requests never receive or decode it.
+      - name: Require signing secrets and decode release keystore
+        if: startsWith(github.ref, 'refs/tags/coreeq-v') || (github.event_name == 'push' && github.ref == 'refs/heads/main')
+        env:
+          KEYSTORE_BASE64: ${{ secrets.KEYSTORE_BASE64 }}
+          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
+          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
         run: |
-          echo "$KEYSTORE_BASE64" | base64 -d > "$RUNNER_TEMP/release.jks"
-          echo "KEYSTORE_PATH=$RUNNER_TEMP/release.jks" >> "$GITHUB_ENV"
-          echo "Keystore decoded — release will be signed."
+          set -euo pipefail
+          for name in KEYSTORE_BASE64 KEYSTORE_PASSWORD KEY_ALIAS KEY_PASSWORD; do
+            if [[ -z "${!name}" ]]; then
+              echo "::error::Required signing secret $name is unavailable; refusing to publish an unsigned or differently signed Core EQ APK."
+              exit 1
+            fi
+          done
+          printf '%s' "$KEYSTORE_BASE64" | base64 --decode > "$RUNNER_TEMP/coreeq-release.jks"
+          test -s "$RUNNER_TEMP/coreeq-release.jks"
+          echo "KEYSTORE_PATH=$RUNNER_TEMP/coreeq-release.jks" >> "$GITHUB_ENV"
+          echo "Release certificate loaded for this trusted main/tag build."
 
       - name: Assemble release APK
         if: startsWith(github.ref, 'refs/tags/coreeq-v')
@@ -153,44 +157,141 @@ jobs:
       - name: Verify release APK is signed
         if: startsWith(github.ref, 'refs/tags/coreeq-v')
         run: |
-          APK=$(ls coreeq/app/build/outputs/apk/release/*.apk)
-          case "$APK" in
-            *-unsigned.apk)
-              echo "::error::$APK is unsigned — a tagged release must be installable."
-              exit 1
-              ;;
-          esac
-          "$ANDROID_HOME/build-tools/35.0.0/apksigner" verify --print-certs "$APK"
-
-      - name: Name the release APK for the stable URL
-        if: startsWith(github.ref, 'refs/tags/coreeq-v')
-        run: |
-          SRC=$(ls coreeq/app/build/outputs/apk/release/*.apk | grep -v unsigned | head -1)
-          mkdir -p dist
-          cp "$SRC" dist/coreeq-release.apk
-          ls -lh dist/coreeq-release.apk
+          set -euo pipefail
+          APK=$(find coreeq/app/build/outputs/apk/release -maxdepth 1 -type f -name '*.apk' ! -name '*-unsigned.apk' -print -quit)
+          test -n "$APK" || { echo "::error::No signed release APK was produced."; exit 1; }
+          "$ANDROID_HOME/build-tools/36.0.0/apksigner" verify --print-certs "$APK"
 
       - name: Assemble debug APK
         if: ${{ !startsWith(github.ref, 'refs/tags/coreeq-v') }}
         working-directory: coreeq
+        env:
+          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
+          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
         run: ./gradlew :app:assembleDebug --no-daemon --stacktrace
 
-      - name: Name the debug APK
+      # Fail closed if the repository key has drifted. This runs for both
+      # production releases and the public test lane, against the APK users
+      # currently install from the floating stable release.
+      - name: Verify candidate certificate matches current stable APK
+        if: startsWith(github.ref, 'refs/tags/coreeq-v') || (github.event_name == 'push' && github.ref == 'refs/heads/main')
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          PREVIOUS_DIR="$RUNNER_TEMP/coreeq-previous"
+          mkdir -p "$PREVIOUS_DIR"
+          gh release download coreeq --repo "$GITHUB_REPOSITORY" \
+            --pattern coreeq-release.apk --dir "$PREVIOUS_DIR"
+          PREVIOUS_APK="$PREVIOUS_DIR/coreeq-release.apk"
+          if [[ "$GITHUB_REF" == refs/tags/coreeq-v* ]]; then
+            CANDIDATE_APK=$(find coreeq/app/build/outputs/apk/release -maxdepth 1 -type f -name '*.apk' ! -name '*-unsigned.apk' -print -quit)
+          else
+            CANDIDATE_APK=$(find coreeq/app/build/outputs/apk/debug -maxdepth 1 -type f -name '*.apk' -print -quit)
+          fi
+          test -s "$PREVIOUS_APK" && test -s "$CANDIDATE_APK"
+          APKSIGNER="$ANDROID_HOME/build-tools/36.0.0/apksigner"
+          cert_sha256() {
+            "$APKSIGNER" verify --print-certs "$1" \
+              | awk -F': ' '/Signer #1 certificate SHA-256 digest:/ { print $2; exit }' \
+              | tr -d '[:space:]:' | tr '[:upper:]' '[:lower:]'
+          }
+          PREVIOUS_CERT=$(cert_sha256 "$PREVIOUS_APK")
+          CANDIDATE_CERT=$(cert_sha256 "$CANDIDATE_APK")
+          if [[ -z "$PREVIOUS_CERT" || -z "$CANDIDATE_CERT" ]]; then
+            echo "::error::Could not read a signing certificate digest from both APKs."
+            exit 1
+          fi
+          if [[ "$PREVIOUS_CERT" != "$CANDIDATE_CERT" ]]; then
+            echo "::error::Core EQ signing certificate differs from the currently published APK; refusing to publish an APK users cannot install over it."
+            exit 1
+          fi
+          echo "Candidate and current stable APK use the same signing certificate."
+
+      - name: Name the release APK
+        if: startsWith(github.ref, 'refs/tags/coreeq-v')
+        run: |
+          SRC=$(find coreeq/app/build/outputs/apk/release -maxdepth 1 -type f -name '*.apk' ! -name '*-unsigned.apk' -print -quit)
+          test -n "$SRC"
+          mkdir -p dist
+          cp "$SRC" dist/coreeq-release.apk
+          ls -lh dist/coreeq-release.apk
+
+      - name: Name the debug test APK
         if: ${{ !startsWith(github.ref, 'refs/tags/coreeq-v') }}
         run: |
-          APK=$(find coreeq/app/build/outputs/apk/debug -maxdepth 1 -type f -name '*.apk' | head -1)
+          APK=$(find coreeq/app/build/outputs/apk/debug -maxdepth 1 -type f -name '*.apk' -print -quit)
           test -n "$APK"
           mkdir -p dist
           cp "$APK" dist/coreeq-debug.apk
           (cd dist && sha256sum coreeq-debug.apk > coreeq-debug.apk.sha256)
           ls -lh dist/
 
-      - name: Upload APK artifact
+      - name: Upload candidate APK
         uses: actions/upload-artifact@v7
         with:
           name: CoreEQ-${{ startsWith(github.ref, 'refs/tags/coreeq-v') && 'release' || 'debug' }}
-          path: dist/*.apk
+          path: dist/*
           if-no-files-found: error
+
+  install:
+    name: Install on Android API ${{ matrix.api-level }}
+    needs: apk
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    strategy:
+      fail-fast: false
+      matrix:
+        api-level: [30, 37]
+    steps:
+      - uses: actions/download-artifact@v7
+        with:
+          name: CoreEQ-${{ startsWith(github.ref, 'refs/tags/coreeq-v') && 'release' || 'debug' }}
+          path: dist
+
+      - name: Enable KVM
+        run: |
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' \
+            | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+          sudo udevadm control --reload-rules
+          sudo udevadm trigger --name-match=kvm
+
+      - name: Boot emulator and install APK
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: ${{ matrix.api-level }}
+          target: google_apis
+          arch: x86_64
+          disable-animations: true
+          emulator-options: -no-window -gpu swiftshader_indirect -no-snapshot -noaudio -no-boot-anim
+          script: |
+            set -eu
+            APK=$(find dist -maxdepth 1 -type f -name '*.apk' -print -quit)
+            test -n "$APK" || { echo "No Core EQ APK artifact was downloaded"; exit 1; }
+            case "$APK" in
+              *coreeq-release.apk) PACKAGE=tv.corebuilds.eq ;;
+              *coreeq-debug.apk) PACKAGE=tv.corebuilds.eq.debug ;;
+              *) echo "Unexpected APK asset: $APK"; exit 1 ;;
+            esac
+            adb install -r "$APK"
+            adb shell pm path "$PACKAGE"
+
+  publish:
+    name: Publish verified APK
+    needs: [apk, install]
+    if: startsWith(github.ref, 'refs/tags/coreeq-v') || (github.event_name == 'push' && github.ref == 'refs/heads/main')
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Download verified artifact
+        uses: actions/download-artifact@v7
+        with:
+          name: CoreEQ-${{ startsWith(github.ref, 'refs/tags/coreeq-v') && 'release' || 'debug' }}
+          path: dist
 
       - name: Publish versioned release
         if: startsWith(github.ref, 'refs/tags/coreeq-v')
@@ -198,7 +299,6 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           TAG="${GITHUB_REF_NAME}"
-          # Immutable releases: attach assets to a draft, then publish.
           gh release delete "$TAG" --yes 2>/dev/null || true
           gh release create "$TAG" --draft --generate-notes --verify-tag \
             dist/coreeq-release.apk
@@ -222,8 +322,6 @@ jobs:
             dist/coreeq-release.apk
           gh release edit coreeq --draft=false --latest=false
 
-      # The test lane publishes merged code only: pushes to main, never PRs or
-      # agent branches, so the public prerelease always reflects reviewed code.
       - name: Publish to the coreeq-test prerelease
         if: github.event_name == 'push' && github.ref == 'refs/heads/main'
         env:
@@ -240,7 +338,7 @@ jobs:
           fi
           VERSION=$(grep -oP 'versionName = "\K[^"]+' coreeq/app/build.gradle.kts)
           TITLE="Core EQ — test channel (tv.corebuilds.eq)"
-          NOTES="Debug build of Core EQ $VERSION from main at ${GITHUB_SHA::7}. Installs beside a release build (package tv.corebuilds.eq.debug). Changes: coreeq/CHANGELOG.md."
+          NOTES="Debug build of Core EQ $VERSION signed with the production certificate; installs beside the release app as tv.corebuilds.eq.debug. Changes: coreeq/CHANGELOG.md."
           if gh release view "$TAG" --repo "$REPO" >/dev/null 2>&1; then
             gh release edit "$TAG" --repo "$REPO" \
               --draft=false --prerelease --latest=false \

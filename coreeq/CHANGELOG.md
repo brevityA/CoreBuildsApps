@@ -19,6 +19,7 @@ must never land there. Releases are `coreeq-v<version>` tags (see
 
 ### Changed
 
+- **Android 11 (API 30) is now the minimum; Core EQ builds and targets Android 17 (API 37).** Android 8–10 devices are no longer supported. CI installs the API 30 and API 37 emulator images to check APK installation at both ends of the supported range.
 - **The Measure screen now says what to do when the sound is already calibrated.** If an AVR or soundbar already calibrates the room (Audyssey, YPAO, A1 Evo, Dirac), do not stack Core EQ on it: measure and export the profile instead.
 
 - **The band maths has one home.** `EqService` and the TV-settings export both sample the correction through `BandMapping`, so the preview, the export and the applied bands cannot drift apart. TV-settings and Poweramp exports include the currently selected mode overlay and identify that mode in the filename.
