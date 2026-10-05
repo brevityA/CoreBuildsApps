@@ -85,6 +85,8 @@
     <item drawable="discovery" />
     <item drawable="discoveryplus" />
     <item drawable="disneyplus" />
+    <item drawable="heatvod" />
+    <item drawable="heatvod_ultra" />
     <item drawable="watcher" />
     <item drawable="livingroomplus" />
     <item drawable="kayo" />
@@ -113,6 +115,7 @@
     <item drawable="screen" />
     <item drawable="hdtv_player" />
     <item drawable="heatlive" />
+    <item drawable="heatlive_backup" />
     <item drawable="myiptvonline" />
     <item drawable="iptvextremepro" />
     <item drawable="iptv_pro" />
@@ -122,6 +125,8 @@
     <item drawable="streamingkemo" />
     <item drawable="lazyiptvdeluxe" />
     <item drawable="livetv" />
+    <item drawable="live_ultra" />
+    <item drawable="live_ultra_plus" />
     <item drawable="m3u_iptv" />
     <item drawable="myiptv" />
     <item drawable="dcsapp" />

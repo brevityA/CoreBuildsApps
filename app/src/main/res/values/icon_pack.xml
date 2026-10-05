@@ -321,6 +321,9 @@
         <item>falcofemoralis</item>
         <item>hdtv_player</item>
         <item>heatlive</item>
+        <item>heatlive_backup</item>
+        <item>heatvod</item>
+        <item>heatvod_ultra</item>
         <item>heinetworktv</item>
         <item>watcher</item>
         <item>hi_browser</item>
@@ -410,6 +413,8 @@
         <item>ligueunpass</item>
         <item>tv</item>
         <item>livetv</item>
+        <item>live_ultra</item>
+        <item>live_ultra_plus</item>
         <item>androidtv_10</item>
         <item>aimitv</item>
         <item>localnow</item>
@@ -1299,6 +1304,9 @@
         <item>HDRezka</item>
         <item>HDTV Player</item>
         <item>HeatLive</item>
+        <item>HeatLive Backup</item>
+        <item>HeatVod</item>
+        <item>HeatVod Ultra</item>
         <item>HEI Network</item>
         <item>HGTV</item>
         <item>Hi Browser</item>
@@ -1388,6 +1396,8 @@
         <item>Ligue 1+</item>
         <item>Live Channels</item>
         <item>Live TV</item>
+        <item>Live Ultra</item>
+        <item>Live Ultra+</item>
         <item>LiveNetTV Pro</item>
         <item>Local 10+</item>
         <item>Local Now</item>
@@ -2277,6 +2287,9 @@
         <item>APP</item>
         <item>LIVE</item>
         <item>LIVE</item>
+        <item>LIVE</item>
+        <item>VOD</item>
+        <item>VOD</item>
         <item>APP</item>
         <item>VOD</item>
         <item>BROWSER</item>
@@ -2365,6 +2378,8 @@
         <item>APP</item>
         <item>APP</item>
         <item>APP</item>
+        <item>LIVE</item>
+        <item>LIVE</item>
         <item>LIVE</item>
         <item>APP</item>
         <item>APP</item>
@@ -3303,15 +3318,20 @@
         <item>1</item>
         <item>1</item>
         <item>1</item>
-        <item>0</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
         <item>1</item>
         <item>1</item>
         <item>1</item>
         <item>0</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>0</item>
+        <item>1</item>
+        <item>1</item>
         <item>1</item>
         <item>1</item>
         <item>1</item>
@@ -3913,5 +3933,5 @@
         <item>1</item>
         <item>1</item>
     </integer-array>
-    <integer name="icon_count">976</integer>
+    <integer name="icon_count">981</integer>
 </resources>

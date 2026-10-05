@@ -6,6 +6,30 @@ All notable changes to the Core Builds Icon Pack. Format follows
 
 ## [Unreleased]
 
+## [2.1.1] — 2026-10-05
+
+### Added
+
+- **The vSeeBox Heat family.** HeatLive shipped in 2.0.0; the four apps
+  that sit beside it on a vSeeBox's Recommend row, and the fifth that the
+  V6 Plus adds, now apply too, each drawn in HeatLive's own construction:
+  the stroke teardrop, point up, with a solid shape standing on its floor.
+  What stands there says what the app is - HeatLive's flame for live TV, a
+  play for on demand - and one small device says which one: **HeatVod**
+  (drop and play, in its splash's blue), **HeatVod Ultra** (drop and play
+  with the play-cone its tile carries, pink), **Live Ultra** (drop and
+  flame with the cone, purple), **Live Ultra+** (drop and flame with its
+  plus, and the family's one warm tile, amber) and **HeatLive Backup**
+  (drop and flame with a second, smaller, empty drop beside it - the
+  spare - magenta-violet). Each keeps the gradient of its own tile, so the
+  five read apart on a shelf where they sit side by side. Requested in
+  #243, #245, #247, #248 and #242 with every launch activity read off the
+  requester's V6-Plus (Android 14).
+- **WAVEO.** Wave IPTV's beta is on Google Play under a new package name,
+  `com.smartwave.waveo`, with the same splash activity; it now applies the
+  Wave IPTV icon. Reported in #246 off the requester's SHIELD Android TV
+  (Android 11). 976 → 981 icons, 1207 → 1213 components.
+
 ## [2.1.0] — 2026-10-05
 
 ### Added
