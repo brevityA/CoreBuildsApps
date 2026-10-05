@@ -41,9 +41,21 @@ jobs:
           distribution: temurin
           java-version: '17'
 
+      # Runs before the install so the ids this runner can actually see are in
+      # the run's annotations even if everything after it fails.
+      - name: Report the SDK packages this runner offers
+        run: bash tools/install_android_platform.sh --report 37
+
+      # The literal below is the job's own statement of what it compiles
+      # against — tools/check_gradle_envelope.py holds it to Core EQ's
+      # compileSdk 37. The fallback covers the case the literal cannot: API 37
+      # published as a preview platform under the CinnamonBun codename on the
+      # canary channel, where this numeric id does not exist. See
+      # tools/install_android_platform.sh; Gradle still owns the real failure
+      # if no platform id resolves.
       - name: Install Android platform 37
         run: |
-          "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" "platforms;android-37" "build-tools;36.0.0"
+          "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" "platforms;android-37" "build-tools;36.0.0" || bash tools/install_android_platform.sh 37 36.0.0
 
       - name: Set up Gradle
         uses: gradle/actions/setup-gradle@v6
@@ -116,9 +128,11 @@ jobs:
           distribution: temurin
           java-version: '17'
 
+      # Same numeric-id-first install as the test job, with the CinnamonBun
+      # preview-channel fallback in tools/install_android_platform.sh.
       - name: Install Android platform 37
         run: |
-          "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" "platforms;android-37" "build-tools;36.0.0"
+          "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" "platforms;android-37" "build-tools;36.0.0" || bash tools/install_android_platform.sh 37 36.0.0
 
       - name: Set up Gradle
         uses: gradle/actions/setup-gradle@v6

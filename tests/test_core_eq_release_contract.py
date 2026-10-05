@@ -26,6 +26,34 @@ class CoreEqReleaseContract(unittest.TestCase):
         self.assertIn("api-level: [30, 37]", self.workflow)
         self.assertIn("adb install -r", self.workflow)
 
+    def test_preview_sdk_ids_are_covered_by_the_install_fallback(self) -> None:
+        """The job states `platforms;android-37`, then has somewhere to go.
+
+        API 37 has shipped both as the numeric platform id and as the
+        CinnamonBun preview codename on the canary channel. The numeric id
+        stays the first attempt because tools/check_gradle_envelope.py holds
+        the job's declaration to the module's compileSdk; the fallback is what
+        keeps a preview-channel repository snapshot from failing the job at
+        the install step, before Gradle can say which platform it wanted.
+        """
+        script = ROOT / "tools/install_android_platform.sh"
+        self.assertTrue(script.is_file(), "the install fallback vanished")
+        body = script.read_text(encoding="utf-8")
+        self.assertIn("CinnamonBun", body, "no preview codename for API 37")
+        self.assertIn("--channel=", body, "the canary channel is not used")
+        self.assertIn("platforms;android-$level", body)
+        self.assertIn("system-images;android-$level;$target;$arch", body)
+        self.assertIn("--report", body, "no way to list the ids the runner offers")
+        for workflow, expected in (
+            (self.workflow, "install_android_platform.sh 37 36.0.0"),
+            (
+                (ROOT / ".github/workflows/suite-ci.yml").read_text(encoding="utf-8"),
+                "install_android_platform.sh",
+            ),
+        ):
+            self.assertIn(expected, workflow)
+            self.assertIn("--report 37", self.workflow)
+
     def test_test_package_is_distinct_but_uses_the_stable_signer_on_main(self) -> None:
         self.assertIn('applicationIdSuffix = ".debug"', self.gradle)
         self.assertIn('signingConfig = signingConfigs.getByName("release")', self.gradle)
