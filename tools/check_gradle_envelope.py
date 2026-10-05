@@ -595,6 +595,16 @@ def check_ci_platforms(roots: list[GradleRoot]) -> None:
                 f"suite-ci.yml matrix entry {name!r} declares compileSdk {declared} but "
                 f"{gradle} compiles against {module.compile_sdk}"
             )
+        # An entry whose platform package id is not the plain SDK number (API 37
+        # ships as 37.0) states it as `platformId`; it must still be a minor
+        # version OF that compileSdk, or the job installs someone else's
+        # platform and the declaration above becomes decoration.
+        platform_id = entry.get("platformId")
+        if platform_id and not re.fullmatch(rf"{module.compile_sdk}\.\d+", platform_id):
+            fail(
+                f"suite-ci.yml matrix entry {name!r} declares platformId {platform_id!r}, "
+                f"which is not a minor version of its compileSdk {module.compile_sdk}"
+            )
         if not (WORKFLOWS / Path(workflow).name).is_file():
             fail(f"suite-ci.yml matrix entry {name!r} references missing workflow {workflow}")
         if not parameterised and module.compile_sdk not in installed_here:

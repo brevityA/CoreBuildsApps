@@ -47,15 +47,16 @@ jobs:
         run: bash tools/install_android_platform.sh --report 37
 
       # The literal below is the job's own statement of what it compiles
-      # against — tools/check_gradle_envelope.py holds it to Core EQ's
-      # compileSdk 37. The fallback covers the case the literal cannot: API 37
-      # published as a preview platform under the CinnamonBun codename on the
-      # canary channel, where this numeric id does not exist. See
-      # tools/install_android_platform.sh; Gradle still owns the real failure
-      # if no platform id resolves.
+      # against — tools/check_gradle_envelope.py reads `android-37` out of it
+      # and holds it to Core EQ's compileSdk 37. API 37 carries a minor
+      # version, so the platform package is platforms;android-37.0 and there is
+      # no plain platforms;android-37 to ask for. The fallback covers the rest:
+      # 37.1/37.2, and the CinnamonBun preview codename on the canary channel.
+      # See tools/install_android_platform.sh; Gradle still owns the real
+      # failure if no platform id resolves.
       - name: Install Android platform 37
         run: |
-          "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" "platforms;android-37" "build-tools;36.0.0" || bash tools/install_android_platform.sh 37 36.0.0
+          "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" "platforms;android-37.0" "build-tools;36.0.0" || bash tools/install_android_platform.sh 37 36.0.0
 
       - name: Set up Gradle
         uses: gradle/actions/setup-gradle@v6
@@ -128,11 +129,11 @@ jobs:
           distribution: temurin
           java-version: '17'
 
-      # Same numeric-id-first install as the test job, with the CinnamonBun
-      # preview-channel fallback in tools/install_android_platform.sh.
+      # Same literal-id-first install as the test job, with the minor-version
+      # and CinnamonBun preview fallbacks in tools/install_android_platform.sh.
       - name: Install Android platform 37
         run: |
-          "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" "platforms;android-37" "build-tools;36.0.0" || bash tools/install_android_platform.sh 37 36.0.0
+          "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" "platforms;android-37.0" "build-tools;36.0.0" || bash tools/install_android_platform.sh 37 36.0.0
 
       - name: Set up Gradle
         uses: gradle/actions/setup-gradle@v6
@@ -174,7 +175,10 @@ jobs:
           set -euo pipefail
           APK=$(find coreeq/app/build/outputs/apk/release -maxdepth 1 -type f -name '*.apk' ! -name '*-unsigned.apk' -print -quit)
           test -n "$APK" || { echo "::error::No signed release APK was produced."; exit 1; }
-          "$ANDROID_HOME/build-tools/36.0.0/apksigner" verify --print-certs "$APK"
+          APKSIGNER="$ANDROID_HOME/build-tools/36.0.0/apksigner"
+          [[ -x "$APKSIGNER" ]] || APKSIGNER="$(find "$ANDROID_HOME/build-tools" -maxdepth 2 -name apksigner -type f 2>/dev/null | sort -V | tail -1)"
+          test -x "$APKSIGNER" || { echo "::error::No apksigner under $ANDROID_HOME/build-tools."; exit 1; }
+          "$APKSIGNER" verify --print-certs "$APK"
 
       - name: Assemble debug APK
         if: ${{ !startsWith(github.ref, 'refs/tags/coreeq-v') }}
@@ -205,7 +209,10 @@ jobs:
             CANDIDATE_APK=$(find coreeq/app/build/outputs/apk/debug -maxdepth 1 -type f -name '*.apk' -print -quit)
           fi
           test -s "$PREVIOUS_APK" && test -s "$CANDIDATE_APK"
+          # build-tools package ids move; the binary has to exist either way.
           APKSIGNER="$ANDROID_HOME/build-tools/36.0.0/apksigner"
+          [[ -x "$APKSIGNER" ]] || APKSIGNER="$(find "$ANDROID_HOME/build-tools" -maxdepth 2 -name apksigner -type f 2>/dev/null | sort -V | tail -1)"
+          test -x "$APKSIGNER" || { echo "::error::No apksigner under $ANDROID_HOME/build-tools."; exit 1; }
           cert_sha256() {
             "$APKSIGNER" verify --print-certs "$1" \
               | awk -F': ' '/Signer #1 certificate SHA-256 digest:/ { print $2; exit }' \
@@ -257,12 +264,31 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        api-level: [30, 37]
+        include:
+          # API 37 carries a minor version: the emulator runner asks
+          # sdkmanager for platforms;android-<api-level> and
+          # system-images;android-<api-level>;..., so the level it is given has
+          # to be the full id (37.0). Its packages are on the canary channel.
+          - api-level: '30'
+            channel: stable
+          - api-level: '37.0'
+            channel: canary
     steps:
+      - uses: actions/checkout@v7
+
       - uses: actions/download-artifact@v7
         with:
           name: CoreEQ-${{ startsWith(github.ref, 'refs/tags/coreeq-v') && 'release' || 'debug' }}
           path: dist
+
+      # The emulator runner installs the platform without a channel flag, so
+      # the canary-channel packages are installed here first; a package that is
+      # already installed is a no-op for its own install. This is also where a
+      # wrong system-image id shows up as an annotation instead of only in a
+      # log nobody can download.
+      - name: Preinstall the preview-channel platform and system image
+        if: matrix.channel == 'canary'
+        run: bash tools/install_android_platform.sh "${{ matrix.api-level }}" 36.0.0 --system-image google_apis x86_64
 
       - name: Enable KVM
         run: |
@@ -277,6 +303,7 @@ jobs:
           api-level: ${{ matrix.api-level }}
           target: google_apis
           arch: x86_64
+          channel: ${{ matrix.channel }}
           disable-animations: true
           emulator-options: -no-window -gpu swiftshader_indirect -no-snapshot -noaudio -no-boot-anim
           script: |

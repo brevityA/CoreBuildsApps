@@ -22,8 +22,13 @@ class CoreEqReleaseContract(unittest.TestCase):
         self.assertRegex(self.gradle, r"compileSdk\s*=\s*37")
         self.assertRegex(self.gradle, r"minSdk\s*=\s*30")
         self.assertRegex(self.gradle, r"targetSdk\s*=\s*37")
-        self.assertIn('"platforms;android-37" "build-tools;36.0.0"', self.workflow)
-        self.assertIn("api-level: [30, 37]", self.workflow)
+        # API 37 carries a minor version: platforms;android-37 does not
+        # exist, the package is platforms;android-37.0.
+        self.assertIn('"platforms;android-37.0" "build-tools;36.0.0"', self.workflow)
+        self.assertNotRegex(self.workflow, r'"platforms;android-37"')
+        for level in ("'30'", "'37.0'"):
+            self.assertIn(f"api-level: {level}", self.workflow)
+        self.assertIn("channel: canary", self.workflow)
         self.assertIn("adb install -r", self.workflow)
 
     def test_preview_sdk_ids_are_covered_by_the_install_fallback(self) -> None:
@@ -41,8 +46,10 @@ class CoreEqReleaseContract(unittest.TestCase):
         body = script.read_text(encoding="utf-8")
         self.assertIn("CinnamonBun", body, "no preview codename for API 37")
         self.assertIn("--channel=", body, "the canary channel is not used")
-        self.assertIn("platforms;android-$level", body)
-        self.assertIn("system-images;android-$level;$target;$arch", body)
+        self.assertIn("MINOR_LIMIT", body, "minor versions are not probed")
+        self.assertIn("platforms;android-%s", body)
+        self.assertIn("system-images;android-%s;%s;%s", body)
+        self.assertIn("--system-image", body)
         self.assertIn("--report", body, "no way to list the ids the runner offers")
         for workflow, expected in (
             (self.workflow, "install_android_platform.sh 37 36.0.0"),
@@ -52,7 +59,8 @@ class CoreEqReleaseContract(unittest.TestCase):
             ),
         ):
             self.assertIn(expected, workflow)
-            self.assertIn("--report 37", self.workflow)
+        self.assertIn("--report 37", self.workflow)
+        self.assertIn("Preinstall the preview-channel platform and system image", self.workflow)
 
     def test_test_package_is_distinct_but_uses_the_stable_signer_on_main(self) -> None:
         self.assertIn('applicationIdSuffix = ".debug"', self.gradle)

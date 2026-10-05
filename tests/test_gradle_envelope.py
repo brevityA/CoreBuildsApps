@@ -492,10 +492,22 @@ class Mutants(unittest.TestCase):
         with ScratchRepo() as repo:
             repo.edit(
                 ".github/workflows/suite-ci.yml",
-                '"platforms;android-${{ matrix.compileSdk }}"',
+                '"platforms;android-${{ matrix.platformId || matrix.compileSdk }}"',
                 '"platforms;android-34"',
             )
             repo.assert_blocked("hard-coded Android platform", "platform install no longer follows the matrix")
+
+    def test_a_platform_id_that_is_not_the_compile_sdk_is_caught(self):
+        # The 37 entry states its package id as platformId because API 37
+        # carries a minor version. That escape hatch must not let a job install
+        # somebody else's platform while declaring compileSdk 37.
+        with ScratchRepo() as repo:
+            repo.edit(
+                ".github/workflows/suite-ci.yml",
+                "compileSdk: 37\n            platformId: 37.0",
+                "compileSdk: 37\n            platformId: 36.1",
+            )
+            repo.assert_blocked("not a minor version of its compileSdk", "platformId drifts from compileSdk")
 
     DOCTOR_ROOT_PLUGINS_OLD = (
         '    id("org.jetbrains.kotlin.android") version "1.9.24" apply false\n'

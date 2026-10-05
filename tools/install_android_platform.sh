@@ -1,15 +1,14 @@
 #!/usr/bin/env bash
-# Install the Android platform (optionally the system image) a CI job needs,
-# tolerating the two ids an SDK level can carry while it moves from preview to
-# stable.
+# Install the Android platform (optionally a system image) a CI job needs,
+# tolerating the several ids one API level can carry.
 #
-# Every workflow states its platform id itself — `platforms;android-37` — and
+# Every workflow states its platform id itself — `platforms;android-37.0` — and
 # tools/check_gradle_envelope.py holds that declaration to the compileSdk in
 # the build file it names. That literal first attempt stays in the workflow;
-# this script is the fallback for when the numeric package is not in the SDK
-# repository yet: Google publishes a preview SDK under its codename (API 37
-# shipped as "CinnamonBun") on the canary channel, so a job that only asks for
-# the numeric id fails before it ever reaches Gradle.
+# this script is the fallback for the ids the literal cannot cover: an API
+# level ships as minor versions (Android 17 is 37.0 / 37.1 / 37.2, and there is
+# no plain `platforms;android-37`), and a preview SDK ships under its codename
+# (`CinnamonBun` for 37) on the canary channel.
 #
 # Usage:
 #   install_android_platform.sh --report <api-level>
@@ -20,16 +19,20 @@
 # pretend to be the gate: Gradle resolves the platform itself and reports the
 # hash string it could not find. What this script owns is the evidence — every
 # attempt, its error text, and every id the repository offers are printed to
-# the log and emitted as workflow annotations, which is the only way a red job
-# here can be diagnosed (the raw log is often not downloadable).
+# the log and emitted as workflow annotations, which is how a red job here gets
+# diagnosed (the raw log is often not downloadable).
 set -uo pipefail
 
 CHANNEL="${ANDROID_SDK_CHANNEL:-3}" # canary; sdkmanager channels are inclusive
 SDK_ROOT="${ANDROID_HOME:-${ANDROID_SDK_ROOT:-/usr/local/lib/android/sdk}}"
 SDKMANAGER="$SDK_ROOT/cmdline-tools/latest/bin/sdkmanager"
+# How many minor versions an API level is probed for (Android 17: 37.0-37.2).
+MINOR_LIMIT=2
 
-# A preview SDK is published under its release codename; when the level is not
-# listed here only the numeric id is tried.
+major_of() { printf '%s' "${1%%.*}"; }
+
+# A preview SDK is published under its release codename; when the level has no
+# entry here only the numeric ids are tried.
 codename_for() {
   case "$1" in
     37) printf '%s' "CinnamonBun" ;;
@@ -37,8 +40,35 @@ codename_for() {
   esac
 }
 
+# Ordered most-literal first, deduplicated: 37.0, 37, 37.0, 37.1, 37.2,
+# CinnamonBun for an input of `37.0`.
+platform_candidates() { # <level>
+  local level="$1" major minor
+  major="$(major_of "$level")"
+  {
+    printf 'platforms;android-%s\n' "$level" "$major"
+    for ((minor = 0; minor <= MINOR_LIMIT; minor++)); do
+      printf 'platforms;android-%s.%s\n' "$major" "$minor"
+    done
+    [[ -n "$(codename_for "$major")" ]] && printf 'platforms;android-%s\n' "$(codename_for "$major")"
+  } | awk '!seen[$0]++'
+}
+
+system_image_candidates() { # <level> <target> <arch>
+  local level="$1" target="$2" arch="$3" major minor
+  major="$(major_of "$level")"
+  {
+    printf 'system-images;android-%s;%s;%s\n' "$level" "$target" "$arch"
+    for ((minor = 0; minor <= MINOR_LIMIT; minor++)); do
+      printf 'system-images;android-%s.%s;%s;%s\n' "$major" "$minor" "$target" "$arch"
+    done
+    [[ -n "$(codename_for "$major")" ]] &&
+      printf 'system-images;android-%s;%s;%s\n' "$(codename_for "$major")" "$target" "$arch"
+  } | awk '!seen[$0]++'
+}
+
 # Workflow commands need % , CR and LF escaped; a package id never contains one
-# but sdkmanager's error text does.
+# but sdkmanager's progress output and error text do.
 annotate() { # <level> <title> <body>
   local level="$1" title="$2" body="$3"
   body="${body//%/\%25}"
@@ -47,31 +77,42 @@ annotate() { # <level> <title> <body>
   printf '::%s title=%s::%s\n' "$level" "$title" "$body"
 }
 
-# Every platform id on this channel from API 30 up, plus the system images for
-# the requested level (numeric and codename). This is the payload that answers
-# "which package should this job have asked for?" without the raw log.
-report() { # <api-level>
-  local level="$1" listing
-  listing="$(timeout 240 "$SDKMANAGER" --list --channel="$CHANNEL" 2>/dev/null |
-    awk -v level="$level" '
-      /^[[:space:]]+[a-z-]+;/ {
-        id = $1
-        if (id ~ /^platforms;android-3[0-9]/ || id ~ /^platforms;android-[A-Za-z]/ \
-            || id ~ ("^system-images;android-" level "([^0-9]|$)") \
-            || id ~ /^system-images;android-[A-Za-z]/) print id
-      }' | sort -u | head -30)"
+emit_list() { # <title> <body>
+  local title="$1" body="$2"
+  [[ -n "$body" ]] || return 0
+  printf '%s\n%s\n' "$title" "$body"
+  annotate notice "$title" "$body"
+  if [[ -n "${GITHUB_STEP_SUMMARY:-}" ]]; then
+    printf '### %s\n\n```\n%s\n```\n' "$title" "$body" >>"$GITHUB_STEP_SUMMARY"
+  fi
+}
+
+# Which platform, build-tools and system-image ids the repository offers for
+# this API level family, and which of them are already installed. This is the
+# payload that answers "which package should this job have asked for?"
+# without the raw log.
+report() { # <level>
+  local level="$1" family listing
+  family="$(major_of "$level")"
+  listing="$(timeout 240 "$SDKMANAGER" --list --channel="$CHANNEL" 2>/dev/null | awk -v family="$family" '
+    /^[[:space:]]*Installed packages:/ { section = "installed"; next }
+    /^[[:space:]]*Available Packages:/ { section = "available"; next }
+    /^[[:space:]]+[A-Za-z0-9._;-]+;/ {
+      id = $1
+      if (id ~ ("^platforms;android-" family "([^0-9]|$)") ||
+          id ~ ("^build-tools;" family) || id ~ /^build-tools;3[0-9]/ ||
+          id ~ ("^system-images;android-" family "([^0-9]|$)"))
+        printf "[%s] %s\n", (section == "" ? "listed" : section), id
+    }' | sort -u)"
   if [[ -z "$listing" ]]; then
-    annotate notice "Android SDK packages on channel $CHANNEL" \
-      "sdkmanager listed no platform or system-image ids (API $level and up). The SDK repository may be unreachable from this runner."
+    annotate notice "Android SDK packages for API $family (channel $CHANNEL)" \
+      "sdkmanager listed no matching platform, build-tools or system-image ids. The SDK repository may be unreachable from this runner."
     return 0
   fi
-  printf 'SDK packages this runner offers (channel %s):\n%s\n' "$CHANNEL" "$listing"
-  if [[ -n "${GITHUB_STEP_SUMMARY:-}" ]]; then
-    {
-      printf '### SDK packages this runner offers (channel %s)\n\n```\n%s\n```\n' "$CHANNEL" "$listing"
-    } >>"$GITHUB_STEP_SUMMARY"
-  fi
-  annotate notice "Android SDK packages on channel $CHANNEL" "$listing"
+  emit_list "Android SDK platforms and build-tools (channel $CHANNEL)" \
+    "$(printf '%s\n' "$listing" | grep -E '^\[[a-z]+\] (platforms|build-tools);' | head -20)"
+  emit_list "Android $family system images (channel $CHANNEL)" \
+    "$(printf '%s\n' "$listing" | grep -E "^\[[a-z]+\] system-images;android-$family([^0-9]|$)" | head -20)"
 }
 
 try_install() { # <package-id> [<package-id> ...]
@@ -85,34 +126,27 @@ try_install() { # <package-id> [<package-id> ...]
   return 1
 }
 
-install() { # <api-level> <build-tools> [--system-image <target> <arch>]
-  local level="$1" tools="build-tools;$2" target="${3:-}" arch="${4:-}"
-  local code candidates id installed=1
-  code="$(codename_for "$level")"
+install() { # <level> <build-tools> [--system-image <target> <arch>]
+  local level="$1" build_tools="$2" target="${3:-}" arch="${4:-}"
+  local id installed=1
 
-  candidates=("platforms;android-$level")
-  [[ -n "$code" ]] && candidates+=("platforms;android-$code")
-  for id in "${candidates[@]}"; do
-    if try_install "$id" "$tools"; then
-      installed=0
-      break
-    fi
-  done
+  # Two passes per candidate: with the requested build-tools, then the platform
+  # alone. Build tools are not the platform — AGP fetches the ones it needs on
+  # its own — so a wrong build-tools id must not be what stops the compile.
+  while read -r id; do
+    if try_install "$id" "build-tools;$build_tools"; then installed=0; break; fi
+    if try_install "$id"; then installed=0; break; fi
+  done < <(platform_candidates "$level")
 
   if [[ -n "$target" ]]; then
-    candidates=("system-images;android-$level;$target;$arch")
-    [[ -n "$code" ]] && candidates+=("system-images;android-$code;$target;$arch")
-    for id in "${candidates[@]}"; do
-      if try_install "$id"; then
-        installed=0
-        break
-      fi
-    done
+    while read -r id; do
+      if try_install "$id"; then installed=0; break; fi
+    done < <(system_image_candidates "$level" "$target" "$arch")
   fi
 
   if ((installed != 0)); then
     annotate warning "No API $level SDK package installed" \
-      "Tried the numeric id${code:+ and the $code codename} on channel $CHANNEL. Gradle resolves the platform itself and will name the hash string it cannot find; the package list below says what this repository really offers."
+      "Tried $(platform_candidates "$level" | tr '\n' ' ')on channel $CHANNEL. Gradle resolves the platform itself and will name the hash string it cannot find; the package lists below say what this repository really offers."
   fi
 
   # Always report, so the ids land in the run's annotations whether or not the
@@ -136,14 +170,14 @@ main() {
       return 2
       ;;
     *)
-      local level="$1" tools="${2:-}" target="" arch=""
-      [[ -n "$tools" ]] || { echo "usage: $0 <api-level> <build-tools> [--system-image <target> <arch>]" >&2; return 2; }
+      local level="$1" build_tools="${2:-}" target="" arch=""
+      [[ -n "$build_tools" ]] || { echo "usage: $0 <api-level> <build-tools> [--system-image <target> <arch>]" >&2; return 2; }
       if [[ "${3:-}" == "--system-image" ]]; then
         target="${4:-}"
         arch="${5:-}"
         [[ -n "$target" && -n "$arch" ]] || { echo "--system-image needs <target> <arch>" >&2; return 2; }
       fi
-      install "$level" "$tools" "$target" "$arch"
+      install "$level" "$build_tools" "$target" "$arch"
       ;;
   esac
   return 0

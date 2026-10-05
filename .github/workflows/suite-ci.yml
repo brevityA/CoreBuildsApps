@@ -108,12 +108,15 @@ jobs:
             artifact: motion-plugin/app/build/outputs/apk/debug/*.apk
           # Core EQ is its own Gradle root on AGP 9.4.0 / compileSdk 37. Its
           # build-tools floor is the toolchain's, not the platform's: there is
-          # no build-tools 37.0.0, so this entry names 36 explicitly.
+          # no build-tools 37.0.0, so this entry names 36 explicitly. API 37
+          # carries a minor version, declared as platformId below; compileSdk
+          # stays the plain 37.
           - name: Core EQ
             dir: coreeq
             tasks: :app:lintDebug :app:testDebugUnitTest :app:assembleDebug
             gradle: coreeq/app/build.gradle.kts
             compileSdk: 37
+            platformId: 37.0
             buildTools: 36
             workflow: .github/workflows/core-eq-apk.yml
             artifact: coreeq/app/build/outputs/apk/debug/*.apk
@@ -143,16 +146,17 @@ jobs:
           # before the field existed); Core EQ pins 36, the AGP 9.4.0 floor,
           # because there is no build-tools 37.0.0 to install.
           # The parameterised line is the job's own statement of its platform
-          # requirement. The fallback covers an SDK level that only exists as
-          # a preview codename on the canary channel (API 37 / CinnamonBun);
-          # if no id resolves, Gradle resolves the platform itself and names
-          # the hash string it cannot find. See
+          # requirement; platformId is the package id when it is not simply
+          # the compileSdk (the 37 entry carries a minor version that way).
+          # The fallback covers an SDK level that only exists as a preview
+          # codename on the canary channel; if no id resolves, Gradle resolves
+          # the platform itself and names the hash string it cannot find. See
           # tools/install_android_platform.sh.
           "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" \
-            "platforms;android-${{ matrix.compileSdk }}" \
+            "platforms;android-${{ matrix.platformId || matrix.compileSdk }}" \
             "build-tools;${{ matrix.buildTools || matrix.compileSdk }}.0.0" \
             || bash tools/install_android_platform.sh \
-                 "${{ matrix.compileSdk }}" "${{ matrix.buildTools || matrix.compileSdk }}.0.0"
+                 "${{ matrix.platformId || matrix.compileSdk }}" "${{ matrix.buildTools || matrix.compileSdk }}.0.0"
       - uses: gradle/actions/setup-gradle@v6
       - name: Verify tracked workflow/build files exist
         run: |
