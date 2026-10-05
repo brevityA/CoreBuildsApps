@@ -6,6 +6,8 @@ All notable changes to the Core Builds Icon Pack. Format follows
 
 ## [Unreleased]
 
+## [2.1.0] — 2026-10-05
+
 ### Added
 
 - **Core Builds Glyphs, the standalone app.** `tv.corebuilds.glyphs` is the
