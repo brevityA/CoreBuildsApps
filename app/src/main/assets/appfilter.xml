@@ -925,6 +925,12 @@
     <item component="ComponentInfo{com.zva3.mobile.litetvandroid/.TvActivity}" drawable="hdtv_player_banner"/>
     <!-- HeatLive -->
     <item component="ComponentInfo{com.google.heatlive/com.huishine.traveler.page.SplashActivity}" drawable="heatlive_banner"/>
+    <!-- HeatLive Backup -->
+    <item component="ComponentInfo{com.google.heatlivebackup/com.google.chuangke.page.SplashActivity}" drawable="heatlive_backup_banner"/>
+    <!-- HeatVod -->
+    <item component="ComponentInfo{com.google.heatvod/com.chuangkevideo.SplashActivity}" drawable="heatvod_banner"/>
+    <!-- HeatVod Ultra -->
+    <item component="ComponentInfo{com.google.heatvodultra/com.google.chuangke.page.SplashActivity}" drawable="heatvod_ultra_banner"/>
     <!-- HEI Network -->
     <item component="ComponentInfo{com.heinetwork.HEINetworkTV/com.heinetwork.HEINetworkTV.MainActivity}" drawable="heinetworktv_banner"/>
     <item component="ComponentInfo{com.heinetwork.HEINetworkTV/.MainActivity}" drawable="heinetworktv_banner"/>
@@ -1198,6 +1204,10 @@
     <!-- Live TV -->
     <item component="ComponentInfo{com.mediatek.wwtv.tvcenter/com.mediatek.wwtv.tvcenter.nav.TurnkeyUiMainActivity}" drawable="livetv_banner"/>
     <item component="ComponentInfo{com.mediatek.wwtv.tvcenter/.nav.TurnkeyUiMainActivity}" drawable="livetv_banner"/>
+    <!-- Live Ultra -->
+    <item component="ComponentInfo{com.google.liveultra/com.google.chuangke.page.SplashActivity}" drawable="live_ultra_banner"/>
+    <!-- Live Ultra+ -->
+    <item component="ComponentInfo{com.google.liveultraplus/com.google.chuangke.page.SplashActivity}" drawable="live_ultra_plus_banner"/>
     <!-- LiveNetTV Pro -->
     <item component="ComponentInfo{com.playnet.androidtv.pro/com.playnet.androidtv.pro.DdfzCtdEstCn}" drawable="androidtv_10_banner"/>
     <item component="ComponentInfo{com.playnet.androidtv.pro/.DdfzCtdEstCn}" drawable="androidtv_10_banner"/>
@@ -2677,6 +2687,7 @@
     <!-- Wave IPTV -->
     <item component="ComponentInfo{com.smartwave.wave_iptv/com.smartwave.wave_iptv.SplashActivity}" drawable="wave_iptv_banner"/>
     <item component="ComponentInfo{com.smartwave.wave_iptv/.SplashActivity}" drawable="wave_iptv_banner"/>
+    <item component="ComponentInfo{com.smartwave.waveo/com.smartwave.wave_iptv.SplashActivity}" drawable="wave_iptv_banner"/>
     <!-- Wave TV Player -->
     <item component="ComponentInfo{com.smartwave.wavetvplayer/com.smartwave.wave_iptv.SplashActivity}" drawable="wavetv_banner"/>
     <!-- WeatherBug -->
