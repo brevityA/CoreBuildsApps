@@ -88,7 +88,9 @@ enum class ContentType(
  * This registry is based on research into the primary content type
  * each app delivers. Apps with mixed content (e.g., Netflix has both
  * movies and TV shows) are mapped to their dominant use case, with
- * the user able to override manually.
+ * the user able to override manually. Package identity cannot reveal the
+ * genre of the current title, so Sitcom and Documentary remain manual modes
+ * rather than receiving speculative app mappings.
  *
  * **Design principles:**
  * - Explicit mappings take precedence over heuristics

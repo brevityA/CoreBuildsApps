@@ -105,12 +105,22 @@ class ContentTypeRegistryTest {
     }
 
     @Test
-    fun `all content types have at least one package`() {
+    fun `app-detectable content types have at least one package`() {
+        // The package registry classifies apps, not individual titles. Genre-
+        // specific Sitcom and Documentary modes stay manual until Android can
+        // identify the program being played; GENERAL is the mixed-content fallback.
+        val typesWithoutRequiredMapping = setOf(ContentType.SITCOM, ContentType.DOCUMENTARY, ContentType.GENERAL)
         for (type in ContentType.entries) {
-            if (type == ContentType.GENERAL) continue  // GENERAL has no specific packages
+            if (type in typesWithoutRequiredMapping) continue
             val count = ContentTypeRegistry.packagesFor(type).size
-            assertTrue("${type.title} should have at least one package, got $count", count > 0)
+            assertTrue("${type.title} should have an app mapping, got $count", count > 0)
         }
+    }
+
+    @Test
+    fun `genre-specific content types are not inferred from app identity`() {
+        assertTrue(ContentTypeRegistry.packagesFor(ContentType.SITCOM).isEmpty())
+        assertTrue(ContentTypeRegistry.packagesFor(ContentType.DOCUMENTARY).isEmpty())
     }
 
     @Test
