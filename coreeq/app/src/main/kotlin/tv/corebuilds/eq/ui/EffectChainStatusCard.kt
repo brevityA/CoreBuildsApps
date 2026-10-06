@@ -125,7 +125,7 @@ class EffectChainStatusCard @JvmOverloads constructor(
         val currentStatus = status
         if (currentStatus != null) {
             textPaint.textSize = 28f
-            canvas.drawText("Content: ${currentStatus.contentType.displayName}", padding, y + textPaint.textSize, textPaint)
+            canvas.drawText("Content: ${currentStatus.contentType.title}", padding, y + textPaint.textSize, textPaint)
             y += textPaint.textSize + 20f
             
             // Effect badges
@@ -133,7 +133,7 @@ class EffectChainStatusCard @JvmOverloads constructor(
             y += 16f
             
             // Night mode indicator
-            if (currentStatus.nightModeActive) {
+            if (currentStatus.nightMode) {
                 badgePaint.color = activeColor
                 canvas.drawRoundRect(RectF(padding, y, padding + 120f, y + 32f), 8f, 8f, badgePaint)
                 badgeTextPaint.textSize = 18f
@@ -174,7 +174,7 @@ class EffectChainStatusCard @JvmOverloads constructor(
         
         // Loudness Enhancer Badge
         if (status.loudnessEnhancerActive) {
-            val loudText = "LOUD +${status.loudnessEnhancerGainMb}mB"
+            val loudText = "LOUD +${status.loudnessGainMb}mB"
             val loudWidth = badgeTextPaint.measureText(loudText) + badgePadding * 2
             badgePaint.color = activeColor
             canvas.drawRoundRect(RectF(currentX, y, currentX + loudWidth, y + badgeHeight), 8f, 8f, badgePaint)

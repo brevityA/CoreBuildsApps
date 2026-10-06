@@ -7,8 +7,8 @@ import android.media.audiofx.Equalizer
 import android.media.audiofx.LoudnessEnhancer
 import android.util.Log
 import tv.corebuilds.eq.dsp.PeakingFilter
+import tv.corebuilds.eq.export.PlatformBand
 import tv.corebuilds.eq.mode.ContentType
-import tv.corebuilds.eq.mode.ContentTypeRegistry
 import kotlin.math.roundToInt
 
 /**
@@ -28,10 +28,11 @@ import kotlin.math.roundToInt
  * - Dynamic range control for late-night listening
  */
 class EnhancedEffectChain(
-    private val audioSessionId: Int,
+    val audioSessionId: Int,
     private val packageName: String? = null
 ) {
-    private var equalizer: Equalizer? = null
+    var equalizer: Equalizer? = null
+        private set
     private var bassBoost: BassBoost? = null
     private var loudnessEnhancer: LoudnessEnhancer? = null
     private var dynamicsProcessing: DynamicsProcessing? = null
@@ -81,10 +82,12 @@ class EnhancedEffectChain(
         contentType: ContentType = ContentType.GENERAL,
         enableBassBoost: Boolean = false,
         enableLoudnessEnhancer: Boolean = true,
-        enableDynamicsProcessing: Boolean = true
+        enableDynamicsProcessing: Boolean = true,
+        enableNightMode: Boolean = false
     ): Boolean {
         this.contentType = contentType
         this.bassEnhancement = enableBassBoost
+        this.nightMode = enableNightMode && enableDynamicsProcessing && android.os.Build.VERSION.SDK_INT >= 28
         
         var success = true
         
@@ -130,12 +133,12 @@ class EnhancedEffectChain(
                     
                     // Find closest matching filter
                     val closestFilter = filters.minByOrNull { 
-                        kotlin.math.abs(it.frequency - centerFreq) 
+                        kotlin.math.abs(it.fc - centerFreq)
                     }
                     
-                    if (closestFilter != null && kotlin.math.abs(closestFilter.frequency - centerFreq) < 100.0) {
+                    if (closestFilter != null && kotlin.math.abs(closestFilter.fc - centerFreq) < 100.0) {
                         // Apply gain (convert dB to millibels)
-                        val gainMb = (closestFilter.gainDb * 100).roundToInt().toShort()
+                        val gainMb = (closestFilter.gain * 100).roundToInt().toShort()
                         val clampedGain = gainMb.coerceIn(bandLevelRange[0], bandLevelRange[1])
                         setBandLevel(i.toShort(), clampedGain)
                     }
@@ -206,9 +209,8 @@ class EnhancedEffectChain(
                     else -> createDefaultConfig()
                 }
                 
-                // Apply configuration
-                // Note: Full DynamicsProcessing configuration is complex
-                // This is a simplified version
+                // Apply the selected processing configuration to the effect.
+                setConfig(config)
                 Log.d(TAG, "DynamicsProcessing initialized for $contentType")
             }
             true
@@ -287,9 +289,9 @@ class EnhancedEffectChain(
         
         // Reconfigure DynamicsProcessing if available
         if (android.os.Build.VERSION.SDK_INT >= 28) {
-            dynamicsProcessing?.let {
+            dynamicsProcessing?.let { effect ->
                 val config = if (enabled) createNightModeConfig() else createDefaultConfig()
-                // Apply new configuration
+                effect.setConfig(config)
                 Log.d(TAG, "Night mode configuration applied")
             }
         }
@@ -314,7 +316,7 @@ class EnhancedEffectChain(
         return EffectChainStatus(
             equalizerActive = equalizer?.enabled == true,
             bassBoostActive = bassBoost?.enabled == true,
-            bassBoostStrength = bassBoost?.roundedStrength?.toInt() ?: 0,
+            bassBoostStrength = (bassBoost?.roundedStrength?.toInt() ?: 0) / 10,
             loudnessEnhancerActive = loudnessEnhancer?.enabled == true,
             loudnessGainMb = try { loudnessEnhancer?.targetGain ?: 0 } catch (e: Exception) { 0 },
             dynamicsProcessingActive = dynamicsProcessing?.enabled == true,
@@ -323,6 +325,17 @@ class EnhancedEffectChain(
         )
     }
     
+    /** Current platform Equalizer bands and their applied millibel levels. */
+    fun getPlatformBands(): List<PlatformBand> {
+        val eq = equalizer ?: return emptyList()
+        return List(eq.numberOfBands.toInt()) { index ->
+            PlatformBand(
+                centerHz = eq.getCenterFreq(index.toShort()) / 1_000.0,
+                millibels = eq.getBandLevel(index.toShort()).toInt()
+            )
+        }
+    }
+
     /**
      * Release all effects and clean up resources
      */

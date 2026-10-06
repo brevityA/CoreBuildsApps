@@ -416,7 +416,7 @@ class EqService : Service() {
                     return AppliedEffect(
                         effect = chain.equalizer!!,
                         engine = ENGINE_ENHANCED_EFFECT_CHAIN,
-                        bands = status.bands
+                        bands = chain.getPlatformBands()
                     )
                 }
             } catch (e: Exception) {
