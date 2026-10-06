@@ -104,6 +104,9 @@ class MainActivity : TvActivity() {
         findViewById<Button>(R.id.btn_nav_display_calibration).setOnClickListener {
             startActivity(Intent(this, tv.corebuilds.eq.display.DisplayCalibrationActivity::class.java))
         }
+        findViewById<Button>(R.id.btn_nav_content_type).setOnClickListener {
+            startActivity(Intent(this, ContentTypeActivity::class.java))
+        }
         updateBarInstall.setOnClickListener { startPendingUpdate() }
         findViewById<Button>(R.id.update_bar_later).setOnClickListener {
             pendingUpdate?.let { updatePrefs.dismiss(it.versionCode) }

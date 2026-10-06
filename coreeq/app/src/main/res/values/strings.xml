@@ -200,4 +200,14 @@
     <string name="quality_fair">Fair measurement — consider re-measuring</string>
     <string name="quality_poor">Poor measurement — re-measure recommended</string>
     <string name="quality_score">Quality: %1$d/100 · %2$s</string>
+
+    <!-- Content type / use-case selection -->
+    <string name="content_type_heading">Content type optimization</string>
+    <string name="content_type_subtitle">Choose what you watch most. Each type applies a curated target curve optimized for its acoustic characteristics. Auto-detect recognizes 40+ streaming apps.</string>
+    <string name="content_type_current">%1$s  %2$s</string>
+    <string name="content_type_auto_on">Auto-detect: On · %1$d known apps · switches when a recognized app starts playing</string>
+    <string name="content_type_auto_off">Auto-detect: Off · using your manual selection</string>
+    <string name="content_type_auto_on_btn">Auto-detect: On</string>
+    <string name="content_type_auto_off_btn">Auto-detect: Off</string>
+    <string name="content_type_nav">Content type · Movies, Anime, TV, Gaming, Music</string>
 </resources>
