@@ -172,4 +172,32 @@
     <string name="target_olive">Olive &amp; Welti 2013 (Mean listener preference)</string>
     <string name="target_dialogue">Dialogue (Speech intelligibility boost)</string>
     <string name="target_house">House Curve (Custom)</string>
+
+    <!-- Display calibration -->
+    <string name="calibration_title">Core Display · Calibration</string>
+    <string name="calibration_nav">Display calibration · Test patterns</string>
+    <string name="calibration_next">Next step →</string>
+    <string name="calibration_prev">← Previous</string>
+    <string name="calibration_toggle_overlay">Toggle instructions</string>
+    <string name="calibration_step_counter">Step %1$d of %2$d</string>
+    <string name="calibration_desc">Reference test patterns with step-by-step guidance for brightness, contrast, colour, sharpness, overscan, gamma, and panel uniformity. Rendered pixel-accurately on your TV.</string>
+
+    <!-- Loudness compensation -->
+    <string name="loudness_title">Loudness Compensation</string>
+    <string name="loudness_on">Loudness: On</string>
+    <string name="loudness_off">Loudness: Off</string>
+    <string name="loudness_desc">ISO 226 equal-loudness contours restore bass and treble perception at lower volumes. Flat at reference level; increases compensation as volume drops.</string>
+
+    <!-- Night mode -->
+    <string name="night_mode_title">Night Mode</string>
+    <string name="night_mode_on">Night mode: On</string>
+    <string name="night_mode_off">Night mode: Off</string>
+    <string name="night_mode_desc">Dynamic range compression and dialogue enhancement for late-night viewing. Reduces loud peaks and lifts the 1–4 kHz speech band.</string>
+
+    <!-- Measurement quality -->
+    <string name="quality_excellent">Excellent measurement</string>
+    <string name="quality_good">Good measurement</string>
+    <string name="quality_fair">Fair measurement — consider re-measuring</string>
+    <string name="quality_poor">Poor measurement — re-measure recommended</string>
+    <string name="quality_score">Quality: %1$d/100 · %2$s</string>
 </resources>
