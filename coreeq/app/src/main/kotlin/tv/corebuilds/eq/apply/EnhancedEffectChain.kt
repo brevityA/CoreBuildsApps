@@ -1,11 +1,11 @@
 package tv.corebuilds.eq.apply
 
-import android.media.audiofx.AudioEffect
 import android.media.audiofx.BassBoost
 import android.media.audiofx.DynamicsProcessing
 import android.media.audiofx.Equalizer
 import android.media.audiofx.LoudnessEnhancer
 import android.util.Log
+import tv.corebuilds.eq.dsp.NightMode
 import tv.corebuilds.eq.dsp.PeakingFilter
 import tv.corebuilds.eq.export.PlatformBand
 import tv.corebuilds.eq.mode.ContentType
@@ -196,66 +196,81 @@ class EnhancedEffectChain(
         if (android.os.Build.VERSION.SDK_INT < 28) {
             return false
         }
-        
+
         return try {
-            dynamicsProcessing = DynamicsProcessing(0, audioSessionId).apply {
+            val config = createDynamicsConfig(limiterSettingsFor(contentType, nightMode))
+            // DynamicsProcessing requires its configuration when the effect is
+            // constructed; a bare (priority, session) instance is not a public
+            // constructor on API 28+.
+            dynamicsProcessing = DynamicsProcessing(0, audioSessionId, config).apply {
                 enabled = true
-                
-                // Configure for content type
-                val config = when {
-                    nightMode -> createNightModeConfig()
-                    contentType == ContentType.MOVIE -> createMovieConfig()
-                    contentType == ContentType.GAMING -> createGamingConfig()
-                    else -> createDefaultConfig()
-                }
-                
-                // Apply the selected processing configuration to the effect.
-                setConfig(config)
-                Log.d(TAG, "DynamicsProcessing initialized for $contentType")
             }
+            Log.d(TAG, "DynamicsProcessing initialized for $contentType")
             true
         } catch (e: Exception) {
             Log.e(TAG, "Failed to initialize DynamicsProcessing", e)
             false
         }
     }
-    
-    private fun createNightModeConfig(): DynamicsProcessing.Config {
-        // Night mode: compress dynamic range for quiet listening
-        return DynamicsProcessing.Config.Builder()
-            .setChannelCount(2)
-            .setPreEq(DynamicsProcessing.Eq(true, 5))
-            .setMbc(DynamicsProcessing.Mbc(true, 4))
-            .setPostEq(DynamicsProcessing.Eq(true, 5))
-            .setLimiter(DynamicsProcessing.Limiter(true))
+
+    private fun limiterSettingsFor(contentType: ContentType, nightMode: Boolean): LimiterSettings =
+        when {
+            nightMode -> LimiterSettings(
+                attackMs = NightMode.NIGHT_LIMITER_ATTACK_MS,
+                releaseMs = NightMode.NIGHT_LIMITER_RELEASE_MS,
+                ratio = NightMode.NIGHT_LIMITER_RATIO,
+                thresholdDb = NightMode.NIGHT_LIMITER_THRESHOLD_DB
+            )
+            contentType == ContentType.GAMING -> LimiterSettings(attackMs = 1f, releaseMs = 25f)
+            else -> LimiterSettings()
+        }
+
+    /** Build a neutral PreEQ plus a linked limiter using the API-28 configuration API. */
+    private fun createDynamicsConfig(settings: LimiterSettings): DynamicsProcessing.Config {
+        val cutoffsHz = floatArrayOf(80f, 250f, 800f, 2_500f, 8_000f)
+        val preEq = DynamicsProcessing.Eq(true, true, cutoffsHz.size).apply {
+            cutoffsHz.forEachIndexed { index, cutoffHz ->
+                setBand(index, DynamicsProcessing.EqBand(true, cutoffHz, 0f))
+            }
+        }
+        val limiter = createLimiter(settings)
+        return DynamicsProcessing.Config.Builder(
+            DynamicsProcessing.VARIANT_FAVOR_FREQUENCY_RESOLUTION,
+            2,
+            true, cutoffsHz.size,
+            false, 0,
+            false, 0,
+            true
+        )
+            .setInputGainAllChannelsTo(0f)
+            .setPreEqAllChannelsTo(preEq)
+            .setLimiterAllChannelsTo(limiter)
             .build()
     }
-    
-    private fun createMovieConfig(): DynamicsProcessing.Config {
-        // Movie: preserve dynamic range but enhance bass
-        return DynamicsProcessing.Config.Builder()
-            .setChannelCount(2)
-            .setPreEq(DynamicsProcessing.Eq(true, 5))
-            .setLimiter(DynamicsProcessing.Limiter(true))
-            .build()
+
+    private fun createLimiter(settings: LimiterSettings): DynamicsProcessing.Limiter =
+        DynamicsProcessing.Limiter(
+            true,
+            settings.enabled,
+            if (settings.linked) 0 else 1,
+            settings.attackMs,
+            settings.releaseMs,
+            settings.ratio,
+            settings.thresholdDb,
+            settings.postGainDb
+        )
+
+    private fun updateDynamicsLimiter() {
+        if (android.os.Build.VERSION.SDK_INT < 28) return
+        try {
+            dynamicsProcessing?.setLimiterAllChannelsTo(
+                createLimiter(limiterSettingsFor(contentType, nightMode))
+            )
+        } catch (e: Exception) {
+            Log.e(TAG, "Failed to update DynamicsProcessing limiter", e)
+        }
     }
-    
-    private fun createGamingConfig(): DynamicsProcessing.Config {
-        // Gaming: fast attack, preserve transients
-        return DynamicsProcessing.Config.Builder()
-            .setChannelCount(2)
-            .setMbc(DynamicsProcessing.Mbc(true, 3))
-            .setLimiter(DynamicsProcessing.Limiter(true))
-            .build()
-    }
-    
-    private fun createDefaultConfig(): DynamicsProcessing.Config {
-        return DynamicsProcessing.Config.Builder()
-            .setChannelCount(2)
-            .setPreEq(DynamicsProcessing.Eq(true, 5))
-            .build()
-    }
-    
+
     /**
      * Update content type and adjust effects accordingly
      */
@@ -276,6 +291,7 @@ class EnhancedEffectChain(
             val gainMb = LOUDNESS_ENHANCEMENT_MB[newContentType] ?: 200
             it.setTargetGain(gainMb)
         }
+        updateDynamicsLimiter()
     }
     
     /**
@@ -287,14 +303,10 @@ class EnhancedEffectChain(
         nightMode = enabled
         Log.i(TAG, "Night mode: $enabled")
         
-        // Reconfigure DynamicsProcessing if available
-        if (android.os.Build.VERSION.SDK_INT >= 28) {
-            dynamicsProcessing?.let { effect ->
-                val config = if (enabled) createNightModeConfig() else createDefaultConfig()
-                effect.setConfig(config)
-                Log.d(TAG, "Night mode configuration applied")
-            }
-        }
+        // DynamicsProcessing exposes live stage setters rather than setConfig();
+        // update only its limiter so the neutral PreEQ remains untouched.
+        updateDynamicsLimiter()
+        Log.d(TAG, "Night mode configuration applied")
     }
     
     /**

@@ -8,6 +8,13 @@ must never land there. Releases are `coreeq-v<version>` tags (see
 
 ## [Unreleased]
 
+## [1.2.0] — 2026-10-06
+
+### Added
+
+- **Content-aware listening and optional night-mode processing.** Core EQ adds content-type controls and app-aware suggestions, with optional bass, loudness and DynamicsProcessing effects where the device supports them. Effect availability and playback coverage remain device- and route-dependent; the app does not claim that every stream is processed.
+- **Guided picture setup for Android TV.** A remote-friendly calibration walkthrough uses on-screen patterns and TV-setting guidance; it does not change the television's picture settings automatically.
+
 ## [1.1.1] — 2026-10-05
 
 ### Added
