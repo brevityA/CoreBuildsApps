@@ -34,6 +34,7 @@ import tv.corebuilds.eq.export.PlatformBand
 import tv.corebuilds.eq.export.Profile
 import tv.corebuilds.eq.export.ProfileStore
 import tv.corebuilds.eq.mode.ContentModeStore
+import tv.corebuilds.eq.ui.EnhancedAudioPrefs
 import java.util.concurrent.Executors
 import kotlin.math.roundToInt
 
@@ -85,6 +86,11 @@ class EqService : Service() {
 
     private lateinit var store: ProfileStore
     private lateinit var modeStore: ContentModeStore
+    
+    // Enhanced audio features
+    private var effectChainManager: EffectChainManager? = null
+    private var enhancedPrefs: EnhancedAudioPrefs? = null
+    
     private val sessionEqs = mutableMapOf<Int, Held>()
     /** Only unambiguous DUMP UID-to-package matches may influence app-mode rules. */
     private var discoveredPackages: Set<String> = emptySet()
@@ -183,6 +189,11 @@ class EqService : Service() {
         super.onCreate()
         store = ProfileStore(this)
         modeStore = ContentModeStore(this)
+        
+        // Initialize enhanced audio features
+        enhancedPrefs = EnhancedAudioPrefs(this)
+        effectChainManager = EffectChainManager(this)
+        
         // Keep the persisted last-known set until a complete dump proves it
         // changed; service recreation is not evidence that playback stopped.
         discoveredPackages = modeStore.lastActivePackages()
@@ -240,6 +251,9 @@ class EqService : Service() {
                 suspended = false
                 applyAll()
                 if (DumpsysDiscovery.hasGrant(this)) scheduleDiscovery(0L)
+            }
+            ACTION_RELOAD_PREFS -> {
+                reloadEnhancedPreferences()
             }
             else -> applyAll() // ACTION_START, ACTION_REAPPLY, or a sticky restart
         }
@@ -385,6 +399,32 @@ class EqService : Service() {
 
     /** Prefer DP on API 28+, and fall back to Equalizer on any construction/configuration refusal. */
     private fun createBestEffect(session: Int, profile: Profile): AppliedEffect {
+        // Try EnhancedEffectChain first (if preferences allow)
+        if (enhancedPrefs != null) {
+            try {
+                val chain = effectChainManager?.createEffectChain(
+                    session,
+                    profile,
+                    activeAppPackages()
+                )
+                
+                if (chain != null && chain.equalizer != null) {
+                    val status = chain.getStatus()
+                    Log.i(TAG, "EnhancedEffectChain created: ${status.toDisplayString()}")
+                    
+                    // Return the equalizer from the chain as the primary effect
+                    return AppliedEffect(
+                        effect = chain.equalizer!!,
+                        engine = ENGINE_ENHANCED_EFFECT_CHAIN,
+                        bands = status.bands
+                    )
+                }
+            } catch (e: Exception) {
+                Log.w(TAG, "EnhancedEffectChain failed; trying legacy effects", e)
+            }
+        }
+        
+        // Fall back to legacy DynamicsProcessing or Equalizer
         var dpFailure: String? = null
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
             try {
@@ -415,7 +455,7 @@ class EqService : Service() {
                 // Preserve the Equalizer refusal below.
             }
             throw IllegalStateException(
-                "DynamicsProcessing refused ($dpFailure); Equalizer refused (${e.message ?: e.javaClass.simpleName})",
+                "EnhancedEffectChain, DynamicsProcessing ($dpFailure), and Equalizer (${e.message ?: e.javaClass.simpleName}) all refused",
                 e
             )
         }
@@ -714,6 +754,26 @@ class EqService : Service() {
         }
     }
 
+    /** Reload preferences and reconfigure effect chain. */
+    private fun reloadEnhancedPreferences() {
+        val (profile, _, _) = resolve()
+        if (profile == null) return
+        
+        effectChainManager?.reloadPreferences(profile, activeAppPackages())
+        
+        // Reapply with new settings
+        if (globalEffect != null) {
+            try {
+                releaseApplied(globalEffect!!)
+                globalEffect = null
+                globalError = null
+                applyAll()
+            } catch (e: Exception) {
+                Log.w(TAG, "Failed to reapply after preference reload", e)
+            }
+        }
+    }
+
     override fun onDestroy() {
         if (!running) {
             super.onDestroy()
@@ -748,6 +808,12 @@ class EqService : Service() {
         releaseSessions()
         globalEffect?.let(::releaseApplied)
         globalEffect = null
+        
+        // Clean up enhanced features
+        effectChainManager?.release()
+        effectChainManager = null
+        enhancedPrefs = null
+        
         store.clearRuntimeBands()
         // "Off" is the user's switch, not the service's fate: a service the
         // system stopped is not a correction the user turned off, and the
@@ -794,6 +860,7 @@ class EqService : Service() {
         const val ACTION_REAPPLY = "tv.corebuilds.eq.action.REAPPLY"
         const val ACTION_SUSPEND = "tv.corebuilds.eq.action.SUSPEND"
         const val ACTION_RESUME = "tv.corebuilds.eq.action.RESUME"
+        const val ACTION_RELOAD_PREFS = "tv.corebuilds.eq.action.RELOAD_PREFS"
         const val ACTION_STATUS_CHANGED = "tv.corebuilds.eq.action.STATUS_CHANGED"
         private const val TAG = "CoreEqService"
         private const val CHANNEL_ID = "core_eq_service_channel"
@@ -801,6 +868,7 @@ class EqService : Service() {
         private const val PRIORITY = 0
         private const val ENGINE_DYNAMICS_PROCESSING = "DynamicsProcessing"
         private const val ENGINE_PLATFORM_EQUALIZER = "Equalizer"
+        private const val ENGINE_ENHANCED_EFFECT_CHAIN = "EnhancedEffectChain"
 
         /** Playback changes coalesce into one re-discovery after this pause. */
         private const val DISCOVERY_DEBOUNCE_MS = 2000L
