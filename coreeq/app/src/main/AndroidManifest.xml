@@ -95,6 +95,17 @@
             android:exported="false"
             android:label="@string/capability_title" />
 
+        <activity
+            android:name=".display.DisplayCalibrationActivity"
+            android:exported="false"
+            android:label="@string/calibration_title"
+            android:configChanges="orientation|screenSize" />
+
+        <activity
+            android:name=".ContentTypeActivity"
+            android:exported="false"
+            android:label="Content type" />
+
         <service
             android:name=".apply.EqService"
             android:exported="false"

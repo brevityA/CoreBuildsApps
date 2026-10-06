@@ -1,0 +1,252 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/cb_night"
+    android:paddingLeft="@dimen/cb_gutter_side"
+    android:paddingRight="@dimen/cb_gutter_side"
+    android:paddingTop="@dimen/cb_gutter_top"
+    android:paddingBottom="@dimen/cb_gutter_bottom">
+
+    <!-- Header -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="CORE EQ · CONTENT TYPE"
+        android:textColor="@color/cb_slate"
+        android:textSize="@dimen/cb_text_kicker"
+        android:fontFamily="monospace"
+        android:textAllCaps="true" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/content_type_heading"
+        android:textColor="@color/cb_ink"
+        android:textSize="@dimen/cb_text_title"
+        android:textStyle="bold"
+        android:layout_marginTop="4dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/content_type_subtitle"
+        android:textColor="@color/cb_slate"
+        android:textSize="@dimen/cb_text_data"
+        android:layout_marginTop="2dp" />
+
+    <!-- Current selection -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:background="@drawable/bg_card"
+        android:padding="@dimen/cb_card_padding"
+        android:layout_marginTop="@dimen/cb_space_md">
+
+        <TextView
+            android:id="@+id/text_content_type_current"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/cb_signal_cyan"
+            android:textSize="@dimen/cb_text_section"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/text_content_type_description"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/cb_slate"
+            android:textSize="@dimen/cb_text_data"
+            android:layout_marginTop="4dp" />
+
+        <TextView
+            android:id="@+id/text_auto_detect_status"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/cb_slate"
+            android:textSize="@dimen/cb_text_kicker"
+            android:fontFamily="monospace"
+            android:layout_marginTop="8dp" />
+    </LinearLayout>
+
+    <!-- Content type buttons -->
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:layout_marginTop="@dimen/cb_space_sm"
+        android:scrollbars="none">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <Button
+                android:id="@+id/btn_content_movie"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:background="@drawable/bg_card"
+                android:text="🎬  Movies"
+                android:textColor="@color/cb_ink"
+                android:textSize="@dimen/cb_text_data"
+                android:gravity="start|center_vertical"
+                android:paddingStart="@dimen/cb_card_padding"
+                android:paddingEnd="@dimen/cb_card_padding"
+                android:focusable="true"
+                android:layout_marginBottom="@dimen/cb_space_xs" />
+
+            <Button
+                android:id="@+id/btn_content_anime"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:background="@drawable/bg_card"
+                android:text="🎌  Anime"
+                android:textColor="@color/cb_ink"
+                android:textSize="@dimen/cb_text_data"
+                android:gravity="start|center_vertical"
+                android:paddingStart="@dimen/cb_card_padding"
+                android:paddingEnd="@dimen/cb_card_padding"
+                android:focusable="true"
+                android:layout_marginBottom="@dimen/cb_space_xs" />
+
+            <Button
+                android:id="@+id/btn_content_tv"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:background="@drawable/bg_card"
+                android:text="📺  TV Shows"
+                android:textColor="@color/cb_ink"
+                android:textSize="@dimen/cb_text_data"
+                android:gravity="start|center_vertical"
+                android:paddingStart="@dimen/cb_card_padding"
+                android:paddingEnd="@dimen/cb_card_padding"
+                android:focusable="true"
+                android:layout_marginBottom="@dimen/cb_space_xs" />
+
+            <Button
+                android:id="@+id/btn_content_sitcom"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:background="@drawable/bg_card"
+                android:text="😂  Sitcoms"
+                android:textColor="@color/cb_ink"
+                android:textSize="@dimen/cb_text_data"
+                android:gravity="start|center_vertical"
+                android:paddingStart="@dimen/cb_card_padding"
+                android:paddingEnd="@dimen/cb_card_padding"
+                android:focusable="true"
+                android:layout_marginBottom="@dimen/cb_space_xs" />
+
+            <Button
+                android:id="@+id/btn_content_documentary"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:background="@drawable/bg_card"
+                android:text="🎓  Documentaries"
+                android:textColor="@color/cb_ink"
+                android:textSize="@dimen/cb_text_data"
+                android:gravity="start|center_vertical"
+                android:paddingStart="@dimen/cb_card_padding"
+                android:paddingEnd="@dimen/cb_card_padding"
+                android:focusable="true"
+                android:layout_marginBottom="@dimen/cb_space_xs" />
+
+            <Button
+                android:id="@+id/btn_content_news"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:background="@drawable/bg_card"
+                android:text="📰  News / Live"
+                android:textColor="@color/cb_ink"
+                android:textSize="@dimen/cb_text_data"
+                android:gravity="start|center_vertical"
+                android:paddingStart="@dimen/cb_card_padding"
+                android:paddingEnd="@dimen/cb_card_padding"
+                android:focusable="true"
+                android:layout_marginBottom="@dimen/cb_space_xs" />
+
+            <Button
+                android:id="@+id/btn_content_podcast"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:background="@drawable/bg_card"
+                android:text="🎙️  Podcasts"
+                android:textColor="@color/cb_ink"
+                android:textSize="@dimen/cb_text_data"
+                android:gravity="start|center_vertical"
+                android:paddingStart="@dimen/cb_card_padding"
+                android:paddingEnd="@dimen/cb_card_padding"
+                android:focusable="true"
+                android:layout_marginBottom="@dimen/cb_space_xs" />
+
+            <Button
+                android:id="@+id/btn_content_gaming"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:background="@drawable/bg_card"
+                android:text="🎮  Gaming"
+                android:textColor="@color/cb_ink"
+                android:textSize="@dimen/cb_text_data"
+                android:gravity="start|center_vertical"
+                android:paddingStart="@dimen/cb_card_padding"
+                android:paddingEnd="@dimen/cb_card_padding"
+                android:focusable="true"
+                android:layout_marginBottom="@dimen/cb_space_xs" />
+
+            <Button
+                android:id="@+id/btn_content_music"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:background="@drawable/bg_card"
+                android:text="🎵  Music"
+                android:textColor="@color/cb_ink"
+                android:textSize="@dimen/cb_text_data"
+                android:gravity="start|center_vertical"
+                android:paddingStart="@dimen/cb_card_padding"
+                android:paddingEnd="@dimen/cb_card_padding"
+                android:focusable="true"
+                android:layout_marginBottom="@dimen/cb_space_xs" />
+
+            <Button
+                android:id="@+id/btn_content_general"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:background="@drawable/bg_card"
+                android:text="🔊  General"
+                android:textColor="@color/cb_ink"
+                android:textSize="@dimen/cb_text_data"
+                android:gravity="start|center_vertical"
+                android:paddingStart="@dimen/cb_card_padding"
+                android:paddingEnd="@dimen/cb_card_padding"
+                android:focusable="true"
+                android:layout_marginBottom="@dimen/cb_space_xs" />
+
+            <Button
+                android:id="@+id/btn_content_auto"
+                android:layout_width="match_parent"
+                android:layout_height="52dp"
+                android:background="@drawable/bg_chip_toggle"
+                android:textColor="@color/cb_ink"
+                android:textSize="@dimen/cb_text_data"
+                android:gravity="center"
+                android:focusable="true"
+                android:layout_marginTop="@dimen/cb_space_sm" />
+        </LinearLayout>
+    </ScrollView>
+
+    <!-- Done button -->
+    <Button
+        android:id="@+id/btn_content_done"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/cb_target_min"
+        android:background="@drawable/bg_cta"
+        android:text="@string/mode_done"
+        android:textColor="@color/cb_cta_ink"
+        android:textSize="@dimen/cb_text_label"
+        android:textStyle="bold"
+        android:focusable="true"
+        android:layout_marginTop="@dimen/cb_space_sm" />
+</LinearLayout>

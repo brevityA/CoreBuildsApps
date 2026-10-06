@@ -1,0 +1,426 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/cb_night"
+    android:paddingLeft="@dimen/cb_gutter_side"
+    android:paddingRight="@dimen/cb_gutter_side"
+    android:paddingTop="@dimen/cb_gutter_top"
+    android:paddingBottom="@dimen/cb_gutter_bottom">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <!-- Header -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="ENHANCED AUDIO SETTINGS"
+            android:textColor="@color/cb_ink"
+            android:textSize="@dimen/cb_text_title"
+            android:textStyle="bold" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Configure advanced audio processing features"
+            android:textColor="@color/cb_slate"
+            android:textSize="@dimen/cb_text_data"
+            android:layout_marginTop="4dp" />
+
+        <!-- Effect Chain Section -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="@drawable/bg_card"
+            android:padding="@dimen/cb_card_padding"
+            android:layout_marginTop="@dimen/cb_space_md">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Effect Chain"
+                android:textColor="@color/cb_ink"
+                android:textSize="@dimen/cb_text_label"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Multi-effect audio processing"
+                android:textColor="@color/cb_slate"
+                android:textSize="@dimen/cb_text_data"
+                android:layout_marginTop="2dp" />
+
+            <CheckBox
+                android:id="@+id/chk_bass_boost"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Bass Boost"
+                android:textColor="@color/cb_ink"
+                android:textSize="@dimen/cb_text_data"
+                android:layout_marginTop="@dimen/cb_space_sm"
+                android:button="@null"
+                android:drawableEnd="?android:attr/listChoiceIndicatorMultiple"
+                android:padding="@dimen/cb_space_xs"
+                android:focusable="true" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Enhance low frequencies (0-60% by content type)"
+                android:textColor="@color/cb_slate"
+                android:textSize="14sp"
+                android:layout_marginStart="32dp" />
+
+            <CheckBox
+                android:id="@+id/chk_loudness_enhancer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Loudness Enhancer"
+                android:textColor="@color/cb_ink"
+                android:textSize="@dimen/cb_text_data"
+                android:layout_marginTop="@dimen/cb_space_xs"
+                android:button="@null"
+                android:drawableEnd="?android:attr/listChoiceIndicatorMultiple"
+                android:padding="@dimen/cb_space_xs"
+                android:focusable="true" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Optimize perceived loudness"
+                android:textColor="@color/cb_slate"
+                android:textSize="14sp"
+                android:layout_marginStart="32dp" />
+
+            <CheckBox
+                android:id="@+id/chk_dynamics_processing"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Dynamics Processing"
+                android:textColor="@color/cb_ink"
+                android:textSize="@dimen/cb_text_data"
+                android:layout_marginTop="@dimen/cb_space_xs"
+                android:button="@null"
+                android:drawableEnd="?android:attr/listChoiceIndicatorMultiple"
+                android:padding="@dimen/cb_space_xs"
+                android:focusable="true" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Dynamic range control (API 28+)"
+                android:textColor="@color/cb_slate"
+                android:textSize="14sp"
+                android:layout_marginStart="32dp" />
+
+        </LinearLayout>
+
+        <!-- Night Mode Section -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="@drawable/bg_card"
+            android:padding="@dimen/cb_card_padding"
+            android:layout_marginTop="@dimen/cb_space_sm">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Night Mode"
+                android:textColor="@color/cb_ink"
+                android:textSize="@dimen/cb_text_label"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Compress dynamic range for quiet listening"
+                android:textColor="@color/cb_slate"
+                android:textSize="@dimen/cb_text_data"
+                android:layout_marginTop="2dp" />
+
+            <CheckBox
+                android:id="@+id/chk_night_mode"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Enable Night Mode"
+                android:textColor="@color/cb_ink"
+                android:textSize="@dimen/cb_text_data"
+                android:layout_marginTop="@dimen/cb_space_sm"
+                android:button="@null"
+                android:drawableEnd="?android:attr/listChoiceIndicatorMultiple"
+                android:padding="@dimen/cb_space_xs"
+                android:focusable="true" />
+
+            <CheckBox
+                android:id="@+id/chk_night_mode_auto"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Automatic (time-based)"
+                android:textColor="@color/cb_ink"
+                android:textSize="@dimen/cb_text_data"
+                android:layout_marginTop="@dimen/cb_space_xs"
+                android:button="@null"
+                android:drawableEnd="?android:attr/listChoiceIndicatorMultiple"
+                android:padding="@dimen/cb_space_xs"
+                android:focusable="true" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="@dimen/cb_space_xs"
+                android:layout_marginStart="32dp">
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Start Time"
+                        android:textColor="@color/cb_slate"
+                        android:textSize="14sp" />
+
+                    <SeekBar
+                        android:id="@+id/seek_night_start"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:max="23"
+                        android:progress="22"
+                        android:layout_marginTop="4dp" />
+
+                    <TextView
+                        android:id="@+id/text_night_start"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="10:00 PM"
+                        android:textColor="@color/cb_ink"
+                        android:textSize="14sp"
+                        android:layout_gravity="center_horizontal" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical"
+                    android:layout_marginStart="@dimen/cb_space_md">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="End Time"
+                        android:textColor="@color/cb_slate"
+                        android:textSize="14sp" />
+
+                    <SeekBar
+                        android:id="@+id/seek_night_end"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:max="23"
+                        android:progress="7"
+                        android:layout_marginTop="4dp" />
+
+                    <TextView
+                        android:id="@+id/text_night_end"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="7:00 AM"
+                        android:textColor="@color/cb_ink"
+                        android:textSize="14sp"
+                        android:layout_gravity="center_horizontal" />
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <!-- Content Type Section -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="@drawable/bg_card"
+            android:padding="@dimen/cb_card_padding"
+            android:layout_marginTop="@dimen/cb_space_sm">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Content Type Detection"
+                android:textColor="@color/cb_ink"
+                android:textSize="@dimen/cb_text_label"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Automatically optimize audio based on active app"
+                android:textColor="@color/cb_slate"
+                android:textSize="@dimen/cb_text_data"
+                android:layout_marginTop="2dp" />
+
+            <CheckBox
+                android:id="@+id/chk_auto_content_type"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Automatic Content Type Switching"
+                android:textColor="@color/cb_ink"
+                android:textSize="@dimen/cb_text_data"
+                android:layout_marginTop="@dimen/cb_space_sm"
+                android:button="@null"
+                android:drawableEnd="?android:attr/listChoiceIndicatorMultiple"
+                android:padding="@dimen/cb_space_xs"
+                android:focusable="true" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Detects streaming apps and applies optimized settings"
+                android:textColor="@color/cb_slate"
+                android:textSize="14sp"
+                android:layout_marginStart="32dp" />
+
+        </LinearLayout>
+
+        <!-- Device Section -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="@drawable/bg_card"
+            android:padding="@dimen/cb_card_padding"
+            android:layout_marginTop="@dimen/cb_space_sm">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Device Settings"
+                android:textColor="@color/cb_ink"
+                android:textSize="@dimen/cb_text_label"
+                android:textStyle="bold" />
+
+            <CheckBox
+                android:id="@+id/chk_show_hdmi_warnings"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Show HDMI Passthrough Warnings"
+                android:textColor="@color/cb_ink"
+                android:textSize="@dimen/cb_text_data"
+                android:layout_marginTop="@dimen/cb_space_sm"
+                android:button="@null"
+                android:drawableEnd="?android:attr/listChoiceIndicatorMultiple"
+                android:padding="@dimen/cb_space_xs"
+                android:focusable="true" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Warn when HDMI bitstream mode bypasses EQ"
+                android:textColor="@color/cb_slate"
+                android:textSize="14sp"
+                android:layout_marginStart="32dp" />
+
+        </LinearLayout>
+
+        <!-- Advanced Section -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="@drawable/bg_card"
+            android:padding="@dimen/cb_card_padding"
+            android:layout_marginTop="@dimen/cb_space_sm">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Advanced"
+                android:textColor="@color/cb_ink"
+                android:textSize="@dimen/cb_text_label"
+                android:textStyle="bold" />
+
+            <CheckBox
+                android:id="@+id/chk_show_advanced_stats"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Show Advanced Statistics"
+                android:textColor="@color/cb_ink"
+                android:textSize="@dimen/cb_text_data"
+                android:layout_marginTop="@dimen/cb_space_sm"
+                android:button="@null"
+                android:drawableEnd="?android:attr/listChoiceIndicatorMultiple"
+                android:padding="@dimen/cb_space_xs"
+                android:focusable="true" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Display detailed effect chain metrics"
+                android:textColor="@color/cb_slate"
+                android:textSize="14sp"
+                android:layout_marginStart="32dp" />
+
+        </LinearLayout>
+
+        <!-- Action Buttons -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="@dimen/cb_space_md"
+            android:gravity="end">
+
+            <Button
+                android:id="@+id/btn_reset"
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/cb_target_min"
+                android:minWidth="120dp"
+                android:background="@drawable/bg_ghost"
+                android:text="Reset"
+                android:textColor="@color/cb_ink"
+                android:textSize="@dimen/cb_text_label"
+                android:focusable="true" />
+
+            <Button
+                android:id="@+id/btn_back"
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/cb_target_min"
+                android:minWidth="120dp"
+                android:background="@drawable/bg_ghost"
+                android:text="Cancel"
+                android:textColor="@color/cb_ink"
+                android:textSize="@dimen/cb_text_label"
+                android:layout_marginStart="@dimen/cb_space_xs"
+                android:focusable="true" />
+
+            <Button
+                android:id="@+id/btn_save"
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/cb_target_min"
+                android:minWidth="160dp"
+                android:background="@drawable/bg_cta"
+                android:text="Save Settings"
+                android:textColor="@color/cb_cta_ink"
+                android:textSize="@dimen/cb_text_label"
+                android:textStyle="bold"
+                android:layout_marginStart="@dimen/cb_space_xs"
+                android:focusable="true" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</ScrollView>
