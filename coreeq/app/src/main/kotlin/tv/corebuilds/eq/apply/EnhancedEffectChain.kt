@@ -330,7 +330,7 @@ class EnhancedEffectChain(
             bassBoostActive = bassBoost?.enabled == true,
             bassBoostStrength = (bassBoost?.roundedStrength?.toInt() ?: 0) / 10,
             loudnessEnhancerActive = loudnessEnhancer?.enabled == true,
-            loudnessGainMb = try { loudnessEnhancer?.targetGain ?: 0 } catch (e: Exception) { 0 },
+            loudnessGainMb = try { loudnessEnhancer?.targetGain?.toInt() ?: 0 } catch (e: Exception) { 0 },
             dynamicsProcessingActive = dynamicsProcessing?.enabled == true,
             contentType = contentType,
             nightMode = nightMode

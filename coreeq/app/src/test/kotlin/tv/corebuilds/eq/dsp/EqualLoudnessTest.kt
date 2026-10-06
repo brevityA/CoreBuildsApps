@@ -1,6 +1,5 @@
 package tv.corebuilds.eq.dsp
 
-import kotlin.math.abs
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Test
@@ -13,11 +12,14 @@ import org.junit.Test
  */
 class EqualLoudnessTest {
 
+    private fun indexOfFrequency(hz: Double): Int =
+        EqualLoudness.FREQUENCIES_HZ.indices.first { EqualLoudness.FREQUENCIES_HZ[it] == hz }
+
     @Test
     fun `contour at 1 kHz equals the phon value`() {
         // At 1 kHz, SPL equals phon by definition.
         val contour = EqualLoudness.contourAtPhon(60.0)
-        val kHz1 = EqualLoudness.FREQUENCIES_HZ.indexOf(1000.0)
+        val kHz1 = indexOfFrequency(1000.0)
         // The 60-phon contour at 1 kHz should be 60 dB SPL
         assertEquals(60.0, contour[kHz1], 0.5)
     }
@@ -27,8 +29,8 @@ class EqualLoudnessTest {
         // Bass needs more SPL to sound equally loud — the whole point of
         // the Fletcher-Munson effect.
         val contour = EqualLoudness.contourAtPhon(50.0)
-        val kHz1 = EqualLoudness.FREQUENCIES_HZ.indexOf(1000.0)
-        val hz40 = EqualLoudness.FREQUENCIES_HZ.indexOf(40.0)
+        val kHz1 = indexOfFrequency(1000.0)
+        val hz40 = indexOfFrequency(40.0)
         assertTrue("40 Hz should need more SPL than 1 kHz at 50 phon",
             contour[hz40] > contour[kHz1] + 10.0)
     }
@@ -45,8 +47,8 @@ class EqualLoudnessTest {
     @Test
     fun `compensation boosts bass at lower volume`() {
         val comp = EqualLoudness.compensationDb(80.0, 40.0, 1.0)
-        val hz40 = EqualLoudness.FREQUENCIES_HZ.indexOf(40.0)
-        val kHz1 = EqualLoudness.FREQUENCIES_HZ.indexOf(1000.0)
+        val hz40 = indexOfFrequency(40.0)
+        val kHz1 = indexOfFrequency(1000.0)
         // 1 kHz is the normalisation point: 0 dB
         assertEquals(0.0, comp[kHz1], 0.01)
         // 40 Hz should get significant boost (typically 15+ dB at this delta)
@@ -102,8 +104,8 @@ class EqualLoudnessTest {
         // (the ear is relatively more sensitive at higher absolute levels)
         val low = EqualLoudness.contourAtPhon(30.0)
         val high = EqualLoudness.contourAtPhon(80.0)
-        val hz40 = EqualLoudness.FREQUENCIES_HZ.indexOf(40.0)
-        val kHz1 = EqualLoudness.FREQUENCIES_HZ.indexOf(1000.0)
+        val hz40 = indexOfFrequency(40.0)
+        val kHz1 = indexOfFrequency(1000.0)
         val excess30 = low[hz40] - low[kHz1]
         val excess80 = high[hz40] - high[kHz1]
         assertTrue("Low frequencies should need relatively less boost at high phon",

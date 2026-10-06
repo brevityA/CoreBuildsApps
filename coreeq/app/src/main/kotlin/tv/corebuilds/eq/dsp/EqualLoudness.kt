@@ -31,6 +31,7 @@ object EqualLoudness {
         200.0, 250.0, 315.0, 400.0, 500.0, 630.0, 800.0, 1000.0, 1250.0, 1600.0,
         2000.0, 2500.0, 3150.0, 4000.0, 5000.0, 6300.0, 8000.0, 10000.0, 12500.0
     )
+    private val ONE_KHZ_INDEX = FREQUENCIES_HZ.indices.first { FREQUENCIES_HZ[it] == 1000.0 }
 
     /**
      * ISO 226:2003 table 1 — equal-loudness-level contours.
@@ -128,7 +129,7 @@ object EqualLoudness {
         // The 1 kHz index: the contour is the SPL needed at each frequency
         // to match 1 kHz at the given phon. The difference between the
         // reference and playback contours is the compensation needed.
-        val kHz1Index = FREQUENCIES_HZ.indexOf(1000.0)
+        val kHz1Index = ONE_KHZ_INDEX
         val refNorm = ref[kHz1Index]
         val playNorm = play[kHz1Index]
 

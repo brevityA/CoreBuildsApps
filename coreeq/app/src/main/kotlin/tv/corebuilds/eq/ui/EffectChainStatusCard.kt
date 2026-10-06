@@ -35,13 +35,13 @@ class EffectChainStatusCard @JvmOverloads constructor(
     
     private val backgroundPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
         style = Paint.Style.FILL
-        color = ContextCompat.getColor(context, R.color.cb_card_bg)
+        color = ContextCompat.getColor(context, R.color.cb_card)
     }
     
     private val borderPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
         style = Paint.Style.STROKE
         strokeWidth = 2f
-        color = ContextCompat.getColor(context, R.color.cb_border)
+        color = ContextCompat.getColor(context, R.color.cb_hairline)
     }
     
     private val textPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
