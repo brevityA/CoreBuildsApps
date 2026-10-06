@@ -4,11 +4,10 @@ import android.content.Context
 import android.media.AudioDeviceCallback
 import android.media.AudioDeviceInfo
 import android.media.AudioManager
-import android.os.Build
 import android.os.Handler
 import android.os.Looper
 import android.util.Log
-import tv.corebuilds.eq.dsp.RoomProfile
+import tv.corebuilds.eq.export.Profile
 
 /**
  * Improved audio device manager with comprehensive device detection,
@@ -30,7 +29,7 @@ class ImprovedAudioDeviceManager(private val context: Context) {
     private var onDeviceChangedListener: ((AudioDeviceState) -> Unit)? = null
     
     private var currentDevice: AudioDeviceInfo? = null
-    private var deviceProfiles: MutableMap<String, RoomProfile> = mutableMapOf()
+    private var deviceProfiles: MutableMap<String, Profile> = mutableMapOf()
     
     companion object {
         private const val TAG = "ImprovedAudioDeviceMgr"
@@ -161,14 +160,6 @@ class ImprovedAudioDeviceManager(private val context: Context) {
                     "to enable EQ processing.")
         }
         
-        // Bluetooth codec warning
-        if (device.type == AudioDeviceInfo.TYPE_BLUETOOTH_A2DP && Build.VERSION.SDK_INT >= 28) {
-            val codec = device.codecs
-            if (codec != null) {
-                Log.d(TAG, "Bluetooth codec: ${codec.codecs?.firstOrNull()?.name ?: "unknown"}")
-            }
-        }
-        
         // USB audio info
         if (device.type == AudioDeviceInfo.TYPE_USB_DEVICE || 
             device.type == AudioDeviceInfo.TYPE_USB_HEADSET) {
@@ -252,7 +243,7 @@ class ImprovedAudioDeviceManager(private val context: Context) {
     /**
      * Save room profile for specific device
      */
-    fun saveProfileForDevice(deviceId: String, profile: RoomProfile) {
+    fun saveProfileForDevice(deviceId: String, profile: Profile) {
         deviceProfiles[deviceId] = profile
         Log.i(TAG, "Profile saved for device: $deviceId")
     }
@@ -260,14 +251,14 @@ class ImprovedAudioDeviceManager(private val context: Context) {
     /**
      * Get room profile for specific device
      */
-    fun getProfileForDevice(deviceId: String): RoomProfile? {
+    fun getProfileForDevice(deviceId: String): Profile? {
         return deviceProfiles[deviceId]
     }
     
     /**
      * Get all saved device profiles
      */
-    fun getAllDeviceProfiles(): Map<String, RoomProfile> {
+    fun getAllDeviceProfiles(): Map<String, Profile> {
         return deviceProfiles.toMap()
     }
     

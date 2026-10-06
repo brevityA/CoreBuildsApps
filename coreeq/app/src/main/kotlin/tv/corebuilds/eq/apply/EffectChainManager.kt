@@ -63,7 +63,7 @@ class EffectChainManager(private val context: Context) {
         // Initialize with user preferences
         val success = chain.initialize(
             filters = profile.filters,
-            preampGainDb = profile.preampGainDb,
+            preampGainDb = profile.preampDb,
             contentType = contentType,
             enableBassBoost = prefs.bassBoostEnabled,
             enableLoudnessEnhancer = prefs.loudnessEnhancerEnabled,
@@ -83,18 +83,11 @@ class EffectChainManager(private val context: Context) {
     }
     
     /**
-     * Detect content type from active packages.
-     * Returns the first specific content type found, or GENERAL if none match.
+     * Resolve content type from active packages, using the registry's safe
+     * consensus rule when multiple players are active.
      */
-    private fun detectContentType(activePackages: Set<String>): ContentType {
-        for (pkg in activePackages) {
-            val detected = ContentTypeRegistry.detect(pkg)
-            if (detected != ContentType.GENERAL) {
-                return detected
-            }
-        }
-        return ContentType.GENERAL
-    }
+    private fun detectContentType(activePackages: Set<String>): ContentType =
+        ContentTypeRegistry.resolve(activePackages) ?: ContentType.GENERAL
     
     /**
      * Update content type based on current active packages.
@@ -122,7 +115,7 @@ class EffectChainManager(private val context: Context) {
         val shouldEnable = prefs.shouldEnableNightMode()
         val status = chain.getStatus()
         
-        if (status.nightModeActive != shouldEnable) {
+        if (status.nightMode != shouldEnable) {
             chain.setNightMode(shouldEnable)
         }
     }
