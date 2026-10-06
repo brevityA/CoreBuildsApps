@@ -33,6 +33,30 @@ enum class ContentType(
         description = "Natural dialogue · Reduced fatigue · Smooth long-session listening",
         icon = "📺"
     ),
+    SITCOM(
+        key = "sitcom",
+        title = "Sitcoms",
+        description = "Rapid dialogue clarity · Laughter track taming · Punchline articulation",
+        icon = "😂"
+    ),
+    DOCUMENTARY(
+        key = "documentary",
+        title = "Documentaries",
+        description = "Narration-first · Authoritative warmth · Smooth non-fatiguing",
+        icon = "🎓"
+    ),
+    NEWS(
+        key = "news",
+        title = "News / Live",
+        description = "Anchor voice clarity · All-day comfort · Background noise reduction",
+        icon = "📰"
+    ),
+    PODCAST(
+        key = "podcast",
+        title = "Podcasts",
+        description = "Voice-first · High-pass filtered · Boxiness cut · Intelligibility boost",
+        icon = "🎙️"
+    ),
     GAMING(
         key = "gaming",
         title = "Gaming",
@@ -47,8 +71,8 @@ enum class ContentType(
     ),
     GENERAL(
         key = "general",
-        title = "General",
-        description = "Balanced for all content · Safe default",
+        title = "Everyday",
+        description = "Balanced for all content · Safe default · All-day listening comfort",
         icon = "🔊"
     );
 
@@ -195,10 +219,26 @@ object ContentTypeRegistry {
         "ru.iptvremote.android" to ContentType.TV_SHOW,
         "com.lamatic.ipptv" to ContentType.TV_SHOW,
 
+        // === PODCASTS / TALK ===
+        // Pocket Casts
+        "au.com.shiftyjelly.pocketcasts" to ContentType.PODCAST,
+
+        // Overcast
+        "fm.overcast" to ContentType.PODCAST,
+
+        // Google Podcasts
+        "com.google.android.apps.podcasts" to ContentType.PODCAST,
+
+        // Audible (audiobooks)
+        "com.audible.application" to ContentType.PODCAST,
+
+        // === NEWS ===
         // News apps
-        "com.cnn.mobile.android.tv" to ContentType.TV_SHOW,
-        "com.foxnews.android" to ContentType.TV_SHOW,
-        "com.bbc.mediaplayer" to ContentType.TV_SHOW
+        "com.cnn.mobile.android.tv" to ContentType.NEWS,
+        "com.foxnews.android" to ContentType.NEWS,
+        "com.bbc.mediaplayer" to ContentType.NEWS,
+        "com.aljazeera.english" to ContentType.NEWS,
+        "com.nbcuni.telemundo.noticiastelemundo" to ContentType.NEWS
     )
 
     /**

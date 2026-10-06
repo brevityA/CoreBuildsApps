@@ -146,12 +146,21 @@ object UseCaseTargets {
      * TV show target curve.
      *
      * **Characteristics:**
-     * - Natural dialogue without fatigue
-     * - Reduced harshness in 2-4 kHz region
+     * - Natural dialogue without fatigue (dialogue mixed closer to program
+     *   loudness than cinema per EBU R128 s4)
+     * - Reduced harshness in 2-4 kHz region (long-session comfort)
      * - Gentle bass (less than movies, more than news)
-     * - Smooth midrange for long listening sessions
+     * - Smooth midrange for extended listening
+     * - Optimized for -23 LUFS broadcast loudness standard
      *
-     * **Optimized for:** Sitcoms, dramas, reality TV, news
+     * **Research basis:**
+     * - TV dialogue typically mixed 5-10 LU below program (vs 10-15 for cinema)
+     * - Sitcoms have rapid dialogue + laughter tracks
+     * - Dramas have wider dynamic range with music beds
+     * - Documentaries are narration-focused with clear speech
+     * - EBU R128 targets -23 LUFS for broadcast consistency
+     *
+     * **Optimized for:** Sitcoms, dramas, reality TV, documentaries
      */
     fun tvShowTarget(freqs: DoubleArray): DoubleArray {
         val out = DoubleArray(freqs.size)
@@ -160,22 +169,121 @@ object UseCaseTargets {
         for (i in freqs.indices) {
             val f = freqs[i]
 
-            // Gentle bass (not as much as movies)
+            // Gentle bass (not as much as movies, enough for drama impact)
             val bass = 1.5 * bellShape(f, 80.0, 0.8)
 
-            // Warm midrange (300-500 Hz)
+            // Warm midrange (300-500 Hz) for natural vocal body
             val warmth = 1.0 * boxShape(f, 300.0, 500.0)
 
-            // Reduce harshness (2-4 kHz)
+            // Reduce boxiness (250 Hz) - common in broadcast recordings
+            val boxinessCut = -1.5 * bellShape(f, 250.0, 1.5)
+
+            // Reduce harshness (2-4 kHz) for long-session comfort
             val harshnessCut = -2.0 * boxShape(f, 2000.0, 4000.0)
 
-            // Gentle presence (2.5 kHz) for dialogue
+            // Gentle presence (2.5 kHz) for dialogue clarity
             val presence = 1.5 * bellShape(f, 2500.0, 1.0)
 
-            out[i] = bass + warmth + harshnessCut + presence
+            // Slight articulation boost (5 kHz) for consonants
+            val articulation = 1.0 * bellShape(f, 5000.0, 1.2)
+
+            out[i] = bass + warmth + boxinessCut + harshnessCut + presence + articulation
         }
 
         // Normalize to 0 dB at pivot frequency
+        val atPivot = interpolate(pivotHz, freqs, out)
+        for (i in out.indices) {
+            out[i] -= atPivot
+        }
+        return out
+    }
+
+    /**
+     * Sitcom-optimized target curve.
+     *
+     * **Characteristics:**
+     * - Enhanced dialogue clarity for rapid-fire exchanges
+     * - Laughter track accommodation (3-5 kHz region)
+     * - Consistent midrange for multi-camera setups
+     * - Reduced fatigue from canned laughter
+     *
+     * **Optimized for:** Friends, The Office, Brooklyn Nine-Nine, sitcoms
+     */
+    fun sitcomTarget(freqs: DoubleArray): DoubleArray {
+        val out = DoubleArray(freqs.size)
+        val pivotHz = 630.0
+
+        for (i in freqs.indices) {
+            val f = freqs[i]
+
+            // Light bass (sitcoms don't need heavy low-end)
+            val bass = 1.0 * bellShape(f, 100.0, 0.9)
+
+            // Vocal body (200-400 Hz)
+            val vocalBody = 1.5 * boxShape(f, 200.0, 400.0)
+
+            // Reduce boxiness from multi-camera setups
+            val boxinessCut = -2.0 * bellShape(f, 280.0, 1.3)
+
+            // Enhanced dialogue presence (2.5-4 kHz) for rapid exchanges
+            val dialoguePresence = 2.5 * boxShape(f, 2500.0, 4000.0)
+
+            // Tame laughter harshness (3-5 kHz)
+            val laughterTaming = -1.5 * bellShape(f, 3800.0, 1.0)
+
+            // Crisp articulation for punchlines
+            val articulation = 1.5 * bellShape(f, 5500.0, 1.1)
+
+            out[i] = bass + vocalBody + boxinessCut + dialoguePresence + laughterTaming + articulation
+        }
+
+        val atPivot = interpolate(pivotHz, freqs, out)
+        for (i in out.indices) {
+            out[i] -= atPivot
+        }
+        return out
+    }
+
+    /**
+     * Documentary-optimized target curve.
+     *
+     * **Characteristics:**
+     * - Narration-first optimization (voice is primary content)
+     * - Enhanced low-mid warmth for authoritative narration
+     * - Smooth, non-fatiguing presentation
+     * - Gentle handling of music beds and sound effects
+     *
+     * **Optimized for:** Nature documentaries, history, true crime, educational
+     */
+    fun documentaryTarget(freqs: DoubleArray): DoubleArray {
+        val out = DoubleArray(freqs.size)
+        val pivotHz = 630.0
+
+        for (i in freqs.indices) {
+            val f = freqs[i]
+
+            // Gentle bass for gravitas
+            val bass = 1.5 * bellShape(f, 90.0, 0.8)
+
+            // Narration warmth (150-300 Hz) - authoritative voice
+            val narrationWarmth = 2.0 * boxShape(f, 150.0, 300.0)
+
+            // Reduce muddiness (400-600 Hz)
+            val mudCut = -1.0 * boxShape(f, 400.0, 600.0)
+
+            // Clear narration presence (2-3 kHz)
+            val narrationPresence = 2.0 * boxShape(f, 2000.0, 3000.0)
+
+            // Gentle highs (avoid fatigue from long narration)
+            val gentleHighs = if (f > 6000.0) {
+                -1.0 * tanh((f - 6000.0) / 4000.0)
+            } else {
+                0.0
+            }
+
+            out[i] = bass + narrationWarmth + mudCut + narrationPresence + gentleHighs
+        }
+
         val atPivot = interpolate(pivotHz, freqs, out)
         for (i in out.indices) {
             out[i] -= atPivot
@@ -267,6 +375,181 @@ object UseCaseTargets {
         }
 
         // Normalize to 0 dB at pivot frequency
+        val atPivot = interpolate(pivotHz, freqs, out)
+        for (i in out.indices) {
+            out[i] -= atPivot
+        }
+        return out
+    }
+
+    /**
+     * Everyday / General target curve.
+     *
+     * **Characteristics:**
+     * - Balanced, safe default for mixed content
+     * - Gentle bass enhancement for body
+     * - Smooth midrange that works for speech and music
+     * - Reduced listening fatigue for all-day use
+     * - Handles loudness jumps between different content types
+     *
+     * **Optimized for:** Casual viewing, background listening, channel
+     * surfing, mixed playlists, YouTube rabbit holes
+     */
+    fun generalTarget(freqs: DoubleArray): DoubleArray {
+        val out = DoubleArray(freqs.size)
+        val pivotHz = 630.0
+
+        for (i in freqs.indices) {
+            val f = freqs[i]
+
+            // Gentle, warm bass (universal body without boom)
+            val bass = 1.5 * bellShape(f, 80.0, 0.8)
+
+            // Light midrange warmth for natural vocal tone
+            val warmth = 0.8 * boxShape(f, 300.0, 600.0)
+
+            // Gentle presence for speech intelligibility (without being
+            // aggressive like the movie/anime targets)
+            val presence = 1.0 * bellShape(f, 2800.0, 1.0)
+
+            // Mild fatigue reduction (6-10 kHz)
+            val fatigueReduction = if (f > 6000.0) {
+                -0.8 * tanh((f - 6000.0) / 4000.0)
+            } else {
+                0.0
+            }
+
+            out[i] = bass + warmth + presence + fatigueReduction
+        }
+
+        val atPivot = interpolate(pivotHz, freqs, out)
+        for (i in out.indices) {
+            out[i] -= atPivot
+        }
+        return out
+    }
+
+    /**
+     * Podcast / talk-radio optimized target curve.
+     *
+     * **Characteristics:**
+     * - Voice-first: everything outside the speech band is secondary
+     * - High-pass at 80 Hz (podcasts have no useful content below this)
+     * - Boxiness cut at 250 Hz (the #1 podcast EQ adjustment)
+     * - Presence boost at 4 kHz (critical for intelligibility)
+     * - Sibilance control at 6-8 kHz
+     * - Aggressive dynamic range reduction (podcasts are listened to in
+     *   noisy environments: cars, commutes, kitchens)
+     *
+     * **Research basis:**
+     * - AES recommends podcasts at -18 to -16 LUFS (vs -23 for broadcast)
+     * - Spotify normalizes to -14 LUFS, YouTube to -14 LUFS
+     * - Top podcast EQ: -2 dB at 250 Hz, +2 dB at 4 kHz, +1 dB at 10 kHz
+     * - High-pass 80 Hz removes plosives and handling noise
+     * - 125 Hz male fullness, 200 Hz female fullness, 250-400 Hz children
+     *
+     * **Optimized for:** Podcasts, talk radio, audiobooks, news broadcasts
+     */
+    fun podcastTarget(freqs: DoubleArray): DoubleArray {
+        val out = DoubleArray(freqs.size)
+        val pivotHz = 1000.0  // Voice reference
+
+        for (i in freqs.indices) {
+            val f = freqs[i]
+
+            // High-pass: cut everything below 80 Hz (no useful content)
+            val highPass = if (f < 80.0) {
+                -6.0 * (1.0 - tanh((f - 40.0) / 30.0))
+            } else {
+                0.0
+            }
+
+            // Male vocal fullness (125 Hz)
+            val maleFullness = 1.0 * bellShape(f, 125.0, 1.0)
+
+            // Female vocal fullness (200 Hz)
+            val femaleFullness = 0.8 * bellShape(f, 200.0, 1.0)
+
+            // Boxiness cut (250 Hz) — the single most important podcast EQ move
+            val boxinessCut = -2.5 * bellShape(f, 250.0, 1.5)
+
+            // Mud reduction (400-500 Hz)
+            val mudCut = -1.0 * boxShape(f, 400.0, 500.0)
+
+            // Critical presence boost (4 kHz) — intelligibility
+            val presence = 2.5 * bellShape(f, 4000.0, 0.9)
+
+            // Articulation (6 kHz)
+            val articulation = 1.5 * bellShape(f, 6000.0, 1.0)
+
+            // Sibilance control (7-8 kHz) — tame harsh S sounds
+            val sibilanceControl = -1.5 * bellShape(f, 7500.0, 1.2)
+
+            // Air (10 kHz) — subtle brightness without fatigue
+            val air = 1.0 * bellShape(f, 10000.0, 0.8)
+
+            out[i] = highPass + maleFullness + femaleFullness + boxinessCut +
+                mudCut + presence + articulation + sibilanceControl + air
+        }
+
+        val atPivot = interpolate(pivotHz, freqs, out)
+        for (i in out.indices) {
+            out[i] -= atPivot
+        }
+        return out
+    }
+
+    /**
+     * News / live broadcast target curve.
+     *
+     * **Characteristics:**
+     * - Speech-optimized with aggressive fatigue reduction
+     * - Reduced background noise emphasis (low rumble, HVAC hum)
+     * - Enhanced anchor voice clarity
+     * - Compressed-friendly (news is heavily compressed at source)
+     * - Works well with ticker graphics and background music beds
+     *
+     * **Optimized for:** 24-hour news, live broadcasts, sports commentary,
+     * weather channels
+     */
+    fun newsTarget(freqs: DoubleArray): DoubleArray {
+        val out = DoubleArray(freqs.size)
+        val pivotHz = 630.0
+
+        for (i in freqs.indices) {
+            val f = freqs[i]
+
+            // High-pass at 100 Hz (news has no useful low content,
+            // and HVAC/rumble from field reporters is common)
+            val highPass = if (f < 100.0) {
+                -4.0 * (1.0 - tanh((f - 50.0) / 30.0))
+            } else {
+                0.0
+            }
+
+            // Anchor voice warmth (150-250 Hz)
+            val anchorWarmth = 1.5 * boxShape(f, 150.0, 250.0)
+
+            // Reduce boxiness (300 Hz)
+            val boxinessCut = -1.5 * bellShape(f, 300.0, 1.5)
+
+            // Enhanced speech presence (2.5-4 kHz)
+            val speechPresence = 2.5 * boxShape(f, 2500.0, 4000.0)
+
+            // Reduce ticker/music bed interference (500-1000 Hz)
+            val bedReduction = -1.0 * boxShape(f, 500.0, 1000.0)
+
+            // Fatigue reduction for all-day listening (highs)
+            val fatigueReduction = if (f > 5000.0) {
+                -1.5 * tanh((f - 5000.0) / 5000.0)
+            } else {
+                0.0
+            }
+
+            out[i] = highPass + anchorWarmth + boxinessCut + speechPresence +
+                bedReduction + fatigueReduction
+        }
+
         val atPivot = interpolate(pivotHz, freqs, out)
         for (i in out.indices) {
             out[i] -= atPivot

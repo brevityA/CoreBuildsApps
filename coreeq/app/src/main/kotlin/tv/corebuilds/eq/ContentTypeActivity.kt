@@ -34,6 +34,10 @@ class ContentTypeActivity : TvActivity() {
     private lateinit var btnMovie: Button
     private lateinit var btnAnime: Button
     private lateinit var btnTvShow: Button
+    private lateinit var btnSitcom: Button
+    private lateinit var btnDocumentary: Button
+    private lateinit var btnNews: Button
+    private lateinit var btnPodcast: Button
     private lateinit var btnGaming: Button
     private lateinit var btnMusic: Button
     private lateinit var btnGeneral: Button
@@ -53,6 +57,10 @@ class ContentTypeActivity : TvActivity() {
         btnMovie = findViewById(R.id.btn_content_movie)
         btnAnime = findViewById(R.id.btn_content_anime)
         btnTvShow = findViewById(R.id.btn_content_tv)
+        btnSitcom = findViewById(R.id.btn_content_sitcom)
+        btnDocumentary = findViewById(R.id.btn_content_documentary)
+        btnNews = findViewById(R.id.btn_content_news)
+        btnPodcast = findViewById(R.id.btn_content_podcast)
         btnGaming = findViewById(R.id.btn_content_gaming)
         btnMusic = findViewById(R.id.btn_content_music)
         btnGeneral = findViewById(R.id.btn_content_general)
@@ -64,6 +72,10 @@ class ContentTypeActivity : TvActivity() {
         btnMovie.setOnClickListener { selectType(ContentType.MOVIE) }
         btnAnime.setOnClickListener { selectType(ContentType.ANIME) }
         btnTvShow.setOnClickListener { selectType(ContentType.TV_SHOW) }
+        btnSitcom.setOnClickListener { selectType(ContentType.SITCOM) }
+        btnDocumentary.setOnClickListener { selectType(ContentType.DOCUMENTARY) }
+        btnNews.setOnClickListener { selectType(ContentType.NEWS) }
+        btnPodcast.setOnClickListener { selectType(ContentType.PODCAST) }
         btnGaming.setOnClickListener { selectType(ContentType.GAMING) }
         btnMusic.setOnClickListener { selectType(ContentType.MUSIC) }
         btnGeneral.setOnClickListener { selectType(ContentType.GENERAL) }
@@ -120,6 +132,10 @@ class ContentTypeActivity : TvActivity() {
         updateButtonState(btnMovie, ContentType.MOVIE)
         updateButtonState(btnAnime, ContentType.ANIME)
         updateButtonState(btnTvShow, ContentType.TV_SHOW)
+        updateButtonState(btnSitcom, ContentType.SITCOM)
+        updateButtonState(btnDocumentary, ContentType.DOCUMENTARY)
+        updateButtonState(btnNews, ContentType.NEWS)
+        updateButtonState(btnPodcast, ContentType.PODCAST)
         updateButtonState(btnGaming, ContentType.GAMING)
         updateButtonState(btnMusic, ContentType.MUSIC)
         updateButtonState(btnGeneral, ContentType.GENERAL)

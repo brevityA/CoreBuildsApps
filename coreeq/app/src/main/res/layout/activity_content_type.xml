@@ -127,6 +127,62 @@
                 android:layout_marginBottom="@dimen/cb_space_xs" />
 
             <Button
+                android:id="@+id/btn_content_sitcom"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:background="@drawable/bg_card"
+                android:text="😂  Sitcoms"
+                android:textColor="@color/cb_ink"
+                android:textSize="@dimen/cb_text_data"
+                android:gravity="start|center_vertical"
+                android:paddingStart="@dimen/cb_card_padding"
+                android:paddingEnd="@dimen/cb_card_padding"
+                android:focusable="true"
+                android:layout_marginBottom="@dimen/cb_space_xs" />
+
+            <Button
+                android:id="@+id/btn_content_documentary"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:background="@drawable/bg_card"
+                android:text="🎓  Documentaries"
+                android:textColor="@color/cb_ink"
+                android:textSize="@dimen/cb_text_data"
+                android:gravity="start|center_vertical"
+                android:paddingStart="@dimen/cb_card_padding"
+                android:paddingEnd="@dimen/cb_card_padding"
+                android:focusable="true"
+                android:layout_marginBottom="@dimen/cb_space_xs" />
+
+            <Button
+                android:id="@+id/btn_content_news"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:background="@drawable/bg_card"
+                android:text="📰  News / Live"
+                android:textColor="@color/cb_ink"
+                android:textSize="@dimen/cb_text_data"
+                android:gravity="start|center_vertical"
+                android:paddingStart="@dimen/cb_card_padding"
+                android:paddingEnd="@dimen/cb_card_padding"
+                android:focusable="true"
+                android:layout_marginBottom="@dimen/cb_space_xs" />
+
+            <Button
+                android:id="@+id/btn_content_podcast"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:background="@drawable/bg_card"
+                android:text="🎙️  Podcasts"
+                android:textColor="@color/cb_ink"
+                android:textSize="@dimen/cb_text_data"
+                android:gravity="start|center_vertical"
+                android:paddingStart="@dimen/cb_card_padding"
+                android:paddingEnd="@dimen/cb_card_padding"
+                android:focusable="true"
+                android:layout_marginBottom="@dimen/cb_space_xs" />
+
+            <Button
                 android:id="@+id/btn_content_gaming"
                 android:layout_width="match_parent"
                 android:layout_height="56dp"
