@@ -34,6 +34,9 @@ import tv.corebuilds.eq.export.PlatformBand
 import tv.corebuilds.eq.export.Profile
 import tv.corebuilds.eq.export.ProfileStore
 import tv.corebuilds.eq.mode.ContentModeStore
+import tv.corebuilds.eq.mode.ContentType
+import tv.corebuilds.eq.mode.ContentTypePrefs
+import tv.corebuilds.eq.mode.ContentTypeRegistry
 import tv.corebuilds.eq.ui.EnhancedAudioPrefs
 import java.util.concurrent.Executors
 import kotlin.math.roundToInt
@@ -78,7 +81,9 @@ class EqService : Service() {
     private data class AppliedEffect(
         val effect: AudioEffect,
         val engine: String,
-        val bands: List<PlatformBand>
+        val bands: List<PlatformBand>,
+        /** Opt-in BassBoost/LoudnessEnhancer on the same session; created and released with [effect]. */
+        val extras: ExtraEffects? = null
     )
 
     /** An effect held on one session, and where that session came from. */
@@ -87,8 +92,7 @@ class EqService : Service() {
     private lateinit var store: ProfileStore
     private lateinit var modeStore: ContentModeStore
     
-    // Enhanced audio features
-    private var effectChainManager: EffectChainManager? = null
+    // The Extra effects screen's switches (all off by default since 1.2.1).
     private var enhancedPrefs: EnhancedAudioPrefs? = null
     
     private val sessionEqs = mutableMapOf<Int, Held>()
@@ -190,9 +194,7 @@ class EqService : Service() {
         store = ProfileStore(this)
         modeStore = ContentModeStore(this)
         
-        // Initialize enhanced audio features
         enhancedPrefs = EnhancedAudioPrefs(this)
-        effectChainManager = EffectChainManager(this)
         
         // Keep the persisted last-known set until a complete dump proves it
         // changed; service recreation is not evidence that playback stopped.
@@ -340,7 +342,7 @@ class EqService : Service() {
                 globalEffect = configured
                 syncRuntimeBands()
                 report(
-                    "Output-mix effect configured · $modeName · ${configured.engine} · ${profile.name}$via · ${configured.bands.size} bands · coverage depends on TV routing${where(output)}",
+                    "Output-mix effect configured · $modeName · ${configured.engine} · ${profile.name}$via · ${configured.bands.size} bands${extrasNote(listOf(configured))} · coverage depends on TV routing${where(output)}",
                     isError = false
                 )
                 releaseSessions() // avoid applying the same curve twice where the mix effect is accepted
@@ -397,38 +399,16 @@ class EqService : Service() {
         for (s in sessionEqs.keys.toList()) closeSession(s)
     }
 
+    /** Correction on [session], plus that session's opt-in extras. */
+    private fun createBestEffect(session: Int, profile: Profile): AppliedEffect =
+        createCorrection(session, profile).let { it.copy(extras = attachExtras(session)) }
+
     /** Prefer DP on API 28+, and fall back to Equalizer on any construction/configuration refusal. */
-    private fun createBestEffect(session: Int, profile: Profile): AppliedEffect {
-        // Try EnhancedEffectChain first (if preferences allow)
-        if (enhancedPrefs != null) {
-            try {
-                val chain = effectChainManager?.createEffectChain(
-                    session,
-                    profile,
-                    activeAppPackages()
-                )
-                
-                if (chain != null && chain.equalizer != null) {
-                    val status = chain.getStatus()
-                    Log.i(TAG, "EnhancedEffectChain created: ${status.toDisplayString()}")
-                    
-                    // Return the equalizer from the chain as the primary effect
-                    return AppliedEffect(
-                        effect = chain.equalizer!!,
-                        engine = ENGINE_ENHANCED_EFFECT_CHAIN,
-                        bands = chain.getPlatformBands()
-                    )
-                }
-            } catch (e: Exception) {
-                Log.w(TAG, "EnhancedEffectChain failed; trying legacy effects", e)
-            }
-        }
-        
-        // Fall back to legacy DynamicsProcessing or Equalizer
+    private fun createCorrection(session: Int, profile: Profile): AppliedEffect {
         var dpFailure: String? = null
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
             try {
-                val dp = DynamicsProcessingEngine.create(session, profile)
+                val dp = DynamicsProcessingEngine.create(session, profile, limiter())
                 return AppliedEffect(
                     effect = dp.effect,
                     engine = ENGINE_DYNAMICS_PROCESSING,
@@ -455,7 +435,7 @@ class EqService : Service() {
                 // Preserve the Equalizer refusal below.
             }
             throw IllegalStateException(
-                "EnhancedEffectChain, DynamicsProcessing ($dpFailure), and Equalizer (${e.message ?: e.javaClass.simpleName}) all refused",
+                "DynamicsProcessing ($dpFailure) and Equalizer (${e.message ?: e.javaClass.simpleName}) both refused",
                 e
             )
         }
@@ -464,7 +444,7 @@ class EqService : Service() {
     /** Reconfigure a held effect; replace it with the preferred path if it no longer accepts control. */
     private fun configureOrReplace(current: AppliedEffect, session: Int, profile: Profile): AppliedEffect =
         try {
-            configure(current, profile)
+            configure(current, profile).copy(extras = current.extras?.also { it.setEnabled(true) })
         } catch (e: Exception) {
             Log.w(TAG, "${current.engine} reconfiguration failed on session $session; replacing the effect", e)
             releaseApplied(current)
@@ -486,7 +466,7 @@ class EqService : Service() {
     @RequiresApi(Build.VERSION_CODES.P)
     private fun configureDynamicsProcessing(effect: AudioEffect, profile: Profile): AppliedEffect {
         require(effect is DynamicsProcessing) { "Unknown audio effect ${effect.javaClass.simpleName}" }
-        val dp = DynamicsProcessingEngine.configure(effect, profile)
+        val dp = DynamicsProcessingEngine.configure(effect, profile, limiter())
         return AppliedEffect(
             effect = effect,
             engine = ENGINE_DYNAMICS_PROCESSING,
@@ -518,6 +498,7 @@ class EqService : Service() {
     }
 
     private fun releaseApplied(applied: AppliedEffect) {
+        applied.extras?.release()
         try {
             applied.effect.setEnabled(false)
         } catch (e: Exception) {
@@ -540,6 +521,7 @@ class EqService : Service() {
     private fun setAllEnabled(on: Boolean) {
         val all = listOfNotNull(globalEffect) + sessionEqs.values.map { it.applied }
         for (applied in all) {
+            applied.extras?.setEnabled(on)
             try {
                 check(applied.effect.setEnabled(on) == AudioEffect.SUCCESS) {
                     "${applied.engine} refused enable=$on"
@@ -687,7 +669,18 @@ class EqService : Service() {
         val names = held.joinToString { label(it.pkg) }
         val engines = held.map { it.applied.engine }.distinct().joinToString(" + ")
         val marker = if (held.any { it.discovered }) " · found by DUMP discovery" else ""
-        return "Effect attached to $names · ${modeStore.currentDecision().mode.title} · $engines · ${profile?.name ?: "the active profile"}$via$marker${where(output)}"
+        return "Effect attached to $names · ${modeStore.currentDecision().mode.title} · $engines · ${profile?.name ?: "the active profile"}$via${extrasNote(held.map { it.applied })}$marker${where(output)}"
+    }
+
+    /** Say what the Extra effects screen added, and when night mode cannot run. */
+    private fun extrasNote(applied: List<AppliedEffect>): String {
+        val extras = applied.mapNotNull { it.extras?.label?.takeIf(String::isNotEmpty) }.distinct()
+        val night = enhancedPrefs?.nightModeEnabled == true
+        val nightOnDp = applied.any { it.engine == ENGINE_DYNAMICS_PROCESSING }
+        return buildString {
+            if (extras.isNotEmpty()) append(" · extras: ").append(extras.joinToString(" / "))
+            if (night) append(if (nightOnDp) " · night mode" else " · night mode needs DynamicsProcessing, not active")
+        }
     }
 
     private fun label(pkg: String): String = try {
@@ -754,25 +747,42 @@ class EqService : Service() {
         }
     }
 
-    /** Reload preferences and reconfigure effect chain. */
+    /**
+     * The Extra effects screen saved: swap every held effect's extras for the
+     * new plan, then reapply so the DP limiter picks up night mode. Correction
+     * effects themselves stay attached; nothing is torn down and rediscovered.
+     */
     private fun reloadEnhancedPreferences() {
-        val (profile, _, _) = resolve()
-        if (profile == null) return
-        
-        effectChainManager?.reloadPreferences(profile, activeAppPackages())
-        
-        // Reapply with new settings
-        if (globalEffect != null) {
-            try {
-                releaseApplied(globalEffect!!)
-                globalEffect = null
-                globalError = null
-                applyAll()
-            } catch (e: Exception) {
-                Log.w(TAG, "Failed to reapply after preference reload", e)
-            }
+        globalEffect = globalEffect?.let { refreshExtras(0, it) }
+        for ((session, held) in sessionEqs.toMap()) {
+            sessionEqs[session] = held.copy(applied = refreshExtras(session, held.applied))
+        }
+        applyAll()
+    }
+
+    private fun refreshExtras(session: Int, applied: AppliedEffect): AppliedEffect {
+        applied.extras?.release()
+        return applied.copy(extras = attachExtras(session))
+    }
+
+    private fun attachExtras(session: Int): ExtraEffects? {
+        val prefs = enhancedPrefs ?: return null
+        val plan = ExtraPlan.of(extrasContentType(), prefs.bassBoostEnabled, prefs.loudnessEnhancerEnabled)
+        return ExtraEffects.attach(session, plan)
+    }
+
+    /** The Content type screen's choice: its manual pick, or the app detected playing. */
+    private fun extrasContentType(): ContentType {
+        val prefs = getSharedPreferences(ContentTypePrefs.PREFS_NAME, Context.MODE_PRIVATE)
+        return if (prefs.getBoolean(ContentTypePrefs.KEY_AUTO_SWITCH, true)) {
+            ContentTypeRegistry.resolve(activeAppPackages()) ?: ContentType.GENERAL
+        } else {
+            ContentType.fromKey(prefs.getString(ContentTypePrefs.KEY_MANUAL_TYPE, null))
         }
     }
+
+    /** Protection-only, or night mode's tighter limiter. DP correction only. */
+    private fun limiter(): LimiterSettings = enhancedPrefs?.limiter() ?: LimiterSettings()
 
     override fun onDestroy() {
         if (!running) {
@@ -809,9 +819,6 @@ class EqService : Service() {
         globalEffect?.let(::releaseApplied)
         globalEffect = null
         
-        // Clean up enhanced features
-        effectChainManager?.release()
-        effectChainManager = null
         enhancedPrefs = null
         
         store.clearRuntimeBands()
@@ -868,7 +875,6 @@ class EqService : Service() {
         private const val PRIORITY = 0
         private const val ENGINE_DYNAMICS_PROCESSING = "DynamicsProcessing"
         private const val ENGINE_PLATFORM_EQUALIZER = "Equalizer"
-        private const val ENGINE_ENHANCED_EFFECT_CHAIN = "EnhancedEffectChain"
 
         /** Playback changes coalesce into one re-discovery after this pause. */
         private const val DISCOVERY_DEBOUNCE_MS = 2000L

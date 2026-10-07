@@ -8,6 +8,39 @@ must never land there. Releases are `coreeq-v<version>` tags (see
 
 ## [Unreleased]
 
+## [1.2.1] — 2026-10-07
+
+### Fixed
+
+- **Updating no longer changes your sound.** 1.2.0 switched Bass Boost,
+  Loudness Enhancer and a second DynamicsProcessing stage on for everyone,
+  with no screen to turn them off. In 1.2.1 every extra is off until you
+  switch it on, and settings stored by 1.2.0 cannot switch one back on.
+- **Room correction is precise again.** 1.2.0 moved correction onto the
+  platform Equalizer (about 5 fixed bands): a measured filter was applied
+  only if it sat within 100 Hz of a band centre, and the preamp was
+  ignored, so boosts could clip. Correction is back on DynamicsProcessing,
+  with the platform Equalizer as the fallback, exactly as in 1.1.1.
+- **Several players at once.** 1.2.0 held one effect chain for the whole
+  service and released it whenever another audio session attached, while
+  the first session still used it; closing a session left its bass and
+  loudness effects running. Extras now belong to each session's correction
+  effect and are created and released with it.
+
+### Added
+
+- **Extra effects screen** (Home → Extra effects): Bass boost, Loudness
+  and Night mode switches, each applied at once. Bass and loudness strength
+  follow the Content type screen, which until now changed nothing at all.
+  Night mode tightens the DynamicsProcessing limiter to -12 dB at 4:1, and
+  Home says when the engine in use cannot run it.
+
+### Removed
+
+- The 1.2.0 effect chain (`EnhancedEffectChain`, `EffectChainManager`) and
+  its unused status card. The time-based night-mode schedule is gone with
+  it: it was never evaluated after the effect was created.
+
 ## [1.2.0] — 2026-10-06
 
 ### Added

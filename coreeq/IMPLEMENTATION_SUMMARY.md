@@ -1,5 +1,10 @@
 # Core EQ Enhancement Implementation Summary
 
+> **Note (1.2.1):** this describes the 1.2.0 branch as written. 1.2.1 removed
+> its effect chain, kept room correction on DynamicsProcessing / Equalizer,
+> and made bass boost, loudness and night mode opt-in on the Extra effects
+> screen. `CHANGELOG.md` in this folder is the current record.
+
 **Date:** 2026-10-06  
 **Branch:** arena/4c8f6ce7-corebuildsapps
 
