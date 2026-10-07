@@ -1,5 +1,6 @@
 import json
 import os
+import functools
 import math
 import re
 
@@ -8217,7 +8218,9 @@ _STROKE_LETTERS = {
     "i": (0, "M 0 .36 L 0 1 D 0 .1"),
     "j": (.16, "M .16 .36 L .16 1.14 C .16 1.28 .08 1.34 0 1.34 D .16 .1"),
     "k": (.44, "M 0 0 L 0 1 M .44 .32 L 0 .72 M .14 .6 L .44 1"),
-    "l": (0, "M 0 0 L 0 1"),
+    # l turns out at its foot (2.1.2): a bare stem made it the same shape as
+    # I, so "Il", "IlI" and every name with both read as one letter twice.
+    "l": (.24, "M 0 0 L 0 .72 C 0 .91 .09 1 .24 1"),
     "m": (.78, "M 0 1 L 0 .3 M 0 .52 C 0 .38 .08 .3 .2 .3 C .32 .3 .39 .38 .39 .52 L .39 1 M .39 .52 C .39 .38 .47 .3 .59 .3 C .71 .3 .78 .38 .78 .52 L .78 1"),
     "n": (.48, "M 0 1 L 0 .3 M 0 .56 C 0 .4 .1 .3 .24 .3 C .38 .3 .48 .4 .48 .56 L .48 1"),
     "o": (.52, "M .26 .3 C .42 .3 .52 .45 .52 .65 C .52 .85 .42 1 .26 1 C .1 1 0 .85 0 .65 C 0 .45 .1 .3 .26 .3 Z"),
@@ -8302,12 +8305,105 @@ def _clamp(v, lo, hi):
     return max(lo, min(hi, v))
 
 
+# Optical spacing (2.1.2). The letter gap used to run box edge to box edge, so
+# a T, an L or an open curve carried its own empty side bearing on top of the
+# gap and "To", "LY" or "rt" set visibly looser than "HH". Each pair now gives
+# back a share of the white its two shapes leave between them, measured on the
+# skeletons band by band. It never gives back more than the narrowest band
+# holds, so the closest strokes of any pair stay at least the full gap apart.
+_KERN_SHARE = .55     # share of the average white given back
+_KERN_CAP = .18       # most white either side may count, in cap units
+_KERN_BANDS = tuple(round(-.3 + i * .05, 2) for i in range(34))   # accents to descenders
+
+
+def _skeleton_points(spec, steps=48):
+    toks = _STROKE_TOKEN.findall(spec)
+    pts, cur, k = [], (0.0, 0.0), 0
+    while k < len(toks):
+        t = toks[k]
+        if t == "Z":
+            k += 1; continue
+        n = {"M": 1, "L": 1, "C": 3, "D": 1}[t]
+        p = [(float(toks[k + 1 + 2 * j]), float(toks[k + 2 + 2 * j])) for j in range(n)]
+        k += 1 + 2 * n
+        if t in "MD":
+            cur = p[0]; pts.append(cur)
+        elif t == "L":
+            (x1, y1), (x0, y0) = p[0], cur
+            pts += [(x0 + (x1 - x0) * i / steps, y0 + (y1 - y0) * i / steps) for i in range(1, steps + 1)]
+            cur = p[0]
+        else:
+            a, b, c = p
+            for i in range(1, steps + 1):
+                u = i / steps; v = 1 - u
+                pts.append((v ** 3 * cur[0] + 3 * v * v * u * a[0] + 3 * v * u * u * b[0] + u ** 3 * c[0],
+                            v ** 3 * cur[1] + 3 * v * v * u * a[1] + 3 * v * u * u * b[1] + u ** 3 * c[1]))
+            cur = c
+    return pts
+
+
+@functools.lru_cache(maxsize=None)
+def _side_white(ch):
+    """({band: white left of the ink}, {band: white right of it}), in cap units."""
+    w, spec = _STROKE_LETTERS[ch]
+    pts = _skeleton_points(spec) if spec else []
+    left, right = {}, {}
+    for yb in _KERN_BANDS:
+        xs = [x for x, y in pts if abs(y - yb) <= .05]
+        if xs:
+            left[yb], right[yb] = min(xs), w - max(xs)
+    return left, right
+
+
+@functools.lru_cache(maxsize=None)
+def _pair_kern(a, b):
+    """Cap units the gap after `a` closes up when `b` follows it."""
+    if a.isdigit() and b.isdigit():
+        return 0.0                       # figures stay tabular: 24 and 42 set alike
+    ra, lb = _side_white(a)[1], _side_white(b)[0]
+    if not ra or not lb:
+        return 0.0                       # a space, or a shape with no ink
+    shared = [ra[y] + lb[y] for y in _KERN_BANDS if y in ra and y in lb]
+    bands = [y for y in _KERN_BANDS if y in ra or y in lb]
+    avg = math.fsum(min(ra.get(y, _KERN_CAP), _KERN_CAP) + min(lb.get(y, _KERN_CAP), _KERN_CAP)
+                    for y in bands) / len(bands)
+    kern = _KERN_SHARE * avg
+    if shared:
+        kern = min(kern, min(shared))
+    return math.floor(max(kern, 0.0) * 1000) / 1000   # down, never past the white
+
+
+def _line_units(line):
+    """A line's advance in cap units, the letter gaps aside."""
+    return (math.fsum(_STROKE_LETTERS[ch][0] for ch in line)
+            - math.fsum(_pair_kern(a, b) for a, b in zip(line, line[1:])))
+
+
+# Overshoot (2.1.2). A curve touches the cap line or baseline at one point
+# while a flat runs the whole way along it, so an O set exactly cap-high reads
+# smaller than the H beside it. Letters that are round at both top and foot
+# reach 1.5% past each line, scaled about the middle of their own body.
+_OVERSHOOT = .03
+_ROUND_CAPS = frozenset("OCGQS03689")
+_ROUND_LOWER = frozenset("oces")
+
+
+def _overshoot_mid(ch):
+    """(middle of the body, stretch) for `ch`: no stretch for flat letters."""
+    if ch in _ROUND_CAPS:
+        return .5, 1 + _OVERSHOOT
+    if ch in _ROUND_LOWER:
+        return .65, 1 + _OVERSHOOT     # x-height .3 to baseline 1
+    return 0.0, 1.0
+
+
 def _stroke_line(text, x0, y0, s, gap=_STROKE_GAP):
     """One line of stroke letters at scale `s`, top-left of the cap box at x0,y0.
     Returns (path d, dots [(x, y)])."""
     d, dots, x = [], [], x0
-    for ch in text:
+    for i, ch in enumerate(text):
         w, spec = _STROKE_LETTERS[ch]
+        mid, stretch = _overshoot_mid(ch)
         toks = _STROKE_TOKEN.findall(spec)
         k = 0
         while k < len(toks):
@@ -8317,19 +8413,20 @@ def _stroke_line(text, x0, y0, s, gap=_STROKE_GAP):
             n = {"M": 1, "L": 1, "C": 3, "D": 1}[t]
             pts = [(float(toks[k + 1 + 2 * j]), float(toks[k + 2 + 2 * j])) for j in range(n)]
             k += 1 + 2 * n
-            xy = [(x + px * s, y0 + py * s) for px, py in pts]
+            xy = [(x + px * s, y0 + (mid + (py - mid) * stretch) * s) for px, py in pts]
             if t == "D":
                 dots.append(xy[0])
             else:
                 d.append(t + " " + " ".join(f"{a:.1f} {b:.1f}" for a, b in xy))
-        x += w * s + gap
+        nxt = text[i + 1] if i + 1 < len(text) else None
+        x += w * s + gap - (_pair_kern(ch, nxt) * s if nxt else 0)
     return " ".join(d), dots
 
 
 def _stroke_px(text, s, gap=_STROKE_GAP):
     # math.fsum, not sum: CPython 3.12 made sum() compensated, so the two
     # disagree in the last bit and a .x5 coordinate rounds differently in CI.
-    return math.fsum(_STROKE_LETTERS[ch][0] for ch in text) * s + gap * (len(text) - 1)
+    return _line_units(text) * s + gap * (len(text) - 1)
 
 
 def _stroke_fit(text, box, gap=_STROKE_GAP):
@@ -8341,7 +8438,7 @@ def _stroke_fit(text, box, gap=_STROKE_GAP):
     desc = any(ch in "gjpqy" for ch in lines[-1])
     s = (by1 - by0 - 44 * (len(lines) - 1)) / (len(lines) * letter_body(text) + (.34 if desc else 0))
     for line in lines:
-        units_w = math.fsum(_STROKE_LETTERS[ch][0] for ch in line) or .01
+        units_w = _line_units(line) or .01
         s = min(s, (bx1 - bx0 - gap * (len(line) - 1)) / units_w)
     return s
 
@@ -8381,7 +8478,9 @@ def stroke_label_metrics(size):
     # .19 of the cap sits a step under the glyph's own banner stroke (34 on
     # the 512 grid at 360 = 24), so the mark leads and the name follows;
     # spacing opens with the weight so counters and gaps stay level.
-    return cap, min(24.0, max(8.0, .19 * cap)), .36 * cap, .3 * cap
+    # Gap .3 of the cap since 2.1.2, the icons' own _WM_SPACING ratio: at .36
+    # names tracked out wider than the same letters inside the marks.
+    return cap, min(24.0, max(8.0, .19 * cap)), _WM_SPACING[0] * cap, .3 * cap
 
 
 def stroke_label_width(text, size, gap=None):
@@ -8495,8 +8594,7 @@ def _settle(text, max_w, cap_h):
     """(cap, gap) for `text` held to `max_w` and to `cap_h` of letter size."""
     body = letter_body(text)
     gap = _STROKE_GAP
-    units = max(math.fsum(_STROKE_LETTERS[ch][0] for ch in line)
-                for line in text.split("/")) or .01
+    units = max(_line_units(line) for line in text.split("/")) or .01
     longest = max(len(line) for line in text.split("/"))
     for _ in range(3):
         cap = min(min(cap_h, _WM_CAP_MAX) / body, (max_w - gap * (longest - 1)) / units)
@@ -8759,5 +8857,69 @@ _WM3 = {
     "oktv22": ("OK", None), "onepixmedia": ("PIX", "dot"), "apksrebrand": ("PL", "play"),
     "sportseverywhere": ("4V", "under"), "xtreamplayeranddownloader": ("9X", None),
     "animetv": ("Anime/TV", None),
+    # 2.1.2: HBO Max is HBO Max again; its stacked HBO over lowercase max.
+    "max": ("HBO/max", None),
 }
 GLYPHS.update({f"{d}_wm": _wm_glyph(t, cue) for d, (t, cue) in _WM3.items()})
+
+
+# --------------------------------------------------------------------------
+# 2.1.2 requests: Pocket Casts (#257) and Silo (#258). Drawn on the pack
+# grid from each brand's published mark, as reference only; not traced.
+# --------------------------------------------------------------------------
+def pocketcasts_arcs(c):
+    """Pocket Casts: the disc with two concentric arcs, each a three-quarter
+    turn left open at the lower right. The disc is a Core stroke ring; the
+    arcs run from three o'clock round over the top to six o'clock."""
+    def arc(r):
+        return f"M {256 + r} 256 A {r} {r} 0 1 0 256 {256 + r}"
+    return (f'<circle cx="256" cy="256" r="184" {_s(c, 32)}/>'
+            f'<path d="{arc(118)}" {_s(c, 26.2)}/>'
+            f'<path d="{arc(54)}" {_s(c, 26.2)}/>')
+
+
+def silo_tower(c):
+    """Silo: the silo itself - a domed storage tower holding the library.
+
+    Silo is a self-hosted media server for films, series, audiobooks,
+    ebooks, podcasts and manga, "built like infrastructure" from one box to a
+    cluster. Its logo stacks a play on three slanted bars; here those bars are
+    what they resemble, the rings of a cylinder seen from just above, banding
+    a tower whose top tier holds the play. Original geometry on the pack
+    grid, not a trace of the Silo mark (a Silo Media L.L.C. trademark)."""
+    tower = ("M 132 184 A 124 100 0 0 1 380 184 L 380 420 "
+             "A 124 28 0 0 1 132 420 Z")
+    play = "M 230 200 L 230 272 L 298 236 Z"
+    rings = "".join(f'<path d="M 132 {y} A 124 24 0 0 0 380 {y}" {_s(c, 26.2)}/>' for y in (300, 360))
+    return f'<path d="{tower}" {_s(c, 32)}/><path d="{play}" {_s(c, 26.2)}/>{rings}'
+
+
+def tivimate_guide(c):
+    """TiviMate: the guide, with the tick on now.
+
+    TiviMate is an IPTV player for Android TV whose centre is its TV guide:
+    the full schedule "in a fast, clear grid". The frame is that grid - a
+    channel column and three programme rows - and the slot playing now
+    carries the one distinctive stroke of TiviMate's logo, the v drawn as a
+    tick. Original geometry on the pack grid; the logo is reference only."""
+    return (f'<rect x="56" y="104" width="400" height="304" rx="40" {_s(c, 32)}/>'
+            f'<path d="M 152 104 L 152 408" {_s(c, 21.8)}/>'
+            f'<path d="M 152 205 L 456 205 M 152 307 L 456 307" {_s(c, 21.8)}/>'
+            f'<path d="M 214 248 L 248 280 L 304 228" {_s(c, 26.2)}/>'
+            f'<path d="M 340 254 L 404 254" {_s(c, 21.8)}/>'
+            f'<path d="M 200 156 L 300 156 M 200 358 L 260 358" {_s(c, 21.8)}/>')
+
+
+def flixvision_f(c):
+    """Flix Vision: a ring round an italic F whose stem sweeps up into its top
+    arm. The app's logo is a thin purple ring holding a leaning, folded F; the
+    pack had drawn it as a red film reel. Here the stem and top arm are one
+    rising curve and the bar a shorter one beneath it, on the pack's stroke
+    widths. Original geometry; the logo is reference only."""
+    return (f'<circle cx="256" cy="256" r="190" {_s(c, 26)}/>'
+            f'<path d="M 186 362 C 204 284 214 214 240 176 C 252 158 268 152 290 152 L 348 152" {_s(c, 34)}/>'
+            f'<path d="M 208 258 C 224 248 240 244 262 244 L 322 244" {_s(c, 34)}/>')
+
+
+GLYPHS.update({"pocketcasts_arcs": pocketcasts_arcs, "silo_tower": silo_tower,
+               "tivimate_guide": tivimate_guide, "flixvision_f": flixvision_f})

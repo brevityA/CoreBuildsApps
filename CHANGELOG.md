@@ -6,12 +6,49 @@ All notable changes to the Core Builds Icon Pack. Format follows
 
 ## [Unreleased]
 
+## [2.1.2] — 2026-10-07
+
 ### Changed
 
 - **Banners give the mark and name more room.** A follow-up 5% increase brings
   the mark/name size caps to about 15% above v2.1.1 overall for better
   shelf-distance legibility. Categories, accents, transparency, square glyphs,
   mappings and wallpapers are unchanged.
+- **Max is HBO Max again.** The card says HBO Max, the service's own name
+  since 2025, its mark is HBO stacked over lowercase max in the pack's stroke
+  letters instead of a lone arc, and it applies to the `com.wbd.hbomax` build that launches
+  `com.wbd.beam.BeamActivity` (#256).
+- **TiviMate gets a mark of its own.** Its card was a generic TV with a
+  guide grid in a borrowed blue. It is now TiviMate's guide - channel column
+  and programme rows - with the tick-shaped v from its logo on the slot
+  playing now, in the light blue `#97C1FF` of its launcher icon.
+- **YouTube red is current.** YouTube, YouTube Music, YouTube Kids and
+  YouTube TV move from `#FF0000` to YouTube Red `#FF0033`, the primary red in
+  Google's own YouTube brand palette.
+- **Aurora Store applies again.** Current builds launch
+  `com.aurora.store.ComposeActivity`; it is mapped beside `.MainActivity`
+  (#255).
+- **Letters are spaced by their shapes.** Every name on a banner and every
+  letter in an icon used one gap, measured box edge to box edge, so open
+  pairs such as `To`, `LY` and `Pa` set looser than `HH`. Each pair now closes
+  up by part of the white its shapes leave, never past the full gap at its
+  narrowest point; figures stay evenly spaced. Lowercase `l` gains a foot, so
+  it no longer draws the same stem as capital `I`. Round letters (`O C G Q S
+  0 3 6 8 9 o c e s`) reach 1.5% past the cap line and baseline so they stand
+  as tall as the flat letters beside them, and banner names track at .3 of
+  the cap, the same gap the marks use, instead of .36.
+- **Flix Vision looks like Flix Vision.** Its card was a red-orange film
+  reel the app has never used. It is now a ring round a leaning F whose stem
+  sweeps into its top arm, after the app's ringed F, in its logo purple
+  `#866EAD`.
+
+### Added
+
+- **Pocket Casts** (#257): the disc with its two open arcs, in Pocket Casts
+  red.
+- **Silo** (#258): a domed storage tower for the self-hosted media server,
+  its play in the top tier and its logo's slanted bars drawn as the tower's
+  rings, in Silo blue with the rings in its pink.
 
 ## [2.1.1] — 2026-10-05
 

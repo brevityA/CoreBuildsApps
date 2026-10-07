@@ -2,11 +2,11 @@
   "$schema": "./catalog.schema.json",
   "meta": {
     "pack": "Core Builds Icon Pack",
-    "version": "2.1.1",
+    "version": "2.1.2",
     "grid": 512,
     "safe_area": 432,
     "note": "Core Builds-authored geometric icons on a shared 512 grid. Reviewed brand glyphs use rounded monoline strokes and one accent, not imported vendor silhouettes. Common Outfit/category/rail banners; artwork is reference-only. Canonical brand colours and the dark-card contrast policy remain shared.",
-    "count": 981
+    "count": 983
   },
   "icons": [
     {
@@ -926,11 +926,13 @@
       "color": "#00C2FF",
       "glyph": "store_bag",
       "components": [
-        "com.aurora.store/.MainActivity"
+        "com.aurora.store/.MainActivity",
+        "com.aurora.store/com.aurora.store.ComposeActivity"
       ],
       "category": "STORE",
       "color_source": "brand reference (pre-provenance, unverified)",
-      "color_reviewed": null
+      "color_reviewed": null,
+      "mapping_source": "issue #255 (device-reported on Google TV Streamer, Android 14, pack 2.1.1): current Aurora Store builds launch com.aurora.store.ComposeActivity"
     },
     {
       "name": "Void",
@@ -3504,14 +3506,15 @@
     {
       "name": "Flix Vision",
       "drawable": "flix_vision",
-      "color": "#E5533D",
-      "glyph": "film_reel",
+      "color": "#866EAD",
+      "glyph": "flixvision_f",
       "components": [
         "flix.com.vision/.activities.SplashScreenActivity"
       ],
       "category": "STREAM",
-      "color_source": "brand reference (pre-provenance, unverified)",
-      "color_reviewed": null
+      "color_source": "sampled from the Projectivy Icon Pack artwork for flix.com.vision (github.com/SicMundus86/ProjectivyIconPack, reference only): the logo ring's purple #866EAD, replacing a pre-provenance red-orange #E5533D the logo never used (2026-10-07)",
+      "color_reviewed": "2026-10-07",
+      "glyph_source": "original mark from the Projectivy Icon Pack artwork for flix.com.vision (reference only): a ring round a leaning F whose stem sweeps into its top arm, after the logo's ringed, folded F; not the vendor geometry (2026-10-07)"
     },
     {
       "name": "FlixNest",
@@ -5959,20 +5962,24 @@
       "style": "core_monoline"
     },
     {
-      "name": "Max",
+      "name": "HBO Max",
       "drawable": "max",
       "color": "#0046FF",
-      "glyph": "max_wave",
+      "glyph": "max_wm",
       "components": [
         "com.wbd.stream/.MainActivity",
         "com.hbo.hbonow/.MainActivity",
         "com.wbd.hbomax/.MainActivity",
         "com.wbd.hbomax/com.wbd.hbomax.MainActivity",
-        "com.wbd.stream/com.wbd.beam.BeamActivity"
+        "com.wbd.stream/com.wbd.beam.BeamActivity",
+        "com.wbd.hbomax/com.wbd.beam.BeamActivity"
       ],
       "category": "VOD",
       "color_source": "brand reference (pre-provenance, unverified)",
-      "color_reviewed": null
+      "color_reviewed": null,
+      "mapping_source": "issue #256 (device-reported on Google TV Streamer, Android 14, pack 2.1.1): com.wbd.beam.BeamActivity is the launch activity of com.wbd.hbomax",
+      "name_source": "the service's own name since its 2025 return from Max to HBO Max; the package id com.wbd.hbomax and issue #256 both name it HBO Max (2026-10-07)",
+      "glyph_source": "wordmark cue from the HBO Max logo since its 2025 return to the HBO Max name: HBO stacked over lowercase max in the pack's stroke letters, replacing the lone Max wave (2026-10-07)"
     },
     {
       "name": "Rover's Morning Glory",
@@ -11060,15 +11067,16 @@
     {
       "name": "TiviMate",
       "drawable": "tvplayer",
-      "color": "#028AD5",
-      "glyph": "tivimate_grid",
+      "color": "#97C1FF",
+      "glyph": "tivimate_guide",
       "components": [
         "ar.tvplayer.tv/ar.tvplayer.tv.ui.MainActivity",
         "ar.tvplayer.tv/.ui.MainActivity"
       ],
       "category": "LIVE",
-      "color_source": "colour sweep: sampled from the Projectivy Icon Pack 1.1.9 artwork for ar.tvplayer.tv (github.com/SicMundus86/ProjectivyIconPack, used as reference only), the logo's dominant hue #028AD5, replacing an accent that did not match it (2026-09-28)",
-      "color_reviewed": "2026-09-28"
+      "color_source": "sampled from the official launcher icon (Google Play listing for ar.tvplayer.tv, 512px): the 'tivi' wordmark's light blue #97C1FF, the icon's dominant ink; #028AD5 came from third-party artwork (2026-10-07)",
+      "color_reviewed": "2026-10-07",
+      "glyph_source": "original Core mark from research into TiviMate (Google Play listing for ar.tvplayer.tv: an IPTV player built around its TV guide grid, reference only): the guide's channel column and programme rows, with the logo's tick-shaped v on the slot playing now; not a trace (2026-10-07)"
     },
     {
       "name": "TizenTube",
@@ -11491,14 +11499,14 @@
     {
       "name": "YouTube TV",
       "drawable": "tvunplugged",
-      "color": "#FF0000",
+      "color": "#FF0033",
       "glyph": "iptv_player",
       "components": [
         "com.google.android.youtube.tvunplugged/com.google.android.apps.youtube.tvunplugged.activity.MainActivity"
       ],
       "category": "VIDEO",
-      "color_source": "colour sweep: sampled from the Projectivy Icon Pack 1.1.9 artwork for com.google.android.youtube.tvunplugged (github.com/SicMundus86/ProjectivyIconPack, used as reference only), the logo's dominant hue #FF0000, replacing an accent that did not match it (2026-09-28)",
-      "color_reviewed": "2026-09-28",
+      "color_source": "YouTube Red #FF0033, the logo palette's primary red in Google's YouTube brand palette (partnermarketinghub.withgoogle.com, YouTube Kids visual identity), which replaced #FF0000 (2026-10-07)",
+      "color_reviewed": "2026-10-07",
       "name_source": "app name from the Projectivy Icon Pack 1.1.9 artwork for com.google.android.youtube.tvunplugged (github.com/SicMundus86/ProjectivyIconPack, used as reference only), which shows the YouTube TV logo for this package (2026-09-27)"
     },
     {
@@ -12994,7 +13002,7 @@
     {
       "name": "YouTube",
       "drawable": "youtube",
-      "color": "#FF0000",
+      "color": "#FF0033",
       "secondary": {
         "color": "#E6EDF3",
         "parts": [
@@ -13010,13 +13018,13 @@
       "category": "VIDEO",
       "brand": "youtube",
       "style": "core_monoline",
-      "color_source": "brand reference (pre-provenance, unverified)",
-      "color_reviewed": null
+      "color_source": "YouTube Red #FF0033, the logo palette's primary red in Google's YouTube brand palette (partnermarketinghub.withgoogle.com, YouTube Kids visual identity), which replaced #FF0000 (2026-10-07)",
+      "color_reviewed": "2026-10-07"
     },
     {
       "name": "YouTube Kids",
       "drawable": "youtube_2",
-      "color": "#FF0000",
+      "color": "#FF0033",
       "glyph": "yt_kids",
       "components": [
         "com.google.android.youtube.tvkids/com.google.android.apps.youtube.tvkids.activity.MainActivity"
@@ -13024,13 +13032,13 @@
       "category": "VIDEO",
       "brand": "youtubekids",
       "style": "core_monoline",
-      "color_source": "brand reference (pre-provenance, unverified)",
-      "color_reviewed": null
+      "color_source": "YouTube Red #FF0033, the logo palette's primary red in Google's YouTube brand palette (partnermarketinghub.withgoogle.com, YouTube Kids visual identity), which replaced #FF0000 (2026-10-07)",
+      "color_reviewed": "2026-10-07"
     },
     {
       "name": "YouTube Music",
       "drawable": "tvmusic",
-      "color": "#FF0000",
+      "color": "#FF0033",
       "glyph": "yt_music",
       "components": [
         "com.google.android.youtube.tvmusic/com.google.android.apps.youtube.tvmusic.activity.MainActivity"
@@ -13038,8 +13046,8 @@
       "category": "MUSIC",
       "brand": "youtubemusic",
       "style": "core_monoline",
-      "color_source": "brand reference (pre-provenance, unverified)",
-      "color_reviewed": null
+      "color_source": "YouTube Red #FF0033, the logo palette's primary red in Google's YouTube brand palette (partnermarketinghub.withgoogle.com, YouTube Kids visual identity), which replaced #FF0000 (2026-10-07)",
+      "color_reviewed": "2026-10-07"
     },
     {
       "name": "YoWindow",
@@ -13819,6 +13827,42 @@
           3
         ],
         "source": "the same Play listing icon: the violet #9058F8 tiles on the right of the patchwork (2026-10-03)"
+      }
+    },
+    {
+      "name": "Pocket Casts",
+      "drawable": "pocketcasts",
+      "color": "#F43E37",
+      "glyph": "pocketcasts_arcs",
+      "components": [
+        "au.com.shiftyjelly.pocketcasts/au.com.shiftyjelly.pocketcasts.TvActivity"
+      ],
+      "category": "MUSIC",
+      "mapping_source": "issue #257 (device-reported on Google TV Streamer, Android 14, pack 2.1.1): TvActivity is the TV launch activity of au.com.shiftyjelly.pocketcasts",
+      "color_source": "Pocket Casts red #F43E37, as Simple Icons records it from the Pocket Casts press page (blog.pocketcasts.com/press) (2026-10-07)",
+      "color_reviewed": "2026-10-07",
+      "glyph_source": "brand-informed redraw of the Pocket Casts mark (Simple Icons pocketcasts.svg, reference only): a Core stroke ring around two concentric three-quarter arcs open at the lower right, drawn on the pack grid, not traced (2026-10-07)"
+    },
+    {
+      "name": "Silo",
+      "drawable": "silo",
+      "color": "#0034FB",
+      "glyph": "silo_tower",
+      "components": [
+        "org.siloserver.silo/org.siloserver.silo.tv.MainTvActivity"
+      ],
+      "category": "MEDIA",
+      "mapping_source": "issue #258 (device-reported on Smart TV, Android 12, pack 2.1.1; #259 is its duplicate): MainTvActivity is the Android TV launch activity of org.siloserver.silo, the Silo media server client",
+      "color_source": "Silo brand blue #0034FB from the official wordmark (siloserver.org/brand/silo-wordmark-dark.svg, (c) Silo Media L.L.C., reference only) (2026-10-07)",
+      "color_reviewed": "2026-10-07",
+      "glyph_source": "original Core mark from research into Silo (siloserver.org, github.com/Silo-Server/silo-server, reference only): a self-hosted media library 'built like infrastructure', drawn as a domed storage tower with the play in its top tier and the logo's slanted bars read as the tower's rings; not a trace of the Silo mark (2026-10-07)",
+      "secondary": {
+        "color": "#F50B4F",
+        "parts": [
+          2,
+          3
+        ],
+        "source": "the Silo mark's lower bars: pink #F50B4F, here the tower's two rings (its third bar's orange #FA7604 is folded into the one secondary paint) (2026-10-07)"
       }
     }
   ],

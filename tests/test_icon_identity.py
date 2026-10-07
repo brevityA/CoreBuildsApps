@@ -285,7 +285,10 @@ class IdentityTests(unittest.TestCase):
     def test_youtube_play_counter_is_really_transparent(self):
         image = Image.open(art_path(NODPI, "youtube", ALIASES)).convert("RGBA")
         self.assertEqual(image.getpixel((256, 256))[3], 0)
-        self.assertEqual(image.getpixel((64, 256))[:3], (255, 0, 0))
+        # The ring wears the catalog's YouTube red (#FF0033 since 2.1.2).
+        red = next(i["color"] for i in ICONS if i["drawable"] == "youtube")
+        self.assertEqual(image.getpixel((64, 256))[:3],
+                         tuple(int(red[k:k + 2], 16) for k in (1, 3, 5)))
         self.assertEqual(image.getpixel((0, 0))[3], 0)
         self.assertEqual(image.getpixel((100, 256))[3], 0)  # no solid button fill
         for background in ("#334155", "#7C3AED"):

@@ -63,6 +63,7 @@
     <item drawable="kodi_banner" />
     <item drawable="mediabrowser_banner" />
     <item drawable="plex_banner" />
+    <item drawable="silo_banner" />
     <category title="Banners · On demand" />
     <item drawable="tenplay_banner" />
     <item drawable="sevenplus_banner" />
@@ -85,12 +86,12 @@
     <item drawable="discovery_banner" />
     <item drawable="discoveryplus_banner" />
     <item drawable="disneyplus_banner" />
+    <item drawable="max_banner" />
     <item drawable="heatvod_banner" />
     <item drawable="heatvod_ultra_banner" />
     <item drawable="watcher_banner" />
     <item drawable="livingroomplus_banner" />
     <item drawable="kayo_banner" />
-    <item drawable="max_banner" />
     <item drawable="mubi_banner" />
     <item drawable="netflix_banner" />
     <item drawable="nordiskfilmplus_banner" />
@@ -201,6 +202,7 @@
     <item drawable="metrolist_banner" />
     <item drawable="appgeneration_banner" />
     <item drawable="pandora_banner" />
+    <item drawable="pocketcasts_banner" />
     <item drawable="podcastaddict_banner" />
     <item drawable="poweramp_eq_banner" />
     <item drawable="music_banner" />

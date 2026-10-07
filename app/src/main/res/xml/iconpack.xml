@@ -312,6 +312,7 @@
     <item drawable="androidapp" />
     <item drawable="haystack" />
     <item drawable="hayu" />
+    <item drawable="max" />
     <item drawable="hd_streamz" />
     <item drawable="hdhomerun" />
     <item drawable="hdmi_source" />
@@ -434,7 +435,6 @@
     <item drawable="intl" />
     <item drawable="materialfiles" />
     <item drawable="matvt_mouse_for_android_tv_toggle" />
-    <item drawable="max" />
     <item drawable="maxplayer" />
     <item drawable="powerpoint45" />
     <item drawable="mecool_file_manager" />
@@ -593,6 +593,7 @@
     <item drawable="plexamp" />
     <item drawable="pluto_tv" />
     <item drawable="pmx" />
+    <item drawable="pocketcasts" />
     <item drawable="podcastaddict" />
     <item drawable="polsat_box_go" />
     <item drawable="poweramp_eq" />
@@ -695,6 +696,7 @@
     <item drawable="showmax" />
     <item drawable="dramafever" />
     <item drawable="sideload_launcher" />
+    <item drawable="silo" />
     <item drawable="androidtv" />
     <item drawable="sirius" />
     <item drawable="sky_news" />
