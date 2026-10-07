@@ -8761,8 +8761,6 @@ _WM3 = {
     "animetv": ("Anime/TV", None),
     # 2.1.2: HBO Max is HBO Max again; its stacked HBO over lowercase max.
     "max": ("HBO/max", None),
-    # 2.1.2: TiviMate's own lockup, tivi stacked over mate (its Play icon).
-    "tvplayer": ("tivi/mate", None),
 }
 GLYPHS.update({f"{d}_wm": _wm_glyph(t, cue) for d, (t, cue) in _WM3.items()})
 
@@ -8798,4 +8796,21 @@ def silo_tower(c):
     return f'<path d="{tower}" {_s(c, 32)}/><path d="{play}" {_s(c, 26.2)}/>{rings}'
 
 
-GLYPHS.update({"pocketcasts_arcs": pocketcasts_arcs, "silo_tower": silo_tower})
+def tivimate_guide(c):
+    """TiviMate: the guide, with the tick on now.
+
+    TiviMate is an IPTV player for Android TV whose centre is its TV guide:
+    the full schedule "in a fast, clear grid". The frame is that grid - a
+    channel column and three programme rows - and the slot playing now
+    carries the one distinctive stroke of TiviMate's logo, the v drawn as a
+    tick. Original geometry on the pack grid; the logo is reference only."""
+    return (f'<rect x="56" y="104" width="400" height="304" rx="40" {_s(c, 32)}/>'
+            f'<path d="M 152 104 L 152 408" {_s(c, 21.8)}/>'
+            f'<path d="M 152 205 L 456 205 M 152 307 L 456 307" {_s(c, 21.8)}/>'
+            f'<path d="M 214 248 L 248 280 L 304 228" {_s(c, 26.2)}/>'
+            f'<path d="M 340 254 L 404 254" {_s(c, 21.8)}/>'
+            f'<path d="M 200 156 L 300 156 M 200 358 L 260 358" {_s(c, 21.8)}/>')
+
+
+GLYPHS.update({"pocketcasts_arcs": pocketcasts_arcs, "silo_tower": silo_tower,
+               "tivimate_guide": tivimate_guide})

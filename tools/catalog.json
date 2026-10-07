@@ -11067,7 +11067,7 @@
       "name": "TiviMate",
       "drawable": "tvplayer",
       "color": "#97C1FF",
-      "glyph": "tvplayer_wm",
+      "glyph": "tivimate_guide",
       "components": [
         "ar.tvplayer.tv/ar.tvplayer.tv.ui.MainActivity",
         "ar.tvplayer.tv/.ui.MainActivity"
@@ -11075,7 +11075,7 @@
       "category": "LIVE",
       "color_source": "sampled from the official launcher icon (Google Play listing for ar.tvplayer.tv, 512px): the 'tivi' wordmark's light blue #97C1FF, the icon's dominant ink; #028AD5 came from third-party artwork (2026-10-07)",
       "color_reviewed": "2026-10-07",
-      "glyph_source": "wordmark cue from the official launcher icon (Google Play listing for ar.tvplayer.tv, reference only): tivi stacked over mate in the pack's stroke letters, replacing a generic TV-and-guide-grid mark (2026-10-07)"
+      "glyph_source": "original Core mark from research into TiviMate (Google Play listing for ar.tvplayer.tv: an IPTV player built around its TV guide grid, reference only): the guide's channel column and programme rows, with the logo's tick-shaped v on the slot playing now; not a trace (2026-10-07)"
     },
     {
       "name": "TizenTube",
