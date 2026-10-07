@@ -660,7 +660,13 @@ def apply_secondary(body, color, secondary):
             return tag
         return (tag.replace(f'stroke="{color}"', f'stroke="{paint}"')
                 .replace(f'fill="{color}"', f'fill="{paint}"'))
-    return _PRIMITIVE_RE.sub(repaint, body)
+    body = _PRIMITIVE_RE.sub(repaint, body)
+    # A third brand colour rides inside the secondary (see secondary_errors),
+    # so every caller that paints a duotone paints the tritone too. Its parts
+    # are disjoint from the secondary's, so they still carry the accent here.
+    if secondary.get("tertiary"):
+        body = apply_secondary(body, color, secondary["tertiary"])
+    return body
 
 
 def primitive_count(body):
@@ -682,8 +688,8 @@ def secondary_errors(icon):
     if not isinstance(sec, dict):
         return ["secondary must be {color, parts, source}"]
     errors = []
-    if set(sec) - {"color", "parts", "source"}:
-        errors.append(f"secondary has unknown keys {sorted(set(sec) - {'color', 'parts', 'source'})}")
+    if set(sec) - {"color", "parts", "source", "tertiary"}:
+        errors.append(f"secondary has unknown keys {sorted(set(sec) - {'color', 'parts', 'source', 'tertiary'})}")
     if not re.fullmatch(r"#[0-9A-Fa-f]{6}", str(sec.get("color", ""))):
         return errors + ["secondary color must be #RRGGBB"]
     if not str(sec.get("source", "")).strip():
@@ -711,6 +717,43 @@ def secondary_errors(icon):
         elif len(parts) >= count:
             errors.append(f"secondary repaints every part of '{glyph}' - "
                           "that is a recolour, not a duotone")
+    return errors + _tertiary_errors(icon, sec, accent)
+
+
+def _tertiary_errors(icon, sec, accent):
+    """A third brand colour (2.1.2, Silo only - see test_icon_identity): the
+    same contract as the secondary, on parts of its own, and the accent must
+    still own at least one part, or the mark is a recolour."""
+    ter = sec.get("tertiary")
+    if ter is None:
+        return []
+    if not isinstance(ter, dict) or set(ter) - {"color", "parts", "source"}:
+        return ["tertiary must be {color, parts, source}"]
+    if not re.fullmatch(r"#[0-9A-Fa-f]{6}", str(ter.get("color", ""))):
+        return ["tertiary color must be #RRGGBB"]
+    errors = []
+    if not str(ter.get("source", "")).strip():
+        errors.append("tertiary carries no source - where was the third brand colour seen?")
+    paint = secondary_paint(ter).upper()
+    if paint in (accent.upper(), secondary_paint(sec).upper()):
+        errors.append("tertiary renders the same as the accent or the secondary")
+    parts = ter.get("parts")
+    if (not isinstance(parts, list) or not parts
+            or not all(isinstance(k, int) and not isinstance(k, bool) for k in parts)
+            or len(set(parts)) != len(parts)):
+        return errors + ["tertiary parts must be a non-empty list of distinct part indexes"]
+    if set(parts) & set(sec.get("parts") or []):
+        errors.append("tertiary and secondary parts overlap")
+    for glyph in {icon.get("glyph"), icon.get("banner_glyph") or icon.get("glyph")}:
+        if glyph not in GLYPHS:
+            continue
+        count = primitive_count(monoline(family_body(glyph, accent, icon.get("mark"),
+                                                     icon.get("mark_style"))))
+        if min(parts) < 0 or max(parts) >= count:
+            errors.append(f"tertiary parts {parts} out of range for '{glyph}' ({count} parts)")
+        elif len(set(parts) | set(sec.get("parts") or [])) >= count:
+            errors.append(f"secondary and tertiary repaint every part of '{glyph}' - "
+                          "the accent must keep one")
     return errors
 
 
@@ -720,6 +763,19 @@ def secondary_color(icon):
     if not sec or secondary_errors(icon) or icon.get("color_note") == "monochrome":
         return None
     return secondary_paint(sec)
+
+
+def tertiary_color(icon):
+    """The drawn third paint an icon declares, or None."""
+    if not secondary_color(icon):
+        return None
+    ter = icon["secondary"].get("tertiary")
+    return secondary_paint(ter) if ter else None
+
+
+def declared_paints(icon):
+    """Every extra paint an icon declares beyond its accent, in order."""
+    return [p for p in (secondary_color(icon), tertiary_color(icon)) if p]
 
 
 def gradient_defs(stops, y0=80, y1=432, gid="cbGrad"):
@@ -8878,20 +8934,20 @@ def pocketcasts_arcs(c):
             f'<path d="{arc(54)}" {_s(c, 26.2)}/>')
 
 
-def silo_tower(c):
-    """Silo: the silo itself - a domed storage tower holding the library.
-
-    Silo is a self-hosted media server for films, series, audiobooks,
-    ebooks, podcasts and manga, "built like infrastructure" from one box to a
-    cluster. Its logo stacks a play on three slanted bars; here those bars are
-    what they resemble, the rings of a cylinder seen from just above, banding
-    a tower whose top tier holds the play. Original geometry on the pack
-    grid, not a trace of the Silo mark (a Silo Media L.L.C. trademark)."""
-    tower = ("M 132 184 A 124 100 0 0 1 380 184 L 380 420 "
-             "A 124 28 0 0 1 132 420 Z")
-    play = "M 230 200 L 230 272 L 298 236 Z"
-    rings = "".join(f'<path d="M 132 {y} A 124 24 0 0 0 380 {y}" {_s(c, 26.2)}/>' for y in (300, 360))
-    return f'<path d="{tower}" {_s(c, 32)}/><path d="{play}" {_s(c, 26.2)}/>{rings}'
+def silo_stack(c):
+    """Silo: its own logo, flattened - the play on a stack of three slotted
+    bars rising to the right. Silo's mark is already flat geometry, so the
+    pack keeps its shape and its three colours (blue play and top bar, pink
+    middle, orange foot: catalog secondary and tertiary) and draws it in the
+    pack's line: each bar an outlined parallelogram whose open centre is the
+    slot. Original strokes on the pack grid, not a trace of the Silo mark
+    (a Silo Media L.L.C. trademark). Replaces 2.1.2's storage tower after
+    community feedback that the logo itself should lead."""
+    play = "M 183 57 L 183 151 L 297 104 Z"
+    bars = "".join(
+        f'<path d="M 181 {207 + y} L 331 {181 + y} L 331 {233 + y} L 181 {259 + y} Z" {_s(c, 26.2)}/>'
+        for y in (0, 96, 192))
+    return f'<path d="{play}" {_s(c, 32)}/>{bars}'
 
 
 def tivimate_guide(c):
@@ -8921,5 +8977,5 @@ def flixvision_f(c):
             f'<path d="M 208 258 C 224 248 240 244 262 244 L 322 244" {_s(c, 34)}/>')
 
 
-GLYPHS.update({"pocketcasts_arcs": pocketcasts_arcs, "silo_tower": silo_tower,
+GLYPHS.update({"pocketcasts_arcs": pocketcasts_arcs, "silo_stack": silo_stack,
                "tivimate_guide": tivimate_guide, "flixvision_f": flixvision_f})

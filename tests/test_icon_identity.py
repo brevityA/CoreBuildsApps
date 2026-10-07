@@ -24,7 +24,8 @@ import brandmarks
 from build_banners import render, render_glyph_only
 from build_icons import validate
 from drawable_art import art_path, read_aliases
-from glyphs import GLYPHS, monoline, render_svg, secondary_color, secondary_errors
+from glyphs import (GLYPHS, declared_paints, monoline, render_svg, secondary_color,
+                    secondary_errors, tertiary_color)
 from icon_style import (CARD, CORE_MONOLINE, CORE_STROKES, LIGHT_INK, MIN_CONTRAST,
                         core_monoline_errors, contrast, display_accent)
 from inspect_icon_apk import activity_name, launcher_components, resource_path
@@ -411,7 +412,7 @@ class CoreStyleTests(unittest.TestCase):
             self.assertEqual(core_monoline_errors(
                 body, display_accent(icon["color"]),
                 gradient=bool(icon.get("gradient")), ink=icon.get("ink"),
-                secondary=secondary_color(icon)), [], icon["name"])
+                secondary=declared_paints(icon)), [], icon["name"])
 
     def test_standard_banner_recipe_is_used_for_every_revised_app(self):
         from build_banners import recentre
@@ -797,7 +798,11 @@ class DuotoneTests(unittest.TestCase):
                 self.assertEqual(
                     [k for k, p in enumerate(drawn) if p == paint],
                     sorted(icon["secondary"]["parts"]))
-                self.assertTrue(all(p in (accent, paint) for p in drawn), drawn)
+                third = tertiary_color(icon)
+                if third:
+                    self.assertEqual([k for k, p in enumerate(drawn) if p == third],
+                                     sorted(icon["secondary"]["tertiary"]["parts"]))
+                self.assertTrue(all(p in (accent, paint, third) for p in drawn), drawn)
 
     def test_shipped_square_and_banner_carry_the_duotone(self):
         for icon in self.DUO:
@@ -848,6 +853,40 @@ class DuotoneTests(unittest.TestCase):
         self.assertTrue(secondary_errors(with_gradient))
         mono = dict(copy.deepcopy(base), color_note="monochrome")
         self.assertTrue(secondary_errors(mono))
+
+    def test_a_third_colour_is_silo_only(self):
+        # 2.1.2: Silo's logo is blue, pink and orange bars, and folding the
+        # orange into the pink lost it. A tertiary is a deliberate exception:
+        # widening it to another icon means changing this list on purpose.
+        tri = {i["name"] for i in ICONS if (i.get("secondary") or {}).get("tertiary")}
+        self.assertEqual(tri, {"Silo"})
+        silo = next(i for i in ICONS if i["name"] == "Silo")
+        self.assertEqual(declared_paints(silo),
+                         [display_accent("#F50B4F"), display_accent("#FA7604")])
+        for kind in ("svg", "banners"):
+            text = (ROOT / "assets" / kind / "silo.svg").read_text()
+            for paint in [display_accent(silo["color"])] + declared_paints(silo):
+                self.assertIn(f'stroke="{paint}"', text, kind)
+
+    def test_unsound_tertiaries_are_refused(self):
+        base = copy.deepcopy(next(i for i in ICONS if i["name"] == "Silo"))
+        cases = {
+            "no source": {"source": ""},
+            "overlaps secondary": {"parts": [2]},
+            "takes the accent's last part": None,
+            "out of range": {"parts": [9]},
+            "same as secondary": {"color": base["secondary"]["color"]},
+            "bad hex": {"color": "orange"},
+        }
+        for label, change in cases.items():
+            with self.subTest(case=label):
+                icon = copy.deepcopy(base)
+                if change is None:
+                    icon["secondary"]["parts"] = [0, 1]
+                    icon["secondary"]["tertiary"]["parts"] = [2, 3]
+                else:
+                    icon["secondary"]["tertiary"].update(change)
+                self.assertTrue(secondary_errors(icon), label)
 
     def test_monochrome_rendering_ignores_a_secondary(self):
         yt = next(i for i in self.DUO if i["name"] == "YouTube")

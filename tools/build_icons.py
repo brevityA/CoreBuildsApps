@@ -25,7 +25,7 @@ from pathlib import Path
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from glyphs import (GLYPHS, apply_secondary, family_body, family_glyph_for,  # noqa: E402
-                    is_monogram, monoline, render_svg, secondary_color,
+                    declared_paints, is_monogram, monoline, render_svg, secondary_color,
                     secondary_errors)
 from icon_style import CORE_MONOLINE, core_monoline_errors, display_accent  # noqa: E402
 from typeface import MIN_LOCKUP_CAP  # noqa: E402
@@ -145,7 +145,7 @@ def validate(icons, artwork=None):
                     body = apply_secondary(body, accent, i["secondary"])
                 errors.extend(f"{n}: {e}" for e in core_monoline_errors(
                     body, accent, gradient=bool(i.get("gradient")), ink=i.get("ink"),
-                    secondary=secondary_color(i)))
+                    secondary=declared_paints(i)))
         for comp in i.get("components", []):
             if "/" not in comp:
                 errors.append(f"{n}: component '{comp}' missing '/activity'")

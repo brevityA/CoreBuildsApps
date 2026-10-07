@@ -46,9 +46,11 @@ All notable changes to the Core Builds Icon Pack. Format follows
 
 - **Pocket Casts** (#257): the disc with its two open arcs, in Pocket Casts
   red.
-- **Silo** (#258): a domed storage tower for the self-hosted media server,
-  its play in the top tier and its logo's slanted bars drawn as the tower's
-  rings, in Silo blue with the rings in its pink.
+- **Silo** (#258): its own logo, flattened into the pack's line - the play on
+  three slotted bars rising to the right, in Silo's three colours: blue play
+  and top bar, pink `#F50B4F` middle, orange `#FA7604` foot. Silo is the
+  first icon with a third brand colour (a `tertiary` inside its `secondary`,
+  test-pinned to Silo alone).
 
 ## [2.1.1] — 2026-10-05
 
