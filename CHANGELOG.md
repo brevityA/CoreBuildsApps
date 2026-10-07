@@ -17,6 +17,9 @@ All notable changes to the Core Builds Icon Pack. Format follows
 - **Max is HBO Max again.** The card says HBO Max, the service's own name
   since 2025, and it applies to the `com.wbd.hbomax` build that launches
   `com.wbd.beam.BeamActivity` (#256).
+- **YouTube red is current.** YouTube, YouTube Music, YouTube Kids and
+  YouTube TV move from `#FF0000` to YouTube Red `#FF0033`, the primary red in
+  Google's own YouTube brand palette.
 - **Aurora Store applies again.** Current builds launch
   `com.aurora.store.ComposeActivity`; it is mapped beside `.MainActivity`
   (#255).

@@ -973,10 +973,10 @@ Source accents are retained in the catalog. **On dark** is the shared square/ban
 | Youcine | `youcine` | `#F8A820` | `#F8A820` | `com.world.youcinetv/com.interactive.brasiliptv.ui.activity.WelcomeActivity` |
 | Youku | `youku` | `#02BDFF` | `#02BDFF` | `com.youku.intl.tv/com.youku.tv.home.activity.HomeActivity` |
 | YouSee Play | `yousee_play` | `#00D800` | `#00D800` | `dk.yousee.tv.leanback/dk.yousee.ott.leanback.main.MainActivity` |
-| YouTube | `youtube` | `#FF0000` | `#FF0000` | `com.google.android.youtube.tv/com.google.android.apps.youtube.tv.activity.ShellActivity`<br>`com.google.android.youtube/.HomeActivity` |
-| YouTube Kids | `youtube_2` | `#FF0000` | `#FF0000` | `com.google.android.youtube.tvkids/com.google.android.apps.youtube.tvkids.activity.MainActivity` |
-| YouTube Music | `tvmusic` | `#FF0000` | `#FF0000` | `com.google.android.youtube.tvmusic/com.google.android.apps.youtube.tvmusic.activity.MainActivity` |
-| YouTube TV | `tvunplugged` | `#FF0000` | `#FF0000` | `com.google.android.youtube.tvunplugged/com.google.android.apps.youtube.tvunplugged.activity.MainActivity` |
+| YouTube | `youtube` | `#FF0033` | `#FF0033` | `com.google.android.youtube.tv/com.google.android.apps.youtube.tv.activity.ShellActivity`<br>`com.google.android.youtube/.HomeActivity` |
+| YouTube Kids | `youtube_2` | `#FF0033` | `#FF0033` | `com.google.android.youtube.tvkids/com.google.android.apps.youtube.tvkids.activity.MainActivity` |
+| YouTube Music | `tvmusic` | `#FF0033` | `#FF0033` | `com.google.android.youtube.tvmusic/com.google.android.apps.youtube.tvmusic.activity.MainActivity` |
+| YouTube TV | `tvunplugged` | `#FF0033` | `#FF0033` | `com.google.android.youtube.tvunplugged/com.google.android.apps.youtube.tvunplugged.activity.MainActivity` |
 | YoWindow | `yowindow` | `#007DB0` | `#007DB0` | `yo.app.free/yo.activity.MainActivity`<br>`yo.app.free/yo.tv.TvActivity` |
 | Zaap TV | `zaap_tv` | `#F88000` | `#F88000` | `com.zaaptv.mw.client.atv/com.alphaott.webtv.client.launcher.SystemLauncherActivity` |
 | Zank Remote | `zank_remote` | `#006766` | `#006C6A` | `zank.remote/zank.remote.MainActivity`<br>`zank.remote/zank.remote.AndroidTV` |

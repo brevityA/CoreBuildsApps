@@ -11496,14 +11496,14 @@
     {
       "name": "YouTube TV",
       "drawable": "tvunplugged",
-      "color": "#FF0000",
+      "color": "#FF0033",
       "glyph": "iptv_player",
       "components": [
         "com.google.android.youtube.tvunplugged/com.google.android.apps.youtube.tvunplugged.activity.MainActivity"
       ],
       "category": "VIDEO",
-      "color_source": "colour sweep: sampled from the Projectivy Icon Pack 1.1.9 artwork for com.google.android.youtube.tvunplugged (github.com/SicMundus86/ProjectivyIconPack, used as reference only), the logo's dominant hue #FF0000, replacing an accent that did not match it (2026-09-28)",
-      "color_reviewed": "2026-09-28",
+      "color_source": "YouTube Red #FF0033, the logo palette's primary red in Google's YouTube brand palette (partnermarketinghub.withgoogle.com, YouTube Kids visual identity), which replaced #FF0000 (2026-10-07)",
+      "color_reviewed": "2026-10-07",
       "name_source": "app name from the Projectivy Icon Pack 1.1.9 artwork for com.google.android.youtube.tvunplugged (github.com/SicMundus86/ProjectivyIconPack, used as reference only), which shows the YouTube TV logo for this package (2026-09-27)"
     },
     {
@@ -12999,7 +12999,7 @@
     {
       "name": "YouTube",
       "drawable": "youtube",
-      "color": "#FF0000",
+      "color": "#FF0033",
       "secondary": {
         "color": "#E6EDF3",
         "parts": [
@@ -13015,13 +13015,13 @@
       "category": "VIDEO",
       "brand": "youtube",
       "style": "core_monoline",
-      "color_source": "brand reference (pre-provenance, unverified)",
-      "color_reviewed": null
+      "color_source": "YouTube Red #FF0033, the logo palette's primary red in Google's YouTube brand palette (partnermarketinghub.withgoogle.com, YouTube Kids visual identity), which replaced #FF0000 (2026-10-07)",
+      "color_reviewed": "2026-10-07"
     },
     {
       "name": "YouTube Kids",
       "drawable": "youtube_2",
-      "color": "#FF0000",
+      "color": "#FF0033",
       "glyph": "yt_kids",
       "components": [
         "com.google.android.youtube.tvkids/com.google.android.apps.youtube.tvkids.activity.MainActivity"
@@ -13029,13 +13029,13 @@
       "category": "VIDEO",
       "brand": "youtubekids",
       "style": "core_monoline",
-      "color_source": "brand reference (pre-provenance, unverified)",
-      "color_reviewed": null
+      "color_source": "YouTube Red #FF0033, the logo palette's primary red in Google's YouTube brand palette (partnermarketinghub.withgoogle.com, YouTube Kids visual identity), which replaced #FF0000 (2026-10-07)",
+      "color_reviewed": "2026-10-07"
     },
     {
       "name": "YouTube Music",
       "drawable": "tvmusic",
-      "color": "#FF0000",
+      "color": "#FF0033",
       "glyph": "yt_music",
       "components": [
         "com.google.android.youtube.tvmusic/com.google.android.apps.youtube.tvmusic.activity.MainActivity"
@@ -13043,8 +13043,8 @@
       "category": "MUSIC",
       "brand": "youtubemusic",
       "style": "core_monoline",
-      "color_source": "brand reference (pre-provenance, unverified)",
-      "color_reviewed": null
+      "color_source": "YouTube Red #FF0033, the logo palette's primary red in Google's YouTube brand palette (partnermarketinghub.withgoogle.com, YouTube Kids visual identity), which replaced #FF0000 (2026-10-07)",
+      "color_reviewed": "2026-10-07"
     },
     {
       "name": "YoWindow",
