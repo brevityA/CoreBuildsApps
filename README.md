@@ -60,14 +60,14 @@ Designed for [Projectivy Launcher](https://play.google.com/store/apps/details?id
 
 Prefer square glyphs and no banners? The pack's `v*` release carries two builds for that, both at the pack's version:
 
-- **Core Builds Glyphs Pack** (`tv.corebuilds.iconpack.glyphs`) — the resource-only square twin the Art style toggle installs: the same 981 icons mapped to the same components, square, no banners, plus one info screen. **Downloader code `5804177`** · **https://github.com/brevityA/CoreBuildsApps/releases/download/iconpack/iconpack-glyphs-release.apk**
+- **Core Builds Glyphs Pack** (`tv.corebuilds.iconpack.glyphs`) — the resource-only square twin the Art style toggle installs: the same 983 icons mapped to the same components, square, no banners, plus one info screen. **Downloader code `5804177`** · **https://github.com/brevityA/CoreBuildsApps/releases/download/iconpack/iconpack-glyphs-release.apk**
 - **Core Builds Glyphs** (`tv.corebuilds.glyphs`) — the whole app (catalog, wallpapers, settings, auditor) built with the square appfilter and no Art style toggle, for a launcher that should never apply banners. No Downloader code yet — install it from **https://github.com/brevityA/CoreBuildsApps/releases/download/iconpack/corebuilds-glyphs-release.apk**
 
 Both install beside the icon pack (their own package IDs and FileProvider authorities), and a launcher applies whichever one you point it at. The standalone app ships no update feed of its own yet, and **Settings → Updates** names that rather than offering the banner APK it couldn't install over itself.
 
 ### What's covered
 
-981 icons across streaming, media centres, debrid services, players, launchers, tools, stores, live TV, music, sport, gaming, VPN, browsers, files, and more — including [NoBuffr](https://downloads.nobuffr.com/android/nobuffr.apk), Stremio, Kodi, Jellyfin, Plex, Syncler, Real-Debrid, TorBox, VLC, SmartTube, Spotify, TiviMate, Downloader, plus Netflix, Disney+, Stan, Kayo, ABC iview and 900+ more.
+983 icons across streaming, media centres, debrid services, players, launchers, tools, stores, live TV, music, sport, gaming, VPN, browsers, files, and more — including [NoBuffr](https://downloads.nobuffr.com/android/nobuffr.apk), Stremio, Kodi, Jellyfin, Plex, Syncler, Real-Debrid, TorBox, VLC, SmartTube, Spotify, TiviMate, Downloader, plus Netflix, Disney+, Stan, Kayo, ABC iview and 900+ more.
 
 Full table with every mapped component: [**docs/IconPackList.md**](docs/IconPackList.md)
 
