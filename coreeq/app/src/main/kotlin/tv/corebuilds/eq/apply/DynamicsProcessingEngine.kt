@@ -34,8 +34,11 @@ object DynamicsProcessingEngine {
     private const val VERIFY_CUTOFF_TOLERANCE_HZ = 0.2
     private const val VERIFY_LIMITER_TOLERANCE = 0.1
 
-    fun create(sessionId: Int, profile: Profile): DynamicsProcessingApplied {
-        val limiter = LimiterSettings()
+    fun create(
+        sessionId: Int,
+        profile: Profile,
+        limiter: LimiterSettings = LimiterSettings()
+    ): DynamicsProcessingApplied {
         check(limiter.isProtectionOnly()) { "Limiter settings must only protect, never boost" }
         val layout = DpBandLayout.specs()
         val gains = BandMapping.gainsDb(profile, layout.map { it.centerHz })
@@ -104,6 +107,12 @@ object DynamicsProcessingEngine {
             }
         }
 
+        // Write the limiter too, so night mode switches on a held effect
+        // instead of failing verification and forcing a rebuild.
+        for (channel in 0 until channelCount) {
+            effect.setLimiterByChannelIndex(channel, limiterStage(limiter))
+        }
+
         verifyConfiguration(effect, channelCount, cutoffs, gains, limiter)
         check(effect.setEnabled(true) == AudioEffect.SUCCESS) { "DynamicsProcessing refused to enable" }
         check(effect.hasControl()) { "DynamicsProcessing lost control after enabling" }
@@ -132,16 +141,7 @@ object DynamicsProcessingEngine {
                 )
             )
         }
-        val limiter = DynamicsProcessing.Limiter(
-            true,
-            limiterSettings.enabled,
-            if (limiterSettings.linked) 0 else 1,
-            limiterSettings.attackMs,
-            limiterSettings.releaseMs,
-            limiterSettings.ratio,
-            limiterSettings.thresholdDb,
-            limiterSettings.postGainDb
-        )
+        val limiter = limiterStage(limiterSettings)
         return DynamicsProcessing.Config.Builder(
             DynamicsProcessing.VARIANT_FAVOR_FREQUENCY_RESOLUTION,
             CONFIG_CHANNELS,
@@ -155,6 +155,18 @@ object DynamicsProcessingEngine {
             .setLimiterAllChannelsTo(limiter)
             .build()
     }
+
+    private fun limiterStage(settings: LimiterSettings): DynamicsProcessing.Limiter =
+        DynamicsProcessing.Limiter(
+            true,
+            settings.enabled,
+            if (settings.linked) 0 else 1,
+            settings.attackMs,
+            settings.releaseMs,
+            settings.ratio,
+            settings.thresholdDb,
+            settings.postGainDb
+        )
 
     private fun verifyConfiguration(
         effect: DynamicsProcessing,

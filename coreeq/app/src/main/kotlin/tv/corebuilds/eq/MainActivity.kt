@@ -107,6 +107,9 @@ class MainActivity : TvActivity() {
         findViewById<Button>(R.id.btn_nav_content_type).setOnClickListener {
             startActivity(Intent(this, ContentTypeActivity::class.java))
         }
+        findViewById<Button>(R.id.btn_nav_extras).setOnClickListener {
+            startActivity(Intent(this, EnhancedAudioSettingsActivity::class.java))
+        }
         updateBarInstall.setOnClickListener { startPendingUpdate() }
         findViewById<Button>(R.id.update_bar_later).setOnClickListener {
             pendingUpdate?.let { updatePrefs.dismiss(it.versionCode) }

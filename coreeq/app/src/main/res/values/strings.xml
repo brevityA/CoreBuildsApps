@@ -203,7 +203,20 @@
 
     <!-- Content type / use-case selection -->
     <string name="content_type_heading">Content type optimization</string>
-    <string name="content_type_subtitle">Choose what you watch most. Each type applies a curated target curve optimized for its acoustic characteristics. Auto-detect recognizes 40+ streaming apps.</string>
+    <string name="content_type_subtitle">Choose what you watch most. This sets how strong the optional Extra effects are (bass boost, loudness); with both off it changes nothing. Room correction is the same for every type. Auto-detect recognizes 40+ streaming apps.</string>
+    <string name="action_extras">Extra effects  ·  Bass, loudness, night</string>
+    <string name="extras_kicker">Core EQ · Extra effects</string>
+    <string name="extras_heading">Extra effects</string>
+    <string name="extras_subtitle">Optional layers on top of room correction. All off by default; each change applies at once. Your measured correction is never changed here.</string>
+    <string name="extras_bass_on">Bass boost: On</string>
+    <string name="extras_bass_off">Bass boost: Off</string>
+    <string name="extras_bass_note" formatted="false">Android\'s BassBoost effect. Strength follows the Content type screen: 60% for movies, 30% general, none for news and podcasts.</string>
+    <string name="extras_loudness_on">Loudness: On</string>
+    <string name="extras_loudness_off">Loudness: Off</string>
+    <string name="extras_loudness_note">Android\'s LoudnessEnhancer. Raises quiet content by up to +4 dB (podcasts, news); none for music.</string>
+    <string name="extras_night_on">Night mode: On</string>
+    <string name="extras_night_off">Night mode: Off</string>
+    <string name="extras_night_note">Pulls loud passages down: limiter from -12 dB at 4:1. Needs the DynamicsProcessing engine; Home names the engine in use, and says when night mode cannot run.</string>
     <string name="content_type_current">%1$s  %2$s</string>
     <string name="content_type_auto_on">Auto-detect: On · %1$d known apps · switches when a recognized app starts playing</string>
     <string name="content_type_auto_off">Auto-detect: Off · using your manual selection</string>
