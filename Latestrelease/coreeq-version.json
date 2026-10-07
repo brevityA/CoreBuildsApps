@@ -1,13 +1,15 @@
 {
-  "versionCode": 5,
-  "versionName": "1.2.0",
+  "versionCode": 6,
+  "versionName": "1.2.1",
   "releaseDate": "2026-10-07",
   "apkUrl": "https://github.com/brevityA/CoreBuildsApps/releases/download/coreeq/coreeq-release.apk",
-  "apkSha256": "b8e2ca56a3e0ffd06124f46793750e004c8d15d6c493246a807f9db2fcbe5ab6",
-  "releaseNotesUrl": "https://github.com/brevityA/CoreBuildsApps/releases/tag/coreeq-v1.2.0",
+  "apkSha256": "2174c84f14de31d63a9ed6213e6bcdebe735ca7d9e2d356bc629812053c3077d",
+  "releaseNotesUrl": "https://github.com/brevityA/CoreBuildsApps/releases/tag/coreeq-v1.2.1",
   "minSdk": 30,
   "highlights": [
-    "Content-aware listening and optional night-mode processing.",
-    "Guided picture setup for Android TV."
+    "Updating no longer changes your sound.",
+    "Room correction is precise again.",
+    "Several players at once.",
+    "Extra effects screen"
   ]
 }
