@@ -1,189 +1,86 @@
 # 16:9 banners
 
-## Correction to earlier advice
+## Current contract
 
-I previously said an icon pack cannot supply banners. **That was wrong.**
+Core Builds Icon Pack applies **transparent 320 × 180 banners** by default. The
+pack's appfilter points every catalog component at its app's banner; the square
+alternative is the separate **Core Builds Glyphs Pack** (`tv.corebuilds.iconpack.glyphs`).
+The banner lets Projectivy or another launcher own the card surface, crop,
+focus treatment, and background colour.
 
-`android:banner` — the attribute each app declares for the Android TV home row
-— genuinely can't be overridden by a third party. But that is not how Projectivy
-draws its cards.
+Each catalog entry is generated from `tools/catalog.json` by
+`tools/build_banners.py`:
 
-Projectivy cards are **16:9 by default**, and the card aspect ratio is a user
-setting. From the developer (Spocky_12):
+| Artifact | Size | Purpose |
+| --- | ---: | --- |
+| `assets/banners/<drawable>.svg` | 1280 × 720 | 4× vector master |
+| `app/src/main/res/drawable-nodpi/<drawable>_banner.webp` | 320 × 180 | shipping transparent banner |
+| `app/src/main/res/values/banner_aliases.xml` | — | aliases for identical banner art |
 
-> "Custom icons: use your favorite graphic editor to create images with a ratio
-> of **16:9** (ex: 160x90px)"
-
-People who want square icons *change the card to 1:1*. So a pack drawable was
-never required to be square — ship 16:9 art and every card renders as a full
-banner. That is exactly what the WuPlay reference banner is.
-
-## What we generate
-
-`tools/build_banners.py` produces a 16:9 lockup per app: glyph left, app name in
-the display serif, transparent ground so the launcher's card colour shows
-through.
-
-**No pack branding on the artwork.** The reference pack puts nothing of its own
-on any icon — their DAZN icon is just DAZN. A `CORE BUILDS` label on someone
-else's app card is noise the user did not ask for. The Core Builds signature is
-carried by the glyph geometry and the accent colour, not by a wordmark.
+All catalog entries are generated; there is no per-icon banner opt-in or
+partial build. Run:
 
 ```bash
-python tools/build_banners.py          # icons flagged "banner": true
-python tools/build_banners.py --all    # every icon in the catalogue
+python tools/build_banners.py
+python tools/build_banners_pack.py
+python tools/validate.py
 ```
 
-Output:
+`build_banners_pack.py` derives the main pack's banner appfilter from the
+square companion's generated component list. Do not hand-edit generated SVG,
+WebP, aliases, appfilter, browser or preview files.
 
-```
-assets/banners/<drawable>.svg                    master vector, 1280x720
-app/src/main/res/drawable-nodpi/<d>_banner.png   1280x720 transparent
-```
+## Composition
 
-## Banners are the default (v1.3.0; again since v1.9.5)
+The standard lockup is:
 
-The icon pack's `appfilter.xml` maps every component to the **banner**
-drawable, so auto-assign gives a 16:9 card straight away. Projectivy cards are
-16:9 by default and the reference pack ships 1002 of its 1002 icons at 320×180
-— a banner is what a card actually wants. (1.9.2–1.9.4 defaulted to square
-glyphs; 1.9.5 put banners back.)
+1. one Core Builds glyph;
+2. a small uppercase category kicker in that app's resolved accent;
+3. the displayed app name (using `banner_name` when set) in the pack's rounded
+   stroke-letter alphabet and light ink.
 
-The square set still ships, in **Core Builds Glyphs Pack**
-(`tv.corebuilds.iconpack.glyphs`, built from `glyphs/`): a resource-only
-companion whose appfilter maps the same components to the square glyphs. A
-launcher reads the appfilter of the package it applies, so the in-app
-**Art style** switch (Banners on by default) works by pointing the launcher at
-one package or the other, installing Core Builds Glyphs Pack from the matching
-release the first time Glyphs is picked. Each pack's `drawable.xml` lists its
-own style only, and the icon picker answers in the style of the pack the
-launcher opened. The companion installs standalone with Downloader `5804177`,
-and the same app also ships glyphs-only, as the `glyphs` flavor
-`tv.corebuilds.glyphs` — square appfilter, no toggle, permanent URL only.
+It is centered on a transparent canvas. There is no left rail, hexagon host,
+pack wordmark, or baked background. Categories remain visible on banners and
+in catalog metadata; they are useful labels even though the app name and mark
+carry the product identity. Square glyphs and banners share the same catalog
+color policy and glyph construction.
 
-Every icon gets a banner, unconditionally. The old `"banner": true` flag is
-gone: partial generation would have left `appfilter` pointing at drawables
-that did not exist, and those apps would silently fall back to their stock
-icon.
+Long names are balanced across lines and measured against the actual text
+column; `banner_name` may shorten only the card label when necessary. The
+actual ink is raster-measured and recentered after rendering, and the validator
+holds every banner to at most 3 px center drift, 90% width, and 72% height.
 
-Mark an app for a banner in `tools/catalog.json`:
+## Support-feedback scale update — 6 October 2026
 
-```jsonc
-{ "name": "Stremio", "drawable": "stremio", "banner": true, ... }
-```
+Support feedback asked for the logo and name to be a little larger and easier to
+distinguish at a glance. The first approved step increased the glyph cap from
+360 to 396 and the name range from 124/62 to 136/68. After reviewing larger
+options, a further 5% step was selected: the current cap is **416**, the name
+range **143/71**, and the overall lockup width cap **88.2%** (up from 78% in
+v2.1.1). That leaves the category size (46), horizontal gap (80 master units),
+accents, transparency, and mappings unchanged. Compared with v2.1.1, the mark
+and name caps are now about 15% larger; the fit solver still shrinks long labels
+when needed.
 
-25 are flagged today — the ecosystem headliners.
+The [first scale receipt](research/banner-scale-study-2026-10.png) compares
+v2.1.1 with the initial +10% step. The
+[follow-up comparison](research/banner-scale-options-2026-10.png) records the
+selected +5% option alongside the larger alternative. Square glyphs and the
+102 wallpapers are unchanged. The six-icon Heat family keeps the original
+v2.0.0 HeatLive square construction; see the
+[Heat family review](research/heat-family-review-2026-10.md).
 
-## The grid, measured from the reference pack
+## Design background
 
-Decompiled Projectivy Icon Pack 1.1.9 and counted every PNG:
+Projectivy cards are 16:9 by default, and its developer recommends 16:9 custom
+images. Core ships the established 320 × 180 transparent size, authored on a
+1280 × 720 master for crisp downscaling. The reference pack's original median
+ink box was approximately 78% wide by 43% high; Core's current 88.2% fit budget
+is a response to direct legibility feedback, not a claim that every banner has
+an identical ink box. Each mark still uses its own geometry, optical fit, accent,
+and word-length handling.
 
-| Dimensions | Count | What |
-| --- | --- | --- |
-| **320×180** | **1002** | **the app icons — 16:9, RGBA, ~10 KB each** |
-| 150×150 | 178 | Blueprint UI chrome, not app icons |
-| 512×512 | 34 | launcher/adaptive icons |
-
-So the established pack's icons are *already* 16:9 banners at 320×180. We now
-emit exactly that: **320×180 RGBA, ~6 KB each**. Authored on a 1280×720 master
-(4×) and downscaled, so the art stays crisp.
-
-Long names auto-shrink: the generator solves for the largest font size that
-fits the text column rather than guessing, so "Projectivy Launcher" and
-"SmartTube Next" stay inside the frame.
-
-## Guarded
-
-The validator checks every flagged banner exists, is **within 0.01 of 16:9**, is
-RGBA, and is listed in `drawable.xml`. Verified it bites: rendering one at
-800×800 produces
-
-```
-✗ Stremio: banner is 800x800 (ratio 1.000), expected 16:9
-```
-
-1357 checks total.
-
-## Composition grammar
-
-Measured across a 150-icon sample of Projectivy Icon Pack 1.1.9:
-
-| Property | Theirs | Ours |
-| --- | --- | --- |
-| Canvas | 320×180 RGBA | 320×180 RGBA |
-| Ink width | median 78% | 78% |
-| Ink height | median 43% | 38% |
-| Centring | 0.0px both axes | 0.0px (max 1px drift) |
-| Ink coverage | ~12% | ~11% |
-| Layout | glyph + wordmark, centred | glyph + wordmark, centred |
-
-Those are their **structural** rules and they are sound for a 10-foot UI: a
-centred lockup filling ~78% of the width reads from across a room without
-crowding the card edge.
-
-What we do **not** take is the art. Their icons are official third-party logos
-placed as-is. Ours are original geometry in the Core Builds language — simple
-shapes, rounded ends, one accent colour per app (Brand Guide §07). Same grid,
-different vocabulary.
-
-### Two implementation notes
-
-**Type is measured, not estimated.** Earlier passes guessed an em-width per
-character and long names overflowed. The generator now measures the actual
-rendered string and solves for the largest size that fits.
-
-**Centring is measured, not calculated.** Glyph grids are not tight to their
-ink and serif text carries side bearings, so geometric centring left every
-lockup ~4px right of centre — invisible alone, obvious in a row. The generator
-rasterises once, reads the real alpha bounding box, and shifts to compensate.
-The validator then enforces ≤3px drift on every banner; verified it fails a
-deliberately shifted one at +19.5px.
-
-## Typography — why the wordmark is bold sans
-
-Brand Guide §04 splits the voices: **serif for display copy** (splash headlines,
-question cards, doc covers) and it is explicit — *"Never bold. Never all-caps."*
-Working UI text belongs to the **system-ui stack at 600–800 weight**.
-
-An app card label is not display copy. It is a name read from across a room, so
-it takes the sans stack at 700:
-
-```
--apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif
-```
-
-This is also what gives the reference pack its punch — their wordmarks are heavy
-sans, and a light serif at card size looks tentative beside them. The serif
-still owns the docs and splash surfaces; it just does not belong on a 320×180
-card.
-
-Tracking is -1.5 at display size, per §04's "tight (-.03em)" guidance for
-headline-scale type.
-
-**Guarded.** A silently-failed edit once left every banner still rendering in
-Georgia while the source *looked* updated. The validator now asserts no banner
-wordmark uses Georgia and every one carries `font-weight="700"`. Verified it
-bites: reverting one banner to serif fails by name.
-
-## The chosen treatment — H + F
-
-Concept **H** carries the layout, with concept **F**'s hexagon as the glyph
-host:
-
-* **cyan→violet rail** on the left edge (H)
-* **uppercase mono category kicker** above the name (H) — real information,
-  not decoration: STREAM, DEBRID, MEDIA, PLAYER, LIVE, VOD, MUSIC, VIDEO,
-  TOOL, STORE, LAUNCHER, SYSTEM, REMOTE, GAMING, TRACK, CORE
-* **point-up hexagon host** in the app's accent (F) — §02's container, and
-  the stance is never rotated
-* **lit glyph** (D) — the §02 halo
-
-The hexagon is deliberately a light wash (10% fill, 42% stroke) rather than a
-solid container. At full strength across 81 icons a row reads as "hexagons"
-before it reads as apps — the generic trap. At this weight it hosts the mark
-and signs the pack without competing with it.
-
-E, G and I were rejected on a structural ground rather than taste: their
-signal lives in the card *background*, which we do not own. These PNGs are
-transparent and Projectivy paints whatever colour the user chose behind them.
-Rail, kicker, hex and halo are all drawn ink, so they survive any card colour.
+The square companion continues to supply the 512 × 512 glyph-only version for
+launchers or layouts that use 1:1 icons. The Banners/Glyphs switch changes the
+selected icon-pack package, not the catalog, app identities, mappings, or
+wallpapers.

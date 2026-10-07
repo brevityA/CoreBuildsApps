@@ -1,7 +1,7 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1280" height="720" viewBox="0 0 1280 720">
-  <g transform="translate(-4.5,5.5)">
-  <g transform="translate(338,180) scale(0.70312)"><g transform="translate(256 256) scale(1.1091) translate(-256 -284.75)"><path d="M 158 150 L 256 350 L 354 150" fill="none" stroke="#FFC300" stroke-width="28.85" stroke-linecap="round" stroke-linejoin="round"/><circle cx="256" cy="404" r="16" fill="#FFC300" stroke="none"/></g></g>
-  <path d="M 685.6 301.5 L 697.8 267.5 L 710.1 301.5 M 690.0 289.9 L 705.7 289.9 M 730.5 301.5 L 730.5 267.5 L 740.0 267.5 C 749.5 267.5 749.5 285.9 740.0 285.9 L 730.5 285.9 M 769.9 301.5 L 769.9 267.5 L 779.4 267.5 C 789.0 267.5 789.0 285.9 779.4 285.9 L 769.9 285.9" fill="none" stroke="#FFC300" stroke-width="9.0" stroke-linecap="round" stroke-linejoin="round"/>
-  <path d="M 685.6 336.8 L 716.0 423.6 L 746.4 336.8 M 777.6 368.0 L 777.6 423.6 M 808.9 362.8 L 808.9 401.0 C 808.9 414.9 817.5 423.6 829.7 423.6 C 841.8 423.6 850.5 414.9 850.5 401.0 M 850.5 362.8 L 850.5 423.6" fill="none" stroke="#E6EDF3" stroke-width="16.5" stroke-linecap="round" stroke-linejoin="round"/>
-  <circle cx="777.6" cy="345.4" r="10.2" fill="#E6EDF3" stroke="none"/></g>
+  <g transform="translate(-5.0,6.5)">
+  <g transform="translate(297,152) scale(0.81250)"><g transform="translate(256 256) scale(1.1091) translate(-256 -284.75)"><path d="M 158 150 L 256 350 L 354 150" fill="none" stroke="#FFC300" stroke-width="28.85" stroke-linecap="round" stroke-linejoin="round"/><circle cx="256" cy="404" r="16" fill="#FFC300" stroke="none"/></g></g>
+  <path d="M 686.7 290.8 L 698.9 256.8 L 711.1 290.8 M 691.1 279.2 L 706.7 279.2 M 731.5 290.8 L 731.5 256.8 L 741.1 256.8 C 750.6 256.8 750.6 275.1 741.1 275.1 L 731.5 275.1 M 771.0 290.8 L 771.0 256.8 L 780.5 256.8 C 790.0 256.8 790.0 275.1 780.5 275.1 L 771.0 275.1" fill="none" stroke="#FFC300" stroke-width="9.0" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M 686.7 330.2 L 721.7 430.3 L 756.7 330.2 M 792.8 366.3 L 792.8 430.3 M 828.8 360.2 L 828.8 404.3 C 828.8 420.3 838.8 430.3 852.8 430.3 C 866.8 430.3 876.9 420.3 876.9 404.3 M 876.9 360.2 L 876.9 430.3" fill="none" stroke="#E6EDF3" stroke-width="19.0" stroke-linecap="round" stroke-linejoin="round"/>
+  <circle cx="792.8" cy="340.2" r="11.8" fill="#E6EDF3" stroke="none"/></g>
 </svg>

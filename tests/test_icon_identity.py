@@ -450,6 +450,46 @@ class CoreStyleTests(unittest.TestCase):
                 self.assertEqual(kick.findall(text)[:1], [accent])
                 self.assertNotIn('fill="#00d4ff"', text)
 
+    def test_banner_scale_includes_the_follow_up_five_percent(self):
+        """Cumulative +15% scale over v2.1.1; category and gap stay fixed."""
+        import build_banners
+        self.assertEqual(build_banners.GLYPH_H, 416)
+        self.assertEqual(build_banners.MAX_TYPE, 143)
+        self.assertEqual(build_banners.MIN_TYPE, 71)
+        self.assertAlmostEqual(build_banners.INK_W / build_banners.W, 0.882)
+        self.assertLess(build_banners.INK_W / build_banners.W, 0.90)
+        self.assertAlmostEqual(build_banners.GLYPH_H / 360, 1.156, places=2)
+        self.assertAlmostEqual(build_banners.MAX_TYPE / 124, 1.153, places=2)
+        self.assertEqual(build_banners.KICKER, 46)
+        self.assertEqual(build_banners.GAP, 80)
+
+    def test_heat_family_keeps_the_exact_v200_heatlive_anchor(self):
+        """The v2.0.0 HeatLive vector is the unchanged source for the family."""
+        import hashlib
+        from glyphs import _HEAT_DROP, _heat_flame_d, _solid, _s
+
+        source = (ROOT / "assets/svg/heatlive.svg").read_bytes()
+        self.assertEqual(
+            hashlib.sha256(source).hexdigest(),
+            "4d7c1323e06af9dcd6d5688cb392586d0906dec84a52d2e35b1a7cfbd8b77e87",
+        )
+        color = "#EB1E54"
+        expected = (f'<path d="{_HEAT_DROP}" {_s(color, 34)}/>'
+                    f'{_solid(_heat_flame_d(), color, 10)}')
+        self.assertEqual(GLYPHS["heatlive_drop"](color), expected)
+        family = {
+            "heatlive": "heatlive_drop",
+            "heatvod": "heatvod_drop",
+            "heatvod_ultra": "heatvod_ultra_drop",
+            "live_ultra": "live_ultra_drop",
+            "live_ultra_plus": "live_ultra_plus_drop",
+            "heatlive_backup": "heatlive_backup_drop",
+        }
+        for drawable, glyph in family.items():
+            with self.subTest(drawable=drawable):
+                self.assertEqual(BY_ID[drawable]["glyph"], glyph)
+                self.assertIn(glyph, GLYPHS)
+
     def test_revised_rasters_are_open_ink_and_clear_the_shared_safe_area(self):
         for icon in self.revised():
             with self.subTest(icon=icon["name"]):

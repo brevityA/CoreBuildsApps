@@ -84,7 +84,7 @@ python tools/build_banners_pack.py   # the icon pack's banner XML from the glyph
 python tools/build_branding.py
 python tools/build_brand_preview.py
 python tools/validate.py
-python tests/test_icon_identity.py    # 66 style/colour/reference/mapping regressions
+python tests/test_icon_identity.py    # 68 style/colour/reference/mapping regressions
 ```
 
 Paste the validator receipt. Current receipt: `Validated 981 icons · 1856 components`.

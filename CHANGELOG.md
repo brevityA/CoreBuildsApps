@@ -6,6 +6,13 @@ All notable changes to the Core Builds Icon Pack. Format follows
 
 ## [Unreleased]
 
+### Changed
+
+- **Banners give the mark and name more room.** A follow-up 5% increase brings
+  the mark/name size caps to about 15% above v2.1.1 overall for better
+  shelf-distance legibility. Categories, accents, transparency, square glyphs,
+  mappings and wallpapers are unchanged.
+
 ## [2.1.1] — 2026-10-05
 
 ### Added
