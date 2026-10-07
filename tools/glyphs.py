@@ -8782,15 +8782,20 @@ def pocketcasts_arcs(c):
             f'<path d="{arc(54)}" {_s(c, 26.2)}/>')
 
 
-def silo_stack(c):
-    """Silo: the play standing on a stack of three slotted bars that rise to
-    the right. Each bar is an outlined parallelogram, its open centre the
-    slot; the play keeps the primary stroke so the stack reads under it."""
-    play = "M 168 59 L 168 123 L 288 91 Z"
-    bars = "".join(
-        f'<path d="M 160 {200 + y} L 352 {176 + y} L 352 {232 + y} L 160 {256 + y} Z" {_s(c, 26.2)}/>'
-        for y in (0, 100, 200))
-    return f'<path d="{play}" {_s(c, 32)}/>{bars}'
+def silo_tower(c):
+    """Silo: the silo itself - a domed storage tower holding the library.
+
+    Silo is a self-hosted media server for films, series, audiobooks,
+    ebooks, podcasts and manga, "built like infrastructure" from one box to a
+    cluster. Its logo stacks a play on three slanted bars; here those bars are
+    what they resemble, the rings of a cylinder seen from just above, banding
+    a tower whose top tier holds the play. Original geometry on the pack
+    grid, not a trace of the Silo mark (a Silo Media L.L.C. trademark)."""
+    tower = ("M 132 184 A 124 100 0 0 1 380 184 L 380 420 "
+             "A 124 28 0 0 1 132 420 Z")
+    play = "M 230 200 L 230 272 L 298 236 Z"
+    rings = "".join(f'<path d="M 132 {y} A 124 24 0 0 0 380 {y}" {_s(c, 26.2)}/>' for y in (300, 360))
+    return f'<path d="{tower}" {_s(c, 32)}/><path d="{play}" {_s(c, 26.2)}/>{rings}'
 
 
-GLYPHS.update({"pocketcasts_arcs": pocketcasts_arcs, "silo_stack": silo_stack})
+GLYPHS.update({"pocketcasts_arcs": pocketcasts_arcs, "silo_tower": silo_tower})

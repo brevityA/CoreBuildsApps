@@ -13846,7 +13846,7 @@
       "name": "Silo",
       "drawable": "silo",
       "color": "#0034FB",
-      "glyph": "silo_stack",
+      "glyph": "silo_tower",
       "components": [
         "org.siloserver.silo/org.siloserver.silo.tv.MainTvActivity"
       ],
@@ -13854,14 +13854,14 @@
       "mapping_source": "issue #258 (device-reported on Smart TV, Android 12, pack 2.1.1; #259 is its duplicate): MainTvActivity is the Android TV launch activity of org.siloserver.silo, the Silo media server client",
       "color_source": "Silo brand blue #0034FB from the official wordmark (siloserver.org/brand/silo-wordmark-dark.svg, (c) Silo Media L.L.C., reference only) (2026-10-07)",
       "color_reviewed": "2026-10-07",
-      "glyph_source": "brand-informed redraw of the Silo mark (siloserver.org wordmark and the Silo-Server Unraid icon, reference only): an outlined play above three slotted bars rising to the right, drawn on the pack grid, not traced (2026-10-07)",
+      "glyph_source": "original Core mark from research into Silo (siloserver.org, github.com/Silo-Server/silo-server, reference only): a self-hosted media library 'built like infrastructure', drawn as a domed storage tower with the play in its top tier and the logo's slanted bars read as the tower's rings; not a trace of the Silo mark (2026-10-07)",
       "secondary": {
         "color": "#F50B4F",
         "parts": [
           2,
           3
         ],
-        "source": "the Silo mark's lower bars: pink #F50B4F (its third bar's orange #FA7604 is folded into the one secondary paint) (2026-10-07)"
+        "source": "the Silo mark's lower bars: pink #F50B4F, here the tower's two rings (its third bar's orange #FA7604 is folded into the one secondary paint) (2026-10-07)"
       }
     }
   ],

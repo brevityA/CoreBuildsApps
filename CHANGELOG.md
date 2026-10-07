@@ -32,8 +32,9 @@ All notable changes to the Core Builds Icon Pack. Format follows
 
 - **Pocket Casts** (#257): the disc with its two open arcs, in Pocket Casts
   red.
-- **Silo** (#258): the play standing on three slotted bars, in Silo blue with
-  the lower bars in its pink.
+- **Silo** (#258): a domed storage tower for the self-hosted media server,
+  its play in the top tier and its logo's slanted bars drawn as the tower's
+  rings, in Silo blue with the rings in its pink.
 
 ## [2.1.1] — 2026-10-05
 
