@@ -11066,15 +11066,16 @@
     {
       "name": "TiviMate",
       "drawable": "tvplayer",
-      "color": "#028AD5",
-      "glyph": "tivimate_grid",
+      "color": "#97C1FF",
+      "glyph": "tvplayer_wm",
       "components": [
         "ar.tvplayer.tv/ar.tvplayer.tv.ui.MainActivity",
         "ar.tvplayer.tv/.ui.MainActivity"
       ],
       "category": "LIVE",
-      "color_source": "colour sweep: sampled from the Projectivy Icon Pack 1.1.9 artwork for ar.tvplayer.tv (github.com/SicMundus86/ProjectivyIconPack, used as reference only), the logo's dominant hue #028AD5, replacing an accent that did not match it (2026-09-28)",
-      "color_reviewed": "2026-09-28"
+      "color_source": "sampled from the official launcher icon (Google Play listing for ar.tvplayer.tv, 512px): the 'tivi' wordmark's light blue #97C1FF, the icon's dominant ink; #028AD5 came from third-party artwork (2026-10-07)",
+      "color_reviewed": "2026-10-07",
+      "glyph_source": "wordmark cue from the official launcher icon (Google Play listing for ar.tvplayer.tv, reference only): tivi stacked over mate in the pack's stroke letters, replacing a generic TV-and-guide-grid mark (2026-10-07)"
     },
     {
       "name": "TizenTube",
