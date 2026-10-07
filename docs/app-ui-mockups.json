@@ -9,11 +9,11 @@
       "structure": "43cb1b6278fa7149a0bc9381a6a40ea3afe6ed989fb416bd03a71748a542af5a"
     },
     "app-ui-catalogue-update.png": {
-      "bytes": 177360,
+      "bytes": 178244,
       "structure": "bf98aaecb0022c12b580264187bfe73872a90968cce3016b702122c3c72be2ce"
     },
     "app-ui-catalogue.png": {
-      "bytes": 184058,
+      "bytes": 184718,
       "structure": "9fd6901118e1c8dda2df75d9b42a0a0c76bc6056ff369303f7387071eb103f59"
     },
     "app-ui-faq.png": {
@@ -45,7 +45,7 @@
   "inputs": {
     "app/src/main/assets/appfilter.xml": "4d214c42ee2ca6240c0b946cbefaacca37b80d4dae487c0b9db79c90b9059ec7",
     "app/src/main/assets/manifest/wallpapers.json": "36a91cdca6d6d1a6ee864f01b992f6ab8f2be159fa9bc6cc5219b88cb95b8719",
-    "app/src/main/assets/version.json": "c38bb3c511ead13c75ae7dbf8bd600df60c2940f0b9f6937a990cc8b684a499b",
+    "app/src/main/assets/version.json": "94f28433e784f9c8a3f98e130e2a999b20e614256c0d3d2875e603e790485182",
     "app/src/main/res/layout/activity_about.xml": "24bf8847817c6c79e0733b25282913f12756331e851a461fdb5f96e43b08d04a",
     "app/src/main/res/layout/activity_auditor.xml": "3353f96d0932249a0ce841ca31ef98c65103132ec9b9efd1c8144e1fe2c34dca",
     "app/src/main/res/layout/activity_export_progress.xml": "3c388eb2b74cc0b5e362069cff6adfe219a4948eed7220f36a9a2d2d06d48210",
@@ -73,13 +73,13 @@
     "app/src/main/res/values/suite_hub.xml": "aff339700a9e6751b31ed189c2695e77ce18b80332f104f94e9235cdd05ef74a",
     "app/src/main/res/values/themes.xml": "ecac526951fe40b6c5c01df0ec36730d0e197fd9511862cf587a2143773b46be",
     "tools/build_app_ui_mockups.py": "35207f64a0177534112d4de41d5ae03be128a185f5d24138fc9ef845a56f70f3",
-    "tools/catalog.json": "fbcba09aade0e52aa72c1e038e9334c90dcd242896a0bd96f0f66e407674b6e4",
+    "tools/catalog.json": "8fbe4832c9dca1e48890793ac437d286ecb8107086b839954c40f896b87e15a0",
     "tools/fonts/DejaVuSansMono-Bold.ttf": "2964f6dac8e6e9d71613928340f17bf868e9ea51692cca333c79e74962f02233",
     "tools/fonts/DejaVuSansMono.ttf": "0f5db4f1749979d961019838b160bec74abdf7f9eca69553fe1aa856bbff49a4",
     "tools/fonts/Outfit-Bold.ttf": "04f7c9705153927058475d6c5e9f75b0a1036ec5f6f63ffb69df046191ea8933",
     "tools/fonts/Outfit-ExtraBold.ttf": "056e8cd5840cea4cfc355f672292f7de00d95f5a42bf9b7cd96d511ca8e2883e"
   },
-  "inputs_digest": "0b07a9cf8e66ff48cf407676933fd3521623483c2825fb885cc2efbaa57c6eb4",
+  "inputs_digest": "36e76974769e01b116ea0cc5152a0aeef814923bb2a11ef744e1aafa46a69986",
   "metrics": {
     "mono-bold@24": 448.0,
     "mono-bold@32": 608.0,
@@ -94,7 +94,7 @@
   "note": "Which sources the frames in docs/ were generated from, and what each one depicts. Written by build_app_ui_mockups.py; never hand-edit. The PNG bytes are not recorded on purpose: text rendering is not reproducible across machines, so --check compares the sources and the drawn structure instead. See the module docstring.",
   "pasted": {
     "count": 19,
-    "digest": "3824b81556e24ea7ab6d1c18929d9e5798f2fa526c0a1d9bfb2272aa6b7b4b52"
+    "digest": "c2d095303216f4cff1ee014e7ca7f978a113e4540b93a2f3ebc5d574edcad98e"
   },
   "renderer": "python 3.11.15, freetype 2.13.2, layout raqm, PIL 10.4.0, qrcode installed, fontTools 4.59.0, resvg_py 0.4.0"
 }

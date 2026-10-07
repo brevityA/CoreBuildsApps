@@ -28,6 +28,16 @@ All notable changes to the Core Builds Icon Pack. Format follows
 - **Aurora Store applies again.** Current builds launch
   `com.aurora.store.ComposeActivity`; it is mapped beside `.MainActivity`
   (#255).
+- **Letters are spaced by their shapes.** Every name on a banner and every
+  letter in an icon used one gap, measured box edge to box edge, so open
+  pairs such as `To`, `LY` and `Pa` set looser than `HH`. Each pair now closes
+  up by part of the white its shapes leave, never past the full gap at its
+  narrowest point; figures stay evenly spaced. Lowercase `l` gains a foot, so
+  it no longer draws the same stem as capital `I`.
+- **Flix Vision looks like Flix Vision.** Its card was a red-orange film
+  reel the app has never used. It is now a ring round a leaning F whose stem
+  sweeps into its top arm, after the app's ringed F, in its logo purple
+  `#866EAD`.
 
 ### Added
 

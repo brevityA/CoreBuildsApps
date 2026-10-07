@@ -3506,14 +3506,15 @@
     {
       "name": "Flix Vision",
       "drawable": "flix_vision",
-      "color": "#E5533D",
-      "glyph": "film_reel",
+      "color": "#866EAD",
+      "glyph": "flixvision_f",
       "components": [
         "flix.com.vision/.activities.SplashScreenActivity"
       ],
       "category": "STREAM",
-      "color_source": "brand reference (pre-provenance, unverified)",
-      "color_reviewed": null
+      "color_source": "sampled from the Projectivy Icon Pack artwork for flix.com.vision (github.com/SicMundus86/ProjectivyIconPack, reference only): the logo ring's purple #866EAD, replacing a pre-provenance red-orange #E5533D the logo never used (2026-10-07)",
+      "color_reviewed": "2026-10-07",
+      "glyph_source": "original mark from the Projectivy Icon Pack artwork for flix.com.vision (reference only): a ring round a leaning F whose stem sweeps into its top arm, after the logo's ringed, folded F; not the vendor geometry (2026-10-07)"
     },
     {
       "name": "FlixNest",

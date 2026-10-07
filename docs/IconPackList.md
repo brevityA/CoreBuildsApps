@@ -267,7 +267,7 @@ Source accents are retained in the catalog. **On dark** is the shared square/ban
 | Flickfolio | `flickfolio` | `#2A63DD` | `#2A63DD` | `com.snapwood.flickfolio/com.snapwood.flickfolio.SelectAlbumActivity` |
 | Flicky | `flicky` | `#6D86A5` | `#6D86A5` | `app.flicky/app.flicky.MainActivity` |
 | flik.tv | `flix_tv` | `#F8A800` | `#F8A800` | `com.tvflix.ippflixtvbox/com.tvflix.ippflixtvbox.view.activity.SplashActivity` |
-| Flix Vision | `flix_vision` | `#E5533D` | `#E5533D` | `flix.com.vision/.activities.SplashScreenActivity` |
+| Flix Vision | `flix_vision` | `#866EAD` | `#866EAD` | `flix.com.vision/.activities.SplashScreenActivity` |
 | FlixNest | `flixnest` | `#A42521` | `#B62925` | `hu.kinetik.streamapp/hu.kinetik.streamapp.MainActivity` |
 | Flixoid | `findlink` | `#3CDE81` | `#3CDE81` | `com.findlink/com.findlink.ActivitySplash` |
 | Flosports | `flosports` | `#19D3C5` | `#19D3C5` | `tv.flosports/tv.flosports.TvActivity` |
