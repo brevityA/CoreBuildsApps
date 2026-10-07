@@ -8379,12 +8379,31 @@ def _line_units(line):
             - math.fsum(_pair_kern(a, b) for a, b in zip(line, line[1:])))
 
 
+# Overshoot (2.1.2). A curve touches the cap line or baseline at one point
+# while a flat runs the whole way along it, so an O set exactly cap-high reads
+# smaller than the H beside it. Letters that are round at both top and foot
+# reach 1.5% past each line, scaled about the middle of their own body.
+_OVERSHOOT = .03
+_ROUND_CAPS = frozenset("OCGQS03689")
+_ROUND_LOWER = frozenset("oces")
+
+
+def _overshoot_mid(ch):
+    """(middle of the body, stretch) for `ch`: no stretch for flat letters."""
+    if ch in _ROUND_CAPS:
+        return .5, 1 + _OVERSHOOT
+    if ch in _ROUND_LOWER:
+        return .65, 1 + _OVERSHOOT     # x-height .3 to baseline 1
+    return 0.0, 1.0
+
+
 def _stroke_line(text, x0, y0, s, gap=_STROKE_GAP):
     """One line of stroke letters at scale `s`, top-left of the cap box at x0,y0.
     Returns (path d, dots [(x, y)])."""
     d, dots, x = [], [], x0
     for i, ch in enumerate(text):
         w, spec = _STROKE_LETTERS[ch]
+        mid, stretch = _overshoot_mid(ch)
         toks = _STROKE_TOKEN.findall(spec)
         k = 0
         while k < len(toks):
@@ -8394,7 +8413,7 @@ def _stroke_line(text, x0, y0, s, gap=_STROKE_GAP):
             n = {"M": 1, "L": 1, "C": 3, "D": 1}[t]
             pts = [(float(toks[k + 1 + 2 * j]), float(toks[k + 2 + 2 * j])) for j in range(n)]
             k += 1 + 2 * n
-            xy = [(x + px * s, y0 + py * s) for px, py in pts]
+            xy = [(x + px * s, y0 + (mid + (py - mid) * stretch) * s) for px, py in pts]
             if t == "D":
                 dots.append(xy[0])
             else:
@@ -8459,7 +8478,9 @@ def stroke_label_metrics(size):
     # .19 of the cap sits a step under the glyph's own banner stroke (34 on
     # the 512 grid at 360 = 24), so the mark leads and the name follows;
     # spacing opens with the weight so counters and gaps stay level.
-    return cap, min(24.0, max(8.0, .19 * cap)), .36 * cap, .3 * cap
+    # Gap .3 of the cap since 2.1.2, the icons' own _WM_SPACING ratio: at .36
+    # names tracked out wider than the same letters inside the marks.
+    return cap, min(24.0, max(8.0, .19 * cap)), _WM_SPACING[0] * cap, .3 * cap
 
 
 def stroke_label_width(text, size, gap=None):

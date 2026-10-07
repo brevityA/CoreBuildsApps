@@ -33,7 +33,10 @@ All notable changes to the Core Builds Icon Pack. Format follows
   pairs such as `To`, `LY` and `Pa` set looser than `HH`. Each pair now closes
   up by part of the white its shapes leave, never past the full gap at its
   narrowest point; figures stay evenly spaced. Lowercase `l` gains a foot, so
-  it no longer draws the same stem as capital `I`.
+  it no longer draws the same stem as capital `I`. Round letters (`O C G Q S
+  0 3 6 8 9 o c e s`) reach 1.5% past the cap line and baseline so they stand
+  as tall as the flat letters beside them, and banner names track at .3 of
+  the cap, the same gap the marks use, instead of .36.
 - **Flix Vision looks like Flix Vision.** Its card was a red-orange film
   reel the app has never used. It is now a ring round a leaning F whose stem
   sweeps into its top arm, after the app's ringed F, in its logo purple

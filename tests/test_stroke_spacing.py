@@ -60,6 +60,25 @@ class StrokeSpacing(unittest.TestCase):
             advance = G._stroke_px(text[:-1], s, gap) + gap - G._pair_kern(text[-2], last) * s
             self.assertAlmostEqual(start, advance, places=6, msg=text)
 
+    def test_round_letters_overshoot_both_lines_and_flats_do_not(self):
+        import re
+        def ys(ch, s=100):
+            d, _ = G._stroke_line(ch, 0, 0, s, 30)
+            nums = [float(v) for v in re.findall(r"-?\d+\.?\d*", d)]
+            return min(nums[1::2]), max(nums[1::2])
+        top, foot = ys("O")
+        self.assertLess(top, 0)          # above the cap line
+        self.assertGreater(foot, 100)    # below the baseline
+        self.assertAlmostEqual(-top, foot - 100, places=1)
+        self.assertEqual(ys("H"), (0.0, 100.0))
+        otop, ofoot = ys("o")
+        self.assertLess(otop, 30)        # above the x-height
+        self.assertGreater(ofoot, 100)
+
+    def test_banner_names_track_like_the_marks(self):
+        cap, _w, gap, _sp = G.stroke_label_metrics(100)
+        self.assertAlmostEqual(gap / cap, G._WM_SPACING[0])
+
 
 if __name__ == "__main__":
     unittest.main()
