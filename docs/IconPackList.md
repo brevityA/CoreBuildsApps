@@ -1,6 +1,6 @@
 # Supported applications
 
-`981` icons · `1213` mapped components · pack v2.1.1
+`983` icons · `1217` mapped components · pack v2.1.2
 
 Every app below auto-assigns in Projectivy. If one doesn't, the app ships a different launcher activity on your device — open an issue with the component name and it gets added.
 
@@ -79,7 +79,7 @@ Source accents are retained in the catalog. **On dark** is the shared square/ban
 | ATV Tools Server | `atvtools` | `#8B949E` | `#8B949E` | `dev.vodik7.atvtoolsserver/.MainActivity` |
 | Audials | `audials` | `#282676` | `#5350C6` | `com.audials.paid/com.audials.main.SplashScreenActivity` |
 | Audiomack | `audiomack` | `#FFA200` | `#FFA200` | `com.audiomack/com.audiomack.ui.splash.SplashActivity` |
-| Aurora Store | `aurora_store` | `#00C2FF` | `#00C2FF` | `com.aurora.store/.MainActivity` |
+| Aurora Store | `aurora_store` | `#00C2FF` | `#00C2FF` | `com.aurora.store/.MainActivity`<br>`com.aurora.store/com.aurora.store.ComposeActivity` |
 | AV Source | `av_source` | `#FF5CA8` | `#FF5CA8` | `com.spocky.projengmenu/.activities.input.SourceAVActivity`<br>`com.spocky.projengmenu/.ui.guidedActions.activities.input.SourceAVActivity` |
 | Award VPN | `award` | `#20C0A8` | `#20C0A8` | `com.award.VPN/app.award.update.SplashActivity` |
 | Baby Einstein | `babyeinstein` | `#FF7A2E` | `#FF7A2E` | `com.giant.babyeinstein/com.codes.ui.SplashActivity` |
@@ -320,6 +320,7 @@ Source accents are retained in the catalog. **On dark** is the shared square/ban
 | Hallmark+ | `androidapp` | `#510D96` | `#831CEB` | `com.feeln.androidapp/tv.accedo.one.app.bootstrap.BootstrapActivity` |
 | Haystack News | `haystack` | `#D73728` | `#D73728` | `com.haystack.android/com.haystack.android.tv.ui.activities.LoadingActivity` |
 | Hayu | `hayu` | `#FF285A` | `#FF285A` | `com.upst.hayu/com.upst.hayu.tv.main.MainActivity` |
+| HBO Max | `max` | `#0046FF` | `#0147FF` | `com.wbd.stream/.MainActivity`<br>`com.hbo.hbonow/.MainActivity`<br>`com.wbd.hbomax/.MainActivity`<br>`com.wbd.hbomax/com.wbd.hbomax.MainActivity`<br>`com.wbd.stream/com.wbd.beam.BeamActivity`<br>`com.wbd.hbomax/com.wbd.beam.BeamActivity` |
 | Hd Streamz | `hd_streamz` | `#3D8BFF` | `#3D8BFF` | `insure.cable.estate/com.android.vending.a.UI`<br>`insure.cable.estate/com.android.vending.a.TV` |
 | HDHomeRun | `hdhomerun` | `#6EED00` | `#6EED00` | `com.silicondust.view/com.silicondust.view.App` |
 | HDMI Source | `hdmi_source` | `#1FD19A` | `#1FD19A` | `com.spocky.projengmenu/.activities.input.SourceHDMI1Activity`<br>`com.spocky.projengmenu/.activities.input.SourceHDMI2Activity`<br>`com.spocky.projengmenu/.activities.input.SourceHDMI3Activity`<br>`com.spocky.projengmenu/.activities.input.SourceHDMI4Activity`<br>`com.spocky.projengmenu/.ui.guidedActions.activities.input.SourceHDMI1Activity`<br>`com.spocky.projengmenu/.ui.guidedActions.activities.input.SourceHDMI2Activity`<br>`com.spocky.projengmenu/.ui.guidedActions.activities.input.SourceHDMI3Activity`<br>`com.spocky.projengmenu/.ui.guidedActions.activities.input.SourceHDMI4Activity` |
@@ -442,7 +443,6 @@ Source accents are retained in the catalog. **On dark** is the shared square/ban
 | Mango TV | `intl` | `#FD6001` | `#FD6001` | `com.mgtv.tv.intl/com.mgtv.tv.launcher.LauncherActivity` |
 | Material Files | `materialfiles` | `#00E5FF` | `#00E5FF` | `me.zhanghai.android.files/me.zhanghai.android.files.filelist.FileListActivity`<br>`me.zhanghai.android.files/.filelist.FileListActivity` |
 | Matvt Mouse For Android TV Toggle | `matvt_mouse_for_android_tv_toggle` | `#24EDA3` | `#24EDA3` | `io.github.virresh.matvt/io.github.virresh.matvt.gui.GuiActivity` |
-| Max | `max` | `#0046FF` | `#0147FF` | `com.wbd.stream/.MainActivity`<br>`com.hbo.hbonow/.MainActivity`<br>`com.wbd.hbomax/.MainActivity`<br>`com.wbd.hbomax/com.wbd.hbomax.MainActivity`<br>`com.wbd.stream/com.wbd.beam.BeamActivity` |
 | MaxPlayer | `maxplayer` | `#F8A000` | `#F8A000` | `tv.maxplayer.android/tv.maxplayer.android.MainActivity` |
 | Maze | `powerpoint45` | `#000000` | `#E6EDF3` | `com.powerpoint45.maze/com.powerpoint45.maze.MainMenuActivity` |
 | Mecool File Manager | `mecool_file_manager` | `#6477FF` | `#6477FF` | `com.tvonline.filewizard/com.tvonline.filewizard.ui.MainActivity` |
@@ -601,6 +601,7 @@ Source accents are retained in the catalog. **On dark** is the shared square/ban
 | Plexamp | `plexamp` | `#FF7A2E` | `#FF7A2E` | `tv.plex.labs.plexamp/com.plexamp.MainActivity` |
 | Pluto TV | `pluto_tv` | `#FFF200` | `#FFF200` | `tv.pluto.android/tv.pluto.android.EntryPoint`<br>`tv.pluto.android/com.paramount.android.pplus.features.splash.tv.SplashMediatorActivity` |
 | PMX | `pmx` | `#00C2C2` | `#00C2C2` | `com.mirfatif.permissionmanagerx/com.mirfatif.permissionmanagerx.fwk.MainActivityM`<br>`com.mirfatif.permissionmanagerx/com.mirfatif.permissionmanagerx.fwk.MainActivity` |
+| Pocket Casts | `pocketcasts` | `#F43E37` | `#F43E37` | `au.com.shiftyjelly.pocketcasts/au.com.shiftyjelly.pocketcasts.TvActivity` |
 | Podcast Addict | `podcastaddict` | `#F4842D` | `#F4842D` | `com.bambuna.podcastaddict/com.bambuna.podcastaddict.activity.PodcastListActivity` |
 | Polsat Box Go | `polsat_box_go` | `#F8C800` | `#F8C800` | `pl.cyfrowypolsat.cpgo/pl.cyfrowypolsat.cpframework.presentation.mobile.launch.LaunchActivity`<br>`pl.cyfrowypolsat.cpgo/pl.cyfrowypolsat.cpframework.presentation.tv.launch.TvLaunchActivity` |
 | Poweramp Equalizer | `poweramp_eq` | `#FF6D00` | `#FF6D00` | `com.maxmpz.equalizer/.StartupActivity` |
@@ -703,6 +704,7 @@ Source accents are retained in the catalog. **On dark** is the shared square/ban
 | Showmax | `showmax` | `#FF5CA8` | `#FF5CA8` | `com.showmax.showmax.google/com.peacock.peacocktv.GoogleMainActivity` |
 | Shudder | `dramafever` | `#D40000` | `#D40000` | `com.dramafever.shudder/amcsvod.shudder.view.activity.LauncherActivity` |
 | Sideload Launcher | `sideload_launcher` | `#E91E63` | `#E91E63` | `eu.chainfire.tv.sideloadlauncher/eu.chainfire.tv.sideloadlauncher.MainActivity`<br>`net.easyjoin.applauncher/net.easyjoin.applauncher.activity.MainActivityTV` |
+| Silo | `silo` | `#0034FB` | `#1546FF` | `org.siloserver.silo/org.siloserver.silo.tv.MainTvActivity` |
 | SimpliTV | `androidtv` | `#CE11A5` | `#CE11A5` | `at.simplitv.ott.androidtv/tv.threess.threeready.ui.generic.activity.MainActivity` |
 | Sirius | `sirius` | `#19D3C5` | `#19D3C5` | `com.sirius/sxmp.app.welcome.WelcomeActivity` |
 | Sky News | `sky_news` | `#9C0000` | `#C40000` | `com.sky.news.androidtv/com.easeltv.falconheavy.tv.splash.view.SplashIntroVideoActivity` |

@@ -63,6 +63,7 @@
     <item drawable="kodi" />
     <item drawable="mediabrowser" />
     <item drawable="plex" />
+    <item drawable="silo" />
     <category title="Square · On demand" />
     <item drawable="tenplay" />
     <item drawable="sevenplus" />
@@ -85,12 +86,12 @@
     <item drawable="discovery" />
     <item drawable="discoveryplus" />
     <item drawable="disneyplus" />
+    <item drawable="max" />
     <item drawable="heatvod" />
     <item drawable="heatvod_ultra" />
     <item drawable="watcher" />
     <item drawable="livingroomplus" />
     <item drawable="kayo" />
-    <item drawable="max" />
     <item drawable="mubi" />
     <item drawable="netflix" />
     <item drawable="nordiskfilmplus" />
@@ -201,6 +202,7 @@
     <item drawable="metrolist" />
     <item drawable="appgeneration" />
     <item drawable="pandora" />
+    <item drawable="pocketcasts" />
     <item drawable="podcastaddict" />
     <item drawable="poweramp_eq" />
     <item drawable="music" />

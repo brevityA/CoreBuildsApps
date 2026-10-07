@@ -1,14 +1,17 @@
 {
-  "versionCode": 45,
-  "versionName": "2.1.1",
-  "iconCount": 981,
-  "componentCount": 1213,
-  "releaseDate": "2026-10-05",
+  "versionCode": 46,
+  "versionName": "2.1.2",
+  "iconCount": 983,
+  "componentCount": 1217,
+  "releaseDate": "2026-10-07",
   "apkUrl": "https://github.com/brevityA/CoreBuildsApps/releases/download/iconpack/iconpack-release.apk",
   "releaseNotesUrl": "https://github.com/brevityA/CoreBuildsApps/releases",
   "minSdk": 21,
   "highlights": [
-    "The vSeeBox Heat family",
-    "WAVEO"
+    "Pocket Casts",
+    "Silo",
+    "Banners give the mark and name more room",
+    "Max is HBO Max again",
+    "Aurora Store applies again"
   ]
 }

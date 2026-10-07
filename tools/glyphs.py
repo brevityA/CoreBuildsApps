@@ -8761,3 +8761,32 @@ _WM3 = {
     "animetv": ("Anime/TV", None),
 }
 GLYPHS.update({f"{d}_wm": _wm_glyph(t, cue) for d, (t, cue) in _WM3.items()})
+
+
+# --------------------------------------------------------------------------
+# 2.1.2 requests: Pocket Casts (#257) and Silo (#258). Drawn on the pack
+# grid from each brand's published mark, as reference only; not traced.
+# --------------------------------------------------------------------------
+def pocketcasts_arcs(c):
+    """Pocket Casts: the disc with two concentric arcs, each a three-quarter
+    turn left open at the lower right. The disc is a Core stroke ring; the
+    arcs run from three o'clock round over the top to six o'clock."""
+    def arc(r):
+        return f"M {256 + r} 256 A {r} {r} 0 1 0 256 {256 + r}"
+    return (f'<circle cx="256" cy="256" r="184" {_s(c, 32)}/>'
+            f'<path d="{arc(118)}" {_s(c, 26.2)}/>'
+            f'<path d="{arc(54)}" {_s(c, 26.2)}/>')
+
+
+def silo_stack(c):
+    """Silo: the play standing on a stack of three slotted bars that rise to
+    the right. Each bar is an outlined parallelogram, its open centre the
+    slot; the play keeps the primary stroke so the stack reads under it."""
+    play = "M 168 59 L 168 123 L 288 91 Z"
+    bars = "".join(
+        f'<path d="M 160 {200 + y} L 352 {176 + y} L 352 {232 + y} L 160 {256 + y} Z" {_s(c, 26.2)}/>'
+        for y in (0, 100, 200))
+    return f'<path d="{play}" {_s(c, 32)}/>{bars}'
+
+
+GLYPHS.update({"pocketcasts_arcs": pocketcasts_arcs, "silo_stack": silo_stack})

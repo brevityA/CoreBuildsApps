@@ -6,12 +6,27 @@ All notable changes to the Core Builds Icon Pack. Format follows
 
 ## [Unreleased]
 
+## [2.1.2] — 2026-10-07
+
 ### Changed
 
 - **Banners give the mark and name more room.** A follow-up 5% increase brings
   the mark/name size caps to about 15% above v2.1.1 overall for better
   shelf-distance legibility. Categories, accents, transparency, square glyphs,
   mappings and wallpapers are unchanged.
+- **Max is HBO Max again.** The card says HBO Max, the service's own name
+  since 2025, and it applies to the `com.wbd.hbomax` build that launches
+  `com.wbd.beam.BeamActivity` (#256).
+- **Aurora Store applies again.** Current builds launch
+  `com.aurora.store.ComposeActivity`; it is mapped beside `.MainActivity`
+  (#255).
+
+### Added
+
+- **Pocket Casts** (#257): the disc with its two open arcs, in Pocket Casts
+  red.
+- **Silo** (#258): the play standing on three slotted bars, in Silo blue with
+  the lower bars in its pink.
 
 ## [2.1.1] — 2026-10-05
 

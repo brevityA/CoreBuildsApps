@@ -2,11 +2,11 @@
   "$schema": "./catalog.schema.json",
   "meta": {
     "pack": "Core Builds Icon Pack",
-    "version": "2.1.1",
+    "version": "2.1.2",
     "grid": 512,
     "safe_area": 432,
     "note": "Core Builds-authored geometric icons on a shared 512 grid. Reviewed brand glyphs use rounded monoline strokes and one accent, not imported vendor silhouettes. Common Outfit/category/rail banners; artwork is reference-only. Canonical brand colours and the dark-card contrast policy remain shared.",
-    "count": 981
+    "count": 983
   },
   "icons": [
     {
@@ -926,11 +926,13 @@
       "color": "#00C2FF",
       "glyph": "store_bag",
       "components": [
-        "com.aurora.store/.MainActivity"
+        "com.aurora.store/.MainActivity",
+        "com.aurora.store/com.aurora.store.ComposeActivity"
       ],
       "category": "STORE",
       "color_source": "brand reference (pre-provenance, unverified)",
-      "color_reviewed": null
+      "color_reviewed": null,
+      "mapping_source": "issue #255 (device-reported on Google TV Streamer, Android 14, pack 2.1.1): current Aurora Store builds launch com.aurora.store.ComposeActivity"
     },
     {
       "name": "Void",
@@ -5959,7 +5961,7 @@
       "style": "core_monoline"
     },
     {
-      "name": "Max",
+      "name": "HBO Max",
       "drawable": "max",
       "color": "#0046FF",
       "glyph": "max_wave",
@@ -5968,11 +5970,14 @@
         "com.hbo.hbonow/.MainActivity",
         "com.wbd.hbomax/.MainActivity",
         "com.wbd.hbomax/com.wbd.hbomax.MainActivity",
-        "com.wbd.stream/com.wbd.beam.BeamActivity"
+        "com.wbd.stream/com.wbd.beam.BeamActivity",
+        "com.wbd.hbomax/com.wbd.beam.BeamActivity"
       ],
       "category": "VOD",
       "color_source": "brand reference (pre-provenance, unverified)",
-      "color_reviewed": null
+      "color_reviewed": null,
+      "mapping_source": "issue #256 (device-reported on Google TV Streamer, Android 14, pack 2.1.1): com.wbd.beam.BeamActivity is the launch activity of com.wbd.hbomax",
+      "name_source": "the service's own name since its 2025 return from Max to HBO Max; the package id com.wbd.hbomax and issue #256 both name it HBO Max (2026-10-07)"
     },
     {
       "name": "Rover's Morning Glory",
@@ -13819,6 +13824,42 @@
           3
         ],
         "source": "the same Play listing icon: the violet #9058F8 tiles on the right of the patchwork (2026-10-03)"
+      }
+    },
+    {
+      "name": "Pocket Casts",
+      "drawable": "pocketcasts",
+      "color": "#F43E37",
+      "glyph": "pocketcasts_arcs",
+      "components": [
+        "au.com.shiftyjelly.pocketcasts/au.com.shiftyjelly.pocketcasts.TvActivity"
+      ],
+      "category": "MUSIC",
+      "mapping_source": "issue #257 (device-reported on Google TV Streamer, Android 14, pack 2.1.1): TvActivity is the TV launch activity of au.com.shiftyjelly.pocketcasts",
+      "color_source": "Pocket Casts red #F43E37, as Simple Icons records it from the Pocket Casts press page (blog.pocketcasts.com/press) (2026-10-07)",
+      "color_reviewed": "2026-10-07",
+      "glyph_source": "brand-informed redraw of the Pocket Casts mark (Simple Icons pocketcasts.svg, reference only): a Core stroke ring around two concentric three-quarter arcs open at the lower right, drawn on the pack grid, not traced (2026-10-07)"
+    },
+    {
+      "name": "Silo",
+      "drawable": "silo",
+      "color": "#0034FB",
+      "glyph": "silo_stack",
+      "components": [
+        "org.siloserver.silo/org.siloserver.silo.tv.MainTvActivity"
+      ],
+      "category": "MEDIA",
+      "mapping_source": "issue #258 (device-reported on Smart TV, Android 12, pack 2.1.1; #259 is its duplicate): MainTvActivity is the Android TV launch activity of org.siloserver.silo, the Silo media server client",
+      "color_source": "Silo brand blue #0034FB from the official wordmark (siloserver.org/brand/silo-wordmark-dark.svg, (c) Silo Media L.L.C., reference only) (2026-10-07)",
+      "color_reviewed": "2026-10-07",
+      "glyph_source": "brand-informed redraw of the Silo mark (siloserver.org wordmark and the Silo-Server Unraid icon, reference only): an outlined play above three slotted bars rising to the right, drawn on the pack grid, not traced (2026-10-07)",
+      "secondary": {
+        "color": "#F50B4F",
+        "parts": [
+          2,
+          3
+        ],
+        "source": "the Silo mark's lower bars: pink #F50B4F (its third bar's orange #FA7604 is folded into the one secondary paint) (2026-10-07)"
       }
     }
   ],

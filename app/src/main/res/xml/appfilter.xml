@@ -214,6 +214,8 @@
     <!-- Aurora Store -->
     <item component="ComponentInfo{com.aurora.store/com.aurora.store.MainActivity}" drawable="aurora_store_banner"/>
     <item component="ComponentInfo{com.aurora.store/.MainActivity}" drawable="aurora_store_banner"/>
+    <item component="ComponentInfo{com.aurora.store/com.aurora.store.ComposeActivity}" drawable="aurora_store_banner"/>
+    <item component="ComponentInfo{com.aurora.store/.ComposeActivity}" drawable="aurora_store_banner"/>
     <!-- AV Source -->
     <item component="ComponentInfo{com.spocky.projengmenu/com.spocky.projengmenu.activities.input.SourceAVActivity}" drawable="av_source_banner"/>
     <item component="ComponentInfo{com.spocky.projengmenu/.activities.input.SourceAVActivity}" drawable="av_source_banner"/>
@@ -889,6 +891,15 @@
     <!-- Hayu -->
     <item component="ComponentInfo{com.upst.hayu/com.upst.hayu.tv.main.MainActivity}" drawable="hayu_banner"/>
     <item component="ComponentInfo{com.upst.hayu/.tv.main.MainActivity}" drawable="hayu_banner"/>
+    <!-- HBO Max -->
+    <item component="ComponentInfo{com.wbd.stream/com.wbd.stream.MainActivity}" drawable="max_banner"/>
+    <item component="ComponentInfo{com.wbd.stream/.MainActivity}" drawable="max_banner"/>
+    <item component="ComponentInfo{com.hbo.hbonow/com.hbo.hbonow.MainActivity}" drawable="max_banner"/>
+    <item component="ComponentInfo{com.hbo.hbonow/.MainActivity}" drawable="max_banner"/>
+    <item component="ComponentInfo{com.wbd.hbomax/com.wbd.hbomax.MainActivity}" drawable="max_banner"/>
+    <item component="ComponentInfo{com.wbd.hbomax/.MainActivity}" drawable="max_banner"/>
+    <item component="ComponentInfo{com.wbd.stream/com.wbd.beam.BeamActivity}" drawable="max_banner"/>
+    <item component="ComponentInfo{com.wbd.hbomax/com.wbd.beam.BeamActivity}" drawable="max_banner"/>
     <!-- Hd Streamz -->
     <item component="ComponentInfo{insure.cable.estate/com.android.vending.a.UI}" drawable="hd_streamz_banner"/>
     <item component="ComponentInfo{insure.cable.estate/com.android.vending.a.TV}" drawable="hd_streamz_banner"/>
@@ -1265,14 +1276,6 @@
     <!-- Matvt Mouse For Android TV Toggle -->
     <item component="ComponentInfo{io.github.virresh.matvt/io.github.virresh.matvt.gui.GuiActivity}" drawable="matvt_mouse_for_android_tv_toggle_banner"/>
     <item component="ComponentInfo{io.github.virresh.matvt/.gui.GuiActivity}" drawable="matvt_mouse_for_android_tv_toggle_banner"/>
-    <!-- Max -->
-    <item component="ComponentInfo{com.wbd.stream/com.wbd.stream.MainActivity}" drawable="max_banner"/>
-    <item component="ComponentInfo{com.wbd.stream/.MainActivity}" drawable="max_banner"/>
-    <item component="ComponentInfo{com.hbo.hbonow/com.hbo.hbonow.MainActivity}" drawable="max_banner"/>
-    <item component="ComponentInfo{com.hbo.hbonow/.MainActivity}" drawable="max_banner"/>
-    <item component="ComponentInfo{com.wbd.hbomax/com.wbd.hbomax.MainActivity}" drawable="max_banner"/>
-    <item component="ComponentInfo{com.wbd.hbomax/.MainActivity}" drawable="max_banner"/>
-    <item component="ComponentInfo{com.wbd.stream/com.wbd.beam.BeamActivity}" drawable="max_banner"/>
     <!-- MaxPlayer -->
     <item component="ComponentInfo{tv.maxplayer.android/tv.maxplayer.android.MainActivity}" drawable="maxplayer_banner"/>
     <item component="ComponentInfo{tv.maxplayer.android/.MainActivity}" drawable="maxplayer_banner"/>
@@ -1719,6 +1722,9 @@
     <item component="ComponentInfo{com.mirfatif.permissionmanagerx/.fwk.MainActivityM}" drawable="pmx_banner"/>
     <item component="ComponentInfo{com.mirfatif.permissionmanagerx/com.mirfatif.permissionmanagerx.fwk.MainActivity}" drawable="pmx_banner"/>
     <item component="ComponentInfo{com.mirfatif.permissionmanagerx/.fwk.MainActivity}" drawable="pmx_banner"/>
+    <!-- Pocket Casts -->
+    <item component="ComponentInfo{au.com.shiftyjelly.pocketcasts/au.com.shiftyjelly.pocketcasts.TvActivity}" drawable="pocketcasts_banner"/>
+    <item component="ComponentInfo{au.com.shiftyjelly.pocketcasts/.TvActivity}" drawable="pocketcasts_banner"/>
     <!-- Podcast Addict -->
     <item component="ComponentInfo{com.bambuna.podcastaddict/com.bambuna.podcastaddict.activity.PodcastListActivity}" drawable="podcastaddict_banner"/>
     <item component="ComponentInfo{com.bambuna.podcastaddict/.activity.PodcastListActivity}" drawable="podcastaddict_banner"/>
@@ -2034,6 +2040,9 @@
     <item component="ComponentInfo{eu.chainfire.tv.sideloadlauncher/.MainActivity}" drawable="sideload_launcher_banner"/>
     <item component="ComponentInfo{net.easyjoin.applauncher/net.easyjoin.applauncher.activity.MainActivityTV}" drawable="sideload_launcher_banner"/>
     <item component="ComponentInfo{net.easyjoin.applauncher/.activity.MainActivityTV}" drawable="sideload_launcher_banner"/>
+    <!-- Silo -->
+    <item component="ComponentInfo{org.siloserver.silo/org.siloserver.silo.tv.MainTvActivity}" drawable="silo_banner"/>
+    <item component="ComponentInfo{org.siloserver.silo/.tv.MainTvActivity}" drawable="silo_banner"/>
     <!-- SimpliTV -->
     <item component="ComponentInfo{at.simplitv.ott.androidtv/tv.threess.threeready.ui.generic.activity.MainActivity}" drawable="androidtv_banner"/>
     <!-- Sirius -->
