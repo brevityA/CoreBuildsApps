@@ -1,9 +1,9 @@
 {
   "versionCode": 5,
   "versionName": "1.2.0",
-  "releaseDate": "2026-10-06",
+  "releaseDate": "2026-10-07",
   "apkUrl": "https://github.com/brevityA/CoreBuildsApps/releases/download/coreeq/coreeq-release.apk",
-  "apkSha256": "c7540f3441cf203da1be03185459a284b77192792d42ec4f30e251c6fcb6e748",
+  "apkSha256": "b8e2ca56a3e0ffd06124f46793750e004c8d15d6c493246a807f9db2fcbe5ab6",
   "releaseNotesUrl": "https://github.com/brevityA/CoreBuildsApps/releases/tag/coreeq-v1.2.0",
   "minSdk": 30,
   "highlights": [
