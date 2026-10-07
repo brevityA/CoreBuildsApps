@@ -7316,21 +7316,28 @@ def animetv_curl(c):
 GLYPHS.update({"animetv_curl": animetv_curl})
 
 
+# HeatLive's exact v2.0.0 geometry is the canonical base for the family.
+# Keep the drop and flame in one source so future variants cannot drift.
+_HEAT_DROP = ("M 256 56 C 300 128 404 208 404 300 A 148 148 0 0 1 108 300 "
+              "C 108 208 212 128 256 56 Z")
+
+
+def _heat_flame_d(cx=256, fb=396, hw=76):
+    """The original HeatLive flame: a solid drop whose tip bends right, with
+    the left-shoulder lick, standing on the shared drop's bowl floor."""
+    return (f"M {cx + 10} {fb - 206} C {cx + 40} {fb - 158} {cx + hw} {fb - 120} {cx + hw} {fb - 70} "
+            f"C {cx + hw} {fb - 26} {cx + 42} {fb} {cx} {fb} C {cx - 42} {fb} {cx - hw} {fb - 26} {cx - hw} {fb - 70} "
+            f"C {cx - hw} {fb - 108} {cx - 50} {fb - 128} {cx - 36} {fb - 150} "
+            f"C {cx - 28} {fb - 120} {cx - 18} {fb - 108} {cx - 4} {fb - 104} "
+            f"C {cx - 6} {fb - 140} {cx - 6} {fb - 176} {cx + 10} {fb - 206} Z")
+
+
 def heatlive_drop(c):
-    """HeatLive: the logo's flame inside a teardrop. The drop is a Core
-    stroke outline, point up; the flame stands on its floor as one solid
-    teardrop whose tip bends right, with a lick split off its left shoulder.
-    Drawn on the pack grid, not traced."""
-    drop = ('M 256 56 C 300 128 404 208 404 300 A 148 148 0 0 1 108 300 '
-            'C 108 208 212 128 256 56 Z')
-    cx, fb, hw = 256, 396, 76
-    flame = _solid(
-        f"M {cx + 10} {fb - 206} C {cx + 40} {fb - 158} {cx + hw} {fb - 120} {cx + hw} {fb - 70} "
-        f"C {cx + hw} {fb - 26} {cx + 42} {fb} {cx} {fb} C {cx - 42} {fb} {cx - hw} {fb - 26} {cx - hw} {fb - 70} "
-        f"C {cx - hw} {fb - 108} {cx - 50} {fb - 128} {cx - 36} {fb - 150} "
-        f"C {cx - 28} {fb - 120} {cx - 18} {fb - 108} {cx - 4} {fb - 104} "
-        f"C {cx - 6} {fb - 140} {cx - 6} {fb - 176} {cx + 10} {fb - 206} Z", c, 10)
-    return f'<path d="{drop}" {_s(c, 34)}/>{flame}'
+    """HeatLive 2.0.0: the canonical point-up stroke drop and solid flame.
+
+    The drop is the family's shared outline; the flame stands on its floor.
+    This remains the source shape for the HeatLive variants, not a trace."""
+    return f'<path d="{_HEAT_DROP}" {_s(c, 34)}/>{_solid(_heat_flame_d(), c, 10)}'
 
 
 GLYPHS.update({"heatlive_drop": heatlive_drop})
@@ -7347,20 +7354,6 @@ GLYPHS.update({"heatlive_drop": heatlive_drop})
 # of its own tile, so the five read apart on a shelf where they sit side
 # by side. All geometry is baked on the pack grid: no transforms.
 # --------------------------------------------------------------------------
-_HEAT_DROP = ("M 256 56 C 300 128 404 208 404 300 A 148 148 0 0 1 108 300 "
-              "C 108 208 212 128 256 56 Z")
-
-
-def _heat_flame_d(cx=256, fb=396, hw=76):
-    """The HeatLive flame: one solid teardrop whose tip bends right, with a
-    lick split off its left shoulder, standing on the drop's floor `fb`."""
-    return (f"M {cx + 10} {fb - 206} C {cx + 40} {fb - 158} {cx + hw} {fb - 120} {cx + hw} {fb - 70} "
-            f"C {cx + hw} {fb - 26} {cx + 42} {fb} {cx} {fb} C {cx - 42} {fb} {cx - hw} {fb - 26} {cx - hw} {fb - 70} "
-            f"C {cx - hw} {fb - 108} {cx - 50} {fb - 128} {cx - 36} {fb - 150} "
-            f"C {cx - 28} {fb - 120} {cx - 18} {fb - 108} {cx - 4} {fb - 104} "
-            f"C {cx - 6} {fb - 140} {cx - 6} {fb - 176} {cx + 10} {fb - 206} Z")
-
-
 # The play that stands where the flame does: optically centred in the
 # drop's bowl (circle centre 256,300 r 148), a touch right of true centre.
 _HEAT_PLAY = "M 204 216 L 204 384 L 350 300 Z"

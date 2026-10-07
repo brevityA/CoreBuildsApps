@@ -51,12 +51,12 @@ VAL_DIR = ROOT / "app" / "src" / "main" / "res" / "values"
 W, H = 1280, 720
 PNG_W, PNG_H = 320, 180
 
-# Their measured ink box, scaled to our master: 78% x 43%.
-# Budget keeps the lockup inside, or it overflows the 90% safe limit the validator enforces.
-INK_W = W * 0.78
-INK_H = H * 0.43          # 310
+# The reference pack's measured median is 78% x 43%. Support feedback first
+# approved a +10% increase; a further +5% step keeps the lockup within the
+# 90% safe limit while giving the mark and name a little more shelf presence.
+INK_W = W * 0.882         # first approved: 84%; follow-up: +5% width budget
 
-GLYPH_H = 360             # glyph cap height inside the ink box
+GLYPH_H = 416             # v2.1.1: 360; cumulative +15.6% mark-height cap
 GAP = 80                  # space between the glyph's INK and the wordmark.
                           # Until 1.9.4 this was 46 from the glyph's 512 grid
                           # box, so the visible gap was 46 plus whatever
@@ -111,7 +111,8 @@ KICK_TRACK = .6           # letter gap as a share of the cap: tracked out so
 # next to a drawn line, two voices on one card. The name now uses the same
 # _STROKE_LETTERS skeleton as every letter inside the icons, a step lighter
 # than the glyph's stroke so the mark still leads (glyphs.stroke_label_metrics).
-# Sizes keep the old em scale, so the layout grid below is unchanged.
+# The two support-led scale steps raise the mark/name caps; the fit solver keeps
+# long labels inside the safe area while category and gap remain fixed.
 
 
 def _measure(text, size):
@@ -124,8 +125,8 @@ def esc(s):
              .replace(">", "&gt;").replace('"', "&quot;"))
 
 
-MAX_TYPE = 124
-MIN_TYPE = 62
+MAX_TYPE = 143             # v2.1.1: 124; cumulative +15.3%, fit still governs names
+MIN_TYPE = 71              # corresponding minimum after the follow-up +5% step
 
 
 def split_name(name):
@@ -396,7 +397,7 @@ def main():
     print(f"\u2713 banner_aliases.xml written ({len(aliases)} dup names \u2192 "
           f"canonical art); stale banner PNGs removed")
     print(f"\nBanners complete \u2014 {len(targets)} at 16:9, centred lockups "
-          f"on the reference pack's measured grid.")
+          f"with the current ~15% mark/name scale vs v2.1.1.")
     return 0
 
 
