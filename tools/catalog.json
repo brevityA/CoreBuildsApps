@@ -5964,7 +5964,7 @@
       "name": "HBO Max",
       "drawable": "max",
       "color": "#0046FF",
-      "glyph": "max_wave",
+      "glyph": "max_wm",
       "components": [
         "com.wbd.stream/.MainActivity",
         "com.hbo.hbonow/.MainActivity",
@@ -5977,7 +5977,8 @@
       "color_source": "brand reference (pre-provenance, unverified)",
       "color_reviewed": null,
       "mapping_source": "issue #256 (device-reported on Google TV Streamer, Android 14, pack 2.1.1): com.wbd.beam.BeamActivity is the launch activity of com.wbd.hbomax",
-      "name_source": "the service's own name since its 2025 return from Max to HBO Max; the package id com.wbd.hbomax and issue #256 both name it HBO Max (2026-10-07)"
+      "name_source": "the service's own name since its 2025 return from Max to HBO Max; the package id com.wbd.hbomax and issue #256 both name it HBO Max (2026-10-07)",
+      "glyph_source": "wordmark cue from the HBO Max logo since its 2025 return to the HBO Max name: HBO stacked over lowercase max in the pack's stroke letters, replacing the lone Max wave (2026-10-07)"
     },
     {
       "name": "Rover's Morning Glory",

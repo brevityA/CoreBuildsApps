@@ -8759,6 +8759,8 @@ _WM3 = {
     "oktv22": ("OK", None), "onepixmedia": ("PIX", "dot"), "apksrebrand": ("PL", "play"),
     "sportseverywhere": ("4V", "under"), "xtreamplayeranddownloader": ("9X", None),
     "animetv": ("Anime/TV", None),
+    # 2.1.2: HBO Max is HBO Max again; its stacked HBO over lowercase max.
+    "max": ("HBO/max", None),
 }
 GLYPHS.update({f"{d}_wm": _wm_glyph(t, cue) for d, (t, cue) in _WM3.items()})
 
