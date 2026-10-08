@@ -40,6 +40,8 @@
          share 540dp with the header, so these sit a little under cb_target_min.
          Focus is by D-pad, and every row keeps the full focus ring. -->
     <dimen name="cb_menu_row">44dp</dimen>
+    <!-- Extra effects: the switch list; the explanation panel takes the rest. -->
+    <dimen name="cb_extras_list">400dp</dimen>
     <dimen name="cb_button_min_width">220dp</dimen>
 
     <!-- The on-screen card over other apps (1.3.0). Placed top right, inset

@@ -76,6 +76,12 @@ must never land there. Releases are `coreeq-v<version>` tags (see
   whatever height is left, so the status line under it is no longer cut
   off. While correction is off, the status line says what Off means
   instead of repeating "Correction: Off".
+- **Extra effects fits on one screen.** Each of the five switches had its
+  paragraph under it, so the screen scrolled. The switches are now one list,
+  grouped **Tone** (Dialogue boost, Low-volume bass, Bass boost) and
+  **Level** (Loudness enhancer, Night mode), and the panel beside them
+  explains whichever has focus. While Low-volume bass is on, that panel also
+  shows this output's reference volume, the volume now and what is added.
 - **Every on/off switch shows its state.** Correction and the switches on
   Extra effects, Profiles, Mode, Capability and Content type have a
   switch drawn at the end of the row and a cyan-tinted background when on.

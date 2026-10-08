@@ -190,6 +190,13 @@
     <string name="action_extras">Extra effects</string>
     <string name="extras_kicker">Core EQ · Extra effects</string>
     <string name="extras_heading">Extra effects</string>
+    <string name="extras_group_tone">Tone</string>
+    <string name="extras_group_level">Level</string>
+    <string name="extras_name_dialogue">Dialogue boost</string>
+    <string name="extras_name_low_bass">Low-volume bass</string>
+    <string name="extras_name_bass">Bass boost</string>
+    <string name="extras_name_loudness">Loudness enhancer</string>
+    <string name="extras_name_night">Night mode</string>
     <string name="extras_subtitle">Optional layers on top of room correction. All off by default; each change applies at once. Your measured correction is never changed here.</string>
     <string name="extras_bass_on">Bass boost: On</string>
     <string name="extras_bass_off">Bass boost: Off</string>

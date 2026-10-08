@@ -9,8 +9,10 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.provider.Settings
+import android.view.View
 import android.widget.Button
 import android.widget.TextView
+import androidx.annotation.StringRes
 import androidx.core.content.ContextCompat
 import tv.corebuilds.eq.apply.EqService
 import tv.corebuilds.eq.apply.LowVolumeBass
@@ -25,7 +27,8 @@ import tv.corebuilds.eq.ui.showSwitch
  * separate platform effects on each corrected session; night mode tightens
  * the DynamicsProcessing limiter. All are off until switched on here, and
  * each change applies at once. Room correction itself never changes on this
- * screen.
+ * screen. Since 1.3.0 the explanation sits in one panel that follows focus
+ * ([Row]), so all five switches fit on one screen.
  *
  * Unreachable in 1.2.0 (not in the manifest, no way in), while every one
  * of these effects except night mode ran by default.
@@ -35,10 +38,23 @@ class EnhancedAudioSettingsActivity : TvActivity() {
     private lateinit var prefs: EnhancedAudioPrefs
     private lateinit var btnDialogue: Button
     private lateinit var btnLowBass: Button
-    private lateinit var textLowBassNote: TextView
     private lateinit var btnBass: Button
     private lateinit var btnLoudness: Button
     private lateinit var btnNight: Button
+    private lateinit var textDetailTitle: TextView
+    private lateinit var textDetailBody: TextView
+    private lateinit var textDetailStatus: TextView
+
+    /** The five switches, each with the name and note the panel shows while it has focus. */
+    private enum class Row(@StringRes val title: Int, @StringRes val note: Int) {
+        DIALOGUE(R.string.extras_name_dialogue, R.string.extras_dialogue_note),
+        LOW_BASS(R.string.extras_name_low_bass, R.string.extras_low_bass_note),
+        BASS(R.string.extras_name_bass, R.string.extras_bass_note),
+        LOUDNESS(R.string.extras_name_loudness, R.string.extras_loudness_note),
+        NIGHT(R.string.extras_name_night, R.string.extras_night_note)
+    }
+
+    private var shown = Row.DIALOGUE
 
     // While this screen is up, the Low-volume bass line follows the volume
     // keys the same way the service does (Settings.System plus the
@@ -57,10 +73,27 @@ class EnhancedAudioSettingsActivity : TvActivity() {
 
         btnDialogue = findViewById(R.id.btn_extras_dialogue)
         btnLowBass = findViewById(R.id.btn_extras_low_bass)
-        textLowBassNote = findViewById(R.id.text_extras_low_bass_note)
         btnBass = findViewById(R.id.btn_extras_bass)
         btnLoudness = findViewById(R.id.btn_extras_loudness)
         btnNight = findViewById(R.id.btn_extras_night)
+        textDetailTitle = findViewById(R.id.text_extras_detail_title)
+        textDetailBody = findViewById(R.id.text_extras_detail_body)
+        textDetailStatus = findViewById(R.id.text_extras_detail_status)
+
+        for ((button, row) in listOf(
+            btnDialogue to Row.DIALOGUE,
+            btnLowBass to Row.LOW_BASS,
+            btnBass to Row.BASS,
+            btnLoudness to Row.LOUDNESS,
+            btnNight to Row.NIGHT
+        )) {
+            button.setOnFocusChangeListener { _, hasFocus ->
+                if (hasFocus) {
+                    shown = row
+                    renderDetail()
+                }
+            }
+        }
 
         btnDialogue.setOnClickListener {
             prefs.dialogueBoostEnabled = !prefs.dialogueBoostEnabled
@@ -118,15 +151,24 @@ class EnhancedAudioSettingsActivity : TvActivity() {
     private fun refresh() {
         btnDialogue.showSwitch(prefs.dialogueBoostEnabled, R.string.extras_dialogue_on, R.string.extras_dialogue_off)
         btnLowBass.showSwitch(prefs.lowVolumeBassEnabled, R.string.extras_low_bass_on, R.string.extras_low_bass_off)
-        textLowBassNote.text = lowBassNote()
         btnBass.showSwitch(prefs.bassBoostEnabled, R.string.extras_bass_on, R.string.extras_bass_off)
         btnLoudness.showSwitch(prefs.loudnessEnhancerEnabled, R.string.extras_loudness_on, R.string.extras_loudness_off)
         btnNight.showSwitch(prefs.nightModeEnabled, R.string.extras_night_on, R.string.extras_night_off)
+        renderDetail()
     }
 
-    /** What the switch does, or, while on, where this output's reference sits and what it adds right now. */
-    private fun lowBassNote(): String {
-        if (!prefs.lowVolumeBassEnabled) return getString(R.string.extras_low_bass_note)
+    /** The focused switch's name and note; for Low-volume bass, also where this output's reference sits now. */
+    private fun renderDetail() {
+        textDetailTitle.setText(shown.title)
+        textDetailBody.setText(shown.note)
+        val status = if (shown == Row.LOW_BASS) lowBassStatus() else null
+        textDetailStatus.text = status.orEmpty()
+        textDetailStatus.visibility = if (status == null) View.GONE else View.VISIBLE
+    }
+
+    /** While Low-volume bass is on: where this output's reference sits and what it adds right now; null while off. */
+    private fun lowBassStatus(): String? {
+        if (!prefs.lowVolumeBassEnabled) return null
         val reading = LowVolumeBass.read(this, prefs)
         val reference = reading.referenceDb
         val now = reading.nowDb

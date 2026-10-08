@@ -49,6 +49,17 @@
         <item name="android:layout_marginTop">@dimen/cb_space_xs</item>
     </style>
 
+    <!-- An on/off row (Extra effects): the label says the state, the knob and
+         the cyan tint show it (bg_toggle / ic_switch, keyed on activated). -->
+    <style name="CoreEQ.SwitchRow" parent="CoreEQ.MenuRow">
+        <item name="android:layout_height">@dimen/cb_target_min</item>
+        <item name="android:layout_marginTop">@dimen/cb_space_xs</item>
+        <item name="android:background">@drawable/bg_toggle</item>
+        <item name="android:drawableEnd">@drawable/ic_switch</item>
+        <item name="android:drawablePadding">@dimen/cb_space_sm</item>
+        <item name="android:textSize">@dimen/cb_text_label</item>
+    </style>
+
     <!-- A choice among several (Content type): fills cyan when activated. -->
     <style name="CoreEQ.Chip" parent="Widget.CoreEQ.Button">
         <item name="android:layout_width">0dp</item>
