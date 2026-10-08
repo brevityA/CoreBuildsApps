@@ -52,6 +52,54 @@ class CoreEqReleaseContract(unittest.TestCase):
         self.assertIn("-partition-size 8192", self.workflow)
         self.assertIn("pm install -r -S", body)
         self.assertIn("::notice title=emulator storage::", body)
+        # The 37.0 preview image restarts its framework after boot_completed on
+        # some boots (SystemUI, then surfaceflinger, abort in RegionSampling);
+        # an install in that window fails (coreeq-v1.3.0 tag run: "Failure
+        # calling service package: Broken pipe", then "Can't find service:
+        # package"). Every install attempt waits for the package service first.
+        self.assertIn("wait_for_package_service", body)
+        # A change to the script has to run the job that uses it: the
+        # workflow's path filters list both tools/ scripts it calls.
+        triggers = self.workflow.split("permissions:", 1)[0]
+        self.assertEqual(triggers.count("- 'tools/install_core_eq_on_emulator.sh'"), 2)
+        self.assertEqual(triggers.count("- 'tools/install_android_platform.sh'"), 2)
+        self.assertIn("timeout 60 adb shell pm path android", body)
+        self.assertIn("timeout 60 adb shell getprop sys.boot_completed", body)
+        self.assertGreaterEqual(body.count('wait_for_package_service "'), 4)
+        first_wait = body.index('wait_for_package_service "before installing"')
+        first_install = body.index('install_apk "streaming" -r')
+        self.assertLess(first_wait, first_install, "the first install must wait for the package service")
+        # When an install fails, the crash buffer is dumped: logd outlives the
+        # system server, so that is where the stack of whatever killed it is.
+        self.assertIn("adb logcat -d -b crash", body)
+        self.assertIn('crash_report "$(basename "$APK"), first attempt"', body)
+
+    def test_pull_requests_install_the_release_shape_too(self) -> None:
+        """The production package has to meet the emulator before a tag does.
+
+        Until coreeq-v1.3.0 only tag runs installed the release variant, so
+        when that tag's install failed twice nothing had installed the same APK
+        before it to compare with. Pull requests now build the release variant,
+        sign it with a throwaway key (they never see the release key), and
+        install it beside the debug APK, release-shape first.
+        """
+        step = self.workflow.split("- name: Assemble release-shape APK (throwaway key)", 1)[1]
+        step = step.split("- name:", 1)[0]
+        self.assertIn("if: github.event_name == 'pull_request'", step)
+        self.assertIn(":app:assembleRelease", step)
+        # Its own key: the runner had no ~/.android/debug.keystore after
+        # assembleDebug, which is how the first version of this step failed.
+        self.assertIn("keytool -genkeypair", step)
+        self.assertIn('KS="$RUNNER_TEMP/coreeq-throwaway.jks"', step)
+        self.assertIn("--v4-signing-enabled false", step)
+        self.assertIn("dist/coreeq-release-shape.apk", step)
+        self.assertNotIn("secrets.", step)
+        upload = self.workflow.index("- name: Upload candidate APK")
+        self.assertLess(self.workflow.index("- name: Assemble release-shape APK (throwaway key)"), upload)
+        body = (ROOT / "tools/install_core_eq_on_emulator.sh").read_text(encoding="utf-8")
+        self.assertIn("*coreeq-release-shape.apk) echo tv.corebuilds.eq ;;", body)
+        self.assertIn('for APK in "${APKS[@]}"; do', body)
+        self.assertIn("LC_ALL=C sort -r", body)
 
     def test_preview_sdk_ids_are_covered_by_the_install_fallback(self) -> None:
         """The job states `platforms;android-37`, then has somewhere to go.

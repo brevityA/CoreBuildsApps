@@ -2,8 +2,9 @@ name: Core EQ APK
 
 # Builds the standalone Core EQ app.
 #
-# CI:       PRs run unit tests, lint, build, then install the APK on Android 11
-#           (API 30) and Android 17 (API 37) emulators.
+# CI:       PRs run unit tests, lint, build, then install the debug APK and a
+#           release-shape APK (production package, throwaway key) on
+#           Android 11 (API 30) and Android 17 (API 37) emulators.
 # Test:     pushes to main publish a debug-package APK signed by the stable
 #           production certificate, so test builds can update in place.
 # Release:  coreeq-v* tags build the production package with that same
@@ -12,15 +13,22 @@ name: Core EQ APK
 
 on:
   workflow_dispatch:
+  # The two tools/ scripts below run inside this workflow's jobs, so a change
+  # to either has to run it: the emulator install script went untested until
+  # a tag run when only coreeq/** and this file were listed.
   pull_request:
     paths:
       - 'coreeq/**'
       - '.github/workflows/core-eq-apk.yml'
+      - 'tools/install_core_eq_on_emulator.sh'
+      - 'tools/install_android_platform.sh'
   push:
     branches: [main]
     paths:
       - 'coreeq/**'
       - '.github/workflows/core-eq-apk.yml'
+      - 'tools/install_core_eq_on_emulator.sh'
+      - 'tools/install_android_platform.sh'
     tags: ['coreeq-v*']
 
 permissions:
@@ -247,6 +255,38 @@ jobs:
           mkdir -p dist
           cp "$APK" dist/coreeq-debug.apk
           (cd dist && sha256sum coreeq-debug.apk > coreeq-debug.apk.sha256)
+          ls -lh dist/
+
+      # Until coreeq-v1.3.0 the production package met an emulator only on a
+      # tag run, so when that tag's install failed twice there was no earlier
+      # run of the same APK to compare against. (The cause turned out to be the
+      # 37.0 image restarting its framework after boot, not the APK; see
+      # tools/install_core_eq_on_emulator.sh.) Pull requests now build the
+      # release variant too and sign it with a throwaway key (they never
+      # receive the release key), and the install job installs both.
+      - name: Assemble release-shape APK (throwaway key)
+        if: github.event_name == 'pull_request'
+        run: |
+          set -euo pipefail
+          (cd coreeq && ./gradlew :app:assembleRelease --no-daemon --stacktrace)
+          UNSIGNED=$(find coreeq/app/build/outputs/apk/release -maxdepth 1 -type f -name '*-unsigned.apk' -print -quit)
+          test -n "$UNSIGNED" || { echo "::error::No unsigned release APK was produced."; exit 1; }
+          BUILD_TOOLS="$ANDROID_HOME/build-tools/36.0.0"
+          [[ -x "$BUILD_TOOLS/apksigner" ]] || BUILD_TOOLS="$(dirname "$(find "$ANDROID_HOME/build-tools" -maxdepth 2 -name apksigner -type f 2>/dev/null | sort -V | tail -1)")"
+          test -x "$BUILD_TOOLS/apksigner" && test -x "$BUILD_TOOLS/zipalign" \
+            || { echo "::error::No apksigner/zipalign under $ANDROID_HOME/build-tools."; exit 1; }
+          # A throwaway key made for this run. The first version of this step
+          # expected assembleDebug to have left ~/.android/debug.keystore on the
+          # runner; it had not ("No debug keystore at ..."), so the key no
+          # longer depends on where AGP keeps its own.
+          KS="$RUNNER_TEMP/coreeq-throwaway.jks"
+          keytool -genkeypair -noprompt -keystore "$KS" -storepass android -keypass android \
+            -alias throwaway -keyalg RSA -keysize 2048 -validity 1 -dname "CN=Core EQ PR throwaway"
+          "$BUILD_TOOLS/zipalign" -f -p 4 "$UNSIGNED" "$RUNNER_TEMP/coreeq-release-aligned.apk"
+          "$BUILD_TOOLS/apksigner" sign --ks "$KS" --ks-pass pass:android \
+            --ks-key-alias throwaway --key-pass pass:android --v4-signing-enabled false \
+            --out dist/coreeq-release-shape.apk "$RUNNER_TEMP/coreeq-release-aligned.apk"
+          "$BUILD_TOOLS/apksigner" verify dist/coreeq-release-shape.apk
           ls -lh dist/
 
       - name: Upload candidate APK
