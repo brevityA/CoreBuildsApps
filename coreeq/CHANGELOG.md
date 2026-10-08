@@ -79,6 +79,33 @@ must never land there. Releases are `coreeq-v<version>` tags (see
   keeps the same 48dp side and 24dp bottom gutters as every other screen.
   Its buttons have side padding (their labels touched their borders), and
   the panel uses the app's type and spacing tokens instead of fixed sizes.
+- **No control sits below the screen any more.** At 1080p, Profiles' Export
+  and Delete, Manual EQ's Done, and Mode's app rules and Done were below
+  the bottom edge. Profiles' graph now takes the height that is left, Mode's
+  three modes are one row of chips, and Manual EQ's Save and Reset share a
+  row.
+- **Profiles' list rows no longer clip.** A long name wrapped onto a second
+  line and pushed the details line out of the card; names now end in "…".
+  The export summary is set in the body size instead of a bold 16sp.
+- **Mode explains automatic switching in plain bullets** under a heading,
+  instead of one paragraph about session UIDs. Its status lines (app rules,
+  conflicts, players now) are in sentence case.
+- **Manual EQ's profile card** names the profile and its output. The mode
+  being edited is only on the Editing mode row, where it was already shown.
+  Headroom fits on one line.
+- **Measure's Stop works only while a sweep runs**, and looks unavailable
+  otherwise. Focus moves to Stop when a sweep starts and back to Start when
+  it is stopped.
+- **Unavailable buttons look unavailable.** A disabled primary button kept
+  its dark label on a grey body, which could not be read. Disabled
+  secondary buttons dim their label and border.
+- **A focused switch that is on keeps its cyan tint** under the focus ring.
+  Until now, focus hid the on state.
+- **Graphs:** the legend sits on a backing, so a curve that runs into the
+  corner passes under it. Frequency labels are centred on their grid
+  lines, and a long title ends in "…" instead of running off the graph.
+- Scrolling columns (Capability, Measure, Extra effects) fade at the edge
+  that has more content, instead of cutting a card in half.
 
 ### Removed
 

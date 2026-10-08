@@ -7,7 +7,7 @@
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
     <item android:state_activated="true" android:state_focused="true">
         <shape android:shape="rectangle">
-            <solid android:color="@color/cb_card_focus" />
+            <solid android:color="@color/cb_focus_glow" />
             <stroke android:width="@dimen/cb_focus_ring" android:color="@color/cb_glow_cyan" />
             <corners android:radius="@dimen/cb_radius_card" />
         </shape>

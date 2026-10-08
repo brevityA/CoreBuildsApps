@@ -100,6 +100,7 @@ class MeasureActivity : TvActivity() {
         textQuality = findViewById(R.id.text_measure_quality)
         btnStart = findViewById(R.id.btn_measure_start)
         btnStop = findViewById(R.id.btn_measure_stop)
+        btnStop.isEnabled = false // only a running sweep can be stopped
         btnSave = findViewById(R.id.btn_measure_save)
         btnImport = findViewById(R.id.btn_measure_import)
         btnRoom = findViewById(R.id.btn_room_size)
@@ -219,6 +220,8 @@ class MeasureActivity : TvActivity() {
             return
         }
         measuring = true
+        btnStop.isEnabled = true
+        btnStop.requestFocus() // Start is disabled for the sweep; keep focus somewhere usable
         measurementGeneration += 1
         val generation = measurementGeneration
         result = null
@@ -525,6 +528,7 @@ class MeasureActivity : TvActivity() {
 
     private fun finishMeasuring() {
         measuring = false
+        btnStop.isEnabled = false
         stimulusPlayer.stop()
         captureEngine.stop()
         btnStart.isEnabled = true
@@ -539,6 +543,7 @@ class MeasureActivity : TvActivity() {
         finishMeasuring()
         progressMeasure.progress = 0
         textStatus.text = message
+        btnStart.requestFocus()
     }
 
     private fun saveAndFinish() {

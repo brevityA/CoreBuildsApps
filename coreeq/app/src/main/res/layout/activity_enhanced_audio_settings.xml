@@ -3,6 +3,8 @@
      switches, all off by default, applied the moment they change. Toggle convention matches Capability's
      "Check for updates on open: On" row. -->
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:requiresFadingEdge="vertical"
+    android:fadingEdgeLength="@dimen/cb_space_xl"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/cb_night"

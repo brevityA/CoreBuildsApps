@@ -178,7 +178,7 @@
             android:minWidth="@dimen/cb_button_min_width"
             android:background="@drawable/bg_cta"
             android:text="@string/mode_done"
-            android:textColor="@color/cb_cta_ink"
+            android:textColor="@color/cta_text"
             android:textSize="@dimen/cb_text_label"
             android:textStyle="bold"
             android:focusable="true"

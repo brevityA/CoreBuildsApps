@@ -58,7 +58,7 @@
             android:minWidth="120dp"
             android:background="@drawable/bg_cta"
             android:text="@string/update_now"
-            android:textColor="@color/cb_cta_ink"
+            android:textColor="@color/cta_text"
             android:textSize="@dimen/cb_text_label"
             android:textStyle="bold"
             android:focusable="true"
@@ -71,7 +71,7 @@
             android:minWidth="96dp"
             android:background="@drawable/bg_ghost"
             android:text="@string/update_later"
-            android:textColor="@color/cb_ink"
+            android:textColor="@color/ghost_text"
             android:textSize="@dimen/cb_text_label"
             android:focusable="true"
             android:layout_marginStart="@dimen/cb_space_xs" />
@@ -199,7 +199,7 @@
             android:layout_height="@dimen/cb_target_min"
             android:background="@drawable/bg_cta"
             android:text="@string/action_remeasure"
-            android:textColor="@color/cb_cta_ink"
+            android:textColor="@color/cta_text"
             android:textSize="@dimen/cb_text_data"
             android:textStyle="bold"
             android:paddingStart="@dimen/cb_card_padding"
@@ -220,6 +220,8 @@
         <!-- Fits without scrolling at 540dp; the ScrollView only matters
              while the update bar is showing above it. -->
         <ScrollView
+            android:requiresFadingEdge="vertical"
+            android:fadingEdgeLength="@dimen/cb_space_xl"
             android:layout_width="@dimen/cb_rail_width"
             android:layout_height="match_parent"
             android:scrollbars="none">

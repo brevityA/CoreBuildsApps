@@ -43,6 +43,12 @@
         <item name="android:focusable">true</item>
     </style>
 
+    <!-- A full-width action row on a card (Manual EQ): the Home menu row at full target height. -->
+    <style name="CoreEQ.ActionRow" parent="CoreEQ.MenuRow">
+        <item name="android:layout_height">@dimen/cb_target_min</item>
+        <item name="android:layout_marginTop">@dimen/cb_space_xs</item>
+    </style>
+
     <!-- A choice among several (Content type): fills cyan when activated. -->
     <style name="CoreEQ.Chip" parent="Widget.CoreEQ.Button">
         <item name="android:layout_width">0dp</item>

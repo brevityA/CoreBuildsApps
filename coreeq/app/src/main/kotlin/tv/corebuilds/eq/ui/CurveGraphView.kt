@@ -6,9 +6,12 @@ import android.graphics.Color
 import android.graphics.DashPathEffect
 import android.graphics.Paint
 import android.graphics.Path
+import android.text.TextPaint
+import android.text.TextUtils
 import android.util.AttributeSet
 import android.view.View
 import androidx.core.content.ContextCompat
+import androidx.core.graphics.ColorUtils
 import tv.corebuilds.eq.R
 import kotlin.math.log10
 import kotlin.math.max
@@ -64,10 +67,17 @@ class CurveGraphView @JvmOverloads constructor(
         color = ContextCompat.getColor(context, R.color.cb_slate)
     }
 
-    private val titlePaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+    private val titlePaint = TextPaint(Paint.ANTI_ALIAS_FLAG).apply {
         textSize = 24f
         isFakeBoldText = true
         color = ContextCompat.getColor(context, R.color.cb_slate)
+    }
+
+    // The legend sits on the plot's own colour, slightly see-through, so a
+    // curve that runs into the corner passes under it instead of through it.
+    private val legendPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+        style = Paint.Style.FILL
+        color = ColorUtils.setAlphaComponent(ContextCompat.getColor(context, R.color.cb_void), 0xE6)
     }
 
     private val linePaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
@@ -160,7 +170,7 @@ class CurveGraphView @JvmOverloads constructor(
         for ((gf, label) in gridFreqs) {
             val x = fx(gf)
             canvas.drawLine(x, plotT, x, plotB, gridPaint)
-            canvas.drawText(label, x - 15f, plotB + 28f, textPaint)
+            canvas.drawText(label, x - textPaint.measureText(label) / 2f, plotB + 28f, textPaint)
         }
 
         // Draw Schroeder transition vertical rule
@@ -169,8 +179,9 @@ class CurveGraphView @JvmOverloads constructor(
             canvas.drawLine(tx, plotT, tx, plotB, transitionPaint)
         }
 
-        // Title
-        canvas.drawText(graphTitle, plotL + 20f, plotT - 18f, titlePaint)
+        // Title, cut to the plot width so a long profile name cannot run off the graph
+        val title = TextUtils.ellipsize(graphTitle, titlePaint, plotR - plotL - 40f, TextUtils.TruncateAt.END)
+        canvas.drawText(title, 0, title.length, plotL + 20f, plotT - 18f, titlePaint)
 
         // Draw Series Curves
         if (frequencies.isNotEmpty()) {
@@ -198,9 +209,14 @@ class CurveGraphView @JvmOverloads constructor(
             }
         }
 
-        // Legend at bottom right
+        // Legend at bottom right, on its backing
         var lx = plotR - 20f
         val ly = plotB - 16f
+        if (seriesList.isNotEmpty()) {
+            val entries = seriesList.sumOf { textPaint.measureText(it.label).toDouble() + 60.0 }.toFloat()
+            val left = lx - entries + 15f
+            canvas.drawRoundRect(left - 12f, ly - 28f, plotR - 6f, ly + 12f, 8f, 8f, legendPaint)
+        }
         for (s in seriesList.reversed()) {
             val textLen = textPaint.measureText(s.label)
             lx -= textLen

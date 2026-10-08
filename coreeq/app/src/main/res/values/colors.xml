@@ -30,4 +30,5 @@
     <!-- A switch that is on (1.3.0): cyan-tinted surface, cyan edge -->
     <color name="cb_toggle_on">#2600D4FF</color>
     <color name="cb_toggle_on_edge">#9900D4FF</color>
+    <color name="cb_text_disabled">#668B949E</color>
 </resources>

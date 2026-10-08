@@ -40,6 +40,8 @@ class ManualEqActivity : TvActivity() {
     private lateinit var graph: CurveGraphView
     private lateinit var bands: ManualEqBandsView
     private lateinit var textProfile: TextView
+    private lateinit var textProfileKicker: TextView
+    private lateinit var textProfileSub: TextView
     private lateinit var textHeadroom: TextView
     private lateinit var textApplyHint: TextView
     private lateinit var textStatus: TextView
@@ -74,6 +76,8 @@ class ManualEqActivity : TvActivity() {
         graph = findViewById(R.id.graph_manual_eq)
         bands = findViewById(R.id.manual_eq_bands)
         textProfile = findViewById(R.id.text_manual_profile)
+        textProfileKicker = findViewById(R.id.text_manual_profile_kicker)
+        textProfileSub = findViewById(R.id.text_manual_profile_sub)
         textHeadroom = findViewById(R.id.text_manual_headroom)
         textApplyHint = findViewById(R.id.text_manual_eq_status)
         textStatus = findViewById(R.id.text_manual_selected_band)
@@ -179,11 +183,14 @@ class ManualEqActivity : TvActivity() {
         val outputLabel = active.outputName
             ?: active.outputKind?.let { OutputRoute.label(it) }
             ?: "current output"
-        textProfile.text = if (active.manualOnly) {
-            "Manual EQ only\nNo room measurement\nFor $outputLabel\nEditing ${editingMode.title}"
-        } else {
-            "Room profile\n${active.name}\nEditing ${editingMode.title} overlay"
-        }
+        // The mode being edited is on the row below this card, so the card
+        // names only the profile and what sits under the manual layer.
+        textProfileKicker.setText(if (active.manualOnly) R.string.manual_profile_manual_only else R.string.manual_profile_room)
+        textProfile.text = active.name
+        textProfileSub.text = getString(
+            if (active.manualOnly) R.string.manual_profile_manual_sub else R.string.manual_profile_room_sub,
+            outputLabel
+        )
 
         val frequencies: DoubleArray
         val series: List<Series>

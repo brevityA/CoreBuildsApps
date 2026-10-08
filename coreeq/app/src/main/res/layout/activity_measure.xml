@@ -46,6 +46,8 @@
 
         <!-- Left rail: scrolls so the optional REW import cannot clip on a 540dp panel. -->
         <ScrollView
+            android:requiresFadingEdge="vertical"
+            android:fadingEdgeLength="@dimen/cb_space_xl"
             android:layout_width="340dp"
             android:layout_height="match_parent"
             android:fillViewport="true"
@@ -97,7 +99,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/cb_target_min"
                     android:background="@drawable/bg_ghost"
-                    android:textColor="@color/cb_ink"
+                    android:textColor="@color/ghost_text"
                     android:textSize="@dimen/cb_text_data"
                     android:textAllCaps="false"
                     android:gravity="start|center_vertical"
@@ -111,7 +113,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/cb_target_min"
                     android:background="@drawable/bg_ghost"
-                    android:textColor="@color/cb_ink"
+                    android:textColor="@color/ghost_text"
                     android:textSize="@dimen/cb_text_data"
                     android:textAllCaps="false"
                     android:gravity="start|center_vertical"
@@ -201,7 +203,7 @@
                 android:layout_height="@dimen/cb_target_min"
                 android:background="@drawable/bg_ghost"
                 android:text="@string/measure_import_rew"
-                android:textColor="@color/cb_ink"
+                android:textColor="@color/ghost_text"
                 android:textSize="@dimen/cb_text_label"
                 android:focusable="true"
                 android:layout_marginTop="@dimen/cb_space_sm" />
@@ -275,7 +277,7 @@
                     android:layout_height="@dimen/cb_target_min"
                     android:background="@drawable/bg_cta"
                     android:text="@string/measure_start"
-                    android:textColor="@color/cb_cta_ink"
+                    android:textColor="@color/cta_text"
                     android:textSize="@dimen/cb_text_label"
                     android:textStyle="bold"
                     android:focusable="true"
@@ -287,7 +289,7 @@
                     android:layout_height="@dimen/cb_target_min"
                     android:background="@drawable/bg_ghost"
                     android:text="@string/measure_stop"
-                    android:textColor="@color/cb_ink"
+                    android:textColor="@color/ghost_text"
                     android:textSize="@dimen/cb_text_label"
                     android:focusable="true"
                     android:layout_marginEnd="@dimen/cb_space_sm" />
@@ -298,7 +300,7 @@
                     android:layout_height="@dimen/cb_target_min"
                     android:background="@drawable/bg_cta"
                     android:text="@string/measure_save"
-                    android:textColor="@color/cb_cta_ink"
+                    android:textColor="@color/cta_text"
                     android:textSize="@dimen/cb_text_label"
                     android:textStyle="bold"
                     android:visibility="gone"

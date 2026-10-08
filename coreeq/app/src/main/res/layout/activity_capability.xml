@@ -48,6 +48,8 @@
         <!-- Left rail: the probed paths, scroll-bounded so an added row can
              never clip on a 540dp panel -->
         <ScrollView
+            android:requiresFadingEdge="vertical"
+            android:fadingEdgeLength="@dimen/cb_space_xl"
             android:layout_width="380dp"
             android:layout_height="match_parent"
             android:scrollbars="none">
@@ -281,7 +283,7 @@
                     android:layout_height="@dimen/cb_target_min"
                     android:background="@drawable/bg_ghost"
                     android:text="@string/update_check_now"
-                    android:textColor="@color/cb_ink"
+                    android:textColor="@color/ghost_text"
                     android:textSize="@dimen/cb_text_label"
                     android:focusable="true"
                     android:layout_marginTop="@dimen/cb_space_sm" />
@@ -292,7 +294,7 @@
                     android:layout_height="@dimen/cb_target_min"
                     android:background="@drawable/bg_cta"
                     android:text="@string/update_now"
-                    android:textColor="@color/cb_cta_ink"
+                    android:textColor="@color/cta_text"
                     android:textSize="@dimen/cb_text_label"
                     android:textStyle="bold"
                     android:focusable="true"
@@ -415,7 +417,7 @@
                 android:layout_height="@dimen/cb_target_min"
                 android:background="@drawable/bg_cta"
                 android:text="@string/action_tv_export"
-                android:textColor="@color/cb_cta_ink"
+                android:textColor="@color/cta_text"
                 android:textSize="@dimen/cb_text_label"
                 android:textStyle="bold"
                 android:focusable="true"

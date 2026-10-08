@@ -84,10 +84,13 @@
             android:orientation="vertical"
             android:layout_marginStart="@dimen/cb_space_lg">
 
+            <!-- Takes the height the export controls leave, so Export and
+                 Delete are always on screen (they sat below it at 1080p). -->
             <tv.corebuilds.eq.ui.CurveGraphView
                 android:id="@+id/graph_profile"
                 android:layout_width="match_parent"
-                android:layout_height="200dp" />
+                android:layout_height="0dp"
+                android:layout_weight="1" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -103,44 +106,45 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:layout_marginTop="6dp">
+                android:baselineAligned="false"
+                android:layout_marginTop="@dimen/cb_space_xs">
 
                 <Button
                     android:id="@+id/chip_parametric"
                     android:layout_width="wrap_content"
-                    android:layout_height="40dp"
+                    android:layout_height="@dimen/cb_target_min"
                     android:background="@drawable/bg_chip_toggle"
                     android:text="@string/export_chip_parametric"
                     android:textColor="@color/chip_text"
                     android:textSize="@dimen/cb_text_data"
-                    android:paddingStart="16dp"
-                    android:paddingEnd="16dp"
+                    android:paddingStart="@dimen/cb_space_md"
+                    android:paddingEnd="@dimen/cb_space_md"
                     android:focusable="true"
                     android:layout_marginEnd="@dimen/cb_space_xs" />
 
                 <Button
                     android:id="@+id/chip_graphiceq"
                     android:layout_width="wrap_content"
-                    android:layout_height="40dp"
+                    android:layout_height="@dimen/cb_target_min"
                     android:background="@drawable/bg_chip_toggle"
                     android:text="@string/export_chip_graphiceq"
                     android:textColor="@color/chip_text"
                     android:textSize="@dimen/cb_text_data"
-                    android:paddingStart="16dp"
-                    android:paddingEnd="16dp"
+                    android:paddingStart="@dimen/cb_space_md"
+                    android:paddingEnd="@dimen/cb_space_md"
                     android:focusable="true"
                     android:layout_marginEnd="@dimen/cb_space_xs" />
 
                 <Button
                     android:id="@+id/chip_json"
                     android:layout_width="wrap_content"
-                    android:layout_height="40dp"
+                    android:layout_height="@dimen/cb_target_min"
                     android:background="@drawable/bg_chip_toggle"
                     android:text="@string/export_chip_json"
                     android:textColor="@color/chip_text"
                     android:textSize="@dimen/cb_text_data"
-                    android:paddingStart="16dp"
-                    android:paddingEnd="16dp"
+                    android:paddingStart="@dimen/cb_space_md"
+                    android:paddingEnd="@dimen/cb_space_md"
                     android:focusable="true" />
             </LinearLayout>
 
@@ -148,11 +152,12 @@
                 android:id="@+id/text_preamp_display"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                tools:text="Preamp  −3.72 dB"
+                tools:text="Parametric preamp −3.72 dB · Everyday · HDMI"
                 android:textColor="@color/cb_ink"
-                android:textSize="@dimen/cb_text_label"
+                android:textSize="@dimen/cb_text_data"
                 android:fontFamily="monospace"
-                android:textStyle="bold"
+                android:maxLines="2"
+                android:ellipsize="end"
                 android:layout_marginTop="@dimen/cb_space_sm" />
 
             <TextView
@@ -176,7 +181,7 @@
                     android:layout_height="@dimen/cb_target_min"
                     android:background="@drawable/bg_cta"
                     android:text="@string/action_export"
-                    android:textColor="@color/cb_cta_ink"
+                    android:textColor="@color/cta_text"
                     android:textSize="@dimen/cb_text_label"
                     android:textStyle="bold"
                     android:focusable="true"

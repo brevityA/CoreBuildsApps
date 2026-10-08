@@ -120,29 +120,30 @@ class ModeActivity : TvActivity() {
             append(getString(R.string.mode_app_rules_hint))
             val rules = modeStore.appRules()
             if (rules.isNotEmpty()) {
-                append("\n\nAPP RULES\n")
+                append("\n\n").append(getString(R.string.mode_rules_app_rules)).append("\n")
                 for ((pkg, mode) in rules.toSortedMap()) {
                     append(appLabel(pkg)).append(" → ").append(mode.title).append("\n")
                 }
             }
             if (decision.conflictingPackages.isNotEmpty()) {
-                append("\nCONFLICT · Everyday selected\n")
+                append("\n").append(getString(R.string.mode_rules_conflict)).append("\n")
                 decision.conflictingPackages.forEach { append(appLabel(it)).append("\n") }
             }
             val active = decision.activePackages
             if (active.isNotEmpty()) {
-                append("\nDETECTED PLAYERS\n")
+                append("\n").append(getString(R.string.mode_rules_playing)).append("\n")
                 active.forEach { append(appLabel(it)).append("\n") }
             }
             if (decision.hasUnidentifiedPlayer) {
-                append("\nUNKNOWN ACTIVE PLAYER · app identity unavailable")
+                append("\n").append(getString(R.string.mode_rules_unknown_player))
                 if (modeStore.automaticSwitching() && decision.mode == ContentMode.EVERYDAY && decision.reason != "Manual override") {
-                    append(" · Everyday fallback")
+                    append(getString(R.string.mode_rules_everyday_fallback))
                 }
                 append("\n")
             }
             if (!DumpsysDiscovery.hasGrant(this@ModeActivity)) {
-                append("\nOptional app switching needs DUMP discovery. Android may refuse this grant on a stock or release build.")
+                if (!endsWith("\n")) append("\n")
+                append("\n").append(getString(R.string.mode_rules_no_dump))
             }
         }.trim()
     }

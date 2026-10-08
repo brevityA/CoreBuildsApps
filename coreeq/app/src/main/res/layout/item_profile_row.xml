@@ -3,7 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/profile_row_root"
     android:layout_width="match_parent"
-    android:layout_height="78dp"
+    android:layout_height="wrap_content"
+    android:minHeight="64dp"
     android:orientation="vertical"
     android:background="@drawable/bg_card"
     android:padding="@dimen/cb_card_padding"
@@ -23,7 +24,9 @@
             tools:text="Living room"
             android:textColor="@color/cb_ink"
             android:textSize="@dimen/cb_text_label"
-            android:textStyle="bold" />
+            android:textStyle="bold"
+            android:singleLine="true"
+            android:ellipsize="end" />
 
         <TextView
             android:id="@+id/item_profile_badge"
@@ -33,7 +36,8 @@
             android:textColor="@color/cb_success"
             android:textSize="@dimen/cb_text_kicker"
             android:fontFamily="monospace"
-            android:textStyle="bold" />
+            android:textStyle="bold"
+            android:layout_marginStart="@dimen/cb_space_xs" />
     </LinearLayout>
 
     <TextView
