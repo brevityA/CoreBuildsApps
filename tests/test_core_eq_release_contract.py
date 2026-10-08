@@ -57,6 +57,11 @@ class CoreEqReleaseContract(unittest.TestCase):
         # package: Broken pipe", then "Can't find service: package"). Every
         # install attempt waits for the package service to answer first.
         self.assertIn("wait_for_package_service", body)
+        # A change to the script has to run the job that uses it: the
+        # workflow's path filters list both tools/ scripts it calls.
+        triggers = self.workflow.split("permissions:", 1)[0]
+        self.assertEqual(triggers.count("- 'tools/install_core_eq_on_emulator.sh'"), 2)
+        self.assertEqual(triggers.count("- 'tools/install_android_platform.sh'"), 2)
         self.assertIn("pm path android", body)
         self.assertGreaterEqual(body.count('wait_for_package_service "'), 4)
         first_wait = body.index('wait_for_package_service "before installing"')

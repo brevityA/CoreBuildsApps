@@ -12,15 +12,22 @@ name: Core EQ APK
 
 on:
   workflow_dispatch:
+  # The two tools/ scripts below run inside this workflow's jobs, so a change
+  # to either has to run it: the emulator install script went untested until
+  # a tag run when only coreeq/** and this file were listed.
   pull_request:
     paths:
       - 'coreeq/**'
       - '.github/workflows/core-eq-apk.yml'
+      - 'tools/install_core_eq_on_emulator.sh'
+      - 'tools/install_android_platform.sh'
   push:
     branches: [main]
     paths:
       - 'coreeq/**'
       - '.github/workflows/core-eq-apk.yml'
+      - 'tools/install_core_eq_on_emulator.sh'
+      - 'tools/install_android_platform.sh'
     tags: ['coreeq-v*']
 
 permissions:
