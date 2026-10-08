@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
@@ -53,7 +54,62 @@
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/recycler_profiles"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent" />
+                android:layout_height="0dp"
+                android:layout_weight="1" />
+
+            <!-- 1.3.0: the on-screen card (or, without the overlay permission,
+                 a toast) the service shows when a profile is applied. -->
+            <Button
+                android:id="@+id/btn_announce_applied"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/cb_target_min"
+                android:layout_marginTop="@dimen/cb_space_sm"
+                android:background="@drawable/bg_toggle"
+                android:drawableEnd="@drawable/ic_switch"
+                android:drawablePadding="@dimen/cb_space_sm"
+                android:gravity="start|center_vertical"
+                android:paddingStart="@dimen/cb_card_padding"
+                android:paddingEnd="@dimen/cb_card_padding"
+                android:text="@string/profiles_announce_on"
+                android:textColor="@color/cb_ink"
+                android:textSize="@dimen/cb_text_data"
+                android:focusable="true" />
+
+            <!-- How the notice shows on this TV, and the way to the card when
+                 "Display over other apps" is not allowed yet. -->
+            <TextView
+                android:id="@+id/text_announce_card"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/cb_space_xs"
+                android:textColor="@color/cb_slate"
+                android:textSize="@dimen/cb_text_kicker"
+                tools:text="Shown as a card at the top right for 4 seconds, over whatever is playing." />
+
+            <Button
+                android:id="@+id/btn_allow_overlay"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/cb_target_min"
+                android:layout_marginTop="@dimen/cb_space_xs"
+                android:background="@drawable/bg_ghost"
+                android:text="@string/profiles_card_allow"
+                android:textColor="@color/ghost_text"
+                android:textSize="@dimen/cb_text_data"
+                android:focusable="true"
+                android:visibility="gone" />
+
+            <!-- Preview the card on this TV: the service shows it for what is
+                 applied now, without switching correction off and on. -->
+            <Button
+                android:id="@+id/btn_test_card"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/cb_target_min"
+                android:layout_marginTop="@dimen/cb_space_xs"
+                android:background="@drawable/bg_ghost"
+                android:text="@string/profiles_card_test"
+                android:textColor="@color/ghost_text"
+                android:textSize="@dimen/cb_text_data"
+                android:focusable="true" />
 
         </LinearLayout>
 
@@ -65,10 +121,13 @@
             android:orientation="vertical"
             android:layout_marginStart="@dimen/cb_space_lg">
 
+            <!-- Takes the height the export controls leave, so Export and
+                 Delete are always on screen (they sat below it at 1080p). -->
             <tv.corebuilds.eq.ui.CurveGraphView
                 android:id="@+id/graph_profile"
                 android:layout_width="match_parent"
-                android:layout_height="200dp" />
+                android:layout_height="0dp"
+                android:layout_weight="1" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -84,44 +143,45 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:layout_marginTop="6dp">
+                android:baselineAligned="false"
+                android:layout_marginTop="@dimen/cb_space_xs">
 
                 <Button
                     android:id="@+id/chip_parametric"
                     android:layout_width="wrap_content"
-                    android:layout_height="40dp"
+                    android:layout_height="@dimen/cb_target_min"
                     android:background="@drawable/bg_chip_toggle"
                     android:text="@string/export_chip_parametric"
-                    android:textColor="@color/cb_ink"
+                    android:textColor="@color/chip_text"
                     android:textSize="@dimen/cb_text_data"
-                    android:paddingStart="16dp"
-                    android:paddingEnd="16dp"
+                    android:paddingStart="@dimen/cb_space_md"
+                    android:paddingEnd="@dimen/cb_space_md"
                     android:focusable="true"
                     android:layout_marginEnd="@dimen/cb_space_xs" />
 
                 <Button
                     android:id="@+id/chip_graphiceq"
                     android:layout_width="wrap_content"
-                    android:layout_height="40dp"
+                    android:layout_height="@dimen/cb_target_min"
                     android:background="@drawable/bg_chip_toggle"
                     android:text="@string/export_chip_graphiceq"
-                    android:textColor="@color/cb_ink"
+                    android:textColor="@color/chip_text"
                     android:textSize="@dimen/cb_text_data"
-                    android:paddingStart="16dp"
-                    android:paddingEnd="16dp"
+                    android:paddingStart="@dimen/cb_space_md"
+                    android:paddingEnd="@dimen/cb_space_md"
                     android:focusable="true"
                     android:layout_marginEnd="@dimen/cb_space_xs" />
 
                 <Button
                     android:id="@+id/chip_json"
                     android:layout_width="wrap_content"
-                    android:layout_height="40dp"
+                    android:layout_height="@dimen/cb_target_min"
                     android:background="@drawable/bg_chip_toggle"
                     android:text="@string/export_chip_json"
-                    android:textColor="@color/cb_ink"
+                    android:textColor="@color/chip_text"
                     android:textSize="@dimen/cb_text_data"
-                    android:paddingStart="16dp"
-                    android:paddingEnd="16dp"
+                    android:paddingStart="@dimen/cb_space_md"
+                    android:paddingEnd="@dimen/cb_space_md"
                     android:focusable="true" />
             </LinearLayout>
 
@@ -129,11 +189,12 @@
                 android:id="@+id/text_preamp_display"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Preamp  −3.72 dB"
+                tools:text="Parametric preamp −3.72 dB · Everyday · HDMI"
                 android:textColor="@color/cb_ink"
-                android:textSize="@dimen/cb_text_label"
+                android:textSize="@dimen/cb_text_data"
                 android:fontFamily="monospace"
-                android:textStyle="bold"
+                android:maxLines="2"
+                android:ellipsize="end"
                 android:layout_marginTop="@dimen/cb_space_sm" />
 
             <TextView
@@ -157,7 +218,7 @@
                     android:layout_height="@dimen/cb_target_min"
                     android:background="@drawable/bg_cta"
                     android:text="@string/action_export"
-                    android:textColor="@color/cb_cta_ink"
+                    android:textColor="@color/cta_text"
                     android:textSize="@dimen/cb_text_label"
                     android:textStyle="bold"
                     android:focusable="true"

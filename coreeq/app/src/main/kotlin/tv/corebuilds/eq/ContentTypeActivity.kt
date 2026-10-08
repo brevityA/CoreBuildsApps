@@ -7,6 +7,7 @@ import android.widget.TextView
 import tv.corebuilds.eq.mode.ContentType
 import tv.corebuilds.eq.mode.ContentTypePrefs
 import tv.corebuilds.eq.mode.ContentTypeRegistry
+import tv.corebuilds.eq.ui.showSwitch
 
 /**
  * Content type selection screen: choose the use-case-specific EQ
@@ -83,7 +84,7 @@ class ContentTypeActivity : TvActivity() {
         btnDone.setOnClickListener { finish() }
 
         refreshUI()
-        btnAnime.requestFocus()  // Default focus for anime fans
+        chipFor(selectedType).requestFocus()
     }
 
     override fun onPause() {
@@ -102,11 +103,7 @@ class ContentTypeActivity : TvActivity() {
     }
 
     private fun refreshUI() {
-        textCurrent.text = getString(
-            R.string.content_type_current,
-            selectedType.icon,
-            selectedType.title
-        )
+        textCurrent.text = selectedType.title
         textDescription.text = selectedType.description
 
         textAutoStatus.text = if (autoSwitch) {
@@ -123,29 +120,29 @@ class ContentTypeActivity : TvActivity() {
             getString(R.string.content_type_auto_off)
         }
 
-        btnAuto.text = getString(
-            if (autoSwitch) R.string.content_type_auto_on_btn
-            else R.string.content_type_auto_off_btn
-        )
+        btnAuto.showSwitch(autoSwitch, R.string.content_type_auto_on_btn, R.string.content_type_auto_off_btn)
 
-        // Visual feedback on selected button
-        updateButtonState(btnMovie, ContentType.MOVIE)
-        updateButtonState(btnAnime, ContentType.ANIME)
-        updateButtonState(btnTvShow, ContentType.TV_SHOW)
-        updateButtonState(btnSitcom, ContentType.SITCOM)
-        updateButtonState(btnDocumentary, ContentType.DOCUMENTARY)
-        updateButtonState(btnNews, ContentType.NEWS)
-        updateButtonState(btnPodcast, ContentType.PODCAST)
-        updateButtonState(btnGaming, ContentType.GAMING)
-        updateButtonState(btnMusic, ContentType.MUSIC)
-        updateButtonState(btnGeneral, ContentType.GENERAL)
+        // The selected type is the filled chip (1.3.0). Until then the others
+        // were dimmed to 60% and the selection marked with a bullet, which
+        // made nine of ten choices look disabled.
+        for (type in ContentType.entries) {
+            val chip = chipFor(type)
+            chip.text = type.title
+            chip.isActivated = type == selectedType
+        }
     }
 
-    private fun updateButtonState(button: Button, type: ContentType) {
-        val isSelected = type == selectedType
-        button.alpha = if (isSelected) 1.0f else 0.6f
-        val label = "${type.icon} ${type.title}"
-        button.text = if (isSelected) "● $label" else label
+    private fun chipFor(type: ContentType): Button = when (type) {
+        ContentType.MOVIE -> btnMovie
+        ContentType.ANIME -> btnAnime
+        ContentType.TV_SHOW -> btnTvShow
+        ContentType.SITCOM -> btnSitcom
+        ContentType.DOCUMENTARY -> btnDocumentary
+        ContentType.NEWS -> btnNews
+        ContentType.PODCAST -> btnPodcast
+        ContentType.GAMING -> btnGaming
+        ContentType.MUSIC -> btnMusic
+        ContentType.GENERAL -> btnGeneral
     }
 
     private fun loadPrefs() {

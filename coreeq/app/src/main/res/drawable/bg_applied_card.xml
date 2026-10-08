@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  The on-screen card's plate (1.3.0), after Core Line's score box: a near-
+  opaque void plate with a hairline, so it reads over any picture, and a
+  3dp band along the top in the state's colour. The band is its own layer
+  on top of the plate, inset 12dp from each side so it stays inside the
+  14dp corners (drawn under the 92% plate it tinted every edge instead).
+  Its colour is set in code (AppliedCard): cyan while correction is on,
+  amber while it is paused.
+-->
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item>
+        <shape android:shape="rectangle">
+            <solid android:color="@color/cb_card_plate" />
+            <stroke android:width="1dp" android:color="@color/cb_card_plate_edge" />
+            <corners android:radius="@dimen/cb_radius_card" />
+        </shape>
+    </item>
+    <item
+        android:id="@+id/card_edge"
+        android:height="3dp"
+        android:gravity="top|fill_horizontal"
+        android:left="12dp"
+        android:right="12dp">
+        <shape android:shape="rectangle">
+            <solid android:color="@color/cb_signal_cyan" />
+            <corners android:radius="1.5dp" />
+        </shape>
+    </item>
+</layer-list>

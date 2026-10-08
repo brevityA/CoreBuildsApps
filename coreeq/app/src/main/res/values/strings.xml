@@ -1,30 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Core EQ</string>
-    <string name="app_tagline">Equaliser built from this room</string>
-    <string name="home_desc">A sine sweep out, the remote microphone listening, a curve you can read before you trust it.</string>
-    <string name="active_profile">Active profile</string>
     <string name="no_profile">No measurement yet</string>
     <string name="no_profile_sub">Measure this room or open Manual EQ to create a profile.</string>
     <string name="output_profile_missing_name">No profile for this output</string>
     <string name="output_profile_missing_sub">Nothing measured for %1$s. Measure it or connect an output with a saved profile.</string>
-    <string name="output_profile_unknown_sub">Android could not identify the current output. Core EQ will not guess a known-output room curve; connect a recognized output or measure while this output is unknown.</string>
+    <string name="output_profile_unknown_sub">Android did not name this output, so no saved profile is guessed for it. Measure here or switch to a known output.</string>
     <string name="profile_not_active_on_output">This profile does not match the current output. It is preview/export only and will not be applied here.</string>
     <string name="action_measure">Measure</string>
-    <string name="action_measure_sub">Sine sweep · 13 s · this room</string>
     <string name="action_remeasure">Re-measure</string>
-    <string name="action_profiles">Profiles</string>
-    <string name="action_profiles_sub">Saved corrections</string>
-    <string name="action_targets">Targets</string>
-    <string name="action_targets_sub">Dialogue, Room, B&amp;K, Flat</string>
-    <string name="action_capability">Capability</string>
-    <string name="action_capability_sub">What this device will accept</string>
-    <string name="action_poweramp_export">Export to Poweramp</string>
     <string name="action_tv_export">Export for TV settings</string>
     <string name="platform_eq_title">Live engine bands when applied · profile preview otherwise · gain in dB</string>
-    <string name="action_manual_eq">Manual EQ · 10-band tone control</string>
-    <string name="action_content_modes">Content modes · Movie, Everyday, Gaming</string>
-    <string name="home_mode_button">Mode · %1$s</string>
+    <string name="action_manual_eq">Manual EQ</string>
+    <string name="home_mode_button">Mode: %1$s</string>
     <string name="mode_title">Core EQ · Content modes</string>
     <string name="mode_heading">Choose how TV audio should sound</string>
     <string name="mode_subtitle">Room correction stays the base for each output. Each selected mode adds its own tone layer; automatic app switching is best-effort while correction runs.</string>
@@ -41,21 +29,32 @@
     <string name="mode_rule_title">Choose a mode for %1$s</string>
     <string name="mode_rule_remove">Remove app rule</string>
     <string name="mode_apps_empty">No launchable TV apps or recently detected players were found.</string>
-    <string name="mode_app_rules_hint">Automatic switching runs while correction is on and requires DUMP-discovered session UIDs that map to one visible package. Session broadcasts and playback callbacks only trigger a rescan; their package and session extras are never trusted as identity. Android documents DUMP as not for third-party apps, so an ADB grant may be refused on your TV. Unmapped or unidentified players default to Everyday, including alongside a different app rule. Conflicting app rules use Everyday. A temporary manual override ends when the detected player set changes.</string>
+    <string name="mode_rules_heading">How automatic switching works</string>
+    <string name="mode_app_rules_hint">• It runs only while Correction is on.\n• Core EQ tells which app is playing through Android\'s DUMP permission, granted once over ADB. Android documents DUMP as not meant for third-party apps, so some TVs refuse it.\n• Playback notices from other apps only make Core EQ look again; they are never taken as proof of which app is playing.\n• A player Core EQ cannot identify, or two app rules that disagree, fall back to Everyday.\n• A temporary manual choice lasts until the playing apps change. A sticky one stays until you choose again.</string>
+    <string name="mode_rules_app_rules">App rules</string>
+    <string name="mode_rules_conflict">These rules disagree, so Everyday is used:</string>
+    <string name="mode_rules_playing">Playing now</string>
+    <string name="mode_rules_unknown_player">A player is active that Core EQ cannot identify</string>
+    <string name="mode_rules_everyday_fallback">, so Everyday is used</string>
+    <string name="mode_rules_no_dump">DUMP is not granted on this TV, so automatic switching cannot tell which app is playing.</string>
     <string name="manual_eq_heading">Manual equaliser</string>
     <string name="manual_eq_edit_mode">Editing mode: %1$s</string>
     <string name="manual_eq_mode_picker_title">Choose the mode overlay to edit</string>
     <string name="manual_eq_subtitle">Ten editable bands from 40 Hz to 8 kHz. Manual tone layers over room correction; positive peaks reserve digital headroom.</string>
     <string name="manual_eq_loading_profile">Preparing an output profile…</string>
+    <string name="manual_profile_room">Room profile</string>
+    <string name="manual_profile_manual_only">Manual EQ only</string>
+    <string name="manual_profile_room_sub">For %1$s</string>
+    <string name="manual_profile_manual_sub">No room measurement · %1$s</string>
     <string name="manual_eq_choose_preset">Preset: %1$s</string>
     <string name="manual_eq_choose_preset_default">Choose EQ preset</string>
-    <string name="manual_eq_save_preset">Save as preset…</string>
-    <string name="manual_eq_reset">Reset manual EQ</string>
+    <string name="manual_eq_save_preset">Save preset…</string>
+    <string name="manual_eq_reset">Reset to flat</string>
     <string name="manual_eq_done">Done</string>
-    <string name="manual_eq_headroom_pending">HEADROOM\nCalculating…</string>
-    <string name="manual_eq_headroom">HEADROOM\n%1$.1f dB reserved to offset EQ boosts</string>
-    <string name="manual_eq_apply_hint">Changes save to this profile. Enable Correction on Home to apply them.</string>
-    <string name="manual_eq_running_hint">Correction is running; changes are reapplied automatically.</string>
+    <string name="manual_eq_headroom_pending">Headroom · calculating…</string>
+    <string name="manual_eq_headroom">Headroom %1$.1f dB · offsets EQ boosts</string>
+    <string name="manual_eq_apply_hint">Saved to this profile. Switch Correction on to hear it.</string>
+    <string name="manual_eq_running_hint">Correction is on: changes apply at once.</string>
     <string name="manual_eq_resume_hint">Correction is set on and resumes when Core EQ is opened.</string>
     <string name="manual_eq_dpad_help">Left/right choose a band · Up/down adjust by 0.5 dB. Touch and drag also works.</string>
     <string name="manual_eq_band_caption">MANUAL EQ · dB PER BAND · RANGE ±6 dB</string>
@@ -81,7 +80,6 @@
     <string name="measure_step3_sub">Talking, footsteps and fans land in the same measurement. A sweep the room drowns out is refused, not guessed at.</string>
     <string name="measure_progress_title">Capture progress</string>
     <string name="measure_stop">Stop</string>
-    <string name="measure_start_over">Start over</string>
     <string name="measure_save">Save profile</string>
     <string name="measure_start">Start</string>
     <string name="measure_ready">Ready · set the room, then press Start</string>
@@ -103,6 +101,9 @@
     <!-- Correction switch -->
     <string name="correction_on">Correction: On</string>
     <string name="correction_off">Correction: Off</string>
+    <!-- Home's status line while the switch is off: what Off means, not Off again -->
+    <string name="status_correction_off">Nothing is applied: audio plays exactly as it would without Core EQ.</string>
+    <string name="status_correction_starting">Starting audio correction…</string>
 
     <!-- Correction indicator badge (Home screen, under the switch) -->
     <string name="indicator_live">PLAYING · COVERAGE UNKNOWN</string>
@@ -118,7 +119,6 @@
     <string name="export_chip_parametric">Parametric .txt</string>
     <string name="export_chip_graphiceq">GraphicEQ</string>
     <string name="export_chip_json">Profile .json</string>
-    <string name="export_preamp_label">Preamp</string>
     <string name="export_preamp_desc">The export ships its own headroom note. Copy the preamp with the filters or the boost clips.</string>
     <string name="profile_preamp_parametric">Parametric preamp  %1$.2f dB  ·  %2$s · For %3$s</string>
     <string name="profile_preamp_graphic">GraphicEQ preamp  %1$.2f dB  ·  %2$s · For %3$s</string>
@@ -165,62 +165,106 @@
     <string name="update_no_feed">This test build has no update feed · release builds install from the coreeq-v* tags</string>
     <string name="update_note">Checks the same release feed the other Core apps use (Latestrelease/coreeq-version.json on main). A download is offered only when the release APK matches this app\'s package, is newer than this build, and is signed by the certificate that signed it — otherwise the file is deleted and nothing is installed.</string>
 
-    <!-- Target curves -->
-    <string name="target_flat">Flat (0 dB reference)</string>
-    <string name="target_bk">Brüel &amp; Kjær 1974 (Living room standard)</string>
-    <string name="target_room">Room / Harman (In-room preferred)</string>
-    <string name="target_olive">Olive &amp; Welti 2013 (Mean listener preference)</string>
-    <string name="target_dialogue">Dialogue (Speech intelligibility boost)</string>
-    <string name="target_house">House Curve (Custom)</string>
-
     <!-- Display calibration -->
     <string name="calibration_title">Core Display · Calibration</string>
-    <string name="calibration_nav">Display calibration · Test patterns</string>
     <string name="calibration_next">Next step →</string>
     <string name="calibration_prev">← Previous</string>
     <string name="calibration_toggle_overlay">Toggle instructions</string>
     <string name="calibration_step_counter">Step %1$d of %2$d</string>
-    <string name="calibration_desc">Reference test patterns with step-by-step guidance for brightness, contrast, colour, sharpness, overscan, gamma, and panel uniformity. Rendered pixel-accurately on your TV.</string>
 
-    <!-- Loudness compensation -->
-    <string name="loudness_title">Loudness Compensation</string>
-    <string name="loudness_on">Loudness: On</string>
-    <string name="loudness_off">Loudness: Off</string>
-    <string name="loudness_desc">ISO 226 equal-loudness contours restore bass and treble perception at lower volumes. Flat at reference level; increases compensation as volume drops.</string>
-
-    <!-- Night mode -->
-    <string name="night_mode_title">Night Mode</string>
-    <string name="night_mode_on">Night mode: On</string>
-    <string name="night_mode_off">Night mode: Off</string>
-    <string name="night_mode_desc">Dynamic range compression and dialogue enhancement for late-night viewing. Reduces loud peaks and lifts the 1–4 kHz speech band.</string>
+    <!-- Home: HDMI bitstream caveat (1.3.0) -->
+    <string name="passthrough_warning">⚠ HDMI audio may carry Dolby or DTS as a bitstream here, which skips all on-device EQ, Core EQ included. To correct it, set the TV\'s Surround sound (or Audio format) to PCM.</string>
 
     <!-- Measurement quality -->
-    <string name="quality_excellent">Excellent measurement</string>
-    <string name="quality_good">Good measurement</string>
-    <string name="quality_fair">Fair measurement — consider re-measuring</string>
-    <string name="quality_poor">Poor measurement — re-measure recommended</string>
-    <string name="quality_score">Quality: %1$d/100 · %2$s</string>
+    <string name="quality_excellent">excellent</string>
+    <string name="quality_good">good</string>
+    <string name="quality_fair">fair · consider re-measuring</string>
+    <string name="quality_poor">poor · re-measure recommended</string>
+    <string name="quality_remeasure">re-measure: quieter room or louder sweep</string>
+    <string name="quality_score">Quality %1$d/100 · %2$s</string>
+    <string name="quality_not_scored">Quality not scored · REW imports carry no SNR or decay data</string>
 
     <!-- Content type / use-case selection -->
     <string name="content_type_heading">Content type optimization</string>
     <string name="content_type_subtitle">Choose what you watch most. This sets how strong the optional Extra effects are (bass boost, loudness); with both off it changes nothing. Room correction is the same for every type. Auto-detect recognizes 40+ streaming apps.</string>
-    <string name="action_extras">Extra effects  ·  Bass, loudness, night</string>
+    <string name="action_extras">Extra effects</string>
     <string name="extras_kicker">Core EQ · Extra effects</string>
     <string name="extras_heading">Extra effects</string>
+    <string name="extras_group_tone">Tone</string>
+    <string name="extras_group_level">Level</string>
+    <string name="extras_name_dialogue">Dialogue boost</string>
+    <string name="extras_name_low_bass">Low-volume bass</string>
+    <string name="extras_name_bass">Bass boost</string>
+    <string name="extras_name_loudness">Loudness enhancer</string>
+    <string name="extras_name_night">Night mode</string>
     <string name="extras_subtitle">Optional layers on top of room correction. All off by default; each change applies at once. Your measured correction is never changed here.</string>
     <string name="extras_bass_on">Bass boost: On</string>
     <string name="extras_bass_off">Bass boost: Off</string>
     <string name="extras_bass_note" formatted="false">Android\'s BassBoost effect. Strength follows the Content type screen: 60% for movies, 30% general, none for news and podcasts.</string>
-    <string name="extras_loudness_on">Loudness: On</string>
-    <string name="extras_loudness_off">Loudness: Off</string>
+    <string name="extras_loudness_on">Loudness enhancer: On</string>
+    <string name="extras_loudness_off">Loudness enhancer: Off</string>
     <string name="extras_loudness_note">Android\'s LoudnessEnhancer. Raises quiet content by up to +4 dB (podcasts, news); none for music.</string>
     <string name="extras_night_on">Night mode: On</string>
     <string name="extras_night_off">Night mode: Off</string>
+    <string name="extras_dialogue_on">Dialogue boost: On</string>
+    <string name="extras_dialogue_off">Dialogue boost: Off</string>
+    <string name="extras_dialogue_note">+2 dB across 2.2–4.5 kHz, where most of speech intelligibility sits, back to neutral by 6.5 kHz so sibilance is not lifted. Profiles measured with the Dialogue or House target already include it, so it adds nothing there.</string>
+    <string name="extras_low_bass_on">Low-volume bass: On</string>
+    <string name="extras_low_bass_off">Low-volume bass: Off</string>
+    <string name="extras_low_bass_note">Ears lose bass first as volume drops (ISO 226). Switch this on at the volume you usually watch at: below it, up to +3 dB is added under 100 Hz, never below what your speaker can play. The rest of the sound is lowered to match, so nothing clips.</string>
+    <string name="extras_low_bass_status">This output: reference %1$.0f dB, now %2$.0f dB, %3$s. Each output keeps its own reference, recorded the first time it is used; switch off and on again to record new ones.</string>
+    <string name="extras_low_bass_lift">+%1$.1f dB under 100 Hz</string>
+    <string name="extras_low_bass_flat">nothing added at or above the reference</string>
+    <string name="extras_low_bass_unknown">Android does not report this output\'s volume in dB (a fixed-volume output, such as a soundbar that keeps its own volume over HDMI-CEC), so there is nothing to follow and nothing is added.</string>
     <string name="extras_night_note">Pulls loud passages down: limiter from -12 dB at 4:1. Needs the DynamicsProcessing engine; Home names the engine in use, and says when night mode cannot run.</string>
-    <string name="content_type_current">%1$s  %2$s</string>
     <string name="content_type_auto_on">Auto-detect: On · %1$d known apps · switches when a recognized app starts playing</string>
     <string name="content_type_auto_off">Auto-detect: Off · using your manual selection</string>
     <string name="content_type_auto_on_btn">Auto-detect: On</string>
     <string name="content_type_auto_off_btn">Auto-detect: Off</string>
-    <string name="content_type_nav">Content type · Movies, Anime, TV, Gaming, Music</string>
+
+    <!-- Profile-applied notice (1.3.0) -->
+    <string name="notice_profile_applied">Core EQ · %1$s · %2$s</string>
+    <string name="card_rail_on">Core EQ · Correction on</string>
+    <string name="card_rail_paused">Core EQ · Correction paused</string>
+    <string name="card_paused_title">No profile for this output</string>
+    <string name="card_paused_detail">%1$s · measure it, or switch back to an output you measured.</string>
+    <string name="notice_paused">Core EQ · paused · no profile for %1$s</string>
+    <plurals name="card_engine_dp">
+        <item quantity="one">%1$d band</item>
+        <item quantity="other">%1$d bands</item>
+    </plurals>
+    <string name="card_engine_eq">%1$d-band fallback</string>
+    <string name="card_description">%1$s. %2$s. %3$s.</string>
+    <string name="profiles_announce_on">Notice when a profile is applied: On</string>
+    <string name="profiles_announce_off">Notice when a profile is applied: Off</string>
+    <string name="profiles_card_allowed">Shown as a card at the top right for 4 seconds, over whatever is playing: profile, mode, output and extras.</string>
+    <string name="profiles_card_needs_permission">Shown as a short text toast for now. Allow “Display over other apps” for the card with the profile, mode, output and extras.</string>
+    <string name="profiles_card_off">Off: nothing is shown when a profile is applied.</string>
+    <string name="profiles_card_allow">Allow the on-screen card…</string>
+    <string name="profiles_card_test">Show a test card</string>
+    <string name="profiles_card_test_off">Correction is off, so there is nothing to show. Switch it on from Home, then try again.</string>
+    <string name="card_test_waiting">Core EQ is waiting for a player: nothing is applied yet, so there is no card to show.</string>
+    <string name="profiles_card_no_settings">This TV has no screen for that permission. From a computer with ADB: adb shell appops set %1$s SYSTEM_ALERT_WINDOW allow</string>
+
+    <!-- Screen labels moved out of layouts (1.3.0) -->
+    <string name="home_kicker">Core EQ · Equaliser built from this room</string>
+    <string name="menu_sound">Sound</string>
+    <string name="menu_setup">Set up</string>
+    <string name="action_profiles">Profiles</string>
+    <string name="action_capability">Capability</string>
+    <string name="action_display_calibration">Display calibration</string>
+    <string name="action_content_type">Content type</string>
+    <string name="manual_kicker">Core EQ · Manual tone</string>
+    <string name="content_type_kicker">Core EQ · Content type</string>
+    <string name="measure_step_1">STEP 1</string>
+    <string name="measure_step_2">STEP 2</string>
+    <string name="measure_step_3">STEP 3</string>
+    <string name="cap_global_title">Global output mix (session 0)</string>
+    <string name="cap_signals_title">Playback and session signals</string>
+    <string name="cap_signals_note">They request a fresh DUMP scan; broadcast extras are not trusted as app or session identity.</string>
+    <string name="cap_own_title">This app\'s own playback</string>
+    <string name="cap_own_note">Always works. The correction applies to what Core EQ plays.</string>
+    <string name="cap_dp_title">DynamicsProcessing (API 28+)</string>
+    <string name="cap_eq_title">Platform Equalizer</string>
+    <string name="cap_verdict_note">Profiles from other sets keep the limits they were built under.</string>
 </resources>

@@ -221,6 +221,11 @@ class ProfileStore(context: Context) {
         get() = prefs.getBoolean(KEY_ENABLED, false)
         set(value) { prefs.edit().putBoolean(KEY_ENABLED, value).apply() }
 
+    /** Show a brief toast when a different profile or mode is applied (1.3.0). On by default. */
+    var announceApplied: Boolean
+        get() = prefs.getBoolean(KEY_ANNOUNCE_APPLIED, true)
+        set(value) { prefs.edit().putBoolean(KEY_ANNOUNCE_APPLIED, value).apply() }
+
     fun status(): EqStatus? {
         val msg = prefs.getString(KEY_STATUS_MSG, null) ?: return null
         return EqStatus(
@@ -285,97 +290,13 @@ class ProfileStore(context: Context) {
         }
     }
 
-    private fun parseProfile(obj: JSONObject): Profile {
-        val room = obj.optJSONObject("room")
-        fun optNullable(o: JSONObject?, key: String): Double? =
-            if (o != null && o.has(key) && !o.isNull(key)) o.optDouble(key).takeIf { !it.isNaN() } else null
-
-        val nullsList = mutableListOf<Double>()
-        obj.optJSONArray("nulls_untouched_hz")?.let { a -> for (i in 0 until a.length()) nullsList.add(a.getDouble(i)) }
-
-        val filtersList = mutableListOf<PeakingFilter>()
-        obj.optJSONArray("filters")?.let { a ->
-            for (i in 0 until a.length()) {
-                val f = a.getJSONObject(i)
-                filtersList.add(PeakingFilter(f.getDouble("fc"), f.getDouble("q"), f.getDouble("gain")))
-            }
-        }
-        val manualFiltersList = mutableListOf<PeakingFilter>()
-        obj.optJSONArray("manual_filters")?.let { a ->
-            for (i in 0 until a.length()) {
-                val f = a.optJSONObject(i) ?: continue
-                manualFiltersList.add(
-                    PeakingFilter(
-                        f.optDouble("fc", Double.NaN),
-                        f.optDouble("q", Double.NaN),
-                        f.optDouble("gain", Double.NaN)
-                    )
-                )
-            }
-        }
-
-        val bandsList = mutableListOf<PlatformBand>()
-        obj.optJSONArray("platform_bands")?.let { a ->
-            for (i in 0 until a.length()) {
-                val b = a.getJSONObject(i)
-                bandsList.add(PlatformBand(b.getDouble("center_hz"), b.getInt("millibels")))
-            }
-        }
-
-        val curveList = mutableListOf<CurvePoint>()
-        obj.optJSONArray("curve")?.let { a ->
-            for (i in 0 until a.length()) {
-                val c = a.getJSONObject(i)
-                curveList.add(CurvePoint(c.getDouble("hz"), c.getDouble("measured_db"), c.getDouble("correction_db")))
-            }
-        }
-
-        val capMap = mutableMapOf<String, String>()
-        obj.optJSONObject("capability")?.let { c -> for (k in c.keys()) capMap[k] = c.optString(k, "") }
-        val measurementNotes = mutableListOf<String>()
-        obj.optJSONArray("measurement_notes")?.let { a ->
-            for (i in 0 until a.length()) {
-                val note = a.optString(i, "")
-                if (note.isNotBlank()) measurementNotes.add(note)
-            }
-        }
-
-        return Profile(
-            id = obj.getString("id"),
-            name = obj.optString("name", "Unnamed room"),
-            timestampMs = obj.optLong("timestamp_ms", 0L),
-            target = obj.optString("target", "dialogue"),
-            micType = obj.optString("microphone", "microphone"),
-            deviceName = obj.optString("device", "Android TV"),
-            stimulus = obj.optString("stimulus", "sweep_10s"),
-            captureSeconds = obj.optDouble("capture_seconds", 10.0),
-            volumeM3 = optNullable(room, "volume_m3"),
-            rt60Seconds = optNullable(room, "rt60_s"),
-            schroederHz = optNullable(obj, "schroeder_hz"),
-            transitionHz = obj.optDouble("transition_hz", 300.0),
-            rolloffHz = obj.optDouble("rolloff_hz", 40.0),
-            snrDb = optNullable(obj, "snr_db"),
-            nullsUntouchedHz = nullsList,
-            preampDb = obj.optDouble("room_preamp_db", obj.optDouble("preamp_db", 0.0)),
-            filters = filtersList,
-            platformBands = bandsList,
-            curve = curveList,
-            capabilityVerdict = capMap,
-            measurementNotes = measurementNotes,
-            outputKind = obj.optJSONObject("output")?.optString("kind", "")?.takeIf { it.isNotBlank() },
-            outputName = obj.optJSONObject("output")?.let { o -> if (o.isNull("name")) null else o.optString("name") }
-                ?.takeIf { it.isNotBlank() },
-            manualFilters = ManualEq.sanitize(manualFiltersList),
-            manualOnly = obj.optBoolean("manual_only", false)
-        )
-    }
-
     companion object {
         private const val TAG = "CoreEqProfiles"
         private const val PREFS_NAME = "core_eq_profiles"
         private const val KEY_PROFILES = "profiles_json"
         private const val KEY_ACTIVE_ID = "active_profile_id"
         private const val KEY_ENABLED = "correction_enabled"
+        private const val KEY_ANNOUNCE_APPLIED = "announce_applied_v130"
         private const val KEY_STATUS_MSG = "status_message"
         private const val KEY_STATUS_ERR = "status_is_error"
         private const val KEY_STATUS_TIME = "status_time"
@@ -386,5 +307,96 @@ class ProfileStore(context: Context) {
         private const val KEY_MODE_EQ_MIGRATED = "manual_eq_migrated_to_modes"
         private const val KEY_DEMO_PURGED = "demo_profiles_purged"
         private val DEMO_IDS = setOf("profile-living-room", "profile-bedroom", "profile-kitchen")
+
+        /**
+         * One stored or backed-up profile, as [Formats.exportProfileJson] writes it.
+         * Uses no instance state, so `ProfileJsonTest` checks the round trip on the JVM.
+         */
+        internal fun parseProfile(obj: JSONObject): Profile {
+            val room = obj.optJSONObject("room")
+            fun optNullable(o: JSONObject?, key: String): Double? =
+                if (o != null && o.has(key) && !o.isNull(key)) o.optDouble(key).takeIf { !it.isNaN() } else null
+
+            val nullsList = mutableListOf<Double>()
+            obj.optJSONArray("nulls_untouched_hz")?.let { a -> for (i in 0 until a.length()) nullsList.add(a.getDouble(i)) }
+
+            val filtersList = mutableListOf<PeakingFilter>()
+            obj.optJSONArray("filters")?.let { a ->
+                for (i in 0 until a.length()) {
+                    val f = a.getJSONObject(i)
+                    filtersList.add(PeakingFilter(f.getDouble("fc"), f.getDouble("q"), f.getDouble("gain")))
+                }
+            }
+            val manualFiltersList = mutableListOf<PeakingFilter>()
+            obj.optJSONArray("manual_filters")?.let { a ->
+                for (i in 0 until a.length()) {
+                    val f = a.optJSONObject(i) ?: continue
+                    manualFiltersList.add(
+                        PeakingFilter(
+                            f.optDouble("fc", Double.NaN),
+                            f.optDouble("q", Double.NaN),
+                            f.optDouble("gain", Double.NaN)
+                        )
+                    )
+                }
+            }
+
+            val bandsList = mutableListOf<PlatformBand>()
+            obj.optJSONArray("platform_bands")?.let { a ->
+                for (i in 0 until a.length()) {
+                    val b = a.getJSONObject(i)
+                    bandsList.add(PlatformBand(b.getDouble("center_hz"), b.getInt("millibels")))
+                }
+            }
+
+            val curveList = mutableListOf<CurvePoint>()
+            obj.optJSONArray("curve")?.let { a ->
+                for (i in 0 until a.length()) {
+                    val c = a.getJSONObject(i)
+                    curveList.add(CurvePoint(c.getDouble("hz"), c.getDouble("measured_db"), c.getDouble("correction_db")))
+                }
+            }
+
+            val capMap = mutableMapOf<String, String>()
+            obj.optJSONObject("capability")?.let { c -> for (k in c.keys()) capMap[k] = c.optString(k, "") }
+            val measurementNotes = mutableListOf<String>()
+            obj.optJSONArray("measurement_notes")?.let { a ->
+                for (i in 0 until a.length()) {
+                    val note = a.optString(i, "")
+                    if (note.isNotBlank()) measurementNotes.add(note)
+                }
+            }
+
+            return Profile(
+                id = obj.getString("id"),
+                name = obj.optString("name", "Unnamed room"),
+                timestampMs = obj.optLong("timestamp_ms", 0L),
+                target = obj.optString("target", "dialogue"),
+                micType = obj.optString("microphone", "microphone"),
+                deviceName = obj.optString("device", "Android TV"),
+                stimulus = obj.optString("stimulus", "sweep_10s"),
+                captureSeconds = obj.optDouble("capture_seconds", 10.0),
+                volumeM3 = optNullable(room, "volume_m3"),
+                rt60Seconds = optNullable(room, "rt60_s"),
+                schroederHz = optNullable(obj, "schroeder_hz"),
+                transitionHz = obj.optDouble("transition_hz", 300.0),
+                rolloffHz = obj.optDouble("rolloff_hz", 40.0),
+                snrDb = optNullable(obj, "snr_db"),
+                qualityScore = if (obj.has("quality_score") && !obj.isNull("quality_score"))
+                    obj.optInt("quality_score", -1).takeIf { it in 0..100 } else null,
+                nullsUntouchedHz = nullsList,
+                preampDb = obj.optDouble("room_preamp_db", obj.optDouble("preamp_db", 0.0)),
+                filters = filtersList,
+                platformBands = bandsList,
+                curve = curveList,
+                capabilityVerdict = capMap,
+                measurementNotes = measurementNotes,
+                outputKind = obj.optJSONObject("output")?.optString("kind", "")?.takeIf { it.isNotBlank() },
+                outputName = obj.optJSONObject("output")?.let { o -> if (o.isNull("name")) null else o.optString("name") }
+                    ?.takeIf { it.isNotBlank() },
+                manualFilters = ManualEq.sanitize(manualFiltersList),
+                manualOnly = obj.optBoolean("manual_only", false)
+            )
+        }
     }
 }

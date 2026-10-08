@@ -15,6 +15,7 @@ import tv.corebuilds.eq.apply.DumpsysDiscovery
 import tv.corebuilds.eq.apply.EqService
 import tv.corebuilds.eq.mode.ContentMode
 import tv.corebuilds.eq.mode.ContentModeStore
+import tv.corebuilds.eq.ui.showSwitch
 
 /** Remote-first controls for manual mode selection and best-effort app rules. */
 class ModeActivity : TvActivity() {
@@ -111,7 +112,7 @@ class ModeActivity : TvActivity() {
         btnMovie.isActivated = decision.mode == ContentMode.MOVIE_TV
         btnEveryday.isActivated = decision.mode == ContentMode.EVERYDAY
         btnGaming.isActivated = decision.mode == ContentMode.GAMING
-        btnAuto.setText(if (modeStore.automaticSwitching()) R.string.mode_auto_on else R.string.mode_auto_off)
+        btnAuto.showSwitch(modeStore.automaticSwitching(), R.string.mode_auto_on, R.string.mode_auto_off)
         btnOverridePolicy.setText(
             if (modeStore.stickyManualOverride()) R.string.mode_override_sticky else R.string.mode_override_temporary
         )
@@ -119,29 +120,30 @@ class ModeActivity : TvActivity() {
             append(getString(R.string.mode_app_rules_hint))
             val rules = modeStore.appRules()
             if (rules.isNotEmpty()) {
-                append("\n\nAPP RULES\n")
+                append("\n\n").append(getString(R.string.mode_rules_app_rules)).append("\n")
                 for ((pkg, mode) in rules.toSortedMap()) {
                     append(appLabel(pkg)).append(" → ").append(mode.title).append("\n")
                 }
             }
             if (decision.conflictingPackages.isNotEmpty()) {
-                append("\nCONFLICT · Everyday selected\n")
+                append("\n").append(getString(R.string.mode_rules_conflict)).append("\n")
                 decision.conflictingPackages.forEach { append(appLabel(it)).append("\n") }
             }
             val active = decision.activePackages
             if (active.isNotEmpty()) {
-                append("\nDETECTED PLAYERS\n")
+                append("\n").append(getString(R.string.mode_rules_playing)).append("\n")
                 active.forEach { append(appLabel(it)).append("\n") }
             }
             if (decision.hasUnidentifiedPlayer) {
-                append("\nUNKNOWN ACTIVE PLAYER · app identity unavailable")
+                append("\n").append(getString(R.string.mode_rules_unknown_player))
                 if (modeStore.automaticSwitching() && decision.mode == ContentMode.EVERYDAY && decision.reason != "Manual override") {
-                    append(" · Everyday fallback")
+                    append(getString(R.string.mode_rules_everyday_fallback))
                 }
                 append("\n")
             }
             if (!DumpsysDiscovery.hasGrant(this@ModeActivity)) {
-                append("\nOptional app switching needs DUMP discovery. Android may refuse this grant on a stock or release build.")
+                if (!endsWith("\n")) append("\n")
+                append("\n").append(getString(R.string.mode_rules_no_dump))
             }
         }.trim()
     }

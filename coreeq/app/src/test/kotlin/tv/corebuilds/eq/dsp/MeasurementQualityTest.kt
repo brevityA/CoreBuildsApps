@@ -101,11 +101,11 @@ class MeasurementQualityTest {
 
     @Test
     fun `labels match tiers`() {
-        assertEquals("Excellent", MeasurementQuality.label(90))
-        assertEquals("Good", MeasurementQuality.label(75))
-        assertEquals("Fair", MeasurementQuality.label(55))
-        assertEquals("Poor", MeasurementQuality.label(35))
-        assertEquals("Re-measure", MeasurementQuality.label(20))
+        assertEquals(MeasurementQuality.Grade.EXCELLENT, MeasurementQuality.grade(90))
+        assertEquals(MeasurementQuality.Grade.GOOD, MeasurementQuality.grade(75))
+        assertEquals(MeasurementQuality.Grade.FAIR, MeasurementQuality.grade(55))
+        assertEquals(MeasurementQuality.Grade.POOR, MeasurementQuality.grade(35))
+        assertEquals(MeasurementQuality.Grade.REMEASURE, MeasurementQuality.grade(20))
     }
 
     /** Helper: build a minimal SweepResult with the given quality factors. */

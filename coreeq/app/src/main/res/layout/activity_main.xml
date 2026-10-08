@@ -1,5 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!--
+  Home (1.3.0): everything on one 960 x 540dp screen, no scrolling.
+  The active profile and the three things changed most often (Correction,
+  Mode, Re-measure) sit in one card at the top; the six other screens are a
+  grouped menu on the left; the curve, the bands and what the service last
+  did fill the right. The graph takes whatever height is left, so the status
+  line below it is never clipped.
+-->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
@@ -9,35 +18,15 @@
     android:paddingTop="@dimen/cb_gutter_top"
     android:paddingBottom="@dimen/cb_gutter_bottom">
 
-    <!-- Header -->
     <TextView
         android:id="@+id/header_kicker"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="CORE EQ · TV.COREBUILDS.EQ"
+        android:text="@string/home_kicker"
         android:textColor="@color/cb_slate"
         android:textSize="@dimen/cb_text_kicker"
         android:fontFamily="monospace"
         android:textAllCaps="true" />
-
-    <TextView
-        android:id="@+id/header_title"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/app_tagline"
-        android:textColor="@color/cb_ink"
-        android:textSize="@dimen/cb_text_title"
-        android:textStyle="bold"
-        android:layout_marginTop="4dp" />
-
-    <TextView
-        android:id="@+id/header_desc"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/home_desc"
-        android:textColor="@color/cb_slate"
-        android:textSize="@dimen/cb_text_data"
-        android:layout_marginTop="2dp" />
 
     <!-- Update bar. GONE until the release feed names a newer build; the same
          shape as the icon pack's bar: say which version, then offer Update or
@@ -58,9 +47,9 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text=""
             android:textColor="@color/cb_ink"
-            android:textSize="@dimen/cb_text_data" />
+            android:textSize="@dimen/cb_text_data"
+            tools:text="Core EQ 1.3.1 is available" />
 
         <Button
             android:id="@+id/update_bar_install"
@@ -69,7 +58,7 @@
             android:minWidth="120dp"
             android:background="@drawable/bg_cta"
             android:text="@string/update_now"
-            android:textColor="@color/cb_cta_ink"
+            android:textColor="@color/cta_text"
             android:textSize="@dimen/cb_text_label"
             android:textStyle="bold"
             android:focusable="true"
@@ -82,104 +71,50 @@
             android:minWidth="96dp"
             android:background="@drawable/bg_ghost"
             android:text="@string/update_later"
-            android:textColor="@color/cb_ink"
+            android:textColor="@color/ghost_text"
             android:textSize="@dimen/cb_text_label"
             android:focusable="true"
             android:layout_marginStart="@dimen/cb_space_xs" />
     </LinearLayout>
 
-    <!-- Two-pane content -->
+    <!-- Active profile and its controls, one row -->
     <LinearLayout
+        android:id="@+id/card_active_profile"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
+        android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:layout_marginTop="@dimen/cb_space_md">
+        android:gravity="center_vertical"
+        android:background="@drawable/bg_card"
+        android:paddingStart="@dimen/cb_card_padding"
+        android:paddingEnd="@dimen/cb_card_padding"
+        android:paddingTop="@dimen/cb_space_sm"
+        android:paddingBottom="@dimen/cb_space_sm"
+        android:focusable="false"
+        android:layout_marginTop="@dimen/cb_space_sm">
 
-        <!-- Left rail; scroll-bounded so the manual EQ entry also fits on a 540dp TV panel. -->
-        <ScrollView
-            android:layout_width="@dimen/cb_rail_width"
-            android:layout_height="match_parent"
-            android:fillViewport="true"
-            android:scrollbars="none">
         <LinearLayout
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_weight="1"
             android:orientation="vertical">
 
-            <!-- Active profile card -->
             <LinearLayout
-                android:id="@+id/card_active_profile"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:background="@drawable/bg_card"
-                android:padding="@dimen/cb_card_padding"
-                android:focusable="false"
-                android:layout_marginBottom="@dimen/cb_space_sm">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/active_profile"
-                    android:textColor="@color/cb_signal_cyan"
-                    android:textSize="@dimen/cb_text_kicker"
-                    android:fontFamily="monospace"
-                    android:textAllCaps="true"
-                    android:textStyle="bold" />
+                android:orientation="horizontal"
+                android:gravity="center_vertical">
 
                 <TextView
                     android:id="@+id/text_active_profile_name"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:layout_weight="1"
                     android:text="@string/no_profile"
                     android:textColor="@color/cb_ink"
                     android:textSize="@dimen/cb_text_section"
                     android:textStyle="bold"
-                    android:layout_marginTop="4dp" />
-
-                <TextView
-                    android:id="@+id/text_active_profile_sub"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/no_profile_sub"
-                    android:textColor="@color/cb_slate"
-                    android:textSize="@dimen/cb_text_kicker"
-                    android:fontFamily="monospace"
-                    android:layout_marginTop="2dp" />
-
-                <Button
-                    android:id="@+id/btn_remeasure"
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/cb_target_min"
-                    android:background="@drawable/bg_cta"
-                    android:text="@string/action_remeasure"
-                    android:textColor="@color/cb_cta_ink"
-                    android:textSize="@dimen/cb_text_label"
-                    android:textStyle="bold"
-                    android:focusable="true"
-                    android:layout_marginTop="@dimen/cb_space_sm" />
-            </LinearLayout>
-
-            <!-- Navigation entry rows -->
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:layout_marginBottom="@dimen/cb_space_xs">
-
-                <Button
-                    android:id="@+id/btn_toggle_correction"
-                    android:layout_width="match_parent"
-                    android:layout_height="52dp"
-                    android:background="@drawable/bg_card"
-                    android:text="@string/correction_off"
-                    android:textColor="@color/cb_ink"
-                    android:textSize="@dimen/cb_text_data"
-                    android:gravity="start|center_vertical"
-                    android:paddingStart="@dimen/cb_card_padding"
-                    android:paddingEnd="@dimen/cb_card_padding"
-                    android:focusable="true" />
+                    android:singleLine="true"
+                    android:ellipsize="end" />
 
                 <!-- Playback hint only: a configured output-mix effect plus
                      reported playback is not proof of end-to-end coverage. -->
@@ -189,11 +124,11 @@
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
                     android:background="@drawable/bg_idle_badge"
-                    android:paddingStart="12dp"
-                    android:paddingEnd="14dp"
-                    android:paddingTop="5dp"
-                    android:paddingBottom="5dp"
-                    android:layout_marginTop="4dp"
+                    android:paddingStart="10dp"
+                    android:paddingEnd="12dp"
+                    android:paddingTop="4dp"
+                    android:paddingBottom="4dp"
+                    android:layout_marginStart="@dimen/cb_space_xs"
                     android:focusable="false"
                     android:visibility="gone">
 
@@ -217,107 +152,126 @@
                 </LinearLayout>
             </LinearLayout>
 
-            <Button
-                android:id="@+id/btn_nav_manual_eq"
+            <TextView
+                android:id="@+id/text_active_profile_sub"
                 android:layout_width="match_parent"
-                android:layout_height="52dp"
-                android:background="@drawable/bg_card"
-                android:text="@string/action_manual_eq"
-                android:textColor="@color/cb_ink"
-                android:textSize="@dimen/cb_text_data"
-                android:gravity="start|center_vertical"
-                android:paddingStart="@dimen/cb_card_padding"
-                android:paddingEnd="@dimen/cb_card_padding"
-                android:focusable="true"
-                android:layout_marginBottom="@dimen/cb_space_xs" />
-
-            <Button
-                android:id="@+id/btn_nav_modes"
-                android:layout_width="match_parent"
-                android:layout_height="52dp"
-                android:background="@drawable/bg_card"
-                android:text="@string/action_content_modes"
-                android:textColor="@color/cb_ink"
-                android:textSize="@dimen/cb_text_data"
-                android:gravity="start|center_vertical"
-                android:paddingStart="@dimen/cb_card_padding"
-                android:paddingEnd="@dimen/cb_card_padding"
-                android:focusable="true"
-                android:layout_marginBottom="@dimen/cb_space_xs" />
-
-            <Button
-                android:id="@+id/btn_nav_profiles"
-                android:layout_width="match_parent"
-                android:layout_height="52dp"
-                android:background="@drawable/bg_card"
-                android:text="Profiles  ·  Saved corrections"
-                android:textColor="@color/cb_ink"
-                android:textSize="@dimen/cb_text_data"
-                android:gravity="start|center_vertical"
-                android:paddingStart="@dimen/cb_card_padding"
-                android:paddingEnd="@dimen/cb_card_padding"
-                android:focusable="true"
-                android:layout_marginBottom="@dimen/cb_space_xs" />
-
-            <Button
-                android:id="@+id/btn_nav_capability"
-                android:layout_width="match_parent"
-                android:layout_height="52dp"
-                android:background="@drawable/bg_card"
-                android:text="Capability  ·  What this device will accept"
-                android:textColor="@color/cb_ink"
-                android:textSize="@dimen/cb_text_data"
-                android:gravity="start|center_vertical"
-                android:paddingStart="@dimen/cb_card_padding"
-                android:paddingEnd="@dimen/cb_card_padding"
-                android:focusable="true"
-                android:layout_marginBottom="@dimen/cb_space_xs" />
-
-            <Button
-                android:id="@+id/btn_nav_display_calibration"
-                android:layout_width="match_parent"
-                android:layout_height="52dp"
-                android:background="@drawable/bg_card"
-                android:text="Display calibration  ·  Test patterns"
-                android:textColor="@color/cb_ink"
-                android:textSize="@dimen/cb_text_data"
-                android:gravity="start|center_vertical"
-                android:paddingStart="@dimen/cb_card_padding"
-                android:paddingEnd="@dimen/cb_card_padding"
-                android:focusable="true"
-                android:layout_marginBottom="@dimen/cb_space_xs" />
-
-            <Button
-                android:id="@+id/btn_nav_content_type"
-                android:layout_width="match_parent"
-                android:layout_height="52dp"
-                android:background="@drawable/bg_card"
-                android:text="Content type  ·  Movies, Anime, Gaming"
-                android:textColor="@color/cb_ink"
-                android:textSize="@dimen/cb_text_data"
-                android:gravity="start|center_vertical"
-                android:paddingStart="@dimen/cb_card_padding"
-                android:paddingEnd="@dimen/cb_card_padding"
-                android:focusable="true"
-                android:layout_marginBottom="@dimen/cb_space_xs" />
-
-            <Button
-                android:id="@+id/btn_nav_extras"
-                android:layout_width="match_parent"
-                android:layout_height="52dp"
-                android:background="@drawable/bg_card"
-                android:text="@string/action_extras"
-                android:textColor="@color/cb_ink"
-                android:textSize="@dimen/cb_text_data"
-                android:gravity="start|center_vertical"
-                android:paddingStart="@dimen/cb_card_padding"
-                android:paddingEnd="@dimen/cb_card_padding"
-                android:focusable="true" />
-
+                android:layout_height="wrap_content"
+                android:text="@string/no_profile_sub"
+                android:textColor="@color/cb_slate"
+                android:textSize="@dimen/cb_text_kicker"
+                android:fontFamily="monospace"
+                android:maxLines="3"
+                android:ellipsize="end"
+                android:layout_marginTop="2dp" />
         </LinearLayout>
+
+        <Button
+            android:id="@+id/btn_toggle_correction"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/cb_target_min"
+            android:background="@drawable/bg_toggle"
+            android:drawableEnd="@drawable/ic_switch"
+            android:drawablePadding="@dimen/cb_space_sm"
+            android:text="@string/correction_off"
+            android:textColor="@color/cb_ink"
+            android:textSize="@dimen/cb_text_data"
+            android:paddingStart="@dimen/cb_card_padding"
+            android:paddingEnd="@dimen/cb_space_sm"
+            android:focusable="true"
+            android:layout_marginStart="@dimen/cb_space_md" />
+
+        <Button
+            android:id="@+id/btn_nav_modes"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/cb_target_min"
+            android:background="@drawable/bg_card"
+            android:textColor="@color/cb_ink"
+            android:textSize="@dimen/cb_text_data"
+            android:paddingStart="@dimen/cb_card_padding"
+            android:paddingEnd="@dimen/cb_card_padding"
+            android:focusable="true"
+            android:layout_marginStart="@dimen/cb_space_xs"
+            tools:text="Mode: Everyday" />
+
+        <Button
+            android:id="@+id/btn_remeasure"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/cb_target_min"
+            android:background="@drawable/bg_cta"
+            android:text="@string/action_remeasure"
+            android:textColor="@color/cta_text"
+            android:textSize="@dimen/cb_text_data"
+            android:textStyle="bold"
+            android:paddingStart="@dimen/cb_card_padding"
+            android:paddingEnd="@dimen/cb_card_padding"
+            android:focusable="true"
+            android:layout_marginStart="@dimen/cb_space_xs" />
+    </LinearLayout>
+
+    <!-- Menu and curve -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:baselineAligned="false"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:orientation="horizontal"
+        android:layout_marginTop="@dimen/cb_space_sm">
+
+        <!-- Fits without scrolling at 540dp; the ScrollView only matters
+             while the update bar is showing above it. -->
+        <ScrollView
+            android:requiresFadingEdge="vertical"
+            android:fadingEdgeLength="@dimen/cb_space_xl"
+            android:layout_width="@dimen/cb_rail_width"
+            android:layout_height="match_parent"
+            android:scrollbars="none">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
+                    style="@style/CoreEQ.MenuHeading"
+                    android:text="@string/menu_sound" />
+
+                <Button
+                    android:id="@+id/btn_nav_manual_eq"
+                    style="@style/CoreEQ.MenuRow"
+                    android:text="@string/action_manual_eq" />
+
+                <Button
+                    android:id="@+id/btn_nav_extras"
+                    style="@style/CoreEQ.MenuRow"
+                    android:text="@string/action_extras" />
+
+                <Button
+                    android:id="@+id/btn_nav_content_type"
+                    style="@style/CoreEQ.MenuRow"
+                    android:text="@string/action_content_type" />
+
+                <TextView
+                    style="@style/CoreEQ.MenuHeading"
+                    android:text="@string/menu_setup"
+                    android:layout_marginTop="@dimen/cb_space_sm" />
+
+                <Button
+                    android:id="@+id/btn_nav_profiles"
+                    style="@style/CoreEQ.MenuRow"
+                    android:text="@string/action_profiles" />
+
+                <Button
+                    android:id="@+id/btn_nav_capability"
+                    style="@style/CoreEQ.MenuRow"
+                    android:text="@string/action_capability" />
+
+                <Button
+                    android:id="@+id/btn_nav_display_calibration"
+                    style="@style/CoreEQ.MenuRow"
+                    android:text="@string/action_display_calibration" />
+            </LinearLayout>
         </ScrollView>
 
-        <!-- Right pane -->
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="match_parent"
@@ -325,11 +279,12 @@
             android:orientation="vertical"
             android:layout_marginStart="@dimen/cb_space_lg">
 
-            <!-- Measured vs Correction graph -->
+            <!-- Measured vs Correction graph: the flexible part of the screen -->
             <tv.corebuilds.eq.ui.CurveGraphView
                 android:id="@+id/graph_home"
                 android:layout_width="match_parent"
-                android:layout_height="220dp" />
+                android:layout_height="0dp"
+                android:layout_weight="1" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -338,30 +293,39 @@
                 android:textColor="@color/cb_slate"
                 android:textSize="@dimen/cb_text_kicker"
                 android:fontFamily="monospace"
-                android:layout_marginTop="@dimen/cb_space_sm"
-                android:layout_marginBottom="@dimen/cb_space_xs" />
+                android:layout_marginTop="@dimen/cb_space_xs"
+                android:layout_marginBottom="4dp" />
 
             <!-- Platform equaliser bands row -->
             <tv.corebuilds.eq.ui.BandSlidersView
                 android:id="@+id/bands_home"
                 android:layout_width="match_parent"
-                android:layout_height="90dp" />
+                android:layout_height="80dp" />
+
+            <!-- 1.3.0: shown only while the HDMI output may receive Dolby/DTS as a bitstream. -->
+            <TextView
+                android:id="@+id/text_passthrough_warning"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/passthrough_warning"
+                android:textColor="@color/cb_warning"
+                android:textSize="@dimen/cb_text_kicker"
+                android:visibility="gone"
+                android:layout_marginTop="@dimen/cb_space_xs" />
 
             <!-- What the correction service last did, including every failure -->
             <TextView
                 android:id="@+id/text_eq_status"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/correction_off"
+                android:text="@string/status_correction_off"
                 android:textColor="@color/cb_slate"
                 android:textSize="@dimen/cb_text_kicker"
                 android:fontFamily="monospace"
-                android:maxLines="3"
+                android:maxLines="4"
                 android:ellipsize="end"
-                android:layout_marginTop="@dimen/cb_space_sm" />
-
+                android:layout_marginTop="@dimen/cb_space_xs" />
         </LinearLayout>
-
     </LinearLayout>
 
 </LinearLayout>

@@ -12,8 +12,8 @@ android {
         applicationId = "tv.corebuilds.eq"
         minSdk = 30
         targetSdk = 37
-        versionCode = 6
-        versionName = "1.2.1"
+        versionCode = 7
+        versionName = "1.3.0"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
         // Read by the updater: the release feed it polls and the FileProvider
@@ -104,4 +104,8 @@ dependencies {
     implementation("androidx.recyclerview:recyclerview:1.3.2")
 
     testImplementation("junit:junit:4.13.2")
+    // android.jar's org.json is a stub on the JVM ("not mocked"), so the
+    // profile JSON round trip (ProfileJsonTest) brings the real one, as Core
+    // Line's tests do.
+    testImplementation("org.json:json:20240303")
 }

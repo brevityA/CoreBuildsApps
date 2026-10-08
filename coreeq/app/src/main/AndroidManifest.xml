@@ -15,6 +15,12 @@
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MEDIA_PLAYBACK" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <!-- 1.3.0: the on-screen card (AppliedCard) that says, over whatever is
+         playing, that correction is on and which profile is in use. The same
+         overlay window Core Line's score box uses. Optional: without "Display
+         over other apps" the card falls back to a text toast, and Fire TV
+         refuses this permission outright. -->
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
     <!-- Android 13+: lets the status notification say what is being corrected. -->
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
     <!-- In-app updater: one HTTPS GET for the release feed, then the release

@@ -36,7 +36,19 @@
 
     <!-- Minimum touch / D-pad target -->
     <dimen name="cb_target_min">48dp</dimen>
+    <!-- Home menu rows: six of them, two headings and the profile card must
+         share 540dp with the header, so these sit a little under cb_target_min.
+         Focus is by D-pad, and every row keeps the full focus ring. -->
+    <dimen name="cb_menu_row">44dp</dimen>
+    <!-- Extra effects: the switch list; the explanation panel takes the rest. -->
+    <dimen name="cb_extras_list">400dp</dimen>
     <dimen name="cb_button_min_width">220dp</dimen>
+
+    <!-- The on-screen card over other apps (1.3.0). Placed top right, inset
+         by the screen gutters; text stops at 360dp so a long profile name ends
+         in an ellipsis instead of growing the card across the picture. -->
+    <dimen name="cb_overlay_card_min">280dp</dimen>
+    <dimen name="cb_overlay_card_text_max">360dp</dimen>
 
     <!-- Type scale: 12sp floor for 10-foot TV readability -->
     <dimen name="cb_text_kicker">12sp</dimen>

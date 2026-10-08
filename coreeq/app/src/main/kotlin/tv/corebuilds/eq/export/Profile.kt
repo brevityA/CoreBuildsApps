@@ -32,6 +32,8 @@ data class Profile(
     val transitionHz: Double = 300.0,
     val rolloffHz: Double = 40.0,
     val snrDb: Double? = null,
+    /** MeasurementQuality score at save time (1.3.0+); null for imports and older profiles. */
+    val qualityScore: Int? = null,
     val nullsUntouchedHz: List<Double> = emptyList(),
     /** Room-correction-only reserve; Formats recomputes the combined value with manual filters. */
     val preampDb: Double = 0.0,

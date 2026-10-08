@@ -43,6 +43,8 @@
         android:layout_marginTop="@dimen/cb_space_md">
 
         <ScrollView
+            android:requiresFadingEdge="vertical"
+            android:fadingEdgeLength="@dimen/cb_space_xl"
             android:layout_width="340dp"
             android:layout_height="match_parent"
             android:fillViewport="true"
@@ -62,45 +64,40 @@
                 android:textSize="@dimen/cb_text_data"
                 android:fontFamily="monospace" />
 
-            <Button
-                android:id="@+id/btn_mode_movie"
+            <!-- The three modes side by side (1.3.0); the filled chip is the one in use. -->
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/cb_target_min"
-                android:layout_marginTop="@dimen/cb_space_sm"
-                android:background="@drawable/bg_chip_toggle"
-                android:text="@string/mode_movie_tv"
-                android:textColor="@color/cb_ink"
-                android:textSize="@dimen/cb_text_data"
-                android:focusable="true" />
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:baselineAligned="false"
+                android:layout_marginTop="@dimen/cb_space_sm">
 
-            <Button
-                android:id="@+id/btn_mode_everyday"
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/cb_target_min"
-                android:layout_marginTop="@dimen/cb_space_xs"
-                android:background="@drawable/bg_chip_toggle"
-                android:text="@string/mode_everyday"
-                android:textColor="@color/cb_ink"
-                android:textSize="@dimen/cb_text_data"
-                android:focusable="true" />
+                <Button
+                    android:id="@+id/btn_mode_movie"
+                    style="@style/CoreEQ.Chip"
+                    android:text="@string/mode_movie_tv" />
 
-            <Button
-                android:id="@+id/btn_mode_gaming"
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/cb_target_min"
-                android:layout_marginTop="@dimen/cb_space_xs"
-                android:background="@drawable/bg_chip_toggle"
-                android:text="@string/mode_gaming"
-                android:textColor="@color/cb_ink"
-                android:textSize="@dimen/cb_text_data"
-                android:focusable="true" />
+                <Button
+                    android:id="@+id/btn_mode_everyday"
+                    style="@style/CoreEQ.Chip"
+                    android:text="@string/mode_everyday"
+                    android:layout_marginStart="@dimen/cb_space_xs" />
+
+                <Button
+                    android:id="@+id/btn_mode_gaming"
+                    style="@style/CoreEQ.Chip"
+                    android:text="@string/mode_gaming"
+                    android:layout_marginStart="@dimen/cb_space_xs" />
+            </LinearLayout>
 
             <Button
                 android:id="@+id/btn_auto_mode"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/cb_target_min"
                 android:layout_marginTop="@dimen/cb_space_md"
-                android:background="@drawable/bg_card"
+                android:background="@drawable/bg_toggle"
+                android:drawableEnd="@drawable/ic_switch"
+                android:drawablePadding="@dimen/cb_space_sm"
                 android:text="@string/mode_auto_off"
                 android:textColor="@color/cb_ink"
                 android:textSize="@dimen/cb_text_data"
@@ -141,7 +138,7 @@
                 android:layout_marginTop="@dimen/cb_space_sm"
                 android:background="@drawable/bg_cta"
                 android:text="@string/mode_done"
-                android:textColor="@color/cb_cta_ink"
+                android:textColor="@color/cta_text"
                 android:textSize="@dimen/cb_text_label"
                 android:textStyle="bold"
                 android:focusable="true" />
@@ -156,20 +153,34 @@
             android:orientation="vertical">
 
             <ScrollView
+                android:requiresFadingEdge="vertical"
+                android:fadingEdgeLength="@dimen/cb_space_xl"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:fillViewport="true"
                 android:scrollbars="none">
-                <TextView
-                    android:id="@+id/text_mode_rules"
+
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:orientation="vertical"
                     android:background="@drawable/bg_card"
-                    android:padding="@dimen/cb_card_padding"
-                    android:gravity="top|start"
-                    android:text="@string/mode_app_rules_hint"
-                    android:textColor="@color/cb_slate"
-                    android:textSize="@dimen/cb_text_data" />
+                    android:padding="@dimen/cb_card_padding">
+
+                    <TextView
+                        style="@style/CoreEQ.MenuHeading"
+                        android:text="@string/mode_rules_heading" />
+
+                    <TextView
+                        android:id="@+id/text_mode_rules"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/cb_space_xs"
+                        android:text="@string/mode_app_rules_hint"
+                        android:textColor="@color/cb_slate"
+                        android:textSize="@dimen/cb_text_data"
+                        android:lineSpacingExtra="2dp" />
+                </LinearLayout>
             </ScrollView>
         </LinearLayout>
     </LinearLayout>

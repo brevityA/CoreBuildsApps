@@ -12,6 +12,7 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.content.pm.PackageManager
 import android.content.pm.ServiceInfo
+import android.database.ContentObserver
 import android.media.AudioAttributes
 import android.media.AudioDeviceCallback
 import android.media.AudioDeviceInfo
@@ -24,12 +25,15 @@ import android.os.Build
 import android.os.Handler
 import android.os.IBinder
 import android.os.Looper
+import android.provider.Settings
 import android.util.Log
+import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
 import androidx.core.app.ServiceCompat
 import androidx.core.content.ContextCompat
 import tv.corebuilds.eq.MainActivity
+import tv.corebuilds.eq.R
 import tv.corebuilds.eq.export.PlatformBand
 import tv.corebuilds.eq.export.Profile
 import tv.corebuilds.eq.export.ProfileStore
@@ -94,6 +98,14 @@ class EqService : Service() {
     
     // The Extra effects screen's switches (all off by default since 1.2.1).
     private var enhancedPrefs: EnhancedAudioPrefs? = null
+    /** Dialogue boost and Low-volume bass as last applied; recomputed by [applyAll]. */
+    private var activeLayers = ToneLayers.NONE
+    /** Decides when the "profile applied" toast shows: on a change, not on every reapply. */
+    private val appliedNotice = AppliedNotice()
+    private val appliedCard by lazy { AppliedCard(this) }
+    /** What the card says about the correction applied right now, for Profiles' test card; null while nothing is applied. */
+    private var currentCard: AppliedCard.Content? = null
+    private var currentCardFallback: String? = null
     
     private val sessionEqs = mutableMapOf<Int, Held>()
     /** Only unambiguous DUMP UID-to-package matches may influence app-mode rules. */
@@ -119,6 +131,16 @@ class EqService : Service() {
     // it. Playback callbacks and session broadcasts are coalesced; untrusted
     // broadcasts cannot queue an unbounded stream of dump processes.
     private val mainHandler = Handler(Looper.getMainLooper())
+
+    // Low-volume bass follows the media volume. Settings.System carries the
+    // persisted volumes; VOLUME_CHANGED_ACTION arrives sooner on most TVs but
+    // is not public API, so both only prompt a re-check of the lift.
+    private val volumeObserver = object : ContentObserver(Handler(Looper.getMainLooper())) {
+        override fun onChange(selfChange: Boolean) = onVolumeChanged()
+    }
+    private val volumeReceiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context, intent: Intent) = onVolumeChanged()
+    }
     private val discoveryExecutor = Executors.newSingleThreadExecutor()
     private var discoveryQueued = false
     private var discoveryInFlight = false
@@ -181,6 +203,12 @@ class EqService : Service() {
     }
     private var lastOutput: OutputRoute.Output? = null
 
+    /** Reprogram only when the lift actually moves a step; holding the volume key costs a few reapplies. */
+    private fun onVolumeChanged() {
+        if (!running || suspended || enhancedPrefs?.lowVolumeBassEnabled != true) return
+        if (toneLayers() != activeLayers) applyAll()
+    }
+
     private fun onOutputsChanged() {
         val output = OutputRoute.current(this)
         if (output == lastOutput) return
@@ -230,6 +258,10 @@ class EqService : Service() {
         } catch (e: Exception) {
             Log.w(TAG, "Playback watcher refused; the playing marker is off", e)
         }
+        contentResolver.registerContentObserver(Settings.System.CONTENT_URI, true, volumeObserver)
+        ContextCompat.registerReceiver(
+            this, volumeReceiver, IntentFilter(VOLUME_CHANGED_ACTION), ContextCompat.RECEIVER_NOT_EXPORTED
+        )
         lastOutput = OutputRoute.current(this)
         // Registering delivers the current devices once; the full route identity makes that a no-op.
         getSystemService(AudioManager::class.java)?.registerAudioDeviceCallback(deviceCallback, Handler(Looper.getMainLooper()))
@@ -256,6 +288,18 @@ class EqService : Service() {
             }
             ACTION_RELOAD_PREFS -> {
                 reloadEnhancedPreferences()
+            }
+            ACTION_SHOW_CARD -> {
+                // Profiles' "Show a test card": the card for what is applied
+                // now, regardless of whether it changed, so it can be checked
+                // on this TV without switching correction off and on.
+                val card = currentCard
+                val fallback = currentCardFallback
+                if (card != null && fallback != null) {
+                    showCard(card, fallback)
+                } else {
+                    Toast.makeText(this, getString(R.string.card_test_waiting), Toast.LENGTH_LONG).show()
+                }
             }
             else -> applyAll() // ACTION_START, ACTION_REAPPLY, or a sticky restart
         }
@@ -303,7 +347,9 @@ class EqService : Service() {
 
     private fun applyAll() {
         if (suspended) return
+        activeLayers = toneLayers()
         if (store.getAllProfiles().isEmpty()) {
+            clearCurrentCard()
             report("No measurement yet. Measure this room to create a correction.", isError = true)
             return
         }
@@ -312,6 +358,7 @@ class EqService : Service() {
             // Another chain's curve would be wrong here: step aside, say why.
             outputPaused = true
             setAllEnabled(false)
+            announcePaused(output)
             val routeName = output?.name ?: "the output Android could not identify"
             report(
                 "Nothing measured on $routeName yet, so correction is paused there. " +
@@ -342,9 +389,10 @@ class EqService : Service() {
                 globalEffect = configured
                 syncRuntimeBands()
                 report(
-                    "Output-mix effect configured · $modeName · ${configured.engine} · ${profile.name}$via · ${configured.bands.size} bands${extrasNote(listOf(configured))} · coverage depends on TV routing${where(output)}",
+                    "Output-mix effect configured · $modeName · ${configured.engine} · ${profile.name}$via · ${configured.bands.size} bands${extrasNote(listOf(configured), profile)} · coverage depends on TV routing${where(output)}",
                     isError = false
                 )
+                announceApplied(profile, modeName, listOf(configured), output)
                 releaseSessions() // avoid applying the same curve twice where the mix effect is accepted
                 if (DumpsysDiscovery.hasGrant(this)) scheduleDiscovery(0L)
                 return
@@ -369,8 +417,13 @@ class EqService : Service() {
         syncRuntimeBands()
         when {
             failed != null -> report(failed, isError = true)
-            sessionEqs.isNotEmpty() -> report(sessionReport(profile, via, output), isError = false)
+            sessionEqs.isNotEmpty() -> {
+                report(sessionReport(profile, via, output), isError = false)
+                announceApplied(profile, modeName, sessionEqs.values.map { it.applied }, output)
+            }
             else -> {
+                appliedNotice.reset()
+                clearCurrentCard()
                 if (DumpsysDiscovery.hasGrant(this)) scheduleDiscovery(0L)
                 report(waitingStatus(), isError = false)
             }
@@ -408,7 +461,7 @@ class EqService : Service() {
         var dpFailure: String? = null
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
             try {
-                val dp = DynamicsProcessingEngine.create(session, profile, limiter())
+                val dp = DynamicsProcessingEngine.create(session, profile, limiter(), activeLayers)
                 return AppliedEffect(
                     effect = dp.effect,
                     engine = ENGINE_DYNAMICS_PROCESSING,
@@ -466,7 +519,7 @@ class EqService : Service() {
     @RequiresApi(Build.VERSION_CODES.P)
     private fun configureDynamicsProcessing(effect: AudioEffect, profile: Profile): AppliedEffect {
         require(effect is DynamicsProcessing) { "Unknown audio effect ${effect.javaClass.simpleName}" }
-        val dp = DynamicsProcessingEngine.configure(effect, profile, limiter())
+        val dp = DynamicsProcessingEngine.configure(effect, profile, limiter(), activeLayers)
         return AppliedEffect(
             effect = effect,
             engine = ENGINE_DYNAMICS_PROCESSING,
@@ -484,7 +537,7 @@ class EqService : Service() {
         check(range != null && range.size >= 2) { "Equalizer reports no gain range" }
         val centres = List(n) { eq.getCenterFreq(it.toShort()) / 1000.0 }
         val mbs = BandMapping.millibels(
-            BandMapping.gainsDb(profile, centres),
+            BandMapping.gainsDb(profile, centres, activeLayers),
             range[0].toInt()..range[1].toInt()
         )
         for (i in 0 until n) eq.setBandLevel(i.toShort(), mbs[i])
@@ -651,8 +704,14 @@ class EqService : Service() {
         if (failed != null) {
             report(failed, isError = true)
         } else if (changed) {
-            if (sessionEqs.isEmpty()) report(waitingStatus(), isError = false)
-            else report(sessionReport(profile, via, output), isError = false)
+            if (sessionEqs.isEmpty()) {
+                appliedNotice.reset()
+                clearCurrentCard()
+                report(waitingStatus(), isError = false)
+            } else {
+                report(sessionReport(profile, via, output), isError = false)
+                announceApplied(profile, modeStore.currentDecision().mode.title, sessionEqs.values.map { it.applied }, output)
+            }
         } else if (playerSnapshotChanged) {
             notifyModeSnapshotChanged()
         }
@@ -669,12 +728,19 @@ class EqService : Service() {
         val names = held.joinToString { label(it.pkg) }
         val engines = held.map { it.applied.engine }.distinct().joinToString(" + ")
         val marker = if (held.any { it.discovered }) " · found by DUMP discovery" else ""
-        return "Effect attached to $names · ${modeStore.currentDecision().mode.title} · $engines · ${profile?.name ?: "the active profile"}$via${extrasNote(held.map { it.applied })}$marker${where(output)}"
+        return "Effect attached to $names · ${modeStore.currentDecision().mode.title} · $engines · ${profile?.name ?: "the active profile"}$via${extrasNote(held.map { it.applied }, profile)}$marker${where(output)}"
     }
 
+    /** What the Extra effects screen added on [applied], one entry per effect or layer. */
+    private fun extrasWords(applied: List<AppliedEffect>, profile: Profile?): List<String> =
+        (applied.mapNotNull { it.extras?.label?.takeIf(String::isNotEmpty) } +
+            listOfNotNull(profile?.let { activeLayers.label(it) }?.takeIf(String::isNotEmpty)))
+            .flatMap { it.split(" + ") }
+            .distinct()
+
     /** Say what the Extra effects screen added, and when night mode cannot run. */
-    private fun extrasNote(applied: List<AppliedEffect>): String {
-        val extras = applied.mapNotNull { it.extras?.label?.takeIf(String::isNotEmpty) }.distinct()
+    private fun extrasNote(applied: List<AppliedEffect>, profile: Profile?): String {
+        val extras = extrasWords(applied, profile)
         val night = enhancedPrefs?.nightModeEnabled == true
         val nightOnDp = applied.any { it.engine == ENGINE_DYNAMICS_PROCESSING }
         return buildString {
@@ -781,8 +847,83 @@ class EqService : Service() {
         }
     }
 
+    /**
+     * The on-screen card when a different profile or mode takes effect
+     * (1.3.0): correction on, the profile, and how it is applied, for a few
+     * seconds over whatever is playing ([AppliedCard]). Without "Display over
+     * other apps" it falls back to a text toast, the one on-screen surface a
+     * background app keeps on Android 11+ (Android TV shows no heads-up
+     * notifications). Plain reapplies stay silent ([AppliedNotice]). Switch it
+     * off on Profiles.
+     */
+    private fun announceApplied(profile: Profile, modeName: String, applied: List<AppliedEffect>, output: OutputRoute.Output?) {
+        val detail = listOfNotNull(
+            modeName,
+            output?.let { OutputRoute.label(it.kind) },
+            engineWords(applied)
+        ).joinToString(" · ")
+        val night = enhancedPrefs?.nightModeEnabled == true && applied.any { it.engine == ENGINE_DYNAMICS_PROCESSING }
+        val extras = (extrasWords(applied, profile) + listOfNotNull("night mode".takeIf { night }))
+            .joinToString(" · ") { word -> word.replaceFirstChar { it.uppercaseChar() } }
+            .ifEmpty { null }
+        val content = AppliedCard.Content(active = true, title = profile.name, detail = detail, extras = extras)
+        val fallback = getString(R.string.notice_profile_applied, profile.name, modeName)
+        currentCard = content
+        currentCardFallback = fallback
+        if (!appliedNotice.onApplied(profile.id, modeName)) return
+        if (!store.announceApplied) return
+        showCard(content, fallback)
+    }
+
+    /** Once per output without a profile: say on screen that correction stepped aside there. */
+    private fun announcePaused(output: OutputRoute.Output?) {
+        val label = OutputRoute.label(output?.kind ?: OutputRoute.UNKNOWN)
+        val content = AppliedCard.Content(
+            active = false,
+            title = getString(R.string.card_paused_title),
+            detail = getString(R.string.card_paused_detail, label),
+            extras = null
+        )
+        val fallback = getString(R.string.notice_paused, label)
+        currentCard = content
+        currentCardFallback = fallback
+        if (!appliedNotice.onPaused(output?.let { "${it.kind}|${it.name}" } ?: OutputRoute.UNKNOWN)) return
+        if (!store.announceApplied) return
+        showCard(content, fallback)
+    }
+
+    /** The card, or the same words as a text toast where Android will not let Core EQ draw over other apps. */
+    private fun showCard(content: AppliedCard.Content, fallback: String) {
+        if (!appliedCard.show(content)) Toast.makeText(this, fallback, Toast.LENGTH_SHORT).show()
+    }
+
+    private fun clearCurrentCard() {
+        currentCard = null
+        currentCardFallback = null
+    }
+
+    /** "32 bands" on DynamicsProcessing, "5-band fallback" when any session fell back to the Equalizer. */
+    private fun engineWords(applied: List<AppliedEffect>): String? {
+        val fallback = applied.firstOrNull { it.engine == ENGINE_PLATFORM_EQUALIZER }
+        if (fallback != null) return getString(R.string.card_engine_eq, fallback.bands.size)
+        val dp = applied.firstOrNull() ?: return null
+        return resources.getQuantityString(R.plurals.card_engine_dp, dp.bands.size, dp.bands.size)
+    }
+
     /** Protection-only, or night mode's tighter limiter. DP correction only. */
     private fun limiter(): LimiterSettings = enhancedPrefs?.limiter() ?: LimiterSettings()
+
+    /**
+     * Dialogue boost and Low-volume bass for this moment. The lift is measured
+     * from the current output's own reference volume, recorded the first time
+     * that output reports one ([LowVolumeBass]); a volume Android does not
+     * report (fixed-volume outputs) adds nothing.
+     */
+    private fun toneLayers(): ToneLayers {
+        val prefs = enhancedPrefs ?: return ToneLayers.NONE
+        val bass = if (prefs.lowVolumeBassEnabled) LowVolumeBass.read(this, prefs).liftDb else 0.0
+        return ToneLayers(dialogue = prefs.dialogueBoostEnabled, lowVolumeBassDb = bass)
+    }
 
     override fun onDestroy() {
         if (!running) {
@@ -793,6 +934,7 @@ class EqService : Service() {
         // write a transient "Correcting …" status (or light the indicator)
         // mid-teardown only to have it overwritten a moment later.
         running = false
+        appliedCard.dismiss() // a card about correction must not outlive it
         discoveredPackages = emptySet()
         discoveredHasUnknownPlayer = false
         discoveryInitialized = false
@@ -809,6 +951,12 @@ class EqService : Service() {
             audioManager.unregisterAudioPlaybackCallback(playbackCallback)
         } catch (e: Exception) {
             Log.w(TAG, "Playback watcher was not registered", e)
+        }
+        contentResolver.unregisterContentObserver(volumeObserver)
+        try {
+            unregisterReceiver(volumeReceiver)
+        } catch (e: IllegalArgumentException) {
+            Log.w(TAG, "Volume receiver was not registered", e)
         }
         mainHandler.removeCallbacksAndMessages(null)
         discoveryQueued = false
@@ -868,6 +1016,10 @@ class EqService : Service() {
         const val ACTION_SUSPEND = "tv.corebuilds.eq.action.SUSPEND"
         const val ACTION_RESUME = "tv.corebuilds.eq.action.RESUME"
         const val ACTION_RELOAD_PREFS = "tv.corebuilds.eq.action.RELOAD_PREFS"
+        /** Show the card for what is applied now (Profiles' test card), whether or not it changed. */
+        const val ACTION_SHOW_CARD = "tv.corebuilds.eq.action.SHOW_CARD"
+        /** AudioManager.VOLUME_CHANGED_ACTION: sent by the system on most builds, but hidden API. */
+        private const val VOLUME_CHANGED_ACTION = "android.media.VOLUME_CHANGED_ACTION"
         const val ACTION_STATUS_CHANGED = "tv.corebuilds.eq.action.STATUS_CHANGED"
         private const val TAG = "CoreEqService"
         private const val CHANNEL_ID = "core_eq_service_channel"

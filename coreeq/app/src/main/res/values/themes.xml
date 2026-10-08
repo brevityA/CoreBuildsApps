@@ -4,5 +4,73 @@
         <item name="android:windowBackground">@color/cb_night</item>
         <item name="android:textColor">@color/cb_ink</item>
         <item name="android:colorBackground">@color/cb_night</item>
+        <item name="buttonStyle">@style/Widget.CoreEQ.Button</item>
+        <item name="android:buttonStyle">@style/Widget.CoreEQ.Button</item>
+    </style>
+
+    <!-- Sentence case on every button (1.3.0). AppCompat's default capitalises
+         button text, which made labels such as "Low-volume bass: Off" wrap
+         onto two lines and read as shouting. -->
+    <style name="Widget.CoreEQ.Button" parent="Widget.AppCompat.Button">
+        <item name="android:textAllCaps">false</item>
+        <item name="textAllCaps">false</item>
+    </style>
+
+    <!-- Home menu: a group heading, then one row per screen. -->
+    <style name="CoreEQ.MenuHeading" parent="android:Widget.TextView">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textColor">@color/cb_signal_cyan</item>
+        <item name="android:textSize">@dimen/cb_text_kicker</item>
+        <item name="android:fontFamily">monospace</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textAllCaps">true</item>
+        <item name="android:importantForAccessibility">yes</item>
+        <item name="android:accessibilityHeading">true</item>
+    </style>
+
+    <style name="CoreEQ.MenuRow" parent="Widget.CoreEQ.Button">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">@dimen/cb_menu_row</item>
+        <item name="android:layout_marginTop">4dp</item>
+        <item name="android:background">@drawable/bg_card</item>
+        <item name="android:textColor">@color/cb_ink</item>
+        <item name="android:textSize">@dimen/cb_text_data</item>
+        <item name="android:gravity">start|center_vertical</item>
+        <item name="android:paddingStart">@dimen/cb_card_padding</item>
+        <item name="android:paddingEnd">@dimen/cb_card_padding</item>
+        <item name="android:minHeight">0dp</item>
+        <item name="android:focusable">true</item>
+    </style>
+
+    <!-- A full-width action row on a card (Manual EQ): the Home menu row at full target height. -->
+    <style name="CoreEQ.ActionRow" parent="CoreEQ.MenuRow">
+        <item name="android:layout_height">@dimen/cb_target_min</item>
+        <item name="android:layout_marginTop">@dimen/cb_space_xs</item>
+    </style>
+
+    <!-- An on/off row (Extra effects): the label says the state, the knob and
+         the cyan tint show it (bg_toggle / ic_switch, keyed on activated). -->
+    <style name="CoreEQ.SwitchRow" parent="CoreEQ.MenuRow">
+        <item name="android:layout_height">@dimen/cb_target_min</item>
+        <item name="android:layout_marginTop">@dimen/cb_space_xs</item>
+        <item name="android:background">@drawable/bg_toggle</item>
+        <item name="android:drawableEnd">@drawable/ic_switch</item>
+        <item name="android:drawablePadding">@dimen/cb_space_sm</item>
+        <item name="android:textSize">@dimen/cb_text_label</item>
+    </style>
+
+    <!-- A choice among several (Content type): fills cyan when activated. -->
+    <style name="CoreEQ.Chip" parent="Widget.CoreEQ.Button">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">@dimen/cb_target_min</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:background">@drawable/bg_chip_toggle</item>
+        <item name="android:textColor">@color/chip_text</item>
+        <item name="android:textSize">@dimen/cb_text_data</item>
+        <item name="android:gravity">center</item>
+        <item name="android:singleLine">true</item>
+        <item name="android:minWidth">0dp</item>
+        <item name="android:focusable">true</item>
     </style>
 </resources>

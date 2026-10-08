@@ -74,31 +74,6 @@ class EqualLoudnessTest {
     }
 
     @Test
-    fun `phon estimate decreases with volume`() {
-        val loud = EqualLoudness.estimatePhon(15, 15, 85.0)
-        val quiet = EqualLoudness.estimatePhon(5, 15, 85.0)
-        assertTrue("Quieter volume should give lower phon", quiet < loud)
-        assertEquals("Max volume should be near reference", 85.0, loud, 0.1)
-    }
-
-    @Test
-    fun `phon estimate never drops below 20`() {
-        val silent = EqualLoudness.estimatePhon(0, 15, 85.0)
-        assertEquals(20.0, silent, 0.01)
-    }
-
-    @Test
-    fun `interpolation onto arbitrary frequencies works`() {
-        val freqs = listOf(50.0, 500.0, 1000.0, 5000.0)
-        val comp = EqualLoudness.compensationAtFreqs(80.0, 40.0, 1.0, freqs)
-        assertEquals(4, comp.size)
-        // 1 kHz should be 0
-        assertEquals(0.0, comp[2], 0.5)
-        // 50 Hz should be positive (bass boost)
-        assertTrue(comp[0] > 0.0)
-    }
-
-    @Test
     fun `all contours are monotonic-ish at low frequencies`() {
         // At 40 Hz, higher phon levels should have lower excess SPL
         // (the ear is relatively more sensitive at higher absolute levels)

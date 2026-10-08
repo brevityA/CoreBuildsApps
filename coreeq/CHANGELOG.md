@@ -8,6 +8,140 @@ must never land there. Releases are `coreeq-v<version>` tags (see
 
 ## [Unreleased]
 
+## [1.3.0] — 2026-10-08
+
+### Added
+
+- **Every sweep gets a quality score.** The Measure screen shows
+  `Quality 0–100` after each sweep, in green, amber or red. It weighs signal
+  to noise (30), a measurable decay (20), untouched nulls (20), bands that
+  pass the minimum-phase gate (15) and the transition frequency (15). The
+  score is saved with the profile (`quality_score` in the JSON backup) and
+  shown on Home and Profiles. It describes the measurement and never changes
+  the correction. REW imports carry no signal-to-noise or decay data, so
+  they say "not scored" instead of showing a low number; profiles saved
+  before 1.3.0 show no score.
+- **Dialogue boost** (Extra effects, off by default): +2 dB across
+  2.2–4.5 kHz, back to neutral by 6.5 kHz, the speech-intelligibility
+  plateau from research pass 6. Profiles measured with the Dialogue or House
+  target already carry it, so there it adds nothing.
+- **Low-volume bass** (Extra effects, off by default): ISO 226 loudness
+  compensation. Switching it on records the current volume, read through
+  Android's own volume curve in dB, as the reference. Each output keeps its
+  own reference (Android keeps a separate volume, on its own curve, per
+  output), recorded the first time that output reports a volume, so
+  switching from TV speakers to a soundbar adds nothing until the soundbar
+  is turned down. The Extra effects screen follows the volume keys while
+  open. Below the reference, half the
+  ISO 226 difference at 63 Hz is added as a shelf under 100 Hz, in 0.5 dB
+  steps, capped at +3 dB, and never below the speaker's measured roll-off.
+  It follows the volume as it changes. On a fixed-volume output (a
+  soundbar that keeps its own volume over HDMI-CEC) Android reports no
+  volume, so it adds nothing, and the screen says so.
+- **An on-screen card when correction takes effect.** For 4 seconds, top
+  right, over whatever is playing: "Core EQ · Correction on", the profile,
+  then mode · output · engine (for example `Everyday · TV speakers · 32
+  bands`, or `5-band fallback` on the platform Equalizer), and any extras in
+  use (`Dialogue +2 dB · Low-volume bass +1.5 dB`). It shows when a
+  different profile or mode takes effect: correction switched on, an output
+  switch, a new measurement, a choice in Profiles, a mode change. Plain
+  reapplies (a volume step, an Extra effects change, a player attaching)
+  stay silent. When the output has no profile, an amber card says
+  correction paused there, once per output. The card uses the same overlay
+  window as Core Line's score box: it never takes focus or the remote. It
+  needs "Display over other apps"; Profiles shows a button for it, or the
+  ADB command on TVs with no screen for that permission. Without it, a
+  short text toast says the same. Fire TV refuses the permission. On by
+  default; switch it off on Profiles. **Show a test card** on Profiles shows
+  the card for what is applied right now, so its place and size can be
+  checked on the TV without switching correction off and on.
+- **Home warns about HDMI bitstream.** When Android may send Dolby or DTS
+  to the HDMI output as a bitstream, Home shows the warning on its own line:
+  a bitstream skips all on-device EQ. Until now it was only a clause at
+  the end of the status text.
+
+### Changed
+
+- Dialogue boost and low-volume bass are summed into the correction before
+  headroom is taken, on DynamicsProcessing and on the platform Equalizer, so
+  their boost lowers everything else instead of clipping. They are never
+  written into a profile, backup or export.
+- The Extra effects **Loudness** switch is now **Loudness enhancer**, its
+  Android effect name, so it cannot be mistaken for low-volume bass.
+- **Home fits on one screen.** At 1080p, Home showed 3 of its 8 menu rows
+  without scrolling. The active profile, its quality score, Correction, Mode
+  and Re-measure are now one card at the top. The six other screens are a
+  menu grouped under **Sound** (Manual EQ, Extra effects, Content type) and
+  **Set up** (Profiles, Capability, Display calibration). The graph takes
+  whatever height is left, so the status line under it is no longer cut
+  off. While correction is off, the status line says what Off means
+  instead of repeating "Correction: Off".
+- **Extra effects fits on one screen.** Each of the five switches had its
+  paragraph under it, so the screen scrolled. The switches are now one list,
+  grouped **Tone** (Dialogue boost, Low-volume bass, Bass boost) and
+  **Level** (Loudness enhancer, Night mode), and the panel beside them
+  explains whichever has focus. While Low-volume bass is on, that panel also
+  shows this output's reference volume, the volume now and what is added.
+- **Every on/off switch shows its state.** Correction and the switches on
+  Extra effects, Profiles, Mode, Capability and Content type have a
+  switch drawn at the end of the row and a cyan-tinted background when on.
+  Until now, the only sign of state was the word at the end of the label.
+- **Button labels are in sentence case.** Android's default button style
+  capitalised every label, which wrapped "LOW-VOLUME BASS: OFF" and similar
+  labels onto two lines.
+- **Content type is a grid of ten chips** with the selection filled. It
+  no longer dims the other nine to 60%, uses no emoji, and fits without
+  scrolling. Auto-detect sits beside Done. If the TV's system text size is
+  turned up past what fits, the screen scrolls to whatever the D-pad
+  reaches.
+- **Display calibration's panel sits inside the screen edges.** It ran to
+  the left, right and bottom edges, where TV overscan can cut text. It now
+  keeps the same 48dp side and 24dp bottom gutters as every other screen.
+  Its buttons have side padding (their labels touched their borders), and
+  the panel uses the app's type and spacing tokens instead of fixed sizes.
+- **No control sits below the screen any more.** At 1080p, Profiles' Export
+  and Delete, Manual EQ's Done, and Mode's app rules and Done were below
+  the bottom edge. Profiles' graph now takes the height that is left, Mode's
+  three modes are one row of chips, and Manual EQ's Save and Reset share a
+  row.
+- **Profiles' list rows no longer clip.** A long name wrapped onto a second
+  line and pushed the details line out of the card; names now end in "…".
+  The quality score leads the details line, as on Home, so the "…" never
+  hides it. The export summary is set in the body size instead of a bold
+  16sp.
+- **Mode explains automatic switching in plain bullets** under a heading,
+  instead of one paragraph about session UIDs. Its status lines (app rules,
+  conflicts, players now) are in sentence case.
+- **Manual EQ's profile card** names the profile and its output. The mode
+  being edited is only on the Editing mode row, where it was already shown.
+  Headroom fits on one line.
+- **Measure's Stop works only while a sweep runs**, and looks unavailable
+  otherwise. Focus moves to Stop when a sweep starts and back to Start when
+  it is stopped.
+- **Unavailable buttons look unavailable.** A disabled primary button kept
+  its dark label on a grey body, which could not be read. Disabled
+  secondary buttons dim their label and border.
+- **A focused switch that is on keeps its cyan tint** under the focus ring.
+  Until now, focus hid the on state.
+- **Graphs:** the legend sits on a backing, so a curve that runs into the
+  corner passes under it. Frequency labels are centred on their grid
+  lines, and a long title ends in "…" instead of running off the graph.
+- Scrolling columns (Capability, Measure, Extra effects) fade at the edge
+  that has more content, instead of cutting a card in half.
+
+- Profiles' quality score has a JVM round-trip test (`ProfileJsonTest`):
+  saved and read back unchanged, and a missing, null or out-of-range score
+  reads back as "not scored". The test brings `org.json` as a test-only
+  dependency, as Core Line's tests do.
+
+### Removed
+
+- 466 lines of 1.2.0 Kotlin that nothing called: `ImprovedAudioDeviceManager`
+  (its "passthrough" test was "is the output HDMI";
+  `OutputRoute.mayPassThrough` checks the TV's surround setting), night
+  mode's never-applied 3.2 kHz dialogue peak, the volume-to-phon estimate that
+  treated a volume step as linear amplitude, and 27 unused strings.
+
 ## [1.2.1] — 2026-10-07
 
 ### Fixed

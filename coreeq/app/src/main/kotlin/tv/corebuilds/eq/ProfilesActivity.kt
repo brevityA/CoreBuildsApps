@@ -1,6 +1,9 @@
 package tv.corebuilds.eq
 
+import android.content.ActivityNotFoundException
+import android.content.Intent
 import android.os.Bundle
+import android.provider.Settings
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -8,6 +11,7 @@ import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
 import androidx.core.content.ContextCompat
+import androidx.core.net.toUri
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import tv.corebuilds.eq.apply.EqService
@@ -21,7 +25,9 @@ import tv.corebuilds.eq.export.ProfileStore
 import tv.corebuilds.eq.mode.ContentMode
 import tv.corebuilds.eq.mode.ContentModeStore
 import tv.corebuilds.eq.ui.CurveGraphView
+import tv.corebuilds.eq.ui.QualityText
 import tv.corebuilds.eq.ui.Series
+import tv.corebuilds.eq.ui.showSwitch
 import java.util.Locale
 
 class ProfilesActivity : TvActivity() {
@@ -36,6 +42,9 @@ class ProfilesActivity : TvActivity() {
     private lateinit var btnChipJson: Button
     private lateinit var btnExport: Button
     private lateinit var btnDelete: Button
+    private lateinit var btnAnnounce: Button
+    private lateinit var textAnnounceCard: TextView
+    private lateinit var btnAllowOverlay: Button
 
     private var profilesList = mutableListOf<Profile>()
     private var selectedProfile: Profile? = null
@@ -48,7 +57,10 @@ class ProfilesActivity : TvActivity() {
 
     override fun onResume() {
         super.onResume()
-        if (::profileStore.isInitialized) loadProfiles()
+        if (::profileStore.isInitialized) {
+            loadProfiles()
+            refreshAnnounce() // back from the overlay permission screen
+        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -66,6 +78,9 @@ class ProfilesActivity : TvActivity() {
         btnChipJson = findViewById(R.id.chip_json)
         btnExport = findViewById(R.id.btn_export_profile)
         btnDelete = findViewById(R.id.btn_delete_profile)
+        btnAnnounce = findViewById(R.id.btn_announce_applied)
+        textAnnounceCard = findViewById(R.id.text_announce_card)
+        btnAllowOverlay = findViewById(R.id.btn_allow_overlay)
 
         recyclerProfiles.layoutManager = LinearLayoutManager(this)
 
@@ -74,6 +89,54 @@ class ProfilesActivity : TvActivity() {
 
         btnExport.setOnClickListener { exportCurrentProfile() }
         btnDelete.setOnClickListener { deleteCurrentProfile() }
+        btnAnnounce.setOnClickListener {
+            profileStore.announceApplied = !profileStore.announceApplied
+            refreshAnnounce()
+        }
+        btnAllowOverlay.setOnClickListener { openOverlaySettings() }
+        findViewById<Button>(R.id.btn_test_card).setOnClickListener { showTestCard() }
+        refreshAnnounce()
+    }
+
+    /**
+     * The service reads the switch each time it would show the notice; the
+     * line under it says how the notice will look on this TV right now.
+     */
+    private fun refreshAnnounce() {
+        val on = profileStore.announceApplied
+        btnAnnounce.showSwitch(on, R.string.profiles_announce_on, R.string.profiles_announce_off)
+        val allowed = Settings.canDrawOverlays(this)
+        textAnnounceCard.setText(
+            when {
+                !on -> R.string.profiles_card_off
+                allowed -> R.string.profiles_card_allowed
+                else -> R.string.profiles_card_needs_permission
+            }
+        )
+        btnAllowOverlay.visibility = if (on && !allowed) View.VISIBLE else View.GONE
+    }
+
+    /**
+     * Ask the running service for the card it would show now, so its place and
+     * size can be checked on this TV. Without the overlay permission the same
+     * words arrive as a toast, which is what this TV would show as well.
+     */
+    private fun showTestCard() {
+        if (!EqService.running) {
+            textAnnounceCard.setText(R.string.profiles_card_test_off)
+            return
+        }
+        refreshAnnounce()
+        EqService.send(this, EqService.ACTION_SHOW_CARD)
+    }
+
+    /** Android's own "Display over other apps" screen for Core EQ, or the ADB line where a TV has none. */
+    private fun openOverlaySettings() {
+        try {
+            startActivity(Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION, "package:$packageName".toUri()))
+        } catch (e: ActivityNotFoundException) {
+            textAnnounceCard.text = getString(R.string.profiles_card_no_settings, packageName)
+        }
     }
 
     private fun setupExportChips() {
@@ -301,7 +364,13 @@ class ProfilesActivity : TvActivity() {
                 "Manual EQ only · not measured$overlays"
             } else {
                 val manual = if (item.manualFilters.isNotEmpty()) " · ${item.manualFilters.size} legacy manual bands" else ""
-                "$targetTitle · ${item.filters.size} filters$manual$overlays · $rt · ${item.micType}$measurementLimit"
+                // Score first: the row is one line with an end ellipsis, and the
+                // details before it vary in length (review on #264).
+                QualityText.prependTo(
+                    holder.itemView.context,
+                    "$targetTitle · ${item.filters.size} filters$manual$overlays · $rt · ${item.micType}$measurementLimit",
+                    item.qualityScore
+                )
             }
 
             val isActive = item.id == activeId()

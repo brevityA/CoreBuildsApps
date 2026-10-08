@@ -1,12 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Extra effects (1.2.1). Three switches, all off by default, applied the
-     moment they change. Toggle convention matches Capability's
-     "Check for updates on open: On" row. -->
+<!-- Extra effects (1.2.1; dialogue and low-volume bass since 1.3.0). Five
+     switches, all off by default, applied the moment they change. Since
+     1.3.0 the switches are one list on the left and the right panel explains
+     whichever has focus, the Android TV settings pattern, so the screen fits
+     960 x 540dp without scrolling. The ScrollView only matters when the TV's
+     system text size is turned up. -->
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:requiresFadingEdge="vertical"
+    android:fadingEdgeLength="@dimen/cb_space_xl"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/cb_night"
-    android:fillViewport="true">
+    android:fillViewport="true"
+    android:scrollbars="none">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -44,71 +51,93 @@
             android:textSize="@dimen/cb_text_data"
             android:layout_marginTop="2dp" />
 
-        <Button
-            android:id="@+id/btn_extras_bass"
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="@dimen/cb_target_min"
-            android:layout_marginTop="@dimen/cb_space_md"
-            android:background="@drawable/bg_card"
-            android:gravity="start|center_vertical"
-            android:paddingStart="@dimen/cb_card_padding"
-            android:paddingEnd="@dimen/cb_card_padding"
-            android:textColor="@color/cb_ink"
-            android:textSize="@dimen/cb_text_data"
-            android:focusable="true" />
-
-        <TextView
-            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:maxWidth="640dp"
-            android:text="@string/extras_bass_note"
-            android:textColor="@color/cb_slate"
-            android:textSize="@dimen/cb_text_label"
-            android:layout_marginTop="@dimen/cb_space_xs" />
+            android:orientation="horizontal"
+            android:baselineAligned="false"
+            android:layout_marginTop="@dimen/cb_space_md">
 
-        <Button
-            android:id="@+id/btn_extras_loudness"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/cb_target_min"
-            android:layout_marginTop="@dimen/cb_space_md"
-            android:background="@drawable/bg_card"
-            android:gravity="start|center_vertical"
-            android:paddingStart="@dimen/cb_card_padding"
-            android:paddingEnd="@dimen/cb_card_padding"
-            android:textColor="@color/cb_ink"
-            android:textSize="@dimen/cb_text_data"
-            android:focusable="true" />
+            <!-- The switches, grouped by what they change -->
+            <LinearLayout
+                android:layout_width="@dimen/cb_extras_list"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:maxWidth="640dp"
-            android:text="@string/extras_loudness_note"
-            android:textColor="@color/cb_slate"
-            android:textSize="@dimen/cb_text_label"
-            android:layout_marginTop="@dimen/cb_space_xs" />
+                <TextView
+                    style="@style/CoreEQ.MenuHeading"
+                    android:text="@string/extras_group_tone" />
 
-        <Button
-            android:id="@+id/btn_extras_night"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/cb_target_min"
-            android:layout_marginTop="@dimen/cb_space_md"
-            android:background="@drawable/bg_card"
-            android:gravity="start|center_vertical"
-            android:paddingStart="@dimen/cb_card_padding"
-            android:paddingEnd="@dimen/cb_card_padding"
-            android:textColor="@color/cb_ink"
-            android:textSize="@dimen/cb_text_data"
-            android:focusable="true" />
+                <Button
+                    android:id="@+id/btn_extras_dialogue"
+                    style="@style/CoreEQ.SwitchRow"
+                    tools:text="Dialogue boost: Off" />
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:maxWidth="640dp"
-            android:text="@string/extras_night_note"
-            android:textColor="@color/cb_slate"
-            android:textSize="@dimen/cb_text_label"
-            android:layout_marginTop="@dimen/cb_space_xs" />
+                <Button
+                    android:id="@+id/btn_extras_low_bass"
+                    style="@style/CoreEQ.SwitchRow"
+                    tools:text="Low-volume bass: Off" />
 
+                <Button
+                    android:id="@+id/btn_extras_bass"
+                    style="@style/CoreEQ.SwitchRow"
+                    tools:text="Bass boost: Off" />
+
+                <TextView
+                    style="@style/CoreEQ.MenuHeading"
+                    android:text="@string/extras_group_level"
+                    android:layout_marginTop="@dimen/cb_space_sm" />
+
+                <Button
+                    android:id="@+id/btn_extras_loudness"
+                    style="@style/CoreEQ.SwitchRow"
+                    tools:text="Loudness enhancer: Off" />
+
+                <Button
+                    android:id="@+id/btn_extras_night"
+                    style="@style/CoreEQ.SwitchRow"
+                    tools:text="Night mode: Off" />
+            </LinearLayout>
+
+            <!-- What the focused switch does; follows focus -->
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:background="@drawable/bg_card"
+                android:padding="@dimen/cb_space_md"
+                android:layout_marginStart="@dimen/cb_space_lg"
+                android:accessibilityLiveRegion="polite">
+
+                <TextView
+                    android:id="@+id/text_extras_detail_title"
+                    style="@style/CoreEQ.MenuHeading"
+                    tools:text="Dialogue boost" />
+
+                <TextView
+                    android:id="@+id/text_extras_detail_body"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/cb_space_xs"
+                    android:textColor="@color/cb_ink"
+                    android:textSize="@dimen/cb_text_data"
+                    android:lineSpacingExtra="3dp"
+                    tools:text="@string/extras_dialogue_note" />
+
+                <TextView
+                    android:id="@+id/text_extras_detail_status"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/cb_space_sm"
+                    android:textColor="@color/cb_glow_cyan"
+                    android:textSize="@dimen/cb_text_kicker"
+                    android:fontFamily="monospace"
+                    android:lineSpacingExtra="2dp"
+                    android:visibility="gone"
+                    tools:text="This output: reference -12 dB, now -22 dB, +1.5 dB under 100 Hz."
+                    tools:visibility="visible" />
+            </LinearLayout>
+        </LinearLayout>
     </LinearLayout>
 </ScrollView>
