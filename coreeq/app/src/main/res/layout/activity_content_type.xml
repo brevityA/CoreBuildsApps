@@ -1,10 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<!-- Fits 960 x 540dp without scrolling at the default text size. The
+     ScrollView is for a TV whose system text size is turned up: the chips
+     and Done then scroll into view as the D-pad reaches them, instead of
+     sitting below the screen with no way to reach them. -->
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     android:background="@color/cb_night"
+    android:fillViewport="true"
+    android:requiresFadingEdge="vertical"
+    android:fadingEdgeLength="@dimen/cb_space_xl"
+    android:scrollbars="none">
+
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
     android:paddingLeft="@dimen/cb_gutter_side"
     android:paddingRight="@dimen/cb_gutter_side"
     android:paddingTop="@dimen/cb_gutter_top"
@@ -185,3 +197,4 @@
             android:layout_marginStart="@dimen/cb_space_sm" />
     </LinearLayout>
 </LinearLayout>
+</ScrollView>

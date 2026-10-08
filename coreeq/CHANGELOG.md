@@ -83,7 +83,9 @@ must never land there. Releases are `coreeq-v<version>` tags (see
   labels onto two lines.
 - **Content type is a grid of ten chips** with the selection filled. It
   no longer dims the other nine to 60%, uses no emoji, and fits without
-  scrolling. Auto-detect sits beside Done.
+  scrolling. Auto-detect sits beside Done. If the TV's system text size is
+  turned up past what fits, the screen scrolls to whatever the D-pad
+  reaches.
 - **Display calibration's panel sits inside the screen edges.** It ran to
   the left, right and bottom edges, where TV overscan can cut text. It now
   keeps the same 48dp side and 24dp bottom gutters as every other screen.
