@@ -79,21 +79,24 @@ class CoreEqReleaseContract(unittest.TestCase):
         tag run was the first to find its release APK losing the 37.0 preview's
         package service mid-install while the debug APK of the same commit
         installed. Pull requests now build the release variant, sign it with the
-        runner's debug key (they never see the release key), and install it
+        throwaway key (they never see the release key), and install it
         beside the debug APK, release-shape first.
         """
-        step = self.workflow.split("- name: Assemble release-shape APK (debug key)", 1)[1]
+        step = self.workflow.split("- name: Assemble release-shape APK (throwaway key)", 1)[1]
         step = step.split("- name:", 1)[0]
         self.assertIn("if: github.event_name == 'pull_request'", step)
         self.assertIn(":app:assembleRelease", step)
-        self.assertIn('KS="$HOME/.android/debug.keystore"', step)
+        # Its own key: the runner had no ~/.android/debug.keystore after
+        # assembleDebug, which is how the first version of this step failed.
+        self.assertIn("keytool -genkeypair", step)
+        self.assertIn('KS="$RUNNER_TEMP/coreeq-throwaway.jks"', step)
         self.assertIn("--v4-signing-enabled false", step)
-        self.assertIn("dist/coreeq-release-debugkey.apk", step)
+        self.assertIn("dist/coreeq-release-shape.apk", step)
         self.assertNotIn("secrets.", step)
         upload = self.workflow.index("- name: Upload candidate APK")
-        self.assertLess(self.workflow.index("- name: Assemble release-shape APK (debug key)"), upload)
+        self.assertLess(self.workflow.index("- name: Assemble release-shape APK (throwaway key)"), upload)
         body = (ROOT / "tools/install_core_eq_on_emulator.sh").read_text(encoding="utf-8")
-        self.assertIn("*coreeq-release-debugkey.apk) echo tv.corebuilds.eq ;;", body)
+        self.assertIn("*coreeq-release-shape.apk) echo tv.corebuilds.eq ;;", body)
         self.assertIn('for APK in "${APKS[@]}"; do', body)
         self.assertIn("LC_ALL=C sort -r", body)
 

@@ -18,9 +18,9 @@
 set -euo pipefail
 
 # A tag run downloads the release APK; a pull request the debug APK plus a
-# release-shape APK (the production package, signed with the runner's debug
-# key). Every one of them is installed and checked, release-shape first, so a
-# pull request meets the emulator the way a tag run does before it reaches the
+# release-shape APK (the production package, signed with a throwaway key).
+# Every one of them is installed and checked, release-shape first, so a pull
+# request meets the emulator the way a tag run does before it reaches the
 # debug package.
 mapfile -t APKS < <(find dist -maxdepth 1 -type f -name '*.apk' | LC_ALL=C sort -r)
 if (( ${#APKS[@]} == 0 )); then
@@ -32,7 +32,7 @@ fi
 # one and probing the other has to be a failure, not a pass.
 package_for() { # <apk>
   case "$1" in
-    *coreeq-release.apk | *coreeq-release-debugkey.apk) echo tv.corebuilds.eq ;;
+    *coreeq-release.apk | *coreeq-release-shape.apk) echo tv.corebuilds.eq ;;
     *coreeq-debug.apk) echo tv.corebuilds.eq.debug ;;
     *) return 1 ;;
   esac
