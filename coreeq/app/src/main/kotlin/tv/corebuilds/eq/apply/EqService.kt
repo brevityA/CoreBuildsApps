@@ -103,6 +103,9 @@ class EqService : Service() {
     /** Decides when the "profile applied" toast shows: on a change, not on every reapply. */
     private val appliedNotice = AppliedNotice()
     private val appliedCard by lazy { AppliedCard(this) }
+    /** What the card says about the correction applied right now, for Profiles' test card; null while nothing is applied. */
+    private var currentCard: AppliedCard.Content? = null
+    private var currentCardFallback: String? = null
     
     private val sessionEqs = mutableMapOf<Int, Held>()
     /** Only unambiguous DUMP UID-to-package matches may influence app-mode rules. */
@@ -286,6 +289,18 @@ class EqService : Service() {
             ACTION_RELOAD_PREFS -> {
                 reloadEnhancedPreferences()
             }
+            ACTION_SHOW_CARD -> {
+                // Profiles' "Show a test card": the card for what is applied
+                // now, regardless of whether it changed, so it can be checked
+                // on this TV without switching correction off and on.
+                val card = currentCard
+                val fallback = currentCardFallback
+                if (card != null && fallback != null) {
+                    showCard(card, fallback)
+                } else {
+                    Toast.makeText(this, getString(R.string.card_test_waiting), Toast.LENGTH_LONG).show()
+                }
+            }
             else -> applyAll() // ACTION_START, ACTION_REAPPLY, or a sticky restart
         }
         return START_STICKY
@@ -334,6 +349,7 @@ class EqService : Service() {
         if (suspended) return
         activeLayers = toneLayers()
         if (store.getAllProfiles().isEmpty()) {
+            clearCurrentCard()
             report("No measurement yet. Measure this room to create a correction.", isError = true)
             return
         }
@@ -407,6 +423,7 @@ class EqService : Service() {
             }
             else -> {
                 appliedNotice.reset()
+                clearCurrentCard()
                 if (DumpsysDiscovery.hasGrant(this)) scheduleDiscovery(0L)
                 report(waitingStatus(), isError = false)
             }
@@ -689,6 +706,7 @@ class EqService : Service() {
         } else if (changed) {
             if (sessionEqs.isEmpty()) {
                 appliedNotice.reset()
+                clearCurrentCard()
                 report(waitingStatus(), isError = false)
             } else {
                 report(sessionReport(profile, via, output), isError = false)
@@ -839,8 +857,6 @@ class EqService : Service() {
      * off on Profiles.
      */
     private fun announceApplied(profile: Profile, modeName: String, applied: List<AppliedEffect>, output: OutputRoute.Output?) {
-        if (!appliedNotice.onApplied(profile.id, modeName)) return
-        if (!store.announceApplied) return
         val detail = listOfNotNull(
             modeName,
             output?.let { OutputRoute.label(it.kind) },
@@ -850,26 +866,40 @@ class EqService : Service() {
         val extras = (extrasWords(applied, profile) + listOfNotNull("night mode".takeIf { night }))
             .joinToString(" · ") { word -> word.replaceFirstChar { it.uppercaseChar() } }
             .ifEmpty { null }
-        val shown = appliedCard.show(AppliedCard.Content(active = true, title = profile.name, detail = detail, extras = extras))
-        if (!shown) {
-            Toast.makeText(this, getString(R.string.notice_profile_applied, profile.name, modeName), Toast.LENGTH_SHORT).show()
-        }
+        val content = AppliedCard.Content(active = true, title = profile.name, detail = detail, extras = extras)
+        val fallback = getString(R.string.notice_profile_applied, profile.name, modeName)
+        currentCard = content
+        currentCardFallback = fallback
+        if (!appliedNotice.onApplied(profile.id, modeName)) return
+        if (!store.announceApplied) return
+        showCard(content, fallback)
     }
 
     /** Once per output without a profile: say on screen that correction stepped aside there. */
     private fun announcePaused(output: OutputRoute.Output?) {
+        val label = OutputRoute.label(output?.kind ?: OutputRoute.UNKNOWN)
+        val content = AppliedCard.Content(
+            active = false,
+            title = getString(R.string.card_paused_title),
+            detail = getString(R.string.card_paused_detail, label),
+            extras = null
+        )
+        val fallback = getString(R.string.notice_paused, label)
+        currentCard = content
+        currentCardFallback = fallback
         if (!appliedNotice.onPaused(output?.let { "${it.kind}|${it.name}" } ?: OutputRoute.UNKNOWN)) return
         if (!store.announceApplied) return
-        val label = OutputRoute.label(output?.kind ?: OutputRoute.UNKNOWN)
-        val shown = appliedCard.show(
-            AppliedCard.Content(
-                active = false,
-                title = getString(R.string.card_paused_title),
-                detail = getString(R.string.card_paused_detail, label),
-                extras = null
-            )
-        )
-        if (!shown) Toast.makeText(this, getString(R.string.notice_paused, label), Toast.LENGTH_SHORT).show()
+        showCard(content, fallback)
+    }
+
+    /** The card, or the same words as a text toast where Android will not let Core EQ draw over other apps. */
+    private fun showCard(content: AppliedCard.Content, fallback: String) {
+        if (!appliedCard.show(content)) Toast.makeText(this, fallback, Toast.LENGTH_SHORT).show()
+    }
+
+    private fun clearCurrentCard() {
+        currentCard = null
+        currentCardFallback = null
     }
 
     /** "32 bands" on DynamicsProcessing, "5-band fallback" when any session fell back to the Equalizer. */
@@ -986,6 +1016,8 @@ class EqService : Service() {
         const val ACTION_SUSPEND = "tv.corebuilds.eq.action.SUSPEND"
         const val ACTION_RESUME = "tv.corebuilds.eq.action.RESUME"
         const val ACTION_RELOAD_PREFS = "tv.corebuilds.eq.action.RELOAD_PREFS"
+        /** Show the card for what is applied now (Profiles' test card), whether or not it changed. */
+        const val ACTION_SHOW_CARD = "tv.corebuilds.eq.action.SHOW_CARD"
         /** AudioManager.VOLUME_CHANGED_ACTION: sent by the system on most builds, but hidden API. */
         private const val VOLUME_CHANGED_ACTION = "android.media.VOLUME_CHANGED_ACTION"
         const val ACTION_STATUS_CHANGED = "tv.corebuilds.eq.action.STATUS_CHANGED"

@@ -98,6 +98,19 @@
                 android:focusable="true"
                 android:visibility="gone" />
 
+            <!-- Preview the card on this TV: the service shows it for what is
+                 applied now, without switching correction off and on. -->
+            <Button
+                android:id="@+id/btn_test_card"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/cb_target_min"
+                android:layout_marginTop="@dimen/cb_space_xs"
+                android:background="@drawable/bg_ghost"
+                android:text="@string/profiles_card_test"
+                android:textColor="@color/ghost_text"
+                android:textSize="@dimen/cb_text_data"
+                android:focusable="true" />
+
         </LinearLayout>
 
         <!-- Right pane: Curve preview + Export chips + Preamp + Actions -->

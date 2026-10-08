@@ -94,6 +94,7 @@ class ProfilesActivity : TvActivity() {
             refreshAnnounce()
         }
         btnAllowOverlay.setOnClickListener { openOverlaySettings() }
+        findViewById<Button>(R.id.btn_test_card).setOnClickListener { showTestCard() }
         refreshAnnounce()
     }
 
@@ -113,6 +114,20 @@ class ProfilesActivity : TvActivity() {
             }
         )
         btnAllowOverlay.visibility = if (on && !allowed) View.VISIBLE else View.GONE
+    }
+
+    /**
+     * Ask the running service for the card it would show now, so its place and
+     * size can be checked on this TV. Without the overlay permission the same
+     * words arrive as a toast, which is what this TV would show as well.
+     */
+    private fun showTestCard() {
+        if (!EqService.running) {
+            textAnnounceCard.setText(R.string.profiles_card_test_off)
+            return
+        }
+        refreshAnnounce()
+        EqService.send(this, EqService.ACTION_SHOW_CARD)
     }
 
     /** Android's own "Display over other apps" screen for Core EQ, or the ADB line where a TV has none. */
