@@ -258,9 +258,10 @@ jobs:
           ls -lh dist/
 
       # Until coreeq-v1.3.0 the production package met an emulator only on a
-      # tag run, so the tag was the first build to find that its release APK
-      # lost the 37.0 preview's package service mid-install, twice, while the
-      # debug APK of the same commit installed. Pull requests now build the
+      # tag run, so when that tag's install failed twice there was no earlier
+      # run of the same APK to compare against. (The cause turned out to be the
+      # 37.0 image restarting its framework after boot, not the APK; see
+      # tools/install_core_eq_on_emulator.sh.) Pull requests now build the
       # release variant too and sign it with a throwaway key (they never
       # receive the release key), and the install job installs both.
       - name: Assemble release-shape APK (throwaway key)

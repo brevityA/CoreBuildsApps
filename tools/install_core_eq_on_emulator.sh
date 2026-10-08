@@ -111,24 +111,28 @@ crash_report() { # <label>
   fi
 }
 
-# A booted emulator is not yet a ready one. On the coreeq-v1.3.0 tag run the
-# 37.0 preview image reported sys.boot_completed=1, accepted three
-# `settings put` calls, and then lost its system server three seconds into the
-# install: "Failure calling service package: Broken pipe (32)", after which
-# every retry read "Can't find service: package" and the job failed before the
-# APK ever reached the device. A re-run failed the same way, three seconds in
-# again, while the push run of the same commit (which installs the debug APK)
-# and the 1.2.1 tag run (the release APK before it) installed on that image.
+# A booted emulator is not yet a ready one. The 37.0 preview image restarts its
+# whole framework shortly after reporting sys.boot_completed=1, on some boots
+# and not others: SystemUI dies with "Couldn't removeRegionSamplingListener",
+# surfaceflinger then aborts (SIGABRT in its RegionSampling thread), and init
+# brings up a new system server. An install that lands in that window fails
+# with "Failure calling service package: Broken pipe (32)" and "Can't find
+# service: package" (both coreeq-v1.3.0 tag attempts) or with a
+# NullPointerException on StorageManager.getVolumes() from the new system
+# server's PackageInstallerService (PR run 37780272513, where the crash buffer
+# below caught the whole chain, all of it before the install was sent). That
+# run's retry then installed the 1.3.0 release-shape APK and the debug APK.
 # So before each attempt, wait until the package service answers twice in a
-# row a few seconds apart, which rides out a system server that restarts once
-# after boot; and when an attempt fails, dump the crash buffer, which is what
-# says whether the APK itself is what takes it down.
+# row a few seconds apart, retry once it is back, and dump the crash buffer
+# whenever an attempt fails.
 wait_for_package_service() { # <label>
   local label="$1" deadline=$((SECONDS + 300)) answered=0 out
   while (( SECONDS < deadline )); do
     timeout 60 adb wait-for-device || true
-    out=$(adb shell pm path android 2>/dev/null || true)
-    if [[ "$(adb shell getprop sys.boot_completed 2>/dev/null | tr -d '\r')" == "1" && "$out" == *package:* ]]; then
+    # Each probe is bounded too: an `adb shell` that hangs on a half-up device
+    # would otherwise hold the loop past its deadline.
+    out=$(timeout 60 adb shell pm path android 2>/dev/null || true)
+    if [[ "$(timeout 60 adb shell getprop sys.boot_completed 2>/dev/null | tr -d '\r')" == "1" && "$out" == *package:* ]]; then
       answered=$((answered + 1))
       if (( answered >= 2 )); then
         return 0
