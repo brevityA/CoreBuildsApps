@@ -217,8 +217,24 @@
 
     <!-- Profile-applied notice (1.3.0) -->
     <string name="notice_profile_applied">Core EQ · %1$s · %2$s</string>
+    <string name="card_rail_on">Core EQ · Correction on</string>
+    <string name="card_rail_paused">Core EQ · Correction paused</string>
+    <string name="card_paused_title">No profile for this output</string>
+    <string name="card_paused_detail">%1$s · measure it, or switch back to an output you measured.</string>
+    <string name="notice_paused">Core EQ · paused · no profile for %1$s</string>
+    <plurals name="card_engine_dp">
+        <item quantity="one">%1$d band</item>
+        <item quantity="other">%1$d bands</item>
+    </plurals>
+    <string name="card_engine_eq">%1$d-band fallback</string>
+    <string name="card_description">%1$s. %2$s. %3$s.</string>
     <string name="profiles_announce_on">Notice when a profile is applied: On</string>
     <string name="profiles_announce_off">Notice when a profile is applied: Off</string>
+    <string name="profiles_card_allowed">Shown as a card at the top right for 4 seconds, over whatever is playing: profile, mode, output and extras.</string>
+    <string name="profiles_card_needs_permission">Shown as a short text toast for now. Allow “Display over other apps” for the card with the profile, mode, output and extras.</string>
+    <string name="profiles_card_off">Off: nothing is shown when a profile is applied.</string>
+    <string name="profiles_card_allow">Allow the on-screen card…</string>
+    <string name="profiles_card_no_settings">This TV has no screen for that permission. From a computer with ADB: adb shell appops set %1$s SYSTEM_ALERT_WINDOW allow</string>
 
     <!-- Screen labels moved out of layouts (1.3.0) -->
     <string name="home_kicker">Core EQ · Equaliser built from this room</string>

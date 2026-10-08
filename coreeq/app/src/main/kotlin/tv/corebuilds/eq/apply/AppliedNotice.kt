@@ -1,8 +1,9 @@
 package tv.corebuilds.eq.apply
 
 /**
- * When the "profile applied" toast shows (1.3.0): once each time the applied
- * profile or mode changes, never on a plain reapply.
+ * When the on-screen card shows (1.3.0): once each time the applied profile
+ * or mode changes, and once when correction pauses on an output with no
+ * profile of its own; never on a plain reapply.
  *
  * The service reapplies often without anything a viewer would call a change:
  * a volume step under Low-volume bass, an Extra effects reload, a discovered
@@ -14,11 +15,28 @@ package tv.corebuilds.eq.apply
  * Kept free of Android types so the rule is unit-tested (`AppliedNoticeTest`).
  */
 class AppliedNotice {
-    private var lastShown: String? = null
+    // Typed keys, not joined strings: no profile id, mode or route can be
+    // spelled to match another kind of event.
+    private data class Applied(val profileId: String, val mode: String)
+    private data class Paused(val route: String)
+
+    private var lastShown: Any? = null
 
     /** [profileId] in [mode] is now applied; true when the notice should show. */
     fun onApplied(profileId: String, mode: String): Boolean {
-        val key = "$profileId\u0000$mode"
+        val key = Applied(profileId, mode)
+        if (key == lastShown) return false
+        lastShown = key
+        return true
+    }
+
+    /**
+     * Correction paused on [route] (an output with no profile of its own);
+     * true when the card should say so. A second report for the same route is
+     * silent, and whatever applies next is news again.
+     */
+    fun onPaused(route: String): Boolean {
+        val key = Paused(route)
         if (key == lastShown) return false
         lastShown = key
         return true

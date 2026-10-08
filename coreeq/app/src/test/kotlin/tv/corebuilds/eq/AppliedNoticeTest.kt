@@ -6,8 +6,9 @@ import org.junit.Test
 import tv.corebuilds.eq.apply.AppliedNotice
 
 /**
- * The "profile applied" toast shows on a change of profile or mode, never on a
- * plain reapply (a volume step, an Extra effects reload, a player attaching).
+ * The on-screen card shows on a change of profile or mode, and once when
+ * correction pauses on an output with no profile, never on a plain reapply
+ * (a volume step, an Extra effects reload, a player attaching).
  */
 class AppliedNoticeTest {
 
@@ -45,5 +46,22 @@ class AppliedNoticeTest {
         val notice = AppliedNotice()
         notice.onApplied("a", "bc")
         assertTrue(notice.onApplied("ab", "c"))
+    }
+
+    @Test
+    fun `a pause is announced once per output, and what applies after it is news`() {
+        val notice = AppliedNotice()
+        notice.onApplied("living-room", "Everyday")
+        assertTrue("switched to an output with no profile", notice.onPaused("HDMI|Soundbar"))
+        repeat(3) { assertFalse("same paused output, reapplied", notice.onPaused("HDMI|Soundbar")) }
+        assertTrue("a different unmeasured output", notice.onPaused("BLUETOOTH|Headphones"))
+        assertTrue("back on the measured output", notice.onApplied("living-room", "Everyday"))
+    }
+
+    @Test
+    fun `a pause cannot be mistaken for a profile named like it`() {
+        val notice = AppliedNotice()
+        notice.onPaused("x")
+        assertTrue(notice.onApplied("paused", "x"))
     }
 }

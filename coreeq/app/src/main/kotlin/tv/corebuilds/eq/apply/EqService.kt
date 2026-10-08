@@ -102,6 +102,7 @@ class EqService : Service() {
     private var activeLayers = ToneLayers.NONE
     /** Decides when the "profile applied" toast shows: on a change, not on every reapply. */
     private val appliedNotice = AppliedNotice()
+    private val appliedCard by lazy { AppliedCard(this) }
     
     private val sessionEqs = mutableMapOf<Int, Held>()
     /** Only unambiguous DUMP UID-to-package matches may influence app-mode rules. */
@@ -341,7 +342,7 @@ class EqService : Service() {
             // Another chain's curve would be wrong here: step aside, say why.
             outputPaused = true
             setAllEnabled(false)
-            appliedNotice.reset()
+            announcePaused(output)
             val routeName = output?.name ?: "the output Android could not identify"
             report(
                 "Nothing measured on $routeName yet, so correction is paused there. " +
@@ -375,7 +376,7 @@ class EqService : Service() {
                     "Output-mix effect configured · $modeName · ${configured.engine} · ${profile.name}$via · ${configured.bands.size} bands${extrasNote(listOf(configured), profile)} · coverage depends on TV routing${where(output)}",
                     isError = false
                 )
-                announceApplied(profile, modeName)
+                announceApplied(profile, modeName, listOf(configured), output)
                 releaseSessions() // avoid applying the same curve twice where the mix effect is accepted
                 if (DumpsysDiscovery.hasGrant(this)) scheduleDiscovery(0L)
                 return
@@ -402,7 +403,7 @@ class EqService : Service() {
             failed != null -> report(failed, isError = true)
             sessionEqs.isNotEmpty() -> {
                 report(sessionReport(profile, via, output), isError = false)
-                announceApplied(profile, modeName)
+                announceApplied(profile, modeName, sessionEqs.values.map { it.applied }, output)
             }
             else -> {
                 appliedNotice.reset()
@@ -691,7 +692,7 @@ class EqService : Service() {
                 report(waitingStatus(), isError = false)
             } else {
                 report(sessionReport(profile, via, output), isError = false)
-                announceApplied(profile, modeStore.currentDecision().mode.title)
+                announceApplied(profile, modeStore.currentDecision().mode.title, sessionEqs.values.map { it.applied }, output)
             }
         } else if (playerSnapshotChanged) {
             notifyModeSnapshotChanged()
@@ -712,10 +713,16 @@ class EqService : Service() {
         return "Effect attached to $names · ${modeStore.currentDecision().mode.title} · $engines · ${profile?.name ?: "the active profile"}$via${extrasNote(held.map { it.applied }, profile)}$marker${where(output)}"
     }
 
+    /** What the Extra effects screen added on [applied], one entry per effect or layer. */
+    private fun extrasWords(applied: List<AppliedEffect>, profile: Profile?): List<String> =
+        (applied.mapNotNull { it.extras?.label?.takeIf(String::isNotEmpty) } +
+            listOfNotNull(profile?.let { activeLayers.label(it) }?.takeIf(String::isNotEmpty)))
+            .flatMap { it.split(" + ") }
+            .distinct()
+
     /** Say what the Extra effects screen added, and when night mode cannot run. */
     private fun extrasNote(applied: List<AppliedEffect>, profile: Profile?): String {
-        val extras = (applied.mapNotNull { it.extras?.label?.takeIf(String::isNotEmpty) } +
-            listOfNotNull(profile?.let { activeLayers.label(it) }?.takeIf(String::isNotEmpty))).distinct()
+        val extras = extrasWords(applied, profile)
         val night = enhancedPrefs?.nightModeEnabled == true
         val nightOnDp = applied.any { it.engine == ENGINE_DYNAMICS_PROCESSING }
         return buildString {
@@ -823,15 +830,54 @@ class EqService : Service() {
     }
 
     /**
-     * A brief toast when a different profile or mode takes effect (1.3.0), so
-     * a viewer in another app sees what Core EQ just did. Text toasts are the
-     * one on-screen surface a background app still has on Android 11+; Android
-     * TV does not show heads-up notifications. Switch it off on Profiles.
+     * The on-screen card when a different profile or mode takes effect
+     * (1.3.0): correction on, the profile, and how it is applied, for a few
+     * seconds over whatever is playing ([AppliedCard]). Without "Display over
+     * other apps" it falls back to a text toast, the one on-screen surface a
+     * background app keeps on Android 11+ (Android TV shows no heads-up
+     * notifications). Plain reapplies stay silent ([AppliedNotice]). Switch it
+     * off on Profiles.
      */
-    private fun announceApplied(profile: Profile, modeName: String) {
+    private fun announceApplied(profile: Profile, modeName: String, applied: List<AppliedEffect>, output: OutputRoute.Output?) {
         if (!appliedNotice.onApplied(profile.id, modeName)) return
         if (!store.announceApplied) return
-        Toast.makeText(this, getString(R.string.notice_profile_applied, profile.name, modeName), Toast.LENGTH_SHORT).show()
+        val detail = listOfNotNull(
+            modeName,
+            output?.let { OutputRoute.label(it.kind) },
+            engineWords(applied)
+        ).joinToString(" · ")
+        val night = enhancedPrefs?.nightModeEnabled == true && applied.any { it.engine == ENGINE_DYNAMICS_PROCESSING }
+        val extras = (extrasWords(applied, profile) + listOfNotNull("night mode".takeIf { night }))
+            .joinToString(" · ") { word -> word.replaceFirstChar { it.uppercaseChar() } }
+            .ifEmpty { null }
+        val shown = appliedCard.show(AppliedCard.Content(active = true, title = profile.name, detail = detail, extras = extras))
+        if (!shown) {
+            Toast.makeText(this, getString(R.string.notice_profile_applied, profile.name, modeName), Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    /** Once per output without a profile: say on screen that correction stepped aside there. */
+    private fun announcePaused(output: OutputRoute.Output?) {
+        if (!appliedNotice.onPaused(output?.let { "${it.kind}|${it.name}" } ?: OutputRoute.UNKNOWN)) return
+        if (!store.announceApplied) return
+        val label = OutputRoute.label(output?.kind ?: OutputRoute.UNKNOWN)
+        val shown = appliedCard.show(
+            AppliedCard.Content(
+                active = false,
+                title = getString(R.string.card_paused_title),
+                detail = getString(R.string.card_paused_detail, label),
+                extras = null
+            )
+        )
+        if (!shown) Toast.makeText(this, getString(R.string.notice_paused, label), Toast.LENGTH_SHORT).show()
+    }
+
+    /** "32 bands" on DynamicsProcessing, "5-band fallback" when any session fell back to the Equalizer. */
+    private fun engineWords(applied: List<AppliedEffect>): String? {
+        val fallback = applied.firstOrNull { it.engine == ENGINE_PLATFORM_EQUALIZER }
+        if (fallback != null) return getString(R.string.card_engine_eq, fallback.bands.size)
+        val dp = applied.firstOrNull() ?: return null
+        return resources.getQuantityString(R.plurals.card_engine_dp, dp.bands.size, dp.bands.size)
     }
 
     /** Protection-only, or night mode's tighter limiter. DP correction only. */
@@ -858,6 +904,7 @@ class EqService : Service() {
         // write a transient "Correcting …" status (or light the indicator)
         // mid-teardown only to have it overwritten a moment later.
         running = false
+        appliedCard.dismiss() // a card about correction must not outlive it
         discoveredPackages = emptySet()
         discoveredHasUnknownPlayer = false
         discoveryInitialized = false

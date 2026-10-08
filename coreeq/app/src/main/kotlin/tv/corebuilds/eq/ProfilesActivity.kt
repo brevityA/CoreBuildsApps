@@ -1,6 +1,9 @@
 package tv.corebuilds.eq
 
+import android.content.ActivityNotFoundException
+import android.content.Intent
 import android.os.Bundle
+import android.provider.Settings
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -8,6 +11,7 @@ import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
 import androidx.core.content.ContextCompat
+import androidx.core.net.toUri
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import tv.corebuilds.eq.apply.EqService
@@ -39,6 +43,8 @@ class ProfilesActivity : TvActivity() {
     private lateinit var btnExport: Button
     private lateinit var btnDelete: Button
     private lateinit var btnAnnounce: Button
+    private lateinit var textAnnounceCard: TextView
+    private lateinit var btnAllowOverlay: Button
 
     private var profilesList = mutableListOf<Profile>()
     private var selectedProfile: Profile? = null
@@ -51,7 +57,10 @@ class ProfilesActivity : TvActivity() {
 
     override fun onResume() {
         super.onResume()
-        if (::profileStore.isInitialized) loadProfiles()
+        if (::profileStore.isInitialized) {
+            loadProfiles()
+            refreshAnnounce() // back from the overlay permission screen
+        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -70,6 +79,8 @@ class ProfilesActivity : TvActivity() {
         btnExport = findViewById(R.id.btn_export_profile)
         btnDelete = findViewById(R.id.btn_delete_profile)
         btnAnnounce = findViewById(R.id.btn_announce_applied)
+        textAnnounceCard = findViewById(R.id.text_announce_card)
+        btnAllowOverlay = findViewById(R.id.btn_allow_overlay)
 
         recyclerProfiles.layoutManager = LinearLayoutManager(this)
 
@@ -82,12 +93,35 @@ class ProfilesActivity : TvActivity() {
             profileStore.announceApplied = !profileStore.announceApplied
             refreshAnnounce()
         }
+        btnAllowOverlay.setOnClickListener { openOverlaySettings() }
         refreshAnnounce()
     }
 
-    /** The service reads this each time it would show the "profile applied" toast. */
+    /**
+     * The service reads the switch each time it would show the notice; the
+     * line under it says how the notice will look on this TV right now.
+     */
     private fun refreshAnnounce() {
-        btnAnnounce.showSwitch(profileStore.announceApplied, R.string.profiles_announce_on, R.string.profiles_announce_off)
+        val on = profileStore.announceApplied
+        btnAnnounce.showSwitch(on, R.string.profiles_announce_on, R.string.profiles_announce_off)
+        val allowed = Settings.canDrawOverlays(this)
+        textAnnounceCard.setText(
+            when {
+                !on -> R.string.profiles_card_off
+                allowed -> R.string.profiles_card_allowed
+                else -> R.string.profiles_card_needs_permission
+            }
+        )
+        btnAllowOverlay.visibility = if (on && !allowed) View.VISIBLE else View.GONE
+    }
+
+    /** Android's own "Display over other apps" screen for Core EQ, or the ADB line where a TV has none. */
+    private fun openOverlaySettings() {
+        try {
+            startActivity(Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION, "package:$packageName".toUri()))
+        } catch (e: ActivityNotFoundException) {
+            textAnnounceCard.text = getString(R.string.profiles_card_no_settings, packageName)
+        }
     }
 
     private fun setupExportChips() {

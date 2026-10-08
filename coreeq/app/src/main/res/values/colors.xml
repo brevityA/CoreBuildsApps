@@ -31,4 +31,7 @@
     <color name="cb_toggle_on">#2600D4FF</color>
     <color name="cb_toggle_on_edge">#9900D4FF</color>
     <color name="cb_text_disabled">#668B949E</color>
+    <!-- The on-screen card over other apps' pictures: void at 92%, as Core Line's score box -->
+    <color name="cb_card_plate">#EB04070F</color>
+    <color name="cb_card_plate_edge">#1AFFFFFF</color>
 </resources>

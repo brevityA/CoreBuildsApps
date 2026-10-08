@@ -38,11 +38,21 @@ must never land there. Releases are `coreeq-v<version>` tags (see
   It follows the volume as it changes. On a fixed-volume output (a
   soundbar that keeps its own volume over HDMI-CEC) Android reports no
   volume, so it adds nothing, and the screen says so.
-- **A brief notice when a profile is applied.** A toast, "Core EQ · profile ·
-  mode", shows over whatever is playing when a different profile or mode
-  takes effect: an output switch, a new measurement, a choice in Profiles, a
-  mode change. Plain reapplies (a volume step, an Extra effects change, a
-  player attaching) stay silent. On by default; switch it off on Profiles.
+- **An on-screen card when correction takes effect.** For 4 seconds, top
+  right, over whatever is playing: "Core EQ · Correction on", the profile,
+  then mode · output · engine (for example `Everyday · TV speakers · 32
+  bands`, or `5-band fallback` on the platform Equalizer), and any extras in
+  use (`Dialogue +2 dB · Low-volume bass +1.5 dB`). It shows when a
+  different profile or mode takes effect: correction switched on, an output
+  switch, a new measurement, a choice in Profiles, a mode change. Plain
+  reapplies (a volume step, an Extra effects change, a player attaching)
+  stay silent. When the output has no profile, an amber card says
+  correction paused there, once per output. The card uses the same overlay
+  window as Core Line's score box: it never takes focus or the remote. It
+  needs "Display over other apps"; Profiles shows a button for it, or the
+  ADB command on TVs with no screen for that permission. Without it, a
+  short text toast says the same. Fire TV refuses the permission. On by
+  default; switch it off on Profiles.
 - **Home warns about HDMI bitstream.** When Android may send Dolby or DTS
   to the HDMI output as a bitstream, Home shows the warning on its own line:
   a bitstream skips all on-device EQ. Until now it was only a clause at
