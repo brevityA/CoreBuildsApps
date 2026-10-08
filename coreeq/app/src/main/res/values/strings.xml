@@ -11,15 +11,7 @@
     <string name="output_profile_unknown_sub">Android could not identify the current output. Core EQ will not guess a known-output room curve; connect a recognized output or measure while this output is unknown.</string>
     <string name="profile_not_active_on_output">This profile does not match the current output. It is preview/export only and will not be applied here.</string>
     <string name="action_measure">Measure</string>
-    <string name="action_measure_sub">Sine sweep · 13 s · this room</string>
     <string name="action_remeasure">Re-measure</string>
-    <string name="action_profiles">Profiles</string>
-    <string name="action_profiles_sub">Saved corrections</string>
-    <string name="action_targets">Targets</string>
-    <string name="action_targets_sub">Dialogue, Room, B&amp;K, Flat</string>
-    <string name="action_capability">Capability</string>
-    <string name="action_capability_sub">What this device will accept</string>
-    <string name="action_poweramp_export">Export to Poweramp</string>
     <string name="action_tv_export">Export for TV settings</string>
     <string name="platform_eq_title">Live engine bands when applied · profile preview otherwise · gain in dB</string>
     <string name="action_manual_eq">Manual EQ · 10-band tone control</string>
@@ -81,7 +73,6 @@
     <string name="measure_step3_sub">Talking, footsteps and fans land in the same measurement. A sweep the room drowns out is refused, not guessed at.</string>
     <string name="measure_progress_title">Capture progress</string>
     <string name="measure_stop">Stop</string>
-    <string name="measure_start_over">Start over</string>
     <string name="measure_save">Save profile</string>
     <string name="measure_start">Start</string>
     <string name="measure_ready">Ready · set the room, then press Start</string>
@@ -118,7 +109,6 @@
     <string name="export_chip_parametric">Parametric .txt</string>
     <string name="export_chip_graphiceq">GraphicEQ</string>
     <string name="export_chip_json">Profile .json</string>
-    <string name="export_preamp_label">Preamp</string>
     <string name="export_preamp_desc">The export ships its own headroom note. Copy the preamp with the filters or the boost clips.</string>
     <string name="profile_preamp_parametric">Parametric preamp  %1$.2f dB  ·  %2$s · For %3$s</string>
     <string name="profile_preamp_graphic">GraphicEQ preamp  %1$.2f dB  ·  %2$s · For %3$s</string>
@@ -165,62 +155,54 @@
     <string name="update_no_feed">This test build has no update feed · release builds install from the coreeq-v* tags</string>
     <string name="update_note">Checks the same release feed the other Core apps use (Latestrelease/coreeq-version.json on main). A download is offered only when the release APK matches this app\'s package, is newer than this build, and is signed by the certificate that signed it — otherwise the file is deleted and nothing is installed.</string>
 
-    <!-- Target curves -->
-    <string name="target_flat">Flat (0 dB reference)</string>
-    <string name="target_bk">Brüel &amp; Kjær 1974 (Living room standard)</string>
-    <string name="target_room">Room / Harman (In-room preferred)</string>
-    <string name="target_olive">Olive &amp; Welti 2013 (Mean listener preference)</string>
-    <string name="target_dialogue">Dialogue (Speech intelligibility boost)</string>
-    <string name="target_house">House Curve (Custom)</string>
-
     <!-- Display calibration -->
     <string name="calibration_title">Core Display · Calibration</string>
-    <string name="calibration_nav">Display calibration · Test patterns</string>
     <string name="calibration_next">Next step →</string>
     <string name="calibration_prev">← Previous</string>
     <string name="calibration_toggle_overlay">Toggle instructions</string>
     <string name="calibration_step_counter">Step %1$d of %2$d</string>
-    <string name="calibration_desc">Reference test patterns with step-by-step guidance for brightness, contrast, colour, sharpness, overscan, gamma, and panel uniformity. Rendered pixel-accurately on your TV.</string>
 
-    <!-- Loudness compensation -->
-    <string name="loudness_title">Loudness Compensation</string>
-    <string name="loudness_on">Loudness: On</string>
-    <string name="loudness_off">Loudness: Off</string>
-    <string name="loudness_desc">ISO 226 equal-loudness contours restore bass and treble perception at lower volumes. Flat at reference level; increases compensation as volume drops.</string>
-
-    <!-- Night mode -->
-    <string name="night_mode_title">Night Mode</string>
-    <string name="night_mode_on">Night mode: On</string>
-    <string name="night_mode_off">Night mode: Off</string>
-    <string name="night_mode_desc">Dynamic range compression and dialogue enhancement for late-night viewing. Reduces loud peaks and lifts the 1–4 kHz speech band.</string>
+    <!-- Home: HDMI bitstream caveat (1.3.0) -->
+    <string name="passthrough_warning">⚠ HDMI audio may carry Dolby or DTS as a bitstream here, which skips all on-device EQ, Core EQ included. To correct it, set the TV\'s Surround sound (or Audio format) to PCM.</string>
 
     <!-- Measurement quality -->
-    <string name="quality_excellent">Excellent measurement</string>
-    <string name="quality_good">Good measurement</string>
-    <string name="quality_fair">Fair measurement — consider re-measuring</string>
-    <string name="quality_poor">Poor measurement — re-measure recommended</string>
-    <string name="quality_score">Quality: %1$d/100 · %2$s</string>
+    <string name="quality_excellent">excellent</string>
+    <string name="quality_good">good</string>
+    <string name="quality_fair">fair · consider re-measuring</string>
+    <string name="quality_poor">poor · re-measure recommended</string>
+    <string name="quality_remeasure">re-measure: quieter room or louder sweep</string>
+    <string name="quality_score">Quality %1$d/100 · %2$s</string>
+    <string name="quality_not_scored">Quality not scored · REW imports carry no SNR or decay data</string>
 
     <!-- Content type / use-case selection -->
     <string name="content_type_heading">Content type optimization</string>
     <string name="content_type_subtitle">Choose what you watch most. This sets how strong the optional Extra effects are (bass boost, loudness); with both off it changes nothing. Room correction is the same for every type. Auto-detect recognizes 40+ streaming apps.</string>
-    <string name="action_extras">Extra effects  ·  Bass, loudness, night</string>
+    <string name="action_extras">Extra effects  ·  Dialogue, bass, loudness, night</string>
     <string name="extras_kicker">Core EQ · Extra effects</string>
     <string name="extras_heading">Extra effects</string>
     <string name="extras_subtitle">Optional layers on top of room correction. All off by default; each change applies at once. Your measured correction is never changed here.</string>
     <string name="extras_bass_on">Bass boost: On</string>
     <string name="extras_bass_off">Bass boost: Off</string>
     <string name="extras_bass_note" formatted="false">Android\'s BassBoost effect. Strength follows the Content type screen: 60% for movies, 30% general, none for news and podcasts.</string>
-    <string name="extras_loudness_on">Loudness: On</string>
-    <string name="extras_loudness_off">Loudness: Off</string>
+    <string name="extras_loudness_on">Loudness enhancer: On</string>
+    <string name="extras_loudness_off">Loudness enhancer: Off</string>
     <string name="extras_loudness_note">Android\'s LoudnessEnhancer. Raises quiet content by up to +4 dB (podcasts, news); none for music.</string>
     <string name="extras_night_on">Night mode: On</string>
     <string name="extras_night_off">Night mode: Off</string>
+    <string name="extras_dialogue_on">Dialogue boost: On</string>
+    <string name="extras_dialogue_off">Dialogue boost: Off</string>
+    <string name="extras_dialogue_note">+2 dB across 2.2–4.5 kHz, where most of speech intelligibility sits, back to neutral by 6.5 kHz so sibilance is not lifted. Profiles measured with the Dialogue or House target already include it, so it adds nothing there.</string>
+    <string name="extras_low_bass_on">Low-volume bass: On</string>
+    <string name="extras_low_bass_off">Low-volume bass: Off</string>
+    <string name="extras_low_bass_note">Ears lose bass first as volume drops (ISO 226). Switch this on at the volume you usually watch at: below it, up to +3 dB is added under 100 Hz, never below what your speaker can play. The rest of the sound is lowered to match, so nothing clips.</string>
+    <string name="extras_low_bass_status">Reference %1$.0f dB, set when switched on. Now %2$.0f dB: %3$s. To move the reference, switch off and on again at the new volume.</string>
+    <string name="extras_low_bass_lift">+%1$.1f dB under 100 Hz</string>
+    <string name="extras_low_bass_flat">nothing added at or above the reference</string>
+    <string name="extras_low_bass_unknown">Android does not report this output\'s volume in dB (a fixed-volume output, such as a soundbar that keeps its own volume over HDMI-CEC), so there is nothing to follow and nothing is added.</string>
     <string name="extras_night_note">Pulls loud passages down: limiter from -12 dB at 4:1. Needs the DynamicsProcessing engine; Home names the engine in use, and says when night mode cannot run.</string>
     <string name="content_type_current">%1$s  %2$s</string>
     <string name="content_type_auto_on">Auto-detect: On · %1$d known apps · switches when a recognized app starts playing</string>
     <string name="content_type_auto_off">Auto-detect: Off · using your manual selection</string>
     <string name="content_type_auto_on_btn">Auto-detect: On</string>
     <string name="content_type_auto_off_btn">Auto-detect: Off</string>
-    <string name="content_type_nav">Content type · Movies, Anime, TV, Gaming, Music</string>
 </resources>

@@ -26,6 +26,7 @@ import tv.corebuilds.eq.mode.ContentModeStore
 import tv.corebuilds.eq.ui.BandSlidersView
 import tv.corebuilds.eq.ui.CorrectionIndicator
 import tv.corebuilds.eq.ui.CurveGraphView
+import tv.corebuilds.eq.ui.QualityText
 import tv.corebuilds.eq.ui.Series
 import tv.corebuilds.eq.ui.correctionIndicator
 import tv.corebuilds.eq.update.UpdateChecker
@@ -258,6 +259,10 @@ class MainActivity : TvActivity() {
             ContextCompat.getColor(this, if (status?.isError == true) R.color.cb_ember else R.color.cb_slate)
         )
         renderIndicator(status)
+        // The status line has carried this caveat since 1.1.1; 1.3.0 also shows
+        // it on its own line, because a bitstream output silently undoes everything.
+        val passthrough = OutputRoute.mayPassThrough(this, OutputRoute.current(this)?.kind)
+        findViewById<TextView>(R.id.text_passthrough_warning).visibility = if (passthrough) View.VISIBLE else View.GONE
     }
 
     /**
@@ -359,7 +364,11 @@ class MainActivity : TvActivity() {
             val rt = profile.rt60Seconds?.let { String.format(Locale.US, "RT60 %.2f s", it) } ?: "RT60 unknown"
             val measurementLimit = if (profile.measurementNotes.isNotEmpty()) " · magnitude-only; phase unverified" else ""
             val manual = if (profile.manualFilters.isNotEmpty()) " · ${profile.manualFilters.size} tone bands" else ""
-            textProfileSub.text = "$targetName · ${profile.filters.size} filters$manual · $rt · ${profile.micType} · $outputLabel$measurementLimit"
+            textProfileSub.text = QualityText.appendTo(
+                this,
+                "$targetName · ${profile.filters.size} filters$manual · $rt · ${profile.micType} · $outputLabel$measurementLimit",
+                profile.qualityScore
+            )
         }
 
         if (profile.curve.isNotEmpty()) {

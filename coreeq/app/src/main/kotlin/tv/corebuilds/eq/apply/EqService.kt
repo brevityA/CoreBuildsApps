@@ -12,6 +12,7 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.content.pm.PackageManager
 import android.content.pm.ServiceInfo
+import android.database.ContentObserver
 import android.media.AudioAttributes
 import android.media.AudioDeviceCallback
 import android.media.AudioDeviceInfo
@@ -24,6 +25,7 @@ import android.os.Build
 import android.os.Handler
 import android.os.IBinder
 import android.os.Looper
+import android.provider.Settings
 import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
@@ -94,6 +96,8 @@ class EqService : Service() {
     
     // The Extra effects screen's switches (all off by default since 1.2.1).
     private var enhancedPrefs: EnhancedAudioPrefs? = null
+    /** Dialogue boost and Low-volume bass as last applied; recomputed by [applyAll]. */
+    private var activeLayers = ToneLayers.NONE
     
     private val sessionEqs = mutableMapOf<Int, Held>()
     /** Only unambiguous DUMP UID-to-package matches may influence app-mode rules. */
@@ -119,6 +123,16 @@ class EqService : Service() {
     // it. Playback callbacks and session broadcasts are coalesced; untrusted
     // broadcasts cannot queue an unbounded stream of dump processes.
     private val mainHandler = Handler(Looper.getMainLooper())
+
+    // Low-volume bass follows the media volume. Settings.System carries the
+    // persisted volumes; VOLUME_CHANGED_ACTION arrives sooner on most TVs but
+    // is not public API, so both only prompt a re-check of the lift.
+    private val volumeObserver = object : ContentObserver(Handler(Looper.getMainLooper())) {
+        override fun onChange(selfChange: Boolean) = onVolumeChanged()
+    }
+    private val volumeReceiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context, intent: Intent) = onVolumeChanged()
+    }
     private val discoveryExecutor = Executors.newSingleThreadExecutor()
     private var discoveryQueued = false
     private var discoveryInFlight = false
@@ -181,6 +195,12 @@ class EqService : Service() {
     }
     private var lastOutput: OutputRoute.Output? = null
 
+    /** Reprogram only when the lift actually moves a step; holding the volume key costs a few reapplies. */
+    private fun onVolumeChanged() {
+        if (!running || suspended || enhancedPrefs?.lowVolumeBassEnabled != true) return
+        if (toneLayers() != activeLayers) applyAll()
+    }
+
     private fun onOutputsChanged() {
         val output = OutputRoute.current(this)
         if (output == lastOutput) return
@@ -230,6 +250,10 @@ class EqService : Service() {
         } catch (e: Exception) {
             Log.w(TAG, "Playback watcher refused; the playing marker is off", e)
         }
+        contentResolver.registerContentObserver(Settings.System.CONTENT_URI, true, volumeObserver)
+        ContextCompat.registerReceiver(
+            this, volumeReceiver, IntentFilter(VOLUME_CHANGED_ACTION), ContextCompat.RECEIVER_NOT_EXPORTED
+        )
         lastOutput = OutputRoute.current(this)
         // Registering delivers the current devices once; the full route identity makes that a no-op.
         getSystemService(AudioManager::class.java)?.registerAudioDeviceCallback(deviceCallback, Handler(Looper.getMainLooper()))
@@ -303,6 +327,7 @@ class EqService : Service() {
 
     private fun applyAll() {
         if (suspended) return
+        activeLayers = toneLayers()
         if (store.getAllProfiles().isEmpty()) {
             report("No measurement yet. Measure this room to create a correction.", isError = true)
             return
@@ -342,7 +367,7 @@ class EqService : Service() {
                 globalEffect = configured
                 syncRuntimeBands()
                 report(
-                    "Output-mix effect configured · $modeName · ${configured.engine} · ${profile.name}$via · ${configured.bands.size} bands${extrasNote(listOf(configured))} · coverage depends on TV routing${where(output)}",
+                    "Output-mix effect configured · $modeName · ${configured.engine} · ${profile.name}$via · ${configured.bands.size} bands${extrasNote(listOf(configured), profile)} · coverage depends on TV routing${where(output)}",
                     isError = false
                 )
                 releaseSessions() // avoid applying the same curve twice where the mix effect is accepted
@@ -408,7 +433,7 @@ class EqService : Service() {
         var dpFailure: String? = null
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
             try {
-                val dp = DynamicsProcessingEngine.create(session, profile, limiter())
+                val dp = DynamicsProcessingEngine.create(session, profile, limiter(), activeLayers)
                 return AppliedEffect(
                     effect = dp.effect,
                     engine = ENGINE_DYNAMICS_PROCESSING,
@@ -466,7 +491,7 @@ class EqService : Service() {
     @RequiresApi(Build.VERSION_CODES.P)
     private fun configureDynamicsProcessing(effect: AudioEffect, profile: Profile): AppliedEffect {
         require(effect is DynamicsProcessing) { "Unknown audio effect ${effect.javaClass.simpleName}" }
-        val dp = DynamicsProcessingEngine.configure(effect, profile, limiter())
+        val dp = DynamicsProcessingEngine.configure(effect, profile, limiter(), activeLayers)
         return AppliedEffect(
             effect = effect,
             engine = ENGINE_DYNAMICS_PROCESSING,
@@ -484,7 +509,7 @@ class EqService : Service() {
         check(range != null && range.size >= 2) { "Equalizer reports no gain range" }
         val centres = List(n) { eq.getCenterFreq(it.toShort()) / 1000.0 }
         val mbs = BandMapping.millibels(
-            BandMapping.gainsDb(profile, centres),
+            BandMapping.gainsDb(profile, centres, activeLayers),
             range[0].toInt()..range[1].toInt()
         )
         for (i in 0 until n) eq.setBandLevel(i.toShort(), mbs[i])
@@ -669,12 +694,13 @@ class EqService : Service() {
         val names = held.joinToString { label(it.pkg) }
         val engines = held.map { it.applied.engine }.distinct().joinToString(" + ")
         val marker = if (held.any { it.discovered }) " · found by DUMP discovery" else ""
-        return "Effect attached to $names · ${modeStore.currentDecision().mode.title} · $engines · ${profile?.name ?: "the active profile"}$via${extrasNote(held.map { it.applied })}$marker${where(output)}"
+        return "Effect attached to $names · ${modeStore.currentDecision().mode.title} · $engines · ${profile?.name ?: "the active profile"}$via${extrasNote(held.map { it.applied }, profile)}$marker${where(output)}"
     }
 
     /** Say what the Extra effects screen added, and when night mode cannot run. */
-    private fun extrasNote(applied: List<AppliedEffect>): String {
-        val extras = applied.mapNotNull { it.extras?.label?.takeIf(String::isNotEmpty) }.distinct()
+    private fun extrasNote(applied: List<AppliedEffect>, profile: Profile?): String {
+        val extras = (applied.mapNotNull { it.extras?.label?.takeIf(String::isNotEmpty) } +
+            listOfNotNull(profile?.let { activeLayers.label(it) }?.takeIf(String::isNotEmpty))).distinct()
         val night = enhancedPrefs?.nightModeEnabled == true
         val nightOnDp = applied.any { it.engine == ENGINE_DYNAMICS_PROCESSING }
         return buildString {
@@ -784,6 +810,24 @@ class EqService : Service() {
     /** Protection-only, or night mode's tighter limiter. DP correction only. */
     private fun limiter(): LimiterSettings = enhancedPrefs?.limiter() ?: LimiterSettings()
 
+    /**
+     * Dialogue boost and Low-volume bass for this moment. The lift is measured
+     * from the reference volume recorded when the switch was turned on; with no
+     * reference, or a volume Android does not report (fixed-volume outputs),
+     * it adds nothing.
+     */
+    private fun toneLayers(): ToneLayers {
+        val prefs = enhancedPrefs ?: return ToneLayers.NONE
+        val bass = if (prefs.lowVolumeBassEnabled) {
+            val reference = prefs.lowVolumeReferenceDb
+            val now = VolumeLevel.mediaDb(this)
+            if (reference != null && now != null) ToneLayers.lowVolumeBassDb(reference - now) else 0.0
+        } else {
+            0.0
+        }
+        return ToneLayers(dialogue = prefs.dialogueBoostEnabled, lowVolumeBassDb = bass)
+    }
+
     override fun onDestroy() {
         if (!running) {
             super.onDestroy()
@@ -809,6 +853,12 @@ class EqService : Service() {
             audioManager.unregisterAudioPlaybackCallback(playbackCallback)
         } catch (e: Exception) {
             Log.w(TAG, "Playback watcher was not registered", e)
+        }
+        contentResolver.unregisterContentObserver(volumeObserver)
+        try {
+            unregisterReceiver(volumeReceiver)
+        } catch (e: IllegalArgumentException) {
+            Log.w(TAG, "Volume receiver was not registered", e)
         }
         mainHandler.removeCallbacksAndMessages(null)
         discoveryQueued = false
@@ -868,6 +918,8 @@ class EqService : Service() {
         const val ACTION_SUSPEND = "tv.corebuilds.eq.action.SUSPEND"
         const val ACTION_RESUME = "tv.corebuilds.eq.action.RESUME"
         const val ACTION_RELOAD_PREFS = "tv.corebuilds.eq.action.RELOAD_PREFS"
+        /** AudioManager.VOLUME_CHANGED_ACTION: sent by the system on most builds, but hidden API. */
+        private const val VOLUME_CHANGED_ACTION = "android.media.VOLUME_CHANGED_ACTION"
         const val ACTION_STATUS_CHANGED = "tv.corebuilds.eq.action.STATUS_CHANGED"
         private const val TAG = "CoreEqService"
         private const val CHANNEL_ID = "core_eq_service_channel"

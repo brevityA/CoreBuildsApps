@@ -24,6 +24,11 @@ import kotlin.math.min
  * |                         |        | shaping-only.                                |
  *
  * The weights sum to 100 and the result is a percentage.
+ *
+ * Shown since 1.3.0 on the Measure result, Home and Profiles, and saved
+ * with the profile (`quality_score`). It describes the measurement only and
+ * never changes the correction. REW imports carry no SNR or decay data, so
+ * they are not scored rather than scored low.
  */
 object MeasurementQuality {
 
@@ -100,13 +105,13 @@ object MeasurementQuality {
         return total.coerceIn(0, 100)
     }
 
-    /** Human-readable label for the score. */
-    fun label(score: Int): String = when {
-        score >= 85 -> "Excellent"
-        score >= 70 -> "Good"
-        score >= 50 -> "Fair"
-        score >= 30 -> "Poor"
-        else -> "Re-measure"
+    /** The word the UI shows beside the score (a string resource per grade). */
+    fun grade(score: Int): Grade = when {
+        score >= 85 -> Grade.EXCELLENT
+        score >= 70 -> Grade.GOOD
+        score >= 50 -> Grade.FAIR
+        score >= 30 -> Grade.POOR
+        else -> Grade.REMEASURE
     }
 
     /** Colour hint for the UI: green, amber, or red. */
@@ -117,4 +122,6 @@ object MeasurementQuality {
     }
 
     enum class Tier { GREEN, AMBER, RED }
+
+    enum class Grade { EXCELLENT, GOOD, FAIR, POOR, REMEASURE }
 }

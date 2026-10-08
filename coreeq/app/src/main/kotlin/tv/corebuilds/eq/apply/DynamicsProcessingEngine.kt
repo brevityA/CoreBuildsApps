@@ -37,16 +37,17 @@ object DynamicsProcessingEngine {
     fun create(
         sessionId: Int,
         profile: Profile,
-        limiter: LimiterSettings = LimiterSettings()
+        limiter: LimiterSettings = LimiterSettings(),
+        layers: ToneLayers = ToneLayers.NONE
     ): DynamicsProcessingApplied {
         check(limiter.isProtectionOnly()) { "Limiter settings must only protect, never boost" }
         val layout = DpBandLayout.specs()
-        val gains = BandMapping.gainsDb(profile, layout.map { it.centerHz })
+        val gains = BandMapping.gainsDb(profile, layout.map { it.centerHz }, layers)
         val config = buildConfig(layout, gains, limiter)
         val effect = DynamicsProcessing(PRIORITY, sessionId, config)
         try {
             check(effect.hasControl()) { "DynamicsProcessing did not obtain control" }
-            val applied = configure(effect, profile, limiter)
+            val applied = configure(effect, profile, limiter, layers)
             Log.i(
                 TAG,
                 "Configured session=$sessionId channels=${effect.channelCount} bands=${applied.bandCentresHz.size} " +
@@ -70,7 +71,8 @@ object DynamicsProcessingEngine {
     fun configure(
         effect: DynamicsProcessing,
         profile: Profile,
-        limiter: LimiterSettings = LimiterSettings()
+        limiter: LimiterSettings = LimiterSettings(),
+        layers: ToneLayers = ToneLayers.NONE
     ): DynamicsProcessingApplied {
         check(Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) { "DynamicsProcessing requires API 28" }
         check(limiter.isProtectionOnly()) { "Limiter settings must only protect, never boost" }
@@ -91,7 +93,7 @@ object DynamicsProcessingEngine {
             }
         }
         val centres = DpBandLayout.centresFromCutoffs(cutoffs)
-        val gains = BandMapping.gainsDb(profile, centres)
+        val gains = BandMapping.gainsDb(profile, centres, layers)
         check(gains.size == cutoffs.size) { "DynamicsProcessing band layout changed unexpectedly" }
 
         for (channel in 0 until channelCount) {

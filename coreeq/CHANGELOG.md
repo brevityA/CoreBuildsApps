@@ -8,6 +8,53 @@ must never land there. Releases are `coreeq-v<version>` tags (see
 
 ## [Unreleased]
 
+## [1.3.0] — 2026-10-08
+
+### Added
+
+- **Every sweep gets a quality score.** The Measure screen shows
+  `Quality 0–100` after each sweep, in green, amber or red. It weighs signal
+  to noise (30), a measurable decay (20), untouched nulls (20), bands that
+  pass the minimum-phase gate (15) and the transition frequency (15). The
+  score is saved with the profile (`quality_score` in the JSON backup) and
+  shown on Home and Profiles. It describes the measurement and never changes
+  the correction. REW imports carry no signal-to-noise or decay data, so
+  they say "not scored" instead of showing a low number; profiles saved
+  before 1.3.0 show no score.
+- **Dialogue boost** (Extra effects, off by default): +2 dB across
+  2.2–4.5 kHz, back to neutral by 6.5 kHz, the speech-intelligibility
+  plateau from research pass 6. Profiles measured with the Dialogue or House
+  target already carry it, so there it adds nothing.
+- **Low-volume bass** (Extra effects, off by default): ISO 226 loudness
+  compensation. Switching it on records the current volume, read through
+  Android's own volume curve in dB, as the reference. Below it, half the
+  ISO 226 difference at 63 Hz is added as a shelf under 100 Hz, in 0.5 dB
+  steps, capped at +3 dB, and never below the speaker's measured roll-off.
+  It follows the volume as it changes. On a fixed-volume output (a
+  soundbar that keeps its own volume over HDMI-CEC) Android reports no
+  volume, so it adds nothing, and the screen says so.
+- **Home warns about HDMI bitstream.** When Android may send Dolby or DTS
+  to the HDMI output as a bitstream, Home shows the warning on its own line:
+  a bitstream skips all on-device EQ. Until now it was only a clause at
+  the end of the status text.
+
+### Changed
+
+- Dialogue boost and low-volume bass are summed into the correction before
+  headroom is taken, on DynamicsProcessing and on the platform Equalizer, so
+  their boost lowers everything else instead of clipping. They are never
+  written into a profile, backup or export.
+- The Extra effects **Loudness** switch is now **Loudness enhancer**, its
+  Android effect name, so it cannot be mistaken for low-volume bass.
+
+### Removed
+
+- 466 lines of 1.2.0 Kotlin that nothing called: `ImprovedAudioDeviceManager`
+  (its "passthrough" test was "is the output HDMI";
+  `OutputRoute.mayPassThrough` checks the TV's surround setting), night
+  mode's never-applied 3.2 kHz dialogue peak, the volume-to-phon estimate that
+  treated a volume step as linear amplitude, and 27 unused strings.
+
 ## [1.2.1] — 2026-10-07
 
 ### Fixed

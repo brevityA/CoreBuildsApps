@@ -21,6 +21,7 @@ import tv.corebuilds.eq.export.ProfileStore
 import tv.corebuilds.eq.mode.ContentMode
 import tv.corebuilds.eq.mode.ContentModeStore
 import tv.corebuilds.eq.ui.CurveGraphView
+import tv.corebuilds.eq.ui.QualityText
 import tv.corebuilds.eq.ui.Series
 import java.util.Locale
 
@@ -301,7 +302,11 @@ class ProfilesActivity : TvActivity() {
                 "Manual EQ only · not measured$overlays"
             } else {
                 val manual = if (item.manualFilters.isNotEmpty()) " · ${item.manualFilters.size} legacy manual bands" else ""
-                "$targetTitle · ${item.filters.size} filters$manual$overlays · $rt · ${item.micType}$measurementLimit"
+                QualityText.appendTo(
+                    holder.itemView.context,
+                    "$targetTitle · ${item.filters.size} filters$manual$overlays · $rt · ${item.micType}$measurementLimit",
+                    item.qualityScore
+                )
             }
 
             val isActive = item.id == activeId()

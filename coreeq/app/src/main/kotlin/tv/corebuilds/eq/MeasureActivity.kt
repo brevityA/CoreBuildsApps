@@ -19,6 +19,7 @@ import tv.corebuilds.eq.apply.OutputRoute
 import tv.corebuilds.eq.dsp.Correction
 import tv.corebuilds.eq.dsp.DspConstants
 import tv.corebuilds.eq.dsp.ImportResult
+import tv.corebuilds.eq.dsp.MeasurementQuality
 import tv.corebuilds.eq.dsp.MeasurementException
 import tv.corebuilds.eq.dsp.RewImport
 import tv.corebuilds.eq.dsp.Sweep
@@ -33,6 +34,7 @@ import tv.corebuilds.eq.measure.CaptureEngine
 import tv.corebuilds.eq.measure.CaptureListener
 import tv.corebuilds.eq.measure.StimulusPlayer
 import tv.corebuilds.eq.ui.CurveGraphView
+import tv.corebuilds.eq.ui.QualityText
 import tv.corebuilds.eq.ui.Series
 import java.text.DateFormat
 import java.util.Date
@@ -58,6 +60,7 @@ class MeasureActivity : TvActivity() {
     private lateinit var graphMeasure: CurveGraphView
     private lateinit var progressMeasure: ProgressBar
     private lateinit var textStatus: TextView
+    private lateinit var textQuality: TextView
     private lateinit var btnStart: Button
     private lateinit var btnStop: Button
     private lateinit var btnSave: Button
@@ -94,6 +97,7 @@ class MeasureActivity : TvActivity() {
         graphMeasure = findViewById(R.id.graph_measure)
         progressMeasure = findViewById(R.id.progress_measure)
         textStatus = findViewById(R.id.text_measure_status)
+        textQuality = findViewById(R.id.text_measure_quality)
         btnStart = findViewById(R.id.btn_measure_start)
         btnStop = findViewById(R.id.btn_measure_stop)
         btnSave = findViewById(R.id.btn_measure_save)
@@ -182,6 +186,29 @@ class MeasureActivity : TvActivity() {
             20.0,
             Correction.transitionHz(ROOMS[roomIndex].volumeM3, null)
         )
+        renderQuality()
+    }
+
+    /**
+     * The quality line follows whatever result is on screen: a sweep is
+     * scored, a REW import says why it is not, and nothing shows otherwise.
+     */
+    private fun renderQuality() {
+        val sweep = result
+        when {
+            sweep != null -> {
+                val score = MeasurementQuality.score(sweep)
+                textQuality.text = QualityText.text(this, score)
+                textQuality.setTextColor(QualityText.color(this, score))
+                textQuality.visibility = View.VISIBLE
+            }
+            importResult != null -> {
+                textQuality.setText(R.string.quality_not_scored)
+                textQuality.setTextColor(ContextCompat.getColor(this, R.color.cb_slate))
+                textQuality.visibility = View.VISIBLE
+            }
+            else -> textQuality.visibility = View.GONE
+        }
     }
 
     private fun startMeasurement() {
@@ -209,6 +236,7 @@ class MeasureActivity : TvActivity() {
         btnImport.isEnabled = false
         progressMeasure.progress = 0
         textStatus.text = getString(R.string.measure_opening_mic)
+        renderQuality()
         EqService.send(this, EqService.ACTION_SUSPEND) // our own correction must not colour the sweep
 
         val total = LEAD_SECONDS + Sweep.SECONDS + SweepAnalysis.TAIL_SECONDS
@@ -313,6 +341,7 @@ class MeasureActivity : TvActivity() {
             rt, r.floorHz, DspConstants.F_MAX / 1000, nulls, if (nulls == 1) "" else "s",
             gated, if (gated == 1) "" else "s", r.snrDb
         )
+        renderQuality()
     }
 
     /** REW measurement import (plan M10): File → Export → Measurement as text. */
@@ -475,6 +504,7 @@ class MeasureActivity : TvActivity() {
             getString(R.string.measure_import_output_estimate, it.name)
         } ?: getString(R.string.measure_import_output_unknown)
         textStatus.text = analysisStatus + outputStatus
+        renderQuality()
         btnSave.visibility = View.VISIBLE
         btnSave.requestFocus()
     }
@@ -489,6 +519,7 @@ class MeasureActivity : TvActivity() {
         btnSave.setText(R.string.measure_save)
         progressMeasure.progress = 0
         textStatus.text = getString(R.string.measure_failed, message)
+        renderQuality()
         btnStart.requestFocus()
     }
 
@@ -538,6 +569,7 @@ class MeasureActivity : TvActivity() {
             transitionHz = r.transitionHz,
             rolloffHz = r.floorHz,
             snrDb = r.snrDb,
+            qualityScore = MeasurementQuality.score(r),
             nullsUntouchedHz = r.centresHz.indices.filter { r.nullMask[it] }.map { r.centresHz[it] },
             preampDb = r.preampDb,
             filters = r.filters,

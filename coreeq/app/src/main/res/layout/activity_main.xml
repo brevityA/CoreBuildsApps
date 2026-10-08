@@ -148,6 +148,18 @@
                     android:fontFamily="monospace"
                     android:layout_marginTop="2dp" />
 
+                <!-- 1.3.0: shown only while the HDMI output may receive Dolby/DTS as a bitstream. -->
+                <TextView
+                    android:id="@+id/text_passthrough_warning"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:maxWidth="640dp"
+                    android:text="@string/passthrough_warning"
+                    android:textColor="@color/cb_warning"
+                    android:textSize="@dimen/cb_text_kicker"
+                    android:visibility="gone"
+                    android:layout_marginTop="4dp" />
+
                 <Button
                     android:id="@+id/btn_remeasure"
                     android:layout_width="match_parent"

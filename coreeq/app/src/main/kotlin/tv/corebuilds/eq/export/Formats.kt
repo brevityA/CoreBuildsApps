@@ -166,6 +166,7 @@ object Formats {
         root.put("transition_hz", profile.transitionHz)
         profile.schroederHz?.let { root.put("schroeder_hz", it) }
         profile.snrDb?.let { root.put("snr_db", it) }
+        profile.qualityScore?.let { root.put("quality_score", it) }
         root.put("rolloff_hz", profile.rolloffHz)
 
         val gainLimits = JSONObject()

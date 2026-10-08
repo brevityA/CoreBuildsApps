@@ -1,12 +1,15 @@
 package tv.corebuilds.eq.dsp
 
 import kotlin.math.log10
-import kotlin.math.max
 import kotlin.math.pow
 
 /**
- * ISO 226:2003 equal-loudness contours and the compensation curve Core EQ
- * layers on top of room correction when the viewer turns the volume down.
+ * ISO 226:2003 equal-loudness contours, and the difference between two
+ * listening levels that Low-volume bass follows
+ * ([tv.corebuilds.eq.apply.ToneLayers.lowVolumeBassDb]: half of it at 63 Hz,
+ * capped at +3 dB). The 1.2.0 volume-to-phon guess and the interpolation
+ * helper were never used and are gone; the volume now comes from Android's
+ * own curve ([tv.corebuilds.eq.apply.VolumeLevel]).
  *
  * Human hearing is non-linear: at lower SPL, bass and treble perception
  * drops disproportionately compared to midrange (the Fletcher-Munson
@@ -107,60 +110,5 @@ object EqualLoudness {
             out[i] = raw * strength.coerceIn(0.0, 1.0)
         }
         return out
-    }
-
-    /**
-     * Interpolate the compensation curve onto arbitrary frequency points
-     * (e.g. the DP band centres or the ManualEq band centres).
-     */
-    fun compensationAtFreqs(
-        referencePhon: Double,
-        playbackPhon: Double,
-        strength: Double,
-        freqs: List<Double>
-    ): DoubleArray {
-        val comp = compensationDb(referencePhon, playbackPhon, strength)
-        val out = DoubleArray(freqs.size)
-        for (i in freqs.indices) {
-            out[i] = interpolate(freqs[i], FREQUENCIES_HZ, comp)
-        }
-        return out
-    }
-
-    /**
-     * Estimate the phon level from an Android stream volume (0–15 on most
-     * TVs) and a calibration reference. The mapping is logarithmic: each
-     * volume step is approximately 3–4 dB.
-     *
-     * @param streamVolume the current STREAM_MUSIC volume index.
-     * @param maxStreamVolume the maximum volume index for this device.
-     * @param referencePhon the phon level at maximum volume. A typical
-     *   living-room TV at max volume is approximately 85 phon at the
-     *   listening position.
-     */
-    fun estimatePhon(
-        streamVolume: Int,
-        maxStreamVolume: Int,
-        referencePhon: Double = 85.0
-    ): Double {
-        if (streamVolume <= 0 || maxStreamVolume <= 0) return 20.0
-        val fraction = streamVolume.toDouble() / maxStreamVolume
-        // Each halving of amplitude is about -10 phon (a factor of 2 in
-        // perceived loudness). Use a logarithmic mapping.
-        val dbBelowRef = -20.0 * log10(max(fraction, 1e-9))
-        return max(20.0, referencePhon - dbBelowRef)
-    }
-
-    private fun interpolate(x: Double, xs: DoubleArray, ys: DoubleArray): Double {
-        if (xs.isEmpty()) return 0.0
-        if (x <= xs[0]) return ys[0]
-        if (x >= xs[xs.size - 1]) return ys[ys.size - 1]
-        for (i in 0 until xs.size - 1) {
-            if (x in xs[i]..xs[i + 1]) {
-                val frac = (x - xs[i]) / (xs[i + 1] - xs[i])
-                return ys[i] + frac * (ys[i + 1] - ys[i])
-            }
-        }
-        return ys[0]
     }
 }

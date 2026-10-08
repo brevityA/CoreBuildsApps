@@ -4,6 +4,12 @@
 > its effect chain, kept room correction on DynamicsProcessing / Equalizer,
 > and made bass boost, loudness and night mode opt-in on the Extra effects
 > screen. `CHANGELOG.md` in this folder is the current record.
+>
+> **Note (1.3.0):** the measurement quality score is now shown and saved;
+> ISO 226 compensation ships as the Low-volume bass switch (reference volume,
+> capped at +3 dB, no phon guess) and dialogue lift as the Dialogue boost
+> switch (the 2.2–4.5 kHz plateau, not the single 3.2 kHz peak described
+> below). `ImprovedAudioDeviceManager` was never called and is removed.
 
 **Date:** 2026-10-06  
 **Branch:** arena/4c8f6ce7-corebuildsapps

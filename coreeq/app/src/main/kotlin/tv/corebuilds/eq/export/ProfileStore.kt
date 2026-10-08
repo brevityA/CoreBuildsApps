@@ -355,6 +355,8 @@ class ProfileStore(context: Context) {
             transitionHz = obj.optDouble("transition_hz", 300.0),
             rolloffHz = obj.optDouble("rolloff_hz", 40.0),
             snrDb = optNullable(obj, "snr_db"),
+            qualityScore = if (obj.has("quality_score") && !obj.isNull("quality_score"))
+                obj.optInt("quality_score", -1).takeIf { it in 0..100 } else null,
             nullsUntouchedHz = nullsList,
             preampDb = obj.optDouble("room_preamp_db", obj.optDouble("preamp_db", 0.0)),
             filters = filtersList,
