@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
@@ -69,7 +70,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Global output mix (session 0)"
+                    android:text="@string/cap_global_title"
                     android:textColor="@color/cb_ink"
                     android:textSize="@dimen/cb_text_data"
                     android:textStyle="bold" />
@@ -78,7 +79,7 @@
                     android:id="@+id/status_session0"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Deprecated in 2012, never removed. Probing..."
+                    tools:text="Deprecated in 2012, never removed. Probing..."
                     android:textColor="@color/cb_slate"
                     android:textSize="@dimen/cb_text_kicker"
                     android:layout_marginTop="2dp" />
@@ -97,7 +98,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Playback and session signals"
+                    android:text="@string/cap_signals_title"
                     android:textColor="@color/cb_ink"
                     android:textSize="@dimen/cb_text_data"
                     android:textStyle="bold" />
@@ -105,7 +106,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="They request a fresh DUMP scan; broadcast extras are not trusted as app or session identity."
+                    android:text="@string/cap_signals_note"
                     android:textColor="@color/cb_slate"
                     android:textSize="@dimen/cb_text_kicker"
                     android:layout_marginTop="2dp" />
@@ -163,7 +164,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="This app's own playback"
+                    android:text="@string/cap_own_title"
                     android:textColor="@color/cb_ink"
                     android:textSize="@dimen/cb_text_data"
                     android:textStyle="bold" />
@@ -171,7 +172,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Always works. The correction applies to what Core EQ plays."
+                    android:text="@string/cap_own_note"
                     android:textColor="@color/cb_slate"
                     android:textSize="@dimen/cb_text_kicker"
                     android:layout_marginTop="2dp" />
@@ -190,7 +191,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="DynamicsProcessing (API 28+)"
+                    android:text="@string/cap_dp_title"
                     android:textColor="@color/cb_ink"
                     android:textSize="@dimen/cb_text_data"
                     android:textStyle="bold" />
@@ -199,7 +200,7 @@
                     android:id="@+id/status_dp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Your own band layout, up to 31 bands, plus a limiter."
+                    tools:text="Your own band layout, up to 31 bands, plus a limiter."
                     android:textColor="@color/cb_slate"
                     android:textSize="@dimen/cb_text_kicker"
                     android:layout_marginTop="2dp" />
@@ -217,7 +218,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Platform Equalizer"
+                    android:text="@string/cap_eq_title"
                     android:textColor="@color/cb_ink"
                     android:textSize="@dimen/cb_text_data"
                     android:textStyle="bold" />
@@ -226,7 +227,7 @@
                     android:id="@+id/status_platform_eq"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Device reports its own bands and millibel range. Always present."
+                    tools:text="Device reports its own bands and millibel range. Always present."
                     android:textColor="@color/cb_slate"
                     android:textSize="@dimen/cb_text_kicker"
                     android:layout_marginTop="2dp" />
@@ -351,7 +352,7 @@
                     android:id="@+id/text_verdict_bands"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="5 bands"
+                    tools:text="5 bands"
                     android:textColor="@color/cb_ink"
                     android:textSize="@dimen/cb_text_title"
                     android:textStyle="bold"
@@ -361,7 +362,7 @@
                     android:id="@+id/text_verdict_session"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="app identity: DUMP not granted"
+                    tools:text="app identity: DUMP not granted"
                     android:textColor="@color/cb_slate"
                     android:textSize="@dimen/cb_text_kicker"
                     android:fontFamily="monospace"
@@ -371,7 +372,7 @@
                     android:id="@+id/text_verdict_global"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="global mix: not supported"
+                    tools:text="global mix: not supported"
                     android:textColor="@color/cb_slate"
                     android:textSize="@dimen/cb_text_kicker"
                     android:fontFamily="monospace"
@@ -380,7 +381,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Profiles from other sets keep the limits they were built under."
+                    android:text="@string/cap_verdict_note"
                     android:textColor="@color/cb_slate"
                     android:textSize="@dimen/cb_text_kicker"
                     android:layout_marginTop="@dimen/cb_space_xs" />

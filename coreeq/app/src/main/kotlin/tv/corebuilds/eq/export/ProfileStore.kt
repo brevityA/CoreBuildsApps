@@ -221,6 +221,11 @@ class ProfileStore(context: Context) {
         get() = prefs.getBoolean(KEY_ENABLED, false)
         set(value) { prefs.edit().putBoolean(KEY_ENABLED, value).apply() }
 
+    /** Show a brief toast when a different profile or mode is applied (1.3.0). On by default. */
+    var announceApplied: Boolean
+        get() = prefs.getBoolean(KEY_ANNOUNCE_APPLIED, true)
+        set(value) { prefs.edit().putBoolean(KEY_ANNOUNCE_APPLIED, value).apply() }
+
     fun status(): EqStatus? {
         val msg = prefs.getString(KEY_STATUS_MSG, null) ?: return null
         return EqStatus(
@@ -378,6 +383,7 @@ class ProfileStore(context: Context) {
         private const val KEY_PROFILES = "profiles_json"
         private const val KEY_ACTIVE_ID = "active_profile_id"
         private const val KEY_ENABLED = "correction_enabled"
+        private const val KEY_ANNOUNCE_APPLIED = "announce_applied_v130"
         private const val KEY_STATUS_MSG = "status_message"
         private const val KEY_STATUS_ERR = "status_is_error"
         private const val KEY_STATUS_TIME = "status_time"

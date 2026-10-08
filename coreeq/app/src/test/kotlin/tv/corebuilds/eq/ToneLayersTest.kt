@@ -5,6 +5,7 @@ import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
 import org.junit.Test
 import tv.corebuilds.eq.apply.BandMapping
+import tv.corebuilds.eq.apply.LowVolumeBass
 import tv.corebuilds.eq.apply.ToneLayers
 import tv.corebuilds.eq.export.CurvePoint
 import tv.corebuilds.eq.export.Profile
@@ -103,6 +104,32 @@ class ToneLayersTest {
         assertEquals(-2.0, withDialogue[1], 1e-9)
         assertTrue(withDialogue.all { it <= 0.0 })
         assertEquals(2.0, BandMapping.headroomDb(p, centres, ToneLayers(dialogue = true)), 1e-9)
+    }
+
+    @Test
+    fun `an output with no reference records its first reported volume and adds nothing yet`() {
+        val first = LowVolumeBass.settle(storedDb = null, nowDb = -22.0)
+        assertTrue(first.capture)
+        assertEquals(-22.0, first.referenceDb!!, 0.0)
+        assertEquals(0.0, first.liftDb, 0.0)
+    }
+
+    @Test
+    fun `turning that output down from its reference adds lift, and a known reference is kept`() {
+        val settled = LowVolumeBass.settle(storedDb = -12.0, nowDb = -22.0)
+        assertFalse(settled.capture)
+        assertEquals(-12.0, settled.referenceDb!!, 0.0)
+        assertEquals(ToneLayers.lowVolumeBassDb(10.0), settled.liftDb, 0.0)
+        assertTrue(settled.liftDb > 0.0)
+    }
+
+    @Test
+    fun `no reported volume records nothing and adds nothing`() {
+        val unknown = LowVolumeBass.settle(storedDb = null, nowDb = null)
+        assertFalse(unknown.capture)
+        assertEquals(null, unknown.referenceDb)
+        assertEquals(0.0, unknown.liftDb, 0.0)
+        assertEquals(0.0, LowVolumeBass.settle(storedDb = -12.0, nowDb = null).liftDb, 0.0)
     }
 
     @Test

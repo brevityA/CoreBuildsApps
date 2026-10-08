@@ -12,7 +12,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="CORE EQ · MANUAL TONE"
+        android:text="@string/manual_kicker"
         android:textColor="@color/cb_slate"
         android:textSize="@dimen/cb_text_kicker"
         android:fontFamily="monospace"

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
@@ -53,7 +54,23 @@
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/recycler_profiles"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent" />
+                android:layout_height="0dp"
+                android:layout_weight="1" />
+
+            <!-- 1.3.0: the brief toast the service shows when a profile is applied. -->
+            <Button
+                android:id="@+id/btn_announce_applied"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/cb_target_min"
+                android:layout_marginTop="@dimen/cb_space_sm"
+                android:background="@drawable/bg_card"
+                android:gravity="start|center_vertical"
+                android:paddingStart="@dimen/cb_card_padding"
+                android:paddingEnd="@dimen/cb_card_padding"
+                android:text="@string/profiles_announce_on"
+                android:textColor="@color/cb_ink"
+                android:textSize="@dimen/cb_text_data"
+                android:focusable="true" />
 
         </LinearLayout>
 
@@ -129,7 +146,7 @@
                 android:id="@+id/text_preamp_display"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Preamp  −3.72 dB"
+                tools:text="Preamp  −3.72 dB"
                 android:textColor="@color/cb_ink"
                 android:textSize="@dimen/cb_text_label"
                 android:fontFamily="monospace"

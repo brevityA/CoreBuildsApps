@@ -1,11 +1,19 @@
 package tv.corebuilds.eq
 
+import android.content.BroadcastReceiver
+import android.content.Context
+import android.content.Intent
+import android.content.IntentFilter
+import android.database.ContentObserver
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
+import android.provider.Settings
 import android.widget.Button
 import android.widget.TextView
+import androidx.core.content.ContextCompat
 import tv.corebuilds.eq.apply.EqService
-import tv.corebuilds.eq.apply.ToneLayers
-import tv.corebuilds.eq.apply.VolumeLevel
+import tv.corebuilds.eq.apply.LowVolumeBass
 import tv.corebuilds.eq.ui.EnhancedAudioPrefs
 
 /**
@@ -31,6 +39,16 @@ class EnhancedAudioSettingsActivity : TvActivity() {
     private lateinit var btnLoudness: Button
     private lateinit var btnNight: Button
 
+    // While this screen is up, the Low-volume bass line follows the volume
+    // keys the same way the service does (Settings.System plus the
+    // system's volume broadcast), instead of showing the volume at open.
+    private val volumeObserver = object : ContentObserver(Handler(Looper.getMainLooper())) {
+        override fun onChange(selfChange: Boolean) = refresh()
+    }
+    private val volumeReceiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context, intent: Intent) = refresh()
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_enhanced_audio_settings)
@@ -49,9 +67,10 @@ class EnhancedAudioSettingsActivity : TvActivity() {
         }
         btnLowBass.setOnClickListener {
             val on = !prefs.lowVolumeBassEnabled
-            // Turning it on records the volume of this moment as the reference:
-            // the viewer's everyday level, below which bass is restored.
-            if (on) prefs.lowVolumeReferenceDb = VolumeLevel.mediaDb(this)
+            // Turning it on starts afresh: this output's volume right now
+            // becomes its reference (recorded by the refresh below), and every
+            // other output records its own the first time it is used.
+            if (on) prefs.clearLowVolumeReferences()
             prefs.lowVolumeBassEnabled = on
             changed()
         }
@@ -71,9 +90,23 @@ class EnhancedAudioSettingsActivity : TvActivity() {
         btnDialogue.requestFocus()
     }
 
+    override fun onStart() {
+        super.onStart()
+        contentResolver.registerContentObserver(Settings.System.CONTENT_URI, true, volumeObserver)
+        ContextCompat.registerReceiver(
+            this, volumeReceiver, IntentFilter(VOLUME_CHANGED_ACTION), ContextCompat.RECEIVER_NOT_EXPORTED
+        )
+    }
+
     override fun onResume() {
         super.onResume()
         refresh() // the volume may have moved while this screen was away
+    }
+
+    override fun onStop() {
+        contentResolver.unregisterContentObserver(volumeObserver)
+        unregisterReceiver(volumeReceiver)
+        super.onStop()
     }
 
     private fun changed() {
@@ -96,20 +129,23 @@ class EnhancedAudioSettingsActivity : TvActivity() {
         btnNight.text = getString(if (prefs.nightModeEnabled) R.string.extras_night_on else R.string.extras_night_off)
     }
 
-    /** What the switch does, or, while on, where the reference sits and what it adds right now. */
+    /** What the switch does, or, while on, where this output's reference sits and what it adds right now. */
     private fun lowBassNote(): String {
         if (!prefs.lowVolumeBassEnabled) return getString(R.string.extras_low_bass_note)
-        val now = VolumeLevel.mediaDb(this)
-        // Switched on while Android reported no volume: the first volume it
-        // does report becomes the reference, rather than leaving it unset.
-        if (prefs.lowVolumeReferenceDb == null && now != null) {
-            prefs.lowVolumeReferenceDb = now
-            if (EqService.running) EqService.send(this, EqService.ACTION_RELOAD_PREFS)
-        }
-        val reference = prefs.lowVolumeReferenceDb
+        val reading = LowVolumeBass.read(this, prefs)
+        val reference = reading.referenceDb
+        val now = reading.nowDb
         if (reference == null || now == null) return getString(R.string.extras_low_bass_unknown)
-        val lift = ToneLayers.lowVolumeBassDb(reference - now)
-        val effect = if (lift > 0.0) getString(R.string.extras_low_bass_lift, lift) else getString(R.string.extras_low_bass_flat)
+        val effect = if (reading.liftDb > 0.0) {
+            getString(R.string.extras_low_bass_lift, reading.liftDb)
+        } else {
+            getString(R.string.extras_low_bass_flat)
+        }
         return getString(R.string.extras_low_bass_status, reference, now, effect)
+    }
+
+    private companion object {
+        /** AudioManager.VOLUME_CHANGED_ACTION: sent by the system on most builds, but hidden API. */
+        const val VOLUME_CHANGED_ACTION = "android.media.VOLUME_CHANGED_ACTION"
     }
 }

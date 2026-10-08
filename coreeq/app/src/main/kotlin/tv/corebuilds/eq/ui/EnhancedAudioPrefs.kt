@@ -43,13 +43,23 @@ class EnhancedAudioPrefs(context: Context) {
         set(value) = prefs.edit().putBoolean(KEY_LOW_VOLUME_BASS, value).apply()
 
     /**
-     * The everyday volume, in dB from Android's volume curve, that Low-volume
-     * bass measures from: nothing is added at or above it. Null until the
-     * switch is first turned on, which records the volume of that moment.
+     * The everyday volume of one output, in dB from that output's own volume
+     * curve, that Low-volume bass measures from: nothing is added at or above
+     * it. Null until recorded ([tv.corebuilds.eq.apply.LowVolumeBass]).
      */
-    var lowVolumeReferenceDb: Double?
-        get() = prefs.getFloat(KEY_LOW_VOLUME_REFERENCE, Float.NaN).toDouble().takeIf { it.isFinite() }
-        set(value) = prefs.edit().putFloat(KEY_LOW_VOLUME_REFERENCE, value?.toFloat() ?: Float.NaN).apply()
+    fun lowVolumeReferenceDb(route: String): Double? =
+        prefs.getFloat(KEY_LOW_VOLUME_REFERENCE + route, Float.NaN).toDouble().takeIf { it.isFinite() }
+
+    fun setLowVolumeReferenceDb(route: String, db: Double?) {
+        prefs.edit().putFloat(KEY_LOW_VOLUME_REFERENCE + route, db?.toFloat() ?: Float.NaN).apply()
+    }
+
+    /** Switching Low-volume bass on starts afresh: every output records a new reference. */
+    fun clearLowVolumeReferences() {
+        val editor = prefs.edit()
+        for (key in prefs.all.keys) if (key.startsWith(KEY_LOW_VOLUME_REFERENCE)) editor.remove(key)
+        editor.apply()
+    }
 
     /** The limiter correction should run with: protection-only, or night mode's. */
     fun limiter(): LimiterSettings = limiterFor(nightModeEnabled)
@@ -61,7 +71,8 @@ class EnhancedAudioPrefs(context: Context) {
         private const val KEY_NIGHT_MODE = "night_mode_v121"
         private const val KEY_DIALOGUE = "dialogue_boost_v130"
         private const val KEY_LOW_VOLUME_BASS = "low_volume_bass_v130"
-        private const val KEY_LOW_VOLUME_REFERENCE = "low_volume_reference_db_v130"
+        /** Followed by the output's route key: one reference per output. */
+        private const val KEY_LOW_VOLUME_REFERENCE = "low_volume_reference_db_v130:"
 
         fun limiterFor(nightMode: Boolean): LimiterSettings =
             if (nightMode) {

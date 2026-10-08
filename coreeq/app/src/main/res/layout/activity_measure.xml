@@ -69,7 +69,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="STEP 1"
+                    android:text="@string/measure_step_1"
                     android:textColor="@color/cb_cta_end"
                     android:textSize="@dimen/cb_text_kicker"
                     android:fontFamily="monospace"
@@ -134,7 +134,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="STEP 2"
+                    android:text="@string/measure_step_2"
                     android:textColor="@color/cb_warning"
                     android:textSize="@dimen/cb_text_kicker"
                     android:fontFamily="monospace"
@@ -170,7 +170,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="STEP 3"
+                    android:text="@string/measure_step_3"
                     android:textColor="@color/cb_slate"
                     android:textSize="@dimen/cb_text_kicker"
                     android:fontFamily="monospace"

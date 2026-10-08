@@ -37,6 +37,7 @@ class ProfilesActivity : TvActivity() {
     private lateinit var btnChipJson: Button
     private lateinit var btnExport: Button
     private lateinit var btnDelete: Button
+    private lateinit var btnAnnounce: Button
 
     private var profilesList = mutableListOf<Profile>()
     private var selectedProfile: Profile? = null
@@ -67,6 +68,7 @@ class ProfilesActivity : TvActivity() {
         btnChipJson = findViewById(R.id.chip_json)
         btnExport = findViewById(R.id.btn_export_profile)
         btnDelete = findViewById(R.id.btn_delete_profile)
+        btnAnnounce = findViewById(R.id.btn_announce_applied)
 
         recyclerProfiles.layoutManager = LinearLayoutManager(this)
 
@@ -75,6 +77,18 @@ class ProfilesActivity : TvActivity() {
 
         btnExport.setOnClickListener { exportCurrentProfile() }
         btnDelete.setOnClickListener { deleteCurrentProfile() }
+        btnAnnounce.setOnClickListener {
+            profileStore.announceApplied = !profileStore.announceApplied
+            refreshAnnounce()
+        }
+        refreshAnnounce()
+    }
+
+    /** The service reads this each time it would show the "profile applied" toast. */
+    private fun refreshAnnounce() {
+        btnAnnounce.text = getString(
+            if (profileStore.announceApplied) R.string.profiles_announce_on else R.string.profiles_announce_off
+        )
     }
 
     private fun setupExportChips() {

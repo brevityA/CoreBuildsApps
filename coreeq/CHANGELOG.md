@@ -27,12 +27,22 @@ must never land there. Releases are `coreeq-v<version>` tags (see
   target already carry it, so there it adds nothing.
 - **Low-volume bass** (Extra effects, off by default): ISO 226 loudness
   compensation. Switching it on records the current volume, read through
-  Android's own volume curve in dB, as the reference. Below it, half the
+  Android's own volume curve in dB, as the reference. Each output keeps its
+  own reference (Android keeps a separate volume, on its own curve, per
+  output), recorded the first time that output reports a volume, so
+  switching from TV speakers to a soundbar adds nothing until the soundbar
+  is turned down. The Extra effects screen follows the volume keys while
+  open. Below the reference, half the
   ISO 226 difference at 63 Hz is added as a shelf under 100 Hz, in 0.5 dB
   steps, capped at +3 dB, and never below the speaker's measured roll-off.
   It follows the volume as it changes. On a fixed-volume output (a
   soundbar that keeps its own volume over HDMI-CEC) Android reports no
   volume, so it adds nothing, and the screen says so.
+- **A brief notice when a profile is applied.** A toast, "Core EQ · profile ·
+  mode", shows over whatever is playing when a different profile or mode
+  takes effect: an output switch, a new measurement, a choice in Profiles, a
+  mode change. Plain reapplies (a volume step, an Extra effects change, a
+  player attaching) stay silent. On by default; switch it off on Profiles.
 - **Home warns about HDMI bitstream.** When Android may send Dolby or DTS
   to the HDMI output as a bitstream, Home shows the warning on its own line:
   a bitstream skips all on-device EQ. Until now it was only a clause at

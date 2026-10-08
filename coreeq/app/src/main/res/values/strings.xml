@@ -195,7 +195,7 @@
     <string name="extras_low_bass_on">Low-volume bass: On</string>
     <string name="extras_low_bass_off">Low-volume bass: Off</string>
     <string name="extras_low_bass_note">Ears lose bass first as volume drops (ISO 226). Switch this on at the volume you usually watch at: below it, up to +3 dB is added under 100 Hz, never below what your speaker can play. The rest of the sound is lowered to match, so nothing clips.</string>
-    <string name="extras_low_bass_status">Reference %1$.0f dB, set when switched on. Now %2$.0f dB: %3$s. To move the reference, switch off and on again at the new volume.</string>
+    <string name="extras_low_bass_status">This output: reference %1$.0f dB, now %2$.0f dB, %3$s. Each output keeps its own reference, recorded the first time it is used; switch off and on again to record new ones.</string>
     <string name="extras_low_bass_lift">+%1$.1f dB under 100 Hz</string>
     <string name="extras_low_bass_flat">nothing added at or above the reference</string>
     <string name="extras_low_bass_unknown">Android does not report this output\'s volume in dB (a fixed-volume output, such as a soundbar that keeps its own volume over HDMI-CEC), so there is nothing to follow and nothing is added.</string>
@@ -205,4 +205,29 @@
     <string name="content_type_auto_off">Auto-detect: Off · using your manual selection</string>
     <string name="content_type_auto_on_btn">Auto-detect: On</string>
     <string name="content_type_auto_off_btn">Auto-detect: Off</string>
+
+    <!-- Profile-applied notice (1.3.0) -->
+    <string name="notice_profile_applied">Core EQ · %1$s · %2$s</string>
+    <string name="profiles_announce_on">Notice when a profile is applied: On</string>
+    <string name="profiles_announce_off">Notice when a profile is applied: Off</string>
+
+    <!-- Screen labels moved out of layouts (1.3.0) -->
+    <string name="home_kicker">Core EQ · tv.corebuilds.eq</string>
+    <string name="action_profiles">Profiles  ·  Saved corrections</string>
+    <string name="action_capability">Capability  ·  What this device will accept</string>
+    <string name="action_display_calibration">Display calibration  ·  Test patterns</string>
+    <string name="action_content_type">Content type  ·  Movies, Anime, Gaming</string>
+    <string name="manual_kicker">Core EQ · Manual tone</string>
+    <string name="content_type_kicker">Core EQ · Content type</string>
+    <string name="measure_step_1">STEP 1</string>
+    <string name="measure_step_2">STEP 2</string>
+    <string name="measure_step_3">STEP 3</string>
+    <string name="cap_global_title">Global output mix (session 0)</string>
+    <string name="cap_signals_title">Playback and session signals</string>
+    <string name="cap_signals_note">They request a fresh DUMP scan; broadcast extras are not trusted as app or session identity.</string>
+    <string name="cap_own_title">This app\'s own playback</string>
+    <string name="cap_own_note">Always works. The correction applies to what Core EQ plays.</string>
+    <string name="cap_dp_title">DynamicsProcessing (API 28+)</string>
+    <string name="cap_eq_title">Platform Equalizer</string>
+    <string name="cap_verdict_note">Profiles from other sets keep the limits they were built under.</string>
 </resources>

@@ -27,11 +27,13 @@ import android.os.IBinder
 import android.os.Looper
 import android.provider.Settings
 import android.util.Log
+import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
 import androidx.core.app.ServiceCompat
 import androidx.core.content.ContextCompat
 import tv.corebuilds.eq.MainActivity
+import tv.corebuilds.eq.R
 import tv.corebuilds.eq.export.PlatformBand
 import tv.corebuilds.eq.export.Profile
 import tv.corebuilds.eq.export.ProfileStore
@@ -98,6 +100,8 @@ class EqService : Service() {
     private var enhancedPrefs: EnhancedAudioPrefs? = null
     /** Dialogue boost and Low-volume bass as last applied; recomputed by [applyAll]. */
     private var activeLayers = ToneLayers.NONE
+    /** Decides when the "profile applied" toast shows: on a change, not on every reapply. */
+    private val appliedNotice = AppliedNotice()
     
     private val sessionEqs = mutableMapOf<Int, Held>()
     /** Only unambiguous DUMP UID-to-package matches may influence app-mode rules. */
@@ -337,6 +341,7 @@ class EqService : Service() {
             // Another chain's curve would be wrong here: step aside, say why.
             outputPaused = true
             setAllEnabled(false)
+            appliedNotice.reset()
             val routeName = output?.name ?: "the output Android could not identify"
             report(
                 "Nothing measured on $routeName yet, so correction is paused there. " +
@@ -370,6 +375,7 @@ class EqService : Service() {
                     "Output-mix effect configured · $modeName · ${configured.engine} · ${profile.name}$via · ${configured.bands.size} bands${extrasNote(listOf(configured), profile)} · coverage depends on TV routing${where(output)}",
                     isError = false
                 )
+                announceApplied(profile, modeName)
                 releaseSessions() // avoid applying the same curve twice where the mix effect is accepted
                 if (DumpsysDiscovery.hasGrant(this)) scheduleDiscovery(0L)
                 return
@@ -394,8 +400,12 @@ class EqService : Service() {
         syncRuntimeBands()
         when {
             failed != null -> report(failed, isError = true)
-            sessionEqs.isNotEmpty() -> report(sessionReport(profile, via, output), isError = false)
+            sessionEqs.isNotEmpty() -> {
+                report(sessionReport(profile, via, output), isError = false)
+                announceApplied(profile, modeName)
+            }
             else -> {
+                appliedNotice.reset()
                 if (DumpsysDiscovery.hasGrant(this)) scheduleDiscovery(0L)
                 report(waitingStatus(), isError = false)
             }
@@ -676,8 +686,13 @@ class EqService : Service() {
         if (failed != null) {
             report(failed, isError = true)
         } else if (changed) {
-            if (sessionEqs.isEmpty()) report(waitingStatus(), isError = false)
-            else report(sessionReport(profile, via, output), isError = false)
+            if (sessionEqs.isEmpty()) {
+                appliedNotice.reset()
+                report(waitingStatus(), isError = false)
+            } else {
+                report(sessionReport(profile, via, output), isError = false)
+                announceApplied(profile, modeStore.currentDecision().mode.title)
+            }
         } else if (playerSnapshotChanged) {
             notifyModeSnapshotChanged()
         }
@@ -807,24 +822,30 @@ class EqService : Service() {
         }
     }
 
+    /**
+     * A brief toast when a different profile or mode takes effect (1.3.0), so
+     * a viewer in another app sees what Core EQ just did. Text toasts are the
+     * one on-screen surface a background app still has on Android 11+; Android
+     * TV does not show heads-up notifications. Switch it off on Profiles.
+     */
+    private fun announceApplied(profile: Profile, modeName: String) {
+        if (!appliedNotice.onApplied(profile.id, modeName)) return
+        if (!store.announceApplied) return
+        Toast.makeText(this, getString(R.string.notice_profile_applied, profile.name, modeName), Toast.LENGTH_SHORT).show()
+    }
+
     /** Protection-only, or night mode's tighter limiter. DP correction only. */
     private fun limiter(): LimiterSettings = enhancedPrefs?.limiter() ?: LimiterSettings()
 
     /**
      * Dialogue boost and Low-volume bass for this moment. The lift is measured
-     * from the reference volume recorded when the switch was turned on; with no
-     * reference, or a volume Android does not report (fixed-volume outputs),
-     * it adds nothing.
+     * from the current output's own reference volume, recorded the first time
+     * that output reports one ([LowVolumeBass]); a volume Android does not
+     * report (fixed-volume outputs) adds nothing.
      */
     private fun toneLayers(): ToneLayers {
         val prefs = enhancedPrefs ?: return ToneLayers.NONE
-        val bass = if (prefs.lowVolumeBassEnabled) {
-            val reference = prefs.lowVolumeReferenceDb
-            val now = VolumeLevel.mediaDb(this)
-            if (reference != null && now != null) ToneLayers.lowVolumeBassDb(reference - now) else 0.0
-        } else {
-            0.0
-        }
+        val bass = if (prefs.lowVolumeBassEnabled) LowVolumeBass.read(this, prefs).liftDb else 0.0
         return ToneLayers(dialogue = prefs.dialogueBoostEnabled, lowVolumeBassDb = bass)
     }
 
