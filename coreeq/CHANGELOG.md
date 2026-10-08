@@ -52,7 +52,9 @@ must never land there. Releases are `coreeq-v<version>` tags (see
   needs "Display over other apps"; Profiles shows a button for it, or the
   ADB command on TVs with no screen for that permission. Without it, a
   short text toast says the same. Fire TV refuses the permission. On by
-  default; switch it off on Profiles.
+  default; switch it off on Profiles. **Show a test card** on Profiles shows
+  the card for what is applied right now, so its place and size can be
+  checked on the TV without switching correction off and on.
 - **Home warns about HDMI bitstream.** When Android may send Dolby or DTS
   to the HDMI output as a bitstream, Home shows the warning on its own line:
   a bitstream skips all on-device EQ. Until now it was only a clause at
@@ -120,6 +122,11 @@ must never land there. Releases are `coreeq-v<version>` tags (see
   lines, and a long title ends in "…" instead of running off the graph.
 - Scrolling columns (Capability, Measure, Extra effects) fade at the edge
   that has more content, instead of cutting a card in half.
+
+- Profiles' quality score has a JVM round-trip test (`ProfileJsonTest`):
+  saved and read back unchanged, and a missing, null or out-of-range score
+  reads back as "not scored". The test brings `org.json` as a test-only
+  dependency, as Core Line's tests do.
 
 ### Removed
 
