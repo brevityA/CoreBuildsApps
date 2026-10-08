@@ -27,20 +27,11 @@ object QualityText {
     )
 
     /**
-     * [base] followed by " · Quality 78/100 · good" in the tier colour, or
+     * "Quality 78/100 · good" in the tier colour, then " · " and [base], or
      * [base] unchanged when the profile carries no score (imports, manual-only
-     * profiles and anything saved before 1.3.0).
+     * profiles and anything saved before 1.3.0). The score leads because Home
+     * and Profiles both end their detail lines in an ellipsis.
      */
-    fun appendTo(context: Context, base: CharSequence, score: Int?): CharSequence {
-        if (score == null) return base
-        val out = SpannableStringBuilder(base).append(" · ")
-        val start = out.length
-        out.append(text(context, score))
-        out.setSpan(ForegroundColorSpan(color(context, score)), start, out.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
-        return out
-    }
-
-    /** "Quality 78/100 · good · " in the tier colour, then [base]; [base] alone without a score. */
     fun prependTo(context: Context, base: CharSequence, score: Int?): CharSequence {
         if (score == null) return base
         val out = SpannableStringBuilder(text(context, score))

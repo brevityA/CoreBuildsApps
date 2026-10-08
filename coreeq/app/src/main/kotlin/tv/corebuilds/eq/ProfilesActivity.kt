@@ -315,7 +315,9 @@ class ProfilesActivity : TvActivity() {
                 "Manual EQ only · not measured$overlays"
             } else {
                 val manual = if (item.manualFilters.isNotEmpty()) " · ${item.manualFilters.size} legacy manual bands" else ""
-                QualityText.appendTo(
+                // Score first: the row is one line with an end ellipsis, and the
+                // details before it vary in length (review on #264).
+                QualityText.prependTo(
                     holder.itemView.context,
                     "$targetTitle · ${item.filters.size} filters$manual$overlays · $rt · ${item.micType}$measurementLimit",
                     item.qualityScore

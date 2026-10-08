@@ -86,7 +86,9 @@ must never land there. Releases are `coreeq-v<version>` tags (see
   row.
 - **Profiles' list rows no longer clip.** A long name wrapped onto a second
   line and pushed the details line out of the card; names now end in "…".
-  The export summary is set in the body size instead of a bold 16sp.
+  The quality score leads the details line, as on Home, so the "…" never
+  hides it. The export summary is set in the body size instead of a bold
+  16sp.
 - **Mode explains automatic switching in plain bullets** under a heading,
   instead of one paragraph about session UIDs. Its status lines (app rules,
   conflicts, players now) are in sentence case.
