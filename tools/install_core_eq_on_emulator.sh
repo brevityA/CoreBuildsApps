@@ -79,30 +79,66 @@ install_apk() { # <label> <adb args...>
   return 1
 }
 
-storage_report
-install_apk "streaming" -r || {
-  # Preview images ship the package verifier on; a verifier that cannot reach
-  # its service rejects the session with a createSession failure rather than a
-  # readable error. --no-streaming then covers a session failure, and -t a
-  # debug build that AGP marks test-only.
-  adb shell settings put global verifier_verify_adb_installs 0 || true
-  adb shell settings put global package_verifier_enable 0 || true
-  install_apk "no-streaming" --no-streaming -r -t || {
-    # A failed push reported `remote write failed: No space left on device` on
-    # the 37.0 preview image, so clear the staging area, say how much room
-    # /data has, and install straight from stdin instead of copying the APK
-    # into /data/local/tmp first.
-    storage_report
-    adb shell 'rm -rf /data/local/tmp/*' || true
-    size=$(stat -c%s "$APK")
-    out=$(cat "$APK" | adb shell pm install -r -S "$size" 2>&1) || {
-      report_failure "pm install -S" "$out"
-      exit 1
-    }
-    printf '%s\n' "$out"
-  }
+# A booted emulator is not yet a ready one. On the coreeq-v1.3.0 tag run the
+# 37.0 preview image reported sys.boot_completed=1, accepted three
+# `settings put` calls, and then lost its system server three seconds into the
+# install: "Failure calling service package: Broken pipe (32)", after which
+# every retry read "Can't find service: package" and the job failed before the
+# APK ever reached the device. The same APK installed on the same image in the
+# push run of the same commit. So before each attempt, wait until the package
+# service answers twice in a row a few seconds apart, which also rides out a
+# system server that restarts once after boot.
+wait_for_package_service() { # <label>
+  local label="$1" deadline=$((SECONDS + 300)) answered=0 out
+  while (( SECONDS < deadline )); do
+    timeout 60 adb wait-for-device || true
+    out=$(adb shell pm path android 2>/dev/null || true)
+    if [[ "$(adb shell getprop sys.boot_completed 2>/dev/null | tr -d '\r')" == "1" && "$out" == *package:* ]]; then
+      answered=$((answered + 1))
+      if (( answered >= 2 )); then
+        return 0
+      fi
+    else
+      answered=0
+    fi
+    sleep 5
+  done
+  echo "::error title=package service not ready (${label})::the emulator's package service did not answer twice in a row within 300 s"
+  return 1
 }
 
+storage_report
+wait_for_package_service "before installing" || exit 1
+if ! install_apk "streaming" -r; then
+  # A system server that restarted under the install leaves the same streaming
+  # install valid once the package service is back, so that is retried first.
+  wait_for_package_service "after the first attempt" || exit 1
+  if ! install_apk "streaming, package service back" -r; then
+    # Preview images ship the package verifier on; a verifier that cannot reach
+    # its service rejects the session with a createSession failure rather than a
+    # readable error. --no-streaming then covers a session failure, and -t a
+    # debug build that AGP marks test-only.
+    adb shell settings put global verifier_verify_adb_installs 0 || true
+    adb shell settings put global package_verifier_enable 0 || true
+    if ! install_apk "no-streaming" --no-streaming -r -t; then
+      # A failed push reported `remote write failed: No space left on device` on
+      # the 37.0 preview image, so clear the staging area, say how much room
+      # /data has, and install straight from stdin instead of copying the APK
+      # into /data/local/tmp first.
+      storage_report
+      adb shell 'rm -rf /data/local/tmp/*' || true
+      wait_for_package_service "before pm install -S" || exit 1
+      size=$(stat -c%s "$APK")
+      out=$(cat "$APK" | adb shell pm install -r -S "$size" 2>&1) || {
+        report_failure "pm install -S" "$out"
+        exit 1
+      }
+      printf '%s\n' "$out"
+    fi
+  fi
+fi
+
+wait_for_package_service "before checking the package" || exit 1
 if ! PATH_OUT=$(adb shell pm path "$PACKAGE" 2>&1); then
   echo "::error title=package not installed::${PACKAGE} is not on the device after installing ${APK}: $(escape "$PATH_OUT")"
   exit 1

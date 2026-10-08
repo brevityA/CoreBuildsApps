@@ -52,6 +52,16 @@ class CoreEqReleaseContract(unittest.TestCase):
         self.assertIn("-partition-size 8192", self.workflow)
         self.assertIn("pm install -r -S", body)
         self.assertIn("::notice title=emulator storage::", body)
+        # The 37.0 preview image has lost its system server seconds after
+        # boot_completed (coreeq-v1.3.0 tag run: "Failure calling service
+        # package: Broken pipe", then "Can't find service: package"). Every
+        # install attempt waits for the package service to answer first.
+        self.assertIn("wait_for_package_service", body)
+        self.assertIn("pm path android", body)
+        self.assertGreaterEqual(body.count('wait_for_package_service "'), 4)
+        first_wait = body.index('wait_for_package_service "before installing"')
+        first_install = body.index('install_apk "streaming" -r')
+        self.assertLess(first_wait, first_install, "the first install must wait for the package service")
 
     def test_preview_sdk_ids_are_covered_by_the_install_fallback(self) -> None:
         """The job states `platforms;android-37`, then has somewhere to go.
