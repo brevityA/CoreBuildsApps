@@ -2,8 +2,9 @@ name: Core EQ APK
 
 # Builds the standalone Core EQ app.
 #
-# CI:       PRs run unit tests, lint, build, then install the APK on Android 11
-#           (API 30) and Android 17 (API 37) emulators.
+# CI:       PRs run unit tests, lint, build, then install the debug APK and a
+#           release-shape APK (production package, runner's debug key) on
+#           Android 11 (API 30) and Android 17 (API 37) emulators.
 # Test:     pushes to main publish a debug-package APK signed by the stable
 #           production certificate, so test builds can update in place.
 # Release:  coreeq-v* tags build the production package with that same
@@ -254,6 +255,33 @@ jobs:
           mkdir -p dist
           cp "$APK" dist/coreeq-debug.apk
           (cd dist && sha256sum coreeq-debug.apk > coreeq-debug.apk.sha256)
+          ls -lh dist/
+
+      # Until coreeq-v1.3.0 the production package met an emulator only on a
+      # tag run, so the tag was the first build to find that its release APK
+      # lost the 37.0 preview's package service mid-install, twice, while the
+      # debug APK of the same commit installed. Pull requests now build the
+      # release variant too and sign it with the runner's debug key (they never
+      # receive the release key), and the install job installs both.
+      - name: Assemble release-shape APK (debug key)
+        if: github.event_name == 'pull_request'
+        run: |
+          set -euo pipefail
+          (cd coreeq && ./gradlew :app:assembleRelease --no-daemon --stacktrace)
+          UNSIGNED=$(find coreeq/app/build/outputs/apk/release -maxdepth 1 -type f -name '*-unsigned.apk' -print -quit)
+          test -n "$UNSIGNED" || { echo "::error::No unsigned release APK was produced."; exit 1; }
+          BUILD_TOOLS="$ANDROID_HOME/build-tools/36.0.0"
+          [[ -x "$BUILD_TOOLS/apksigner" ]] || BUILD_TOOLS="$(dirname "$(find "$ANDROID_HOME/build-tools" -maxdepth 2 -name apksigner -type f 2>/dev/null | sort -V | tail -1)")"
+          test -x "$BUILD_TOOLS/apksigner" && test -x "$BUILD_TOOLS/zipalign" \
+            || { echo "::error::No apksigner/zipalign under $ANDROID_HOME/build-tools."; exit 1; }
+          # assembleDebug above created the runner's debug keystore.
+          KS="$HOME/.android/debug.keystore"
+          test -s "$KS" || { echo "::error::No debug keystore at $KS after assembleDebug."; exit 1; }
+          "$BUILD_TOOLS/zipalign" -f -p 4 "$UNSIGNED" "$RUNNER_TEMP/coreeq-release-aligned.apk"
+          "$BUILD_TOOLS/apksigner" sign --ks "$KS" --ks-pass pass:android \
+            --ks-key-alias androiddebugkey --key-pass pass:android --v4-signing-enabled false \
+            --out dist/coreeq-release-debugkey.apk "$RUNNER_TEMP/coreeq-release-aligned.apk"
+          "$BUILD_TOOLS/apksigner" verify dist/coreeq-release-debugkey.apk
           ls -lh dist/
 
       - name: Upload candidate APK

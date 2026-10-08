@@ -17,22 +17,32 @@
 # downloadable.
 set -euo pipefail
 
-APK=$(find dist -maxdepth 1 -type f -name '*.apk' -print -quit)
-if [[ -z "$APK" ]]; then
+# A tag run downloads the release APK; a pull request the debug APK plus a
+# release-shape APK (the production package, signed with the runner's debug
+# key). Every one of them is installed and checked, release-shape first, so a
+# pull request meets the emulator the way a tag run does before it reaches the
+# debug package.
+mapfile -t APKS < <(find dist -maxdepth 1 -type f -name '*.apk' | LC_ALL=C sort -r)
+if (( ${#APKS[@]} == 0 )); then
   echo "::error::No Core EQ APK artifact was downloaded into dist/"
   exit 1
 fi
 
 # The release package and the debug test package are different ids; installing
 # one and probing the other has to be a failure, not a pass.
-case "$APK" in
-  *coreeq-release.apk) PACKAGE=tv.corebuilds.eq ;;
-  *coreeq-debug.apk) PACKAGE=tv.corebuilds.eq.debug ;;
-  *)
+package_for() { # <apk>
+  case "$1" in
+    *coreeq-release.apk | *coreeq-release-debugkey.apk) echo tv.corebuilds.eq ;;
+    *coreeq-debug.apk) echo tv.corebuilds.eq.debug ;;
+    *) return 1 ;;
+  esac
+}
+for APK in "${APKS[@]}"; do
+  if ! package_for "$APK" >/dev/null; then
     echo "::error::Unexpected Core EQ APK asset: $APK"
     exit 1
-    ;;
-esac
+  fi
+done
 
 escape() { # % , CR and LF are the workflow-command escapes
   local text="$1"
@@ -79,15 +89,40 @@ install_apk() { # <label> <adb args...>
   return 1
 }
 
+# What took the system server down, when one dies under an install. logd
+# outlives the system server, so the crash buffer still holds the stack after
+# it restarts; without it the job log says "Broken pipe" and nothing about why.
+crash_report() { # <label>
+  local label="$1" crash first
+  crash=$(timeout 30 adb logcat -d -b crash 2>&1 || true)
+  echo "::group::crash buffer (${label})"
+  printf '%s\n' "$crash"
+  echo "::endgroup::"
+  echo "::group::package manager and runtime log (${label})"
+  timeout 30 adb logcat -d -b main,system 2>&1 \
+    | grep -E 'AndroidRuntime|PackageManager|PackageInstaller|system_server|SystemServer|Watchdog|FATAL|ArtService|Permission' \
+    | tail -n 200 || true
+  echo "::endgroup::"
+  first="$(printf '%s\n' "$crash" | grep -m4 -E 'FATAL|Exception|Error:|Caused by' || true)"
+  if [[ -n "$first" ]]; then
+    echo "::error title=crash buffer (${label})::$(escape "$first")"
+  else
+    echo "::notice title=crash buffer (${label})::empty"
+  fi
+}
+
 # A booted emulator is not yet a ready one. On the coreeq-v1.3.0 tag run the
 # 37.0 preview image reported sys.boot_completed=1, accepted three
 # `settings put` calls, and then lost its system server three seconds into the
 # install: "Failure calling service package: Broken pipe (32)", after which
 # every retry read "Can't find service: package" and the job failed before the
-# APK ever reached the device. The same APK installed on the same image in the
-# push run of the same commit. So before each attempt, wait until the package
-# service answers twice in a row a few seconds apart, which also rides out a
-# system server that restarts once after boot.
+# APK ever reached the device. A re-run failed the same way, three seconds in
+# again, while the push run of the same commit (which installs the debug APK)
+# and the 1.2.1 tag run (the release APK before it) installed on that image.
+# So before each attempt, wait until the package service answers twice in a
+# row a few seconds apart, which rides out a system server that restarts once
+# after boot; and when an attempt fails, dump the crash buffer, which is what
+# says whether the APK itself is what takes it down.
 wait_for_package_service() { # <label>
   local label="$1" deadline=$((SECONDS + 300)) answered=0 out
   while (( SECONDS < deadline )); do
@@ -107,40 +142,59 @@ wait_for_package_service() { # <label>
   return 1
 }
 
-storage_report
-wait_for_package_service "before installing" || exit 1
-if ! install_apk "streaming" -r; then
-  # A system server that restarted under the install leaves the same streaming
-  # install valid once the package service is back, so that is retried first.
-  wait_for_package_service "after the first attempt" || exit 1
-  if ! install_apk "streaming, package service back" -r; then
-    # Preview images ship the package verifier on; a verifier that cannot reach
-    # its service rejects the session with a createSession failure rather than a
-    # readable error. --no-streaming then covers a session failure, and -t a
-    # debug build that AGP marks test-only.
-    adb shell settings put global verifier_verify_adb_installs 0 || true
-    adb shell settings put global package_verifier_enable 0 || true
-    if ! install_apk "no-streaming" --no-streaming -r -t; then
-      # A failed push reported `remote write failed: No space left on device` on
-      # the 37.0 preview image, so clear the staging area, say how much room
-      # /data has, and install straight from stdin instead of copying the APK
-      # into /data/local/tmp first.
-      storage_report
-      adb shell 'rm -rf /data/local/tmp/*' || true
-      wait_for_package_service "before pm install -S" || exit 1
-      size=$(stat -c%s "$APK")
-      out=$(cat "$APK" | adb shell pm install -r -S "$size" 2>&1) || {
-        report_failure "pm install -S" "$out"
-        exit 1
-      }
-      printf '%s\n' "$out"
+install_one() { # installs $APK and proves $PACKAGE is on the device
+  PACKAGE=$(package_for "$APK")
+  storage_report
+  wait_for_package_service "before installing" || return 1
+  if ! install_apk "streaming" -r; then
+    crash_report "$(basename "$APK"), first attempt"
+    # A system server that restarted under the install leaves the same streaming
+    # install valid once the package service is back, so that is retried first.
+    wait_for_package_service "after the first attempt" || return 1
+    if ! install_apk "streaming, package service back" -r; then
+      # Preview images ship the package verifier on; a verifier that cannot reach
+      # its service rejects the session with a createSession failure rather than a
+      # readable error. --no-streaming then covers a session failure, and -t a
+      # debug build that AGP marks test-only.
+      adb shell settings put global verifier_verify_adb_installs 0 || true
+      adb shell settings put global package_verifier_enable 0 || true
+      if ! install_apk "no-streaming" --no-streaming -r -t; then
+        # A failed push reported `remote write failed: No space left on device` on
+        # the 37.0 preview image, so clear the staging area, say how much room
+        # /data has, and install straight from stdin instead of copying the APK
+        # into /data/local/tmp first.
+        storage_report
+        adb shell 'rm -rf /data/local/tmp/*' || true
+        wait_for_package_service "before pm install -S" || return 1
+        size=$(stat -c%s "$APK")
+        out=$(cat "$APK" | adb shell pm install -r -S "$size" 2>&1) || {
+          report_failure "pm install -S" "$out"
+          crash_report "$(basename "$APK"), last attempt"
+          return 1
+        }
+        printf '%s\n' "$out"
+      fi
     fi
   fi
-fi
 
-wait_for_package_service "before checking the package" || exit 1
-if ! PATH_OUT=$(adb shell pm path "$PACKAGE" 2>&1); then
-  echo "::error title=package not installed::${PACKAGE} is not on the device after installing ${APK}: $(escape "$PATH_OUT")"
+  wait_for_package_service "before checking the package" || return 1
+  if ! PATH_OUT=$(adb shell pm path "$PACKAGE" 2>&1); then
+    echo "::error title=package not installed::${PACKAGE} is not on the device after installing ${APK}: $(escape "$PATH_OUT")"
+    return 1
+  fi
+  printf 'Installed %s as %s\n' "$APK" "$PACKAGE"
+}
+
+failed=()
+for APK in "${APKS[@]}"; do
+  # A plain header, not a ::group::, because the crash dump below opens its
+  # own groups and Actions does not nest them.
+  echo "=== install $(basename "$APK") ==="
+  if ! install_one; then
+    failed+=("$(basename "$APK")")
+  fi
+done
+if (( ${#failed[@]} )); then
+  echo "::error title=Core EQ install smoke::did not install: ${failed[*]}"
   exit 1
 fi
-printf 'Installed %s as %s\n' "$APK" "$PACKAGE"
