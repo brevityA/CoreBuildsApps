@@ -29,6 +29,7 @@ import tv.corebuilds.eq.ui.CurveGraphView
 import tv.corebuilds.eq.ui.QualityText
 import tv.corebuilds.eq.ui.Series
 import tv.corebuilds.eq.ui.correctionIndicator
+import tv.corebuilds.eq.ui.showSwitch
 import tv.corebuilds.eq.update.UpdateChecker
 import tv.corebuilds.eq.update.UpdateInstaller
 import tv.corebuilds.eq.update.UpdatePrefs
@@ -249,10 +250,14 @@ class MainActivity : TvActivity() {
 
     private fun refreshStatus() {
         val on = profileStore.correctionEnabled
-        btnToggle.text = getString(if (on) R.string.correction_on else R.string.correction_off)
+        btnToggle.showSwitch(on, R.string.correction_on, R.string.correction_off)
         val status = profileStore.status()
+        // The switch above already says Off; this line says what Off means
+        // rather than repeating it. Errors always show, whatever the switch.
         textStatus.text = when {
-            status == null -> getString(R.string.correction_off)
+            status?.isError == true -> status.message
+            !on -> getString(R.string.status_correction_off)
+            status == null -> getString(R.string.status_correction_starting)
             else -> status.message
         }
         textStatus.setTextColor(
@@ -364,7 +369,9 @@ class MainActivity : TvActivity() {
             val rt = profile.rt60Seconds?.let { String.format(Locale.US, "RT60 %.2f s", it) } ?: "RT60 unknown"
             val measurementLimit = if (profile.measurementNotes.isNotEmpty()) " · magnitude-only; phase unverified" else ""
             val manual = if (profile.manualFilters.isNotEmpty()) " · ${profile.manualFilters.size} tone bands" else ""
-            textProfileSub.text = QualityText.appendTo(
+            // Quality leads on Home: the line can run to a third line and
+            // ellipsize, and the score is the part worth keeping.
+            textProfileSub.text = QualityText.prependTo(
                 this,
                 "$targetName · ${profile.filters.size} filters$manual · $rt · ${profile.micType} · $outputLabel$measurementLimit",
                 profile.qualityScore

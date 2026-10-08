@@ -15,6 +15,7 @@ import androidx.core.content.ContextCompat
 import tv.corebuilds.eq.apply.EqService
 import tv.corebuilds.eq.apply.LowVolumeBass
 import tv.corebuilds.eq.ui.EnhancedAudioPrefs
+import tv.corebuilds.eq.ui.showSwitch
 
 /**
  * Extra effects: the opt-in layers on top of room correction.
@@ -115,18 +116,12 @@ class EnhancedAudioSettingsActivity : TvActivity() {
     }
 
     private fun refresh() {
-        btnDialogue.text = getString(
-            if (prefs.dialogueBoostEnabled) R.string.extras_dialogue_on else R.string.extras_dialogue_off
-        )
-        btnLowBass.text = getString(
-            if (prefs.lowVolumeBassEnabled) R.string.extras_low_bass_on else R.string.extras_low_bass_off
-        )
+        btnDialogue.showSwitch(prefs.dialogueBoostEnabled, R.string.extras_dialogue_on, R.string.extras_dialogue_off)
+        btnLowBass.showSwitch(prefs.lowVolumeBassEnabled, R.string.extras_low_bass_on, R.string.extras_low_bass_off)
         textLowBassNote.text = lowBassNote()
-        btnBass.text = getString(if (prefs.bassBoostEnabled) R.string.extras_bass_on else R.string.extras_bass_off)
-        btnLoudness.text = getString(
-            if (prefs.loudnessEnhancerEnabled) R.string.extras_loudness_on else R.string.extras_loudness_off
-        )
-        btnNight.text = getString(if (prefs.nightModeEnabled) R.string.extras_night_on else R.string.extras_night_off)
+        btnBass.showSwitch(prefs.bassBoostEnabled, R.string.extras_bass_on, R.string.extras_bass_off)
+        btnLoudness.showSwitch(prefs.loudnessEnhancerEnabled, R.string.extras_loudness_on, R.string.extras_loudness_off)
+        btnNight.showSwitch(prefs.nightModeEnabled, R.string.extras_night_on, R.string.extras_night_off)
     }
 
     /** What the switch does, or, while on, where this output's reference sits and what it adds right now. */

@@ -303,10 +303,15 @@
                     android:id="@+id/btn_update_auto"
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/cb_target_min"
-                    android:background="@drawable/bg_ghost"
+                    android:background="@drawable/bg_toggle"
+                    android:drawableEnd="@drawable/ic_switch"
+                    android:drawablePadding="@dimen/cb_space_sm"
                     android:text="@string/update_auto_on"
-                    android:textColor="@color/cb_slate"
-                    android:textSize="@dimen/cb_text_label"
+                    android:textColor="@color/cb_ink"
+                    android:textSize="@dimen/cb_text_data"
+                    android:gravity="start|center_vertical"
+                    android:paddingStart="@dimen/cb_card_padding"
+                    android:paddingEnd="@dimen/cb_card_padding"
                     android:focusable="true"
                     android:layout_marginTop="@dimen/cb_space_xs" />
 

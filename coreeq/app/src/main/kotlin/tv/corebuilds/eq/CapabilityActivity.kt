@@ -14,6 +14,7 @@ import tv.corebuilds.eq.apply.OutputRoute
 import tv.corebuilds.eq.export.Formats
 import tv.corebuilds.eq.export.ProfileStore
 import tv.corebuilds.eq.mode.ContentModeStore
+import tv.corebuilds.eq.ui.showSwitch
 import tv.corebuilds.eq.update.UpdateChecker
 import tv.corebuilds.eq.update.UpdateInstaller
 import tv.corebuilds.eq.update.UpdatePrefs
@@ -100,9 +101,7 @@ class CapabilityActivity : TvActivity() {
     }
 
     private fun refreshAutoButton() {
-        btnUpdateAuto.text = getString(
-            if (updatePrefs.checksEnabled) R.string.update_auto_on else R.string.update_auto_off
-        )
+        btnUpdateAuto.showSwitch(updatePrefs.checksEnabled, R.string.update_auto_on, R.string.update_auto_off)
     }
 
     private fun runUpdateCheck() {

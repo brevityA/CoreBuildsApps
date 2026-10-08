@@ -36,6 +36,10 @@
 
     <!-- Minimum touch / D-pad target -->
     <dimen name="cb_target_min">48dp</dimen>
+    <!-- Home menu rows: six of them, two headings and the profile card must
+         share 540dp with the header, so these sit a little under cb_target_min.
+         Focus is by D-pad, and every row keeps the full focus ring. -->
+    <dimen name="cb_menu_row">44dp</dimen>
     <dimen name="cb_button_min_width">220dp</dimen>
 
     <!-- Type scale: 12sp floor for 10-foot TV readability -->

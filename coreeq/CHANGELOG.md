@@ -56,6 +56,29 @@ must never land there. Releases are `coreeq-v<version>` tags (see
   written into a profile, backup or export.
 - The Extra effects **Loudness** switch is now **Loudness enhancer**, its
   Android effect name, so it cannot be mistaken for low-volume bass.
+- **Home fits on one screen.** At 1080p, Home showed 3 of its 8 menu rows
+  without scrolling. The active profile, its quality score, Correction, Mode
+  and Re-measure are now one card at the top. The six other screens are a
+  menu grouped under **Sound** (Manual EQ, Extra effects, Content type) and
+  **Set up** (Profiles, Capability, Display calibration). The graph takes
+  whatever height is left, so the status line under it is no longer cut
+  off. While correction is off, the status line says what Off means
+  instead of repeating "Correction: Off".
+- **Every on/off switch shows its state.** Correction and the switches on
+  Extra effects, Profiles, Mode, Capability and Content type have a
+  switch drawn at the end of the row and a cyan-tinted background when on.
+  Until now, the only sign of state was the word at the end of the label.
+- **Button labels are in sentence case.** Android's default button style
+  capitalised every label, which wrapped "LOW-VOLUME BASS: OFF" and similar
+  labels onto two lines.
+- **Content type is a grid of ten chips** with the selection filled. It
+  no longer dims the other nine to 60%, uses no emoji, and fits without
+  scrolling. Auto-detect sits beside Done.
+- **Display calibration's panel sits inside the screen edges.** It ran to
+  the left, right and bottom edges, where TV overscan can cut text. It now
+  keeps the same 48dp side and 24dp bottom gutters as every other screen.
+  Its buttons have side padding (their labels touched their borders), and
+  the panel uses the app's type and spacing tokens instead of fixed sizes.
 
 ### Removed
 

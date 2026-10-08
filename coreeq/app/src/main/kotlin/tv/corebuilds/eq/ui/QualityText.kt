@@ -40,6 +40,14 @@ object QualityText {
         return out
     }
 
+    /** "Quality 78/100 · good · " in the tier colour, then [base]; [base] alone without a score. */
+    fun prependTo(context: Context, base: CharSequence, score: Int?): CharSequence {
+        if (score == null) return base
+        val out = SpannableStringBuilder(text(context, score))
+        out.setSpan(ForegroundColorSpan(color(context, score)), 0, out.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+        return out.append(" · ").append(base)
+    }
+
     private fun gradeRes(score: Int): Int = when (MeasurementQuality.grade(score)) {
         MeasurementQuality.Grade.EXCELLENT -> R.string.quality_excellent
         MeasurementQuality.Grade.GOOD -> R.string.quality_good

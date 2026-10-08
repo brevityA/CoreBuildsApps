@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  A switch row (1.3.0). Off looks like any card; on is tinted cyan with a
+  cyan edge, so the state reads from across the room before the words do.
+  Focus keeps the Brand Guide §05 ring in both states.
+-->
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:state_activated="true" android:state_focused="true">
+        <shape android:shape="rectangle">
+            <solid android:color="@color/cb_card_focus" />
+            <stroke android:width="@dimen/cb_focus_ring" android:color="@color/cb_glow_cyan" />
+            <corners android:radius="@dimen/cb_radius_card" />
+        </shape>
+    </item>
+    <item android:state_activated="true">
+        <shape android:shape="rectangle">
+            <solid android:color="@color/cb_toggle_on" />
+            <stroke android:width="1dp" android:color="@color/cb_toggle_on_edge" />
+            <corners android:radius="@dimen/cb_radius_card" />
+        </shape>
+    </item>
+    <item android:state_focused="true">
+        <shape android:shape="rectangle">
+            <solid android:color="@color/cb_card_focus" />
+            <stroke android:width="@dimen/cb_focus_ring" android:color="@color/cb_signal_cyan" />
+            <corners android:radius="@dimen/cb_radius_card" />
+        </shape>
+    </item>
+    <item>
+        <shape android:shape="rectangle">
+            <solid android:color="@color/cb_card_surface" />
+            <stroke android:width="1dp" android:color="@color/cb_hairline" />
+            <corners android:radius="@dimen/cb_radius_card" />
+        </shape>
+    </item>
+</selector>

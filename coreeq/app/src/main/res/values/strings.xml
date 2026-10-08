@@ -1,22 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Core EQ</string>
-    <string name="app_tagline">Equaliser built from this room</string>
-    <string name="home_desc">A sine sweep out, the remote microphone listening, a curve you can read before you trust it.</string>
-    <string name="active_profile">Active profile</string>
     <string name="no_profile">No measurement yet</string>
     <string name="no_profile_sub">Measure this room or open Manual EQ to create a profile.</string>
     <string name="output_profile_missing_name">No profile for this output</string>
     <string name="output_profile_missing_sub">Nothing measured for %1$s. Measure it or connect an output with a saved profile.</string>
-    <string name="output_profile_unknown_sub">Android could not identify the current output. Core EQ will not guess a known-output room curve; connect a recognized output or measure while this output is unknown.</string>
+    <string name="output_profile_unknown_sub">Android did not name this output, so no saved profile is guessed for it. Measure here or switch to a known output.</string>
     <string name="profile_not_active_on_output">This profile does not match the current output. It is preview/export only and will not be applied here.</string>
     <string name="action_measure">Measure</string>
     <string name="action_remeasure">Re-measure</string>
     <string name="action_tv_export">Export for TV settings</string>
     <string name="platform_eq_title">Live engine bands when applied · profile preview otherwise · gain in dB</string>
-    <string name="action_manual_eq">Manual EQ · 10-band tone control</string>
-    <string name="action_content_modes">Content modes · Movie, Everyday, Gaming</string>
-    <string name="home_mode_button">Mode · %1$s</string>
+    <string name="action_manual_eq">Manual EQ</string>
+    <string name="home_mode_button">Mode: %1$s</string>
     <string name="mode_title">Core EQ · Content modes</string>
     <string name="mode_heading">Choose how TV audio should sound</string>
     <string name="mode_subtitle">Room correction stays the base for each output. Each selected mode adds its own tone layer; automatic app switching is best-effort while correction runs.</string>
@@ -94,6 +90,9 @@
     <!-- Correction switch -->
     <string name="correction_on">Correction: On</string>
     <string name="correction_off">Correction: Off</string>
+    <!-- Home's status line while the switch is off: what Off means, not Off again -->
+    <string name="status_correction_off">Nothing is applied: audio plays exactly as it would without Core EQ.</string>
+    <string name="status_correction_starting">Starting audio correction…</string>
 
     <!-- Correction indicator badge (Home screen, under the switch) -->
     <string name="indicator_live">PLAYING · COVERAGE UNKNOWN</string>
@@ -177,7 +176,7 @@
     <!-- Content type / use-case selection -->
     <string name="content_type_heading">Content type optimization</string>
     <string name="content_type_subtitle">Choose what you watch most. This sets how strong the optional Extra effects are (bass boost, loudness); with both off it changes nothing. Room correction is the same for every type. Auto-detect recognizes 40+ streaming apps.</string>
-    <string name="action_extras">Extra effects  ·  Dialogue, bass, loudness, night</string>
+    <string name="action_extras">Extra effects</string>
     <string name="extras_kicker">Core EQ · Extra effects</string>
     <string name="extras_heading">Extra effects</string>
     <string name="extras_subtitle">Optional layers on top of room correction. All off by default; each change applies at once. Your measured correction is never changed here.</string>
@@ -200,7 +199,6 @@
     <string name="extras_low_bass_flat">nothing added at or above the reference</string>
     <string name="extras_low_bass_unknown">Android does not report this output\'s volume in dB (a fixed-volume output, such as a soundbar that keeps its own volume over HDMI-CEC), so there is nothing to follow and nothing is added.</string>
     <string name="extras_night_note">Pulls loud passages down: limiter from -12 dB at 4:1. Needs the DynamicsProcessing engine; Home names the engine in use, and says when night mode cannot run.</string>
-    <string name="content_type_current">%1$s  %2$s</string>
     <string name="content_type_auto_on">Auto-detect: On · %1$d known apps · switches when a recognized app starts playing</string>
     <string name="content_type_auto_off">Auto-detect: Off · using your manual selection</string>
     <string name="content_type_auto_on_btn">Auto-detect: On</string>
@@ -212,11 +210,13 @@
     <string name="profiles_announce_off">Notice when a profile is applied: Off</string>
 
     <!-- Screen labels moved out of layouts (1.3.0) -->
-    <string name="home_kicker">Core EQ · tv.corebuilds.eq</string>
-    <string name="action_profiles">Profiles  ·  Saved corrections</string>
-    <string name="action_capability">Capability  ·  What this device will accept</string>
-    <string name="action_display_calibration">Display calibration  ·  Test patterns</string>
-    <string name="action_content_type">Content type  ·  Movies, Anime, Gaming</string>
+    <string name="home_kicker">Core EQ · Equaliser built from this room</string>
+    <string name="menu_sound">Sound</string>
+    <string name="menu_setup">Set up</string>
+    <string name="action_profiles">Profiles</string>
+    <string name="action_capability">Capability</string>
+    <string name="action_display_calibration">Display calibration</string>
+    <string name="action_content_type">Content type</string>
     <string name="manual_kicker">Core EQ · Manual tone</string>
     <string name="content_type_kicker">Core EQ · Content type</string>
     <string name="measure_step_1">STEP 1</string>

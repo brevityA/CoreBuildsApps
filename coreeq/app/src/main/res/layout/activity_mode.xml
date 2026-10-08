@@ -69,7 +69,7 @@
                 android:layout_marginTop="@dimen/cb_space_sm"
                 android:background="@drawable/bg_chip_toggle"
                 android:text="@string/mode_movie_tv"
-                android:textColor="@color/cb_ink"
+                android:textColor="@color/chip_text"
                 android:textSize="@dimen/cb_text_data"
                 android:focusable="true" />
 
@@ -80,7 +80,7 @@
                 android:layout_marginTop="@dimen/cb_space_xs"
                 android:background="@drawable/bg_chip_toggle"
                 android:text="@string/mode_everyday"
-                android:textColor="@color/cb_ink"
+                android:textColor="@color/chip_text"
                 android:textSize="@dimen/cb_text_data"
                 android:focusable="true" />
 
@@ -91,7 +91,7 @@
                 android:layout_marginTop="@dimen/cb_space_xs"
                 android:background="@drawable/bg_chip_toggle"
                 android:text="@string/mode_gaming"
-                android:textColor="@color/cb_ink"
+                android:textColor="@color/chip_text"
                 android:textSize="@dimen/cb_text_data"
                 android:focusable="true" />
 
@@ -100,7 +100,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/cb_target_min"
                 android:layout_marginTop="@dimen/cb_space_md"
-                android:background="@drawable/bg_card"
+                android:background="@drawable/bg_toggle"
+                android:drawableEnd="@drawable/ic_switch"
+                android:drawablePadding="@dimen/cb_space_sm"
                 android:text="@string/mode_auto_off"
                 android:textColor="@color/cb_ink"
                 android:textSize="@dimen/cb_text_data"

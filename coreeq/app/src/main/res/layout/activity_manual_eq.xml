@@ -81,7 +81,7 @@
                 android:layout_marginTop="@dimen/cb_space_sm"
                 android:background="@drawable/bg_chip_toggle"
                 android:text="@string/manual_eq_choose_preset_default"
-                android:textColor="@color/cb_ink"
+                android:textColor="@color/chip_text"
                 android:textSize="@dimen/cb_text_data"
                 android:focusable="true" />
 

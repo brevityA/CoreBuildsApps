@@ -15,6 +15,7 @@ import tv.corebuilds.eq.apply.DumpsysDiscovery
 import tv.corebuilds.eq.apply.EqService
 import tv.corebuilds.eq.mode.ContentMode
 import tv.corebuilds.eq.mode.ContentModeStore
+import tv.corebuilds.eq.ui.showSwitch
 
 /** Remote-first controls for manual mode selection and best-effort app rules. */
 class ModeActivity : TvActivity() {
@@ -111,7 +112,7 @@ class ModeActivity : TvActivity() {
         btnMovie.isActivated = decision.mode == ContentMode.MOVIE_TV
         btnEveryday.isActivated = decision.mode == ContentMode.EVERYDAY
         btnGaming.isActivated = decision.mode == ContentMode.GAMING
-        btnAuto.setText(if (modeStore.automaticSwitching()) R.string.mode_auto_on else R.string.mode_auto_off)
+        btnAuto.showSwitch(modeStore.automaticSwitching(), R.string.mode_auto_on, R.string.mode_auto_off)
         btnOverridePolicy.setText(
             if (modeStore.stickyManualOverride()) R.string.mode_override_sticky else R.string.mode_override_temporary
         )

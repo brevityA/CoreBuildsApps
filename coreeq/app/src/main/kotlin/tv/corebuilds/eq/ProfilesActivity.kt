@@ -23,6 +23,7 @@ import tv.corebuilds.eq.mode.ContentModeStore
 import tv.corebuilds.eq.ui.CurveGraphView
 import tv.corebuilds.eq.ui.QualityText
 import tv.corebuilds.eq.ui.Series
+import tv.corebuilds.eq.ui.showSwitch
 import java.util.Locale
 
 class ProfilesActivity : TvActivity() {
@@ -86,9 +87,7 @@ class ProfilesActivity : TvActivity() {
 
     /** The service reads this each time it would show the "profile applied" toast. */
     private fun refreshAnnounce() {
-        btnAnnounce.text = getString(
-            if (profileStore.announceApplied) R.string.profiles_announce_on else R.string.profiles_announce_off
-        )
+        btnAnnounce.showSwitch(profileStore.announceApplied, R.string.profiles_announce_on, R.string.profiles_announce_off)
     }
 
     private fun setupExportChips() {
