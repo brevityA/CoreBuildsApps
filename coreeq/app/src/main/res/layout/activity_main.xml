@@ -77,6 +77,57 @@
             android:layout_marginStart="@dimen/cb_space_xs" />
     </LinearLayout>
 
+    <!-- 1.3.2: the on-screen card needs "Display over other apps", and until
+         now only Profiles asked for it, so the card fell back to a text toast
+         on TVs that never opened Profiles. GONE while the card can be drawn,
+         while the notice is off, or once Later was pressed. Same shape as the
+         update bar above. -->
+    <LinearLayout
+        android:id="@+id/card_permission_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:background="@drawable/bg_card"
+        android:padding="@dimen/cb_card_padding"
+        android:visibility="gone"
+        android:layout_marginTop="@dimen/cb_space_sm">
+
+        <TextView
+            android:id="@+id/card_permission_text"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/home_card_permission"
+            android:textColor="@color/cb_ink"
+            android:textSize="@dimen/cb_text_data" />
+
+        <Button
+            android:id="@+id/card_permission_allow"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/cb_target_min"
+            android:minWidth="120dp"
+            android:background="@drawable/bg_cta"
+            android:text="@string/home_card_allow"
+            android:textColor="@color/cta_text"
+            android:textSize="@dimen/cb_text_label"
+            android:textStyle="bold"
+            android:focusable="true"
+            android:layout_marginStart="@dimen/cb_space_sm" />
+
+        <Button
+            android:id="@+id/card_permission_later"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/cb_target_min"
+            android:minWidth="96dp"
+            android:background="@drawable/bg_ghost"
+            android:text="@string/update_later"
+            android:textColor="@color/ghost_text"
+            android:textSize="@dimen/cb_text_label"
+            android:focusable="true"
+            android:layout_marginStart="@dimen/cb_space_xs" />
+    </LinearLayout>
+
     <!-- Active profile and its controls, one row -->
     <LinearLayout
         android:id="@+id/card_active_profile"

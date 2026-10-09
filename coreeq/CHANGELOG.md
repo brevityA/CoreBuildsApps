@@ -25,6 +25,21 @@ must never land there. Releases are `coreeq-v<version>` tags (see
   Profiles work the score out from each profile's saved SNR, so profiles
   from 1.3.0 and 1.3.1 show the new score too. The correction itself is
   unchanged.
+### Fixed
+
+- **Home asks for the on-screen card's permission.** The card needs
+  "Display over other apps", and only Profiles asked for it. A TV that never
+  opened Profiles got a short text toast where the card should be. Home now
+  shows a bar while the notice is on and the card cannot be drawn, with
+  **Allow**, which opens Android's screen for it, and **Later**, which is
+  remembered. On a TV with no such screen, the bar shows the one-line ADB
+  command instead. Profiles keeps its own button.
+- **No screen is cut off on a TV that keeps a status or navigation bar.**
+  Core EQ sized its 960 × 540dp layout box by the window's width alone, so a
+  projector or box running a phone-style Android build, with a window of
+  1920 × 1032 rather than 1920 × 1080, lost the bottom of every screen: on
+  Home, the Display calibration row. The box now fits whichever side runs out
+  first.
 
 ## [1.3.1] — 2026-10-09
 

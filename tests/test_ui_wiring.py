@@ -294,10 +294,24 @@ def collect() -> list[str]:
           "AuditorActivity: back must leave the QR panel before the screen")
     check("R.string.audit_issue_url_fmt" in auditor and "URLEncoder.encode" in auditor,
           "AuditorActivity: deep link must come from the generated fmt, URL-encoded")
-    check('assets.open("appfilter.xml")' in auditor,
-          "AuditorActivity: the diff target must be the bundled appfilter asset")
-    check("queryIntentActivities" in auditor and "itemAnimator = null" in auditor,
-          "AuditorActivity: scan via queryIntentActivities, list without item animator")
+    # The scan is AppAudit, shared by the auditor's list and the home screen's
+    # Missing icons count so the two can never disagree.
+    app_audit = read(ROOT / "app" / "src" / "main" / "java" / "tv" / "corebuilds"
+                     / "iconpack" / "AppAudit.kt")
+    check('assets.open("appfilter.xml")' in app_audit,
+          "AppAudit: the diff target must be the bundled appfilter asset")
+    check("queryIntentActivities" in app_audit,
+          "AppAudit: scan via queryIntentActivities")
+    check("CATEGORY_LEANBACK_LAUNCHER to true" in app_audit
+          and app_audit.index("CATEGORY_LEANBACK_LAUNCHER") < app_audit.index("CATEGORY_LAUNCHER to false"),
+          "AppAudit: the leanback pass must run first, so the TV entry decides")
+    check("Kind.NOT_APPLYING" in app_audit and "Kind.NO_ICON" in app_audit,
+          "AppAudit: a package mapped under another activity must stay its own kind")
+    check("AppAudit.scan(" in auditor and "itemAnimator = null" in auditor,
+          "AuditorActivity: list the AppAudit scan, without item animator")
+    check("AppAudit.scan(" in main and "R.id.missing_entry" in main
+          and "AuditorActivity::class.java" in main,
+          "MainActivity: the Missing icons row must open the auditor with AppAudit's count")
     check("R.id.set_audit_row)" in settings_kt,
           "SettingsActivity: audit row not wired")
     for layout in (settings_layout,):

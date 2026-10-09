@@ -255,6 +255,8 @@
     <string name="profiles_card_test_off">Correction is off, so there is nothing to show. Switch it on from Home, then try again.</string>
     <string name="card_test_waiting">Core EQ is waiting for a player: nothing is applied yet, so there is no card to show.</string>
     <string name="profiles_card_no_settings">This TV has no screen for that permission. From a computer with ADB: adb shell appops set %1$s SYSTEM_ALERT_WINDOW allow</string>
+    <string name="home_card_permission">The on-screen card needs “Display over other apps”. Until it is allowed, a short text toast says the same.</string>
+    <string name="home_card_allow">Allow</string>
 
     <!-- Screen labels moved out of layouts (1.3.0) -->
     <string name="home_kicker">Core EQ · Equaliser built from this room</string>
