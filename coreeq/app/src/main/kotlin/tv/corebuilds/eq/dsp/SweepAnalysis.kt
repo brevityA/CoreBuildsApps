@@ -66,6 +66,15 @@ object SweepAnalysis {
     private const val NOISE_TO_S = -0.02
     private const val RT60_TOP_DB = -5.0
     private const val RT60_BOTTOM_DB = -25.0
+    /**
+     * The tail at the bottom of the fit must clear the noise floor by this much
+     * in the raw signal. Below it, noise subtraction dominates the late energy
+     * and the fit reads short: a 1.4 s decay measured about 1.1 s at 20 dB SNR
+     * (replication, 1.3.2 review). The gate was chosen against that replication
+     * so that fits at 30 dB SNR and above, which were within a few percent,
+     * are kept.
+     */
+    private const val RT60_BOTTOM_MARGIN_DB = 6.0
     private const val RT60_MAX_TAIL_S = 1.5
     private const val PRE_SECONDS = 0.002
     private const val ALIGN_LO_HZ = 300.0
@@ -169,7 +178,8 @@ object SweepAnalysis {
      * within 3 dB of the noise floor, the noise power is subtracted before
      * the backward integration (so it cannot flatten the decay), and a room
      * whose decay never reaches -25 dB above the noise returns null rather
-     * than a guess.
+     * than a guess, and so does a fit whose bottom sits within
+     * [RT60_BOTTOM_MARGIN_DB] of the noise floor (1.3.2).
      */
     fun rt60Seconds(ir: DoubleArray, peak: Int, fs: Int, noisePower: Double): Double? {
         val maxLen = min(ir.size - peak, (RT60_MAX_TAIL_S * fs).toInt())
@@ -191,16 +201,19 @@ object SweepAnalysis {
         if (energy[0] <= 0.0) return null
         var n = 0; var sx = 0.0; var sy = 0.0; var sxx = 0.0; var sxy = 0.0
         var reachedBottom = false
+        var bottomK = -1
         for (k in 0 until cut) {
             if (energy[k] <= 0.0) break
             val db = 10.0 * log10(energy[k] / energy[0])
-            if (db < RT60_BOTTOM_DB) { reachedBottom = true; break }
+            if (db < RT60_BOTTOM_DB) { reachedBottom = true; bottomK = k; break }
             if (db <= RT60_TOP_DB) {
                 val t = k.toDouble() / fs
                 n++; sx += t; sy += db; sxx += t * t; sxy += t * db
             }
         }
         if (!reachedBottom || n < 8) return null
+        val rawBottom = meanSquare(ir, peak + bottomK, peak + bottomK + block)
+        if (rawBottom < noisePower * Math.pow(10.0, RT60_BOTTOM_MARGIN_DB / 10.0)) return null
         val denom = n * sxx - sx * sx
         if (denom <= 0.0) return null
         val slope = (n * sxy - sx * sy) / denom

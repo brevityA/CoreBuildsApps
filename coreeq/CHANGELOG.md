@@ -8,6 +8,14 @@ must never land there. Releases are `coreeq-v<version>` tags (see
 
 ## [Unreleased]
 
+### Fixed
+
+- **A decay fit near the noise floor no longer counts.** The recording
+  score gives its decay share to any RT60 the analysis fits. A fit whose
+  bottom sat close to the noise read short (about 1.1 s for a 1.4 s decay at
+  20 dB SNR), so it now returns no fit when the tail there is under 6 dB over
+  the noise.
+
 ### Changed
 
 - **The score grades the recording, not your room.** The 0-100 score

@@ -70,6 +70,24 @@ class SweepAnalysisTest {
     }
 
     @Test
+    fun aFitIsOnlyAcceptedWhenItIsAccurate() {
+        // A tail that sits near the noise floor reads short (a 1.4 s decay
+        // measured about 1.1 s at 20 dB SNR in the replication), so the gate
+        // refuses it. Raise the noise: the analysis either refuses the sweep or
+        // returns null, or any fit it still returns must be close to the true
+        // 0.5 s.
+        for (noise in listOf(-70.0, -60.0, -55.0, -50.0, -45.0, -40.0)) {
+            val result = try {
+                SweepAnalysis.analyze(capture(room = reverbRoom(0.5), noiseDbfs = noise), capFs, "flat", 54.0)
+            } catch (e: MeasurementException) {
+                continue
+            }
+            val rt60 = result.rt60Seconds ?: continue
+            assertEquals("fit at noise $noise dBFS", 0.5, rt60, 0.1)
+        }
+    }
+
+    @Test
     fun aRoomModeShowsUpAndIsCut() {
         // Differential: the same reverberant room with and without an 80 Hz
         // mode, so the room's own colouring cancels out of the comparison.
