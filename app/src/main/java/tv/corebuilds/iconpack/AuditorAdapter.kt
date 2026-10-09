@@ -43,8 +43,19 @@ class AuditorAdapter(
     /** Adapter position of the first row, for initial focus. */
     val firstRowPosition: Int get() = entries.indexOfFirst { it is Entry.Row }.coerceAtLeast(0)
 
-    class HeaderVH(view: View) : RecyclerView.ViewHolder(view)
-    class RowVH(view: View) : RecyclerView.ViewHolder(view)
+    class HeaderVH(view: View) : RecyclerView.ViewHolder(view) {
+        val title: TextView = view.findViewById(R.id.audit_header_title)
+        val sub: TextView = view.findViewById(R.id.audit_header_sub)
+    }
+
+    class RowVH(view: View) : RecyclerView.ViewHolder(view) {
+        val icon: ImageView = view.findViewById(R.id.audit_item_icon)
+        val label: TextView = view.findViewById(R.id.audit_item_label)
+        val tags: TextView = view.findViewById(R.id.audit_item_tags)
+        val pkg: TextView = view.findViewById(R.id.audit_item_pkg)
+        val mapped: TextView = view.findViewById(R.id.audit_item_mapped)
+        val action: TextView = view.findViewById(R.id.audit_item_action)
+    }
 
     override fun getItemViewType(position: Int): Int =
         if (entries[position] is Entry.Header) TYPE_HEADER else TYPE_ROW
@@ -62,45 +73,44 @@ class AuditorAdapter(
         val context = holder.itemView.context
         when (val entry = entries[position]) {
             is Entry.Header -> {
+                val h = holder as HeaderVH
                 val notApplying = entry.kind == AppAudit.Kind.NOT_APPLYING
-                holder.itemView.findViewById<TextView>(R.id.audit_header_title).text =
-                    context.getString(
-                        if (notApplying) R.string.audit_section_not_applying_fmt
-                        else R.string.audit_section_no_icon_fmt,
-                        entry.count
-                    )
-                holder.itemView.findViewById<TextView>(R.id.audit_header_sub).setText(
+                h.title.text = context.getString(
+                    if (notApplying) R.string.audit_section_not_applying_fmt
+                    else R.string.audit_section_no_icon_fmt,
+                    entry.count
+                )
+                h.sub.setText(
                     if (notApplying) R.string.audit_section_not_applying_sub
                     else R.string.audit_section_no_icon_sub
                 )
             }
             is Entry.Row -> {
+                val r = holder as RowVH
                 val item = entry.item
-                val row = holder.itemView
-                row.findViewById<TextView>(R.id.audit_item_label).text = item.label
-                row.findViewById<TextView>(R.id.audit_item_tags).text = tags(context, item)
-                row.findViewById<TextView>(R.id.audit_item_pkg).text = item.component
-                val mapped = row.findViewById<TextView>(R.id.audit_item_mapped)
+                r.label.text = item.label
+                r.tags.text = tags(context, item)
+                r.pkg.text = item.component
                 if (item.mapped && item.mappedAs.isNotEmpty()) {
-                    mapped.text = context.getString(R.string.audit_mapped_as_fmt,
-                                                    shortActivity(item.pkg, item.mappedAs.first()))
-                    mapped.visibility = View.VISIBLE
+                    r.mapped.text = context.getString(R.string.audit_mapped_as_fmt,
+                                                      shortActivity(item.pkg, item.mappedAs.first()))
+                    r.mapped.visibility = View.VISIBLE
                 } else {
-                    mapped.visibility = View.GONE
+                    r.mapped.visibility = View.GONE
                 }
-                row.findViewById<TextView>(R.id.audit_item_action).setText(
+                r.action.setText(
                     if (item.mapped) R.string.audit_action_report else R.string.audit_action_request
                 )
                 val icon = icons.getOrPut(item.pkg) {
                     runCatching { pm.getApplicationIcon(item.pkg) }.getOrNull()
                 }
-                row.findViewById<ImageView>(R.id.audit_item_icon).setImageDrawable(icon)
-                row.contentDescription = context.getString(
+                r.icon.setImageDrawable(icon)
+                r.itemView.contentDescription = context.getString(
                     if (item.mapped) R.string.audit_row_report_cd_fmt
                     else R.string.audit_row_request_cd_fmt,
                     item.label
                 )
-                row.setOnClickListener { onPick(item) }
+                r.itemView.setOnClickListener { onPick(item) }
             }
         }
     }

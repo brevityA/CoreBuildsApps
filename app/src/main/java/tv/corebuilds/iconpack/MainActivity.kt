@@ -1136,14 +1136,19 @@ class MainActivity : TvActivity() {
      * since the last visit shows up without a restart, and the parsed
      * appfilter is cached for the process, so a repeat costs only the
      * PackageManager query. A failed scan leaves the row as a plain way in.
+     * Two quick resumes start two scans; only the latest one may write, so
+     * a slower, older scan cannot put a stale count back on the badge.
      */
+    private var missingScanGeneration = 0
+
     private fun refreshMissingCount() {
         val sub = findViewById<TextView>(R.id.missing_entry_sub)
         val badge = findViewById<TextView>(R.id.missing_entry_count)
+        val generation = ++missingScanGeneration
         Thread {
             val result = runCatching { AppAudit.scan(applicationContext) }.getOrNull()
             runOnUiThread {
-                if (isFinishing || isDestroyed) return@runOnUiThread
+                if (isFinishing || isDestroyed || generation != missingScanGeneration) return@runOnUiThread
                 val missing = result?.items?.size
                 when {
                     missing == null -> {

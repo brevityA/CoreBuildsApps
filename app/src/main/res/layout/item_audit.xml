@@ -73,7 +73,7 @@
             android:layout_marginTop="2dp"
             android:ellipsize="middle"
             android:fontFamily="monospace"
-            android:maxLines="1"
+            android:singleLine="true"
             android:textColor="@color/cb_slate"
             android:textSize="@dimen/cb_text_data" />
 
@@ -84,7 +84,7 @@
             android:layout_marginTop="2dp"
             android:ellipsize="middle"
             android:fontFamily="monospace"
-            android:maxLines="1"
+            android:singleLine="true"
             android:textColor="@color/cb_warning"
             android:textSize="@dimen/cb_text_data"
             android:visibility="gone" />
