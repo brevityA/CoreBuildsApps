@@ -1,15 +1,17 @@
 {
-  "versionCode": 6,
-  "versionName": "1.2.1",
-  "releaseDate": "2026-10-07",
+  "versionCode": 8,
+  "versionName": "1.3.1",
+  "releaseDate": "2026-10-09",
   "apkUrl": "https://github.com/brevityA/CoreBuildsApps/releases/download/coreeq/coreeq-release.apk",
-  "apkSha256": "2174c84f14de31d63a9ed6213e6bcdebe735ca7d9e2d356bc629812053c3077d",
-  "releaseNotesUrl": "https://github.com/brevityA/CoreBuildsApps/releases/tag/coreeq-v1.2.1",
+  "apkSha256": "5a205db402c1eb947ece86b3f09d3c065ac43868fb472b976261a053b17e8134",
+  "releaseNotesUrl": "https://github.com/brevityA/CoreBuildsApps/releases/tag/coreeq-v1.3.1",
   "minSdk": 30,
   "highlights": [
-    "Updating no longer changes your sound.",
-    "Room correction is precise again.",
-    "Several players at once.",
-    "Extra effects screen"
+    "Every sweep gets a quality score",
+    "Dialogue boost",
+    "Low-volume bass",
+    "An on-screen card when correction takes effect",
+    "Home warns about HDMI bitstream",
+    "Every screen fits a 1080p TV"
   ]
 }
