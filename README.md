@@ -11,10 +11,11 @@
 ![Android TV](https://img.shields.io/badge/Android_TV-Leanback-8a4890.svg)
 [![Discord](https://img.shields.io/badge/Discord-Core_Builds-5865F2?logo=discord&logoColor=white)](https://discord.gg/AwJ49yzbqT)
 [![Reddit](https://img.shields.io/badge/Reddit-r%2FCoreBuilds-FF4500?logo=reddit&logoColor=white)](https://www.reddit.com/r/CoreBuilds/)
+[![Ko-fi](https://img.shields.io/badge/Ko--fi-Support_Core_Builds-FF5E5B?logo=kofi&logoColor=white)](https://ko-fi.com/branding_brevity)
 
 </div>
 
-Five apps for Android TV and Google TV, and one for your phone. Each installs from a Downloader code, and the table shows every app's current release. Every app has a short card on this page and a full guide in [`docs/apps/`](docs/apps/). Community: **[Discord](https://discord.gg/AwJ49yzbqT)** · **[r/CoreBuilds](https://www.reddit.com/r/CoreBuilds/)**.
+Five apps for Android TV and Google TV, and one for your phone. Each installs from a Downloader code, and the table shows every app's current release. Every app has a short card on this page and a full guide in [`docs/apps/`](docs/apps/). Community: **[Discord](https://discord.gg/AwJ49yzbqT)** · **[r/CoreBuilds](https://www.reddit.com/r/CoreBuilds/)**. Every app is free; if one earns a place on your TV, you can support it on **[Ko-fi](https://ko-fi.com/branding_brevity)**.
 
 ---
 
@@ -139,4 +140,4 @@ Icon-pack conventions follow [Projectivy Icon Pack](https://github.com/SicMundus
 
 *Retired September 2026: Core Builds Pixel Neon and Core Builds Pop. The suite keeps one icon pack; their last releases stay under their tags in [Releases](../../releases).*
 
-Part of the [Core Builds](https://github.com/brevityA/Core-Builds) ecosystem · [Discord](https://discord.gg/AwJ49yzbqT) · [r/CoreBuilds](https://www.reddit.com/r/CoreBuilds/) · [ko-fi.com/branding_brevity](https://ko-fi.com/branding_brevity)
+Part of the [Core Builds](https://github.com/brevityA/Core-Builds) ecosystem · [Discord](https://discord.gg/AwJ49yzbqT) · [r/CoreBuilds](https://www.reddit.com/r/CoreBuilds/) · [Ko-fi](https://ko-fi.com/branding_brevity)
