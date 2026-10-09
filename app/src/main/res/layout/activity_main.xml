@@ -6,7 +6,7 @@
 
   LEFT RAIL (cb_rail_width, fixed): the sheet's vertical stack - cyan caps
   wordmark and the icon/component count, the Apply CTA with the detected
-  launchers under it, the three entry rows with their subtitles, and the
+  launchers under it, the entry rows with one-line subtitles, and the
   ALSO APPLIES TO kicker over its launcher chips. The rail has the panel's full
   height to spend, so the rows carry title over subtitle exactly as drawn.
 
@@ -21,7 +21,7 @@
   that is wider than the rail and more urgent than the grid.
 
   Focus: one vertical chain, apply_button -> update_bar -> the rail's rows
-  (art style, wallpapers, settings, about) ->
+  (art style, missing icons, wallpapers, then settings | about on one row) ->
   the band -> search -> chip_row -> grid, with LEFT/RIGHT crossing between rail
   and pane geometrically. update_bar and apply_targets_band are GONE unless
   something shows them and focusable="false" while hidden, because
@@ -165,11 +165,24 @@
         android:baselineAligned="false"
         android:orientation="horizontal">
 
-        <!-- LEFT RAIL -->
-        <LinearLayout
+        <!-- LEFT RAIL. A ScrollView, because the rail's height depends on
+             what the device shows: the launcher note under Apply runs to
+             three lines with no supported launcher, and ALSO APPLIES TO adds
+             a band with a second one. On a 540dp panel that pushed the last
+             row past the bottom edge with no way to reach it. A ScrollView
+             scrolls to whatever takes focus, so D-pad DOWN always lands on
+             a visible row; when everything fits it is inert. -->
+        <ScrollView
             android:layout_width="@dimen/cb_rail_width"
             android:layout_height="match_parent"
             android:layout_marginEnd="@dimen/cb_space_md"
+            android:fillViewport="true"
+            android:overScrollMode="never"
+            android:scrollbars="none">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:orientation="vertical">
 
             <TextView
@@ -247,7 +260,7 @@
                     android:gravity="center_vertical"
                     android:minHeight="@dimen/cb_target_min"
                     android:nextFocusUp="@id/update_bar"
-                    android:nextFocusDown="@id/wallpapers_entry"
+                    android:nextFocusDown="@id/missing_entry"
                     android:orientation="horizontal"
                     android:padding="@dimen/cb_card_padding">
 
@@ -270,6 +283,8 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="3dp"
+                            android:ellipsize="end"
+                            android:maxLines="1"
                             android:textColor="@color/cb_slate"
                             android:textSize="@dimen/cb_text_data" />
                     </LinearLayout>
@@ -283,6 +298,73 @@
                         android:focusable="false" />
                 </LinearLayout>
 
+                <!-- Missing icons, on the home screen rather than only in
+                     Settings: the scan is how a person gets an app added, so
+                     it sits under Art style with this TV's count on it. The
+                     count comes from the same AppAudit scan the screen lists,
+                     run off the main thread on every resume, so it is right
+                     after an install without a restart. -->
+                <LinearLayout
+                    android:id="@+id/missing_entry"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/cb_space_xs"
+                    android:background="@drawable/bg_card"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:focusableInTouchMode="true"
+                    android:gravity="center_vertical"
+                    android:minHeight="@dimen/cb_target_min"
+                    android:nextFocusUp="@id/style_entry"
+                    android:nextFocusDown="@id/wallpapers_entry"
+                    android:orientation="horizontal"
+                    android:padding="@dimen/cb_card_padding">
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="@string/missing_entry"
+                            android:textColor="@color/cb_ink"
+                            android:textSize="@dimen/cb_text_body"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:id="@+id/missing_entry_sub"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="3dp"
+                            android:ellipsize="end"
+                            android:maxLines="1"
+                            android:text="@string/missing_entry_scanning"
+                            android:textColor="@color/cb_slate"
+                            android:textSize="@dimen/cb_text_data" />
+                    </LinearLayout>
+
+                    <TextView
+                        android:id="@+id/missing_entry_count"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/cb_space_sm"
+                        android:background="@drawable/bg_chip"
+                        android:fontFamily="monospace"
+                        android:gravity="center"
+                        android:minWidth="36dp"
+                        android:paddingStart="@dimen/cb_space_xs"
+                        android:paddingEnd="@dimen/cb_space_xs"
+                        android:paddingTop="4dp"
+                        android:paddingBottom="4dp"
+                        android:textColor="@color/cb_signal_cyan"
+                        android:textSize="@dimen/cb_text_label"
+                        android:textStyle="bold"
+                        android:visibility="gone" />
+                </LinearLayout>
+
                 <LinearLayout
                     android:id="@+id/wallpapers_entry"
                     android:layout_width="match_parent"
@@ -293,7 +375,7 @@
                     android:focusableInTouchMode="true"
                     android:layout_marginTop="@dimen/cb_space_xs"
                     android:minHeight="@dimen/cb_target_min"
-                    android:nextFocusUp="@id/style_entry"
+                    android:nextFocusUp="@id/missing_entry"
                     android:nextFocusDown="@id/settings_entry"
                     android:orientation="vertical"
                     android:padding="@dimen/cb_card_padding">
@@ -311,72 +393,84 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="3dp"
+                        android:ellipsize="end"
+                        android:maxLines="1"
                         android:textColor="@color/cb_slate"
                         android:textSize="@dimen/cb_text_data" />
                 </LinearLayout>
 
+                <!-- Settings and About share one row: each is a single word
+                     that says what it opens, and the rail needs the height for
+                     Missing icons. LEFT/RIGHT moves between the two; the
+                     version rides on About as a mono suffix. -->
                 <LinearLayout
-                    android:id="@+id/settings_entry"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/cb_space_xs"
-                    android:background="@drawable/bg_card"
-                    android:clickable="true"
-                    android:focusable="true"
-                    android:focusableInTouchMode="true"
-                    android:minHeight="@dimen/cb_target_min"
-                    android:nextFocusUp="@id/wallpapers_entry"
-                    android:nextFocusDown="@id/about_entry"
-                    android:orientation="vertical"
-                    android:padding="@dimen/cb_card_padding">
+                    android:baselineAligned="false"
+                    android:orientation="horizontal">
 
                     <TextView
-                        android:layout_width="match_parent"
+                        android:id="@+id/settings_entry"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_marginEnd="@dimen/cb_space_xs"
+                        android:background="@drawable/bg_card"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:focusableInTouchMode="true"
+                        android:gravity="center_vertical"
+                        android:minHeight="@dimen/cb_target_min"
+                        android:nextFocusUp="@id/wallpapers_entry"
+                        android:nextFocusDown="@id/apply_targets"
+                        android:nextFocusRight="@id/about_entry"
+                        android:paddingStart="@dimen/cb_card_padding"
+                        android:paddingEnd="@dimen/cb_card_padding"
                         android:text="@string/settings_label"
                         android:textColor="@color/cb_ink"
                         android:textSize="@dimen/cb_text_body"
                         android:textStyle="bold" />
 
-                    <TextView
-                        android:layout_width="match_parent"
+                    <LinearLayout
+                        android:id="@+id/about_entry"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="3dp"
-                        android:text="@string/settings_entry_sub"
-                        android:textColor="@color/cb_slate"
-                        android:textSize="@dimen/cb_text_data" />
-                </LinearLayout>
+                        android:layout_weight="1"
+                        android:background="@drawable/bg_card"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:focusableInTouchMode="true"
+                        android:gravity="center_vertical"
+                        android:minHeight="@dimen/cb_target_min"
+                        android:nextFocusUp="@id/wallpapers_entry"
+                        android:nextFocusDown="@id/apply_targets"
+                        android:nextFocusLeft="@id/settings_entry"
+                        android:orientation="horizontal"
+                        android:paddingStart="@dimen/cb_card_padding"
+                        android:paddingEnd="@dimen/cb_card_padding">
 
-                <LinearLayout
-                    android:id="@+id/about_entry"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/cb_space_xs"
-                    android:background="@drawable/bg_card"
-                    android:clickable="true"
-                    android:focusable="true"
-                    android:focusableInTouchMode="true"
-                    android:minHeight="@dimen/cb_target_min"
-                    android:nextFocusUp="@id/settings_entry"
-                    android:nextFocusDown="@id/apply_targets"
-                    android:orientation="vertical"
-                    android:padding="@dimen/cb_card_padding">
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/about_label"
+                            android:textColor="@color/cb_ink"
+                            android:textSize="@dimen/cb_text_body"
+                            android:textStyle="bold" />
 
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="@string/about_label"
-                        android:textColor="@color/cb_ink"
-                        android:textSize="@dimen/cb_text_body"
-                        android:textStyle="bold" />
-
-                    <TextView
-                        android:id="@+id/about_entry_sub"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="3dp"
-                        android:textColor="@color/cb_slate"
-                        android:textSize="@dimen/cb_text_data" />
+                        <TextView
+                            android:id="@+id/about_entry_sub"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:layout_marginStart="@dimen/cb_space_xs"
+                            android:ellipsize="end"
+                            android:fontFamily="monospace"
+                            android:gravity="end"
+                            android:maxLines="1"
+                            android:textColor="@color/cb_slate"
+                            android:textSize="@dimen/cb_text_data" />
+                    </LinearLayout>
                 </LinearLayout>
             </LinearLayout>
 
@@ -414,11 +508,12 @@
                     android:clipToPadding="false"
                     android:descendantFocusability="afterDescendants"
                     android:focusable="false"
-                    android:nextFocusUp="@id/about_entry"
+                    android:nextFocusUp="@id/settings_entry"
                     android:nextFocusDown="@id/search"
                     android:orientation="horizontal" />
             </LinearLayout>
         </LinearLayout>
+        </ScrollView>
 
         <!-- RIGHT PANE -->
         <LinearLayout

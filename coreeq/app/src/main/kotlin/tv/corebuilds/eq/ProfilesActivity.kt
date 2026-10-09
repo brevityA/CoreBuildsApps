@@ -1,9 +1,6 @@
 package tv.corebuilds.eq
 
-import android.content.ActivityNotFoundException
-import android.content.Intent
 import android.os.Bundle
-import android.provider.Settings
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,7 +8,6 @@ import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
 import androidx.core.content.ContextCompat
-import androidx.core.net.toUri
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import tv.corebuilds.eq.apply.EqService
@@ -25,6 +21,7 @@ import tv.corebuilds.eq.export.ProfileStore
 import tv.corebuilds.eq.mode.ContentMode
 import tv.corebuilds.eq.mode.ContentModeStore
 import tv.corebuilds.eq.ui.CurveGraphView
+import tv.corebuilds.eq.ui.OverlayPermission
 import tv.corebuilds.eq.ui.QualityText
 import tv.corebuilds.eq.ui.Series
 import tv.corebuilds.eq.ui.showSwitch
@@ -105,7 +102,7 @@ class ProfilesActivity : TvActivity() {
     private fun refreshAnnounce() {
         val on = profileStore.announceApplied
         btnAnnounce.showSwitch(on, R.string.profiles_announce_on, R.string.profiles_announce_off)
-        val allowed = Settings.canDrawOverlays(this)
+        val allowed = OverlayPermission.allowed(this)
         textAnnounceCard.setText(
             when {
                 !on -> R.string.profiles_card_off
@@ -132,9 +129,7 @@ class ProfilesActivity : TvActivity() {
 
     /** Android's own "Display over other apps" screen for Core EQ, or the ADB line where a TV has none. */
     private fun openOverlaySettings() {
-        try {
-            startActivity(Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION, "package:$packageName".toUri()))
-        } catch (e: ActivityNotFoundException) {
+        if (!OverlayPermission.open(this)) {
             textAnnounceCard.text = getString(R.string.profiles_card_no_settings, packageName)
         }
     }

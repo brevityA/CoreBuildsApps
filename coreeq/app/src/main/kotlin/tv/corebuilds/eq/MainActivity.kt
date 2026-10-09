@@ -26,6 +26,7 @@ import tv.corebuilds.eq.mode.ContentModeStore
 import tv.corebuilds.eq.ui.BandSlidersView
 import tv.corebuilds.eq.ui.CorrectionIndicator
 import tv.corebuilds.eq.ui.CurveGraphView
+import tv.corebuilds.eq.ui.OverlayPermission
 import tv.corebuilds.eq.ui.QualityText
 import tv.corebuilds.eq.ui.Series
 import tv.corebuilds.eq.ui.correctionIndicator
@@ -54,6 +55,7 @@ class MainActivity : TvActivity() {
     private lateinit var updateBarText: TextView
     private lateinit var updateBarInstall: Button
     private lateinit var updatePrefs: UpdatePrefs
+    private lateinit var cardPermissionBar: View
     private var pendingUpdate: UpdateChecker.Result.Available? = null
     private var updateChecked = false
     private var pulse: ObjectAnimator? = null
@@ -88,6 +90,7 @@ class MainActivity : TvActivity() {
         updateBar = findViewById(R.id.update_bar)
         updateBarText = findViewById(R.id.update_bar_text)
         updateBarInstall = findViewById(R.id.update_bar_install)
+        cardPermissionBar = findViewById(R.id.card_permission_bar)
 
         findViewById<Button>(R.id.btn_remeasure).setOnClickListener {
             startActivity(Intent(this, MeasureActivity::class.java))
@@ -119,11 +122,41 @@ class MainActivity : TvActivity() {
             updateBar.visibility = View.GONE
         }
 
+        findViewById<Button>(R.id.card_permission_allow).setOnClickListener { allowCard(it) }
+        findViewById<Button>(R.id.card_permission_later).setOnClickListener {
+            profileStore.cardPromptDismissed = true
+            cardPermissionBar.visibility = View.GONE
+        }
+
         findViewById<Button>(R.id.btn_remeasure).requestFocus()
+    }
+
+    /**
+     * Home's bar for the on-screen card (1.3.2): shown while the notice is on
+     * and Android will not let Core EQ draw over other apps. Re-read on every
+     * resume, so coming back from the permission screen hides it.
+     */
+    private fun refreshCardPermissionBar() {
+        val visible = OverlayPermission.homePromptVisible(
+            noticeOn = profileStore.announceApplied,
+            allowed = OverlayPermission.allowed(this),
+            dismissed = profileStore.cardPromptDismissed
+        )
+        cardPermissionBar.visibility = if (visible) View.VISIBLE else View.GONE
+    }
+
+    /** Android's screen for the permission, or the ADB line where this TV has none. */
+    private fun allowCard(allow: View) {
+        if (OverlayPermission.open(this)) return
+        findViewById<TextView>(R.id.card_permission_text).text =
+            getString(R.string.profiles_card_no_settings, packageName)
+        allow.visibility = View.GONE
+        findViewById<Button>(R.id.card_permission_later).requestFocus()
     }
 
     override fun onResume() {
         super.onResume()
+        refreshCardPermissionBar()
         ContextCompat.registerReceiver(
             this, statusReceiver, IntentFilter(EqService.ACTION_STATUS_CHANGED), ContextCompat.RECEIVER_NOT_EXPORTED
         )

@@ -131,6 +131,11 @@ def load_strings() -> dict[str, str]:
             raw = re.sub(r"\s+", " ", "".join(element.itertext())).strip()
             # strings.xml escapes apostrophes; the TextView shows them bare.
             out[element.get("name")] = raw.replace("\\'", "'")
+        elif element.tag == "plurals":
+            # One entry per quantity, as `name#one` / `name#other`.
+            for item in element:
+                raw = re.sub(r"\s+", " ", "".join(item.itertext())).strip()
+                out[f"{element.get('name')}#{item.get('quantity')}"] = raw.replace("\\'", "'")
     return out
 
 
@@ -529,8 +534,17 @@ def entry_row_lines(sub: str, with_switch: bool = False) -> list[str]:
     inset = dp(DIMENS["cb_card_padding"])
     probe = ImageDraw.Draw(Image.new("RGBA", (8, 8)))
     slot = dp(SWITCH_SLOT_DP) if with_switch else 0
-    return wrap(probe, sub, font("mono", DIMENS["cb_text_data"]),
-                dp(DIMENS["cb_rail_width"]) - 2 * inset - slot)
+    f = font("mono", DIMENS["cb_text_data"])
+    width = dp(DIMENS["cb_rail_width"]) - 2 * inset - slot
+    lines = wrap(probe, sub, f, width)
+    # Since 2.1.3 every rail subtitle is maxLines="1" ellipsize="end", so the
+    # rail keeps its rows when a fifth one (Missing icons) joins them.
+    if len(lines) > 1:
+        line = lines[0]
+        while line and text_width(probe, line + "\u2026", f) > width:
+            line = line[:-1]
+        lines = [line.rstrip() + "\u2026"]
+    return lines
 
 
 def entry_row_height(sub: str, with_switch: bool = False) -> int:
@@ -540,7 +554,7 @@ def entry_row_height(sub: str, with_switch: bool = False) -> int:
 
 
 def entry_row(img: Image.Image, box, title: str, sub: str, focused: bool = False,
-              switch: bool | None = None) -> None:
+              switch: bool | None = None, badge: str | None = None) -> None:
     """One of the rail's entry cards: title over subtitle, as the sheet draws
     them - the rail is the one place with the height for both lines. `switch`
     is the Art style row's state; None for the plain rows."""
@@ -552,11 +566,21 @@ def entry_row(img: Image.Image, box, title: str, sub: str, focused: bool = False
     inset = dp(DIMENS["cb_card_padding"])
     draw_text(draw, (box[0] + inset, box[1] + inset), title,
               font("sans", DIMENS["cb_text_body"], bold=True), colour("cb_ink"))
-    for i, line in enumerate(entry_row_lines(sub, switch is not None)):
+    for i, line in enumerate(entry_row_lines(sub, switch is not None or badge is not None)):
         draw_text(draw, (box[0] + inset, box[1] + inset + dp(23) + i * dp(17)),
                   line, font("mono", DIMENS["cb_text_data"]), colour("cb_slate"))
     if switch is not None:
         draw_switch(draw, box[2] - inset - dp(46), (box[1] + box[3]) // 2 - dp(11), switch)
+    if badge is not None:
+        # missing_entry_count: a cyan mono count in a chip, right-aligned.
+        fb = font("mono", DIMENS["cb_text_label"], bold=True)
+        bw = max(dp(36), text_width(draw, badge, fb) + 2 * dp(DIMENS["cb_space_xs"]))
+        bh = dp(DIMENS["cb_text_label"]) + dp(12)
+        bx, by = box[2] - inset - bw, (box[1] + box[3]) // 2 - bh // 2
+        rrect(draw, [bx, by, bx + bw, by + bh], bh // 2, fill=(0x14, 0x20, 0x2B),
+              outline=(0x00, 0xD4, 0xFF, 0x55), width=dp(1))
+        draw_text(draw, (bx + bw / 2, by + bh / 2), badge, fb, colour("cb_signal_cyan"),
+                  anchor="mm")
 
 
 def rail_box() -> tuple[int, int, int]:
@@ -699,19 +723,37 @@ def catalogue_frame(with_update_bar: bool) -> tuple[Image.Image, str]:
     tile_h = dp(DIMENS["cb_tile_icon"]) + 2 * dp(DIMENS["cb_card_padding"])
     # (title, subtitle, switch state or None), in activity_main.xml's order.
     # The Art style row shows the shipped default, Banners (switch on).
+    # Missing icons shows an example count (a real scan counts this TV's apps).
+    missing = len(AUDIT_EXAMPLES)
     rows = [
-        (STRINGS["art_style_label"], STRINGS["art_style_banners"], True),
-        (STRINGS["wp_entry"], fmt(STRINGS["wp_entry_sub_fmt"], len(WALLPAPERS)), None),
-        (STRINGS["settings_label"], STRINGS["settings_entry_sub"], None),
-        (STRINGS["about_label"],
-         fmt(STRINGS["about_entry_sub_fmt"], VERSION["versionName"]), None),
+        (STRINGS["art_style_label"], STRINGS["art_style_banners"], True, None),
+        (STRINGS["missing_entry"], STRINGS["missing_entry_sub"], None, str(missing)),
+        (STRINGS["wp_entry"], fmt(STRINGS["wp_entry_sub_fmt"], len(WALLPAPERS)), None, None),
     ]
-    for index, (title, sub_text, state) in enumerate(rows):
-        h = entry_row_height(sub_text, state is not None)
+    for index, (title, sub_text, state, badge) in enumerate(rows):
+        h = entry_row_height(sub_text, state is not None or badge is not None)
         entry_row(img, [g, ry, rail_r, ry + h], title, sub_text,
-                  focused=(index == 0 and not with_update_bar), switch=state)
+                  focused=(index == 0 and not with_update_bar), switch=state, badge=badge)
         # The rows sit cb_space_xs apart, as the layout's margins space them.
         ry += h + dp(DIMENS["cb_space_xs"])
+    # Settings | About: one row of two single-line cards, About carrying the
+    # version as a mono suffix.
+    half = (rail_r - g - dp(DIMENS["cb_space_xs"])) // 2
+    inset = dp(DIMENS["cb_card_padding"])
+    f_title = font("sans", DIMENS["cb_text_body"], bold=True)
+    for i, (title, suffix) in enumerate((
+        (STRINGS["settings_label"], None),
+        (STRINGS["about_label"], fmt(STRINGS["about_entry_sub_fmt"], VERSION["versionName"])),
+    )):
+        x0 = g + i * (half + dp(DIMENS["cb_space_xs"]))
+        box = [x0, ry, x0 + half, ry + row_h]
+        card(img, box)
+        draw_text(draw, (x0 + inset, ry + row_h / 2), title, f_title, colour("cb_ink"),
+                  anchor="lm")
+        if suffix:
+            draw_text(draw, (x0 + half - inset, ry + row_h / 2), suffix, f_data,
+                      colour("cb_slate"), anchor="rm")
+    ry += row_h + dp(DIMENS["cb_space_xs"])
     ry += gap - dp(DIMENS["cb_space_xs"])
     if not with_update_bar:
         draw_text(draw, (g, ry + dp(4)), STRINGS["cta_also_applies"],
@@ -1023,39 +1065,105 @@ def faq_frame() -> tuple[Image.Image, str]:
     return img, note
 
 
+# Example rows for the auditor frames and the home screen's Missing icons
+# count: (label, component, kind, tv app, preinstalled, what the pack maps
+# instead). A real scan lists this TV's apps.
+AUDIT_EXAMPLES = [
+    ("Speedtest", "com.rma.speedtesttv/com.rma.speedtesttv.ui.SplashActivity",
+     "not_applying", True, False, ".MainActivity"),
+    ("TiviMate IPTV Player", "ar.tvplayer/ar.tvplayer.tv.ui.MainActivity",
+     "no_icon", True, False, None),
+    ("XCIPTV Player", "com.otg.xciptv/com.otg.xciptv.activity.SplashActivity",
+     "no_icon", True, False, None),
+    ("File Manager", "com.sdmc.filemanager/com.sdmc.filemanager.MainActivity",
+     "no_icon", False, True, None),
+]
+
+
+def app_icon_placeholder(img: Image.Image, box, label: str) -> None:
+    """Where the row shows the app's own launcher icon (PackageManager's, so
+    not reproducible here): a neutral tile with the label's initial."""
+    draw = ImageDraw.Draw(img, "RGBA")
+    rrect(draw, box, dp(8), fill=(0x22, 0x2C, 0x3A))
+    f = font("sans", DIMENS["cb_text_body"], bold=True)
+    draw_text(draw, ((box[0] + box[2]) / 2, (box[1] + box[3]) / 2), label[:1], f,
+              colour("cb_slate"), anchor="mm")
+
+
+def audit_row(img: Image.Image, y: int, example, focused: bool) -> int:
+    label, component, kind, tv, system, mapped_as = example
+    draw = ImageDraw.Draw(img, "RGBA")
+    g = dp(DIMENS["cb_gutter_side"])
+    lines = 3 if kind == "not_applying" else 2
+    row_h = dp(20) + lines * dp(19) + dp(4)
+    box = [g, y, W - g, y + row_h]
+    (focus_ring if focused else card)(img, box)
+    pad = dp(DIMENS["cb_card_padding"])
+    icon = dp(40)
+    app_icon_placeholder(img, [g + pad, y + (row_h - icon) // 2,
+                               g + pad + icon, y + (row_h - icon) // 2 + icon], label)
+    tx = g + pad + icon + dp(DIMENS["cb_space_sm"])
+    f_label = font("sans", DIMENS["cb_text_body"], bold=True)
+    f_tag = font("mono", DIMENS["cb_text_kicker"])
+    f_pkg = font("mono", DIMENS["cb_text_data"])
+    ty = y + dp(10)
+    draw_text(draw, (tx, ty), label, f_label, colour("cb_ink"))
+    tags = [STRINGS["audit_tag_tv"] if tv else STRINGS["audit_tag_phone"]]
+    if system:
+        tags.append(STRINGS["audit_tag_system"])
+    draw_text(draw, (tx + text_width(draw, label, f_label) + dp(DIMENS["cb_space_sm"]),
+                     ty + dp(5)), " \u00b7 ".join(tags), f_tag, colour("cb_slate"))
+    draw_text(draw, (tx, ty + dp(23)), component, f_pkg, colour("cb_slate"))
+    if kind == "not_applying":
+        draw_text(draw, (tx, ty + dp(42)), fmt(STRINGS["audit_mapped_as_fmt"], mapped_as),
+                  f_pkg, colour("cb_warning"))
+    action = STRINGS["audit_action_report" if kind == "not_applying" else "audit_action_request"]
+    fa = font("mono", DIMENS["cb_text_kicker"], bold=True)
+    aw = text_width(draw, action, fa) + 2 * dp(DIMENS["cb_space_sm"])
+    ah = dp(DIMENS["cb_text_kicker"]) + dp(14)
+    ax, ay = W - g - pad - aw, y + (row_h - ah) // 2
+    rrect(draw, [ax, ay, ax + aw, ay + ah], ah // 2, fill=(0x14, 0x20, 0x2B),
+          outline=(0x00, 0xD4, 0xFF, 0x55), width=dp(1))
+    draw_text(draw, (ax + aw / 2, ay + ah / 2), action, fa, colour("cb_signal_cyan"),
+              anchor="mm")
+    return row_h
+
+
+def audit_section(draw, y: int, title: str, sub: str) -> int:
+    g = dp(DIMENS["cb_gutter_side"])
+    y += dp(DIMENS["cb_space_md"])
+    draw_text(draw, (g, y), title, font("mono", DIMENS["cb_text_kicker"], bold=True),
+              colour("cb_signal_cyan"))
+    draw_text(draw, (g, y + dp(18)), sub, font("sans", DIMENS["cb_text_data"]),
+              colour("cb_slate"))
+    return dp(DIMENS["cb_space_md"]) + dp(40)
+
+
 def auditor_frames() -> list[tuple[Image.Image, str]]:
-    examples = [
-        ("TiviMate IPTV Player", "ar.tvplayer/ar.tvplayer.tv.ui.MainActivity"),
-        ("IPTV Smarters Pro", "com.whatsapp.iptv.smarters.activity.MainActivity"),
-        ("XCIPTV Player", "com.otg.xciptv.activity.SplashActivity"),
-    ]
+    checked = 41
     img = new_frame()
     draw = ImageDraw.Draw(img, "RGBA")
     top = header(img, STRINGS["audit_kicker"], STRINGS["audit_title"],
-                 fmt(STRINGS["audit_count_fmt"], len(examples)))
-    g = dp(DIMENS["cb_gutter_side"])
-    y = top + dp(10)
-    f_label = font("sans", DIMENS["cb_text_body"], bold=True)
-    f_pkg = font("mono", DIMENS["cb_text_data"])
-    for index, (label, component) in enumerate(examples):
-        row_h = dp(64)
-        if index == 0:
-            focus_ring(img, [g, y, W - g, y + row_h])
-            inner = dp(DIMENS["cb_focus_inset"])
-        else:
-            card(img, [g, y, W - g, y + row_h])
-            inner = dp(DIMENS["cb_focus_inset"])
-        draw_text(draw, (g + inner + dp(8), y + inner + dp(2)), label, f_label,
-                  colour("cb_ink"))
-        draw_text(draw, (g + inner + dp(8), y + inner + dp(30)), component, f_pkg,
-                  colour("cb_slate"))
-        y += row_h + dp(8)
-    list_note = ("MOCKUP - auditor frame from activity_auditor.xml + strings.xml; "
-                 "example: the three unmapped rows (a real scan lists this TV's apps)")
+                 fmt(STRINGS["audit_count_fmt"], checked))
+    y = top
+    first = True
+    for kind, title_key, sub_key in (
+        ("not_applying", "audit_section_not_applying_fmt", "audit_section_not_applying_sub"),
+        ("no_icon", "audit_section_no_icon_fmt", "audit_section_no_icon_sub"),
+    ):
+        rows = [e for e in AUDIT_EXAMPLES if e[2] == kind]
+        y += audit_section(draw, y, fmt(STRINGS[title_key], len(rows)), STRINGS[sub_key])
+        for example in rows:
+            y += audit_row(img, y, example, focused=first) + dp(6)
+            first = False
+    list_note = ("MOCKUP - auditor frame from activity_auditor.xml + item_audit*.xml + "
+                 "strings.xml; example rows and count (a real scan lists this TV's apps; "
+                 "the tile stands in for each app's own launcher icon)")
     frames = [(img, list_note)]
 
-    # QR panel: the same generated deep link the screen builds, really scannable.
-    label, component = examples[0]
+    # QR panel: the same generated deep link the screen builds, really
+    # scannable, beside the request's identity - two columns, as the layout.
+    label, component = AUDIT_EXAMPLES[1][0], AUDIT_EXAMPLES[1][1]
     note_text = f"Scanned on Example TV, Android 14, pack {VERSION['versionName']}"
     url = fmt(
         STRINGS["audit_issue_url_fmt"],
@@ -1065,27 +1173,45 @@ def auditor_frames() -> list[tuple[Image.Image, str]]:
     img = new_frame()
     draw = ImageDraw.Draw(img, "RGBA")
     top = header(img, STRINGS["audit_kicker"], STRINGS["audit_title"])
-    qr = qrcode.QRCode(error_correction=ERROR_CORRECT_M,
-                       box_size=8, border=4)
+    g = dp(DIMENS["cb_gutter_side"])
+    size = dp(DIMENS["cb_qr_size"])
+    qx = W - g - size
+    panel_top = top + dp(DIMENS["cb_space_md"])
+    panel_h = H - dp(16) - panel_top
+    qy = panel_top + (panel_h - size) // 2
+    qr = qrcode.QRCode(error_correction=ERROR_CORRECT_M, box_size=8, border=4)
     qr.add_data(url)
     qr.make(fit=True)
     qr_img = qr.make_image(fill_color="black", back_color="white").convert("RGB")
-    size = dp(330)
-    qr_img = qr_img.resize((size, size), Image.NEAREST)
-    px, py = (W - size) // 2, top + dp(20)
-    img.paste(qr_img, (px, py))
-    f_url = font("mono", DIMENS["cb_text_data"])
-    url_lines = wrap(draw, url, f_url, W - 2 * g)[:2]
-    if len(wrap(draw, url, f_url, W - 2 * g)) > 2:
-        url_lines[-1] = url_lines[-1][: -1] + "…"
-    for i, line in enumerate(url_lines):
-        draw_text(draw, (W // 2, py + size + dp(14) + i * dp(18)), line, f_url,
-                  colour("cb_slate"), anchor="ma")
+    img.paste(qr_img.resize((size, size), Image.NEAREST), (qx, qy))
+    col_w = qx - dp(DIMENS["cb_space_lg"]) - g
+    ly = qy + dp(10)
+    draw_text(draw, (g, ly), STRINGS["audit_qr_kind_request"].upper(),
+              font("mono", DIMENS["cb_text_kicker"], bold=True), colour("cb_signal_cyan"))
+    ly += dp(26)
+    pad = dp(DIMENS["cb_card_padding"])
+    card_h = 2 * pad + dp(64)
+    card(img, [g, ly, g + col_w, ly + card_h])
+    app_icon_placeholder(img, [g + pad, ly + pad, g + pad + dp(64), ly + pad + dp(64)], label)
+    tx = g + pad + dp(64) + dp(DIMENS["cb_space_sm"])
+    draw_text(draw, (tx, ly + pad + dp(6)), label,
+              font("sans", DIMENS["cb_text_section"], bold=True), colour("cb_ink"))
+    f_data = font("mono", DIMENS["cb_text_data"])
+    for i, line in enumerate(wrap(draw, component, f_data, g + col_w - pad - tx)[:2]):
+        draw_text(draw, (tx, ly + pad + dp(32) + i * dp(18)), line, f_data, colour("cb_slate"))
+    ly += card_h + dp(DIMENS["cb_space_md"])
     f_hint = font("sans", DIMENS["cb_text_data"])
-    hint_top = py + size + dp(14) + len(url_lines) * dp(18) + dp(10)
-    for i, line in enumerate(wrap(draw, STRINGS["audit_qr_hint"], f_hint, dp(620))):
-        draw_text(draw, (W // 2, hint_top + i * dp(19)), line, f_hint,
-                  colour("cb_slate"), anchor="ma")
+    for i, line in enumerate(wrap(draw, STRINGS["audit_qr_hint"], f_hint, col_w)):
+        draw_text(draw, (g, ly + i * dp(21)), line, f_hint, colour("cb_ink"))
+        last = ly + i * dp(21)
+    ly = last + dp(21) + dp(DIMENS["cb_space_sm"])
+    f_url = font("mono", DIMENS["cb_text_kicker"])
+    url_lines = wrap(draw, url, f_url, col_w)
+    shown = url_lines[:2]
+    if len(url_lines) > 2:
+        shown[-1] = shown[-1][:-1] + "\u2026"
+    for i, line in enumerate(shown):
+        draw_text(draw, (g, ly + i * dp(16)), line, f_url, colour("cb_slate"))
     qr_note = ("MOCKUP panel with a REAL scannable QR of an EXAMPLE prefilled issue URL "
                "(issue_prefill.xml fmt + URL-encoded args, as AuditorActivity builds it)")
     frames.append((img, qr_note))
