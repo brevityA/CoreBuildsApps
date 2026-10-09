@@ -8,6 +8,15 @@ must never land there. Releases are `coreeq-v<version>` tags (see
 
 ## [Unreleased]
 
+### Fixed
+
+- **No screen is cut off on a TV that keeps a status or navigation bar.**
+  Core EQ sized its 960 × 540dp layout box by the window's width alone, so a
+  projector or box running a phone-style Android build, with a window of
+  1920 × 1032 rather than 1920 × 1080, lost the bottom of every screen: on
+  Home, the Display calibration row. The box now fits whichever side runs out
+  first.
+
 ## [1.3.1] — 2026-10-09
 
 The first published build with the 1.3.0 changes. The `coreeq-v1.3.0` tag
