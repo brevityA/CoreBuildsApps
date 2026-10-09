@@ -85,17 +85,36 @@ class AuditorActivity : TvActivity() {
         // first row just received; there is nothing here worth animating.
         list.itemAnimator = null
 
+        // Say what is happening until the scan lands. The screen used to stay
+        // blank until then, which on a slow box with many apps reads as a
+        // screen that does not work.
+        findViewById<TextView>(R.id.audit_count).setText(R.string.audit_scanning)
+
         // Off the main thread: the scan reads and regex-walks the whole
         // appfilter asset (~1800 components) and loads a label per
         // launchable app, and that is not frame-budget work on a TV CPU.
+        // An exception here (an app with broken resources, a failed binder
+        // call) used to end the whole app from this thread; it now ends the
+        // scan with its cause on screen.
         Thread {
-            val items = scan()
-            runOnUiThread { if (!isFinishing && !isDestroyed) showScan(items) }
+            val result = runCatching { scan() }
+            runOnUiThread {
+                if (isFinishing || isDestroyed) return@runOnUiThread
+                result.fold({ showScan(it) }, { showScanError(it) })
+            }
         }.start()
+    }
+
+    private fun showScanError(error: Throwable) {
+        findViewById<TextView>(R.id.audit_count).visibility = View.GONE
+        val cause = error.javaClass.simpleName + (error.message?.let { ": $it" } ?: "")
+        empty.text = getString(R.string.audit_scan_failed_fmt, cause)
+        empty.visibility = View.VISIBLE
     }
 
     private fun showScan(items: List<AuditItem>) {
         if (items.isEmpty()) {
+            findViewById<TextView>(R.id.audit_count).visibility = View.GONE
             empty.visibility = View.VISIBLE
             return
         }

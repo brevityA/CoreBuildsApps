@@ -236,6 +236,8 @@
     <string name="audit_title">Apps without a Core Builds icon</string>
     <string name="audit_count_fmt">%1$d launchable apps on this TV have no icon yet</string>
     <string name="audit_empty">Every launchable app on this TV is mapped. Nothing to request.</string>
+    <string name="audit_scanning">Scanning the apps on this TV…</string>
+    <string name="audit_scan_failed_fmt">The scan stopped before it finished (%1$s). Nothing was sent. Press Back and open it again; if it stops the same way, report this message.</string>
     <string name="audit_qr_hint">Scan with your phone — the app name, this component and the TV\'s details go with it. If the phone opens the GitHub app with empty fields instead, use its menu → Open in browser. Or photograph this screen and attach the photo to the issue.</string>
     <string name="audit_qr_icon_hint">The app\'s current launcher icon — attach a photo of this screen to the issue</string>
     <string name="audit_request_sending">Sending the request…</string>

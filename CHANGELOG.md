@@ -6,6 +6,14 @@ All notable changes to the Core Builds Icon Pack. Format follows
 
 ## [Unreleased]
 
+### Fixed
+
+- **Scan for unmapped apps says what it is doing.** The screen stayed blank
+  until the scan finished, which on a slow box looked like a scanner that did
+  not work. It now reads "Scanning the apps on this TV…" from the first
+  frame. A scan that fails shows its cause on screen instead of closing the
+  app.
+
 ## [2.1.2] — 2026-10-07
 
 ### Changed
