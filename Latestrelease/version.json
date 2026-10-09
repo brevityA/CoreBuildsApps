@@ -1,21 +1,17 @@
 {
-  "versionCode": 46,
-  "versionName": "2.1.2",
+  "versionCode": 47,
+  "versionName": "2.2.0",
   "iconCount": 983,
   "componentCount": 1217,
-  "releaseDate": "2026-10-07",
+  "releaseDate": "2026-10-09",
   "apkUrl": "https://github.com/brevityA/CoreBuildsApps/releases/download/iconpack/iconpack-release.apk",
   "releaseNotesUrl": "https://github.com/brevityA/CoreBuildsApps/releases",
   "minSdk": 21,
   "highlights": [
-    "Pocket Casts",
-    "Silo",
-    "Banners give the mark and name more room",
-    "Max is HBO Max again",
-    "TiviMate gets a mark of its own",
-    "YouTube red is current",
-    "Aurora Store applies again",
-    "Letters are spaced by their shapes",
-    "Flix Vision looks like Flix Vision"
+    "Missing icons on the home screen",
+    "The missing-icon list says what each app needs",
+    "The request code sits beside the app, not under it",
+    "A tidier home rail",
+    "Scan for unmapped apps says what it is doing"
   ]
 }
