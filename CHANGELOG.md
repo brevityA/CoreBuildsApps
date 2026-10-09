@@ -6,6 +6,8 @@ All notable changes to the Core Builds Icon Pack. Format follows
 
 ## [Unreleased]
 
+## [2.2.0] — 2026-10-09
+
 ### Added
 
 - **Missing icons on the home screen.** A new row under Art style opens the
