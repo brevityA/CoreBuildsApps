@@ -8,7 +8,43 @@ must never land there. Releases are `coreeq-v<version>` tags (see
 
 ## [Unreleased]
 
+## [1.3.1] — 2026-10-09
+
+The first published build with the 1.3.0 changes. The `coreeq-v1.3.0` tag
+build stopped at its Android 17 emulator install check, so 1.3.0 was never
+released. The app is the same, and updating from 1.2.1 brings everything
+listed under 1.3.0 below.
+
+### Added
+
+- **Every sweep gets a quality score**, 0–100, on Measure, Home and
+  Profiles, saved with the profile.
+- **Dialogue boost** in Extra effects, off by default: +2 dB across
+  2.2–4.5 kHz.
+- **Low-volume bass** in Extra effects, off by default: adds bass below
+  100 Hz as the TV volume goes down, up to +3 dB.
+- **An on-screen card when correction takes effect**: 4 seconds, top right,
+  with the profile, mode and output. It needs "Display over other apps";
+  without it a short toast says the same.
+- **Home warns about HDMI bitstream**, which skips all on-device EQ.
+
+### Changed
+
+- **Every screen fits a 1080p TV**, with no control below the screen edge,
+  and every on/off switch shows its state.
+
+### Fixed
+
+- The tag build's emulator install check now waits for Android's package
+  service and retries. The Android 17 preview image restarts its framework
+  shortly after boot on some runs, and that restart is what stopped the
+  1.3.0 tag build (`Failure calling service package: Broken pipe`). Pull
+  requests now install a release-shape APK too, so the production package
+  meets the emulator before a tag does.
+
 ## [1.3.0] — 2026-10-08
+
+Tagged but never released: see 1.3.1.
 
 ### Added
 
