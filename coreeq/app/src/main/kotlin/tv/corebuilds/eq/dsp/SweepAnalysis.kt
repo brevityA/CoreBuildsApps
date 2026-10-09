@@ -44,13 +44,18 @@ data class SweepResult(
  *    impulse response; the linear response is its largest peak, and the
  *    harmonic distortion lands ahead of it where it is ignored.
  * 2. Refuse a capture whose impulse response does not stand [MIN_SNR_DB]
- *    above the noise just ahead of it: the sweep was not heard.
- * 3. RT60 by noise-compensated Schroeder backward integration, fitted over
- *    the -5 to -25 dB span (T20) because a remote mic rarely gives the 45 dB
- *    of range a T30 needs.
+ *    above the noise just ahead of it: the sweep was not heard. The peak is
+ *    read between samples ([interpolatedPeak]), so where the arrival happens
+ *    to fall in the 16 kHz grid cannot cost up to 3 dB of SNR.
+ * 3. RT60 as a T20 ([decay]): Lundeby-style crosspoint from the decay's own
+ *    regression line, noise subtracted, the energy past the crosspoint added
+ *    back, and no RT60 at all unless the decay stands [MIN_DECAY_RANGE_DB]
+ *    clear of the noise (ISO 3382-2's requirement for a T20).
  * 4. Magnitude from a 170 ms window that starts 2 ms before the direct sound
  *    and fades out over its second half, reduced to 1/3-octave bands by
- *    energy mean, then level-aligned to the target over 300 Hz-3 kHz.
+ *    energy mean, then level-aligned to the target over 300 Hz-3 kHz. Only
+ *    bands that end below 0.45 x the capture rate are kept: at 16 kHz the
+ *    8 kHz band straddles the anti-alias edge and read 4-12 dB low.
  * 5. The minimum-phase gate, below the transition: excess group delay over
  *    the same window, aligned to the direct arrival, against the cepstral
  *    minimum-phase reference; a band whose median exceeds
@@ -61,6 +66,10 @@ data class SweepResult(
 object SweepAnalysis {
 
     const val MIN_SNR_DB = 20.0
+    /** Decay range a T20 needs (ISO 3382-2:2008 via Hak & Vertegaal; Larson Davis rates under 35 dB "poor"). */
+    const val MIN_DECAY_RANGE_DB = 35.0
+    /** The highest band edge a capture holds cleanly, as a fraction of its rate. */
+    const val BAND_TOP_FRACTION = 0.45
     const val TAIL_SECONDS = 2.5
     private const val NOISE_FROM_S = -0.30
     private const val NOISE_TO_S = -0.02
@@ -70,6 +79,8 @@ object SweepAnalysis {
     private const val PRE_SECONDS = 0.002
     private const val ALIGN_LO_HZ = 300.0
     private const val ALIGN_HI_HZ = 3000.0
+    private const val STEPS_PER_SAMPLE = 8
+    private const val INTERP_HALF = 16
 
     fun impulseResponse(recording: DoubleArray, fs: Int, seconds: Double = Sweep.SECONDS): DoubleArray =
         Fft.convolve(recording, Sweep.inverse(fs, seconds))
@@ -93,13 +104,14 @@ object SweepAnalysis {
         val ir = impulseResponse(recording, fs, seconds)
 
         var peak = 0
-        var peakAbs = 0.0
+        var sampleAbs = 0.0
         for (i in ir.indices) {
             val a = abs(ir[i])
-            if (a > peakAbs) { peakAbs = a; peak = i }
+            if (a > sampleAbs) { sampleAbs = a; peak = i }
         }
-        if (peakAbs <= 0.0) throw MeasurementException("The microphone recorded silence: no sweep was heard.")
+        if (sampleAbs <= 0.0) throw MeasurementException("The microphone recorded silence: no sweep was heard.")
         val latencySamples = peak - (inverseLen - 1)
+        val peakAbs = interpolatedPeak(ir, peak)
 
         val noisePower = meanSquare(ir, peak + (NOISE_FROM_S * fs).toInt(), peak + (NOISE_TO_S * fs).toInt())
         val snrDb = 10.0 * log10(peakAbs * peakAbs / max(noisePower, 1e-30))
@@ -110,7 +122,7 @@ object SweepAnalysis {
             )
         }
 
-        val rt60 = rt60Seconds(ir, peak, fs, noisePower)
+        val rt60 = decay(ir, peak, fs, noisePower).rt60Seconds
         val transition = Correction.transitionHz(volumeM3, rt60)
         val schroeder = if (volumeM3 != null && rt60 != null) Correction.schroederHz(volumeM3, rt60) else null
 
@@ -126,6 +138,7 @@ object SweepAnalysis {
         // corrector inverts; above it the field is diffuse and the correction
         // is one-octave shaping that a phase gate would only switch off.
         val gate = bandMinPhaseOk(centres, gdFreqs, excess)
+        checkTimeline(centres, gate, transition)
         val minPhaseOk = BooleanArray(centres.size) { gate[it] || centres[it] >= transition }
         val correction = Correction.calculateCorrectionCurve(
             centres, measured, targetDb,
@@ -164,49 +177,138 @@ object SweepAnalysis {
         return s / (b - a)
     }
 
+    /** A T20 and the decay range it was fitted over; [rt60Seconds] is null when the range is too small. */
+    data class Decay(val rt60Seconds: Double?, val decayRangeDb: Double?)
+
+    fun rt60Seconds(ir: DoubleArray, peak: Int, fs: Int, noisePower: Double): Double? =
+        decay(ir, peak, fs, noisePower).rt60Seconds
+
     /**
-     * Noise-compensated T20. The tail is cut where its 10 ms envelope comes
-     * within 3 dB of the noise floor, the noise power is subtracted before
-     * the backward integration (so it cannot flatten the decay), and a room
-     * whose decay never reaches -25 dB above the noise returns null rather
-     * than a guess.
+     * T20 with Lundeby-style noise handling (1.3.2).
+     *
+     * Through 1.3.1 the tail was cut at the first 10 ms block within 3 dB of
+     * the noise, each sample's noise was clamped away (`max(0, v^2 - N)`,
+     * which removes only about half of it) and nothing was added back past
+     * the cut. The truncated curve always plunged to -25 dB at the cut, so
+     * the "decay reached -25 dB" check always passed, and the fit read short:
+     * 22-39 % at 35 dB SNR and 63-82 % at 25 dB in synthetic rooms, still
+     * accepted. Now:
+     *
+     * 1. The 10 ms envelope is fitted by regression from the direct sound down
+     *    to 10 dB above the noise. Where that line meets the noise is the
+     *    crosspoint, and the line's level at t = 0 over the noise is the decay
+     *    range (INR).
+     * 2. Up to the crosspoint, v^2 - N is integrated signed, and the energy an
+     *    exponential decay holds past it (N x the decay's time constant) is
+     *    added back, so the Schroeder curve is not truncated.
+     * 3. The T20 is fitted over -5 to -25 dB of that curve, across at least
+     *    30 ms, and only kept if the decay range is [MIN_DECAY_RANGE_DB] or
+     *    more. In simulation this read within 0.2 % on every run it kept.
      */
-    fun rt60Seconds(ir: DoubleArray, peak: Int, fs: Int, noisePower: Double): Double? {
-        val maxLen = min(ir.size - peak, (RT60_MAX_TAIL_S * fs).toInt())
-        if (maxLen < fs / 20) return null
+    fun decay(ir: DoubleArray, peak: Int, fs: Int, noisePower: Double): Decay {
         val block = max(1, fs / 100)
-        var cut = maxLen
-        var i = block
-        while (i + block <= maxLen) {
-            if (meanSquare(ir, peak + i, peak + i + block) < 2.0 * noisePower) { cut = i; break }
-            i += block
+        val blockS = block.toDouble() / fs
+        val len = min(ir.size - peak, (RT60_MAX_TAIL_S * fs).toInt())
+        val nBlocks = len / block
+        if (nBlocks < 5) return Decay(null, null)
+        val noise = max(noisePower, 1e-30)
+        val noiseDb = 10.0 * log10(noise)
+        val envDb = DoubleArray(nBlocks) {
+            10.0 * log10(max(meanSquare(ir, peak + it * block, peak + (it + 1) * block), 1e-300))
         }
-        val energy = DoubleArray(cut)
+        var k = 1
+        while (k < nBlocks && envDb[k] > noiseDb + 10.0) k++
+        if (k - 1 < 3) return Decay(null, null)
+        val (s, c) = fitLine(DoubleArray(k - 1) { (it + 1.5) * blockS }, DoubleArray(k - 1) { envDb[it + 1] })
+        if (s >= 0.0) return Decay(null, null)
+        val rangeDb = c - noiseDb
+        val crossSamples = ((noiseDb - c) / s * fs).toInt()
+        val end = min(len, max(crossSamples, block))
+        val tailEnergy = noise * (10.0 / (-s * ln(10.0))) * fs
+        val energy = DoubleArray(end)
         var acc = 0.0
-        for (k in cut - 1 downTo 0) {
-            val v = ir[peak + k]
-            acc += max(0.0, v * v - noisePower)
-            energy[k] = acc
+        for (i in end - 1 downTo 0) {
+            val v = ir[peak + i]
+            acc += v * v - noise
+            energy[i] = max(acc + tailEnergy, 1e-300)
         }
-        if (energy[0] <= 0.0) return null
-        var n = 0; var sx = 0.0; var sy = 0.0; var sxx = 0.0; var sxy = 0.0
-        var reachedBottom = false
-        for (k in 0 until cut) {
-            if (energy[k] <= 0.0) break
-            val db = 10.0 * log10(energy[k] / energy[0])
-            if (db < RT60_BOTTOM_DB) { reachedBottom = true; break }
-            if (db <= RT60_TOP_DB) {
-                val t = k.toDouble() / fs
-                n++; sx += t; sy += db; sxx += t * t; sxy += t * db
-            }
+        var i5 = -1
+        var i25 = -1
+        for (i in 0 until end) {
+            val db = 10.0 * log10(energy[i] / energy[0])
+            if (i5 < 0 && db <= RT60_TOP_DB) i5 = i
+            if (db <= RT60_BOTTOM_DB) { i25 = i; break }
         }
-        if (!reachedBottom || n < 8) return null
-        val denom = n * sxx - sx * sx
-        if (denom <= 0.0) return null
-        val slope = (n * sxy - sx * sy) / denom
-        if (slope >= 0.0) return null
+        if (i5 < 0 || i25 < 0 || i25 - i5 < 3 * block) return Decay(null, rangeDb)
+        val n = i25 - i5
+        val (slope, _) = fitLine(
+            DoubleArray(n) { (i5 + it).toDouble() / fs },
+            DoubleArray(n) { 10.0 * log10(energy[i5 + it] / energy[0]) }
+        )
+        if (slope >= 0.0) return Decay(null, rangeDb)
         val rt60 = -60.0 / slope
-        return if (rt60 in 0.05..3.0) rt60 else null
+        val kept = rangeDb >= MIN_DECAY_RANGE_DB && rt60 in 0.05..3.0
+        return Decay(if (kept) rt60 else null, rangeDb)
+    }
+
+    /** Least-squares line through (x, y): (slope, intercept). */
+    private fun fitLine(x: DoubleArray, y: DoubleArray): Pair<Double, Double> {
+        val n = x.size
+        var sx = 0.0; var sy = 0.0; var sxx = 0.0; var sxy = 0.0
+        for (i in 0 until n) { sx += x[i]; sy += y[i]; sxx += x[i] * x[i]; sxy += x[i] * y[i] }
+        val denom = n * sxx - sx * sx
+        if (n < 2 || denom <= 0.0) return Pair(0.0, 0.0)
+        val slope = (n * sxy - sx * sy) / denom
+        return Pair(slope, (sy - slope * sx) / n)
+    }
+
+    /**
+     * The impulse response's peak magnitude read between samples: a
+     * band-limited (Hann-windowed sinc) interpolation at 1/8-sample steps
+     * within a sample either side of the largest sample. A direct sound that
+     * lands half-way between two 16 kHz samples otherwise reads up to 3.2 dB
+     * low, and the SNR with it.
+     */
+    fun interpolatedPeak(ir: DoubleArray, peak: Int): Double {
+        var best = abs(ir[peak])
+        for (step in -STEPS_PER_SAMPLE..STEPS_PER_SAMPLE) {
+            if (step == 0) continue
+            val t = step.toDouble() / STEPS_PER_SAMPLE
+            var v = 0.0
+            for (m in -INTERP_HALF..INTERP_HALF) {
+                val idx = peak + m
+                if (idx < 0 || idx >= ir.size) continue
+                val x = t - m
+                val sinc = if (abs(x) < 1e-12) 1.0 else kotlin.math.sin(PI * x) / (PI * x)
+                val w = 0.5 * (1.0 + cos(PI * x / (INTERP_HALF + 1)))
+                v += ir[idx] * sinc * w
+            }
+            best = max(best, abs(v))
+        }
+        return best
+    }
+
+    /**
+     * Refuse a recording that lost part of itself. When a stretch of the
+     * capture is dropped (a lost Bluetooth audio packet that is skipped
+     * rather than filled), everything after it arrives early: the impulse
+     * response lines up on the late, high-frequency part of the sweep, and
+     * the bass swept before the gap looks delayed by the gap. In simulation,
+     * losing 8 ms anywhere from 2 s to 7.5 s into the sweep failed the
+     * minimum-phase gate on every band from 20 Hz to the transition, which
+     * silently zeroed the bass correction while the SNR stayed above 40 dB.
+     * A real room's modal bass is minimum phase, so every bass band failing
+     * together is the recording, not the room.
+     */
+    private fun checkTimeline(centres: DoubleArray, gate: BooleanArray, transitionHz: Double) {
+        val bass = centres.indices.filter { centres[it] >= DspConstants.F_MIN && centres[it] < transitionHz }
+        if (bass.size >= 4 && bass.none { gate[it] }) {
+            throw MeasurementException(
+                "Part of the recording went missing: every bass band arrived late against the rest of the " +
+                    "sweep, which a room cannot do. A remote that drops a stretch of audio causes this. " +
+                    "Measure again with the remote still and nearer the TV."
+            )
+        }
     }
 
     /**
@@ -244,14 +346,14 @@ object SweepAnalysis {
         val binHz = fs.toDouble() / nfft
         val power = DoubleArray(nfft / 2 + 1) { re[it] * re[it] + im[it] * im[it] }
 
-        val top = min(Sweep.bandTopHz(fs), DspConstants.F_MAX * 2.0.pow(1.0 / 6.0))
+        val top = minOf(Sweep.bandTopHz(fs), BAND_TOP_FRACTION * fs, DspConstants.F_MAX * 2.0.pow(1.0 / 6.0))
         val centres = mutableListOf<Double>()
         val values = mutableListOf<Double>()
         for (c in DspConstants.ISO_CENTRES_HZ) {
             val exact = 1000.0 * 2.0.pow((3.0 * log2(c / 1000.0)).roundToInt() / 3.0)
             val lo = exact * 2.0.pow(-1.0 / 6.0)
             val hi = exact * 2.0.pow(1.0 / 6.0)
-            if (lo >= top || c > DspConstants.F_MAX) continue
+            if (hi > top || c > DspConstants.F_MAX) continue
             val a = max(1, kotlin.math.ceil(lo / binHz).toInt())
             val b = min(power.size - 1, kotlin.math.floor(hi / binHz).toInt())
             val mean = if (b >= a) {

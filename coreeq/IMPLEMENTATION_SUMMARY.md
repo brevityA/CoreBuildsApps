@@ -166,16 +166,19 @@ Added 18 new string resources for:
    - Frequency interpolation works
    - Contours are monotonic at low frequencies
 
-2. **MeasurementQualityTest** (12 tests)
-   - Perfect measurement scores near 100
-   - Noisy measurement scores poorly
-   - SNR score thresholds (0 at min, max at ideal)
-   - SNR linear interpolation
-   - RT60 score (0 for null, max for typical)
-   - Null score decreases with count
-   - Min-phase score (max when all pass, 0 when all fail)
-   - Transition score (max at low freq, min at 400 Hz)
+2. **MeasurementQualityTest** (7 tests, 1.3.2)
+   - A clean recording scores 100 whatever the room
+   - A noisy recording scores poorly
+   - Score runs from 0 at 20 dB SNR to 100 at 50 dB
+   - Grades follow the band errors (45 dB Good, 35 dB Fair, 25 dB Remeasure)
+   - A fitted or missing decay changes nothing
+   - Room facts are reported, not scored
    - Labels match tiers
+
+3. **SweepAnalysisTest accuracy cases** (1.3.2): T20 true within 0.03 s at
+   40 and 50 dB of decay range; no RT60 under 35 dB; RT60 goes before the
+   capture is refused, never reading short; the peak read between samples;
+   bands stop at 6.3 kHz at 16 kHz; a recording missing 8 ms is refused.
 
 3. **NightModeTest** (6 tests)
    - Night limiter threshold is negative

@@ -106,6 +106,106 @@ class SweepAnalysisTest {
         }
     }
 
+    // --- accuracy (1.3.2 audit) ---------------------------------------------
+
+    /** An exponentially decaying noise tail with a known RT60, plus a noise floor [rangeDb] under its start. */
+    private fun decayTail(rt60: Double, rangeDb: Double, seed: Long = 3L): Pair<DoubleArray, Double> {
+        val n = 2 * capFs
+        val rnd = Random(seed)
+        val k = ln(10.0.pow(3.0)) / rt60
+        val noisePower = 10.0.pow(-rangeDb / 10.0)
+        val ir = DoubleArray(n) { i ->
+            rnd.nextGaussian() * exp(-k * i / capFs) + rnd.nextGaussian() * sqrt(noisePower)
+        }
+        return Pair(ir, noisePower)
+    }
+
+    @Test
+    fun t20ReadsTrueWhenTheDecayStandsClearOfTheNoise() {
+        for (range in doubleArrayOf(50.0, 40.0)) {
+            val (ir, noise) = decayTail(0.6, range)
+            val d = SweepAnalysis.decay(ir, 0, capFs, noise)
+            assertNotNull("RT60 at $range dB of decay range", d.rt60Seconds)
+            // 1.3.1 read 3.5-10 % short here; the tail compensation keeps it true.
+            assertEquals("RT60 at $range dB", 0.6, d.rt60Seconds!!, 0.03)
+            assertEquals("decay range", range, d.decayRangeDb!!, 3.0)
+        }
+    }
+
+    @Test
+    fun t20IsRefusedRatherThanReadShortWhenTheDecayIsShallow() {
+        val (ir, noise) = decayTail(0.6, 28.0)
+        val d = SweepAnalysis.decay(ir, 0, capFs, noise)
+        assertEquals("no RT60 under ${SweepAnalysis.MIN_DECAY_RANGE_DB} dB of range", null, d.rt60Seconds)
+        assertEquals(28.0, d.decayRangeDb!!, 3.0)
+    }
+
+    /**
+     * The sweep is lowered 10 dB at a time against the same noise until the
+     * analysis refuses it. 1.3.1 kept returning an RT60 all the way down,
+     * reading ever shorter. Now every RT60 it returns is the room's, and the
+     * RT60 goes (the transition falling back to its default) before the
+     * capture is refused.
+     */
+    @Test
+    fun asTheSweepSinksIntoTheNoiseRt60GoesRatherThanReadingShort() {
+        val readings = mutableListOf<Pair<Double, Double?>>()
+        var gain = 0.5
+        while (gain > 1e-5) {
+            val result = try {
+                SweepAnalysis.analyze(capture(room = reverbRoom(0.5), gain = gain, noiseDbfs = -40.0), capFs, "flat", 54.0)
+            } catch (e: MeasurementException) {
+                break
+            }
+            readings += Pair(result.snrDb, result.rt60Seconds)
+            result.rt60Seconds?.let { assertEquals("RT60 at ${result.snrDb} dB SNR", 0.5, it, 0.06) }
+                ?: assertEquals(DspConstants.UNKNOWN_ROOM_TRANSITION_HZ, result.transitionHz, 1e-9)
+            gain /= sqrt(10.0)
+        }
+        assertTrue("the sweep should be refused eventually: $readings", gain > 1e-5)
+        assertEquals("the quietest accepted sweep should have no RT60: $readings", null, readings.last().second)
+        assertTrue("a loud sweep should time the room: $readings", readings.first().second != null)
+    }
+
+    @Test
+    fun thePeakIsReadBetweenSamples() {
+        // An arrival half-way between two samples, band-limited to 0.45 x the
+        // rate as the capture's anti-alias filter leaves it: the largest
+        // sample is 0.70 of the true peak, 3.1 dB short.
+        val ir = DoubleArray(96) { n ->
+            val x = 0.9 * (n - 48.5)
+            sin(PI * x) / (PI * x)
+        }
+        var peak = 0
+        for (i in ir.indices) if (abs(ir[i]) > abs(ir[peak])) peak = i
+        assertEquals(0.70, abs(ir[peak]), 0.01)
+        assertEquals(1.0, SweepAnalysis.interpolatedPeak(ir, peak), 0.01)
+    }
+
+    @Test
+    fun noBandStraddlesTheCapturesAntiAliasEdge() {
+        val result = SweepAnalysis.analyze(capture(room = doubleArrayOf(1.0)), capFs, "flat", 54.0)
+        val top = result.centresHz.maxOrNull()!!
+        assertEquals("16 kHz capture keeps bands up to 6.3 kHz", 6300.0, top, 1e-9)
+        assertTrue("the loopback must not report a dip at the top: ${result.nullMask.toList()}", result.nullMask.none { it })
+    }
+
+    @Test
+    fun aRecordingThatLostAStretchIsRefused() {
+        val clean = capture(room = reverbRoom(0.5))
+        val at = ((0.12 + 4.0) * capFs).toInt()
+        val lost = 128 // 8 ms: one dropped Bluetooth packet's worth
+        val broken = DoubleArray(clean.size) { i -> if (i < at) clean[i] else clean.getOrElse(i + lost) { 0.0 } }
+        try {
+            SweepAnalysis.analyze(broken, capFs, "flat", 54.0)
+            fail("a recording with 8 ms missing must not produce a profile")
+        } catch (e: MeasurementException) {
+            assertTrue(e.message!!, e.message!!.contains("went missing"))
+        }
+        // The same capture intact still measures.
+        SweepAnalysis.analyze(clean, capFs, "flat", 54.0)
+    }
+
     // --- minimum-phase gate ---------------------------------------------------
 
     private fun gateAt(ir: DoubleArray, centres: DoubleArray): BooleanArray {

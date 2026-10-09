@@ -4,8 +4,13 @@ import android.Manifest
 import android.content.Context
 import android.content.pm.PackageManager
 import android.media.AudioFormat
+import android.media.AudioManager
 import android.media.AudioRecord
 import android.media.MediaRecorder
+import android.media.audiofx.AcousticEchoCanceler
+import android.media.audiofx.AudioEffect
+import android.media.audiofx.AutomaticGainControl
+import android.media.audiofx.NoiseSuppressor
 import android.util.Log
 import androidx.core.content.ContextCompat
 import tv.corebuilds.eq.dsp.Resample
@@ -28,7 +33,11 @@ interface CaptureListener {
  * Records the room through the remote microphone.
  *
  * `VOICE_RECOGNITION` is the source the CDD (§5.4.2) requires to be flat and
- * free of AGC and noise suppression, which is what a measurement needs. The
+ * free of AGC and noise suppression, which is what a measurement needs. A
+ * device can still attach either by default (Android's AutomaticGainControl
+ * reference says so and tells apps to check), and an AGC bends the bass
+ * shape while leaving the score alone, so [silenceCaptureEffects] turns off
+ * any AGC, noise suppressor or echo canceller found on the session. The
  * remote streams 16 kHz, so that rate is asked for first; a device that only
  * offers 48 kHz is decimated to 16 kHz so the analysis always runs at one rate.
  *
@@ -97,15 +106,18 @@ class CaptureEngine(private val context: Context) {
             return
         }
 
+        val effects = silenceCaptureEffects(record.audioSessionId)
         try {
             record.startRecording()
         } catch (e: IllegalStateException) {
+            effects.forEach { it.release() }
             record.release()
             recording = false
             listener.onError("The microphone would not start recording: ${e.message ?: "IllegalStateException"}")
             return
         }
         if (record.recordingState != AudioRecord.RECORDSTATE_RECORDING) {
+            effects.forEach { it.release() }
             record.release()
             recording = false
             listener.onError(
@@ -150,6 +162,7 @@ class CaptureEngine(private val context: Context) {
 
         val cancelled = !recording
         recording = false
+        effects.forEach { it.release() }
         release(record)
         when {
             cancelled -> Unit
@@ -165,6 +178,44 @@ class CaptureEngine(private val context: Context) {
     /** Ask the capture to end. The capture thread releases the recorder itself. */
     fun stop() {
         recording = false
+    }
+
+    /**
+     * Turn off every capture effect the platform attached to [session] and
+     * return them, to be released with the recorder. Each one that exists is
+     * logged with the state it was found in, and whether it stayed off, so a
+     * device that forces one can be told apart in a bug report. Processing
+     * inside the remote's own firmware is below this layer and stays
+     * invisible here.
+     */
+    private fun silenceCaptureEffects(session: Int): List<AudioEffect> {
+        val found = mutableListOf<AudioEffect>()
+        val report = mutableListOf<String>()
+        fun take(name: String, available: Boolean, create: () -> AudioEffect?) {
+            if (!available) return
+            val effect = try {
+                create()
+            } catch (e: RuntimeException) {
+                Log.w(TAG, "$name on session $session could not be created", e)
+                null
+            } ?: return
+            val wasOn = effect.enabled
+            val result = effect.setEnabled(false)
+            report += "$name ${if (wasOn) "was on" else "was off"}, " +
+                if (result == AudioEffect.SUCCESS && !effect.enabled) "now off" else "could not be turned off ($result)"
+            found += effect
+        }
+        take("AGC", AutomaticGainControl.isAvailable()) { AutomaticGainControl.create(session) }
+        take("NoiseSuppressor", NoiseSuppressor.isAvailable()) { NoiseSuppressor.create(session) }
+        take("EchoCanceler", AcousticEchoCanceler.isAvailable()) { AcousticEchoCanceler.create(session) }
+        val unprocessed = (context.getSystemService(Context.AUDIO_SERVICE) as? AudioManager)
+            ?.getProperty(AudioManager.PROPERTY_SUPPORT_AUDIO_SOURCE_UNPROCESSED)
+        Log.i(
+            TAG,
+            "Capture effects on session $session: ${report.ifEmpty { listOf("none attached") }.joinToString("; ")}. " +
+                "UNPROCESSED source supported: ${unprocessed ?: "not reported"}."
+        )
+        return found
     }
 
     private fun release(r: AudioRecord) {

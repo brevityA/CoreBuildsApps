@@ -26,6 +26,38 @@ must never land there. Releases are `coreeq-v<version>` tags (see
   from 1.3.0 and 1.3.1 show the new score too. The correction itself is
   unchanged.
 
+### Fixed
+
+Found by an audit of the measurement against the acoustics literature and a
+synthetic-room simulation of the app's own analysis.
+
+- **The room's decay time no longer reads short.** RT60 was cut where the
+  decay met the noise with nothing added back for the rest, and a check
+  meant to catch that always passed: it read 22-39 % short at 35 dB of
+  signal to noise and 63-82 % short at 25 dB. It now uses a Lundeby-style
+  crosspoint with the missing tail added back, and gives no RT60 at all
+  unless the decay stands 35 dB clear of the noise (ISO 3382-2's need for
+  a T20). Without one, full correction stops at the 300 Hz default, as it
+  does when the room size is unknown.
+- **The signal-to-noise reading no longer depends on luck.** The peak was
+  read from the largest single sample, so a direct sound landing between
+  two samples cost up to 3.2 dB of SNR and about 10 points of score. It is
+  now read between samples.
+- **No more phantom dip at the top.** At the remote's 16 kHz the 8 kHz band
+  straddles the anti-alias filter and read 4-12 dB low, so every room
+  reported a dip there. Bands now stop at 6.3 kHz, the last one a 16 kHz
+  capture holds cleanly.
+- **A recording that lost a stretch of audio is refused.** A dropped piece
+  of the remote's audio shifts everything after it, and the bass then
+  looked so delayed that every bass band was left uncorrected while the
+  score stayed above 85. Measure now says part of the recording went
+  missing and asks for another sweep.
+- **The TV's own microphone processing is switched off.** Android lets a
+  device attach automatic gain, noise suppression or echo cancelling to the
+  recording; an automatic gain bends the bass by up to 2.5 dB without
+  touching the score. Core EQ now turns off any it finds for the sweep and
+  logs what it found. Processing inside the remote itself is out of reach.
+
 ## [1.3.1] — 2026-10-09
 
 The first published build with the 1.3.0 changes. The `coreeq-v1.3.0` tag

@@ -12,6 +12,8 @@ two places:
 - The **remote mic is supported** (the TV hardware guide says the controller
   microphone is "fully supported"), but it is not a measurement microphone.
   Core EQ corrects **40 Hz–8 kHz** and refuses to invent a curve outside it.
+  From the remote's 16 kHz capture the measured bands stop at 6.3 kHz
+  (1.3.2): the 8 kHz band straddles the capture's anti-alias edge.
 - Android has **no global equaliser API**. Session 0 is deprecated and never
   removed; the supported path is an opt-in broadcast most players do not send.
   So the product is built around a **capability probe** whose verdict is shown,
@@ -81,7 +83,7 @@ exponential sine sweep (10 s, Farina) — primary
 pink noise (20 s, deterministic) — cross-check and live RTA
   → AudioRecord(VOICE_RECOGNITION, 48 kHz), read ~3 s past the stop
   → deconvolve with the time-reversed inverse filter → impulse response
-        ├→ RT60 (Schroeder backward integration)
+        ├→ RT60 (T20: Lundeby crosspoint + tail compensation; none under 35 dB of decay range)
         │      → Schroeder f_s = 2000·√(RT60/V)   [room dims are asked for]
         ├→ excess group delay → minimum-phase gate
         └→ magnitude response
