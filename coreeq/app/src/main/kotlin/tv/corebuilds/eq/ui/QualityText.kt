@@ -7,12 +7,23 @@ import android.text.style.ForegroundColorSpan
 import androidx.core.content.ContextCompat
 import tv.corebuilds.eq.R
 import tv.corebuilds.eq.dsp.MeasurementQuality
+import tv.corebuilds.eq.export.Profile
 
 /**
- * The measurement quality line, worded and coloured the same on Measure,
- * Home and Profiles: "Quality 78/100 · good" in green, amber or red.
+ * The recording score line, worded and coloured the same on Measure, Home and
+ * Profiles: "Recording 78/100 · good" in green, amber or red.
  */
 object QualityText {
+
+    /**
+     * A sweep profile's recording score, worked out from the SNR and RT60 it
+     * saved rather than read from `quality_score`. That field held 1.3.0's
+     * room-weighted score, and every sweep profile since 1.0 saved both
+     * figures, so older profiles get the 1.3.2 score too. Imports and
+     * manual-only profiles saved no SNR, and have none.
+     */
+    fun scoreOf(profile: Profile): Int? =
+        profile.snrDb?.let { MeasurementQuality.recordingScore(it, profile.rt60Seconds) }
 
     fun text(context: Context, score: Int): String =
         context.getString(R.string.quality_score, score, context.getString(gradeRes(score)))
@@ -27,10 +38,10 @@ object QualityText {
     )
 
     /**
-     * "Quality 78/100 · good" in the tier colour, then " · " and [base], or
-     * [base] unchanged when the profile carries no score (imports, manual-only
-     * profiles and anything saved before 1.3.0). The score leads because Home
-     * and Profiles both end their detail lines in an ellipsis.
+     * "Recording 78/100 · good" in the tier colour, then " · " and [base], or
+     * [base] unchanged when the profile carries no score (imports and
+     * manual-only profiles). The score leads because Home and Profiles both
+     * end their detail lines in an ellipsis.
      */
     fun prependTo(context: Context, base: CharSequence, score: Int?): CharSequence {
         if (score == null) return base

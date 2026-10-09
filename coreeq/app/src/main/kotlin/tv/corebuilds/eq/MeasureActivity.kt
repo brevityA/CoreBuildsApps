@@ -7,6 +7,9 @@ import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.text.SpannableStringBuilder
+import android.text.Spanned
+import android.text.style.ForegroundColorSpan
 import android.util.Log
 import android.view.View
 import android.widget.Button
@@ -191,16 +194,29 @@ class MeasureActivity : TvActivity() {
     }
 
     /**
-     * The quality line follows whatever result is on screen: a sweep is
-     * scored, a REW import says why it is not, and nothing shows otherwise.
+     * The quality line follows whatever result is on screen: a sweep shows its
+     * recording score, then what it found about the room with no points
+     * (1.3.2), a REW import says why it is not scored, and nothing shows
+     * otherwise.
      */
     private fun renderQuality() {
         val sweep = result
         when {
             sweep != null -> {
                 val score = MeasurementQuality.score(sweep)
-                textQuality.text = QualityText.text(this, score)
-                textQuality.setTextColor(QualityText.color(this, score))
+                val room = MeasurementQuality.room(sweep)
+                val line = SpannableStringBuilder(QualityText.text(this, score))
+                line.setSpan(ForegroundColorSpan(QualityText.color(this, score)), 0, line.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+                line.append("\n").append(
+                    getString(
+                        R.string.measure_room_line,
+                        resources.getQuantityString(R.plurals.measure_room_dips, room.dips, room.dips),
+                        resources.getQuantityString(R.plurals.measure_room_gated, room.phaseGatedBands, room.phaseGatedBands),
+                        room.transitionHz.roundToInt()
+                    )
+                )
+                textQuality.text = line
+                textQuality.setTextColor(ContextCompat.getColor(this, R.color.cb_slate))
                 textQuality.visibility = View.VISIBLE
             }
             importResult != null -> {

@@ -374,7 +374,7 @@ class MainActivity : TvActivity() {
             textProfileSub.text = QualityText.prependTo(
                 this,
                 "$targetName · ${profile.filters.size} filters$manual · $rt · ${profile.micType} · $outputLabel$measurementLimit",
-                profile.qualityScore
+                QualityText.scoreOf(profile)
             )
         }
 
