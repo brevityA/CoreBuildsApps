@@ -15,7 +15,7 @@
 
 </div>
 
-Five apps for Android TV and Google TV, and one for your phone. Each installs from a Downloader code, and the table shows every app's current release. Every app has a short card on this page and a full guide in [`docs/apps/`](docs/apps/). Community: **[Discord](https://discord.gg/AwJ49yzbqT)** · **[r/CoreBuilds](https://www.reddit.com/r/CoreBuilds/)**. Every app is free; if one earns a place on your TV, you can support it on **[Ko-fi](https://ko-fi.com/branding_brevity)**.
+Five free apps for Android TV and Google TV, and one for your phone. Each has a permanent APK link, all but Core Motion have a Downloader code, and the table shows the current release of each. Every app has a short card on this page and a full guide in [`docs/apps/`](docs/apps/). Community: **[Discord](https://discord.gg/AwJ49yzbqT)** · **[r/CoreBuilds](https://www.reddit.com/r/CoreBuilds/)**. If one earns a place on your TV, you can support it on **[Ko-fi](https://ko-fi.com/branding_brevity)**.
 
 ---
 
@@ -36,11 +36,15 @@ Five apps for Android TV and Google TV, and one for your phone. Each installs fr
 
 ## Install any app
 
-1. On the TV, install **Downloader** by AFTVnews from the Play Store or Amazon Appstore.
+On a TV:
+
+1. Install **Downloader** by AFTVnews from the Play Store or Amazon Appstore.
 2. Enter the app's **Downloader code** from the table above, and install the APK when Android asks.
 3. Open the app.
 
-Each card below also has a **permanent APK link**. It always serves the current release from that app's own floating tag, such as `iconpack` or `coreeq`. Don't use the repo-wide `releases/latest/download/…` URL: six apps release from this repo, so "latest" is whichever one shipped last.
+Core Motion has no Downloader code yet, so open its permanent APK link instead. Core Doctor runs on your phone: open its permanent APK link there.
+
+Each card below has a **permanent APK link**. It always serves the current release from that app's own floating tag, such as `iconpack` or `coreeq`. Don't use the repo-wide `releases/latest/download/…` URL: six apps release from this repo, so "latest" is whichever one shipped last.
 
 Icon Pack, Core Line, Core Shift and Core EQ check for their own updates. Core Motion and Core Doctor update by installing the new APK over the old one.
 
