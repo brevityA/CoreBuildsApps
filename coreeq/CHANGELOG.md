@@ -25,6 +25,7 @@ must never land there. Releases are `coreeq-v<version>` tags (see
   Profiles work the score out from each profile's saved SNR, so profiles
   from 1.3.0 and 1.3.1 show the new score too. The correction itself is
   unchanged.
+
 ### Fixed
 
 - **Home asks for the on-screen card's permission.** The card needs
