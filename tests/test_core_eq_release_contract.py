@@ -74,6 +74,25 @@ class CoreEqReleaseContract(unittest.TestCase):
         self.assertIn("adb logcat -d -b crash", body)
         self.assertIn('crash_report "$(basename "$APK"), first attempt"', body)
 
+    def test_a_failed_first_emulator_boot_gets_one_fresh_emulator(self) -> None:
+        """The 37.0 image can restart its framework inside the action's own
+        post-boot commands, before the install script can wait it out: the
+        main push of c4de1167f failed on `adb shell input keyevent 82` with
+        "Can't find service: input". The first boot may fail without failing
+        the job; a second, identical boot then decides it.
+        """
+        install = self.workflow.split("\n  install:\n", 1)[1].split("\n  publish:\n", 1)[0]
+        steps = re.split(r"(?m)^      - ", install)
+        first = next(step for step in steps if step.startswith("name: Boot emulator and install APK\n"))
+        second = next(step for step in steps if step.startswith("name: Boot emulator and install APK (second attempt)\n"))
+        self.assertIn("id: first_boot\n", first)
+        self.assertIn("continue-on-error: true\n", first)
+        self.assertIn("if: steps.first_boot.outcome == 'failure'\n", second)
+        self.assertNotIn("continue-on-error", second)
+        self.assertEqual(first.split("        with:\n", 1)[1].rstrip(), second.split("        with:\n", 1)[1].rstrip(),
+                         "the second boot must use exactly the first boot's inputs")
+        self.assertEqual(install.count("uses: reactivecircus/android-emulator-runner@v2"), 2)
+
     def test_pull_requests_install_the_release_shape_too(self) -> None:
         """The production package has to meet the emulator before a tag does.
 
