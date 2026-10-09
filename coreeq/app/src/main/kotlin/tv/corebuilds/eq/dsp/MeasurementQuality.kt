@@ -1,8 +1,5 @@
 package tv.corebuilds.eq.dsp
 
-import kotlin.math.max
-import kotlin.math.roundToInt
-
 /**
  * How much a sweep's recording can be trusted, from 0 to 100, kept apart from
  * what the recording says about the room (1.3.2).
@@ -21,7 +18,7 @@ import kotlin.math.roundToInt
  * | Factor             | Points | 0 at                               | Full at        |
  * |--------------------|--------|------------------------------------|----------------|
  * | SNR                | 60     | 20 dB (the analysis refuses below) | 45 dB          |
- * | Decay measurable   | 40     | RT60 not measurable                | RT60 0.1-1.5 s |
+ * | Decay measurable   | 40     | RT60 not measurable                | any fitted RT60 |
  *
  * and the room is reported as [Room], facts with no points: the dips and
  * phase-gated bands the correction leaves alone, and where full correction
@@ -35,8 +32,6 @@ object MeasurementQuality {
     const val DECAY_POINTS = 40
     private const val SNR_MIN_DB = 20.0
     private const val SNR_IDEAL_DB = 45.0
-    private const val RT60_LOW_S = 0.1
-    private const val RT60_HIGH_S = 1.5
 
     /** SNR share: 20 dB is the analysis's own floor (0 points), 45 dB or more is [SNR_POINTS]. */
     fun snrScore(snrDb: Double): Int {
@@ -47,18 +42,14 @@ object MeasurementQuality {
 
     /**
      * Decay share: a decay the noise-compensated T20 could fit at all means
-     * the recording's tail stood clear of the noise. Null (not measurable)
-     * scores 0; an RT60 outside 0.1-1.5 s loses points with its distance from
-     * that range, since a figure like that more often comes from a capture
-     * problem than from a living room.
+     * the recording's tail stood clear of the noise, so it earns the whole
+     * [DECAY_POINTS]; null (not measurable) earns none. How long the decay
+     * is describes the room, not the recording, and gets no penalty here:
+     * whether a fit is believable is [SweepAnalysis.rt60Seconds]'s job,
+     * which already returns null unless the tail reached -25 dB over at
+     * least 8 blocks with an RT60 in 0.05-3.0 s.
      */
-    fun decayScore(rt60Seconds: Double?): Int {
-        if (rt60Seconds == null) return 0
-        if (rt60Seconds in RT60_LOW_S..RT60_HIGH_S) return DECAY_POINTS
-        val deviation = if (rt60Seconds < RT60_LOW_S) RT60_LOW_S - rt60Seconds else rt60Seconds - RT60_HIGH_S
-        // Rounded, not truncated: 1.7 - 1.5 is 0.19999... in binary.
-        return max(0, DECAY_POINTS - (deviation * 2 * DECAY_POINTS).roundToInt())
-    }
+    fun decayScore(rt60Seconds: Double?): Int = if (rt60Seconds == null) 0 else DECAY_POINTS
 
     /** The recording score from the two figures a sweep profile also saves (snrDb, rt60Seconds). */
     fun recordingScore(snrDb: Double, rt60Seconds: Double?): Int =

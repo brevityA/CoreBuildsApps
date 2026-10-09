@@ -76,7 +76,7 @@ Scores the recording from 0 to 100, apart from the room:
 | Factor | Points | Rationale |
 |--------|--------|-----------|
 | SNR | 60 | Full at 45 dB; 20 dB is the analysis's own refusal floor |
-| Decay measurable | 40 | A fitted RT60 in 0.1-1.5 s means the tail stood clear of the noise |
+| Decay measurable | 40 | Any RT60 the T20 fit accepts (reached -25 dB, 0.05-3.0 s) means the tail stood clear of the noise; a long decay is the room, not the recording |
 
 The room (dips and phase-gated bass bands left alone, the transition) is
 reported beside it with no points. 1.3.0-1.3.1 used five factors, two of

@@ -37,13 +37,14 @@ class MeasurementQualityTest {
     }
 
     @Test
-    fun `decay share is 0 when not measurable and 40 for a living room`() {
+    fun `decay share is 0 when not measurable and 40 for any fitted decay`() {
         assertEquals(0, MeasurementQuality.decayScore(null))
-        assertEquals(40, MeasurementQuality.decayScore(0.1))
+        assertEquals(40, MeasurementQuality.decayScore(0.05))
         assertEquals(40, MeasurementQuality.decayScore(0.5))
         assertEquals(40, MeasurementQuality.decayScore(1.5))
-        assertEquals(24, MeasurementQuality.decayScore(1.7))
-        assertEquals(0, MeasurementQuality.decayScore(2.5))
+        // A long, live room is the room, not a bad recording (#270 review).
+        assertEquals(40, MeasurementQuality.decayScore(1.7))
+        assertEquals(40, MeasurementQuality.decayScore(2.5))
     }
 
     @Test
