@@ -6,6 +6,31 @@ All notable changes to the Core Builds Icon Pack. Format follows
 
 ## [Unreleased]
 
+### Added
+
+- **Missing icons on the home screen.** A new row under Art style opens the
+  scan for apps without a Core Builds icon, with this TV's count on it. The
+  count comes from the same scan as the list, rerun each time you come back
+  to the home screen, so an app you just installed shows up without a
+  restart. The scan stays in Settings too.
+
+### Changed
+
+- **The missing-icon list says what each app needs.** Apps the pack already
+  draws under another activity, usually one an app update renamed, now have
+  their own section, ICON NOT APPLYING, which shows the activity the pack maps
+  and files a mapping report. Until now they were listed as "no icon yet" and
+  sent a new-icon request. Every row shows the app's own icon, whether it is a
+  TV or phone app, whether it came preinstalled, and what pressing it does
+  (REQUEST or REPORT). The header counts the launchable apps checked, and the
+  empty state says how many were covered.
+- **The request code sits beside the app, not under it.** The QR panel is two
+  columns: the app and the steps on the left, a 320dp code on the right. The
+  stacked layout ran past the bottom of a 1080p screen.
+- **A tidier home rail.** Every row's subtitle is one line, and Settings and
+  About share a row, with the version on About. With the new row the rail
+  still fits a 1080p screen, ALSO APPLIES TO included.
+
 ### Fixed
 
 - **Scan for unmapped apps says what it is doing.** The screen stayed blank
