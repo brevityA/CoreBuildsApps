@@ -8,6 +8,8 @@ must never land there. Releases are `coreeq-v<version>` tags (see
 
 ## [Unreleased]
 
+## [1.3.2] — 2026-10-09
+
 ### Changed
 
 - **The score grades the recording, not your room.** The 0-100 score
