@@ -355,7 +355,41 @@ jobs:
           sudo udevadm control --reload-rules
           sudo udevadm trigger --name-match=kvm
 
+      # The 37.0 preview image sometimes restarts its framework within a second
+      # or two of sys.boot_completed (SystemUI, then surfaceflinger, abort in
+      # RegionSampling). Once the script runs it waits that out, but the
+      # action's own post-boot `adb shell input keyevent 82` runs first and
+      # stops the step on "Can't find service: input" (the main push of
+      # c4de1167f failed exactly there, exit code 20, before the script ran).
+      # So the first boot may fail without failing the job, and a failed first
+      # boot gets one fresh emulator. A real install failure fails both.
       - name: Boot emulator and install APK
+        id: first_boot
+        continue-on-error: true
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: ${{ matrix.api-level }}
+          target: google_apis
+          arch: x86_64
+          channel: ${{ matrix.channel }}
+          cores: ${{ matrix.cores || 2 }}
+          ram-size: ${{ matrix.ram-size || '2048M' }}
+          emulator-boot-timeout: 1800
+          disable-animations: true
+          emulator-options: ${{ matrix.emulator-options }}
+          # One line on purpose: the action runs each line of `script:` as its
+          # own `sh -c`, so state has to live in the script it calls. The whole
+          # check lives in tools/install_core_eq_on_emulator.sh.
+          script: bash tools/install_core_eq_on_emulator.sh
+
+      - name: Say the first boot failed
+        if: steps.first_boot.outcome == 'failure'
+        run: echo "::warning title=Core EQ emulator retry::the first emulator boot or install on API ${{ matrix.api-level }} failed; booting a fresh emulator once"
+
+      # Same inputs as the first boot, held identical by
+      # tests/test_core_eq_release_contract.py.
+      - name: Boot emulator and install APK (second attempt)
+        if: steps.first_boot.outcome == 'failure'
         uses: reactivecircus/android-emulator-runner@v2
         with:
           api-level: ${{ matrix.api-level }}
