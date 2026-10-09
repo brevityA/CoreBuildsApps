@@ -8,6 +8,16 @@ must never land there. Releases are `coreeq-v<version>` tags (see
 
 ## [Unreleased]
 
+### Fixed
+
+- **Home asks for the on-screen card's permission.** The card needs
+  "Display over other apps", and only Profiles asked for it. A TV that never
+  opened Profiles got a short text toast where the card should be. Home now
+  shows a bar while the notice is on and the card cannot be drawn, with
+  **Allow**, which opens Android's screen for it, and **Later**, which is
+  remembered. On a TV with no such screen, the bar shows the one-line ADB
+  command instead. Profiles keeps its own button.
+
 ## [1.3.1] — 2026-10-09
 
 The first published build with the 1.3.0 changes. The `coreeq-v1.3.0` tag
