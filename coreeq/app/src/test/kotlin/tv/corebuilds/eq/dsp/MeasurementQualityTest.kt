@@ -1,102 +1,65 @@
 package tv.corebuilds.eq.dsp
 
-import kotlin.math.abs
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Test
 
 /**
- * Pins the measurement quality scoring so the weights and thresholds
- * cannot drift.
+ * Pins the recording score (1.3.2) so its weights and thresholds cannot
+ * drift, and pins that the room facts carry no points.
  */
 class MeasurementQualityTest {
 
     @Test
-    fun `perfect measurement scores near 100`() {
-        val result = makeResult(
-            snrDb = 50.0,
-            rt60Seconds = 0.4,
-            nullCount = 0,
-            bandsBelowTransition = 8,
-            bandsGated = 0,
-            transitionHz = 200.0
-        )
-        val score = MeasurementQuality.score(result)
-        assertTrue("Perfect measurement should score 85+, got $score", score >= 85)
-        assertEquals(MeasurementQuality.Tier.GREEN, MeasurementQuality.tier(score))
+    fun `a clean recording scores 100 whatever the room is like`() {
+        val plain = makeResult(snrDb = 50.0, rt60Seconds = 0.4, nullCount = 0, bandsGated = 0, transitionHz = 200.0)
+        val awkward = makeResult(snrDb = 50.0, rt60Seconds = 0.4, nullCount = 6, bandsGated = 5, transitionHz = 400.0)
+        assertEquals(100, MeasurementQuality.score(plain))
+        assertEquals(100, MeasurementQuality.score(awkward))
+        assertEquals(MeasurementQuality.Tier.GREEN, MeasurementQuality.tier(100))
     }
 
     @Test
-    fun `noisy measurement scores poorly`() {
-        val result = makeResult(
-            snrDb = 22.0,   // barely above minimum
-            rt60Seconds = null,  // too noisy to measure
-            nullCount = 6,
-            bandsBelowTransition = 8,
-            bandsGated = 5,
-            transitionHz = 300.0
-        )
+    fun `a noisy recording scores poorly`() {
+        val result = makeResult(snrDb = 22.0, rt60Seconds = null, nullCount = 0, bandsGated = 0, transitionHz = 300.0)
         val score = MeasurementQuality.score(result)
-        assertTrue("Noisy measurement should score below 40, got $score", score < 40)
+        assertTrue("Noisy recording should score below 30, got $score", score < 30)
         assertEquals(MeasurementQuality.Tier.RED, MeasurementQuality.tier(score))
     }
 
     @Test
-    fun `SNR score is 0 at minimum threshold`() {
-        assertEquals(0, MeasurementQuality.snrScore(20.0))
-        assertEquals(0, MeasurementQuality.snrScore(15.0))
+    fun `score runs from 0 at the analysis floor to 100 at 50 dB`() {
+        assertEquals(0, MeasurementQuality.recordingScore(20.0))
+        assertEquals(0, MeasurementQuality.recordingScore(15.0))
+        assertEquals(100, MeasurementQuality.recordingScore(50.0))
+        assertEquals(100, MeasurementQuality.recordingScore(80.0))
+        assertEquals(50, MeasurementQuality.recordingScore(35.0))
     }
 
     @Test
-    fun `SNR score is max at ideal level`() {
-        assertEquals(30, MeasurementQuality.snrScore(45.0))
-        assertEquals(30, MeasurementQuality.snrScore(60.0))
+    fun `grades follow what the band errors mean for the EQ`() {
+        // Audit, synthetic rooms: bass band RMS error under 1 dB at 45 dB SNR,
+        // 1-2.8 dB at 35 dB, 2-8 dB at 25 dB.
+        assertEquals(MeasurementQuality.Grade.GOOD, MeasurementQuality.grade(MeasurementQuality.recordingScore(45.0)))
+        assertEquals(MeasurementQuality.Grade.FAIR, MeasurementQuality.grade(MeasurementQuality.recordingScore(35.0)))
+        assertEquals(MeasurementQuality.Grade.REMEASURE, MeasurementQuality.grade(MeasurementQuality.recordingScore(25.0)))
     }
 
     @Test
-    fun `SNR score interpolates linearly`() {
-        val mid = MeasurementQuality.snrScore(32.5)
-        assertTrue("Mid-range SNR should be between 0 and 30", mid in 1..29)
+    fun `a fitted decay earns nothing and a missing one costs nothing`() {
+        val fitted = makeResult(snrDb = 40.0, rt60Seconds = 0.4, nullCount = 0, bandsGated = 0, transitionHz = 300.0)
+        val missing = makeResult(snrDb = 40.0, rt60Seconds = null, nullCount = 0, bandsGated = 0, transitionHz = 300.0)
+        assertEquals(MeasurementQuality.score(fitted), MeasurementQuality.score(missing))
     }
 
     @Test
-    fun `RT60 score is 0 for null`() {
-        assertEquals(0, MeasurementQuality.rt60Score(null))
-    }
-
-    @Test
-    fun `RT60 score is max for typical room`() {
-        assertEquals(20, MeasurementQuality.rt60Score(0.4))
-        assertEquals(20, MeasurementQuality.rt60Score(0.8))
-    }
-
-    @Test
-    fun `null score decreases with count`() {
-        assertEquals(20, MeasurementQuality.nullScore(0))
-        assertEquals(16, MeasurementQuality.nullScore(1))
-        assertEquals(0, MeasurementQuality.nullScore(5))
-        assertEquals(0, MeasurementQuality.nullScore(10))
-    }
-
-    @Test
-    fun `min phase score is max when all bands pass`() {
-        assertEquals(15, MeasurementQuality.minPhaseScore(8, 0))
-    }
-
-    @Test
-    fun `min phase score is 0 when all bands fail`() {
-        assertEquals(0, MeasurementQuality.minPhaseScore(8, 8))
-    }
-
-    @Test
-    fun `transition score is max at low frequency`() {
-        assertEquals(15, MeasurementQuality.transitionScore(150.0))
-        assertEquals(15, MeasurementQuality.transitionScore(100.0))
-    }
-
-    @Test
-    fun `transition score is min at default 400 Hz`() {
-        assertEquals(5, MeasurementQuality.transitionScore(400.0))
+    fun `room facts are reported, not scored`() {
+        val result = makeResult(snrDb = 50.0, rt60Seconds = 0.4, nullCount = 3, bandsGated = 2, transitionHz = 300.0)
+        val room = MeasurementQuality.room(result)
+        assertEquals(3, room.dips)
+        assertEquals(2, room.phaseGatedBands)
+        assertEquals(300.0, room.transitionHz, 0.0)
+        assertEquals(100, MeasurementQuality.score(result))
     }
 
     @Test
@@ -108,31 +71,24 @@ class MeasurementQualityTest {
         assertEquals(MeasurementQuality.Grade.REMEASURE, MeasurementQuality.grade(20))
     }
 
-    /** Helper: build a minimal SweepResult with the given quality factors. */
+    /** A minimal SweepResult: [nullCount] dips, [bandsGated] gated bands below [transitionHz]. */
     private fun makeResult(
         snrDb: Double,
         rt60Seconds: Double?,
         nullCount: Int,
-        bandsBelowTransition: Int,
         bandsGated: Int,
         transitionHz: Double
     ): SweepResult {
         val nBands = 30
         val centres = DoubleArray(nBands) { 20.0 * Math.pow(2.0, it / 3.0) }
-        val measured = DoubleArray(nBands) { 0.0 }
-        val target = DoubleArray(nBands) { 0.0 }
-        val correction = DoubleArray(nBands) { 0.0 }
-        val nullMask = BooleanArray(nBands) { it < nullCount }
-        val minPhaseOk = BooleanArray(nBands) { i ->
-            if (centres[i] < transitionHz) i >= bandsGated else true
-        }
+        val zeros = DoubleArray(nBands)
         return SweepResult(
             centresHz = centres,
-            measuredDb = measured,
-            targetDb = target,
-            correctionDb = correction,
-            nullMask = nullMask,
-            minPhaseOk = minPhaseOk,
+            measuredDb = zeros,
+            targetDb = zeros,
+            correctionDb = zeros,
+            nullMask = BooleanArray(nBands) { it < nullCount },
+            minPhaseOk = BooleanArray(nBands) { i -> if (centres[i] < transitionHz) i >= bandsGated else true },
             rt60Seconds = rt60Seconds,
             schroederHz = null,
             transitionHz = transitionHz,

@@ -364,7 +364,7 @@ class ProfilesActivity : TvActivity() {
                 QualityText.prependTo(
                     holder.itemView.context,
                     "$targetTitle · ${item.filters.size} filters$manual$overlays · $rt · ${item.micType}$measurementLimit",
-                    item.qualityScore
+                    QualityText.scoreOf(item)
                 )
             }
 

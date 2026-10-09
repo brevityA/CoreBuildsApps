@@ -175,14 +175,24 @@
     <!-- Home: HDMI bitstream caveat (1.3.0) -->
     <string name="passthrough_warning">⚠ HDMI audio may carry Dolby or DTS as a bitstream here, which skips all on-device EQ, Core EQ included. To correct it, set the TV\'s Surround sound (or Audio format) to PCM.</string>
 
-    <!-- Measurement quality -->
+    <!-- Recording score (1.3.2: the recording only; the room is reported, not scored) -->
     <string name="quality_excellent">excellent</string>
     <string name="quality_good">good</string>
     <string name="quality_fair">fair · consider re-measuring</string>
     <string name="quality_poor">poor · re-measure recommended</string>
     <string name="quality_remeasure">re-measure: quieter room or louder sweep</string>
-    <string name="quality_score">Quality %1$d/100 · %2$s</string>
-    <string name="quality_not_scored">Quality not scored · REW imports carry no SNR or decay data</string>
+    <string name="quality_score">Recording %1$d/100 · %2$s</string>
+    <string name="quality_not_scored">Recording not scored · REW imports carry no SNR data</string>
+    <!-- 1.3.2: what the sweep found about the room, with no points. -->
+    <string name="measure_room_line">Room, not scored: %1$s · %2$s · full correction below %3$d Hz</string>
+    <plurals name="measure_room_dips">
+        <item quantity="one">%d dip left alone</item>
+        <item quantity="other">%d dips left alone</item>
+    </plurals>
+    <plurals name="measure_room_gated">
+        <item quantity="one">%d bass band phase-gated</item>
+        <item quantity="other">%d bass bands phase-gated</item>
+    </plurals>
 
     <!-- Content type / use-case selection -->
     <string name="content_type_heading">Content type optimization</string>

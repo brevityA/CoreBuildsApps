@@ -70,16 +70,18 @@ The research identified that movies have wide dynamic range that's problematic a
 - `coreeq/app/src/main/kotlin/tv/corebuilds/eq/dsp/MeasurementQuality.kt`
 - `coreeq/app/src/test/kotlin/tv/corebuilds/eq/dsp/MeasurementQualityTest.kt`
 
-**What it does:**
-Computes a composite quality score (0-100) for each measurement based on five weighted factors:
+**What it does (1.3.2):**
+Scores the recording from 0 to 100, apart from the room:
 
-| Factor | Weight | Rationale |
+| Factor | Points | Rationale |
 |--------|--------|-----------|
-| SNR | 30% | Quiet room + loud sweep = trustworthy result |
-| RT60 plausibility | 20% | Measurable decay = analysis worked |
-| Null count | 20% | Fewer nulls = simpler room, more correctable |
-| Min-phase gates | 15% | More bands passing = more low-end correction |
-| Transition frequency | 15% | Lower = more bass gets full inversion |
+| SNR | 100 | 0 at 20 dB (the analysis's own refusal floor), 100 at 50 dB, linear between; the bass bands' error follows it (under 1 dB at 45 dB, 1-3 dB at 35, 2-8 dB at 25 in synthetic rooms) |
+
+The room (dips and phase-gated bass bands left alone, the transition) is
+reported beside it with no points. 1.3.0-1.3.1 used five factors, two of
+which (null count, transition) described the room; a clean recording of a
+room with two wall reflections scored 69, and entering the room size
+lowered the score.
 
 **Key features:**
 - Color-coded tiers (green ≥70, amber 45-69, red <45)

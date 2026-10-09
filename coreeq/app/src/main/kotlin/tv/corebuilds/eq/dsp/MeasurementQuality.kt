@@ -1,109 +1,73 @@
 package tv.corebuilds.eq.dsp
 
-import kotlin.math.max
-import kotlin.math.min
-
 /**
- * A composite measurement quality score from 0 to 100, so the user can
- * tell at a glance whether their sweep was good enough.
+ * How much a sweep's recording can be trusted, from 0 to 100, kept apart from
+ * what the recording says about the room (1.3.2).
  *
- * The score weights five factors that the analysis already computes:
+ * 1.3.0 scored one number from five factors, and two of them (null count, 20
+ * points, and transition frequency, 15 points) described the room rather
+ * than the recording. A clean capture of an ordinary living room with two
+ * wall reflections scored 69: five 1/3-octave dips cost the whole null share.
+ * Telling the app the room size lowered the score, because a known size moves
+ * the transition from the 300 Hz fallback to the real, higher value. Neither
+ * says anything about the microphone, and a better microphone would measure
+ * the same dips.
  *
- * | Factor                  | Weight | Rationale                                    |
- * |-------------------------|--------|----------------------------------------------|
- * | SNR                     | 30     | A quiet room and a loud sweep are the single |
- * |                         |        | biggest predictor of a trustworthy result.   |
- * | RT60 plausibility       | 20     | A measurable decay means the room was not    |
- * |                         |        | too noisy for the analysis to work.          |
- * | Null count              | 20     | Fewer nulls means a simpler room with more   |
- * |                         |        | correctable response.                        |
- * | Min-phase gates passed  | 15     | More bands passing means more of the low     |
- * |                         |        | end is safe to correct.                      |
- * | Transition frequency    | 15     | A lower transition means more of the bass    |
- * |                         |        | range gets full inversion rather than        |
- * |                         |        | shaping-only.                                |
+ * So the score is now the recording's only, and it is one figure: the
+ * impulse response's peak-to-noise ratio (the `snrDb` the analysis already
+ * refuses below 20 dB), mapped linearly from 20 dB (0) to 50 dB (100).
  *
- * The weights sum to 100 and the result is a percentage.
+ * Why SNR alone. The #270 review and a synthetic-room audit (pink noise,
+ * modes, a strong reflection, 12 seeds per cell) showed what the band levels
+ * the correction is built from actually track: the RMS error of the bass
+ * bands against the true response was about 0.5 dB at 55 dB SNR, under 1 dB
+ * at 45, 1-2.8 dB at 35 and 2-8 dB at 25. So 45 dB scores 83 (Good), 35 dB
+ * 50 (Fair) and 25 dB 17 (Remeasure), which is what those errors mean for
+ * the EQ. 50 dB is about what a voice remote's codec allows at best (the
+ * audit measured 50.5 dB through 8 kHz ADPCM and 53.7 dB at 16 kHz), so
+ * Excellent is reachable in a quiet room.
  *
- * Shown since 1.3.0 on the Measure result, Home and Profiles, and saved
- * with the profile (`quality_score`). It describes the measurement only and
- * never changes the correction. REW imports carry no SNR or decay data, so
- * they are not scored rather than scored low.
+ * The decay share is gone. Through 1.3.2 drafts it gave 40 points to any
+ * RT60 the T20 fit returned, and the fit returned one in 36 of 36 runs at
+ * 35 dB SNR, reading 22-39 % short: points for nothing. RT60 is a room fact
+ * (it sets where full correction stops) and is reported with the room.
+ *
+ * The room is reported as [Room], facts with no points: the dips and
+ * phase-gated bands the correction leaves alone, and where full correction
+ * stops. Shown on the Measure result, Home and Profiles. It describes the
+ * measurement only and never changes the correction. REW imports carry no
+ * SNR data, so they are not scored rather than scored low.
  */
 object MeasurementQuality {
 
-    /** SNR score: 20 dB is the minimum (0 points), 45+ dB is perfect (30 points). */
-    fun snrScore(snrDb: Double): Int {
-        val min = 20.0
-        val ideal = 45.0
-        if (snrDb <= min) return 0
-        if (snrDb >= ideal) return 30
-        return (30.0 * (snrDb - min) / (ideal - min)).toInt()
+    private const val SNR_MIN_DB = 20.0
+    private const val SNR_FULL_DB = 50.0
+
+    /** The recording score: 20 dB SNR (the analysis's own floor) is 0, 50 dB or more is 100. */
+    fun recordingScore(snrDb: Double): Int {
+        if (snrDb <= SNR_MIN_DB) return 0
+        if (snrDb >= SNR_FULL_DB) return 100
+        return (100.0 * (snrDb - SNR_MIN_DB) / (SNR_FULL_DB - SNR_MIN_DB)).toInt()
     }
 
-    /**
-     * RT60 plausibility score: a measured RT60 between 0.1 and 1.5 s
-     * is ideal (20 points). A null RT60 (too noisy to measure) scores 0.
-     * Values outside the plausible range lose points proportionally.
-     */
-    fun rt60Score(rt60Seconds: Double?): Int {
-        if (rt60Seconds == null) return 0
-        if (rt60Seconds in 0.1..1.5) return 20
-        // Penalise but don't zero out for slightly unusual rooms
-        val deviation = if (rt60Seconds < 0.1) 0.1 - rt60Seconds else rt60Seconds - 1.5
-        return max(0, 20 - (deviation * 40).toInt())
-    }
+    fun score(result: SweepResult): Int = recordingScore(result.snrDb)
 
     /**
-     * Null count score: 0 nulls is perfect (20 points), 5+ nulls is 0.
-     * Nulls are room cancellations that cannot be corrected; fewer means
-     * more of the response is addressable.
+     * What the sweep found about the room, with no points: [dips] are nulls
+     * the correction leaves alone, [phaseGatedBands] are bands below
+     * [transitionHz] that failed the minimum-phase gate and are also left
+     * alone, and [transitionHz] is where full correction gives way to gentle
+     * shaping.
      */
-    fun nullScore(nullCount: Int): Int {
-        if (nullCount <= 0) return 20
-        if (nullCount >= 5) return 0
-        return 20 - (nullCount * 4)
-    }
+    data class Room(val dips: Int, val phaseGatedBands: Int, val transitionHz: Double)
 
-    /**
-     * Minimum-phase gate score: the fraction of bands below the transition
-     * that passed the gate. All passing = 15 points.
-     */
-    fun minPhaseScore(bandsBelowTransition: Int, bandsGated: Int): Int {
-        if (bandsBelowTransition <= 0) return 15
-        val passed = bandsBelowTransition - bandsGated
-        return (15.0 * passed / bandsBelowTransition).toInt()
-    }
-
-    /**
-     * Transition frequency score: 300 Hz (the fallback) scores 5 points;
-     * 150 Hz or lower scores 15 points (more of the bass gets full correction).
-     */
-    fun transitionScore(transitionHz: Double): Int {
-        if (transitionHz <= 150.0) return 15
-        if (transitionHz >= 400.0) return 5
-        // Linear between 150 and 400
-        return 15 - ((transitionHz - 150.0) / 250.0 * 10.0).toInt()
-    }
-
-    /**
-     * Composite score from a SweepResult.
-     */
-    fun score(result: SweepResult): Int {
-        val nullCount = result.nullMask.count { it }
-        val bandsBelowTransition = result.centresHz.indices.count {
-            result.centresHz[it] < result.transitionHz
-        }
-        val bandsGated = result.centresHz.indices.count {
+    fun room(result: SweepResult): Room = Room(
+        dips = result.nullMask.count { it },
+        phaseGatedBands = result.centresHz.indices.count {
             !result.minPhaseOk[it] && result.centresHz[it] < result.transitionHz
-        }
-        val total = snrScore(result.snrDb) +
-            rt60Score(result.rt60Seconds) +
-            nullScore(nullCount) +
-            minPhaseScore(bandsBelowTransition, bandsGated) +
-            transitionScore(result.transitionHz)
-        return total.coerceIn(0, 100)
-    }
+        },
+        transitionHz = result.transitionHz
+    )
 
     /** The word the UI shows beside the score (a string resource per grade). */
     fun grade(score: Int): Grade = when {

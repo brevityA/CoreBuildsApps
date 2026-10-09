@@ -32,7 +32,12 @@ data class Profile(
     val transitionHz: Double = 300.0,
     val rolloffHz: Double = 40.0,
     val snrDb: Double? = null,
-    /** MeasurementQuality score at save time (1.3.0+); null for imports and older profiles. */
+    /**
+     * MeasurementQuality score at save time; null for imports and older profiles.
+     * 1.3.0-1.3.1 saved the room-weighted score here, 1.3.2+ the recording score.
+     * The UI recomputes the recording score from [snrDb] and [rt60Seconds]
+     * (QualityText.scoreOf), so this field is kept for backups, not read for display.
+     */
     val qualityScore: Int? = null,
     val nullsUntouchedHz: List<Double> = emptyList(),
     /** Room-correction-only reserve; Formats recomputes the combined value with manual filters. */

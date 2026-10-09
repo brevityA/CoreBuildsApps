@@ -8,6 +8,7 @@ import org.junit.Test
 import tv.corebuilds.eq.dsp.DspConstants
 import tv.corebuilds.eq.dsp.Fft
 import tv.corebuilds.eq.dsp.MeasurementException
+import tv.corebuilds.eq.dsp.MeasurementQuality
 import tv.corebuilds.eq.dsp.Sweep
 import tv.corebuilds.eq.dsp.SweepAnalysis
 import java.util.Random
@@ -143,6 +144,46 @@ class SweepAnalysisTest {
     }
 
     // --- synthetic room -----------------------------------------------------
+
+    /**
+     * 1.3.0's score lowered when the room size was entered: a known size moved
+     * the transition from the 300 Hz fallback to the room's real value, and
+     * the transition carried points. The recording score must not depend on
+     * what the user says about the room.
+     */
+    @Test
+    fun recordingScoreDoesNotDependOnTheRoomSize() {
+        val cap = capture(room = reverbRoom(0.5))
+        val unknown = SweepAnalysis.analyze(cap, capFs, "flat", null)
+        val known = SweepAnalysis.analyze(cap, capFs, "flat", 54.0)
+        assertTrue("the transition should move with a known size", known.transitionHz != unknown.transitionHz)
+        assertEquals(MeasurementQuality.score(unknown), MeasurementQuality.score(known))
+    }
+
+    /**
+     * A clean recording of a room with two ordinary reflections (a wall
+     * behind the sofa, a side wall) has 1/3-octave dips the correction leaves
+     * alone. 1.3.0 scored that recording 69 because the dips cost the whole
+     * null share; they belong to the room, so the recording still scores
+     * excellent and the dips are reported.
+     */
+    @Test
+    fun roomReflectionsDoNotLowerTheRecordingScore() {
+        val room = reflection(reflection(reverbRoom(0.5), 1.7, -0.85), 4.3, -0.7)
+        val result = SweepAnalysis.analyze(capture(room = room), capFs, "flat", 54.0)
+        val facts = MeasurementQuality.room(result)
+        assertTrue("the reflections should leave dips, found ${facts.dips}", facts.dips >= 3)
+        val score = MeasurementQuality.score(result)
+        assertTrue("a clean recording of this room scored $score", score >= 85)
+    }
+
+    /** A reflection: x[n] + [gain] * x[n - delay], the comb filter a wall makes, at the playback rate. */
+    private fun reflection(x: DoubleArray, delayMs: Double, gain: Double): DoubleArray {
+        val d = (delayMs * playFs / 1000).toInt()
+        return DoubleArray(x.size + d) { i ->
+            (if (i < x.size) x[i] else 0.0) + (if (i - d in x.indices) gain * x[i - d] else 0.0)
+        }
+    }
 
     private fun capture(
         room: DoubleArray,
