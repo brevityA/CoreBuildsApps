@@ -524,6 +524,35 @@ class TestRoomModel:
         measured = np.zeros_like(third_octave)
         assert dsp.detect_low_rolloff(third_octave, measured) == dsp.F_MIN
 
+    def test_rolloff_is_not_dragged_down_by_bands_that_climb_back(self, third_octave):
+        """1.3.2: noise lifted the bands below a 63 Hz roll-off back within
+        6 dB, and the lowest-band-anywhere rule read 40 Hz."""
+        nominal = {31.25: -5.5, 39.4: -4.0, 49.6: -5.0, 62.5: -9.0, 78.7: -3.0, 99.2: -2.0, 125.0: -1.0}
+        measured = np.zeros_like(third_octave)
+        for fc, db in nominal.items():
+            measured[int(np.argmin(np.abs(third_octave - fc)))] = db
+        assert dsp.detect_low_rolloff(third_octave, measured) == pytest.approx(78.7, abs=0.1)
+
+    def test_rolloff_steps_over_a_room_null(self, third_octave):
+        """A narrow cancellation above a mode is the room, not the speaker."""
+        measured = np.zeros_like(third_octave)
+        measured[int(np.argmin(np.abs(third_octave - 125.0)))] = -18.0
+        assert dsp.detect_low_rolloff(third_octave, measured) == dsp.F_MIN
+
+    def test_single_seat_boosts_are_capped_below_the_transition(self, third_octave):
+        measured = np.where((third_octave >= 60.0) & (third_octave <= 130.0), -6.0, 0.0)
+        target = np.zeros_like(third_octave)
+        no_nulls = np.zeros(third_octave.shape, dtype=bool)
+        open_ = dsp.correction_curve(third_octave, measured, target, transition_hz_=300.0, null_mask=no_nulls)
+        capped = dsp.correction_curve(third_octave, measured, target, transition_hz_=300.0, null_mask=no_nulls,
+                                      max_boost_below_transition=dsp.SINGLE_SEAT_BOOST_DB)
+        assert float(open_.max()) > 3.0
+        assert float(capped[third_octave < 300.0].max()) <= dsp.SINGLE_SEAT_BOOST_DB + 1e-9
+        peaky = -measured
+        cut = dsp.correction_curve(third_octave, peaky, target, transition_hz_=300.0, null_mask=no_nulls,
+                                   max_boost_below_transition=dsp.SINGLE_SEAT_BOOST_DB)
+        assert float(cut.min()) < -4.0
+
     def test_averaging_is_in_energy(self):
         avg = dsp.average_measurements([np.array([10.0, 0.0]),
                                        np.array([0.0, 10.0])])
@@ -548,6 +577,26 @@ class TestImpulseResponse:
         # Amplitude 10^(-12t) falls 60 dB in 0.25 s exactly.
         t = np.arange(dsp.FS) / float(dsp.FS)
         assert 0.18 < dsp.rt60_from_ir(10 ** (-12.0 * t)) < 0.32
+
+    @staticmethod
+    def _noisy_decay(rt60, range_db, seed=3):
+        rng = np.random.default_rng(seed)
+        n = 2 * dsp.FS
+        t = np.arange(n) / float(dsp.FS)
+        noise = 10 ** (-range_db / 10.0)
+        ir = rng.normal(size=n) * np.exp(-math.log(1000.0) / rt60 * t) + rng.normal(size=n) * math.sqrt(noise)
+        ir[0] = 4.0  # the arrival, so the peak is at t = 0
+        return ir, noise
+
+    def test_rt60_reads_true_with_the_noise_subtracted(self):
+        """1.3.1 cut the tail at the noise and added nothing back: 3.5-10 % short at these ranges."""
+        for range_db in (50.0, 40.0):
+            ir, noise = self._noisy_decay(0.6, range_db)
+            assert dsp.rt60_from_ir(ir, noise_power=noise) == pytest.approx(0.6, abs=0.03)
+
+    def test_rt60_is_refused_when_the_decay_is_shallow(self):
+        ir, noise = self._noisy_decay(0.6, 28.0)
+        assert dsp.rt60_from_ir(ir, noise_power=noise) == 0.0
 
     def test_min_phase_gate_accepts_the_identity(self):
         ir = np.zeros(4096)
