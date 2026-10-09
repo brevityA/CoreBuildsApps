@@ -28,30 +28,28 @@ class MeasurementQualityTest {
     }
 
     @Test
-    fun `SNR share is 0 at the analysis floor and 60 at 45 dB`() {
-        assertEquals(0, MeasurementQuality.snrScore(20.0))
-        assertEquals(0, MeasurementQuality.snrScore(15.0))
-        assertEquals(60, MeasurementQuality.snrScore(45.0))
-        assertEquals(60, MeasurementQuality.snrScore(80.0))
-        assertEquals(30, MeasurementQuality.snrScore(32.5))
+    fun `score runs from 0 at the analysis floor to 100 at 50 dB`() {
+        assertEquals(0, MeasurementQuality.recordingScore(20.0))
+        assertEquals(0, MeasurementQuality.recordingScore(15.0))
+        assertEquals(100, MeasurementQuality.recordingScore(50.0))
+        assertEquals(100, MeasurementQuality.recordingScore(80.0))
+        assertEquals(50, MeasurementQuality.recordingScore(35.0))
     }
 
     @Test
-    fun `decay share is 0 when not measurable and 40 for any fitted decay`() {
-        assertEquals(0, MeasurementQuality.decayScore(null))
-        assertEquals(40, MeasurementQuality.decayScore(0.05))
-        assertEquals(40, MeasurementQuality.decayScore(0.5))
-        assertEquals(40, MeasurementQuality.decayScore(1.5))
-        // A long, live room is the room, not a bad recording (#270 review).
-        assertEquals(40, MeasurementQuality.decayScore(1.7))
-        assertEquals(40, MeasurementQuality.decayScore(2.5))
+    fun `grades follow what the band errors mean for the EQ`() {
+        // Audit, synthetic rooms: bass band RMS error under 1 dB at 45 dB SNR,
+        // 1-2.8 dB at 35 dB, 2-8 dB at 25 dB.
+        assertEquals(MeasurementQuality.Grade.GOOD, MeasurementQuality.grade(MeasurementQuality.recordingScore(45.0)))
+        assertEquals(MeasurementQuality.Grade.FAIR, MeasurementQuality.grade(MeasurementQuality.recordingScore(35.0)))
+        assertEquals(MeasurementQuality.Grade.REMEASURE, MeasurementQuality.grade(MeasurementQuality.recordingScore(25.0)))
     }
 
     @Test
-    fun `the two shares sum to 100`() {
-        assertEquals(100, MeasurementQuality.SNR_POINTS + MeasurementQuality.DECAY_POINTS)
-        assertEquals(60, MeasurementQuality.recordingScore(45.0, null))
-        assertEquals(40, MeasurementQuality.recordingScore(20.0, 0.5))
+    fun `a fitted decay earns nothing and a missing one costs nothing`() {
+        val fitted = makeResult(snrDb = 40.0, rt60Seconds = 0.4, nullCount = 0, bandsGated = 0, transitionHz = 300.0)
+        val missing = makeResult(snrDb = 40.0, rt60Seconds = null, nullCount = 0, bandsGated = 0, transitionHz = 300.0)
+        assertEquals(MeasurementQuality.score(fitted), MeasurementQuality.score(missing))
     }
 
     @Test

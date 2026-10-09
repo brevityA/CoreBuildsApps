@@ -182,7 +182,7 @@
     <string name="quality_poor">poor · re-measure recommended</string>
     <string name="quality_remeasure">re-measure: quieter room or louder sweep</string>
     <string name="quality_score">Recording %1$d/100 · %2$s</string>
-    <string name="quality_not_scored">Recording not scored · REW imports carry no SNR or decay data</string>
+    <string name="quality_not_scored">Recording not scored · REW imports carry no SNR data</string>
     <!-- 1.3.2: what the sweep found about the room, with no points. -->
     <string name="measure_room_line">Room, not scored: %1$s · %2$s · full correction below %3$d Hz</string>
     <plurals name="measure_room_dips">

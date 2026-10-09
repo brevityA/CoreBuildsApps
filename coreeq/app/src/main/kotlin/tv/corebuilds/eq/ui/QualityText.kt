@@ -23,7 +23,7 @@ object QualityText {
      * manual-only profiles saved no SNR, and have none.
      */
     fun scoreOf(profile: Profile): Int? =
-        profile.snrDb?.let { MeasurementQuality.recordingScore(it, profile.rt60Seconds) }
+        profile.snrDb?.let { MeasurementQuality.recordingScore(it) }
 
     fun text(context: Context, score: Int): String =
         context.getString(R.string.quality_score, score, context.getString(gradeRes(score)))

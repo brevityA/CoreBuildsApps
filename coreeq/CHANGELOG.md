@@ -15,14 +15,16 @@ must never land there. Releases are `coreeq-v<version>` tags (see
   stops behaving like a room (15 points). Neither is about the recording,
   and a better microphone measures the same dips: a clean recording of an
   ordinary living room with two wall reflections scored 69. Entering the
-  room size also lowered the score. It is now **Recording 0-100** from the
-  two things a recording decides: signal to noise (60 points, full at
-  45 dB) and whether the room's decay could be measured (40 points). The
-  Measure result adds a second line, **Room, not scored**, with the dips
-  and phase-gated bass bands the correction leaves alone and where full
-  correction stops. Home and Profiles work the score out from each
-  profile's saved SNR and RT60, so profiles from 1.3.0 and 1.3.1 show the
-  new score too. The correction itself is unchanged.
+  room size also lowered the score. It is now **Recording 0-100**, from
+  the recording's signal to noise alone: 20 dB is 0, 50 dB is 100. That is
+  the figure the band levels' accuracy follows: in synthetic rooms the bass
+  bands were within 1 dB of the truth at 45 dB (score 83), 1-3 dB at 35 dB
+  (50) and 2-8 dB at 25 dB (17). The Measure result adds a second line,
+  **Room, not scored**, with the dips and phase-gated bass bands the
+  correction leaves alone and where full correction stops. Home and
+  Profiles work the score out from each profile's saved SNR, so profiles
+  from 1.3.0 and 1.3.1 show the new score too. The correction itself is
+  unchanged.
 
 ## [1.3.1] — 2026-10-09
 

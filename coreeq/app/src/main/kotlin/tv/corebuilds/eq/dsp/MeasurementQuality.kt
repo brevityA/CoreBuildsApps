@@ -13,49 +13,44 @@ package tv.corebuilds.eq.dsp
  * says anything about the microphone, and a better microphone would measure
  * the same dips.
  *
- * So the score is now the recording's only:
+ * So the score is now the recording's only, and it is one figure: the
+ * impulse response's peak-to-noise ratio (the `snrDb` the analysis already
+ * refuses below 20 dB), mapped linearly from 20 dB (0) to 50 dB (100).
  *
- * | Factor             | Points | 0 at                               | Full at        |
- * |--------------------|--------|------------------------------------|----------------|
- * | SNR                | 60     | 20 dB (the analysis refuses below) | 45 dB          |
- * | Decay measurable   | 40     | RT60 not measurable                | any fitted RT60 |
+ * Why SNR alone. The #270 review and a synthetic-room audit (pink noise,
+ * modes, a strong reflection, 12 seeds per cell) showed what the band levels
+ * the correction is built from actually track: the RMS error of the bass
+ * bands against the true response was about 0.5 dB at 55 dB SNR, under 1 dB
+ * at 45, 1-2.8 dB at 35 and 2-8 dB at 25. So 45 dB scores 83 (Good), 35 dB
+ * 50 (Fair) and 25 dB 17 (Remeasure), which is what those errors mean for
+ * the EQ. 50 dB is about what a voice remote's codec allows at best (the
+ * audit measured 50.5 dB through 8 kHz ADPCM and 53.7 dB at 16 kHz), so
+ * Excellent is reachable in a quiet room.
  *
- * and the room is reported as [Room], facts with no points: the dips and
+ * The decay share is gone. Through 1.3.2 drafts it gave 40 points to any
+ * RT60 the T20 fit returned, and the fit returned one in 36 of 36 runs at
+ * 35 dB SNR, reading 22-39 % short: points for nothing. RT60 is a room fact
+ * (it sets where full correction stops) and is reported with the room.
+ *
+ * The room is reported as [Room], facts with no points: the dips and
  * phase-gated bands the correction leaves alone, and where full correction
  * stops. Shown on the Measure result, Home and Profiles. It describes the
  * measurement only and never changes the correction. REW imports carry no
- * SNR or decay data, so they are not scored rather than scored low.
+ * SNR data, so they are not scored rather than scored low.
  */
 object MeasurementQuality {
 
-    const val SNR_POINTS = 60
-    const val DECAY_POINTS = 40
     private const val SNR_MIN_DB = 20.0
-    private const val SNR_IDEAL_DB = 45.0
+    private const val SNR_FULL_DB = 50.0
 
-    /** SNR share: 20 dB is the analysis's own floor (0 points), 45 dB or more is [SNR_POINTS]. */
-    fun snrScore(snrDb: Double): Int {
+    /** The recording score: 20 dB SNR (the analysis's own floor) is 0, 50 dB or more is 100. */
+    fun recordingScore(snrDb: Double): Int {
         if (snrDb <= SNR_MIN_DB) return 0
-        if (snrDb >= SNR_IDEAL_DB) return SNR_POINTS
-        return (SNR_POINTS * (snrDb - SNR_MIN_DB) / (SNR_IDEAL_DB - SNR_MIN_DB)).toInt()
+        if (snrDb >= SNR_FULL_DB) return 100
+        return (100.0 * (snrDb - SNR_MIN_DB) / (SNR_FULL_DB - SNR_MIN_DB)).toInt()
     }
 
-    /**
-     * Decay share: a decay the noise-compensated T20 could fit at all means
-     * the recording's tail stood clear of the noise, so it earns the whole
-     * [DECAY_POINTS]; null (not measurable) earns none. How long the decay
-     * is describes the room, not the recording, and gets no penalty here:
-     * whether a fit is believable is [SweepAnalysis.rt60Seconds]'s job,
-     * which already returns null unless the tail reached -25 dB over at
-     * least 8 blocks with an RT60 in 0.05-3.0 s.
-     */
-    fun decayScore(rt60Seconds: Double?): Int = if (rt60Seconds == null) 0 else DECAY_POINTS
-
-    /** The recording score from the two figures a sweep profile also saves (snrDb, rt60Seconds). */
-    fun recordingScore(snrDb: Double, rt60Seconds: Double?): Int =
-        (snrScore(snrDb) + decayScore(rt60Seconds)).coerceIn(0, 100)
-
-    fun score(result: SweepResult): Int = recordingScore(result.snrDb, result.rt60Seconds)
+    fun score(result: SweepResult): Int = recordingScore(result.snrDb)
 
     /**
      * What the sweep found about the room, with no points: [dips] are nulls
