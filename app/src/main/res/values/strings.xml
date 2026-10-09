@@ -16,8 +16,7 @@
     <string name="pack_stats_fmt">%1$d icons - %2$d components</string>
     <string name="search_hint_fmt">Search %1$d icons</string>
     <string name="cta_also_applies">ALSO APPLIES TO</string>
-    <string name="settings_entry_sub">Updates, display, storage, launcher and help</string>
-    <string name="about_entry_sub_fmt">Version %1$s - update check</string>
+    <string name="about_entry_sub_fmt">v%1$s</string>
     <string name="wp_sub_fmt">%1$d walls - series chips filter the grid</string>
 
     <!-- Empty state. Without it a filter with no match renders a blank grid
@@ -106,7 +105,7 @@
     <!-- No resolution claim here on purpose. 40 walls are 3840x2160 and the 10
          series-6 walls are 1376x768; a blanket "4K" was false for a fifth of
          the collection. Each preview states its own real resolution. -->
-    <string name="wp_entry_sub_fmt">%1$d walls - export to Pictures/CoreBuilds</string>
+    <string name="wp_entry_sub_fmt">%1$d walls · export to Pictures</string>
     <string name="wp_downloading_fmt">Downloading… %1$d KB</string>
     <string name="wp_downloading_of_fmt">Downloading… %1$d of %2$d KB</string>
     <string name="wp_download_failed_fmt">Download failed: %1$s</string>
@@ -180,8 +179,8 @@
     <!-- Settings -->
     <string name="settings_label">Settings</string>
     <string name="art_style_label">Art style</string>
-    <string name="art_style_glyphs">Glyphs: square icons for every app</string>
-    <string name="art_style_banners">Banners: 16:9 cards for every app</string>
+    <string name="art_style_glyphs">Glyphs: square icons</string>
+    <string name="art_style_banners">Banners: 16:9 cards</string>
     <string name="settings_kicker">SETTINGS</string>
     <string name="settings_title">Worth storing, worth knowing</string>
     <string name="settings_group_updates">UPDATES</string>
@@ -229,13 +228,33 @@
     <string name="chip_count_fmt">%1$s (%2$d)</string>
 
     <!-- On-device auditor -->
-    <string name="settings_audit_title">Scan for unmapped apps</string>
-    <string name="settings_audit_sub">Lists every launchable app on this TV that has no icon in the pack yet, and draws a QR code that opens a prefilled icon request on your phone.</string>
+    <string name="settings_audit_title">Missing icons</string>
+    <string name="settings_audit_sub">Lists the apps on this TV with no Core Builds icon, or one that is not applying, and sends a request or a report for any of them. Also on the home screen.</string>
     <string name="audit_kicker">AUDIT</string>
     <string name="audit_label">Unmapped apps</string>
     <string name="audit_title">Apps without a Core Builds icon</string>
-    <string name="audit_count_fmt">%1$d launchable apps on this TV have no icon yet</string>
-    <string name="audit_empty">Every launchable app on this TV is mapped. Nothing to request.</string>
+    <string name="audit_count_fmt">Checked %1$d launchable apps on this TV. Press one to send what it needs.</string>
+    <string name="audit_empty_fmt">All %1$d launchable apps on this TV have a Core Builds icon. Nothing to request.</string>
+    <string name="audit_section_not_applying_fmt">ICON NOT APPLYING · %1$d</string>
+    <string name="audit_section_not_applying_sub">The pack has art for these under another activity, usually one an app update renamed. A report fixes the mapping.</string>
+    <string name="audit_section_no_icon_fmt">NO ICON YET · %1$d</string>
+    <string name="audit_section_no_icon_sub">Nothing in the pack for these yet. A request asks for a new icon.</string>
+    <string name="audit_tag_tv">TV APP</string>
+    <string name="audit_tag_phone">PHONE APP</string>
+    <string name="audit_tag_system">PREINSTALLED</string>
+    <string name="audit_mapped_as_fmt">pack maps %1$s</string>
+    <string name="audit_action_request">REQUEST</string>
+    <string name="audit_action_report">REPORT</string>
+    <string name="audit_row_request_cd_fmt">%1$s, no icon yet, press to request one</string>
+    <string name="audit_row_report_cd_fmt">%1$s, icon not applying, press to report it</string>
+    <string name="audit_qr_kind_request">New icon request</string>
+    <string name="audit_qr_kind_report">Icon not applying</string>
+    <string name="missing_entry">Missing icons</string>
+    <string name="missing_entry_scanning">Checking the apps on this TV…</string>
+    <string name="missing_entry_none">Every app on this TV is covered</string>
+    <string name="missing_entry_failed">Open to scan the apps on this TV</string>
+    <string name="missing_entry_sub">Apps here with no icon yet</string>
+    <string name="missing_entry_count_cd_fmt">%1$d apps without an icon</string>
     <string name="audit_scanning">Scanning the apps on this TV…</string>
     <string name="audit_scan_failed_fmt">The scan stopped before it finished (%1$s). Nothing was sent. Press Back and open it again; if it stops the same way, report this message.</string>
     <string name="audit_qr_hint">Scan with your phone — the app name, this component and the TV\'s details go with it. If the phone opens the GitHub app with empty fields instead, use its menu → Open in browser. Or photograph this screen and attach the photo to the issue.</string>

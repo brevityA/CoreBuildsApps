@@ -23,6 +23,7 @@ import java.io.File
 import kotlin.math.abs
 import kotlin.math.floor
 import kotlin.math.max
+import java.text.NumberFormat
 
 /**
  * Front door. Apply targets the Home launcher. An update bar appears
@@ -169,6 +170,9 @@ class MainActivity : TvActivity() {
                 getString(R.string.about_entry_sub_fmt, BuildConfig.VERSION_NAME)
 
             bindStyleRow()
+            findViewById<View>(R.id.missing_entry).setOnClickListener {
+                startActivity(Intent(this, AuditorActivity::class.java))
+            }
             findViewById<View>(R.id.settings_entry).setOnClickListener {
                 startActivity(Intent(this, SettingsActivity::class.java))
             }
@@ -204,7 +208,8 @@ class MainActivity : TvActivity() {
      * at the moment their visibility changes.
      *
      * The sheet's screen order is apply_button -> update_bar -> style_entry ->
-     * wallpapers_entry -> settings_entry -> about_entry -> apply_targets ->
+     * missing_entry -> wallpapers_entry -> settings_entry | about_entry (one
+     * row) -> apply_targets ->
      * search -> chip_row ->
      * grid, and three of those stops are conditional: the update bar only when a
      * newer manifest exists, the ALSO APPLIES TO row only with a second launcher
@@ -251,12 +256,14 @@ class MainActivity : TvActivity() {
             findViewById<View>(id).nextFocusDownId =
                 if (groupShown) R.id.style_entry else R.id.search
         }
+        // Settings and About share the rail's last row: both step down.
+        findViewById<View>(R.id.settings_entry).nextFocusDownId = belowRows
         findViewById<View>(R.id.about_entry).nextFocusDownId = belowRows
         findViewById<View>(R.id.apply_targets).nextFocusUpId =
-            if (groupShown) R.id.about_entry else aboveRows
+            if (groupShown) R.id.settings_entry else aboveRows
         findViewById<View>(R.id.apply_targets).nextFocusDownId = R.id.search
         findViewById<View>(R.id.search).nextFocusUpId = belowRows.takeIf { targetsShown }
-            ?: if (groupShown) R.id.about_entry else aboveRows
+            ?: if (groupShown) R.id.settings_entry else aboveRows
         findViewById<View>(R.id.chip_row).nextFocusUpId = R.id.search
         // Down from the category row: the grid, or the empty state's undo when
         // the grid is the container that just went GONE. The search field always
@@ -402,6 +409,7 @@ class MainActivity : TvActivity() {
         syncArtStyle()
         if (!pickMode) {
             bindApplyButton()
+            refreshMissingCount()
             // What's New fires once per upgrade, independently of the update
             // checker's switch: it reads the APK's own asset, so it works
             // with the network check off. Fresh installs seed the gate
@@ -1121,6 +1129,43 @@ class MainActivity : TvActivity() {
      * Glyphs first when it is not installed. Builds without a companion
      * switch the catalogue only.
      */
+    /**
+     * The Missing icons row's count, from the same [AppAudit] scan the
+     * auditor lists, so the number on the home screen and the rows behind it
+     * cannot disagree. Off the main thread on every resume: an app installed
+     * since the last visit shows up without a restart, and the parsed
+     * appfilter is cached for the process, so a repeat costs only the
+     * PackageManager query. A failed scan leaves the row as a plain way in.
+     */
+    private fun refreshMissingCount() {
+        val sub = findViewById<TextView>(R.id.missing_entry_sub)
+        val badge = findViewById<TextView>(R.id.missing_entry_count)
+        Thread {
+            val result = runCatching { AppAudit.scan(applicationContext) }.getOrNull()
+            runOnUiThread {
+                if (isFinishing || isDestroyed) return@runOnUiThread
+                val missing = result?.items?.size
+                when {
+                    missing == null -> {
+                        sub.setText(R.string.missing_entry_failed)
+                        badge.visibility = View.GONE
+                    }
+                    missing == 0 -> {
+                        sub.setText(R.string.missing_entry_none)
+                        badge.visibility = View.GONE
+                    }
+                    else -> {
+                        sub.setText(R.string.missing_entry_sub)
+                        badge.text = NumberFormat.getIntegerInstance().format(missing)
+                        badge.contentDescription =
+                            getString(R.string.missing_entry_count_cd_fmt, missing)
+                        badge.visibility = View.VISIBLE
+                    }
+                }
+            }
+        }.start()
+    }
+
     private fun bindStyleRow() {
         findViewById<View>(R.id.style_entry).setOnClickListener {
             Prefs.set(this, Prefs.KEY_PICK_BANNERS, !Prefs.pickerPrefersBanners(this))

@@ -1,9 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-  One unmapped app in the auditor list. The row is the focus target (house
-  grammar); label over component, because the label is what the person
-  recognises on their home screen and the component is what the issue form
-  needs - both on the row so a request can be checked before it is scanned.
+  One app the pack does not cover, in the auditor list. The row is the focus
+  target (house grammar). Left to right: the app's own launcher icon, so the
+  row reads at a glance the way the home screen does; the label a person
+  recognises over the component the report needs, with what kind of app it is
+  beside the label; and the verb the press performs, so a request and a
+  mapping report never look alike. For an icon that is not applying, a third
+  line shows the component the pack maps instead: the stale half of the pair.
 -->
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
@@ -13,25 +16,94 @@
     android:background="@drawable/bg_card"
     android:clickable="true"
     android:focusable="true"
-    android:orientation="vertical"
-    android:padding="@dimen/cb_card_padding">
+    android:gravity="center_vertical"
+    android:minHeight="@dimen/cb_target_min"
+    android:orientation="horizontal"
+    android:paddingStart="@dimen/cb_card_padding"
+    android:paddingEnd="@dimen/cb_card_padding"
+    android:paddingTop="10dp"
+    android:paddingBottom="10dp">
+
+    <ImageView
+        android:id="@+id/audit_item_icon"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_marginEnd="@dimen/cb_space_sm"
+        android:importantForAccessibility="no"
+        android:scaleType="fitCenter" />
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:baselineAligned="true"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/audit_item_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:textColor="@color/cb_ink"
+                android:textSize="@dimen/cb_text_body"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/audit_item_tags"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/cb_space_sm"
+                android:fontFamily="monospace"
+                android:letterSpacing="0.12"
+                android:maxLines="1"
+                android:textColor="@color/cb_slate"
+                android:textSize="@dimen/cb_text_kicker" />
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/audit_item_pkg"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="2dp"
+            android:ellipsize="middle"
+            android:fontFamily="monospace"
+            android:maxLines="1"
+            android:textColor="@color/cb_slate"
+            android:textSize="@dimen/cb_text_data" />
+
+        <TextView
+            android:id="@+id/audit_item_mapped"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="2dp"
+            android:ellipsize="middle"
+            android:fontFamily="monospace"
+            android:maxLines="1"
+            android:textColor="@color/cb_warning"
+            android:textSize="@dimen/cb_text_data"
+            android:visibility="gone" />
+    </LinearLayout>
 
     <TextView
-        android:id="@+id/audit_item_label"
+        android:id="@+id/audit_item_action"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="@color/cb_ink"
-        android:textSize="@dimen/cb_text_body"
-        android:textStyle="bold" />
-
-    <TextView
-        android:id="@+id/audit_item_pkg"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
-        android:ellipsize="end"
+        android:layout_marginStart="@dimen/cb_space_md"
+        android:background="@drawable/bg_chip"
+        android:duplicateParentState="true"
         android:fontFamily="monospace"
-        android:maxLines="1"
-        android:textColor="@color/cb_slate"
-        android:textSize="@dimen/cb_text_data" />
+        android:letterSpacing="0.12"
+        android:paddingStart="@dimen/cb_space_sm"
+        android:paddingEnd="@dimen/cb_space_sm"
+        android:paddingTop="6dp"
+        android:paddingBottom="6dp"
+        android:textColor="@color/cb_signal_cyan"
+        android:textSize="@dimen/cb_text_kicker"
+        android:textStyle="bold" />
 </LinearLayout>
