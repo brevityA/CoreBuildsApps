@@ -70,7 +70,7 @@
 
     <!-- Measure screen -->
     <string name="measure_title">Core EQ · Measure</string>
-    <string name="measure_heading">Keep the room quiet for 13 seconds</string>
+    <string name="measure_heading">Keep the room quiet for 14 seconds</string>
     <string name="measure_sub">The TV plays a sine sweep. The remote microphone listens. Nothing leaves this device.</string>
     <string name="measure_step1_title">Tell Core EQ about the room</string>
     <string name="measure_step1_sub">Room size sets where full correction stops. Turn off the TV\'s own sound effects first (AI sound, bass boost, virtual surround): they would be measured too. If your AVR or soundbar already calibrates the room, do not stack Core EQ on it: measure and export the profile instead.</string>

@@ -178,7 +178,14 @@ Added 18 new string resources for:
 3. **SweepAnalysisTest accuracy cases** (1.3.2): T20 true within 0.03 s at
    40 and 50 dB of decay range; no RT60 under 35 dB; RT60 goes before the
    capture is refused, never reading short; the peak read between samples;
-   bands stop at 6.3 kHz at 16 kHz; a recording missing 8 ms is refused.
+   bands from 31.5 Hz to 6.3 kHz at 16 kHz; a recording missing 8 ms is
+   refused by the timing markers, and without them by the bass timing;
+   80 and -150 ppm of clock drift read within 1 ppm and taken out (SNR and
+   every band within 0.3 dB of the drift-free run); an 8 kHz-codec remote
+   ends the measurement at 2.5-3.15 kHz; a rumble-buried 63 Hz band is not
+   cut; octave T20s keep 0.7 s mids apart from a 0.3 s treble; the roll-off
+   walk stops at the speaker, not at a room null; bass boosts capped at
+   2 dB while cuts are not.
 
 3. **NightModeTest** (6 tests)
    - Night limiter threshold is negative

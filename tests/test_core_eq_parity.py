@@ -20,6 +20,15 @@ import core_eq_dsp as dsp  # noqa: E402
 
 KOTLIN_LIMITS = ROOT / "coreeq/app/src/main/kotlin/tv/corebuilds/eq/CorrectionLimits.kt"
 KOTLIN_CONSTANTS = ROOT / "coreeq/app/src/main/kotlin/tv/corebuilds/eq/dsp/DspConstants.kt"
+KOTLIN_DSP = ROOT / "coreeq/app/src/main/kotlin/tv/corebuilds/eq/dsp"
+# Measurement constants that live beside the code that uses them (1.3.2).
+SOURCE_PAIRS = {
+    ("SweepAnalysis.kt", "SINGLE_SEAT_BOOST_DB"): "SINGLE_SEAT_BOOST_DB",
+    ("SweepAnalysis.kt", "MIN_DECAY_RANGE_DB"): "MIN_DECAY_RANGE_DB",
+    ("SweepAnalysis.kt", "MIN_BAND_HZ"): "MIN_BAND_HZ",
+    ("SweepAnalysis.kt", "RT60_MAX_TAIL_S"): "RT60_MAX_TAIL_S",
+    ("Correction.kt", "MAX_NULL_SKIP"): "MAX_NULL_SKIP",
+}
 PAIRS = {
     "MIN_HZ": "F_MIN",
     "MAX_HZ": "F_MAX",
@@ -61,6 +70,14 @@ class CorrectionLimitParity(unittest.TestCase):
             with self.subTest(constant=kotlin_name):
                 m = re.search(rf"const val {kotlin_name} = ([0-9.]+)", src)
                 self.assertIsNotNone(m, f"{kotlin_name} missing from {KOTLIN_CONSTANTS.name}")
+                self.assertEqual(float(m.group(1)), float(getattr(dsp, py_name)))
+
+    def test_kotlin_measurement_constants_match_the_reference(self):
+        for (file, kotlin_name), py_name in SOURCE_PAIRS.items():
+            with self.subTest(constant=kotlin_name):
+                src = (KOTLIN_DSP / file).read_text(encoding="utf-8")
+                m = re.search(rf"const val {kotlin_name} = ([0-9.]+)", src)
+                self.assertIsNotNone(m, f"{kotlin_name} missing from {file}")
                 self.assertEqual(float(m.group(1)), float(getattr(dsp, py_name)))
 
 

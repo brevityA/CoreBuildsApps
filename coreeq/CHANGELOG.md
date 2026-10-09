@@ -23,8 +23,17 @@ must never land there. Releases are `coreeq-v<version>` tags (see
   **Room, not scored**, with the dips and phase-gated bass bands the
   correction leaves alone and where full correction stops. Home and
   Profiles work the score out from each profile's saved SNR, so profiles
-  from 1.3.0 and 1.3.1 show the new score too. The correction itself is
-  unchanged.
+  from 1.3.0 and 1.3.1 show the new score too. The score change leaves the
+  correction alone.
+- **Bass dips are lifted by 2 dB at most.** Below the transition the
+  correction could boost a dip by up to 6 dB. One seat and an uncalibrated
+  remote cannot tell a dip that belongs to the room from one that belongs
+  to that seat, or to the remote's own bass roll-off (a first-order 100 Hz
+  high-pass reads 8.6 dB low at 40 Hz), so the corrector was boosting the
+  microphone. Peaks are still cut in full.
+- **Measure beeps before and after the sweep**, and asks for 14 seconds of
+  quiet instead of 13. The two beeps time the remote's clock against the
+  TV's (see Fixed).
 
 ### Fixed
 
@@ -51,7 +60,45 @@ synthetic-room simulation of the app's own analysis.
   of the remote's audio shifts everything after it, and the bass then
   looked so delayed that every bass band was left uncorrected while the
   score stayed above 85. Measure now says part of the recording went
-  missing and asks for another sweep.
+  missing and asks for another sweep. The timing beeps catch it directly:
+  8 ms lost moves them 755 ppm closer, and over 300 ppm is no clock. They
+  also catch a loss the bass timing misses: one 4.35 s into the sweep left
+  the 250 Hz band in phase and was accepted.
+- **The remote's clock is taken out of the measurement.** The remote and the
+  TV run on separate crystals, and a remote 80 ppm fast smeared the sweep
+  and cost 2.7 dB of signal to noise, about 9 points of score. The beeps'
+  spacing measures the drift to within 1 ppm and the recording is
+  stretched back onto the TV's clock before it is analysed; the result line
+  says so when it does.
+- **A remote with a narrow microphone no longer reports phantom treble
+  dips.** A remote that sends 8 kHz audio hears nothing above about 4 kHz:
+  its 5 and 6.3 kHz bands read 62-92 dB down as phantom dips, and the
+  half-heard 4 kHz band was boosted 1.6 dB. Measure now finds where the capture stops (a band
+  under 10 dB of signal to noise, or 20 dB under the mid-band level, from
+  2 kHz up) and ends the measurement below that edge; the result line
+  shows how far it reached.
+- **A band buried in noise is not corrected.** Each band's own signal to
+  noise is measured against the noise ahead of the sweep. An air
+  conditioner's rumble can bury the 63 Hz band while the overall signal to
+  noise still scores excellent, and the corrector then answered whatever
+  level the rumble gave that band. A band under 10 dB is shown, counted on
+  the result line and left alone: in the test room the 63 Hz mode that a
+  quiet recording cuts by 3.5 dB is not cut once rumble buries it.
+- **The room's decay time is read per octave.** A single broadband figure
+  follows the treble, which holds most of the energy: in a room whose mids
+  rang for 0.7 s under a 0.3 s treble it read 0.41 s, which put the
+  transition 67 Hz low in a 150 m3 room. Core EQ now times the 125 Hz-2 kHz
+  octaves separately (ISO 3382-2) and uses the 500 Hz-1 kHz mean.
+- **The bass floor stops where the speaker does.** The roll-off finder took
+  the lowest band anywhere within 6 dB of the plateau, so noise lifting a
+  band below the roll-off moved the floor down: a soundbar rolling off at
+  63 Hz read 40 Hz at 35 dB, and the corrector boosted bass it cannot make.
+  It now walks down from the plateau and stops at the first band that
+  falls away, stepping over up to two bands of a narrow room null.
+- **The 20 and 25 Hz bands are gone.** The analysis window cannot resolve
+  them (its main lobe is 6.7 Hz wide) and the sweep starts at 20 Hz; they
+  read up to 1.8 dB off in a loopback and fed only the roll-off finder.
+  Bands now start at 31.5 Hz.
 - **The TV's own microphone processing is switched off.** Android lets a
   device attach automatic gain, noise suppression or echo cancelling to the
   recording; an automatic gain bends the bass by up to 2.5 dB without

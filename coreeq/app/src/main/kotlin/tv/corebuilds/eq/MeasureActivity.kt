@@ -258,7 +258,7 @@ class MeasureActivity : TvActivity() {
         renderQuality()
         EqService.send(this, EqService.ACTION_SUSPEND) // our own correction must not colour the sweep
 
-        val total = LEAD_SECONDS + Sweep.SECONDS + SweepAnalysis.TAIL_SECONDS
+        val total = LEAD_SECONDS + Sweep.STIMULUS_SECONDS + SweepAnalysis.TAIL_SECONDS
         captureEngine.start(total, object : CaptureListener {
             override fun onRecording(deviceName: String?) {
                 micName = deviceName
@@ -355,10 +355,17 @@ class MeasureActivity : TvActivity() {
         val rt = r.rt60Seconds?.let { String.format(Locale.US, "RT60 %.2f s", it) } ?: "RT60 not measurable (noisy decay)"
         val nulls = r.nullMask.count { it }
         val gated = r.centresHz.indices.count { !r.minPhaseOk[it] && r.centresHz[it] >= r.floorHz }
+        val noisy = r.centresHz.indices.count {
+            r.centresHz[it] >= r.floorHz && r.bandSnrDb.getOrElse(it) { Double.MAX_VALUE } < SweepAnalysis.BAND_MIN_SNR_DB
+        }
+        val top = r.centresHz.lastOrNull() ?: DspConstants.F_MAX
+        val clock = r.driftPpm?.takeIf { kotlin.math.abs(it) > SweepAnalysis.MIN_DRIFT_PPM }
+            ?.let { String.format(Locale.US, " · clock drift %+.0f ppm corrected", it) } ?: ""
         textStatus.text = String.format(
-            Locale.US, "%s · corrects %.0f Hz–%.0f kHz · %d null%s and %d non-minimum-phase band%s left alone · SNR %.0f dB",
-            rt, r.floorHz, DspConstants.F_MAX / 1000, nulls, if (nulls == 1) "" else "s",
-            gated, if (gated == 1) "" else "s", r.snrDb
+            Locale.US,
+            "%s · corrects %.0f Hz–%.1f kHz · %d null%s, %d non-minimum-phase band%s and %d noisy band%s left alone · SNR %.0f dB%s",
+            rt, r.floorHz, top / 1000, nulls, if (nulls == 1) "" else "s",
+            gated, if (gated == 1) "" else "s", noisy, if (noisy == 1) "" else "s", r.snrDb, clock
         )
         renderQuality()
     }
@@ -583,7 +590,7 @@ class MeasureActivity : TvActivity() {
             micType = micName ?: "microphone",
             deviceName = "${Build.MANUFACTURER} ${Build.MODEL}".trim(),
             stimulus = "sweep_${Sweep.SECONDS.roundToInt()}s",
-            captureSeconds = LEAD_SECONDS + Sweep.SECONDS + SweepAnalysis.TAIL_SECONDS,
+            captureSeconds = LEAD_SECONDS + Sweep.STIMULUS_SECONDS + SweepAnalysis.TAIL_SECONDS,
             volumeM3 = ROOMS[roomIndex].volumeM3,
             rt60Seconds = r.rt60Seconds,
             schroederHz = r.schroederHz,

@@ -12,8 +12,9 @@ two places:
 - The **remote mic is supported** (the TV hardware guide says the controller
   microphone is "fully supported"), but it is not a measurement microphone.
   Core EQ corrects **40 Hz–8 kHz** and refuses to invent a curve outside it.
-  From the remote's 16 kHz capture the measured bands stop at 6.3 kHz
-  (1.3.2): the 8 kHz band straddles the capture's anti-alias edge.
+  From the remote's 16 kHz capture the measured bands run 31.5 Hz-6.3 kHz
+  (1.3.2): the 8 kHz band straddles the capture's anti-alias edge, and a
+  remote with a narrower codec ends the measurement where its band ends.
 - Android has **no global equaliser API**. Session 0 is deprecated and never
   removed; the supported path is an opt-in broadcast most players do not send.
   So the product is built around a **capability probe** whose verdict is shown,
@@ -82,22 +83,29 @@ fifth frame before a visual release receipt is claimed.
 exponential sine sweep (10 s, Farina) — primary
 pink noise (20 s, deterministic) — cross-check and live RTA
   → AudioRecord(VOICE_RECOGNITION, 48 kHz), read ~3 s past the stop
+  → timing markers before and after the sweep → clock drift (ppm)
+        → stretch the capture back onto the player's clock (5-300 ppm; over 300 is a dropout, refused)
   → deconvolve with the time-reversed inverse filter → impulse response
-        ├→ RT60 (T20: Lundeby crosspoint + tail compensation; none under 35 dB of decay range)
+        ├→ RT60 (T20 per octave, 125 Hz-2 kHz: Lundeby crosspoint + tail compensation;
+        │        none under 35 dB of decay range; the 500 Hz-1 kHz mean is the room's)
         │      → Schroeder f_s = 2000·√(RT60/V)   [room dims are asked for]
         ├→ excess group delay → minimum-phase gate
-        └→ magnitude response
+        └→ magnitude response, 1/3-octave from 31.5 Hz
+              → band SNR against the noise ahead of the arrival
+              → capture bandwidth edge (from 2 kHz: under 10 dB SNR or 20 dB under the mids)
+              → bands under 10 dB SNR are shown, not corrected
   → 3 captures within the seat envelope (head height, ±25 cm), energy-averaged
   → measured vs target (Flat / B&K / Room / Olive / Dialogue / House)
   → room model
         transition  = min(2·f_s, 400 Hz), or 300 Hz when the room is unknown
         nulls       = dips deeper than 6 dB below the 2-octave trend
         floor       = wherever the loudspeaker's own roll-off is detected
+                      (walking down from 250 Hz; steps over up to 2 null bands)
   → correction, in two regimes
         below the transition   variable smoothing (1/6 oct) → invert
                                → never boost into a null
                                → honour the minimum-phase gate
-                               → clamp(+6/−12) → slope limit(6 dB/oct)
+                               → clamp(+6/−12; +2 from one seat) → slope limit(6 dB/oct)
                                → recentre → clamp again
         above the transition   shaping only, ±3 dB, one-octave smoothing
         → taper the edges → zero outside floor–8 kHz
