@@ -12,7 +12,21 @@ frame 1 when focus moves away shows "glyph, then banner on hover".
 Every frame is rendered from the same SVG tools/build_banners.py draws: the
 banner's glyph group is moved and scaled, the rest of the lockup is faded.
 Nothing is traced or hand-drawn, so the end state cannot drift from the
-banner the pack ships.
+banner the pack ships. frames_for() calls render() with exactly the
+arguments build_banners.py uses (banner_name, secondary included) and
+tests/test_morph_icons.py holds the last frame to the shipped banner's
+pixels, so a catalog or banner change fails loudly instead of silently
+shipping a stale morph.
+
+Two flavours are written per app:
+
+  play once   glyph -> banner, held, loop count 1. The shape a launcher
+              that honours the file's loop count shows: morph on focus,
+              rest on the banner, reset to the glyph on stop.
+  ping-pong   glyph -> banner -> glyph, looping forever (loop count 0).
+              The shape for a launcher that loops every animated icon
+              regardless of the file (Projectivy before 4.72 did): the
+              return trip eases back instead of cutting to frame 1.
 
 Writes, for the apps in TEST_SET:
   app/src/candidate/res/drawable-nodpi/<d>_morph.webp   animated WebP 320x180
@@ -23,10 +37,18 @@ Writes, for the apps in TEST_SET:
   docs/morph-test/<d>_morph.webp                         the same files, for
       trying them as manual per-card custom icons
   docs/morph-test/apng/<d>_morph.png                     the same frames as
-      APNG, the animated format Projectivy users already trade
+      APNG (Projectivy 4.70+ decodes it; the Android framework does not)
   docs/morph-test/gif/<d>_morph.gif                      and as GIF (1-bit
       alpha, so edges are harder) for launchers that only animate GIF
-  docs/morph-test/preview.gif                            contact sheet, animated
+  docs/morph-test/<d>_morph_loop.webp, apng/<d>_morph_loop.png and
+      gif/<d>_morph_loop.gif                              the ping-pong
+      variants, manual custom-icon route only (the icon-pack route shows a
+      static frame 1 either way, so the candidate APK carries just the
+      play-once set)
+  docs/morph-test/preview.gif                            contact sheet,
+      animated, play-once set
+  docs/morph-test/preview-loop.gif                       the same sheet,
+      ping-pong set
 
 Only the candidate build type (tv.corebuilds.iconpack.test) sees the
 candidate/ source set; the production pack is unchanged.
@@ -35,6 +57,7 @@ candidate/ source set; the production pack is unchanged.
 """
 from __future__ import annotations
 
+import difflib
 import io
 import json
 import math
@@ -55,7 +78,7 @@ CAND = ROOT / "app" / "src" / "candidate"
 DOCS = ROOT / "docs" / "morph-test"
 
 TEST_SET = ["Netflix", "Prime Video", "YouTube", "Disney+", "Plex",
-            "Crunchyroll", "Apple TV", "Max", "Stremio", "Spotify"]
+            "Crunchyroll", "Apple TV", "HBO Max", "Stremio", "Spotify"]
 
 OUT_W, OUT_H = 320, 180
 FRAMES = 16                # the move itself
@@ -73,12 +96,34 @@ def ease(t: float) -> float:
     return 0.5 - 0.5 * math.cos(math.pi * t)
 
 
+def once_durations(n: int) -> list[int]:
+    """Hold briefly on the glyph, morph, then hold on the banner."""
+    return [120] + [FRAME_MS] * (n - 2) + [1000]
+
+
+def pingpong(frames: list[Image.Image]) -> list[Image.Image]:
+    """Forward, then back to frame 2 — a seamless loop that rests on the
+    glyph, so a launcher that loops the file eases out instead of cutting."""
+    return frames + frames[-2:0:-1]
+
+
+def loop_durations(n_forward: int) -> list[int]:
+    """Durations for pingpong(frames) of n_forward forward frames: hold on
+    the glyph at both ends of the cycle, hold on the banner at the turn."""
+    return ([120] + [FRAME_MS] * (n_forward - 2) + [600]
+            + [FRAME_MS] * (n_forward - 3) + [120])
+
+
 def frames_for(icon: dict) -> list[Image.Image]:
     mono = icon.get("color_note") == "monochrome"
-    flat = render(icon["name"], icon.get("banner_glyph", icon["glyph"]), icon["color"],
+    # Exactly build_banners.py's render() call — banner_name and secondary
+    # included — so the last frame is the shipped banner, pixel for pixel.
+    flat = render(icon.get("banner_name", icon["name"]),
+                  icon.get("banner_glyph", icon["glyph"]), icon["color"],
                   icon.get("category"), monochrome=mono,
                   gradient=icon.get("gradient"), mark=icon.get("mark"),
-                  style=icon.get("mark_style"))
+                  style=icon.get("mark_style"),
+                  secondary=icon.get("secondary"))
     final = recentre(flat)
     # recentre() wraps the lockup in one translate; apply the same to every
     # frame so the last one is pixel-for-pixel the shipped banner.
@@ -117,27 +162,27 @@ def frames_for(icon: dict) -> list[Image.Image]:
     return out
 
 
-def save_webp(frames: list[Image.Image], path: Path) -> None:
+def save_webp(frames: list[Image.Image], path: Path,
+              durations: list[int], loop: int) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
-    durations = [120] + [FRAME_MS] * (len(frames) - 2) + [1000]
     frames[0].save(path, "WEBP", save_all=True, append_images=frames[1:],
-                   duration=durations, loop=1, lossless=True, quality=100,
+                   duration=durations, loop=loop, lossless=True, quality=100,
                    method=6)
 
 
-def save_apng(frames: list[Image.Image], path: Path) -> None:
+def save_apng(frames: list[Image.Image], path: Path,
+              durations: list[int], loop: int) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
-    durations = [120] + [FRAME_MS] * (len(frames) - 2) + [1000]
     # Each frame replaces the last outright (blend 0 = source), so the
     # transparent card never accumulates earlier frames.
     frames[0].save(path, "PNG", save_all=True, append_images=frames[1:],
-                   duration=durations, loop=1, disposal=1, blend=0,
+                   duration=durations, loop=loop, disposal=1, blend=0,
                    optimize=True)
 
 
-def save_gif(frames: list[Image.Image], path: Path) -> None:
+def save_gif(frames: list[Image.Image], path: Path,
+             durations: list[int], loop: int) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
-    durations = [120] + [FRAME_MS] * (len(frames) - 2) + [1000]
     pal = []
     for f in frames:
         # GIF alpha is on/off: anything under half-opaque becomes the
@@ -148,7 +193,7 @@ def save_gif(frames: list[Image.Image], path: Path) -> None:
         q.info["transparency"] = 255
         pal.append(q)
     pal[0].save(path, "GIF", save_all=True, append_images=pal[1:],
-                duration=durations, loop=1, disposal=2, transparency=255)
+                duration=durations, loop=loop, disposal=2, transparency=255)
 
 
 def overlay_appfilter(targets: dict[str, str]) -> str:
@@ -187,21 +232,39 @@ def preview(sets: list[list[Image.Image]], path: Path) -> None:
 
 def main() -> int:
     icons = {i["name"]: i for i in json.loads(CATALOG.read_text(encoding="utf-8"))["icons"]}
-    targets, morphs, sets = {}, [], []
+    targets, morphs, sets, loop_sets = {}, [], [], []
     for name in TEST_SET:
+        if name not in icons:
+            close = difflib.get_close_matches(name, icons, n=3, cutoff=0.5)
+            raise SystemExit(
+                f"{name}: not in tools/catalog.json (renamed? close: "
+                f"{', '.join(close) if close else 'none'})")
         icon = icons[name]
         morph = f"{icon['drawable']}_morph"
         frames = frames_for(icon)
+        once = once_durations(len(frames))
+        loop_frames = pingpong(frames)
+        loop = loop_durations(len(frames))
         for dest in (CAND / "res" / "drawable-nodpi" / f"{morph}.webp",
                      DOCS / f"{morph}.webp"):
-            save_webp(frames, dest)
-        save_apng(frames, DOCS / "apng" / f"{morph}.png")
-        save_gif(frames, DOCS / "gif" / f"{morph}.gif")
+            save_webp(frames, dest, once, loop=1)
+        save_apng(frames, DOCS / "apng" / f"{morph}.png", once, loop=1)
+        save_gif(frames, DOCS / "gif" / f"{morph}.gif", once, loop=1)
         size = (DOCS / f"{morph}.webp").stat().st_size
         print(f"  {name:12} {morph}.webp  {len(frames)} frames  {size / 1024:.0f} KB")
+        # The ping-pong variants exist for the manual custom-icon route
+        # only: the icon-pack route shows a static frame 1 either way, so
+        # the candidate APK carries just the play-once set.
+        save_webp(loop_frames, DOCS / f"{morph}_loop.webp", loop, loop=0)
+        save_apng(loop_frames, DOCS / "apng" / f"{morph}_loop.png", loop, loop=0)
+        save_gif(loop_frames, DOCS / "gif" / f"{morph}_loop.gif", loop, loop=0)
+        lsize = (DOCS / f"{morph}_loop.webp").stat().st_size
+        print(f"  {name:12} {morph}_loop.webp  {len(loop_frames)} frames  "
+              f"{lsize / 1024:.0f} KB")
         targets[f"{icon['drawable']}_banner"] = morph
         morphs.append(morph)
         sets.append(frames)
+        loop_sets.append(loop_frames)
 
     af = overlay_appfilter(targets)
     dx = overlay_drawable(morphs)
@@ -211,8 +274,10 @@ def main() -> int:
         p.parent.mkdir(parents=True, exist_ok=True)
         p.write_text(text, encoding="utf-8")
     preview(sets, DOCS / "preview.gif")
-    print(f"morph test set written - {len(morphs)} icons; candidate appfilter + "
-          "drawable.xml overlays; docs/morph-test/preview.gif")
+    preview(loop_sets, DOCS / "preview-loop.gif")
+    print(f"morph test set written - {len(morphs)} icons, play-once + ping-pong; "
+          "candidate appfilter + drawable.xml overlays; "
+          "docs/morph-test/preview.gif and preview-loop.gif")
     return 0
 
 
