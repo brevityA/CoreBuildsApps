@@ -6,6 +6,8 @@ All notable changes to the Core Builds Icon Pack. Format follows
 
 ## [Unreleased]
 
+## [2.3.0] — 2026-10-10
+
 ### Added
 
 - **Support Core Builds, from About.** A new row in About's links, under
