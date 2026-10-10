@@ -17,15 +17,12 @@ not confirmed by any source found here.
 | TCL | User-agent strings show `TCL TV` in the Android build token, which is the model field, not the manufacturer. ([DeviceAtlas](https://deviceatlas.com/blog/list-smart-tv-user-agent-strings)) | Mapped as `tcl`. Verify on device. |
 | Hisense | Hisense's VIDAA TVs are a non-Android platform, with their own user-agent format. ([DeviceAtlas](https://deviceatlas.com/blog/list-smart-tv-user-agent-strings)) Hisense Google TV models are Android. | Mapped as `hisense`. A VIDAA TV will not report Android build fields, so it will be detected as unknown. This is expected. |
 | Sony | Sony BRAVIA TVs run Android TV, with the BRAVIA name in the build token. ([DeviceAtlas](https://deviceatlas.com/blog/list-smart-tv-user-agent-strings)) | Mapped as `sony`. Verify on device. |
-| Samsung | Samsung TVs use Tizen, not Android (`core-eq-android-tv-market-and-competitors-2026-09-28.md`, section on Samsung Tizen). | Mapped as `samsung` for the output name only; a Samsung TV will normally be detected as unknown. This is a real limitation of the Android-identity signal. |
+| Samsung | Samsung TVs use Tizen, not Android (`core-eq-android-tv-market-and-competitors-2026-09-28.md`, section on Samsung Tizen). Core EQ cannot run on them. | No TV manufacturer string. Samsung stays as a soundbar name only. |
 
-Consequence: Core EQ is an Android TV app, so it runs only on Android TV or
-Google TV sets. A Samsung (Tizen) or LG (webOS) TV cannot install it, so the
-Samsung and LG TV-brand entries cannot be reached through TV detection. Their
-soundbars can still be detected through the output name. This is a scope
-question for the user: the requested TV brands include two that cannot run the app. The
-output-name hint still works for soundbars from those brands. This should be
-stated in the setup check and in the device test record.
+Decision (maintainer, 2026-10-10): Core EQ is Android TV only. Samsung and LG
+are removed from the TV-brand list (no manufacturer string maps to them). They
+remain soundbar brands, detected from the output name over HDMI ARC or eARC.
+The TV brands are Sony, TCL, Hisense and Philips.
 
 ## 2. Soundbar and speaker candidates
 

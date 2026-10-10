@@ -85,12 +85,25 @@ approved.
 
 ## 4. Verification status
 
-- Ran this round: the UI resource checker (`tools/check_ui_resources.py`), the
-  update-contract test (`tests/test_core_eq_update_contract.py`), and the suite
-  truth check (`tools/check_suite_truth.py`). Results are recorded in the
-  final report.
-- Not run: Gradle unit tests, lint, the Python DSP selftest (needs numpy), and
-  any device test. CI is the first real gate for the new Kotlin.
+Two runs, both in a sandbox without Android SDK access.
+
+- **Static checks (passed):** the UI resource checker, the update-contract
+  test, the suite-truth check, and bracket balance on each changed Kotlin file.
+- **Compiled and unit-tested (passed, 44 of 44):** the pure-Kotlin sources were
+  compiled with Kotlin 2.4.21 on a JDK 25 runtime, and the unit tests for
+  CorrectionImport, DeviceIdentity, SetupGuide, SpatialStatus and HardwarePresets
+  were run. The harness uses a JUnit shim, and `OutputRoute` is a verbatim copy of
+  its constants and `label()`. Those classes need Android, so they are not in
+  the harness. This is not an Android build.
+- **Measured on synthetic data:** the correction fit over 200 random
+  AutoEq-style curves (3 to 10 filters, full range). Median error 1.5 dB,
+  90th percentile 2.5 dB, worst 4.9 dB. Parse and fit take about 130 ms on a
+  JVM; a TV's CPU will be slower.
+- **Preset audit (run):** every shipped preset was checked for band centres,
+  Q, 0.5 dB steps, the ±6 dB range, unique names and ids. Findings and fixes
+  are in the final report of this round.
+- **Not run:** Android lint, the Android unit-test task, Gradle, and any device
+  test (brand strings, ARC output names, TalkBack, acoustic results).
 
 ## 5. Decisions needed from you
 
@@ -111,7 +124,6 @@ approved.
 | 2.5 Model-string matching, 2.6 auto-apply, 2.7 on-TV ADB | Still deferred. |
 | I1 Accessibility | Withdrawn (see row above). |
 
-Finding from the device research: Core EQ is an Android TV app, so Samsung
-(Tizen) and LG (webOS) TVs cannot run it. The TV-brand entries for those two
-brands cannot be reached. This needs a decision from the user.
+Decided (maintainer, 2026-10-10): Core EQ is Android TV only. Samsung and LG
+are no longer TV brands; they remain soundbar brands.
 

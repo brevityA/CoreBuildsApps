@@ -16,8 +16,9 @@ must never land there. Releases are `coreeq-v<version>` tags (see
   presets **Open stage**, **Centred vocal** and **Bass-forward**. The bar has
   no EQ and no bass settings of its own, so these are the only tone control.
   They come from the published specification (70 Hz to 20 kHz) and reviews.
-  No measured response was published, so none of them is measured. No preset
-  boosts below 70 Hz, where the bar has no output. The soundstage presets are
+  No measured response was published, so none of them is measured. The
+  presets add no lift above 70 Hz. Their 125 Hz lifts leak into 40 to 70 Hz through the
+  filter skirt (up to about 0.8 dB), where the bar has no output. The soundstage presets are
   tonal: an EQ cannot widen the stereo image. The MK2 (2022) is not matched.
 - **Setup check.** Home has a new **Setup check and ADB** row. One screen
   checks the DUMP grant, Display over other apps, the sound output and the
@@ -35,9 +36,9 @@ must never land there. Releases are `coreeq-v<version>` tags (see
   like any other preset, and you can edit a copy of one.
 
 - **Brand detection for TVs and sound outputs.** The setup check now names
-  the TV's brand (from Android's manufacturer string: Samsung, LG, Sony, TCL,
-  Hisense, Philips) and, separately, the output's brand (JBL, Sonos, Bose,
-  Yamaha, or a brand in the output name). A name that matches the TV's own
+  the TV's brand (from Android's manufacturer string: Sony, TCL, Hisense,
+  Philips; Core EQ is Android TV only) and, separately, the output's brand
+  (JBL, Sonos, Bose, Yamaha, Samsung, LG, Sony, or a brand in the output name). A name that matches the TV's own
   brand over HDMI or ARC is flagged as possibly the TV, not a soundbar. A
   **Measure this output** row appears when the current output has no
   measurement. Brand starter presets and auto-apply are not included yet.
@@ -63,6 +64,10 @@ must never land there. Releases are `coreeq-v<version>` tags (see
   confirmed on a device.
 
 ### Changed
+
+- Hardware presets (JBL Bar 800 and Bar 2.0) use Q 1.0, the same as the Manual
+  EQ's fixed bands and the correction import. They were Q 0.9 in the first
+  version, so the curves are slightly narrower than that version.
 
 - **Output detection finds the hardware by name.** Core EQ now reads the
   product name of every connected output of the kind the sound is routed

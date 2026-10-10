@@ -31,10 +31,16 @@ object DeviceIdentity {
     private fun word(vararg words: String) =
         Regex("(?<![a-z])(?:" + words.joinToString("|") + ")(?![a-z])", RegexOption.IGNORE_CASE)
 
-    /** The brands Core EQ recognises. TV brands also appear as soundbar brands. */
+    /**
+     * The brands Core EQ recognises.
+     *
+     * Core EQ is an Android TV app. Samsung (Tizen) and LG (webOS) TVs cannot run
+     * it, so they have no manufacturer string here and are never a TV brand. They
+     * stay in the list for soundbars, whose names Android reports over HDMI ARC.
+     */
     val BRANDS: List<Brand> = listOf(
-        Brand("samsung", "Samsung", setOf("samsung"), word("samsung")),
-        Brand("lg", "LG", setOf("lg", "lge", "lg electronics"), word("lg", "lg electronics")),
+        Brand("samsung", "Samsung", emptySet(), word("samsung")),
+        Brand("lg", "LG", emptySet(), word("lg", "lg electronics")),
         Brand("sony", "Sony", setOf("sony"), word("sony")),
         Brand("tcl", "TCL", setOf("tcl"), word("tcl")),
         Brand("hisense", "Hisense", setOf("hisense"), word("hisense")),

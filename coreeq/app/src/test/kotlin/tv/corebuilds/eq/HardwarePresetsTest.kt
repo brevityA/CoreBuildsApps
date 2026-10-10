@@ -103,10 +103,19 @@ class HardwarePresetsTest {
     }
 
     @Test
-    fun theBar20PresetsDoNotBoostBelowItsSeventyHertzFloor() {
+    fun theBar20PresetsStayWithinAOneDecibelSkirtBelowItsSeventyHertzFloor() {
+        // A 125 Hz bell's skirt reaches into 40 to 70 Hz, so no positive 125 Hz lift can
+        // be exactly zero there. The measured worst case is about 0.8 dB; this guards
+        // against a regression beyond that.
         assertEquals(7, bar20.presets.size)
         for (preset in bar20.presets) {
-            assertTrue("below 70 Hz: ${preset.id}", preset.filters.filter { it.fc < 70.0 }.all { it.gain <= 0.0 })
+            var worst = -99.0
+            var hz = 40.0
+            while (hz <= 70.0) {
+                worst = maxOf(worst, ManualEq.responseDb(preset.filters, hz))
+                hz *= 1.01
+            }
+            assertTrue("below 70 Hz: ${preset.id} peaks at $worst dB", worst <= 1.0)
         }
     }
 

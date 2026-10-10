@@ -12,9 +12,12 @@ class DeviceIdentityTest {
 
     @Test
     fun theTvBrandComesFromItsManufacturerString() {
-        assertEquals("lg", DeviceIdentity.brandForManufacturer("LGE")?.id)
-        assertEquals("samsung", DeviceIdentity.brandForManufacturer(" Samsung ")?.id)
+        assertEquals("sony", DeviceIdentity.brandForManufacturer(" Sony ")?.id)
         assertEquals("hisense", DeviceIdentity.brandForManufacturer("HISENSE")?.id)
+        assertEquals("philips", DeviceIdentity.brandForManufacturer("TP Vision")?.id)
+        // Samsung (Tizen) and LG (webOS) cannot run Core EQ, so they are never a TV brand.
+        assertNull(DeviceIdentity.brandForManufacturer("LGE"))
+        assertNull(DeviceIdentity.brandForManufacturer("Samsung"))
         assertNull(DeviceIdentity.brandForManufacturer("Acme Unknown"))
         assertNull(DeviceIdentity.brandForManufacturer(null))
     }
@@ -29,14 +32,14 @@ class DeviceIdentityTest {
 
     @Test
     fun aNamedSoundbarOverArcIsClaimedWithItsBrand() {
-        val d = DeviceIdentity.detect("Samsung", OutputRoute.HDMI_ARC, "Sonos Arc", listOf("Sonos Arc"))
+        val d = DeviceIdentity.detect("Sony", OutputRoute.HDMI_ARC, "Sonos Arc", listOf("Sonos Arc"))
         assertEquals("sonos", d.outputBrand?.id)
         assertFalse(d.ambiguous)
     }
 
     @Test
     fun aTvNameOverArcIsFlaggedNotClaimed() {
-        val d = DeviceIdentity.detect("LGE", OutputRoute.HDMI_ARC, "LG TV", listOf("LG TV"))
+        val d = DeviceIdentity.detect("Sony", OutputRoute.HDMI_ARC, "Sony TV", listOf("Sony TV"))
         assertTrue(d.ambiguous)
         assertNull(d.outputBrand)
     }
@@ -51,7 +54,7 @@ class DeviceIdentityTest {
 
     @Test
     fun aModelMatchReportsItsBrandEvenWithoutABrandWordInTheName() {
-        val d = DeviceIdentity.detect("Samsung", OutputRoute.HDMI_ARC, "BAR 800", listOf("BAR 800"))
+        val d = DeviceIdentity.detect("Sony", OutputRoute.HDMI_ARC, "BAR 800", listOf("BAR 800"))
         assertEquals("jbl", d.outputBrand?.id)
         assertEquals("JBL Bar 800", d.hardware?.name)
         assertFalse(d.ambiguous)

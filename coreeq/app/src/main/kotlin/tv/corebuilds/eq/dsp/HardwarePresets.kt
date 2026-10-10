@@ -43,7 +43,8 @@ object HardwarePresets {
         val basis: String
     )
 
-    private fun bell(fc: Double, gain: Double, q: Double = 0.9) = PeakingFilter(fc, q, gain)
+    // Q matches the editor's fixed bands (ManualEq.DEFAULT_Q), so a preset edits the same way.
+    private fun bell(fc: Double, gain: Double, q: Double = ManualEq.DEFAULT_Q) = PeakingFilter(fc, q, gain)
 
     /** JBL Bar 800 (5.1.2 Dolby Atmos soundbar, 10-inch wireless subwoofer). */
     private val JBL_BAR_800 = Model(
@@ -115,7 +116,8 @@ object HardwarePresets {
      * say: front soundstage wider and deeper than expected, dialogue distinct,
      * no centre channel, bright highs with energy, vocals sometimes harsh, bass
      * short on the lowest demanding material, virtual surround on its TV mode.
-     * No preset boosts below 70 Hz, where the bar has no output.
+     * The 125 Hz lifts reach into 40 to 70 Hz through their skirts (up to about
+     * 0.8 dB). The bar has no output there, so that part is headroom, not sound.
      *
      * The soundstage presets are tonal only. An EQ cannot widen a stereo image,
      * so they shape how the front stage sounds; the bar's own TV or virtual

@@ -61,11 +61,11 @@ class SetupGuideTest {
 
     @Test
     fun aSoundbarNamedAfterTheTvIsNotClaimedAsOne() {
-        val tv = DeviceIdentity.brandForManufacturer("samsung")
-        val detection = DeviceIdentity.detect("samsung", OutputRoute.HDMI_ARC, "Samsung Q80", listOf("Samsung Q80"))
-        val steps = SetupGuide.steps(true, true, OutputRoute.HDMI_ARC, "Samsung Q80", null, detection, measured = false)
+        val tv = DeviceIdentity.brandForManufacturer("sony")
+        val detection = DeviceIdentity.detect("sony", OutputRoute.HDMI_ARC, "Sony TV", listOf("Sony TV"))
+        val steps = SetupGuide.steps(true, true, OutputRoute.HDMI_ARC, "Sony TV", null, detection, measured = false)
         val device = step(steps, "device").detail
-        assertTrue(device.contains("TV: Samsung."))
+        assertTrue(device.contains("TV: Sony."))
         assertTrue(device.contains("may be the TV itself"))
         assertEquals(tv, detection.tvBrand)
         assertEquals("Measure this output", step(steps, "measure").title)
