@@ -1,17 +1,13 @@
 {
-  "versionCode": 47,
-  "versionName": "2.2.0",
+  "versionCode": 48,
+  "versionName": "2.3.0",
   "iconCount": 983,
   "componentCount": 1217,
-  "releaseDate": "2026-10-09",
+  "releaseDate": "2026-10-10",
   "apkUrl": "https://github.com/brevityA/CoreBuildsApps/releases/download/iconpack/iconpack-release.apk",
   "releaseNotesUrl": "https://github.com/brevityA/CoreBuildsApps/releases",
   "minSdk": 21,
   "highlights": [
-    "Missing icons on the home screen",
-    "The missing-icon list says what each app needs",
-    "The request code sits beside the app, not under it",
-    "A tidier home rail",
-    "Scan for unmapped apps says what it is doing"
+    "Support Core Builds, from About"
   ]
 }
