@@ -8,6 +8,8 @@ must never land there. Releases are `coreeq-v<version>` tags (see
 
 ## [Unreleased]
 
+## [1.4.0] — 2026-10-10
+
 ### Added
 
 - **Support Core Builds, from Capability.** A Support card under App updates
