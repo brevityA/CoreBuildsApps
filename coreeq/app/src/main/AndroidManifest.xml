@@ -117,6 +117,13 @@
             android:exported="false"
             android:label="@string/extras_heading" />
 
+        <!-- Opened from the Capability screen. Draws two QR codes locally;
+             sends nothing. -->
+        <activity
+            android:name=".SupportActivity"
+            android:exported="false"
+            android:label="@string/support_heading" />
+
         <service
             android:name=".apply.EqService"
             android:exported="false"

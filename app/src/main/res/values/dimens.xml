@@ -78,6 +78,9 @@
     <!-- The auditor's request code: about a third of a 1080p panel's height,
          which a phone camera reads across a living room. -->
     <dimen name="cb_qr_size">320dp</dimen>
+    <!-- Support shows two codes side by side, so each is smaller. Its URLs
+         encode at 29 modules, about 6dp a module here. -->
+    <dimen name="cb_support_qr">220dp</dimen>
 
     <!-- Stacked action buttons share a minimum width so they align as a column
          instead of jagging to their text length. -->

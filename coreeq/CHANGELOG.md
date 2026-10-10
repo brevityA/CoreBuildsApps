@@ -8,6 +8,15 @@ must never land there. Releases are `coreeq-v<version>` tags (see
 
 ## [Unreleased]
 
+### Added
+
+- **Support Core Builds, from Capability.** A Support card under App updates
+  opens two QR codes, GitHub Sponsors and Ko-fi, for your phone's camera,
+  with each address printed under its code. It is optional and unlocks
+  nothing, and opening it sends nothing: the codes are drawn on the TV with
+  the encoder the icon pack's auditor uses. Home keeps its six menu rows; a
+  seventh would not fit a 1080p screen.
+
 ## [1.3.2] — 2026-10-09
 
 ### Changed
