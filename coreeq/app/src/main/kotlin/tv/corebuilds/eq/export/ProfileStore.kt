@@ -6,11 +6,12 @@ import android.util.Log
 import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
+import tv.corebuilds.eq.dsp.HardwarePresets
 import tv.corebuilds.eq.dsp.ManualEq
 import tv.corebuilds.eq.dsp.ManualEqPreset
+import tv.corebuilds.eq.dsp.PeakingFilter
 import tv.corebuilds.eq.mode.ContentMode
 import tv.corebuilds.eq.mode.ContentModeStore
-import tv.corebuilds.eq.dsp.PeakingFilter
 import java.util.UUID
 
 /**
@@ -138,15 +139,18 @@ class ProfileStore(context: Context) {
         return removed
     }
 
-    /** Built-in tone presets followed by any presets the viewer saved. */
-    fun manualEqPresets(): List<ManualEqPreset> = ManualEq.BUILT_IN_PRESETS + storedManualEqPresets()
+    /** Built-in tone presets, then the shipped hardware presets, then any presets the viewer saved. */
+    fun manualEqPresets(): List<ManualEqPreset> = shippedManualEqPresets() + storedManualEqPresets()
+
+    private fun shippedManualEqPresets(): List<ManualEqPreset> =
+        ManualEq.BUILT_IN_PRESETS + HardwarePresets.PRESETS
 
     /** Save (or replace by case-insensitive name) a reusable user preset. */
     fun saveManualEqPreset(name: String, filters: List<PeakingFilter>): ManualEqPreset {
         val cleanName = name.trim()
         require(cleanName.isNotEmpty()) { "Preset name cannot be empty" }
         require(cleanName.length <= 32) { "Preset names must be 32 characters or fewer" }
-        require(ManualEq.BUILT_IN_PRESETS.none { it.name.equals(cleanName, ignoreCase = true) }) {
+        require(shippedManualEqPresets().none { it.name.equals(cleanName, ignoreCase = true) }) {
             "Choose a name other than a built-in preset"
         }
         val existing = storedManualEqPresets().firstOrNull { it.name.equals(cleanName, ignoreCase = true) }
@@ -161,7 +165,7 @@ class ProfileStore(context: Context) {
     }
 
     fun deleteManualEqPreset(id: String): Boolean {
-        if (ManualEq.BUILT_IN_PRESETS.any { it.id == id }) return false
+        if (shippedManualEqPresets().any { it.id == id }) return false
         val presets = storedManualEqPresets()
         val updated = presets.filterNot { it.id == id }
         if (updated.size == presets.size) return false

@@ -106,6 +106,9 @@ class MainActivity : TvActivity() {
         findViewById<Button>(R.id.btn_nav_capability).setOnClickListener {
             startActivity(Intent(this, CapabilityActivity::class.java))
         }
+        findViewById<Button>(R.id.btn_nav_setup).setOnClickListener {
+            startActivity(Intent(this, SetupActivity::class.java))
+        }
         findViewById<Button>(R.id.btn_nav_display_calibration).setOnClickListener {
             startActivity(Intent(this, tv.corebuilds.eq.display.DisplayCalibrationActivity::class.java))
         }

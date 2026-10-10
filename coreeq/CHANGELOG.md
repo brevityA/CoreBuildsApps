@@ -8,6 +8,76 @@ must never land there. Releases are `coreeq-v<version>` tags (see
 
 ## [Unreleased]
 
+## [1.5.0] — 2026-10-10
+
+### Added
+
+- **Hardware presets: JBL Bar 2.0 All-in-One (original).** Seven tone
+  presets in the Manual EQ list under "JBL Bar 2.0": listening presets
+  **Movie**, **Dialogue**, **Music** and **Late night**, and soundstage
+  presets **Open stage**, **Centred vocal** and **Bass-forward**. The bar has
+  no EQ and no bass settings of its own, so these are the only tone control.
+  They come from the published specification (70 Hz to 20 kHz) and reviews.
+  No measured response was published, so none of them is measured. The
+  presets add no lift above 70 Hz. Their 125 Hz lifts leak into 40 to 70 Hz through the
+  filter skirt (up to about 0.8 dB), where the bar has no output. The soundstage presets are
+  tonal: an EQ cannot widen the stereo image. The MK2 (2022) is not matched.
+- **Setup check.** Home has a new **Setup check and ADB** row. One screen
+  checks the DUMP grant, Display over other apps, the sound output and the
+  detected hardware, and lists each missing step with its exact ADB command.
+  **Copy command** and **Copy report** put them on the clipboard. Core EQ
+  cannot run ADB itself, so the commands are copied for a computer; the check
+  does not run them.
+- **Hardware presets: JBL Bar 800.** Four manual tone presets for the JBL
+  Bar 800 soundbar, in the Manual EQ preset list under "JBL Bar 800":
+  **Movie**, **Dialogue**, **Music** and **Late night**. They are built from
+  the bar's published specification (5.1.2 Atmos, 10-inch subwoofer, 35 Hz
+  to 20 kHz at -6 dB) and from reviewers' descriptions of its sound: bass
+  that can overpower the mids, slightly thin dialogue, and mud at high
+  volume. None is a measured curve. They sit on top of the room correction
+  like any other preset, and you can edit a copy of one.
+- **Brand detection for TVs and sound outputs.** The setup check now names
+  the TV's brand (from Android's manufacturer string: Sony, TCL, Hisense,
+  Philips; Core EQ is Android TV only) and, separately, the output's brand
+  (JBL, Sonos, Bose, Yamaha, Samsung, LG, Sony, or a brand in the output name). A name that matches the TV's own
+  brand over HDMI or ARC is flagged as possibly the TV, not a soundbar. A
+  **Measure this output** row appears when the current output has no
+  measurement. Brand starter presets and auto-apply are not included yet.
+- **Setup check: passthrough check.** When the sound output is HDMI, the
+  setup check adds a "Check the TV's surround setting" row (info, not a
+  missing step). It asks you to set the TV's Surround sound (or Audio format)
+  to PCM. It is based on Android's encoded-surround setting, not the stream format.
+- **Device test record template.** `docs/CORE_EQ_DEVICE_TEST_RECORD.md` gives
+  one record per TV and output, for checking brand detection, routing and
+  presets on hardware. Nothing in it has been run yet.
+- **Import a correction file.** Manual EQ has **Import correction file…**,
+  which reads an AutoEq ParametricEQ, Equalizer APO or GraphicEQ text file and
+  fits it to the 10 bands (Q 1.0, ±6 dB, 0.5 dB steps). The result is saved as
+  a preset named "Import: …" and applied. The closest fit's largest difference
+  from the file is shown. Only peaking (PK) filters are fitted; other filter
+  types and the preamp are reported, not applied. Files over 64 KB are refused.
+- **Read-only spatial audio line in the setup check.** On Android 12L (API 32)
+  and later, the setup check shows whether spatial audio is on and available
+  for the current output. Core EQ cannot change it: Android gives apps no
+  switch for it.
+- **Philips TV aliases.** Philips Android TVs are made by TP Vision (TPV);
+  detection now also reads `tp vision` and `tpv` as the Philips brand. Not yet
+  confirmed on a device.
+
+### Changed
+
+- Hardware presets (JBL Bar 800 and Bar 2.0) use Q 1.0, the same as the Manual
+  EQ's fixed bands and the correction import. They were Q 0.9 in the first
+  version, so the curves are slightly narrower than that version.
+
+- **Output detection finds the hardware by name.** Core EQ now reads the
+  product name of every connected output of the kind the sound is routed
+  to, not only the first one. A soundbar on HDMI ARC, eARC, Bluetooth, USB
+  or a wired output is recognised even when Android names only the generic
+  port, and the Manual EQ preset picker puts that soundbar's presets first
+  under "Choose an EQ preset · detected …". The TV's own speakers never
+  match a soundbar name.
+
 ## [1.4.0] — 2026-10-10
 
 ### Added

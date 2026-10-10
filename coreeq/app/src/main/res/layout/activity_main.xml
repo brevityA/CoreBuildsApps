@@ -317,6 +317,11 @@
                     android:text="@string/action_capability" />
 
                 <Button
+                    android:id="@+id/btn_nav_setup"
+                    style="@style/CoreEQ.MenuRow"
+                    android:text="@string/action_setup" />
+
+                <Button
                     android:id="@+id/btn_nav_display_calibration"
                     style="@style/CoreEQ.MenuRow"
                     android:text="@string/action_display_calibration" />

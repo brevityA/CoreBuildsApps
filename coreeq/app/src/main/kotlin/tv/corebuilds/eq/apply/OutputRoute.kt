@@ -114,6 +114,24 @@ object OutputRoute {
         return Output(kind, displayName(kind, device?.productName?.toString()))
     }
 
+    /**
+     * The product names of every connected output of [kind]. A soundbar can
+     * be connected alongside another device of the same kind, and Android's
+     * single "current" route may name only the generic port, so detection
+     * looks at all of them. Empty for an unknown kind or a failed lookup.
+     */
+    fun connectedNames(context: Context, kind: String?): List<String> {
+        if (kind == null) return emptyList()
+        val am = context.getSystemService(AudioManager::class.java) ?: return emptyList()
+        return try {
+            am.getDevices(AudioManager.GET_DEVICES_OUTPUTS)
+                .filter { kindOf(it.type) == kind }
+                .mapNotNull { it.productName?.toString()?.trim()?.takeIf { s -> s.isNotEmpty() } }
+        } catch (_: SecurityException) {
+            emptyList()
+        }
+    }
+
     /** The name to show for an output: the device's own, unless it only repeats the TV's model. */
     fun displayName(kind: String, product: String?, model: String = Build.MODEL): String {
         val p = product?.trim().orEmpty()
@@ -190,7 +208,7 @@ object OutputRoute {
     }
 
     private fun specificName(kind: String, name: String?): String? {
-        val clean = name?.trim()?.takeIf { it.isNotEmpty() } ?: return null
+        val clean = name?.trim()?.takeIf { s -> s.isNotEmpty() } ?: return null
         return clean.takeUnless { it.equals(label(kind), ignoreCase = true) }
             ?.lowercase(java.util.Locale.ROOT)
     }

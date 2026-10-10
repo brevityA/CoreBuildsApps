@@ -97,6 +97,11 @@
             android:label="@string/mode_title" />
 
         <activity
+            android:name=".SetupActivity"
+            android:exported="false"
+            android:label="@string/setup_title" />
+
+        <activity
             android:name=".CapabilityActivity"
             android:exported="false"
             android:label="@string/capability_title" />
