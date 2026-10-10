@@ -34,7 +34,6 @@ must never land there. Releases are `coreeq-v<version>` tags (see
   that can overpower the mids, slightly thin dialogue, and mud at high
   volume. None is a measured curve. They sit on top of the room correction
   like any other preset, and you can edit a copy of one.
-
 - **Brand detection for TVs and sound outputs.** The setup check now names
   the TV's brand (from Android's manufacturer string: Sony, TCL, Hisense,
   Philips; Core EQ is Android TV only) and, separately, the output's brand
