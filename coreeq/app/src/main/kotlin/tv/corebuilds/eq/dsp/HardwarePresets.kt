@@ -37,6 +37,8 @@ object HardwarePresets {
         val name: String,
         val kind: Kind,
         val nameMatch: Regex,
+        /** A name that matches [nameMatch] but is a different product, or null. */
+        val nameExclude: Regex?,
         val presets: List<ManualEqPreset>,
         val basis: String
     )
@@ -50,6 +52,7 @@ object HardwarePresets {
         name = "JBL Bar 800",
         kind = Kind.SOUNDBAR,
         nameMatch = Regex("""(?<![a-z0-9])(?:jbl[\s_-]*)?bar[\s_-]*800(?![0-9])""", RegexOption.IGNORE_CASE),
+        nameExclude = null,
         presets = listOf(
             ManualEqPreset(
                 id = "jbl-bar-800-movie",
@@ -103,8 +106,102 @@ object HardwarePresets {
             "Not measured by Core EQ."
     )
 
+    /**
+     * JBL Bar 2.0 All-in-One, original (2 x 40 W, 70 Hz to 20 kHz, no EQ and no
+     * bass settings on the bar itself, so Core EQ is the only tone control).
+     *
+     * Research for these presets (October 2026) found no measured frequency
+     * response, only the claimed 70 Hz to 20 kHz range and reviews. Reviews
+     * say: front soundstage wider and deeper than expected, dialogue distinct,
+     * no centre channel, bright highs with energy, vocals sometimes harsh, bass
+     * short on the lowest demanding material, virtual surround on its TV mode.
+     * No preset boosts below 70 Hz, where the bar has no output.
+     *
+     * The soundstage presets are tonal only. An EQ cannot widen a stereo image,
+     * so they shape how the front stage sounds; the bar's own TV or virtual
+     * surround mode is set on the bar and Core EQ does not change it.
+     *
+     * The MK2 (2022, JBLBAR20AIOM2BLKAM) is a different product and is not
+     * matched, so its owners get no automatic preset.
+     */
+    private val JBL_BAR_2_0 = Model(
+        id = "jbl-bar-2-0-all-in-one",
+        brand = "JBL",
+        name = "JBL Bar 2.0",
+        kind = Kind.SOUNDBAR,
+        nameMatch = Regex("""(?<![a-z0-9])(?:jbl[\s_-]*)?bar[\s_-]*2[\s_.-]*0(?![0-9])""", RegexOption.IGNORE_CASE),
+        nameExclude = Regex("""mk?[\s_-]*2(?![0-9])""", RegexOption.IGNORE_CASE),  // MK2, and the SKU's "AIOM2"
+        presets = listOf(
+            ManualEqPreset(
+                id = "jbl-bar-2-0-movie",
+                name = "JBL Bar 2.0 · Movie",
+                filters = listOf(
+                    bell(125.0, 1.5),    // the bass port adds depth the bar lacks at 70 Hz
+                    bell(2_000.0, 1.0),
+                    bell(4_000.0, 1.0)
+                )
+            ),
+            ManualEqPreset(
+                id = "jbl-bar-2-0-dialogue",
+                name = "JBL Bar 2.0 · Dialogue",
+                filters = listOf(
+                    bell(250.0, -1.0),   // less boxiness on speech
+                    bell(1_000.0, 1.0),
+                    bell(2_000.0, 2.0)   // dialogue is already distinct; this is a small lift
+                )
+            ),
+            ManualEqPreset(
+                id = "jbl-bar-2-0-music",
+                name = "JBL Bar 2.0 · Music",
+                filters = listOf(
+                    bell(125.0, 1.5),    // reviews: the bass is short on demanding music
+                    bell(4_000.0, -1.0), // reviews: vocals sometimes harsh
+                    bell(8_000.0, 0.5)
+                )
+            ),
+            ManualEqPreset(
+                id = "jbl-bar-2-0-late-night",
+                name = "JBL Bar 2.0 · Late night",
+                filters = listOf(
+                    bell(125.0, -1.5),   // less port thump at low volume
+                    bell(250.0, -1.0),
+                    bell(2_000.0, 1.5)   // keeps speech readable when quiet
+                )
+            ),
+            ManualEqPreset(
+                id = "jbl-bar-2-0-open-stage",
+                name = "JBL Bar 2.0 · Open stage",
+                filters = listOf(
+                    bell(250.0, -1.0),   // less centre-mid crowding, so the stage opens up
+                    bell(4_000.0, 1.0),
+                    bell(8_000.0, 1.5)   // air around the front image
+                )
+            ),
+            ManualEqPreset(
+                id = "jbl-bar-2-0-centred-vocal",
+                name = "JBL Bar 2.0 · Centred vocal",
+                filters = listOf(
+                    bell(250.0, -1.0),
+                    bell(1_000.0, 1.0),
+                    bell(2_000.0, 1.5)   // a voice that sits in the middle of the front stage
+                )
+            ),
+            ManualEqPreset(
+                id = "jbl-bar-2-0-bass-forward",
+                name = "JBL Bar 2.0 · Bass-forward",
+                filters = listOf(
+                    bell(125.0, 2.0),    // the most bass lift the bar can use above its 70 Hz floor
+                    bell(250.0, -0.5)
+                )
+            )
+        ),
+        basis = "Specification: JBL Bar 2.0 All-in-One product page and reviews (70 Hz to 20 kHz; " +
+            "2 x 40 W; two racetrack drivers; Dolby Digital; optical, USB, Bluetooth). " +
+            "No measured response found in October 2026. Character: reviews only. Not measured by Core EQ."
+    )
+
     /** Every shipped hardware model, in the order the picker lists them. */
-    val MODELS: List<Model> = listOf(JBL_BAR_800)
+    val MODELS: List<Model> = listOf(JBL_BAR_800, JBL_BAR_2_0)
 
     /** Every shipped hardware preset, flat across models. */
     val PRESETS: List<ManualEqPreset> = MODELS.flatMap { it.presets }
@@ -116,7 +213,11 @@ object HardwarePresets {
 
     fun matchAny(names: Collection<String?>): Model? {
         val cleaned = names.mapNotNull { it?.trim()?.takeIf { s -> s.isNotEmpty() } }
-        return MODELS.firstOrNull { model -> cleaned.any { model.nameMatch.containsMatchIn(it) } }
+        return MODELS.firstOrNull { model ->
+            cleaned.any { name ->
+                model.nameMatch.containsMatchIn(name) && model.nameExclude?.containsMatchIn(name) != true
+            }
+        }
     }
 
     /**

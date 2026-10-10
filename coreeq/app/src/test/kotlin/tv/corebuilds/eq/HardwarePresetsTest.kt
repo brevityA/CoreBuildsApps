@@ -1,6 +1,7 @@
 package tv.corebuilds.eq
 
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
@@ -80,5 +81,47 @@ class HardwarePresetsTest {
         assertTrue(ManualEq.gainAtBand(music.filters, 1) < 0.0)
         val late = bar800.presets.single { it.id == "jbl-bar-800-late-night" }
         assertEquals(-3.0, ManualEq.gainAtBand(late.filters, 0), 0.0)
+    }
+
+    private val bar20 = HardwarePresets.MODELS.single { it.id == "jbl-bar-2-0-all-in-one" }
+
+    @Test
+    fun theOriginalBar20IsFoundButItsMk2IsNot() {
+        for (name in listOf("JBL BAR 2.0 ALL-IN-ONE", "JBL Bar 2.0", "BAR2.0", "jbl_bar-2-0")) {
+            assertEquals("name: $name", bar20, HardwarePresets.matchAny(listOf(name)))
+        }
+        assertNull(HardwarePresets.matchAny(listOf("JBL BAR 2.0 ALL-IN-ONE MK2")))
+        assertNull(HardwarePresets.matchAny(listOf("JBLBAR20AIOM2BLKAM")))
+        assertNull(HardwarePresets.matchAny(listOf("JBL BAR 2.0 AIO M2")))
+        assertNull(HardwarePresets.matchAny(listOf("Bar 2.00 pro")))
+    }
+
+    @Test
+    fun theTwoJblBarsDoNotMatchEachOther() {
+        assertEquals(bar800, HardwarePresets.matchAny(listOf("JBL BAR 800")))
+        assertEquals(bar20, HardwarePresets.matchAny(listOf("JBL BAR 2.0 ALL-IN-ONE")))
+    }
+
+    @Test
+    fun theBar20PresetsDoNotBoostBelowItsSeventyHertzFloor() {
+        assertEquals(7, bar20.presets.size)
+        for (preset in bar20.presets) {
+            assertTrue("below 70 Hz: ${preset.id}", preset.filters.filter { it.fc < 70.0 }.all { it.gain <= 0.0 })
+        }
+    }
+
+    @Test
+    fun theBar20StageAndListeningPresetsCoverBothGroups() {
+        val ids = bar20.presets.map { it.id }
+        assertTrue(ids.containsAll(listOf("jbl-bar-2-0-movie", "jbl-bar-2-0-dialogue", "jbl-bar-2-0-music", "jbl-bar-2-0-late-night")))
+        assertTrue(ids.containsAll(listOf("jbl-bar-2-0-open-stage", "jbl-bar-2-0-centred-vocal", "jbl-bar-2-0-bass-forward")))
+    }
+
+    @Test
+    fun noTwoShippedPresetsHaveTheSameToneSoTheNameIsNeverAmbiguous() {
+        val all = ManualEq.BUILT_IN_PRESETS + HardwarePresets.PRESETS
+        for (i in all.indices) for (j in i + 1 until all.size) {
+            assertFalse("${all[i].name} = ${all[j].name}", ManualEq.sameFilters(all[i].filters, all[j].filters))
+        }
     }
 }

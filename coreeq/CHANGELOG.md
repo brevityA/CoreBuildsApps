@@ -10,6 +10,21 @@ must never land there. Releases are `coreeq-v<version>` tags (see
 
 ### Added
 
+- **Hardware presets: JBL Bar 2.0 All-in-One (original).** Seven tone
+  presets in the Manual EQ list under "JBL Bar 2.0": listening presets
+  **Movie**, **Dialogue**, **Music** and **Late night**, and soundstage
+  presets **Open stage**, **Centred vocal** and **Bass-forward**. The bar has
+  no EQ and no bass settings of its own, so these are the only tone control.
+  They come from the published specification (70 Hz to 20 kHz) and reviews.
+  No measured response was published, so none of them is measured. No preset
+  boosts below 70 Hz, where the bar has no output. The soundstage presets are
+  tonal: an EQ cannot widen the stereo image. The MK2 (2022) is not matched.
+- **Setup check.** Home has a new **Setup check and ADB** row. One screen
+  checks the DUMP grant, Display over other apps, the sound output and the
+  detected hardware, and lists each missing step with its exact ADB command.
+  **Copy command** and **Copy report** put them on the clipboard. Core EQ
+  cannot run ADB itself, so the commands are copied for a computer; the check
+  does not run them.
 - **Hardware presets: JBL Bar 800.** Four manual tone presets for the JBL
   Bar 800 soundbar, in the Manual EQ preset list under "JBL Bar 800":
   **Movie**, **Dialogue**, **Music** and **Late night**. They are built from
