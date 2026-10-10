@@ -9,8 +9,14 @@
 [![Suite CI](https://github.com/brevityA/CoreBuildsApps/actions/workflows/suite-ci.yml/badge.svg)](https://github.com/brevityA/CoreBuildsApps/actions/workflows/suite-ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-00d4ff.svg)](LICENSE)
 ![Android TV](https://img.shields.io/badge/Android_TV-Leanback-8a4890.svg)
+[![Discord](https://img.shields.io/badge/Discord-Core_Builds-5865F2?logo=discord&logoColor=white)](https://discord.gg/AwJ49yzbqT)
+[![Reddit](https://img.shields.io/badge/Reddit-r%2FCoreBuilds-FF4500?logo=reddit&logoColor=white)](https://www.reddit.com/r/CoreBuilds/)
+[![GitHub Sponsors](https://img.shields.io/badge/Sponsor-brevityA-EA4AAA?logo=githubsponsors&logoColor=white)](https://github.com/sponsors/brevityA)
+[![Ko-fi](https://img.shields.io/badge/Ko--fi-Support_Core_Builds-FF5E5B?logo=kofi&logoColor=white)](https://ko-fi.com/branding_brevity)
 
 </div>
+
+Five free apps for Android TV and Google TV, and one for your phone. Each has a permanent APK link, all but Core Motion have a Downloader code, and the table shows the current release of each. Every app has a short card on this page and a full guide in [`docs/apps/`](docs/apps/). Community: **[Discord](https://discord.gg/AwJ49yzbqT)** · **[r/CoreBuilds](https://www.reddit.com/r/CoreBuilds/)**. If one earns a place on your TV, you can support it through **[GitHub Sponsors](https://github.com/sponsors/brevityA)** or **[Ko-fi](https://ko-fi.com/branding_brevity)**.
 
 ---
 
@@ -20,95 +26,81 @@
 > | **[Core Builds Icon Pack](#-core-builds-icon-pack)** | `v2.2.0` | 983 transparent icons + 102 wallpapers for Projectivy Launcher | `5270601` | [`v*` / `iconpack`](../../releases) |
 > | **[Core Line](#-core-line)** | `v1.4.4` | Sports scores & channel RSS ticker (chyron) | `7375676` | [`coreline-v*` / `coreline`](../../releases) |
 > | **[Core Shift](#-core-shift)** | `v2.3.5` | Android TV screensaver + motion wallpaper browser | `8829421` | [`shift-v*` / `shift`](../../releases) |
-> | **[Core Motion](#-core-motion)** | `v1.0.0` | Projectivy wallpaper-provider plugin for Core Motion loops | `[USER TO SUPPLY]` | [`motion-v*` / `motion`](../../releases) |
+> | **[Core Motion](#-core-motion)** | `v1.0.0` | Projectivy wallpaper-provider plugin for Core Motion loops | none yet | [`motion-v*` / `motion`](../../releases) |
 > | **[Core Doctor](#-core-doctor)** | `v0.1.0` | Local-only streaming and suite diagnostics (phone) | `8664938` | [`doctor-v*` / `doctor`](../../releases) |
 > | **[Core EQ](#-core-eq)** | `v1.3.2` | Room EQ measured per TV audio output, with manual/content-mode tone controls | `7946159` | [`coreeq-v*` / `coreeq`](../../releases) |
 >
-> Each app has its own CI workflow and release tag. Do not merge Gradle roots, split the repo, or repoint floating Downloader tags.
 > The Icon Pack release also carries a glyphs-only pack — square art, no banners (`tv.corebuilds.iconpack.glyphs`) — Downloader `5804177`.
 <!-- suite-stamp:end -->
 
 ---
 
+## Install any app
+
+On a TV:
+
+1. Install **Downloader** by AFTVnews from the Play Store or Amazon Appstore.
+2. Enter the app's **Downloader code** from the table above, and install the APK when Android asks.
+3. Open the app.
+
+Core Motion has no Downloader code yet, so open its permanent APK link instead. Core Doctor runs on your phone: open its permanent APK link there.
+
+Each card below has a **permanent APK link**. It always serves the current release from that app's own floating tag, such as `iconpack` or `coreeq`. Don't use the repo-wide `releases/latest/download/…` URL: six apps release from this repo, so "latest" is whichever one shipped last.
+
+Icon Pack, Core Line, Core Shift and Core EQ check for their own updates. Core Motion and Core Doctor update by installing the new APK over the old one.
+
+---
+
 ## 🔷 Core Builds Icon Pack
 
-**Transparent app icons for Projectivy Launcher on Android TV.**
+**Transparent icons and 16:9 banners for Projectivy Launcher, plus wallpapers.** Every icon is drawn in one style: original geometry, one accent colour, transparent background. The pack applies banners by default; a square glyph build is one switch away. Home's **Missing icons** row lists the apps on your TV that have no icon yet and prefills the request for you.
 
-Designed for [Projectivy Launcher](https://play.google.com/store/apps/details?id=com.spocky.projengmenu) on Android TV and Google TV, built to the [Core Builds Brand & Style Guide v1.0](https://github.com/brevityA/Core-Builds). Every icon shares one visual language — original geometry, rounded-line brand motifs, one accent, transparent backgrounds — with the canonical **32px main stroke** and 26.2px / 21.8px detail. Brand artwork informs the recognisable cue and colour; it never replaces the pack's style with filled vendor silhouettes ([provenance and rights](THIRD_PARTY_NOTICES.md)).
+**Install:** Downloader **`5270601`** · [permanent APK](https://github.com/brevityA/CoreBuildsApps/releases/download/iconpack/iconpack-release.apk) · then press **Apply** in the app. \
+**More:** [guide](docs/apps/icon-pack.md) · [every mapped app](docs/IconPackList.md) · [wallpapers](Wallpapers/README.md) · [changelog](CHANGELOG.md)
 
-> **Tip:** use a **dark card background** in Projectivy. These icons are drawn for night chrome (`#0d1117`).
+## 🔷 Core Line
 
-> **Note:** mapped against Android TV / Google TV builds of each app. Mobile variants sometimes expose a different launcher activity — if an icon doesn't auto-assign, [open a prefilled issue](#request-an-icon) with the component name and it gets added.
+**A TV-first sports and channel ticker.** It crawls the listings your channel apps already publish as RSS, with live ESPN, NHL and MLB scores. It is not a player and carries no streams. Pair it from your phone with a QR code, so a Fire TV remote never types a URL.
 
-### Install
+**Install:** Downloader **`7375676`** · [permanent APK](https://github.com/brevityA/CoreBuildsApps/releases/download/coreline/coreline-release.apk) \
+**More:** [guide](docs/apps/core-line.md) · [changelog](ticker/CHANGELOG.md)
 
-1. Download with **Downloader code `5270601`**, or use the permanent APK URL:
+## 🔷 Core Shift
 
-   **https://github.com/brevityA/CoreBuildsApps/releases/download/iconpack/iconpack-release.apk**
+**An Android TV screensaver and motion wallpaper browser.** Browse, preview and download MP4 loops for Monet's video picker, or feed them to Projectivy through Core Motion and to Aerial Views as a screensaver. Works offline after the first sync.
 
-   Versioned builds live under [**Releases**](../../releases) (`v*` tags). The `iconpack` release is a floating stable target — don't use the repo-wide `latest/download/…` URL, other apps release from this repo too.
-2. Sideload it (Downloader, `adb install`, or a file manager).
-3. Open the app and press **Apply** — it detects your launcher and hands off directly.
+**Install:** Downloader **`8829421`** · [permanent APK](https://github.com/brevityA/CoreBuildsApps/releases/download/shift/coreshift-release.apk) \
+**More:** [guide](docs/apps/core-shift.md)
 
-   Or manually: **Projectivy Settings → Appearance → Cards → Icon Pack → Core Builds Icon Pack**.
+## 🔷 Core Motion
 
-> **Android 11+:** the APK declares a `<queries>` block so launcher detection works under package-visibility filtering. No `QUERY_ALL_PACKAGES` needed.
+**The Projectivy wallpaper plugin for Core Motion loops.** It serves the motion feed and bundled loops to Projectivy Premium as launcher wallpapers.
 
-> **Updates:** at launch the app checks `Latestrelease/version.json`. When a newer build exists, a **Download** button pulls the APK from GitHub and opens the system installer.
+**Install:** no Downloader code yet · [permanent APK](https://github.com/brevityA/CoreBuildsApps/releases/download/motion/coremotion-release.apk) · then pick **Core Motion** in Projectivy's wallpaper settings. \
+**More:** [guide](docs/apps/core-motion.md)
 
-#### Glyphs-only builds
+## 🔷 Core Doctor
 
-Prefer square glyphs and no banners? The pack's `v*` release carries two builds for that, both at the pack's version:
+**Streaming diagnostics for your phone.** Six checks: DNS, VPN detection, addon manifest and stream probe, and Real-Debrid and TorBox account status. No backend, nothing stored, no analytics, and shared reports are redacted.
 
-- **Core Builds Glyphs Pack** (`tv.corebuilds.iconpack.glyphs`) — the resource-only square twin the Art style toggle installs: the same 983 icons mapped to the same components, square, no banners, plus one info screen. **Downloader code `5804177`** · **https://github.com/brevityA/CoreBuildsApps/releases/download/iconpack/iconpack-glyphs-release.apk**
-- **Core Builds Glyphs** (`tv.corebuilds.glyphs`) — the whole app (catalog, wallpapers, settings, auditor) built with the square appfilter and no Art style toggle, for a launcher that should never apply banners. No Downloader code yet — install it from **https://github.com/brevityA/CoreBuildsApps/releases/download/iconpack/corebuilds-glyphs-release.apk**
+**Install:** Downloader **`8664938`** · [permanent APK](https://github.com/brevityA/CoreBuildsApps/releases/download/doctor/coredoctor-release.apk) \
+**More:** [guide](docs/apps/core-doctor.md)
 
-Both install beside the icon pack (their own package IDs and FileProvider authorities), and a launcher applies whichever one you point it at. The standalone app ships no update feed of its own yet, and **Settings → Updates** names that rather than offering the banner APK it couldn't install over itself.
+## 🔷 Core EQ
 
-### What's covered
+**Measure the room you sit in, with the remote you already hold.** A sweep through the remote's microphone builds a room correction for each TV output, with Movie / TV, Everyday and Gaming tone modes on top. Each sweep gets a 0–100 recording score. Android 11 and later.
 
-983 icons across streaming, media centres, debrid services, players, launchers, tools, stores, live TV, music, sport, gaming, VPN, browsers, files, and more — including [NoBuffr](https://downloads.nobuffr.com/android/nobuffr.apk), Stremio, Kodi, Jellyfin, Plex, Syncler, Real-Debrid, TorBox, VLC, SmartTube, Spotify, TiviMate, Downloader, plus Netflix, Disney+, Stan, Kayo, ABC iview and 900+ more.
+**Install:** Downloader **`7946159`** · [permanent APK](https://github.com/brevityA/CoreBuildsApps/releases/download/coreeq/coreeq-release.apk) \
+**More:** [guide](docs/apps/core-eq.md) · [changelog](coreeq/CHANGELOG.md)
 
-Full table with every mapped component: [**docs/IconPackList.md**](docs/IconPackList.md)
+---
 
-<div align="center"><img src="docs/preview.png" alt="All icons" width="760"></div>
+## Get help
 
-### Wallpapers
-
-102 curated wallpapers in eight series — browse in the Wallpapers tab, preview full-screen, **Set** as device wallpaper or **Save** to `Pictures/CoreBuilds`. Multi-select export bulk-saves to a folder any launcher can rotate from. Thumbnails ship in the APK; full images download on demand from GitHub.
-
-All twelve Series 9 walls and all six Series 10 walls are also **live wallpapers**: each one's loop rides the same grid behind a LIVE badge, and **Set** hands you to the system live picker pre-pointed at Core Builds Live — a muted, looping `MediaPlayer` engine that pauses off-screen and shows the bundled frame until the clip has downloaded once. Loops sit under their own **Live** chip and bulk-export alongside stills: loops save as MP4 to `Movies/CoreBuilds`, where video-wallpaper pickers such as Monet's find them, and stills to `Pictures/CoreBuilds` for launcher rotation. On Monet-as-HOME, **Set** saves the MP4 to `Movies/CoreBuilds` instead.
-
-| Series | Walls | Theme |
-|---|---|---|
-| 1 · Fieldwork | 01–24 | Mesh gradients, aurora, light trails, topo |
-| 2 · Motion | 25–32, 51–54 | Long-exposure kinetics: orbitals, warp, spiral |
-| 3 · Horizons | 33–40, 55–58 | One horizon, eight meanings |
-| 6 · Circuit Core | 41–50, 79–80 | Lit-circuit fields on near-black |
-| 7 · Retrowave | 59–68, 81–82 | Gradient suns, perspective grids, chrome |
-| 8 · AMOLED | 69–78, 83–84 | Exact-black minimalism |
-| 9 · Deep Space | 85–96 | Event horizon, nebulae, ringed planet, comets, novae |
-| 10 · Cinema | 97–102 | Neon cinema nights: marquee, velvet curtain, projector beam, lounge, late rentals, box office |
-
-Series numbers are historical — 4 and 5 both retired with earlier packs. The [series map](Wallpapers/README.md) has the full numbering.
-
-<div align="center"><img src="docs/deep-space-wallpapers.png" alt="Deep Space series" width="760"></div>
-
-Series 9's twelve walls have twelve moving companions — the same scene, animated, playable as the pack's own live wallpaper. The full map of what plays where (Core Motion plugin, Aerial Views, the in-pack engine): [Space live wallpapers](docs/SPACE_LIVE_WALLPAPERS.md). Everything about the collection (including the Monet **Send to Monet** handoff): [`Wallpapers/README.md`](Wallpapers/README.md).
-
-### 16:9 banners
-
-Every icon ships a **320×180 transparent banner** for Projectivy's wide-card layout — monoline glyph, icon-coloured category, stroke-letter name, nothing else on the card. Banners are what the pack applies by default; the in-app Art style toggle switches to square glyphs by pointing launchers at the small Core Builds Glyphs Pack companion instead (`tv.corebuilds.iconpack.glyphs`, Downloader `5804177`, [permanent URL](https://github.com/brevityA/CoreBuildsApps/releases/download/iconpack/iconpack-glyphs-release.apk)), and `tv.corebuilds.glyphs` ships the same app with square glyphs baked in for a launcher that should never apply banners ([permanent URL](https://github.com/brevityA/CoreBuildsApps/releases/download/iconpack/corebuilds-glyphs-release.apk)). Generated from `tools/build_banners.py`.
-
-<div align="center"><img src="docs/banner-preview.png" alt="Banner styles" width="760"></div>
-
-### The pack's own brand
-
-Leanback banner, launcher icon, adaptive-icon masks — all generated from `tools/build_branding.py`, never hand-drawn.
-
-<div align="center"><img src="docs/brand-preview.png" alt="Branding assets" width="760"></div>
+The issue forms here are for icons: request one for an app the pack doesn't draw yet, or report one that isn't applying. Each link below opens with the right template, title and label already set. For anything else, ask on the [Core Builds Discord](https://discord.gg/AwJ49yzbqT) or [r/CoreBuilds](https://www.reddit.com/r/CoreBuilds/), and name the app, its version and your device.
 
 <!-- issue-prefills:start -->
+<!-- Generated from .github/ISSUE_TEMPLATE/ by tools/build_issue_prefills.py. Edit the forms and re-run it; --check fails this block on drift. -->
 ### Request an icon
 
 Both issue forms are deep-linked: a report opens on the right template with
@@ -124,134 +116,33 @@ the reporter — a link can never tick a gate for them.
 
 One app per issue, and check [docs/IconPackList.md](docs/IconPackList.md) by
 name, drawable and package first — a listed app that isn't applying belongs
-on the other form.
-
-For one specific app, let the generator build the link you paste into a reply:
-
-```bash
-python tools/build_issue_prefills.py --app Stremio \
-    --template 2.icon_not_applying.yml \
-    --component com.stremio.one/com.stremio.tv.MainActivity
-```
-
-```text
-https://github.com/brevityA/CoreBuildsApps/issues/new?assignees=&labels=mapping&projects=&template=2.icon_not_applying.yml&title=%5BNot+applying%5D+Stremio&app_name=Stremio&component=com.stremio.one%2Fcom.stremio.tv.MainActivity
-```
-
-Generated from `.github/ISSUE_TEMPLATE/` by `tools/build_issue_prefills.py`.
-Edit the forms, re-run the generator — `--check` fails this block on drift.
+on the other form. On the TV, the Icon Pack's **Missing icons** row builds
+the same links for the apps it finds and shows them as a QR code.
 <!-- issue-prefills:end -->
 
 ---
 
-### For developers
+## For developers
 
-Everything generates from one file — `tools/catalog.json`. Never hand-edit XML.
+Each app is its own Gradle root with its own CI workflow and release tag. Don't merge the roots or repoint the floating tags.
 
-```jsonc
-{
-  "name": "Example TV",
-  "drawable": "example_tv",          // a-z0-9_ , unique
-  "color": "#00D4FF",                // the app's accent
-  "glyph": "play_round",             // from tools/glyphs.py
-  "components": ["com.example.tv/.MainActivity"]
-}
-```
+| App | Source | Build | Notes |
+|---|---|---|---|
+| Icon Pack | `app/` | `./gradlew assembleDebug` | Everything generates from `tools/catalog.json`; see the [guide](docs/apps/icon-pack.md#for-developers) |
+| Core Line | `ticker/` | `cd ticker/android && ./gradlew :app:assembleDebug` | Tests: `cd ticker && npm test` |
+| Core Shift | `shift/` | `cd shift && ./gradlew :app:assembleDebug` | Feed check: `python tools/validate_motion_feed.py` |
+| Core Motion | `motion-plugin/` | `cd motion-plugin && ./gradlew :app:assembleDebug` | |
+| Core Doctor | `doctor/` | `cd doctor && ./gradlew :app:assembleDebug` | |
+| Core EQ | `coreeq/` | `cd coreeq && ./gradlew :app:assembleDebug` | DSP reference: `tools/core_eq_dsp.py` |
 
-```bash
-pip install -r tools/requirements.txt
-python tools/build_icons.py      # SVGs, PNGs, appfilter, docs, preview
-python tools/build_banners.py    # 16:9 monoline banners
-python tools/build_banners_pack.py  # banner appfilter + glyph companion XML
-python tools/build_branding.py   # launcher icon + TV banner
-python tools/validate.py         # 26,000+ coherence checks
-```
-
-Find a component name with `adb shell dumpsys package <pkg> | grep -A1 "android.intent.action.MAIN"`. New shape? Add it to `tools/glyphs.py` on the 512 grid (stroke 34, safe area 432, rounded caps).
-
-**Build the APK** (CI does this on every push; `v*` tags cut releases):
-
-```bash
-./gradlew assembleDebug     # unsigned, installable (needs JDK 17 + Android SDK)
-./gradlew assembleRelease   # signed if keystore env vars are set
-```
-
-Design rules (enforced by generator + validator): transparent backgrounds · one accent per icon · 32px monoline · no solid fills or containers · 3:1 contrast on dark cards · banners share one glyph + category + name lockup. Contributor guide: [AGENTS.md](AGENTS.md) · [CONTRIBUTING.md](CONTRIBUTING.md).
+The table at the top is generated from `suite.json` by `tools/build_readme_badge.py`, and `tools/check_suite_truth.py` fails CI when it drifts. Contributor guide: [AGENTS.md](AGENTS.md) · [CONTRIBUTING.md](CONTRIBUTING.md) · [publishing](PUBLISHING.md).
 
 ---
 
-## 🔷 Core Line
-
-**TV-first sports & channel ticker (chyron).** `v1.4.4`
-
-A reader that crawls the listings your channel apps already publish as RSS — not a player, not streams:
-
-```
-LIVE  TOR 3-2 MTL  ·  TSN4  SN 3     ◆     LAL vs BOS  7:00 PM  ·  ESPN
-```
-
-One APK for phone, Shield, Google TV, Fire TV · messy listing lines parsed (`Team vs team epn, tsn4` → ESPN, TSN4) · ESPN/NHL/MLB scoreboards with a labeled demo fallback · same-Wi-Fi QR pairing so a Fire remote never types a URL · zero npm dependencies.
-
-**Install:** Downloader code **`7375676`**, or the [**stable release**](../../releases/tag/coreline). Open it — a demo ticker loads immediately, then add feeds or pair from your phone. Already installed? Settings → Updates. Changes: [`ticker/CHANGELOG.md`](ticker/CHANGELOG.md).
-
-Build: `cd ticker/android && ./gradlew :app:assembleDebug` · tests: `cd ticker && npm test` · [`ticker/HANDOVER.md`](ticker/HANDOVER.md)
-
----
-
-## 🔷 Core Shift
-
-**Android TV screensaver + motion wallpaper browser.** `v2.3.5`
-
-Motion wallpapers on Android TV, three ways: browse + preview + download MP4 loops to `Movies/CoreBuilds` for **Monet Premium**'s video picker · the **Core Motion** plugin serves the feed to **Projectivy Premium** as `VIDEO` wallpapers · the **Aerial Views bridge** (`Motion/aerial-entries.json`) gives Monet an auto-updating feed plus a matching screensaver.
-
-Content: 13 ffmpeg-procedural MP4 loops (1080p H.264), 3 self-authored GLSL shaders, bundled Lottie vectors — all §03 palette, HTTPS-only, works offline after first sync.
-
-**Install:** Downloader code **`8829421`**, or **https://github.com/brevityA/CoreBuildsApps/releases/download/shift/coreshift-release.apk**
-
-Build: `cd shift && ./gradlew :app:assembleDebug` · feed check: `python tools/validate_motion_feed.py` · [`shift/HANDOVER.md`](shift/HANDOVER.md)
-
----
-
-## 🔷 Core Motion
-
-**Projectivy wallpaper-provider plugin for Core Motion loops.** `v1.0.0`
-
-The Projectivy-side delivery app: implements Spocky's `IWallpaperProviderService`, serves the GitHub-hosted feed plus bundled vector loops. Separate from Core Shift so the Monet/Aerial and Projectivy paths evolve independently.
-
-**Install:** **https://github.com/brevityA/CoreBuildsApps/releases/download/motion/coremotion-release.apk** → Projectivy **Settings → Appearance → Wallpaper → Launcher wallpaper → Core Motion** (requires Projectivy Premium).
-
-Build: `cd motion-plugin && ./gradlew :app:assembleDebug` · [`motion-plugin/README.md`](motion-plugin/README.md)
-
----
-
-## 🔷 Core Doctor
-
-**Streaming infrastructure diagnostics for your phone.** `v0.1.0`
-
-Six checks on your setup's health — DNS, VPN detection, addon manifest + stream probe, Real-Debrid and TorBox account status. No backend, no persistence, no analytics; keys go only to their own provider; share reports are redacted by construction. Permissions: INTERNET, ACCESS_NETWORK_STATE, nothing else.
-
-**Install:** Downloader code **`8664938`**, or [**Releases**](../../releases) under `doctor-v*` tags.
-
-Build: `cd doctor && ./gradlew :app:assembleDebug` · [`doctor/SPEC.md`](doctor/SPEC.md)
-
----
-
-## 🔷 Core EQ
-
-**Measure the room you sit in, with the remote you already hold.** `v1.3.2`
-
-Core EQ combines TV-room measurement with a manual 10-band tone EQ. Each measured base belongs to its output; Movie / TV, Everyday and Gaming add independent tone overlays. Choose a mode with the remote or optionally assign app rules for best-effort automatic switching (unmapped, unidentified or conflicting players use Everyday; a temporary or sticky manual override is configurable). Profiles and the current mode can be exported for Poweramp Equalizer or TV sound settings. Optional Extra effects, all off by default: dialogue boost, low-volume bass that follows the TV volume, bass boost, loudness enhancer and night mode. Each sweep gets a 0–100 recording score from its signal to noise; what it found about the room is listed beside it, not scored. When a different profile or mode takes effect, a card shows for 4 seconds over whatever is playing: profile, mode, output, engine and extras. **Compatibility: Android 11 (API 30) and later; built against Android 17 (API 37).** Android does not guarantee a global equaliser, reveal every player's identity, or prove another app's actual output route, so Core EQ reports its apply path instead of promising every app will be affected. Optional DUMP discovery may require an ADB grant that stock/release builds can refuse. Permissions: RECORD_AUDIO, MODIFY_AUDIO_SETTINGS; optional "Display over other apps" (SYSTEM_ALERT_WINDOW) for the on-screen card, which falls back to a text toast without it and is refused on Fire TV.
-
-**Install:** test builds on the [`coreeq-test`](../../releases/tag/coreeq-test) prerelease; releases under `coreeq-v*` tags. Downloader code **`7946159`**. Release builds check the suite's release feed when Home opens and offer the update in-app after verifying its package, version, SHA-256 and signing certificate; the test package carries no feed and is installed by hand.
-
-Build: `cd coreeq && ./gradlew :app:assembleDebug` · [`coreeq/CHANGELOG.md`](coreeq/CHANGELOG.md)
-
----
-
-## 🔷 Credits
+## Credits
 
 Icon-pack conventions follow [Projectivy Icon Pack](https://github.com/SicMundus86/ProjectivyIconPack) by SicMundus86. Projectivy Launcher is by Spocky. App names and trademarks belong to their owners ([sources and notices](THIRD_PARTY_NOTICES.md)) — no endorsement implied.
 
 *Retired September 2026: Core Builds Pixel Neon and Core Builds Pop. The suite keeps one icon pack; their last releases stay under their tags in [Releases](../../releases).*
 
-Part of the [Core Builds](https://github.com/brevityA/Core-Builds) ecosystem · [ko-fi.com/branding_brevity](https://ko-fi.com/branding_brevity)
+Part of the [Core Builds](https://github.com/brevityA/Core-Builds) ecosystem · [Discord](https://discord.gg/AwJ49yzbqT) · [r/CoreBuilds](https://www.reddit.com/r/CoreBuilds/) · [GitHub Sponsors](https://github.com/sponsors/brevityA) · [Ko-fi](https://ko-fi.com/branding_brevity)

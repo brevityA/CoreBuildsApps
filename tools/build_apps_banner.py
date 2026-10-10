@@ -1,11 +1,16 @@
 #!/usr/bin/env python3
 """
-Generates docs/apps-banner.png — a repo-level banner showing all four
-Core Builds apps side by side.
+Generates docs/apps-banner.png — the repo banner showing every Core Builds
+app side by side.
 
-Layout: dark ground, four columns, each with a glyph + app name + one-liner.
-Uses the same hex/diamond mark defs as build_branding.py.
+Layout: dark ground, one column per app, each with a glyph, the app's name,
+a one-liner and its Downloader code. Names, codes and the icon pack's counts
+are read from suite.json, tools/catalog.json and Wallpapers/manifest.json, so
+the banner cannot fall behind a release the way the hand-written four-app
+version did (it still read "921 icons + 70 wallpapers" at 983 and 102).
 """
+import json
+import re
 from pathlib import Path
 import cairosvg
 
@@ -18,44 +23,53 @@ TEXT_ACCENT = "#00d4ff"
 TEXT_MUTED = "#8b949e"
 DIVIDER = "#21262d"
 
-APPS = [
-    {
-        "name": "Icon Pack",
-        "tagline": "921 icons + 70 wallpapers",
-        "code": "5270601",
-        "color": "#00d4ff",
-        "glyph": "iconpack",
-    },
-    {
-        "name": "Core Line",
-        "tagline": "Sports and channel ticker",
-        "code": "7375676",
-        "color": "#f0883e",
-        "glyph": "coreline",
-    },
-    {
-        "name": "Core Shift",
-        "tagline": "Live wallpaper browser",
-        "code": "8829421",
-        "color": "#a371f7",
-        "glyph": "coreshift",
-    },
-    {
-        "name": "Core Doctor",
-        "tagline": "Streaming diagnostics",
-        "code": "8664938",
-        "color": "#3fb950",
-        "glyph": "coredoctor",
-    },
-]
+# Per-app art: suite.json key -> short display name, colour, glyph and the
+# one-liner. "{icons}" and "{wallpapers}" are filled from the catalog and
+# the wallpaper manifest.
+ART = {
+    "iconpack": ("Icon Pack", "#00d4ff", "iconpack", "{icons} icons + {wallpapers} wallpapers"),
+    "line": ("Core Line", "#f0883e", "coreline", "Sports and channel ticker"),
+    "shift": ("Core Shift", "#a371f7", "coreshift", "Motion wallpaper browser"),
+    "motion": ("Core Motion", "#58a6ff", "coremotion", "Projectivy wallpaper plugin"),
+    "doctor": ("Core Doctor", "#3fb950", "coredoctor", "Streaming diagnostics"),
+    "eq": ("Core EQ", "#db61a2", "coreeq", "Room EQ from the remote"),
+}
+NUMBER_WORDS = {4: "four", 5: "five", 6: "six", 7: "seven", 8: "eight"}
+
+
+def load_apps() -> list[dict]:
+    suite = json.loads((ROOT / "suite.json").read_text(encoding="utf-8"))
+    icons = len(json.loads((ROOT / "tools" / "catalog.json").read_text(encoding="utf-8"))["icons"])
+    wallpapers = json.loads((ROOT / "Wallpapers" / "manifest.json").read_text(encoding="utf-8"))["count"]
+    apps = []
+    for key, app in suite["apps"].items():
+        if key not in ART:
+            raise SystemExit(f"suite.json app {key!r} has no banner art in build_apps_banner.py")
+        name, color, glyph, tagline = ART[key]
+        code = app.get("downloader", "")
+        apps.append({
+            "name": name,
+            "tagline": tagline.format(icons=icons, wallpapers=wallpapers),
+            # A placeholder such as [USER TO SUPPLY] is never printed: a banner
+            # that showed it would send people to type nonsense into Downloader.
+            "code": code if re.fullmatch(r"\d+", code or "") else "no code yet",
+            "color": color,
+            "glyph": glyph,
+        })
+    return apps
+
+
+APPS = load_apps()
 
 W, H = 1280, 400
-COL_W = W // 4
-GLYPH_Y = 100
+COL_W = W // len(APPS)
+# The discs (r=42) start below the subtitle at y=68: with six columns the
+# middle two sit under the centred header, which four columns never did.
+GLYPH_Y = 132
 GLYPH_R = 36
-NAME_Y = 190
-TAG_Y = 218
-CODE_Y = 252
+NAME_Y = 222
+TAG_Y = 248
+CODE_Y = 284
 
 
 def _hex_points(cx, cy, r):
@@ -113,11 +127,41 @@ def _glyph_coredoctor(cx, cy, color):
     )
 
 
+def _glyph_coremotion(cx, cy, color):
+    """A play mark in a ring, with two arcs trailing it: a loop that moves."""
+    return (
+        f'<circle cx="{cx}" cy="{cy}" r="28" fill="none" stroke="{color}" '
+        f'stroke-width="3"/>'
+        f'<path d="M{cx-7} {cy-11} L{cx+11} {cy} L{cx-7} {cy+11} Z" '
+        f'fill="{color}" opacity="0.85" stroke="{color}" stroke-width="2" '
+        f'stroke-linejoin="round"/>'
+        f'<path d="M{cx-40} {cy-12} Q{cx-46} {cy} {cx-40} {cy+12}" fill="none" '
+        f'stroke="{color}" stroke-width="3" stroke-linecap="round" opacity="0.6"/>'
+        f'<path d="M{cx-48} {cy-18} Q{cx-56} {cy} {cx-48} {cy+18}" fill="none" '
+        f'stroke="{color}" stroke-width="3" stroke-linecap="round" opacity="0.35"/>'
+    )
+
+
+def _glyph_coreeq(cx, cy, color):
+    """Four slider tracks with knobs at different heights: a room curve."""
+    parts = []
+    for i, knob in enumerate([8, -10, 4, -4]):
+        x = cx - 21 + i * 14
+        parts.append(
+            f'<line x1="{x}" y1="{cy-22}" x2="{x}" y2="{cy+22}" stroke="{color}" '
+            f'stroke-width="3" stroke-linecap="round" opacity="0.45"/>'
+        )
+        parts.append(f'<circle cx="{x}" cy="{cy + knob}" r="5" fill="{color}"/>')
+    return "".join(parts)
+
+
 GLYPH_FNS = {
     "iconpack": _glyph_iconpack,
     "coreline": _glyph_coreline,
     "coreshift": _glyph_coreshift,
+    "coremotion": _glyph_coremotion,
     "coredoctor": _glyph_coredoctor,
+    "coreeq": _glyph_coreeq,
 }
 
 
@@ -126,7 +170,7 @@ def build_svg():
 
     # top accent gradient bar
     top_stops = " ".join(
-        f'<stop offset="{i * 33}%" stop-color="{app["color"]}"/>'
+        f'<stop offset="{round(100 * i / max(1, len(APPS) - 1))}%" stop-color="{app["color"]}"/>'
         for i, app in enumerate(APPS)
     )
     parts.append(
@@ -144,7 +188,7 @@ def build_svg():
     parts.append(
         f'<text x="{W//2}" y="68" text-anchor="middle" '
         f'fill="{TEXT_MUTED}" font-family="ui-monospace,monospace" '
-        f'font-size="11">four apps · same brand · same living-room bar</text>'
+        f'font-size="11">{NUMBER_WORDS.get(len(APPS), len(APPS))} apps · same brand · same living-room bar</text>'
     )
 
     for i, app in enumerate(APPS):
@@ -154,7 +198,7 @@ def build_svg():
         if i > 0:
             dx = COL_W * i
             parts.append(
-                f'<line x1="{dx}" y1="82" x2="{dx}" y2="{H-30}" '
+                f'<line x1="{dx}" y1="92" x2="{dx}" y2="{H-30}" '
                 f'stroke="{DIVIDER}" stroke-width="1"/>'
             )
 

@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 from __future__ import annotations
 import json
+import re
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -34,15 +35,20 @@ def block(suite: dict) -> str:
     for key in ["iconpack", "line", "shift", "motion", "doctor", "eq"]:
         app = suite["apps"][key]
         releases = "../../releases"
-        downloader = app["downloader"]
+        # A placeholder such as [USER TO SUPPLY] is printed as "none yet": the
+        # public table must never ask anyone to type it into Downloader.
+        code = app["downloader"]
+        downloader = f"`{code}`" if re.fullmatch(r"\d+", code or "") else "none yet"
         tag = f"[`{app['tagPrefix']}*` / `{app['floatingTag']}`]({releases})"
         lines.append(
             f"> | **[{app['name']}](#-{ANCHOR[key]})** | `v{app['versionName']}` | "
-            f"{WHAT[key].format(wallpapers=wallpapers, **app)} | `{downloader}` | {tag} |"
+            f"{WHAT[key].format(wallpapers=wallpapers, **app)} | {downloader} | {tag} |"
         )
     lines += [
         ">",
-        "> Each app has its own CI workflow and release tag. Do not merge Gradle roots, split the repo, or repoint floating Downloader tags.",
+        # The maintainer rule that used to sit here (separate Gradle roots,
+        # never repoint floating tags) is in the README's developer section
+        # and AGENTS.md; this table is the one users read.
         # Hand-maintained, and deliberately not a suite.json entry: the
         # glyphs-only pack is the icon pack's square companion
         # (tv.corebuilds.iconpack.glyphs), not a suite product - no registry

@@ -33,7 +33,7 @@ The companion (`tv.corebuilds.iconpack.glyphs`) is the one those two builds'
 codes name: Downloader `5804177` resolves to its asset,
 `iconpack-glyphs-release.apk`. Like the pack's own `5270601`, it is a
 convenience pointer registered outside the repo, read out of the README suite
-stamp (and the Icon Pack install steps) rather than a registry row — it must
+stamp (and the install steps in `docs/apps/icon-pack.md`) rather than a registry row — it must
 never be repointed at another asset, exactly like a floating tag. Do not move
 it to the flavor's `corebuilds-glyphs-release.apk`: the two assets are one
 edit apart and the labels are one word apart, so `tests/test_glyphs_pack.py`
