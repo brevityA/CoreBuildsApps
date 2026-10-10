@@ -1686,6 +1686,9 @@
     <!-- PikPak -->
     <item component="ComponentInfo{com.pikcloud.pikpak/com.pikcloud.app.SplashActivity}" drawable="pikcloud"/>
     <item component="ComponentInfo{com.pikcloud.pikpak/com.pikcloud.app.TVLaunchActivity}" drawable="pikcloud"/>
+    <!-- Pixee -->
+    <item component="ComponentInfo{com.pixee.tv/com.pixee.tv.MainActivity}" drawable="pixee"/>
+    <item component="ComponentInfo{com.pixee.tv/.MainActivity}" drawable="pixee"/>
     <!-- Play Now -->
     <item component="ComponentInfo{com.play.playnow.tv/com.n7mobile.playbox.ui.MainActivity}" drawable="playnow"/>
     <!-- Play Suisse -->

@@ -6,7 +6,7 @@
     "grid": 512,
     "safe_area": 432,
     "note": "Core Builds-authored geometric icons on a shared 512 grid. Reviewed brand glyphs use rounded monoline strokes and one accent, not imported vendor silhouettes. Common Outfit/category/rail banners; artwork is reference-only. Canonical brand colours and the dark-card contrast policy remain shared.",
-    "count": 984
+    "count": 985
   },
   "icons": [
     {
@@ -13843,6 +13843,20 @@
       "color_source": "sampled blue from the ARD Sounds wordmark (ARD Sounds Logo 2026, Wikimedia Commons, public domain PD-textlogo; the gradient's blue mid-tone), approximate (2026-10-10)",
       "color_reviewed": "2026-10-10",
       "glyph_source": "original Core monoline mark: five rounded bars rising and falling from centre, the audio-play cue of the ARD Sounds platform; not the ARD ring-and-1 and not traced (2026-10-10)"
+    },
+    {
+      "name": "Pixee",
+      "drawable": "pixee",
+      "color": "#19D3C5",
+      "glyph": "pixee_frame",
+      "components": [
+        "com.pixee.tv/com.pixee.tv.MainActivity"
+      ],
+      "category": "MEDIA",
+      "mapping_source": "issue #284 (device-reported on Hybrid Stick, Android 12, pack 2.1.2; #282 is its package-only duplicate): com.pixee.tv.MainActivity is the activity the launcher opened for com.pixee.tv on that device. Confirm on a second TV before treating as the stock launcher activity",
+      "color_source": "Brand Guide Teal #19D3C5, matched by eye to the teal-to-blue hummingbird on the Pixee Play listing icon (screenshot, 2026-10-10); approximate, not sampled",
+      "color_reviewed": "2026-10-10",
+      "glyph_source": "original Core monoline mark: a photo frame with a sun and a hill, the slideshow the app shows; not the Pixee hummingbird and not traced (2026-10-10)"
     },
     {
       "name": "Pocket Casts",

@@ -62,6 +62,7 @@
     <item drawable="jellyfin_banner" />
     <item drawable="kodi_banner" />
     <item drawable="mediabrowser_banner" />
+    <item drawable="pixee_banner" />
     <item drawable="plex_banner" />
     <item drawable="silo_banner" />
     <category title="Banners · On demand" />

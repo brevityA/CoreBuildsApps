@@ -1,6 +1,6 @@
 # Supported applications
 
-`984` icons · `1219` mapped components · pack v2.3.1
+`985` icons · `1220` mapped components · pack v2.3.1
 
 Every app below auto-assigns in Projectivy. If one doesn't, the app ships a different launcher activity on your device — open an issue with the component name and it gets added.
 
@@ -590,6 +590,7 @@ Source accents are retained in the catalog. **On dark** is the shared square/ban
 | PigeonCast | `pigeoncast` | `#0092B0` | `#0092B0` | `com.pigeoncast.screen.mirroring.android.tv/com.mirror_universal.receiver.activity.MainActivity` |
 | Pikashow | `offshore` | `#F80010` | `#F80010` | `com.offshore.pikachu/com.offshore.pikachu.view.Splash` |
 | PikPak | `pikcloud` | `#4664F3` | `#4664F3` | `com.pikcloud.pikpak/com.pikcloud.app.SplashActivity`<br>`com.pikcloud.pikpak/com.pikcloud.app.TVLaunchActivity` |
+| Pixee | `pixee` | `#19D3C5` | `#19D3C5` | `com.pixee.tv/com.pixee.tv.MainActivity` |
 | Play Now | `playnow` | `#7444A1` | `#7A48AA` | `com.play.playnow.tv/com.n7mobile.playbox.ui.MainActivity` |
 | Play Suisse | `playsuisse` | `#9A0326` | `#C20430` | `ch.srgssr.playsuisse.tv/ch.srgssr.playsuisse.tv.MainActivity` |
 | Play Universal | `universal` | `#FCCC12` | `#FCCC12` | `com.play.universal/com.play.universal.MainActivity` |

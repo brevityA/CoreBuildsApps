@@ -23,7 +23,7 @@ Five free apps for Android TV and Google TV, and one for your phone. Each has a 
 <!-- suite-stamp:start -->
 > | App | Current | What it does | Downloader | Release tag |
 > |---|---:|---|---|---|
-> | **[Core Builds Icon Pack](#-core-builds-icon-pack)** | `v2.3.1` | 984 transparent icons + 102 wallpapers for Projectivy Launcher | `5270601` | [`v*` / `iconpack`](../../releases) |
+> | **[Core Builds Icon Pack](#-core-builds-icon-pack)** | `v2.3.1` | 985 transparent icons + 102 wallpapers for Projectivy Launcher | `5270601` | [`v*` / `iconpack`](../../releases) |
 > | **[Core Line](#-core-line)** | `v1.4.4` | Sports scores & channel RSS ticker (chyron) | `7375676` | [`coreline-v*` / `coreline`](../../releases) |
 > | **[Core Shift](#-core-shift)** | `v2.3.5` | Android TV screensaver + motion wallpaper browser | `8829421` | [`shift-v*` / `shift`](../../releases) |
 > | **[Core Motion](#-core-motion)** | `v1.0.0` | Projectivy wallpaper-provider plugin for Core Motion loops | none yet | [`motion-v*` / `motion`](../../releases) |

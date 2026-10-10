@@ -8992,3 +8992,15 @@ def ard_sounds_wave(c):
 
 
 GLYPHS.update({"ard_sounds_wave": ard_sounds_wave})
+
+
+def pixee_frame(c):
+    """Pixee: a photo frame on the wall - a rounded frame with a sun and a
+    hill inside it, the slideshow the app puts on the screen. Core stroke
+    geometry, not a trace of the Pixee icon."""
+    return (f'<rect x="112" y="136" width="288" height="240" rx="24" {_s(c, 32)}/>'
+            f'<circle cx="206" cy="216" r="18" {_f(c)}/>'
+            f'<path d="M 152 336 L 236 258 L 288 302 L 326 270 L 360 336" {_s(c, 26.2)}/>')
+
+
+GLYPHS.update({"pixee_frame": pixee_frame})
