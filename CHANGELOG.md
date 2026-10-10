@@ -12,6 +12,9 @@ All notable changes to the Core Builds Icon Pack. Format follows
 
 - **ARD Sounds icon.** The ARD Audiothek app, now called ARD Sounds, has its own
   icon in the pack.
+- **Core Builds Glyphs has its own icon.** The glyph-only app (`tv.corebuilds.glyphs`)
+  now has a violet launcher icon and TV banner, so it no longer looks like a second
+  copy of the icon pack in a launcher.
 
 ## [2.3.0] — 2026-10-10
 
