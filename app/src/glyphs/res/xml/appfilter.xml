@@ -2682,6 +2682,8 @@
     <!-- waipu.tv -->
     <item component="ComponentInfo{de.exaring.waipu/de.exaring.waipu.ui.login.LoginActivity}" drawable="waipu_tv"/>
     <item component="ComponentInfo{de.exaring.waipu/.ui.login.LoginActivity}" drawable="waipu_tv"/>
+    <item component="ComponentInfo{de.exaring.waipu/de.exaring.waipu.MainActivity}" drawable="waipu_tv"/>
+    <item component="ComponentInfo{de.exaring.waipu/.MainActivity}" drawable="waipu_tv"/>
     <!-- Wako -->
     <item component="ComponentInfo{app.wako/app.wako.MainActivity}" drawable="wako"/>
     <item component="ComponentInfo{app.wako/.MainActivity}" drawable="wako"/>

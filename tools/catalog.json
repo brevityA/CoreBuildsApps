@@ -12415,10 +12415,11 @@
       "color": "#885CA3",
       "glyph": "waipu_pills",
       "components": [
-        "de.exaring.waipu/de.exaring.waipu.ui.login.LoginActivity"
+        "de.exaring.waipu/de.exaring.waipu.ui.login.LoginActivity",
+        "de.exaring.waipu/de.exaring.waipu.MainActivity"
       ],
       "category": "APP",
-      "mapping_source": "Projectivy Icon Pack 1.1.9",
+      "mapping_source": "Projectivy Icon Pack 1.1.9; de.exaring.waipu.MainActivity from issue #286 (device-reported on Hybrid Stick, Android 12, pack 2.3.0, via Projectivy): the activity the launcher opens for this package on that device",
       "color_source": "sampled from the Projectivy Icon Pack 1.1.9 artwork for de.exaring.waipu (github.com/SicMundus86/ProjectivyIconPack, used as reference only): gradient start #885CA3 (2026-09-28)",
       "color_reviewed": "2026-09-28",
       "name_source": "app name from the Projectivy Icon Pack 1.1.9 artwork for de.exaring.waipu (github.com/SicMundus86/ProjectivyIconPack, used as reference only), which shows the waipu.tv logo for this package (2026-09-28)",

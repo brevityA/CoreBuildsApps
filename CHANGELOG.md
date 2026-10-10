@@ -16,6 +16,11 @@ All notable changes to the Core Builds Icon Pack. Format follows
   now has a violet launcher icon and TV banner, so it no longer looks like a second
   copy of the icon pack in a launcher.
 
+### Fixed
+
+- **waipu.tv gets its icon on current devices.** The app opens a different
+  activity on current devices, and the pack now maps that one too (issue #286).
+
 ## [2.3.0] — 2026-10-10
 
 ### Added
