@@ -20,6 +20,7 @@ import tv.corebuilds.eq.apply.DpBandLayout
 import tv.corebuilds.eq.apply.EqService
 import tv.corebuilds.eq.apply.OutputRoute
 import tv.corebuilds.eq.dsp.DspConstants
+import tv.corebuilds.eq.dsp.HardwarePresets
 import tv.corebuilds.eq.dsp.ManualEq
 import tv.corebuilds.eq.dsp.ManualEqPreset
 import tv.corebuilds.eq.dsp.PeakingFilter
@@ -274,12 +275,28 @@ class ManualEqActivity : TvActivity() {
             .show()
     }
 
+    /** The hardware the current output is, when its name says so: see [HardwarePresets.detect]. */
+    private fun detectedHardware(): HardwarePresets.Model? {
+        val output = OutputRoute.current(this) ?: return null
+        return HardwarePresets.detect(output.kind, output.name, OutputRoute.connectedNames(this, output.kind))
+    }
+
     private fun showPresetPicker() {
-        val presets = profileStore.manualEqPresets()
+        // A detected soundbar's presets lead the list; the rest stay below them.
+        val detected = detectedHardware()
+        val all = profileStore.manualEqPresets()
+        val presets = if (detected == null) {
+            all
+        } else {
+            val mine = all.filter { HardwarePresets.modelForPreset(it.id) == detected }
+            mine + all.filterNot { it in mine }
+        }
         val current = currentManualFilters()
         val selected = presets.indexOfFirst { ManualEq.sameFilters(it.filters, current) }
+        val title = detected?.let { getString(R.string.manual_eq_presets_detected, it.name) }
+            ?: getString(R.string.manual_eq_presets_title)
         AlertDialog.Builder(this)
-            .setTitle(R.string.manual_eq_presets_title)
+            .setTitle(title)
             .setSingleChoiceItems(presets.map { it.name }.toTypedArray(), selected) { dialog, which ->
                 applyPreset(presets[which])
                 dialog.dismiss()

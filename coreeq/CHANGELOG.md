@@ -8,6 +8,27 @@ must never land there. Releases are `coreeq-v<version>` tags (see
 
 ## [Unreleased]
 
+### Added
+
+- **Hardware presets: JBL Bar 800.** Four manual tone presets for the JBL
+  Bar 800 soundbar, in the Manual EQ preset list under "JBL Bar 800":
+  **Movie**, **Dialogue**, **Music** and **Late night**. They are built from
+  the bar's published specification (5.1.2 Atmos, 10-inch subwoofer, 35 Hz
+  to 20 kHz at -6 dB) and from reviewers' descriptions of its sound: bass
+  that can overpower the mids, slightly thin dialogue, and mud at high
+  volume. None is a measured curve. They sit on top of the room correction
+  like any other preset, and you can edit a copy of one.
+
+### Changed
+
+- **Output detection finds the hardware by name.** Core EQ now reads the
+  product name of every connected output of the kind the sound is routed
+  to, not only the first one. A soundbar on HDMI ARC, eARC, Bluetooth, USB
+  or a wired output is recognised even when Android names only the generic
+  port, and the Manual EQ preset picker puts that soundbar's presets first
+  under "Choose an EQ preset · detected …". The TV's own speakers never
+  match a soundbar name.
+
 ## [1.3.2] — 2026-10-09
 
 ### Changed

@@ -59,6 +59,7 @@
     <string name="manual_eq_dpad_help">Left/right choose a band · Up/down adjust by 0.5 dB. Touch and drag also works.</string>
     <string name="manual_eq_band_caption">MANUAL EQ · dB PER BAND · RANGE ±6 dB</string>
     <string name="manual_eq_presets_title">Choose an EQ preset</string>
+    <string name="manual_eq_presets_detected">Choose an EQ preset · detected %1$s</string>
     <string name="manual_eq_save_title">Save manual EQ preset</string>
     <string name="manual_eq_save">Save</string>
     <string name="manual_eq_save_hint">Preset name</string>
