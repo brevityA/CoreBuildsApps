@@ -69,7 +69,7 @@ Source accents are retained in the catalog. **On dark** is the shared square/ban
 | Aptoide TV | `aptoide` | `#F26522` | `#F26522` | `cm.aptoidetv.pt/.activity.MainActivity` |
 | Arc Browser | `arc_browser` | `#C95CFF` | `#C95CFF` | `net.floatingpoint.android.arcturus/net.floatingpoint.android.arcturus.MainActivity` |
 | ARD Mediathek | `ard_mediathek` | `#003480` | `#0057D6` | `de.swr.avp.ard.tv/de.swr.avp.ard.tv.TvActivity` |
-| ARD Sounds | `ard_sounds` | `#1F6FEB` | `#1F6FEB` | `de.ard.audiothek.tv/com.mitxp.androidtv.MainActivity` |
+| ARD Sounds | `ard_sounds` | `#2D92FF` | `#2D92FF` | `de.ard.audiothek.tv/com.mitxp.androidtv.MainActivity` |
 | Arrow | `arrowfilms` | `#4FACFE` | `#4FACFE` | `com.arrowfilms/tv.vhx.LauncherActivity`<br>`com.arrowfilms/tv.vhx.tv.home.TvHomeActivity` |
 | Arte | `arte` | `#FC4700` | `#FC4700` | `tv.arte.plus7/tv.arte.plus7.leanback.MainActivity` |
 | Artemis | `limelight` | `#B388FF` | `#B388FF` | `com.limelight.noir/com.limelight.PcView` |

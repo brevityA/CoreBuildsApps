@@ -13833,15 +13833,15 @@
     {
       "name": "ARD Sounds",
       "drawable": "ard_sounds",
-      "color": "#1F6FEB",
+      "color": "#2D92FF",
       "glyph": "ard_sounds_wave",
       "components": [
         "de.ard.audiothek.tv/com.mitxp.androidtv.MainActivity"
       ],
       "category": "MUSIC",
       "mapping_source": "issue #283 (device-reported on Hybrid Stick, Android 12, pack 2.1.2; #280 is its package-only duplicate): de.ard.audiothek.tv launched via com.mitxp.androidtv.MainActivity on that device. Confirm on a second TV before treating as the stock launcher activity",
-      "color_source": "sampled blue from the ARD Sounds wordmark (ARD Sounds Logo 2026, Wikimedia Commons, public domain PD-textlogo; the gradient's blue mid-tone), approximate (2026-10-10)",
-      "color_reviewed": "2026-10-10",
+      "color_source": "ARD brand blue #2D92FF (Brandfetch brand colours for ard.de, the ARD main-site palette; ARD Sounds has no published hex of its own) (2026-10-11)",
+      "color_reviewed": "2026-10-11",
       "glyph_source": "original Core monoline mark: five rounded bars rising and falling from centre, the audio-play cue of the ARD Sounds platform; not the ARD ring-and-1 and not traced (2026-10-10)"
     },
     {
