@@ -63,6 +63,7 @@
         <item>aptoide</item>
         <item>arc_browser</item>
         <item>ard_mediathek</item>
+        <item>ard_sounds</item>
         <item>arrowfilms</item>
         <item>arte</item>
         <item>limelight</item>
@@ -583,6 +584,7 @@
         <item>pigeoncast</item>
         <item>offshore</item>
         <item>pikcloud</item>
+        <item>pixee</item>
         <item>playnow</item>
         <item>playsuisse</item>
         <item>universal</item>
@@ -1048,6 +1050,7 @@
         <item>Aptoide TV</item>
         <item>Arc Browser</item>
         <item>ARD Mediathek</item>
+        <item>ARD Sounds</item>
         <item>Arrow</item>
         <item>Arte</item>
         <item>Artemis</item>
@@ -1568,6 +1571,7 @@
         <item>PigeonCast</item>
         <item>Pikashow</item>
         <item>PikPak</item>
+        <item>Pixee</item>
         <item>Play Now</item>
         <item>Play Suisse</item>
         <item>Play Universal</item>
@@ -2033,6 +2037,7 @@
         <item>STORE</item>
         <item>BROWSER</item>
         <item>APP</item>
+        <item>MUSIC</item>
         <item>STREAM</item>
         <item>APP</item>
         <item>GAMING</item>
@@ -2553,6 +2558,7 @@
         <item>APP</item>
         <item>APP</item>
         <item>APP</item>
+        <item>MEDIA</item>
         <item>APP</item>
         <item>APP</item>
         <item>APP</item>
@@ -3077,6 +3083,7 @@
         <item>1</item>
         <item>1</item>
         <item>1</item>
+        <item>1</item>
         <item>0</item>
         <item>1</item>
         <item>1</item>
@@ -3537,6 +3544,7 @@
         <item>1</item>
         <item>1</item>
         <item>0</item>
+        <item>1</item>
         <item>1</item>
         <item>1</item>
         <item>1</item>
@@ -3941,5 +3949,5 @@
         <item>1</item>
         <item>1</item>
     </integer-array>
-    <integer name="icon_count">983</integer>
+    <integer name="icon_count">985</integer>
 </resources>

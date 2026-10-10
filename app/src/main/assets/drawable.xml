@@ -62,6 +62,7 @@
     <item drawable="jellyfin_banner" />
     <item drawable="kodi_banner" />
     <item drawable="mediabrowser_banner" />
+    <item drawable="pixee_banner" />
     <item drawable="plex_banner" />
     <item drawable="silo_banner" />
     <category title="Banners · On demand" />
@@ -192,6 +193,7 @@
     <item drawable="tvunplugged_banner" />
     <category title="Banners · Music" />
     <item drawable="amazon_banner" />
+    <item drawable="ard_sounds_banner" />
     <item drawable="audiomack_banner" />
     <item drawable="launchsounds_banner" />
     <item drawable="deezer_banner" />

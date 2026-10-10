@@ -62,6 +62,7 @@
     <item drawable="jellyfin" />
     <item drawable="kodi" />
     <item drawable="mediabrowser" />
+    <item drawable="pixee" />
     <item drawable="plex" />
     <item drawable="silo" />
     <category title="Square · On demand" />
@@ -192,6 +193,7 @@
     <item drawable="tvunplugged" />
     <category title="Square · Music" />
     <item drawable="amazon" />
+    <item drawable="ard_sounds" />
     <item drawable="audiomack" />
     <item drawable="launchsounds" />
     <item drawable="deezer" />

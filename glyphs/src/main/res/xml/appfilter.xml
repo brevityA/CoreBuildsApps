@@ -185,6 +185,8 @@
     <!-- ARD Mediathek -->
     <item component="ComponentInfo{de.swr.avp.ard.tv/de.swr.avp.ard.tv.TvActivity}" drawable="ard_mediathek"/>
     <item component="ComponentInfo{de.swr.avp.ard.tv/.TvActivity}" drawable="ard_mediathek"/>
+    <!-- ARD Sounds -->
+    <item component="ComponentInfo{de.ard.audiothek.tv/com.mitxp.androidtv.MainActivity}" drawable="ard_sounds"/>
     <!-- Arrow -->
     <item component="ComponentInfo{com.arrowfilms/tv.vhx.LauncherActivity}" drawable="arrowfilms"/>
     <item component="ComponentInfo{com.arrowfilms/tv.vhx.tv.home.TvHomeActivity}" drawable="arrowfilms"/>
@@ -1684,6 +1686,9 @@
     <!-- PikPak -->
     <item component="ComponentInfo{com.pikcloud.pikpak/com.pikcloud.app.SplashActivity}" drawable="pikcloud"/>
     <item component="ComponentInfo{com.pikcloud.pikpak/com.pikcloud.app.TVLaunchActivity}" drawable="pikcloud"/>
+    <!-- Pixee -->
+    <item component="ComponentInfo{com.pixee.tv/com.pixee.tv.MainActivity}" drawable="pixee"/>
+    <item component="ComponentInfo{com.pixee.tv/.MainActivity}" drawable="pixee"/>
     <!-- Play Now -->
     <item component="ComponentInfo{com.play.playnow.tv/com.n7mobile.playbox.ui.MainActivity}" drawable="playnow"/>
     <!-- Play Suisse -->
@@ -2680,6 +2685,8 @@
     <!-- waipu.tv -->
     <item component="ComponentInfo{de.exaring.waipu/de.exaring.waipu.ui.login.LoginActivity}" drawable="waipu_tv"/>
     <item component="ComponentInfo{de.exaring.waipu/.ui.login.LoginActivity}" drawable="waipu_tv"/>
+    <item component="ComponentInfo{de.exaring.waipu/de.exaring.waipu.MainActivity}" drawable="waipu_tv"/>
+    <item component="ComponentInfo{de.exaring.waipu/.MainActivity}" drawable="waipu_tv"/>
     <!-- Wako -->
     <item component="ComponentInfo{app.wako/app.wako.MainActivity}" drawable="wako"/>
     <item component="ComponentInfo{app.wako/.MainActivity}" drawable="wako"/>
