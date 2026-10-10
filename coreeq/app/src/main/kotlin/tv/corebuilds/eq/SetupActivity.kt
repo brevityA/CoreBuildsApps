@@ -87,9 +87,12 @@ class SetupActivity : TvActivity() {
 
     /** Read-only: Android 12L and later report the spatializer state; older versions get a plain note. */
     private fun spatialDetail(): String {
-        val sdk = Build.VERSION.SDK_INT
-        if (sdk < SpatialStatus.MIN_SDK) return SpatialStatus.detail(sdk, null, null, null)
-        return readSpatializer(sdk)
+        // The version check is written against Build.VERSION.SDK_INT here, in the
+        // same method as the call, so lint's NewApi check can see the guard.
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.S_V2) {
+            return SpatialStatus.detail(Build.VERSION.SDK_INT, null, null, null)
+        }
+        return readSpatializer(Build.VERSION.SDK_INT)
     }
 
     @RequiresApi(Build.VERSION_CODES.S_V2)
