@@ -8,6 +8,8 @@ must never land there. Releases are `coreeq-v<version>` tags (see
 
 ## [Unreleased]
 
+## [1.5.0] — 2026-10-10
+
 ### Added
 
 - **Hardware presets: JBL Bar 2.0 All-in-One (original).** Seven tone
