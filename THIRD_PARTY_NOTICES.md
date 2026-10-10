@@ -105,3 +105,9 @@ The on-device auditor renders its prefilled-issue QR codes with this encoder
 quiet zone, black-on-white modules). It is vendored rather than pulled as a
 dependency because the pack ships with no runtime libraries at all, and the
 two files are the encoder's complete Java surface.
+
+Core EQ carries the same four files, byte-identical (the SHA-256 values above
+hold), under `coreeq/app/src/main/java/io/nayuki/qrcodegen/`, with its own
+copy of the wrapper at `coreeq/app/src/main/kotlin/tv/corebuilds/eq/ui/QrBitmap.kt`.
+Both apps use them for the Support screen's two codes; the icon pack also uses
+them for the auditor's.

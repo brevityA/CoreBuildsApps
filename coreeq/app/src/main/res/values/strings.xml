@@ -279,4 +279,23 @@
     <string name="cap_dp_title">DynamicsProcessing (API 28+)</string>
     <string name="cap_eq_title">Platform Equalizer</string>
     <string name="cap_verdict_note">Profiles from other sets keep the limits they were built under.</string>
+
+    <!-- Support, opened from the Capability screen. The URLs are the ones
+         .github/FUNDING.yml names; tests/test_support_links.py holds them
+         equal to it and to the icon pack's. -->
+    <string name="support_card_title">Support</string>
+    <string name="support_card_note">Every Core Builds app is free. Two QR codes, GitHub Sponsors and Ko-fi, for your phone.</string>
+    <string name="action_support">Support Core Builds</string>
+    <string name="support_title">Core EQ · Support</string>
+    <string name="support_heading">Support Core Builds</string>
+    <string name="support_body">Every Core Builds app is free. If one has earned a place on your TV, you can chip in from your phone: point its camera at either code.</string>
+    <string name="support_mode">Optional. Every app ships every feature whether you give or not.</string>
+    <string name="support_footer">These codes are drawn on this TV. Opening this screen sends nothing.</string>
+    <string name="support_sponsors_label">GitHub Sponsors</string>
+    <string name="support_sponsors_url">https://github.com/sponsors/brevityA</string>
+    <string name="support_kofi_label">Ko-fi</string>
+    <string name="support_kofi_url">https://ko-fi.com/branding_brevity</string>
+    <string name="support_sponsors_qr_hint">QR code for GitHub Sponsors</string>
+    <string name="support_kofi_qr_hint">QR code for Ko-fi</string>
+    <string name="support_done">Done</string>
 </resources>

@@ -61,6 +61,9 @@ class CapabilityActivity : TvActivity() {
         btnExportTv = findViewById(R.id.btn_export_tv_settings)
 
         btnExportTv.setOnClickListener { exportForTvSettings() }
+        findViewById<Button>(R.id.btn_open_support).setOnClickListener {
+            startActivity(Intent(this, SupportActivity::class.java))
+        }
 
         setUpUpdateCard()
         showDiscoveryGrant()

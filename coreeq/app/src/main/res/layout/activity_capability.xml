@@ -326,6 +326,47 @@
                     android:layout_marginTop="@dimen/cb_space_xs" />
             </LinearLayout>
 
+            <!-- Row 8: Support. Here beside the installed build rather than on
+                 Home, whose menu has no row to spare at 540dp. Opens the two
+                 QR codes; this card itself shows no code and sends nothing. -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:background="@drawable/bg_card"
+                android:padding="@dimen/cb_card_padding"
+                android:layout_marginTop="@dimen/cb_space_sm">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/support_card_title"
+                    android:textColor="@color/cb_signal_cyan"
+                    android:textSize="@dimen/cb_text_kicker"
+                    android:fontFamily="monospace"
+                    android:textAllCaps="true"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/support_card_note"
+                    android:textColor="@color/cb_slate"
+                    android:textSize="@dimen/cb_text_kicker"
+                    android:layout_marginTop="4dp" />
+
+                <Button
+                    android:id="@+id/btn_open_support"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/cb_target_min"
+                    android:background="@drawable/bg_ghost"
+                    android:text="@string/action_support"
+                    android:textColor="@color/ghost_text"
+                    android:textSize="@dimen/cb_text_label"
+                    android:focusable="true"
+                    android:layout_marginTop="@dimen/cb_space_sm" />
+            </LinearLayout>
+
         </LinearLayout>
 
         </ScrollView>

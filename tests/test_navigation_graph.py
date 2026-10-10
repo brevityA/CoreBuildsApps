@@ -55,6 +55,7 @@ ACTIVITY_OWNER = {
     "wallpaper_preview": "WallpaperPreviewActivity.kt",
     "settings": "SettingsActivity.kt",
     "about": "AboutActivity.kt",
+    "support": "SupportActivity.kt",
     "faq": "FaqActivity.kt",
     "auditor": "AuditorActivity.kt",
     "inspector": "InspectorActivity.kt",
