@@ -1,19 +1,12 @@
 {
-  "versionCode": 9,
-  "versionName": "1.3.2",
-  "releaseDate": "2026-10-09",
+  "versionCode": 10,
+  "versionName": "1.4.0",
+  "releaseDate": "2026-10-10",
   "apkUrl": "https://github.com/brevityA/CoreBuildsApps/releases/download/coreeq/coreeq-release.apk",
-  "apkSha256": "812669b6b7e745bb03ade06dc44125d54e134c4f946794967bb634eee5ad4e62",
-  "releaseNotesUrl": "https://github.com/brevityA/CoreBuildsApps/releases/tag/coreeq-v1.3.2",
+  "apkSha256": "477ccfd21ff3d0f120d54f3f3189de08e47c0c056fedc41b68d5234a7652694e",
+  "releaseNotesUrl": "https://github.com/brevityA/CoreBuildsApps/releases/tag/coreeq-v1.4.0",
   "minSdk": 30,
   "highlights": [
-    "The score grades the recording, not your room.",
-    "Bass dips are lifted by 2 dB at most.",
-    "Measure beeps before and after the sweep",
-    "Home asks for the on-screen card's permission.",
-    "No screen is cut off on a TV that keeps a status or navigation bar.",
-    "The room's decay time no longer reads short.",
-    "The signal-to-noise reading no longer depends on luck.",
-    "No more phantom dip at the top."
+    "Support Core Builds, from Capability."
   ]
 }
