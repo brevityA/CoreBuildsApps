@@ -6,6 +6,16 @@ All notable changes to the Core Builds Icon Pack. Format follows
 
 ## [Unreleased]
 
+## [2.3.0] — 2026-10-10
+
+### Added
+
+- **Support Core Builds, from About.** A new row in About's links, under
+  Settings, opens two QR codes, GitHub Sponsors and Ko-fi, for your phone's
+  camera, with each address printed under its code. It is optional, and
+  every feature ships either way. The codes are drawn on the TV, so About's
+  list of everything the app sends is unchanged.
+
 ## [2.2.0] — 2026-10-09
 
 ### Added

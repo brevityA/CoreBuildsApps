@@ -271,6 +271,12 @@
             android:exported="false"
             android:label="@string/about_label"
             android:theme="@style/Theme.CoreBuilds" />
+        <!-- Opened from About. Draws two QR codes locally; sends nothing. -->
+        <activity
+            android:name=".SupportActivity"
+            android:exported="false"
+            android:label="@string/support_label"
+            android:theme="@style/Theme.CoreBuilds" />
         <!-- The walk through a launcher that has no inbound apply (Monet).
              Opened from the sheet's CTA and from Settings; not exported. -->
         <activity

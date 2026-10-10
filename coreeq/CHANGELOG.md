@@ -77,6 +77,17 @@ must never land there. Releases are `coreeq-v<version>` tags (see
   under "Choose an EQ preset · detected …". The TV's own speakers never
   match a soundbar name.
 
+## [1.4.0] — 2026-10-10
+
+### Added
+
+- **Support Core Builds, from Capability.** A Support card under App updates
+  opens two QR codes, GitHub Sponsors and Ko-fi, for your phone's camera,
+  with each address printed under its code. It is optional, every feature
+  ships either way, and opening it sends nothing: the codes are drawn on the TV with
+  the encoder the icon pack's auditor uses. Home keeps its six menu rows; a
+  seventh would not fit a 1080p screen.
+
 ## [1.3.2] — 2026-10-09
 
 ### Changed

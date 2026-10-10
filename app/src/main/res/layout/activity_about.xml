@@ -288,6 +288,21 @@
                 android:textColor="@color/cb_ink"
                 android:textSize="@dimen/cb_text_label" />
 
+            <TextView
+                android:id="@+id/about_support"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/cb_space_xs"
+                android:minHeight="@dimen/cb_target_min"
+                android:background="@drawable/bg_card"
+                android:clickable="true"
+                android:focusable="true"
+                android:gravity="center_vertical"
+                android:padding="@dimen/cb_card_padding"
+                android:text="@string/about_support_label"
+                android:textColor="@color/cb_ink"
+                android:textSize="@dimen/cb_text_label" />
+
             <View
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
