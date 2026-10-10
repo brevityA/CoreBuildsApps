@@ -192,6 +192,7 @@
     <item drawable="tvunplugged" />
     <category title="Square · Music" />
     <item drawable="amazon" />
+    <item drawable="ard_sounds" />
     <item drawable="audiomack" />
     <item drawable="launchsounds" />
     <item drawable="deezer" />

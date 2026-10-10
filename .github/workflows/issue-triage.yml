@@ -1,0 +1,27 @@
+name: Icon request triage
+
+# Replies to icon requests that are missing or malformed (tools/issue_triage.py).
+# It comments once, edits that comment on later edits, and labels the issue
+# needs-info. It never closes or edits the issue itself.
+
+on:
+  issues:
+    types: [opened, edited, reopened]
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  triage:
+    runs-on: ubuntu-latest
+    if: contains(github.event.issue.labels.*.name, 'icon request') || contains(github.event.issue.labels.*.name, 'mapping') || startsWith(github.event.issue.title, '[Icon]') || startsWith(github.event.issue.title, '[Not applying]')
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Check the request and reply if it is incomplete
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: python tools/issue_triage.py --event "$GITHUB_EVENT_PATH"

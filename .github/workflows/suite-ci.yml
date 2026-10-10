@@ -37,6 +37,8 @@ jobs:
         run: python tools/audit_contract.py
       - name: Check prefilled icon-request links against the issue forms
         run: python tools/build_issue_prefills.py --check
+      - name: Test the icon-request auto-reply against the issue forms
+        run: python tests/test_issue_triage.py
       - name: Check the Banners companion matches the glyph pack
         run: python tools/build_banners_pack.py --check
       # Depends on no Android SDK and no Gradle, so it runs here rather than in

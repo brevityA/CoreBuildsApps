@@ -2,11 +2,11 @@
   "$schema": "./catalog.schema.json",
   "meta": {
     "pack": "Core Builds Icon Pack",
-    "version": "2.3.0",
+    "version": "2.3.1",
     "grid": 512,
     "safe_area": 432,
     "note": "Core Builds-authored geometric icons on a shared 512 grid. Reviewed brand glyphs use rounded monoline strokes and one accent, not imported vendor silhouettes. Common Outfit/category/rail banners; artwork is reference-only. Canonical brand colours and the dark-card contrast policy remain shared.",
-    "count": 983
+    "count": 984
   },
   "icons": [
     {
@@ -13828,6 +13828,20 @@
         ],
         "source": "the same Play listing icon: the violet #9058F8 tiles on the right of the patchwork (2026-10-03)"
       }
+    },
+    {
+      "name": "ARD Sounds",
+      "drawable": "ard_sounds",
+      "color": "#1F6FEB",
+      "glyph": "ard_sounds_wave",
+      "components": [
+        "de.ard.audiothek.tv/com.mitxp.androidtv.MainActivity"
+      ],
+      "category": "MUSIC",
+      "mapping_source": "issue #283 (device-reported on Hybrid Stick, Android 12, pack 2.1.2; #280 is its package-only duplicate): de.ard.audiothek.tv launched via com.mitxp.androidtv.MainActivity on that device. Confirm on a second TV before treating as the stock launcher activity",
+      "color_source": "sampled blue from the ARD Sounds wordmark (ARD Sounds Logo 2026, Wikimedia Commons, public domain PD-textlogo; the gradient's blue mid-tone), approximate (2026-10-10)",
+      "color_reviewed": "2026-10-10",
+      "glyph_source": "original Core monoline mark: five rounded bars rising and falling from centre, the audio-play cue of the ARD Sounds platform; not the ARD ring-and-1 and not traced (2026-10-10)"
     },
     {
       "name": "Pocket Casts",

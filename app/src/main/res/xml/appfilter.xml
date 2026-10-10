@@ -185,6 +185,8 @@
     <!-- ARD Mediathek -->
     <item component="ComponentInfo{de.swr.avp.ard.tv/de.swr.avp.ard.tv.TvActivity}" drawable="ard_mediathek_banner"/>
     <item component="ComponentInfo{de.swr.avp.ard.tv/.TvActivity}" drawable="ard_mediathek_banner"/>
+    <!-- ARD Sounds -->
+    <item component="ComponentInfo{de.ard.audiothek.tv/com.mitxp.androidtv.MainActivity}" drawable="ard_sounds_banner"/>
     <!-- Arrow -->
     <item component="ComponentInfo{com.arrowfilms/tv.vhx.LauncherActivity}" drawable="arrowfilms_banner"/>
     <item component="ComponentInfo{com.arrowfilms/tv.vhx.tv.home.TvHomeActivity}" drawable="arrowfilms_banner"/>

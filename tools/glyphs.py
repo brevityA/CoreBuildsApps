@@ -8979,3 +8979,16 @@ def flixvision_f(c):
 
 GLYPHS.update({"pocketcasts_arcs": pocketcasts_arcs, "silo_stack": silo_stack,
                "tivimate_guide": tivimate_guide, "flixvision_f": flixvision_f})
+
+
+def ard_sounds_wave(c):
+    """ARD Sounds: five rounded bars rising and falling from the centre, the
+    audio-play mark of the Sounds platform. Deliberately not the ARD ring-and-1
+    (ard_one), which is the ARD Mediathek mark."""
+    bars = [(136, 216, 296), (200, 176, 336), (264, 136, 376),
+            (328, 176, 336), (392, 216, 296)]
+    return ''.join(f'<path d="M {x} {y0} L {x} {y1}" {_s(c, 32)}/>'
+                   for x, y0, y1 in bars)
+
+
+GLYPHS.update({"ard_sounds_wave": ard_sounds_wave})

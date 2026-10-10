@@ -6,6 +6,13 @@ All notable changes to the Core Builds Icon Pack. Format follows
 
 ## [Unreleased]
 
+## [2.3.1] — 2026-10-10
+
+### Added
+
+- **ARD Sounds icon.** The ARD Audiothek app, now called ARD Sounds, has its own
+  icon in the pack.
+
 ## [2.3.0] — 2026-10-10
 
 ### Added

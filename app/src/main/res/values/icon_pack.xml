@@ -63,6 +63,7 @@
         <item>aptoide</item>
         <item>arc_browser</item>
         <item>ard_mediathek</item>
+        <item>ard_sounds</item>
         <item>arrowfilms</item>
         <item>arte</item>
         <item>limelight</item>
@@ -1048,6 +1049,7 @@
         <item>Aptoide TV</item>
         <item>Arc Browser</item>
         <item>ARD Mediathek</item>
+        <item>ARD Sounds</item>
         <item>Arrow</item>
         <item>Arte</item>
         <item>Artemis</item>
@@ -2033,6 +2035,7 @@
         <item>STORE</item>
         <item>BROWSER</item>
         <item>APP</item>
+        <item>MUSIC</item>
         <item>STREAM</item>
         <item>APP</item>
         <item>GAMING</item>
@@ -3077,6 +3080,7 @@
         <item>1</item>
         <item>1</item>
         <item>1</item>
+        <item>1</item>
         <item>0</item>
         <item>1</item>
         <item>1</item>
@@ -3941,5 +3945,5 @@
         <item>1</item>
         <item>1</item>
     </integer-array>
-    <integer name="icon_count">983</integer>
+    <integer name="icon_count">984</integer>
 </resources>
