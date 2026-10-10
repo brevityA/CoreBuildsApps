@@ -52,6 +52,8 @@ object SetupGuide {
      * - [hardware]: the model that output matches, or null (see HardwarePresets.detect).
      * - [detection]: the TV and output brands (see [DeviceIdentity]), or null to omit the row.
      * - [measured]: whether this output has a measurement, or null to omit the row.
+     * - [passthroughRisk]: HDMI may carry Dolby or DTS as a bitstream (see OutputRoute.mayPassThrough).
+     *   This is a may-bypass warning, not proof that the current stream is bitstreamed.
      */
     fun steps(
         dumpGranted: Boolean,
@@ -60,7 +62,8 @@ object SetupGuide {
         outputName: String?,
         hardware: HardwarePresets.Model?,
         detection: DeviceIdentity.Detection? = null,
-        measured: Boolean? = null
+        measured: Boolean? = null,
+        passthroughRisk: Boolean = false
     ): List<Step> = buildList {
         add(
             Step(
@@ -106,6 +109,17 @@ object SetupGuide {
                 command = null
             )
         )
+        if (passthroughRisk) {
+            add(
+                Step(
+                    id = "passthrough",
+                    title = "Check the TV's surround setting",
+                    state = State.INFO,
+                    detail = "HDMI may carry Dolby or DTS as a bitstream, and Core EQ cannot process that. On the TV, set Surround sound (or Audio format) to PCM. Core EQ cannot see the current format, so this is a check, not a missing step.",
+                    command = null
+                )
+            )
+        }
         detection?.let { add(deviceRow(it)) }
         if (measured == false) {
             add(

@@ -67,7 +67,8 @@ class SetupActivity : TvActivity() {
             outputName = output?.name,
             hardware = detection.hardware,
             detection = detection,
-            measured = measured
+            measured = measured,
+            passthroughRisk = OutputRoute.mayPassThrough(this, output?.kind)
         )
         rows.removeAllViews()
         for (step in lastSteps) rows.addView(rowFor(step))

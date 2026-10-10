@@ -41,6 +41,13 @@ must never land there. Releases are `coreeq-v<version>` tags (see
   brand over HDMI or ARC is flagged as possibly the TV, not a soundbar. A
   **Measure this output** row appears when the current output has no
   measurement. Brand starter presets and auto-apply are not included yet.
+- **Setup check: passthrough check.** When the sound output is HDMI, the
+  setup check adds a "Check the TV's surround setting" row (info, not a
+  missing step). It asks you to set the TV's Surround sound (or Audio format)
+  to PCM. It is based on Android's encoded-surround setting, not the stream format.
+- **Device test record template.** `docs/CORE_EQ_DEVICE_TEST_RECORD.md` gives
+  one record per TV and output, for checking brand detection, routing and
+  presets on hardware. Nothing in it has been run yet.
 
 ### Changed
 

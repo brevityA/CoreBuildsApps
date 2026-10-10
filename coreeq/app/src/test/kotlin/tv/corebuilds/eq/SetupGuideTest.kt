@@ -78,4 +78,21 @@ class SetupGuideTest {
         assertTrue(steps.none { it.id == "measure" })
         assertTrue(steps.none { it.id == "device" })
     }
+
+    @Test
+    fun aPossiblePassthroughAddsAWarningRowWithNoCommand() {
+        val steps = SetupGuide.steps(true, true, OutputRoute.HDMI, "TV", null, passthroughRisk = true)
+        val row = step(steps, "passthrough")
+        assertEquals(State.INFO, row.state)
+        assertNull(row.command)
+        assertTrue(row.detail.contains("PCM"))
+        assertEquals(0, SetupGuide.steps(true, true, OutputRoute.HDMI, "TV", null, passthroughRisk = true)
+            .count { it.state == State.NEEDED })
+    }
+
+    @Test
+    fun noPassthroughRiskAddsNoRow() {
+        val steps = SetupGuide.steps(true, true, OutputRoute.SPEAKER, null, null)
+        assertTrue(steps.none { it.id == "passthrough" })
+    }
 }
