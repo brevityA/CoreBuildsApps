@@ -1,5 +1,6 @@
 package tv.corebuilds.eq.apply
 
+import tv.corebuilds.eq.dsp.DeviceIdentity
 import tv.corebuilds.eq.dsp.HardwarePresets
 
 /**
@@ -49,13 +50,17 @@ object SetupGuide {
      * - [overlayAllowed]: "Display over other apps" is allowed (see OverlayPermission.allowed).
      * - [outputKind] and [outputName]: the output the sound is routed to, from OutputRoute.current.
      * - [hardware]: the model that output matches, or null (see HardwarePresets.detect).
+     * - [detection]: the TV and output brands (see [DeviceIdentity]), or null to omit the row.
+     * - [measured]: whether this output has a measurement, or null to omit the row.
      */
     fun steps(
         dumpGranted: Boolean,
         overlayAllowed: Boolean,
         outputKind: String?,
         outputName: String?,
-        hardware: HardwarePresets.Model?
+        hardware: HardwarePresets.Model?,
+        detection: DeviceIdentity.Detection? = null,
+        measured: Boolean? = null
     ): List<Step> = buildList {
         add(
             Step(
@@ -101,6 +106,18 @@ object SetupGuide {
                 command = null
             )
         )
+        detection?.let { add(deviceRow(it)) }
+        if (measured == false) {
+            add(
+                Step(
+                    id = "measure",
+                    title = "Measure this output",
+                    state = State.INFO,
+                    detail = "No measurement for this output yet. Run Measure: it is the real calibration. Brand and model presets are only starting points.",
+                    command = null
+                )
+            )
+        }
         if (hardware != null) {
             add(
                 Step(
@@ -127,6 +144,18 @@ object SetupGuide {
             append("    ").append(step.detail).append('\n')
             step.command?.let { append("    ").append(it).append('\n') }
         }
+    }
+
+    private fun deviceRow(detection: DeviceIdentity.Detection): Step {
+        val lines = mutableListOf<String>()
+        val tv = detection.tvBrand
+        lines += if (tv != null) "TV: ${tv.name}." else "TV: brand not recognised."
+        when {
+            detection.ambiguous -> lines += "The output name matches the TV's own brand, so it may be the TV itself. Core EQ is not guessing a soundbar."
+            detection.outputBrand != null -> lines += "Output: ${detection.outputBrand.name}."
+            else -> lines += "Output: no brand in its name."
+        }
+        return Step("device", "Detected devices", State.INFO, lines.joinToString(" "), null)
     }
 
     private fun outputDetail(kind: String?, name: String?): String {

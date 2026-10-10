@@ -2,6 +2,7 @@ package tv.corebuilds.eq
 
 import android.content.ClipData
 import android.content.ClipboardManager
+import android.os.Build
 import android.os.Bundle
 import android.view.Gravity
 import android.view.ViewGroup
@@ -11,7 +12,8 @@ import android.widget.TextView
 import tv.corebuilds.eq.apply.DumpsysDiscovery
 import tv.corebuilds.eq.apply.OutputRoute
 import tv.corebuilds.eq.apply.SetupGuide
-import tv.corebuilds.eq.dsp.HardwarePresets
+import tv.corebuilds.eq.dsp.DeviceIdentity
+import tv.corebuilds.eq.export.ProfileStore
 import tv.corebuilds.eq.ui.OverlayPermission
 
 /**
@@ -45,17 +47,27 @@ class SetupActivity : TvActivity() {
 
     private fun refresh() {
         val output = OutputRoute.current(this)
-        val hardware: HardwarePresets.Model? = HardwarePresets.detect(
+        val detection = DeviceIdentity.detect(
+            Build.MANUFACTURER,
             output?.kind,
             output?.name,
             OutputRoute.connectedNames(this, output?.kind)
         )
+        val store = ProfileStore(this)
+        val measured = OutputRoute.pick(
+            store.getAllProfiles(),
+            store.chosenId(),
+            output?.kind,
+            output?.name
+        ).profile != null
         lastSteps = SetupGuide.steps(
             dumpGranted = DumpsysDiscovery.hasGrant(this),
             overlayAllowed = OverlayPermission.allowed(this),
             outputKind = output?.kind,
             outputName = output?.name,
-            hardware = hardware
+            hardware = detection.hardware,
+            detection = detection,
+            measured = measured
         )
         rows.removeAllViews()
         for (step in lastSteps) rows.addView(rowFor(step))

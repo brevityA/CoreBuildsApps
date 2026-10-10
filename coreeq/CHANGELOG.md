@@ -34,6 +34,14 @@ must never land there. Releases are `coreeq-v<version>` tags (see
   volume. None is a measured curve. They sit on top of the room correction
   like any other preset, and you can edit a copy of one.
 
+- **Brand detection for TVs and sound outputs.** The setup check now names
+  the TV's brand (from Android's manufacturer string: Samsung, LG, Sony, TCL,
+  Hisense, Philips) and, separately, the output's brand (JBL, Sonos, Bose,
+  Yamaha, or a brand in the output name). A name that matches the TV's own
+  brand over HDMI or ARC is flagged as possibly the TV, not a soundbar. A
+  **Measure this output** row appears when the current output has no
+  measurement. Brand starter presets and auto-apply are not included yet.
+
 ### Changed
 
 - **Output detection finds the hardware by name.** Core EQ now reads the

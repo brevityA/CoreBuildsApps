@@ -7,6 +7,7 @@ import org.junit.Test
 import tv.corebuilds.eq.apply.OutputRoute
 import tv.corebuilds.eq.apply.SetupGuide
 import tv.corebuilds.eq.apply.SetupGuide.State
+import tv.corebuilds.eq.dsp.DeviceIdentity
 import tv.corebuilds.eq.dsp.HardwarePresets
 
 class SetupGuideTest {
@@ -56,5 +57,25 @@ class SetupGuideTest {
         assertTrue(report.contains("[needed] Read the playing app (DUMP)"))
         assertTrue(report.contains("    adb shell pm grant tv.corebuilds.eq android.permission.DUMP"))
         assertTrue(report.contains("[done] Show the on-screen card"))
+    }
+
+    @Test
+    fun aSoundbarNamedAfterTheTvIsNotClaimedAsOne() {
+        val tv = DeviceIdentity.brandForManufacturer("samsung")
+        val detection = DeviceIdentity.detect("samsung", OutputRoute.HDMI_ARC, "Samsung Q80", listOf("Samsung Q80"))
+        val steps = SetupGuide.steps(true, true, OutputRoute.HDMI_ARC, "Samsung Q80", null, detection, measured = false)
+        val device = step(steps, "device").detail
+        assertTrue(device.contains("TV: Samsung."))
+        assertTrue(device.contains("may be the TV itself"))
+        assertEquals(tv, detection.tvBrand)
+        assertEquals("Measure this output", step(steps, "measure").title)
+        assertEquals(State.INFO, step(steps, "measure").state)
+    }
+
+    @Test
+    fun aMeasuredOutputShowsNoMeasureRow() {
+        val steps = SetupGuide.steps(true, true, OutputRoute.SPEAKER, null, null, measured = true)
+        assertTrue(steps.none { it.id == "measure" })
+        assertTrue(steps.none { it.id == "device" })
     }
 }
