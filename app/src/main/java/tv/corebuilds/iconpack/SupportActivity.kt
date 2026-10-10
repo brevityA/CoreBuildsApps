@@ -13,8 +13,9 @@ import android.widget.TextView
  * codes are drawn here from the URLs in strings.xml and nothing is fetched,
  * so About's list of everything this app sends stays the whole list.
  *
- * Nothing in the app depends on this screen and it unlocks nothing; the
- * screen says so rather than leaving a reader to wonder.
+ * Nothing in the app depends on this screen, and every feature ships
+ * whether anyone gives or not; the screen says so rather than leaving a
+ * reader to wonder.
  */
 class SupportActivity : TvActivity() {
 

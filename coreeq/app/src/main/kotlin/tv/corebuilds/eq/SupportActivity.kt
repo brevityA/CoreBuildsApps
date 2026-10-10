@@ -13,7 +13,8 @@ import tv.corebuilds.eq.ui.QrBitmap
  * Codes rather than links: plenty of Android TV boxes ship without a browser,
  * and nobody fills in a payment page with a remote. They are drawn here from
  * the URLs in strings.xml, so opening this screen makes no network request.
- * Support unlocks nothing in Core EQ, and the screen says so.
+ * Every Core EQ feature ships whether anyone gives or not, and the screen
+ * says so.
  */
 class SupportActivity : TvActivity() {
 

@@ -323,7 +323,7 @@
     <string name="support_kicker">SUPPORT</string>
     <string name="support_title">Support Core Builds</string>
     <string name="support_body">Every Core Builds app is free. If one has earned a place on your TV, you can chip in from your phone: point its camera at either code.</string>
-    <string name="support_mode">Optional, and it unlocks nothing. Every build ships every feature whether you give or not.</string>
+    <string name="support_mode">Optional. Every app ships every feature whether you give or not.</string>
     <string name="support_footer">These codes are drawn on this TV. Opening this screen sends nothing.</string>
     <string name="support_sponsors_label">GitHub Sponsors</string>
     <string name="support_sponsors_url">https://github.com/sponsors/brevityA</string>
