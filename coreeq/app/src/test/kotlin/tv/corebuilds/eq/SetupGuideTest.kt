@@ -95,4 +95,18 @@ class SetupGuideTest {
         val steps = SetupGuide.steps(true, true, OutputRoute.SPEAKER, null, null)
         assertTrue(steps.none { it.id == "passthrough" })
     }
+
+    @Test
+    fun aSpatialLineIsAReadOnlyInfoRow() {
+        val steps = SetupGuide.steps(true, true, OutputRoute.SPEAKER, null, null, spatialDetail = "Spatial audio is on.")
+        val row = step(steps, "spatial")
+        assertEquals(State.INFO, row.state)
+        assertNull(row.command)
+    }
+
+    @Test
+    fun noSpatialLineWhenNotRead() {
+        val steps = SetupGuide.steps(true, true, OutputRoute.SPEAKER, null, null)
+        assertTrue(steps.none { it.id == "spatial" })
+    }
 }

@@ -1,12 +1,15 @@
 package tv.corebuilds.eq
 
 import android.content.BroadcastReceiver
+import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.os.Build
+import android.provider.OpenableColumns
 import android.os.Bundle
 import android.os.Handler
+import android.net.Uri
 import android.os.Looper
 import android.text.InputType
 import android.widget.Button
@@ -19,6 +22,7 @@ import tv.corebuilds.eq.apply.BandMapping
 import tv.corebuilds.eq.apply.DpBandLayout
 import tv.corebuilds.eq.apply.EqService
 import tv.corebuilds.eq.apply.OutputRoute
+import tv.corebuilds.eq.dsp.CorrectionImport
 import tv.corebuilds.eq.dsp.DspConstants
 import tv.corebuilds.eq.dsp.HardwarePresets
 import tv.corebuilds.eq.dsp.ManualEq
@@ -32,6 +36,7 @@ import tv.corebuilds.eq.ui.CurveGraphView
 import tv.corebuilds.eq.ui.ManualEqBandsView
 import tv.corebuilds.eq.ui.Series
 import java.util.Locale
+import kotlin.concurrent.thread
 
 /** TV-first manual graphic EQ editor layered on an optional room measurement. */
 class ManualEqActivity : TvActivity() {
@@ -47,6 +52,7 @@ class ManualEqActivity : TvActivity() {
     private lateinit var textApplyHint: TextView
     private lateinit var textStatus: TextView
     private lateinit var btnPreset: Button
+    private var importing = false
     private lateinit var btnEditMode: Button
     private var profile: Profile? = null
     private var editingOutput: OutputRoute.Output? = null
@@ -88,6 +94,7 @@ class ManualEqActivity : TvActivity() {
         btnEditMode.setOnClickListener { showEditingModePicker() }
         findViewById<Button>(R.id.btn_choose_eq_preset).setOnClickListener { showPresetPicker() }
         findViewById<Button>(R.id.btn_save_eq_preset).setOnClickListener { promptSavePreset() }
+        findViewById<Button>(R.id.btn_import_eq_file).setOnClickListener { pickCorrectionFile() }
         findViewById<Button>(R.id.btn_reset_eq).setOnClickListener {
             applyPreset(ManualEq.BUILT_IN_PRESETS.first())
             textStatus.text = getString(R.string.manual_eq_reset_done)
@@ -333,6 +340,99 @@ class ManualEqActivity : TvActivity() {
             .show()
     }
 
+    /** Import a ParametricEQ or GraphicEQ text file (AutoEq, Equalizer APO) as a preset. */
+    private fun pickCorrectionFile() {
+        if (importing) return
+        val intent = Intent(Intent.ACTION_OPEN_DOCUMENT)
+            .addCategory(Intent.CATEGORY_OPENABLE)
+            .setType("*/*")
+        try {
+            startActivityForResult(intent, REQ_IMPORT_EQ)
+        } catch (e: ActivityNotFoundException) {
+            showImportError(getString(R.string.manual_eq_import_no_picker))
+        }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode != REQ_IMPORT_EQ) return
+        val uri = data?.data
+        if (resultCode == RESULT_OK && uri != null) importCorrection(uri)
+    }
+
+    private fun importCorrection(uri: Uri) {
+        if (importing) return
+        importing = true
+        textStatus.text = getString(R.string.manual_eq_import_busy)
+        thread(name = "CoreEqCorrectionImport", start = true) {
+            val outcome = try {
+                val text = readCorrectionText(uri)
+                Result.success(displayName(uri) to CorrectionImport.parse(text))
+            } catch (e: Exception) {
+                Result.failure<Pair<String, CorrectionImport.Result>>(e)
+            }
+            runOnUiThread {
+                importing = false
+                if (isFinishing || isDestroyed) return@runOnUiThread
+                outcome.onSuccess { (name, result) -> finishImport(name, result) }
+                    .onFailure { error -> showImportError(error.message ?: getString(R.string.manual_eq_import_unreadable)) }
+            }
+        }
+    }
+
+    private fun readCorrectionText(uri: Uri): String {
+        val input = contentResolver.openInputStream(uri)
+            ?: throw IllegalArgumentException(getString(R.string.manual_eq_import_unreadable))
+        // UTF-8 uses at most four bytes per character, so this bounds the read before parsing.
+        val limit = CorrectionImport.MAX_CHARS * 4
+        val bytes = input.use { stream ->
+            val out = java.io.ByteArrayOutputStream()
+            val buffer = ByteArray(8192)
+            while (true) {
+                val count = stream.read(buffer)
+                if (count < 0) break
+                out.write(buffer, 0, count)
+                if (out.size() > limit) {
+                    throw IllegalArgumentException(getString(R.string.manual_eq_import_too_large))
+                }
+            }
+            out.toByteArray()
+        }
+        return String(bytes, Charsets.UTF_8)
+    }
+
+    private fun displayName(uri: Uri): String {
+        val name = contentResolver.query(uri, arrayOf(OpenableColumns.DISPLAY_NAME), null, null, null)?.use { cursor ->
+            if (cursor.moveToFirst()) cursor.getString(0) else null
+        }
+        return name ?: uri.lastPathSegment ?: "correction"
+    }
+
+    private fun finishImport(fileName: String, result: CorrectionImport.Result) {
+        val base = fileName.substringBeforeLast('.').trim().ifEmpty { "correction" }
+        val name = "Import: $base".take(32).trim()
+        val saved = try {
+            profileStore.saveManualEqPreset(name, result.filters)
+        } catch (e: IllegalArgumentException) {
+            showImportError(e.message ?: getString(R.string.manual_eq_builtin_name))
+            return
+        }
+        applyPreset(saved)
+        val fit = String.format(Locale.US, "%.1f", result.maxErrorDb)
+        val notes = result.notes.joinToString("\n")
+        val summary = getString(R.string.manual_eq_import_summary, result.source, fit)
+        AlertDialog.Builder(this)
+            .setTitle(getString(R.string.manual_eq_import_title, saved.name))
+            .setMessage(if (notes.isEmpty()) summary else "$summary\n\n$notes")
+            .setPositiveButton(android.R.string.ok, null)
+            .show()
+    }
+
+    private fun showImportError(reason: String) {
+        textStatus.text = getString(R.string.manual_eq_import_failed, reason)
+        Toast.makeText(this, getString(R.string.manual_eq_import_failed, reason), Toast.LENGTH_LONG).show()
+    }
+
     private fun applyPreset(preset: ManualEqPreset) {
         val active = profile ?: return
         modeStore.saveModeFilters(active.id, editingMode, ManualEq.sanitize(preset.filters))
@@ -350,5 +450,6 @@ class ManualEqActivity : TvActivity() {
 
     private companion object {
         const val APPLY_DEBOUNCE_MS = 160L
+        const val REQ_IMPORT_EQ = 4101
     }
 }

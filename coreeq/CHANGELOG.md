@@ -48,6 +48,19 @@ must never land there. Releases are `coreeq-v<version>` tags (see
 - **Device test record template.** `docs/CORE_EQ_DEVICE_TEST_RECORD.md` gives
   one record per TV and output, for checking brand detection, routing and
   presets on hardware. Nothing in it has been run yet.
+- **Import a correction file.** Manual EQ has **Import correction file…**,
+  which reads an AutoEq ParametricEQ, Equalizer APO or GraphicEQ text file and
+  fits it to the 10 bands (Q 1.0, ±6 dB, 0.5 dB steps). The result is saved as
+  a preset named "Import: …" and applied. The closest fit's largest difference
+  from the file is shown. Only peaking (PK) filters are fitted; other filter
+  types and the preamp are reported, not applied. Files over 64 KB are refused.
+- **Read-only spatial audio line in the setup check.** On Android 12L (API 32)
+  and later, the setup check shows whether spatial audio is on and available
+  for the current output. Core EQ cannot change it: Android gives apps no
+  switch for it.
+- **Philips TV aliases.** Philips Android TVs are made by TP Vision (TPV);
+  detection now also reads `tp vision` and `tpv` as the Philips brand. Not yet
+  confirmed on a device.
 
 ### Changed
 

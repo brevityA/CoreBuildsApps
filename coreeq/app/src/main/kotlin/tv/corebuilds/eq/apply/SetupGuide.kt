@@ -54,6 +54,7 @@ object SetupGuide {
      * - [measured]: whether this output has a measurement, or null to omit the row.
      * - [passthroughRisk]: HDMI may carry Dolby or DTS as a bitstream (see OutputRoute.mayPassThrough).
      *   This is a may-bypass warning, not proof that the current stream is bitstreamed.
+     * - [spatialDetail]: the read-only spatial audio line (see SpatialStatus.detail), or null to omit it.
      */
     fun steps(
         dumpGranted: Boolean,
@@ -63,7 +64,8 @@ object SetupGuide {
         hardware: HardwarePresets.Model?,
         detection: DeviceIdentity.Detection? = null,
         measured: Boolean? = null,
-        passthroughRisk: Boolean = false
+        passthroughRisk: Boolean = false,
+        spatialDetail: String? = null
     ): List<Step> = buildList {
         add(
             Step(
@@ -121,6 +123,9 @@ object SetupGuide {
             )
         }
         detection?.let { add(deviceRow(it)) }
+        spatialDetail?.let {
+            add(Step("spatial", "Spatial audio (read-only)", State.INFO, it, null))
+        }
         if (measured == false) {
             add(
                 Step(

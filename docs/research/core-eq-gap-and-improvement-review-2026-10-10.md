@@ -74,7 +74,7 @@ approved.
 
 | # | Finding | Why it matters | Suggested fix |
 | --- | --- | --- | --- |
-| I1 | Accessibility: one `contentDescription` across 12 layouts. | TalkBack and focus users get unlabelled controls. | Audit each layout; label icon-only buttons. |
+| I1 | ~~Accessibility: one `contentDescription` across 12 layouts.~~ **Withdrawn after audit.** No layout uses `ImageView` or `ImageButton`. The unlabelled-looking buttons get their text in code (`ContentTypeActivity` chips, `showSwitch` on Enhanced Audio, `btnModes.text` on Home). | A TalkBack pass on a real TV is still needed; this audit cannot test focus or speech output. | Run TalkBack on a device and record the result in the device test record. |
 | I2 | Setup check counts only NEEDED rows. | Fixed this round: the passthrough row is now INFO, so it no longer blocks "Everything is in place". | Done in this round. |
 | I3 | Stale statements in the features doc. `V1.2.0_FEATURES.md` roadmap still shows v1.3.0 as Q1 2027, while the app is 1.3.2. | Readers will trust dates that no longer hold. | Mark the roadmap as historical, or rewrite it from the current CHANGELOG. |
 | I4 | `IMPLEMENTATION_SUMMARY.md` mixes historical and current claims (it has version notes at the top). | Easy to mis-read. | Keep the header note; move the body under a "historical" label. |
@@ -99,3 +99,19 @@ approved.
    Core EQ's own output?
 3. Your device list, to unblock model-level presets (2.4).
 4. Is accessibility (I1) in scope for the next round?
+
+## 6. Status update (this round, 2026-10-10)
+
+| Item | Status |
+| --- | --- |
+| 2.1 Correction-file import | Built: `dsp/CorrectionImport.kt` parses ParametricEQ, Equalizer APO and GraphicEQ text, and fits it to the 10 bands. Manual EQ has an **Import correction file** button. The fit's maximum error is shown. Tests written; not compiled here. |
+| 2.2 Passthrough | Setup check shows an info row on HDMI outputs (earlier this session). |
+| 2.3 Spatializer | Built as a **read-only** status row in the setup check, not a settings switch. Android has no on/off call for the spatializer, so a switch could not work. Gated to API 32. Tests written. |
+| 2.4 Model-level presets | Research note written: `docs/research/core-eq-device-models-research-2026-10-10.md`. No model presets added; no source gives a measured response. Needs the user's device list. |
+| 2.5 Model-string matching, 2.6 auto-apply, 2.7 on-TV ADB | Still deferred. |
+| I1 Accessibility | Withdrawn (see row above). |
+
+Finding from the device research: Core EQ is an Android TV app, so Samsung
+(Tizen) and LG (webOS) TVs cannot run it. The TV-brand entries for those two
+brands cannot be reached. This needs a decision from the user.
+

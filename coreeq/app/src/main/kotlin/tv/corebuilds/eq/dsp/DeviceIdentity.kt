@@ -38,7 +38,7 @@ object DeviceIdentity {
         Brand("sony", "Sony", setOf("sony"), word("sony")),
         Brand("tcl", "TCL", setOf("tcl"), word("tcl")),
         Brand("hisense", "Hisense", setOf("hisense"), word("hisense")),
-        Brand("philips", "Philips", setOf("philips"), word("philips")),
+        Brand("philips", "Philips", setOf("philips", "tp vision", "tpv"), word("philips")),
         Brand("jbl", "JBL", emptySet(), word("jbl")),
         Brand("sonos", "Sonos", emptySet(), word("sonos")),
         Brand("bose", "Bose", emptySet(), word("bose")),

@@ -2,6 +2,8 @@ package tv.corebuilds.eq
 
 import android.content.ClipData
 import android.content.ClipboardManager
+import android.media.AudioManager
+import android.media.Spatializer
 import android.os.Build
 import android.os.Bundle
 import android.view.Gravity
@@ -9,9 +11,11 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.annotation.RequiresApi
 import tv.corebuilds.eq.apply.DumpsysDiscovery
 import tv.corebuilds.eq.apply.OutputRoute
 import tv.corebuilds.eq.apply.SetupGuide
+import tv.corebuilds.eq.apply.SpatialStatus
 import tv.corebuilds.eq.dsp.DeviceIdentity
 import tv.corebuilds.eq.export.ProfileStore
 import tv.corebuilds.eq.ui.OverlayPermission
@@ -68,7 +72,8 @@ class SetupActivity : TvActivity() {
             hardware = detection.hardware,
             detection = detection,
             measured = measured,
-            passthroughRisk = OutputRoute.mayPassThrough(this, output?.kind)
+            passthroughRisk = OutputRoute.mayPassThrough(this, output?.kind),
+            spatialDetail = spatialDetail()
         )
         rows.removeAllViews()
         for (step in lastSteps) rows.addView(rowFor(step))
@@ -78,6 +83,25 @@ class SetupActivity : TvActivity() {
         } else {
             resources.getQuantityString(R.plurals.setup_status_needed, needed, needed)
         }
+    }
+
+    /** Read-only: Android 12L and later report the spatializer state; older versions get a plain note. */
+    private fun spatialDetail(): String {
+        val sdk = Build.VERSION.SDK_INT
+        if (sdk < SpatialStatus.MIN_SDK) return SpatialStatus.detail(sdk, null, null, null)
+        return readSpatializer(sdk)
+    }
+
+    @RequiresApi(Build.VERSION_CODES.S_V2)
+    private fun readSpatializer(sdk: Int): String {
+        val spatializer = getSystemService(AudioManager::class.java)?.spatializer
+            ?: return SpatialStatus.detail(sdk, false, null, null)
+        return SpatialStatus.detail(
+            sdk,
+            supported = spatializer.immersiveAudioLevel != Spatializer.SPATIALIZER_IMMERSIVE_LEVEL_NONE,
+            enabled = spatializer.isEnabled,
+            available = spatializer.isAvailable
+        )
     }
 
     private fun rowFor(step: SetupGuide.Step): LinearLayout {

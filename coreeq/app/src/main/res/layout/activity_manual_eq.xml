@@ -137,6 +137,11 @@
                     android:focusable="true" />
             </LinearLayout>
 
+            <Button
+                android:id="@+id/btn_import_eq_file"
+                style="@style/CoreEQ.ActionRow"
+                android:text="@string/manual_eq_import_file" />
+
             <TextView
                 android:id="@+id/text_manual_headroom"
                 android:layout_width="match_parent"

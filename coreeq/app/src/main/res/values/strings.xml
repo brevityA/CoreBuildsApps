@@ -63,6 +63,14 @@
     <string name="manual_eq_save_title">Save manual EQ preset</string>
     <string name="manual_eq_save">Save</string>
     <string name="manual_eq_save_hint">Preset name</string>
+    <string name="manual_eq_import_file">Import correction file…</string>
+    <string name="manual_eq_import_busy">Reading the correction file…</string>
+    <string name="manual_eq_import_no_picker">This TV has no file picker. Enable the Files app, then try again.</string>
+    <string name="manual_eq_import_unreadable">That file could not be read.</string>
+    <string name="manual_eq_import_too_large">The file is larger than 64 KB. Export a ParametricEQ or GraphicEQ text file and try again.</string>
+    <string name="manual_eq_import_failed">Not imported: %1$s</string>
+    <string name="manual_eq_import_title">Imported “%1$s”</string>
+    <string name="manual_eq_import_summary">Source: %1$s. The closest fit to the 10 bands differs from the file by up to %2$s dB over 40 Hz to 8 kHz. It is applied and saved as a preset, so you can change it.</string>
     <string name="manual_eq_preset_saved">Saved EQ preset “%1$s”</string>
     <string name="manual_eq_preset_applied">Preset applied: %1$s</string>
     <string name="manual_eq_preset_name_required">Enter a name for this preset.</string>
