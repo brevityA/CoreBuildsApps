@@ -37,7 +37,12 @@ class SetupActivity : TvActivity() {
         setContentView(R.layout.activity_setup)
         rows = findViewById(R.id.setup_rows)
         status = findViewById(R.id.text_setup_status)
-        findViewById<Button>(R.id.btn_setup_check).setOnClickListener { refresh() }
+        // Other screens focus a first control on open; without this the D-pad
+        // starts on a row and has nowhere sensible to go.
+        findViewById<Button>(R.id.btn_setup_check).apply {
+            setOnClickListener { refresh() }
+            requestFocus()
+        }
         findViewById<Button>(R.id.btn_setup_copy_report).setOnClickListener {
             copy(SetupGuide.report(lastSteps), getString(R.string.setup_report_copied))
         }
@@ -50,6 +55,9 @@ class SetupActivity : TvActivity() {
     }
 
     private fun refresh() {
+        // Rows are rebuilt on every resume. Removing a focused row drops focus
+        // with it, so remember whether focus was in the list and give it back.
+        val focusWasInRows = rows.findFocus() != null
         val output = OutputRoute.current(this)
         val detection = DeviceIdentity.detect(
             Build.MANUFACTURER,
@@ -77,6 +85,7 @@ class SetupActivity : TvActivity() {
         )
         rows.removeAllViews()
         for (step in lastSteps) rows.addView(rowFor(step))
+        if (focusWasInRows) findViewById<Button>(R.id.btn_setup_check).requestFocus()
         val needed = lastSteps.count { it.state == SetupGuide.State.NEEDED }
         status.text = if (needed == 0) {
             getString(R.string.setup_status_ready)
@@ -150,7 +159,6 @@ class SetupActivity : TvActivity() {
         textSize = if (mono) 13f else 14f
         if (bold) setTypeface(typeface, android.graphics.Typeface.BOLD)
         if (mono) typeface = android.graphics.Typeface.MONOSPACE
-        setTextIsSelectable(true)
         layoutParams = LinearLayout.LayoutParams(
             ViewGroup.LayoutParams.MATCH_PARENT,
             ViewGroup.LayoutParams.WRAP_CONTENT
