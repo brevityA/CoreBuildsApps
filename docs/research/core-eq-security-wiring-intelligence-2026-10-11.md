@@ -1,6 +1,6 @@
 # Core EQ security hardening, wiring, and intelligent-EQ roadmap
 
-**Research date:** 2026-10-11  
+**Research date:** 2026-10-11
 **Scope:** Static review of the Core EQ Android TV app and Android phone companion, current platform guidance, and practical AV signal-chain recommendations. This is a research brief and hardening plan—not a penetration test, Android build result, device qualification, or claim of calibrated phone-microphone performance.
 
 ## Executive recommendations
