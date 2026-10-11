@@ -463,6 +463,7 @@
         <item>monplayer</item>
         <item>moonfin</item>
         <item>moonlight</item>
+        <item>morphe</item>
         <item>officialmotogp</item>
         <item>moviehd</item>
         <item>movieark</item>
@@ -1450,6 +1451,7 @@
         <item>Monplayer</item>
         <item>Moonfin</item>
         <item>Moonlight</item>
+        <item>Morphe</item>
         <item>MotoGP</item>
         <item>Movie HD</item>
         <item>Movieark</item>
@@ -2437,6 +2439,7 @@
         <item>PLAYER</item>
         <item>APP</item>
         <item>GAMING</item>
+        <item>TOOL</item>
         <item>APP</item>
         <item>STREAM</item>
         <item>APP</item>
@@ -3438,6 +3441,7 @@
         <item>1</item>
         <item>1</item>
         <item>1</item>
+        <item>1</item>
         <item>0</item>
         <item>1</item>
         <item>1</item>
@@ -3949,5 +3953,5 @@
         <item>1</item>
         <item>1</item>
     </integer-array>
-    <integer name="icon_count">985</integer>
+    <integer name="icon_count">986</integer>
 </resources>

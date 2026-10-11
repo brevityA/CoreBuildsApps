@@ -14,6 +14,8 @@ All notable changes to the Core Builds Icon Pack. Format follows
   icon in the pack.
   Its accent is now the published ARD brand blue (#2D92FF), not an eyeballed value.
 - **Pixee icon.** Pixee, the photo-frame slideshow app, has its own icon (issue #284).
+- **Morphe icon.** The Morphe patcher manager has its own icon (issue #287). The activity is
+  device-reported from a scan on one TV and is not yet confirmed on a second device.
 - **Core Builds Glyphs has its own icon.** The glyph-only app (`tv.corebuilds.glyphs`)
   now has a violet launcher icon and TV banner, so it no longer looks like a second
   copy of the icon pack in a launcher.

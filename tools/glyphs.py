@@ -9004,3 +9004,14 @@ def pixee_frame(c):
 
 
 GLYPHS.update({"pixee_frame": pixee_frame})
+
+
+def morphe_m(c):
+    """Morphe: a monoline capital M with a filled dot on its right leg - the
+    patcher's letter mark, drawn in Core stroke geometry, not a trace of the
+    Morphe gradient icon."""
+    return (f'<path d="M 128 384 L 128 176 L 256 272 L 384 176 L 384 384" {_s(c, 32)}/>'
+            f'<circle cx="420" cy="372" r="22" {_f(c)}/>')
+
+
+GLYPHS.update({"morphe_m": morphe_m})

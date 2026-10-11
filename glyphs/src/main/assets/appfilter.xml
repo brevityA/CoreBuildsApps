@@ -1350,6 +1350,9 @@
     <!-- Moonlight -->
     <item component="ComponentInfo{com.limelight/com.limelight.PcView}" drawable="moonlight"/>
     <item component="ComponentInfo{com.limelight/.PcView}" drawable="moonlight"/>
+    <!-- Morphe -->
+    <item component="ComponentInfo{app.morphe.manager/app.morphe.manager.MainActivity_Dark_2}" drawable="morphe"/>
+    <item component="ComponentInfo{app.morphe.manager/.MainActivity_Dark_2}" drawable="morphe"/>
     <!-- MotoGP -->
     <item component="ComponentInfo{com.dorna.officialmotogp/com.dorna.motogpapp.ui.view.tv.splash.SplashTVActivity}" drawable="officialmotogp"/>
     <!-- Movie HD -->

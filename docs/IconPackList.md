@@ -1,6 +1,6 @@
 # Supported applications
 
-`985` icons · `1220` mapped components · pack v2.3.1
+`986` icons · `1221` mapped components · pack v2.3.1
 
 Every app below auto-assigns in Projectivy. If one doesn't, the app ships a different launcher activity on your device — open an issue with the component name and it gets added.
 
@@ -469,6 +469,7 @@ Source accents are retained in the catalog. **On dark** is the shared square/ban
 | Monplayer | `monplayer` | `#4FACFE` | `#4FACFE` | `org.monplayer.mpapp/org.monplayer.mpapp.MainActivity` |
 | Moonfin | `moonfin` | `#B453E6` | `#B453E6` | `org.moonfin.androidtv/org.jellyfin.androidtv.ui.startup.StartupActivity` |
 | Moonlight | `moonlight` | `#76B900` | `#76B900` | `com.limelight/.PcView` |
+| Morphe | `morphe` | `#7355F8` | `#7355F8` | `app.morphe.manager/app.morphe.manager.MainActivity_Dark_2` |
 | MotoGP | `officialmotogp` | `#34EB7A` | `#34EB7A` | `com.dorna.officialmotogp/com.dorna.motogpapp.ui.view.tv.splash.SplashTVActivity` |
 | Movie HD | `moviehd` | `#DBA608` | `#DBA608` | `com.ggateam.moviehd.ui/com.ggateam.moviehd.ui.FrmSplash` |
 | Movieark | `movieark` | `#00C1D2` | `#00C1D2` | `com.tcl.movieark/com.tcl.waterfall.overseas.main.MainActivity` |
