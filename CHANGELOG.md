@@ -20,6 +20,12 @@ All notable changes to the Core Builds Icon Pack. Format follows
   now has a violet launcher icon and TV banner, so it no longer looks like a second
   copy of the icon pack in a launcher.
 
+### Changed
+
+- **New pack icon artwork.** The Core Builds Icon Pack launcher icon and TV banner
+  use a refreshed mark: the same rounded tile and Signal Cyan accent, with a circle, a square,
+  a play cue and a plus. Launcher icon only; the glyphs app is unchanged.
+
 ### Fixed
 
 - **waipu.tv gets its icon on current devices.** The app opens a different

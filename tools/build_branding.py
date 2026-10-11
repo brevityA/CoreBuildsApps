@@ -47,8 +47,11 @@ PACK_ICON = (
     f'<rect x="64" y="64" width="384" height="384" rx="96" {_s("32.0")}/>'
     f'<circle cx="168" cy="168" r="44" {_s("26.2")}/>'
     f'<rect x="300" y="124" width="88" height="88" rx="24" {_s("26.2")}/>'
-    f'<rect x="124" y="300" width="88" height="88" rx="24" {_s("26.2")}/>'
-    f'<rect x="300" y="300" width="88" height="88" rx="24" {_s("26.2")}/>'
+    # v2.3.1 refresh: the bottom row now carries a play cue and a plus, so the
+    # four marks read as four different apps (media, tools) rather than a
+    # square repeated. Still strokes only, same weights, same grid.
+    f'<path d="M 140 298 L 200 344 L 140 390 Z" {_s("26.2")}/>'
+    f'<path d="M 344 300 L 344 388 M 300 344 L 388 344" {_s("26.2")}/>'
 )
 
 # Adaptive background: the night card. Kept deliberately quiet — a radial
