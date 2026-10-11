@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<full-backup-content>
+    <!-- Pairing grants control of the TV. Neither the TV's raw token nor the
+         phone's Keystore-encrypted token can safely move in an app backup. -->
+    <exclude domain="sharedpref" path="core_eq_companion.xml" />
+    <exclude domain="sharedpref" path="core_eq_phone_pairing.xml" />
+</full-backup-content>

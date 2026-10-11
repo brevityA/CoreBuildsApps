@@ -1,0 +1,819 @@
+package tv.corebuilds.eq.companion
+
+import android.Manifest
+import android.content.pm.PackageManager
+import android.os.Build
+import android.os.Bundle
+import android.text.InputFilter
+import android.text.InputType
+import android.view.Gravity
+import android.view.View
+import android.view.ViewGroup
+import android.widget.Button
+import android.widget.EditText
+import android.widget.LinearLayout
+import android.widget.ProgressBar
+import android.widget.ScrollView
+import android.widget.TextView
+import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
+import org.json.JSONObject
+import tv.corebuilds.eq.R
+import java.net.Inet4Address
+import java.net.InetAddress
+import java.util.Base64
+import kotlin.concurrent.thread
+import kotlin.math.roundToInt
+
+/** Android phone UI for local TV control and a foreground-only phone-mic measurement. */
+class PhoneCompanionActivity : AppCompatActivity() {
+
+    private data class RemoteProfile(val id: String, val name: String, val active: Boolean, val manualOnly: Boolean)
+    private data class Dashboard(
+        val deviceName: String,
+        val version: String,
+        val output: String,
+        val mode: String,
+        val correctionEnabled: Boolean,
+        val profileName: String,
+        val serviceStatus: String,
+        val serviceError: Boolean,
+        val profiles: List<RemoteProfile>
+    )
+    private data class RoomChoice(val label: String, val volumeM3: Double?)
+
+    private lateinit var credentialStore: PhoneCredentialStore
+    private lateinit var hostField: EditText
+    private lateinit var portField: EditText
+    private lateinit var codeField: EditText
+    private lateinit var connectionLine: TextView
+    private lateinit var detailLine: TextView
+    private lateinit var statusLine: TextView
+    private lateinit var remotePanel: LinearLayout
+    private lateinit var profileList: LinearLayout
+    private lateinit var correctionButton: Button
+    private lateinit var pairButton: Button
+    private lateinit var connectButton: Button
+    private lateinit var revokeButton: Button
+    private lateinit var forgetButton: Button
+    private lateinit var measureButton: Button
+    private lateinit var cancelMeasureButton: Button
+    private lateinit var targetButton: Button
+    private lateinit var roomButton: Button
+    private lateinit var measureProgress: ProgressBar
+
+    private var dashboard: Dashboard? = null
+    private var targetIndex = 0
+    private var roomIndex = 0
+    private var pendingLocalNetworkAction: (() -> Unit)? = null
+    private var pendingMicrophoneAction: (() -> Unit)? = null
+    private var captureEngine: PhoneCaptureEngine? = null
+    @Volatile private var measurementInProgress = false
+    @Volatile private var measurementCancelled = false
+    @Volatile private var activeSessionId: String? = null
+    @Volatile private var operationInProgress = false
+
+    private val targets = listOf(
+        "dialogue" to "Dialogue",
+        "room" to "Room",
+        "bk" to "B&K",
+        "flat" to "Flat",
+        "olive" to "Olive",
+        "house" to "Harman"
+    )
+    private val rooms = listOf(
+        RoomChoice("Not provided", null),
+        RoomChoice("20 m³", 20.0),
+        RoomChoice("35 m³", 35.0),
+        RoomChoice("50 m³", 50.0),
+        RoomChoice("75 m³", 75.0),
+        RoomChoice("100 m³", 100.0)
+    )
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        credentialStore = PhoneCredentialStore(this)
+        val prefs = getSharedPreferences(PREFS, MODE_PRIVATE)
+        targetIndex = prefs.getInt(KEY_TARGET, 0).coerceIn(targets.indices)
+        roomIndex = prefs.getInt(KEY_ROOM, 0).coerceIn(rooms.indices)
+        setContentView(buildContent())
+
+        credentialStore.load()?.let { saved ->
+            hostField.setText(saved.host)
+            portField.setText(saved.port.toString())
+            remotePanel.visibility = View.VISIBLE
+            connectionLine.setText(R.string.phone_saved_not_connected)
+            setRemoteEnabled(true)
+            withLocalNetwork { refreshDashboard() }
+        } ?: run {
+            remotePanel.visibility = View.GONE
+            connectionLine.setText(R.string.phone_not_paired)
+            setRemoteEnabled(false)
+        }
+        refreshMeasurementChoices()
+    }
+
+    private fun buildContent(): ScrollView {
+        val scroll = ScrollView(this)
+        val column = LinearLayout(this).apply {
+            orientation = LinearLayout.VERTICAL
+            setPadding(dp(20), dp(18), dp(20), dp(24))
+            setBackgroundColor(color(R.color.cb_night))
+        }
+        scroll.addView(column)
+        column.addView(label(getString(R.string.phone_companion_title), 25f, true, R.color.cb_ink))
+        column.addView(label(getString(R.string.phone_companion_subtitle), 15f, false, R.color.cb_slate))
+        column.addView(cardText(getString(R.string.phone_capture_warning)))
+
+        val pairHeading = label(getString(R.string.phone_pair_heading), 19f, true, R.color.cb_ink)
+        column.addView(pairHeading, matchWrap(top = 16))
+        hostField = editField(getString(R.string.phone_tv_ip_hint), InputType.TYPE_CLASS_PHONE).apply {
+            contentDescription = getString(R.string.phone_tv_ip_accessibility)
+        }
+        portField = editField(getString(R.string.phone_tv_port_hint), InputType.TYPE_CLASS_NUMBER).apply {
+            contentDescription = getString(R.string.phone_tv_port_accessibility)
+        }
+        codeField = editField(getString(R.string.phone_pair_code_hint), InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS).apply {
+            filters = arrayOf(InputFilter.LengthFilter(64))
+            isSingleLine = true
+            contentDescription = getString(R.string.phone_pair_code_accessibility)
+        }
+        column.addView(hostField, matchWrap(top = 6))
+        column.addView(portField, matchWrap(top = 6))
+        column.addView(codeField, matchWrap(top = 6))
+        pairButton = actionButton(getString(R.string.phone_pair_button), primary = true)
+        connectButton = actionButton(getString(R.string.phone_connect_button), primary = false)
+        column.addView(pairButton, matchWrap(top = 8))
+        column.addView(connectButton, matchWrap(top = 6))
+        pairButton.setOnClickListener { withLocalNetwork { pairWithTv() } }
+        connectButton.setOnClickListener { withLocalNetwork { refreshDashboard() } }
+
+        connectionLine = label(getString(R.string.phone_not_paired), 15f, true, R.color.cb_signal_cyan)
+        column.addView(connectionLine, matchWrap(top = 12))
+        detailLine = label("", 14f, false, R.color.cb_slate)
+        column.addView(detailLine, matchWrap(top = 5))
+        statusLine = cardText(getString(R.string.phone_measure_ready))
+        column.addView(statusLine, matchWrap(top = 8))
+
+        remotePanel = LinearLayout(this).apply {
+            orientation = LinearLayout.VERTICAL
+            visibility = View.GONE
+        }
+        column.addView(remotePanel, matchWrap(top = 14))
+        buildRemotePanel(remotePanel)
+        return scroll
+    }
+
+    private fun buildRemotePanel(parent: LinearLayout) {
+        parent.addView(label(getString(R.string.phone_remote_heading), 20f, true, R.color.cb_ink))
+        correctionButton = actionButton(getString(R.string.phone_correction_off), primary = true)
+        correctionButton.setOnClickListener {
+            val current = dashboard ?: return@setOnClickListener
+            runControl(JSONObject().put("op", "set_enabled").put("enabled", !current.correctionEnabled))
+        }
+        parent.addView(correctionButton, matchWrap(top = 8))
+
+        parent.addView(label(getString(R.string.phone_profiles_heading), 16f, true, R.color.cb_ink), matchWrap(top = 10))
+        profileList = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL }
+        parent.addView(profileList, matchWrap(top = 4))
+
+        val modeRow = LinearLayout(this).apply {
+            orientation = LinearLayout.HORIZONTAL
+            gravity = Gravity.CENTER_VERTICAL
+        }
+        parent.addView(label(getString(R.string.phone_mode_heading), 16f, true, R.color.cb_ink), matchWrap(top = 10))
+        listOf(
+            "movie_tv" to R.string.phone_mode_movie,
+            "everyday" to R.string.phone_mode_everyday,
+            "gaming" to R.string.phone_mode_gaming
+        ).forEach { (mode, titleRes) ->
+            val button = actionButton(getString(titleRes), primary = false).apply {
+                setOnClickListener { runControl(JSONObject().put("op", "set_mode").put("mode", mode)) }
+            }
+            modeRow.addView(button, weightedWrap())
+        }
+        parent.addView(modeRow, matchWrap(top = 5))
+
+        parent.addView(label(getString(R.string.phone_measure_heading), 19f, true, R.color.cb_ink), matchWrap(top = 16))
+        parent.addView(label(getString(R.string.phone_measure_explanation), 14f, false, R.color.cb_slate), matchWrap(top = 4))
+        targetButton = actionButton("", primary = false)
+        roomButton = actionButton("", primary = false)
+        parent.addView(targetButton, matchWrap(top = 6))
+        parent.addView(roomButton, matchWrap(top = 6))
+        targetButton.setOnClickListener {
+            targetIndex = (targetIndex + 1) % targets.size
+            getSharedPreferences(PREFS, MODE_PRIVATE).edit().putInt(KEY_TARGET, targetIndex).apply()
+            refreshMeasurementChoices()
+        }
+        roomButton.setOnClickListener {
+            roomIndex = (roomIndex + 1) % rooms.size
+            getSharedPreferences(PREFS, MODE_PRIVATE).edit().putInt(KEY_ROOM, roomIndex).apply()
+            refreshMeasurementChoices()
+        }
+        measureButton = actionButton(getString(R.string.phone_measure_button), primary = true)
+        measureButton.setOnClickListener { withLocalNetwork { requestMicrophoneThenMeasure() } }
+        parent.addView(measureButton, matchWrap(top = 8))
+        measureProgress = ProgressBar(this, null, android.R.attr.progressBarStyleHorizontal).apply {
+            max = PROGRESS_MAX
+            progress = 0
+            visibility = View.GONE
+            contentDescription = getString(R.string.phone_measure_progress_accessibility)
+        }
+        parent.addView(measureProgress, matchWrap(top = 8))
+        cancelMeasureButton = actionButton(getString(R.string.phone_cancel_measure), primary = false).apply {
+            visibility = View.GONE
+            setOnClickListener { cancelCapture(sendRemote = true) }
+        }
+        parent.addView(cancelMeasureButton, matchWrap(top = 5))
+
+        revokeButton = actionButton(getString(R.string.phone_unpair_button), primary = false).apply {
+            setOnClickListener { withLocalNetwork { revokePairing() } }
+        }
+        forgetButton = actionButton(getString(R.string.phone_forget_button), primary = false).apply {
+            setOnClickListener { forgetLocally() }
+        }
+        parent.addView(revokeButton, matchWrap(top = 18))
+        parent.addView(forgetButton, matchWrap(top = 5))
+        parent.addView(label(getString(R.string.phone_forget_note), 12f, false, R.color.cb_slate), matchWrap(top = 3))
+    }
+
+    private fun pairWithTv() {
+        if (operationInProgress || measurementInProgress) return
+        val host = parsePrivateIpv4(hostField.text?.toString().orEmpty())
+        if (host == null) {
+            setStatus(getString(R.string.phone_invalid_tv_ip), error = true)
+            hostField.requestFocus()
+            return
+        }
+        val port = portField.text?.toString()?.trim()?.toIntOrNull()?.takeIf { it in 1..65535 }
+        if (port == null) {
+            setStatus(getString(R.string.phone_invalid_tv_port), error = true)
+            portField.requestFocus()
+            return
+        }
+        val pairingKey = CompanionCrypto.decodeKey(codeField.text?.toString().orEmpty(), CompanionCrypto.PAIRING_KEY_BYTES)
+        if (pairingKey == null) {
+            setStatus(getString(R.string.phone_invalid_pair_code), error = true)
+            codeField.requestFocus()
+            return
+        }
+        setOperationBusy(true)
+        setStatus(getString(R.string.phone_pairing), error = false)
+        thread(name = "CoreEqPhonePair") {
+            try {
+                val token = CompanionCrypto.randomKey()
+                val clientName = "${Build.MANUFACTURER} ${Build.MODEL}".trim().take(60).ifBlank { "Android phone" }
+                val response = CompanionClient(host, port, pairingKey).pair(pairingKey, token, clientName)
+                requireOk(response)
+                val saved = PhoneCredentials(host, port, token)
+                credentialStore.save(saved)
+                val newDashboard = loadDashboard(saved)
+                runOnUiThread {
+                    setOperationBusy(false)
+                    codeField.text?.clear()
+                    remotePanel.visibility = View.VISIBLE
+                    setStatus(getString(R.string.phone_pair_success), error = false)
+                    showDashboard(newDashboard)
+                    setRemoteEnabled(true)
+                }
+            } catch (e: Exception) {
+                runOnUiThread {
+                    setOperationBusy(false)
+                    setStatus(getString(R.string.phone_pair_failed, readableError(e)), error = true)
+                }
+            }
+        }
+    }
+
+    private fun refreshDashboard() {
+        if (operationInProgress || measurementInProgress) return
+        val credentials = credentialStore.load()
+        if (credentials == null) {
+            remotePanel.visibility = View.GONE
+            connectionLine.setText(R.string.phone_not_paired)
+            detailLine.text = ""
+            setRemoteEnabled(false)
+            setStatus(getString(R.string.phone_pair_first), error = false)
+            return
+        }
+        hostField.setText(credentials.host)
+        portField.setText(credentials.port.toString())
+        remotePanel.visibility = View.VISIBLE
+        setOperationBusy(true)
+        setStatus(getString(R.string.phone_connecting), error = false)
+        thread(name = "CoreEqPhoneStatus") {
+            try {
+                val newDashboard = loadDashboard(credentials)
+                runOnUiThread {
+                    setOperationBusy(false)
+                    showDashboard(newDashboard)
+                    setRemoteEnabled(true)
+                }
+            } catch (e: Exception) {
+                runOnUiThread {
+                    setOperationBusy(false)
+                    connectionLine.setText(R.string.phone_saved_not_connected)
+                    setRemoteEnabled(true)
+                    setStatus(getString(R.string.phone_connect_failed, readableError(e)), error = true)
+                }
+            }
+        }
+    }
+
+    private fun loadDashboard(credentials: PhoneCredentials): Dashboard {
+        val client = clientFor(credentials)
+        val status = requireOk(client.rpc(JSONObject().put("op", "status")))
+        val profilesResponse = requireOk(client.rpc(JSONObject().put("op", "profiles")))
+        val profilesArray = profilesResponse.optJSONArray("profiles")
+        val profiles = buildList {
+            if (profilesArray != null) {
+                for (i in 0 until profilesArray.length()) {
+                    val item = profilesArray.optJSONObject(i) ?: continue
+                    val id = item.optString("id", "").take(120)
+                    if (id.isBlank()) continue
+                    add(RemoteProfile(
+                        id = id,
+                        name = item.optString("name", "Profile").take(120),
+                        active = item.optBoolean("active", false),
+                        manualOnly = item.optBoolean("manual_only", false)
+                    ))
+                }
+            }
+        }
+        val outputName = status.optString("output_name", "").takeIf { it.isNotBlank() && it != "null" }
+            ?: status.optString("output_kind", "").takeIf { it.isNotBlank() && it != "null" }
+            ?: getString(R.string.phone_output_unreported)
+        return Dashboard(
+            deviceName = status.optString("device_name", "Android TV").take(100),
+            version = status.optString("app_version", "?").take(30),
+            output = outputName,
+            mode = status.optString("mode", "everyday").take(30),
+            correctionEnabled = status.optBoolean("correction_enabled", false),
+            profileName = status.optString("profile_name", "").takeIf { it.isNotBlank() && it != "null" }
+                ?: getString(R.string.phone_no_active_profile),
+            serviceStatus = status.optString("service_status", "").take(180),
+            serviceError = status.optBoolean("service_error", false),
+            profiles = profiles
+        )
+    }
+
+    private fun showDashboard(value: Dashboard) {
+        dashboard = value
+        connectionLine.text = getString(R.string.phone_connected, value.deviceName, value.version)
+        val modeTitle = when (value.mode) {
+            "movie_tv" -> getString(R.string.phone_mode_movie)
+            "gaming" -> getString(R.string.phone_mode_gaming)
+            else -> getString(R.string.phone_mode_everyday)
+        }
+        val onOff = getString(if (value.correctionEnabled) R.string.phone_state_on else R.string.phone_state_off)
+        detailLine.text = getString(
+            R.string.phone_dashboard_details,
+            value.output,
+            modeTitle,
+            onOff,
+            value.profileName,
+            value.serviceStatus.ifBlank { getString(R.string.phone_status_unknown) }
+        )
+        detailLine.setTextColor(color(if (value.serviceError) R.color.cb_warning else R.color.cb_slate))
+        correctionButton.text = getString(
+            if (value.correctionEnabled) R.string.phone_correction_on else R.string.phone_correction_off
+        )
+        correctionButton.isEnabled = !operationInProgress && !measurementInProgress
+        profileList.removeAllViews()
+        if (value.profiles.isEmpty()) {
+            profileList.addView(label(getString(R.string.phone_no_profiles), 14f, false, R.color.cb_slate))
+        } else {
+            value.profiles.forEach { profile ->
+                val title = when {
+                    profile.active && profile.manualOnly -> getString(R.string.phone_profile_active_manual, profile.name)
+                    profile.active -> getString(R.string.phone_profile_active, profile.name)
+                    profile.manualOnly -> getString(R.string.phone_profile_manual, profile.name)
+                    else -> profile.name
+                }
+                val button = actionButton(title, primary = profile.active).apply {
+                    isEnabled = !operationInProgress && !measurementInProgress
+                    setOnClickListener {
+                        runControl(JSONObject().put("op", "activate_profile").put("id", profile.id))
+                    }
+                }
+                profileList.addView(button, matchWrap(top = 4))
+            }
+        }
+        setRemoteEnabled(true)
+        refreshMeasurementChoices()
+    }
+
+    private fun runControl(request: JSONObject) {
+        if (operationInProgress || measurementInProgress) return
+        val credentials = credentialStore.load() ?: return
+        setOperationBusy(true)
+        setStatus(getString(R.string.phone_sending_command), error = false)
+        thread(name = "CoreEqPhoneControl") {
+            try {
+                val response = requireOk(clientFor(credentials).rpc(request))
+                val newDashboard = loadDashboard(credentials)
+                runOnUiThread {
+                    setOperationBusy(false)
+                    showDashboard(newDashboard)
+                    val message = response.optString("profile_name", "").takeIf { it.isNotBlank() }
+                        ?: response.optString("title", "").takeIf { it.isNotBlank() }
+                        ?: getString(R.string.phone_command_complete)
+                    setStatus(message, error = false)
+                }
+            } catch (e: Exception) {
+                runOnUiThread {
+                    setOperationBusy(false)
+                    setStatus(getString(R.string.phone_command_failed, readableError(e)), error = true)
+                }
+            }
+        }
+    }
+
+    private fun requestMicrophoneThenMeasure() {
+        if (measurementInProgress || operationInProgress) return
+        val engine = PhoneCaptureEngine(this)
+        if (!engine.hasPermission()) {
+            pendingMicrophoneAction = { startPhoneMeasurement() }
+            requestPermissions(arrayOf(Manifest.permission.RECORD_AUDIO), REQ_MICROPHONE)
+            return
+        }
+        startPhoneMeasurement()
+    }
+
+    private fun startPhoneMeasurement() {
+        if (measurementInProgress || operationInProgress) return
+        val credentials = credentialStore.load()
+        if (credentials == null) {
+            setStatus(getString(R.string.phone_pair_first), error = true)
+            return
+        }
+        val engine = PhoneCaptureEngine(this)
+        if (!engine.hasPermission()) {
+            pendingMicrophoneAction = { startPhoneMeasurement() }
+            requestPermissions(arrayOf(Manifest.permission.RECORD_AUDIO), REQ_MICROPHONE)
+            return
+        }
+        measurementInProgress = true
+        measurementCancelled = false
+        activeSessionId = null
+        captureEngine = engine
+        setMeasurementUi(true)
+        measureProgress.progress = 0
+        setStatus(getString(R.string.phone_measure_preparing), error = false)
+        val selectedTarget = targets[targetIndex]
+        val selectedRoom = rooms[roomIndex]
+        thread(name = "CoreEqPhoneMeasurement") {
+            try {
+                val recording = engine.capture(
+                    onRecordingReady = { captureInfo ->
+                        val startRequest = JSONObject()
+                            .put("op", "start_measurement")
+                            .put("target", selectedTarget.first)
+                        selectedRoom.volumeM3?.let { startRequest.put("volume_m3", it) }
+                        val response = requireOk(clientFor(credentials).rpc(startRequest))
+                        val start = PhoneCaptureStart(
+                            sessionId = response.optString("session_id", ""),
+                            captureSeconds = response.optDouble("capture_seconds", Double.NaN)
+                        )
+                        activeSessionId = start.sessionId
+                        start
+                    },
+                    onProgress = { fraction ->
+                        runOnUiThread {
+                            if (!measurementCancelled && !isDestroyed) {
+                                measureProgress.progress = (fraction * PROGRESS_MAX).roundToInt().coerceIn(0, PROGRESS_MAX)
+                                setStatus(getString(R.string.phone_measure_recording, (fraction * 100).roundToInt()), error = false)
+                            }
+                        }
+                    }
+                )
+                if (measurementCancelled) throw InterruptedException("Phone measurement cancelled.")
+                runOnUiThread {
+                    if (!isDestroyed) setStatus(getString(R.string.phone_measure_uploading), error = false)
+                }
+                val upload = JSONObject()
+                    .put("op", "upload_measurement")
+                    .put("session_id", recording.sessionId)
+                    .put("sample_rate_hz", recording.sampleRateHz)
+                    .put("pcm16_le_base64", encodePcm16Le(recording.pcm))
+                    .put("capture", recording.captureInfo)
+                val result = requireOk(clientFor(credentials).rpc(upload))
+                activeSessionId = null
+                val newDashboard = loadDashboard(credentials)
+                runOnUiThread {
+                    measurementInProgress = false
+                    captureEngine = null
+                    setMeasurementUi(false)
+                    measureProgress.progress = PROGRESS_MAX
+                    showDashboard(newDashboard)
+                    setStatus(
+                        getString(
+                            R.string.phone_measure_saved,
+                            result.optString("profile_name", "Phone measurement"),
+                            result.optDouble("snr_db", Double.NaN).takeIf { it.isFinite() }?.let { String.format(java.util.Locale.US, "%.1f", it) }
+                                ?: getString(R.string.phone_value_unreported),
+                            captureSummary(recording.captureInfo, recording.sampleRateHz)
+                        ),
+                        error = false
+                    )
+                }
+            } catch (e: Exception) {
+                val sessionId = activeSessionId
+                if (!sessionId.isNullOrBlank()) {
+                    runCatching {
+                        clientFor(credentials).rpc(JSONObject().put("op", "cancel_measurement").put("session_id", sessionId))
+                    }
+                }
+                activeSessionId = null
+                runOnUiThread {
+                    measurementInProgress = false
+                    captureEngine = null
+                    setMeasurementUi(false)
+                    measureProgress.progress = 0
+                    if (e is InterruptedException || measurementCancelled) {
+                        setStatus(getString(R.string.phone_measure_cancelled), error = false)
+                    } else {
+                        setStatus(getString(R.string.phone_measure_failed, readableError(e)), error = true)
+                    }
+                }
+            }
+        }
+    }
+
+    private fun cancelCapture(sendRemote: Boolean) {
+        if (!measurementInProgress) return
+        measurementCancelled = true
+        captureEngine?.cancel()
+        val sessionId = activeSessionId
+        if (sendRemote && !sessionId.isNullOrBlank()) {
+            val credentials = credentialStore.load()
+            if (credentials != null) {
+                thread(name = "CoreEqPhoneCancel") {
+                    runCatching {
+                        clientFor(credentials).rpc(JSONObject().put("op", "cancel_measurement").put("session_id", sessionId))
+                    }
+                }
+            }
+        }
+        setStatus(getString(R.string.phone_measure_cancelling), error = false)
+    }
+
+    private fun revokePairing() {
+        if (operationInProgress || measurementInProgress) return
+        val credentials = credentialStore.load() ?: return
+        setOperationBusy(true)
+        setStatus(getString(R.string.phone_unpairing), error = false)
+        thread(name = "CoreEqPhoneRevoke") {
+            try {
+                requireOk(clientFor(credentials).rpc(JSONObject().put("op", "revoke")))
+                credentialStore.clear()
+                runOnUiThread {
+                    dashboard = null
+                    remotePanel.visibility = View.GONE
+                    detailLine.text = ""
+                    connectionLine.setText(R.string.phone_not_paired)
+                    setOperationBusy(false)
+                    setRemoteEnabled(false)
+                    setStatus(getString(R.string.phone_unpaired), error = false)
+                }
+            } catch (e: Exception) {
+                runOnUiThread {
+                    setOperationBusy(false)
+                    setStatus(getString(R.string.phone_unpair_failed, readableError(e)), error = true)
+                }
+            }
+        }
+    }
+
+    private fun forgetLocally() {
+        if (measurementInProgress || operationInProgress) return
+        credentialStore.clear()
+        dashboard = null
+        remotePanel.visibility = View.GONE
+        connectionLine.setText(R.string.phone_not_paired)
+        detailLine.text = ""
+        setRemoteEnabled(false)
+        setStatus(getString(R.string.phone_forgotten), error = false)
+    }
+
+    private fun withLocalNetwork(action: () -> Unit) {
+        if (Build.VERSION.SDK_INT >= 37 &&
+            checkSelfPermission(Manifest.permission.ACCESS_LOCAL_NETWORK) != PackageManager.PERMISSION_GRANTED
+        ) {
+            pendingLocalNetworkAction = action
+            requestPermissions(arrayOf(Manifest.permission.ACCESS_LOCAL_NETWORK), REQ_LOCAL_NETWORK)
+            return
+        }
+        action()
+    }
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        val granted = grantResults.firstOrNull() == PackageManager.PERMISSION_GRANTED
+        when (requestCode) {
+            REQ_LOCAL_NETWORK -> {
+                val action = pendingLocalNetworkAction
+                pendingLocalNetworkAction = null
+                if (granted) action?.invoke() else setStatus(getString(R.string.phone_local_network_denied), error = true)
+            }
+            REQ_MICROPHONE -> {
+                val action = pendingMicrophoneAction
+                pendingMicrophoneAction = null
+                if (granted) action?.invoke() else setStatus(getString(R.string.phone_microphone_denied), error = true)
+            }
+        }
+    }
+
+    override fun onStop() {
+        if (measurementInProgress && !isChangingConfigurations) cancelCapture(sendRemote = true)
+        super.onStop()
+    }
+
+    override fun onDestroy() {
+        if (measurementInProgress) cancelCapture(sendRemote = true)
+        super.onDestroy()
+    }
+
+    private fun setMeasurementUi(active: Boolean) {
+        measureButton.isEnabled = !active && !operationInProgress && dashboard != null
+        targetButton.isEnabled = !active && !operationInProgress
+        roomButton.isEnabled = !active && !operationInProgress
+        cancelMeasureButton.visibility = if (active) View.VISIBLE else View.GONE
+        measureProgress.visibility = if (active) View.VISIBLE else View.GONE
+        correctionButton.isEnabled = !active && !operationInProgress && dashboard != null
+        pairButton.isEnabled = !active && !operationInProgress
+        connectButton.isEnabled = !active && !operationInProgress
+        revokeButton.isEnabled = !active && !operationInProgress && credentialStore.load() != null
+        forgetButton.isEnabled = !active && !operationInProgress && credentialStore.load() != null
+        setProfileButtonsEnabled(!active && !operationInProgress)
+    }
+
+    private fun setOperationBusy(busy: Boolean) {
+        operationInProgress = busy
+        pairButton.isEnabled = !busy && !measurementInProgress
+        connectButton.isEnabled = !busy && !measurementInProgress
+        correctionButton.isEnabled = !busy && !measurementInProgress && dashboard != null
+        revokeButton.isEnabled = !busy && !measurementInProgress && credentialStore.load() != null
+        forgetButton.isEnabled = !busy && !measurementInProgress && credentialStore.load() != null
+        targetButton.isEnabled = !busy && !measurementInProgress
+        roomButton.isEnabled = !busy && !measurementInProgress
+        measureButton.isEnabled = !busy && !measurementInProgress && dashboard != null
+        setProfileButtonsEnabled(!busy && !measurementInProgress)
+    }
+
+    private fun setRemoteEnabled(enabled: Boolean) {
+        remotePanel.visibility = if (enabled) View.VISIBLE else View.GONE
+        setOperationBusy(operationInProgress)
+        if (!enabled) {
+            pairButton.isEnabled = !operationInProgress
+            connectButton.isEnabled = !operationInProgress
+        }
+    }
+
+    private fun setProfileButtonsEnabled(enabled: Boolean) {
+        for (i in 0 until profileList.childCount) {
+            profileList.getChildAt(i).isEnabled = enabled
+        }
+    }
+
+    private fun refreshMeasurementChoices() {
+        if (!::targetButton.isInitialized) return
+        val selectedTarget = targets[targetIndex].second
+        targetButton.text = getString(R.string.phone_target_choice, selectedTarget)
+        val selectedRoom = rooms[roomIndex]
+        roomButton.text = if (selectedRoom.volumeM3 == null) {
+            getString(R.string.phone_room_choice_unknown)
+        } else {
+            getString(R.string.phone_room_choice, selectedRoom.label)
+        }
+    }
+
+    private fun setStatus(message: String, error: Boolean) {
+        statusLine.text = message
+        statusLine.setTextColor(color(if (error) R.color.cb_warning else R.color.cb_ink))
+    }
+
+    private fun captureSummary(capture: JSONObject, sampleRateHz: Int): String {
+        val device = capture.optString("capture_device_model", "").takeIf { it.isNotBlank() && it != "null" }
+            ?: getString(R.string.phone_android_device)
+        val inputName = capture.optString("input_device_name", "").takeIf { it.isNotBlank() && it != "null" }
+        val inputType = capture.optString("input_device_type", "").takeIf { it.isNotBlank() && it != "null" }
+        val input = listOfNotNull(inputName, inputType).distinct().joinToString(" / ")
+            .ifBlank { getString(R.string.phone_value_unreported) }
+        val source = capture.optString("audio_source", "").takeIf { it.isNotBlank() && it != "null" }
+            ?: getString(R.string.phone_value_unreported)
+        val processingValues = capture.optJSONArray("processing")
+        val processing = if (processingValues == null || processingValues.length() == 0) {
+            getString(R.string.phone_processing_unreported)
+        } else {
+            buildList {
+                for (index in 0 until minOf(processingValues.length(), 16)) {
+                    processingValues.optString(index, "").trim().takeIf(String::isNotEmpty)?.let(::add)
+                }
+            }.joinToString("; ").ifBlank { getString(R.string.phone_processing_unreported) }
+        }
+        return getString(R.string.phone_capture_summary, device, input, sampleRateHz, source, processing)
+    }
+
+    private fun clientFor(credentials: PhoneCredentials) =
+        CompanionClient(credentials.host, credentials.port, credentials.token)
+
+    private fun requireOk(response: JSONObject): JSONObject {
+        if (!response.optBoolean("ok", false)) {
+            throw IllegalStateException(response.optString("error", "TV did not accept the command").ifBlank { "TV did not accept the command" })
+        }
+        return response
+    }
+
+    private fun encodePcm16Le(samples: ShortArray): String {
+        val bytes = ByteArray(samples.size * 2)
+        samples.forEachIndexed { index, sample ->
+            val value = sample.toInt()
+            bytes[index * 2] = (value and 0xff).toByte()
+            bytes[index * 2 + 1] = ((value ushr 8) and 0xff).toByte()
+        }
+        return Base64.getEncoder().encodeToString(bytes)
+    }
+
+    private fun parsePrivateIpv4(raw: String): String? {
+        val pieces = raw.trim().split('.')
+        if (pieces.size != 4) return null
+        val octets = IntArray(4)
+        for (index in pieces.indices) {
+            val piece = pieces[index]
+            if (piece.isEmpty() || piece.length > 3 || piece.any { it !in '0'..'9' }) return null
+            octets[index] = piece.toIntOrNull()?.takeIf { it in 0..255 } ?: return null
+        }
+        val privateLan = octets[0] == 10 ||
+            (octets[0] == 172 && octets[1] in 16..31) ||
+            (octets[0] == 192 && octets[1] == 168)
+        if (!privateLan || octets[0] == 0 || octets[0] >= 224 || octets[3] == 0 || octets[3] == 255) return null
+        return try {
+            (InetAddress.getByAddress(ByteArray(4) { octets[it].toByte() }) as? Inet4Address)?.hostAddress
+        } catch (_: Exception) {
+            null
+        }
+    }
+
+    private fun readableError(error: Exception): String =
+        error.message?.trim()?.takeIf(String::isNotEmpty)?.take(180) ?: error.javaClass.simpleName
+
+    private fun editField(hintText: String, type: Int): EditText = EditText(this).apply {
+        hint = hintText
+        inputType = type
+        isSingleLine = true
+        setTextColor(color(R.color.cb_ink))
+        setHintTextColor(color(R.color.cb_slate))
+        setPadding(dp(12), dp(6), dp(12), dp(6))
+        setBackgroundResource(R.drawable.bg_card)
+        textSize = 16f
+    }
+
+    private fun label(textValue: String, size: Float, bold: Boolean, colorId: Int): TextView = TextView(this).apply {
+        text = textValue
+        textSize = size
+        setTextColor(color(colorId))
+        if (bold) setTypeface(typeface, android.graphics.Typeface.BOLD)
+        setPadding(0, dp(3), 0, dp(3))
+    }
+
+    private fun cardText(textValue: String): TextView = label(
+        textValue, 14f, false, R.color.cb_ink
+    ).apply {
+        setPadding(dp(12), dp(10), dp(12), dp(10))
+        setBackgroundResource(R.drawable.bg_card)
+    }
+
+    private fun actionButton(textValue: String, primary: Boolean): Button = Button(this).apply {
+        text = textValue
+        isAllCaps = false
+        textSize = 15f
+        setTextColor(color(if (primary) R.color.cta_text else R.color.ghost_text))
+        setBackgroundResource(if (primary) R.drawable.bg_cta else R.drawable.bg_ghost)
+        minimumHeight = dp(48)
+        setPadding(dp(12), dp(8), dp(12), dp(8))
+    }
+
+    private fun matchWrap(top: Int = 0): LinearLayout.LayoutParams =
+        LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT).apply {
+            if (top > 0) topMargin = dp(top)
+        }
+
+    private fun weightedWrap(): LinearLayout.LayoutParams =
+        LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f).apply {
+            marginEnd = dp(3)
+            marginStart = dp(3)
+        }
+
+    private fun color(id: Int): Int = ContextCompat.getColor(this, id)
+    private fun dp(value: Int): Int = (value * resources.displayMetrics.density).roundToInt()
+
+    companion object {
+        private const val REQ_LOCAL_NETWORK = 731
+        private const val REQ_MICROPHONE = 732
+        private const val PROGRESS_MAX = 1000
+        private const val PREFS = "core_eq_phone_measurement"
+        private const val KEY_TARGET = "target_index"
+        private const val KEY_ROOM = "room_index"
+    }
+}

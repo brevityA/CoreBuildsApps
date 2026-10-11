@@ -1,0 +1,41 @@
+[
+  {
+    "name": "TEST BASS-TREB",
+    "preamp": 0.0,
+    "parametric": true,
+    "bands": [
+      {
+        "type": 0,
+        "channels": 0,
+        "frequency": 90,
+        "q": 0.800000011920929,
+        "gain": 0.0,
+        "color": 0
+      },
+      {
+        "type": 1,
+        "channels": 0,
+        "frequency": 10000,
+        "q": 0.6000000238418579,
+        "gain": 0.0,
+        "color": 0
+      },
+      {
+        "type": 0,
+        "channels": 1,
+        "frequency": 100,
+        "q": 0.9988598823547363,
+        "gain": 7.0,
+        "color": -11206656
+      },
+      {
+        "type": 1,
+        "channels": 2,
+        "frequency": 8000,
+        "q": 0.9957138299942017,
+        "gain": 7.001068115234375,
+        "color": -16764160
+      }
+    ]
+  }
+]

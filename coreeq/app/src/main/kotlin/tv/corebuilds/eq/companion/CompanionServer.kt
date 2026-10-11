@@ -1,0 +1,801 @@
+package tv.corebuilds.eq.companion
+
+import android.content.Context
+import android.os.Build
+import android.os.Handler
+import android.os.Looper
+import android.os.SystemClock
+import android.util.Log
+import org.json.JSONArray
+import org.json.JSONObject
+import tv.corebuilds.eq.BuildConfig
+import tv.corebuilds.eq.apply.EqService
+import tv.corebuilds.eq.apply.OutputRoute
+import tv.corebuilds.eq.dsp.Correction
+import tv.corebuilds.eq.dsp.MeasurementQuality
+import tv.corebuilds.eq.dsp.MeasurementException
+import tv.corebuilds.eq.dsp.Sweep
+import tv.corebuilds.eq.dsp.SweepAnalysis
+import tv.corebuilds.eq.dsp.SweepResult
+import tv.corebuilds.eq.export.CaptureInfo
+import tv.corebuilds.eq.export.CurvePoint
+import tv.corebuilds.eq.export.MicrophoneResponsePoint
+import tv.corebuilds.eq.export.PlatformBand
+import tv.corebuilds.eq.export.Profile
+import tv.corebuilds.eq.export.ProfileStore
+import tv.corebuilds.eq.measure.StimulusPlayer
+import tv.corebuilds.eq.mode.ContentMode
+import tv.corebuilds.eq.mode.ContentModeStore
+import java.io.ByteArrayOutputStream
+import java.io.Closeable
+import java.io.InputStream
+import java.net.InetAddress
+import java.net.ServerSocket
+import java.net.Socket
+import java.nio.charset.StandardCharsets
+import java.util.Base64
+import java.util.UUID
+import java.util.concurrent.ExecutorService
+import java.util.concurrent.Executors
+import kotlin.math.abs
+import kotlin.math.log10
+
+/**
+ * On-demand Core EQ LAN endpoint. It exists only while the TV user has the
+ * Companion screen open. RPC bodies are AES-GCM encrypted with a one-time
+ * 128-bit pairing key or a 256-bit per-phone token; the HTTP path is bound as
+ * GCM additional data. Pairing expires and is rate-limited, requests are
+ * replay-checked, and TV-side revoke deletes the stored token.
+ *
+ * This is not an internet service, an ADB service, or an always-on listener.
+ */
+internal class CompanionServer(
+    context: Context,
+    private val onStatus: (String) -> Unit = {}
+) : Closeable {
+
+    private val appContext = context.applicationContext
+    private val preferences = appContext.getSharedPreferences(PREFS, Context.MODE_PRIVATE)
+    private val profileStore = ProfileStore(appContext)
+    private val modeStore = ContentModeStore(appContext)
+    private val stimulusPlayer = StimulusPlayer()
+    private val mainHandler = Handler(Looper.getMainLooper())
+    private val workers: ExecutorService = Executors.newFixedThreadPool(WORKER_COUNT)
+    private val replayedNonces = object : LinkedHashSet<String>() {}
+    private val nonceLock = Any()
+    private val server = ServerSocket()
+    @Volatile private var running = false
+    @Volatile var port: Int = 0
+        private set
+    @Volatile private var pairingKey: ByteArray? = null
+    @Volatile private var pairingExpiresElapsed: Long = 0L
+    @Volatile private var pairingAttempts: Int = 0
+    @Volatile private var pairingLocked = false
+    @Volatile private var measurement: MeasurementSession? = null
+    @Volatile private var measurementTimeout: Runnable? = null
+    @Volatile private var lastError: String? = null
+
+    private data class MeasurementSession(
+        val id: String,
+        val target: String,
+        val volumeM3: Double?,
+        val startedElapsedMs: Long,
+        @Volatile var output: OutputRoute.Output?
+    )
+
+    fun start(): Int {
+        if (running) return port
+        server.reuseAddress = true
+        server.bind(java.net.InetSocketAddress(InetAddress.getByName("0.0.0.0"), 0), BACKLOG)
+        port = server.localPort
+        running = true
+        Thread({ acceptLoop() }, "CoreEqCompanionServer").apply { isDaemon = true; start() }
+        updateStatus("Phone link ready on port $port. Pairing is off until you start it here.")
+        return port
+    }
+
+    /** Return a fresh, high-entropy code for the TV screen; a previous code is immediately invalid. */
+    @Synchronized
+    fun startPairing(): String {
+        check(running) { "Companion server is not running" }
+        val key = CompanionCrypto.randomKey(CompanionCrypto.PAIRING_KEY_BYTES)
+        pairingKey = key
+        pairingExpiresElapsed = SystemClock.elapsedRealtime() + PAIRING_WINDOW_MS
+        pairingAttempts = 0
+        pairingLocked = false
+        clearReplayCache()
+        updateStatus("Pairing code is active for two minutes. It is shown only on this TV.")
+        return CompanionCrypto.encodeKey(key)
+    }
+
+    @Synchronized
+    fun stopPairing() {
+        pairingKey = null
+        pairingExpiresElapsed = 0L
+        pairingAttempts = 0
+        pairingLocked = false
+        clearReplayCache()
+        updateStatus(if (isPaired()) "Paired phone retained; new pairings are off." else "Pairing stopped.")
+    }
+
+    fun isPairing(): Boolean = pairingKey != null &&
+        SystemClock.elapsedRealtime() < pairingExpiresElapsed && !pairingLocked
+
+    fun isPaired(): Boolean = storedToken() != null
+
+    fun pairedClientName(): String? = preferences.getString(KEY_CLIENT_NAME, null)
+
+    @Synchronized
+    fun revokePairing() {
+        preferences.edit().remove(KEY_TOKEN).remove(KEY_CLIENT_NAME).remove(KEY_PAIRED_AT).apply()
+        clearReplayCache()
+        if (measurement != null) {
+            measurement = null
+            lastError = null
+            clearMeasurementTimeout()
+            stimulusPlayer.stop()
+            EqService.send(appContext, EqService.ACTION_RESUME)
+        }
+        updateStatus("Phone pairing revoked.")
+    }
+
+    private fun acceptLoop() {
+        while (running) {
+            try {
+                val socket = server.accept()
+                if (!isPrivateLanAddress(socket.inetAddress)) {
+                    socket.close()
+                    continue
+                }
+                socket.soTimeout = SOCKET_TIMEOUT_MS
+                workers.execute { handleSocket(socket) }
+            } catch (e: Exception) {
+                if (running) {
+                    Log.w(TAG, "Local companion connection failed", e)
+                    updateStatus("A phone connection failed: ${e.javaClass.simpleName}.")
+                }
+            }
+        }
+    }
+
+    private fun isPrivateLanAddress(address: InetAddress): Boolean {
+        val bytes = (address as? java.net.Inet4Address)?.address ?: return false
+        val first = bytes[0].toInt() and 0xff
+        val second = bytes[1].toInt() and 0xff
+        return first == 10 ||
+            (first == 172 && second in 16..31) ||
+            (first == 192 && second == 168)
+    }
+
+    private data class HttpRequest(val method: String, val path: String, val body: ByteArray)
+    private data class HttpResponse(val status: Int, val body: ByteArray)
+
+    private fun handleSocket(socket: Socket) {
+        socket.use { client ->
+            try {
+                val request = readRequest(client.getInputStream())
+                val response = dispatchHttp(request)
+                val output = client.getOutputStream()
+                val reason = when (response.status) {
+                    200 -> "OK"
+                    400 -> "Bad Request"
+                    403 -> "Forbidden"
+                    404 -> "Not Found"
+                    409 -> "Conflict"
+                    405 -> "Method Not Allowed"
+                    413 -> "Payload Too Large"
+                    429 -> "Too Many Requests"
+                    500 -> "Internal Server Error"
+                    else -> "Unauthorized"
+                }
+                val header = "HTTP/1.1 ${response.status} $reason\r\n" +
+                    "Content-Type: application/json; charset=utf-8\r\n" +
+                    "Content-Length: ${response.body.size}\r\n" +
+                    "Cache-Control: no-store\r\n" +
+                    "Connection: close\r\n\r\n"
+                output.write(header.toByteArray(StandardCharsets.US_ASCII))
+                output.write(response.body)
+                output.flush()
+            } catch (e: RequestTooLargeException) {
+                writeError(client, 413, "Request too large")
+            } catch (e: Exception) {
+                Log.w(TAG, "Companion request rejected", e)
+                try {
+                    writeError(client, 400, "Invalid request")
+                } catch (_: Exception) {
+                    // The socket may already be gone.
+                }
+            }
+        }
+    }
+
+    private fun writeError(socket: Socket, status: Int, message: String) {
+        val body = JSONObject().put("error", message).toString().toByteArray(StandardCharsets.UTF_8)
+        val reason = if (status == 413) "Payload Too Large" else "Bad Request"
+        val header = "HTTP/1.1 $status $reason\r\nContent-Type: application/json; charset=utf-8\r\n" +
+            "Content-Length: ${body.size}\r\nCache-Control: no-store\r\nConnection: close\r\n\r\n"
+        socket.getOutputStream().apply {
+            write(header.toByteArray(StandardCharsets.US_ASCII))
+            write(body)
+            flush()
+        }
+    }
+
+    private fun readRequest(input: InputStream): HttpRequest {
+        val headers = ByteArrayOutputStream()
+        var state = 0
+        while (headers.size() < MAX_HEADER_BYTES && state < 4) {
+            val value = input.read()
+            if (value < 0) throw IllegalArgumentException("Connection closed before headers")
+            headers.write(value)
+            state = when {
+                state == 0 && value == '\r'.code -> 1
+                state == 1 && value == '\n'.code -> 2
+                state == 2 && value == '\r'.code -> 3
+                state == 3 && value == '\n'.code -> 4
+                value == '\r'.code -> 1
+                else -> 0
+            }
+        }
+        if (state != 4) throw IllegalArgumentException("HTTP header too large or incomplete")
+        val lines = String(headers.toByteArray(), StandardCharsets.US_ASCII).split("\r\n")
+        val requestLine = lines.firstOrNull()?.split(' ') ?: throw IllegalArgumentException("Missing request line")
+        if (requestLine.size < 2) throw IllegalArgumentException("Invalid request line")
+        val contentLength = lines.drop(1).mapNotNull { line ->
+            val separator = line.indexOf(':')
+            if (separator <= 0) null else line.substring(0, separator).trim().lowercase()
+                .takeIf { it == "content-length" }?.let { line.substring(separator + 1).trim().toIntOrNull() }
+        }.firstOrNull() ?: 0
+        if (contentLength < 0 || contentLength > MAX_BODY_BYTES) throw RequestTooLargeException()
+        val body = ByteArray(contentLength)
+        var filled = 0
+        while (filled < contentLength) {
+            val count = input.read(body, filled, contentLength - filled)
+            if (count < 0) throw IllegalArgumentException("Truncated request body")
+            filled += count
+        }
+        return HttpRequest(requestLine[0], requestLine[1].substringBefore('?'), body)
+    }
+
+    private fun dispatchHttp(request: HttpRequest): HttpResponse {
+        if (request.method != "POST") return plain(405, "POST required")
+        return when (request.path) {
+            PAIR_PATH -> pair(request.body)
+            RPC_PATH -> rpc(request.body)
+            else -> plain(404, "Unknown endpoint")
+        }
+    }
+
+    @Synchronized
+    private fun pair(envelope: ByteArray): HttpResponse {
+        val secret = pairingKey
+        if (secret == null || pairingLocked || SystemClock.elapsedRealtime() >= pairingExpiresElapsed) {
+            pairingKey = null
+            return plain(403, "Pairing is not open")
+        }
+        return try {
+            if (!rememberNonce(envelope)) return plain(409, "Request already used")
+            val request = CompanionCrypto.decryptJson(secret, PAIR_PATH, envelope)
+            if (request.optString("op") != "pair") return plain(400, "Invalid pairing request")
+            val token = Base64.getDecoder().decode(request.getString("token"))
+            if (token.size != CompanionCrypto.TOKEN_BYTES) return plain(400, "Invalid pairing token")
+            val client = request.optString("client_name", "Android phone").trim().take(60).ifBlank { "Android phone" }
+            preferences.edit()
+                .putString(KEY_TOKEN, Base64.getEncoder().encodeToString(token))
+                .putString(KEY_CLIENT_NAME, client)
+                .putLong(KEY_PAIRED_AT, System.currentTimeMillis())
+                .apply()
+            pairingKey = null // one pairing code can authorize one phone once
+            pairingExpiresElapsed = 0L
+            pairingAttempts = 0
+            clearReplayCache()
+            val response = CompanionCrypto.encryptJson(secret, PAIR_PATH, JSONObject().put("ok", true))
+            updateStatus("Paired to $client. Close this screen or revoke to end access.")
+            HttpResponse(200, response)
+        } catch (e: Exception) {
+            pairingAttempts++
+            Log.i(TAG, "Pairing attempt rejected (${pairingAttempts.coerceAtMost(MAX_PAIR_ATTEMPTS)}/$MAX_PAIR_ATTEMPTS)")
+            if (pairingAttempts >= MAX_PAIR_ATTEMPTS) {
+                pairingLocked = true
+                pairingKey = null
+                pairingExpiresElapsed = 0L
+                updateStatus("Pairing closed after too many incorrect codes. Start pairing again on the TV.")
+            }
+            plain(403, "Pairing code not accepted")
+        }
+    }
+
+    private fun rpc(envelope: ByteArray): HttpResponse {
+        val token = storedToken() ?: return plain(403, "Pair this phone on the TV first")
+        return try {
+            if (!rememberNonce(envelope)) return plain(409, "Request already used")
+            val request = CompanionCrypto.decryptJson(token, RPC_PATH, envelope)
+            val sentAt = request.optLong("sent_at_ms", 0L)
+            if (sentAt == 0L || abs(System.currentTimeMillis() - sentAt) > REQUEST_MAX_AGE_MS) {
+                return plain(409, "Request expired; reconnect and try again")
+            }
+            val response = handleRpc(request)
+            val encrypted = CompanionCrypto.encryptJson(token, RPC_PATH, response)
+            HttpResponse(200, encrypted)
+        } catch (e: Exception) {
+            Log.i(TAG, "Authenticated RPC rejected: ${e.javaClass.simpleName}")
+            plain(403, "Request not accepted")
+        }
+    }
+
+    private fun handleRpc(request: JSONObject): JSONObject = try {
+        when (request.optString("op")) {
+            "status" -> statusResponse()
+            "profiles" -> profilesResponse()
+            "activate_profile" -> activateProfile(request.getString("id"))
+            "set_enabled" -> setEnabled(request.getBoolean("enabled"))
+            "set_mode" -> setMode(request.getString("mode"))
+            "start_measurement" -> startMeasurement(request)
+            "upload_measurement" -> uploadMeasurement(request)
+            "cancel_measurement" -> cancelMeasurement(request)
+            "revoke" -> {
+                val response = JSONObject().put("ok", true)
+                revokePairing()
+                response
+            }
+            else -> JSONObject().put("ok", false).put("error", "Unknown Core EQ command")
+        }
+    } catch (e: MeasurementException) {
+        failMeasurement(e.message ?: "The measurement could not be trusted.")
+        JSONObject().put("ok", false).put("error", e.message ?: "The measurement could not be trusted.")
+    } catch (e: Exception) {
+        Log.w(TAG, "Core EQ companion command failed", e)
+        JSONObject().put("ok", false).put("error", (e.message ?: "Command failed").take(180))
+    }
+
+    private fun statusResponse(): JSONObject {
+        val output = OutputRoute.current(appContext)
+        val profile = profileStore.getActiveProfile()
+        val status = profileStore.status()
+        return JSONObject()
+            .put("ok", true)
+            .put("device_name", "${Build.MANUFACTURER} ${Build.MODEL}".trim())
+            .put("app_version", BuildConfig.VERSION_NAME)
+            .put("output_kind", output?.kind ?: JSONObject.NULL)
+            .put("output_name", output?.name ?: JSONObject.NULL)
+            .put("correction_enabled", profileStore.correctionEnabled)
+            .put("profile_id", profile?.id ?: JSONObject.NULL)
+            .put("profile_name", profile?.name ?: JSONObject.NULL)
+            .put("mode", modeStore.currentDecision().mode.key)
+            .put("service_status", status?.message ?: "No status reported")
+            .put("service_error", status?.isError ?: false)
+            .put("paired_client", pairedClientName() ?: "")
+    }
+
+    private fun profilesResponse(): JSONObject {
+        val chosen = profileStore.chosenId()
+        val profiles = JSONArray()
+        profileStore.getAllProfiles().take(MAX_PROFILES).forEach { profile ->
+            profiles.put(JSONObject()
+                .put("id", profile.id)
+                .put("name", profile.name)
+                .put("output_kind", profile.outputKind ?: "unknown")
+                .put("output_name", profile.outputName ?: "")
+                .put("active", profile.id == chosen)
+                .put("manual_only", profile.manualOnly))
+        }
+        return JSONObject().put("ok", true).put("profiles", profiles)
+    }
+
+    @Synchronized
+    private fun activateProfile(id: String): JSONObject {
+        check(measurement == null) { "TV controls are paused during a phone measurement." }
+        val profile = profileStore.getAllProfiles().firstOrNull { it.id == id }
+            ?: return JSONObject().put("ok", false).put("error", "That profile no longer exists on the TV")
+        profileStore.setActiveProfile(profile.id)
+        EqService.send(appContext, EqService.ACTION_REAPPLY)
+        updateStatus("Phone selected ${profile.name}.")
+        return JSONObject().put("ok", true).put("profile_id", profile.id).put("profile_name", profile.name)
+    }
+
+    @Synchronized
+    private fun setEnabled(enabled: Boolean): JSONObject {
+        check(measurement == null) { "TV controls are paused during a phone measurement." }
+        if (enabled) {
+            val refused = EqService.enable(appContext)
+            if (refused != null) return JSONObject().put("ok", false).put("error", refused)
+        } else {
+            EqService.disable(appContext)
+        }
+        updateStatus(if (enabled) "Correction enabled from the phone." else "Correction turned off from the phone.")
+        return JSONObject().put("ok", true).put("correction_enabled", profileStore.correctionEnabled)
+    }
+
+    @Synchronized
+    private fun setMode(key: String): JSONObject {
+        check(measurement == null) { "TV controls are paused during a phone measurement." }
+        val mode = ContentMode.entries.firstOrNull { it.key == key }
+            ?: return JSONObject().put("ok", false).put("error", "Unknown listening mode")
+        modeStore.selectMode(mode)
+        EqService.send(appContext, EqService.ACTION_REAPPLY)
+        updateStatus("Phone selected ${mode.title} mode.")
+        return JSONObject().put("ok", true).put("mode", mode.key).put("title", mode.title)
+    }
+
+    private fun startMeasurement(request: JSONObject): JSONObject {
+        check(running) { "Local phone link is stopped." }
+        val target = request.optString("target", "dialogue")
+        if (target !in SUPPORTED_TARGETS) throw MeasurementException("Choose a supported target first.")
+        val room = if (request.has("volume_m3") && !request.isNull("volume_m3")) request.optDouble("volume_m3", Double.NaN) else null
+        if (room != null && (!room.isFinite() || room !in MIN_ROOM_VOLUME_M3..MAX_ROOM_VOLUME_M3)) {
+            throw MeasurementException("Room size is outside the supported range.")
+        }
+        synchronized(this) {
+            val prior = measurement
+            if (prior != null && SystemClock.elapsedRealtime() - prior.startedElapsedMs < MEASUREMENT_TIMEOUT_MS) {
+                throw MeasurementException("A phone measurement is already waiting for its capture.")
+            }
+            val id = UUID.randomUUID().toString()
+            val session = MeasurementSession(id, target, room, SystemClock.elapsedRealtime(), OutputRoute.current(appContext))
+            measurement = session
+            lastError = null
+            // Do not let the correction being measured colour its own sweep.
+            EqService.send(appContext, EqService.ACTION_SUSPEND)
+            try {
+                // The phone is already recording before it sends this RPC. Keep
+                // the same half-second acoustic lead as the TV's own capture
+                // screen so AudioTrack setup does not eat the sweep tail.
+                Thread.sleep(CAPTURE_LEAD_MS)
+                check(running && measurement?.id == id) { "Measurement stopped before playback started" }
+                stimulusPlayer.playSweep(
+                    onError = { message ->
+                        if (measurement?.id == id) {
+                            lastError = message
+                            updateStatus(message)
+                        }
+                    },
+                    onRouted = { device ->
+                        if (measurement?.id == id) {
+                            session.output = OutputRoute.tag(session.output, device?.type, device?.productName?.toString())
+                            updateStatus("Playing the calibration sweep to ${session.output?.name ?: "the TV audio output"}.")
+                        }
+                    }
+                )
+                scheduleMeasurementTimeout(session)
+            } catch (e: Exception) {
+                if (measurement?.id == id) measurement = null
+                clearMeasurementTimeout()
+                stimulusPlayer.stop()
+                EqService.send(appContext, EqService.ACTION_RESUME)
+                throw e
+            }
+            updateStatus("The phone is recording; the TV has started the calibration sweep.")
+            return JSONObject()
+                .put("ok", true)
+                .put("session_id", id)
+                .put("capture_seconds", CAPTURE_LEAD_SECONDS + Sweep.STIMULUS_SECONDS + SweepAnalysis.TAIL_SECONDS)
+                .put("stimulus_seconds", Sweep.STIMULUS_SECONDS)
+        }
+    }
+
+    @Synchronized
+    private fun uploadMeasurement(request: JSONObject): JSONObject {
+        val session = measurement ?: throw MeasurementException("No phone measurement is waiting on the TV.")
+        val sessionId = request.optString("session_id", "")
+        if (sessionId != session.id) throw MeasurementException("That measurement session expired; start a new one.")
+        if (SystemClock.elapsedRealtime() - session.startedElapsedMs > MEASUREMENT_TIMEOUT_MS) {
+            measurement = null
+            throw MeasurementException("The phone capture arrived too late. Start the measurement again.")
+        }
+        lastError?.let { throw MeasurementException(it) }
+        val rate = request.optInt("sample_rate_hz", 0)
+        if (rate !in SUPPORTED_SAMPLE_RATES) throw MeasurementException("The phone reported an unsupported microphone sample rate.")
+        val pcmText = request.optString("pcm16_le_base64", "")
+        if (pcmText.length > MAX_PCM_BASE64_CHARS) throw MeasurementException("The phone recording is too large to accept.")
+        val pcm = try {
+            Base64.getDecoder().decode(pcmText)
+        } catch (_: IllegalArgumentException) {
+            throw MeasurementException("The phone recording was not valid PCM audio.")
+        }
+        val minimumBytes = (rate * MIN_CAPTURE_SECONDS * 2.0).toInt()
+        val maximumBytes = (rate * MAX_CAPTURE_SECONDS * 2.0).toInt()
+        if (pcm.size < minimumBytes || pcm.size > maximumBytes || pcm.size % 2 != 0) {
+            throw MeasurementException("The phone recording length does not include a complete sweep and decay tail.")
+        }
+        val samples = DoubleArray(pcm.size / 2) { i ->
+            val value = (pcm[i * 2].toInt() and 0xff) or (pcm[i * 2 + 1].toInt() shl 8)
+            value.toShort().toDouble() / Short.MAX_VALUE
+        }
+        var peak = 0.0
+        for (sample in samples) peak = maxOf(peak, abs(sample))
+        val peakDbfs = 20.0 * log10(maxOf(peak, 1e-9))
+        if (peakDbfs > CLIP_DBFS) {
+            throw MeasurementException("The phone microphone clipped (${String.format(java.util.Locale.US, "%.1f", peakDbfs)} dBFS). Lower the TV volume and measure again.")
+        }
+        val captureInfo = parseCaptureInfo(request.optJSONObject("capture"), rate)
+        val result = try {
+            SweepAnalysis.analyze(samples, rate, session.target, session.volumeM3)
+        } catch (e: MeasurementException) {
+            throw e
+        } catch (e: Exception) {
+            Log.e(TAG, "Phone capture analysis failed", e)
+            throw MeasurementException("Analysis failed: ${e.javaClass.simpleName}.")
+        }
+        try {
+            stimulusPlayer.stop()
+            val output = session.output
+            val now = System.currentTimeMillis()
+            val profile = profileFromMeasurement(result, session, output, captureInfo, samples.size.toDouble() / rate, now)
+            profileStore.saveProfile(profile, setAsActive = true)
+            updateStatus("Phone measurement saved as ${profile.name}.")
+            return JSONObject()
+                .put("ok", true)
+                .put("profile_id", profile.id)
+                .put("profile_name", profile.name)
+                .put("snr_db", result.snrDb)
+                .put("quality_score", MeasurementQuality.score(result))
+                .put("output_kind", profile.outputKind)
+                .put("output_name", profile.outputName ?: "")
+        } finally {
+            measurement = null
+            lastError = null
+            clearMeasurementTimeout()
+            // Resume applies the just-saved profile (or the previous one if
+            // saving failed) and clears the measurement suspension.
+            EqService.send(appContext, EqService.ACTION_RESUME)
+        }
+    }
+
+    private fun profileFromMeasurement(
+        result: SweepResult,
+        session: MeasurementSession,
+        output: OutputRoute.Output?,
+        captureInfo: CaptureInfo,
+        captureSeconds: Double,
+        now: Long
+    ): Profile {
+        val displayBandsHz = doubleArrayOf(60.0, 230.0, 910.0, 3_600.0, 14_000.0)
+        val platformBands = Correction.collapseToBands(
+            displayBandsHz,
+            { hz -> interpolate(hz, result.centresHz, result.correctionDb) },
+            -1500,
+            1500
+        ).map { PlatformBand(it.first, it.second) }
+        val baseName = "Phone measurement · ${java.text.DateFormat.getDateTimeInstance(java.text.DateFormat.MEDIUM, java.text.DateFormat.SHORT).format(java.util.Date(now))}"
+        val outputName = output?.name
+        return Profile(
+            id = "profile-$now",
+            name = if (outputName != null) "$baseName · $outputName" else baseName,
+            timestampMs = now,
+            target = session.target,
+            micType = captureInfo.captureDeviceModel?.let { "$it microphone" } ?: "phone microphone",
+            captureInfo = captureInfo,
+            deviceName = "${Build.MANUFACTURER} ${Build.MODEL}".trim(),
+            stimulus = "sweep_${Sweep.SECONDS.toInt()}s_phone_capture",
+            captureSeconds = captureSeconds,
+            volumeM3 = session.volumeM3,
+            rt60Seconds = result.rt60Seconds,
+            schroederHz = result.schroederHz,
+            transitionHz = result.transitionHz,
+            rolloffHz = result.floorHz,
+            snrDb = result.snrDb,
+            qualityScore = MeasurementQuality.score(result),
+            nullsUntouchedHz = result.centresHz.indices.filter { result.nullMask[it] }.map { result.centresHz[it] },
+            preampDb = result.preampDb,
+            filters = result.filters,
+            platformBands = platformBands,
+            curve = result.centresHz.indices.map { index ->
+                CurvePoint(result.centresHz[index], result.measuredDb[index], result.correctionDb[index])
+            },
+            outputKind = OutputRoute.keyFor(output),
+            outputName = outputName,
+            measurementNotes = listOf(
+                "Phone microphone capture: device response and Android audio processing may vary by model; Android microphone metadata is stored, not applied as calibration."
+            )
+        )
+    }
+
+    private fun parseCaptureInfo(value: JSONObject?, sampleRate: Int): CaptureInfo {
+        val capture = value ?: JSONObject()
+        val descriptions = readStrings(capture.optJSONArray("microphone_descriptions"))
+        val processing = readStrings(capture.optJSONArray("processing"))
+        val points = mutableListOf<MicrophoneResponsePoint>()
+        capture.optJSONArray("microphone_frequency_response")?.let { array ->
+            for (index in 0 until minOf(array.length(), MAX_RESPONSE_POINTS)) {
+                val point = array.optJSONObject(index) ?: continue
+                val hz = point.optDouble("frequency_hz", Double.NaN)
+                val db = point.optDouble("response_db", Double.NaN)
+                val label = point.optString("microphone", "phone microphone").take(80)
+                if (hz > 0.0 && hz.isFinite() && db.isFinite()) points += MicrophoneResponsePoint(label, hz, db)
+            }
+        }
+        return CaptureInfo(
+            requestedSampleRateHz = capture.optInt("requested_sample_rate_hz", sampleRate).takeIf { it > 0 },
+            inputSampleRateHz = sampleRate,
+            analysisSampleRateHz = sampleRate,
+            audioSource = capture.optString("audio_source", "VOICE_RECOGNITION").take(40),
+            inputDeviceName = capture.optString("input_device_name", "").takeIf { it.isNotBlank() && it != "null" },
+            inputDeviceType = capture.optString("input_device_type", "").takeIf { it.isNotBlank() && it != "null" },
+            activeMicrophoneCount = capture.optInt("active_microphone_count", -1).takeIf { it >= 0 },
+            captureDeviceModel = capture.optString("capture_device_model", "Android phone microphone").take(80),
+            captureOsVersion = capture.optString("capture_os_version", "").takeIf { it.isNotBlank() }?.take(40),
+            microphoneDescriptions = descriptions,
+            processing = processing,
+            unprocessedAudioSourceSupported = if (capture.has("unprocessed_audio_source_supported")) {
+                when (capture.opt("unprocessed_audio_source_supported")) {
+                    true -> true
+                    false -> false
+                    else -> null
+                }
+            } else null,
+            microphoneResponse = points
+        )
+    }
+
+    private fun readStrings(array: JSONArray?): List<String> = buildList {
+        if (array == null) return@buildList
+        for (index in 0 until minOf(array.length(), MAX_METADATA_STRINGS)) {
+            val text = array.optString(index, "").trim().take(120)
+            if (text.isNotEmpty()) add(text)
+        }
+    }
+
+    private fun interpolate(hz: Double, frequencies: DoubleArray, values: DoubleArray): Double {
+        if (frequencies.isEmpty() || hz < frequencies.first() || hz > frequencies.last()) return 0.0
+        for (index in 0 until frequencies.lastIndex) {
+            val a = frequencies[index]
+            val b = frequencies[index + 1]
+            if (hz in a..b) {
+                val t = kotlin.math.ln(hz / a) / kotlin.math.ln(b / a)
+                return values[index] + t * (values[index + 1] - values[index])
+            }
+        }
+        return values.last()
+    }
+
+    @Synchronized
+    private fun cancelMeasurement(request: JSONObject): JSONObject {
+        val session = measurement ?: return JSONObject().put("ok", true).put("cancelled", false)
+        if (request.optString("session_id") != session.id) return JSONObject().put("ok", false).put("error", "Measurement session does not match")
+        stimulusPlayer.stop()
+        measurement = null
+        lastError = null
+        clearMeasurementTimeout()
+        EqService.send(appContext, EqService.ACTION_RESUME)
+        updateStatus("Phone measurement cancelled; nothing was saved.")
+        return JSONObject().put("ok", true).put("cancelled", true)
+    }
+
+    private fun scheduleMeasurementTimeout(session: MeasurementSession) {
+        clearMeasurementTimeout()
+        val task = object : Runnable {
+            override fun run() {
+                val current = measurement
+                if (current?.id != session.id) return
+                val remaining = MEASUREMENT_TIMEOUT_MS - (SystemClock.elapsedRealtime() - current.startedElapsedMs)
+                if (remaining <= 0L) {
+                    failMeasurement("Phone measurement timed out; the sweep stopped and correction resumed.")
+                } else {
+                    mainHandler.postDelayed(this, remaining)
+                }
+            }
+        }
+        measurementTimeout = task
+        mainHandler.postDelayed(task, MEASUREMENT_TIMEOUT_MS)
+    }
+
+    private fun clearMeasurementTimeout() {
+        measurementTimeout?.let(mainHandler::removeCallbacks)
+        measurementTimeout = null
+    }
+
+    @Synchronized
+    private fun failMeasurement(message: String) {
+        stimulusPlayer.stop()
+        measurement = null
+        lastError = null
+        clearMeasurementTimeout()
+        EqService.send(appContext, EqService.ACTION_RESUME)
+        updateStatus(message)
+    }
+
+    private fun statusString(): String = when {
+        !running -> "Local phone link is stopped."
+        isPaired() -> "Paired to ${pairedClientName() ?: "Android phone"}; connection is local-only while this screen remains open."
+        else -> "Open Core EQ Companion on the phone and enter this TV's IP, port and temporary pairing code."
+    }
+
+    private fun updateStatus(message: String) {
+        mainHandler.post { onStatus(message) }
+    }
+
+    private fun storedToken(): ByteArray? = try {
+        preferences.getString(KEY_TOKEN, null)?.let { Base64.getDecoder().decode(it) }
+            ?.takeIf { it.size == CompanionCrypto.TOKEN_BYTES }
+    } catch (_: Exception) {
+        null
+    }
+
+    private fun rememberNonce(envelope: ByteArray): Boolean {
+        return try {
+            val nonce = JSONObject(String(envelope, StandardCharsets.UTF_8)).getString("nonce")
+            synchronized(nonceLock) {
+                if (nonce in replayedNonces) false else {
+                    replayedNonces += nonce
+                    while (replayedNonces.size > MAX_REPLAYED_NONCES) {
+                        replayedNonces.iterator().let { iterator -> if (iterator.hasNext()) { iterator.next(); iterator.remove() } }
+                    }
+                    true
+                }
+            }
+        } catch (_: Exception) {
+            false
+        }
+    }
+
+    private fun clearReplayCache() {
+        synchronized(nonceLock) { replayedNonces.clear() }
+    }
+
+    private fun plain(status: Int, message: String): HttpResponse =
+        HttpResponse(status, JSONObject().put("error", message).toString().toByteArray(StandardCharsets.UTF_8))
+
+    override fun close() {
+        if (!running) {
+            try { server.close() } catch (_: Exception) { }
+            return
+        }
+        running = false
+        try {
+            server.close()
+        } catch (_: Exception) {
+            // Already closed.
+        }
+        synchronized(this) {
+            pairingKey = null
+            pairingExpiresElapsed = 0L
+            val hadMeasurement = measurement != null
+            measurement = null
+            lastError = null
+            clearMeasurementTimeout()
+            try {
+                stimulusPlayer.stop()
+            } catch (e: RuntimeException) {
+                Log.w(TAG, "Could not stop the phone-measurement stimulus", e)
+            }
+            if (hadMeasurement) EqService.send(appContext, EqService.ACTION_RESUME)
+        }
+        workers.shutdownNow()
+        clearReplayCache()
+    }
+
+    private class RequestTooLargeException : RuntimeException()
+
+    companion object {
+        const val PAIR_PATH = "/v1/pair"
+        const val RPC_PATH = "/v1/rpc"
+        private const val PREFS = "core_eq_companion"
+        private const val KEY_TOKEN = "paired_phone_token"
+        private const val KEY_CLIENT_NAME = "paired_phone_name"
+        private const val KEY_PAIRED_AT = "paired_phone_at"
+        private const val BACKLOG = 8
+        private const val WORKER_COUNT = 4
+        private const val SOCKET_TIMEOUT_MS = 20_000
+        private const val MAX_HEADER_BYTES = 8192
+        private const val MAX_BODY_BYTES = 3 * 1024 * 1024
+        private const val MAX_PCM_BASE64_CHARS = 2_400_000
+        private const val MAX_PROFILES = 100
+        private const val MAX_REPLAYED_NONCES = 2048
+        private const val MAX_PAIR_ATTEMPTS = 5
+        private const val PAIRING_WINDOW_MS = 120_000L
+        private const val REQUEST_MAX_AGE_MS = 120_000L
+        private const val MEASUREMENT_TIMEOUT_MS = 90_000L
+        private const val CAPTURE_LEAD_SECONDS = 0.5
+        private const val CAPTURE_LEAD_MS = 500L
+        private const val MIN_CAPTURE_SECONDS = 8.0
+        private const val MAX_CAPTURE_SECONDS = 30.0
+        private const val CLIP_DBFS = -0.5
+        private const val MIN_ROOM_VOLUME_M3 = 8.0
+        private const val MAX_ROOM_VOLUME_M3 = 500.0
+        private const val MAX_METADATA_STRINGS = 16
+        private const val MAX_RESPONSE_POINTS = 256
+        private val SUPPORTED_TARGETS = setOf("dialogue", "room", "bk", "flat", "olive", "house")
+        private val SUPPORTED_SAMPLE_RATES = setOf(16_000, 44_100, 48_000)
+        private const val TAG = "CoreEqCompanion"
+    }
+}

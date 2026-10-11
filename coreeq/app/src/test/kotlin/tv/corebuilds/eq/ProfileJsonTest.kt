@@ -1,11 +1,16 @@
 package tv.corebuilds.eq
 
+import org.json.JSONArray
 import org.json.JSONObject
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNull
+import org.junit.Assert.assertTrue
 import org.junit.Test
+import tv.corebuilds.eq.export.CaptureInfo
 import tv.corebuilds.eq.export.CurvePoint
 import tv.corebuilds.eq.export.Formats
+import tv.corebuilds.eq.export.MicrophoneResponsePoint
 import tv.corebuilds.eq.export.Profile
 import tv.corebuilds.eq.export.ProfileStore
 
@@ -59,5 +64,59 @@ class ProfileJsonTest {
             base.put("quality_score", bad)
             assertNull("quality_score = $bad", ProfileStore.parseProfile(base).qualityScore)
         }
+    }
+
+    @Test
+    fun `capture provenance including Android mic response survives a backup round trip`() {
+        val capture = CaptureInfo(
+            requestedSampleRateHz = 48_000,
+            inputSampleRateHz = 44_100,
+            analysisSampleRateHz = 16_000,
+            audioSource = "VOICE_RECOGNITION",
+            inputDeviceName = "TV remote microphone",
+            inputDeviceType = "AUDIO_DEVICE_IN_REMOTE_SUBMIX",
+            activeMicrophoneCount = 1,
+            captureDeviceModel = "Example Phone 12",
+            captureOsVersion = "16",
+            microphoneDescriptions = listOf("Remote control microphone"),
+            processing = listOf("AGC was off, now off", "NoiseSuppressor not exposed"),
+            unprocessedAudioSourceSupported = false,
+            microphoneResponse = listOf(
+                MicrophoneResponsePoint("Remote control microphone", 100.0, -0.5),
+                MicrophoneResponsePoint("Remote control microphone", 1_000.0, 0.2)
+            )
+        )
+        val json = JSONObject(Formats.exportProfileJson(profile(78).copy(captureInfo = capture)))
+        val captureJson = json.getJSONObject("capture")
+
+        assertEquals(44_100, captureJson.getInt("input_sample_rate_hz"))
+        assertEquals(2, captureJson.getJSONArray("microphone_frequency_response").length())
+        assertEquals(capture, ProfileStore.parseProfile(json).captureInfo)
+    }
+
+    @Test
+    fun `old profiles without capture metadata remain valid`() {
+        val json = JSONObject(Formats.exportProfileJson(profile(78)))
+
+        assertFalse(json.has("capture"))
+        assertNull(ProfileStore.parseProfile(json).captureInfo)
+    }
+
+    @Test
+    fun `invalid optional microphone response points are ignored not fatal`() {
+        val json = JSONObject(Formats.exportProfileJson(profile(78).copy(
+            captureInfo = CaptureInfo(inputSampleRateHz = 44_100, analysisSampleRateHz = 16_000)
+        )))
+        json.getJSONObject("capture").put(
+            "microphone_frequency_response",
+            JSONArray()
+                .put(JSONObject().put("microphone", "mic").put("frequency_hz", -1).put("response_db", 0.0))
+                .put(JSONObject().put("microphone", "mic").put("frequency_hz", "not a frequency").put("response_db", 0.0))
+                .put(JSONObject().put("frequency_hz", 1_000.0).put("response_db", 0.0))
+        )
+
+        val back = ProfileStore.parseProfile(json)
+        assertEquals(44_100, back.captureInfo?.inputSampleRateHz)
+        assertTrue(back.captureInfo?.microphoneResponse.isNullOrEmpty())
     }
 }

@@ -25,12 +25,18 @@ object Formats {
 
     private const val PREAMP_ROUNDING_EPSILON_DB = 1e-9
 
+    /** Exported metadata is comment-only; strip control characters so a device name cannot add a filter line. */
+    private fun safeComment(note: String): String = note.filter {
+        it == '\t' || (!it.isISOControl() && it != '\u2028' && it != '\u2029')
+    }.take(240)
+
     fun exportParametricTxt(profile: Profile): String {
         val filters = profile.filters + ManualEq.sanitize(profile.manualFilters)
+        val provenanceNotes = profile.measurementNotes + profile.captureInfo?.exportNotes().orEmpty()
         if (filters.isEmpty()) {
             return buildString {
                 append("# Core EQ: no filters\n")
-                for (note in profile.measurementNotes) append("# Core EQ measurement note: $note\n")
+                for (note in provenanceNotes) append("# Core EQ measurement note: ${safeComment(note)}\n")
             }
         }
         val pDb = exportPreampDb(profile, filters)
@@ -42,8 +48,8 @@ object Formats {
         if (profile.manualFilters.isNotEmpty()) {
             sb.append("# Core EQ: manual EQ filters are included after the measured correction.\n")
         }
-        for (note in profile.measurementNotes) {
-            sb.append("# Core EQ measurement note: $note\n")
+        for (note in provenanceNotes) {
+            sb.append("# Core EQ measurement note: ${safeComment(note)}\n")
         }
 
         for (i in filters.indices) {
@@ -155,6 +161,32 @@ object Formats {
         val measurementNotes = JSONArray()
         for (note in profile.measurementNotes) measurementNotes.put(note)
         root.put("measurement_notes", measurementNotes)
+        profile.captureInfo?.let { capture ->
+            val captureObj = JSONObject()
+            capture.requestedSampleRateHz?.let { captureObj.put("requested_sample_rate_hz", it) }
+            capture.inputSampleRateHz?.let { captureObj.put("input_sample_rate_hz", it) }
+            capture.analysisSampleRateHz?.let { captureObj.put("analysis_sample_rate_hz", it) }
+            capture.audioSource?.let { captureObj.put("audio_source", it) }
+            capture.inputDeviceName?.let { captureObj.put("input_device_name", it) }
+            capture.inputDeviceType?.let { captureObj.put("input_device_type", it) }
+            capture.activeMicrophoneCount?.let { captureObj.put("active_microphone_count", it) }
+            capture.captureDeviceModel?.let { captureObj.put("capture_device_model", it) }
+            capture.captureOsVersion?.let { captureObj.put("capture_os_version", it) }
+            captureObj.put("microphone_descriptions", JSONArray(capture.microphoneDescriptions))
+            captureObj.put("processing", JSONArray(capture.processing))
+            capture.unprocessedAudioSourceSupported?.let { captureObj.put("unprocessed_audio_source_supported", it) }
+            val response = JSONArray()
+            for (point in capture.microphoneResponse) {
+                response.put(JSONObject()
+                    .put("microphone", point.microphone)
+                    .put("frequency_hz", point.frequencyHz)
+                    .put("response_db", point.responseDb))
+            }
+            captureObj.put("microphone_frequency_response", response)
+            root.put("capture", captureObj)
+        }
+        // sample_rate remains the generated stimulus/DSP rate (48 kHz). The
+        // actual recorder and analysis rates live separately in `capture`.
         root.put("sample_rate", DspConstants.FS)
         root.put("target", profile.target)
 

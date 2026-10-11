@@ -29,6 +29,7 @@ import tv.corebuilds.eq.dsp.Sweep
 import tv.corebuilds.eq.dsp.SweepAnalysis
 import tv.corebuilds.eq.dsp.SweepResult
 import tv.corebuilds.eq.dsp.Targets
+import tv.corebuilds.eq.export.CaptureInfo
 import tv.corebuilds.eq.export.CurvePoint
 import tv.corebuilds.eq.export.PlatformBand
 import tv.corebuilds.eq.export.Profile
@@ -80,6 +81,7 @@ class MeasureActivity : TvActivity() {
     private var importing = false
     private var importThread: Thread? = null
     private var micName: String? = null
+    private var captureInfo: CaptureInfo? = null
     private var measuredOutput: OutputRoute.Output? = null
     /** Current media-route estimate captured when an external REW file is imported. */
     private var importedOutputEstimate: OutputRoute.Output? = null
@@ -247,6 +249,7 @@ class MeasureActivity : TvActivity() {
         importedOutputEstimate = null
         measuredOutput = null
         micName = null
+        captureInfo = null
         btnStart.isEnabled = false
         btnRoom.isEnabled = false
         btnTarget.isEnabled = false
@@ -260,8 +263,11 @@ class MeasureActivity : TvActivity() {
 
         val total = LEAD_SECONDS + Sweep.STIMULUS_SECONDS + SweepAnalysis.TAIL_SECONDS
         captureEngine.start(total, object : CaptureListener {
-            override fun onRecording(deviceName: String?) {
-                micName = deviceName
+            override fun onRecording(info: CaptureInfo) {
+                captureInfo = info
+                micName = info.inputDeviceName?.takeIf { it.isNotBlank() }
+                    ?: info.inputDeviceType?.takeIf { it.isNotBlank() }
+                    ?: if (info.activeMicrophoneCount != null) "Android microphone input" else "remote microphone"
                 // Keep an output estimate as a fallback if Android does not
                 // report which device receives the sweep's own AudioTrack.
                 val ranked = OutputRoute.current(this@MeasureActivity)
@@ -290,9 +296,10 @@ class MeasureActivity : TvActivity() {
                 }
             }
 
-            override fun onCaptured(samples: DoubleArray, sampleRate: Int, deviceName: String?) {
+            override fun onCaptured(samples: DoubleArray, sampleRate: Int, info: CaptureInfo) {
+                captureInfo = info
                 runOnUiThread { textStatus.text = getString(R.string.measure_analysing) }
-                analyse(samples, sampleRate)
+                analyse(samples, sampleRate, info)
             }
 
             override fun onError(message: String) {
@@ -304,7 +311,7 @@ class MeasureActivity : TvActivity() {
     private var lastCapture: DoubleArray? = null
     private var lastRate = CaptureEngine.ANALYSIS_RATE
 
-    private fun analyse(samples: DoubleArray, rate: Int) {
+    private fun analyse(samples: DoubleArray, rate: Int, info: CaptureInfo) {
         thread(name = "CoreEqAnalysis") {
             val (peakDbfs, _) = SweepAnalysis.levelsDbfs(samples)
             val outcome: Result<SweepResult> = if (peakDbfs > CLIP_DBFS) {
@@ -325,6 +332,7 @@ class MeasureActivity : TvActivity() {
             }
             runOnUiThread {
                 outcome.onSuccess {
+                    captureInfo = info
                     lastCapture = samples
                     lastRate = rate
                     finishMeasuring()
@@ -361,12 +369,13 @@ class MeasureActivity : TvActivity() {
         val top = r.centresHz.lastOrNull() ?: DspConstants.F_MAX
         val clock = r.driftPpm?.takeIf { kotlin.math.abs(it) > SweepAnalysis.MIN_DRIFT_PPM }
             ?.let { String.format(Locale.US, " · clock drift %+.0f ppm corrected", it) } ?: ""
-        textStatus.text = String.format(
+        val resultSummary = String.format(
             Locale.US,
             "%s · corrects %.0f Hz–%.1f kHz · %d null%s, %d non-minimum-phase band%s and %d noisy band%s left alone · SNR %.0f dB%s",
             rt, r.floorHz, top / 1000, nulls, if (nulls == 1) "" else "s",
             gated, if (gated == 1) "" else "s", noisy, if (noisy == 1) "" else "s", r.snrDb, clock
         )
+        textStatus.text = listOfNotNull(resultSummary, captureInfo?.summary()).joinToString("\n")
         renderQuality()
     }
 
@@ -588,6 +597,7 @@ class MeasureActivity : TvActivity() {
             timestampMs = now,
             target = TARGETS[targetIndex].key,
             micType = micName ?: "microphone",
+            captureInfo = captureInfo,
             deviceName = "${Build.MANUFACTURER} ${Build.MODEL}".trim(),
             stimulus = "sweep_${Sweep.SECONDS.roundToInt()}s",
             captureSeconds = LEAD_SECONDS + Sweep.STIMULUS_SECONDS + SweepAnalysis.TAIL_SECONDS,

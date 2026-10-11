@@ -8,6 +8,11 @@ must never land there. Releases are `coreeq-v<version>` tags (see
 
 ## [Unreleased]
 
+### Added
+
+- **Android phone companion.** Core EQ now opens a phone-first control screen on non-Leanback Android devices, with TV-initiated one-time LAN pairing, encrypted profile/mode/correction controls, and a foreground-only phone-microphone measurement flow. The listener is opt-in and runs only while the TV companion screen stays open. Phone-mic captures remain single-position and explicitly uncalibrated; Android input routing and processing are not guaranteed, and reported microphone response is stored as metadata only. Physical-device qualification is still required.
+- **Poweramp EQ preset import.** Manual EQ reads a single-preset native Poweramp JSON export as well as the existing AutoEq / Equalizer APO correction text. The numeric JSON mapping is versionless and provisional: unsupported codes are listed, and a file with no supported bands is refused rather than imported flat. A review dialog shows the fit error, mapping warning and skipped content before anything is saved or applied. Dated 2023/2026 public JSON fixtures cover observed shapes, but do not validate filter-response equivalence; physical Poweramp-build validation remains outstanding. Stereo-only filters are averaged into Core EQ's shared curve; source preamp is not applied.
+
 ## [1.5.1] — 2026-10-11
 
 ### Fixed

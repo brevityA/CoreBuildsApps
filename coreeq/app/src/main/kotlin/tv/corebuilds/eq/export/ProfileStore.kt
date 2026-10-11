@@ -377,12 +377,64 @@ class ProfileStore(context: Context) {
                 }
             }
 
+            val captureInfo = obj.optJSONObject("capture")?.let { capture ->
+                val descriptions = mutableListOf<String>()
+                capture.optJSONArray("microphone_descriptions")?.let { a ->
+                    for (i in 0 until a.length()) {
+                        a.optString(i, "").trim().takeIf { it.isNotEmpty() }?.let(descriptions::add)
+                    }
+                }
+                val processing = mutableListOf<String>()
+                capture.optJSONArray("processing")?.let { a ->
+                    for (i in 0 until a.length()) {
+                        a.optString(i, "").trim().takeIf { it.isNotEmpty() }?.let(processing::add)
+                    }
+                }
+                val response = mutableListOf<MicrophoneResponsePoint>()
+                capture.optJSONArray("microphone_frequency_response")?.let { a ->
+                    for (i in 0 until a.length()) {
+                        val point = a.optJSONObject(i) ?: continue
+                        val hz = point.optDouble("frequency_hz", Double.NaN)
+                        val db = point.optDouble("response_db", Double.NaN)
+                        val microphone = point.optString("microphone", "").trim()
+                        if (hz > 0.0 && hz.isFinite() && db.isFinite() && microphone.isNotEmpty()) {
+                            response += MicrophoneResponsePoint(microphone, hz, db)
+                        }
+                    }
+                }
+                val unprocessedSupported = when (val value = capture.opt("unprocessed_audio_source_supported")) {
+                    is Boolean -> value
+                    is String -> when (value.trim().lowercase()) {
+                        "true" -> true
+                        "false" -> false
+                        else -> null
+                    }
+                    else -> null
+                }
+                CaptureInfo(
+                    requestedSampleRateHz = capture.optInt("requested_sample_rate_hz", 0).takeIf { it > 0 },
+                    inputSampleRateHz = capture.optInt("input_sample_rate_hz", 0).takeIf { it > 0 },
+                    analysisSampleRateHz = capture.optInt("analysis_sample_rate_hz", 0).takeIf { it > 0 },
+                    audioSource = capture.optString("audio_source", "").takeIf { it.isNotBlank() },
+                    inputDeviceName = capture.optString("input_device_name", "").takeIf { it.isNotBlank() },
+                    inputDeviceType = capture.optString("input_device_type", "").takeIf { it.isNotBlank() },
+                    activeMicrophoneCount = capture.optInt("active_microphone_count", -1).takeIf { it >= 0 },
+                    captureDeviceModel = capture.optString("capture_device_model", "").takeIf { it.isNotBlank() },
+                    captureOsVersion = capture.optString("capture_os_version", "").takeIf { it.isNotBlank() },
+                    microphoneDescriptions = descriptions,
+                    processing = processing,
+                    unprocessedAudioSourceSupported = unprocessedSupported,
+                    microphoneResponse = response
+                )
+            }
+
             return Profile(
                 id = obj.getString("id"),
                 name = obj.optString("name", "Unnamed room"),
                 timestampMs = obj.optLong("timestamp_ms", 0L),
                 target = obj.optString("target", "dialogue"),
                 micType = obj.optString("microphone", "microphone"),
+                captureInfo = captureInfo,
                 deviceName = obj.optString("device", "Android TV"),
                 stimulus = obj.optString("stimulus", "sweep_10s"),
                 captureSeconds = obj.optDouble("capture_seconds", 10.0),

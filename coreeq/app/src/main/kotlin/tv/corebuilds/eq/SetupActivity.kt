@@ -31,6 +31,7 @@ class SetupActivity : TvActivity() {
     private lateinit var rows: LinearLayout
     private lateinit var status: TextView
     private var lastSteps: List<SetupGuide.Step> = emptyList()
+    private var lastReportDetails: List<String> = emptyList()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -44,7 +45,7 @@ class SetupActivity : TvActivity() {
             requestFocus()
         }
         findViewById<Button>(R.id.btn_setup_copy_report).setOnClickListener {
-            copy(SetupGuide.report(lastSteps), getString(R.string.setup_report_copied))
+            copy(SetupGuide.report(lastSteps, lastReportDetails), getString(R.string.setup_report_copied))
         }
         findViewById<Button>(R.id.btn_setup_done).setOnClickListener { finish() }
     }
@@ -66,12 +67,29 @@ class SetupActivity : TvActivity() {
             OutputRoute.connectedNames(this, output?.kind)
         )
         val store = ProfileStore(this)
-        val measured = OutputRoute.pick(
+        val picked = OutputRoute.pick(
             store.getAllProfiles(),
             store.chosenId(),
             output?.kind,
             output?.name
-        ).profile != null
+        )
+        val measured = picked.profile != null
+        lastReportDetails = buildList {
+            add("TV: ${Build.MANUFACTURER} ${Build.MODEL}".trim())
+            add("Android: ${Build.VERSION.RELEASE} (API ${Build.VERSION.SDK_INT})")
+            val version = packageManager.getPackageInfo(packageName, 0)
+            add("Core EQ: ${version.versionName} (${version.longVersionCode})")
+            val outputSummary = output?.let {
+                val label = OutputRoute.label(it.kind)
+                val name = it.name.trim().takeIf { value -> value.isNotEmpty() && value != label }
+                "Current output: $label${name?.let { value -> ": $value" }.orEmpty()}"
+            } ?: "Current output: not named"
+            add(outputSummary)
+            picked.profile?.let { profile ->
+                add("Matched profile: ${profile.name}")
+                profile.captureInfo?.summary()?.let { add(it) }
+            }
+        }
         lastSteps = SetupGuide.steps(
             dumpGranted = DumpsysDiscovery.hasGrant(this),
             overlayAllowed = OverlayPermission.allowed(this),
