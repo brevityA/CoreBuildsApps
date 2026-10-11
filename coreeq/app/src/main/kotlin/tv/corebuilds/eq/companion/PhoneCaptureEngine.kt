@@ -149,6 +149,9 @@ internal class PhoneCaptureEngine(private val context: Context) {
     private data class Opened(val record: AudioRecord, val requestedRate: Int, val source: Int)
 
     private fun openRecorder(source: Int): Opened? {
+        if (ContextCompat.checkSelfPermission(context, Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
+            throw SecurityException("Phone microphone permission is not granted.")
+        }
         for (rate in RATES) {
             val minimum = try {
                 AudioRecord.getMinBufferSize(rate, AudioFormat.CHANNEL_IN_MONO, AudioFormat.ENCODING_PCM_16BIT)

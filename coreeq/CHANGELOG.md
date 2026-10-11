@@ -19,7 +19,7 @@ must never land there. Releases are `coreeq-v<version>` tags (see
 
 ### Fixed
 
-- **Android capture metadata builds against public APIs.** Capture routes now use stable labels from `AudioDeviceInfo`'s public type constants, and the companion's address, port and pairing code use the supported `TextView` selectability setter.
+- **Android capture permissions and route metadata.** Phone microphone permission is checked immediately before opening `AudioRecord`; capture routes use stable labels from `AudioDeviceInfo`'s public type constants, and the companion's address, port and pairing code use the supported `TextView` selectability setter.
 
 ## [1.5.1] — 2026-10-11
 
