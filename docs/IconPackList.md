@@ -1,6 +1,6 @@
 # Supported applications
 
-`983` icons · `1217` mapped components · pack v2.3.0
+`986` icons · `1221` mapped components · pack v2.3.1
 
 Every app below auto-assigns in Projectivy. If one doesn't, the app ships a different launcher activity on your device — open an issue with the component name and it gets added.
 
@@ -69,6 +69,7 @@ Source accents are retained in the catalog. **On dark** is the shared square/ban
 | Aptoide TV | `aptoide` | `#F26522` | `#F26522` | `cm.aptoidetv.pt/.activity.MainActivity` |
 | Arc Browser | `arc_browser` | `#C95CFF` | `#C95CFF` | `net.floatingpoint.android.arcturus/net.floatingpoint.android.arcturus.MainActivity` |
 | ARD Mediathek | `ard_mediathek` | `#003480` | `#0057D6` | `de.swr.avp.ard.tv/de.swr.avp.ard.tv.TvActivity` |
+| ARD Sounds | `ard_sounds` | `#2D92FF` | `#2D92FF` | `de.ard.audiothek.tv/com.mitxp.androidtv.MainActivity` |
 | Arrow | `arrowfilms` | `#4FACFE` | `#4FACFE` | `com.arrowfilms/tv.vhx.LauncherActivity`<br>`com.arrowfilms/tv.vhx.tv.home.TvHomeActivity` |
 | Arte | `arte` | `#FC4700` | `#FC4700` | `tv.arte.plus7/tv.arte.plus7.leanback.MainActivity` |
 | Artemis | `limelight` | `#B388FF` | `#B388FF` | `com.limelight.noir/com.limelight.PcView` |
@@ -468,6 +469,7 @@ Source accents are retained in the catalog. **On dark** is the shared square/ban
 | Monplayer | `monplayer` | `#4FACFE` | `#4FACFE` | `org.monplayer.mpapp/org.monplayer.mpapp.MainActivity` |
 | Moonfin | `moonfin` | `#B453E6` | `#B453E6` | `org.moonfin.androidtv/org.jellyfin.androidtv.ui.startup.StartupActivity` |
 | Moonlight | `moonlight` | `#76B900` | `#76B900` | `com.limelight/.PcView` |
+| Morphe | `morphe` | `#7355F8` | `#7355F8` | `app.morphe.manager/app.morphe.manager.MainActivity_Dark_2` |
 | MotoGP | `officialmotogp` | `#34EB7A` | `#34EB7A` | `com.dorna.officialmotogp/com.dorna.motogpapp.ui.view.tv.splash.SplashTVActivity` |
 | Movie HD | `moviehd` | `#DBA608` | `#DBA608` | `com.ggateam.moviehd.ui/com.ggateam.moviehd.ui.FrmSplash` |
 | Movieark | `movieark` | `#00C1D2` | `#00C1D2` | `com.tcl.movieark/com.tcl.waterfall.overseas.main.MainActivity` |
@@ -589,6 +591,7 @@ Source accents are retained in the catalog. **On dark** is the shared square/ban
 | PigeonCast | `pigeoncast` | `#0092B0` | `#0092B0` | `com.pigeoncast.screen.mirroring.android.tv/com.mirror_universal.receiver.activity.MainActivity` |
 | Pikashow | `offshore` | `#F80010` | `#F80010` | `com.offshore.pikachu/com.offshore.pikachu.view.Splash` |
 | PikPak | `pikcloud` | `#4664F3` | `#4664F3` | `com.pikcloud.pikpak/com.pikcloud.app.SplashActivity`<br>`com.pikcloud.pikpak/com.pikcloud.app.TVLaunchActivity` |
+| Pixee | `pixee` | `#19D3C5` | `#19D3C5` | `com.pixee.tv/com.pixee.tv.MainActivity` |
 | Play Now | `playnow` | `#7444A1` | `#7A48AA` | `com.play.playnow.tv/com.n7mobile.playbox.ui.MainActivity` |
 | Play Suisse | `playsuisse` | `#9A0326` | `#C20430` | `ch.srgssr.playsuisse.tv/ch.srgssr.playsuisse.tv.MainActivity` |
 | Play Universal | `universal` | `#FCCC12` | `#FCCC12` | `com.play.universal/com.play.universal.MainActivity` |
@@ -927,7 +930,7 @@ Source accents are retained in the catalog. **On dark** is the shared square/ban
 | VTM GO | `zenderapp` | `#F8C0B8` | `#F8C0B8` | `be.vmma.vtm.zenderapp/be.persgroep.vtmgo.presentation.VtmGoMainActivity` |
 | VTVcab ON | `vtvcab_on_tv` | `#E02820` | `#E02820` | `com.vtvcab.onTV/com.vtvcab.activities.NewSplashActivity` |
 | VTVgo | `vtvgo_tv` | `#D50808` | `#D50808` | `vn.vtv.vtvgotv/com.vtvcab.activities.NewSplashActivity` |
-| waipu.tv | `waipu_tv` | `#885CA3` | `#885CA3` | `de.exaring.waipu/de.exaring.waipu.ui.login.LoginActivity` |
+| waipu.tv | `waipu_tv` | `#885CA3` | `#885CA3` | `de.exaring.waipu/de.exaring.waipu.ui.login.LoginActivity`<br>`de.exaring.waipu/de.exaring.waipu.MainActivity` |
 | Wako | `wako` | `#3082C4` | `#3082C4` | `app.wako/app.wako.MainActivity` |
 | Watch Free UK | `amcnetworks` | `#D10000` | `#D10000` | `com.amcnetworks.cbscatchup/com.simplestream.presentation.startup.StartUpActivity` |
 | WATCHA | `frograms` | `#FF0558` | `#FF0558` | `com.frograms.wplay/com.frograms.wplay.activity.InitActivity` |

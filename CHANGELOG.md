@@ -6,6 +6,31 @@ All notable changes to the Core Builds Icon Pack. Format follows
 
 ## [Unreleased]
 
+## [2.3.1] — 2026-10-11
+
+### Added
+
+- **ARD Sounds icon.** The ARD Audiothek app, now called ARD Sounds, has its own
+  icon in the pack.
+  Its accent is now the published ARD brand blue (#2D92FF), not an eyeballed value.
+- **Pixee icon.** Pixee, the photo-frame slideshow app, has its own icon (issue #284).
+- **Morphe icon.** The Morphe patcher manager has its own icon (issue #287). The activity is
+  device-reported from a scan on one TV and is not yet confirmed on a second device.
+- **Core Builds Glyphs has its own icon.** The glyph-only app (`tv.corebuilds.glyphs`)
+  now has a violet launcher icon and TV banner, so it no longer looks like a second
+  copy of the icon pack in a launcher.
+
+### Changed
+
+- **New pack icon artwork.** The Core Builds Icon Pack launcher icon and TV banner
+  use a refreshed mark: the same rounded tile and Signal Cyan accent, with a circle, a square,
+  a play cue and a plus. Launcher icon only; the glyphs app is unchanged.
+
+### Fixed
+
+- **waipu.tv gets its icon on current devices.** The app opens a different
+  activity on current devices, and the pack now maps that one too (issue #286).
+
 ## [2.3.0] — 2026-10-10
 
 ### Added
