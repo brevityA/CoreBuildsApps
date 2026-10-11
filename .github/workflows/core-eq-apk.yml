@@ -98,11 +98,18 @@ jobs:
           if not failures and lint_report.is_file():
               try:
                   root = ET.parse(lint_report).getroot()
-                  failures = [
-                      f"Lint {issue.get('severity', '?')} [{issue.get('id', '?')}]: {issue.get('message', '')}"
-                      for issue in root.iter("issue")
-                      if issue.get("severity", "").lower() in {"error", "fatal"}
-                  ]
+                  for issue in root.iter("issue"):
+                      if issue.get("severity", "").lower() not in {"error", "fatal"}:
+                          continue
+                      location = issue.find("location")
+                      where = (
+                          f" at {location.get('file', '?')}:{location.get('line', '?')}"
+                          if location is not None else ""
+                      )
+                      failures.append(
+                          f"Lint {issue.get('severity', '?')} [{issue.get('id', '?')}]"
+                          f"{where}: {issue.get('message', '')}"
+                      )
               except ET.ParseError:
                   pass
 
