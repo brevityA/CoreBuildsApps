@@ -150,7 +150,6 @@ class SetupActivity : TvActivity() {
         textSize = if (mono) 13f else 14f
         if (bold) setTypeface(typeface, android.graphics.Typeface.BOLD)
         if (mono) typeface = android.graphics.Typeface.MONOSPACE
-        setTextIsSelectable(true)
         layoutParams = LinearLayout.LayoutParams(
             ViewGroup.LayoutParams.MATCH_PARENT,
             ViewGroup.LayoutParams.WRAP_CONTENT
