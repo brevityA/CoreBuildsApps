@@ -3,7 +3,6 @@ package tv.corebuilds.eq.measure
 import android.Manifest
 import android.content.Context
 import android.content.pm.PackageManager
-import android.media.AudioDeviceInfo
 import android.media.AudioFormat
 import android.media.AudioManager
 import android.media.AudioRecord
@@ -14,6 +13,7 @@ import android.media.audiofx.AutomaticGainControl
 import android.media.audiofx.NoiseSuppressor
 import android.util.Log
 import androidx.core.content.ContextCompat
+import tv.corebuilds.eq.audioDeviceTypeLabel
 import tv.corebuilds.eq.dsp.Resample
 import tv.corebuilds.eq.export.CaptureInfo
 import tv.corebuilds.eq.export.MicrophoneResponsePoint
@@ -360,7 +360,7 @@ class CaptureEngine(private val context: Context) {
             }
             if (response.size >= MAX_RESPONSE_POINTS) return@forEachIndexed
         }
-        val inputType = route?.let { AudioDeviceInfo.typeToString(it.type) }
+        val inputType = route?.let { audioDeviceTypeLabel(it.type) }
         val inputName = route?.productName?.toString()?.trim()?.takeIf(String::isNotEmpty)
         val info = CaptureInfo(
             requestedSampleRateHz = requestedRate,

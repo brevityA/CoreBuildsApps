@@ -107,17 +107,17 @@ class CompanionActivity : TvActivity() {
         column.addView(label(getString(R.string.companion_tv_title), 26f, true, R.color.cb_ink))
         column.addView(label(getString(R.string.companion_tv_subtitle), 16f, false, R.color.cb_slate))
         addressLine = label(getString(R.string.companion_finding_address), 18f, true, R.color.cb_ink).apply {
-            textIsSelectable = true
+            setTextIsSelectable(true)
         }
         column.addView(addressLine)
         portLine = label("", 18f, true, R.color.cb_ink).apply {
-            textIsSelectable = true
+            setTextIsSelectable(true)
         }
         column.addView(portLine)
         column.addView(label(getString(R.string.companion_tv_pair_instructions), 16f, false, R.color.cb_slate))
         pairingCode = label(getString(R.string.companion_pairing_closed), 24f, true, R.color.cb_signal_cyan).apply {
             gravity = Gravity.CENTER
-            textIsSelectable = true
+            setTextIsSelectable(true)
             setPadding(dp(14), dp(14), dp(14), dp(14))
             setBackgroundResource(R.drawable.bg_card)
         }

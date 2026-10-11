@@ -3,7 +3,6 @@ package tv.corebuilds.eq.companion
 import android.Manifest
 import android.content.Context
 import android.content.pm.PackageManager
-import android.media.AudioDeviceInfo
 import android.media.AudioFormat
 import android.media.AudioManager
 import android.media.AudioRecord
@@ -16,6 +15,7 @@ import android.os.Build
 import android.util.Log
 import androidx.core.content.ContextCompat
 import org.json.JSONArray
+import tv.corebuilds.eq.audioDeviceTypeLabel
 import org.json.JSONObject
 import kotlin.math.max
 
@@ -236,7 +236,7 @@ internal class PhoneCaptureEngine(private val context: Context) {
             .put("requested_sample_rate_hz", requestedRate)
             .put("audio_source", audioSource)
             .put("input_device_name", route?.productName?.toString()?.take(80) ?: JSONObject.NULL)
-            .put("input_device_type", route?.let { AudioDeviceInfo.typeToString(it.type) } ?: JSONObject.NULL)
+            .put("input_device_type", route?.let { audioDeviceTypeLabel(it.type) } ?: JSONObject.NULL)
             .put("active_microphone_count", microphones.size)
             .put("capture_device_model", "${Build.MANUFACTURER} ${Build.MODEL}".trim().take(80))
             .put("capture_os_version", Build.VERSION.RELEASE.take(40))

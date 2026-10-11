@@ -17,6 +17,10 @@ must never land there. Releases are `coreeq-v<version>` tags (see
 
 - **Phone companion security limits.** Pairing attempts are throttled per LAN peer (five per minute, followed by a 30-second pause) rather than closing pairing for every phone. The listener caps work at four active workers, four queued requests and eight accepted sockets; it rejects ambiguous HTTP framing and applies an 8 KiB header limit, a 3 MiB body limit, a five-second read-idle timeout and a 30-second deadline from accept. The listener and accepted sockets close as soon as the companion screen leaves the foreground, and opening it again starts a fresh listener. This remains a trusted-LAN feature, not a public internet service.
 
+### Fixed
+
+- **Android capture metadata builds against public APIs.** Capture routes now use stable labels from `AudioDeviceInfo`'s public type constants, and the companion's address, port and pairing code use the supported `TextView` selectability setter.
+
 ## [1.5.1] — 2026-10-11
 
 ### Fixed
