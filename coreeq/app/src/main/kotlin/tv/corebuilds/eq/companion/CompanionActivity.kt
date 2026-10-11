@@ -38,7 +38,9 @@ class CompanionActivity : TvActivity() {
     private var server: CompanionServer? = null
     private var activeCode: String? = null
     private var expiresAt = 0L
-    private var pendingPermissionAction: (() -> Unit)? = null
+    private var screenVisible = false
+    private var permissionRequestInFlight = false
+    private var permissionDenied = false
 
     private val handler = Handler(Looper.getMainLooper())
     private val expiryTicker = object : Runnable {
@@ -65,7 +67,33 @@ class CompanionActivity : TvActivity() {
             server?.revokePairing()
             refreshPairedState()
         }
+    }
+
+    override fun onStart() {
+        super.onStart()
+        screenVisible = true
         startServerWhenPermitted()
+    }
+
+    override fun onStop() {
+        screenVisible = false
+        handler.removeCallbacks(expiryTicker)
+        activeCode = null
+        expiresAt = 0L
+        pairingCode.setText(R.string.companion_pairing_closed)
+        pairingExpiry.setText(R.string.companion_pairing_stopped)
+        stopPairing.isEnabled = false
+        closeVisibleServer()
+        super.onStop()
+    }
+
+    private fun closeVisibleServer() {
+        val closingServer = server ?: return
+        server = null
+        closingServer.stopListening()
+        // stopListening closes the listener and accepted sockets immediately;
+        // finish measurement/player cleanup away from the UI thread.
+        thread(name = "CoreEqCompanionClose") { closingServer.close() }
     }
 
     private fun buildContent(): ScrollView {
@@ -113,18 +141,26 @@ class CompanionActivity : TvActivity() {
     }
 
     private fun startServerWhenPermitted() {
+        if (!screenVisible || server != null) return
         if (Build.VERSION.SDK_INT >= 37 &&
             checkSelfPermission(Manifest.permission.ACCESS_LOCAL_NETWORK) != PackageManager.PERMISSION_GRANTED
         ) {
-            statusLine.setText(R.string.companion_local_network_permission)
-            pendingPermissionAction = { startServerWhenPermitted() }
-            requestPermissions(arrayOf(Manifest.permission.ACCESS_LOCAL_NETWORK), REQ_LOCAL_NETWORK)
+            statusLine.setText(
+                if (permissionDenied) R.string.companion_local_network_denied
+                else R.string.companion_local_network_permission
+            )
+            if (!permissionRequestInFlight && !permissionDenied) {
+                permissionRequestInFlight = true
+                requestPermissions(arrayOf(Manifest.permission.ACCESS_LOCAL_NETWORK), REQ_LOCAL_NETWORK)
+            }
             return
         }
+        permissionRequestInFlight = false
+        permissionDenied = false
         var candidateServer: CompanionServer? = null
         try {
             val runningServer = CompanionServer(this) { message ->
-                if (!isFinishing && !isDestroyed) {
+                if (screenVisible && server === candidateServer && !isFinishing && !isDestroyed) {
                     statusLine.text = message
                     refreshPairedState()
                     if (runningServerPaired()) {
@@ -197,23 +233,19 @@ class CompanionActivity : TvActivity() {
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         if (requestCode != REQ_LOCAL_NETWORK) return
+        permissionRequestInFlight = false
         if (grantResults.firstOrNull() == PackageManager.PERMISSION_GRANTED) {
-            pendingPermissionAction?.invoke()
+            permissionDenied = false
+            startServerWhenPermitted()
         } else {
+            permissionDenied = true
             statusLine.setText(R.string.companion_local_network_denied)
         }
-        pendingPermissionAction = null
     }
 
     override fun onDestroy() {
         handler.removeCallbacks(expiryTicker)
-        val closingServer = server
-        server = null
-        if (closingServer != null) {
-            // Close the listener off the UI thread. CompanionServer closes its
-            // socket first, then drains any in-flight analysis before cleanup.
-            thread(name = "CoreEqCompanionClose") { closingServer.close() }
-        }
+        closeVisibleServer()
         super.onDestroy()
     }
 
