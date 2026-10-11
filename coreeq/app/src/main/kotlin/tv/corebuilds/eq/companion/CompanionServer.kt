@@ -74,6 +74,7 @@ internal class CompanionServer(
     )
     private val activeSockets = ConcurrentHashMap.newKeySet<Socket>()
     private val listenerLock = Any()
+    private val pairingLock = Any()
     private val pairingAttemptLimiter = PairingAttemptLimiter()
     private val replayedNonces = object : LinkedHashSet<String>() {}
     private val nonceLock = Any()
@@ -107,19 +108,17 @@ internal class CompanionServer(
     }
 
     /** Return a fresh, high-entropy code for the TV screen; a previous code is immediately invalid. */
-    @Synchronized
-    fun startPairing(): String {
+    fun startPairing(): String = synchronized(pairingLock) {
         check(running) { "Companion server is not running" }
         val key = CompanionCrypto.randomKey(CompanionCrypto.PAIRING_KEY_BYTES)
         pairingKey = key
         pairingExpiresElapsed = SystemClock.elapsedRealtime() + PAIRING_WINDOW_MS
         clearReplayCache()
         updateStatus("Pairing code is active for two minutes. It is shown only on this TV.")
-        return CompanionCrypto.encodeKey(key)
+        CompanionCrypto.encodeKey(key)
     }
 
-    @Synchronized
-    fun stopPairing() {
+    fun stopPairing() = synchronized(pairingLock) {
         pairingKey = null
         pairingExpiresElapsed = 0L
         clearReplayCache()
@@ -384,24 +383,23 @@ internal class CompanionServer(
         }
     }
 
-    @Synchronized
-    private fun pair(envelope: ByteArray, peerAddress: InetAddress): HttpResponse {
+    private fun pair(envelope: ByteArray, peerAddress: InetAddress): HttpResponse = synchronized(pairingLock) {
         val secret = pairingKey
-        if (secret == null || SystemClock.elapsedRealtime() >= pairingExpiresElapsed) {
+        if (!running || secret == null || SystemClock.elapsedRealtime() >= pairingExpiresElapsed) {
             pairingKey = null
             pairingExpiresElapsed = 0L
-            return plain(403, "Pairing is not open")
+            return@synchronized plain(403, "Pairing is not open")
         }
-        val peer = peerAddress.hostAddress ?: return plain(403, "Pairing code not accepted")
+        val peer = peerAddress.hostAddress ?: return@synchronized plain(403, "Pairing code not accepted")
         if (!pairingAttemptLimiter.allow(peer, SystemClock.elapsedRealtime())) {
-            return plain(429, "Too many pairing attempts; try again shortly")
+            return@synchronized plain(429, "Too many pairing attempts; try again shortly")
         }
-        return try {
-            if (!rememberNonce(envelope)) return plain(409, "Request already used")
+        try {
+            if (!rememberNonce(envelope)) return@synchronized plain(409, "Request already used")
             val request = CompanionCrypto.decryptJson(secret, PAIR_PATH, envelope)
-            if (request.optString("op") != "pair") return plain(400, "Invalid pairing request")
+            if (request.optString("op") != "pair") return@synchronized plain(400, "Invalid pairing request")
             val token = Base64.getDecoder().decode(request.getString("token"))
-            if (token.size != CompanionCrypto.TOKEN_BYTES) return plain(400, "Invalid pairing token")
+            if (token.size != CompanionCrypto.TOKEN_BYTES) return@synchronized plain(400, "Invalid pairing token")
             val client = request.optString("client_name", "Android phone").trim().take(60).ifBlank { "Android phone" }
             preferences.edit()
                 .putString(KEY_TOKEN, Base64.getEncoder().encodeToString(token))
@@ -859,22 +857,22 @@ internal class CompanionServer(
 
     /** Stop accepting or serving sockets synchronously when the companion screen is hidden. */
     fun stopListening() {
-        synchronized(this) {
-            synchronized(listenerLock) {
-                running = false
-                pairingKey = null
-                pairingExpiresElapsed = 0L
-                try {
-                    server.close()
-                } catch (_: Exception) {
-                    // Already closed.
-                }
-                activeSockets.toList().forEach { socket ->
-                    try { socket.close() } catch (_: Exception) { }
-                }
-                activeSockets.clear()
-                workers.shutdownNow()
+        synchronized(pairingLock) {
+            running = false
+            pairingKey = null
+            pairingExpiresElapsed = 0L
+        }
+        synchronized(listenerLock) {
+            try {
+                server.close()
+            } catch (_: Exception) {
+                // Already closed.
             }
+            activeSockets.toList().forEach { socket ->
+                try { socket.close() } catch (_: Exception) { }
+            }
+            activeSockets.clear()
+            workers.shutdownNow()
         }
     }
 
