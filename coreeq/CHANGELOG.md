@@ -8,6 +8,19 @@ must never land there. Releases are `coreeq-v<version>` tags (see
 
 ## [Unreleased]
 
+## [1.5.1] — 2026-10-11
+
+### Fixed
+
+- **Setup check and ADB works with the D-pad.** The screen had no D-pad
+  function: its text rows were selectable, which made each row a focus stop
+  that could take the arrow keys, so focus never reached the buttons. The rows
+  are no longer selectable. **Copy command** and **Copy report** still copy
+  the commands.
+- **Setup check starts on Check again.** The screen now opens with focus on
+  **Check again**, as the other screens do. Focus stays on the buttons when
+  the rows are rebuilt on resume.
+
 ## [1.5.0] — 2026-10-10
 
 ### Added
