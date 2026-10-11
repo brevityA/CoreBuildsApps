@@ -1,19 +1,13 @@
 {
-  "versionCode": 11,
-  "versionName": "1.5.0",
-  "releaseDate": "2026-10-10",
+  "versionCode": 12,
+  "versionName": "1.5.1",
+  "releaseDate": "2026-10-11",
   "apkUrl": "https://github.com/brevityA/CoreBuildsApps/releases/download/coreeq/coreeq-release.apk",
-  "apkSha256": "e02cac9a21870861beefc010349b066f2ee19a000e48f8ea3b69e0bb4d0a7109",
-  "releaseNotesUrl": "https://github.com/brevityA/CoreBuildsApps/releases/tag/coreeq-v1.5.0",
+  "apkSha256": "58b5528e138cce31453b625084f6cc16c5f65ddf9ad0118991ba948c596ea763",
+  "releaseNotesUrl": "https://github.com/brevityA/CoreBuildsApps/releases/tag/coreeq-v1.5.1",
   "minSdk": 30,
   "highlights": [
-    "Hardware presets: JBL Bar 2.0 All-in-One (original).",
-    "Setup check.",
-    "Hardware presets: JBL Bar 800.",
-    "Brand detection for TVs and sound outputs.",
-    "Setup check: passthrough check.",
-    "Device test record template.",
-    "Import a correction file.",
-    "Read-only spatial audio line in the setup check."
+    "Setup check and ADB works with the D-pad.",
+    "Setup check starts on Check again."
   ]
 }
