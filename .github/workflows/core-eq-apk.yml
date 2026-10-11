@@ -94,11 +94,23 @@ jobs:
                       detail = " ".join(filter(None, [node.get("message", ""), node.text or ""]))
                       failures.append(f"{case.get('classname', '?')}#{case.get('name', '?')}: {detail[:2400]}")
 
+          lint_report = Path("coreeq/app/build/reports/lint-results-debug.xml")
+          if not failures and lint_report.is_file():
+              try:
+                  root = ET.parse(lint_report).getroot()
+                  failures = [
+                      f"Lint {issue.get('severity', '?')} [{issue.get('id', '?')}]: {issue.get('message', '')}"
+                      for issue in root.iter("issue")
+                      if issue.get("severity", "").lower() in {"error", "fatal"}
+                  ]
+              except ET.ParseError:
+                  pass
+
           gradle_log = Path(os.environ["RUNNER_TEMP"]) / "coreeq-gradle.log"
           if not failures and gradle_log.is_file():
               lines = gradle_log.read_text(errors="replace").splitlines()
-              needles = ("e: ", "error:", "What went wrong:", "Execution failed for task", "BUILD FAILED")
-              failures = [line.strip() for line in lines if any(n in line for n in needles)][-20:]
+              needles = ("e: ", "error", "warning:", "lint found", "what went wrong:", "execution failed for task", "build failed")
+              failures = [line.strip() for line in lines if any(n in line.lower() for n in needles)][-40:]
               if not failures:
                   failures = lines[-25:]
 
