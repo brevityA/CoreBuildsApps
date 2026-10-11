@@ -11,6 +11,8 @@ package tv.corebuilds.eq.ui
  * - [LIVE] – the output-mix effect is configured and Android reports media
  *   playback. The UI labels this `PLAYING · COVERAGE UNKNOWN` and pulses in
  *   this state only; the state does not prove the stream traverses the effect.
+ *   The optional overlay chip uses the same wording while that playback is
+ *   reported, and says `SESSION MATCH UNKNOWN` on the per-session path.
  *
  * Pure on purpose: [tv.corebuilds.eq.apply.EqService] supplies the playback
  * hint and the Home screen supplies enabled/fault state. Public callbacks hide

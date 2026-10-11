@@ -225,10 +225,15 @@ class ProfileStore(context: Context) {
         get() = prefs.getBoolean(KEY_ENABLED, false)
         set(value) { prefs.edit().putBoolean(KEY_ENABLED, value).apply() }
 
-    /** Show a brief toast when a different profile or mode is applied (1.3.0). On by default. */
+    /** Show a brief notice when a different profile or mode is applied (1.3.0). On by default. */
     var announceApplied: Boolean
         get() = prefs.getBoolean(KEY_ANNOUNCE_APPLIED, true)
         set(value) { prefs.edit().putBoolean(KEY_ANNOUNCE_APPLIED, value).apply() }
+
+    /** Keep a truthful playback-status chip over other apps while playback is reported. Off by default. */
+    var playbackHudEnabled: Boolean
+        get() = prefs.getBoolean(KEY_PLAYBACK_HUD_ENABLED, false)
+        set(value) { prefs.edit().putBoolean(KEY_PLAYBACK_HUD_ENABLED, value).apply() }
 
     /** Home's "allow the on-screen card" bar was answered with Later (1.3.2); Profiles still offers it. */
     var cardPromptDismissed: Boolean
@@ -306,6 +311,7 @@ class ProfileStore(context: Context) {
         private const val KEY_ACTIVE_ID = "active_profile_id"
         private const val KEY_ENABLED = "correction_enabled"
         private const val KEY_ANNOUNCE_APPLIED = "announce_applied_v130"
+        private const val KEY_PLAYBACK_HUD_ENABLED = "playback_hud_enabled_v160"
         private const val KEY_CARD_PROMPT_DISMISSED = "card_prompt_dismissed_v132"
         private const val KEY_STATUS_MSG = "status_message"
         private const val KEY_STATUS_ERR = "status_is_error"

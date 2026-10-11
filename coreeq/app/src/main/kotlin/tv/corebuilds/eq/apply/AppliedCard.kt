@@ -19,9 +19,9 @@ import tv.corebuilds.eq.R
 import tv.corebuilds.eq.TvActivity
 
 /**
- * The on-screen card (1.3.0): a few seconds over whatever is playing that
- * say correction is on, which profile, and how it is applied; or that it has
- * paused on an output with no profile of its own.
+ * The on-screen card: either a brief applied/paused notice or an optional
+ * persistent playback chip. The chip names the profile and effect, and labels
+ * playback as reported rather than claiming the route is covered.
  *
  * Built the way Core Line's score box and VPN dot are (`ScoreBugWindow`,
  * `VpnDotWindow` in `ticker/android`), because they already solved drawing
@@ -43,8 +43,14 @@ import tv.corebuilds.eq.TvActivity
  */
 class AppliedCard(context: Context) {
 
-    /** What the card says. [active] picks the colour: cyan on, amber paused. */
-    data class Content(val active: Boolean, val title: String, val detail: String, val extras: String?)
+    /** What the card says. [active] picks the colour; [railText] can name a live evidence state. */
+    data class Content(
+        val active: Boolean,
+        val title: String,
+        val detail: String,
+        val extras: String?,
+        val railText: String? = null
+    )
 
     private val ui: Context = ContextThemeWrapper(
         TvActivity.normalizeDpBox(context.applicationContext), R.style.Theme_CoreEQ
@@ -52,6 +58,8 @@ class AppliedCard(context: Context) {
     private val windowManager = context.applicationContext.getSystemService(Context.WINDOW_SERVICE) as? WindowManager
     private val handler = Handler(Looper.getMainLooper())
     private var card: View? = null
+    private var persistent = false
+    private var animationGeneration = 0
     private val fadeOut = Runnable { hide(animated = true) }
 
     /** Whether Android lets Core EQ draw over other apps right now. */
@@ -62,11 +70,19 @@ class AppliedCard(context: Context) {
      * already up (the timer restarts). False when the overlay is not allowed
      * or Android refused the window, so the caller can fall back.
      */
+    fun show(content: Content): Boolean = display(content, persistent = false)
+
+    /** Keep [content] visible until [dismissPersistent] or [dismiss]. */
+    fun showPersistent(content: Content): Boolean = display(content, persistent = true)
+
     // InflateParams: an overlay window has no parent to inflate against; the
     // window's own LayoutParams size the card.
     @SuppressLint("InflateParams")
-    fun show(content: Content): Boolean {
-        if (!allowed()) return false
+    private fun display(content: Content, persistent: Boolean): Boolean {
+        if (!allowed()) {
+            if (card != null) hide(animated = false)
+            return false
+        }
         val manager = windowManager ?: return false
         val view = card ?: LayoutInflater.from(ui).inflate(R.layout.view_applied_card, null)
         bind(view, content)
@@ -81,29 +97,40 @@ class AppliedCard(context: Context) {
             card = view
             view.alpha = 0f
             view.translationY = -dp(SLIDE_DP)
+            animationGeneration++
             view.animate().alpha(1f).translationY(0f).setDuration(FADE_IN_MS).start()
         } else {
+            animationGeneration++
             view.animate().cancel()
             view.alpha = 1f
             view.translationY = 0f
         }
+        this.persistent = persistent
         handler.removeCallbacks(fadeOut)
-        handler.postDelayed(fadeOut, SHOW_MS)
+        if (!persistent) handler.postDelayed(fadeOut, SHOW_MS)
         return true
     }
 
     /** Take the card down now (correction stopped, service ending). */
     fun dismiss() = hide(animated = false)
 
+    /** Fade out only the persistent playback chip; leave a brief notice alone. */
+    fun dismissPersistent() {
+        if (persistent) hide(animated = true)
+    }
+
     private fun hide(animated: Boolean) {
         handler.removeCallbacks(fadeOut)
+        persistent = false
         val view = card ?: return
         if (!animated) {
+            animationGeneration++
             remove(view)
             return
         }
+        val generation = ++animationGeneration
         view.animate().alpha(0f).translationY(-dp(SLIDE_DP)).setDuration(FADE_OUT_MS)
-            .withEndAction { remove(view) }
+            .withEndAction { if (generation == animationGeneration) remove(view) }
             .start()
     }
 
@@ -122,7 +149,7 @@ class AppliedCard(context: Context) {
         ((view.background?.mutate() as? LayerDrawable)?.findDrawableByLayerId(R.id.card_edge) as? GradientDrawable)
             ?.setColor(tint)
         (view.findViewById<View>(R.id.card_dot).background?.mutate() as? GradientDrawable)?.setColor(tint)
-        val rail = ui.getString(if (content.active) R.string.card_rail_on else R.string.card_rail_paused)
+        val rail = content.railText ?: ui.getString(if (content.active) R.string.card_rail_on else R.string.card_rail_paused)
         view.findViewById<TextView>(R.id.card_rail).apply {
             text = rail
             setTextColor(tint)

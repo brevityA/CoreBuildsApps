@@ -148,13 +148,13 @@ class MainActivity : TvActivity() {
     }
 
     /**
-     * Home's bar for the on-screen card (1.3.2): shown while the notice is on
-     * and Android will not let Core EQ draw over other apps. Re-read on every
-     * resume, so coming back from the permission screen hides it.
+     * Home's permission bar for requested overlay features: shown while a
+     * notice or playback chip is enabled and Android will not let Core EQ draw
+     * over other apps. Re-read on resume after the permission screen.
      */
     private fun refreshCardPermissionBar() {
         val visible = OverlayPermission.homePromptVisible(
-            noticeOn = profileStore.announceApplied,
+            noticeOn = profileStore.announceApplied || profileStore.playbackHudEnabled,
             allowed = OverlayPermission.allowed(this),
             dismissed = profileStore.cardPromptDismissed
         )
@@ -184,6 +184,7 @@ class MainActivity : TvActivity() {
         if (profileStore.correctionEnabled && !EqService.running) {
             EqService.enable(this)?.let { profileStore.setStatus(it, isError = true) }
         }
+        EqService.send(this, EqService.ACTION_REFRESH_PLAYBACK_HUD)
         loadActiveProfile()
         refreshModeButton()
         refreshStatus()

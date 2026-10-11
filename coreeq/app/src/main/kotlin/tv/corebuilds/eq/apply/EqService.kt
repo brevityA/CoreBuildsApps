@@ -76,9 +76,9 @@ import kotlin.math.roundToInt
  * When the platform reports media playback while the output-mix effect is
  * configured, the Home indicator and notification show a playback hint. The
  * callback does not identify the app or prove its route passes through the
- * effect, so the wording explicitly says coverage is unknown. On the
- * per-session path the callback cannot be correlated with a held session, so
- * there is no playback badge there.
+ * effect, so the wording explicitly says coverage is unknown. The optional
+ * overlay uses the same wording for the output-mix path; on the per-session
+ * path it says the playback-to-effect match is unknown.
  */
 class EqService : Service() {
 
@@ -106,6 +106,13 @@ class EqService : Service() {
     /** What the card says about the correction applied right now, for Profiles' test card; null while nothing is applied. */
     private var currentCard: AppliedCard.Content? = null
     private var currentCardFallback: String? = null
+    private var currentPlaybackHudState = PlaybackHudState.HIDDEN
+    private val playbackHudHideRunnable = Runnable {
+        if (currentPlaybackHudState == PlaybackHudState.IDLE) {
+            currentPlaybackHudState = PlaybackHudState.HIDDEN
+            appliedCard.dismissPersistent()
+        }
+    }
     
     private val sessionEqs = mutableMapOf<Int, Held>()
     /** Only unambiguous DUMP UID-to-package matches may influence app-mode rules. */
@@ -301,6 +308,7 @@ class EqService : Service() {
                     Toast.makeText(this, getString(R.string.card_test_waiting), Toast.LENGTH_LONG).show()
                 }
             }
+            ACTION_REFRESH_PLAYBACK_HUD -> publish()
             else -> applyAll() // ACTION_START, ACTION_REAPPLY, or a sticky restart
         }
         return START_STICKY
@@ -757,16 +765,34 @@ class EqService : Service() {
 
     /**
      * Publishes the status to every visible surface — the Home screen status
-     * line, its correction indicator, and the notification — from one place,
-     * so they cannot disagree. The words are whatever [report] last chose; the
-     * "▶ Playing ·" marker is added while the output-mix effect is configured
+     * line, its correction indicator, the notification, and the optional
+     * playback chip — from one place, so they cannot disagree. The words are
+     * whatever [report] last chose; the "▶ Playing ·" marker is added while
+     * the output-mix effect is configured
      * and Android reports media playback, not as proof of end-to-end coverage.
      * Unchanged reports publish nothing, so playback callbacks cannot spam
      * the notification on every focus change.
      */
     private fun publish(configs: List<AudioPlaybackConfiguration>? = null) {
         if (!running || messageBody.isEmpty()) return
-        val playingNow = !suspended && !outputPaused && !messageError && globalEffect != null && audioIsPlaying(configs)
+        val healthy = !suspended && !outputPaused && !messageError
+        val hasOutputMixEffect = globalEffect != null
+        val hasSessionEffect = sessionEqs.isNotEmpty()
+        val shouldProbePlayback = healthy && (
+            hasOutputMixEffect || (store.playbackHudEnabled && hasSessionEffect)
+        )
+        val playbackReported = shouldProbePlayback && audioIsPlaying(configs)
+        val playingNow = healthy && hasOutputMixEffect && playbackReported
+        val hudState = playbackHudState(
+            enabled = store.playbackHudEnabled,
+            correctionEnabled = store.correctionEnabled,
+            healthy = healthy,
+            playbackReported = playbackReported,
+            outputMixConfigured = hasOutputMixEffect,
+            sessionEffectConfigured = hasSessionEffect
+        )
+        syncPlaybackHud(hudState)
+
         val shown = if (playingNow) "▶ Playing · $messageBody" else messageBody
         if (shown == lastShown && playingNow == lastPlaying) return
         lastShown = shown
@@ -780,6 +806,60 @@ class EqService : Service() {
             getSystemService(NotificationManager::class.java)?.notify(NOTIFICATION_ID, notification(shown))
         }
         sendBroadcast(Intent(ACTION_STATUS_CHANGED).setPackage(packageName))
+    }
+
+    /**
+     * Keep the optional overlay in step with reported playback. A short idle
+     * grace avoids flicker between tracks; errors, suspension, an unmatched
+     * output, and disabling the switch dismiss it immediately.
+     */
+    private fun syncPlaybackHud(next: PlaybackHudState) {
+        mainHandler.post {
+            if (!running) {
+                mainHandler.removeCallbacks(playbackHudHideRunnable)
+                currentPlaybackHudState = PlaybackHudState.HIDDEN
+                appliedCard.dismissPersistent()
+                return@post
+            }
+            when (next) {
+                PlaybackHudState.HIDDEN -> {
+                    mainHandler.removeCallbacks(playbackHudHideRunnable)
+                    currentPlaybackHudState = PlaybackHudState.HIDDEN
+                    appliedCard.dismissPersistent()
+                }
+                PlaybackHudState.IDLE -> {
+                    if (currentPlaybackHudState == PlaybackHudState.OUTPUT_MIX_REPORTED ||
+                        currentPlaybackHudState == PlaybackHudState.SESSION_MATCH_UNKNOWN
+                    ) {
+                        currentPlaybackHudState = PlaybackHudState.IDLE
+                        mainHandler.removeCallbacks(playbackHudHideRunnable)
+                        mainHandler.postDelayed(playbackHudHideRunnable, PLAYBACK_HUD_STOP_GRACE_MS)
+                    } else {
+                        currentPlaybackHudState = PlaybackHudState.IDLE
+                    }
+                }
+                PlaybackHudState.OUTPUT_MIX_REPORTED,
+                PlaybackHudState.SESSION_MATCH_UNKNOWN -> {
+                    mainHandler.removeCallbacks(playbackHudHideRunnable)
+                    currentPlaybackHudState = next
+                    renderPlaybackHud()
+                }
+            }
+        }
+    }
+
+    /** Render only evidence the service has: mix callback, or an unmatched session-effect set. */
+    private fun renderPlaybackHud(): Boolean {
+        val base = currentCard ?: run {
+            appliedCard.dismissPersistent()
+            return false
+        }
+        val rail = when (currentPlaybackHudState) {
+            PlaybackHudState.OUTPUT_MIX_REPORTED -> getString(R.string.card_rail_playing_mix)
+            PlaybackHudState.SESSION_MATCH_UNKNOWN -> getString(R.string.card_rail_playing_session)
+            else -> return false
+        }
+        return appliedCard.showPersistent(base.copy(active = true, railText = rail))
     }
 
     private fun report(message: String, isError: Boolean) {
@@ -894,6 +974,10 @@ class EqService : Service() {
 
     /** The card, or the same words as a text toast where Android will not let Core EQ draw over other apps. */
     private fun showCard(content: AppliedCard.Content, fallback: String) {
+        if ((currentPlaybackHudState == PlaybackHudState.OUTPUT_MIX_REPORTED ||
+                currentPlaybackHudState == PlaybackHudState.SESSION_MATCH_UNKNOWN) &&
+            renderPlaybackHud()
+        ) return
         if (!appliedCard.show(content)) Toast.makeText(this, fallback, Toast.LENGTH_SHORT).show()
     }
 
@@ -1018,6 +1102,8 @@ class EqService : Service() {
         const val ACTION_RELOAD_PREFS = "tv.corebuilds.eq.action.RELOAD_PREFS"
         /** Show the card for what is applied now (Profiles' test card), whether or not it changed. */
         const val ACTION_SHOW_CARD = "tv.corebuilds.eq.action.SHOW_CARD"
+        /** Refresh the optional overlay after its setting or Android's overlay permission changes. */
+        const val ACTION_REFRESH_PLAYBACK_HUD = "tv.corebuilds.eq.action.REFRESH_PLAYBACK_HUD"
         /** AudioManager.VOLUME_CHANGED_ACTION: sent by the system on most builds, but hidden API. */
         private const val VOLUME_CHANGED_ACTION = "android.media.VOLUME_CHANGED_ACTION"
         const val ACTION_STATUS_CHANGED = "tv.corebuilds.eq.action.STATUS_CHANGED"
@@ -1030,6 +1116,8 @@ class EqService : Service() {
 
         /** Playback changes coalesce into one re-discovery after this pause. */
         private const val DISCOVERY_DEBOUNCE_MS = 2000L
+        /** Keep the overlay through brief pauses between tracks. */
+        private const val PLAYBACK_HUD_STOP_GRACE_MS = 5000L
 
         @Volatile
         var running = false

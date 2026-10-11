@@ -252,6 +252,8 @@
     <string name="notice_profile_applied">Core EQ · %1$s · %2$s</string>
     <string name="card_rail_on">Core EQ · Correction on</string>
     <string name="card_rail_paused">Core EQ · Correction paused</string>
+    <string name="card_rail_playing_mix">PLAYBACK REPORTED · COVERAGE UNKNOWN</string>
+    <string name="card_rail_playing_session">PLAYBACK REPORTED · SESSION MATCH UNKNOWN</string>
     <string name="card_paused_title">No profile for this output</string>
     <string name="card_paused_detail">%1$s · measure it, or switch back to an output you measured.</string>
     <string name="notice_paused">Core EQ · paused · no profile for %1$s</string>
@@ -266,12 +268,17 @@
     <string name="profiles_card_allowed">Shown as a card at the top right for 4 seconds, over whatever is playing: profile, mode, output and extras.</string>
     <string name="profiles_card_needs_permission">Shown as a short text toast for now. Allow “Display over other apps” for the card with the profile, mode, output and extras.</string>
     <string name="profiles_card_off">Off: nothing is shown when a profile is applied.</string>
-    <string name="profiles_card_allow">Allow the on-screen card…</string>
+    <string name="profiles_playback_hud_on">Playback chip: On</string>
+    <string name="profiles_playback_hud_off">Playback chip: Off</string>
+    <string name="profiles_playback_hud_allowed">While media playback is reported, a touch-through chip shows the profile and effect. It says “coverage unknown”; per-session effects say “session match unknown”.</string>
+    <string name="profiles_playback_hud_needs_permission">Enabled, but waiting for “Display over other apps”. The Home badge remains available; the notification also updates if notifications are allowed.</string>
+    <string name="profiles_playback_hud_off_note">Off. The Home badge remains available; the notification also updates if allowed. Neither proves the audio traverses the effect.</string>
+    <string name="profiles_card_allow">Allow on-screen indicators…</string>
     <string name="profiles_card_test">Show a test card</string>
     <string name="profiles_card_test_off">Correction is off, so there is nothing to show. Switch it on from Home, then try again.</string>
     <string name="card_test_waiting">Core EQ is waiting for a player: nothing is applied yet, so there is no card to show.</string>
     <string name="profiles_card_no_settings">This TV has no screen for that permission. From a computer with ADB: adb shell appops set %1$s SYSTEM_ALERT_WINDOW allow</string>
-    <string name="home_card_permission">The on-screen card needs “Display over other apps”. Until it is allowed, a short text toast says the same.</string>
+    <string name="home_card_permission">On-screen indicators need “Display over other apps”. The Home badge remains available; the notification also depends on notification permission.</string>
     <string name="home_card_allow">Allow</string>
 
     <!-- Screen labels moved out of layouts (1.3.0) -->
