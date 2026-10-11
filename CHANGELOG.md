@@ -6,7 +6,7 @@ All notable changes to the Core Builds Icon Pack. Format follows
 
 ## [Unreleased]
 
-## [2.3.1] — 2026-10-10
+## [2.3.1] — 2026-10-11
 
 ### Added
 
