@@ -172,17 +172,22 @@ jobs:
         if: failure()
         working-directory: ${{ matrix.dir }}
         run: |
-          # Re-run compile + lint (config-cache warm, cheap) with all output
-          # captured, then post the failure cause and first errors as
-          # annotations - readable without downloading job logs.
-          # The module comes from this entry's own tasks (":glyphs:lintDebug ..."
-          # -> glyphs), so a Glyphs failure reports Glyphs, not
-          # :app. compileDebugSources covers Java-only modules too.
+          # Re-run the entry's own tasks (config-cache warm, cheap) with all
+          # output captured, then post the failure cause and first errors as
+          # annotations - readable without downloading job logs. The tasks are
+          # re-run as written, NOT as ":<module>:compileDebugSources": with
+          # :app's art flavor dimension that shorthand is ambiguous
+          # (compileBannersDebugSources vs compileGlyphsDebugSources), so the
+          # diagnostic fails before the real error is ever reached and posts
+          # the ambiguity instead of the cause.
           MOD=$(printf '%s' "${{ matrix.tasks }}" | awk '{print $1}' | cut -d: -f2)
-          ./gradlew ":$MOD:compileDebugSources" ":$MOD:lintDebug" --no-daemon > build_out.txt 2>&1 || true
+          ./gradlew ${{ matrix.tasks }} --no-daemon > build_out.txt 2>&1 || true
           {
             grep -A 8 "What went wrong" build_out.txt | head -10 || true
             grep -E "^e: |error: " build_out.txt | head -5 || true
+            # Lint's console format is "path:line: Error: ..." - the two
+            # patterns above never match it.
+            grep -E " Error: " build_out.txt | head -5 || true
             LINT_TXT=$(find "$MOD/build" -name "lint-results-*.txt" 2>/dev/null | head -1)
             if [ -n "$LINT_TXT" ]; then
               grep -iE "Error" "$LINT_TXT" | head -4 || true
@@ -272,11 +277,16 @@ jobs:
           python tests/test_mapping_hygiene.py
           python tests/test_monet_handoff.py
           python tests/test_launcher_handoff.py
+          python tests/test_launcher_compat.py
           python tests/test_presence.py
           python tests/test_render_stack.py
           python tests/test_changelog_contract.py
           python tests/test_glyphs_pack.py
           python tests/test_icon_palette.py
+          # The coverage report's CI half: no network - it only proves the
+          # committed docs/COVERAGE.md exists and the weekly refresh
+          # (coverage-report.yml) has not lapsed.
+          python tools/coverage_report.py --check
           python tests/test_update_manifest_gate.py
           python tests/test_core_eq_update_contract.py
           python tests/test_support_links.py

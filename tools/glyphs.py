@@ -9015,3 +9015,32 @@ def morphe_m(c):
 
 
 GLYPHS.update({"morphe_m": morphe_m})
+
+
+def aiostreams_a(c):
+    """AIOStreams: a diagonal stroke rising to the right, and the circle at
+    its upper right — the app's A cue, drawn in Core stroke geometry. The
+    brand's own mark is the same two shapes (monochrome white on black);
+    this is not a trace of it."""
+    return (f'<path d="M 152 372 L 282 152" {_s(c, 40)}/>'
+            f'<circle cx="352" cy="248" r="72" {_s(c, 34)}/>')
+
+
+GLYPHS.update({"aiostreams_a": aiostreams_a})
+
+
+def movieboxtv_strip(c):
+    """MovieBoxTV: a film strip with its sprockets beside a play triangle —
+    the app's download-and-play cue in Core stroke geometry, not a trace of
+    the vendor icon (whose film strip, triangle and arrow share this
+    composition)."""
+    return (f'<rect x="96" y="96" width="120" height="320" rx="44" {_s(c, 34)}/>'
+            f'<circle cx="156" cy="148" r="15" {_f(c)}/>'
+            f'<circle cx="156" cy="206" r="15" {_f(c)}/>'
+            f'<circle cx="156" cy="264" r="15" {_f(c)}/>'
+            f'<circle cx="156" cy="322" r="15" {_f(c)}/>'
+            f'<circle cx="156" cy="380" r="15" {_f(c)}/>'
+            f'<path d="M 288 168 L 424 256 L 288 344 Z" {_s(c, 34)}/>')
+
+
+GLYPHS.update({"movieboxtv_strip": movieboxtv_strip})

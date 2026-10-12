@@ -1,5 +1,6 @@
 package tv.corebuilds.iconpack
 
+import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.view.View
@@ -83,6 +84,23 @@ class AuditorActivity : TvActivity() {
         // screen that does not work.
         findViewById<TextView>(R.id.audit_count).setText(R.string.audit_scanning)
 
+        // Which launcher this TV is on, before any row is pressed: half of
+        // "not applying" is the launcher, not the mapping - phone launchers
+        // take the glyphs, Fire TV builds ship different activities, and a
+        // launcher without an inbound apply needs the walk. Detection is one
+        // resolveActivity, so it runs on the main thread before the scan.
+        val home = ApplyIconPack.detectDefault(this)
+        val launcherNote = findViewById<TextView>(R.id.audit_launcher_note)
+        launcherNote.text = if (home != null) {
+            getString(R.string.launcher_compat_here_fmt, home.displayName,
+                      ApplyIconPack.artText(this, home.art))
+        } else {
+            getString(R.string.launcher_compat_here_unknown)
+        }
+        launcherNote.setOnClickListener {
+            startActivity(Intent(this, LauncherCompatActivity::class.java))
+        }
+
         // Off the main thread: the scan reads and regex-walks the whole
         // appfilter asset (~1800 components) and loads a label per
         // launchable app, and that is not frame-budget work on a TV CPU.
@@ -127,9 +145,20 @@ class AuditorActivity : TvActivity() {
         }
     }
 
-    /** The reporter-side device note central to both request channels. */
-    private fun deviceNote(): String = "Scanned on ${Build.MODEL}, Android " +
-        "${Build.VERSION.RELEASE}, pack ${BuildConfig.VERSION_NAME}"
+    /**
+     * The reporter-side device note central to both request channels.
+     *
+     * The detected launcher goes with it: the form's device field already
+     * expects one (its placeholder ends "· Projectivy 4.70"), and GitHub
+     * prefills text inputs but not dropdowns - so the launcher rides in the
+     * device line rather than a box the reporter has to fill by hand. When
+     * HOME is not in the known list the note stays what it was, because a
+     * guessed launcher name is worse than a missing one.
+     */
+    private fun deviceNote(): String =
+        "Scanned on ${Build.MODEL}, Android " +
+            "${Build.VERSION.RELEASE}, pack ${BuildConfig.VERSION_NAME}" +
+            (ApplyIconPack.detectDefault(this)?.let { ", ${it.displayName}" } ?: "")
 
     /**
      * The row press. Tries the broker first - one press, one JSON POST, the

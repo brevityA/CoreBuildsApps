@@ -6,6 +6,64 @@ All notable changes to the Core Builds Icon Pack. Format follows
 
 ## [Unreleased]
 
+## [2.3.3] — 2026-10-12
+
+### Added
+
+- **MovieBoxTV icon.** The all-in-one movie and TV app for Android TV
+  (`com.community.mbox.tv`) has its own icon: a film strip with its sprockets
+  beside a play triangle, in the arrow green of the app's own mark
+  (issues #291, #294).
+- **AIOStreams icon.** AIOStreams, the Stremio-compatible media hub that now
+  ships its own Android TV app, has its own icon: the diagonal stroke and
+  circle of its A cue, in the pack's off-white (its mark is monochrome white
+  on black) (issues #290, #293).
+- **Icon Echo wallpaper series.** Six new 4K wallpapers (series 11, walls
+  103–108) lit by accents taken from the icon catalogue itself — HeatLive
+  magenta, YouTube red, Spotify green, Max Player amber, TiviMate light blue,
+  ARD azure — each shifted a step toward the night ground, so a wall and the
+  icons it backs glow the same colour a shade apart. The existing 102
+  wallpapers are untouched (2026-10 concept study, carried to full
+  resolution).
+- **Three Icon Echo live loops.** Signal Sweep, Green Current and Molten
+  Orbit (loops 29–31) move as system live wallpapers in the app and in the
+  Core Motion feed, in the same icon accents.
+- **Launcher compatibility summary.** A new screen (About → Launcher
+  compatibility) shows every launcher the pack knows: what art it applies
+  (the 16:9 banners, or the square glyphs from Core Builds Glyphs on phone
+  launchers), how the pack reaches it (auto-apply, the launcher's own
+  settings, per-app, or not at all), and its notes — Monet's premium
+  gate, AT4K's bundled theme, Projectivy's rescan-after-upgrade practice,
+  and FLauncher's deliberate "not supported". The Unmapped apps screen now
+  opens with which launcher this TV is on, and a not-applying report
+  carries the detected launcher in its device line; the report form's
+  launcher dropdown covers the full known set.
+- **Coverage and mapping-reliability report.** `docs/COVERAGE.md`, refreshed
+  weekly by workflow: the tracker cross-checked against the bundled
+  appfilter, so the loop's outcomes are standing numbers instead of a hand
+  derivation — distinct apps reported and how many are in the pack now,
+  the first-fix rate on closed not-applying reports (the exact reported
+  component shipped), resolution speed, and the open backlog. Shipped
+  numbers as of 2.3.3: 40 distinct apps reported, 22 in the pack,
+  8/9 reported components exact-fixed, median resolution 1.0 day.
+
+### Changed
+
+- **Wallpaper colours sit on the icon palette.** The generated wallpaper
+  series and their motion loops were retuned a step toward the icon pack's
+  own accents: the cyan light is now the pack's Signal `#00D4FF`, and Dusk
+  Violet and Ember are nudged toward the icon violet and coral families. The
+  walls each generator's list owns were re-rendered; the genre-palette sets
+  (series 0, 1, 6, 7) and earlier committed walls keep their colours.
+
+### Fixed
+
+- **Nuvio on the `com.nuvio.app` package.** The September P0 pass mapped
+  Nuvio's `AppIconDefault` launcher activity under `com.nuvio.tv` only; the
+  `com.nuvio.app` package variant ships the same activity, which issue #288
+  reported (device-reported, Smart TV Pro, Android 14). The component is now
+  mapped — the first gap the new coverage report itself surfaced.
+
 ## [2.3.2] — 2026-10-12
 
 ### Fixed

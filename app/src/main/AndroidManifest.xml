@@ -284,6 +284,14 @@
             android:exported="false"
             android:label="@string/setup_label"
             android:theme="@style/Theme.CoreBuilds" />
+        <!-- The per-launcher compatibility summary: what art each known
+             launcher applies, how the pack reaches it, and its notes.
+             Opened from About and from the auditor's launcher line. -->
+        <activity
+            android:name=".LauncherCompatActivity"
+            android:exported="false"
+            android:label="@string/launcher_compat_label"
+            android:theme="@style/Theme.CoreBuilds" />
         <activity
             android:name=".ExportProgressActivity"
             android:exported="false"

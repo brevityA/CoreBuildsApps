@@ -68,6 +68,9 @@
     <item component="ComponentInfo{com.finalwire.aida64/.HHMainActivity}" drawable="finalwire"/>
     <item component="ComponentInfo{com.finalwire.aida64/com.finalwire.aida64.TVMainActivity}" drawable="finalwire"/>
     <item component="ComponentInfo{com.finalwire.aida64/.TVMainActivity}" drawable="finalwire"/>
+    <!-- AIOStreams -->
+    <item component="ComponentInfo{io.github.viren070.aiostreams/io.github.viren070.aiostreams.MainActivity}" drawable="aiostreams"/>
+    <item component="ComponentInfo{io.github.viren070.aiostreams/.MainActivity}" drawable="aiostreams"/>
     <!-- Air Attack 2 -->
     <item component="ComponentInfo{com.ArtInGames.AirAttack2tv/com.unity3d.player.UnityPlayerActivity}" drawable="airattack2tv"/>
     <!-- Aircast -->
@@ -1362,6 +1365,8 @@
     <item component="ComponentInfo{com.tcl.movieark/com.tcl.waterfall.overseas.main.MainActivity}" drawable="movieark"/>
     <!-- MovieBox Pro -->
     <item component="ComponentInfo{com.movieboxpro.androidtv/com.movieboxpro.android.view.activity.SplashActivity}" drawable="movieboxpro"/>
+    <!-- MovieBoxTV -->
+    <item component="ComponentInfo{com.community.mbox.tv/com.transsion.subroom.activity.SplashActivity}" drawable="movieboxtv"/>
     <!-- MovieLab -->
     <item component="ComponentInfo{com.movielab.tv/com.movielab.MainActivity}" drawable="movielab"/>
     <!-- Movies Anywhere -->
@@ -1551,6 +1556,7 @@
     <item component="ComponentInfo{com.nuvio.tv/.launcher.AppIconCopper}" drawable="nuvio"/>
     <item component="ComponentInfo{com.nuvio.tv/com.nuvio.tv.launcher.AppIconGraphite}" drawable="nuvio"/>
     <item component="ComponentInfo{com.nuvio.tv/.launcher.AppIconGraphite}" drawable="nuvio"/>
+    <item component="ComponentInfo{com.nuvio.app/com.nuvio.tv.launcher.AppIconDefault}" drawable="nuvio"/>
     <!-- NV Player -->
     <item component="ComponentInfo{com.acb.nvplayer/com.ae.video.bplayer.ui.SplashActivity}" drawable="nvplayer"/>
     <!-- Nxsha -->

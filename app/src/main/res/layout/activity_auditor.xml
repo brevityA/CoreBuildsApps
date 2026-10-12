@@ -87,6 +87,30 @@
         android:textColor="@color/cb_slate"
         android:textSize="@dimen/cb_text_data" />
 
+    <!-- Which launcher this TV is on, detected: half of "icon not applying"
+         is the launcher, not the mapping (phone launchers take the glyphs,
+         Fire TV builds ship different activities, a launcher without inbound
+         apply needs the walk). The line opens the compatibility screen.
+         Focusable, because a TV line that says something and cannot be
+         reached by the D-pad is a label, not a stop. -->
+    <TextView
+        android:id="@+id/audit_launcher_note"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/cb_space_sm"
+        android:background="@drawable/bg_ghost"
+        android:clickable="true"
+        android:contentDescription="@string/launcher_compat_note_cd"
+        android:focusable="true"
+        android:gravity="center_vertical"
+        android:minHeight="@dimen/cb_target_min"
+        android:paddingStart="@dimen/cb_space_md"
+        android:paddingEnd="@dimen/cb_space_md"
+        android:paddingTop="@dimen/cb_space_xs"
+        android:paddingBottom="@dimen/cb_space_xs"
+        android:textColor="@color/cb_slate"
+        android:textSize="@dimen/cb_text_data" />
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/audit_list"
         android:layout_width="match_parent"

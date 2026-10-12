@@ -14,9 +14,14 @@ package tv.corebuilds.iconpack
  * are drawn with their stills rather than from them: marquee bulbs chase,
  * neon tubes stutter, dust drifts through a projector beam, all at 60 fps.
  *
- * One loop per wall and nothing else: the list is exactly the Deep Space and
- * Cinema sets in Motion/live-feed.json (tests/test_live_wallpaper.py holds
- * them equal). Nothing is fetched until it is previewed or saved.
+ * The three Icon Echo loops (series-11-icon-echo, loops 29-31,
+ * tools/build_icon_echo_loops.py) are slow procedural fields in one icon
+ * accent from the catalogue each — the moving half of the icon-echo stills.
+ *
+ * One loop per icon-echo wall and nothing else beyond the Deep Space and
+ * Cinema sets: the list is exactly the feed's Deep Space, Cinema and Icon
+ * Echo entries (tests/test_live_wallpaper.py holds them equal). Nothing is
+ * fetched until it is previewed or saved.
  */
 data class Loop(
     /** Stable preference value: the wall's slug, e.g. "event-horizon". Never renamed once shipped. */
@@ -48,6 +53,10 @@ object LiveLoop {
     /** The Cinema set's series (walls 97-102, loops 23-28). */
     const val CINEMA_SERIES = "series-10-cinema"
 
+    /** The Icon Echo set's series (walls 103-108; loops 29-31 are its moving
+     *  half, rendered by tools/build_icon_echo_loops.py). */
+    const val ICON_ECHO_SERIES = "series-11-icon-echo"
+
     /** Asset directory holding the bundled still frames. */
     const val THUMB_DIR = "live_thumbs"
 
@@ -56,7 +65,7 @@ object LiveLoop {
 
     /**
      * The twelve Deep Space loops (walls 85-96) then the six Cinema loops
-     * (97-102), in wall order.
+     * (97-102) then the three Icon Echo loops (103-105), in wall order.
      *
      * The first entry is the default: [Prefs.liveLoopId] falls back to it, and
      * so does the engine when it reads a value it does not recognise, so a
@@ -213,6 +222,33 @@ object LiveLoop {
             thumbUrl = RAW_BASE + "thumbs/coremotion-live-28-cinema-box-office.jpg",
             thumbAsset = "$THUMB_DIR/coremotion-live-28-cinema-box-office.jpg",
             series = CINEMA_SERIES
+        ),
+        Loop(
+            id = "signal-sweep",
+            title = "Signal Sweep",
+            fileName = "coremotion-live-29-signal-sweep.mp4",
+            url = RAW_BASE + "coremotion-live-29-signal-sweep.mp4",
+            thumbUrl = RAW_BASE + "thumbs/coremotion-live-29-signal-sweep.jpg",
+            thumbAsset = "$THUMB_DIR/coremotion-live-29-signal-sweep.jpg",
+            series = ICON_ECHO_SERIES
+        ),
+        Loop(
+            id = "green-current",
+            title = "Green Current",
+            fileName = "coremotion-live-30-green-current.mp4",
+            url = RAW_BASE + "coremotion-live-30-green-current.mp4",
+            thumbUrl = RAW_BASE + "thumbs/coremotion-live-30-green-current.jpg",
+            thumbAsset = "$THUMB_DIR/coremotion-live-30-green-current.jpg",
+            series = ICON_ECHO_SERIES
+        ),
+        Loop(
+            id = "molten-orbit",
+            title = "Molten Orbit",
+            fileName = "coremotion-live-31-molten-orbit.mp4",
+            url = RAW_BASE + "coremotion-live-31-molten-orbit.mp4",
+            thumbUrl = RAW_BASE + "thumbs/coremotion-live-31-molten-orbit.jpg",
+            thumbAsset = "$THUMB_DIR/coremotion-live-31-molten-orbit.jpg",
+            series = ICON_ECHO_SERIES
         ),
     )
 

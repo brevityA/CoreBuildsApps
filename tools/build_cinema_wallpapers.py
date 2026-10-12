@@ -61,9 +61,12 @@ VOID = (4, 7, 15)
 NIGHT = (13, 17, 23)
 CYAN = (0, 212, 255)
 GLOW_CYAN = (126, 238, 255)
-VIOLET = (138, 72, 144)
+# Icon-echo retune (2026-10-11): the dim violet/ember bases sit on the icon
+# pack's accent families; the lifted tube colours (ORCHID, FLAME) already do
+# (see build_classic_wallpapers.py and Wallpapers/README.md).
+VIOLET = (151, 84, 168)
 ORCHID = (196, 110, 214)     # violet lifted for a lit tube
-EMBER = (192, 58, 32)
+EMBER = (210, 72, 42)
 FLAME = (255, 96, 60)        # ember lifted for a lit tube
 BULB = (255, 204, 140)       # marquee bulb white - the one warm addition
 BUILD_BLUE = (79, 172, 254)

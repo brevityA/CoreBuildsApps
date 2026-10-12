@@ -9,6 +9,7 @@
     <item drawable="coreshift_banner" />
     <category title="Banners · Streaming" />
     <item drawable="androidtv_3_banner" />
+    <item drawable="aiostreams_banner" />
     <item drawable="arrowfilms_banner" />
     <item drawable="arvio_banner" />
     <item drawable="begin_banner" />
@@ -29,6 +30,7 @@
     <item drawable="lumera_banner" />
     <item drawable="moviehd_banner" />
     <item drawable="movieboxpro_banner" />
+    <item drawable="movieboxtv_banner" />
     <item drawable="movielab_banner" />
     <item drawable="moviesanywhere_banner" />
     <item drawable="moviesbyfawesomeandroidtv_banner" />

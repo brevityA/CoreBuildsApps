@@ -9,6 +9,7 @@
     <item drawable="coreshift" />
     <category title="Square · Streaming" />
     <item drawable="androidtv_3" />
+    <item drawable="aiostreams" />
     <item drawable="arrowfilms" />
     <item drawable="arvio" />
     <item drawable="begin" />
@@ -29,6 +30,7 @@
     <item drawable="lumera" />
     <item drawable="moviehd" />
     <item drawable="movieboxpro" />
+    <item drawable="movieboxtv" />
     <item drawable="movielab" />
     <item drawable="moviesanywhere" />
     <item drawable="moviesbyfawesomeandroidtv" />

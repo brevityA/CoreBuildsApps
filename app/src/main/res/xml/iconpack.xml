@@ -19,6 +19,7 @@
     <item drawable="aerialviews" />
     <item drawable="aicamview" />
     <item drawable="finalwire" />
+    <item drawable="aiostreams" />
     <item drawable="airattack2tv" />
     <item drawable="aircast" />
     <item drawable="airpin_pro" />
@@ -466,6 +467,7 @@
     <item drawable="moviehd" />
     <item drawable="movieark" />
     <item drawable="movieboxpro" />
+    <item drawable="movieboxtv" />
     <item drawable="movielab" />
     <item drawable="moviesanywhere" />
     <item drawable="moviesbyfawesomeandroidtv" />

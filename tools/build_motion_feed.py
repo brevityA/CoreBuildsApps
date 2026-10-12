@@ -41,13 +41,17 @@ DURATION = 20
 W, H = 1920, 1080
 THUMB_W, THUMB_H = 480, 270
 
-# §03 palette (hex, as ffmpeg colors)
+# §03 palette (hex, as ffmpeg colors).
+#
+# Icon-echo retune (2026-10-11): CYAN is the icon pack's own Signal #00D4FF;
+# VIOLET and EMBER are nudged slightly toward the icon violet/coral families
+# (see build_classic_wallpapers.py and Wallpapers/README.md).
 NIGHT = "0x04070f"
-CYAN = "0x00e5ff"
+CYAN = "0x00d4ff"
 SIGNAL = "0x00d4ff"
 BUILD_BLUE = "0x4facfe"
-VIOLET = "0x8a4890"
-EMBER = "0xc03a20"
+VIOLET = "0x9754a8"
+EMBER = "0xd2482a"
 
 # ── clips ────────────────────────────────────────────────────────────────
 # src = ffmpeg lavfi source string, vf = optional post-filter, crf per clip
@@ -160,6 +164,16 @@ def cinema_entries():
             for i, (_number, slug, title) in enumerate(CINEMA)]
 
 
+def icon_echo_entries():
+    """(file stem, title) for the Icon Echo loops (29-31), in feed order.
+
+    Rendered by tools/build_icon_echo_loops.py; the import is deferred to
+    keep the module graph acyclic.
+    """
+    from build_icon_echo_loops import entries
+    return entries()
+
+
 def write_feed():
     feed = []
     rows = [(f"coremotion-live-{i + 1:02d}-{e['slug']}", e["title"], "Core Motion")
@@ -168,6 +182,8 @@ def write_feed():
              for stem, title in deep_space_entries()]
     rows += [(stem, title, "Core Motion \u00b7 Cinema")
              for stem, title in cinema_entries()]
+    rows += [(stem, title, "Core Motion \u00b7 Icon Echo")
+             for stem, title in icon_echo_entries()]
     for stem, title, location in rows:
         feed.append({
             "location": location,

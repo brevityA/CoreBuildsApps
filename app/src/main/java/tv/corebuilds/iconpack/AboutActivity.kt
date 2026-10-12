@@ -50,6 +50,9 @@ class AboutActivity : TvActivity() {
         findViewById<View>(R.id.about_settings).setOnClickListener {
             startActivity(Intent(this, SettingsActivity::class.java))
         }
+        findViewById<View>(R.id.about_launcher).setOnClickListener {
+            startActivity(Intent(this, LauncherCompatActivity::class.java))
+        }
         findViewById<View>(R.id.about_support).setOnClickListener {
             startActivity(Intent(this, SupportActivity::class.java))
         }

@@ -31,13 +31,19 @@ BUNDLED_THUMBS = ROOT / "app" / "src" / "main" / "assets" / "wallpapers_thumbs"
 W, H = 3840, 2160
 THUMB_W, THUMB_H = 480, 270
 
-# Core Builds palette
+# Core Builds palette.
+#
+# Icon-echo retune (2026-10-11): the wall accents sit on the icon pack's own
+# accent families. CYAN is the pack's most-used icon accent, Signal #00D4FF;
+# DUSK and EMBER are nudged slightly toward the icon violet and coral
+# families (#A366FF / #FF4D4D territory) so a wall and the icons it backs
+# glow the same colour, a step apart in tone. See Wallpapers/README.md.
 NIGHT = (13, 17, 23)
 VOID = (4, 7, 15)
 PANEL = (26, 32, 48)
 CYAN = (0, 212, 255)
-EMBER = (192, 58, 32)
-DUSK = (138, 72, 144)
+EMBER = (210, 72, 42)
+DUSK = (151, 84, 168)
 BUILD_BLUE = (79, 172, 254)
 GLOW_CYAN = (126, 238, 255)
 SLATE = (139, 148, 158)

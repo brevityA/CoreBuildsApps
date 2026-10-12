@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Launcher compatibility: one row per known launcher - what art it applies
+  (16:9 banners from the appfilter, or the square glyphs from Core Builds
+  Glyphs), how the pack reaches it (auto-apply, the launcher's own settings,
+  per-app, not at all), and the launcher-specific notes. The data is
+  ApplyIconPack's; this screen only displays it, so it cannot drift from what
+  the apply flow would have done with the same launcher.
+
+  Chrome grammar copied from Settings: pinned header, one list between header
+  and bottom edge, scrollbar visible so overflow is legible. Rows are NOT
+  focusable - the same read-only grammar as the FAQ cards: a focusable
+  paragraph is a D-pad trap, and a compatibility row has nothing to press.
+-->
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/cb_night"
+    android:paddingStart="@dimen/cb_gutter_side"
+    android:paddingEnd="@dimen/cb_gutter_side"
+    android:paddingTop="24dp"
+    android:paddingBottom="16dp">
+
+    <!-- HEADER -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical">
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/bg_chip"
+                android:fontFamily="monospace"
+                android:paddingStart="@dimen/cb_space_sm"
+                android:paddingEnd="@dimen/cb_space_sm"
+                android:paddingTop="7dp"
+                android:paddingBottom="7dp"
+                android:letterSpacing="0.18"
+                android:text="@string/launcher_compat_kicker"
+                android:textColor="@color/cb_signal_cyan"
+                android:textSize="@dimen/cb_text_kicker"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/cb_space_md"
+                android:ellipsize="end"
+                android:letterSpacing="-0.025"
+                android:maxLines="1"
+                android:text="@string/launcher_compat_title"
+                android:textColor="@color/cb_ink"
+                android:textSize="@dimen/cb_text_title"
+                android:textStyle="bold" />
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/launcher_compat_back"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:minWidth="@dimen/cb_button_min_width"
+            android:minHeight="@dimen/cb_target_min"
+            android:background="@drawable/bg_ghost"
+            android:clickable="true"
+            android:focusable="true"
+            android:gravity="center"
+            android:paddingStart="@dimen/cb_space_lg"
+            android:paddingEnd="@dimen/cb_space_lg"
+            android:text="@string/action_back"
+            android:textColor="@color/cb_ink"
+            android:textSize="@dimen/cb_text_body" />
+    </LinearLayout>
+
+    <!-- This TV's launcher, detected: the one row the user is actually on.
+         The unknown case says so plainly instead of guessing. -->
+    <TextView
+        android:id="@+id/launcher_compat_here"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/cb_space_xs"
+        android:textColor="@color/cb_signal_cyan"
+        android:textSize="@dimen/cb_text_data"
+        android:visibility="gone" />
+
+    <TextView
+        android:id="@+id/launcher_compat_sub"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="3dp"
+        android:textColor="@color/cb_slate"
+        android:textSize="@dimen/cb_text_data" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/launcher_compat_list"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:clipToPadding="false"
+        android:paddingTop="@dimen/cb_space_sm"
+        android:paddingBottom="@dimen/cb_space_xs"
+        android:scrollbars="vertical" />
+</LinearLayout>

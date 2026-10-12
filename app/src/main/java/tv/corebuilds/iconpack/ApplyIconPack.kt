@@ -17,6 +17,25 @@ import android.content.pm.PackageManager
  */
 object ApplyIconPack {
 
+    /**
+     * What a launcher applies from this pack. BANNERS: the 16:9 banners the
+     * appfilter maps - the pack's native art on a TV card. GLYPHS: the square
+     * mark, which a phone launcher takes from the Core Builds Glyphs
+     * companion, because a phone launcher has no banner surface. NONE: the
+     * launcher applies no pack art at all.
+     */
+    enum class Art { BANNERS, GLYPHS, NONE }
+
+    /**
+     * How the pack reaches a launcher. AUTO: a press from this app fires the
+     * launcher's own apply contract. WALK: the launcher has no inbound apply,
+     * so the user picks the pack in the launcher's own settings - the handoff
+     * screen names the stops. PER_APP: there is no pack apply at all; icons
+     * are assigned one app at a time. NONE: the launcher does not apply icon
+     * packs, and nothing here should claim otherwise.
+     */
+    enum class ApplyMode { AUTO, WALK, PER_APP, NONE }
+
     sealed class Result {
         data class Applied(val launcherName: String) : Result()
         data class NotInstalled(val launcherName: String) : Result()
@@ -61,7 +80,28 @@ object ApplyIconPack {
          * pick as the final step so exactly one pack is ever named. Empty for
          * every launcher that never gets a handoff.
          */
-        val setupStops: List<String> = emptyList()
+        val setupStops: List<String> = emptyList(),
+        /**
+         * What this launcher shows when it applies the pack. TV launchers take
+         * the 16:9 banners; phone launchers take the square glyphs from the
+         * companion. A launcher with no pack support applies nothing.
+         */
+        val art: Art = Art.BANNERS,
+        /**
+         * How the press routes: [ApplyMode.AUTO] fires [intent],
+         * [ApplyMode.WALK] leads to the setup walk ([setupStops]),
+         * [ApplyMode.PER_APP] says so plainly, [ApplyMode.NONE] means no apply
+         * at all. WALK pairs with [inboundApply] false: the walk exists because
+         * the probe would only miss.
+         */
+        val applyMode: ApplyMode = ApplyMode.AUTO,
+        /**
+         * The launcher-specific facts that decide whether an applied icon
+         * appears - premium gates, renamed screens, launcher-internal cards.
+         * Shown on the compatibility screen and kept short enough to read on
+         * a 540p panel; the deep versions live in docs/research.
+         */
+        val notes: List<String> = emptyList()
     )
 
     private fun applyIntent(
@@ -120,7 +160,13 @@ object ApplyIconPack {
             )
         },
         manualPath = "Projectivy Settings → Appearance → Cards → Icon Pack → Core Builds",
-        setupStops = listOf("Projectivy Settings", "Appearance", "Cards", "Icon Pack")
+        setupStops = listOf("Projectivy Settings", "Appearance", "Cards", "Icon Pack"),
+        notes = listOf(
+            // docs/research/community-input-icons-2026-09.md §4.5: the dev has
+            // said the input-card namespace may change again, and the standing
+            // practice is a rescan after each major Projectivy version.
+            "Projectivy's HDMI and AV input cards are launcher-internal; if they revert to stock after a Projectivy update, re-apply the pack."
+        )
     )
 
     val MONET = Launcher(
@@ -144,7 +190,15 @@ object ApplyIconPack {
         // 1.0.80 reorganised Settings: the "Icons" category became "Apps".
         manualPath = "Monet Settings → Apps → Icon pack → Core Builds Icon Pack",
         inboundApply = false,
-        setupStops = listOf("Monet Settings", "Apps", "Icon pack")
+        setupStops = listOf("Monet Settings", "Apps", "Icon pack"),
+        applyMode = ApplyMode.WALK,
+        notes = listOf(
+            // Play listing, re-confirmed in docs/research/launcher-style-audit-2026-09.md:
+            // icon-pack support is a Monet Premium feature, and the 7 icon
+            // shapes include circle.
+            "Icon packs are a Monet Premium feature.",
+            "Monet offers seven icon shapes, including circle."
+        )
     )
 
     val AT4K = Launcher(
@@ -163,7 +217,14 @@ object ApplyIconPack {
         intent = { ctx, self -> tryStandardApply(ctx, "com.overdevs.at4k", self) },
         manualPath = "AT4K Settings → Themes → Icon packs → Core Builds Icon Pack",
         inboundApply = false,
-        setupStops = listOf("AT4K Settings", "Themes", "Icon packs")
+        setupStops = listOf("AT4K Settings", "Themes", "Icon packs"),
+        applyMode = ApplyMode.WALK,
+        notes = listOf(
+            // v1.2 bundles its own free transparent-icon theme
+            // (docs/research/launcher-style-audit-2026-09.md): a TV on the
+            // bundled set looks applied, so the pack has to be picked.
+            "AT4K ships a built-in transparent icon theme; the pack applies only when picked under Settings → Themes → Icon packs."
+        )
     )
 
     val LEANBACK = Launcher(
@@ -173,7 +234,14 @@ object ApplyIconPack {
         intent = { ctx, self ->
             tryStandardApply(ctx, "com.amazon.tv.leanbacklauncher", self)
         },
-        manualPath = "Leanback on Fire has no icon-pack apply. Open it and assign icons per app."
+        manualPath = "Leanback on Fire has no icon-pack apply. Open it and assign icons per app.",
+        applyMode = ApplyMode.PER_APP,
+        notes = listOf(
+            // The not-applying form's own preamble: Fire TV ships different
+            // launcher activities by region and carrier, so a stale mapping
+            // there is a component question, not a pack question.
+            "No icon-pack apply: icons are assigned per app. Fire TV builds vary by region and carrier, so the report form asks for the exact launcher activity."
+        )
     )
 
     val LTV = Launcher(
@@ -199,6 +267,16 @@ object ApplyIconPack {
         setupStops = listOf("ChillHub Settings", "Icon pack")
     )
 
+    /**
+     * What a phone launcher applies: the square glyph art, never the 16:9
+     * banners - a phone tile has no banner surface. This is the whole reason
+     * the Banners/Glyphs toggle exists, and the answer when a TV user who
+     * installs a phone launcher sees stock icons: apply Core Builds Glyphs
+     * there, not this pack.
+     */
+    private val PHONE_LAUNCHER_NOTE =
+        "Phone launcher: applies the square glyph art, not the 16:9 banners. Use Core Builds Glyphs for this launcher."
+
     val NOVA = Launcher(
         key = "nova",
         displayName = "Nova Launcher",
@@ -214,7 +292,9 @@ object ApplyIconPack {
             )
         },
         manualPath = "Nova Settings → Look & feel → Icon style → Icon theme",
-        setupStops = listOf("Nova Settings", "Look & feel", "Icon style", "Icon theme")
+        setupStops = listOf("Nova Settings", "Look & feel", "Icon style", "Icon theme"),
+        art = Art.GLYPHS,
+        notes = listOf(PHONE_LAUNCHER_NOTE)
     )
 
     private val LAWNCHAIR_PACKAGES = listOf(
@@ -236,7 +316,9 @@ object ApplyIconPack {
             }
         },
         manualPath = "Lawnchair Settings → General → Icon style → Icon pack",
-        setupStops = listOf("Lawnchair Settings", "General", "Icon style", "Icon pack")
+        setupStops = listOf("Lawnchair Settings", "General", "Icon style", "Icon pack"),
+        art = Art.GLYPHS,
+        notes = listOf(PHONE_LAUNCHER_NOTE)
     )
 
     val APEX = Launcher(
@@ -250,7 +332,9 @@ object ApplyIconPack {
             }
         },
         manualPath = "Apex Settings → Theme settings",
-        setupStops = listOf("Apex Settings", "Theme settings")
+        setupStops = listOf("Apex Settings", "Theme settings"),
+        art = Art.GLYPHS,
+        notes = listOf(PHONE_LAUNCHER_NOTE)
     )
 
     val ADW = Launcher(
@@ -266,7 +350,9 @@ object ApplyIconPack {
             }
         },
         manualPath = "ADW Settings → Themes",
-        setupStops = listOf("ADW Settings", "Themes")
+        setupStops = listOf("ADW Settings", "Themes"),
+        art = Art.GLYPHS,
+        notes = listOf(PHONE_LAUNCHER_NOTE)
     )
 
     /** Known launchers. HOME detection walks this list. Projectivy first. */
@@ -274,6 +360,36 @@ object ApplyIconPack {
         PROJECTIVY, MONET, AT4K, LEANBACK, LTV, CHILLHUB,
         NOVA, LAWNCHAIR, APEX, ADW
     )
+
+    /**
+     * Known, and intentionally inapplicable: a [Launcher] here documents that
+     * the pack does NOT apply to it, so the compatibility screen can say so
+     * instead of a user on it being pointed at an apply that cannot land.
+     * FLauncher's upstream project states icon-pack support is not planned
+     * (the 2026-09-24 changelog entry that removed its apply support keeps
+     * this exclusion deliberate).
+     */
+    val FLAUNCHER = Launcher(
+        key = "flauncher",
+        displayName = "FLauncher",
+        packages = listOf("me.efesser.flauncher"),
+        intent = { _, _ -> null },
+        manualPath = "FLauncher does not apply icon packs.",
+        art = Art.NONE,
+        applyMode = ApplyMode.NONE,
+        notes = listOf(
+            "FLauncher's upstream project states that icon-pack support is not planned."
+        )
+    )
+
+    val NOT_SUPPORTED = listOf(FLAUNCHER)
+
+    /**
+     * The compatibility screen's list: every launcher the pack can reach,
+     * then the ones it deliberately cannot. The screen marks which of them
+     * is this TV's HOME and which are installed.
+     */
+    val COMPATIBILITY = ALL + NOT_SUPPORTED
 
     fun Context.isInstalled(pkg: String): Boolean = try {
         packageManager.getPackageInfo(pkg, 0)
@@ -310,6 +426,25 @@ object ApplyIconPack {
         val home = detectDefault(context)
         val rest = ALL.filter { context.isInstalledAny(it) && it != home }
         return listOfNotNull(home) + rest
+    }
+
+    /**
+     * Is [launcher] on this device, by any of its packages? [installed] is the
+     * ordered variant over [ALL]; the compatibility screen needs the raw
+     * answer for [NOT_SUPPORTED] entries too, which [installed] never yields.
+     */
+    fun isInstalled(context: Context, launcher: Launcher): Boolean =
+        context.isInstalledAny(launcher)
+
+    /**
+     * The [art] sentence for the user: what a launcher applies from the pack.
+     * Shared by the compatibility screen and the auditor's launcher line so
+     * the two screens can never phrase the same fact two ways.
+     */
+    fun artText(context: Context, art: Art): String = when (art) {
+        Art.BANNERS -> context.getString(R.string.launcher_compat_art_banners)
+        Art.GLYPHS -> context.getString(R.string.launcher_compat_art_glyphs)
+        Art.NONE -> context.getString(R.string.launcher_compat_art_none)
     }
 
     /**

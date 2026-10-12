@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
-Contracts for the live wallpaper feature: Series 9 / Deep Space loops playing
-as the system live wallpaper.
+Contracts for the live wallpaper feature: the Deep Space, Cinema and Icon
+Echo loops playing as the system live wallpaper.
 
 Plain unittest over the repo tree, no Android SDK (mirrors
 tests/test_wallpaper_export.py). Guards the wiring that would otherwise rot
@@ -68,22 +68,25 @@ class LoopCatalogueTests(unittest.TestCase):
         cls.titles = re.findall(r'title = "([^"]+)"', cls.loops_body)
         cls.files = re.findall(r'fileName = "([^"]+)"', cls.loops_body)
 
-    def test_the_loops_are_exactly_the_deep_space_and_cinema_sets(self):
-        # One loop per series-9 and series-10 wall, in wall order, and nothing
-        # else: the app's list is the feed's Deep Space then Cinema entries,
-        # so a loop the feed drops (or adds) cannot linger (or go missing) in
-        # the picker.
+    def test_the_loops_are_exactly_the_deep_space_cinema_and_icon_echo_sets(self):
+        # One loop per series-9, series-10 and series-11 wall, in wall order,
+        # and nothing else: the app's list is the feed's Deep Space, Cinema
+        # and Icon Echo entries, so a loop the feed drops (or adds) cannot
+        # linger (or go missing) in the picker.
         feed = json.loads(read(MOTION_FEED))
         deep = [e["url_1080p"].rsplit("/", 1)[-1] for e in feed
                 if "Deep Space" in e.get("location", "")]
         cinema = [e["url_1080p"].rsplit("/", 1)[-1] for e in feed
                   if "Cinema" in e.get("location", "")]
+        echo = [e["url_1080p"].rsplit("/", 1)[-1] for e in feed
+                if "Icon Echo" in e.get("location", "")]
         self.assertEqual(len(deep), 12, "live-feed.json should list twelve Deep Space loops")
         self.assertEqual(len(cinema), 6, "live-feed.json should list six Cinema loops")
-        self.assertEqual(self.files, deep + cinema)
-        self.assertEqual(len(re.findall(r"\bLoop\(", self.loops_body)), 18, "eighteen Loop entries")
-        self.assertEqual(len(self.ids), 18)
-        self.assertEqual(len(set(self.ids)), 18, "loop ids must be unique")
+        self.assertEqual(len(echo), 3, "live-feed.json should list three Icon Echo loops")
+        self.assertEqual(self.files, deep + cinema + echo)
+        self.assertEqual(len(re.findall(r"\bLoop\(", self.loops_body)), 21, "twenty-one Loop entries")
+        self.assertEqual(len(self.ids), 21)
+        self.assertEqual(len(set(self.ids)), 21, "loop ids must be unique")
 
     def test_no_stale_bundled_frames(self):
         # Every bundled frame belongs to a listed loop (the 1.9.4 placeholder
@@ -149,12 +152,15 @@ class LoopCatalogueTests(unittest.TestCase):
         # wallpaper's two forms.
         self.assertIn('const val SERIES = "series-9-deep-space"', self.src)
         self.assertIn('const val CINEMA_SERIES = "series-10-cinema"', self.src)
+        self.assertIn('const val ICON_ECHO_SERIES = "series-11-icon-echo"', self.src)
         self.assertIn("val series: String = LiveLoop.SERIES", self.src)
         self.assertEqual(self.loops_body.count("series = CINEMA_SERIES"), 6)
+        self.assertEqual(self.loops_body.count("series = ICON_ECHO_SERIES"), 3)
         self.assertIn("series = loop.series", self.src)
         manifest = json.loads(read(ROOT / "Wallpapers" / "manifest.json"))
         series = {w["series"] for w in manifest["wallpapers"]}
         self.assertIn("series-10-cinema", series, "the Cinema stills must exist for their chip")
+        self.assertIn("series-11-icon-echo", series, "the Icon Echo stills must exist for their chip")
 
     def test_as_wallpapers_marks_them_live(self):
         self.assertIn("isLive = true", self.src)
